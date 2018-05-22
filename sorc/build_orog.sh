@@ -5,12 +5,16 @@
 #####################################################################################
 set -eux
 
-source ./machine-setup.sh > /dev/null 2>&1
+source ./machine-setup.sh $1 > /dev/null 2>&1
 cwd=`pwd`
 
 USE_PREINST_LIBS=${USE_PREINST_LIBS:-"true"}
 if [ $USE_PREINST_LIBS = true ]; then
-  export MOD_PATH=/scratch3/NCEPDEV/nwprod/lib/modulefiles
+  if [ $target = odin ]; then
+    export MOD_PATH=/scratch/ywang/external/modulefiles
+  else
+    export MOD_PATH=/scratch3/NCEPDEV/nwprod/lib/modulefiles
+  fi
   source ../modulefiles/fv3gfs/orog.$target             > /dev/null 2>&1
 else
   export MOD_PATH=${cwd}/lib/modulefiles
@@ -40,6 +44,10 @@ elif [ $target = theia ]; then
  export INCS="-I${NETCDF}/include"
  export LIBSM="${BACIO_LIB4} ${W3NCO_LIBd} ${IP_LIBd} ${SP_LIBd} -L${NETCDF}/lib -lnetcdff -lnetcdf"
  export FFLAGSM="-O3 -g -traceback -r8  -convert big_endian -fp-model precise  -assume byterecl ${INCS}"
+elif [ $target = odin ]; then
+ export INCS=""
+ export LIBSM="${BACIO_LIB4} ${IP_LIBd} ${W3NCO_LIBd} ${SP_LIBd}"
+ export FFLAGSM="-O3 -g -traceback -r8  -convert big_endian -fp-model precise  -assume byterecl"
 fi
 
 export FCMP=${FCMP:-ifort}
