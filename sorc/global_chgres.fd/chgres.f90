@@ -331,10 +331,11 @@
       ELSE
         CALL NEMSIO_OPEN(GFILEI,'chgres.inp.sig','read',IRET=IRET)
         CALL NEMSIO_GETFILEHEAD(GFILEI, GTYPE=FILETYPE, MODELNAME=MODELNAME)
-        IF (TRIM(FILETYPE) == 'NEMSIO' .AND. TRIM(MODELNAME) == 'GFS'  &
-          .AND. IRET == 0) THEN
-         INPTYP = 1
-         PRINT*,'INPUT ATMOS FILE chgres.inp.sig IS NEMSIO FORMAT'
+        IF (TRIM(FILETYPE) == 'NEMSIO' .AND. IRET == 0) THEN
+          IF (TRIM(MODELNAME)=='GFS' .OR. TRIM(MODELNAME)=='FV3GFS') THEN 
+            INPTYP = 1
+            PRINT*,'INPUT ATMOS FILE chgres.inp.sig IS NEMSIO FORMAT'
+          ENDIF
         ENDIF
       ENDIF
 
@@ -782,7 +783,11 @@
 
       ELSEIF(INPTYP == 1) THEN
 
+      IF (TRIM(MODELNAME)=='GFS') THEN
         PRINT*, 'CHGRES INPUT:  GFS GAUSSIAN NEMSIO GRID FILE '
+      ELSE
+        PRINT*, 'CHGRES INPUT:  FV3GFS GAUSSIAN NEMSIO GRID FILE '
+      ENDIF
         PRINT*, 'CHGRES OUTPUT: FV3 NETCDF FILE'
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -832,6 +837,8 @@
         PRINT*," VERSION:   ",GFSHEADI%VERSION
         PRINT*," NREC:      ",GFSHEADI%NREC
         PRINT*," JCAP:      ",GFSHEADI%JCAP
+! fv3gfs with gfdl mp says there are 8 tracers.  I only count 7.
+        IF(TRIM(MODELNAME) == "FV3GFS") GFSHEADI%NTRAC = GFSHEADI%NTRAC - 1
         PRINT*," NTRAC:     ",GFSHEADI%NTRAC
         PRINT*," NCLDT:     ",GFSHEADI%NCLDT
         PRINT*," IDSL:      ",GFSHEADI%IDSL
@@ -858,9 +865,16 @@
         ALLOCATE(GFSHEADVI%CPI(GFSHEADI%NTRAC+1))
         ALLOCATE(GFSHEADVI%RI(GFSHEADI%NTRAC+1))
 
-        CALL NEMSIO_GETFILEHEAD(GFILEI, VCOORD=GFSHEADVI%VCOORD,    &
+        IF(TRIM(MODELNAME) == 'FV3GFS') THEN
+          CALL NEMSIO_GETFILEHEAD(GFILEI, VCOORD=GFSHEADVI%VCOORD,    &
+                                IRET=IRET1)
+          GFSHEADVI%CPI = -999.
+          GFSHEADVI%RI  = -999.
+        ELSE
+          CALL NEMSIO_GETFILEHEAD(GFILEI, VCOORD=GFSHEADVI%VCOORD,    &
                                 CPI=GFSHEADVI%CPI, RI=GFSHEADVI%RI, &
                                 IRET=IRET1)
+        ENDIF
 
         IF(IRET1.NE.0 ) THEN
           PRINT*, 'FATAL ERROR READNG NEMSIO FILE HEADER. IRET: ', IRET1
@@ -899,7 +913,11 @@
           ALLOCATE(GFSDATAI%W(LONB,LATB,LEVSI))
         ENDIF 
 
-        CALL NEMSIO_GFS_RDGRD(GFILEI,GFSDATAI,IRET=IRET)
+        IF(TRIM(MODELNAME) == "FV3GFS") THEN
+          CALL READ_FV3GFS_ATMS_DATA_NEMSIO(GFILEI, GFSDATAI, GFSHEADI)
+        ELSE
+          CALL NEMSIO_GFS_RDGRD(GFILEI,GFSDATAI,IRET=IRET)
+        ENDIF
 
         CALL NEMSIO_CLOSE(GFILEI,IRET=IRET)
 
@@ -909,7 +927,11 @@
           LEVSO = LEVSI
         ENDIF
 
-        NTRACO = GFSHEADI%NTRAC
+        IF (NTRAC > 0) THEN
+          NTRACO = NTRAC
+        ELSE
+          NTRACO = GFSHEADI%NTRAC
+        ENDIF
 
         IF(IDVT > 0)THEN
           IDVTO = IDVT
@@ -917,14 +939,14 @@
           IDVTO = GFSHEADI%IDVT
         ENDIF
 
-        IF (NTRACO == 3 .AND. IDVTO == 21) THEN
-          PRINT*,'INPUT FILE TRACERS: SPFH, O3MR, CLWMR'
-        ELSE
-          PRINT*,'- FATAL ERROR: CHGRES ASSUMES NTRACO=3 AND IDVT=21'
-          PRINT*,'- INPUT FILE VALUES ARE ',NTRACO,IDVT
-          PRINT*,'- STOP.'
-          CALL ERREXIT(27)
-        ENDIF
+!       IF (NTRACO == 3 .AND. IDVTO == 21) THEN
+!         PRINT*,'INPUT FILE TRACERS: SPFH, O3MR, CLWMR'
+!       ELSE
+!         PRINT*,'- FATAL ERROR: CHGRES ASSUMES NTRACO=3 AND IDVT=21'
+!         PRINT*,'- INPUT FILE VALUES ARE ',NTRACO,IDVT
+!         PRINT*,'- STOP.'
+!         CALL ERREXIT(27)
+!       ENDIF
 
         IF(IDVC  >  0) THEN
           IDVCO = IDVC
@@ -994,6 +1016,9 @@
         IF (NTRACO == GFSHEADI%NTRAC) THEN
           CPI(0:NTRACO) = GFSHEADVI%CPI(1:NTRACO+1)
           RI(0:NTRACO)  = GFSHEADVI%RI(1:NTRACO+1)
+        ELSEIF (IDVC == 2) THEN
+          CPI(0:NTRACO) = -999.
+          RI(0:NTRACO)  = -999.
         ELSE
           PRINT *,'FATAL ERROR: You have different Tracers from input,',  &
           ' make sure to provide CPI & RI, for generalized coordinate.'
@@ -1212,8 +1237,10 @@
         CALL SFCIO_SCLOSE(NSFCI, IRET)
       ELSE
         CALL NEMSIO_OPEN(GFILEISFC,'chgres.inp.sfc','read',IRET=IRET)
-        CALL NEMSIO_GETFILEHEAD(GFILEISFC,GTYPE=FILETYPE,IRET=IRET)
-        PRINT *,'OPEN chgres.inp.sfc,iret=',IRET, 'gtype=',FILETYPE
+        CALL NEMSIO_GETFILEHEAD(GFILEISFC,GTYPE=FILETYPE,  &
+                                MODELNAME=MODELNAME,IRET=IRET)
+        PRINT *,'OPEN chgres.inp.sfc,iret=',IRET, 'gtype=',FILETYPE,  &
+                'modelname= ',modelname
         IF (TRIM(FILETYPE) == 'NEMSIO' .AND. IRET == 0) THEN
           INPTYP = 1
           CALL NEMSIO_CLOSE(GFILEISFC, IRET=IRET)
@@ -1225,11 +1252,15 @@
 
       IF (NSFCO == 0) GOTO 80
 
-      INQUIRE (FILE="./chgres.inp.nst", EXIST=DO_NSST)
-      IF (DO_NSST .AND. NSFCO == 0) THEN
+      IF (.not. TRIM(MODELNAME) == "FV3GFS") THEN
+       INQUIRE (FILE="./chgres.inp.nst", EXIST=DO_NSST)
+       IF (DO_NSST .AND. NSFCO == 0) THEN
         PRINT*,'FATAL ERROR: WHEN CONVERTING AN NSST RESTART FILE,'
         PRINT*,'YOU MUST ALSO CONVERT A SURFACE RESTART FILE.'
         CALL ERREXIT(33)
+       ENDIF
+      ELSE
+       DO_NSST= .true. !always do NSST for fv3gfs input
       ENDIF
 
       IF(INPTYP==2) THEN
@@ -1285,9 +1316,15 @@
 
       ELSE
 
-        CALL READ_GFS_SFC_DATA_NEMSIO (IMI, JMI, LSOILI, IVSI, SFCINPUT,  &
-     &                       F10MI, T2MI, Q2MI, UUSTARI, FFMMI, FFHHI,    &
-     &                       SRFLAGI, TPRCPI)
+        IF (TRIM(MODELNAME) == "FV3GFS") THEN
+          CALL READ_FV3GFS_SFC_DATA_NEMSIO (IMI, JMI, LSOILI, SFCINPUT,  &
+                               F10MI, T2MI, Q2MI, UUSTARI, FFMMI, FFHHI,    &
+                               SRFLAGI, TPRCPI)
+        ELSE
+          CALL READ_GFS_SFC_DATA_NEMSIO (IMI, JMI, LSOILI, IVSI, SFCINPUT,  &
+                               F10MI, T2MI, Q2MI, UUSTARI, FFMMI, FFHHI,    &
+                               SRFLAGI, TPRCPI)
+        ENDIF
 
       ENDIF
       
@@ -1470,9 +1507,16 @@
         ALLOCATE(MASK_INPUT(IMI,JMI))
 
         IF (INPTYP == 1) THEN
-          CALL READ_GFS_NSST_DATA_NEMSIO (MASK_INPUT,NSST_INPUT,IMI,JMI, &
-                   NUM_NSST_FIELDS,NSST_YEAR,NSST_MON,NSST_DAY,  &
-                   NSST_HOUR,NSST_FHOUR)
+          IF(TRIM(MODELNAME) == "FV3GFS") THEN ! for fv3, surface and nst
+                                               ! records in same file.
+            CALL READ_FV3GFS_NSST_DATA_NEMSIO (MASK_INPUT,NSST_INPUT,IMI,JMI, &
+                     NUM_NSST_FIELDS,NSST_YEAR,NSST_MON,NSST_DAY,  &
+                     NSST_HOUR,NSST_FHOUR)
+          ELSE
+            CALL READ_GFS_NSST_DATA_NEMSIO (MASK_INPUT,NSST_INPUT,IMI,JMI, &
+                     NUM_NSST_FIELDS,NSST_YEAR,NSST_MON,NSST_DAY,  &
+                     NSST_HOUR,NSST_FHOUR)
+          ENDIF
         ELSEIF (INPTYP == 2) THEN
           CALL READ_GFS_NSST_DATA_NSTIO (IMI,JMI,NUM_NSST_FIELDS,       &
                                     NSST_INPUT, MASK_INPUT,NSST_YEAR,   &
