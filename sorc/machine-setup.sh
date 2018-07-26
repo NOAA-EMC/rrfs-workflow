@@ -16,34 +16,66 @@ else
     __ms_shell=sh
 fi
 
-target=""
+if [ -z "$platform" ];then
+    echo "Using directory structure to determine platform"
+    if [[ -d /lfs3 ]] ; then
+        # We are on NOAA Jet
+        platform=jet
+    elif [[ -d /scratch3 ]] ; then
+        # We are on NOAA Theia
+        platform=theia
+    elif [[ -d /gpfs/hps && -e /etc/SuSE-release ]] ; then
+        # We are on NOAA Luna or Surge
+        platform=wcoss_cray
+    elif [[ -d /dcom && -d /hwrf ]] ; then
+        # We are on NOAA Tide or Gyre
+        platform=wcoss
+    elif [[ -d /glade ]] ; then
+        # We are on NCAR Yellowstone
+        platform=yellowstone
+    elif [[ -d /lustre && -d /ncrc ]] ; then
+        # We are on GAEA. 
+        platform=gaea
+    elif [[ "$(hostname)" =~ "odin" ]]; then
+        # We are on odin
+        platform=odin
+    else
+        # We are on an unknown machine
+        echo WARNING: UNKNOWN PLATFORM 1>&2
+        platform=UNKNOWN
+    fi
+fi
+
+
+if [ "$platform" != "UNKNOWN" ]; then 
+    #Do not set "target" if platform is unknown
+    target=$platform
+fi
+
 USERNAME=`echo $LOGNAME | awk '{ print tolower($0)'}`
 
-if [[ -d /lfs3 ]] ; then
+if [ "$target" = "jet" ] ; then
     # We are on NOAA Jet
     if ( ! eval module help > /dev/null 2>&1 ) ; then
 	echo load the module command 1>&2
         source /apps/lmod/lmod/init/$__ms_shell
     fi
-    target=jet
     module purge
-elif [[ -d /scratch3 ]] ; then
+elif [ "$target" = "theia" ] ; then
     # We are on NOAA Theia
     if ( ! eval module help > /dev/null 2>&1 ) ; then
 	echo load the module command 1>&2
         source /apps/lmod/lmod/init/$__ms_shell
     fi
-    target=theia
     module purge
     module use /scratch3/NCEPDEV/nwprod/modulefiles/
     module use /scratch3/NCEPDEV/nwprod/lib/modulefiles
-elif [[ -d /gpfs/hps && -e /etc/SuSE-release ]] ; then
+elif [ "$target" = "wcoss_cray" ] ; then
     # We are on NOAA Luna or Surge
     if ( ! eval module help > /dev/null 2>&1 ) ; then
 	echo load the module command 1>&2
 	source /opt/modules/default/init/$__ms_shell
     fi
-    target=wcoss_cray
 
     # Silence the "module purge" to avoid the expected error messages
     # related to modules that load modules.
@@ -71,23 +103,21 @@ elif [[ -d /gpfs/hps && -e /etc/SuSE-release ]] ; then
     module use /opt/modulefiles
     module load modules
 
-elif [[ -d /dcom && -d /hwrf ]] ; then
+elif [ "$target" = "wcoss" ] ; then
     # We are on NOAA Tide or Gyre
     if ( ! eval module help > /dev/null 2>&1 ) ; then
 	echo load the module command 1>&2
         source /usrx/local/Modules/default/init/$__ms_shell
     fi
-    target=wcoss
     module purge
-elif [[ -d /glade ]] ; then
+elif [ "$target" = "yellowstone" ] ; then
     # We are on NCAR Yellowstone
     if ( ! eval module help > /dev/null 2>&1 ) ; then
 	echo load the module command 1>&2
         . /usr/share/Modules/init/$__ms_shell
     fi
-    target=yellowstone
     module purge
-elif [[ -d /lustre && -d /ncrc ]] ; then
+elif [ "$target" = "gaea" ] ; then
     # We are on GAEA. 
     if ( ! eval module help > /dev/null 2>&1 ) ; then
         # We cannot simply load the module command.  The GAEA
@@ -98,10 +128,9 @@ elif [[ -d /lustre && -d /ncrc ]] ; then
 	echo load the module command 1>&2
         source /etc/profile
     fi
-    target=gaea
     module purge
-elif [[ "$(hostname)" =~ "odin" ]]; then
-    target="odin"
+elif [ "$target" = "odin" ] ; then
+    echo "Not doing anything for 'odin', if statement reserved for future use"
 else
     echo WARNING: UNKNOWN PLATFORM 1>&2
 fi
