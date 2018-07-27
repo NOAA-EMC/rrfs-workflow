@@ -16,7 +16,10 @@ else
     __ms_shell=sh
 fi
 
-if [ -z "$platform" ];then
+# Handle platform as an optional command line argument
+platform=${1:-no_platform_specified}
+
+if [ "$platform" = "no_platform_specified" ]; then
     echo "Using directory structure to determine platform"
     if [[ -d /lfs3 ]] ; then
         # We are on NOAA Jet

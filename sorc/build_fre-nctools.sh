@@ -9,7 +9,7 @@ if [ $# -eq 0 ]; then
 else 
    platform=$1
 fi
-source ./machine-setup.sh > /dev/null 2>&1
+source ./machine-setup.sh $platform > /dev/null 2>&1
 system_site=$target
 if [ $system_site = "wcoss_cray" ]; then
   system_site=cray
