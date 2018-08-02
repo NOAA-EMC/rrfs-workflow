@@ -1,3 +1,115 @@
+ SUBROUTINE READ_FV3GFS_ATMS_DATA_NEMSIO(GFILEI, GFSDATAI, GFSHEADI)
+
+ USE NEMSIO_MODULE
+ USE NEMSIO_GFS
+
+ IMPLICIT NONE
+
+ TYPE(NEMSIO_GFILE) :: GFILEI
+ TYPE(NEMSIO_DBTA)  :: GFSDATAI
+ TYPE(NEMSIO_HEAD)  :: GFSHEADI
+
+ INTEGER            :: L, IRET
+ INTEGER            :: LONB, LATB, LEVSI
+
+ REAL, ALLOCATABLE  :: TMP(:)
+
+ LONB = GFSHEADI%DIMX
+ LATB = GFSHEADI%DIMY
+ LEVSI = GFSHEADI%DIMZ
+
+ ALLOCATE(TMP(LONB*LATB))
+
+ PRINT*,'READ HGT'
+ CALL NEMSIO_READRECV(GFILEI, 'hgt', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ GFSDATAI%ZS = RESHAPE(TMP,(/LONB,LATB/))
+
+ PRINT*,'READ PRES'
+ CALL NEMSIO_READRECV(GFILEI, 'pres', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ GFSDATAI%PS = RESHAPE(TMP,(/LONB,LATB/))
+
+ PRINT*,'READ U WINDS'
+ DO L = 1, LEVSI
+   CALL NEMSIO_READRECV(GFILEI, 'ugrd', 'mid layer', L, TMP, IRET=IRET)
+   IF (IRET /= 0) GOTO 99
+   GFSDATAI%U(:,:,L) = RESHAPE(TMP,(/LONB,LATB/))
+ ENDDO
+
+ PRINT*,'READ V WINDS'
+ DO L = 1, LEVSI
+   CALL NEMSIO_READRECV(GFILEI, 'vgrd', 'mid layer', L, TMP, IRET=IRET)
+   IF (IRET /= 0) GOTO 99
+   GFSDATAI%V(:,:,L) = RESHAPE(TMP,(/LONB,LATB/))
+ ENDDO
+
+ PRINT*,'READ T'
+ DO L = 1, LEVSI
+   CALL NEMSIO_READRECV(GFILEI, 'tmp', 'mid layer', L, TMP, IRET=IRET)
+   IF (IRET /= 0) GOTO 99
+   GFSDATAI%T(:,:,L) = RESHAPE(TMP,(/LONB,LATB/))
+ ENDDO
+
+ PRINT*,'READ Q'
+ DO L = 1, LEVSI
+   CALL NEMSIO_READRECV(GFILEI, 'spfh', 'mid layer', L, TMP, IRET=IRET)
+   IF (IRET /= 0) GOTO 99
+   GFSDATAI%Q(:,:,L,1) = RESHAPE(TMP,(/LONB,LATB/))
+ ENDDO
+
+ PRINT*,'READ O3'
+ DO L = 1, LEVSI
+   CALL NEMSIO_READRECV(GFILEI, 'o3mr', 'mid layer', L, TMP, IRET=IRET)
+   IF (IRET /= 0) GOTO 99
+   GFSDATAI%Q(:,:,L,2) = RESHAPE(TMP,(/LONB,LATB/))
+ ENDDO
+
+ PRINT*,'READ CLWMR'
+ DO L = 1, LEVSI
+   CALL NEMSIO_READRECV(GFILEI, 'clwmr', 'mid layer', L, TMP, IRET=IRET)
+   IF (IRET /= 0) GOTO 99
+   GFSDATAI%Q(:,:,L,3) = RESHAPE(TMP,(/LONB,LATB/))
+ ENDDO
+
+ PRINT*,'READ RWMR'
+ DO L = 1, LEVSI
+   CALL NEMSIO_READRECV(GFILEI, 'rwmr', 'mid layer', L, TMP, IRET=IRET)
+   IF (IRET /= 0) GOTO 99
+   GFSDATAI%Q(:,:,L,4) = RESHAPE(TMP,(/LONB,LATB/))
+ ENDDO
+
+ PRINT*,'READ ICMR'
+ DO L = 1, LEVSI
+   CALL NEMSIO_READRECV(GFILEI, 'icmr', 'mid layer', L, TMP, IRET=IRET)
+   IF (IRET /= 0) GOTO 99
+   GFSDATAI%Q(:,:,L,5) = RESHAPE(TMP,(/LONB,LATB/))
+ ENDDO
+
+ PRINT*,'READ SNMR'
+ DO L = 1, LEVSI
+   CALL NEMSIO_READRECV(GFILEI, 'snmr', 'mid layer', L, TMP, IRET=IRET)
+   IF (IRET /= 0) GOTO 99
+   GFSDATAI%Q(:,:,L,6) = RESHAPE(TMP,(/LONB,LATB/))
+ ENDDO
+
+ PRINT*,'READ GRLE'
+ DO L = 1, LEVSI
+   CALL NEMSIO_READRECV(GFILEI, 'grle', 'mid layer', L, TMP, IRET=IRET)
+   IF (IRET /= 0) GOTO 99
+   GFSDATAI%Q(:,:,L,7) = RESHAPE(TMP,(/LONB,LATB/))
+ ENDDO
+
+ DEALLOCATE(TMP)
+
+ RETURN
+
+ 99 CONTINUE
+ PRINT*,'FATAL ERROR '
+ STOP
+
+ END SUBROUTINE READ_FV3GFS_ATMS_DATA_NEMSIO
+
  SUBROUTINE WRITE_FV3_ATMS_HEADER_NETCDF(LEVS_P1, NTRACM, NVCOORD, VCOORD)
 
  IMPLICIT NONE
@@ -751,6 +863,14 @@
  INTEGER               :: ID_CLWMR_RIGHT, ID_CLWMR_LEFT
  INTEGER               :: ID_O3MR_TOP, ID_O3MR_BOTTOM
  INTEGER               :: ID_O3MR_RIGHT, ID_O3MR_LEFT
+ INTEGER               :: ID_RWMR_TOP, ID_RWMR_BOTTOM
+ INTEGER               :: ID_RWMR_RIGHT, ID_RWMR_LEFT
+ INTEGER               :: ID_ICMR_TOP, ID_ICMR_BOTTOM
+ INTEGER               :: ID_ICMR_RIGHT, ID_ICMR_LEFT
+ INTEGER               :: ID_SNMR_TOP, ID_SNMR_BOTTOM
+ INTEGER               :: ID_SNMR_RIGHT, ID_SNMR_LEFT
+ INTEGER               :: ID_GRLE_TOP, ID_GRLE_BOTTOM
+ INTEGER               :: ID_GRLE_RIGHT, ID_GRLE_LEFT
  INTEGER               :: ID_W_TOP, ID_W_BOTTOM
  INTEGER               :: ID_W_RIGHT, ID_W_LEFT
  INTEGER               :: ID_ZH_TOP, ID_ZH_BOTTOM
@@ -1013,6 +1133,74 @@
                              (/DIM_HALO, DIM_LAT, DIM_LEV/), ID_CLWMR_LEFT)
  CALL NETCDF_ERR(ERROR, 'DEFINING LIQ_WAT_RIGHT')
 
+ IF (NTRACM > 3) THEN
+
+   ERROR = NF90_DEF_VAR(NCID2, 'rwmr_bottom', NF90_FLOAT, &
+                             (/DIM_LON, DIM_HALO, DIM_LEV/), ID_RWMR_BOTTOM)
+   CALL NETCDF_ERR(ERROR, 'DEFINING RWMR_BOTTOM')
+
+   ERROR = NF90_DEF_VAR(NCID2, 'rwmr_top', NF90_FLOAT, &
+                             (/DIM_LON, DIM_HALO, DIM_LEV/), ID_RWMR_TOP)
+   CALL NETCDF_ERR(ERROR, 'DEFINING RWMR_TOP')
+
+   ERROR = NF90_DEF_VAR(NCID2, 'rwmr_right', NF90_FLOAT, &
+                             (/DIM_HALO, DIM_LAT, DIM_LEV/), ID_RWMR_RIGHT)
+   CALL NETCDF_ERR(ERROR, 'DEFINING RWMR_RIGHT')
+
+   ERROR = NF90_DEF_VAR(NCID2, 'rwmr_left', NF90_FLOAT, &
+                             (/DIM_HALO, DIM_LAT, DIM_LEV/), ID_RWMR_LEFT)
+   CALL NETCDF_ERR(ERROR, 'DEFINING RWMR_LEFT')
+
+   ERROR = NF90_DEF_VAR(NCID2, 'icmr_bottom', NF90_FLOAT, &
+                             (/DIM_LON, DIM_HALO, DIM_LEV/), ID_ICMR_BOTTOM)
+   CALL NETCDF_ERR(ERROR, 'DEFINING ICMR_BOTTOM')
+
+   ERROR = NF90_DEF_VAR(NCID2, 'icmr_top', NF90_FLOAT, &
+                             (/DIM_LON, DIM_HALO, DIM_LEV/), ID_ICMR_TOP)
+   CALL NETCDF_ERR(ERROR, 'DEFINING ICMR_TOP')
+
+   ERROR = NF90_DEF_VAR(NCID2, 'icmr_right', NF90_FLOAT, &
+                             (/DIM_HALO, DIM_LAT, DIM_LEV/), ID_ICMR_RIGHT)
+   CALL NETCDF_ERR(ERROR, 'DEFINING ICMR_RIGHT')
+
+   ERROR = NF90_DEF_VAR(NCID2, 'icmr_left', NF90_FLOAT, &
+                             (/DIM_HALO, DIM_LAT, DIM_LEV/), ID_ICMR_LEFT)
+   CALL NETCDF_ERR(ERROR, 'DEFINING ICMR_LEFT')
+
+   ERROR = NF90_DEF_VAR(NCID2, 'snmr_bottom', NF90_FLOAT, &
+                             (/DIM_LON, DIM_HALO, DIM_LEV/), ID_SNMR_BOTTOM)
+   CALL NETCDF_ERR(ERROR, 'DEFINING SNMR_BOTTOM')
+
+   ERROR = NF90_DEF_VAR(NCID2, 'snmr_top', NF90_FLOAT, &
+                             (/DIM_LON, DIM_HALO, DIM_LEV/), ID_SNMR_TOP)
+   CALL NETCDF_ERR(ERROR, 'DEFINING SNMR_TOP')
+
+   ERROR = NF90_DEF_VAR(NCID2, 'snmr_right', NF90_FLOAT, &
+                             (/DIM_HALO, DIM_LAT, DIM_LEV/), ID_SNMR_RIGHT)
+   CALL NETCDF_ERR(ERROR, 'DEFINING SNMR_RIGHT')
+
+   ERROR = NF90_DEF_VAR(NCID2, 'snmr_left', NF90_FLOAT, &
+                             (/DIM_HALO, DIM_LAT, DIM_LEV/), ID_SNMR_LEFT)
+   CALL NETCDF_ERR(ERROR, 'DEFINING SNMR_LEFT')
+
+   ERROR = NF90_DEF_VAR(NCID2, 'grle_bottom', NF90_FLOAT, &
+                             (/DIM_LON, DIM_HALO, DIM_LEV/), ID_GRLE_BOTTOM)
+   CALL NETCDF_ERR(ERROR, 'DEFINING GRLE_BOTTOM')
+
+   ERROR = NF90_DEF_VAR(NCID2, 'grle_top', NF90_FLOAT, &
+                             (/DIM_LON, DIM_HALO, DIM_LEV/), ID_GRLE_TOP)
+   CALL NETCDF_ERR(ERROR, 'DEFINING GRLE_TOP')
+
+   ERROR = NF90_DEF_VAR(NCID2, 'grle_right', NF90_FLOAT, &
+                             (/DIM_HALO, DIM_LAT, DIM_LEV/), ID_GRLE_RIGHT)
+   CALL NETCDF_ERR(ERROR, 'DEFINING GRLE_RIGHT')
+
+   ERROR = NF90_DEF_VAR(NCID2, 'grle_left', NF90_FLOAT, &
+                             (/DIM_HALO, DIM_LAT, DIM_LEV/), ID_GRLE_LEFT)
+   CALL NETCDF_ERR(ERROR, 'DEFINING GRLE_LEFT')
+
+ ENDIF
+
  ERROR = NF90_DEF_VAR(NCID2, 'i_w_bottom', NF90_INT, &
                              (/DIM_LONP/), ID_I_W_BOTTOM)
  CALL NETCDF_ERR(ERROR, 'DEFINING I_W_BOTTOM')
@@ -1223,6 +1411,42 @@
 
  ERROR = NF90_PUT_VAR(NCID2, ID_CLWMR_BOTTOM, HALO_3D_4BYTE)
  CALL NETCDF_ERR(ERROR, 'WRITING LIQ_WAT_BOTTOM')
+
+ IF (NTRACM > 3) THEN
+
+   CALL GL2ANY(0, LEVSO, Q(:,:,:,4), LONB, LATB, HALO_3D, IHALO, JHALO, GEOLON_HALO, GEOLAT_HALO)
+   DO K = 1, LEVSO
+     HALO_3D_4BYTE(:,:,LEVSO-K+1) = REAL(HALO_3D(:,:,K),4)
+   ENDDO
+
+   ERROR = NF90_PUT_VAR(NCID2, ID_RWMR_BOTTOM, HALO_3D_4BYTE)
+   CALL NETCDF_ERR(ERROR, 'WRITING RWMR_BOTTOM')
+
+   CALL GL2ANY(0, LEVSO, Q(:,:,:,5), LONB, LATB, HALO_3D, IHALO, JHALO, GEOLON_HALO, GEOLAT_HALO)
+   DO K = 1, LEVSO
+     HALO_3D_4BYTE(:,:,LEVSO-K+1) = REAL(HALO_3D(:,:,K),4)
+   ENDDO
+
+   ERROR = NF90_PUT_VAR(NCID2, ID_ICMR_BOTTOM, HALO_3D_4BYTE)
+   CALL NETCDF_ERR(ERROR, 'WRITING ICMR_BOTTOM')
+
+   CALL GL2ANY(0, LEVSO, Q(:,:,:,6), LONB, LATB, HALO_3D, IHALO, JHALO, GEOLON_HALO, GEOLAT_HALO)
+   DO K = 1, LEVSO
+     HALO_3D_4BYTE(:,:,LEVSO-K+1) = REAL(HALO_3D(:,:,K),4)
+   ENDDO
+
+   ERROR = NF90_PUT_VAR(NCID2, ID_SNMR_BOTTOM, HALO_3D_4BYTE)
+   CALL NETCDF_ERR(ERROR, 'WRITING SNMR_BOTTOM')
+
+   CALL GL2ANY(0, LEVSO, Q(:,:,:,7), LONB, LATB, HALO_3D, IHALO, JHALO, GEOLON_HALO, GEOLAT_HALO)
+   DO K = 1, LEVSO
+     HALO_3D_4BYTE(:,:,LEVSO-K+1) = REAL(HALO_3D(:,:,K),4)
+   ENDDO
+
+   ERROR = NF90_PUT_VAR(NCID2, ID_GRLE_BOTTOM, HALO_3D_4BYTE)
+   CALL NETCDF_ERR(ERROR, 'WRITING GRLE_BOTTOM')
+
+ ENDIF
 
  CALL GL2ANY(0, LEVSO, W, LONB, LATB, HALO_3D, IHALO, JHALO, GEOLON_HALO, GEOLAT_HALO)
  DO K = 1, LEVSO
@@ -1449,6 +1673,42 @@
 
  ERROR = NF90_PUT_VAR(NCID2, ID_CLWMR_TOP, HALO_3D_4BYTE)
  CALL NETCDF_ERR(ERROR, 'WRITING CLWMR_TOP')
+
+ IF (NTRACM > 3) THEN
+
+   CALL GL2ANY(0, LEVSO, Q(:,:,:,4), LONB, LATB, HALO_3D, IHALO, JHALO, GEOLON_HALO, GEOLAT_HALO)
+   DO K = 1, LEVSO
+     HALO_3D_4BYTE(:,:,LEVSO-K+1) = REAL(HALO_3D(:,:,K),4)
+   ENDDO
+
+   ERROR = NF90_PUT_VAR(NCID2, ID_RWMR_TOP, HALO_3D_4BYTE)
+   CALL NETCDF_ERR(ERROR, 'WRITING RWMR_TOP')
+
+   CALL GL2ANY(0, LEVSO, Q(:,:,:,5), LONB, LATB, HALO_3D, IHALO, JHALO, GEOLON_HALO, GEOLAT_HALO)
+   DO K = 1, LEVSO
+     HALO_3D_4BYTE(:,:,LEVSO-K+1) = REAL(HALO_3D(:,:,K),4)
+   ENDDO
+
+   ERROR = NF90_PUT_VAR(NCID2, ID_ICMR_TOP, HALO_3D_4BYTE)
+   CALL NETCDF_ERR(ERROR, 'WRITING ICMR_TOP')
+
+   CALL GL2ANY(0, LEVSO, Q(:,:,:,6), LONB, LATB, HALO_3D, IHALO, JHALO, GEOLON_HALO, GEOLAT_HALO)
+   DO K = 1, LEVSO
+     HALO_3D_4BYTE(:,:,LEVSO-K+1) = REAL(HALO_3D(:,:,K),4)
+   ENDDO
+
+   ERROR = NF90_PUT_VAR(NCID2, ID_SNMR_TOP, HALO_3D_4BYTE)
+   CALL NETCDF_ERR(ERROR, 'WRITING SNMR_TOP')
+
+   CALL GL2ANY(0, LEVSO, Q(:,:,:,7), LONB, LATB, HALO_3D, IHALO, JHALO, GEOLON_HALO, GEOLAT_HALO)
+   DO K = 1, LEVSO
+     HALO_3D_4BYTE(:,:,LEVSO-K+1) = REAL(HALO_3D(:,:,K),4)
+   ENDDO
+
+   ERROR = NF90_PUT_VAR(NCID2, ID_GRLE_TOP, HALO_3D_4BYTE)
+   CALL NETCDF_ERR(ERROR, 'WRITING GRLE_TOP')
+
+ ENDIF
 
  CALL GL2ANY(0, LEVSO, W, LONB, LATB, HALO_3D, IHALO, JHALO, GEOLON_HALO, GEOLAT_HALO)
  DO K = 1, LEVSO
@@ -1677,6 +1937,42 @@
  ERROR = NF90_PUT_VAR(NCID2, ID_CLWMR_LEFT, HALO_3D_4BYTE)
  CALL NETCDF_ERR(ERROR, 'WRITING CLWMR_LEFT')
 
+ IF (NTRACM > 3) THEN
+
+   CALL GL2ANY(0, LEVSO, Q(:,:,:,4), LONB, LATB, HALO_3D, IHALO, JHALO, GEOLON_HALO, GEOLAT_HALO)
+   DO K = 1, LEVSO
+     HALO_3D_4BYTE(:,:,LEVSO-K+1) = REAL(HALO_3D(:,:,K),4)
+   ENDDO
+
+   ERROR = NF90_PUT_VAR(NCID2, ID_RWMR_LEFT, HALO_3D_4BYTE)
+   CALL NETCDF_ERR(ERROR, 'WRITING RWMR_LEFT')
+
+   CALL GL2ANY(0, LEVSO, Q(:,:,:,5), LONB, LATB, HALO_3D, IHALO, JHALO, GEOLON_HALO, GEOLAT_HALO)
+   DO K = 1, LEVSO
+     HALO_3D_4BYTE(:,:,LEVSO-K+1) = REAL(HALO_3D(:,:,K),4)
+   ENDDO
+
+   ERROR = NF90_PUT_VAR(NCID2, ID_ICMR_LEFT, HALO_3D_4BYTE)
+   CALL NETCDF_ERR(ERROR, 'WRITING ICMR_LEFT')
+
+   CALL GL2ANY(0, LEVSO, Q(:,:,:,6), LONB, LATB, HALO_3D, IHALO, JHALO, GEOLON_HALO, GEOLAT_HALO)
+   DO K = 1, LEVSO
+     HALO_3D_4BYTE(:,:,LEVSO-K+1) = REAL(HALO_3D(:,:,K),4)
+   ENDDO
+
+   ERROR = NF90_PUT_VAR(NCID2, ID_SNMR_LEFT, HALO_3D_4BYTE)
+   CALL NETCDF_ERR(ERROR, 'WRITING SNMR_LEFT')
+
+   CALL GL2ANY(0, LEVSO, Q(:,:,:,7), LONB, LATB, HALO_3D, IHALO, JHALO, GEOLON_HALO, GEOLAT_HALO)
+   DO K = 1, LEVSO
+     HALO_3D_4BYTE(:,:,LEVSO-K+1) = REAL(HALO_3D(:,:,K),4)
+   ENDDO
+
+   ERROR = NF90_PUT_VAR(NCID2, ID_GRLE_LEFT, HALO_3D_4BYTE)
+   CALL NETCDF_ERR(ERROR, 'WRITING GRLE_LEFT')
+
+ ENDIF
+
  CALL GL2ANY(0, LEVSO, W, LONB, LATB, HALO_3D, IHALO, JHALO, GEOLON_HALO, GEOLAT_HALO)
  DO K = 1, LEVSO
    HALO_3D_4BYTE(:,:,LEVSO-K+1) = REAL(HALO_3D(:,:,K),4)
@@ -1903,6 +2199,42 @@
  ERROR = NF90_PUT_VAR(NCID2, ID_CLWMR_RIGHT, HALO_3D_4BYTE)
  CALL NETCDF_ERR(ERROR, 'WRITING CLWMR_RIGHT')
 
+ IF (NTRACM > 3) THEN
+
+   CALL GL2ANY(0, LEVSO, Q(:,:,:,4), LONB, LATB, HALO_3D, IHALO, JHALO, GEOLON_HALO, GEOLAT_HALO)
+   DO K = 1, LEVSO
+     HALO_3D_4BYTE(:,:,LEVSO-K+1) = REAL(HALO_3D(:,:,K),4)
+   ENDDO
+
+   ERROR = NF90_PUT_VAR(NCID2, ID_RWMR_RIGHT, HALO_3D_4BYTE)
+   CALL NETCDF_ERR(ERROR, 'WRITING RWMR_RIGHT')
+   
+   CALL GL2ANY(0, LEVSO, Q(:,:,:,5), LONB, LATB, HALO_3D, IHALO, JHALO, GEOLON_HALO, GEOLAT_HALO)
+   DO K = 1, LEVSO
+     HALO_3D_4BYTE(:,:,LEVSO-K+1) = REAL(HALO_3D(:,:,K),4)
+   ENDDO
+
+   ERROR = NF90_PUT_VAR(NCID2, ID_ICMR_RIGHT, HALO_3D_4BYTE)
+   CALL NETCDF_ERR(ERROR, 'WRITING ICMR_RIGHT')
+
+   CALL GL2ANY(0, LEVSO, Q(:,:,:,6), LONB, LATB, HALO_3D, IHALO, JHALO, GEOLON_HALO, GEOLAT_HALO)
+   DO K = 1, LEVSO
+     HALO_3D_4BYTE(:,:,LEVSO-K+1) = REAL(HALO_3D(:,:,K),4)
+   ENDDO
+
+   ERROR = NF90_PUT_VAR(NCID2, ID_SNMR_RIGHT, HALO_3D_4BYTE)
+   CALL NETCDF_ERR(ERROR, 'WRITING SNMR_RIGHT')
+
+   CALL GL2ANY(0, LEVSO, Q(:,:,:,7), LONB, LATB, HALO_3D, IHALO, JHALO, GEOLON_HALO, GEOLAT_HALO)
+   DO K = 1, LEVSO
+     HALO_3D_4BYTE(:,:,LEVSO-K+1) = REAL(HALO_3D(:,:,K),4)
+   ENDDO
+
+   ERROR = NF90_PUT_VAR(NCID2, ID_GRLE_RIGHT, HALO_3D_4BYTE)
+   CALL NETCDF_ERR(ERROR, 'WRITING GRLE_RIGHT')
+
+ ENDIF
+
  CALL GL2ANY(0, LEVSO, W, LONB, LATB, HALO_3D, IHALO, JHALO, GEOLON_HALO, GEOLAT_HALO)
  DO K = 1, LEVSO
    HALO_3D_4BYTE(:,:,LEVSO-K+1) = REAL(HALO_3D(:,:,K),4)
@@ -2089,6 +2421,7 @@
  INTEGER               :: ID_LON, ID_LAT, ID_PS
  INTEGER               :: ID_W, ID_ZH, ID_SPHUM, ID_O3MR
  INTEGER               :: ID_CLWMR, ID_U_W, ID_V_W
+ INTEGER               :: ID_RWMR, ID_ICMR, ID_SNMR, ID_GRLE
  INTEGER               :: ID_U_S, ID_V_S, K, LEVSO_P1
  INTEGER               :: I, J, II, JJ
  INTEGER               :: ISTART, IEND, JSTART, JEND, IM_OUT, JM_OUT
@@ -2326,6 +2659,26 @@
                              (/DIM_LON, DIM_LAT, DIM_LEV/), ID_CLWMR)
  CALL NETCDF_ERR(ERROR, 'DEFINING LIQ_WAT')
 
+ IF (NTRACM > 3) THEN
+
+   ERROR = NF90_DEF_VAR(NCID2, 'rwmr', NF90_FLOAT, &
+                             (/DIM_LON, DIM_LAT, DIM_LEV/), ID_RWMR)
+   CALL NETCDF_ERR(ERROR, 'DEFINING RWMR')
+
+   ERROR = NF90_DEF_VAR(NCID2, 'icmr', NF90_FLOAT, &
+                             (/DIM_LON, DIM_LAT, DIM_LEV/), ID_ICMR)
+   CALL NETCDF_ERR(ERROR, 'DEFINING ICMR')
+
+   ERROR = NF90_DEF_VAR(NCID2, 'snmr', NF90_FLOAT, &
+                             (/DIM_LON, DIM_LAT, DIM_LEV/), ID_SNMR)
+   CALL NETCDF_ERR(ERROR, 'DEFINING SNMR')
+
+   ERROR = NF90_DEF_VAR(NCID2, 'grle', NF90_FLOAT, &
+                             (/DIM_LON, DIM_LAT, DIM_LEV/), ID_GRLE)
+   CALL NETCDF_ERR(ERROR, 'DEFINING GRLE')
+
+ ENDIF
+
  ERROR = NF90_DEF_VAR(NCID2, 'u_w', NF90_FLOAT, &
                              (/DIM_LONP, DIM_LAT, DIM_LEV/), ID_U_W)
  CALL NETCDF_ERR(ERROR, 'DEFINING U_W')
@@ -2420,6 +2773,42 @@
 
  ERROR = NF90_PUT_VAR(NCID2, ID_CLWMR, CUBE_3D_4BYTE)
  CALL NETCDF_ERR(ERROR, 'WRITING CLWMR')
+
+ IF (NTRACM > 3) THEN
+
+   CALL GL2ANY(0,LEVSO,Q(:,:,:,4),LONB,LATB,CUBE_3D,IM_OUT,JM_OUT,GEOLON, GEOLAT)
+   DO K = 1, LEVSO
+     CUBE_3D_4BYTE(:,:,LEVSO-K+1) = REAL(CUBE_3D(:,:,K),4)
+   ENDDO
+
+   ERROR = NF90_PUT_VAR(NCID2, ID_RWMR, CUBE_3D_4BYTE)
+   CALL NETCDF_ERR(ERROR, 'WRITING RWMR')
+ 
+   CALL GL2ANY(0,LEVSO,Q(:,:,:,5),LONB,LATB,CUBE_3D,IM_OUT,JM_OUT,GEOLON, GEOLAT)
+   DO K = 1, LEVSO
+     CUBE_3D_4BYTE(:,:,LEVSO-K+1) = REAL(CUBE_3D(:,:,K),4)
+   ENDDO
+
+   ERROR = NF90_PUT_VAR(NCID2, ID_ICMR, CUBE_3D_4BYTE)
+   CALL NETCDF_ERR(ERROR, 'WRITING ICMR')
+
+   CALL GL2ANY(0,LEVSO,Q(:,:,:,6),LONB,LATB,CUBE_3D,IM_OUT,JM_OUT,GEOLON, GEOLAT)
+   DO K = 1, LEVSO
+     CUBE_3D_4BYTE(:,:,LEVSO-K+1) = REAL(CUBE_3D(:,:,K),4)
+   ENDDO
+
+   ERROR = NF90_PUT_VAR(NCID2, ID_SNMR, CUBE_3D_4BYTE)
+   CALL NETCDF_ERR(ERROR, 'WRITING SNMR')
+
+   CALL GL2ANY(0,LEVSO,Q(:,:,:,7),LONB,LATB,CUBE_3D,IM_OUT,JM_OUT,GEOLON, GEOLAT)
+   DO K = 1, LEVSO
+     CUBE_3D_4BYTE(:,:,LEVSO-K+1) = REAL(CUBE_3D(:,:,K),4)
+   ENDDO
+
+   ERROR = NF90_PUT_VAR(NCID2, ID_GRLE, CUBE_3D_4BYTE)
+   CALL NETCDF_ERR(ERROR, 'WRITING GRLE')
+
+ ENDIF
 
  DEALLOCATE (CUBE_3D, CUBE_3D_4BYTE)
 
@@ -2548,12 +2937,159 @@
 
  END SUBROUTINE READ_GFS_NSST_DATA_NSTIO
 
+ SUBROUTINE READ_FV3GFS_NSST_DATA_NEMSIO (MASK_INPUT,NSST_INPUT,IMI,JMI, &
+                 NUM_NSST_FIELDS,NSST_YEAR,NSST_MON,NSST_DAY,    & 
+                 NSST_HOUR,NSST_FHOUR)
+
+!-----------------------------------------------------------------------
+! Subroutine: read nsst data from a fv3gfs nemsio file
+!
+! Author: George Gayno/EMC
+!
+! Abstract: Reads an fv3gfs nsst file in nemsio format.  Places data
+!           in the "nsst_input" array in the order expected by routine
+!           nsst_chgres.
+!
+! Input files: 
+!    "chgres.inp.nst" - input nsst nemsio file
+!
+! Output files:  none
+!
+! History:
+!   2018-05-31   Gayno - Initial version
+!
+! Condition codes:  all non-zero codes are fatal
+!   109 - bad open of nst file "chgres.inp.nst"
+!   110 - bad read of "chgres.inp.nst" header
+!   112 - wrong number of nsst records
+!   113 - bad read of landmask record.
+!   114 - bad read of an nst file record.
+!-----------------------------------------------------------------------
+
+ use nemsio_module
+
+ implicit none
+
+ integer, parameter      :: nrec=18
+
+ character(len=3)        :: levtyp
+ character(len=8)        :: recname(nrec)
+
+ integer, intent(in)     :: imi, jmi, num_nsst_fields
+ integer, intent(out)    :: nsst_year, nsst_mon
+ integer, intent(out)    :: nsst_day, nsst_hour
+
+ real,    intent(out)    :: mask_input(imi,jmi)
+ real,    intent(out)    :: nsst_input(imi,jmi,num_nsst_fields)
+ real,    intent(out)    :: nsst_fhour
+
+ integer(nemsio_intkind) :: iret, lev, nframe
+ integer(nemsio_intkind) :: idate(7), nfhour
+
+ integer                 :: j
+
+ real(nemsio_realkind),allocatable :: dummy(:)
+
+ type(nemsio_gfile)      :: gfile
+
+ data recname   /"xt      ", "xs      ", "xu      ", &
+                 "xv      ", "xz      ", "zm      ", &
+                 "xtts    ", "xzts    ", "dtcool  ", &
+                 "zc      ", "c0      ", "cd      ", &
+                 "w0      ", "wd      ", "dconv   ", &
+                 "ifd     ", "tref    ", "qrain   " /
+
+ print*,"- READ INPUT NSST DATA IN NEMSIO FORMAT"
+
+ if (nrec /= num_nsst_fields) then
+   print*,"- FATAL ERROR: bad number of nsst records."
+   call errexit(112)
+ endif
+
+! note: fv3gfs surface and nsst fields are in a single file.
+  
+ call nemsio_open(gfile, "chgres.inp.sfc", "read", iret=iret)
+ if (iret /= 0) then
+   print*,"- FATAL ERROR: bad open of chgres.inp.sfc for nst."
+   print*,"- IRET IS ", iret
+   call errexit(109)
+ endif
+
+ print*,"- READ FILE HEADER"
+ call nemsio_getfilehead(gfile,iret=iret, &
+           idate=idate,nfhour=nfhour)
+ if (iret /= 0) then
+   print*,"- FATAL ERROR: bad read of chgres.inp.sfc header for nst."
+   print*,"- IRET IS ", iret
+   call errexit(110)
+ endif
+
+ nsst_year=idate(1)
+ nsst_mon=idate(2)
+ nsst_day=idate(3)
+ nsst_hour=idate(4)
+ nsst_fhour=float(nfhour)
+
+ levtyp='sfc'
+ lev=1
+ nframe=0
+
+ allocate(dummy(imi*jmi))
+
+!-----------------------------------------------------------------------
+! Read land mask into its own variable
+!-----------------------------------------------------------------------
+
+ call nemsio_readrecv(gfile,"land",levtyp,lev, &
+           dummy,nframe,iret)
+
+ if (iret /= 0) then
+   print*,"- FATAL ERROR: bad read of landmask record."
+   print*,"- IRET IS ", iret
+   call errexit(113)
+ endif
+
+ mask_input = reshape (dummy, (/imi,jmi/))
+
+!-----------------------------------------------------------------------
+! Read remaining records into nsst_input data structure.
+! Note: fv3gfs files do not contain 'ifd' or 'zm' records.  Set
+! to default values per recommendation of nsst developer.
+!-----------------------------------------------------------------------
+
+ print*,"- READ DATA RECORDS"
+
+ do j = 1, nrec
+   if (trim(recname(j)) == 'zm') then  
+     nsst_input(:,:,j) = 0.0
+     cycle
+   endif
+   if (trim(recname(j)) == 'ifd') then
+     nsst_input(:,:,j) = 1.0
+     cycle
+   endif
+   call nemsio_readrecv(gfile,recname(j),levtyp,lev, &
+             dummy,nframe,iret)
+   if (iret /= 0) then
+     print*,"- FATAL ERROR: bad read of chgres.inp.nst."
+     print*,"- IRET IS ", iret
+     call errexit(114)
+   endif
+   nsst_input(:,:,j) = reshape (dummy, (/imi,jmi/))
+ enddo
+
+ deallocate(dummy)
+
+ call nemsio_close(gfile,iret=iret)
+
+ END SUBROUTINE READ_FV3GFS_NSST_DATA_NEMSIO
+
  SUBROUTINE READ_GFS_NSST_DATA_NEMSIO (MASK_INPUT,NSST_INPUT,IMI,JMI, &
                  NUM_NSST_FIELDS,NSST_YEAR,NSST_MON,NSST_DAY,    & 
                  NSST_HOUR,NSST_FHOUR)
 
 !-----------------------------------------------------------------------
-! Subroutine: read nsst data from nemsio file
+! Subroutine: read nsst data from a gfs nemsio file
 !
 ! Author: George Gayno/EMC
 !
@@ -2570,14 +3106,14 @@
 !   2016-04-05   Gayno - Initial version
 !
 ! Condition codes:  all non-zero codes are fatal
-!    16 - bad initialization of nemsio environment
-!    17 - bad open of nst file "chgres.inp.nst"
-!    18 - bad read of "chgres.inp.nst" header
-!    19 - the program assumes that the resolution of the
+!   109 - bad open of nst file "chgres.inp.nst"
+!   110 - bad read of "chgres.inp.nst" header
+!   111 - the program assumes that the resolution of the
 !         nst grid matches the input surface grid.  if
 !         they are not the same, stop procoessing.
-!    20 - the nst file does not have the 19 required records.
-!    21 - bad read of an nst file record.
+!   112 - the nst file does not have the 19 required records.
+!   113 - bad read of landmask record.
+!   114 - bad read of an nst file record.
 !-----------------------------------------------------------------------
 
  use nemsio_module
@@ -2613,13 +3149,6 @@
                  "qrain   " /
 
  print*,"- READ INPUT NSST DATA IN NEMSIO FORMAT"
-
- call nemsio_init(iret=iret)
- if (iret /= 0) then
-   print*,"- FATAL ERROR: bad nemsio initialization."
-   print*,"- IRET IS ", iret
-   call errexit(108)
- endif
 
  call nemsio_open(gfile, "chgres.inp.nst", "read", iret=iret)
  if (iret /= 0) then
@@ -2693,8 +3222,6 @@
  deallocate(dummy)
 
  call nemsio_close(gfile,iret=iret)
-
- call nemsio_finalize()
 
  END SUBROUTINE READ_GFS_NSST_DATA_NEMSIO
 
@@ -2817,6 +3344,220 @@
  KGDS_INPUT(20) = 255       ! OCT 5  - NOT USED, SET TO 255
 
  END SUBROUTINE READ_GFS_SFC_HEADER_SFCIO
+
+ SUBROUTINE READ_FV3GFS_SFC_DATA_NEMSIO (IMI, JMI, LSOILI, SFCINPUT, &
+                                 F10MI, T2MI, Q2MI,  &
+                                 UUSTARI, FFMMI, FFHHI, SRFLAGI, &
+                                 TPRCPI)
+
+ USE NEMSIO_MODULE
+ USE SURFACE_CHGRES
+
+ INTEGER, INTENT(IN)  :: IMI, JMI, LSOILI
+
+ REAL, INTENT(OUT)    :: F10MI(IMI,JMI), T2MI(IMI,JMI)
+ REAL, INTENT(OUT)    :: Q2MI(IMI,JMI), UUSTARI(IMI,JMI)
+ REAL, INTENT(OUT)    :: FFMMI(IMI,JMI), FFHHI(IMI,JMI)
+ REAL, INTENT(OUT)    :: SRFLAGI(IMI,JMI), TPRCPI(IMI,JMI)
+
+ TYPE(SFC2D)              :: SFCINPUT
+ TYPE(NEMSIO_GFILE)       :: GFILEISFC
+
+ INTEGER(NEMSIO_INTKIND)  :: IRET
+
+ REAL(NEMSIO_REALKIND)    :: TMP(IMI*JMI)
+
+ CALL NEMSIO_OPEN(GFILEISFC,'chgres.inp.sfc','read',IRET=IRET)
+ IF(IRET /= 0)THEN
+   PRINT*,"FATAL ERROR OPENING chgres.inp.sfc"
+   PRINT*,"IRET IS ", IRET
+   CALL ERREXIT(244)
+ ENDIF
+
+ SRFLAGI = 0.0  ! NOT IN FILE.  SET TO ZERO.
+
+ CALL NEMSIO_READRECV(GFILEISFC, 'ffhh', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ FFHHI = RESHAPE(TMP, (/IMI,JMI/) )
+ 
+ CALL NEMSIO_READRECV(GFILEISFC, 'ffmm', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ FFMMI = RESHAPE(TMP, (/IMI,JMI/) )
+ 
+ CALL NEMSIO_READRECV(GFILEISFC, 'f10m', '10 m above gnd', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ F10MI = RESHAPE(TMP, (/IMI,JMI/) )
+ 
+ CALL NEMSIO_READRECV(GFILEISFC, 'tmp', '2 m above gnd', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ T2MI = RESHAPE(TMP, (/IMI,JMI/) )
+ 
+ CALL NEMSIO_READRECV(GFILEISFC, 'spfh', '2 m above gnd', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ Q2MI = RESHAPE(TMP, (/IMI,JMI/) )
+ 
+ CALL NEMSIO_READRECV(GFILEISFC, 'fricv', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ UUSTARI = RESHAPE(TMP, (/IMI,JMI/) )
+ 
+ CALL NEMSIO_READRECV(GFILEISFC, 'tprcp', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ TPRCPI = RESHAPE(TMP, (/IMI,JMI/) )
+ 
+ CALL NEMSIO_READRECV(GFILEISFC, 'alnsf', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%ALNSF = RESHAPE(TMP, (/IMI,JMI/) )
+ 
+ CALL NEMSIO_READRECV(GFILEISFC, 'alnwf', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%ALNWF = RESHAPE(TMP, (/IMI,JMI/) )
+ 
+ CALL NEMSIO_READRECV(GFILEISFC, 'alvsf', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%ALVSF = RESHAPE(TMP, (/IMI,JMI/) )
+ 
+ CALL NEMSIO_READRECV(GFILEISFC, 'cnwat', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%CANOPY_MC = RESHAPE(TMP, (/IMI,JMI/) )
+ 
+ CALL NEMSIO_READRECV(GFILEISFC, 'veg', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%GREENFRC = RESHAPE(TMP, (/IMI,JMI/) )
+ 
+ CALL NEMSIO_READRECV(GFILEISFC, 'facsf', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%FACSF = RESHAPE(TMP, (/IMI,JMI/) )
+ 
+ CALL NEMSIO_READRECV(GFILEISFC, 'facwf', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%FACWF = RESHAPE(TMP, (/IMI,JMI/) )
+ 
+ CALL NEMSIO_READRECV(GFILEISFC, 'tmp', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%SKIN_TEMP = RESHAPE(TMP, (/IMI,JMI/) )
+ 
+ CALL NEMSIO_READRECV(GFILEISFC, 'land', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%LSMASK = RESHAPE(TMP, (/IMI,JMI/) )
+
+ DO J = 1, JMI
+ DO I = 1, IMI
+   SFCINPUT%SEA_ICE_FLAG(I,J) = 0
+   IF(NINT(SFCINPUT%LSMASK(I,J))==2) THEN
+     SFCINPUT%LSMASK(I,J)=0.
+     SFCINPUT%SEA_ICE_FLAG(I,J) = 1
+   ENDIF
+ ENDDO
+ ENDDO
+
+ CALL NEMSIO_READRECV(GFILEISFC, 'sfcr', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%Z0 = RESHAPE(TMP, (/IMI,JMI/) )
+ SFCINPUT%Z0 = SFCINPUT%Z0 * 100.0  ! convert to cm
+ 
+ CALL NEMSIO_READRECV(GFILEISFC, 'orog', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%OROG = RESHAPE(TMP, (/IMI,JMI/) )
+ 
+ CALL NEMSIO_READRECV(GFILEISFC, 'vtype', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%VEG_TYPE = NINT(RESHAPE(TMP, (/IMI,JMI/) ))
+ 
+ CALL NEMSIO_READRECV(GFILEISFC, 'sotyp', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%SOIL_TYPE = NINT(RESHAPE(TMP, (/IMI,JMI/) ))
+ 
+ CALL NEMSIO_READRECV(GFILEISFC, 'weasd', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%SNOW_LIQ_EQUIV = RESHAPE(TMP, (/IMI,JMI/) )
+
+ CALL NEMSIO_READRECV(GFILEISFC, 'icec', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%SEA_ICE_FRACT = RESHAPE(TMP, (/IMI,JMI/) )
+
+ CALL NEMSIO_READRECV(GFILEISFC, 'icetk', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%SEA_ICE_DEPTH = RESHAPE(TMP, (/IMI,JMI/) )
+
+ CALL NEMSIO_READRECV(GFILEISFC, 'snoalb', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%MXSNOW_ALB = RESHAPE(TMP, (/IMI,JMI/) )
+
+ CALL NEMSIO_READRECV(GFILEISFC, 'snod', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%SNOW_DEPTH = RESHAPE(TMP, (/IMI,JMI/) )
+ SFCINPUT%SNOW_DEPTH = SFCINPUT%SNOW_DEPTH * 1000.0 ! convert to mm
+
+ CALL NEMSIO_READRECV(GFILEISFC, 'sltyp', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%SLOPE_TYPE = RESHAPE(TMP, (/IMI,JMI/) )
+
+ CALL NEMSIO_READRECV(GFILEISFC, 'shdmin', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%GREENFRC_MIN = RESHAPE(TMP, (/IMI,JMI/) )
+
+ CALL NEMSIO_READRECV(GFILEISFC, 'shdmax', 'sfc', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%GREENFRC_MAX = RESHAPE(TMP, (/IMI,JMI/) )
+
+ CALL NEMSIO_READRECV(GFILEISFC, 'soilw', '0-10 cm down', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%SOILM_TOT(:,:,1) = RESHAPE(TMP, (/IMI,JMI/) )
+
+ CALL NEMSIO_READRECV(GFILEISFC, 'soilw', '10-40 cm down', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%SOILM_TOT(:,:,2) = RESHAPE(TMP, (/IMI,JMI/) )
+
+ CALL NEMSIO_READRECV(GFILEISFC, 'soilw', '40-100 cm down', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%SOILM_TOT(:,:,3) = RESHAPE(TMP, (/IMI,JMI/) )
+
+ CALL NEMSIO_READRECV(GFILEISFC, 'soilw', '100-200 cm down', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%SOILM_TOT(:,:,4) = RESHAPE(TMP, (/IMI,JMI/) )
+
+ CALL NEMSIO_READRECV(GFILEISFC, 'soill', '0-10 cm down', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%SOILM_LIQ(:,:,1) = RESHAPE(TMP, (/IMI,JMI/) )
+
+ CALL NEMSIO_READRECV(GFILEISFC, 'soill', '10-40 cm down', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%SOILM_LIQ(:,:,2) = RESHAPE(TMP, (/IMI,JMI/) )
+
+ CALL NEMSIO_READRECV(GFILEISFC, 'soill', '40-100 cm down', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%SOILM_LIQ(:,:,3) = RESHAPE(TMP, (/IMI,JMI/) )
+
+ CALL NEMSIO_READRECV(GFILEISFC, 'soill', '100-200 cm down', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%SOILM_LIQ(:,:,4) = RESHAPE(TMP, (/IMI,JMI/) )
+
+ CALL NEMSIO_READRECV(GFILEISFC, 'tmp', '0-10 cm down', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%SOIL_TEMP(:,:,1) = RESHAPE(TMP, (/IMI,JMI/) )
+
+ CALL NEMSIO_READRECV(GFILEISFC, 'tmp', '10-40 cm down', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%SOIL_TEMP(:,:,2) = RESHAPE(TMP, (/IMI,JMI/) )
+
+ CALL NEMSIO_READRECV(GFILEISFC, 'tmp', '40-100 cm down', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%SOIL_TEMP(:,:,3) = RESHAPE(TMP, (/IMI,JMI/) )
+
+ CALL NEMSIO_READRECV(GFILEISFC, 'tmp', '100-200 cm down', 1, TMP, IRET=IRET)
+ IF (IRET /= 0) GOTO 99
+ SFCINPUT%SOIL_TEMP(:,:,4) = RESHAPE(TMP, (/IMI,JMI/) )
+
+ CALL NEMSIO_CLOSE(GFILEISFC, IRET=IRET)
+
+ RETURN
+
+ 99 CONTINUE
+ PRINT*,"FATAL ERROR READING DATA FROM chgres.inp.sfc"
+ PRINT*,"IRET IS ", IRET
+ CALL ERREXIT(245)
+
+ END SUBROUTINE READ_FV3GFS_SFC_DATA_NEMSIO
 
  SUBROUTINE READ_GFS_SFC_DATA_NEMSIO (IMI, JMI, LSOILI, IVSI, SFCINPUT, &
                                  F10MI, T2MI, Q2MI,  &
