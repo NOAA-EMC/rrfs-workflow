@@ -1,11 +1,21 @@
 #!/bin/sh
 set -eux
 
-source ./machine-setup.sh > /dev/null 2>&1
+# Check for input argument: this should be the "platform" if it exists
+if [ $# -eq 0 ]; then
+   echo "No 'platform' argument supplied"
+   echo "Using directory structure to determine machine settings"
+   platform=''
+else 
+   platform=$1
+fi
+source ./machine-setup.sh $platform > /dev/null 2>&1
 system_site=$target
 if [ $system_site = "wcoss_cray" ]; then
   system_site=cray
 fi
+
+echo "Building fre-nctools package for $system_site"
 
 cwd=`pwd`
 
@@ -34,8 +44,8 @@ set -x
 
 set +x
 module list
-module use ../../../modulefiles/fv3gfs                  > /dev/null 2>&1
-module load fre-nctools.${target} > /dev/null 2>&1
+module use ../../../modulefiles/fv3gfs
+module load fre-nctools.${target}
 module list
 set -x
 
@@ -47,6 +57,9 @@ F_UFMTENDIAN=big
 if [ $system_site = theia ]; then
   HDF5_DIR=$HDF5
   NETCDF_DIR=$NETCDF
+elif [ $system_site = cheyenne ]; then
+  NETCDF_DIR=$NETCDF
+  HDF5_DIR=$NETCDF #HDF5 resides with NETCDF on Cheyenne
 fi
 
 alias make="make HDF5_HOME=${HDF5_DIR}  NETCDF_HOME=${NETCDF_DIR} NC_BLKSZ=64K SITE=${system_site} -f fre-nctools.mk"
@@ -99,6 +112,9 @@ echo "//////////////////////////////////////////////////////////////////////////
 set -x
 
 cd ../tools/filter_topo
+if [ $system_site = cheyenne ]; then
+  export HDF5=$HDF5_DIR
+fi
 ./make.csh_${target}
 mv filter_topo $home_dir/exec/.
 
