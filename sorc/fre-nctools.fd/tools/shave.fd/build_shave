@@ -12,6 +12,9 @@ case $1 in
   "theia" )
      FCMP=ifort
      FFLAGS="-O0 -I$NETCDF/include -L$NETCDF/lib -lnetcdff -lnetcdf" ;;
+  "jet" )
+     FCMP=ifort
+     FFLAGS="-O0 -I$NETCDF/include -L$NETCDF/lib -lnetcdff -lnetcdf" ;;
   "odin" )
      FCMP=ftn
      FFLAGS="-O0" ;;

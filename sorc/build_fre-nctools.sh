@@ -49,6 +49,7 @@ module load fre-nctools.${target}
 module list
 set -x
 
+
 MPICH_UNEX_BUFFER_SIZE=256m
 MPICH_MAX_SHORT_MSG_SIZE=64000
 MPICH_PTL_UNEX_EVENTS=160k
@@ -60,6 +61,11 @@ if [ $system_site = theia ]; then
 elif [ $system_site = cheyenne ]; then
   NETCDF_DIR=$NETCDF
   HDF5_DIR=$NETCDF #HDF5 resides with NETCDF on Cheyenne
+elif [ $system_site = jet ]; then
+   HDF5_DIR=$HDF5
+   NETCDF_DIR=$NETCDF4
+   HDF5_HOME=$HDF5
+   NETCDF_HOME=$NETCDF4
 fi
 
 alias make="make HDF5_HOME=${HDF5_DIR}  NETCDF_HOME=${NETCDF_DIR} NC_BLKSZ=64K SITE=${system_site} -f fre-nctools.mk"
