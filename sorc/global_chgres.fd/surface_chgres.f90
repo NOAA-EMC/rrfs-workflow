@@ -462,7 +462,7 @@
  use soil_utils, only        : rescale_soilm, adjust_soilt_for_orog, &
                                calc_liq_soilm, calc_albedo
  
-! use gdswzd_mod
+ use gdswzd_mod
 
  implicit none
 
