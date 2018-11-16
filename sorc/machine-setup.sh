@@ -64,6 +64,9 @@ if [ "$target" = "jet" ] ; then
         source /apps/lmod/lmod/init/$__ms_shell
     fi
     module purge
+    export NCEPLIBS=/mnt/lfs3/projects/hfv3gfs/gwv/ljtjet/lib
+    echo NCEPLIBS HARD SET to  $NCEPLIBS in `pwd`/module_setup.sh.inc
+    module use $NCEPLIBS/modulefiles
 elif [ "$target" = "theia" ] ; then
     # We are on NOAA Theia
     if ( ! eval module help > /dev/null 2>&1 ) ; then
@@ -105,6 +108,16 @@ elif [ "$target" = "wcoss_cray" ] ; then
     module use /opt/cray/ari/modulefiles
     module use /opt/modulefiles
     module load modules
+
+elif [[ -L /usrx && "$( readlink /usrx 2> /dev/null )" =~ dell ]] ; then
+    # We are on NOAA Venus or Mars
+    if ( ! eval module help > /dev/null 2>&1 ) ; then
+        echo load the module command 1>&2
+        source /usrx/local/prod/lmod/lmod/init/$__ms_shell
+    fi
+    target=wcoss_dell_p3
+    module purge 
+    module use /usrx/local/dev/modulefiles
 
 elif [ "$target" = "wcoss" ] ; then
     # We are on NOAA Tide or Gyre

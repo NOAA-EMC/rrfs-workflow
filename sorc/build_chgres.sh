@@ -51,17 +51,20 @@ if [ $target = cheyenne ]; then
   export NEMSIOGFS_INC="${NEMSIOGFSDIR}/include/nemsiogfs_v2.0.1/"
   export NEMSIOGFS_LIB="${NEMSIOGFSDIR}"
 
-  export LDFLAGSM="-qopenmp -auto"
-  export OMPFLAGM="-qopenmp -auto"
-
+  export LDFLAGSM=${LDFLAGSM:-"-qopenmp -auto"}
+  export OMPFLAGM=${OMPFLAGM:-"-qopenmp -auto"}
   export INCS="-I${NETCDF}/include -I${NCEPLIB_DIR}/include -I${SIGIO_INC4} -I${LANDSFCUTIL_INCd} -I${SFCIO_INC4} -I${NEMSIO_INC} -I${NEMSIOGFS_INC}"
+
   export LIBSM="-L${NCEPLIB_DIR}/lib -L${LANDSFCUTIL_LIBd} -L${SFCIO_LIB4} -L${NEMSIO_LIB} -L${NEMSIOGFS_LIB} -llandsfcutil_v2.1.0_d -lsfcio_1.0.0_4 -lnemsiogfs_v2.0.1 -lnemsio_v2.2.3 -lbacio_4 -lw3emc_d -lw3nco_d -lip_d -lsp_v2.0.2_d -lsigio_v2.0.1_4 -L${NETCDF}/lib -lnetcdff -lnetcdf"
+
   make -f Makefile clobber
   make -f Makefile
   make -f Makefile install
+
 else
-  export LDFLAGSM="-openmp -auto"
-  export OMPFLAGM="-openmp -auto"
+
+  export LDFLAGSM=${LDFLAGSM:-"-openmp -auto"}
+  export OMPFLAGM=${OMPFLAGM:-"-openmp -auto"}
   export INCS="-I${SIGIO_INC4} -I${SFCIO_INC4} -I${LANDSFCUTIL_INCd} \
                -I${NEMSIO_INC} -I${NEMSIOGFS_INC} -I${GFSIO_INC4} -I${IP_INCd} ${NETCDF_INCLUDE}"
 
@@ -77,10 +80,12 @@ else
                 ${W3NCO_LIBd} \
                 ${BACIO_LIB4} \
                 ${NETCDF_LDFLAGS_F}"
+
   make -f Makefile clobber
   make -f Makefile
   make -f Makefile install
   make -f Makefile clobber
+
 fi
 
 exit

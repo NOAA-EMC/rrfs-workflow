@@ -3,15 +3,21 @@ set -ex
 
 #--make symbolic links for EMC installation and hardcopies for NCO delivery
 
-RUN_ENVIR=${1:-emc}
-machine=${2:-cray}
+RUN_ENVIR=${1}
+machine=${2}
 
-if [ $RUN_ENVIR != emc -a $RUN_ENVIR != nco ]; then
-    echo 'Syntax: link_fv3gfs.sh ( nco | emc ) ( cray | theia )'
+if [ $# -lt 2 ]; then
+    echo '***ERROR*** must specify two arguements: (1) RUN_ENVIR, (2) machine'
+    echo ' Syntax: link_fv3gfs.sh ( nco | emc ) ( cray | dell | theia )'
     exit 1
 fi
-if [ $machine != cray -a $machine != theia ]; then
-    echo 'Syntax: link_fv3gfs.sh ( nco | emc ) ( cray | theia )'
+
+if [ $RUN_ENVIR != emc -a $RUN_ENVIR != nco ]; then
+    echo 'Syntax: link_fv3gfs.sh ( nco | emc ) ( cray | dell | theia )'
+    exit 1
+fi
+if [ $machine != cray -a $machine != theia -a $machine != dell ]; then
+    echo 'Syntax: link_fv3gfs.sh ( nco | emc ) ( cray | dell | theia )'
     exit 1
 fi
 
@@ -20,9 +26,13 @@ LINK="ln -fs"
 
 pwd=$(pwd -P)
 
+#------------------------------
 #--model fix fields
+#------------------------------
 if [ $machine == "cray" ]; then
     FIX_DIR="/gpfs/hps3/emc/global/noscrub/emc.glopara/git/fv3gfs/fix"
+elif [ $machine = "dell" ]; then
+    FIX_DIR="/gpfs/dell2/emc/modeling/noscrub/emc.glopara/git/fv3gfs/fix"
 elif [ $machine = "theia" ]; then
     FIX_DIR="/scratch4/NCEPDEV/global/save/glopara/git/fv3gfs/fix"
 fi
@@ -33,7 +43,9 @@ done
 $LINK $FIX_DIR/* .
 
 
+#------------------------------
 #--add gfs_post file
+#------------------------------
 cd ${pwd}/../jobs               ||exit 8
     $LINK ../sorc/gfs_post.fd/jobs/JGLOBAL_POST_MANAGER      .
     $LINK ../sorc/gfs_post.fd/jobs/JGLOBAL_NCEPPOST          .
@@ -50,7 +62,9 @@ cd ${pwd}/../ush                ||exit 8
     done
 
 
+#------------------------------
 #--add GSI/EnKF file
+#------------------------------
 cd ${pwd}/../jobs               ||exit 8
     $LINK ../sorc/gsi.fd/jobs/JGLOBAL_ANALYSIS           .
     $LINK ../sorc/gsi.fd/jobs/JGLOBAL_ENKF_SELECT_OBS    .
@@ -72,7 +86,9 @@ cd ${pwd}/../fix                ||exit 8
     $LINK ../sorc/gsi.fd/fix  fix_gsi
 
 
+#------------------------------
 #--add DA Monitor file (NOTE: ensure to use correct version)
+#------------------------------
 cd ${pwd}/../fix                ||exit 8
     [[ -d gdas ]] && rm -rf gdas
     mkdir -p gdas
@@ -108,29 +124,43 @@ cd ${pwd}/../ush                ||exit 8
     $LINK ../sorc/gsi.fd/util/Minimization_Monitor/nwprod/minmon_shared.v1.0.1/ush/minmon_xtrct_gnorms.pl    .
     $LINK ../sorc/gsi.fd/util/Minimization_Monitor/nwprod/minmon_shared.v1.0.1/ush/minmon_xtrct_reduct.pl    .
     $LINK ../sorc/gsi.fd/util/Ozone_Monitor/nwprod/oznmon_shared.v2.0.0/ush/ozn_xtrct.sh                     .
-    $LINK ../sorc/gsi.fd/util/Radiance_Monitor/nwprod/radmon_shared.v2.0.4/ush/radmon_ck_stdout.sh           .
-    $LINK ../sorc/gsi.fd/util/Radiance_Monitor/nwprod/radmon_shared.v2.0.4/ush/radmon_err_rpt.sh             .
-    $LINK ../sorc/gsi.fd/util/Radiance_Monitor/nwprod/radmon_shared.v2.0.4/ush/radmon_verf_angle.sh          .
-    $LINK ../sorc/gsi.fd/util/Radiance_Monitor/nwprod/radmon_shared.v2.0.4/ush/radmon_verf_bcoef.sh          .
-    $LINK ../sorc/gsi.fd/util/Radiance_Monitor/nwprod/radmon_shared.v2.0.4/ush/radmon_verf_bcor.sh           .
-    $LINK ../sorc/gsi.fd/util/Radiance_Monitor/nwprod/radmon_shared.v2.0.4/ush/radmon_verf_time.sh           .
+    $LINK ../sorc/gsi.fd/util/Radiance_Monitor/nwprod/radmon_shared.v3.0.0/ush/radmon_ck_stdout.sh           .
+    $LINK ../sorc/gsi.fd/util/Radiance_Monitor/nwprod/radmon_shared.v3.0.0/ush/radmon_err_rpt.sh             .
+    $LINK ../sorc/gsi.fd/util/Radiance_Monitor/nwprod/radmon_shared.v3.0.0/ush/radmon_verf_angle.sh          .
+    $LINK ../sorc/gsi.fd/util/Radiance_Monitor/nwprod/radmon_shared.v3.0.0/ush/radmon_verf_bcoef.sh          .
+    $LINK ../sorc/gsi.fd/util/Radiance_Monitor/nwprod/radmon_shared.v3.0.0/ush/radmon_verf_bcor.sh           .
+    $LINK ../sorc/gsi.fd/util/Radiance_Monitor/nwprod/radmon_shared.v3.0.0/ush/radmon_verf_time.sh           .
     
 
+#------------------------------
 #--link executables 
+#------------------------------
 
 cd $pwd/../exec
-[[ -s fv3_gfs_nh.prod.32bit.x ]] && rm -f fv3_gfs_nh.prod.32bit.x
-$LINK ../sorc/fv3gfs.fd/NEMS/exe/fv3_gfs_nh.prod.32bit.x .
+[[ -s global_fv3gfs.x ]] && rm -f global_fv3gfs.x
+$LINK ../sorc/fv3gfs.fd/NEMS/exe/global_fv3gfs.x .
 
 [[ -s gfs_ncep_post ]] && rm -f gfs_ncep_post
 $LINK ../sorc/gfs_post.fd/exec/ncep_post gfs_ncep_post
 
-for gsiexe in  global_gsi global_enkf calc_increment_ens.x  getsfcensmeanp.x  getsigensmeanp_smooth.x  getsigensstatp.x  recentersigp.x oznmon_horiz.x oznmon_time.x radmon_angle radmon_bcoef radmon_bcor radmon_time ;do
+
+for gsiexe in  global_gsi.x global_enkf.x calc_increment_ens.x  getsfcensmeanp.x  getsigensmeanp_smooth.x  getsigensstatp.x  recentersigp.x oznmon_horiz.x oznmon_time.x radmon_angle radmon_bcoef radmon_bcor radmon_time ;do
     [[ -s $gsiexe ]] && rm -f $gsiexe
     $LINK ../sorc/gsi.fd/exec/$gsiexe .
 done
 
 
+#------------------------------
+#--choose dynamic config.base for EMC installation 
+#--choose static config.base for NCO installation 
+cd $pwd/../parm/config
+[[ -s config.base ]] && rm -f config.base 
+if [ $RUN_ENVIR = nco ] ; then
+ cp -p config.base.nco.static config.base
+else
+ cp -p config.base.emc.dyn config.base
+fi
+#------------------------------
 
 
 exit 0

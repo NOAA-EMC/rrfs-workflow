@@ -55,7 +55,11 @@ MPICH_MAX_SHORT_MSG_SIZE=64000
 MPICH_PTL_UNEX_EVENTS=160k
 KMP_STACKSIZE=2g
 F_UFMTENDIAN=big
-if [ $system_site = theia ]; then
+
+if [ $system_site = "cray" ]; then
+  HDF5=${HDF5_DIR}
+  NETCDF=${NETCDF_DIR}
+elif [ $system_site = theia ]; then
   HDF5_DIR=$HDF5
   NETCDF_DIR=$NETCDF
 elif [ $system_site = cheyenne ]; then
@@ -68,7 +72,11 @@ elif [ $system_site = jet ]; then
    NETCDF_HOME=$NETCDF4
 fi
 
-alias make="make HDF5_HOME=${HDF5_DIR}  NETCDF_HOME=${NETCDF_DIR} NC_BLKSZ=64K SITE=${system_site} -f fre-nctools.mk"
+if [ $system_site = "cray" ]; then
+  alias make="make HDF5_HOME=${HDF5} NETCDF_HOME=${NETCDF} NC_BLKSZ=64K SITE=${system_site} -f fre-nctools.mk"
+else
+  alias make="make HDF5_HOME=${HDF5_DIR}  NETCDF_HOME=${NETCDF_DIR} NC_BLKSZ=64K SITE=${system_site} -f fre-nctools.mk"
+fi
 
 set +x
 echo "////////////////////////////////////////////////////////////////////////////////"

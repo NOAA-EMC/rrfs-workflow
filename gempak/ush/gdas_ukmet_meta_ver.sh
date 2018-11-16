@@ -140,11 +140,11 @@ for area in $areas
             cyclenum=$cycle9
         fi
         # JY grid="$COMROOT/nawips/${envir}/ukmet.20${sdatenum}/ukmet_20${sdatenum}${cyclenum}${dgdattim}"
-        grid="${COMINROOTukmet}/ukmet.20${sdatenum}/ukmet_20${sdatenum}${cyclenum}${dgdattim}"
+        grid="${COMINukmet}.20${sdatenum}/ukmet_20${sdatenum}${cyclenum}${dgdattim}"
 
 # 500 MB HEIGHT METAFILE
 
-gdplot2_nc << EOFplt
+$GEMEXE/gdplot2_nc << EOFplt
 \$MAPFIL = mepowo.gsf
 PROJ     = ${proj}
 GAREA    = ${garea}
@@ -237,11 +237,11 @@ ls -l ukmetver_12.meta
 export err=$?;export pgm="GEMPAK CHECK FILE";err_chk
 
 if [ $SENDCOM = "YES" ] ; then
-    mkdir -p -m 775 ${COMOUTROOTukmet}/ukmet.${PDY}/meta/
-    mv ukmetver_12.meta ${COMOUTROOTukmet}/ukmet.${PDY}/meta/ukmetver_${PDY}_12
+    mkdir -p -m 775 ${COMOUTukmet}/ukmet.${PDY}/meta/
+    mv ukmetver_12.meta ${COMOUTukmet}/ukmet.${PDY}/meta/ukmetver_${PDY}_12
     if [ $SENDDBN = "YES" ] ; then
         ${DBNROOT}/bin/dbn_alert MODEL UKMETVER_HPCMETAFILE $job \
-        ${COMOUTROOTukmet}/ukmet.${PDY}/meta/ukmetver_${PDY}_12
+        ${COMOUTukmet}/ukmet.${PDY}/meta/ukmetver_${PDY}_12
     fi
 fi
 

@@ -33,29 +33,32 @@ fi
 cd ./orog.fd
 
 if [ $target = wcoss_cray ]; then
-  export INCS=""
+  INCS=""
   export LIBSM="${BACIO_LIB4} ${IP_LIBd} ${W3NCO_LIBd} ${SP_LIBd}"
   export FFLAGSM="-O3 -g -traceback -r8  -convert big_endian -fp-model precise  -assume byterecl"
 elif [ $target = wcoss ]; then
-  export INCS="${NETCDF_INCLUDE}"
+  INCS="${NETCDF_INCLUDE}"
   export LIBSM="${BACIO_LIB4} ${W3NCO_LIBd} ${IP_LIBd} ${SP_LIBd} ${NETCDF_LDFLAGS}"
   export FFLAGSM="-O3 -g -traceback -r8  -convert big_endian -fp-model precise  -assume byterecl ${INCS}"
 elif [ $target = theia ]; then
-  export INCS="-I${NETCDF}/include"
+  INCS="-I${NETCDF}/include"
   export LIBSM="${BACIO_LIB4} ${W3NCO_LIBd} ${IP_LIBd} ${SP_LIBd} -L${NETCDF}/lib -lnetcdff -lnetcdf"
   export FFLAGSM="-O3 -g -traceback -r8  -convert big_endian -fp-model precise  -assume byterecl ${INCS}"
 elif [ $target = jet ]; then
-  export INCS="-I${NETCDF}/include"
+  INCS="-I${NETCDF}/include"
   export LIBSM="${BACIO_LIB4} ${W3NCO_LIBd} ${IP_LIBd} ${SP_LIBd} -L${NETCDF}/lib -lnetcdff -lnetcdf"
   export FFLAGSM="-O3 -g -traceback -r8  -convert big_endian -fp-model precise  -assume byterecl ${INCS}"
 elif [ $target = odin ]; then
-  export INCS=""
+  INCS=""
   export LIBSM="${BACIO_LIB4} ${IP_LIBd} ${W3NCO_LIBd} ${SP_LIBd}"
   export FFLAGSM="-O3 -g -traceback -r8  -convert big_endian -fp-model precise  -assume byterecl"
 elif [ $target = cheyenne ]; then
-  export INCS="-I${NETCDF}/include -I${NCEPLIB_DIR}/include"
+  INCS="-I${NETCDF}/include -I${NCEPLIB_DIR}/include"
   export LIBSM="-L${NCEPLIB_DIR}/lib -lbacio_4 -lw3emc_d -lw3nco_d -lip_d -lsp_v2.0.2_d -L${NETCDF}/lib -lnetcdff -lnetcdf"
   export FFLAGSM="-O3 -g -traceback -r8  -convert big_endian -fp-model precise  -assume byterecl ${INCS}"
+else
+  echo machine $target not found
+  exit 1
 fi
 
 export FCMP=${FCMP:-ifort}

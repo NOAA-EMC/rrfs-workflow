@@ -20,11 +20,7 @@ if [ ! -d "../exec" ]; then
 fi
 
 cd gsi.fd/ush/
-
-# Workarounds for bugs in gsi build scripts:
-export PATH=$PATH:.
-
-./build_all.sh "$gsitarget"
+./build_all_cmake.sh "PRODUCTION" "$cwd/gsi.fd"
 
 exit
 
