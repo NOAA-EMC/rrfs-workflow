@@ -1,0 +1,865 @@
+MSLET:mean sea level:
+PRMSL:mean sea level:
+VIS:surface:
+VIS:cloud top:
+ABSV:250 mb:
+ABSV:500 mb:
+ABSV:700 mb:
+ABSV:850 mb:
+ABSV:1000 mb:
+PRES:surface:
+HGT:surface:
+TMP:2 m above ground:
+RH:2 m above ground:
+DPT:2 m above ground:
+UGRD:10 m above ground:
+VGRD:10 m above ground:
+CSNOW:surface:
+CICEP:surface:
+CFRZR:surface:
+CRAIN:surface:
+CAPE:surface:
+CIN:surface:
+PWAT:entire atmosphere (considered as a single layer):
+DSWRF:surface:
+HLCY:3000-0 m above ground:
+USTM:6000-0 m above ground:
+VSTM:6000-0 m above ground:
+PLI:30-0 mb above ground:
+4LFTX:180-0 mb above ground:
+CAPE:180-0 mb above ground:
+CIN:180-0 mb above ground:
+LFTX:500-1000 mb:
+PRES:1 hybrid level:
+HGT:1 hybrid level:
+TMP:1 hybrid level:
+RH:1 hybrid level:
+SPFH:1 hybrid level:
+UGRD:1 hybrid level:
+VGRD:1 hybrid level:
+VVEL:1 hybrid level:
+TKE:1 hybrid level:
+TKE:2 hybrid level:
+CLWMR:1 hybrid level:
+CICE:1 hybrid level:
+HGT:50 mb:
+TMP:50 mb:
+RH:50 mb:
+SPFH:50 mb:
+UGRD:50 mb:
+VGRD:50 mb:
+HGT:75 mb:
+TMP:75 mb:
+RH:75 mb:
+SPFH:75 mb:
+UGRD:75 mb:
+VGRD:75 mb:
+HGT:100 mb:
+TMP:100 mb:
+RH:100 mb:
+SPFH:100 mb:
+UGRD:100 mb:
+VGRD:100 mb:
+HGT:125 mb:
+TMP:125 mb:
+RH:125 mb:
+SPFH:125 mb:
+UGRD:125 mb:
+VGRD:125 mb:
+HGT:150 mb:
+TMP:150 mb:
+RH:150 mb:
+SPFH:150 mb:
+UGRD:150 mb:
+VGRD:150 mb:
+HGT:175 mb:
+TMP:175 mb:
+RH:175 mb:
+SPFH:175 mb:
+UGRD:175 mb:
+VGRD:175 mb:
+HGT:200 mb:
+TMP:200 mb:
+RH:200 mb:
+SPFH:200 mb:
+UGRD:200 mb:
+VGRD:200 mb:
+HGT:225 mb:
+TMP:225 mb:
+RH:225 mb:
+SPFH:225 mb:
+UGRD:225 mb:
+VGRD:225 mb:
+HGT:250 mb:
+TMP:250 mb:
+RH:250 mb:
+SPFH:250 mb:
+UGRD:250 mb:
+VGRD:250 mb:
+HGT:275 mb:
+TMP:275 mb:
+RH:275 mb:
+SPFH:275 mb:
+UGRD:275 mb:
+VGRD:275 mb:
+HGT:300 mb:
+TMP:300 mb:
+RH:300 mb:
+DPT:300 mb:
+SPFH:300 mb:
+UGRD:300 mb:
+VGRD:300 mb:
+HGT:325 mb:
+TMP:325 mb:
+RH:325 mb:
+SPFH:325 mb:
+UGRD:325 mb:
+VGRD:325 mb:
+HGT:350 mb:
+TMP:350 mb:
+RH:350 mb:
+SPFH:350 mb:
+UGRD:350 mb:
+VGRD:350 mb:
+HGT:375 mb:
+TMP:375 mb:
+RH:375 mb:
+SPFH:375 mb:
+UGRD:375 mb:
+VGRD:375 mb:
+HGT:400 mb:
+TMP:400 mb:
+RH:400 mb:
+DPT:400 mb:
+SPFH:400 mb:
+UGRD:400 mb:
+VGRD:400 mb:
+HGT:425 mb:
+TMP:425 mb:
+RH:425 mb:
+SPFH:425 mb:
+UGRD:425 mb:
+VGRD:425 mb:
+HGT:450 mb:
+TMP:450 mb:
+RH:450 mb:
+SPFH:450 mb:
+UGRD:450 mb:
+VGRD:450 mb:
+HGT:475 mb:
+TMP:475 mb:
+RH:475 mb:
+SPFH:475 mb:
+UGRD:475 mb:
+VGRD:475 mb:
+HGT:500 mb:
+TMP:500 mb:
+RH:500 mb:
+DPT:500 mb:
+SPFH:500 mb:
+UGRD:500 mb:
+VGRD:500 mb:
+HGT:525 mb:
+TMP:525 mb:
+RH:525 mb:
+SPFH:525 mb:
+UGRD:525 mb:
+VGRD:525 mb:
+HGT:550 mb:
+TMP:550 mb:
+RH:550 mb:
+SPFH:550 mb:
+UGRD:550 mb:
+VGRD:550 mb:
+HGT:575 mb:
+TMP:575 mb:
+RH:575 mb:
+SPFH:575 mb:
+UGRD:575 mb:
+VGRD:575 mb:
+HGT:600 mb:
+TMP:600 mb:
+RH:600 mb:
+SPFH:600 mb:
+UGRD:600 mb:
+VGRD:600 mb:
+HGT:625 mb:
+TMP:625 mb:
+RH:625 mb:
+SPFH:625 mb:
+UGRD:625 mb:
+VGRD:625 mb:
+HGT:650 mb:
+TMP:650 mb:
+RH:650 mb:
+SPFH:650 mb:
+UGRD:650 mb:
+VGRD:650 mb:
+HGT:675 mb:
+TMP:675 mb:
+RH:675 mb:
+SPFH:675 mb:
+UGRD:675 mb:
+VGRD:675 mb:
+HGT:700 mb:
+TMP:700 mb:
+RH:700 mb:
+DPT:700 mb:
+SPFH:700 mb:
+UGRD:700 mb:
+VGRD:700 mb:
+HGT:725 mb:
+TMP:725 mb:
+RH:725 mb:
+SPFH:725 mb:
+UGRD:725 mb:
+VGRD:725 mb:
+HGT:750 mb:
+TMP:750 mb:
+RH:750 mb:
+SPFH:750 mb:
+UGRD:750 mb:
+VGRD:750 mb:
+HGT:775 mb:
+TMP:775 mb:
+RH:775 mb:
+SPFH:775 mb:
+UGRD:775 mb:
+VGRD:775 mb:
+HGT:800 mb:
+TMP:800 mb:
+RH:800 mb:
+SPFH:800 mb:
+UGRD:800 mb:
+VGRD:800 mb:
+HGT:825 mb:
+TMP:825 mb:
+RH:825 mb:
+SPFH:825 mb:
+UGRD:825 mb:
+VGRD:825 mb:
+HGT:850 mb:
+TMP:850 mb:
+RH:850 mb:
+DPT:850 mb:
+SPFH:850 mb:
+MCONV:850 mb:
+UGRD:850 mb:
+VGRD:850 mb:
+HGT:875 mb:
+TMP:875 mb:
+RH:875 mb:
+SPFH:875 mb:
+UGRD:875 mb:
+VGRD:875 mb:
+HGT:900 mb:
+TMP:900 mb:
+RH:900 mb:
+SPFH:900 mb:
+UGRD:900 mb:
+VGRD:900 mb:
+HGT:925 mb:
+TMP:925 mb:
+RH:925 mb:
+SPFH:925 mb:
+UGRD:925 mb:
+VGRD:925 mb:
+HGT:950 mb:
+TMP:950 mb:
+RH:950 mb:
+SPFH:950 mb:
+MCONV:950 mb:
+UGRD:950 mb:
+VGRD:950 mb:
+HGT:975 mb:
+TMP:975 mb:
+RH:975 mb:
+SPFH:975 mb:
+UGRD:975 mb:
+VGRD:975 mb:
+HGT:1000 mb:
+TMP:1000 mb:
+RH:1000 mb:
+DPT:1000 mb:
+SPFH:1000 mb:
+UGRD:1000 mb:
+VGRD:1000 mb:
+TMP:surface:
+TSOIL:0-0.1 m below ground:
+SOILW:0-0.1 m below ground:
+TSOIL:0.1-0.4 m below ground:
+SOILW:0.1-0.4 m below ground:
+TSOIL:0.4-1 m below ground:
+SOILW:0.4-1 m below ground:
+TSOIL:1-2 m below ground:
+SOILW:1-2 m below ground:
+TSOIL:3 m underground:
+MSTAV:0-1 m below ground:
+SOILM:0-2 m below ground:
+CNWAT:surface:
+SPFH:2 m above ground:
+POT:10 m above ground:
+SPFH:10 m above ground:
+NCPCP:surface:
+SNOM:surface:
+SSRUN:surface:
+BGRUN:surface:
+LHTFL:surface:
+SHTFL:surface:
+GFLUX:surface:
+GFLUX:surface:
+SNOHF:surface:
+EVP:surface:
+PEVAP:surface:
+SFCR:surface:
+CD:surface:
+UFLX:surface:
+VFLX:surface:
+SHTFL:surface:
+LHTFL:surface:
+SFEXC:surface:
+VEG:surface:
+LCDC:low cloud layer:
+MCDC:middle cloud layer:
+HCDC:high cloud layer:
+DLWRF:surface:
+USWRF:surface:
+ULWRF:surface:
+USWRF:top of atmosphere:
+ULWRF:top of atmosphere:
+ULWRF:top of atmosphere:
+BRTMP:top of atmosphere:
+DSWRF:surface:
+DLWRF:surface:
+USWRF:surface:
+ULWRF:surface:
+UGRD:2 hybrid level:
+VGRD:2 hybrid level:
+STRM:250 mb:
+ABSV:400 mb:
+ABSV:750 mb:
+SPFH:surface:
+BMIXL:1 hybrid level:
+FRICV:surface:
+CAPE:90-0 mb above ground:
+CIN:90-0 mb above ground:
+HLCY:1000-0 m above ground:
+CAPE:255-0 mb above ground:
+CIN:255-0 mb above ground:
+PLPL:255-0 mb above ground:
+RWMR:1 hybrid level:
+SNMR:1 hybrid level:
+CPOFP:surface:
+PRATE:surface:
+SRWEQ:surface:
+TCOND:1 hybrid level:
+RIME:1 hybrid level:
+MXSALB:surface:
+SOILL:0-0.1 m below ground:
+SOILL:0.1-0.4 m below ground:
+SOILL:0.4-1 m below ground:
+SOILL:1-2 m below ground:
+SNFALB:surface:
+RLYRS:surface:
+CCOND:surface:
+RSMIN:surface:
+WILT:surface:
+SOTYP:surface:
+VGTYP:surface:
+SMREF:surface:
+SMDRY:surface:
+SNOWC:surface:
+POROS:surface:
+RCS:surface:
+RCT:surface:
+RCQ:surface:
+RCSOL:surface:
+PRES:level of adiabatic condensation from sfc:
+HGT:level of adiabatic condensation from sfc:
+GUST:surface:
+HGT:10 mb:
+TMP:10 mb:
+UGRD:10 mb:
+VGRD:10 mb:
+HGT:20 mb:
+TMP:20 mb:
+UGRD:20 mb:
+VGRD:20 mb:
+HGT:30 mb:
+TMP:30 mb:
+UGRD:30 mb:
+VGRD:30 mb:
+RH:10 mb:
+SPFH:10 mb:
+RH:20 mb:
+SPFH:20 mb:
+RH:30 mb:
+SPFH:30 mb:
+REFD:1 hybrid level:
+CSDSF:surface:
+LTNG:surface:
+DPT:925 mb:
+VUCSH:0-6000 m above ground:
+VVCSH:0-6000 m above ground:
+TMP:30-0 mb above ground:
+RH:30-0 mb above ground:
+UGRD:30-0 mb above ground:
+VGRD:30-0 mb above ground:
+TMP:60-30 mb above ground:
+RH:60-30 mb above ground:
+UGRD:60-30 mb above ground:
+VGRD:60-30 mb above ground:
+TMP:90-60 mb above ground:
+RH:90-60 mb above ground:
+UGRD:90-60 mb above ground:
+VGRD:90-60 mb above ground:
+TMP:120-90 mb above ground:
+RH:120-90 mb above ground:
+UGRD:120-90 mb above ground:
+VGRD:120-90 mb above ground:
+TMP:150-120 mb above ground:
+RH:150-120 mb above ground:
+UGRD:150-120 mb above ground:
+VGRD:150-120 mb above ground:
+LAND:surface:
+VVEL:50 mb:
+VVEL:75 mb:
+VVEL:100 mb:
+VVEL:125 mb:
+VVEL:150 mb:
+VVEL:175 mb:
+VVEL:200 mb:
+VVEL:225 mb:
+VVEL:250 mb:
+VVEL:275 mb:
+VVEL:300 mb:
+VVEL:325 mb:
+VVEL:350 mb:
+VVEL:375 mb:
+VVEL:400 mb:
+VVEL:425 mb:
+VVEL:450 mb:
+VVEL:475 mb:
+VVEL:500 mb:
+VVEL:525 mb:
+VVEL:550 mb:
+VVEL:575 mb:
+VVEL:600 mb:
+VVEL:625 mb:
+VVEL:650 mb:
+VVEL:675 mb:
+VVEL:700 mb:
+VVEL:725 mb:
+VVEL:750 mb:
+VVEL:775 mb:
+VVEL:800 mb:
+VVEL:825 mb:
+VVEL:850 mb:
+VVEL:875 mb:
+VVEL:900 mb:
+VVEL:925 mb:
+VVEL:950 mb:
+VVEL:975 mb:
+VVEL:1000 mb:
+TKE:30 mb:
+TKE:50 mb:
+TKE:75 mb:
+TKE:100 mb:
+TKE:125 mb:
+TKE:150 mb:
+TKE:175 mb:
+CLWMR:50 mb:
+CICE:50 mb:
+CLWMR:75 mb:
+CICE:75 mb:
+CLWMR:100 mb:
+CICE:100 mb:
+CLWMR:125 mb:
+CICE:125 mb:
+CLWMR:150 mb:
+CICE:150 mb:
+CLWMR:175 mb:
+CICE:175 mb:
+TKE:200 mb:
+CLWMR:200 mb:
+CICE:200 mb:
+TKE:225 mb:
+CLWMR:225 mb:
+CICE:225 mb:
+TKE:250 mb:
+CLWMR:250 mb:
+CICE:250 mb:
+TKE:275 mb:
+CLWMR:275 mb:
+CICE:275 mb:
+TKE:300 mb:
+CLWMR:300 mb:
+CICE:300 mb:
+TKE:325 mb:
+CLWMR:325 mb:
+CICE:325 mb:
+TKE:350 mb:
+CLWMR:350 mb:
+CICE:350 mb:
+TKE:375 mb:
+CLWMR:375 mb:
+CICE:375 mb:
+TKE:400 mb:
+CLWMR:400 mb:
+CICE:400 mb:
+TKE:425 mb:
+CLWMR:425 mb:
+CICE:425 mb:
+TKE:450 mb:
+CLWMR:450 mb:
+CICE:450 mb:
+TKE:475 mb:
+CLWMR:475 mb:
+CICE:475 mb:
+TKE:500 mb:
+CLWMR:500 mb:
+CICE:500 mb:
+TKE:525 mb:
+CLWMR:525 mb:
+CICE:525 mb:
+TKE:550 mb:
+CLWMR:550 mb:
+CICE:550 mb:
+TKE:575 mb:
+CLWMR:575 mb:
+CICE:575 mb:
+TKE:600 mb:
+CLWMR:600 mb:
+CICE:600 mb:
+TKE:625 mb:
+CLWMR:625 mb:
+CICE:625 mb:
+TKE:650 mb:
+CLWMR:650 mb:
+CICE:650 mb:
+TKE:675 mb:
+CLWMR:675 mb:
+CICE:675 mb:
+TKE:700 mb:
+CLWMR:700 mb:
+CICE:700 mb:
+TKE:725 mb:
+CLWMR:725 mb:
+CICE:725 mb:
+TKE:750 mb:
+CLWMR:750 mb:
+CICE:750 mb:
+TKE:775 mb:
+CLWMR:775 mb:
+CICE:775 mb:
+TKE:800 mb:
+CLWMR:800 mb:
+CICE:800 mb:
+TKE:825 mb:
+CLWMR:825 mb:
+CICE:825 mb:
+TKE:850 mb:
+CLWMR:850 mb:
+CICE:850 mb:
+TKE:875 mb:
+CLWMR:875 mb:
+CICE:875 mb:
+TKE:900 mb:
+CLWMR:900 mb:
+CICE:900 mb:
+TKE:925 mb:
+CLWMR:925 mb:
+CICE:925 mb:
+TKE:950 mb:
+CLWMR:950 mb:
+CICE:950 mb:
+TKE:975 mb:
+CLWMR:975 mb:
+CICE:975 mb:
+TKE:1000 mb:
+CLWMR:1000 mb:
+CICE:1000 mb:
+PRES:tropopause:
+TMP:tropopause:
+UGRD:tropopause:
+VGRD:tropopause:
+VWSH:tropopause:
+HGT:0C isotherm:
+RH:0C isotherm:
+HGT:highest tropospheric freezing level:
+PRES:30-0 mb above ground:
+POT:30-0 mb above ground:
+DPT:30-0 mb above ground:
+SPFH:30-0 mb above ground:
+MCONV:30-0 mb above ground:
+VVEL:30-0 mb above ground:
+PWAT:30-0 mb above ground:
+PRES:60-30 mb above ground:
+SPFH:60-30 mb above ground:
+PRES:90-60 mb above ground:
+SPFH:90-60 mb above ground:
+VVEL:90-60 mb above ground:
+PRES:120-90 mb above ground:
+SPFH:120-90 mb above ground:
+PRES:150-120 mb above ground:
+SPFH:150-120 mb above ground:
+PRES:180-150 mb above ground:
+TMP:180-150 mb above ground:
+SPFH:180-150 mb above ground:
+UGRD:180-150 mb above ground:
+VGRD:180-150 mb above ground:
+VVEL:180-150 mb above ground:
+ALBDO:surface:
+WTMP:surface:
+RH:180-150 mb above ground:
+ICEC:surface:
+TMP:914 m above mean sea level:
+UGRD:914 m above mean sea level:
+VGRD:914 m above mean sea level:
+TMP:1524 m above mean sea level:
+UGRD:1524 m above mean sea level:
+VGRD:1524 m above mean sea level:
+TMP:1829 m above mean sea level:
+UGRD:1829 m above mean sea level:
+VGRD:1829 m above mean sea level:
+TMP:2134 m above mean sea level:
+UGRD:2134 m above mean sea level:
+VGRD:2134 m above mean sea level:
+TMP:2743 m above mean sea level:
+UGRD:2743 m above mean sea level:
+VGRD:2743 m above mean sea level:
+TMP:3658 m above mean sea level:
+UGRD:3658 m above mean sea level:
+VGRD:3658 m above mean sea level:
+PRES:max wind:
+HGT:max wind:
+UGRD:max wind:
+VGRD:max wind:
+PRES:cloud base:
+HGT:cloud base:
+PRES:cloud top:
+HGT:cloud top:
+TMP:cloud top:
+TCOLW:entire atmosphere (considered as a single layer):
+TCOLI:entire atmosphere (considered as a single layer):
+TCOLR:entire atmosphere (considered as a single layer):
+TCOLS:entire atmosphere (considered as a single layer):
+TCOLC:entire atmosphere (considered as a single layer):
+PRES:grid scale cloud bottom level:
+PRES:grid scale cloud top level:
+RWMR:30 mb:
+SNMR:30 mb:
+RWMR:50 mb:
+SNMR:50 mb:
+RWMR:75 mb:
+SNMR:75 mb:
+RWMR:100 mb:
+SNMR:100 mb:
+RWMR:125 mb:
+SNMR:125 mb:
+RWMR:150 mb:
+SNMR:150 mb:
+RWMR:175 mb:
+SNMR:175 mb:
+RWMR:200 mb:
+SNMR:200 mb:
+RWMR:225 mb:
+SNMR:225 mb:
+RWMR:250 mb:
+SNMR:250 mb:
+RWMR:275 mb:
+SNMR:275 mb:
+RWMR:300 mb:
+SNMR:300 mb:
+RWMR:325 mb:
+SNMR:325 mb:
+RWMR:350 mb:
+SNMR:350 mb:
+RWMR:375 mb:
+SNMR:375 mb:
+RWMR:400 mb:
+SNMR:400 mb:
+RWMR:425 mb:
+SNMR:425 mb:
+RWMR:450 mb:
+SNMR:450 mb:
+RWMR:475 mb:
+SNMR:475 mb:
+RWMR:500 mb:
+SNMR:500 mb:
+RWMR:525 mb:
+SNMR:525 mb:
+RWMR:550 mb:
+SNMR:550 mb:
+RWMR:575 mb:
+SNMR:575 mb:
+RWMR:600 mb:
+SNMR:600 mb:
+RWMR:625 mb:
+SNMR:625 mb:
+RWMR:650 mb:
+SNMR:650 mb:
+RWMR:675 mb:
+SNMR:675 mb:
+RWMR:700 mb:
+SNMR:700 mb:
+RWMR:725 mb:
+SNMR:725 mb:
+RWMR:750 mb:
+SNMR:750 mb:
+RWMR:775 mb:
+SNMR:775 mb:
+RWMR:800 mb:
+SNMR:800 mb:
+RWMR:825 mb:
+SNMR:825 mb:
+RWMR:850 mb:
+SNMR:850 mb:
+RWMR:875 mb:
+SNMR:875 mb:
+RWMR:900 mb:
+SNMR:900 mb:
+RWMR:925 mb:
+SNMR:925 mb:
+RWMR:950 mb:
+SNMR:950 mb:
+RWMR:975 mb:
+SNMR:975 mb:
+RWMR:1000 mb:
+SNMR:1000 mb:
+HPBL:surface:
+TMP:305 m above mean sea level:
+UGRD:305 m above mean sea level:
+VGRD:305 m above mean sea level:
+TMP:457 m above mean sea level:
+UGRD:457 m above mean sea level:
+VGRD:457 m above mean sea level:
+TMP:610 m above mean sea level:
+UGRD:610 m above mean sea level:
+VGRD:610 m above mean sea level:
+TMP:4572 m above mean sea level:
+UGRD:4572 m above mean sea level:
+VGRD:4572 m above mean sea level:
+HGT:lowest level of the wet bulb zero:
+RIME:30 mb:
+RIME:50 mb:
+RIME:75 mb:
+RIME:100 mb:
+RIME:125 mb:
+RIME:150 mb:
+RIME:175 mb:
+RIME:200 mb:
+RIME:225 mb:
+RIME:250 mb:
+RIME:275 mb:
+RIME:300 mb:
+RIME:325 mb:
+RIME:350 mb:
+RIME:375 mb:
+RIME:400 mb:
+RIME:425 mb:
+RIME:450 mb:
+RIME:475 mb:
+RIME:500 mb:
+RIME:525 mb:
+RIME:550 mb:
+RIME:575 mb:
+RIME:600 mb:
+RIME:625 mb:
+RIME:650 mb:
+RIME:675 mb:
+RIME:700 mb:
+RIME:725 mb:
+RIME:750 mb:
+RIME:775 mb:
+RIME:800 mb:
+RIME:825 mb:
+RIME:850 mb:
+RIME:875 mb:
+RIME:900 mb:
+RIME:925 mb:
+RIME:950 mb:
+RIME:975 mb:
+RIME:1000 mb:
+VVEL:10 mb:
+VVEL:20 mb:
+VVEL:30 mb:
+CLWMR:30 mb:
+CICE:30 mb:
+REFC:entire atmosphere (considered as a single layer):
+REFD:1000 m above ground:
+REFD:4000 m above ground:
+RETOP:entire atmosphere (considered as a single layer):
+HGT:cloud ceiling:
+TCLSW:entire atmosphere (considered as a single layer):
+TCOLM:entire atmosphere (considered as a single layer):
+HGT:lowest bottom level of supercooled liquid water layer:
+HGT:highest top level of supercooled liquid water layer:
+DZDT:10 mb:
+DZDT:20 mb:
+DZDT:30 mb:
+DZDT:50 mb:
+DZDT:75 mb:
+DZDT:100 mb:
+DZDT:125 mb:
+DZDT:150 mb:
+DZDT:175 mb:
+DZDT:200 mb:
+DZDT:225 mb:
+DZDT:250 mb:
+DZDT:275 mb:
+DZDT:300 mb:
+DZDT:325 mb:
+DZDT:350 mb:
+DZDT:375 mb:
+DZDT:400 mb:
+DZDT:425 mb:
+DZDT:450 mb:
+DZDT:475 mb:
+DZDT:500 mb:
+DZDT:525 mb:
+DZDT:550 mb:
+DZDT:575 mb:
+DZDT:600 mb:
+DZDT:625 mb:
+DZDT:650 mb:
+DZDT:675 mb:
+DZDT:700 mb:
+DZDT:725 mb:
+DZDT:750 mb:
+DZDT:775 mb:
+DZDT:800 mb:
+DZDT:825 mb:
+DZDT:850 mb:
+DZDT:875 mb:
+DZDT:900 mb:
+DZDT:925 mb:
+DZDT:950 mb:
+DZDT:975 mb:
+DZDT:1000 mb:
+SWHR:entire atmosphere (considered as a single layer):
+LWHR:entire atmosphere (considered as a single layer):
+LRGHR:entire atmosphere (considered as a single layer):
+MCONV:entire atmosphere (considered as a single layer):
+UGRD:planetary boundary layer:
+VGRD:planetary boundary layer:
+HGT:planetary boundary layer:
+PRES:80 m above ground:
+TMP:80 m above ground:
+UGRD:80 m above ground:
+VGRD:80 m above ground:
+SPFH:80 m above ground:
+VRATE:planetary boundary layer:
+HINDEX:surface:
+TMAX:2 m above ground:
+TMIN:2 m above ground:
+MAXRH:2 m above ground:
+MINRH:2 m above ground:
+MAXUW:10 m above ground:
+MAXVW:10 m above ground:
+MXUPHL:5000-2000 m above ground:
+UPHL:5000-2000 m above ground:
+MAXREF:1000 m above ground:
+MAXUVV:400-1000 mb:
+MAXDVV:400-1000 mb:
+VIL:entire atmosphere (considered as a single layer):
