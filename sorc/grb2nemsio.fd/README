@@ -1,0 +1,28 @@
+Grib2 to nemsio converter
+
+This code converts grib2 files for GFS model output (RAP/NAM planned) to 
+nemsio files that can then be read in to chgres. 
+
+Currently the codes supports conversion of GFS3 (1.0-degree) and GFS4 
+(0.5-degree) files. Usage is: 
+
+grb2nemsio.x mname analdate ifhr ifhr_end ifhr_freq inpath
+
+mname: Model name, gfs3, gfs4, or ruc_native currently
+analydate: Analysis date, YYYYMMDD
+ifhr: Forecast hour
+ifhr_end: Final forecast hour you wish to convert
+ifhr_freq: Forecast hour frequency
+inpath: Location of the grb files
+
+Note:
+
+Grib files can have a wide variety of name formats depending on where you
+acquire the data. For gfs3/4 files, the code searches for files of format:
+
+gfs_[3/4]_YYYYMMDD_IIII_FFF.grb2
+
+where IIII is the initialization time and FFF is the forecast hour. This 
+complies with the naming convention of archived NCEI grb2 files. You can 
+either change file names or modify the code to look for different name 
+formats. 
