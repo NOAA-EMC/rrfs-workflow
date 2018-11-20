@@ -1,4 +1,5 @@
 program gfs_main
+  USE, INTRINSIC :: IEEE_ARITHMETIC
   use gfs_module
   use netcdf
   use nemsio_module   
@@ -46,7 +47,7 @@ program gfs_main
       			13-km RUC/RAP data on the native sigma grid)'
       STOP 1
    ENDIF
-   call getarg(1,mname)			! Model name: gfs3, gfs4, or ruc_native currently
+   call getarg(1,mname)			! Model name: gfs4, or ruc_native currently
    call getarg(2,analdate)		! Analysis date: YYYYMMDD
    call getarg(3,cfhr)			! Forecast hour 
    call getarg(4,cfhr_end)		! End forecast hour to be converted
@@ -65,10 +66,10 @@ program gfs_main
  	doslconvert = 0
  	isnative = 0
  	hasspfh = 0
-    if (trim(mname) == 'gfs3' .or. trim(mname) == 'gfs4') then
+    if (trim(mname) == 'gfs4') then
 	
-		nvar2d = 8
-		nvar2dmeta = 16
+		nvar2d = 9
+		nvar2dmeta = 17
 		nvarsoil = 2
 		nvar3d = 6
 		
@@ -82,44 +83,27 @@ program gfs_main
 		allocate(lvlslout(nslev))
 		allocate(name2dmeta(nvar2dmeta))
 		allocate(lvls2dmeta(nvar2dmeta))
-
-	   if (trim(mname)=='gfs3') then
-			! These are what the variable names look like in 1-degree GFS grib files. 
-
-			name3din = (/'U_GRD_3_ISBL','V_GRD_3_ISBL', 'TMP_3_ISBL','R_H_3_ISBL','O3MR_3_ISBL', &
-				'CLWMR_3_ISBL'/)
-			name2din = (/'PRES_3_SFC', 'TMP_3_HTGL','TMP_3_SFC','WEASD_3_SFC','HGT_3_SFC', &
-				'LAND_3_SFC','ICE_C_3_SFC','SPF_H_3_HTGL'/)
-			nameslin = (/'TMP_3_DBLY','SOILW_3_DBLY'/)
-			pnamein = 'lv_ISBL3'
-			
-			! The code will look for files that start with gfs_3_
-			file_start = '/gfs_3_'
-			latname = 'lat_3'
-			lonname = 'lon_3'
-		elseif (trim(mname) == 'gfs4') then
 	
-			name3din=(/'UGRD_P0_L100_GLL0','VGRD_P0_L100_GLL0','TMP_P0_L100_GLL0','RH_P0_L100_GLL0','O3MR_P0_L100_GLL0',&
-					'CLWMR_P0_L100_GLL0'/)
-					
-			name2din=(/'PRES_P0_L1_GLL0','TMP_P0_L1_GLL0','TMP_P0_L103_GLL0','WEASD_P0_L1_GLL0',&
-			'HGT_P0_L1_GLL0','LAND_P0_L1_GLL0','ICEC_P0_L1_GLL0','SPFH_P0_L103_GLL0'/)
-			
-			!At some point, the grib table soil variable names changed for GFS files. 
-			! I'm actually not sure when this happened, though. Change "2017" accordingly.
-			
-			if (YYYY .gt. 2017) then !
-				nameslin=(/'TSOIL_P0_2L106_GLL0','SOILW_P0_2L106_GLL0'/)
-			else
-				nameslin=(/'TMP_P0_2L106_GLL0','SOILW_P0_2L106_GLL0'/)
-			endif
-			
-			!Look for files that start with gfs_4
-			file_start = '/gfs_4_'
-			pnamein = 'lv_ISBL0' 
-			latname = 'lat_0'
-			lonname = 'lon_0'
+		name3din=(/'UGRD_P0_L100_GLL0','VGRD_P0_L100_GLL0','TMP_P0_L100_GLL0','RH_P0_L100_GLL0','O3MR_P0_L100_GLL0',&
+				'CLWMR_P0_L100_GLL0'/)
+				
+		name2din=(/'PRES_P0_L1_GLL0','TMP_P0_L1_GLL0','TMP_P0_L103_GLL0','WEASD_P0_L1_GLL0',&
+		'HGT_P0_L1_GLL0','LAND_P0_L1_GLL0','ICEC_P0_L1_GLL0','SPFH_P0_L103_GLL0','SNOD_P0_L1_GLL0'/)
+		
+		!At some point, the grib table soil variable names changed for GFS files. 
+		! I'm actually not sure when this happened, though. Change "2017" accordingly.
+		
+		if (YYYY .gt. 2017) then !
+			nameslin=(/'TSOIL_P0_2L106_GLL0','SOILW_P0_2L106_GLL0'/)
+		else
+			nameslin=(/'TMP_P0_2L106_GLL0','SOILW_P0_2L106_GLL0'/)
 		endif
+		
+		!Look for files that start with gfs_4
+		file_start = '/gfs_4_'
+		pnamein = 'lv_ISBL0' 
+		latname = 'lat_0'
+		lonname = 'lon_0'
 		
 		out_start = '/gfs.t'
 		ygridname = latname
@@ -127,16 +111,16 @@ program gfs_main
 		
    		name3dout=(/'ugrd','vgrd','tmp','spfh','o3mr','clwmr'/)
    
-		name2dout=(/'pres','tmp','tmp','weasd','hgt','land','icec','spfh'/)
-		lvl2dout=(/'sfc','2 m above gnd','sfc','sfc','sfc','sfc','sfc','2 m above gnd'/)
+		name2dout=(/'pres','tmp','tmp','weasd','hgt','land','icec','spfh','snwdph'/)
+		lvl2dout=(/'sfc','2 m above gnd','sfc','sfc','sfc','sfc','sfc','2 m above gnd','sfc'/)
     
 	    nameslout=(/'tmp','soilw'/)
 		lvlslout=(/'0-10 cm down','10-40 cm down','40-100 cm down','100-200 cm down'/)
 		
 		
-		name2dmeta = (/'pres','tmp','tmp','weasd','hgt','land','icec','spfh', &
+		name2dmeta = (/'pres','tmp','tmp','weasd','hgt','land','icec','spfh', 'snwdph', &
 					'tmp','tmp','tmp','tmp','soilw','soilw','soilw','soilw'/)
-		lvls2dmeta = (/'sfc','2 m above gnd','sfc','sfc','sfc','sfc','sfc','2 m above gnd', &
+		lvls2dmeta = (/'sfc','2 m above gnd','sfc','sfc','sfc','sfc','sfc','2 m above gnd','sfc', &
 					'0-10 cm down','10-40 cm down','40-100 cm down','100-200 cm down', &
 					'0-10 cm down','10-40 cm down','40-100 cm down','100-200 cm down'/)
     elseif (trim(mname) == 'ruc13_native') then
@@ -413,8 +397,14 @@ program gfs_main
 		  tmp2d = tmp2dx
 		endif 
 		
+		
+		
+		if (trim(name2din(i)) == 'SNOD_P0_L1_GLL0' .OR. trim(name2din(i)) .eq. 'WEASD_P0_L1_GLL0') then
+			WHERE(tmp2d .gt. 1000.0)tmp2d=IEEE_VALUE(tmp2d,IEEE_QUIET_NAN)
+		endif
 		call nems_write(gfile,name2dout(i),lvl2dout(i),1, nlons*nlats,tmp2d,stat)
-
+		print *, 'Min ', trim(name2din(i)), ' = ', minval(tmp2d)
+		print *, 'Max ', trim(name2din(i)), ' = ', maxval(tmp2d)
 		! Save psfc data for converting non-native grids to sigma coordinates
 		if (i .eq. 1) then
 			psfc(:,:) = tmp2d(:,:)
