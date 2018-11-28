@@ -1,5 +1,4 @@
-!-----------------------------------------------------------------------
-      PROGRAM CHGRES
+PROGRAM CHGRES
 !C$$$  MAIN PROGRAM DOCUMENTATION BLOCK
 !
 ! MAIN PROGRAM: GLOBAL_CHGRES
@@ -265,6 +264,7 @@
       TYPE(NEMSIO_DBTA)  :: GFSDATAO
       CHARACTER(8)       :: FILETYPE, MODELNAME
       CHARACTER(LEN=16)  :: FILETYPE2
+      INTEGER            :: ISGRBSRC
 !
 ! Define local vars:
       INTEGER LONBO,LATBO,IDVCO,IDVMO,IDSLO,IDVTO,      &
@@ -831,7 +831,7 @@
         CALL NEMSIO_GETHEADVAR(GFILEI,'PDRYINI', GFSHEADI%PDRYINI,IRET=IRET)
         CALL NEMSIO_GETHEADVAR(GFILEI,'IVS', GFSHEADI%IVSSIG,IRET=IRET)
         CALL NEMSIO_GETHEADVAR(GFILEI,'NVCOORD', GFSHEADI%NVCOORD,IRET=IRET)
-
+        CALL NEMSIO_GETHEADVAR(GFILEI,'ISGRBSRC',GFSHEADI%ISGRBSRC,IRET=IRET)
         PRINT*,''
         PRINT*,"INPUT NEMSIO FILE SPECS:"
         WRITE(6,155) GFSHEADI%IDATE
@@ -856,6 +856,7 @@
         PRINT*," LONB:      ",GFSHEADI%LONB
         PRINT*," LATB:      ",GFSHEADI%LATB
         PRINT*," LEVS:      ",GFSHEADI%LEVS
+        PRINT*," DIMZ:      ",GFSHEADI%DIMZ
         PRINT*," ITRUN:     ",GFSHEADI%ITRUN
         PRINT*," IORDER:    ",GFSHEADI%IORDER
         PRINT*," IREALF:    ",GFSHEADI%IREALF
@@ -864,7 +865,9 @@
         PRINT*," PDRYINI:   ",GFSHEADI%PDRYINI
         PRINT*," IVSSIG:    ",GFSHEADI%IVSSIG
         PRINT*," NVCOORD:   ",GFSHEADI%NVCOORD
+        PRINT*," ISGRBSRC:  ",GFSHEADI%ISGRBSRC
         
+        ISGRBSRC=GFSHEADI%ISGRBSRC
         LEVSI = GFSHEADI%DIMZ
         LONB   = GFSHEADI%DIMX
         LATB   = GFSHEADI%DIMY
@@ -879,6 +882,11 @@
           GFSHEADVI%CPI = -999.
           GFSHEADVI%RI  = -999.
           NOPDPVV = .FALSE.
+        ELSEIF(GFSHEADI%ISGRBSRC .gt. 0) THEN
+           CALL NEMSIO_GETFILEHEAD(GFILEI, VCOORD=GFSHEADVI%VCOORD,    &
+                                IRET=IRET1)
+          GFSHEADVI%CPI = -999.
+          GFSHEADVI%RI  = -999.
         ELSE
           CALL NEMSIO_GETFILEHEAD(GFILEI, VCOORD=GFSHEADVI%VCOORD,    &
                                 CPI=GFSHEADVI%CPI, RI=GFSHEADVI%RI, &
@@ -920,18 +928,28 @@
           ALLOCATE(GFSDATAI%P(LONB,LATB,LEVSI))
           ALLOCATE(GFSDATAI%DP(LONB,LATB,LEVSI))
           ALLOCATE(GFSDATAI%W(LONB,LATB,LEVSI))
-        ENDIF 
+        ENDIF
+
 
         IF(TRIM(MODELNAME) == "FV3GFS") THEN
+
           CALL READ_FV3GFS_ATMS_DATA_NEMSIO(GFILEI, GFSDATAI, GFSHEADI, &
                                          VCOORDI, (LEVSI+1), GFSHEADI%NVCOORD)
           deallocate(gfsdatai%dp)
-        ELSE
+        ELSEIF(GFSHEADI%ISGRBSRC .GT. 0) THEN
+            IF (GFSHEADI%ISGRBSRC .EQ. 1) THEN
+                CALL READ_GRBGFS_ATMS_DATA_NEMSIO(GFILEI, GFSDATAI,GFSHEADI, &
+                        VCOORDI, (LEVSI+1), GFSHEADI%NVCOORD)
+            ELSE
+                CALL READ_GRBRAP_ATMS_DATA_NEMSIO(GFILEI, GFSDATAI,GFSHEADI, &
+                        VCOORDI, (LEVSI+1), GFSHEADI%NVCOORD)
+            ENDIF
+        ELSE 
+
           CALL NEMSIO_GFS_RDGRD(GFILEI,GFSDATAI,IRET=IRET)
         ENDIF
 
         CALL NEMSIO_CLOSE(GFILEI,IRET=IRET)
-
         IF (LEVS > 0) THEN
           LEVSO = LEVS
         ELSE
@@ -982,6 +1000,8 @@
         ELSE
           NVCOORDO = GFSHEADI%NVCOORD
         ENDIF
+        
+        
 
         IF(MQUICK == 1) THEN
           IF(LEVSO.NE.LEVSI)    CALL ERREXIT(28)
@@ -1038,7 +1058,7 @@
         ENDIF
 
         MQUICKNEMS : IF (MQUICK == 0) THEN
- 
+
           ALLOCATE(ZSI(LONB,LATCH2), PSI(LONB,LATCH2))
           ALLOCATE(TI(LONB,LATCH2,LEVSI), TIV(LONB,LATCH2,LEVSI),   &
                    UI(LONB,LATCH2,LEVSI), VI(LONB,LATCH2,LEVSI),    &
@@ -1066,13 +1086,13 @@
             JL  = J2-J1+1
             IJL = LONB*JL
             IJX = LONB*JL
- 
             ZSI(:,:) = GFSDATAI%ZS(:,J1:J2)
             PSI(:,:) = GFSDATAI%PS(:,J1:J2)
-
+            
             TI(:,:,:) = GFSDATAI%T(:,J1:J2,:)
             UI(:,:,:) = GFSDATAI%U(:,J1:J2,:)
             VI(:,:,:) = GFSDATAI%V(:,J1:J2,:)
+
 
             DO N=1,NTRACO
               QI(:,:,:,N) = GFSDATAI%Q(:,J1:J2,:,N)
@@ -1098,7 +1118,7 @@
 
             GFSDATAO%ZS(:,J1:J2) = ZSI
             GFSDATAO%PS(:,J1:J2) = PSI
-
+            
 !-----------------------------------------------------------------------
 !  VERTICALLY INTERPOLATE UPPER-AIR FIELDS
 ! -- Henry Juang's approach
@@ -1107,16 +1127,17 @@
               CALL NEWPR1(IJL, IJX, LEVSO, LEVSI, IDVCO, IDVMO, IDSLO, &
                           NVCOORDO, VCOORDO, RI, CPI, NTRACO,          &
                           PI, TI, QI, GFSDATAO%PS(:,J1:J2), PO)
-
               CALL VINTG(IJL,IJX,LEVSI,LEVSO,NTRACO,PI,UI,VI,TI,QI,WI, &
                          PO, GFSDATAO%U(:,J1:J2,:),  GFSDATAO%V(:,J1:J2,:), &
                          GFSDATAO%T(:,J1:J2,:), GFSDATAO%Q(:,J1:J2,:,:), WO)
 
             ELSE
+              
               CALL NEWPR1(IJL, IJX, LEVSO, LEVSI, IDVCO, IDVMO, IDSLO,     &
                           NVCOORDO, VCOORDO, RI, CPI, NTRACO, PI, TI, QI,  &
                           GFSDATAO%PS(:,J1:J2), PO)
 
+              
               CALL VINTG(IJL,IJX,LEVSI,LEVSO,NTRACO,PI,UI,VI,TI,QI,WI,     &
                          PO, GFSDATAO%U(:,J1:J2,:),      &
                          GFSDATAO%V(:,J1:J2,:),GFSDATAO%T(:,J1:J2,:),      &
@@ -1229,6 +1250,7 @@
         CALL NEMSIO_OPEN(GFILEISFC,'chgres.inp.sfc','read',IRET=IRET)
         CALL NEMSIO_GETFILEHEAD(GFILEISFC,GTYPE=FILETYPE,  &
                                 MODELNAME=MODELNAME,IRET=IRET)
+        CALL NEMSIO_GETHEADVAR(GFILEISFC,'ISGRBSRC',ISGRBSRC,IRET=IRET)
         PRINT *,'OPEN chgres.inp.sfc,iret=',IRET, 'gtype=',FILETYPE,  &
                 'modelname= ',modelname
         IF (TRIM(FILETYPE) == 'NEMSIO' .AND. IRET == 0) THEN
@@ -1243,7 +1265,6 @@
       IF (NSFCO == 0) GOTO 80
 
 ! FV3GFS SURFACE FILES CONTAIN BOTH SFC AND NSST FIELDS
-
       IF (TRIM(MODELNAME) == "FV3GFS") THEN
         DO_NSST=.TRUE.
       ELSE
@@ -1251,6 +1272,7 @@
         DO_NSST=.FALSE.
         INQUIRE (FILE="./chgres.inp.nst", SIZE=FILESZ)
         IF (FILESZ > 0) DO_NSST=.TRUE.
+
         IF (DO_NSST .AND. NSFCO == 0) THEN
           PRINT*,'FATAL ERROR: WHEN CONVERTING AN NSST RESTART FILE,'
           PRINT*,'YOU MUST ALSO CONVERT A SURFACE RESTART FILE.'
@@ -1288,7 +1310,7 @@
 !  DO NOT.  IF THESE VARIABLES ARE NOT ALLOCATED, THE SURFACE CHGRES
 !  CODE WILL NOT INTERPOLATE THEM.
 
-      IF (IVSI >= 200501) THEN
+      IF (IVSI >= 200501 .AND. ISGRBSRC .LT. 0) THEN
         ALLOCATE (SFCINPUT%SEA_ICE_FRACT(IMI,JMI),   &
                   SFCINPUT%SEA_ICE_DEPTH(IMI,JMI),   &
                   SFCINPUT%MXSNOW_ALB(IMI,JMI),      &
@@ -1297,6 +1319,10 @@
                   SFCINPUT%GREENFRC_MAX(IMI,JMI),    &
                   SFCINPUT%GREENFRC_MIN(IMI,JMI),    &
                   SFCINPUT%SOILM_LIQ(IMI,JMI,LSOILI) )
+      ELSE
+        IF (ISGRBSRC .GT. 0) THEN
+          ALLOCATE (SFCINPUT%SNOW_DEPTH(IMI,JMI) )
+        ENDIF
       ENDIF
 
       ALLOCATE (F10MI(IMI,JMI), T2MI(IMI,JMI), Q2MI(IMI,JMI),      &
@@ -1316,9 +1342,22 @@
                                F10MI, T2MI, Q2MI, UUSTARI, FFMMI, FFHHI,    &
                                SRFLAGI, TPRCPI)
         ELSE
-          CALL READ_GFS_SFC_DATA_NEMSIO (IMI, JMI, LSOILI, IVSI, SFCINPUT,  &
+          IF (ISGRBSRC .GT. 0) THEN
+              IF (ISGRBSRC .EQ. 1) THEN
+                print *, 'call read_grbgfs_sfc_data_nemsio'
+                CALL READ_GRBGFS_SFC_DATA_NEMSIO(IMI, JMI, LSOILI, SFCINPUT, &
+                        F10MI, T2MI, Q2MI, SRFLAGI)
+            ELSE
+                print *, 'call read_grbrap_sfc_data_nemsio'
+                CALL READ_GRBRAP_SFC_DATA_NEMSIO(IMI, JMI, LSOILI, SFCINPUT, &
+                                F10MI, T2MI, Q2MI, UUSTARI, SRFLAGI)
+            ENDIF
+          ELSE
+            print *, 'call read_gfs_sfc_data_nemsio'
+            CALL READ_GFS_SFC_DATA_NEMSIO (IMI, JMI, LSOILI, IVSI, SFCINPUT,  &
                                F10MI, T2MI, Q2MI, UUSTARI, FFMMI, FFHHI,    &
                                SRFLAGI, TPRCPI)
+          ENDIF
         ENDIF
 
       ENDIF
@@ -1380,16 +1419,21 @@
       ALLOCATE (F10MO(IMO,JMO), T2MO(IMO,JMO), Q2MO(IMO,JMO),       &
                 UUSTARO(IMO,JMO), FFMMO(IMO,JMO), FFHHO(IMO,JMO),   &
                 TPRCPO(IMO,JMO), SRFLAGO(IMO,JMO) )
-
-      CALL GL2ANY(0,1,F10MI,IMI,JMI,F10MO,IMO,JMO,GEOLON,GEOLAT)
-      CALL GL2ANY(0,1,T2MI,IMI,JMI,T2MO,IMO,JMO,GEOLON,GEOLAT)
-      CALL GL2ANY(0,1,Q2MI,IMI,JMI,Q2MO,IMO,JMO,GEOLON,GEOLAT)
-      CALL GL2ANY(0,1,UUSTARI,IMI,JMI,UUSTARO,IMO,JMO,GEOLON,GEOLAT)
-      CALL GL2ANY(0,1,FFMMI,IMI,JMI,FFMMO,IMO,JMO,GEOLON,GEOLAT)
-      CALL GL2ANY(0,1,FFHHI,IMI,JMI,FFHHO,IMO,JMO,GEOLON,GEOLAT)
-      CALL GL2ANY(0,1,TPRCPI,IMI,JMI,TPRCPO,IMO,JMO,GEOLON,GEOLAT)
-      CALL GL2ANY(2,1,SRFLAGI,IMI,JMI,SRFLAGO,IMO,JMO,GEOLON,GEOLAT)
-
+      IF (ISGRBSRC > 0) THEN
+          CALL GL2ANY(0,1,T2MI,IMI,JMI,T2MO,IMO,JMO,GEOLON,GEOLAT)
+          CALL GL2ANY(0,1,Q2MI,IMI,JMI,Q2MO,IMO,JMO,GEOLON,GEOLAT)
+          CALL GL2ANY(2,1,SRFLAGI,IMI,JMI,SRFLAGO,IMO,JMO,GEOLON,GEOLAT)
+          CALL GL2ANY(0,1,F10MI,IMI,JMI,F10MO,IMO,JMO,GEOLON,GEOLAT)
+      ELSE
+          CALL GL2ANY(0,1,F10MI,IMI,JMI,F10MO,IMO,JMO,GEOLON,GEOLAT)
+          CALL GL2ANY(0,1,T2MI,IMI,JMI,T2MO,IMO,JMO,GEOLON,GEOLAT)
+          CALL GL2ANY(0,1,Q2MI,IMI,JMI,Q2MO,IMO,JMO,GEOLON,GEOLAT)
+          CALL GL2ANY(0,1,UUSTARI,IMI,JMI,UUSTARO,IMO,JMO,GEOLON,GEOLAT)
+          CALL GL2ANY(0,1,FFMMI,IMI,JMI,FFMMO,IMO,JMO,GEOLON,GEOLAT)
+          CALL GL2ANY(0,1,FFHHI,IMI,JMI,FFHHO,IMO,JMO,GEOLON,GEOLAT)
+          CALL GL2ANY(0,1,TPRCPI,IMI,JMI,TPRCPO,IMO,JMO,GEOLON,GEOLAT)
+          CALL GL2ANY(2,1,SRFLAGI,IMI,JMI,SRFLAGO,IMO,JMO,GEOLON,GEOLAT)
+      ENDIF
       DEALLOCATE (F10MI, T2MI, Q2MI, UUSTARI, FFMMI, FFHHI)
       DEALLOCATE (TPRCPI, SRFLAGI)
 
@@ -1462,6 +1506,8 @@
       IF (IVSO >= 200509) then
         ALLOCATE (SFCOUTPUT%SEA_ICE_TEMP(IJMO))
       END IF
+      
+      
 
 ! the fv3 does not have a grib 1 gds.  so, there is no way to set the
 ! kgds array for the output grid.  ipolates only uses kgds for the 
@@ -1469,7 +1515,6 @@
 ! only bilinear and neighbor interpolation will be used.
 
       KGDS_OUTPUT = 0
-
       CALL SURFACE_CHGRES_DRIVER(IMO,JMO,IJMO,LSOILO,              &
                                  KGDS_OUTPUT,SFCOUTPUT,IMI,JMI,    &
                                  OROGO_UF,USE_UFO,NST_ANL,         &
@@ -1529,18 +1574,19 @@
 
         DEALLOCATE(RLATS_OUTPUT,RLONS_OUTPUT)
         DEALLOCATE(NSST_INPUT,MASK_INPUT,MASK_OUTPUT)
-
+		print *, 'Writing with NSST data'
         CALL WRITE_FV3_SFC_DATA_NETCDF(IMO,JMO,LSOILO,SFCOUTPUT,F10MO, &
                            T2MO,Q2MO,UUSTARO,FFMMO,FFHHO,TPRCPO, &
-                           SRFLAGO,TILE_NUM,NUM_NSST_FIELDS,NSST_OUTPUT)
+                           SRFLAGO,TILE_NUM,NUM_NSST_FIELDS,DO_NSST,NSST_OUTPUT)
 
         DEALLOCATE(NSST_OUTPUT)
 
       ELSE   ! output surface data only.
-
-        CALL WRITE_FV3_SFC_DATA_NETCDF(IMO,JMO,LSOILO,SFCOUTPUT,F10MO, &
+			print *, 'Writing without NSST data'
+           CALL WRITE_FV3_SFC_DATA_NETCDF(IMO,JMO,LSOILO,SFCOUTPUT,F10MO, &
                            T2MO,Q2MO,UUSTARO,FFMMO,FFHHO,TPRCPO, &
-                           SRFLAGO,TILE_NUM,NUM_NSST_FIELDS)
+                           SRFLAGO,TILE_NUM,NUM_NSST_FIELDS,DO_NSST)
+        ! ENDIF
 
 
       ENDIF  ! process nsst file
