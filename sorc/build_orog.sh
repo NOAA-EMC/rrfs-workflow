@@ -15,13 +15,13 @@ if [ $USE_PREINST_LIBS = true ]; then
   else
     export MOD_PATH=/scratch3/NCEPDEV/nwprod/lib/modulefiles
   fi
-  source ../modulefiles/fv3gfs/orog.$target
+  source ../modulefiles/fv3sar_workflow/orog.$target
 else
   export MOD_PATH=${cwd}/lib/modulefiles
   if [ $target = wcoss_cray ]; then
-    source ../modulefiles/fv3gfs/orog.${target}_userlib
+    source ../modulefiles/fv3sar_workflow/orog.${target}_userlib
   else
-    source ../modulefiles/fv3gfs/orog.$target
+    source ../modulefiles/fv3sar_workflow/orog.$target
   fi
 fi
 
