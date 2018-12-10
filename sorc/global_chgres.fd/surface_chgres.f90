@@ -666,6 +666,12 @@
    yindx_wrt_input_grid = reshape(float(jpts),(/ijmdl_output/))
    deallocate(ipts,jpts)
    grid_type="egrid"
+ elseif(kgds_input(1) == 0) then
+   call gdswzd(kgds_input,-1,ijmdl_output,-999.9, &
+   			   xindx_wrt_input_grid,        &
+               yindx_wrt_input_grid,        &
+               output%lons, output%lats, nret)
+    grid_type="latlon"
  end if
 
 !-----------------------------------------------------------------------
@@ -2244,8 +2250,13 @@
  print *, climo_fields_opt
  print *, soil_src_input 
 
- !!! Only valid for global input data, which won't work for NAM/RAP
- mdl_res_input = 360.0 / float(kgds_input(2))
+ IF (KGDS_INPUT(5).EQ. 0) then
+	 !!! Only valid for global input data, which won't work for NAM/RAP
+	 mdl_res_input = 360.0 / float(kgds_input(2))
+ ELSE 
+     mdl_res_input = ABS((float(KGDS_INPUT(7))-float(KGDS_INPUT(4)))/float(KGDS_INPUT(3)))*1.E-3
+ ENDIF
+ 
  print*,"- RESOLUTION OF INPUT GRID IN DEGREES IS: ", mdl_res_input
 
  mdl_res_output = 360.0 / (float(imo) * 4.0) 

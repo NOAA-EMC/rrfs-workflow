@@ -1,6 +1,6 @@
 program gfs_main
   USE, INTRINSIC :: IEEE_ARITHMETIC
-  use gfs_module
+  use grb2nemsio_module
   use netcdf
   use nemsio_module   
   implicit none
@@ -13,7 +13,7 @@ program gfs_main
   character(len=25), dimension(:), allocatable :: name2din, name2dout,lvl2dout
   character(len=25), dimension(:), allocatable :: name2dmeta,lvls2dmeta
   character(len=25), dimension(:), allocatable :: name3din, name3dout
-  character(len=25) 		 :: levtype, pnamein,u10namein,v10namein
+  character(len=25) 		 :: levtype, pnamein,u10namein,v10namein,landnamein
   character(len=300)         :: inpath
   character(len=200)         :: fname,fname_pre,fname_latlon
   character(len=400) 		 :: outfile
@@ -26,17 +26,18 @@ program gfs_main
   real , allocatable         :: lons(:),lats(:),tmp1d(:), tmp1dx(:), p_i(:), vcoord (:), dummy(:)
   real ,allocatable          :: tmp2d(:,:),tmp2dx(:,:),tmp2dT(:,:,:), psfc(:,:), tmp2dx2(:,:)
   real, allocatable			 :: tmp3dx(:,:,:), tmp3d(:,:,:), tmp3dhyb(:,:,:), tmp2dU(:,:)
-  real, allocatable			 :: tmp2dU1(:,:),tmp2dV1(:,:)
+  real, allocatable			 :: tmp2dU1(:,:),tmp2dV1(:,:), land(:,:)
   real						 :: zeros, q_cur, xmsg, maxlats, minlats, maxlons, minlons, dlon, dlat
   real						 :: mean, avgvals(8)
   real(nemsio_realkind), allocatable		 :: sigma(:)
-  integer                    :: fhour, isnative, doslconvert, hasspfh
+  integer                    :: fhour, isnative, doslconvert, hasspfh,kgds(200),kgds2(200)
 
   
-  integer :: ii,i,j,k,kk,ncid3d,ifhr,ifhr_end,ifhr_freq,ifhr_name,nlevs,nlons,nlats,ntimes
+  integer :: ii,i,j,k,kk,ncid3d,ifhr,ifhr_end,ifhr_freq,ifhr_name,nlevs,nlons,nlats,nt
   integer :: nargs,iargc,YYYY,MM,DD,HH,stat,varid,hr, n, v
   integer :: status, nvar2d, nvar2dmeta, nvarsoil, nvar3d,ncid3d_new
   
+  INCLUDE 'gribcst.inc'
 !=========================================================================================
  
    ! read in from command line
@@ -68,7 +69,7 @@ program gfs_main
  	doslconvert = 0
  	isnative = 0
  	hasspfh = 0
-    if (trim(mname) == 'gfs4') then
+    if (trim(mname) == 'gfs4' .or. trim(mname) == 'nam') then
 	
 		nvar2d = 10
 		nvar2dmeta = 18
@@ -94,6 +95,7 @@ program gfs_main
 				'F10M'/)
 		v10namein='VGRD_P0_L103_GLL0'
 		u10namein='UGRD_P0_L103_GLL0'
+		landnamein='LAND_P0_L1_GLL0'
 		!At some point, the grib table soil variable names changed for GFS files. 
 		! I'm actually not sure when this happened, though. Change "2017" accordingly.
 		
@@ -104,12 +106,12 @@ program gfs_main
 		endif
 		
 		!Look for files that start with gfs_4
-		file_start = '/gfs_4_'
+		
 		pnamein = 'lv_ISBL0' 
 		latname = 'lat_0'
 		lonname = 'lon_0'
 		
-		out_start = '/gfs.t'
+		
 		ygridname = latname
 		xgridname = lonname
 		
@@ -129,6 +131,13 @@ program gfs_main
 					'sfc', '10 m above gnd', &
 					'0-10 cm down','10-40 cm down','40-100 cm down','100-200 cm down', &
 					'0-10 cm down','10-40 cm down','40-100 cm down','100-200 cm down'/)
+		if (trim(mname) .eq. 'gfs4') then 
+		  file_start = '/gfs_4_'
+		  out_start = '/gfs.t'
+		else 
+		  file_start = '/nam_218_'
+		  out_start = '/nam.t'
+		endif
     elseif (trim(mname) == 'ruc13_native') then
     
 		nvar2d = 13
@@ -185,6 +194,7 @@ program gfs_main
     	lonname = 'lon_0'
     	ygridname = 'lat_0'
     	xgridname = 'lon_0'
+    	landnamein='LAND_P0_L1_GLL0'
     	isnative=1
     	doslconvert = 1
     	hasspfh = 1
@@ -198,15 +208,17 @@ program gfs_main
     	
 
     
-    ntimes=(ifhr_end)/ifhr_freq+1
-    allocate(fhours(ntimes))
-    call gen_fhours_array(0,ifhr_end,ifhr_freq,ntimes,fhours)
+    nt=(ifhr_end)/ifhr_freq+1
+    allocate(fhours(nt))
+    call gen_fhours_array(0,ifhr_end,ifhr_freq,nt,fhours)
     print *, fhours(:)
     hr = 1
-    do kk=1,ntimes
+    
+    
+    do kk=1,nt
     	print *, fhours(hr)
     	
-		if (mname == 'ruc13_native') then
+		if (trim(mname) == 'ruc13_native') then
 			write(hr_name,'(I0.2)') fhours(kk)
 			write(cfhr_in, '(I0.2)') ifhr
 			write(cfhr_out, '(I0.2)') ifhr
@@ -219,6 +231,28 @@ program gfs_main
 			cmdline_msg='~/tmp/wgrib2/wgrib2/wgrib2 '//trim(fname_pre)//' -set_bitmap 1 -set_grib_type c3 &
 				-new_grid_winds grid -new_grid_interpolation neighbor -new_grid latlon &
 				-139.85:550:0.15 16.25:281:0.15 '//trim(fname_latlon)//' &> wgrb.out'
+			
+			CALL execute_command_line(trim(cmdline_msg))
+		
+			CALL execute_command_line('ncl_convert2nc '//trim(fname_latlon)//' -o '//trim(inpath)//' &> convert.out')
+			
+			outfile=trim(inpath)//trim(out_start)//trim(cfhr_out)//'.atmf'//trim(hr_name)//'.nemsio'
+		elseif (trim(mname) == 'nam') then
+			write(hr_name,'(I0.3)') fhours(kk)
+			write(cfhr_in, '(I0.4)') ifhr
+			write(cfhr_out, '(I0.2)') ifhr
+			fname_pre=trim(inpath)//trim(file_start)//trim(analdate)//'_'//trim(cfhr_in)// &
+				'_'//trim(hr_name)//'.grib2'
+			
+			fname=trim(inpath)//trim(file_start)//trim(analdate)//'_'//trim(cfhr_in)// &
+				'_'//trim(hr_name)//'_latlon.nc'
+			
+			fname_latlon = trim(inpath)//trim(file_start)//trim(analdate)//'_'//trim(cfhr_in)// &
+				'_'//trim(hr_name)//'_latlon.grb2'
+			
+			cmdline_msg='~/tmp/wgrib2/wgrib2/wgrib2 '//trim(fname_pre)//' -set_bitmap 1 -set_grib_type c3 &
+				-new_grid_winds grid -new_grid_interpolation neighbor -new_grid latlon &
+				-153.25:693:0.15 61.2:328:-0.15 '//trim(fname_latlon)//' &> wgrb.out'
 			
 			CALL execute_command_line(trim(cmdline_msg))
 		
@@ -247,6 +281,7 @@ program gfs_main
 		print *, 'reading ', fname
 		stat = nf90_open(fname,NF90_NOWRITE, ncid3d)
 		if (stat .NE.0) print*,stat
+		
 		
 		! For the first file only, inquire about grid information and set up nemsio meta data 
 		! that will be shared across all files
@@ -315,13 +350,17 @@ program gfs_main
 			call define_nemsio_meta(meta_nemsio,nlons,nlats,nlevs,nvar2dmeta,nvar3d,& 	
 					name2dmeta,lvls2dmeta,lons,lats,mname)
 	     
-		   deallocate(lons,lats)
+		   
 		   deallocate(name2dmeta,lvls2dmeta)
 					
 		   meta_nemsio%idate(1)=YYYY
 		   meta_nemsio%idate(2)=MM
 		   meta_nemsio%idate(3)=DD
 		   meta_nemsio%idate(4)=HH
+		   
+		   allocate(land(nlons,nlats))
+		   
+		   call fv3_netcdf_read_2d(ncid3d,1,meta_nemsio,landnamein,land)
 		   
 		   zeros = 0.0
 		   	allocate(sigma(nlevs))
@@ -359,8 +398,32 @@ program gfs_main
 				meta_nemsio%vcoord(1:nlevs,1,1) = sigma
 				meta_nemsio%vcoord(nlevs+1,1,1) = zeros 
           	endif
+          	
+			if (trim(mname) .ne. 'gfs4') then
+				kgds(:)=0
+				!Set kgds array variables. These will be used in chgres to analyze input grid
+				kgds(1)= 0 								!lat/lon grid
+				kgds(2)= nlons							!Num x points
+				kgds(3)= nlats							!Num y points
+				kgds(4)= NINT(maxval(lats)*1000)			!Lat of 1st grid point
+				kgds(5)= NINT(minval(lons)*1000)			!Lon of 1st grid point
+				kgds(6)= 128								!Resolution flags
+				kgds(7)= NINT(minval(lats)*1000)			!Lat of last grid point
+				kgds(8)= NINT(maxval(lons)*1000)			!Lon of last grid point
+				kgds(9)= 150								!X resolution 
+				kgds(10)=-150							!Y resolution
+		
+				kgds(20)=255
 			
+				meta_nemsio%aryival(:,1) = kgds
+				print *, 'just after setting, ', meta_nemsio%aryival
+		    endif
+		
+		    deallocate(lons,lats)
 		endif
+		
+		
+		
 		
 		!Allocate temporary arrays
 		allocate (tmp2d(nlons,nlats))
@@ -428,7 +491,7 @@ program gfs_main
 !!!!$OMP DO PRIVATE(mean,v,n,ii,j,avgvals)
 		do ii=2,nlons-1
 		  do j=2,nlats-1
-			if (tmp2d(ii,j) > 1000000.0) then
+			if (tmp2d(ii,j) > 1000000.0 .and. land(ii,j) .ge. 1.0) then
 			   avgvals=(/tmp2d(ii-1,j),tmp2d(ii-1,j-1),tmp2d(ii-1,j+1), &
 							tmp2d(ii,j-1),tmp2d(ii,j+1),tmp2d(ii+1,j-1), &
 							tmp2d(ii+1,j),tmp2d(ii+1,j+1)/)
@@ -446,8 +509,6 @@ program gfs_main
 		enddo
 !!!!!$OMP ENDDO
 		call nems_write(gfile,name2dout(i),lvl2dout(i),1, nlons*nlats,tmp2d,stat)
-		print *, 'Min ', trim(name2din(i)), ' = ', minval(tmp2d)
-		print *, 'Max ', trim(name2din(i)), ' = ', maxval(tmp2d)
 		! Save psfc data for converting non-native grids to sigma coordinates
 		if (i .eq. 1) then
 			psfc(:,:) = tmp2d(:,:)
@@ -471,7 +532,7 @@ program gfs_main
 !!!!!!$OMP DO PRIVATE(mean,v,n,ii,j,avgvals)
 					do ii=2,nlons-1
 					  do j=2,nlats-1
-					    if (tmp2d(ii,j) > 1000000.0) then
+					    if (tmp2d(ii,j) > 1000000.0 .and. land(ii,j) .ge. 1.0) then
 					       avgvals=(/tmp2d(ii-1,j),tmp2d(ii-1,j-1),tmp2d(ii-1,j+1), &
 						  				tmp2d(ii,j-1),tmp2d(ii,j+1),tmp2d(ii+1,j-1), &
 						  				tmp2d(ii+1,j),tmp2d(ii+1,j+1)/)
@@ -520,7 +581,7 @@ program gfs_main
 
 		  
 		 IF (i .EQ. 5) THEN !Ozone mixing ratio
-		 	if (mname .ne. 'ruc13_native') then
+		 	if (trim(mname) .ne. 'ruc13_native' .and. trim(mname) .ne. 'nam') then
 		 
 				if (YYYY .gt. 2017) then !Only available for the top 17 layers for older data; !!!!!DATE UNCERTAIN!!!!!
 					allocate(tmp3dx(nlons,nlats,17))
@@ -539,7 +600,7 @@ program gfs_main
 					enddo
 					deallocate(tmp3dx)
 				endif
-			else
+			else !Missing in RAP and NAM, set to small value
 				tmp3d(:,:,:) = 1E-7
 			endif
 		 !RH not available at the second layer from TOA in older, non-native data; !!!!!DATE UNCERTAIN!!!!!
@@ -551,24 +612,28 @@ program gfs_main
 		 	tmp3d(:,:,2) = tmp3dx(:,:,1)
 		 	tmp3d(:,:,3:nlevs) = tmp3dx(:,:,2:nlevs-1)
 			deallocate(tmp3dx)
-		 ELSEIF (i .EQ. 6 .AND. .not. isnative) THEN !Q_cloud
-		 	if (YYYY .gt. 2017) then !Not available in the top 10 layers; !!!!!DATE UNCERTAIN!!!!!
-		 		allocate(tmp3dx(nlons,nlats,nlevs-10))
-				call fv3_netcdf_read_3d(ncid3d,1,meta_nemsio,name3din(i),1,nlevs-10,tmp3dx)
-				DO k = 1,10
-					tmp3d(:,:,k)= zeros
-				ENDDO
-				tmp3d(:,:,11:nlevs) = tmp3dx
-				deallocate(tmp3dx)
-		 	else	!Not available in the top 5 layers in newer data
-				allocate(tmp3dx(nlons,nlats,nlevs-5))
-				call fv3_netcdf_read_3d(ncid3d,1,meta_nemsio,name3din(i),1,nlevs-5,tmp3dx)
-				DO k = 1,5
-					tmp3d(:,:,k)= zeros
-				ENDDO
-				tmp3d(:,:,6:nlevs) = tmp3dx
-				deallocate(tmp3dx)
-			endif
+		 ELSEIF (i .EQ. 6) THEN !Q_cloud
+		    IF(.not. isnative .and. trim(mname) .ne. 'nam') THEN 
+				if (YYYY .gt. 2017) then !Not available in the top 10 layers; !!!!!DATE UNCERTAIN!!!!!
+					allocate(tmp3dx(nlons,nlats,nlevs-10))
+					call fv3_netcdf_read_3d(ncid3d,1,meta_nemsio,name3din(i),1,nlevs-10,tmp3dx)
+					DO k = 1,10
+						tmp3d(:,:,k)= zeros
+					ENDDO
+					tmp3d(:,:,11:nlevs) = tmp3dx
+					deallocate(tmp3dx)
+				else	!Not available in the top 5 layers in newer data
+					allocate(tmp3dx(nlons,nlats,nlevs-5))
+					call fv3_netcdf_read_3d(ncid3d,1,meta_nemsio,name3din(i),1,nlevs-5,tmp3dx)
+					DO k = 1,5
+						tmp3d(:,:,k)= zeros
+					ENDDO
+					tmp3d(:,:,6:nlevs) = tmp3dx
+					deallocate(tmp3dx)
+				endif
+			ELSEIF (trim(mname) .eq. 'nam') then !Not available in NAM, set to 0
+				tmp3d(:,:,:) = 0.0
+			ENDIF
 		 ELSE	!All other variables are available across all levels
 			call fv3_netcdf_read_3d(ncid3d,1,meta_nemsio,name3din(i),1,nlevs,tmp3d)
 		 ENDIF
@@ -607,8 +672,7 @@ program gfs_main
 				
 				 enddo
 				 enddo
-				 print *, 'Min ', trim(name3dout(i)), ' = ', minval(tmp2d)
-				print *, 'Max ', trim(name3dout(i)), ' = ', maxval(tmp2d)
+
 				!Write data to nemsio
 				call nems_write(gfile,name3dout(i),levtype,nlevs-k+1,nlons*nlats,tmp2d(:,:),stat)
 				 IF (stat .NE. 0) then
@@ -649,8 +713,10 @@ program gfs_main
 		  
 	   ENDDO !loop over 3d variables
 
-
+		CALL NEMSIO_GETHEADVAR(GFILE,'KGDS',KGDS2,IRET=STAT)
+		print *, KGDS2
 	   call nemsio_close(gfile,iret=stat)
+	   
 	   stat = nf90_close(ncid3d)
 	   stat = nf90_close(ncid3d_new)
 	   
@@ -667,6 +733,7 @@ program gfs_main
 	deallocate(lvlslout,lvl2dout)
 	deallocate(fhours)
 	deallocate(sigma,dummy,p_i)
+	deallocate(land)
 
 
 
