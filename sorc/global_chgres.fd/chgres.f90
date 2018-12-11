@@ -832,6 +832,7 @@ PROGRAM CHGRES
         CALL NEMSIO_GETHEADVAR(GFILEI,'IVS', GFSHEADI%IVSSIG,IRET=IRET)
         CALL NEMSIO_GETHEADVAR(GFILEI,'NVCOORD', GFSHEADI%NVCOORD,IRET=IRET)
         CALL NEMSIO_GETHEADVAR(GFILEI,'ISGRBSRC',ISGRBSRC,IRET=IRET)
+        IF(IRET/=0)ISGRBSRC=-1
         CALL NEMSIO_GETHEADVAR(GFILEI,'KGDS',KGDS_INPUT,IRET=IRET)
         
         
@@ -1265,12 +1266,13 @@ PROGRAM CHGRES
       ELSE
         CALL NEMSIO_OPEN(GFILEISFC,'chgres.inp.sfc','read',IRET=IRET)
         CALL NEMSIO_GETHEADVAR(GFILEISFC,'ISGRBSRC',ISGRBSRC,IRET=IRET)
+        IF(IRET/=0) ISGRBSRC=-1
         CALL NEMSIO_GETFILEHEAD(GFILEISFC,GTYPE=FILETYPE,  &
                                 MODELNAME=MODELNAME,IRET=IRET)
         PRINT *,'OPEN chgres.inp.sfc,iret=',IRET, 'gtype=',FILETYPE,  &
                 'modelname= ',modelname
         print *, 'ISGRBSRC =', ISGRBSRC
-        if (ISGRBSRC .GT. 10) ISGRBSRC=0
+
         
         IF (TRIM(FILETYPE) == 'NEMSIO' .AND. IRET == 0) THEN
           INPTYP = 1
@@ -1306,7 +1308,7 @@ PROGRAM CHGRES
 
       ELSEIF(INPTYP==1) THEN
 
-		IF (ISGRBSRC .LE. 1 .or. ISGRBSRC .GT. 10) THEN
+		IF (ISGRBSRC .LE. 1) THEN
 		print *, 'CALL READ_GFS_SFC_HEADER_NEMSIO'
           CALL READ_GFS_SFC_HEADER_NEMSIO (IMI,JMI,IVSI,LSOILI,  &
                               FCSTHOUR,IDATE4O,KGDS_INPUT)
@@ -1348,7 +1350,7 @@ PROGRAM CHGRES
                   SFCINPUT%GREENFRC_MIN(IMI,JMI),    &
                   SFCINPUT%SOILM_LIQ(IMI,JMI,LSOILI) )
       ELSE
-        IF (ISGRBSRC .GT. 0 .and. ISGRBSRC .LT. 10) THEN
+        IF (ISGRBSRC .GT. 0) THEN
           ALLOCATE (SFCINPUT%SNOW_DEPTH(IMI,JMI) )
         ENDIF
       ENDIF
@@ -1371,7 +1373,7 @@ PROGRAM CHGRES
                                SRFLAGI, TPRCPI)
         ELSE
           IF (ISGRBSRC .GT. 0) THEN
-              IF (ISGRBSRC .LE. 2 .or. ISGRBSRC .GT. 10) THEN
+              IF (ISGRBSRC .LE. 2) THEN
                 print *, 'call read_grbgfs_sfc_data_nemsio'
                 CALL READ_GRBGFS_SFC_DATA_NEMSIO(IMI, JMI, LSOILI, SFCINPUT, &
                         F10MI, T2MI, Q2MI, SRFLAGI)
