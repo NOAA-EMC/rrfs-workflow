@@ -174,7 +174,8 @@
  real, allocatable, private                 :: mxsnow_alb_output_ext(:)                         
  real, allocatable, private                 :: snow_free_albedo_output_ext(:)
  real, allocatable, private                 :: substrate_temp_output_ext(:)                         
- real, allocatable, private                 :: z0_output_ext(:)                         
+ real, allocatable, private                 :: z0_output_ext(:)
+ real, allocatable, private					:: canopy_mc_output_ext(:)                         
 
 !-----------------------------------------------------------------------
 ! these structures are to be used by the program that uses this
@@ -348,7 +349,7 @@
 
  iret = 0  ! becomes non-zero if there is an error in this module.
 
- print*,"- CALL SETUP ROUTINE"
+ print*,"-IN SFC_CHGRES_DRIVER CALL SETUP ROUTINE"
  call setup (kgds_input, input, imdl_input, jmdl_input, imdl_output, iret)
  if (iret /= 0) return
 
@@ -665,6 +666,12 @@
    yindx_wrt_input_grid = reshape(float(jpts),(/ijmdl_output/))
    deallocate(ipts,jpts)
    grid_type="egrid"
+ elseif(kgds_input(1) == 0) then
+   call gdswzd(kgds_input,-1,ijmdl_output,-999.9, &
+   			   xindx_wrt_input_grid,        &
+               yindx_wrt_input_grid,        &
+               output%lons, output%lats, nret)
+    grid_type="latlon"
  end if
 
 !-----------------------------------------------------------------------
@@ -1024,6 +1031,17 @@
      endif
    endif
  enddo
+ 
+!-----------------------------------------------------------------------
+! replace interpolated canopy_mc with externally generated canopy_mc
+! on the output grid (if this data was read in).  the externally
+! generated data is only valid over land.  
+!-----------------------------------------------------------------------
+ if (allocated(canopy_mc_output_ext)) then
+   print*,'- REPLACE CANOPY_MC WITH EXTERNAL DATA AT LAND POINTS.'
+   where(output%lsmask > 0.0) output%canopy_mc = canopy_mc_output_ext
+   deallocate (canopy_mc_output_ext)
+ end if
 
 !-----------------------------------------------------------------------
 ! treat soil moist as discreet field because it is a function of
@@ -1204,6 +1222,7 @@
        if (nsoil_output == nsoil_input) then
          do n = 1, nsoil_output
            output%soil_temp(ij,n) = input%soil_temp(ii,jj,n)
+           
          enddo
        elseif (nsoil_output > nsoil_input) then
          output%soil_temp(ij,1) = input%soil_temp(ii,jj,1)
@@ -1219,6 +1238,7 @@
                                   1.0*input%soil_temp(ii,jj,4))/1.9
        endif
        orog_sav(ij) = input%orog(ii,jj)
+       
      else
        print*,'- *WARNING* SETTING TO DEFAULT VALUES AT POINT ', &
                   iindx_output(ij), jindx_output(ij)
@@ -1227,6 +1247,7 @@
      endif
    endif
  enddo
+
 !-----------------------------------------------------------------------
 ! "soil" temperature over sea ice.  treat as continuous field.
 ! ipolates expects the number of ice levels to be the same.
@@ -1250,6 +1271,7 @@
  allocate(input_dat(imdl_input,jmdl_input,nsoil_input))
  do n=1, nsoil_input
    input_dat(:,:,n)=input%soil_temp(:,:,n)
+   
  enddo 
  kgds_output_tmp=kgds_output
  kgds_output_tmp(1) = kgdso1
@@ -1415,6 +1437,7 @@
        return
      endif
      deallocate(ibo)
+     
 ! note: very shallow amounts of liquid equivalent are zeroed out
 ! when the budget interpolation is used.  make sure depth is consistent.
      do ij = 1, count_land_output
@@ -1437,6 +1460,7 @@
          end if
        enddo
      endif
+
 ! now do snow over sea ice.
      if (count_sea_ice_output > 0) then
        print*,"- INTERPOLATE SNOW DEPTH FROM INPUT GRID - NON LAND."
@@ -1446,11 +1470,13 @@
        kgds_output_tmp(1) = kgdso1
        no=count_sea_ice_output
        allocate(ibo(1))
+       
        call ipolates(int_opt_snow, ipopt_snow, kgds_input, kgds_output_tmp,   &
                     (imdl_input*jmdl_input), count_sea_ice_output,               &
                      1, 1, bitmap_sea_ice_input, input%snow_depth,  &
                      no, lats_sea_ice_output, lons_sea_ice_output, ibo,  &
                      bitmap_sea_ice_output, output_data_sea_ice, iret)
+       
        if (iret /= 0) then
          print*,'- ERROR IN IPOLATES ',iret
          return
@@ -1466,6 +1492,10 @@
            endif
          endif
        enddo
+       
+       print *, 'after sea ice bitmap assigmnent'
+     print *, 'max input snow depth = ', maxval(input%snow_depth)
+     print *, 'max output snow depth = ',maxval(output%snow_depth)
      endif   ! no ice
    endif
   endif
@@ -2217,7 +2247,16 @@
  read(81, nml=options, iostat=istat, err=910)
  close(81)
 
- mdl_res_input = 360.0 / float(kgds_input(2))
+ print *, climo_fields_opt
+ print *, soil_src_input 
+
+ IF (KGDS_INPUT(5).EQ. 0) then
+	 !!! Only valid for global input data, which won't work for NAM/RAP
+	 mdl_res_input = 360.0 / float(kgds_input(2))
+ ELSE 
+     mdl_res_input = ABS((float(KGDS_INPUT(7))-float(KGDS_INPUT(4)))/float(KGDS_INPUT(3)))*1.E-3
+ ENDIF
+ 
  print*,"- RESOLUTION OF INPUT GRID IN DEGREES IS: ", mdl_res_input
 
  mdl_res_output = 360.0 / (float(imo) * 4.0) 
@@ -2493,8 +2532,17 @@
 
  allocate (substrate_temp_output_ext(ijmdl_output))
  substrate_temp_output_ext = tg3fcs
+ 
+ !! ljr !! 
+ !! add the option to use climatological canopy moisture because some archived grb files don't 
+ !! contain canopy water content
+ 
+ if (climo_fields_opt ==4) then
+ 	allocate(canopy_mc_output_ext(ijmdl_output))
+ 	canopy_mc_output_ext = cnpfcs
+ endif
 
- if (climo_fields_opt == 3) then
+ if (climo_fields_opt == 3 .or. climo_fields_opt == 4) then
    allocate (soil_type_output_ext(ijmdl_output))
    soil_type_output_ext = nint(sotfcs)
    allocate (veg_type_output_ext(ijmdl_output))
@@ -2502,8 +2550,13 @@
    allocate (slope_type_output_ext(ijmdl_output))
    slope_type_output_ext = nint(slpfcs)
  end if
+ 
+ if (climo_fields_opt ==5) then !RAP data has veg and soil type, but needs slope type
+   allocate (slope_type_output_ext(ijmdl_output))
+   slope_type_output_ext = nint(slpfcs)
+ endif
 
- if (climo_fields_opt == 2 .or. climo_fields_opt == 3) then
+ if (climo_fields_opt == 2 .or. climo_fields_opt == 3 .or. climo_fields_opt == 5) then
    allocate (mxsnow_alb_output_ext(ijmdl_output))
    mxsnow_alb_output_ext = absfcs
    allocate (z0_output_ext(ijmdl_output))

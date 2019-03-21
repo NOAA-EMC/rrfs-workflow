@@ -1,3 +1,135 @@
+      SUBROUTINE EC2ANY(IP,KM,G1,IM1,JM1,G2,IM2,JM2,RLON,RLAT,KGDS1) 
+!$$$  SUBPROGRAM DOCUMENTATION BLOCK                                    
+!                                                                       
+! SUBPROGRAM:    GL2ANY      INTERPOLATE GAUSSIAN GRID TO ANY GRID      
+!   PRGMMR: EMC              ORG: W/NMC23     DATE: JAN-18-2017
+!                                                                       
+! ABSTRACT: LINEARLY INTERPOLATES ANY GRID WITH GIVEN KGDS TO ANY GRID.            
+!                                                                       
+! PROGRAM HISTORY LOG:                                                  
+!   2017-JAN-18  EMC      INITIAL VERSION
+!                                                                       
+! USAGE:    CALL EC2ANY(IP,KM,G1,IM1,JM1,G2,IM2,JM2,RLON,RLAT)          
+!   INPUT ARGUMENT LIST:                                                
+!     IP           INTEGER INTERPOLATION TYPE                           
+!     KM           INTEGER NUMBER OF LEVELS                             
+!     G1           REAL (IM1,JM1,KM) INPUT GAUSSIAN FIELD               
+!     IM1          INTEGER NUMBER OF INPUT LONGITUDES                   
+!     JM1          INTEGER NUMBER OF INPUT LATITUDES                    
+!     IM2          INTEGER NUMBER OF OUTPUT LONGITUDES                  
+!     JM2          INTEGER NUMBER OF OUTPUT LATITUDES                   
+!     RLON         REAL (IM2,JM2) OUTPUT GRID LONGITUDES                
+!     RLAT         REAL (IM2,JM2) OUTPUT GRID LATITUDES                 
+!   OUTPUT ARGUMENT LIST:                                               
+!     G2           REAL (IM2,JM2,KM) OUTPUT FIELD              
+!                                                                       
+! SUBPROGRAMS CALLED:                                                   
+!   IPOLATES     IREDELL'S POLATE FOR SCALAR FIELDS                     
+!                                                                       
+! ATTRIBUTES:                                                           
+!   LANGUAGE: FORTRAN                                                   
+!                                                                       
+!C$$$                                                                   
+      IMPLICIT NONE 
+      INTEGER, INTENT(IN)     :: IP, KM, IM1, JM1, IM2, JM2, KGDS1(200) 
+      REAL, INTENT(IN)        :: G1(IM1,JM1,KM) 
+      REAL, INTENT(IN)        :: RLAT(IM2,JM2),RLON(IM2,JM2) 
+      REAL, INTENT(OUT)       :: G2(IM2,JM2,KM) 
+      LOGICAL*1               :: L1(IM1,JM1,KM),L2(IM2,JM2,KM) 
+      INTEGER                 :: IB1(KM),IB2(KM) 
+      INTEGER                 :: KGDS2(200) 
+      INTEGER                 :: IPOPT(20), IRET, NO
+
+      !DATA KGDS1/0,0,0,90000,0,0,-90000,193*0/ 
+      DATA KGDS2/200*0/ 
+      DATA IPOPT/20*0/ 
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+      L1=.TRUE. 
+      KGDS2(1) = -1 
+      NO = IM2*JM2 
+      IB1=0 
+      !KGDS1(2)=IM1 
+      !KGDS1(3)=JM1 
+      !KGDS1(8)=NINT(-360000./IM1) 
+      !KGDS1(10)=JM1/2
+      print *, 'In ec2any, kgds1 =', KGDS1 
+     
+      CALL IPOLATES(IP,IPOPT,KGDS1,KGDS2,IM1*JM1,IM2*JM2,KM,IB1,L1,G1,  &
+                    NO,RLAT,RLON,IB2,L2,G2,IRET)                        
+      IF(IRET/=0)THEN 
+        PRINT*,'FATAL ERROR IN ROUTINE EC2ANY, IRET: ', IRET 
+        CALL ERREXIT(23) 
+      ENDIF 
+      END SUBROUTINE EC2ANY 
+                                                                        
+!-----------------------------------------------------------------------
+      SUBROUTINE EC2ANYV(IP,KM,G1U,G1V,IM1,JM1,G2U,G2V,IM2,JM2,RLON,RLAT,KGDS1) 
+!$$$  SUBPROGRAM DOCUMENTATION BLOCK                                    
+!                                                                       
+! SUBPROGRAM:    GL2ANYV     INTERPOLATE GAUSSIAN GRID TO ANY GRID      
+!   PRGMMR: EMC              ORG: W/NMC23     DATE: JAN-23-2017
+!                                                                       
+! ABSTRACT: LINEARLY INTERPOLATES VECTOR FIELD FROM GAUSSIAN GRID TO
+!           ANY GRID.  OUTPUT WINDS ARE EARTH RELATIVE.
+!                                                                       
+! PROGRAM HISTORY LOG:                                                  
+!   2017-JAN-23  ESRL/EMC    INITIAL VERSION
+!                                                                       
+! USAGE:    CALL GL2ANY(IP,KM,G1U,G1V,IM1,JM1,G2U,G2V,IM2,JM2,RLON,RLAT)
+!   INPUT ARGUMENT LIST:                                                
+!     IP           INTEGER INTERPOLATION TYPE                           
+!     KM           INTEGER NUMBER OF LEVELS                             
+!     G1U          REAL (IM1,JM1,KM) INPUT GAUSSIAN U-COMPONENT FIELD               
+!     G1V          REAL (IM1,JM1,KM) INPUT GAUSSIAN V-COMPONENT FIELD               
+!     IM1          INTEGER NUMBER OF INPUT LONGITUDES                   
+!     JM1          INTEGER NUMBER OF INPUT LATITUDES                    
+!     IM2          INTEGER NUMBER OF OUTPUT LONGITUDES                  
+!     JM2          INTEGER NUMBER OF OUTPUT LATITUDES                   
+!     RLON         REAL (IM2,JM2) OUTPUT GRID LONGITUDES                
+!     RLAT         REAL (IM2,JM2) OUTPUT GRID LATITUDES                 
+!   OUTPUT ARGUMENT LIST:                                               
+!     G2U          REAL (IM2,JM2,KM) OUTPUT U-COMPONENT FIELD
+!     G2V          REAL (IM2,JM2,KM) OUTPUT V-COMPONENT FIELD
+!                                                                       
+! SUBPROGRAMS CALLED:                                                   
+!   IPOLATEV     IREDELL'S POLATE FOR VECTOR FIELDS                     
+!                                                                       
+! ATTRIBUTES:                                                          
+!   LANGUAGE: FORTRAN 90
+!                                                                       
+!C$$$                                                                   
+      IMPLICIT NONE 
+      INTEGER, INTENT(IN)     :: IP, KM, IM1, JM1, IM2, JM2,KGDS1(200) 
+      REAL, INTENT(IN)        :: G1U(IM1,JM1,KM), G1V(IM1,JM1,KM)
+      REAL, INTENT(IN)        :: RLAT(IM2,JM2),RLON(IM2,JM2) 
+      REAL, INTENT(OUT)       :: G2U(IM2,JM2,KM), G2V(IM2,JM2,KM)
+      LOGICAL*1               :: L1(IM1,JM1,KM),L2(IM2,JM2,KM) 
+      INTEGER                 :: IB1(KM),IB2(KM) 
+      INTEGER                 :: KGDS2(200) 
+      INTEGER                 :: IPOPT(20), IRET, NO 
+      REAL                    :: CROT(IM2,JM2),SROT(IM2,JM2) 
+      !DATA KGDS1/4,0,0,90000,0,0,-90000,193*0/ 
+      DATA KGDS2/200*0/ 
+      DATA IPOPT/20*0/ 
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+      L1=.TRUE. 
+      KGDS2(1) = -1  ! THE OUTPUT GRID IS A SERIES OF POINTS
+      NO = IM2*JM2 
+      IB1=0 
+      !KGDS1(2)=IM1 
+      !KGDS1(3)=JM1 
+      !KGDS1(8)=NINT(-360000./IM1) 
+      !KGDS1(10)=JM1/2 
+      CROT = 1.0    ! DONT ROTATE WINDS TO THE OUTPUT GRID.
+      SROT = 0.0    ! FV3 EXPECTS EARTH RELATIVE WINDS.
+      CALL IPOLATEV(IP,IPOPT,KGDS1,KGDS2,IM1*JM1,IM2*JM2,KM,IB1,L1,G1U,  &
+                    G1V,NO,RLAT,RLON,CROT,SROT,IB2,L2,G2U,G2V,IRET)                        
+      IF(IRET/=0)THEN 
+        PRINT*,'FATAL ERROR IN ROUTINE GL2ANYV, IRET: ', IRET 
+        CALL ERREXIT(23) 
+      ENDIF 
+      END SUBROUTINE EC2ANYV
+
       SUBROUTINE GL2ANY(IP,KM,G1,IM1,JM1,G2,IM2,JM2,RLON,RLAT) 
 !$$$  SUBPROGRAM DOCUMENTATION BLOCK                                    
 !                                                                       

@@ -1,4 +1,4 @@
-module gfs_module
+module grb2nemsio_module
 
 
   !=======================================================================
@@ -59,410 +59,12 @@ module gfs_module
      integer(nemsio_intkind)                                       :: idrt     
      integer(nemsio_intkind)                                       :: fhour 
      integer(nemsio_intkind)									   :: jcap
+     integer(nemsio_intkind)									   :: kgds(200)
      
 
   end type nemsio_meta ! type nemsio_meta
   contains
-!-----------------------------------------------------------------------
-      SUBROUTINE DRCM2RGRID(NGRD,NYI,NXI,YI,XI,FI,NYO,YO,NXO,XO,FO,XMSG,NCRIT,OPT,IER)
-      IMPLICIT NONE
-      INTEGER          	:: NGRD,NXI,NYI,NXO,NYO,NCRIT,OPT,IER
-      REAL				:: XI(NXI,NYI),YI(NXI,NYI),FI(NXI,NYI,NGRD)
-      REAL 				:: XO(NXO),YO(NYO),FO(NXO,NYO,NGRD),XMSG
 
-! NCL:  fo = rcm2rgrid (lat2d,lon2d,fi, lat, lon iopt)
-!                        yi    xi   fi  yo   xo
-!
-!            fo is the same size xo, yo and same type as "fi"
-!            xmsg = fi@_FillValue
-!            opt unused option
-!
-!            The NCL wrapper should allow for multiple datasets
-!            so the user need only make one call to the function.
-
-! perform 2D interpolation allowing for missing data:  nothing fancy
-
-! nomenclature:
-! .   nxi,nyi - lengths of xi,yi and dimensions of fi (must be >= 2)
-! .   xi      - coordinates of fi (eg, lon [2D] )
-! .   yi      - coordinates of fi (eg, lat [2D] )
-! .   fi      - functional input values [2D]
-! .   nxo,nyo - lengths of xo,yo and dimensions of fo (must be >= 1)
-! .   xo      - coordinates of fo (eg, lon [1D])
-! .             must be monotonically increasing
-! .   yo      - coordinates of fo (eg, lat [1D])
-! .             must be monotonically increasing
-! .   fo      - functional output values [interpolated]
-! .   xmsg    - missing code
-! .   opt     - unused
-! .   ier     - error code
-! .             =0;   no error
-! .             =1;   not enough points in input/output array
-! .             =2/3; xi or yi are not monotonically increasing
-! .             =4/5; xo or yo are not monotonically increasing
-!
-!                              local
-      INTEGER          	:: NG, NX,NY,NEXACT,IX,IY,M,N,NW,NER,K,NCRT
-      INTEGER          	:: MFLAG, MPTCRT, MKNT
-      REAL 				:: FW(2,2),W(2,2),SUMF,SUMW,CHKLAT(NYI),CHKLON(NXI)
-      REAL				:: EPS
-      !REAL				:: DGCDIST
-!                              error checking
-      IER = 0
-      IF (NXI.LE.1 .OR. NYI.LE.1 .OR. NXO.LE.1 .OR. NYO.LE.1) THEN
-          IER = 1
-          RETURN
-      END IF
-      IF (IER.NE.0) RETURN
-
-      CALL DMONOINC(YO,NYO,IER,NER)
-      IF (IER.NE.0) RETURN
-      CALL DMONOINC(XO,NXO,IER,NER)
-      IF (IER.NE.0) RETURN
-
-      DO NY = 1,NYI
-         CHKLAT(NY) = YI(1,NY)
-!    print *,"chklat: ny=",ny,"  chklat=",chklat(ny)
-      END DO
-      CALL DMONOINC(CHKLAT,NYI,IER,NER)
-      IF (IER.NE.0) RETURN
-
-      DO NX = 1,NXI
-         CHKLON(NX) = XI(NX,1)
-!   print *,"chklon: nx=",nx,"  chklon=",chklon(nx)
-      END DO
-      CALL DMONOINC(CHKLAT,NYI,IER,NER)
-      IF (IER.NE.0) RETURN
-
-      K = 2
-! k = opt
-
-      IF (NCRIT.LE.1) THEN
-          NCRT = 1
-      ELSE
-          NCRT = MIN(4,NCRIT)
-      END IF
-!                              initialize to xmsg
-      DO NG=1,NGRD      
-         DO NY = 1,NYO
-            DO NX = 1,NXO
-               FO(NX,NY,NG) = XMSG
-            END DO
-         END DO
-      END DO
-!                              main loop [exact matches]
-!                              people want bit-for-bit match
-      EPS    = 1.D-04
-      !NEXACT = 0
-
-      DO NY = 1,NYO
-        DO NX = 1,NXO
-           DO IY = 1,NYI
-      
-              DO IX = 1,NXI
-                 IF (XO(NX).GE.(XI(IX,IY)-EPS) .AND. &
-                     XO(NX).LE.(XI(IX,IY)+EPS) .AND. &
-                     YO(NY).GE.(YI(IX,IY)-EPS) .AND. &
-                     YO(NY).LE.(YI(IX,IY)+EPS) ) THEN
-                    !print *,'EXACT MATCH AT IX,IY', IX, IY
-                    DO NG=1,NGRD
-                    	!PRINT *, 'FO =', FO(NX,NY,NG)
-                       FO(NX,NY,NG) = FI(IX,IY,NG)
-                       !NEXACT = NEXACT + 1
-                    END DO
-                  END IF
-              	END DO
-
-           END DO
-        END DO
-      END DO
-
-! print *, "nexact=",nexact
-!                              main loop [interpolation]
-      DO NY = 1,NYO
-        DO NX = 1,NXO
-
-               DO IY = 1,NYI-K
-
-                 DO IX = 1,NXI-K
-                    IF (XO(NX).GE.XI(IX,IY) .AND. &
-                       XO(NX).LE.XI(IX+K,IY) .AND. &
-                       YO(NY).GE.YI(IX,IY) .AND. &
-                       YO(NY).LE.YI(IX,IY+K)) THEN
-						!PRINT *, 'COMPUTING WEIGHTS AT IX, IY', IX, IY
-												
-                        W(1,1) = (1.D0/DGCDIST(YO(NY),XO(NX), &
-                                 YI(IX,IY),XI(IX,IY),2))**2
-                        W(2,1) = (1.D0/DGCDIST(YO(NY),XO(NX), &
-                                 YI(IX+K,IY),XI(IX+K,IY),2))**2
-                        W(1,2) = (1.D0/DGCDIST(YO(NY),XO(NX), &
-                                 YI(IX,IY+K),XI(IX,IY+K),2))**2
-                        W(2,2) = (1.D0/DGCDIST(YO(NY),XO(NX), &
-                                 YI(IX+K,IY+K),XI(IX+K,IY+K),2))**2
-                      DO NG=1,NGRD
-                        IF (FO(NX,NY,NG).EQ.XMSG) THEN
-                        	!PRINT *, "PREPARING TO INTERPOLATE"
-                            FW(1,1) = FI(IX,IY,NG)
-                            FW(2,1) = FI(IX+K,IY,NG)
-                            FW(1,2) = FI(IX,IY+K,NG)
-                            FW(2,2) = FI(IX+K,IY+K,NG)
-
-                            NW   = 0
-                            SUMF = 0.0D0
-                            SUMW = 0.0D0
-                            DO N = 1,2
-                              DO M = 1,2
-                                 IF (FW(M,N).NE.XMSG) THEN
-                                     SUMF = SUMF + FW(M,N)*W(M,N)
-                                     SUMW = SUMW + W(M,N)
-                                     NW   = NW + 1
-                                 END IF
-                              END DO
-                            END DO
-!                                             nw >=3 arbitrary
-!                       IF (NW.GE.3 .AND. SUMW.GT.0.D0) THEN
-!                                             nw =1 nearest neighbor
-                            IF (NW.GE.NCRT .AND. SUMW.GT.0.D0) THEN
-                            	!PRINT *, 'FILLING IN F0 AT NX NY,NG', NX, NY, NG
-                            	!PRINT *, 'FO =', FO(NX,NY,NG)
-                                FO(NX,NY,NG) = SUMF/SUMW
-                            END IF
-                          END IF
-                        END DO
-
-                     END IF
-                   END DO
-
-               END DO
-       END DO
-      END DO
-
-! Since the RCM grid is curvilinear the above algorithm may not work 
-! .   for all of the locations on regular grid. Fill via linear interp.
-
-      MKNT   =  0
-      MFLAG  =  0
-      MPTCRT =  2
-      DO NG=1,NGRD
-        DO NY=1,NYO
-          DO NX=1,NXO
-             IF (FO(NX,NY,NG).EQ.XMSG) THEN
-                 CALL DLINMSG(FO(1,NY,NG),NXO,XMSG,MFLAG,MPTCRT)
-                 MKNT = MKNT + 1
-             END IF
-          END DO
-        END DO
-      END DO
-
-! PRINT *,"MKNT=",MKNT
-  PRINT *, "MIN MAX INSIDE DRCM2RGRID =", MINVAL(FO), MAXVAL(FO)
-      RETURN
-      END SUBROUTINE DRCM2RGRID
-!-----------------------------------------------------------------------
-      SUBROUTINE DMONOINC(X,NX,NER,IER)
-      IMPLICIT NONE
-
-! chk to make sure that x is monotonically increasing
-
-      INTEGER NX,NER,IER
-      REAL X(NX)
-!                          local
-      INTEGER N
-
-      IER = 0
-      IF (NX.LE.1) RETURN
-
-      DO N = 1,NX - 1
-          IF (X(N+1).LE.X(N)) THEN
-              IER = NER
-              RETURN
-          END IF
-      END DO
-
-      RETURN
-      END SUBROUTINE DMONOINC
-!-----------------------------------------------------------------------
-DOUBLE PRECISION FUNCTION DGCDIST(RLAT1,RLON1,RLAT2,RLON2,IU)
-      IMPLICIT NONE
-!
-! calculate the great circle distance between two points
-!
-! usage: dist = gcdist (rlat1,rlon1,rlat2,rlon2,iu)
-!
-! nomenclature :
-! .   rlat1,rlon1 - latitude and longtitude of the first point
-! .   rlat2,rlon2 - latitude and longtitude of the second point
-! .   iu          - code for the type units gcdist is to return
-! .               = 1 : gcdist returned in radians
-! .               = 2 : gcdist returned in degrees
-! .               = 3 : gcdist returned in meters
-! .               = 4 : gcdist returned in kilometers
-! .               = 5 : gcdist returned in *not used*
-!
-! input
-      INTEGER IU
-! input types
-      REAL RLAT1,RLON1,RLAT2,RLON2
-
-! local stuff
-      REAL UNITS(5),RAD,DLONR,RLAT1R,RLAT2R
-      DATA UNITS/1.0D0,57.29577995691645D0,6371220.D0,6371.2200D0,0.D0/
-! change as required
-      DATA RAD/0.01745329238474369D0/
-
-! special test if RLAT1=RLAT2 and RLON1=RLON2
-      IF(RLAT1.EQ.RLAT2.AND.RLON1.EQ.RLON2) THEN
-         DGCDIST = 0.D0
-         RETURN
-      END IF
-      RLAT1R = RLAT1*RAD
-      RLAT2R = RLAT2*RAD
-      DLONR = DMIN1(ABS(RLON1-RLON2),ABS(360.D0-RLON1+RLON2), &
-             ABS(360.D0-RLON2+RLON1))*RAD
-
-      DGCDIST = ATAN2(SQRT((COS(RLAT2R) * SIN(DLONR)) ** 2 + &
-                          (COS(RLAT1R) * SIN(RLAT2R) - &
-                           SIN(RLAT1R) * COS(RLAT2R) * COS(DLONR)) ** 2 &
-                         ), &
-                     SIN(RLAT1R)*SIN(RLAT2R)+ &
-                     COS(RLAT1R)*COS(RLAT2R)*COS(DLONR) &
-                    ) * UNITS(IU)
-
-      RETURN
-END
-!-----------------------------------------------------------------------
-SUBROUTINE DLINMSG(X,NPTS,XMSG,MFLAG,MPTCRT)
-     implicit none
-
-! NCL: xnew = linmsg(x,mflag)
-
-! given a series x of length npts : this routine will linearly
-! .   interpolate to fill in the missing pts. missing values at the
-! .   beginning and end of the series will be be determined
-! .   by the sign of mprcrt.
-!
-! nomenclature :
-! .   x         - input series which may or may not contain msg values
-! .   npts      - length of the series
-! .   xmsg      - missing code
-! .   mflag     - note: if mflag.lt.0 then the missing values at the
-! .               beginning and end of the series will be set to the
-! .               value of the nearest non-msg value. if mflag.ge.0
-! .               then set these values to missing.
-! .   mptcrt    - if more than "mptcrt" consecutive values are 
-! .               encountered, the routine will not interpolate across
-! .               that segment. If mptcrt=npts [most common option], 
-! .               then the routine will interpolate as many values as
-! .               it can.
-! .
-! OTHER variables
-! .   ncode     - code number
-! .               ncode = -1  : whole series is missing
-! .               ncode =  0  : series has no missing points upon return
-! .                             to the calling routine. either the serie
-! .                             had no missing points or this routine
-! .                             has filled them with interpolated values
-! .               ncode = nn  : series still has missing values. this
-! .                             occurs when iabs(mptcrt) is exceeded.
-! .                             nn is the number of missing values
-! .                             still present.
-! .   nitp      - No. of InTerpolated Points : user shouldcheck
-! .               the ratio (nitp/npts)
-
-      INTEGER NPTS,MPTCRT,NCODE,NITP,N,NEND,NSTRT
-      REAL X(1:NPTS),XMSG
-      INTEGER NPTCRT,NN,NBASE, MFLAG
-      REAL SLOPE
-!
-! This do loop was added later to check for the special
-! case were all values in X are missing.
-!
-      DO N=1,NPTS
-         IF (X(N).NE.XMSG) EXIT
-      END DO   
-      RETURN
-
-! MPTCRT = NPTS   ! updated version
-
-   NSTRT = 0
-      NEND = 0
-      NCODE = 0
-      NITP = 0
-      NPTCRT = IABS(MPTCRT)
-      DO  N = 1,NPTS
-          IF (X(N).EQ.XMSG) THEN
-! must be a msg pt : set indices
-              IF (NSTRT.EQ.0) NSTRT = N
-              NEND = N
-          ELSE
-
-! must be a valid pt : check for prior missing values
-!        (1) if nstrt=0 then there are no msg prior values : skip out
-!        (2) if (nend-nstrt+1).gt.nptcrt the set ncode : skip out
-!        (3) if nstrt=1 then initial series values are msg : set to
-!            first non-msg value
-!        ... else
-!            perform the linear interpolation
-
-              IF (NSTRT.NE.0) THEN
-                  IF ((NEND-NSTRT+1).GT.NPTCRT) THEN
-                      
-                  ELSEIF (NSTRT.EQ.1) THEN
-                      NITP = NITP + (NEND-NSTRT+1)
-                      IF (MFLAG.LT.0) THEN
-                          DO  NN = NSTRT,NEND
-                        	X(NN) = X(N)
-   						  ENDDO
-                      ELSE
-                          DO NN = NSTRT,NEND
-   	                    	X(NN) = XMSG
-   						  END DO
-                      END IF
-                  ELSE
-                      NBASE = NSTRT - 1
-                      SLOPE = (X(N)-X(NBASE))/DBLE(N-NBASE)
-                      NITP = NITP + (NEND-NSTRT+1)
-                      DO  NN = NSTRT,NEND
-                    	X(NN) = X(NBASE) + SLOPE*DBLE(NN-NBASE)
-   					  ENDDO
-                  END IF
-
-                  NSTRT = 0
-                  NEND = 0
-              END IF
-          END IF
-    END DO
-
-! check the end points
-
-      IF (NEND.EQ.NPTS) THEN
-          NITP = NITP + (NEND-NSTRT+1)
-          IF (MFLAG.LT.0) THEN
-              DO  NN = NSTRT,NPTS
-                X(NN) = X(NSTRT-1)
-   			  END DO
-          ELSE
-              DO  NN = NSTRT,NPTS
-            	X(NN) = XMSG
-   			  END DO
-          END IF
-      END IF
-
-!     nn = 0
-!     do  n=1,npts
-!     if (x(n).eq.xmsg) then
-!         nn = nn+1
-!     endif
-!   enddo
-
-!     ncode = nn
-!     if (nn.eq.npts) then
-! for historical reasons
-!         ncode = -1
-!     endif
-
-      RETURN
-      END SUBROUTINE DLINMSG
 !-----------------------------------------------------------------------
  SUBROUTINE P2HYO(PI,MLON,NLAT,KLEVI,XI,PSFC &
                       ,P0,HYAO,HYBO,KLEVO,XO,XMSG &
@@ -776,7 +378,7 @@ end subroutine    fv3_netcdf_read_3d
     meta_nemsio%nmeta      = 8
     meta_nemsio%nmetavari  = 8
     meta_nemsio%nmetaaryi  = 1
-    meta_nemsio%nmetaaryr = 1
+    
     meta_nemsio%dimx       = nlons
     meta_nemsio%dimy       = nlats
     meta_nemsio%dimz		= nlevs
@@ -794,7 +396,10 @@ end subroutine    fv3_netcdf_read_3d
 		meta_nemsio%modelname  	= 'RAP'
 		meta_nemsio%ncldt      	= 5
 		meta_nemsio%ntrac		= 7
-
+	elseif(mname == 'nam') then
+	 	meta_nemsio%modelname  	= 'NAM'
+		meta_nemsio%ncldt      	= 1
+		meta_nemsio%ntrac		= 3
 	endif
 	
     meta_nemsio%nsoil      = 4
@@ -816,20 +421,22 @@ end subroutine    fv3_netcdf_read_3d
    allocate(meta_nemsio%reclev(meta_nemsio%nrec))
    allocate(meta_nemsio%variname(meta_nemsio%nmetavari))
    allocate(meta_nemsio%varival(meta_nemsio%nmetavari))
-   allocate(meta_nemsio%aryiname(meta_nemsio%nmetavari))
-   allocate(meta_nemsio%aryilen(meta_nemsio%nmetavari))
+   allocate(meta_nemsio%aryiname(meta_nemsio%nmetaaryi))
+   allocate(meta_nemsio%aryilen(meta_nemsio%nmetaaryi))
    allocate(meta_nemsio%lon(nlons*nlats))
    allocate(meta_nemsio%lat(nlons*nlats))
    allocate(meta_nemsio%ri(meta_nemsio%ntrac))
    allocate(meta_nemsio%cpi(meta_nemsio%ntrac))
    allocate(meta_nemsio%vcoord(meta_nemsio%dimz+1,3,2))
+  
+
 
    meta_nemsio%variname(1)='cu_physics'
    meta_nemsio%varival(1)=4
    meta_nemsio%variname(2)='mp_physics'
    meta_nemsio%varival(2)=1000 
    meta_nemsio%variname(3)='IVEGSRC'
-   if (mname=='gfs4' .or. mname=='gfs3') then
+   if (mname=='gfs4' .or. mname=='gfs3' .or. mname =='nam') then
    	meta_nemsio%varival(3)=2
    else if (mname == 'ruc13_native') then
    	meta_nemsio%varival(3)=1		!RAP data has newer vegetation type
@@ -844,13 +451,17 @@ end subroutine    fv3_netcdf_read_3d
    meta_nemsio%variname(7)='nvcoord'
    meta_nemsio%varival(7)=1
    meta_nemsio%variname(8)='isgrbsrc'
+
    
    if (mname=='gfs4' .or. mname=='gfs3') then
-   		! 1 for gfs
+   		! 1 for gfs and nam
    		meta_nemsio%varival(8)=1
+   	else if (mname == 'nam') then
+   		! 2 for nam
+   		meta_nemsio%varival(8)=2
    	else if (mname == 'ruc13_native') then
    		! 2 for rap/ruc
-   		meta_nemsio%varival(8)=2
+   		meta_nemsio%varival(8)=3
    	endif
    
    ct=1
@@ -865,8 +476,10 @@ end subroutine    fv3_netcdf_read_3d
    meta_nemsio%ri = (/286.0500,461.5,173.2247/)
    meta_nemsio%cpi = (/1004.600, 1846.000, 820.2391/)
    
-   !meta_nemsio%aryilen(1)    = nlats/2
-   !meta_nemsio%aryiname(1)   = 'lpl'
+   meta_nemsio%aryilen(1)    = 200 
+   allocate(meta_nemsio%aryival(meta_nemsio%aryilen(1),meta_nemsio%nmetaaryi))
+   meta_nemsio%aryiname(1)   = 'kgds'
+   !meta_nemsio%aryival(1,:) = meta_nemsio%kgds
    !meta_nemsio%reclev(:)=1
    
    
@@ -946,6 +559,7 @@ end subroutine    fv3_netcdf_read_3d
     !gfile%gtype           = 'NEMSIO'
     meta_nemsio%gdatatype = 'bin4'
     print *, trim(meta_nemsio%modelname)
+    print *, 'in nems_write', meta_nemsio%aryival
     call nemsio_open(gfile,trim(filename),'write',                                  &
          & iret=nemsio_iret,                                                        &
          & modelname=trim(meta_nemsio%modelname),                                   &
@@ -966,7 +580,8 @@ end subroutine    fv3_netcdf_read_3d
          & varival=meta_nemsio%varival, nmetaaryr=meta_nemsio%nmetaaryr,             &
          & reclevtyp=meta_nemsio%reclevtyp,                                         &
          & reclev=meta_nemsio%reclev,jcap=meta_nemsio%jcap,idsl=meta_nemsio%idsl, &
-         & idvm=meta_nemsio%idvm,vcoord=meta_nemsio%vcoord, ntrac=meta_nemsio%ntrac)
+         & idvm=meta_nemsio%idvm,vcoord=meta_nemsio%vcoord, ntrac=meta_nemsio%ntrac, &
+         & aryiname=meta_nemsio%aryiname,aryival=meta_nemsio%aryival,aryilen=meta_nemsio%aryilen)
 
    end subroutine nems_write_init
  
@@ -989,4 +604,4 @@ end subroutine    fv3_netcdf_read_3d
   end subroutine nems_write  
   
   
-end module gfs_module
+end module grb2nemsio_module
