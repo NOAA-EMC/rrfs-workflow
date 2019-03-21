@@ -32,12 +32,28 @@ program regional_grid
   integer                      :: x_varid, y_varid, area_varid
   integer, dimension(2)        :: dimids
 
+  integer :: i
+  integer, parameter :: ntiles = 1
+  integer, parameter :: string = 255
+  integer                      :: ntiles_dimid, string_dimid, &
+                                  mosaic_varid, gridlocation_varid, &
+                                  gridfiles_varid, gridtiles_varid
+  integer, dimension(1)        :: dimids1D
+  integer, dimension(ntiles)   :: tile_inds
+  character(len=string)        :: mosaic, gridlocation, &
+                                  CRES_str, tmp_str
+!  character(len=string), dimension(ntiles) :: gridfiles, gridtiles
+!  character, dimension(string,ntiles) :: gridfiles, gridtiles
+!  character, dimension(ntiles,string) :: gridfiles, gridtiles
+
 !=============================================================================
 
-  if (command_argument_count() == 1) then
+  if (command_argument_count() == 2) then
     call get_command_argument(1, nml_fname)
+    call get_command_argument(2, CRES_str)
   else
     nml_fname = "regional_grid.nml"
+    CRES_str = "CNNN"
   end if
 
   open(10,file=trim(nml_fname),status="old",action="read")
@@ -103,6 +119,56 @@ program regional_grid
   call check( nf90_put_var(ncid, x_varid, glon) )
   call check( nf90_put_var(ncid, y_varid, glat) )
   call check( nf90_put_var(ncid, area_varid, garea) )
+
+  call check( nf90_close(ncid) )
+!
+!=============================================================================
+!
+! Create the grid mosaic file that FV3 expects to be present in the IN-
+! PUT subdirectory of the run directory.
+!
+!=============================================================================
+!
+  call check( nf90_create("regional_mosaic.nc", NF90_64BIT_OFFSET, ncid) )
+  call check( nf90_def_dim(ncid, "ntiles", ntiles, ntiles_dimid) )
+  call check( nf90_def_dim(ncid, "string", string, string_dimid) )
+
+  dimids1D = (/ string_dimid /)
+  call check( nf90_def_var(ncid, "mosaic", NF90_CHAR, dimids1D, mosaic_varid) )
+  call check( nf90_put_att(ncid, mosaic_varid, "standard_name", "grid_mosaic_spec") )
+  call check( nf90_put_att(ncid, mosaic_varid, "children", "gridtiles") )
+  call check( nf90_put_att(ncid, mosaic_varid, "contact_regions", "contacts") )
+  call check( nf90_put_att(ncid, mosaic_varid, "grid_descriptor", "") )
+
+  dimids1D = (/ string_dimid /)
+  call check( nf90_def_var(ncid, "gridlocation", NF90_CHAR, dimids1D, gridlocation_varid) )
+  call check( nf90_put_att(ncid, gridlocation_varid, "standard_name", "grid_file_location") )
+
+  dimids = (/ string_dimid, ntiles_dimid /)
+  call check( nf90_def_var(ncid, "gridfiles", NF90_CHAR, dimids, gridfiles_varid) )
+  call check( nf90_def_var(ncid, "gridtiles", NF90_CHAR, dimids, gridtiles_varid) )
+
+  call check( nf90_put_att(ncid, NF90_GLOBAL, "grid_version", "") )
+  call check( nf90_put_att(ncid, NF90_GLOBAL, "code_version", "") )
+  call check( nf90_put_att(ncid, NF90_GLOBAL, "history", "") )
+
+  call check( nf90_enddef(ncid) )
+
+  mosaic = trim(CRES_str) // "_mosaic"
+  gridlocation = "/path/to/directory"
+
+  call check( nf90_put_var(ncid, mosaic_varid, trim(mosaic)) )
+  call check( nf90_put_var(ncid, gridlocation_varid, trim(gridlocation)) )
+
+  tile_inds(1) = 7
+  do i=1, ntiles
+    write(tmp_str, 510) "tile", tile_inds(i)
+    call check( nf90_put_var(ncid, gridtiles_varid, trim(tmp_str), start=(/1,i/)) )
+    write(tmp_str, 520) trim(CRES_str), "_grid.", trim(tmp_str), ".nc"
+    call check( nf90_put_var(ncid, gridfiles_varid, trim(tmp_str), start=(/1,i/)) )
+  end do
+510 FORMAT(A, I1)
+520 FORMAT(4A)
 
   call check( nf90_close(ncid) )
 
