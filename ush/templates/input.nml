@@ -8,7 +8,7 @@
 /
 
  &atmos_model_nml
-     blocksize = 24
+     blocksize = <blocksize>
      chksum_debug = .false.
      dycore_only = .false.
      fdiag = 1
@@ -107,7 +107,7 @@
        target_lon = <target_lon>
        stretch_fac = <stretch_fac>
        regional = .true.
-       bc_update_interval = 3
+       bc_update_interval = <bc_update_interval>
        agrid_vel_rst = .false.
 
        full_zs_filter = .F. !unreleased feature
