@@ -10,12 +10,12 @@ LIBS = ${NETCDF}/lib/libnetcdff.a ${NETCDF}/lib/libnetcdf.a \
 FC = ifort
 FFLAGS = -g -O2 $(INC)
 
-EXEC = create_grid_mosaic_file
+EXEC = global_equiv_resol
 
 .PHONY: all
 all : $(EXEC)
 
-$(EXEC): create_grid_mosaic_file.o $(LIBS)
+$(EXEC): global_equiv_resol.o $(LIBS)
 	$(FC) $(FFLAGS) -o $@ $^
 
 .SUFFIXES:

@@ -1,5 +1,5 @@
 !=======================================================================
-program create_grid_mosaic_file
+program mosaic_file
 !=======================================================================
 
   use netcdf
@@ -33,10 +33,10 @@ program create_grid_mosaic_file
     call get_command_argument(1, CRES)
   else
     WRITE(*,500)
-    WRITE(*,500) "Exactly one argument must be specified to program create_grid_mosaic_file."
+    WRITE(*,500) "Exactly one argument must be specified to program mosaic_file."
     WRITE(*,500) "Usage:"
     WRITE(*,500)
-    WRITE(*,500) "  create_grid_mosaic_file  CRES"
+    WRITE(*,500) "  mosaic_file  CRES"
     WRITE(*,500)
     WRITE(*,500) "where CRES is the cubed-sphere grid resolution that will"
     WRITE(*,500) "be used to form the name of the grid specification file(s)"
@@ -111,7 +111,7 @@ program create_grid_mosaic_file
 
   call check( nf90_close(ncid) )
 
-end program create_grid_mosaic_file
+end program mosaic_file
 
 
 subroutine check(status)

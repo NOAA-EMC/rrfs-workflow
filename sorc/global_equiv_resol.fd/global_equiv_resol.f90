@@ -1,5 +1,5 @@
 !=======================================================================
-program calc_RES_glob_equiv
+program global_equiv_resol
 !=======================================================================
 
   use netcdf
@@ -32,10 +32,10 @@ program calc_RES_glob_equiv
     call get_command_argument(1, grid_fn)
   else
     WRITE(*,500)
-    WRITE(*,500) "Exactly one argument must be specified to program calc_RES_glob_equiv."
+    WRITE(*,500) "Exactly one argument must be specified to program global_equiv_resol."
     WRITE(*,500) "Usage:"
     WRITE(*,500)
-    WRITE(*,500) "  calc_RES_glob_equiv  path_to_grid_file"
+    WRITE(*,500) "  global_equiv_resol  path_to_grid_file"
     WRITE(*,500)
     WRITE(*,500) "where path_to_grid_file is the path to the NetCDF grid file.  Actual "
     WRITE(*,500) "number of specified command line arguments is:"
@@ -170,7 +170,7 @@ program calc_RES_glob_equiv
   WRITE(*,500)
   WRITE(*,500) "Done."
 
-end program calc_RES_glob_equiv
+end program global_equiv_resol
 
 
 subroutine check(status)

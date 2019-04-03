@@ -10,12 +10,12 @@ LIBS = ${NETCDF}/lib/libnetcdff.a ${NETCDF}/lib/libnetcdf.a \
 FC = ifort
 FFLAGS = -g -O2 $(INC)
 
-EXEC = calc_RES_glob_equiv
+EXEC = mosaic_file
 
 .PHONY: all
 all : $(EXEC)
 
-$(EXEC): calc_RES_glob_equiv.o $(LIBS)
+$(EXEC): mosaic_file.o $(LIBS)
 	$(FC) $(FFLAGS) -o $@ $^
 
 .SUFFIXES:
