@@ -57,7 +57,7 @@ program mosaic_file
 !
 !=======================================================================
 !
-  mosaic_fn = trim(CRES) // "_mosaic"
+  mosaic_fn = trim(CRES) // "_mosaic.nc"
 
   call check( nf90_create(mosaic_fn, NF90_64BIT_OFFSET, ncid) )
   call check( nf90_def_dim(ncid, "ntiles", ntiles, ntiles_dimid) )
