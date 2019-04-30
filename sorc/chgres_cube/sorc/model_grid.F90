@@ -365,6 +365,8 @@
  num_tiles_input_grid = 1
 
  inv_file = trim(data_dir_input_grid) // "/" // "chgres.inv"
+ the_file = trim(data_dir_input_grid) // "/" // grib2_file_input_grid
+ temp_file = "./test.grib2"
   
  call ESMF_FieldGather(latitude_target_grid, lat_target, rootPet=0, tile=1, rc=error)
  if(ESMF_logFoundError(rcToCheck=error,msg=ESMF_LOGERR_PASSTHRU,line=__line__,file=__file__)) &
@@ -374,8 +376,6 @@
       call error_handler("IN FieldGather", error)
 
  if (localpet==0) then
- 		the_file = trim(data_dir_input_grid) // "/" // grib2_file_input_grid
- 		temp_file = "./test.grib2" 
  		! Check for the grid template number to see if wgrib2 can access the lat/lon arrays
  		cmdline_msg = trim(wgrib2_path)//" "//trim(the_file)//" -d 1 -Sec3 &> temp.out"
  		call system(cmdline_msg)
@@ -421,10 +421,9 @@
 						 trim(adjustl(min_lonc))//":"//trim(adjustl(nlonc))//":0.10 "// &
 						 trim(adjustl(min_latc))//":"//trim(adjustl(nlatc))//":0.10  "// &
 						 trim(temp_file)//" &> wgrb.out"
-			print*, cmdline_msg
+			print*, trim(cmdline_msg)
 			CALL execute_command_line(trim(cmdline_msg))
 			
-			the_file = temp_file
 			file_is_converted = 1
 			
 			print*, "on localpet=0"
@@ -435,8 +434,11 @@
  endif
  
  call MPI_Barrier(MPI_COMM_WORLD,error)
- call MPI_BCAST(the_file,12,MPI_CHARACTER,0,MPI_COMM_WORLD,error)
+ !call MPI_BCAST(the_file,12,MPI_CHARACTER,0,MPI_COMM_WORLD,error)
  call MPI_BCAST(file_is_converted,1,MPI_INTEGER,0,MPI_COMM_WORLD,error)
+ if (file_is_converted) then
+   the_file=temp_file
+ endif
  print*, the_file
  print*, file_is_converted
  !if (trim(external_model)=="RAP" .or. trim(external_model) == "NAM") the_file=temp_file
@@ -1362,7 +1364,7 @@
  if (ESMF_FieldIsCreated(longitude_w_input_grid)) then
    call ESMF_FieldDestroy(longitude_w_input_grid, rc=rc)
  endif
- !call ESMF_FieldDestroy(landmask_target_grid, rc=rc)
+ call ESMF_FieldDestroy(landmask_target_grid, rc=rc)
  call ESMF_FieldDestroy(latitude_target_grid, rc=rc)
  call ESMF_FieldDestroy(latitude_s_target_grid, rc=rc)
  call ESMF_FieldDestroy(latitude_w_target_grid, rc=rc)

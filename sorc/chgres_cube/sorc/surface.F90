@@ -122,7 +122,7 @@
 
  use program_setup, only             : calc_soil_params_driver, &
                                        convert_nst, phys_suite, read_from_input, &
- 																			 input_type
+                                       input_type
 
  use static_data, only               : get_static_fields, &
                                        cleanup_static_fields
@@ -231,9 +231,9 @@
 !---------------------------------------------------------------------------------------------
 
  if (trim(input_type) == "grib2") then
- 	 call write_fv3_sfc_grib2data_netcdf(localpet)
+   call write_fv3_sfc_grib2data_netcdf(localpet)
  else
- 	 call write_fv3_sfc_data_netcdf(localpet)
+   call write_fv3_sfc_data_netcdf(localpet)
  endif
 
 !---------------------------------------------------------------------------------------------
@@ -710,7 +710,7 @@
     call error_handler("IN FieldGet", rc)
 
   print*, "MIN, MAX SNWDPH AFTER SEA ICE REGRID = ", &
-   					minval(snow_depth_target_ptr), maxval(snow_depth_target_ptr)
+            minval(snow_depth_target_ptr), maxval(snow_depth_target_ptr)
 
  print*,"- CALL Field_Regrid for snow liq equiv."
  call ESMF_FieldRegrid(snow_liq_equiv_input_grid, &
@@ -784,7 +784,7 @@
      call search(data_one_tile, mask_target_one_tile, i_target, j_target, tile, 66)
      
      print*, "MIN, MAX SNWDPH AFTER SEA ICE INTERP AND SEARCH = ", &
-   					minval(data_one_tile), maxval(data_one_tile)
+            minval(data_one_tile), maxval(data_one_tile)
    endif
    
    
@@ -1681,7 +1681,7 @@
     call error_handler("IN FieldGet", rc)
   
   print*, "MIN, MAX SNWDPH AFTER LAND REGRID  = ", &
-   					minval(snow_depth_target_ptr), maxval(snow_depth_target_ptr)
+            minval(snow_depth_target_ptr), maxval(snow_depth_target_ptr)
 
  print*,"- CALL FieldGet FOR TARGET snow liq equiv."
  call ESMF_FieldGet(snow_liq_equiv_target_grid, &
@@ -1723,7 +1723,7 @@
      where(mask_target_one_tile == 1) land_target_one_tile = 1
      call search(data_one_tile, land_target_one_tile, i_target, j_target, tile, 66)
      print*, "MIN, MAX SNWDPH AFTER LAND SEARCH  = ", &
-   					minval(data_one_tile), maxval(data_one_tile)
+            minval(data_one_tile), maxval(data_one_tile)
    endif
 
    print*,"- CALL FieldScatter FOR TARGET GRID SNOW DEPTH: ", tile
@@ -2103,11 +2103,11 @@
       call error_handler("IN FieldGather", rc)
 
    if (localpet == 0) then
-   	 print*, "MAX VAL SOIL TYPE = ", maxval(data_one_tile)
+     print*, "MAX VAL SOIL TYPE = ", maxval(data_one_tile)
      if (maxval(data_one_tile) > 0) then
-     		call search(data_one_tile, mask_target_one_tile, i_target, j_target, tile, 224)
+        call search(data_one_tile, mask_target_one_tile, i_target, j_target, tile, 224)
      else 
-     		where(data_one_tile < 0) data_one_tile= -9999.9_esmf_kind_r8
+        where(data_one_tile < 0) data_one_tile= -9999.9_esmf_kind_r8
      endif
    endif
 
@@ -2719,6 +2719,26 @@
 !---------------------------------------------------------------------------------------------
  
  subroutine adjust_soil_levels
+ use model_grid, only       : lsoil_target
+ use input_data, only       : lsoil_input
+ use program_setup, only    : phys_suite
+ implicit none
+ character(len=1000)      :: msg
+ integer                  :: rc
+ 
+ !Set lsoil_target 
+ if (trim(phys_suite) == "RAP" .OR. trim(phys_suite) == "GSD") then
+   lsoil_target = 9
+ endif
+
+ if (lsoil_input /= lsoil_target) then
+  rc = -1
+  
+  write(msg,'("NUMBER OF SOIL LEVELS IN INPUT (",I2,") and OUPUT &
+               (",I2,") MUST BE EQUAL")') lsoil_input, lsoil_target
+
+  call error_handler(trim(msg), rc)
+ endif
  
  !! Not sure what the proper method is here, but will need one branch for
  !! converting from 9 --> 4 levels and another for 4 --> 9 levels. 
@@ -3297,16 +3317,11 @@
  subroutine create_surface_esmf_fields
 
  use model_grid, only         : target_grid, lsoil_target
- use program_setup, only			: phys_suite
+ use program_setup, only      : phys_suite
 
  implicit none
 
  integer                     :: rc
- 
- !Set lsoil_target 
- if (trim(phys_suite) == "RAP" .OR. trim(phys_suite) == "GSD") then
- 	 lsoil_target = 9
- endif
 
  print*,"- CALL FieldCreate FOR TARGET GRID T2M."
  t2m_target_grid = ESMF_FieldCreate(target_grid, &

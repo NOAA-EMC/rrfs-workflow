@@ -11,15 +11,15 @@ if [ $USE_PREINST_LIBS = true ]; then
 else
   export MOD_PATH=${cwd}/lib/modulefiles
   if [ $target = wcoss_cray ]; then
-    source ../../modulefiles/fv3sar_workflow/grb_chgres.${target}_userlib > /dev/null 2>&1
+    source ../../modulefiles/fv3gfs/grb_chgres.${target}_userlib > /dev/null 2>&1
   else
     source ../../../modulefiles/fv3sar_workflow/grb_chgres.$target
   fi
 fi
 
 # Check final exec folder exists
-if [ ! -d "../../../exec" ]; then
-  mkdir ../../../exec
+if [ ! -d "../../exec" ]; then
+  mkdir ../../exec
 fi
 
 #
@@ -90,12 +90,12 @@ else
 		${NETCDF_LDFLAGS_F} \
 		${WGRIB2API_LIB} \
    		${WGRIB2_LIB}"
-  
+		
   #make -f makefile clobber
   make -f Makefile
   #make -f makefile install
  # make -f makefile clobber
- cd ../../../exec
+ cd ../../exec
  ln -s ../sorc/chgres_cube/sorc/global_chgres.exe .
 fi
 

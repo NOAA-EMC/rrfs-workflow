@@ -39,7 +39,7 @@
                                        read_input_atm_data, &
                                        cleanup_input_atm_data, &
                                        P_QC, P_QNC, P_QI, P_QV, & 
- 																		   P_QNI, P_QR, P_QNR, P_QNWFA
+                                       P_QNI, P_QR, P_QNR, P_QNWFA
 
  use model_grid, only                : target_grid,  &
                                        latitude_s_target_grid,  &
@@ -403,7 +403,7 @@
    call create_number_concentrations
  endif
 
- call ESMF_FieldDestroy(landmask_target_grid, rc=rc)
+ !call ESMF_FieldDestroy(landmask_target_grid, rc=rc)
 !-----------------------------------------------------------------------------------
 ! Write target data to file.
 !-----------------------------------------------------------------------------------
@@ -1429,8 +1429,7 @@
 !     REAL(ESMF_KIND_R8) :: J2S 
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-!  FIND THE SURROUNDING INPUT INTERVAL FOR EACH OUTPUT POINT. 
-			PRINT*, "IN TERP2, CALL RSEARCH"          
+!  FIND THE SURROUNDING INPUT INTERVAL FOR EACH OUTPUT POINT.         
       CALL RSEARCH(IM,KM1,IXZ1,KXZ1,Z1,KM2,IXZ2,KXZ2,Z2,1,IM,K1S) 
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -1510,7 +1509,7 @@
                          ONE/(Z1D-Z1C)                                  
           ENDIF 
         ENDDO 
-  PRINT*, "INTERPOLATE INSIDE TERP3"
+
 !  INTERPOLATE.                                                         
         DO N=1,NM 
           DO I=1,IM 
@@ -1633,7 +1632,7 @@
 
  REAL(ESMF_KIND_R8)            :: Z 
 
- 	
+  
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  print*, "IN RSEARCH"
 !  FIND THE SURROUNDING INPUT INTERVAL FOR EACH OUTPUT POINT.          
@@ -1760,17 +1759,17 @@
    use esmf 
    implicit none
    
-   real(esmf_kind_r8), pointer				:: tempptr(:,:,:), presptr(:,:,:), &
-   																			 cloudptr(:,:,:), vaporptr(:,:,:), &
-   																			 iceptr(:,:,:), rainptr(:,:,:), &
-   																			 qncptr(:,:,:), qniptr(:,:,:), &
-   																			 qnrptr(:,:,:),qnwfaptr(:,:,:)
-   integer(esmf_kind_i8), pointer			:: landptr(:,:)
-   real(esmf_kind_r8)									:: alt, temp_rho
-   integer														:: i,j,k, clb(3), cub(3), rc																 
-   real(esmf_kind_r8), parameter 			:: cvpm = -0.714285731, &
-   																			 Rd = 287.05, &
-   																			 Rv =461.51 
+   real(esmf_kind_r8), pointer        :: tempptr(:,:,:), presptr(:,:,:), &
+                                         cloudptr(:,:,:), vaporptr(:,:,:), &
+                                         iceptr(:,:,:), rainptr(:,:,:), &
+                                         qncptr(:,:,:), qniptr(:,:,:), &
+                                         qnrptr(:,:,:),qnwfaptr(:,:,:)
+   integer(esmf_kind_i8), pointer     :: landptr(:,:)
+   real(esmf_kind_r8)                 :: alt, temp_rho
+   integer                            :: i,j,k, clb(3), cub(3), rc                                 
+   real(esmf_kind_r8), parameter      :: cvpm = -0.714285731, &
+                                         Rd = 287.05, &
+                                         Rv =461.51 
 
    call ESMF_FieldGet(temp_target_grid, &
                     computationalLBound=clb, &
@@ -1779,7 +1778,7 @@
    if(ESMF_logFoundError(rcToCheck=rc,msg=ESMF_LOGERR_PASSTHRU,line=__line__,file=__file__)) &
     call error_handler("IN FieldGet temp", rc)
     
-	 call ESMF_FieldGet(pres_target_grid, &
+   call ESMF_FieldGet(pres_target_grid, &
                     farrayPtr=presptr, rc=rc)
    if(ESMF_logFoundError(rcToCheck=rc,msg=ESMF_LOGERR_PASSTHRU,line=__line__,file=__file__)) &
     call error_handler("IN FieldGet pres", rc)
@@ -1822,44 +1821,44 @@
     call error_handler("IN FieldGet tracers_qnwfa", rc)    
     
     
-	 do i = clb(1),cub(1)
-			 do j = clb(2),cub(2)
-					do k = clb(3),cub(3)
-					
-						 alt = Rd/presptr(i,j,k)*tempptr(i,j,k)*(1+Rv/Rd*vaporptr(i,j,k))
-						 temp_rho = 1./alt
+   do i = clb(1),cub(1)
+       do j = clb(2),cub(2)
+          do k = clb(3),cub(3)
+          
+             alt = Rd/presptr(i,j,k)*tempptr(i,j,k)*(1+Rv/Rd*vaporptr(i,j,k))
+             temp_rho = 1./alt
 
-						 !..Produce a sensible cloud droplet number concentration
+             !..Produce a sensible cloud droplet number concentration
 
-						 if (P_QNC.gt.1 .AND. cloudptr(i,j,k).gt.0.0 .AND. qncptr(i,j,k).le.0.0) then
-								if (P_QNWFA .gt. 1) then
-									 qncptr(i,j,k) = make_DropletNumber (vaporptr(i,j,k)*temp_rho,       &
-	 &                           qnwfaptr(i,j,k)*temp_rho, real(landptr(i,j)))
-								else
-									 qncptr(i,j,k) = make_DropletNumber (vaporptr(i,j,k)*temp_rho,       &
-	 &                           0.0, real(landptr(i,j)))
-								endif
-								qncptr(i,j,k) = qncptr(i,j,k) / temp_rho
-						 endif
+             if (P_QNC.gt.1 .AND. cloudptr(i,j,k).gt.0.0 .AND. qncptr(i,j,k).le.0.0) then
+                if (P_QNWFA .gt. 1) then
+                   qncptr(i,j,k) = make_DropletNumber (vaporptr(i,j,k)*temp_rho,       &
+   &                           qnwfaptr(i,j,k)*temp_rho, real(landptr(i,j)))
+                else
+                   qncptr(i,j,k) = make_DropletNumber (vaporptr(i,j,k)*temp_rho,       &
+   &                           0.0, real(landptr(i,j)))
+                endif
+                qncptr(i,j,k) = qncptr(i,j,k) / temp_rho
+             endif
 
-						 !..Produce a sensible cloud ice number concentration
+             !..Produce a sensible cloud ice number concentration
 
-						 if (P_QNI.gt.1 .AND. iceptr(i,j,k).gt.0.0 .AND. qniptr(i,j,k).le.0.0) then
-								qniptr(i,j,k) = make_IceNumber (iceptr(i,j,k)*temp_rho, tempptr(i,j,k))
-								qniptr(i,j,k) = qniptr(i,j,k)  / temp_rho
-						 endif
+             if (P_QNI.gt.1 .AND. iceptr(i,j,k).gt.0.0 .AND. qniptr(i,j,k).le.0.0) then
+                qniptr(i,j,k) = make_IceNumber (iceptr(i,j,k)*temp_rho, tempptr(i,j,k))
+                qniptr(i,j,k) = qniptr(i,j,k)  / temp_rho
+             endif
 
-						 !..Produce a sensible rain number concentration
+             !..Produce a sensible rain number concentration
 
-						 if (P_QNR.gt.1 .AND. rainptr(i,j,k).gt.0.0 .AND. qnrptr(i,j,k).le.0.0) then
-								qnrptr(i,j,k)  = make_RainNumber (rainptr(i,j,k)*temp_rho, tempptr(i,j,k))
-								qnrptr(i,j,k)  = qnrptr(i,j,k)  / temp_rho
-						 endif
+             if (P_QNR.gt.1 .AND. rainptr(i,j,k).gt.0.0 .AND. qnrptr(i,j,k).le.0.0) then
+                qnrptr(i,j,k)  = make_RainNumber (rainptr(i,j,k)*temp_rho, tempptr(i,j,k))
+                qnrptr(i,j,k)  = qnrptr(i,j,k)  / temp_rho
+             endif
 
-					enddo
+          enddo
 
-			 enddo
-			 enddo      
+       enddo
+       enddo      
  
  end subroutine create_number_concentrations
  
