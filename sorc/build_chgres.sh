@@ -61,6 +61,31 @@ if [ $target = cheyenne ]; then
   make -f Makefile
   make -f Makefile install
 
+elif [ $target = jet ]; then 
+
+  export LDFLAGSM=${LDFLAGSM:-"-qopenmp -auto"}
+  export OMPFLAGM=${OMPFLAGM:-"-qopenmp -auto"}
+  export INCS="-I${SIGIO_INC4} -I${SFCIO_INC4} -I${LANDSFCUTIL_INCd} \
+               -I${NEMSIO_INC} -I${NEMSIOGFS_INC} -I${GFSIO_INC4} -I${IP_INCd} ${NETCDF_INCLUDE}"
+
+  export LIBSM="${GFSIO_LIB4} \
+                ${NEMSIOGFS_LIB} \
+                ${NEMSIO_LIB} \
+                ${SIGIO_LIB4} \
+                ${SFCIO_LIB4} \
+                ${LANDSFCUTIL_LIBd} \
+                ${IP_LIBd} \
+                ${SP_LIBd} \
+                ${W3EMC_LIBd} \
+                ${W3NCO_LIBd} \
+                ${BACIO_LIB4} \
+                ${NETCDF_LDFLAGS_F}"
+
+  make -f Makefile clobber
+  make -f Makefile
+  make -f Makefile install
+  make -f Makefile clobber
+
 else
 
   export LDFLAGSM=${LDFLAGSM:-"-openmp -auto"}

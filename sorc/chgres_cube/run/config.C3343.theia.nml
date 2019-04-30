@@ -1,0 +1,26 @@
+# Takes lots of memory.  Use two nodes - six tasks per node.
+
+&config
+ fix_dir_target_grid="/scratch3/BMC/det/beck/FV3-CAM/C3343"
+ mosaic_file_target_grid="/scratch3/BMC/det/beck/FV3-CAM/run_dirs/RAP/INPUT/C3343_mosaic.nc"
+ orog_dir_target_grid="/scratch3/BMC/det/beck/FV3-CAM/run_dirs/RAP/INPUT"
+ orog_files_target_grid="C3343_oro_data.tile7.nc"
+ vcoord_file_target_grid="/scratch4/NCEPDEV/global/save/glopara/git/fv3gfs/fix/fix_am"
+ mosaic_file_input_grid=""
+ orog_dir_input_grid=""
+ base_install_dir="/scratch3/BMC/det/beck/FV3-CAM/fv3sar_workflow/sorc/chgres_cube"
+ wgrib2_path="/scratch3/BMC/det/beck/FV3-CAM/grib2/wgrib2"
+ orog_files_input_grid="C384_oro_data.tile1.nc","C384_oro_data.tile2.nc","C384_oro_data.tile3.nc","C384_oro_data.tile4.nc","C384_oro_data.tile5.nc","C384_oro_data.tile6.nc"
+ data_dir_input_grid="/scratch3/BMC/det/beck/FV3-CAM/2019042800"
+ grib2_file_input_grid="wrfnat_rr_01.grib2"
+ cycle_mon=4
+ cycle_day=28
+ cycle_hour=0
+ convert_atm=.true.
+ convert_sfc=.true.
+ convert_nst=.false.
+ regional=1
+ input_type="grib2"
+ external_model="RAP"
+ phys_suite="GSD"
+/

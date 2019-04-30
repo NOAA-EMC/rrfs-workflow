@@ -49,7 +49,6 @@ module load fre-nctools.${target}
 module list
 set -x
 
-
 MPICH_UNEX_BUFFER_SIZE=256m
 MPICH_MAX_SHORT_MSG_SIZE=64000
 MPICH_PTL_UNEX_EVENTS=160k
@@ -67,9 +66,10 @@ elif [ $system_site = cheyenne ]; then
   HDF5_DIR=$NETCDF #HDF5 resides with NETCDF on Cheyenne
 elif [ $system_site = jet ]; then
    HDF5_DIR=$HDF5
-   NETCDF_DIR=$NETCDF4
+   NETCDF_DIR=$NETCDF
    HDF5_HOME=$HDF5
-   NETCDF_HOME=$NETCDF4
+   NETCDF_HOME=$NETCDF
+   export I_MPI_CC=icc
 fi
 
 if [ $system_site = "cray" ]; then
