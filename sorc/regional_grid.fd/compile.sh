@@ -6,4 +6,4 @@ module load netcdf/4.6.1
 module load hdf5/1.10.4
 module list
 
-make
+make -f Makefile_theia

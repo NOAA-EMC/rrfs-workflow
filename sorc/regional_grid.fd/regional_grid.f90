@@ -28,8 +28,8 @@ program regional_grid
 
   ! netcdf
   integer                      :: ncid
-  integer                      :: nxp_dimid, nyp_dimid, nx_dimid, ny_dimid
-  integer                      :: x_varid, y_varid, area_varid
+  integer                      :: string_dimid, nxp_dimid, nyp_dimid, nx_dimid, ny_dimid
+  integer                      :: tile_varid, x_varid, y_varid, area_varid
   integer, dimension(2)        :: dimids
 
 !=============================================================================
@@ -65,10 +65,14 @@ program regional_grid
   where (glon < 0.0) glon = glon + 360.0
 
   call check( nf90_create("regional_grid.nc", NF90_64BIT_OFFSET, ncid) )
+  call check( nf90_def_dim(ncid, "string", 255, string_dimid) )
   call check( nf90_def_dim(ncid, "nx", nx, nx_dimid) )
   call check( nf90_def_dim(ncid, "ny", ny, ny_dimid) )
   call check( nf90_def_dim(ncid, "nxp", nx+1, nxp_dimid) )
   call check( nf90_def_dim(ncid, "nyp", ny+1, nyp_dimid) )
+
+  call check( nf90_def_var(ncid, "tile", NF90_CHAR, [string_dimid], tile_varid) )
+  call check( nf90_put_att(ncid, tile_varid, "standard_name", "grid_tile_spec") )
 
   dimids = (/ nxp_dimid, nyp_dimid /)
   call check( nf90_def_var(ncid, "x", NF90_DOUBLE, dimids, x_varid) )
@@ -100,6 +104,7 @@ program regional_grid
 
   call check( nf90_enddef(ncid) )
 
+  call check( nf90_put_var(ncid, tile_varid, "tile7") )
   call check( nf90_put_var(ncid, x_varid, glon) )
   call check( nf90_put_var(ncid, y_varid, glat) )
   call check( nf90_put_var(ncid, area_varid, garea) )
