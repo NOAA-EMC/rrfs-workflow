@@ -187,8 +187,8 @@
                               temp_b4adj_target_grid, &
                               polemethod=ESMF_POLEMETHOD_NONE, &
                               srctermprocessing=isrctermprocessing, &
-                              extrapmethod=ESMF_EXTRAPMETHOD_NEAREST_STOD, &
                               routehandle=regrid_bl, &
+                              extrapmethod=ESMF_EXTRAPMETHOD_NEAREST_STOD, &
                               regridmethod=method, rc=rc)
    if(ESMF_logFoundError(rcToCheck=rc,msg=ESMF_LOGERR_PASSTHRU,line=__line__,file=__file__)) &
       call error_handler("IN FieldRegridStore", rc)
@@ -958,7 +958,6 @@
 
 ! Find specific humidity in the array of tracer fields.
 
- print*, "Tracer names are: ", tracers
  do ii = 1, num_tracers
    if (trim(tracers(ii)) == "sphum") exit
  enddo
@@ -1271,10 +1270,8 @@
  KM2= LEV_TARGET
  NT=  NUM_TRACERS + 1 ! treat 'z' wind as tracer.
 
- PRINT *, "IN VINTG, CALL TERP3"
  CALL TERP3(IM,1,1,1,1,4+NT,(IM*KM1),(IM*KM2), &
             KM1,IM,IM,Z1,C1,KM2,IM,IM,Z2,C2)
- PRINT*, "IN VINTG, AFTER TERP3"
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !  COPY OUTPUT WIND, TEMPERATURE, HUMIDITY AND OTHER TRACERS
 !  EXCEPT BELOW THE INPUT DOMAIN, LET TEMPERATURE INCREASE WITH A FIXED
@@ -1429,7 +1426,7 @@
 !     REAL(ESMF_KIND_R8) :: J2S 
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-!  FIND THE SURROUNDING INPUT INTERVAL FOR EACH OUTPUT POINT.         
+!  FIND THE SURROUNDING INPUT INTERVAL FOR EACH OUTPUT POINT.
       CALL RSEARCH(IM,KM1,IXZ1,KXZ1,Z1,KM2,IXZ2,KXZ2,Z2,1,IM,K1S) 
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -1438,10 +1435,10 @@
 !  BUT WITHIN THE TWO EDGE INTERVALS INTERPOLATE LINEARLY.              
 !  KEEP THE OUTPUT FIELDS CONSTANT OUTSIDE THE INPUT DOMAIN.            
                                                                         
-!!!!$OMP PARALLEL DO DEFAULT(PRIVATE) SHARED(IM,IXZ1,IXQ1,IXZ2), &
-!!!!$OMP& SHARED(IXQ2,NM,NXQ1,NXQ2,KM1,KXZ1,KXQ1,Z1,Q1,KM2,KXZ2), &
-!!!!$OMP& SHARED(KXQ2,Z2,Q2,J2,K1S)
-      !print*, "IN TERP3 AFTER RSEARCH"                                                             
+!$OMP PARALLEL DO DEFAULT(PRIVATE) SHARED(IM,IXZ1,IXQ1,IXZ2), &
+!$OMP& SHARED(IXQ2,NM,NXQ1,NXQ2,KM1,KXZ1,KXQ1,Z1,Q1,KM2,KXZ2), &
+!$OMP& SHARED(KXQ2,Z2,Q2,K1S)
+                                                                        
       DO K2=1,KM2 
         DO I=1,IM 
           K1=K1S(I,K2) 
@@ -1545,7 +1542,7 @@
           ENDDO 
         ENDDO 
       ENDDO 
-!!!!!$OMP END PARALLEL DO                                                   
+!$OMP END PARALLEL DO                                                   
 
  END SUBROUTINE TERP3 
 
@@ -1628,7 +1625,7 @@
  REAL(ESMF_KIND_R8),INTENT(IN) :: Z1(1+(IM-1)*IXZ1+(KM1-1)*KXZ1) 
  REAL(ESMF_KIND_R8),INTENT(IN) :: Z2(1+(IM-1)*IXZ2+(KM2-1)*KXZ2) 
 
- INTEGER                       :: I,K2,L, INDEX
+ INTEGER                       :: I,K2,L
 
  REAL(ESMF_KIND_R8)            :: Z 
 
@@ -1641,14 +1638,13 @@
 !  INPUT COORDINATE IS MONOTONICALLY ASCENDING.                        
      DO K2=1,KM2
        Z=Z2(1+(I-1)*IXZ2+(K2-1)*KXZ2)
-       INDEX = 1+(I-1)*IXL2+(K2-1)*KXL2
        L=0 
        DO 
          IF(Z.LT.Z1(1+(I-1)*IXZ1+L*KXZ1)) EXIT 
          L=L+1 
          IF(L.EQ.KM1) EXIT 
        ENDDO
-       L2(INDEX)=L 
+       L2(1+(I-1)*IXL2+(K2-1)*KXL2)=L
      ENDDO 
    ELSE 
 !   INPUT COORDINATE IS MONOTONICALLY DESCENDING.                       
