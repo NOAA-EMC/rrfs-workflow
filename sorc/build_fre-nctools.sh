@@ -44,7 +44,7 @@ set -x
 
 set +x
 module list
-module use ../../../modulefiles/fv3sar_workflow
+module use ../../../modulefiles/regional_workflow
 module load fre-nctools.${target}
 module list
 set -x
@@ -58,7 +58,10 @@ F_UFMTENDIAN=big
 if [ $system_site = "cray" ]; then
   HDF5=${HDF5_DIR}
   NETCDF=${NETCDF_DIR}
-elif [ $system_site = theia ]; then
+elif [ "$system_site" = "theia" ]; then
+  HDF5_DIR=$HDF5
+  NETCDF_DIR=$NETCDF
+elif [ "$system_site" = "hera" ]; then
   HDF5_DIR=$HDF5
   NETCDF_DIR=$NETCDF
 elif [ $system_site = wcoss_dell_p3 ]; then
