@@ -43,7 +43,7 @@ cd $tmpDir
 #
 set +x
 module list
-module use ../../../modulefiles/fv3sar_workflow
+module use ../../../modulefiles/regional_workflow
 module load ${package_name}.${target}
 module list
 set -x
@@ -60,6 +60,9 @@ if [ $platform = "cray" ]; then
   HDF5=${HDF5_DIR}
   NETCDF=${NETCDF_DIR}
 elif [ $platform = "theia" ]; then
+  HDF5_DIR=$HDF5
+  NETCDF_DIR=$NETCDF
+elif [ $platform = "hera" ]; then
   HDF5_DIR=$HDF5
   NETCDF_DIR=$NETCDF
 elif [ $platform = "cheyenne" ]; then

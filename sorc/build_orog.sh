@@ -15,13 +15,13 @@ if [ $USE_PREINST_LIBS = true ]; then
   else
     export MOD_PATH=/scratch3/NCEPDEV/nwprod/lib/modulefiles
   fi
-  source ../modulefiles/fv3sar_workflow/orog.$target
+  source ../modulefiles/regional_workflow/orog.$target
 else
   export MOD_PATH=${cwd}/lib/modulefiles
   if [ $target = wcoss_cray ]; then
-    source ../modulefiles/fv3sar_workflow/orog.${target}_userlib
+    source ../modulefiles/regional_workflow/orog.${target}_userlib
   else
-    source ../modulefiles/fv3sar_workflow/orog.$target
+    source ../modulefiles/regional_workflow/orog.$target
   fi
 fi
 
@@ -45,6 +45,10 @@ elif [ $target = wcoss_dell_p3 ]; then
  export LIBSM="${BACIO_LIB4} ${W3NCO_LIBd} ${IP_LIBd} ${SP_LIBd} ${NETCDF_LDFLAGS}"
  export FFLAGSM="-O3 -g -traceback -r8  -convert big_endian -fp-model precise  -assume byterecl ${INCS}"
 elif [ $target = theia ]; then
+  INCS="-I${NETCDF}/include"
+  export LIBSM="${BACIO_LIB4} ${W3NCO_LIBd} ${IP_LIBd} ${SP_LIBd} -L${NETCDF}/lib -lnetcdff -lnetcdf"
+  export FFLAGSM="-O3 -g -traceback -r8  -convert big_endian -fp-model precise  -assume byterecl ${INCS}"
+elif [ $target = hera ]; then
   INCS="-I${NETCDF}/include"
   export LIBSM="${BACIO_LIB4} ${W3NCO_LIBd} ${IP_LIBd} ${SP_LIBd} -L${NETCDF}/lib -lnetcdff -lnetcdf"
   export FFLAGSM="-O3 -g -traceback -r8  -convert big_endian -fp-model precise  -assume byterecl ${INCS}"
