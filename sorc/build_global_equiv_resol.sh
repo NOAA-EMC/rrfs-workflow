@@ -68,6 +68,7 @@ elif [ $platform = "hera" ]; then
 elif [ $platform = "cheyenne" ]; then
   NETCDF_DIR=$NETCDF
   HDF5_DIR=$NETCDF #HDF5 resides with NETCDF on Cheyenne
+  export HDF5=$NETCDF     #HDF5 used in Makefile_cheyenne
 elif [ $platform = "jet" ]; then
   HDF5_DIR=$HDF5
   NETCDF_DIR=$NETCDF4
