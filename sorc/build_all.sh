@@ -9,18 +9,6 @@ set -eux
 
 export USE_PREINST_LIBS="true"
 
-if [ $# -eq 0 ] ; then
-    echo "ERROR: You must provide the platform as a command-line argument"
-    exit 1
-fi
-
-SITE=${1}
-
-RGNL_WFLOW_DIR=$( pwd )/..
-if [ ${SITE} == "cheyenne" ]; then
-  export NCEPLIB_DIR=/glade/p/ral/jntp/GMTB/tools/NCEPlibs/20180717/intel-18.0.1/
-fi
-
 #------------------------------------
 # END USER DEFINED STUFF
 #------------------------------------
@@ -90,10 +78,21 @@ echo " .... Building utils .... "
 # build gsi
 #------------------------------------
 $Build_gsi && {
-echo " .... Building gsi .... "
-./build_gsi.sh > $logs_dir/build_gsi.log 2>&1
+echo " .... GSI build not currently supported .... "
+#echo " .... Building gsi .... "
+#./build_gsi.sh > $logs_dir/build_gsi.log 2>&1
 }
 
 echo;echo " .... Build system finished .... "
+echo;echo " .... Installing executables .... "
+
+./install_all.sh
+
+echo;echo " .... Installation finished .... "
+echo;echo " .... Linking fix files .... "
+
+./link_fix.sh
+
+echo;echo " .... Linking fix files finished .... "
 
 exit 0

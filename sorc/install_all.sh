@@ -20,48 +20,48 @@ fi
 #------------------------------------
 # install forecast
 #------------------------------------
- ${CP} regional_forecast.fd/NEMS/exe/NEMS.x            ../exec/regional_forecast.x
+#${CP} NEMSfv3gfs/fv3.exe                             ../exec/regional_forecast.x
 
 #------------------------------------
 # install post
 #------------------------------------
- ${CP} regional_post.fd/exec/ncep_post                 ../exec/regional_post.x
+ ${CP} EMC_post/exec/ncep_post                         ../exec/ncep_post
 
 #------------------------------------
 # install chgres
 #------------------------------------
- ${CP} regional_utils.fd/exec/global_chgres            ../exec/regional_chgres.x
+# ${CP} regional_utils.fd/exec/global_chgres            ../exec/regional_chgres.x
 
 #------------------------------------
 # install chgres_cube
 #------------------------------------
- ${CP} regional_utils.fd/exec/chgres_cube.exe          ../exec/regional_chgres_cube.x
+ ${CP} UFS_UTILS_chgres_grib2/exec/chgres_cube.exe     ../exec/chgres_cube.exe
 
 #------------------------------------
 # install orog
 #------------------------------------
- ${CP} regional_utils.fd/exec/orog.x                   ../exec/regional_orog.x
+ ${CP} UFS_UTILS_develop/exec/orog.x                   ../exec/orog.x
 
 #------------------------------------
 # install sfc_climo_gen
 #------------------------------------
- ${CP} regional_utils.fd/exec/sfc_climo_gen            ../exec/regional_sfc_climo_gen.x
+ ${CP} UFS_UTILS_develop/exec/sfc_climo_gen            ../exec/sfc_climo_gen
 
 #------------------------------------
 # install regional_grid
 #------------------------------------
- ${CP} regional_utils.fd/exec/regional_grid            ../exec/regional_grid.x
+# ${CP} regional_utils.fd/exec/regional_grid            ../exec/regional_grid.x
 
 #------------------------------------
 # install fre-nctools
 #------------------------------------
- ${CP} regional_utils.fd/exec/make_hgrid               ../exec/regional_make_hgrid.x
-#${CP} regional_utils.fd/exec/make_hgrid_parallel      ../exec/regional_make_hgrid_parallel.x
- ${CP} regional_utils.fd/exec/make_solo_mosaic         ../exec/regional_make_solo_mosaic.x
- ${CP} regional_utils.fd/exec/fregrid                  ../exec/regional_fregrid.x
-#${CP} regional_utils.fd/exec/fregrid_parallel         ../exec/regional_fregrid_parallel.x
- ${CP} regional_utils.fd/exec/filter_topo              ../exec/regional_filter_topo.x
- ${CP} regional_utils.fd/exec/shave.x                  ../exec/regional_shave.x
+ ${CP} UFS_UTILS_develop/exec/make_hgrid               ../exec/make_hgrid
+ ${CP} UFS_UTILS_develop/exec/make_hgrid_parallel      ../exec/make_hgrid_parallel
+ ${CP} UFS_UTILS_develop/exec/make_solo_mosaic         ../exec/make_solo_mosaic
+ ${CP} UFS_UTILS_develop/exec/fregrid                  ../exec/fregrid
+ ${CP} UFS_UTILS_develop/exec/fregrid_parallel         ../exec/fregrid_parallel
+ ${CP} UFS_UTILS_develop/exec/filter_topo              ../exec/filter_topo
+ ${CP} UFS_UTILS_develop/exec/shave.x                  ../exec/shave.x
 
 #------------------------------------
 # install gsi

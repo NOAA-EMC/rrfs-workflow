@@ -77,6 +77,24 @@ cd $build_dir
 ./build_regional_grid.sh > $logs_dir/build_regional_grid.log 2>&1
 }
 
+#------------------------------------
+# build global_equiv_resol
+#------------------------------------
+$Build_global_equiv_resol && {
+echo " .... Building global_equiv_resol .... "
+cd $build_dir
+./build_global_equiv_resol.sh > $logs_dir/build_global_equiv_resol.log 2>&1
+}
+
+#------------------------------------
+# build mosaic file
+#------------------------------------
+$Build_mosaic_file && {
+echo " .... Building mosaic_file .... "
+cd $build_dir
+./build_mosaic_file.sh > $logs_dir/build_mosaic_file.log 2>&1
+}
+
 cd $build_dir
 
 echo 'Building utils done'
