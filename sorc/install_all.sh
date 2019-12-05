@@ -35,7 +35,7 @@ fi
 #------------------------------------
 # install chgres_cube
 #------------------------------------
- ${CP} UFS_UTILS_chgres_grib2/exec/chgres_cube.exe     ../exec/chgres_cube.exe
+ ${CP} UFS_UTILS_chgres_grib2_gsd/exec/chgres_cube.exe     ../exec/chgres_cube.exe
 
 #------------------------------------
 # install orog

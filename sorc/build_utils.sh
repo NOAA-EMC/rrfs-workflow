@@ -1,5 +1,8 @@
 #!/bin/sh
+
 set -eux
+
+. ../ush/source_util_funcs.sh
 
 export USE_PREINST_LIBS="true"
 
@@ -20,8 +23,37 @@ fi
 
 . ./partial_build.sh
 
-UFS_UTILS_DEV=$build_dir/UFS_UTILS_develop/sorc
-UFS_UTILS_CHGRES_GRIB2=$build_dir/UFS_UTILS_chgres_grib2/sorc
+
+#------------------------------------
+# Get from the manage_externals configuration file the relative directo-
+# ries in which the UFS utility codes (not including chgres_cube) and 
+# the chgres_cube codes get cloned.  Note that these two sets of codes
+# are in the same repository but different branches.  These directories
+# will be relative to the workflow home directory, which we denote below
+# by HOMErrfs.  Then form the absolute paths to these codes.
+#------------------------------------
+HOMErrfs=$( readlink -f "${build_dir}/.." )
+mng_extrns_cfg_fn="${HOMErrfs}/Externals.cfg"
+property_name="local_path"
+
+# First, consider the UFS utility codes, not including chgres (i.e. we
+# do not use any versions of chgres or chgres_cube in this set of codes).
+external_name="ufs_utils"
+UFS_UTILS_DEV=$( \
+get_manage_externals_property \
+"${mng_extrns_cfg_fn}" "${external_name}" "${property_name}" ) || \
+print_err_msg_exit "\
+Call to function get_manage_externals_property failed."
+UFS_UTILS_DEV="${HOMErrfs}/${UFS_UTILS_DEV}/sorc"
+
+# Next, consider the chgres_cube code.
+external_name="ufs_utils_chgres"
+UFS_UTILS_CHGRES_GRIB2=$( \
+get_manage_externals_property \
+"${mng_extrns_cfg_fn}" "${external_name}" "${property_name}" ) || \
+print_err_msg_exit "\
+Call to function get_manage_externals_property failed."
+UFS_UTILS_CHGRES_GRIB2="${HOMErrfs}/${UFS_UTILS_CHGRES_GRIB2}/sorc"
 
 #------------------------------------
 # build chgres
