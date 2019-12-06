@@ -40,19 +40,19 @@ property_name="local_path"
 # do not use any versions of chgres or chgres_cube in this set of codes).
 external_name="ufs_utils"
 UFS_UTILS_DEV=$( \
-get_manage_externals_property \
+get_manage_externals_config_property \
 "${mng_extrns_cfg_fn}" "${external_name}" "${property_name}" ) || \
 print_err_msg_exit "\
-Call to function get_manage_externals_property failed."
+Call to function get_manage_config_externals_property failed."
 UFS_UTILS_DEV="${HOMErrfs}/${UFS_UTILS_DEV}/sorc"
 
 # Next, consider the chgres_cube code.
 external_name="ufs_utils_chgres"
 UFS_UTILS_CHGRES_GRIB2=$( \
-get_manage_externals_property \
+get_manage_externals_config_property \
 "${mng_extrns_cfg_fn}" "${external_name}" "${property_name}" ) || \
 print_err_msg_exit "\
-Call to function get_manage_externals_property failed."
+Call to function get_manage_externals_config_property failed."
 UFS_UTILS_CHGRES_GRIB2="${HOMErrfs}/${UFS_UTILS_CHGRES_GRIB2}/sorc"
 
 #------------------------------------
