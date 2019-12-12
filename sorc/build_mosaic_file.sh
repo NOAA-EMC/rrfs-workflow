@@ -43,8 +43,10 @@ cd $tmpDir
 #
 set +x
 module list
-module use ../../../modulefiles/regional_workflow
-module load ${package_name}.${target}
+#module use ../../../modulefiles/build_mosaic
+#module load ${package_name}.${target}
+module use ../../../modulefiles/codes/${target}
+module load ${package_name}
 module list
 set -x
 #
