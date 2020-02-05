@@ -43,8 +43,10 @@ cd $tmpDir
 #
 set +x
 module list
-module use ../../../modulefiles/fv3sar_workflow
-module load ${package_name}.${target}
+#module use ../../../modulefiles/build_mosaic
+#module load ${package_name}.${target}
+module use ../../../modulefiles/codes/${target}
+module load ${package_name}
 module list
 set -x
 #
@@ -62,9 +64,13 @@ if [ $platform = "cray" ]; then
 elif [ $platform = "theia" ]; then
   HDF5_DIR=$HDF5
   NETCDF_DIR=$NETCDF
+elif [ $platform = "hera" ]; then
+  HDF5_DIR=$HDF5
+  NETCDF_DIR=$NETCDF
 elif [ $platform = "cheyenne" ]; then
   NETCDF_DIR=$NETCDF
   HDF5_DIR=$NETCDF #HDF5 resides with NETCDF on Cheyenne
+  export HDF5=$NETCDF     #HDF5 used in Makefile_cheyenne
 elif [ $platform = "jet" ]; then
   HDF5_DIR=$HDF5
   NETCDF_DIR=$NETCDF4
