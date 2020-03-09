@@ -22,6 +22,8 @@ if [ $target = hera ]; then target=hera.intel ; fi
 
 if [ $target = jet ]; then target=jet.intel ; fi
 
+if [ $target = cheyenne ]; then target=cheyenne.intel ; fi
+
 #------------------------------------
 # Get from the manage_externals configuration file the relative directo-
 # ries in which the UFS utility codes (not including chgres_cube) and 
