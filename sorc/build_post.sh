@@ -19,20 +19,15 @@ fi
 cd EMC_post
 
 if [ "$target" = "jet" ] ; then
-  cd sorc
-  sh build_ncep_post.sh
+./compile jet
 elif [ "$target" = "hera" ] ; then
-  cd sorc
-  sh build_ncep_post.sh
+./compile hera
 elif [ "$target" = "wcoss_cray" ] ; then
-  cd sorc
-  sh build_ncep_post.sh
+./compile wcross_cray
 elif [ "$target" = "wcoss_dell_p3" ] ; then
-  cd sorc
-  sh build_ncep_post.sh
+./compile wcoss_dell_p3
 elif [ "$target" = "wcoss" ] ; then
-  cd sorc
-  sh build_ncep_post.sh
+./compile wcoss
 elif [ "$target" = "cheyenne" ] ; then
 export NCEPLIBS_DIR=/glade/p/ral/jntp/UPP/pre-compiled_libraries/NCEPlibs_intel_18.0.5
 ./configure << EOT
