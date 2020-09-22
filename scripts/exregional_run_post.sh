@@ -143,9 +143,9 @@ esac
 #-----------------------------------------------------------------------
 #
 rm_vrfy -f fort.*
-cp_vrfy $FIXupp/nam_micro_lookup.dat ./eta_micro_lookup.dat
-cp_vrfy $FIXupp/postxconfig-NT-fv3sar.txt ./postxconfig-NT.txt
-cp_vrfy $FIXupp/params_grib2_tbl_new ./params_grib2_tbl_new
+cp_vrfy ${EMC_POST_DIR}/parm/nam_micro_lookup.dat ./eta_micro_lookup.dat
+cp_vrfy ${EMC_POST_DIR}/parm/postxconfig-NT-fv3sar.txt ./postxconfig-NT.txt
+cp_vrfy ${EMC_POST_DIR}/parm/params_grib2_tbl_new ./params_grib2_tbl_new
 cp_vrfy ${EXECDIR}/ncep_post .
 #
 #-----------------------------------------------------------------------
@@ -167,8 +167,8 @@ tmmark="tm$hh"
 #
 #-----------------------------------------------------------------------
 #
-dyn_file="${run_dir}/dynf0${fhr}.nc"
-phy_file="${run_dir}/phyf0${fhr}.nc"
+dyn_file="${run_dir}/dynf${fhr}.nc"
+phy_file="${run_dir}/phyf${fhr}.nc"
 
 post_time=$( date --utc --date "${yyyymmdd} ${hh} UTC + ${fhr} hours" "+%Y%m%d%H" )
 post_yyyy=${post_time:0:4}
@@ -206,32 +206,30 @@ zero exit code."
 #
 #-----------------------------------------------------------------------
 #
-if [ -n "${PREDEF_GRID_NAME}" ]; then 
-
-  grid_name="${PREDEF_GRID_NAME}"
-
-else 
-
-  grid_name="${GRID_GEN_METHOD}"
-
-  if [ "${GRID_GEN_METHOD}" = "GFDLgrid" ]; then
-    stretch_str="S$( printf "%s" "${STRETCH_FAC}" | sed "s|\.|p|" )"
-    refine_str="RR${GFDLgrid_REFINE_RATIO}"
-    grid_name="${grid_name}_${CRES}_${stretch_str}_${refine_str}"
-  elif [ "${GRID_GEN_METHOD}" = "JPgrid" ]; then
-    nx_str="NX$( printf "%s" "$NX" | sed "s|\.|p|" )"
-    ny_str="NY$( printf "%s" "$NY" | sed "s|\.|p|" )"
-    JPgrid_alpha_param_str="A"$( printf "%s" "${JPgrid_ALPHA_PARAM}" | \
-                                 sed "s|-|mns|" | sed "s|\.|p|" )
-    JPgrid_kappa_param_str="K"$( printf "%s" "${JPgrid_KAPPA_PARAM}" | \
-                                 sed "s|-|mns|" | sed "s|\.|p|" )
-    grid_name="${grid_name}_${nx_str}_${ny_str}_${JPgrid_alpha_param_str}_${JPgrid_kappa_param_str}"
+#
+#-----------------------------------------------------------------------
+#
+# A separate ${post_fhr} forecast hour variable is required for the post 
+# files, since they may or may not be three digits long, depending on the
+# length of the forecast.
+#
+#-----------------------------------------------------------------------
+#
+len_fhr=${#fhr}
+if [ ${len_fhr} -eq 2 ]; then
+  post_fhr=${fhr}
+elif [ ${len_fhr} -eq 3 ]; then
+  if [ "${fhr:0:1}" = "0" ]; then
+    post_fhr="${fhr:1}"
   fi
-
+else
+  print_err_msg_exit "\
+The \${fhr} variable contains too few or too many characters:
+  fhr = \"$fhr\""
 fi
 
-mv_vrfy BGDAWP.GrbF${fhr} ${postprd_dir}/RRFS.t${cyc}z.bgdawp${fhr}.${tmmark}
-mv_vrfy BGRD3D.GrbF${fhr} ${postprd_dir}/RRFS.t${cyc}z.bgrd3d${fhr}.${tmmark}
+mv_vrfy BGDAWP.GrbF${post_fhr} ${postprd_dir}/${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2
+mv_vrfy BGRD3D.GrbF${post_fhr} ${postprd_dir}/${NET}.t${cyc}z.bgrd3df${fhr}.${tmmark}.grib2
 
 #Link output for transfer to Jet
 # Should the following be done only if on jet??
@@ -242,10 +240,10 @@ mv_vrfy BGRD3D.GrbF${fhr} ${postprd_dir}/RRFS.t${cyc}z.bgrd3d${fhr}.${tmmark}
 # instead of calling sed.
 start_date=$( echo "${cdate}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/' )
 basetime=$( date +%y%j%H%M -d "${start_date}" )
-ln_vrfy -fs ${postprd_dir}/RRFS.t${cyc}z.bgdawp${fhr}.${tmmark} \
-            ${postprd_dir}/BGDAWP_${basetime}${fhr}00
-ln_vrfy -fs ${postprd_dir}/RRFS.t${cyc}z.bgrd3d${fhr}.${tmmark} \
-            ${postprd_dir}/BGRD3D_${basetime}${fhr}00
+ln_vrfy -fs ${postprd_dir}/${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2 \
+            ${postprd_dir}/BGDAWP_${basetime}f${fhr}00
+ln_vrfy -fs ${postprd_dir}/${NET}.t${cyc}z.bgrd3df${fhr}.${tmmark}.grib2 \
+            ${postprd_dir}/BGRD3D_${basetime}f${fhr}00
 
 rm_vrfy -rf ${fhr_dir}
 #

@@ -3,7 +3,7 @@
 #
 # This file defines and then calls a function that sets a secondary set
 # of parameters needed by the various scripts that are called by the 
-# FV3SAR rocoto community workflow.  This secondary set of parameters is 
+# FV3-LAM rocoto community workflow.  This secondary set of parameters is 
 # calculated using the primary set of user-defined parameters in the de-
 # fault and custom experiment/workflow configuration scripts (whose file
 # names are defined below).  This script then saves both sets of parame-
@@ -59,7 +59,7 @@ cd_vrfy ${scrfunc_dir}
 #
 . ./set_cycle_dates.sh
 . ./set_gridparams_GFDLgrid.sh
-. ./set_gridparams_JPgrid.sh
+. ./set_gridparams_ESGgrid.sh
 . ./link_fix.sh
 . ./set_ozone_param.sh
 #
@@ -244,10 +244,10 @@ check_var_valid_value "DO_SHUM" "valid_vals_DO_SHUM"
 DO_SHUM=${DO_SHUM^^}
 if [ "${DO_SHUM}" = "TRUE" ] || \
    [ "${DO_SHUM}" = "YES" ]; then
-  DO_SHUM="true"
+  DO_SHUM="TRUE"
 elif [ "${DO_SHUM}" = "FALSE" ] || \
      [ "${DO_SHUM}" = "NO" ]; then
-  DO_SHUM="false"
+  DO_SHUM="FALSE"
 fi
 #
 #-----------------------------------------------------------------------
@@ -264,10 +264,10 @@ check_var_valid_value "DO_SPPT" "valid_vals_DO_SPPT"
 DO_SPPT=${DO_SPPT^^}
 if [ "${DO_SPPT}" = "TRUE" ] || \
    [ "${DO_SPPT}" = "YES" ]; then
-  DO_SPPT="true"
+  DO_SPPT="TRUE"
 elif [ "${DO_SPPT}" = "FALSE" ] || \
      [ "${DO_SPPT}" = "NO" ]; then
-  DO_SPPT="false"
+  DO_SPPT="FALSE"
 fi
 #
 #-----------------------------------------------------------------------
@@ -284,11 +284,32 @@ check_var_valid_value "DO_SKEB" "valid_vals_DO_SKEB"
 DO_SKEB=${DO_SKEB^^}
 if [ "${DO_SKEB}" = "TRUE" ] || \
    [ "${DO_SKEB}" = "YES" ]; then
-  DO_SKEB="true"
+  DO_SKEB="TRUE"
 elif [ "${DO_SKEB}" = "FALSE" ] || \
      [ "${DO_SKEB}" = "NO" ]; then
-  DO_SKEB="false"
+  DO_SKEB="FALSE"
 fi
+#
+#-----------------------------------------------------------------------
+#
+# Set magnitude of stochastic ad-hoc schemes to -999.0 if they are not
+# being used. This is required at the moment, since "do_shum/sppt/skeb"
+# does not override the use of the scheme unless the magnitude is also
+# specifically set to -999.0.  If all "do_shum/sppt/skeb" are set to
+# "false," then none will run, regardless of the magnitude values. 
+#
+#-----------------------------------------------------------------------
+#
+if [ "${DO_SHUM}" = "FALSE" ]; then
+  SHUM_MAG=-999.0
+fi
+if [ "${DO_SKEB}" = "FALSE" ]; then
+  SKEB_MAG=-999.0
+fi
+if [ "${DO_SPPT}" = "FALSE" ]; then
+  SPPT_MAG=-999.0
+fi
+
 #
 #-----------------------------------------------------------------------
 #
@@ -344,7 +365,7 @@ case $MACHINE in
   SCHED="${SCHED:-slurm}"
   QUEUE_DEFAULT=${QUEUE_DEFAULT:-"batch"}
   QUEUE_HPSS=${QUEUE_HPSS:-"service"}
-  QUEUE_FCST=${QUEUE_FCST:-""}
+  QUEUE_FCST=${QUEUE_FCST:-"batch"}
   ;;
 #
 "JET")
@@ -459,7 +480,10 @@ case "${EMC_GRID_NAME}" in
   "conus_c96")
     PREDEF_GRID_NAME="EMC_CONUS_coarse"
     ;;
-  "conus_orig"|"guam"|"hi"|"pr")
+  "GSD_HRRR25km" | "GSD_HRRR13km" | "GSD_HRRR3km" | "GSD_SUBCONUS3km")
+    PREDEF_GRID_NAME="${EMC_GRID_NAME}"
+    ;;
+  "conus_orig" | "guam" | "hi" | "pr")
     print_err_msg_exit "\
 A predefined grid (PREDEF_GRID_NAME) has not yet been defined for this
 EMC grid (EMC_GRID_NAME):
@@ -642,7 +666,7 @@ NUM_CYCLES="${#ALL_CDATES[@]}"
 # Set various directories.
 #
 # HOMErrfs:
-# Top directory of the clone of the FV3SAR workflow git repository.
+# Top directory of the clone of the FV3-LAM workflow git repository.
 #
 # USHDIR:
 # Directory containing the shell scripts called by the workflow.
@@ -663,20 +687,13 @@ NUM_CYCLES="${#ALL_CDATES[@]}"
 # Directory containing various executable files.
 #
 # TEMPLATE_DIR:
-# Directory in which templates of various FV3SAR input files are locat-
+# Directory in which templates of various FV3-LAM input files are locat-
 # ed.
 #
 # UFS_WTHR_MDL_DIR:
-# Directory in which the (NEMS-enabled) FV3SAR application is located.
+# Directory in which the (NEMS-enabled) FV3-LAM application is located.
 # This directory includes subdirectories for FV3, NEMS, and FMS.  If
 # USE_CCPP is set to "TRUE", it also includes a subdirectory for CCPP.
-#
-# FIXupp:
-# System directory from which to copy necessary fixed files for UPP.
-#
-# FIXgsd:
-# System directory from which to copy GSD physics-associated fixed files 
-# needed when running CCPP.
 #
 #-----------------------------------------------------------------------
 #
@@ -700,8 +717,6 @@ PARMDIR="$HOMErrfs/parm"
 MODULES_DIR="$HOMErrfs/modulefiles"
 EXECDIR="${SR_WX_APP_TOP_DIR}/exec"
 FIXrrfs="$HOMErrfs/fix"
-FIXupp="$FIXrrfs/fix_upp"
-FIXgsd="$FIXrrfs/fix_gsd"
 TEMPLATE_DIR="$USHDIR/templates"
 
 case $MACHINE in
@@ -737,8 +752,8 @@ case $MACHINE in
   ;;
 
 "JET")
-  FIXgsm=${FIXgsm:-"/lfs4/HFIP/gsd-fv3-hfip/FV3/fix/fix_am"}
-  TOPO_DIR=${TOPO_DIR:-"/lfs4/HFIP/gsd-fv3-hfip/FV3/fix/fix_orog"}
+  FIXgsm=${FIXgsm:-"/lfs4/HFIP/hfv3gfs/glopara/git/fv3gfs/fix/fix_am"}
+  TOPO_DIR=${TOPO_DIR:-"/lfs4/HFIP/hfv3gfs/glopara/git/fv3gfs/fix/fix_orog"}
   SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/lfs1/HFIP/hwrf-data/git/fv3gfs/fix/fix_sfc_climo"}
   ;;
 
@@ -938,6 +953,39 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+# If using the FV3_RRFS_v1beta physics suite, make sure that the directory
+# from which certain fixed orography files will be copied to the experiment 
+# directory actually exists.  Note that this is temporary code.  It should
+# be removed once there is a script that will create these orography files
+# for any grid.
+#
+#-----------------------------------------------------------------------
+#
+GWD_RRFS_v1beta_DIR="${GWD_RRFS_v1beta_BASEDIR}/${PREDEF_GRID_NAME}"
+if [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v1beta" ]; then
+  if [ -z "${PREDEF_GRID_NAME}" ]; then
+    print_err_msg_exit "\
+A predefined grid name (PREDEF_GRID_NAME) must be specified when using 
+the FV3_RRFS_v1beta physic suite:
+  CCPP_PHYS_SUITE = \"${CCPP_PHYS_SUITE}\"
+  PREDEF_GRID_NAME = \"${PREDEF_GRID_NAME}\""
+  else        
+    if [ ! -d "${GWD_RRFS_v1beta_DIR}" ]; then
+      print_err_msg_exit "\
+The directory (GWD_RRFS_v1beta_DIR) that should contain the gravity wave 
+drag-related orography files for the FV3_RRFS_v1beta does not exist:
+  GWD_RRFS_v1beta_DIR = \"${GWD_RRFS_v1beta_DIR}\""
+    elif [ ! "$( ls -A ${GWD_RRFS_v1beta_DIR} )" ]; then
+      print_err_msg_exit "\
+The directory (GWD_RRFS_v1beta_DIR) that should contain the gravity wave 
+drag related orography files for the FV3_RRFS_v1beta is empty:
+  GWD_RRFS_v1beta_DIR = \"${GWD_RRFS_v1beta_DIR}\""
+    fi      
+  fi
+fi
+#
+#-----------------------------------------------------------------------
+#
 # If the base directory (EXPT_BASEDIR) in which the experiment subdirec-
 # tory (EXPT_SUBDIR) will be located is not set or is set to an empty 
 # string, set it to a default location that is at the same level as the
@@ -985,12 +1033,12 @@ check_for_preexist_dir_file "$EXPTDIR" "${PREEXISTING_DIR_METHOD}"
 # FIXam:
 # This is the directory that will contain the fixed files or symlinks to
 # the fixed files containing various fields on global grids (which are
-# usually much coarser than the native FV3SAR grid).
+# usually much coarser than the native FV3-LAM grid).
 #
-# FIXsar:
+# FIXLAM:
 # This is the directory that will contain the fixed files or symlinks to
 # the fixed files containing the grid, orography, and surface climatology
-# on the native FV3SAR grid.
+# on the native FV3-LAM grid.
 #
 # CYCLE_BASEDIR:
 # The base directory in which the directories for the various cycles will
@@ -1046,24 +1094,24 @@ Please ensure that path_resolved is an existing directory and then rerun
 the experiment generation script."
   fi
 
-  FIXsar="${FIXrrfs}/fix_sar/${EMC_GRID_NAME}"
+  FIXLAM="${FIXrrfs}/fix_lam/${EMC_GRID_NAME}"
 #
 # In NCO mode (i.e. if RUN_ENVIR set to "nco"), it is assumed that before
-# running the experiment generation script, the path specified in FIXsar 
+# running the experiment generation script, the path specified in FIXLAM 
 # already exists and is either itself the directory in which the fixed 
 # grid, orography, and surface climatology files are located, or it is a
 # symlink to such a directory.  Resolve any symlinks in the path specified
-# by FIXsar and check that this is the case.
+# by FIXLAM and check that this is the case.
 #
-  path_resolved=$( readlink -m "$FIXsar" )
+  path_resolved=$( readlink -m "$FIXLAM" )
   if [ ! -d "${path_resolved}" ]; then
     print_err_msg_exit "\
 In order to be able to generate a forecast experiment in NCO mode (i.e. 
-when RUN_ENVIR set to \"nco\"), the path specified by FIXsar after resolving 
+when RUN_ENVIR set to \"nco\"), the path specified by FIXLAM after resolving 
 all symlinks (path_resolved) must be an existing directory (but in this
 case isn't):
   RUN_ENVIR = \"${RUN_ENVIR}\"
-  FIXsar = \"$FIXsar\"
+  FIXLAM = \"$FIXLAM\"
   path_resolved = \"${path_resolved}\"
 Please ensure that path_resolved is an existing directory and then rerun 
 the experiment generation script."
@@ -1076,11 +1124,11 @@ the experiment generation script."
 
   COMOUT_BASEDIR="$COMROOT/$NET/$envir"
   check_for_preexist_dir_file "${COMOUT_BASEDIR}" "${PREEXISTING_DIR_METHOD}"
-  
+
 else
 
   FIXam="${EXPTDIR}/fix_am"
-  FIXsar="${EXPTDIR}/fix_sar"
+  FIXLAM="${EXPTDIR}/fix_lam"
   CYCLE_BASEDIR="$EXPTDIR"
   COMROOT=""
   COMOUT_BASEDIR=""
@@ -1176,6 +1224,12 @@ if [ "${USE_CCPP}" = "TRUE" ]; then
   CCPP_PHYS_SUITE_FN="suite_${CCPP_PHYS_SUITE}.xml"
   CCPP_PHYS_SUITE_IN_CCPP_FP="${UFS_WTHR_MDL_DIR}/FV3/ccpp/suites/${CCPP_PHYS_SUITE_FN}"
   CCPP_PHYS_SUITE_FP="${EXPTDIR}/${CCPP_PHYS_SUITE_FN}"
+  if [ ! -f "${CCPP_PHYS_SUITE_IN_CCPP_FP}" ]; then
+    print_err_msg_exit "\
+The CCPP suite definition file (CCPP_PHYS_SUITE_IN_CCPP_FP) does not exist
+in the local clone of the ufs-weather-model:
+  CCPP_PHYS_SUITE_IN_CCPP_FP = \"${CCPP_PHYS_SUITE_IN_CCPP_FP}\""
+  fi
 fi
 #
 #-----------------------------------------------------------------------
@@ -1225,11 +1279,22 @@ NEMS_CONFIG_FP="${EXPTDIR}/${NEMS_CONFIG_FN}"
 #-----------------------------------------------------------------------
 #
 check_var_valid_value "DO_ENSEMBLE" "valid_vals_DO_ENSEMBLE"
-
+#
+# Set DO_ENSEMBLE to either "TRUE" or "FALSE" so we don't have to consider
+# other valid values later on.
+#
+DO_ENSEMBLE=${DO_ENSEMBLE^^}
+if [ "$DO_ENSEMBLE" = "TRUE" ] || \
+   [ "$DO_ENSEMBLE" = "YES" ]; then
+  DO_ENSEMBLE="TRUE"
+elif [ "$DO_ENSEMBLE" = "FALSE" ] || \
+     [ "$DO_ENSEMBLE" = "NO" ]; then
+  DO_ENSEMBLE="FALSE"
+fi
 NDIGITS_ENSMEM_NAMES="0"
 ENSMEM_NAMES=("")
 FV3_NML_ENSMEM_FPS=("")
-if [ "${DO_ENSEMBLE}" = TRUE ]; then
+if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   NDIGITS_ENSMEM_NAMES="${#NUM_ENS_MEMBERS}"
 # Strip away all leading zeros in NUM_ENS_MEMBERS by converting it to a 
 # decimal (leading zeros will cause bash to interpret the number as an 
@@ -1307,22 +1372,22 @@ if [ "${RUN_ENVIR}" = "nco" ]; then
 
   if [ "${RUN_TASK_MAKE_GRID}" = "TRUE" ] || \
      [ "${RUN_TASK_MAKE_GRID}" = "FALSE" -a \
-       "${GRID_DIR}" != "$FIXsar" ]; then
+       "${GRID_DIR}" != "$FIXLAM" ]; then
 
     msg="
 When RUN_ENVIR is set to \"nco\", it is assumed that grid files already
-exist in the directory specified by FIXsar.  Thus, the grid file genera-
+exist in the directory specified by FIXLAM.  Thus, the grid file genera-
 tion task must not be run (i.e. RUN_TASK_MAKE_GRID must be set to 
 FALSE), and the directory in which to look for the grid files (i.e. 
-GRID_DIR) must be set to FIXsar.  Current values for these quantities
+GRID_DIR) must be set to FIXLAM.  Current values for these quantities
 are:
   RUN_TASK_MAKE_GRID = \"${RUN_TASK_MAKE_GRID}\"
   GRID_DIR = \"${GRID_DIR}\"
 Resetting RUN_TASK_MAKE_GRID to \"FALSE\" and GRID_DIR to the contents
-of FIXsar.  Reset values are:"
+of FIXLAM.  Reset values are:"
 
     RUN_TASK_MAKE_GRID="FALSE"
-    GRID_DIR="$FIXsar"
+    GRID_DIR="$FIXLAM"
 
     msg="$msg""
   RUN_TASK_MAKE_GRID = \"${RUN_TASK_MAKE_GRID}\"
@@ -1335,22 +1400,22 @@ of FIXsar.  Reset values are:"
 
   if [ "${RUN_TASK_MAKE_OROG}" = "TRUE" ] || \
      [ "${RUN_TASK_MAKE_OROG}" = "FALSE" -a \
-       "${OROG_DIR}" != "$FIXsar" ]; then
+       "${OROG_DIR}" != "$FIXLAM" ]; then
 
     msg="
 When RUN_ENVIR is set to \"nco\", it is assumed that orography files al-
-ready exist in the directory specified by FIXsar.  Thus, the orography 
+ready exist in the directory specified by FIXLAM.  Thus, the orography 
 file generation task must not be run (i.e. RUN_TASK_MAKE_OROG must be 
 set to FALSE), and the directory in which to look for the orography 
-files (i.e. OROG_DIR) must be set to FIXsar.  Current values for these
+files (i.e. OROG_DIR) must be set to FIXLAM.  Current values for these
 quantities are:
   RUN_TASK_MAKE_OROG = \"${RUN_TASK_MAKE_OROG}\"
   OROG_DIR = \"${OROG_DIR}\"
 Resetting RUN_TASK_MAKE_OROG to \"FALSE\" and OROG_DIR to the contents
-of FIXsar.  Reset values are:"
+of FIXLAM.  Reset values are:"
 
     RUN_TASK_MAKE_OROG="FALSE"
-    OROG_DIR="$FIXsar"
+    OROG_DIR="$FIXLAM"
 
     msg="$msg""
   RUN_TASK_MAKE_OROG = \"${RUN_TASK_MAKE_OROG}\"
@@ -1363,22 +1428,22 @@ of FIXsar.  Reset values are:"
 
   if [ "${RUN_TASK_MAKE_SFC_CLIMO}" = "TRUE" ] || \
      [ "${RUN_TASK_MAKE_SFC_CLIMO}" = "FALSE" -a \
-       "${SFC_CLIMO_DIR}" != "$FIXsar" ]; then
+       "${SFC_CLIMO_DIR}" != "$FIXLAM" ]; then
 
     msg="
 When RUN_ENVIR is set to \"nco\", it is assumed that surface climatology
-files already exist in the directory specified by FIXsar.  Thus, the 
+files already exist in the directory specified by FIXLAM.  Thus, the 
 surface climatology file generation task must not be run (i.e. RUN_-
 TASK_MAKE_SFC_CLIMO must be set to FALSE), and the directory in which to
 look for the surface climatology files (i.e. SFC_CLIMO_DIR) must be set
-to FIXsar.  Current values for these quantities are:
+to FIXLAM.  Current values for these quantities are:
   RUN_TASK_MAKE_SFC_CLIMO = \"${RUN_TASK_MAKE_SFC_CLIMO}\"
   SFC_CLIMO_DIR = \"${SFC_CLIMO_DIR}\"
 Resetting RUN_TASK_MAKE_SFC_CLIMO to \"FALSE\" and SFC_CLIMO_DIR to the
-contents of FIXsar.  Reset values are:"
+contents of FIXLAM.  Reset values are:"
 
     RUN_TASK_MAKE_SFC_CLIMO="FALSE"
-    SFC_CLIMO_DIR="$FIXsar"
+    SFC_CLIMO_DIR="$FIXLAM"
 
     msg="$msg""
   RUN_TASK_MAKE_SFC_CLIMO = \"${RUN_TASK_MAKE_SFC_CLIMO}\"
@@ -1463,7 +1528,7 @@ fi
 #
 err_msg="\
 The external model specified in EXTRN_MDL_NAME_ICS that provides initial
-conditions (ICs) and surface fields to the FV3SAR is not supported:
+conditions (ICs) and surface fields to the FV3-LAM is not supported:
   EXTRN_MDL_NAME_ICS = \"${EXTRN_MDL_NAME_ICS}\""
 check_var_valid_value \
   "EXTRN_MDL_NAME_ICS" "valid_vals_EXTRN_MDL_NAME_ICS" "${err_msg}"
@@ -1476,7 +1541,7 @@ check_var_valid_value \
 #
 err_msg="\
 The external model specified in EXTRN_MDL_NAME_ICS that provides lateral
-boundary conditions (LBCs) to the FV3SAR is not supported:
+boundary conditions (LBCs) to the FV3-LAM is not supported:
   EXTRN_MDL_NAME_LBCS = \"${EXTRN_MDL_NAME_LBCS}\""
 check_var_valid_value \
   "EXTRN_MDL_NAME_LBCS" "valid_vals_EXTRN_MDL_NAME_LBCS" "${err_msg}"
@@ -1513,35 +1578,6 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# If the run environment is "nco", the external model for both the ICs
-# and the LBCs should be either the FV3GFS or the GSMGFS.
-#
-#-----------------------------------------------------------------------
-#
-if [ "${RUN_ENVIR}" = "nco" ]; then
-
-  if [ "${EXTRN_MDL_NAME_ICS}" != "FV3GFS" ] && \
-     [ "${EXTRN_MDL_NAME_ICS}" != "GSMGFS" ]; then
-    print_err_msg_exit "\
-When RUN_ENVIR set to \"nco\", the external model used for the initial
-conditions and surface fields must be either \"FV3GFS\" or \"GSMGFS\":
-  RUN_ENVIR = \"${RUN_ENVIR}\"
-  EXTRN_MDL_NAME_ICS = \"${EXTRN_MDL_NAME_ICS}\""
-  fi
-
-  if [ "${EXTRN_MDL_NAME_LBCS}" != "FV3GFS" ] && \
-     [ "${EXTRN_MDL_NAME_LBCS}" != "GSMGFS" ]; then
-    print_err_msg_exit "\
-When RUN_ENVIR set to \"nco\", the external model used for the initial
-conditions and surface fields must be either \"FV3GFS\" or \"GSMGFS\":
-  RUN_ENVIR = \"${RUN_ENVIR}\"
-  EXTRN_MDL_NAME_LBCS = \"${EXTRN_MDL_NAME_LBCS}\""
-  fi
-
-fi
-#
-#-----------------------------------------------------------------------
-#
 # Set cycle-independent parameters associated with the external models
 # from which we will obtain the ICs and LBCs.
 #
@@ -1569,7 +1605,7 @@ fi
 #
 # Any regional model must be supplied lateral boundary conditions (in
 # addition to initial conditions) to be able to perform a forecast.  In
-# the FV3SAR model, these boundary conditions (BCs) are supplied using a
+# the FV3-LAM model, these boundary conditions (BCs) are supplied using a
 # "halo" of grid cells around the regional domain that extend beyond the
 # boundary of the domain.  The model is formulated such that along with
 # files containing these BCs, it needs as input the following files (in
@@ -1654,18 +1690,18 @@ if [ "${GRID_GEN_METHOD}" = "GFDLgrid" ]; then
 #
 #-----------------------------------------------------------------------
 #
-elif [ "${GRID_GEN_METHOD}" = "JPgrid" ]; then
+elif [ "${GRID_GEN_METHOD}" = "ESGgrid" ]; then
 
-  set_gridparams_JPgrid \
-    lon_ctr="${JPgrid_LON_CTR}" \
-    lat_ctr="${JPgrid_LAT_CTR}" \
-    nx="${JPgrid_NX}" \
-    ny="${JPgrid_NY}" \
-    halo_width="${JPgrid_WIDE_HALO_WIDTH}" \
-    delx="${JPgrid_DELX}" \
-    dely="${JPgrid_DELY}" \
-    alpha="${JPgrid_ALPHA_PARAM}" \
-    kappa="${JPgrid_KAPPA_PARAM}" \
+  set_gridparams_ESGgrid \
+    lon_ctr="${ESGgrid_LON_CTR}" \
+    lat_ctr="${ESGgrid_LAT_CTR}" \
+    nx="${ESGgrid_NX}" \
+    ny="${ESGgrid_NY}" \
+    halo_width="${ESGgrid_WIDE_HALO_WIDTH}" \
+    delx="${ESGgrid_DELX}" \
+    dely="${ESGgrid_DELY}" \
+    alpha="${ESGgrid_ALPHA_PARAM}" \
+    kappa="${ESGgrid_KAPPA_PARAM}" \
     output_varname_lon_ctr="LON_CTR" \
     output_varname_lat_ctr="LAT_CTR" \
     output_varname_nx="NX" \
@@ -1685,10 +1721,10 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-RES_IN_FIXSAR_FILENAMES=""
+RES_IN_FIXLAM_FILENAMES=""
 
 if [ "${RUN_ENVIR}" != "nco" ]; then
-  mkdir_vrfy -p "$FIXsar"
+  mkdir_vrfy -p "$FIXLAM"
 fi
 #
 #-----------------------------------------------------------------------
@@ -1701,28 +1737,28 @@ if [ "${RUN_ENVIR}" = "nco" ]; then
 
   suffix="${DOT_OR_USCORE}mosaic.halo${NH3}.nc"
   glob_pattern="C*$suffix"
-  cd_vrfy $FIXsar
+  cd_vrfy $FIXLAM
   num_files=$( ls -1 ${glob_pattern} 2>/dev/null | wc -l )
 
   if [ "${num_files}" -ne "1" ]; then
     print_err_msg_exit "\
-Exactly one file must exist in directory FIXsar matching the globbing
+Exactly one file must exist in directory FIXLAM matching the globbing
 pattern glob_pattern:
-  FIXsar = \"${FIXsar}\"
+  FIXLAM = \"${FIXLAM}\"
   glob_pattern = \"${glob_pattern}\"
   num_files = ${num_files}"
   fi
 
   fn=$( ls -1 ${glob_pattern} )
-  RES_IN_FIXSAR_FILENAMES=$( \
+  RES_IN_FIXLAM_FILENAMES=$( \
     printf "%s" $fn | sed -n -r -e "s/^C([0-9]*)$suffix/\1/p" )
   if [ "${GRID_GEN_METHOD}" = "GFDLgrid" ] && \
-     [ "${GFDLgrid_RES}" -ne "${RES_IN_FIXSAR_FILENAMES}" ]; then
+     [ "${GFDLgrid_RES}" -ne "${RES_IN_FIXLAM_FILENAMES}" ]; then
     print_err_msg_exit "\
-The resolution extracted from the fixed file names (RES_IN_FIXSAR_FILENAMES)
+The resolution extracted from the fixed file names (RES_IN_FIXLAM_FILENAMES)
 does not match the resolution specified by GFDLgrid_RES:
   GFDLgrid_RES = ${GFDLgrid_RES}
-  RES_IN_FIXSAR_FILENAMES = ${RES_IN_FIXSAR_FILENAMES}"
+  RES_IN_FIXLAM_FILENAMES = ${RES_IN_FIXLAM_FILENAMES}"
   fi
 
 else
@@ -1730,7 +1766,7 @@ else
 #-----------------------------------------------------------------------
 #
 # If the grid file generation task in the workflow is going to be skipped
-# (because pregenerated files are available), create links in the FIXsar
+# (because pregenerated files are available), create links in the FIXLAM
 # directory to the pregenerated grid files.
 #
 #-----------------------------------------------------------------------
@@ -1745,7 +1781,7 @@ else
     print_err_msg_exit "\
   Call to function to create links to grid files failed."
 
-    RES_IN_FIXSAR_FILENAMES="${res_in_grid_fns}"
+    RES_IN_FIXLAM_FILENAMES="${res_in_grid_fns}"
 
   fi
 #
@@ -1753,7 +1789,7 @@ else
 #
 # If the orography file generation task in the workflow is going to be
 # skipped (because pregenerated files are available), create links in
-# the FIXsar directory to the pregenerated orography files.
+# the FIXLAM directory to the pregenerated orography files.
 #
 #-----------------------------------------------------------------------
 #
@@ -1767,16 +1803,16 @@ else
     print_err_msg_exit "\
   Call to function to create links to orography files failed."
 
-    if [ ! -z "${RES_IN_FIXSAR_FILENAMES}" ] && \
-       [ "${res_in_orog_fns}" -ne "${RES_IN_FIXSAR_FILENAMES}" ]; then
+    if [ ! -z "${RES_IN_FIXLAM_FILENAMES}" ] && \
+       [ "${res_in_orog_fns}" -ne "${RES_IN_FIXLAM_FILENAMES}" ]; then
       print_err_msg_exit "\
   The resolution extracted from the orography file names (res_in_orog_fns)
   does not match the resolution in other groups of files already consi-
-  dered (RES_IN_FIXSAR_FILENAMES):
+  dered (RES_IN_FIXLAM_FILENAMES):
     res_in_orog_fns = ${res_in_orog_fns}
-    RES_IN_FIXSAR_FILENAMES = ${RES_IN_FIXSAR_FILENAMES}"
+    RES_IN_FIXLAM_FILENAMES = ${RES_IN_FIXLAM_FILENAMES}"
     else
-      RES_IN_FIXSAR_FILENAMES="${res_in_orog_fns}"
+      RES_IN_FIXLAM_FILENAMES="${res_in_orog_fns}"
     fi
 
   fi
@@ -1785,7 +1821,7 @@ else
 #
 # If the surface climatology file generation task in the workflow is
 # going to be skipped (because pregenerated files are available), create
-# links in the FIXsar directory to the pregenerated surface climatology
+# links in the FIXLAM directory to the pregenerated surface climatology
 # files.
 #
 #-----------------------------------------------------------------------
@@ -1800,16 +1836,16 @@ else
     print_err_msg_exit "\
   Call to function to create links to surface climatology files failed."
 
-    if [ ! -z "${RES_IN_FIXSAR_FILENAMES}" ] && \
-       [ "${res_in_sfc_climo_fns}" -ne "${RES_IN_FIXSAR_FILENAMES}" ]; then
+    if [ ! -z "${RES_IN_FIXLAM_FILENAMES}" ] && \
+       [ "${res_in_sfc_climo_fns}" -ne "${RES_IN_FIXLAM_FILENAMES}" ]; then
       print_err_msg_exit "\
   The resolution extracted from the surface climatology file names (res_-
   in_sfc_climo_fns) does not match the resolution in other groups of files
-  already considered (RES_IN_FIXSAR_FILENAMES):
+  already considered (RES_IN_FIXLAM_FILENAMES):
     res_in_sfc_climo_fns = ${res_in_sfc_climo_fns}
-    RES_IN_FIXSAR_FILENAMES = ${RES_IN_FIXSAR_FILENAMES}"
+    RES_IN_FIXLAM_FILENAMES = ${RES_IN_FIXLAM_FILENAMES}"
     else
-      RES_IN_FIXSAR_FILENAMES="${res_in_sfc_climo_fns}"
+      RES_IN_FIXLAM_FILENAMES="${res_in_sfc_climo_fns}"
     fi
 
   fi
@@ -1826,7 +1862,7 @@ fi
 #
 CRES=""
 if [ "${RUN_TASK_MAKE_GRID}" = "FALSE" ]; then
-  CRES="C${RES_IN_FIXSAR_FILENAMES}"
+  CRES="C${RES_IN_FIXLAM_FILENAMES}"
 fi
 
 
@@ -2482,15 +2518,14 @@ MODULES_DIR="${MODULES_DIR}"
 EXECDIR="$EXECDIR"
 FIXrrfs="$FIXrrfs"
 FIXam="$FIXam"
-FIXsar="$FIXsar"
+FIXLAM="$FIXLAM"
 FIXgsm="$FIXgsm"
-FIXupp="$FIXupp"
-FIXgsd="$FIXgsd"
 COMROOT="$COMROOT"
 COMOUT_BASEDIR="${COMOUT_BASEDIR}"
 TEMPLATE_DIR="${TEMPLATE_DIR}"
 UFS_WTHR_MDL_DIR="${UFS_WTHR_MDL_DIR}"
 UFS_UTILS_DIR="${UFS_UTILS_DIR}"
+EMC_POST_DIR="${EMC_POST_DIR}"
 CHGRES_DIR="${CHGRES_DIR}"
 SFC_CLIMO_INPUT_DIR="${SFC_CLIMO_INPUT_DIR}"
 TOPO_DIR=${TOPO_DIR}
@@ -2501,6 +2536,7 @@ CYCLE_BASEDIR="${CYCLE_BASEDIR}"
 GRID_DIR="${GRID_DIR}"
 OROG_DIR="${OROG_DIR}"
 SFC_CLIMO_DIR="${SFC_CLIMO_DIR}"
+GWD_RRFS_v1beta_DIR="${GWD_RRFS_v1beta_DIR}"
 
 NDIGITS_ENSMEM_NAMES="${NDIGITS_ENSMEM_NAMES}"
 ENSMEM_NAMES=( $( printf "\"%s\" " "${ENSMEM_NAMES[@]}" ))
@@ -2568,7 +2604,7 @@ NY="${NY}"
 NHW="${NHW}"
 STRETCH_FAC="${STRETCH_FAC}"
 
-RES_IN_FIXSAR_FILENAMES="${RES_IN_FIXSAR_FILENAMES}"
+RES_IN_FIXLAM_FILENAMES="${RES_IN_FIXLAM_FILENAMES}"
 #
 # If running the make_grid task, CRES will be set to a null string du-
 # the grid generation step.  It will later be set to an actual value af-
@@ -2612,7 +2648,7 @@ EOM
 Heredoc (cat) command to append grid parameters to variable definitions
 file returned with a nonzero status."
 
-elif [ "${GRID_GEN_METHOD}" = "JPgrid" ]; then
+elif [ "${GRID_GEN_METHOD}" = "ESGgrid" ]; then
 
   { cat << EOM >> ${GLOBAL_VAR_DEFNS_FP}
 #
@@ -2662,7 +2698,7 @@ OZONE_PARAM="${OZONE_PARAM}"
 # directory in which the workflow scripts will look for the files generated 
 # by the external model specified in EXTRN_MDL_NAME_ICS.  These files will 
 # be used to generate the input initial condition and surface files for 
-# the FV3SAR.
+# the FV3-LAM.
 #
 #-----------------------------------------------------------------------
 #
@@ -2674,7 +2710,7 @@ EXTRN_MDL_SYSBASEDIR_ICS="${EXTRN_MDL_SYSBASEDIR_ICS}"
 # directory in which the workflow scripts will look for the files generated 
 # by the external model specified in EXTRN_MDL_NAME_LBCS.  These files 
 # will be used to generate the input lateral boundary condition files for 
-# the FV3SAR.
+# the FV3-LAM.
 #
 #-----------------------------------------------------------------------
 #

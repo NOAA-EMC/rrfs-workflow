@@ -81,7 +81,7 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 {%- endfor %}
 
   <log>
-    <cyclestr>&LOGDIR;/FV3SAR_wflow.log</cyclestr>
+    <cyclestr>&LOGDIR;/FV3LAM_wflow.log</cyclestr>
   </log>
 
 <!-- 
@@ -375,7 +375,7 @@ MODULES_RUN_TASK_FP script.
 -->
   <metatask name="&RUN_POST_TN;{{ uscore_ensmem_name }}">
 
-    <var name="fhr"> {% for h in range(0, fcst_len_hrs+1) %}{{ " %02d" % h  }}{% endfor %} </var>
+    <var name="fhr"> {% for h in range(0, fcst_len_hrs+1) %}{{ " %03d" % h  }}{% endfor %} </var>
 
     <task name="&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr#" maxtries="1">
 
@@ -399,8 +399,8 @@ MODULES_RUN_TASK_FP script.
         <or>
           <taskdep task="&RUN_FCST_TN;"/>
           <and>
-            <datadep age="05:00"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/dynf0#fhr#.nc</cyclestr></datadep>
-            <datadep age="05:00"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/phyf0#fhr#.nc</cyclestr></datadep>
+            <datadep age="05:00"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/dynf#fhr#.nc</cyclestr></datadep>
+            <datadep age="05:00"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/phyf#fhr#.nc</cyclestr></datadep>
           </and>
         </or>
       </dependency>

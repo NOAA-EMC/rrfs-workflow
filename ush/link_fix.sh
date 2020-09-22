@@ -106,7 +106,7 @@ function link_fix() {
 #
 #-----------------------------------------------------------------------
 #
-# Create symlinks in the FIXsar directory pointing to the grid files.
+# Create symlinks in the FIXLAM directory pointing to the grid files.
 # These symlinks are needed by the make_orog, make_sfc_climo, make_ic,
 # make_lbc, and/or run_fcst tasks.
 #
@@ -118,7 +118,7 @@ function link_fix() {
 #-----------------------------------------------------------------------
 #
   print_info_msg "$verbose" "
-Creating links in the FIXsar directory to the grid files..."
+Creating links in the FIXLAM directory to the grid files..."
 #
 #-----------------------------------------------------------------------
 #
@@ -127,7 +127,7 @@ Creating links in the FIXsar directory to the grid files..."
 #
 #
 # For grid files (i.e. file_group set to "grid"), symlinks are created
-# in the FIXsar directory to files (of the same names) in the GRID_DIR.
+# in the FIXLAM directory to files (of the same names) in the GRID_DIR.
 # These symlinks/files and the reason each is needed is listed below:
 #
 # 1) "C*.mosaic.halo${NHW}.nc"
@@ -229,12 +229,12 @@ Creating links in the FIXsar directory to the grid files..."
 #
   "grid")
     fns=( \
-"C*${DOT_OR_USCORE}mosaic.halo${NHW}.nc" \
-"C*${DOT_OR_USCORE}mosaic.halo${NH4}.nc" \
-"C*${DOT_OR_USCORE}mosaic.halo${NH3}.nc" \
-"C*${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NHW}.nc" \
-"C*${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH3}.nc" \
-"C*${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH4}.nc" \
+    "C*${DOT_OR_USCORE}mosaic.halo${NHW}.nc" \
+    "C*${DOT_OR_USCORE}mosaic.halo${NH4}.nc" \
+    "C*${DOT_OR_USCORE}mosaic.halo${NH3}.nc" \
+    "C*${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NHW}.nc" \
+    "C*${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH3}.nc" \
+    "C*${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH4}.nc" \
         )
     fps=( "${fns[@]/#/${GRID_DIR}/}" )
     run_task="${RUN_TASK_MAKE_GRID}"
@@ -242,9 +242,16 @@ Creating links in the FIXsar directory to the grid files..."
 #
   "orog")
     fns=( \
-"C*${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH0}.nc" \
-"C*${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH4}.nc" \
+    "C*${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH0}.nc" \
+    "C*${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH4}.nc" \
         )
+    if [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v1beta" ]; then
+      fns+=( \
+      "C*${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc" \
+      "C*${DOT_OR_USCORE}oro_data_ls.tile${TILE_RGNL}.halo${NH0}.nc" \
+           )
+    fi
+
     fps=( "${fns[@]/#/${OROG_DIR}/}" )
     run_task="${RUN_TASK_MAKE_OROG}"
     ;;
@@ -336,17 +343,17 @@ Please ensure that all files have the same resolution."
 #-----------------------------------------------------------------------
 #
 # In creating the various symlinks below, it is convenient to work in 
-# the FIXsar directory.  We will change directory back to the original
+# the FIXLAM directory.  We will change directory back to the original
 # later below.
 #
 #-----------------------------------------------------------------------
 #
-  cd_vrfy "$FIXsar"
+  cd_vrfy "$FIXLAM"
 #
 #-----------------------------------------------------------------------
 #
 # Use the set of full file paths generated above as the link targets to 
-# create symlinks to these files in the FIXsar directory.
+# create symlinks to these files in the FIXLAM directory.
 #
 #-----------------------------------------------------------------------
 #
@@ -392,8 +399,8 @@ Cannot create symlink because target file (fp) does not exist:
     else
       print_err_msg_exit "\
 Cannot create symlink because the target file (target) in the directory 
-specified by FIXsar does not exist:
-  FIXsar = \"${FIXsar}\"
+specified by FIXLAM does not exist:
+  FIXLAM = \"${FIXLAM}\"
   target = \"${target}\""
     fi
 #
@@ -418,8 +425,8 @@ specified by FIXsar does not exist:
       else
         print_err_msg_exit "\
 Cannot create symlink because the target file (target) in the directory 
-specified by FIXsar does not exist:
-  FIXsar = \"${FIXsar}\"
+specified by FIXLAM does not exist:
+  FIXLAM = \"${FIXLAM}\"
   target = \"${target}\""
       fi
 
@@ -455,7 +462,7 @@ Cannot create symlink because target file (target) does not exist:
     done
 #
 # In order to be able to specify the surface climatology file names in 
-# the forecast model's namelist file, in the FIXsar directory a symlink
+# the forecast model's namelist file, in the FIXLAM directory a symlink
 # must be created for each surface climatology field that has "tile1" in
 # its name (and no "halo") and which points to the corresponding "tile7.halo0" 
 # file.

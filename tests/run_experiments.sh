@@ -15,10 +15,10 @@ scrfunc_dir=$( dirname "${scrfunc_fp}" )
 #
 #-----------------------------------------------------------------------
 #
-# The current script should be located in the "tests" subdirectory of 
-# the workflow directory, which we denote by homerrfs.  Thus, the work-
-# flow directory (homerrfs) is the one above the directory of the cur-
-# rent script.  Set HOMRErrfs accordingly.
+# The current script should be located in the "tests" subdirectory of the 
+# workflow's top-level directory, which we denote by homerrfs.  Thus, 
+# homerrfs is the directory one level above the directory in which the 
+# current script is located.  Set homerrfs accordingly.
 #
 #-----------------------------------------------------------------------
 #
@@ -65,6 +65,9 @@ valid_args=( \
 "account" \
 "use_cron_to_relaunch" \
 "cron_relaunch_intvl_mnts" \
+"stmp" \
+"ptmp" \
+"verbose" \
 )
 process_args valid_args "$@"
 #
@@ -138,6 +141,14 @@ this script:
     account=\"name_of_hpc_account_to_use\" \\
     ..."
 fi
+#
+#-----------------------------------------------------------------------
+#
+# Source the default workflow configuration file.
+#
+#-----------------------------------------------------------------------
+#
+. ${ushdir}/config_defaults.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -382,7 +393,7 @@ fi
 # baseline and the experiment.
 #
   expt_config_fp="$ushdir/config.${expt_name}.sh"
-  cp_vrfy "${baseline_config_fp}" "${expt_config_fp}"
+#  cp_vrfy "${baseline_config_fp}" "${expt_config_fp}"
 #
 #-----------------------------------------------------------------------
 #
@@ -391,7 +402,61 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-  set_bash_param "${expt_config_fp}" "EXPT_SUBDIR" "${expt_subdir}"
+#  set_bash_param "${expt_config_fp}" "EXPT_SUBDIR" "${expt_subdir}"
+#
+#-----------------------------------------------------------------------
+#
+# Source the experiment configuration file.
+#
+#-----------------------------------------------------------------------
+#
+#  . ${expt_config_fp}
+#
+#-----------------------------------------------------------------------
+#
+# Source the experiment baseline configuration file.
+#
+#-----------------------------------------------------------------------
+#
+  . ${baseline_config_fp}
+#
+#-----------------------------------------------------------------------
+#
+# Set MACHINE, ACCOUNT, and EXPT_SUBDIR using the values provided on the 
+# command line or set above.  These override any values set in the default 
+# workflow configuration file sourced above.  Then write them to the actual 
+# workflow configuration file for the test.
+#
+#-----------------------------------------------------------------------
+#
+  MACHINE="${machine^^}"
+  ACCOUNT="${account}"
+  EXPT_SUBDIR="${expt_subdir}"
+  USE_CRON_TO_RELAUNCH=${use_cron_to_relaunch:-"TRUE"}
+  CRON_RELAUNCH_INTVL_MNTS=${cron_relaunch_intvl_mnts:-"02"}
+  VERBOSE=${verbose:-"TRUE"}
+
+  { cat << EOM >> ${expt_config_fp}
+#
+# The machine and account.
+#
+MACHINE="${MACHINE}"
+ACCOUNT="${ACCOUNT}"
+EXPT_SUBDIR="${EXPT_SUBDIR}"
+#
+# Whether or not to resubmit the worfklow to the job submission system
+# using cron.
+#
+USE_CRON_TO_RELAUNCH="${USE_CRON_TO_RELAUNCH}"
+CRON_RELAUNCH_INTVL_MNTS="${CRON_RELAUNCH_INTVL_MNTS}"
+VERBOSE="${VERBOSE}"
+
+EOM
+  } || print_err_msg_exit "\
+Heredoc (cat) command failed."
+
+# Append test-specific values to the workflow configuration file.
+  cat "${baseline_config_fp}" >> "${expt_config_fp}"
 #
 #-----------------------------------------------------------------------
 #
@@ -405,20 +470,272 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-  if [ ! -z "$machine" ]; then
-    set_bash_param "${expt_config_fp}" "MACHINE" "$machine"
-  fi
+##  if [ ! -z "$machine" ]; then
+##    set_bash_param "${expt_config_fp}" "MACHINE" "${MACHINE}"
+##  fi
+#  set_bash_param "${expt_config_fp}" "MACHINE" "${MACHINE}"
+##
+##  if [ ! -z "$account" ]; then
+##    set_bash_param "${expt_config_fp}" "ACCOUNT" "$account"
+##  fi
+#  set_bash_param "${expt_config_fp}" "ACCOUNT" "$account"
+#
+#  if [ ! -z "${use_cron_to_relaunch}" ]; then
+#    set_bash_param "${expt_config_fp}" "USE_CRON_TO_RELAUNCH" "${use_cron_to_relaunch}"
+#  fi
+#
+#  if [ ! -z "${cron_relaunch_intvl_mnts}" ]; then
+#    set_bash_param "${expt_config_fp}" "CRON_RELAUNCH_INTVL_MNTS" "${cron_relaunch_intvl_mnts}"
+#  fi
+#
+#-----------------------------------------------------------------------
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+  if [ ${RUN_TASK_MAKE_GRID} = "FALSE" ]; then
 
-  if [ ! -z "$account" ]; then
-    set_bash_param "${expt_config_fp}" "ACCOUNT" "$account"
-  fi
+    if [ "$MACHINE" = "HERA" ]; then
+      GRID_DIR="/scratch2/BMC/det/FV3LAM_pregen/grid/${PREDEF_GRID_NAME}"
+    elif [ "$MACHINE" = "CHEYENNE" ]; then
+      GRID_DIR="/glade/p/ral/jntp/UFS_CAM/FV3LAM_pregen/grid/${PREDEF_GRID_NAME}"
+    else
+      print_err_msg_exit "\
+The directory (GRID_DIR) in which the pregenerated grid files are located
+has not been specified for this machine (MACHINE):
+  MACHINE= \"${MACHINE}\""
+    fi
 
-  if [ ! -z "${use_cron_to_relaunch}" ]; then
-    set_bash_param "${expt_config_fp}" "USE_CRON_TO_RELAUNCH" "${use_cron_to_relaunch}"
-  fi
+    { cat << EOM >> ${expt_config_fp}
+#
+# Directory containing the pregenerated grid files.
+#
+GRID_DIR="${GRID_DIR}"
+EOM
+    } || print_err_msg_exit "\
+Heredoc (cat) command to append the variable GRID_DIR containing the 
+pregenerated grid files to the workflow configuration file returned 
+with a nonzero status."
 
-  if [ ! -z "${cron_relaunch_intvl_mnts}" ]; then
-    set_bash_param "${expt_config_fp}" "CRON_RELAUNCH_INTVL_MNTS" "${cron_relaunch_intvl_mnts}"
+  fi
+#
+#-----------------------------------------------------------------------
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+  if [ ${RUN_TASK_MAKE_OROG} = "FALSE" ]; then
+
+    if [ "$MACHINE" = "HERA" ]; then
+      OROG_DIR="/scratch2/BMC/det/FV3LAM_pregen/orog/${PREDEF_GRID_NAME}"
+    elif [ "$MACHINE" = "CHEYENNE" ]; then
+      OROG_DIR="/glade/p/ral/jntp/UFS_CAM/FV3LAM_pregen/orog/${PREDEF_GRID_NAME}"
+    else
+      print_err_msg_exit "\
+The directory (OROG_DIR) in which the pregenerated grid files are located
+has not been specified for this machine (MACHINE):
+  MACHINE= \"${MACHINE}\""
+    fi
+
+    { cat << EOM >> ${expt_config_fp}
+#
+# Directory containing the pregenerated grid files.
+#
+OROG_DIR="${OROG_DIR}"
+EOM
+    } || print_err_msg_exit "\
+Heredoc (cat) command to append the variable OROG_DIR containing the 
+pregenerated orography files to the workflow configuration file returned 
+with a nonzero status."
+
+  fi
+#
+#-----------------------------------------------------------------------
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+  if [ ${RUN_TASK_MAKE_SFC_CLIMO} = "FALSE" ]; then
+
+    if [ "$MACHINE" = "HERA" ]; then
+      SFC_CLIMO_DIR="/scratch2/BMC/det/FV3LAM_pregen/sfc_climo/${PREDEF_GRID_NAME}"
+    elif [ "$MACHINE" = "CHEYENNE" ]; then
+      SFC_CLIMO_DIR="/glade/p/ral/jntp/UFS_CAM/FV3LAM_pregen/sfc_climo/${PREDEF_GRID_NAME}"
+    else
+      print_err_msg_exit "\
+The directory (SFC_CLIMO_DIR) in which the pregenerated grid files are 
+located has not been specified for this machine (MACHINE):
+  MACHINE= \"${MACHINE}\""
+    fi
+
+    { cat << EOM >> ${expt_config_fp}
+#
+# Directory containing the pregenerated grid files.
+#
+SFC_CLIMO_DIR="${SFC_CLIMO_DIR}"
+EOM
+    } || print_err_msg_exit "\
+Heredoc (cat) command to append the variable SFC_CLIMO_DIR containing 
+the pregenerated grid files to the workflow configuration file returned 
+with a nonzero status."
+
+  fi
+#
+#-----------------------------------------------------------------------
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+  if [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v1beta" ]; then
+
+    if [ "$MACHINE" = "HERA" ]; then
+      GWD_RRFS_v1beta_BASEDIR="/scratch2/BMC/det/FV3LAM_pregen/orog"
+    elif [ "$MACHINE" = "JET" ]; then
+      GWD_RRFS_v1beta_BASEDIR="/lfs4/BMC/wrfruc/FV3LAM_pregen/orog"
+    elif [ "$MACHINE" = "CHEYENNE" ]; then
+      GWD_RRFS_v1beta_BASEDIR="/glade/p/ral/jntp/UFS_CAM/FV3LAM_pregen/orog"
+    else
+      print_err_msg_exit "\
+The base directory (GWD_RRFS_v1beta_BASEDIR) in which the orography 
+statistics files needed by the gravity wave drag parameterization in 
+the current physics suite (CCPP_PHYS_SUITE) should be located has not 
+been specified for this machine (MACHINE):
+  CCPP_PHYS_SUITE= \"${CCPP_PHYS_SUIT}\"
+  MACHINE= \"${MACHINE}\""
+    fi
+
+    { cat << EOM >> ${expt_config_fp}
+#
+# Directory containing the orography statistics files needed by the 
+# gravity wave drag parameterization.
+#
+GWD_RRFS_v1beta_BASEDIR="${GWD_RRFS_v1beta_BASEDIR}"
+EOM
+    } || print_err_msg_exit "\
+Heredoc (cat) command to append the variable GWD_RRFS_v1beta_BASEDIR 
+containing the orography statistics files needed by the gravity wave 
+drag parameterization to the workflow configuration file returned with 
+a nonzero status."
+
+  fi
+#
+#-----------------------------------------------------------------------
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+  if [ "${RUN_ENVIR}" = "nco" ]; then
+
+    nco_dirs=$( readlink -f "$homerrfs/../../nco_dirs" ) 
+    STMP=${stmp:-"${nco_dirs}/stmp"}
+    PTMP=${ptmp:-"${nco_dirs}/ptmp"}
+
+    if [ "${EXTRN_MDL_NAME_ICS}" = "FV3GFS" ] || \
+       [ "${EXTRN_MDL_NAME_ICS}" = "GSMGFS" ] || \
+       [ "${EXTRN_MDL_NAME_LBCS}" = "FV3GFS" ] || \
+       [ "${EXTRN_MDL_NAME_LBCS}" = "GSMGFS" ]; then 
+
+      if [ "$MACHINE" = "HERA" ]; then
+        COMINgfs="/scratch1/NCEPDEV/hwrf/noscrub/hafs-input/COMGFS"
+      elif [ "$MACHINE" = "JET" ]; then
+        COMINgfs="/lfs1/HFIP/hwrf-data/hafs-input/COMGFS"
+      elif [ "$MACHINE" = "CHEYENNE" ]; then
+        COMINgfs="/glade/scratch/ketefian/NCO_dirs/COMGFS"
+      else
+        print_err_msg_exit "\
+The directories COMINgfs, STMP, and PTMP that need to be specified when
+running the workflow in NCO-mode (i.e. RUN_ENVIR set to \"nco\") have 
+not been specified for this machine (MACHINE):
+  MACHINE= \"${MACHINE}\""
+      fi
+
+    fi
+
+    { cat << EOM >> ${expt_config_fp}
+#
+# Directories COMINgfs, STMP, and PTMP that need to be specified when
+# running the workflow in NCO-mode (i.e. RUN_ENVIR set to "nco").
+#
+COMINgfs="${COMINgfs}"
+STMP="${STMP}"
+PTMP="${PTMP}"
+EOM
+    } || print_err_msg_exit "\
+Heredoc (cat) command to append variables specifying user-staged external 
+model files and locations to the workflow configuration file returned with 
+a nonzero status."
+
+  fi
+#
+#-----------------------------------------------------------------------
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+  do_user_staged_extrn="TRUE"  # Change this to an input argument at some point.
+
+  if [ ${do_user_staged_extrn} = "TRUE" ]; then
+
+#    EXTRN_MDL_NAME_ICS=$( . ${expt_config_fp} ; echo "${EXTRN_MDL_NAME_ICS}" )
+#    EXTRN_MDL_NAME_LBCS=$( . ${expt_config_fp} ; echo "${EXTRN_MDL_NAME_LBCS}" )
+#    FCST_LEN_HRS=$( . ${expt_config_fp} ; echo "${FCST_LEN_HRS}" )
+#    LBC_SPEC_INTVL_HRS=$( . ${expt_config_fp} ; echo "${LBC_SPEC_INTVL_HRS}" )
+
+    if [ "$MACHINE" = "HERA" ]; then
+      extrn_mdl_source_baseir="/scratch2/BMC/det/Gerard.Ketefian/UFS_CAM/staged_extrn_mdl_files"
+    elif [ "$MACHINE" = "JET" ]; then
+      extrn_mdl_source_baseir="/mnt/lfs1/BMC/fim/Gerard.Ketefian/UFS_CAM/staged_extrn_mdl_files"
+    elif [ "$MACHINE" = "CHEYENNE" ]; then
+      extrn_mdl_source_baseir="/glade/p/ral/jntp/UFS_CAM/staged_extrn_mdl_files"
+    else
+      print_err_msg_exit "\
+The base directory (extrn_mdl_source_baseir) in which the user-staged 
+external model files should be located has not been specified for this 
+machine (MACHINE):
+  MACHINE= \"${MACHINE}\""
+    fi
+
+    EXTRN_MDL_SOURCE_DIR_ICS="${extrn_mdl_source_baseir}/${EXTRN_MDL_NAME_ICS}"
+    if [ "${EXTRN_MDL_NAME_ICS}" = "FV3GFS" ] || \
+       [ "${EXTRN_MDL_NAME_ICS}" = "GSMGFS" ]; then
+      EXTRN_MDL_FILES_ICS=( "gfs.atmanl.nemsio" "gfs.sfcanl.nemsio" )
+    elif [ "${EXTRN_MDL_NAME_ICS}" = "HRRRX" ] || \
+         [ "${EXTRN_MDL_NAME_ICS}" = "RAPX" ]; then
+      EXTRN_MDL_FILES_ICS=( "${EXTRN_MDL_NAME_ICS,,}.out.for_f000" )
+    fi
+
+    EXTRN_MDL_SOURCE_DIR_LBCS="${extrn_mdl_source_baseir}/${EXTRN_MDL_NAME_LBCS}"
+    EXTRN_MDL_FILES_LBCS=( $( seq ${LBC_SPEC_INTVL_HRS} ${LBC_SPEC_INTVL_HRS} ${FCST_LEN_HRS} ) )
+    if [ "${EXTRN_MDL_NAME_LBCS}" = "FV3GFS" ] || \
+       [ "${EXTRN_MDL_NAME_LBCS}" = "GSMGFS" ]; then
+      EXTRN_MDL_FILES_LBCS=( "${EXTRN_MDL_FILES_LBCS[@]/#/gfs.atmf00}" )
+      EXTRN_MDL_FILES_LBCS=( "${EXTRN_MDL_FILES_LBCS[@]/%/.nemsio}" )
+    elif [ "${EXTRN_MDL_NAME_LBCS}" = "HRRRX" ] || \
+         [ "${EXTRN_MDL_NAME_LBCS}" = "RAPX" ]; then
+      EXTRN_MDL_FILES_LBCS=( "${EXTRN_MDL_FILES_LBCS[@]/#/${EXTRN_MDL_NAME_LBCS,,}.out.for_f00}" )
+    fi
+
+    { cat << EOM >> ${expt_config_fp}
+#
+# Locations and names of user-staged external model files for generating
+# ICs and LBCs.
+#
+EXTRN_MDL_SOURCE_DIR_ICS="${EXTRN_MDL_SOURCE_DIR_ICS}"
+EXTRN_MDL_FILES_ICS=( $( printf "\"%s\" " "${EXTRN_MDL_FILES_ICS[@]}" ))
+EXTRN_MDL_SOURCE_DIR_LBCS="${EXTRN_MDL_SOURCE_DIR_LBCS}"
+EXTRN_MDL_FILES_LBCS=( $( printf "\"%s\" " "${EXTRN_MDL_FILES_LBCS[@]}" ))
+EOM
+    } || print_err_msg_exit "\
+Heredoc (cat) command to append variables specifying user-staged external 
+model files and locations to the workflow configuration file returned with 
+a nonzero status."
+
   fi
 #
 #-----------------------------------------------------------------------
@@ -449,7 +766,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-  $ushdir/generate_FV3SAR_wflow.sh || \
+  $ushdir/generate_FV3LAM_wflow.sh || \
     print_err_msg_exit "\
 Could not generate an experiment/workflow for the test specified by 
 expt_name:

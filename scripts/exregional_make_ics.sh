@@ -107,7 +107,7 @@ case "${CCPP_PHYS_SUITE}" in
 "FV3_GFS_2017_gfdlmp" | "FV3_GFS_2017_gfdlmp_regional" )
   phys_suite="GFS"
   ;;
-"FV3_GSD_v0" | "FV3_GSD_SAR" | "FV3_GSD_SAR_v1" |"FV3_RRFS_v0" )
+"FV3_GSD_v0" | "FV3_GSD_SAR" | "FV3_RRFS_v1beta")
   phys_suite="GSD"
   ;;
 "FV3_CPT_v0")
@@ -305,12 +305,19 @@ case "${EXTRN_MDL_NAME_ICS}" in
          [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_v16beta" ]; then
         tracers="[\"sphum\",\"liq_wat\",\"o3mr\",\"ice_wat\",\"rainwat\",\"snowwat\",\"graupel\"]"
       elif [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_v0" ] || \
-           [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_SAR_v1" ] || \
-           [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v0" ] || \
+           [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v1beta" ] || \
            [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_SAR" ]; then
 # For GSD physics, add three additional tracers (the ice, rain and water
 # number concentrations) that are required for Thompson microphysics.
         tracers="[\"sphum\",\"liq_wat\",\"o3mr\",\"ice_wat\",\"rainwat\",\"snowwat\",\"graupel\",\"ice_nc\",\"rain_nc\",\"water_nc\"]"
+      else
+        print_err_msg_exit "\
+The parameter \"tracers\" has not been defined for this combination of 
+external model (EXTRN_MDL_NAME_ICS), physics suite (CCPP_PHYS_SUITE), and 
+FV3GFS file type (FV3GFS_FILE_FMT_ICS):
+  EXTRN_MDL_NAME_ICS = \"${EXTRN_MDL_NAME_ICS}\"
+  CCPP_PHYS_SUITE = \"${CCPP_PHYS_SUITE}\"
+  FV3GFS_FILE_FMT_ICS = \"${FV3GFS_FILE_FMT_ICS}\""
       fi
 #
 # If CCPP is not being used, the only physics suite that can be used is
@@ -361,8 +368,8 @@ HRRRX grib2 files created after about \"${cdate_min_HRRRX}\"..."
 
   if [ "${USE_CCPP}" = "TRUE" ]; then
     if [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_2017_gfdlmp" ] || \
-       [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_SAR_v1" ] || \
-       [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v0" ] || \
+       [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_2017_gfdlmp_regional" ] || \
+       [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v1beta" ] || \
        [ "${CCPP_PHYS_SUITE}" = "FV3_CPT_v0" ] || \
        [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_v15p2" ] || \
        [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_v16beta" ]; then
@@ -370,15 +377,23 @@ HRRRX grib2 files created after about \"${cdate_min_HRRRX}\"..."
     elif [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_v0" ] || \
          [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_SAR" ]; then
       numsoil_out="9"
+    else
+      print_err_msg_exit "\
+The parameter \"numsoil_out\" has not been defined for this combination 
+of external model (EXTRN_MDL_NAME_ICS) and physics suite (CCPP_PHYS_SUITE):
+  EXTRN_MDL_NAME_ICS = \"${EXTRN_MDL_NAME_ICS}\"
+  CCPP_PHYS_SUITE = \"${CCPP_PHYS_SUITE}\""
     fi
   fi
 #
 # These geogrid files need to be moved to more permanent locations.
 #
   if [ "${MACHINE}" = "HERA" ]; then
-    geogrid_file_input_grid="/scratch2/BMC/det/beck/FV3-SAR/geo_em.d01.nc_HRRRX"
+    geogrid_file_input_grid="/scratch2/BMC/det/beck/FV3-LAM/geo_em.d01.nc_HRRRX"
   elif [ "${MACHINE}" = "JET" ]; then
     geogrid_file_input_grid="/misc/whome/rtrr/HRRR/static/WPS/geo_em.d01.nc"
+  elif [ "${MACHINE}" = "CHEYENNE" ]; then
+    geogrid_file_input_grid="/glade/p/ral/jntp/UFS_CAM/fix/geo_em.d01.nc_HRRRX"
   fi
 
   replace_vgtyp=False
@@ -400,24 +415,32 @@ HRRRX grib2 files created after about \"${cdate_min_HRRRX}\"..."
 
   if [ "${USE_CCPP}" = "TRUE" ]; then
     if [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_2017_gfdlmp" ] || \
+       [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_2017_gfdlmp_regional" ] || \
        [ "${CCPP_PHYS_SUITE}" = "FV3_CPT_v0" ] || \
-       [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_SAR_v1" ] || \
-       [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v0" ] || \
+       [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v1beta" ] || \
        [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_v15p2" ] || \
        [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_v16beta" ]; then
       numsoil_out="4"
     elif [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_v0" ] || \
          [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_SAR" ]; then
       numsoil_out="9"
+    else
+      print_err_msg_exit "\
+The parameter \"numsoil_out\" has not been defined for this combination 
+of external model (EXTRN_MDL_NAME_ICS) and physics suite (CCPP_PHYS_SUITE):
+  EXTRN_MDL_NAME_ICS = \"${EXTRN_MDL_NAME_ICS}\"
+  CCPP_PHYS_SUITE = \"${CCPP_PHYS_SUITE}\""
     fi
   fi
 #
 # These geogrid files need to be moved to more permanent locations.
 #
   if [ "${MACHINE}" = "HERA" ]; then
-    geogrid_file_input_grid="/scratch2/BMC/det/beck/FV3-SAR/geo_em.d01.nc_RAPX"
+    geogrid_file_input_grid="/scratch2/BMC/det/beck/FV3-LAM/geo_em.d01.nc_RAPX"
   elif [ "${MACHINE}" = "JET" ]; then
     geogrid_file_input_grid="/misc/whome/rtrr/HRRR/static/WPS/geo_em.d01.nc"
+  elif [ "${MACHINE}" = "CHEYENNE" ]; then
+    geogrid_file_input_grid="/glade/p/ral/jntp/UFS_CAM/fix/geo_em.d01.nc_RAPX"
   fi
 
   replace_vgtyp=False
@@ -457,7 +480,7 @@ exec_fn="chgres_cube.exe"
 exec_fp="$EXECDIR/${exec_fn}"
 if [ ! -f "${exec_fp}" ]; then
   print_err_msg_exit "\
-The executable (exec_fp) for generating initial conditions on the FV3SAR
+The executable (exec_fp) for generating initial conditions on the FV3-LAM
 native grid does not exist:
   exec_fp = \"${exec_fp}\"
 Please ensure that you've built this executable."
@@ -508,7 +531,7 @@ fi
 # config.C768.nest.atm.theia.nml:23: tracers_input="sphum","liq_wat","o3mr","ice_wat","rainwat","snowwat","graupel"
 
 
-# fix_dir_target_grid="${BASEDIR}/JP_grid_HRRR_like_fix_files_chgres_cube"
+# fix_dir_target_grid="${BASEDIR}/ESG_grid_HRRR_like_fix_files_chgres_cube"
 # base_install_dir="${SORCDIR}/chgres_cube.fd"
 
 #
@@ -520,9 +543,9 @@ fi
 #
 settings="
 'config': {
- 'fix_dir_target_grid': ${FIXsar},
- 'mosaic_file_target_grid': ${FIXsar}/${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc,
- 'orog_dir_target_grid': ${FIXsar},
+ 'fix_dir_target_grid': ${FIXLAM},
+ 'mosaic_file_target_grid': ${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc,
+ 'orog_dir_target_grid': ${FIXLAM},
  'orog_files_target_grid': ${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH4}.nc,
  'vcoord_file_target_grid': ${FIXam}/global_hyblev.l65.txt,
  'mosaic_file_input_grid': '',
@@ -587,7 +610,7 @@ $settings"
 ${APRUN} ${exec_fp} || \
   print_err_msg_exit "\
 Call to executable (exec_fp) to generate surface and initial conditions
-(ICs) files for the FV3SAR failed:
+(ICs) files for the FV3-LAM failed:
   exec_fp = \"${exec_fp}\"
 The external model from which the ICs files are to be generated is:
   EXTRN_MDL_NAME_ICS = \"${EXTRN_MDL_NAME_ICS}\"

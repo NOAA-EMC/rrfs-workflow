@@ -16,7 +16,7 @@
 #
 #-----------------------------------------------------------------------
 #
-. $USHDIR/create_model_config_file.sh
+. $USHDIR/create_model_configure_file.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -166,7 +166,7 @@ Creating links in the INPUT subdirectory of the current run directory to
 the grid and (filtered) orography files ..."
 
 
-# Create links to fix files in the FIXsar directory.
+# Create links to fix files in the FIXLAM directory.
 
 
 cd_vrfy ${run_dir}/INPUT
@@ -177,8 +177,8 @@ if [ "${RUN_TASK_MAKE_GRID}" = "TRUE" ]; then
 fi
 
 # Symlink to mosaic file with a completely different name.
-#target="${FIXsar}/${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc"   # Should this point to this halo4 file or a halo3 file???
-target="${FIXsar}/${CRES}${DOT_OR_USCORE}mosaic.halo${NH3}.nc"   # Should this point to this halo4 file or a halo3 file???
+#target="${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc"   # Should this point to this halo4 file or a halo3 file???
+target="${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo${NH3}.nc"   # Should this point to this halo4 file or a halo3 file???
 symlink="grid_spec.nc"
 if [ -f "${target}" ]; then
   ln_vrfy -sf ${relative_or_null} $target $symlink
@@ -189,7 +189,7 @@ Cannot create symlink because target does not exist:
 fi
 
 ## Symlink to halo-3 grid file with "halo3" stripped from name.
-#target="${FIXsar}/${CRES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH3}.nc"
+#target="${FIXLAM}/${CRES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH3}.nc"
 #if [ "${RUN_TASK_MAKE_SFC_CLIMO}" = "TRUE" ] && \
 #   [ "${GRID_GEN_METHOD}" = "GFDLgrid" ] && \
 #   [ "${GFDLgrid_USE_GFDLgrid_RES_IN_FILENAMES}" = "FALSE" ]; then
@@ -202,7 +202,7 @@ fi
 mosaic_fn="grid_spec.nc"
 grid_fn=$( get_charvar_from_netcdf "${mosaic_fn}" "gridfiles" )
 
-target="${FIXsar}/${grid_fn}"
+target="${FIXLAM}/${grid_fn}"
 symlink="${grid_fn}"
 if [ -f "${target}" ]; then
   ln_vrfy -sf ${relative_or_null} $target $symlink
@@ -224,7 +224,7 @@ fi
 # Note that even though the message says "Stopped", the task still con-
 # sumes core-hours.
 #
-target="${FIXsar}/${CRES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH4}.nc"
+target="${FIXLAM}/${CRES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH4}.nc"
 symlink="grid.tile${TILE_RGNL}.halo${NH4}.nc"
 if [ -f "${target}" ]; then
   ln_vrfy -sf ${relative_or_null} $target $symlink
@@ -242,7 +242,7 @@ if [ "${RUN_TASK_MAKE_OROG}" = "TRUE" ]; then
 fi
 
 # Symlink to halo-0 orography file with "${CRES}_" and "halo0" stripped from name.
-target="${FIXsar}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH0}.nc"
+target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH0}.nc"
 symlink="oro_data.nc"
 if [ -f "${target}" ]; then
   ln_vrfy -sf ${relative_or_null} $target $symlink
@@ -251,7 +251,36 @@ else
 Cannot create symlink because target does not exist:
   target = \"$target\""
 fi
-
+#
+# If using the FV3_RRFS_v1beta physics suite, there are two files (that
+# contain statistics of the orography) that are needed by the drag 
+# parameterization in that suite.  Below, symlinks to these are created
+# in the run directory.  Note that the symlinks must have specific names
+# that the FV3 model is hardcoded to recognize ("${CRES}_" and "halo0" 
+# must be stripped from the file names).  We use those below.
+#
+if [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v1beta" ]; then
+# Symlink to orographic statistics fields file with "${CRES}_" and "halo0" 
+# stripped from name.
+  target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data_ls.tile${TILE_RGNL}.halo${NH0}.nc"
+  symlink="oro_data_ls.nc"
+  if [ -f "${target}" ]; then
+    ln_vrfy -sf ${relative_or_null} $target $symlink
+  else
+    print_err_msg_exit "\
+Cannot create symlink because target does not exist:
+  target = \"$target}\""
+  fi
+  target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc"
+  symlink="oro_data_ss.nc"
+  if [ -f "${target}" ]; then
+    ln_vrfy -sf ${relative_or_null} $target $symlink
+  else
+    print_err_msg_exit "\
+Cannot create symlink because target does not exist:
+  target = \"$target}\""
+  fi
+fi
 #
 # Symlink to halo-4 orography file with "${CRES}_" stripped from name.
 #
@@ -265,7 +294,7 @@ fi
 # Note that even though the message says "Stopped", the task still con-
 # sumes core-hours.
 #
-target="${FIXsar}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH4}.nc"
+target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH4}.nc"
 symlink="oro_data.tile${TILE_RGNL}.halo${NH4}.nc"
 if [ -f "${target}" ]; then
   ln_vrfy -sf ${relative_or_null} $target $symlink
@@ -413,13 +442,13 @@ if [ "${USE_CCPP}" = "TRUE" ]; then
   ln_vrfy -sf ${relative_or_null} ${CCPP_PHYS_SUITE_FP} ${run_dir} 
 
   if [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_v0" ] || \
-     [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_SAR_v1" ] || \
-     [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v0" ] || \
+     [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v1beta" ] || \
      [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_SAR" ]; then
     ln_vrfy -sf ${relative_or_null} $EXPTDIR/CCN_ACTIVATE.BIN ${run_dir}
   fi
 
 fi
+#
 #-----------------------------------------------------------------------
 #
 # Call the function that creates the model configuration file within each
@@ -427,7 +456,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-create_model_config_file \
+create_model_configure_file \
   cdate="$cdate" \
   nthreads=${OMP_NUM_THREADS:-1} \
   run_dir="${run_dir}" || print_err_msg_exit "\
@@ -438,7 +467,7 @@ cycle's (cdate) run directory (run_dir) failed:
 #
 #-----------------------------------------------------------------------
 #
-# If running enemble forecasts, create a link to the cycle-specific 
+# If running ensemble forecasts, create a link to the cycle-specific 
 # diagnostic tables file in the cycle directory.  Note that this link 
 # should not be made if not running ensemble forecasts because in that 
 # case, the cycle directory is the run directory (and we would be creating 
@@ -465,7 +494,7 @@ export OMP_STACKSIZE=1024m
 #
 #-----------------------------------------------------------------------
 #
-# Run the FV3SAR model.  Note that we have to launch the forecast from
+# Run the FV3-LAM model.  Note that we have to launch the forecast from
 # the current cycle's directory because the FV3 executable will look for 
 # input files in the current directory.  Since those files have been 
 # staged in the cycle directory, the current directory must be the cycle
@@ -474,7 +503,7 @@ export OMP_STACKSIZE=1024m
 #-----------------------------------------------------------------------
 #
 $APRUN ${FV3_EXEC_FP} || print_err_msg_exit "\
-Call to executable to run FV3SAR forecast returned with nonzero exit 
+Call to executable to run FV3-LAM forecast returned with nonzero exit 
 code."
 #
 #-----------------------------------------------------------------------

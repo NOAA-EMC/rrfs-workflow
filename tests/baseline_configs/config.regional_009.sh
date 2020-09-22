@@ -1,28 +1,3 @@
-#
-# The values of the variables MACHINE, ACCOUNT, and EXPT_SUBDIR are required
-# inputs to the script that launces the WE2E test experiments.  That script 
-# will use those inputs to fill in the values of these variables below.
-#
-MACHINE=""
-ACCOUNT=""
-EXPT_SUBDIR=""
-#
-# The values of the variables USE_CRON_TO_RELAUNCH and CRON_RELAUNCH_INTVL_MNTS
-# are optional inputs to the script that launces the WE2E test experiments.  
-# If one or both of these values are specified, then that script will 
-# replace the default values of these variables below with those values.
-# Otherwise, it will keep the default values.
-#
-USE_CRON_TO_RELAUNCH="TRUE"
-CRON_RELAUNCH_INTVL_MNTS="02"
-
-
-QUEUE_DEFAULT="batch"
-QUEUE_HPSS="service"
-QUEUE_FCST="batch"
-
-VERBOSE="TRUE"
-
 RUN_ENVIR="nco"
 PREEXISTING_DIR_METHOD="rename"
 
@@ -98,27 +73,18 @@ EXTRN_MDL_NAME_LBCS="FV3GFS"
 RUN="${EXPT_SUBDIR}"
 envir="${EXPT_SUBDIR}"
 
-#On Hera:
-COMINgfs="/scratch1/NCEPDEV/hwrf/noscrub/hafs-input/COMGFS"
-STMP="/scratch2/BMC/det/Gerard.Ketefian/UFS_CAM/NCO_dirs/stmp"
-PTMP="/scratch2/BMC/det/Gerard.Ketefian/UFS_CAM/NCO_dirs/ptmp"
-
-#On Jet:
-#COMINgfs="/lfs1/projects/hwrf-data/hafs-input/COMGFS"
-#STMP=""
-#PTMP=""
 
 #
 # In NCO mode, the user must manually (e.g. after doing the build step)
-# create the symlink "${FIXrrfs}/fix_sar" that points to EMC's FIXsar
+# create the symlink "${FIXrrfs}/fix_lam" that points to EMC's FIXLAM
 # directory on the machine.  For example, on hera, the symlink's target
 # needs to be
 #
 #   /scratch2/NCEPDEV/fv3-cam/emc.campara/fix_fv3cam/fix_sar
 #
-# The experiment generation script will then set FIXsar to
+# The experiment generation script will then set FIXLAM to
 #
-#   FIXsar="${FIXrrfs}/fix_sar/${EMC_GRID_NAME}"
+#   FIXLAM="${FIXrrfs}/fix_lam/${EMC_GRID_NAME}"
 #
 # where EMC_GRID_NAME has the value set above.
 #

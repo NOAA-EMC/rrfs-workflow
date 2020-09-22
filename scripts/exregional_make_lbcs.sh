@@ -107,7 +107,7 @@ case "${CCPP_PHYS_SUITE}" in
 "FV3_GFS_2017_gfdlmp" | "FV3_GFS_2017_gfdlmp_regional")
   phys_suite="GFS"
   ;;
-"FV3_GSD_v0" | "FV3_GSD_SAR" | "FV3_GSD_SAR_v1" | "FV3_RRFS_v0" )
+"FV3_GSD_v0" | "FV3_GSD_SAR" | "FV3_RRFS_v1beta" )
   phys_suite="GSD"
   ;;
 "FV3_CPT_v0" )
@@ -236,7 +236,7 @@ input_type=""
 tracers_input="\"\""
 tracers="\"\""
 numsoil_out=""
-geogrid_file_input_grid="\"\""
+#geogrid_file_input_grid="\"\""
 replace_vgtyp=""
 replace_sotyp=""
 replace_vgfrc=""
@@ -288,12 +288,19 @@ case "${EXTRN_MDL_NAME_LBCS}" in
          [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_v16beta" ]; then
         tracers="[\"sphum\",\"liq_wat\",\"o3mr\",\"ice_wat\",\"rainwat\",\"snowwat\",\"graupel\"]"
       elif [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_v0" ] || \
-           [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_SAR_v1" ] || \
-           [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v0" ] || \
+           [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v1beta" ] || \
            [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_SAR" ]; then
 # For GSD physics, add three additional tracers (the ice, rain and water
 # number concentrations) that are required for Thompson microphysics.
         tracers="[\"sphum\",\"liq_wat\",\"o3mr\",\"ice_wat\",\"rainwat\",\"snowwat\",\"graupel\",\"ice_nc\",\"rain_nc\",\"water_nc\"]"
+      else
+        print_err_msg_exit "\
+The parameter \"tracers\" has not been defined for this combination of
+external model (EXTRN_MDL_NAME_LBCS), physics suite (CCPP_PHYS_SUITE), 
+and FV3GFS file type (FV3GFS_FILE_FMT_LBCS):
+  EXTRN_MDL_NAME_LBCS = \"${EXTRN_MDL_NAME_LBCS}\"
+  CCPP_PHYS_SUITE = \"${CCPP_PHYS_SUITE}\"
+  FV3GFS_FILE_FMT_LBCS = \"${FV3GFS_FILE_FMT_LBCS}\""
       fi
 #
 # If CCPP is not being used, the only physics suite that can be used is
@@ -329,15 +336,21 @@ case "${EXTRN_MDL_NAME_LBCS}" in
 
   if [ "${USE_CCPP}" = "TRUE" ]; then
     if [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_2017_gfdlmp" ] || \
+       [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_2017_gfdlmp_regional" ] || \
        [ "${CCPP_PHYS_SUITE}" = "FV3_CPT_v0" ] || \
-       [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_SAR_v1" ] || \
-       [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v0" ] || \
+       [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v1beta" ] || \
        [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_v15p2" ] || \
        [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_v16beta" ]; then
       numsoil_out="4"
     elif [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_v0" ] || \
          [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_SAR" ]; then
       numsoil_out="9"
+    else
+      print_err_msg_exit "\
+The parameter \"numsoil_out\" has not been defined for this combination 
+of external model (EXTRN_MDL_NAME_LBCS) and physics suite (CCPP_PHYS_SUITE):
+  EXTRN_MDL_NAME_LBCS = \"${EXTRN_MDL_NAME_LBCS}\"
+  CCPP_PHYS_SUITE = \"${CCPP_PHYS_SUITE}\""
     fi
   fi
 
@@ -369,7 +382,7 @@ exec_fn="chgres_cube.exe"
 exec_fp="$EXECDIR/${exec_fn}"
 if [ ! -f "${exec_fp}" ]; then
   print_err_msg_exit "\
-The executable (exec_fp) for generating initial conditions on the FV3SAR
+The executable (exec_fp) for generating initial conditions on the FV3-LAM
 native grid does not exist:
   exec_fp = \"${exec_fp}\"
 Please ensure that you've built this executable."
@@ -378,7 +391,7 @@ fi
 #-----------------------------------------------------------------------
 #
 # Loop through the LBC update times and run chgres for each such time to
-# obtain an LBC file for each that can be used as input to the FV3SAR.
+# obtain an LBC file for each that can be used as input to the FV3-LAM.
 #
 #-----------------------------------------------------------------------
 #
@@ -450,9 +463,9 @@ list file has not specified for this external model:
 #
   settings="
 'config': {
- 'fix_dir_target_grid': ${FIXsar},
- 'mosaic_file_target_grid': ${FIXsar}/${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc,
- 'orog_dir_target_grid': ${FIXsar},
+ 'fix_dir_target_grid': ${FIXLAM},
+ 'mosaic_file_target_grid': ${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc,
+ 'orog_dir_target_grid': ${FIXLAM},
  'orog_files_target_grid': ${CRES}${DOT_OR_USCORE}oro_data.tile7.halo${NH4}.nc,
  'vcoord_file_target_grid': ${FIXam}/global_hyblev.l65.txt,
  'mosaic_file_input_grid': '',
@@ -510,7 +523,7 @@ $settings"
   ${APRUN} ${exec_fp} || \
     print_err_msg_exit "\
 Call to executable (exec_fp) to generate lateral boundary conditions (LBCs)
-file for the FV3SAR for forecast hour fhr failed:
+file for the FV3-LAM for forecast hour fhr failed:
   exec_fp = \"${exec_fp}\"
   fhr = \"$fhr\"
 The external model from which the LBCs files are to be generated is:
@@ -521,11 +534,11 @@ located in the following directory:
 #
 # Move LBCs file for the current lateral boundary update time to the LBCs
 # work directory.  Note that we rename the file by including in its name
-# the forecast hour of the FV3SAR (which is not necessarily the same as
+# the forecast hour of the FV3-LAM (which is not necessarily the same as
 # that of the external model since their start times may be offset).
 #
-  fcst_hhh_FV3SAR=$( printf "%03d" "${LBC_SPEC_FCST_HRS[$i]}" )
-  mv_vrfy gfs_bndy.nc ${lbcs_dir}/gfs_bndy.tile7.${fcst_hhh_FV3SAR}.nc
+  fcst_hhh_FV3LAM=$( printf "%03d" "${LBC_SPEC_FCST_HRS[$i]}" )
+  mv_vrfy gfs_bndy.nc ${lbcs_dir}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc
 
 done
 #

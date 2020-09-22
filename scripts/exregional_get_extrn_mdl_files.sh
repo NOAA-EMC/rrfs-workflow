@@ -214,6 +214,10 @@ if [ "${num_files_found_on_disk}" -eq "${num_files_to_copy}" ]; then
 else
   data_src="HPSS"
 fi
+
+if [ ${NOMADS} == "TRUE" ]; then
+  data_src="online"
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -631,7 +635,7 @@ file unzip_log_fn in that directory for details:
 # of each external model file.  If any are missing, then the corresponding 
 # files are not in the zip file and thus cannot be extracted.  In that 
 # case, print out a message and exit the script because initial condition 
-# and surface field files for the FV3SAR cannot be generated without all 
+# and surface field files for the FV3-LAM cannot be generated without all 
 # the external model files.
 #
 #-----------------------------------------------------------------------
@@ -690,7 +694,7 @@ details:
     print_info_msg "
 ========================================================================
 External model files needed for generating initial condition and surface 
-fields for the FV3SAR successfully fetched from HPSS!!!
+fields for the FV3-LAM successfully fetched from HPSS!!!
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
@@ -701,7 +705,7 @@ In directory:    \"${scrfunc_dir}\"
     print_info_msg "
 ========================================================================
 External model files needed for generating lateral boundary conditions
-on the halo of the FV3SAR's regional grid successfully fetched from 
+on the halo of the FV3-LAM's regional grid successfully fetched from 
 HPSS!!!
 
 Exiting script:  \"${scrfunc_fn}\"
@@ -709,6 +713,38 @@ In directory:    \"${scrfunc_dir}\"
 ========================================================================"
 
   fi
+
+elif [ "${data_src}" = "online" ]; then
+    print_info_msg "
+========================================================================
+getting data from online nomads data sources
+========================================================================"
+
+#
+#-----------------------------------------------------------------------
+#
+# Set extrn_mdl_fps to the full paths within the archive files of the
+# external model output files.
+#
+#-----------------------------------------------------------------------
+#
+  prefix=${extrn_mdl_arcvrel_dir:+${extrn_mdl_arcvrel_dir}/}
+  extrn_mdl_fps=( "${extrn_mdl_fns_on_disk[@]/#/$prefix}" )
+
+  extrn_mdl_fps_str="( "$( printf "\"%s\" " "${extrn_mdl_fps[@]}" )")"
+
+  print_info_msg " 
+Getting external model files from nomads:
+  extrn_mdl_fps= ${extrn_mdl_fps_str}"
+
+  num_files_to_extract="${#extrn_mdl_fps[@]}"
+  wget_LOG_FN="log.wget.txt"
+  for (( nfile=0; nfile<${num_files_to_extract}; nfile++ )); do
+    cp ../../../${extrn_mdl_fps[$nfile]} . || \
+    print_err_msg_exit "\
+    onlie file ${extrn_mdl_fps[$nfile]} not found."
+  done
+
 
 fi
 #
@@ -732,6 +768,8 @@ if [ "${data_src}" = "disk" ]; then
   extrn_mdl_fns_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" )")"
 elif [ "${data_src}" = "HPSS" ]; then
   extrn_mdl_fns_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_in_arcv[@]}" )")"
+elif [ "${data_src}" = "online" ]; then
+  extrn_mdl_fns_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" )")"
 fi
 
 settings="\
