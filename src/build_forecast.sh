@@ -47,7 +47,7 @@ fi
 # Build static executable using cmake for all valid suites in workflow
 # defined in regional_workflow/ush/valid_param_vals.sh
 #---------------------------------------------------------------------------------
-export CCPP_SUITES="FV3_GFS_2017_gfdlmp,FV3_GSD_v0,FV3_GSD_SAR,FV3_CPT_v0,FV3_GFS_v15p2,FV3_GFS_v16beta"
+export CCPP_SUITES="FV3_GSD_SAR,FV3_HRRR"
 
 ./build.sh || echo "FAIL:  build_forecast.sh failed, see ${cwd}/logs/build_forecast.log"
 
