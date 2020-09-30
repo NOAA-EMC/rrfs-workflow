@@ -1066,7 +1066,7 @@ check_for_preexist_dir_file "$EXPTDIR" "${PREEXISTING_DIR_METHOD}"
 #
 #-----------------------------------------------------------------------
 #
-LOGDIR="${EXPTDIR}/log"
+LOGDIR="${EXPTDIR}/log/@Y@m@d/@H"
 
 if [ "${RUN_ENVIR}" = "nco" ]; then
 
@@ -1124,6 +1124,8 @@ the experiment generation script."
 
   COMOUT_BASEDIR="$COMROOT/$NET/$envir"
   check_for_preexist_dir_file "${COMOUT_BASEDIR}" "${PREEXISTING_DIR_METHOD}"
+
+  LOGDIR="${COMROOT}/logs/${NET}/@Y@m@d/@H"
 
 else
 
@@ -2530,6 +2532,12 @@ CHGRES_DIR="${CHGRES_DIR}"
 SFC_CLIMO_INPUT_DIR="${SFC_CLIMO_INPUT_DIR}"
 TOPO_DIR=${TOPO_DIR}
 
+ARCHIVEDIR="${ARCHIVEDIR}"
+NCARG_ROOT="${NCARG_ROOT}"
+NCL_HOME="${NCL_HOME}"
+NCL_REGION="${NCL_REGION}"
+MODEL="${MODEL}"
+
 EXPTDIR="$EXPTDIR"
 LOGDIR="$LOGDIR"
 CYCLE_BASEDIR="${CYCLE_BASEDIR}"
@@ -2733,18 +2741,6 @@ EXTRN_MDL_LBCS_OFFSET_HRS="${EXTRN_MDL_LBCS_OFFSET_HRS}"
 #-----------------------------------------------------------------------
 #
 LBC_SPEC_FCST_HRS=(${LBC_SPEC_FCST_HRS[@]})
-#
-#-----------------------------------------------------------------------
-#
-# The number of cycles for which to make forecasts and the list of starting
-# dates/hours of these cycles.
-#
-#-----------------------------------------------------------------------
-#
-NUM_CYCLES="${NUM_CYCLES}"
-ALL_CDATES=( \\
-$( printf "\"%s\" \\\\\n" "${ALL_CDATES[@]}" )
-)
 #
 #-----------------------------------------------------------------------
 #

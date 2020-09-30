@@ -44,7 +44,7 @@ local func_name="${FUNCNAME[0]}"
 #
 #-----------------------------------------------------------------------
 #
-if [ "${RUN_ENVIR}" = "nco" ]; then
+if [ "${RUN_ENVIR}" = "nco" & -z ${COMINgfs} ]; then
 
   EXTRN_MDL_SYSBASEDIR_ICS="$COMINgfs"
 
@@ -186,7 +186,7 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-if [ "${RUN_ENVIR}" = "nco" ]; then
+if [ "${RUN_ENVIR}" = "nco" & -z ${COMINgfs} ]; then
 
   EXTRN_MDL_SYSBASEDIR_LBCS="$COMINgfs"
 

@@ -173,12 +173,13 @@ rm "${tmp_fn}"
 error_msg="sbatch: error: Batch job submission failed:"
 # Job violates accounting/QOS policy (job submit limit, user's size and/or time limits)"
 while read -r line; do
-  grep_output=$( printf "$line" | grep "${error_msg}" )
+  grep_output=$( echo "$line" | grep "${error_msg}" )
   if [ $? -eq 0 ]; then
     wflow_status="FAILURE"
     break
   fi
 done <<< "${rocotorun_output}"
+
 #
 #-----------------------------------------------------------------------
 #
@@ -205,7 +206,7 @@ rocotostat_output=$( eval ${rocotostat_cmd} 2>&1 )
 #rocotostat_output=$( { pwd; ls -alF; } 2>&1 )
 error_msg="DEAD"
 while read -r line; do
-  grep_output=$( printf "$line" | grep "${error_msg}" )
+  grep_output=$( echo "$line" | grep "${error_msg}" )
   if [ $? -eq 0 ]; then
     wflow_status="FAILURE"
     break

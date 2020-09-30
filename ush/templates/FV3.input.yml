@@ -13,6 +13,15 @@
 FV3_GSD_v0:
 
 FV3_GSD_SAR: 
+  fv_core_nml:
+    hord_dp: -5
+    hord_mt: 5
+    hord_tm: 5
+    hord_vt: 5
+    kord_mt: 9
+    kord_tm: -9
+    kord_tr: 9
+    kord_wz: 9
   gfs_physics_nml: &gsd_sar_phys
     cnvcld: false
     cnvgwd: false
@@ -31,6 +40,29 @@ FV3_GSD_SAR:
     iopt_stc: 1
     iopt_tbot: 2
     shal_cnv: false
+
+FV3_HRRR:
+  fv_core_nml:
+    hord_dp: -5
+    hord_mt: 5
+    hord_tm: 5
+    hord_vt: 5
+    kord_mt: 9
+    kord_tm: -9
+    kord_tr: 9
+    kord_wz: 9
+    nrows_blend: 10
+    regional_bcs_from_gsi: false
+    write_restart_with_bcs: false
+  gfs_physics_nml:
+    <<: *gsd_sar_phys
+    cdmbgwd: [3.5, 1.0]
+    do_mynnsfclay: true
+    effr_in: true
+    gwd_opt: 3
+    imfdeepcnv: -1
+    imfshalcnv: -1
+    lsoil: 9
 
 FV3_RRFS_v1beta:
   gfs_physics_nml:

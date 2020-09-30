@@ -204,6 +204,12 @@ NET="rrfs"
 envir="para"
 RUN="experiment_name"
 PTMP="/base/path/of/directory/containing/postprocessed/output/files"
+
+ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_dev1"
+NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
+NCL_HOME="/home/rtrr/RRFS/graphics"
+NCL_REGION="conus"
+MODEL="NO MODEL CHOSEN"
 #
 #-----------------------------------------------------------------------
 #
