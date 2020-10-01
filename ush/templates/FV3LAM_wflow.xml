@@ -96,7 +96,7 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
   <cycledef group="archive">{{ cdate_first_arch.strftime("%Y%m%d%H%M") }} {{ cdate_last_arch.strftime("%Y%m%d%H%M") }} 24:00:00</cycledef> 
 
   <log>
-    <cyclestr>&LOGDIR;/../../FV3LAM_wflow.log</cyclestr>
+    <cyclestr>&LOGDIR;/FV3LAM_wflow.log</cyclestr>
   </log>
 
 <!-- 
