@@ -39,10 +39,12 @@ echo "Deleting log files before ${deletetime}..."
 logs=`echo ${LOGDIR} | rev | cut -f 3- -d / | rev`
 cd ${logs}
 pwd
-set -A XX `ls -d 20*/* | sort -r`
+set -A XX `ls -d ${RUN}.20*/* | sort -r`
 for onetime in ${XX[*]}; do
-  # Remove slash from directory to get time
+  # Remove slash and RUN from directory to get time
   filetime=${onetime/\//}
+  filetime=${filetime##*.}
+  # Remove cycle subdir from path
   logsdate=${onetime%%/*}
   if [[ ${filetime} -le ${deletetime} ]]; then
     echo "Deleting files from ${logs}/${onetime}"
