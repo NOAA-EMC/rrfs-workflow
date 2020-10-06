@@ -107,6 +107,12 @@ fi
 rocoto_xml_bn=$( basename "${WFLOW_XML_FN}" ".xml" )
 rocoto_database_fn="${rocoto_xml_bn}.db"
 launch_log_fn="log.launch_${rocoto_xml_bn}"
+
+logs=`echo ${LOGDIR} | rev | cut -f 3- -d / | rev`
+latest=$(ls -td $logs/*/* | head -n 1)
+
+wflow_launch_log_fp=${latest}/${WFLOW_LAUNCH_LOG_FN}
+
 #
 #-----------------------------------------------------------------------
 #
@@ -201,7 +207,7 @@ rocotostat_cmd="rocotostat -w \"${WFLOW_XML_FN}\" -d \"${rocoto_database_fn}\" -
 
 #rocotostat_output=$( pwd; rocotostat -w "${WFLOW_XML_FN}" -d "${rocoto_database_fn}" -v 10 2>&1 )
 #rocotostat_output=$( rocotostat -w "${WFLOW_XML_FN}" -d "${rocoto_database_fn}" -v 10 2>&1 )
-rocotostat_output=$( eval ${rocotostat_cmd} 2>&1 )
+#rocotostat_output=$( eval ${rocotostat_cmd} 2>&1 )
 #rocotostat_output=$( ${rocotostat_cmd} 2>&1 )
 #rocotostat_output=$( { pwd; ls -alF; } 2>&1 )
 error_msg="DEAD"
@@ -245,7 +251,7 @@ Output of rocotostat_cmd is:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ${rocotostat_output}
-" >> "${WFLOW_LAUNCH_LOG_FN}" 2>&1
+" >> "${wflow_launch_log_fp}" 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -337,7 +343,7 @@ Summary of workflow status:
 End of output from script \"${scrfunc_fn}\".
 ========================================================================
 
-" >> ${WFLOW_LAUNCH_LOG_FN} 2>&1
+" >> ${wflow_launch_log_fp} 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -393,7 +399,7 @@ launch script for this experiment:
 #
 # Print the workflow completion message to the launch log file.
 #
-  printf "$msg" >> ${WFLOW_LAUNCH_LOG_FN} 2>&1
+  printf "$msg" >> ${wflow_launch_log_fp} 2>&1
 #
 # If the stdout from this script is being sent to the screen (e.g. it is
 # not being redirected to a file), then also print out the workflow 
