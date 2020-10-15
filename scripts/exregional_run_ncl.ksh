@@ -19,6 +19,9 @@ echo "Using $THREADS thread(s) for procesing."
 # START_TIME
 # FCST_TIME
 
+FCST_TIME_3=$(printf "%03d" $(( 10#$FCST_TIME )))
+FCST_TIME=$(printf "%02d" $(( 10#$FCST_TIME )))
+
 # Load modules
 module purge
 module load intel
@@ -109,7 +112,7 @@ cd ${workdir}
 pwd
 
 # Link to input file
-${LN} -s ${DATAHOME}/${POST_PREFIX}.t${INIT_HOUR}z.bgdawpf${FCST_TIME}.tm${INIT_HOUR}.grib2 rrfsfile.grb
+${LN} -s ${DATAHOME}/${POST_PREFIX}.t${INIT_HOUR}z.bgdawpf${FCST_TIME_3}.tm${INIT_HOUR}.grib2 rrfsfile.grb
 
 ${ECHO} "rrfsfile.grb" > rrfs_file.txt
 

@@ -37,6 +37,8 @@ else
   START_TIME=$( date +"%Y%m%d%H" -d "${START_TIME}" )
 fi
 
+FCST_TIME=$(printf "%02d" $(( 10#$FCST_TIME )))
+
 # Print out times
 ${ECHO} "   START_TIME = ${START_TIME}"
 ${ECHO} "    FCST_TIME = ${FCST_TIME}"
