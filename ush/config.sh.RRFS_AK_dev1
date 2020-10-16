@@ -1,7 +1,7 @@
 MACHINE="jet"
 ACCOUNT="nrtrr"
 EXPT_BASEDIR="/home/rtrr/RRFS"
-EXPT_SUBDIR="RRFS_dev1"
+EXPT_SUBDIR="RRFS_AK"
 
 QUEUE_DEFAULT="batch"
 QUEUE_HPSS="service"
@@ -12,7 +12,7 @@ VERBOSE="TRUE"
 RUN_ENVIR="nco"
 PREEXISTING_DIR_METHOD="rename"
 
-EMC_GRID_NAME="GSD_HRRR3km"  # For now (20200130), this is maps to PREDEF_GRID_NAME="EMC_CONUS_coarse".
+EMC_GRID_NAME="GSD_RRFSAK_3km" 
 GRID_GEN_METHOD="ESGgrid"
 
 QUILTING="TRUE"
@@ -23,24 +23,24 @@ LBC_SPEC_INTVL_HRS="6"
 
 HALO_BLEND=10
 
-WTIME_RUN_FCST="06:15:00"
+WTIME_RUN_FCST="04:30:00"
 
-DATE_FIRST_CYCL="20200930"
-DATE_LAST_CYCL="20210930"
+DATE_FIRST_CYCL="20201016"
+DATE_LAST_CYCL="20211231"
 CYCL_HRS=( "00" "12" )
 
-EXTRN_MDL_NAME_ICS="HRRRX"
+EXTRN_MDL_NAME_ICS="RAPX"
 EXTRN_MDL_NAME_LBCS="RAPX"
 
 envir="para"
 
-NET="RRFS_CONUS"
+NET="RRFS_AK"
 
-ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_dev1"
+ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_ak"
 NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
 NCL_HOME="/home/rtrr/RRFS/graphics"
-NCL_REGION="conus"
-MODEL="RRFS (HRRRX/FV3_GSD_SAR)"
+NCL_REGION="alaska"
+MODEL="RRFS-AK (RAPX/FV3_GSD_SAR)"
 
 #
 # In NCO mode, the following don't need to be explicitly set to "FALSE" 
@@ -51,7 +51,7 @@ MODEL="RRFS (HRRRX/FV3_GSD_SAR)"
 #RUN_TASK_MAKE_OROG="FALSE"
 #RUN_TASK_MAKE_SFC_CLIMO="FALSE"
 
-RUN="RRFS_dev1"
+RUN="RRFS_AK"
 COMINgfs=""
 
 STMP="/lfs4/BMC/nrtrr/NCO_dirs/stmp"  # Path to directory STMP that mostly contains input files.

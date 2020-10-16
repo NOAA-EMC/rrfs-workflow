@@ -108,6 +108,7 @@ else
       ;;
     "JET")
       EXTRN_MDL_SYSBASEDIR_ICS="/misc/whome/rtrr/rap"
+      EXTRN_MDL_PREFIX_ICS="wrfnat_rr"
       ;;
 # This goes with the comment below for the if-statement (-z EXTRN_MDL_SYSBASEDIR_ICS).
 # Should not need this case.
@@ -124,6 +125,7 @@ else
       ;;
     "JET")
       EXTRN_MDL_SYSBASEDIR_ICS="/misc/whome/rtrr/hrrr"
+      EXTRN_MDL_PREFIX_ICS="wrfnat_hrconus"
       ;;
     "CHEYENNE")
       EXTRN_MDL_SYSBASEDIR_ICS="dummy_value"

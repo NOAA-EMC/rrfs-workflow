@@ -380,7 +380,7 @@ fi
   
     "RAPX")
       if [ "${MACHINE}" = "JET" ]; then
-        fns_on_disk=( "wrfnat_130_${fcst_hh}.grib2" )
+        fns_on_disk=( "wrfnat_rr_${fcst_hh}.grib2" )
       else
         fns_on_disk=( "${yy}${ddd}${hh}${mn}${fcst_hh}${fcst_mn}" )
       fi
@@ -460,7 +460,7 @@ and analysis or forecast (anl_or_fcst):
       fcst_hh=( $( printf "%02d " "${lbc_spec_fhrs[@]}" ) )
 
       if [ "${MACHINE}" = "JET" ]; then 
-        prefix="wrfnat_130_"
+        prefix="wrfnat_rr_"
         suffix=".grib2"
       else
         prefix="${yy}${ddd}${hh}${mn}"

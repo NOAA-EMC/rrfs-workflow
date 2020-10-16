@@ -480,7 +480,7 @@ case "${EMC_GRID_NAME}" in
   "conus_c96")
     PREDEF_GRID_NAME="EMC_CONUS_coarse"
     ;;
-  "GSD_HRRR25km" | "GSD_HRRR13km" | "GSD_HRRR3km" | "GSD_SUBCONUS3km")
+  "GSD_RRFSAK_3km" | "GSD_HRRR25km" | "GSD_HRRR13km" | "GSD_HRRR3km" | "GSD_SUBCONUS3km")
     PREDEF_GRID_NAME="${EMC_GRID_NAME}"
     ;;
   "conus_orig" | "guam" | "hi" | "pr")
@@ -2711,6 +2711,7 @@ OZONE_PARAM="${OZONE_PARAM}"
 #-----------------------------------------------------------------------
 #
 EXTRN_MDL_SYSBASEDIR_ICS="${EXTRN_MDL_SYSBASEDIR_ICS}"
+EXTRN_MDL_PREFIX_ICS="${EXTRN_MDL_PREFIX_ICS}"
 #
 #-----------------------------------------------------------------------
 #

@@ -32,6 +32,7 @@ valid_vals_EMC_GRID_NAME=( \
 "GSD_HRRR13km" \
 "GSD_HRRR3km" \
 "GSD_SUBCONUS3km" \
+"GSD_RRFSAK_3km" \
 "GSD_RAP13km" \
 )
 valid_vals_USE_CCPP=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")

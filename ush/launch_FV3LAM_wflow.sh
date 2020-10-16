@@ -210,6 +210,7 @@ rocotostat_cmd="rocotostat -w \"${WFLOW_XML_FN}\" -d \"${rocoto_database_fn}\" -
 #rocotostat_output=$( eval ${rocotostat_cmd} 2>&1 )
 #rocotostat_output=$( ${rocotostat_cmd} 2>&1 )
 #rocotostat_output=$( { pwd; ls -alF; } 2>&1 )
+rocotostat_output=''
 error_msg="DEAD"
 while read -r line; do
   grep_output=$( echo "$line" | grep "${error_msg}" )

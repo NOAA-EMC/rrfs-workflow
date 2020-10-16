@@ -33,6 +33,7 @@ module load ncl
 export TZ="GMT"
 export UDUNITS2_XML_PATH=${NCARG_ROOT}/lib/ncarg/udunits/udunits2.xml
 export NCL_HOME=${NCL_HOME}
+export MODEL=${MODEL}
 export NCL_EXE_ROOT=${NCL_HOME}/scripts
 export NCL_CONFIG=${NCL_HOME}/config
 export SUBDOMAINS=${NCL_CONFIG}/${NCL_REGION}_subdomains.ncl

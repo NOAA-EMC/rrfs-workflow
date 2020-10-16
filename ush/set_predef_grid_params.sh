@@ -924,11 +924,11 @@ predefined domain:
 
     ESGgrid_WIDE_HALO_WIDTH=6
 
-    DT_ATMOS="50"
+    DT_ATMOS="40"
 
     LAYOUT_X="30"
     LAYOUT_Y="17"
-    BLOCKSIZE="25"
+    BLOCKSIZE="23"
 
     if [ "$QUILTING" = "TRUE" ]; then
       WRTCMP_write_groups="1"
