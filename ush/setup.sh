@@ -1123,7 +1123,6 @@ the experiment generation script."
   COMROOT="$PTMP/com"
 
   COMOUT_BASEDIR="$COMROOT/$NET/$envir"
-  check_for_preexist_dir_file "${COMOUT_BASEDIR}" "${PREEXISTING_DIR_METHOD}"
 
   LOGDIR="${COMROOT}/logs/${NET}/${RUN}.@Y@m@d/@H"
 
