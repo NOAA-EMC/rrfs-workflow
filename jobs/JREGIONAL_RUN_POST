@@ -82,7 +82,6 @@ run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}"
 #
 if [ "${RUN_ENVIR}" = "nco" ]; then
   COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
-  check_for_preexist_dir_file "${COMOUT}" "${PREEXISTING_DIR_METHOD}"
   postprd_dir="$COMOUT"
 else
   postprd_dir="${run_dir}/postprd"
