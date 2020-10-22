@@ -457,7 +457,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <metatask mode="serial" name="&RUN_NCL_TN;">
+  <metatask name="&RUN_NCL_TN;">
 
     <var name="fhr"> {% for h in range(0, fcst_len_hrs+1) %}{{ " %03d" % h  }}{% endfor %} </var>
 
