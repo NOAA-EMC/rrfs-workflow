@@ -245,9 +245,9 @@ wgrib2 -match "APCP|REFC" ${bgrd3d} -grib ${bgsfc}
 # instead of calling sed.
 start_date=$( echo "${cdate}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/' )
 basetime=$( date +%y%j%H%M -d "${start_date}" )
-ln_vrfy -fs ${bgdawp} ${postprd_dir}/BGDAWP_${basetime}f${fhr}00
-ln_vrfy -fs ${bgrd3d} ${postprd_dir}/BGRD3D_${basetime}f${fhr}00
-ln_vrfy -fs ${bgsfc} ${postprd_dir}/BGSFC_${basetime}f${fhr}00
+ln_vrfy -fs ${bgdawp} ${postprd_dir}/BGDAWP_${basetime}${post_fhr}00
+ln_vrfy -fs ${bgrd3d} ${postprd_dir}/BGRD3D_${basetime}${post_fhr}00
+ln_vrfy -fs ${bgsfc} ${postprd_dir}/BGSFC_${basetime}${post_fhr}00
 
 rm_vrfy -rf ${fhr_dir}
 #
