@@ -81,7 +81,7 @@ Building need be done only once if no source code is changed.
 
 - Clone the ufs-srweather-app repository.
 ```
-    clone https://github.com/NOAA-GSD/ufs-srweather-app.git gsd-srweather-app
+    git clone https://github.com/NOAA-GSD/ufs-srweather-app.git gsd-srweather-app
     cd gsd-srweather-app
     git checkout feature/RRFS_dev1
 ```
@@ -94,7 +94,7 @@ Building need be done only once if no source code is changed.
 - Build the code.
 
 ```
-    cd ufs-srweather-app/src/
+    cd src/
     ./build_all.sh
 ```
 
@@ -104,7 +104,7 @@ Building need be done only once if no source code is changed.
 The files need to be linked for each new clone. The configuration step
 below will fail verbosely if this step has been skipped.
 
-    cd ufs-srweather-app/regional_workflow
+    cd regional_workflow
     mkdir fix
     cd fix
     ln -sf /mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_am.20201001 fix_am
@@ -131,7 +131,7 @@ to be updated consistently with each other:
 Before running the RRFS_dev1 configuration, you will need to change your
 output directories by editing the config file:
 
-    cd ufs-srweather-app/regional_workflow/ush
+    cd regional_workflow/ush
     vi config.sh.RRFS_dev1
 
 Inside the config file, ensure that you are point to your preferred user
@@ -160,7 +160,7 @@ the logic for cleaning and archiving in the respective scripts level to
 modify as needed. Alternative, turn off those events by removing them
 from the XML.
 
-    cd ufs-srweather-app/regional_workflow/ush/templates
+    cd regional_workflow/ush/templates
     vi FV3LAM_wflow.xml
 
 Manually comment or delete the following tasks:
