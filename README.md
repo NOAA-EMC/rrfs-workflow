@@ -25,6 +25,47 @@ This branch supports the following features:
  - FV3_HRRR physics (workflow components enabled)
  - A different vertical configuration -- L65_20mb
 
+# Repo Directory Structure
+
+The following is the directory structure of the ufs-srweather-app and
+regional_workflow repositories.
+
+    ufs-srweather-app/
+    ├── docs
+    │   └── UsersGuide
+    ├── exec              # Installed executables
+    ├── fix
+    │   ├── fix_am        # Linked during build. Soon to be DEPRECATED.
+    │   └── fix_fv3       # DEPRECATED
+    ├── manage_externals  # Utility for gathering git submodules
+    ├── regional_workflow # See details below.
+    └── src               # Source code
+        ├── EMC_post
+        ├── logs
+        ├── UFS_UTILS_chgres_grib2
+        ├── UFS_UTILS_develop
+        └── ufs_weather_model
+
+    regional_workflow/
+    ├── docs
+    │   └── UsersGuide
+    ├── env           # DEPRECATED and recently removed
+    ├── jobs          # Job cards - bash scripts that call ex-scripts
+    ├── modulefiles
+    │   ├── codes     # DEPRECATED and recently removed
+    │   └── tasks     # Module files loaded at run time
+    ├── scripts       # EX Scripts - bash scripts to run components
+    ├── sorc          # DEPRECATED
+    ├── tests         # Workflow E2E test configuration files
+    │   └── baseline_configs
+    └── ush           # Utility scripts
+        ├── bash_utils
+        ├── NCL       # Not used at GSL
+        ├── Python    # Not used at GSL
+        ├── rocoto    # Not used!
+        ├── templates # Files for XML, model, UPP, etc.
+        └── wrappers  # Not used -- running in stand-alone mode
+
 # Getting started
 
 ## Running an experiment
@@ -39,19 +80,23 @@ is successful before moving onto the next.
 Building need be done only once if no source code is changed.
 
 - Clone the ufs-srweather-app repository.
-
-    git clone https://github.com/NOAA-GSD/ufs-srweather-app.git
-    cd ufs-srweather-app
+```
+    clone https://github.com/NOAA-GSD/ufs-srweather-app.git gsd-srweather-app
+    cd gsd-srweather-app
     git checkout feature/RRFS_dev1
-
+```
 - And retrieve the externals.
 
+```
     ./manage_externals/checkout_externals
+```
 
 - Build the code.
 
+```
     cd ufs-srweather-app/src/
     ./build_all.sh
+```
 
 
 ### Linking fix files
@@ -109,7 +154,7 @@ The configure script should then be linked to the expected name:
 
 #### Retro runs
 
-The workflow automatically cleans and archives the realtime runs, and is
+The workflow automatically cleans and archives the real time runs, and is
 not guaranteed to work with retro runs. You may want to take a look at
 the logic for cleaning and archiving in the respective scripts level to
 modify as needed. Alternative, turn off those events by removing them
@@ -131,12 +176,26 @@ You may also want to remove the NCL graphics metatasks:
 
 ## Build the workflow
 
-You will need a conda environment to generate the experiment directory
-that contains the XML, namelists, etc.
+
+Before proceeding with this section, make sure you have successfully
+done the following:
+
+  - Built the source code
+  - Linked the fix files
+  - Modified and linked the configure file
+  - Modified the XML template to your needs
+
+You will need to activate a conda environment to generate the experiment
+directory that contains the XML, namelists, etc.
+
+### Load the conda environment:
 
     module use -a /contrib3/miniconda3/modulefiles
     module load miniconda3
     conda activate regional_workflow
+
+### Configure the experiment:
+
     cd ufs-srweather-app/regional_workflow/ush
     ./generate_FV3LAM_wflow.sh
 
