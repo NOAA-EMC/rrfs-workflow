@@ -4,9 +4,22 @@ currentime=`date`
 
 . ${GLOBAL_VAR_DEFNS_FP}
 
-# Delete run directories
+# Delete ptmp directories
+deletetime=`date +%Y%m%d -d "${currentime} 72 hours ago"`
+echo "Deleting ptmp directories before ${deletetime}..."
+cd ${COMOUT_BASEDIR}
+set -A XX `ls -d ${RUN}.20* | sort -r`
+for dir in ${XX[*]};do
+  onetime=`echo $dir | cut -d'.' -f2`
+  if [[ ${onetime} -le ${deletetime} ]]; then
+    rm -rf ${COMOUT_BASEDIR}/${RUN}.${onetime}
+    echo "Deleted ${COMOUT_BASEDIR}/${RUN}.${onetime}"
+  fi
+done
+
+# Delete stmp directories
 deletetime=`date +%Y%m%d%H -d "${currentime} 72 hours ago"`
-echo "Deleting directories before ${deletetime}..."
+echo "Deleting stmp directories before ${deletetime}..."
 cd ${CYCLE_BASEDIR}
 set -A XX `ls -d 20* | sort -r`
 for onetime in ${XX[*]};do
