@@ -263,7 +263,7 @@ settings="\
   'cdate_first_arch': !datetime ${DATE_FIRST_CYCL}07
   'cdate_last_arch': !datetime ${DATE_LAST_CYCL}07
   'cycl_hrs': [ $( printf "\'%s\', " "${CYCL_HRS[@]}" ) ]
-  'cycl_freq': !!str 12:00:00
+  'cycl_freq': !!str 06:00:00
 #
 # Forecast length (same for all cycles).
 #
