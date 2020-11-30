@@ -154,7 +154,7 @@ The configure script should then be linked to the expected name:
 
 #### Retro runs
 
-The workflow automatically cleans and archives the real time runs, and is
+The workflow automatically cleans and archives the real-time runs, and is
 not guaranteed to work with retro runs. You may want to take a look at
 the logic for cleaning and archiving in the respective scripts level to
 modify as needed. Alternative, turn off those events by removing them
@@ -231,10 +231,88 @@ If major changes are needed, and could be useful to the wider UFS SR
 Weather App community, please consider contributing them to that
 repository first.
 
+# Updating Real-time Runs
+
+The AVID Team manages several real-time experiments on the Jet RDHPCS
+platform. The deployment of the system for these runs is performed
+manually, and they are run under a role account for easier Team
+management. There is no specific user assigned to the local clones, so
+the repository structures are "pull only".
+
+Changes to the real-time runs should be made through the Pull Request
+process and subsequently pulled into the relevant repositories upon
+successfully merging with the appropriate feature branch, e.g.
+feature/RRFS_dev1 in the regional_workflow repository.
+
+Minor hot fixes are allowed to be made in-place for the real-time runs,
+especially since many setting will be a result of the configuration
+system. Any changes made in place should immediately be applied to the
+code that generates the configuration system. A local test in user space
+to ensure the correct result is also highly recommended.
+
+All other changes should follow these steps:
+
+ - Modify the code in a your own branch in your own fork.
+ - Open a PR to the branch corresponding to the run you'd like to
+   update.
+ - Once the PR has been accepted and merged, sudo to role account and
+   pull the changes to the local clone.
+ - If any changes were made that result in changes to products of the
+   ush/generate_FV3LAM_wflow.sh, rerun that script to update, or
+   manually update (small changes only).
+   - It's best to do this between cycles, if possible.
+
+## Effects of changes
+Changes to different parts of the system will require slightly different
+actions to fully update the system.
+
+### Changes to the XML
+
+- XML changes that are very minor can be made manually reflecting the
+  change to the template, which is committed to the repository.
+- Extensive changes to the XML should be applied through a rebuild using
+  the script ush/generate_FV3LAM_wflow.sh once the XML template has been
+  through a PR.
+
+### Changes to a configuration setting.
+
+- The changes should be committed as changes to the configuration
+  file(s), potentially config.sh.RRFS_dev1 and config.sh.RRFS_AK_dev1.
+- It's a good idea to go through a PR first for these settings since so
+  many of them have repercussions to XML and scripts.
+- For minor changes, a manual update of the var_defns.sh file to reflect
+  a config.sh change can be made.
+- For significant modifications, regenerating var_defns.sh by re-running
+  ush/generate_FV3LAM_wflow.sh will be necessary.
+
+### Changes to a script
+
+- For hot fixes made to jobs and scripts before a PR, there will be
+  a conflict when pulling in your merged PR. To completely avoid this,
+  do the PR first. Otherwise, just before you do `git pull` into
+    regional_workflow, you will need to "checkout" all modified files:
+
+```
+    git status # see all modified files
+    git checkout <filename> # discard changes to file; do for each
+```
+
+## Rules of Thumb
+
+- Doing a PR first is *highly recommended*. Reviewed code is stronger
+  code, and you run into fewer issues when pulling changes to the local
+  clone.
+- Ask for guidance if you are unclear what downstream effects some
+  changes may have, or what real-time mods may be needed to get them
+  implemented. Example: does changing config setting X impact run-time
+  scripts and XML, or only the run-time environment?
+
+
+
 # Contact Info
 
 For questions related to code management, contributing to the AVID
-real-time runs, or running real time runs:
+real-time runs, or running real-time runs:
 
 | Name | Email |
 | ---- | :---- |
