@@ -511,7 +511,8 @@ MODULES_RUN_TASK_FP script.
 
       <dependency>
         <or>
-        <!--  <taskdep state="Dead" task="&RUN_POST_TN;_#fhr#"/> -->
+          <taskdep state="Dead" task="&RUN_POST_TN;_#fhr#"/>
+          <taskdep state="Dead" task="&RUN_NCL_TN;_#fhr#"/>
           <taskdep task="&RUN_NCL_TN;_#fhr#"/>
         </or>
       </dependency>
