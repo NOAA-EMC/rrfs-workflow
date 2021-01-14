@@ -25,7 +25,7 @@ if [[ $runcount -gt 0 ]];then
     if [[ -e ${COMOUT_BASEDIR}/${onerun}/nclprd/full/files.zip ]];then
       echo "Graphics..."
       mkdir -p $COMOUT_BASEDIR/stage/$year$month$day$hour/nclprd
-      cp -rv ${COMOUT_BASEDIR}/${onerun}/nclprd/* $COMOUT_BASEDIR/stage/$year$month$day$hour/nclprd
+      cp -rsv ${COMOUT_BASEDIR}/${onerun}/nclprd/* $COMOUT_BASEDIR/stage/$year$month$day$hour/nclprd
     fi
 
     set -A YY `ls -d ${COMOUT_BASEDIR}/${onerun}/*bg*tm*`
@@ -34,15 +34,13 @@ if [[ $runcount -gt 0 ]];then
     if [[ $postcount -gt 0 ]];then
       echo "GRIB-2..."
       mkdir -p $COMOUT_BASEDIR/stage/$year$month$day$hour/postprd
-      cp -rv ${COMOUT_BASEDIR}/${onerun}/*bg*tm* $COMOUT_BASEDIR/stage/$year$month$day$hour/postprd 
+      cp -rsv ${COMOUT_BASEDIR}/${onerun}/*bg*tm* $COMOUT_BASEDIR/stage/$year$month$day$hour/postprd 
     fi
 
     if [[ -e ${COMOUT_BASEDIR}/stage/$year$month$day$hour ]];then
       cd ${COMOUT_BASEDIR}/stage
-      tar -zcvf $year$month$day$hour.tar.gz $year$month$day$hour
+      htar -chvf $ARCHIVEDIR/$year/$month/$day/$year$month$day$hour.tar $year$month$day$hour
       rm -rf $year$month$day$hour
-      hsi put $year$month$day$hour.tar.gz : $ARCHIVEDIR/$year/$month/$day/$year$month$day$hour.tar.gz
-      rm -rf $year$month$day$hour.tar.gz
     fi
 
   done
