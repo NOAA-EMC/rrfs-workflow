@@ -70,9 +70,22 @@ tasks other than GET_EXTRN_ICS_TN, GET_EXTRN_LBCS_TN, and RUN_FCST_TN;
 the "HPSS" type is used for the GET_EXTRN_ICS_TN and GET_EXTRN_LBCS_TN 
 tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 -->
-<!ENTITY RSRV_DEFAULT "<account>&ACCOUNT;</account><{{ queue_default_tag }}>&QUEUE_DEFAULT;</{{ queue_default_tag }}>">
-<!ENTITY RSRV_HPSS    "<account>&ACCOUNT;</account><{{ queue_hpss_tag }}>&QUEUE_HPSS;</{{ queue_hpss_tag }}>">
-<!ENTITY RSRV_FCST    "<account>&ACCOUNT;</account><{{ queue_fcst_tag }}>&QUEUE_FCST;</{{ queue_fcst_tag }}>">
+
+{%- if partition_default is not none %}
+<!ENTITY RSRV_DEFAULT "<account>&ACCOUNT;</account><queue>&QUEUE_DEFAULT;</queue><partition>{{ partition_default }}</partition>">
+{%- else %}
+<!ENTITY RSRV_DEFAULT "<account>&ACCOUNT;</account><queue>&QUEUE_DEFAULT;</queue>">
+{%- endif %}
+{%- if partition_hpss is not none %}
+<!ENTITY RSRV_HPSS    "<account>&ACCOUNT;</account><queue>&QUEUE_HPSS;</queue><partition>{{ partition_hpss }}</partition>">
+{%- else %}
+<!ENTITY RSRV_HPSS    "<account>&ACCOUNT;</account><queue>&QUEUE_HPSS;</queue>">
+{%- endif %}
+{%- if partition_fcst is not none %}
+<!ENTITY RSRV_FCST    "<account>&ACCOUNT;</account><queue>&QUEUE_FCST;</queue><partition>{{ partition_fcst }}</partition>">
+{%- else %}
+<!ENTITY RSRV_FCST    "<account>&ACCOUNT;</account><queue>&QUEUE_FCST;</queue>">
+{%- endif %}
 
 <!ENTITY DEADLINE_PRE      "16:00:00">
 <!ENTITY DEADLINE_FCST     "23:30:00">
@@ -131,11 +144,15 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&MAKE_GRID_TN;" cycledefs="at_start" maxtries="1">
+  <task name="&MAKE_GRID_TN;" cycledefs="at_start" maxtries="{{ maxtries_make_grid }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_GRID_TN;" "&JOBSDIR;/JREGIONAL_MAKE_GRID"</command>
+  {% if machine in ["WCOSS_DELL_P3", "WCOSS_CRAY"]  %}
+    <nodes>{{ nnodes_make_grid }}:ppn=1</nodes>
+  {% else %}
     <nodes>{{ nnodes_make_grid }}:ppn={{ ppn_make_grid }}</nodes>
+  {% endif %}
     <walltime>{{ wtime_make_grid }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
     <jobname>&MAKE_GRID_TN;</jobname>
@@ -151,11 +168,15 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&MAKE_OROG_TN;" cycledefs="at_start" maxtries="1">
+  <task name="&MAKE_OROG_TN;" cycledefs="at_start" maxtries="{{ maxtries_make_orog }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_OROG_TN;" "&JOBSDIR;/JREGIONAL_MAKE_OROG"</command>
+  {% if machine in ["WCOSS_DELL_P3", "WCOSS_CRAY"]  %}
+    <nodes>{{ nnodes_make_orog }}:ppn=1</nodes>
+  {% else %}
     <nodes>{{ nnodes_make_orog }}:ppn={{ ppn_make_orog }}</nodes>
+  {% endif %}
     <walltime>{{ wtime_make_orog }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
     <jobname>&MAKE_OROG_TN;</jobname>
@@ -179,7 +200,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&MAKE_SFC_CLIMO_TN;" cycledefs="at_start" maxtries="1">
+  <task name="&MAKE_SFC_CLIMO_TN;" cycledefs="at_start" maxtries="{{ maxtries_make_sfc_climo }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_SFC_CLIMO_TN;" "&JOBSDIR;/JREGIONAL_MAKE_SFC_CLIMO"</command>
@@ -213,12 +234,17 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&GET_EXTRN_ICS_TN;" cycledefs="forecast" maxtries="1">
+  <task name="&GET_EXTRN_ICS_TN;" cycledefs="forecast" maxtries="{{ maxtries_get_extrn_ics }}">
 
-    &RSRV_DEFAULT;
     &WALL_LIMIT_PRE;
-
+    &RSRV_HPSS;
+  {% if machine in ["WCOSS_CRAY"] %}
+    <shared/>
+  {% endif %}
     <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_EXTRN_ICS_TN;" "&JOBSDIR;/JREGIONAL_GET_EXTRN_MDL_FILES"</command>
+  {% if machine in ["WCOSS_DELL_P3"] %}
+    <memory>2048M</memory><native>-R affinity[core]</native>
+  {% endif %}
     <nodes>{{ nnodes_get_extrn_ics }}:ppn={{ ppn_get_extrn_ics }}</nodes>
     <walltime>{{ wtime_get_extrn_ics }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
@@ -241,12 +267,17 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&GET_EXTRN_LBCS_TN;" cycledefs="forecast" maxtries="1">
+  <task name="&GET_EXTRN_LBCS_TN;" cycledefs="forecast" maxtries="{{ maxtries_get_extrn_lbcs }}">
 
-    &RSRV_DEFAULT;
     &WALL_LIMIT_PRE;
-
+    &RSRV_HPSS;
+  {% if machine in ["WCOSS_CRAY"] %}
+    <shared/>
+  {% endif %}
     <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_EXTRN_LBCS_TN;" "&JOBSDIR;/JREGIONAL_GET_EXTRN_MDL_FILES"</command>
+  {% if machine in ["WCOSS_DELL_P3"] %}
+    <memory>2048M</memory><native>-R affinity[core]</native>
+  {% endif %}
     <nodes>{{ nnodes_get_extrn_lbcs }}:ppn={{ ppn_get_extrn_lbcs }}</nodes>
     <walltime>{{ wtime_get_extrn_lbcs }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
@@ -285,7 +316,7 @@ MODULES_RUN_TASK_FP script.
 {%- endfor %} </var>
 {%- endif %}
 
-  <task name="&MAKE_ICS_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="1">
+  <task name="&MAKE_ICS_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_make_ics }}">
 
     &RSRV_DEFAULT;
     &WALL_LIMIT_PRE;
@@ -329,7 +360,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&MAKE_LBCS_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="1">
+  <task name="&MAKE_LBCS_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_make_lbcs }}">
 
     &RSRV_DEFAULT;
     &WALL_LIMIT_PRE;
@@ -373,7 +404,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&RUN_FCST_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="1">
+  <task name="&RUN_FCST_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_run_fcst }}">
 
     &RSRV_FCST;
     &WALL_LIMIT_FCST;
@@ -382,9 +413,6 @@ MODULES_RUN_TASK_FP script.
   {% if machine in ["JET", "HERA"]  %}
     <cores>{{ ncores_run_fcst }}</cores>
     <native>{{ native_run_fcst }}</native>
-    {% if machine == "JET" %}
-    <partition>{{ partition_run_fcst }} </partition>
-    {% endif %}
   {% else %}
     <nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>
     <nodesize>&NCORES_PER_NODE;</nodesize>
@@ -416,7 +444,7 @@ MODULES_RUN_TASK_FP script.
 
     <var name="fhr"> {% for h in range(0, fcst_len_hrs+1) %}{{ " %03d" % h  }}{% endfor %} </var>
 
-    <task name="&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr#" cycledefs="forecast" maxtries="1">
+    <task name="&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr#" cycledefs="forecast" maxtries="{{ maxtries_run_post }}">
 
       &RSRV_DEFAULT;
       &WALL_LIMIT_POST;
@@ -425,7 +453,7 @@ MODULES_RUN_TASK_FP script.
       <walltime>{{ wtime_run_post }}</walltime>
       <nodesize>&NCORES_PER_NODE;</nodesize>
       <jobname>&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr#</jobname>
-      <join><cyclestr>&LOGDIR;/&RUN_POST_TN;{{ uscore_ensmem_name }}_#fhr#_@Y@m@d@H.log</cyclestr></join>
+      <join><cyclestr>&LOGDIR;/&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -437,7 +465,7 @@ MODULES_RUN_TASK_FP script.
 
       <dependency>
         <or>
-          <taskdep task="&RUN_FCST_TN;"/>
+          <taskdep task="&RUN_FCST_TN;{{ uscore_ensmem_name }}"/>
           <and>
             <datadep age="05:00"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/dynf#fhr#.nc</cyclestr></datadep>
             <datadep age="05:00"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/phyf#fhr#.nc</cyclestr></datadep>
@@ -461,7 +489,7 @@ MODULES_RUN_TASK_FP script.
 
     <var name="fhr"> {% for h in range(0, fcst_len_hrs+1) %}{{ " %03d" % h  }}{% endfor %} </var>
 
-    <task name="&RUN_NCL_TN;_#fhr#" cycledefs="forecast" maxtries="2">
+    <task name="&RUN_NCL_TN;_#fhr#" cycledefs="forecast" maxtries="{{ maxtries_run_post }}">
 
       &RSRV_DEFAULT;
       &WALL_LIMIT_GRAPHICS;
@@ -493,7 +521,7 @@ MODULES_RUN_TASK_FP script.
 
     <var name="fhr"> {% for h in range(0, fcst_len_hrs+1) %}{{ " %03d" % h  }}{% endfor %} </var>
 
-    <task name="&RUN_NCL_ZIP_TN;_#fhr#" cycledefs="forecast" maxtries="2">
+    <task name="&RUN_NCL_ZIP_TN;_#fhr#" cycledefs="forecast" maxtries="{{ maxtries_run_post }}">
 
       &RSRV_DEFAULT;
       &WALL_LIMIT_GRAPHICS;
@@ -525,7 +553,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&CLEAN_TN;" cycledefs="forecast" maxtries="1">
+  <task name="&CLEAN_TN;" cycledefs="forecast" maxtries="{{ maxtries_run_post }}">
 
     &RSRV_DEFAULT;
 
@@ -544,7 +572,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&ARCHIVE_TN;" cycledefs="archive" maxtries="1">
+  <task name="&ARCHIVE_TN;" cycledefs="archive" maxtries="{{ maxtries_run_post }}">
 
     &RSRV_HPSS;
 

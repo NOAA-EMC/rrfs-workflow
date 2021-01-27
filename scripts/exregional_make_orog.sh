@@ -78,8 +78,6 @@ print_input_args valid_args
 #
 # The orography code runs with threads.  On Cray, the code is optimized
 # for six threads.  Do not change.
-# Note that OMP_NUM_THREADS and OMP_STACKSIZE only affect the threaded   <== I don't think this is true.  Remove??
-# executions on Cray; they don't affect executions on theia.
 #
 #-----------------------------------------------------------------------
 #
@@ -98,56 +96,63 @@ export OMP_STACKSIZE=2048m
 #
 case $MACHINE in
 
+  "WCOSS_CRAY")
+    { save_shell_opts; set +x; } > /dev/null 2>&1
+    . $MODULESHOME/init/sh
+    module load PrgEnv-intel cfp-intel-sandybridge/1.1.0
+    module list
+    { restore_shell_opts; } > /dev/null 2>&1
+    export NODES=1
+    export APRUN="aprun -n 1 -N 1 -j 1 -d 1 -cc depth"
+    export KMP_AFFINITY=disabled
+    ulimit -s unlimited
+    ulimit -a
+    ;;
 
-"WCOSS_C" | "WCOSS")
-#
-  { save_shell_opts; set +x; } > /dev/null 2>&1
+  "WCOSS_DELL_P3")
+    ulimit -s unlimited
+    ulimit -a
+    APRUN="mpirun"
+    ;;
 
-  . $MODULESHOME/init/sh
-  module load PrgEnv-intel cfp-intel-sandybridge/1.1.0
-  module list
+  "HERA")
+    ulimit -s unlimited
+    ulimit -a
+    APRUN="time"
+    ;;
 
-  { restore_shell_opts; } > /dev/null 2>&1
+  "ORION")
+    ulimit -s unlimited
+    ulimit -a
+    APRUN="time"
+    ;;
 
-  export NODES=1
-  export APRUN="aprun -n 1 -N 1 -j 1 -d 1 -cc depth"
-  export KMP_AFFINITY=disabled
+  "JET")
+    ulimit -s unlimited
+    ulimit -a
+    export APRUN="time"
+    ;;
 
-  ulimit -s unlimited
-  ulimit -a
-  ;;
+  "ODIN")
+    export APRUN="srun -n 1"
+    ulimit -s unlimited
+    ulimit -a
+    ;;
 
+  "CHEYENNE")
+    APRUN="time"
+    ;;
 
-"HERA")
-  ulimit -s unlimited
-  ulimit -a
-  APRUN="time"
-  ;;
+  "STAMPEDE")
+    export APRUN="time"
+    ;;
 
-
-"JET")
-  ulimit -s unlimited
-  ulimit -a
-  export APRUN="time"
-  ;;
-
-
-"ODIN")
-#
-  export APRUN="srun -n 1"
-
-  ulimit -s unlimited
-  ulimit -a
-  ;;
-
-
-"CHEYENNE")
-  APRUN="time"
-  ;;
-
-"STAMPEDE")
-  export APRUN="time"
-  ;;
+  *)
+    print_err_msg_exit "\
+Run command has not been specified for this machine:
+  MACHINE = \"$MACHINE\"
+  APRUN = \"$APRUN\""
+    ;;
 
 esac
 #
@@ -181,7 +186,7 @@ mkdir_vrfy -p "${shave_dir}"
 # Set the name and path to the executable that generates the raw orography
 # file and make sure that it exists.
 #
-exec_fn="orog.x"
+exec_fn="orog"
 exec_fp="$EXECDIR/${exec_fn}"
 if [ ! -f "${exec_fp}" ]; then
   print_err_msg_exit "\
@@ -192,7 +197,7 @@ fi
 #
 # Create a temporary (work) directory in which to generate the raw orography
 # file and change location to it.
-# 
+#
 tmp_dir="${raw_dir}/tmp"
 mkdir_vrfy -p "${tmp_dir}"
 cd_vrfy "${tmp_dir}"
@@ -230,7 +235,7 @@ grid_fp="${FIXLAM}/${grid_fn}"
 # them to a text file.
 #
 # Note that it doesn't matter what lonb and latb are set to below because
-# if we specify an input grid file to the executable read in (which is 
+# if we specify an input grid file to the executable read in (which is
 # what we do below), then if lonb and latb are not set to the dimensions
 # of the grid specified in that file (divided by 2 since the grid file
 # specifies a "supergrid"), then lonb and latb effectively get reset to
@@ -264,7 +269,7 @@ cat "${input_redirect_fn}"
 #
 #-----------------------------------------------------------------------
 #
-# Call the executable to generate the raw orography file corresponding 
+# Call the executable to generate the raw orography file corresponding
 # to tile 7 (the regional domain) only.
 #
 # The following will create an orography file named
@@ -282,46 +287,12 @@ cat "${input_redirect_fn}"
 print_info_msg "$VERBOSE" "
 Starting orography file generation..."
 
-
-case $MACHINE in
-
-
-"WCOSS_C" | "WCOSS")
-#
-# On WCOSS and WCOSS_C, use cfp to run multiple tiles simulatneously for
-# the orography.  For now, we have only one tile in the regional case,
-# but in the future we will have more.  First, create an input file for
-# cfp.
-#
-  ufs_utils_ushdir="${UFS_UTILS_DIR}/ush"
-  res="0"  # What should this be set to???
-
-  printf "%s\n" "\
-${ufs_utils_ushdir}/${orog_gen_scr} \
-$res \
-${TILE_RGNL} \
-${FIXLAM} \
-${raw_dir} \
-${UFS_UTILS_DIR} \
-${TOPO_DIR} \
-${tmp_dir}" \
-  >> ${tmp_dir}/orog.file1
-
-  aprun -j 1 -n 4 -N 4 -d 6 -cc depth cfp ${tmp_dir}/orog.file1
-  rm_vrfy ${tmp_dir}/orog.file1
-  ;;
-
-
-"CHEYENNE" | "HERA" | "JET" | "ODIN" | "STAMPEDE")
-  $APRUN "${exec_fp}" < "${input_redirect_fn}" || \
-    print_err_msg_exit "\
-Call to executable (exec_fp) that generates the raw orography file returned 
+$APRUN "${exec_fp}" < "${input_redirect_fn}" || \
+      print_err_msg_exit "\
+Call to executable (exec_fp) that generates the raw orography file returned
 with nonzero exit code:
   exec_fp = \"${exec_fp}\""
-  ;;
 
-
-esac
 #
 # Change location to the original directory.
 #
@@ -341,47 +312,43 @@ fn_suffix_with_halo="tile${TILE_RGNL}.halo${NHW}.nc"
 raw_orog_fn="${raw_orog_fn_prefix}.${fn_suffix_with_halo}"
 raw_orog_fp="${raw_dir}/${raw_orog_fn}"
 mv_vrfy "${raw_orog_fp_orig}" "${raw_orog_fp}"
-
 #
 #-----------------------------------------------------------------------
 #
-# Copy the two orography files needed for the drag suite in the FV3_RRFS_v1beta
+# Copy the two orography files needed for the drag suite in the FV3_HRRR
 # physics suite.
-# 
-# Note that the following is a temporary fix. We need a long-term solution 
-# that calls a script or program to generates the necessary files (instead 
+#
+# Note that the following is a temporary fix.  We need a long-term solution
+# that calls a script or program to generates the necessary files (instead
 # of copying them).
 #
 #-----------------------------------------------------------------------
 #
-if [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v1beta" ]; then
-  cp_vrfy ${GWD_RRFS_v1beta_DIR}/*_ls*.nc ${OROG_DIR}
-  cp_vrfy ${GWD_RRFS_v1beta_DIR}/*_ss*.nc ${OROG_DIR}
+if [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ]; then
+  cp_vrfy ${GWD_HRRRsuite_DIR}/${CRES}*_ls.*.nc ${OROG_DIR}
+  cp_vrfy ${GWD_HRRRsuite_DIR}/${CRES}*_ss.*.nc ${OROG_DIR}
 fi
-
-print_info_msg "$VERBOSE" "
-Orography file generation complete."
 #
 #-----------------------------------------------------------------------
 #
 # Note that the orography filtering code assumes that the regional grid
 # is a GFDLgrid type of grid; it is not designed to handle ESGgrid type
-# regional grids.  If the flag "regional" in the orography filtering 
+# regional grids.  If the flag "regional" in the orography filtering
 # namelist file is set to .TRUE. (which it always is will be here; see
-# below), then filtering code will first calculate a resolution (i.e. 
+# below), then filtering code will first calculate a resolution (i.e.
 # number of grid points) value named res_regional for the assumed GFDLgrid
 # type regional grid using the formula
 #
 #   res_regional = res*stretch_fac*real(refine_ratio)
 #
 # Here res, stretch_fac, and refine_ratio are the values passed to the
-# code via the namelist.  res and stretch_fac are assumed to be the 
+# code via the namelist.  res and stretch_fac are assumed to be the
 # resolution (in terms of number of grid points) and the stretch factor
 # of the (GFDLgrid type) regional grid's parent global cubed-sphere grid,
 # and refine_ratio is the ratio of the number of grid cells on the regional
 # grid to a single cell on tile 6 of the parent global grid.  After
 # calculating res_regional, the code interpolates/extrapolates between/
-# beyond a set of (currently 7) resolution values for which the four 
+# beyond a set of (currently 7) resolution values for which the four
 # filtering parameters (n_del2_weak, cd4, max_slope, peak_fac) are provided
 # (by GFDL) to obtain the corresponding values of these parameters at a
 # resolution of res_regional.  These interpolated/extrapolated values are
@@ -468,7 +435,13 @@ cp_vrfy "${raw_orog_fp}" "${filtered_orog_fp}"
 # filtering executable will run) with the same name as the grid file and
 # point it to the actual grid file specified by grid_fp.
 #
-ln_vrfy -fs --relative "${grid_fp}" "${filter_dir}/${grid_fn}"
+
+if [ "${MACHINE}" = "WCOSS_CRAY" ]; then
+  ln_vrfy -fs "${grid_fp}" "${filter_dir}/${grid_fn}"
+else
+  ln_vrfy -fs --relative "${grid_fp}" "${filter_dir}/${grid_fn}"
+fi
+
 #
 # Create the namelist file (in the filter_dir directory) that the orography
 # filtering executable will read in.
@@ -531,7 +504,7 @@ Filtering of orography complete."
 #
 # Set the name and path to the executable and make sure that it exists.
 #
-exec_fn="shave.x"
+exec_fn="shave"
 exec_fp="$EXECDIR/${exec_fn}"
 if [ ! -f "${exec_fp}" ]; then
   print_err_msg_exit "\

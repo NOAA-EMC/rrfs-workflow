@@ -44,7 +44,7 @@ In directory:     \"${scrfunc_dir}\"
 
 This is the ex-script for the task that generates initial condition
 (IC), surface, and zeroth hour lateral boundary condition (LBC0) files
-for FV3 (in NetCDF format).
+(in NetCDF format) for the FV3-LAM.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -56,9 +56,7 @@ for FV3 (in NetCDF format).
 #-----------------------------------------------------------------------
 #
 valid_args=( \
-"wgrib2_dir" \
 "ics_dir" \
-"APRUN" \
 )
 process_args valid_args "$@"
 #
@@ -71,6 +69,54 @@ process_args valid_args "$@"
 #-----------------------------------------------------------------------
 #
 print_input_args valid_args
+#
+#-----------------------------------------------------------------------
+#
+# Set machine-dependent parameters.
+#
+#-----------------------------------------------------------------------
+#
+case "$MACHINE" in
+
+  "WCOSS_CRAY")
+    ulimit -s unlimited
+    APRUN="aprun -b -j1 -n48 -N12 -d1 -cc depth"
+    ;;
+
+  "WCOSS_DELL_P3")
+    ulimit -s unlimited
+    APRUN="mpirun"
+    ;;
+
+  "HERA")
+    ulimit -s unlimited
+    APRUN="srun"
+    ;;
+
+  "ORION")
+    ulimit -s unlimited
+    APRUN="srun"
+    ;;
+
+  "JET")
+    ulimit -s unlimited
+    APRUN="srun"
+    ;;
+
+  "ODIN")
+    APRUN="srun"
+    ;;
+
+  "CHEYENNE")
+    nprocs=$(( NNODES_MAKE_ICS*PPN_MAKE_ICS ))
+    APRUN="mpirun -np $nprocs"
+    ;;
+
+  "STAMPEDE")
+    APRUN="ibrun"
+    ;;
+
+esac
 #
 #-----------------------------------------------------------------------
 #
@@ -95,43 +141,50 @@ cd_vrfy $workdir
 #
 #-----------------------------------------------------------------------
 #
-# Set physics-suite-dependent variables that are needed in the FORTRAN
-# namelist file that the chgres executable will read in.
+# Set physics-suite-dependent variable mapping table needed in the FORTRAN
+# namelist file that the chgres_cube executable will read in.
 #
 #-----------------------------------------------------------------------
 #
-phys_suite=""
+varmap_file=""
 
 case "${CCPP_PHYS_SUITE}" in
-
-"FV3_GFS_2017_gfdlmp" | "FV3_GFS_2017_gfdlmp_regional" )
-  phys_suite="GFS"
-  ;;
-"FV3_GSD_v0" | "FV3_GSD_SAR" | "FV3_RRFS_v1beta" | "FV3_HRRR")
-  phys_suite="GSD"
-  ;;
-"FV3_CPT_v0")
-  phys_suite="CPT"
-  ;;
-"FV3_GFS_v15p2")
-  phys_suite="v15p2"
-  ;;
-"FV3_GFS_v16beta")
-  phys_suite="v16beta"
-  ;;
-*)
-  print_err_msg_exit "\
-Physics-suite-dependent namelist variables have not yet been specified
-for this physics suite:
+#
+  "FV3_GFS_2017_gfdlmp" | \
+  "FV3_GFS_2017_gfdlmp_regional" | \
+  "FV3_GFS_v16beta" | \
+  "FV3_GFS_v15p2" | "FV3_CPT_v0" )
+    varmap_file="GFSphys_var_map.txt"
+    ;;
+#
+  "FV3_GSD_v0" | \
+  "FV3_GSD_SAR" | \
+  "FV3_RRFS_v1alpha" | \
+  "FV3_RRFS_v1beta" | \
+  "FV3_HRRR" )
+    if [ "${EXTRN_MDL_NAME_ICS}" = "RAP" ] || \
+       [ "${EXTRN_MDL_NAME_ICS}" = "HRRR" ]; then
+      varmap_file="GSDphys_var_map.txt"
+    elif [ "${EXTRN_MDL_NAME_ICS}" = "NAM" ] || \
+         [ "${EXTRN_MDL_NAME_ICS}" = "FV3GFS" ] || \
+         [ "${EXTRN_MDL_NAME_ICS}" = "GSMGFS" ]; then
+      varmap_file="GFSphys_var_map.txt"
+    fi
+    ;;
+#
+  *)
+    print_err_msg_exit "\
+The variable \"varmap_file\" has not yet been specified for this physics
+suite (CCPP_PHYS_SUITE):
   CCPP_PHYS_SUITE = \"${CCPP_PHYS_SUITE}\""
-  ;;
-
+    ;;
+#
 esac
 #
 #-----------------------------------------------------------------------
 #
 # Set external-model-dependent variables that are needed in the FORTRAN
-# namelist file that the chgres executable will read in.  These are de-
+# namelist file that the chgres_cube executable will read in.  These are de-
 # scribed below.  Note that for a given external model, usually only a
 # subset of these all variables are set (since some may be irrelevant).
 #
@@ -148,10 +201,10 @@ esac
 # model that contains the surface fields.
 #
 # input_type:
-# The "type" of input being provided to chgres.  This contains a combi-
+# The "type" of input being provided to chgres_cube.  This contains a combi-
 # nation of information on the external model, external model file for-
 # mat, and maybe other parameters.  For clarity, it would be best to
-# eliminate this variable in chgres and replace with with 2 or 3 others
+# eliminate this variable in chgres_cube and replace with with 2 or 3 others
 # (e.g. extrn_mdl, extrn_mdl_file_format, etc).
 #
 # tracers_input:
@@ -167,26 +220,24 @@ esac
 # ment of tracers should be the name to use for the O3 mixing ratio in
 # the output file.  For GSD physics, three additional tracers -- ice,
 # rain, and water number concentrations -- may be specified at the end
-# of tracers, and these will be calculated by chgres.
+# of tracers, and these will be calculated by chgres_cube.
 #
-# internal_GSD:
-# Logical variable indicating whether or not to try to read in land sur-
-# face model (LSM) variables available in the HRRRX grib2 files created
-# after about 2019111500.
-#
-# numsoil_out:
+# nsoill_out:
 # The number of soil layers to include in the output NetCDF file.
 #
-# replace_FIELD, where FIELD="vgtyp", "sotyp", or "vgfrc":
+# FIELD_from_climo, where FIELD = "vgtyp", "sotyp", "vgfrc", "lai", or
+# "minmax_vgfrc":
 # Logical variable indicating whether or not to obtain the field in
 # question from climatology instead of the external model.  The field in
 # question is one of vegetation type (FIELD="vgtyp"), soil type (FIELD=
-# "sotyp"), and vegetation fraction (FIELD="vgfrc").  If replace_FIELD
-# is set to ".true.", then the field is obtained from climatology (re-
-# gardless of whether or not it exists in an external model file).  If
-# it is set to ".false.", then the field is obtained from the external
-# model.  If the external model file does not provide this field, then
-# chgres prints out an error message and stops.
+# "sotyp"), vegetation fraction (FIELD="vgfrc"), leaf area index
+# (FIELD="lai"), or min/max areal fractional coverage of annual green
+# vegetation (FIELD="minmax_vfrr").  If FIELD_from_climo is set to
+# ".true.", then the field is obtained from climatology (regardless of
+# whether or not it exists in an external model file).  If it is set
+# to ".false.", then the field is obtained from the external  model.
+# If "false" is chosen and the external model file does not provide
+# this field, then chgres_cube prints out an error message and stops.
 #
 # tg3_from_soil:
 # Logical variable indicating whether or not to set the tg3 soil tempe-  # Needs to be verified.
@@ -228,7 +279,6 @@ esac
 # A non-prognostic variable that appears in the field_table for GSD physics
 # is cld_amt.  Why is that in the field_table at all (since it is a non-
 # prognostic field), and how should we handle it here??
-
 # I guess this works for FV3GFS but not for the spectral GFS since these
 # variables won't exist in the spectral GFS atmanl files.
 #  tracers_input="\"sphum\",\"liq_wat\",\"ice_wat\",\"rainwat\",\"snowwat\",\"graupel\",\"o3mr\""
@@ -243,221 +293,177 @@ fn_grib2=""
 input_type=""
 tracers_input="\"\""
 tracers="\"\""
-internal_GSD=""
-numsoil_out=""
+nsoill_out=""
 geogrid_file_input_grid="\"\""
-replace_vgtyp=""
-replace_sotyp=""
-replace_vgfrc=""
+vgtyp_from_climo=""
+sotyp_from_climo=""
+vgfrc_from_climo=""
+minmax_vgfrc_from_climo=""
+lai_from_climo=""
 tg3_from_soil=""
 convert_nst=""
-
-
+#
+#-----------------------------------------------------------------------
+#
+# If the external model is not one that uses the RUC land surface model
+# (LSM) -- which currently includes all valid external models except the
+# HRRR and the RAP -- then we set the number of soil levels to include
+# in the output NetCDF file that chgres_cube generates (nsoill_out; this
+# is a variable in the namelist that chgres_cube reads in) to 4.  This 
+# is because FV3 can handle this regardless of the LSM that it is using
+# (which is specified in the suite definition file, or SDF), as follows.  
+# If the SDF does not use the RUC LSM (i.e. it uses the Noah or Noah MP 
+# LSM), then it will expect to see 4 soil layers; and if the SDF uses 
+# the RUC LSM, then the RUC LSM itself has the capability to regrid from 
+# 4 soil layers to the 9 layers that it uses.
+#
+# On the other hand, if the external model is one that uses the RUC LSM
+# (currently meaning that it is either the HRRR or the RAP), then what
+# we set nsoill_out to depends on whether the RUC or the Noah/Noah MP
+# LSM is used in the SDF.  If the SDF uses RUC, then both the external
+# model and FV3 use RUC (which expects 9 soil levels), so we simply set
+# nsoill_out to 9.  In this case, chgres_cube does not need to do any
+# regridding of soil levels (because the number of levels in is the same
+# as the number out).  If the SDF uses the Noah or Noah MP LSM, then the
+# output from chgres_cube must contain 4 soil levels because that is what
+# these LSMs expect, and the code in FV3 does not have the capability to
+# regrid from the 9 levels in the external model to the 4 levels expected
+# by Noah/Noah MP.  In this case, chgres_cube does the regridding from 
+# 9 to 4 levels.
+#
+# In summary, we can set nsoill_out to 4 unless the external model is
+# the HRRR or RAP AND the forecast model is using the RUC LSM.
+#
+#-----------------------------------------------------------------------
+#
+nsoill_out="4"
+if [ "${EXTRN_MDL_NAME_ICS}" = "HRRR" -o \
+     "${EXTRN_MDL_NAME_ICS}" = "RAP" ] && \
+   [ "${SDF_USES_RUC_LSM}" = "TRUE" ]; then
+  nsoill_out="9"
+fi
+#
+#-----------------------------------------------------------------------
+#
+# If the external model for ICs is one that does not provide the aerosol
+# fields needed by Thompson microphysics (currently only the HRRR and 
+# RAP provide aerosol data) and if the physics suite uses Thompson 
+# microphysics, set the variable thomp_mp_climo_file in the chgres_cube 
+# namelist to the full path of the file containing aerosol climatology 
+# data.  In this case, this file will be used to generate approximate 
+# aerosol fields in the ICs that Thompson MP can use.  Otherwise, set
+# thomp_mp_climo_file to a null string.
+#
+#-----------------------------------------------------------------------
+#
+thomp_mp_climo_file=""
+if [ "${EXTRN_MDL_NAME_ICS}" != "HRRR" -a \
+     "${EXTRN_MDL_NAME_ICS}" != "RAP" ] && \
+   [ "${SDF_USES_THOMPSON_MP}" = "TRUE" ]; then
+  thomp_mp_climo_file="${THOMPSON_MP_CLIMO_FP}"
+fi
+#
+#-----------------------------------------------------------------------
+#
+# Set other chgres_cube namelist variables depending on the external
+# model used.
+#
+#-----------------------------------------------------------------------
+#
 case "${EXTRN_MDL_NAME_ICS}" in
 
-
 "GSMGFS")
-
   external_model="GSMGFS"
-
   fn_atm_nemsio="${EXTRN_MDL_FNS[0]}"
   fn_sfc_nemsio="${EXTRN_MDL_FNS[1]}"
-  input_type="gfs_gaussian" # For spectral GFS Gaussian grid in nemsio format.
-
+  input_type="gfs_gaussian_nemsio" # For spectral GFS Gaussian grid in nemsio format.
+  convert_nst=False
   tracers_input="[\"spfh\",\"clwmr\",\"o3mr\"]"
   tracers="[\"sphum\",\"liq_wat\",\"o3mr\"]"
-
-  internal_GSD=False
-  numsoil_out="4"
-  replace_vgtyp=True
-  replace_sotyp=True
-  replace_vgfrc=True
+  vgtyp_from_climo=True
+  sotyp_from_climo=True
+  vgfrc_from_climo=True
+  minmax_vgfrc_from_climo=True
+  lai_from_climo=True
   tg3_from_soil=False
-  convert_nst=False
-
   ;;
-
 
 "FV3GFS")
-
   if [ "${FV3GFS_FILE_FMT_ICS}" = "nemsio" ]; then
-
     external_model="FV3GFS"
-
+    tracers_input="[\"spfh\",\"clwmr\",\"o3mr\",\"icmr\",\"rwmr\",\"snmr\",\"grle\"]"
+    tracers="[\"sphum\",\"liq_wat\",\"o3mr\",\"ice_wat\",\"rainwat\",\"snowwat\",\"graupel\"]"
     fn_atm_nemsio="${EXTRN_MDL_FNS[0]}"
     fn_sfc_nemsio="${EXTRN_MDL_FNS[1]}"
-    input_type="gaussian"     # For FV3-GFS Gaussian grid in nemsio format.
-
-    tracers_input="[\"spfh\",\"clwmr\",\"o3mr\",\"icmr\",\"rwmr\",\"snmr\",\"grle\"]"
-
-#
-# If CCPP is being used, then the list of atmospheric tracers to include
-# in the output file depends on the physics suite.  Hopefully, this me-
-# thod of specifying output tracers will be replaced with a variable
-# table (which should be specific to each combination of external model,
-# external model file type, and physics suite).
-#
-    if [ "${USE_CCPP}" = "TRUE" ]; then
-      if [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_2017_gfdlmp" ] || \
-         [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_2017_gfdlmp_regional" ] || \
-         [ "${CCPP_PHYS_SUITE}" = "FV3_CPT_v0" ] || \
-         [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_v15p2" ] || \
-         [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_v16beta" ]; then
-        tracers="[\"sphum\",\"liq_wat\",\"o3mr\",\"ice_wat\",\"rainwat\",\"snowwat\",\"graupel\"]"
-      elif [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_v0" ] || \
-           [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v1beta" ] || \
-           [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ] || \
-           [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_SAR" ]; then
-# For GSD physics, add three additional tracers (the ice, rain and water
-# number concentrations) that are required for Thompson microphysics.
-        tracers="[\"sphum\",\"liq_wat\",\"o3mr\",\"ice_wat\",\"rainwat\",\"snowwat\",\"graupel\",\"ice_nc\",\"rain_nc\",\"water_nc\"]"
-      else
-        print_err_msg_exit "\
-The parameter \"tracers\" has not been defined for this combination of 
-external model (EXTRN_MDL_NAME_ICS), physics suite (CCPP_PHYS_SUITE), and 
-FV3GFS file type (FV3GFS_FILE_FMT_ICS):
-  EXTRN_MDL_NAME_ICS = \"${EXTRN_MDL_NAME_ICS}\"
-  CCPP_PHYS_SUITE = \"${CCPP_PHYS_SUITE}\"
-  FV3GFS_FILE_FMT_ICS = \"${FV3GFS_FILE_FMT_ICS}\""
-      fi
-#
-# If CCPP is not being used, the only physics suite that can be used is
-# GFS.
-#
-    else
-      tracers="[\"sphum\",\"liq_wat\",\"o3mr\",\"ice_wat\",\"rainwat\",\"snowwat\",\"graupel\"]"
-    fi
-
+    input_type="gaussian_nemsio"     # For FV3-GFS Gaussian grid in nemsio format.
+    convert_nst=True
   elif [ "${FV3GFS_FILE_FMT_ICS}" = "grib2" ]; then
-
     external_model="GFS"
-
     fn_grib2="${EXTRN_MDL_FNS[0]}"
     input_type="grib2"
-
+    convert_nst=False
   fi
-
-  internal_GSD=False
-  numsoil_out="4"
-  replace_vgtyp=True
-  replace_sotyp=True
-  replace_vgfrc=True
+  vgtyp_from_climo=True
+  sotyp_from_climo=True
+  vgfrc_from_climo=True
+  minmax_vgfrc_from_climo=True
+  lai_from_climo=True
   tg3_from_soil=False
-  convert_nst=True
-
   ;;
 
-
-"HRRRX")
-
+"HRRR")
   external_model="HRRR"
-
   fn_grib2="${EXTRN_MDL_FNS[0]}"
   input_type="grib2"
-
-  internal_GSD=False
-  cdate_min_HRRRX="2019111500"
-  if [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_v0" -o \
-       "${CCPP_PHYS_SUITE}" = "FV3_GSD_SAR" ] && \
-     [ ${CDATE} -gt ${cdate_min_HRRRX} ]; then
-    print_info_msg "
-Setting the chgres_cube namelist setting \"internal_GSD\" to \".true.\" in
-order to read in land surface model (LSM) variables available in the
-HRRRX grib2 files created after about \"${cdate_min_HRRRX}\"..."
-    internal_GSD=True
-  fi
-
-  if [ "${USE_CCPP}" = "TRUE" ]; then
-    if [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_2017_gfdlmp" ] || \
-       [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_2017_gfdlmp_regional" ] || \
-       [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v1beta" ] || \
-       [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ] || \
-       [ "${CCPP_PHYS_SUITE}" = "FV3_CPT_v0" ] || \
-       [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_v15p2" ] || \
-       [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_v16beta" ]; then
-      numsoil_out="4"
-    elif [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_v0" ] || \
-         [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_SAR" ]; then
-      numsoil_out="9"
-    else
-      print_err_msg_exit "\
-The parameter \"numsoil_out\" has not been defined for this combination 
-of external model (EXTRN_MDL_NAME_ICS) and physics suite (CCPP_PHYS_SUITE):
-  EXTRN_MDL_NAME_ICS = \"${EXTRN_MDL_NAME_ICS}\"
-  CCPP_PHYS_SUITE = \"${CCPP_PHYS_SUITE}\""
-    fi
-  fi
 #
-# These geogrid files need to be moved to more permanent locations.
+# Path to the HRRRX geogrid file.
 #
-  if [ "${MACHINE}" = "HERA" ]; then
-    geogrid_file_input_grid="/scratch2/BMC/det/beck/FV3-LAM/geo_em.d01.nc_HRRRX"
-  elif [ "${MACHINE}" = "JET" ]; then
-    geogrid_file_input_grid="/misc/whome/rtrr/HRRR/static/WPS/geo_em.d01.nc"
-  elif [ "${MACHINE}" = "CHEYENNE" ]; then
-    geogrid_file_input_grid="/glade/p/ral/jntp/UFS_CAM/fix/geo_em.d01.nc_HRRRX"
-  fi
-
-  replace_vgtyp=False
-  replace_sotyp=False
-  replace_vgfrc=False
+  geogrid_file_input_grid="${FIXgsm}/geo_em.d01.nc_HRRRX"
+# Note that vgfrc, shdmin/shdmax (minmax_vgfrc), and lai fields are only available in HRRRX
+# files after mid-July 2019, and only so long as the record order didn't change afterward
+  vgtyp_from_climo=True
+  sotyp_from_climo=True
+  vgfrc_from_climo=True
+  minmax_vgfrc_from_climo=True
+  lai_from_climo=True
   tg3_from_soil=True
   convert_nst=False
-
   ;;
 
-"RAPX")
-
+"RAP")
   external_model="RAP"
-
   fn_grib2="${EXTRN_MDL_FNS[0]}"
   input_type="grib2"
-
-  internal_GSD=False
-
-  if [ "${USE_CCPP}" = "TRUE" ]; then
-    if [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_2017_gfdlmp" ] || \
-       [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_2017_gfdlmp_regional" ] || \
-       [ "${CCPP_PHYS_SUITE}" = "FV3_CPT_v0" ] || \
-       [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v1beta" ] || \
-       [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ] || \
-       [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_v15p2" ] || \
-       [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_v16beta" ]; then
-      numsoil_out="4"
-    elif [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_v0" ] || \
-         [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_SAR" ]; then
-      numsoil_out="9"
-    else
-      print_err_msg_exit "\
-The parameter \"numsoil_out\" has not been defined for this combination 
-of external model (EXTRN_MDL_NAME_ICS) and physics suite (CCPP_PHYS_SUITE):
-  EXTRN_MDL_NAME_ICS = \"${EXTRN_MDL_NAME_ICS}\"
-  CCPP_PHYS_SUITE = \"${CCPP_PHYS_SUITE}\""
-    fi
-  fi
 #
-# These geogrid files need to be moved to more permanent locations.
+# Path to the RAPX geogrid file.
 #
-  if [ "${MACHINE}" = "HERA" ]; then
-    geogrid_file_input_grid="/scratch2/BMC/det/beck/FV3-LAM/geo_em.d01.nc_RAPX"
-  elif [ "${MACHINE}" = "JET" ]; then
-    geogrid_file_input_grid="/misc/whome/rtrr/HRRR/static/WPS/geo_em.d01.nc"
-  elif [ "${MACHINE}" = "CHEYENNE" ]; then
-    geogrid_file_input_grid="/glade/p/ral/jntp/UFS_CAM/fix/geo_em.d01.nc_RAPX"
-  fi
-
-  replace_vgtyp=False
-  replace_sotyp=False
-  replace_vgfrc=False
+  geogrid_file_input_grid="${FIXgsm}/geo_em.d01.nc_RAPX"
+  vgtyp_from_climo=True
+  sotyp_from_climo=False
+  vgfrc_from_climo=True
+  minmax_vgfrc_from_climo=True
+  lai_from_climo=True
   tg3_from_soil=True
   convert_nst=False
+  ;;
 
+"NAM")
+  external_model="NAM"
+  fn_grib2="${EXTRN_MDL_FNS[0]}"
+  input_type="grib2"
+  vgtyp_from_climo=True
+  sotyp_from_climo=True
+  vgfrc_from_climo=True
+  minmax_vgfrc_from_climo=True
+  lai_from_climo=True
+  tg3_from_soil=False
+  convert_nst=False
   ;;
 
 *)
   print_err_msg_exit "\
 External-model-dependent namelist variables have not yet been specified
-for this external model:
+for this external IC model (EXTRN_MDL_NAME_ICS):
   EXTRN_MDL_NAME_ICS = \"${EXTRN_MDL_NAME_ICS}\""
   ;;
 
@@ -479,7 +485,7 @@ hh="${EXTRN_MDL_CDATE:8:2}"
 #
 #-----------------------------------------------------------------------
 #
-exec_fn="chgres_cube.exe"
+exec_fn="chgres_cube"
 exec_fp="$EXECDIR/${exec_fn}"
 if [ ! -f "${exec_fp}" ]; then
   print_err_msg_exit "\
@@ -495,91 +501,58 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# For GFS physics, the character arrays tracers_input(:) and tracers(:)
-# must be specified in the namelist file.  tracers_input(:) contains the
-# tracer name to look for in the external model file(s), while tracers(:)
-# contains the names to use for the tracers in the output NetCDF files
-# that chgres creates (that will be read in by FV3).  Since when FV3
-# reads these NetCDF files it looks for atmospheric traces as specified
-# in the file field_table, tracers(:) should be set to the names in
-# field_table.
-#
-# NOTE: This process should be automated where the set of elements that
-# tracers(:) should be set to is obtained from reading in field_table.
-#
-# To know how to set tracers_input(:), you have to know the names of the
-# variables in the input atmospheric nemsio file (usually this file is
-# named gfs.t00z.atmanl.nemsio).
-#
-# It is not quite clear how these should be specified.  Here are a list
-# of examples:
-#
-# [Gerard.Ketefian@tfe05] /scratch3/.../chgres_cube.fd/run (feature/chgres_grib2_gsk)
-# $ grep -n -i "tracers" * | grep theia
-# config.C1152.l91.atm.theia.nml:24: tracers="sphum","liq_wat","o3mr","ice_wat","rainwat","snowwat","graupel"
-# config.C1152.l91.atm.theia.nml:25: tracers_input="sphum","liq_wat","o3mr","ice_wat","rainwat","snowwat","graupel"
-# config.C48.gaussian.theia.nml:20: tracers="sphum","liq_wat","o3mr","ice_wat","rainwat","snowwat","graupel"
-# config.C48.gaussian.theia.nml:21: tracers_input="spfh","clwmr","o3mr","icmr","rwmr","snmr","grle"
-# config.C48.gfs.gaussian.theia.nml:21: tracers="sphum","liq_wat","o3mr"
-# config.C48.gfs.gaussian.theia.nml:22: tracers_input="spfh","clwmr","o3mr"
-# config.C48.gfs.spectral.theia.nml:21: tracers_input="spfh","o3mr","clwmr"
-# config.C48.gfs.spectral.theia.nml:22: tracers="sphum","o3mr","liq_wat"
-# config.C48.theia.nml:21: tracers="sphum","liq_wat","o3mr"
-# config.C48.theia.nml:22: tracers_input="spfh","clwmr","o3mr"
-# config.C768.atm.theia.nml:24: tracers="sphum","liq_wat","o3mr","ice_wat","rainwat","snowwat","graupel"
-# config.C768.atm.theia.nml:25: tracers_input="sphum","liq_wat","o3mr","ice_wat","rainwat","snowwat","graupel"
-# config.C768.l91.atm.theia.nml:24: tracers="sphum","liq_wat","o3mr","ice_wat","rainwat","snowwat","graupel"
-# config.C768.l91.atm.theia.nml:25: tracers_input="sphum","liq_wat","o3mr","ice_wat","rainwat","snowwat","graupel"
-# config.C768.nest.atm.theia.nml:22: tracers="sphum","liq_wat","o3mr","ice_wat","rainwat","snowwat","graupel"
-# config.C768.nest.atm.theia.nml:23: tracers_input="sphum","liq_wat","o3mr","ice_wat","rainwat","snowwat","graupel"
-
-
-# fix_dir_target_grid="${BASEDIR}/ESG_grid_HRRR_like_fix_files_chgres_cube"
-# base_install_dir="${SORCDIR}/chgres_cube.fd"
-
-#
 # Create a multiline variable that consists of a yaml-compliant string
 # specifying the values that the namelist variables need to be set to
 # (one namelist variable per line, plus a header and footer).  Below,
 # this variable will be passed to a python script that will create the
 # namelist file.
 #
+# IMPORTANT:
+# If we want a namelist variable to be removed from the namelist file,
+# in the "settings" variable below, we need to set its value to the
+# string "null".  This is equivalent to setting its value to
+#    !!python/none
+# in the base namelist file specified by FV3_NML_BASE_SUITE_FP or the
+# suite-specific yaml settings file specified by FV3_NML_YAML_CONFIG_FP.
+#
+# It turns out that setting the variable to an empty string also works
+# to remove it from the namelist!  Which is better to use??
+#
 settings="
 'config': {
+ 'fix_dir_input_grid': ${FIXgsm},
  'fix_dir_target_grid': ${FIXLAM},
- 'mosaic_file_target_grid': ${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc,
+ 'mosaic_file_target_grid': ${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo$((10#${NH4})).nc,
  'orog_dir_target_grid': ${FIXLAM},
- 'orog_files_target_grid': ${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH4}.nc,
+ 'orog_files_target_grid': ${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo$((10#${NH4})).nc,
  'vcoord_file_target_grid': ${FIXam}/L65_20mb.txt,
- 'mosaic_file_input_grid': '',
- 'orog_dir_input_grid': '',
- 'base_install_dir': ${CHGRES_DIR},
- 'wgrib2_path': ${wgrib2_dir},
+ 'varmap_file': ${UFS_UTILS_DIR}/parm/varmap_tables/${varmap_file},
  'data_dir_input_grid': ${extrn_mdl_staging_dir},
  'atm_files_input_grid': ${fn_atm_nemsio},
  'sfc_files_input_grid': ${fn_sfc_nemsio},
  'grib2_file_input_grid': \"${fn_grib2}\",
- 'cycle_mon': $((10#$mm)),
- 'cycle_day': $((10#$dd)),
- 'cycle_hour': $((10#$hh)),
+ 'cycle_mon': $((10#${mm})),
+ 'cycle_day': $((10#${dd})),
+ 'cycle_hour': $((10#${hh})),
  'convert_atm': True,
  'convert_sfc': True,
  'convert_nst': ${convert_nst},
  'regional': 1,
- 'halo_bndy': ${NH4},
- 'halo_blend': 10,
+ 'halo_bndy': $((10#${NH4})),
+ 'halo_blend': $((10#${HALO_BLEND})),
  'input_type': ${input_type},
  'external_model': ${external_model},
  'tracers_input': ${tracers_input},
  'tracers': ${tracers},
- 'phys_suite': ${phys_suite},
- 'internal_GSD': ${internal_GSD},
- 'numsoil_out': ${numsoil_out},
+ 'nsoill_out': $((10#${nsoill_out})),
  'geogrid_file_input_grid': ${geogrid_file_input_grid},
- 'replace_vgtyp': ${replace_vgtyp},
- 'replace_sotyp': ${replace_sotyp},
- 'replace_vgfrc': ${replace_vgfrc},
+ 'vgtyp_from_climo': ${vgtyp_from_climo},
+ 'sotyp_from_climo': ${sotyp_from_climo},
+ 'vgfrc_from_climo': ${vgfrc_from_climo},
+ 'minmax_vgfrc_from_climo': ${minmax_vgfrc_from_climo},
+ 'lai_from_climo': ${lai_from_climo},
  'tg3_from_soil': ${tg3_from_soil},
+ 'thomp_mp_climo_file': ${thomp_mp_climo_file},
 }
 "
 #
@@ -637,7 +610,49 @@ mv_vrfy out.sfc.tile${TILE_RGNL}.nc \
 
 mv_vrfy gfs_ctrl.nc ${ics_dir}
 
-mv_vrfy gfs_bndy.nc ${ics_dir}/gfs_bndy.tile${TILE_RGNL}.000.nc
+mv_vrfy gfs.bndy.nc ${ics_dir}/gfs_bndy.tile${TILE_RGNL}.000.nc
+#
+#-----------------------------------------------------------------------
+#
+# Process FVCOM Data
+#
+#-----------------------------------------------------------------------
+#
+if [ "${USE_FVCOM}" = "TRUE" ]; then
+
+  fvcom_exec_fn="fvcom_to_FV3"
+  fvcom_exec_fp="$EXECDIR/${fvcom_exec_fn}"
+  if [ ! -f "${fvcom_exec_fp}" ]; then
+    print_err_msg_exit "\
+The executable (fvcom_exec_fp) for processing FVCOM data onto FV3-LAM
+native grid does not exist:
+  fvcom_exec_fp = \"${fvcom_exec_fp}\"
+Please ensure that you've built this executable."
+  fi
+  cp_vrfy ${fvcom_exec_fp} ${ics_dir}/.
+  fvcom_data_fp="${FVCOM_DIR}/${FVCOM_FILE}"
+  if [ ! -f "${fvcom_data_fp}" ]; then
+    print_err_msg_exit "\
+The file or path (fvcom_data_fp) does not exist:
+  fvcom_data_fp = \"${fvcom_data_fp}\"
+Please check the following user defined variables:
+  FVCOM_DIR = \"${FVCOM_DIR}\"
+  FVCOM_FILE= \"${FVCOM_FILE}\" "
+  fi
+
+  cp_vrfy ${fvcom_data_fp} ${ics_dir}/fvcom.nc
+  cd_vrfy ${ics_dir}
+  ${APRUN} ${fvcom_exec_fn} sfc_data.tile${TILE_RGNL}.halo${NH0}.nc fvcom.nc || \
+  print_err_msg_exit "\
+Call to executable (fvcom_exe) to modify sfc fields for FV3-LAM failed:
+  fvcom_exe = \"${fvcom_exe}\"
+The following variables were being used:
+  FVCOM_DIR = \"${FVCOM_DIR}\"
+  FVCOM_FILE = \"${FVCOM_FILE}\"
+  ics_dir = \"${ics_dir}\"
+  fvcom_exe_dir = \"${fvcom_exe_dir}\"
+  fvcom_exe = \"${fvcom_exe}\""
+fi
 #
 #-----------------------------------------------------------------------
 #

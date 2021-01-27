@@ -89,61 +89,68 @@ print_input_args valid_args
 #-----------------------------------------------------------------------
 #
 case $MACHINE in
-#
-"WCOSS_CRAY")
-#
-  ulimit -s unlimited
-  ulimit -a
-  APRUN="aprun -b -j1 -n${PE_MEMBER01} -N24 -d1 -cc depth"
-  ;;
-#
-"WCOSS_DELL_P3")
-  ulimit -s unlimited
-  ulimit -a
-  APRUN="mpirun -l -np ${PE_MEMBER01}"
-  ;;
-#
-"HERA")
-  ulimit -s unlimited
-  ulimit -a
-  APRUN="srun"
-  LD_LIBRARY_PATH="${UFS_WTHR_MDL_DIR}/FV3/ccpp/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-  OMP_NUM_THREADS=4
-  ;;
-#
-"JET")
-  ulimit -s unlimited
-  ulimit -a
-  APRUN="srun"
-  LD_LIBRARY_PATH="${UFS_WTHR_MDL_DIR}/FV3/ccpp/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-  OMP_NUM_THREADS=4
-  ;;
-#
-"ODIN")
-#
-  module list
 
-  ulimit -s unlimited
-  ulimit -a
-  APRUN="srun -n ${PE_MEMBER01}"
-  ;;
-#
-"CHEYENNE")
-#
-  module list
-  nprocs=$(( NNODES_RUN_FCST*PPN_RUN_FCST ))
-  APRUN="mpirun -np $nprocs"
-  LD_LIBRARY_PATH="${UFS_WTHR_MDL_DIR}/FV3/ccpp/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-  ;;
-#
+  "WCOSS_CRAY")
+    ulimit -s unlimited
+    ulimit -a
 
-"STAMPEDE")
-#
-  module list
+    if [ ${PE_MEMBER01} -gt 24 ];then
+      APRUN="aprun -b -j1 -n${PE_MEMBER01} -N24 -d1 -cc depth"
+    else
+      APRUN="aprun -b -j1 -n24 -N24 -d1 -cc depth"
+    fi
+    ;;
 
-  APRUN="ibrun -np ${PE_MEMBER01}"
-  #LD_LIBRARY_PATH="${UFS_WTHR_MDL_DIR}/FV3/ccpp/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-  ;;
+  "WCOSS_DELL_P3")
+    ulimit -s unlimited
+    ulimit -a
+    APRUN="mpirun -l -np ${PE_MEMBER01}"
+    ;;
+
+  "HERA")
+    ulimit -s unlimited
+    ulimit -a
+    APRUN="srun"
+    OMP_NUM_THREADS=4
+    ;;
+
+  "ORION")
+    ulimit -s unlimited
+    ulimit -a
+    APRUN="srun"
+    ;;
+
+  "JET")
+    ulimit -s unlimited
+    ulimit -a
+    APRUN="srun"
+    OMP_NUM_THREADS=4
+    ;;
+
+  "ODIN")
+    module list
+    ulimit -s unlimited
+    ulimit -a
+    APRUN="srun -n ${PE_MEMBER01}"
+    ;;
+
+  "CHEYENNE")
+    module list
+    nprocs=$(( NNODES_RUN_FCST*PPN_RUN_FCST ))
+    APRUN="mpirun -np $nprocs"
+    ;;
+
+  "STAMPEDE")
+    module list
+    APRUN="ibrun -np ${PE_MEMBER01}"
+    ;;
+
+  *)
+    print_err_msg_exit "\
+Run command has not been specified for this machine:
+  MACHINE = \"$MACHINE\"
+  APRUN = \"$APRUN\""
+    ;;
 
 esac
 #
@@ -157,13 +164,13 @@ run_dir="${cycle_dir}${slash_ensmem_subdir}"
 #
 #-----------------------------------------------------------------------
 #
-# Create links in the INPUT subdirectory of the current run directory to 
+# Create links in the INPUT subdirectory of the current run directory to
 # the grid and (filtered) orography files.
 #
 #-----------------------------------------------------------------------
 #
 print_info_msg "$VERBOSE" "
-Creating links in the INPUT subdirectory of the current run directory to 
+Creating links in the INPUT subdirectory of the current run directory to
 the grid and (filtered) orography files ..."
 
 
@@ -173,7 +180,7 @@ the grid and (filtered) orography files ..."
 cd_vrfy ${run_dir}/INPUT
 
 relative_or_null=""
-if [ "${RUN_TASK_MAKE_GRID}" = "TRUE" ]; then
+if [ "${RUN_TASK_MAKE_GRID}" = "TRUE" ] && [ "${MACHINE}" != "WCOSS_CRAY" ]; then
   relative_or_null="--relative"
 fi
 
@@ -238,7 +245,7 @@ fi
 
 
 relative_or_null=""
-if [ "${RUN_TASK_MAKE_OROG}" = "TRUE" ]; then
+if [ "${RUN_TASK_MAKE_OROG}" = "TRUE" ] && [ "${MACHINE}" != "WCOSS_CRAY" ] ; then
   relative_or_null="--relative"
 fi
 
@@ -253,36 +260,6 @@ Cannot create symlink because target does not exist:
   target = \"$target\""
 fi
 
-#
-# If using the FV3_RRFS_v1beta or FV3_HRRR physics suites, there are two files
-# (that contain statistics of the orography) that are needed by the drag
-# parameterization in that suite.  Below, symlinks to these are created in the
-# run directory.  Note that the symlinks must have specific names that the FV3
-# model is hardcoded to recognize ("${CRES}_" and "halo0" must be stripped from
-# the file names).  We use those below.
-#
-if [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v1beta" ] || \
-   [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ]; then
-    # Symlink to orographic statistics fields file with "${CRES}_" and "halo0" stripped from name.
-    target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data_ls.tile${TILE_RGNL}.halo${NH0}.nc"
-    symlink="oro_data_ls.nc"
-    if [ -f "${target}" ]; then
-      ln_vrfy -sf ${relative_or_null} $target $symlink
-    else
-      print_err_msg_exit "\
-    Cannot create symlink because target does not exist:
-      target = \"$target}\""
-    fi
-    target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc"
-    symlink="oro_data_ss.nc"
-    if [ -f "${target}" ]; then
-      ln_vrfy -sf ${relative_or_null} $target $symlink
-    else
-      print_err_msg_exit "\
-    Cannot create symlink because target does not exist:
-      target = \"$target}\""
-    fi
-fi
 #
 # Symlink to halo-4 orography file with "${CRES}_" stripped from name.
 #
@@ -307,6 +284,33 @@ Cannot create symlink because target does not exist:
 fi
 
 #
+# If using the FV3_HRRR physics suite, there are two files (that contain 
+# statistics of the orography) that are needed by the gravity wave drag 
+# parameterization in that suite.  Below, create symlinks to these files
+# in the run directory.  Note that the symlinks must have specific names 
+# that the FV3 model is hardcoded to recognize, and those are the names 
+# we use below.
+#
+if [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ]; then
+
+  fileids=( "ss" "ls" )
+  for fileid in "${fileids[@]}"; do
+    target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data_${fileid}.tile${TILE_RGNL}.halo${NH0}.nc"
+    symlink="oro_data_${fileid}.nc"
+    if [ -f "${target}" ]; then
+      ln_vrfy -sf ${relative_or_null} $target $symlink
+    else
+      print_err_msg_exit "\
+Cannot create symlink because target does not exist:
+  target = \"${target}\"
+  symlink = \"${symlink}\""
+    fi
+  done
+
+fi
+
+
+#
 #-----------------------------------------------------------------------
 #
 # The FV3 model looks for the following files in the INPUT subdirectory
@@ -317,7 +321,7 @@ fi
 #   gfs_bndy*.nc
 #   gfs_ctrl.nc
 #
-# Some of these files (gfs_ctrl.nc, gfs_bndy*.nc) already exist, but 
+# Some of these files (gfs_ctrl.nc, gfs_bndy*.nc) already exist, but
 # others do not.  Thus, create links with these names to the appropriate
 # files (in this case the initial condition and surface files only).
 #
@@ -358,9 +362,9 @@ fi
 #-----------------------------------------------------------------------
 #
 # Create links in the current run directory to fixed (i.e. static) files
-# in the FIXam directory.  These links have names that are set to the 
+# in the FIXam directory.  These links have names that are set to the
 # names of files that the forecast model expects to exist in the current
-# working directory when the forecast model executable is called (and 
+# working directory when the forecast model executable is called (and
 # that is just the run directory).
 #
 #-----------------------------------------------------------------------
@@ -368,13 +372,13 @@ fi
 cd_vrfy ${run_dir}
 
 print_info_msg "$VERBOSE" "
-Creating links in the current run directory (run_dir) to fixed (i.e. 
+Creating links in the current run directory (run_dir) to fixed (i.e.
 static) files in the FIXam directory:
   FIXam = \"${FIXam}\"
   run_dir = \"${run_dir}\""
 
 relative_or_null=""
-if [ "${RUN_ENVIR}" != "nco" ]; then
+if [ "${RUN_ENVIR}" != "nco" ] && [ "${MACHINE}" != "WCOSS_CRAY" ] ; then
   relative_or_null="--relative"
 fi
 
@@ -402,8 +406,8 @@ done
 #
 #-----------------------------------------------------------------------
 #
-# If running this cycle/ensemble member combination more than once (e.g. 
-# using rocotoboot), remove any time stamp file that may exist from the 
+# If running this cycle/ensemble member combination more than once (e.g.
+# using rocotoboot), remove any time stamp file that may exist from the
 # previous attempt.
 #
 #-----------------------------------------------------------------------
@@ -414,17 +418,17 @@ rm_vrfy -f time_stamp.out
 #-----------------------------------------------------------------------
 #
 # Create links in the current run directory to cycle-independent (and
-# ensemble-member-independent) model input files in the main experiment 
+# ensemble-member-independent) model input files in the main experiment
 # directory.
 #
 #-----------------------------------------------------------------------
 #
 print_info_msg "$VERBOSE" "
-Creating links in the current run directory to cycle-independent model 
+Creating links in the current run directory to cycle-independent model
 input files in the main experiment directory..."
 
 relative_or_null=""
-if [ "${RUN_ENVIR}" != "nco" ]; then
+if [ "${RUN_ENVIR}" != "nco" ] && [ "${MACHINE}" != "WCOSS_CRAY" ] ; then
   relative_or_null="--relative"
 fi
 
@@ -436,19 +440,6 @@ if [ "${DO_ENSEMBLE}" = TRUE ]; then
   ln_vrfy -sf ${relative_or_null} "${FV3_NML_ENSMEM_FPS[$(( 10#${ensmem_indx}-1 ))]}" ${run_dir}/${FV3_NML_FN}
 else
   ln_vrfy -sf ${relative_or_null} ${FV3_NML_FP} ${run_dir}
-fi
-
-if [ "${USE_CCPP}" = "TRUE" ]; then
-
-  ln_vrfy -sf ${relative_or_null} ${CCPP_PHYS_SUITE_FP} ${run_dir} 
-
-  if [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_v0" ] || \
-     [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v1beta" ] || \
-     [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ] || \
-     [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_SAR" ]; then
-    ln_vrfy -sf ${relative_or_null} $EXPTDIR/CCN_ACTIVATE.BIN ${run_dir}
-  fi
-
 fi
 #
 #-----------------------------------------------------------------------
@@ -462,7 +453,7 @@ create_model_configure_file \
   cdate="$cdate" \
   nthreads=${OMP_NUM_THREADS:-1} \
   run_dir="${run_dir}" || print_err_msg_exit "\
-Call to function to create a model configuration file for the current 
+Call to function to create a model configuration file for the current
 cycle's (cdate) run directory (run_dir) failed:
   cdate = \"${cdate}\"
   run_dir = \"${run_dir}\""
@@ -484,16 +475,20 @@ cycle's (cdate) run directory (run_dir) failed:
 #
 #-----------------------------------------------------------------------
 #
-# If running ensemble forecasts, create a link to the cycle-specific 
-# diagnostic tables file in the cycle directory.  Note that this link 
-# should not be made if not running ensemble forecasts because in that 
-# case, the cycle directory is the run directory (and we would be creating 
+# If running ensemble forecasts, create a link to the cycle-specific
+# diagnostic tables file in the cycle directory.  Note that this link
+# should not be made if not running ensemble forecasts because in that
+# case, the cycle directory is the run directory (and we would be creating
 # a symlink with the name of a file that already exists).
 #
 #-----------------------------------------------------------------------
 #
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  relative_or_null="--relative"
+  if [ "${MACHINE}" = "WCOSS_CRAY" ]; then
+    relative_or_null=""
+  else
+    relative_or_null="--relative"
+  fi
   diag_table_fp="${cycle_dir}/${DIAG_TABLE_FN}"
   ln_vrfy -sf ${relative_or_null} ${diag_table_fp} ${run_dir}
 fi
@@ -512,15 +507,15 @@ export OMP_STACKSIZE=1024m
 #-----------------------------------------------------------------------
 #
 # Run the FV3-LAM model.  Note that we have to launch the forecast from
-# the current cycle's directory because the FV3 executable will look for 
-# input files in the current directory.  Since those files have been 
+# the current cycle's directory because the FV3 executable will look for
+# input files in the current directory.  Since those files have been
 # staged in the cycle directory, the current directory must be the cycle
 # directory (which it already is).
 #
 #-----------------------------------------------------------------------
 #
 $APRUN ${FV3_EXEC_FP} || print_err_msg_exit "\
-Call to executable to run FV3-LAM forecast returned with nonzero exit 
+Call to executable to run FV3-LAM forecast returned with nonzero exit
 code."
 #
 #-----------------------------------------------------------------------

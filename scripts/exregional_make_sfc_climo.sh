@@ -112,7 +112,7 @@ input_vegetation_type_file="${SFC_CLIMO_INPUT_DIR}/vegetation_type.igbp.0.05.nc"
 input_vegetation_greenness_file="${SFC_CLIMO_INPUT_DIR}/vegetation_greenness.0.144.nc"
 mosaic_file_mdl="${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc"
 orog_dir_mdl="${FIXLAM}"
-orog_files_mdl=${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH4}.nc
+orog_files_mdl="${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH4}.nc"
 halo=${NH4}
 maximum_snow_albedo_method="bilinear"
 snowfree_albedo_method="bilinear"
@@ -122,51 +122,60 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-# Set the run machine-dependent run command.
+# Set the machine-dependent run command.
 #
 #-----------------------------------------------------------------------
 #
 case $MACHINE in
 
-"WCOSS_C")
-# This could be wrong.  Just a guess since I don't have access to this machine.
-  APRUN=${APRUN:-"aprun -j 1 -n 6 -N 6"}
-  ;;
+  "WCOSS_CRAY")
+    APRUN=${APRUN:-"aprun -j 1 -n 6 -N 6"}
+    ;;
 
-"WCOSS")
-# This could be wrong.  Just a guess since I don't have access to this machine.
-  APRUN=${APRUN:-"aprun -j 1 -n 6 -N 6"}
-  ;;
+  "WCOSS_DELL_P3")
+# Specify computational resources.
+    export NODES=2
+    export ntasks=48
+    export ptile=24
+    export threads=1
+    export MP_LABELIO=yes
+    export OMP_NUM_THREADS=$threads
+    APRUN="mpirun"
+    ;;
 
-"HERA")
-  APRUN="srun"
-  ;;
+  "HERA")
+    APRUN="srun"
+    ;;
 
-"JET")
-  APRUN="srun"
-  ;;
+  "ORION")
+    APRUN="srun"
+    ;;
 
-"CHEYENNE")
-  nprocs=$(( NNODES_MAKE_SFC_CLIMO*PPN_MAKE_SFC_CLIMO ))
-  APRUN="mpirun -np $nprocs"
-  ;;
+  "JET")
+    APRUN="srun"
+    ;;
 
-"ODIN")
-  nprocs=$(( NNODES_MAKE_SFC_CLIMO*PPN_MAKE_SFC_CLIMO ))
-  APRUN="srun -n $nprocs"
-  ;;
+  "CHEYENNE")
+    nprocs=$(( NNODES_MAKE_SFC_CLIMO*PPN_MAKE_SFC_CLIMO ))
+    APRUN="mpirun -np $nprocs"
+    ;;
 
-"STAMPEDE")
-  nprocs=$(( NNODES_MAKE_SFC_CLIMO*PPN_MAKE_SFC_CLIMO ))
-  APRUN="ibrun -np ${nprocs}"
-  ;;
+  "ODIN")
+    nprocs=$(( NNODES_MAKE_SFC_CLIMO*PPN_MAKE_SFC_CLIMO ))
+    APRUN="srun -n $nprocs"
+    ;;
 
-*)
-  print_err_msg_exit "\
+  "STAMPEDE")
+    nprocs=$(( NNODES_MAKE_SFC_CLIMO*PPN_MAKE_SFC_CLIMO ))
+    APRUN="ibrun -np ${nprocs}"
+    ;;
+
+  *)
+    print_err_msg_exit "\
 Run command has not been specified for this machine:
   MACHINE = \"$MACHINE\"
   APRUN = \"$APRUN\""
-  ;;
+    ;;
 
 esac
 #

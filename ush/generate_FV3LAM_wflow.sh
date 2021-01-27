@@ -164,12 +164,12 @@ settings="\
 #
   'account': $ACCOUNT
   'sched': $SCHED
+  'partition_default': ${PARTITION_DEFAULT}
   'queue_default': ${QUEUE_DEFAULT}
-  'queue_default_tag': ${QUEUE_DEFAULT_TAG}
+  'partition_hpss': ${PARTITION_HPSS}
   'queue_hpss': ${QUEUE_HPSS}
-  'queue_hpss_tag': ${QUEUE_HPSS_TAG}
+  'partition_fcst': ${PARTITION_FCST}
   'queue_fcst': ${QUEUE_FCST}
-  'queue_fcst_tag': ${QUEUE_FCST_TAG}
   'machine': ${MACHINE}
 #
 # Workflow task names.
@@ -200,7 +200,6 @@ settings="\
 #
   'ncores_run_fcst': ${PE_MEMBER01}
   'native_run_fcst': --cpus-per-task 4 --exclusive
-  'partition_run_fcst': sjet,vjet,kjet,xjet
 #
 # Number of logical processes per node for each task.  If running without
 # threading, this is equal to the number of MPI processes per node.
@@ -226,6 +225,18 @@ settings="\
   'wtime_make_lbcs': ${WTIME_MAKE_LBCS}
   'wtime_run_fcst': ${WTIME_RUN_FCST}
   'wtime_run_post': ${WTIME_RUN_POST}
+#
+# Maximum number of tries for each task.
+#
+  'maxtries_make_grid': ${MAXTRIES_MAKE_GRID}
+  'maxtries_make_orog': ${MAXTRIES_MAKE_OROG}
+  'maxtries_make_sfc_climo': ${MAXTRIES_MAKE_SFC_CLIMO}
+  'maxtries_get_extrn_ics': ${MAXTRIES_GET_EXTRN_ICS}
+  'maxtries_get_extrn_lbcs': ${MAXTRIES_GET_EXTRN_LBCS}
+  'maxtries_make_ics': ${MAXTRIES_MAKE_ICS}
+  'maxtries_make_lbcs': ${MAXTRIES_MAKE_LBCS}
+  'maxtries_run_fcst': ${MAXTRIES_RUN_FCST}
+  'maxtries_run_post': ${MAXTRIES_RUN_POST}
 #
 # Flags that specify whether to run the preprocessing tasks.
 #
@@ -311,56 +322,6 @@ $settings"
 #
 #-----------------------------------------------------------------------
 #
-# For select workflow tasks, copy module files from the various cloned
-# external repositories to the appropriate subdirectory under the workflow
-# directory tree.  In principle, this is better than having hard-coded
-# module files for tasks because the copied module files will always be
-# up-to-date.  However, it does require that these module files in the
-# external repositories be coded correctly, e.g. that they really be lua
-# module files and not contain any shell commands (like "export SOME_VARIABLE").
-#
-#-----------------------------------------------------------------------
-#
-machine=${MACHINE,,}
-
-cd_vrfy "${MODULES_DIR}/tasks/$machine"
-
-cp_vrfy -f "${UFS_UTILS_DIR}/modulefiles/fv3gfs/orog.$machine" "${MAKE_OROG_TN}"
-cp_vrfy -f "${UFS_UTILS_DIR}/modulefiles/modulefile.sfc_climo_gen.$machine" "${MAKE_SFC_CLIMO_TN}"
-cp_vrfy -f "${CHGRES_DIR}/modulefiles/chgres_cube.$machine" "${MAKE_ICS_TN}"
-cp_vrfy -f "${CHGRES_DIR}/modulefiles/chgres_cube.$machine" "${MAKE_LBCS_TN}"
-if [ $MACHINE = "WCOSS_CRAY" -o $MACHINE = "WCOSS_DELL_P3" ] ; then
-  cp_vrfy -f "${UFS_WTHR_MDL_DIR}/modulefiles/$machine/fv3" "${RUN_FCST_TN}"
-else
-  cp_vrfy -f "${UFS_WTHR_MDL_DIR}/modulefiles/$machine.intel/fv3" "${RUN_FCST_TN}"
-fi
-
-task_names=( "${MAKE_GRID_TN}" "${MAKE_OROG_TN}" "${MAKE_SFC_CLIMO_TN}" "${MAKE_ICS_TN}" "${MAKE_LBCS_TN}" "${RUN_FCST_TN}" )
-#
-# Only some platforms build EMC_post using modules, and some machines 
-# require a different EMC_post modulefile name.
-#
-if [ "${MACHINE}" = "CHEYENNE" ]; then
-  print_info_msg "No post modulefile needed for ${MACHINE}"
-elif [ "${MACHINE}" = "WCOSS_CRAY" ]; then
-  cp_vrfy -f "${EMC_POST_DIR}/modulefiles/post/v8.0.0-cray-intel" "${RUN_POST_TN}"
-  task_names+=("${RUN_POST_TN}")
-else
-  cp_vrfy -f "${EMC_POST_DIR}/modulefiles/post/v8.0.0-$machine" "${RUN_POST_TN}"
-  task_names+=("${RUN_POST_TN}")
-fi
-
-for task in "${task_names[@]}"; do
-  modulefile_local="${task}.local"
-  if [ -f ${modulefile_local} ]; then
-    cat "${modulefile_local}" >> "${task}"
-  fi
-done
-
-cd_vrfy -
-#
-#-----------------------------------------------------------------------
-#
 # Create a symlink in the experiment directory that points to the workflow
 # (re)launch script.
 #
@@ -438,16 +399,39 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Copy fixed files from system directory to the FIXam directory (which
-# is under the experiment directory).  Note that some of these files get
-# renamed during the copy process.
+# Create the FIXam directory under the experiment directory.  In NCO mode,
+# this will be a symlink to the directory specified in FIXgsm, while in
+# community mode, it will be an actual directory with files copied into
+# it from FIXgsm.
 #
 #-----------------------------------------------------------------------
 #
+# First, consider NCO mode.
+#
+if [ "${RUN_ENVIR}" = "nco" ]; then
 
-# In NCO mode, we assume the following copy operation is done beforehand,
-# but that can be changed.
-if [ "${RUN_ENVIR}" != "nco" ]; then
+  ln_vrfy -fsn "$FIXgsm" "$FIXam"
+#
+# Resolve the target directory that the FIXam symlink points to and check 
+# that it exists.
+#
+  path_resolved=$( readlink -m "$FIXam" )
+  if [ ! -d "${path_resolved}" ]; then
+    print_err_msg_exit "\
+In order to be able to generate a forecast experiment in NCO mode (i.e.
+when RUN_ENVIR set to \"nco\"), the path specified by FIXam after resolving
+all symlinks (path_resolved) must be an existing directory (but in this
+case isn't):
+  RUN_ENVIR = \"${RUN_ENVIR}\"
+  FIXam = \"$FIXam\"
+  path_resolved = \"${path_resolved}\"
+Please ensure that path_resolved is an existing directory and then rerun
+the experiment generation script."
+  fi
+#
+# Now consider community mode.
+#
+else
 
   print_info_msg "$VERBOSE" "
 Copying fixed files from system directory (FIXgsm) to a subdirectory
@@ -489,116 +473,14 @@ print_info_msg "$VERBOSE" "
   ory..."
 cp_vrfy "${NEMS_CONFIG_TMPL_FP}" "${NEMS_CONFIG_FP}"
 #
-# If using CCPP ...
-#
-if [ "${USE_CCPP}" = "TRUE" ]; then
-#
 # Copy the CCPP physics suite definition file from its location in the
 # clone of the FV3 code repository to the experiment directory (EXPT-
 # DIR).
 #
-  print_info_msg "$VERBOSE" "
+print_info_msg "$VERBOSE" "
 Copying the CCPP physics suite definition XML file from its location in
 the forecast model directory sturcture to the experiment directory..."
-  cp_vrfy "${CCPP_PHYS_SUITE_IN_CCPP_FP}" "${CCPP_PHYS_SUITE_FP}"
-#
-# If using the GSD_v0 or GSD_SAR physics suite, copy the fixed file con-
-# taining cloud condensation nuclei (CCN) data that is needed by the
-# Thompson microphysics parameterization to the experiment directory.
-#
-  if [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_v0" ] || \
-     [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v1beta" ] || \
-     [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ] || \
-     [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_SAR" ]; then
-    print_info_msg "$VERBOSE" "
-Copying the fixed file containing cloud condensation nuclei (CCN) data
-(needed by the Thompson microphysics parameterization) to the experiment
-directory..."
-    cp_vrfy "${FIXgsm}/CCN_ACTIVATE.BIN" "$EXPTDIR"
-  fi
-
-fi
-
-
-#
-#-----------------------------------------------------------------------
-#
-# This if-statement is a temporary fix that makes corrections to the suite
-# definition file for the "FV3_GFS_2017_gfdlmp_regional" physics suite
-# that EMC uses.
-#
-# IMPORTANT:
-# This if-statement must be removed once these corrections are made to
-# the suite definition file in the dtc/develop branch of the NCAR fork
-# of the fv3atm repository.
-#
-#-----------------------------------------------------------------------
-#
-if [ "${USE_CCPP}" = "TRUE" ] && \
-   [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_2017_gfdlmp_regional" ]; then
-  mv_vrfy "${CCPP_PHYS_SUITE_FP}.tmp" "${CCPP_PHYS_SUITE_FP}"
-fi
-
-
-
-
-
-#
-#-----------------------------------------------------------------------
-#
-# Copy the forecast model executable from its location in the directory
-# in which the forecast model repository was cloned (UFS_WTHR_MDL_DIR)
-# to the executables directory (EXECDIR).
-#
-# Note that if there is already an experiment that is running the forecast
-# task (so that the forecast model executable in EXECDIR is in use) and
-# the user tries to generate another experiment, the generation of this
-# second experiment will fail because the operating system won't allow
-# the existing executable in EXECDIR to be overwritten (because it is
-# "busy", i.e. in use by the first experiment).  For this reason, below,
-# we try to prevent this situation by comparing the ages of the source
-# and target executables and attempting the copy only if the source one
-# is newer (or if the target doesn't exist).  This will very likely prevent
-# the situation described above, but it doesn't guarantee that it will
-# never happen (it will still happen if an experiment is running a forecast
-# while the user rebuilts the forecast model and attempts to generate a
-# new experiment.  For this reason, this copy operation should really be
-# performed duirng the build step, not here.
-#
-# Question:
-# Why doesn't the build script(s) perform this action?  It should...
-#
-#-----------------------------------------------------------------------
-#
-if [ "${USE_CCPP}" = "TRUE" ]; then
-  exec_fn="fv3.exe"
-else
-  exec_fn="fv3_32bit.exe"
-fi
-
-exec_fp="${UFS_WTHR_MDL_DIR}/tests/${exec_fn}"
-if [ ! -f "${exec_fp}" ]; then
-  print_err_msg_exit "\
-The executable (exec_fp) for running the forecast model does not exist:
-  exec_fp = \"${exec_fp}\"
-Please ensure that you've built this executable."
-fi
-#
-# Make a copy of the executable in the executables directory only if a
-# copy doens't already exist or if a copy does exist but is older than
-# the original.
-#
-if [ ! -e "${FV3_EXEC_FP}" ] || \
-   [ "${exec_fp}" -nt "${FV3_EXEC_FP}" ]; then
-  print_info_msg "$VERBOSE" "
-Copying the FV3-LAM executable (exec_fp) to the executables directory
-(EXECDIR):
-  exec_fp = \"${exec_fp}\"
-  EXECDIR = \"$EXECDIR\""
-  cp_vrfy "${exec_fp}" "${FV3_EXEC_FP}"
-fi
-
-
+cp_vrfy "${CCPP_PHYS_SUITE_IN_CCPP_FP}" "${CCPP_PHYS_SUITE_FP}"
 #
 #-----------------------------------------------------------------------
 #
@@ -618,35 +500,36 @@ Setting parameters in FV3 namelist file (FV3_NML_FP):
 npx=$((NX+1))
 npy=$((NY+1))
 #
-# For the FV3_GSD_v0 and the FV3_GSD_SAR physics suites, set the parameter
-# lsoil according to the external models used to obtain ICs and LBCs.
+# For the physics suites that use RUC LSM, set the parameter kice to 9,
+# Otherwise, leave it unspecified (which means it gets set to the default
+# value in the forecast model).
 #
-if [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_v0" ] || \
-   [ "${CCPP_PHYS_SUITE}" = "FV3_GSD_SAR" ] || \
-   [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ]; then
-
-  if [ "${EXTRN_MDL_NAME_ICS}" = "GSMGFS" -o \
-       "${EXTRN_MDL_NAME_ICS}" = "FV3GFS" ] && \
-     [ "${EXTRN_MDL_NAME_LBCS}" = "GSMGFS" -o \
-       "${EXTRN_MDL_NAME_LBCS}" = "FV3GFS" ]; then
-    lsoil=4
-  elif [ "${EXTRN_MDL_NAME_ICS}" = "RAPX" -o \
-         "${EXTRN_MDL_NAME_ICS}" = "HRRRX" ] && \
-       [ "${EXTRN_MDL_NAME_LBCS}" = "RAPX" -o \
-         "${EXTRN_MDL_NAME_LBCS}" = "HRRRX" ]; then
-    lsoil=9
-  else
-    print_err_msg_exit "\
-The value to set the variable lsoil to in the FV3 namelist file (FV3_NML_FP)
-has not been specified for the following combination of physics suite and
-external models for ICs and LBCs:
-  CCPP_PHYS_SUITE = \"${CCPP_PHYS_SUITE}\"
-  EXTRN_MDL_NAME_ICS = \"${EXTRN_MDL_NAME_ICS}\"
-  EXTRN_MDL_NAME_LBCS = \"${EXTRN_MDL_NAME_LBCS}\"
-Please change one or more of these parameters or provide a value for lsoil
-(and change workflow generation script(s) accordingly) and rerun."
-  fi
-
+# NOTE:
+# May want to remove kice from FV3.input.yml (and maybe input.nml.FV3).
+#
+kice=""
+if [ "${SDF_USES_RUC_LSM}" = "TRUE" ]; then
+  kice="9"
+fi
+#
+# Set lsoil, which is the number of input soil levels provided in the 
+# chgres_cube output NetCDF file.  This is the same as the parameter 
+# nsoill_out in the namelist file for chgres_cube.  [On the other hand, 
+# the parameter lsoil_lsm (not set here but set in input.nml.FV3 and/or 
+# FV3.input.yml) is the number of soil levels that the LSM scheme in the
+# forecast model will run with.]  Here, we use the same approach to set
+# lsoil as the one used to set nsoill_out in exregional_make_ics.sh.  
+# See that script for details.
+#
+# NOTE:
+# May want to remove lsoil from FV3.input.yml (and maybe input.nml.FV3).
+# Also, may want to set lsm here as well depending on SDF_USES_RUC_LSM.
+#
+lsoil="4"
+if [ "${EXTRN_MDL_NAME_ICS}" = "HRRR" -o \
+     "${EXTRN_MDL_NAME_ICS}" = "RAP" ] && \
+   [ "${SDF_USES_RUC_LSM}" = "TRUE" ]; then
+  lsoil="9"
 fi
 #
 # Create a multiline variable that consists of a yaml-compliant string
@@ -654,6 +537,17 @@ fi
 # suite-independent need to be set to.  Below, this variable will be
 # passed to a python script that will in turn set the values of these
 # variables in the namelist file.
+#
+# IMPORTANT:
+# If we want a namelist variable to be removed from the namelist file,
+# in the "settings" variable below, we need to set its value to the
+# string "null".  This is equivalent to setting its value to 
+#    !!python/none
+# in the base namelist file specified by FV3_NML_BASE_SUITE_FP or the 
+# suite-specific yaml settings file specified by FV3_NML_YAML_CONFIG_FP.
+#
+# It turns out that setting the variable to an empty string also works
+# to remove it from the namelist!  Which is better to use??
 #
 settings="\
 'atmos_model_nml': {
@@ -679,6 +573,7 @@ settings="\
     'bc_update_interval': ${LBC_SPEC_INTVL_HRS},
   }
 'gfs_physics_nml': {
+    'kice': ${kice:-null},
     'lsoil': ${lsoil:-null},
     'do_shum': ${DO_SHUM},
     'do_sppt': ${DO_SPPT},
@@ -917,6 +812,15 @@ edit the cron table):
 Done.
 "
 #
+# If necessary, run the NOMADS script to source external model data.
+#
+if [ "${NOMADS}" = "TRUE" ]; then
+  echo "Getting NOMADS online data"
+  echo "NOMADS_file_type=" $NOMADS_file_type
+  cd $EXPTDIR
+  $USHDIR/NOMADS_get_extrn_mdl_files.sh $DATE_FIRST_CYCL $CYCL_HRS $NOMADS_file_type $FCST_LEN_HRS $LBC_SPEC_INTVL_HRS
+fi
+#
 #-----------------------------------------------------------------------
 #
 # Restore the shell options saved at the beginning of this script/func-
@@ -1027,13 +931,3 @@ Stopping.
 "
   exit 1
 fi
-source $exptdir/var_defns.sh
-if [ "${NOMADS}" = "TRUE" ]; then
-  echo "Getting NOMADS online data"
-  echo "NOMADS_file_type=" $NOMADS_file_type
-cd $exptdir
-$ushdir/NOMADS_get_extrn_mdl_files.sh $DATE_FIRST_CYCL $CYCL_HRS $NOMADS_file_type $FCST_LEN_HRS $LBC_SPEC_INTVL_HRS
-fi
-
-
-
