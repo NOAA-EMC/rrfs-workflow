@@ -20,7 +20,6 @@
 . $USHDIR/link_fix.sh
 . $USHDIR/set_FV3nml_sfc_climo_filenames.sh
 . $USHDIR/set_FV3nml_stoch_params.sh
-. $USHDIR/create_diag_table_files.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -683,9 +682,6 @@ Call to function to set stochastic parameters in the FV3 namelist files
 for the various ensemble members failed."
 fi
 
-create_diag_table_files || print_err_msg_exit "\
-Call to function to create a diagnostics table file under each cycle
-directory failed."
 #
 #-----------------------------------------------------------------------
 #
