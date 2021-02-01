@@ -51,36 +51,51 @@ RUN_ENVIR="nco"
 # order for the experiment generation script to set it depending on the
 # machine.
 #
+# PARTITION_DEFAULT:
+# If using the slurm job scheduler (i.e. if SCHED is set to "slurm"), 
+# the default partition to which to submit workflow tasks.  If a task 
+# does not have a specific variable that specifies the partition to which 
+# it will be submitted (e.g. PARTITION_HPSS, PARTITION_FCST; see below), 
+# it will be submitted to the partition specified by this variable.  If 
+# this is not set or is set to an empty string, it will be (re)set to a 
+# machine-dependent value.  This is not used if SCHED is not set to 
+# "slurm".
+#
 # QUEUE_DEFAULT:
-# The default queue to which workflow tasks are submitted.  If a task
-# does not have a specific variable that specifies the queue to which it
-# will be submitted (e.g. QUEUE_HPSS, QUEUE_FCST; see below), it will be
-# submitted to the queue specified by this variable.  If this is not set
+# The default queue or QOS (if using the slurm job scheduler, where QOS
+# is Quality of Service) to which workflow tasks are submitted.  If a 
+# task does not have a specific variable that specifies the queue to which 
+# it will be submitted (e.g. QUEUE_HPSS, QUEUE_FCST; see below), it will 
+# be submitted to the queue specified by this variable.  If this is not 
+# set or is set to an empty string, it will be (re)set to a machine-
+# dependent value.
+#
+# PARTITION_HPSS:
+# If using the slurm job scheduler (i.e. if SCHED is set to "slurm"), 
+# the partition to which the tasks that get or create links to external 
+# model files [which are needed to generate initial conditions (ICs) and 
+# lateral boundary conditions (LBCs)] are submitted.  If this is not set 
+# or is set to an empty string, it will be (re)set to a machine-dependent 
+# value.  This is not used if SCHED is not set to "slurm".
+#
+# QUEUE_HPSS:
+# The queue or QOS to which the tasks that get or create links to external 
+# model files [which are needed to generate initial conditions (ICs) and 
+# lateral boundary conditions (LBCs)] are submitted.  If this is not set 
 # or is set to an empty string, it will be (re)set to a machine-dependent 
 # value.
 #
-# QUEUE_DEFAULT_TAG:
-# The rocoto xml tag to use for specifying the default queue. For most
-# platforms this should be "queue"
-#
-# QUEUE_HPSS:
-# The queue to which the tasks that get or create links to external model
-# files [which are needed to generate initial conditions (ICs) and lateral
-# boundary conditions (LBCs)] are submitted.  If this is not set or is 
-# set to an empty string, it will be (re)set to a machine-dependent value.
-#
-# QUEUE_HPSS_TAG:
-# The rocoto xml tag to use for specifying the HPSS queue. For slurm-based
-# platforms this is typically "partition", for others it may be "queue"
+# PARTITION_FCST:
+# If using the slurm job scheduler (i.e. if SCHED is set to "slurm"), 
+# the partition to which the task that runs forecasts is submitted.  If 
+# this is not set or set to an empty string, it will be (re)set to a 
+# machine-dependent value.  This is not used if SCHED is not set to 
+# "slurm".
 #
 # QUEUE_FCST:
-# The queue to which the task that runs a forecast is submitted.  If this
-# is not set or set to an empty string, it will be (re)set to a machine-
-# dependent value.
-#
-# QUEUE_FCST_TAG:
-# The rocoto xml tag to use for specifying the fcst queue. For most
-# platforms this should be "queue"
+# The queue or QOS to which the task that runs a forecast is submitted.  
+# If this is not set or set to an empty string, it will be (re)set to a 
+# machine-dependent value.
 #
 # mach_doc_end
 #
@@ -89,12 +104,12 @@ RUN_ENVIR="nco"
 MACHINE="BIG_COMPUTER"
 ACCOUNT="project_name"
 SCHED=""
+PARTITION_DEFAULT=""
 QUEUE_DEFAULT=""
-QUEUE_DEFAULT_TAG="queue"
+PARTITION_HPSS=""
 QUEUE_HPSS=""
-QUEUE_HPSS_TAG="partition"
+PARTITION_FCST=""
 QUEUE_FCST=""
-QUEUE_FCST_TAG="queue"
 #
 #-----------------------------------------------------------------------
 #
@@ -160,6 +175,19 @@ EXPT_SUBDIR=""
 #
 #   $COMINgfs/gfs.$yyyymmdd/$hh
 #
+# FIXLAM_NCO_BASEDIR:
+# The base directory containing pregenerated grid, orography, and surface 
+# climatology files.  For the pregenerated grid specified by PREDEF_GRID_NAME, 
+# these "fixed" files are located in:
+#
+#   ${FIXLAM_NCO_BASEDIR}/${PREDEF_GRID_NAME}
+#
+# The workflow scripts will create a symlink in the experiment directory
+# that will point to a subdirectory (having the name of the grid being
+# used) under this directory.  This variable should be set to a null 
+# string in this file, but it can be specified in the user-specified 
+# workflow configuration file (EXPT_CONFIG_FN)
+#
 # STMP:
 # The beginning portion of the directory that will contain cycle-dependent
 # model input files, symlinks to cycle-independent input files, and raw 
@@ -199,6 +227,7 @@ EXPT_SUBDIR=""
 #-----------------------------------------------------------------------
 #
 COMINgfs="/base/path/of/directory/containing/gfs/input/files"
+FIXLAM_NCO_BASEDIR=""
 STMP="/base/path/of/directory/containing/model/input/and/raw/output/files"
 NET="rrfs"
 envir="para"
@@ -321,7 +350,7 @@ FV3_NML_YAML_CONFIG_FN="FV3.input.yml"
 FV3_NML_BASE_ENS_FN="input.nml.base_ens"
 MODEL_CONFIG_FN="model_configure"
 NEMS_CONFIG_FN="nems.configure"
-FV3_EXEC_FN="fv3_gfs.x"
+FV3_EXEC_FN="ufs_model"
 
 WFLOW_XML_FN="FV3LAM_wflow.xml"
 GLOBAL_VAR_DEFNS_FN="var_defns.sh"
@@ -406,10 +435,12 @@ FV3GFS_FILE_FMT_LBCS="nemsio"
 # Set NOMADS online data associated parameters. Definitions:
 #
 # NOMADS:
-# Flag controlling whether or not using NOMADS online data
+# Flag controlling whether or not using NOMADS online data.
 #
-# NOMADS_file_type
-# Flag controlling the format of data
+# NOMADS_file_type:
+# Flag controlling the format of data.
+#
+#-----------------------------------------------------------------------
 #
 NOMADS="FALSE"
 NOMADS_file_type="nemsio"
@@ -418,82 +449,62 @@ NOMADS_file_type="nemsio"
 #
 # User-staged external model directories and files.  Definitions:
 #
-# EXTRN_MDL_SOURCE_DIR_ICS:
+# USE_USER_STAGED_EXTRN_FILES:
+# Flag that determines whether or not the workflow will look for the 
+# external model files needed for generating ICs and LBCs in user-specified
+# directories.
+#
+# EXTRN_MDL_SOURCE_BASEDIR_ICS:
 # Directory in which to look for external model files for generating ICs.
-# If this is set to a non-empty string, the workflow looks in this directory
-# (specifically, in a subdirectory under this directory named "YYYYMMDDHH"
-# consisting of the starting date and cycle hour of the forecast, where 
-# YYYY is the 4-digit year, MM the 2-digit month, DD the 2-digit day of
-# the month, and HH the 2-digit hour of the day) for the external model 
-# files specified by the array EXTRN_MDL_FILES_ICS (these files will be 
-# used to generate the ICs on the native FV3-LAM grid.  If this is set to 
-# an empty string, then the workflow will look for the external model 
-# files for generating ICS in a default machine-dependent location.  In 
-# this case, EXTRN_MDL_FILES_ICS is not used.
+# If USE_USER_STAGED_EXTRN_FILES is set to "TRUE", the workflow looks in 
+# this directory (specifically, in a subdirectory under this directory 
+# named "YYYYMMDDHH" consisting of the starting date and cycle hour of 
+# the forecast, where YYYY is the 4-digit year, MM the 2-digit month, DD 
+# the 2-digit day of the month, and HH the 2-digit hour of the day) for 
+# the external model files specified by the array EXTRN_MDL_FILES_ICS 
+# (these files will be used to generate the ICs on the native FV3-LAM 
+# grid).  This variable is not used if USE_USER_STAGED_EXTRN_FILES is 
+# set to "FALSE".
 # 
 # EXTRN_MDL_FILES_ICS:
 # Array containing the names of the files to search for in the directory
-# specified by EXTRN_MDL_SOURCE_DIR_ICS.  This variable is not used if 
-# EXTRN_MDL_SOURCE_DIR_ICS is set to a null (i.e. empty) string.
+# specified by EXTRN_MDL_SOURCE_BASEDIR_ICS.  This variable is not used
+# if USE_USER_STAGED_EXTRN_FILES is set to "FALSE".
 #
-# EXTRN_MDL_SOURCE_DIR_LBCS:
-# Analogous to EXTRN_MDL_SOURCE_DIR_ICS but for LBCs instead of ICs.
+# EXTRN_MDL_SOURCE_BASEDIR_LBCS:
+# Analogous to EXTRN_MDL_SOURCE_BASEDIR_ICS but for LBCs instead of ICs.
 #
 # EXTRN_MDL_FILES_LBCS:
 # Analogous to EXTRN_MDL_FILES_ICS but for LBCs instead of ICs.
 #
 #-----------------------------------------------------------------------
 #
-EXTRN_MDL_SOURCE_DIR_ICS=""
+USE_USER_STAGED_EXTRN_FILES="FALSE"
+EXTRN_MDL_SOURCE_BASEDIR_ICS="/base/dir/containing/user/staged/extrn/mdl/files/for/ICs"
 EXTRN_MDL_FILES_ICS=( "ICS_file1" "ICS_file2" "..." )
-
-EXTRN_MDL_SOURCE_DIR_LBCS=""
+EXTRN_MDL_SOURCE_BASEDIR_LBCS="/base/dir/containing/user/staged/extrn/mdl/files/for/LBCs"
 EXTRN_MDL_FILES_LBCS=( "LBCS_file1" "LBCS_file2" "..." )
 #
 #-----------------------------------------------------------------------
 #
 # Set CCPP-associated parameters.  Definitions:
 #
-# USE_CCPP:
-# Flag controlling whether or not a CCPP-enabled version of the forecast
-# model will be run.  Note that the user is responsible for ensuring that
-# a CCPP-enabled forecast model executable is built and placed at the 
-# correct location (that is part of the build process).
-#
 # CCPP_PHYS_SUITE:
-# If USE_CCPP has been set to "TRUE", this variable defines the physics
-# suite that will run using CCPP.  The choice of physics suite determines
-# the forecast model's namelist file, the diagnostics table file, the 
-# field table file, and the XML physics suite definition file that are 
-# staged in the experiment directory or the cycle directories under it.
-# If USE_CCPP is set to "FALSE", the only physics suite that can be run
-# is the GFS.
-#
-# Note that it is up to the user to ensure that the CCPP-enabled forecast 
-# model executable is built with either the dynamic build (which can 
-# handle any CCPP physics package but is slower to run) or the static 
-# build with the correct physics package.  If using a static build, the 
-# forecast will fail if the physics package specified in the experiment's 
-# variable defintions file (GLOBAL_VAR_DEFNS_FN) is not the same as the
-# one that was used for the static build. 
-#
-# OZONE_PARAM_NO_CCPP:
-# The ozone parameterization to use if NOT using a CCPP-enabled forecast
-# model executable.
+# The physics suite that will run using CCPP (Common Community Physics
+# Package).  The choice of physics suite determines the forecast model's 
+# namelist file, the diagnostics table file, the field table file, and 
+# the XML physics suite definition file that are staged in the experiment 
+# directory or the cycle directories under it.
 #
 #-----------------------------------------------------------------------
 #
-USE_CCPP="FALSE"
-CCPP_PHYS_SUITE="FV3_GSD_v0"
-OZONE_PARAM_NO_CCPP="ozphys"
+CCPP_PHYS_SUITE="FV3_GFS_v15p2"
 #
 #-----------------------------------------------------------------------
 #
 # Set GRID_GEN_METHOD.  This variable specifies the method to use to 
-# generate a regional grid in the horizontal, or, if using pregenerated
-# grid files instead of running the grid generation task, the grid generation
-# method that was used to generate those files.  The values that 
-# GRID_GEN_METHOD can take on are:
+# generate a regional grid in the horizontal.  The values that it can 
+# take on are:
 #
 # * "GFDLgrid":
 #   This setting will generate a regional grid by first generating a 
@@ -507,9 +518,26 @@ OZONE_PARAM_NO_CCPP="ozphys"
 #   This will generate a regional grid using the map projection developed
 #   by Jim Purser of EMC.
 #
+# Note that:
+#
+# 1) If the experiment is using one of the predefined grids (i.e. if 
+#    PREDEF_GRID_NAME is set to the name of one of the valid predefined 
+#    grids), then GRID_GEN_METHOD will be reset to the value of 
+#    GRID_GEN_METHOD for that grid.  This will happen regardless of 
+#    whether or not GRID_GEN_METHOD is assigned a value in the user-
+#    specified experiment configuration file, i.e. any value it may be
+#    assigned in the experiment configuration file will be overwritten.
+#
+# 2) If the experiment is not using one of the predefined grids (i.e. if 
+#    PREDEF_GRID_NAME is set to a null string), then GRID_GEN_METHOD must 
+#    be set in the experiment configuration file.  Otherwise, it will 
+#    remain set to a null string, and the experiment generation will 
+#    fail because the generation scripts check to ensure that it is set 
+#    to a non-empty string before creating the experiment directory.
+#
 #-----------------------------------------------------------------------
 #
-GRID_GEN_METHOD="ESGgrid"
+GRID_GEN_METHOD=""
 #
 #-----------------------------------------------------------------------
 #
@@ -649,18 +677,46 @@ GRID_GEN_METHOD="ESGgrid"
 # in the file names, so we allow for that here by setting this flag to
 # "TRUE".
 #
+# Note that:
+#
+# 1) If the experiment is using one of the predefined grids (i.e. if 
+#    PREDEF_GRID_NAME is set to the name of one of the valid predefined
+#    grids), then:
+#
+#    a) If the value of GRID_GEN_METHOD for that grid is "GFDLgrid", then
+#       these parameters will get reset to the values for that grid.  
+#       This will happen regardless of whether or not they are assigned 
+#       values in the user-specified experiment configuration file, i.e. 
+#       any values they may be assigned in the experiment configuration 
+#       file will be overwritten.
+#
+#    b) If the value of GRID_GEN_METHOD for that grid is "ESGgrid", then
+#       these parameters will not be used and thus do not need to be reset
+#       to non-empty strings.
+#
+# 2) If the experiment is not using one of the predefined grids (i.e. if 
+#    PREDEF_GRID_NAME is set to a null string), then:
+#
+#    a) If GRID_GEN_METHOD is set to "GFDLgrid" in the user-specified 
+#       experiment configuration file, then these parameters must be set
+#       in that configuration file.
+#
+#    b) If GRID_GEN_METHOD is set to "ESGgrid" in the user-specified 
+#       experiment configuration file, then these parameters will not be 
+#       used and thus do not need to be reset to non-empty strings.
+#
 #-----------------------------------------------------------------------
 #
-GFDLgrid_LON_T6_CTR=-97.5
-GFDLgrid_LAT_T6_CTR=35.5
-GFDLgrid_RES="384"
-GFDLgrid_STRETCH_FAC=1.5
-GFDLgrid_REFINE_RATIO=3
-GFDLgrid_ISTART_OF_RGNL_DOM_ON_T6G=10
-GFDLgrid_IEND_OF_RGNL_DOM_ON_T6G=374
-GFDLgrid_JSTART_OF_RGNL_DOM_ON_T6G=10
-GFDLgrid_JEND_OF_RGNL_DOM_ON_T6G=374
-GFDLgrid_USE_GFDLgrid_RES_IN_FILENAMES="TRUE"
+GFDLgrid_LON_T6_CTR=""
+GFDLgrid_LAT_T6_CTR=""
+GFDLgrid_RES=""
+GFDLgrid_STRETCH_FAC=""
+GFDLgrid_REFINE_RATIO=""
+GFDLgrid_ISTART_OF_RGNL_DOM_ON_T6G=""
+GFDLgrid_IEND_OF_RGNL_DOM_ON_T6G=""
+GFDLgrid_JSTART_OF_RGNL_DOM_ON_T6G=""
+GFDLgrid_JEND_OF_RGNL_DOM_ON_T6G=""
+GFDLgrid_USE_GFDLgrid_RES_IN_FILENAMES=""
 #
 #-----------------------------------------------------------------------
 #
@@ -704,69 +760,90 @@ GFDLgrid_USE_GFDLgrid_RES_IN_FILENAMES="TRUE"
 # 4-cell-wide halos that we will eventually end up with.  Note that the
 # grid and orography files with the wide halo are only needed as intermediates
 # in generating the files with 0-cell-, 3-cell-, and 4-cell-wide halos;
-# they are not needed by the forecast model.  Usually, there is no reason
-# to change this parameter from its default value set here.
+# they are not needed by the forecast model.  
+# NOTE: Probably don't need to make ESGgrid_WIDE_HALO_WIDTH a user-specified 
+#       variable.  Just set it in the function set_gridparams_ESGgrid.sh.
 #
-#   NOTE: Probably don't need to make this a user-specified variable.  
-#         Just set it in the function set_gridparams_ESGgrid.sh.
+# Note that:
 #
-# ESGgrid_ALPHA_PARAM:
-# The alpha parameter used in the Jim Purser map projection/grid generation
-# method.
+# 1) If the experiment is using one of the predefined grids (i.e. if 
+#    PREDEF_GRID_NAME is set to the name of one of the valid predefined
+#    grids), then:
 #
-# ESGgrid_KAPPA_PARAM:
-# The kappa parameter used in the Jim Purser map projection/grid generation
-# method.
+#    a) If the value of GRID_GEN_METHOD for that grid is "GFDLgrid", then
+#       these parameters will not be used and thus do not need to be reset
+#       to non-empty strings.
 #
-#-----------------------------------------------------------------------
+#    b) If the value of GRID_GEN_METHOD for that grid is "ESGgrid", then
+#       these parameters will get reset to the values for that grid.  
+#       This will happen regardless of whether or not they are assigned 
+#       values in the user-specified experiment configuration file, i.e. 
+#       any values they may be assigned in the experiment configuration 
+#       file will be overwritten.
 #
-ESGgrid_LON_CTR="-97.5"
-ESGgrid_LAT_CTR="35.5"
-ESGgrid_DELX="3000.0"
-ESGgrid_DELY="3000.0"
-ESGgrid_NX="1000"
-ESGgrid_NY="1000"
-ESGgrid_WIDE_HALO_WIDTH="6"
-ESGgrid_ALPHA_PARAM="0.21423"
-ESGgrid_KAPPA_PARAM="-0.23209"
+# 2) If the experiment is not using one of the predefined grids (i.e. if 
+#    PREDEF_GRID_NAME is set to a null string), then:
 #
-#-----------------------------------------------------------------------
+#    a) If GRID_GEN_METHOD is set to "GFDLgrid" in the user-specified 
+#       experiment configuration file, then these parameters will not be 
+#       used and thus do not need to be reset to non-empty strings.
 #
-# Set DT_ATMOS.  This is the main forecast model integraton time step.  
-# As described in the forecast model documentation, "It corresponds to
-# the frequency with which the top level routine in the dynamics is called
-# as well as the frequency with which the physics is called."
-#
-#-----------------------------------------------------------------------
-#
-DT_ATMOS="18"
+#    b) If GRID_GEN_METHOD is set to "ESGgrid" in the user-specified 
+#       experiment configuration file, then these parameters must be set
+#       in that configuration file.
 #
 #-----------------------------------------------------------------------
 #
-# Set LAYOUT_X and LAYOUT_Y.  These are the number of MPI tasks (processes)
-# to use in the two horizontal directions (x and y) of the regional grid
-# when running the forecast model.
+ESGgrid_LON_CTR=""
+ESGgrid_LAT_CTR=""
+ESGgrid_DELX=""
+ESGgrid_DELY=""
+ESGgrid_NX=""
+ESGgrid_NY=""
+ESGgrid_WIDE_HALO_WIDTH=""
 #
 #-----------------------------------------------------------------------
 #
-LAYOUT_X="20"
-LAYOUT_Y="20"
+# Set computational parameters for the forecast.  Definitions:
+#
+# DT_ATMOS:
+# The main forecast model integraton time step.  As described in the 
+# forecast model documentation, "It corresponds to the frequency with 
+# which the top level routine in the dynamics is called as well as the 
+# frequency with which the physics is called."
+#
+# LAYOUT_X, LAYOUT_Y:
+# The number of MPI tasks (processes) to use in the two horizontal 
+# directions (x and y) of the regional grid when running the forecast 
+# model.
+#
+# BLOCKSIZE:
+# The amount of data that is passed into the cache at a time.
+#
+# Here, we set these parameters to null strings.  This is so that, for 
+# any one of these parameters:
+#
+# 1) If the experiment is using a predefined grid, then if the user 
+#    sets the parameter in the user-specified experiment configuration 
+#    file (EXPT_CONFIG_FN), that value will be used in the forecast(s).
+#    Otherwise, the default value of the parameter for that predefined 
+#    grid will be used.
+#
+# 2) If the experiment is not using a predefined grid (i.e. it is using
+#    a custom grid whose parameters are specified in the experiment 
+#    configuration file), then the user must specify a value for the 
+#    parameter in that configuration file.  Otherwise, the parameter 
+#    will remain set to a null string, and the experiment generation 
+#    will fail because the generation scripts check to ensure that all 
+#    the parameters defined in this section are set to non-empty strings
+#    before creating the experiment directory.
 #
 #-----------------------------------------------------------------------
 #
-# Set BLOCKSIZE.  This is the amount of data that is passed into the cache
-# at a time.  The number of vertical columns per MPI task needs to be 
-# divisible by BLOCKSIZE; otherwise, unexpected results may occur.
-#
-# GSK: IMPORTANT NOTE:
-# I think Dom fixed the code so that the number of columns per MPI task
-# no longer needs to be divisible by BLOCKSIZE.  If so, remove the check
-# on blocksize in the experiment generation scripts.  Note that BLOCKSIZE
-# still needs to be set to a value (probably machine-dependent).
-#
-#-----------------------------------------------------------------------
-#
-BLOCKSIZE="24"
+DT_ATMOS=""
+LAYOUT_X=""
+LAYOUT_Y=""
+BLOCKSIZE=""
 #
 #-----------------------------------------------------------------------
 #
@@ -785,11 +862,11 @@ BLOCKSIZE="24"
 #
 # PRINT_ESMF:
 # Flag for whether or not to output extra (debugging) information from
-# ESMF routines.  Must be ".true." or ".false.".  Note that the write
+# ESMF routines.  Must be "TRUE" or "FALSE".  Note that the write
 # component uses ESMF library routines to interpolate from the native
-# forecast model grid to the user-specified output grid (which is defined in the
-# model configuration file MODEL_CONFIG_FN in the forecast's run direc-
-# tory).
+# forecast model grid to the user-specified output grid (which is defined 
+# in the model configuration file MODEL_CONFIG_FN in the forecast's run 
+# directory).
 #
 #-----------------------------------------------------------------------
 #
@@ -828,34 +905,34 @@ WRTCMP_dy=""
 # Set PREDEF_GRID_NAME.  This parameter specifies a predefined regional
 # grid, as follows:
 #
-# * If PREDEF_GRID_NAME is set to an empty string, the grid parameters,
-#   time step (DT_ATMOS), computational parameters (e.g. LAYOUT_X, LAYOUT_Y),
-#   and write component parameters set above (and possibly overwritten by
-#   values in the user-specified configuration file) are used.
+# * If PREDEF_GRID_NAME is set to a valid predefined grid name, the grid 
+#   generation method GRID_GEN_METHOD, the (native) grid parameters, and 
+#   the write-component grid parameters are set to predefined values for 
+#   the specified grid, overwriting any settings of these parameters in 
+#   the user-specified experiment configuration file.  In addition, if 
+#   the time step DT_ATMOS and the computational parameters LAYOUT_X, 
+#   LAYOUT_Y, and BLOCKSIZE are not specified in that configuration file, 
+#   they are also set to predefined values for the specified grid.
 #
-# * If PREDEF_GRID_NAME is set to a valid grid name, the grid parameters, 
-#   time step (DT_ATMOS), computational parameters (e.g. LAYOUT_X, LAYOUT_Y),
-#   and write component parameters set above (and possibly overwritten by
-#   values in the user-specified configuration file) are overwritten by 
-#   predefined values for the specified grid.
+# * If PREDEF_GRID_NAME is set to an empty string, it implies the user
+#   is providing the native grid parameters in the user-specified 
+#   experiment configuration file (EXPT_CONFIG_FN).  In this case, the 
+#   grid generation method GRID_GEN_METHOD, the native grid parameters, 
+#   and the write-component grid parameters as well as the time step 
+#   forecast model's main time step DT_ATMOS and the computational 
+#   parameters LAYOUT_X, LAYOUT_Y, and BLOCKSIZE must be set in that 
+#   configuration file; otherwise, the values of all of these parameters 
+#   in this default experiment configuration file will be used.
 #
-# This is simply a convenient way to quickly specify a set of parameters
-# that depend on the grid.
+# Setting PREDEF_GRID_NAME provides a convenient method of specifying a
+# commonly used set of grid-dependent parameters.  The predefined grid 
+# parameters are specified in the script 
+#
+#   $HOMErrfs/ush/set_predef_grid_params.sh
 #
 #-----------------------------------------------------------------------
 #
 PREDEF_GRID_NAME=""
-#
-#-----------------------------------------------------------------------
-#
-# Set EMC_GRID_NAME.  This is a convenience parameter to allow EMC to use
-# its original grid names.  It is simply used to determine a value for 
-# PREDEF_GRID_NAME.  Once EMC starts using PREDEF_GRID_NAME, this variable
-# can be eliminated.
-#
-#-----------------------------------------------------------------------
-#
-EMC_GRID_NAME=""
 #
 #-----------------------------------------------------------------------
 #
@@ -1117,8 +1194,9 @@ CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING=( \
 # Set the names of the various workflow tasks.  Then, for each task, set
 # the parameters to pass to the job scheduler (e.g. slurm) that will submit
 # a job for each task to be run.  These parameters include the number of
-# nodes to use to run the job, the MPI processes per node, and the maximum
-# walltime to allow for the job to complete.
+# nodes to use to run the job, the MPI processes per node, the maximum
+# walltime to allow for the job to complete, and the maximum number of
+# times to attempt to run each task.
 #
 #-----------------------------------------------------------------------
 #
@@ -1169,6 +1247,41 @@ WTIME_MAKE_ICS="00:30:00"
 WTIME_MAKE_LBCS="00:30:00"
 WTIME_RUN_FCST="04:30:00"
 WTIME_RUN_POST="00:15:00"
+#
+# Maximum number of attempts.
+#
+MAXTRIES_MAKE_GRID="1"
+MAXTRIES_MAKE_OROG="1"
+MAXTRIES_MAKE_SFC_CLIMO="1"
+MAXTRIES_GET_EXTRN_ICS="1"
+MAXTRIES_GET_EXTRN_LBCS="1"
+MAXTRIES_MAKE_ICS="1"
+MAXTRIES_MAKE_LBCS="1"
+MAXTRIES_RUN_FCST="1"
+MAXTRIES_RUN_POST="1"
+#
+#-----------------------------------------------------------------------
+#
+# Set parameters associated with defining a customized post configuration 
+# file.
+#
+# USE_CUSTOM_POST_CONFIG_FILE:
+# Flag that determines whether a user-provided custom configuration file
+# should be used for post-processing the model data. If this is set to
+# "TRUE", then the workflow will use the custom post-processing (UPP) 
+# configuration file specified in CUSTOM_POST_CONFIG_FP. Otherwise, a 
+# default configuration file provided in the EMC_post repository will be 
+# used.
+#
+# CUSTOM_POST_CONFIG_FP:
+# The full path to the custom post flat file, including filename, to be 
+# used for post-processing. This is only used if CUSTOM_POST_CONFIG_FILE
+# is set to "TRUE".
+#
+#-----------------------------------------------------------------------
+#
+USE_CUSTOM_POST_CONFIG_FILE="FALSE"
+CUSTOM_POST_CONFIG_FP=""
 #
 #-----------------------------------------------------------------------
 #
@@ -1228,28 +1341,63 @@ USE_ZMTNBLCK="false"
 # 
 # HALO_BLEND:
 # Number of rows into the computational domain that should be blended 
-# with the LBCs.  To shut of halo blending, this can be set to zero.
+# with the LBCs.  To shut halo blending off, this can be set to zero.
 #
 #-----------------------------------------------------------------------
 #
-HALO_BLEND=0
+HALO_BLEND=10
 #
 #-----------------------------------------------------------------------
 #
-# GWD_RRFS_v1beta_BASEDIR:
+# USE_FVCOM:
+# Flag set to update surface conditions in FV3-LAM with fields generated
+# from the Finite Volume Community Ocean Model (FVCOM). This will
+# replace lake/sea surface temperature, ice surface temperature, and ice
+# placement. FVCOM data must already be interpolated to the desired
+# FV3-LAM grid. This flag will be used in make_ics to modify sfc_data.nc
+# after chgres_cube is run by running the routine process_FVCOM.exe
+#
+# FVCOM_DIR:
+# User defined directory where FVCOM data already interpolated to FV3-LAM
+# grid is located. File name in this path should be "fvcom.nc" to allow
+#
+# FVCOM_FILE:
+# Name of file located in FVCOM_DIR that has FVCOM data interpolated to 
+# FV3-LAM grid. This file will be copied later to a new location and name
+# changed to fvcom.nc
+#
+#------------------------------------------------------------------------
+#
+USE_FVCOM="FALSE"
+FVCOM_DIR="/user/defined/dir/to/fvcom/data"
+FVCOM_FILE="fvcom.nc"
+#
+#-----------------------------------------------------------------------
+#
+# COMPILER:
+# Type of compiler invoked during the build step. 
+#
+#------------------------------------------------------------------------
+#
+COMPILER="intel"
+#
+#-----------------------------------------------------------------------
+#
+# GWD_HRRRsuite_BASEDIR:
 # Temporary workflow variable specifies the base directory in which to 
-# look for certain fixed orography files needed only by the gravity wave 
-# drag parameterization in the FV3_RRFS_v1beta physics suite.  This variable
-# is added in order to avoid including hard-coded paths in the workflow
-# scripts.  Currently, the workflow simply copies the necessary files 
-# from a subdirectory under this directory (named according to the specified
-# predefined grid) to the orography directory (OROG_DIR) under the 
-# experiment directory.  
+# look for certain fixed orography statistics files needed only by the 
+# gravity wave drag parameterization in the FV3_HRRR physics suite.  This 
+# variable is added in order to avoid including hard-coded paths in the 
+# workflow scripts.  Currently, the workflow simply copies the necessary 
+# files from a subdirectory under this directory (named according to the 
+# specified predefined grid) to the orography directory (OROG_DIR) under 
+# the experiment directory.  
 #
-# Note that this variable is only used when using the FV3_RRFS_v1beta 
-# physics suite.  This variable should be removed from the workflow once 
-# there is a script that generates these files for any grid.
+# Note that this variable is only used when using the FV3_HRRR physics 
+# suite.  It should be removed from the workflow once there is a script 
+# or code available that generates these files for any grid.
 #
 #-----------------------------------------------------------------------
 #
-GWD_RRFS_v1beta_BASEDIR=""
+GWD_HRRRsuite_BASEDIR=""
+

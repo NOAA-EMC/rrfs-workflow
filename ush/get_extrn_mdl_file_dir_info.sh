@@ -122,18 +122,18 @@ where the arguments are defined as follows:
   Name of the external model, i.e. the name of the model providing the
   fields from which files containing initial conditions, surface fields, 
   and/or lateral boundary conditions for the FV3-LAM will be generated.
- 
+
   anl_or_fcst:
   Flag that specifies whether the external model files we are interested
-  in obtaining are analysis or forecast files.  
- 
+  in obtaining are analysis or forecast files.
+
   cdate_FV3LAM:
   The cycle date and time (hours only) for which we want to obtain file
   and directory information.  This has the form YYYYMMDDHH, where YYYY
-  is the four-digit starting year of the cycle, MM is the two-digit 
+  is the four-digit starting year of the cycle, MM is the two-digit
   month, DD is the two-digit day of the month, and HH is the two-digit
   hour of day.
- 
+
   time_offset_hrs:
   The number of hours by which to shift back in time the start time of
   the external model forecast from the specified cycle start time of the
@@ -141,47 +141,47 @@ where the arguments are defined as follows:
   external model analysis files, this is normally set to 0.  When get-
   ting directory and file information on external model forecast files,
   this may be set to a nonzero value to obtain information for an exter-
-  nal model run that started time_offset_hrs hours before cdate_FV3LAM 
-  (instead of exactly at cdate_FV3LAM).  Note that in this case, the 
+  nal model run that started time_offset_hrs hours before cdate_FV3LAM
+  (instead of exactly at cdate_FV3LAM).  Note that in this case, the
   forecast hours (relative to the external model run's start time) at
   which the lateral boundary conditions will be updated must be shifted
   forward by time_offset_hrs hours relative to those for the FV3-LAM in
   order to make up for the backward-in-time shift in the starting time
   of the external model.
- 
+
   varname_extrn_mdl_cdate:
-  Name of the global variable that will contain the starting date and 
+  Name of the global variable that will contain the starting date and
   hour of the external model run.
- 
+
   varname_extrn_mdl_lbc_spec_fhrs:
   Name of the global variable that will contain the forecast hours (re-
   lative to the starting time of the external model run, which is earli-
   er than that of the FV3-LAM by time_offset_hrs hours) at which lateral
   boundary condition (LBC) output files are obtained from the external
   model (and will be used to update the LBCs of the FV3-LAM).
- 
+
   varname_extrn_mdl_fns:
   Name of the global variable that will contain the names of the exter-
   nal model output files.
- 
+
   varname_extrn_mdl_sysdir:
   Name of the global variable that will contain the system directory in
   which the externaml model output files may be stored.
- 
+
   varname_extrn_mdl_arcv_fmt:
   Name of the global variable that will contain the format of the ar-
   chive file on HPSS in which the externaml model output files may be 
   stored.
- 
+
   varname_extrn_mdl_arcv_fns:
   Name of the global variable that will contain the name of the archive
   file on HPSS in which the externaml model output files may be stored.
- 
+
   varname_extrn_mdl_arcv_fps:
   Name of the global variable that will contain the full path to the ar-
-  chive file on HPSS in which the externaml model output files may be 
+  chive file on HPSS in which the externaml model output files may be
   stored.
- 
+
   varname_extrn_mdl_arcvrel_dir:
   Name of the global variable that will contain the archive-relative di-
   rectory, i.e. the directory \"inside\" the archive file in which the ex-
@@ -290,8 +290,9 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-  if [ "${extrn_mdl_name}" = "RAPX" ] || \
-     [ "${extrn_mdl_name}" = "HRRRX" ] || \
+  if [ "${extrn_mdl_name}" = "RAP" ] || \
+     [ "${extrn_mdl_name}" = "HRRR" ] || \
+     [ "${extrn_mdl_name}" = "NAM" ] || \
      [ "${extrn_mdl_name}" = "FV3GFS" -a "${MACHINE}" = "JET" ]; then
 #
 # Get the Julian day-of-year of the starting date and time of the exter-
@@ -345,8 +346,8 @@ fi
       ;;
 
     "FV3GFS")
-    
-      if [ "${fv3gfs_file_fmt}" = "nemsio" ]; then  
+
+      if [ "${fv3gfs_file_fmt}" = "nemsio" ]; then
 
         fns=( "atm" "sfc" )
         suffix="anl.nemsio"
@@ -377,8 +378,12 @@ fi
 
       fi
       ;;
-  
-    "RAPX")
+
+    "RAP")
+#
+# Note that this is GSL RAPX data, not operational NCEP RAP data.  An option for the latter
+# may be added in the future.
+#
       if [ "${MACHINE}" = "JET" ]; then
         fns_on_disk=( "wrfnat_rr_${fcst_hh}.grib2" )
       else
@@ -387,13 +392,26 @@ fi
       fns_in_arcv=( "${yy}${ddd}${hh}${mn}${fcst_hh}${fcst_mn}" )
       ;;
 
-    "HRRRX")
+    "HRRR")
+#
+# Note that this is GSL HRRRX data, not operational NCEP HRRR data.  An option for the latter
+# may be added in the future.
+#
       if [ "${MACHINE}" = "JET" ]; then
         fns_on_disk=( "wrfnat_hrconus_${fcst_hh}.grib2" )
       else
         fns_on_disk=( "${yy}${ddd}${hh}${mn}${fcst_hh}${fcst_mn}" )
       fi
       fns_in_arcv=( "${yy}${ddd}${hh}${mn}${fcst_hh}${fcst_mn}" )
+      ;;
+
+    "NAM")
+      fns=( "" )
+      prefix="nam.t${hh}z.bgrdsfi${hh}"
+      fns=( "${fns[@]/#/$prefix}" )
+      suffix=".tm${hh}"
+      fns_on_disk=( "${fns[@]/%/$suffix}" )
+      fns_in_arcv=( "${fns[@]/%/$suffix}" )
       ;;
 
     *)
@@ -456,7 +474,11 @@ and analysis or forecast (anl_or_fcst):
       fi
       ;;
 
-    "RAPX")
+    "RAP")
+#
+# Note that this is GSL RAPX data, not operational NCEP RAP data.  An option for the latter
+# may be added in the future.
+#
       fcst_hh=( $( printf "%02d " "${lbc_spec_fhrs[@]}" ) )
 
       if [ "${MACHINE}" = "JET" ]; then 
@@ -475,7 +497,11 @@ and analysis or forecast (anl_or_fcst):
       fns_in_arcv=( "${fns_in_arcv[@]/%/$suffix}" )
       ;;
 
-    "HRRRX")
+    "HRRR")
+#
+# Note that this is GSL HRRRX data, not operational NCEP HRRR data.  An option for the latter
+# may be added in the future.
+#
       fcst_hh=( $( printf "%02d " "${lbc_spec_fhrs[@]}" ) )
 
       if [ "${MACHINE}" = "JET" ]; then
@@ -494,10 +520,19 @@ and analysis or forecast (anl_or_fcst):
       fns_in_arcv=( "${fns_in_arcv[@]/%/$suffix}" )
       ;;
 
+    "NAM")
+      fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
+      prefix="nam.t${hh}z.bgrdsf"
+      fns=( "${fcst_hhh[@]/#/$prefix}" )
+      suffix=""
+      fns_on_disk=( "${fns[@]/%/$suffix}" )
+      fns_in_arcv=( "${fns[@]/%/$suffix}" )
+      ;;
+
     *)
       print_err_msg_exit "\
 The external model file names have not yet been specified for this com-
-bination of external model (extrn_mdl_name) and analysis or forecast 
+bination of external model (extrn_mdl_name) and analysis or forecast
 (anl_or_fcst):
   extrn_mdl_name = \"${extrn_mdl_name}\"
   anl_or_fcst = \"${anl_or_fcst}\""
@@ -510,10 +545,10 @@ bination of external model (extrn_mdl_name) and analysis or forecast
 #
 #-----------------------------------------------------------------------
 #
-# Set the system directory (i.e. a directory on disk) in which the external 
-# model output files for the specified cycle date (cdate) may be located.  
-# Note that this will be used by the calling script only if the output 
-# files for the specified cdate actually exist at this location.  Otherwise, 
+# Set the system directory (i.e. a directory on disk) in which the external
+# model output files for the specified cycle date (cdate) may be located.
+# Note that this will be used by the calling script only if the output
+# files for the specified cdate actually exist at this location.  Otherwise,
 # the files will be searched for on the mass store (HPSS).
 #
 #-----------------------------------------------------------------------
@@ -540,6 +575,9 @@ bination of external model (extrn_mdl_name) and analysis or forecast
       ;;
     "HERA")
       sysdir=""
+      ;;
+    "ORION")
+      sysdir="$sysbasedir"
       ;;
     "JET")
       sysdir=""
@@ -575,6 +613,9 @@ has not been specified for this external model and machine combination:
     "HERA")
       sysdir="$sysbasedir/gfs.${yyyymmdd}/${hh}"
       ;;
+    "ORION")
+      sysdir="$sysbasedir"
+      ;;
     "JET")
       sysdir="$sysbasedir"
       ;;
@@ -584,6 +625,9 @@ has not been specified for this external model and machine combination:
     "CHEYENNE")
       sysdir="$sysbasedir/gfs.${yyyymmdd}/${hh}"
       ;;
+    "STAMPEDE")
+      sysdir="$sysbasedir"
+      ;;
     *)
       print_err_msg_exit "\
 The system directory in which to look for external model output files 
@@ -595,7 +639,7 @@ has not been specified for this external model and machine combination:
     ;;
 
 
-  "RAPX")
+  "RAP")
     case "$MACHINE" in
     "WCOSS_CRAY")
       sysdir="$sysbasedir"
@@ -604,6 +648,9 @@ has not been specified for this external model and machine combination:
       sysdir="$sysbasedir"
       ;;
     "HERA")
+      sysdir="$sysbasedir"
+      ;;
+    "ORION")
       sysdir="$sysbasedir"
       ;;
     "JET")
@@ -626,7 +673,7 @@ has not been specified for this external model and machine combination:
     ;;
 
 
-  "HRRRX")
+  "HRRR")
     case "$MACHINE" in
     "WCOSS_CRAY")
       sysdir="$sysbasedir"
@@ -635,6 +682,9 @@ has not been specified for this external model and machine combination:
       sysdir="$sysbasedir"
       ;;
     "HERA")
+      sysdir="$sysbasedir"
+      ;;
+    "ORION")
       sysdir="$sysbasedir"
       ;;
     "JET")
@@ -649,6 +699,39 @@ has not been specified for this external model and machine combination:
     *)
       print_err_msg_exit "\
 The system directory in which to look for external model output files 
+has not been specified for this external model and machine combination:
+  extrn_mdl_name = \"${extrn_mdl_name}\"
+  MACHINE = \"$MACHINE\""
+      ;;
+    esac
+    ;;
+
+  "NAM")
+    case "$MACHINE" in
+    "WCOSS_CRAY")
+      sysdir="$sysbasedir"
+      ;;
+    "WCOSS_DELL_P3")
+      sysdir="$sysbasedir"
+      ;;
+    "HERA")
+      sysdir="$sysbasedir"
+      ;;
+    "ORION")
+      sysdir="$sysbasedir"
+      ;;
+    "JET")
+      sysdir="$sysbasedir"
+      ;;
+    "ODIN")
+      sysdir="$sysbasedir"
+      ;;
+    "CHEYENNE")
+      sysdir="$sysbasedir"
+      ;;
+    *)
+      print_err_msg_exit "\
+The system directory in which to look for external model output files
 has not been specified for this external model and machine combination:
   extrn_mdl_name = \"${extrn_mdl_name}\"
   MACHINE = \"$MACHINE\""
@@ -699,22 +782,22 @@ has not been specified for this external model:
     ;;
 
   "FV3GFS")
+
+    if [ "${cdate_FV3LAM}" -lt "2019061200" ]; then
+      arcv_dir="/NCEPDEV/emc-global/5year/emc.glopara/WCOSS_C/Q2FY19/prfv3rt3/${cdate_FV3LAM}"
+      arcv_fns=""
+    elif [ "${cdate_FV3LAM}" -ge "2019061200" ] && \
+         [ "${cdate_FV3LAM}" -lt "2020022600" ]; then
+      arcv_dir="/NCEPPROD/hpssprod/runhistory/rh${yyyy}/${yyyy}${mm}/${yyyymmdd}"
+      arcv_fns="gpfs_dell1_nco_ops_com_gfs_prod_gfs.${yyyymmdd}_${hh}."
+    elif [ "${cdate_FV3LAM}" -ge "2020022600" ]; then
+      arcv_dir="/NCEPPROD/hpssprod/runhistory/rh${yyyy}/${yyyy}${mm}/${yyyymmdd}"
+      arcv_fns="com_gfs_prod_gfs.${yyyymmdd}_${hh}."
+    fi
+
     if [ "${fv3gfs_file_fmt}" = "nemsio" ]; then
- 
-      if [ "${cdate_FV3LAM}" -le "2019061206" ]; then
-        arcv_dir="/NCEPDEV/emc-global/5year/emc.glopara/WCOSS_C/Q2FY19/prfv3rt3/${cdate_FV3LAM}"
-        arcv_fns=""
-      elif [ "${cdate_FV3LAM}" -le "2020022518" ]; then
-        arcv_dir="/NCEPPROD/hpssprod/runhistory/rh${yyyy}/${yyyy}${mm}/${yyyymmdd}"
-        arcv_fns="gpfs_dell1_nco_ops_com_gfs_prod_gfs.${yyyymmdd}_${hh}."
-      else
-        arcv_dir="/NCEPPROD/hpssprod/runhistory/rh${yyyy}/${yyyy}${mm}/${yyyymmdd}"
-        arcv_fns="com_gfs_prod_gfs.${yyyymmdd}_${hh}."
-      fi
-      arcv_fmt="tar"
       if [ "${anl_or_fcst}" = "ANL" ]; then
         arcv_fns="${arcv_fns}gfs_nemsioa"
-        arcvrel_dir="./gfs.${yyyymmdd}/${hh}"
       elif [ "${anl_or_fcst}" = "FCST" ]; then
         last_fhr_in_nemsioa="39"
         first_lbc_fhr="${lbc_spec_fhrs[0]}"
@@ -726,17 +809,16 @@ has not been specified for this external model:
         else
           arcv_fns=( "${arcv_fns}gfs_nemsioa" "${arcv_fns}gfs_nemsiob" )
         fi
-        arcvrel_dir="./gfs.${yyyymmdd}/${hh}"
       fi
 
     elif [ "${fv3gfs_file_fmt}" = "grib2" ]; then
 
-      arcv_dir="/NCEPPROD/hpssprod/runhistory/rh${yyyy}/${yyyy}${mm}/${yyyymmdd}"
-      arcv_fns="gpfs_dell1_nco_ops_com_gfs_prod_gfs.${yyyymmdd}_${hh}.gfs_pgrb2"
-      arcv_fmt="tar"
-      arcvrel_dir="./gfs.${yyyymmdd}/${hh}"
-  
+      arcv_fns="${arcv_fns}gfs_pgrb2"
+
     fi
+
+    arcv_fmt="tar"
+    arcvrel_dir="./gfs.${yyyymmdd}/${hh}"
 
     is_array arcv_fns
     if [ "$?" = "0" ]; then
@@ -750,7 +832,11 @@ has not been specified for this external model:
     fi
     ;;
 
-  "RAPX")
+
+  "RAP")
+#
+# Note that this is GSL RAPX data, not operational NCEP RAP data.  An option for the latter
+# may be added in the future.
 #
 # The zip archive files for RAPX are named such that the forecast files
 # for odd-numbered starting hours (e.g. 01, 03, ..., 23) are stored 
@@ -785,10 +871,22 @@ has not been specified for this external model:
     hh=${hh_orig}
     ;;
 
-  "HRRRX")
+  "HRRR")
+#
+# Note that this is GSL HRRRX data, not operational NCEP HRRR data.  An option for the latter
+# may be added in the future.
+#
     arcv_dir="/BMC/fdr/Permanent/${yyyy}/${mm}/${dd}/data/fsl/hrrr/conus/wrfnat"
     arcv_fmt="zip"
     arcv_fns="${yyyy}${mm}${dd}${hh}00.${arcv_fmt}"
+    arcv_fps="$arcv_dir/$arcv_fns"
+    arcvrel_dir=""
+    ;;
+
+  "NAM")
+    arcv_dir="/NCEPPROD/hpssprod/runhistory/rh${yyyy}/${yyyy}${mm}/${yyyymmdd}"
+    arcv_fmt="tar"
+    arcv_fns="com_nam_prod_nam.${yyyy}${mm}${dd}${hh}.bgrid.${arcv_fmt}"
     arcv_fps="$arcv_dir/$arcv_fns"
     arcvrel_dir=""
     ;;

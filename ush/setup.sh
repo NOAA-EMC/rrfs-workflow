@@ -62,6 +62,8 @@ cd_vrfy ${scrfunc_dir}
 . ./set_gridparams_ESGgrid.sh
 . ./link_fix.sh
 . ./set_ozone_param.sh
+. ./set_thompson_mp_fix_files.sh
+. ./check_ruc_lsm.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -79,7 +81,7 @@ cd_vrfy ${scrfunc_dir}
 #
 #-----------------------------------------------------------------------
 #
-  EXPT_DEFAULT_CONFIG_FN="config_defaults.sh"
+EXPT_DEFAULT_CONFIG_FN="config_defaults.sh"
 . ./${EXPT_DEFAULT_CONFIG_FN}
 #
 #-----------------------------------------------------------------------
@@ -189,6 +191,26 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+# Make sure that RUN_TASK_MAKE_OROG is set to a valid value.
+#
+#-----------------------------------------------------------------------
+#
+check_var_valid_value "RUN_TASK_MAKE_OROG" "valid_vals_RUN_TASK_MAKE_OROG"
+#
+# Set RUN_TASK_MAKE_OROG to either "TRUE" or "FALSE" so we don't have to
+# consider other valid values later on.
+#
+RUN_TASK_MAKE_OROG=${RUN_TASK_MAKE_OROG^^}
+if [ "${RUN_TASK_MAKE_OROG}" = "TRUE" ] || \
+   [ "${RUN_TASK_MAKE_OROG}" = "YES" ]; then
+  RUN_TASK_MAKE_OROG="TRUE"
+elif [ "${RUN_TASK_MAKE_OROG}" = "FALSE" ] || \
+     [ "${RUN_TASK_MAKE_OROG}" = "NO" ]; then
+  RUN_TASK_MAKE_OROG="FALSE"
+fi
+#
+#-----------------------------------------------------------------------
+#
 # Make sure that RUN_TASK_MAKE_SFC_CLIMO is set to a valid value.
 #
 #-----------------------------------------------------------------------
@@ -206,28 +228,6 @@ if [ "${RUN_TASK_MAKE_SFC_CLIMO}" = "TRUE" ] || \
 elif [ "${RUN_TASK_MAKE_SFC_CLIMO}" = "FALSE" ] || \
      [ "${RUN_TASK_MAKE_SFC_CLIMO}" = "NO" ]; then
   RUN_TASK_MAKE_SFC_CLIMO="FALSE"
-fi
-#
-# If RUN_TASK_MAKE_SFC_CLIMO is set to "FALSE", make sure that the di-
-# rectory SFC_CLIMO_DIR that should contain the pre-generated surface 
-# climatology files exists.
-#
-if [ "${RUN_TASK_MAKE_SFC_CLIMO}" = "FALSE" ] && \
-   [ ! -d "${SFC_CLIMO_DIR}" ]; then
-  print_err_msg_exit "\
-The directory (SFC_CLIMO_DIR) that should contain the pre-generated sur-
-face climatology files does not exist:
-  SFC_CLIMO_DIR = \"${SFC_CLIMO_DIR}\""
-fi
-#
-# If RUN_TASK_MAKE_SFC_CLIMO is set to "TRUE" and the variable specify-
-# ing the directory in which to look for pregenerated grid and orography
-# files (i.e. SFC_CLIMO_DIR) is not empty, then for clarity reset the 
-# latter to an empty string (because it will not be used).
-#
-if [ "${RUN_TASK_MAKE_SFC_CLIMO}" = "TRUE" ] && \
-   [ -n "${SFC_CLIMO_DIR}" ]; then
-  SFC_CLIMO_DIR=""
 fi
 #
 #-----------------------------------------------------------------------
@@ -309,7 +309,27 @@ fi
 if [ "${DO_SPPT}" = "FALSE" ]; then
   SPPT_MAG=-999.0
 fi
-
+#
+#-----------------------------------------------------------------------
+#
+# Make sure that USE_FVCOM is set to a valid value and assign directory
+# and file names.
+#
+#-----------------------------------------------------------------------
+#
+check_var_valid_value "USE_FVCOM" "valid_vals_USE_FVCOM"
+#
+# Set USE_FVCOM to either "TRUE" or "FALSE" so we don't have to consider
+# other valid values later on.
+#
+USE_FVCOM=${USE_FVCOM^^}
+if [ "$USE_FVCOM" = "TRUE" ] || \
+   [ "$USE_FVCOM" = "YES" ]; then
+  USE_FVCOM="TRUE"
+elif [ "$USE_FVCOM" = "FALSE" ] || \
+     [ "$USE_FVCOM" = "NO" ]; then
+  USE_FVCOM="FALSE"
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -338,72 +358,86 @@ check_var_valid_value "MACHINE" "valid_vals_MACHINE"
 #-----------------------------------------------------------------------
 #
 case $MACHINE in
-#
-"WCOSS_CRAY")
-#
-  NCORES_PER_NODE="24"
-  SCHED="lsfcray"
-  QUEUE_DEFAULT=${QUEUE_DEFAULT:-"dev"}
-  QUEUE_HPSS=${QUEUE_HPSS:-"dev_transfer"}
-  QUEUE_HPSS_TAG="queue"       # lsfcray does not support "partition" tag
-  QUEUE_FCST=${QUEUE_FCST:-"dev"}
-  ;;
-#
-"WCOSS_DELL_P3")
-#
-  NCORES_PER_NODE=24
-  SCHED="lsf"
-  QUEUE_DEFAULT=${QUEUE_DEFAULT:-"dev"}
-  QUEUE_HPSS=${QUEUE_HPSS:-"dev_transfer"}
-  QUEUE_HPSS_TAG="queue"       # lsf does not support "partition" tag
-  QUEUE_FCST=${QUEUE_FCST:-"dev"}
-  ;;
-#
-"HERA")
-#
-  NCORES_PER_NODE=24
-  SCHED="${SCHED:-slurm}"
-  QUEUE_DEFAULT=${QUEUE_DEFAULT:-"batch"}
-  QUEUE_HPSS=${QUEUE_HPSS:-"service"}
-  QUEUE_FCST=${QUEUE_FCST:-"batch"}
-  ;;
-#
-"JET")
-#
-  NCORES_PER_NODE=24
-  SCHED="${SCHED:-slurm}"
-  QUEUE_DEFAULT=${QUEUE_DEFAULT:-"batch"}
-  QUEUE_HPSS=${QUEUE_HPSS:-"service"}
-  QUEUE_FCST=${QUEUE_FCST:-"batch"}
-  ;;
-#
-"ODIN")
-#
-  NCORES_PER_NODE=24
-  SCHED="${SCHED:-slurm}"
-  QUEUE_DEFAULT=${QUEUE_DEFAULT:-""}
-  QUEUE_HPSS=${QUEUE_HPSS:-""}
-  QUEUE_FCST=${QUEUE_FCST:-""}
-  ;;
-#
-"CHEYENNE")
-#
-  NCORES_PER_NODE=36
-  SCHED="${SCHED:-pbspro}"
-  QUEUE_DEFAULT=${QUEUE_DEFAULT:-"regular"}
-  QUEUE_HPSS=${QUEUE_HPSS:-"regular"}
-  QUEUE_HPSS_TAG="queue"       # pbspro does not support "partition" tag
-  QUEUE_FCST=${QUEUE_FCST:-"regular"}
-  ;;
-#
-"STAMPEDE")
-#
-  NCORES_PER_NODE=68
-  SCHED="slurm"
-  QUEUE_DEFAULT=${QUEUE_DEFAULT:-"normal"}
-  QUEUE_HPSS=${QUEUE_HPSS:-"development"}
-  QUEUE_FCST=${QUEUE_FCST:-"normal"}
-  ;;
+
+  "WCOSS_CRAY")
+    NCORES_PER_NODE="24"
+    SCHED="lsfcray"
+    QUEUE_DEFAULT=${QUEUE_DEFAULT:-"dev"}
+    QUEUE_HPSS=${QUEUE_HPSS:-"dev_transfer"}
+    QUEUE_FCST=${QUEUE_FCST:-"dev"}
+    ;;
+
+  "WCOSS_DELL_P3")
+    NCORES_PER_NODE=24
+    SCHED="lsf"
+    QUEUE_DEFAULT=${QUEUE_DEFAULT:-"dev"}
+    QUEUE_HPSS=${QUEUE_HPSS:-"dev_transfer"}
+    QUEUE_FCST=${QUEUE_FCST:-"dev"}
+    ;;
+
+  "HERA")
+    NCORES_PER_NODE=40
+    SCHED="${SCHED:-slurm}"
+    PARTITION_DEFAULT=${PARTITION_DEFAULT:-"hera"}
+    QUEUE_DEFAULT=${QUEUE_DEFAULT:-"batch"}
+    PARTITION_HPSS=${PARTITION_HPSS:-"service"}
+    QUEUE_HPSS=${QUEUE_HPSS:-"batch"}
+    PARTITION_FCST=${PARTITION_FCST:-"hera"}
+    QUEUE_FCST=${QUEUE_FCST:-"batch"}
+    ;;
+
+  "ORION")
+    NCORES_PER_NODE=40
+    SCHED="${SCHED:-slurm}"
+    PARTITION_DEFAULT=${PARTITION_DEFAULT:-"orion"}
+    QUEUE_DEFAULT=${QUEUE_DEFAULT:-"batch"}
+    PARTITION_HPSS=${PARTITION_HPSS:-"service"}
+    QUEUE_HPSS=${QUEUE_HPSS:-"batch"}
+    PARTITION_FCST=${PARTITION_FCST:-"orion"}
+    QUEUE_FCST=${QUEUE_FCST:-"batch"}
+    ;;
+
+  "JET")
+    NCORES_PER_NODE=24
+    SCHED="${SCHED:-slurm}"
+    PARTITION_DEFAULT=${PARTITION_DEFAULT:-"sjet,vjet,kjet,xjet"}
+    QUEUE_DEFAULT=${QUEUE_DEFAULT:-"batch"}
+    PARTITION_HPSS=${PARTITION_HPSS:-"service"}
+    QUEUE_HPSS=${QUEUE_HPSS:-"batch"}
+    PARTITION_FCST=${PARTITION_FCST:-"sjet,vjet,kjet,xjet"}
+    QUEUE_FCST=${QUEUE_FCST:-"batch"}
+    ;;
+
+  "ODIN")
+    NCORES_PER_NODE=24
+    SCHED="${SCHED:-slurm}"
+    PARTITION_DEFAULT=${PARTITION_DEFAULT:-"workq"}
+    QUEUE_DEFAULT=${QUEUE_DEFAULT:-"workq"}
+    PARTITION_HPSS=${PARTITION_HPSS:-"workq"}
+    QUEUE_HPSS=${QUEUE_HPSS:-"workq"}
+    PARTITION_FCST=${PARTITION_FCST:-"workq"}
+    QUEUE_FCST=${QUEUE_FCST:-"workq"}
+    ;;
+
+  "CHEYENNE")
+    NCORES_PER_NODE=36
+    SCHED="${SCHED:-pbspro}"
+    QUEUE_DEFAULT=${QUEUE_DEFAULT:-"regular"}
+    QUEUE_HPSS=${QUEUE_HPSS:-"regular"}
+    QUEUE_FCST=${QUEUE_FCST:-"regular"}
+    ;;
+
+  "STAMPEDE")
+    NCORES_PER_NODE=68
+    SCHED="slurm"
+    PARTITION_DEFAULT=${PARTITION_DEFAULT:-"normal"}
+    QUEUE_DEFAULT=${QUEUE_DEFAULT:-"normal"}
+    PARTITION_HPSS=${PARTITION_HPSS:-"normal"}
+    QUEUE_HPSS=${QUEUE_HPSS:-"normal"}
+    PARTITION_FCST=${PARTITION_FCST:-"normal"}
+    QUEUE_FCST=${QUEUE_FCST:-"normal"}
+    ;;
+
 esac
 #
 #-----------------------------------------------------------------------
@@ -452,47 +486,6 @@ check_var_valid_value "GTYPE" "valid_vals_GTYPE"
 #
 #-----------------------------------------------------------------------
 #
-# If running in NCO mode, a valid EMC grid must be specified.  Make sure 
-# EMC_GRID_NAME is set to a valid value.
-#
-# Note: It is probably best to eventually eliminate EMC_GRID_NAME as a
-# user-specified variable and just go with PREDEF_GRID_NAME.
-#
-#-----------------------------------------------------------------------
-#
-if [ "${RUN_ENVIR}" = "nco" ]; then
-  err_msg="\
-The EMC grid specified in EMC_GRID_NAME is not supported:
-  EMC_GRID_NAME = \"${EMC_GRID_NAME}\""
-  check_var_valid_value \
-    "EMC_GRID_NAME" "valid_vals_EMC_GRID_NAME" "${err_msg}"
-fi
-#
-# Map the specified EMC grid to one of the predefined grids.
-#
-case "${EMC_GRID_NAME}" in
-  "ak")
-    PREDEF_GRID_NAME="EMC_AK"
-    ;;
-  "conus")
-    PREDEF_GRID_NAME="EMC_CONUS_3km"
-    ;;
-  "conus_c96")
-    PREDEF_GRID_NAME="EMC_CONUS_coarse"
-    ;;
-  "GSD_RRFSAK_3km" | "GSD_HRRR25km" | "GSD_HRRR13km" | "GSD_HRRR3km" | "GSD_SUBCONUS3km")
-    PREDEF_GRID_NAME="${EMC_GRID_NAME}"
-    ;;
-  "conus_orig" | "guam" | "hi" | "pr")
-    print_err_msg_exit "\
-A predefined grid (PREDEF_GRID_NAME) has not yet been defined for this
-EMC grid (EMC_GRID_NAME):
-  EMC_GRID_NAME = \"${EMC_GRID_NAME}\""
-    ;;
-esac
-#
-#-----------------------------------------------------------------------
-#
 # Make sure PREDEF_GRID_NAME is set to a valid value.
 #
 #-----------------------------------------------------------------------
@@ -517,64 +510,15 @@ check_var_valid_value \
 #
 #-----------------------------------------------------------------------
 #
-# Make sure USE_CCPP is set to a valid value.
+# Make sure CCPP_PHYS_SUITE is set to a valid value.
 #
 #-----------------------------------------------------------------------
 #
-check_var_valid_value "USE_CCPP" "valid_vals_USE_CCPP"
-#
-# Set USE_CCPP to either "TRUE" or "FALSE" so we don't have to consider
-# other valid values later on.
-#
-USE_CCPP=${USE_CCPP^^}
-if [ "$USE_CCPP" = "TRUE" ] || \
-   [ "$USE_CCPP" = "YES" ]; then
-  USE_CCPP="TRUE"
-elif [ "$USE_CCPP" = "FALSE" ] || \
-     [ "$USE_CCPP" = "NO" ]; then
-  USE_CCPP="FALSE"
-fi
-#
-#-----------------------------------------------------------------------
-#
-# If USE_CCPP is set to "TRUE", make sure CCPP_PHYS_SUITE is set to a 
-# valid value.
-#
-#-----------------------------------------------------------------------
-#
-if [ "${USE_CCPP}" = "TRUE" ] && [ ! -z ${CCPP_PHYS_SUITE} ]; then
-  err_msg="\
+err_msg="\
 The CCPP physics suite specified in CCPP_PHYS_SUITE is not supported:
   CCPP_PHYS_SUITE = \"${CCPP_PHYS_SUITE}\""
-  check_var_valid_value \
-    "CCPP_PHYS_SUITE" "valid_vals_CCPP_PHYS_SUITE" "${err_msg}"
-fi
-#
-#-----------------------------------------------------------------------
-#
-# If using CCPP with the GFS_2017_gfdlmp physics suite, only allow 
-# "GSMGFS" and "FV3GFS" as the external models for ICs and LBCs.
-#
-#-----------------------------------------------------------------------
-#
-if [ "${USE_CCPP}" = "TRUE" ] && \
-   [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_2017_gfdlmp" ]; then
-
-  if [ "${EXTRN_MDL_NAME_ICS}" != "GSMGFS" -a \
-       "${EXTRN_MDL_NAME_ICS}" != "FV3GFS" ] || \
-     [ "${EXTRN_MDL_NAME_LBCS}" != "GSMGFS" -a \
-       "${EXTRN_MDL_NAME_LBCS}" != "FV3GFS" ]; then
-    print_info_msg "$VERBOSE" "
-The following combination of physics suite and external model(s) for ICs 
-and LBCs is not allowed:
-  CCPP_PHYS_SUITE = \"${CCPP_PHYS_SUITE}\"
-  EXTRN_MDL_NAME_ICS = \"${EXTRN_MDL_NAME_ICS}\"
-  EXTRN_MDL_NAME_LBCS = \"${EXTRN_MDL_NAME_LBCS}\"
-For this physics suite, the only external models that the workflow cur-
-rently allows are \"GSMGFS\" and \"FV3GFS\"." 
-  fi
-
-fi
+check_var_valid_value \
+  "CCPP_PHYS_SUITE" "valid_vals_CCPP_PHYS_SUITE" "${err_msg}"
 #
 #-----------------------------------------------------------------------
 #
@@ -692,8 +636,7 @@ NUM_CYCLES="${#ALL_CDATES[@]}"
 #
 # UFS_WTHR_MDL_DIR:
 # Directory in which the (NEMS-enabled) FV3-LAM application is located.
-# This directory includes subdirectories for FV3, NEMS, and FMS.  If
-# USE_CCPP is set to "TRUE", it also includes a subdirectory for CCPP.
+# This directory includes subdirectories for FV3, NEMS, and FMS.
 #
 #-----------------------------------------------------------------------
 #
@@ -715,75 +658,78 @@ SORCDIR="$HOMErrfs/sorc"
 SRC_DIR="${SR_WX_APP_TOP_DIR}/src"
 PARMDIR="$HOMErrfs/parm"
 MODULES_DIR="$HOMErrfs/modulefiles"
-EXECDIR="${SR_WX_APP_TOP_DIR}/exec"
-FIXrrfs="$HOMErrfs/fix"
+EXECDIR="${SR_WX_APP_TOP_DIR}/bin"
 TEMPLATE_DIR="$USHDIR/templates"
 
 case $MACHINE in
 
-"WCOSS_CRAY")
-  FIXgsm=${FIXgsm:-"/gpfs/hps3/emc/global/noscrub/emc.glopara/git/fv3gfs/fix/fix_am"}
-  TOPO_DIR=${TOPO_DIR:-"/gpfs/hps3/emc/global/noscrub/emc.glopara/git/fv3gfs/fix/fix_orog"}
-  SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-""}
-  ;;
+  "WCOSS_CRAY")
+    FIXgsm=${FIXgsm:-"/gpfs/hps3/emc/global/noscrub/emc.glopara/git/fv3gfs/fix/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/gpfs/hps3/emc/global/noscrub/emc.glopara/git/fv3gfs/fix/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/gpfs/hps3/emc/global/noscrub/emc.glopara/git/fv3gfs/fix/fix_sfc_climo"}
+    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
+    ;;
 
-"WCOSS_DELL_P3")
-  FIXgsm=${FIXgsm:-"/gpfs/dell2/emc/modeling/noscrub/emc.glopara/git/fv3gfs/fix/fix_am"}
-  TOPO_DIR=${TOPO_DIR:-"/gpfs/dell2/emc/modeling/noscrub/emc.glopara/git/fv3gfs/fix/fix_orog"}
-  SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-""}
-  ;;
+  "WCOSS_DELL_P3")
+    FIXgsm=${FIXgsm:-"/gpfs/dell2/emc/modeling/noscrub/emc.glopara/git/fv3gfs/fix/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/gpfs/dell2/emc/modeling/noscrub/emc.glopara/git/fv3gfs/fix/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/gpfs/dell2/emc/modeling/noscrub/emc.glopara/git/fv3gfs/fix/fix_sfc_climo"}
+    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
+    ;;
 
-"DELL")
-  FIXgsm=${FIXgsm:-"/gpfs/dell2/emc/modeling/noscrub/emc.glopara/git/fv3gfs/fix/fix_am"}
-  TOPO_DIR=${TOPO_DIR:-"/gpfs/dell2/emc/modeling/noscrub/emc.glopara/git/fv3gfs/fix/fix_orog"}
-  SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-""}
-  ;;
+  "HERA")
+    FIXgsm=${FIXgsm:-"/scratch1/NCEPDEV/global/glopara/fix/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/scratch1/NCEPDEV/global/glopara/fix/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/scratch1/NCEPDEV/global/glopara/fix/fix_sfc_climo"}
+    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/scratch2/BMC/det/FV3LAM_pregen"}
+    ;;
 
-"THEIA")
-  FIXgsm=${FIXgsm:-"/scratch4/NCEPDEV/global/save/glopara/git/fv3gfs/fix/fix_am"}
-  TOPO_DIR=${TOPO_DIR:-"/scratch4/NCEPDEV/global/save/glopara/git/fv3gfs/fix/fix_orog"}
-  SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/scratch4/NCEPDEV/da/noscrub/George.Gayno/climo_fields_netcdf"}
-  ;;
+  "ORION")
+    FIXgsm=${FIXgsm:-"/work/noaa/global/glopara/fix/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/work/noaa/global/glopara/fix/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/work/noaa/global/glopara/fix/fix_sfc_climo"}
+    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
+    ;;
 
-"HERA")
-  FIXgsm=${FIXgsm:-"/scratch1/NCEPDEV/global/glopara/fix/fix_am"}
-  TOPO_DIR=${TOPO_DIR:-"/scratch1/NCEPDEV/global/glopara/fix/fix_orog"}
-  SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/scratch1/NCEPDEV/da/George.Gayno/ufs_utils.git/climo_fields_netcdf"}
-  ;;
+  "JET")
+    FIXgsm=${FIXgsm:-"/lfs4/HFIP/hfv3gfs/glopara/git/fv3gfs/fix/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/lfs4/HFIP/hfv3gfs/glopara/git/fv3gfs/fix/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/lfs4/HFIP/hfv3gfs/glopara/git/fv3gfs/fix/fix_sfc_climo"}
+    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
+    ;;
 
-"JET")
-  FIXgsm=${FIXgsm:-"/lfs4/HFIP/hfv3gfs/glopara/git/fv3gfs/fix/fix_am"}
-  TOPO_DIR=${TOPO_DIR:-"/lfs4/HFIP/hfv3gfs/glopara/git/fv3gfs/fix/fix_orog"}
-  SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/lfs1/HFIP/hwrf-data/git/fv3gfs/fix/fix_sfc_climo"}
-  ;;
+  "ODIN")
+    FIXgsm=${FIXgsm:-"/scratch/ywang/fix/theia_fix/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/scratch/ywang/fix/theia_fix/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/scratch/ywang/fix/climo_fields_netcdf"}
+    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
+    ;;
 
-"ODIN")
-  FIXgsm=${FIXgsm:-"/scratch/ywang/fix/theia_fix/fix_am"}
-  TOPO_DIR=${TOPO_DIR:-"/scratch/ywang/fix/theia_fix/fix_orog"}
-  SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/scratch/ywang/fix/climo_fields_netcdf"}
-  ;;
-"CHEYENNE")
-  FIXgsm=${FIXgsm:-"/glade/p/ral/jntp/UFS_CAM/fix/fix_am"}
-  TOPO_DIR=${TOPO_DIR:-"/glade/p/ral/jntp/UFS_CAM/fix/fix_orog"}
-  SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/glade/p/ral/jntp/UFS_CAM/fix/climo_fields_netcdf"}
-  ;;
+  "CHEYENNE")
+    FIXgsm=${FIXgsm:-"/glade/p/ral/jntp/UFS_CAM/fix/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/glade/p/ral/jntp/UFS_CAM/fix/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/glade/p/ral/jntp/UFS_CAM/fix/climo_fields_netcdf"}
+    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
+    ;;
 
-"STAMPEDE")
-  FIXgsm=${FIXgsm:-"/work/00315/tg455890/stampede2/regional_fv3/fix_am"}
-  TOPO_DIR=${TOPO_DIR:-"/work/00315/tg455890/stampede2/regional_fv3/fix_orog"}
-  SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/work/00315/tg455890/stampede2/regional_fv3/climo_fields_netcdf"}
-  ;;
+  "STAMPEDE")
+    FIXgsm=${FIXgsm:-"/work/00315/tg455890/stampede2/regional_fv3/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/work/00315/tg455890/stampede2/regional_fv3/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/work/00315/tg455890/stampede2/regional_fv3/climo_fields_netcdf"}
+    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
+    ;;
 
-*)
-  print_err_msg_exit "\
+  *)
+    print_err_msg_exit "\
 One or more fix file directories have not been specified for this machine:
   MACHINE = \"$MACHINE\"
   FIXgsm = \"${FIXgsm:-\"\"}
   TOPO_DIR = \"${TOPO_DIR:-\"\"}
   SFC_CLIMO_INPUT_DIR = \"${SFC_CLIMO_INPUT_DIR:-\"\"}
-
+  FIXLAM_NCO_BASEDIR = \"${FIXLAM_NCO_BASEDIR:-\"\"}
 You can specify the missing location(s) in config.sh"
-  ;;
+    ;;
+
 esac
 #
 #-----------------------------------------------------------------------
@@ -798,7 +744,7 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-mng_extrns_cfg_fn=$( readlink -f "$SR_WX_APP_TOP_DIR/Externals.cfg" )
+mng_extrns_cfg_fn=$( readlink -f "${SR_WX_APP_TOP_DIR}/Externals.cfg" )
 property_name="local_path"
 #
 # Get the base directory of the FV3 forecast model code.
@@ -820,7 +766,7 @@ Please clone the external repository containing the code in this directory,
 build the executable, and then rerun the workflow."
 fi
 #
-# Get the base directory of the UFS_UTILS codes (except for chgres).
+# Get the base directory of the UFS_UTILS codes.
 #
 external_name="ufs_utils"
 UFS_UTILS_DIR=$( \
@@ -837,25 +783,6 @@ cated (UFS_UTILS_DIR) does not exist:
   UFS_UTILS_DIR = \"${UFS_UTILS_DIR}\"
 Please clone the external repository containing the code in this direct-
 ory, build the executables, and then rerun the workflow."
-fi
-#
-# Get the base directory of the chgres code.
-#
-external_name="ufs_utils_chgres"
-CHGRES_DIR=$( \
-get_manage_externals_config_property \
-"${mng_extrns_cfg_fn}" "${external_name}" "${property_name}" ) || \
-print_err_msg_exit "\
-Call to function get_manage_externals_config_property failed."
-
-CHGRES_DIR="${SR_WX_APP_TOP_DIR}/${CHGRES_DIR}"
-if [ ! -d "${CHGRES_DIR}" ]; then
-  print_err_msg_exit "\
-The base directory in which the chgres source code should be located 
-(CHGRES_DIR) does not exist:
-  CHGRES_DIR = \"${CHGRES_DIR}\"
-Please clone the external repository containing the code in this direct-
-ory, build the executable, and then rerun the workflow."
 fi
 #
 # Get the base directory of the EMC_post code.
@@ -875,6 +802,42 @@ The base directory in which the EMC_post source code should be located
   EMS_POST_DIR = \"${EMC_POST_DIR}\"
 Please clone the external repository containing the code in this directory,
 build the executable, and then rerun the workflow."
+fi
+#
+#-----------------------------------------------------------------------
+#
+# Make sure that USE_CUSTOM_POST_CONFIG_FILE is set to a valid value.
+#
+#-----------------------------------------------------------------------
+#
+check_var_valid_value \
+  "USE_CUSTOM_POST_CONFIG_FILE" "valid_vals_USE_CUSTOM_POST_CONFIG_FILE"
+#
+# Set USE_CUSTOM_POST_CONFIG_FILE to either "TRUE" or "FALSE" so we don't
+# have to consider other valid values later on.
+#
+USE_CUSTOM_POST_CONFIG_FILE=${USE_CUSTOM_POST_CONFIG_FILE^^}
+if [ "$USE_CUSTOM_POST_CONFIG_FILE" = "TRUE" ] || \
+   [ "$USE_CUSTOM_POST_CONFIG_FILE" = "YES" ]; then
+  USE_CUSTOM_POST_CONFIG_FILE="TRUE"
+elif [ "$USE_CUSTOM_POST_CONFIG_FILE" = "FALSE" ] || \
+     [ "$USE_CUSTOM_POST_CONFIG_FILE" = "NO" ]; then
+  USE_CUSTOM_POST_CONFIG_FILE="FALSE"
+fi
+#
+#-----------------------------------------------------------------------
+#
+# If using a custom post configuration file, make sure that it exists.
+#
+#-----------------------------------------------------------------------
+#
+if [ ${USE_CUSTOM_POST_CONFIG_FILE} = "TRUE" ]; then
+  if [ ! -f "${CUSTOM_POST_CONFIG_FP}" ]; then
+    print_err_msg_exit "
+The custom post configuration specified by CUSTOM_POST_CONFIG_FP does not 
+exist:
+  CUSTOM_POST_CONFIG_FP = \"${CUSTOM_POST_CONFIG_FP}\""
+  fi
 fi
 #
 #-----------------------------------------------------------------------
@@ -938,6 +901,19 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+# Make sure GRID_GEN_METHOD is set to a valid value.
+#
+#-----------------------------------------------------------------------
+#
+err_msg="\
+The horizontal grid generation method specified in GRID_GEN_METHOD is 
+not supported:
+  GRID_GEN_METHOD = \"${GRID_GEN_METHOD}\""
+check_var_valid_value \
+  "GRID_GEN_METHOD" "valid_vals_GRID_GEN_METHOD" "${err_msg}"
+#
+#-----------------------------------------------------------------------
+#
 # For a "GFDLgrid" type of grid, make sure GFDLgrid_RES is set to a valid
 # value.
 #
@@ -953,49 +929,104 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# If using the FV3_RRFS_v1beta physics suite, make sure that the directory
-# from which certain fixed orography files will be copied to the experiment 
-# directory actually exists.  Note that this is temporary code.  It should
-# be removed once there is a script that will create these orography files
-# for any grid.
+# Check to make sure that various computational parameters needed by the 
+# forecast model are set to non-empty values.  At this point in the 
+# experiment generation, all of these should be set to valid (non-empty) 
+# values.
 #
 #-----------------------------------------------------------------------
 #
-GWD_RRFS_v1beta_DIR="${GWD_RRFS_v1beta_BASEDIR}/${PREDEF_GRID_NAME}"
-if [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v1beta" ]; then
+if [ -z "${DT_ATMOS}" ]; then
+  print_err_msg_exit "\
+The forecast model main time step (DT_ATMOS) is set to a null string:
+  DT_ATMOS = ${DT_ATMOS}
+Please set this to a valid numerical value in the user-specified experiment
+configuration file (EXPT_CONFIG_FP) and rerun:
+  EXPT_CONFIG_FP = \"${EXPT_CONFIG_FP}\""
+fi
+
+if [ -z "${LAYOUT_X}" ]; then
+  print_err_msg_exit "\
+The number of MPI processes to be used in the x direction (LAYOUT_X) by 
+the forecast job is set to a null string:
+  LAYOUT_X = ${LAYOUT_X}
+Please set this to a valid numerical value in the user-specified experiment
+configuration file (EXPT_CONFIG_FP) and rerun:
+  EXPT_CONFIG_FP = \"${EXPT_CONFIG_FP}\""
+fi
+
+if [ -z "${LAYOUT_Y}" ]; then
+  print_err_msg_exit "\
+The number of MPI processes to be used in the y direction (LAYOUT_Y) by 
+the forecast job is set to a null string:
+  LAYOUT_Y = ${LAYOUT_Y}
+Please set this to a valid numerical value in the user-specified experiment
+configuration file (EXPT_CONFIG_FP) and rerun:
+  EXPT_CONFIG_FP = \"${EXPT_CONFIG_FP}\""
+fi
+
+if [ -z "${BLOCKSIZE}" ]; then
+  print_err_msg_exit "\
+The cache size to use for each MPI task of the forecast (BLOCKSIZE) is 
+set to a null string:
+  BLOCKSIZE = ${BLOCKSIZE}
+Please set this to a valid numerical value in the user-specified experiment
+configuration file (EXPT_CONFIG_FP) and rerun:
+  EXPT_CONFIG_FP = \"${EXPT_CONFIG_FP}\""
+fi
+#
+#-----------------------------------------------------------------------
+#
+# If using the FV3_HRRR physics suite, make sure that the directory from 
+# which certain fixed orography files will be copied to the experiment 
+# directory actually exists.  Note that this is temporary code.  It should
+# be removed once there is a script or code available that will create 
+# these orography files for any grid.
+#
+#-----------------------------------------------------------------------
+#
+GWD_HRRRsuite_DIR="${GWD_HRRRsuite_BASEDIR}/${PREDEF_GRID_NAME}"
+if [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ]; then
   if [ -z "${PREDEF_GRID_NAME}" ]; then
     print_err_msg_exit "\
 A predefined grid name (PREDEF_GRID_NAME) must be specified when using 
-the FV3_RRFS_v1beta physic suite:
+the FV3_HRRR physics suite:
   CCPP_PHYS_SUITE = \"${CCPP_PHYS_SUITE}\"
   PREDEF_GRID_NAME = \"${PREDEF_GRID_NAME}\""
   else        
-    if [ ! -d "${GWD_RRFS_v1beta_DIR}" ]; then
+    if [ ! -d "${GWD_HRRRsuite_DIR}" ]; then
       print_err_msg_exit "\
-The directory (GWD_RRFS_v1beta_DIR) that should contain the gravity wave 
-drag-related orography files for the FV3_RRFS_v1beta does not exist:
-  GWD_RRFS_v1beta_DIR = \"${GWD_RRFS_v1beta_DIR}\""
-    elif [ ! "$( ls -A ${GWD_RRFS_v1beta_DIR} )" ]; then
+The directory (GWD_HRRRsuite_DIR) that should contain the gravity wave 
+drag-related orography files for the FV3_HRRR suite does not exist:
+  GWD_HRRRsuite_DIR = \"${GWD_HRRRsuite_DIR}\""
+    elif [ ! "$( ls -A ${GWD_HRRRsuite_DIR} )" ]; then
       print_err_msg_exit "\
-The directory (GWD_RRFS_v1beta_DIR) that should contain the gravity wave 
-drag related orography files for the FV3_RRFS_v1beta is empty:
-  GWD_RRFS_v1beta_DIR = \"${GWD_RRFS_v1beta_DIR}\""
+The directory (GWD_HRRRsuite_DIR) that should contain the gravity wave 
+drag related orography files for the FV3_HRRR suite is empty:
+  GWD_HRRRsuite_DIR = \"${GWD_HRRRsuite_DIR}\""
     fi      
   fi
 fi
 #
 #-----------------------------------------------------------------------
 #
-# If the base directory (EXPT_BASEDIR) in which the experiment subdirec-
-# tory (EXPT_SUBDIR) will be located is not set or is set to an empty 
-# string, set it to a default location that is at the same level as the
-# workflow directory (HOMErrfs).  Then create EXPT_BASEDIR if it doesn't
+# If the base directory (EXPT_BASEDIR) in which the experiment subdirectory 
+# (EXPT_SUBDIR) will be located does not start with a "/", then it is 
+# either set to a null string or contains a relative directory.  In both 
+# cases, prepend to it the absolute path of the default directory under 
+# which the experiment directories are placed.  If EXPT_BASEDIR was set 
+# to a null string, it will get reset to this default experiment directory, 
+# and if it was set to a relative directory, it will get reset to an 
+# absolute directory that points to the relative directory under the 
+# default experiment directory.  Then create EXPT_BASEDIR if it doesn't 
 # already exist.
 #
 #-----------------------------------------------------------------------
 #
-EXPT_BASEDIR="${EXPT_BASEDIR:-${SR_WX_APP_TOP_DIR}/../expt_dirs}"
-EXPT_BASEDIR="$( readlink -f ${EXPT_BASEDIR} )"
+if [ "${EXPT_BASEDIR:0:1}" != "/" ]; then
+  EXPT_BASEDIR="${SR_WX_APP_TOP_DIR}/../expt_dirs/${EXPT_BASEDIR}"
+fi
+EXPT_BASEDIR="$( readlink -m ${EXPT_BASEDIR} )"
 mkdir_vrfy -p "${EXPT_BASEDIR}"
 #
 #-----------------------------------------------------------------------
@@ -1068,68 +1099,20 @@ check_for_preexist_dir_file "$EXPTDIR" "${PREEXISTING_DIR_METHOD}"
 #
 LOGDIR="${EXPTDIR}/log/@Y@m@d/@H"
 
+FIXam="${EXPTDIR}/fix_am"
+FIXLAM="${EXPTDIR}/fix_lam"
+
 if [ "${RUN_ENVIR}" = "nco" ]; then
-
-  FIXam="${FIXrrfs}/fix_am"
-#
-# In NCO mode (i.e. if RUN_ENVIR set to "nco"), it is assumed that before
-# running the experiment generation script, the path specified in FIXam 
-# already exists and is either itself the directory in which various fixed
-# files (but not the ones containing the regional grid and the orography
-# and surface climatology on that grid) are located, or it is a symlink 
-# to such a directory.  Resolve any symlinks in the path specified by 
-# FIXam and check that this is the case.
-#
-  path_resolved=$( readlink -m "$FIXam" )
-  if [ ! -d "${path_resolved}" ]; then
-    print_err_msg_exit "\
-In order to be able to generate a forecast experiment in NCO mode (i.e. 
-when RUN_ENVIR set to \"nco\"), the path specified by FIXam after resolving 
-all symlinks (path_resolved) must be an existing directory (but in this
-case isn't):
-  RUN_ENVIR = \"${RUN_ENVIR}\"
-  FIXam = \"$FIXam\"
-  path_resolved = \"${path_resolved}\"
-Please ensure that path_resolved is an existing directory and then rerun 
-the experiment generation script."
-  fi
-
-  FIXLAM="${FIXrrfs}/fix_lam/${EMC_GRID_NAME}"
-#
-# In NCO mode (i.e. if RUN_ENVIR set to "nco"), it is assumed that before
-# running the experiment generation script, the path specified in FIXLAM 
-# already exists and is either itself the directory in which the fixed 
-# grid, orography, and surface climatology files are located, or it is a
-# symlink to such a directory.  Resolve any symlinks in the path specified
-# by FIXLAM and check that this is the case.
-#
-  path_resolved=$( readlink -m "$FIXLAM" )
-  if [ ! -d "${path_resolved}" ]; then
-    print_err_msg_exit "\
-In order to be able to generate a forecast experiment in NCO mode (i.e. 
-when RUN_ENVIR set to \"nco\"), the path specified by FIXLAM after resolving 
-all symlinks (path_resolved) must be an existing directory (but in this
-case isn't):
-  RUN_ENVIR = \"${RUN_ENVIR}\"
-  FIXLAM = \"$FIXLAM\"
-  path_resolved = \"${path_resolved}\"
-Please ensure that path_resolved is an existing directory and then rerun 
-the experiment generation script."
-  fi
 
   CYCLE_BASEDIR="$STMP/tmpnwprd/$RUN"
   check_for_preexist_dir_file "${CYCLE_BASEDIR}" "${PREEXISTING_DIR_METHOD}"
-
   COMROOT="$PTMP/com"
-
   COMOUT_BASEDIR="$COMROOT/$NET/$envir"
 
   LOGDIR="${COMROOT}/logs/${NET}/${RUN}.@Y@m@d/@H"
 
 else
 
-  FIXam="${EXPTDIR}/fix_am"
-  FIXLAM="${EXPTDIR}/fix_lam"
   CYCLE_BASEDIR="$EXPTDIR"
   COMROOT=""
   COMOUT_BASEDIR=""
@@ -1176,15 +1159,12 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-dot_ccpp_phys_suite_or_null=""
-if [ "${USE_CCPP}" = "TRUE" ]; then
-  dot_ccpp_phys_suite_or_null=".${CCPP_PHYS_SUITE}"
-fi
+dot_ccpp_phys_suite_or_null=".${CCPP_PHYS_SUITE}"
 
 DATA_TABLE_TMPL_FN="${DATA_TABLE_FN}"
 DIAG_TABLE_TMPL_FN="${DIAG_TABLE_FN}${dot_ccpp_phys_suite_or_null}"
 FIELD_TABLE_TMPL_FN="${FIELD_TABLE_FN}${dot_ccpp_phys_suite_or_null}"
-MODEL_CONFIG_TMPL_FN="${MODEL_CONFIG_FN}${dot_ccpp_phys_suite_or_null}"
+MODEL_CONFIG_TMPL_FN="${MODEL_CONFIG_FN}"
 NEMS_CONFIG_TMPL_FN="${NEMS_CONFIG_FN}"
 
 DATA_TABLE_TMPL_FP="${TEMPLATE_DIR}/${DATA_TABLE_TMPL_FN}"
@@ -1198,7 +1178,7 @@ NEMS_CONFIG_TMPL_FP="${TEMPLATE_DIR}/${NEMS_CONFIG_TMPL_FN}"
 #
 #-----------------------------------------------------------------------
 #
-# If using CCPP, set:
+# Set:
 #
 # 1) the variable CCPP_PHYS_SUITE_FN to the name of the CCPP physics 
 #    suite definition file.
@@ -1212,26 +1192,28 @@ NEMS_CONFIG_TMPL_FP="${TEMPLATE_DIR}/${NEMS_CONFIG_TMPL_FN}"
 # each cycle, the forecast launch script will create a link in the cycle
 # run directory to the copy of this file at CCPP_PHYS_SUITE_FP.
 #
-# Note that if not using CCPP, the variables described above will get 
-# set to null strings.
-#
 #-----------------------------------------------------------------------
 #
-CCPP_PHYS_SUITE_FN=""
-CCPP_PHYS_SUITE_IN_CCPP_FP=""
-CCPP_PHYS_SUITE_FP=""
-
-if [ "${USE_CCPP}" = "TRUE" ]; then
-  CCPP_PHYS_SUITE_FN="suite_${CCPP_PHYS_SUITE}.xml"
-  CCPP_PHYS_SUITE_IN_CCPP_FP="${UFS_WTHR_MDL_DIR}/FV3/ccpp/suites/${CCPP_PHYS_SUITE_FN}"
-  CCPP_PHYS_SUITE_FP="${EXPTDIR}/${CCPP_PHYS_SUITE_FN}"
-  if [ ! -f "${CCPP_PHYS_SUITE_IN_CCPP_FP}" ]; then
-    print_err_msg_exit "\
+CCPP_PHYS_SUITE_FN="suite_${CCPP_PHYS_SUITE}.xml"
+CCPP_PHYS_SUITE_IN_CCPP_FP="${UFS_WTHR_MDL_DIR}/FV3/ccpp/suites/${CCPP_PHYS_SUITE_FN}"
+CCPP_PHYS_SUITE_FP="${EXPTDIR}/${CCPP_PHYS_SUITE_FN}"
+if [ ! -f "${CCPP_PHYS_SUITE_IN_CCPP_FP}" ]; then
+  print_err_msg_exit "\
 The CCPP suite definition file (CCPP_PHYS_SUITE_IN_CCPP_FP) does not exist
 in the local clone of the ufs-weather-model:
   CCPP_PHYS_SUITE_IN_CCPP_FP = \"${CCPP_PHYS_SUITE_IN_CCPP_FP}\""
-  fi
 fi
+#
+#-----------------------------------------------------------------------
+#
+# Call the function that sets the ozone parameterization being used and
+# modifies associated parameters accordingly. 
+#
+#-----------------------------------------------------------------------
+#
+set_ozone_param \
+  ccpp_phys_suite_fp="${CCPP_PHYS_SUITE_IN_CCPP_FP}" \
+  output_varname_ozone_param="OZONE_PARAM"
 #
 #-----------------------------------------------------------------------
 #
@@ -1269,6 +1251,50 @@ FIELD_TABLE_FP="${EXPTDIR}/${FIELD_TABLE_FN}"
 FV3_NML_FN="${FV3_NML_BASE_SUITE_FN%.*}"
 FV3_NML_FP="${EXPTDIR}/${FV3_NML_FN}"
 NEMS_CONFIG_FP="${EXPTDIR}/${NEMS_CONFIG_FN}"
+#
+#-----------------------------------------------------------------------
+#
+# Make sure that USE_USER_STAGED_EXTRN_FILES is set to a valid value.
+#
+#-----------------------------------------------------------------------
+#
+check_var_valid_value "USE_USER_STAGED_EXTRN_FILES" "valid_vals_USE_USER_STAGED_EXTRN_FILES"
+#
+# Set USE_USER_STAGED_EXTRN_FILES to either "TRUE" or "FALSE" so we don't 
+# have to consider other valid values later on.
+#
+USE_USER_STAGED_EXTRN_FILES=${USE_USER_STAGED_EXTRN_FILES^^}
+if [ "${USE_USER_STAGED_EXTRN_FILES}" = "YES" ]; then
+  USE_USER_STAGED_EXTRN_FILES="TRUE"
+elif [ "${USE_USER_STAGED_EXTRN_FILES}" = "NO" ]; then
+  USE_USER_STAGED_EXTRN_FILES="FALSE"
+fi
+#
+#-----------------------------------------------------------------------
+#
+# If USE_USER_STAGED_EXTRN_FILES is set to TRUE, make sure that the user-
+# specified directories under which the external model files should be 
+# located actually exist.
+#
+#-----------------------------------------------------------------------
+#
+if [ "${USE_USER_STAGED_EXTRN_FILES}" = "TRUE" ]; then
+
+  if [ ! -d "${EXTRN_MDL_SOURCE_BASEDIR_ICS}" ]; then
+    print_err_msg_exit "\
+The directory (EXTRN_MDL_SOURCE_BASEDIR_ICS) in which the user-staged 
+external model files for generating ICs should be located does not exist:
+  EXTRN_MDL_SOURCE_BASEDIR_ICS = \"${EXTRN_MDL_SOURCE_BASEDIR_ICS}\""
+  fi
+
+  if [ ! -d "${EXTRN_MDL_SOURCE_BASEDIR_LBCS}" ]; then
+    print_err_msg_exit "\
+The directory (EXTRN_MDL_SOURCE_BASEDIR_LBCS) in which the user-staged 
+external model files for generating LBCs should be located does not exist:
+  EXTRN_MDL_SOURCE_BASEDIR_LBCS = \"${EXTRN_MDL_SOURCE_BASEDIR_LBCS}\""
+  fi
+
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -1353,42 +1379,61 @@ LOAD_MODULES_RUN_TASK_FP="$USHDIR/load_modules_run_task.sh"
 # processing, as follows:
 #
 # GRID_DIR:
-# Directory in which the grid files will be placed (if RUN_TASK_MAKE_-
-# GRID is set to "TRUE") or searched for (if RUN_TASK_MAKE_GRID is set
-# to "FALSE").
+# Directory in which the grid files will be placed (if RUN_TASK_MAKE_GRID 
+# is set to "TRUE") or searched for (if RUN_TASK_MAKE_GRID is set to 
+# "FALSE").
 #
 # OROG_DIR:
-# Directory in which the orography files will be placed (if RUN_TASK_-
-# MAKE_OROG is set to "TRUE") or searched for (if RUN_TASK_MAKE_OROG is
-# set to "FALSE").
+# Directory in which the orography files will be placed (if RUN_TASK_MAKE_OROG 
+# is set to "TRUE") or searched for (if RUN_TASK_MAKE_OROG is set to 
+# "FALSE").
 #
 # SFC_CLIMO_DIR:
 # Directory in which the surface climatology files will be placed (if
-# RUN_TASK_MAKE_SFC_CLIMO is set to "TRUE") or searched for (if RUN_-
-# TASK_MAKE_SFC_CLIMO is set to "FALSE").
+# RUN_TASK_MAKE_SFC_CLIMO is set to "TRUE") or searched for (if 
+# RUN_TASK_MAKE_SFC_CLIMO is set to "FALSE").
 #
 #----------------------------------------------------------------------
 #
 if [ "${RUN_ENVIR}" = "nco" ]; then
 
+  nco_fix_dir="${FIXLAM_NCO_BASEDIR}/${PREDEF_GRID_NAME}"
+  if [ ! -d "${nco_fix_dir}" ]; then
+    print_err_msg_exit "\
+The directory (nco_fix_dir) that should contain the pregenerated grid,
+orography, and surface climatology files does not exist:
+  nco_fix_dir = \"${nco_fix_dir}\""
+  fi
+
   if [ "${RUN_TASK_MAKE_GRID}" = "TRUE" ] || \
      [ "${RUN_TASK_MAKE_GRID}" = "FALSE" -a \
-       "${GRID_DIR}" != "$FIXLAM" ]; then
+       "${GRID_DIR}" != "${nco_fix_dir}" ]; then
 
     msg="
-When RUN_ENVIR is set to \"nco\", it is assumed that grid files already
-exist in the directory specified by FIXLAM.  Thus, the grid file genera-
-tion task must not be run (i.e. RUN_TASK_MAKE_GRID must be set to 
-FALSE), and the directory in which to look for the grid files (i.e. 
-GRID_DIR) must be set to FIXLAM.  Current values for these quantities
-are:
+When RUN_ENVIR is set to \"nco\", the workflow assumes that pregenerated
+grid files already exist in the directory 
+
+  \${FIXLAM_NCO_BASEDIR}/\${PREDEF_GRID_NAME}
+
+where
+
+  FIXLAM_NCO_BASEDIR = \"${FIXLAM_NCO_BASEDIR}\"
+  PREDEF_GRID_NAME = \"${PREDEF_GRID_NAME}\"
+
+Thus, the MAKE_GRID_TN task must not be run (i.e. RUN_TASK_MAKE_GRID must 
+be set to \"FALSE\"), and the directory in which to look for the grid 
+files (i.e. GRID_DIR) must be set to the one above.  Current values for 
+these quantities are:
+
   RUN_TASK_MAKE_GRID = \"${RUN_TASK_MAKE_GRID}\"
   GRID_DIR = \"${GRID_DIR}\"
-Resetting RUN_TASK_MAKE_GRID to \"FALSE\" and GRID_DIR to the contents
-of FIXLAM.  Reset values are:"
+
+Resetting RUN_TASK_MAKE_GRID to \"FALSE\" and GRID_DIR to the one above.
+Reset values are:
+"
 
     RUN_TASK_MAKE_GRID="FALSE"
-    GRID_DIR="$FIXLAM"
+    GRID_DIR="${nco_fix_dir}"
 
     msg="$msg""
   RUN_TASK_MAKE_GRID = \"${RUN_TASK_MAKE_GRID}\"
@@ -1396,27 +1441,38 @@ of FIXLAM.  Reset values are:"
 "
 
     print_info_msg "$msg"
-  
+
   fi
 
   if [ "${RUN_TASK_MAKE_OROG}" = "TRUE" ] || \
      [ "${RUN_TASK_MAKE_OROG}" = "FALSE" -a \
-       "${OROG_DIR}" != "$FIXLAM" ]; then
+       "${OROG_DIR}" != "${nco_fix_dir}" ]; then
 
     msg="
-When RUN_ENVIR is set to \"nco\", it is assumed that orography files al-
-ready exist in the directory specified by FIXLAM.  Thus, the orography 
-file generation task must not be run (i.e. RUN_TASK_MAKE_OROG must be 
-set to FALSE), and the directory in which to look for the orography 
-files (i.e. OROG_DIR) must be set to FIXLAM.  Current values for these
-quantities are:
+When RUN_ENVIR is set to \"nco\", the workflow assumes that pregenerated
+orography files already exist in the directory 
+
+  \${FIXLAM_NCO_BASEDIR}/\${PREDEF_GRID_NAME}
+
+where
+
+  FIXLAM_NCO_BASEDIR = \"${FIXLAM_NCO_BASEDIR}\"
+  PREDEF_GRID_NAME = \"${PREDEF_GRID_NAME}\"
+
+Thus, the MAKE_OROG_TN task must not be run (i.e. RUN_TASK_MAKE_OROG must 
+be set to \"FALSE\"), and the directory in which to look for the orography 
+files (i.e. OROG_DIR) must be set to the one above.  Current values for 
+these quantities are:
+
   RUN_TASK_MAKE_OROG = \"${RUN_TASK_MAKE_OROG}\"
   OROG_DIR = \"${OROG_DIR}\"
-Resetting RUN_TASK_MAKE_OROG to \"FALSE\" and OROG_DIR to the contents
-of FIXLAM.  Reset values are:"
+
+Resetting RUN_TASK_MAKE_OROG to \"FALSE\" and OROG_DIR to the one above.
+Reset values are:
+"
 
     RUN_TASK_MAKE_OROG="FALSE"
-    OROG_DIR="$FIXLAM"
+    OROG_DIR="${nco_fix_dir}"
 
     msg="$msg""
   RUN_TASK_MAKE_OROG = \"${RUN_TASK_MAKE_OROG}\"
@@ -1424,27 +1480,38 @@ of FIXLAM.  Reset values are:"
 "
 
     print_info_msg "$msg"
-  
+
   fi
 
   if [ "${RUN_TASK_MAKE_SFC_CLIMO}" = "TRUE" ] || \
      [ "${RUN_TASK_MAKE_SFC_CLIMO}" = "FALSE" -a \
-       "${SFC_CLIMO_DIR}" != "$FIXLAM" ]; then
+       "${SFC_CLIMO_DIR}" != "${nco_fix_dir}" ]; then
 
     msg="
-When RUN_ENVIR is set to \"nco\", it is assumed that surface climatology
-files already exist in the directory specified by FIXLAM.  Thus, the 
-surface climatology file generation task must not be run (i.e. RUN_-
-TASK_MAKE_SFC_CLIMO must be set to FALSE), and the directory in which to
-look for the surface climatology files (i.e. SFC_CLIMO_DIR) must be set
-to FIXLAM.  Current values for these quantities are:
+When RUN_ENVIR is set to \"nco\", the workflow assumes that pregenerated
+surface climatology files already exist in the directory 
+
+  \${FIXLAM_NCO_BASEDIR}/\${PREDEF_GRID_NAME}
+
+where
+
+  FIXLAM_NCO_BASEDIR = \"${FIXLAM_NCO_BASEDIR}\"
+  PREDEF_GRID_NAME = \"${PREDEF_GRID_NAME}\"
+
+Thus, the MAKE_SFC_CLIMO_TN task must not be run (i.e. RUN_TASK_MAKE_SFC_CLIMO 
+must be set to \"FALSE\"), and the directory in which to look for the 
+surface climatology files (i.e. SFC_CLIMO_DIR) must be set to the one 
+above.  Current values for these quantities are:
+
   RUN_TASK_MAKE_SFC_CLIMO = \"${RUN_TASK_MAKE_SFC_CLIMO}\"
   SFC_CLIMO_DIR = \"${SFC_CLIMO_DIR}\"
-Resetting RUN_TASK_MAKE_SFC_CLIMO to \"FALSE\" and SFC_CLIMO_DIR to the
-contents of FIXLAM.  Reset values are:"
+
+Resetting RUN_TASK_MAKE_SFC_CLIMO to \"FALSE\" and SFC_CLIMO_DIR to the 
+one above.  Reset values are:
+"
 
     RUN_TASK_MAKE_SFC_CLIMO="FALSE"
-    SFC_CLIMO_DIR="$FIXLAM"
+    SFC_CLIMO_DIR="${nco_fix_dir}"
 
     msg="$msg""
   RUN_TASK_MAKE_SFC_CLIMO = \"${RUN_TASK_MAKE_SFC_CLIMO}\"
@@ -1452,44 +1519,42 @@ contents of FIXLAM.  Reset values are:"
 "
 
     print_info_msg "$msg"
-  
-  fi
 
+  fi
+#
+#-----------------------------------------------------------------------
+#
+# Now consider community mode.
+#
+#-----------------------------------------------------------------------
+#
 else
 #
-#-----------------------------------------------------------------------
-#
 # If RUN_TASK_MAKE_GRID is set to "FALSE", the workflow will look for 
-# the pre-generated grid files in GRID_DIR.  In this case, make sure 
-# that GRID_DIR exists.  Otherwise, set it to a predefined location un-
-# der the experiment directory (EXPTDIR).
-#
-#-----------------------------------------------------------------------
+# the pregenerated grid files in GRID_DIR.  In this case, make sure that 
+# GRID_DIR exists.  Otherwise, set it to a predefined location under the 
+# experiment directory (EXPTDIR).
 #
   if [ "${RUN_TASK_MAKE_GRID}" = "FALSE" ]; then
     if [ ! -d "${GRID_DIR}" ]; then
       print_err_msg_exit "\
-The directory (GRID_DIR) that should contain the pre-generated grid 
-files does not exist:
+The directory (GRID_DIR) that should contain the pregenerated grid files 
+does not exist:
   GRID_DIR = \"${GRID_DIR}\""
     fi
   else
     GRID_DIR="$EXPTDIR/grid"
   fi
 #
-#-----------------------------------------------------------------------
-#
 # If RUN_TASK_MAKE_OROG is set to "FALSE", the workflow will look for 
-# the pre-generated orography files in OROG_DIR.  In this case, make 
-# sure that OROG_DIR exists.  Otherwise, set it to a predefined location
-# under the experiment directory (EXPTDIR).
-#
-#-----------------------------------------------------------------------
+# the pregenerated orography files in OROG_DIR.  In this case, make sure 
+# that OROG_DIR exists.  Otherwise, set it to a predefined location under 
+# the experiment directory (EXPTDIR).
 #
   if [ "${RUN_TASK_MAKE_OROG}" = "FALSE" ]; then
     if [ ! -d "${OROG_DIR}" ]; then
       print_err_msg_exit "\
-The directory (OROG_DIR) that should contain the pre-generated orography
+The directory (OROG_DIR) that should contain the pregenerated orography
 files does not exist:
   OROG_DIR = \"${OROG_DIR}\""
     fi
@@ -1497,24 +1562,18 @@ files does not exist:
     OROG_DIR="$EXPTDIR/orog"
   fi
 #
-#-----------------------------------------------------------------------
-#
 # If RUN_TASK_MAKE_SFC_CLIMO is set to "FALSE", the workflow will look 
-# for the pre-generated surface climatology files in SFC_CLIMO_DIR.  In
+# for the pregenerated surface climatology files in SFC_CLIMO_DIR.  In
 # this case, make sure that SFC_CLIMO_DIR exists.  Otherwise, set it to
 # a predefined location under the experiment directory (EXPTDIR).
 #
-#-----------------------------------------------------------------------
-#
   if [ "${RUN_TASK_MAKE_SFC_CLIMO}" = "FALSE" ]; then
-
     if [ ! -d "${SFC_CLIMO_DIR}" ]; then
       print_err_msg_exit "\
-The directory (SFC_CLIMO_DIR) that should contain the pre-generated orography
-files does not exist:
+The directory (SFC_CLIMO_DIR) that should contain the pregenerated surface
+climatology files does not exist:
   SFC_CLIMO_DIR = \"${SFC_CLIMO_DIR}\""
     fi
-
   else
     SFC_CLIMO_DIR="$EXPTDIR/sfc_climo"
   fi
@@ -1643,22 +1702,9 @@ NH4=4
 #
 #-----------------------------------------------------------------------
 #
-# Make sure GRID_GEN_METHOD is set to a valid value.
-#
-#-----------------------------------------------------------------------
-#
-err_msg="\
-The horizontal grid generation method specified in GRID_GEN_METHOD is 
-not supported:
-  GRID_GEN_METHOD = \"${GRID_GEN_METHOD}\""
-check_var_valid_value \
-  "GRID_GEN_METHOD" "valid_vals_GRID_GEN_METHOD" "${err_msg}"
-#
-#-----------------------------------------------------------------------
-#
-# Set parameters according to the type of horizontal grid generation me-
-# thod specified.  First consider GFDL's global-parent-grid based me-
-# thod.
+# Set parameters according to the type of horizontal grid generation 
+# method specified.  First consider GFDL's global-parent-grid based 
+# method.
 #
 #-----------------------------------------------------------------------
 #
@@ -1701,8 +1747,6 @@ elif [ "${GRID_GEN_METHOD}" = "ESGgrid" ]; then
     halo_width="${ESGgrid_WIDE_HALO_WIDTH}" \
     delx="${ESGgrid_DELX}" \
     dely="${ESGgrid_DELY}" \
-    alpha="${ESGgrid_ALPHA_PARAM}" \
-    kappa="${ESGgrid_KAPPA_PARAM}" \
     output_varname_lon_ctr="LON_CTR" \
     output_varname_lat_ctr="LAT_CTR" \
     output_varname_nx="NX" \
@@ -1718,51 +1762,28 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-#
+# Create a new experiment directory.  Note that at this point we are 
+# guaranteed that there is no preexisting experiment directory.
 #
 #-----------------------------------------------------------------------
 #
+mkdir_vrfy -p "$EXPTDIR"
+
+
+#
+#-----------------------------------------------------------------------
+#
+# If not running the MAKE_GRID_TN, MAKE_OROG_TN, and/or MAKE_SFC_CLIMO
+# tasks, create symlinks under the FIXLAM directory to pregenerated grid,
+# orography, and surface climatology files.  In the process, also set 
+# RES_IN_FIXLAM_FILENAMES, which is the resolution of the grid (in units
+# of number of grid points on an equivalent global uniform cubed-sphere
+# grid) used in the names of the fixed files in the FIXLAM directory.
+#
+#-----------------------------------------------------------------------
+#
+mkdir_vrfy -p "$FIXLAM"
 RES_IN_FIXLAM_FILENAMES=""
-
-if [ "${RUN_ENVIR}" != "nco" ]; then
-  mkdir_vrfy -p "$FIXLAM"
-fi
-#
-#-----------------------------------------------------------------------
-#
-#
-#
-#-----------------------------------------------------------------------
-#
-if [ "${RUN_ENVIR}" = "nco" ]; then
-
-  suffix="${DOT_OR_USCORE}mosaic.halo${NH3}.nc"
-  glob_pattern="C*$suffix"
-  cd_vrfy $FIXLAM
-  num_files=$( ls -1 ${glob_pattern} 2>/dev/null | wc -l )
-
-  if [ "${num_files}" -ne "1" ]; then
-    print_err_msg_exit "\
-Exactly one file must exist in directory FIXLAM matching the globbing
-pattern glob_pattern:
-  FIXLAM = \"${FIXLAM}\"
-  glob_pattern = \"${glob_pattern}\"
-  num_files = ${num_files}"
-  fi
-
-  fn=$( ls -1 ${glob_pattern} )
-  RES_IN_FIXLAM_FILENAMES=$( \
-    printf "%s" $fn | sed -n -r -e "s/^C([0-9]*)$suffix/\1/p" )
-  if [ "${GRID_GEN_METHOD}" = "GFDLgrid" ] && \
-     [ "${GFDLgrid_RES}" -ne "${RES_IN_FIXLAM_FILENAMES}" ]; then
-    print_err_msg_exit "\
-The resolution extracted from the fixed file names (RES_IN_FIXLAM_FILENAMES)
-does not match the resolution specified by GFDLgrid_RES:
-  GFDLgrid_RES = ${GFDLgrid_RES}
-  RES_IN_FIXLAM_FILENAMES = ${RES_IN_FIXLAM_FILENAMES}"
-  fi
-
-else
 #
 #-----------------------------------------------------------------------
 #
@@ -1772,19 +1793,19 @@ else
 #
 #-----------------------------------------------------------------------
 #
-  res_in_grid_fns=""
-  if [ "${RUN_TASK_MAKE_GRID}" = "FALSE" ]; then
+res_in_grid_fns=""
+if [ "${RUN_TASK_MAKE_GRID}" = "FALSE" ]; then
 
-    link_fix \
-      verbose="$VERBOSE" \
-      file_group="grid" \
-      output_varname_res_in_filenames="res_in_grid_fns" || \
-    print_err_msg_exit "\
-  Call to function to create links to grid files failed."
+  link_fix \
+    verbose="$VERBOSE" \
+    file_group="grid" \
+    output_varname_res_in_filenames="res_in_grid_fns" || \
+  print_err_msg_exit "\
+Call to function to create links to grid files failed."
 
-    RES_IN_FIXLAM_FILENAMES="${res_in_grid_fns}"
+  RES_IN_FIXLAM_FILENAMES="${res_in_grid_fns}"
 
-  fi
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -1794,29 +1815,29 @@ else
 #
 #-----------------------------------------------------------------------
 #
-  res_in_orog_fns=""
-  if [ "${RUN_TASK_MAKE_OROG}" = "FALSE" ]; then
+res_in_orog_fns=""
+if [ "${RUN_TASK_MAKE_OROG}" = "FALSE" ]; then
 
-    link_fix \
-      verbose="$VERBOSE" \
-      file_group="orog" \
-      output_varname_res_in_filenames="res_in_orog_fns" || \
+  link_fix \
+    verbose="$VERBOSE" \
+    file_group="orog" \
+    output_varname_res_in_filenames="res_in_orog_fns" || \
+  print_err_msg_exit "\
+Call to function to create links to orography files failed."
+
+  if [ ! -z "${RES_IN_FIXLAM_FILENAMES}" ] && \
+     [ "${res_in_orog_fns}" -ne "${RES_IN_FIXLAM_FILENAMES}" ]; then
     print_err_msg_exit "\
-  Call to function to create links to orography files failed."
-
-    if [ ! -z "${RES_IN_FIXLAM_FILENAMES}" ] && \
-       [ "${res_in_orog_fns}" -ne "${RES_IN_FIXLAM_FILENAMES}" ]; then
-      print_err_msg_exit "\
-  The resolution extracted from the orography file names (res_in_orog_fns)
-  does not match the resolution in other groups of files already consi-
-  dered (RES_IN_FIXLAM_FILENAMES):
-    res_in_orog_fns = ${res_in_orog_fns}
-    RES_IN_FIXLAM_FILENAMES = ${RES_IN_FIXLAM_FILENAMES}"
-    else
-      RES_IN_FIXLAM_FILENAMES="${res_in_orog_fns}"
-    fi
-
+The resolution extracted from the orography file names (res_in_orog_fns)
+does not match the resolution in other groups of files already consi-
+dered (RES_IN_FIXLAM_FILENAMES):
+  res_in_orog_fns = ${res_in_orog_fns}
+  RES_IN_FIXLAM_FILENAMES = ${RES_IN_FIXLAM_FILENAMES}"
+  else
+    RES_IN_FIXLAM_FILENAMES="${res_in_orog_fns}"
   fi
+
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -1827,28 +1848,26 @@ else
 #
 #-----------------------------------------------------------------------
 #
-  res_in_sfc_climo_fns=""
-  if [ "${RUN_TASK_MAKE_SFC_CLIMO}" = "FALSE" ]; then
+res_in_sfc_climo_fns=""
+if [ "${RUN_TASK_MAKE_SFC_CLIMO}" = "FALSE" ]; then
 
-    link_fix \
-      verbose="$VERBOSE" \
-      file_group="sfc_climo" \
-      output_varname_res_in_filenames="res_in_sfc_climo_fns" || \
+  link_fix \
+    verbose="$VERBOSE" \
+    file_group="sfc_climo" \
+    output_varname_res_in_filenames="res_in_sfc_climo_fns" || \
+  print_err_msg_exit "\
+Call to function to create links to surface climatology files failed."
+
+  if [ ! -z "${RES_IN_FIXLAM_FILENAMES}" ] && \
+     [ "${res_in_sfc_climo_fns}" -ne "${RES_IN_FIXLAM_FILENAMES}" ]; then
     print_err_msg_exit "\
-  Call to function to create links to surface climatology files failed."
-
-    if [ ! -z "${RES_IN_FIXLAM_FILENAMES}" ] && \
-       [ "${res_in_sfc_climo_fns}" -ne "${RES_IN_FIXLAM_FILENAMES}" ]; then
-      print_err_msg_exit "\
-  The resolution extracted from the surface climatology file names (res_-
-  in_sfc_climo_fns) does not match the resolution in other groups of files
-  already considered (RES_IN_FIXLAM_FILENAMES):
-    res_in_sfc_climo_fns = ${res_in_sfc_climo_fns}
-    RES_IN_FIXLAM_FILENAMES = ${RES_IN_FIXLAM_FILENAMES}"
-    else
-      RES_IN_FIXLAM_FILENAMES="${res_in_sfc_climo_fns}"
-    fi
-
+The resolution extracted from the surface climatology file names (res_-
+in_sfc_climo_fns) does not match the resolution in other groups of files
+already considered (RES_IN_FIXLAM_FILENAMES):
+  res_in_sfc_climo_fns = ${res_in_sfc_climo_fns}
+  RES_IN_FIXLAM_FILENAMES = ${RES_IN_FIXLAM_FILENAMES}"
+  else
+    RES_IN_FIXLAM_FILENAMES="${res_in_sfc_climo_fns}"
   fi
 
 fi
@@ -1931,128 +1950,19 @@ component if it is being used) are:
 #
 #-----------------------------------------------------------------------
 #
-# Make sure that the number of cells in the x and y direction are divi-
-# sible by the MPI task dimensions LAYOUT_X and LAYOUT_Y, respectively.
+# If the write-component is going to be used to write output files to 
+# disk (i.e. if QUILTING is set to "TRUE"), make sure that the grid type 
+# used by the write-component (WRTCMP_output_grid) is set to a valid value.
 #
 #-----------------------------------------------------------------------
 #
-rem=$(( NX%LAYOUT_X ))
-if [ $rem -ne 0 ]; then
-  print_err_msg_exit "\
-The number of grid cells in the x direction (NX) is not evenly divisible
-by the number of MPI tasks in the x direction (LAYOUT_X):
-  NX = $NX
-  LAYOUT_X = ${LAYOUT_X}"
-fi
-
-rem=$(( NY%LAYOUT_Y ))
-if [ $rem -ne 0 ]; then
-  print_err_msg_exit "\
-The number of grid cells in the y direction (NY) is not evenly divisible
-by the number of MPI tasks in the y direction (LAYOUT_Y):
-  NY = $NY
-  LAYOUT_Y = ${LAYOUT_Y}"
-fi
-
-print_info_msg "$VERBOSE" "
-The MPI task layout is:
-  LAYOUT_X = ${LAYOUT_X}
-  LAYOUT_Y = ${LAYOUT_Y}"
-#
-#-----------------------------------------------------------------------
-#
-# Make sure that, for a given MPI task, the number columns (which is 
-# equal to the number of horizontal cells) is divisible by BLOCKSIZE.
-#
-#-----------------------------------------------------------------------
-#
-nx_per_task=$(( NX/LAYOUT_X ))
-ny_per_task=$(( NY/LAYOUT_Y ))
-num_cols_per_task=$(( $nx_per_task*$ny_per_task ))
-
-rem=$(( num_cols_per_task%BLOCKSIZE ))
-if [ $rem -ne 0 ]; then
-  prime_factors_num_cols_per_task=$( factor $num_cols_per_task | sed -r -e 's/^[0-9]+: (.*)/\1/' )
-  print_err_msg_exit "\
-The number of columns assigned to a given MPI task must be divisible by
-BLOCKSIZE:
-  nx_per_task = NX/LAYOUT_X = $NX/${LAYOUT_X} = ${nx_per_task}
-  ny_per_task = NY/LAYOUT_Y = $NY/${LAYOUT_Y} = ${ny_per_task}
-  num_cols_per_task = nx_per_task*ny_per_task = ${num_cols_per_task}
-  BLOCKSIZE = $BLOCKSIZE
-  rem = num_cols_per_task%%BLOCKSIZE = $rem
-The prime factors of num_cols_per_task are (useful for determining a va-
-lid BLOCKSIZE): 
-  prime_factors_num_cols_per_task: ${prime_factors_num_cols_per_task}"
-fi
-#
-#-----------------------------------------------------------------------
-#
-# Initialize the full path to the template file containing placeholder 
-# values for the write component parameters.  Then, if the write component
-# is going to be used to write output files to disk (i.e. if QUILTING is
-# set to "TRUE"), set the full path to this file.  This file will be 
-# appended to the NEMS configuration file (MODEL_CONFIG_FN), and placeholder
-# values will be replaced with actual ones.  
-#
-#-----------------------------------------------------------------------
-#
-WRTCMP_PARAMS_TMPL_FP=""
-
 if [ "$QUILTING" = "TRUE" ]; then
-#
-# First, make sure that WRTCMP_output_grid is set to a valid value.
-#
   err_msg="\
 The coordinate system used by the write-component output grid specified
 in WRTCMP_output_grid is not supported:
   WRTCMP_output_grid = \"${WRTCMP_output_grid}\""
   check_var_valid_value \
     "WRTCMP_output_grid" "valid_vals_WRTCMP_output_grid" "${err_msg}"
-#
-# Now set the name of the write-component template file.
-#
-  wrtcmp_params_tmpl_fn=${wrtcmp_params_tmpl_fn:-"wrtcmp_${WRTCMP_output_grid}"}
-#
-# Finally, set the full path to the write component template file and
-# make sure that the file exists.
-#
-  WRTCMP_PARAMS_TMPL_FP="${TEMPLATE_DIR}/${wrtcmp_params_tmpl_fn}"
-  if [ ! -f "${WRTCMP_PARAMS_TMPL_FP}" ]; then
-    print_err_msg_exit "\
-The write-component template file does not exist or is not a file:
-  WRTCMP_PARAMS_TMPL_FP = \"${WRTCMP_PARAMS_TMPL_FP}\""
-  fi
-
-fi
-#
-#-----------------------------------------------------------------------
-#
-# If the write component is going to be used, make sure that the number
-# of grid cells in the y direction (NY) is divisible by the number of
-# write tasks per group.  This is because the NY rows of the grid must
-# be distributed evenly among the write_tasks_per_group tasks in a given
-# write group, i.e. each task must receive the same number of rows.  
-# This implies that NY must be evenly divisible by WRTCMP_write_tasks_-
-# per_group.  If it isn't, the write component will hang or fail.  We
-# check for this below.
-#
-#-----------------------------------------------------------------------
-#
-if [ "$QUILTING" = "TRUE" ]; then
-
-  rem=$(( NY%WRTCMP_write_tasks_per_group ))
-
-  if [ $rem -ne 0 ]; then
-    print_err_msg_exit "\
-The number of grid points in the y direction on the regional grid (ny_-
-T7) must be evenly divisible by the number of tasks per write group 
-(WRTCMP_write_tasks_per_group):
-  NY = $NY
-  WRTCMP_write_tasks_per_group = $WRTCMP_write_tasks_per_group
-  NY%%write_tasks_per_group = $rem"
-  fi
-
 fi
 #
 #-----------------------------------------------------------------------
@@ -2076,127 +1986,52 @@ fi
 #-----------------------------------------------------------------------
 #
 NNODES_RUN_FCST=$(( (PE_MEMBER01 + PPN_RUN_FCST - 1)/PPN_RUN_FCST ))
-#
-#-----------------------------------------------------------------------
-#
-# Make sure that OZONE_PARAM_NO_CCPP is set to a valid value.
-#
-#-----------------------------------------------------------------------
-#
-check_var_valid_value "OZONE_PARAM_NO_CCPP" "valid_vals_OZONE_PARAM_NO_CCPP"
-#
-#-----------------------------------------------------------------------
-#
-# Create a new experiment directory.  Note that at this point we are 
-# guaranteed that there is no preexisting experiment directory.
-#
-#-----------------------------------------------------------------------
-#
-mkdir_vrfy -p "$EXPTDIR"
-
-
-
-
 
 
 #
 #-----------------------------------------------------------------------
 #
-# This if-statement is a temporary fix that makes corrections to the suite
-# definition file for the "FV3_GFS_2017_gfdlmp_regional" physics suite
-# that EMC uses.  The corrections are:
-#
-# 1) Add a "fast_physics" group name to the beginning of the file.
-# 2) Replace the ozphys parameterization with the ozphys_2015 parameterization.
-#
-# Note that this must be done before the call to the function set_ozone_param
-# below because that function reads in the ozone parameterization in the
-# suite definition file in order to set the ozone parameterization being
-# used in the experiment; thus, the suite definition file must have the
-# correct ozone parameterization specified before the call to set_ozone_param.
-#
-# IMPORTANT:
-# This if-statement must be removed once these corrections are made to
-# the suite definition file in the dtc/develop branch of the NCAR fork
-# of the fv3atm repository.
+# Call the function that checks whether the RUC land surface model (LSM)
+# is being called by the physics suite and sets the workflow variable 
+# SDF_USES_RUC_LSM to "TRUE" or "FALSE" accordingly.
 #
 #-----------------------------------------------------------------------
 #
-if [ "${USE_CCPP}" = "TRUE" ] && \
-   [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_2017_gfdlmp_regional" ]; then
-
-  CCPP_PHYS_SUITE_FP="${CCPP_PHYS_SUITE_FP}.tmp"
-  cp_vrfy "${CCPP_PHYS_SUITE_IN_CCPP_FP}" "${CCPP_PHYS_SUITE_FP}"
-
-  grep "fast_physics" "${CCPP_PHYS_SUITE_FP}" || { \
-    fast_phys_group='\
-  <group name=\"fast_physics\">\
-    <subcycle loop=\"1\">\
-      <scheme>fv_sat_adj</scheme>\
-    </subcycle>\
-  </group>' ;
-    sed -i -r "5i${fast_phys_group}" "${CCPP_PHYS_SUITE_FP}" || \
-      print_err_msg_exit "\
-Attempt to insert the \"fast_physics\" group into the suite definition
-file (CCPP_PHYS_SUITE_FP) failed:
-  CCPP_PHYS_SUITE_FP = \"${CCPP_PHYS_SUITE_FP}\"" ;
-  }
-
-  grep "<scheme>ozphys</scheme>" "${CCPP_PHYS_SUITE_FP}" && { \
-    sed -i "s/ozphys/ozphys_2015/g" "${CCPP_PHYS_SUITE_FP}" || \
-      print_err_msg_exit "\
-Attempt to replace the \"ozphys\" scheme with the \"ozphys_2015\" scheme
-in the suite definition file (CCPP_PHYS_SUITE_FP) failed:
-  CCPP_PHYS_SUITE_FP = \"${CCPP_PHYS_SUITE_FP}\"" ;
-  }
-#
-#-----------------------------------------------------------------------
-#
-# Call the function that sets the ozone parameterization being used and
-# modifies associated parameters accordingly.
-#
-# This is a repeat of the same call in setup.sh.  It must be redone because
-# the contents of CCPP_PHYS_SUITE_FP have been modified, and the function
-# set_ozone_param depends on that file to set elements of the workflow
-# arrays CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING and FIXgsm_FILES_TO_COPY_TO_FIXam.
-#
-#-----------------------------------------------------------------------
-#
-  set_ozone_param \
-    ccpp_phys_suite_fp="${CCPP_PHYS_SUITE_FP}" \
-    ozone_param_no_ccpp="OZONE_PARAM_NO_CCPP" \
-    output_varname_ozone_param="OZONE_PARAM"
-
-  CCPP_PHYS_SUITE_FP="${CCPP_PHYS_SUITE_FP%.tmp}"
-
-else
-#
-#-----------------------------------------------------------------------
-#
-# Call the function that sets the ozone parameterization being used and
-# modifies associated parameters accordingly. 
-#
-#-----------------------------------------------------------------------
-#
-# NOTE:
-# After the temporary code above in the "if" part of the if-statement is 
-# removed, this "else" part can be moved back up to before the creation
-# of EXPTDIR (above).
-#
-set_ozone_param \
+check_ruc_lsm \
   ccpp_phys_suite_fp="${CCPP_PHYS_SUITE_IN_CCPP_FP}" \
-  ozone_param_no_ccpp="OZONE_PARAM_NO_CCPP" \
-  output_varname_ozone_param="OZONE_PARAM"
-
-
-fi
-
-
-
-
-
-
-
+  output_varname_sdf_uses_ruc_lsm="SDF_USES_RUC_LSM"
+#
+#-----------------------------------------------------------------------
+#
+# Set the name of the file containing aerosol climatology data that, if
+# necessary, can be used to generate approximate versions of the aerosol 
+# fields needed by Thompson microphysics.  This file will be used to 
+# generate such approximate aerosol fields in the ICs and LBCs if Thompson 
+# MP is included in the physics suite and if the exteranl model for ICs
+# or LBCs does not already provide these fields.  Also, set the full path
+# to this file.
+#
+#-----------------------------------------------------------------------
+#
+THOMPSON_MP_CLIMO_FN="Thompson_MP_MONTHLY_CLIMO.nc"
+THOMPSON_MP_CLIMO_FP="$FIXam/${THOMPSON_MP_CLIMO_FN}"
+#
+#-----------------------------------------------------------------------
+#
+# Call the function that, if the Thompson microphysics parameterization
+# is being called by the physics suite, modifies certain workflow arrays
+# to ensure that fixed files needed by this parameterization are copied
+# to the FIXam directory and appropriate symlinks to them are created in
+# the run directories.  This function also sets the workflow variable
+# SDF_USES_THOMPSON_MP that indicates whether Thompson MP is called by 
+# the physics suite.
+#
+#-----------------------------------------------------------------------
+#
+set_thompson_mp_fix_files \
+  ccpp_phys_suite_fp="${CCPP_PHYS_SUITE_IN_CCPP_FP}" \
+  thompson_mp_climo_fn="${THOMPSON_MP_CLIMO_FN}" \
+  output_varname_sdf_uses_thompson_mp="SDF_USES_THOMPSON_MP"
 #
 #-----------------------------------------------------------------------
 #
@@ -2507,7 +2342,7 @@ CRONTAB_LINE="${CRONTAB_LINE}"
 #
 #-----------------------------------------------------------------------
 #
-SR_WX_APP_TOP_DIR="$SR_WX_APP_TOP_DIR"
+SR_WX_APP_TOP_DIR="${SR_WX_APP_TOP_DIR}"
 HOMErrfs="$HOMErrfs"
 USHDIR="$USHDIR"
 SCRIPTSDIR="$SCRIPTSDIR"
@@ -2517,7 +2352,6 @@ SRC_DIR="$SRC_DIR"
 PARMDIR="$PARMDIR"
 MODULES_DIR="${MODULES_DIR}"
 EXECDIR="$EXECDIR"
-FIXrrfs="$FIXrrfs"
 FIXam="$FIXam"
 FIXLAM="$FIXLAM"
 FIXgsm="$FIXgsm"
@@ -2526,10 +2360,9 @@ COMOUT_BASEDIR="${COMOUT_BASEDIR}"
 TEMPLATE_DIR="${TEMPLATE_DIR}"
 UFS_WTHR_MDL_DIR="${UFS_WTHR_MDL_DIR}"
 UFS_UTILS_DIR="${UFS_UTILS_DIR}"
-EMC_POST_DIR="${EMC_POST_DIR}"
-CHGRES_DIR="${CHGRES_DIR}"
 SFC_CLIMO_INPUT_DIR="${SFC_CLIMO_INPUT_DIR}"
-TOPO_DIR=${TOPO_DIR}
+TOPO_DIR="${TOPO_DIR}"
+EMC_POST_DIR="${EMC_POST_DIR}"
 
 ARCHIVEDIR="${ARCHIVEDIR}"
 NCARG_ROOT="${NCARG_ROOT}"
@@ -2543,7 +2376,7 @@ CYCLE_BASEDIR="${CYCLE_BASEDIR}"
 GRID_DIR="${GRID_DIR}"
 OROG_DIR="${OROG_DIR}"
 SFC_CLIMO_DIR="${SFC_CLIMO_DIR}"
-GWD_RRFS_v1beta_DIR="${GWD_RRFS_v1beta_DIR}"
+GWD_HRRRsuite_DIR="${GWD_HRRRsuite_DIR}"
 
 NDIGITS_ENSMEM_NAMES="${NDIGITS_ENSMEM_NAMES}"
 ENSMEM_NAMES=( $( printf "\"%s\" " "${ENSMEM_NAMES[@]}" ))
@@ -2589,7 +2422,18 @@ FV3_EXEC_FP="${FV3_EXEC_FP}"
 
 LOAD_MODULES_RUN_TASK_FP="${LOAD_MODULES_RUN_TASK_FP}"
 
-WRTCMP_PARAMS_TMPL_FP="${WRTCMP_PARAMS_TMPL_FP}"
+THOMPSON_MP_CLIMO_FN="${THOMPSON_MP_CLIMO_FN}"
+THOMPSON_MP_CLIMO_FP="${THOMPSON_MP_CLIMO_FP}"
+#
+#-----------------------------------------------------------------------
+#
+# Parameters that indicate whether or not various parameterizations are 
+# included in and called by the phsics suite.
+#
+#-----------------------------------------------------------------------
+#
+SDF_USES_RUC_LSM="${SDF_USES_RUC_LSM}"
+SDF_USES_THOMPSON_MP="${SDF_USES_THOMPSON_MP}"
 #
 #-----------------------------------------------------------------------
 #
@@ -2690,10 +2534,8 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Name of the ozone parameterization.  If USE_CCPP is set to "FALSE", 
-# then this will be equal to OZONE_PARAM_NO_CCPP.  If USE_CCPP is set to
-# "TRUE", then the value this gets set to depends on the CCPP physics
-# suite being used.
+# Name of the ozone parameterization.  The value this gets set to depends 
+# on the CCPP physics suite being used.
 #
 #-----------------------------------------------------------------------
 #
@@ -2701,7 +2543,7 @@ OZONE_PARAM="${OZONE_PARAM}"
 #
 #-----------------------------------------------------------------------
 #
-# If EXTRN_MDL_SOURCE_DIR_ICS is set to a null string, this is the system 
+# If USE_USER_STAGED_EXTRN_FILES is set to "FALSE", this is the system 
 # directory in which the workflow scripts will look for the files generated 
 # by the external model specified in EXTRN_MDL_NAME_ICS.  These files will 
 # be used to generate the input initial condition and surface files for 
@@ -2714,7 +2556,7 @@ EXTRN_MDL_PREFIX_ICS="${EXTRN_MDL_PREFIX_ICS}"
 #
 #-----------------------------------------------------------------------
 #
-# If EXTRN_MDL_SOURCE_DIR_LBCS is set to a null string, this is the system 
+# If USE_USER_STAGED_EXTRN_FILES is set to "FALSE", this is the system 
 # directory in which the workflow scripts will look for the files generated 
 # by the external model specified in EXTRN_MDL_NAME_LBCS.  These files 
 # will be used to generate the input lateral boundary condition files for 
@@ -2741,6 +2583,18 @@ EXTRN_MDL_LBCS_OFFSET_HRS="${EXTRN_MDL_LBCS_OFFSET_HRS}"
 #-----------------------------------------------------------------------
 #
 LBC_SPEC_FCST_HRS=(${LBC_SPEC_FCST_HRS[@]})
+#
+#-----------------------------------------------------------------------
+#
+# If USE_FVCOM is set to TRUE, then FVCOM data (located in FVCOM_DIR
+# in FVCOM_FILE) will be used to update lower boundary conditions during
+# make_ics.
+#
+#-----------------------------------------------------------------------
+#
+USE_FVCOM="${USE_FVCOM}"
+FVCOM_DIR="${FVCOM_DIR}"
+FVCOM_FILE="${FVCOM_FILE}"
 #
 #-----------------------------------------------------------------------
 #

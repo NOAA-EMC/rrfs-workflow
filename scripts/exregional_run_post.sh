@@ -80,59 +80,67 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-print_info_msg "$VERBOSE" "
-Starting post-processing for fhr = $fhr hr..."
-
 case $MACHINE in
 
-"WCOSS_CRAY")
+  "WCOSS_CRAY")
 
 # Specify computational resources.
-  export NODES=2
-  export ntasks=48
-  export ptile=24
-  export threads=1
-  export MP_LABELIO=yes
-  export OMP_NUM_THREADS=$threads
+    export NODES=2
+    export ntasks=48
+    export ptile=24
+    export threads=1
+    export MP_LABELIO=yes
+    export OMP_NUM_THREADS=$threads
 
-  APRUN="aprun -j 1 -n${ntasks} -N${ptile} -d${threads} -cc depth"
-  ;;
+    APRUN="aprun -j 1 -n${ntasks} -N${ptile} -d${threads} -cc depth"
+    ;;
 
-"WCOSS_DELL_P3")
+  "WCOSS_DELL_P3")
 
 # Specify computational resources.
-  export NODES=2
-  export ntasks=48
-  export ptile=24
-  export threads=1
-  export MP_LABELIO=yes
-  export OMP_NUM_THREADS=$threads
- 
-  APRUN="mpirun"
-  ;;
+    export NODES=2
+    export ntasks=48
+    export ptile=24
+    export threads=1
+    export MP_LABELIO=yes
+    export OMP_NUM_THREADS=$threads
 
-"HERA")
-  APRUN="srun"
-  ;;
+    APRUN="mpirun"
+    ;;
 
-"JET")
-  APRUN="srun"
-  ;;
+  "HERA")
+    APRUN="srun"
+    ;;
 
-"ODIN")
-  APRUN="srun -n 1"
-  ;;
+  "ORION")
+    APRUN="srun"
+    ;;
 
-"CHEYENNE")
-  module list
-  nprocs=$(( NNODES_RUN_POST*PPN_RUN_POST ))
-  APRUN="mpirun -np $nprocs"
-  ;;
+  "JET")
+    APRUN="srun"
+    ;;
 
-"STAMPEDE")
-  nprocs=$(( NNODES_RUN_POST*PPN_RUN_POST ))
-  APRUN="ibrun -n $nprocs"
-  ;;
+  "ODIN")
+    APRUN="srun -n 1"
+    ;;
+
+  "CHEYENNE")
+    module list
+    nprocs=$(( NNODES_RUN_POST*PPN_RUN_POST ))
+    APRUN="mpirun -np $nprocs"
+    ;;
+
+  "STAMPEDE")
+    nprocs=$(( NNODES_RUN_POST*PPN_RUN_POST ))
+    APRUN="ibrun -n $nprocs"
+    ;;
+
+  *)
+    print_err_msg_exit "\
+Run command has not been specified for this machine:
+  MACHINE = \"$MACHINE\"
+  APRUN = \"$APRUN\""
+    ;;
 
 esac
 #
@@ -144,21 +152,50 @@ esac
 #
 rm_vrfy -f fort.*
 cp_vrfy ${EMC_POST_DIR}/parm/nam_micro_lookup.dat ./eta_micro_lookup.dat
-cp_vrfy ${EMC_POST_DIR}/parm/postxconfig-NT-fv3sar.txt ./postxconfig-NT.txt
+if [ ${USE_CUSTOM_POST_CONFIG_FILE} = "TRUE" ]; then
+  post_config_fp="${CUSTOM_POST_CONFIG_FP}"
+  print_info_msg "
+====================================================================
+Copying the user-defined post flat file specified by CUSTOM_POST_CONFIG_FP
+to the post forecast hour directory (fhr_dir):
+  CUSTOM_POST_CONFIG_FP = \"${CUSTOM_POST_CONFIG_FP}\"
+  fhr_dir = \"${fhr_dir}\"
+===================================================================="
+else
+  post_config_fp="${EMC_POST_DIR}/parm/postxconfig-NT-fv3lam.txt"
+  print_info_msg "
+====================================================================
+Copying the default post flat file specified by post_config_fp to the post
+forecast hour directory (fhr_dir):
+  post_config_fp = \"${post_config_fp}\"
+  fhr_dir = \"${fhr_dir}\"
+===================================================================="
+fi
+cp_vrfy ${post_config_fp} ./postxconfig-NT.txt
 cp_vrfy ${EMC_POST_DIR}/parm/params_grib2_tbl_new ./params_grib2_tbl_new
 cp_vrfy ${EXECDIR}/ncep_post .
 #
 #-----------------------------------------------------------------------
 #
-# Get the cycle date and hour (in formats of yyyymmdd and hh, respect-
-# ively) from cdate.
+# Get the cycle date and hour (in formats of yyyymmdd and hh, respectively)
+# from cdate.
 #
 #-----------------------------------------------------------------------
 #
 yyyymmdd=${cdate:0:8}
 hh=${cdate:8:2}
 cyc=$hh
-tmmark="tm$hh"
+#
+#-----------------------------------------------------------------------
+#
+# The tmmark is a reference value used in real-time, DA-enabled NCEP models.
+# It represents the delay between the onset of the DA cycle and the free
+# forecast.  With no DA in the SRW App at the moment, it is hard-wired to
+# tm00 for now. 
+#
+#-----------------------------------------------------------------------
+#
+tmmark="tm00"
 #
 #-----------------------------------------------------------------------
 #
@@ -195,6 +232,9 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
+print_info_msg "$VERBOSE" "
+Starting post-processing for fhr = $fhr hr..."
+
 ${APRUN} ./ncep_post < itag || print_err_msg_exit "\
 Call to executable to run post for forecast hour $fhr returned with non-
 zero exit code."
@@ -202,14 +242,14 @@ zero exit code."
 #-----------------------------------------------------------------------
 #
 # Move (and rename) the output files from the work directory to their
-# final location (postprd_dir).  Then delete the work directory. 
+# final location (postprd_dir).  Then delete the work directory.
 #
 #-----------------------------------------------------------------------
 #
 #
 #-----------------------------------------------------------------------
 #
-# A separate ${post_fhr} forecast hour variable is required for the post 
+# A separate ${post_fhr} forecast hour variable is required for the post
 # files, since they may or may not be three digits long, depending on the
 # length of the forecast.
 #

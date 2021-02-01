@@ -245,14 +245,12 @@ Creating links in the FIXLAM directory to the grid files..."
     "C*${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH0}.nc" \
     "C*${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH4}.nc" \
         )
-    if [ "${CCPP_PHYS_SUITE}" = "FV3_RRFS_v1beta" ] || \
-       [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ]; then
+    if [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ]; then
       fns+=( \
       "C*${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc" \
       "C*${DOT_OR_USCORE}oro_data_ls.tile${TILE_RGNL}.halo${NH0}.nc" \
            )
     fi
-
     fps=( "${fns[@]/#/${OROG_DIR}/}" )
     run_task="${RUN_TASK_MAKE_OROG}"
     ;;
@@ -359,7 +357,7 @@ Please ensure that all files have the same resolution."
 #-----------------------------------------------------------------------
 #
   relative_or_null=""
-  if [ "${run_task}" = "TRUE" ]; then
+  if [ "${run_task}" = "TRUE" ] && [ "${MACHINE}" != "WCOSS_CRAY" ] ; then
     relative_or_null="--relative"
   fi
 

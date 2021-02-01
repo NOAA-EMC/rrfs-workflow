@@ -1,42 +1,40 @@
 MACHINE="jet"
 ACCOUNT="nrtrr"
 EXPT_BASEDIR="/home/rtrr/RRFS"
-EXPT_SUBDIR="RRFS_AK"
+EXPT_SUBDIR="RRFS_AK_dev1"
 
-QUEUE_DEFAULT="batch"
-QUEUE_HPSS="service"
-QUEUE_FCST="batch"
+FIXLAM_NCO_BASEDIR=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_lam.20210128
+FIXgsm=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_am.20210128
 
 VERBOSE="TRUE"
 
 RUN_ENVIR="nco"
 PREEXISTING_DIR_METHOD="rename"
 
-EMC_GRID_NAME="GSD_RRFSAK_3km" 
-GRID_GEN_METHOD="ESGgrid"
+PREDEF_GRID_NAME=RRFS_AK_3km
 
 QUILTING="TRUE"
-USE_CCPP="TRUE"
 CCPP_PHYS_SUITE="FV3_GSD_SAR"
 FCST_LEN_HRS="36"
 LBC_SPEC_INTVL_HRS="6"
 
 HALO_BLEND=10
 
-WTIME_RUN_FCST="04:30:00"
+WTIME_RUN_FCST="05:30:00"
+DT_ATMOS=20
 
-DATE_FIRST_CYCL="20201016"
-DATE_LAST_CYCL="20211231"
+DATE_FIRST_CYCL="20210128"
+DATE_LAST_CYCL="20221231"
 CYCL_HRS=( "00" "12" )
 
-EXTRN_MDL_NAME_ICS="RAPX"
-EXTRN_MDL_NAME_LBCS="RAPX"
+EXTRN_MDL_NAME_ICS="RAP"
+EXTRN_MDL_NAME_LBCS="RAP"
 
 envir="para"
 
 NET="RRFS_AK"
 
-ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_ak"
+ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_ak_dev1"
 NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
 NCL_HOME="/home/rtrr/RRFS/graphics"
 NCL_REGION="alaska"
@@ -56,6 +54,7 @@ COMINgfs=""
 
 STMP="/lfs4/BMC/nrtrr/NCO_dirs/stmp"  # Path to directory STMP that mostly contains input files.
 PTMP="/lfs4/BMC/nrtrr/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains input files.
+
 
 #
 # In NCO mode, the user must manually (e.g. after doing the build step)
