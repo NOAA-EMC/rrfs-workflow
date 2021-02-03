@@ -380,28 +380,12 @@ fi
       ;;
 
     "RAP")
-#
-# Note that this is GSL RAPX data, not operational NCEP RAP data.  An option for the latter
-# may be added in the future.
-#
-      if [ "${MACHINE}" = "JET" ]; then
-        fns_on_disk=( "wrfnat_rr_${fcst_hh}.grib2" )
-      else
-        fns_on_disk=( "${yy}${ddd}${hh}${mn}${fcst_hh}${fcst_mn}" )
-      fi
+      fns_on_disk=( "${yy}${ddd}${hh}${mn}${fcst_mn}${fcst_hh}" )
       fns_in_arcv=( "${yy}${ddd}${hh}${mn}${fcst_hh}${fcst_mn}" )
       ;;
 
     "HRRR")
-#
-# Note that this is GSL HRRRX data, not operational NCEP HRRR data.  An option for the latter
-# may be added in the future.
-#
-      if [ "${MACHINE}" = "JET" ]; then
-        fns_on_disk=( "wrfnat_hrconus_${fcst_hh}.grib2" )
-      else
-        fns_on_disk=( "${yy}${ddd}${hh}${mn}${fcst_hh}${fcst_mn}" )
-      fi
+      fns_on_disk=( "${yy}${ddd}${hh}${mn}${fcst_mn}${fcst_hh}" )
       fns_in_arcv=( "${yy}${ddd}${hh}${mn}${fcst_hh}${fcst_mn}" )
       ;;
 
@@ -481,15 +465,9 @@ and analysis or forecast (anl_or_fcst):
 #
       fcst_hh=( $( printf "%02d " "${lbc_spec_fhrs[@]}" ) )
 
-      if [ "${MACHINE}" = "JET" ]; then 
-        prefix="wrfnat_rr_"
-        suffix=".grib2"
-      else
-        prefix="${yy}${ddd}${hh}${mn}"
-        suffix="${fcst_mn}"
-      fi
+      prefix="${yy}${ddd}${hh}${mn}${fcst_mn}"
+      suffix="${fcst_mn}"
       fns_on_disk=( "${fcst_hh[@]/#/$prefix}" )
-      fns_on_disk=( "${fns_on_disk[@]/%/$suffix}" )
 
       prefix="${yy}${ddd}${hh}${mn}"
       fns_in_arcv=( "${fcst_hh[@]/#/$prefix}" )
@@ -504,15 +482,10 @@ and analysis or forecast (anl_or_fcst):
 #
       fcst_hh=( $( printf "%02d " "${lbc_spec_fhrs[@]}" ) )
 
-      if [ "${MACHINE}" = "JET" ]; then
-        prefix="wrfnat_hrconus_"
-        suffix=".grib2"
-      else
-        prefix="${yy}${ddd}${hh}${mn}"
-        suffix="${fcst_mn}"
-      fi
+      prefix="${yy}${ddd}${hh}${mn}"
+      prefix="${yy}${ddd}${hh}${mn}${fcst_mn}"
+      suffix="${fcst_mn}"
       fns_on_disk=( "${fcst_hh[@]/#/$prefix}" )
-      fns_on_disk=( "${fns_on_disk[@]/%/$suffix}" )
 
       prefix="${yy}${ddd}${hh}${mn}"
       fns_in_arcv=( "${fcst_hh[@]/#/$prefix}" )
@@ -654,7 +627,7 @@ has not been specified for this external model and machine combination:
       sysdir="$sysbasedir"
       ;;
     "JET")
-      sysdir="$sysbasedir/${yyyymmdd}${hh}/postprd"
+      sysdir="$sysbasedir"
       ;;
     "ODIN")
       sysdir="$sysbasedir"
@@ -688,7 +661,7 @@ has not been specified for this external model and machine combination:
       sysdir="$sysbasedir"
       ;;
     "JET")
-      sysdir="$sysbasedir/${yyyymmdd}${hh}/postprd"
+      sysdir="$sysbasedir"
       ;;
     "ODIN")
       sysdir="$sysbasedir"
