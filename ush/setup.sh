@@ -804,6 +804,26 @@ Please clone the external repository containing the code in this directory,
 build the executable, and then rerun the workflow."
 fi
 #
+# Get the base directory of the Python Graphics code.
+#
+external_name="python_graphics"
+PYTHON_GRAPHICS_DIR=$( \
+  get_manage_externals_config_property \
+  "${mng_extrns_cfg_fn}" "${external_name}" "${property_name}" ) || \
+  print_err_msg_exit "\
+  Call to function get_manage_externals_config_property failed."
+
+PYTHON_GRAPHICS_DIR="${SR_WX_APP_TOP_DIR}/${PYTHON_GRAPHICS_DIR}"
+if [ ! -d "${PYTHON_GRAPHICS_DIR}" ]; then
+  print_err_msg_exit "
+The base directory in which the Python Graphics source code should be located
+(PYTHON_GRAPHICS_DIR) does not exist:
+  PYTHON_GRAPHICS_DIR = \"${PYTHON_GRAPHICS_DIR}\"
+Please clone the external repository containing the code in this directory,
+build the executable, and then rerun the workflow."
+fi
+#
+#
 #-----------------------------------------------------------------------
 #
 # Make sure that USE_CUSTOM_POST_CONFIG_FILE is set to a valid value.
@@ -2363,6 +2383,7 @@ UFS_UTILS_DIR="${UFS_UTILS_DIR}"
 SFC_CLIMO_INPUT_DIR="${SFC_CLIMO_INPUT_DIR}"
 TOPO_DIR="${TOPO_DIR}"
 EMC_POST_DIR="${EMC_POST_DIR}"
+PYTHON_GRAPHICS_DIR="${PYTHON_GRAPHICS_DIR}"
 
 ARCHIVEDIR="${ARCHIVEDIR}"
 NCARG_ROOT="${NCARG_ROOT}"

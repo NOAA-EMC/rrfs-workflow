@@ -70,7 +70,6 @@ tasks other than GET_EXTRN_ICS_TN, GET_EXTRN_LBCS_TN, and RUN_FCST_TN;
 the "HPSS" type is used for the GET_EXTRN_ICS_TN and GET_EXTRN_LBCS_TN 
 tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 -->
-
 {%- if partition_default is not none %}
 <!ENTITY RSRV_DEFAULT "<account>&ACCOUNT;</account><queue>&QUEUE_DEFAULT;</queue><partition>{{ partition_default }}</partition>">
 {%- else %}
@@ -86,6 +85,7 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 {%- else %}
 <!ENTITY RSRV_FCST    "<account>&ACCOUNT;</account><queue>&QUEUE_FCST;</queue>">
 {%- endif %}
+<!ENTITY RSRV_GRAPHICS   "<account>&ACCOUNT;</account><queue>&QUEUE_FCST;</queue><partition>kjet,xjet</partition>">
 
 <!ENTITY DEADLINE_PRE      "16:00:00">
 <!ENTITY DEADLINE_FCST     "23:30:00">
@@ -480,6 +480,36 @@ MODULES_RUN_TASK_FP script.
 {% if do_ensemble %}
   </metatask>
 {% endif %}
+
+<!--
+************************************************************************
+************************************************************************
+-->
+
+  <task name="python_skewt" cycledefs="forecast" maxtries="{{ maxtries_run_post }}">
+
+    &RSRV_GRAPHICS;
+    &WALL_LIMIT_GRAPHICS;
+
+    <walltime>{{ wtime_run_fcst }}</walltime>
+    <nodes>1:ppn=24</nodes>
+    <native>--exclusive</native>
+    <jobname><cyclestr>python_@H_skewt</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/python_skewt.log</cyclestr></join>
+
+    <command>&LOAD_MODULES_RUN_TASK_FP; "run_graphics" "&JOBSDIR;/JREGIONAL_RUN_PYTHON_GRAPHICS"</command>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+    <envar><name>GRAPHICS_TYPE</name><value>skewts</value></envar>
+
+    <dependency>
+      <taskdep task="&RUN_POST_TN;_f000"/>
+    </dependency>
+  </task>
 
 <!--
 ************************************************************************

@@ -1,0 +1,154 @@
+#!/bin/bash
+
+#
+#-----------------------------------------------------------------------
+#
+# This script runs the adb_graphics create_graphics driver for creating
+# PNG figures and zipping them for dissemination to the web.
+#
+#-----------------------------------------------------------------------
+#
+
+#
+#-----------------------------------------------------------------------
+#
+# Source the variable definitions file and the bash utility functions.
+#
+#-----------------------------------------------------------------------
+#
+. ${GLOBAL_VAR_DEFNS_FP}
+. $USHDIR/source_util_funcs.sh
+#
+#-----------------------------------------------------------------------
+#
+# Save current shell options (in a global array).  Then set new options
+# for this script/function.
+#
+#-----------------------------------------------------------------------
+#
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
+#
+#-----------------------------------------------------------------------
+#
+# Get the full path to the file in which this script/function is located 
+# (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
+# which the file is located (scrfunc_dir).
+#
+#-----------------------------------------------------------------------
+#
+scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
+scrfunc_fn=$( basename "${scrfunc_fp}" )
+scrfunc_dir=$( dirname "${scrfunc_fp}" )
+#
+#-----------------------------------------------------------------------
+#
+# Print message indicating entry into script.
+#
+#-----------------------------------------------------------------------
+#
+print_info_msg "
+========================================================================
+Entering script:  \"${scrfunc_fn}\"
+In directory:     \"${scrfunc_dir}\"
+
+This is the J-job script for the task that runs the post-processor (UPP)
+on the output files corresponding to a specified forecast hour.
+========================================================================"
+#
+#-----------------------------------------------------------------------
+#
+# Set the run directory and post directories.
+#
+#-----------------------------------------------------------------------
+#
+
+if [ "${RUN_ENVIR}" = "nco" ]; then
+  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
+  postprd_dir="$COMOUT"
+  run_dir="${COMOUT}/pyprd"
+else
+  postprd_dir="${run_dir}/postprd"
+  run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/pyprd"
+fi
+
+# Choose an appropriate sites file for the grid
+if [[ ${PREDEF_GRID_NAME} =~ CONUS ]] ; then
+  sites_file=conus_raobs.txt
+elif [[ ${PREDEF_GRID_NAME} =~ AK ]] ; then
+  sites_file=alaska_raobs.txt
+else
+  print_err_msg_exit "\
+  Choice of sites file is ambiguous. Please help."
+fi
+
+# Choose the appropriate file template for graphics type
+
+case ${GRAPHICS_TYPE} in 
+
+  "maps")
+
+    file_tmpl="${NET}.${CDATE:8:2}z.bgdawpf{FCST_TIME:03d}.tm${CDATE:8:2}.grib2"
+    file_type=prs
+    extra_args="\
+      --tiles all
+      --images ${PYTHON_GRAPHICS_DIR}/image_lists/rrfs_subset.yml hourly"
+    ;;
+
+  "skewts")
+
+    file_tmpl="${NET}.t${CDATE:8:2}z.bgrd3df{FCST_TIME:03d}.tm00.grib2"
+    file_type=nat
+    extra_args="\
+      --sites ${PYTHON_GRAPHICS_DIR}/static/${sites_file}\
+      --max_plev 100"
+    ;;
+
+  *)
+    print_err_msg_exit "\
+      GRAPHICS_TYPE \"${GRAPHICS_TYPE}\" is not recognized."
+    ;;
+esac
+mkdir_vrfy -p "${run_dir}"
+#
+#-----------------------------------------------------------------------
+#
+# Call the graphics driver script.
+#
+#-----------------------------------------------------------------------
+#
+cd_vrfy ${PYTHON_GRAPHICS_DIR}
+python -u ${PYTHON_GRAPHICS_DIR}/create_graphics.py \
+  ${GRAPHICS_TYPE} \
+  -d ${postprd_dir} \
+  -f 0 ${FCST_LEN_HRS} \
+  --file_tmpl ${file_tmpl} \
+  --file_type ${file_type} \
+  -n ${SLURM_CPUS_ON_NODE:-12} \
+  -o ${run_dir} \
+  -s ${CDATE} \
+  -z ${run_dir}/skewt \
+  ${extra_args} ||
+print_err_msg_exit "\
+Call to pyscript \"${scrfunc_fn}\" failed."
+#
+#-----------------------------------------------------------------------
+#
+# Print exit message.
+#
+#-----------------------------------------------------------------------
+#
+print_info_msg "
+========================================================================
+Exiting script:  \"${scrfunc_fn}\"
+In directory:    \"${scrfunc_dir}\"
+========================================================================"
+#
+#-----------------------------------------------------------------------
+#
+# Restore the shell options saved at the beginning of this script/func-
+# tion.
+#
+#-----------------------------------------------------------------------
+#
+{ restore_shell_opts; } > /dev/null 2>&1
+
