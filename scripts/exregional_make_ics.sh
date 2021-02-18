@@ -421,11 +421,11 @@ case "${EXTRN_MDL_NAME_ICS}" in
   geogrid_file_input_grid="${FIXgsm}/geo_em.d01.nc_HRRRX"
 # Note that vgfrc, shdmin/shdmax (minmax_vgfrc), and lai fields are only available in HRRRX
 # files after mid-July 2019, and only so long as the record order didn't change afterward
-  vgtyp_from_climo=True
-  sotyp_from_climo=True
-  vgfrc_from_climo=True
-  minmax_vgfrc_from_climo=True
-  lai_from_climo=True
+  vgtyp_from_climo=False
+  sotyp_from_climo=False
+  vgfrc_from_climo=False
+  minmax_vgfrc_from_climo=False
+  lai_from_climo=False
   tg3_from_soil=True
   convert_nst=False
   ;;
@@ -438,11 +438,11 @@ case "${EXTRN_MDL_NAME_ICS}" in
 # Path to the RAPX geogrid file.
 #
   geogrid_file_input_grid="${FIXgsm}/geo_em.d01.nc_RAPX"
-  vgtyp_from_climo=True
+  vgtyp_from_climo=False
   sotyp_from_climo=False
-  vgfrc_from_climo=True
-  minmax_vgfrc_from_climo=True
-  lai_from_climo=True
+  vgfrc_from_climo=False
+  minmax_vgfrc_from_climo=False
+  lai_from_climo=False
   tg3_from_soil=True
   convert_nst=False
   ;;
