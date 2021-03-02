@@ -22,7 +22,6 @@ This branch supports the following features:
  - NCL Graphics Rocoto jobs, jobs, and scripts for the web graphics
  - A slight modification on the standard NCO configuration for logs
  - Additional grib2 files
- - FV3_HRRR physics (workflow components enabled)
  - A different vertical configuration -- L65_20mb
 
 # Repo Directory Structure
@@ -33,10 +32,8 @@ regional_workflow repositories.
     ufs-srweather-app/
     ├── docs
     │   └── UsersGuide
+    ├── env               # Files to set environment on supported platforms
     ├── exec              # Installed executables
-    ├── fix
-    │   ├── fix_am        # Linked during build. Soon to be DEPRECATED.
-    │   └── fix_fv3       # DEPRECATED
     ├── manage_externals  # Utility for gathering git submodules
     ├── regional_workflow # See details below.
     └── src               # Source code
@@ -49,13 +46,11 @@ regional_workflow repositories.
     regional_workflow/
     ├── docs
     │   └── UsersGuide
-    ├── env           # DEPRECATED and recently removed
+    ├── env           # DEPRECATED and removed recently in community
     ├── jobs          # Job cards - bash scripts that call ex-scripts
     ├── modulefiles
-    │   ├── codes     # DEPRECATED and recently removed
     │   └── tasks     # Module files loaded at run time
     ├── scripts       # EX Scripts - bash scripts to run components
-    ├── sorc          # DEPRECATED
     ├── tests         # Workflow E2E test configuration files
     │   └── baseline_configs
     └── ush           # Utility scripts
@@ -72,8 +67,8 @@ regional_workflow repositories.
 
 There are a handful of steps below that are required to build the code,
 configure an experiment, and run the experiment. Please ensure that each
-is successful before moving onto the next.
-
+is successful before moving onto the next. The example shown here is for
+building in your own working area on Jet, not the role account.
 
 ### Building
 
@@ -81,34 +76,26 @@ Building need be done only once if no source code is changed.
 
 - Clone the ufs-srweather-app repository.
 ```
-    git clone https://github.com/NOAA-GSD/ufs-srweather-app.git gsd-srweather-app
-    cd gsd-srweather-app
+    git clone https://github.com/NOAA-GSL/ufs-srweather-app.git gsl-srweather-app
+    cd gsl-srweather-app
     git checkout feature/RRFS_dev1
 ```
 - And retrieve the externals.
-
 ```
     ./manage_externals/checkout_externals
 ```
-
-- Build the code.
-
+- Source the build environment (must be in bash shell)
 ```
-    cd src/
-    ./build_all.sh
+    bash # If your default shell is not bash
+    source env/build_jet_intel.env
 ```
-
-
-### Linking fix files
-
-The files need to be linked for each new clone. The configuration step
-below will fail verbosely if this step has been skipped.
-
-    cd regional_workflow
-    mkdir fix
-    cd fix
-    ln -sf /mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_am.20201001 fix_am
-    ln -sf /mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_lam.20201001 fix_lam
+- Build the code (from top level SRW App).
+```
+    mkdir build
+    cd build
+    cmake .. -DCMAKE_INSTALL_PREFIX=..
+    make -j 4 2>&1 | tee build.log
+```
 
 ### Configuring
 
@@ -117,7 +104,7 @@ to be updated consistently with each other:
 
  - Module files staged in regional_workflow/modulefiles
  - Scripts and templates staged in regional_workflow/ush:
-   - FV3 input.nml
+   - FV3's input.nml
    - config.sh
    - setup.sh
    - config_defaults.sh
@@ -181,7 +168,6 @@ Before proceeding with this section, make sure you have successfully
 done the following:
 
   - Built the source code
-  - Linked the fix files
   - Modified and linked the configure file
   - Modified the XML template to your needs
 
@@ -190,9 +176,15 @@ directory that contains the XML, namelists, etc.
 
 ### Load the conda environment:
 
-    module use -a /contrib3/miniconda3/modulefiles
+    module use -a /contrib/miniconda3/modulefiles
     module load miniconda3
     conda activate regional_workflow
+
+
+Alternatively, you can source an environment file from the App level:
+
+    source env/wflow_jet.env
+
 
 ### Configure the experiment:
 
@@ -318,6 +310,7 @@ real-time runs, or running real-time runs:
 | ---- | :---- |
 | Christina Holt | Christina.Holt@NOAA.gov |
 | Trevor Alcott  | Trevor.Alcott@NOAA.gov  |
+| Jaymes Kenyon  | Jaymes.Kenyon@NOAA.gov  |
 
 For science and programmatic questions related to RRFS runs at AVID:
 
