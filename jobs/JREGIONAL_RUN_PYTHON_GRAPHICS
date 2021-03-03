@@ -66,9 +66,11 @@ if [ "${RUN_ENVIR}" = "nco" ]; then
   COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
   postprd_dir="$COMOUT"
   run_dir="${COMOUT}/pyprd"
+  zip_dir="${COMOUT}/nclprd"
 else
   postprd_dir="${run_dir}/postprd"
   run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/pyprd"
+  zip_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/nclprd"
 fi
 
 # Choose an appropriate sites file for the grid
@@ -101,6 +103,7 @@ case ${GRAPHICS_TYPE} in
     extra_args="\
       --sites ${PYTHON_GRAPHICS_DIR}/static/${sites_file}\
       --max_plev 100"
+    zip_dir=${zip_dir}/skewt
     ;;
 
   *)
@@ -126,7 +129,7 @@ python -u ${PYTHON_GRAPHICS_DIR}/create_graphics.py \
   -n ${SLURM_CPUS_ON_NODE:-12} \
   -o ${run_dir} \
   -s ${CDATE} \
-  -z ${run_dir}/skewt \
+  -z ${zip_dir} \
   ${extra_args} ||
 print_err_msg_exit "\
 Call to pyscript \"${scrfunc_fn}\" failed."
