@@ -274,7 +274,7 @@ bgrd3d=${postprd_dir}/${NET}.t${cyc}z.bgrd3df${fhr}.${tmmark}.grib2
 bgsfc=${postprd_dir}/${NET}.t${cyc}z.bgsfcf${fhr}.${tmmark}.grib2
 mv_vrfy BGDAWP.GrbF${post_fhr} ${bgdawp}
 mv_vrfy BGRD3D.GrbF${post_fhr} ${bgrd3d}
-wgrib2 -match "APCP|REFC" ${bgrd3d} -grib ${bgsfc}
+wgrib2 -match "APCP|REFC|PRATE" ${bgrd3d} -grib ${bgsfc}
 
 #Link output for transfer to Jet
 # Should the following be done only if on jet??
