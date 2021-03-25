@@ -163,6 +163,7 @@ settings="\
 # Parameters needed by the job scheduler.
 #
   'account': $ACCOUNT
+  'reservation': $RESERVATION
   'sched': $SCHED
   'partition_default': ${PARTITION_DEFAULT}
   'queue_default': ${QUEUE_DEFAULT}
@@ -170,6 +171,8 @@ settings="\
   'queue_hpss': ${QUEUE_HPSS}
   'partition_fcst': ${PARTITION_FCST}
   'queue_fcst': ${QUEUE_FCST}
+  'partition_graphics': ${PARTITION_GRAPHICS}
+  'queue_graphics': ${QUEUE_GRAPHICS}
   'machine': ${MACHINE}
 #
 # Workflow task names.
@@ -183,6 +186,7 @@ settings="\
   'make_lbcs_tn': ${MAKE_LBCS_TN}
   'run_fcst_tn': ${RUN_FCST_TN}
   'run_post_tn': ${RUN_POST_TN}
+  'tag': ${TAG}
 #
 # Number of nodes to use for each task.
 #
@@ -199,7 +203,7 @@ settings="\
 # Number of cores used for a task
 #
   'ncores_run_fcst': ${PE_MEMBER01}
-  'native_run_fcst': --cpus-per-task 4 --exclusive
+  'native_run_fcst': --cpus-per-task 2 --exclusive
 #
 # Number of logical processes per node for each task.  If running without
 # threading, this is equal to the number of MPI processes per node.

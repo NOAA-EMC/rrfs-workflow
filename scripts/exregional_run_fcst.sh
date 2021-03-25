@@ -124,7 +124,7 @@ case $MACHINE in
     ulimit -s unlimited
     ulimit -a
     APRUN="srun"
-    OMP_NUM_THREADS=4
+    OMP_NUM_THREADS=2
     ;;
 
   "ODIN")
