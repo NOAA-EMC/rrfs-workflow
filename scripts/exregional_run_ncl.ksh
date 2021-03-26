@@ -112,8 +112,16 @@ ${MKDIR} -p ${workdir}
 cd ${workdir}
 pwd
 
-# Link to input file
-${LN} -s ${DATAHOME}/${POST_PREFIX}.t${INIT_HOUR}z.bgdawpf${FCST_TIME_3}.tm${INIT_HOUR}.grib2 rrfsfile.grb
+# Check that the input file exists
+input_file=${DATAHOME}/${POST_PREFIX}.t${INIT_HOUR}z.bgdawpf${FCST_TIME_3}.tm00.grib2
+
+if [ -e $input_file ] ; then
+  # Link to input file
+  ${LN} -sf ${input_file} rrfsfile.grb
+else
+  echo "Cannot find input file: ${input_file}!"
+  exit 1
+fi
 
 ${ECHO} "rrfsfile.grb" > rrfs_file.txt
 
