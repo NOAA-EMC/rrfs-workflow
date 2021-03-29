@@ -416,6 +416,14 @@ FCST_LEN_HRS="24"
 # data availble at least every 6 hours.  It is up to the user to ensure 
 # that this is the case.
 #
+# EXTRN_MDL_LBCS_FILE_NUM:
+# The number of external model files required for LBC processing.  This variable 
+# is used to formulate a dependency that determines when the GET_EXTRN_LBCS_TN
+# task is eligible to run.  For example, if the external model provides output 
+# at 3-h intervals, and a 6-h LAM forecast is desired, then 
+# EXTRN_MDL_LBCS_FILE_NUM should be set to 3; i.e., external model files for 
+# 0, 3, and 6 h--totalling three files--must be available for LBC processing.
+#
 # FV3GFS_FILE_FMT_ICS:
 # If using the FV3GFS model as the source of the ICs (i.e. if EXTRN_MDL_NAME_ICS
 # is set to "FV3GFS"), this variable specifies the format of the model
@@ -431,6 +439,7 @@ FCST_LEN_HRS="24"
 EXTRN_MDL_NAME_ICS="FV3GFS"
 EXTRN_MDL_NAME_LBCS="FV3GFS"
 LBC_SPEC_INTVL_HRS="6"
+EXTRN_MDL_LBCS_FILE_NUM="40"
 FV3GFS_FILE_FMT_ICS="nemsio"
 FV3GFS_FILE_FMT_LBCS="nemsio"
 #

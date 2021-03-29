@@ -1139,12 +1139,12 @@ case ${PREDEF_GRID_NAME} in
     WRTCMP_output_grid="rotated_latlon"
     WRTCMP_cen_lon="${ESGgrid_LON_CTR}"
     WRTCMP_cen_lat="${ESGgrid_LAT_CTR}"
-    WRTCMP_lon_lwr_left="-57.9926"
-    WRTCMP_lat_lwr_left="-50.74344"
-    WRTCMP_lon_upr_rght="57.99249"
-    WRTCMP_lat_upr_rght="50.74344"
-    WRTCMP_dlon="0.1218331"
-    WRTCMP_dlat="0.121833"
+    WRTCMP_lon_lwr_left="-55.82538869"
+    WRTCMP_lat_lwr_left="-48.57685654"
+    WRTCMP_lon_upr_rght="55.82538869"
+    WRTCMP_lat_upr_rght="48.57685654"
+    WRTCMP_dlon="0.11691181"
+    WRTCMP_dlat="0.11691181"
   fi
   ;;
 

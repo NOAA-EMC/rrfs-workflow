@@ -1,0 +1,87 @@
+MACHINE="jet"
+ACCOUNT="nrtrr"
+RESERVATION="rrfsdet"
+EXPT_BASEDIR="/home/rtrr/RRFS"
+EXPT_SUBDIR="RRFS_NA_13km_dev1"
+
+if [[ -n $RESERVATION ]] ; then
+  ACCOUNT=rtrr
+  PARTITION_DEFAULT=kjet
+  PARTITION_FCST=kjet
+  PARTITION_GRAPHICS=kjet
+fi
+
+FIXLAM_NCO_BASEDIR=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_lam.20210128
+FIXgsm=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_am.20210128
+GWD_HRRRsuite_BASEDIR=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_lam.20210128
+
+VERBOSE="TRUE"
+
+RUN_ENVIR="nco"
+PREEXISTING_DIR_METHOD="rename"
+
+PREDEF_GRID_NAME=GSD_RAP13km
+
+QUILTING="TRUE"
+CCPP_PHYS_SUITE="FV3_GSD_v0"
+FCST_LEN_HRS="12"
+LBC_SPEC_INTVL_HRS="6"
+
+HALO_BLEND=10
+
+WTIME_RUN_FCST="02:00:00"
+
+DATE_FIRST_CYCL="20210328"
+DATE_LAST_CYCL="20220328"
+CYCL_HRS=( "00" "06" "12" "18")
+
+EXTRN_MDL_NAME_ICS="FV3GFS"
+EXTRN_MDL_NAME_LBCS="FV3GFS"
+EXTRN_MDL_LBCS_FILE_NUM="14"  # 14th file is a 39-h forecast from GFS
+
+FV3GFS_FILE_FMT_ICS="grib2"
+FV3GFS_FILE_FMT_LBCS="grib2"
+
+envir="para"
+
+NET="RRFS_NA_13km"
+TAG="RRFS_dev1_NA_13km"
+
+USE_CUSTOM_POST_CONFIG_FILE="TRUE"
+CUSTOM_POST_CONFIG_FP="/mnt/lfs4/BMC/nrtrr/RRFS/dev1-13km-NA-ufs-srweather-app/src/EMC_post/parm/postxconfig-NT-fv3lam_rrfs.txt"
+ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_na_13km_dev1"
+NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
+NCL_HOME="/home/rtrr/RRFS/graphics"
+NCL_REGION="conus"
+MODEL="RRFS_NA_13km"
+
+#
+# In NCO mode, the following don't need to be explicitly set to "FALSE" 
+# in this configuration file because the experiment generation script
+# will do this (along with printing out an informational message).
+#
+#RUN_TASK_MAKE_GRID="FALSE"
+#RUN_TASK_MAKE_OROG="FALSE"
+#RUN_TASK_MAKE_SFC_CLIMO="FALSE"
+
+RUN="RRFS_NA_13km_dev1"
+COMINgfs=""
+
+STMP="/lfs4/BMC/nrtrr/NCO_dirs/stmp"  # Path to directory STMP that mostly contains input files.
+PTMP="/lfs4/BMC/nrtrr/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains input files.
+
+#
+# In NCO mode, the user must manually (e.g. after doing the build step)
+# create the symlink "${FIXrrfs}/fix_sar" that points to EMC's FIXLAM
+# directory on the machine.  For example, on hera, the symlink's target
+# needs to be
+#
+#   /scratch2/NCEPDEV/fv3-cam/emc.campara/fix_fv3cam/fix_sar
+#
+# The experiment generation script will then set FIXLAM to 
+#
+#   FIXLAM="${FIXrrfs}/fix_lam/${EMC_GRID_NAME}"
+#
+# where EMC_GRID_NAME has the value set above.
+#
+

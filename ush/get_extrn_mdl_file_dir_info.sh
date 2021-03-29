@@ -373,7 +373,12 @@ fi
 # are not in the .anl file, so switch to the former.
 #        fns=( "gfs.t${hh}z.pgrb2.0p25.anl" )  # Get only 0.25 degree files for now.
 #        fns=( "gfs.t${hh}z.pgrb2.0p25.f000" )  # Get only 0.25 degree files for now.
-        fns_on_disk=( "gfs.t${hh}z.pgrb2.0p25.f000" )  # Get only 0.25 degree files for now.
+
+        if [ "${MACHINE}" = "JET" ]; then
+          fns_on_disk=( "${yy}${ddd}${hh}${fcst_mn}0000" )
+        else
+          fns_on_disk=( "gfs.t${hh}z.pgrb2.0p25.f000" )  # Get only 0.25 degree files for now.
+        fi
         fns_in_arcv=( "gfs.t${hh}z.pgrb2.0p25.f000" )  # Get only 0.25 degree files for now.
 
       fi
@@ -451,9 +456,15 @@ and analysis or forecast (anl_or_fcst):
       elif [ "${fv3gfs_file_fmt}" = "grib2" ]; then
 
         fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
-        prefix="gfs.t${hh}z.pgrb2.0p25.f"
-        fns_on_disk=( "${fcst_hhh[@]/#/$prefix}" )
-        fns_in_arcv=( "${fcst_hhh[@]/#/$prefix}" )
+
+        if [ "${MACHINE}" = "JET" ]; then
+          prefix=( "${yy}${ddd}${hh}${fcst_mn}0" )
+          fns_on_disk=( "${fcst_hhh[@]/#/$prefix}" )
+        else
+          prefix="gfs.t${hh}z.pgrb2.0p25.f"
+          fns_on_disk=( "${fcst_hhh[@]/#/$prefix}" )
+          fns_in_arcv=( "${fcst_hhh[@]/#/$prefix}" )
+        fi
 
       fi
       ;;

@@ -95,7 +95,7 @@ else
       EXTRN_MDL_SYSBASEDIR_ICS=""
       ;;
     "JET")
-      EXTRN_MDL_SYSBASEDIR_ICS="/public/data/grids/gfs/nemsio"
+      EXTRN_MDL_SYSBASEDIR_ICS="/public/data/grids/gfs/0p25deg/grib2"
       ;;
     "ODIN")
       EXTRN_MDL_SYSBASEDIR_ICS="/scratch/ywang/test_runs/FV3_regional/gfs"
@@ -249,7 +249,7 @@ else
       EXTRN_MDL_SYSBASEDIR_LBCS=""
       ;;
     "JET")
-      EXTRN_MDL_SYSBASEDIR_LBCS="/public/data/grids/gfs/nemsio"
+      EXTRN_MDL_SYSBASEDIR_LBCS="/public/data/grids/gfs/0p25deg/grib2"
       ;;
     "ODIN")
       EXTRN_MDL_SYSBASEDIR_LBCS="/scratch/ywang/test_runs/FV3_regional/gfs"
