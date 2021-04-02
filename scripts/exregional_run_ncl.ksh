@@ -156,6 +156,9 @@ set -A ncgms  sfc_temp   \
               10m_gust   \
               sfc_hlcy  \
               in25_hlcy \
+              mx03_hlcy \
+              mx03_hlcytot \
+              mx25_hlcytot \
               sfc_lcl   \
               sfc_tcc   \
               sfc_lcc   \
