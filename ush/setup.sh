@@ -408,6 +408,8 @@ case $MACHINE in
     QUEUE_FCST=${QUEUE_FCST:-"batch"}
     PARTITION_GRAPHICS=${PARTITION_GRAPHICS:-"kjet,xjet"}
     QUEUE_GRAPHICS=${QUEUE_GRAPHICS:-"batch"}
+    PARTITION_ANALYSIS=${PARTITION_ANALYSIS:-"vjet,kjet,xjet"}
+    QUEUE_ANALYSIS=${QUEUE_ANALYSIS:-"batch"}
     ;;
 
   "ODIN")
@@ -698,6 +700,8 @@ case $MACHINE in
     TOPO_DIR=${TOPO_DIR:-"/lfs4/HFIP/hfv3gfs/glopara/git/fv3gfs/fix/fix_orog"}
     SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/lfs4/HFIP/hfv3gfs/glopara/git/fv3gfs/fix/fix_sfc_climo"}
     FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
+    FIX_GSI=${FIX_GSI:-"/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_gsi"}
+    FIX_CRTM=${FIX_CRTM:-"/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_crtm"}
     ;;
 
   "ODIN")
@@ -904,10 +908,11 @@ fi
 # Set the array containing the forecast hours at which the lateral 
 # boundary conditions (LBCs) need to be updated.  Note that this array
 # does not include the 0-th hour (initial time).
+# Need to include 0-th hour for data assimilation cycling.
 #
 #-----------------------------------------------------------------------
 #
-LBC_SPEC_FCST_HRS=($( seq ${LBC_SPEC_INTVL_HRS} ${LBC_SPEC_INTVL_HRS} \
+LBC_SPEC_FCST_HRS=($( seq 0 ${LBC_SPEC_INTVL_HRS} \
                           ${FCST_LEN_HRS} ))
 #
 #-----------------------------------------------------------------------
@@ -1145,6 +1150,12 @@ check_for_preexist_dir_file "$EXPTDIR" "${PREEXISTING_DIR_METHOD}"
 # the fixed files containing the grid, orography, and surface climatology
 # on the native FV3-LAM grid.
 #
+# FIXgsi:
+# This is the directory that will contain the fixed files for GSI run
+#
+# FIXcrtm:
+# This is the directory that will contain the coefficient files for CRTM
+#
 # CYCLE_BASEDIR:
 # The base directory in which the directories for the various cycles will
 # be placed.
@@ -1175,6 +1186,8 @@ LOGDIR="${EXPTDIR}/log/@Y@m@d/@H"
 
 FIXam="${EXPTDIR}/fix_am"
 FIXLAM="${EXPTDIR}/fix_lam"
+FIXgsi="${EXPTDIR}/fix_gsi"
+FIXcrtm="${EXPTDIR}/fix_crtm"
 
 if [ "${RUN_ENVIR}" = "nco" ]; then
 
@@ -1324,6 +1337,7 @@ DATA_TABLE_FP="${EXPTDIR}/${DATA_TABLE_FN}"
 FIELD_TABLE_FP="${EXPTDIR}/${FIELD_TABLE_FN}"
 FV3_NML_FN="${FV3_NML_BASE_SUITE_FN%.*}"
 FV3_NML_FP="${EXPTDIR}/${FV3_NML_FN}"
+FV3_NML_RESTART_FP="${EXPTDIR}/${FV3_NML_FN}_restart"
 NEMS_CONFIG_FP="${EXPTDIR}/${NEMS_CONFIG_FN}"
 #
 #-----------------------------------------------------------------------
@@ -2456,6 +2470,18 @@ GWD_HRRRsuite_DIR="${GWD_HRRRsuite_DIR}"
 NDIGITS_ENSMEM_NAMES="${NDIGITS_ENSMEM_NAMES}"
 ENSMEM_NAMES=( $( printf "\"%s\" " "${ENSMEM_NAMES[@]}" ))
 FV3_NML_ENSMEM_FPS=( $( printf "\"%s\" " "${FV3_NML_ENSMEM_FPS[@]}" ))
+
+# for data assimilation
+OBSPATH="${OBSPATH}"
+OBSPATH_NSSLMOSIAC="${OBSPATH_NSSLMOSIAC}"
+LIGHTNING_ROOT="${LIGHTNING_ROOT}"
+ENKF_FCST="${ENKF_FCST}"
+
+FIX_GSI="${FIX_GSI}"
+FIX_CRTM="${FIX_CRTM}"
+AIRCRAFT_REJECT="${FIX_GSI}"
+SFCOBS_USELIST="${FIX_GSI}"
+
 #
 #-----------------------------------------------------------------------
 #
@@ -2491,6 +2517,7 @@ DATA_TABLE_FP="${DATA_TABLE_FP}"
 FIELD_TABLE_FP="${FIELD_TABLE_FP}"
 FV3_NML_FN="${FV3_NML_FN}"   # This may not be necessary...
 FV3_NML_FP="${FV3_NML_FP}"
+FV3_NML_RESTART_FP="${FV3_NML_RESTART_FP}"
 NEMS_CONFIG_FP="${NEMS_CONFIG_FP}"
 
 FV3_EXEC_FP="${FV3_EXEC_FP}"

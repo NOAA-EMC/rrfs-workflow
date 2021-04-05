@@ -307,7 +307,7 @@ ules_dir) for the specified task (task_name) failed:
   modulefile_local = \"${modulefile_local}\"
   modules_dir = \"${modules_dir}\""    
     fi
-
+#
 #  else # using default modulefile
 #
 #    module load "${default_modulefile_name}" || print_err_msg_exit "\

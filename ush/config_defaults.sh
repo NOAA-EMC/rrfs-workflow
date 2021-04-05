@@ -113,6 +113,8 @@ PARTITION_FCST=""
 QUEUE_FCST=""
 PARTITION_GRAPHICS=""
 QUEUE_GRAPHICS=""
+PARTITION_ANALYSIS=""
+QUEUE_ANALYSIS=""
 #
 #-----------------------------------------------------------------------
 #
@@ -227,6 +229,12 @@ EXPT_SUBDIR=""
 # 
 #   $PTMP/com/$NET/$envir/$RUN.$yyyymmdd/$hh
 #
+# Setup default observation locations for data assimilation:
+#
+#    OBSPATH:   observation BUFR file path
+#    OBSPATH_NSSLMOSIAC: location of NSSL radar reflectivity 
+#    LIGHTNING_ROOT: location of lightning observations
+#    ENKF_FCSTL: location of global ensemble forecast
 #-----------------------------------------------------------------------
 #
 COMINgfs="/base/path/of/directory/containing/gfs/input/files"
@@ -243,6 +251,12 @@ NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
 NCL_HOME="/home/rtrr/RRFS/graphics"
 NCL_REGION="conus"
 MODEL="NO MODEL CHOSEN"
+
+OBSPATH="/public/data/grids/rap/obs"
+OBSPATH_NSSLMOSIAC="/public/data/radar/mrms"
+LIGHTNING_ROOT="/public/data/lightning"
+ENKF_FCST="/lfs4/BMC/public/data/grids/enkf/atm"
+
 #
 #-----------------------------------------------------------------------
 #
@@ -385,12 +399,26 @@ WFLOW_LAUNCH_LOG_FN="log.launch_FV3LAM_wflow"
 # FCST_LEN_HRS:
 # The length of each forecast, in integer hours.
 #
+# FCST_LEN_HRS_CYCLES:
+# The length of forecast for each cycle, in integer hours.
+# When it empty, all forecast will be FCST_LEN_HRS
+#
+# DA_CYCLE_INTERV:
+# Data assimilation cycle interval, in integer hours for now.
+#
+# RESTART_INTERVAL:
+# Set up frequenency or list of the forecast hours that FV3 should
+# generate the restart files.
+#
 #-----------------------------------------------------------------------
 #
 DATE_FIRST_CYCL="YYYYMMDD"
 DATE_LAST_CYCL="YYYYMMDD"
 CYCL_HRS=( "HH1" "HH2" )
 FCST_LEN_HRS="24"
+FCST_LEN_HRS_CYCLES=( )
+DA_CYCLE_INTERV="3"
+RESTART_INTERVAL="3,6"
 #
 #-----------------------------------------------------------------------
 #
@@ -416,13 +444,8 @@ FCST_LEN_HRS="24"
 # data availble at least every 6 hours.  It is up to the user to ensure 
 # that this is the case.
 #
-# EXTRN_MDL_LBCS_FILE_NUM:
-# The number of external model files required for LBC processing.  This variable 
-# is used to formulate a dependency that determines when the GET_EXTRN_LBCS_TN
-# task is eligible to run.  For example, if the external model provides output 
-# at 3-h intervals, and a 6-h LAM forecast is desired, then 
-# EXTRN_MDL_LBCS_FILE_NUM should be set to 3; i.e., external model files for 
-# 0, 3, and 6 h--totalling three files--must be available for LBC processing.
+# EXTRN_MDL_LBCS_OFFSET_HRS:
+#  boundary file offset hours.
 #
 # FV3GFS_FILE_FMT_ICS:
 # If using the FV3GFS model as the source of the ICs (i.e. if EXTRN_MDL_NAME_ICS
@@ -439,7 +462,7 @@ FCST_LEN_HRS="24"
 EXTRN_MDL_NAME_ICS="FV3GFS"
 EXTRN_MDL_NAME_LBCS="FV3GFS"
 LBC_SPEC_INTVL_HRS="6"
-EXTRN_MDL_LBCS_FILE_NUM="40"
+EXTRN_MDL_LBCS_OFFSET_HRS=""
 FV3GFS_FILE_FMT_ICS="nemsio"
 FV3GFS_FILE_FMT_LBCS="nemsio"
 #
@@ -1063,6 +1086,13 @@ SFC_CLIMO_FIELDS=( \
 # The location on disk of the static surface climatology input fields, used by 
 # sfc_climo_gen. These files are only used if RUN_TASK_MAKE_SFC_CLIMO=TRUE
 #
+# FIX_GSI:
+# System directory in which the fixed 
+# files that are needed to run the GSI are located
+#
+# FIX_CRTM:
+# System directory in which the CRTM coefficient files are located 
+#
 # FNGLAC, ..., FNMSKH:
 # Names of (some of the) global data files that are assumed to exist in 
 # a system directory specified (this directory is machine-dependent; 
@@ -1108,6 +1138,7 @@ SFC_CLIMO_FIELDS=( \
 # specifies its target file in FIXam (where columns are delineated by the
 # pipe symbol "|").
 #
+# 
 #-----------------------------------------------------------------------
 #
 # Because the default values are dependent on the platform, we set these
@@ -1116,6 +1147,8 @@ SFC_CLIMO_FIELDS=( \
 FIXgsm=""
 TOPO_DIR=""
 SFC_CLIMO_INPUT_DIR=""
+FIX_GSI=""
+FIX_CRTM=""
 
 FNGLAC="global_glacier.2x2.grb"
 FNMXIC="global_maxice.2x2.grb"
@@ -1224,6 +1257,10 @@ MAKE_ICS_TN="make_ics"
 MAKE_LBCS_TN="make_lbcs"
 RUN_FCST_TN="run_fcst"
 RUN_POST_TN="run_post"
+
+ANAL_GSI_INPUT_TN="anal_gsi_input"
+ANAL_GSI_RESTART_TN="anal_gsi_restart"
+
 #
 # Number of nodes.
 #
@@ -1236,6 +1273,11 @@ NNODES_MAKE_ICS="4"
 NNODES_MAKE_LBCS="4"
 NNODES_RUN_FCST=""  # This is calculated in the workflow generation scripts, so no need to set here.
 NNODES_RUN_POST="2"
+NNODES_RUN_ANAL="16"
+#
+# Number of cores.
+#
+NCORES_RUN_ANAL="4"
 #
 # Number of MPI processes per node.
 #
@@ -1248,6 +1290,7 @@ PPN_MAKE_ICS="12"
 PPN_MAKE_LBCS="12"
 PPN_RUN_FCST="24"  # This may have to be changed depending on the number of threads used.
 PPN_RUN_POST="24"
+PPN_RUN_ANAL="24"
 #
 # Walltimes.
 #
@@ -1260,6 +1303,7 @@ WTIME_MAKE_ICS="00:30:00"
 WTIME_MAKE_LBCS="00:30:00"
 WTIME_RUN_FCST="04:30:00"
 WTIME_RUN_POST="00:15:00"
+WTIME_RUN_ANAL="00:30:00"
 #
 # Maximum number of attempts.
 #
@@ -1271,7 +1315,9 @@ MAXTRIES_GET_EXTRN_LBCS="1"
 MAXTRIES_MAKE_ICS="1"
 MAXTRIES_MAKE_LBCS="1"
 MAXTRIES_RUN_FCST="1"
+MAXTRIES_ANAL_GSI="1"
 MAXTRIES_RUN_POST="1"
+MAXTRIES_RUN_ANAL="1"
 #
 #-----------------------------------------------------------------------
 #
@@ -1323,6 +1369,24 @@ CUSTOM_POST_CONFIG_FP=""
 #
 DO_ENSEMBLE="FALSE"
 NUM_ENS_MEMBERS="1"
+#
+#-----------------------------------------------------------------------
+#
+# Set parameters associated with running data assimilation.  Definitions:
+#
+# DO_DACYCLE:
+# Flag that determines whether to run a data assimilation cycle.
+#
+DO_DACYCLE="FALSE"
+#
+#-----------------------------------------------------------------------
+#
+# Set parameters associated with running retrospective experiments.  Definitions:
+#
+# DO_RETRO:
+# Flag turn on the retrospective experiments.
+#
+DO_RETRO="FALSE"
 #
 #-----------------------------------------------------------------------
 #

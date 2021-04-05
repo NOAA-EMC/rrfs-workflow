@@ -100,6 +100,20 @@ run directory (run_dir):
   dot_quilting_dot="."${QUILTING,,}"."
   dot_print_esmf_dot="."${PRINT_ESMF,,}"."
 #
+# decide the forecast length for this cycle
+#
+
+  num_fhrs=( "${#FCST_LEN_HRS_CYCLES[@]}" )
+  ihh=`expr ${hh} + 0`
+  if [ ${num_fhrs} -gt ${ihh} ]; then
+     FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS_CYCLES[${ihh}]}
+  else
+     FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS}
+  fi
+  print_info_msg "$VERBOSE" " The forecast length for cycle (\"${hh}\") is
+                 ( \"${FCST_LEN_HRS_thiscycle}\") "
+
+#
 #-----------------------------------------------------------------------
 #
 # Create a multiline variable that consists of a yaml-compliant string
@@ -114,10 +128,11 @@ run directory (run_dir):
   'start_month': $mm
   'start_day': $dd
   'start_hour': $hh
-  'nhours_fcst': ${FCST_LEN_HRS}
+  'nhours_fcst': ${FCST_LEN_HRS_thiscycle}
   'dt_atmos': ${DT_ATMOS}
   'atmos_nthreads': ${nthreads:-1}
   'ncores_per_node': ${NCORES_PER_NODE}
+  'restart_interval': ${RESTART_INTERVAL}
   'quilting': ${dot_quilting_dot}
   'print_esmf': ${dot_print_esmf_dot}
   'output_grid': ${WRTCMP_output_grid}"

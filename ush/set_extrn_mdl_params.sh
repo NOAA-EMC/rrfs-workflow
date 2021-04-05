@@ -168,20 +168,22 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-case ${EXTRN_MDL_NAME_LBCS} in
-  "GSMGFS")
-    EXTRN_MDL_LBCS_OFFSET_HRS="0"
-    ;;
-  "FV3GFS")
-    EXTRN_MDL_LBCS_OFFSET_HRS="0"
-    ;;
-  "RAP")
-    EXTRN_MDL_LBCS_OFFSET_HRS="3"
-    ;;
-  "HRRR")
-    EXTRN_MDL_LBCS_OFFSET_HRS="0"
-    ;;
-esac
+if [[ -z ${EXTRN_MDL_LBCS_OFFSET_HRS} ]]; then
+  case ${EXTRN_MDL_NAME_LBCS} in
+    "GSMGFS")
+      EXTRN_MDL_LBCS_OFFSET_HRS="0"
+      ;;
+    "FV3GFS")
+      EXTRN_MDL_LBCS_OFFSET_HRS="0"
+      ;;
+    "RAP")
+      EXTRN_MDL_LBCS_OFFSET_HRS="3"
+      ;;
+    "HRRR")
+      EXTRN_MDL_LBCS_OFFSET_HRS="0"
+      ;;
+  esac
+fi
 #
 #-----------------------------------------------------------------------
 #
