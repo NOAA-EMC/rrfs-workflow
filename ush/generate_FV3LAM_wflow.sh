@@ -163,6 +163,7 @@ settings="\
 # Parameters needed by the job scheduler.
 #
   'account': $ACCOUNT
+  'service_account': ${SERVICE_ACCOUNT:-$ACCOUNT}
   'reservation': $RESERVATION
   'sched': $SCHED
   'partition_default': ${PARTITION_DEFAULT}

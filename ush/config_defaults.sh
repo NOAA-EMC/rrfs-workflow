@@ -46,6 +46,10 @@ RUN_ENVIR="nco"
 # ACCOUNT:
 # The account under which to submit jobs to the queue.
 #
+# SERVICE_ACCOUNT:
+# The account under which to submit non-reservation jobs to the queue.
+# Defaults to ACCOUNT if not set.
+#
 # SCHED:
 # The job scheduler to use (e.g. slurm).  Set this to an empty string in
 # order for the experiment generation script to set it depending on the
@@ -103,6 +107,7 @@ RUN_ENVIR="nco"
 #
 MACHINE="BIG_COMPUTER"
 ACCOUNT="project_name"
+SERVICE_ACCOUNT=""
 RESERVATION=""
 SCHED=""
 PARTITION_DEFAULT=""
