@@ -154,7 +154,7 @@ case $MACHINE in
   ulimit -a
   APRUN="srun"
   LD_LIBRARY_PATH="${UFS_WTHR_MDL_DIR}/FV3/ccpp/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-  NCKS=/apps/nco/4.1.0-intel/bin/ncks
+  NCKS=ncks
   ;;
 #
 "ODIN")
@@ -244,30 +244,7 @@ for loop in $loops; do
   done
 done
 
-size=`du --apparent-size --block-size=1 --dereference ${ENKF_FCST}/${enkfcstname}.mem001.${ens_type} | grep -o '..........' | sed -n '1 p'`
-ls ${ENKF_FCST}/${enkfcstname}.mem001.${ens_type} > filelist03
-
-n=2
-while [[ $n -le 80 ]] ; do
-  
-  if [ $n -lt 10  ]; then
-    nn=00$n
-  else
-    nn=0$n
-  fi
-
-  size2=`du --apparent-size --block-size=1 --dereference ${ENKF_FCST}/${enkfcstname}.mem${nn}.${ens_type} | grep -o '..........' | sed -n '1 p'`
-
-  if [[ $size2 -lt $size ]]; then
-    print_info_msg "$VERBOSE"  "Bad GDAS member number ${nn}."
-  else
-    ls ${ENKF_FCST}/${enkfcstname}.mem${nn}.${ens_type} >> filelist03
-  fi
-
-  n=$((n + 1))
-
-done
-
+ls ${ENKF_FCST}/${enkfcstname}.mem0??.${ens_type} >> filelist03
 
 #
 #-----------------------------------------------------------------------
