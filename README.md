@@ -87,14 +87,21 @@ Building need be done only once if no source code is changed.
 - Source the build environment (must be in bash shell)
 ```
     bash # If your default shell is not bash
+    source /etc/profile.d/modules.sh
     source env/build_jet_intel.env
 ```
-- Build the code (from top level SRW App).
+- Build the code for UFS_UTILS, ufs_weather_model, and UPP only(from top level SRW App).
 ```
     mkdir build
     cd build
     cmake .. -DCMAKE_INSTALL_PREFIX=..
     make -j 4 2>&1 | tee build.log
+```
+- You can also use devbuild.sh to build all the code including data assimilation components (from top level SRW App).
+```
+    On Jet        :   devbuild.sh jet intel 
+    On Hera       :   devbuild.sh hera intel 
+    On Wcoss(Dell):   devbuild.sh wcoss_dell_p3 intel 
 ```
 
 ### Configuring
@@ -133,6 +140,11 @@ You will also likely want to change the dates over which to run:
 
     DATE_FIRST_CYCL
     DATE_LAST_CYCL
+
+The run can be configured as cold start only or data assimilation cycling by setting:
+
+    DO_DACYCLE="false"  : cold start only
+    DO_DACYCLE="true"   : data assimilation cycling
 
 The configure script should then be linked to the expected name:
 
@@ -183,7 +195,9 @@ directory that contains the XML, namelists, etc.
 
 Alternatively, you can source an environment file from the App level:
 
-    source env/wflow_jet.env
+    On Jet        :     source env/wflow_jet.env
+    On Hera       :     source env/wflow_hera.env
+    On WCOSS(Dell):     source env/wflow_wcoss_dell_p3.env
 
 
 ### Configure the experiment:
