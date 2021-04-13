@@ -398,7 +398,7 @@ case $MACHINE in
     ;;
 
   "JET")
-    NCORES_PER_NODE=24
+    NCORES_PER_NODE=${NCORES_PER_NODE}
     SCHED="${SCHED:-slurm}"
     PARTITION_DEFAULT=${PARTITION_DEFAULT:-"sjet,vjet,kjet,xjet"}
     QUEUE_DEFAULT=${QUEUE_DEFAULT:-"batch"}
@@ -1192,7 +1192,9 @@ FIXcrtm="${EXPTDIR}/fix_crtm"
 if [ "${RUN_ENVIR}" = "nco" ]; then
 
   CYCLE_BASEDIR="$STMP/tmpnwprd/$RUN"
-  check_for_preexist_dir_file "${CYCLE_BASEDIR}" "${PREEXISTING_DIR_METHOD}"
+  if [ "${NEW_STMP}" = "TRUE" ]; then
+    check_for_preexist_dir_file "${CYCLE_BASEDIR}" "${PREEXISTING_DIR_METHOD}"
+  fi
   COMROOT="$PTMP/com"
   COMOUT_BASEDIR="$COMROOT/$NET/$envir"
 

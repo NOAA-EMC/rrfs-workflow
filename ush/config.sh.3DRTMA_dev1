@@ -1,0 +1,117 @@
+#!/bin/bash
+MACHINE="jet"
+ACCOUNT="nrtrr"
+RESERVATION="3drtma"
+EXPT_BASEDIR="/home/rtrr/RTMA"
+EXPT_SUBDIR="3DRTMA_dev1"
+
+if [[ -n $RESERVATION ]] ; then
+  ACCOUNT=rtrr
+  SERVICE_ACCOUNT=nrtrr
+  PARTITION_DEFAULT=kjet
+  PARTITION_FCST=kjet
+  PARTITION_GRAPHICS=kjet
+  PARTITION_ANALYSIS=kjet
+fi
+
+FIXLAM_NCO_BASEDIR=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_lam.20210128
+FIXgsm=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_am.20210128
+GWD_HRRRsuite_BASEDIR=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_lam.20210128
+
+FIX_GSI=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_gsi ### new background
+FIX_CRTM=/home/rtrr/FIX_EXEC_MODULE/crtm/CRTM_v2.3.0
+
+VERBOSE="TRUE"
+
+RUN_ENVIR="nco"
+PREEXISTING_DIR_METHOD="rename"
+
+PREDEF_GRID_NAME=RRFS_CONUS_3km
+
+DO_DACYCLE="true"
+
+QUILTING="TRUE"
+CCPP_PHYS_SUITE="FV3_HRRR"
+FCST_LEN_HRS="0" #the number of run_post jobs #lbcs
+FCST_LEN_HRS_CYCLES=(1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1)
+LBC_SPEC_INTVL_HRS="1"
+EXTRN_MDL_LBCS_OFFSET_HRS="1"
+DA_CYCLE_INTERV="1" #need to be 1 to have hourly DA
+RESTART_INTERVAL="1" #"1 2 3 4 5 6" #restart file used by GSI, don't need this, how to turn off writing restart files?
+
+NCORES_RUN_ANAL=240
+HALO_BLEND=10
+#LAYOUT_X="25"
+#LAYOUT_Y="8"
+#LAYOUT_X="28"
+#LAYOUT_Y="14"
+#LAYOUT_X="23"
+#LAYOUT_Y="10"
+LAYOUT_X="17"
+LAYOUT_Y="10"
+
+if [[ -n $RESERVATION ]] ; then
+  NNODES_MAKE_ICS="3"
+  PPN_MAKE_ICS="20"
+  NNODES_MAKE_LBCS="3"
+  PPN_MAKE_LBCS="20"
+  NNODES_RUN_POST="1"
+  PPN_RUN_POST="40"
+fi
+
+WTIME_RUN_FCST="00:05:00" #normally 2 minutes is enough to generate dynf000.nc and phyf000.nc
+
+DATE_FIRST_CYCL="20210401"
+DATE_LAST_CYCL="20211231"
+CYCL_HRS=( "00" "12" ) #not used anymore
+
+EXTRN_MDL_NAME_ICS="HRRR"
+EXTRN_MDL_NAME_LBCS="RAP"
+
+envir="para"
+
+NET="3DRTMA" ##product name prefix: ${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2
+TAG="3DRTMA_dev1" ## used by job names
+IS_3DRTMA="TRUE"
+NCORES_PER_NODE=40 #kjet
+FG_ROOTDIR="/lfs4/BMC/nrtrr/NCO_dirs/stmp/tmpnwprd/RRFS_dev1" #only needed by 3DRTMA
+NEW_STMP="FALSE"  #don't rename/remove $STMP
+
+USE_CUSTOM_POST_CONFIG_FILE="TRUE"
+CUSTOM_POST_CONFIG_FP="/mnt/lfs4/BMC/nrtrr/3DRTMA/3DRTMA-dev1-ufs-srweather-app/src/EMC_post/parm/postxconfig-NT-fv3lam_rrfs.txt"
+ARCHIVEDIR="/5year/BMC/wrfruc/3drtma_dev1"
+NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
+NCL_HOME="/home/rtrr/RTMA/graphics"
+NCL_REGION="conus"
+MODEL="3DRTMA_dev1" #used by NCL
+
+#
+# In NCO mode, the following don't need to be explicitly set to "FALSE" 
+# in this configuration file because the experiment generation script
+# will do this (along with printing out an informational message).
+#
+#RUN_TASK_MAKE_GRID="FALSE"
+#RUN_TASK_MAKE_OROG="FALSE"
+#RUN_TASK_MAKE_SFC_CLIMO="FALSE"
+
+RUN="3DRTMA_dev1"
+COMINgfs=""
+
+STMP="/lfs4/BMC/nrtrr/NCO_dirs/stmp"  # Path to directory STMP that mostly contains input files.
+PTMP="/lfs4/BMC/nrtrr/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains input files.
+
+#
+# In NCO mode, the user must manually (e.g. after doing the build step)
+# create the symlink "${FIXrrfs}/fix_sar" that points to EMC's FIXLAM
+# directory on the machine.  For example, on hera, the symlink's target
+# needs to be
+#
+#   /scratch2/NCEPDEV/fv3-cam/emc.campara/fix_fv3cam/fix_sar
+#
+# The experiment generation script will then set FIXLAM to 
+#
+#   FIXLAM="${FIXrrfs}/fix_lam/${EMC_GRID_NAME}"
+#
+# where EMC_GRID_NAME has the value set above.
+#
+

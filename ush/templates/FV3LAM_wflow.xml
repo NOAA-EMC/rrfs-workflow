@@ -70,6 +70,11 @@ Directories and files.
 <!ENTITY JOBSDIR                  "{{ jobsdir }}">
 <!ENTITY LOGDIR                   "{{ logdir }}">
 <!ENTITY CYCLE_BASEDIR            "{{ cycle_basedir }}">
+{%- if is_3drtma %}
+<!ENTITY FG_ROOT                  "{{ fg_rootdir }}">
+{%- else %}
+<!ENTITY FG_ROOT                  "{{ cycle_basedir }}">
+{%- endif %}
 <!ENTITY GLOBAL_VAR_DEFNS_FP      "{{ global_var_defns_fp }}">
 <!ENTITY LOAD_MODULES_RUN_TASK_FP "{{ load_modules_run_task_fp }}">
 
@@ -254,7 +259,7 @@ MODULES_RUN_TASK_FP script.
 
   </task>
 {% endif %}
-
+{% if not is_3drtma %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -423,8 +428,10 @@ MODULES_RUN_TASK_FP script.
     </dependency>
 
   </task>
+{%- endif %}
 
 {%- if do_dacycle %}
+{%- if not is_3drtma %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -444,14 +451,14 @@ MODULES_RUN_TASK_FP script.
     <nodesize>&NCORES_PER_NODE;</nodesize>
     {% endif -%}
     <walltime>{{ wtime_run_anal }}</walltime>
-    <jobname>&ANAL_GSI_INPUT_TN;</jobname>
+    <jobname>&TAG;_&ANAL_GSI_INPUT_TN;</jobname>
     <join><cyclestr>&LOGDIR;/&ANAL_GSI_INPUT_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CYCLE_ROOT</name><value><cyclestr>&CYCLE_BASEDIR;</cyclestr></value></envar>
+    <envar><name>FG_ROOT</name><value><cyclestr>&CYCLE_BASEDIR;</cyclestr></value></envar>
     <envar><name>BKTYPE</name><value><cyclestr>1</cyclestr></value></envar>
 
     <dependency>
@@ -463,13 +470,18 @@ MODULES_RUN_TASK_FP script.
     </dependency>
 
   </task>
+{%- endif %}
 
 <!--
 ************************************************************************
 ************************************************************************
 -->
 
+{% if is_3drtma %}
+  <task name="&ANAL_GSI_RESTART_TN;" cycledefs="forecast,dacycle" maxtries="{{ maxtries_anal_gsi }}">
+{%- else %}
   <task name="&ANAL_GSI_RESTART_TN;" cycledefs="dacycle" maxtries="{{ maxtries_anal_gsi }}">
+{%- endif %}
 
     &RSRV_ANALYSIS;
     &WALL_LIMIT_ANAL;
@@ -483,29 +495,33 @@ MODULES_RUN_TASK_FP script.
     <nodesize>&NCORES_PER_NODE;</nodesize>
     {% endif -%}
     <walltime>{{ wtime_run_anal }}</walltime>
-    <jobname>&ANAL_GSI_RESTART_TN;</jobname>
+    <jobname>&TAG;_&ANAL_GSI_RESTART_TN;</jobname>
     <join><cyclestr>&LOGDIR;/&ANAL_GSI_RESTART_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CYCLE_ROOT</name><value><cyclestr>&CYCLE_BASEDIR;</cyclestr></value></envar>
+    <envar><name>FG_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
     <envar><name>BKTYPE</name><value><cyclestr>0</cyclestr></value></envar>
 
     <dependency>
       <or>
         <and>
           <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
+          {%- if not is_3drtma %}
           <taskdep task="&MAKE_LBCS_TN;"/>
-          <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&CYCLE_BASEDIR;/@Y@m@d@H/dynf00{{ da_cycle_interval_hrs }}.nc</cyclestr></datadep>
+          {%- endif %}
+          <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&FG_ROOT;/@Y@m@d@H/dynf00{{ da_cycle_interval_hrs }}.nc</cyclestr></datadep>
         </and>
         <and>
+          {%- if not is_3drtma %}
           <taskdep task="&MAKE_LBCS_TN;"/>
+          {%- endif %}
           <timedep><cyclestr offset="&START_TIME_ANALYSIS;">@Y@m@d@H@M00</cyclestr></timedep>
           <or>
             {%- for h in range(da_cycle_interval_hrs+da_cycle_interval_hrs, 6+1, da_cycle_interval_hrs) %}
-            <datadep age="00:00:05:00"><cyclestr offset="-{{ h }}:00:00">&CYCLE_BASEDIR;/@Y@m@d@H/dynf{{ "%03d" % h}}.nc</cyclestr></datadep>
+            <datadep age="00:00:05:00"><cyclestr offset="-{{ h }}:00:00">&FG_ROOT;/@Y@m@d@H/dynf{{ "%03d" % h}}.nc</cyclestr></datadep>
             {%- endfor %}
           </or>
         </and>

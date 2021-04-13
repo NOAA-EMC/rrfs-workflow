@@ -55,7 +55,7 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "CYCLE_DIR" "ANALWORKDIR" "CYCLE_ROOT")
+valid_args=( "CYCLE_DIR" "ANALWORKDIR" "FG_ROOT")
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -200,7 +200,7 @@ if [ ${BKTYPE} -eq 1 ]; then  # cold start, use background from INPUT
   bkpath=${CYCLE_DIR}/INPUT
 else
   YYYYMMDDHHmInterv=`date +%Y%m%d%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago"`
-  bkpath=${CYCLE_ROOT}/${YYYYMMDDHHmInterv}/RESTART  # cycling, use background from RESTART
+  bkpath=${FG_ROOT}/${YYYYMMDDHHmInterv}/RESTART  # cycling, use background from RESTART
 fi
 
 print_info_msg "$VERBOSE" "FIX_GSI is $FIX_GSI"
@@ -306,7 +306,7 @@ else                          # cycle uses background from restart
     else
       n=$((n + ${DA_CYCLE_INTERV}))
       YYYYMMDDHHmInterv=`date +%Y%m%d%H -d "${START_DATE} ${n} hours ago"`
-      bkpath=${CYCLE_ROOT}/${YYYYMMDDHHmInterv}/RESTART  # cycling, use background from RESTART
+      bkpath=${FG_ROOT}/${YYYYMMDDHHmInterv}/RESTART  # cycling, use background from RESTART
       if [ ${n} -eq ${FCST_LEN_HRS} ]; then
         restart_prefix=""
       fi
@@ -541,6 +541,16 @@ if [ ${BKTYPE} -eq 1 ]; then  # cold start, put analysis back to current INPUT
   cp ${ANALWORKDIR}/fv3_dynvars ${CYCLE_DIR}/INPUT/gfs_data.tile7.halo0.nc
   cp ${ANALWORKDIR}/fv3_sfcdata ${CYCLE_DIR}/INPUT/sfc_data.tile7.halo0.nc
 else                          # cycling, generate INPUT from previous cycle RESTART and GSI analysis
+  if [ "${NET}" = "3DRTMA" ]; then
+    #find a bdry file last modified before current cycle time and size > 100M 
+    #to make sure it exists and was written out completely. 
+    mkdir -p ${CYCLE_DIR}/INPUT
+    TIME1HAGO=`date -d "${START_DATE}" +"%Y-%m-%d %H:%M:%S"`
+    bdryfile0=${FG_ROOT}/`cd $FG_ROOT;find . -name "gfs_bndy.tile7.000.nc" ! -newermt "$TIME1HAGO" -size +100M | xargs ls -1rt $bdryfiles |tail -n 1`
+    bdryfile1=`echo $bdryfile0 | sed -e "s/gfs_bndy.tile7.000.nc/gfs_bndy.tile7.001.nc/"`
+    ln_vrfy -snf ${bdryfile0} ${CYCLE_DIR}/INPUT
+    ln_vrfy -snf ${bdryfile1} ${CYCLE_DIR}/INPUT
+  fi
   cp_vrfy ${bkpath}/${restart_prefix}coupler.res                ${CYCLE_DIR}/INPUT/coupler.res
   cp_vrfy ${bkpath}/${restart_prefix}fv_core.res.nc             ${CYCLE_DIR}/INPUT/fv_core.res.nc
   cp_vrfy ${bkpath}/${restart_prefix}fv_srf_wnd.res.tile1.nc    ${CYCLE_DIR}/INPUT/fv_srf_wnd.res.tile1.nc
@@ -548,7 +558,7 @@ else                          # cycling, generate INPUT from previous cycle REST
   cp_vrfy ${ANALWORKDIR}/fv3_dynvars                            ${CYCLE_DIR}/INPUT/fv_core.res.tile1.nc
   cp_vrfy ${ANALWORKDIR}/fv3_tracer                             ${CYCLE_DIR}/INPUT/fv_tracer.res.tile1.nc
   cp_vrfy ${ANALWORKDIR}/fv3_sfcdata                            ${CYCLE_DIR}/INPUT/sfc_data.nc
-  cp_vrfy ${CYCLE_ROOT}/${YYYYMMDDHHmInterv}/INPUT/gfs_ctrl.nc  ${CYCLE_DIR}/INPUT/gfs_ctrl.nc
+  cp_vrfy ${FG_ROOT}/${YYYYMMDDHHmInterv}/INPUT/gfs_ctrl.nc  ${CYCLE_DIR}/INPUT/gfs_ctrl.nc
 fi
 
 
