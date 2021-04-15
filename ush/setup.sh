@@ -2481,8 +2481,8 @@ ENKF_FCST="${ENKF_FCST}"
 
 FIX_GSI="${FIX_GSI}"
 FIX_CRTM="${FIX_CRTM}"
-AIRCRAFT_REJECT="${FIX_GSI}"
-SFCOBS_USELIST="${FIX_GSI}"
+AIRCRAFT_REJECT="${AIRCRAFT_REJECT}"
+SFCOBS_USELIST="${SFCOBS_USELIST}"
 
 #
 #-----------------------------------------------------------------------

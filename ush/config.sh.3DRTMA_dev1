@@ -3,7 +3,7 @@ MACHINE="jet"
 ACCOUNT="nrtrr"
 RESERVATION="3drtma"
 EXPT_BASEDIR="/home/rtrr/RTMA"
-EXPT_SUBDIR="3DRTMA_dev1"
+EXPT_SUBDIR="RTMA_dev1"
 
 if [[ -n $RESERVATION ]] ; then
   ACCOUNT=rtrr
@@ -18,7 +18,7 @@ FIXLAM_NCO_BASEDIR=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_lam.20210128
 FIXgsm=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_am.20210128
 GWD_HRRRsuite_BASEDIR=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_lam.20210128
 
-FIX_GSI=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_gsi ### new background
+FIX_GSI=/mnt/lfs4/BMC/nrtrr/RTMA/fix/fix_gsi
 FIX_CRTM=/home/rtrr/FIX_EXEC_MODULE/crtm/CRTM_v2.3.0
 
 VERBOSE="TRUE"
@@ -29,7 +29,50 @@ PREEXISTING_DIR_METHOD="rename"
 PREDEF_GRID_NAME=RRFS_CONUS_3km
 
 DO_DACYCLE="true"
+#
+#-------------------------------------------------------------------------------------
+#      GSI Namelist parameters configurable across differnt applications
+# if we need to tune one GSI namelist parameter, we can elevate it to a shell variable
+# and assign value in config.sh and give it a default value in config_default.sh
+# In realtime testing, don't need to regenerate the whole workflow, you can tweak 
+# $EXPTDIR/var_defns.sh and $USH/template/gsiparm.anl.sh to make sure the change is
+# expected and then put it back into config.sh and config_default.sh
+#       (need to follow FORTRAN namelist convetion)
+#-------------------------------------------------------------------------------------
+#
+# &SETUP  and &BKGERR
+diag_radardbz=.false.
+write_diag_2=.true.
+bkgerr_vs=0.25                        #1.0 is default setting
+#bkgerr_hzscl=0.373,0.746,1.5         #default setting, no trailing ,
+bkgerr_hzscl=0.046625,0.09325,0.1875  #hzscl/8
 
+# &HYBRID_ENSEMBLE
+readin_localization=.true.     #if true, it overwrites the "beta1_inv/ens_h/ens_v" setting
+beta1_inv=0.5                  #beata_inv is 1-ensemble_wgt
+ens_h=20                       #110
+ens_v=1                        #3
+regional_ensemble_option=1     #1 for GDAS
+grid_ratio_ens=3               #analysis 3km, so ensemble=3*3=9km. GDAS ensemble is 20km
+i_en_perts_io=1                #0 or 1: original file   3: pre-processed ensembles
+
+# &RAPIDREFRESH_CLDSURF
+l_PBL_pseudo_SurfobsT=.false.
+l_PBL_pseudo_SurfobsQ=.false
+i_use_2mQ4B=0
+i_use_2mT4B=0
+#-------------------------------------------------------------------------------------
+#
+BERROR_FN="berror.rtma"      #under $FIX_GSI
+#the following four are under $USHDIR/templates
+ANAVINFO_FN="anavinfo.fv3lam_hrrr"
+CONVINFO_FN="convinfo.rtma"
+OBERROR_FN="errtable.rtma"
+HYBENSINFO_FN="hybens_info.rtma"
+AIRCRAFT_REJECT="/home/amb-verif/acars_RR/amdar_reject_lists"
+SFCOBS_USELIST="/home/amb-verif/ruc_madis_surface/mesonet_uselists"
+#
+#
 QUILTING="TRUE"
 CCPP_PHYS_SUITE="FV3_HRRR"
 FCST_LEN_HRS="0" #the number of run_post jobs #lbcs
@@ -70,20 +113,21 @@ EXTRN_MDL_NAME_LBCS="RAP"
 
 envir="para"
 
-NET="3DRTMA" ##product name prefix: ${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2
-TAG="3DRTMA_dev1" ## used by job names
-IS_3DRTMA="TRUE"
+NET="RTMA" ##product name prefix: ${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2
+TAG="RTMA_dev1" ## used by job names
+IS_RTMA="TRUE"
 NCORES_PER_NODE=40 #kjet
-FG_ROOTDIR="/lfs4/BMC/nrtrr/NCO_dirs/stmp/tmpnwprd/RRFS_dev1" #only needed by 3DRTMA
+FG_ROOTDIR="/lfs4/BMC/nrtrr/NCO_dirs/stmp/tmpnwprd/RRFS_dev1" #only needed by RTMA
 NEW_STMP="FALSE"  #don't rename/remove $STMP
+#NEW_EXPTDIR="FALSE"  #don't generate new dir, overwite same files under $EXPTDIR
 
 USE_CUSTOM_POST_CONFIG_FILE="TRUE"
-CUSTOM_POST_CONFIG_FP="/mnt/lfs4/BMC/nrtrr/3DRTMA/3DRTMA-dev1-ufs-srweather-app/src/EMC_post/parm/postxconfig-NT-fv3lam_rrfs.txt"
-ARCHIVEDIR="/5year/BMC/wrfruc/3drtma_dev1"
+CUSTOM_POST_CONFIG_FP="/mnt/lfs4/BMC/nrtrr/RTMA/RTMA-dev1-ufs-srweather-app/src/EMC_post/parm/postxconfig-NT-fv3lam_rrfs.txt"
+ARCHIVEDIR="/5year/BMC/wrfruc/rtma_dev1"
 NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
 NCL_HOME="/home/rtrr/RTMA/graphics"
 NCL_REGION="conus"
-MODEL="3DRTMA_dev1" #used by NCL
+MODEL="RTMA_dev1" #used by NCL
 
 #
 # In NCO mode, the following don't need to be explicitly set to "FALSE" 
@@ -94,7 +138,7 @@ MODEL="3DRTMA_dev1" #used by NCL
 #RUN_TASK_MAKE_OROG="FALSE"
 #RUN_TASK_MAKE_SFC_CLIMO="FALSE"
 
-RUN="3DRTMA_dev1"
+RUN="RTMA_dev1"
 COMINgfs=""
 
 STMP="/lfs4/BMC/nrtrr/NCO_dirs/stmp"  # Path to directory STMP that mostly contains input files.

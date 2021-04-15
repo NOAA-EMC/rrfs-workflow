@@ -425,6 +425,45 @@ FCST_LEN_HRS_CYCLES=( )
 DA_CYCLE_INTERV="3"
 RESTART_INTERVAL="3,6"
 #
+#-------------------------------------------------------------------------------------
+#      GSI Namelist parameters configurable across differnt applications
+# if we need to tune one GSI namelist parameter, we can elevate it to a shell variable
+# and assign value in config.sh and give it a default value in config_default.sh
+# In realtime testing, don't need to regenerate the whole workflow, you can tweak 
+# $EXPTDIR/var_defns.sh and $USH/template/gsiparm.anl.sh to make sure the change is
+# expected and then put it back into config.sh and config_default.sh
+#       (need to follow FORTRAN namelist convetion)
+#-------------------------------------------------------------------------------------
+# &SETUP  and &BKGERR
+diag_radardbz=.true.
+write_diag_2=.false.
+bkgerr_vs=1.0
+bkgerr_hzscl=0.373,0.746,1.5   #no trailing ,
+
+# &HYBRID_ENSEMBLE
+readin_localization=.true.     #if true, it overwrites the "beta1_inv/ens_h/ens_v" setting
+beta1_inv=0.15                 #beata_inv is 1-ensemble_wgt
+ens_h=110
+ens_v=3
+regional_ensemble_option=1     #1 for GDAS
+grid_ratio_ens=3               #analysis 3km, so ensemble=3*3=9km. GDAS ensemble is 20km
+i_en_perts_io=1                #0 or 1: original file   3: pre-processed ensembles
+
+# &RAPIDREFRESH_CLDSURF
+l_PBL_pseudo_SurfobsT=.false.
+l_PBL_pseudo_SurfobsQ=.false.
+i_use_2mQ4B=0
+i_use_2mT4B=0
+#-----------------------------------------------------------------------
+#
+ANAVINFO_FN="anavinfo.fv3lam_hrrr"
+CONVINFO_FN="convinfo.rrfs"
+BERROR_FN="rap_berror_stats_global_RAP_tune" #under $FIX_GSI
+OBERROR_FN="errtable.rrfs"
+HYBENSINFO_FN="hybens_info.rrfs"
+AIRCRAFT_REJECT="/home/amb-verif/acars_RR/amdar_reject_lists"
+SFCOBS_USELIST="/home/amb-verif/ruc_madis_surface/mesonet_uselists"
+#
 #-----------------------------------------------------------------------
 #
 # Set initial and lateral boundary condition generation parameters.  
@@ -1046,19 +1085,19 @@ VERBOSE="TRUE"
 # SFC_CLIMO_DIR:
 # Same as GRID_DIR but for the surface climatology generation task.
 #
-# IS_3DRTMA:
+# IS_RTMA:
 #   If true, some ICs,LBCs,GSI rocoto tasks will be turned off
 #
 # FG_ROOTDIR:
 #  First Guess Root Directory, GSI will find corresponding first guess
 #  fields from this directory. RRFS will find FG under CYCLE_BASEDIR,
-#  but we needs to explicitly specify where to find FG for 3DRTMA.
-#  So this parameter only matters for 3DRTMA
+#  but we needs to explicitly specify where to find FG for RTMA.
+#  So this parameter only matters for RTMA
 #
 # NEW_STMP:
 #   if TRUE, existing $STMP directory will be renamed/removed,  but this
 #   may break current real-time/ongoing runs. Set to FALSE to avoid that 
-# 
+#
 #-----------------------------------------------------------------------
 #
 RUN_TASK_MAKE_GRID="TRUE"
@@ -1071,7 +1110,7 @@ RUN_TASK_MAKE_SFC_CLIMO="TRUE"
 SFC_CLIMO_DIR="/path/to/pregenerated/surface/climo/files"
 #
 NCORES_PER_NODE=24 #Jet default value
-IS_3DRTMA="FALSE"
+IS_RTMA="FALSE"
 FG_ROOTDIR=""
 NEW_STMP="TRUE"
 #

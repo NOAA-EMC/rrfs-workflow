@@ -70,7 +70,7 @@ Directories and files.
 <!ENTITY JOBSDIR                  "{{ jobsdir }}">
 <!ENTITY LOGDIR                   "{{ logdir }}">
 <!ENTITY CYCLE_BASEDIR            "{{ cycle_basedir }}">
-{%- if is_3drtma %}
+{%- if is_rtma %}
 <!ENTITY FG_ROOT                  "{{ fg_rootdir }}">
 {%- else %}
 <!ENTITY FG_ROOT                  "{{ cycle_basedir }}">
@@ -259,7 +259,7 @@ MODULES_RUN_TASK_FP script.
 
   </task>
 {% endif %}
-{% if not is_3drtma %}
+{% if not is_rtma %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -431,7 +431,7 @@ MODULES_RUN_TASK_FP script.
 {%- endif %}
 
 {%- if do_dacycle %}
-{%- if not is_3drtma %}
+{%- if not is_rtma %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -477,7 +477,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 -->
 
-{% if is_3drtma %}
+{% if is_rtma %}
   <task name="&ANAL_GSI_RESTART_TN;" cycledefs="forecast,dacycle" maxtries="{{ maxtries_anal_gsi }}">
 {%- else %}
   <task name="&ANAL_GSI_RESTART_TN;" cycledefs="dacycle" maxtries="{{ maxtries_anal_gsi }}">
@@ -509,13 +509,13 @@ MODULES_RUN_TASK_FP script.
       <or>
         <and>
           <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
-          {%- if not is_3drtma %}
+          {%- if not is_rtma %}
           <taskdep task="&MAKE_LBCS_TN;"/>
           {%- endif %}
           <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&FG_ROOT;/@Y@m@d@H/dynf00{{ da_cycle_interval_hrs }}.nc</cyclestr></datadep>
         </and>
         <and>
-          {%- if not is_3drtma %}
+          {%- if not is_rtma %}
           <taskdep task="&MAKE_LBCS_TN;"/>
           {%- endif %}
           <timedep><cyclestr offset="&START_TIME_ANALYSIS;">@Y@m@d@H@M00</cyclestr></timedep>
