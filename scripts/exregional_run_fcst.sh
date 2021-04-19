@@ -284,14 +284,16 @@ Cannot create symlink because target does not exist:
 fi
 
 #
-# If using the FV3_HRRR physics suite, there are two files (that contain 
-# statistics of the orography) that are needed by the gravity wave drag 
-# parameterization in that suite.  Below, create symlinks to these files
-# in the run directory.  Note that the symlinks must have specific names 
+# If using the FV3_HRRR or FV3_RAP physics suites, there are two files 
+# (that contain statistics of the orography) that are needed by the gravity 
+# wave drag parameterization in that suite.  Below, create symlinks to these 
+# files in the run directory.  Note that the symlinks must have specific names 
 # that the FV3 model is hardcoded to recognize, and those are the names 
 # we use below.
 #
-if [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ]; then
+if [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ] || \
+   [ "${CCPP_PHYS_SUITE}" = "FV3_RAP" ]; then
+
 
   fileids=( "ss" "ls" )
   for fileid in "${fileids[@]}"; do

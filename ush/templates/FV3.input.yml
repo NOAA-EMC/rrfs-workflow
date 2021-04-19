@@ -57,7 +57,7 @@ FV3_HRRR:
     nrows_blend: 10
     regional_bcs_from_gsi: false
     write_restart_with_bcs: false
-  gfs_physics_nml:
+  gfs_physics_nml: 
     <<: *gsd_sar_phys
     cdmbgwd: [3.5, 1.0]
     do_mynnsfclay: true
@@ -68,6 +68,42 @@ FV3_HRRR:
     icliq_sw: 2
     imfdeepcnv: -1
     imfshalcnv: -1
+    iovr: 3
+
+FV3_RAP:
+  fv_core_nml:
+    hord_dp: -5
+    hord_mt: 5
+    hord_tm: 5
+    hord_vt: 5
+    kord_mt: 9
+    kord_tm: -9
+    kord_tr: 9
+    kord_wz: 9
+    nord_tr: 2
+    nrows_blend: 10
+    regional_bcs_from_gsi: false
+    write_restart_with_bcs: false
+  gfs_physics_nml:
+    <<: *gsd_sar_phys
+    cdmbgwd: [3.5, 1.0]
+    do_mynnsfclay: true
+    do_sfcperts: !!python/none
+    effr_in: true
+    gwd_opt: 3
+    do_ugwp_v0: false
+    do_ugwp_v0_orog_only: false
+    do_gsl_drag_ls_bl: true
+    do_gsl_drag_ss: true
+    do_gsl_drag_tofd: true
+    do_ugwp_v1: false
+    do_ugwp_v1_orog_only: false
+    iaer: 5111
+    icliq_sw: 2
+    do_deep: true
+    shal_cnv: true
+    imfdeepcnv: 3
+    imfshalcnv: 3
     iovr: 3
 
 FV3_RRFS_v1beta:
