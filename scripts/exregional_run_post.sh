@@ -59,6 +59,7 @@ valid_args=( \
 "cdate" \
 "run_dir" \
 "postprd_dir" \
+"comout" \
 "fhr_dir" \
 "fhr" \
 )
@@ -277,14 +278,25 @@ mv_vrfy BGRD3D.GrbF${post_fhr} ${bgrd3d}
 # small subset of surface fields for testbed and internal use
 wgrib2 -match "APCP|parmcat=16 parm=196|PRATE" ${bgrd3d} -grib ${bgsfc}
 
-# Link output for transfer from Jet to web
+#Link output for transfer to Jet
+# Should the following be done only if on jet??
+
+# Seems like start_date is the same as "$yyyymmdd $hh", where yyyymmdd
+# and hh are calculated above, i.e. start_date is just cdate but with a
+# space inserted between the dd and hh.  If so, just use "$yyyymmdd $hh"
+# instead of calling sed.
 basetime=$( date +%y%j%H%M -d "${yyyymmdd} ${hh}" )
-ln_vrfy -fs ${bgdawp} ${postprd_dir}/BGDAWP_${basetime}${post_fhr}00
-ln_vrfy -fs ${bgrd3d} ${postprd_dir}/BGRD3D_${basetime}${post_fhr}00
-ln_vrfy -fs ${bgsfc} ${postprd_dir}/BGSFC_${basetime}${post_fhr}00
+cp_vrfy ${bgdawp} ${comout}/${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2
+cp_vrfy ${bgrd3d} ${comout}/${NET}.t${cyc}z.bgrd3df${fhr}.${tmmark}.grib2
+cp_vrfy ${bgsfc}  ${comout}/${NET}.t${cyc}z.bgsfcf${fhr}.${tmmark}.grib2
+ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2 ${comout}/BGDAWP_${basetime}${post_fhr}00
+ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgrd3df${fhr}.${tmmark}.grib2 ${comout}/BGRD3D_${basetime}${post_fhr}00
+ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgsfcf${fhr}.${tmmark}.grib2  ${comout}/BGSFC_${basetime}${post_fhr}00
 
 # Remap North America output grids for 130-CONUS and 242-AK
 if [ ${NET} = "RRFS_NA_13km" ]; then
+
+  cd_vrfy ${comout}
 
   grid_specs_130="lambert:265:25.000000 233.862000:451:13545.000000 16.281000:337:13545.000000"
   grid_specs_242="nps:225:60.000000 187.000000:553:11250.000000 30.000000:425:11250.000000"

@@ -61,7 +61,7 @@ on the output files corresponding to a specified forecast hour.
 #
 #-----------------------------------------------------------------------
 #
-run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}"
+run_dir="${CYCLE_DIR}/fcst_fv3lam${SLASH_ENSMEM_SUBDIR}"
 #
 #-----------------------------------------------------------------------
 #
@@ -82,10 +82,10 @@ run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}"
 #
 if [ "${RUN_ENVIR}" = "nco" ]; then
   COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
-  postprd_dir="$COMOUT"
-else
-  postprd_dir="${run_dir}/postprd"
+  mkdir_vrfy -p "${COMOUT}"
 fi
+
+postprd_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/postprd"
 mkdir_vrfy -p "${postprd_dir}"
 
 fhr_dir="${postprd_dir}/$fhr"
@@ -119,6 +119,7 @@ $SCRIPTSDIR/exregional_run_post.sh \
   cdate="${CDATE}" \
   run_dir="${run_dir}" \
   postprd_dir="${postprd_dir}" \
+  comout="${COMOUT}" \
   fhr_dir="${fhr_dir}" \
   fhr="${fhr}" || \
 print_err_msg_exit "\

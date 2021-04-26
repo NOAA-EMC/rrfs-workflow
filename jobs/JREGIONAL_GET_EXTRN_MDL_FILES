@@ -178,10 +178,14 @@ check_var_valid_value "ICS_OR_LBCS" "valid_vals_ICS_OR_LBCS"
 #
 if [ "${ICS_OR_LBCS}" = "ICS" ]; then
   anl_or_fcst="ANL"
-  time_offset_hrs="0"
+  time_offset_hrs="${EXTRN_MDL_ICS_OFFSET_HRS}"
+  lbs_spec_intvl_hrs="${LBC_SPEC_INTVL_HRS}"
+  boundary_len_hrs="0"
 elif [ "${ICS_OR_LBCS}" = "LBCS" ]; then
   anl_or_fcst="FCST"
   time_offset_hrs="${EXTRN_MDL_LBCS_OFFSET_HRS}"
+  lbs_spec_intvl_hrs="${LBC_SPEC_INTVL_HRS}"
+  boundary_len_hrs="${BOUNDARY_LEN}"
 fi
 #
 #-----------------------------------------------------------------------
@@ -207,6 +211,8 @@ get_extrn_mdl_file_dir_info \
   extrn_mdl_name="${EXTRN_MDL_NAME}" \
   anl_or_fcst="${anl_or_fcst}" \
   cdate_FV3LAM="${CDATE}" \
+  lbs_spec_intvl_hrs="${lbs_spec_intvl_hrs}" \
+  boundary_len_hrs="${boundary_len_hrs}"\
   time_offset_hrs="${time_offset_hrs}" \
   varname_extrn_mdl_cdate="extrn_mdl_cdate" \
   varname_extrn_mdl_lbc_spec_fhrs="extrn_mdl_lbc_spec_fhrs" \

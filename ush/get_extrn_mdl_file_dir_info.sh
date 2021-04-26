@@ -27,7 +27,7 @@ function get_extrn_mdl_file_dir_info() {
 #
 #-----------------------------------------------------------------------
 #
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
+  { save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -61,6 +61,8 @@ function get_extrn_mdl_file_dir_info() {
     "extrn_mdl_name" \
     "anl_or_fcst" \
     "cdate_FV3LAM" \
+    "lbs_spec_intvl_hrs" \
+    "boundary_len_hrs" \
     "time_offset_hrs" \
     "varname_extrn_mdl_cdate" \
     "varname_extrn_mdl_lbc_spec_fhrs" \
@@ -106,6 +108,8 @@ Usage:
     extrn_mdl_name \
     anl_or_fcst \
     cdate_FV3LAM \
+    lbs_spec_intvl_hrs \
+    boundary_len_hrs \
     time_offset_hrs \
     varname_extrn_mdl_cdate \
     varname_extrn_mdl_lbc_spec_fhrs \
@@ -266,9 +270,18 @@ fi
 #
   lbc_spec_fhrs=( "" )
 
-  if [ "${anl_or_fcst}" = "FCST" ]; then
+  if [ "${anl_or_fcst}" = "ANL" ]; then
+    ic_spec_fhrs=$(( 0 + time_offset_hrs ))
+  elif [ "${anl_or_fcst}" = "FCST" ]; then
 
-    lbc_spec_fhrs=( "${LBC_SPEC_FCST_HRS[@]}" )
+# offset is to go back to a previous cycle (for example 3-h) and 
+# use the forecast (3-h) from that cycle valid at this cycle. 
+# Here calculates the forecast and it is adding.
+
+    lbc_spec_fcst_hrs=($( seq 0 ${lbs_spec_intvl_hrs} \
+                          ${boundary_len_hrs} ))
+
+    lbc_spec_fhrs=( "${lbc_spec_fcst_hrs[@]}" )
 #
 # Add the temporal offset specified in time_offset_hrs (assumed to be in 
 # units of hours) to the the array of LBC update forecast hours to make
@@ -282,6 +295,7 @@ fi
     done
 
   fi
+
 #
 #-----------------------------------------------------------------------
 #
@@ -330,7 +344,7 @@ fi
 #
   "ANL")
 
-    fcst_hh="00"
+    fcst_hh=$( printf "%02d" "${ic_spec_fhrs}" )
     fcst_mn="00"
 
     case "${extrn_mdl_name}" in
@@ -375,11 +389,11 @@ fi
 #        fns=( "gfs.t${hh}z.pgrb2.0p25.f000" )  # Get only 0.25 degree files for now.
 
         if [ "${MACHINE}" = "JET" ]; then
-          fns_on_disk=( "${yy}${ddd}${hh}${fcst_mn}0000" )
+          fns_on_disk=( "${yy}${ddd}${hh}0${fcst_mn}0${fcst_hh}" )
         else
-          fns_on_disk=( "gfs.t${hh}z.pgrb2.0p25.f000" )  # Get only 0.25 degree files for now.
+          fns_on_disk=( "gfs.t${hh}z.pgrb2.0p25.f${fcst_hh}" )  # Get only 0.25 degree files for now.
         fi
-        fns_in_arcv=( "gfs.t${hh}z.pgrb2.0p25.f000" )  # Get only 0.25 degree files for now.
+        fns_in_arcv=( "gfs.t${hh}z.pgrb2.0p25.f${fcst_hh}" )  # Get only 0.25 degree files for now.
 
       fi
       ;;

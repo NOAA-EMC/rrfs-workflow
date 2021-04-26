@@ -54,8 +54,9 @@ hour zero).
 #
 #-----------------------------------------------------------------------
 #
-lbcs_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/INPUT"
+lbcs_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/lbcs"
 mkdir_vrfy -p "${lbcs_dir}"
+
 #
 #-----------------------------------------------------------------------
 #

@@ -336,7 +336,7 @@ of the current run directory (run_dir), where
 ..."
 
 BKTYPE=1    # cold start using INPUT
-if [ -r ${CYCLE_DIR}/INPUT/fv_tracer.res.tile1.nc ]; then
+if [ -r ${CYCLE_DIR}/fcst_fv3lam/INPUT/fv_tracer.res.tile1.nc ]; then
   BKTYPE=0  # cycling using RESTART
 fi
 print_info_msg "$VERBOSE" "

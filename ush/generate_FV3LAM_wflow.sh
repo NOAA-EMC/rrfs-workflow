@@ -185,12 +185,14 @@ settings="\
   'make_sfc_climo_tn': ${MAKE_SFC_CLIMO_TN}
   'get_extrn_ics_tn': ${GET_EXTRN_ICS_TN}
   'get_extrn_lbcs_tn': ${GET_EXTRN_LBCS_TN}
+  'get_extrn_lbcs_long_tn': ${GET_EXTRN_LBCS_LONG_TN}
   'make_ics_tn': ${MAKE_ICS_TN}
   'make_lbcs_tn': ${MAKE_LBCS_TN}
   'run_fcst_tn': ${RUN_FCST_TN}
   'run_post_tn': ${RUN_POST_TN}
-  'anal_gsi_input': ${ANAL_GSI_INPUT_TN}
-  'anal_gsi_restart': ${ANAL_GSI_RESTART_TN}
+  'anal_gsi': ${ANAL_GSI_TN}
+  'prep_coldstart': ${PREP_COLDSTART_TN}
+  'prep_warmstart': ${PREP_WARMSTART_TN}
   'tag': ${TAG}
 #
 # Number of nodes to use for each task.
@@ -202,6 +204,7 @@ settings="\
   'nnodes_get_extrn_lbcs': ${NNODES_GET_EXTRN_LBCS}
   'nnodes_make_ics': ${NNODES_MAKE_ICS}
   'nnodes_make_lbcs': ${NNODES_MAKE_LBCS}
+  'nnodes_run_prepstart': ${NNODES_RUN_PREPSTART}
   'nnodes_run_fcst': ${NNODES_RUN_FCST}
   'nnodes_run_anal': ${NNODES_RUN_ANAL}
   'nnodes_run_post': ${NNODES_RUN_POST}
@@ -223,6 +226,7 @@ settings="\
   'ppn_get_extrn_lbcs': ${PPN_GET_EXTRN_LBCS}
   'ppn_make_ics': ${PPN_MAKE_ICS}
   'ppn_make_lbcs': ${PPN_MAKE_LBCS}
+  'ppn_run_prepstart': ${PPN_RUN_PREPSTART}
   'ppn_run_fcst': ${PPN_RUN_FCST}
   'ppn_run_anal': ${PPN_RUN_ANAL}
   'ppn_run_post': ${PPN_RUN_POST}
@@ -236,6 +240,7 @@ settings="\
   'wtime_get_extrn_lbcs': ${WTIME_GET_EXTRN_LBCS}
   'wtime_make_ics': ${WTIME_MAKE_ICS}
   'wtime_make_lbcs': ${WTIME_MAKE_LBCS}
+  'wtime_run_prepstart': ${WTIME_RUN_PREPSTART}
   'wtime_run_fcst': ${WTIME_RUN_FCST}
   'wtime_run_anal': ${WTIME_RUN_ANAL}
   'wtime_run_post': ${WTIME_RUN_POST}
@@ -249,6 +254,7 @@ settings="\
   'maxtries_get_extrn_lbcs': ${MAXTRIES_GET_EXTRN_LBCS}
   'maxtries_make_ics': ${MAXTRIES_MAKE_ICS}
   'maxtries_make_lbcs': ${MAXTRIES_MAKE_LBCS}
+  'maxtries_run_prepstart': ${MAXTRIES_RUN_PREPSTART}
   'maxtries_run_fcst': ${MAXTRIES_RUN_FCST}
   'maxtries_anal_gsi': ${MAXTRIES_ANAL_GSI}
   'maxtries_run_post': ${MAXTRIES_RUN_POST}
@@ -280,7 +286,9 @@ settings="\
   'extrn_mdl_name_lbcs': ${EXTRN_MDL_NAME_LBCS}
   'extrn_mdl_sysbasedir_ics': ${EXTRN_MDL_SYSBASEDIR_ICS}
   'extrn_mdl_sysbasedir_lbcs': ${EXTRN_MDL_SYSBASEDIR_LBCS}
+  'extrn_mdl_ics_offset_hrs': ${EXTRN_MDL_ICS_OFFSET_HRS}
   'extrn_mdl_lbcs_offset_hrs': ${EXTRN_MDL_LBCS_OFFSET_HRS}
+  'extrn_mdl_lbcs_search_offset_hrs': ${EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS}
   'bc_update_interval': ${LBC_SPEC_INTVL_HRS}
 #
 # Parameters that determine the set of cycles to run.
@@ -293,10 +301,21 @@ settings="\
   'cdate_last_arch': !datetime ${DATE_LAST_CYCL}07
   'cycl_hrs': [ $( printf "\'%s\', " "${CYCL_HRS[@]}" ) ]
   'cycl_freq': !!str 12:00:00
+  'at_start_cycledef': ${AT_START_CYCLEDEF}
+  'initial_cycledef': ${INITIAL_CYCLEDEF}
+  'boundary_cycledef': ${BOUNDARY_CYCLEDEF}
+  'boundary_long_cycledef': ${BOUNDARY_LONG_CYCLEDEF}
+  'prep_coldstart_cycledef': ${PREP_COLDSTART_CYCLEDEF}
+  'prep_warmstart_cycledef': ${PREP_WARMSTART_CYCLEDEF}
+  'analysis_cycledef': ${ANALYSIS_CYCLEDEF}
+  'forecast_cycledef': ${FORECAST_CYCLEDEF}
+  'archive_cycledef': ${ARCHIVE_CYCLEDEF}
 #
 # Forecast length (same for all cycles).
 #
   'fcst_len_hrs': ${FCST_LEN_HRS}
+  'boundary_len_hrs': ${BOUNDARY_LEN_HRS}
+  'boundary_long_len_hrs': ${BOUNDARY_LONG_LEN_HRS}
 #
 # Ensemble-related parameters.
 #

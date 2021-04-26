@@ -101,6 +101,11 @@ RUN_ENVIR="nco"
 # If this is not set or set to an empty string, it will be (re)set to a 
 # machine-dependent value.
 #
+# QUEUE_ANALYSIS:
+# The queue or QOS to which the task that runs a analysis is submitted.  
+# If this is not set or set to an empty string, it will be (re)set to a 
+# machine-dependent value.
+#
 # mach_doc_end
 #
 #-----------------------------------------------------------------------
@@ -401,6 +406,12 @@ WFLOW_LAUNCH_LOG_FN="log.launch_FV3LAM_wflow"
 # two-digit string representing an integer that is less than or equal to
 # 23, e.g. "00", "03", "12", "23".
 #
+# BOUNDARY_LEN_HRS
+# The length of boundary condition for normal forecast, in integer hours.
+#
+# BOUNDARY_LONG_LEN_HRS
+# The length of boundary condition for long forecast, in integer hours.
+#
 # FCST_LEN_HRS:
 # The length of each forecast, in integer hours.
 #
@@ -420,10 +431,76 @@ WFLOW_LAUNCH_LOG_FN="log.launch_FV3LAM_wflow"
 DATE_FIRST_CYCL="YYYYMMDD"
 DATE_LAST_CYCL="YYYYMMDD"
 CYCL_HRS=( "HH1" "HH2" )
+BOUNDARY_LEN_HRS="24"
+BOUNDARY_LONG_LEN_HRS="24"
 FCST_LEN_HRS="24"
 FCST_LEN_HRS_CYCLES=( )
 DA_CYCLE_INTERV="3"
 RESTART_INTERVAL="3,6"
+
+#-----------------------------------------------------------------------
+#
+# Set cycle definition for each group.  The cycle definition sets the cycle
+# time that the group will run. It has two way to set up:
+#  1) 00 HHs DDs MMs YYYYs *
+#       HHs can be "01-03/01" or "01,02,03" or "*"
+#       DDs,MMs can be "01-03" or "01,02,03" or "*"
+#       YYYYs can be "2020-2021" or "2020,2021" or "*"
+#  2)   start_time(YYYYMMDDHH00) end_time(YYYYMMDDHH00) interval(HH:MM:SS)
+#       for example: 202104010000 202104310000 12:00:00
+#  The default cycle definition is:
+#     "00 01 01 01 2100 *"
+#  which will likely never get to run.
+#
+# Definitions:
+#
+# AT_START_CYCLEDEF:
+# cycle definition for "at start" group
+# This group runs: make_grid, make_orog, make_sfc_climo
+#
+# INITIAL_CYCLEDEF:
+# cycle definition for "initial" group
+# This group runs get_extrn_ics, make_ics
+#
+# BOUNDARY_CYCLEDEF:
+# cycle definition for "boundary" group
+# This group runs: get_extrn_lbcs,make_lbcs
+#
+# BOUNDARY_LONG_CYCLEDEF:
+# cycle definition for "boundary_long" group
+# This group runs: get_extrn_lbcs_long,make_lbcs
+#
+# PREP_COLDSTART_CYCLEDEF:
+# cycle definition for "prep_coldstart" group
+# This group runs: prep_coldstart
+#
+# PREP_WARMSTART_CYCLEDEF:
+# cycle definition for "prep_warmstart" group
+# This group runs: prep_warmstart
+#
+# ANALYSIS_CYCLEDEF:
+# cycle definition for "analysis" group
+# This group runs: anal_gsi_input
+#
+# FORECAST_CYCLEDEF:
+# cycle definition for "forecast" group
+# This group runs: run_fcst, run_post, python_skewt, run_ncl, run_ncl_zip, run_clean
+#
+# ARCHIVE_CYCLEDEF:
+# cycle definition for "archive" group
+# This group runs: run_archive
+#
+#-----------------------------------------------------------------------
+#
+AT_START_CYCLEDEF="00 01 01 01 2100 *"
+INITIAL_CYCLEDEF="00 01 01 01 2100 *"
+BOUNDARY_CYCLEDEF="00 01 01 01 2100 *"
+BOUNDARY_LONG_CYCLEDEF="00 01 01 01 2100 *"
+PREP_COLDSTART_CYCLEDEF="00 01 01 01 2100 *"
+PREP_WARMSTART_CYCLEDEF="00 01 01 01 2100 *"
+ANALYSIS_CYCLEDEF="00 01 01 01 2100 *"
+FORECAST_CYCLEDEF="00 01 01 01 2100 *"
+ARCHIVE_CYCLEDEF="00 01 01 01 2100 *"
 #
 #-------------------------------------------------------------------------------------
 #      GSI Namelist parameters configurable across differnt applications
@@ -479,6 +556,9 @@ SFCOBS_USELIST="/home/amb-verif/ruc_madis_surface/mesonet_uselists"
 # lateral boundary condition (LBC) files will be generated for input into
 # the forecast model.
 #
+# EXTRN_MDL_ICS_OFFSET_HRS:
+#  initial file offset hours.
+#
 # LBC_SPEC_INTVL_HRS:
 # The interval (in integer hours) with which LBC files will be generated.
 # We will refer to this as the boundary update interval.  Note that the
@@ -490,6 +570,13 @@ SFCOBS_USELIST="/home/amb-verif/ruc_madis_surface/mesonet_uselists"
 #
 # EXTRN_MDL_LBCS_OFFSET_HRS:
 #  boundary file offset hours.
+#
+# EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS:
+#  When search boundary conditions from previous cycles in prep_start stemp, 
+#  the search will start at cycle before (this parameter) of current cycle.
+#  For example: 0 means search start at the same cycle lbcs directory.
+#               1 means search start at 1-h previous cycle  lbcs directory.
+#               2 means search start at 2-h previous cycle  lbcs directory.
 #
 # FV3GFS_FILE_FMT_ICS:
 # If using the FV3GFS model as the source of the ICs (i.e. if EXTRN_MDL_NAME_ICS
@@ -505,8 +592,10 @@ SFCOBS_USELIST="/home/amb-verif/ruc_madis_surface/mesonet_uselists"
 #
 EXTRN_MDL_NAME_ICS="FV3GFS"
 EXTRN_MDL_NAME_LBCS="FV3GFS"
+EXTRN_MDL_ICS_OFFSET_HRS="0"
 LBC_SPEC_INTVL_HRS="6"
 EXTRN_MDL_LBCS_OFFSET_HRS=""
+EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS="0"
 FV3GFS_FILE_FMT_ICS="nemsio"
 FV3GFS_FILE_FMT_LBCS="nemsio"
 #
@@ -1315,13 +1404,15 @@ MAKE_OROG_TN="make_orog"
 MAKE_SFC_CLIMO_TN="make_sfc_climo"
 GET_EXTRN_ICS_TN="get_extrn_ics"
 GET_EXTRN_LBCS_TN="get_extrn_lbcs"
+GET_EXTRN_LBCS_LONG_TN="get_extrn_lbcs_long"
 MAKE_ICS_TN="make_ics"
 MAKE_LBCS_TN="make_lbcs"
 RUN_FCST_TN="run_fcst"
 RUN_POST_TN="run_post"
 
-ANAL_GSI_INPUT_TN="anal_gsi_input"
-ANAL_GSI_RESTART_TN="anal_gsi_restart"
+ANAL_GSI_TN="anal_gsi_input"
+PREP_COLDSTART_TN="prep_coldstart"
+PREP_WARMSTART_TN="prep_warmstart"
 
 #
 # Number of nodes.
@@ -1333,6 +1424,7 @@ NNODES_GET_EXTRN_ICS="1"
 NNODES_GET_EXTRN_LBCS="1"
 NNODES_MAKE_ICS="4"
 NNODES_MAKE_LBCS="4"
+NNODES_RUN_PREPSTART="1"
 NNODES_RUN_FCST=""  # This is calculated in the workflow generation scripts, so no need to set here.
 NNODES_RUN_POST="2"
 NNODES_RUN_ANAL="16"
@@ -1350,6 +1442,7 @@ PPN_GET_EXTRN_ICS="1"
 PPN_GET_EXTRN_LBCS="1"
 PPN_MAKE_ICS="12"
 PPN_MAKE_LBCS="12"
+PPN_RUN_PREPSTART="1"
 PPN_RUN_FCST="24"  # This may have to be changed depending on the number of threads used.
 PPN_RUN_POST="24"
 PPN_RUN_ANAL="24"
@@ -1363,6 +1456,7 @@ WTIME_GET_EXTRN_ICS="00:45:00"
 WTIME_GET_EXTRN_LBCS="00:45:00"
 WTIME_MAKE_ICS="00:30:00"
 WTIME_MAKE_LBCS="00:30:00"
+WTIME_RUN_PREPSTART="00:10:00"
 WTIME_RUN_FCST="04:30:00"
 WTIME_RUN_POST="00:15:00"
 WTIME_RUN_ANAL="00:30:00"
@@ -1376,6 +1470,7 @@ MAXTRIES_GET_EXTRN_ICS="1"
 MAXTRIES_GET_EXTRN_LBCS="1"
 MAXTRIES_MAKE_ICS="1"
 MAXTRIES_MAKE_LBCS="1"
+MAXTRIES_RUN_PREPSTART="1"
 MAXTRIES_RUN_FCST="1"
 MAXTRIES_ANAL_GSI="1"
 MAXTRIES_RUN_POST="1"

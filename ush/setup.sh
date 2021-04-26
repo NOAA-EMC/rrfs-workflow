@@ -913,7 +913,9 @@ fi
 #-----------------------------------------------------------------------
 #
 LBC_SPEC_FCST_HRS=($( seq 0 ${LBC_SPEC_INTVL_HRS} \
-                          ${FCST_LEN_HRS} ))
+                          ${BOUNDARY_LEN_HRS} ))
+LBC_SPEC_FCST_LONG_HRS=($( seq 0 ${LBC_SPEC_INTVL_HRS} \
+                          ${BOUNDARY_LONG_LEN_HRS} ))
 #
 #-----------------------------------------------------------------------
 #
@@ -2660,6 +2662,15 @@ EXTRN_MDL_SYSBASEDIR_ICS="${EXTRN_MDL_SYSBASEDIR_ICS}"
 #
 #-----------------------------------------------------------------------
 #
+# Shift back in time (in units of hours) of the starting time of the ex-
+# ternal model specified in EXTRN_MDL_NAME_LBCS.
+#
+#-----------------------------------------------------------------------
+#
+EXTRN_MDL_ICS_OFFSET_HRS="${EXTRN_MDL_ICS_OFFSET_HRS}"
+#
+#-----------------------------------------------------------------------
+#
 # If USE_USER_STAGED_EXTRN_FILES is set to "FALSE", this is the system 
 # directory in which the workflow scripts will look for the files generated 
 # by the external model specified in EXTRN_MDL_NAME_LBCS.  These files 
@@ -2678,6 +2689,7 @@ EXTRN_MDL_SYSBASEDIR_LBCS="${EXTRN_MDL_SYSBASEDIR_LBCS}"
 #-----------------------------------------------------------------------
 #
 EXTRN_MDL_LBCS_OFFSET_HRS="${EXTRN_MDL_LBCS_OFFSET_HRS}"
+EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS="${EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS}"
 #
 #-----------------------------------------------------------------------
 #
@@ -2687,6 +2699,7 @@ EXTRN_MDL_LBCS_OFFSET_HRS="${EXTRN_MDL_LBCS_OFFSET_HRS}"
 #-----------------------------------------------------------------------
 #
 LBC_SPEC_FCST_HRS=(${LBC_SPEC_FCST_HRS[@]})
+LBC_SPEC_FCST_LONG_HRS=(${LBC_SPEC_FCST_LONG_HRS[@]})
 #
 #-----------------------------------------------------------------------
 #
