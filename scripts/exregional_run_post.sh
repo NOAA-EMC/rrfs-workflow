@@ -293,15 +293,21 @@ ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2 $
 ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgrd3df${fhr}.${tmmark}.grib2 ${comout}/BGRD3D_${basetime}${post_fhr}00
 ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgsfcf${fhr}.${tmmark}.grib2  ${comout}/BGSFC_${basetime}${post_fhr}00
 
-# Remap North America output grids for 130-CONUS and 242-AK
-if [ ${NET} = "RRFS_NA_13km" ]; then
+# Remap to additional output grids if requested
+if [ ${#ADDNL_OUTPUT_GRIDS[@]} -gt 0 ]; then
 
   cd_vrfy ${comout}
 
   grid_specs_130="lambert:265:25.000000 233.862000:451:13545.000000 16.281000:337:13545.000000"
+  grid_specs_200="lambert:253:50.000000 285.720000:108:16232.000000 16.201000:94:16232.000000"
+  grid_specs_221="lambert:253:50.000000 214.500000:349:32463.000000 1.000000:277:32463.000000"
   grid_specs_242="nps:225:60.000000 187.000000:553:11250.000000 30.000000:425:11250.000000"
+  grid_specs_243="latlon 190.0:126:0.400 10.000:101:0.400"
+  grid_specs_clue="lambert:262.5:38.5 239.891:1620:3000.0 20.971:1120:3000.0"
+  grid_specs_hrrr="lambert:-97.5:38.5 -122.72:1799:3000.0 21.128:1059:3000.0"
+  grid_specs_hrrre="lambert:-97.5:38.5 -122.71953:1800:3000.0 21.138123:1060:3000.0"
 
-  for grid in 130 242
+  for grid in ${ADDNL_OUTPUT_GRIDS[@]}
   do
     for leveltype in dawp rd3d sfc 
     do

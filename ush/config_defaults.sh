@@ -1476,6 +1476,25 @@ MAXTRIES_ANAL_GSI="1"
 MAXTRIES_RUN_POST="1"
 MAXTRIES_RUN_ANAL="1"
 #
+#
+#-----------------------------------------------------------------------
+#
+# Set additional output grids for wgrib2 remapping, if any 
+# Space-separated list of strings, e.g., ( "130" "242" "clue" )
+# Default is no additional grids
+#
+# Current options as of 23 Apr 2021:
+#  "130"   (CONUS 13.5 km)
+#  "200"   (Puerto Rico 16 km)
+#  "221"   (North America 32 km)
+#  "242"   (Alaska 11.25 km)
+#  "243"   (Pacific 0.4-deg)
+#  "clue"  (NSSL/SPC 3-km CLUE grid for 2020/2021)
+#  "hrrr"  (HRRR 3-km CONUS grid)
+#  "hrrre" (HRRRE 3-km CONUS grid)
+#
+ADDNL_OUTPUT_GRIDS=( )
+#
 #-----------------------------------------------------------------------
 #
 # Set parameters associated with defining a customized post configuration 
