@@ -1,9 +1,8 @@
 #!/bin/bash
 
-#
 #-----------------------------------------------------------------------
 #
-# This J-JOB script runs the GSI analysis 
+# This J-JOB script runs the standalone No-Var Cloud Analysis
 #      for the FV3-LAM model
 #
 #-----------------------------------------------------------------------
@@ -50,8 +49,8 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs a analysis with FV3 for 
-the specified cycle.
+This is the J-job script for the task that runs a standalone No-Var cloud
+analysis with FV3 for the specified cycle.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -60,9 +59,9 @@ the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-analworkdir=${CYCLE_DIR}/anal_gsi
-rm -fr ${analworkdir}
-mkdir_vrfy -p ${analworkdir}
+workdir=${CYCLE_DIR}/nonvar_cldanl
+rm -fr ${workdir}
+mkdir_vrfy -p ${workdir}
 #
 #-----------------------------------------------------------------------
 #
@@ -71,9 +70,8 @@ mkdir_vrfy -p ${analworkdir}
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSDIR/exregional_run_analysis.sh \
-             cycle_dir="${CYCLE_DIR}" \
-             analworkdir="${analworkdir}" || \
+$SCRIPTSDIR/exregional_nonvarcldanl.sh \
+  CYCLE_DIR="${CYCLE_DIR}" WORKDIR="${workdir}" || \
 print_err_msg_exit "\
 Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
 #

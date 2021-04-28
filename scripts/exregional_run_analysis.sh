@@ -475,16 +475,16 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-GSI_EXEC="${EXECDIR}/gsi.x"
+gsi_exec="${EXECDIR}/gsi.x"
 
-if [ -f $GSI_EXEC ]; then
+if [ -f $gsi_exec ]; then
   print_info_msg "$VERBOSE" "
 Copying the GSI executable to the run directory..."
-  cp_vrfy ${GSI_EXEC} ${analworkdir}/gsi.x
+  cp_vrfy ${gsi_exec} ${analworkdir}/gsi.x
 else
   print_err_msg_exit "\
 The GSI executable specified in GSI_EXEC does not exist:
-  GSI_EXEC = \"$GSI_EXEC\"
+  GSI_EXEC = \"$gsi_exec\"
 Build GSI and rerun."
 fi
 #
@@ -564,16 +564,16 @@ fi
 if [ $netcdf_diag = ".true." ]; then
    listallnc="conv_ps conv_q conv_t conv_uv"
 
-   CAT_EXEC="${EXECDIR}/ncdiag_cat.x"
+   cat_exec="${EXECDIR}/ncdiag_cat.x"
 
-   if [ -f $CAT_EXEC ]; then
+   if [ -f $cat_exec ]; then
       print_info_msg "$VERBOSE" "
         Copying the ncdiag_cat executable to the run directory..."
-      cp_vrfy ${CAT_EXEC} ${analworkdir}/ncdiag_cat.x
+      cp_vrfy ${cat_exec} ${analworkdir}/ncdiag_cat.x
    else
       print_err_msg_exit "\
-        The ncdiag_cat executable specified in CAT_EXEC does not exist:
-        CAT_EXEC = \"$CAT_EXEC\"
+        The ncdiag_cat executable specified in cat_exec does not exist:
+        cat_exec = \"$cat_exec\"
         Build GSI and rerun."
    fi
 

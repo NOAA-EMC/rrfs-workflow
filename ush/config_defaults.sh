@@ -1413,7 +1413,11 @@ RUN_POST_TN="run_post"
 ANAL_GSI_TN="anal_gsi_input"
 PREP_COLDSTART_TN="prep_coldstart"
 PREP_WARMSTART_TN="prep_warmstart"
-
+PROCESS_RADAR_REF_TN="process_radarref"
+PROCESS_LIGHTNING_TN="process_lightning"
+PROCESS_BUFR_TN="process_bufr"
+RADAR_REFL2TTEN_TN="radar_refl2tten"
+CLDANL_NONVAR_TN="cldanl_nonvar"
 #
 # Number of nodes.
 #
@@ -1428,6 +1432,11 @@ NNODES_RUN_PREPSTART="1"
 NNODES_RUN_FCST=""  # This is calculated in the workflow generation scripts, so no need to set here.
 NNODES_RUN_POST="2"
 NNODES_RUN_ANAL="16"
+NNODES_PROC_RADAR="2"
+NNODES_PROC_LIGHTNING="1"
+NNODES_PROC_BUFR="1"
+NNODES_RUN_REF2TTEN="1"
+NNODES_RUN_NONVARCLDANL="1"
 #
 # Number of cores.
 #
@@ -1446,6 +1455,11 @@ PPN_RUN_PREPSTART="1"
 PPN_RUN_FCST="24"  # This may have to be changed depending on the number of threads used.
 PPN_RUN_POST="24"
 PPN_RUN_ANAL="24"
+PPN_PROC_RADAR="24"
+PPN_PROC_LIGHTNING="1"
+PPN_PROC_BUFR="1"
+PPN_RUN_REF2TTEN="1"
+PPN_RUN_NONVARCLDANL="1"
 #
 # Walltimes.
 #
@@ -1455,11 +1469,21 @@ WTIME_MAKE_SFC_CLIMO="00:20:00"
 WTIME_GET_EXTRN_ICS="00:45:00"
 WTIME_GET_EXTRN_LBCS="00:45:00"
 WTIME_MAKE_ICS="00:30:00"
-WTIME_MAKE_LBCS="00:30:00"
+WTIME_MAKE_LBCS="01:30:00"
 WTIME_RUN_PREPSTART="00:10:00"
 WTIME_RUN_FCST="04:30:00"
 WTIME_RUN_POST="00:15:00"
 WTIME_RUN_ANAL="00:30:00"
+WTIME_PROC_RADAR="00:10:00"
+WTIME_PROC_LIGHTNING="00:10:00"
+WTIME_PROC_BUFR="00:10:00"
+WTIME_RUN_REF2TTEN="00:10:00"
+WTIME_RUN_NONVARCLDANL="00:20:00"
+#
+# Memory.
+#
+MEMO_RUN_REF2TTEN="10G"
+MEMO_RUN_NONVARCLDANL="20G"
 #
 # Maximum number of attempts.
 #
@@ -1475,6 +1499,11 @@ MAXTRIES_RUN_FCST="1"
 MAXTRIES_ANAL_GSI="1"
 MAXTRIES_RUN_POST="1"
 MAXTRIES_RUN_ANAL="1"
+MAXTRIES_PROCESS_RADARREF="1"
+MAXTRIES_PROCESS_LIGHTNING="1"
+MAXTRIES_PROCESS_BUFR="1"
+MAXTRIES_RADAR_REF2TTEN="1"
+MAXTRIES_CLDANL_NONVAR="1"
 #
 #
 #-----------------------------------------------------------------------
@@ -1653,4 +1682,28 @@ COMPILER="intel"
 #-----------------------------------------------------------------------
 #
 GWD_HRRRsuite_BASEDIR=""
-
+#-----------------------------------------------------------------------
+#
+# Parameters for analysis options
+# DO_NONVAR_CLDANAL: 
+#     Flag turn on the non-var cloud analysis.
+# DO_REFL2TTEN: 
+#     Flag turn on the radar reflectivity to temperature tendenecy.
+#
+#-----------------------------------------------------------------------
+#
+DO_NONVAR_CLDANAL="FALSE"
+DO_REFL2TTEN="FALSE"
+#
+#-----------------------------------------------------------------------
+#
+# Parameters for observation preprocess.
+# MM?: minute from the hour that the NSSL mosaic files will be searched for 
+#      data preprocess
+#
+#-----------------------------------------------------------------------
+#
+MM0="00"
+MM1="01"
+MM2="02"
+MM3="03"
