@@ -314,7 +314,7 @@ if [ ${#ADDNL_OUTPUT_GRIDS[@]} -gt 0 ]; then
       
       eval grid_specs=\$grid_specs_${grid}
       subdir=${postprd_dir}/${grid}_grid
-      mkdir -p ${subdir}
+      mkdir -p ${subdir}/${fhr}
       bg_remap=${subdir}/${NET}.t${cyc}z.bg${leveltype}f${fhr}.${tmmark}.grib2
 
       # Interpolate fields to new grid
@@ -324,15 +324,15 @@ if [ ${#ADDNL_OUTPUT_GRIDS[@]} -gt 0 ]; then
         -new_grid_interpolation bilinear \
         -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
         -if ":(NCONCD|NCCICE|SPNCR|CLWMR|CICE|RWMR|SNMR|GRLE|PMTF|PMTC|REFC|CSNOW|CICEP|CFRZR|CRAIN|LAND|ICEC|TMP:surface|VEG|CCOND|SFEXC|MSLMA|PRES:tropopause|LAI|HPBL|HGT:planetary boundary layer):" -new_grid_interpolation neighbor -fi \
-        -new_grid ${grid_specs} ${subdir}/tmp_${grid}.grib2 &
+        -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2 &
       wait 
 
       # Merge vector field records
-      wgrib2 ${subdir}/tmp_${grid}.grib2 -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" -submsg_uv ${bg_remap} &
+      wgrib2 ${subdir}/${fhr}/tmp_${grid}.grib2 -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" -submsg_uv ${bg_remap} &
       wait 
 
       # Remove temporary files
-      rm -f ${subdir}/tmp_${grid}.grib2
+      rm -f ${subdir}/${fhr}/tmp_${grid}.grib2
 
       # Link output for transfer from Jet to web
       ln -fs ${bg_remap} ${subdir}/BG${leveltype^^}_${basetime}${post_fhr}00
