@@ -76,7 +76,7 @@ function source_util_funcs() {
 #
 # Source the file containing the function that checks for preexisting 
 # directories or files and handles them according to a specified method
-# (which can be one of "delete", "rename", and "quit").
+# (which can be one of "delete", "overwrite", "rename", and "quit").
 #
 #-----------------------------------------------------------------------
 #

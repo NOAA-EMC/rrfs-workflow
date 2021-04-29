@@ -63,7 +63,7 @@ where the arguments are defined as follows:
 
   method:
   String specifying the action to take if a preexisting version of 
-  dir_or_file is found.  Valid values are \"delete\", \"rename\", and \"quit\".
+  dir_or_file is found.  Valid values are \"delete\", \"overwrite\", \"rename\", and \"quit\".
 "
 
   fi
@@ -84,7 +84,7 @@ where the arguments are defined as follows:
 #
 #-----------------------------------------------------------------------
 #
-  local valid_vals_method=( "delete" "rename" "quit" )
+  local valid_vals_method=( "delete" "overwrite" "rename" "quit" )
   check_var_valid_value "method" "valid_vals_method"
 #
 #-----------------------------------------------------------------------
@@ -108,6 +108,19 @@ where the arguments are defined as follows:
     "delete")
 
       rm_vrfy -rf "${dir_or_file}"
+      ;;
+#
+#-----------------------------------------------------------------------
+#
+# If method is set to "overwrite", just overwrite existing directory 
+# file. Useful to keep ongoing run uninterrupted in some situations:
+#   rocotoco *db files and dependent previous cycle dirs stay
+#
+#-----------------------------------------------------------------------
+#
+    "overwrite")
+
+      continue
       ;;
 #
 #-----------------------------------------------------------------------

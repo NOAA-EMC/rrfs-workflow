@@ -1195,9 +1195,7 @@ FIXcrtm="${EXPTDIR}/fix_crtm"
 if [ "${RUN_ENVIR}" = "nco" ]; then
 
   CYCLE_BASEDIR="$STMP/tmpnwprd/$RUN"
-  if [ "${NEW_STMP}" = "TRUE" ]; then
-    check_for_preexist_dir_file "${CYCLE_BASEDIR}" "${PREEXISTING_DIR_METHOD}"
-  fi
+  check_for_preexist_dir_file "${CYCLE_BASEDIR}" "${PREEXISTING_DIR_METHOD}"
   COMROOT="$PTMP/com"
   COMOUT_BASEDIR="$COMROOT/$NET/$envir"
 

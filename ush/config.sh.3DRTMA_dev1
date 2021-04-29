@@ -24,7 +24,7 @@ FIX_CRTM=/home/rtrr/FIX_EXEC_MODULE/crtm/CRTM_v2.3.0
 VERBOSE="TRUE"
 
 RUN_ENVIR="nco"
-PREEXISTING_DIR_METHOD="rename"
+PREEXISTING_DIR_METHOD="overwrite"
 
 PREDEF_GRID_NAME=RRFS_CONUS_3km
 
@@ -127,8 +127,6 @@ TAG="RTMA_dev1" ## used by job names
 IS_RTMA="TRUE"
 NCORES_PER_NODE=40 #kjet
 FG_ROOTDIR="/lfs4/BMC/nrtrr/NCO_dirs/stmp/tmpnwprd/RRFS_dev1" #only needed by RTMA
-NEW_STMP="FALSE"  #don't rename/remove $STMP
-#NEW_EXPTDIR="FALSE"  #don't generate new dir, overwite same files under $EXPTDIR
 
 USE_CUSTOM_POST_CONFIG_FILE="TRUE"
 CUSTOM_POST_CONFIG_FP="/mnt/lfs4/BMC/nrtrr/RTMA/RTMA-dev1-ufs-srweather-app/src/EMC_post/parm/postxconfig-NT-fv3lam_rrfs.txt"
