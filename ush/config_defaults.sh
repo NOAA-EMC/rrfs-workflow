@@ -1472,10 +1472,10 @@ WTIME_RUN_PREPSTART="00:10:00"
 WTIME_RUN_FCST="04:30:00"
 WTIME_RUN_POST="00:15:00"
 WTIME_RUN_ANAL="00:30:00"
-WTIME_PROC_RADAR="00:10:00"
-WTIME_PROC_LIGHTNING="00:10:00"
-WTIME_PROC_BUFR="00:10:00"
-WTIME_RUN_REF2TTEN="00:10:00"
+WTIME_PROC_RADAR="00:25:00"
+WTIME_PROC_LIGHTNING="00:25:00"
+WTIME_PROC_BUFR="00:25:00"
+WTIME_RUN_REF2TTEN="00:20:00"
 WTIME_RUN_NONVARCLDANL="00:20:00"
 #
 # Memory.
@@ -1696,12 +1696,13 @@ DO_REFL2TTEN="FALSE"
 #-----------------------------------------------------------------------
 #
 # Parameters for observation preprocess.
-# MM?: minute from the hour that the NSSL mosaic files will be searched for 
+# RADARREFL_MINS:
+#   minute from the hour that the NSSL mosaic files will be searched for 
 #      data preprocess
+# RADARREFL_TIMELEVEL:
+#   time level (minute) from the hour that the NSSL mosaic files will be generated 
 #
 #-----------------------------------------------------------------------
 #
-MM0="00"
-MM1="01"
-MM2="02"
-MM3="03"
+RADARREFL_MINS=(0 1 2 3)
+RADARREFL_TIMELEVEL=(0)

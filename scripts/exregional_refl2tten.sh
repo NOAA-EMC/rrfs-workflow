@@ -182,12 +182,18 @@ fi
 process_radarref_path=${CYCLE_DIR}/process_radarref
 process_lightning_path=${CYCLE_DIR}/process_lightning
 
-obs_file=${process_radarref_path}/RefInGSI3D.dat
-if [ -r "${obs_file}" ]; then
-   cp_vrfy "${obs_file}" "RefInGSI3D.dat_01"
-else
-   print_info_msg "$VERBOSE" "Warning: ${obs_file} does not exist!"
-fi
+ss=0
+for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
+  bigmin=$( printf %2.2i $bigmin ) 
+  obs_file=${process_radarref_path}/${bigmin}/RefInGSI3D.dat
+  ((ss+=1))
+  num=$( printf %2.2i ${ss} )
+  if [ -r "${obs_file}" ]; then
+     cp_vrfy "${obs_file}" "RefInGSI3D.dat_${num}"
+  else
+     print_info_msg "$VERBOSE" "Warning: ${obs_file} does not exist!"
+  fi
+done
 
 obs_file=${process_lightning_path}/LightningInFV3LAM.dat
 if [ -r "${obs_file}" ]; then

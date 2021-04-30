@@ -132,6 +132,7 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 #
 #-----------------------------------------------------------------------
 #
+# Loop through different time levels
 # Get into working directory
 #
 #-----------------------------------------------------------------------
@@ -139,13 +140,16 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 print_info_msg "$VERBOSE" "
 Getting into working directory for radar reflectivity process ..."
 
-cd ${WORKDIR}
+for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
+  bigmin=$( printf %2.2i $bigmin )
+  mkdir_vrfy ${WORKDIR}/${bigmin}
+  cd ${WORKDIR}/${bigmin}
 
-fixdir=$FIX_GSI/
-fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
+  fixdir=$FIX_GSI/
+  fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 
-print_info_msg "$VERBOSE" "fixdir is $fixdir"
-print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
+  print_info_msg "$VERBOSE" "fixdir is $fixdir"
+  print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
 
 #
 #-----------------------------------------------------------------------
@@ -154,7 +158,7 @@ print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
 #
 #-----------------------------------------------------------------------
 
-cp_vrfy ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
+  cp_vrfy ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
 
 #
 #-----------------------------------------------------------------------
@@ -163,60 +167,59 @@ cp_vrfy ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
 #
 #-----------------------------------------------------------------------
 
-NSSL=${OBSPATH_NSSLMOSIAC}
+  NSSL=${OBSPATH_NSSLMOSIAC}
 
-mrms="MRMS_MergedReflectivityQC"
-
-echo "${MM0} ${MM1} ${MM2} ${MM3}"
+  mrms="MRMS*MergedReflectivityQC"
 
 # Link to the MRMS operational data
-for min in ${MM0} ${MM1} ${MM2} ${MM3}
-do
-  echo "Looking for data valid:"${YYYY}"-"${MM}"-"${DD}" "${HH}":"${min}
-  s=0
-  while [[ $s -le 59 ]]; do
-    if [ $s -lt 10 ]; then
-      ss=0${s}
-    else
-      ss=$s
-    fi
-    nsslfile=${NSSL}/${YYYY}${MM}${DD}-${HH}${min}${ss}.${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.grib2
-    if [ -s $nsslfile ]; then
-      echo 'Found '${nsslfile}
-      numgrib2=$(ls ${NSSL}/${YYYY}${MM}${DD}-${HH}${min}*.${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.grib2 | wc -l)
-      echo 'Number of GRIB-2 files: '${numgrib2}
-      if [ ${numgrib2} -ge 10 ] && [ ! -e filelist_mrms ]; then
-        ln -sf ${NSSL}/${YYYY}${MM}${DD}-${HH}${min}*.${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.grib2 . 
-        ls ${YYYY}${MM}${DD}-${HH}${min}*.${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.grib2 > filelist_mrms
-        echo 'Creating links for ${YYYY}${MM}${DD}-${HH}${min}'
+  echo "bigmin = ${bigmin}"
+  echo "RADARREFL_MINS = ${RADARREFL_MINS[@]}"
+
+# Link to the MRMS operational data
+  for min in ${RADARREFL_MINS[@]}
+  do
+    min=$( printf %2.2i $((bigmin+min)) )
+    echo "Looking for data valid:"${YYYY}"-"${MM}"-"${DD}" "${HH}":"${min}
+    s=0
+    while [[ $s -le 59 ]]; do
+      ss=$(printf %2.2i ${s})
+      nsslfile=${NSSL}/${YYYY}${MM}${DD}-${HH}${min}${ss}.${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.grib2
+      if [ -s $nsslfile ]; then
+        echo 'Found '${nsslfile}
+        numgrib2=$(ls ${NSSL}/${YYYY}${MM}${DD}-${HH}${min}*.${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.grib2 | wc -l)
+        echo 'Number of GRIB-2 files: '${numgrib2}
+        if [ ${numgrib2} -ge 10 ] && [ ! -e filelist_mrms ]; then
+          ln -sf ${NSSL}/${YYYY}${MM}${DD}-${HH}${min}*.${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.grib2 . 
+          ls ${YYYY}${MM}${DD}-${HH}${min}*.${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.grib2 > filelist_mrms
+          echo 'Creating links for ${YYYY}${MM}${DD}-${HH}${min}'
+        fi
       fi
-    fi
-    ((s+=1))
+      ((s+=1))
+    done
   done
-done
 
 # remove filelist_mrms if zero bytes
-if [ ! -s filelist_mrms ]; then
-  rm -f filelist_mrms
-fi
+  if [ ! -s filelist_mrms ]; then
+    rm -f filelist_mrms
+  fi
 
-if [ -s filelist_mrms ]; then
-   numgrib2=$(more filelist_mrms | wc -l)
-   print_info_msg "$VERBOSE" "Using radar data from: `head -1 filelist_mrms | cut -c10-15`"
-   print_info_msg "$VERBOSE" "NSSL grib2 file levels = $numgrib2"
-else
-   echo "ERROR: Not enough radar reflectivity files available."
-   exit 1
-fi
+  if [ -s filelist_mrms ]; then
+     numgrib2=$(more filelist_mrms | wc -l)
+     print_info_msg "$VERBOSE" "Using radar data from: `head -1 filelist_mrms | cut -c10-15`"
+     print_info_msg "$VERBOSE" "NSSL grib2 file levels = $numgrib2"
+  else
+     echo "WARNING: Not enough radar reflectivity files available for loop ${bigmin}."
+     continue
+  fi
 
 #-----------------------------------------------------------------------
 #
 # copy bufr table from fix directory
 #
 #-----------------------------------------------------------------------
-BUFR_TABLE=${fixdir}/prepobs_prep_RAP.bufrtable
+  BUFR_TABLE=${fixdir}/prepobs_prep_RAP.bufrtable
 
-cp_vrfy $BUFR_TABLE prepobs_prep.bufrtable
+  cp_vrfy $BUFR_TABLE prepobs_prep.bufrtable
 
 #-----------------------------------------------------------------------
 #
@@ -235,13 +238,12 @@ cp_vrfy $BUFR_TABLE prepobs_prep.bufrtable
 #-----------------------------------------------------------------------
 
 cat << EOF > mosaic.namelist
- &setup
-  tversion=1,
-  bkversion=1,
-  analysis_time = ${YYYYMMDDHH},
-  dataPath = './',
- /
-
+   &setup
+    tversion=1,
+    bkversion=1,
+    analysis_time = ${YYYYMMDDHH},
+    dataPath = './',
+   /
 EOF
 
 #
@@ -251,18 +253,18 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-exect="${EXECDIR}/process_NSSL_mosaic.exe"
+  exect="process_NSSL_mosaic.exe"
 
-if [ -f ${EXECDIR}/$exect ]; then
-  print_info_msg "$VERBOSE" "
-Copying the radar process  executable to the run directory..."
-  cp_vrfy ${EXECDIR}/${exect} ${WORKDIR}
-else
-  print_err_msg_exit "\
-The executable specified in GSI_exect does not exist:
-  exect = \"${EXECDIR}/$exect\"
-Build radar process and rerun."
-fi
+  if [ -f ${EXECDIR}/$exect ]; then
+    print_info_msg "$VERBOSE" "
+    Copying the radar process  executable to the run directory..."
+    cp_vrfy ${EXECDIR}/${exect} .
+  else
+    print_err_msg_exit "\
+    The executable specified in GSI_exect does not exist:
+    exect = \"${EXECDIR}/$exect\"
+    Build radar process and rerun."
+  fi
 #
 #
 #-----------------------------------------------------------------------
@@ -271,8 +273,10 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-$APRUN ./${exect} > stdout 2>&1 || print_err_msg "\
-Call to executable to run radar refl process returned with nonzero exit code."
+  $APRUN ./${exect} > stdout 2>&1 || print_err_msg "\
+  Call to executable to run radar refl process returned with nonzero exit code."
+
+done # done with the bigmin for-loop
 #
 #-----------------------------------------------------------------------
 #

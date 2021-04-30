@@ -122,8 +122,8 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 
 <!ENTITY START_TIME_ANALYSIS     "02:37:00">
 <!ENTITY START_TIME_CONVENTIONAL "00:37:00">
-<!ENTITY START_TIME_NSSLMOSIAC   "00:25:00">
-<!ENTITY START_TIME_LIGHTNINGNC  "00:25:00">
+<!ENTITY START_TIME_NSSLMOSIAC   "00:45:00">
+<!ENTITY START_TIME_LIGHTNINGNC  "00:45:00">
 
 <!ENTITY WALL_LIMIT_PRE '<deadline><cyclestr offset="&DEADLINE_PRE;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_ANAL '<deadline><cyclestr offset="&DEADLINE_ANAL;">@Y@m@d@H@M</cyclestr></deadline>'>

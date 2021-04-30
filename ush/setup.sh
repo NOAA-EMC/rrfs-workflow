@@ -2485,6 +2485,8 @@ FIX_CRTM="${FIX_CRTM}"
 AIRCRAFT_REJECT="${AIRCRAFT_REJECT}"
 SFCOBS_USELIST="${SFCOBS_USELIST}"
 
+RADARREFL_MINS=( $(printf "\"%s\" " "${RADARREFL_MINS[@]}" ))
+RADARREFL_TIMELEVEL=( $(printf "\"%s\" " "${RADARREFL_TIMELEVEL[@]}" ))
 #
 #-----------------------------------------------------------------------
 #
