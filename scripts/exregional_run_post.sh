@@ -322,12 +322,19 @@ if [ ${#ADDNL_OUTPUT_GRIDS[@]} -gt 0 ]; then
 
       # Interpolate fields to new grid
       eval infile=\$bg${leveltype}
-      wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
-        -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
-        -new_grid_interpolation bilinear \
-        -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
-        -if ":(NCONCD|NCCICE|SPNCR|CLWMR|CICE|RWMR|SNMR|GRLE|PMTF|PMTC|REFC|CSNOW|CICEP|CFRZR|CRAIN|LAND|ICEC|TMP:surface|VEG|CCOND|SFEXC|MSLMA|PRES:tropopause|LAI|HPBL|HGT:planetary boundary layer):" -new_grid_interpolation neighbor -fi \
-        -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2 &
+      if [ ${NET} = "RRFS_NA_13km" ]; then
+         wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
+           -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
+           -new_grid_interpolation bilinear \
+           -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
+           -if ":(NCONCD|NCCICE|SPNCR|CLWMR|CICE|RWMR|SNMR|GRLE|PMTF|PMTC|REFC|CSNOW|CICEP|CFRZR|CRAIN|LAND|ICEC|TMP:surface|VEG|CCOND|SFEXC|MSLMA|PRES:tropopause|LAI|HPBL|HGT:planetary boundary layer):" -new_grid_interpolation neighbor -fi \
+           -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2 &
+      else
+         wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
+           -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
+           -new_grid_interpolation neighbor \
+           -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2 &
+      fi
       wait 
 
       # Merge vector field records
