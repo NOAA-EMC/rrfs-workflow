@@ -2487,6 +2487,7 @@ SFCOBS_USELIST="${SFCOBS_USELIST}"
 
 RADARREFL_MINS=( $(printf "\"%s\" " "${RADARREFL_MINS[@]}" ))
 RADARREFL_TIMELEVEL=( $(printf "\"%s\" " "${RADARREFL_TIMELEVEL[@]}" ))
+ADDNL_OUTPUT_GRIDS=( $(printf "\"%s\" " "${ADDNL_OUTPUT_GRIDS[@]}" ))
 #
 #-----------------------------------------------------------------------
 #
