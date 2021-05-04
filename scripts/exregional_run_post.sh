@@ -276,7 +276,10 @@ bgsfc=${postprd_dir}/${NET}.t${cyc}z.bgsfcf${fhr}.${tmmark}.grib2
 mv_vrfy BGDAWP.GrbF${post_fhr} ${bgdawp}
 mv_vrfy BGRD3D.GrbF${post_fhr} ${bgrd3d}
 # small subset of surface fields for testbed and internal use
-wgrib2 -match "APCP|parmcat=16 parm=196|PRATE" ${bgrd3d} -grib ${bgsfc}
+#wgrib2 -match "APCP|parmcat=16 parm=196|PRATE" ${bgrd3d} -grib ${bgsfc}
+
+# extract the output fields for the testbed
+wgrib2 ${bgdawp} | grep -F -f ${FIXam}/testbed_fields_bgdawp.txt | wgrib2 -i -grib ${bgsfc} ${bgdawp}
 
 #Link output for transfer to Jet
 # Should the following be done only if on jet??
