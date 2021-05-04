@@ -20,6 +20,7 @@ valid_vals_PREDEF_GRID_NAME=( \
 "GSL_HAFSV0.A_3km" \
 "GSD_HRRR_AK_50km" \
 "GSD_RAP13km" \
+"RRFS_NA_3km" \
 )
 valid_vals_CCPP_PHYS_SUITE=( \
 "FV3_CPT_v0" \
