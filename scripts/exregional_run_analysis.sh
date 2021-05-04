@@ -321,14 +321,18 @@ sed -i "s/hh/${HH}/"     coupler.res
 # copy observation files to working directory 
 #
 #-----------------------------------------------------------------------
+obs_source=rap
+if [[ ${HH} -eq '00' || ${HH} -eq '12' ]]; then
+  obs_source=rap_e
+fi
 
-obs_files_source[0]=${OBSPATH}/${YYYYMMDDHH}.rap.t${HH}z.prepbufr.tm00
+obs_files_source[0]=${OBSPATH}/${YYYYMMDDHH}.${obs_source}.t${HH}z.prepbufr.tm00
 obs_files_target[0]=prepbufr
 
-obs_files_source[1]=${OBSPATH}/${YYYYMMDDHH}.rap.t${HH}z.satwnd.tm00.bufr_d
+obs_files_source[1]=${OBSPATH}/${YYYYMMDDHH}.${obs_source}.t${HH}z.satwnd.tm00.bufr_d
 obs_files_target[1]=satwndbufr
 
-obs_files_source[2]=${OBSPATH}/${YYYYMMDDHH}.rap.t${HH}z.nexrad.tm00.bufr_d
+obs_files_source[2]=${OBSPATH}/${YYYYMMDDHH}.${obs_source}.t${HH}z.nexrad.tm00.bufr_d
 obs_files_target[2]=l2rwbufr
 
 obs_number=${#obs_files_source[@]}

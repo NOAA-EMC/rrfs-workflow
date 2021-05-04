@@ -339,13 +339,17 @@ settings="\
   'prep_warmstart_cycledef': ${PREP_WARMSTART_CYCLEDEF}
   'analysis_cycledef': ${ANALYSIS_CYCLEDEF}
   'forecast_cycledef': ${FORECAST_CYCLEDEF}
+  'postproc_cycledef': ${POSTPROC_CYCLEDEF}
+  'postproc_long_cycledef': ${POSTPROC_LONG_CYCLEDEF}
   'archive_cycledef': ${ARCHIVE_CYCLEDEF}
 #
-# Forecast length (same for all cycles).
+# boundary, forecast, and post process length.
 #
   'fcst_len_hrs': ${FCST_LEN_HRS}
   'boundary_len_hrs': ${BOUNDARY_LEN_HRS}
   'boundary_long_len_hrs': ${BOUNDARY_LONG_LEN_HRS}
+  'postproc_len_hrs': ${POSTPROC_LEN_HRS}
+  'postproc_long_len_hrs': ${POSTPROC_LONG_LEN_HRS}
 #
 # Ensemble-related parameters.
 #

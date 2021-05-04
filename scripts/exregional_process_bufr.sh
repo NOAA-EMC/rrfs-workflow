@@ -169,6 +169,16 @@ cp_vrfy ${fixgriddir}/geo_em.d01.nc          geo_em.d01.nc
 BUFR_TABLE=${FIX_GSI}/prepobs_prep_RAP.bufrtable
 cp_vrfy $BUFR_TABLE prepobs_prep.bufrtable
 
+#-----------------------------------------------------------------------
+#
+#   set observation soruce 
+#
+#-----------------------------------------------------------------------
+obs_source=rap
+if [[ ${HH} -eq '00' || ${HH} -eq '12' ]]; then
+  obs_source=rap_e
+fi
+
 #
 #-----------------------------------------------------------------------
 #-----------------------------------------------------------------------
@@ -178,7 +188,7 @@ cp_vrfy $BUFR_TABLE prepobs_prep.bufrtable
 #-----------------------------------------------------------------------
 
 run_lightning=false
-obs_file=${OBSPATH}/${YYYYMMDDHH}.rap.t${HH}z.lghtng.tm00.bufr_d
+obs_file=${OBSPATH}/${YYYYMMDDHH}.${obs_source}.t${HH}z.lghtng.tm00.bufr_d
 print_info_msg "$VERBOSE" "obsfile is $obs_file"
 if [ -r "${obs_file}" ]; then
    cp_vrfy "${obs_file}" "lghtngbufr"
@@ -238,7 +248,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-if [ $run_lightning ]; then
+if [[ "$run_lightning" == true ]]; then
    $APRUN ./${exect} > stdout_lightning_bufr 2>&1 || print_err_msg "\
    Call to executable to run lightning process returned with nonzero exit code."
 fi
@@ -251,7 +261,7 @@ fi
 #
 #-----------------------------------------------------------------------
 
-obs_file=${OBSPATH}/${YYYYMMDDHH}.rap.t${HH}z.lgycld.tm00.bufr_d
+obs_file=${OBSPATH}/${YYYYMMDDHH}.${obs_source}.t${HH}z.lgycld.tm00.bufr_d
 print_info_msg "$VERBOSE" "obsfile is $obs_file"
 run_cloud=false
 if [ -r "${obs_file}" ]; then
@@ -313,7 +323,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-if [ $run_cloud ]; then
+if [[ "$run_cloud" == true ]]; then
   $APRUN ./${exect} > stdout_nasalarc 2>&1 || print_err_msg "\
   Call to executable to run NASA LaRC Cloud process returned with nonzero exit code."
 fi
@@ -326,7 +336,7 @@ fi
 #
 #-----------------------------------------------------------------------
 
-obs_file=${OBSPATH}/${YYYYMMDDHH}.rap.t${HH}z.prepbufr.tm00 
+obs_file=${OBSPATH}/${YYYYMMDDHH}.${obs_source}.t${HH}z.prepbufr.tm00 
 print_info_msg "$VERBOSE" "obsfile is $obs_file"
 run_metar=false
 if [ -r "${obs_file}" ]; then
@@ -382,7 +392,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-if [ $run_metar ]; then
+if [[ "$run_metar" == true ]]; then
   $APRUN ./${exect} > stdout_metarcld 2>&1 || print_err_msg "\
   Call to executable to run METAR cloud process returned with nonzero exit code."
 fi

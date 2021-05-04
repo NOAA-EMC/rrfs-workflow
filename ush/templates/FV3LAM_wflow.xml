@@ -46,15 +46,15 @@ Workflow task names.
 <!ENTITY RADAR_REFL2TTEN_TN   "{{ radar_refl2tten }}">
 <!ENTITY CLDANL_NONVAR_TN     "{{ cldanl_nonvar }}">
 
-<!ENTITY RUN_PREPSTART_TN  "run_prepstart">
-<!ENTITY RUN_ANAL_TN       "run_anal_gsi">
-<!ENTITY RUN_BUFR_TN       "run_bufr">
-<!ENTITY RUN_NCL_TN        "run_ncl">
-<!ENTITY RUN_NCL_ZIP_TN    "run_ncl_zip">
-<!ENTITY CLEAN_TN          "run_clean">
-<!ENTITY ARCHIVE_TN        "run_archive">
+<!ENTITY RUN_PREPSTART_TN     "run_prepstart">
+<!ENTITY RUN_ANAL_TN          "run_anal_gsi">
+<!ENTITY RUN_BUFR_TN          "run_bufr">
+<!ENTITY RUN_NCL_TN           "run_ncl">
+<!ENTITY RUN_NCL_ZIP_TN       "run_ncl_zip">
+<!ENTITY CLEAN_TN             "run_clean">
+<!ENTITY ARCHIVE_TN           "run_archive">
 
-<!ENTITY TAG               "{{ tag }}">
+<!ENTITY TAG                  "{{ tag }}">
 
 <!--
 Flags that specify whether to run the preprocessing tasks.
@@ -121,7 +121,7 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 <!ENTITY DEADLINE_GRAPHICS "24:00:00">
 
 <!ENTITY START_TIME_ANALYSIS     "02:37:00">
-<!ENTITY START_TIME_CONVENTIONAL "00:37:00">
+<!ENTITY START_TIME_CONVENTIONAL "00:40:00">
 <!ENTITY START_TIME_NSSLMOSIAC   "00:45:00">
 <!ENTITY START_TIME_LIGHTNINGNC  "00:45:00">
 
@@ -149,6 +149,9 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 
   <cycledef group="analysis"> {{ analysis_cycledef }} </cycledef>
   <cycledef group="forecast"> {{ forecast_cycledef }} </cycledef>
+
+  <cycledef group="postproc_normal"> {{ postproc_cycledef }} </cycledef>
+  <cycledef group="postproc_long"> {{ postproc_long_cycledef }} </cycledef>
   <cycledef group="archive">  {{ archive_cycledef }} </cycledef> 
 
   <log>
@@ -657,13 +660,12 @@ MODULES_RUN_TASK_FP script.
   </task>
 
 {%- endif %}
+
+{%- if do_dacycle %}
 <!--
 ************************************************************************
 ************************************************************************
 -->
-
-{%- if do_dacycle %}
-
   <task name="&ANAL_GSI_TN;" cycledefs="analysis" maxtries="{{ maxtries_anal_gsi }}">
 
     &RSRV_ANALYSIS;
@@ -813,15 +815,17 @@ MODULES_RUN_TASK_FP script.
     </dependency>
 
   </task>
+
 <!--
 ************************************************************************
 ************************************************************************
 -->
   <metatask name="&RUN_POST_TN;{{ uscore_ensmem_name }}">
 
-    <var name="fhr"> {% for h in range(0, fcst_len_hrs+1) %}{{ " %03d" % h  }}{% endfor %} </var>
+    <var name="fhr"> {% for h in range(0, postproc_long_len_hrs+1) %}{{ " %03d" % h  }}{% endfor %} </var>
+    <var name="type"> {% for h in range(0, postproc_len_hrs+1) %}{{ " normal" }}{% endfor %} {% for h in range(postproc_len_hrs+1, postproc_long_len_hrs+1) %}{{ " long"  }}{% endfor %} </var>
 
-    <task name="&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr#" cycledefs="forecast" maxtries="{{ maxtries_run_post }}">
+    <task name="&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr#" cycledefs="postproc_#type#" maxtries="{{ maxtries_run_post }}">
 
       &RSRV_DEFAULT;
       &WALL_LIMIT_POST;
@@ -891,9 +895,10 @@ MODULES_RUN_TASK_FP script.
 -->
   <metatask name="&RUN_NCL_TN;">
 
-    <var name="fhr"> {% for h in range(0, fcst_len_hrs+1) %}{{ " %03d" % h  }}{% endfor %} </var>
+    <var name="fhr"> {% for h in range(0, postproc_long_len_hrs+1) %}{{ " %03d" % h  }}{% endfor %} </var>
+    <var name="type"> {% for h in range(0, postproc_len_hrs+1) %}{{ " normal" }}{% endfor %} {% for h in range(postproc_len_hrs+1, postproc_long_len_hrs+1) %}{{ " long"  }}{% endfor %} </var>
 
-    <task name="&RUN_NCL_TN;_#fhr#" cycledefs="forecast" maxtries="{{ maxtries_run_post }}">
+    <task name="&RUN_NCL_TN;_#fhr#" cycledefs="postproc_#type#" maxtries="{{ maxtries_run_post }}">
 
       &RSRV_GRAPHICS;
       &WALL_LIMIT_GRAPHICS;
@@ -923,9 +928,10 @@ MODULES_RUN_TASK_FP script.
 -->
    <metatask mode="serial" name="&RUN_NCL_ZIP_TN;">
 
-    <var name="fhr"> {% for h in range(0, fcst_len_hrs+1) %}{{ " %03d" % h  }}{% endfor %} </var>
+    <var name="fhr"> {% for h in range(0, postproc_long_len_hrs+1) %}{{ " %03d" % h  }}{% endfor %} </var>
+    <var name="type"> {% for h in range(0, postproc_len_hrs+1) %}{{ " normal" }}{% endfor %} {% for h in range(postproc_len_hrs+1, postproc_long_len_hrs+1) %}{{ " long"  }}{% endfor %} </var>
 
-    <task name="&RUN_NCL_ZIP_TN;_#fhr#" cycledefs="forecast" maxtries="{{ maxtries_run_post }}">
+    <task name="&RUN_NCL_ZIP_TN;_#fhr#" cycledefs="postproc_#type#" maxtries="{{ maxtries_run_post }}">
 
       &RSRV_GRAPHICS;
       &WALL_LIMIT_GRAPHICS;
