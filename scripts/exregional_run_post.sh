@@ -309,6 +309,7 @@ if [ ${#ADDNL_OUTPUT_GRIDS[@]} -gt 0 ]; then
   grid_specs_clue="lambert:262.5:38.5 239.891:1620:3000.0 20.971:1120:3000.0"
   grid_specs_hrrr="lambert:-97.5:38.5 -122.7195:1799:3000.0 21.13812:1059:3000.0"
   grid_specs_hrrre="lambert:-97.5:38.5 -122.71953:1800:3000.0 21.138123:1060:3000.0"
+  grid_specs_rrfsak="lambert:-161.5:63.0 172.102615:1379:3000.0 45.84576:1003:3000.0"
 
   for grid in ${ADDNL_OUTPUT_GRIDS[@]}
   do
