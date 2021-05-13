@@ -125,18 +125,30 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 <!ENTITY START_TIME_NSSLMOSIAC   "00:45:00">
 <!ENTITY START_TIME_LIGHTNINGNC  "00:45:00">
 
+{%- if do_retro %}
+<!ENTITY WALL_LIMIT_PRE ''>
+<!ENTITY WALL_LIMIT_ANAL ''>
+<!ENTITY WALL_LIMIT_FCST ''>
+<!ENTITY WALL_LIMIT_POST ''>
+<!ENTITY WALL_LIMIT_BUFR ''>
+<!ENTITY WALL_LIMIT_GRAPHICS ''>
+{% else %}
 <!ENTITY WALL_LIMIT_PRE '<deadline><cyclestr offset="&DEADLINE_PRE;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_ANAL '<deadline><cyclestr offset="&DEADLINE_ANAL;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_FCST '<deadline><cyclestr offset="&DEADLINE_FCST;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_POST '<deadline><cyclestr offset="&DEADLINE_POST;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_BUFR '<deadline><cyclestr offset="&DEADLINE_POST;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_GRAPHICS '<deadline><cyclestr offset="&DEADLINE_GRAPHICS;">@Y@m@d@H@M</cyclestr></deadline>'>
-
+{% endif %}
 
 
 ]>
 
+{%- if do_retro %}
+<workflow realtime="F" scheduler="&SCHED;" cyclethrottle="5" cyclelifespan="01:00:00:00">
+{% else %}
 <workflow realtime="T" scheduler="&SCHED;" cyclethrottle="24" cyclelifespan="01:00:00:00">
+{%- endif %}
 {# Double quotes are required inside the strftime! Expect an error from reading the template if using single quotes. #}
   <cycledef group="at_start">{{ at_start_cycledef }} </cycledef>
 
@@ -306,7 +318,11 @@ MODULES_RUN_TASK_FP script.
     <envar><name>ICS_OR_LBCS</name><value>ICS</value></envar>
 
     <dependency>
+      {%- if machine in ["WCOSS_DELL_P3", "WCOSS_CRAY"]  %}
+      <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/gfs.@Y@m@d/@H/atmos/gfs.t@Hz.pgrb2.0p25.f{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
+      {% else %}
       <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/@y@j@H000{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
+      {%- endif %}
     </dependency>
 
   </task>
@@ -342,7 +358,11 @@ MODULES_RUN_TASK_FP script.
     <dependency>
        <and>
          {%- for h in range(extrn_mdl_lbcs_offset_hrs, boundary_len_hrs+extrn_mdl_lbcs_offset_hrs+1, bc_update_interval) %}
+         {%- if machine in ["WCOSS_DELL_P3", "WCOSS_CRAY"]  %}
+         <datadep age="00:00:05:00"><cyclestr>{{ extrn_mdl_sysbasedir_ics }}/gfs.@Y@m@d/@H/atmos/gfs.t@Hz.pgrb2.0p25.f{{ "%03d" % h }}</cyclestr></datadep>
+         {%- else %}
          <datadep age="00:00:05:00"> <cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/@y@j@H000{{ "%03d" % h }}</cyclestr></datadep>
+         {%- endif %}
          {%- endfor %}
        </and>
     </dependency>
@@ -380,7 +400,11 @@ MODULES_RUN_TASK_FP script.
     <dependency>
        <and>
          {%- for h in range(extrn_mdl_lbcs_offset_hrs, boundary_long_len_hrs+extrn_mdl_lbcs_offset_hrs+1, bc_update_interval) %}
+         {%- if machine in ["WCOSS_DELL_P3", "WCOSS_CRAY"]  %}
+         <datadep age="00:00:05:00"><cyclestr>{{ extrn_mdl_sysbasedir_ics }}/gfs.@Y@m@d/@H/atmos/gfs.t@Hz.pgrb2.0p25.f{{ "%03d" % h }}</cyclestr></datadep>
+         {%- else %}
          <datadep age="00:00:05:00"> <cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/@y@j@H000{{ "%03d" % h }}</cyclestr></datadep>
+         {%- endif %}
          {%- endfor %}
        </and>
     </dependency>
@@ -513,6 +537,9 @@ MODULES_RUN_TASK_FP script.
     <envar><name>BKTYPE</name><value><cyclestr>1</cyclestr></value></envar>
 
     <dependency>
+{%- if do_retro %}
+      <datadep age="00:00:05:00"><cyclestr>&FG_ROOT;/@Y@m@d@H/ics/gfs_data.tile7.halo0.nc</cyclestr></datadep>
+{% else %}
       <and>
         <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
         <taskdep task="&MAKE_ICS_TN;"/>
@@ -520,6 +547,7 @@ MODULES_RUN_TASK_FP script.
         <taskdep task="&MAKE_LBCS_TN;"/>
         {%- endif %}
       </and>
+{%- endif %}
     </dependency>
 
   </task>
@@ -550,6 +578,9 @@ MODULES_RUN_TASK_FP script.
     <envar><name>BKTYPE</name><value><cyclestr>0</cyclestr></value></envar>
 
     <dependency>
+{%- if do_retro %}
+      <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&FG_ROOT;/@Y@m@d@H/fcst_fv3lam/dynf00{{ da_cycle_interval_hrs }}.nc</cyclestr></datadep>
+{% else %}
       <or>
         <and>
           <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
@@ -564,6 +595,7 @@ MODULES_RUN_TASK_FP script.
           </or>
         </and>
       </or>
+{%- endif %}
     </dependency>
 
   </task>
@@ -859,6 +891,7 @@ MODULES_RUN_TASK_FP script.
   </metatask>
 {% endif %}
 
+{%- if machine in ["JET", "HERA"]  %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -959,6 +992,8 @@ MODULES_RUN_TASK_FP script.
 
    </metatask>
 
+{%- endif %}
+{%- if not do_retro %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -978,6 +1013,8 @@ MODULES_RUN_TASK_FP script.
 
   </task>
 
+{%- endif %}
+{%- if machine in ["JET", "HERA"]  %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -997,5 +1034,6 @@ MODULES_RUN_TASK_FP script.
 
   </task>
 
+{%- endif %}
 
 </workflow>

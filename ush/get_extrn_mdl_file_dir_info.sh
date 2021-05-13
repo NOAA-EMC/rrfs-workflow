@@ -391,9 +391,9 @@ fi
         if [ "${MACHINE}" = "JET" ]; then
           fns_on_disk=( "${yy}${ddd}${hh}0${fcst_mn}0${fcst_hh}" )
         else
-          fns_on_disk=( "gfs.t${hh}z.pgrb2.0p25.f${fcst_hh}" )  # Get only 0.25 degree files for now.
+          fns_on_disk=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" "gfs.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
         fi
-        fns_in_arcv=( "gfs.t${hh}z.pgrb2.0p25.f${fcst_hh}" )  # Get only 0.25 degree files for now.
+        fns_in_arcv=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )  # Get only 0.25 degree files for now.
 
       fi
       ;;
@@ -603,10 +603,10 @@ has not been specified for this external model and machine combination:
   "FV3GFS")
     case "$MACHINE" in
     "WCOSS_CRAY")
-      sysdir="$sysbasedir/gfs.${yyyymmdd}/${hh}"
+      sysdir="$sysbasedir/gfs.${yyyymmdd}/${hh}/atmos"
       ;;
     "WCOSS_DELL_P3")
-      sysdir="$sysbasedir/gfs.${yyyymmdd}/${hh}"
+      sysdir="$sysbasedir/gfs.${yyyymmdd}/${hh}/atmos"
       ;;
     "HERA")
       sysdir="$sysbasedir/gfs.${yyyymmdd}/${hh}"

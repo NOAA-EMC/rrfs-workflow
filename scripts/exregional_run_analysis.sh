@@ -78,31 +78,17 @@ case $MACHINE in
 #
 "WCOSS_C" | "WCOSS")
 #
-
-  if [ "${USE_CCPP}" = "TRUE" ]; then
-  
-# Needed to change to the experiment directory because the module files
-# for the CCPP-enabled version of FV3 have been copied to there.
-
-    cd_vrfy ${cycle_dir}
-  
-    set +x
-    source ./module-setup.sh
-    module use $( pwd -P )
-    module load modules.fv3
-    module list
-    set -x
-  
-  else
-  
-    . /apps/lmod/lmod/init/sh
-    module purge
-    module use /scratch4/NCEPDEV/nems/noscrub/emc.nemspara/soft/modulefiles
-    module load intel/16.1.150 impi/5.1.1.109 netcdf/4.3.0 
-    module list
-  
-  fi
-
+  module load NCO/4.7.0
+  module list
+  ulimit -s unlimited
+  ulimit -a
+  APRUN="mpirun -l -np ${PE_MEMBER01}"
+  ;;
+#
+"WCOSS_DELL_P3")
+#
+  module load NCO/4.7.0
+  module list
   ulimit -s unlimited
   ulimit -a
   APRUN="mpirun -l -np ${PE_MEMBER01}"
@@ -110,32 +96,6 @@ case $MACHINE in
 #
 "THEIA")
 #
-
-  if [ "${USE_CCPP}" = "TRUE" ]; then
-  
-# Need to change to the experiment directory to correctly load necessary 
-# modules for CCPP-version of FV3LAM in lines below
-    cd_vrfy ${EXPTDIR}
-  
-    set +x
-    source ./module-setup.sh
-    module use $( pwd -P )
-    module load modules.fv3
-    module load contrib wrap-mpi
-    module list
-    set -x
-  
-  else
-  
-    . /apps/lmod/lmod/init/sh
-    module purge
-    module use /scratch4/NCEPDEV/nems/noscrub/emc.nemspara/soft/modulefiles
-    module load intel/16.1.150 impi/5.1.1.109 netcdf/4.3.0 
-    module load contrib wrap-mpi 
-    module list
-  
-  fi
-
   ulimit -s unlimited
   ulimit -a
   np=${SLURM_NTASKS}
@@ -146,14 +106,12 @@ case $MACHINE in
   ulimit -s unlimited
   ulimit -a
   APRUN="srun"
-  LD_LIBRARY_PATH="${UFS_WTHR_MDL_DIR}/FV3/ccpp/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
   ;;
 #
 "JET")
   ulimit -s unlimited
   ulimit -a
   APRUN="srun"
-  LD_LIBRARY_PATH="${UFS_WTHR_MDL_DIR}/FV3/ccpp/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
   NCKS=ncks
   ;;
 #
@@ -175,10 +133,10 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-START_DATE=`echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/'`
+START_DATE=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
 
-YYYYMMDDHH=`date +%Y%m%d%H -d "${START_DATE}"`
-JJJ=`date +%j -d "${START_DATE}"`
+YYYYMMDDHH=$(date +%Y%m%d%H -d "${START_DATE}")
+JJJ=$(date +%j -d "${START_DATE}")
 
 YYYY=${YYYYMMDDHH:0:4}
 MM=${YYYYMMDDHH:4:2}
@@ -216,43 +174,82 @@ print_info_msg "$VERBOSE" "background type is is $BKTYPE"
 #
 #-----------------------------------------------------------------------
 
-stampcycle=`date -d "${START_DATE}" +%s`
+stampcycle=$(date -d "${START_DATE}" +%s)
 minHourDiff=100
 loops="009"    # or 009s for GFSv15
 ens_type="nc"  # or nemsio for GFSv15
 foundens=false
-for loop in $loops; do
-  for timelist in `ls ${ENKF_FCST}/*.gdas.t*z.atmf${loop}.mem080.${ens_type}`; do
-    availtimeyy=`basename ${timelist} | cut -c 1-2`
-    availtimeyyyy=20${availtimeyy}
-    availtimejjj=`basename ${timelist} | cut -c 3-5`
-    availtimemm=`date -d "${availtimeyyyy}0101 +$(( 10#${availtimejjj} - 1 )) days" +%m`
-    availtimedd=`date -d "${availtimeyyyy}0101 +$(( 10#${availtimejjj} - 1 )) days" +%d`
-    availtimehh=`basename ${timelist} | cut -c 6-7`
-    availtime=${availtimeyyyy}${availtimemm}${availtimedd}${availtimehh}
-    avail_time=`echo "${availtime}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/'`
-    avail_time=`date -d "${avail_time}"`
+cat "no ens found" >> filelist03
 
-    stamp_avail=`date -d "${avail_time} ${loop} hours" +%s`
+case $MACHINE in
 
-    hourDiff=`echo "($stampcycle - $stamp_avail) / (60 * 60 )" | bc`;
-    if [[ ${stampcycle} -lt ${stamp_avail} ]]; then
-       hourDiff=`echo "($stamp_avail - $stampcycle) / (60 * 60 )" | bc`;
-    fi
+"WCOSS_C" | "WCOSS" | "WCOSS_DELL_P3")
 
-    if [[ ${hourDiff} -lt ${minHourDiff} ]]; then
-       minHourDiff=${hourDiff}
-       enkfcstname=${availtimeyy}${availtimejjj}${availtimehh}00.gdas.t${availtimehh}z.atmf${loop}
-       foundens=true
-    fi
+  for loop in $loops; do
+    for timelist in $(ls ${ENKF_FCST}/enkfgdas.*/*/atmos/mem080/gdas*.atmf${loop}.${ens_type}); do
+      availtimeyyyymmdd=$(echo ${timelist} | cut -d'/' -f9 | cut -c 10-17)
+      availtimehh=$(echo ${timelist} | cut -d'/' -f10)
+      availtime=${availtimeyyyymmdd}${availtimehh}
+      avail_time=$(echo "${availtime}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
+      avail_time=$(date -d "${avail_time}")
+
+      stamp_avail=$(date -d "${avail_time} ${loop} hours" +%s)
+
+      hourDiff=$(echo "($stampcycle - $stamp_avail) / (60 * 60 )" | bc);
+      if [[ ${stampcycle} -lt ${stamp_avail} ]]; then
+         hourDiff=$(echo "($stamp_avail - $stampcycle) / (60 * 60 )" | bc);
+      fi
+
+      if [[ ${hourDiff} -lt ${minHourDiff} ]]; then
+         minHourDiff=${hourDiff}
+         enkfcstname=gdas.t${availtimehh}z.atmf${loop}
+         eyyyymmdd=$(echo ${availtime} | cut -c1-8)
+         ehh=$(echo ${availtime} | cut -c9-10)
+         foundens=true
+      fi
+    done
   done
-done
 
-if [ $foundens ]; then
-  ls ${ENKF_FCST}/${enkfcstname}.mem0??.${ens_type} >> filelist03
-else
-  cat "no ens found" >> filelist03
-fi
+  if [ ${foundens} ]
+  then
+    ls ${ENKF_FCST}/enkfgdas.${eyyyymmdd}/${ehh}/atmos/mem???/${enkfcstname}.nc > filelist03
+  fi
+
+  ;;
+"JET")
+
+  for loop in $loops; do
+    for timelist in $(ls ${ENKF_FCST}/*.gdas.t*z.atmf${loop}.mem080.${ens_type}); do
+      availtimeyy=$(basename ${timelist} | cut -c 1-2)
+      availtimeyyyy=20${availtimeyy}
+      availtimejjj=$(basename ${timelist} | cut -c 3-5)
+      availtimemm=$(date -d "${availtimeyyyy}0101 +$(( 10#${availtimejjj} - 1 )) days" +%m)
+      availtimedd=$(date -d "${availtimeyyyy}0101 +$(( 10#${availtimejjj} - 1 )) days" +%d)
+      availtimehh=$(basename ${timelist} | cut -c 6-7)
+      availtime=${availtimeyyyy}${availtimemm}${availtimedd}${availtimehh}
+      avail_time=$(echo "${availtime}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
+      avail_time=$(date -d "${avail_time}")
+
+      stamp_avail=$(date -d "${avail_time} ${loop} hours" +%s)
+
+      hourDiff=$(echo "($stampcycle - $stamp_avail) / (60 * 60 )" | bc);
+      if [[ ${stampcycle} -lt ${stamp_avail} ]]; then
+         hourDiff=$(echo "($stamp_avail - $stampcycle) / (60 * 60 )" | bc);
+      fi
+
+      if [[ ${hourDiff} -lt ${minHourDiff} ]]; then
+         minHourDiff=${hourDiff}
+         enkfcstname=${availtimeyy}${availtimejjj}${availtimehh}00.gdas.t${availtimehh}z.atmf${loop}
+         foundens=true
+      fi
+    done
+  done
+
+  if [ $foundens ]; then
+    ls ${ENKF_FCST}/${enkfcstname}.mem0??.${ens_type} >> filelist03
+  fi
+
+esac
 
 #
 #-----------------------------------------------------------------------
@@ -268,14 +265,13 @@ ifhyb=.false.
 
 # Determine if hybrid option is available
 memname='atmf009'
-nummem=`more filelist03 | wc -l`
+nummem=$(more filelist03 | wc -l)
 nummem=$((nummem - 3 ))
 if [[ ${nummem} -eq 80 ]]; then
   print_info_msg "$VERBOSE" "Do hybrid with ${memname}"
   ifhyb=.true.
   print_info_msg "$VERBOSE" " Cycle ${YYYYMMDDHH}: GSI hybrid uses ${memname} with n_ens=${nummem}" 
 fi
-
 
 #
 #-----------------------------------------------------------------------
@@ -293,7 +289,7 @@ cp_vrfy ${fixgriddir}/fv3_grid_spec                fv3_grid_spec
 
 if [ ${BKTYPE} -eq 1 ]; then  # cold start uses background from INPUT
   cp_vrfy ${bkpath}/gfs_data.tile7.halo0.nc        gfs_data.tile7.halo0.nc_b
-  ${NCKS} -A -v  phis ${fixgriddir}/phis.nc        gfs_data.tile7.halo0.nc_b
+  ncks -A -v  phis ${fixgriddir}/phis.nc           gfs_data.tile7.halo0.nc_b
 
   cp_vrfy ${bkpath}/sfc_data.tile7.halo0.nc        fv3_sfcdata
   cp_vrfy gfs_data.tile7.halo0.nc_b                fv3_dynvars
@@ -326,13 +322,27 @@ if [[ ${HH} -eq '00' || ${HH} -eq '12' ]]; then
   obs_source=rap_e
 fi
 
-obs_files_source[0]=${OBSPATH}/${YYYYMMDDHH}.${obs_source}.t${HH}z.prepbufr.tm00
+case $MACHINE in
+
+"WCOSS_C" | "WCOSS" | "WCOSS_DELL_P3")
+   obsfileprefix=${obs_source}
+   obspath_tmp=${OBSPATH}/${obs_source}.${YYYYMMDD}
+
+  ;;
+"JET")
+   obsfileprefix=${YYYYMMDDHH}.${obs_source}
+   obspath_tmp=${OBSPATH}
+
+esac
+
+
+obs_files_source[0]=${obspath_tmp}/${obsfileprefix}.t${HH}z.prepbufr.tm00
 obs_files_target[0]=prepbufr
 
-obs_files_source[1]=${OBSPATH}/${YYYYMMDDHH}.${obs_source}.t${HH}z.satwnd.tm00.bufr_d
+obs_files_source[1]=${obspath_tmp}/${obsfileprefix}.t${HH}z.satwnd.tm00.bufr_d
 obs_files_target[1]=satwndbufr
 
-obs_files_source[2]=${OBSPATH}/${YYYYMMDDHH}.${obs_source}.t${HH}z.nexrad.tm00.bufr_d
+obs_files_source[2]=${obspath_tmp}/${obsfileprefix}.t${HH}z.nexrad.tm00.bufr_d
 obs_files_target[2]=l2rwbufr
 
 obs_number=${#obs_files_source[@]}
@@ -427,7 +437,7 @@ ln -s $cldcoef  ./CloudCoeff.bin
 
 
 # Copy CRTM coefficient files based on entries in satinfo file
-for file in `awk '{if($1!~"!"){print $1}}' ./satinfo | sort | uniq` ;do
+for file in $(awk '{if($1!~"!"){print $1}}' ./satinfo | sort | uniq) ;do
    ln -s ${CRTMFIX}/${file}.SpcCoeff.bin ./
    ln -s ${CRTMFIX}/${file}.TauCoeff.bin ./
 done
@@ -558,9 +568,9 @@ esac
 if [ $binary_diag = ".true." ]; then
    listall="conv hirs2_n14 msu_n14 sndr_g08 sndr_g11 sndr_g11 sndr_g12 sndr_g13 sndr_g08_prep sndr_g11_prep sndr_g12_prep sndr_g13_prep sndrd1_g11 sndrd2_g11 sndrd3_g11 sndrd4_g11 sndrd1_g12 sndrd2_g12 sndrd3_g12 sndrd4_g12 sndrd1_g13 sndrd2_g13 sndrd3_g13 sndrd4_g13 hirs3_n15 hirs3_n16 hirs3_n17 amsua_n15 amsua_n16 amsua_n17 amsub_n15 amsub_n16 amsub_n17 hsb_aqua airs_aqua amsua_aqua imgr_g08 imgr_g11 imgr_g12 pcp_ssmi_dmsp pcp_tmi_trmm sbuv2_n16 sbuv2_n17 sbuv2_n18 omi_aura ssmi_f13 ssmi_f14 ssmi_f15 hirs4_n18 hirs4_metop-a amsua_n18 amsua_metop-a mhs_n18 mhs_metop-a amsre_low_aqua amsre_mid_aqua amsre_hig_aqua ssmis_las_f16 ssmis_uas_f16 ssmis_img_f16 ssmis_env_f16 iasi_metop-a"
    for type in $listall; do
-      count=`ls pe*.${type}_${loop} | wc -l`
+      count=$(ls pe*.${type}_${loop} | wc -l)
       if [[ $count -gt 0 ]]; then
-         `cat pe*.${type}_${loop} > diag_${type}_${string}.${YYYYMMDDHH}`
+         $(cat pe*.${type}_${loop} > diag_${type}_${string}.${YYYYMMDDHH})
       fi
    done
 fi
@@ -582,7 +592,7 @@ if [ $netcdf_diag = ".true." ]; then
    fi
 
    for type in $listallnc; do
-      count=`ls pe*.${type}_${loop}.nc4 | wc -l`
+      count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
       if [[ $count -gt 0 ]]; then
          ./ncdiag_cat.x -o ncdiag_${type}_${string}.nc4.${YYYYMMDDHH} pe*.${type}_${loop}.nc4
       fi

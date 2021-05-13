@@ -1610,7 +1610,12 @@ DO_DACYCLE="FALSE"
 # DO_RETRO:
 # Flag turn on the retrospective experiments.
 #
+# LBCS_ICS_ONLY:
+# Flag turn on the runs prepare boundary and cold start initial conditions in
+#      retrospective experiments.
+#
 DO_RETRO="FALSE"
+LBCS_ICS_ONLY="FALSE"
 #
 #-----------------------------------------------------------------------
 #
