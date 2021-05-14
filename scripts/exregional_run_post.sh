@@ -345,8 +345,12 @@ if [ ${#ADDNL_OUTPUT_GRIDS[@]} -gt 0 ]; then
       # Remove temporary files
       rm -f ${subdir}/${fhr}/tmp_${grid}.grib2
 
+      # Save to com directory 
+      mkdir -p ${comout}/${grid}_grid
+      cp_vrfy ${bg_remap} ${comout}/${grid}_grid/${NET}.t${cyc}z.bg${leveltype}f${fhr}.${tmmark}.grib2
+
       # Link output for transfer from Jet to web
-      ln -fs ${bg_remap} ${subdir}/BG${leveltype^^}_${basetime}${post_fhr}00
+      ln_vrfy -fs --relative ${comout}/${grid}_grid/${NET}.t${cyc}z.bg${leveltype}f${fhr}.${tmmark}.grib2 ${comout}/${grid}_grid/BG${leveltype^^}_${basetime}${post_fhr}00
     done
   done
 fi
