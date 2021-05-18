@@ -147,6 +147,13 @@ else
 
 fi
 #
+#  for retro, the external boundary could come from other location.
+#
+if [[ "${DO_RETRO}" == "true" && ! -z "${EXTRN_MDL_SOURCE_BASEDIR_ICS}" ]]; then
+      EXTRN_MDL_SYSBASEDIR_ICS="${EXTRN_MDL_SOURCE_BASEDIR_ICS}"
+fi
+
+#
 # If EXTRN_MDL_SYSBASEDIR_ICS has not been set (not even to a null string), 
 # print out an error message and exit.
 #
@@ -299,6 +306,12 @@ else
   esac
 
 fi
+
+
+if [[ "${DO_RETRO}" == "true" && ! -z "${EXTRN_MDL_SOURCE_BASEDIR_LBCS}" ]]; then
+      EXTRN_MDL_SYSBASEDIR_LBCS="${EXTRN_MDL_SOURCE_BASEDIR_LBCS}"
+fi
+
 #
 # If EXTRN_MDL_SYSBASEDIR_LBCS has not been set (not even to a null string), 
 # print out an error message and exit.

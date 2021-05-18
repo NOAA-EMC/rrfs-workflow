@@ -669,9 +669,9 @@ NOMADS_file_type="nemsio"
 #-----------------------------------------------------------------------
 #
 USE_USER_STAGED_EXTRN_FILES="FALSE"
-EXTRN_MDL_SOURCE_BASEDIR_ICS="/base/dir/containing/user/staged/extrn/mdl/files/for/ICs"
+EXTRN_MDL_SOURCE_BASEDIR_ICS=""
 EXTRN_MDL_FILES_ICS=( "ICS_file1" "ICS_file2" "..." )
-EXTRN_MDL_SOURCE_BASEDIR_LBCS="/base/dir/containing/user/staged/extrn/mdl/files/for/LBCs"
+EXTRN_MDL_SOURCE_BASEDIR_LBCS=""
 EXTRN_MDL_FILES_LBCS=( "LBCS_file1" "LBCS_file2" "..." )
 #
 #-----------------------------------------------------------------------
@@ -1009,6 +1009,13 @@ ESGgrid_WIDE_HALO_WIDTH=""
 # BLOCKSIZE:
 # The amount of data that is passed into the cache at a time.
 #
+# FH_DFI_RADAR:
+# the forecast hour to use radar tten, this is used  to set the fh_dfi_radar 
+# parameter in input.nml, e.g. FH_DFI_RADAR="0.0,0.25,0.5,0.75,1.0"
+# will set fh_dfi_radar = 0.0,0.25,0.5,0.75,1.0 in input.nml* and
+# it tells the model to read at the 0, 15, 30, 45 minutes,
+# and apply radar tten from 0-60 minutes of forecasts.
+#
 # Here, we set these parameters to null strings.  This is so that, for 
 # any one of these parameters:
 #
@@ -1033,6 +1040,7 @@ DT_ATMOS=""
 LAYOUT_X=""
 LAYOUT_Y=""
 BLOCKSIZE=""
+FH_DFI_RADAR="-20000000000"
 #
 #-----------------------------------------------------------------------
 #

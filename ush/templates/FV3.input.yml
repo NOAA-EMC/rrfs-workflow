@@ -45,6 +45,7 @@ FV3_GSD_SAR:
 
 FV3_HRRR:
   fv_core_nml:
+    dz_min: 6.0
     hord_dp: -5
     hord_mt: 5
     hord_tm: 5
