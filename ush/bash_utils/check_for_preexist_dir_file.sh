@@ -63,7 +63,7 @@ where the arguments are defined as follows:
 
   method:
   String specifying the action to take if a preexisting version of 
-  dir_or_file is found.  Valid values are \"delete\", \"overwrite\", \"rename\", and \"quit\".
+  dir_or_file is found.  Valid values are \"delete\", \"upgrade\", \"rename\", and \"quit\".
 "
 
   fi
@@ -84,7 +84,7 @@ where the arguments are defined as follows:
 #
 #-----------------------------------------------------------------------
 #
-  local valid_vals_method=( "delete" "overwrite" "rename" "quit" )
+  local valid_vals_method=( "delete" "upgrade" "rename" "quit" )
   check_var_valid_value "method" "valid_vals_method"
 #
 #-----------------------------------------------------------------------
@@ -112,15 +112,42 @@ where the arguments are defined as follows:
 #
 #-----------------------------------------------------------------------
 #
-# If method is set to "overwrite", just overwrite existing directory 
-# file. Useful to keep ongoing run uninterrupted in some situations:
-#   rocotoco *db files and dependent previous cycle dirs stay
+# If method is set to "upgrade", 
+#  keep preexisting directory intact except that
+#  when preexisting directory is $EXPDIR, do the following:
+#    save all old files to a subdirecotry oldxxx/ and then
+#    populate new files into the $EXPDIR directory
+# This is useful to keep ongoing runs uninterrupted:
+#  rocotoco *db files and previous cycles will stay and hence
+#    1. no need to manually cp/mv *db files and previous cycles back
+#    2. no need to manually restart related rocoto tasks failed during
+#         the workflow generation process
+# This may best suit for incremental system upgrades.
+#
+# Alternatively, one can always elect to use the "rename" option 
+#   and then manually do the above aftermath
 #
 #-----------------------------------------------------------------------
 #
-    "overwrite")
+    "upgrade")
+      if [[ "${dir_or_file}" == "${EXPTDIR}" ]]; then
+        local i=1
+        local old_indx=$( printf "%03d" "$i" )
+        local old_dir_or_file="${dir_or_file}/old${old_indx}"
+        while [ -d "${old_dir_or_file}" ]; do
+          i=$[$i+1]
+          old_indx=$( printf "%03d" "$i" )
+          old_dir_or_file="${dir_or_file}/old${old_indx}"
+        done
 
-      continue
+        print_info_msg "$VERBOSE" "
+  Specified directory or file (dir_or_file) already exists:
+    dir_or_file = \"${dir_or_file}\"
+  Moving (renaming) preexisting directory or file to:
+    old_dir_or_file = \"${old_dir_or_file}\""
+
+        rsync_vrfy -a --exclude "old*" "${dir_or_file}/" "${old_dir_or_file}"
+      fi
       ;;
 #
 #-----------------------------------------------------------------------

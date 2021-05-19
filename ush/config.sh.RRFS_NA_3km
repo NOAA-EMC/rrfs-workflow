@@ -55,7 +55,7 @@ if [[ $DO_RETRO == "true" ]] ; then
     INITIAL_CYCLEDEF="00 00,12 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
     BOUNDARY_CYCLEDEF="00 00,12 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
   else
-    PREEXISTING_DIR_METHOD="overwrite"
+    PREEXISTING_DIR_METHOD="upgrade"
     PREP_COLDSTART_CYCLEDEF="00 00,12 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
     #PREP_WARMSTART_CYCLEDEF="00 00-02,04-14,16-23 ${CYCLEDAY} ${CYCLEMONTH} 2021 *" <!-- placeholder; future capability -->
     #ANALYSIS_CYCLEDEF="00 00-23/01 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"                <!-- placeholder; future capability -->

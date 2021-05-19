@@ -234,6 +234,12 @@ function cp_vrfy() {
   { restore_shell_opts; } > /dev/null 2>&1
 }
 
+function rsync_vrfy() {
+  { save_shell_opts; set -u +x; } > /dev/null 2>&1
+  filesys_cmd_vrfy "rsync" "$@"
+  { restore_shell_opts; } > /dev/null 2>&1
+}
+
 function mv_vrfy() {
   { save_shell_opts; set -u +x; } > /dev/null 2>&1
   filesys_cmd_vrfy "mv" "$@"
