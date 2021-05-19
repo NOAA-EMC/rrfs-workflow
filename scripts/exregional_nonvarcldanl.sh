@@ -158,11 +158,11 @@ cp_vrfy ${fixgriddir}/fv3_grid_spec                          fv3_grid_spec
 bkpath=${CYCLE_DIR}/fcst_fv3lam/INPUT
 if [ -w ${bkpath}/gfs_data.tile7.halo0.nc ]; then  # Use background from INPUT
   ln_vrfy -s ${bkpath}/sfc_data.tile7.halo0.nc      fv3_sfcdata
-  ln_vrfy -s ${bkpath}/gfs_data.tile7.halo0.nc      fv3_dynvars
-  ln_vrfy -s ${bkpath}/gfs_data.tile7.halo0.nc      fv3_tracer
+  cp_vrfy ${bkpath}/gfs_data.tile7.halo0.nc      fv3_dynvars
+  cp_vrfy ${bkpath}/gfs_data.tile7.halo0.nc      fv3_tracer
 else                                               # Use background from RESTART
-  ln_vrfy -s ${bkpath}/fv_core.res.tile1.nc         fv3_dynvars
-  ln_vrfy -s ${bkpath}/fv_tracer.res.tile1.nc       fv3_tracer
+  cp_vrfy ${bkpath}/fv_core.res.tile1.nc         fv3_dynvars
+  cp_vrfy ${bkpath}/fv_tracer.res.tile1.nc       fv3_tracer
   ln_vrfy -s ${bkpath}/sfc_data.nc                  fv3_sfcdata
 fi
 
