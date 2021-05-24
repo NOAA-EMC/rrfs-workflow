@@ -835,7 +835,7 @@ MODULES_RUN_TASK_FP script.
   
     <dependency>
       {%- if do_dacycle and do_nonvar_cldanal%}
-      <taskdep task="&CLDANL_NONVAR_TN;"/>
+      <taskdep task="&RADAR_REFL2TTEN_TN;"/>
       {%- elif do_dacycle %}
       <taskdep task="&ANAL_GSI_TN;"/>
       {%- else %}

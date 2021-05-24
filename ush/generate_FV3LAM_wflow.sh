@@ -847,6 +847,9 @@ if [ "${DO_DACYCLE}" = "true" ]; then
      'nggps_ic'   : false,
      'mountain'  : true,
      'warm_start' : true,
+   }
+ 'gfs_physics_nml': {
+    'fh_dfi_radar': [${FH_DFI_RADAR[@]}],
   }"
  
  $USHDIR/set_namelist.py -q \

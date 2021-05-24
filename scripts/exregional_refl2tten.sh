@@ -170,7 +170,7 @@ else                                               # cycle uses background from 
   ln_vrfy -s ${bkpath}/fv_core.res.tile1.nc         fv3_dynvars
   ln_vrfy -s ${bkpath}/fv_tracer.res.tile1.nc       fv3_tracer
   ln_vrfy -s ${bkpath}/sfc_data.nc                  fv3_sfcdata
-  cp_vrfy    ${bkpath}/phy_data.nc                  fv3_phydata
+  ln_vrfy -s ${bkpath}/phy_data.nc                  fv3_phydata
 fi
 
 #
