@@ -28,6 +28,9 @@ PREEXISTING_DIR_METHOD="rename"
 PREDEF_GRID_NAME=GSD_RAP13km
 ADDNL_OUTPUT_GRIDS=( "130" "242" )
 
+TILE_LABELS="NA"
+TILE_SETS="full"
+
 DO_DACYCLE="true"
 #DO_RETRO="true"
 #LBCS_ICS_ONLY="true"
@@ -139,4 +142,3 @@ PTMP="/lfs4/BMC/nrtrr/NCO_dirs/ptmp"  # Path to directory STMP that mostly conta
 #
 # where EMC_GRID_NAME has the value set above.
 #
-

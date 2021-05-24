@@ -119,6 +119,9 @@ NCL_REGION="conus"
 MODEL="RRFS_NA_3km"
 ADDNL_OUTPUT_GRIDS=( "hrrr" "rrfsak" )
 
+TILE_LABELS="NA"
+TILE_SETS="full"
+
 #
 # In NCO mode, the following don't need to be explicitly set to "FALSE" 
 # in this configuration file because the experiment generation script

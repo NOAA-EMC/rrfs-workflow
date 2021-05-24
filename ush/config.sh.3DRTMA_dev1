@@ -28,6 +28,9 @@ PREEXISTING_DIR_METHOD="upgrade"
 
 PREDEF_GRID_NAME=RRFS_CONUS_3km
 
+TILE_LABELS="CONUS regions zones1 zones2"
+TILE_SETS="full NE,NC,NW,SE,SC,SW  ATL,CA-NV,CentralCA,CHI-DET,DCArea,EastCO,GreatLakes NYC-BOS,SEA-POR,SouthCA,SouthFL,VortexSE"
+
 DO_DACYCLE="true"
 #
 #-------------------------------------------------------------------------------------

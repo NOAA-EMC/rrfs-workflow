@@ -218,6 +218,7 @@ settings="\
   'nnodes_proc_bufr': ${NNODES_PROC_BUFR}
   'nnodes_run_ref2tten': ${NNODES_RUN_REF2TTEN}
   'nnodes_run_nonvarcldanl': ${NNODES_RUN_NONVARCLDANL}
+  'nnodes_run_graphics': ${NNODES_RUN_GRAPHICS}
 #
 # Number of cores used for a task
 #
@@ -245,6 +246,7 @@ settings="\
   'ppn_proc_bufr': ${PPN_PROC_BUFR}
   'ppn_run_ref2tten': ${PPN_RUN_REF2TTEN}
   'ppn_run_nonvarcldanl': ${PPN_RUN_NONVARCLDANL}
+  'ppn_run_graphics': ${PPN_RUN_GRAPHICS}
 #
 # Maximum wallclock time for each task.
 #
@@ -366,6 +368,11 @@ settings="\
   'da_cycle_interval_hrs': ${DA_CYCLE_INTERV}
   'do_nonvar_cldanal': ${DO_NONVAR_CLDANAL}
   'do_refl2tten': ${DO_REFL2TTEN}
+#
+# graphics related parameters
+#
+  'tilelabels': ${TILE_LABELS}
+  'tilesets': ${TILE_SETS}
 #
 #  retrospective experiments
 #

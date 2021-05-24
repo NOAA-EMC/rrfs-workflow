@@ -62,9 +62,10 @@ on the output files corresponding to a specified forecast hour.
 #-----------------------------------------------------------------------
 #
 
+
 if [ "${RUN_ENVIR}" = "nco" ]; then
   COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
-  postprd_dir="$COMOUT"
+  postprd_dir="${COMOUT}"
   run_dir="${COMOUT}/pyprd"
   zip_dir="${COMOUT}/nclprd"
 else
@@ -73,26 +74,44 @@ else
   zip_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/nclprd"
 fi
 
+# Use a subdirectory for input from alternative wgrib2-produced grids.
+if [ "${TILES:-}" = "full" ] ; then
+  subdir=${postprd_dir}/${TILELABEL:-}_grid
+  if [ -d ${subdir} ] ; then
+    postprd_dir=${subdir}
+    run_dir=${run_dir}/${TILELABEL:-}_grid
+    zip_dir=${zip_dir}/${TILELABEL:-}_grid
+  fi
+fi
+
+
 # Choose an appropriate sites file for the grid
-if [[ ${PREDEF_GRID_NAME} =~ CONUS ]] ; then
-  sites_file=conus_raobs.txt
-elif [[ ${PREDEF_GRID_NAME} =~ AK ]] ; then
+sites_file=conus_raobs.txt
+tiles=${TILES:-full}
+
+if [[ "${PREDEF_GRID_NAME}" =~ "AK" || \
+      "${TILELABEL:-}" == "242" ]] ; then
   sites_file=alaska_raobs.txt
-else
-  print_err_msg_exit "\
-  Choice of sites file is ambiguous. Please help."
+  tiles=${TILES:-full}
+
+elif [[ "${PREDEF_GRID_NAME}" =~ "RAP" || \
+        "${PREDEF_GRID_NAME}" =~ "NA" || \
+        "${TILELABEL:-}" = "221" ]] ; then
+  sites_file=na_raobs.txt
+  tiles=${TILES:-full}
+
 fi
 
 # Choose the appropriate file template for graphics type
-
-case ${GRAPHICS_TYPE} in 
+case ${GRAPHICS_TYPE} in
 
   "maps")
 
-    file_tmpl="${NET}.${CDATE:8:2}z.bgdawpf{FCST_TIME:03d}.tm${CDATE:8:2}.grib2"
+    file_tmpl="${NET}.t${CDATE:8:2}z.bgdawpf{FCST_TIME:03d}.tm00.grib2"
     file_type=prs
     extra_args="\
-      --tiles all
+      --all_leads \
+      --tiles $tiles \
       --images ${PYTHON_GRAPHICS_DIR}/image_lists/rrfs_subset.yml hourly"
     ;;
 
@@ -101,9 +120,8 @@ case ${GRAPHICS_TYPE} in
     file_tmpl="${NET}.t${CDATE:8:2}z.bgrd3df{FCST_TIME:03d}.tm00.grib2"
     file_type=nat
     extra_args="\
-      --sites ${PYTHON_GRAPHICS_DIR}/static/${sites_file}\
+      --sites ${PYTHON_GRAPHICS_DIR}/static/${sites_file} \
       --max_plev 100"
-    zip_dir=${zip_dir}/skewt
     ;;
 
   *)
@@ -126,6 +144,7 @@ python -u ${PYTHON_GRAPHICS_DIR}/create_graphics.py \
   -f 0 ${FCST_LEN_HRS} \
   --file_tmpl ${file_tmpl} \
   --file_type ${file_type} \
+  -m "${MODEL}" \
   -n ${SLURM_CPUS_ON_NODE:-12} \
   -o ${run_dir} \
   -s ${CDATE} \

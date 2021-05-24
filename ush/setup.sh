@@ -853,6 +853,19 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+# Add graphics for the additional post-processed domains
+#
+#-----------------------------------------------------------------------
+#
+if [ ${#ADDNL_OUTPUT_GRIDS[@]} -ne 0 ]; then
+  for grid in ${ADDNL_OUTPUT_GRIDS[@]} ; do
+    TILE_SETS="${TILE_SETS} full"
+    TILE_LABELS="${TILE_LABELS} ${grid}"
+  done
+fi
+#
+#-----------------------------------------------------------------------
+#
 # If using a custom post configuration file, make sure that it exists.
 #
 #-----------------------------------------------------------------------
