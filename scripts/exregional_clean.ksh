@@ -1,27 +1,48 @@
 #!/bin/ksh --login
 
-currentime=`date`
-
+#
+#-----------------------------------------------------------------------
+# Source the variable definitions file.
+#-----------------------------------------------------------------------
+#
 . ${GLOBAL_VAR_DEFNS_FP}
+#
+#-----------------------------------------------------------------------
+# Save current shell options (in a global array).  Then set new options
+# for this script/function.
+#-----------------------------------------------------------------------
+#
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
+#
+#
+#-----------------------------------------------------------------------
+# set up currentime from CDATE 
+#-----------------------------------------------------------------------
+#
+currentime=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
 
+#-----------------------------------------------------------------------
 # Delete ptmp directories
-deletetime=`date +%Y%m%d -d "${currentime} 72 hours ago"`
+#-----------------------------------------------------------------------
+deletetime=$(date +%Y%m%d -d "${currentime} ${CLEAN_OLDPROD_HRS} hours ago")
 echo "Deleting ptmp directories before ${deletetime}..."
 cd ${COMOUT_BASEDIR}
-set -A XX `ls -d ${RUN}.20* | sort -r`
+set -A XX $(ls -d ${RUN}.20* | sort -r)
 for dir in ${XX[*]};do
-  onetime=`echo $dir | cut -d'.' -f2`
+  onetime=$(echo $dir | cut -d'.' -f2)
   if [[ ${onetime} -le ${deletetime} ]]; then
     rm -rf ${COMOUT_BASEDIR}/${RUN}.${onetime}
     echo "Deleted ${COMOUT_BASEDIR}/${RUN}.${onetime}"
   fi
 done
 
+#-----------------------------------------------------------------------
 # Delete stmp directories
-deletetime=`date +%Y%m%d%H -d "${currentime} 72 hours ago"`
+#-----------------------------------------------------------------------
+deletetime=$(date +%Y%m%d%H -d "${currentime} ${CLEAN_OLDRUN_HRS} hours ago")
 echo "Deleting stmp directories before ${deletetime}..."
 cd ${CYCLE_BASEDIR}
-set -A XX `ls -d 20* | sort -r`
+set -A XX $(ls -d 20* | sort -r)
 for onetime in ${XX[*]};do
   if [[ ${onetime} -le ${deletetime} ]]; then
     rm -rf ${CYCLE_BASEDIR}/${onetime}
@@ -29,30 +50,33 @@ for onetime in ${XX[*]};do
   fi
 done
 
+#-----------------------------------------------------------------------
 # Delete netCDF files
-deletetime=`date +%Y%m%d%H -d "${currentime} 24 hours ago"`
+#-----------------------------------------------------------------------
+deletetime=$(date +%Y%m%d%H -d "${currentime} ${CLEAN_OLDFCST_HRS} hours ago")
 echo "Deleting netCDF files before ${deletetime}..."
 cd ${CYCLE_BASEDIR}
-set -A XX `ls -d 20* | sort -r`
+set -A XX $(ls -d 20* | sort -r)
 for onetime in ${XX[*]};do
   if [[ ${onetime} -le ${deletetime} ]]; then
     rm -f ${CYCLE_BASEDIR}/${onetime}/fcst_fv3lam/phy*nc
     rm -f ${CYCLE_BASEDIR}/${onetime}/fcst_fv3lam/dyn*nc
     rm -rf ${CYCLE_BASEDIR}/${onetime}/fcst_fv3lam/RESTART
-    rm -rf ${CYCLE_BASEDIR}/${onetime}/fcst_fv3lam/INPUT
     echo "Deleted netCDF files in ${CYCLE_BASEDIR}/${onetime}/fcst_fv3lam"
   fi
 done
 
+#-----------------------------------------------------------------------
 # Delete old log files
-deletetime=`date +%Y%m%d%H -d "${currentime} 48 hours ago"`
+#-----------------------------------------------------------------------
+deletetime=$(date +%Y%m%d%H -d "${currentime} ${CLEAN_OLDLOG_HRS} hours ago")
 echo "Deleting log files before ${deletetime}..."
 
 # Remove template date from last two levels
-logs=`echo ${LOGDIR} | rev | cut -f 3- -d / | rev`
+logs=$(echo ${LOGDIR} | rev | cut -f 3- -d / | rev)
 cd ${logs}
 pwd
-set -A XX `ls -d ${RUN}.20*/* | sort -r`
+set -A XX $(ls -d ${RUN}.20*/* | sort -r)
 for onetime in ${XX[*]}; do
   # Remove slash and RUN from directory to get time
   filetime=${onetime/\//}

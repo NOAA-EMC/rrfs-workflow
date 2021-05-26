@@ -1771,3 +1771,23 @@ DO_REFL2TTEN="FALSE"
 #
 RADARREFL_MINS=(0 1 2 3)
 RADARREFL_TIMELEVEL=(0)
+
+#
+#-----------------------------------------------------------------------
+#
+# Parameters for cleaning the real-time and retrospective runs.
+# CLEAN_OLDPROD_HRS:
+#   the product under com directory from cycles older than (current cycle - this hour) will be cleaned 
+# CLEAN_OLDLOG_HRS
+#   the log files under com directory from cycles older than (current cycle - this hour) will be cleaned 
+# CLEAN_OLDRUN_HRS
+#   the run directory under tmpnwprd directory from cycles older than (current cycle - this hour) will be cleaned 
+# CLEAN_OLDFCST_HRS
+#   the fv3lam forecast netcdf files forecast run directory from cycles older than (current cycle - this hour) will be cleaned 
+#-----------------------------------------------------------------------
+#
+
+CLEAN_OLDPROD_HRS="72"
+CLEAN_OLDLOG_HRS="48"
+CLEAN_OLDRUN_HRS="72"
+CLEAN_OLDFCST_HRS="24"

@@ -133,6 +133,17 @@ COMINgfs=""
 STMP="/gpfs/hps3/ptmp/Ming.Hu/stmp"  # Path to directory STMP that mostly contains input files.
 PTMP="/gpfs/hps3/ptmp/Ming.Hu/ptmp"  # Path to directory STMP that mostly contains input files.
 
+if [[ $DO_RETRO == "true" ]] ; then
+  CLEAN_OLDPROD_HRS="240"
+  CLEAN_OLDLOG_HRS="240"
+  CLEAN_OLDRUN_HRS="6"
+  CLEAN_OLDFCST_HRS="6"
+  if [[ $LBCS_ICS_ONLY == "true" ]]; then
+    CLEAN_OLDRUN_HRS="7777"
+    CLEAN_OLDFCST_HRS="7777"
+  fi
+fi
+
 #
 # In NCO mode, the user must manually (e.g. after doing the build step)
 # create the symlink "${FIXrrfs}/fix_sar" that points to EMC's FIXLAM

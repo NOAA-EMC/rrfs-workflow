@@ -950,15 +950,7 @@ MODULES_RUN_TASK_FP script.
     </dependency>
   </task>
 
-<!--
-************************************************************************
-************************************************************************
--->
 {%- endif %}
-
-
-{%- if not do_retro %}
-
 <!--
 ************************************************************************
 ************************************************************************
@@ -975,6 +967,11 @@ MODULES_RUN_TASK_FP script.
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>LOGDIR</name><value>&LOGDIR;</value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+
+    <dependency>
+      <taskdep task="&RUN_FCST_TN;"/>
+    </dependency>
 
   </task>
 
@@ -999,6 +996,4 @@ MODULES_RUN_TASK_FP script.
   </task>
 
 {%- endif %}
-{%- endif %}
-
 </workflow>
