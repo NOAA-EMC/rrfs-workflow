@@ -141,7 +141,7 @@ cd_vrfy ${PYTHON_GRAPHICS_DIR}
 python -u ${PYTHON_GRAPHICS_DIR}/create_graphics.py \
   ${GRAPHICS_TYPE} \
   -d ${postprd_dir} \
-  -f 0 ${FCST_LEN_HRS} \
+  -f 0 ${POSTPROC_LONG_LEN_HRS} \
   --file_tmpl ${file_tmpl} \
   --file_type ${file_type} \
   -m "${MODEL}" \
