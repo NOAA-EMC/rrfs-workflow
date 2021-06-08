@@ -1,7 +1,7 @@
-# UFS Short-Range Weather Application for GSL dev1
+# UFS Short-Range Weather Application for GSL RRFS
 
 The UFS Short-Range Weather Application (UFS SR Wx App) provides an end-to-end system to run
-pre-processing tasks, the regional UFS Weather Model, and the Unified Post Processor (UPP). 
+pre-processing tasks, data assimilation, the regional UFS Weather Model, and the Unified Post Processor (UPP). 
 
 ## Official Documentation
 For the most up-to-date instructions on how to clone the repository, build the code, and run the workflow, see:
@@ -12,7 +12,7 @@ https://github.com/ufs-community/ufs-srweather-app/wiki/Getting-Started
 # Modifications for the RRFS_dev1
 
 This branch supports additional features for running real-time RRFS runs
-at GSL on Jet. The branch's default configuration has not been tested on
+at GSL on Jet/WCOSS. The branch's default configuration has not been tested on
 other RDHPCS platforms.
 
 This branch supports the following features:
@@ -68,7 +68,7 @@ regional_workflow repositories.
 There are a handful of steps below that are required to build the code,
 configure an experiment, and run the experiment. Please ensure that each
 is successful before moving onto the next. The example shown here is for
-building in your own working area on Jet, not the role account.
+building in your own working area on Jet/WCOSS, not the role account.
 
 ### Building
 
@@ -84,19 +84,6 @@ Building need be done only once if no source code is changed.
 ```
     ./manage_externals/checkout_externals
 ```
-- Source the build environment (must be in bash shell)
-```
-    bash # If your default shell is not bash
-    source /etc/profile.d/modules.sh
-    source env/build_jet_intel.env
-```
-- Build the code for UFS_UTILS, ufs_weather_model, and UPP only(from top level SRW App).
-```
-    mkdir build
-    cd build
-    cmake .. -DCMAKE_INSTALL_PREFIX=..
-    make -j 4 2>&1 | tee build.log
-```
 - You can also use devbuild.sh to build all the code including data assimilation components (from top level SRW App).
 ```
     On Jet        :   devbuild.sh jet intel 
@@ -109,13 +96,12 @@ Building need be done only once if no source code is changed.
 The configuring steps below should be run when any of these files need
 to be updated consistently with each other:
 
- - Module files staged in regional_workflow/modulefiles
  - Scripts and templates staged in regional_workflow/ush:
-   - FV3's input.nml
+   - FV3's input.nml or input.nml_restart
    - config.sh
    - setup.sh
    - config_defaults.sh
-   - Rocoto XML
+   - Rocoto XML template
 
 > Note: Any value set by var_defns.sh, which is a product of the
 > configuration stage, overrides any environment variables with
@@ -131,47 +117,17 @@ output directories by editing the config file:
 Inside the config file, ensure that you are point to your preferred user
 space for the following variables:
 
-    EXPT_BASEDIR
-    ARCHIVEDIR
-    STMP
-    PTMP
+    EXPT_BASEDIR   # workflow, model namelist/configure, var_defns.sh
+    ARCHIVEDIR     # archive location
+    STMP           # com for log, grib2 and plot product
+    PTMP           # run directory 
 
-You will also likely want to change the dates over which to run:
-
-    DATE_FIRST_CYCL
-    DATE_LAST_CYCL
-
-The run can be configured as cold start only or data assimilation cycling by setting:
-
-    DO_DACYCLE="false"  : cold start only
-    DO_DACYCLE="true"   : data assimilation cycling
-
+You will also likely want to change the dates over which to run and other configurations based on the experiment purpose.
+Please read "[Set up RRFS real-time and restrospective runs](Setup-RRFS.md)" for detailed instruction on setting up config.sh file.
+ 
 The configure script should then be linked to the expected name:
 
     ln -sf config.sh.RRFS_dev1 config.sh
-
-
-#### Retro runs
-
-The workflow automatically cleans and archives the real-time runs, and is
-not guaranteed to work with retro runs. You may want to take a look at
-the logic for cleaning and archiving in the respective scripts level to
-modify as needed. Alternative, turn off those events by removing them
-from the XML.
-
-    cd regional_workflow/ush/templates
-    vi FV3LAM_wflow.xml
-
-Manually comment or delete the following tasks:
-
-    CLEAN_TN
-    ARCHIVE_TN
-
-You may also want to remove the NCL graphics metatasks:
-
-    RUN_NCL_TN
-    RUN_NCL_ZIP_TN
-
 
 ## Build the workflow
 
@@ -179,8 +135,8 @@ You may also want to remove the NCL graphics metatasks:
 Before proceeding with this section, make sure you have successfully
 done the following:
 
-  - Built the source code
-  - Modified and linked the configure file
+  - Built the source code (check bin directory under ufs-srweather-app)
+  - Modified and linked the configure file (has config.sh)
   - Modified the XML template to your needs
 
 You will need to activate a conda environment to generate the experiment
@@ -188,19 +144,14 @@ directory that contains the XML, namelists, etc.
 
 ### Load the conda environment:
 
-    module use -a /contrib/miniconda3/modulefiles
-    module load miniconda3
-    conda activate regional_workflow
-
-
-Alternatively, you can source an environment file from the App level:
+You can source an environment file from the App level:
 
     On Jet        :     source env/wflow_jet.env
     On Hera       :     source env/wflow_hera.env
     On WCOSS(Dell):     source env/wflow_wcoss_dell_p3.env
 
 
-### Configure the experiment:
+### Generate the experiment workflow directory:
 
     cd ufs-srweather-app/regional_workflow/ush
     ./generate_FV3LAM_wflow.sh
