@@ -105,6 +105,8 @@ case $MACHINE in
 "HERA")
   ulimit -s unlimited
   ulimit -a
+  export OMP_NUM_THREADS=1
+  export OMP_STACKSIZE=300M
   APRUN="srun"
   ;;
 #
@@ -112,7 +114,6 @@ case $MACHINE in
   ulimit -s unlimited
   ulimit -a
   APRUN="srun"
-  NCKS=ncks
   ;;
 #
 "ODIN")
@@ -329,10 +330,15 @@ case $MACHINE in
    obspath_tmp=${OBSPATH}/${obs_source}.${YYYYMMDD}
 
   ;;
-"JET")
+"JET" | "HERA")
    obsfileprefix=${YYYYMMDDHH}.${obs_source}
    obspath_tmp=${OBSPATH}
 
+  ;;
+*)
+   obsfileprefix=${obs_source}
+   obspath_tmp=${OBSPATH}
+   ;;
 esac
 
 

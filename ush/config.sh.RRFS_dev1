@@ -23,6 +23,34 @@ OBSPATH_NSSLMOSIAC=/public/data/radar/nssl/mrms/conus
 RADARREFL_TIMELEVEL=(0 15 30 45)
 FH_DFI_RADAR="0.0,0.25,0.5"
 
+if [[ $MACHINE == "hera" ]] ; then
+  ACCOUNT="wrfruc"
+  PARTITION_DEFAULT=""
+  PARTITION_FCST=""
+  QUEUE_ANALYSIS="batch"
+
+  FIXLAM_NCO_BASEDIR=/scratch1/BMC/zrtrr/RRFS/fix/fix_lam.20210128
+  FIXgsm=/scratch1/BMC/zrtrr/RRFS/fix/fix_am.20210128
+  GWD_HRRRsuite_BASEDIR=/scratch1/BMC/zrtrr/RRFS/fix/fix_lam.20210128
+
+  FIX_GSI=/scratch1/BMC/zrtrr/RRFS/fix/fix_gsi
+  FIX_CRTM=/scratch1/BMC/zrtrr/RRFS/fix/CRTM_v2.3.0
+  AIRCRAFT_REJECT=${FIX_GSI}
+  SFCOBS_USELIST=${FIX_GSI}
+
+# for using RAP as boundary and initial
+#  EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/public/data/grids/rap/full/wrfnat/grib2
+#  EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/public/data/grids/rap/full/wrfnat/grib2
+# for using GFS as boundary and initial
+  EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/public/data/grids/gfs/0p25deg/grib2
+  EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/public/data/grids/gfs/0p25deg/grib2
+# observations
+  OBSPATH=/scratch2/BMC/public/data/grids/rap/obs
+  OBSPATH_NSSLMOSIAC=/scratch2/BMC/public/data/radar/nssl/mrms/conus
+  LIGHTNING_ROOT=/scratch2/BMC/public/data/lightning
+  ENKF_FCST=/scratch1/NCEPDEV/rstprod/com/gfs/prod
+fi
+
 VERBOSE="TRUE"
 
 RUN_ENVIR="nco"
