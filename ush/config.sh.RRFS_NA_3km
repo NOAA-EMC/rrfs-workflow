@@ -1,6 +1,6 @@
 MACHINE="jet"
 ACCOUNT="nrtrr"
-#RESERVATION="rrfsdet"
+RESERVATION="rrfsdet"
 EXPT_BASEDIR="/home/rtrr/RRFS"
 EXPT_SUBDIR="RRFS_NA_3km_dev1"
 
