@@ -245,6 +245,7 @@ EXPT_SUBDIR=""
 #    OBSPATH_NSSLMOSIAC: location of NSSL radar reflectivity 
 #    LIGHTNING_ROOT: location of lightning observations
 #    ENKF_FCSTL: location of global ensemble forecast
+#    FFG_DIR: location of flash flood guidance for QPF comparison
 #-----------------------------------------------------------------------
 #
 COMINgfs="/base/path/of/directory/containing/gfs/input/files"
@@ -266,6 +267,7 @@ OBSPATH="/public/data/grids/rap/obs"
 OBSPATH_NSSLMOSIAC="/public/data/radar/mrms"
 LIGHTNING_ROOT="/public/data/lightning"
 ENKF_FCST="/lfs4/BMC/public/data/grids/enkf/atm"
+FFG_DIR="/public/data/grids/ncep/ffg/grib2"
 
 #
 #-----------------------------------------------------------------------

@@ -20,6 +20,7 @@ GWD_HRRRsuite_BASEDIR=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_lam.20210128
 FIX_GSI=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_gsi
 FIX_CRTM=/home/rtrr/FIX_EXEC_MODULE/crtm/CRTM_v2.3.0
 OBSPATH_NSSLMOSIAC=/public/data/radar/nssl/mrms/conus
+FFG_DIR=/public/data/grids/ncep/ffg/grib2
 RADARREFL_TIMELEVEL=(0 15 30 45)
 FH_DFI_RADAR="0.0,0.25,0.5"
 

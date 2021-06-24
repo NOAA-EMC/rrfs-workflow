@@ -175,6 +175,14 @@ fi
 cp_vrfy ${post_config_fp} ./postxconfig-NT.txt
 cp_vrfy ${EMC_POST_DIR}/parm/params_grib2_tbl_new ./params_grib2_tbl_new
 cp_vrfy ${EXECDIR}/ncep_post .
+cp_vrfy ${FFG_DIR}/latest.FFG .
+if [ ${NET} = "RRFS_CONUS" ]; then
+  grid_specs_rrfs="lambert:-97.5:38.500000 237.826355:1746:3000 21.885885:1014:3000"
+  wgrib2 latest.FFG -match "0-12 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_12h.grib2
+  wgrib2 latest.FFG -match "0-6 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_06h.grib2
+  wgrib2 latest.FFG -match "0-3 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_03h.grib2
+  wgrib2 latest.FFG -match "0-1 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_01h.grib2
+fi
 #
 #-----------------------------------------------------------------------
 #
