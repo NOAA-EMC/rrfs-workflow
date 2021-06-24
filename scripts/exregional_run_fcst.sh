@@ -536,6 +536,27 @@ export OMP_STACKSIZE=1024m
 #
 #-----------------------------------------------------------------------
 #
+# If INPUT/phy_data.nc exists, convert it from NetCDF4 to NetCDF3
+# (happens for cycled runs, not cold-started)
+#
+#-----------------------------------------------------------------------
+#
+cd INPUT
+if [[ -f phy_data.nc ]] ; then
+  rm -f phy_data.nc3 phy_data.nc4
+  cp -fp phy_data.nc phy_data.nc4
+  if ( ! time ( module purge ; module load intel szip hdf5 netcdf nco ; module list ; set -x ; ncks -3 --64 phy_data.nc4 phy_data.nc3) ) ; then
+    mv -f phy_data.nc4 phy_data.nc
+    rm -f phy_data.nc3
+    echo "NetCDF 3=>4 conversion failed. :-( Continuing with NetCDF 4 data."
+  else
+    mv -f phy_data.nc3 phy_data.nc
+  fi
+fi
+cd ..
+#
+#-----------------------------------------------------------------------
+#
 # Run the FV3-LAM model.  Note that we have to launch the forecast from
 # the current cycle's directory because the FV3 executable will look for
 # input files in the current directory.  Since those files have been
