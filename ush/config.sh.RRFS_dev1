@@ -158,6 +158,7 @@ TAG="RRFS_dev1_CONUS"
 
 USE_CUSTOM_POST_CONFIG_FILE="TRUE"
 CUSTOM_POST_CONFIG_FP="/mnt/lfs4/BMC/nrtrr/RRFS/dev1-ufs-srweather-app/src/EMC_post/parm/postxconfig-NT-fv3lam_rrfs.txt"
+CUSTOM_POST_PARAMS_FP="/mnt/lfs4/BMC/nrtrr/RRFS/dev1-ufs-srweather-app/src/EMC_post/parm/params_grib2_tbl_new"
 ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_dev1"
 NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
 NCL_HOME="/home/rtrr/RRFS/graphics"

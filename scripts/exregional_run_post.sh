@@ -153,30 +153,35 @@ esac
 #
 rm_vrfy -f fort.*
 cp_vrfy ${EMC_POST_DIR}/parm/nam_micro_lookup.dat ./eta_micro_lookup.dat
+ln_vrfy -snf ${FIX_CRTM}/*bin ./
 if [ ${USE_CUSTOM_POST_CONFIG_FILE} = "TRUE" ]; then
   post_config_fp="${CUSTOM_POST_CONFIG_FP}"
+  post_params_fp="${CUSTOM_POST_PARAMS_FP}"
   print_info_msg "
 ====================================================================
 Copying the user-defined post flat file specified by CUSTOM_POST_CONFIG_FP
 to the post forecast hour directory (fhr_dir):
   CUSTOM_POST_CONFIG_FP = \"${CUSTOM_POST_CONFIG_FP}\"
+  CUSTOM_POST_PARAMS_FP = \"${CUSTOM_POST_PARAMS_FP}\"
   fhr_dir = \"${fhr_dir}\"
 ===================================================================="
 else
   post_config_fp="${EMC_POST_DIR}/parm/postxconfig-NT-fv3lam.txt"
+  post_params_fp="${EMC_POST_DIR}/parm/params_grib2_tbl_new"
   print_info_msg "
 ====================================================================
 Copying the default post flat file specified by post_config_fp to the post
 forecast hour directory (fhr_dir):
   post_config_fp = \"${post_config_fp}\"
+  post_params_fp = \"${post_params_fp}\"
   fhr_dir = \"${fhr_dir}\"
 ===================================================================="
 fi
 cp_vrfy ${post_config_fp} ./postxconfig-NT.txt
-cp_vrfy ${EMC_POST_DIR}/parm/params_grib2_tbl_new ./params_grib2_tbl_new
+cp_vrfy ${post_params_fp} ./params_grib2_tbl_new
 cp_vrfy ${EXECDIR}/ncep_post .
-cp_vrfy ${FFG_DIR}/latest.FFG .
-if [ ${NET} = "RRFS_CONUS" ]; then
+if [ -f ${FFG_DIR}/latest.FFG ] && [ ${NET} = "RRFS_CONUS" ]; then
+  cp_vrfy ${FFG_DIR}/latest.FFG .
   grid_specs_rrfs="lambert:-97.5:38.500000 237.826355:1746:3000 21.885885:1014:3000"
   wgrib2 latest.FFG -match "0-12 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_12h.grib2
   wgrib2 latest.FFG -match "0-6 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_06h.grib2
@@ -227,7 +232,7 @@ ${dyn_file}
 netcdf
 grib2
 ${post_yyyy}-${post_mm}-${post_dd}_${post_hh}:00:00
-FV3R
+${POST_FULL_MODEL_NAME}
 ${phy_file}
 
  &NAMPGB

@@ -1574,10 +1574,20 @@ ADDNL_OUTPUT_GRIDS=( )
 # used for post-processing. This is only used if CUSTOM_POST_CONFIG_FILE
 # is set to "TRUE".
 #
+# CUSTOM_POST_PARAMS_FP:
+# The full path to the custom post params file, including filename, to be 
+# used for post-processing. This is only used if CUSTOM_POST_CONFIG_FILE
+# is set to "TRUE".
+#
+# POST_FULL_MODEL_NAME
+# The full module name required by UPP and set in the itag file
+#
 #-----------------------------------------------------------------------
 #
 USE_CUSTOM_POST_CONFIG_FILE="FALSE"
 CUSTOM_POST_CONFIG_FP=""
+CUSTOM_POST_PARAMS_FP=""
+POST_FULL_MODEL_NAME="FV3R"
 #
 #-----------------------------------------------------------------------
 #

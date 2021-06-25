@@ -834,8 +834,10 @@ MODULES_RUN_TASK_FP script.
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
   
     <dependency>
-      {%- if do_dacycle and do_nonvar_cldanal%}
+      {%- if do_dacycle and do_refl2tten%}
       <taskdep task="&RADAR_REFL2TTEN_TN;"/>
+      {%- elif do_dacycle and do_nonvar_cldanal%}
+      <taskdep task="&CLDANL_NONVAR_TN;"/>
       {%- elif do_dacycle %}
       <taskdep task="&ANAL_GSI_TN;"/>
       {%- else %}

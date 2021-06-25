@@ -20,6 +20,38 @@ GWD_HRRRsuite_BASEDIR=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_lam.20210128
 
 FIX_GSI=/mnt/lfs4/BMC/nrtrr/RTMA/fix/fix_gsi
 FIX_CRTM=/home/rtrr/FIX_EXEC_MODULE/crtm/CRTM_v2.3.0
+OBSPATH_NSSLMOSIAC=/public/data/radar/nssl/mrms/conus
+FFG_DIR=/public/data/grids/ncep/ffg/grib2
+RADARREFL_TIMELEVEL=(0)
+FH_DFI_RADAR=""
+
+if [[ $MACHINE == "hera" ]] ; then
+  ACCOUNT="wrfruc"
+  PARTITION_DEFAULT=""
+  PARTITION_FCST=""
+  QUEUE_ANALYSIS="batch"
+
+  FIXLAM_NCO_BASEDIR=/scratch1/BMC/zrtrr/RRFS/fix/fix_lam.20210128
+  FIXgsm=/scratch1/BMC/zrtrr/RRFS/fix/fix_am.20210128
+  GWD_HRRRsuite_BASEDIR=/scratch1/BMC/zrtrr/RRFS/fix/fix_lam.20210128
+
+  FIX_GSI=/scratch1/BMC/zrtrr/RRFS/fix/fix_gsi
+  FIX_CRTM=/scratch1/BMC/zrtrr/RRFS/fix/CRTM_v2.3.0
+  AIRCRAFT_REJECT=${FIX_GSI}
+  SFCOBS_USELIST=${FIX_GSI}
+
+# for using RAP as boundary and initial
+#  EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/public/data/grids/rap/full/wrfnat/grib2
+#  EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/public/data/grids/rap/full/wrfnat/grib2
+# for using GFS as boundary and initial
+  EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/public/data/grids/gfs/0p25deg/grib2
+  EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/public/data/grids/gfs/0p25deg/grib2
+# observations
+  OBSPATH=/scratch2/BMC/public/data/grids/rap/obs
+  OBSPATH_NSSLMOSIAC=/scratch2/BMC/public/data/radar/nssl/mrms/conus
+  LIGHTNING_ROOT=/scratch2/BMC/public/data/lightning
+  ENKF_FCST=/scratch1/NCEPDEV/rstprod/com/gfs/prod
+fi
 
 VERBOSE="TRUE"
 
@@ -27,11 +59,16 @@ RUN_ENVIR="nco"
 PREEXISTING_DIR_METHOD="upgrade"
 
 PREDEF_GRID_NAME=RRFS_CONUS_3km
+ADDNL_OUTPUT_GRIDS=( "hrrr" )
 
-TILE_LABELS="CONUS regions zones1 zones2"
-TILE_SETS="full NE,NC,NW,SE,SC,SW  ATL,CA-NV,CentralCA,CHI-DET,DCArea,EastCO,GreatLakes NYC-BOS,SEA-POR,SouthCA,SouthFL,VortexSE"
+TILE_LABELS="CONUS REGIONS"
+TILE_SETS="full NE,NC,NW,SE,SC,SW"
 
 DO_DACYCLE="true"
+#DO_RETRO="true"
+#LBCS_ICS_ONLY="true"
+DO_NONVAR_CLDANAL="true"
+DO_REFL2TTEN="false"
 #
 #-------------------------------------------------------------------------------------
 #      GSI Namelist parameters configurable across differnt applications
@@ -46,7 +83,7 @@ DO_DACYCLE="true"
 # &SETUP  and &BKGERR
 diag_radardbz=.false.
 write_diag_2=.true.
-bkgerr_vs=0.25                        #1.0 is default setting
+bkgerr_vs=0.125                        #1.0 is default setting
 #bkgerr_hzscl=0.373,0.746,1.5         #default setting, no trailing ,
 bkgerr_hzscl=0.046625,0.09325,0.1875  #hzscl/8
 
@@ -80,25 +117,64 @@ QUILTING="TRUE"
 CCPP_PHYS_SUITE="FV3_HRRR"
 
 EXTRN_MDL_ICS_OFFSET_HRS="0"
-BOUNDARY_LEN_HRS="6"
-BOUNDARY_LONG_LEN_HRS="6"
+BOUNDARY_LEN_HRS="1"
+BOUNDARY_LONG_LEN_HRS="1"
 LBC_SPEC_INTVL_HRS="1"
 EXTRN_MDL_LBCS_OFFSET_HRS="0"
 EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS="0"
 
-#INITIAL_CYCLEDEF="00 00,12 * * 2021 *"
-#BOUNDARY_CYCLEDEF="00 00-02/01,04-08/01,10-14/01,16-20/01,22,23 * * 2021 *"
-#BOUNDARY_LONG_CYCLEDEF="00 03,09,15,21 * * 2021 *"
-#PREP_COLDSTART_CYCLEDEF="00 00,12 * * 2021 *"
-PREP_WARMSTART_CYCLEDEF="00 00-23/01 * * 2021 *"  ##very important, no cold start in RTMA
-ANALYSIS_CYCLEDEF="00 00-23/01 * * 2021 *"
-FORECAST_CYCLEDEF="00 00-23/01 * * 2021 *"
-ARCHIVE_CYCLEDEF="00 07 * * 2021 *"
+DATE_FIRST_CYCL="20210414"
+DATE_LAST_CYCL="20210415"
+CYCL_HRS=( "00" "12" )
+#CYCLEMONTH="5-7"
+#CYCLEDAY="1-4"
 
-FCST_LEN_HRS="0" #the number of run_post jobs #lbcs
-FCST_LEN_HRS_CYCLES=(1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1)
-DA_CYCLE_INTERV="1"
-RESTART_INTERVAL="1" 
+if [[ $DO_RETRO == "true" ]] ; then
+
+  if [[ $MACHINE == "jet" ]] ; then
+    EXTRN_MDL_SOURCE_BASEDIR_ICS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/hrrr/conus/wrfnat/grib2
+    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/rap/full/wrfnat/grib2
+#    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/gfs/0p25deg/grib2 
+    OBSPATH=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/obs_rap
+    OBSPATH_NSSLMOSIAC=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/reflectivity
+    LIGHTNING_ROOT=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/lightning/vaisala/netcdf/
+    ENKF_FCST=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/enkf/atm
+  fi
+
+  if [[ $LBCS_ICS_ONLY == "true" ]]; then
+    PREEXISTING_DIR_METHOD="rename"
+    INITIAL_CYCLEDEF="00 10,22 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+    BOUNDARY_CYCLEDEF="00 00-02/01,04-08/01,10-14/01,16-20/01,22,23 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+    BOUNDARY_LONG_CYCLEDEF="00 03,09,15,21 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+  else
+    PREEXISTING_DIR_METHOD="upgrade"
+    PREP_COLDSTART_CYCLEDEF="00 10,22 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+    PREP_WARMSTART_CYCLEDEF="00 00-09/01,11-21/01,23 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+    ANALYSIS_CYCLEDEF="00 00-23/01 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+    FORECAST_CYCLEDEF="00 00-23/01 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+    POSTPROC_CYCLEDEF="00 00-23/01 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+    POSTPROC_LONG_CYCLEDEF="00 00,06,12,18 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+  fi
+else
+  #INITIAL_CYCLEDEF="00 10,22 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+  #BOUNDARY_CYCLEDEF="00 00-02/01,04-08/01,10-14/01,16-20/01,22,23 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+  #BOUNDARY_LONG_CYCLEDEF="00 03,09,15,21 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+  #PREP_COLDSTART_CYCLEDEF="00 10,22 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+  PREP_WARMSTART_CYCLEDEF="00 00-23/01 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+  ANALYSIS_CYCLEDEF="00 00-23/01 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+  FORECAST_CYCLEDEF="00 00-23/01 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+  POSTPROC_CYCLEDEF="00 00-23/01 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+  POSTPROC_LONG_CYCLEDEF="00 00,06,12,18 ${CYCLEDAY} ${CYCLEMONTH} 2021 *" #no impact for RTMA
+  ARCHIVE_CYCLEDEF="00 07 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+fi
+
+FCST_LEN_HRS="0"
+POSTPROC_LEN_HRS="0"
+POSTPROC_LONG_LEN_HRS="0"
+
+for i in {0..23}; do FCST_LEN_HRS_CYCLES[$i]=0.0112; done
+DA_CYCLE_INTERV="1" #need to be 1 to have hourly DA
+RESTART_INTERVAL="1"
 
 NCORES_RUN_ANAL=240
 HALO_BLEND=10
@@ -115,10 +191,7 @@ if [[ -n $RESERVATION ]] ; then
 fi
 
 WTIME_RUN_FCST="00:05:00" #normally 2 minutes is enough to generate dynf000.nc and phyf000.nc
-
-DATE_FIRST_CYCL="20210401"
-DATE_LAST_CYCL="20211231"
-CYCL_HRS=( "00" "12" ) #not used anymore
+WTIME_MAKE_LBCS="02:00:00"
 
 EXTRN_MDL_NAME_ICS="HRRR"
 EXTRN_MDL_NAME_LBCS="RAP"
@@ -132,7 +205,9 @@ NCORES_PER_NODE=40 #kjet
 FG_ROOTDIR="/lfs4/BMC/nrtrr/NCO_dirs/stmp/tmpnwprd/RRFS_dev1" #only needed by RTMA
 
 USE_CUSTOM_POST_CONFIG_FILE="TRUE"
-CUSTOM_POST_CONFIG_FP="/mnt/lfs4/BMC/nrtrr/RTMA/RTMA-dev1-ufs-srweather-app/src/EMC_post/parm/postxconfig-NT-fv3lam_rrfs.txt"
+CUSTOM_POST_CONFIG_FP="/lfs4/BMC/nrtrr/RTMA/RTMA-dev1-ufs-srweather-app/regional_workflow/ush/templates/postxconfig-NT-3drtma.txt"
+CUSTOM_POST_PARAMS_FP="/lfs4/BMC/nrtrr/RTMA/RTMA-dev1-ufs-srweather-app/regional_workflow/ush/templates/params_grib2_tbl_new_rtma"
+POST_FULL_MODEL_NAME="FV3RRTMA"
 ARCHIVEDIR="/5year/BMC/wrfruc/rtma_dev1"
 NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
 NCL_HOME="/home/rtrr/RTMA/graphics"
@@ -153,6 +228,17 @@ COMINgfs=""
 
 STMP="/lfs4/BMC/nrtrr/NCO_dirs/stmp"  # Path to directory STMP that mostly contains input files.
 PTMP="/lfs4/BMC/nrtrr/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains input files.
+
+if [[ $DO_RETRO == "true" ]] ; then
+  CLEAN_OLDPROD_HRS="240"
+  CLEAN_OLDLOG_HRS="240"
+  CLEAN_OLDRUN_HRS="6"
+  CLEAN_OLDFCST_HRS="6"
+  if [[ $LBCS_ICS_ONLY == "true" ]]; then
+    CLEAN_OLDRUN_HRS="7777"
+    CLEAN_OLDFCST_HRS="7777"
+  fi
+fi
 
 #
 # In NCO mode, the user must manually (e.g. after doing the build step)
