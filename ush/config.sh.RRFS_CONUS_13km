@@ -1,8 +1,8 @@
 MACHINE="jet"
 ACCOUNT="nrtrr"
-RESERVATION="rrfsdet"
-EXPT_BASEDIR="/home/rtrr/RRFS"
-EXPT_SUBDIR="RRFS_NA_13km_dev1"
+#RESERVATION="rrfsdet"
+EXPT_BASEDIR="YourOwnSpace"
+EXPT_SUBDIR="RRFS_13km"
 
 if [[ -n $RESERVATION ]] ; then
   ACCOUNT=rtrr
@@ -19,6 +19,10 @@ GWD_HRRRsuite_BASEDIR=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_lam.20210128
 
 FIX_GSI=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_gsi
 FIX_CRTM=/home/rtrr/FIX_EXEC_MODULE/crtm/CRTM_v2.3.0
+OBSPATH_NSSLMOSIAC=/public/data/radar/nssl/mrms/conus
+
+RADARREFL_TIMELEVEL=(0 15 30 45)
+FH_DFI_RADAR="0.0,0.25,0.5"
 
 if [[ $MACHINE == "hera" ]] ; then
   ACCOUNT="wrfruc"
@@ -36,16 +40,16 @@ if [[ $MACHINE == "hera" ]] ; then
   SFCOBS_USELIST=${FIX_GSI}
 
 # for using RAP as boundary and initial
-#  EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/public/data/grids/rap/full/wrfnat/grib2
-#  EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/public/data/grids/rap/full/wrfnat/grib2
-# for using GFS as boundary and initial
-  EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/public/data/grids/gfs/0p25deg/grib2
-  EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/public/data/grids/gfs/0p25deg/grib2
-# real-time observations on hera
-  OBSPATH=/scratch2/BMC/public/data/grids/rap/obs
-  OBSPATH_NSSLMOSIAC=/scratch2/BMC/public/data/radar/nssl/mrms/conus
-  LIGHTNING_ROOT=/scratch2/BMC/public/data/lightning
-  ENKF_FCST=/scratch1/NCEPDEV/rstprod/com/gfs/prod
+# #  EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/public/data/grids/rap/full/wrfnat/grib2
+# #  EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/public/data/grids/rap/full/wrfnat/grib2
+# # for using GFS as boundary and initial
+   EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/public/data/grids/gfs/0p25deg/grib2
+   EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/public/data/grids/gfs/0p25deg/grib2
+# observations
+   OBSPATH=/scratch2/BMC/public/data/grids/rap/obs
+   OBSPATH_NSSLMOSIAC=/scratch2/BMC/public/data/radar/nssl/mrms/conus
+   LIGHTNING_ROOT=/scratch2/BMC/public/data/lightning
+   ENKF_FCST=/scratch1/NCEPDEV/rstprod/com/gfs/prod
 fi
 
 if [[ $MACHINE == "orion" ]] ; then
@@ -66,43 +70,44 @@ VERBOSE="TRUE"
 RUN_ENVIR="nco"
 PREEXISTING_DIR_METHOD="upgrade"
 
-PREDEF_GRID_NAME=GSD_RAP13km
-ADDNL_OUTPUT_GRIDS=( "130" "242" )
-
-TILE_LABELS="NA"
-TILE_SETS="full"
+PREDEF_GRID_NAME=RRFS_CONUS_13km
+#"ADDNL_OUTPUT_GRIDS=( "hrrr" )
+TILE_LABELS="CONUS REGIONS"
+TILE_SETS="full NE,NC,NW,SE,SC,SW"
 
 DO_DACYCLE="true"
 #DO_RETRO="true"
 #LBCS_ICS_ONLY="true"
+DO_NONVAR_CLDANAL="true"
+DO_REFL2TTEN="true"
 
 QUILTING="TRUE"
-CCPP_PHYS_SUITE="FV3_RAP"
+CCPP_PHYS_SUITE="FV3_HRRR"
 
-EXTRN_MDL_ICS_OFFSET_HRS="3"
-BOUNDARY_LEN_HRS="75"
-BOUNDARY_LONG_LEN_HRS="1"
+EXTRN_MDL_ICS_OFFSET_HRS="0"
+BOUNDARY_LEN_HRS="15"
+BOUNDARY_LONG_LEN_HRS="18"
 LBC_SPEC_INTVL_HRS="1"
 EXTRN_MDL_LBCS_OFFSET_HRS="0"
 EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS="0"
 
-DATE_FIRST_CYCL="20210419"
-DATE_LAST_CYCL="20220419"
-CYCL_HRS=( "00" "06" "12" "18" )
-CYCLEMONTH="5-7"
-#CYCLEDAY="1-4"
+DATE_FIRST_CYCL="20210414"
+DATE_LAST_CYCL="20210415"
+CYCL_HRS=( "00" "12" )
+CYCLEMONTH="5"
+CYCLEDAY="24"
 
 if [[ $DO_RETRO == "true" ]] ; then
-
+  
   if [[ $MACHINE == "jet" ]] ; then
     EXTRN_MDL_SOURCE_BASEDIR_ICS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/hrrr/conus/wrfnat/grib2
     EXTRN_MDL_SOURCE_BASEDIR_LBCS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/rap/full/wrfnat/grib2
-#    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/gfs/0p25deg/grib2
+#    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/gfs/0p25deg/grib2 
     OBSPATH=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/obs_rap
     OBSPATH_NSSLMOSIAC=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/reflectivity
     LIGHTNING_ROOT=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/lightning/vaisala/netcdf/
     ENKF_FCST=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/enkf/atm
-  if
+  fi
   if [[ $MACHINE == "hera" ]] ; then
     EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/zrtrr/rli/data/hrrr/conus/wrfnat/grib2
     EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/zrtrr/rli/data/rap/full/wrfnat/grib2
@@ -116,8 +121,9 @@ if [[ $DO_RETRO == "true" ]] ; then
     EXTRN_MDL_SOURCE_BASEDIR_ICS=/work/noaa/wrfruc/mhu/rrfs/data/gfs
     EXTRN_MDL_SOURCE_BASEDIR_LBCS=/work/noaa/wrfruc/mhu/rrfs/data/gfs
     OBSPATH=/work/noaa/wrfruc/mhu/rrfs/data/obs_rap
+    OBSPATH_NSSLMOSIAC=/work/noaa/wrfruc/mhu/rrfs/data/reflectivity
+    LIGHTNING_ROOT=/work/noaa/wrfruc/mhu/rrfs/data/lightning/vaisala/netcdf/
   fi
-
   if [[ $LBCS_ICS_ONLY == "true" ]]; then
     PREEXISTING_DIR_METHOD="rename"
     INITIAL_CYCLEDEF="00 03,15 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
@@ -125,60 +131,75 @@ if [[ $DO_RETRO == "true" ]] ; then
   else
     PREEXISTING_DIR_METHOD="upgrade"
     PREP_COLDSTART_CYCLEDEF="00 03,15 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
-    PREP_WARMSTART_CYCLEDEF="00 00-02,04-14,16-23 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+    PREP_WARMSTART_CYCLEDEF="00 04-14,16-23 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
     ANALYSIS_CYCLEDEF="00 00-23/01 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
     FORECAST_CYCLEDEF="00 00-23/01 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
     POSTPROC_CYCLEDEF="00 00-23/01 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
-    POSTPROC_LONG_CYCLEDEF="00 03,09,15,21 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+    POSTPROC_LONG_CYCLEDEF="00 03-23/03 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
   fi
 else
-  INITIAL_CYCLEDEF="00 03,15 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
-  BOUNDARY_CYCLEDEF="00 00,06,12,18 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
-  PREP_COLDSTART_CYCLEDEF="00 03,15 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
-  PREP_WARMSTART_CYCLEDEF="00 00-02,04-14,16-23 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+  INITIAL_CYCLEDEF="00 09,21 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+  BOUNDARY_CYCLEDEF="00 00-02/01,04-08/01,10-14/01,16-20/01,22,23 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+  BOUNDARY_LONG_CYCLEDEF="00 03,09,15,21 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+  PREP_COLDSTART_CYCLEDEF="00 09,21 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+  PREP_WARMSTART_CYCLEDEF="00 00-08,10-20,22,23 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
   ANALYSIS_CYCLEDEF="00 00-23/01 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
   FORECAST_CYCLEDEF="00 00-23/01 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
   POSTPROC_CYCLEDEF="00 00-23/01 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
-  POSTPROC_LONG_CYCLEDEF="00 03,09,15,21 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+  POSTPROC_LONG_CYCLEDEF="00 00-23/03 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
   ARCHIVE_CYCLEDEF="00 07 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
 fi
 
-FCST_LEN_HRS="21"
-POSTPROC_LEN_HRS="21"
-POSTPROC_LONG_LEN_HRS="63"
-#FCST_LEN_HRS_CYCLES=(21 21 21 63 21 21 21 21 21 63 21 21 21 21 21 63 21 21 21 21 21 63 21 21)
-for i in {0..23}; do FCST_LEN_HRS_CYCLES[$i]=21; done
-for i in {3..23..6}; do FCST_LEN_HRS_CYCLES[$i]=63; done
+FCST_LEN_HRS="12"
+POSTPROC_LEN_HRS="3"
+POSTPROC_LONG_LEN_HRS="12"
+#FCST_LEN_HRS_CYCLES=(48 18 18 18 18 18 48 18 18 18 18 18 48 18 18 18 18 18 48 18 18 18 18 18)
+for i in {0..23}; do FCST_LEN_HRS_CYCLES[$i]=3; done
+for i in {0..23..3}; do FCST_LEN_HRS_CYCLES[$i]=12; done
 DA_CYCLE_INTERV="1"
 RESTART_INTERVAL="1 2 3 4 5 6"
 
 NCORES_RUN_ANAL=240
 HALO_BLEND=10
 
-WTIME_RUN_FCST="07:30:00"
-WTIME_MAKE_LBCS="02:30:00"
+if [[ -n $RESERVATION ]] ; then
+  NNODES_MAKE_ICS="3"
+  PPN_MAKE_ICS="20"
+  NNODES_MAKE_LBCS="3"
+  PPN_MAKE_LBCS="20"
+  NNODES_RUN_POST="1"
+  PPN_RUN_POST="40"
+fi
 
-NNODES_RUN_POST="1"
+if [[ ${PREDEF_GRID_NAME}=="RRFS_CONUS_13km" ]] ; then
+  NNODES_MAKE_ICS="1"
+  NNODES_MAKE_LBCS="1"
+  NNODES_RUN_POST="1"
+  NCORES_RUN_ANAL=60
+
+  DT_ATMOS=60
+  LAYOUT_X=12
+  LAYOUT_Y=6
+fi
+
+WTIME_RUN_FCST="02:45:00"
+WTIME_MAKE_LBCS="02:00:00"
 
 EXTRN_MDL_NAME_ICS="FV3GFS"
 EXTRN_MDL_NAME_LBCS="FV3GFS"
 
-FV3GFS_FILE_FMT_ICS="grib2"
-FV3GFS_FILE_FMT_LBCS="grib2"
-
 envir="para"
 
-NET="RRFS_NA_13km"
-TAG="RRFS_dev1_NA_13km"
+NET="RRFS_CONUS"
+TAG="RRFS_13km_CONUS"
 
 USE_CUSTOM_POST_CONFIG_FILE="TRUE"
-CUSTOM_POST_CONFIG_FP="/mnt/lfs4/BMC/nrtrr/RRFS/dev1-13km-NA-ufs-srweather-app/src/EMC_post/parm/postxconfig-NT-fv3lam_rrfs.txt"
-CUSTOM_POST_PARAMS_FP="/mnt/lfs4/BMC/nrtrr/RRFS/dev1-ufs-srweather-app/src/EMC_post/parm/params_grib2_tbl_new"
-ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_na_13km_dev1"
+CUSTOM_POST_CONFIG_FP="/mnt/lfs4/BMC/nrtrr/RRFS/dev1-ufs-srweather-app/src/EMC_post/parm/postxconfig-NT-fv3lam_rrfs.txt"
+ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_dev1"
 NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
 NCL_HOME="/home/rtrr/RRFS/graphics"
 NCL_REGION="conus"
-MODEL="RRFS_NA_13km"
+MODEL="RRFS_13km"
 
 #
 # In NCO mode, the following don't need to be explicitly set to "FALSE" 
@@ -189,11 +210,11 @@ MODEL="RRFS_NA_13km"
 #RUN_TASK_MAKE_OROG="FALSE"
 #RUN_TASK_MAKE_SFC_CLIMO="FALSE"
 
-RUN="RRFS_NA_13km_dev1"
+RUN="RRFS_13km"
 COMINgfs=""
 
-STMP="/lfs4/BMC/nrtrr/NCO_dirs/stmp"  # Path to directory STMP that mostly contains input files.
-PTMP="/lfs4/BMC/nrtrr/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains input files.
+STMP="YourOwnSpace"  # Path to directory STMP that mostly contains input files.
+PTMP="YourOwnSpace"  # Path to directory STMP that mostly contains input files.
 
 if [[ $DO_RETRO == "true" ]] ; then
   CLEAN_OLDPROD_HRS="240"
@@ -220,3 +241,4 @@ fi
 #
 # where EMC_GRID_NAME has the value set above.
 #
+

@@ -322,6 +322,12 @@ case "${EXTRN_MDL_NAME_LBCS}" in
     external_model="GFS"
     fn_grib2="${EXTRN_MDL_FNS[0]}"
     input_type="grib2"
+  elif [ "${FV3GFS_FILE_FMT_ICS}" = "netcdf" ]; then
+    tracers_input="[\"spfh\",\"clwmr\",\"o3mr\",\"icmr\",\"rwmr\",\"snmr\",\"grle\"]"
+    tracers="[\"sphum\",\"liq_wat\",\"o3mr\",\"ice_wat\",\"rainwat\",\"snowwat\",\"graupel\"]"
+    external_model="GFS"
+    input_type="gaussian_netcdf"
+    fn_atm_nemsio="${EXTRN_MDL_FNS[0]}"
   fi
   ;;
 
@@ -394,6 +400,8 @@ for (( i=0; i<${num_fhrs}; i++ )); do
       fn_atm_nemsio="${EXTRN_MDL_FNS[$i]}"
     elif [ "${FV3GFS_FILE_FMT_LBCS}" = "grib2" ]; then
       fn_grib2="${EXTRN_MDL_FNS[$i]}"
+    elif [ "${FV3GFS_FILE_FMT_LBCS}" = "netcdf" ]; then
+      fn_atm_nemsio="${EXTRN_MDL_FNS[$i]}"
     fi
     ;;
   "RAP")

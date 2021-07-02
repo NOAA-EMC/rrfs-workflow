@@ -114,6 +114,10 @@ case $MACHINE in
     ;;
 
   "ORION")
+    ulimit -s unlimited
+    ulimit -a
+    export OMP_NUM_THREADS=1
+    export OMP_STACKSIZE=1024M
     APRUN="srun"
     ;;
 

@@ -95,6 +95,11 @@ case $MACHINE in
   APRUN="srun"
   ;;
 #
+"ORION")
+  ulimit -s unlimited
+  APRUN="srun"
+  ;;
+#
 "ODIN")
 #
   module list

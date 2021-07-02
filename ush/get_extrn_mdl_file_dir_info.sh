@@ -307,6 +307,7 @@ fi
   if [ "${extrn_mdl_name}" = "RAP" ] || \
      [ "${extrn_mdl_name}" = "HRRR" ] || \
      [ "${extrn_mdl_name}" = "NAM" ] || \
+     [ "${extrn_mdl_name}" = "FV3GFS" -a "${MACHINE}" = "ORION" ] || \
      [ "${extrn_mdl_name}" = "FV3GFS" -a "${MACHINE}" = "JET" ] || \
      [ "${extrn_mdl_name}" = "FV3GFS" -a "${MACHINE}" = "HERA" ]; then
 #
@@ -389,13 +390,16 @@ fi
 #        fns=( "gfs.t${hh}z.pgrb2.0p25.anl" )  # Get only 0.25 degree files for now.
 #        fns=( "gfs.t${hh}z.pgrb2.0p25.f000" )  # Get only 0.25 degree files for now.
 
-        if [ "${MACHINE}" = "JET" ] || [ "${MACHINE}" = "HERA" ]; then
+        if [ "${MACHINE}" = "JET" ] || [ "${MACHINE}" = "HERA" ] || [ "${MACHINE}" = "ORION" ]; then
           fns_on_disk=( "${yy}${ddd}${hh}0${fcst_mn}0${fcst_hh}" )
         else
           fns_on_disk=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" "gfs.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
         fi
         fns_in_arcv=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )  # Get only 0.25 degree files for now.
 
+      elif [ "${fv3gfs_file_fmt}" = "netcdf" ]; then
+        fns_on_disk=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
+        fns_in_arcv=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )  # Get only 0.25 degree files for now.
       fi
       ;;
 
@@ -472,7 +476,7 @@ and analysis or forecast (anl_or_fcst):
 
         fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
 
-        if [ "${MACHINE}" = "JET" ] ||  [ "${MACHINE}" = "HERA" ] ; then
+        if [ "${MACHINE}" = "JET" ] ||  [ "${MACHINE}" = "HERA" ] || [ "${MACHINE}" = "ORION" ]; then
           prefix=( "${yy}${ddd}${hh}${fcst_mn}0" )
           fns_on_disk=( "${fcst_hhh[@]/#/$prefix}" )
         else
@@ -480,7 +484,13 @@ and analysis or forecast (anl_or_fcst):
           fns_on_disk=( "${fcst_hhh[@]/#/$prefix}" )
           fns_in_arcv=( "${fcst_hhh[@]/#/$prefix}" )
         fi
-
+      elif [ "${fv3gfs_file_fmt}" = "netcdf" ]; then
+        fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
+        postfix=".nc"
+        prefix="gdas.t${hh}z.atmf"
+        fns_on_disk_tmp=( "${fcst_hhh[@]/#/${prefix}}" )
+        fns_on_disk=( "${fns_on_disk_tmp[@]/%/${postfix}}" )
+        fns_in_arcv=( "${fcst_hhh[@]/#/${prefix}}" )
       fi
       ;;
 
@@ -613,7 +623,7 @@ has not been specified for this external model and machine combination:
       sysdir="$sysbasedir"
       ;;
     "ORION")
-      sysdir="$sysbasedir"
+      sysdir="$sysbasedir/gdas.${yyyymmdd}/${hh}/atmos"
       ;;
     "JET")
       sysdir="$sysbasedir"
@@ -813,6 +823,10 @@ has not been specified for this external model:
     elif [ "${fv3gfs_file_fmt}" = "grib2" ]; then
 
       arcv_fns="${arcv_fns}gfs_pgrb2"
+
+    elif [ "${fv3gfs_file_fmt}" = "netcdf" ]; then
+# we don't know if there are archive for netcdf file. This is to fill in arcv_fns to avoid crash.
+      arcv_fns=""
 
     fi
 

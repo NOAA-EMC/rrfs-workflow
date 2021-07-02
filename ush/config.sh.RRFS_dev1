@@ -52,6 +52,20 @@ if [[ $MACHINE == "hera" ]] ; then
   ENKF_FCST=/scratch1/NCEPDEV/rstprod/com/gfs/prod
 fi
 
+if [[ $MACHINE == "orion" ]] ; then
+  ACCOUNT=ztrr
+  QUEUE_ANALYSIS="batch"
+  FIXLAM_NCO_BASEDIR=/work/noaa/wrfruc/mhu/rrfs/data/fix/fix_lam.20210128
+  FIXgsm=/work/noaa/wrfruc/mhu/rrfs/data/fix/fix_am.20210128
+  GWD_HRRRsuite_BASEDIR=/work/noaa/wrfruc/mhu/rrfs/data/fix/fix_lam.20210128
+
+  FIX_GSI=/work/noaa/wrfruc/mhu/rrfs/data/fix/fix_gsi
+  FIX_CRTM=/work/noaa/wrfruc/mhu/rrfs/data/fix/CRTM_v2.3.0
+  AIRCRAFT_REJECT=${FIX_GSI}
+  SFCOBS_USELIST=${FIX_GSI}
+fi
+
+
 VERBOSE="TRUE"
 
 RUN_ENVIR="nco"
@@ -90,11 +104,25 @@ if [[ $DO_RETRO == "true" ]] ; then
   if [[ $MACHINE == "jet" ]] ; then
     EXTRN_MDL_SOURCE_BASEDIR_ICS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/hrrr/conus/wrfnat/grib2
     EXTRN_MDL_SOURCE_BASEDIR_LBCS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/rap/full/wrfnat/grib2
-#    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/gfs/0p25deg/grib2 
+#    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/gfs/0p25deg/grib2
     OBSPATH=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/obs_rap
     OBSPATH_NSSLMOSIAC=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/reflectivity
     LIGHTNING_ROOT=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/lightning/vaisala/netcdf/
     ENKF_FCST=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/enkf/atm
+  if
+  if [[ $MACHINE == "hera" ]] ; then
+    EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/zrtrr/rli/data/hrrr/conus/wrfnat/grib2
+    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/zrtrr/rli/data/rap/full/wrfnat/grib2
+#    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/zrtrr/rli/data/gfs/0p25deg/grib2
+    OBSPATH=/scratch2/BMC/zrtrr/rli/data/obs_rap
+    OBSPATH_NSSLMOSIAC=/scratch2/BMC/zrtrr/rli/data/reflectivity
+    LIGHTNING_ROOT=/scratch2/BMC/zrtrr/rli/data/lightning/vaisala/netcdf/
+    ENKF_FCST=/scratch2/BMC/zrtrr/rli/data/enkf/atm
+  fi
+  if [[ $MACHINE == "orion" ]] ; then
+    EXTRN_MDL_SOURCE_BASEDIR_ICS=/work/noaa/wrfruc/mhu/rrfs/data/gfs
+    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/work/noaa/wrfruc/mhu/rrfs/data/gfs
+    OBSPATH=/work/noaa/wrfruc/mhu/rrfs/data/obs_rap
   fi
 
   if [[ $LBCS_ICS_ONLY == "true" ]]; then

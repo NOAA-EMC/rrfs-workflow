@@ -407,6 +407,14 @@ case "${EXTRN_MDL_NAME_ICS}" in
       fn_atm_nemsio="${EXTRN_MDL_FNS[0]}"
       fn_sfc_nemsio="${EXTRN_MDL_FNS[1]}"
     fi
+  elif [ "${FV3GFS_FILE_FMT_ICS}" = "netcdf" ]; then
+    tracers_input="[\"spfh\",\"clwmr\",\"o3mr\",\"icmr\",\"rwmr\",\"snmr\",\"grle\"]"
+    tracers="[\"sphum\",\"liq_wat\",\"o3mr\",\"ice_wat\",\"rainwat\",\"snowwat\",\"graupel\"]"
+    external_model="GFS"
+    input_type="gaussian_netcdf"
+    convert_nst=False
+    fn_atm_nemsio="${EXTRN_MDL_FNS[0]}"
+    fn_sfc_nemsio="${EXTRN_MDL_FNS[1]}"
   fi
   vgtyp_from_climo=True
   sotyp_from_climo=True
