@@ -67,6 +67,20 @@ for onetime in ${XX[*]};do
 done
 
 #-----------------------------------------------------------------------
+# Delete duplicate postprod files in stmp
+#-----------------------------------------------------------------------
+deletetime=$(date +%Y%m%d%H -d "${currentime} ${CLEAN_OLDSTMPPOST_HRS} hours ago")
+echo "Deleting stmp postprd files before ${deletetime}..."
+cd ${CYCLE_BASEDIR}
+set -A XX $(ls -d 20* | sort -r)
+for onetime in ${XX[*]};do
+  if [[ ${onetime} -le ${deletetime} ]]; then
+    rm -rf ${CYCLE_BASEDIR}/${onetime}/postprd
+    echo "Deleted postprd files in ${CYCLE_BASEDIR}/${onetime}/postprd"
+  fi
+done
+
+#-----------------------------------------------------------------------
 # Delete old log files
 #-----------------------------------------------------------------------
 deletetime=$(date +%Y%m%d%H -d "${currentime} ${CLEAN_OLDLOG_HRS} hours ago")

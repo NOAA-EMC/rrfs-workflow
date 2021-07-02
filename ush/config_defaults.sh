@@ -1796,6 +1796,8 @@ RADARREFL_TIMELEVEL=(0)
 #   the run directory under tmpnwprd directory from cycles older than (current cycle - this hour) will be cleaned 
 # CLEAN_OLDFCST_HRS
 #   the fv3lam forecast netcdf files forecast run directory from cycles older than (current cycle - this hour) will be cleaned 
+# CLEAN_OLDSTMP_HRS
+#   the postprd GRIB-2 files from cycles older than (current cycle - this hour) will be cleaned 
 #-----------------------------------------------------------------------
 #
 
@@ -1803,3 +1805,4 @@ CLEAN_OLDPROD_HRS="72"
 CLEAN_OLDLOG_HRS="48"
 CLEAN_OLDRUN_HRS="72"
 CLEAN_OLDFCST_HRS="24"
+CLEAN_OLDSTMPPOST_HRS="24"

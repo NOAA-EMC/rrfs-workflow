@@ -161,6 +161,7 @@ if [[ $DO_RETRO == "true" ]] ; then
   CLEAN_OLDLOG_HRS="240"
   CLEAN_OLDRUN_HRS="6"
   CLEAN_OLDFCST_HRS="6"
+  CLEAN_OLDSTMPPOST_HRS="6"
   if [[ $LBCS_ICS_ONLY == "true" ]]; then
     CLEAN_OLDRUN_HRS="7777"
     CLEAN_OLDFCST_HRS="7777"
