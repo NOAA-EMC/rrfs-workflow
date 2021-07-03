@@ -174,9 +174,15 @@ def isdate(string):
 def isdomain(string):
 
     ''' Returns a bool after checking whether the input string meets the
-    requirements for a date string: YYYYMMDDHH. '''
+    requirements for a domain, or list of domains '''
 
-    return string.lower() in [d.lower() for d in DOMAINS]
+    string_list = [i.strip("[]\"', ") for i in string.split(',')]
+    domains = [d.lower() for d in DOMAINS]
+    for s in string_list:
+        if s.lower() not in domains:
+            print(f'{s} is not a valid domain')
+            return False
+    return True
 
 def load_externals(ext_path="Externals.cfg"):
 
@@ -230,7 +236,7 @@ def logit(logfile, tmpfile):
                 # Create a logfile backup just in case. Make it a hidden file.
                 # Won't remove this one in the script in case something goes
                 # wrong.
-                path, fname = os.path.abspath(logfile), os.path.basename(logfile)
+                path, fname = os.path.dirname(logfile), os.path.basename(logfile)
                 shutil.copy(logfile, os.path.join(path, f".{fname}._bk"))
 
                 # Write the contents of the logfile to the tempfile for reverse
