@@ -10,7 +10,7 @@ if [[ -n $RESERVATION ]] ; then
   SERVICE_ACCOUNT=nrtrr
   PARTITION_DEFAULT=kjet
   PARTITION_FCST=kjet
-  PARTITION_GRAPHICS=kjet
+  PARTITION_GRAPHICS=kjet,xjet,tjet,ujet,vjet
   PARTITION_ANALYSIS=kjet
 fi
 

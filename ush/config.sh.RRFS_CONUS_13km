@@ -4,12 +4,12 @@ ACCOUNT="nrtrr"
 EXPT_BASEDIR="YourOwnSpace"
 EXPT_SUBDIR="RRFS_13km"
 
+PARTITION_GRAPHICS=kjet,xjet,tjet,ujet,vjet
 if [[ -n $RESERVATION ]] ; then
   ACCOUNT=rtrr
   SERVICE_ACCOUNT=nrtrr
   PARTITION_DEFAULT=kjet
   PARTITION_FCST=kjet
-  PARTITION_GRAPHICS=kjet
   PARTITION_ANALYSIS=kjet
 fi
 
