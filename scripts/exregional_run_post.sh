@@ -183,7 +183,7 @@ forecast hour directory (fhr_dir):
 fi
 cp_vrfy ${post_config_fp} ./postxconfig-NT.txt
 cp_vrfy ${post_params_fp} ./params_grib2_tbl_new
-cp_vrfy ${EXECDIR}/ncep_post .
+cp_vrfy ${EXECDIR}/upp.x .
 if [ -f ${FFG_DIR}/latest.FFG ] && [ ${NET} = "RRFS_CONUS" ]; then
   cp_vrfy ${FFG_DIR}/latest.FFG .
   grid_specs_rrfs="lambert:-97.5:38.500000 237.826355:1746:3000 21.885885:1014:3000"
@@ -253,7 +253,7 @@ EOF
 print_info_msg "$VERBOSE" "
 Starting post-processing for fhr = $fhr hr..."
 
-${APRUN} ./ncep_post < itag || print_err_msg_exit "\
+${APRUN} ./upp.x < itag || print_err_msg_exit "\
 Call to executable to run post for forecast hour $fhr returned with non-
 zero exit code."
 #
