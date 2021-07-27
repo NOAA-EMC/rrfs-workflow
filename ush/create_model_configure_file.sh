@@ -47,6 +47,7 @@ function create_model_configure_file() {
 #
   local valid_args=(
 cdate \
+cycle_type \
 run_dir \
 nthreads \
   )
@@ -112,6 +113,10 @@ run directory (run_dir):
   fi
   print_info_msg "$VERBOSE" " The forecast length for cycle (\"${hh}\") is
                  ( \"${FCST_LEN_HRS_thiscycle}\") "
+
+  if [ ${cycle_type} == "spinup" ]; then
+    FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS_SPINUP}
+  fi
 
 #
 #-----------------------------------------------------------------------

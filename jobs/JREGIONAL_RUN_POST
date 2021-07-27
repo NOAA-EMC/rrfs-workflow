@@ -60,8 +60,17 @@ on the output files corresponding to a specified forecast hour.
 # Set the run directory.
 #
 #-----------------------------------------------------------------------
+# CYCLE_TYPE is to indicate which type of cycle this job for:
+#   spinup: this job is for spin-up cycles
+#   others(prod): this job is for product cycle
 #
-run_dir="${CYCLE_DIR}/fcst_fv3lam${SLASH_ENSMEM_SUBDIR}"
+CYCLE_TYPE=${CYCLE_TYPE:-prod}
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  run_dir="${CYCLE_DIR}/fcst_fv3lam_spinup"
+else
+  run_dir="${CYCLE_DIR}/fcst_fv3lam${SLASH_ENSMEM_SUBDIR}"
+fi
+
 #
 #-----------------------------------------------------------------------
 #
@@ -82,10 +91,16 @@ run_dir="${CYCLE_DIR}/fcst_fv3lam${SLASH_ENSMEM_SUBDIR}"
 #
 if [ "${RUN_ENVIR}" = "nco" ]; then
   COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
+  if [ ${CYCLE_TYPE} == "spinup" ]; then
+    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+  fi
   mkdir_vrfy -p "${COMOUT}"
 fi
 
 postprd_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/postprd"
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  postprd_dir="${CYCLE_DIR}/postprd_spinup"
+fi
 mkdir_vrfy -p "${postprd_dir}"
 
 fhr_dir="${postprd_dir}/$fhr"
@@ -121,7 +136,8 @@ $SCRIPTSDIR/exregional_run_post.sh \
   postprd_dir="${postprd_dir}" \
   comout="${COMOUT}" \
   fhr_dir="${fhr_dir}" \
-  fhr="${fhr}" || \
+  fhr="${fhr}" \
+  tmmark="${TMMARK}" || \
 print_err_msg_exit "\
 Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
 #

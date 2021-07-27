@@ -827,7 +827,6 @@ has not been specified for this external model:
     elif [ "${fv3gfs_file_fmt}" = "netcdf" ]; then
 # we don't know if there are archive for netcdf file. This is to fill in arcv_fns to avoid crash.
       arcv_fns=""
-
     fi
 
     arcv_fmt="tar"

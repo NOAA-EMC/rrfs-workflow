@@ -408,6 +408,13 @@ WFLOW_LAUNCH_LOG_FN="log.launch_FV3LAM_wflow"
 # two-digit string representing an integer that is less than or equal to
 # 23, e.g. "00", "03", "12", "23".
 #
+# CYCL_HRS_SPINSTART:
+# An array containing the hours of the day at which the spin up cycle starts.
+#
+# CYCL_HRS_PRODSTART:
+# An array containing the hours of the day at which the product cycle starts,
+# from cold start input or from spin-up cycle forcast
+#
 # BOUNDARY_LEN_HRS
 # The length of boundary condition for normal forecast, in integer hours.
 #
@@ -416,6 +423,9 @@ WFLOW_LAUNCH_LOG_FN="log.launch_FV3LAM_wflow"
 #
 # FCST_LEN_HRS:
 # The length of each forecast, in integer hours.
+#
+# FCST_LEN_HRS_SPINUP:
+# The length of each forecast in spin up cycles, in integer hours.
 #
 # FCST_LEN_HRS_CYCLES:
 # The length of forecast for each cycle, in integer hours.
@@ -439,11 +449,14 @@ WFLOW_LAUNCH_LOG_FN="log.launch_FV3LAM_wflow"
 DATE_FIRST_CYCL="YYYYMMDD"
 DATE_LAST_CYCL="YYYYMMDD"
 CYCL_HRS=( "HH1" "HH2" )
+CYCL_HRS_SPINSTART=( "HH1" "HH2" )
+CYCL_HRS_PRODSTART=( "HH1" "HH2" )
 BOUNDARY_LEN_HRS="0"
 BOUNDARY_LONG_LEN_HRS="0"
 POSTPROC_LEN_HRS="1"
 POSTPROC_LONG_LEN_HRS="1"
 FCST_LEN_HRS="24"
+FCST_LEN_HRS_SPINUP="1"
 FCST_LEN_HRS_CYCLES=( )
 DA_CYCLE_INTERV="3"
 RESTART_INTERVAL="3,6"
@@ -480,21 +493,13 @@ RESTART_INTERVAL="3,6"
 # cycle definition for "boundary_long" group
 # This group runs: get_extrn_lbcs_long,make_lbcs
 #
-# PREP_COLDSTART_CYCLEDEF:
-# cycle definition for "prep_coldstart" group
-# This group runs: prep_coldstart
+# SPINUP_CYCLEDEF:
+# cycle definition for spin-up cycle group
+# This group runs: anal_gsi_input_spinup and data process, run_fcst_spinup, run_post_spinup
 #
-# PREP_WARMSTART_CYCLEDEF:
-# cycle definition for "prep_warmstart" group
-# This group runs: prep_warmstart
-#
-# ANALYSIS_CYCLEDEF:
-# cycle definition for "analysis" group
-# This group runs: anal_gsi_input
-#
-# FORECAST_CYCLEDEF:
-# cycle definition for "forecast" group
-# This group runs: run_fcst, python_skewt, run_clean
+# PROD_CYCLEDEF:
+# cycle definition for product cycle group
+# This group runs: anal_gsi_input and data process, run_fcst, python_skewt, run_clean
 #
 # POSTPROC_CYCLEDEF:
 # cycle definition for "postproc" group
@@ -516,10 +521,8 @@ AT_START_CYCLEDEF="00 01 01 01 2100 *"
 INITIAL_CYCLEDEF="00 01 01 01 2100 *"
 BOUNDARY_CYCLEDEF="00 01 01 01 2100 *"
 BOUNDARY_LONG_CYCLEDEF="00 01 01 01 2100 *"
-PREP_COLDSTART_CYCLEDEF="00 01 01 01 2100 *"
-PREP_WARMSTART_CYCLEDEF="00 01 01 01 2100 *"
-ANALYSIS_CYCLEDEF="00 01 01 01 2100 *"
-FORECAST_CYCLEDEF="00 01 01 01 2100 *"
+SPINUP_CYCLEDEF="00 01 01 01 2100 *"
+PROD_CYCLEDEF="00 01 01 01 2100 *"
 POSTPROC_CYCLEDEF="00 01 01 01 2100 *"
 POSTPROC_LONG_CYCLEDEF="00 01 01 01 2100 *"
 ARCHIVE_CYCLEDEF="00 01 01 01 2100 *"
@@ -1440,8 +1443,10 @@ RUN_FCST_TN="run_fcst"
 RUN_POST_TN="run_post"
 
 ANAL_GSI_TN="anal_gsi_input"
-PREP_COLDSTART_TN="prep_coldstart"
-PREP_WARMSTART_TN="prep_warmstart"
+PREP_START_TN="prep_start"
+PREP_CYC_SPINUP_TN="prep_cyc_spinup"
+PREP_CYC_PROD_TN="prep_cyc_prod"
+PREP_CYC_TN="prep_cyc"
 PROCESS_RADAR_REF_TN="process_radarref"
 PROCESS_LIGHTNING_TN="process_lightning"
 PROCESS_BUFR_TN="process_bufr"
@@ -1661,11 +1666,15 @@ DO_DACYCLE="FALSE"
 # DO_RETRO:
 # Flag turn on the retrospective experiments.
 #
+# DO_SPINUP:
+# Flag turn on the spin-up cycle.
+#
 # LBCS_ICS_ONLY:
 # Flag turn on the runs prepare boundary and cold start initial conditions in
 #      retrospective experiments.
 #
 DO_RETRO="FALSE"
+DO_SPINUP="FALSE"
 LBCS_ICS_ONLY="FALSE"
 #
 #-----------------------------------------------------------------------

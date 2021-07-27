@@ -66,6 +66,7 @@ specified cycle.
 #
 valid_args=( \
 "cdate" \
+"cycle_type" \
 "cycle_dir" \
 "ensmem_indx" \
 "slash_ensmem_subdir" \
@@ -336,7 +337,7 @@ of the current run directory (run_dir), where
 ..."
 
 BKTYPE=1    # cold start using INPUT
-if [ -r ${CYCLE_DIR}/fcst_fv3lam/INPUT/fv_tracer.res.tile1.nc ]; then
+if [ -r ${run_dir}/INPUT/fv_tracer.res.tile1.nc ]; then
   BKTYPE=0  # cycling using RESTART
 fi
 print_info_msg "$VERBOSE" "
@@ -481,6 +482,7 @@ fi
 #
 create_model_configure_file \
   cdate="$cdate" \
+  cycle_type="$cycle_type" \
   nthreads=${OMP_NUM_THREADS:-1} \
   run_dir="${run_dir}" || print_err_msg_exit "\
 Call to function to create a model configuration file for the current

@@ -191,8 +191,10 @@ settings="\
   'run_fcst_tn': ${RUN_FCST_TN}
   'run_post_tn': ${RUN_POST_TN}
   'anal_gsi': ${ANAL_GSI_TN}
-  'prep_coldstart': ${PREP_COLDSTART_TN}
-  'prep_warmstart': ${PREP_WARMSTART_TN}
+  'prep_start': ${PREP_START_TN}
+  'prep_cyc_spinup': ${PREP_CYC_SPINUP_TN}
+  'prep_cyc_prod': ${PREP_CYC_PROD_TN}
+  'prep_cyc': ${PREP_CYC_TN}
   'process_radarref': ${PROCESS_RADAR_REF_TN}
   'process_lightning': ${PROCESS_LIGHTNING_TN}
   'process_bufr': ${PROCESS_BUFR_TN}
@@ -332,22 +334,22 @@ settings="\
   'cdate_first_arch': !datetime ${DATE_FIRST_CYCL}07
   'cdate_last_arch': !datetime ${DATE_LAST_CYCL}07
   'cycl_hrs': [ $( printf "\'%s\', " "${CYCL_HRS[@]}" ) ]
+  'cycl_hrs_spinstart': [ $( printf "\'%s\', " "${CYCL_HRS_SPINSTART[@]}" ) ]
+  'cycl_hrs_prodstart': [ $( printf "\'%s\', " "${CYCL_HRS_PRODSTART[@]}" ) ]
   'cycl_freq': !!str 12:00:00
   'at_start_cycledef': ${AT_START_CYCLEDEF}
   'initial_cycledef': ${INITIAL_CYCLEDEF}
   'boundary_cycledef': ${BOUNDARY_CYCLEDEF}
   'boundary_long_cycledef': ${BOUNDARY_LONG_CYCLEDEF}
-  'prep_coldstart_cycledef': ${PREP_COLDSTART_CYCLEDEF}
-  'prep_warmstart_cycledef': ${PREP_WARMSTART_CYCLEDEF}
-  'analysis_cycledef': ${ANALYSIS_CYCLEDEF}
-  'forecast_cycledef': ${FORECAST_CYCLEDEF}
-  'postproc_cycledef': ${POSTPROC_CYCLEDEF}
+  'spinup_cycledef': ${SPINUP_CYCLEDEF}
+  'prod_cycledef': ${PROD_CYCLEDEF}
   'postproc_long_cycledef': ${POSTPROC_LONG_CYCLEDEF}
   'archive_cycledef': ${ARCHIVE_CYCLEDEF}
 #
 # boundary, forecast, and post process length.
 #
   'fcst_len_hrs': ${FCST_LEN_HRS}
+  'fcst_len_hrs_spinup': ${FCST_LEN_HRS_SPINUP}
   'boundary_len_hrs': ${BOUNDARY_LEN_HRS}
   'boundary_long_len_hrs': ${BOUNDARY_LONG_LEN_HRS}
   'postproc_len_hrs': ${POSTPROC_LEN_HRS}
@@ -368,6 +370,7 @@ settings="\
   'da_cycle_interval_hrs': ${DA_CYCLE_INTERV}
   'do_nonvar_cldanal': ${DO_NONVAR_CLDANAL}
   'do_refl2tten': ${DO_REFL2TTEN}
+  'do_spinup': ${DO_SPINUP}
 #
 # graphics related parameters
 #

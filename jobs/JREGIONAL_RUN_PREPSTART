@@ -62,7 +62,16 @@ the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-modelinputdir=${CYCLE_DIR}/fcst_fv3lam/INPUT
+# CYCLE_TYPE is to indicate which type of cycle this job for:
+#   spinup: this job is for spin-up cycles
+#   others(prod): this job is for product cycle
+#
+CYCLE_TYPE=${CYCLE_TYPE:-prod}
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  modelinputdir=${CYCLE_DIR}/fcst_fv3lam_spinup/INPUT
+else
+  modelinputdir=${CYCLE_DIR}/fcst_fv3lam/INPUT
+fi
 rm -fr ${modelinputdir}
 mkdir_vrfy -p ${modelinputdir}
 #
@@ -75,7 +84,9 @@ mkdir_vrfy -p ${modelinputdir}
 #
 $SCRIPTSDIR/exregional_run_prepstart.sh \
              cycle_dir="${CYCLE_DIR}" \
+             cycle_type="${CYCLE_TYPE}" \
              modelinputdir="${modelinputdir}" \
+             lbcs_root="${LBCS_ROOT}" \
              fg_root="${FG_ROOT}" || \
 print_err_msg_exit "\
 Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."

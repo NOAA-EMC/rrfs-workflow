@@ -55,7 +55,7 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "analworkdir" )
+valid_args=( "cycle_dir" "cycle_type" "analworkdir" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -163,7 +163,11 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 cd_vrfy ${analworkdir}
 
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
-bkpath=${cycle_dir}/fcst_fv3lam/INPUT
+if [ ${cycle_type} == "spinup" ]; then
+  bkpath=${cycle_dir}/fcst_fv3lam_spinup/INPUT
+else
+  bkpath=${cycle_dir}/fcst_fv3lam/INPUT
+fi
 # decide background type
 if [ -r "${bkpath}/phy_data.nc" ]; then
   BKTYPE=0              # warm start
@@ -418,7 +422,6 @@ cp_vrfy $ATMS_BEAMWIDTH atms_beamwidth.txt
 cp_vrfy ${HYBENSINFO} hybens_info
 
 # Get aircraft reject list and surface uselist
-
 if [ -r ${AIRCRAFT_REJECT}/current_bad_aircraft.txt ]; then
   cp_vrfy ${AIRCRAFT_REJECT}/current_bad_aircraft.txt current_bad_aircraft
 else

@@ -55,7 +55,7 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "modelinputdir" "fg_root")
+valid_args=( "cycle_dir" "cycle_type" "modelinputdir" "lbcs_root" "fg_root")
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -98,27 +98,63 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 # prepare initial conditions for 
 #     cold start if BKTYPE=1 
 #     warm start if BKTYPE=0
+#     spinupcyc + warm start if BKTYPE=2
 #       the previous 6 cycles are searched to find the restart files
 #       valid at this time from the closet previous cycle.
 #
 #-----------------------------------------------------------------------
 
+BKTYPE=0
+if [ ${cycle_type} == "spinup" ]; then
+   echo "spin up cycle"
+  for cyc_start in ${CYCL_HRS_SPINSTART[@]}; do
+    if [ ${HH} -eq ${cyc_start} ]; then
+      BKTYPE=1
+    fi
+  done
+else
+  echo " product cycle"
+  for cyc_start in ${CYCL_HRS_PRODSTART[@]}; do
+    if [ ${HH} -eq ${cyc_start} ]; then
+      if [ ${DO_SPINUP} == "true" ]; then
+        BKTYPE=2   # using 1-h forecast from spinup cycle
+      else
+        BKTYPE=1
+      fi
+    fi
+  done
+fi
+
 cd_vrfy ${modelinputdir}
 
-if [ ${BKTYPE} -eq 1 ]; then  # cold start, use prepare cold strat initial files from ics
-  bkpath=${cycle_dir}/ics
-  if [ -r "${bkpath}/gfs_data.tile7.halo0.nc" ]; then
-    cp_vrfy ${bkpath}/gfs_bndy.tile7.000.nc gfs_bndy.tile7.000.nc        
-    cp_vrfy ${bkpath}/gfs_ctrl.nc gfs_ctrl.nc        
-    cp_vrfy ${bkpath}/gfs_data.tile7.halo0.nc gfs_data.tile7.halo0.nc        
-    cp_vrfy ${bkpath}/sfc_data.tile7.halo0.nc sfc_data.tile7.halo0.nc        
-    print_info_msg "$VERBOSE" "cold start from $bkpath"
-  else
-    print_err_msg_exit "Error: cannot find cold start initial condition from : ${bkpath}"
-  fi
+if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial files from ics
+    bkpath=${cycle_dir}/ics
+    if [ -r "${bkpath}/gfs_data.tile7.halo0.nc" ]; then
+      cp_vrfy ${bkpath}/gfs_bndy.tile7.000.nc gfs_bndy.tile7.000.nc        
+      cp_vrfy ${bkpath}/gfs_ctrl.nc gfs_ctrl.nc        
+      cp_vrfy ${bkpath}/gfs_data.tile7.halo0.nc gfs_data.tile7.halo0.nc        
+      cp_vrfy ${bkpath}/sfc_data.tile7.halo0.nc sfc_data.tile7.halo0.nc        
+      print_info_msg "$VERBOSE" "cold start from $bkpath"
+    else
+      print_err_msg_exit "Error: cannot find cold start initial condition from : ${bkpath}"
+    fi
 else
+
+# Setup the INPUT directory for warm start cycles, which can be spin-up cycle or product cycle.
+#
+# First decide the source of the first guess (fg_restart_dirname) depending on cycle_type and BKTYPE:
+#  1. If cycle is spinup cycle (cycle_type == spinup) or it is the product start cycle (BKTYPE==2),
+#             looking for the first guess from spinup forecast (fcst_fv3lam_spinup)
+#  2. Others, looking for the first guess from product forecast (fcst_fv3lam)
+#
+  if [ ${cycle_type} == "spinup" ] || [ ${BKTYPE} -eq 2 ]; then
+     fg_restart_dirname=fcst_fv3lam_spinup
+  else
+     fg_restart_dirname=fcst_fv3lam
+  fi
+
   YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
-  bkpath=${fg_root}/${YYYYMMDDHHmInterv}/fcst_fv3lam/RESTART  # cycling, use background from RESTART
+  bkpath=${fg_root}/${YYYYMMDDHHmInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
 
 #   let us figure out which backgound is available
 #
@@ -136,8 +172,8 @@ else
     else
       n=$((n + ${DA_CYCLE_INTERV}))
       YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${n} hours ago" )
-      bkpath=${fg_root}/${YYYYMMDDHHmInterv}/fcst_fv3lam/RESTART  # cycling, use background from RESTART
-      if [ ${n} -eq ${FCST_LEN_HRS} ]; then
+      bkpath=${fg_root}/${YYYYMMDDHHmInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+      if [ ${n} -eq ${FCST_LEN_HRS_SPINUP} ] && [ ${cycle_type} == "spinup" ]; then
         restart_prefix=""
       fi
       print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
@@ -153,7 +189,7 @@ else
     cp_vrfy ${bkpath}/${restart_prefix}fv_core.res.nc             fv_core.res.nc
     cp_vrfy ${bkpath}/${restart_prefix}fv_srf_wnd.res.tile1.nc    fv_srf_wnd.res.tile1.nc
     cp_vrfy ${bkpath}/${restart_prefix}phy_data.nc                phy_data.nc
-    cp_vrfy ${fg_root}/${YYYYMMDDHHmInterv}/fcst_fv3lam/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
+    cp_vrfy ${fg_root}/${YYYYMMDDHHmInterv}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
   else
     print_err_msg_exit "Error: cannot find background: ${checkfile}"
   fi
@@ -173,7 +209,7 @@ if [ "${NET}" = "RTMA" ]; then
     #find a bdry file last modified before current cycle time and size > 100M 
     #to make sure it exists and was written out completely. 
     TIME1HAGO=$(date -d "${START_DATE}" +"%Y-%m-%d %H:%M:%S")
-    bdryfile0=${fg_root}/$(cd $fg_root;find . -name "gfs_bndy.tile7.000.nc" ! -newermt "$TIME1HAGO" -size +100M | xargs ls -1rt |tail -n 1)
+    bdryfile0=${lbcs_root}/$(cd $lbcs_root;find . -name "gfs_bndy.tile7.000.nc" ! -newermt "$TIME1HAGO" -size +100M | xargs ls -1rt |tail -n 1)
     bdryfile1=$(echo $bdryfile0 | sed -e "s/gfs_bndy.tile7.000.nc/gfs_bndy.tile7.001.nc/")
     ln_vrfy -snf ${bdryfile0} .
     ln_vrfy -snf ${bdryfile1} .
@@ -186,6 +222,9 @@ else
   else
      FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS}
   fi
+  if [ ${cycle_type} == "spinup" ]; then
+     FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS_SPINUP}
+  fi 
   print_info_msg "$VERBOSE" " The forecast length for cycle (\"${HH}\") is
                  ( \"${FCST_LEN_HRS_thiscycle}\") "
 
@@ -194,7 +233,7 @@ else
   n=${EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS}
   end_search_hr=$(( 12 + ${EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS} ))
   YYYYMMDDHHmInterv=$(date +%Y%m%d%H -d "${START_DATE} ${n} hours ago")
-  lbcs_path=${fg_root}/${YYYYMMDDHHmInterv}/lbcs
+  lbcs_path=${lbcs_root}/${YYYYMMDDHHmInterv}/lbcs
   while [[ $n -le ${end_search_hr} ]] ; do
     last_bdy_time=$(( n + ${FCST_LEN_HRS_thiscycle} ))
     last_bdy=$(printf %3.3i $last_bdy_time)
@@ -205,7 +244,7 @@ else
     else
       n=$((n + 1))
       YYYYMMDDHHmInterv=$(date +%Y%m%d%H -d "${START_DATE} ${n} hours ago")
-      lbcs_path=${fg_root}/${YYYYMMDDHHmInterv}/lbcs
+      lbcs_path=${lbcs_root}/${YYYYMMDDHHmInterv}/lbcs
     fi
   done
 #
