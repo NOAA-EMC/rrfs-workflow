@@ -174,7 +174,7 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
 
   NSSL=${OBSPATH_NSSLMOSIAC}
 
-  mrms="MRMS*MergedReflectivityQC"
+  mrms="MergedReflectivityQC"
 
 # Link to the MRMS operational data
   echo "bigmin = ${bigmin}"
@@ -188,14 +188,15 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
     s=0
     while [[ $s -le 59 ]]; do
       ss=$(printf %2.2i ${s})
-      nsslfile=${NSSL}/${YYYY}${MM}${DD}-${HH}${min}${ss}.${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.grib2
+      nsslfile=${NSSL}/*${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.grib2
       if [ -s $nsslfile ]; then
         echo 'Found '${nsslfile}
-        numgrib2=$(ls ${NSSL}/${YYYY}${MM}${DD}-${HH}${min}*.${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.grib2 | wc -l)
+        nsslfile1=*${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.grib2
+        numgrib2=$(ls ${NSSL}/${nsslfile1} | wc -l)
         echo 'Number of GRIB-2 files: '${numgrib2}
         if [ ${numgrib2} -ge 10 ] && [ ! -e filelist_mrms ]; then
-          ln -sf ${NSSL}/${YYYY}${MM}${DD}-${HH}${min}*.${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.grib2 . 
-          ls ${YYYY}${MM}${DD}-${HH}${min}*.${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.grib2 > filelist_mrms
+          ln -sf ${NSSL}/${nsslfile1} . 
+          ls ${nsslfile1} > filelist_mrms 
           echo 'Creating links for ${YYYY}${MM}${DD}-${HH}${min}'
         fi
       fi

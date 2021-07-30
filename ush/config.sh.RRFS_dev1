@@ -110,7 +110,7 @@ if [[ $DO_RETRO == "true" ]] ; then
 #    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/gfs/0p25deg/grib2
     OBSPATH=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/obs_rap
     OBSPATH_NSSLMOSIAC=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/reflectivity
-    LIGHTNING_ROOT=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/lightning/vaisala/netcdf/
+    LIGHTNING_ROOT=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/lightning
     ENKF_FCST=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/enkf/atm
   fi
   if [[ $MACHINE == "hera" ]] ; then
@@ -119,7 +119,7 @@ if [[ $DO_RETRO == "true" ]] ; then
 #    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/zrtrr/rli/data/gfs/0p25deg/grib2
     OBSPATH=/scratch2/BMC/zrtrr/rli/data/obs_rap
     OBSPATH_NSSLMOSIAC=/scratch2/BMC/zrtrr/rli/data/reflectivity
-    LIGHTNING_ROOT=/scratch2/BMC/zrtrr/rli/data/lightning/vaisala/netcdf/
+    LIGHTNING_ROOT=/scratch2/BMC/zrtrr/rli/data/lightning
     ENKF_FCST=/scratch2/BMC/zrtrr/rli/data/enkf/atm
   fi
   if [[ $MACHINE == "orion" ]] ; then
