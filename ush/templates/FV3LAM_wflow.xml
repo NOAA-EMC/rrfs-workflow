@@ -568,6 +568,8 @@ MODULES_RUN_TASK_FP script.
 {% else %}
            <and>
              <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
+             <taskdep task="&MAKE_ICS_TN;"/>
+             <taskdep task="&MAKE_LBCS_TN;" cycle_offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00"/>
            </and>
 {%- endif %}
          </and>

@@ -166,7 +166,8 @@ else
   n=${DA_CYCLE_INTERV}
   while [[ $n -le 6 ]] ; do
     checkfile=${bkpath}/${restart_prefix}fv_core.res.tile1.nc
-    if [ -r "${checkfile}" ]; then
+    checkfile1=${bkpath}/${restart_prefix}fv_tracer.res.tile1.nc
+    if [ -r "${checkfile}" ] && [ -r "${checkfile1}" ]; then
       print_info_msg "$VERBOSE" "Found ${checkfile}; Use it as background for analysis "
       break
     else
@@ -176,12 +177,16 @@ else
       if [ ${n} -eq ${FCST_LEN_HRS_SPINUP} ] && [ ${cycle_type} == "spinup" ]; then
         restart_prefix=""
       fi
+      if [ ${n} -eq ${FCST_LEN_HRS} ] && [ ${cycle_type} == "prod" ] ; then
+        restart_prefix=""
+      fi
       print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
     fi
   done
 #
   checkfile=${bkpath}/${restart_prefix}fv_core.res.tile1.nc
-  if [ -r "${checkfile}" ]; then
+  checkfile1=${bkpath}/${restart_prefix}fv_tracer.res.tile1.nc
+  if [ -r "${checkfile}" ] && [ -r "${checkfile1}" ] ; then
     cp_vrfy ${bkpath}/${restart_prefix}fv_core.res.tile1.nc       fv_core.res.tile1.nc 
     cp_vrfy ${bkpath}/${restart_prefix}fv_tracer.res.tile1.nc     fv_tracer.res.tile1.nc
     cp_vrfy ${bkpath}/${restart_prefix}sfc_data.nc                sfc_data.nc 

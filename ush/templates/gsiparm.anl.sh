@@ -16,7 +16,7 @@ gsi_namelist="
    netcdf_diag=.false.,
  /     
  &GRIDOPTS
-   fv3_regional=.true.,grid_ratio_fv3_regional=1.0,nvege_type=20,
+   fv3_regional=.true.,grid_ratio_fv3_regional=2.0,nvege_type=20,
  /
  &BKGERR
    vs=${bkgerr_vs},
