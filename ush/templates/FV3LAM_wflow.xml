@@ -36,6 +36,7 @@ Workflow task names.
 <!ENTITY MAKE_LBCS_TN      "{{ make_lbcs_tn }}">
 <!ENTITY RUN_FCST_TN       "{{ run_fcst_tn }}">
 <!ENTITY RUN_POST_TN       "{{ run_post_tn }}">
+<!ENTITY RUN_WGRIB2_TN     "{{ run_wgrib2_tn }}">
 <!ENTITY ANAL_GSI_TN       "{{ anal_gsi }}">
 <!ENTITY PREP_CYC_SPINUP_TN "{{ prep_cyc_spinup }}">
 <!ENTITY PREP_CYC_PROD_TN  "{{ prep_cyc_prod }}">
@@ -1000,6 +1001,33 @@ MODULES_RUN_TASK_FP script.
 
     </task>
 
+    <task name="&RUN_WGRIB2_TN;{{ uscore_ensmem_name }}_f#fhr#" cycledefs="postproc_#type#" maxtries="{{ maxtries_run_wgrib2 }}">
+
+      &RSRV_DEFAULT;
+      &WALL_LIMIT_POST;
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_WGRIB2_TN;" "&JOBSDIR;/JREGIONAL_RUN_WGRIB2"</command>
+      <nodes>{{ nnodes_run_wgrib2 }}:ppn={{ ppn_run_wgrib2 }}</nodes>
+      <walltime>{{ wtime_run_wgrib2 }}</walltime>
+      <nodesize>&NCORES_PER_NODE;</nodesize>
+      <memory>{{ memo_run_wgrib2 }}</memory>
+      <jobname>&TAG;_&RUN_WGRIB2_TN;{{ uscore_ensmem_name }}_f#fhr#</jobname>
+      <join><cyclestr>&LOGDIR;/&RUN_WGRIB2_TN;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
+
+      <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+      <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+      <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+      <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+      <envar><name>fhr</name><value>#fhr#</value></envar>
+      <envar><name>TMMARK</name><value>tm00</value></envar>
+
+      <dependency>
+        <taskdep task="&RUN_POST_TN;_f#fhr#"/>
+      </dependency>
+
+    </task>
+
   </metatask>
 
 {% if do_ensemble %}
@@ -1037,7 +1065,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>TILELABEL</name><value>#tilelabel#</value></envar>
 
       <dependency>
-        <taskdep task="&RUN_POST_TN;_f000"/>
+        <taskdep task="&RUN_WGRIB2_TN;_f000"/>
       </dependency>
     </task>
   </metatask>
@@ -1061,7 +1089,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GRAPHICS_TYPE</name><value>skewts</value></envar>
 
     <dependency>
-      <taskdep task="&RUN_POST_TN;_f000"/>
+      <taskdep task="&RUN_WGRIB2_TN;_f000"/>
     </dependency>
   </task>
 
@@ -1101,6 +1129,34 @@ MODULES_RUN_TASK_FP script.
           <datadep age="05:00"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H/fcst_fv3lam_spinup/dynf#fhr#.nc</cyclestr></datadep>
           <datadep age="05:00"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H/fcst_fv3lam_spinup/phyf#fhr#.nc</cyclestr></datadep>
         </and>
+      </dependency>
+
+    </task>
+
+    <task name="&RUN_WGRIB2_TN;_spinup_f#fhr#" cycledefs="spinupcyc" maxtries="{{ maxtries_run_wgrib2 }}">
+
+      &RSRV_DEFAULT;
+      &WALL_LIMIT_POST;
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_WGRIB2_TN;" "&JOBSDIR;/JREGIONAL_RUN_WGRIB2"</command>
+      <nodes>{{ nnodes_run_wgrib2 }}:ppn={{ ppn_run_wgrib2 }}</nodes>
+      <walltime>{{ wtime_run_wgrib2 }}</walltime>
+      <nodesize>&NCORES_PER_NODE;</nodesize>
+      <memory>{{ memo_run_wgrib2 }}</memory>
+      <jobname>&TAG;_&RUN_WGRIB2_TN;{{ uscore_ensmem_name }}_f#fhr#</jobname>
+      <join><cyclestr>&LOGDIR;/&RUN_WGRIB2_TN;_spinup_f#fhr#_@Y@m@d@H.log</cyclestr></join>
+
+      <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+      <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+      <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr></cyclestr></value></envar>
+      <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+      <envar><name>fhr</name><value>#fhr#</value></envar>
+      <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
+      <envar><name>TMMARK</name><value>tm00</value></envar>
+
+      <dependency>
+        <taskdep task="&RUN_POST_TN;_spinup_f#fhr#"/>
       </dependency>
 
     </task>

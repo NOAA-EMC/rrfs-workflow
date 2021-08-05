@@ -190,6 +190,7 @@ settings="\
   'make_lbcs_tn': ${MAKE_LBCS_TN}
   'run_fcst_tn': ${RUN_FCST_TN}
   'run_post_tn': ${RUN_POST_TN}
+  'run_wgrib2_tn': ${RUN_WGRIB2_TN}
   'anal_gsi': ${ANAL_GSI_TN}
   'prep_start': ${PREP_START_TN}
   'prep_cyc_spinup': ${PREP_CYC_SPINUP_TN}
@@ -215,6 +216,7 @@ settings="\
   'nnodes_run_fcst': ${NNODES_RUN_FCST}
   'nnodes_run_anal': ${NNODES_RUN_ANAL}
   'nnodes_run_post': ${NNODES_RUN_POST}
+  'nnodes_run_wgrib2': ${NNODES_RUN_WGRIB2}
   'nnodes_proc_radar': ${NNODES_PROC_RADAR}
   'nnodes_proc_lightning': ${NNODES_PROC_LIGHTNING}
   'nnodes_proc_bufr': ${NNODES_PROC_BUFR}
@@ -243,6 +245,7 @@ settings="\
   'ppn_run_fcst': ${PPN_RUN_FCST}
   'ppn_run_anal': ${PPN_RUN_ANAL}
   'ppn_run_post': ${PPN_RUN_POST}
+  'ppn_run_wgrib2': ${PPN_RUN_WGRIB2}
   'ppn_proc_radar': ${PPN_PROC_RADAR}
   'ppn_proc_lightning': ${PPN_PROC_LIGHTNING}
   'ppn_proc_bufr': ${PPN_PROC_BUFR}
@@ -263,6 +266,7 @@ settings="\
   'wtime_run_fcst': ${WTIME_RUN_FCST}
   'wtime_run_anal': ${WTIME_RUN_ANAL}
   'wtime_run_post': ${WTIME_RUN_POST}
+  'wtime_run_wgrib2': ${WTIME_RUN_WGRIB2}
   'wtime_proc_radar': ${WTIME_PROC_RADAR}
   'wtime_proc_lightning': ${WTIME_PROC_LIGHTNING}
   'wtime_proc_bufr': ${WTIME_PROC_BUFR}
@@ -273,6 +277,7 @@ settings="\
 #
   'memo_run_ref2tten': ${MEMO_RUN_REF2TTEN}
   'memo_run_nonvarcldanl': ${MEMO_RUN_NONVARCLDANL}
+  'memo_run_wgrib2': ${MEMO_RUN_WGRIB2}
 #
 # Maximum number of tries for each task.
 #
@@ -287,6 +292,7 @@ settings="\
   'maxtries_run_fcst': ${MAXTRIES_RUN_FCST}
   'maxtries_anal_gsi': ${MAXTRIES_ANAL_GSI}
   'maxtries_run_post': ${MAXTRIES_RUN_POST}
+  'maxtries_run_wgrib2': ${MAXTRIES_RUN_WGRIB2}
   'maxtries_process_radarref': ${MAXTRIES_PROCESS_RADARREF}
   'maxtries_process_lightning': ${MAXTRIES_PROCESS_LIGHTNING}
   'maxtries_process_bufr': ${MAXTRIES_PROCESS_BUFR}
