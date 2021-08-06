@@ -330,7 +330,9 @@ ules_dir) for the specified task (task_name) failed:
   module list
 
 if [ -n "${SRW_ENV:-}" ] ; then
+  set +u
   conda activate ${SRW_ENV}
+  set -u
 fi
 
 #fi #End if statement for tasks that load no modules
