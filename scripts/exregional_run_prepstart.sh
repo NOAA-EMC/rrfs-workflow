@@ -107,14 +107,14 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 BKTYPE=0
 if [ ${cycle_type} == "spinup" ]; then
    echo "spin up cycle"
-  for cyc_start in ${CYCL_HRS_SPINSTART[@]}; do
+  for cyc_start in "${CYCL_HRS_SPINSTART[@]}"; do
     if [ ${HH} -eq ${cyc_start} ]; then
       BKTYPE=1
     fi
   done
 else
   echo " product cycle"
-  for cyc_start in ${CYCL_HRS_PRODSTART[@]}; do
+  for cyc_start in "${CYCL_HRS_PRODSTART[@]}"; do
     if [ ${HH} -eq ${cyc_start} ]; then
       if [ ${DO_SPINUP} == "true" ]; then
         BKTYPE=2   # using 1-h forecast from spinup cycle
