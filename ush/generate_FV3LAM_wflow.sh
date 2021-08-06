@@ -227,7 +227,7 @@ settings="\
 # Number of cores used for a task
 #
   'ncores_run_fcst': ${PE_MEMBER01}
-  'native_run_fcst': --cpus-per-task 2 --exclusive
+  'native_run_fcst': --cpus-per-task 4 --exclusive
   'ncores_run_anal': ${NCORES_RUN_ANAL}
   'native_run_anal': --cpus-per-task 4 --exclusive
 #

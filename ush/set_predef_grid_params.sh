@@ -1177,7 +1177,7 @@ case ${PREDEF_GRID_NAME} in
 
   if [ "$QUILTING" = "TRUE" ]; then
     WRTCMP_write_groups="1"
-    WRTCMP_write_tasks_per_group="144"
+    WRTCMP_write_tasks_per_group="100"
     WRTCMP_output_grid="rotated_latlon"
     WRTCMP_cen_lon="-112.0"
     WRTCMP_cen_lat="48.0"
