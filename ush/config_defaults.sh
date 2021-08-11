@@ -1663,7 +1663,11 @@ NUM_ENS_MEMBERS="1"
 # DO_DACYCLE:
 # Flag that determines whether to run a data assimilation cycle.
 #
+# DO_SURFACE_CYCLE:
+# Flag that determines whether to continue cycle surface fields.
+#
 DO_DACYCLE="FALSE"
+DO_SURFACE_CYCLE="FALSE"
 #
 #-----------------------------------------------------------------------
 #

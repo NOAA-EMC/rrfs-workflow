@@ -373,6 +373,7 @@ settings="\
 # data assimilation related parameters.
 #
   'do_dacycle': ${DO_DACYCLE}
+  'do_surface_cycle': ${DO_SURFACE_CYCLE}
   'da_cycle_interval_hrs': ${DA_CYCLE_INTERV}
   'do_nonvar_cldanal': ${DO_NONVAR_CLDANAL}
   'do_refl2tten': ${DO_REFL2TTEN}
@@ -658,6 +659,10 @@ fi
 lsoil="4"
 if [ "${EXTRN_MDL_NAME_ICS}" = "HRRR" -o \
      "${EXTRN_MDL_NAME_ICS}" = "RAP" ] && \
+   [ "${SDF_USES_RUC_LSM}" = "TRUE" ]; then
+  lsoil="9"
+fi
+if [ "${DO_SURFACE_CYCLE}" = "TRUE" ] && \
    [ "${SDF_USES_RUC_LSM}" = "TRUE" ]; then
   lsoil="9"
 fi

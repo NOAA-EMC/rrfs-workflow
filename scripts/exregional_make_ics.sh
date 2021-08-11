@@ -421,7 +421,7 @@ case "${EXTRN_MDL_NAME_ICS}" in
   vgfrc_from_climo=True
   minmax_vgfrc_from_climo=True
   lai_from_climo=True
-  tg3_from_soil=False
+  tg3_from_soil=True
   ;;
 
 "HRRR")

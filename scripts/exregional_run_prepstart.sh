@@ -138,6 +138,45 @@ if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial file
     else
       print_err_msg_exit "Error: cannot find cold start initial condition from : ${bkpath}"
     fi
+
+    if [ ${DO_SURFACE_CYCLE} == "true" ]; then  # cycle surface fields
+
+# find surface file resource
+      surface_file_dir_name=fcst_fv3lam
+      YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
+      bkpath=${fg_root}/${YYYYMMDDHHmInterv}/${surface_file_dir_name}/RESTART  
+
+# figure out which surface is available
+      restart_prefix="${YYYYMMDD}.${HH}0000."
+      n=${DA_CYCLE_INTERV}
+      while [[ $n -le 6 ]] ; do
+         checkfile=${bkpath}/${restart_prefix}sfc_data.nc
+         if [ -r "${checkfile}" ]; then
+           print_info_msg "$VERBOSE" "Found ${checkfile}; Use it as surface for analysis "
+           break
+         else
+           n=$((n + ${DA_CYCLE_INTERV}))
+           YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${n} hours ago" )
+           bkpath=${fg_root}/${YYYYMMDDHHmInterv}/${surface_file_dir_name}/RESTART  # cycling, use background from RESTART
+           if [ ${n} -eq ${FCST_LEN_HRS} ]; then
+             restart_prefix=""
+           fi
+           print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
+         fi
+      done
+# rename the soil mositure and temperature fields in restart file
+      checkfile=${bkpath}/${restart_prefix}sfc_data.nc
+      if [ -r "${checkfile}" ]; then
+        cp_vrfy ${bkpath}/${restart_prefix}sfc_data.nc  ${restart_prefix}sfc_data.nc
+        mv sfc_data.tile7.halo0.nc cold.sfc_data.tile7.halo0.nc
+        ncks -v geolon,geolat cold.sfc_data.tile7.halo0.nc geolonlat.nc
+        ln_vrfy -sf ${restart_prefix}sfc_data.nc sfc_data.tile7.halo0.nc
+        ncks --append geolonlat.nc sfc_data.tile7.halo0.nc
+        ncrename -v tslb,stc -v smois,smc -v sh2o,slc sfc_data.tile7.halo0.nc
+      else
+        print_info_msg "Warning: cannot find surface from previous cycle"
+      fi
+    fi
 else
 
 # Setup the INPUT directory for warm start cycles, which can be spin-up cycle or product cycle.
