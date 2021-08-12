@@ -46,6 +46,7 @@ if [[ $MACHINE == "hera" ]] ; then
 # observations
   OBSPATH=/scratch2/BMC/public/data/grids/rap/obs
   OBSPATH_NSSLMOSIAC=/scratch2/BMC/public/data/radar/nssl/mrms/conus
+  FFG_DIR=/public/data/grids/ncep/ffg/grib2
   LIGHTNING_ROOT=/scratch2/BMC/public/data/lightning
   ENKF_FCST=/scratch1/NCEPDEV/rstprod/com/gfs/prod
 fi

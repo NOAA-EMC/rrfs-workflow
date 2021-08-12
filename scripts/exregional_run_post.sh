@@ -192,6 +192,13 @@ if [ -f ${FFG_DIR}/latest.FFG ] && [ ${NET} = "RRFS_CONUS" ]; then
   wgrib2 latest.FFG -match "0-6 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_06h.grib2
   wgrib2 latest.FFG -match "0-3 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_03h.grib2
   wgrib2 latest.FFG -match "0-1 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_01h.grib2
+elif [ -f ${FFG_DIR}/latest.FFG ] && [ ${NET} = "RRFS_NA_3km" ]; then
+  cp_vrfy ${FFG_DIR}/latest.FFG .
+  grid_specs_rrfs="rot-ll:248.000000:-42.000000:0.000000 309.000000:4081:0.025000 -33.0000000:2641:0.025000"
+  wgrib2 latest.FFG -match "0-12 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_12h.grib2
+  wgrib2 latest.FFG -match "0-6 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_06h.grib2
+  wgrib2 latest.FFG -match "0-3 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_03h.grib2
+  wgrib2 latest.FFG -match "0-1 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_01h.grib2
 fi
 #
 #-----------------------------------------------------------------------
