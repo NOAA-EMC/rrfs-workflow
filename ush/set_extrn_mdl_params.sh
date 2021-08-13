@@ -149,7 +149,7 @@ fi
 #
 #  for retro, the external boundary could come from other location.
 #
-if [[ "${DO_RETRO}" == "true" && ! -z "${EXTRN_MDL_SOURCE_BASEDIR_ICS}" ]]; then
+if [[ "${DO_RETRO}" == "TRUE" && ! -z "${EXTRN_MDL_SOURCE_BASEDIR_ICS}" ]]; then
       EXTRN_MDL_SYSBASEDIR_ICS="${EXTRN_MDL_SOURCE_BASEDIR_ICS}"
 fi
 
@@ -308,7 +308,7 @@ else
 fi
 
 
-if [[ "${DO_RETRO}" == "true" && ! -z "${EXTRN_MDL_SOURCE_BASEDIR_LBCS}" ]]; then
+if [[ "${DO_RETRO}" == "TRUE" && ! -z "${EXTRN_MDL_SOURCE_BASEDIR_LBCS}" ]]; then
       EXTRN_MDL_SYSBASEDIR_LBCS="${EXTRN_MDL_SOURCE_BASEDIR_LBCS}"
 fi
 

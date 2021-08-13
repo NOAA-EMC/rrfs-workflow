@@ -58,10 +58,10 @@ PREEXISTING_DIR_METHOD="upgrade"
 
 PREDEF_GRID_NAME=RRFS_NA_3km
 
-DO_DACYCLE="true"
+DO_DACYCLE="TURE"
 DO_SURFACE_CYCLE="TRUE"
-#DO_RETRO="true"
-#LBCS_ICS_ONLY="true"
+#DO_RETRO="TURE"
+#LBCS_ICS_ONLY="TURE"
 
 QUILTING="TRUE"
 CCPP_PHYS_SUITE="FV3_HRRR"
@@ -80,8 +80,8 @@ CYCL_HRS_PRODSTART=("03" "15")
 CYCLEMONTH="8"
 CYCLEDAY="1-4"
 #
-if [[ $DO_RETRO == "true" ]] ; then
-  if [[ $LBCS_ICS_ONLY == "true" ]]; then
+if [[ $DO_RETRO == "TURE" ]] ; then
+  if [[ $LBCS_ICS_ONLY == "TRUE" ]]; then
     PREEXISTING_DIR_METHOD="rename"
     INITIAL_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 12:00:00"
     BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 12:00:00"
@@ -96,7 +96,7 @@ else
   PROD_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 01:00:00"
   POSTPROC_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 01:00:00"
   ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}0700 ${DATE_LAST_CYCL}2300 24:00:00"
-  if [[ $DO_SPINUP == "true" ]] ; then
+  if [[ $DO_SPINUP == "TURE" ]] ; then
     SPINUP_CYCLEDEF="00 03-08,15-20 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
   fi
 fi
@@ -168,13 +168,13 @@ STMP="/lfs4/BMC/nrtrr/NCO_dirs/stmp"  # Path to directory STMP that mostly conta
 PTMP="/lfs4/BMC/nrtrr/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains input files.
 NWGES="/lfs4/BMC/nrtrr/NCO_dirs/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 
-if [[ $DO_RETRO == "true" ]] ; then
+if [[ $DO_RETRO == "TRUE" ]] ; then
   CLEAN_OLDPROD_HRS="240"
   CLEAN_OLDLOG_HRS="240"
   CLEAN_OLDRUN_HRS="6"
   CLEAN_OLDFCST_HRS="6"
   CLEAN_OLDSTMPPOST_HRS="6"
-  if [[ $LBCS_ICS_ONLY == "true" ]]; then
+  if [[ $LBCS_ICS_ONLY == "TRUE" ]]; then
     CLEAN_OLDRUN_HRS="7777"
     CLEAN_OLDFCST_HRS="7777"
   fi

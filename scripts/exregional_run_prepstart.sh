@@ -116,7 +116,7 @@ else
   echo " product cycle"
   for cyc_start in "${CYCL_HRS_PRODSTART[@]}"; do
     if [ ${HH} -eq ${cyc_start} ]; then
-      if [ ${DO_SPINUP} == "true" ]; then
+      if [ ${DO_SPINUP} == "TRUE" ]; then
         BKTYPE=2   # using 1-h forecast from spinup cycle
       else
         BKTYPE=1
@@ -139,7 +139,7 @@ if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial file
       print_err_msg_exit "Error: cannot find cold start initial condition from : ${bkpath}"
     fi
 
-    if [ ${DO_SURFACE_CYCLE} == "true" ]; then  # cycle surface fields
+    if [ ${DO_SURFACE_CYCLE} == "TRUE" ]; then  # cycle surface fields
 
 # find surface file resource
       surface_file_dir_name=fcst_fv3lam

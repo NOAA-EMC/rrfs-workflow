@@ -91,10 +91,10 @@ ADDNL_OUTPUT_GRIDS=( "130" "242" )
 TILE_LABELS="NA"
 TILE_SETS="full"
 
-DO_DACYCLE="true"
-DO_SPINUP="true"
-DO_RETRO="true"
-#LBCS_ICS_ONLY="true"
+DO_DACYCLE="TRUE"
+DO_SPINUP="TRUE"
+DO_RETRO="TRUE"
+#LBCS_ICS_ONLY="TRUE"
 
 QUILTING="TRUE"
 CCPP_PHYS_SUITE="FV3_RAP"
@@ -114,7 +114,7 @@ CYCL_HRS_PRODSTART=("09" "21")
 CYCLEMONTH="7"
 CYCLEDAY="8-10"
 
-if [[ $DO_RETRO == "true" ]] ; then
+if [[ $DO_RETRO == "TRUE" ]] ; then
 
   if [[ $MACHINE == "jet" ]] ; then
     EXTRN_MDL_SOURCE_BASEDIR_ICS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/hrrr/conus/wrfnat/grib2
@@ -145,7 +145,7 @@ if [[ $DO_RETRO == "true" ]] ; then
     PROD_CYCLEDEF="${DATE_FIRST_CYCL}0900 ${DATE_LAST_CYCL}2300 01:00:00"
     POSTPROC_CYCLEDEF="${DATE_FIRST_CYCL}0900 ${DATE_LAST_CYCL}2300 01:00:00"
     POSTPROC_LONG_CYCLEDEF="${DATE_FIRST_CYCL}0900 ${DATE_LAST_CYCL}2300 06:00:00"
-    if [[ $DO_SPINUP == "true" ]] ; then
+    if [[ $DO_SPINUP == "TRUE" ]] ; then
       SPINUP_CYCLEDEF="00 03-08,15-20 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
     fi
 else
@@ -154,7 +154,7 @@ else
   PROD_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 01:00:00"
   POSTPROC_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 01:00:00"
   POSTPROC_LONG_CYCLEDEF="${DATE_FIRST_CYCL}0300 ${DATE_LAST_CYCL}2300 06:00:00"
-  if [[ $DO_SPINUP == "true" ]] ; then
+  if [[ $DO_SPINUP == "TRUE" ]] ; then
     SPINUP_CYCLEDEF="00 03-08,15-20 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
   fi
   ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}0700 ${DATE_LAST_CYCL}2300 24:00:00"
@@ -214,13 +214,13 @@ STMP="/gpfs/hps3/ptmp/First.Last/stmp"  # Path to directory STMP that mostly con
 PTMP="/gpfs/hps3/ptmp/First.Last/ptmp"  # Path to directory STMP that mostly contains input files.
 NWGES="/gpfs/hps3/ptmp/First.Last/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 
-if [[ $DO_RETRO == "true" ]] ; then
+if [[ $DO_RETRO == "TRUE" ]] ; then
   CLEAN_OLDPROD_HRS="240"
   CLEAN_OLDLOG_HRS="240"
   CLEAN_OLDRUN_HRS="6"
   CLEAN_OLDFCST_HRS="6"
   CLEAN_OLDSTMPPOST_HRS="6"
-  if [[ $LBCS_ICS_ONLY == "true" ]]; then
+  if [[ $LBCS_ICS_ONLY == "TRUE" ]]; then
     CLEAN_OLDRUN_HRS="7777"
     CLEAN_OLDFCST_HRS="7777"
   fi

@@ -87,30 +87,30 @@ ADDNL_OUTPUT_GRIDS=( "130" "242" )
 TILE_LABELS="NA"
 TILE_SETS="full"
 
-DO_DACYCLE="true"
-DO_SPINUP="false"
-#DO_RETRO="true"
-#LBCS_ICS_ONLY="true"
+DO_DACYCLE="TRUE"
+#DO_SPINUP="TRUE"
+#DO_RETRO="TRUE"
+#LBCS_ICS_ONLY="TRUE"
 
 QUILTING="TRUE"
 CCPP_PHYS_SUITE="FV3_RAP"
 
 EXTRN_MDL_ICS_OFFSET_HRS="3"
-BOUNDARY_LEN_HRS="75"
+BOUNDARY_LEN_HRS="15"
 BOUNDARY_LONG_LEN_HRS="1"
 LBC_SPEC_INTVL_HRS="1"
-EXTRN_MDL_LBCS_OFFSET_HRS="0"
+EXTRN_MDL_LBCS_OFFSET_HRS="6"
 EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS="0"
 
-DATE_FIRST_CYCL="20210708"
-DATE_LAST_CYCL="20210930"
+DATE_FIRST_CYCL="20210812"
+DATE_LAST_CYCL="20210813"
 CYCL_HRS=( "00" "12" )
 CYCL_HRS_SPINSTART=("03" "15")
 CYCL_HRS_PRODSTART=("03" "15")
 CYCLEMONTH="7-9"
 #CYCLEDAY="1-4"
 
-if [[ $DO_RETRO == "true" ]] ; then
+if [[ $DO_RETRO == "TURE" ]] ; then
 
   if [[ $MACHINE == "jet" ]] ; then
     EXTRN_MDL_SOURCE_BASEDIR_ICS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/hrrr/conus/wrfnat/grib2
@@ -136,7 +136,7 @@ if [[ $DO_RETRO == "true" ]] ; then
     OBSPATH=/work/noaa/wrfruc/mhu/rrfs/data/obs_rap
   fi
 
-  if [[ $LBCS_ICS_ONLY == "true" ]]; then
+  if [[ $LBCS_ICS_ONLY == "TURE" ]]; then
     PREEXISTING_DIR_METHOD="rename"
     INITIAL_CYCLEDEF="${DATE_FIRST_CYCL}0300 ${DATE_LAST_CYCL}2300 12:00:00"
     BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 06:00:00"
@@ -145,7 +145,7 @@ if [[ $DO_RETRO == "true" ]] ; then
     PROD_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 01:00:00"
     POSTPROC_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 01:00:00"
     POSTPROC_LONG_CYCLEDEF="${DATE_FIRST_CYCL}0300 ${DATE_LAST_CYCL}2300 06:00:00"
-    if [[ $DO_SPINUP == "true" ]] ; then
+    if [[ $DO_SPINUP == "TURE" ]] ; then
       SPINUP_CYCLEDEF="00 03-08,15-20 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
     fi
   fi
@@ -155,19 +155,19 @@ else
   PROD_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 01:00:00"
   POSTPROC_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 01:00:00"
   POSTPROC_LONG_CYCLEDEF="${DATE_FIRST_CYCL}0300 ${DATE_LAST_CYCL}2300 06:00:00"
-  if [[ $DO_SPINUP == "true" ]] ; then
+  if [[ $DO_SPINUP == "TURE" ]] ; then
     SPINUP_CYCLEDEF="00 03-08,15-20 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
   fi
   ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}0700 ${DATE_LAST_CYCL}2300 24:00:00"
 fi
 
-FCST_LEN_HRS="21"
+FCST_LEN_HRS="3"
 FCST_LEN_HRS_SPINUP="2"
-POSTPROC_LEN_HRS="21"
-POSTPROC_LONG_LEN_HRS="63"
+POSTPROC_LEN_HRS="3"
+POSTPROC_LONG_LEN_HRS="6"
 #FCST_LEN_HRS_CYCLES=(21 21 21 63 21 21 21 21 21 63 21 21 21 21 21 63 21 21 21 21 21 63 21 21)
-for i in {0..23}; do FCST_LEN_HRS_CYCLES[$i]=21; done
-for i in {3..23..6}; do FCST_LEN_HRS_CYCLES[$i]=63; done
+for i in {0..23}; do FCST_LEN_HRS_CYCLES[$i]=3; done
+for i in {3..23..6}; do FCST_LEN_HRS_CYCLES[$i]=6; done
 DA_CYCLE_INTERV="1"
 RESTART_INTERVAL="1 2 3 4 5 6"
 
@@ -191,7 +191,7 @@ NET="RRFS_NA_13km"
 TAG="RRFS_dev1_NA_13km"
 
 USE_CUSTOM_POST_CONFIG_FILE="TRUE"
-CUSTOM_POST_CONFIG_FP="/mnt/lfs4/BMC/nrtrr/RRFS/dev1-13km-NA-ufs-srweather-app/src/EMC_post/parm/postxconfig-NT-fv3lam_rrfs.txt"
+CUSTOM_POST_CONFIG_FP="/mnt/lfs4/BMC/nrtrr/RRFS/dev1-ufs-srweather-app/src/EMC_post/parm/postxconfig-NT-fv3lam_rrfs.txt"
 CUSTOM_POST_PARAMS_FP="/mnt/lfs4/BMC/nrtrr/RRFS/dev1-ufs-srweather-app/src/EMC_post/parm/params_grib2_tbl_new"
 ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_na_13km_dev1"
 NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
@@ -215,13 +215,13 @@ STMP="/lfs4/BMC/nrtrr/NCO_dirs/stmp"  # Path to directory STMP that mostly conta
 PTMP="/lfs4/BMC/nrtrr/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains input files.
 NWGES="/lfs4/BMC/nrtrr/NCO_dirs/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 
-if [[ $DO_RETRO == "true" ]] ; then
+if [[ $DO_RETRO == "TRUE" ]] ; then
   CLEAN_OLDPROD_HRS="240"
   CLEAN_OLDLOG_HRS="240"
   CLEAN_OLDRUN_HRS="6"
   CLEAN_OLDFCST_HRS="6"
   CLEAN_OLDSTMPPOST_HRS="6"
-  if [[ $LBCS_ICS_ONLY == "true" ]]; then
+  if [[ $LBCS_ICS_ONLY == "TRUE" ]]; then
     CLEAN_OLDRUN_HRS="7777"
     CLEAN_OLDFCST_HRS="7777"
   fi

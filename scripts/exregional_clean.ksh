@@ -105,4 +105,18 @@ for onetime in ${XX[*]}; do
   fi
 done
 
+#-----------------------------------------------------------------------
+# Delete nwges directories
+#-----------------------------------------------------------------------
+deletetime=$(date +%Y%m%d%H -d "${currentime} ${CLEAN_NWGES_HRS} hours ago")
+echo "Deleting nwges directories before ${deletetime}..."
+cd ${NWGES_BASEDIR}
+set -A XX $(ls -d 20* | sort -r)
+for onetime in ${XX[*]};do
+  if [[ ${onetime} -le ${deletetime} ]]; then
+    rm -rf ${NWGES_BASEDIR}/${onetime}
+    echo "Deleted ${NWGES_BASEDIR}/${onetime}"
+  fi
+done
+
 exit 0

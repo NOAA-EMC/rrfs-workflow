@@ -510,7 +510,7 @@ fi
 #
 if [ "${RUN_ENVIR}" = "nco" ]; then
 
-  if [ "${DO_DACYCLE}" = "true" ]; then
+  if [ "${DO_DACYCLE}" = "TRUE" ]; then
 # Resolve the target directory that the FIXgsi symlink points to
     ln_vrfy -fsn "$FIX_GSI" "$FIXgsi"
 
@@ -852,7 +852,7 @@ for the various ensemble members failed."
 
 fi
 
-if [ "${DO_DACYCLE}" = "true" ]; then
+if [ "${DO_DACYCLE}" = "TRUE" ]; then
 # need to generate a namelist for da cycle
  settings="\
  'fv_core_nml': {

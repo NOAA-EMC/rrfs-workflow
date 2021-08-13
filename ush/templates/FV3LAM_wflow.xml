@@ -131,7 +131,7 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 <!ENTITY DEADLINE_GRAPHICS "24:00:00">
 {% endif %}
 
-<!ENTITY START_TIME_ANALYSIS     "02:37:00">
+<!ENTITY START_TIME_LATE_ANALYSIS "02:37:00">
 <!ENTITY START_TIME_CONVENTIONAL "00:40:00">
 <!ENTITY START_TIME_NSSLMOSIAC   "00:45:00">
 <!ENTITY START_TIME_LIGHTNINGNC  "00:45:00">
@@ -567,8 +567,7 @@ MODULES_RUN_TASK_FP script.
            </or>
 {%- if do_retro %}
            <datadep age="00:00:05:00"><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H/ics/gfs_data.tile7.halo0.nc</cyclestr></datadep>
-           <taskdep task="&MAKE_ICS_TN;"/>
-           <taskdep task="&MAKE_LBCS_TN;" cycle_offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00"/>
+           <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/lbcs/gfs_bndy.tile7.000.nc</cyclestr></datadep>
 {% else %}
            <and>
              <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
@@ -593,7 +592,7 @@ MODULES_RUN_TASK_FP script.
                <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam_spinup/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
              </and>
              <and>
-               <timedep><cyclestr offset="&START_TIME_ANALYSIS;">@Y@m@d@H@M00</cyclestr></timedep>
+               <timedep><cyclestr offset="&START_TIME_LATE_ANALYSIS;">@Y@m@d@H@M00</cyclestr></timedep>
                <or>
                  {%- for h in range(da_cycle_interval_hrs+da_cycle_interval_hrs, 3+1, da_cycle_interval_hrs) %}
                  <datadep age="00:00:05:00"><cyclestr offset="-{{ h }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam_spinup/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
@@ -644,23 +643,30 @@ MODULES_RUN_TASK_FP script.
              {%- endfor %}
            </or>
 {%- if do_spinup %}
+{%- if do_retro %}
+           <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam_spinup/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
+{% else %}
            <or>
              <and>
                <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
                <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam_spinup/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
              </and>
              <and>
-               <timedep><cyclestr offset="&START_TIME_ANALYSIS;">@Y@m@d@H@M00</cyclestr></timedep>
+               <timedep><cyclestr offset="&START_TIME_LATE_ANALYSIS;">@Y@m@d@H@M00</cyclestr></timedep>
                <or>
                  {%- for h in range(da_cycle_interval_hrs, 6+1, da_cycle_interval_hrs) %}
                  <datadep age="00:00:05:00"><cyclestr offset="-{{ h }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
                  {%- endfor %}
                </or>
              </and>
+{%- endif %}
            </or>
 {% else %}
 {%- if do_retro %}
-           <datadep age="00:00:05:00"><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H/ics/gfs_data.tile7.halo0.nc</cyclestr></datadep>
+           <and>
+             <datadep age="00:00:05:00"><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H/ics/gfs_data.tile7.halo0.nc</cyclestr></datadep>
+             <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/lbcs/gfs_bndy.tile7.000.nc</cyclestr></datadep>
+           </and>
 {% else %}
            <and>
              <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
@@ -686,7 +692,7 @@ MODULES_RUN_TASK_FP script.
                <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
              </and>
              <and>
-               <timedep><cyclestr offset="&START_TIME_ANALYSIS;">@Y@m@d@H@M00</cyclestr></timedep>
+               <timedep><cyclestr offset="&START_TIME_LATE_ANALYSIS;">@Y@m@d@H@M00</cyclestr></timedep>
                <or>
                  {%- for h in range(da_cycle_interval_hrs+da_cycle_interval_hrs, 6+1, da_cycle_interval_hrs) %}
                  <datadep age="00:00:05:00"><cyclestr offset="-{{ h }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
@@ -888,7 +894,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&CLDANL_NONVAR_TN;_#type#" cycledefs="cyc"  maxtries="{{ maxtries_cldanl_nonvar }}">
+  <task name="&CLDANL_NONVAR_TN;_#type#" cycledefs="#type#cyc"  maxtries="{{ maxtries_cldanl_nonvar }}">
 
     &RSRV_DEFAULT;
     &WALL_LIMIT_ANAL;
@@ -1183,6 +1189,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>LOGDIR</name><value>&LOGDIR;</value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>NWGES_BASEDIR</name><value><cyclestr>&NWGES_BASEDIR;</cyclestr></value></envar>
 
     <dependency>
       <taskdep task="&RUN_FCST_TN;_prod"/>
