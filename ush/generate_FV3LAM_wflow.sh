@@ -227,9 +227,9 @@ settings="\
 # Number of cores used for a task
 #
   'ncores_run_fcst': ${PE_MEMBER01}
-  'native_run_fcst': --cpus-per-task 4 --exclusive
+  'native_run_fcst': ${NATIVE_RUN_FCST}
   'ncores_run_anal': ${NCORES_RUN_ANAL}
-  'native_run_anal': --cpus-per-task 4 --exclusive
+  'native_run_anal': ${NATIVE_RUN_ANAL}
 #
 # Number of logical processes per node for each task.  If running without
 # threading, this is equal to the number of MPI processes per node.
@@ -317,6 +317,7 @@ settings="\
   'jobsdir': $JOBSDIR
   'logdir': $LOGDIR
   'cycle_basedir': ${CYCLE_BASEDIR}
+  'nwges_basedir': ${NWGES_BASEDIR}
   'global_var_defns_fp': ${GLOBAL_VAR_DEFNS_FP}
   'load_modules_run_task_fp': ${LOAD_MODULES_RUN_TASK_FP}
 #

@@ -212,6 +212,7 @@ COMINgfs=""
 
 STMP="/gpfs/hps3/ptmp/First.Last/stmp"  # Path to directory STMP that mostly contains input files.
 PTMP="/gpfs/hps3/ptmp/First.Last/ptmp"  # Path to directory STMP that mostly contains input files.
+NWGES="/gpfs/hps3/ptmp/First.Last/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 
 if [[ $DO_RETRO == "true" ]] ; then
   CLEAN_OLDPROD_HRS="240"

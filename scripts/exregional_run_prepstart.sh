@@ -128,7 +128,7 @@ fi
 cd_vrfy ${modelinputdir}
 
 if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial files from ics
-    bkpath=${cycle_dir}/ics
+    bkpath=${lbcs_root}/$YYYYMMDD$HH/ics
     if [ -r "${bkpath}/gfs_data.tile7.halo0.nc" ]; then
       cp_vrfy ${bkpath}/gfs_bndy.tile7.000.nc gfs_bndy.tile7.000.nc        
       cp_vrfy ${bkpath}/gfs_ctrl.nc gfs_ctrl.nc        
@@ -158,9 +158,6 @@ if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial file
            n=$((n + ${DA_CYCLE_INTERV}))
            YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${n} hours ago" )
            bkpath=${fg_root}/${YYYYMMDDHHmInterv}/${surface_file_dir_name}/RESTART  # cycling, use background from RESTART
-           if [ ${n} -eq ${FCST_LEN_HRS} ]; then
-             restart_prefix=""
-           fi
            print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
          fi
       done
@@ -213,12 +210,6 @@ else
       n=$((n + ${DA_CYCLE_INTERV}))
       YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${n} hours ago" )
       bkpath=${fg_root}/${YYYYMMDDHHmInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
-      if [ ${n} -eq ${FCST_LEN_HRS_SPINUP} ] && [ ${cycle_type} == "spinup" ]; then
-        restart_prefix=""
-      fi
-      if [ ${n} -eq ${FCST_LEN_HRS} ] && [ ${cycle_type} == "prod" ] ; then
-        restart_prefix=""
-      fi
       print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
     fi
   done

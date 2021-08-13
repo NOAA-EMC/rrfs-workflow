@@ -239,6 +239,14 @@ EXPT_SUBDIR=""
 # 
 #   $PTMP/com/$NET/$envir/$RUN.$yyyymmdd/$hh
 #
+# NWGES:
+# The beginning portion of the directory that will contain the output 
+# files from the forecast for a given cycle.  For a cycle 
+# that starts on the date specified by yyyymmdd and hour specified by hh
+# (where yyyymmdd and hh are as described above), the directory in which
+# the forecast output files will be placed will be:
+#   $NWGES/$NET/$envir/$RUN.$yyyymmdd/$hh
+# 
 # Setup default observation locations for data assimilation:
 #
 #    OBSPATH:   observation BUFR file path
@@ -256,6 +264,7 @@ envir="para"
 RUN="experiment_name"
 TAG="dev_grid"
 PTMP="/base/path/of/directory/containing/postprocessed/output/files"
+NWGES="/base/path/of/directory/containing/model/output/files"
 
 ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_dev1"
 NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
@@ -1478,6 +1487,8 @@ NNODES_RUN_GRAPHICS="1"
 # Number of cores.
 #
 NCORES_RUN_ANAL="4"
+NATIVE_RUN_FCST="--cpus-per-task 2 --exclusive"
+NATIVE_RUN_ANAL="--cpus-per-task 2 --exclusive"
 #
 # Number of MPI processes per node.
 #

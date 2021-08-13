@@ -57,6 +57,7 @@ This is the ex-script for the task that generates initial condition
 #
 valid_args=( \
 "ics_dir" \
+"ics_nwges_dir" \
 )
 process_args valid_args "$@"
 #
@@ -666,6 +667,17 @@ The following variables were being used:
   fvcom_exe_dir = \"${fvcom_exe_dir}\"
   fvcom_exe = \"${fvcom_exe}\""
 fi
+
+#
+#-----------------------------------------------------------------------
+#
+# copy results to nwges for longe time disk storage.
+#
+#-----------------------------------------------------------------------
+#
+
+cp_vrfy ${ics_dir}/*.nc ${ics_nwges_dir}/.
+
 #
 #-----------------------------------------------------------------------
 #

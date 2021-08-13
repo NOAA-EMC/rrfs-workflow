@@ -1211,6 +1211,7 @@ if [ "${RUN_ENVIR}" = "nco" ]; then
   check_for_preexist_dir_file "${CYCLE_BASEDIR}" "${PREEXISTING_DIR_METHOD}"
   COMROOT="$PTMP/com"
   COMOUT_BASEDIR="$COMROOT/$NET/$envir"
+  NWGES_BASEDIR="$NWGES/$envir/$NET"
 
   LOGDIR="${COMROOT}/logs/${NET}/${RUN}.@Y@m@d/@H"
 
@@ -1219,6 +1220,7 @@ else
   CYCLE_BASEDIR="$EXPTDIR"
   COMROOT=""
   COMOUT_BASEDIR=""
+  NWGES_BASEDIR="$CYCLE_BASEDIR"
 
 fi
 #

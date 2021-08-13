@@ -79,6 +79,7 @@ Directories and files.
 <!ENTITY JOBSDIR                  "{{ jobsdir }}">
 <!ENTITY LOGDIR                   "{{ logdir }}">
 <!ENTITY CYCLE_BASEDIR            "{{ cycle_basedir }}">
+<!ENTITY NWGES_BASEDIR            "{{ nwges_basedir }}">
 {%- if is_rtma %}
 <!ENTITY FG_ROOT                  "{{ fg_rootdir }}">
 {%- else %}
@@ -453,6 +454,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
 
     <dependency>
@@ -497,6 +499,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
 
     <dependency>
@@ -549,8 +552,8 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>FG_ROOT</name><value><cyclestr>&CYCLE_BASEDIR;</cyclestr></value></envar>
-    <envar><name>LBCS_ROOT</name><value><cyclestr>&CYCLE_BASEDIR;</cyclestr></value></envar>
+    <envar><name>FG_ROOT</name><value><cyclestr>&NWGES_BASEDIR;</cyclestr></value></envar>
+    <envar><name>LBCS_ROOT</name><value><cyclestr>&NWGES_BASEDIR;</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
 
     <dependency>
@@ -563,7 +566,7 @@ MODULES_RUN_TASK_FP script.
              {%- endfor %}
            </or>
 {%- if do_retro %}
-           <datadep age="00:00:05:00"><cyclestr>&FG_ROOT;/@Y@m@d@H/ics/gfs_data.tile7.halo0.nc</cyclestr></datadep>
+           <datadep age="00:00:05:00"><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H/ics/gfs_data.tile7.halo0.nc</cyclestr></datadep>
            <taskdep task="&MAKE_ICS_TN;"/>
            <taskdep task="&MAKE_LBCS_TN;" cycle_offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00"/>
 {% else %}
@@ -582,18 +585,18 @@ MODULES_RUN_TASK_FP script.
              {%- endfor %}
            </or>
 {%- if do_retro %}
-           <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&FG_ROOT;/@Y@m@d@H/fcst_fv3lam_spinup/dynf00{{ da_cycle_interval_hrs }}.nc</cyclestr></datadep>
+           <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam_spinup/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
 {% else %}
            <or>
              <and>
                <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
-               <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&FG_ROOT;/@Y@m@d@H/fcst_fv3lam_spinup/dynf00{{ da_cycle_interval_hrs }}.nc</cyclestr></datadep>
+               <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam_spinup/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
              </and>
              <and>
                <timedep><cyclestr offset="&START_TIME_ANALYSIS;">@Y@m@d@H@M00</cyclestr></timedep>
                <or>
                  {%- for h in range(da_cycle_interval_hrs+da_cycle_interval_hrs, 3+1, da_cycle_interval_hrs) %}
-                 <datadep age="00:00:05:00"><cyclestr offset="-{{ h }}:00:00">&FG_ROOT;/@Y@m@d@H/fcst_fv3lam_spinup/dynf{{ "%03d" % h}}.nc</cyclestr></datadep>
+                 <datadep age="00:00:05:00"><cyclestr offset="-{{ h }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam_spinup/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
                  {%- endfor %}
                </or>
              </and>
@@ -627,8 +630,8 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>FG_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
-    <envar><name>LBCS_ROOT</name><value><cyclestr>&CYCLE_BASEDIR;</cyclestr></value></envar>
+    <envar><name>FG_ROOT</name><value><cyclestr>&NWGES_BASEDIR;</cyclestr></value></envar>
+    <envar><name>LBCS_ROOT</name><value><cyclestr>&NWGES_BASEDIR;</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
 
     <dependency>
@@ -644,27 +647,25 @@ MODULES_RUN_TASK_FP script.
            <or>
              <and>
                <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
-               <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&FG_ROOT;/@Y@m@d@H/fcst_fv3lam_spinup/dynf00{{ da_cycle_interval_hrs }}.nc</cyclestr></datadep>
+               <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam_spinup/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
              </and>
              <and>
                <timedep><cyclestr offset="&START_TIME_ANALYSIS;">@Y@m@d@H@M00</cyclestr></timedep>
                <or>
                  {%- for h in range(da_cycle_interval_hrs, 6+1, da_cycle_interval_hrs) %}
-                 <datadep age="00:00:05:00"><cyclestr offset="-{{ h }}:00:00">&FG_ROOT;/@Y@m@d@H/fcst_fv3lam/dynf{{ "%03d" % h}}.nc</cyclestr></datadep>
+                 <datadep age="00:00:05:00"><cyclestr offset="-{{ h }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
                  {%- endfor %}
                </or>
              </and>
            </or>
 {% else %}
 {%- if do_retro %}
-           <datadep age="00:00:05:00"><cyclestr>&FG_ROOT;/@Y@m@d@H/ics/gfs_data.tile7.halo0.nc</cyclestr></datadep>
+           <datadep age="00:00:05:00"><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H/ics/gfs_data.tile7.halo0.nc</cyclestr></datadep>
 {% else %}
            <and>
              <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
              <taskdep task="&MAKE_ICS_TN;"/>
-             {%- if not do_dacycle %}
-             <taskdep task="&MAKE_LBCS_TN;"/>
-             {%- endif %}
+             <taskdep task="&MAKE_LBCS_TN;" cycle_offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00"/>
            </and>
 {%- endif %}
 {%- endif %}
@@ -677,18 +678,18 @@ MODULES_RUN_TASK_FP script.
              {%- endfor %}
            </or>
 {%- if do_retro %}
-           <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&FG_ROOT;/@Y@m@d@H/fcst_fv3lam/dynf00{{ da_cycle_interval_hrs }}.nc</cyclestr></datadep>
+           <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
 {% else %}
            <or>
              <and>
                <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
-               <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&FG_ROOT;/@Y@m@d@H/fcst_fv3lam/dynf00{{ da_cycle_interval_hrs }}.nc</cyclestr></datadep>
+               <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
              </and>
              <and>
                <timedep><cyclestr offset="&START_TIME_ANALYSIS;">@Y@m@d@H@M00</cyclestr></timedep>
                <or>
                  {%- for h in range(da_cycle_interval_hrs+da_cycle_interval_hrs, 6+1, da_cycle_interval_hrs) %}
-                 <datadep age="00:00:05:00"><cyclestr offset="-{{ h }}:00:00">&FG_ROOT;/@Y@m@d@H/fcst_fv3lam/dynf{{ "%03d" % h}}.nc</cyclestr></datadep>
+                 <datadep age="00:00:05:00"><cyclestr offset="-{{ h }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
                  {%- endfor %}
                </or>
              </and>
@@ -987,6 +988,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
       <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
@@ -1118,6 +1120,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
       <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr></cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>

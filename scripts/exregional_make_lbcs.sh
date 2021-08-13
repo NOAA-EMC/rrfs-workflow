@@ -57,6 +57,7 @@ hour zero).
 #
 valid_args=( \
 "lbcs_dir" \
+"lbcs_nwges_dir" \
 )
 process_args valid_args "$@"
 #
@@ -539,6 +540,17 @@ located in the following directory:
   mv_vrfy gfs.bndy.nc ${lbcs_dir}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc
 
 done
+
+#
+#-----------------------------------------------------------------------
+#
+# copy results to nwges for longe time disk storage.
+#
+#-----------------------------------------------------------------------
+#
+
+cp_vrfy ${lbcs_dir}/gfs_bndy.tile7.*.nc ${lbcs_nwges_dir}/.
+   
 #
 #-----------------------------------------------------------------------
 #

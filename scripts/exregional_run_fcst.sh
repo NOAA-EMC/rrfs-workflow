@@ -125,7 +125,11 @@ case $MACHINE in
     ulimit -s unlimited
     ulimit -a
     APRUN="srun"
-    OMP_NUM_THREADS=4
+    if [${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]; then
+      OMP_NUM_THREADS=4
+    else
+      OMP_NUM_THREADS=2
+    fi
     ;;
 
   "ODIN")

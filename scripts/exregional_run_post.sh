@@ -58,11 +58,13 @@ the output files corresponding to a specified forecast hour.
 valid_args=( \
 "cdate" \
 "run_dir" \
+"nwges_dir" \
 "postprd_dir" \
 "comout" \
 "fhr_dir" \
 "fhr" \
 "tmmark" \
+"cycle_type" \
 )
 process_args valid_args "$@"
 #
@@ -240,6 +242,51 @@ ${phy_file}
  KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
  /
 EOF
+
+# 
+#-----------------------------------------------------------------------
+#
+# Let save the restart files if needed before run post.
+# This part will copy or move restart files matching the forecast hour
+# this post will process to the nwges directory. The nwges is used to 
+# stage the restart files for a long time. 
+#-----------------------------------------------------------------------
+#
+filelist="coupler.res fv_core.res.nc fv_core.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_tracer.res.tile1.nc phy_data.nc sfc_data.nc"
+restart_prefix=${post_yyyy}${post_mm}${post_dd}.${post_hh}0000
+if [ ! -r ${nwges_dir}/INPUT/gfs_ctrl.nc ]; then
+    cp_vrfy $run_dir/INPUT/gfs_ctrl.nc ${nwges_dir}/INPUT/gfs_ctrl.nc
+fi
+if [ -r "$run_dir/RESTART/${restart_prefix}.fv_core.res.tile1.nc" ]; then
+  for file in ${filelist}; do
+    cp_vrfy $run_dir/RESTART/${restart_prefix}.${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
+  done
+  echo " ${fhr} forecast from ${yyyymmdd}${hh} is ready " #> ${nwges_dir}/RESTART/restart_done_f${fhr}
+else
+
+  FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS}
+  if [ ${cycle_type} == "spinup" ]; then
+    FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS_SPINUP}
+  else
+    num_fhrs=( "${#FCST_LEN_HRS_CYCLES[@]}" )
+    ihh=`expr ${hh} + 0`
+    if [ ${num_fhrs} -gt ${ihh} ]; then
+       FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS_CYCLES[${ihh}]}
+    fi
+  fi
+  print_info_msg "$VERBOSE" " The forecast length for cycle (\"${hh}\") is
+                 ( \"${FCST_LEN_HRS_thiscycle}\") "
+
+  if [ -r "$run_dir/RESTART/fv_core.res.tile1.nc" ] && [ ${fhr} -eq ${FCST_LEN_HRS_thiscycle} ] ; then
+    for file in ${filelist}; do
+      cp_vrfy $run_dir/RESTART/${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
+    done
+    echo " ${fhr} forecast from ${yyyymmdd}${hh} is ready " #> ${nwges_dir}/RESTART/restart_done_f${fhr}
+  else
+    echo "This forecast hour does not need to save restart: ${yyyymmdd}${hh}f${fhr}"
+  fi
+fi
+#
 #
 #-----------------------------------------------------------------------
 #

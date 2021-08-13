@@ -60,12 +60,25 @@ mkdir_vrfy -p "${lbcs_dir}"
 #
 #-----------------------------------------------------------------------
 #
+# Set the name of and create the directory in which the output from this
+# script will be saved for a long time (if it doesn't already exist).
+# Usually lbcs_dir under tmpnwprd should be purged fairly soon after cycle done
+#
+#-----------------------------------------------------------------------
+#
+lbcs_nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/lbcs"
+mkdir_vrfy -p "${lbcs_nwges_dir}"
+
+#
+#-----------------------------------------------------------------------
+#
 # Call the ex-script for this J-job and pass to it the necessary variables.
 #
 #-----------------------------------------------------------------------
 #
 $SCRIPTSDIR/exregional_make_lbcs.sh \
-  lbcs_dir="${lbcs_dir}" || \
+  lbcs_dir="${lbcs_dir}" \
+  lbcs_nwges_dir="${lbcs_nwges_dir}" || \
 print_err_msg_exit "\
 Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
 #

@@ -59,12 +59,24 @@ mkdir_vrfy -p "${ics_dir}"
 #
 #-----------------------------------------------------------------------
 #
+# Set the name of and create the directory in which the output from this
+# script will be saved for long time (if that directory doesn't already exist).
+# Usually ics_dir under tmpnwprd should be purged fairly soon after cycle done
+#
+#-----------------------------------------------------------------------
+#
+ics_nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/ics"
+mkdir_vrfy -p "${ics_nwges_dir}"
+#
+#-----------------------------------------------------------------------
+#
 # Call the ex-script for this J-job and pass to it the necessary variables.
 #
 #-----------------------------------------------------------------------
 #
 $SCRIPTSDIR/exregional_make_ics.sh \
-  ics_dir="${ics_dir}" || \
+  ics_dir="${ics_dir}" \
+  ics_nwges_dir="${ics_nwges_dir}" || \
 print_err_msg_exit "\
 Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
 #
