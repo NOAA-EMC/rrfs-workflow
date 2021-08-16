@@ -338,6 +338,39 @@ fi
 #-----------------------------------------------------------------------
 #
 check_var_valid_value "DOT_OR_USCORE" "valid_vals_DOT_OR_USCORE"
+
+#
+#-----------------------------------------------------------------------
+#
+# Make sure the following options are set to a valid value.
+# Convert YES/yes/true to TRUE and NO/no/false to FALSE
+#
+#-----------------------------------------------------------------------
+#
+optionList[0]=DO_DACYCLE
+optionList[1]=DO_SURFACE_CYCLE
+optionList[2]=DO_RETRO
+optionList[3]=LBCS_ICS_ONLY
+optionList[4]=DO_NONVAR_CLDANAL
+optionList[5]=DO_REFL2TTEN
+
+obs_number=${#optionList[@]}
+for (( i=0; i<${obs_number}; i++ ));
+do
+  value2check=${optionList[$i]}
+  check_var_valid_value "$value2check" "valid_vals_$value2check"
+  eval value2change=\$$value2check
+  value2change=${value2change^^}
+  if [ "${value2change}" = "TRUE" ] ||
+     [ "${value2change}" = "YES" ]; then
+    value2change="TRUE"
+  elif [ "${value2change}" = "FALSE" ] ||
+       [ "${value2change}" = "NO" ]; then
+    value2change="FALSE"
+  fi
+  eval ${value2check}=${value2change}
+done
+
 #
 #-----------------------------------------------------------------------
 #

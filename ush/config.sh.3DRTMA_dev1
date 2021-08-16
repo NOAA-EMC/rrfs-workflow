@@ -64,10 +64,10 @@ ADDNL_OUTPUT_GRIDS=( "hrrr" )
 TILE_LABELS="CONUS REGIONS"
 TILE_SETS="full NE,NC,NW,SE,SC,SW"
 
-DO_DACYCLE="TURE"
-#DO_RETRO="TURE"
+DO_DACYCLE="TRUE"
+#DO_RETRO="TRUE"
 #LBCS_ICS_ONLY="TRUE"
-DO_NONVAR_CLDANAL="TURE"
+DO_NONVAR_CLDANAL="TRUE"
 #DO_REFL2TTEN="TRUE"
 #
 #-------------------------------------------------------------------------------------
@@ -131,7 +131,7 @@ CYCL_HRS_PRODSTART=("09" "21")
 #CYCLEMONTH="7-9"
 #CYCLEDAY="1-4"
 
-if [[ $DO_RETRO == "TURE" ]] ; then
+if [[ $DO_RETRO == "TRUE" ]] ; then
 
   if [[ $MACHINE == "jet" ]] ; then
     EXTRN_MDL_SOURCE_BASEDIR_ICS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/hrrr/conus/wrfnat/grib2
@@ -143,7 +143,7 @@ if [[ $DO_RETRO == "TURE" ]] ; then
     ENKF_FCST=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/enkf/atm
   fi
 
-  if [[ $LBCS_ICS_ONLY == "TURE" ]]; then
+  if [[ $LBCS_ICS_ONLY == "TRUE" ]]; then
     PREEXISTING_DIR_METHOD="rename"
     INITIAL_CYCLEDEF="00 10,22 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
     BOUNDARY_CYCLEDEF="00 00-02/01,04-08/01,10-14/01,16-20/01,22,23 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
@@ -235,13 +235,13 @@ STMP="/lfs4/BMC/nrtrr/NCO_dirs/stmp"  # Path to directory STMP that mostly conta
 PTMP="/lfs4/BMC/nrtrr/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains input files.
 NWGES="/lfs4/BMC/nrtrr/NCO_dirs/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 
-if [[ $DO_RETRO == "TURE" ]] ; then
+if [[ $DO_RETRO == "TRUE" ]] ; then
   CLEAN_OLDPROD_HRS="240"
   CLEAN_OLDLOG_HRS="240"
   CLEAN_OLDRUN_HRS="6"
   CLEAN_OLDFCST_HRS="6"
   CLEAN_OLDSTMPPOST_HRS="6"
-  if [[ $LBCS_ICS_ONLY == "TURE" ]]; then
+  if [[ $LBCS_ICS_ONLY == "TRUE" ]]; then
     CLEAN_OLDRUN_HRS="7777"
     CLEAN_OLDFCST_HRS="7777"
   fi
