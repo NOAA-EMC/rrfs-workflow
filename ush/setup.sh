@@ -1341,6 +1341,30 @@ The CCPP suite definition file (CCPP_PHYS_SUITE_IN_CCPP_FP) does not exist
 in the local clone of the ufs-weather-model:
   CCPP_PHYS_SUITE_IN_CCPP_FP = \"${CCPP_PHYS_SUITE_IN_CCPP_FP}\""
 fi
+
+#
+#-----------------------------------------------------------------------
+#
+# Set:
+#
+# 1) the variable NEMS_YAML_FN to the name of the fd_nems.yaml 
+# 2) the variable NEMS_YAML_IN_PARM_FP to the full path of this 
+#    file in the forecast model's directory structure.
+# 3) the variable NEMS_YAML_FP to the full path of this file in 
+#    the experiment directory.
+#
+#-----------------------------------------------------------------------
+#
+NEMS_YAML_FN="fd_nems.yaml"
+NEMS_YAML_IN_PARM_FP="${UFS_WTHR_MDL_DIR}/tests/parm/${NEMS_YAML_FN}"
+NEMS_YAML_FP="${EXPTDIR}/${NEMS_YAML_FN}"
+if [ ! -f "${NEMS_YAML_IN_PARM_FP}" ]; then
+  print_err_msg_exit "\
+The (NEMS_YAML_IN_PARM_FP) does not exist
+in the local clone of the ufs-weather-model:
+  NEMS_YAML_IN_PARM_FP= \"${NEMS_YAML_IN_PARM_FP}\""
+fi
+
 #
 #-----------------------------------------------------------------------
 #
@@ -2573,6 +2597,7 @@ FV3_NML_FN="${FV3_NML_FN}"   # This may not be necessary...
 FV3_NML_FP="${FV3_NML_FP}"
 FV3_NML_RESTART_FP="${FV3_NML_RESTART_FP}"
 NEMS_CONFIG_FP="${NEMS_CONFIG_FP}"
+NEMS_YAML_FP="${NEMS_YAML_FP}"
 
 FV3_EXEC_FP="${FV3_EXEC_FP}"
 

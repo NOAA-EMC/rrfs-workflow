@@ -613,6 +613,15 @@ print_info_msg "$VERBOSE" "
 Copying the CCPP physics suite definition XML file from its location in
 the forecast model directory sturcture to the experiment directory..."
 cp_vrfy "${CCPP_PHYS_SUITE_IN_CCPP_FP}" "${CCPP_PHYS_SUITE_FP}"
+
+#
+# copy nems.yaml from its location in the
+# clone of the FV3 code repository to the experiment directory
+#
+print_info_msg "$VERBOSE" "
+Copying the nems.yaml from its location in
+the forecast model directory sturcture to the experiment directory..."
+cp_vrfy "${NEMS_YAML_IN_PARM_FP}" "${NEMS_YAML_FP}"
 #
 #-----------------------------------------------------------------------
 #
@@ -862,10 +871,11 @@ if [ "${DO_DACYCLE}" = "TRUE" ]; then
      'nggps_ic'   : false,
      'mountain'  : true,
      'warm_start' : true,
-   }
- 'gfs_physics_nml': {
-    'fh_dfi_radar': [${FH_DFI_RADAR[@]}],
-  }"
+   }"
+# commnet out for using current develop branch that has no radar tten code yet.
+# 'gfs_physics_nml': {
+#    'fh_dfi_radar': [${FH_DFI_RADAR[@]}],
+#  }"
  
  $USHDIR/set_namelist.py -q \
                          -n ${FV3_NML_FP} \
