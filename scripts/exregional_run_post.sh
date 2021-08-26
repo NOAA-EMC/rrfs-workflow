@@ -252,12 +252,12 @@ EOF
 # stage the restart files for a long time. 
 #-----------------------------------------------------------------------
 #
-filelist="coupler.res fv_core.res.nc fv_core.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_tracer.res.tile1.nc phy_data.nc sfc_data.nc"
+filelist="fv_core.res.nc fv_core.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_tracer.res.tile1.nc phy_data.nc sfc_data.nc coupler.res"
 restart_prefix=${post_yyyy}${post_mm}${post_dd}.${post_hh}0000
 if [ ! -r ${nwges_dir}/INPUT/gfs_ctrl.nc ]; then
     cp_vrfy $run_dir/INPUT/gfs_ctrl.nc ${nwges_dir}/INPUT/gfs_ctrl.nc
 fi
-if [ -r "$run_dir/RESTART/${restart_prefix}.fv_core.res.tile1.nc" ]; then
+if [ -r "$run_dir/RESTART/${restart_prefix}.coupler.res" ]; then
   for file in ${filelist}; do
     cp_vrfy $run_dir/RESTART/${restart_prefix}.${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
   done
@@ -277,7 +277,7 @@ else
   print_info_msg "$VERBOSE" " The forecast length for cycle (\"${hh}\") is
                  ( \"${FCST_LEN_HRS_thiscycle}\") "
 
-  if [ -r "$run_dir/RESTART/fv_core.res.tile1.nc" ] && [ ${fhr} -eq ${FCST_LEN_HRS_thiscycle} ] ; then
+  if [ -r "$run_dir/RESTART/coupler.res" ] && [ ${fhr} -eq ${FCST_LEN_HRS_thiscycle} ] ; then
     for file in ${filelist}; do
       cp_vrfy $run_dir/RESTART/${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
     done

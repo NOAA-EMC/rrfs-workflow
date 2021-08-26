@@ -567,7 +567,7 @@ MODULES_RUN_TASK_FP script.
            </or>
 {%- if do_retro %}
            <datadep age="00:00:05:00"><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H/ics/gfs_data.tile7.halo0.nc</cyclestr></datadep>
-           <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/lbcs/gfs_bndy.tile7.000.nc</cyclestr></datadep>
+           <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/lbcs/gfs_bndy.tile7.001.nc</cyclestr></datadep>
 {% else %}
            <and>
              <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
@@ -578,24 +578,22 @@ MODULES_RUN_TASK_FP script.
          </and>
 <!-- for continue spin up cycles  -->
          <and>
-           <or>
-             {%- for h in cycl_hrs_spinstart %}
-             <strneq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></strneq>
-             {%- endfor %}
-           </or>
+           {%- for h in cycl_hrs_spinstart %}
+           <strneq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></strneq>
+           {%- endfor %}
 {%- if do_retro %}
-           <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam_spinup/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
+           <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam_spinup/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
 {% else %}
            <or>
              <and>
                <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
-               <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam_spinup/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
+               <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam_spinup/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
              </and>
              <and>
                <timedep><cyclestr offset="&START_TIME_LATE_ANALYSIS;">@Y@m@d@H@M00</cyclestr></timedep>
                <or>
                  {%- for h in range(da_cycle_interval_hrs+da_cycle_interval_hrs, 3+1, da_cycle_interval_hrs) %}
-                 <datadep age="00:00:05:00"><cyclestr offset="-{{ h }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam_spinup/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
+                 <datadep age="00:00:01:00"><cyclestr offset="-{{ h }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam_spinup/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
                  {%- endfor %}
                </or>
              </and>
@@ -644,28 +642,28 @@ MODULES_RUN_TASK_FP script.
            </or>
 {%- if do_spinup %}
 {%- if do_retro %}
-           <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam_spinup/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
+           <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam_spinup/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
 {% else %}
            <or>
              <and>
                <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
-               <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam_spinup/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
+               <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam_spinup/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
              </and>
              <and>
                <timedep><cyclestr offset="&START_TIME_LATE_ANALYSIS;">@Y@m@d@H@M00</cyclestr></timedep>
                <or>
                  {%- for h in range(da_cycle_interval_hrs, 6+1, da_cycle_interval_hrs) %}
-                 <datadep age="00:00:05:00"><cyclestr offset="-{{ h }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
+                 <datadep age="00:00:01:00"><cyclestr offset="-{{ h }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
                  {%- endfor %}
                </or>
              </and>
-{%- endif %}
            </or>
+{%- endif %}
 {% else %}
 {%- if do_retro %}
            <and>
              <datadep age="00:00:05:00"><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H/ics/gfs_data.tile7.halo0.nc</cyclestr></datadep>
-             <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/lbcs/gfs_bndy.tile7.000.nc</cyclestr></datadep>
+             <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/lbcs/gfs_bndy.tile7.{{ "%03d" % boundary_len_hrs }}.nc</cyclestr></datadep>
            </and>
 {% else %}
            <and>
@@ -678,24 +676,22 @@ MODULES_RUN_TASK_FP script.
          </and>
 <!-- for continue product cycles  -->
          <and>
-           <or>
-             {%- for h in cycl_hrs_prodstart %}
-             <strneq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></strneq>
-             {%- endfor %}
-           </or>
+           {%- for h in cycl_hrs_prodstart %}
+           <strneq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></strneq>
+           {%- endfor %}
 {%- if do_retro %}
-           <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
+           <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
 {% else %}
            <or>
              <and>
                <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
-               <datadep age="00:00:05:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
+               <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
              </and>
              <and>
                <timedep><cyclestr offset="&START_TIME_LATE_ANALYSIS;">@Y@m@d@H@M00</cyclestr></timedep>
                <or>
                  {%- for h in range(da_cycle_interval_hrs+da_cycle_interval_hrs, 6+1, da_cycle_interval_hrs) %}
-                 <datadep age="00:00:05:00"><cyclestr offset="-{{ h }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
+                 <datadep age="00:00:01:00"><cyclestr offset="-{{ h }}:00:00">&NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
                  {%- endfor %}
                </or>
              </and>
