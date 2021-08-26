@@ -4,12 +4,13 @@ RESERVATION="rrfsdet"
 EXPT_BASEDIR="/home/rtrr/RRFS"
 EXPT_SUBDIR="RRFS_NA_3km_dev1"
 
+PARTITION_GRAPHICS=kjet,xjet
+
 if [[ -n $RESERVATION ]] ; then
   ACCOUNT=rtrr
   SERVICE_ACCOUNT=nrtrr
   PARTITION_DEFAULT=kjet
   PARTITION_FCST=kjet
-  PARTITION_GRAPHICS=kjet,xjet,tjet,ujet,vjet
   PARTITION_ANALYSIS=kjet
 else
   PARTITION_DEFAULT=kjet
