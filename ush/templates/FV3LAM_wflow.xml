@@ -1187,10 +1187,6 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>NWGES_BASEDIR</name><value><cyclestr>&NWGES_BASEDIR;</cyclestr></value></envar>
 
-    <dependency>
-      <taskdep task="&RUN_FCST_TN;_prod"/>
-    </dependency>
-
   </task>
 
 {%- if machine in ["JET", "HERA"]  %}

@@ -30,7 +30,7 @@ cd ${COMOUT_BASEDIR}
 set -A XX $(ls -d ${RUN}.20* | sort -r)
 for dir in ${XX[*]};do
   onetime=$(echo $dir | cut -d'.' -f2)
-  if [[ ${onetime} =~ '^[0-9]+$' ]] && [[ ${onetime} -le ${deletetime} ]]; then
+  if [[ ${onetime} =~ ^[0-9]+$ ]] && [[ ${onetime} -le ${deletetime} ]]; then
     rm -rf ${COMOUT_BASEDIR}/${RUN}.${onetime}
     echo "Deleted ${COMOUT_BASEDIR}/${RUN}.${onetime}"
   fi
@@ -44,7 +44,7 @@ echo "Deleting stmp directories before ${deletetime}..."
 cd ${CYCLE_BASEDIR}
 set -A XX $(ls -d 20* | sort -r)
 for onetime in ${XX[*]};do
-  if [[ ${onetime} =~ '^[0-9]+$' ]] && [[ ${onetime} -le ${deletetime} ]]; then
+  if [[ ${onetime} =~ ^[0-9]+$ ]] && [[ ${onetime} -le ${deletetime} ]]; then
     rm -rf ${CYCLE_BASEDIR}/${onetime}
     echo "Deleted ${CYCLE_BASEDIR}/${onetime}"
   fi
@@ -58,7 +58,7 @@ echo "Deleting netCDF files before ${deletetime}..."
 cd ${CYCLE_BASEDIR}
 set -A XX $(ls -d 20* | sort -r)
 for onetime in ${XX[*]};do
-  if [[ ${onetime} =~ '^[0-9]+$' ]] && [[ ${onetime} -le ${deletetime} ]]; then
+  if [[ ${onetime} =~ ^[0-9]+$ ]] && [[ ${onetime} -le ${deletetime} ]]; then
     rm -f ${CYCLE_BASEDIR}/${onetime}/fcst_fv3lam/phy*nc
     rm -f ${CYCLE_BASEDIR}/${onetime}/fcst_fv3lam/dyn*nc
     rm -rf ${CYCLE_BASEDIR}/${onetime}/fcst_fv3lam/RESTART
@@ -74,7 +74,7 @@ echo "Deleting stmp postprd files before ${deletetime}..."
 cd ${CYCLE_BASEDIR}
 set -A XX $(ls -d 20* | sort -r)
 for onetime in ${XX[*]};do
-  if [[ ${onetime} =~ '^[0-9]+$' ]] && [[ ${onetime} -le ${deletetime} ]]; then
+  if [[ ${onetime} =~ ^[0-9]+$ ]] && [[ ${onetime} -le ${deletetime} ]]; then
     rm -rf ${CYCLE_BASEDIR}/${onetime}/postprd
     echo "Deleted postprd files in ${CYCLE_BASEDIR}/${onetime}/postprd"
   fi
@@ -97,7 +97,7 @@ for onetime in ${XX[*]}; do
   filetime=${filetime##*.}
   # Remove cycle subdir from path
   logsdate=${onetime%%/*}
-  if [[ ${filetime} =~ '^[0-9]+$' ]] && [[ ${filetime} -le ${deletetime} ]]; then
+  if [[ ${filetime} =~ ^[0-9]+$ ]] && [[ ${filetime} -le ${deletetime} ]]; then
     echo "Deleting files from ${logs}/${onetime}"
     rm -rf ${onetime}
     # Remove an empty date directory
@@ -113,7 +113,7 @@ echo "Deleting nwges directories before ${deletetime}..."
 cd ${NWGES_BASEDIR}
 set -A XX $(ls -d 20* | sort -r)
 for onetime in ${XX[*]};do
-  if [[ ${onetime} =~ '^[0-9]+$' ]] && [[ ${onetime} -le ${deletetime} ]]; then
+  if [[ ${onetime} =~ ^[0-9]+$ ]] && [[ ${onetime} -le ${deletetime} ]]; then
     rm -rf ${NWGES_BASEDIR}/${onetime}
     echo "Deleted ${NWGES_BASEDIR}/${onetime}"
   fi
