@@ -256,12 +256,12 @@ fi
 #
 #-----------------------------------------------------------------------
 
-if [ "${NET}" = "RTMA" ]; then
+if [[ "${NET}" = "RTMA"* ]]; then
     #find a bdry file last modified before current cycle time and size > 100M 
     #to make sure it exists and was written out completely. 
-    TIME1HAGO=$(date -d "${START_DATE}" +"%Y-%m-%d %H:%M:%S")
-    bdryfile0=${lbcs_root}/$(cd $lbcs_root;find . -name "gfs_bndy.tile7.000.nc" ! -newermt "$TIME1HAGO" -size +100M | xargs ls -1rt |tail -n 1)
-    bdryfile1=$(echo $bdryfile0 | sed -e "s/gfs_bndy.tile7.000.nc/gfs_bndy.tile7.001.nc/")
+    TIME1HAGO=$(date -d "${START_DATE} 58 minute" +"%Y-%m-%d %H:%M:%S")
+    bdryfile1=${lbcs_root}/$(cd $lbcs_root;find . -name "gfs_bndy.tile7.001.nc" ! -newermt "$TIME1HAGO" -size +100M | xargs ls -1rt |tail -n 1)
+    bdryfile0=$(echo $bdryfile1 | sed -e "s/gfs_bndy.tile7.001.nc/gfs_bndy.tile7.000.nc/")
     ln_vrfy -snf ${bdryfile0} .
     ln_vrfy -snf ${bdryfile1} .
 

@@ -548,19 +548,20 @@ export OMP_STACKSIZE=1024m
 #
 #-----------------------------------------------------------------------
 #
-cd INPUT
 if [[ -f phy_data.nc ]] ; then
+  echo "convert phy_data.nc from NetCDF4 to NetCDF3"
+  cd INPUT
   rm -f phy_data.nc3 phy_data.nc4
   cp -fp phy_data.nc phy_data.nc4
   if ( ! time ( module purge ; module load intel szip hdf5 netcdf nco ; module list ; set -x ; ncks -3 --64 phy_data.nc4 phy_data.nc3) ) ; then
     mv -f phy_data.nc4 phy_data.nc
     rm -f phy_data.nc3
-    echo "NetCDF 3=>4 conversion failed. :-( Continuing with NetCDF 4 data."
+    echo "NetCDF 4=>3 conversion failed. :-( Continuing with NetCDF 4 data."
   else
     mv -f phy_data.nc3 phy_data.nc
   fi
+  cd ..
 fi
-cd ..
 #
 #-----------------------------------------------------------------------
 #

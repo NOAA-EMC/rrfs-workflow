@@ -557,7 +557,8 @@ beta1_inv=0.15                 #beata_inv is 1-ensemble_wgt
 ens_h=110
 ens_v=3
 regional_ensemble_option=1     #1 for GDAS
-grid_ratio_ens=3               #analysis 3km, so ensemble=3*3=9km. GDAS ensemble is 20km
+grid_ratio_fv3=2.0             #fv3 resolution 3km, so analysis=3*2=6km
+grid_ratio_ens=3               #if analysis is 3km, then ensemble=3*3=9km. GDAS ensemble is 20km
 i_en_perts_io=1                #0 or 1: original file   3: pre-processed ensembles
 
 # &RAPIDREFRESH_CLDSURF
@@ -1224,10 +1225,14 @@ VERBOSE="TRUE"
 #   If true, some ICs,LBCs,GSI rocoto tasks will be turned off
 #
 # FG_ROOTDIR:
-#  First Guess Root Directory, GSI will find corresponding first guess
-#  fields from this directory. RRFS will find FG under CYCLE_BASEDIR,
+#  First Guess Root Directory, APP will find corresponding first guess
+#  fields from this directory. RRFS will find FG under NWGES_BASEDIR,
 #  but we needs to explicitly specify where to find FG for RTMA.
 #  So this parameter only matters for RTMA
+#
+# PYTHON_GRAPHICS_YML_FN
+#  The name of the yml file under ${PYTHON_GRAPHICS_DIR}/image_lists
+#  to be used by current application
 #
 #-----------------------------------------------------------------------
 #
@@ -1243,6 +1248,7 @@ SFC_CLIMO_DIR="/path/to/pregenerated/surface/climo/files"
 NCORES_PER_NODE=24 #Jet default value
 IS_RTMA="FALSE"
 FG_ROOTDIR=""
+PYTHON_GRAPHICS_YML_FN="rrfs_subset.yml"
 #
 #-----------------------------------------------------------------------
 #

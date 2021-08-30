@@ -112,7 +112,7 @@ case ${GRAPHICS_TYPE} in
     extra_args="\
       --all_leads \
       --tiles $tiles \
-      --images ${PYTHON_GRAPHICS_DIR}/image_lists/rrfs_subset.yml hourly"
+      --images ${PYTHON_GRAPHICS_DIR}/image_lists/${PYTHON_GRAPHICS_YML_FN} hourly"
     ;;
 
   "skewts")
