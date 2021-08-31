@@ -19,6 +19,7 @@ Parameters needed by the job scheduler.
 <!ENTITY QUEUE_DEFAULT   "{{ queue_default }}">
 <!ENTITY QUEUE_HPSS      "{{ queue_hpss }}">
 <!ENTITY QUEUE_FCST      "{{ queue_fcst }}">
+<!ENTITY QUEUE_WGRIB2    "{{ queue_wgrib2 }}">
 <!ENTITY QUEUE_ANALYSIS  "{{ queue_analysis }}">
 <!ENTITY QUEUE_GRAPHICS  "{{ queue_graphics }}">
 <!ENTITY RRFS_RESERVE  {% if reservation %}"--reservation={{ reservation }}"{% else %}""{% endif %}>
@@ -114,6 +115,11 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 <!ENTITY RSRV_ANALYSIS    "<account>&ACCOUNT;</account><queue>&QUEUE_ANALYSIS;</queue><partition>{{ partition_analysis }}</partition>">
 {%- else %}
 <!ENTITY RSRV_ANALYSIS    "<account>&ACCOUNT;</account><queue>&QUEUE_ANALYSIS;</queue>">
+{%- endif %}
+{%- if partition_wgrib2 is not none %}
+<!ENTITY RSRV_WGRIB2    "<account>&ACCOUNT;</account><queue>&QUEUE_WGRIB2;</queue><partition>{{ partition_wgrib2 }}</partition>">
+{%- else %}
+<!ENTITY RSRV_WGRIB2    "<account>&ACCOUNT;</account><queue>&QUEUE_WGRIB2;</queue>">
 {%- endif %}
 <!ENTITY RSRV_GRAPHICS   "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_GRAPHICS;</queue><partition>{{ partition_graphics }}</partition><native>--exclusive</native>">
 
@@ -1007,7 +1013,7 @@ MODULES_RUN_TASK_FP script.
 
     <task name="&RUN_WGRIB2_TN;{{ uscore_ensmem_name }}_f#fhr#" cycledefs="postproc_#type#" maxtries="{{ maxtries_run_wgrib2 }}">
 
-      &RSRV_DEFAULT;
+      &RSRV_WGRIB2;
       &WALL_LIMIT_POST;
       <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_WGRIB2_TN;" "&JOBSDIR;/JREGIONAL_RUN_WGRIB2"</command>
       <nodes>{{ nnodes_run_wgrib2 }}:ppn={{ ppn_run_wgrib2 }}</nodes>

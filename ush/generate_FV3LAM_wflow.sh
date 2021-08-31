@@ -177,6 +177,8 @@ settings="\
   'machine': ${MACHINE}
   'partition_analysis': ${PARTITION_ANALYSIS}
   'queue_analysis': ${QUEUE_ANALYSIS}
+  'partition_wgrib2': ${PARTITION_WGRIB2}
+  'queue_wgrib2': ${QUEUE_WGRIB2}
 #
 # Workflow task names.
 #

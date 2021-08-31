@@ -443,6 +443,8 @@ case $MACHINE in
     QUEUE_GRAPHICS=${QUEUE_GRAPHICS:-"batch"}
     PARTITION_ANALYSIS=${PARTITION_ANALYSIS:-"vjet,kjet,xjet"}
     QUEUE_ANALYSIS=${QUEUE_ANALYSIS:-"batch"}
+    PARTITION_WGRIB2=${PARTITION_WGRIB2:-"sjet,vjet,kjet,xjet"}
+    QUEUE_WGRIB2=${QUEUE_WGRIB2:-"batch"}
     ;;
 
   "ODIN")

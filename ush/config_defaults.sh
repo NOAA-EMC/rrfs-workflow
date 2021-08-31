@@ -106,6 +106,18 @@ RUN_ENVIR="nco"
 # If this is not set or set to an empty string, it will be (re)set to a 
 # machine-dependent value.
 #
+# PARTITION_WGRIB2:
+# If using the slurm job scheduler (i.e. if SCHED is set to "slurm"), 
+# the partition to which the task that remaps output grids is submitted.  If 
+# this is not set or set to an empty string, it will be (re)set to a 
+# machine-dependent value.  This is not used if SCHED is not set to 
+# "slurm".
+#
+# QUEUE_WGRIB2:
+# The queue or QOS to which the task that remaps output grids is submitted.  
+# If this is not set or set to an empty string, it will be (re)set to a 
+# machine-dependent value.
+#
 # mach_doc_end
 #
 #-----------------------------------------------------------------------
@@ -125,6 +137,8 @@ PARTITION_GRAPHICS=""
 QUEUE_GRAPHICS=""
 PARTITION_ANALYSIS=""
 QUEUE_ANALYSIS=""
+PARTITION_WGRIB2=""
+QUEUE_WGRIB2=""
 #
 #-----------------------------------------------------------------------
 #
