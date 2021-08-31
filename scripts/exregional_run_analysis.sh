@@ -516,7 +516,7 @@ done
 ifsatbufr=.false.
 
 # Set some parameters for use by the GSI executable and to build the namelist
-grid_ratio=1
+grid_ratio_fv3=2
 cloudanalysistype=0
 
 # Build the GSI namelist on-the-fly
