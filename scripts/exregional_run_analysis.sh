@@ -281,10 +281,13 @@ ifhyb=.false.
 memname='atmf009'
 nummem=$(more filelist03 | wc -l)
 nummem=$((nummem - 3 ))
-if [[ ${nummem} -eq 80 ]]; then
+if [[ ${nummem} -ge ${HYBENSMEM_NMIN} ]]; then
   print_info_msg "$VERBOSE" "Do hybrid with ${memname}"
   ifhyb=.true.
   print_info_msg "$VERBOSE" " Cycle ${YYYYMMDDHH}: GSI hybrid uses ${memname} with n_ens=${nummem}" 
+else
+  print_info_msg "$VERBOSE" " Cycle ${YYYYMMDDHH}: GSI does pure 3DVAR."
+  print_info_msg "$VERBOSE" " Hybrid needs at least ${HYBENSMEM_NMIN} ${memname} ensembles, only ${nummem} available"
 fi
 
 #

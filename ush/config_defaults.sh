@@ -581,7 +581,10 @@ l_PBL_pseudo_SurfobsQ=.false.
 i_use_2mQ4B=0
 i_use_2mT4B=0
 #-----------------------------------------------------------------------
+# HYBENSMEM_NMIN:
+#    Minimum number of ensemble members required a hybrid GSI analysis 
 #
+HYBENSMEM_NMIN=80
 ANAVINFO_FN="anavinfo.fv3lam_hrrr"
 CONVINFO_FN="convinfo.rrfs"
 BERROR_FN="rap_berror_stats_global_RAP_tune" #under $FIX_GSI
