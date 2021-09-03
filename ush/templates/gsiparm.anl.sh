@@ -176,7 +176,7 @@ OBS_INPUT::
    iclean_hydro_withRef_allcol=1,
    i_use_2mQ4B=0,
    i_use_2mT4B=0,
-   i_gsdcldanal_type=${cloudanalysistype},
+   i_gsdcldanal_type=0,
    i_gsdsfc_uselist=1,
    i_lightpcp=1,
    i_sfct_gross=1,

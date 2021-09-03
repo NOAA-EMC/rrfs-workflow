@@ -119,6 +119,8 @@ case $MACHINE in
   ;;
 #
 "JET")
+  export OMP_NUM_THREADS=2
+  export OMP_STACKSIZE=1024M
   ulimit -s unlimited
   ulimit -a
   APRUN="srun"
@@ -271,7 +273,6 @@ esac
 #
 #-----------------------------------------------------------------------
 
-cloudanalysistype=0
 ifsatbufr=.false.
 ifsoilnudge=.false.
 ifhyb=.false.
@@ -297,22 +298,23 @@ fi
 #           radar_tten converting code.
 #-----------------------------------------------------------------------
 
-cp_vrfy ${fixgriddir}/fv3_akbk                     fv3_akbk
-cp_vrfy ${fixgriddir}/fv3_grid_spec                fv3_grid_spec
+ln_vrfy -snf ${fixgriddir}/fv3_akbk                     fv3_akbk
+ln_vrfy -snf ${fixgriddir}/fv3_grid_spec                fv3_grid_spec
 
 if [ ${BKTYPE} -eq 1 ]; then  # cold start uses background from INPUT
-  cp_vrfy ${bkpath}/gfs_data.tile7.halo0.nc        gfs_data.tile7.halo0.nc_b
-  ncks -A -v  phis ${fixgriddir}/phis.nc           gfs_data.tile7.halo0.nc_b
+  ln_vrfy -snf ${bkpath}/gfs_data.tile7.halo0.nc        gfs_data.tile7.halo0.nc_b
+  ln_vrfy -snf ${fixgriddir}/phis.nc                    phis.nc
+  ncks -A -v  phis               phis.nc           gfs_data.tile7.halo0.nc_b
 
-  cp_vrfy ${bkpath}/sfc_data.tile7.halo0.nc        fv3_sfcdata
-  cp_vrfy gfs_data.tile7.halo0.nc_b                fv3_dynvars
+  ln_vrfy -snf ${bkpath}/sfc_data.tile7.halo0.nc        fv3_sfcdata
+  ln_vrfy -snf gfs_data.tile7.halo0.nc_b                fv3_dynvars
   ln_vrfy -s fv3_dynvars                           fv3_tracer
 
   fv3lam_bg_type=1
 else                          # cycle uses background from restart
-  cp_vrfy  ${bkpath}/fv_core.res.tile1.nc             fv3_dynvars
-  cp_vrfy  ${bkpath}/fv_tracer.res.tile1.nc           fv3_tracer
-  cp_vrfy  ${bkpath}/sfc_data.nc                      fv3_sfcdata
+  ln_vrfy  -snf ${bkpath}/fv_core.res.tile1.nc             fv3_dynvars
+  ln_vrfy  -snf ${bkpath}/fv_tracer.res.tile1.nc           fv3_tracer
+  ln_vrfy  -snf ${bkpath}/sfc_data.nc                      fv3_sfcdata
   fv3lam_bg_type=0
 fi
 
@@ -509,17 +511,12 @@ done
 
 #-----------------------------------------------------------------------
 #
-# Build namelist and run GSI
+# Build the GSI namelist on-the-fly
+#    most configurable paramters take values from settings in config.sh
+#                                             (var_defns.sh in runtime)
 #
 #-----------------------------------------------------------------------
-# Link the AMV bufr file
-ifsatbufr=.false.
-
-# Set some parameters for use by the GSI executable and to build the namelist
-grid_ratio_fv3=2
-cloudanalysistype=0
-
-# Build the GSI namelist on-the-fly
+# 
 . ${USHDIR}/templates/gsiparm.anl.sh
 cat << EOF > gsiparm.anl
 $gsi_namelist
@@ -572,15 +569,15 @@ Call to executable to run GSI returned with nonzero exit code."
 #
 #-----------------------------------------------------------------------
 #
-
-if [ ${BKTYPE} -eq 1 ]; then  # cold start, put analysis back to current INPUT 
-  cp_vrfy ${analworkdir}/fv3_dynvars                  ${bkpath}/gfs_data.tile7.halo0.nc
-  cp_vrfy ${analworkdir}/fv3_sfcdata                  ${bkpath}/sfc_data.tile7.halo0.nc
-else                          # cycling
-  cp_vrfy ${analworkdir}/fv3_dynvars             ${bkpath}/fv_core.res.tile1.nc
-  cp_vrfy ${analworkdir}/fv3_tracer              ${bkpath}/fv_tracer.res.tile1.nc
-  cp_vrfy ${analworkdir}/fv3_sfcdata             ${bkpath}/sfc_data.nc
-fi
+#
+#if [ ${BKTYPE} -eq 1 ]; then  # cold start, put analysis back to current INPUT 
+#  cp_vrfy ${analworkdir}/fv3_dynvars                  ${bkpath}/gfs_data.tile7.halo0.nc
+#  cp_vrfy ${analworkdir}/fv3_sfcdata                  ${bkpath}/sfc_data.tile7.halo0.nc
+#else                          # cycling
+#  cp_vrfy ${analworkdir}/fv3_dynvars             ${bkpath}/fv_core.res.tile1.nc
+#  cp_vrfy ${analworkdir}/fv3_tracer              ${bkpath}/fv_tracer.res.tile1.nc
+#  cp_vrfy ${analworkdir}/fv3_sfcdata             ${bkpath}/sfc_data.nc
+#fi
 
 #-----------------------------------------------------------------------
 # Loop over first and last outer loops to generate innovation
