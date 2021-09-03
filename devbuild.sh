@@ -1,38 +1,79 @@
 #!/bin/bash
 set -eu
 
+# Initialize and load modules
+if [[ -d /dcom && -d /hwrf ]] ; then
+    . /usrx/local/Modules/3.2.10/init/sh
+    PLATFORM=wcoss
+    . $MODULESHOME/init/sh
+elif [[ -d /cm ]] ; then
+    . $MODULESHOME/init/sh
+    PLATFORM=wcoss_c
+elif [[ -d /ioddev_dell ]]; then
+    . $MODULESHOME/init/sh
+    PLATFORM=wcoss_d
+elif [[ -d /scratch1 ]] ; then
+    . /apps/lmod/lmod/init/sh
+    PLATFORM=hera
+elif [[ -d /carddata ]] ; then
+    . /opt/apps/lmod/3.1.9/init/sh
+    PLATFORM=s4
+elif [[ -d /jetmon ]] ; then
+    . $MODULESHOME/init/sh
+    PLATFORM=jet
+elif [[ -d /glade ]] ; then
+    . $MODULESHOME/init/sh
+    PLATFORM=cheyenne
+elif [[ -d /sw/gaea ]] ; then
+    . /opt/cray/pe/modules/3.2.10.5/init/sh
+    PLATFORM=gaea
+elif [[ -d /work ]]; then
+    . $MODULESHOME/init/sh
+    PLATFORM=orion
+else
+    echo "unknown PLATFORM"
+    exit 9
+fi
+
 #cd to location of script
 MYDIR=$(cd "$(dirname "$(readlink -f -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
 
 usage () {
-  echo "Usage: "
-  echo "  $0 PLATFORM COMPILER"
+  echo -e "\nExample Usage: "
+  echo "  $0        (build GSI using Intel compiler)"
+  echo "  $0 intel  (build GSI using Intel compiler)"
+  echo "  $0 gnu    (build GSI using GNU compiler)"
+  echo "  $0 kjet   (build GSI using Intel compiler and kjet specfici optimization)"
+  echo "  $0 help   (show this help)"
   echo ""
-  echo "PLATFORM: Name of machine you are building on"
-  echo "COMPILER: (optional) compiler to use; valid options are 'intel', 'gnu'"
+  echo " The build script will automatically determine current HPC platform."
+  echo " Don't use the 'kjet' optin if you will run GSI on other jet (such as xjet,etc) or you are not on Jet"
   echo ""
   echo "NOTE: This script is for internal developer use only;"
   echo "See User's Guide for detailed build instructions"
 }
 
-PLATFORM="${1:-NONE}"
-COMPILER="${2:-intel}"
-
-
-if [ $# -lt 1 ]; then 
-  echo "ERROR: not enough arguments"
-  usage
-  exit 1
-fi
-if [ $# -gt 2 ]; then
-  echo "ERROR: too many arguments"
-  usage
-  exit 1
-fi
-
-if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then 
-  usage
-  exit 0
+opt=${1:-""}
+COMPILER="intel"
+KJET=""
+if [[ ! -z $opt ]]; then
+  case $opt in
+    kjet|kJet|KJET|Kjet|kJET)
+      KJET="kjet"
+       ;;
+    --help|-h|help)
+      usage
+      exit 0
+      ;;
+    intel|gnu)
+     COMPILER="${opt}"
+      ;;
+    *)
+     echo -e "\n        unknown option: ${opt}"
+     usage
+     exit 0
+      ;;
+  esac
 fi
 
 ENV_FILE="env/build_${PLATFORM}_${COMPILER}.env"
@@ -74,7 +115,7 @@ cmake .. -DCMAKE_INSTALL_PREFIX=..
 make -j ${BUILD_JOBS:-4}
 
 cd ${MYDIR}/src/gsi
-./ush/build.comgsi
+./ush/build.comgsi ${KJET}
 cp ${MYDIR}/src/gsi/build/bin/gsi.x ${MYDIR}/bin/gsi.x
 
 . ${MYDIR}/${ENV_FILE}_DA
