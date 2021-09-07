@@ -45,31 +45,40 @@ FV3_GSD_SAR:
 
 FV3_HRRR:
   fv_core_nml:
+    d_con: 0.5
+    d2_bg_k2: 0
     dz_min: 6.0
     hord_dp: -5
     hord_mt: 5
     hord_tm: 5
     hord_vt: 5
+    k_split: 5
     kord_mt: 9
     kord_tm: -9
     kord_tr: 9
     kord_wz: 9
+    n_split: 2
     nord_tr: 2
     nrows_blend: 10
     regional_bcs_from_gsi: false
+    vtdm4: 0.03
     write_restart_with_bcs: false
   gfs_physics_nml: 
     <<: *gsd_sar_phys
     cdmbgwd: [3.5, 1.0]
     do_mynnsfclay: true
     do_sfcperts: !!python/none
+    dt_inner : 30
     effr_in: true
     gwd_opt: 3
     iaer: 5111
+    ialb: 2 
     icliq_sw: 2
+    iems: 2 
     imfdeepcnv: -1
     imfshalcnv: -1
     iovr: 3
+    thsfc_loc: .false. 
 
 FV3_RAP:
   fv_core_nml:
