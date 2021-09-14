@@ -10,7 +10,6 @@
 &atmos_model_nml
     chksum_debug = .false.
     dycore_only = .false.
-    fdiag = 1
 /
 
 &cires_ugwp_nml

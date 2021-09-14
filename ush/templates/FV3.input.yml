@@ -52,12 +52,13 @@ FV3_HRRR:
     hord_mt: 5
     hord_tm: 5
     hord_vt: 5
-    k_split: 5
+    k_split: 6
     kord_mt: 9
     kord_tm: -9
     kord_tr: 9
     kord_wz: 9
-    n_split: 2
+    n_split: 3
+    psm_bc: 0
     nord_tr: 2
     nrows_blend: 10
     regional_bcs_from_gsi: false
@@ -68,7 +69,7 @@ FV3_HRRR:
     cdmbgwd: [3.5, 1.0]
     do_mynnsfclay: true
     do_sfcperts: !!python/none
-    dt_inner : 30
+    dt_inner : 20
     effr_in: true
     gwd_opt: 3
     iaer: 5111
@@ -78,7 +79,7 @@ FV3_HRRR:
     imfdeepcnv: -1
     imfshalcnv: -1
     iovr: 3
-    thsfc_loc: .false. 
+    thsfc_loc: false 
 
 FV3_RAP:
   fv_core_nml:
