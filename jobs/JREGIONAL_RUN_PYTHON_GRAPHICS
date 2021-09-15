@@ -97,6 +97,8 @@ if [[ "${PREDEF_GRID_NAME}" =~ "AK" || \
 elif [[ "${PREDEF_GRID_NAME}" =~ "RAP" || \
         "${PREDEF_GRID_NAME}" =~ "NA" || \
         "${TILELABEL:-}" = "221" ]] ; then
+  age=5
+  wait_time=15
   sites_file=na_raobs.txt
   tiles=${TILES:-full}
 
@@ -140,6 +142,7 @@ mkdir_vrfy -p "${run_dir}"
 cd_vrfy ${PYTHON_GRAPHICS_DIR}
 python -u ${PYTHON_GRAPHICS_DIR}/create_graphics.py \
   ${GRAPHICS_TYPE} \
+  -a ${age:-3} \
   -d ${postprd_dir} \
   -f 0 ${POSTPROC_LONG_LEN_HRS} \
   --file_tmpl ${file_tmpl} \
@@ -148,6 +151,7 @@ python -u ${PYTHON_GRAPHICS_DIR}/create_graphics.py \
   -n ${SLURM_CPUS_ON_NODE:-12} \
   -o ${run_dir} \
   -s ${CDATE} \
+  -w ${wait_time:-10} \
   -z ${zip_dir} \
   ${extra_args} ||
 print_err_msg_exit "\
