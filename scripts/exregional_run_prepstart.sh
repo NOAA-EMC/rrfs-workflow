@@ -365,6 +365,49 @@ else
   fi
 
 fi 
+
+#
+#-----------------------------------------------------------------------
+#
+# condut surface surgery to transfer RAP/HRRR surface fields into RRFS.
+# 
+# This surgery only needs to be done once to give RRFS a good start of the surfcase.
+# Please consult Ming or Tanya first before turning on this surgery.
+#
+#-----------------------------------------------------------------------
+#
+if [ ${YYYYMMDDHH} -eq 9999999999 ]; then
+   raphrrr_com=/mnt/lfs4/BMC/rtwbl/mhu/wcoss/nco/com/
+#   cp_vrfy ${FIX_GSI}/use_raphrrr_sfc.namelist                                  use_raphrrr_sfc.namelist
+   ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec                     fv3_grid_spec
+   ln -s ${raphrrr_com}/rap/prod/rap.${YYYYMMDD}/rap.t${HH}z.wrf_inout_smoke    sfc_rap
+   ln -s ${raphrrr_com}/hrrr/prod/hrrr.${YYYYMMDD}/conus/hrrr.t${HH}z.wrf_inout sfc_hrrr
+   ln -s ${raphrrr_com}/hrrr/prod/hrrr.${YYYYMMDD}/alaska/hrrrak.t${HH}z.wrf_inout sfc_hrrrak
+ 
+cat << EOF > use_raphrrr_sfc.namelist
+&setup
+rapfile='sfc_rap'
+hrrrfile='sfc_hrrr'
+hrrr_akfile='sfc_hrrrak'
+rrfsfile='sfc_data.nc'
+/
+EOF
+
+   exect="use_raphrrr_sfc.exe"
+   if [ -f ${EXECDIR}/$exect ]; then
+      print_info_msg "$VERBOSE" "
+      Copying the surface surgery executable to the run directory..."
+      cp_vrfy ${EXECDIR}/${exect} ${exect}
+
+      ./${exect} > stdout 2>&1 || print_info_msg "\
+      Call to executable to run surface surgery returned with nonzero exit code."
+   else
+      print_info_msg "\
+      The executable specified in exect does not exist:
+      exect = \"${EXECDIR}/$exect\"
+      Build executable and rerun."
+   fi
+fi
 #
 #-----------------------------------------------------------------------
 #
