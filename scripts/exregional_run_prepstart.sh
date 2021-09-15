@@ -94,6 +94,12 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 #
 #-----------------------------------------------------------------------
 #
+# Compute date & time components for the SST analysis time relative to current analysis time
+YYJJJ00000000=`date +"%y%j00000000" -d "${START_DATE} 1 day ago"`
+YYJJJ1200=`date +"%y%j1200" -d "${START_DATE} 1 day ago"`
+#
+#-----------------------------------------------------------------------
+#
 # go to INPUT directory.
 # prepare initial conditions for 
 #     cold start if BKTYPE=1 
@@ -241,6 +247,41 @@ else
     cp_vrfy ${bkpath}/${restart_prefix}fv_srf_wnd.res.tile1.nc    fv_srf_wnd.res.tile1.nc
     cp_vrfy ${bkpath}/${restart_prefix}phy_data.nc                phy_data.nc
     cp_vrfy ${fg_root}/${YYYYMMDDHHmInterv}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
+
+# do SST update at ${SST_update_hour}z for the restart sfc_data.nc
+    if [ ${HH} -eq ${SST_update_hour} ]; then
+       echo "Update SST at ${SST_update_hour}z"
+       if [ -r "${SST_ROOT}/latest.SST" ]; then
+          cp ${SST_ROOT}/latest.SST .
+       elif [ -r "${SST_ROOT}/${YYJJJ00000000}" ]; then
+          cp ${SST_ROOT}/${YYJJJ00000000} latest.SST
+       else
+         ${ECHO} "${SST_ROOT} data does not exist!!"
+         ${ECHO} "ERROR: No SST update at ${time_str}!!!!"
+       fi
+       if [ -r "latest.SST" ]; then
+         cp_vrfy ${FIXgsm}/RTG_SST_landmask.dat                ./RTG_SST_landmask.dat
+         ln_vrfy ./latest.SST                                  ./SSTRTG
+         cp_vrfy ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  ./fv3_grid_spec
+         cp_vrfy ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_akbk       ./fv3_akbk
+
+cat << EOF > sst.namelist
+&setup
+  bkversion=1,
+  iyear=${YYYY}
+  imonth=${MM}
+  iday=${DD}
+  ihr=${HH}
+/
+EOF
+         ${EXECDIR}/process_updatesst > stdout_sstupdate 2>&1
+       else
+         echo "ERROR: No latest SST file for update at ${YYYYMMDDHH}!!!!"
+       fi
+    else
+       echo "NOTE: No update for SST at ${YYYYMMDDHH}!"
+    fi
+    
   else
     print_err_msg_exit "Error: cannot find background: ${checkfile}"
   fi

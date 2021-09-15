@@ -112,6 +112,9 @@ for i in {3..23..6}; do FCST_LEN_HRS_CYCLES[$i]=24; done
 DA_CYCLE_INTERV="1"
 RESTART_INTERVAL="1 2"
 
+SST_ROOT="/lfs4/BMC/public/data/grids/ncep/sst/0p083deg/grib2"
+SST_update_hour=01
+
 NCORES_RUN_ANAL=240
 WTIME_RUN_ANAL="01:00:00"
 HYBENSMEM_NMIN=66

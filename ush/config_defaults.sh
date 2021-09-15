@@ -268,6 +268,10 @@ EXPT_SUBDIR=""
 #    LIGHTNING_ROOT: location of lightning observations
 #    ENKF_FCSTL: location of global ensemble forecast
 #    FFG_DIR: location of flash flood guidance for QPF comparison
+
+# Setup default locations for global SST and update time:
+#   SST_ROOT: locations of global SST
+#   SST_update_hour: cycle time for updating SST 
 #-----------------------------------------------------------------------
 #
 COMINgfs="/base/path/of/directory/containing/gfs/input/files"
@@ -291,6 +295,8 @@ OBSPATH_NSSLMOSIAC="/public/data/radar/mrms"
 LIGHTNING_ROOT="/public/data/lightning"
 ENKF_FCST="/lfs4/BMC/public/data/grids/enkf/atm"
 FFG_DIR="/public/data/grids/ncep/ffg/grib2"
+SST_ROOT="/lfs4/BMC/public/data/grids/ncep/sst/0p083deg/grib2"
+SST_update_hour=99
 
 #
 #-----------------------------------------------------------------------
