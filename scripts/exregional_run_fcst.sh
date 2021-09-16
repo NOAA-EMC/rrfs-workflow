@@ -471,10 +471,10 @@ if [ "${DO_ENSEMBLE}" = TRUE ]; then
 else
    if [ ${BKTYPE} -eq 0 ]; then
     # cycling, using namelist for cycling forecast
-    ln_vrfy -sf ${relative_or_null} ${FV3_NML_RESTART_FP} ${run_dir}/input.nml
+    cp_vrfy ${FV3_NML_RESTART_FP} ${run_dir}/input.nml
   else
     # cold start, using namelist for cold start
-    ln_vrfy -sf ${relative_or_null} ${FV3_NML_FP} ${run_dir}
+    cp_vrfy ${FV3_NML_FP} ${run_dir}/input.nml
   fi
 fi
 #
