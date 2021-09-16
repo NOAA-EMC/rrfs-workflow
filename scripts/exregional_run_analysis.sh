@@ -231,7 +231,7 @@ case $MACHINE in
   fi
 
   ;;
-"JET")
+"JET" | "HERA")
 
   for loop in $loops; do
     for timelist in $(ls ${ENKF_FCST}/*.gdas.t*z.atmf${loop}.mem080.${ens_type}); do
