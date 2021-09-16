@@ -58,7 +58,7 @@ FV3_HRRR:
     kord_tr: 9
     kord_wz: 9
     n_split: 3
-    psm_bc: 0
+    psm_bc: 1
     nord_tr: 2
     nrows_blend: 10
     regional_bcs_from_gsi: false
