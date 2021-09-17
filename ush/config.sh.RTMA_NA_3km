@@ -21,8 +21,6 @@ FIXLAM_NCO_BASEDIR=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_lam.20210128
 FIXgsm=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_am.20210128
 GWD_HRRRsuite_BASEDIR=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_lam.20210128
 
-FIX_GSI=/mnt/lfs4/BMC/nrtrr/RTMA/fix/fix_gsi
-FIX_CRTM=/home/rtrr/FIX_EXEC_MODULE/crtm/CRTM_v2.3.0
 OBSPATH_NSSLMOSIAC=/public/data/radar/nssl/mrms/conus
 FFG_DIR=/public/data/grids/ncep/ffg/grib2
 RADARREFL_TIMELEVEL=(0)
@@ -37,11 +35,6 @@ if [[ $MACHINE == "hera" ]] ; then
   FIXLAM_NCO_BASEDIR=/scratch1/BMC/zrtrr/RRFS/fix/fix_lam.20210128
   FIXgsm=/scratch1/BMC/zrtrr/RRFS/fix/fix_am.20210128
   GWD_HRRRsuite_BASEDIR=/scratch1/BMC/zrtrr/RRFS/fix/fix_lam.20210128
-
-  FIX_GSI=/scratch1/BMC/zrtrr/RTMA/fix/fix_gsi
-  FIX_CRTM=/scratch1/BMC/zrtrr/RRFS/fix/CRTM_v2.3.0
-  AIRCRAFT_REJECT=${FIX_GSI}
-  SFCOBS_USELIST=${FIX_GSI}
 
 # for using RAP as boundary and initial
 #  EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/public/data/grids/rap/full/wrfnat/grib2
@@ -77,7 +70,7 @@ DO_DACYCLE="TRUE"
 # if we need to tune one GSI namelist parameter, we can elevate it to a shell variable
 # and assign value in config.sh and give it a default value in config_default.sh
 # In realtime testing, don't need to regenerate the whole workflow, you can tweak 
-# $EXPTDIR/var_defns.sh and $USH/template/gsiparm.anl.sh to make sure the change is
+# $EXPTDIR/var_defns.sh and $FIX_GSI/gsiparm.anl.sh to make sure the change is
 # expected and then put it back into config.sh and config_default.sh
 #       (need to follow FORTRAN namelist convetion)
 #-------------------------------------------------------------------------------------
@@ -107,7 +100,6 @@ i_use_2mT4B=0
 #-------------------------------------------------------------------------------------
 #
 BERROR_FN="berror.rtma"      #under $FIX_GSI
-#the following four are under $USHDIR/templates
 ANAVINFO_FN="anavinfo.fv3lam_hrrr"
 CONVINFO_FN="convinfo.rtma"
 OBERROR_FN="errtable.rtma"
@@ -175,9 +167,9 @@ PPN_MAKE_ICS="8"
 PPN_MAKE_LBCS="10"
 WTIME_MAKE_LBCS="01:30:00"
 
-WTIME_RUN_FCST="01:00:00" #normally 2 minutes is enough to generate dynf000.nc and phyf000.nc
-LAYOUT_X=20
-LAYOUT_Y=35
+WTIME_RUN_FCST="01:00:00" #NA_3km, normally 13 minutes is enough to generate dynf000.nc and phyf000.nc
+LAYOUT_X=35
+LAYOUT_Y=20
 NATIVE_RUN_FCST="--cpus-per-task 4 --exclusive"
 NATIVE_RUN_ANAL="--cpus-per-task 4 --exclusive"
 
@@ -198,14 +190,13 @@ IS_RTMA="TRUE"
 NCORES_PER_NODE=40 #kjet
 FG_ROOTDIR="/lfs4/BMC/nrtrr/NCO_dirs/nwges/para/RRFS_NA_3km" #only needed by RTMA
 DT_ATMOS=1
-MAXTRIES_RUN_FCST="3"
+MAXTRIES_RUN_FCST="1"
 PYTHON_GRAPHICS_YML_FN="rtma.yml"
 
 USE_CUSTOM_POST_CONFIG_FILE="TRUE"
-#CUSTOM_POST_CONFIG_FP="/lfs4/BMC/nrtrr/RTMA/RTMA-dev1-ufs-rtma-app/regional_workflow/ush/templates/postxconfig-NT-3drtma.txt"
-#CUSTOM_POST_PARAMS_FP="/lfs4/BMC/nrtrr/RTMA/RTMA-dev1-ufs-rtma-app/regional_workflow/ush/templates/params_grib2_tbl_new_rtma"
-CUSTOM_POST_CONFIG_FP="/lfs4/BMC/nrtrr/RTMA/RTMA-dev1-ufs-rtma-app/src/EMC_post/parm/postxconfig-NT-fv3lam_rrfs.txt"
-CUSTOM_POST_PARAMS_FP="/lfs4/BMC/nrtrr/RTMA/RTMA-dev1-ufs-rtma-app/src/EMC_post/parm/params_grib2_tbl_new"
+TESTBED_FIELDS_FN="testbed_fields_rtma.txt"
+CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-fv3lam_rrfs.txt"
+CUSTOM_POST_PARAMS_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/params_grib2_tbl_new"
 POST_FULL_MODEL_NAME="FV3RRTMA"
 ARCHIVEDIR="/5year/BMC/wrfruc/rtma_na_3km_dev1"
 NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"

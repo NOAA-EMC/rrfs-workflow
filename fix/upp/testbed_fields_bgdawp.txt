@@ -1,0 +1,78 @@
+MSLET:mean sea level:
+PRMSL:mean sea level:
+APCP:surface:
+PRATE:surface:
+WEASD:surface:
+SNOD:surface:
+REFC:entire atmosphere (considered as a single layer):
+REFD:1000 m above ground:
+REFD:4000 m above ground:
+REFD:1 hybrid level:
+REFD:2 hybrid level:
+REFD:263 K level:
+GUST:surface:
+HGT:500 mb:
+VVEL:500 mb:
+UGRD:500 mb:
+VGRD:500 mb:
+VVEL:700 mb:
+MAXUVV:100-1000 mb:
+MAXDVV:100-1000 mb:
+MAXREF:1000 m above ground:
+MAXREF:263 K level:
+MXUPHL:5000-2000 m above ground:
+MXUPHL:3000-0 m above ground:
+TMP:2 m above ground:
+DPT:2 m above ground:
+RH:2 m above ground:
+TMAX:2 m above ground:
+MINRH:2 m above ground:
+UGRD:10 m above ground:
+VGRD:10 m above ground:
+MAXUW:10 m above ground:
+MAXVW:10 m above ground:
+CSNOW:surface:
+CICEP:surface:
+CFRZR:surface:
+CRAIN:surface:
+CPOFP:surface:
+PRES:surface:
+HGT:surface:
+CAPE:surface:
+CIN:surface:
+HLCY:3000-0 m above ground:
+HLCY:1000-0 m above ground:
+UPHL:5000-2000 m above ground:
+TMP:30-0 mb above ground:
+RH:30-0 mb above ground:
+DPT:30-0 mb above ground:
+UGRD:30-0 mb above ground:
+VGRD:30-0 mb above ground:
+VVEL:30-0 mb above ground:
+4LFTX:180-0 mb above ground:
+CAPE:180-0 mb above ground:
+CIN:180-0 mb above ground:
+CAPE:90-0 mb above ground:
+CIN:90-0 mb above ground:
+CAPE:255-0 mb above ground:
+CIN:255-0 mb above ground:
+HGT:local level type 215 0:
+CEIL:no_level:
+CEIL:cloud base:
+VIS:surface:
+parmcat=3 parm=197
+parmcat=16 parm=196
+parmcat=16 parm=195
+parmcat=2 parm=220
+parmcat=2 parm=221
+parmcat=16 parm=198
+parmcat=7 parm=199
+parmcat=1 parm=198
+parmcat=2 parm=222
+parmcat=2 parm=223
+parmcat=1 parm=195
+parmcat=1 parm=194
+parmcat=1 parm=193
+parmcat=1 parm=192
+parmcat=7 parm=197
+parmcat=7 parm=193

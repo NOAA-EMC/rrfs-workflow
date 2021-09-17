@@ -186,7 +186,14 @@ bgrd3d=${postprd_dir}/${NET}.t${cyc}z.bgrd3df${fhr}.${tmmark}.grib2
 bgsfc=${postprd_dir}/${NET}.t${cyc}z.bgsfcf${fhr}.${tmmark}.grib2
 
 # extract the output fields for the testbed
-wgrib2 ${bgdawp} | grep -F -f ${FIXam}/testbed_fields_bgdawp.txt | wgrib2 -i -grib ${bgsfc} ${bgdawp}
+touch ${bgsfc}
+if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
+  if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN} ]]; then
+    wgrib2 ${bgdawp} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN} | wgrib2 -i -grib ${bgsfc} ${bgdawp}
+  else
+    echo "${FIX_UPP}/${TESTBED_FIELDS_FN} not found"
+  fi
+fi
 
 #Link output for transfer to Jet
 # Should the following be done only if on jet??
@@ -220,7 +227,7 @@ if [ ${#ADDNL_OUTPUT_GRIDS[@]} -gt 0 ]; then
 
   for grid in ${ADDNL_OUTPUT_GRIDS[@]}
   do
-    for leveltype in dawp rd3d sfc 
+    for leveltype in dawp rd3d sfc
     do
       
       eval grid_specs=\$grid_specs_${grid}

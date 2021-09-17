@@ -1,1 +1,4 @@
 config.sh
+fix/.agent
+fix/tmp
+fix/INIT_DONE

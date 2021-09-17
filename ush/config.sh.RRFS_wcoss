@@ -21,8 +21,6 @@ FIXLAM_NCO_BASEDIR=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_lam.20210128
 FIXgsm=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_am.20210128
 GWD_HRRRsuite_BASEDIR=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_lam.20210128
 
-FIX_GSI=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_gsi
-FIX_CRTM=/home/rtrr/FIX_EXEC_MODULE/crtm/CRTM_v2.3.0
 
 if [[ $MACHINE == "hera" ]] ; then
   ACCOUNT="wrfruc"
@@ -33,11 +31,6 @@ if [[ $MACHINE == "hera" ]] ; then
   FIXLAM_NCO_BASEDIR=/scratch1/BMC/zrtrr/RRFS/fix/fix_lam.20210128
   FIXgsm=/scratch1/BMC/zrtrr/RRFS/fix/fix_am.20210128
   GWD_HRRRsuite_BASEDIR=/scratch1/BMC/zrtrr/RRFS/fix/fix_lam.20210128
-
-  FIX_GSI=/scratch1/BMC/zrtrr/RRFS/fix/fix_gsi
-  FIX_CRTM=/scratch1/BMC/zrtrr/RRFS/fix/CRTM_v2.3.0
-  AIRCRAFT_REJECT=${FIX_GSI}
-  SFCOBS_USELIST=${FIX_GSI}
 
 # for using RAP as boundary and initial
 #  EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/public/data/grids/rap/full/wrfnat/grib2
@@ -59,10 +52,6 @@ if [[ $MACHINE == "orion" ]] ; then
   FIXgsm=/work/noaa/wrfruc/mhu/rrfs/data/fix/fix_am.20210128
   GWD_HRRRsuite_BASEDIR=/work/noaa/wrfruc/mhu/rrfs/data/fix/fix_lam.20210128
 
-  FIX_GSI=/work/noaa/wrfruc/mhu/rrfs/data/fix/fix_gsi
-  FIX_CRTM=/work/noaa/wrfruc/mhu/rrfs/data/fix/CRTM_v2.3.0
-  AIRCRAFT_REJECT=${FIX_GSI}
-  SFCOBS_USELIST=${FIX_GSI}
 fi
 
 if [[ $MACHINE == "WCOSS_DELL_P3" ]] ; then
@@ -73,10 +62,6 @@ if [[ $MACHINE == "WCOSS_DELL_P3" ]] ; then
   FIXgsm=/gpfs/hps3/emc/meso/save/Ming.Hu/rrfs/fix/fix_am.20210128
   GWD_HRRRsuite_BASEDIR=/gpfs/hps3/emc/meso/save/Ming.Hu/rrfs/fix/fix_lam.20210128
 
-  FIX_GSI=/gpfs/hps3/emc/meso/save/Ming.Hu/rrfs/fix/fix_gsi
-  FIX_CRTM=/gpfs/hps3/emc/meso/save/Ming.Hu/rrfs/fix/CRTM_v2.3.0
-  AIRCRAFT_REJECT=${FIX_GSI}
-  SFCOBS_USELIST=${FIX_GSI}
 fi
 
 
@@ -190,8 +175,9 @@ NET="RRFS_NA_13km"
 TAG="RRFS_dev1_NA_13km"
 
 USE_CUSTOM_POST_CONFIG_FILE="TRUE"
-CUSTOM_POST_CONFIG_FP="/gpfs/hps3/emc/meso/save/Ming.Hu/rrfs/ufs-srweather-app_dev1/src/EMC_post/parm/postxconfig-NT-fv3lam_rrfs.txt"
-CUSTOM_POST_PARAMS_FP="/gpfs/hps3/emc/meso/save/Ming.Hu/rrfs/ufs-srweather-app_dev1/src/EMC_post/parm/params_grib2_tbl_new"
+TESTBED_FIELDS_FN="testbed_fields_bgdawp.txt"
+CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-fv3lam_rrfs.txt"
+CUSTOM_POST_PARAMS_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/params_grib2_tbl_new"
 ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_na_13km_dev1"
 NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
 NCL_HOME="/home/rtrr/RRFS/graphics"

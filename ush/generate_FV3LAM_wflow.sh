@@ -130,6 +130,16 @@ fi
 . $ushdir/setup.sh
 #
 #-----------------------------------------------------------------------
+# check whether the .agent link for fix/ is initialized
+# if not, run Init.sh (otherwise, the workflow generation will fail)
+#-----------------------------------------------------------------------
+#
+if [[ ! -L ${HOMErrfs}/fix/.agent || ! -e ${HOMErrfs}/fix/.agent ]] \
+  && [ -e ${HOMErrfs}/Init.sh ]; then
+    ${HOMErrfs}/Init.sh
+fi
+#
+#-----------------------------------------------------------------------
 #
 # Set the full path to the experiment's rocoto workflow xml file.  This
 # file will be placed at the top level of the experiment directory and
@@ -992,6 +1002,9 @@ edit the cron table):
 
 Done.
 "
+#
+echo -e "../fix/.agent points to " $(readlink -f ${HOMErrfs}/fix/.agent) "\n"
+
 #
 # If necessary, run the NOMADS script to source external model data.
 #

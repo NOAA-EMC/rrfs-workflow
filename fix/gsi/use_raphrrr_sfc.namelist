@@ -1,0 +1,7 @@
+
+&setup
+ rapfile='sfc_rap'
+ hrrrfile='sfc_hrrr'
+ hrrr_akfile='sfc_hrrrak'
+ rrfsfile='sfc_data.nc'
+/

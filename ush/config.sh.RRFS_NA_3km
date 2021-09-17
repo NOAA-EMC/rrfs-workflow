@@ -20,8 +20,6 @@ FIXLAM_NCO_BASEDIR=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_lam.20210128
 FIXgsm=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_am.20210128
 GWD_HRRRsuite_BASEDIR=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_lam.20210128
 
-FIX_GSI=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_gsi
-FIX_CRTM=/home/rtrr/FIX_EXEC_MODULE/crtm/CRTM_v2.3.0
 
 if [[ $MACHINE == "hera" ]] ; then
   ACCOUNT="wrfruc"
@@ -32,11 +30,6 @@ if [[ $MACHINE == "hera" ]] ; then
   FIXLAM_NCO_BASEDIR=/scratch1/BMC/zrtrr/RRFS/fix/fix_lam.20210128
   FIXgsm=/scratch1/BMC/zrtrr/RRFS/fix/fix_am.20210128
   GWD_HRRRsuite_BASEDIR=/scratch1/BMC/zrtrr/RRFS/fix/fix_lam.20210128
-
-  FIX_GSI=/scratch1/BMC/zrtrr/RRFS/fix/fix_gsi
-  FIX_CRTM=/scratch1/BMC/zrtrr/RRFS/fix/CRTM_v2.3.0
-  AIRCRAFT_REJECT=${FIX_GSI}
-  SFCOBS_USELIST=${FIX_GSI}
 
 # for using RAP as boundary and initial
 #  EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/public/data/grids/rap/full/wrfnat/grib2
@@ -64,6 +57,8 @@ DO_SURFACE_CYCLE="TRUE"
 #DO_RETRO="TRUE"
 #LBCS_ICS_ONLY="TRUE"
 
+AIRCRAFT_REJECT="/home/amb-verif/acars_RR/amdar_reject_lists"
+SFCOBS_USELIST="/lfs4/BMC/amb-verif/rap_ops_mesonet_uselists"
 QUILTING="TRUE"
 CCPP_PHYS_SUITE="FV3_HRRR"
 
@@ -147,9 +142,10 @@ NET="RRFS_NA_3km"
 TAG="RRFS_dev1_NA_3km"
 
 USE_CUSTOM_POST_CONFIG_FILE="TRUE"
+TESTBED_FIELDS_FN="testbed_fields_bgdawp.txt"
 # Below:  use EMC_post control file from 13-km NA configuration (provisional only)
-CUSTOM_POST_CONFIG_FP="/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_upp/postxconfig-NT-fv3lam_rrfs.txt"
-CUSTOM_POST_PARAMS_FP="/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_upp/params_grib2_tbl_new"
+CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-fv3lam_rrfs.txt"
+CUSTOM_POST_PARAMS_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/params_grib2_tbl_new"
 ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_na_3km_dev1"
 NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
 NCL_HOME="/home/rtrr/RRFS/graphics"

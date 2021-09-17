@@ -404,10 +404,10 @@ done
 #
 #-----------------------------------------------------------------------
 
-ANAVINFO=${USHDIR}/templates/${ANAVINFO_FN}
-CONVINFO=${USHDIR}/templates/${CONVINFO_FN}
-HYBENSINFO=${USHDIR}/templates/${HYBENSINFO_FN}
-OBERROR=${USHDIR}/templates/${OBERROR_FN}
+ANAVINFO=${FIX_GSI}/${ANAVINFO_FN}
+CONVINFO=${FIX_GSI}/${CONVINFO_FN}
+HYBENSINFO=${FIX_GSI}/${HYBENSINFO_FN}
+OBERROR=${FIX_GSI}/${OBERROR_FN}
 BERROR=${FIX_GSI}/${BERROR_FN}
 
 SATINFO=${FIX_GSI}/global_satinfo.txt
@@ -520,7 +520,7 @@ done
 #
 #-----------------------------------------------------------------------
 # 
-. ${USHDIR}/templates/gsiparm.anl.sh
+. ${FIX_GSI}/gsiparm.anl.sh
 cat << EOF > gsiparm.anl
 $gsi_namelist
 EOF
