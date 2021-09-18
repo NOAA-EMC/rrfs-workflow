@@ -40,10 +40,11 @@ MYDIR=$(cd "$(dirname "$(readlink -f -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
 
 usage () {
   echo -e "\nExample Usage: "
-  echo "  $0        (build GSI using Intel compiler)"
+  echo "  $0        (show this help)"
   echo "  $0 intel  (build GSI using Intel compiler)"
   echo "  $0 gnu    (build GSI using GNU compiler)"
   echo "  $0 kjet   (build GSI using Intel compiler and kjet specfici optimization)"
+  echo "            ** kjet option should be used by real time deployment on Jet**   "
   echo "  $0 help   (show this help)"
   echo ""
   echo " The build script will automatically determine current HPC platform."
@@ -74,6 +75,9 @@ if [[ ! -z $opt ]]; then
      exit 0
       ;;
   esac
+else
+  usage
+  exit 0
 fi
 
 ENV_FILE="env/build_${PLATFORM}_${COMPILER}.env"

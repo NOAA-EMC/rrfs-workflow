@@ -10,6 +10,7 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from __future__ import print_function
 
+import os
 import sys
 import traceback
 
@@ -28,6 +29,8 @@ if __name__ == '__main__':
     ARGS = manic.checkout.commandline_arguments()
     try:
         RET_STATUS, _ = manic.checkout.main(ARGS)
+        if os.path.isfile('regional_workflow/Init.sh'):
+            os.system('regional_workflow/Init.sh')
         sys.exit(RET_STATUS)
     except Exception as error:  # pylint: disable=broad-except
         manic.printlog(str(error))
