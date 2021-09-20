@@ -1,0 +1,1 @@
+../../.agent/lam/CONUS_25km_GFDLgrid/C96_grid.tile7.halo3.nc

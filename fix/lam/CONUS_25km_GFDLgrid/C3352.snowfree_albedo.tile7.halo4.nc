@@ -1,0 +1,1 @@
+../../.agent/lam/RRFS_AK_3km/C3352.snowfree_albedo.tile7.halo4.nc

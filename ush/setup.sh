@@ -699,6 +699,10 @@ PARMDIR="$HOMErrfs/parm"
 MODULES_DIR="$HOMErrfs/modulefiles"
 EXECDIR="${SR_WX_APP_TOP_DIR}/bin"
 TEMPLATE_DIR="$USHDIR/templates"
+if [ "${RUN_ENVIR}" = "nco" ]; then
+  FIXgsm=${FIXgsm:-"$HOMErrfs/fix/am"}
+  FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"$HOMErrfs/fix/lam"}
+fi
 
 case $MACHINE in
 

@@ -15,10 +15,6 @@ else
   PARTITION_DEFAULT=kjet
 fi
 
-FIXLAM_NCO_BASEDIR=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_lam.20210128
-FIXgsm=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_am.20210128
-GWD_HRRRsuite_BASEDIR=/mnt/lfs4/BMC/nrtrr/RRFS/fix/fix_lam.20210128
-
 OBSPATH_NSSLMOSIAC=/public/data/radar/nssl/mrms/conus
 
 RADARREFL_TIMELEVEL=(0 15 30 45)
@@ -29,10 +25,6 @@ if [[ $MACHINE == "hera" ]] ; then
   PARTITION_DEFAULT=""
   PARTITION_FCST=""
   QUEUE_ANALYSIS="batch"
-
-  FIXLAM_NCO_BASEDIR=/scratch1/BMC/zrtrr/RRFS/fix/fix_lam.20210128
-  FIXgsm=/scratch1/BMC/zrtrr/RRFS/fix/fix_am.20210128
-  GWD_HRRRsuite_BASEDIR=/scratch1/BMC/zrtrr/RRFS/fix/fix_lam.20210128
 
 # for using RAP as boundary and initial
 # #  EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/public/data/grids/rap/full/wrfnat/grib2
@@ -50,10 +42,6 @@ fi
 if [[ $MACHINE == "orion" ]] ; then
   ACCOUNT=ztrr
   QUEUE_ANALYSIS="batch"
-  FIXLAM_NCO_BASEDIR=/work/noaa/wrfruc/mhu/rrfs/data/fix/fix_lam.20210128
-  FIXgsm=/work/noaa/wrfruc/mhu/rrfs/data/fix/fix_am.20210128
-  GWD_HRRRsuite_BASEDIR=/work/noaa/wrfruc/mhu/rrfs/data/fix/fix_lam.20210128
-
 fi
 
 VERBOSE="TRUE"
