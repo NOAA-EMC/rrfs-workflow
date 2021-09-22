@@ -155,6 +155,12 @@ DD=${YYYYMMDDHH:6:2}
 HH=${YYYYMMDDHH:8:2}
 YYYYMMDD=${YYYYMMDDHH:0:8}
 #
+# YYYY-MM-DD_meso_uselist.txt and YYYYMMDD_rejects.txt: 
+# both contain past 7 day OmB averages till ~YYYYMMDD_23:59:59 UTC
+# So they are to be used by next day cycles
+MESO_USELIST_FN=$(date +%Y-%m-%d -d "${START_DATE} -1 day")_meso_uselist.txt 
+AIR_REJECT_FN=$(date +%Y%m%d -d "${START_DATE} -1 day")_rejects.txt
+#
 #-----------------------------------------------------------------------
 #
 # go to working directory.
@@ -426,21 +432,31 @@ cp_vrfy $OBERROR    errtable
 cp_vrfy $ATMS_BEAMWIDTH atms_beamwidth.txt
 cp_vrfy ${HYBENSINFO} hybens_info
 
-# Get aircraft reject list and surface uselist
-if [ -r ${AIRCRAFT_REJECT}/current_bad_aircraft.txt ]; then
-  cp_vrfy ${AIRCRAFT_REJECT}/current_bad_aircraft.txt current_bad_aircraft
-else
-  print_info_msg "$VERBOSE" "Warning: gsd aircraft reject list does not exist!" 
-fi
-
+# Get surface observation provider list
 if [ -r ${FIX_GSI}/gsd_sfcobs_provider.txt ]; then
   cp_vrfy ${FIX_GSI}/gsd_sfcobs_provider.txt gsd_sfcobs_provider.txt
 else
   print_info_msg "$VERBOSE" "Warning: gsd surface observation provider does not exist!" 
 fi
 
+# Get aircraft reject list
+for reject_list in "${AIRCRAFT_REJECT}/current_bad_aircraft.txt" \
+                   "${AIRCRAFT_REJECT}/${AIR_REJECT_FN}"
+do
+  if [ -r $reject_list ]; then
+    cp_vrfy $reject_list current_bad_aircraft
+    print_info_msg "$VERBOSE" "Use aircraft reject list: $reject_list "
+    break
+  fi
+done
+if [ ! -r $reject_list ] ; then 
+  print_info_msg "$VERBOSE" "Warning: gsd aircraft reject list does not exist!" 
+fi
+
+# Get mesonet uselist
 gsd_sfcobs_uselist="gsd_sfcobs_uselist.txt"
 for use_list in "${SFCOBS_USELIST}/current_mesonet_uselist.txt" \
+                "${SFCOBS_USELIST}/${MESO_USELIST_FN}"      \
                 "${SFCOBS_USELIST}/gsd_sfcobs_uselist.txt"
 do 
   if [ -r $use_list ] ; then
