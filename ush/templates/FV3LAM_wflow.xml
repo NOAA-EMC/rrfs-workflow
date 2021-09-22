@@ -963,7 +963,7 @@ MODULES_RUN_TASK_FP script.
       {%- elif do_dacycle %}
       <taskdep task="&ANAL_GSI_TN;_#type#"/>
       {%- else %}
-      <taskdep task="&PREP_CYC_PROD_TN;_#type#{{ uscore_ensmem_name }}"/>
+      <taskdep task="&PREP_CYC_TN;_#type#{{ uscore_ensmem_name }}"/>
       {%- endif %}
     </dependency>
 
