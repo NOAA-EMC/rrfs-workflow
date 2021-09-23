@@ -86,10 +86,15 @@ Building need be done only once if no source code is changed.
 ```
 - You can also use devbuild.sh to build all the code including data assimilation components (from top level SRW App).
 ```
-    On Jet        :   devbuild.sh jet intel 
-    On Hera       :   devbuild.sh hera intel 
-    On Wcoss(Dell):   devbuild.sh wcoss_dell_p3 intel 
+  devbuild.sh        (show this help)
+  devbuild.sh intel  (build GSI using Intel compiler)
+  devbuild.sh gnu    (build GSI using GNU compiler)
+  devbuild.sh kjet   (build GSI using Intel compiler and kjet specfici optimization)
+            ** kjet option should be used by real time deployment on Jet**
+  devbuild.sh help   (show this help)
 ```
+The build script will automatically determine current HPC platform.     
+Don't use the 'kjet' optin if you will run GSI on other jet (such as xjet,etc) or you are NOT on Jet    
 
 ### Configuring
 

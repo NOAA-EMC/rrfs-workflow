@@ -48,7 +48,7 @@ usage () {
   echo "  $0 help   (show this help)"
   echo ""
   echo " The build script will automatically determine current HPC platform."
-  echo " Don't use the 'kjet' optin if you will run GSI on other jet (such as xjet,etc) or you are not on Jet"
+  echo " Don't use the 'kjet' optin if you will run GSI on other jet (such as xjet,etc) or you are NOT on Jet"
   echo ""
   echo "NOTE: This script is for internal developer use only;"
   echo "See User's Guide for detailed build instructions"
