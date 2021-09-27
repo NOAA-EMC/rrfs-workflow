@@ -117,7 +117,7 @@ Before running the RRFS_dev1 configuration, you will need to change your
 output directories by editing the config file:
 
     cd regional_workflow/ush
-    vi config.sh.RRFS_dev1
+    vi config.sh.RRFS_CONUS_3km
 
 Inside the config file, ensure that you are point to your preferred user
 space for the following variables:
@@ -126,13 +126,14 @@ space for the following variables:
     ARCHIVEDIR     # archive location
     STMP           # com for log, grib2 and plot product
     PTMP           # run directory 
+    NWGES          # save boundary, cold initial, restart files
 
 You will also likely want to change the dates over which to run and other configurations based on the experiment purpose.
 Please read "[Set up RRFS real-time and restrospective runs](Setup-RRFS.md)" for detailed instruction on setting up config.sh file.
  
 The configure script should then be linked to the expected name:
 
-    ln -sf config.sh.RRFS_dev1 config.sh
+    ln -sf config.sh.RRFS_CONUS_3km config.sh
 
 ## Build the workflow
 
