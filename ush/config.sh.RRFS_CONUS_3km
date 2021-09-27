@@ -134,7 +134,7 @@ COMINgfs=""
 
 . set_rrfs_config.sh
 
-STMP="YourOwnSpace/stmp"  # Path to directory STMP that mostly contains input files.
-PTMP="YourOwnSpace/ptmp"  # Path to directory STMP that mostly contains input files.
-NWGES="YourOwnSpace/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+STMP="YourOwnSpace/NCO_dirs/stmp"  # Path to directory STMP that mostly contains input files.
+PTMP="YourOwnSpace/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains input files.
+NWGES="YourOwnSpace/NCO_dirs/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 
