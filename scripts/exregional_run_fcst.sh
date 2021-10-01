@@ -190,8 +190,8 @@ if [ "${RUN_TASK_MAKE_GRID}" = "TRUE" ] && [ "${MACHINE}" != "WCOSS_CRAY" ]; the
 fi
 
 # Symlink to mosaic file with a completely different name.
-target="${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc"   # Should this point to this halo4 file or a halo3 file???
-#target="${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo${NH3}.nc"   # Should this point to this halo4 file or a halo3 file???
+#target="${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc"   # Should this point to this halo4 file or a halo3 file???
+target="${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo${NH3}.nc"   # Should this point to this halo4 file or a halo3 file???
 symlink="grid_spec.nc"
 if [ -f "${target}" ]; then
   ln_vrfy -sf ${relative_or_null} $target $symlink
@@ -469,12 +469,17 @@ ln_vrfy -sf ${relative_or_null} ${NEMS_YAML_FP} ${run_dir}
 if [ "${DO_ENSEMBLE}" = TRUE ]; then
   ln_vrfy -sf ${relative_or_null} "${FV3_NML_ENSMEM_FPS[$(( 10#${ensmem_indx}-1 ))]}" ${run_dir}/${FV3_NML_FN}
 else
-   if [ ${BKTYPE} -eq 0 ]; then
+  if [ ${BKTYPE} -eq 0 ]; then
     # cycling, using namelist for cycling forecast
     cp_vrfy ${FV3_NML_RESTART_FP} ${run_dir}/input.nml
   else
+    if [ -f "INPUT/cycle_surface.done" ]; then
+    # namelist for cold start with surface cycle
+      cp_vrfy ${FV3_NML_CYCSFC_FP} ${run_dir}/input.nml
+    else
     # cold start, using namelist for cold start
-    cp_vrfy ${FV3_NML_FP} ${run_dir}/input.nml
+      cp_vrfy ${FV3_NML_FP} ${run_dir}/input.nml
+    fi
   fi
 fi
 #

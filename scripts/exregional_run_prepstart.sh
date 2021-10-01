@@ -180,6 +180,7 @@ if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial file
       done
 
 # rename the soil mositure and temperature fields in restart file
+      rm -f cycle_surface.done
       if [ "${bkpath_find}" == "missing" ]; then
         print_info_msg "Warning: cannot find surface from previous cycle"
       else
@@ -191,6 +192,7 @@ if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial file
           ln_vrfy -sf ${restart_prefix_find}sfc_data.nc sfc_data.tile7.halo0.nc
           ncks --append geolonlat.nc sfc_data.tile7.halo0.nc
           ncrename -v tslb,stc -v smois,smc -v sh2o,slc sfc_data.tile7.halo0.nc
+          echo "cycle surface with ${checkfile}" > cycle_surface.done
         else
           print_info_msg "Warning: cannot find surface from previous cycle"
         fi
