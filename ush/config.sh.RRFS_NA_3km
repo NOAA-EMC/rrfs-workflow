@@ -21,26 +21,11 @@ if [[ $MACHINE == "hera" ]] ; then
   PARTITION_DEFAULT=""
   PARTITION_FCST=""
   QUEUE_ANALYSIS="batch"
-
-# for using RAP as boundary and initial
-#  EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/public/data/grids/rap/full/wrfnat/grib2
-#  EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/public/data/grids/rap/full/wrfnat/grib2
-# for using GFS as boundary and initial
-  EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/public/data/grids/gfs/0p25deg/grib2
-  EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/public/data/grids/gfs/0p25deg/grib2
-# observations
-  OBSPATH=/scratch2/BMC/public/data/grids/rap/obs
-  OBSPATH_NSSLMOSIAC=/scratch2/BMC/public/data/radar/nssl/mrms/conus
-  FFG_DIR=/public/data/grids/ncep/ffg/grib2
-  LIGHTNING_ROOT=/scratch2/BMC/public/data/lightning
-  ENKF_FCST=/scratch1/NCEPDEV/rstprod/com/gfs/prod
 fi
 
 VERBOSE="TRUE"
 
 RUN_ENVIR="nco"
-PREEXISTING_DIR_METHOD="upgrade"
-
 PREDEF_GRID_NAME=RRFS_NA_3km
 
 DO_DACYCLE="TRUE"
@@ -48,8 +33,6 @@ DO_SURFACE_CYCLE="TRUE"
 #DO_RETRO="TRUE"
 #LBCS_ICS_ONLY="TRUE"
 
-AIRCRAFT_REJECT="/home/amb-verif/acars_RR/amdar_reject_lists"
-SFCOBS_USELIST="/lfs4/BMC/amb-verif/rap_ops_mesonet_uselists"
 QUILTING="TRUE"
 CCPP_PHYS_SUITE="FV3_HRRR"
 
@@ -67,26 +50,15 @@ CYCL_HRS_PRODSTART=("03" "15")
 CYCLEMONTH="8"
 CYCLEDAY="1-4"
 #
-if [[ $DO_RETRO == "TRUE" ]] ; then
-  if [[ $LBCS_ICS_ONLY == "TRUE" ]]; then
-    PREEXISTING_DIR_METHOD="rename"
-    INITIAL_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 12:00:00"
-    BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 12:00:00"
-  else
-    PREEXISTING_DIR_METHOD="upgrade"
-    PROD_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 12:00:00"
-    POSTPROC_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 12:00:00"
-  fi
-else
-  INITIAL_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 12:00:00"
-  BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}1800 ${DATE_LAST_CYCL}2300 06:00:00"
-  PROD_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 01:00:00"
-  POSTPROC_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 01:00:00"
-  POSTPROC_LONG_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 06:00:00"
-  ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}0700 ${DATE_LAST_CYCL}2300 24:00:00"
-  if [[ $DO_SPINUP == "TRUE" ]] ; then
-    SPINUP_CYCLEDEF="00 03-08,15-20 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
-  fi
+PREEXISTING_DIR_METHOD="upgrade"
+INITIAL_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 12:00:00"
+BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}1800 ${DATE_LAST_CYCL}2300 06:00:00"
+PROD_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 01:00:00"
+POSTPROC_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 01:00:00"
+POSTPROC_LONG_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 06:00:00"
+ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}0700 ${DATE_LAST_CYCL}2300 24:00:00"
+if [[ $DO_SPINUP == "TRUE" ]] ; then
+  SPINUP_CYCLEDEF="00 03-08,15-20 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
 fi
 
 FCST_LEN_HRS="2"
@@ -162,34 +134,9 @@ CLEAN_OLDRUN_HRS="24"
 RUN="RRFS_NA_3km_dev1"
 COMINgfs=""
 
+. set_rrfs_config.sh
+
 STMP="/lfs4/BMC/nrtrr/NCO_dirs/stmp"  # Path to directory STMP that mostly contains input files.
 PTMP="/lfs4/BMC/nrtrr/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains input files.
 NWGES="/lfs4/BMC/nrtrr/NCO_dirs/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
-
-if [[ $DO_RETRO == "TRUE" ]] ; then
-  CLEAN_OLDPROD_HRS="240"
-  CLEAN_OLDLOG_HRS="240"
-  CLEAN_OLDRUN_HRS="6"
-  CLEAN_OLDFCST_HRS="6"
-  CLEAN_OLDSTMPPOST_HRS="6"
-  if [[ $LBCS_ICS_ONLY == "TRUE" ]]; then
-    CLEAN_OLDRUN_HRS="7777"
-    CLEAN_OLDFCST_HRS="7777"
-  fi
-fi
-
-#
-# In NCO mode, the user must manually (e.g. after doing the build step)
-# create the symlink "${FIXrrfs}/fix_sar" that points to EMC's FIXLAM
-# directory on the machine.  For example, on hera, the symlink's target
-# needs to be
-#
-#   /scratch2/NCEPDEV/fv3-cam/emc.campara/fix_fv3cam/fix_sar
-#
-# The experiment generation script will then set FIXLAM to 
-#
-#   FIXLAM="${FIXrrfs}/fix_lam/${EMC_GRID_NAME}"
-#
-# where EMC_GRID_NAME has the value set above.
-#
 
