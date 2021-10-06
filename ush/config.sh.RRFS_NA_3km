@@ -114,7 +114,7 @@ NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
 NCL_HOME="/home/rtrr/RRFS/graphics"
 NCL_REGION="conus"
 MODEL="RRFS_NA_3km"
-ADDNL_OUTPUT_GRIDS=( "hrrr" "rrfsak" )
+ADDNL_OUTPUT_GRIDS=( "hrrr" "hrrrak" )
 
 TILE_LABELS="NA"
 TILE_SETS="full"

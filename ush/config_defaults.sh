@@ -1609,6 +1609,7 @@ MAXTRIES_CLDANL_NONVAR="1"
 #  "hrrr"  (HRRR 3-km CONUS grid)
 #  "hrrre" (HRRRE 3-km CONUS grid)
 #  "rrfsak" (RRFS 3-km Alaska grid)
+#  "hrrrak" (HRRR 3-km Alaska grid)
 #
 ADDNL_OUTPUT_GRIDS=( )
 #
