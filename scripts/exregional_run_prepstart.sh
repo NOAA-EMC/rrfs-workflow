@@ -91,6 +91,8 @@ MM=${YYYYMMDDHH:4:2}
 DD=${YYYYMMDDHH:6:2}
 HH=${YYYYMMDDHH:8:2}
 YYYYMMDD=${YYYYMMDDHH:0:8}
+
+current_time=$(date "+%T")
 #
 #-----------------------------------------------------------------------
 #
@@ -112,7 +114,7 @@ YYJJJ1200=`date +"%y%j1200" -d "${START_DATE} 1 day ago"`
 
 BKTYPE=0
 if [ ${cycle_type} == "spinup" ]; then
-   echo "spin up cycle"
+  echo "spin up cycle"
   for cyc_start in "${CYCL_HRS_SPINSTART[@]}"; do
     if [ ${HH} -eq ${cyc_start} ]; then
       BKTYPE=1
@@ -141,6 +143,9 @@ if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial file
       cp_vrfy ${bkpath}/gfs_data.tile7.halo0.nc gfs_data.tile7.halo0.nc        
       cp_vrfy ${bkpath}/sfc_data.tile7.halo0.nc sfc_data.tile7.halo0.nc        
       print_info_msg "$VERBOSE" "cold start from $bkpath"
+      if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
+        echo "${YYYYMMDDHH}(${cycle_type}): cold start at ${current_time} from $bkpath " >> ${EXPTDIR}/log.cycles
+      if
     else
       print_err_msg_exit "Error: cannot find cold start initial condition from : ${bkpath}"
     fi
@@ -193,6 +198,9 @@ if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial file
           ncks --append geolonlat.nc sfc_data.tile7.halo0.nc
           ncrename -v tslb,stc -v smois,smc -v sh2o,slc sfc_data.tile7.halo0.nc
           echo "cycle surface with ${checkfile}" > cycle_surface.done
+          if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
+            echo "${YYYYMMDDHH}(${cycle_type}): cycle surface with ${checkfile} " >> ${EXPTDIR}/log.cycles
+          fi
         else
           print_info_msg "Warning: cannot find surface from previous cycle"
         fi
@@ -225,9 +233,8 @@ else
   restart_prefix="${YYYYMMDD}.${HH}0000."
   n=${DA_CYCLE_INTERV}
   while [[ $n -le 6 ]] ; do
-    checkfile=${bkpath}/${restart_prefix}fv_core.res.tile1.nc
-    checkfile1=${bkpath}/${restart_prefix}fv_tracer.res.tile1.nc
-    if [ -r "${checkfile}" ] && [ -r "${checkfile1}" ]; then
+    checkfile=${bkpath}/${restart_prefix}coupler.res
+    if [ -r "${checkfile}" ] ; then
       print_info_msg "$VERBOSE" "Found ${checkfile}; Use it as background for analysis "
       break
     else
@@ -238,9 +245,32 @@ else
     fi
   done
 #
-  checkfile=${bkpath}/${restart_prefix}fv_core.res.tile1.nc
-  checkfile1=${bkpath}/${restart_prefix}fv_tracer.res.tile1.nc
-  if [ -r "${checkfile}" ] && [ -r "${checkfile1}" ] ; then
+  checkfile=${bkpath}/${restart_prefix}coupler.res
+# spin-up cycle is not success, try to find background from full cycle
+  if [ ! -r "${checkfile}" ] && [ ${BKTYPE} -eq 2 ]; then
+     print_info_msg "$VERBOSE" "cannot find background from spin-up cycle, try product cycle"
+     fg_restart_dirname=fcst_fv3lam
+     YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
+     bkpath=${fg_root}/${YYYYMMDDHHmInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+#
+     restart_prefix="${YYYYMMDD}.${HH}0000."
+     n=${DA_CYCLE_INTERV}
+     while [[ $n -le 6 ]] ; do
+       checkfile=${bkpath}/${restart_prefix}coupler.res
+       if [ -r "${checkfile}" ] ; then
+         print_info_msg "$VERBOSE" "Found ${checkfile}; Use it as background for analysis "
+         break
+       else
+         n=$((n + ${DA_CYCLE_INTERV}))
+         YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${n} hours ago" )
+         bkpath=${fg_root}/${YYYYMMDDHHmInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+         print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
+       fi
+     done
+  fi
+#
+  checkfile=${bkpath}/${restart_prefix}coupler.res
+  if [ -r "${checkfile}" ] ; then
     cp_vrfy ${bkpath}/${restart_prefix}fv_core.res.tile1.nc       fv_core.res.tile1.nc 
     cp_vrfy ${bkpath}/${restart_prefix}fv_tracer.res.tile1.nc     fv_tracer.res.tile1.nc
     cp_vrfy ${bkpath}/${restart_prefix}sfc_data.nc                sfc_data.nc 
@@ -249,6 +279,9 @@ else
     cp_vrfy ${bkpath}/${restart_prefix}fv_srf_wnd.res.tile1.nc    fv_srf_wnd.res.tile1.nc
     cp_vrfy ${bkpath}/${restart_prefix}phy_data.nc                phy_data.nc
     cp_vrfy ${fg_root}/${YYYYMMDDHHmInterv}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
+    if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
+      echo "${YYYYMMDDHH}(${cycle_type}): warm start at ${current_time} from ${checkfile} " >> ${EXPTDIR}/log.cycles
+    fi
 
 # do SST update at ${SST_update_hour}z for the restart sfc_data.nc
     if [ ${HH} -eq ${SST_update_hour} ]; then
@@ -262,10 +295,10 @@ else
          ${ECHO} "ERROR: No SST update at ${time_str}!!!!"
        fi
        if [ -r "latest.SST" ]; then
-         cp_vrfy ${FIXgsm}/RTG_SST_landmask.dat                ./RTG_SST_landmask.dat
+         ln_vrfy ${FIXgsm}/RTG_SST_landmask.dat                ./RTG_SST_landmask.dat
          ln_vrfy ./latest.SST                                  ./SSTRTG
-         cp_vrfy ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  ./fv3_grid_spec
-         cp_vrfy ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_akbk       ./fv3_akbk
+         ln_vrfy ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  ./fv3_grid_spec
+         ln_vrfy ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_akbk       ./fv3_akbk
 
 cat << EOF > sst.namelist
 &setup
@@ -277,6 +310,10 @@ cat << EOF > sst.namelist
 /
 EOF
          ${EXECDIR}/process_updatesst > stdout_sstupdate 2>&1
+         sst_reference_time=$(wgrib2 -t latest.SST) 
+         if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
+           echo "${YYYYMMDDHH}(${cycle_type}): update SST using ${sst_reference_time}" >> ${EXPTDIR}/log.cycles
+         fi
        else
          echo "ERROR: No latest SST file for update at ${YYYYMMDDHH}!!!!"
        fi
@@ -377,10 +414,11 @@ fi
 # Please consult Ming or Tanya first before turning on this surgery.
 #
 #-----------------------------------------------------------------------
-#
-if [ ${YYYYMMDDHH} -eq 9999999999 ]; then
+# 
+#if [ ${YYYYMMDDHH} -eq 2021100812 ] ; then
+if [ ${HH} -eq 06 ] || [ ${HH} -eq 18 ]; then
+if [ ${cycle_type} == "spinup" ]; then
    raphrrr_com=/mnt/lfs4/BMC/rtwbl/mhu/wcoss/nco/com/
-#   cp_vrfy ${FIX_GSI}/use_raphrrr_sfc.namelist                                  use_raphrrr_sfc.namelist
    ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec                     fv3_grid_spec
    ln -s ${raphrrr_com}/rap/prod/rap.${YYYYMMDD}/rap.t${HH}z.wrf_inout_smoke    sfc_rap
    ln -s ${raphrrr_com}/hrrr/prod/hrrr.${YYYYMMDD}/conus/hrrr.t${HH}z.wrf_inout sfc_hrrr
@@ -403,12 +441,16 @@ EOF
 
       ./${exect} > stdout 2>&1 || print_info_msg "\
       Call to executable to run surface surgery returned with nonzero exit code."
+      if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
+        echo "${YYYYMMDDHH}(${cycle_type}): run surface surgery" >> ${EXPTDIR}/log.cycles
+      fi
    else
       print_info_msg "\
       The executable specified in exect does not exist:
       exect = \"${EXECDIR}/$exect\"
       Build executable and rerun."
    fi
+fi
 fi
 #
 #-----------------------------------------------------------------------

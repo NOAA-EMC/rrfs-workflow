@@ -1207,10 +1207,14 @@ PREEXISTING_DIR_METHOD="delete"
 # Set VERBOSE.  This is a flag that determines whether or not the experiment
 # generation and workflow task scripts tend to be print out more informational
 # messages.
+# Set SAVE_CYCLE_LOG.  This is a flag that determines whether or not save
+#    the information related to data assimilation cycling, such as background
+#    used in each cycle
 #
 #-----------------------------------------------------------------------
 #
 VERBOSE="TRUE"
+SAVE_CYCLE_LOG="FALSE"
 #
 #-----------------------------------------------------------------------
 #
@@ -1569,6 +1573,7 @@ WTIME_RUN_NONVARCLDANL="00:20:00"
 #
 MEMO_RUN_REF2TTEN="10G"
 MEMO_RUN_NONVARCLDANL="20G"
+MEMO_RUN_PREPSTART="24G"
 MEMO_RUN_WGRIB2="24G"
 #
 # Maximum number of attempts.

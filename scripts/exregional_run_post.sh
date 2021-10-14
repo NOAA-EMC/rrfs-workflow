@@ -154,54 +154,11 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-# Remove any files from previous runs and stage necessary files in fhr_dir.
+# Remove any files from previous runs.
 #
 #-----------------------------------------------------------------------
 #
 rm_vrfy -f fort.*
-cp_vrfy ${EMC_POST_DIR}/parm/nam_micro_lookup.dat ./eta_micro_lookup.dat
-ln_vrfy -snf ${FIX_CRTM}/*bin ./
-if [ ${USE_CUSTOM_POST_CONFIG_FILE} = "TRUE" ]; then
-  post_config_fp="${CUSTOM_POST_CONFIG_FP}"
-  post_params_fp="${CUSTOM_POST_PARAMS_FP}"
-  print_info_msg "
-====================================================================
-Copying the user-defined post flat file specified by CUSTOM_POST_CONFIG_FP
-to the post forecast hour directory (fhr_dir):
-  CUSTOM_POST_CONFIG_FP = \"${CUSTOM_POST_CONFIG_FP}\"
-  CUSTOM_POST_PARAMS_FP = \"${CUSTOM_POST_PARAMS_FP}\"
-  fhr_dir = \"${fhr_dir}\"
-===================================================================="
-else
-  post_config_fp="${EMC_POST_DIR}/parm/postxconfig-NT-fv3lam.txt"
-  post_params_fp="${EMC_POST_DIR}/parm/params_grib2_tbl_new"
-  print_info_msg "
-====================================================================
-Copying the default post flat file specified by post_config_fp to the post
-forecast hour directory (fhr_dir):
-  post_config_fp = \"${post_config_fp}\"
-  post_params_fp = \"${post_params_fp}\"
-  fhr_dir = \"${fhr_dir}\"
-===================================================================="
-fi
-cp_vrfy ${post_config_fp} ./postxconfig-NT.txt
-cp_vrfy ${post_params_fp} ./params_grib2_tbl_new
-cp_vrfy ${EXECDIR}/upp.x .
-if [ -f ${FFG_DIR}/latest.FFG ] && [ ${NET} = "RRFS_CONUS" ]; then
-  cp_vrfy ${FFG_DIR}/latest.FFG .
-  grid_specs_rrfs="lambert:-97.5:38.500000 237.826355:1746:3000 21.885885:1014:3000"
-  wgrib2 latest.FFG -match "0-12 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_12h.grib2
-  wgrib2 latest.FFG -match "0-6 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_06h.grib2
-  wgrib2 latest.FFG -match "0-3 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_03h.grib2
-  wgrib2 latest.FFG -match "0-1 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_01h.grib2
-elif [ -f ${FFG_DIR}/latest.FFG ] && [ ${NET} = "RRFS_NA_3km" ]; then
-  cp_vrfy ${FFG_DIR}/latest.FFG .
-  grid_specs_rrfs="rot-ll:248.000000:-42.000000:0.000000 309.000000:4081:0.025000 -33.0000000:2641:0.025000"
-  wgrib2 latest.FFG -match "0-12 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_12h.grib2
-  wgrib2 latest.FFG -match "0-6 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_06h.grib2
-  wgrib2 latest.FFG -match "0-3 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_03h.grib2
-  wgrib2 latest.FFG -match "0-1 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_01h.grib2
-fi
 #
 #-----------------------------------------------------------------------
 #
@@ -259,7 +216,7 @@ if [ ! -r ${nwges_dir}/INPUT/gfs_ctrl.nc ]; then
 fi
 if [ -r "$run_dir/RESTART/${restart_prefix}.coupler.res" ]; then
   for file in ${filelist}; do
-    cp_vrfy $run_dir/RESTART/${restart_prefix}.${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
+    mv_vrfy $run_dir/RESTART/${restart_prefix}.${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
   done
   echo " ${fhr} forecast from ${yyyymmdd}${hh} is ready " #> ${nwges_dir}/RESTART/restart_done_f${fhr}
 else
@@ -279,7 +236,7 @@ else
 
   if [ -r "$run_dir/RESTART/coupler.res" ] && [ ${fhr} -eq ${FCST_LEN_HRS_thiscycle} ] ; then
     for file in ${filelist}; do
-      cp_vrfy $run_dir/RESTART/${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
+      mv_vrfy $run_dir/RESTART/${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
     done
     echo " ${fhr} forecast from ${yyyymmdd}${hh} is ready " #> ${nwges_dir}/RESTART/restart_done_f${fhr}
   else
@@ -287,6 +244,55 @@ else
   fi
 fi
 #
+#-----------------------------------------------------------------------
+#
+# stage necessary files in fhr_dir.
+#
+#-----------------------------------------------------------------------
+#
+cp_vrfy ${EMC_POST_DIR}/parm/nam_micro_lookup.dat ./eta_micro_lookup.dat
+ln_vrfy -snf ${FIX_CRTM}/*bin ./
+if [ ${USE_CUSTOM_POST_CONFIG_FILE} = "TRUE" ]; then
+  post_config_fp="${CUSTOM_POST_CONFIG_FP}"
+  post_params_fp="${CUSTOM_POST_PARAMS_FP}"
+  print_info_msg "
+====================================================================
+Copying the user-defined post flat file specified by CUSTOM_POST_CONFIG_FP
+to the post forecast hour directory (fhr_dir):
+  CUSTOM_POST_CONFIG_FP = \"${CUSTOM_POST_CONFIG_FP}\"
+  CUSTOM_POST_PARAMS_FP = \"${CUSTOM_POST_PARAMS_FP}\"
+  fhr_dir = \"${fhr_dir}\"
+===================================================================="
+else
+  post_config_fp="${EMC_POST_DIR}/parm/postxconfig-NT-fv3lam.txt"
+  post_params_fp="${EMC_POST_DIR}/parm/params_grib2_tbl_new"
+  print_info_msg "
+====================================================================
+Copying the default post flat file specified by post_config_fp to the post
+forecast hour directory (fhr_dir):
+  post_config_fp = \"${post_config_fp}\"
+  post_params_fp = \"${post_params_fp}\"
+  fhr_dir = \"${fhr_dir}\"
+===================================================================="
+fi
+cp_vrfy ${post_config_fp} ./postxconfig-NT.txt
+cp_vrfy ${post_params_fp} ./params_grib2_tbl_new
+cp_vrfy ${EXECDIR}/upp.x .
+if [ -f ${FFG_DIR}/latest.FFG ] && [ ${NET} = "RRFS_CONUS" ]; then
+  cp_vrfy ${FFG_DIR}/latest.FFG .
+  grid_specs_rrfs="lambert:-97.5:38.500000 237.826355:1746:3000 21.885885:1014:3000"
+  wgrib2 latest.FFG -match "0-12 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_12h.grib2
+  wgrib2 latest.FFG -match "0-6 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_06h.grib2
+  wgrib2 latest.FFG -match "0-3 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_03h.grib2
+  wgrib2 latest.FFG -match "0-1 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_01h.grib2
+elif [ -f ${FFG_DIR}/latest.FFG ] && [ ${NET} = "RRFS_NA_3km" ]; then
+  cp_vrfy ${FFG_DIR}/latest.FFG .
+  grid_specs_rrfs="rot-ll:248.000000:-42.000000:0.000000 309.000000:4081:0.025000 -33.0000000:2641:0.025000"
+  wgrib2 latest.FFG -match "0-12 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_12h.grib2
+  wgrib2 latest.FFG -match "0-6 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_06h.grib2
+  wgrib2 latest.FFG -match "0-3 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_03h.grib2
+  wgrib2 latest.FFG -match "0-1 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_01h.grib2
+fi
 #
 #-----------------------------------------------------------------------
 #

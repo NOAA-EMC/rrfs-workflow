@@ -353,6 +353,7 @@ optionList[2]=DO_RETRO
 optionList[3]=LBCS_ICS_ONLY
 optionList[4]=DO_NONVAR_CLDANAL
 optionList[5]=DO_REFL2TTEN
+optionList[6]=SAVE_CYCLE_LOG
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));

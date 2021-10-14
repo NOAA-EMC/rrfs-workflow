@@ -289,6 +289,7 @@ settings="\
 #
   'memo_run_ref2tten': ${MEMO_RUN_REF2TTEN}
   'memo_run_nonvarcldanl': ${MEMO_RUN_NONVARCLDANL}
+  'memo_run_prepstart': ${MEMO_RUN_PREPSTART}
   'memo_run_wgrib2': ${MEMO_RUN_WGRIB2}
 #
 # Maximum number of tries for each task.
