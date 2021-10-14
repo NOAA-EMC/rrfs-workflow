@@ -311,12 +311,11 @@ ln_vrfy -snf ${fixgriddir}/fv3_akbk                     fv3_akbk
 ln_vrfy -snf ${fixgriddir}/fv3_grid_spec                fv3_grid_spec
 
 if [ ${BKTYPE} -eq 1 ]; then  # cold start uses background from INPUT
-  ln_vrfy -snf ${bkpath}/gfs_data.tile7.halo0.nc        gfs_data.tile7.halo0.nc_b
-  ln_vrfy -snf ${fixgriddir}/phis.nc                    phis.nc
-  ncks -A -v  phis               phis.nc           gfs_data.tile7.halo0.nc_b
+  ln_vrfy -snf ${fixgriddir}/phis.nc               phis.nc
+  ncks -A -v  phis               phis.nc           ${bkpath}/gfs_data.tile7.halo0.nc 
 
-  ln_vrfy -snf ${bkpath}/sfc_data.tile7.halo0.nc        fv3_sfcdata
-  ln_vrfy -snf gfs_data.tile7.halo0.nc_b                fv3_dynvars
+  ln_vrfy -snf ${bkpath}/sfc_data.tile7.halo0.nc   fv3_sfcdata
+  ln_vrfy -snf ${bkpath}/gfs_data.tile7.halo0.nc   fv3_dynvars
   ln_vrfy -s fv3_dynvars                           fv3_tracer
 
   fv3lam_bg_type=1

@@ -62,6 +62,7 @@ FV3_HRRR:
     nord_tr: 2
     nrows_blend: 10
     regional_bcs_from_gsi: false
+    rf_cutoff: 20000.0
     vtdm4: 0.03
     write_restart_with_bcs: false
   gfs_physics_nml: 
@@ -94,6 +95,7 @@ FV3_RAP:
     nord_tr: 2
     nrows_blend: 10
     regional_bcs_from_gsi: false
+    rf_cutoff: 20000.0
     write_restart_with_bcs: false
   gfs_physics_nml:
     <<: *gsd_sar_phys
