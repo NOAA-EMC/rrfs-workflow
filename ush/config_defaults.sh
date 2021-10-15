@@ -1722,8 +1722,15 @@ NUM_ENS_MEMBERS="1"
 # DO_SURFACE_CYCLE:
 # Flag that determines whether to continue cycle surface fields.
 #
+# SURFACE_CYCLE_DELAY_HRS:
+# The surface cycle usually happens in cold start cycle. But there is
+# a need to delay surface cycle to the warm start cycle following the
+# cold start cycle. This one sets how many hours we want the surface
+# cycle being delayed.
+#
 DO_DACYCLE="FALSE"
 DO_SURFACE_CYCLE="FALSE"
+SURFACE_CYCLE_DELAY_HRS="0"
 #
 #-----------------------------------------------------------------------
 #

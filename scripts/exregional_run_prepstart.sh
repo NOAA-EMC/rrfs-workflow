@@ -133,6 +133,31 @@ else
   done
 fi
 
+# cycle surface 
+SFC_CYC=0
+if [ ${DO_SURFACE_CYCLE} == "TRUE" ]; then  # cycle surface fields
+  if [ ${DO_SPINUP} == "TRUE" ]; then
+    if [ ${cycle_type} == "spinup" ]; then
+      for cyc_start in "${CYCL_HRS_SPINSTART[@]}"; do
+        SFC_CYCL_HH=$(( ${cyc_start} + ${SURFACE_CYCLE_DELAY_HRS} ))
+        if [ ${HH} -eq ${SFC_CYCL_HH} ]; then
+          if [${SURFACE_CYCLE_DELAY_HRS} == "0" ]; then
+            SFC_CYC=1  # cold start
+          else
+            SFC_CYC=2  # delayed surface cycle
+          fi
+        fi
+      done
+    fi
+  else
+    for cyc_start in "${CYCL_HRS_PRODSTART[@]}"; do
+       if [ ${HH} -eq ${cyc_start} ]; then
+          SFC_CYC=1  # cold start
+       fi
+    done
+  fi
+fi
+
 cd_vrfy ${modelinputdir}
 
 if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial files from ics
@@ -145,67 +170,11 @@ if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial file
       print_info_msg "$VERBOSE" "cold start from $bkpath"
       if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
         echo "${YYYYMMDDHH}(${cycle_type}): cold start at ${current_time} from $bkpath " >> ${EXPTDIR}/log.cycles
-      if
+      fi
     else
       print_err_msg_exit "Error: cannot find cold start initial condition from : ${bkpath}"
     fi
 
-    if [ ${DO_SURFACE_CYCLE} == "TRUE" ]; then  # cycle surface fields
-
-# figure out which surface is available
-      surface_file_dir_name=fcst_fv3lam
-      bkpath_find="missing"
-      restart_prefix_find="missing"
-      for ndayinhour in 00 24 48
-      do 
-        if [ "${bkpath_find}" == "missing" ]; then
-          restart_prefix=$( date +%Y%m%d.%H0000. -d "${START_DATE} ${ndayinhour} hours ago" )
-
-          offset_hours=$(( ${DA_CYCLE_INTERV} + ${ndayinhour} ))
-          YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
-          bkpath=${fg_root}/${YYYYMMDDHHmInterv}/${surface_file_dir_name}/RESTART  
-
-          n=${DA_CYCLE_INTERV}
-          while [[ $n -le 6 ]] ; do
-             checkfile=${bkpath}/${restart_prefix}sfc_data.nc
-             if [ -r "${checkfile}" ] && [ "${bkpath_find}" == "missing" ]; then
-               bkpath_find=${bkpath}
-               restart_prefix_find=${restart_prefix}
-               print_info_msg "$VERBOSE" "Found ${checkfile}; Use it as surface for analysis "
-             fi
- 
-             n=$((n + ${DA_CYCLE_INTERV}))
-             offset_hours=$(( ${n} + ${ndayinhour} ))
-             YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
-             bkpath=${fg_root}/${YYYYMMDDHHmInterv}/${surface_file_dir_name}/RESTART  # cycling, use background from RESTART
-             print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
-          done
-        fi
-
-      done
-
-# rename the soil mositure and temperature fields in restart file
-      rm -f cycle_surface.done
-      if [ "${bkpath_find}" == "missing" ]; then
-        print_info_msg "Warning: cannot find surface from previous cycle"
-      else
-        checkfile=${bkpath_find}/${restart_prefix_find}sfc_data.nc
-        if [ -r "${checkfile}" ]; then
-          cp_vrfy ${checkfile}  ${restart_prefix_find}sfc_data.nc
-          mv sfc_data.tile7.halo0.nc cold.sfc_data.tile7.halo0.nc
-          ncks -v geolon,geolat cold.sfc_data.tile7.halo0.nc geolonlat.nc
-          ln_vrfy -sf ${restart_prefix_find}sfc_data.nc sfc_data.tile7.halo0.nc
-          ncks --append geolonlat.nc sfc_data.tile7.halo0.nc
-          ncrename -v tslb,stc -v smois,smc -v sh2o,slc sfc_data.tile7.halo0.nc
-          echo "cycle surface with ${checkfile}" > cycle_surface.done
-          if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
-            echo "${YYYYMMDDHH}(${cycle_type}): cycle surface with ${checkfile} " >> ${EXPTDIR}/log.cycles
-          fi
-        else
-          print_info_msg "Warning: cannot find surface from previous cycle"
-        fi
-      fi
-    fi
 else
 
 # Setup the INPUT directory for warm start cycles, which can be spin-up cycle or product cycle.
@@ -326,6 +295,68 @@ EOF
   fi
 fi
 
+if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
+
+# figure out which surface is available
+      surface_file_dir_name=fcst_fv3lam
+      bkpath_find="missing"
+      restart_prefix_find="missing"
+      for ndayinhour in 00 24 48
+      do 
+        if [ "${bkpath_find}" == "missing" ]; then
+          restart_prefix=$( date +%Y%m%d.%H0000. -d "${START_DATE} ${ndayinhour} hours ago" )
+
+          offset_hours=$(( ${DA_CYCLE_INTERV} + ${ndayinhour} ))
+          YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
+          bkpath=${fg_root}/${YYYYMMDDHHmInterv}/${surface_file_dir_name}/RESTART  
+
+          n=${DA_CYCLE_INTERV}
+          while [[ $n -le 6 ]] ; do
+             checkfile=${bkpath}/${restart_prefix}sfc_data.nc
+             if [ -r "${checkfile}" ] && [ "${bkpath_find}" == "missing" ]; then
+               bkpath_find=${bkpath}
+               restart_prefix_find=${restart_prefix}
+               print_info_msg "$VERBOSE" "Found ${checkfile}; Use it as surface for analysis "
+             fi
+ 
+             n=$((n + ${DA_CYCLE_INTERV}))
+             offset_hours=$(( ${n} + ${ndayinhour} ))
+             YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
+             bkpath=${fg_root}/${YYYYMMDDHHmInterv}/${surface_file_dir_name}/RESTART  # cycling, use background from RESTART
+             print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
+          done
+        fi
+
+      done
+
+# rename the soil mositure and temperature fields in restart file
+      rm -f cycle_surface.done
+      if [ "${bkpath_find}" == "missing" ]; then
+        print_info_msg "Warning: cannot find surface from previous cycle"
+      else
+        checkfile=${bkpath_find}/${restart_prefix_find}sfc_data.nc
+        if [ -r "${checkfile}" ]; then
+          cp_vrfy ${checkfile}  ${restart_prefix_find}sfc_data.nc
+          if [ ${SFC_CYC} -eq 1 ]; then   # cycle surface at cold start cycle
+            mv sfc_data.tile7.halo0.nc cold.sfc_data.tile7.halo0.nc
+            ncks -v geolon,geolat cold.sfc_data.tile7.halo0.nc geolonlat.nc
+            ln_vrfy -sf ${restart_prefix_find}sfc_data.nc sfc_data.tile7.halo0.nc
+            ncks --append geolonlat.nc sfc_data.tile7.halo0.nc
+            ncrename -v tslb,stc -v smois,smc -v sh2o,slc sfc_data.tile7.halo0.nc
+          else
+            mv sfc_data.nc old.sfc_data.nc
+            mv ${restart_prefix_find}sfc_data.nc sfc_data.nc
+          fi
+          echo "cycle surface with ${checkfile}" > cycle_surface.done
+          if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
+            echo "${YYYYMMDDHH}(${cycle_type}): cycle surface with ${checkfile} " >> ${EXPTDIR}/log.cycles
+          fi
+        else
+          print_info_msg "Warning: cannot find surface from previous cycle"
+        fi
+      fi
+fi
+
 #-----------------------------------------------------------------------
 #
 # go to INPUT directory.
@@ -415,8 +446,8 @@ fi
 #
 #-----------------------------------------------------------------------
 # 
-#if [ ${YYYYMMDDHH} -eq 2021100812 ] ; then
-if [ ${HH} -eq 06 ] || [ ${HH} -eq 18 ]; then
+if [ ${YYYYMMDDHH} -eq 9999999999 ] ; then
+#if [ ${HH} -eq 06 ] || [ ${HH} -eq 18 ]; then
 if [ ${cycle_type} == "spinup" ]; then
    raphrrr_com=/mnt/lfs4/BMC/rtwbl/mhu/wcoss/nco/com/
    ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec                     fv3_grid_spec
