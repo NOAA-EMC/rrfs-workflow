@@ -67,9 +67,9 @@ the specified cycle.
 #
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ ${CYCLE_TYPE} == "spinup" ]; then
-  run_dir="${CYCLE_DIR}/fcst_fv3lam_spinup"
+  run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_spinup"
 else
-  run_dir="${CYCLE_DIR}/fcst_fv3lam${SLASH_ENSMEM_SUBDIR}"
+  run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
 fi
 mkdir_vrfy -p ${run_dir}/INPUT
 mkdir_vrfy -p ${run_dir}/RESTART

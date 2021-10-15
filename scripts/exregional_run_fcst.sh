@@ -9,6 +9,7 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHDIR/source_util_funcs.sh
+. $USHDIR/set_FV3nml_stoch_params.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -165,7 +166,7 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-run_dir="${cycle_dir}${slash_ensmem_subdir}"
+run_dir="${cycle_dir}"
 #
 #-----------------------------------------------------------------------
 #
@@ -465,21 +466,26 @@ ln_vrfy -sf ${relative_or_null} ${FIELD_TABLE_FP} ${run_dir}
 ln_vrfy -sf ${relative_or_null} ${NEMS_CONFIG_FP} ${run_dir}
 ln_vrfy -sf ${relative_or_null} ${NEMS_YAML_FP} ${run_dir}
 
-if [ "${DO_ENSEMBLE}" = TRUE ]; then
-  ln_vrfy -sf ${relative_or_null} "${FV3_NML_ENSMEM_FPS[$(( 10#${ensmem_indx}-1 ))]}" ${run_dir}/${FV3_NML_FN}
+if [ ${BKTYPE} -eq 0 ]; then
+  # cycling, using namelist for cycling forecast
+  cp_vrfy ${FV3_NML_RESTART_FP} ${run_dir}/input.nml
 else
-  if [ ${BKTYPE} -eq 0 ]; then
-    # cycling, using namelist for cycling forecast
-    cp_vrfy ${FV3_NML_RESTART_FP} ${run_dir}/input.nml
+  if [ -f "INPUT/cycle_surface.done" ]; then
+  # namelist for cold start with surface cycle
+    cp_vrfy ${FV3_NML_CYCSFC_FP} ${run_dir}/input.nml
   else
-    if [ -f "INPUT/cycle_surface.done" ]; then
-    # namelist for cold start with surface cycle
-      cp_vrfy ${FV3_NML_CYCSFC_FP} ${run_dir}/input.nml
-    else
-    # cold start, using namelist for cold start
-      cp_vrfy ${FV3_NML_FP} ${run_dir}/input.nml
-    fi
+  # cold start, using namelist for cold start
+    cp_vrfy ${FV3_NML_FP} ${run_dir}/input.nml
   fi
+fi
+
+if [ "${DO_ENSEMBLE}" = TRUE ]; then
+  cp ${run_dir}/input.nml ${run_dir}/input.nml_base
+  set_FV3nml_stoch_params cdate="$cdate" || print_err_msg_exit "\
+ Call to function to create the ensemble-based namelist for the current 
+ cycle's (cdate) run directory (run_dir) failed: 
+   cdate = \"${cdate}\"
+   run_dir = \"${run_dir}\""
 fi
 #
 #-----------------------------------------------------------------------
@@ -513,30 +519,6 @@ create_diag_table_file \
 cycle's (cdate) run directory (run_dir) failed:
   run_dir = \"${run_dir}\""
 
-#
-#-----------------------------------------------------------------------
-#
-# If running ensemble forecasts, create a link to the cycle-specific
-# diagnostic tables file in the cycle directory.  Note that this link
-# should not be made if not running ensemble forecasts because in that
-# case, the cycle directory is the run directory (and we would be creating
-# a symlink with the name of a file that already exists).
-#
-#-----------------------------------------------------------------------
-#
-if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  if [ "${MACHINE}" = "WCOSS_CRAY" ]; then
-    relative_or_null=""
-  else
-    relative_or_null="--relative"
-  fi
-  diag_table_fp="${cycle_dir}/${DIAG_TABLE_FN}"
-  ln_vrfy -sf ${relative_or_null} ${diag_table_fp} ${run_dir}
-fi
-#
-#-----------------------------------------------------------------------
-#
-# Set and export variables.
 #
 #-----------------------------------------------------------------------
 #

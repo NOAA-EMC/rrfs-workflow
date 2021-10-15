@@ -4,58 +4,37 @@ ACCOUNT="nrtrr"
 EXPT_BASEDIR="YourOwnSpace"
 EXPT_SUBDIR="RRFS_CONUS_13km"
 
+PARTITION_GRAPHICS=kjet,xjet
+
 if [[ -n $RESERVATION ]] ; then
   ACCOUNT=rtrr
   SERVICE_ACCOUNT=nrtrr
   PARTITION_DEFAULT=kjet
   PARTITION_FCST=kjet
-  PARTITION_GRAPHICS=kjet,xjet,tjet,ujet,vjet
   PARTITION_ANALYSIS=kjet
 else
   PARTITION_DEFAULT=kjet
 fi
-
-OBSPATH_NSSLMOSIAC=/public/data/radar/nssl/mrms/conus
-
-RADARREFL_TIMELEVEL=(0 15 30 45)
-FH_DFI_RADAR="0.0,0.25,0.5"
 
 if [[ $MACHINE == "hera" ]] ; then
   ACCOUNT="wrfruc"
   PARTITION_DEFAULT=""
   PARTITION_FCST=""
   QUEUE_ANALYSIS="batch"
-
-# for using RAP as boundary and initial
-# #  EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/public/data/grids/rap/full/wrfnat/grib2
-# #  EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/public/data/grids/rap/full/wrfnat/grib2
-# # for using GFS as boundary and initial
-   EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/public/data/grids/gfs/0p25deg/grib2
-   EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/public/data/grids/gfs/0p25deg/grib2
-# observations
-   OBSPATH=/scratch2/BMC/public/data/grids/rap/obs
-   OBSPATH_NSSLMOSIAC=/scratch2/BMC/public/data/radar/nssl/mrms/conus
-   LIGHTNING_ROOT=/scratch2/BMC/public/data/lightning
-   ENKF_FCST=/scratch1/NCEPDEV/rstprod/com/gfs/prod
 fi
 
-if [[ $MACHINE == "orion" ]] ; then
-  ACCOUNT=ztrr
-  QUEUE_ANALYSIS="batch"
-fi
+#DO_ENSEMBLE="TRUE"
 
 VERBOSE="TRUE"
 
 RUN_ENVIR="nco"
-PREEXISTING_DIR_METHOD="upgrade"
-
 PREDEF_GRID_NAME=RRFS_CONUS_13km
 TILE_LABELS="CONUS REGIONS"
 
 DO_DACYCLE="TRUE"
 #DO_SPINUP="TRUE"
-#DO_SURFACE_CYCLE="TRUE"
-#DO_RETRO="TRUE"
+DO_SURFACE_CYCLE="TRUE"
+DO_RETRO="TRUE"
 #LBCS_ICS_ONLY="TRUE"
 #DO_NONVAR_CLDANAL="TRUE"
 #DO_REFL2TTEN="TRUE"
@@ -63,67 +42,55 @@ DO_DACYCLE="TRUE"
 QUILTING="TRUE"
 CCPP_PHYS_SUITE="FV3_HRRR"
 
-EXTRN_MDL_ICS_OFFSET_HRS="3"
+if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
+   NUM_ENS_MEMBERS=9
+   DO_SPPT=TRUE
+   SPPT_MAG=0.5
+   DO_DACYCLE="TRUE"
+   DO_SPINUP="FALSE"
+   DO_SURFACE_CYCLE="FALSE"
+   DO_NONVAR_CLDANAL="FALSE"
+   DO_REFL2TTEN="FALSE"
+   DO_ENSCONTROL="TRUE"
+   EXTRN_MDL_NAME_ICS="GEFS"
+   EXTRN_MDL_NAME_ICS="HRRRDAS"
+   EXTRN_MDL_NAME_LBCS="GEFS"
+   EXTRN_MDL_ICS_OFFSET_HRS="0"
+   EXTRN_MDL_LBCS_OFFSET_HRS="0"
+   LBC_SPEC_INTVL_HRS="3"
+   DA_CYCLE_INTERV="3"
+   ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_ens"
+else
+   EXTRN_MDL_NAME_ICS="FV3GFS"
+   EXTRN_MDL_NAME_LBCS="FV3GFS"
+   EXTRN_MDL_ICS_OFFSET_HRS="3"
+   EXTRN_MDL_LBCS_OFFSET_HRS="6"
+   LBC_SPEC_INTVL_HRS="1"
+   DA_CYCLE_INTERV="1"
+   ARCHIVEDIR="/1year/BMC/wrfruc/rrfs_dev1"
+fi
+
+
 BOUNDARY_LEN_HRS="24"
-LBC_SPEC_INTVL_HRS="1"
-EXTRN_MDL_LBCS_OFFSET_HRS="6"
 EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS="0"
 
-DATE_FIRST_CYCL="20210811"
-DATE_LAST_CYCL="20210811"
+DATE_FIRST_CYCL="20211007"
+DATE_LAST_CYCL="20211007"
 CYCL_HRS=( "00" "12" )
 CYCL_HRS_SPINSTART=("03" "15")
-CYCL_HRS_PRODSTART=("03" "15")
+CYCL_HRS_PRODSTART=("00" "12")
 CYCLEMONTH="8"
 CYCLEDAY="10"
 
-if [[ $DO_RETRO == "TRUE" ]] ; then
-  
-  if [[ $MACHINE == "jet" ]] ; then
-    EXTRN_MDL_SOURCE_BASEDIR_ICS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/hrrr/conus/wrfnat/grib2
-    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/rap/full/wrfnat/grib2
-#    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/gfs/0p25deg/grib2 
-    OBSPATH=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/obs_rap
-    OBSPATH_NSSLMOSIAC=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/reflectivity
-    LIGHTNING_ROOT=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/lightning/vaisala/netcdf/
-    ENKF_FCST=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/enkf/atm
-  fi
-  if [[ $MACHINE == "hera" ]] ; then
-    EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/zrtrr/rli/data/hrrr/conus/wrfnat/grib2
-    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/zrtrr/rli/data/rap/full/wrfnat/grib2
-#    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/zrtrr/rli/data/gfs/0p25deg/grib2
-    OBSPATH=/scratch2/BMC/zrtrr/rli/data/obs_rap
-    OBSPATH_NSSLMOSIAC=/scratch2/BMC/zrtrr/rli/data/reflectivity
-    LIGHTNING_ROOT=/scratch2/BMC/zrtrr/rli/data/lightning/vaisala/netcdf/
-    ENKF_FCST=/scratch2/BMC/zrtrr/rli/data/enkf/atm
-  fi
-  if [[ $MACHINE == "orion" ]] ; then
-    EXTRN_MDL_SOURCE_BASEDIR_ICS=/work/noaa/wrfruc/mhu/rrfs/data/gfs
-    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/work/noaa/wrfruc/mhu/rrfs/data/gfs
-    OBSPATH=/work/noaa/wrfruc/mhu/rrfs/data/obs_rap
-    OBSPATH_NSSLMOSIAC=/work/noaa/wrfruc/mhu/rrfs/data/reflectivity
-    LIGHTNING_ROOT=/work/noaa/wrfruc/mhu/rrfs/data/lightning/vaisala/netcdf/
-  fi
-  if [[ $LBCS_ICS_ONLY == "TRUE" ]]; then
-    PREEXISTING_DIR_METHOD="rename"
-    INITIAL_CYCLEDEF="${DATE_FIRST_CYCL}0300 ${DATE_LAST_CYCL}2300 12:00:00"
-    BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 06:00:00"
-  else
-    PREEXISTING_DIR_METHOD="upgrade"
-    PROD_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 01:00:00"
-    POSTPROC_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 01:00:00"
-    POSTPROC_LONG_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 03:00:00"
-  fi
-else
-  INITIAL_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 12:00:00"
-  BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}1200 ${DATE_LAST_CYCL}2300 06:00:00"
-  PROD_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 01:00:00"
-  POSTPROC_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 01:00:00"
-  POSTPROC_LONG_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 03:00:00"
-  ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}0700 ${DATE_LAST_CYCL}2300 24:00:00"
-  if [[ $DO_SPINUP == "TRUE" ]] ; then
-    SPINUP_CYCLEDEF="00 03-08,15-20 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
-  fi
+PREEXISTING_DIR_METHOD="upgrade"
+INITIAL_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 06:00:00"
+BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 06:00:00"
+PROD_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 03:00:00"
+POSTPROC_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 03:00:00"
+#POSTPROC_LONG_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 06:00:00"
+ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}0700 ${DATE_LAST_CYCL}2300 24:00:00"
+if [[ $DO_SPINUP == "TRUE" ]] ; then
+  SPINUP_CYCLEDEF="00 03-08,15-20 ${CYCLEDAY} ${CYCLEMONTH} 2021 *" 
 fi
 
 FCST_LEN_HRS="12"
@@ -133,11 +100,13 @@ POSTPROC_LONG_LEN_HRS="12"
 #FCST_LEN_HRS_CYCLES=(48 18 18 18 18 18 48 18 18 18 18 18 48 18 18 18 18 18 48 18 18 18 18 18)
 for i in {0..23}; do FCST_LEN_HRS_CYCLES[$i]=3; done
 for i in {0..23..3}; do FCST_LEN_HRS_CYCLES[$i]=12; done
-DA_CYCLE_INTERV="1"
 RESTART_INTERVAL="1 2 3 4 5 6"
 
+SST_ROOT="/lfs4/BMC/public/data/grids/ncep/sst/0p083deg/grib2"
+SST_update_hour=01
+
 NCORES_RUN_ANAL=240
-HALO_BLEND=10
+HALO_BLEND=20
 
 if [[ -n $RESERVATION ]] ; then
   NNODES_MAKE_ICS="3"
@@ -163,8 +132,6 @@ fi
 WTIME_RUN_FCST="02:45:00"
 WTIME_MAKE_LBCS="02:00:00"
 
-EXTRN_MDL_NAME_ICS="FV3GFS"
-EXTRN_MDL_NAME_LBCS="FV3GFS"
 FV3GFS_FILE_FMT_ICS="grib2"
 FV3GFS_FILE_FMT_LBCS="grib2"
 
@@ -177,7 +144,7 @@ USE_CUSTOM_POST_CONFIG_FILE="TRUE"
 TESTBED_FIELDS_FN="testbed_fields_bgdawp.txt"
 CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-fv3lam_rrfs.txt"
 CUSTOM_POST_PARAMS_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/params_grib2_tbl_new"
-ARCHIVEDIR="/1year/BMC/wrfruc/rrfs_dev1"
+
 NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
 NCL_HOME="/home/rtrr/RRFS/graphics"
 NCL_REGION="conus"
@@ -198,33 +165,9 @@ TILE_SETS="full"
 RUN="RRFS_CONUS_13km"
 COMINgfs=""
 
+ . set_rrfs_config.sh
+
 STMP="YourOwnSpace"  # Path to directory STMP that mostly contains input files.
 PTMP="YourOwnSpace"  # Path to directory STMP that mostly contains input files.
 NWGES="YourOwnSpace"  # Path to directory NWGES that save boundary, cold initial, restart files.
-
-if [[ $DO_RETRO == "TRUE" ]] ; then
-  CLEAN_OLDPROD_HRS="240"
-  CLEAN_OLDLOG_HRS="240"
-  CLEAN_OLDRUN_HRS="6"
-  CLEAN_OLDFCST_HRS="6"
-  if [[ $LBCS_ICS_ONLY == "TRUE" ]]; then
-    CLEAN_OLDRUN_HRS="7777"
-    CLEAN_OLDFCST_HRS="7777"
-  fi
-fi
-
-#
-# In NCO mode, the user must manually (e.g. after doing the build step)
-# create the symlink "${FIXrrfs}/fix_sar" that points to EMC's FIXLAM
-# directory on the machine.  For example, on hera, the symlink's target
-# needs to be
-#
-#   /scratch2/NCEPDEV/fv3-cam/emc.campara/fix_fv3cam/fix_sar
-#
-# The experiment generation script will then set FIXLAM to 
-#
-#   FIXLAM="${FIXrrfs}/fix_lam/${EMC_GRID_NAME}"
-#
-# where EMC_GRID_NAME has the value set above.
-#
 

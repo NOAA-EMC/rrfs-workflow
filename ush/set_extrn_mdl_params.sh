@@ -45,7 +45,7 @@ local func_name="${FUNCNAME[0]}"
 #
 if [[ "${RUN_ENVIR}" == "nco" && ! -z ${COMINgfs} ]]; then
 
-  EXTRN_MDL_SYSBASEDIR_ICS="$COMINgfs"
+  EXTRN_MDL_SYSBASEDIR_ICS="${EXTRN_MDL_SYSBASEDIR_ICS:-$COMINgfs}"
 
 else
 
@@ -109,6 +109,17 @@ else
     esac
     ;;
 
+  "GEFS")
+    case "$MACHINE" in
+    "HERA")
+      EXTRN_MDL_SYSBASEDIR_ICS=""
+      ;;
+    "JET")
+      EXTRN_MDL_SYSBASEDIR_ICS="/mnt/lfs4/BMC/public/data/grids/gens/pgrb2b"
+      ;;
+    esac
+    ;;
+
   "RAP")
     case $MACHINE in
     "HERA")
@@ -139,6 +150,17 @@ else
       ;;
     "CHEYENNE")
       EXTRN_MDL_SYSBASEDIR_ICS="dummy_value"
+      ;;
+    esac
+    ;;
+
+  "HRRRDAS")
+    case "$MACHINE" in
+    "HERA")
+      EXTRN_MDL_SYSBASEDIR_ICS=""
+      ;;
+    "JET")
+      EXTRN_MDL_SYSBASEDIR_ICS="/mnt/lfs1/BMC/wrfruc/HRRRE/cycle"
       ;;
     esac
     ;;
@@ -182,6 +204,9 @@ if [[ -z ${EXTRN_MDL_LBCS_OFFSET_HRS} ]]; then
       ;;
     "FV3GFS")
       EXTRN_MDL_LBCS_OFFSET_HRS="0"
+      ;;
+    "GEFS")
+      EXTRN_MDL_LBCS_OFFSET_HRS="6"
       ;;
     "RAP")
       EXTRN_MDL_LBCS_OFFSET_HRS="3"
@@ -271,6 +296,14 @@ else
       ;;
     esac
     ;;
+
+  "GEFS")
+    case "$MACHINE" in
+    "JET")
+      EXTRN_MDL_SYSBASEDIR_LBCS="/mnt/lfs4/BMC/public/data/grids/gens/pgrb2b"
+      ;;
+    esac
+  ;;
 
   "RAP")
     case $MACHINE in

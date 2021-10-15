@@ -196,7 +196,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-extrn_mdl_staging_dir="${CYCLE_DIR}/${EXTRN_MDL_NAME}/for_${ICS_OR_LBCS}"
+extrn_mdl_staging_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/${EXTRN_MDL_NAME}/for_${ICS_OR_LBCS}"
 mkdir_vrfy -p "${extrn_mdl_staging_dir}"
 cd_vrfy "${extrn_mdl_staging_dir}"
 #
@@ -250,9 +250,15 @@ if [ "${USE_USER_STAGED_EXTRN_FILES}" = "TRUE" ]; then
 
   if [ "${ICS_OR_LBCS}" = "ICS" ]; then
     extrn_mdl_source_dir="${EXTRN_MDL_SOURCE_BASEDIR_ICS}/$CDATE"
+    if [[ "${DO_ENSEMBLE}" = "TRUE" && "${extrn_mdl_name} = "GEFS" ]]; then
+        extrn_mdl_source_dir="${EXTRN_MDL_SOURCE_BASEDIR_ICS}/${INPUT_ENSMEM_SUBDIR}"
+    fi
     extrn_mdl_fns_on_disk=( $( printf "%s " "${EXTRN_MDL_FILES_ICS[@]}" ))
   elif [ "${ICS_OR_LBCS}" = "LBCS" ]; then
     extrn_mdl_source_dir="${EXTRN_MDL_SOURCE_BASEDIR_LBCS}/$CDATE"
+    if [[ "${DO_ENSEMBLE}" = "TRUE" && "${extrn_mdl_name} = "GEFS" ]]; then
+        extrn_mdl_source_dir="${EXTRN_MDL_SOURCE_BASEDIR_LBCS}/${INPUT_ENSMEM_SUBDIR}"
+    fi
     extrn_mdl_fns_on_disk=( $( printf "%s " "${EXTRN_MDL_FILES_LBCS[@]}" ))
   fi
 

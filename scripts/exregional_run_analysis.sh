@@ -55,7 +55,7 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "analworkdir" )
+valid_args=( "cycle_dir" "cycle_type" "analworkdir" "slash_ensmem_subdir" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -172,9 +172,9 @@ cd_vrfy ${analworkdir}
 
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 if [ ${cycle_type} == "spinup" ]; then
-  bkpath=${cycle_dir}/fcst_fv3lam_spinup/INPUT
+  bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam_spinup/INPUT
 else
-  bkpath=${cycle_dir}/fcst_fv3lam/INPUT
+  bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam/INPUT
 fi
 # decide background type
 if [ -r "${bkpath}/phy_data.nc" ]; then

@@ -68,9 +68,9 @@ the specified cycle.
 #
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ ${CYCLE_TYPE} == "spinup" ]; then
-  modelinputdir=${CYCLE_DIR}/fcst_fv3lam_spinup/INPUT
+  modelinputdir=${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_spinup/INPUT
 else
-  modelinputdir=${CYCLE_DIR}/fcst_fv3lam/INPUT
+  modelinputdir=${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/INPUT
 fi
 rm -fr ${modelinputdir}
 mkdir_vrfy -p ${modelinputdir}

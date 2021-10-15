@@ -23,11 +23,23 @@ fi
 if [[ $DO_RETRO == "TRUE" ]] ; then
 
   if [[ $MACHINE == "jet" ]] ; then
-#    EXTRN_MDL_SOURCE_BASEDIR_ICS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/hrrr/conus/wrfnat/grib2
-#    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/rap/full/wrfnat/grib2
-    EXTRN_MDL_SOURCE_BASEDIR_ICS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/gfs/0p25deg/grib2
-    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/gfs/0p25deg/grib2
-    OBSPATH=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/obs_rap
+
+    if [[ ${DO_ENSEMBLE} == "TRUE" ]]; then
+       if [[ ${EXTRN_MDL_NAME_ICS} == "GEFS" ]]; then
+         EXTRN_MDL_SOURCE_BASEDIR_ICS="/mnt/lfs4/HFIP/gsihyb/Chunhua.Zhou/data/GEFS/public/pgrb2"
+       elif [[ ${EXTRN_MDL_NAME_ICS} == "HRRRDAS" ]]; then
+         EXTRN_MDL_SOURCE_BASEDIR_ICS="/mnt/lfs4/HFIP/gsihyb/Chunhua.Zhou/data/HRRRE"
+       fi
+       EXTRN_MDL_SOURCE_BASEDIR_LBCS="/mnt/lfs4/HFIP/gsihyb/Chunhua.Zhou/data/GEFS/public/pgrb2"
+       OBSPATH=/mnt/lfs4/HFIP/gsihyb/Chunhua.Zhou/data/obs
+    else
+#        EXTRN_MDL_SOURCE_BASEDIR_ICS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/hrrr/conus/wrfnat/grib2
+#        EXTRN_MDL_SOURCE_BASEDIR_LBCS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/rap/full/wrfnat/grib2
+       EXTRN_MDL_SOURCE_BASEDIR_ICS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/gfs/0p25deg/grib2
+       EXTRN_MDL_SOURCE_BASEDIR_LBCS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/gfs/0p25deg/grib2
+       OBSPATH=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/obs_rap
+    fi
+
     OBSPATH_NSSLMOSIAC=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/reflectivity
     LIGHTNING_ROOT=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/lightning
     ENKF_FCST=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/enkf/atm
@@ -35,11 +47,23 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     SFCOBS_USELIST="/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/mesonet_uselists"
   fi
   if [[ $MACHINE == "hera" ]] ; then
+
+   if [[ ${DO_ENSEMBLE} == "TRUE" ]]; then
+       if [[ ${EXTRN_MDL_NAME_ICS} == "GEFS" ]]; then
+         EXTRN_MDL_SOURCE_BASEDIR_ICS="/scratch1/BMC/wrfruc/chunhua/data/GEFS/pgrb2"
+       elif [[ ${EXTRN_MDL_NAME_ICS} == "HRRRDAS" ]]; then
+         EXTRN_MDL_SOURCE_BASEDIR_ICS="/scratch1/BMC/wrfruc/chunhua/data/HRRRDAS"
+       fi
+       EXTRN_MDL_SOURCE_BASEDIR_LBCS="/scratch1/BMC/wrfruc/chunhua/data/GEFS/pgrb2"
+       OBSPATH="/scratch1/BMC/wrfruc/chunhua/data/obs"
+    else
 #    EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/zrtrr/rli/data/hrrr/conus/wrfnat/grib2
 #    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/zrtrr/rli/data/rap/full/wrfnat/grib2
-    EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/zrtrr/rli/data/gfs/0p25deg/grib2
-    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/zrtrr/rli/data/gfs/0p25deg/grib2
-    OBSPATH=/scratch2/BMC/zrtrr/rli/data/obs_rap
+      EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/zrtrr/rli/data/gfs/0p25deg/grib2
+      EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/zrtrr/rli/data/gfs/0p25deg/grib2
+      OBSPATH=/scratch2/BMC/zrtrr/rli/data/obs_rap
+    fi
+
     OBSPATH_NSSLMOSIAC=/scratch2/BMC/zrtrr/rli/data/reflectivity
     LIGHTNING_ROOT=/scratch2/BMC/zrtrr/rli/data/lightning
     ENKF_FCST=/scratch2/BMC/zrtrr/rli/data/enkf/atm

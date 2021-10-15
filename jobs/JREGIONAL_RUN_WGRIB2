@@ -67,9 +67,9 @@ files corresponding to a specified forecast hour.
 #
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ ${CYCLE_TYPE} == "spinup" ]; then
-  run_dir="${CYCLE_DIR}/fcst_fv3lam_spinup"
+  run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_spinup"
 else
-  run_dir="${CYCLE_DIR}/fcst_fv3lam${SLASH_ENSMEM_SUBDIR}"
+  run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
 fi
 
 #
@@ -93,14 +93,14 @@ fi
 if [ "${RUN_ENVIR}" = "nco" ]; then
   COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
   if [ ${CYCLE_TYPE} == "spinup" ]; then
-    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
   fi
   mkdir_vrfy -p "${COMOUT}"
 fi
 
 postprd_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/postprd"
 if [ ${CYCLE_TYPE} == "spinup" ]; then
-  postprd_dir="${CYCLE_DIR}/postprd_spinup"
+  postprd_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/postprd_spinup"
 fi
 mkdir_vrfy -p "${postprd_dir}"
 

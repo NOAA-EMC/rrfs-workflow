@@ -1889,3 +1889,6 @@ CLEAN_OLDRUN_HRS="48"
 CLEAN_OLDFCST_HRS="24"
 CLEAN_OLDSTMPPOST_HRS="24"
 CLEAN_NWGES_HRS="72"
+
+# in ensemble mode, whether or not to run member 1 as control member
+DO_ENSCONTROL="FALSE"
