@@ -11,7 +11,7 @@ elif [[ -d /cm ]] ; then
     PLATFORM=wcoss_c
 elif [[ -d /ioddev_dell ]]; then
     . $MODULESHOME/init/sh
-    PLATFORM=wcoss_d
+    PLATFORM=wcoss_dell_p3
 elif [[ -d /scratch1 ]] ; then
     . /apps/lmod/lmod/init/sh
     PLATFORM=hera
