@@ -703,6 +703,11 @@ TEMPLATE_DIR="$USHDIR/templates"
 if [ "${RUN_ENVIR}" = "nco" ]; then
   FIXgsm=${FIXgsm:-"$HOMErrfs/fix/am"}
   FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"$HOMErrfs/fix/lam"}
+  FIX_GSI=${FIX_GSI:-"${HOMErrfs}/fix/gsi"}
+  FIX_UPP=${FIX_UPP:-"${HOMErrfs}/fix/upp"}
+  FIX_CRTM=${FIX_CRTM:-"${HOMErrfs}/fix/crtm/CRTM_v2.3.0"}
+  AIRCRAFT_REJECT=${AIRCRAFT_REJECT:-"${FIX_GSI}"}
+  SFCOBS_USELIST=${SFCOBS_USELIST:-"${FIX_GSI}"}
 fi
 
 case $MACHINE in
@@ -740,11 +745,6 @@ case $MACHINE in
     TOPO_DIR=${TOPO_DIR:-"/lfs4/HFIP/hfv3gfs/glopara/git/fv3gfs/fix/fix_orog"}
     SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/lfs4/HFIP/hfv3gfs/glopara/git/fv3gfs/fix/fix_sfc_climo"}
     FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
-    FIX_GSI=${FIX_GSI:-"${HOMErrfs}/fix/gsi"}
-    FIX_UPP=${FIX_UPP:-"${HOMErrfs}/fix/upp"}
-    FIX_CRTM=${FIX_CRTM:-"${HOMErrfs}/fix/crtm/CRTM_v2.3.0"}
-    AIRCRAFT_REJECT=${AIRCRAFT_REJECT:-"${FIX_GSI}"}
-    SFCOBS_USELIST=${SFCOBS_USELIST:-"${FIX_GSI}"}
     ;;
 
   "ODIN")
