@@ -592,6 +592,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>FG_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
     <envar><name>LBCS_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
 
     <dependency>
        <or>
