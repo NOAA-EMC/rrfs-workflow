@@ -735,6 +735,7 @@ settings="\
     'do_shum': ${DO_SHUM},
     'do_sppt': ${DO_SPPT},
     'do_skeb': ${DO_SKEB},
+    'print_diff_pgr': ${PRINT_DIFF_PGR},
   }
 'nam_stochy': {
     'shum': ${SHUM_MAG},

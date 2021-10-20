@@ -1787,6 +1787,15 @@ USE_ZMTNBLCK="false"
 HALO_BLEND=10
 #
 #-----------------------------------------------------------------------
+# 
+# PRINT_DIFF_PGR:
+# Option to turn on/off pressure tendency diagnostic
+#
+#-----------------------------------------------------------------------
+#
+PRINT_DIFF_PGR=.false.
+#
+#-----------------------------------------------------------------------
 #
 # USE_FVCOM:
 # Flag set to update surface conditions in FV3-LAM with fields generated
