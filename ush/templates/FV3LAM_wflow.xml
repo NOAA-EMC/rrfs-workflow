@@ -39,8 +39,11 @@ Workflow task names.
 <!ENTITY RUN_POST_TN       "{{ run_post_tn }}">
 <!ENTITY RUN_WGRIB2_TN     "{{ run_wgrib2_tn }}">
 <!ENTITY ANAL_GSI_TN       "{{ anal_gsi }}">
+<!ENTITY OBSERVER_GSI_ENSMEAN_TN       "{{ observer_gsi_ensmean }}">
+<!ENTITY OBSERVER_GSI_TN       "{{ observer_gsi }}">
 <!ENTITY PREP_CYC_SPINUP_TN "{{ prep_cyc_spinup }}">
 <!ENTITY PREP_CYC_PROD_TN  "{{ prep_cyc_prod }}">
+<!ENTITY PREP_CYC_ENSMEAN_TN  "{{ prep_cyc_ensmean }}">
 <!ENTITY PREP_CYC_TN  "{{ prep_cyc }}">
 
 <!ENTITY PROCESS_RADAR_REF_TN "{{ process_radarref }}">
@@ -79,6 +82,7 @@ Directories and files.
 -->
 <!ENTITY JOBSDIR                  "{{ jobsdir }}">
 <!ENTITY LOGDIR                   "{{ logdir }}">
+<!ENTITY OBSPATH                  "{{ obspath }}">
 <!ENTITY CYCLE_BASEDIR            "{{ cycle_basedir }}">
 <!ENTITY NWGES_BASEDIR            "{{ nwges_basedir }}">
 {%- if is_rtma %}
@@ -864,6 +868,9 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_ROOT</name><value><cyclestr>&CYCLE_BASEDIR;</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
+    <envar><name>GSI_TYPE</name><value><cyclestr>ANALYSIS</cyclestr></value></envar>
+    <envar><name>ENS_TYPE</name><value><cyclestr></cyclestr></value></envar>
+
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
 
     <dependency>
@@ -1237,6 +1244,142 @@ MODULES_RUN_TASK_FP script.
 
 {%- if do_ensemble %}
   </metatask>
+{%- endif %}
+
+{%- if do_gsiobserver %}
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&PREP_CYC_ENSMEAN_TN;" cycledefs="prodcyc" maxtries="{{ maxtries_run_prepstart }}">
+
+    &RSRV_DEFAULT;
+    &WALL_LIMIT_PRE;
+
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PREPSTART_TN;" "&JOBSDIR;/JREGIONAL_RUN_PREPSTART_ENSMEAN"</command>
+    <nodes>{{ nnodes_run_prepstart }}:ppn={{ ppn_run_prepstart }}</nodes>
+    <nodesize>&NCORES_PER_NODE;</nodesize>
+    <walltime>{{ wtime_run_prepstart }}</walltime>
+    <jobname>&TAG;_&PREP_CYC_ENSMEAN_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&PREP_CYC_ENSMEAN_TN;_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>FG_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
+    <envar><name>LBCS_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
+    <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
+    <envar><name>NUM_ENS_MEMBERS</name><value><cyclestr>#{{ num_ens_members }}#</cyclestr></value></envar>
+
+    <dependency>
+         <and>
+{%- if do_retro %}
+         {%- for m in range(1, num_ens_members+1) %}
+         <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&FG_ROOT;/@Y@m@d@H/mem{{ "%04d" % m }}/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+         {%- endfor %}
+{%- else %}
+         <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
+         {%- for m in range(1, num_ens_members+1) %}
+         <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&FG_ROOT;/@Y@m@d@H/mem{{ "%04d" % m }}/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+         {%- endfor %}
+{%- endif %}
+         </and>
+    </dependency>
+
+  </task>
+
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&OBSERVER_GSI_ENSMEAN_TN;" cycledefs="prodcyc" maxtries="{{ maxtries_anal_gsi }}">
+
+    &RSRV_ANALYSIS;
+    &WALL_LIMIT_ANAL;
+
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_RUN_ANAL"</command>
+    {% if machine in ["JET", "HERA"] -%}
+    <cores>{{ ncores_run_anal }}</cores>
+    <native>{{ native_run_anal }} &RRFS_RESERVE;</native>
+    {% else -%}
+    <nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}</nodes>
+    <nodesize>&NCORES_PER_NODE;</nodesize>
+    {% endif -%}
+    <walltime>{{ wtime_run_anal }}</walltime>
+    <jobname>&TAG;_&OBSERVER_GSI_ENSMEAN_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&OBSERVER_GSI_ENSMEAN_TN;_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_ROOT</name><value><cyclestr>&CYCLE_BASEDIR;</cyclestr></value></envar>
+    <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>GSI_TYPE</name><value><cyclestr>OBSERVER</cyclestr></value></envar>
+    <envar><name>ENS_TYPE</name><value><cyclestr>MEAN</cyclestr></value></envar>
+
+    <dependency>
+       <and>
+         <taskdep task="&PREP_CYC_ENSMEAN_TN;"/>
+         <datadep age="05:00"><cyclestr offset="{{ da_cycle_interval_hrs }}:00:00">&OBSPATH;/@Y@m@d@H.rap.t@Hz.prepbufr.tm00</cyclestr></datadep>
+       </and>
+    </dependency>
+
+  </task>
+
+<!--
+************************************************************************
+************************************************************************
+-->
+ {%- if do_ensemble %}
+ <metatask name="run_ensemble">
+   <var name="{{ ensmem_indx_name }}">
+    {%- for m in range(1, num_ens_members+1) -%}
+    {%- set fmtstr=" %0"~ndigits_ensmem_names~"d" -%}
+    {{- fmtstr%m -}}
+   {%- endfor %} </var>
+ {%- endif %}
+
+  <task name="&OBSERVER_GSI_TN;{{ uscore_ensmem_name }}" cycledefs="prodcyc" maxtries="{{ maxtries_anal_gsi }}">
+
+    &RSRV_ANALYSIS;
+    &WALL_LIMIT_ANAL;
+
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_RUN_ANAL"</command>
+    {% if machine in ["JET", "HERA"] -%}
+    <cores>{{ ncores_run_anal }}</cores>
+    <native>{{ native_run_anal }} &RRFS_RESERVE;</native>
+    {% else -%}
+    <nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}</nodes>
+    <nodesize>&NCORES_PER_NODE;</nodesize>
+    {% endif -%}
+    <walltime>{{ wtime_run_anal }}</walltime>
+    <jobname>&TAG;_&OBSERVER_GSI_TN;{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr>&LOGDIR;/&OBSERVER_GSI_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_ROOT</name><value><cyclestr>&CYCLE_BASEDIR;</cyclestr></value></envar>
+    <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>GSI_TYPE</name><value><cyclestr>OBSERVER</cyclestr></value></envar>
+    <envar><name>ENS_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+
+    <dependency>
+       <and>
+         <taskdep task="&OBSERVER_GSI_ENSMEAN_TN;"/>
+       </and>
+    </dependency>
+
+  </task>
+
+{%- if do_ensemble %}
+  </metatask>
+{%- endif %}
+
 {%- endif %}
 
 </workflow>

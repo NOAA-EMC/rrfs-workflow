@@ -55,7 +55,7 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "analworkdir" "slash_ensmem_subdir" )
+valid_args=( "cycle_dir" "cycle_type" "gsi_type" "ens_type" "analworkdir" "observer_nwges_dir" "slash_ensmem_subdir" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -172,9 +172,17 @@ cd_vrfy ${analworkdir}
 
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 if [ ${cycle_type} == "spinup" ]; then
-  bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam_spinup/INPUT
+  if [ ${ens_type} == "MEAN" ]; then
+    bkpath=${cycle_dir}/ensmean/fcst_fv3lam_spinup/INPUT
+  else
+    bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam_spinup/INPUT
+  fi
 else
-  bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam/INPUT
+  if [ ${ens_type} == "MEAN" ]; then
+    bkpath=${cycle_dir}/ensmean/fcst_fv3lam/INPUT
+  else
+    bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam/INPUT
+  fi
 fi
 # decide background type
 if [ -r "${bkpath}/phy_data.nc" ]; then
@@ -535,6 +543,18 @@ done
 #
 #-----------------------------------------------------------------------
 # 
+if [ ${gsi_type} == "OBSERVER" ]; then
+  miter=0
+  if [ ${ens_type} == "MEAN" ]; then
+    lread_obs_save=.true.
+    lread_obs_skip=.false.
+  else
+    lread_obs_save=.false.
+    lread_obs_skip=.true.
+    ln -s ../../enseman/observer_gsi/obs_input.* .
+  fi
+fi
+
 . ${FIX_GSI}/gsiparm.anl.sh
 cat << EOF > gsiparm.anl
 $gsi_namelist
@@ -659,6 +679,9 @@ fi
 
 done
 
+if [ ${gsi_type} == "OBSERVER" ]; then
+  cp_vrfy *diag* ${observer_nwges_dir}/.
+fi
 #
 #-----------------------------------------------------------------------
 #

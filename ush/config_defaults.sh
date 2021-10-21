@@ -1491,9 +1491,12 @@ RUN_POST_TN="run_post"
 RUN_WGRIB2_TN="run_wgrib2"
 
 ANAL_GSI_TN="anal_gsi_input"
+OBSERVER_GSI_ENSMEAN_TN="observer_gsi_ensmean"
+OBSERVER_GSI_TN="observer_gsi"
 PREP_START_TN="prep_start"
 PREP_CYC_SPINUP_TN="prep_cyc_spinup"
 PREP_CYC_PROD_TN="prep_cyc_prod"
+PREP_CYC_ENSMEAN_TN="prep_cyc_ensmean"
 PREP_CYC_TN="prep_cyc"
 PROCESS_RADAR_REF_TN="process_radarref"
 PROCESS_LIGHTNING_TN="process_lightning"
@@ -1899,5 +1902,7 @@ CLEAN_OLDFCST_HRS="24"
 CLEAN_OLDSTMPPOST_HRS="24"
 CLEAN_NWGES_HRS="72"
 
-# in ensemble mode, whether or not to run member 1 as control member
+# In ensemble mode, whether or not to run member 1 as control member
 DO_ENSCONTROL="FALSE"
+# Decide whether or not to run GSI observer
+DO_GSIOBSERVER="FALSE"

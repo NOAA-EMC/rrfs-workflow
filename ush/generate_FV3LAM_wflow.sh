@@ -203,9 +203,12 @@ settings="\
   'run_post_tn': ${RUN_POST_TN}
   'run_wgrib2_tn': ${RUN_WGRIB2_TN}
   'anal_gsi': ${ANAL_GSI_TN}
+  'observer_gsi_ensmean': ${OBSERVER_GSI_ENSMEAN_TN}
+  'observer_gsi': ${OBSERVER_GSI_TN}
   'prep_start': ${PREP_START_TN}
   'prep_cyc_spinup': ${PREP_CYC_SPINUP_TN}
   'prep_cyc_prod': ${PREP_CYC_PROD_TN}
+  'prep_cyc_ensmean': ${PREP_CYC_ENSMEAN_TN}
   'prep_cyc': ${PREP_CYC_TN}
   'process_radarref': ${PROCESS_RADAR_REF_TN}
   'process_lightning': ${PROCESS_LIGHTNING_TN}
@@ -330,6 +333,7 @@ settings="\
   'logdir': $LOGDIR
   'cycle_basedir': ${CYCLE_BASEDIR}
   'nwges_basedir': ${NWGES_BASEDIR}
+  'obspath': ${OBSPATH}
   'global_var_defns_fp': ${GLOBAL_VAR_DEFNS_FP}
   'load_modules_run_task_fp': ${LOAD_MODULES_RUN_TASK_FP}
 #
@@ -383,6 +387,7 @@ settings="\
   'uscore_ensmem_name': ${uscore_ensmem_name}
   'slash_ensmem_subdir': ${slash_ensmem_subdir}
   'do_enscontrol': ${DO_ENSCONTROL}
+  'do_gsiobserver': ${DO_GSIOBSERVER}
 #
 # data assimilation related parameters.
 #

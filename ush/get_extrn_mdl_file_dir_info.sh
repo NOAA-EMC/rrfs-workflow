@@ -310,6 +310,7 @@ fi
      [ "${extrn_mdl_name}" = "NAM" ] || \
      [ "${extrn_mdl_name}" = "FV3GFS" -a "${MACHINE}" = "ORION" ] || \
      [ "${extrn_mdl_name}" = "GEFS" -a "${MACHINE}" = "JET" ] || \
+     [ "${extrn_mdl_name}" = "GEFS" -a "${MACHINE}" = "HERA" ] || \
      [ "${extrn_mdl_name}" = "FV3GFS" -a "${MACHINE}" = "JET" ] || \
      [ "${extrn_mdl_name}" = "FV3GFS" -a "${MACHINE}" = "HERA" ]; then
 #
