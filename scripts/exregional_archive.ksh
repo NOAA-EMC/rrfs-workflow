@@ -13,9 +13,7 @@ set -A XX `ls -d ${RUN}.$year$month$day/* | sort -r`
 runcount=${#XX[*]}
 if [[ $runcount -gt 0 ]];then
 
-  hsi mkdir $ARCHIVEDIR/$year
-  hsi mkdir $ARCHIVEDIR/$year/$month
-  hsi mkdir $ARCHIVEDIR/$year/$month/$day
+  hsi mkdir -p $ARCHIVEDIR/$year/$month/$day
 
   for onerun in ${XX[*]};do
 
