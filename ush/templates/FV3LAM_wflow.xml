@@ -323,6 +323,10 @@ MODULES_RUN_TASK_FP script.
   {%- endif %}
 {%- endif %}
 
+<!--
+************************************************************************
+************************************************************************
+-->
   <task name="&GET_EXTRN_ICS_TN;{{ uscore_ensmem_name }}" cycledefs="initial" maxtries="{{ maxtries_get_extrn_ics }}">
 
     &WALL_LIMIT_PRE;

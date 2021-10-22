@@ -93,6 +93,9 @@ HH=${YYYYMMDDHH:8:2}
 YYYYMMDD=${YYYYMMDDHH:0:8}
 
 current_time=$(date "+%T")
+
+YYYYMMDDm1=$(date +%Y%m%d -d "${START_DATE} 1 days ago")
+YYYYMMDDm2=$(date +%Y%m%d -d "${START_DATE} 2 days ago")
 #
 #-----------------------------------------------------------------------
 #
@@ -141,7 +144,7 @@ if [ ${DO_SURFACE_CYCLE} == "TRUE" ]; then  # cycle surface fields
       for cyc_start in "${CYCL_HRS_SPINSTART[@]}"; do
         SFC_CYCL_HH=$(( ${cyc_start} + ${SURFACE_CYCLE_DELAY_HRS} ))
         if [ ${HH} -eq ${SFC_CYCL_HH} ]; then
-          if [${SURFACE_CYCLE_DELAY_HRS} == "0" ]; then
+          if [ ${SURFACE_CYCLE_DELAY_HRS} == "0" ]; then
             SFC_CYC=1  # cold start
           else
             SFC_CYC=2  # delayed surface cycle
@@ -252,22 +255,31 @@ else
       echo "${YYYYMMDDHH}(${cycle_type}): warm start at ${current_time} from ${checkfile} " >> ${EXPTDIR}/log.cycles
     fi
 
+  else
+    print_err_msg_exit "Error: cannot find background: ${checkfile}"
+  fi
+fi
+
+#-----------------------------------------------------------------------
+#
 # do SST update at ${SST_update_hour}z for the restart sfc_data.nc
-    if [ ${HH} -eq ${SST_update_hour} ]; then
-       echo "Update SST at ${SST_update_hour}z"
-       if [ -r "${SST_ROOT}/latest.SST" ]; then
-          cp ${SST_ROOT}/latest.SST .
-       elif [ -r "${SST_ROOT}/${YYJJJ00000000}" ]; then
-          cp ${SST_ROOT}/${YYJJJ00000000} latest.SST
-       else
-         ${ECHO} "${SST_ROOT} data does not exist!!"
-         ${ECHO} "ERROR: No SST update at ${time_str}!!!!"
-       fi
-       if [ -r "latest.SST" ]; then
-         ln_vrfy ${FIXgsm}/RTG_SST_landmask.dat                ./RTG_SST_landmask.dat
-         ln_vrfy ./latest.SST                                  ./SSTRTG
-         ln_vrfy ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  ./fv3_grid_spec
-         ln_vrfy ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_akbk       ./fv3_akbk
+#
+#-----------------------------------------------------------------------
+if [ ${HH} -eq ${SST_update_hour} ] && [ ${cycle_type} == "prod" ] ; then
+   echo "Update SST at ${SST_update_hour}z"
+   if [ -r "${SST_ROOT}/latest.SST" ]; then
+      cp ${SST_ROOT}/latest.SST .
+   elif [ -r "${SST_ROOT}/${YYJJJ00000000}" ]; then
+      cp ${SST_ROOT}/${YYJJJ00000000} latest.SST
+   else
+     ${ECHO} "${SST_ROOT} data does not exist!!"
+     ${ECHO} "ERROR: No SST update at ${time_str}!!!!"
+   fi
+   if [ -r "latest.SST" ]; then
+     cp_vrfy ${FIXgsm}/RTG_SST_landmask.dat                RTG_SST_landmask.dat
+     ln_vrfy ./latest.SST                                  SSTRTG
+     cp_vrfy ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
+     cp_vrfy ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_akbk       fv3_akbk
 
 cat << EOF > sst.namelist
 &setup
@@ -278,23 +290,23 @@ cat << EOF > sst.namelist
   ihr=${HH}
 /
 EOF
-         ${EXECDIR}/process_updatesst > stdout_sstupdate 2>&1
-         sst_reference_time=$(wgrib2 -t latest.SST) 
-         if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
-           echo "${YYYYMMDDHH}(${cycle_type}): update SST using ${sst_reference_time}" >> ${EXPTDIR}/log.cycles
-         fi
-       else
-         echo "ERROR: No latest SST file for update at ${YYYYMMDDHH}!!!!"
-       fi
-    else
-       echo "NOTE: No update for SST at ${YYYYMMDDHH}!"
-    fi
-    
-  else
-    print_err_msg_exit "Error: cannot find background: ${checkfile}"
-  fi
+     ${EXECDIR}/process_updatesst > stdout_sstupdate 2>&1
+     sst_reference_time=$(wgrib2 -t latest.SST) 
+     if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
+       echo "${YYYYMMDDHH}(${cycle_type}): update SST using ${sst_reference_time}" >> ${EXPTDIR}/log.cycles
+     fi
+   else
+     echo "ERROR: No latest SST file for update at ${YYYYMMDDHH}!!!!"
+   fi
+else
+   echo "NOTE: No update for SST at ${YYYYMMDDHH}!"
 fi
 
+#-----------------------------------------------------------------------
+#
+#  surface cycling
+#
+#-----------------------------------------------------------------------
 if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
 
 # figure out which surface is available
@@ -346,6 +358,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
           else
             mv sfc_data.nc old.sfc_data.nc
             mv ${restart_prefix_find}sfc_data.nc sfc_data.nc
+#            ${EXECDIR}/cycle_ice.exe > stdout_cycleICE 2>&1
           fi
           echo "cycle surface with ${checkfile}" > cycle_surface.done
           if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
@@ -357,6 +370,33 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
       fi
 fi
 
+#-----------------------------------------------------------------------
+#
+# do update_GVF at ${GVF_update_hour}z for the restart sfc_data.nc
+#
+#-----------------------------------------------------------------------
+if [ ${HH} -eq ${GVF_update_hour} ] && [ ${cycle_type} == "spinup" ]; then
+   latestGVF=$(ls ${GVFOBS_PATH}/GVF-WKL-GLB_v2r3_npp_s*_e${YYYYMMDDm1}_c${YYYYMMDD}*.grib2)
+   latestGVF2=$(ls ${GVFOBS_PATH}/GVF-WKL-GLB_v2r3_npp_s*_e${YYYYMMDDm2}_c${YYYYMMDDm1}*.grib2)
+   if [ ! -r "${latestGVF}" ]; then
+     if [ -r "${latestGVF2}" ]; then
+       latestGVF=${latestGVF2}
+     else
+       print_info_msg "Warning: cannot find GVF observation file"
+     fi
+   fi
+
+   if [ -r "${latestGVF}" ]; then
+      cp_vrfy ${latestGVF} ./GVF-WKL-GLB.grib2
+      cp_vrfy ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
+      ln_vrfy ${FIX_GSI}/gvf_VIIRS_4KM.MAX.1gd4r.new  gvf_VIIRS_4KM.MAX.1gd4r.new
+      ln_vrfy ${FIX_GSI}/gvf_VIIRS_4KM.MIN.1gd4r.new  gvf_VIIRS_4KM.MIN.1gd4r.new
+      ${EXECDIR}/update_GVF.exe > stdout_updateGVF 2>&1
+      if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
+         echo "${YYYYMMDDHH}(${cycle_type}): update GVF with ${latestGVF} " >> ${EXPTDIR}/log.cycles
+      fi
+   fi
+fi
 #-----------------------------------------------------------------------
 #
 # go to INPUT directory.

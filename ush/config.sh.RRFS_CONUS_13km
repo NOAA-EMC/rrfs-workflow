@@ -103,7 +103,6 @@ for i in {0..23}; do FCST_LEN_HRS_CYCLES[$i]=3; done
 for i in {0..23..3}; do FCST_LEN_HRS_CYCLES[$i]=12; done
 RESTART_INTERVAL="1 2 3 4 5 6"
 
-SST_ROOT="/lfs4/BMC/public/data/grids/ncep/sst/0p083deg/grib2"
 SST_update_hour=01
 
 NCORES_RUN_ANAL=240

@@ -268,10 +268,14 @@ EXPT_SUBDIR=""
 #    LIGHTNING_ROOT: location of lightning observations
 #    ENKF_FCSTL: location of global ensemble forecast
 #    FFG_DIR: location of flash flood guidance for QPF comparison
-
+#
 # Setup default locations for global SST and update time:
 #   SST_ROOT: locations of global SST
 #   SST_update_hour: cycle time for updating SST 
+#
+# Setup default locations for GVF and update time:
+#   GVF_ROOT: locations of GVF observations
+#   GVF_update_hour: cycle time for updating GVF 
 #-----------------------------------------------------------------------
 #
 COMINgfs="/base/path/of/directory/containing/gfs/input/files"
@@ -297,6 +301,8 @@ ENKF_FCST="/lfs4/BMC/public/data/grids/enkf/atm"
 FFG_DIR="/public/data/grids/ncep/ffg/grib2"
 SST_ROOT="/lfs4/BMC/public/data/grids/ncep/sst/0p083deg/grib2"
 SST_update_hour=99
+GVF_ROOT="/public/data/sat/ncep/viirs/gvf/grib2"
+GVF_update_hour=99
 
 #
 #-----------------------------------------------------------------------
@@ -1710,10 +1716,18 @@ TILE_SETS="full"
 # (GLOBAL_VAR_DEFNS_FN), this variable appear with its leading zeros 
 # stripped.  This variable is not used if DO_ENSEMBLE is not set to "TRUE".
 # 
+# DO_ENSCONTROL: 
+# In ensemble mode, whether or not to run member 1 as control member
+#
+# DO_GSIOBSERVER:
+# Decide whether or not to run GSI observer
+#
 #-----------------------------------------------------------------------
 #
 DO_ENSEMBLE="FALSE"
 NUM_ENS_MEMBERS="1"
+DO_ENSCONTROL="FALSE"
+DO_GSIOBSERVER="FALSE"
 #
 #-----------------------------------------------------------------------
 #
@@ -1902,7 +1916,3 @@ CLEAN_OLDFCST_HRS="24"
 CLEAN_OLDSTMPPOST_HRS="24"
 CLEAN_NWGES_HRS="72"
 
-# In ensemble mode, whether or not to run member 1 as control member
-DO_ENSCONTROL="FALSE"
-# Decide whether or not to run GSI observer
-DO_GSIOBSERVER="FALSE"
