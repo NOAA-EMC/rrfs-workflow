@@ -289,6 +289,7 @@ settings="\
 #
 # Maximum memory for each task.
 #
+  'memo_run_processbufr': ${MEMO_RUN_PROCESSBUFR}
   'memo_run_ref2tten': ${MEMO_RUN_REF2TTEN}
   'memo_run_nonvarcldanl': ${MEMO_RUN_NONVARCLDANL}
   'memo_run_prepstart': ${MEMO_RUN_PREPSTART}

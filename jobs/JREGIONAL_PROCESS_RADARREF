@@ -62,7 +62,11 @@ preprocess with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-workdir=${CYCLE_DIR}/process_radarref
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  workdir=${CYCLE_DIR}/process_radarref_spinup
+else
+  workdir=${CYCLE_DIR}/process_radarref
+fi
 rm -fr ${workdir}
 mkdir_vrfy -p ${workdir}
 #

@@ -55,7 +55,7 @@ with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "CYCLE_DIR" "WORKDIR")
+valid_args=( "cycle_dir" "cycle_type" "ens_type" "workdir" "slash_ensmem_subdir" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -145,7 +145,6 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 print_info_msg "$VERBOSE" "
 Getting into working directory for radar tten process ..."
 
-workdir=${WORKDIR}
 cd_vrfy ${workdir}
 
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
@@ -158,18 +157,28 @@ print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
 #
 #-----------------------------------------------------------------------
 
+if [ ${cycle_type} == "spinup" ]; then
+  cycle_tag="_spinup"
+else
+  cycle_tag=""
+fi
+if [ ${ens_type} == "MEAN" ]; then
+    bkpath=${cycle_dir}/ensmean/fcst_fv3lam${cycle_tag}/INPUT
+else
+    bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam${cycle_tag}/INPUT
+fi
+
 cp_vrfy ${fixgriddir}/fv3_akbk                               fv3_akbk
 cp_vrfy ${fixgriddir}/fv3_grid_spec                          fv3_grid_spec
 
-bkpath=${CYCLE_DIR}/fcst_fv3lam/INPUT
-if [ -w ${bkpath}/gfs_data.tile7.halo0.nc ]; then  # Use background from INPUT
-  ln_vrfy -s ${bkpath}/sfc_data.tile7.halo0.nc      fv3_sfcdata
-  cp_vrfy ${bkpath}/gfs_data.tile7.halo0.nc      fv3_dynvars
-  cp_vrfy ${bkpath}/gfs_data.tile7.halo0.nc      fv3_tracer
-else                                               # Use background from RESTART
+if [ -r ${bkpath}/phy_data.nc ]; then  # Use background from restart
   cp_vrfy ${bkpath}/fv_core.res.tile1.nc         fv3_dynvars
   cp_vrfy ${bkpath}/fv_tracer.res.tile1.nc       fv3_tracer
   ln_vrfy -s ${bkpath}/sfc_data.nc                  fv3_sfcdata
+else                                   # Use background from input (cold start)
+  ln_vrfy -s ${bkpath}/sfc_data.tile7.halo0.nc      fv3_sfcdata
+  cp_vrfy ${bkpath}/gfs_data.tile7.halo0.nc      fv3_dynvars
+  cp_vrfy ${bkpath}/gfs_data.tile7.halo0.nc      fv3_tracer
 fi
 
 #
@@ -179,7 +188,7 @@ fi
 #
 #-----------------------------------------------------------------------
 
-process_bufr_path=${CYCLE_DIR}/process_bufr
+process_bufr_path=${CYCLE_DIR}/process_bufr${cycle_tag}
 
 obs_files_source[0]=${process_bufr_path}/LightningInFV3LAM.dat
 obs_files_target[0]=LightningInFV3LAM.dat

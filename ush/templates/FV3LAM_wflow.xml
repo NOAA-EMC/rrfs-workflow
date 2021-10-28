@@ -802,6 +802,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
 
     <dependency>
       <and>
@@ -825,6 +826,7 @@ MODULES_RUN_TASK_FP script.
     <nodes>{{ nnodes_proc_bufr }}:ppn={{ ppn_proc_bufr }};</nodes>
     <walltime>{{ wtime_proc_bufr }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
+    <memory>{{ memo_run_processbufr }}</memory>
     <jobname>&PROCESS_BUFR_TN;_#type#</jobname>
     <join><cyclestr>&LOGDIR;/&PROCESS_BUFR_TN;_#type#_@Y@m@d@H.log</cyclestr></join>
 
@@ -873,8 +875,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_ROOT</name><value><cyclestr>&CYCLE_BASEDIR;</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
     <envar><name>GSI_TYPE</name><value><cyclestr>ANALYSIS</cyclestr></value></envar>
-    <envar><name>ENS_TYPE</name><value><cyclestr></cyclestr></value></envar>
-
+    <envar><name>ENS_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
 
     <dependency>
@@ -910,6 +911,8 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
+    <envar><name>ENS_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
 
     <dependency>
       <and>
@@ -948,6 +951,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
+    <envar><name>ENS_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
 
     <dependency>

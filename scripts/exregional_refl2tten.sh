@@ -55,7 +55,7 @@ with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "CYCLE_DIR" "WORKDIR")
+valid_args=( "cycle_dir" "cycle_type" "ens_type" "workdir" "slash_ensmem_subdir" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -144,7 +144,6 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 print_info_msg "$VERBOSE" "
 Getting into working directory for radar tten process ..."
 
-workdir=${WORKDIR}
 cd_vrfy ${workdir}
 
 fixdir=$FIX_GSI
@@ -161,21 +160,31 @@ pwd
 #
 #-----------------------------------------------------------------------
 
+if [ ${cycle_type} == "spinup" ]; then
+  cycle_tag="_spinup"
+else
+  cycle_tag=""
+fi
+if [ ${ens_type} == "MEAN" ]; then
+    bkpath=${cycle_dir}/ensmean/fcst_fv3lam${cycle_tag}/INPUT
+else
+    bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam${cycle_tag}/INPUT
+fi
+
 cp_vrfy ${fixgriddir}/fv3_akbk                               fv3_akbk
 cp_vrfy ${fixgriddir}/fv3_grid_spec                          fv3_grid_spec
 
-bkpath=${CYCLE_DIR}/fcst_fv3lam/INPUT
-if [ -w ${bkpath}/gfs_data.tile7.halo0.nc ]; then  # cold start uses background from INPUT
+if [ -r ${bkpath}/phy_data.nc ]; then  # Use background from warm restart
+  ln_vrfy -s ${bkpath}/fv_core.res.tile1.nc         fv3_dynvars
+  ln_vrfy -s ${bkpath}/fv_tracer.res.tile1.nc       fv3_tracer
+  ln_vrfy -s ${bkpath}/sfc_data.nc                  fv3_sfcdata
+  ln_vrfy -s ${bkpath}/phy_data.nc                  fv3_phydata
+else                                   # Use background from cold start
   ln_vrfy -s ${bkpath}/sfc_data.tile7.halo0.nc      fv3_sfcdata
   ln_vrfy -s ${bkpath}/gfs_data.tile7.halo0.nc      fv3_dynvars
   ln_vrfy -s ${bkpath}/gfs_data.tile7.halo0.nc      fv3_tracer
   print_info_msg "$VERBOSE" "radar2tten is not ready for cold start"
   exit 0
-else                                               # cycle uses background from RESTART
-  ln_vrfy -s ${bkpath}/fv_core.res.tile1.nc         fv3_dynvars
-  ln_vrfy -s ${bkpath}/fv_tracer.res.tile1.nc       fv3_tracer
-  ln_vrfy -s ${bkpath}/sfc_data.nc                  fv3_sfcdata
-  ln_vrfy -s ${bkpath}/phy_data.nc                  fv3_phydata
 fi
 
 #
@@ -184,8 +193,8 @@ fi
 # link/copy observation files to working directory
 #
 #-----------------------------------------------------------------------
-process_radarref_path=${CYCLE_DIR}/process_radarref
-process_lightning_path=${CYCLE_DIR}/process_lightning
+process_radarref_path=${cycle_dir}/process_radarref${cycle_tag}
+process_lightning_path=${cycle_dir}/process_lightning${cycle_tag}
 
 ss=0
 for bigmin in ${RADARREFL_TIMELEVEL[@]}; do

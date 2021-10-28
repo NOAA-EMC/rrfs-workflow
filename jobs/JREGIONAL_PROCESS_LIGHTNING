@@ -60,7 +60,11 @@ the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-workdir=${CYCLE_DIR}/process_lightning
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  workdir=${CYCLE_DIR}/process_lightning_spinup
+else
+  workdir=${CYCLE_DIR}/process_lightning
+fi
 rm -fr ${workdir}
 mkdir_vrfy -p ${workdir}
 #
