@@ -161,7 +161,7 @@ workflow task specified by task_name failed:
   task_name = \"${task_name}\"
   env_fp = \"${env_fp}\""
 
-if [ ${task_name} = "run_anal_gsi" ] || [ ${task_name} = "run_prepstart" ]; then
+if [ ${task_name} = "run_anal_gsi" ] || [ ${task_name} = "run_enkfupdt" || [ ${task_name} = "run_prepstart" ]; then
   source "${env_fp}_DA" || print_err_msg_exit "\
   Sourcing platform- and compiler-specific environment file (env_fp) for the 
   workflow task specified by task_name failed:

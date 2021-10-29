@@ -1598,6 +1598,7 @@ MAXTRIES_MAKE_LBCS="1"
 MAXTRIES_RUN_PREPSTART="1"
 MAXTRIES_RUN_FCST="1"
 MAXTRIES_ANAL_GSI="1"
+MAXTRIES_ANAL_ENKF="1"
 MAXTRIES_RUN_POST="1"
 MAXTRIES_RUN_WGRIB2="1"
 MAXTRIES_RUN_ANAL="1"
@@ -1723,12 +1724,15 @@ TILE_SETS="full"
 # DO_GSIOBSERVER:
 # Decide whether or not to run GSI observer
 #
+# DO_ENKFUPDATE:
+# Decide whether or not to run EnKF update for the ensemble members
 #-----------------------------------------------------------------------
 #
 DO_ENSEMBLE="FALSE"
 NUM_ENS_MEMBERS="1"
 DO_ENSCONTROL="FALSE"
 DO_GSIOBSERVER="FALSE"
+DO_ENKFUPDATE="FALSE"
 #
 #-----------------------------------------------------------------------
 #

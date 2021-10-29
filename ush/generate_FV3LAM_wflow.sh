@@ -307,6 +307,7 @@ settings="\
   'maxtries_run_prepstart': ${MAXTRIES_RUN_PREPSTART}
   'maxtries_run_fcst': ${MAXTRIES_RUN_FCST}
   'maxtries_anal_gsi': ${MAXTRIES_ANAL_GSI}
+  'maxtries_anal_enkf': ${MAXTRIES_ANAL_ENKF}
   'maxtries_run_post': ${MAXTRIES_RUN_POST}
   'maxtries_run_wgrib2': ${MAXTRIES_RUN_WGRIB2}
   'maxtries_process_radarref': ${MAXTRIES_PROCESS_RADARREF}
@@ -389,6 +390,7 @@ settings="\
   'slash_ensmem_subdir': ${slash_ensmem_subdir}
   'do_enscontrol': ${DO_ENSCONTROL}
   'do_gsiobserver': ${DO_GSIOBSERVER}
+  'do_enkfupdate': ${DO_ENKFUPDATE}
 #
 # data assimilation related parameters.
 #
