@@ -433,7 +433,7 @@ for imem in $(seq 1 $nens); do
    FileUpdated=fv3sar_tile1_${memcharv0}_dynvartracer
      
    cp_vrfy $bkpath/fv_tracer.res.tile1.nc ./${memcharv0}_fv3_tracer
-   cp_vrfy $bkpath/fv_tracer.res.tile1.nc ./${memcharv0}_fv3_dynvars
+   cp_vrfy $bkpath/fv_core.res.tile1.nc ./${memcharv0}_fv3_dynvars
    if [ $imem == 1 ];then   
       ncvarlst_noaxis_time_new ${memcharv0}_fv3_tracer > nck_tracer_list.txt
       ncvarlst_noaxis_time_new ${memcharv0}_fv3_dynvars > nck_dynvar_list.txt
@@ -443,9 +443,11 @@ for imem in $(seq 1 $nens); do
        
    ncks -A -v $user_nck_dynvar_list $FileUpdated  ${memcharv0}_fv3_dynvars
    cp_vrfy ${memcharv0}_fv3_dynvars   ${enkfanal_nwges_dir}/fv_core.res.tile1.nc
+   cp_vrfy ${memcharv0}_fv3_dynvars   ${bkpath}/fv_core.res.tile1.nc
    ncks -A -v  $user_nck_tracer_list $FileUpdated  ${memcharv0}_fv3_tracer 
    ncks --no_abc -O -x -v yaxis_2  ${memcharv0}_fv3_tracer tmp_${memcharv0}_tracer
    cp_vrfy tmp_${memcharv0}_tracer  ${enkfanal_nwges_dir}/fv_tracer.res.tile1.nc
+   cp_vrfy tmp_${memcharv0}_tracer  ${bkpath}/fv_tracer.res.tile1.nc
          
 done
 

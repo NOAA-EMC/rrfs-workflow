@@ -907,7 +907,7 @@ if [ "${DO_SURFACE_CYCLE}" = "TRUE" ]; then
  $settings"
 fi
 
-if [ "${DO_DACYCLE}" = "TRUE" ]; then
+if [[ "${DO_DACYCLE}" = "TRUE" || "${DO_ENKFUPDATE}" = "TRUE" ]]; then
   nstf_name="2,0,0,0,0"
   if [ "${SDF_USES_RUC_LSM}" = "TRUE" ]; then
     lsoil="9"

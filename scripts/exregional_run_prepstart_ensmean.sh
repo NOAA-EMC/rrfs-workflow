@@ -135,14 +135,16 @@ while [[ $imem -le ${NUM_ENS_MEMBERS} ]];
   checkfile=${bkpath}/${restart_prefix}fv_core.res.tile1.nc
   checkfile1=${bkpath}/${restart_prefix}fv_tracer.res.tile1.nc
   if [ -r "${checkfile}" ] && [ -r "${checkfile1}" ] ; then
-    cp_vrfy ${bkpath}/${restart_prefix}fv_core.res.tile1.nc       fv_core.res.tile1.nc_mem${ensmem} 
-    cp_vrfy ${bkpath}/${restart_prefix}fv_tracer.res.tile1.nc     fv_tracer.res.tile1.nc_mem${ensmem}
-    cp_vrfy ${bkpath}/${restart_prefix}sfc_data.nc                sfc_data.nc_mem${ensmem} 
-    cp_vrfy ${bkpath}/${restart_prefix}coupler.res                coupler.res
-    cp_vrfy ${bkpath}/${restart_prefix}fv_core.res.nc             fv_core.res.nc
-    cp_vrfy ${bkpath}/${restart_prefix}fv_srf_wnd.res.tile1.nc    fv_srf_wnd.res.tile1.nc_mem${ensmem}
-    cp_vrfy ${bkpath}/${restart_prefix}phy_data.nc                phy_data.nc_mem${ensmem}
-    cp_vrfy ${fg_root}/${YYYYMMDDHHmInterv}/mem${ensmem}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
+    ln_vrfy ${bkpath}/${restart_prefix}fv_core.res.tile1.nc       fv_core.res.tile1.nc_mem${ensmem}
+    ln_vrfy ${bkpath}/${restart_prefix}fv_tracer.res.tile1.nc     fv_tracer.res.tile1.nc_mem${ensmem}
+    ln_vrfy ${bkpath}/${restart_prefix}sfc_data.nc                sfc_data.nc_mem${ensmem}
+    ln_vrfy ${bkpath}/${restart_prefix}fv_srf_wnd.res.tile1.nc    fv_srf_wnd.res.tile1.nc_mem${ensmem}
+    ln_vrfy ${bkpath}/${restart_prefix}phy_data.nc                phy_data.nc_mem${ensmem}
+    if [ $imem == 1 ]; then
+      ln_vrfy ${bkpath}/${restart_prefix}coupler.res                coupler.res
+      ln_vrfy ${bkpath}/${restart_prefix}fv_core.res.nc             fv_core.res.nc
+      ln_vrfy ${fg_root}/${YYYYMMDDHHmInterv}/mem${ensmem}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
+    fi
   else
     print_err_msg_exit "Error: cannot find background: ${checkfile}"
   fi
