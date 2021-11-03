@@ -615,6 +615,7 @@ MODULES_RUN_TASK_FP script.
 {%- if do_retro %}
            <datadep age="00:00:05:00"><cyclestr>&FG_ROOT;/@Y@m@d@H/ics/gfs_data.tile7.halo0.nc</cyclestr></datadep>
            <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">&FG_ROOT;/@Y@m@d@H/lbcs/gfs_bndy.tile7.001.nc</cyclestr></datadep>
+           <datadep age="00:00:10:00"><cyclestr offset="00:00:00">&FG_ROOT;/@Y@m@d@H/fcst_fv3lam/INPUT/gfs_ctrl.nc</cyclestr></datadep>
 {% else %}
            <and>
              <timedep><cyclestr offset="&START_TIME_SPINUP;">@Y@m@d@H@M00</cyclestr></timedep>

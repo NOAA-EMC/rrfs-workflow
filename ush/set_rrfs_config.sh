@@ -47,6 +47,8 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     ENKF_FCST=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/enkf/atm
     AIRCRAFT_REJECT="/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/amdar_reject_lists"
     SFCOBS_USELIST="/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/mesonet_uselists"
+    SST_ROOT="/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/May_2021_data/highres_sst"
+    GVF_ROOT="/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/May_2021_data/gvf/grib2"
   fi
   if [[ $MACHINE == "hera" ]] ; then
 

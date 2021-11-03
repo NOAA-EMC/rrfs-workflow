@@ -356,9 +356,9 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
             ncks --append geolonlat.nc sfc_data.tile7.halo0.nc
             ncrename -v tslb,stc -v smois,smc -v sh2o,slc sfc_data.tile7.halo0.nc
           else
-            mv sfc_data.nc old.sfc_data.nc
+            mv sfc_data.nc gfsice.sfc_data.nc
             mv ${restart_prefix_find}sfc_data.nc sfc_data.nc
-#            ${EXECDIR}/cycle_ice.exe > stdout_cycleICE 2>&1
+            ${EXECDIR}/cycle_ice.exe > stdout_cycleICE 2>&1
           fi
           echo "cycle surface with ${checkfile}" > cycle_surface.done
           if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
@@ -376,8 +376,8 @@ fi
 #
 #-----------------------------------------------------------------------
 if [ ${HH} -eq ${GVF_update_hour} ] && [ ${cycle_type} == "spinup" ]; then
-   latestGVF=$(ls ${GVFOBS_PATH}/GVF-WKL-GLB_v2r3_npp_s*_e${YYYYMMDDm1}_c${YYYYMMDD}*.grib2)
-   latestGVF2=$(ls ${GVFOBS_PATH}/GVF-WKL-GLB_v2r3_npp_s*_e${YYYYMMDDm2}_c${YYYYMMDDm1}*.grib2)
+   latestGVF=$(ls ${GVF_ROOT}/GVF-WKL-GLB_v2r3_npp_s*_e${YYYYMMDDm1}_c${YYYYMMDD}*.grib2)
+   latestGVF2=$(ls ${GVF_ROOT}/GVF-WKL-GLB_v2r3_npp_s*_e${YYYYMMDDm2}_c${YYYYMMDDm1}*.grib2)
    if [ ! -r "${latestGVF}" ]; then
      if [ -r "${latestGVF2}" ]; then
        latestGVF=${latestGVF2}
