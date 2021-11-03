@@ -1003,12 +1003,17 @@ MODULES_RUN_TASK_FP script.
       {%- elif do_dacycle %}
       <taskdep task="&ANAL_GSI_TN;_#type#{{ uscore_ensmem_name }}"/>
       {%- elif do_enkfupdate %}
-       <or>
-          {%- for h in cycl_hrs_prodstart %}
-           <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
-          {%- endfor %}
-          <taskdep task="&RUN_ENKFUPDT_TN;"/>
-       </or>
+      <or>
+        <and>
+          <or>
+           {%- for h in cycl_hrs_prodstart %}
+            <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
+           {%- endfor %}
+          </or>
+          <taskdep task="&PREP_CYC_TN;_#type#{{ uscore_ensmem_name }}"/>
+        </and>
+        <taskdep task="&RUN_ENKFUPDT_TN;"/>
+      </or>
       {%- else %}
       <taskdep task="&PREP_CYC_TN;_#type#{{ uscore_ensmem_name }}"/>
       {%- endif %}

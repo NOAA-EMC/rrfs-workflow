@@ -598,6 +598,7 @@ i_use_2mT4B=0
 #
 HYBENSMEM_NMIN=80
 ANAVINFO_FN="anavinfo.fv3lam_hrrr"
+ENKF_ANAVINFO_FN="anavinfo.enkf_fv3lam_hrrr"
 CONVINFO_FN="convinfo.rrfs"
 BERROR_FN="rap_berror_stats_global_RAP_tune" #under $FIX_GSI
 OBERROR_FN="errtable.rrfs"

@@ -231,7 +231,7 @@ fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 #
 #----------------------------------------------------------------------
 #
-ANAVINFO=${FIX_GSI}/anavinfo.enkf_fv3lam_hrrr
+ANAVINFO=${FIX_GSI}/${ENKF_ANAVINFO_FN}
 CONVINFO=${FIX_GSI}/${CONVINFO_FN}
 SATINFO=${FIX_GSI}/global_satinfo.txt
 OZINFO=${FIX_GSI}/global_ozinfo.txt
