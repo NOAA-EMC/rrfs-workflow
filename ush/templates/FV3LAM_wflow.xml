@@ -318,10 +318,11 @@ MODULES_RUN_TASK_FP script.
   {%- if do_enscontrol %}
     <var name="subdirGE">/gec00{% for m in range(2, num_ens_members+1) %}{{ " /gep%02d"%m }}{% endfor %}</var>
     <var name="memNameWRF">_mem0000{% for m in range(2, num_ens_members+1) %}{{ " _mem%04d"%m }}{% endfor %} </var>
-  {%- else -%}
+  {%- else %}
     <var name="subdirGE">{% for m in range(1, num_ens_members+1) %}{{ " /gep%02d"%m }}{% endfor %}</var>
     <var name="memNameWRF">{% for m in range(1, num_ens_members+1) %}{{ " _mem%04d"%m }}{% endfor %} </var>
   {%- endif %}
+    <var name="subdirGDAS">{% for m in range(1, num_ens_members+1) %}{{ " /mem%03d"%m }}{% endfor %}</var>
 {%- endif %}
 
 <!--
@@ -354,6 +355,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value>{{ slash_ensmem_subdir }}</value></envar>
     <envar><name>GEFS_INPUT_SUBDIR</name><value>#subdirGE#</value></envar>
     <envar><name>WRF_MEM_NAME</name><value>#memNameWRF#</value></envar>
+    <envar><name>GDASENKF_INPUT_SUBDIR</name><value>#subdirGDAS#</value></envar>
 
     <dependency>
       {%- if machine in ["WCOSS_DELL_P3", "WCOSS_CRAY"]  %}
@@ -362,11 +364,22 @@ MODULES_RUN_TASK_FP script.
       <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/gdas.@Y@m@d/@H/atmos/gdas.t@Hz.atmf{{ "%03d" % extrn_mdl_ics_offset_hrs }}.nc</cyclestr></datadep>
       {% else %}
       {%- if extrn_mdl_name_ics in ["GEFS"] %}
-      <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}#subdirGE#/@y@j@H00000{{ extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
+      <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/#subdirGE#/@y@j@H00000{{ extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
+      {%- elif extrn_mdl_name_ics in ["GDASENKF"] %}
+      <and>
+      {%- if machine in ["HERA"] %}
+        <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/enkfgdas.@Y@m@d/@H/atmos/#subdirGDAS#/gdas.t@Hz.atmf00{{ extrn_mdl_ics_offset_hrs }}.nc</cyclestr></datadep>
+        <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/enkfgdas.@Y@m@d/@H/atmos/#subdirGDAS#/gdas.t@Hz.sfcf00{{ extrn_mdl_ics_offset_hrs }}.nc</cyclestr></datadep>
+      {%- endif %}
+      </and>
       {%- elif extrn_mdl_name_ics in ["HRRRDAS"] %}
       <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/@Y@m@d@H/postprd#memNameWRF#/wrfnat#memNameWRF#_00.grib2</cyclestr></datadep>
       {%- else %}
+      {%- if machine in ["JET"] %}
       <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/@y@j@H000{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
+      {%- elif machine in ["HERA"] %}
+      <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/gfs.@Y@m@d/@H/atmos/gfs.t@Hz.pgrb2.0p25.f{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
+      {%- endif %}
       {%- endif %}
       {%- endif %}
     </dependency>
@@ -402,6 +415,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>BOUNDARY_LEN</name><value>{{ boundary_len_hrs }}</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value>{{ slash_ensmem_subdir }}</value></envar>
     <envar><name>GEFS_INPUT_SUBDIR</name><value>#subdirGE#</value></envar>
+    <envar><name>GDASENKF_INPUT_SUBDIR</name><value>#subdirGDAS#</value></envar>
 
     <dependency>
        <and>
@@ -412,9 +426,18 @@ MODULES_RUN_TASK_FP script.
          <datadep age="00:00:05:00"><cyclestr>{{ extrn_mdl_sysbasedir_ics }}/gdas.@Y@m@d/@H/atmos/gdas.t@Hz.atmf{{ "%03d" % h }}.nc</cyclestr></datadep>
          {%- else %}
          {%- if extrn_mdl_name_lbcs in ["GEFS"] %}
-         <datadep age="00:00:05:00"> <cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}#subdirGE#/@y@j@H000{{ "%03d" % h }}</cyclestr></datadep>
+         <datadep age="00:00:05:00"> <cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/#subdirGE#/@y@j@H000{{ "%03d" % h }}</cyclestr></datadep>
+         {%- elif extrn_mdl_name_lbcs in ["GDASENKF"] %}
+         {%- if machine in ["HERA"] %}
+          <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/enkfgdas.@Y@m@d/@H/atmos/#subdirGDAS#/gdas.t@Hz.atmf{{ "%03d" % h }}.nc</cyclestr></datadep>
+          <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/enkfgdas.@Y@m@d/@H/atmos/#subdirGDAS#/gdas.t@Hz.sfcf{{ "%03d" % h }}.nc</cyclestr></datadep>
+         {%- endif %}
          {%- else %}
-         <datadep age="00:00:05:00"> <cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/@y@j@H000{{ "%03d" % h }}</cyclestr></datadep>
+         {%- if machine in ["JET"] %}
+         <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/@y@j@H000{{ "%03d" % h }}</cyclestr></datadep>
+         {%- elif machine in ["HERA"] %}
+         <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/gfs.@Y@m@d/@H/atmos/gfs.t@Hz.pgrb2.0p25.f{{ "%03d" % h }}</cyclestr></datadep>
+         {%- endif %}
          {%- endif %}
          {%- endif %}
          {%- endfor %}

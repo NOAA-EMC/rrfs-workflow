@@ -311,6 +311,7 @@ fi
      [ "${extrn_mdl_name}" = "FV3GFS" -a "${MACHINE}" = "ORION" ] || \
      [ "${extrn_mdl_name}" = "GEFS" -a "${MACHINE}" = "JET" ] || \
      [ "${extrn_mdl_name}" = "GEFS" -a "${MACHINE}" = "HERA" ] || \
+     [ "${extrn_mdl_name}" = "GDASENKF" -a "${MACHINE}" = "JET" ] || \
      [ "${extrn_mdl_name}" = "FV3GFS" -a "${MACHINE}" = "JET" ] || \
      [ "${extrn_mdl_name}" = "FV3GFS" -a "${MACHINE}" = "HERA" ]; then
 #
@@ -395,8 +396,10 @@ fi
 #        fns=( "gfs.t${hh}z.pgrb2.0p25.anl" )  # Get only 0.25 degree files for now.
 #        fns=( "gfs.t${hh}z.pgrb2.0p25.f000" )  # Get only 0.25 degree files for now.
 
-        if [ "${MACHINE}" = "JET" ] || [ "${MACHINE}" = "HERA" ] || [ "${MACHINE}" = "ORION" ]; then
+        if [ "${MACHINE}" = "JET" ] || [ "${MACHINE}" = "ORION" ]; then
           fns_on_disk=( "${yy}${ddd}${hh}0${fcst_mn}0${fcst_hh}" )
+        elif [ "${MACHINE}" = "HERA" ] ; then
+          fns_on_disk=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )
         else
           fns_on_disk=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" "gfs.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
         fi
@@ -408,6 +411,13 @@ fi
       fi
       ;;
 
+    "GDASENKF")
+      if [ "${MACHINE}" = "HERA" ] ; then
+        fns_on_disk=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
+        fns_in_arcv=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )  # Get only 0.25 degree files for now.
+      fi
+      ;;
+ 
     "GEFS")
       fcst_hh=( $( printf "%02d " "${time_offset_hrs}" ) )
       prefix="${yy}${ddd}${hh}${mn}${fcst_mn}"
@@ -493,7 +503,7 @@ and analysis or forecast (anl_or_fcst):
 
         fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
 
-        if [ "${MACHINE}" = "JET" ] ||  [ "${MACHINE}" = "HERA" ] || [ "${MACHINE}" = "ORION" ]; then
+        if [ "${MACHINE}" = "JET" ] || [ "${MACHINE}" = "ORION" ]; then
           prefix=( "${yy}${ddd}${hh}${fcst_mn}0" )
           fns_on_disk=( "${fcst_hhh[@]/#/$prefix}" )
         else
@@ -508,6 +518,14 @@ and analysis or forecast (anl_or_fcst):
         fns_on_disk_tmp=( "${fcst_hhh[@]/#/${prefix}}" )
         fns_on_disk=( "${fns_on_disk_tmp[@]/%/${postfix}}" )
         fns_in_arcv=( "${fcst_hhh[@]/#/${prefix}}" )
+      fi
+      ;;
+
+    "GDASENKF")
+      fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
+      if  [ "${MACHINE}" = "HERA" ]; then
+        fns_on_disk=( "gdas.t${hh}z.atmf${fcst_hhh[@]}.nc" "gdas.t${hh}z.sfcf${fcst_hhh[@]}.nc")  # use netcdf
+        fns_in_arcv=( "gdas.t${hh}z.atmf${fcst_hhh}.nc" "gdas.t${hh}z.sfcf${fcst_hhh}.nc" )  #  for now.
       fi
       ;;
 
@@ -644,7 +662,7 @@ has not been specified for this external model and machine combination:
       sysdir="$sysbasedir/gfs.${yyyymmdd}/${hh}/atmos"
       ;;
     "HERA")
-      sysdir="$sysbasedir"
+      sysdir="$sysbasedir/gfs.${yyyymmdd}/${hh}/atmos"
       ;;
     "ORION")
       sysdir="$sysbasedir/gdas.${yyyymmdd}/${hh}/atmos"
@@ -661,6 +679,24 @@ has not been specified for this external model and machine combination:
     "STAMPEDE")
       sysdir="$sysbasedir"
       ;;
+    *)
+      print_err_msg_exit "\
+The system directory in which to look for external model output files 
+has not been specified for this external model and machine combination:
+  extrn_mdl_name = \"${extrn_mdl_name}\"
+  MACHINE = \"$MACHINE\""
+      ;;
+    esac
+    ;;
+
+  "GDASENKF")
+    case "$MACHINE" in
+    "HERA")
+       sysdir="$sysbasedir/enkfgdas.${yyyymmdd}/${hh}/atmos/${GDASENKF_INPUT_SUBDIR}"
+       ;;
+    "JET")
+       sysdir="$sysbasedir"
+       ;;
     *)
       print_err_msg_exit "\
 The system directory in which to look for external model output files 
@@ -978,6 +1014,13 @@ has not been specified for this external model:
      arcvrel_dir=""
      ;;
 
+  "GDASENKF")
+     arcv_dir=""
+     arcv_fmt="tar"
+     arcv_fns=""
+     arcv_fps="$arcv_dir/$arcv_fns"
+     arcvrel_dir=""
+     ;;
 
   *)
     print_err_msg_exit "\

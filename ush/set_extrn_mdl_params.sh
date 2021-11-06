@@ -109,6 +109,17 @@ else
     esac
     ;;
 
+  "GDASENKF")
+     case "$MACHINE" in
+     "HERA")
+       EXTRN_MDL_SYSBASEDIR_ICS="/scratch1/NCEPDEV/rstprod/com/gfs/prod"
+       ;;
+     "JET")
+       EXTRN_MDL_SYSBASEDIR_ICS="/mnt/lfs4/BMC/public/data/grids/enkf/atm"
+       ;;
+     esac
+     ;;
+
   "GEFS")
     case "$MACHINE" in
     "HERA")
@@ -205,6 +216,9 @@ if [[ -z ${EXTRN_MDL_LBCS_OFFSET_HRS} ]]; then
     "FV3GFS")
       EXTRN_MDL_LBCS_OFFSET_HRS="0"
       ;;
+    "GDASENKF")
+      EXTRN_MDL_LBCS_OFFSET_HRS="6"
+      ;;
     "GEFS")
       EXTRN_MDL_LBCS_OFFSET_HRS="6"
       ;;
@@ -293,6 +307,17 @@ else
       ;;
     "STAMPEDE")
       EXTRN_MDL_SYSBASEDIR_LBCS="/scratch/00315/tg455890/GDAS/20190530/2019053000_mem001"
+      ;;
+    esac
+    ;;
+
+  "GDASENKF")
+    case "$MACHINE" in
+    "HERA")
+      EXTRN_MDL_SYSBASEDIR_LBCS="/scratch1/NCEPDEV/rstprod/com/gfs/prod"
+      ;;
+    "JET")
+      EXTRN_MDL_SYSBASEDIR_LBCS="/mnt/lfs4/BMC/public/data/grids/enkf/atm"
       ;;
     esac
     ;;

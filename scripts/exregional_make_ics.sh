@@ -171,6 +171,7 @@ case "${CCPP_PHYS_SUITE}" in
     elif [ "${EXTRN_MDL_NAME_ICS}" = "NAM" ] || \
          [ "${EXTRN_MDL_NAME_ICS}" = "FV3GFS" ] || \
          [ "${EXTRN_MDL_NAME_ICS}" = "GEFS" ] || \
+         [ "${EXTRN_MDL_NAME_ICS}" = "GDASENKF" ] || \
          [ "${EXTRN_MDL_NAME_ICS}" = "GSMGFS" ]; then
       varmap_file="GFSphys_var_map.txt"
     fi
@@ -421,6 +422,22 @@ case "${EXTRN_MDL_NAME_ICS}" in
     fn_atm_nemsio="${EXTRN_MDL_FNS[0]}"
     fn_sfc_nemsio="${EXTRN_MDL_FNS[1]}"
   fi
+  vgtyp_from_climo=True
+  sotyp_from_climo=True
+  vgfrc_from_climo=True
+  minmax_vgfrc_from_climo=True
+  lai_from_climo=True
+  tg3_from_soil=True
+  ;;
+
+"GDASENKF")
+  tracers_input="[\"spfh\",\"clwmr\",\"o3mr\",\"icmr\",\"rwmr\",\"snmr\",\"grle\"]"
+  tracers="[\"sphum\",\"liq_wat\",\"o3mr\",\"ice_wat\",\"rainwat\",\"snowwat\",\"graupel\"]"
+  external_model="GFS"
+  input_type="gaussian_netcdf"
+  convert_nst=False
+  fn_atm_nemsio="${EXTRN_MDL_FNS[0]}"
+  fn_sfc_nemsio="${EXTRN_MDL_FNS[1]}"
   vgtyp_from_climo=True
   sotyp_from_climo=True
   vgfrc_from_climo=True
