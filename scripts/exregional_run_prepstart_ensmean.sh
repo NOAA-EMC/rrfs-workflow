@@ -55,7 +55,7 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_type" "modelinputdir" "fg_root")
+valid_args=( "cycle_type" "modelinputdir" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -123,27 +123,25 @@ while [[ $imem -le ${NUM_ENS_MEMBERS} ]];
 #
   fg_restart_dirname=fcst_fv3lam
 
-  YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
-  bkpath=${fg_root}/${YYYYMMDDHHmInterv}/mem${ensmem}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+  bkpath=${CYCLE_DIR}/mem${ensmem}/${fg_restart_dirname}/INPUT  # cycling, use background from RESTART
 
 #   the restart file from FV3 has a name like: ${YYYYMMDD}.${HH}0000.fv_core.res.tile1.nc
 #   But the restart files for the forecast length has a name like: fv_core.res.tile1.nc
 #   So the defination of restart_prefix needs a "." at the end.
 #
-  restart_prefix="${YYYYMMDD}.${HH}0000."
 
-  checkfile=${bkpath}/${restart_prefix}fv_core.res.tile1.nc
-  checkfile1=${bkpath}/${restart_prefix}fv_tracer.res.tile1.nc
+  checkfile=${bkpath}/fv_core.res.tile1.nc
+  checkfile1=${bkpath}/fv_tracer.res.tile1.nc
   if [ -r "${checkfile}" ] && [ -r "${checkfile1}" ] ; then
-    ln_vrfy ${bkpath}/${restart_prefix}fv_core.res.tile1.nc       fv_core.res.tile1.nc_mem${ensmem}
-    ln_vrfy ${bkpath}/${restart_prefix}fv_tracer.res.tile1.nc     fv_tracer.res.tile1.nc_mem${ensmem}
-    ln_vrfy ${bkpath}/${restart_prefix}sfc_data.nc                sfc_data.nc_mem${ensmem}
-    ln_vrfy ${bkpath}/${restart_prefix}fv_srf_wnd.res.tile1.nc    fv_srf_wnd.res.tile1.nc_mem${ensmem}
-    ln_vrfy ${bkpath}/${restart_prefix}phy_data.nc                phy_data.nc_mem${ensmem}
+    ln_vrfy ${bkpath}/fv_core.res.tile1.nc       fv_core.res.tile1.nc_mem${ensmem}
+    ln_vrfy ${bkpath}/fv_tracer.res.tile1.nc     fv_tracer.res.tile1.nc_mem${ensmem}
+    ln_vrfy ${bkpath}/sfc_data.nc                sfc_data.nc_mem${ensmem}
+    ln_vrfy ${bkpath}/fv_srf_wnd.res.tile1.nc    fv_srf_wnd.res.tile1.nc_mem${ensmem}
+    ln_vrfy ${bkpath}/phy_data.nc                phy_data.nc_mem${ensmem}
     if [ $imem == 1 ]; then
-      ln_vrfy ${bkpath}/${restart_prefix}coupler.res                coupler.res
-      ln_vrfy ${bkpath}/${restart_prefix}fv_core.res.nc             fv_core.res.nc
-      ln_vrfy ${fg_root}/${YYYYMMDDHHmInterv}/mem${ensmem}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
+      ln_vrfy ${bkpath}/coupler.res                coupler.res
+      ln_vrfy ${bkpath}/fv_core.res.nc             fv_core.res.nc
+      ln_vrfy ${bkpath}/gfs_ctrl.nc  gfs_ctrl.nc
     fi
   else
     print_err_msg_exit "Error: cannot find background: ${checkfile}"
