@@ -97,7 +97,7 @@ case $MACHINE in
   ulimit -v unlimited
   ulimit -a
   export OMP_NUM_THREADS=1
-  export OMP_STACKSIZE=300M
+#  export OMP_STACKSIZE=300M
   APRUN="srun"
   ;;
 #
@@ -163,6 +163,16 @@ fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
  cp_vrfy ${fixgriddir}/fv3_akbk           fv3sar_tile1_akbk.nc
  cp_vrfy ${fixgriddir}/fv3_grid_spec      fv3sar_tile1_grid_spec.nc
 
+#
+#-----------------------------------------------------------------------
+#
+# Get nlons (NX_RES) and nlats (NY_RES) from  fv3_grid_spec
+#
+#-----------------------------------------------------------------------
+#
+ NX_RES=`ncdump -h fv3sar_tile1_grid_spec.nc | grep "grid_xt =" | cut -f3 -d" " `
+ NY_RES=`ncdump -h fv3sar_tile1_grid_spec.nc | grep "grid_yt =" | cut -f3 -d" " `
+
  for imem in  $(seq 1 $nens) ensmean; do
 
      if [ ${imem} == "ensmean" ]; then
@@ -195,6 +205,7 @@ fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
      if [ $imem == 1 ];then   
          ncvarlst_noaxis_time_new fv3_${memcharv0}_tracer > nck_tracer_list.txt
          ncvarlst_noaxis_time_new fv3_${memcharv0}_dynvars > nck_dynvar_list.txt
+         nlevs=`ncdump -h fv3_${memcharv0}_tracer | grep "zaxis_1 =" | cut -f3 -d" " `
      fi
      user_nck_dynvar_list=`cat nck_dynvar_list.txt|paste -sd "," -  | tr -d '[:space:]'`
      user_nck_tracer_list=`cat nck_tracer_list.txt |paste -sd "," -  | tr -d '[:space:]'` 

@@ -229,6 +229,7 @@ settings="\
   'nnodes_run_prepstart': ${NNODES_RUN_PREPSTART}
   'nnodes_run_fcst': ${NNODES_RUN_FCST}
   'nnodes_run_anal': ${NNODES_RUN_ANAL}
+  'nnodes_run_enkf': ${NNODES_RUN_ENKF}
   'nnodes_run_post': ${NNODES_RUN_POST}
   'nnodes_run_wgrib2': ${NNODES_RUN_WGRIB2}
   'nnodes_proc_radar': ${NNODES_PROC_RADAR}
@@ -244,6 +245,8 @@ settings="\
   'native_run_fcst': ${NATIVE_RUN_FCST}
   'ncores_run_anal': ${NCORES_RUN_ANAL}
   'native_run_anal': ${NATIVE_RUN_ANAL}
+  'ncores_run_enkf': ${NCORES_RUN_ENKF}
+  'native_run_enkf': ${NATIVE_RUN_ENKF}
 #
 # Number of logical processes per node for each task.  If running without
 # threading, this is equal to the number of MPI processes per node.
@@ -258,6 +261,7 @@ settings="\
   'ppn_run_prepstart': ${PPN_RUN_PREPSTART}
   'ppn_run_fcst': ${PPN_RUN_FCST}
   'ppn_run_anal': ${PPN_RUN_ANAL}
+  'ppn_run_enkf': ${PPN_RUN_ENKF}
   'ppn_run_post': ${PPN_RUN_POST}
   'ppn_run_wgrib2': ${PPN_RUN_WGRIB2}
   'ppn_proc_radar': ${PPN_PROC_RADAR}
@@ -277,8 +281,10 @@ settings="\
   'wtime_make_ics': ${WTIME_MAKE_ICS}
   'wtime_make_lbcs': ${WTIME_MAKE_LBCS}
   'wtime_run_prepstart': ${WTIME_RUN_PREPSTART}
+  'wtime_run_prepstart_ensmean': ${WTIME_RUN_PREPSTART_ENSMEAN}
   'wtime_run_fcst': ${WTIME_RUN_FCST}
   'wtime_run_anal': ${WTIME_RUN_ANAL}
+  'wtime_run_enkf': ${WTIME_RUN_ENKF}
   'wtime_run_post': ${WTIME_RUN_POST}
   'wtime_run_wgrib2': ${WTIME_RUN_WGRIB2}
   'wtime_proc_radar': ${WTIME_PROC_RADAR}
