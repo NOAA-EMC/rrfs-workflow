@@ -68,6 +68,9 @@ FV3_HRRR:
   gfs_physics_nml: 
     <<: *gsd_sar_phys
     cdmbgwd: [3.5, 1.0]
+    do_gsl_drag_ls_bl: true
+    do_gsl_drag_ss: true
+    do_gsl_drag_tofd: true
     do_mynnsfclay: true
     do_sfcperts: !!python/none
     dt_inner : 20
@@ -100,6 +103,9 @@ FV3_RAP:
   gfs_physics_nml:
     <<: *gsd_sar_phys
     cdmbgwd: [3.5, 1.0]
+    do_gsl_drag_ls_bl: true
+    do_gsl_drag_ss: true
+    do_gsl_drag_tofd: true
     do_mynnsfclay: true
     do_sfcperts: !!python/none
     effr_in: true

@@ -254,7 +254,15 @@ else
     if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
       echo "${YYYYMMDDHH}(${cycle_type}): warm start at ${current_time} from ${checkfile} " >> ${EXPTDIR}/log.cycles
     fi
-
+#
+# remove checksum from restart files. Checksum will cause trouble if model initializes from analysis
+#
+    ncatted -a checksum,,d,, fv_core.res.tile1.nc
+    ncatted -a checksum,,d,, fv_tracer.res.tile1.nc
+    ncatted -a checksum,,d,, sfc_data.nc
+    ncatted -a checksum,,d,, fv_core.res.nc
+    ncatted -a checksum,,d,, fv_srf_wnd.res.tile1.nc
+    ncatted -a checksum,,d,, phy_data.nc
   else
     print_err_msg_exit "Error: cannot find background: ${checkfile}"
   fi
@@ -272,8 +280,8 @@ if [ ${HH} -eq ${SST_update_hour} ] && [ ${cycle_type} == "prod" ] ; then
    elif [ -r "${SST_ROOT}/${YYJJJ00000000}" ]; then
       cp ${SST_ROOT}/${YYJJJ00000000} latest.SST
    else
-     ${ECHO} "${SST_ROOT} data does not exist!!"
-     ${ECHO} "ERROR: No SST update at ${time_str}!!!!"
+     echo "${SST_ROOT} data does not exist!!"
+     echo "ERROR: No SST update at ${time_str}!!!!"
    fi
    if [ -r "latest.SST" ]; then
      cp_vrfy ${FIXgsm}/RTG_SST_landmask.dat                RTG_SST_landmask.dat
