@@ -415,53 +415,6 @@ fi
 ${APRUN}  $enkfworkdir/enkf.x < enkf.nml 1>stdout 2>stderr || print_err_msg_exit "\
 Call to executable to run EnKF returned with nonzero exit code."
 
-#
-#-----------------------------------------------------------------------
-#
-# Loop through the members, restore the EnKF analysis back to
-# separate tracer and dynvar files, copy them
-# to nwges staging locations
-#
-#-----------------------------------------------------------------------
-#
-
-for imem in $(seq 1 $nens); do
-
-   memchar="mem"$(printf %04i $imem)
-   memcharv0="mem"$(printf %03i $imem)
-   memstr=$memchar
-   slash_ensmem_subdir=$memchar
-
-   if [ ${cycle_type} == "spinup" ]; then
-      enkfanal_nwges_dir=${NWGES_DIR}/${slash_ensmem_subdir}/anal_enkf_spinup
-      bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam_spinup/INPUT
-   else
-      enkfanal_nwges_dir=${NWGES_DIR}/${slash_ensmem_subdir}/anal_enkf
-      bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam/INPUT
-   fi
-   mkdir_vrfy -p  ${enkfanal_nwges_dir} 
-
-   FileUpdated=fv3sar_tile1_${memcharv0}_dynvartracer
-     
-   cp_vrfy $bkpath/fv_tracer.res.tile1.nc ./${memcharv0}_fv3_tracer
-   cp_vrfy $bkpath/fv_core.res.tile1.nc ./${memcharv0}_fv3_dynvars
-   if [ $imem == 1 ];then   
-      ncvarlst_noaxis_time_new ${memcharv0}_fv3_tracer > nck_tracer_list.txt
-      ncvarlst_noaxis_time_new ${memcharv0}_fv3_dynvars > nck_dynvar_list.txt
-   fi
-   user_nck_dynvar_list=`cat nck_dynvar_list.txt|paste -sd "," -  | tr -d '[:space:]'`
-   user_nck_tracer_list=`cat nck_tracer_list.txt |paste -sd "," -  | tr -d '[:space:]'` 
-       
-   ncks -A -v $user_nck_dynvar_list $FileUpdated  ${memcharv0}_fv3_dynvars
-   cp_vrfy ${memcharv0}_fv3_dynvars   ${enkfanal_nwges_dir}/fv_core.res.tile1.nc
-   cp_vrfy ${memcharv0}_fv3_dynvars   ${bkpath}/fv_core.res.tile1.nc
-   ncks -A -v  $user_nck_tracer_list $FileUpdated  ${memcharv0}_fv3_tracer 
-   ncks --no_abc -O -x -v yaxis_2  ${memcharv0}_fv3_tracer tmp_${memcharv0}_tracer
-   cp_vrfy tmp_${memcharv0}_tracer  ${enkfanal_nwges_dir}/fv_tracer.res.tile1.nc
-   cp_vrfy tmp_${memcharv0}_tracer  ${bkpath}/fv_tracer.res.tile1.nc
-         
-done
-
 print_info_msg "
 ========================================================================
 EnKF PROCESS completed successfully!!!

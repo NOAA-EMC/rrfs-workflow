@@ -42,37 +42,6 @@ DO_RETRO="TRUE"
 QUILTING="TRUE"
 CCPP_PHYS_SUITE="FV3_HRRR"
 
-if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
-   NUM_ENS_MEMBERS=9
-   DO_SPPT=TRUE
-   SPPT_MAG=0.5
-   DO_DACYCLE="FALSE"
-   DO_ENKFUPDATE="TRUE"
-   DO_SPINUP="FALSE"
-   DO_SURFACE_CYCLE="FALSE"
-   DO_NONVAR_CLDANAL="FALSE"
-   DO_REFL2TTEN="FALSE"
-   DO_ENSCONTROL="TRUE"
-   DO_GSIOBSERVER="TRUE"
-   EXTRN_MDL_NAME_ICS="GEFS"
-   EXTRN_MDL_NAME_ICS="HRRRDAS"
-   EXTRN_MDL_NAME_LBCS="GEFS"
-   EXTRN_MDL_ICS_OFFSET_HRS="0"
-   EXTRN_MDL_LBCS_OFFSET_HRS="0"
-   LBC_SPEC_INTVL_HRS="3"
-   DA_CYCLE_INTERV="3"
-   ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_ens"
-else
-   EXTRN_MDL_NAME_ICS="FV3GFS"
-   EXTRN_MDL_NAME_LBCS="FV3GFS"
-   EXTRN_MDL_ICS_OFFSET_HRS="3"
-   EXTRN_MDL_LBCS_OFFSET_HRS="6"
-   LBC_SPEC_INTVL_HRS="1"
-   DA_CYCLE_INTERV="1"
-   ARCHIVEDIR="/1year/BMC/wrfruc/rrfs_dev1"
-fi
-
-
 BOUNDARY_LEN_HRS="24"
 EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS="0"
 
@@ -145,7 +114,7 @@ USE_CUSTOM_POST_CONFIG_FILE="TRUE"
 TESTBED_FIELDS_FN="testbed_fields_bgdawp.txt"
 CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-fv3lam_rrfs.txt"
 CUSTOM_POST_PARAMS_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/params_grib2_tbl_new"
-
+ARCHIVEDIR="/1year/BMC/wrfruc/rrfs_dev1
 NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
 NCL_HOME="/home/rtrr/RRFS/graphics"
 NCL_REGION="conus"
@@ -171,4 +140,14 @@ COMINgfs=""
 STMP="YourOwnSpace"  # Path to directory STMP that mostly contains input files.
 PTMP="YourOwnSpace"  # Path to directory STMP that mostly contains input files.
 NWGES="YourOwnSpace"  # Path to directory NWGES that save boundary, cold initial, restart files.
+
+if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
+   NUM_ENS_MEMBERS=9
+#   DO_SPPT=TRUE
+#   SPPT_MAG=0.5
+#   DO_ENSCONTROL="TRUE"
+   DO_GSIOBSERVER="TRUE"
+   DO_ENKFUPDATE="TRUE"
+   ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_ens"
+fi
 
