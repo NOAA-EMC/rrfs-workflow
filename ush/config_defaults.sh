@@ -1221,7 +1221,7 @@ PREEXISTING_DIR_METHOD="delete"
 #-----------------------------------------------------------------------
 #
 VERBOSE="TRUE"
-SAVE_CYCLE_LOG="FALSE"
+SAVE_CYCLE_LOG="TRUE"
 #
 #-----------------------------------------------------------------------
 #
@@ -1760,7 +1760,7 @@ DO_ENKFUPDATE="FALSE"
 #
 DO_DACYCLE="FALSE"
 DO_SURFACE_CYCLE="FALSE"
-SURFACE_CYCLE_DELAY_HRS="0"
+SURFACE_CYCLE_DELAY_HRS="1"
 #
 #-----------------------------------------------------------------------
 #
