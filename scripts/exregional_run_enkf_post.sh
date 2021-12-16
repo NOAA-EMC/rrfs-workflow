@@ -153,20 +153,16 @@ cd_vrfy $enkfworkdir
 #-----------------------------------------------------------------------
 #
 # For each member, restore the EnKF analysis back to
-# separate tracer and dynvar files, copy them
-# to nwges staging locations
+# separate tracer and dynvar files
 #
 #-----------------------------------------------------------------------
 #
 
 if [ ${cycle_type} == "spinup" ]; then
-   enkfanal_nwges_dir=${NWGES_DIR}/${slash_ensmem_subdir}/anal_enkf_spinup
    bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam_spinup/INPUT
 else
-   enkfanal_nwges_dir=${NWGES_DIR}/${slash_ensmem_subdir}/anal_enkf
    bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam/INPUT
 fi
-mkdir_vrfy -p  ${enkfanal_nwges_dir} 
 
 FileUpdated=fv3sar_tile1_${memname}_dynvartracer
     
@@ -181,27 +177,36 @@ user_nck_tracer_list=`cat nck_tracer_list.txt |paste -sd "," -  | tr -d '[:space
 #-----------------------------------------------------------------------
 #
 # Extract dynvars variables from the EnKF analysi, update the
-# dynvar files, copy to nwges staging locations
+# dynvar files
 #
 #-----------------------------------------------------------------------
 #
 ncks -A -v $user_nck_dynvar_list $FileUpdated  ${memname}_fv3_dynvars
-cp_vrfy ${memname}_fv3_dynvars   ${enkfanal_nwges_dir}/fv_core.res.tile1.nc
-cp_vrfy ${memname}_fv3_dynvars   ${bkpath}/fv_core.res.tile1.nc
+mv_vrfy ${memname}_fv3_dynvars   ${bkpath}/fv_core.res.tile1.nc
 #
 #-----------------------------------------------------------------------
 #
 # Extract tracer variables from the EnKF analysi, update the
-# tracer files, copy to nwges staging locations
+# tracer files
 #
 #-----------------------------------------------------------------------
 #
 ncks -A -v  $user_nck_tracer_list $FileUpdated  ${memname}_fv3_tracer 
 ncks --no_abc -O -x -v yaxis_2  ${memname}_fv3_tracer tmp_${memname}_tracer
-cp_vrfy tmp_${memname}_tracer  ${enkfanal_nwges_dir}/fv_tracer.res.tile1.nc
-cp_vrfy tmp_${memname}_tracer  ${bkpath}/fv_tracer.res.tile1.nc
+mv_vrfy tmp_${memname}_tracer  ${bkpath}/fv_tracer.res.tile1.nc
 
-         
+#
+#-----------------------------------------------------------------------
+# clean up temporary files
+#-----------------------------------------------------------------------
+#
+rm -f $FileUpdated
+rm -f ${memname}_fv3_tracer tmp_${memname}_tracer
+rm -f fv3_${memname}_tracer
+rm -f ${memname}_fv3_dynvars
+rm -f fv3_${memname}_dynvars
+rm -f fv3_${memname}_sfcdata  diag*ges*_${memname}
+
 print_info_msg "
 ========================================================================
 EnKF POST-PROCESS completed successfully for mem"${memname}"!!!

@@ -151,6 +151,12 @@ vlddate=$CDATE
 cd_vrfy $enkfworkdir
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 
+if [ ${cycle_type} == "spinup" ]; then
+   enkfanal_nwges_dir="${NWGES_DIR}/anal_enkf_spinup"
+else
+   enkfanal_nwges_dir="${NWGES_DIR}/anal_enkf"
+fi
+mkdir_vrfy -p ${enkfanal_nwges_dir}
 #
 #-----------------------------------------------------------------------
 #
@@ -414,6 +420,9 @@ fi
 #
 ${APRUN}  $enkfworkdir/enkf.x < enkf.nml 1>stdout 2>stderr || print_err_msg_exit "\
 Call to executable to run EnKF returned with nonzero exit code."
+
+cp_vrfy stdout ${enkfanal_nwges_dir}/.
+cp_vrfy stderr ${enkfanal_nwges_dir}/.
 
 print_info_msg "
 ========================================================================
