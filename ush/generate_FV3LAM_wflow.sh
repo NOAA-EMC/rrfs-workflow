@@ -244,6 +244,7 @@ settings="\
   'ncores_run_fcst': ${PE_MEMBER01}
   'native_run_fcst': ${NATIVE_RUN_FCST}
   'ncores_run_anal': ${NCORES_RUN_ANAL}
+  'ncores_run_observer': ${NCORES_RUN_OBSERVER}
   'native_run_anal': ${NATIVE_RUN_ANAL}
   'ncores_run_enkf': ${NCORES_RUN_ENKF}
   'native_run_enkf': ${NATIVE_RUN_ENKF}

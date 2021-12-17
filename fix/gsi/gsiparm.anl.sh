@@ -1,10 +1,11 @@
 gsi_namelist="
  &SETUP
-   miter=2,niter(1)=50,niter(2)=50,
+   miter=${miter},niter(1)=50,niter(2)=50,
    write_diag(1)=.true.,write_diag(2)=${write_diag_2},write_diag(3)=.true.,
    qoption=2,print_obs_para=.true.,diag_radardbz=${diag_radardbz},
    gencode=78,factqmin=0.0,factqmax=0.0,
    iguess=-1,
+   lread_obs_save=${lread_obs_save},lread_obs_skip=${lread_obs_skip},
    oneobtest=.false.,retrieval=.false.,
    nhr_assimilation=3,l_foto=.false.,
    use_pbl=.false.,use_prepb_satwnd=$ifsatbufr,

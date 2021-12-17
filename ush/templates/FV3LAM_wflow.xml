@@ -904,7 +904,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_ROOT</name><value><cyclestr>&CYCLE_BASEDIR;</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
     <envar><name>GSI_TYPE</name><value><cyclestr>ANALYSIS</cyclestr></value></envar>
-    <envar><name>ENS_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
+    <envar><name>RRFSENS_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
 
     <dependency>
@@ -940,7 +940,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
-    <envar><name>ENS_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
+    <envar><name>RRFSENS_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
 
     <dependency>
@@ -980,7 +980,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
-    <envar><name>ENS_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
+    <envar><name>RRFSENS_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
 
     <dependency>
@@ -1364,7 +1364,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_ROOT</name><value><cyclestr>&CYCLE_BASEDIR;</cyclestr></value></envar>
     <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>GSI_TYPE</name><value><cyclestr>OBSERVER</cyclestr></value></envar>
-    <envar><name>ENS_TYPE</name><value><cyclestr>MEAN</cyclestr></value></envar>
+    <envar><name>RRFSENS_TYPE</name><value><cyclestr>MEAN</cyclestr></value></envar>
 
     <dependency>
        <and>
@@ -1395,7 +1395,7 @@ MODULES_RUN_TASK_FP script.
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_RUN_ANAL"</command>
     {% if machine in ["JET", "HERA"] -%}
-    <cores>{{ ncores_run_anal }}</cores>
+    <cores>{{ ncores_run_observer }}</cores>
     <native>{{ native_run_anal }} &RRFS_RESERVE;</native>
     {% else -%}
     <nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}</nodes>
@@ -1412,7 +1412,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_ROOT</name><value><cyclestr>&CYCLE_BASEDIR;</cyclestr></value></envar>
     <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>GSI_TYPE</name><value><cyclestr>OBSERVER</cyclestr></value></envar>
-    <envar><name>ENS_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
+    <envar><name>RRFSENS_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
 
     <dependency>

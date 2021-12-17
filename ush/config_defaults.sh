@@ -1536,6 +1536,7 @@ NNODES_RUN_GRAPHICS="1"
 # Number of cores.
 #
 NCORES_RUN_ANAL="4"
+NCORES_RUN_OBSERVER="4"
 NCORES_RUN_ENKF="4"
 NATIVE_RUN_FCST="--cpus-per-task 2 --exclusive"
 NATIVE_RUN_ANAL="--cpus-per-task 2 --exclusive"

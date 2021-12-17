@@ -55,7 +55,7 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "gsi_type" "ens_type" "analworkdir" "observer_nwges_dir" "slash_ensmem_subdir" )
+valid_args=( "cycle_dir" "cycle_type" "gsi_type" "rrfsens_type" "analworkdir" "observer_nwges_dir" "slash_ensmem_subdir" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -172,13 +172,13 @@ cd_vrfy ${analworkdir}
 
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 if [ ${cycle_type} == "spinup" ]; then
-  if [ ${ens_type} == "MEAN" ]; then
+  if [ ${rrfsens_type} == "MEAN" ]; then
     bkpath=${cycle_dir}/ensmean/fcst_fv3lam_spinup/INPUT
   else
     bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam_spinup/INPUT
   fi
 else
-  if [ ${ens_type} == "MEAN" ]; then
+  if [ ${rrfsens_type} == "MEAN" ]; then
     bkpath=${cycle_dir}/ensmean/fcst_fv3lam/INPUT
   else
     bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam/INPUT
@@ -290,6 +290,9 @@ esac
 ifsatbufr=.false.
 ifsoilnudge=.false.
 ifhyb=.false.
+miter=2
+lread_obs_save=.false.
+lread_obs_skip=.false.
 
 # Determine if hybrid option is available
 memname='atmf009'
@@ -545,7 +548,8 @@ done
 # 
 if [ ${gsi_type} == "OBSERVER" ]; then
   miter=0
-  if [ ${ens_type} == "MEAN" ]; then
+  ifhyb=.false.
+  if [ ${rrfsens_type} == "MEAN" ]; then
     lread_obs_save=.true.
     lread_obs_skip=.false.
   else
