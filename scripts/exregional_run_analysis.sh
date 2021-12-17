@@ -555,7 +555,7 @@ if [ ${gsi_type} == "OBSERVER" ]; then
   else
     lread_obs_save=.false.
     lread_obs_skip=.true.
-    ln -s ../../enseman/observer_gsi/obs_input.* .
+    ln -s ../../ensmean/observer_gsi/obs_input.* .
   fi
 fi
 
