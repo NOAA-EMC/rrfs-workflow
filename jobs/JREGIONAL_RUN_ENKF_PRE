@@ -69,6 +69,8 @@ if [ ${CYCLE_TYPE} == "spinup" ]; then
 else
   enkfworkdir="${CYCLE_DIR}/enkfupdt"
 fi
+rm -fr ${enkfworkdir}
+mkdir_vrfy -p ${enkfworkdir}
 #
 #-----------------------------------------------------------------------
 #
@@ -77,7 +79,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSDIR/exregional_run_enkf.sh \
+$SCRIPTSDIR/exregional_run_enkf_pre.sh \
              cycle_dir="${CYCLE_DIR}" \
              cycle_type="${CYCLE_TYPE}" \
              enkfworkdir="${enkfworkdir}" \

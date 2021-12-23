@@ -58,7 +58,7 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "enkfworkdir" "NWGES_DIR" "slash_ensmem_subdir" "memname")
+valid_args=( "cycle_dir" "cycle_type" "enkfworkdir" "NWGES_DIR" )
 process_args valid_args "$@"
 
 cycle_type=${cycle_type:-prod}
@@ -143,73 +143,101 @@ vlddate=$CDATE
 #-----------------------------------------------------------------------
 #
 # Go to working directory.
+# Define fix path
 #
 #-----------------------------------------------------------------------
 #
 
 cd_vrfy $enkfworkdir
+fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 
 #
 #-----------------------------------------------------------------------
 #
-# For each member, restore the EnKF analysis back to
-# separate tracer and dynvar files
+# Loop through the members, copy over the background and
+#  observer output (diag*ges*) files to the running directory
 #
 #-----------------------------------------------------------------------
 #
-
-if [ ${cycle_type} == "spinup" ]; then
-   bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam_spinup/INPUT
-else
-   bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam/INPUT
-fi
-
-FileUpdated=fv3sar_tile1_${memname}_dynvartracer
-    
-cp_vrfy $bkpath/fv_tracer.res.tile1.nc ./${memname}_fv3_tracer
-cp_vrfy $bkpath/fv_core.res.tile1.nc ./${memname}_fv3_dynvars
-ncvarlst_noaxis_time_new ${memname}_fv3_tracer > nck_tracer_list.txt
-ncvarlst_noaxis_time_new ${memname}_fv3_dynvars > nck_dynvar_list.txt
-user_nck_dynvar_list=`cat nck_dynvar_list.txt|paste -sd "," -  | tr -d '[:space:]'`
-user_nck_tracer_list=`cat nck_tracer_list.txt |paste -sd "," -  | tr -d '[:space:]'` 
-      
-#
-#-----------------------------------------------------------------------
-#
-# Extract dynvars variables from the EnKF analysi, update the
-# dynvar files
-#
-#-----------------------------------------------------------------------
-#
-ncks -A -v $user_nck_dynvar_list $FileUpdated  ${memname}_fv3_dynvars
-mv_vrfy ${memname}_fv3_dynvars   ${bkpath}/fv_core.res.tile1.nc
-#
-#-----------------------------------------------------------------------
-#
-# Extract tracer variables from the EnKF analysi, update the
-# tracer files
-#
-#-----------------------------------------------------------------------
-#
-ncks -A -v  $user_nck_tracer_list $FileUpdated  ${memname}_fv3_tracer 
-ncks --no_abc -O -x -v yaxis_2  ${memname}_fv3_tracer tmp_${memname}_tracer
-mv_vrfy tmp_${memname}_tracer  ${bkpath}/fv_tracer.res.tile1.nc
+ cp_vrfy ${fixgriddir}/fv3_coupler.res    coupler.res
+ cp_vrfy ${fixgriddir}/fv3_akbk           fv3sar_tile1_akbk.nc
+ cp_vrfy ${fixgriddir}/fv3_grid_spec      fv3sar_tile1_grid_spec.nc
 
 #
 #-----------------------------------------------------------------------
-# clean up temporary files
+#
+# Get nlons (NX_RES) and nlats (NY_RES) from  fv3_grid_spec
+#
 #-----------------------------------------------------------------------
 #
-rm -f $FileUpdated
-rm -f ${memname}_fv3_tracer tmp_${memname}_tracer
-rm -f fv3_${memname}_tracer
-rm -f ${memname}_fv3_dynvars
-rm -f fv3_${memname}_dynvars
-rm -f fv3_${memname}_sfcdata  diag*ges*_${memname}
+ for imem in  $(seq 1 $nens) ensmean; do
+
+     if [ ${imem} == "ensmean" ]; then
+        memchar="ensmean"
+        memcharv0="ensmean"
+     else
+        memchar="mem"$(printf %04i $imem)
+        memcharv0="mem"$(printf %03i $imem)
+     fi
+     slash_ensmem_subdir=$memchar
+     if [ ${cycle_type} == "spinup" ]; then
+        bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam_spinup/INPUT
+        observer_nwges_dir="${NWGES_DIR}/${slash_ensmem_subdir}/observer_gsi_spinup"
+     else
+        bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam/INPUT
+        observer_nwges_dir="${NWGES_DIR}/${slash_ensmem_subdir}/observer_gsi"
+     fi
+
+     cp_vrfy   ${bkpath}/fv_core.res.tile1.nc         fv3_${memcharv0}_dynvars
+     cp_vrfy   ${bkpath}/fv_tracer.res.tile1.nc       fv3_${memcharv0}_tracer
+     cp_vrfy   ${bkpath}/sfc_data.nc                  fv3_${memcharv0}_sfcdata
+
+#
+#-----------------------------------------------------------------------
+#
+# get the variable list from the tracer and dynvar files
+#
+#-----------------------------------------------------------------------
+#
+     if [ $imem == 1 ];then   
+         ncvarlst_noaxis_time_new fv3_${memcharv0}_tracer > nck_tracer_list.txt
+         ncvarlst_noaxis_time_new fv3_${memcharv0}_dynvars > nck_dynvar_list.txt
+     fi
+     user_nck_dynvar_list=`cat nck_dynvar_list.txt|paste -sd "," -  | tr -d '[:space:]'`
+     user_nck_tracer_list=`cat nck_tracer_list.txt |paste -sd "," -  | tr -d '[:space:]'` 
+#   This file contains horizontal grid information
+     ncrename -d yaxis_1,yaxis_2 -v yaxis_1,yaxis_2 fv3_${memcharv0}_tracer
+#
+#-----------------------------------------------------------------------
+#
+# Copy tracer variables from tracer file to dynvars file, and
+# get a combined dynvartracer background
+#
+#-----------------------------------------------------------------------
+#
+     ncks -A -v $user_nck_tracer_list fv3_${memcharv0}_tracer fv3_${memcharv0}_dynvars
+     mv fv3_${memcharv0}_dynvars fv3sar_tile1_${memcharv0}_dynvartracer
+#
+#-----------------------------------------------------------------------
+#
+# Copy observer outputs (diag*ges*) to the working directory
+#
+#-----------------------------------------------------------------------
+#
+     for diagfile0 in `ls  ${observer_nwges_dir}/diag*ges*`; do
+         diagfile=$(basename  $diagfile0)
+         cp_vrfy  $diagfile0  ${diagfile}_$memcharv0
+     done
+
+ done
+
+#
+#----------------------------------------------------------------------
+#
 
 print_info_msg "
 ========================================================================
-EnKF POST-PROCESS completed successfully for mem"${memname}"!!!
+EnKF PRE-PROCESS completed successfully!!!
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"

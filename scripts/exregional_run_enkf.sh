@@ -10,7 +10,7 @@
 . $USHDIR/source_util_funcs.sh
 
 function ncvarlst_noaxis_time { ncks --trd -m ${1} | grep -E ': type' | cut -f 1 -d ' ' | sed 's/://' | sort |grep -v -i -E "axis|time" ;  }
-function ncvarlst_noaxis_time_new { ncks -m  ${1} | grep -E 'name.*=' | cut -f 2 -d '=' | grep -o '"*.*"' | sed 's/"//g' | sort |grep -v -i -E "axis|time" ;  }
+function ncvarlst_noaxis_time_new { ncks -m  ${1} | grep -E 'float' | cut -d "(" -f 1 | cut -c 10- ;  }
 export  HDF5_USE_FILE_LOCKING=FALSE #clt to avoild recenter's error "NetCDF: HDF error"
 #
 #-----------------------------------------------------------------------
@@ -160,90 +160,6 @@ mkdir_vrfy -p ${enkfanal_nwges_dir}
 #
 #-----------------------------------------------------------------------
 #
-# Loop through the members, copy over the background and
-#  observer output (diag*ges*) files to the running directory
-#
-#-----------------------------------------------------------------------
-#
- cp_vrfy ${fixgriddir}/fv3_coupler.res    coupler.res
- cp_vrfy ${fixgriddir}/fv3_akbk           fv3sar_tile1_akbk.nc
- cp_vrfy ${fixgriddir}/fv3_grid_spec      fv3sar_tile1_grid_spec.nc
-
-#
-#-----------------------------------------------------------------------
-#
-# Get nlons (NX_RES) and nlats (NY_RES) from  fv3_grid_spec
-#
-#-----------------------------------------------------------------------
-#
- NX_RES=`ncdump -h fv3sar_tile1_grid_spec.nc | grep "grid_xt =" | cut -f3 -d" " `
- NY_RES=`ncdump -h fv3sar_tile1_grid_spec.nc | grep "grid_yt =" | cut -f3 -d" " `
-
- for imem in  $(seq 1 $nens) ensmean; do
-
-     if [ ${imem} == "ensmean" ]; then
-        memchar="ensmean"
-        memcharv0="ensmean"
-     else
-        memchar="mem"$(printf %04i $imem)
-        memcharv0="mem"$(printf %03i $imem)
-     fi
-     slash_ensmem_subdir=$memchar
-     if [ ${cycle_type} == "spinup" ]; then
-        bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam_spinup/INPUT
-        observer_nwges_dir="${NWGES_DIR}/${slash_ensmem_subdir}/observer_gsi_spinup"
-     else
-        bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam/INPUT
-        observer_nwges_dir="${NWGES_DIR}/${slash_ensmem_subdir}/observer_gsi"
-     fi
-
-     cp_vrfy   ${bkpath}/fv_core.res.tile1.nc         fv3_${memcharv0}_dynvars
-     cp_vrfy   ${bkpath}/fv_tracer.res.tile1.nc       fv3_${memcharv0}_tracer
-     cp_vrfy   ${bkpath}/sfc_data.nc                  fv3_${memcharv0}_sfcdata
-
-#
-#-----------------------------------------------------------------------
-#
-# get the variable list from the tracer and dynvar files
-#
-#-----------------------------------------------------------------------
-#
-     if [ $imem == 1 ];then   
-         ncvarlst_noaxis_time_new fv3_${memcharv0}_tracer > nck_tracer_list.txt
-         ncvarlst_noaxis_time_new fv3_${memcharv0}_dynvars > nck_dynvar_list.txt
-         nlevs=`ncdump -h fv3_${memcharv0}_tracer | grep "zaxis_1 =" | cut -f3 -d" " `
-     fi
-     user_nck_dynvar_list=`cat nck_dynvar_list.txt|paste -sd "," -  | tr -d '[:space:]'`
-     user_nck_tracer_list=`cat nck_tracer_list.txt |paste -sd "," -  | tr -d '[:space:]'` 
-#   This file contains horizontal grid information
-     ncrename -d yaxis_1,yaxis_2 -v yaxis_1,yaxis_2 fv3_${memcharv0}_tracer
-#
-#-----------------------------------------------------------------------
-#
-# Copy tracer variables from tracer file to dynvars file, and
-# get a combined dynvartracer background
-#
-#-----------------------------------------------------------------------
-#
-     ncks -A -v $user_nck_tracer_list fv3_${memcharv0}_tracer fv3_${memcharv0}_dynvars
-     mv fv3_${memcharv0}_dynvars fv3sar_tile1_${memcharv0}_dynvartracer
-#
-#-----------------------------------------------------------------------
-#
-# Copy observer outputs (diag*ges*) to the working directory
-#
-#-----------------------------------------------------------------------
-#
-     for diagfile0 in `ls  ${observer_nwges_dir}/diag*ges*`; do
-         diagfile=$(basename  $diagfile0)
-         cp_vrfy  $diagfile0  ${diagfile}_$memcharv0
-     done
-
- done
-
-#
-#----------------------------------------------------------------------
-#
 # Set GSI fix files
 #
 #----------------------------------------------------------------------
@@ -265,6 +181,9 @@ cp_vrfy $OZINFO     ozinfo
 #
 #----------------------------------------------------------------------
 #
+NX_RES=`ncdump -h fv3sar_tile1_grid_spec.nc | grep "grid_xt =" | cut -f3 -d" " `
+NY_RES=`ncdump -h fv3sar_tile1_grid_spec.nc | grep "grid_yt =" | cut -f3 -d" " `
+nlevs=`ncdump -h fv3_mem001_tracer | grep "zaxis_1 =" | cut -f3 -d" " `
 
 EnKFTracerVars=${EnKFTracerVar:-"sphum,o3mr"}
 ldo_enscalc_option=${ldo_enscalc_option:-0}
