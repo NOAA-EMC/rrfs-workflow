@@ -1054,6 +1054,11 @@ ESGgrid_WIDE_HALO_WIDTH=""
 # BLOCKSIZE:
 # The amount of data that is passed into the cache at a time.
 #
+# IO_LAYOUT_X,IO_LAYOUT_Y:
+# When wrtie out restrat files, how many subdomain files will be write in
+# x and y directory. Right now, please always set IO_LAYOUT_X=1.
+# LAYOUT_Y/IO_LAYOUT_Y needs to be a integer number.
+#
 # FH_DFI_RADAR:
 # the forecast hour to use radar tten, this is used  to set the fh_dfi_radar 
 # parameter in input.nml, e.g. FH_DFI_RADAR="0.0,0.25,0.5,0.75,1.0"
@@ -1084,6 +1089,8 @@ ESGgrid_WIDE_HALO_WIDTH=""
 DT_ATMOS=""
 LAYOUT_X=""
 LAYOUT_Y=""
+IO_LAYOUT_X="1"
+IO_LAYOUT_Y="1"
 BLOCKSIZE=""
 FH_DFI_RADAR="-20000000000"
 #

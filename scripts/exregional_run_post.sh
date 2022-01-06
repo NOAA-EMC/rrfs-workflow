@@ -212,7 +212,11 @@ EOF
 # stage the restart files for a long time. 
 #-----------------------------------------------------------------------
 #
-filelist="fv_core.res.nc fv_core.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_tracer.res.tile1.nc phy_data.nc sfc_data.nc coupler.res"
+filelist="fv_core.res.nc coupler.res"
+filelistn="fv_core.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_tracer.res.tile1.nc phy_data.nc sfc_data.nc"
+n_iolayouty=$(($IO_LAYOUT_Y-1))
+list_iolayout=$(seq 0 $n_iolayouty)
+
 restart_prefix=${post_yyyy}${post_mm}${post_dd}.${post_hh}0000
 if [ ! -r ${nwges_dir}/INPUT/gfs_ctrl.nc ]; then
     cp_vrfy $run_dir/INPUT/gfs_ctrl.nc ${nwges_dir}/INPUT/gfs_ctrl.nc
@@ -221,6 +225,19 @@ if [ -r "$run_dir/RESTART/${restart_prefix}.coupler.res" ]; then
   for file in ${filelist}; do
     mv_vrfy $run_dir/RESTART/${restart_prefix}.${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
   done
+  if [ "${IO_LAYOUT_Y}" == "1" ]; then
+    for file in ${filelistn}; do
+      mv_vrfy $run_dir/RESTART/${restart_prefix}.${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
+    done
+  else
+    for file in ${filelistn}; do
+      for ii in ${list_iolayout}
+      do
+        iii=`printf %4.4i $ii`
+        mv_vrfy $run_dir/RESTART/${restart_prefix}.${file}.${iii} ${nwges_dir}/RESTART/${restart_prefix}.${file}.${iii}
+      done
+    done
+  fi
   echo " ${fhr} forecast from ${yyyymmdd}${hh} is ready " #> ${nwges_dir}/RESTART/restart_done_f${fhr}
 else
 
@@ -239,8 +256,21 @@ else
 
   if [ -r "$run_dir/RESTART/coupler.res" ] && [ ${fhr} -eq ${FCST_LEN_HRS_thiscycle} ] ; then
     for file in ${filelist}; do
-      mv_vrfy $run_dir/RESTART/${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
+       mv_vrfy $run_dir/RESTART/${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
     done
+    if [ "${IO_LAYOUT_Y}" == "1" ]; then
+      for file in ${filelistn}; do
+        mv_vrfy $run_dir/RESTART/${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
+      done
+    else
+      for file in ${filelistn}; do
+        for ii in ${list_iolayout}
+        do
+          iii=`printf %4.4i $ii`
+          mv_vrfy $run_dir/RESTART/${file}.${iii} ${nwges_dir}/RESTART/${restart_prefix}.${file}.${iii}
+        done
+      done
+    fi
     echo " ${fhr} forecast from ${yyyymmdd}${hh} is ready " #> ${nwges_dir}/RESTART/restart_done_f${fhr}
   else
     echo "This forecast hour does not need to save restart: ${yyyymmdd}${hh}f${fhr}"

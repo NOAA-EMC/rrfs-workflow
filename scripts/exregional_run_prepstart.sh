@@ -241,15 +241,26 @@ else
      done
   fi
 #
+  filelistn="fv_core.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_tracer.res.tile1.nc phy_data.nc sfc_data.nc"
   checkfile=${bkpath}/${restart_prefix}coupler.res
+  n_iolayouty=$(($IO_LAYOUT_Y-1))
+  list_iolayout=$(seq 0 $n_iolayouty)
   if [ -r "${checkfile}" ] ; then
-    cp_vrfy ${bkpath}/${restart_prefix}fv_core.res.tile1.nc       fv_core.res.tile1.nc 
-    cp_vrfy ${bkpath}/${restart_prefix}fv_tracer.res.tile1.nc     fv_tracer.res.tile1.nc
-    cp_vrfy ${bkpath}/${restart_prefix}sfc_data.nc                sfc_data.nc 
     cp_vrfy ${bkpath}/${restart_prefix}coupler.res                coupler.res
     cp_vrfy ${bkpath}/${restart_prefix}fv_core.res.nc             fv_core.res.nc
-    cp_vrfy ${bkpath}/${restart_prefix}fv_srf_wnd.res.tile1.nc    fv_srf_wnd.res.tile1.nc
-    cp_vrfy ${bkpath}/${restart_prefix}phy_data.nc                phy_data.nc
+    if [ "${IO_LAYOUT_Y}" == "1" ]; then
+      for file in ${filelistn}; do
+        cp_vrfy ${bkpath}/${restart_prefix}${file}     ${file}
+      done
+    else
+      for file in ${filelistn}; do
+        for ii in $list_iolayout
+        do
+          iii=`printf %4.4i $ii`
+          cp_vrfy ${bkpath}/${restart_prefix}${file}.${iii}     ${file}.${iii}
+        done
+      done
+    fi
     cp_vrfy ${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
     if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
       echo "${YYYYMMDDHH}(${cycle_type}): warm start at ${current_time} from ${checkfile} " >> ${EXPTDIR}/log.cycles
@@ -257,12 +268,20 @@ else
 #
 # remove checksum from restart files. Checksum will cause trouble if model initializes from analysis
 #
-    ncatted -a checksum,,d,, fv_core.res.tile1.nc
-    ncatted -a checksum,,d,, fv_tracer.res.tile1.nc
-    ncatted -a checksum,,d,, sfc_data.nc
+    if [ "${IO_LAYOUT_Y}" == "1" ]; then
+      for file in ${filelistn}; do
+        ncatted -a checksum,,d,, ${file}
+      done
+    else
+      for file in ${filelistn}; do
+        for ii in $list_iolayout
+        do
+          iii=`printf %4.4i $ii`
+          ncatted -a checksum,,d,, ${file}.${iii}
+        done
+      done
+    fi
     ncatted -a checksum,,d,, fv_core.res.nc
-    ncatted -a checksum,,d,, fv_srf_wnd.res.tile1.nc
-    ncatted -a checksum,,d,, phy_data.nc
   else
     print_err_msg_exit "Error: cannot find background: ${checkfile}"
   fi
@@ -285,8 +304,7 @@ if [ ${HH} -eq ${SST_update_hour} ] && [ ${cycle_type} == "prod" ] ; then
    fi
    if [ -r "latest.SST" ]; then
      cp_vrfy ${FIXgsm}/RTG_SST_landmask.dat                RTG_SST_landmask.dat
-     ln_vrfy ./latest.SST                                  SSTRTG
-     cp_vrfy ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
+     ln_vrfy -sf ./latest.SST                                  SSTRTG
      cp_vrfy ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_akbk       fv3_akbk
 
 cat << EOF > sst.namelist
@@ -298,7 +316,21 @@ cat << EOF > sst.namelist
   ihr=${HH}
 /
 EOF
-     ${EXECDIR}/process_updatesst > stdout_sstupdate 2>&1
+     if [ "${IO_LAYOUT_Y}" == "1" ]; then
+       ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
+       ${EXECDIR}/process_updatesst > stdout_sstupdate 2>&1
+     else
+       for ii in ${list_iolayout}
+       do
+         iii=`printf %4.4i $ii`
+         ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec.${iii}  fv3_grid_spec
+         ln_vrfy -sf sfc_data.nc.${iii} sfc_data.nc
+         ${EXECDIR}/process_updatesst > stdout_sstupdate.${iii} 2>&1
+         ls -l > list_sstupdate.${iii}
+       done
+       rm -f sfc_data.nc
+     fi
+
      sst_reference_time=$(wgrib2 -t latest.SST) 
      if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
        echo "${YYYYMMDDHH}(${cycle_type}): update SST using ${sst_reference_time}" >> ${EXPTDIR}/log.cycles
@@ -332,7 +364,11 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
 
           n=${DA_CYCLE_INTERV}
           while [[ $n -le 6 ]] ; do
-             checkfile=${bkpath}/${restart_prefix}sfc_data.nc
+             if [ "${IO_LAYOUT_Y}" == "1" ]; then
+               checkfile=${bkpath}/${restart_prefix}sfc_data.nc
+             else
+               checkfile=${bkpath}/${restart_prefix}sfc_data.nc.0000
+             fi
              if [ -r "${checkfile}" ] && [ "${bkpath_find}" == "missing" ]; then
                bkpath_find=${bkpath}
                restart_prefix_find=${restart_prefix}
@@ -354,19 +390,50 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
       if [ "${bkpath_find}" == "missing" ]; then
         print_info_msg "Warning: cannot find surface from previous cycle"
       else
-        checkfile=${bkpath_find}/${restart_prefix_find}sfc_data.nc
+        if [ "${IO_LAYOUT_Y}" == "1" ]; then
+          checkfile=${bkpath_find}/${restart_prefix_find}sfc_data.nc
+        else
+          checkfile=${bkpath_find}/${restart_prefix_find}sfc_data.nc.0000
+        fi
         if [ -r "${checkfile}" ]; then
-          cp_vrfy ${checkfile}  ${restart_prefix_find}sfc_data.nc
           if [ ${SFC_CYC} -eq 1 ]; then   # cycle surface at cold start cycle
-            mv sfc_data.tile7.halo0.nc cold.sfc_data.tile7.halo0.nc
-            ncks -v geolon,geolat cold.sfc_data.tile7.halo0.nc geolonlat.nc
-            ln_vrfy -sf ${restart_prefix_find}sfc_data.nc sfc_data.tile7.halo0.nc
-            ncks --append geolonlat.nc sfc_data.tile7.halo0.nc
-            ncrename -v tslb,stc -v smois,smc -v sh2o,slc sfc_data.tile7.halo0.nc
+            if [ "${IO_LAYOUT_Y}" == "1" ]; then 
+              cp_vrfy ${checkfile}  ${restart_prefix_find}sfc_data.nc
+              mv sfc_data.tile7.halo0.nc cold.sfc_data.tile7.halo0.nc
+              ncks -v geolon,geolat cold.sfc_data.tile7.halo0.nc geolonlat.nc
+              ln_vrfy -sf ${restart_prefix_find}sfc_data.nc sfc_data.tile7.halo0.nc
+              ncks --append geolonlat.nc sfc_data.tile7.halo0.nc
+              ncrename -v tslb,stc -v smois,smc -v sh2o,slc sfc_data.tile7.halo0.nc
+            else
+              print_info_msg "Warning: cannot do surface cycle in cold start with sudomain restart files"
+            fi
           else
-            mv sfc_data.nc gfsice.sfc_data.nc
-            mv ${restart_prefix_find}sfc_data.nc sfc_data.nc
-            ${EXECDIR}/cycle_ice.exe > stdout_cycleICE 2>&1
+            if [ "${IO_LAYOUT_Y}" == "1" ]; then 
+              cp_vrfy ${checkfile}  ${restart_prefix_find}sfc_data.nc
+              mv sfc_data.nc gfsice.sfc_data.nc
+              mv ${restart_prefix_find}sfc_data.nc sfc_data.nc
+              ncatted -a checksum,,d,, sfc_data.nc
+              ${EXECDIR}/cycle_ice.exe > stdout_cycleICE 2>&1
+            else
+              checkfile=${bkpath_find}/${restart_prefix_find}sfc_data.nc
+              for ii in ${list_iolayout}
+              do
+                iii=`printf %4.4i $ii`
+                cp_vrfy ${checkfile}.${iii}  ${restart_prefix_find}sfc_data.nc.${iii}
+                mv sfc_data.nc.${iii} gfsice.sfc_data.nc.${iii}
+                mv ${restart_prefix_find}sfc_data.nc.${iii} sfc_data.nc.${iii}
+                ncatted -a checksum,,d,, sfc_data.nc.${iii}
+              done
+              ls -l > list_cycle_sfc
+              for ii in ${list_iolayout}
+              do
+                iii=`printf %4.4i $ii`
+                ln_vrfy -sf sfc_data.nc.${iii} sfc_data.nc
+                ln_vrfy -sf gfsice.sfc_data.nc.${iii} gfsice.sfc_data.nc
+                ${EXECDIR}/cycle_ice.exe > stdout_cycleICE.${iii} 2>&1
+              done
+              rm -f sfc_data.nc gfsice.sfc_data.nc
+            fi
           fi
           echo "cycle surface with ${checkfile}" > cycle_surface.done
           if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
@@ -396,10 +463,24 @@ if [ ${HH} -eq ${GVF_update_hour} ] && [ ${cycle_type} == "spinup" ]; then
 
    if [ -r "${latestGVF}" ]; then
       cp_vrfy ${latestGVF} ./GVF-WKL-GLB.grib2
-      cp_vrfy ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
       ln_vrfy -sf ${FIX_GSI}/gvf_VIIRS_4KM.MAX.1gd4r.new  gvf_VIIRS_4KM.MAX.1gd4r.new
       ln_vrfy -sf ${FIX_GSI}/gvf_VIIRS_4KM.MIN.1gd4r.new  gvf_VIIRS_4KM.MIN.1gd4r.new
-      ${EXECDIR}/update_GVF.exe > stdout_updateGVF 2>&1
+
+      if [ "${IO_LAYOUT_Y}" == "1" ]; then
+        ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
+        ${EXECDIR}/update_GVF.exe > stdout_updateGVF 2>&1
+      else
+        for ii in ${list_iolayout}
+        do
+          iii=`printf %4.4i $ii`
+          ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec.${iii}  fv3_grid_spec
+          ln_vrfy -sf sfc_data.nc.${iii} sfc_data.nc
+          ${EXECDIR}/update_GVF.exe > stdout_updateGVF.${iii} 2>&1
+          ls -l > list_updateGVF.${iii}
+        done
+        rm -f sfc_data.nc
+      fi
+
       if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
          echo "${YYYYMMDDHH}(${cycle_type}): update GVF with ${latestGVF} " >> ${EXPTDIR}/log.cycles
       fi
@@ -498,7 +579,6 @@ if [ ${YYYYMMDDHH} -eq 9999999999 ] ; then
 #if [ ${HH} -eq 06 ] || [ ${HH} -eq 18 ]; then
 if [ ${cycle_type} == "spinup" ]; then
    raphrrr_com=/mnt/lfs4/BMC/rtwbl/mhu/wcoss/nco/com/
-   ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec                     fv3_grid_spec
    ln -s ${raphrrr_com}/rap/prod/rap.${YYYYMMDD}/rap.t${HH}z.wrf_inout_smoke    sfc_rap
    ln -s ${raphrrr_com}/hrrr/prod/hrrr.${YYYYMMDD}/conus/hrrr.t${HH}z.wrf_inout sfc_hrrr
    ln -s ${raphrrr_com}/hrrr/prod/hrrr.${YYYYMMDD}/alaska/hrrrak.t${HH}z.wrf_inout sfc_hrrrak
@@ -514,20 +594,35 @@ EOF
 
    exect="use_raphrrr_sfc.exe"
    if [ -f ${EXECDIR}/$exect ]; then
-      print_info_msg "$VERBOSE" "
-      Copying the surface surgery executable to the run directory..."
-      cp_vrfy ${EXECDIR}/${exect} ${exect}
+     print_info_msg "$VERBOSE" "
+     Copying the surface surgery executable to the run directory..."
+     cp_vrfy ${EXECDIR}/${exect} ${exect}
 
-      ./${exect} > stdout 2>&1 || print_info_msg "\
-      Call to executable to run surface surgery returned with nonzero exit code."
-      if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
-        echo "${YYYYMMDDHH}(${cycle_type}): run surface surgery" >> ${EXPTDIR}/log.cycles
-      fi
+     if [ "${IO_LAYOUT_Y}" == "1" ]; then
+       ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
+       ./${exect} > sfc_sugery_stdout 2>&1 || print_info_msg "\
+       Call to executable to run surface surgery returned with nonzero exit code."
+     else
+       for ii in ${list_iolayout}
+       do
+         iii=`printf %4.4i $ii`
+         ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec.${iii}  fv3_grid_spec
+         ln_vrfy -sf sfc_data.nc.${iii} sfc_data.nc
+         ./${exect} > sfc_sugery_stdout.${iii} 2>&1 || print_info_msg "\
+         Call to executable to run surface surgery returned with nonzero exit code."
+         ls -l > list_sfc_sugery.${iii}
+       done
+       rm -f sfc_data.nc
+     fi
+
+     if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
+       echo "${YYYYMMDDHH}(${cycle_type}): run surface surgery" >> ${EXPTDIR}/log.cycles
+     fi
    else
-      print_info_msg "\
-      The executable specified in exect does not exist:
-      exect = \"${EXECDIR}/$exect\"
-      Build executable and rerun."
+     print_info_msg "\
+     The executable specified in exect does not exist:
+     exect = \"${EXECDIR}/$exect\"
+     Build executable and rerun."
    fi
 fi
 fi

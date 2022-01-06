@@ -18,6 +18,7 @@ gsi_namelist="
  /     
  &GRIDOPTS
    fv3_regional=.true.,grid_ratio_fv3_regional=${grid_ratio_fv3},nvege_type=20,
+   fv3_io_layout_y=${n_iolayouty},
  /
  &BKGERR
    vs=${bkgerr_vs},

@@ -341,7 +341,7 @@ of the current run directory (run_dir), where
 ..."
 
 BKTYPE=1    # cold start using INPUT
-if [ -r ${run_dir}/INPUT/fv_tracer.res.tile1.nc ]; then
+if [ -r ${run_dir}/INPUT/coupler.res ] ; then
   BKTYPE=0  # cycling using RESTART
 fi
 print_info_msg "$VERBOSE" "
@@ -353,18 +353,35 @@ cd_vrfy ${run_dir}/INPUT
 
 relative_or_null=""
 
+n_iolayouty=$(($IO_LAYOUT_Y-1))
+list_iolayout=$(seq 0 $n_iolayouty)
+
 if [ ${BKTYPE} -eq 1 ]; then
   target="gfs_data.tile${TILE_RGNL}.halo${NH0}.nc"
 else
   target="fv_core.res.tile1.nc"
 fi
 symlink="gfs_data.nc"
-if [ -f "${target}" ]; then
-  ln_vrfy -sf ${relative_or_null} $target $symlink
+if [ -f "${target}.0000" ]; then
+  for ii in ${list_iolayout}
+  do
+    iii=`printf %4.4i $ii`
+    if [ -f "${target}.${iii}" ]; then
+      ln_vrfy -sf ${relative_or_null} $target.${iii} $symlink.${iii}
+    else
+      print_err_msg_exit "\
+      Cannot create symlink because target does not exist:
+      target = \"$target.$iii\""
+    fi
+  done
 else
-  print_err_msg_exit "\
-  Cannot create symlink because target does not exist:
-  target = \"$target\""
+  if [ -f "${target}" ]; then
+    ln_vrfy -sf ${relative_or_null} $target $symlink
+  else
+    print_err_msg_exit "\
+    Cannot create symlink because target does not exist:
+    target = \"$target\""
+  fi
 fi
 
 if [ ${BKTYPE} -eq 1 ]; then
@@ -378,7 +395,7 @@ if [ ${BKTYPE} -eq 1 ]; then
     target = \"$target\""
   fi
 else
-  if [ -f "sfc_data.nc" ]; then
+  if [ -f "sfc_data.nc.0000" ] || [ -f "sfc_data.nc" ]; then
     print_info_msg "$VERBOSE" "
     sfc_data.nc is available at INPUT directory"
   else

@@ -185,7 +185,7 @@ else
   fi
 fi
 # decide background type
-if [ -r "${bkpath}/phy_data.nc" ]; then
+if [ -r "${bkpath}/coupler.res" ]; then
   BKTYPE=0              # warm start
 else
   BKTYPE=1              # cold start
@@ -318,6 +318,9 @@ fi
 #           radar_tten converting code.
 #-----------------------------------------------------------------------
 
+n_iolayouty=$(($IO_LAYOUT_Y-1))
+list_iolayout=$(seq 0 $n_iolayouty)
+
 ln_vrfy -snf ${fixgriddir}/fv3_akbk                     fv3_akbk
 ln_vrfy -snf ${fixgriddir}/fv3_grid_spec                fv3_grid_spec
 
@@ -331,9 +334,20 @@ if [ ${BKTYPE} -eq 1 ]; then  # cold start uses background from INPUT
 
   fv3lam_bg_type=1
 else                          # cycle uses background from restart
-  ln_vrfy  -snf ${bkpath}/fv_core.res.tile1.nc             fv3_dynvars
-  ln_vrfy  -snf ${bkpath}/fv_tracer.res.tile1.nc           fv3_tracer
-  ln_vrfy  -snf ${bkpath}/sfc_data.nc                      fv3_sfcdata
+  if [ "${IO_LAYOUT_Y}" == "1" ]; then
+    ln_vrfy  -snf ${bkpath}/fv_core.res.tile1.nc             fv3_dynvars
+    ln_vrfy  -snf ${bkpath}/fv_tracer.res.tile1.nc           fv3_tracer
+    ln_vrfy  -snf ${bkpath}/sfc_data.nc                      fv3_sfcdata
+  else
+    for ii in ${list_iolayout}
+    do
+      iii=`printf %4.4i $ii`
+      ln_vrfy  -snf ${bkpath}/fv_core.res.tile1.nc.${iii}     fv3_dynvars.${iii}
+      ln_vrfy  -snf ${bkpath}/fv_tracer.res.tile1.nc.${iii}   fv3_tracer.${iii}
+      ln_vrfy  -snf ${bkpath}/sfc_data.nc.${iii}              fv3_sfcdata.${iii}
+      ln_vrfy  -snf ${fixgriddir}/fv3_grid_spec.${iii}        fv3_grid_spec.${iii}
+    done
+  fi
   fv3lam_bg_type=0
 fi
 
@@ -557,6 +571,11 @@ if [ ${gsi_type} == "OBSERVER" ]; then
     lread_obs_skip=.true.
     ln -s ../../ensmean/observer_gsi/obs_input.* .
   fi
+fi
+if [ ${BKTYPE} -eq 1 ]; then
+  n_iolayouty=1
+else
+  n_iolayouty=$(($IO_LAYOUT_Y))
 fi
 
 . ${FIX_GSI}/gsiparm.anl.sh

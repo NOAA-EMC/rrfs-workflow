@@ -741,6 +741,7 @@ settings="\
     'stretch_fac': ${STRETCH_FAC},
     'npx': $npx,
     'npy': $npy,
+    'io_layout': [${IO_LAYOUT_X}, ${IO_LAYOUT_Y}],
     'layout': [${LAYOUT_X}, ${LAYOUT_Y}],
     'bc_update_interval': ${LBC_SPEC_INTVL_HRS},
   }
