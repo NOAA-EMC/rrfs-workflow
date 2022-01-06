@@ -74,15 +74,6 @@ else
   zip_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/nclprd"
 fi
 
-# Use a subdirectory for input from alternative wgrib2-produced grids.
-if [ "${TILES:-}" = "full" ] ; then
-  subdir=${postprd_dir}/${TILELABEL:-}_grid
-  if [ -d ${subdir} ] ; then
-    postprd_dir=${subdir}
-    run_dir=${run_dir}/${TILELABEL:-}_grid
-    zip_dir=${zip_dir}/${TILELABEL:-}_grid
-  fi
-fi
 
 
 # Choose an appropriate sites file for the grid
@@ -90,9 +81,10 @@ sites_file=conus_raobs.txt
 tiles=${TILES:-full}
 
 if [[ "${PREDEF_GRID_NAME}" =~ "AK" || \
-      "${TILELABEL:-}" == "242" ]] ; then
+      "${TILELABEL:-}" == "242" || \
+      "${TILELABEL:-}" == "hrrrak" ]] ; then
   sites_file=alaska_raobs.txt
-  tiles=${TILES:-full}
+  tiles=${TILES:-hrrrak}
 
 elif [[ "${PREDEF_GRID_NAME}" =~ "RAP" || \
         "${PREDEF_GRID_NAME}" =~ "NA" || \
@@ -102,6 +94,37 @@ elif [[ "${PREDEF_GRID_NAME}" =~ "RAP" || \
   sites_file=na_raobs.txt
   tiles=${TILES:-full}
 
+elif [[ "${TILELABEL:-}" = hrrr ]] ; then
+
+  # This domain comes from a NA domain, so wait longer.
+  age=5
+  wait_time=15
+  tiles=${TILES:-hrrr}
+
+fi
+
+# Use a subdirectory for input from alternative wgrib2-produced grids.
+wgrib2_grids=( hrrr hrrrak full )
+first_grid=${tiles%%,*} # First in a comma separated list
+first_grid=${first_grid%%_*} # First part of an underscore separated string (requirement set by Rocoto)
+
+sub_conus_grids=( SE SC SW NE NC NW \
+  ATL CA-NV CentralCA CHI-DET DCArea EastCO GreatLakes NYC-BOS SEA-POR SouthCA SouthFL VortexSE )
+
+sub_ak_grids=( AKRange Anchorage Juneau )
+
+if [[ "${sub_conus_grids[*]}" =~ $first_grid ]] ; then
+  subdir=hrrr_grid
+elif [[ "${sub_ak_grids[*]}" =~ $first_grid ]] ; then
+  subdir=hrrrak_grid
+elif [[ "${wgrib2_grids[*]}" =~ $first_grid ]] ; then
+  subdir=${first_grid:-}_grid
+fi
+
+if [ -d ${postprd_dir}/${subdir} ] ; then
+  postprd_dir=${postprd_dir}/${subdir}
+  run_dir=${run_dir}/${subdir:-}
+  zip_dir=${zip_dir}/${subdir:-}
 fi
 
 # Choose the appropriate file template for graphics type

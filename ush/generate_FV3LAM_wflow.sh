@@ -410,8 +410,8 @@ settings="\
 #
 # graphics related parameters
 #
-  'tilelabels': ${TILE_LABELS}
-  'tilesets': ${TILE_SETS}
+  'tilelabels': \"${TILE_LABELS}\"
+  'tilesets': \"${TILE_SETS}\"
 #
 #  retrospective experiments
 #

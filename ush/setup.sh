@@ -902,7 +902,7 @@ fi
 #
 if [ ${#ADDNL_OUTPUT_GRIDS[@]} -ne 0 ]; then
   for grid in ${ADDNL_OUTPUT_GRIDS[@]} ; do
-    TILE_SETS="${TILE_SETS} full"
+    TILE_SETS="${TILE_SETS} ${grid}"
     TILE_LABELS="${TILE_LABELS} ${grid}"
   done
 fi
