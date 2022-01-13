@@ -542,9 +542,21 @@ esac
 #
 #-----------------------------------------------------------------------
 #
+yyyymmdd="${EXTRN_MDL_CDATE:0:8}"
 mm="${EXTRN_MDL_CDATE:4:2}"
 dd="${EXTRN_MDL_CDATE:6:2}"
 hh="${EXTRN_MDL_CDATE:8:2}"
+
+fhr="${EXTRN_MDL_ICS_OFFSET_HRS}"
+cdate_crnt_fhr=$( date --utc --date "${yyyymmdd} ${hh} UTC + ${fhr} hours" "+%Y%m%d%H" )
+#
+# Get the month, day, and hour corresponding to the current forecast time
+# of the the external model.
+#
+  mm="${cdate_crnt_fhr:4:2}"
+  dd="${cdate_crnt_fhr:6:2}"
+  hh="${cdate_crnt_fhr:8:2}"
+
 #
 #-----------------------------------------------------------------------
 #
