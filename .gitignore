@@ -1,0 +1,10 @@
+bin/
+build/
+include/
+lib/
+python_graphics/
+regional_workflow/
+share/
+src/*
+!src/CMakeLists.txt
+save/
