@@ -55,7 +55,7 @@ with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "ens_type" "workdir" "slash_ensmem_subdir" )
+valid_args=( "cycle_dir" "cycle_type" "rrfsens_type" "workdir" "slash_ensmem_subdir" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -165,7 +165,7 @@ if [ ${cycle_type} == "spinup" ]; then
 else
   cycle_tag=""
 fi
-if [ ${ens_type} == "MEAN" ]; then
+if [ ${rrfsens_type} == "MEAN" ]; then
     bkpath=${cycle_dir}/ensmean/fcst_fv3lam${cycle_tag}/INPUT
 else
     bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam${cycle_tag}/INPUT

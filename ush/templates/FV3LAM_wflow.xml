@@ -962,7 +962,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&CLDANL_NONVAR_TN;_#type#" cycledefs="#type#cyc"  maxtries="{{ maxtries_cldanl_nonvar }}">
+  <task name="&CLDANL_NONVAR_TN;_#type#{{ uscore_ensmem_name }}" cycledefs="#type#cyc"  maxtries="{{ maxtries_cldanl_nonvar }}">
 
     &RSRV_DEFAULT;
     &WALL_LIMIT_ANAL;
@@ -986,7 +986,16 @@ MODULES_RUN_TASK_FP script.
     <dependency>
       <and>
         <taskdep task="&PROCESS_BUFR_TN;_#type#"/>
+        {%- if do_enkfupdate %}
+        <and>
+           {%- for h in cycl_hrs_prodstart %}
+            <strneq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></strneq>
+           {%- endfor %}
+           <metataskdep metatask="run_enkf_post"/>
+        </and>
+        {%- else %}
         <taskdep task="&ANAL_GSI_TN;_#type#"/>
+        {%- endif %}
       </and>
     </dependency>
 
@@ -1040,7 +1049,11 @@ MODULES_RUN_TASK_FP script.
           </or>
           <taskdep task="&PREP_CYC_TN;_#type#{{ uscore_ensmem_name }}"/>
         </and>
+        {%- if do_nonvar_cldanal%}
+        <taskdep task="&CLDANL_NONVAR_TN;_#type#{{ uscore_ensmem_name }}"/>
+        {%- else %}
         <metataskdep metatask="run_enkf_post"/>
+        {%- endif %}
       </or>
       {%- else %}
       <taskdep task="&PREP_CYC_TN;_#type#{{ uscore_ensmem_name }}"/>

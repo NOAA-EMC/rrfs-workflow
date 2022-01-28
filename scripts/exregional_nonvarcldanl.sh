@@ -55,7 +55,7 @@ with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "ens_type" "workdir" "slash_ensmem_subdir" )
+valid_args=( "cycle_dir" "cycle_type" "rrfsens_type" "workdir" "slash_ensmem_subdir" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -162,7 +162,7 @@ if [ ${cycle_type} == "spinup" ]; then
 else
   cycle_tag=""
 fi
-if [ ${ens_type} == "MEAN" ]; then
+if [ ${rrfsens_type} == "MEAN" ]; then
     bkpath=${cycle_dir}/ensmean/fcst_fv3lam${cycle_tag}/INPUT
 else
     bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam${cycle_tag}/INPUT
@@ -172,13 +172,13 @@ cp_vrfy ${fixgriddir}/fv3_akbk                               fv3_akbk
 cp_vrfy ${fixgriddir}/fv3_grid_spec                          fv3_grid_spec
 
 if [ -r ${bkpath}/phy_data.nc ]; then  # Use background from restart
-  cp_vrfy ${bkpath}/fv_core.res.tile1.nc         fv3_dynvars
-  cp_vrfy ${bkpath}/fv_tracer.res.tile1.nc       fv3_tracer
+  ln_vrfy  -snf  ${bkpath}/fv_core.res.tile1.nc         fv3_dynvars
+  ln_vrfy  -snf  ${bkpath}/fv_tracer.res.tile1.nc       fv3_tracer
   ln_vrfy -s ${bkpath}/sfc_data.nc                  fv3_sfcdata
 else                                   # Use background from input (cold start)
   ln_vrfy -s ${bkpath}/sfc_data.tile7.halo0.nc      fv3_sfcdata
-  cp_vrfy ${bkpath}/gfs_data.tile7.halo0.nc      fv3_dynvars
-  cp_vrfy ${bkpath}/gfs_data.tile7.halo0.nc      fv3_tracer
+  ln_vrfy  -snf  ${bkpath}/gfs_data.tile7.halo0.nc      fv3_dynvars
+  ln_vrfy  -snf  ${bkpath}/gfs_data.tile7.halo0.nc      fv3_tracer
 fi
 
 #
@@ -237,7 +237,7 @@ cat << EOF > gsiparm.anl
    r_cleanSnow_WarmTs_threshold=5.0,
    l_conserve_thetaV=.true.,
    i_conserve_thetaV_iternum=3,
-   l_cld_bld=.true.,
+   l_cld_bld=.false.,
    l_numconc=.true.,
    cld_bld_hgt=1200.0,
    build_cloud_frac_p=0.50,
