@@ -55,7 +55,7 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "gsi_type" "rrfsens_type" "analworkdir" "observer_nwges_dir" "slash_ensmem_subdir" )
+valid_args=( "cycle_dir" "cycle_type" "gsi_type" "mem_type" "analworkdir" "observer_nwges_dir" "slash_ensmem_subdir" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -172,13 +172,13 @@ cd_vrfy ${analworkdir}
 
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 if [ ${cycle_type} == "spinup" ]; then
-  if [ ${rrfsens_type} == "MEAN" ]; then
+  if [ ${mem_type} == "MEAN" ]; then
     bkpath=${cycle_dir}/ensmean/fcst_fv3lam_spinup/INPUT
   else
     bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam_spinup/INPUT
   fi
 else
-  if [ ${rrfsens_type} == "MEAN" ]; then
+  if [ ${mem_type} == "MEAN" ]; then
     bkpath=${cycle_dir}/ensmean/fcst_fv3lam/INPUT
   else
     bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam/INPUT
@@ -206,7 +206,7 @@ print_info_msg "$VERBOSE" "background type is is $BKTYPE"
 stampcycle=$(date -d "${START_DATE}" +%s)
 minHourDiff=100
 loops="009"    # or 009s for GFSv15
-ens_type="nc"  # or nemsio for GFSv15
+ftype="nc"  # or nemsio for GFSv15
 foundens="false"
 cat "no ens found" >> filelist03
 
@@ -215,7 +215,7 @@ case $MACHINE in
 "WCOSS_C" | "WCOSS" | "WCOSS_DELL_P3")
 
   for loop in $loops; do
-    for timelist in $(ls ${ENKF_FCST}/enkfgdas.*/*/atmos/mem080/gdas*.atmf${loop}.${ens_type}); do
+    for timelist in $(ls ${ENKF_FCST}/enkfgdas.*/*/atmos/mem080/gdas*.atmf${loop}.${ftype}); do
       availtimeyyyymmdd=$(echo ${timelist} | cut -d'/' -f9 | cut -c 10-17)
       availtimehh=$(echo ${timelist} | cut -d'/' -f10)
       availtime=${availtimeyyyymmdd}${availtimehh}
@@ -248,7 +248,7 @@ case $MACHINE in
 "JET" | "HERA")
 
   for loop in $loops; do
-    for timelist in $(ls ${ENKF_FCST}/*.gdas.t*z.atmf${loop}.mem080.${ens_type}); do
+    for timelist in $(ls ${ENKF_FCST}/*.gdas.t*z.atmf${loop}.mem080.${ftype}); do
       availtimeyy=$(basename ${timelist} | cut -c 1-2)
       availtimeyyyy=20${availtimeyy}
       availtimejjj=$(basename ${timelist} | cut -c 3-5)
@@ -275,7 +275,7 @@ case $MACHINE in
   done
 
   if [ $foundens = "true" ]; then
-    ls ${ENKF_FCST}/${enkfcstname}.mem0??.${ens_type} >> filelist03
+    ls ${ENKF_FCST}/${enkfcstname}.mem0??.${ftype} >> filelist03
   fi
 
 esac
@@ -563,7 +563,7 @@ done
 if [ ${gsi_type} == "OBSERVER" ]; then
   miter=0
   ifhyb=.false.
-  if [ ${rrfsens_type} == "MEAN" ]; then
+  if [ ${mem_type} == "MEAN" ]; then
     lread_obs_save=.true.
     lread_obs_skip=.false.
   else

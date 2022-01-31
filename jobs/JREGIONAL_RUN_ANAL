@@ -73,7 +73,7 @@ else
 fi
 
 if [ ${GSI_TYPE} == "OBSERVER" ]; then
-  if [ ${RRFSENS_TYPE} == "MEAN" ]; then
+  if [ ${MEM_TYPE} == "MEAN" ]; then
     analworkdir="${CYCLE_DIR}/ensmean/observer${analworkname}"
     SLASH_ENSMEM_SUBDIR=""
     observer_nwges_dir="${NWGES_DIR}/ensmean/observer${analworkname}"
@@ -100,7 +100,7 @@ $SCRIPTSDIR/exregional_run_analysis.sh \
              cycle_dir="${CYCLE_DIR}" \
              cycle_type="${CYCLE_TYPE}" \
              gsi_type="${GSI_TYPE}" \
-             rrfsens_type="${RRFSENS_TYPE}" \
+             mem_type="${MEM_TYPE}" \
              analworkdir="${analworkdir}" \
              observer_nwges_dir="${observer_nwges_dir}" \
              slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}" || \

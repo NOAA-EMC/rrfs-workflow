@@ -55,7 +55,7 @@ with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "rrfsens_type" "workdir" "slash_ensmem_subdir" )
+valid_args=( "cycle_dir" "cycle_type" "mem_type" "workdir" "slash_ensmem_subdir" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -162,7 +162,7 @@ if [ ${cycle_type} == "spinup" ]; then
 else
   cycle_tag=""
 fi
-if [ ${rrfsens_type} == "MEAN" ]; then
+if [ ${mem_type} == "MEAN" ]; then
     bkpath=${cycle_dir}/ensmean/fcst_fv3lam${cycle_tag}/INPUT
 else
     bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam${cycle_tag}/INPUT
@@ -237,7 +237,7 @@ cat << EOF > gsiparm.anl
    r_cleanSnow_WarmTs_threshold=5.0,
    l_conserve_thetaV=.true.,
    i_conserve_thetaV_iternum=3,
-   l_cld_bld=.false.,
+   l_cld_bld=.true.,
    l_numconc=.true.,
    cld_bld_hgt=1200.0,
    build_cloud_frac_p=0.50,
