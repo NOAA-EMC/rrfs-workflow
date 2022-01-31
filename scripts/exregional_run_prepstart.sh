@@ -74,6 +74,60 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
+case $MACHINE in
+
+  "WCOSS_CRAY")
+    export ntasks=1
+    export ptile=1
+    export threads=1
+    APRUN="aprun -j 1 -n${ntasks} -N${ptile} -d${threads} -cc depth"
+    ;;
+
+  "WCOSS_DELL_P3")
+    APRUN="mpirun"
+    ;;
+
+  "HERA")
+    APRUN="srun"
+    ;;
+
+  "ORION")
+    APRUN="srun"
+    ;;
+
+  "JET")
+    APRUN="srun"
+    ;;
+
+  "ODIN")
+    APRUN="srun -n 1"
+    ;;
+
+  "CHEYENNE")
+    module list
+    APRUN="mpirun -np 1"
+    ;;
+
+  "STAMPEDE")
+    APRUN="ibrun -n 1"
+    ;;
+
+  *)
+    print_err_msg_exit "\
+Run command has not been specified for this machine:
+  MACHINE = \"$MACHINE\"
+  APRUN = \"$APRUN\""
+    ;;
+
+esac
+
+#
+#-----------------------------------------------------------------------
+#
+# Load modules.
+#
+#-----------------------------------------------------------------------
+#
 #-----------------------------------------------------------------------
 #
 # Extract from CDATE the starting year, month, day, and hour of the
@@ -626,6 +680,82 @@ EOF
    fi
 fi
 fi
+
+#
+#-----------------------------------------------------------------------
+#
+# Process FVCOM Data
+#
+#-----------------------------------------------------------------------
+#
+if [ "${USE_FVCOM}" = "TRUE" ]; then
+
+  set -x
+  latest_fvcom_file="${FVCOM_DIR}/${FVCOM_FILE}"
+  if [ ${HH} -gt 12 ]; then 
+    starttime_fvcom="$(date +%Y%m%d -d "${START_DATE}") 12"
+  else
+    starttime_fvcom="$(date +%Y%m%d -d "${START_DATE}") 00"
+  fi
+  for ii in $(seq 0 3)
+  do
+     jumphour=$((${ii} * 12))
+     fvcomtime=$(date +%Y%j%H -d "${starttime_fvcom}  ${jumphour} hours ago")
+     fvcom_data_fp="${latest_fvcom_file}_${fvcomtime}.nc"
+     if [ -f "${fvcom_data_fp}" ]; then
+       break 
+     fi
+  done
+
+  if [ ! -f "${fvcom_data_fp}" ]; then
+    print_info_msg "\
+The file or path (fvcom_data_fp) does not exist:
+  fvcom_data_fp = \"${fvcom_data_fp}\"
+Please check the following user defined variables:
+  FVCOM_DIR = \"${FVCOM_DIR}\"
+  FVCOM_FILE= \"${FVCOM_FILE}\" "
+
+  else
+    cp_vrfy ${fvcom_data_fp} fvcom.nc
+
+#Format for fvcom_time: YYYY-MM-DDTHH:00:00.000000
+    fvcom_time="${YYYY}-${MM}-${DD}T${HH}:00:00.000000"
+    fvcom_exec_fn="fvcom_to_FV3"
+    fvcom_exec_fp="$EXECDIR/${fvcom_exec_fn}"
+    if [ ! -f "${fvcom_exec_fp}" ]; then
+      print_err_msg_exit "\
+The executable (fvcom_exec_fp) for processing FVCOM data onto FV3-LAM
+native grid does not exist:
+  fvcom_exec_fp = \"${fvcom_exec_fp}\"
+Please ensure that you've built this executable."
+    fi
+    cp_vrfy ${fvcom_exec_fp} .
+
+# decide surface
+    if [ ${BKTYPE} -eq 1 ] ; then
+      FVCOM_WCSTART='cold'
+      surface_file='sfc_data.tile7.halo0.nc'
+    else
+      FVCOM_WCSTART='warm'
+      surface_file='sfc_data.nc'
+    fi
+
+#
+    ${APRUN} ${fvcom_exec_fn} ${surface_file} fvcom.nc ${FVCOM_WCSTART} ${fvcom_time} ${IO_LAYOUT_Y} || \
+    print_err_msg_exit "\
+Call to executable (fvcom_exe) to modify sfc fields for FV3-LAM failed:
+  fvcom_exe = \"${fvcom_exe}\"
+The following variables were being used:
+  FVCOM_DIR = \"${FVCOM_DIR}\"
+  FVCOM_FILE = \"${FVCOM_FILE}\"
+  fvcom_time = \"${fvcom_time}\"
+  FVCOM_WCSTART = \"${FVCOM_WCSTART}\"
+  ics_dir = \"${ics_dir}\"
+  fvcom_exe_dir = \"${fvcom_exe_dir}\"
+  fvcom_exe = \"${fvcom_exec_fn}\""
+  fi
+fi
+
 #
 #-----------------------------------------------------------------------
 #
