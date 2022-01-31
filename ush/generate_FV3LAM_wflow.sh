@@ -116,6 +116,16 @@ fi
 { save_shell_opts; set -u +x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
+# check whether the .agent link is initialized
+# if not, run Init.sh (otherwise, the workflow generation will fail)
+#-----------------------------------------------------------------------
+#
+if [[ ! -L ${ushdir}/../fix/.agent || ! -e ${ushdir}/../fix/.agent ]] \
+  && [ -e ${ushdir}/../Init.sh ]; then
+    ${ushdir}/../Init.sh
+fi
+#
+#-----------------------------------------------------------------------
 #
 # Source the file that defines and then calls the setup function.  The
 # setup function in turn first sources the default configuration file
@@ -127,16 +137,6 @@ fi
 #-----------------------------------------------------------------------
 #
 . $ushdir/setup.sh
-#
-#-----------------------------------------------------------------------
-# check whether the .agent link for fix/ is initialized
-# if not, run Init.sh (otherwise, the workflow generation will fail)
-#-----------------------------------------------------------------------
-#
-if [[ ! -L ${HOMErrfs}/fix/.agent || ! -e ${HOMErrfs}/fix/.agent ]] \
-  && [ -e ${HOMErrfs}/Init.sh ]; then
-    ${HOMErrfs}/Init.sh
-fi
 #
 #-----------------------------------------------------------------------
 #
