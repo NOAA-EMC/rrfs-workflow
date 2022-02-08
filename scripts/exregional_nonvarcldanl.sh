@@ -135,6 +135,7 @@ MM=${YYYYMMDDHH:4:2}
 DD=${YYYYMMDDHH:6:2}
 HH=${YYYYMMDDHH:8:2}
 YYYYMMDD=${YYYYMMDDHH:0:8}
+
 #
 #-----------------------------------------------------------------------
 #
@@ -168,17 +169,33 @@ else
     bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam${cycle_tag}/INPUT
 fi
 
+n_iolayouty=$(($IO_LAYOUT_Y-1))
+list_iolayout=$(seq 0 $n_iolayouty)
+
 cp_vrfy ${fixgriddir}/fv3_akbk                               fv3_akbk
 cp_vrfy ${fixgriddir}/fv3_grid_spec                          fv3_grid_spec
 
-if [ -r ${bkpath}/phy_data.nc ]; then  # Use background from restart
-  ln_vrfy  -snf  ${bkpath}/fv_core.res.tile1.nc         fv3_dynvars
-  ln_vrfy  -snf  ${bkpath}/fv_tracer.res.tile1.nc       fv3_tracer
-  ln_vrfy -s ${bkpath}/sfc_data.nc                  fv3_sfcdata
+if [ -r "${bkpath}/coupler.res" ]; then # Use background from warm restart
+  if [ "${IO_LAYOUT_Y}" == "1" ]; then
+    ln_vrfy -s ${bkpath}/fv_core.res.tile1.nc         fv3_dynvars
+    ln_vrfy -s ${bkpath}/fv_tracer.res.tile1.nc       fv3_tracer
+    ln_vrfy -s ${bkpath}/sfc_data.nc                  fv3_sfcdata
+  else
+    for ii in ${list_iolayout}
+    do
+      iii=$(printf %4.4i $ii)
+      ln_vrfy -s ${bkpath}/fv_core.res.tile1.nc.${iii}         fv3_dynvars.${iii}
+      ln_vrfy -s ${bkpath}/fv_tracer.res.tile1.nc.${iii}       fv3_tracer.${iii}
+      ln_vrfy -s ${bkpath}/sfc_data.nc.${iii}                  fv3_sfcdata.${iii}
+      ln_vrfy -s ${fixgriddir}/fv3_grid_spec.${iii}            fv3_grid_spec.${iii}
+    done
+  fi
+  BKTYPE=0
 else                                   # Use background from input (cold start)
   ln_vrfy -s ${bkpath}/sfc_data.tile7.halo0.nc      fv3_sfcdata
-  ln_vrfy  -snf  ${bkpath}/gfs_data.tile7.halo0.nc      fv3_dynvars
-  ln_vrfy  -snf  ${bkpath}/gfs_data.tile7.halo0.nc      fv3_tracer
+  ln_vrfy -s ${bkpath}/gfs_data.tile7.halo0.nc         fv3_dynvars
+  ln_vrfy -s ${bkpath}/gfs_data.tile7.halo0.nc         fv3_tracer
+  BKTYPE=1
 fi
 
 #
@@ -211,11 +228,46 @@ do
   fi
 done
 
+# radar reflectivity on esg grid over each subdomain.
+process_radarref_path=${cycle_dir}/process_radarref${cycle_tag}
+ss=0
+for bigmin in 0; do
+  bigmin=$( printf %2.2i $bigmin )
+  obs_file=${process_radarref_path}/${bigmin}/RefInGSI3D.dat
+  if [ "${IO_LAYOUT_Y}" == "1" ]; then
+    obs_file_check=${obs_file}
+  else
+    obs_file_check=${obs_file}.0000
+  fi
+  ((ss+=1))
+  num=$( printf %2.2i ${ss} )
+  if [ -r "${obs_file_check}" ]; then
+     if [ "${IO_LAYOUT_Y}" == "1" ]; then
+       cp_vrfy "${obs_file}" "RefInGSI3D.dat_${num}"
+     else
+       for ii in ${list_iolayout}
+       do
+         iii=$(printf %4.4i $ii)
+         cp_vrfy "${obs_file}.${iii}" "RefInGSI3D.dat.${iii}_${num}"
+       done
+     fi
+  else
+     print_info_msg "$VERBOSE" "Warning: ${obs_file} does not exist!"
+  fi
+done
+
 #-----------------------------------------------------------------------
 #
 # Build namelist 
 #
 #-----------------------------------------------------------------------
+
+if [ ${BKTYPE} -eq 1 ]; then
+  n_iolayouty=1
+else
+  n_iolayouty=$(($IO_LAYOUT_Y))
+fi
+
 
 cat << EOF > gsiparm.anl
 
@@ -225,6 +277,7 @@ cat << EOF > gsiparm.anl
   iday=${DD},
   ihour=${HH},
   iminute=00,
+  fv3_io_layout_y=${n_iolayouty},
  /
  &RAPIDREFRESH_CLDSURF
    dfi_radar_latent_heat_time_period=20.0,

@@ -233,7 +233,7 @@ if [ -r "$run_dir/RESTART/${restart_prefix}.coupler.res" ]; then
     for file in ${filelistn}; do
       for ii in ${list_iolayout}
       do
-        iii=`printf %4.4i $ii`
+        iii=$(printf %4.4i $ii)
         mv_vrfy $run_dir/RESTART/${restart_prefix}.${file}.${iii} ${nwges_dir}/RESTART/${restart_prefix}.${file}.${iii}
       done
     done
@@ -266,7 +266,7 @@ else
       for file in ${filelistn}; do
         for ii in ${list_iolayout}
         do
-          iii=`printf %4.4i $ii`
+          iii=$(printf %4.4i $ii)
           mv_vrfy $run_dir/RESTART/${file}.${iii} ${nwges_dir}/RESTART/${restart_prefix}.${file}.${iii}
         done
       done

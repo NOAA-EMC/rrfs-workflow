@@ -55,7 +55,7 @@ with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "CYCLE_DIR" "WORKDIR")
+valid_args=( "CYCLE_DIR" "cycle_type" "WORKDIR")
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -116,6 +116,7 @@ case $MACHINE in
   ;;
 #
 esac
+
 #
 #-----------------------------------------------------------------------
 #
@@ -134,6 +135,36 @@ MM=${YYYYMMDDHH:4:2}
 DD=${YYYYMMDDHH:6:2}
 HH=${YYYYMMDDHH:8:2}
 YYYYMMDD=${YYYYMMDDHH:0:8}
+
+#
+#-----------------------------------------------------------------------
+#
+# Find cycle type: cold or warm 
+#  BKTYPE=0: warm start
+#  BKTYPE=1: cold start
+#
+#-----------------------------------------------------------------------
+#
+BKTYPE=0
+if [ ${DO_SPINUP} == "TRUE" ]; then
+  if [ ${cycle_type} == "spinup" ]; then
+    for cyc_start in "${CYCL_HRS_SPINSTART[@]}"; do
+      if [ ${HH} -eq ${cyc_start} ]; then
+        BKTYPE=1
+      fi
+    done
+  fi
+else
+  for cyc_start in "${CYCL_HRS_PRODSTART[@]}"; do
+    if [ ${HH} -eq ${cyc_start} ]; then
+        BKTYPE=1
+    fi
+  done
+fi
+
+n_iolayouty=$(($IO_LAYOUT_Y-1))
+list_iolayout=$(seq 0 $n_iolayouty)
+
 #
 #-----------------------------------------------------------------------
 #
@@ -163,7 +194,19 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
 #
 #-----------------------------------------------------------------------
 
-  cp_vrfy ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
+  if [ ${BKTYPE} -eq 1 ]; then
+    cp_vrfy ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
+  else
+    if [ "${IO_LAYOUT_Y}" == "1" ]; then
+      cp_vrfy ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
+    else
+      for ii in $list_iolayout
+      do
+        iii=$(printf %4.4i $ii)
+        cp_vrfy ${fixgriddir}/fv3_grid_spec.${iii}   fv3sar_grid_spec.nc.${iii}
+      done
+    fi
+  fi
 
 #
 #-----------------------------------------------------------------------
@@ -235,20 +278,24 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
 #                   = 1 NSSL 1 tile grib2 for single level
 #                   = 4 NSSL 4 tiles binary
 #                   = 8 NSSL 8 tiles netcdf
-#   bkversion     : grid type (background will be used in the analysis)
-#                   0 for ARW  (default)
-#                   1 for FV3LAM
+#   fv3_io_layout_y : subdomain of restart files
 #   analysis_time : process obs used for this analysis date (YYYYMMDDHH)
 #   dataPath      : path of the radar reflectivity mosaic files.
 #
 #-----------------------------------------------------------------------
 
-cat << EOF > mosaic.namelist
+if [ ${BKTYPE} -eq 1 ]; then
+  n_iolayouty=1
+else
+  n_iolayouty=$(($IO_LAYOUT_Y))
+fi
+
+cat << EOF > namelist.mosaic
    &setup
     tversion=1,
-    bkversion=1,
     analysis_time = ${YYYYMMDDHH},
     dataPath = './',
+    fv3_io_layout_y=${n_iolayouty},
    /
 EOF
 

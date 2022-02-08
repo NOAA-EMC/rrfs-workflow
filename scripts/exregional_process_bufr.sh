@@ -163,8 +163,6 @@ print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
 #-----------------------------------------------------------------------
 
 cp_vrfy ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
-cp_vrfy ${fixgriddir}/geo_em.d01.nc          geo_em.d01.nc
-
 
 #-----------------------------------------------------------------------
 #
@@ -215,13 +213,14 @@ fi
 #                   1 for FV3LAM
 #-----------------------------------------------------------------------
 
-cat << EOF > lightning_bufr.namelist
+cat << EOF > namelist.lightning
  &setup
   analysis_time = ${YYYYMMDDHH},
   minute=00,
   trange_start=-10,
   trange_end=10,
-  bkversion=1,
+  grid_type = "${PREDEF_GRID_NAME}",
+  obs_type = "bufr"
  /
 
 EOF
@@ -233,7 +232,7 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-exect="process_Lightning_bufr.exe"
+exect="process_Lightning.exe"
 
 if [ -f ${EXECDIR}/$exect ]; then
   print_info_msg "$VERBOSE" "
@@ -270,7 +269,7 @@ obs_file=${OBSPATH}/${YYYYMMDDHH}.${obs_source}.t${HH}z.lgycld.tm00.bufr_d
 print_info_msg "$VERBOSE" "obsfile is $obs_file"
 run_cloud=false
 if [ -r "${obs_file}" ]; then
-   cp_vrfy "${obs_file}" "NASA_LaRC_cloud.bufr"
+   cp_vrfy "${obs_file}" "lgycld.bufr_d"
    run_cloud=true
 else
    print_info_msg "$VERBOSE" "Warning: ${obs_file} does not exist!"
@@ -291,13 +290,13 @@ fi
 #                   = 1 for FV3LAM
 #-----------------------------------------------------------------------
 
-cat << EOF > namelist_nasalarc
+cat << EOF > namelist.nasalarc
  &setup
   analysis_time = ${YYYYMMDDHH},
   bufrfile='NASALaRCCloudInGSI_bufr.bufr',
-  npts_rad=1,
+  npts_rad=3,
   ioption = 2,
-  bkversion=1,
+  grid_type = "${PREDEF_GRID_NAME}",
  /
 EOF
 
@@ -362,11 +361,13 @@ fi
 #
 #-----------------------------------------------------------------------
 
-cat << EOF > namelist_metarcld
+cat << EOF > namelist.metarcld
  &setup
   analysis_time = ${YYYYMMDDHH},
   prepbufrfile='prepbufr',
   twindin=0.5,
+  metar_impact_radius=15,
+  grid_type = "${PREDEF_GRID_NAME}",
  /
 EOF
 

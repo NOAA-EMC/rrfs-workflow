@@ -365,7 +365,7 @@ symlink="gfs_data.nc"
 if [ -f "${target}.0000" ]; then
   for ii in ${list_iolayout}
   do
-    iii=`printf %4.4i $ii`
+    iii=$(printf %4.4i $ii)
     if [ -f "${target}.${iii}" ]; then
       ln_vrfy -sf ${relative_or_null} $target.${iii} $symlink.${iii}
     else

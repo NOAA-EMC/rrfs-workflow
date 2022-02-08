@@ -310,7 +310,7 @@ else
       for file in ${filelistn}; do
         for ii in $list_iolayout
         do
-          iii=`printf %4.4i $ii`
+          iii=$(printf %4.4i $ii)
           cp_vrfy ${bkpath}/${restart_prefix}${file}.${iii}     ${file}.${iii}
         done
       done
@@ -330,7 +330,7 @@ else
       for file in ${filelistn}; do
         for ii in $list_iolayout
         do
-          iii=`printf %4.4i $ii`
+          iii=$(printf %4.4i $ii)
           ncatted -a checksum,,d,, ${file}.${iii}
         done
       done
@@ -376,7 +376,7 @@ EOF
      else
        for ii in ${list_iolayout}
        do
-         iii=`printf %4.4i $ii`
+         iii=$(printf %4.4i $ii)
          ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec.${iii}  fv3_grid_spec
          ln_vrfy -sf sfc_data.nc.${iii} sfc_data.nc
          ${EXECDIR}/process_updatesst > stdout_sstupdate.${iii} 2>&1
@@ -472,7 +472,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
               checkfile=${bkpath_find}/${restart_prefix_find}sfc_data.nc
               for ii in ${list_iolayout}
               do
-                iii=`printf %4.4i $ii`
+                iii=$(printf %4.4i $ii)
                 cp_vrfy ${checkfile}.${iii}  ${restart_prefix_find}sfc_data.nc.${iii}
                 mv sfc_data.nc.${iii} gfsice.sfc_data.nc.${iii}
                 mv ${restart_prefix_find}sfc_data.nc.${iii} sfc_data.nc.${iii}
@@ -481,7 +481,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
               ls -l > list_cycle_sfc
               for ii in ${list_iolayout}
               do
-                iii=`printf %4.4i $ii`
+                iii=$(printf %4.4i $ii)
                 ln_vrfy -sf sfc_data.nc.${iii} sfc_data.nc
                 ln_vrfy -sf gfsice.sfc_data.nc.${iii} gfsice.sfc_data.nc
                 ${EXECDIR}/cycle_ice.exe > stdout_cycleICE.${iii} 2>&1
@@ -526,7 +526,7 @@ if [ ${HH} -eq ${GVF_update_hour} ] && [ ${cycle_type} == "spinup" ]; then
       else
         for ii in ${list_iolayout}
         do
-          iii=`printf %4.4i $ii`
+          iii=$(printf %4.4i $ii)
           ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec.${iii}  fv3_grid_spec
           ln_vrfy -sf sfc_data.nc.${iii} sfc_data.nc
           ${EXECDIR}/update_GVF.exe > stdout_updateGVF.${iii} 2>&1
@@ -659,7 +659,7 @@ EOF
      else
        for ii in ${list_iolayout}
        do
-         iii=`printf %4.4i $ii`
+         iii=$(printf %4.4i $ii)
          ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec.${iii}  fv3_grid_spec
          ln_vrfy -sf sfc_data.nc.${iii} sfc_data.nc
          ./${exect} > sfc_sugery_stdout.${iii} 2>&1 || print_info_msg "\
