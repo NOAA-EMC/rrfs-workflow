@@ -128,7 +128,7 @@ cd ${MYDIR}/src/rrfs_utl
 mkdir -p build
 cd build
 cmake ..
-make -j ${BUILD_JOBS:-4}
+make -j ${BUILD_JOBS:-1}
 mkdir -p ${MYDIR}/bin
 cp ./bin/* ${MYDIR}/bin/.
 
