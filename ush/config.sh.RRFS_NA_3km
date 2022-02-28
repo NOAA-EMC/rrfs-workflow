@@ -1,8 +1,10 @@
 MACHINE="jet"
+
 ACCOUNT="nrtrr"
 RESERVATION="rrfsdet"
 EXPT_BASEDIR="/home/rtrr/RRFS"
 EXPT_SUBDIR="RRFS_NA_3km_dev1"
+
 
 PARTITION_GRAPHICS=kjet,xjet
 
@@ -16,11 +18,20 @@ else
   PARTITION_DEFAULT=kjet
 fi
 
+
 if [[ $MACHINE == "hera" ]] ; then
   ACCOUNT="wrfruc"
   PARTITION_DEFAULT=""
   PARTITION_FCST=""
   QUEUE_ANALYSIS="batch"
+fi
+
+if [[ $MACHINE == "wcoss_dell_p3" ]] ; then
+  ACCOUNT=HRRR-T2O
+  RESERVATION="rrfsdet"
+  QUEUE_ANALYSIS="dev"
+  QUEUE_HPSS="dev"
+  EXPT_BASEDIR="/gpfs/dell6/emc/modeling/noscrub/Shun.Liu/rrfs_dev1/test"
 fi
 
 VERBOSE="TRUE"
@@ -45,13 +56,13 @@ LBC_SPEC_INTVL_HRS="1"
 EXTRN_MDL_LBCS_OFFSET_HRS="6"
 EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS="0"
 
-DATE_FIRST_CYCL="20220201"
-DATE_LAST_CYCL="20220330"
+DATE_FIRST_CYCL="20220214"
+DATE_LAST_CYCL="20220228"
 CYCL_HRS=( "00" )
 CYCL_HRS_SPINSTART=("03" "15")
 CYCL_HRS_PRODSTART=("09" "21")
-CYCLEMONTH="2,3"
-CYCLEDAY="*"
+CYCLEMONTH="1"
+CYCLEDAY="14-28"
 #
 PREEXISTING_DIR_METHOD="upgrade"
 INITIAL_CYCLEDEF="${DATE_FIRST_CYCL}0300 ${DATE_LAST_CYCL}2300 12:00:00"
@@ -80,7 +91,6 @@ GVF_update_hour=04
 USE_FVCOM="TRUE"
 FVCOM_DIR="/mnt/lfs4/BMC/public/data/grids/glerl/owaq"
 FVCOM_FILE="tsfc_fv3grid"
-
 NCORES_RUN_ANAL=240
 WTIME_RUN_ANAL="01:00:00"
 HYBENSMEM_NMIN=66
@@ -155,3 +165,9 @@ COMINgfs=""
 STMP="/lfs4/BMC/nrtrr/NCO_dirs/stmp"  # Path to directory STMP that mostly contains input files.
 PTMP="/lfs4/BMC/nrtrr/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains input files.
 NWGES="/lfs4/BMC/nrtrr/NCO_dirs/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+
+if [[ $MACHINE == "WCOSS_DELL_P3" ]] ; then
+STMP="/gpfs/dell1/ptmp/Shun.Liu/stmp"  # Path to directory STMP that mostly contains input file
+PTMP="/gpfs/dell1/ptmp/Shun.Liu/ptmp"  # Path to directory STMP that mostly contains input files.
+NWGES="/gpfs/dell1/ptmp/Shun.Liu/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+fi

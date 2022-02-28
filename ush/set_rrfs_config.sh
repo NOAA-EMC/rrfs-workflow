@@ -21,6 +21,12 @@ if [[ $MACHINE == "hera" ]] ; then
   ENKF_FCST=/scratch1/NCEPDEV/rstprod/com/gfs/prod
 fi
 
+if [[ $MACHINE == "wcoss_dell_p3" ]] ; then
+  OBSPATH=/gpfs/hps/nco/ops/com/rap/prod
+  OBSPATH_NSSLMOSIAC=/gpfs/dell1/nco/ops/dcom/prod/ldmdata/obs/upperair/mrms/conus
+  SST_ROOT=/gpfs/dell1/nco/ops/com/gfs/prod
+fi
+
 # set up for retrospective test:
 if [[ $DO_RETRO == "TRUE" ]] ; then
 
