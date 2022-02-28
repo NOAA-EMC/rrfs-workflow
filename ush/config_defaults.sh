@@ -276,6 +276,10 @@ EXPT_SUBDIR=""
 # Setup default locations for GVF and update time:
 #   GVF_ROOT: locations of GVF observations
 #   GVF_update_hour: cycle time for updating GVF 
+#
+# Setup default locations for IMS snow/ice and update time:
+#   IMSSNOW_ROOT: locations of IMS snow/ice observations
+#   SNOWICE_update_hour: cycle time for updating snow/ice 
 #-----------------------------------------------------------------------
 #
 COMINgfs="/base/path/of/directory/containing/gfs/input/files"
@@ -303,6 +307,8 @@ SST_ROOT="/lfs4/BMC/public/data/grids/ncep/sst/0p083deg/grib2"
 SST_update_hour=99
 GVF_ROOT="/public/data/sat/ncep/viirs/gvf/grib2"
 GVF_update_hour=99
+IMSSNOW_ROOT="/public/data/grids/ncep/snow/ims96/grib2"
+SNOWICE_update_hour=99
 
 #
 #-----------------------------------------------------------------------

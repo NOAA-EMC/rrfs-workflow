@@ -343,6 +343,65 @@ fi
 
 #-----------------------------------------------------------------------
 #
+# do snow/ice update at ${SNOWICE_update_hour}z for the restart sfc_data.nc
+#
+#-----------------------------------------------------------------------
+
+if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ ${cycle_type} == "prod" ] ; then
+   echo "Update snow cover based on imssnow  at ${SNOWICE_update_hour}z"
+   if [ -r "${IMSSNOW_ROOT}/latest.SNOW_IMS" ]; then
+      cp ${IMSSNOW_ROOT}/latest.SNOW_IMS .
+   elif [ -r "${IMSSNOW_ROOT}/${YYJJJ00000000}" ]; then
+      cp ${IMSSNOW_ROOT}/${YYJJJ00000000} latest.SNOW_IMS
+   else
+     echo "${IMSSNOW_ROOT} data does not exist!!"
+     echo "ERROR: No SST update at ${time_str}!!!!"
+   fi
+   if [ -r "latest.SNOW_IMS" ]; then
+     ln_vrfy -sf ./latest.SNOW_IMS                imssnow2
+
+     if [ "${IO_LAYOUT_Y}" == "1" ]; then
+       ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
+     else
+       for ii in ${list_iolayout}
+       do
+         iii=$(printf %4.4i $ii)
+         ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec.${iii}  fv3_grid_spec.${iii}
+       done
+     fi
+#
+# copy executable
+#
+     snowice_exec_fn="process_imssnow_fv3lam.exe"
+     snowice_exec_fp="$EXECDIR/${snowice_exec_fn}"
+     if [ ! -f "${snowice_exec_fp}" ]; then
+      print_err_msg_exit "\
+The executable (snowice_exec_fn) for processing snow/ice data onto FV3-LAM
+native grid does not exist:
+  snowice_exec_fp= \"${snowice_exec_fp}\"
+Please ensure that you've built this executable."
+     fi
+     cp_vrfy ${snowice_exec_fp} .
+
+     ${APRUN} ${snowice_exec_fn} ${IO_LAYOUT_Y} || \
+     print_err_msg_exit "\
+ Call to executable (fvcom_exe) to modify sfc fields for FV3-LAM failed:
+   snowice_exe = \"${snowice_exec_fp}\"
+ The following variables were being used:
+   list_iolayout = \"${list_iolayout}\""
+
+     snowice_reference_time=$(wgrib2 -t latest.SNOW_IMS | tail -1) 
+     if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
+       echo "${YYYYMMDDHH}(${cycle_type}): update snow/ice using ${snowice_reference_time}" >> ${EXPTDIR}/log.cycles
+     fi
+   else
+     echo "ERROR: No latest IMS SNOW file for update at ${YYYYMMDDHH}!!!!"
+   fi
+else
+   echo "NOTE: No update for IMS SNOW/ICE at ${YYYYMMDDHH}!"
+fi
+#-----------------------------------------------------------------------
+#
 # do SST update at ${SST_update_hour}z for the restart sfc_data.nc
 #
 #-----------------------------------------------------------------------

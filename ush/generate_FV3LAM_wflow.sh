@@ -883,7 +883,6 @@ file failed."
 fi
 
 if [ "${DO_SURFACE_CYCLE}" = "TRUE" ]; then
-  nstf_name="2,0,0,0,0"
   if [ "${SDF_USES_RUC_LSM}" = "TRUE" ]; then
     lsoil="9"
   fi
@@ -891,8 +890,6 @@ if [ "${DO_SURFACE_CYCLE}" = "TRUE" ]; then
  settings="\
  'gfs_physics_nml': {
      'lsoil': ${lsoil:-null},
-     'nst_anl' : false,
-     'nstf_name'  : [${nstf_name[@]}],
    }"
 # commnet out for using current develop branch that has no radar tten code yet.
 # 'gfs_physics_nml': {
@@ -916,7 +913,6 @@ if [ "${DO_SURFACE_CYCLE}" = "TRUE" ]; then
 fi
 
 if [[ "${DO_DACYCLE}" = "TRUE" || "${DO_ENKFUPDATE}" = "TRUE" ]]; then
-  nstf_name="2,0,0,0,0"
   if [ "${SDF_USES_RUC_LSM}" = "TRUE" ]; then
     lsoil="9"
   fi
@@ -933,8 +929,6 @@ if [[ "${DO_DACYCLE}" = "TRUE" || "${DO_ENKFUPDATE}" = "TRUE" ]]; then
    }
  'gfs_physics_nml': {
      'lsoil': ${lsoil:-null},
-     'nst_anl' : false,
-     'nstf_name'  : [${nstf_name[@]}],
    }"
 # commnet out for using current develop branch that has no radar tten code yet.
 # 'gfs_physics_nml': {
