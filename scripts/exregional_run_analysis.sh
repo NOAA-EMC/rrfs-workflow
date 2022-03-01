@@ -82,7 +82,7 @@ case $MACHINE in
   module list
   ulimit -s unlimited
   ulimit -a
-  APRUN="mpirun -l -np ${PE_MEMBER01}"
+  APRUN="mpirun -l"
   ;;
 #
 "WCOSS_DELL_P3")
@@ -91,7 +91,7 @@ case $MACHINE in
   module list
   ulimit -s unlimited
   ulimit -a
-  APRUN="mpirun -l -np ${PE_MEMBER01}"
+  APRUN="mpirun -l"
   ;;
 #
 "THEIA")
@@ -99,7 +99,7 @@ case $MACHINE in
   ulimit -s unlimited
   ulimit -a
   np=${SLURM_NTASKS}
-  APRUN="mpirun -np ${np}"
+  APRUN="mpirun"
   ;;
 #
 "HERA")
@@ -132,7 +132,7 @@ case $MACHINE in
 
   ulimit -s unlimited
   ulimit -a
-  APRUN="srun -n ${PE_MEMBER01}"
+  APRUN="srun"
   ;;
 #
 esac

@@ -22,8 +22,11 @@ if [[ $MACHINE == "hera" ]] ; then
 fi
 
 if [[ $MACHINE == "wcoss_dell_p3" ]] ; then
+  EXTRN_MDL_SOURCE_BASEDIR_ICS=/gpfs/dell1/nco/ops/com/gfs/prod
+  EXTRN_MDL_SOURCE_BASEDIR_LBCS=/gpfs/dell1/nco/ops/com/gfs/prod
   OBSPATH=/gpfs/hps/nco/ops/com/rap/prod
   OBSPATH_NSSLMOSIAC=/gpfs/dell1/nco/ops/dcom/prod/ldmdata/obs/upperair/mrms/conus
+  ENKF_FCST=/gpfs/dell1/nco/ops/com/gfs/prod
   SST_ROOT=/gpfs/dell1/nco/ops/com/gfs/prod
 fi
 
