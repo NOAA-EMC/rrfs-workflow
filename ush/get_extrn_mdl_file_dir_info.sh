@@ -414,7 +414,10 @@ fi
     "GDASENKF")
       if [ "${MACHINE}" = "HERA" ] ; then
         fns_on_disk=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
-        fns_in_arcv=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )  # Get only 0.25 degree files for now.
+        fns_in_arcv=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
+      elif [ "${MACHINE}" = "JET" ] ; then
+        fns_on_disk=( "${yy}${ddd}${hh}${mn}.gdas.t${hh}z.atmf0${fcst_hh}.${GDAS_MEM_NAME}.nc" "${yy}${ddd}${hh}${mn}.gdas.t${hh}z.sfcf0${fcst_hh}.${GDAS_MEM_NAME}.nc")  # use netcdf
+        fns_in_arcv=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
       fi
       ;;
  
@@ -525,6 +528,9 @@ and analysis or forecast (anl_or_fcst):
       fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
       if  [ "${MACHINE}" = "HERA" ]; then
         fns_on_disk=( "gdas.t${hh}z.atmf${fcst_hhh[@]}.nc" "gdas.t${hh}z.sfcf${fcst_hhh[@]}.nc")  # use netcdf
+        fns_in_arcv=( "gdas.t${hh}z.atmf${fcst_hhh}.nc" "gdas.t${hh}z.sfcf${fcst_hhh}.nc" )  #  for now.
+      elif  [ "${MACHINE}" = "JET" ]; then
+        fns_on_disk=( "${yy}${ddd}${hh}${mn}.gdas.t${hh}z.atmf0${fcst_hh}.${GDAS_MEM_NAME}.nc" "${yy}${ddd}${hh}${mn}.gdas.t${hh}z.sfcf0${fcst_hh}.${GDAS_MEM_NAME}.nc")  # use netcdf
         fns_in_arcv=( "gdas.t${hh}z.atmf${fcst_hhh}.nc" "gdas.t${hh}z.sfcf${fcst_hhh}.nc" )  #  for now.
       fi
       ;;
