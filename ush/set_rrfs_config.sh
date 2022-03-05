@@ -90,6 +90,8 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     ENKF_FCST=/scratch2/BMC/zrtrr/rli/data/enkf/atm
     AIRCRAFT_REJECT="/scratch2/BMC/zrtrr/rli/data/amdar_reject_lists"
     SFCOBS_USELIST="/scratch2/BMC/zrtrr/rli/data/mesonet_uselists"
+    SST_ROOT="/scratch2/BMC/zrtrr/rli/data/highres_sst"
+    GVF_ROOT="/scratch2/BMC/zrtrr/rli/data/gvf/grib2"
   fi
   if [[ $MACHINE == "orion" ]] ; then
     EXTRN_MDL_SOURCE_BASEDIR_ICS=/work/noaa/wrfruc/mhu/rrfs/data/gfs

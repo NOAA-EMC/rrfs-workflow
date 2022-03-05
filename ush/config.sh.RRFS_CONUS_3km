@@ -18,6 +18,8 @@ if [[ $MACHINE == "hera" ]] ; then
   PARTITION_DEFAULT=""
   PARTITION_FCST=""
   QUEUE_ANALYSIS="batch"
+  QUEUE_WGRIB2="batch"
+  QUEUE_GRAPHICS="batch"
 fi
 
 if [[ $MACHINE == "orion" ]] ; then
