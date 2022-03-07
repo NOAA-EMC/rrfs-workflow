@@ -28,6 +28,7 @@ if [[ $MACHINE == "wcoss_dell_p3" ]] ; then
   OBSPATH_NSSLMOSIAC=/gpfs/dell1/nco/ops/dcom/prod/ldmdata/obs/upperair/mrms/conus
   ENKF_FCST=/gpfs/dell1/nco/ops/com/gfs/prod
   SST_ROOT=/gpfs/dell1/nco/ops/com/gfs/prod
+  GVF_ROOT=/gpfs/dell1/nco/ops/dcom/prod/viirs
 fi
 
 # set up for retrospective test:

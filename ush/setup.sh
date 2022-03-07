@@ -402,7 +402,7 @@ case $MACHINE in
     ;;
 
   "WCOSS_DELL_P3")
-    NCORES_PER_NODE=24
+    NCORES_PER_NODE=28
     SCHED="lsf"
     QUEUE_DEFAULT=${QUEUE_DEFAULT:-"dev"}
     QUEUE_HPSS=${QUEUE_HPSS:-"dev_transfer"}

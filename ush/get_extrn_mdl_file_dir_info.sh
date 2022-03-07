@@ -407,7 +407,7 @@ fi
         fns_in_arcv=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )  # Get only 0.25 degree files for now.
 
       elif [ "${fv3gfs_file_fmt}" = "netcdf" ]; then
-        fns_on_disk=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
+        fns_on_disk=( "gfs.t${hh}z.atmf0${fcst_hh}.nc" "gfs.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
         fns_in_arcv=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )  # Get only 0.25 degree files for now.
       fi
       ;;
@@ -518,7 +518,7 @@ and analysis or forecast (anl_or_fcst):
       elif [ "${fv3gfs_file_fmt}" = "netcdf" ]; then
         fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
         postfix=".nc"
-        prefix="gdas.t${hh}z.atmf"
+        prefix="gfs.t${hh}z.atmf"
         fns_on_disk_tmp=( "${fcst_hhh[@]/#/${prefix}}" )
         fns_on_disk=( "${fns_on_disk_tmp[@]/%/${postfix}}" )
         fns_in_arcv=( "${fcst_hhh[@]/#/${prefix}}" )

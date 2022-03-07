@@ -356,6 +356,8 @@ settings="\
   'extrn_mdl_lbcs_offset_hrs': ${EXTRN_MDL_LBCS_OFFSET_HRS}
   'extrn_mdl_lbcs_search_offset_hrs': ${EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS}
   'bc_update_interval': ${LBC_SPEC_INTVL_HRS}
+  'fv3gfs_file_fmt_ics': ${FV3GFS_FILE_FMT_ICS}
+  'fv3gfs_file_fmt_lbcs': ${FV3GFS_FILE_FMT_LBCS}
 #
 # Parameters that determine the set of cycles to run.
 #
