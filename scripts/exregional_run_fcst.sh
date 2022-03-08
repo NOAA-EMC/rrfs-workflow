@@ -576,7 +576,19 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-$APRUN ${FV3_EXEC_FP} || print_err_msg_exit "\
+# Copy the executable to the run directory.
+if [ -f ${FV3_EXEC_FP} ]; then
+   print_info_msg "$VERBOSE" "
+  Copying the fv3lam  executable to the run directory..."
+  cp_vrfy ${FV3_EXEC_FP} ${run_dir}/ufs_model
+else
+  print_err_msg_exit "\
+ The GSI executable specified in FV3_EXEC_FP does not exist:
+   FV3_EXEC_FP = \"$FV3_EXEC_FP\"
+ Build FV3LAM and rerun."
+fi
+
+$APRUN ${run_dir}/ufs_model || print_err_msg_exit "\
 Call to executable to run FV3-LAM forecast returned with nonzero exit
 code."
 #

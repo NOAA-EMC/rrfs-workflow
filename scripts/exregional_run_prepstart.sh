@@ -224,6 +224,9 @@ if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial file
       cp_vrfy ${bkpath}/gfs_ctrl.nc gfs_ctrl.nc        
       cp_vrfy ${bkpath}/gfs_data.tile7.halo0.nc gfs_data.tile7.halo0.nc        
       cp_vrfy ${bkpath}/sfc_data.tile7.halo0.nc sfc_data.tile7.halo0.nc        
+      ln_vrfy -s ${bkpath}/gfs_bndy.tile7.000.nc bk_gfs_bndy.tile7.000.nc
+      ln_vrfy -s ${bkpath}/gfs_data.tile7.halo0.nc bk_gfs_data.tile7.halo0.nc
+      ln_vrfy -s ${bkpath}/sfc_data.tile7.halo0.nc bk_sfc_data.tile7.halo0.nc
       print_info_msg "$VERBOSE" "cold start from $bkpath"
       if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
         echo "${YYYYMMDDHH}(${cycle_type}): cold start at ${current_time} from $bkpath " >> ${EXPTDIR}/log.cycles
@@ -305,6 +308,7 @@ else
     if [ "${IO_LAYOUT_Y}" == "1" ]; then
       for file in ${filelistn}; do
         cp_vrfy ${bkpath}/${restart_prefix}${file}     ${file}
+        ln_vrfy -s ${bkpath}/${restart_prefix}${file}     bk_${file}
       done
     else
       for file in ${filelistn}; do
@@ -312,6 +316,7 @@ else
         do
           iii=$(printf %4.4i $ii)
           cp_vrfy ${bkpath}/${restart_prefix}${file}.${iii}     ${file}.${iii}
+          ln_vrfy -s ${bkpath}/${restart_prefix}${file}.${iii}     bk_${file}.${iii}
         done
       done
     fi
@@ -464,13 +469,15 @@ fi
 #  surface cycling
 #
 #-----------------------------------------------------------------------
+#SFC_CYC=2
+if_update_ice="TRUE"
 if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
 
 # figure out which surface is available
       surface_file_dir_name=fcst_fv3lam
       bkpath_find="missing"
       restart_prefix_find="missing"
-      for ndayinhour in 00 24 48
+      for ndayinhour in 00 24 48 72
       do 
         if [ "${bkpath_find}" == "missing" ]; then
           restart_prefix=$( date +%Y%m%d.%H0000. -d "${START_DATE} ${ndayinhour} hours ago" )
@@ -530,7 +537,9 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
               mv sfc_data.nc gfsice.sfc_data.nc
               mv ${restart_prefix_find}sfc_data.nc sfc_data.nc
               ncatted -a checksum,,d,, sfc_data.nc
-              ${EXECDIR}/cycle_ice.exe > stdout_cycleICE 2>&1
+              if [ "${if_update_ice}" == "TRUE" ]; then
+                ${EXECDIR}/update_ice.exe > stdout_cycleICE 2>&1
+              fi
             else
               checkfile=${bkpath_find}/${restart_prefix_find}sfc_data.nc
               for ii in ${list_iolayout}
@@ -547,7 +556,9 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
                 iii=$(printf %4.4i $ii)
                 ln_vrfy -sf sfc_data.nc.${iii} sfc_data.nc
                 ln_vrfy -sf gfsice.sfc_data.nc.${iii} gfsice.sfc_data.nc
-                ${EXECDIR}/cycle_ice.exe > stdout_cycleICE.${iii} 2>&1
+                if [ "${if_update_ice}" == "TRUE" ]; then
+                  ${EXECDIR}/update_ice.exe > stdout_cycleICE.${iii} 2>&1
+                fi
               done
               rm -f sfc_data.nc gfsice.sfc_data.nc
             fi
