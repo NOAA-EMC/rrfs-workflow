@@ -138,7 +138,7 @@ START_DATE=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
 YYYYMMDDHH=$(date +%Y%m%d%H -d "${START_DATE}")
 
 vlddate=$CDATE
-
+l_fv3reg_filecombined=.false.
 #
 #-----------------------------------------------------------------------
 #
@@ -160,6 +160,56 @@ mkdir_vrfy -p ${enkfanal_nwges_dir}
 #
 #-----------------------------------------------------------------------
 #
+ cp_vrfy ${fixgriddir}/fv3_coupler.res    coupler.res
+ cp_vrfy ${fixgriddir}/fv3_akbk           fv3sar_tile1_akbk.nc
+ cp_vrfy ${fixgriddir}/fv3_grid_spec      fv3sar_tile1_grid_spec.nc
+
+#
+#-----------------------------------------------------------------------
+#
+# Loop through the members, link the background and copy over
+#  observer output (diag*ges*) files to the running directory
+#
+#-----------------------------------------------------------------------
+#
+ for imem in  $(seq 1 $nens) ensmean; do
+
+     if [ ${imem} == "ensmean" ]; then
+        memchar="ensmean"
+        memcharv0="ensmean"
+     else
+        memchar="mem"$(printf %04i $imem)
+        memcharv0="mem"$(printf %03i $imem)
+     fi
+     slash_ensmem_subdir=$memchar
+     if [ ${cycle_type} == "spinup" ]; then
+        bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam_spinup/INPUT
+        observer_nwges_dir="${NWGES_DIR}/${slash_ensmem_subdir}/observer_gsi_spinup"
+     else
+        bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam/INPUT
+        observer_nwges_dir="${NWGES_DIR}/${slash_ensmem_subdir}/observer_gsi"
+     fi
+
+     ln_vrfy  -snf  ${bkpath}/fv_core.res.tile1.nc         fv3sar_tile1_${memcharv0}_dynvars
+     ln_vrfy  -snf  ${bkpath}/fv_tracer.res.tile1.nc       fv3sar_tile1_${memcharv0}_tracer
+     ln_vrfy  -snf  ${bkpath}/sfc_data.nc                  fv3sar_tile1_${memcharv0}_sfcdata
+
+#
+#-----------------------------------------------------------------------
+#
+# Copy observer outputs (diag*ges*) to the working directory
+#
+#-----------------------------------------------------------------------
+#
+     for diagfile0 in $(ls  ${observer_nwges_dir}/diag*ges*) ; do
+         diagfile=$(basename  $diagfile0)
+         cp_vrfy  $diagfile0  ${diagfile}_$memcharv0
+     done
+
+done
+#
+#-----------------------------------------------------------------------
+#
 # Set GSI fix files
 #
 #----------------------------------------------------------------------
@@ -175,15 +225,22 @@ cp_vrfy $CONVINFO   convinfo
 cp_vrfy $OZINFO     ozinfo
 
 #
+#-----------------------------------------------------------------------
+#
+# Get nlons (NX_RES), nlats (NY_RES) and nlevs
+#
+#-----------------------------------------------------------------------
+#
+NX_RES=$(ncdump -h fv3sar_tile1_grid_spec.nc | grep "grid_xt =" | cut -f3 -d" " )
+NY_RES=$(ncdump -h fv3sar_tile1_grid_spec.nc | grep "grid_yt =" | cut -f3 -d" " )
+nlevs=$(ncdump -h fv3sar_tile1_mem001_tracer | grep "zaxis_1 =" | cut -f3 -d" " )
+#
 #----------------------------------------------------------------------
 #
 # Set namelist parameters for EnKF
 #
 #----------------------------------------------------------------------
 #
-NX_RES=`ncdump -h fv3sar_tile1_grid_spec.nc | grep "grid_xt =" | cut -f3 -d" " `
-NY_RES=`ncdump -h fv3sar_tile1_grid_spec.nc | grep "grid_yt =" | cut -f3 -d" " `
-nlevs=`ncdump -h fv3_mem001_tracer | grep "zaxis_1 =" | cut -f3 -d" " `
 
 EnKFTracerVars=${EnKFTracerVar:-"sphum,o3mr"}
 ldo_enscalc_option=${ldo_enscalc_option:-0}
@@ -225,7 +282,7 @@ use_gfs_nemsio=.true.,
 	lobsdiag_forenkf=.false.,
 	write_spread_diag=.false.,
 	netcdf_diag=${netcdf_diag:-.false.},
-    fv3_native=.true.,
+        fv3_native=.true.,
 	/
 	&satobs_enkf
 	sattypes_rad(1) = 'amsua_n15',     dsis(1) = 'amsua_n15',
@@ -305,6 +362,7 @@ use_gfs_nemsio=.true.,
 	/
 	&nam_fv3
 	fv3fixpath="XXX",nx_res=${NX_RES:-396},ny_res=${NY_RES-232},ntiles=1,
+        l_fv3reg_filecombined=${l_fv3reg_filecombined},
 	/
 EOFnml
 
@@ -339,6 +397,7 @@ fi
 #
 ${APRUN}  $enkfworkdir/enkf.x < enkf.nml 1>stdout 2>stderr || print_err_msg_exit "\
 Call to executable to run EnKF returned with nonzero exit code."
+
 
 cp_vrfy stdout ${enkfanal_nwges_dir}/.
 cp_vrfy stderr ${enkfanal_nwges_dir}/.
