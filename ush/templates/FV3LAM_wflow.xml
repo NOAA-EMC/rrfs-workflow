@@ -126,7 +126,11 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 {%- else %}
 <!ENTITY RSRV_WGRIB2    "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_WGRIB2;</queue>">
 {%- endif %}
+{%- if partition_graphics is not none %}
 <!ENTITY RSRV_GRAPHICS   "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_GRAPHICS;</queue><partition>{{ partition_graphics }}</partition><native>--exclusive</native>">
+{%- else %}
+<!ENTITY RSRV_GRAPHICS   "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_GRAPHICS;</queue><native>--exclusive</native>">
+{%- endif %}
 
 {%- if do_retro %}
 <!ENTITY DEADLINE_PRE      "999:00:00">

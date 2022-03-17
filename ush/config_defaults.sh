@@ -1772,9 +1772,14 @@ DO_ENKFUPDATE="FALSE"
 # cold start cycle. This one sets how many hours we want the surface
 # cycle being delayed.
 #
+# DO_SURFACE_CYCLE:
+# Flag that determines whether to adjust soil T and Q based on
+# the lowest level T/Q analysis increments.
+#
 DO_DACYCLE="FALSE"
 DO_SURFACE_CYCLE="FALSE"
 SURFACE_CYCLE_DELAY_HRS="1"
+DO_SOIL_ADJUST="FALSE"
 #
 #-----------------------------------------------------------------------
 #

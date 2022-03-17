@@ -622,8 +622,7 @@ fi
 # comment out for testing
 $APRUN ./gsi.x < gsiparm.anl > stdout 2>&1 || print_err_msg_exit "\
 Call to executable to run GSI returned with nonzero exit code."
-
-
+#
 #-----------------------------------------------------------------------
 #
 # Copy analysis results to INPUT for model forecast.
@@ -708,6 +707,53 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+# adjust soil T/Q based on analysis increment
+#
+#-----------------------------------------------------------------------
+#
+if [ ${BKTYPE} -eq 0 ] && [ "${DO_SURFACE_CYCLE}" = "TRUE" ]; then  # warm start
+  cd ${bkpath}
+  if [ "${IO_LAYOUT_Y}" == "1" ]; then
+    ln_vrfy -snf ${fixgriddir}/fv3_grid_spec                fv3_grid_spec
+  else
+    for ii in ${list_iolayout}
+    do
+      iii=`printf %4.4i $ii`
+      ln_vrfy  -snf ${fixgriddir}/fv3_grid_spec.${iii}        fv3_grid_spec.${iii}
+    done
+  fi
+
+cat << EOF > namelist.soiltq
+ &setup
+  fv3_io_layout_y=${IO_LAYOUT_Y},
+  iyear=${YYYY},
+  imonth=${MM},
+  iday=${DD},
+  ihour=${HH},
+  iminute=0,
+ /
+EOF
+
+  adjustsoil_exec="${EXECDIR}/adjust_soiltq.exe"
+
+  if [ -f $adjustsoil_exec ]; then
+    print_info_msg "$VERBOSE" "
+Copying the adjust soil executable to the run directory..."
+    cp_vrfy ${adjustsoil_exec} adjust_soiltq.exe
+  else
+    print_err_msg_exit "\
+The adjust_soiltq.exe specified in ${EXECDIR} does not exist.
+Build adjust_soiltq.exe and rerun."
+  fi
+
+  $APRUN ./adjust_soiltq.exe || print_err_msg_exit "\
+  Call to executable to run adjust soil returned with nonzero exit code."
+
+fi
+
+#
+#-----------------------------------------------------------------------
+#
 # Print message indicating successful completion of script.
 #
 #-----------------------------------------------------------------------
@@ -719,6 +765,7 @@ ANALYSIS GSI completed successfully!!!
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
+#
 #
 #-----------------------------------------------------------------------
 #

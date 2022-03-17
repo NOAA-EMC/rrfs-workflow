@@ -303,7 +303,7 @@ else
   n_iolayouty=$(($IO_LAYOUT_Y-1))
   list_iolayout=$(seq 0 $n_iolayouty)
   if [ -r "${checkfile}" ] ; then
-    cp_vrfy ${bkpath}/${restart_prefix}coupler.res                coupler.res
+    cp_vrfy ${bkpath}/${restart_prefix}coupler.res                bk_coupler.res
     cp_vrfy ${bkpath}/${restart_prefix}fv_core.res.nc             fv_core.res.nc
     if [ "${IO_LAYOUT_Y}" == "1" ]; then
       for file in ${filelistn}; do
@@ -341,6 +341,11 @@ else
       done
     fi
     ncatted -a checksum,,d,, fv_core.res.nc
+
+# generate coupler.res with right date
+    head -1 bk_coupler.res > coupler.res
+    tail -1 bk_coupler.res >> coupler.res
+    tail -1 bk_coupler.res >> coupler.res
   else
     print_err_msg_exit "Error: cannot find background: ${checkfile}"
   fi
