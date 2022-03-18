@@ -8,6 +8,8 @@ met_guess::
   q        65       2         specific_humidity    sphu
   oz       65       2         ozone                ozone
   delp     65      -1         fv3 del pressure     delp
+  t2m       1      -1         2-m_T                t2m
+  q2m       1      -1         2-m_Q                q2m
 ::
 
 state_derivatives::
@@ -46,11 +48,11 @@ state_vector::
 ::
 control_vector_enkf::
 !var     level  itracer as/tsfc_sdv  an_amp0   source  funcof
- u       65      0       1.00        -1.0     state    u,v
- v       65      0       1.00        -1.0     state    u,v
+ u        65      0       1.00        -1.0     state    u,v
+ v        65      0       1.00        -1.0     state    u,v
  ps        1      0       0.50        -1.0     state    prse
  t        65      0       0.70        -1.0     state    tv
- oz        65      0       0.70        -1.0     state   oz 
+ oz       65      0       0.70        -1.0     state    oz 
  q        65      1       0.70        -1.0     state    q
 ::
 

@@ -8,6 +8,8 @@ met_guess::
   q        65       2         specific_humidity    sphu
   oz       65       2         ozone                ozone
   delp     65      -1         fv3 del pressure     delp
+  t2m       1      -1         2-m_T                t2m
+  q2m       1      -1         2-m_Q                q2m
 ::
 
 state_derivatives::
