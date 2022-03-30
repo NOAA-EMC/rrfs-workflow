@@ -43,6 +43,7 @@ DO_DACYCLE="TRUE"
 #DO_SPINUP="TRUE"
 #DO_RETRO="TRUE"
 #LBCS_ICS_ONLY="TRUE"
+#DO_RADDA="FALSE"
 
 AIRCRAFT_REJECT="/home/amb-verif/acars_RR/amdar_reject_lists"
 SFCOBS_USELIST="/lfs4/BMC/amb-verif/rap_ops_mesonet_uselists"

@@ -55,7 +55,7 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "gsi_type" "mem_type" "analworkdir" "observer_nwges_dir" "slash_ensmem_subdir" )
+valid_args=( "cycle_dir" "cycle_type" "gsi_type" "mem_type" "analworkdir" "observer_nwges_dir" "slash_ensmem_subdir" "satbias_dir" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -395,11 +395,83 @@ esac
 obs_files_source[0]=${obspath_tmp}/${obsfileprefix}.t${HH}z.prepbufr.tm00
 obs_files_target[0]=prepbufr
 
-obs_files_source[1]=${obspath_tmp}/${obsfileprefix}.t${HH}z.satwnd.tm00.bufr_d
-obs_files_target[1]=satwndbufr
+obs_number=${#obs_files_source[@]}
+obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}z.satwnd.tm00.bufr_d
+obs_files_target[${obs_number}]=satwndbufr
 
-obs_files_source[2]=${obspath_tmp}/${obsfileprefix}.t${HH}z.nexrad.tm00.bufr_d
-obs_files_target[2]=l2rwbufr
+obs_number=${#obs_files_source[@]}
+obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}z.nexrad.tm00.bufr_d
+obs_files_target[${obs_number}]=l2rwbufr
+
+#
+#-----------------------------------------------------------------------
+#
+# including satellite radiance data
+#
+#-----------------------------------------------------------------------
+if [ ${DO_RADDA} == "TRUE" ]; then
+
+  obs_number=${#obs_files_source[@]}
+  obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}z.1bamua.tm00.bufr_d
+  obs_files_target[${obs_number}]=amsuabufr
+
+  obs_number=${#obs_files_source[@]}
+  obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}z.esamua.tm00.bufr_d
+  obs_files_target[${obs_number}]=amsuabufrears
+
+  obs_number=${#obs_files_source[@]}
+  obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}z.1bmhs.tm00.bufr_d
+  obs_files_target[${obs_number}]=mhsbufr
+
+  obs_number=${#obs_files_source[@]}
+  obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}z.esmhs.tm00.bufr_d
+  obs_files_target[${obs_number}]=mhsbufrears
+
+  obs_number=${#obs_files_source[@]}
+  obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}z.atms.tm00.bufr_d
+  obs_files_target[${obs_number}]=atmsbufr
+
+  obs_number=${#obs_files_source[@]}
+  obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}z.esatms.tm00.bufr_d
+  obs_files_target[${obs_number}]=atmsbufrears
+
+  obs_number=${#obs_files_source[@]}
+  obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}z.atmsdb.tm00.bufr_d
+  obs_files_target[${obs_number}]=atmsbufr_db
+
+  obs_number=${#obs_files_source[@]}
+  obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}z.crisf4.tm00.bufr_d
+  obs_files_target[${obs_number}]=crisfsbufr
+
+  obs_number=${#obs_files_source[@]}
+  obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}z.crsfdb.tm00.bufr_d
+  obs_files_target[${obs_number}]=crisfsbufr_db
+
+  obs_number=${#obs_files_source[@]}
+  obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}z.mtiasi.tm00.bufr_d
+  obs_files_target[${obs_number}]=iasibufr
+
+  obs_number=${#obs_files_source[@]}
+  obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}z.esiasi.tm00.bufr_d
+  obs_files_target[${obs_number}]=iasibufrears
+
+  obs_number=${#obs_files_source[@]}
+  obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}z.iasidb.tm00.bufr_d
+  obs_files_target[${obs_number}]=iasibufr_db
+
+  obs_number=${#obs_files_source[@]}
+  obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}z.gsrcsr.tm00.bufr_d
+  obs_files_target[${obs_number}]=abibufr
+
+  obs_number=${#obs_files_source[@]}
+  obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}z.ssmisu.tm00.bufr_d
+  obs_files_target[${obs_number}]=ssmisbufr
+
+  obs_number=${#obs_files_source[@]}
+  obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}z.sevcsr.tm00.bufr_d
+  obs_files_target[${obs_number}]=sevcsr
+
+fi
 
 obs_number=${#obs_files_source[@]}
 for (( i=0; i<${obs_number}; i++ ));
@@ -413,6 +485,7 @@ do
   fi
 done
 
+#
 #-----------------------------------------------------------------------
 #
 # Create links to fix files in the FIXgsi directory.
@@ -530,27 +603,73 @@ for file in $(awk '{if($1!~"!"){print $1}}' ./satinfo | sort | uniq) ;do
    ln -s ${CRTMFIX}/${file}.TauCoeff.bin ./
 done
 
-## satellite bias correction
-#if [ ${FULLCYC} -eq 1 ]; then
-#   latest_bias=${DATAHOME_PBK}/satbias/satbias_out_latest
-#   latest_bias_pc=${DATAHOME_PBK}/satbias/satbias_pc.out_latest
-#   latest_radstat=${DATAHOME_PBK}/satbias/radstat.rap_latest
-#fi
-
-# cp $latest_bias ./satbias_in
-# cp $latest_bias_pc ./satbias_pc
-# cp $latest_radstat ./radstat.rap
-# listdiag=`tar xvf radstat.rap | cut -d' ' -f2 | grep _ges`
-# for type in $listdiag; do
-#       diag_file=`echo $type | cut -d',' -f1`
-#       fname=`echo $diag_file | cut -d'.' -f1`
-#       date=`echo $diag_file | cut -d'.' -f2`
-#       gunzip $diag_file
-#       fnameanl=$(echo $fname|sed 's/_ges//g')
-#       mv $fname.$date $fnameanl
-# done
+#-----------------------------------------------------------------------
 #
-#mv radstat.rap  radstat.rap.for_this_cycle
+# cycling radiance bias corretion files
+#
+#-----------------------------------------------------------------------
+if [ ${DO_RADDA} == "TRUE" ]; then
+  if [ ${cycle_type} == "spinup" ]; then
+    echo "spin up cycle"
+    spinup_or_prod_rrfs=spinup
+    for cyc_start in "${CYCL_HRS_SPINSTART[@]}"; do
+      if [ ${HH} -eq ${cyc_start} ]; then
+        spinup_or_prod_rrfs=prod 
+      fi
+    done
+  else 
+    echo " product cycle"
+    spinup_or_prod_rrfs=prod
+    for cyc_start in "${CYCL_HRS_PRODSTART[@]}"; do
+      if [ ${HH} -eq ${cyc_start} ]; then
+        spinup_or_prod_rrfs=spinup      
+      fi 
+    done
+  fi
+
+  satcounter=1
+  maxcounter=240
+  while [ $satcounter -lt $maxcounter ]; do
+    SAT_TIME=`date +"%Y%m%d%H" -d "${START_DATE}  ${satcounter} hours ago"`
+    echo $SAT_TIME
+    if [ -r ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
+      echo " using satellite bias files from ${SAT_TIME}"
+
+      cp_vrfy ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
+      cp_vrfy ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
+      cp_vrfy ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ./radstat.rrfs
+
+      break
+    fi
+    satcounter=` expr $satcounter + 1 `
+  done
+
+  ## if satbias files (go back to previous 10 dyas) are not available from ${satbias_dir}, use satbias files from the ${FIX_GSI} 
+  if [ $satcounter -eq $maxcounter ]; then
+    if [ -r ${FIX_GSI}/rrfs.starting_satbias ]; then
+      echo "using satllite satbias_in files from ${FIX_GSI}"     
+      cp_vrfy ${FIX_GSI}/rrfs.starting_satbias ./satbias_in
+    fi
+    if [ -r ${FIX_GSI}/rrfs.starting_satbias_pc ]; then
+      echo "using satllite satbias_pc files from ${FIX_GSI}"     
+      cp_vrfy ${FIX_GSI}/rrfs.starting_satbias_pc ./satbias_pc
+    fi
+    if [ -r ${FIX_GSI}/rrfs.starting_radstat ]; then
+      echo "using satllite radstat files from ${FIX_GSI}"     
+      cp_vrfy ${FIX_GSI}/rrfs.starting_radstat ./radstat.rrfs
+    fi
+  fi
+
+  listdiag=`tar xvf radstat.rrfs | cut -d' ' -f2 | grep _ges`
+  for type in $listdiag; do
+    diag_file=`echo $type | cut -d',' -f1`
+    fname=`echo $diag_file | cut -d'.' -f1`
+    date=`echo $diag_file | cut -d'.' -f2`
+    gunzip $diag_file
+    fnameanl=$(echo $fname|sed 's/_ges//g')
+    mv $fname.$date $fnameanl
+  done
+fi
 
 #-----------------------------------------------------------------------
 #
@@ -666,7 +785,7 @@ esac
 
 #  Collect diagnostic files for obs types (groups) below
 if [ $binary_diag = ".true." ]; then
-   listall="conv hirs2_n14 msu_n14 sndr_g08 sndr_g11 sndr_g11 sndr_g12 sndr_g13 sndr_g08_prep sndr_g11_prep sndr_g12_prep sndr_g13_prep sndrd1_g11 sndrd2_g11 sndrd3_g11 sndrd4_g11 sndrd1_g12 sndrd2_g12 sndrd3_g12 sndrd4_g12 sndrd1_g13 sndrd2_g13 sndrd3_g13 sndrd4_g13 hirs3_n15 hirs3_n16 hirs3_n17 amsua_n15 amsua_n16 amsua_n17 amsub_n15 amsub_n16 amsub_n17 hsb_aqua airs_aqua amsua_aqua imgr_g08 imgr_g11 imgr_g12 pcp_ssmi_dmsp pcp_tmi_trmm sbuv2_n16 sbuv2_n17 sbuv2_n18 omi_aura ssmi_f13 ssmi_f14 ssmi_f15 hirs4_n18 hirs4_metop-a amsua_n18 amsua_metop-a mhs_n18 mhs_metop-a amsre_low_aqua amsre_mid_aqua amsre_hig_aqua ssmis_las_f16 ssmis_uas_f16 ssmis_img_f16 ssmis_env_f16 iasi_metop-a"
+   listall="hirs2_n14 msu_n14 sndr_g08 sndr_g11 sndr_g11 sndr_g12 sndr_g13 sndr_g08_prep sndr_g11_prep sndr_g12_prep sndr_g13_prep sndrd1_g11 sndrd2_g11 sndrd3_g11 sndrd4_g11 sndrd1_g15 sndrd2_g15 sndrd3_g15 sndrd4_g15 sndrd1_g13 sndrd2_g13 sndrd3_g13 sndrd4_g13 hirs3_n15 hirs3_n16 hirs3_n17 amsua_n15 amsua_n16 amsua_n17 amsua_n18 amsua_n19 amsua_metop-a amsua_metop-b amsua_metop-c amsub_n15 amsub_n16 amsub_n17 hsb_aqua airs_aqua amsua_aqua imgr_g08 imgr_g11 imgr_g12 pcp_ssmi_dmsp pcp_tmi_trmm conv sbuv2_n16 sbuv2_n17 sbuv2_n18 omi_aura ssmi_f13 ssmi_f14 ssmi_f15 hirs4_n18 hirs4_metop-a mhs_n18 mhs_n19 mhs_metop-a mhs_metop-b mhs_metop-c amsre_low_aqua amsre_mid_aqua amsre_hig_aqua ssmis_las_f16 ssmis_uas_f16 ssmis_img_f16 ssmis_env_f16 iasi_metop-a iasi_metop-b iasi_metop-c seviri_m08 seviri_m09 seviri_m10 seviri_m11 cris_npp atms_npp ssmis_f17 cris-fsr_npp cris-fsr_n20 atms_n20 abi_g16 abi_g17"
    for type in $listall; do
       count=$(ls pe*.${type}_${loop} | wc -l)
       if [[ $count -gt 0 ]]; then
@@ -704,6 +823,26 @@ done
 if [ ${gsi_type} == "OBSERVER" ]; then
   cp_vrfy *diag* ${observer_nwges_dir}/.
 fi
+
+#
+#-----------------------------------------------------------------------
+#
+# cycling radiance bias corretion files
+#
+#-----------------------------------------------------------------------
+
+if [ ${DO_RADDA} == "TRUE" ]; then
+  if [ ${cycle_type} == "spinup" ]; then
+    spinup_or_prod_rrfs=spinup
+  else
+    spinup_or_prod_rrfs=prod
+  fi
+  tar -cvzf rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat *diag*.${YYYYMMDDHH}
+  cp_vrfy ./satbias_out ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
+  cp_vrfy ./satbias_pc.out ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
+  cp_vrfy ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat  ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
+fi
+
 #
 #-----------------------------------------------------------------------
 #

@@ -1776,10 +1776,14 @@ DO_ENKFUPDATE="FALSE"
 # Flag that determines whether to adjust soil T and Q based on
 # the lowest level T/Q analysis increments.
 #
+# DO_RADDA:
+# Flag that determines whether to assimilate satellite radiance data
+#
 DO_DACYCLE="FALSE"
 DO_SURFACE_CYCLE="FALSE"
 SURFACE_CYCLE_DELAY_HRS="1"
 DO_SOIL_ADJUST="FALSE"
+DO_RADDA="FALSE"
 #
 #-----------------------------------------------------------------------
 #
