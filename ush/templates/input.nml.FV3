@@ -172,6 +172,7 @@
     lheatstrg = .false.
     lndp_type = 0
     lradar = .true.
+    lrefres= .true.
     lsm = 3
     lsoil_lsm = 9
     ltaerosol = .true.

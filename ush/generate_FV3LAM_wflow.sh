@@ -918,6 +918,10 @@ if [[ "${DO_DACYCLE}" = "TRUE" || "${DO_ENKFUPDATE}" = "TRUE" ]]; then
   if [ "${SDF_USES_RUC_LSM}" = "TRUE" ]; then
     lsoil="9"
   fi
+  lupdatebc="false"
+  if [ "${DO_UPDATE_BC}" = "TRUE" ]; then
+    lupdatebc="false" # not ready for setting this to true yet
+  fi
 
 # need to generate a namelist for da cycle
  settings="\
@@ -927,6 +931,7 @@ if [[ "${DO_DACYCLE}" = "TRUE" || "${DO_ENKFUPDATE}" = "TRUE" ]]; then
      'na_init'    : 0,
      'nggps_ic'   : false,
      'mountain'  : true,
+     'regional_bcs_from_gsi': ${lupdatebc},
      'warm_start' : true,
    }
  'gfs_physics_nml': {

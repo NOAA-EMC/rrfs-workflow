@@ -355,6 +355,8 @@ optionList[4]=DO_NONVAR_CLDANAL
 optionList[5]=DO_REFL2TTEN
 optionList[6]=SAVE_CYCLE_LOG
 optionList[7]=DO_SOIL_ADJUST
+optionList[8]=DO_UPDATE_BC
+optionList[9]=DO_RADDA
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));

@@ -850,7 +850,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-if [ ${BKTYPE} -eq 0 ] && [ "${DO_SURFACE_CYCLE}" = "TRUE" ]; then  # warm start
+if [ ${BKTYPE} -eq 0 ] && [ "${DO_SOIL_ADJUST}" = "TRUE" ]; then  # warm start
   cd ${bkpath}
   if [ "${IO_LAYOUT_Y}" == "1" ]; then
     ln_vrfy -snf ${fixgriddir}/fv3_grid_spec                fv3_grid_spec
@@ -887,6 +887,43 @@ Build adjust_soiltq.exe and rerun."
 
   $APRUN ./adjust_soiltq.exe || print_err_msg_exit "\
   Call to executable to run adjust soil returned with nonzero exit code."
+
+fi
+
+#
+#-----------------------------------------------------------------------
+#
+# update boundary condition absed on analysis results.
+# This will generate a new boundary file at 0-hour
+#
+#-----------------------------------------------------------------------
+#
+if [ ${BKTYPE} -eq 0 ] && [ "${DO_UPDATE_BC}" = "TRUE" ]; then  # warm start
+  cd ${bkpath}
+
+cat << EOF > namelist.updatebc
+ &setup
+  fv3_io_layout_y=${IO_LAYOUT_Y},
+  bdy_update_type=1,
+  grid_type_fv3_regional=2,
+ /
+EOF
+
+  update_bc_exec="${EXECDIR}/update_bc.exe"
+  cp gfs_bndy.tile7.000.nc gfs_bndy.tile7.000.nc_before_update
+
+  if [ -f $update_bc_exec ]; then
+    print_info_msg "$VERBOSE" "
+Copying the update bc executable to the run directory..."
+    cp_vrfy ${update_bc_exec} update_bc.exe 
+  else
+    print_err_msg_exit "\
+The update_bc.exe specified in ${EXECDIR} does not exist.
+Build update_bc.exe and rerun."
+  fi
+
+  $APRUN ./update_bc.exe || print_err_msg_exit "\
+  Call to executable to run update bc returned with nonzero exit code."
 
 fi
 
