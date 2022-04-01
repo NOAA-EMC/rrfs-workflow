@@ -1,0 +1,1 @@
+../../.agent/lam/RRFS_CONUS_3km_LAMDA/C3359.vegetation_greenness.tile7.nc
