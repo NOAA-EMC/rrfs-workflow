@@ -1,0 +1,1 @@
+../../.agent/lam/RRFS_CONUS_3km_C3359/C3359.vegetation_type.tile7.halo0.nc

@@ -166,55 +166,11 @@ case ${PREDEF_GRID_NAME} in
 #
 #-----------------------------------------------------------------------
 #
-# The RRFS CONUS domain with ~3km cells.
+# The RRFS CONUS domain with ~3km cells (C3359)
 #
 #-----------------------------------------------------------------------
 #
 "RRFS_CONUS_3km")
-
-  GRID_GEN_METHOD="ESGgrid"
-
-  ESGgrid_LON_CTR="-97.5"
-  ESGgrid_LAT_CTR="38.5"
-
-  ESGgrid_DELX="3000.0"
-  ESGgrid_DELY="3000.0"
-
-  ESGgrid_NX="1748"
-  ESGgrid_NY="1038"
-
-  ESGgrid_WIDE_HALO_WIDTH="6"
-
-  DT_ATMOS="${DT_ATMOS:-40}"
-
-  LAYOUT_X="${LAYOUT_X:-30}"
-  LAYOUT_Y="${LAYOUT_Y:-16}"
-  BLOCKSIZE="${BLOCKSIZE:-32}"
-
-  if [ "$QUILTING" = "TRUE" ]; then
-    WRTCMP_write_groups="1"
-    WRTCMP_write_tasks_per_group=$(( 1*LAYOUT_Y ))
-    WRTCMP_output_grid="lambert_conformal"
-    WRTCMP_cen_lon="${ESGgrid_LON_CTR}"
-    WRTCMP_cen_lat="${ESGgrid_LAT_CTR}"
-    WRTCMP_stdlat1="${ESGgrid_LAT_CTR}"
-    WRTCMP_stdlat2="${ESGgrid_LAT_CTR}"
-    WRTCMP_nx="1746"
-    WRTCMP_ny="1014"
-    WRTCMP_lon_lwr_left="-122.17364391"
-    WRTCMP_lat_lwr_left="21.88588562"
-    WRTCMP_dx="${ESGgrid_DELX}"
-    WRTCMP_dy="${ESGgrid_DELY}"
-  fi
-  ;;
-#
-#-----------------------------------------------------------------------
-#
-# The RRFS CONUS domain with ~3km cells.
-#
-#-----------------------------------------------------------------------
-#
-"RRFS_CONUS_3km_LAMDA")
 
   GRID_GEN_METHOD="ESGgrid"
 
@@ -254,7 +210,7 @@ case ${PREDEF_GRID_NAME} in
 #
 #-----------------------------------------------------------------------
 #
-# The RRFS CONUS domain with ~3km cells.
+# The RRFS CONUS domain with ~3km cells (C3357, HRRRIC)
 #
 #-----------------------------------------------------------------------
 #

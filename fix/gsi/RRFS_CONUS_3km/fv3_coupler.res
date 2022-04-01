@@ -1,1 +1,1 @@
-../../.agent/gsi/RRFS_CONUS_3km/fv3_coupler.res
+../../.agent/gsi/RRFS_CONUS_3km_C3359/fv3_coupler.res

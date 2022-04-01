@@ -8,7 +8,6 @@ valid_vals_PREDEF_GRID_NAME=( \
 "RRFS_CONUS_13km" \
 "RRFS_CONUS_3km" \
 "RRFS_CONUS_3km_HRRRIC" \
-"RRFS_CONUS_3km_LAMDA" \
 "RRFS_SUBCONUS_3km" \
 "RRFS_AK_13km" \
 "RRFS_AK_3km" \

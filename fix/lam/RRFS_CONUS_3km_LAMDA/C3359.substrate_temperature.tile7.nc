@@ -1,1 +1,0 @@
-../../.agent/lam/RRFS_CONUS_3km_LAMDA/C3359.substrate_temperature.tile7.nc
