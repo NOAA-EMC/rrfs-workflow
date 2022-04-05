@@ -6,11 +6,19 @@ EXPT_SUBDIR="RRFS_CONUS_3km"
 
 if [[ -n $RESERVATION ]] ; then
   ACCOUNT=rtrr
-  SERVICE_ACCOUNT=nrtrr
+  SERVICE_ACCOUNT=rtrr
   PARTITION_DEFAULT=kjet
   PARTITION_FCST=kjet
-  PARTITION_GRAPHICS=kjet,xjet,tjet,ujet,vjet
+  PARTITION_GRAPHICS=kjet
   PARTITION_ANALYSIS=kjet
+  PARTITION_WGRIB2=kjet
+  
+  QUEUE_DEFAULT="rth"
+  QUEUE_FCST="rth"
+  QUEUE_ANALYSIS="rth"
+  QUEUE_WGRIB2="rt"
+  QUEUE_GRAPHICS="rt"
+  QUEUE_HPSS="rt"
 fi
 
 if [[ $MACHINE == "hera" ]] ; then
