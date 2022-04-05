@@ -83,6 +83,12 @@ case $MACHINE in
   APRUN="mpirun -l -np 1"
   ;;
 #
+"WCOSS_DELL_P3")
+  ulimit -s unlimited
+  ulimit -a
+  APRUN="mpirun -l -np 1"
+  ;;
+#
 "HERA")
   ulimit -s unlimited
   ulimit -a
@@ -164,6 +170,7 @@ cp_vrfy ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
 # Link to the NLDN data
 #
 #-----------------------------------------------------------------------
+run_lightning=false
 filenum=0
 LIGHTNING_FILE=${LIGHTNING_ROOT}/vaisala/netcdf
 for n in 00 05 ; do
@@ -180,6 +187,7 @@ for n in 55 50 45 40 35 ; do
   if [ -r ${filename} ]; then
   ((filenum += 1 ))
     ln -sf ${filename} ./NLDN_lightning_${filenum}
+    run_lightning=true
   else
    echo " ${filename} does not exist"
   fi
@@ -245,8 +253,11 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-$APRUN ./${exect} < namelist.lightning > stdout 2>&1 || print_err_msg "\
-Call to executable to run lightning (nc) process returned with nonzero exit code."
+
+if [[ "$run_lightning" == true ]]; then
+  $APRUN ./${exect} < namelist.lightning > stdout 2>&1 || print_err_msg "\
+  Call to executable to run lightning (nc) process returned with nonzero exit code."
+fi
 #
 #-----------------------------------------------------------------------
 #

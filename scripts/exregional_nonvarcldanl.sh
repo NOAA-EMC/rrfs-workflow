@@ -89,6 +89,12 @@ case $MACHINE in
   APRUN="mpirun -l -np 1"
   ;;
 #
+"WCOSS_DELL_P3")
+  ulimit -s unlimited
+  ulimit -a
+  APRUN="mpirun -l -np 1"
+  ;;
+#
 "HERA")
   ulimit -s unlimited
   ulimit -a

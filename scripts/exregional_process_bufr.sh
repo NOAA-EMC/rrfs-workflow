@@ -90,6 +90,12 @@ case $MACHINE in
   APRUN="mpirun -l -n 1"
   ;;
 #
+"WCOSS_DELL_P3")
+  ulimit -s unlimited
+  ulimit -a
+  APRUN="mpirun -l -np 1"
+  ;;
+#
 "HERA")
   ulimit -s unlimited
   ulimit -a
@@ -182,6 +188,21 @@ if [[ ${HH} -eq '00' || ${HH} -eq '12' ]]; then
   obs_source=rap_e
 fi
 
+case $MACHINE in
+
+"WCOSS_C" | "WCOSS" | "WCOSS_DELL_P3")
+
+  obsfileprefix=${obs_source}
+  obspath_tmp=${OBSPATH}/${obs_source}.${YYYYMMDD}
+
+  ;;
+"JET" | "HERA")
+
+  obsfileprefix=${YYYYMMDDHH}.${obs_source}
+  obspath_tmp=${OBSPATH}
+
+esac
+
 #
 #-----------------------------------------------------------------------
 #-----------------------------------------------------------------------
@@ -191,7 +212,7 @@ fi
 #-----------------------------------------------------------------------
 
 run_lightning=false
-obs_file=${OBSPATH}/${YYYYMMDDHH}.${obs_source}.t${HH}z.lghtng.tm00.bufr_d
+obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}z.lghtng.tm00.bufr_d
 print_info_msg "$VERBOSE" "obsfile is $obs_file"
 if [ -r "${obs_file}" ]; then
    cp_vrfy "${obs_file}" "lghtngbufr"
@@ -199,6 +220,7 @@ if [ -r "${obs_file}" ]; then
 else
    print_info_msg "$VERBOSE" "Warning: ${obs_file} does not exist!"
 fi
+
 
 #-----------------------------------------------------------------------
 #
@@ -265,7 +287,7 @@ fi
 #
 #-----------------------------------------------------------------------
 
-obs_file=${OBSPATH}/${YYYYMMDDHH}.${obs_source}.t${HH}z.lgycld.tm00.bufr_d
+obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}z.lgycld.tm00.bufr_d
 print_info_msg "$VERBOSE" "obsfile is $obs_file"
 run_cloud=false
 if [ -r "${obs_file}" ]; then
@@ -340,7 +362,7 @@ fi
 #
 #-----------------------------------------------------------------------
 
-obs_file=${OBSPATH}/${YYYYMMDDHH}.${obs_source}.t${HH}z.prepbufr.tm00 
+obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}z.prepbufr.tm00 
 print_info_msg "$VERBOSE" "obsfile is $obs_file"
 run_metar=false
 if [ -r "${obs_file}" ]; then

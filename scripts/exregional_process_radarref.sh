@@ -89,6 +89,12 @@ case $MACHINE in
   APRUN="mpirun -l -np 36"
   ;;
 #
+"WCOSS_DELL_P3")
+  ulimit -s unlimited
+  ulimit -a
+  APRUN="mpirun -l -np 36"
+  ;;
+#
 "HERA")
   ulimit -s unlimited
   ulimit -a
@@ -215,6 +221,18 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
 #
 #-----------------------------------------------------------------------
 
+
+case $MACHINE in
+
+"WCOSS_C" | "WCOSS" | "WCOSS_DELL_P3")
+
+  obs_appendix=grib2.gz
+  ;;
+"JET" | "HERA")
+
+  obs_appendix=grib2
+esac
+
   NSSL=${OBSPATH_NSSLMOSIAC}
 
   mrms="MergedReflectivityQC"
@@ -231,14 +249,14 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
     s=0
     while [[ $s -le 59 ]]; do
       ss=$(printf %2.2i ${s})
-      nsslfile=${NSSL}/*${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.grib2
+      nsslfile=${NSSL}/*${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.${obs_appendix}
       if [ -s $nsslfile ]; then
         echo 'Found '${nsslfile}
-        nsslfile1=*${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.grib2
+        nsslfile1=*${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.${obs_appendix}
         numgrib2=$(ls ${NSSL}/${nsslfile1} | wc -l)
         echo 'Number of GRIB-2 files: '${numgrib2}
         if [ ${numgrib2} -ge 10 ] && [ ! -e filelist_mrms ]; then
-          ln -sf ${NSSL}/${nsslfile1} . 
+          cp ${NSSL}/${nsslfile1} . 
           ls ${nsslfile1} > filelist_mrms 
           echo 'Creating links for ${YYYY}${MM}${DD}-${HH}${min}'
         fi
@@ -253,6 +271,13 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   fi
 
   if [ -s filelist_mrms ]; then
+
+     if [ ${obs_appendix} == "grib2.gz" ]; then
+        gzip -d *.gz
+        mv filelist_mrms filelist_mrms_org
+        ls MergedReflectivityQC_*_${YYYY}${MM}${DD}-${HH}????.grib2 > filelist_mrms
+     fi
+
      numgrib2=$(more filelist_mrms | wc -l)
      print_info_msg "$VERBOSE" "Using radar data from: `head -1 filelist_mrms | cut -c10-15`"
      print_info_msg "$VERBOSE" "NSSL grib2 file levels = $numgrib2"
@@ -260,6 +285,7 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
      echo "WARNING: Not enough radar reflectivity files available for loop ${bigmin}."
      continue
   fi
+
 
 #-----------------------------------------------------------------------
 #
@@ -326,7 +352,7 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-  $APRUN ./${exect} > stdout 2>&1 || print_err_msg "\
+  $APRUN ./${exect} > stdout 2>&1 || print_info_msg "\
   Call to executable to run radar refl process returned with nonzero exit code."
 
 done # done with the bigmin for-loop

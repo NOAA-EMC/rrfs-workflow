@@ -363,9 +363,13 @@ if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ ${cycle_type} == "prod" ] ; then
       cp ${IMSSNOW_ROOT}/latest.SNOW_IMS .
    elif [ -r "${IMSSNOW_ROOT}/${YYJJJ00000000}" ]; then
       cp ${IMSSNOW_ROOT}/${YYJJJ00000000} latest.SNOW_IMS
+   elif [ -r "${IMSSNOW_ROOT}/rap.${YYYYMMDD}/rap.t${HH}z.imssnow.grib2" ]; then
+      cp ${IMSSNOW_ROOT}/rap.${YYYYMMDD}/rap.t${HH}z.imssnow.grib2  latest.SNOW_IMS
+   elif [ -r "${IMSSNOW_ROOT}/rap.${YYYYMMDD}/rap_e.t${HH}z.imssnow.grib2" ]; then
+      cp ${IMSSNOW_ROOT}/rap.${YYYYMMDD}/rap_e.t${HH}z.imssnow.grib2  latest.SNOW_IMS
    else
      echo "${IMSSNOW_ROOT} data does not exist!!"
-     echo "ERROR: No SST update at ${time_str}!!!!"
+     echo "ERROR: No snow update at ${time_str}!!!!"
    fi
    if [ -r "latest.SNOW_IMS" ]; then
      ln_vrfy -sf ./latest.SNOW_IMS                imssnow2
