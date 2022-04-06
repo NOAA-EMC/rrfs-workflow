@@ -92,7 +92,7 @@ case $MACHINE in
 "WCOSS_DELL_P3")
   ulimit -s unlimited
   ulimit -a
-  APRUN="mpirun -l -np 1"
+  APRUN="mpirun -l -np ${IO_LAYOUT_Y}"
   ;;
 #
 "HERA")

@@ -827,15 +827,13 @@ Please ensure that you've built this executable."
     ${APRUN} ${fvcom_exec_fn} ${surface_file} fvcom.nc ${FVCOM_WCSTART} ${fvcom_time} ${IO_LAYOUT_Y} || \
     print_err_msg_exit "\
 Call to executable (fvcom_exe) to modify sfc fields for FV3-LAM failed:
-  fvcom_exe = \"${fvcom_exe}\"
+  fvcom_exe = \"${fvcom_exec_fn}\"
 The following variables were being used:
   FVCOM_DIR = \"${FVCOM_DIR}\"
   FVCOM_FILE = \"${FVCOM_FILE}\"
   fvcom_time = \"${fvcom_time}\"
   FVCOM_WCSTART = \"${FVCOM_WCSTART}\"
-  ics_dir = \"${ics_dir}\"
-  fvcom_exe_dir = \"${fvcom_exe_dir}\"
-  fvcom_exe = \"${fvcom_exec_fn}\""
+  "
   fi
 fi
 

@@ -1399,6 +1399,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>GSI_TYPE</name><value><cyclestr>OBSERVER</cyclestr></value></envar>
     <envar><name>MEM_TYPE</name><value><cyclestr>MEAN</cyclestr></value></envar>
+    <envar><name>SATBIAS_DIR</name><value><cyclestr>&NWGES_BASEDIR;/satbias</cyclestr></value></envar>
 
     <dependency>
        <and>
@@ -1448,6 +1449,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GSI_TYPE</name><value><cyclestr>OBSERVER</cyclestr></value></envar>
     <envar><name>MEM_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+    <envar><name>SATBIAS_DIR</name><value><cyclestr>&NWGES_BASEDIR;/satbias</cyclestr></value></envar>
 
     <dependency>
        <and>
