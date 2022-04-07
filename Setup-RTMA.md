@@ -29,7 +29,7 @@ cd RTMA
 cd RTMA
 source env/wflow_jet.env (use other wflow files for different platforms)
 cd regional_workflow/ush
-cp config.sh.RTMA_NA_3km config.sh
+cp config.sh.RTMA_NA_3km(or config.sh.RTMA_CONUS_3km)  config.sh
 vi config.sh (modify EXPT_BASEDIR, STMP, PTMP and other variables accordingly)
 ./generate_FV3LAM_wflow.sh
 ```
