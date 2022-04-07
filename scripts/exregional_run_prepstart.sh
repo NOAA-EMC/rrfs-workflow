@@ -634,13 +634,16 @@ fi
 #-----------------------------------------------------------------------
 
 if [[ "${NET}" = "RTMA"* ]]; then
-    #find a bdry file last modified before current cycle time and size > 100M 
-    #to make sure it exists and was written out completely. 
-    TIME1HAGO=$(date -d "${START_DATE} 58 minute" +"%Y-%m-%d %H:%M:%S")
-    bdryfile1=${lbcs_root}/$(cd $lbcs_root;find . -name "gfs_bndy.tile7.001.nc" ! -newermt "$TIME1HAGO" -size +100M | xargs ls -1rt |tail -n 1)
-    bdryfile0=$(echo $bdryfile1 | sed -e "s/gfs_bndy.tile7.001.nc/gfs_bndy.tile7.000.nc/")
-    ln_vrfy -snf ${bdryfile0} .
-    ln_vrfy -snf ${bdryfile1} .
+    #find a bdry file, make sure it exists and was written out completely.
+    for i in $(seq 0 24); do #track back up to 24 cycles to find bdry files
+      lbcDIR="${lbcs_root}/$(date -d "${START_DATE} ${i} hours ago" +"%Y%m%d%H")/lbcs"
+      if [[  -f ${lbcDIR}/gfs_bndy.tile7.001.nc ]]; then
+        age=$(( $(date +%s) - $(date -r ${lbcDIR}/gfs_bndy.tile7.001.nc +%s) ))
+        [[ age -gt 300 ]] && break
+      fi
+    done
+    ln_vrfy -snf ${lbcDIR}/gfs_bndy.tile7.000.nc .
+    ln_vrfy -snf ${lbcDIR}/gfs_bndy.tile7.001.nc .
 
 else
   num_fhrs=( "${#FCST_LEN_HRS_CYCLES[@]}" )

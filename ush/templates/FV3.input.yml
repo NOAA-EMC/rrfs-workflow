@@ -283,6 +283,86 @@ FV3_GFS_2017_gfdlmp_regional:
   gfdl_cloud_microphysics_nml:
     <<: *gfs_gfdl_cloud_mp
 
+FV3_GFS_v15_thompson_mynn_lam3km:
+  atmos_model_nml:
+    fdiag: !!python/none
+  fv_core_nml:
+    full_zs_filter: !!python/none
+    dz_min: 2.0
+    psm_bc: 1
+    external_ic: false
+    nord_tr: 2
+    nrows_blend: 10
+    regional_bcs_from_gsi: false
+    write_restart_with_bcs: false
+    k_split: 2
+    make_nh: false
+    mountain: true
+    na_init: 0
+    nggps_ic: false
+    npz_type: ''
+    stretch_fac: 0.999
+    vtdm4: 0.02
+    warm_start: true
+    agrid_vel_rst: false
+  gfs_physics_nml:
+    <<: *gsd_sar_phys
+    cdmbgwd: [0.88, 0.04]
+    cplflx: false
+    do_mynnsfclay: true
+    lgfdlmprad: false
+    do_gsl_drag_ls_bl: false
+    do_gsl_drag_ss: true
+    do_gsl_drag_tofd: true
+    do_tofd: false
+    do_ugwp: false
+    do_ugwp_v0: false
+    do_ugwp_v0_nst_only: false
+    do_ugwp_v0_orog_only: false
+    ldiag_ugwp: false
+    do_sfcperts: !!python/none
+    effr_in: true
+    gwd_opt: 2
+    iaer: 5111
+    icliq_sw: 2
+    imfdeepcnv: 2
+    imfshalcnv: 2
+    iovr: 3
+    fhlwr: 900.0
+    fhswr: 900.0
+    xkzminv: 0.3
+    xkzm_m: 1.0
+    xkzm_h: 1.0
+    avg_max_length: 3600
+    lsm: 1
+    lsoil: !!python/none
+    lsoil_lsm: !!python/none
+    ltaerosol: false
+    nstf_name: [2, 0, 0, 0, 0]
+  nam_sfcperts:
+    iseed_lndp: !!python/none
+    lndp_lscale: !!python/none
+    lndp_prt_list: !!python/none
+    lndp_tau: !!python/none
+    lndp_type: !!python/none
+    lndp_var_list: !!python/none
+  nam_stochy:
+    shum: !!python/none
+    shum_lscale: !!python/none
+    shum_tau: !!python/none
+    shumint: !!python/none
+    skeb: !!python/none
+    skeb_lscale: !!python/none
+    skeb_tau: !!python/none
+    skeb_vdof: !!python/none
+    skebint: !!python/none
+    sppt: !!python/none
+    sppt_lscale: !!python/none
+    sppt_tau: !!python/none
+    spptint: !!python/none
+    use_zmtnblck: !!python/none
+  namsfc:
+    ldebug: false
 FV3_GFS_v15p2:
   atmos_model_nml:
     ccpp_suite: FV3_GFS_v15

@@ -4,7 +4,7 @@ MACHINE=${PLATFORM}
 ACCOUNT="nrtrr"
 RESERVATION="rrfsdet"
 EXPT_BASEDIR="/home/rtrr/RTMA"
-EXPT_SUBDIR="RTMA_NA_3km_dev1"
+EXPT_SUBDIR="RTMA_CONUS"
 
 if [[ -n $RESERVATION ]] ; then
   ACCOUNT=rtrr
@@ -24,42 +24,38 @@ if [[ -n $RESERVATION ]] ; then
 fi
 
 OBSPATH_NSSLMOSIAC=/public/data/radar/nssl/mrms/conus
-FFG_DIR=/public/data/grids/ncep/ffg/grib2
-RADARREFL_TIMELEVEL=(0)
-FH_DFI_RADAR=""
-
 if [[ $MACHINE == "hera" ]] ; then
   ACCOUNT="wrfruc"
   PARTITION_DEFAULT=""
   PARTITION_FCST=""
   QUEUE_ANALYSIS="batch"
-
-# for using RAP as boundary and initial
-#  EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/public/data/grids/rap/full/wrfnat/grib2
-#  EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/public/data/grids/rap/full/wrfnat/grib2
-# for using GFS as boundary and initial
-  EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/public/data/grids/gfs/0p25deg/grib2
-  EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/public/data/grids/gfs/0p25deg/grib2
-# observations
-  OBSPATH=/scratch2/BMC/public/data/grids/rap/obs
-  OBSPATH_NSSLMOSIAC=/scratch2/BMC/public/data/radar/nssl/mrms/conus
-  FFG_DIR=/public/data/grids/ncep/ffg/grib2
-  LIGHTNING_ROOT=/scratch2/BMC/public/data/lightning
-  ENKF_FCST=/scratch1/NCEPDEV/rstprod/com/gfs/prod
+  QUEUE_WGRIB2="batch"
+  QUEUE_GRAPHICS="batch"
 fi
+
+if [[ $MACHINE == "orion" ]] ; then
+  ACCOUNT=ztrr
+  QUEUE_ANALYSIS="batch"
+fi
+
 
 VERBOSE="TRUE"
 
 RUN_ENVIR="nco"
-PREDEF_GRID_NAME=RRFS_NA_3km
+
+PREDEF_GRID_NAME=RRFS_CONUS_3km
+ADDNL_OUTPUT_GRIDS=( "hrrr" )
+
+TILE_LABELS="CONUS REGIONS"
+TILE_SETS="full NE,NC,NW,SE,SC,SW"
 
 DO_DACYCLE="TRUE"
 #DO_SURFACE_CYCLE="FALSE"
 #DO_SPINUP="FALSE"
 #DO_RETRO="TRUE"
-#DO_NONVAR_CLDANAL="TRUE"
+DO_NONVAR_CLDANAL="TRUE"
 #DO_REFL2TTEN="FALSE"
-#RADARREFL_TIMELEVEL=(0)
+RADARREFL_TIMELEVEL=(0)
 #FH_DFI_RADAR="0.0,0.25,0.5"
 #DO_SOIL_ADJUST="TRUE"
 #DO_RADDA="FALSE"
@@ -117,8 +113,8 @@ EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS="0"
 BOUNDARY_LEN_HRS="1"
 BOUNDARY_LONG_LEN_HRS="1"
 
-DATE_FIRST_CYCL="20210826"
-DATE_LAST_CYCL="20220826"
+DATE_FIRST_CYCL="20220406"
+DATE_LAST_CYCL="20220626"
 CYCL_HRS=( "00" "12" )
 CYCL_HRS_SPINSTART=("03" "15")
 CYCL_HRS_PRODSTART=("99") # RTMA always warm-starts
@@ -149,24 +145,23 @@ NCORES_RUN_ANAL=240
 WTIME_RUN_ANAL="01:00:00"
 HYBENSMEM_NMIN=66
 HALO_BLEND=20
-
-NNODES_MAKE_ICS="10"
-NNODES_MAKE_LBCS="5"
-PPN_MAKE_ICS="8"
-PPN_MAKE_LBCS="10"
-WTIME_MAKE_LBCS="01:30:00"
+IO_LAYOUT_Y=4
 PPN_RUN_REF2TTEN=1
-
-WTIME_RUN_FCST="01:00:00"
-LAYOUT_X=35
-LAYOUT_Y=20
-IO_LAYOUT_Y=10
 PPN_RUN_NONVARCLDANL=${IO_LAYOUT_Y}
-NATIVE_RUN_FCST="--cpus-per-task 4 --exclusive"
-NATIVE_RUN_ANAL="--cpus-per-task 4 --exclusive"
 
-NNODES_RUN_POST="6"
-WTIME_RUN_POST="00:35:00"
+#PRINT_DIFF_PGR="TRUE"
+
+if [[ -n $RESERVATION ]] ; then
+  NNODES_MAKE_ICS="3"
+  PPN_MAKE_ICS="20"
+  NNODES_MAKE_LBCS="3"
+  PPN_MAKE_LBCS="20"
+  NNODES_RUN_POST="1"
+  PPN_RUN_POST="40"
+fi
+
+WTIME_RUN_FCST="00:20:00"
+WTIME_MAKE_LBCS="02:00:00"
 
 EXTRN_MDL_NAME_ICS="FV3GFS"
 EXTRN_MDL_NAME_LBCS="FV3GFS"
@@ -176,13 +171,13 @@ FV3GFS_FILE_FMT_LBCS="grib2"
 
 envir="para"
 
-NET="RTMA_NA_3km" ##must start with "RTMA". ${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2
-TAG="RTMA_NA_3km_dev1" ## used by job names
+NET="RTMA_CONUS" ##must start with "RTMA". ${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2
+TAG="RTMA_CONUS" ## used by job names
 IS_RTMA="TRUE"
 NCORES_PER_NODE=40 #kjet
-FG_ROOTDIR="/lfs4/BMC/nrtrr/NCO_dirs/nwges/para/RRFS_NA_3km" #only needed by RTMA
+FG_ROOTDIR="/lfs4/BMC/nrtrr/NCO_dirs/nwges/para/RRFS_CONUS" #only needed by RTMA
 DT_ATMOS=1
-MAXTRIES_RUN_FCST="2"
+MAXTRIES_RUN_FCST="3"
 PYTHON_GRAPHICS_YML_FN="rtma.yml"
 
 USE_CUSTOM_POST_CONFIG_FILE="TRUE"
@@ -190,22 +185,12 @@ TESTBED_FIELDS_FN="testbed_fields_rtma.txt"
 CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-fv3lam_rrfs.txt"
 CUSTOM_POST_PARAMS_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/params_grib2_tbl_new"
 POST_FULL_MODEL_NAME="FV3RRTMA"
-ARCHIVEDIR="/5year/BMC/wrfruc/rtma_na_3km_dev1"
+ARCHIVEDIR="/5year/BMC/wrfruc/rtma_dev1"
 NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
 NCL_HOME="/home/rtrr/RTMA/graphics"
 NCL_REGION="conus"
-MODEL="RTMA_NA_3km"
-ADDNL_OUTPUT_GRIDS=( "hrrr" "rrfsak" )
+MODEL="RTMA_CONUS" #used by NCL
 
-TILE_LABELS="NA"
-TILE_SETS="full"
-
-CLEAN_OLDPROD_HRS="72"
-CLEAN_OLDRUN_HRS="24"
-CLEAN_OLDLOG_HRS="72"
-CLEAN_OLDFCST_HRS="12"
-CLEAN_OLDSTMPPOST_HRS="24"
-CLEAN_NWGES_HRS="72"
 #
 # In NCO mode, the following don't need to be explicitly set to "FALSE" 
 # in this configuration file because the experiment generation script
@@ -215,7 +200,7 @@ CLEAN_NWGES_HRS="72"
 #RUN_TASK_MAKE_OROG="FALSE"
 #RUN_TASK_MAKE_SFC_CLIMO="FALSE"
 
-RUN="RTMA_NA_3km_dev1"
+RUN="RTMA_CONUS"
 COMINgfs=""
 
 STMP="/lfs4/BMC/nrtrr/NCO_dirs/stmp"  # Path to directory STMP that mostly contains input files.

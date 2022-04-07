@@ -9,7 +9,7 @@ elif [[ -d /cm ]] ; then
     PLATFORM=wcoss_c
     FIX_RRFS_LOCATION="/to/do"
 elif [[ -d /ioddev_dell ]]; then
-    PLATFORM=wcoss_d
+    PLATFORM=wcoss_dell_p3
     FIX_RRFS_LOCATION="/gpfs/hps3/emc/meso/save/Ming.Hu/FIX_RRFS"
 elif [[ -d /scratch1 ]] ; then
     PLATFORM=hera
@@ -22,7 +22,7 @@ elif [[ -d /jetmon ]] ; then
     FIX_RRFS_LOCATION="/lfs4/BMC/nrtrr/FIX_RRFS"
 elif [[ -d /glade ]] ; then
     PLATFORM=cheyenne
-    FIX_RRFS_LOCATION="/to/do"
+    FIX_RRFS_LOCATION="/glade/p/ral/jntp/FIX_RRFS"
 elif [[ -d /sw/gaea ]] ; then
     PLATFORM=gaea
     FIX_RRFS_LOCATION="/to/do"

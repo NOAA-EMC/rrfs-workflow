@@ -410,6 +410,8 @@ case $MACHINE in
     QUEUE_DEFAULT=${QUEUE_DEFAULT:-"dev"}
     QUEUE_HPSS=${QUEUE_HPSS:-"dev_transfer"}
     QUEUE_FCST=${QUEUE_FCST:-"dev"}
+    QUEUE_ANALYSIS=${QUEUE_ANALYSIS:-"dev"}
+    QUEUE_WGRIB2=${QUEUE_WGRIB2:-"dev"}
     ;;
 
   "HERA")
@@ -1075,7 +1077,8 @@ fi
 #
 GWD_HRRRsuite_DIR=""
 if [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ] || \
-   [ "${CCPP_PHYS_SUITE}" = "FV3_RAP" ]; then
+   [ "${CCPP_PHYS_SUITE}" = "FV3_RAP" ]  || \
+   [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_v15_thompson_mynn_lam3km" ]; then
 #
 # If in NCO mode, make sure that GWD_HRRRsuite_BASEDIR is set equal to  
 # FIXLAM_NCO_BASEDIR
