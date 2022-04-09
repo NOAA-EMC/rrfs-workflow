@@ -156,6 +156,7 @@ YYYYMMDDm2=$(date +%Y%m%d -d "${START_DATE} 2 days ago")
 # Compute date & time components for the SST analysis time relative to current analysis time
 YYJJJ00000000=`date +"%y%j00000000" -d "${START_DATE} 1 day ago"`
 YYJJJ1200=`date +"%y%j1200" -d "${START_DATE} 1 day ago"`
+YYJJJ2200000000=`date +"%y%j2200000000" -d "${START_DATE} 1 day ago"`
 #
 #-----------------------------------------------------------------------
 #
@@ -361,15 +362,15 @@ if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ ${cycle_type} == "prod" ] ; then
    echo "Update snow cover based on imssnow  at ${SNOWICE_update_hour}z"
    if [ -r "${IMSSNOW_ROOT}/latest.SNOW_IMS" ]; then
       cp ${IMSSNOW_ROOT}/latest.SNOW_IMS .
-   elif [ -r "${IMSSNOW_ROOT}/${YYJJJ00000000}" ]; then
-      cp ${IMSSNOW_ROOT}/${YYJJJ00000000} latest.SNOW_IMS
+   elif [ -r "${IMSSNOW_ROOT}/${YYJJJ2200000000}" ]; then
+      cp ${IMSSNOW_ROOT}/${YYJJJ2200000000} latest.SNOW_IMS
    elif [ -r "${IMSSNOW_ROOT}/rap.${YYYYMMDD}/rap.t${HH}z.imssnow.grib2" ]; then
       cp ${IMSSNOW_ROOT}/rap.${YYYYMMDD}/rap.t${HH}z.imssnow.grib2  latest.SNOW_IMS
    elif [ -r "${IMSSNOW_ROOT}/rap.${YYYYMMDD}/rap_e.t${HH}z.imssnow.grib2" ]; then
-      cp ${IMSSNOW_ROOT}/rap.${YYYYMMDD}/rap_e.t${HH}z.imssnow.grib2  latest.SNOW_IMS
+      cp ${IMSSNOW_ROOT}/rap_e.${YYYYMMDD}/rap_e.t${HH}z.imssnow.grib2  latest.SNOW_IMS
    else
      echo "${IMSSNOW_ROOT} data does not exist!!"
-     echo "ERROR: No snow update at ${time_str}!!!!"
+     echo "ERROR: No snow update at ${HH}!!!!"
    fi
    if [ -r "latest.SNOW_IMS" ]; then
      ln_vrfy -sf ./latest.SNOW_IMS                imssnow2
@@ -397,7 +398,7 @@ Please ensure that you've built this executable."
      fi
      cp_vrfy ${snowice_exec_fp} .
 
-     ${APRUN} ${snowice_exec_fn} ${IO_LAYOUT_Y} || \
+     ${APRUN} ./${snowice_exec_fn} ${IO_LAYOUT_Y} || \
      print_err_msg_exit "\
  Call to executable (fvcom_exe) to modify sfc fields for FV3-LAM failed:
    snowice_exe = \"${snowice_exec_fp}\"
@@ -431,7 +432,7 @@ if [ ${HH} -eq ${SST_update_hour} ] && [ ${cycle_type} == "prod" ] ; then
       cp ${SST_ROOT}/sst.$YYYYMMDDm1/rtgssthr_grb_0.083.grib2 latest.SST
    else
      echo "${SST_ROOT} data does not exist!!"
-     echo "ERROR: No SST update at ${time_str}!!!!"
+     echo "ERROR: No SST update at ${HH}!!!!"
    fi
    if [ -r "latest.SST" ]; then
      cp_vrfy ${FIXgsm}/RTG_SST_landmask.dat                RTG_SST_landmask.dat
@@ -827,7 +828,7 @@ Please ensure that you've built this executable."
     fi
 
 #
-    ${APRUN} ${fvcom_exec_fn} ${surface_file} fvcom.nc ${FVCOM_WCSTART} ${fvcom_time} ${IO_LAYOUT_Y} || \
+    ${APRUN} ./${fvcom_exec_fn} ${surface_file} fvcom.nc ${FVCOM_WCSTART} ${fvcom_time} ${IO_LAYOUT_Y} || \
     print_err_msg_exit "\
 Call to executable (fvcom_exe) to modify sfc fields for FV3-LAM failed:
   fvcom_exe = \"${fvcom_exec_fn}\"
