@@ -202,6 +202,7 @@ MODEL="RTMA_CONUS" #used by NCL
 
 RUN="RTMA_CONUS"
 COMINgfs=""
+OBSPATH="/lfs4/BMC/wrfruc/gge/rtma/wcoss_obs"
 
 STMP="/lfs4/BMC/nrtrr/NCO_dirs/stmp"  # Path to directory STMP that mostly contains input files.
 PTMP="/lfs4/BMC/nrtrr/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains input files.

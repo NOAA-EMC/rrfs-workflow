@@ -183,25 +183,34 @@ cp_vrfy $BUFR_TABLE prepobs_prep.bufrtable
 #   set observation soruce 
 #
 #-----------------------------------------------------------------------
-obs_source=rap
-if [[ ${HH} -eq '00' || ${HH} -eq '12' ]]; then
-  obs_source=rap_e
-fi
-
-case $MACHINE in
-
-"WCOSS_C" | "WCOSS" | "WCOSS_DELL_P3")
-
+if [[ "${NET}" = "RTMA"* ]]; then
+  SUBH=$(date +%M -d "${START_DATE}")
+  obs_source="rtma_ru"
   obsfileprefix=${obs_source}
   obspath_tmp=${OBSPATH}/${obs_source}.${YYYYMMDD}
 
-  ;;
-"JET" | "HERA")
+else
+  SUBH=""
+  obs_source=rap
+  if [[ ${HH} -eq '00' || ${HH} -eq '12' ]]; then
+    obs_source=rap_e
+  fi
 
-  obsfileprefix=${YYYYMMDDHH}.${obs_source}
-  obspath_tmp=${OBSPATH}
+  case $MACHINE in
 
-esac
+  "WCOSS_C" | "WCOSS" | "WCOSS_DELL_P3")
+
+    obsfileprefix=${obs_source}
+    obspath_tmp=${OBSPATH}/${obs_source}.${YYYYMMDD}
+
+    ;;
+  "JET" | "HERA")
+
+    obsfileprefix=${YYYYMMDDHH}.${obs_source}
+    obspath_tmp=${OBSPATH}
+
+  esac
+fi
 
 #
 #-----------------------------------------------------------------------
@@ -212,7 +221,7 @@ esac
 #-----------------------------------------------------------------------
 
 run_lightning=false
-obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}z.lghtng.tm00.bufr_d
+obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.lghtng.tm00.bufr_d
 print_info_msg "$VERBOSE" "obsfile is $obs_file"
 if [ -r "${obs_file}" ]; then
    cp_vrfy "${obs_file}" "lghtngbufr"
@@ -287,7 +296,7 @@ fi
 #
 #-----------------------------------------------------------------------
 
-obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}z.lgycld.tm00.bufr_d
+obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.lgycld.tm00.bufr_d
 print_info_msg "$VERBOSE" "obsfile is $obs_file"
 run_cloud=false
 if [ -r "${obs_file}" ]; then
@@ -362,7 +371,7 @@ fi
 #
 #-----------------------------------------------------------------------
 
-obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}z.prepbufr.tm00 
+obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.prepbufr.tm00 
 print_info_msg "$VERBOSE" "obsfile is $obs_file"
 run_metar=false
 if [ -r "${obs_file}" ]; then

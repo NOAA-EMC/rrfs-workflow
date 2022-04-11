@@ -409,6 +409,7 @@ settings="\
   'do_nonvar_cldanal': ${DO_NONVAR_CLDANAL}
   'do_refl2tten': ${DO_REFL2TTEN}
   'do_spinup': ${DO_SPINUP}
+  'do_nldn_lght': ${DO_NLDN_LGHT}
 #
 # graphics related parameters
 #

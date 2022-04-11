@@ -1913,11 +1913,14 @@ GWD_HRRRsuite_BASEDIR=""
 #     Flag turn on the non-var cloud analysis.
 # DO_REFL2TTEN: 
 #     Flag turn on the radar reflectivity to temperature tendenecy.
+# DO_NLDN_LGHT
+#     Flag turn on processing NLDN NetCDF lightning data
 #
 #-----------------------------------------------------------------------
 #
 DO_NONVAR_CLDANAL="FALSE"
 DO_REFL2TTEN="FALSE"
+DO_NLDN_LGHT="FALSE"
 #
 #-----------------------------------------------------------------------
 #

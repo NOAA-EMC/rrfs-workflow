@@ -365,42 +365,51 @@ sed -i "s/hh/${HH}/"     coupler.res
 # copy observation files to working directory 
 #
 #-----------------------------------------------------------------------
-obs_source=rap
-if [[ ${HH} -eq '00' || ${HH} -eq '12' ]]; then
-  obs_source=rap_e
+if [[ "${NET}" = "RTMA"* ]]; then
+  SUBH=$(date +%M -d "${START_DATE}")
+  obs_source="rtma_ru"
+  obsfileprefix=${obs_source}
+  obspath_tmp=${OBSPATH}/${obs_source}.${YYYYMMDD}
+
+else
+  SUBH=""
+  obs_source=rap
+  if [[ ${HH} -eq '00' || ${HH} -eq '12' ]]; then
+    obs_source=rap_e
+  fi
+
+  case $MACHINE in
+
+  "WCOSS_C" | "WCOSS" | "WCOSS_DELL_P3")
+     obsfileprefix=${obs_source}
+     obspath_tmp=${OBSPATH}/${obs_source}.${YYYYMMDD}
+    ;;
+  "JET" | "HERA")
+     obsfileprefix=${YYYYMMDDHH}.${obs_source}
+     obspath_tmp=${OBSPATH}
+    ;;
+  "ORION" )
+     obs_source=rap
+     #obsfileprefix=${YYYYMMDDHH}.${obs_source}               # rap observation from JET.
+     obsfileprefix=${obs_source}.${YYYYMMDD}/${obs_source}    # observation from operation.
+     obspath_tmp=${OBSPATH}
+    ;;
+  *)
+     obsfileprefix=${obs_source}
+     obspath_tmp=${OBSPATH}
+  esac
 fi
 
-case $MACHINE in
 
-"WCOSS_C" | "WCOSS" | "WCOSS_DELL_P3")
-   obsfileprefix=${obs_source}
-   obspath_tmp=${OBSPATH}/${obs_source}.${YYYYMMDD}
-  ;;
-"JET" | "HERA")
-   obsfileprefix=${YYYYMMDDHH}.${obs_source}
-   obspath_tmp=${OBSPATH}
-  ;;
-"ORION" )
-   obs_source=rap
-   #obsfileprefix=${YYYYMMDDHH}.${obs_source}               # rap observation from JET.
-   obsfileprefix=${obs_source}.${YYYYMMDD}/${obs_source}    # observation from operation.
-   obspath_tmp=${OBSPATH}
-  ;;
-*)
-   obsfileprefix=${obs_source}
-   obspath_tmp=${OBSPATH}
-esac
-
-
-obs_files_source[0]=${obspath_tmp}/${obsfileprefix}.t${HH}z.prepbufr.tm00
+obs_files_source[0]=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.prepbufr.tm00
 obs_files_target[0]=prepbufr
 
 obs_number=${#obs_files_source[@]}
-obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}z.satwnd.tm00.bufr_d
+obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.satwnd.tm00.bufr_d
 obs_files_target[${obs_number}]=satwndbufr
 
 obs_number=${#obs_files_source[@]}
-obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}z.nexrad.tm00.bufr_d
+obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.nexrad.tm00.bufr_d
 obs_files_target[${obs_number}]=l2rwbufr
 
 #

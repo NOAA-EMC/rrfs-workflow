@@ -833,6 +833,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
+{%- if do_nldn_lght %}
   <task name="&PROCESS_LIGHTNING_TN;_#type#" cycledefs="#type#cyc"  maxtries="{{ maxtries_process_lightning }}">
 
     &RSRV_DEFAULT;
@@ -859,6 +860,7 @@ MODULES_RUN_TASK_FP script.
     </dependency>
 
   </task>
+{%- endif %}
 
 <!--
 ************************************************************************
@@ -967,7 +969,7 @@ MODULES_RUN_TASK_FP script.
       <and>
         <or>
           <taskdep task="&PROCESS_RADAR_REF_TN;_#type#"/>
-          <taskdep task="&PROCESS_LIGHTNING_TN;_#type#"/>
+          <taskdep task="&PROCESS_BUFR_TN;_#type#"/>
         </or>
         <taskdep task="&ANAL_GSI_TN;_#type#"/>
       </and>
