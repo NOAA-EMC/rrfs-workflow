@@ -1,7 +1,7 @@
 2
 220
 254
-BGDAWP
+PRSLEV
 32769
 ncep_nco
 v2003
@@ -11,8 +11,8 @@ oper
 fcst
 fcst
 hour
-noaa_fsl_boulder
-hrrr
+nws_ncep
+rrfs
 complex_packing_spatial_diff
 2nd_ord_sptdiff
 fltng_pnt
@@ -9415,7 +9415,7 @@ surface
 ?
 ?
 ?
-BGRD3D
+NATLEV
 32769
 ncep_nco
 v2003
@@ -9425,8 +9425,8 @@ oper
 fcst
 fcst
 hour
-noaa_fsl_boulder
-hrrr
+nws_ncep
+rrfs
 complex_packing_spatial_diff
 2nd_ord_sptdiff
 fltng_pnt

@@ -383,10 +383,9 @@ fi
 bgdawp=${postprd_dir}/${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2
 bgrd3d=${postprd_dir}/${NET}.t${cyc}z.bgrd3df${fhr}.${tmmark}.grib2
 bgsfc=${postprd_dir}/${NET}.t${cyc}z.bgsfcf${fhr}.${tmmark}.grib2
-mv_vrfy BGDAWP.GrbF${post_fhr} ${bgdawp}
-mv_vrfy BGRD3D.GrbF${post_fhr} ${bgrd3d}
-# small subset of surface fields for testbed and internal use
-#wgrib2 -match "APCP|parmcat=16 parm=196|PRATE" ${bgrd3d} -grib ${bgsfc}
+
+wgrib2 PRSLEV.GrbF${post_fhr} -set center 7 -grib ${bgdawp}
+wgrib2 NATLEV.GrbF${post_fhr} -set center 7 -grib ${bgrd3d}
 
 #
 #-----------------------------------------------------------------------

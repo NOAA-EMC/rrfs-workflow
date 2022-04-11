@@ -97,6 +97,20 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+# create COMOUT directory
+#
+#-----------------------------------------------------------------------
+
+if [ "${RUN_ENVIR}" = "nco" ]; then
+  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
+  if [ ${CYCLE_TYPE} == "spinup" ]; then
+    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
+  fi
+  mkdir_vrfy -p "${COMOUT}"
+fi
+#
+#-----------------------------------------------------------------------
+#
 # Call the ex-script for this J-job and pass to it the necessary varia-
 # bles.
 #
@@ -110,6 +124,7 @@ $SCRIPTSDIR/exregional_run_analysis.sh \
              analworkdir="${analworkdir}" \
              observer_nwges_dir="${observer_nwges_dir}" \
              slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}" \
+             comout="${COMOUT}" \
              satbias_dir="${SATBIAS_DIR}" || \
 print_err_msg_exit "\
 Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
