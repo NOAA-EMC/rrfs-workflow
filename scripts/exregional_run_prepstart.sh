@@ -450,14 +450,14 @@ cat << EOF > sst.namelist
 EOF
      if [ "${IO_LAYOUT_Y}" == "1" ]; then
        ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
-       ${EXECDIR}/process_updatesst > stdout_sstupdate 2>&1
+       ${EXECDIR}/process_updatesst.exe > stdout_sstupdate 2>&1
      else
        for ii in ${list_iolayout}
        do
          iii=$(printf %4.4i $ii)
          ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec.${iii}  fv3_grid_spec
          ln_vrfy -sf sfc_data.nc.${iii} sfc_data.nc
-         ${EXECDIR}/process_updatesst > stdout_sstupdate.${iii} 2>&1
+         ${EXECDIR}/process_updatesst.exe > stdout_sstupdate.${iii} 2>&1
          ls -l > list_sstupdate.${iii}
        done
        rm -f sfc_data.nc
