@@ -200,7 +200,7 @@ case ${PREDEF_GRID_NAME} in
     WRTCMP_stdlat1="${ESGgrid_LAT_CTR}"
     WRTCMP_stdlat2="${ESGgrid_LAT_CTR}"
     WRTCMP_nx="1799"
-    WRTCMP_ny="1057"
+    WRTCMP_ny="1059"
     WRTCMP_lon_lwr_left="-122.719258"
     WRTCMP_lat_lwr_left="21.138123"
     WRTCMP_dx="${ESGgrid_DELX}"
