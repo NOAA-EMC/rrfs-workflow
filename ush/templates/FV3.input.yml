@@ -44,14 +44,16 @@ FV3_GSD_SAR:
     iopt_tbot: 2
 
 FV3_HRRR:
+  atmos_model_nml:
+    avg_max_length: 3600.
   fv_core_nml:
     d_con: 0.5
-    d2_bg_k2: 0
-    dz_min: 6.0
-    hord_dp: -5
-    hord_mt: 5
-    hord_tm: 5
-    hord_vt: 5
+    d2_bg_k2: 0.04
+    dz_min: 2.0
+    hord_dp: -6
+    hord_mt: 6
+    hord_tm: 6
+    hord_vt: 6
     k_split: 6
     kord_mt: 9
     kord_tm: -9
@@ -59,11 +61,11 @@ FV3_HRRR:
     kord_wz: 9
     n_split: 3
     psm_bc: 1
-    nord_tr: 2
+    nord_tr: 0
     nrows_blend: 10
     regional_bcs_from_gsi: false
-    rf_cutoff: 20000.0
-    vtdm4: 0.03
+    rf_cutoff: 2000.0
+    vtdm4: 0.02
     write_restart_with_bcs: false
   gfs_physics_nml: 
     <<: *gsd_sar_phys
@@ -76,6 +78,8 @@ FV3_HRRR:
     dt_inner : 20
     effr_in: true
     gwd_opt: 3
+    fhlwr: 900.0
+    fhswr: 900.0
     iaer: 5111
     ialb: 2 
     icliq_sw: 2
@@ -83,6 +87,7 @@ FV3_HRRR:
     imfdeepcnv: -1
     imfshalcnv: -1
     iovr: 3
+    lgfdlmprad: false
     thsfc_loc: false 
 
 FV3_RAP:
