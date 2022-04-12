@@ -75,6 +75,11 @@ FV3_HRRR:
     do_gsl_drag_tofd: true
     do_mynnsfclay: true
     do_sfcperts: !!python/none
+    do_tofd : false
+    do_ugwp : false
+    do_ugwp_v0 : false
+    do_ugwp_v0_nst_only : false
+    do_ugwp_v0_orog_only : false
     dt_inner : 20
     effr_in: true
     gwd_opt: 3
@@ -87,6 +92,7 @@ FV3_HRRR:
     imfdeepcnv: -1
     imfshalcnv: -1
     iovr: 3
+    ldiag_ugwp: false
     lgfdlmprad: false
     thsfc_loc: false 
 
