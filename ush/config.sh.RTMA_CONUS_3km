@@ -217,6 +217,8 @@ if [[ "$MACHINE" == "wcoss_dell_p3" ]]; then
   PARTITION_DEFAULT=""
   PARTITION_FCST=""
   PARTITION_ANALYSIS=""
+  PARTITION_GRAPHICS=""
+  PARTITION_WGRIB2=""
 
   OBSPATH_NSSLMOSIAC=/gpfs/dell1/nco/ops/dcom/prod/ldmdata/obs/upperair/mrms/conus
   #FIXLAM_NCO_BASEDIR=/gpfs/dell2/emc/modeling/save/Annette.Gibbs/rrfs/fix/fix_lam.20210128
@@ -231,7 +233,7 @@ if [[ "$MACHINE" == "wcoss_dell_p3" ]]; then
   PPN_RUN_ANAL="7"
 
   LAYOUT_X=42
-  LAYOUT_Y=45
+  LAYOUT_Y=40
   WTIME_RUN_FCST="00:20:00"
   PPN_RUN_FCST="14"
   WRTCMP_write_groups="3"
