@@ -5,11 +5,11 @@ A brief example to set up and run RTMA
 ## 1. clone the ufs-srweather-app repository as follows
 
 ```
-  git clone -b feature/RRFS_dev1 https://github.com/NOAA-GSL/ufs-srweather-app RTMA
+  git clone -b 3DRTMA https://github.com/NOAA-GSL/ufs-srweather-app RTMA
 ```
 or
 ```
-  git clone -b feature/RRFS_dev1 git@github.com:NOAA-GSL/ufs-srweather-app RTMA
+  git clone -b 3DRTMA git@github.com:NOAA-GSL/ufs-srweather-app RTMA
   ```
 
 ## 2. checkout external components

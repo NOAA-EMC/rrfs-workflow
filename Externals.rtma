@@ -4,7 +4,7 @@ protocol = git
 repo_url = https://github.com/NOAA-GSL/regional_workflow
 # Specify either a branch name or a hash but not both.
 #branch = 3DRTMA
-hash = b2628e9a
+hash = 6098199d
 local_path = regional_workflow
 required = True
 
@@ -38,7 +38,7 @@ required = True
 [python_graphics]
 protocol = git
 repo_url = https://github.com/NOAA-GSL/pygraf
-hash = 3327b47
+hash = f74700b
 local_path = python_graphics
 required = True
 
@@ -47,8 +47,9 @@ protocol = git
 repo_url = https://github.com/NOAA-GSL/GSI.git
 # Specify either a branch name or a hash but not both.
 #branch = feature/rrfs
-hash = 32e9d20
+hash = dabbce1
 local_path = src/gsi
+externals = None
 required = True
 
 [rrfs_utl]
@@ -56,7 +57,7 @@ protocol = git
 repo_url = https://github.com/NOAA-GSL/rrfs_utl.git
 # Specify either a branch name or a hash but not both.
 # branch = develop
-hash = 6f1f87b
+hash = 88a237f
 local_path = src/rrfs_utl
 required = True
 
