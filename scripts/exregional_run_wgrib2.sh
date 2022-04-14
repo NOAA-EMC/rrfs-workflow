@@ -210,8 +210,9 @@ ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2 $
 ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgrd3df${fhr}.${tmmark}.grib2 ${comout}/BGRD3D_${basetime}${post_fhr}00
 ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgsfcf${fhr}.${tmmark}.grib2  ${comout}/BGSFC_${basetime}${post_fhr}00
 
-ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2 ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.grib2
-ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgrd3df${fhr}.${tmmark}.grib2 ${comout}/rrfs.t${cyc}z.natlev.f${fhr}.grib2
+ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2 ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.conus_3km.grib2
+ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgrd3df${fhr}.${tmmark}.grib2 ${comout}/rrfs.t${cyc}z.natlev.f${fhr}.conus_3km.grib2
+ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgsfcf${fhr}.${tmmark}.grib2  ${comout}/rrfs.t${cyc}z.testbed.f${fhr}.conus_3km.grib2
 # Remap to additional output grids if requested
 if [ ${#ADDNL_OUTPUT_GRIDS[@]} -gt 0 ]; then
 
@@ -223,7 +224,7 @@ if [ ${#ADDNL_OUTPUT_GRIDS[@]} -gt 0 ]; then
   grid_specs_242="nps:225:60.000000 187.000000:553:11250.000000 30.000000:425:11250.000000"
   grid_specs_243="latlon 190.0:126:0.400 10.000:101:0.400"
   grid_specs_clue="lambert:262.5:38.5 239.891:1620:3000.0 20.971:1120:3000.0"
-  grid_specs_hrrr="lambert:-97.5:38.5 -122.719528:1799:3000.0 21.138123:1059:3000.0"
+  grid_specs_hrrr="lambert:-97.5:38.5 -122.719258:1799:3000.0 21.138123:1059:3000.0"
   grid_specs_hrrre="lambert:-97.5:38.5 -122.719528:1800:3000.0 21.138123:1060:3000.0"
   grid_specs_rrfsak="lambert:-161.5:63.0 172.102615:1379:3000.0 45.84576:1003:3000.0"
   grid_specs_hrrrak="nps:225:60.000000 185.117126:1299:3000.0 41.612949:919:3000.0"
