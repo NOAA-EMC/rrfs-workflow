@@ -176,6 +176,21 @@
 "gfs_phys",  "dvsfc",         "vflx_ave",    "fv3_history2d",         "all",  .false.,  "none",  2
 #"gfs_phys",  "cnvw",          "cnvcldwat",   "fv3_history2d",         "all",  .false.,  "none",  2
 
+"gfs_phys",    "u10max",     "u10max",     "fv3_history2d", "all", .false.,  "none",  2
+"gfs_phys",    "v10max",     "v10max",     "fv3_history2d",  "all", .false.,  "none",  2
+"gfs_phys",    "spd10max",   "spd10max",   "fv3_history2d", "all", .false.,  "none",  2
+"gfs_dyn",     "ustm",        "ustm",       "fv3_history", "all", .false.,  "none",  2
+"gfs_dyn",     "vstm",        "vstm",       "fv3_history", "all", .false.,  "none",  2
+"gfs_dyn",     "srh01",        "srh01",       "fv3_history", "all", .false.,  "none",  2
+"gfs_dyn",     "srh03",        "srh03",       "fv3_history", "all", .false.,  "none",  2
+"gfs_phys",    "pratemax",    "pratemax",   "fv3_history2d", "all", .false.,  "none",  2
+"gfs_phys",    "refdmax",    "refdmax",    "fv3_history2d", "all", .false.,  "none",  2
+"gfs_phys",    "refdmax263k","refdmax263k","fv3_history2d", "all", .false.,  "none",  2
+"gfs_phys",    "t02max",     "t02max",    "fv3_history2d", "all", .false.,  "none",  2
+"gfs_phys",    "t02min",     "t02min",    "fv3_history2d", "all", .false.,  "none",  2
+"gfs_phys",    "rh02max",    "rh02max",    "fv3_history2d", "all", .false.,  "none",  2
+"gfs_phys",    "rh02min",    "rh02min",    "fv3_history2d", "all", .false.,  "none",  2
+
 "gfs_phys",    "psurf",       "pressfc",   "fv3_history2d",  "all",  .false.,  "none",  2
 "gfs_phys",    "u10m",        "ugrd10m",   "fv3_history2d",  "all",  .false.,  "none",  2
 "gfs_phys",    "v10m",        "vgrd10m",   "fv3_history2d",  "all",  .false.,  "none",  2
