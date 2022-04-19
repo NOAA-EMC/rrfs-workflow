@@ -451,6 +451,9 @@ for (( i=0; i<${num_symlinks}; i++ )); do
   fi
 
 done
+
+ln_vrfy -sf ${relative_or_null} ${FIXam}/optics_??.dat ${run_dir}
+ln_vrfy -sf ${relative_or_null} ${FIXam}/aeroclim.m??.nc ${run_dir}
 #
 #-----------------------------------------------------------------------
 #

@@ -85,8 +85,9 @@ FV3_HRRR:
     gwd_opt: 3
     fhlwr: 900.0
     fhswr: 900.0
-    iaer: 5111
+    iaer: 1011
     ialb: 2 
+    iccn: 2
     icliq_sw: 2
     iems: 2 
     imfdeepcnv: -1
