@@ -44,7 +44,7 @@ VERBOSE="TRUE"
 RUN_ENVIR="nco"
 
 PREDEF_GRID_NAME=RRFS_CONUS_3km
-ADDNL_OUTPUT_GRIDS=( "hrrr" )
+ADDNL_OUTPUT_GRIDS=( )
 
 TILE_LABELS="CONUS REGIONS"
 TILE_SETS="full NE,NC,NW,SE,SC,SW"
@@ -184,7 +184,8 @@ USE_CUSTOM_POST_CONFIG_FILE="TRUE"
 TESTBED_FIELDS_FN="testbed_fields_rtma.txt"
 CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-fv3lam_rrfs.txt"
 CUSTOM_POST_PARAMS_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/params_grib2_tbl_new"
-POST_FULL_MODEL_NAME="FV3RRTMA"
+POST_FULL_MODEL_NAME="FV3R"
+POST_SUB_MODEL_NAME="RTMA"
 ARCHIVEDIR="/5year/BMC/wrfruc/rtma_dev1"
 NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
 NCL_HOME="/home/rtrr/RTMA/graphics"
@@ -212,7 +213,7 @@ NWGES="/lfs4/BMC/nrtrr/NCO_dirs/nwges"  # Path to directory NWGES that save boun
 if [[ "$MACHINE" == "wcoss_dell_p3" ]]; then
   ACCOUNT="RTMA-T2O"
   RESERVATION=""
-  EXPT_BASEDIR="/gpfs/dell2/emc/modeling/save/${USER}/RTMA-NA"
+  EXPT_BASEDIR="/gpfs/dell2/emc/modeling/save/${USER}/RTMA-CONUS"
   SERVICE_ACCOUNT=""
   PARTITION_DEFAULT=""
   PARTITION_FCST=""
@@ -220,13 +221,9 @@ if [[ "$MACHINE" == "wcoss_dell_p3" ]]; then
   PARTITION_GRAPHICS=""
   PARTITION_WGRIB2=""
 
-  OBSPATH_NSSLMOSIAC=/gpfs/dell1/nco/ops/dcom/prod/ldmdata/obs/upperair/mrms/conus
-  #FIXLAM_NCO_BASEDIR=/gpfs/dell2/emc/modeling/save/Annette.Gibbs/rrfs/fix/fix_lam.20210128
-  AIRCRAFT_REJECT="" #let the generating step set it to a correct value
-  SFCOBS_USELIST="" #let the generating step set it to a correct value
-  CCPP_PHYS_SUITE="FV3_GFS_v15_thompson_mynn_lam3km"
-  HALO_BLEND=10 # must use 10 as that is what lamdax uses
-  CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-rtma_NOAHLSM.txt"
+  OBSPATH_NSSLMOSIAC="/gpfs/dell1/nco/ops/dcom/prod/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC"
+  AIRCRAFT_REJECT="/gpfs/dell2/emc/modeling/noscrub/Edward.Colon/FixData/obsuselist/amdar_reject_lists"
+  SFCOBS_USELIST="/gpfs/dell2/emc/modeling/noscrub/Edward.Colon/FixData/obsuselist/mesonet_uselists"
 
   WTIME_RUN_ANAL="00:30:00"
   NNODES_RUN_ANAL="70"
@@ -242,10 +239,10 @@ if [[ "$MACHINE" == "wcoss_dell_p3" ]]; then
   NNODES_RUN_POST="10"
   PPN_RUN_POST="28"
 
-  FG_ROOTDIR="/gpfs/dell2/ptmp/Annette.Gibbs/nwges/para/RRFS_NA_3km" #only needed by RTMA; Annette is copying files to this directory
-  OBSPATH="/gpfs/hps/nco/ops/com/rap/prod"
+  FG_ROOTDIR="/gpfs/dell1/ptmp/emc.campara/nwges/para/rrfs_a"
+  OBSPATH="/gpfs/dell2/ptmp/Ashley.Stanfield/rtma_3d/com/rtma/prod"
   ENKF_FCST="/gpfs/dell1/nco/ops/com/gfs/prod"
-  LIGHTNING_ROOT="/gpfs/dell2/ptmp/Shelley.Melchior/rtma_3d/com/rtma/prod"
+  LIGHTNING_ROOT="/gpfs/dell2/ptmp/Ashley.Stanfield/rtma_3d/com/rtma/prod"
 
   STMP="/gpfs/dell2/ptmp/${USER}/stmp"
   PTMP="/gpfs/dell2/ptmp/${USER}/ptmp"

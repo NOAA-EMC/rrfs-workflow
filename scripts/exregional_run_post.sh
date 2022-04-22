@@ -194,6 +194,7 @@ cat > itag <<EOF
  grib='grib2'
  DateStr='${post_yyyy}-${post_mm}-${post_dd}_${post_hh}:00:00'
  MODELNAME='${POST_FULL_MODEL_NAME}'
+ SUBMODELNAME='${POST_SUB_MODEL_NAME}'
  fileNameFlux='${phy_file}'
  fileNameFlat='postxconfig-NT.txt'
 /
