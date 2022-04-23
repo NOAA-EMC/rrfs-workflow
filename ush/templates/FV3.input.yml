@@ -50,7 +50,7 @@ FV3_HRRR:
     d_con: 0.5
     d2_bg_k2: 0.04
     dz_min: 2.0
-    hord_dp: -6
+    hord_dp: 6
     hord_mt: 6
     hord_tm: 6
     hord_vt: 6

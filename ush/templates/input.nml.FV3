@@ -51,6 +51,10 @@
     print_memory_usage = .false.
 /
 
+&fv3gfs_io
+  use_io_netcdf = .true.
+/
+
 &fms2_io_nml
     netcdf_default_format="netcdf4"
 /
