@@ -24,6 +24,7 @@ gsi_namelist="
    vs=${bkgerr_vs},
    hzscl=${bkgerr_hzscl},
    bw=0.,fstat=.true.,
+   usenewgfsberror=.true.,
 /
  &ANBKGERR
    anisotropic=.false.,

@@ -49,11 +49,11 @@ state_vector::
 
 control_vector::
 !var     level  itracer as/tsfc_sdv  an_amp0   source  funcof
- sf       65      0       1.00        -1.0     state    u,v
- vp       65      0       1.00        -1.0     state    u,v
- ps        1      0       0.50        -1.0     state    prse
- t        65      0       0.70        -1.0     state    tv
- q        65      1       0.70        -1.0     state    q
+ sf       65      0       0.90        -1.0     state    u,v
+ vp       65      0       0.90        -1.0     state    u,v
+ ps        1      0       1.00        -1.0     state    prse
+ t        65      0       1.40        -1.0     state    tv
+ q        65      1       0.80        -1.0     state    q
  sst       1      0       1.00        -1.0     state    sst
  stl       1      0       1.00        -1.0     motley   sst
  sti       1      0       1.00        -1.0     motley   sst

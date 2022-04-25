@@ -6,6 +6,8 @@ SFCOBS_USELIST="/lfs4/BMC/amb-verif/rap_ops_mesonet_uselists"
 SST_ROOT="/lfs4/BMC/public/data/grids/ncep/sst/0p083deg/grib2"
 GVF_ROOT="/public/data/sat/ncep/viirs/gvf/grib2"
 
+BERROR_FN="rrfs_glb_berror.l127y194.f77"
+
 if [[ $MACHINE == "hera" ]] ; then
 
 # for using RAP as boundary and initial

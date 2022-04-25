@@ -284,6 +284,7 @@
 "gfs_phys",    "evbs_ave",     "evbs_ave",      "fv3_history2d",  "all",  .false.,  "none",  2
 "gfs_phys",    "evcw_ave",     "evcw_ave",      "fv3_history2d",  "all",  .false.,  "none",  2
 "gfs_phys",    "fldcp",        "fldcp",         "fv3_history2d",  "all",  .false.,  "none",  2
+"gfs_phys",    "wet1",         "wet1",          "fv3_history2d",  "all",  .false.,  "none",  2
 "gfs_phys",    "hgt_hyblev1",  "hgt_hyblev1",   "fv3_history2d",  "all",  .false.,  "none",  2
 "gfs_phys",    "spfh_hyblev1", "spfh_hyblev1",  "fv3_history2d",  "all",  .false.,  "none",  2
 "gfs_phys",    "ugrd_hyblev1", "ugrd_hyblev1",  "fv3_history2d",  "all",  .false.,  "none",  2
