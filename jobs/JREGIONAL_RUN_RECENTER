@@ -3,8 +3,10 @@
 #
 #-----------------------------------------------------------------------
 #
-# This J-JOB script runs the GSI analysis 
-#      for the FV3-LAM model
+# This J-JOB script stages initial and boundary conditions for
+#      the analysis and model of the cycle it is running. The initial
+#      could come from external model or previous cycles forecast.
+#      The boundary could come from previous many cycles.
 #
 #-----------------------------------------------------------------------
 
@@ -59,55 +61,21 @@ the specified cycle.
 # Create the working directory under the cycle directory.
 #
 #-----------------------------------------------------------------------
+#
 # CYCLE_TYPE is to indicate which type of cycle this job for:
 #   spinup: this job is for spin-up cycles
 #   others(prod): this job is for product cycle
 #
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
-observer_nwges_dir=""
-
 if [ ${CYCLE_TYPE} == "spinup" ]; then
-  analworkname="_gsi_spinup"
+  recenterdir=${CYCLE_DIR}/recenter/fcst_fv3lam_spinup/INPUT
+  controldir=${ENSCTRL_CYCLE_DIR}/fcst_fv3lam_spinup/INPUT
 else
-  analworkname="_gsi"
+  recenterdir=${CYCLE_DIR}/recenter/fcst_fv3lam/INPUT
+  controldir=${ENSCTRL_CYCLE_DIR}/fcst_fv3lam/INPUT
 fi
-
-if [ ${GSI_TYPE} == "OBSERVER" ]; then
-  if [ ${MEM_TYPE} == "MEAN" ]; then
-    analworkdir="${CYCLE_DIR}/ensmean/observer${analworkname}"
-    SLASH_ENSMEM_SUBDIR=""
-    observer_nwges_dir="${NWGES_DIR}/ensmean/observer${analworkname}"
-  else
-    analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/observer${analworkname}"
-    observer_nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/observer${analworkname}"
-  fi
-  mkdir_vrfy -p ${observer_nwges_dir}
-else
-  analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/anal${analworkname}"
-fi
-
-rm -fr ${analworkdir}
-mkdir_vrfy -p ${analworkdir}
-
-if [ ! -d "${SATBIAS_DIR}" ]; then
-  echo "makding satbias_dir directory for cycling bias correction files" 
-  mkdir_vrfy -p ${SATBIAS_DIR}
-fi
-
-#
-#-----------------------------------------------------------------------
-#
-# create COMOUT directory
-#
-#-----------------------------------------------------------------------
-
-if [ "${RUN_ENVIR}" = "nco" ]; then
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
-  if [ ${CYCLE_TYPE} == "spinup" ]; then
-    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
-  fi
-  mkdir_vrfy -p "${COMOUT}"
-fi
+rm -fr ${recenterdir}
+mkdir_vrfy -p ${recenterdir}
 #
 #-----------------------------------------------------------------------
 #
@@ -116,17 +84,10 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSDIR/exregional_run_analysis.sh \
-             cycle_dir="${CYCLE_DIR}" \
+$SCRIPTSDIR/exregional_run_recenter.sh \
              cycle_type="${CYCLE_TYPE}" \
-             gsi_type="${GSI_TYPE}" \
-             mem_type="${MEM_TYPE}" \
-             analworkdir="${analworkdir}" \
-             observer_nwges_dir="${observer_nwges_dir}" \
-             slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}" \
-             comout="${COMOUT}" \
-             rrfse_fg_root="${RRFSE_FG_ROOT}" \
-             satbias_dir="${SATBIAS_DIR}" || \
+             recenterdir="${recenterdir}" \
+             controldir="${controldir}" || \
 print_err_msg_exit "\
 Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
 #

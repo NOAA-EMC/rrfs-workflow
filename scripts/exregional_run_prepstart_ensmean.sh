@@ -156,13 +156,13 @@ while [[ $imem -le ${NUM_ENS_MEMBERS} ]];
 #
 #-----------------------------------------------------------------------
 #
-# get ensemble mean
+# use member 1 to get the reference stat obs.input in the GSI observer run
 #
-ncea fv_core.res.tile1.nc_mem* fv_core.res.tile1.nc
-ncea fv_tracer.res.tile1.nc_mem* fv_tracer.res.tile1.nc
-ncea sfc_data.nc_mem* sfc_data.nc
-ncea fv_srf_wnd.res.tile1.nc_mem* fv_srf_wnd.res.tile1.nc
-ncea phy_data.nc_mem* phy_data.nc
+ln_vrfy -snf fv_core.res.tile1.nc_mem0001 fv_core.res.tile1.nc
+ln_vrfy -snf fv_tracer.res.tile1.nc_mem0001 fv_tracer.res.tile1.nc
+ln_vrfy -snf sfc_data.nc_mem0001 sfc_data.nc
+ln_vrfy -snf fv_srf_wnd.res.tile1.nc_mem0001 fv_srf_wnd.res.tile1.nc
+ln_vrfy -snf phy_data.nc_mem0001 phy_data.nc
 #
 #-----------------------------------------------------------------------
 #

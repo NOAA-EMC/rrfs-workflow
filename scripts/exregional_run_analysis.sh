@@ -48,14 +48,14 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-# Specify the set of valid argument names for this script/function.  
+# Specify the set of valid argument names for this script/function.
 # Then process the arguments provided to this script/function (which 
 # should consist of a set of name-value pairs of the form arg1="value1",
 # etc).
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "gsi_type" "mem_type" "analworkdir" "observer_nwges_dir" "slash_ensmem_subdir" "comout" "satbias_dir" )
+valid_args=( "cycle_dir" "cycle_type" "gsi_type" "mem_type" "analworkdir" "observer_nwges_dir" "slash_ensmem_subdir" "comout" "rrfse_fg_root" "satbias_dir" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -155,10 +155,10 @@ DD=${YYYYMMDDHH:6:2}
 HH=${YYYYMMDDHH:8:2}
 YYYYMMDD=${YYYYMMDDHH:0:8}
 #
-# YYYY-MM-DD_meso_uselist.txt and YYYYMMDD_rejects.txt: 
+# YYYY-MM-DD_meso_uselist.txt and YYYYMMDD_rejects.txt:
 # both contain past 7 day OmB averages till ~YYYYMMDD_23:59:59 UTC
 # So they are to be used by next day cycles
-MESO_USELIST_FN=$(date +%Y-%m-%d -d "${START_DATE} -1 day")_meso_uselist.txt 
+MESO_USELIST_FN=$(date +%Y-%m-%d -d "${START_DATE} -1 day")_meso_uselist.txt
 AIR_REJECT_FN=$(date +%Y%m%d -d "${START_DATE} -1 day")_rejects.txt
 #
 #-----------------------------------------------------------------------
@@ -191,94 +191,133 @@ else
   BKTYPE=1              # cold start
 fi
 
+#---------------------------------------------------------------------
+#
+# decide regional_ensemble_option: global ensemble (1) or FV3LAM ensemble (5)
+#
+#---------------------------------------------------------------------
+#
+echo "regional_ensemble_option is ",${regional_ensemble_option:-1}
+
 print_info_msg "$VERBOSE" "FIX_GSI is $FIX_GSI"
 print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
 print_info_msg "$VERBOSE" "default bkpath is $bkpath"
 print_info_msg "$VERBOSE" "background type is is $BKTYPE"
 
-
-#-----------------------------------------------------------------------
 #
-# Make a list of the latest GFS EnKF ensemble
+# Check if we have enough FV3-LAM ensembles when regional_ensemble_option=5
 #
-#-----------------------------------------------------------------------
+if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
+  ens_nstarthr=$( printf "%02d" ${DA_CYCLE_INTERV} )
+  imem=1
+  ifound=0
+  while [[ $imem -le ${NUM_ENS_MEMBERS} ]];do
+    memcharv0=$( printf "%03d" $imem )
+    memchar=mem$( printf "%04d" $imem )
 
-stampcycle=$(date -d "${START_DATE}" +%s)
-minHourDiff=100
-loops="009"    # or 009s for GFSv15
-ftype="nc"  # or nemsio for GFSv15
-foundens="false"
-cat "no ens found" >> filelist03
+    YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
+    restart_prefix="${YYYYMMDD}.${HH}0000."
+    slash_ensmem_subdir=$memchar
+    bkpathmem=${rrfse_fg_root}/${YYYYMMDDHHmInterv}/${slash_ensmem_subdir}/fcst_fv3lam/RESTART
 
-case $MACHINE in
-
-"WCOSS_C" | "WCOSS" | "WCOSS_DELL_P3")
-
-  for loop in $loops; do
-    for timelist in $(ls ${ENKF_FCST}/enkfgdas.*/*/atmos/mem080/gdas*.atmf${loop}.${ftype}); do
-      availtimeyyyymmdd=$(echo ${timelist} | cut -d'/' -f9 | cut -c 10-17)
-      availtimehh=$(echo ${timelist} | cut -d'/' -f10)
-      availtime=${availtimeyyyymmdd}${availtimehh}
-      avail_time=$(echo "${availtime}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
-      avail_time=$(date -d "${avail_time}")
-
-      stamp_avail=$(date -d "${avail_time} ${loop} hours" +%s)
-
-      hourDiff=$(echo "($stampcycle - $stamp_avail) / (60 * 60 )" | bc);
-      if [[ ${stampcycle} -lt ${stamp_avail} ]]; then
-         hourDiff=$(echo "($stamp_avail - $stampcycle) / (60 * 60 )" | bc);
-      fi
-
-      if [[ ${hourDiff} -lt ${minHourDiff} ]]; then
-         minHourDiff=${hourDiff}
-         enkfcstname=gdas.t${availtimehh}z.atmf${loop}
-         eyyyymmdd=$(echo ${availtime} | cut -c1-8)
-         ehh=$(echo ${availtime} | cut -c9-10)
-         foundens="true"
-      fi
-    done
+    dynvarfile=${bkpathmem}/${restart_prefix}fv_core.res.tile1.nc
+    tracerfile=${bkpathmem}/${restart_prefix}fv_tracer.res.tile1.nc
+    if [ -r "${dynvarfile}" ] && [ -r "${tracerfile}" ] ; then
+      ln_vrfy ${bkpathmem}/${restart_prefix}fv_core.res.tile1.nc       fv3SAR${ens_nstarthr}_ens_mem${memcharv0}-fv3_dynvars 
+      ln_vrfy ${bkpathmem}/${restart_prefix}fv_tracer.res.tile1.nc     fv3SAR${ens_nstarthr}_ens_mem${memcharv0}-fv3_tracer 
+      (( ifound += 1 ))
+    else
+      print_info_msg "Error: cannot find ensemble files: ${dynvarfile} ${tracerfile} "
+    fi
+    (( imem += 1 ))
   done
-
-  if [ ${foundens} = "true" ]
-  then
-    ls ${ENKF_FCST}/enkfgdas.${eyyyymmdd}/${ehh}/atmos/mem???/${enkfcstname}.nc > filelist03
+  if [[ $ifound -ne ${NUM_ENS_MEMBERS} ]]; then
+    print_info_msg "Not enough FV3_LAM ensembles, will fall to GDAS"
+    regional_ensemble_option=1
   fi
+fi
+#
+if  [[ ${regional_ensemble_option:-1} -eq 1 ]]; then #using GDAS
+  #-----------------------------------------------------------------------
+  # Make a list of the latest GFS EnKF ensemble
+  #-----------------------------------------------------------------------
+  stampcycle=$(date -d "${START_DATE}" +%s)
+  minHourDiff=100
+  loops="009"    # or 009s for GFSv15
+  ftype="nc"  # or nemsio for GFSv15
+  foundgdasens="false"
+  cat "no ens found" >> filelist03
 
-  ;;
-"JET" | "HERA")
+  case $MACHINE in
 
-  for loop in $loops; do
-    for timelist in $(ls ${ENKF_FCST}/*.gdas.t*z.atmf${loop}.mem080.${ftype}); do
-      availtimeyy=$(basename ${timelist} | cut -c 1-2)
-      availtimeyyyy=20${availtimeyy}
-      availtimejjj=$(basename ${timelist} | cut -c 3-5)
-      availtimemm=$(date -d "${availtimeyyyy}0101 +$(( 10#${availtimejjj} - 1 )) days" +%m)
-      availtimedd=$(date -d "${availtimeyyyy}0101 +$(( 10#${availtimejjj} - 1 )) days" +%d)
-      availtimehh=$(basename ${timelist} | cut -c 6-7)
-      availtime=${availtimeyyyy}${availtimemm}${availtimedd}${availtimehh}
-      avail_time=$(echo "${availtime}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
-      avail_time=$(date -d "${avail_time}")
+  "WCOSS_C" | "WCOSS" | "WCOSS_DELL_P3")
 
-      stamp_avail=$(date -d "${avail_time} ${loop} hours" +%s)
+    for loop in $loops; do
+      for timelist in $(ls ${ENKF_FCST}/enkfgdas.*/*/atmos/mem080/gdas*.atmf${loop}.${ftype}); do
+        availtimeyyyymmdd=$(echo ${timelist} | cut -d'/' -f9 | cut -c 10-17)
+        availtimehh=$(echo ${timelist} | cut -d'/' -f10)
+        availtime=${availtimeyyyymmdd}${availtimehh}
+        avail_time=$(echo "${availtime}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
+        avail_time=$(date -d "${avail_time}")
 
-      hourDiff=$(echo "($stampcycle - $stamp_avail) / (60 * 60 )" | bc);
-      if [[ ${stampcycle} -lt ${stamp_avail} ]]; then
-         hourDiff=$(echo "($stamp_avail - $stampcycle) / (60 * 60 )" | bc);
-      fi
+        stamp_avail=$(date -d "${avail_time} ${loop} hours" +%s)
 
-      if [[ ${hourDiff} -lt ${minHourDiff} ]]; then
-         minHourDiff=${hourDiff}
-         enkfcstname=${availtimeyy}${availtimejjj}${availtimehh}00.gdas.t${availtimehh}z.atmf${loop}
-         foundens="true"
-      fi
+        hourDiff=$(echo "($stampcycle - $stamp_avail) / (60 * 60 )" | bc);
+        if [[ ${stampcycle} -lt ${stamp_avail} ]]; then
+           hourDiff=$(echo "($stamp_avail - $stampcycle) / (60 * 60 )" | bc);
+        fi
+
+        if [[ ${hourDiff} -lt ${minHourDiff} ]]; then
+           minHourDiff=${hourDiff}
+           enkfcstname=gdas.t${availtimehh}z.atmf${loop}
+           eyyyymmdd=$(echo ${availtime} | cut -c1-8)
+           ehh=$(echo ${availtime} | cut -c9-10)
+           foundgdasens="true"
+        fi
+      done
     done
-  done
 
-  if [ $foundens = "true" ]; then
-    ls ${ENKF_FCST}/${enkfcstname}.mem0??.${ftype} >> filelist03
-  fi
+    if [ ${foundgdasens} = "true" ]
+    then
+      ls ${ENKF_FCST}/enkfgdas.${eyyyymmdd}/${ehh}/atmos/mem???/${enkfcstname}.nc > filelist03
+    fi
 
-esac
+    ;;
+  "JET" | "HERA")
+
+    for loop in $loops; do
+      for timelist in $(ls ${ENKF_FCST}/*.gdas.t*z.atmf${loop}.mem080.${ftype}); do
+        availtimeyy=$(basename ${timelist} | cut -c 1-2)
+        availtimeyyyy=20${availtimeyy}
+        availtimejjj=$(basename ${timelist} | cut -c 3-5)
+        availtimemm=$(date -d "${availtimeyyyy}0101 +$(( 10#${availtimejjj} - 1 )) days" +%m)
+        availtimedd=$(date -d "${availtimeyyyy}0101 +$(( 10#${availtimejjj} - 1 )) days" +%d)
+        availtimehh=$(basename ${timelist} | cut -c 6-7)
+        availtime=${availtimeyyyy}${availtimemm}${availtimedd}${availtimehh}
+        avail_time=$(echo "${availtime}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
+        avail_time=$(date -d "${avail_time}")
+
+        stamp_avail=$(date -d "${avail_time} ${loop} hours" +%s)
+
+        hourDiff=$(echo "($stampcycle - $stamp_avail) / (60 * 60 )" | bc);
+        if [[ ${stampcycle} -lt ${stamp_avail} ]]; then
+           hourDiff=$(echo "($stamp_avail - $stampcycle) / (60 * 60 )" | bc);
+        fi
+
+        if [[ ${hourDiff} -lt ${minHourDiff} ]]; then
+           minHourDiff=${hourDiff}
+           enkfcstname=${availtimeyy}${availtimejjj}${availtimehh}00.gdas.t${availtimehh}z.atmf${loop}
+           foundgdasens="true"
+        fi
+      done
+    done
+
+    if [ $foundgdasens = "true" ]; then
+      ls ${ENKF_FCST}/${enkfcstname}.mem0??.${ftype} >> filelist03
+    fi
+
+  esac
+fi
 
 #
 #-----------------------------------------------------------------------
@@ -296,15 +335,23 @@ lread_obs_skip=.false.
 
 # Determine if hybrid option is available
 memname='atmf009'
-nummem=$(more filelist03 | wc -l)
-nummem=$((nummem - 3 ))
-if [[ ${nummem} -ge ${HYBENSMEM_NMIN} ]]; then
-  print_info_msg "$VERBOSE" "Do hybrid with ${memname}"
+
+if [ ${regional_ensemble_option:-1} -eq 5 ]  && [ ${BKTYPE} != 1  ]; then 
+  nummem=$NUM_ENS_MEMBERS
+  print_info_msg "$VERBOSE" "Do hybrid with FV3LAM ensemble"
   ifhyb=.true.
-  print_info_msg "$VERBOSE" " Cycle ${YYYYMMDDHH}: GSI hybrid uses ${memname} with n_ens=${nummem}" 
-else
-  print_info_msg "$VERBOSE" " Cycle ${YYYYMMDDHH}: GSI does pure 3DVAR."
-  print_info_msg "$VERBOSE" " Hybrid needs at least ${HYBENSMEM_NMIN} ${memname} ensembles, only ${nummem} available"
+  print_info_msg "$VERBOSE" " Cycle ${YYYYMMDDHH}: GSI hybrid uses FV3LAM ensemble with n_ens=${nummem}" 
+else    
+  nummem=$(more filelist03 | wc -l)
+  nummem=$((nummem - 3 ))
+  if [[ ${nummem} -ge ${HYBENSMEM_NMIN} ]]; then
+    print_info_msg "$VERBOSE" "Do hybrid with ${memname}"
+    ifhyb=.true.
+    print_info_msg "$VERBOSE" " Cycle ${YYYYMMDDHH}: GSI hybrid uses ${memname} with n_ens=${nummem}"
+  else
+    print_info_msg "$VERBOSE" " Cycle ${YYYYMMDDHH}: GSI does pure 3DVAR."
+    print_info_msg "$VERBOSE" " Hybrid needs at least ${HYBENSMEM_NMIN} ${memname} ensembles, only ${nummem} available"
+  fi
 fi
 
 #
@@ -312,7 +359,7 @@ fi
 #
 # link or copy background and grib configuration files
 #
-#  Using ncks to add phis (terrain) into cold start input background. 
+#  Using ncks to add phis (terrain) into cold start input background.
 #           it is better to change GSI to use the terrain from fix file.
 #  Adding radar_tten array to fv3_tracer. Should remove this after add this array in
 #           radar_tten converting code.
@@ -750,6 +797,15 @@ fi
 # comment out for testing
 $APRUN ./gsi.x < gsiparm.anl > stdout 2>&1 || print_err_msg_exit "\
 Call to executable to run GSI returned with nonzero exit code."
+#
+#-----------------------------------------------------------------------
+#
+# touch a file "gsi_complete.txt" after the successful GSI run. This is to inform
+# the successful analysis for the EnKF recentering
+#
+#-----------------------------------------------------------------------
+#
+touch gsi_complete.txt
 #
 #-----------------------------------------------------------------------
 #

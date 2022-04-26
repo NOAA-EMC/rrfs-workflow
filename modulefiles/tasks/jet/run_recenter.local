@@ -1,0 +1,8 @@
+#%Module
+
+module purge
+module load intel/18.0.5.274
+module load impi/2018.4.274
+module load netcdf-hdf5parallel/4.7.4
+# module load pnetcdf/1.11.2
+

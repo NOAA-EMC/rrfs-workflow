@@ -6,6 +6,7 @@ gsi_namelist="
    gencode=78,factqmin=0.0,factqmax=0.0,
    iguess=-1,
    lread_obs_save=${lread_obs_save},lread_obs_skip=${lread_obs_skip},
+   ${ens_nstarthr:+"ens_nstarthr=$ens_nstarthr,"}
    oneobtest=.false.,retrieval=.false.,
    nhr_assimilation=3,l_foto=.false.,
    use_pbl=.false.,use_prepb_satwnd=$ifsatbufr,

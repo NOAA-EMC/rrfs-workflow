@@ -376,7 +376,7 @@ EOFnml
 #
 
 echo pwd is `pwd`
-ENKFEXEC=${EXECDIR}/enkf_fv3reg.x
+ENKFEXEC=${EXECDIR}/enkf.x
 
 if [ -f ${ENKFEXEC} ]; then
   print_info_msg "$VERBOSE" "

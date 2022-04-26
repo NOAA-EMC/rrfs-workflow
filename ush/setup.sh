@@ -1225,6 +1225,10 @@ check_for_preexist_dir_file "$EXPTDIR" "${PREEXISTING_DIR_METHOD}"
 # The base directory in which the directories for the various cycles will
 # be placed.
 #
+# ENSCTRL_CYCLE_BASEDIR:
+# The base directory of the control member for EnKF recentering, in which
+# the directories for the various cycles will be placed.
+#
 # COMROOT:
 # In NCO mode, this is the full path to the "com" directory under which 
 # output from the RUN_POST_TN task will be placed.  Note that this output
@@ -1259,9 +1263,11 @@ if [ "${RUN_ENVIR}" = "nco" ]; then
 
   CYCLE_BASEDIR="$STMP/tmpnwprd/$RUN"
   check_for_preexist_dir_file "${CYCLE_BASEDIR}" "${PREEXISTING_DIR_METHOD}"
+  ENSCTRL_CYCLE_BASEDIR="${ENSCTRL_STMP}/tmpnwprd/$RUN"
   COMROOT="$PTMP/com"
   COMOUT_BASEDIR="$COMROOT/$NET/$envir"
   NWGES_BASEDIR="$NWGES/$envir/$NET"
+  RRFSE_NWGES_BASEDIR="${RRFSE_NWGES}/$envir/$NET"
 
   LOGDIR="${COMROOT}/logs/${NET}/${RUN}.@Y@m@d/@H"
 

@@ -230,6 +230,7 @@ settings="\
   'nnodes_run_fcst': ${NNODES_RUN_FCST}
   'nnodes_run_anal': ${NNODES_RUN_ANAL}
   'nnodes_run_enkf': ${NNODES_RUN_ENKF}
+  'nnodes_run_recenter': ${NNODES_RUN_RECENTER}
   'nnodes_run_post': ${NNODES_RUN_POST}
   'nnodes_run_wgrib2': ${NNODES_RUN_WGRIB2}
   'nnodes_proc_radar': ${NNODES_PROC_RADAR}
@@ -263,6 +264,7 @@ settings="\
   'ppn_run_fcst': ${PPN_RUN_FCST}
   'ppn_run_anal': ${PPN_RUN_ANAL}
   'ppn_run_enkf': ${PPN_RUN_ENKF}
+  'ppn_run_recenter': ${PPN_RUN_RECENTER}
   'ppn_run_post': ${PPN_RUN_POST}
   'ppn_run_wgrib2': ${PPN_RUN_WGRIB2}
   'ppn_proc_radar': ${PPN_PROC_RADAR}
@@ -286,6 +288,7 @@ settings="\
   'wtime_run_fcst': ${WTIME_RUN_FCST}
   'wtime_run_anal': ${WTIME_RUN_ANAL}
   'wtime_run_enkf': ${WTIME_RUN_ENKF}
+  'wtime_run_recenter': ${WTIME_RUN_RECENTER}
   'wtime_run_post': ${WTIME_RUN_POST}
   'wtime_run_wgrib2': ${WTIME_RUN_WGRIB2}
   'wtime_proc_radar': ${WTIME_PROC_RADAR}
@@ -315,6 +318,7 @@ settings="\
   'maxtries_run_fcst': ${MAXTRIES_RUN_FCST}
   'maxtries_anal_gsi': ${MAXTRIES_ANAL_GSI}
   'maxtries_anal_enkf': ${MAXTRIES_ANAL_ENKF}
+  'maxtries_recenter': ${MAXTRIES_RECENTER}
   'maxtries_run_post': ${MAXTRIES_RUN_POST}
   'maxtries_run_wgrib2': ${MAXTRIES_RUN_WGRIB2}
   'maxtries_process_radarref': ${MAXTRIES_PROCESS_RADARREF}
@@ -341,7 +345,9 @@ settings="\
   'jobsdir': $JOBSDIR
   'logdir': $LOGDIR
   'cycle_basedir': ${CYCLE_BASEDIR}
+  'ensctrl_cycle_basedir': ${ENSCTRL_CYCLE_BASEDIR:-}
   'nwges_basedir': ${NWGES_BASEDIR}
+  'rrfse_nwges_basedir': ${RRFSE_NWGES_BASEDIR}
   'obspath': ${OBSPATH}
   'global_var_defns_fp': ${GLOBAL_VAR_DEFNS_FP}
   'load_modules_run_task_fp': ${LOAD_MODULES_RUN_TASK_FP}
@@ -400,6 +406,7 @@ settings="\
   'do_enscontrol': ${DO_ENSCONTROL}
   'do_gsiobserver': ${DO_GSIOBSERVER}
   'do_enkfupdate': ${DO_ENKFUPDATE}
+  'do_recenter': ${DO_RECENTER}
 #
 # data assimilation related parameters.
 #
@@ -410,6 +417,7 @@ settings="\
   'do_refl2tten': ${DO_REFL2TTEN}
   'do_spinup': ${DO_SPINUP}
   'do_nldn_lght': ${DO_NLDN_LGHT}
+  'regional_ensemble_option': ${regional_ensemble_option}
 #
 # graphics related parameters
 #
