@@ -323,6 +323,12 @@ done
 #
 #-----------------------------------------------------------------------
 #
+# touch a file to show completion of the task
+#
+touch recenter_complete.txt
+#
+#-----------------------------------------------------------------------
+#
 # Print message indicating successful completion of script.
 #
 #-----------------------------------------------------------------------

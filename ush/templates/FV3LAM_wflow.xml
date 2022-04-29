@@ -384,7 +384,7 @@ MODULES_RUN_TASK_FP script.
       <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/gdas.@Y@m@d/@H/atmos/gdas.t@Hz.atmf{{ "%03d" % extrn_mdl_ics_offset_hrs }}.nc</cyclestr></datadep>
       {% else %}
       {%- if extrn_mdl_name_ics in ["GEFS"] %}
-      <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/#subdirGE#/@y@j@H00000{{ extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
+      <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/#subdirGE#/@y@j@H000{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
       {%- elif extrn_mdl_name_ics in ["GDASENKF"] %}
       <and>
       {%- if machine in ["HERA"] %}
