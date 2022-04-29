@@ -1009,35 +1009,6 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Copy analysis results to com
-#
-#-----------------------------------------------------------------------
-#
-#
-mynet=${NET}
-if [ ${BKTYPE} -eq 1 ]; then  # cold start, put analysis back to current INPUT 
-  cp_vrfy ${analworkdir}/fv3_dynvars                  ${comout}/${mynet}.t${cyc}z.gfs_data.tile7.halo0.nc
-  cp_vrfy ${analworkdir}/fv3_sfcdata                  ${comout}/${mynet}.t${cyc}z.sfc_data.tile7.halo0.nc
-else                          # cycling
-
-  if [ "${IO_LAYOUT_Y}" == "1" ]; then
-    cp_vrfy ${analworkdir}/fv3_dynvars             ${comout}/${mynet}.t${cyc}z.fv_core.res.tile1.nc
-    cp_vrfy ${analworkdir}/fv3_tracer              ${comout}/${mynet}.t${cyc}z.fv_tracer.res.tile1.nc
-    cp_vrfy ${analworkdir}/fv3_sfcdata             ${comout}/${mynet}.t${cyc}z.sfc_data.nc
-  else
-    for ii in ${list_iolayout}
-    do
-      iii=`printf %4.4i $ii`
-      cp_vrfy ${analworkdir}/fv3_dynvars.${iii}      ${comout}/${mynet}.t${cyc}z.fv_core.res.tile1.nc.${iii}
-      cp_vrfy ${analworkdir}/fv3_tracer.${iii}       ${comout}/${mynet}.t${cyc}z.fv_tracer.res.tile1.nc.${iii}
-      cp_vrfy ${analworkdir}/fv3_sfcdata.${iii}      ${comout}/${mynet}.t${cyc}z.sfc_data.nc.${iii}
-    done
-  fi
-
-fi
-#
-#-----------------------------------------------------------------------
-#
 # Restore the shell options saved at the beginning of this script/func-
 # tion.
 #

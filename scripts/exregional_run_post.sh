@@ -220,7 +220,23 @@ list_iolayout=$(seq 0 $n_iolayouty)
 
 restart_prefix=${post_yyyy}${post_mm}${post_dd}.${post_hh}0000
 if [ ! -r ${nwges_dir}/INPUT/gfs_ctrl.nc ]; then
-    cp_vrfy $run_dir/INPUT/gfs_ctrl.nc ${nwges_dir}/INPUT/gfs_ctrl.nc
+  cp_vrfy $run_dir/INPUT/gfs_ctrl.nc ${nwges_dir}/INPUT/gfs_ctrl.nc
+  for file in ${filelist}; do
+    cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
+  done
+  if [ "${IO_LAYOUT_Y}" == "1" ]; then
+    for file in ${filelistn}; do
+      cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
+    done
+  else
+    for file in ${filelistn}; do
+      for ii in ${list_iolayout}
+      do
+        iii=$(printf %4.4i $ii)
+       cp_vrfy $run_dir/INPUT/${file}.${iii} ${nwges_dir}/INPUT/${file}.${iii}
+      done
+    done
+  fi
 fi
 if [ -r "$run_dir/RESTART/${restart_prefix}.coupler.res" ]; then
   for file in ${filelist}; do

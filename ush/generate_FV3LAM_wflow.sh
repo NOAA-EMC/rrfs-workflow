@@ -215,6 +215,7 @@ settings="\
   'process_bufr': ${PROCESS_BUFR_TN}
   'radar_refl2tten': ${RADAR_REFL2TTEN_TN}
   'cldanl_nonvar': ${CLDANL_NONVAR_TN}
+  'run_bufrsnd_tn': ${RUN_BUFRSND_TN}
   'tag': ${TAG}
 #
 # Number of nodes to use for each task.
@@ -239,6 +240,7 @@ settings="\
   'nnodes_run_ref2tten': ${NNODES_RUN_REF2TTEN}
   'nnodes_run_nonvarcldanl': ${NNODES_RUN_NONVARCLDANL}
   'nnodes_run_graphics': ${NNODES_RUN_GRAPHICS}
+  'nnodes_run_bufrsnd': ${NNODES_RUN_BUFRSND}
 #
 # Number of cores used for a task
 #
@@ -273,6 +275,7 @@ settings="\
   'ppn_run_ref2tten': ${PPN_RUN_REF2TTEN}
   'ppn_run_nonvarcldanl': ${PPN_RUN_NONVARCLDANL}
   'ppn_run_graphics': ${PPN_RUN_GRAPHICS}
+  'ppn_run_bufrsnd': ${PPN_RUN_BUFRSND}
 #
 # Maximum wallclock time for each task.
 #
@@ -296,6 +299,7 @@ settings="\
   'wtime_proc_bufr': ${WTIME_PROC_BUFR}
   'wtime_run_ref2tten': ${WTIME_RUN_REF2TTEN}
   'wtime_run_nonvarcldanl': ${WTIME_RUN_NONVARCLDANL}
+  'wtime_run_bufrsnd': ${WTIME_RUN_BUFRSND}
 #
 # Maximum memory for each task.
 #
@@ -407,6 +411,7 @@ settings="\
   'do_gsiobserver': ${DO_GSIOBSERVER}
   'do_enkfupdate': ${DO_ENKFUPDATE}
   'do_recenter': ${DO_RECENTER}
+  'do_bufrsnd': ${DO_BUFRSND}
 #
 # data assimilation related parameters.
 #

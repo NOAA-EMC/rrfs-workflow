@@ -357,6 +357,8 @@ optionList[6]=SAVE_CYCLE_LOG
 optionList[7]=DO_SOIL_ADJUST
 optionList[8]=DO_UPDATE_BC
 optionList[9]=DO_RADDA
+optionList[10]=DO_RECENTER
+optionList[11]=DO_BUFRSND
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));

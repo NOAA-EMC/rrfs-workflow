@@ -1512,6 +1512,7 @@ MAKE_LBCS_TN="make_lbcs"
 RUN_FCST_TN="run_fcst"
 RUN_POST_TN="run_post"
 RUN_WGRIB2_TN="run_wgrib2"
+RUN_BUFRSND_TN="run_bufrsnd"
 
 ANAL_GSI_TN="anal_gsi_input"
 OBSERVER_GSI_ENSMEAN_TN="observer_gsi_ensmean"
@@ -1549,6 +1550,7 @@ NNODES_PROC_BUFR="1"
 NNODES_RUN_REF2TTEN="1"
 NNODES_RUN_NONVARCLDANL="1"
 NNODES_RUN_GRAPHICS="1"
+NNODES_RUN_BUFRSND="1"
 #
 # Number of cores.
 #
@@ -1581,6 +1583,7 @@ PPN_PROC_BUFR="1"
 PPN_RUN_REF2TTEN="1"
 PPN_RUN_NONVARCLDANL="1"
 PPN_RUN_GRAPHICS="12"
+PPN_RUN_BUFRSND="28"
 #
 # Walltimes.
 #
@@ -1604,6 +1607,7 @@ WTIME_PROC_LIGHTNING="00:25:00"
 WTIME_PROC_BUFR="00:25:00"
 WTIME_RUN_REF2TTEN="00:20:00"
 WTIME_RUN_NONVARCLDANL="00:20:00"
+WTIME_RUN_BUFRSND="00:45:00"
 #
 # Memory.
 #
@@ -1758,6 +1762,10 @@ TILE_SETS="full"
 #
 # DO_ENKFUPDATE:
 # Decide whether or not to run EnKF update for the ensemble members
+#
+# DO_RECENTER:
+# Decide whether or not to run recenter for the ensemble members
+#
 #-----------------------------------------------------------------------
 #
 DO_ENSEMBLE="FALSE"
@@ -1794,12 +1802,16 @@ DO_RECENTER="FALSE"
 # DO_RADDA:
 # Flag that determines whether to assimilate satellite radiance data
 #
+# DO_BUFRSND:
+# Decide whether or not to run EMC BUFR sounding
+#-----------------------------------------------------------------------
 DO_DACYCLE="FALSE"
 DO_SURFACE_CYCLE="FALSE"
 SURFACE_CYCLE_DELAY_HRS="1"
 DO_SOIL_ADJUST="FALSE"
 DO_UPDATE_BC="FALSE"
 DO_RADDA="FALSE"
+DO_BUFRSND="FALSE"
 #
 #-----------------------------------------------------------------------
 #
