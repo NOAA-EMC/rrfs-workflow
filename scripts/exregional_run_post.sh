@@ -215,26 +215,33 @@ EOF
 #
 filelist="fv_core.res.nc coupler.res"
 filelistn="fv_core.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_tracer.res.tile1.nc phy_data.nc sfc_data.nc"
+filelistcold="gfs_data.tile7.halo0.nc sfc_data.tile7.halo0.nc"
 n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
 restart_prefix=${post_yyyy}${post_mm}${post_dd}.${post_hh}0000
 if [ ! -r ${nwges_dir}/INPUT/gfs_ctrl.nc ]; then
   cp_vrfy $run_dir/INPUT/gfs_ctrl.nc ${nwges_dir}/INPUT/gfs_ctrl.nc
-  for file in ${filelist}; do
-    cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
-  done
-  if [ "${IO_LAYOUT_Y}" == "1" ]; then
-    for file in ${filelistn}; do
+  if [ -r ${run_dir}/INPUT/coupler.res ]; then  # warm start
+    for file in ${filelist}; do
       cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
     done
-  else
-    for file in ${filelistn}; do
-      for ii in ${list_iolayout}
-      do
-        iii=$(printf %4.4i $ii)
-       cp_vrfy $run_dir/INPUT/${file}.${iii} ${nwges_dir}/INPUT/${file}.${iii}
+    if [ "${IO_LAYOUT_Y}" == "1" ]; then
+      for file in ${filelistn}; do
+        cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
       done
+    else
+      for file in ${filelistn}; do
+        for ii in ${list_iolayout}
+        do
+          iii=$(printf %4.4i $ii)
+         cp_vrfy $run_dir/INPUT/${file}.${iii} ${nwges_dir}/INPUT/${file}.${iii}
+        done
+      done
+    fi
+  else  # cold start
+    for file in ${filelistcold}; do
+      cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
     done
   fi
 fi
