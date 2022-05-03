@@ -829,7 +829,7 @@ MODULES_RUN_TASK_FP script.
     <nodes>{{ nnodes_proc_radar }}:ppn={{ ppn_proc_radar }};</nodes>
     <walltime>{{ wtime_proc_radar }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
-    <jobname>&PROCESS_RADAR_REF_TN;_#type#</jobname>
+    <jobname>&TAG;_&PROCESS_RADAR_REF_TN;_#type#</jobname>
     <join><cyclestr>&LOGDIR;/&PROCESS_RADAR_REF_TN;_#type#_@Y@m@d@H.log</cyclestr></join>
         
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
@@ -862,7 +862,7 @@ MODULES_RUN_TASK_FP script.
     <nodes>{{ nnodes_proc_lightning }}:ppn={{ ppn_proc_lightning }};</nodes>
     <walltime>{{ wtime_proc_lightning }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
-    <jobname>&PROCESS_LIGHTNING_TN;_#type#</jobname>
+    <jobname>&TAG;_&PROCESS_LIGHTNING_TN;_#type#</jobname>
     <join><cyclestr>&LOGDIR;/&PROCESS_LIGHTNING_TN;_#type#_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
@@ -895,7 +895,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>{{ wtime_proc_bufr }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
     <memory>{{ memo_run_processbufr }}</memory>
-    <jobname>&PROCESS_BUFR_TN;_#type#</jobname>
+    <jobname>&TAG;_&PROCESS_BUFR_TN;_#type#</jobname>
     <join><cyclestr>&LOGDIR;/&PROCESS_BUFR_TN;_#type#_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
@@ -975,7 +975,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>{{ wtime_run_ref2tten }}</walltime>
     <memory>{{ memo_run_ref2tten }}</memory>
     <nodesize>&NCORES_PER_NODE;</nodesize>
-    <jobname>&RADAR_REFL2TTEN_TN;_#type#</jobname>
+    <jobname>&TAG;_&RADAR_REFL2TTEN_TN;_#type#</jobname>
     <join><cyclestr>&LOGDIR;/&RADAR_REFL2TTEN_TN;_#type#_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
@@ -1015,7 +1015,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>{{ wtime_run_nonvarcldanl }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
     <memory>{{ memo_run_nonvarcldanl }}</memory>
-    <jobname>&CLDANL_NONVAR_TN;_#type#</jobname>
+    <jobname>&TAG;_&CLDANL_NONVAR_TN;_#type#</jobname>
     <join><cyclestr>&LOGDIR;/&CLDANL_NONVAR_TN;_#type#_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
