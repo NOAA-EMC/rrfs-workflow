@@ -133,7 +133,11 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 <!ENTITY RSRV_WGRIB2    "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_WGRIB2;</queue>">
 {%- endif %}
 {%- if partition_graphics is not none %}
+{%- if do_ens_graphics %}
+<!ENTITY RSRV_GRAPHICS   "<account>&ACCOUNT;</account><queue>&QUEUE_GRAPHICS;</queue><partition>{{ partition_graphics }}</partition><native>&RRFS_RESERVE;</native>">
+{%- else %}
 <!ENTITY RSRV_GRAPHICS   "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_GRAPHICS;</queue><partition>{{ partition_graphics }}</partition><native>&RRFS_RESERVE;</native>">
+{%- endif %}
 {%- else %}
 <!ENTITY RSRV_GRAPHICS   "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_GRAPHICS;</queue><native>--exclusive</native>">
 {%- endif %}
@@ -1521,6 +1525,46 @@ MODULES_RUN_TASK_FP script.
 {%- if do_ensemble %}
   </metatask>
 {%- endif %}
+
+{%- endif %}
+
+{%- if do_ensemble and do_ens_graphics %}
+  <metatask name="ensemble_maps">
+
+    <var name="tilelabel"> {{ tilelabels }} </var>
+    <var name="tileset"> {{ tilesets }} </var>
+    <task name="python_maps_#tilelabel#" cycledefs="prodcyc" maxtries="{{ maxtries_run_post }}">
+
+      &RSRV_GRAPHICS;
+      &WALL_LIMIT_GRAPHICS;
+
+      <walltime>{{ wtime_run_fcst }}</walltime>
+      <nodes>{{ nnodes_run_graphics }}:ppn={{ ppn_run_graphics }}</nodes>
+      <jobname><cyclestr>&TAG;_python_@H_#tilelabel#</cyclestr></jobname>
+      <join><cyclestr>&LOGDIR;/python_#tilelabel#.log</cyclestr></join>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "run_graphics" "&JOBSDIR;/JREGIONAL_RUN_PYTHON_GRAPHICS"</command>
+
+      <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+      <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+      <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+      <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+      <envar><name>GRAPHICS_TYPE</name><value>enspanel</value></envar>
+      <envar><name>TILES</name><value>#tileset#</value></envar>
+      <envar><name>TILELABEL</name><value>#tilelabel#</value></envar>
+      <envar><name>ALL_LEADS</name><value>FALSE</value></envar>
+
+      <dependency>
+        <and>
+          {%- for m in range(1, 10) %}
+          <taskdep task="&RUN_WGRIB2_TN;_mem{{ "%04d" % m }}_f000"/>
+          {%- endfor %}
+          <datadep age="00:00:00:05"><cyclestr>{{ ensctrl_stmp }}/@Y@m@d@H/postprd/RRFS_CONUS.t@Hz.bgdawpf000.tm00.grib2</cyclestr></datadep>
+        </and>
+      </dependency>
+    </task>
+  </metatask>
+
 
 {%- endif %}
 

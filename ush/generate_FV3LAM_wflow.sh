@@ -412,6 +412,7 @@ settings="\
   'do_enkfupdate': ${DO_ENKFUPDATE}
   'do_recenter': ${DO_RECENTER}
   'do_bufrsnd': ${DO_BUFRSND}
+  'do_ens_graphics': ${DO_ENS_GRAPHICS}
 #
 # data assimilation related parameters.
 #
@@ -424,6 +425,7 @@ settings="\
   'do_nldn_lght': ${DO_NLDN_LGHT}
   'regional_ensemble_option': ${regional_ensemble_option}
   'radar_ref_thinning': ${RADAR_REF_THINNING}
+  'ensctrl_stmp': ${ENSCTRL_STMP}
 #
 # graphics related parameters
 #

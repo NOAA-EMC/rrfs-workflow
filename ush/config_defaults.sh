@@ -1296,6 +1296,8 @@ OROG_DIR="/path/to/pregenerated/orog/files"
 
 RUN_TASK_MAKE_SFC_CLIMO="TRUE"
 SFC_CLIMO_DIR="/path/to/pregenerated/surface/climo/files"
+
+
 #
 NCORES_PER_NODE=24 #Jet default value
 IS_RTMA="FALSE"
@@ -1769,6 +1771,9 @@ TILE_SETS="full"
 # DO_RECENTER:
 # Decide whether or not to run recenter for the ensemble members
 #
+# DO_ENS_GRAPHICS:
+# Flag to turn on/off ensemble graphics. Turns OFF deterministic
+# graphics.
 #-----------------------------------------------------------------------
 #
 DO_ENSEMBLE="FALSE"
@@ -1777,6 +1782,7 @@ DO_ENSCONTROL="FALSE"
 DO_GSIOBSERVER="FALSE"
 DO_ENKFUPDATE="FALSE"
 DO_RECENTER="FALSE"
+DO_ENS_GRAPHICS="FALSE"
 #
 #-----------------------------------------------------------------------
 #

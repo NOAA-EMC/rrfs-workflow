@@ -3,7 +3,7 @@
 #
 #-----------------------------------------------------------------------
 #
-# This script runs the adb_graphics create_graphics driver for creating
+# This script runs the pygraf create_graphics driver for creating
 # PNG figures and zipping them for dissemination to the web.
 #
 #-----------------------------------------------------------------------
@@ -62,7 +62,6 @@ on the output files corresponding to a specified forecast hour.
 #-----------------------------------------------------------------------
 #
 
-
 if [ "${RUN_ENVIR}" = "nco" ]; then
   COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
   postprd_dir="${COMOUT}"
@@ -74,7 +73,7 @@ else
   zip_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/nclprd"
 fi
 
-
+fcst_length=${FCST_LEN_HRS_CYCLES[$cyc]}
 
 # Choose an appropriate sites file for the grid
 sites_file=conus_raobs.txt
@@ -127,6 +126,7 @@ if [ -d ${postprd_dir}/${subdir} ] ; then
   zip_dir=${zip_dir}/${subdir:-}
 fi
 
+
 # Choose the appropriate file template for graphics type
 case ${GRAPHICS_TYPE} in
 
@@ -135,9 +135,13 @@ case ${GRAPHICS_TYPE} in
     file_tmpl="${NET}.t${CDATE:8:2}z.bgdawpf{FCST_TIME:03d}.tm00.grib2"
     file_type=prs
     extra_args="\
-      --all_leads \
       --tiles $tiles \
       --images ${PYTHON_GRAPHICS_DIR}/image_lists/${PYTHON_GRAPHICS_YML_FN} hourly"
+    if [ ${ALL_LEADS:-true} = "true" ] ; then
+        extra_args="\
+          ${extra_args} \
+          --all_leads"
+    fi
     ;;
 
   "skewts")
@@ -147,6 +151,38 @@ case ${GRAPHICS_TYPE} in
     extra_args="\
       --sites ${PYTHON_GRAPHICS_DIR}/static/${sites_file} \
       --max_plev 100"
+    ;;
+
+  "enspanel")
+
+    file_tmpl="${NET}.t${CDATE:8:2}z.bgdawpf{FCST_TIME:03d}.tm00.grib2"
+    file_type=prs
+    extra_args="\
+      --tiles $tiles \
+      --images ${PYTHON_GRAPHICS_DIR}/image_lists/rrfs_ens.yml hourly"
+
+    # Link in control member to the location it should be
+    ens_mem0=${postprd_dir/'#mem#'/'0000'/}
+    mem0_fp=${ENSCTRL_STMP}/${CDATE}/postprd
+    mem0_fn=${file_tmpl/'{FCST_TIME:03d}'/'*'}
+
+    mkdir_vrfy -p ${ens_mem0}
+    pushd ${ens_mem0}
+
+    rm *.grib2
+
+    for mem0_file in $( find ${mem0_fp} -name ${mem0_fn} ) ; do
+      cp_vrfy ${mem0_file} .
+    done
+    popd
+
+    # Create a python template for postprd_dir
+    postprd_dir=${postprd_dir/'#mem#'/'{mem:04d}'/}
+
+    # Remove ensemble reference from output locations
+    run_dir=${run_dir/'/mem#mem#/'//}
+    zip_dir=${zip_dir/'/mem#mem#/'//}
+
     ;;
 
   *)
@@ -167,7 +203,7 @@ python -u ${PYTHON_GRAPHICS_DIR}/create_graphics.py \
   ${GRAPHICS_TYPE} \
   -a ${age:-3} \
   -d ${postprd_dir} \
-  -f 0 ${POSTPROC_LONG_LEN_HRS} \
+  -f 0 ${fcst_length} \
   --file_tmpl ${file_tmpl} \
   --file_type ${file_type} \
   -m "${MODEL}" \
