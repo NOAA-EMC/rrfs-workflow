@@ -581,10 +581,12 @@ ARCHIVE_CYCLEDEF="00 01 01 01 2100 *"
 #       (need to follow FORTRAN namelist convetion)
 #-------------------------------------------------------------------------------------
 # &SETUP  and &BKGERR
+l_obsprvdiag=.false.
 diag_radardbz=.true.
 write_diag_2=.false.
 bkgerr_vs=1.0
 bkgerr_hzscl=0.7,1.4,2.80   #no trailing ,
+usenewgfsberror=.true.
 
 # &HYBRID_ENSEMBLE
 readin_localization=.true.     #if true, it overwrites the "beta1_inv/ens_h/ens_v" setting

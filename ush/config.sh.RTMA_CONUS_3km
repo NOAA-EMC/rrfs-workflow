@@ -44,7 +44,7 @@ VERBOSE="TRUE"
 RUN_ENVIR="nco"
 
 PREDEF_GRID_NAME=RRFS_CONUS_3km
-ADDNL_OUTPUT_GRIDS=( )
+ADDNL_OUTPUT_GRIDS=()
 
 TILE_LABELS="CONUS REGIONS"
 TILE_SETS="full NE,NC,NW,SE,SC,SW"
@@ -59,6 +59,7 @@ RADARREFL_TIMELEVEL=(0)
 #FH_DFI_RADAR="0.0,0.25,0.5"
 #DO_SOIL_ADJUST="TRUE"
 #DO_RADDA="FALSE"
+#DO_BUFRSND="FALSE"
 #
 #-------------------------------------------------------------------------------------
 #      GSI Namelist parameters configurable across differnt applications
@@ -71,11 +72,13 @@ RADARREFL_TIMELEVEL=(0)
 #-------------------------------------------------------------------------------------
 #
 # &SETUP  and &BKGERR
+l_obsprvdiag=.true.
 diag_radardbz=.false.
 write_diag_2=.true.
 bkgerr_vs=0.125                        #1.0 is default setting
 #bkgerr_hzscl=0.373,0.746,1.5         #default setting, no trailing ,
 bkgerr_hzscl=0.046625,0.09325,0.1875  #hzscl/8
+usenewgfsberror=.false.
 
 # &HYBRID_ENSEMBLE
 readin_localization=.true.     #if true, it overwrites the "beta1_inv/ens_h/ens_v" setting
@@ -95,7 +98,7 @@ i_use_2mT4B=0
 #-------------------------------------------------------------------------------------
 #
 BERROR_FN="berror.rtma"      #under $FIX_GSI
-ANAVINFO_FN="anavinfo.fv3lam_hrrr"
+ANAVINFO_FN="anavinfo.rtma"
 CONVINFO_FN="convinfo.rtma"
 OBERROR_FN="errtable.rtma"
 HYBENSINFO_FN="hybens_info.rtma"
@@ -178,6 +181,7 @@ NCORES_PER_NODE=40 #kjet
 FG_ROOTDIR="/lfs4/BMC/nrtrr/NCO_dirs/nwges/para/RRFS_CONUS" #only needed by RTMA
 DT_ATMOS=1
 #adjust to low priority queue and possible preemption, slurm socket error, etc
+MAXTRIES_RUN_PREPSTART="3"
 MAXTRIES_RUN_FCST="3"
 MAXTRIES_ANAL_GSI="3"
 MAXTRIES_RUN_POST="3"
@@ -213,7 +217,6 @@ MODEL="RTMA_CONUS" #used by NCL
 RUN="RTMA_CONUS"
 COMINgfs=""
 OBSPATH="/lfs4/BMC/wrfruc/gge/rtma/wcoss_obs"
-BERROR_FN="rrfs_glb_berror.l127y194.f77"
 
 STMP="/lfs4/BMC/nrtrr/NCO_dirs/stmp"  # Path to directory STMP that mostly contains input files.
 PTMP="/lfs4/BMC/nrtrr/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains input files.
@@ -230,14 +233,15 @@ if [[ "$MACHINE" == "wcoss_dell_p3" ]]; then
   PARTITION_ANALYSIS=""
   PARTITION_GRAPHICS=""
   PARTITION_WGRIB2=""
+  DO_BUFRSND="FALSE"
 
   OBSPATH_NSSLMOSIAC="/gpfs/dell1/nco/ops/dcom/prod/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC"
   AIRCRAFT_REJECT="/gpfs/dell2/emc/modeling/noscrub/Edward.Colon/FixData/obsuselist/amdar_reject_lists"
   SFCOBS_USELIST="/gpfs/dell2/emc/modeling/noscrub/Edward.Colon/FixData/obsuselist/mesonet_uselists"
 
   WTIME_RUN_ANAL="00:30:00"
-  NNODES_RUN_ANAL="70"
-  PPN_RUN_ANAL="7"
+  NNODES_RUN_ANAL="28"
+  PPN_RUN_ANAL="14"
 
   LAYOUT_X=42
   LAYOUT_Y=40
@@ -259,6 +263,6 @@ if [[ "$MACHINE" == "wcoss_dell_p3" ]]; then
   NWGES="/gpfs/dell2/ptmp/${USER}/nwges"
 fi
 # Wait longer for rrfsdas
-if [[ "$MACHINE" == "jet" ]] && [[ $regional_ensemble_option -eq 5 ]] ; then
+#if [[ "$MACHINE" == "jet" ]] && [[ $regional_ensemble_option -eq 5 ]] ; then
 #  START_TIME_ANAL="5:00:00"
-fi
+#fi
