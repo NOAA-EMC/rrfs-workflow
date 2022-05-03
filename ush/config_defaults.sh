@@ -584,7 +584,7 @@ ARCHIVE_CYCLEDEF="00 01 01 01 2100 *"
 diag_radardbz=.true.
 write_diag_2=.false.
 bkgerr_vs=1.0
-bkgerr_hzscl=0.373,0.746,1.5   #no trailing ,
+bkgerr_hzscl=0.7,1.4,2.80   #no trailing ,
 
 # &HYBRID_ENSEMBLE
 readin_localization=.true.     #if true, it overwrites the "beta1_inv/ens_h/ens_v" setting

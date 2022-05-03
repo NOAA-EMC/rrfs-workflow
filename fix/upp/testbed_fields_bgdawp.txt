@@ -41,6 +41,7 @@ HGT:500 mb:
 UGRD:500 mb:
 VGRD:500 mb:
 TMP:500 mb:
+ABSV:500 mb:
 HGT:700 mb:
 UGRD:700 mb:
 VGRD:700 mb:
