@@ -55,7 +55,7 @@ with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "CYCLE_DIR" "cycle_type" "WORKDIR")
+valid_args=( "CYCLE_DIR" "cycle_type" "WORKDIR" "RADAR_REF_THINNING")
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -323,6 +323,43 @@ cat << EOF > namelist.mosaic
     dataPath = './',
     fv3_io_layout_y=${n_iolayouty},
    /
+EOF
+
+if [ ${RADAR_REF_THINNING} -eq 2 ]; then
+  # heavy data thinning, typically used for EnKF
+  precipdbzhorizskip=1
+  precipdbzvertskip=2
+  clearairdbzhorizskip=5
+  clearairdbzvertskip=-1
+else
+  if [ ${RADAR_REF_THINNING} -eq 1 ]; then
+    # light data thinning, typically used for hybrid EnVar
+    precipdbzhorizskip=0
+    precipdbzvertskip=0
+    clearairdbzhorizskip=1
+    clearairdbzvertskip=1
+  else
+    # no data thinning
+    precipdbzhorizskip=0
+    precipdbzvertskip=0
+    clearairdbzhorizskip=0
+    clearairdbzvertskip=0
+  fi
+fi
+
+cat << EOF > namelist.mosaic_netcdf
+   &setup_netcdf
+    output_netcdf = .true.,
+    max_height = 11001.0,
+    use_clear_air_type = .true.,
+    precip_dbz_thresh = 10.0,
+    clear_air_dbz_thresh = 5.0,
+    clear_air_dbz_value = 0.0,
+    precip_dbz_horiz_skip = ${precipdbzhorizskip},
+    precip_dbz_vert_skip = ${precipdbzvertskip},
+    clear_air_dbz_horiz_skip = ${clearairdbzhorizskip},
+    clear_air_dbz_vert_skip = ${clearairdbzvertskip},
+   / 
 EOF
 
 #

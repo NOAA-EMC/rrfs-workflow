@@ -423,6 +423,7 @@ settings="\
   'do_spinup': ${DO_SPINUP}
   'do_nldn_lght': ${DO_NLDN_LGHT}
   'regional_ensemble_option': ${regional_ensemble_option}
+  'radar_ref_thinning': ${RADAR_REF_THINNING}
 #
 # graphics related parameters
 #
