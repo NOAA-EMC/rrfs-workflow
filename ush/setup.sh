@@ -1269,6 +1269,7 @@ if [ "${RUN_ENVIR}" = "nco" ]; then
   COMROOT="$PTMP/com"
   COMOUT_BASEDIR="$COMROOT/$NET/$envir"
   NWGES_BASEDIR="$NWGES/$envir/$NET"
+  ENSCTRL_NWGES_BASEDIR="${ENSCTRL_NWGES}/$envir/$NET"
   RRFSE_NWGES_BASEDIR="${RRFSE_NWGES}/$envir/$NET"
 
   LOGDIR="${COMROOT}/logs/${NET}/${RUN}.@Y@m@d/@H"

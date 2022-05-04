@@ -346,6 +346,12 @@ Call to executable to run No Var Cloud Analysis returned with nonzero exit code.
 #
 #-----------------------------------------------------------------------
 #
+# touch nonvarcldanl_complete.txt to indicate competion of this task
+#
+touch nonvarcldanl_complete.txt
+#
+#-----------------------------------------------------------------------
+#
 # Print message indicating successful completion of script.
 #
 #-----------------------------------------------------------------------

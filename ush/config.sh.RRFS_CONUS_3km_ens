@@ -42,7 +42,7 @@ VERBOSE="TRUE"
 RUN_ENVIR="nco"
 
 PREDEF_GRID_NAME=RRFS_CONUS_3km
-ADDNL_OUTPUT_GRIDS=( "hrrr" )
+ADDNL_OUTPUT_GRIDS=()
 
 TILE_LABELS="CONUS NE NC NW SE SC SW"
 TILE_SETS="full NE NC NW SE SC SW"
@@ -180,6 +180,7 @@ PTMP="YourOwnSpace/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains
 NWGES="YourOwnSpace/NCO_dirs/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 if [[ ${DO_RECENTER}  == "TRUE" ]]; then
   ENSCTRL_STMP="YourOwnSpace/NCO_dirs/stmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+  ENSCTRL_NWGES="YourOwnSpace/NCO_dirs/nwges"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
 fi
 
 if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then

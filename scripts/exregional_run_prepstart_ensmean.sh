@@ -93,8 +93,6 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 #-----------------------------------------------------------------------
 #
 # go to INPUT directory.
-# prepare member initial conditions for 
-#     warm start if BKTYPE=0
 #
 #-----------------------------------------------------------------------
 
@@ -103,66 +101,33 @@ cd_vrfy ${modelinputdir}
 #
 #--------------------------------------------------------------------
 #
-# loop through ensemble members to link all the member files
-#
-
-imem=1
-while [[ $imem -le ${NUM_ENS_MEMBERS} ]];
-  do
-  ensmem=$( printf "%04d" $imem ) 
-
+# link the deterministic (control) member restart files as the ensemble mean
+# to get the reference obs.input in the GSI observer run
 #
 #--------------------------------------------------------------------
 #
-# Setup the INPUT directory for warm start cycles, which can be spin-up cycle or product cycle.
-#
-# First decide the source of the first guess (fg_restart_dirname) depending on cycle_type and BKTYPE:
-#  1. If cycle is spinup cycle (cycle_type == spinup) or it is the product start cycle (BKTYPE==2),
-#             looking for the first guess from spinup forecast (fcst_fv3lam_spinup)
-#  2. Others, looking for the first guess from product forecast (fcst_fv3lam)
-#
-  fg_restart_dirname=fcst_fv3lam
 
-  bkpath=${CYCLE_DIR}/mem${ensmem}/${fg_restart_dirname}/INPUT  # cycling, use background from RESTART
+fg_restart_dirname=fcst_fv3lam
 
+YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
+bkpath=${ENSCTRL_NWGES_BASEDIR}/${YYYYMMDDHHmInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+
+#
 #   the restart file from FV3 has a name like: ${YYYYMMDD}.${HH}0000.fv_core.res.tile1.nc
-#   But the restart files for the forecast length has a name like: fv_core.res.tile1.nc
-#   So the defination of restart_prefix needs a "." at the end.
 #
 
-  checkfile=${bkpath}/fv_core.res.tile1.nc
-  checkfile1=${bkpath}/fv_tracer.res.tile1.nc
-  if [ -r "${checkfile}" ] && [ -r "${checkfile1}" ] ; then
-    ln_vrfy ${bkpath}/fv_core.res.tile1.nc       fv_core.res.tile1.nc_mem${ensmem}
-    ln_vrfy ${bkpath}/fv_tracer.res.tile1.nc     fv_tracer.res.tile1.nc_mem${ensmem}
-    ln_vrfy ${bkpath}/sfc_data.nc                sfc_data.nc_mem${ensmem}
-    ln_vrfy ${bkpath}/fv_srf_wnd.res.tile1.nc    fv_srf_wnd.res.tile1.nc_mem${ensmem}
-    ln_vrfy ${bkpath}/phy_data.nc                phy_data.nc_mem${ensmem}
-    if [ $imem == 1 ]; then
-      ln_vrfy ${bkpath}/coupler.res                coupler.res
-      ln_vrfy ${bkpath}/fv_core.res.nc             fv_core.res.nc
-      ln_vrfy ${bkpath}/gfs_ctrl.nc  gfs_ctrl.nc
-    fi
-  else
-    print_err_msg_exit "Error: cannot find background: ${checkfile}"
-  fi
+restart_prefix="${YYYYMMDD}.${HH}0000."
+checkfile=${bkpath}/${restart_prefix}coupler.res
+if [ -r "${checkfile}" ] ; then
+  ln_vrfy -snf ${bkpath}/${restart_prefix}fv_core.res.tile1.nc fv_core.res.tile1.nc
+  ln_vrfy -snf ${bkpath}/${restart_prefix}fv_tracer.res.tile1.nc fv_tracer.res.tile1.nc
+  ln_vrfy -snf ${bkpath}/${restart_prefix}sfc_data.nc sfc_data.nc
+  ln_vrfy -snf ${bkpath}/${restart_prefix}fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
+  ln_vrfy -snf ${bkpath}/${restart_prefix}phy_data.nc phy_data.nc
+else
+  print_err_msg_exit "Error: cannot find deterministic (control) warm start files from : ${bkpath}"
+fi
 
-#-----------------------------------------------------------------------
-#
-# next member
-  (( imem += 1 ))
-
- done
-#
-#-----------------------------------------------------------------------
-#
-# use member 1 to get the reference stat obs.input in the GSI observer run
-#
-ln_vrfy -snf fv_core.res.tile1.nc_mem0001 fv_core.res.tile1.nc
-ln_vrfy -snf fv_tracer.res.tile1.nc_mem0001 fv_tracer.res.tile1.nc
-ln_vrfy -snf sfc_data.nc_mem0001 sfc_data.nc
-ln_vrfy -snf fv_srf_wnd.res.tile1.nc_mem0001 fv_srf_wnd.res.tile1.nc
-ln_vrfy -snf phy_data.nc_mem0001 phy_data.nc
 #
 #-----------------------------------------------------------------------
 #

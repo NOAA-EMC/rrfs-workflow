@@ -89,6 +89,7 @@ Directories and files.
 <!ENTITY CYCLE_BASEDIR            "{{ cycle_basedir }}">
 <!ENTITY NWGES_BASEDIR            "{{ nwges_basedir }}">
 <!ENTITY ENSCTRL_CYCLE_BASEDIR    "{{ ensctrl_cycle_basedir }}">
+<!ENTITY ENSCTRL_NWGES_BASEDIR    "{{ ensctrl_nwges_basedir }}">
 <!ENTITY RRFSE_FG_ROOT            "{{ rrfse_nwges_basedir }}">
 {%- if is_rtma %}
 <!ENTITY FG_ROOT                  "{{ fg_rootdir }}">
@@ -1411,12 +1412,10 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-<!--
-    <envar><name>FG_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
-    <envar><name>LBCS_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
--->
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
     <envar><name>NUM_ENS_MEMBERS</name><value><cyclestr>#{{ num_ens_members }}#</cyclestr></value></envar>
+    <envar><name>ENSCTRL_NWGES_BASEDIR</name><value><cyclestr>&ENSCTRL_NWGES_BASEDIR;</cyclestr></value></envar>
+    <envar><name>ENSCTRL_NWGES_DIR</name><value><cyclestr>&ENSCTRL_NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
 
     <dependency>
          <and>
@@ -1426,6 +1425,7 @@ MODULES_RUN_TASK_FP script.
          {%- for m in range(1, num_ens_members+1) %}
          <taskdep task="&PREP_CYC_PROD_TN;_mem{{ "%04d" % m }}"/>
          {%- endfor %}
+         <datadep age="02:30"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&ENSCTRL_NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
          </and>
     </dependency>
 
@@ -1559,7 +1559,7 @@ MODULES_RUN_TASK_FP script.
           {%- for m in range(1, 10) %}
           <taskdep task="&RUN_WGRIB2_TN;_mem{{ "%04d" % m }}_f000"/>
           {%- endfor %}
-          <datadep age="00:00:00:05"><cyclestr>{{ ensctrl_stmp }}/@Y@m@d@H/postprd/RRFS_CONUS.t@Hz.bgdawpf000.tm00.grib2</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_CYCLE_BASEDIR;/@Y@m@d@H/postprd/RRFS_CONUS.t@Hz.bgdawpf000.tm00.grib2</cyclestr></datadep>
         </and>
       </dependency>
     </task>
@@ -1629,7 +1629,7 @@ MODULES_RUN_TASK_FP script.
     <dependency>
       <and>
         <taskdep task="&RUN_ENKFUPDT_TN;"/>
-        <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_CYCLE_BASEDIR;/@Y@m@d@H/anal_gsi/gsi_complete.txt</cyclestr></datadep>
+        <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_CYCLE_BASEDIR;/@Y@m@d@H/nonvar_cldanl/nonvarcldanl_complete.txt</cyclestr></datadep>
       </and>
     </dependency>
   </task>
