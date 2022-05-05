@@ -15,7 +15,7 @@ gsi_namelist="
    diag_precon=.true.,step_start=1.e-3,
    l4densvar=.false.,nhr_obsbin=3,
    use_gfs_nemsio=.false.,use_gfs_ncio=.true.,reset_bad_radbc=.true.,
-   netcdf_diag=.false.,
+   netcdf_diag=${netcdf_diag},binary_diag=${binary_diag},
    l_obsprvdiag=${l_obsprvdiag},
  /     
  &GRIDOPTS

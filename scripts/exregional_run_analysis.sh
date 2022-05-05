@@ -862,15 +862,15 @@ fi
 if [ $netcdf_diag = ".true." ]; then
    listallnc="conv_ps conv_q conv_t conv_uv"
 
-   cat_exec="${EXECDIR}/ncdiag_cat.x"
+   cat_exec="${EXECDIR}/nc_diag_cat.x"
 
    if [ -f $cat_exec ]; then
       print_info_msg "$VERBOSE" "
-        Copying the ncdiag_cat executable to the run directory..."
-      cp_vrfy ${cat_exec} ${analworkdir}/ncdiag_cat.x
+        Copying the nc_diag_cat executable to the run directory..."
+      cp_vrfy ${cat_exec} ${analworkdir}/nc_diag_cat.x
    else
       print_err_msg_exit "\
-        The ncdiag_cat executable specified in cat_exec does not exist:
+        The nc_diag_cat executable specified in cat_exec does not exist:
         cat_exec = \"$cat_exec\"
         Build GSI and rerun."
    fi
@@ -878,7 +878,7 @@ if [ $netcdf_diag = ".true." ]; then
    for type in $listallnc; do
       count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
       if [[ $count -gt 0 ]]; then
-         ./ncdiag_cat.x -o ncdiag_${type}_${string}.nc4.${YYYYMMDDHH} pe*.${type}_${loop}.nc4
+         ${APRUN} ./nc_diag_cat.x -o ncdiag_${type}_${string}.nc4.${YYYYMMDDHH} pe*.${type}_${loop}.nc4
       fi
    done
 fi

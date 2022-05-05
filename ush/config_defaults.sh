@@ -588,6 +588,8 @@ write_diag_2=.false.
 bkgerr_vs=1.0
 bkgerr_hzscl=0.7,1.4,2.80   #no trailing ,
 usenewgfsberror=.true.
+netcdf_diag=.false.
+binary_diag=.true.
 
 # &HYBRID_ENSEMBLE
 readin_localization=.true.     #if true, it overwrites the "beta1_inv/ens_h/ens_v" setting
