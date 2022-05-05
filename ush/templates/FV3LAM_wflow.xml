@@ -1365,12 +1365,40 @@ MODULES_RUN_TASK_FP script.
 
   </task>
 
+{%- if do_ensemble %}
+  </metatask>
+{%- endif %}
+
 {%- if machine in ["JET", "HERA"]  %}
+
+{%- if do_ensemble %}
 <!--
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&ARCHIVE_TN;{{ uscore_ensmem_name }}" cycledefs="archive" maxtries="{{ maxtries_run_post }}">
+  <task name="&ARCHIVE_TN;_ens" cycledefs="archive" maxtries="{{ maxtries_run_post }}">
+
+    &RSRV_HPSS;
+
+    <command>&JOBSDIR;/../scripts/exregional_archive_ens.ksh</command>
+    <cores>1</cores>
+    <walltime>06:00:00</walltime>
+    <memory>24G</memory>
+    <jobname>&TAG;_&ARCHIVE_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&ARCHIVE_TN;_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
+
+  </task>
+
+{%- else %}
+
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&ARCHIVE_TN;" cycledefs="archive" maxtries="{{ maxtries_run_post }}">
 
     &RSRV_HPSS;
 
@@ -1378,17 +1406,13 @@ MODULES_RUN_TASK_FP script.
     <cores>1</cores>
     <walltime>04:00:00</walltime>
     <memory>24G</memory>
-    <jobname>&TAG;_&ARCHIVE_TN;{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&ARCHIVE_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&TAG;_&ARCHIVE_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&ARCHIVE_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
 
   </task>
-
 {%- endif %}
-
-{%- if do_ensemble %}
-  </metatask>
 {%- endif %}
 
 {%- if do_gsiobserver %}
