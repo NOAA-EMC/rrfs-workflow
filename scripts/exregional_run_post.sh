@@ -58,7 +58,6 @@ the output files corresponding to a specified forecast hour.
 valid_args=( \
 "cdate" \
 "run_dir" \
-"nwges_dir" \
 "postprd_dir" \
 "comout" \
 "fhr_dir" \
@@ -204,102 +203,6 @@ cat > itag <<EOF
  /
 EOF
 
-# 
-#-----------------------------------------------------------------------
-#
-# Let save the restart files if needed before run post.
-# This part will copy or move restart files matching the forecast hour
-# this post will process to the nwges directory. The nwges is used to 
-# stage the restart files for a long time. 
-#-----------------------------------------------------------------------
-#
-filelist="fv_core.res.nc coupler.res"
-filelistn="fv_core.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_tracer.res.tile1.nc phy_data.nc sfc_data.nc"
-filelistcold="gfs_data.tile7.halo0.nc sfc_data.tile7.halo0.nc"
-n_iolayouty=$(($IO_LAYOUT_Y-1))
-list_iolayout=$(seq 0 $n_iolayouty)
-
-restart_prefix=${post_yyyy}${post_mm}${post_dd}.${post_hh}0000
-if [ ! -r ${nwges_dir}/INPUT/gfs_ctrl.nc ]; then
-  cp_vrfy $run_dir/INPUT/gfs_ctrl.nc ${nwges_dir}/INPUT/gfs_ctrl.nc
-  if [ -r ${run_dir}/INPUT/coupler.res ]; then  # warm start
-    for file in ${filelist}; do
-      cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
-    done
-    if [ "${IO_LAYOUT_Y}" == "1" ]; then
-      for file in ${filelistn}; do
-        cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
-      done
-    else
-      for file in ${filelistn}; do
-        for ii in ${list_iolayout}
-        do
-          iii=$(printf %4.4i $ii)
-         cp_vrfy $run_dir/INPUT/${file}.${iii} ${nwges_dir}/INPUT/${file}.${iii}
-        done
-      done
-    fi
-  else  # cold start
-    for file in ${filelistcold}; do
-      cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
-    done
-  fi
-fi
-if [ -r "$run_dir/RESTART/${restart_prefix}.coupler.res" ]; then
-  for file in ${filelist}; do
-    mv_vrfy $run_dir/RESTART/${restart_prefix}.${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
-  done
-  if [ "${IO_LAYOUT_Y}" == "1" ]; then
-    for file in ${filelistn}; do
-      mv_vrfy $run_dir/RESTART/${restart_prefix}.${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
-    done
-  else
-    for file in ${filelistn}; do
-      for ii in ${list_iolayout}
-      do
-        iii=$(printf %4.4i $ii)
-        mv_vrfy $run_dir/RESTART/${restart_prefix}.${file}.${iii} ${nwges_dir}/RESTART/${restart_prefix}.${file}.${iii}
-      done
-    done
-  fi
-  echo " ${fhr} forecast from ${yyyymmdd}${hh} is ready " #> ${nwges_dir}/RESTART/restart_done_f${fhr}
-else
-
-  FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS}
-  if [ ${cycle_type} == "spinup" ]; then
-    FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS_SPINUP}
-  else
-    num_fhrs=( "${#FCST_LEN_HRS_CYCLES[@]}" )
-    ihh=`expr ${hh} + 0`
-    if [ ${num_fhrs} -gt ${ihh} ]; then
-       FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS_CYCLES[${ihh}]}
-    fi
-  fi
-  print_info_msg "$VERBOSE" " The forecast length for cycle (\"${hh}\") is
-                 ( \"${FCST_LEN_HRS_thiscycle}\") "
-
-  if [ -r "$run_dir/RESTART/coupler.res" ] && [ ${fhr} -eq ${FCST_LEN_HRS_thiscycle} ] ; then
-    for file in ${filelist}; do
-       mv_vrfy $run_dir/RESTART/${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
-    done
-    if [ "${IO_LAYOUT_Y}" == "1" ]; then
-      for file in ${filelistn}; do
-        mv_vrfy $run_dir/RESTART/${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
-      done
-    else
-      for file in ${filelistn}; do
-        for ii in ${list_iolayout}
-        do
-          iii=$(printf %4.4i $ii)
-          mv_vrfy $run_dir/RESTART/${file}.${iii} ${nwges_dir}/RESTART/${restart_prefix}.${file}.${iii}
-        done
-      done
-    fi
-    echo " ${fhr} forecast from ${yyyymmdd}${hh} is ready " #> ${nwges_dir}/RESTART/restart_done_f${fhr}
-  else
-    echo "This forecast hour does not need to save restart: ${yyyymmdd}${hh}f${fhr}"
-  fi
-fi
 #
 #-----------------------------------------------------------------------
 #

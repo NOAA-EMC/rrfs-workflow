@@ -3,8 +3,7 @@
 #
 #-----------------------------------------------------------------------
 #
-# This script runs the post-processor (UPP) on the NetCDF output files
-# of the write component of the FV3-LAM model.
+# This script runs the save_restart to save restart files to nwges
 #
 #-----------------------------------------------------------------------
 #
@@ -64,49 +63,22 @@ on the output files corresponding to a specified forecast hour.
 #   spinup: this job is for spin-up cycles
 #   others(prod): this job is for product cycle
 #
+# NWGES_DIR is the directory in which the model restart file will be saved
+#
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ ${CYCLE_TYPE} == "spinup" ]; then
   run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_spinup"
+  nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_spinup"
 else
   run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
+  nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
 fi
-#
-#-----------------------------------------------------------------------
-#
-# If it doesn't already exist, create the directory (postprd_dir) in which 
-# to store post-processing output.  (Note that postprd_dir may already 
-# have been created by this post-processing script run for a different 
-# forecast hour of the same cycle and/or ensemble member.)  Also, create 
-# a temporary work directory (fhr_dir) for the current forecast hour.  
-# fhr_dir will be deleted later after the processing for the current 
-# forecast hour is complete.  Then change location to fhr_dir.
-#
-# Note that there may be a preexisting version of fhr_dir from previous 
-# runs of this script for the current forecast hour (and current cycle), 
-# e.g. from the workflow task that runs this script failing and then being 
-# called again.  Thus, we first make sure preexisting versions are deleted.
-#
-#-----------------------------------------------------------------------
-#
+
 if [ "${RUN_ENVIR}" = "nco" ]; then
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
-  if [ ${CYCLE_TYPE} == "spinup" ]; then
-    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
-  fi
-  mkdir_vrfy -p "${COMOUT}"
+   mkdir_vrfy -p "${nwges_dir}/RESTART"
+   mkdir_vrfy -p "${nwges_dir}/INPUT"
 fi
 
-postprd_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/postprd"
-if [ ${CYCLE_TYPE} == "spinup" ]; then
-  postprd_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/postprd_spinup"
-fi
-mkdir_vrfy -p "${postprd_dir}"
-
-fhr_dir="${postprd_dir}/$fhr"
-check_for_preexist_dir_file "${fhr_dir}" "delete"
-mkdir_vrfy -p "${fhr_dir}"
-
-cd_vrfy "${fhr_dir}"
 #
 #-----------------------------------------------------------------------
 #
@@ -129,14 +101,11 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSDIR/exregional_run_post.sh \
+$SCRIPTSDIR/exregional_save_restart.sh \
   cdate="${CDATE}" \
   run_dir="${run_dir}" \
-  postprd_dir="${postprd_dir}" \
-  comout="${COMOUT}" \
-  fhr_dir="${fhr_dir}" \
+  nwges_dir="${nwges_dir}" \
   fhr="${fhr}" \
-  tmmark="${TMMARK}" \
   cycle_type="${CYCLE_TYPE}" || \
 print_err_msg_exit "\
 Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."

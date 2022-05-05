@@ -216,6 +216,7 @@ settings="\
   'radar_refl2tten': ${RADAR_REFL2TTEN_TN}
   'cldanl_nonvar': ${CLDANL_NONVAR_TN}
   'run_bufrsnd_tn': ${RUN_BUFRSND_TN}
+  'save_restart': ${SAVE_RESTART_TN}
   'tag': ${TAG}
 #
 # Number of nodes to use for each task.
@@ -241,6 +242,7 @@ settings="\
   'nnodes_run_nonvarcldanl': ${NNODES_RUN_NONVARCLDANL}
   'nnodes_run_graphics': ${NNODES_RUN_GRAPHICS}
   'nnodes_run_bufrsnd': ${NNODES_RUN_BUFRSND}
+  'nnodes_save_restart': ${NNODES_SAVE_RESTART}
 #
 # Number of cores used for a task
 #
@@ -276,6 +278,7 @@ settings="\
   'ppn_run_nonvarcldanl': ${PPN_RUN_NONVARCLDANL}
   'ppn_run_graphics': ${PPN_RUN_GRAPHICS}
   'ppn_run_bufrsnd': ${PPN_RUN_BUFRSND}
+  'ppn_save_restart': ${PPN_SAVE_RESTART}
 #
 # Maximum wallclock time for each task.
 #
@@ -300,6 +303,7 @@ settings="\
   'wtime_run_ref2tten': ${WTIME_RUN_REF2TTEN}
   'wtime_run_nonvarcldanl': ${WTIME_RUN_NONVARCLDANL}
   'wtime_run_bufrsnd': ${WTIME_RUN_BUFRSND}
+  'wtime_save_restart': ${WTIME_SAVE_RESTART}
 #
 # Maximum memory for each task.
 #
@@ -330,6 +334,7 @@ settings="\
   'maxtries_process_bufr': ${MAXTRIES_PROCESS_BUFR}
   'maxtries_radar_ref2tten': ${MAXTRIES_RADAR_REF2TTEN}
   'maxtries_cldanl_nonvar': ${MAXTRIES_CLDANL_NONVAR}
+  'maxtries_save_restart': ${MAXTRIES_SAVE_RESTART}
 #
 # Flags that specify whether to run the preprocessing tasks.
 #
@@ -381,6 +386,7 @@ settings="\
   'cycl_hrs': [ $( printf "\'%s\', " "${CYCL_HRS[@]}" ) ]
   'cycl_hrs_spinstart': [ $( printf "\'%s\', " "${CYCL_HRS_SPINSTART[@]}" ) ]
   'cycl_hrs_prodstart': [ $( printf "\'%s\', " "${CYCL_HRS_PRODSTART[@]}" ) ]
+  'restart_hrs_prod': ${RESTART_INTERVAL}
   'cycl_freq': !!str 12:00:00
   'at_start_cycledef': ${AT_START_CYCLEDEF}
   'initial_cycledef': ${INITIAL_CYCLEDEF}

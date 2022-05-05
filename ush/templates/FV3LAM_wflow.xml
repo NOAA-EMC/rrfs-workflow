@@ -52,6 +52,7 @@ Workflow task names.
 <!ENTITY PROCESS_BUFR_TN      "{{ process_bufr }}">
 <!ENTITY RADAR_REFL2TTEN_TN   "{{ radar_refl2tten }}">
 <!ENTITY CLDANL_NONVAR_TN     "{{ cldanl_nonvar }}">
+<!ENTITY SAVE_RESTART_TN     "{{ save_restart }}">
 
 <!ENTITY RUN_PREPSTART_TN     "run_prepstart">
 <!ENTITY RUN_ANAL_TN          "run_anal_gsi">
@@ -150,6 +151,7 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 <!ENTITY DEADLINE_POST     "999:00:00">
 <!ENTITY DEADLINE_GRAPHICS "999:00:00">
 <!ENTITY DEADLINE_RECENTER "999:00:00">
+<!ENTITY DEADLINE_SAVE_RESTART "999:00:00">
 {% else %}
 <!ENTITY DEADLINE_PRE      "16:00:00">
 <!ENTITY DEADLINE_ANAL     "16:00:00">
@@ -157,6 +159,7 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 <!ENTITY DEADLINE_POST     "24:00:00">
 <!ENTITY DEADLINE_GRAPHICS "24:00:00">
 <!ENTITY DEADLINE_RECENTER "24:00:00">
+<!ENTITY DEADLINE_SAVE_RESTART "24:00:00">
 {% endif %}
 
 <!ENTITY START_TIME_SPINUP "01:10:00">
@@ -175,6 +178,7 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 <!ENTITY WALL_LIMIT_BUFR ''>
 <!ENTITY WALL_LIMIT_GRAPHICS ''>
 <!ENTITY WALL_LIMIT_RECENTER ''>
+<!ENTITY WALL_LIMIT_SAVE_RESTART ''>
 {% else %}
 <!ENTITY WALL_LIMIT_PRE '<deadline><cyclestr offset="&DEADLINE_PRE;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_ANAL '<deadline><cyclestr offset="&DEADLINE_ANAL;">@Y@m@d@H@M</cyclestr></deadline>'>
@@ -183,6 +187,7 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 <!ENTITY WALL_LIMIT_BUFR '<deadline><cyclestr offset="&DEADLINE_POST;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_GRAPHICS '<deadline><cyclestr offset="&DEADLINE_GRAPHICS;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_RECENTER '<deadline><cyclestr offset="&DEADLINE_RECENTER;">@Y@m@d@H@M</cyclestr></deadline>'>
+<!ENTITY WALL_LIMIT_SAVE_RESTART '<deadline><cyclestr offset="&DEADLINE_SAVE_RESTART;">@Y@m@d@H@M</cyclestr></deadline>'>
 {% endif %}
 
 
@@ -1117,6 +1122,49 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
+  <metatask name="&SAVE_RESTART_TN;_prod">
+
+    <var name="fhr"> {{ restart_hrs_prod }} </var>
+
+    <task name="&SAVE_RESTART_TN;_prod{{ uscore_ensmem_name }}_f#fhr#" cycledefs="prodcyc" maxtries="{{ maxtries_save_restart }}">
+
+      &RSRV_DEFAULT;
+      &WALL_LIMIT_SAVE_RESTART;
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSDIR;/JREGIONAL_SAVE_RESTART"</command>
+      <nodes>{{ nnodes_save_restart }}:ppn={{ ppn_save_restart }}</nodes>
+      <walltime>{{ wtime_save_restart }}</walltime>
+      <nodesize>&NCORES_PER_NODE;</nodesize>
+      <jobname>&TAG;_&SAVE_RESTART_TN;{{ uscore_ensmem_name }}_f#fhr#</jobname>
+      <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
+
+      <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+      <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+      <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+      <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+      <envar><name>fhr</name><value>#fhr#</value></envar>
+      <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
+
+      <dependency>
+        <and>
+          <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
+          <or>
+            <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/RESTART/coupler.res</cyclestr></datadep>
+            <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          </or>
+        </and>
+      </dependency>
+
+    </task>
+
+  </metatask>
+
+<!--
+************************************************************************
+************************************************************************
+-->
 
   <metatask name="&RUN_POST_TN;{{ uscore_ensmem_name }}">
 
@@ -1146,9 +1194,7 @@ MODULES_RUN_TASK_FP script.
 
       <dependency>
        <or>
-        <datadep age="06:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/logf#fhr#</cyclestr></datadep>
-        <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/RESTART/coupler.res</cyclestr></datadep>
-        <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+        <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/logf#fhr#</cyclestr></datadep>
        </or>
       </dependency>
 
@@ -1279,6 +1325,46 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
+
+  <metatask name="&SAVE_RESTART_TN;_spinup">
+
+    <var name="fhr"> {% for h in range(da_cycle_interval_hrs, fcst_len_hrs_spinup+da_cycle_interval_hrs, da_cycle_interval_hrs) %}{{ " %03d" % h  }}{% endfor %} </var>
+
+    <task name="&SAVE_RESTART_TN;_spinup{{ uscore_ensmem_name }}_f#fhr#" cycledefs="spinupcyc" maxtries="{{ maxtries_save_restart }}">
+
+      &RSRV_DEFAULT;
+      &WALL_LIMIT_SAVE_RESTART;
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSDIR;/JREGIONAL_SAVE_RESTART"</command>
+      <nodes>{{ nnodes_save_restart }}:ppn={{ ppn_save_restart }}</nodes>
+      <walltime>{{ wtime_save_restart }}</walltime>
+      <nodesize>&NCORES_PER_NODE;</nodesize>
+      <jobname>&TAG;_&SAVE_RESTART_TN;{{ uscore_ensmem_name }}_f#fhr#</jobname>
+      <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;_spinup{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
+
+      <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+      <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+      <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+      <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+      <envar><name>fhr</name><value>#fhr#</value></envar>
+      <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
+
+      <dependency>
+        <and>
+          <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
+          <or>
+            <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam_spinup/RESTART/coupler.res</cyclestr></datadep>
+            <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam_spinup/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          </or>
+        </and>
+      </dependency>
+
+    </task>
+
+  </metatask>
+
   <metatask name="&RUN_POST_TN;_spinup">
 
     <var name="fhr"> {% for h in range(0, fcst_len_hrs_spinup+1) %}{{ " %03d" % h  }}{% endfor %} </var>
