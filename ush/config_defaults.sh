@@ -1856,23 +1856,89 @@ LBCS_ICS_ONLY="FALSE"
 #
 #-----------------------------------------------------------------------
 #
-DO_SHUM="false"
-DO_SPPT="false"
-DO_SKEB="false"
+DO_SHUM="FALSE"
+DO_SPPT="FALSE"
+DO_SKEB="FALSE"
+ISEED_SPPT="1"
+ISEED_SHUM="2"
+ISEED_SKEB="3"
+NEW_LSCALE="TRUE"
 SHUM_MAG="0.006" #Variable "shum" in input.nml
 SHUM_LSCALE="150000"
 SHUM_TSCALE="21600" #Variable "shum_tau" in input.nml
 SHUM_INT="3600" #Variable "shumint" in input.nml
-SPPT_MAG="1.0" #Variable "sppt" in input.nml
+SPPT_MAG="0.7" #Variable "sppt" in input.nml
+SPPT_LOGIT="TRUE"
 SPPT_LSCALE="150000"
 SPPT_TSCALE="21600" #Variable "sppt_tau" in input.nml
 SPPT_INT="3600" #Variable "spptint" in input.nml
+SPPT_SFCLIMIT="TRUE"
 SKEB_MAG="0.5" #Variable "skeb" in input.nml
 SKEB_LSCALE="150000"
 SKEB_TSCALE="21600" #Variable "skeb_tau" in input.nml
 SKEB_INT="3600" #Variable "skebint" in input.nml
+SKEBNORM="1"
 SKEB_VDOF="10"
-USE_ZMTNBLCK="false"
+USE_ZMTNBLCK="FALSE"
+#
+#-----------------------------------------------------------------------
+#
+# Set default SPP stochastic physics options. Each SPP option is an array,  
+# applicable (in order) to the scheme/parameter listed in SPP_VAR_LIST. 
+# Enter each value of the array in config.sh as shown below without commas
+# or single quotes (e.g., SPP_VAR_LIST=( "pbl" "sfc" "mp" "rad" "gwd" ). 
+# Both commas and single quotes will be added by Jinja when creating the
+# namelist.
+#
+# Note that SPP is currently only available for specific physics schemes 
+# used in the RAP/HRRR physics suite.  Users need to be aware of which SDF
+# is chosen when turning this option on. 
+#
+# Patterns evolve and are applied at each time step.
+#
+#-----------------------------------------------------------------------
+#
+DO_SPP="FALSE"
+SPP_VAR_LIST=( "pbl" "sfc" "mp" "rad" "gwd" ) 
+SPP_MAG_LIST=( "0.2" "0.2" "0.75" "0.2" "0.2" ) #Variable "spp_prt_list" in input.nml
+SPP_LSCALE=( "150000.0" "150000.0" "150000.0" "150000.0" "150000.0" )
+SPP_TSCALE=( "21600.0" "21600.0" "21600.0" "21600.0" "21600.0" ) #Variable "spp_tau" in input.nml
+SPP_SIGTOP1=( "0.1" "0.1" "0.1" "0.1" "0.1")
+SPP_SIGTOP2=( "0.025" "0.025" "0.025" "0.025" "0.025" )
+SPP_STDDEV_CUTOFF=( "1.5" "1.5" "2.5" "1.5" "1.5" ) 
+ISEED_SPP=( "4" "5" "6" "7" "8" )
+#
+#-----------------------------------------------------------------------
+#
+# Turn on SPP in Noah or RUC LSM (support for Noah MP is in progress).
+# Please be aware of the SDF that you choose if you wish to turn on LSM
+# SPP.
+#
+# SPP in LSM schemes is handled in the &nam_sfcperts namelist block 
+# instead of in &nam_sppperts, where all other SPP is implemented.
+#
+# The default perturbation frequency is determined by the fhcyc namelist 
+# entry.  Since that parameter is set to zero in the SRW App, use 
+# LSM_SPP_EACH_STEP to perturb every time step. 
+#
+# Perturbations to soil moisture content (SMC) are only applied at the  
+# first time step.
+#
+# LSM perturbations include SMC - soil moisture content (volume fraction),
+# VGF - vegetation fraction, ALB - albedo, SAL - salinity, 
+# EMI - emissivity, ZOL - surface roughness (cm), and STC - soil temperature.
+#
+# Only five perturbations at a time can be applied currently, but all seven
+# are shown below.  In addition, only one unique iseed value is allowed 
+# at the moment, and is used for each pattern.
+#
+DO_LSM_SPP="FALSE" #If true, sets lndp_type=2
+LSM_SPP_TSCALE=( "21600" "21600" "21600" "21600" "21600" "21600" "21600" )
+LSM_SPP_LSCALE=( "150000" "150000" "150000" "150000" "150000" "150000" "150000" )
+ISEED_LSM_SPP=( "9" )
+LSM_SPP_VAR_LIST=( "smc" "vgf" "alb" "sal" "emi" "zol" "stc" )
+LSM_SPP_MAG_LIST=( "0.2" "0.001" "0.001" "0.001" "0.001" "0.001" "0.2" )
+LSM_SPP_EACH_STEP="TRUE" #Sets lndp_each_step=.true.
 #
 #-----------------------------------------------------------------------
 # 

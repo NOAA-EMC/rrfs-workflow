@@ -777,23 +777,13 @@ settings="\
     'do_shum': ${DO_SHUM},
     'do_sppt': ${DO_SPPT},
     'do_skeb': ${DO_SKEB},
+    'do_spp': ${DO_SPP},
+    'n_var_spp': ${N_VAR_SPP},
+    'n_var_lndp': ${N_VAR_LNDP},
+    'lndp_type': ${LNDP_TYPE},
+    'lndp_each_step': ${LSM_SPP_EACH_STEP},
+    'fhcyc': ${FHCYC_LSM_SPP_OR_NOT},
     'print_diff_pgr': ${PRINT_DIFF_PGR},
-  }
-'nam_stochy': {
-    'shum': ${SHUM_MAG},
-    'shum_lscale': ${SHUM_LSCALE},
-    'shum_tau': ${SHUM_TSCALE},
-    'shumint': ${SHUM_INT},
-    'sppt': ${SPPT_MAG},
-    'sppt_lscale': ${SPPT_LSCALE},
-    'sppt_tau': ${SPPT_TSCALE},
-    'spptint': ${SPPT_INT},
-    'skeb': ${SKEB_MAG},
-    'skeb_lscale': ${SKEB_LSCALE},
-    'skeb_tau': ${SKEB_TSCALE},
-    'skebint': ${SKEB_INT},
-    'skeb_vdof': ${SKEB_VDOF},
-    'use_zmtnblck': ${USE_ZMTNBLCK},
   }"
 #
 # Add to "settings" the values of those namelist variables that specify
@@ -849,7 +839,91 @@ done
 #
 settings="$settings
   }"
+#
+# Add the relevant tendency-based stochastic physics namelist variables to
+# "settings" when running with SPPT, SHUM, or SKEB turned on. If running 
+# with SPP or LSM SPP, set the "new_lscale" variable.  Otherwise only 
+# include an empty "nam_stochy" stanza. 
+#
+settings="$settings
+'nam_stochy': {"
+if [ "${DO_SPPT}" = "TRUE" ]; then 
+    settings="$settings
+    'iseed_sppt': ${ISEED_SPPT},
+    'new_lscale': ${NEW_LSCALE},
+    'sppt': ${SPPT_MAG},
+    'sppt_logit': ${SPPT_LOGIT},
+    'sppt_lscale': ${SPPT_LSCALE},
+    'sppt_sfclimit': ${SPPT_SFCLIMIT},
+    'sppt_tau': ${SPPT_TSCALE},
+    'spptint': ${SPPT_INT},
+    'use_zmtnblck': ${USE_ZMTNBLCK},"
+fi
 
+if [ "${DO_SHUM}" = "TRUE" ]; then 
+    settings="$settings
+    'iseed_shum': ${ISEED_SHUM},
+    'new_lscale': ${NEW_LSCALE},
+    'shum': ${SHUM_MAG},
+    'shum_lscale': ${SHUM_LSCALE},
+    'shum_tau': ${SHUM_TSCALE},
+    'shumint': ${SHUM_INT},"
+fi
+
+if [ "${DO_SKEB}" = "TRUE" ]; then
+    settings="$settings
+    'iseed_skeb': ${ISEED_SKEB},
+    'new_lscale': ${NEW_LSCALE},
+    'skeb': ${SKEB_MAG},
+    'skeb_lscale': ${SKEB_LSCALE},
+    'skebnorm': ${SKEBNORM},
+    'skeb_tau': ${SKEB_TSCALE},
+    'skebint': ${SKEB_INT},
+    'skeb_vdof': ${SKEB_VDOF},"
+fi
+
+if [ "${DO_SPP}" = "TRUE" ] || [ "${DO_LSM_SPP}" = "TRUE" ]; then
+    settings="$settings
+    'new_lscale': ${NEW_LSCALE},"
+fi
+settings="$settings
+  }"
+#
+# Add the relevant SPP namelist variables to "settings" when running with
+# SPP turned on.  Otherwise only include an empty "nam_sppperts" stanza.
+#
+settings="$settings
+'nam_sppperts': {"
+if [ "${DO_SPP}" = "TRUE" ]; then
+    settings="$settings
+    'iseed_spp': [ $( printf "%s, " "${ISEED_SPP[@]}" ) ],
+    'spp_lscale': [ $( printf "%s, " "${SPP_LSCALE[@]}" ) ],
+    'spp_prt_list': [ $( printf "%s, " "${SPP_MAG_LIST[@]}" ) ],
+    'spp_sigtop1': [ $( printf "%s, " "${SPP_SIGTOP1[@]}" ) ],
+    'spp_sigtop2': [ $( printf "%s, " "${SPP_SIGTOP2[@]}" ) ],
+    'spp_stddev_cutoff': [ $( printf "%s, " "${SPP_STDDEV_CUTOFF[@]}" ) ],
+    'spp_tau': [ $( printf "%s, " "${SPP_TSCALE[@]}" ) ],
+    'spp_var_list': [ $( printf "%s, " "${SPP_VAR_LIST[@]}" ) ],"
+fi
+settings="$settings
+  }"
+#
+# Add the relevant LSM SPP namelist variables to "settings" when running with
+# LSM SPP turned on.
+#
+settings="$settings
+'nam_sfcperts': {"
+if [ "${DO_LSM_SPP}" = "TRUE" ]; then
+    settings="$settings
+    'lndp_type': ${LNDP_TYPE},
+    'lndp_tau': [ $( printf "%s, " "${LSM_SPP_TSCALE[@]}" ) ],
+    'lndp_lscale': [ $( printf "%s, " "${LSM_SPP_LSCALE[@]}" ) ],
+    'iseed_lndp': [ $( printf "%s, " "${ISEED_LSM_SPP[@]}" ) ],
+    'lndp_var_list': [ $( printf "%s, " "${LSM_SPP_VAR_LIST[@]}" ) ],
+    'lndp_prt_list': [ $( printf "%s, " "${LSM_SPP_MAG_LIST[@]}" ) ],"
+fi
+settings="$settings
+  }"
 print_info_msg $VERBOSE "
 The variable \"settings\" specifying values of the namelist variables
 has been set as follows:
