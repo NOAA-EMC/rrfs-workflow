@@ -1102,7 +1102,7 @@ MODULES_RUN_TASK_FP script.
         <taskdep task="&CLDANL_NONVAR_TN;_#type#{{ uscore_ensmem_name }}"/>
         {%- else %}
         {%- if do_recenter%}
-          <taskdep task="&RUN_RECENTER_TN;"/>
+          <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H/recenter/fcst_fv3lam/INPUT/recenter_complete.txt</cyclestr></datadep>
         {%- else %}
           <taskdep task="&RUN_ENKFUPDT_TN;"/>
         {%- endif %}
@@ -1553,7 +1553,7 @@ MODULES_RUN_TASK_FP script.
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_RUN_ANAL"</command>
     {% if machine in ["JET", "HERA"] -%}
     <cores>{{ ncores_run_observer }}</cores>
-    <native>{{ native_run_anal }}</native>
+    <native>{{ native_run_anal }} &RRFS_RESERVE;</native>
     {% else -%}
     <nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}</nodes>
     <nodesize>&NCORES_PER_NODE;</nodesize>
@@ -1603,7 +1603,7 @@ MODULES_RUN_TASK_FP script.
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_RUN_ANAL"</command>
     {% if machine in ["JET", "HERA"] -%}
     <cores>{{ ncores_run_observer }}</cores>
-    <native>{{ native_run_anal }}</native>
+    <native>{{ native_run_anal }} &RRFS_RESERVE;</native>
     {% else -%}
     <nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}</nodes>
     <nodesize>&NCORES_PER_NODE;</nodesize>

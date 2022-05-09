@@ -1,11 +1,11 @@
 MACHINE="jet"
 ACCOUNT="nrtrr"
-#RESERVATION="rrfsdet"
-EXPT_BASEDIR="YourOwnSpace"
-EXPT_SUBDIR="RRFS_CONUS_3km_ens"
+RESERVATION="rrfsens"
+EXPT_BASEDIR="/misc/whome/wrfruc/RRFSE/"
+EXPT_SUBDIR="RRFS_CONUS_3km_ens.00Z"
 
 if [[ -n $RESERVATION ]] ; then
-  ACCOUNT=rtrr
+  ACCOUNT=rtwrfruc
   SERVICE_ACCOUNT=nrtrr
   PARTITION_DEFAULT=kjet
   PARTITION_FCST=kjet
@@ -51,7 +51,7 @@ DO_ENSEMBLE="TRUE"
 #DO_DACYCLE="TRUE"
 #DO_SURFACE_CYCLE="TRUE"
 #DO_SPINUP="TRUE"
-DO_RETRO="TRUE"
+#DO_RETRO="TRUE"
 #DO_NONVAR_CLDANAL="TRUE"
 #DO_REFL2TTEN="FALSE"
 #RADARREFL_TIMELEVEL=(0)
@@ -62,42 +62,44 @@ DO_RETRO="TRUE"
 QUILTING="TRUE"
 CCPP_PHYS_SUITE="FV3_HRRR"
 
-EXTRN_MDL_ICS_OFFSET_HRS="9"
-LBC_SPEC_INTVL_HRS="1"
-EXTRN_MDL_LBCS_OFFSET_HRS="9"
-BOUNDARY_LEN_HRS="18"
+EXTRN_MDL_ICS_OFFSET_HRS="30"
+LBC_SPEC_INTVL_HRS="3"
+EXTRN_MDL_LBCS_OFFSET_HRS="12"
+BOUNDARY_LEN_HRS="36"
 
 # avaialble retro period:
 # 20210511-20210531; 20210718-20210801
-DATE_FIRST_CYCL="20220404"
-DATE_LAST_CYCL="20220404"
+DATE_FIRST_CYCL="20220508"
+DATE_LAST_CYCL="20220630"
 CYCL_HRS=( "00" "12" )
-CYCL_HRS=( "21" )
+CYCL_HRS=( "18" )
 CYCL_HRS_SPINSTART=("03" "15")
 CYCL_HRS_PRODSTART=("09" "21")
-CYCL_HRS_PRODSTART=("21")
+CYCL_HRS_PRODSTART=("18")
 #CYCLEMONTH="5"
 #CYCLEDAY="11-12"
 
 PREEXISTING_DIR_METHOD="upgrade" # "rename"
-INITIAL_CYCLEDEF="${DATE_FIRST_CYCL}2100 ${DATE_LAST_CYCL}2300 12:00:00"
-BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}2100 ${DATE_LAST_CYCL}2300 12:00:00"
-PROD_CYCLEDEF="${DATE_FIRST_CYCL}2100 ${DATE_LAST_CYCL}2300 01:00:00"
-POSTPROC_CYCLEDEF="${DATE_FIRST_CYCL}2100 ${DATE_LAST_CYCL}2300 01:00:00"
+#INITIAL_CYCLEDEF="${DATE_FIRST_CYCL}1800 ${DATE_LAST_CYCL}2300 24:00:00"
+BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 24:00:00"
+#PROD_CYCLEDEF="${DATE_FIRST_CYCL}2100 ${DATE_LAST_CYCL}2300 01:00:00"
+#POSTPROC_CYCLEDEF="${DATE_FIRST_CYCL}2100 ${DATE_LAST_CYCL}2300 01:00:00"
+PROD_CYCLEDEF="00 00 * 5-6 2022 *"
+POSTPROC_CYCLEDEF="00 00 * 5-6 2022 *"
 #POSTPROC_LONG_CYCLEDEF="${DATE_FIRST_CYCL}0900 ${DATE_LAST_CYCL}2300 03:00:00"
-#ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}0700 ${DATE_LAST_CYCL}2300 24:00:00"
+#ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 24:00:00"
 if [[ $DO_SPINUP == "TRUE" ]] ; then
   SPINUP_CYCLEDEF="00 03-08,15-20 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
 fi
 
-FCST_LEN_HRS="1"
+FCST_LEN_HRS="36"
 FCST_LEN_HRS_SPINUP="1"
-POSTPROC_LEN_HRS="1"
-POSTPROC_LONG_LEN_HRS="24"
+POSTPROC_LEN_HRS="36"
+POSTPROC_LONG_LEN_HRS="36"
 #FCST_LEN_HRS_CYCLES=(48 18 18 18 18 18 48 18 18 18 18 18 48 18 18 18 18 18 48 18 18 18 18 18)
 for i in {0..23}; do FCST_LEN_HRS_CYCLES[$i]=1; done
 for i in {0..23..3}; do FCST_LEN_HRS_CYCLES[$i]=1; done
-for i in 0; do FCST_LEN_HRS_CYCLES[$i]=24; done
+for i in 0; do FCST_LEN_HRS_CYCLES[$i]=36; done
 DA_CYCLE_INTERV="1"
 RESTART_INTERVAL="1"
 
@@ -123,11 +125,11 @@ if [[ -n $RESERVATION ]] ; then
   PPN_RUN_POST="40"
 fi
 
-WTIME_RUN_FCST="02:00:00"
+WTIME_RUN_FCST="05:30:00"
 WTIME_MAKE_LBCS="02:00:00"
 
 EXTRN_MDL_NAME_ICS="GEFS"
-EXTRN_MDL_NAME_LBCS="FV3GFS"
+EXTRN_MDL_NAME_LBCS="GEFS"
 
 FV3GFS_FILE_FMT_ICS="grib2"
 FV3GFS_FILE_FMT_LBCS="grib2"
@@ -171,10 +173,10 @@ fi
 if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    NUM_ENS_MEMBERS=30
 #   DO_SPPT=TRUE
-#   DO_SPP=TRUE
+   DO_SPP=TRUE
 #   SPPT_MAG=0.5
 #   DO_ENSCONTROL="TRUE"
-   DO_GSIOBSERVER="TRUE"
+#   DO_GSIOBSERVER="TRUE"
    DO_ENKFUPDATE="TRUE"
    DO_RECENTER="TRUE"
    DO_ENS_GRAPHICS="TRUE"
@@ -185,16 +187,17 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    CLEAN_OLDSTMPPOST_HRS="48"
 fi
 
+
 RUN="RRFS_conus_3km"
 COMINgfs=""
 
 . set_rrfs_config.sh
 
-STMP="YourOwnSpace/NCO_dirs/stmp"  # Path to directory STMP that mostly contains input files.
-PTMP="YourOwnSpace/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains input files.
-NWGES="YourOwnSpace/NCO_dirs/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+STMP="/mnt/lfs4/BMC/wrfruc/RRFSE/NCO_dirs/stmp"  # Path to directory STMP that mostly contains input files.
+PTMP="/mnt/lfs4/BMC/wrfruc/RRFSE/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains input files.
+NWGES="/mnt/lfs4/BMC/wrfruc/RRFSE/NCO_dirs/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 if [[ ${DO_RECENTER}  == "TRUE" ]]; then
-  ENSCTRL_STMP="YourOwnSpace/NCO_dirs/stmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
-  ENSCTRL_NWGES="YourOwnSpace/NCO_dirs/nwges"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+   ENSCTRL_STMP="/mnt/lfs4/BMC/nrtrr/NCO_dirs/stmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+   ENSCTRL_NWGES="/mnt/lfs4/BMC/nrtrr/NCO_dirs/nwges"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
 fi
 

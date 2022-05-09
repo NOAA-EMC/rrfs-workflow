@@ -119,6 +119,8 @@ bkpath=${ENSCTRL_NWGES_BASEDIR}/${YYYYMMDDHHmInterv}/${fg_restart_dirname}/RESTA
 restart_prefix="${YYYYMMDD}.${HH}0000."
 checkfile=${bkpath}/${restart_prefix}coupler.res
 if [ -r "${checkfile}" ] ; then
+  cp_vrfy -f ${checkfile} coupler.res
+  ln_vrfy -snf ${bkpath}/${restart_prefix}fv_core.res.nc fv_core.res.nc
   ln_vrfy -snf ${bkpath}/${restart_prefix}fv_core.res.tile1.nc fv_core.res.tile1.nc
   ln_vrfy -snf ${bkpath}/${restart_prefix}fv_tracer.res.tile1.nc fv_tracer.res.tile1.nc
   ln_vrfy -snf ${bkpath}/${restart_prefix}sfc_data.nc sfc_data.nc
