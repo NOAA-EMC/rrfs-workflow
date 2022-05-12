@@ -321,11 +321,19 @@ fi
 #                   = 1 for FV3LAM
 #-----------------------------------------------------------------------
 
+if [ ${PREDEF_GRID_NAME} == "GSD_RAP13km" ]; then
+   npts_rad_number=1
+   metar_impact_radius_number=9
+else
+   npts_rad_number=3
+   metar_impact_radius_number=15
+fi
+
 cat << EOF > namelist.nasalarc
  &setup
   analysis_time = ${YYYYMMDDHH},
   bufrfile='NASALaRCCloudInGSI_bufr.bufr',
-  npts_rad=3,
+  npts_rad=$npts_rad_number,
   ioption = 2,
   grid_type = "${PREDEF_GRID_NAME}",
  /
@@ -397,7 +405,7 @@ cat << EOF > namelist.metarcld
   analysis_time = ${YYYYMMDDHH},
   prepbufrfile='prepbufr',
   twindin=0.5,
-  metar_impact_radius=15,
+  metar_impact_radius=$metar_impact_radius_number,
   grid_type = "${PREDEF_GRID_NAME}",
  /
 EOF
