@@ -223,8 +223,8 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
     dynvarfile=${bkpathmem}/${restart_prefix}fv_core.res.tile1.nc
     tracerfile=${bkpathmem}/${restart_prefix}fv_tracer.res.tile1.nc
     if [ -r "${dynvarfile}" ] && [ -r "${tracerfile}" ] ; then
-      ln_vrfy ${bkpathmem}/${restart_prefix}fv_core.res.tile1.nc       fv3SAR${ens_nstarthr}_ens_mem${memcharv0}-fv3_dynvars 
-      ln_vrfy ${bkpathmem}/${restart_prefix}fv_tracer.res.tile1.nc     fv3SAR${ens_nstarthr}_ens_mem${memcharv0}-fv3_tracer 
+      ln_vrfy -snf ${bkpathmem}/${restart_prefix}fv_core.res.tile1.nc       fv3SAR${ens_nstarthr}_ens_mem${memcharv0}-fv3_dynvars 
+      ln_vrfy -snf ${bkpathmem}/${restart_prefix}fv_tracer.res.tile1.nc     fv3SAR${ens_nstarthr}_ens_mem${memcharv0}-fv3_tracer 
       (( ifound += 1 ))
     else
       print_info_msg "Error: cannot find ensemble files: ${dynvarfile} ${tracerfile} "

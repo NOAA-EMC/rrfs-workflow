@@ -72,6 +72,7 @@ valid_vals_DO_NONVAR_CLDANAL=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no
 valid_vals_DO_REFL2TTEN=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
 valid_vals_DO_NLDN_LGHT=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
 valid_vals_DO_RADDA=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
+valid_vals_USE_RRFSE_ENS=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
 valid_vals_USE_CUSTOM_POST_CONFIG_FILE=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
 valid_vals_DO_SHUM=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
 valid_vals_DO_SPPT=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")

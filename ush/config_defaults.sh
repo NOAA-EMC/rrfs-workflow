@@ -489,6 +489,9 @@ WFLOW_LAUNCH_LOG_FN="log.launch_FV3LAM_wflow"
 # POSTPROC_LONG_LEN_HRS:
 # The length of long post process, in integer hours.
 #
+# CYCL_HRS_HYB_FV3LAM_ENS:
+# An array containing the hours of the day at which the GSI hybrid using FV3LAM ensemeble.
+#
 #-----------------------------------------------------------------------
 #
 DATE_FIRST_CYCL="YYYYMMDD"
@@ -505,6 +508,7 @@ FCST_LEN_HRS_SPINUP="1"
 FCST_LEN_HRS_CYCLES=( )
 DA_CYCLE_INTERV="3"
 RESTART_INTERVAL="3,6"
+CYCL_HRS_HYB_FV3LAM_ENS=( "99" )
 
 #-----------------------------------------------------------------------
 #
@@ -1621,6 +1625,17 @@ WTIME_RUN_NONVARCLDANL="00:20:00"
 WTIME_RUN_BUFRSND="00:45:00"
 WTIME_SAVE_RESTART="00:15:00"
 #
+# Start times.
+#
+START_TIME_SPINUP="01:10:00"
+START_TIME_PROD="02:20:00"
+START_TIME_CONVENTIONAL_SPINUP="00:40:00"
+START_TIME_LATE_ANALYSIS="01:40:00"
+START_TIME_CONVENTIONAL="00:40:00"
+START_TIME_NSSLMOSIAC="00:45:00"
+START_TIME_LIGHTNINGNC="00:45:00"
+
+#
 # Memory.
 #
 MEMO_RUN_PROCESSBUFR="20G"
@@ -1821,6 +1836,9 @@ DO_ENS_GRAPHICS="FALSE"
 #
 # DO_BUFRSND:
 # Decide whether or not to run EMC BUFR sounding
+#
+# USE_RRFSE_ENS:
+# Use rrfse ensemble for hybrid analysis
 #-----------------------------------------------------------------------
 DO_DACYCLE="FALSE"
 DO_SURFACE_CYCLE="FALSE"
@@ -1829,6 +1847,7 @@ DO_SOIL_ADJUST="FALSE"
 DO_UPDATE_BC="FALSE"
 DO_RADDA="FALSE"
 DO_BUFRSND="FALSE"
+USE_RRFSE_ENS="FALSE"
 #
 #-----------------------------------------------------------------------
 #

@@ -162,13 +162,13 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 <!ENTITY DEADLINE_SAVE_RESTART "24:00:00">
 {% endif %}
 
-<!ENTITY START_TIME_SPINUP "01:10:00">
-<!ENTITY START_TIME_PROD "02:20:00">
-<!ENTITY START_TIME_CONVENTIONAL_SPINUP "00:40:00">
-<!ENTITY START_TIME_LATE_ANALYSIS "01:40:00">
-<!ENTITY START_TIME_CONVENTIONAL "00:40:00">
-<!ENTITY START_TIME_NSSLMOSIAC   "00:45:00">
-<!ENTITY START_TIME_LIGHTNINGNC  "00:45:00">
+<!ENTITY START_TIME_SPINUP "{{ start_time_spinup }}">
+<!ENTITY START_TIME_PROD "{{ start_time_prod }}">
+<!ENTITY START_TIME_CONVENTIONAL_SPINUP "{{ start_time_conventional_spinup }}">
+<!ENTITY START_TIME_LATE_ANALYSIS "{{ start_time_late_analysis }}">
+<!ENTITY START_TIME_CONVENTIONAL "{{ start_time_conventional }}">
+<!ENTITY START_TIME_NSSLMOSIAC   "{{ start_time_nsslmosiac }}">
+<!ENTITY START_TIME_LIGHTNINGNC  "{{ start_time_lightningnc }}">
 
 {%- if do_retro %}
 <!ENTITY WALL_LIMIT_PRE ''>
@@ -960,6 +960,25 @@ MODULES_RUN_TASK_FP script.
        <and>
          <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
          <taskdep task="&PREP_CYC_TN;_#type#{{ uscore_ensmem_name }}"/>
+         {%- if use_rrfse_ens %}
+         <or>
+           <and>
+             <or>
+             {%- for h in cycl_hrs_hyb_fv3lam_ens %}
+               <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
+             {%- endfor %}
+             </or>
+             {% for h in range(1, num_ens_members+1) %}
+             <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&RRFSE_FG_ROOT;/@Y@m@d@H/mem{{ "%04d" % h  }}/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+             {%- endfor %}
+           </and>
+           <and>
+              {%- for h in cycl_hrs_hyb_fv3lam_ens %}
+                <strneq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></strneq>
+              {%- endfor %}
+           </and>
+         </or>
+         {%- endif %}
        </and>
     </dependency>
 
@@ -1193,9 +1212,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>TMMARK</name><value>tm00</value></envar>
 
       <dependency>
-       <or>
         <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/logf#fhr#</cyclestr></datadep>
-       </or>
       </dependency>
 
     </task>

@@ -480,6 +480,7 @@ optionList[8]=DO_UPDATE_BC
 optionList[9]=DO_RADDA
 optionList[10]=DO_RECENTER
 optionList[11]=DO_BUFRSND
+optionList[12]=USE_RRFSE_ENS
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));

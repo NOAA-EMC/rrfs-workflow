@@ -305,6 +305,16 @@ settings="\
   'wtime_run_bufrsnd': ${WTIME_RUN_BUFRSND}
   'wtime_save_restart': ${WTIME_SAVE_RESTART}
 #
+# start time for each task.
+#
+  'start_time_spinup': ${START_TIME_SPINUP}
+  'start_time_prod': ${START_TIME_PROD}
+  'start_time_conventional_spinup': ${START_TIME_CONVENTIONAL_SPINUP}
+  'start_time_late_analysis': ${START_TIME_LATE_ANALYSIS}
+  'start_time_conventional': ${START_TIME_CONVENTIONAL}
+  'start_time_nsslmosiac': ${START_TIME_NSSLMOSIAC}
+  'start_time_lightningnc': ${START_TIME_LIGHTNINGNC}
+#
 # Maximum memory for each task.
 #
   'memo_run_processbufr': ${MEMO_RUN_PROCESSBUFR}
@@ -386,6 +396,7 @@ settings="\
   'cycl_hrs': [ $( printf "\'%s\', " "${CYCL_HRS[@]}" ) ]
   'cycl_hrs_spinstart': [ $( printf "\'%s\', " "${CYCL_HRS_SPINSTART[@]}" ) ]
   'cycl_hrs_prodstart': [ $( printf "\'%s\', " "${CYCL_HRS_PRODSTART[@]}" ) ]
+  'cycl_hrs_hyb_fv3lam_ens': [ $( printf "\'%s\', " "${CYCL_HRS_HYB_FV3LAM_ENS[@]}" ) ]
   'restart_hrs_prod': ${RESTART_INTERVAL}
   'cycl_freq': !!str 12:00:00
   'at_start_cycledef': ${AT_START_CYCLEDEF}
@@ -433,6 +444,7 @@ settings="\
   'regional_ensemble_option': ${regional_ensemble_option}
   'radar_ref_thinning': ${RADAR_REF_THINNING}
   'ensctrl_stmp': ${ENSCTRL_STMP}
+  'use_rrfse_ens': ${USE_RRFSE_ENS}
 #
 # graphics related parameters
 #
