@@ -1,1 +1,0 @@
-../../.agent/lam/RRFS_NA_3km_pazi-13/C3445.maximum_snow_albedo.tile7.halo4.nc

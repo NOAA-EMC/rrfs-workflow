@@ -174,6 +174,7 @@ settings="\
   'account': $ACCOUNT
   'service_account': ${SERVICE_ACCOUNT:-$ACCOUNT}
   'reservation': $RESERVATION
+  'reservation_post': $RESERVATION_POST
   'sched': $SCHED
   'partition_default': ${PARTITION_DEFAULT}
   'queue_default': ${QUEUE_DEFAULT}
@@ -188,6 +189,8 @@ settings="\
   'queue_analysis': ${QUEUE_ANALYSIS}
   'partition_wgrib2': ${PARTITION_WGRIB2}
   'queue_wgrib2': ${QUEUE_WGRIB2}
+  'partition_post': ${PARTITION_POST}
+  'queue_post': ${QUEUE_POST}
 #
 # Workflow task names.
 #
@@ -761,6 +764,9 @@ settings="\
 'atmos_model_nml': {
     'blocksize': $BLOCKSIZE,
     'ccpp_suite': ${CCPP_PHYS_SUITE},
+  }
+'fv3gfs_io': {
+    'use_io_netcdf': ${USE_IO_NETCDF:-FALSE},
   }
 'fv_core_nml': {
     'target_lon': ${LON_CTR},

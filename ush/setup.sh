@@ -481,6 +481,7 @@ optionList[9]=DO_RADDA
 optionList[10]=DO_RECENTER
 optionList[11]=DO_BUFRSND
 optionList[12]=USE_RRFSE_ENS
+optionList[13]=USE_IO_NETCDF
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));
@@ -536,6 +537,7 @@ case $MACHINE in
     QUEUE_FCST=${QUEUE_FCST:-"dev"}
     QUEUE_ANALYSIS=${QUEUE_ANALYSIS:-"dev"}
     QUEUE_WGRIB2=${QUEUE_WGRIB2:-"dev"}
+    QUEUE_POST=${QUEUE_POST:-"dev"}
     ;;
 
   "HERA")
@@ -547,6 +549,8 @@ case $MACHINE in
     QUEUE_HPSS=${QUEUE_HPSS:-"batch"}
     PARTITION_FCST=${PARTITION_FCST:-"hera"}
     QUEUE_FCST=${QUEUE_FCST:-"batch"}
+    QUEUE_WGRIB2=${QUEUE_WGRIB2:-"batch"}
+    QUEUE_POST=${QUEUE_POST:-"batch"}
     ;;
 
   "ORION")
@@ -575,6 +579,8 @@ case $MACHINE in
     QUEUE_ANALYSIS=${QUEUE_ANALYSIS:-"batch"}
     PARTITION_WGRIB2=${PARTITION_WGRIB2:-"sjet,vjet,kjet,xjet"}
     QUEUE_WGRIB2=${QUEUE_WGRIB2:-"batch"}
+    PARTITION_POST=${PARTITION_POST:-"sjet,vjet,kjet,xjet"}
+    QUEUE_POST=${QUEUE_POST:-"batch"}
     ;;
 
   "ODIN")

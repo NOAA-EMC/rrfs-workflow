@@ -1,0 +1,1 @@
+../../.agent/lam/RRFS_NA_3km_C3463/C3463.maximum_snow_albedo.tile7.nc

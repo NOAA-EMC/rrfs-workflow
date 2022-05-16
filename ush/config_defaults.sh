@@ -114,9 +114,24 @@ RUN_ENVIR="nco"
 # "slurm".
 #
 # QUEUE_WGRIB2:
-# The queue or QOS to which the task that remaps output grids is submitted.  
+# The queue or QOS to which the task that wgrib2 is submitted.  
 # If this is not set or set to an empty string, it will be (re)set to a 
 # machine-dependent value.
+#
+# PARTITION_POST:
+# If using the slurm job scheduler (i.e. if SCHED is set to "slurm"), 
+# the partition to which the task that upp is submitted.
+#
+# QUEUE_POST:
+# The queue or QOS to which the task that upp is submitted.  
+# If this is not set or set to an empty string, it will be (re)set to a 
+# machine-dependent value.
+#
+# RESERVATION:
+# The reservation for major tasks.  
+#
+# RESERVATION_POST:
+# The reservation for post tasks.  
 #
 # mach_doc_end
 #
@@ -126,6 +141,7 @@ MACHINE="BIG_COMPUTER"
 ACCOUNT="project_name"
 SERVICE_ACCOUNT=""
 RESERVATION=""
+RESERVATION_POST=""
 SCHED=""
 PARTITION_DEFAULT=""
 QUEUE_DEFAULT=""
@@ -139,6 +155,8 @@ PARTITION_ANALYSIS=""
 QUEUE_ANALYSIS=""
 PARTITION_WGRIB2=""
 QUEUE_WGRIB2=""
+PARTITION_POST=""
+QUEUE_POST=""
 #
 #-----------------------------------------------------------------------
 #
@@ -1102,6 +1120,9 @@ ESGgrid_WIDE_HALO_WIDTH=""
 #    the parameters defined in this section are set to non-empty strings
 #    before creating the experiment directory.
 #
+# USE_IO_NETCDF
+#   use parallel netcdf io for restart files
+#
 #-----------------------------------------------------------------------
 #
 DT_ATMOS=""
@@ -1111,6 +1132,7 @@ IO_LAYOUT_X="1"
 IO_LAYOUT_Y="1"
 BLOCKSIZE=""
 FH_DFI_RADAR="-20000000000"
+USE_IO_NETCDF=""
 #
 #-----------------------------------------------------------------------
 #

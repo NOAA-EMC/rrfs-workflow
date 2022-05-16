@@ -1202,14 +1202,16 @@ case ${PREDEF_GRID_NAME} in
 
   GRID_GEN_METHOD="ESGgrid"
 
-  ESGgrid_LON_CTR="-107.5"
-  ESGgrid_LAT_CTR="51.5"
+  ESGgrid_LON_CTR="-112.5"
+  ESGgrid_LAT_CTR="55.0"
 
   ESGgrid_DELX="3000.0"
   ESGgrid_DELY="3000.0"
 
-  ESGgrid_NX=3640
-  ESGgrid_NY=2520
+  ESGgrid_NX=3950
+  ESGgrid_NY=2700
+ 
+  ESGgrid_PAZI="0.0"
 
   ESGgrid_WIDE_HALO_WIDTH="6"
 
@@ -1221,14 +1223,14 @@ case ${PREDEF_GRID_NAME} in
 
   if [ "$QUILTING" = "TRUE" ]; then
     WRTCMP_write_groups="${WRTCMP_write_groups:-1}"
-    WRTCMP_write_tasks_per_group="${WRTCMP_write_tasks_per_group:-100}"
+    WRTCMP_write_tasks_per_group="${WRTCMP_write_tasks_per_group:-50}"
     WRTCMP_output_grid="rotated_latlon"
-    WRTCMP_cen_lon="-112.0"
-    WRTCMP_cen_lat="48.0"
-    WRTCMP_lon_lwr_left="-51.0"
-    WRTCMP_lat_lwr_left="-33.0"
-    WRTCMP_lon_upr_rght="51.0"
-    WRTCMP_lat_upr_rght="33.0"
+    WRTCMP_cen_lon="-113.0"
+    WRTCMP_cen_lat="55.0"
+    WRTCMP_lon_lwr_left="-61.0"
+    WRTCMP_lat_lwr_left="-37.0"
+    WRTCMP_lon_upr_rght="61.0"
+    WRTCMP_lat_upr_rght="37.0"
     WRTCMP_dlon="0.025"
     WRTCMP_dlat="0.025"
   fi
