@@ -178,13 +178,17 @@ for imem in  $(seq 1 $nens)
   if [ -r "${dynvarfile}" ] && [ -r "${tracerfile}" ] ; then
     ln -sf ${bkpath}/fv_core.res.tile1.nc  ./fv3sar_tile1_mem${memberstring}_dynvar
     ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem${memberstring}_tracer
-    ln -sf ${bkpath}/phy_data.nc  ./fv3sar_tile1_mem${memberstring}_phyvar
+    ln -sf ${bkpath}/sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
+    ln -sf ${bkpath}/fv_core.res.tile1.nc  ./rec_fv3sar_tile1_mem${memberstring}_dynvar
+    ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./rec_fv3sar_tile1_mem${memberstring}_tracer
+    ln -sf ${bkpath}/sfc_data.nc  ./rec_fv3sar_tile1_mem${memberstring}_sfcvar
   else
     print_err_msg_exit "Error: cannot find background: ${dynvarfile} ${tracerfile}"
   fi
 
   (( imem += 1 ))
  done
+
 #
 #-----------------------------------------------------------------------
 #
@@ -192,81 +196,19 @@ for imem in  $(seq 1 $nens)
 #
 cp_vrfy -f ./fv3sar_tile1_mem001_dynvar fv3sar_tile1_dynvar
 cp_vrfy -f ./fv3sar_tile1_mem001_tracer fv3sar_tile1_tracer
-cp_vrfy -f ./fv3sar_tile1_mem001_phyvar fv3sar_tile1_phyvar
+cp_vrfy -f ./fv3sar_tile1_mem001_sfcvar fv3sar_tile1_sfcvar
 
-#
-#-----------------------------------------------------------------------
-#
-# Run executable to get ensemble mean
-#
-
-echo pwd is `pwd`
-ENSMEAN_EXEC=${EXECDIR}/gen_be_ensmean.x
-
-if [ -f ${ENSMEAN_EXEC} ]; then 
-  print_info_msg "$VERBOSE" "
-Copying the ensemble mean executable to the run directory..."
-  cp_vrfy ${ENSMEAN_EXEC} ${recenterdir}/gen_be_ensmean.x
-else
-  print_err_msg_exit "\
-The ensemble mean executable specified in ENSMEAN_EXEC does not exist:
-  ENSMEAN_EXEC = \"${ENSMEAN_EXEC}\"
-Build ENSMEAN_EXEC and rerun." 
-fi
-
-# get ensemble mean of dynvar
-ftail=dynvar
-for varname in u v W DZ T delp phis ; do
-${APRUN} ${ENSMEAN_EXEC}  ./  fv3sar_tile1 ${nens} ${varname} ${ftail} 1>stdout.ensmean.${ftail}_${varname} 2>stderr.ensmean.${ftail}_${varname} || print_err_msg_exit "\
-Call to executable to run ensemble mean returned with nonzero exit code."
-done
-
-
-# get ensemble mean of tracer
-ftail=tracer
-for varname in sphum liq_wat ice_wat rainwat snowwat graupel water_nc ice_nc rain_nc o3mr liq_aero ice_aero sgs_tke ; do
-${APRUN} ${ENSMEAN_EXEC}  ./  fv3sar_tile1 ${nens} ${varname} ${ftail} 1>stdout.ensmean.${ftail}_${varname} 2>stderr.ensmean.${ftail}_${varname} || print_err_msg_exit "\
-Call to executable to run ensemble mean returned with nonzero exit code."
-done
-
-#
-#-----------------------------------------------------------------------
-#
-# Link all members to be recentered
-#
-
-imem=1
-for imem in  $(seq 1 $nens)
-  do
-  ensmem=$( printf "%04d" $imem ) 
-  memberstring=$( printf "%03d" $imem )
-
-  bkpath=${CYCLE_DIR}/mem${ensmem}/${fg_restart_dirname}/INPUT  # cycling, use background from RESTART
-
-  dynvarfile=${bkpath}/fv_core.res.tile1.nc
-  tracerfile=${bkpath}/fv_tracer.res.tile1.nc
-  if [ -r "${dynvarfile}" ] && [ -r "${tracerfile}" ] ; then
-    ln -sf ${bkpath}/fv_core.res.tile1.nc  ./rec_fv3sar_tile1_mem${memberstring}_dynvar
-    ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./rec_fv3sar_tile1_mem${memberstring}_tracer
-    ln -sf ${bkpath}/phy_data.nc  ./rec_fv3sar_tile1_mem${memberstring}_phyvar
-  else
-    print_err_msg_exit "Error: cannot find background: ${dynvarfile} ${tracerfile} "
-  fi
-
-  (( imem += 1 ))
- done
 #
 #-----------------------------------------------------------------------
 #
 # link the control member 
 #
-
 dynvarfile_control=${controldir}/fv_core.res.tile1.nc
 tracerfile_control=${controldir}/fv_tracer.res.tile1.nc
 if [ -r "${dynvarfile_control}" ] && [ -r "${tracerfile_control}" ] ; then
   ln -sf ${controldir}/fv_core.res.tile1.nc  ./control_dynvar
   ln -sf ${controldir}/fv_tracer.res.tile1.nc   ./control_tracer
-  ln -sf ${controldir}/phy_data.nc  ./control_phyvar
+  ln -sf ${controldir}/sfc_data.nc  ./control_sfcvar
 else
   print_err_msg_exit "Error: cannot find background: ${dynvarfile_control}"
 fi
@@ -274,40 +216,49 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# recenter the ensemble 
+# prepare the namelist.ens
 #
-echo pwd is `pwd`
-RECENTER_EXEC=${EXECDIR}/gen_be_ensmeanrecenter.x
+cat << EOF > namelist.ens
+&setup
+  fv3_io_layout_y=1,
+  ens_size=${nens},
+  filebase='fv3sar_tile1'
+  filetail(1)='dynvar'
+  filetail(2)='tracer'
+  filetail(3)='sfcvar'
+  numvar(1)=7
+  numvar(2)=13
+  numvar(3)=14
+  varlist(1)="u v W DZ T delp phis"
+  varlist(2)="sphum liq_wat ice_wat rainwat snowwat graupel water_nc ice_nc rain_nc o3mr liq_aero ice_aero sgs_tke"
+  varlist(3)="t2m q2m f10m tsea smois tsea tsfc tsfcl alnsf alnwf alvsf alvwf emis_ice emis_lnd"
+  l_write_mean=.false.
+  l_recenter=.true.
+/
+EOF
 
-if [ -f ${RECENTER_EXEC} ]; then 
+#
+#-----------------------------------------------------------------------
+#
+# Run executable to recenter the ensemble
+#
+
+echo pwd is `pwd`
+ENSMEAN_EXEC=${EXECDIR}/gen_ensmean_recenter.exe
+
+if [ -f ${ENSMEAN_EXEC} ]; then 
   print_info_msg "$VERBOSE" "
-Copying the ensemble recenter executable to the run directory..."
-  cp_vrfy ${RECENTER_EXEC} ${recenterdir}/gen_be_ensmeanrecenter.x
+Copying the ensemble mean executable to the run directory..."
+  cp_vrfy ${ENSMEAN_EXEC} ${recenterdir}/.
 else
   print_err_msg_exit "\
-The EnKF recentering executable specified in RECENTER_EXEC does not exist:
-  RECENTER_EXEC = \"${RECENTER_EXEC}\"
-Build RECENTER_EXEC and rerun." 
+The ensemble mean executable specified in ENSMEAN_EXEC does not exist:
+  ENSMEAN_EXEC = \"${ENSMEAN_EXEC}\"
+Build ENSMEAN_EXEC and rerun." 
 fi
 
-#
-#-----------------------------------------------------------------------
-#
-# Run the EnKF Recentering for all the variables/files
-#
-#-----------------------------------------------------------------------
-#
-ftail=dynvar 
-for varname in u v W DZ T delp phis ; do
-${APRUN} ${RECENTER_EXEC}  ./ rec_fv3sar_tile1 fv3sar_tile1 control ${nens} ${varname} ${ftail} 1>stdout.rec.${ftail}_${varname} 2>stderr.rec.${ftail}_${varname} || print_err_msg_exit "\
-Call to executable to run EnKF Recenter returned with nonzero exit code."
-done
-
-ftail=tracer
-for varname in sphum liq_wat ice_wat rainwat snowwat graupel water_nc ice_nc rain_nc o3mr liq_aero ice_aero sgs_tke ; do
-${APRUN} ${RECENTER_EXEC}  ./ rec_fv3sar_tile1 fv3sar_tile1 control ${nens} ${varname} ${ftail} 1>stdout.rec.${ftail}_${varname} 2>stderr.rec.${ftail}_${varname} || print_err_msg_exit "\
-Call to executable to run EnKF Recenter returned with nonzero exit code."
-done
+${APRUN} ${ENSMEAN_EXEC}  < namelist.ens > stdout_recenter 2>&1 || print_err_msg_exit "\
+Call to executable to run ensemble recenter returned with nonzero exit code."
 
 #
 #-----------------------------------------------------------------------
