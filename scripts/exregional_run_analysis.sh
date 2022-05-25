@@ -887,6 +887,13 @@ done
 
 if [ ${gsi_type} == "OBSERVER" ]; then
   cp_vrfy *diag* ${observer_nwges_dir}/.
+  if [ ${mem_type} == "MEAN" ]; then
+  mkdir_vrfy -p ${observer_nwges_dir}/../../../observer_diag/${YYYYMMDDHH}/ensmean/observer_gsi
+  cp_vrfy *diag* ${observer_nwges_dir}/../../../observer_diag/${YYYYMMDDHH}/ensmean/observer_gsi/.
+  else
+  mkdir_vrfy -p ${observer_nwges_dir}/../../../observer_diag/${YYYYMMDDHH}/${slash_ensmem_subdir}/observer_gsi
+  cp_vrfy *diag* ${observer_nwges_dir}/../../../observer_diag/${YYYYMMDDHH}/${slash_ensmem_subdir}/observer_gsi/.
+  fi
 fi
 
 #

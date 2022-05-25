@@ -64,6 +64,7 @@ on the output files corresponding to a specified forecast hour.
 
 if [ "${RUN_ENVIR}" = "nco" ]; then
   COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
+  COMOUT_mem0="${ENSCTRL_COMOUT_BASEDIR}/$RUN.$PDY/$cyc"
   postprd_dir="${COMOUT}"
   run_dir="${COMOUT}/pyprd"
   zip_dir="${COMOUT}/nclprd"
@@ -163,7 +164,7 @@ case ${GRAPHICS_TYPE} in
 
     # Link in control member to the location it should be
     ens_mem0=${postprd_dir/'#mem#'/'0000'/}
-    mem0_fp=${ENSCTRL_STMP}/${CDATE}/postprd
+    mem0_fp=${COMOUT_mem0}
     mem0_fn=${file_tmpl/'{FCST_TIME:03d}'/'*'}
 
     mkdir_vrfy -p ${ens_mem0}

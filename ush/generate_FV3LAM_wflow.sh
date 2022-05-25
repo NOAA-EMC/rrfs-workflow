@@ -370,6 +370,8 @@ settings="\
   'ensctrl_cycle_basedir': ${ENSCTRL_CYCLE_BASEDIR:-}
   'nwges_basedir': ${NWGES_BASEDIR}
   'ensctrl_nwges_basedir': ${ENSCTRL_NWGES_BASEDIR}
+  'ensctrl_comout_basedir': ${ENSCTRL_COMOUT_BASEDIR}
+  'ensctrl_comout_dir': ${ENSCTRL_COMOUT_DIR}
   'rrfse_nwges_basedir': ${RRFSE_NWGES_BASEDIR}
   'obspath': ${OBSPATH}
   'global_var_defns_fp': ${GLOBAL_VAR_DEFNS_FP}

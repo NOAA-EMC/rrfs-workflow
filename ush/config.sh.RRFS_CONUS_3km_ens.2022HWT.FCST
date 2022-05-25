@@ -115,6 +115,7 @@ PPN_RUN_REF2TTEN=1
 PPN_RUN_NONVARCLDANL=1
 
 PRINT_DIFF_PGR="TRUE"
+USE_IO_NETCDF="TRUE"
 
 if [[ -n $RESERVATION ]] ; then
   NNODES_MAKE_ICS="3"
@@ -180,6 +181,7 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    DO_ENKFUPDATE="TRUE"
    DO_RECENTER="TRUE"
    DO_ENS_GRAPHICS="TRUE"
+   RADAR_REF_THINNING="2"
    ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_ens"
    NNODES_RUN_RECENTER="3"
    PPN_RUN_RECENTER="31"
@@ -198,6 +200,7 @@ PTMP="/mnt/lfs4/BMC/wrfruc/RRFSE/NCO_dirs/ptmp"  # Path to directory STMP that m
 NWGES="/mnt/lfs4/BMC/wrfruc/RRFSE/NCO_dirs/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 if [[ ${DO_RECENTER}  == "TRUE" ]]; then
    ENSCTRL_STMP="/mnt/lfs4/BMC/nrtrr/NCO_dirs/stmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+   ENSCTRL_PTMP="/mnt/lfs4/BMC/nrtrr/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
    ENSCTRL_NWGES="/mnt/lfs4/BMC/nrtrr/NCO_dirs/nwges"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
 fi
 

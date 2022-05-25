@@ -402,7 +402,11 @@ Call to executable to run EnKF returned with nonzero exit code."
 
 cp_vrfy stdout ${enkfanal_nwges_dir}/.
 cp_vrfy stderr ${enkfanal_nwges_dir}/.
-
+if [ ! -d ${NWGES_DIR}/../enkf_diag ]; then
+  mkdir -p ${NWGES_DIR}/../enkf_diag
+fi
+cp_vrfy stdout ${NWGES_DIR}/../enkf_diag/stdout.$vlddate
+cp_vrfy stderr ${NWGES_DIR}/../enkf_diag/stderr.$vlddate
 print_info_msg "
 ========================================================================
 EnKF PROCESS completed successfully!!!

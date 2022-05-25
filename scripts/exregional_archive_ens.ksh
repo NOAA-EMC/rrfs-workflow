@@ -157,7 +157,7 @@ fi
 #
 rmdir $COMOUT_BASEDIR/stage
 
-dateval=$(date}
+dateval=$(date)
 echo "Completed archive at "$dateval
 exit 0
 
