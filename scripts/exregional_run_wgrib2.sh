@@ -168,18 +168,51 @@ cyc=$hh
 #
 #-----------------------------------------------------------------------
 #
+
 len_fhr=${#fhr}
+if [ ${len_fhr} -eq 9 ]; then
+  post_min=${fhr:4:2}
+  if [ ${post_min} -lt 15 ]; then
+    post_min=00
+  fi
+else
+  post_min=00
+fi
+
+subh_fhr=${fhr}
 if [ ${len_fhr} -eq 2 ]; then
-  post_fhr=${fhr}
+  post_fhr=${fhr}00
 elif [ ${len_fhr} -eq 3 ]; then
   if [ "${fhr:0:1}" = "0" ]; then
-    post_fhr="${fhr:1}"
+    post_fhr="${fhr:1}00"
+  else
+    post_fhr=${fhr}00
+  fi
+elif [ ${len_fhr} -eq 9 ]; then
+  if [ "${fhr:0:1}" = "0" ]; then
+    if [ ${post_min} -eq 00 ]; then
+      post_fhr="${fhr:1:2}00"
+      subh_fhr="${fhr:0:3}"
+    else
+      post_fhr="${fhr:1:2}${fhr:4:2}"
+    fi
+  else
+    if [ ${post_min} -eq 00 ]; then
+      post_fhr="${fhr:0:3}00"
+      subh_fhr="${fhr:0:3}"
+    else
+      post_fhr="${fhr:0:3}${fhr:4:2}"
+    fi
   fi
 else
   print_err_msg_exit "\
 The \${fhr} variable contains too few or too many characters:
   fhr = \"$fhr\""
 fi
+
+# replace fhr with subh_fhr
+echo "fhr=${fhr} and subh_fhr=${subh_fhr}"
+fhr=${subh_fhr}
 
 bgdawp=${postprd_dir}/${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2
 bgrd3d=${postprd_dir}/${NET}.t${cyc}z.bgrd3df${fhr}.${tmmark}.grib2
@@ -206,9 +239,9 @@ basetime=$( date +%y%j%H%M -d "${yyyymmdd} ${hh}" )
 cp_vrfy ${bgdawp} ${comout}/${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2
 cp_vrfy ${bgrd3d} ${comout}/${NET}.t${cyc}z.bgrd3df${fhr}.${tmmark}.grib2
 cp_vrfy ${bgsfc}  ${comout}/${NET}.t${cyc}z.bgsfcf${fhr}.${tmmark}.grib2
-ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2 ${comout}/BGDAWP_${basetime}${post_fhr}00
-ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgrd3df${fhr}.${tmmark}.grib2 ${comout}/BGRD3D_${basetime}${post_fhr}00
-ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgsfcf${fhr}.${tmmark}.grib2  ${comout}/BGSFC_${basetime}${post_fhr}00
+ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2 ${comout}/BGDAWP_${basetime}${post_fhr}
+ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgrd3df${fhr}.${tmmark}.grib2 ${comout}/BGRD3D_${basetime}${post_fhr}
+ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgsfcf${fhr}.${tmmark}.grib2  ${comout}/BGSFC_${basetime}${post_fhr}
 
 net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
 ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2 ${comout}/${net4}.t${cyc}z.prslev.f${fhr}.conus_3km.grib2
@@ -281,7 +314,7 @@ if [ ${#ADDNL_OUTPUT_GRIDS[@]} -gt 0 ]; then
       fi
 
       # Link output for transfer from Jet to web
-      ln_vrfy -fs --relative ${comout}/${grid}_grid/${NET}.t${cyc}z.bg${leveltype}f${fhr}.${tmmark}.grib2 ${comout}/${grid}_grid/BG${leveltype^^}_${basetime}${post_fhr}00
+      ln_vrfy -fs --relative ${comout}/${grid}_grid/${NET}.t${cyc}z.bg${leveltype}f${fhr}.${tmmark}.grib2 ${comout}/${grid}_grid/BG${leveltype^^}_${basetime}${post_fhr}
     done
   done
 fi

@@ -1194,8 +1194,14 @@ MODULES_RUN_TASK_FP script.
 
   <metatask name="&RUN_POST_TN;{{ uscore_ensmem_name }}">
 
-    <var name="fhr"> {% for h in range(0, postproc_long_len_hrs+1) %}{{ " %03d" % h  }}{% endfor %} </var>
+    <var name="fullfhr"> {% for h in range(0, postproc_long_len_hrs+1) %}{{ " %03d" % h  }}{% endfor %} </var>
     <var name="type"> {% for h in range(0, postproc_len_hrs+1) %}{{ " normal" }}{% endfor %} {% for h in range(postproc_len_hrs+1, postproc_long_len_hrs+1) %}{{ " long"  }}{% endfor %} </var>
+    <metatask>
+{% if postproc_nsout_min > 0 %}
+       <var name="fhr"> {% for h in range(0, 60, postproc_nsout_min) %}{{ " #fullfhr#-%02d-00 " % h  }}{% endfor %} </var>
+{%- else %}
+       <var name="fhr"> #fullfhr# </var>
+{%- endif %}
 
     <task name="&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr#" cycledefs="postproc_#type#" maxtries="{{ maxtries_run_post }}">
 
@@ -1251,6 +1257,7 @@ MODULES_RUN_TASK_FP script.
 
     </task>
 
+    </metatask>
   </metatask>
 
 {% if do_bufrsnd %}
@@ -1311,6 +1318,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>GRAPHICS_TYPE</name><value>maps</value></envar>
       <envar><name>TILES</name><value>#tileset#</value></envar>
       <envar><name>TILELABEL</name><value>#tilelabel#</value></envar>
+      <envar><name>ENSCTRL_COMOUT_BASEDIR</name><value>&ENSCTRL_COMOUT_BASEDIR;</value></envar>
 
       <dependency>
         <taskdep task="&RUN_WGRIB2_TN;{{ uscore_ensmem_name }}_f000"/>
@@ -1335,6 +1343,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
     <envar><name>GRAPHICS_TYPE</name><value>skewts</value></envar>
+      <envar><name>ENSCTRL_COMOUT_BASEDIR</name><value>&ENSCTRL_COMOUT_BASEDIR;</value></envar>
 
     <dependency>
       <taskdep task="&RUN_WGRIB2_TN;{{ uscore_ensmem_name }}_f000"/>

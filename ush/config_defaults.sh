@@ -1124,6 +1124,11 @@ ESGgrid_WIDE_HALO_WIDTH=""
 # USE_IO_NETCDF
 #   use parallel netcdf io for restart files
 #
+# NSOUT
+#   setup frequency of writing out forecast files in time steps
+# NSOUT_MIN
+#   setup frequency of writing out forecast files in minutes
+#
 #-----------------------------------------------------------------------
 #
 DT_ATMOS=""
@@ -1133,7 +1138,9 @@ IO_LAYOUT_X="1"
 IO_LAYOUT_Y="1"
 BLOCKSIZE=""
 FH_DFI_RADAR="-20000000000"
-USE_IO_NETCDF=""
+USE_IO_NETCDF="FALSE"
+NSOUT="0"
+NSOUT_MIN="0"
 #
 #-----------------------------------------------------------------------
 #

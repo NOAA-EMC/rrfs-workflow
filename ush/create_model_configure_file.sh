@@ -140,7 +140,8 @@ run directory (run_dir):
   'restart_interval': ${RESTART_INTERVAL}
   'quilting': ${dot_quilting_dot}
   'print_esmf': ${dot_print_esmf_dot}
-  'output_grid': ${WRTCMP_output_grid}"
+  'output_grid': ${WRTCMP_output_grid}
+  'nsout': ${NSOUT}"
 #  'output_grid': \'${WRTCMP_output_grid}\'"
 #
 # If the write-component is to be used, then specify a set of computational

@@ -52,7 +52,7 @@ write_fsyncflag:         .false.
 nfhout:     1
 nfhmax_hf:  60
 nfhout_hf:  1
-nsout:      -1
+nsout:      {{ nsout }}
 #
 # Coordinate system used by the output grid.
 #
