@@ -644,6 +644,11 @@ AIRCRAFT_REJECT=""
 SFCOBS_USELIST=""
 #
 #-----------------------------------------------------------------------
+# default namelist for nonvar cloud analysis
+cld_bld_hgt=1200.0
+l_precip_clear_only=.false.
+#
+#-----------------------------------------------------------------------
 #
 # Set initial and lateral boundary condition generation parameters.  
 # Definitions:

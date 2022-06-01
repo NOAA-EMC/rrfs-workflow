@@ -187,6 +187,8 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    PPN_RUN_RECENTER="31"
    CLEAN_OLDFCST_HRS="48"
    CLEAN_OLDSTMPPOST_HRS="48"
+   cld_bld_hgt=0.0
+   l_precip_clear_only=.true.
 fi
 
 

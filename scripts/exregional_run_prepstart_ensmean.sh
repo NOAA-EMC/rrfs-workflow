@@ -108,9 +108,11 @@ cd_vrfy ${modelinputdir}
 #
 
 fg_restart_dirname=fcst_fv3lam
+fg_restart_dirname_spinup=fcst_fv3lam_spinup
 
 YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
 bkpath=${ENSCTRL_NWGES_BASEDIR}/${YYYYMMDDHHmInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+bkpath_spinup=${ENSCTRL_NWGES_BASEDIR}/${YYYYMMDDHHmInterv}/${fg_restart_dirname_spinup}/RESTART  # cycling, use background from RESTART
 
 #
 #   the restart file from FV3 has a name like: ${YYYYMMDD}.${HH}0000.fv_core.res.tile1.nc
@@ -118,6 +120,7 @@ bkpath=${ENSCTRL_NWGES_BASEDIR}/${YYYYMMDDHHmInterv}/${fg_restart_dirname}/RESTA
 
 restart_prefix="${YYYYMMDD}.${HH}0000."
 checkfile=${bkpath}/${restart_prefix}coupler.res
+checkfile_spinup=${bkpath_spinup}/${restart_prefix}coupler.res
 if [ -r "${checkfile}" ] ; then
   cp_vrfy -f ${checkfile} coupler.res
   ln_vrfy -snf ${bkpath}/${restart_prefix}fv_core.res.nc fv_core.res.nc
@@ -126,8 +129,16 @@ if [ -r "${checkfile}" ] ; then
   ln_vrfy -snf ${bkpath}/${restart_prefix}sfc_data.nc sfc_data.nc
   ln_vrfy -snf ${bkpath}/${restart_prefix}fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
   ln_vrfy -snf ${bkpath}/${restart_prefix}phy_data.nc phy_data.nc
+elif [ -r "${checkfile_spinup}" ] ; then
+  cp_vrfy -f ${checkfile_spinup} coupler.res
+  ln_vrfy -snf ${bkpath_spinup}/${restart_prefix}fv_core.res.nc fv_core.res.nc
+  ln_vrfy -snf ${bkpath_spinup}/${restart_prefix}fv_core.res.tile1.nc fv_core.res.tile1.nc
+  ln_vrfy -snf ${bkpath_spinup}/${restart_prefix}fv_tracer.res.tile1.nc fv_tracer.res.tile1.nc
+  ln_vrfy -snf ${bkpath_spinup}/${restart_prefix}sfc_data.nc sfc_data.nc
+  ln_vrfy -snf ${bkpath_spinup}/${restart_prefix}fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
+  ln_vrfy -snf ${bkpath_spinup}/${restart_prefix}phy_data.nc phy_data.nc
 else
-  print_err_msg_exit "Error: cannot find deterministic (control) warm start files from : ${bkpath}"
+  print_err_msg_exit "Error: cannot find deterministic (control) warm start files from : ${bkpath} or ${bkpath_spinup}"
 fi
 
 #
