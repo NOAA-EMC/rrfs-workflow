@@ -74,6 +74,11 @@ fi
 mkdir_vrfy -p ${run_dir}/INPUT
 mkdir_vrfy -p ${run_dir}/RESTART
 #
+#
+#
+gridspec_dir=${NWGES_BASEDIR}/grid_spec
+mkdir_vrfy -p ${gridspec_dir}
+#
 #-----------------------------------------------------------------------
 #
 # Call the ex-script for this J-job and pass to it the necessary varia-
@@ -85,6 +90,7 @@ $SCRIPTSDIR/exregional_run_fcst.sh \
   cdate="${CDATE}" \
   cycle_type="${CYCLE_TYPE}" \
   cycle_dir="${run_dir}" \
+  gridspec_dir="${gridspec_dir}" \
   ensmem_indx="${ENSMEM_INDX}" \
   slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}" || \
 print_err_msg_exit "\

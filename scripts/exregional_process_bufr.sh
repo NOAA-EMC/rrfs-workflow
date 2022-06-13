@@ -204,7 +204,7 @@ else
     obspath_tmp=${OBSPATH}/${obs_source}.${YYYYMMDD}
 
     ;;
-  "JET" | "HERA")
+  "JET" | "HERA" | "ORION")
 
     obsfileprefix=${YYYYMMDDHH}.${obs_source}
     obspath_tmp=${OBSPATH}

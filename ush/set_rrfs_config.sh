@@ -106,9 +106,17 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     IMSSNOW_ROOT="/scratch2/BMC/zrtrr/rli/data/snow/ims96/grib2"
   fi
   if [[ $MACHINE == "orion" ]] ; then
-    EXTRN_MDL_SOURCE_BASEDIR_ICS=/work/noaa/wrfruc/mhu/rrfs/data/gfs
-    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/work/noaa/wrfruc/mhu/rrfs/data/gfs
+    EXTRN_MDL_SOURCE_BASEDIR_ICS=/work/noaa/wrfruc/mhu/rrfs/data/gfs/0p25deg/grib2
+    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/work/noaa/wrfruc/mhu/rrfs/data/gfs/0p25deg/grib2
     OBSPATH=/work/noaa/wrfruc/mhu/rrfs/data/obs_rap
+    OBSPATH_NSSLMOSIAC=/work/noaa/wrfruc/mhu/rrfs/data/reflectivity
+    LIGHTNING_ROOT=/work/noaa/wrfruc/mhu/rrfs/data/lightning
+    ENKF_FCST=/work/noaa/wrfruc/mhu/rrfs/data/enkf/atm
+    AIRCRAFT_REJECT="/work/noaa/wrfruc/mhu/rrfs/data/amdar_reject_lists"
+    SFCOBS_USELIST="/work/noaa/wrfruc/mhu/rrfs/data/mesonet_uselists"
+    SST_ROOT="/work/noaa/wrfruc/mhu/rrfs/data/highres_sst"
+    GVF_ROOT="/work/noaa/wrfruc/mhu/rrfs/data/gvf/grib2"
+    IMSSNOW_ROOT="/work/noaa/wrfruc/mhu/rrfs/data/snow/ims96/grib2"
   fi
 fi
 

@@ -673,7 +673,8 @@ has not been specified for this external model and machine combination:
       #sysdir="$sysbasedir/gfs.${yyyymmdd}/${hh}/atmos"
       ;;
     "ORION")
-      sysdir="$sysbasedir/gdas.${yyyymmdd}/${hh}/atmos"
+      sysdir="$sysbasedir"
+      #sysdir="$sysbasedir/gdas.${yyyymmdd}/${hh}/atmos"
       ;;
     "JET")
       sysdir="$sysbasedir"

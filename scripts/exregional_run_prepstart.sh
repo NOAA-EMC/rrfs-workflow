@@ -55,7 +55,7 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "modelinputdir" "lbcs_root" "fg_root")
+valid_args=( "cycle_dir" "cycle_type" "gridspec_dir" "modelinputdir" "lbcs_root" "fg_root")
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -381,7 +381,7 @@ if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ ${cycle_type} == "prod" ] ; then
        for ii in ${list_iolayout}
        do
          iii=$(printf %4.4i $ii)
-         ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec.${iii}  fv3_grid_spec.${iii}
+         ln_vrfy -sf ${gridspec_dir}/fv3_grid_spec.${iii}  fv3_grid_spec.${iii}
        done
      fi
 #
@@ -394,7 +394,7 @@ if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ ${cycle_type} == "prod" ] ; then
 The executable (snowice_exec_fn) for processing snow/ice data onto FV3-LAM
 native grid does not exist:
   snowice_exec_fp= \"${snowice_exec_fp}\"
-Please ensure that you've built this executable."
+Please ensure that you have built this executable."
      fi
      cp_vrfy ${snowice_exec_fp} .
 
@@ -455,7 +455,7 @@ EOF
        for ii in ${list_iolayout}
        do
          iii=$(printf %4.4i $ii)
-         ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec.${iii}  fv3_grid_spec
+         ln_vrfy -sf ${gridspec_dir}/fv3_grid_spec.${iii}  fv3_grid_spec
          ln_vrfy -sf sfc_data.nc.${iii} sfc_data.nc
          ${EXECDIR}/process_updatesst.exe > stdout_sstupdate.${iii} 2>&1
          ls -l > list_sstupdate.${iii}
@@ -611,7 +611,7 @@ if [ ${HH} -eq ${GVF_update_hour} ] && [ ${cycle_type} == "spinup" ]; then
         for ii in ${list_iolayout}
         do
           iii=$(printf %4.4i $ii)
-          ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec.${iii}  fv3_grid_spec
+          ln_vrfy -sf ${gridspec_dir}/fv3_grid_spec.${iii}  fv3_grid_spec
           ln_vrfy -sf sfc_data.nc.${iii} sfc_data.nc
           ${EXECDIR}/update_GVF.exe > stdout_updateGVF.${iii} 2>&1
           ls -l > list_updateGVF.${iii}
@@ -747,7 +747,7 @@ EOF
        for ii in ${list_iolayout}
        do
          iii=$(printf %4.4i $ii)
-         ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec.${iii}  fv3_grid_spec
+         ln_vrfy -sf ${gridspec_dir}/fv3_grid_spec.${iii}  fv3_grid_spec
          ln_vrfy -sf sfc_data.nc.${iii} sfc_data.nc
          ./${exect} > sfc_sugery_stdout.${iii} 2>&1 || print_info_msg "\
          Call to executable to run surface surgery returned with nonzero exit code."

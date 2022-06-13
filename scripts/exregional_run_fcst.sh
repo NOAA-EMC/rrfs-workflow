@@ -68,6 +68,7 @@ valid_args=( \
 "cdate" \
 "cycle_type" \
 "cycle_dir" \
+"gridspec_dir" \
 "ensmem_indx" \
 "slash_ensmem_subdir" \
 )
@@ -120,6 +121,7 @@ case $MACHINE in
     ulimit -s unlimited
     ulimit -a
     APRUN="srun"
+    OMP_NUM_THREADS=1
     ;;
 
   "JET")
@@ -611,6 +613,26 @@ FV3 forecast completed successfully!!!
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
+#
+#-----------------------------------------------------------------------
+#
+# Save grid_spec files for restart subdomain.
+#
+#-----------------------------------------------------------------------
+#
+if [ ${BKTYPE} -eq 1 ] && [ ${n_iolayouty} -ge 1 ]; then
+  for ii in ${list_iolayout}
+  do
+    iii=$(printf %4.4i $ii)
+    if [ -f "grid_spec.nc.${iii}" ]; then
+      cp_vrfy grid_spec.nc.${iii} ${gridspec_dir}/fv3_grid_spec.${iii}
+    else
+      print_err_msg_exit "\
+      Cannot create symlink because target does not exist:
+      target = \"grid_spec.nc.$iii\""
+    fi
+  done
+fi
 #
 #-----------------------------------------------------------------------
 #

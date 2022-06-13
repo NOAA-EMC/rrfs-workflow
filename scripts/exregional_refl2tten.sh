@@ -55,7 +55,7 @@ with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "mem_type" "workdir" "slash_ensmem_subdir" )
+valid_args=( "cycle_dir" "cycle_type" "gridspec_dir" "mem_type" "workdir" "slash_ensmem_subdir" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -197,7 +197,7 @@ if [ -r "${bkpath}/coupler.res" ]; then # Use background from warm restart
       ln_vrfy -s ${bkpath}/fv_tracer.res.tile1.nc.${iii}       fv3_tracer.${iii}
       ln_vrfy -s ${bkpath}/sfc_data.nc.${iii}                  fv3_sfcdata.${iii}
       ln_vrfy -s ${bkpath}/phy_data.nc.${iii}                  fv3_phydata.${iii}
-      ln_vrfy -s ${fixgriddir}/fv3_grid_spec.${iii}            fv3_grid_spec.${iii}
+      ln_vrfy -s ${gridspec_dir}/fv3_grid_spec.${iii}          fv3_grid_spec.${iii}
     done
   fi
   BKTYPE=0

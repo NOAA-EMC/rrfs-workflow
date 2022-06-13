@@ -400,7 +400,7 @@ MODULES_RUN_TASK_FP script.
       <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/gfs.@Y@m@d/@H/atmos/gfs.t@Hz.pgrb2.0p25.f{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
       {%- endif %}
       {%- elif machine in ["ORION"]  %}
-      <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/gdas.@Y@m@d/@H/atmos/gdas.t@Hz.atmf{{ "%03d" % extrn_mdl_ics_offset_hrs }}.nc</cyclestr></datadep>
+      <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/@y@j@H000{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
       {% else %}
       {%- if extrn_mdl_name_ics in ["GEFS"] %}
       <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/#subdirGE#/@y@j@H000{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
@@ -470,7 +470,7 @@ MODULES_RUN_TASK_FP script.
          <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/gfs.@Y@m@d/@H/atmos/gfs.t@Hz.pgrb2.0p25.f{{ "%03d" % h }}</cyclestr></datadep>
          {%- endif %}
          {%- elif machine in ["ORION"]  %}
-         <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/gdas.@Y@m@d/@H/atmos/gdas.t@Hz.atmf{{ "%03d" % h }}.nc</cyclestr></datadep>
+         <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/@y@j@H000{{ "%03d" % h }}</cyclestr></datadep>
          {%- else %}
          {%- if extrn_mdl_name_lbcs in ["GEFS"] %}
          <datadep age="00:00:05:00"> <cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/#subdirGE#/@y@j@H000{{ "%03d" % h }}</cyclestr></datadep>
@@ -674,6 +674,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>LBCS_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+    <envar><name>NWGES_BASEDIR</name><value>&NWGES_BASEDIR;</value></envar>
 
     <dependency>
        <or>
@@ -739,6 +740,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>LBCS_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+    <envar><name>NWGES_BASEDIR</name><value>&NWGES_BASEDIR;</value></envar>
 
     <dependency>
        <or>
@@ -853,20 +855,24 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
     <envar><name>RADAR_REF_THINNING</name><value>{{radar_ref_thinning}}</value></envar>
+    <envar><name>NWGES_BASEDIR</name><value>&NWGES_BASEDIR;</value></envar>
         
     <dependency>
       <and>
         <timedep><cyclestr offset="&START_TIME_NSSLMOSIAC;">@Y@m@d@H@M00</cyclestr></timedep>
+{%- if do_retro %}
+        <taskdep task="&PREP_CYC_TN;_#type#{{ uscore_ensmem_name }}"/>
+{%- endif %}
       </and>
     </dependency>
 
   </task>
 
+{%- if do_nldn_lght %}
 <!--
 ************************************************************************
 ************************************************************************
 -->
-{%- if do_nldn_lght %}
   <task name="&PROCESS_LIGHTNING_TN;_#type#" cycledefs="#type#cyc"  maxtries="{{ maxtries_process_lightning }}">
 
     &RSRV_DEFAULT;
@@ -1108,12 +1114,18 @@ MODULES_RUN_TASK_FP script.
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
+    <envar><name>NWGES_BASEDIR</name><value>&NWGES_BASEDIR;</value></envar>
   
     <dependency>
-      {%- if do_dacycle and do_refl2tten%}
-      <taskdep task="&RADAR_REFL2TTEN_TN;_#type#"/>
+      {%- if do_dacycle and do_refl2tten and do_nonvar_cldanal%}
+      <and>
+        <taskdep task="&RADAR_REFL2TTEN_TN;_#type#"/>
+        <taskdep task="&CLDANL_NONVAR_TN;_#type#"/>
+      </and>
       {%- elif do_dacycle and do_nonvar_cldanal%}
       <taskdep task="&CLDANL_NONVAR_TN;_#type#"/>
+      {%- elif do_dacycle and do_refl2tten%}
+      <taskdep task="&RADAR_REFL2TTEN_TN;_#type#"/>
       {%- elif do_dacycle %}
       <taskdep task="&ANAL_GSI_TN;_#type#{{ uscore_ensmem_name }}"/>
       {%- elif do_enkfupdate %}

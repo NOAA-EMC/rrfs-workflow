@@ -32,8 +32,12 @@ if [[ $MACHINE == "hera" ]] ; then
 fi
 
 if [[ $MACHINE == "orion" ]] ; then
-  ACCOUNT=ztrr
+  ACCOUNT=wrfruc
   QUEUE_ANALYSIS="batch"
+  QUEUE_WGRIB2="batch"
+  QUEUE_GRAPHICS="batch"
+  QUEUE_POST="batch"
+  NCORES_PER_NODE=24
 fi
 
 if [[ $MACHINE == "wcoss_dell_p3" ]] ; then
@@ -175,6 +179,13 @@ if [[ $MACHINE == "wcoss_dell_p3" ]] ; then
   PPN_RUN_POST="28"
   FV3GFS_FILE_FMT_ICS="netcdf"
   FV3GFS_FILE_FMT_LBCS="netcdf"
+fi
+
+if [[ $MACHINE == "orion" ]] ; then
+  LAYOUT_X="30"
+  LAYOUT_Y="40"
+  PPN_RUN_FCST="40"
+  WTIME_RUN_WGRIB2="00:20:00"
 fi
 
 RUN="RRFS_conus_3km"

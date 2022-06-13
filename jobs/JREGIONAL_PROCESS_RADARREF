@@ -70,6 +70,10 @@ fi
 rm -fr ${workdir}
 mkdir_vrfy -p ${workdir}
 #
+#
+#
+gridspec_dir=${NWGES_BASEDIR}/grid_spec
+#
 #-----------------------------------------------------------------------
 #
 # Call the ex-script for this J-job and pass to it the necessary varia-
@@ -78,7 +82,8 @@ mkdir_vrfy -p ${workdir}
 #-----------------------------------------------------------------------
 #
 $SCRIPTSDIR/exregional_process_radarref.sh \
-  CYCLE_DIR="${CYCLE_DIR}" cycle_type="${CYCLE_TYPE}" WORKDIR="${workdir}" RADAR_REF_THINNING="${RADAR_REF_THINNING}" || \
+  CYCLE_DIR="${CYCLE_DIR}" cycle_type="${CYCLE_TYPE}" gridspec_dir="${gridspec_dir}" \
+  WORKDIR="${workdir}" RADAR_REF_THINNING="${RADAR_REF_THINNING}" || \
 print_err_msg_exit "\
 Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
 #

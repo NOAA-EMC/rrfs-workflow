@@ -75,6 +75,10 @@ fi
 rm -fr ${modelinputdir}
 mkdir_vrfy -p ${modelinputdir}
 #
+#
+#
+gridspec_dir=${NWGES_BASEDIR}/grid_spec
+#
 #-----------------------------------------------------------------------
 #
 # Call the ex-script for this J-job and pass to it the necessary varia-
@@ -85,6 +89,7 @@ mkdir_vrfy -p ${modelinputdir}
 $SCRIPTSDIR/exregional_run_prepstart.sh \
              cycle_dir="${CYCLE_DIR}" \
              cycle_type="${CYCLE_TYPE}" \
+             gridspec_dir="${gridspec_dir}" \
              modelinputdir="${modelinputdir}" \
              lbcs_root="${LBCS_ROOT}" \
              fg_root="${FG_ROOT}" || \

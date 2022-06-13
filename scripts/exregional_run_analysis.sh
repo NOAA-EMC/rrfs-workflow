@@ -55,7 +55,9 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "gsi_type" "mem_type" "analworkdir" "observer_nwges_dir" "slash_ensmem_subdir" "comout" "rrfse_fg_root" "satbias_dir" )
+valid_args=( "cycle_dir" "cycle_type" "gsi_type" "mem_type" "analworkdir" \
+             "observer_nwges_dir" "slash_ensmem_subdir" "comout" \
+             "rrfse_fg_root" "satbias_dir" "gridspec_dir" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -283,7 +285,7 @@ if  [[ ${regional_ensemble_option:-1} -eq 1 ]]; then #using GDAS
     fi
 
     ;;
-  "JET" | "HERA")
+  "JET" | "HERA" | "ORION" )
 
     for loop in $loops; do
       for timelist in $(ls ${ENKF_FCST}/*.gdas.t*z.atmf${loop}.mem080.${ftype}); do
@@ -392,7 +394,7 @@ else                          # cycle uses background from restart
       ln_vrfy  -snf ${bkpath}/fv_core.res.tile1.nc.${iii}     fv3_dynvars.${iii}
       ln_vrfy  -snf ${bkpath}/fv_tracer.res.tile1.nc.${iii}   fv3_tracer.${iii}
       ln_vrfy  -snf ${bkpath}/sfc_data.nc.${iii}              fv3_sfcdata.${iii}
-      ln_vrfy  -snf ${fixgriddir}/fv3_grid_spec.${iii}        fv3_grid_spec.${iii}
+      ln_vrfy  -snf ${gridspec_dir}/fv3_grid_spec.${iii}      fv3_grid_spec.${iii}
     done
   fi
   fv3lam_bg_type=0
@@ -421,7 +423,7 @@ if [[ "${NET}" = "RTMA"* ]]; then
 else
   SUBH=""
   obs_source=rap
-  if [[ ${HH} -eq '00' || ${HH} -eq '12' ]]; then
+  if [ ${HH} -eq '00' ] || [ ${HH} -eq '12' ]; then
     obs_source=rap_e
   fi
 
@@ -437,8 +439,8 @@ else
     ;;
   "ORION" )
      obs_source=rap
-     #obsfileprefix=${YYYYMMDDHH}.${obs_source}               # rap observation from JET.
-     obsfileprefix=${obs_source}.${YYYYMMDD}/${obs_source}    # observation from operation.
+     obsfileprefix=${YYYYMMDDHH}.${obs_source}               # rap observation from JET.
+     #obsfileprefix=${obs_source}.${YYYYMMDD}/${obs_source}    # observation from operation.
      obspath_tmp=${OBSPATH}
     ;;
   *)
@@ -962,7 +964,7 @@ if [ ${BKTYPE} -eq 0 ] && [ "${DO_SOIL_ADJUST}" = "TRUE" ]; then  # warm start
     for ii in ${list_iolayout}
     do
       iii=`printf %4.4i $ii`
-      ln_vrfy  -snf ${fixgriddir}/fv3_grid_spec.${iii}        fv3_grid_spec.${iii}
+      ln_vrfy  -snf ${gridspec_dir}/fv3_grid_spec.${iii}    fv3_grid_spec.${iii}
     done
   fi
 
