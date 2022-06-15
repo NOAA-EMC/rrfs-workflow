@@ -69,10 +69,8 @@ the specified cycle.
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ ${CYCLE_TYPE} == "spinup" ]; then
   recenterdir=${CYCLE_DIR}/recenter/fcst_fv3lam_spinup/INPUT
-  controldir=${ENSCTRL_CYCLE_DIR}/fcst_fv3lam_spinup/INPUT
 else
   recenterdir=${CYCLE_DIR}/recenter/fcst_fv3lam/INPUT
-  controldir=${ENSCTRL_CYCLE_DIR}/fcst_fv3lam/INPUT
 fi
 rm -fr ${recenterdir}
 mkdir_vrfy -p ${recenterdir}
@@ -86,8 +84,7 @@ mkdir_vrfy -p ${recenterdir}
 #
 $SCRIPTSDIR/exregional_run_recenter.sh \
              cycle_type="${CYCLE_TYPE}" \
-             recenterdir="${recenterdir}" \
-             controldir="${controldir}" || \
+             recenterdir="${recenterdir}" || \
 print_err_msg_exit "\
 Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
 #
