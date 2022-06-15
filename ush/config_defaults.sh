@@ -1448,6 +1448,7 @@ SFC_CLIMO_INPUT_DIR=""
 FIX_GSI=""
 FIX_UPP=""
 FIX_CRTM=""
+FIX_UPP_CRTM=""
 
 FNGLAC="global_glacier.2x2.grb"
 FNMXIC="global_maxice.2x2.grb"

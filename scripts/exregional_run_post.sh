@@ -223,7 +223,7 @@ EOF
 #-----------------------------------------------------------------------
 #
 cp_vrfy ${EMC_POST_DIR}/parm/nam_micro_lookup.dat ./eta_micro_lookup.dat
-ln_vrfy -snf ${FIX_CRTM}/*bin ./
+ln_vrfy -snf ${FIX_UPP_CRTM}/*bin ./
 if [ ${USE_CUSTOM_POST_CONFIG_FILE} = "TRUE" ]; then
   post_config_fp="${CUSTOM_POST_CONFIG_FP}"
   post_params_fp="${CUSTOM_POST_PARAMS_FP}"

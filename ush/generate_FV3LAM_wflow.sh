@@ -612,6 +612,20 @@ if [ "${RUN_ENVIR}" = "nco" ]; then
     the experiment generation script."
     fi
 
+# Resolve the target directory that the FIXuppcrtm symlink points to
+    ln_vrfy -fsn "$FIX_UPP_CRTM" "$FIXuppcrtm"
+
+    path_resolved=$( readlink -m "$FIXuppcrtm" )
+    if [ ! -d "${path_resolved}" ]; then
+      print_err_msg_exit "\
+    Missing link to FIXuppcrtm
+    RUN_ENVIR = \"${RUN_ENVIR}\"
+    FIXuppcrtm = \"$FIXuppcrtm\"
+    path_resolved = \"${path_resolved}\"
+    Please ensure that path_resolved is an existing directory and then rerun
+    the experiment generation script."
+    fi
+
   fi  # check if DA
 
   ln_vrfy -fsn "$FIXgsm" "$FIXam"
