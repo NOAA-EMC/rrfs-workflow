@@ -1,0 +1,115 @@
+#!/bin/bash
+
+#
+#-----------------------------------------------------------------------
+#
+# This script calls a python script to create postprocessed ensemble
+# fields in GRIB-2 format from the full set of member GRIB-2 files
+#
+#-----------------------------------------------------------------------
+#
+
+#
+#-----------------------------------------------------------------------
+#
+# Source the variable definitions file and the bash utility functions.
+#
+#-----------------------------------------------------------------------
+#
+. ${GLOBAL_VAR_DEFNS_FP}
+. $USHDIR/source_util_funcs.sh
+#
+#-----------------------------------------------------------------------
+#
+# Save current shell options (in a global array).  Then set new options
+# for this script/function.
+#
+#-----------------------------------------------------------------------
+#
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
+#
+#-----------------------------------------------------------------------
+#
+# Get the full path to the file in which this script/function is located 
+# (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
+# which the file is located (scrfunc_dir).
+#
+#-----------------------------------------------------------------------
+#
+scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
+scrfunc_fn=$( basename "${scrfunc_fp}" )
+scrfunc_dir=$( dirname "${scrfunc_fp}" )
+#
+#-----------------------------------------------------------------------
+#
+# Print message indicating entry into script.
+#
+#-----------------------------------------------------------------------
+#
+print_info_msg "
+========================================================================
+Entering script:  \"${scrfunc_fn}\"
+In directory:     \"${scrfunc_dir}\"
+
+This is the J-job script for the task that creates ensemble fields from
+the member files corresponding to a specified forecast hour.
+========================================================================"
+#
+#-----------------------------------------------------------------------
+#
+# Set directories.
+#
+#-----------------------------------------------------------------------
+ens_dir="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc"
+rrfs_dir="${ENSCTRL_COMOUT_BASEDIR}/$RUN.$PDY/$cyc"
+enspost_dir="${ens_dir}/ensprod"
+mkdir_vrfy -p "${enspost_dir}"
+cd_vrfy "${enspost_dir}"
+ffg_local_dir="${ens_dir}/ensprod/ffg"
+mkdir_vrfy -p "${ffg_local_dir}"
+ffg_latest="${FFG_DIR}/latest.FFG"
+#
+#-----------------------------------------------------------------------
+#
+# Call the ex-script for this J-job and pass to it the necessary varia-
+# bles.
+#
+#-----------------------------------------------------------------------
+#
+
+python -u $SCRIPTSDIR/exregional_enspost.py \
+  "${FIX_UPP}/enspost" \
+  "${USHDIR}" \
+  "${ens_dir}" \
+  "${rrfs_dir}" \
+  "${enspost_dir}" \
+  "${PDY}" \
+  "${cyc}" \
+  "${fhr}" \
+  "${ffg_latest}" \
+  "${ffg_local_dir}" \
+print_err_msg_exit "\
+Call to pyscript \"${scrfunc_fn}\" failed."
+
+#
+#-----------------------------------------------------------------------
+#
+# Print exit message.
+#
+#-----------------------------------------------------------------------
+#
+print_info_msg "
+========================================================================
+Exiting script:  \"${scrfunc_fn}\"
+In directory:    \"${scrfunc_dir}\"
+========================================================================"
+#
+#-----------------------------------------------------------------------
+#
+# Restore the shell options saved at the beginning of this script/func-
+# tion.
+#
+#-----------------------------------------------------------------------
+#
+{ restore_shell_opts; } > /dev/null 2>&1
+

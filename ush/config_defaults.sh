@@ -1599,6 +1599,7 @@ NNODES_PROC_BUFR="1"
 NNODES_RUN_REF2TTEN="1"
 NNODES_RUN_NONVARCLDANL="1"
 NNODES_RUN_GRAPHICS="1"
+NNODES_RUN_ENSPOST="1"
 NNODES_RUN_BUFRSND="1"
 NNODES_SAVE_RESTART="1"
 #
@@ -1633,6 +1634,7 @@ PPN_PROC_BUFR="1"
 PPN_RUN_REF2TTEN="1"
 PPN_RUN_NONVARCLDANL="1"
 PPN_RUN_GRAPHICS="12"
+PPN_RUN_ENSPOST="1"
 PPN_RUN_BUFRSND="28"
 PPN_SAVE_RESTART="1"
 #
@@ -1660,6 +1662,7 @@ WTIME_RUN_REF2TTEN="00:20:00"
 WTIME_RUN_NONVARCLDANL="00:20:00"
 WTIME_RUN_BUFRSND="00:45:00"
 WTIME_SAVE_RESTART="00:15:00"
+WTIME_RUN_ENSPOST="00:30:00"
 #
 # Start times.
 #
@@ -1833,6 +1836,9 @@ TILE_SETS="full"
 # DO_ENS_GRAPHICS:
 # Flag to turn on/off ensemble graphics. Turns OFF deterministic
 # graphics.
+#
+# DO_ENSPOST:
+# Flag to turn on/off python ensemble postprocessing for WPC testbeds.
 #-----------------------------------------------------------------------
 #
 DO_ENSEMBLE="FALSE"
@@ -1842,6 +1848,7 @@ DO_GSIOBSERVER="FALSE"
 DO_ENKFUPDATE="FALSE"
 DO_RECENTER="FALSE"
 DO_ENS_GRAPHICS="FALSE"
+DO_ENSPOST="FALSE"
 #
 #-----------------------------------------------------------------------
 #
@@ -2096,6 +2103,7 @@ DO_NLDN_LGHT="FALSE"
 #
 RADARREFL_MINS=(0 1 2 3)
 RADARREFL_TIMELEVEL=(0)
+
 
 #
 #-----------------------------------------------------------------------

@@ -1727,6 +1727,43 @@ MODULES_RUN_TASK_FP script.
 
 {%- endif %}
 
+{%- if do_ensemble and do_enspost %}
+
+  <metatask name="enspost">
+    <var name="fhr"> {% for h in range(0, postproc_long_len_hrs+1) %}{{ " %03d" % h  }}{% endfor %} </var>
+
+    <task name="enspost_#fhr#" cycledefs="prodcyc" maxtries="{{ maxtries_run_post }}">
+
+      &RSRV_DEFAULT;
+      &WALL_LIMIT_POST;
+
+      <walltime>{{ wtime_run_enspost }}</walltime>
+      <nodes>{{ nnodes_run_enspost }}:ppn={{ ppn_run_enspost }}</nodes>
+      <jobname><cyclestr>&TAG;_enspost_@H_#fhr#</cyclestr></jobname>
+      <join><cyclestr>&LOGDIR;/enspost_f#fhr#_@Y@m@d@H.log</cyclestr></join>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "run_enspost" "&JOBSDIR;/JREGIONAL_RUN_ENSPOST"</command>
+
+      <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+      <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+      <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+      <envar><name>fhr</name><value>#fhr#</value></envar>
+      <envar><name>ENSCTRL_COMOUT_BASEDIR</name><value>&ENSCTRL_COMOUT_BASEDIR;</value></envar>
+
+      <dependency>
+        <and>
+          <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/RRFS_CONUS.t@Hz.bgsfcf#fhr#.tm00.grib2</cyclestr></datadep>
+          {%- for m in range(1, 10) %}
+          <taskdep task="&RUN_WGRIB2_TN;_mem{{ "%04d" % m }}_f#fhr#"/>
+          {%- endfor %}
+        </and>
+      </dependency>
+    </task>
+  </metatask>
+
+
+{%- endif %}
+
 {%- if do_enkfupdate %}
 <!--
 ************************************************************************
