@@ -345,7 +345,7 @@ MODULES_RUN_TASK_FP script.
 
 {% if not is_rtma %}
 {%- if do_ensemble %}
- <metatask name="run_ensemble">
+ <metatask name="run_ensemble_pre">
   <var name="{{ ensmem_indx_name }}">
     {%- for m in range(1, num_ens_members+1) -%}{%- set fmtstr=" %0"~ndigits_ensmem_names~"d" -%}{{- fmtstr%m -}}{%- endfor %} </var>
   {%- if do_enscontrol %}
@@ -1513,7 +1513,7 @@ MODULES_RUN_TASK_FP script.
 
     <command>&JOBSDIR;/../scripts/exregional_archive_ens.ksh</command>
     <cores>1</cores>
-    <walltime>06:00:00</walltime>
+    <walltime>23:00:00</walltime>
     <memory>24G</memory>
     <jobname>&TAG;_&ARCHIVE_TN;</jobname>
     <join><cyclestr>&LOGDIR;/&ARCHIVE_TN;_@Y@m@d@H.log</cyclestr></join>

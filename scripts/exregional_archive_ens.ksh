@@ -35,6 +35,30 @@ if [[ $runcount -gt 0 ]];then
 #
 #-------------------------------------------------------------------------
 #
+# Archiving ncl graphics
+#
+#-------------------------------------------------------------------------
+#
+    if [ "$(ls ${COMOUT_BASEDIR}/${onerun}/nclprd)" ]; then
+      echo "NCL Graphics..."
+      mkdir -p $COMOUT_BASEDIR/stage/$year$month$day$hour/nclprd
+      cp -rsv ${COMOUT_BASEDIR}/${onerun}/nclprd/* $COMOUT_BASEDIR/stage/$year$month$day$hour/nclprd
+    fi
+#
+#-------------------------------------------------------------------------
+#
+# Archiving ensprod
+#
+#-------------------------------------------------------------------------
+#
+    if [ "$(ls ${COMOUT_BASEDIR}/${onerun}/ensprod)" ]; then
+      echo "ensprod..."
+      mkdir -p $COMOUT_BASEDIR/stage/$year$month$day$hour/ensprod
+      cp -rsv ${COMOUT_BASEDIR}/${onerun}/ensprod/* $COMOUT_BASEDIR/stage/$year$month$day$hour/ensprod
+    fi
+#
+#-------------------------------------------------------------------------
+#
 # Archiving EnKF diag files 
 #
 #-------------------------------------------------------------------------
