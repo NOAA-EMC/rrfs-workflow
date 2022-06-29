@@ -292,21 +292,23 @@ if lpmm_parms != [] and pmm_parms == []:
   for p in lpmm_parms:
     membervals[p] = np.zeros((len(mems),nlats,nlons))
 
+do_parms = []
+for i in range(len(post_parms)):
+  intv = int(post_parms[i].split('h')[0])
+  if (fhour % ens_proc_intervals[intv] == 0 and fhour >= intv):
+    do_parms.append(post_parms[i])
+
 for m in mems:
   print('Processing member',(1+mems.index(m)),'of',len(mems))
   idx = pygrib.index(rrfse_files[m][0],'discipline','parameterCategory','parameterNumber','typeOfFirstFixedSurface','level')
-  for p in post_parms:
+  for p in do_parms:
     if 'qpf' in p:
       ptable = 'qpf'
     elif 'snow' in p:
       ptable = 'snow'
     else:
       ptable = p
-    if p == 'accqpf':
-      idx2 = pygrib.index(rrfse_files[m][0],'discipline','parameterCategory','parameterNumber','typeOfFirstFixedSurface','level','startStep')
-      vals = idx2(discipline=grib_discipline[ptable],parameterCategory=grib_category[ptable],parameterNumber=grib_number[ptable],typeOfFirstFixedSurface=grib_surface[ptable],level=grib_level[ptable],startStep=0)[0].values
-      idx2.close()
-    elif (p == '1hqpf' or p == '1hsnow') and fhour >= 1 and (fhour % pqpf_proc_intervals[1] == 0):
+    if (p == '1hqpf' or p == '1hsnow'):
       idx2 = pygrib.index(rrfse_files[m][0],'discipline','parameterCategory','parameterNumber','typeOfFirstFixedSurface','level','startStep')
       vals = idx2(discipline=grib_discipline[ptable],parameterCategory=grib_category[ptable],parameterNumber=grib_number[ptable],typeOfFirstFixedSurface=grib_surface[ptable],level=grib_level[ptable],startStep=0)[0].values
       idx2.close()
@@ -314,7 +316,7 @@ for m in mems:
         idx2 = pygrib.index(rrfse_files[m][1],'discipline','parameterCategory','parameterNumber','typeOfFirstFixedSurface','level','startStep')
         vals = vals - idx2(discipline=grib_discipline[ptable],parameterCategory=grib_category[ptable],parameterNumber=grib_number[ptable],typeOfFirstFixedSurface=grib_surface[ptable],level=grib_level[ptable],startStep=0)[0].values
         idx2.close()
-    elif (p == '3hqpf' or p == '3hsnow') and fhour >= 3 and (fhour % pqpf_proc_intervals[3] == 0):
+    elif (p == '3hqpf' or p == '3hsnow'):
       idx2 = pygrib.index(rrfse_files[m][0],'discipline','parameterCategory','parameterNumber','typeOfFirstFixedSurface','level','startStep')
       vals = idx2(discipline=grib_discipline[ptable],parameterCategory=grib_category[ptable],parameterNumber=grib_number[ptable],typeOfFirstFixedSurface=grib_surface[ptable],level=grib_level[ptable],startStep=0)[0].values
       idx2.close()
@@ -322,7 +324,7 @@ for m in mems:
         idx2 = pygrib.index(rrfse_files[m][2],'discipline','parameterCategory','parameterNumber','typeOfFirstFixedSurface','level','startStep')
         vals = vals - idx2(discipline=grib_discipline[ptable],parameterCategory=grib_category[ptable],parameterNumber=grib_number[ptable],typeOfFirstFixedSurface=grib_surface[ptable],level=grib_level[ptable],startStep=0)[0].values
         idx2.close()
-    elif (p == '6hqpf' or p == '6hsnow') and fhour >= 6 and (fhour % pqpf_proc_intervals[6] == 0):
+    elif (p == '6hqpf' or p == '6hsnow'):
       idx2 = pygrib.index(rrfse_files[m][0],'discipline','parameterCategory','parameterNumber','typeOfFirstFixedSurface','level','startStep')
       vals = idx2(discipline=grib_discipline[ptable],parameterCategory=grib_category[ptable],parameterNumber=grib_number[ptable],typeOfFirstFixedSurface=grib_surface[ptable],level=grib_level[ptable],startStep=0)[0].values
       idx2.close()
@@ -330,7 +332,7 @@ for m in mems:
         idx2 = pygrib.index(rrfse_files[m][3],'discipline','parameterCategory','parameterNumber','typeOfFirstFixedSurface','level','startStep')
         vals = vals - idx2(discipline=grib_discipline[ptable],parameterCategory=grib_category[ptable],parameterNumber=grib_number[ptable],typeOfFirstFixedSurface=grib_surface[ptable],level=grib_level[ptable],startStep=0)[0].values
         idx2.close()
-    elif (p == '12hqpf' or p == '12hsnow') and fhour >= 12 and (fhour % pqpf_proc_intervals[12] == 0):
+    elif (p == '12hqpf' or p == '12hsnow'):
       idx2 = pygrib.index(rrfse_files[m][0],'discipline','parameterCategory','parameterNumber','typeOfFirstFixedSurface','level','startStep')
       vals = idx2(discipline=grib_discipline[ptable],parameterCategory=grib_category[ptable],parameterNumber=grib_number[ptable],typeOfFirstFixedSurface=grib_surface[ptable],level=grib_level[ptable],startStep=0)[0].values
       idx2.close()
@@ -338,7 +340,7 @@ for m in mems:
         idx2 = pygrib.index(rrfse_files[m][4],'discipline','parameterCategory','parameterNumber','typeOfFirstFixedSurface','level','startStep')
         vals = vals - idx2(discipline=grib_discipline[ptable],parameterCategory=grib_category[ptable],parameterNumber=grib_number[ptable],typeOfFirstFixedSurface=grib_surface[ptable],level=grib_level[ptable],startStep=0)[0].values
         idx2.close()
-    elif (p == '24hqpf' or p == '24hsnow') and fhour >= 24 and (fhour % pqpf_proc_intervals[24] == 0):
+    elif (p == '24hqpf' or p == '24hsnow'):
       idx2 = pygrib.index(rrfse_files[m][0],'discipline','parameterCategory','parameterNumber','typeOfFirstFixedSurface','level','startStep')
       vals = idx2(discipline=grib_discipline[ptable],parameterCategory=grib_category[ptable],parameterNumber=grib_number[ptable],typeOfFirstFixedSurface=grib_surface[ptable],level=grib_level[ptable],startStep=0)[0].values
       idx2.close()
@@ -346,13 +348,6 @@ for m in mems:
         idx2 = pygrib.index(rrfse_files[m][5],'discipline','parameterCategory','parameterNumber','typeOfFirstFixedSurface','level','startStep')
         vals = vals - idx2(discipline=grib_discipline[ptable],parameterCategory=grib_category[ptable],parameterNumber=grib_number[ptable],typeOfFirstFixedSurface=grib_surface[ptable],level=grib_level[ptable],startStep=0)[0].values
         idx2.close()
-    else:
-      if isinstance(grib_number[p],int):
-        vals = idx(discipline=grib_discipline[ptable],parameterCategory=grib_category[ptable],parameterNumber=grib_number[ptable],typeOfFirstFixedSurface=grib_surface[ptable],level=grib_level[ptable])[0].values
-      else:
-        grb1 = idx(discipline=grib_discipline[ptable],parameterCategory=grib_category[ptable],parameterNumber=grib_number[ptable][0],typeOfFirstFixedSurface=grib_surface[ptable],level=grib_level[ptable])[0]
-        grb2 = idx(discipline=grib_discipline[ptable],parameterCategory=grib_category[ptable],parameterNumber=grib_number[ptable][1],typeOfFirstFixedSurface=grib_surface[ptable],level=grib_level[ptable])[0]
-        vals = (grb1.values**2 + grb2.values**2)**0.5
     psum[p] = psum[p] + vals
     if p in std_parms:
       psumsq[p] = psumsq[p] + vals**2
@@ -364,8 +359,10 @@ for m in mems:
       membervals[p][m-1] = vals
   idx.close()
 
-for i in range(len(post_parms)):
-  p = post_parms[i]
+for i in range(len(do_parms)):
+  print('Working on',p)
+  p = do_parms[i]
+  intv = int(p.split('h')[0])
   if ('snow' in p) or ('qpf' in p):
     grbtmp = accum_template
     if 'qpf' in p:
@@ -377,84 +374,81 @@ for i in range(len(post_parms)):
   else:
     grbtmp = normal_template
 
-  intv = int(p.split('h')[0])
-  if (fhour % pqpf_proc_intervals[intv] == 0 and fhour >= intv):
+  # fill in GRIB time definition metadata
+  grbtmp['numberOfForecastsInEnsemble'] = len(mems)
+  grbtmp['year'] = cy
+  grbtmp['month'] = cm
+  grbtmp['day'] = cd
+  grbtmp['hour'] = ch
+  grbtmp.packingType='grid_jpeg'  # complex packing for smallest file size
 
-    # fill in GRIB time definition metadata
-    grbtmp['numberOfForecastsInEnsemble'] = len(mems)
-    grbtmp['year'] = cy
-    grbtmp['month'] = cm
-    grbtmp['day'] = cd
-    grbtmp['hour'] = ch
-    grbtmp.packingType='grid_jpeg'  # complex packing for smallest file size
-  
-    # calculate mean
-    pmean = psum[p]/float(len(mems))
-  
-    # set forecast hour(s)
-    grbtmp['endStep'] = fhour
-    grbtmp['startStep'] = fhour-intv
-  
-    # fill in GRIB parameter metadata
-    grbtmp['discipline']=grib_discipline[ptable]
-    grbtmp['parameterCategory']=grib_category[ptable]
-    if isinstance(grib_number[ptable],int):
-      grbtmp['parameterNumber']=grib_number[ptable]
-    else:
-      grbtmp['parameterNumber']=grib_number[ptable][2]
-    if grib_surface == 'sfc':
-      grbtmp['typeOfFirstFixedSurface']=grib_surface[ptable]
-    grbtmp['level']=grib_level[ptable]
-    if 'snow' in p:
-      grbtmp['decimalPrecision']=3
-  
-    grbout = open(outfile,'ab')
-    if p in mean_parms:
-      if 'qpf' in p or 'snow' in p:
-        pmean = np.clip(pmean,0,10000)
-      grbtmp['values']=pmean.astype(np.float32)
-      grbtmp['typeOfGeneratingProcess']=4
-      grbtmp['derivedForecast']=0
-      grbout.write(grbtmp.tostring())
-    if p in std_parms:
-      pstd = ((psumsq[p])/float(len(mems)) - pmean**2)**0.5
-      pstd = np.where(np.greater_equal(pstd,0),pstd,0) # code NaN values as zero to prevent GRIB-API issues
-      grbtmp['values']=pstd.astype(np.float32)
-      grbtmp['typeOfGeneratingProcess']=4
-      grbtmp['derivedForecast']=4
-      grbout.write(grbtmp.tostring())
-    if p in max_parms:
-      if 'qpf' in p or 'snow' in p:
-        pmax[p] = np.clip(pmax[p],0,10000)
-      grbtmp['values']=pmax[p].astype(np.float32)
-      grbtmp['typeOfGeneratingProcess']=4
-      grbtmp['derivedForecast']=9
-      grbout.write(grbtmp.tostring())
-    if p in min_parms:
-      if 'qpf' in p or 'snow' in p:
-        pmin[p] = np.clip(pmin[p],0,10000)
-      grbtmp['values']=pmin[p].astype(np.float32)
-      grbtmp['typeOfGeneratingProcess']=4
-      grbtmp['derivedForecast']=8
-      grbout.write(grbtmp.tostring())
-    if p in pmm_parms:
-      pmm = compute_pmm(membervals[p],pmm_smooth)  # sobash method
-      if 'qpf' in p or 'snow' in p:
-        pmm = np.clip(pmm,0,10000)
-      grbtmp['values']=pmm.astype(np.float32)
-      grbtmp['typeOfGeneratingProcess']=193
-      grbtmp['derivedForecast']=1
-      grbout.write(grbtmp.tostring())
-    if p in lpmm_parms:
-      lpmm = compute_lpmm(membervals[p],lpmm_patch,lpmm_neighborhood,lpmm_smooth)
-      if 'qpf' in p or 'snow' in p:
-        lpmm = np.clip(lpmm,0,10000)
-      grbtmp['values']=lpmm.astype(np.float32)
-      grbtmp['typeOfGeneratingProcess']=193
-      grbtmp['derivedForecast']=6
-      grbout.write(grbtmp.tostring())
+  # calculate mean
+  pmean = psum[p]/float(len(mems))
 
-    grbout.close()
+  # set forecast hour(s)
+  grbtmp['endStep'] = fhour
+  grbtmp['startStep'] = fhour-intv
+
+  # fill in GRIB parameter metadata
+  grbtmp['discipline']=grib_discipline[ptable]
+  grbtmp['parameterCategory']=grib_category[ptable]
+  if isinstance(grib_number[ptable],int):
+    grbtmp['parameterNumber']=grib_number[ptable]
+  else:
+    grbtmp['parameterNumber']=grib_number[ptable][2]
+  if grib_surface == 'sfc':
+    grbtmp['typeOfFirstFixedSurface']=grib_surface[ptable]
+  grbtmp['level']=grib_level[ptable]
+  if 'snow' in p:
+    grbtmp['decimalPrecision']=3
+
+  grbout = open(outfile,'ab')
+  if p in mean_parms:
+    if 'qpf' in p or 'snow' in p:
+      pmean = np.clip(pmean,0,10000)
+    grbtmp['values']=pmean.astype(np.float32)
+    grbtmp['typeOfGeneratingProcess']=4
+    grbtmp['derivedForecast']=0
+    grbout.write(grbtmp.tostring())
+  if p in std_parms:
+    pstd = ((psumsq[p])/float(len(mems)) - pmean**2)**0.5
+    pstd = np.where(np.greater_equal(pstd,0),pstd,0) # code NaN values as zero to prevent GRIB-API issues
+    grbtmp['values']=pstd.astype(np.float32)
+    grbtmp['typeOfGeneratingProcess']=4
+    grbtmp['derivedForecast']=4
+    grbout.write(grbtmp.tostring())
+  if p in max_parms:
+    if 'qpf' in p or 'snow' in p:
+      pmax[p] = np.clip(pmax[p],0,10000)
+    grbtmp['values']=pmax[p].astype(np.float32)
+    grbtmp['typeOfGeneratingProcess']=4
+    grbtmp['derivedForecast']=9
+    grbout.write(grbtmp.tostring())
+  if p in min_parms:
+    if 'qpf' in p or 'snow' in p:
+      pmin[p] = np.clip(pmin[p],0,10000)
+    grbtmp['values']=pmin[p].astype(np.float32)
+    grbtmp['typeOfGeneratingProcess']=4
+    grbtmp['derivedForecast']=8
+    grbout.write(grbtmp.tostring())
+  if p in pmm_parms:
+    pmm = compute_pmm(membervals[p],pmm_smooth)  # sobash method
+    if 'qpf' in p or 'snow' in p:
+      pmm = np.clip(pmm,0,10000)
+    grbtmp['values']=pmm.astype(np.float32)
+    grbtmp['typeOfGeneratingProcess']=193
+    grbtmp['derivedForecast']=1
+    grbout.write(grbtmp.tostring())
+  if p in lpmm_parms:
+    lpmm = compute_lpmm(membervals[p],lpmm_patch,lpmm_neighborhood,lpmm_smooth)
+    if 'qpf' in p or 'snow' in p:
+      lpmm = np.clip(lpmm,0,10000)
+    grbtmp['values']=lpmm.astype(np.float32)
+    grbtmp['typeOfGeneratingProcess']=193
+    grbtmp['derivedForecast']=6
+    grbout.write(grbtmp.tostring())
+
+  grbout.close()
 
 print('Wrote derived ensemble fields to:',outfile)
 
