@@ -227,6 +227,13 @@ if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
     echo "${FIX_UPP}/${TESTBED_FIELDS_FN} not found"
   fi
 fi
+if [[ ! -z ${TESTBED_FIELDS_FN2} ]]; then
+  if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN2} ]]; then
+    wgrib2 ${bgrd3d} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN2} | wgrib2 -i -append -grib ${bgsfc} ${bgrd3d}
+  else
+    echo "${FIX_UPP}/${TESTBED_FIELDS_FN2} not found"
+  fi
+fi
 
 #Link output for transfer to Jet
 # Should the following be done only if on jet??

@@ -1769,6 +1769,7 @@ CUSTOM_POST_PARAMS_FP=""
 POST_FULL_MODEL_NAME="FV3R"
 POST_SUB_MODEL_NAME="NONE"
 TESTBED_FIELDS_FN=""
+TESTBED_FIELDS_FN2=""
 #
 #-----------------------------------------------------------------------
 #

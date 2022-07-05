@@ -1,0 +1,9 @@
+:var discipline=3 center=7 local_table=1 parmcat=192 parm=77:top of atmosphere:
+:var discipline=3 center=7 local_table=1 parmcat=192 parm=78:top of atmosphere:
+:var discipline=3 center=7 local_table=1 parmcat=192 parm=79:top of atmosphere:
+:var discipline=3 center=7 local_table=1 parmcat=192 parm=80:top of atmosphere:
+:var discipline=3 center=7 local_table=1 parmcat=192 parm=81:top of atmosphere:
+:var discipline=3 center=7 local_table=1 parmcat=192 parm=82:top of atmosphere:
+:var discipline=3 center=7 local_table=1 parmcat=192 parm=83:top of atmosphere:
+:var discipline=3 center=7 local_table=1 parmcat=192 parm=84:top of atmosphere:
+:var discipline=3 center=7 local_table=1 parmcat=192 parm=85:top of atmosphere:
