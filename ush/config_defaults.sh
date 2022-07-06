@@ -605,8 +605,10 @@ ARCHIVE_CYCLEDEF="00 01 01 01 2100 *"
 #       (need to follow FORTRAN namelist convetion)
 #-------------------------------------------------------------------------------------
 # &SETUP  and &BKGERR
+niter1=50
+niter2=50
 l_obsprvdiag=.false.
-diag_radardbz=.true.
+diag_radardbz=.false.
 write_diag_2=.false.
 bkgerr_vs=1.0
 bkgerr_hzscl=0.7,1.4,2.80   #no trailing ,
@@ -623,6 +625,8 @@ regional_ensemble_option=1     #1 for GDAS ; 5 for FV3LAM ensemble
 grid_ratio_fv3=2.0             #fv3 resolution 3km, so analysis=3*2=6km
 grid_ratio_ens=3               #if analysis is 3km, then ensemble=3*3=9km. GDAS ensemble is 20km
 i_en_perts_io=1                #0 or 1: original file   3: pre-processed ensembles
+q_hyb_ens=.false.
+ens_fast_read=.false.
 
 # &RAPIDREFRESH_CLDSURF
 l_PBL_pseudo_SurfobsT=.false.
@@ -634,8 +638,10 @@ i_use_2mT4B=0
 #    Minimum number of ensemble members required a hybrid GSI analysis 
 #
 HYBENSMEM_NMIN=80
-ANAVINFO_FN="anavinfo.fv3lam_hrrr"
-ENKF_ANAVINFO_FN="anavinfo.enkf_fv3lam_hrrr"
+ANAVINFO_FN="anavinfo.rrfs"
+ANAVINFO_DBZ_FN="anavinfo.rrfs_dbz"
+ENKF_ANAVINFO_FN="anavinfo.rrfs"
+ENKF_ANAVINFO_DBZ_FN="anavinfo.enkf.rrfs_dbz"
 CONVINFO_FN="convinfo.rrfs"
 BERROR_FN="rap_berror_stats_global_RAP_tune" #under $FIX_GSI
 OBERROR_FN="errtable.rrfs"
@@ -647,6 +653,7 @@ SFCOBS_USELIST=""
 # default namelist for nonvar cloud analysis
 cld_bld_hgt=1200.0
 l_precip_clear_only=.false.
+l_qnr_from_qr=.false.
 #
 #-----------------------------------------------------------------------
 #
@@ -1831,6 +1838,12 @@ TILE_SETS="full"
 # DO_ENKFUPDATE:
 # Decide whether or not to run EnKF update for the ensemble members
 #
+# DO_ENKF_RADAR_REF:
+# Decide whether or not to run Radar Reflectivity EnKF update for the ensemble members
+#
+# DO_ENVAR_RADAR_REF:
+# Decide whether or not to run Radar Reflectivity hybrid analysis
+#
 # DO_RECENTER:
 # Decide whether or not to run recenter for the ensemble members
 #
@@ -1847,6 +1860,8 @@ NUM_ENS_MEMBERS="1"
 DO_ENSCONTROL="FALSE"
 DO_GSIOBSERVER="FALSE"
 DO_ENKFUPDATE="FALSE"
+DO_ENKF_RADAR_REF="FALSE"
+DO_ENVAR_RADAR_REF="FALSE"
 DO_RECENTER="FALSE"
 DO_ENS_GRAPHICS="FALSE"
 DO_ENSPOST="FALSE"

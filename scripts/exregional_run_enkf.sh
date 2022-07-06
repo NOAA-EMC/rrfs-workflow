@@ -59,7 +59,7 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "enkfworkdir" "NWGES_DIR" )
+valid_args=( "cycle_dir" "cycle_type" "enkfworkdir" "NWGES_DIR" "ob_type" )
 process_args valid_args "$@"
 
 cycle_type=${cycle_type:-prod}
@@ -194,6 +194,7 @@ mkdir_vrfy -p ${enkfanal_nwges_dir}
      ln_vrfy  -snf  ${bkpath}/fv_core.res.tile1.nc         fv3sar_tile1_${memcharv0}_dynvars
      ln_vrfy  -snf  ${bkpath}/fv_tracer.res.tile1.nc       fv3sar_tile1_${memcharv0}_tracer
      ln_vrfy  -snf  ${bkpath}/sfc_data.nc                  fv3sar_tile1_${memcharv0}_sfcdata
+     ln_vrfy  -snf  ${bkpath}/phy_data.nc                  fv3sar_tile1_${memcharv0}_phyvar
 
 #
 #-----------------------------------------------------------------------
@@ -202,9 +203,9 @@ mkdir_vrfy -p ${enkfanal_nwges_dir}
 #
 #-----------------------------------------------------------------------
 #
-     for diagfile0 in $(ls  ${observer_nwges_dir}/diag*ges*) ; do
+     for diagfile0 in $(ls  ${observer_nwges_dir}/diag_${ob_type}_ges*) ; do
          diagfile=$(basename  $diagfile0)
-         cp_vrfy  $diagfile0  ${diagfile}_$memcharv0
+         cp_vrfy  $diagfile0  diag_conv_ges.$memcharv0
      done
 
 done
@@ -215,8 +216,28 @@ done
 #
 #----------------------------------------------------------------------
 #
-ANAVINFO=${FIX_GSI}/${ENKF_ANAVINFO_FN}
-CONVINFO=${FIX_GSI}/${CONVINFO_FN}
+found_ob_type=0
+
+CONVINFO=${FIX_GSI}/convinfo.rrfs
+
+if [ ${ob_type} == "conv" ]; then
+  ANAVINFO=${FIX_GSI}/${ENKF_ANAVINFO_FN}
+  CORRLENGTH=400
+  LNSIGCUTOFF=0.5
+  found_ob_type=1
+fi
+if [ ${ob_type} == "radardbz" ]; then
+  ANAVINFO=${FIX_GSI}/${ENKF_ANAVINFO_DBZ_FN}
+  CORRLENGTH=18
+  LNSIGCUTOFF=0.5
+  found_ob_type=1
+fi
+if [ ${found_ob_type} == 0 ]; then
+  print_err_msg_exit "Error: unknown observation type: ${ob_type}"
+fi
+stdout_name=stdout.${ob_type}
+stderr_name=stderr.${ob_type}
+
 SATINFO=${FIX_GSI}/global_satinfo.txt
 OZINFO=${FIX_GSI}/global_ozinfo.txt
 
@@ -268,10 +289,10 @@ use_gfs_nemsio=.true.,
 	datestring="$vlddate",datapath="$enkfworkdir/",
 	analpertwtnh=0.85,analpertwtsh=0.85,analpertwttr=0.85,
 	covinflatemax=1.e2,covinflatemin=1,pseudo_rh=.true.,iassim_order=0,
-	corrlengthnh=400,corrlengthsh=400,corrlengthtr=400,
-	lnsigcutoffnh=0.5,lnsigcutoffsh=0.5,lnsigcutofftr=0.5,
-	lnsigcutoffpsnh=0.5,lnsigcutoffpssh=0.5,lnsigcutoffpstr=0.5,
-	lnsigcutoffsatnh=0.5,lnsigcutoffsatsh=0.5,lnsigcutoffsattr=0.5,
+        corrlengthnh=$CORRLENGTH,corrlengthsh=$CORRLENGTH,corrlengthtr=$CORRLENGTH,
+        lnsigcutoffnh=$LNSIGCUTOFF,lnsigcutoffsh=$LNSIGCUTOFF,lnsigcutofftr=$LNSIGCUTOFF,
+        lnsigcutoffpsnh=$LNSIGCUTOFF,lnsigcutoffpssh=$LNSIGCUTOFF,lnsigcutoffpstr=$LNSIGCUTOFF,
+        lnsigcutoffsatnh=$LNSIGCUTOFF,lnsigcutoffsatsh=$LNSIGCUTOFF,lnsigcutoffsattr=$LNSIGCUTOFF,
 	obtimelnh=1.e30,obtimelsh=1.e30,obtimeltr=1.e30,
 	saterrfact=1.0,numiter=1,
 	sprd_tol=1.e30,paoverpb_thresh=0.98,
@@ -396,17 +417,18 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-${APRUN}  $enkfworkdir/enkf.x < enkf.nml 1>stdout 2>stderr || print_err_msg_exit "\
+${APRUN}  $enkfworkdir/enkf.x < enkf.nml 1>${stdout_name} 2>${stderr_name} || print_err_msg_exit "\
 Call to executable to run EnKF returned with nonzero exit code."
 
 
-cp_vrfy stdout ${enkfanal_nwges_dir}/.
-cp_vrfy stderr ${enkfanal_nwges_dir}/.
+cp_vrfy ${stdout_name} ${enkfanal_nwges_dir}/.
+cp_vrfy ${stderr_name} ${enkfanal_nwges_dir}/.
 if [ ! -d ${NWGES_DIR}/../enkf_diag ]; then
   mkdir -p ${NWGES_DIR}/../enkf_diag
 fi
-cp_vrfy stdout ${NWGES_DIR}/../enkf_diag/stdout.$vlddate
-cp_vrfy stderr ${NWGES_DIR}/../enkf_diag/stderr.$vlddate
+cp_vrfy ${stdout_name} ${NWGES_DIR}/../enkf_diag/${stdout_name}.$vlddate
+cp_vrfy ${stderr_name} ${NWGES_DIR}/../enkf_diag/${stderr_name}.$vlddate
+
 print_info_msg "
 ========================================================================
 EnKF PROCESS completed successfully!!!

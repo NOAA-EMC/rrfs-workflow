@@ -437,6 +437,8 @@ settings="\
   'do_enscontrol': ${DO_ENSCONTROL}
   'do_gsiobserver': ${DO_GSIOBSERVER}
   'do_enkfupdate': ${DO_ENKFUPDATE}
+  'do_enkf_radar_ref': ${DO_ENKF_RADAR_REF}
+  'do_envar_radar_ref': ${DO_ENVAR_RADAR_REF}
   'do_recenter': ${DO_RECENTER}
   'do_bufrsnd': ${DO_BUFRSND}
   'do_ens_graphics': ${DO_ENS_GRAPHICS}

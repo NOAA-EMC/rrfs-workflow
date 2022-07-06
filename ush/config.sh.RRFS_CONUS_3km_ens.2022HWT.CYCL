@@ -208,6 +208,7 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    DO_ENKFUPDATE="TRUE"
    DO_RECENTER="TRUE"
    DO_ENS_GRAPHICS="TRUE"
+   DO_ENKF_RADAR_REF="TRUE"
    DO_ENSPOST="FALSE"
    RADAR_REF_THINNING="2"
    ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_ens"
@@ -217,6 +218,7 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    CLEAN_OLDSTMPPOST_HRS="48"
    cld_bld_hgt=0.0
    l_precip_clear_only=.true.
+   write_diag_2=.true.
 fi
 
 

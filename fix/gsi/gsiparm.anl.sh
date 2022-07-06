@@ -1,8 +1,11 @@
 gsi_namelist="
  &SETUP
-   miter=${miter},niter(1)=50,niter(2)=50,
+   miter=${miter},niter(1)=${niter1},niter(2)=${niter2},
    write_diag(1)=.true.,write_diag(2)=${write_diag_2},write_diag(3)=.true.,
    qoption=2,print_obs_para=.true.,diag_radardbz=${diag_radardbz},
+   if_model_dbz=${if_model_dbz}, static_gsi_nopcp_dbz=0.0,
+   rmesh_dbz=4.0,rmesh_vr=4.0,zmesh_dbz=1000.0,zmesh_vr=1000.0,
+   missing_to_nopcp=.false.,radar_no_thinning=.true.,
    gencode=78,factqmin=0.0,factqmax=0.0,
    iguess=-1,
    lread_obs_save=${lread_obs_save},lread_obs_skip=${lread_obs_skip},
@@ -44,6 +47,7 @@ gsi_namelist="
  /
 OBS_INPUT::
 !  dfile          dtype       dplat     dsis                 dval    dthin dsfcalc
+   dbzobs.nc      dbz         null      dbz                  1.0     0     0
    prepbufr       ps          null      ps                   1.0     0     0
    prepbufr       t           null      t                    1.0     0     0
    prepbufr       q           null      q                    1.0     0     0
@@ -138,6 +142,7 @@ OBS_INPUT::
  &HYBRID_ENSEMBLE
    l_hyb_ens=${ifhyb},
    uv_hyb_ens=.true.,
+   q_hyb_ens=${q_hyb_ens},
    aniso_a_en=.false.,generate_ens=.false.,
    n_ens=${nummem},
    beta_s0=${beta1_inv},s_ens_h=${ens_h},s_ens_v=${ens_v},
@@ -150,6 +155,7 @@ OBS_INPUT::
    jcap_ens=574,
    fv3sar_bg_opt=${fv3lam_bg_type},
    readin_localization=${readin_localization},
+   ens_fast_read=${ens_fast_read},
  /
  &RAPIDREFRESH_CLDSURF
    dfi_radar_latent_heat_time_period=20.0,

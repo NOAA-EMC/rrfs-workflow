@@ -273,6 +273,12 @@ if [ ${BKTYPE} -eq 1 ]; then
 else
   n_iolayouty=$(($IO_LAYOUT_Y))
 fi
+if [ ${DO_ENKF_RADAR_REF} == "TRUE" ]; then
+  l_qnr_from_qr=".true."
+fi
+if [ ${DO_ENVAR_RADAR_REF} == "TRUE" ]; then
+  l_qnr_from_qr=".true."
+fi
 
 cat << EOF > gsiparm.anl
 
@@ -307,6 +313,8 @@ cat << EOF > gsiparm.anl
    i_lightpcp=1,
    i_gsdqc=2,
    l_saturate_bkCloud=.true.,
+   l_qnr_from_qr=${l_qnr_from_qr},
+   n0_rain=100000000.0
  /
 EOF
 
