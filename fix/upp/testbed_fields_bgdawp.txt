@@ -21,6 +21,9 @@ UGRD:10 m above ground:
 VGRD:10 m above ground:
 WIND:10 m above ground:
 APCP:surface:
+CEIL:cloud base:
+HGT:cloud ceiling:
+VIS:surface:
 CAPE:surface:
 CIN:surface:
 CAPE:180-0 mb above ground:
