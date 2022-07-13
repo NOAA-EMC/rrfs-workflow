@@ -584,12 +584,12 @@ for pqpf_acc_interval in pqpf_acc_intervals:
       files = rrfse_files[m]
       print('Processing member',(1+mems.index(m)),'of',len(mems))
      
-      idx = pygrib.index(files[0],'discipline','parameterCategory','parameterNumber')
-      qpf = idx(discipline=0,parameterCategory=1,parameterNumber=8)[0].values
+      idx = pygrib.index(files[0],'discipline','parameterCategory','parameterNumber','startStep')
+      qpf = idx(discipline=0,parameterCategory=1,parameterNumber=8,startStep=0)[0].values
       idx.close()
       if len(files) == 2:
-        idx = pygrib.index(files[1],'discipline','parameterCategory','parameterNumber')
-        qpf = qpf - idx(discipline=0,parameterCategory=1,parameterNumber=8)[0].values
+        idx = pygrib.index(files[1],'discipline','parameterCategory','parameterNumber','startStep')
+        qpf = qpf - idx(discipline=0,parameterCategory=1,parameterNumber=8,startStep=0)[0].values
         idx.close()
       qpf = np.where(np.logical_and(np.greater_equal(qpf,0.0),np.less(qpf,9999)),qpf,0.0)
     
