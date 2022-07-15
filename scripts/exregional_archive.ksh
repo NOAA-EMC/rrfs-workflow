@@ -2,9 +2,10 @@
 
 module load hpss
 
-day=`date -u "+%d" -d "-1 day"`
-month=`date -u "+%m" -d "-1 day"`
-year=`date -u "+%Y" -d "-1 day"`
+currentime=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
+day=$(date +%d -d "${currentime} 24 hours ago")
+month=$(date +%m -d "${currentime} 24 hours ago")
+year=$(date +%Y -d "${currentime} 24 hours ago")
 
 . ${GLOBAL_VAR_DEFNS_FP}
 
@@ -37,7 +38,7 @@ if [[ $runcount -gt 0 ]];then
 
     if [[ -e ${COMOUT_BASEDIR}/stage/$year$month$day$hour ]];then
       cd ${COMOUT_BASEDIR}/stage
-      htar -chvf $ARCHIVEDIR/$year/$month/$day/$year$month$day$hour.tar $year$month$day$hour
+      htar -chvf $ARCHIVEDIR/$year/$month/$day/post_$year$month$day$hour.tar $year$month$day$hour
       rm -rf $year$month$day$hour
     fi
 
@@ -45,6 +46,21 @@ if [[ $runcount -gt 0 ]];then
 fi
 
 rmdir $COMOUT_BASEDIR/stage
+
+cd ${NWGES_BASEDIR}
+set -A YY `ls -d ${year}${month}${day}?? | sort -r`
+runcount=${#YY[*]}
+if [[ $runcount -gt 0 ]];then
+
+  hsi mkdir -p $ARCHIVEDIR/$year/$month/$day
+
+  for onerun in ${YY[*]};do
+     hour=$(echo $onerun | cut -c9-10 )
+     htar -chvf $ARCHIVEDIR/$year/$month/$day/nwges_${onerun} ${onerun}
+  done
+
+fi
+
 
 dateval=`date`
 echo "Completed archive at "$dateval

@@ -348,12 +348,8 @@ if [ ${regional_ensemble_option:-1} -eq 5 ]  && [ ${BKTYPE} != 1  ]; then
   print_info_msg "$VERBOSE" "Do hybrid with FV3LAM ensemble"
   ifhyb=.true.
   print_info_msg "$VERBOSE" " Cycle ${YYYYMMDDHH}: GSI hybrid uses FV3LAM ensemble with n_ens=${nummem}" 
-  if [ ${ob_type} == "conv" ]; then
-    grid_ratio_ens="3"
-  fi
-  if [ ${ob_type} == "radardbz" ]; then
-    grid_ratio_ens="1"
-  fi
+  grid_ratio_ens="1"
+  ens_fast_read=.true.
 else    
   nummem=$(more filelist03 | wc -l)
   nummem=$((nummem - 3 ))
@@ -485,7 +481,11 @@ else
 
   if [ ${ob_type} == "radardbz" ]; then
 
-    obs_files_source[0]=${cycle_dir}/process_radarref/00/Gridded_ref.nc
+    if [ ${cycle_type} == "spinup" ]; then
+      obs_files_source[0]=${cycle_dir}/process_radarref_spinup/00/Gridded_ref.nc
+    else
+      obs_files_source[0]=${cycle_dir}/process_radarref/00/Gridded_ref.nc
+    fi
     obs_files_target[0]=dbzobs.nc
 
   fi
@@ -615,7 +615,6 @@ if [[ ${gsi_type} == "ANALYSIS" && ${ob_type} == "radardbz" ]]; then
   ens_v=-0.30125
   readin_localization=.false.
   q_hyb_ens=.true.
-  ens_fast_read=.true.
   if_model_dbz=.true.
 fi
 CONVINFO=${FIX_GSI}/${CONVINFO_FN}

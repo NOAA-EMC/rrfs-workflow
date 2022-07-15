@@ -111,9 +111,6 @@ restart_prefix=${save_yyyy}${save_mm}${save_dd}.${save_hh}0000
 if [ ! -r ${nwges_dir}/INPUT/gfs_ctrl.nc ]; then
   cp_vrfy $run_dir/INPUT/gfs_ctrl.nc ${nwges_dir}/INPUT/gfs_ctrl.nc
   if [ -r ${run_dir}/INPUT/coupler.res ]; then  # warm start
-    for file in ${filelist}; do
-      cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
-    done
     if [ "${IO_LAYOUT_Y}" == "1" ]; then
       for file in ${filelistn}; do
         cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
@@ -127,6 +124,9 @@ if [ ! -r ${nwges_dir}/INPUT/gfs_ctrl.nc ]; then
         done
       done
     fi
+    for file in ${filelist}; do
+      cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
+    done
   else  # cold start
     for file in ${filelistcold}; do
       cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
@@ -134,9 +134,6 @@ if [ ! -r ${nwges_dir}/INPUT/gfs_ctrl.nc ]; then
   fi
 fi
 if [ -r "$run_dir/RESTART/${restart_prefix}.coupler.res" ]; then
-  for file in ${filelist}; do
-    mv_vrfy $run_dir/RESTART/${restart_prefix}.${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
-  done
   if [ "${IO_LAYOUT_Y}" == "1" ]; then
     for file in ${filelistn}; do
       mv_vrfy $run_dir/RESTART/${restart_prefix}.${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
@@ -150,6 +147,9 @@ if [ -r "$run_dir/RESTART/${restart_prefix}.coupler.res" ]; then
       done
     done
   fi
+  for file in ${filelist}; do
+    mv_vrfy $run_dir/RESTART/${restart_prefix}.${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
+  done
   echo " ${fhr} forecast from ${yyyymmdd}${hh} is ready " #> ${nwges_dir}/RESTART/restart_done_f${fhr}
 else
 
@@ -167,9 +167,6 @@ else
                  ( \"${FCST_LEN_HRS_thiscycle}\") "
 
   if [ -r "$run_dir/RESTART/coupler.res" ] && [ ${fhr} -eq ${FCST_LEN_HRS_thiscycle} ] ; then
-    for file in ${filelist}; do
-       mv_vrfy $run_dir/RESTART/${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
-    done
     if [ "${IO_LAYOUT_Y}" == "1" ]; then
       for file in ${filelistn}; do
         mv_vrfy $run_dir/RESTART/${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
@@ -183,6 +180,9 @@ else
         done
       done
     fi
+    for file in ${filelist}; do
+       mv_vrfy $run_dir/RESTART/${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
+    done
     echo " ${fhr} forecast from ${yyyymmdd}${hh} is ready " #> ${nwges_dir}/RESTART/restart_done_f${fhr}
   else
     echo "This forecast hour does not need to save restart: ${yyyymmdd}${hh}f${fhr}"

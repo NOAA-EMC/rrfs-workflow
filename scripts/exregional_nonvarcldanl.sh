@@ -213,14 +213,14 @@ fi
 
 process_bufr_path=${CYCLE_DIR}/process_bufr${cycle_tag}
 
-obs_files_source[0]=${process_bufr_path}/LightningInFV3LAM.dat
-obs_files_target[0]=LightningInFV3LAM.dat
+obs_files_source[0]=${process_bufr_path}/NASALaRC_cloud4fv3.bin
+obs_files_target[0]=NASALaRC_cloud4fv3.bin
 
-obs_files_source[1]=${process_bufr_path}/NASALaRC_cloud4fv3.bin
-obs_files_target[1]=NASALaRC_cloud4fv3.bin
+obs_files_source[1]=${process_bufr_path}/fv3_metarcloud.bin
+obs_files_target[1]=fv3_metarcloud.bin
 
-obs_files_source[2]=${process_bufr_path}/fv3_metarcloud.bin
-obs_files_target[2]=fv3_metarcloud.bin
+obs_files_source[2]=${process_bufr_path}/LightningInFV3LAM.dat
+obs_files_target[2]=LightningInFV3LAM.dat
 
 obs_number=${#obs_files_source[@]}
 for (( i=0; i<${obs_number}; i++ ));
@@ -276,7 +276,8 @@ fi
 if [ ${DO_ENKF_RADAR_REF} == "TRUE" ]; then
   l_qnr_from_qr=".true."
 fi
-if [ ${DO_ENVAR_RADAR_REF} == "TRUE" ]; then
+if [ -r "${cycle_dir}/anal_radardbz_gsi${cycle_tag}/stdout" ]; then
+  l_precip_clear_only=".true."
   l_qnr_from_qr=".true."
 fi
 
