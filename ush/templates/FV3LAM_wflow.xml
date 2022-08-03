@@ -1130,7 +1130,7 @@ MODULES_RUN_TASK_FP script.
              <taskdep task="&RUN_ENKFUPDT_TN;"/>
            {%- endif %}
         </and>
-        {%- else %}
+        {%- elif do_envar_radar_ref %}
         <or>
           <and>
             <taskdep task="&ANAL_GSI_TN;_#type#"/>
@@ -1147,7 +1147,10 @@ MODULES_RUN_TASK_FP script.
             </or>   
           </and>
         </or>
+        {%- else %}
+        <taskdep task="&ANAL_GSI_TN;_#type#"/>
         {%- endif %}
+      </and>
     </dependency>
 
   </task>
@@ -1234,6 +1237,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
+{% if not is_rtma %}
   <metatask name="&SAVE_RESTART_TN;_prod">
 
     <var name="fhr"> {{ restart_hrs_prod }} </var>
@@ -1272,7 +1276,7 @@ MODULES_RUN_TASK_FP script.
     </task>
 
   </metatask>
-
+{%- endif %}
 <!--
 ************************************************************************
 ************************************************************************

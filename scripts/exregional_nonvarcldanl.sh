@@ -316,6 +316,9 @@ cat << EOF > gsiparm.anl
    l_saturate_bkCloud=.true.,
    l_qnr_from_qr=${l_qnr_from_qr},
    n0_rain=100000000.0
+   i_T_Q_adjust=${i_T_Q_adjust},
+   l_rtma3d=${l_rtma3d},
+   i_precip_vertical_check=${i_precip_vertical_check},
  /
 EOF
 

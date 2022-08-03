@@ -633,6 +633,9 @@ l_PBL_pseudo_SurfobsT=.false.
 l_PBL_pseudo_SurfobsQ=.false.
 i_use_2mQ4B=0
 i_use_2mT4B=0
+i_T_Q_adjust=1
+l_rtma3d=.false.
+i_precip_vertical_check=0
 #-----------------------------------------------------------------------
 # HYBENSMEM_NMIN:
 #    Minimum number of ensemble members required a hybrid GSI analysis 

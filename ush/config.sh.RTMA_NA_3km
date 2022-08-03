@@ -14,6 +14,7 @@ if [[ -n $RESERVATION ]] ; then
   PARTITION_GRAPHICS=kjet
   PARTITION_ANALYSIS=kjet
   PARTITION_WGRIB2=kjet
+  PARTITION_POST=kjet
   
   QUEUE_DEFAULT="rt"
   QUEUE_FCST="rt"
@@ -88,9 +89,11 @@ readin_localization=.true.     #if true, it overwrites the "beta1_inv/ens_h/ens_
 beta1_inv=0.5                  #beata_inv is 1-ensemble_wgt
 ens_h=20                       #110
 ens_v=1                        #3
-regional_ensemble_option=1     #1 for GDAS
+regional_ensemble_option=1     #1 for GDAS, 5 for RRFSDAS
 grid_ratio_fv3=2.0             #fv3 resolution 3km, so analysis=3*2=6km
 grid_ratio_ens=3               #analysis 6km, so ensemble=6*3=18km. GDAS ensemble is 20km
+##MEMO1: regional_ensemble_option=5 will be changed to 1 if there are not enough RRFS ensembles at the runtime.
+##MEMO2: grid_ratio_ens will be hardwired to 1 for RRFSDAS, so grid_ratio_ens here only affects GDAS.
 i_en_perts_io=1                #0 or 1: original file   3: pre-processed ensembles
 
 # &RAPIDREFRESH_CLDSURF
@@ -98,6 +101,9 @@ l_PBL_pseudo_SurfobsT=.false.
 l_PBL_pseudo_SurfobsQ=.false
 i_use_2mQ4B=0
 i_use_2mT4B=0
+i_T_Q_adjust=1
+l_rtma3d=.true.
+i_precip_vertical_check=3
 #-------------------------------------------------------------------------------------
 #
 BERROR_FN="berror.rtma"      #under $FIX_GSI
