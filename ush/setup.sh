@@ -482,6 +482,7 @@ optionList[10]=DO_RECENTER
 optionList[11]=DO_BUFRSND
 optionList[12]=USE_RRFSE_ENS
 optionList[13]=USE_IO_NETCDF
+optionList[14]=DO_JEDI_ENVAR_IODA
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));

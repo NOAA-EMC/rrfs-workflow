@@ -55,6 +55,7 @@ Workflow task names.
 <!ENTITY RADAR_REFL2TTEN_TN   "{{ radar_refl2tten }}">
 <!ENTITY CLDANL_NONVAR_TN     "{{ cldanl_nonvar }}">
 <!ENTITY SAVE_RESTART_TN     "{{ save_restart }}">
+<!ENTITY JEDI_ENVAR_IODA_TN     "{{ jedi_envar_ioda }}">
 
 <!ENTITY RUN_PREPSTART_TN     "run_prepstart">
 <!ENTITY RUN_ANAL_TN          "run_anal_gsi">
@@ -1089,6 +1090,45 @@ MODULES_RUN_TASK_FP script.
   </task>
 
 {%- endif %}
+
+
+{%- if do_jedi_envar_ioda %}
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&JEDI_ENVAR_IODA_TN;_#type#{{ uscore_ensmem_name }}" cycledefs="#type#cyc"  maxtries="{{ maxtries_jedi_envar_ioda }}">
+
+    &RSRV_DEFAULT;
+    &WALL_LIMIT_ANAL;
+
+    <command>&LOAD_MODULES_RUN_TASK_FP; "jedienvar_ioda" "&JOBSDIR;/JREGIONAL_JEDIENVAR_IODA"</command>
+    <nodes>{{ nnodes_run_jedienvar_ioda }}:ppn={{ ppn_run_jedienvar_ioda }}</nodes>
+    <walltime>{{ wtime_run_jedienvar_ioda }}</walltime>
+    <nodesize>&NCORES_PER_NODE;</nodesize>
+    <memory>{{ memo_run_jedienvar_ioda }}</memory>
+    <jobname>&TAG;_&JEDI_ENVAR_IODA_TN;_#type#</jobname>
+    <join><cyclestr>&LOGDIR;/&JEDI_ENVAR_IODA_TN;_#type#_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
+    <envar><name>MEM_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+
+    <dependency>
+      <and>
+        <taskdep task="&ANAL_GSI_TN;_#type#"/>
+      </and>
+    </dependency>
+
+  </task>
+
+{%- endif %}
+
 
 {%- if do_nonvar_cldanal %}
 <!--

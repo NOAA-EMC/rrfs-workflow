@@ -221,6 +221,7 @@ settings="\
   'run_bufrsnd_tn': ${RUN_BUFRSND_TN}
   'save_restart': ${SAVE_RESTART_TN}
   'tag': ${TAG}
+  'jedi_envar_ioda': ${JEDI_ENVAR_IODA_TN}
 #
 # Number of nodes to use for each task.
 #
@@ -247,6 +248,7 @@ settings="\
   'nnodes_run_enspost': ${NNODES_RUN_ENSPOST}
   'nnodes_run_bufrsnd': ${NNODES_RUN_BUFRSND}
   'nnodes_save_restart': ${NNODES_SAVE_RESTART}
+  'nnodes_run_jedienvar_ioda': ${NNODES_RUN_JEDIENVAR_IODA}
 #
 # Number of cores used for a task
 #
@@ -284,6 +286,7 @@ settings="\
   'ppn_run_enspost': ${PPN_RUN_ENSPOST}
   'ppn_run_bufrsnd': ${PPN_RUN_BUFRSND}
   'ppn_save_restart': ${PPN_SAVE_RESTART}
+  'ppn_run_jedienvar_ioda': ${PPN_RUN_JEDIENVAR_IODA}
 #
 # Maximum wallclock time for each task.
 #
@@ -310,6 +313,7 @@ settings="\
   'wtime_run_nonvarcldanl': ${WTIME_RUN_NONVARCLDANL}
   'wtime_run_bufrsnd': ${WTIME_RUN_BUFRSND}
   'wtime_save_restart': ${WTIME_SAVE_RESTART}
+  'wtime_run_jedienvar_ioda': ${WTIME_RUN_JEDIENVAR_IODA}
 #
 # start time for each task.
 #
@@ -328,6 +332,7 @@ settings="\
   'memo_run_nonvarcldanl': ${MEMO_RUN_NONVARCLDANL}
   'memo_run_prepstart': ${MEMO_RUN_PREPSTART}
   'memo_run_wgrib2': ${MEMO_RUN_WGRIB2}
+  'memo_run_jedienvar_ioda': ${MEMO_RUN_JEDIENVAR_IODA}
 #
 # Maximum number of tries for each task.
 #
@@ -351,6 +356,7 @@ settings="\
   'maxtries_radar_ref2tten': ${MAXTRIES_RADAR_REF2TTEN}
   'maxtries_cldanl_nonvar': ${MAXTRIES_CLDANL_NONVAR}
   'maxtries_save_restart': ${MAXTRIES_SAVE_RESTART}
+  'maxtries_jedi_envar_ioda': ${MAXTRIES_JEDI_ENVAR_IODA}
 #
 # Flags that specify whether to run the preprocessing tasks.
 #
@@ -457,6 +463,10 @@ settings="\
   'radar_ref_thinning': ${RADAR_REF_THINNING}
   'ensctrl_stmp': ${ENSCTRL_STMP}
   'use_rrfse_ens': ${USE_RRFSE_ENS}
+#
+# JEDI related parameters (liaofan)
+#
+  'do_jedi_envar_ioda': ${DO_JEDI_ENVAR_IODA}
 #
 # graphics related parameters
 #

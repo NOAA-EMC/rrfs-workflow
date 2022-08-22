@@ -937,8 +937,8 @@ if [ $netcdf_diag = ".true." ]; then
    for type in $listall_cnv; do
       count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
       if [[ $count -gt 0 ]]; then
-         ${APRUN} ./nc_diag_cat.x -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4
-         gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4*
+         ${APRUN} ./nc_diag_cat.x -o ncdiag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4
+         gzip ncdiag_${type}_${string}.${YYYYMMDDHH}.nc4*
          echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4*" >> listcnv
          numfile_cnv=`expr ${numfile_cnv} + 1`
       fi
@@ -947,8 +947,8 @@ if [ $netcdf_diag = ".true." ]; then
    for type in $listall_rad; do
       count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
       if [[ $count -gt 0 ]]; then
-         ${APRUN} ./nc_diag_cat.x -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4
-         gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4*
+         ${APRUN} ./nc_diag_cat.x -o ncdiag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4
+         gzip ncdiag_${type}_${string}.${YYYYMMDDHH}.nc4*
          echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4*" >> listrad
          numfile_rad=`expr ${numfile_rad} + 1`
       else

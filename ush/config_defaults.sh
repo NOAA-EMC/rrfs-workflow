@@ -1586,6 +1586,7 @@ PROCESS_BUFR_TN="process_bufr"
 RADAR_REFL2TTEN_TN="radar_refl2tten"
 CLDANL_NONVAR_TN="cldanl_nonvar"
 SAVE_RESTART_TN="save_restart"
+JEDI_ENVAR_IODA_TN="jedi_envar_ioda"
 #
 # Number of nodes.
 #
@@ -1612,6 +1613,7 @@ NNODES_RUN_GRAPHICS="1"
 NNODES_RUN_ENSPOST="1"
 NNODES_RUN_BUFRSND="1"
 NNODES_SAVE_RESTART="1"
+NNODES_RUN_JEDIENVAR_IODA="1"
 #
 # Number of cores.
 #
@@ -1647,6 +1649,7 @@ PPN_RUN_GRAPHICS="12"
 PPN_RUN_ENSPOST="1"
 PPN_RUN_BUFRSND="28"
 PPN_SAVE_RESTART="1"
+PPN_RUN_JEDIENVAR_IODA="1"
 #
 # Walltimes.
 #
@@ -1673,6 +1676,7 @@ WTIME_RUN_NONVARCLDANL="00:20:00"
 WTIME_RUN_BUFRSND="00:45:00"
 WTIME_SAVE_RESTART="00:15:00"
 WTIME_RUN_ENSPOST="00:30:00"
+WTIME_RUN_JEDIENVAR_IODA="00:30:00"
 #
 # Start times.
 #
@@ -1692,6 +1696,7 @@ MEMO_RUN_REF2TTEN="20G"
 MEMO_RUN_NONVARCLDANL="20G"
 MEMO_RUN_PREPSTART="24G"
 MEMO_RUN_WGRIB2="24G"
+MEMO_RUN_JEDIENVAR_IODA="20G"
 #
 # Maximum number of attempts.
 #
@@ -1716,6 +1721,7 @@ MAXTRIES_PROCESS_BUFR="1"
 MAXTRIES_RADAR_REF2TTEN="1"
 MAXTRIES_CLDANL_NONVAR="1"
 MAXTRIES_SAVE_RESTART="1"
+MAXTRIES_JEDI_ENVAR_IODA="1"
 #
 #
 #-----------------------------------------------------------------------
@@ -2093,6 +2099,17 @@ COMPILER="intel"
 #-----------------------------------------------------------------------
 #
 GWD_HRRRsuite_BASEDIR=""
+#
+#-----------------------------------------------------------------------
+#
+# Parameters for JEDI options
+# DO_JEDI_ENVAR_IODA:
+#      Flag turn on the JEDI-IODA converters for EnVAR.  It requires GSI 
+#      to produce NetCDF diag files
+#-----------------------------------------------------------------------
+#
+DO_JEDI_ENVAR_IODA="FALSE"
+#
 #-----------------------------------------------------------------------
 #
 # Parameters for analysis options
