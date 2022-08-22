@@ -74,7 +74,11 @@ else
   zip_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/nclprd"
 fi
 
-fcst_length=${FCST_LEN_HRS_CYCLES[$cyc]}
+if [ "${IS_RTMA}" = "TRUE" ]; then
+  fcst_length=${FCST_LEN_HRS_CYCLES[$cyc]/%.*/}
+else
+  fcst_length=${FCST_LEN_HRS_CYCLES[$cyc]}
+fi
 
 IMAGES_FN=${IMAGES_FN:-$PYTHON_GRAPHICS_YML_FN}
 # Choose an appropriate sites file for the grid
