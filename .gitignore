@@ -2,6 +2,7 @@ bin/
 build/
 include/
 lib/
+lib64/
 python_graphics/
 regional_workflow/
 share/
