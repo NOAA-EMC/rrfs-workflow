@@ -1846,6 +1846,35 @@ MODULES_RUN_TASK_FP script.
     </task>
   </metatask>
 
+  <task name="python_enspost_maps" cycledefs="prodcyc" maxtries="{{ maxtries_run_post }}">
+
+    &RSRV_GRAPHICS;
+    &WALL_LIMIT_GRAPHICS;
+
+    <walltime>{{ wtime_run_enspost }}</walltime>
+    <nodes>{{ nnodes_run_graphics }}:ppn={{ ppn_run_graphics }}</nodes>
+    <jobname><cyclestr>&TAG;_python_@H_enspost_maps</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/python_enspost_maps.log</cyclestr></join>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "run_graphics" "&JOBSDIR;/JREGIONAL_RUN_PYTHON_GRAPHICS"</command>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+    <envar><name>GRAPHICS_TYPE</name><value>maps</value></envar>
+    <envar><name>TILES</name><value>full</value></envar>
+    <envar><name>TILELABEL</name><value>full</value></envar>
+    <envar><name>ALL_LEADS</name><value>FALSE</value></envar>
+    <envar><name>ENSCTRL_COMOUT_BASEDIR</name><value>&ENSCTRL_COMOUT_BASEDIR;</value></envar>
+    <envar><name>ENSPROD</name><value>ensprod</value></envar>
+    <envar><name>IMAGES_FN</name><value>rrfs_ensprod.yml</value></envar>
+
+    <dependency>
+      <metataskdep metatask='enspost'/>
+    </dependency>
+  </task>
+
 
 {%- endif %}
 
