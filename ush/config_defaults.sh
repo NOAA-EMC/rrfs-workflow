@@ -479,6 +479,9 @@ WFLOW_LAUNCH_LOG_FN="log.launch_FV3LAM_wflow"
 # An array containing the hours of the day at which the product cycle starts,
 # from cold start input or from spin-up cycle forcast
 #
+# CYCL_HRS_RECENTER:
+# An array containing the hours of the day at which the ensemble recenter is on
+#
 # BOUNDARY_LEN_HRS
 # The length of boundary condition for normal forecast, in integer hours.
 #
@@ -518,6 +521,7 @@ DATE_LAST_CYCL="YYYYMMDD"
 CYCL_HRS=( "HH1" "HH2" )
 CYCL_HRS_SPINSTART=( "HH1" "HH2" )
 CYCL_HRS_PRODSTART=( "HH1" "HH2" )
+CYCL_HRS_RECENTER=( "HH1" "HH2" )
 BOUNDARY_LEN_HRS="0"
 BOUNDARY_LONG_LEN_HRS="0"
 POSTPROC_LEN_HRS="1"
@@ -569,6 +573,10 @@ CYCL_HRS_HYB_FV3LAM_ENS=( "99" )
 # cycle definition for product cycle group
 # This group runs: anal_gsi_input and data process, run_fcst, python_skewt, run_clean
 #
+# RECENTER_CYCLEDEF:
+# cycle definition for recenter cycle group
+# This group runs: recenter
+#
 # POSTPROC_CYCLEDEF:
 # cycle definition for "postproc" group
 # This group runs: run_post, run_ncl, run_ncl_zip
@@ -591,6 +599,7 @@ BOUNDARY_CYCLEDEF="00 01 01 01 2100 *"
 BOUNDARY_LONG_CYCLEDEF="00 01 01 01 2100 *"
 SPINUP_CYCLEDEF="00 01 01 01 2100 *"
 PROD_CYCLEDEF="00 01 01 01 2100 *"
+RECENTER_CYCLEDEF="00 01 01 01 2100 *"
 POSTPROC_CYCLEDEF="00 01 01 01 2100 *"
 POSTPROC_LONG_CYCLEDEF="00 01 01 01 2100 *"
 ARCHIVE_CYCLEDEF="00 01 01 01 2100 *"
