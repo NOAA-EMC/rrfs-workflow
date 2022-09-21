@@ -203,12 +203,36 @@ mkdir_vrfy -p ${enkfanal_nwges_dir}
 #
 #-----------------------------------------------------------------------
 #
-     for diagfile0 in $(ls  ${observer_nwges_dir}/diag_${ob_type}_ges*) ; do
+
+  if [ ${netcdf_diag} == ".true." ] ; then
+    if [ ${ob_type} == "conv" ]; then
+      list_ob_type="conv_ps conv_q conv_t conv_uv conv_pw conv_rw conv_sst"
+    fi
+    if [ ${ob_type} == "radardbz" ]; then
+      list_ob_type="conv_dbz"
+    fi
+    for sub_ob_type in ${list_ob_type} ; do
+      diagfile0=${observer_nwges_dir}/diag_${sub_ob_type}_ges.${YYYYMMDDHH}.nc4.gz
+      if [ -s $diagfile0 ]; then
+        diagfile=$(basename  $diagfile0)
+        cp_vrfy  $diagfile0  $diagfile
+        gzip -d $diagfile && rm -f $diagfile
+        ncfile0=$(basename -s .gz $diagfile)
+        ncfile=$(basename -s .nc4 $ncfile0)
+        mv_vrfy $ncfile0 ${ncfile}_${memcharv0}.nc4
+      fi
+    done
+  else
+    for diagfile0 in $(ls  ${observer_nwges_dir}/diag*${ob_type}*ges* ) ; do
+      if [ -s $diagfile0 ]; then
          diagfile=$(basename  $diagfile0)
-         cp_vrfy  $diagfile0  diag_conv_ges.$memcharv0
-     done
+         cp_vrfy  $diagfile0   diag_conv_ges.$memcharv0
+      fi
+    done
+  fi
 
 done
+
 #
 #-----------------------------------------------------------------------
 #
