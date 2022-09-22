@@ -78,12 +78,14 @@ OBS_INPUT::
    amsuabufr      amsua       n19       amsua_n19            0.0     2     0
    amsuabufr      amsua       metop-a   amsua_metop-a        0.0     2     0
    amsuabufr      amsua       metop-b   amsua_metop-b        0.0     2     0
+   amsuabufr      amsua       metop-c   amsua_metop-c        0.0     2     0
    airsbufr       amsua       aqua      amsua_aqua           0.0     2     0
    amsubbufr      amsub       n17       amsub_n17            0.0     1     0
    mhsbufr        mhs         n18       mhs_n18              0.0     2     0
    mhsbufr        mhs         n19       mhs_n19              0.0     2     0
    mhsbufr        mhs         metop-a   mhs_metop-a          0.0     2     0
    mhsbufr        mhs         metop-b   mhs_metop-b          0.0     2     0
+   mhsbufr        mhs         metop-c   mhs_metop-c          0.0     2     0
    ssmitbufr      ssmi        f13       ssmi_f13             0.0     2     0
    ssmitbufr      ssmi        f14       ssmi_f14             0.0     2     0
    ssmitbufr      ssmi        f15       ssmi_f15             0.0     2     0
@@ -118,6 +120,7 @@ OBS_INPUT::
    seviribufr     seviri      m08       seviri_m08           0.0     2     0
    seviribufr     seviri      m09       seviri_m09           0.0     2     0
    seviribufr     seviri      m10       seviri_m10           0.0     2     0
+   seviribufr     seviri      m11       seviri_m11           0.0     2     0
    iasibufr       iasi        metop-b   iasi_metop-b         0.0     2     0
    gomebufr       gome        metop-b   gome_metop-b         0.0     2     0
    atmsbufr       atms        npp       atms_npp             0.0     2     0

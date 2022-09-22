@@ -756,16 +756,16 @@ if [ ${DO_RADDA} == "TRUE" ]; then
   ## if satbias files (go back to previous 10 dyas) are not available from ${satbias_dir}, use satbias files from the ${FIX_GSI} 
   if [ $satcounter -eq $maxcounter ]; then
     if [ -r ${FIX_GSI}/rrfs.gdas_satbias ]; then
-      echo "using satllite gdas satbias_in files from ${FIX_GSI}"
-      cp_vrfy ${FIX_GSI}/rrfs.gdas_satbias ./satbias_in
+      echo "using satllite satbias_in files from ${FIX_GSI}"     
+      cp_vrfy ${FIX_GSI}/rrfs.starting_satbias ./satbias_in
     fi
     if [ -r ${FIX_GSI}/rrfs.gdas_satbias_pc ]; then
-      echo "using satllite gdas satbias_pc files from ${FIX_GSI}"
-      cp_vrfy ${FIX_GSI}/rrfs.gdas_satbias_pc ./satbias_pc
+      echo "using satllite satbias_pc files from ${FIX_GSI}"     
+      cp_vrfy ${FIX_GSI}/rrfs.starting_satbias_pc ./satbias_pc
     fi
     if [ -r ${FIX_GSI}/rrfs.gdas_radstat ]; then
-      echo "using netcdf satllite radstat files from ${FIX_GSI}"
-      cp_vrfy ${FIX_GSI}/rrfs.gdas_radstat ./radstat.rrfs
+      echo "using satllite radstat files from ${FIX_GSI}"     
+      cp_vrfy ${FIX_GSI}/rrfs.starting_radstat ./radstat.rrfs
     fi
   fi
 
