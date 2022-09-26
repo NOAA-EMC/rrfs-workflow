@@ -342,9 +342,11 @@ fi
 bgdawp=${postprd_dir}/${NET}.t${cyc}z.bgdawpf${subh_fhr}.${tmmark}.grib2
 bgrd3d=${postprd_dir}/${NET}.t${cyc}z.bgrd3df${subh_fhr}.${tmmark}.grib2
 bgsfc=${postprd_dir}/${NET}.t${cyc}z.bgsfcf${subh_fhr}.${tmmark}.grib2
+bgifi=${postprd_dir}/${NET}.t${cyc}z.bgifif${subh_fhr}.${tmmark}.grib2
 
 wgrib2 PRSLEV.GrbF${post_fhr} -set center 7 -grib ${bgdawp}
 wgrib2 NATLEV.GrbF${post_fhr} -set center 7 -grib ${bgrd3d}
+wgrib2 IFIFIP.GrbF${post_fhr} -set center 7 -grib ${bgifi}
 
 #
 #-----------------------------------------------------------------------
