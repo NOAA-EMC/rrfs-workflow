@@ -186,6 +186,7 @@ if [ -r "${bkpath}/coupler.res" ]; then # Use background from warm restart
     ln_vrfy -s ${bkpath}/fv_core.res.tile1.nc         fv3_dynvars
     ln_vrfy -s ${bkpath}/fv_tracer.res.tile1.nc       fv3_tracer
     ln_vrfy -s ${bkpath}/sfc_data.nc                  fv3_sfcdata
+    ln_vrfy -s ${bkpath}/phy_data.nc                  fv3_phydata
   else
     for ii in ${list_iolayout}
     do
@@ -193,12 +194,14 @@ if [ -r "${bkpath}/coupler.res" ]; then # Use background from warm restart
       ln_vrfy -s ${bkpath}/fv_core.res.tile1.nc.${iii}         fv3_dynvars.${iii}
       ln_vrfy -s ${bkpath}/fv_tracer.res.tile1.nc.${iii}       fv3_tracer.${iii}
       ln_vrfy -s ${bkpath}/sfc_data.nc.${iii}                  fv3_sfcdata.${iii}
+      ln_vrfy -s ${bkpath}/phy_data.nc.${iii}                  fv3_phydata.${iii}
       ln_vrfy -s ${gridspec_dir}/fv3_grid_spec.${iii}          fv3_grid_spec.${iii}
     done
   fi
   BKTYPE=0
 else                                   # Use background from input (cold start)
   ln_vrfy -s ${bkpath}/sfc_data.tile7.halo0.nc      fv3_sfcdata
+  ln_vrfy -s ${bkpath}/phy_data.tile7.halo0.nc      fv3_phydata
   ln_vrfy -s ${bkpath}/gfs_data.tile7.halo0.nc         fv3_dynvars
   ln_vrfy -s ${bkpath}/gfs_data.tile7.halo0.nc         fv3_tracer
   BKTYPE=1
