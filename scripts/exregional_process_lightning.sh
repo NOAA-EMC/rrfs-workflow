@@ -76,17 +76,10 @@ print_input_args valid_args
 #
 case $MACHINE in
 #
-"WCOSS_C" | "WCOSS")
-#
+"WCOSS2")
   ulimit -s unlimited
   ulimit -a
-  APRUN="mpirun -l -np 1"
-  ;;
-#
-"WCOSS_DELL_P3")
-  ulimit -s unlimited
-  ulimit -a
-  APRUN="mpirun -l -np 1"
+  APRUN="mpiexec -n 1 -ppn 1"
   ;;
 #
 "HERA")

@@ -96,16 +96,14 @@ if [ "$MACHINE" = "CHEYENNE" ]; then
   module load rocoto
 elif [ "$MACHINE" = "ORION" ]; then
   module load contrib rocoto
-elif [ "$MACHINE" = "WCOSS_DELL_P3" ]; then
+elif [ "$MACHINE" = "WCOSS2" ]; then
   module purge
-  module load lsf/10.1
-  module use /gpfs/dell3/usrx/local/dev/emc_rocoto/modulefiles/
-  module load ruby/2.5.1 rocoto/1.3.0rc2 #rocoto/1.2.4
-elif [ "$MACHINE" = "WCOSS_CRAY" ]; then
-  module purge
-  module load xt-lsfhpc/9.1.3
-  module use -a /usrx/local/emc_rocoto/modulefiles
-  module load rocoto/1.2.4
+  module use /apps/ops/test/nco/modulefiles
+  module load craype-x86-rome
+  module load libfabric/1.11.0.0.
+  module load craype-network-ofi
+  module load envvar/1.0
+  module load core/rocoto/1.3.4
 else
   module purge
   module load rocoto

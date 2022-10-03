@@ -78,22 +78,16 @@ print_input_args valid_args
 #
 case $MACHINE in
 #
-"WCOSS_C" | "WCOSS")
+"WCOSS2")
 #
-  module load NCO/4.7.0
   module list
   ulimit -s unlimited
   ulimit -a
-  APRUN="mpirun -l"
-  ;;
-#
-"WCOSS_DELL_P3")
-#
-  module load NCO/4.7.0
-  module list
-  ulimit -s unlimited
-  ulimit -a
-  APRUN="mpirun -l"
+  export FI_OFI_RXM_SAR_LIMIT=3145728
+  export OMP_STACKSIZE=500M
+  export OMP_NUM_THREADS=1
+  ncores=$(( NNODES_RUN_ANAL*PPN_RUN_ANAL))
+  APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_ANAL} --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;
 #
 "THEIA")
@@ -254,7 +248,7 @@ if  [[ ${regional_ensemble_option:-1} -eq 1 ]]; then #using GDAS
 
   case $MACHINE in
 
-  "WCOSS_C" | "WCOSS" | "WCOSS_DELL_P3")
+  "WCOSS2")
 
     for loop in $loops; do
       for timelist in $(ls ${ENKF_FCST}/enkfgdas.*/*/atmos/mem080/gdas*.atmf${loop}.${ftype}); do
@@ -438,7 +432,7 @@ else
 
   case $MACHINE in
 
-  "WCOSS_C" | "WCOSS" | "WCOSS_DELL_P3")
+  "WCOSS2")
      obsfileprefix=${obs_source}
      obspath_tmp=${OBSPATH}/${obs_source}.${YYYYMMDD}
     ;;

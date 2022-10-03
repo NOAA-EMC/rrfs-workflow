@@ -76,15 +76,9 @@ print_input_args valid_args
 #
 case $MACHINE in
 
-  "WCOSS_CRAY")
-    export ntasks=1
-    export ptile=1
-    export threads=1
-    APRUN="aprun -j 1 -n${ntasks} -N${ptile} -d${threads} -cc depth"
-    ;;
-
-  "WCOSS_DELL_P3")
-    APRUN="mpirun"
+  "WCOSS2")
+    ncores=$(( NNODES_RUN_PREPSTART*PPN_RUN_PREPSTART))
+    APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_PREPSTART}"
     ;;
 
   "HERA")

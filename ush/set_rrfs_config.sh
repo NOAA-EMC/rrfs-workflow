@@ -23,15 +23,15 @@ if [[ $MACHINE == "hera" ]] ; then
   ENKF_FCST=/scratch1/NCEPDEV/rstprod/com/gfs/prod
 fi
 
-if [[ $MACHINE == "wcoss_dell_p3" ]] ; then
-  EXTRN_MDL_SOURCE_BASEDIR_ICS=/gpfs/dell1/nco/ops/com/gfs/prod
-  EXTRN_MDL_SOURCE_BASEDIR_LBCS=/gpfs/dell1/nco/ops/com/gfs/prod
-  OBSPATH=/gpfs/hps/nco/ops/com/rap/prod
-  OBSPATH_NSSLMOSIAC=/gpfs/dell1/nco/ops/dcom/prod/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC
-  ENKF_FCST=/gpfs/dell1/nco/ops/com/gfs/prod
-  SST_ROOT=/gpfs/dell1/nco/ops/com/gfs/prod
-  GVF_ROOT=/gpfs/dell1/nco/ops/dcom/prod/viirs
-  IMSSNOW_ROOT=/gpfs/hps/nco/ops/com/rap/prod
+if [[ $MACHINE == "wcoss2" ]] ; then
+  EXTRN_MDL_SOURCE_BASEDIR_ICS=/lfs/h1/ops/prod/com/gfs/v16.2
+  EXTRN_MDL_SOURCE_BASEDIR_LBCS=/lfs/h1/ops/prod/com/gfs/v16.2
+  OBSPATH=/lfs/h1/ops/prod/com/obsproc/v1.0
+  OBSPATH_NSSLMOSIAC=/lfs/h1/ops/prod/dcom/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC
+  ENKF_FCST=/lfs/h1/ops/prod/com/gfs/v16.2
+  SST_ROOT=/lfs/h1/ops/prod/com/gfs/v16.2
+  GVF_ROOT=/lfs/h1/ops/prod/dcom/viirs
+  IMSSNOW_ROOT=/lfs/h1/ops/prod/com/obsproc/v1.0
 fi
 
 # set up for retrospective test:

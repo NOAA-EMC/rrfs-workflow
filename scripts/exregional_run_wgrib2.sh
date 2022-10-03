@@ -84,30 +84,11 @@ print_input_args valid_args
 #
 case $MACHINE in
 
-  "WCOSS_CRAY")
-
-# Specify computational resources.
-    export NODES=2
-    export ntasks=48
-    export ptile=24
-    export threads=1
-    export MP_LABELIO=yes
-    export OMP_NUM_THREADS=$threads
-
-    APRUN="aprun -j 1 -n${ntasks} -N${ptile} -d${threads} -cc depth"
-    ;;
-
-  "WCOSS_DELL_P3")
-
-# Specify computational resources.
-    export NODES=2
-    export ntasks=48
-    export ptile=24
-    export threads=1
-    export MP_LABELIO=yes
-    export OMP_NUM_THREADS=$threads
-
-    APRUN="mpirun"
+  "WCOSS2")
+    ulimit -s unlimited
+    ulimit -a
+    export OMP_NUM_THREADS=1
+    APRUN="mpiexec -n 1 -ppn 1"
     ;;
 
   "HERA")

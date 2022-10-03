@@ -76,23 +76,11 @@ print_input_args valid_args
 #
 case $MACHINE in
 #
-"WCOSS_C" | "WCOSS")
-#
-  . /apps/lmod/lmod/init/sh
-  module purge
-  module use /scratch4/NCEPDEV/nems/noscrub/emc.nemspara/soft/modulefiles
-  module load intel/16.1.150 impi/5.1.1.109 netcdf/4.3.0 
-  module list
-
+"WCOSS2")
   ulimit -s unlimited
   ulimit -a
-  APRUN="mpirun -l -np 1"
-  ;;
-#
-"WCOSS_DELL_P3")
-  ulimit -s unlimited
-  ulimit -a
-  APRUN="mpirun -l -np 1"
+  ncores=$(( NNODES_RUN_REF2TTEN*PPN_RUN_NONVARCLDANL))
+  APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_NONVARCLDANL}"
   ;;
 #
 "HERA")

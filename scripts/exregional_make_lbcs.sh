@@ -79,14 +79,12 @@ print_input_args valid_args
 #
 case "$MACHINE" in
 
-  "WCOSS_CRAY")
+  "WCOSS2")
     ulimit -s unlimited
-    APRUN="aprun -b -j1 -n48 -N12 -d1 -cc depth"
-    ;;
-
-  "WCOSS_DELL_P3")
-    ulimit -s unlimited
-    APRUN="mpirun"
+    export OMP_STACKSIZE=1G
+    export OMP_NUM_THREADS=2
+    ncores=$(( NNODES_MAKE_LBCS*PPN_MAKE_LBCS ))
+    APRUN="mpiexec -n ${ncores} -ppn ${PPN_MAKE_LBCS} --cpu-bind core --depth ${OMP_NUM_THREADS}"
     ;;
 
   "HERA")

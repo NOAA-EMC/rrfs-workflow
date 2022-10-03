@@ -92,22 +92,26 @@ print_input_args valid_args
 #
 case $MACHINE in
 
-  "WCOSS_CRAY")
+  "WCOSS2")
     ulimit -s unlimited
     ulimit -a
-
-    if [ ${PE_MEMBER01} -gt 24 ];then
-      APRUN="aprun -b -j1 -n${PE_MEMBER01} -N24 -d1 -cc depth"
-    else
-      APRUN="aprun -b -j1 -n24 -N24 -d1 -cc depth"
-    fi
-    ;;
-
-  "WCOSS_DELL_P3")
-    ulimit -s unlimited
-    ulimit -a
-    APRUN="mpirun -l -np ${PE_MEMBER01}"
-    OMP_STACKSIZE=2048m
+    export OMP_PROC_BIND=true
+    export OMP_NUM_THREADS=2
+    export OMP_STACKSIZE=1G
+    export OMP_PLACES=cores
+    export MPICH_ABORT_ON_ERROR=1
+    export MALLOC_MMAP_MAX_=0
+    export MALLOC_TRIM_THRESHOLD_=134217728
+    export FORT_FMT_NO_WRAP_MARGIN=true
+    export MPICH_REDUCE_NO_SMP=1
+    export FOR_DISABLE_KMP_MALLOC=TRUE
+    export FI_OFI_RXM_RX_SIZE=40000
+    export FI_OFI_RXM_TX_SIZE=40000
+    export MPICH_OFI_STARTUP_CONNECT=1
+    export MPICH_OFI_VERBOSE=1
+    export MPICH_OFI_NIC_VERBOSE=1
+    ncores=$(( NNODES_RUN_FCST*PPN_RUN_FCST))
+    APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_FCST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
     ;;
 
   "HERA")

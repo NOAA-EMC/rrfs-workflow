@@ -76,24 +76,10 @@ print_input_args valid_args
 #
 case $MACHINE in
 #
-"WCOSS_C" | "WCOSS")
-#
-
-  . /apps/lmod/lmod/init/sh
-  module purge
-  module use /scratch4/NCEPDEV/nems/noscrub/emc.nemspara/soft/modulefiles
-  module load intel/16.1.150 impi/5.1.1.109 netcdf/4.3.0 
-  module list
-  
+"WCOSS2")
   ulimit -s unlimited
   ulimit -a
-  APRUN="mpirun -l -n 1"
-  ;;
-#
-"WCOSS_DELL_P3")
-  ulimit -s unlimited
-  ulimit -a
-  APRUN="mpirun -l -np 1"
+  APRUN="mpiexec -n 1 -ppn 1"
   ;;
 #
 "HERA")
@@ -198,7 +184,7 @@ else
 
   case $MACHINE in
 
-  "WCOSS_C" | "WCOSS" | "WCOSS_DELL_P3")
+  "WCOSS2")
 
     obsfileprefix=${obs_source}
     obspath_tmp=${OBSPATH}/${obs_source}.${YYYYMMDD}

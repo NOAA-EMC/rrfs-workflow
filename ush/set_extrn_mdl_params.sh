@@ -53,10 +53,7 @@ else
 
   "GSMGFS")
     case $MACHINE in
-    "WCOSS_CRAY")
-      EXTRN_MDL_SYSBASEDIR_ICS=""
-      ;;
-    "WCOSS_DELL_P3")
+    "WCOSS2")
       EXTRN_MDL_SYSBASEDIR_ICS=""
       ;;
     "HERA")
@@ -82,11 +79,8 @@ else
 
   "FV3GFS")
     case $MACHINE in
-    "WCOSS_CRAY")
-      EXTRN_MDL_SYSBASEDIR_ICS="/gpfs/dell1/nco/ops/com/gfs/prod"
-      ;;
-    "WCOSS_DELL_P3")
-      EXTRN_MDL_SYSBASEDIR_ICS="/gpfs/dell1/nco/ops/com/gfs/prod"
+    "WCOSS2")
+      EXTRN_MDL_SYSBASEDIR_ICS="/lfs/h1/ops/prod/com/gfs/v16.2"
       ;;
     "HERA")
       EXTRN_MDL_SYSBASEDIR_ICS="/scratch1/NCEPDEV/rstprod/com/gfs/prod"
@@ -255,10 +249,7 @@ else
 
   "GSMGFS")
     case $MACHINE in
-    "WCOSS_CRAY")
-      EXTRN_MDL_SYSBASEDIR_LBCS=""
-      ;;
-    "WCOSS_DELL_P3")
+    "WCOSS2")
       EXTRN_MDL_SYSBASEDIR_LBCS=""
       ;;
     "HERA")
@@ -284,11 +275,8 @@ else
 
   "FV3GFS")
     case $MACHINE in
-    "WCOSS_CRAY")
-      EXTRN_MDL_SYSBASEDIR_LBCS="/gpfs/dell1/nco/ops/com/gfs/prod"
-      ;;
-    "WCOSS_DELL_P3")
-      EXTRN_MDL_SYSBASEDIR_LBCS="/gpfs/dell1/nco/ops/com/gfs/prod"
+    "WCOSS2")
+      EXTRN_MDL_SYSBASEDIR_LBCS="/lfs/h1/ops/prod/com/gfs/v16.2"
       ;;
     "HERA")
       EXTRN_MDL_SYSBASEDIR_LBCS="/scratch1/NCEPDEV/rstprod/com/gfs/prod"

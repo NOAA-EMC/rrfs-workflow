@@ -522,17 +522,9 @@ check_var_valid_value "MACHINE" "valid_vals_MACHINE"
 #
 case $MACHINE in
 
-  "WCOSS_CRAY")
-    NCORES_PER_NODE="24"
-    SCHED="lsfcray"
-    QUEUE_DEFAULT=${QUEUE_DEFAULT:-"dev"}
-    QUEUE_HPSS=${QUEUE_HPSS:-"dev_transfer"}
-    QUEUE_FCST=${QUEUE_FCST:-"dev"}
-    ;;
-
-  "WCOSS_DELL_P3")
-    NCORES_PER_NODE=28
-    SCHED="lsf"
+  "WCOSS2")
+    NCORES_PER_NODE=128
+    SCHED="pbspro"
     QUEUE_DEFAULT=${QUEUE_DEFAULT:-"dev"}
     QUEUE_HPSS=${QUEUE_HPSS:-"dev_transfer"}
     QUEUE_FCST=${QUEUE_FCST:-"dev"}
@@ -849,17 +841,10 @@ fi
 
 case $MACHINE in
 
-  "WCOSS_CRAY")
-    FIXgsm=${FIXgsm:-"/gpfs/hps3/emc/global/noscrub/emc.glopara/git/fv3gfs/fix/fix_am"}
-    TOPO_DIR=${TOPO_DIR:-"/gpfs/hps3/emc/global/noscrub/emc.glopara/git/fv3gfs/fix/fix_orog"}
-    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/gpfs/hps3/emc/global/noscrub/emc.glopara/git/fv3gfs/fix/fix_sfc_climo"}
-    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
-    ;;
-
-  "WCOSS_DELL_P3")
-    FIXgsm=${FIXgsm:-"/gpfs/dell2/emc/modeling/noscrub/emc.glopara/git/fv3gfs/fix/fix_am"}
-    TOPO_DIR=${TOPO_DIR:-"/gpfs/dell2/emc/modeling/noscrub/emc.glopara/git/fv3gfs/fix/fix_orog"}
-    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/gpfs/dell2/emc/modeling/noscrub/emc.glopara/git/fv3gfs/fix/fix_sfc_climo"}
+  "WCOSS2")
+    FIXgsm=${FIXgsm:-"/lfs/h2/emc/da/noscrub/Shun.Liu/FIX_RRFS/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/lfs/h2/emc/da/noscrub/Shun.Liu/FIX_RRFS/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/lfs/h2/emc/da/noscrub/Shun.Liu/FIX_RRFS/fix_sfc_climo"}
     FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
     ;;
 
