@@ -69,9 +69,19 @@ the specified cycle.
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ ${CYCLE_TYPE} == "spinup" ]; then
   modelinputdir=${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_spinup/INPUT
+elif [ ${CYCLE_TYPE} == "ensinit" ]; then
+  modelinputdir=${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/INPUT
 else
   modelinputdir=${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/INPUT
+  if [ ${DO_ENSINIT} == "TRUE" ]; then
+    for cyc_start in "${CYCL_HRS_ENSINIT[@]}"; do
+      if [ ${HH} -eq ${cyc_start} ]; then 
+        modelinputdir=${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_ensinit/INPUT
+      fi
+    done
+  fi
 fi
+
 rm -fr ${modelinputdir}
 mkdir_vrfy -p ${modelinputdir}
 #

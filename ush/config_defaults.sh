@@ -482,6 +482,12 @@ WFLOW_LAUNCH_LOG_FN="log.launch_FV3LAM_wflow"
 # CYCL_HRS_RECENTER:
 # An array containing the hours of the day at which the ensemble recenter is on
 #
+# CYCL_HRS_ENSINIT:
+# An array containing the hours of the day at which the ensemble initialization is on
+#
+# CYCL_HRS_ENSFCST
+# An array containing the hours of the day at which the ensemble free forecast is on
+#
 # BOUNDARY_LEN_HRS
 # The length of boundary condition for normal forecast, in integer hours.
 #
@@ -493,6 +499,9 @@ WFLOW_LAUNCH_LOG_FN="log.launch_FV3LAM_wflow"
 #
 # FCST_LEN_HRS_SPINUP:
 # The length of each forecast in spin up cycles, in integer hours.
+#
+# FCST_LEN_HRS_ENSFCST:
+# The length of each forecast in free ensemble forecast cycles, in integer hours.
 #
 # FCST_LEN_HRS_CYCLES:
 # The length of forecast for each cycle, in integer hours.
@@ -522,12 +531,15 @@ CYCL_HRS=( "HH1" "HH2" )
 CYCL_HRS_SPINSTART=( "HH1" "HH2" )
 CYCL_HRS_PRODSTART=( "HH1" "HH2" )
 CYCL_HRS_RECENTER=( "HH1" "HH2" )
+CYCL_HRS_ENSINIT=( "HH1" "HH2" )
+CYCL_HRS_ENSFCST=( "HH1" "HH2" )
 BOUNDARY_LEN_HRS="0"
 BOUNDARY_LONG_LEN_HRS="0"
 POSTPROC_LEN_HRS="1"
 POSTPROC_LONG_LEN_HRS="1"
 FCST_LEN_HRS="24"
 FCST_LEN_HRS_SPINUP="1"
+FCST_LEN_HRS_ENSFCST="1"
 FCST_LEN_HRS_CYCLES=( )
 DA_CYCLE_INTERV="3"
 RESTART_INTERVAL="3,6"
@@ -569,9 +581,18 @@ CYCL_HRS_HYB_FV3LAM_ENS=( "99" )
 # cycle definition for spin-up cycle group
 # This group runs: anal_gsi_input_spinup and data process, run_fcst_spinup, run_post_spinup
 #
+# ENSINIT_CYCLEDEF:
+# cycle definition for ensemble initialization cycle group
+# This group runs run_fcst for 1 timestep to get restart files at
+# the beginning of the cycles and to be recentered at the control analysis
+#
 # PROD_CYCLEDEF:
 # cycle definition for product cycle group
 # This group runs: anal_gsi_input and data process, run_fcst, python_skewt, run_clean
+#
+# ENSFCST_CYCLEDEF:
+# cycle definition for ensemble free forecast cycle group
+# This group runs: run_fcst
 #
 # RECENTER_CYCLEDEF:
 # cycle definition for recenter cycle group
@@ -598,7 +619,9 @@ INITIAL_CYCLEDEF="00 01 01 01 2100 *"
 BOUNDARY_CYCLEDEF="00 01 01 01 2100 *"
 BOUNDARY_LONG_CYCLEDEF="00 01 01 01 2100 *"
 SPINUP_CYCLEDEF="00 01 01 01 2100 *"
+ENSINIT_CYCLEDEF="00 01 01 01 2100 *"
 PROD_CYCLEDEF="00 01 01 01 2100 *"
+ENSFCST_CYCLEDEF="00 01 01 01 2100 *"
 RECENTER_CYCLEDEF="00 01 01 01 2100 *"
 POSTPROC_CYCLEDEF="00 01 01 01 2100 *"
 POSTPROC_LONG_CYCLEDEF="00 01 01 01 2100 *"
@@ -1871,10 +1894,36 @@ TILE_SETS="full"
 #
 # DO_ENSPOST:
 # Flag to turn on/off python ensemble postprocessing for WPC testbeds.
+#
+# DO_ENSINIT:
+# Decide whether or not to do ensemble initialization by running 1 timestep ensemble
+# forecast and recentering on the deterministic analysis
+#
+# DO_ENSFCST:
+# Flag that determines whether to run ensemble free forecasts (for
+# each set of specified cycles).  If this is set to "TRUE", NUM_ENS_MEMBERS_FCST
+# forecasts are run for each specified cycle, each with a different set of stochastic
+# seed values. 
+#
+# NUM_ENS_MEMBERS_FCST:
+# The number of ensemble members to run forecast if DO_ENSFCST is set to "TRUE",
+# This variable also controls the naming of the ensemble member directories.  
+# For example, if this is set to "8", the member directories will be named 
+# mem1, mem2, ..., mem8.  If it is set to "08" (note the leading zero), 
+# the member directories will be named mem01, mem02, ..., mem08.  Note, 
+# however, that after reading in the number of characters in this string
+# (in order to determine how many leading zeros, if any, should be placed
+# in the names of the member directories), the workflow generation scripts
+# strip away those leading zeros.  Thus, in the variable definitions file 
+# (GLOBAL_VAR_DEFNS_FN), this variable appear with its leading zeros 
+# stripped.  This variable is not used if DO_ENSEMBLE is not set to "TRUE".
+# 
 #-----------------------------------------------------------------------
 #
 DO_ENSEMBLE="FALSE"
 NUM_ENS_MEMBERS="1"
+DO_ENSFCST="FALSE"
+NUM_ENS_MEMBERS_FCST="0"
 DO_ENSCONTROL="FALSE"
 DO_GSIOBSERVER="FALSE"
 DO_ENKFUPDATE="FALSE"
@@ -1883,6 +1932,7 @@ DO_ENVAR_RADAR_REF="FALSE"
 DO_RECENTER="FALSE"
 DO_ENS_GRAPHICS="FALSE"
 DO_ENSPOST="FALSE"
+DO_ENSINIT="FALSE"
 #
 #-----------------------------------------------------------------------
 #

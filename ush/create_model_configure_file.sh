@@ -118,6 +118,24 @@ run directory (run_dir):
     FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS_SPINUP}
   fi
 
+  if [ "${CYCLE_TYPE}" == "ensinit" ]; then
+    for cyc_start in "${CYCL_HRS_ENSINIT[@]}"; do
+      if [ ${hh} -eq ${cyc_start} ]; then 
+      FCST_LEN_HRS_thiscycle=$( expr ${DT_ATMOS}/3600 | bc -l )
+      FCST_LEN_HRS_thiscycle=$( printf "%.5f\n" ${FCST_LEN_HRS_thiscycle} )
+      NSOUT=1
+      RESTART_INTERVAL=0
+      print_info_msg "DT_ATMOS ${DT_ATMOS} FCST_LEN_HRS_thiscycle ${FCST_LEN_HRS_thiscycle} \
+      NSOUT $NSOUT \
+      RESTART_INTERVAL ${RESTART_INTERVAL} " 
+      fi
+    done
+  fi
+
+  if [ ${cycle_type} == "ensfcst" ]; then
+    FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS_ENSFCST}
+  fi
+
 #
 #-----------------------------------------------------------------------
 #

@@ -411,6 +411,8 @@ settings="\
   'cycl_hrs_spinstart': [ $( printf "\'%s\', " "${CYCL_HRS_SPINSTART[@]}" ) ]
   'cycl_hrs_prodstart': [ $( printf "\'%s\', " "${CYCL_HRS_PRODSTART[@]}" ) ]
   'cycl_hrs_recenter': [ $( printf "\'%s\', " "${CYCL_HRS_RECENTER[@]}" ) ]
+  'cycl_hrs_ensinit': [ $( printf "\'%s\', " "${CYCL_HRS_ENSINIT[@]}" ) ]
+  'cycl_hrs_ensfcst': [ $( printf "\'%s\', " "${CYCL_HRS_ENSFCST[@]}" ) ]
   'cycl_hrs_hyb_fv3lam_ens': [ $( printf "\'%s\', " "${CYCL_HRS_HYB_FV3LAM_ENS[@]}" ) ]
   'restart_hrs_prod': ${RESTART_INTERVAL}
   'cycl_freq': !!str 12:00:00
@@ -418,6 +420,8 @@ settings="\
   'initial_cycledef': ${INITIAL_CYCLEDEF}
   'boundary_cycledef': ${BOUNDARY_CYCLEDEF}
   'boundary_long_cycledef': ${BOUNDARY_LONG_CYCLEDEF}
+  'ensinit_cycledef': ${ENSINIT_CYCLEDEF}
+  'ensfcst_cycledef': ${ENSFCST_CYCLEDEF}
   'spinup_cycledef': ${SPINUP_CYCLEDEF}
   'prod_cycledef': ${PROD_CYCLEDEF}
   'recenter_cycledef': ${RECENTER_CYCLEDEF}
@@ -428,6 +432,7 @@ settings="\
 #
   'fcst_len_hrs': ${FCST_LEN_HRS}
   'fcst_len_hrs_spinup': ${FCST_LEN_HRS_SPINUP}
+  'fcst_len_hrs_ensfcst': ${FCST_LEN_HRS_ENSFCST}
   'boundary_len_hrs': ${BOUNDARY_LEN_HRS}
   'boundary_long_len_hrs': ${BOUNDARY_LONG_LEN_HRS}
   'postproc_len_hrs': ${POSTPROC_LEN_HRS}
@@ -437,7 +442,9 @@ settings="\
 # Ensemble-related parameters.
 #
   'do_ensemble': ${DO_ENSEMBLE}
+  'do_ensfcst': ${DO_ENSFCST}
   'num_ens_members': ${NUM_ENS_MEMBERS}
+  'num_ens_members_fcst': ${NUM_ENS_MEMBERS_FCST}
   'ndigits_ensmem_names': !!str ${NDIGITS_ENSMEM_NAMES}
   'ensmem_indx_name': ${ensmem_indx_name}
   'uscore_ensmem_name': ${uscore_ensmem_name}
@@ -451,6 +458,7 @@ settings="\
   'do_bufrsnd': ${DO_BUFRSND}
   'do_ens_graphics': ${DO_ENS_GRAPHICS}
   'do_enspost': ${DO_ENSPOST}
+  'do_ensinit': ${DO_ENSINIT}
 #
 # data assimilation related parameters.
 #

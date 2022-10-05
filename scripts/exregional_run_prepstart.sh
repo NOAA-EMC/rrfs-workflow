@@ -172,6 +172,13 @@ if [ ${cycle_type} == "spinup" ]; then
       BKTYPE=1
     fi
   done
+elif [ ${cycle_type} == "ensinit" ]; then
+  echo "ensinit cycle - warm start from 1 timestep restart files"
+  for cyc_start in "${CYCL_HRS_ENSINIT[@]}"; do
+    if [ ${HH} -eq ${cyc_start} ]; then
+      BKTYPE=0
+    fi
+  done
 else
   echo " product cycle"
   for cyc_start in "${CYCL_HRS_PRODSTART[@]}"; do
@@ -244,10 +251,7 @@ else
   else
      fg_restart_dirname=fcst_fv3lam
   fi
-
-  YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
-  bkpath=${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
-
+#
 #   let us figure out which backgound is available
 #
 #   the restart file from FV3 has a name like: ${YYYYMMDD}.${HH}0000.fv_core.res.tile1.nc
@@ -255,6 +259,15 @@ else
 #   So the defination of restart_prefix needs a "." at the end.
 #
   restart_prefix="${YYYYMMDD}.${HH}0000."
+
+  if [ ${cycle_type} == "ensinit" ] ; then
+# point to the 0-h cycle for the warm start from the 1 timestep restart files
+    fg_restart_dirname=fcst_fv3lam_ensinit
+    bkpath=${fg_root}/${YYYYMMDDHH}${SLASH_ENSMEM_SUBDIR}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+  else
+    YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
+    bkpath=${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+
   n=${DA_CYCLE_INTERV}
   while [[ $n -le 6 ]] ; do
     checkfile=${bkpath}/${restart_prefix}coupler.res
@@ -293,6 +306,8 @@ else
      done
   fi
 #
+  fi
+
   filelistn="fv_core.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_tracer.res.tile1.nc phy_data.nc sfc_data.nc"
   checkfile=${bkpath}/${restart_prefix}coupler.res
   n_iolayouty=$(($IO_LAYOUT_Y-1))
@@ -315,7 +330,11 @@ else
         done
       done
     fi
-    cp_vrfy ${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
+    if [ ${cycle_type} == "ensinit" ] ; then
+      cp_vrfy ${fg_root}/${YYYYMMDDHH}${SLASH_ENSMEM_SUBDIR}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
+    else
+      cp_vrfy ${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
+    fi
     if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
       echo "${YYYYMMDDHH}(${cycle_type}): warm start at ${current_time} from ${checkfile} " >> ${EXPTDIR}/log.cycles
     fi
@@ -338,9 +357,15 @@ else
     ncatted -a checksum,,d,, fv_core.res.nc
 
 # generate coupler.res with right date
-    head -1 bk_coupler.res > coupler.res
-    tail -1 bk_coupler.res >> coupler.res
-    tail -1 bk_coupler.res >> coupler.res
+    if [ ${cycle_type} == "ensinit" ]; then
+# from the 1 timestep restart files
+      head -2 bk_coupler.res > coupler.res
+      head -2 bk_coupler.res | tail -1 >> coupler.res
+    else
+      head -1 bk_coupler.res > coupler.res
+      tail -1 bk_coupler.res >> coupler.res
+      tail -1 bk_coupler.res >> coupler.res
+    fi
   else
     print_err_msg_exit "Error: cannot find background: ${checkfile}"
   fi

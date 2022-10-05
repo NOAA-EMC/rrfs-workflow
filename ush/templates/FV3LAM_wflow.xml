@@ -120,7 +120,7 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 <!ENTITY RSRV_DEFAULT "<account>&ACCOUNT;</account><queue>&QUEUE_DEFAULT;</queue>">
 {%- endif %}
 {%- if partition_hpss is not none %}
-<!ENTITY RSRV_HPSS    "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_HPSS;</queue><partition>{{ partition_hpss }}</partition><native>&RRFS_RESERVE;</native>">
+<!ENTITY RSRV_HPSS    "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_HPSS;</queue><partition>{{ partition_hpss }}</partition><native>&RRFS_POST_RESERVE;</native>">
 {%- else %}
 <!ENTITY RSRV_HPSS    "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_HPSS;</queue>">
 {%- endif %}
@@ -218,8 +218,10 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
   <cycledef group="boundary_long"> {{ boundary_long_cycledef }} </cycledef>
 
   <cycledef group="spinupcyc"> {{ spinup_cycledef }} </cycledef>
+  <cycledef group="ensinitcyc"> {{ ensinit_cycledef }} </cycledef>
   <cycledef group="prodcyc"> {{ prod_cycledef }} </cycledef>
   <cycledef group="recentercyc"> {{ recenter_cycledef }} </cycledef>
+  <cycledef group="ensfcstcyc"> {{ ensfcst_cycledef }} </cycledef>
 
   <cycledef group="postproc_normal"> {{ prod_cycledef }} </cycledef>
   <cycledef group="postproc_long"> {{ postproc_long_cycledef }} </cycledef>
@@ -713,6 +715,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>FG_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
     <envar><name>LBCS_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
@@ -725,9 +728,15 @@ MODULES_RUN_TASK_FP script.
 <!-- for start product cycle -->
          <and>
            <or>
-             {%- for h in cycl_hrs_prodstart %}
-             <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
-             {%- endfor %}
+             {%- if do_ensinit %}
+               {%- for h in cycl_hrs_ensinit %}
+               <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
+               {%- endfor %}
+             {%- else %}
+               {%- for h in cycl_hrs_prodstart %}
+               <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
+               {%- endfor %}
+             {%- endif %}
            </or>
 {%- if do_spinup %}
 {%- if do_retro %}
@@ -798,6 +807,158 @@ MODULES_RUN_TASK_FP script.
     </dependency>
 
   </task>
+
+{% if do_ensinit and do_ensemble -%}
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&RUN_FCST_TN;_ensinit{{ uscore_ensmem_name }}" cycledefs="ensinitcyc" maxtries="{{ maxtries_run_fcst }}">
+
+    &RSRV_FCST;
+    &WALL_LIMIT_FCST;
+
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_FCST_TN;" "&JOBSDIR;/JREGIONAL_RUN_FCST"</command>
+  {% if machine in ["JET", "HERA"]  %}
+    <cores>{{ ncores_run_fcst }}</cores>
+    <native>{{ native_run_fcst }} &RRFS_RESERVE;</native>
+  {% else %} 
+    <nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>
+    <nodesize>&NCORES_PER_NODE;</nodesize>
+  {% endif %}
+    <walltime>00:30:00</walltime>
+    <jobname>&TAG;_&RUN_FCST_TN;_ensinit{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr>&LOGDIR;/&RUN_FCST_TN;_ensinit{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+    <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
+    <envar><name>CYCLE_TYPE</name><value><cyclestr>ensinit</cyclestr></value></envar>
+    <envar><name>NWGES_BASEDIR</name><value>&NWGES_BASEDIR;</value></envar>
+
+    <dependency>
+        <and>   
+          <or>    
+           {%- for h in cycl_hrs_ensinit %}
+            <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
+           {%- endfor %}
+          </or>   
+          <taskdep task="&PREP_CYC_PROD_TN;{{ uscore_ensmem_name }}"/>
+        </and>  
+    </dependency>
+
+  </task> 
+
+<!--
+************************************************************************
+************************************************************************
+-->
+    <task name="&SAVE_RESTART_TN;_ensinit{{ uscore_ensmem_name }}" cycledefs="ensinitcyc" maxtries="{{ maxtries_save_restart }}">
+
+      &RSRV_DEFAULT;
+      &WALL_LIMIT_SAVE_RESTART;
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSDIR;/JREGIONAL_SAVE_RESTART"</command>
+      <nodes>{{ nnodes_save_restart }}:ppn={{ ppn_save_restart }}</nodes>
+      <walltime>{{ wtime_save_restart }}</walltime>
+      <nodesize>&NCORES_PER_NODE;</nodesize>
+      <jobname>&TAG;_&SAVE_RESTART_TN;_ensinit{{ uscore_ensmem_name }}</jobname>
+      <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;_ensinit{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+
+      <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+      <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+      <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+      <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+      <envar><name>fhr</name><value>0</value></envar>
+      <envar><name>CYCLE_TYPE</name><value><cyclestr>ensinit</cyclestr></value></envar>
+
+      <dependency>
+        <and>
+          <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
+          <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam_ensinit/RESTART/coupler.res</cyclestr></datadep>
+        </and>
+      </dependency>
+
+    </task>
+<!--
+************************************************************************
+************************************************************************
+-->
+
+  <task name="&PREP_CYC_TN;_ensinit{{ uscore_ensmem_name }}" cycledefs="ensinitcyc" maxtries="{{ maxtries_run_prepstart }}">
+
+    &RSRV_DEFAULT;
+    &WALL_LIMIT_PRE;
+
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PREPSTART_TN;" "&JOBSDIR;/JREGIONAL_RUN_PREPSTART"</command>
+    <nodes>{{ nnodes_run_prepstart }}:ppn={{ ppn_run_prepstart }}</nodes>
+    <nodesize>&NCORES_PER_NODE;</nodesize>
+    <walltime>{{ wtime_run_prepstart }}</walltime>
+    <jobname>&TAG;_&PREP_CYC_TN;_ensinit{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr>&LOGDIR;/&PREP_CYC_TN;_ensinit{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>FG_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
+    <envar><name>LBCS_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
+    <envar><name>CYCLE_TYPE</name><value><cyclestr>ensinit</cyclestr></value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+    <envar><name>NWGES_BASEDIR</name><value>&NWGES_BASEDIR;</value></envar>
+
+    <dependency>
+       <taskdep task="&SAVE_RESTART_TN;_ensinit{{ uscore_ensmem_name }}"/>
+    </dependency>
+
+  </task>
+
+<!--
+************************************************************************
+************************************************************************
+-->
+
+  <task name="&RUN_RECENTER_TN;_ensinit" cycledefs="ensinitcyc" maxtries="{{ maxtries_recenter }}">
+    &RSRV_ENKF;
+    &WALL_LIMIT_RECENTER;
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_RECENTER_TN;" &JOBSDIR;/JREGIONAL_RUN_RECENTER</command>
+
+    <nodes>{{ nnodes_run_recenter }}:ppn={{ ppn_run_recenter }}</nodes>
+    <nodesize>&NCORES_PER_NODE;</nodesize>
+    <walltime>{{ wtime_run_recenter }}</walltime>
+    <jobname><cyclestr>&TAG;_&RUN_RECENTER_TN;</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/&RUN_RECENTER_TN;_@Y@m@d@H.log</cyclestr></join>
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+
+    <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_ROOT</name><value><cyclestr>&CYCLE_BASEDIR;</cyclestr></value></envar>
+    <envar><name>ENSCTRL_CYCLE_DIR</name><value><cyclestr>&ENSCTRL_CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>ENSCTRL_CYCLE_ROOT</name><value><cyclestr>&ENSCTRL_CYCLE_BASEDIR;</cyclestr></value></envar>
+    <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+
+    <dependency>
+      <and>
+        {%- for m in range(1, num_ens_members+1) %}
+          <taskdep task="&PREP_CYC_TN;_ensinit_mem{{ "%04d" % m }}"/>
+        {%- endfor %}
+        <or>    
+        <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_CYCLE_BASEDIR;/@Y@m@d@H/nonvar_cldanl/nonvarcldanl_complete.txt</cyclestr></datadep>
+        <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_CYCLE_BASEDIR;/@Y@m@d@H/nonvar_cldanl_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
+        </or>   
+      </and>
+    </dependency>
+  </task>
+
+{%- endif %}
+
 
 <!-- beginning of meta block for prod spinup  -->
 <metatask name="do_prod_and_spinup_cyc">
@@ -1223,6 +1384,16 @@ MODULES_RUN_TASK_FP script.
         {%- endif %}
       {%- elif do_enkfupdate or do_enkf_radar_ref %}
       <or>
+      {%- if do_ensinit and do_ensemble %}
+      <and>
+        <or>
+          {%- for h in cycl_hrs_ensinit %}
+          <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
+          {%- endfor %}
+        </or>
+        <taskdep task="&RUN_RECENTER_TN;_ensinit"/>
+      </and>
+      {%- else %}
         <and>
           <or>
            {%- for h in cycl_hrs_prodstart %}
@@ -1231,6 +1402,7 @@ MODULES_RUN_TASK_FP script.
           </or>
           <taskdep task="&PREP_CYC_TN;_#type#{{ uscore_ensmem_name }}"/>
         </and>
+      {%- endif %}
         {%- if do_recenter %}
           <or>
            <and>
@@ -1317,6 +1489,10 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
+{%- if do_ensfcst %}
+  <metatask name="run_post">
+  <var name="cycletype">prod ensfcst</var>
+{%- endif %}
 
   <metatask name="&RUN_POST_TN;{{ uscore_ensmem_name }}">
 
@@ -1349,14 +1525,34 @@ MODULES_RUN_TASK_FP script.
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
       <envar><name>TMMARK</name><value>tm00</value></envar>
+      <envar><name>CYCLE_TYPE</name><value><cyclestr>#cycletype#</cyclestr></value></envar>
 
       <dependency>
-        <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/logf#fhr#</cyclestr></datadep>
+        {%- if do_ensfcst %}
+        <or>
+          {%- for h in cycl_hrs_ensfcst %}
+          <and>
+            <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
+            <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam_long/logf#fhr#</cyclestr></datadep>
+          </and>
+          <and>
+            <strneq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></strneq>
+            <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/logf#fhr#</cyclestr></datadep>
+          </and>
+          {%- endfor %}
+        </or>
+        {%- else %}
+          <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/logf#fhr#</cyclestr></datadep>
+        {%- endif %}
       </dependency>
 
     </task>
   </metatask>
   </metatask>
+
+{%- if do_ensfcst %}
+  </metatask>
+{%- endif %}
 
 <metatask mode="serial">
 
@@ -2028,5 +2224,132 @@ MODULES_RUN_TASK_FP script.
   </task>
 
 {%- endif %}
+<!--
+************************************************************************
+************************************************************************
+-->
+ {%- if do_ensfcst %}
+ <metatask name="run_ensemble_fcst">
+   <var name="{{ ensmem_indx_name }}">
+    {%- for m in range(1, num_ens_members_fcst+1) -%}
+    {%- set fmtstr=" %0"~ndigits_ensmem_names~"d" -%}
+    {{- fmtstr%m -}}
+   {%- endfor %} </var>
+
+  <task name="&PREP_CYC_TN;_ensfcst{{ uscore_ensmem_name }}" cycledefs="ensfcstcyc" maxtries="{{ maxtries_run_prepstart }}">
+
+    &RSRV_DEFAULT;
+    &WALL_LIMIT_PRE;
+
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PREPSTART_TN;" "&JOBSDIR;/JREGIONAL_RUN_PREPSTART_ENSFCST"</command>
+    <nodes>{{ nnodes_run_prepstart }}:ppn={{ ppn_run_prepstart }}</nodes>
+    <nodesize>&NCORES_PER_NODE;</nodesize>
+    <walltime>{{ wtime_run_prepstart_ensmean }}</walltime>
+    <jobname>&TAG;_&PREP_CYC_TN;_ensfcst{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr>&LOGDIR;/&PREP_CYC_TN;_ensfcst{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>LBCS_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
+    <envar><name>CYCLE_TYPE</name><value><cyclestr>ensfcst</cyclestr></value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+    <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
+
+    <dependency>
+     {%- if do_enkfupdate or do_enkf_radar_ref %}
+      <or>
+      {%- if do_ensinit and do_ensemble %}
+      <and>
+        <or>
+          {%- for h in cycl_hrs_ensinit %}
+          <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
+          {%- endfor %}
+        </or>
+        <taskdep task="&RUN_RECENTER_TN;_ensinit"/>
+      </and>
+      {%- else %}
+        <and>
+          <or>
+           {%- for h in cycl_hrs_prodstart %}
+            <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
+           {%- endfor %}
+          </or>
+          <taskdep task="&PREP_CYC_TN;_prod{{ uscore_ensmem_name }}"/>
+        </and>
+      {%- endif %}
+      {%- if do_recenter %}
+          <or>
+           <and>
+            <or>
+            {%- for h in cycl_hrs_recenter %}
+             <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
+            {%- endfor %}
+            </or>
+            <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H/recenter/fcst_fv3lam/INPUT/recenter_complete.txt</cyclestr></datadep>
+           </and>
+           <and>
+            {%- for h in cycl_hrs_recenter %}
+             <strneq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></strneq>
+            {%- endfor %}
+            {%- for h in cycl_hrs_prodstart %}
+             <strneq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></strneq>
+            {%- endfor %}
+            <taskdep task="&CLDANL_NONVAR_TN;_prod{{ uscore_ensmem_name }}"/>
+           </and>
+          </or>
+      {%- elif do_nonvar_cldanal%}
+          <taskdep task="&CLDANL_NONVAR_TN;_prod{{ uscore_ensmem_name }}"/>
+      {%- elif do_enkf_radar_ref %}
+          <taskdep task="&ENKF_RADAR_REF_TN;"/>
+      {%- else %}
+          <taskdep task="&RUN_ENKFUPDT_TN;"/>
+      {%- endif %}
+      </or>
+     {%- else %}
+      <taskdep task="&PREP_CYC_TN;_prod{{ uscore_ensmem_name }}"/>
+     {%- endif %}
+    </dependency>
+
+  </task>
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&RUN_FCST_TN;_long{{ uscore_ensmem_name }}" cycledefs="ensfcstcyc" maxtries="{{ maxtries_run_fcst }}">
+
+    &RSRV_FCST;
+    &WALL_LIMIT_FCST;
+
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_FCST_TN;" "&JOBSDIR;/JREGIONAL_RUN_FCST"</command>
+  {% if machine in ["JET", "HERA"]  %}
+    <cores>{{ ncores_run_fcst }}</cores>
+    <native>{{ native_run_fcst }} &RRFS_RESERVE;</native>
+  {% else %}
+    <nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>
+    <nodesize>&NCORES_PER_NODE;</nodesize>
+  {% endif %}
+    <walltime>{{ wtime_run_fcst }}</walltime>
+    <jobname>&TAG;_&RUN_FCST_TN;_long{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr>&LOGDIR;/&RUN_FCST_TN;_long{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+    <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
+    <envar><name>CYCLE_TYPE</name><value><cyclestr>ensfcst</cyclestr></value></envar>
+    <envar><name>NWGES_BASEDIR</name><value>&NWGES_BASEDIR;</value></envar>
+
+    <dependency>
+      <taskdep task="&PREP_CYC_TN;_ensfcst{{ uscore_ensmem_name }}"/>
+    </dependency>
+
+  </task> 
+
+ </metatask>
+ {%- endif %}
 
 </workflow>

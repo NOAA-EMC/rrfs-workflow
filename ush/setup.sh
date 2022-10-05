@@ -1627,6 +1627,47 @@ elif [ "$DO_ENSEMBLE" = "FALSE" ] || \
      [ "$DO_ENSEMBLE" = "NO" ]; then
   DO_ENSEMBLE="FALSE"
 fi
+#
+#-----------------------------------------------------------------------
+#
+# Make sure that DO_ENSINIT is set to a valid value.
+#
+#-----------------------------------------------------------------------
+#
+check_var_valid_value "DO_ENSINIT" "valid_vals_DO_ENSINIT"
+#
+# Set DO_ENSFCST to either "TRUE" or "FALSE" so we don't have to consider
+# other valid values later on.
+#
+DO_ENSINIT=${DO_ENSINIT^^}
+if [ "$DO_ENSINIT" = "TRUE" ] || \
+   [ "$DO_ENSINIT" = "YES" ]; then 
+  DO_ENSINIT="TRUE"
+elif [ "$DO_ENSINIT" = "FALSE" ] || \
+     [ "$DO_ENSINIT" = "NO" ]; then 
+  DO_ENSINIT="FALSE"
+fi
+#
+#-----------------------------------------------------------------------
+#
+# Make sure that DO_ENSFCST is set to a valid value.
+#
+#-----------------------------------------------------------------------
+#
+check_var_valid_value "DO_ENSFCST" "valid_vals_DO_ENSFCST"
+#
+# Set DO_ENSFCST to either "TRUE" or "FALSE" so we don't have to consider
+# other valid values later on.
+#
+DO_ENSFCST=${DO_ENSFCST^^}
+if [ "$DO_ENSFCST" = "TRUE" ] || \
+   [ "$DO_ENSFCST" = "YES" ]; then 
+  DO_ENSFCST="TRUE"
+elif [ "$DO_ENSFCST" = "FALSE" ] || \
+     [ "$DO_ENSFCST" = "NO" ]; then 
+  DO_ENSFCST="FALSE"
+fi
+
 NDIGITS_ENSMEM_NAMES="0"
 ENSMEM_NAMES=("")
 FV3_NML_ENSMEM_FPS=("")
