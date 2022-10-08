@@ -493,22 +493,50 @@ ln_vrfy -sf ${relative_or_null} ${FIELD_TABLE_FP} ${run_dir}
 ln_vrfy -sf ${relative_or_null} ${NEMS_CONFIG_FP} ${run_dir}
 ln_vrfy -sf ${relative_or_null} ${NEMS_YAML_FP} ${run_dir}
 
+#
+# Determine if running stochastic physics for the specified cycles in CYCL_HRS_STOCH
+#
+STOCH="FALSE"
+if [ "${DO_ENSEMBLE}" = TRUE ] && ([ "${DO_SPP}" = TRUE ] || [ "${DO_SPPT}" = TRUE ] || [ "${DO_SHUM}" = TRUE ] \
+  || [ "${DO_SKEB}" = TRUE ] || [ "${DO_LSM_SPP}" =  TRUE ]); then
+   for cyc_start in "${CYCL_HRS_STOCH[@]}"; do
+     if [ ${HH} -eq ${cyc_start} ]; then 
+       if [ "${DO_ENSFCST}" = TRUE ]; then
+         if [ ${cycle_type} == "ensfcst" ]; then 
+           STOCH="TRUE"
+         else
+           STOCH="FALSE"
+         fi
+       else
+         STOCH="TRUE"
+       fi
+     fi
+   done
+fi
+
 if [ ${BKTYPE} -eq 0 ]; then
   # cycling, using namelist for cycling forecast
-  cp_vrfy ${FV3_NML_RESTART_FP} ${run_dir}/input.nml
+  if [ "${STOCH}" == "TRUE" ]; then
+    cp_vrfy ${FV3_NML_RESTART_STOCH_FP} ${run_dir}/${FV3_NML_FN}
+   else
+    cp_vrfy ${FV3_NML_RESTART_FP} ${run_dir}/${FV3_NML_FN}
+  fi
 else
   if [ -f "INPUT/cycle_surface.done" ]; then
   # namelist for cold start with surface cycle
-    cp_vrfy ${FV3_NML_CYCSFC_FP} ${run_dir}/input.nml
+    cp_vrfy ${FV3_NML_CYCSFC_FP} ${run_dir}/${FV3_NML_FN}
   else
   # cold start, using namelist for cold start
-    cp_vrfy ${FV3_NML_FP} ${run_dir}/input.nml
+    if [ "${STOCH}" == "TRUE" ]; then
+      cp_vrfy ${FV3_NML_STOCH_FP} ${run_dir}/${FV3_NML_FN}
+     else
+      cp_vrfy ${FV3_NML_FP} ${run_dir}/${FV3_NML_FN}
+    fi
   fi
 fi
 
-if [ "${DO_ENSEMBLE}" = TRUE ] && ([ "${DO_SPP}" = TRUE ] || [ "${DO_SPPT}" = TRUE ] || [ "${DO_SHUM}" = TRUE ] \
-   [ "${DO_SKEB}" = TRUE ] || [ "${DO_LSM_SPP}" =  TRUE ]); then
-  cp ${run_dir}/input.nml ${run_dir}/input.nml_base
+if [ "${STOCH}" == "TRUE" ]; then
+  cp ${run_dir}/${FV3_NML_FN} ${run_dir}/${FV3_NML_FN}_base
   set_FV3nml_ens_stoch_seeds cdate="$cdate" || print_err_msg_exit "\
  Call to function to create the ensemble-based namelist for the current 
  cycle's (cdate) run directory (run_dir) failed: 

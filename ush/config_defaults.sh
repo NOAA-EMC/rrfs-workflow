@@ -488,6 +488,10 @@ WFLOW_LAUNCH_LOG_FN="log.launch_FV3LAM_wflow"
 # CYCL_HRS_ENSFCST
 # An array containing the hours of the day at which the ensemble free forecast is on
 #
+# CYCL_HRS_STOCH
+# An array containing the hours of the day at which the stochastics physcis is on
+# this might include: SPPT, SHUM, SKEB, SPP, LSM_SPP
+#
 # BOUNDARY_LEN_HRS
 # The length of boundary condition for normal forecast, in integer hours.
 #
@@ -533,6 +537,7 @@ CYCL_HRS_PRODSTART=( "HH1" "HH2" )
 CYCL_HRS_RECENTER=( "HH1" "HH2" )
 CYCL_HRS_ENSINIT=( "HH1" "HH2" )
 CYCL_HRS_ENSFCST=( "HH1" "HH2" )
+CYCL_HRS_STOCH=( "HH1" "HH2" )
 BOUNDARY_LEN_HRS="0"
 BOUNDARY_LONG_LEN_HRS="0"
 POSTPROC_LEN_HRS="1"
