@@ -858,6 +858,7 @@ settings="\
     'kice': ${kice:-null},
     'lsoil': ${lsoil:-null},
     'print_diff_pgr': ${PRINT_DIFF_PGR},
+    'rrfs_sd': ${DO_SMOKE_DUST},
   }"
 #
 # Add to "settings" the values of those namelist variables that specify

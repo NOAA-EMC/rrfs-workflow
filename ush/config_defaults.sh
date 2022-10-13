@@ -1981,6 +1981,9 @@ DO_ENSINIT="FALSE"
 #
 # USE_RRFSE_ENS:
 # Use rrfse ensemble for hybrid analysis
+#
+# DO_SMOKE_DUST
+#     Flag turn on smoke and dust for RRFS-SD
 #-----------------------------------------------------------------------
 DO_DACYCLE="FALSE"
 DO_SURFACE_CYCLE="FALSE"
@@ -1990,6 +1993,7 @@ DO_UPDATE_BC="FALSE"
 DO_RADDA="FALSE"
 DO_BUFRSND="FALSE"
 USE_RRFSE_ENS="FALSE"
+DO_SMOKE_DUST="FALSE"
 #
 #-----------------------------------------------------------------------
 #

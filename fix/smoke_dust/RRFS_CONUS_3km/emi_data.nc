@@ -1,0 +1,1 @@
+../../.agent/smoke_dust/RRFS_CONUS_3km/emi_data.nc
