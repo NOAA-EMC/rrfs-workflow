@@ -298,6 +298,10 @@ EXPT_SUBDIR=""
 # Setup default locations for IMS snow/ice and update time:
 #   IMSSNOW_ROOT: locations of IMS snow/ice observations
 #   SNOWICE_update_hour: cycle time for updating snow/ice 
+#
+# Setup default locations for FIRE_RRFS files and update time
+#  FIRE_RRFS_ROOT
+#  FIRE_RRFS_update_hour
 #-----------------------------------------------------------------------
 #
 COMINgfs="/base/path/of/directory/containing/gfs/input/files"
@@ -332,6 +336,8 @@ GVF_ROOT="/public/data/sat/ncep/viirs/gvf/grib2"
 GVF_update_hour=99
 IMSSNOW_ROOT="/public/data/grids/ncep/snow/ims96/grib2"
 SNOWICE_update_hour=99
+FIRE_RRFS_ROOT="/path/to/FIRE_RRFS/files"
+FIRE_RRFS_update_hour=99
 
 #
 #-----------------------------------------------------------------------
@@ -1438,6 +1444,9 @@ SFC_CLIMO_FIELDS=( \
 # FIX_CRTM:
 # System directory in which the CRTM coefficient files are located 
 #
+# FIX_SMOKE_DUST
+# directory in which the smoke and dust fix files are located
+#
 # FNGLAC, ..., FNMSKH:
 # Names of (some of the) global data files that are assumed to exist in 
 # a system directory specified (this directory is machine-dependent; 
@@ -1496,6 +1505,7 @@ FIX_GSI=""
 FIX_UPP=""
 FIX_CRTM=""
 FIX_UPP_CRTM=""
+FIX_SMOKE_DUST=""
 
 FNGLAC="global_glacier.2x2.grb"
 FNMXIC="global_maxice.2x2.grb"
@@ -2189,6 +2199,7 @@ DO_JEDI_ENVAR_IODA="FALSE"
 DO_NONVAR_CLDANAL="FALSE"
 DO_REFL2TTEN="FALSE"
 DO_NLDN_LGHT="FALSE"
+DO_SMOKE_DUST="FALSE"
 #
 #-----------------------------------------------------------------------
 #

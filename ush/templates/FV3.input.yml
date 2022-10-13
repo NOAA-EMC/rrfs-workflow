@@ -96,6 +96,25 @@ FV3_HRRR:
     ldiag_ugwp: false
     lgfdlmprad: false
     thsfc_loc: false 
+    sfclay_compute_flux: true
+    # Smoke/dust options
+    rrfs_sd : false
+    rrfs_smoke_debug : false
+    seas_opt : 0
+    mix_chem : true
+    enh_mix : true
+    dust_opt : 5
+    drydep_opt : 1
+    smoke_forecast : 0
+    aero_ind_fdb : false
+    aero_dir_fdb : false
+    addsmoke_flag : 1
+    wetdep_ls_opt : 1
+    do_plumerise : true
+    plumerisefire_frq : 60
+    dust_alpha : 0.01
+    dust_gamma : 1.3
+    wetdep_ls_alpha : 0.5
 
 FV3_RAP:
   atmos_model_nml:

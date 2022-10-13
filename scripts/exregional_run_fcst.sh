@@ -412,6 +412,13 @@ else
 fi
 
 #
+if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then
+ ln_vrfy -snf  ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/dust12m_data.nc  ${run_dir}/INPUT/dust12m_data.nc
+ ln_vrfy -snf  ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/emi_data.nc      ${run_dir}/INPUT/emi_data.nc
+ #yyyymmdd=${cdate:0:8}
+ ln_vrfy -snf  ${FIRE_RRFS_ROOT}/${PREDEF_GRID_NAME}/FIRE_RRFS_data_3km_in.nc   ${run_dir}/INPUT/SMOKE_RRFS_data.nc
+fi
+#
 #-----------------------------------------------------------------------
 #
 # Create links in the current run directory to fixed (i.e. static) files

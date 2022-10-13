@@ -479,6 +479,10 @@ settings="\
 #
   'do_jedi_envar_ioda': ${DO_JEDI_ENVAR_IODA}
 #
+# smoke and dust related parameters.
+#
+  'do_smoke_dust': ${DO_SMOKE_DUST}
+#
 # graphics related parameters
 #
   'tilelabels': \"${TILE_LABELS}\"
@@ -654,6 +658,23 @@ if [ "${RUN_ENVIR}" = "nco" ]; then
     fi
 
   fi  # check if DA
+
+#
+# Resolve the target directory that the FIXsmokedust symlink points to
+#
+  ln_vrfy -fsn "$FIX_SMOKE_DUST" "$FIXsmokedust"
+
+  path_resolved=$( readlink -m "$FIXsmokedust" )
+  if [ ! -d "${path_resolved}" ]; then
+    print_err_msg_exit "\
+  Missing link to FIXsmokedust
+  RUN_ENVIR = \"${RUN_ENVIR}\"
+  FIXsmokedust = \"$FIXsmokedust\"
+  path_resolved = \"${path_resolved}\"
+  Please ensure that path_resolved is an existing directory and then rerun
+  the experiment generation script."
+  fi
+#
 
   ln_vrfy -fsn "$FIXgsm" "$FIXam"
 #
