@@ -116,6 +116,9 @@ else
 
   "GEFS")
     case "$MACHINE" in
+    "WCOSS2")
+      EXTRN_MDL_SYSBASEDIR_ICS="/lfs/h1/ops/prod/com/gefs/v12.3"
+      ;;
     "HERA")
       EXTRN_MDL_SYSBASEDIR_ICS=""
       ;;

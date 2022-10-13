@@ -110,7 +110,8 @@ case $MACHINE in
     export MPICH_OFI_STARTUP_CONNECT=1
     export MPICH_OFI_VERBOSE=1
     export MPICH_OFI_NIC_VERBOSE=1
-    ncores=$(( NNODES_RUN_FCST*PPN_RUN_FCST))
+    #ncores=$(( NNODES_RUN_FCST*PPN_RUN_FCST))
+    ncores=${PE_MEMBER01}
     APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_FCST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
     ;;
 
@@ -192,9 +193,6 @@ the grid and (filtered) orography files ..."
 cd_vrfy ${run_dir}/INPUT
 
 relative_or_null=""
-if [ "${RUN_TASK_MAKE_GRID}" = "TRUE" ] && [ "${MACHINE}" != "WCOSS_CRAY" ]; then
-  relative_or_null="--relative"
-fi
 
 # Symlink to mosaic file with a completely different name.
 target="${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo${NH3}.nc" # must use *mosaic.halo3.nc
@@ -256,9 +254,6 @@ fi
 
 
 relative_or_null=""
-if [ "${RUN_TASK_MAKE_OROG}" = "TRUE" ] && [ "${MACHINE}" != "WCOSS_CRAY" ] ; then
-  relative_or_null="--relative"
-fi
 
 # Symlink to halo-0 orography file with "${CRES}_" and "halo0" stripped from name.
 target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH0}.nc"
@@ -438,9 +433,6 @@ static) files in the FIXam directory:
   run_dir = \"${run_dir}\""
 
 relative_or_null=""
-if [ "${RUN_ENVIR}" != "nco" ] && [ "${MACHINE}" != "WCOSS_CRAY" ] ; then
-  relative_or_null="--relative"
-fi
 
 regex_search="^[ ]*([^| ]+)[ ]*[|][ ]*([^| ]+)[ ]*$"
 num_symlinks=${#CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING[@]}
@@ -491,9 +483,6 @@ Creating links in the current run directory to cycle-independent model
 input files in the main experiment directory..."
 
 relative_or_null=""
-if [ "${RUN_ENVIR}" != "nco" ] && [ "${MACHINE}" != "WCOSS_CRAY" ] ; then
-  relative_or_null="--relative"
-fi
 
 ln_vrfy -sf ${relative_or_null} ${DATA_TABLE_FP} ${run_dir}
 ln_vrfy -sf ${relative_or_null} ${FIELD_TABLE_FP} ${run_dir}

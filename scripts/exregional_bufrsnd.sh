@@ -85,36 +85,9 @@ print_input_args valid_args
 #
 case $MACHINE in
 
-  "WCOSS_CRAY")
-
-# Specify computational resources.
-    export NODES=2
-    export ntasks=48
-    export ptile=24
-    export threads=1
-    export MP_LABELIO=yes
-    export OMP_NUM_THREADS=$threads
-
-    APRUN="aprun -j 1 -n${ntasks} -N${ptile} -d${threads} -cc depth"
-    ;;
-
-  "WCOSS_DELL_P3")
-
-# Specify computational resources.
-    module list
-    export NODES=1
-    export ntasks=28
-    export ptile=28
-    export threads=1
-    export MP_LABELIO=yes
-    export OMP_NUM_THREADS=$threads
-    module unload netcdf/4.7.4
-    module load NetCDF/4.5.0
-
-    module list
-
-    APRUNC="mpirun"
-    APRUNS="time"
+  "WCOSS2")
+    ncores=$(( NNODES_RUN_BUFRSND*PPN_RUN_BUFRSND))
+    APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_BUFRSND}"
     ;;
 
   "HERA")

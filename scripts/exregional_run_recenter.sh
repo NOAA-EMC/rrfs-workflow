@@ -74,22 +74,16 @@ print_input_args valid_args
 #
 case $MACHINE in
 #
-"WCOSS_C" | "WCOSS")
+"WCOSS2")
 #
-  module load NCO/4.7.0
   module list
   ulimit -s unlimited
   ulimit -a
-  APRUN="mpirun -l -np ${PE_MEMBER01}"
-  ;;
-#
-"WCOSS_DELL_P3")
-#
-  module load NCO/4.7.0
-  module list
-  ulimit -s unlimited
-  ulimit -a
-  APRUN="mpirun -l -np ${PE_MEMBER01}"
+  export FI_OFI_RXM_SAR_LIMIT=3145728
+  export OMP_STACKSIZE=500M
+  export OMP_NUM_THREADS=1
+  ncores=$(( NNODES_RUN_RECENTER*PPN_RUN_RECENTER ))
+  APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_RECENTER} --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;
 #
 "THEIA")

@@ -96,23 +96,11 @@ export OMP_STACKSIZE=2048m
 #
 case $MACHINE in
 
-  "WCOSS_CRAY")
-    { save_shell_opts; set +x; } > /dev/null 2>&1
-    . $MODULESHOME/init/sh
-    module load PrgEnv-intel cfp-intel-sandybridge/1.1.0
-    module list
-    { restore_shell_opts; } > /dev/null 2>&1
-    export NODES=1
-    export APRUN="aprun -n 1 -N 1 -j 1 -d 1 -cc depth"
-    export KMP_AFFINITY=disabled
+  "WCOSS2")
     ulimit -s unlimited
     ulimit -a
-    ;;
-
-  "WCOSS_DELL_P3")
-    ulimit -s unlimited
-    ulimit -a
-    APRUN="mpirun"
+    ncores=$(( NNODES_MAKE_OROG*PPN_MAKE_OROG ))
+    APRUN="mpiexec -n ${ncores} -ppn ${PPN_MAKE_ORO}"
     ;;
 
   "HERA")
@@ -436,7 +424,7 @@ cp_vrfy "${raw_orog_fp}" "${filtered_orog_fp}"
 # point it to the actual grid file specified by grid_fp.
 #
 
-if [ "${MACHINE}" = "WCOSS_CRAY" ]; then
+if [ "${MACHINE}" = "WCOSS2" ]; then
   ln_vrfy -fs "${grid_fp}" "${filter_dir}/${grid_fn}"
 else
   ln_vrfy -fs --relative "${grid_fp}" "${filter_dir}/${grid_fn}"

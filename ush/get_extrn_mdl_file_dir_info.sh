@@ -64,9 +64,11 @@ function get_extrn_mdl_file_dir_info() {
     "lbs_spec_intvl_hrs" \
     "boundary_len_hrs" \
     "time_offset_hrs" \
+    "varname_extrn_mdl_memhead" \
     "varname_extrn_mdl_cdate" \
     "varname_extrn_mdl_lbc_spec_fhrs" \
     "varname_extrn_mdl_fns_on_disk" \
+    "varname_extrn_mdl_fns_on_disk2" \
     "varname_extrn_mdl_fns_in_arcv" \
     "varname_extrn_mdl_sysdir" \
     "varname_extrn_mdl_arcv_fmt" \
@@ -424,8 +426,12 @@ fi
  
     "GEFS")
       fcst_hh=( $( printf "%02d " "${time_offset_hrs}" ) )
-      prefix="${yy}${ddd}${hh}${mn}${fcst_mn}"
+#      prefix="${yy}${ddd}${hh}${mn}${fcst_mn}"
+      prefix="${varname_extrn_mdl_memhead}"".t${hh}z.pgrb2b.0p50.f0"
+      prefix2="${varname_extrn_mdl_memhead}"".t${hh}z.pgrb2a.0p50.f0"
+      echo ${varname_extrn_mdl_memhead}
       fns_on_disk=( "${fcst_hh/#/$prefix}" )
+      fns_on_disk2=( "${fcst_hh/#/$prefix2}" )
       fns_in_arcv=( "${fcst_hh/#/$prefix}" )
       ;;
 
@@ -718,6 +724,9 @@ has not been specified for this external model and machine combination:
      "JET")
        sysdir="$sysbasedir/${GEFS_INPUT_SUBDIR}"
        ;;
+    "WCOSS2")
+      sysdir="$sysbasedir/gefs.${yyyymmdd}/${hh}/atmos/pgrb2bp5"
+      ;;
     *)
       print_err_msg_exit "\
 The system directory in which to look for external model output files 
@@ -1052,6 +1061,8 @@ Archive file information has not been specified for this external model:
   if [ ! -z "${varname_extrn_mdl_fns_on_disk}" ]; then
     fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
     eval ${varname_extrn_mdl_fns_on_disk}=${fns_on_disk_str}
+    fns_on_disk_str2="( "$( printf "\"%s\" " "${fns_on_disk2[@]}" )")"
+    eval ${varname_extrn_mdl_fns_on_disk2}=${fns_on_disk_str2}
   fi
 
   if [ ! -z "${varname_extrn_mdl_fns_in_arcv}" ]; then

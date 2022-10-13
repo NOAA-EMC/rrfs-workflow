@@ -46,6 +46,7 @@ FV3_GSD_SAR:
 FV3_HRRR:
   atmos_model_nml:
     avg_max_length: 3600.
+    ignore_rst_cksum: true
   fv_core_nml:
     d_con: 0.5
     d2_bg_k2: 0.04
@@ -53,6 +54,7 @@ FV3_HRRR:
     hord_dp: 6
     hord_mt: 6
     hord_tm: 6
+    hord_tr: 10
     hord_vt: 6
     k_split: 6
     kord_mt: 9
@@ -63,6 +65,7 @@ FV3_HRRR:
     psm_bc: 1
     nord_tr: 0
     nrows_blend: 10
+    range_warn: False
     regional_bcs_from_gsi: false
     rf_cutoff: 2000.0
     vtdm4: 0.02
@@ -70,6 +73,7 @@ FV3_HRRR:
   gfs_physics_nml: 
     <<: *gsd_sar_phys
     cdmbgwd: [3.5, 1.0]
+    diag_flux: false
     do_gsl_drag_ls_bl: true
     do_gsl_drag_ss: true
     do_gsl_drag_tofd: true
@@ -95,6 +99,7 @@ FV3_HRRR:
     iovr: 3
     ldiag_ugwp: false
     lgfdlmprad: false
+    sfclay_compute_flux: true
     thsfc_loc: false 
     sfclay_compute_flux: true
     # Smoke/dust options

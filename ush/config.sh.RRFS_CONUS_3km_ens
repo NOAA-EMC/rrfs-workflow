@@ -38,12 +38,12 @@ if [[ $MACHINE == "orion" ]] ; then
   QUEUE_ANALYSIS="batch"
 fi
 
-if [[ $MACHINE == "wcoss_dell_p3" ]] ; then
-  ACCOUNT=HRRR-T2O
+if [[ $MACHINE == "wcoss2" ]] ; then
+  ACCOUNT=RRFS-DEV
   QUEUE_DEFAULT="dev"
   QUEUE_ANALYSIS="dev"
   QUEUE_FCST="dev"
-  QUEUE_HPSS="dev"
+  QUEUE_HPSS="dev_transfer"
   QUEUE_WGRIB2="dev"
   QUEUE_GRAPHICS="dev"
 fi
@@ -197,16 +197,26 @@ MODEL="RRFS_B"
 #RUN_TASK_MAKE_OROG="FALSE"
 #RUN_TASK_MAKE_SFC_CLIMO="FALSE"
 
-if [[ $MACHINE == "wcoss_dell_p3" ]] ; then
-  LAYOUT_X="28"
-  LAYOUT_Y="30"
-  PPN_MAKE_ICS="14"
-  PPN_MAKE_LBCS="14"
-  PPN_RUN_ANAL="28"
-  PPN_RUN_FCST="28"
-  PPN_RUN_POST="28"
-  FV3GFS_FILE_FMT_ICS="netcdf"
-  FV3GFS_FILE_FMT_LBCS="netcdf"
+if [[ $MACHINE == "wcoss2" ]] ; then
+  LAYOUT_X="48"
+  LAYOUT_Y="40"
+  PPN_MAKE_ICS="32"
+  PPN_MAKE_LBCS="64"
+  NNODES_MAKE_ICS="2"
+  NNODES_MAKE_LBCS="1"
+  PPN_RUN_ANAL="64"
+  NNODES_RUN_ANAL="1"
+  PPN_RUN_FCST="64"
+  NNODES_RUN_FCST="31"
+  PPN_RUN_POST="64"
+  NNODES_RUN_POST="1"
+  PPN_PROC_RADAR="64"
+  NNODES_PROC_RADAR="1"
+  PPN_RUN_ENKF="32"
+  NNODES_RUN_ENKF="6"
+
+  FV3GFS_FILE_FMT_ICS="grib2"
+  FV3GFS_FILE_FMT_LBCS="grib2"
 fi
 
 if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then

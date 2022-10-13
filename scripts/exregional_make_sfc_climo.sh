@@ -128,19 +128,9 @@ EOF
 #
 case $MACHINE in
 
-  "WCOSS_CRAY")
-    APRUN=${APRUN:-"aprun -j 1 -n 6 -N 6"}
-    ;;
-
-  "WCOSS_DELL_P3")
-# Specify computational resources.
-    export NODES=2
-    export ntasks=48
-    export ptile=24
-    export threads=1
-    export MP_LABELIO=yes
-    export OMP_NUM_THREADS=$threads
-    APRUN="mpirun"
+  "WCOSS2")
+    ncores=$(( NNODES_MAKE_SFC_CLIMO*PPN_MAKE_SFC_CLIMO))
+    APRUN="mpiexec -n ${ncores} -ppn ${PPN_MAKE_SFC_CLIMO}"
     ;;
 
   "HERA")

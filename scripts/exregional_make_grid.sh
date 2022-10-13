@@ -96,25 +96,11 @@ export OMP_STACKSIZE=2048m
 #
 case $MACHINE in
 
-  "WCOSS_CRAY")
-    { save_shell_opts; set +x; } > /dev/null 2>&1
-    . $MODULESHOME/init/sh
-    module load PrgEnv-intel cfp-intel-sandybridge/1.1.0
-    module list
-    { restore_shell_opts; } > /dev/null 2>&1
-    export NODES=1
-    export APRUN="aprun -n 1 -N 1 -j 1 -d 1 -cc depth"
-    export KMP_AFFINITY=disabled
+  "WCOSS2")
     ulimit -s unlimited
     ulimit -a
-    ;;
-
-  "WCOSS_DELL_P3")
-    { save_shell_opts; set +x; } > /dev/null 2>&1
-    module list
-    { restore_shell_opts; } > /dev/null 2>&1
-    export APRUN="mpirun"
-    ulimit -s unlimited
+    ncores=$(( NNODES_MAKE_GRID*PPN_MAKE_GRID))
+    APRUN="mpiexec -n ${ncores} -ppn ${PPN_MAKE_GRID}"
     ;;
 
   "HERA")
