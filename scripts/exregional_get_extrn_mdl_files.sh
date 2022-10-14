@@ -64,6 +64,7 @@ valid_args=( \
 "extrn_mdl_fns_on_disk2" \
 "extrn_mdl_fns_in_arcv" \
 "extrn_mdl_source_dir" \
+"extrn_mdl_source_dir2" \
 "extrn_mdl_staging_dir" \
 "extrn_mdl_arcv_fmt" \
 "extrn_mdl_arcv_fns" \
@@ -93,8 +94,8 @@ print_input_args valid_args
 #
 num_files_to_copy="${#extrn_mdl_fns_on_disk[@]}"
 prefix="${extrn_mdl_source_dir}/"
-prefix2="${extrn_mdl_source_dir}/../pgrb2ap5"
 extrn_mdl_fps_on_disk=( "${extrn_mdl_fns_on_disk[@]/#/$prefix}" )
+prefix2="${extrn_mdl_source_dir2}"
 extrn_mdl_fps_on_disk2=( "${extrn_mdl_fns_on_disk2[@]/#/$prefix2}" )
 #
 #-----------------------------------------------------------------------
@@ -235,10 +236,13 @@ model files on disk (extrn_mdl_fns_on_disk) in the source directory
   extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
   extrn_mdl_fns_on_disk = ${extrn_mdl_fns_on_disk_str}"
 
-    cp_vrfy ${extrn_mdl_fps_on_disk[@]} ${extrn_mdl_staging_dir}/.
     if [ "${ics_or_lbcs}" = "ICS" ]; then
-      cp_vrfy ${extrn_mdl_fps_on_disk[@]} ${extrn_mdl_staging_dir}/.
-      more ${extrn_mdl_fps_on_disk2[@]} >>  ${extrn_mdl_staging_dir}/${extrn_mdl_fns_on_disk[@]}
+      if [ ! -z ${extrn_mdl_source_dir2} ]; then
+        cp_vrfy ${extrn_mdl_fps_on_disk[@]} ${extrn_mdl_staging_dir}/.
+        more ${extrn_mdl_fps_on_disk2[@]} >>  ${extrn_mdl_staging_dir}/${extrn_mdl_fns_on_disk[@]}
+      else
+        ln_vrfy -sf -t ${extrn_mdl_staging_dir} ${extrn_mdl_fps_on_disk[@]}
+      fi
     else
       ln_vrfy -sf -t ${extrn_mdl_staging_dir} ${extrn_mdl_fps_on_disk[@]}
     fi

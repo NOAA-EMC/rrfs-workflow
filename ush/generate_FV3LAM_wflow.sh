@@ -830,9 +830,6 @@ settings="\
     'blocksize': $BLOCKSIZE,
     'ccpp_suite': ${CCPP_PHYS_SUITE},
   }
-'fv3gfs_io': {
-    'use_io_netcdf': ${USE_IO_NETCDF:-FALSE},
-  }
 'fv_core_nml': {
     'target_lon': ${LON_CTR},
     'target_lat': ${LAT_CTR},
@@ -965,36 +962,6 @@ if [ "${RUN_TASK_MAKE_GRID}" = "FALSE" ]; then
 Call to function to set surface climatology file names in the FV3 namelist
 file failed."
 
-fi
-
-if [ "${DO_SURFACE_CYCLE}" = "TRUE" ]; then
-  if [ "${SDF_USES_RUC_LSM}" = "TRUE" ]; then
-    lsoil="9"
-  fi
-# need to generate a namelist for surface cycle
- settings="\
- 'gfs_physics_nml': {
-     'lsoil': ${lsoil:-null},
-   }"
-# commnet out for using current develop branch that has no radar tten code yet.
-# 'gfs_physics_nml': {
-#    'fh_dfi_radar': [${FH_DFI_RADAR[@]}],
-#  }"
- 
- $USHDIR/set_namelist.py -q \
-                         -n ${FV3_NML_FP} \
-                         -u "$settings" \
-                         -o ${FV3_NML_CYCSFC_FP} || \
-   print_err_msg_exit "\
- Call to python script set_namelist.py to generate an restart FV3 namelist file
- failed.  Parameters passed to this script are:
-   Full path to base namelist file:
-     FV3_NML_FP = \"${FV3_NML_FP}\"
-   Full path to output namelist file for DA:
-     FV3_NML_CYCSFC_FP = \"${FV3_NML_CYCSFC_FP}\"
-   Namelist settings specified on command line:
-     settings =
- $settings"
 fi
 
 if [[ "${DO_DACYCLE}" = "TRUE" || "${DO_ENKFUPDATE}" = "TRUE" ]]; then

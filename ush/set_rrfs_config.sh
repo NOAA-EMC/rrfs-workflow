@@ -104,6 +104,7 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     SST_ROOT="/scratch2/BMC/zrtrr/rli/data/highres_sst"
     GVF_ROOT="/scratch2/BMC/zrtrr/rli/data/gvf/grib2"
     IMSSNOW_ROOT="/scratch2/BMC/zrtrr/rli/data/snow/ims96/grib2"
+    RAPHRR_SOIL_ROOT="/scratch2/BMC/zrtrr/rli/data/rap_hrrr_soil"
   fi
   if [[ $MACHINE == "orion" ]] ; then
     EXTRN_MDL_SOURCE_BASEDIR_ICS=/work/noaa/wrfruc/mhu/rrfs/data/gfs/0p25deg/grib2

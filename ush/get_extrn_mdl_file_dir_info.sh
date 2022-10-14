@@ -71,6 +71,7 @@ function get_extrn_mdl_file_dir_info() {
     "varname_extrn_mdl_fns_on_disk2" \
     "varname_extrn_mdl_fns_in_arcv" \
     "varname_extrn_mdl_sysdir" \
+    "varname_extrn_mdl_sysdir2" \
     "varname_extrn_mdl_arcv_fmt" \
     "varname_extrn_mdl_arcv_fns" \
     "varname_extrn_mdl_arcv_fps" \
@@ -209,8 +210,8 @@ fi
   local yyyy mm dd hh mn yyyymmdd \
         lbc_spec_fhrs i num_fhrs \
         yy ddd fcst_hhh fcst_hh fcst_mn \
-        prefix suffix fns fns_on_disk fns_in_arcv \
-        sysbasedir sysdir \
+        prefix suffix fns fns_on_disk fns_on_disk2 fns_in_arcv \
+        sysbasedir sysdir sysdir2 \
         arcv_dir arcv_fmt arcv_fns arcv_fps arcvrel_dir
 #
 #-----------------------------------------------------------------------
@@ -343,6 +344,9 @@ fi
     fv3gfs_file_fmt="${FV3GFS_FILE_FMT_LBCS}"
     gefs_file_fmt="grib2"
   fi
+
+  fns_on_disk2=( "" )
+  fns_in_arcv=( "" )
 
   case "${anl_or_fcst}" in
 #
@@ -623,6 +627,8 @@ bination of external model (extrn_mdl_name) and analysis or forecast
     sysbasedir="${EXTRN_MDL_SYSBASEDIR_LBCS}"
   fi
 
+  sysdir2=""
+
   case "${extrn_mdl_name}" in
 
 #
@@ -726,6 +732,7 @@ has not been specified for this external model and machine combination:
        ;;
     "WCOSS2")
       sysdir="$sysbasedir/gefs.${yyyymmdd}/${hh}/atmos/pgrb2bp5"
+      sysdir2="$sysbasedir/gefs.${yyyymmdd}/${hh}/atmos/pgrb2ap5"
       ;;
     *)
       print_err_msg_exit "\
@@ -1061,6 +1068,9 @@ Archive file information has not been specified for this external model:
   if [ ! -z "${varname_extrn_mdl_fns_on_disk}" ]; then
     fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
     eval ${varname_extrn_mdl_fns_on_disk}=${fns_on_disk_str}
+  fi
+
+  if [ ! -z "${varname_extrn_mdl_fns_on_disk2}" ]; then
     fns_on_disk_str2="( "$( printf "\"%s\" " "${fns_on_disk2[@]}" )")"
     eval ${varname_extrn_mdl_fns_on_disk2}=${fns_on_disk_str2}
   fi
@@ -1072,6 +1082,10 @@ Archive file information has not been specified for this external model:
 
   if [ ! -z "${varname_extrn_mdl_sysdir}" ]; then
     eval ${varname_extrn_mdl_sysdir}="${sysdir}"
+  fi
+
+  if [ ! -z "${varname_extrn_mdl_sysdir2}" ]; then
+    eval ${varname_extrn_mdl_sysdir2}="${sysdir2}"
   fi
 
   if [ ! -z "${varname_extrn_mdl_arcv_fmt}" ]; then

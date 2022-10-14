@@ -299,6 +299,10 @@ EXPT_SUBDIR=""
 #   IMSSNOW_ROOT: locations of IMS snow/ice observations
 #   SNOWICE_update_hour: cycle time for updating snow/ice 
 #
+# Setup default resource data locations for soil surgery and time:
+#   RAPHRR_SOIL_ROOT: locations of RAP/HRRR forecast netcdf files
+#   SOIL_SURGERY_time: cycle time for soil surgery 
+#
 # Setup default locations for FIRE_RRFS files and update time
 #  FIRE_RRFS_ROOT
 #  FIRE_RRFS_update_hour
@@ -336,6 +340,8 @@ GVF_ROOT="/public/data/sat/ncep/viirs/gvf/grib2"
 GVF_update_hour=99
 IMSSNOW_ROOT="/public/data/grids/ncep/snow/ims96/grib2"
 SNOWICE_update_hour=99
+RAPHRR_SOIL_ROOT="/mnt/lfs4/BMC/rtwbl/mhu/wcoss/nco/com"
+SOIL_SURGERY_time=9999999999
 FIRE_RRFS_ROOT="/path/to/FIRE_RRFS/files"
 FIRE_RRFS_update_hour=99
 
@@ -1179,8 +1185,6 @@ ESGgrid_WIDE_HALO_WIDTH=""
 #    the parameters defined in this section are set to non-empty strings
 #    before creating the experiment directory.
 #
-# USE_IO_NETCDF
-#   use parallel netcdf io for restart files
 #
 # NSOUT
 #   setup frequency of writing out forecast files in time steps
@@ -1196,7 +1200,6 @@ IO_LAYOUT_X="1"
 IO_LAYOUT_Y="1"
 BLOCKSIZE=""
 FH_DFI_RADAR="-20000000000"
-USE_IO_NETCDF="FALSE"
 NSOUT="0"
 NSOUT_MIN="0"
 #

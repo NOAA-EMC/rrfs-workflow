@@ -221,6 +221,7 @@ get_extrn_mdl_file_dir_info \
   varname_extrn_mdl_fns_on_disk2="extrn_mdl_fns_on_disk2" \
   varname_extrn_mdl_fns_in_arcv="extrn_mdl_fns_in_arcv" \
   varname_extrn_mdl_sysdir="extrn_mdl_sysdir" \
+  varname_extrn_mdl_sysdir2="extrn_mdl_sysdir2" \
   varname_extrn_mdl_arcv_fmt="extrn_mdl_arcv_fmt" \
   varname_extrn_mdl_arcv_fns="extrn_mdl_arcv_fns" \
   varname_extrn_mdl_arcv_fps="extrn_mdl_arcv_fps" \
@@ -237,6 +238,7 @@ Call to function get_extrn_mdl_file_dir_info failed."
 #-----------------------------------------------------------------------
 #
 extrn_mdl_source_dir="${extrn_mdl_sysdir}"
+extrn_mdl_source_dir2="${extrn_mdl_sysdir2}"
 #
 #-----------------------------------------------------------------------
 #
@@ -300,6 +302,7 @@ $SCRIPTSDIR/exregional_get_extrn_mdl_files.sh \
   extrn_mdl_fns_on_disk2="${extrn_mdl_fns_on_disk_str2}" \
   extrn_mdl_fns_in_arcv="${extrn_mdl_fns_in_arcv_str}" \
   extrn_mdl_source_dir="${extrn_mdl_source_dir}" \
+  extrn_mdl_source_dir2="${extrn_mdl_source_dir2}" \
   extrn_mdl_staging_dir="${extrn_mdl_staging_dir}" \
   extrn_mdl_arcv_fmt="${extrn_mdl_arcv_fmt}" \
   extrn_mdl_arcv_fns="${extrn_mdl_arcv_fns_str}" \

@@ -735,19 +735,35 @@ fi
 #
 #-----------------------------------------------------------------------
 # 
-if [ ${YYYYMMDDHH} -eq 9999999999 ] ; then
-#if [ ${HH} -eq 06 ] || [ ${HH} -eq 18 ]; then
+if [ ${YYYYMMDDHH} -eq ${SOIL_SURGERY_time} ] ; then
 if [ ${cycle_type} == "spinup" ]; then
-   raphrrr_com=/mnt/lfs4/BMC/rtwbl/mhu/wcoss/nco/com/
-   ln -s ${raphrrr_com}/rap/prod/rap.${YYYYMMDD}/rap.t${HH}z.wrf_inout_smoke    sfc_rap
-   ln -s ${raphrrr_com}/hrrr/prod/hrrr.${YYYYMMDD}/conus/hrrr.t${HH}z.wrf_inout sfc_hrrr
-   ln -s ${raphrrr_com}/hrrr/prod/hrrr.${YYYYMMDD}/alaska/hrrrak.t${HH}z.wrf_inout sfc_hrrrak
+
+#   raphrrr_com=/mnt/lfs4/BMC/rtwbl/mhu/wcoss/nco/com/
+#   ln -s ${raphrrr_com}/rap/prod/rap.${YYYYMMDD}/rap.t${HH}z.wrf_inout_smoke    sfc_rap
+#   ln -s ${raphrrr_com}/hrrr/prod/hrrr.${YYYYMMDD}/conus/hrrr.t${HH}z.wrf_inout sfc_hrrr
+#   ln -s ${raphrrr_com}/hrrr/prod/hrrr.${YYYYMMDD}/alaska/hrrrak.t${HH}z.wrf_inout sfc_hrrrak
+   raphrrr_com=${RAPHRR_SOIL_ROOT}
+   rapfile='missing'
+   hrrrfile='missing'
+   hrrr_akfile='missing'
+   if [ -r ${raphrrr_com}/${YYYYMMDD}/rap.t${HH}z.wrf_inout_smoke ]; then
+     ln -s ${raphrrr_com}/${YYYYMMDD}/rap.t${HH}z.wrf_inout_smoke    sfc_rap
+     rapfile='sfc_rap'
+   fi
+   if [ -r ${raphrrr_com}/${YYYYMMDD}/hrrr.t${HH}z.wrf_inout ]; then
+     ln -s ${raphrrr_com}/${YYYYMMDD}/hrrr.t${HH}z.wrf_inout sfc_hrrr
+     hrrrfile='sfc_hrrr'
+   fi
+   if [ -r ${raphrrr_com}/${YYYYMMDD}/hrrrak.t${HH}z.wrf_inout ]; then
+     ln -s ${raphrrr_com}/${YYYYMMDD}/hrrr.t${HH}z.wrf_inout sfc_hrrrak
+     hrrr_akfile='sfc_hrrrak'
+   fi
  
 cat << EOF > use_raphrrr_sfc.namelist
 &setup
-rapfile='sfc_rap'
-hrrrfile='sfc_hrrr'
-hrrr_akfile='sfc_hrrrak'
+rapfile=${rapfile}
+hrrrfile=${hrrrfile}
+hrrr_akfile=${hrrr_akfile}
 rrfsfile='sfc_data.nc'
 /
 EOF
@@ -760,7 +776,7 @@ EOF
 
      if [ "${IO_LAYOUT_Y}" == "1" ]; then
        ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
-       ./${exect} > sfc_sugery_stdout 2>&1 || print_info_msg "\
+       ./${exect} > stdout_sfc_sugery 2>&1 || print_info_msg "\
        Call to executable to run surface surgery returned with nonzero exit code."
      else
        for ii in ${list_iolayout}
@@ -768,7 +784,7 @@ EOF
          iii=$(printf %4.4i $ii)
          ln_vrfy -sf ${gridspec_dir}/fv3_grid_spec.${iii}  fv3_grid_spec
          ln_vrfy -sf sfc_data.nc.${iii} sfc_data.nc
-         ./${exect} > sfc_sugery_stdout.${iii} 2>&1 || print_info_msg "\
+         ./${exect} > stdout_sfc_sugery.${iii} 2>&1 || print_info_msg "\
          Call to executable to run surface surgery returned with nonzero exit code."
          ls -l > list_sfc_sugery.${iii}
        done
