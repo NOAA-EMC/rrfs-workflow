@@ -1318,7 +1318,7 @@ MODULES_RUN_TASK_FP script.
           <and>
             <taskdep task="&ANAL_GSI_TN;_#type#"/>
              {%- for h in cycl_hrs_hyb_fv3lam_ens %}
-                <strneq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
+                <strneq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></strneq>
              {%- endfor %}
           </and>
           <and>
