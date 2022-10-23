@@ -439,6 +439,7 @@ settings="\
   'postproc_len_hrs': ${POSTPROC_LEN_HRS}
   'postproc_long_len_hrs': ${POSTPROC_LONG_LEN_HRS}
   'postproc_nsout_min': ${NSOUT_MIN}
+  'boundary_proc_group_num': ${BOUNDARY_PROC_GROUP_NUM}
 #
 # Ensemble-related parameters.
 #

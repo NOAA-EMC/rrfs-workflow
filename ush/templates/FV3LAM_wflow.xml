@@ -584,7 +584,10 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&MAKE_LBCS_TN;{{ uscore_ensmem_name }}" cycledefs="boundary,boundary_long" maxtries="{{ maxtries_make_lbcs }}">
+<metatask name="&MAKE_LBCS_TN;">
+  <var name="bcgrp">{% for h in range(0, boundary_proc_group_num) %}{{ " %02d" % h  }}{% endfor %}</var>
+
+  <task name="&MAKE_LBCS_TN;_#bcgrp#{{ uscore_ensmem_name }}" cycledefs="boundary,boundary_long" maxtries="{{ maxtries_make_lbcs }}">
 
     &RSRV_DEFAULT;
     &WALL_LIMIT_PRE;
@@ -593,8 +596,8 @@ MODULES_RUN_TASK_FP script.
     <nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>
     <walltime>{{ wtime_make_lbcs }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
-    <jobname>&TAG;_&MAKE_LBCS_TN;{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&MAKE_LBCS_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&TAG;_&MAKE_LBCS_TN;_#bcgrp#{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr>&LOGDIR;/&MAKE_LBCS_TN;{{ uscore_ensmem_name }}_@Y@m@d@H_#bcgrp#.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -602,6 +605,8 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+    <envar><name>bcgrp</name><value>#bcgrp#</value></envar>
+    <envar><name>bcgrpnum</name><value>{{ boundary_proc_group_num }}</value></envar>
 
     <dependency>
       <and>
@@ -628,6 +633,7 @@ MODULES_RUN_TASK_FP script.
     </dependency>
 
   </task>
+</metatask>
 
 {%- endif %}
 
@@ -676,7 +682,9 @@ MODULES_RUN_TASK_FP script.
            <and>
              <timedep><cyclestr offset="&START_TIME_SPINUP;">@Y@m@d@H@M00</cyclestr></timedep>
              <taskdep task="&MAKE_ICS_TN;"/>
-             <taskdep task="&MAKE_LBCS_TN;" cycle_offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00"/>
+             {%- for h in range(0,  boundary_proc_group_num) %}
+             <taskdep task="&MAKE_LBCS_TN;_{{ "%02d" % h }}" cycle_offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00"/>
+             {%- endfor %}
            </and>
 {%- endif %}
          </and>

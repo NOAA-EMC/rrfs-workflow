@@ -510,6 +510,9 @@ WFLOW_LAUNCH_LOG_FN="log.launch_FV3LAM_wflow"
 # BOUNDARY_LONG_LEN_HRS
 # The length of boundary condition for long forecast, in integer hours.
 #
+# BOUNDARY_PROC_GROUP_NUM
+# The number of groups used to run make_lbcs, in integer from 1 to forecast longest hours.
+#
 # FCST_LEN_HRS:
 # The length of each forecast, in integer hours.
 #
@@ -552,6 +555,7 @@ CYCL_HRS_ENSFCST=( "HH1" "HH2" )
 CYCL_HRS_STOCH=( "HH1" "HH2" )
 BOUNDARY_LEN_HRS="0"
 BOUNDARY_LONG_LEN_HRS="0"
+BOUNDARY_PROC_GROUP_NUM="1"
 POSTPROC_LEN_HRS="1"
 POSTPROC_LONG_LEN_HRS="1"
 FCST_LEN_HRS="24"

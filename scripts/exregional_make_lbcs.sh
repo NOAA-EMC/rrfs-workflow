@@ -58,6 +58,8 @@ hour zero).
 valid_args=( \
 "lbcs_dir" \
 "lbcs_nwges_dir" \
+"bcgrp" \
+"bcgrpnum" \
 )
 process_args valid_args "$@"
 #
@@ -134,7 +136,7 @@ extrn_mdl_var_defns_fp="${extrn_mdl_staging_dir}/${EXTRN_MDL_LBCS_VAR_DEFNS_FN}"
 #
 #-----------------------------------------------------------------------
 #
-workdir="${lbcs_dir}/tmp_LBCS"
+workdir="${lbcs_dir}/tmp_LBCS_${bcgrp}"
 mkdir_vrfy -p "$workdir"
 cd_vrfy $workdir
 #
@@ -395,7 +397,12 @@ fi
 #-----------------------------------------------------------------------
 #
 num_fhrs="${#EXTRN_MDL_LBC_SPEC_FHRS[@]}"
-for (( i=0; i<${num_fhrs}; i++ )); do
+bcgrp10=${bcgrp#0}
+bcgrpnum10=${bcgrpnum#0}
+for (( ii=0; ii<${num_fhrs}; ii=ii+bcgrpnum10 )); do
+  i=$(( ii + bcgrp10 ))
+  if [ ${i} -lt ${num_fhrs} ]; then
+    echo " group ${bcgrp10} processes member ${i}"
 #
 # Get the forecast hour of the external model.
 #
@@ -559,19 +566,12 @@ located in the following directory:
   fcst_hhh=$(( ${lbc_spec_fhrs} - ${EXTRN_MDL_LBCS_OFFSET_HRS} ))
   fcst_hhh_FV3LAM=`printf %3.3i $fcst_hhh`
   mv_vrfy gfs.bndy.nc ${lbcs_dir}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc
+# copy results to nwges for longe time disk storage.
+  cp_vrfy ${lbcs_dir}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc ${lbcs_nwges_dir}/.
 
+  fi
 done
 
-#
-#-----------------------------------------------------------------------
-#
-# copy results to nwges for longe time disk storage.
-#
-#-----------------------------------------------------------------------
-#
-
-cp_vrfy ${lbcs_dir}/gfs_bndy.tile7.*.nc ${lbcs_nwges_dir}/.
-   
 #
 #-----------------------------------------------------------------------
 #
