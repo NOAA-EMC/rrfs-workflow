@@ -206,6 +206,7 @@ settings="\
   'run_post_tn': ${RUN_POST_TN}
   'run_wgrib2_tn': ${RUN_WGRIB2_TN}
   'anal_gsi': ${ANAL_GSI_TN}
+  'post_anal': ${POSTANAL_TN}
   'observer_gsi_ensmean': ${OBSERVER_GSI_ENSMEAN_TN}
   'observer_gsi': ${OBSERVER_GSI_TN}
   'prep_start': ${PREP_START_TN}
@@ -235,6 +236,7 @@ settings="\
   'nnodes_run_prepstart': ${NNODES_RUN_PREPSTART}
   'nnodes_run_fcst': ${NNODES_RUN_FCST}
   'nnodes_run_anal': ${NNODES_RUN_ANAL}
+  'nnodes_run_postanal': ${NNODES_RUN_POSTANAL}
   'nnodes_run_enkf': ${NNODES_RUN_ENKF}
   'nnodes_run_recenter': ${NNODES_RUN_RECENTER}
   'nnodes_run_post': ${NNODES_RUN_POST}
@@ -273,6 +275,7 @@ settings="\
   'ppn_run_prepstart': ${PPN_RUN_PREPSTART}
   'ppn_run_fcst': ${PPN_RUN_FCST}
   'ppn_run_anal': ${PPN_RUN_ANAL}
+  'ppn_run_postanal': ${PPN_RUN_POSTANAL}
   'ppn_run_enkf': ${PPN_RUN_ENKF}
   'ppn_run_recenter': ${PPN_RUN_RECENTER}
   'ppn_run_post': ${PPN_RUN_POST}
@@ -301,6 +304,7 @@ settings="\
   'wtime_run_prepstart_ensmean': ${WTIME_RUN_PREPSTART_ENSMEAN}
   'wtime_run_fcst': ${WTIME_RUN_FCST}
   'wtime_run_anal': ${WTIME_RUN_ANAL}
+  'wtime_run_postanal': ${WTIME_RUN_POSTANAL}
   'wtime_run_enkf': ${WTIME_RUN_ENKF}
   'wtime_run_recenter': ${WTIME_RUN_RECENTER}
   'wtime_run_post': ${WTIME_RUN_POST}
@@ -346,6 +350,7 @@ settings="\
   'maxtries_run_prepstart': ${MAXTRIES_RUN_PREPSTART}
   'maxtries_run_fcst': ${MAXTRIES_RUN_FCST}
   'maxtries_anal_gsi': ${MAXTRIES_ANAL_GSI}
+  'maxtries_postanal': ${MAXTRIES_POSTANAL}
   'maxtries_anal_enkf': ${MAXTRIES_ANAL_ENKF}
   'maxtries_recenter': ${MAXTRIES_RECENTER}
   'maxtries_run_post': ${MAXTRIES_RUN_POST}
@@ -475,6 +480,17 @@ settings="\
   'radar_ref_thinning': ${RADAR_REF_THINNING}
   'ensctrl_stmp': ${ENSCTRL_STMP}
   'use_rrfse_ens': ${USE_RRFSE_ENS}
+#
+# cycle start and end date
+#
+  'startyear': ${STARTYEAR}
+  'startmonth': ${STARTMONTH}
+  'startday': ${STARTDAY}
+  'starthour': ${STARTHOUR}
+  'endyear': ${ENDYEAR}
+  'endmonth': ${ENDMONTH}
+  'endday': ${ENDDAY}
+  'endhour': ${ENDHOUR}
 #
 # JEDI related parameters (liaofan)
 #

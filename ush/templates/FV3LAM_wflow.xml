@@ -42,6 +42,7 @@ Workflow task names.
 <!ENTITY RUN_WGRIB2_TN     "{{ run_wgrib2_tn }}">
 <!ENTITY RUN_BUFRSND_TN    "{{ run_bufrsnd_tn }}">
 <!ENTITY ANAL_GSI_TN       "{{ anal_gsi }}">
+<!ENTITY POSTANAL_TN       "{{ post_anal }}">
 <!ENTITY OBSERVER_GSI_ENSMEAN_TN       "{{ observer_gsi_ensmean }}">
 <!ENTITY OBSERVER_GSI_TN       "{{ observer_gsi }}">
 <!ENTITY PREP_CYC_SPINUP_TN "{{ prep_cyc_spinup }}">
@@ -201,6 +202,16 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 <!ENTITY WALL_LIMIT_RECENTER '<deadline><cyclestr offset="&DEADLINE_RECENTER;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_SAVE_RESTART '<deadline><cyclestr offset="&DEADLINE_SAVE_RESTART;">@Y@m@d@H@M</cyclestr></deadline>'>
 {% endif %}
+
+<!ENTITY STARTYEAR  "{{ startyear }}">
+<!ENTITY STARTMONTH "{{ startmonth }}">
+<!ENTITY STARTDAY   "{{ startday }}">
+<!ENTITY STARTHOUR  "{{ starthour }}">
+
+<!ENTITY ENDYEAR  "{{ endyear }}">
+<!ENTITY ENDMONTH "{{ endmonth }}">
+<!ENTITY ENDDAY   "{{ endday }}">
+<!ENTITY ENDHOUR  "{{ endhour }}">
 
 ]>
 
@@ -1153,6 +1164,44 @@ MODULES_RUN_TASK_FP script.
 
   </task>
 
+
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&POSTANAL_TN;_#type#{{ uscore_ensmem_name }}" cycledefs="#type#cyc" maxtries="{{ maxtries_postanal }}">
+
+    &RSRV_ANALYSIS;
+    &WALL_LIMIT_ANAL;
+
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_RUN_POSTANAL"</command>
+    <nodes>{{ nnodes_run_postanal }}:ppn={{ ppn_run_postanal }}</nodes>
+    <nodesize>&NCORES_PER_NODE;</nodesize>
+    <walltime>{{ wtime_run_postanal }}</walltime>
+    <jobname>&TAG;_&POSTANAL_TN;_#type#{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr>&LOGDIR;/&POSTANAL_TN;{{ uscore_ensmem_name }}_#type#_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_ROOT</name><value><cyclestr>&CYCLE_BASEDIR;</cyclestr></value></envar>
+    <envar><name>RRFSE_FG_ROOT</name><value><cyclestr>&RRFSE_FG_ROOT;</cyclestr></value></envar>
+    <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
+    <envar><name>GSI_TYPE</name><value><cyclestr>ANALYSIS</cyclestr></value></envar>
+    <envar><name>MEM_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+    <envar><name>SATBIAS_DIR</name><value><cyclestr>&NWGES_BASEDIR;/satbias</cyclestr></value></envar>
+    <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
+
+    <dependency>
+       <taskdep task="&ANAL_GSI_TN;_#type#{{ uscore_ensmem_name }}"/>
+    </dependency>
+
+  </task>
+
+
 {%- if do_envar_radar_ref %}
 <!--
 ************************************************************************
@@ -1324,13 +1373,13 @@ MODULES_RUN_TASK_FP script.
         {%- elif do_envar_radar_ref %}
         <or>
           <and>
-            <taskdep task="&ANAL_GSI_TN;_#type#"/>
+            <taskdep task="&POSTANAL_TN;_#type#"{{ uscore_ensmem_name }}/>
              {%- for h in cycl_hrs_hyb_fv3lam_ens %}
                 <strneq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></strneq>
              {%- endfor %}
           </and>
           <and>
-            <taskdep task="&HYBRID_RADAR_REF_TN;_#type#"/>
+	    <taskdep task="&HYBRID_RADAR_REF_TN;_#type#"/>
             <or>    
              {%- for h in cycl_hrs_hyb_fv3lam_ens %}
                 <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
@@ -1339,7 +1388,7 @@ MODULES_RUN_TASK_FP script.
           </and>
         </or>
         {%- else %}
-        <taskdep task="&ANAL_GSI_TN;_#type#"/>
+	<taskdep task="&POSTANAL_TN;_#type#"{{ uscore_ensmem_name }}/>
         {%- endif %}
       </and>
     </dependency>
@@ -1396,7 +1445,7 @@ MODULES_RUN_TASK_FP script.
         {%- if do_envar_radar_ref %}
         <taskdep task="&HYBRID_RADAR_REF_TN;_#type#"/>
         {%- else  %}
-        <taskdep task="&ANAL_GSI_TN;_#type#{{ uscore_ensmem_name }}"/>
+        <taskdep task="&POSTANAL_TN;_#type#{{ uscore_ensmem_name }}"/>
         {%- endif %}
       {%- elif do_enkfupdate or do_enkf_radar_ref %}
       <or>
@@ -1877,6 +1926,44 @@ MODULES_RUN_TASK_FP script.
 
   </task>
 {%- endif %}
+{%- endif %}
+
+{%- if machine in ["WCOSS2"]  %}
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&ARCHIVE_TN;" cycledefs="archive" maxtries="{{ maxtries_run_post }}">
+
+    &RSRV_HPSS;
+
+    <command>&JOBSDIR;/../scripts/exregional_archive_emc.ksh</command>
+    <nodes>1:ppn=1</nodes>
+    <walltime>08:00:00</walltime>
+    <jobname>&TAG;_&ARCHIVE_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&ARCHIVE_TN;_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+
+    <dependency>
+       <or>
+          <and>
+            <or>
+             <streq><left>00</left><right><cyclestr>@H</cyclestr></right></streq>
+             <streq><left>12</left><right><cyclestr>@H</cyclestr></right></streq>
+            </or>
+            <taskdep task="&RUN_WGRIB2_TN;_f060"/>
+          </and>
+          <and>
+            <strneq><left>00</left><right><cyclestr>@H</cyclestr></right></strneq>
+            <strneq><left>12</left><right><cyclestr>@H</cyclestr></right></strneq>
+            <taskdep task="&RUN_WGRIB2_TN;_f003"/>
+          </and>
+       </or>
+    </dependency>
+
+  </task>
 {%- endif %}
 
 {%- if do_gsiobserver %}

@@ -477,6 +477,11 @@ WFLOW_LAUNCH_LOG_FN="log.launch_FV3LAM_wflow"
 # Starting date of the last forecast in the set of forecasts to run.
 # Format is "YYYYMMDD".  Note that this does not include the hour-of-day.
 #
+# STARTYEAR,STARTMONTH,STARTDAY,STARTHOUR:
+# Year,month,day and hour of the first cycle in the set of forecasts to run
+# ENDYEAR,ENDMONTH,ENDDAY,ENDHOUR
+# Year,month,day and hour of the last cycle in the set of forecasts to run
+#
 # CYCL_HRS:
 # An array containing the hours of the day at which to launch forecasts.
 # Forecasts are launched at these hours on each day from DATE_FIRST_CYCL
@@ -546,6 +551,14 @@ WFLOW_LAUNCH_LOG_FN="log.launch_FV3LAM_wflow"
 #
 DATE_FIRST_CYCL="YYYYMMDD"
 DATE_LAST_CYCL="YYYYMMDD"
+STARTYEAR="2022"
+STARTMONTH="21"
+STARTDAY="10"
+STARTHOUR="00"
+ENDYEAR="2022"
+ENDMONTH="10"
+ENDDAY="21"
+ENDHOUR="23"
 CYCL_HRS=( "HH1" "HH2" )
 CYCL_HRS_SPINSTART=( "HH1" "HH2" )
 CYCL_HRS_PRODSTART=( "HH1" "HH2" )
@@ -1626,6 +1639,7 @@ RUN_WGRIB2_TN="run_wgrib2"
 RUN_BUFRSND_TN="run_bufrsnd"
 
 ANAL_GSI_TN="anal_gsi_input"
+POSTANAL_TN="postanal_input"
 OBSERVER_GSI_ENSMEAN_TN="observer_gsi_ensmean"
 OBSERVER_GSI_TN="observer_gsi"
 PREP_START_TN="prep_start"
@@ -1656,6 +1670,7 @@ NNODES_RUN_FCST=""  # This is calculated in the workflow generation scripts, so 
 NNODES_RUN_POST="2"
 NNODES_RUN_WGRIB2="1"
 NNODES_RUN_ANAL="16"
+NNODES_RUN_POSTANAL="1"
 NNODES_RUN_ENKF="90"
 NNODES_RUN_RECENTER="2"
 NNODES_PROC_RADAR="2"
@@ -1692,6 +1707,7 @@ PPN_RUN_FCST="24"  # This may have to be changed depending on the number of thre
 PPN_RUN_POST="24"
 PPN_RUN_WGRIB2="1"
 PPN_RUN_ANAL="24"
+PPN_RUN_POSTANAL="1"
 PPN_RUN_ENKF="1"
 PPN_RUN_RECENTER="20"
 PPN_PROC_RADAR="24"
@@ -1720,6 +1736,7 @@ WTIME_RUN_FCST="04:30:00"
 WTIME_RUN_POST="00:15:00"
 WTIME_RUN_WGRIB2="00:40:00"
 WTIME_RUN_ANAL="00:30:00"
+WTIME_RUN_POSTANAL="00:30:00"
 WTIME_RUN_ENKF="01:00:00"
 WTIME_RUN_RECENTER="01:00:00"
 WTIME_PROC_RADAR="00:25:00"
@@ -1764,10 +1781,12 @@ MAXTRIES_MAKE_LBCS="1"
 MAXTRIES_RUN_PREPSTART="1"
 MAXTRIES_RUN_FCST="1"
 MAXTRIES_ANAL_GSI="1"
+MAXTRIES_POSTANAL="1"
 MAXTRIES_ANAL_ENKF="1"
 MAXTRIES_RUN_POST="1"
 MAXTRIES_RUN_WGRIB2="1"
-MAXTRIES_RUN_ANAL="1"
+#MAXTRIES_RUN_ANAL="1"
+MAXTRIES_RUN_POSTANAL="1"
 MAXTRIES_RECENTER="1"
 MAXTRIES_PROCESS_RADARREF="1"
 MAXTRIES_PROCESS_LIGHTNING="1"

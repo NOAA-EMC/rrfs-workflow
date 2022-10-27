@@ -844,6 +844,17 @@ fi
 # comment out for testing
 $APRUN ./gsi.x < gsiparm.anl > stdout 2>&1 || print_err_msg_exit "\
 Call to executable to run GSI returned with nonzero exit code."
+
+mv fort.207 fit_rad1
+sed -e 's/   asm all/ps asm 900/; s/   rej all/ps rej 900/; s/   mon all/ps mon 900/' fort.201 > fit_p1
+sed -e 's/   asm all/uv asm 900/; s/   rej all/uv rej 900/; s/   mon all/uv mon 900/' fort.202 > fit_w1
+sed -e 's/   asm all/ t asm 900/; s/   rej all/ t rej 900/; s/   mon all/ t mon 900/' fort.203 > fit_t1
+sed -e 's/   asm all/ q asm 900/; s/   rej all/ q rej 900/; s/   mon all/ q mon 900/' fort.204 > fit_q1
+sed -e 's/   asm all/pw asm 900/; s/   rej all/pw rej 900/; s/   mon all/pw mon 900/' fort.205 > fit_pw1
+sed -e 's/   asm all/rw asm 900/; s/   rej all/rw rej 900/; s/   mon all/rw mon 900/' fort.209 > fit_rw1
+
+cat fit_p1 fit_w1 fit_t1 fit_q1 fit_pw1 fit_rad1 fit_rw1 > $comout/rrfs_a.t${HH}z.fits.tm00
+cat fort.208 fort.210 fort.211 fort.212 fort.213 fort.220 > $comout/rrfs_a.t${HH}z.fits2.tm00
 #
 #-----------------------------------------------------------------------
 #
@@ -933,6 +944,7 @@ if [ $netcdf_diag = ".true." ]; then
       if [[ $count -gt 0 ]]; then
          ${APRUN} ./nc_diag_cat.x -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4
          gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4*
+         cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz $comout
          echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4*" >> listcnv
          numfile_cnv=`expr ${numfile_cnv} + 1`
       fi
@@ -943,6 +955,7 @@ if [ $netcdf_diag = ".true." ]; then
       if [[ $count -gt 0 ]]; then
          ${APRUN} ./nc_diag_cat.x -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4
          gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4*
+         cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz $comout
          echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4*" >> listrad
          numfile_rad=`expr ${numfile_rad} + 1`
       else
@@ -992,90 +1005,6 @@ if [ ${DO_RADDA} == "TRUE" ]; then
 
   cp_vrfy ./satbias_out ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
   cp_vrfy ./satbias_pc.out ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
-fi
-
-#
-#-----------------------------------------------------------------------
-#
-# adjust soil T/Q based on analysis increment
-#
-#-----------------------------------------------------------------------
-#
-if [ ${BKTYPE} -eq 0 ] && [ ${ob_type} == "conv" ] && [ "${DO_SOIL_ADJUST}" = "TRUE" ]; then  # warm start
-  cd ${bkpath}
-  if [ "${IO_LAYOUT_Y}" == "1" ]; then
-    ln_vrfy -snf ${fixgriddir}/fv3_grid_spec                fv3_grid_spec
-  else
-    for ii in ${list_iolayout}
-    do
-      iii=`printf %4.4i $ii`
-      ln_vrfy  -snf ${gridspec_dir}/fv3_grid_spec.${iii}    fv3_grid_spec.${iii}
-    done
-  fi
-
-cat << EOF > namelist.soiltq
- &setup
-  fv3_io_layout_y=${IO_LAYOUT_Y},
-  iyear=${YYYY},
-  imonth=${MM},
-  iday=${DD},
-  ihour=${HH},
-  iminute=0,
- /
-EOF
-
-  adjustsoil_exec="${EXECDIR}/adjust_soiltq.exe"
-
-  if [ -f $adjustsoil_exec ]; then
-    print_info_msg "$VERBOSE" "
-Copying the adjust soil executable to the run directory..."
-    cp_vrfy ${adjustsoil_exec} adjust_soiltq.exe
-  else
-    print_err_msg_exit "\
-The adjust_soiltq.exe specified in ${EXECDIR} does not exist.
-Build adjust_soiltq.exe and rerun."
-  fi
-
-  $APRUN ./adjust_soiltq.exe || print_err_msg_exit "\
-  Call to executable to run adjust soil returned with nonzero exit code."
-
-fi
-
-#
-#-----------------------------------------------------------------------
-#
-# update boundary condition absed on analysis results.
-# This will generate a new boundary file at 0-hour
-#
-#-----------------------------------------------------------------------
-#
-if [ ${BKTYPE} -eq 0 ] && [ "${DO_UPDATE_BC}" = "TRUE" ]; then  # warm start
-  cd ${bkpath}
-
-cat << EOF > namelist.updatebc
- &setup
-  fv3_io_layout_y=${IO_LAYOUT_Y},
-  bdy_update_type=1,
-  grid_type_fv3_regional=2,
- /
-EOF
-
-  update_bc_exec="${EXECDIR}/update_bc.exe"
-  cp gfs_bndy.tile7.000.nc gfs_bndy.tile7.000.nc_before_update
-
-  if [ -f $update_bc_exec ]; then
-    print_info_msg "$VERBOSE" "
-Copying the update bc executable to the run directory..."
-    cp_vrfy ${update_bc_exec} update_bc.exe 
-  else
-    print_err_msg_exit "\
-The update_bc.exe specified in ${EXECDIR} does not exist.
-Build update_bc.exe and rerun."
-  fi
-
-  $APRUN ./update_bc.exe || print_err_msg_exit "\
-  Call to executable to run update bc returned with nonzero exit code."
-
 fi
 
 #
