@@ -71,6 +71,7 @@ valid_args=( \
 "gridspec_dir" \
 "ensmem_indx" \
 "slash_ensmem_subdir" \
+"NWGES_BASEDIR" \
 )
 process_args valid_args "$@"
 #
@@ -410,8 +411,14 @@ fi
 if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then
  ln_vrfy -snf  ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/dust12m_data.nc  ${run_dir}/INPUT/dust12m_data.nc
  ln_vrfy -snf  ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/emi_data.nc      ${run_dir}/INPUT/emi_data.nc
- #yyyymmdd=${cdate:0:8}
- ln_vrfy -snf  ${FIRE_RRFS_ROOT}/${PREDEF_GRID_NAME}/FIRE_RRFS_data_3km_in.nc   ${run_dir}/INPUT/SMOKE_RRFS_data.nc
+ yyyymmddhh=${cdate:0:10}
+ echo ${yyyymmddhh}
+ echo ${NWGES_BASEDIR}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc
+ if [ -f ${NWGES_BASEDIR}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc ]; then
+  ln_vrfy -snf ${NWGES_BASEDIR}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc ${run_dir}/INPUT/SMOKE_RRFS_data.nc
+ else
+  ln_vrfy -snf ${FIRE_RRFS_ROOT}/${PREDEF_GRID_NAME}/fixed/dummy_24hr_smoke.nc ${run_dir}/INPUT/SMOKE_RRFS_data.nc
+ fi
 fi
 #
 #-----------------------------------------------------------------------

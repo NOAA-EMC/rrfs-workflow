@@ -217,6 +217,7 @@ settings="\
   'process_radarref': ${PROCESS_RADAR_REF_TN}
   'process_lightning': ${PROCESS_LIGHTNING_TN}
   'process_bufr': ${PROCESS_BUFR_TN}
+  'process_smoke': ${PROCESS_SMOKE_TN}
   'radar_refl2tten': ${RADAR_REFL2TTEN_TN}
   'cldanl_nonvar': ${CLDANL_NONVAR_TN}
   'run_bufrsnd_tn': ${RUN_BUFRSND_TN}
@@ -244,6 +245,7 @@ settings="\
   'nnodes_proc_radar': ${NNODES_PROC_RADAR}
   'nnodes_proc_lightning': ${NNODES_PROC_LIGHTNING}
   'nnodes_proc_bufr': ${NNODES_PROC_BUFR}
+  'nnodes_proc_smoke': ${NNODES_PROC_SMOKE}
   'nnodes_run_ref2tten': ${NNODES_RUN_REF2TTEN}
   'nnodes_run_nonvarcldanl': ${NNODES_RUN_NONVARCLDANL}
   'nnodes_run_graphics': ${NNODES_RUN_GRAPHICS}
@@ -283,6 +285,7 @@ settings="\
   'ppn_proc_radar': ${PPN_PROC_RADAR}
   'ppn_proc_lightning': ${PPN_PROC_LIGHTNING}
   'ppn_proc_bufr': ${PPN_PROC_BUFR}
+  'ppn_proc_smoke': ${PPN_PROC_SMOKE}
   'ppn_run_ref2tten': ${PPN_RUN_REF2TTEN}
   'ppn_run_nonvarcldanl': ${PPN_RUN_NONVARCLDANL}
   'ppn_run_graphics': ${PPN_RUN_GRAPHICS}
@@ -313,6 +316,7 @@ settings="\
   'wtime_proc_radar': ${WTIME_PROC_RADAR}
   'wtime_proc_lightning': ${WTIME_PROC_LIGHTNING}
   'wtime_proc_bufr': ${WTIME_PROC_BUFR}
+  'wtime_proc_smoke': ${WTIME_PROC_SMOKE}
   'wtime_run_ref2tten': ${WTIME_RUN_REF2TTEN}
   'wtime_run_nonvarcldanl': ${WTIME_RUN_NONVARCLDANL}
   'wtime_run_bufrsnd': ${WTIME_RUN_BUFRSND}
@@ -328,6 +332,7 @@ settings="\
   'start_time_conventional': ${START_TIME_CONVENTIONAL}
   'start_time_nsslmosiac': ${START_TIME_NSSLMOSIAC}
   'start_time_lightningnc': ${START_TIME_LIGHTNINGNC}
+  'start_time_procsmoke': ${START_TIME_PROCSMOKE}
 #
 # Maximum memory for each task.
 #
@@ -358,6 +363,7 @@ settings="\
   'maxtries_process_radarref': ${MAXTRIES_PROCESS_RADARREF}
   'maxtries_process_lightning': ${MAXTRIES_PROCESS_LIGHTNING}
   'maxtries_process_bufr': ${MAXTRIES_PROCESS_BUFR}
+  'maxtries_process_smoke': ${MAXTRIES_PROCESS_SMOKE}
   'maxtries_radar_ref2tten': ${MAXTRIES_RADAR_REF2TTEN}
   'maxtries_cldanl_nonvar': ${MAXTRIES_CLDANL_NONVAR}
   'maxtries_save_restart': ${MAXTRIES_SAVE_RESTART}

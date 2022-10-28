@@ -5,7 +5,7 @@ AIRCRAFT_REJECT="/home/amb-verif/acars_RR/amdar_reject_lists"
 SFCOBS_USELIST="/lfs4/BMC/amb-verif/rap_ops_mesonet_uselists"
 SST_ROOT="/lfs4/BMC/public/data/grids/ncep/sst/0p083deg/grib2"
 GVF_ROOT="/public/data/sat/ncep/viirs/gvf/grib2"
-FIRE_RRFS_ROOT="/mnt/lfs4/BMC/nrtrr/FIX_RRFS/smoke_dust//RRFS_CONUS_3km"
+FIRE_RRFS_ROOT="/mnt/lfs4/BMC/gsd-fv3-dev/FIRE_RRFS_ROOT"
 
 BERROR_FN="rrfs_glb_berror.l127y194.f77"
 
