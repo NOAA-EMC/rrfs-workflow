@@ -1,1 +1,1 @@
-../../.agent/smoke_dust/grid_in_new_dom.nc
+../../.agent/smoke_dust/RRFS_NA_3km/grid_in_new_dom.nc

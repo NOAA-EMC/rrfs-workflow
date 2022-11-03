@@ -1,1 +1,1 @@
-../../.agent/smoke_dust/dummy_hr_rave.nc
+../../.agent/smoke_dust/RRFS_CONUS_3km/dummy_hr_rave.nc

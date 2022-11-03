@@ -1,1 +1,1 @@
-../../.agent/smoke_dust/dummy_24hr_smoke.nc
+../../.agent/smoke_dust/RRFS_NA_3km/dummy_24hr_smoke.nc

@@ -1,1 +1,1 @@
-../../.agent/smoke_dust/grid_in.nc
+../../.agent/smoke_dust/RRFS_CONUS_3km/grid_in.nc

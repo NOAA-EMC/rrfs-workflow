@@ -1,1 +1,1 @@
-../../.agent/smoke_dust/RRFS_CONUS_3km_weight_file.nc
+../../.agent/smoke_dust/RRFS_CONUS_3km/RRFS_CONUS_3km_weight_file.nc
