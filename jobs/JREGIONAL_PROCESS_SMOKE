@@ -62,6 +62,7 @@ preprocess with FV3 for the specified cycle.
 #
 if [ ${CYCLE_TYPE} == "spinup" ]; then
   workdir=${CYCLE_DIR}/process_smoke_spinup
+  exit 0
 else
   workdir=${CYCLE_DIR}/process_smoke
 fi
@@ -91,9 +92,9 @@ mkdir_vrfy -p "${rave_nwges_dir}"
 #
 cd_vrfy ${workdir}
 python -u ${SCRIPTSDIR}/preprocess_smoke.py \
-  "${FIRE_RRFS_ROOT}/${PREDEF_GRID_NAME}/fixed" \
+  "${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}" \
   "${FIRE_RAVE_DIR}" \
-  "${rave_nwges_dir}" \
+  "${workdir}" \
   "${PREDEF_GRID_NAME}" \
 print_err_msg_exit "\
 Call to pyscript \"${scrfunc_fn}\" failed."
@@ -117,13 +118,10 @@ prev_hh=`${DATE} -d "$current_hh -24 hour" +"%H"`
 previous_day=`${DATE} '+%C%y%m%d' -d "$current_day-1 days"`
 previous_day=${previous_day}${prev_hh}
 output_filename=SMOKE_RRFS_data_${YYYYMMDDHH}00.nc
-#output_filename=SMOKE_RRFS_data_${previous_day}00.nc
 echo ${previous_day}
 echo ${output_filename}
 
-#cd_vrfy /mnt/lfs4/BMC/gsd-fv3-dev/FIRE_RRFS_ROOT/RAVE_INTP2
-cd_vrfy ${rave_nwges_dir}
-echo ${rave_nwges_dir}
+cd ${workdir}
 
 # Convert START_TIME from 'YYYYMMDDHH' format to Unix date format, e.g. "Fri May  6 19:50:23 GMT 2005"
 if [ `${ECHO} "${previous_day}" | ${AWK} '/^[[:digit:]]{10}$/'` ]; then
@@ -145,6 +143,7 @@ files2cat[$i]=${PREDEF_GRID_NAME}_intp_${timestr}00_${timestr}00.nc
 done
 echo ${files2cat[*]}
 ncrcat ${files2cat[*]} ${output_filename} 
+cp ${output_filename}  ${rave_nwges_dir}
 
 #
 #-----------------------------------------------------------------------

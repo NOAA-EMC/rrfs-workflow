@@ -305,7 +305,6 @@ EXPT_SUBDIR=""
 #
 # Setup default locations for FIRE_RRFS files and update time
 #  FIRE_RAVE_DIR
-#  FIRE_RRFS_ROOT
 #  FIRE_RRFS_update_hour
 #-----------------------------------------------------------------------
 #
@@ -344,7 +343,6 @@ SNOWICE_update_hour=99
 RAPHRR_SOIL_ROOT="/mnt/lfs4/BMC/rtwbl/mhu/wcoss/nco/com"
 SOIL_SURGERY_time=9999999999
 FIRE_RAVE_DIR="/lfs4/BMC/public/data/grids/nesdis/3km_fire_emissions"
-FIRE_RRFS_ROOT="/mnt/lfs4/BMC/gsd-fv3-dev/FIRE_RRFS_ROOT"
 FIRE_RRFS_update_hour=99
 
 #

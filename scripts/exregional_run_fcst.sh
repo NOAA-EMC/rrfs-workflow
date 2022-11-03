@@ -417,7 +417,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then
  if [ -f ${NWGES_BASEDIR}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc ]; then
   ln_vrfy -snf ${NWGES_BASEDIR}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc ${run_dir}/INPUT/SMOKE_RRFS_data.nc
  else
-  ln_vrfy -snf ${FIRE_RRFS_ROOT}/${PREDEF_GRID_NAME}/fixed/dummy_24hr_smoke.nc ${run_dir}/INPUT/SMOKE_RRFS_data.nc
+  ln_vrfy -snf ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/dummy_24hr_smoke.nc ${run_dir}/INPUT/SMOKE_RRFS_data.nc
  fi
 fi
 #

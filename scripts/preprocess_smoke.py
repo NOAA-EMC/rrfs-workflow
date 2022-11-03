@@ -54,12 +54,8 @@ rave_to_intp= predef_grid+"_intp_"
 print('fcst_YYYYMMDDHH', fcst_YYYYMMDDHH, previous_day, fcst_dates[5])
 
 #Check if interoplated RAVE is available for the previous 24 hours. Create dummy RAVE if given hours are not available
-#RAVE='/mnt/lfs4/BMC/gsd-fv3-dev/Johana.R/FIRE_RRFS_ROOT/RAVE_INTP/test_new_wf'
-#RAVE='/lfs4/BMC/public/data/grids/nesdis/3km_fire_emissions'
 RAVE=ravedir
 intp_dir=newges_dir
-#intp_dir= os.path.join(newges_dir,"RAVE_INTP")
-#intp_dir= os.path.join(FIRE_RRFS_ROOT,"RAVE_INTP")
 
 os.chdir(intp_dir)
 sorted_obj = sorted(os.listdir(intp_dir))
