@@ -74,20 +74,22 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
 
     if [[ ${DO_ENSEMBLE} == "TRUE" ]]; then
       if [[ ${EXTRN_MDL_NAME_ICS} == "GEFS" ]]; then
-        EXTRN_MDL_SOURCE_BASEDIR_ICS="/scratch1/BMC/wrfruc/chunhua/data/GEFS/pgrb2"
+#        EXTRN_MDL_SOURCE_BASEDIR_ICS="/scratch1/BMC/wrfruc/chunhua/data/GEFS/pgrb2"
+        EXTRN_MDL_SOURCE_BASEDIR_ICS="/scratch2/BMC/zrtrr/rli/data/GEFS/dsg"
       elif [[ ${EXTRN_MDL_NAME_ICS} == "HRRRDAS" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_ICS="/scratch1/BMC/wrfruc/chunhua/data/HRRRDAS"
       elif [[ ${EXTRN_MDL_NAME_ICS} == "GDASENKF" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_ICS="/scratch1/BMC/wrfruc/chunhua/data/GDASENKF"
       fi
       if [[ ${EXTRN_MDL_NAME_LBCS} == "GEFS" ]]; then
-        EXTRN_MDL_SOURCE_BASEDIR_LBCS="/scratch1/BMC/wrfruc/chunhua/data/GEFS/pgrb2"
+#        EXTRN_MDL_SOURCE_BASEDIR_LBCS="/scratch1/BMC/wrfruc/chunhua/data/GEFS/pgrb2"
+        EXTRN_MDL_SOURCE_BASEDIR_LBCS="/scratch2/BMC/zrtrr/rli/data/GEFS/dsg"
       elif [[ ${EXTRN_MDL_NAME_LBCS} == "GDASENKF" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_LBCS="/scratch1/BMC/wrfruc/chunhua/data/GDASENKF"
       elif [[ ${EXTRN_MDL_NAME_LBCS} == "FV3GFS" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_LBCS="/scratch1/BMC/wrfruc/chunhua/data/FV3GFS"
       fi
-      OBSPATH="/scratch1/BMC/wrfruc/chunhua/data/obs"
+      OBSPATH="/scratch2/BMC/zrtrr/rli/data/obs_rap"
     else
 #    EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/zrtrr/rli/data/hrrr/conus/wrfnat/grib2
 #    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/zrtrr/rli/data/rap/full/wrfnat/grib2

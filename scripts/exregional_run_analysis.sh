@@ -258,7 +258,8 @@ if  [[ ${regional_ensemble_option:-1} -eq 1 ]]; then #using GDAS
         avail_time=$(echo "${availtime}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
         avail_time=$(date -d "${avail_time}")
 
-        stamp_avail=$(date -d "${avail_time} ${loop} hours" +%s)
+        loopfcst=$(echo ${loop}| cut -c 1-3)      # for nemsio 009s to get 009
+        stamp_avail=$(date -d "${avail_time} ${loopfcst} hours" +%s)
 
         hourDiff=$(echo "($stampcycle - $stamp_avail) / (60 * 60 )" | bc);
         if [[ ${stampcycle} -lt ${stamp_avail} ]]; then
@@ -295,7 +296,8 @@ if  [[ ${regional_ensemble_option:-1} -eq 1 ]]; then #using GDAS
         avail_time=$(echo "${availtime}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
         avail_time=$(date -d "${avail_time}")
 
-        stamp_avail=$(date -d "${avail_time} ${loop} hours" +%s)
+        loopfcst=$(echo ${loop}| cut -c 1-3)      # for nemsio 009s to get 009
+        stamp_avail=$(date -d "${avail_time} ${loopfcst} hours" +%s)
 
         hourDiff=$(echo "($stampcycle - $stamp_avail) / (60 * 60 )" | bc);
         if [[ ${stampcycle} -lt ${stamp_avail} ]]; then
