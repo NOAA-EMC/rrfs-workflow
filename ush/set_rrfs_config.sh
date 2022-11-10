@@ -32,6 +32,7 @@ if [[ $MACHINE == "wcoss2" ]] ; then
   SST_ROOT=/lfs/h1/ops/prod/com/gfs/v16.2
   GVF_ROOT=/lfs/h1/ops/prod/dcom/viirs
   IMSSNOW_ROOT=/lfs/h1/ops/prod/com/obsproc/v1.0
+  FIRE_RAVE_DIR=/lfs/h2/emc/physics/noscrub/partha.bhattacharjee/RAVE_rawdata/RAVE_NA
 fi
 
 # set up for retrospective test:

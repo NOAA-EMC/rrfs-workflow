@@ -409,16 +409,22 @@ fi
 
 #
 if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then
- ln_vrfy -snf  ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/dust12m_data.nc  ${run_dir}/INPUT/dust12m_data.nc
- ln_vrfy -snf  ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/emi_data.nc      ${run_dir}/INPUT/emi_data.nc
- yyyymmddhh=${cdate:0:10}
- echo ${yyyymmddhh}
- echo ${NWGES_BASEDIR}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc
- if [ -f ${NWGES_BASEDIR}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc ]; then
-  ln_vrfy -snf ${NWGES_BASEDIR}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc ${run_dir}/INPUT/SMOKE_RRFS_data.nc
- else
-  ln_vrfy -snf ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/dummy_24hr_smoke.nc ${run_dir}/INPUT/SMOKE_RRFS_data.nc
- fi
+  ln_vrfy -snf  ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/dust12m_data.nc  ${run_dir}/INPUT/dust12m_data.nc
+  ln_vrfy -snf  ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/emi_data.nc      ${run_dir}/INPUT/emi_data.nc
+  yyyymmddhh=${cdate:0:10}
+  echo ${yyyymmddhh}
+  if [ ${cycle_type} == "spinup" ]; then
+    smokefile=${NWGES_BASEDIR}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00_spinup.nc
+  else
+    smokefile=${NWGES_BASEDIR}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc
+  fi
+  echo "try to use smoke file=",${smokefile}
+  if [ -f ${smokefile} ]; then
+    ln_vrfy -snf ${smokefile} ${run_dir}/INPUT/SMOKE_RRFS_data.nc
+  else
+    ln_vrfy -snf ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/dummy_24hr_smoke.nc ${run_dir}/INPUT/SMOKE_RRFS_data.nc
+    echo "smoke file is not available, use dummy_24hr_smoke.nc instead"
+  fi
 fi
 #
 #-----------------------------------------------------------------------

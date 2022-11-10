@@ -307,16 +307,6 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-  if [ "${extrn_mdl_name}" = "RAP" ] || \
-     [ "${extrn_mdl_name}" = "HRRR" ] || \
-     [ "${extrn_mdl_name}" = "HRRRDAS" ] || \
-     [ "${extrn_mdl_name}" = "NAM" ] || \
-     [ "${extrn_mdl_name}" = "FV3GFS" -a "${MACHINE}" = "ORION" ] || \
-     [ "${extrn_mdl_name}" = "GEFS" -a "${MACHINE}" = "JET" ] || \
-     [ "${extrn_mdl_name}" = "GEFS" -a "${MACHINE}" = "HERA" ] || \
-     [ "${extrn_mdl_name}" = "GDASENKF" -a "${MACHINE}" = "JET" ] || \
-     [ "${extrn_mdl_name}" = "FV3GFS" -a "${MACHINE}" = "JET" ] || \
-     [ "${extrn_mdl_name}" = "FV3GFS" -a "${MACHINE}" = "HERA" ]; then
 #
 # Get the Julian day-of-year of the starting date and time of the exter-
 # nal model forecast.
@@ -328,7 +318,6 @@ fi
 #
     yy=${yyyy:2:4}
 
-  fi
 #
 #-----------------------------------------------------------------------
 #

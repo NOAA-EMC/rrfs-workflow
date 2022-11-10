@@ -116,7 +116,11 @@ current_hh=`${DATE} -d ${HH} +"%H"`
 prev_hh=`${DATE} -d "$current_hh -24 hour" +"%H"`
 previous_day=`${DATE} '+%C%y%m%d' -d "$current_day-1 days"`
 previous_day=${previous_day}${prev_hh}
-output_filename=SMOKE_RRFS_data_${YYYYMMDDHH}00.nc
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  output_filename=SMOKE_RRFS_data_${YYYYMMDDHH}00_spinup.nc
+else
+  output_filename=SMOKE_RRFS_data_${YYYYMMDDHH}00.nc
+fi
 echo ${previous_day}
 echo ${output_filename}
 

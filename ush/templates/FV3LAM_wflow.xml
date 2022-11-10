@@ -1216,10 +1216,10 @@ MODULES_RUN_TASK_FP script.
 -->
   <task name="&POSTANAL_TN;_#type#{{ uscore_ensmem_name }}" cycledefs="#type#cyc" maxtries="{{ maxtries_postanal }}">
 
-    &RSRV_ANALYSIS;
-    &WALL_LIMIT_ANAL;
+    &RSRV_POST;
+    &WALL_LIMIT_POST;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_RUN_POSTANAL"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_POST_TN;" "&JOBSDIR;/JREGIONAL_RUN_POSTANAL"</command>
     <nodes>{{ nnodes_run_postanal }}:ppn={{ ppn_run_postanal }}</nodes>
     <nodesize>&NCORES_PER_NODE;</nodesize>
     <walltime>{{ wtime_run_postanal }}</walltime>
