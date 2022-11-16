@@ -61,6 +61,7 @@ valid_args=( \
 "nwges_dir" \
 "fhr" \
 "cycle_type" \
+"cycle_subtype" \
 )
 process_args valid_args "$@"
 #
@@ -166,7 +167,7 @@ else
   print_info_msg "$VERBOSE" " The forecast length for cycle (\"${hh}\") is
                  ( \"${FCST_LEN_HRS_thiscycle}\") "
 
-  if [ -r "$run_dir/RESTART/coupler.res" ] && ([ ${fhr} -eq ${FCST_LEN_HRS_thiscycle} ] || [ ${cycle_type} == "ensinit" ]) ; then
+  if [ -r "$run_dir/RESTART/coupler.res" ] && ([ ${fhr} -eq ${FCST_LEN_HRS_thiscycle} ] || [ ${cycle_subtype} == "ensinit" ]) ; then
     if [ "${IO_LAYOUT_Y}" == "1" ]; then
       for file in ${filelistn}; do
         mv_vrfy $run_dir/RESTART/${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}

@@ -496,11 +496,13 @@ WFLOW_LAUNCH_LOG_FN="log.launch_FV3LAM_wflow"
 # An array containing the hours of the day at which the product cycle starts,
 # from cold start input or from spin-up cycle forcast
 #
+# CYCL_HRS_PRODSTART_ENS:
+# An array containing the hours of the day at which the product cycle starts,
+# from cold start input or from spin-up cycle forcast, for the ensemble.
+# this is only needed for locating the RRFS ensemble files for the the deterministic hybrid analysis.
+#
 # CYCL_HRS_RECENTER:
 # An array containing the hours of the day at which the ensemble recenter is on
-#
-# CYCL_HRS_ENSINIT:
-# An array containing the hours of the day at which the ensemble initialization is on
 #
 # CYCL_HRS_ENSFCST
 # An array containing the hours of the day at which the ensemble free forecast is on
@@ -562,8 +564,8 @@ ENDHOUR="23"
 CYCL_HRS=( "HH1" "HH2" )
 CYCL_HRS_SPINSTART=( "HH1" "HH2" )
 CYCL_HRS_PRODSTART=( "HH1" "HH2" )
+CYCL_HRS_PRODSTART_ENS=( "HH1" "HH2" )
 CYCL_HRS_RECENTER=( "HH1" "HH2" )
-CYCL_HRS_ENSINIT=( "HH1" "HH2" )
 CYCL_HRS_ENSFCST=( "HH1" "HH2" )
 CYCL_HRS_STOCH=( "HH1" "HH2" )
 BOUNDARY_LEN_HRS="0"
@@ -615,11 +617,6 @@ CYCL_HRS_HYB_FV3LAM_ENS=( "99" )
 # cycle definition for spin-up cycle group
 # This group runs: anal_gsi_input_spinup and data process, run_fcst_spinup, run_post_spinup
 #
-# ENSINIT_CYCLEDEF:
-# cycle definition for ensemble initialization cycle group
-# This group runs run_fcst for 1 timestep to get restart files at
-# the beginning of the cycles and to be recentered at the control analysis
-#
 # PROD_CYCLEDEF:
 # cycle definition for product cycle group
 # This group runs: anal_gsi_input and data process, run_fcst, python_skewt, run_clean
@@ -653,7 +650,6 @@ INITIAL_CYCLEDEF="00 01 01 01 2100 *"
 BOUNDARY_CYCLEDEF="00 01 01 01 2100 *"
 BOUNDARY_LONG_CYCLEDEF="00 01 01 01 2100 *"
 SPINUP_CYCLEDEF="00 01 01 01 2100 *"
-ENSINIT_CYCLEDEF="00 01 01 01 2100 *"
 PROD_CYCLEDEF="00 01 01 01 2100 *"
 ENSFCST_CYCLEDEF="00 01 01 01 2100 *"
 RECENTER_CYCLEDEF="00 01 01 01 2100 *"
@@ -725,6 +721,10 @@ l_precip_clear_only=.false.
 l_qnr_from_qr=.false.
 #
 #-----------------------------------------------------------------------
+# default weighting for control analysis in ensemble recentering
+beta_recenter=1.0
+#
+#-----------------------------------------------------------------------
 #
 # Set initial and lateral boundary condition generation parameters.  
 # Definitions:
@@ -754,8 +754,14 @@ l_qnr_from_qr=.false.
 # EXTRN_MDL_LBCS_OFFSET_HRS:
 #  boundary file offset hours.
 #
+# LBCS_SEARCH_HRS:
+#  When search boundary conditions tasks from previous cycles in prep_cyc step,
+#  For example: 0 means search start for the same cycle lbcs task.
+#               1 means search start for 1-h previous cycle lbcs task.
+#               2 means search start for 2-h previous cycle lbcs task.
+#
 # EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS:
-#  When search boundary conditions from previous cycles in prep_start stemp, 
+#  When search boundary conditions from previous cycles in prep_start step,
 #  the search will start at cycle before (this parameter) of current cycle.
 #  For example: 0 means search start at the same cycle lbcs directory.
 #               1 means search start at 1-h previous cycle  lbcs directory.
@@ -779,6 +785,7 @@ EXTRN_MDL_ICS_OFFSET_HRS="0"
 LBC_SPEC_INTVL_HRS="6"
 EXTRN_MDL_LBCS_OFFSET_HRS=""
 EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS="0"
+LBCS_SEARCH_HRS="6"
 FV3GFS_FILE_FMT_ICS="nemsio"
 FV3GFS_FILE_FMT_LBCS="nemsio"
 #
@@ -1203,6 +1210,15 @@ ESGgrid_WIDE_HALO_WIDTH=""
 #    before creating the experiment directory.
 #
 #
+# NFHOUT: 
+# Output frequency in hours after forecast hour "nfhmax_hf".
+#
+# NFHMAX_HF:
+# Number of forecast hours until output frequency "nfhout" takes affect. 
+#
+# NFHOUT_HF:
+# Output frequency in hours until forecast hour "nfhmax_hf".
+#
 # NSOUT
 #   setup frequency of writing out forecast files in time steps
 # NSOUT_MIN
@@ -1217,6 +1233,9 @@ IO_LAYOUT_X="1"
 IO_LAYOUT_Y="1"
 BLOCKSIZE=""
 FH_DFI_RADAR="-20000000000"
+NFHOUT="1"
+NFHMAX_HF="60"
+NFHOUT_HF="1"
 NSOUT="0"
 NSOUT_MIN="0"
 #
@@ -1790,7 +1809,7 @@ MAXTRIES_POSTANAL="1"
 MAXTRIES_ANAL_ENKF="1"
 MAXTRIES_RUN_POST="1"
 MAXTRIES_RUN_WGRIB2="1"
-#MAXTRIES_RUN_ANAL="1"
+MAXTRIES_RUN_ANAL="1"
 MAXTRIES_RUN_POSTANAL="1"
 MAXTRIES_RECENTER="1"
 MAXTRIES_PROCESS_RADARREF="1"

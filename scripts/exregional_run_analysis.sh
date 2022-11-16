@@ -215,6 +215,11 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
     restart_prefix="${YYYYMMDD}.${HH}0000."
     slash_ensmem_subdir=$memchar
     bkpathmem=${rrfse_fg_root}/${YYYYMMDDHHmInterv}/${slash_ensmem_subdir}/fcst_fv3lam/RESTART
+    for cycl_hrs in ${CYCL_HRS_PRODSTART_ENS}; do
+     if [ $HH == ${cycl_hrs} ]; then
+       bkpathmem=${rrfse_fg_root}/${YYYYMMDDHHmInterv}/${slash_ensmem_subdir}/fcst_fv3lam_spinup/RESTART
+     fi
+    done
 
     dynvarfile=${bkpathmem}/${restart_prefix}fv_core.res.tile1.nc
     tracerfile=${bkpathmem}/${restart_prefix}fv_tracer.res.tile1.nc

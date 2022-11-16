@@ -39,29 +39,21 @@ fi
 if [[ $DO_RETRO == "TRUE" ]] ; then
 
   if [[ $MACHINE == "jet" ]] ; then
+#    EXTRN_MDL_SOURCE_BASEDIR_ICS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/hrrr/conus/wrfnat/grib2
+#    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/rap/full/wrfnat/grib2
 
-    if [[ ${DO_ENSEMBLE} == "TRUE" ]]; then
-       if [[ ${EXTRN_MDL_NAME_ICS} == "GEFS" ]]; then
-         EXTRN_MDL_SOURCE_BASEDIR_ICS="/mnt/lfs4/HFIP/gsihyb/Chunhua.Zhou/data/GEFS/public/pgrb2"
-       elif [[ ${EXTRN_MDL_NAME_ICS} == "HRRRDAS" ]]; then
-         EXTRN_MDL_SOURCE_BASEDIR_ICS="/mnt/lfs4/HFIP/gsihyb/Chunhua.Zhou/data/HRRRE"
-       elif [[ ${EXTRN_MDL_NAME_ICS} == "FV3GFS" ]]; then
-         EXTRN_MDL_SOURCE_BASEDIR_ICS="/mnt/lfs4/HFIP/gsihyb/Chunhua.Zhou/data/FV3GFS/0p25deg/grib2"
-       fi
-       if [[ ${EXTRN_MDL_NAME_LBCS} == "GEFS" ]]; then
-         EXTRN_MDL_SOURCE_BASEDIR_LBCS="/mnt/lfs4/HFIP/gsihyb/Chunhua.Zhou/data/GEFS/public/pgrb2"
-       elif [[ ${EXTRN_MDL_NAME_LBCS} == "FV3GFS" ]]; then
-         EXTRN_MDL_SOURCE_BASEDIR_LBCS="/mnt/lfs4/HFIP/gsihyb/Chunhua.Zhou/data/FV3GFS/0p25deg/grib2"
-       fi
-       OBSPATH=/mnt/lfs4/HFIP/gsihyb/Chunhua.Zhou/data/obs
-    else
-#        EXTRN_MDL_SOURCE_BASEDIR_ICS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/hrrr/conus/wrfnat/grib2
-#        EXTRN_MDL_SOURCE_BASEDIR_LBCS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/rap/full/wrfnat/grib2
-       EXTRN_MDL_SOURCE_BASEDIR_ICS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/gfs/0p25deg/grib2
-       EXTRN_MDL_SOURCE_BASEDIR_LBCS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/gfs/0p25deg/grib2
-       OBSPATH=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/obs_rap
+    if [ ${EXTRN_MDL_NAME_ICS} == "FV3GFS" ] ; then
+      EXTRN_MDL_SOURCE_BASEDIR_ICS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/gfs/0p25deg/grib2
+    elif [ ${EXTRN_MDL_NAME_ICS} == "GEFS" ] ; then
+      EXTRN_MDL_SOURCE_BASEDIR_ICS="/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/GEFS/dsg"
+    fi
+    if [ ${EXTRN_MDL_NAME_LBCS} == "FV3GFS" ] ; then
+      EXTRN_MDL_SOURCE_BASEDIR_LBCS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/gfs/0p25deg/grib2
+    elif [ ${EXTRN_MDL_NAME_LBCS} == "GEFS" ] ; then
+      EXTRN_MDL_SOURCE_BASEDIR_LBCS="/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/GEFS/dsg"
     fi
 
+    OBSPATH=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/obs_rap
     OBSPATH_NSSLMOSIAC=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/reflectivity
     LIGHTNING_ROOT=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/lightning
     ENKF_FCST=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/enkf/atm
@@ -70,6 +62,7 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     SST_ROOT="/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/highres_sst"
     GVF_ROOT="/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/gvf/grib2"
     IMSSNOW_ROOT="/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/snow/ims96/grib2"
+    RAPHRR_SOIL_ROOT="/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/rap_hrrr_soil"
   fi
   if [[ $MACHINE == "hera" ]] ; then
 

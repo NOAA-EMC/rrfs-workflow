@@ -48,6 +48,7 @@ function create_model_configure_file() {
   local valid_args=(
 cdate \
 cycle_type \
+cycle_subtype \
 run_dir \
 nthreads \
   )
@@ -116,20 +117,19 @@ run directory (run_dir):
 
   if [ ${cycle_type} == "spinup" ]; then
     FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS_SPINUP}
-  fi
-
-  if [ "${CYCLE_TYPE}" == "ensinit" ]; then
-    for cyc_start in "${CYCL_HRS_ENSINIT[@]}"; do
-      if [ ${hh} -eq ${cyc_start} ]; then 
-      FCST_LEN_HRS_thiscycle=$( expr ${DT_ATMOS}/3600 | bc -l )
-      FCST_LEN_HRS_thiscycle=$( printf "%.5f\n" ${FCST_LEN_HRS_thiscycle} )
-      NSOUT=1
-      RESTART_INTERVAL=0
-      print_info_msg "DT_ATMOS ${DT_ATMOS} FCST_LEN_HRS_thiscycle ${FCST_LEN_HRS_thiscycle} \
-      NSOUT $NSOUT \
-      RESTART_INTERVAL ${RESTART_INTERVAL} " 
-      fi
-    done
+    if [ "${cycle_subtype}" == "ensinit" ]; then
+      for cyc_start in "${CYCL_HRS_SPINSTART[@]}"; do
+        if [ ${hh} -eq ${cyc_start} ]; then 
+        FCST_LEN_HRS_thiscycle=$( expr ${DT_ATMOS}/3600 | bc -l )
+        FCST_LEN_HRS_thiscycle=$( printf "%.5f\n" ${FCST_LEN_HRS_thiscycle} )
+        NSOUT=1
+        RESTART_INTERVAL=0
+        print_info_msg "DT_ATMOS ${DT_ATMOS} FCST_LEN_HRS_thiscycle ${FCST_LEN_HRS_thiscycle} \
+        NSOUT $NSOUT \
+        RESTART_INTERVAL ${RESTART_INTERVAL} " 
+        fi
+      done
+    fi
   fi
 
   if [ ${cycle_type} == "ensfcst" ]; then
@@ -159,7 +159,10 @@ run directory (run_dir):
   'quilting': ${dot_quilting_dot}
   'print_esmf': ${dot_print_esmf_dot}
   'output_grid': ${WRTCMP_output_grid}
-  'nsout': ${NSOUT}"
+  'nsout': ${NSOUT}
+  'nfhout': ${NFHOUT}
+  'nfhmax_hf': ${NFHMAX_HF}
+  'nfhout_hf': ${NFHOUT_HF}"
 #  'output_grid': \'${WRTCMP_output_grid}\'"
 #
 # If the write-component is to be used, then specify a set of computational

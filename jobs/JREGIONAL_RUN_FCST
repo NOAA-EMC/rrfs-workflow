@@ -66,10 +66,12 @@ the specified cycle.
 #   others(prod): this job is for product cycle
 #
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
+CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
 if [ ${CYCLE_TYPE} == "spinup" ]; then
   run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_spinup"
-elif  [ ${CYCLE_TYPE} == "ensinit" ]; then
-  run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_ensinit"
+  if  [ ${CYCLE_SUBTYPE} == "ensinit" ]; then
+    run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_ensinit"
+  fi
 elif  [ ${CYCLE_TYPE} == "ensfcst" ]; then
   run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_long"
 else
@@ -93,6 +95,7 @@ mkdir_vrfy -p ${gridspec_dir}
 $SCRIPTSDIR/exregional_run_fcst.sh \
   cdate="${CDATE}" \
   cycle_type="${CYCLE_TYPE}" \
+  cycle_subtype="${CYCLE_SUBTYPE}" \
   cycle_dir="${run_dir}" \
   gridspec_dir="${gridspec_dir}" \
   ensmem_indx="${ENSMEM_INDX}" \

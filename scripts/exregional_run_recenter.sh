@@ -157,7 +157,11 @@ cd_vrfy ${recenterdir}
 # loop through ensemble members to link all the member files
 #
 
-fg_restart_dirname=fcst_fv3lam
+if [ ${cycle_type} == "spinup" ]; then
+  fg_restart_dirname=fcst_fv3lam_spinup
+else
+  fg_restart_dirname=fcst_fv3lam
+fi
 
 imem=1
 for imem in  $(seq 1 $nens)
@@ -201,14 +205,14 @@ dynvarfile_control=${ENSCTRL_CYCLE_DIR}/fcst_fv3lam/INPUT/fv_core.res.tile1.nc
 tracerfile_control=${ENSCTRL_CYCLE_DIR}/fcst_fv3lam/INPUT/fv_tracer.res.tile1.nc
 dynvarfile_control_spinup=${ENSCTRL_CYCLE_DIR}/fcst_fv3lam_spinup/INPUT/fv_core.res.tile1.nc
 tracerfile_control_spinup=${ENSCTRL_CYCLE_DIR}/fcst_fv3lam_spinup/INPUT/fv_tracer.res.tile1.nc
-if [ -r "${dynvarfile_control}" ] && [ -r "${tracerfile_control}" ] ; then
-  ln -sf ${ENSCTRL_CYCLE_DIR}/fcst_fv3lam/INPUT/fv_core.res.tile1.nc  ./control_dynvar
-  ln -sf ${ENSCTRL_CYCLE_DIR}/fcst_fv3lam/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
-  ln -sf ${ENSCTRL_CYCLE_DIR}/fcst_fv3lam/INPUT/sfc_data.nc  ./control_sfcvar
-elif [ -r "${dynvarfile_control_spinup}" ] && [ -r "${tracerfile_control_spinup}" ] ; then
+if [ -r "${dynvarfile_control_spinup}" ] && [ -r "${tracerfile_control_spinup}" ] ; then
   ln -sf ${ENSCTRL_CYCLE_DIR}/fcst_fv3lam_spinup/INPUT/fv_core.res.tile1.nc  ./control_dynvar
   ln -sf ${ENSCTRL_CYCLE_DIR}/fcst_fv3lam_spinup/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
   ln -sf ${ENSCTRL_CYCLE_DIR}/fcst_fv3lam_spinup/INPUT/sfc_data.nc  ./control_sfcvar
+elif [ -r "${dynvarfile_control}" ] && [ -r "${tracerfile_control}" ] ; then
+  ln -sf ${ENSCTRL_CYCLE_DIR}/fcst_fv3lam/INPUT/fv_core.res.tile1.nc  ./control_dynvar
+  ln -sf ${ENSCTRL_CYCLE_DIR}/fcst_fv3lam/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
+  ln -sf ${ENSCTRL_CYCLE_DIR}/fcst_fv3lam/INPUT/sfc_data.nc  ./control_sfcvar
 else
   print_err_msg_exit "Error: cannot find background: ${dynvarfile_control} or ${dynvarfile_control_spinup}"
 fi
@@ -234,6 +238,7 @@ cat << EOF > namelist.ens
   varlist(3)="t2m q2m f10m tsea smois tsea tsfc tsfcl alnsf alnwf alvsf alvwf emis_ice emis_lnd"
   l_write_mean=.false.
   l_recenter=.true.
+  beta=${beta_recenter},
 /
 EOF
 

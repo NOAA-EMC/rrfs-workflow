@@ -406,6 +406,7 @@ settings="\
   'extrn_mdl_ics_offset_hrs': ${EXTRN_MDL_ICS_OFFSET_HRS}
   'extrn_mdl_lbcs_offset_hrs': ${EXTRN_MDL_LBCS_OFFSET_HRS}
   'extrn_mdl_lbcs_search_offset_hrs': ${EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS}
+  'lbcs_search_hrs': ${LBCS_SEARCH_HRS}
   'bc_update_interval': ${LBC_SPEC_INTVL_HRS}
   'fv3gfs_file_fmt_ics': ${FV3GFS_FILE_FMT_ICS}
   'fv3gfs_file_fmt_lbcs': ${FV3GFS_FILE_FMT_LBCS}
@@ -421,8 +422,8 @@ settings="\
   'cycl_hrs': [ $( printf "\'%s\', " "${CYCL_HRS[@]}" ) ]
   'cycl_hrs_spinstart': [ $( printf "\'%s\', " "${CYCL_HRS_SPINSTART[@]}" ) ]
   'cycl_hrs_prodstart': [ $( printf "\'%s\', " "${CYCL_HRS_PRODSTART[@]}" ) ]
+  'cycl_hrs_prodstart_ens': [ $( printf "\'%s\', " "${CYCL_HRS_PRODSTART_ENS[@]}" ) ]
   'cycl_hrs_recenter': [ $( printf "\'%s\', " "${CYCL_HRS_RECENTER[@]}" ) ]
-  'cycl_hrs_ensinit': [ $( printf "\'%s\', " "${CYCL_HRS_ENSINIT[@]}" ) ]
   'cycl_hrs_ensfcst': [ $( printf "\'%s\', " "${CYCL_HRS_ENSFCST[@]}" ) ]
   'cycl_hrs_stoch': [ $( printf "\'%s\', " "${CYCL_HRS_STOCH[@]}" ) ]
   'cycl_hrs_hyb_fv3lam_ens': [ $( printf "\'%s\', " "${CYCL_HRS_HYB_FV3LAM_ENS[@]}" ) ]
@@ -432,7 +433,6 @@ settings="\
   'initial_cycledef': ${INITIAL_CYCLEDEF}
   'boundary_cycledef': ${BOUNDARY_CYCLEDEF}
   'boundary_long_cycledef': ${BOUNDARY_LONG_CYCLEDEF}
-  'ensinit_cycledef': ${ENSINIT_CYCLEDEF}
   'ensfcst_cycledef': ${ENSFCST_CYCLEDEF}
   'spinup_cycledef': ${SPINUP_CYCLEDEF}
   'prod_cycledef': ${PROD_CYCLEDEF}

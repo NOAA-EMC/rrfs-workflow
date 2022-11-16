@@ -55,7 +55,7 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "gridspec_dir" "modelinputdir" "lbcs_root" "fg_root")
+valid_args=( "cycle_dir" "cycle_type" "cycle_subtype" "gridspec_dir" "modelinputdir" "lbcs_root" "fg_root")
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -172,13 +172,10 @@ if [ ${cycle_type} == "spinup" ]; then
       BKTYPE=1
     fi
   done
-elif [ ${cycle_type} == "ensinit" ]; then
-  echo "ensinit cycle - warm start from 1 timestep restart files"
-  for cyc_start in "${CYCL_HRS_ENSINIT[@]}"; do
-    if [ ${HH} -eq ${cyc_start} ]; then
-      BKTYPE=0
-    fi
-  done
+  if [ ${cycle_subtype} == "spinup" ]; then
+    echo "ensinit cycle - warm start from 1 timestep restart files"
+    BKTYPE=0
+  fi
 else
   echo " product cycle"
   for cyc_start in "${CYCL_HRS_PRODSTART[@]}"; do
@@ -260,7 +257,7 @@ else
 #
   restart_prefix="${YYYYMMDD}.${HH}0000."
 
-  if [ ${cycle_type} == "ensinit" ] ; then
+  if [ ${cycle_subtype} == "spinup" ] ; then
 # point to the 0-h cycle for the warm start from the 1 timestep restart files
     fg_restart_dirname=fcst_fv3lam_ensinit
     bkpath=${fg_root}/${YYYYMMDDHH}${SLASH_ENSMEM_SUBDIR}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
@@ -330,7 +327,7 @@ else
         done
       done
     fi
-    if [ ${cycle_type} == "ensinit" ] ; then
+    if [ ${cycle_subtype} == "spinup" ] ; then
       cp_vrfy ${fg_root}/${YYYYMMDDHH}${SLASH_ENSMEM_SUBDIR}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
     else
       cp_vrfy ${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
@@ -357,7 +354,7 @@ else
     ncatted -a checksum,,d,, fv_core.res.nc
 
 # generate coupler.res with right date
-    if [ ${cycle_type} == "ensinit" ]; then
+    if [ ${cycle_subtype} == "spinup" ]; then
 # from the 1 timestep restart files
       head -2 bk_coupler.res > coupler.res
       head -2 bk_coupler.res | tail -1 >> coupler.res

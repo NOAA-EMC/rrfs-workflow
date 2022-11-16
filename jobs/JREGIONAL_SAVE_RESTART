@@ -66,12 +66,14 @@ on the output files corresponding to a specified forecast hour.
 # NWGES_DIR is the directory in which the model restart file will be saved
 #
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
+CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
 if [ ${CYCLE_TYPE} == "spinup" ]; then
   run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_spinup"
   nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_spinup"
-elif [ ${CYCLE_TYPE} == "ensinit" ]; then
-  run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_ensinit"
-  nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_ensinit"
+  if [ ${CYCLE_SUBTYPE} == "ensinit" ]; then
+    run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_ensinit"
+    nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_ensinit"
+  fi
 else
   run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
   nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
@@ -109,7 +111,8 @@ $SCRIPTSDIR/exregional_save_restart.sh \
   run_dir="${run_dir}" \
   nwges_dir="${nwges_dir}" \
   fhr="${fhr}" \
-  cycle_type="${CYCLE_TYPE}" || \
+  cycle_type="${CYCLE_TYPE}"  \
+  cycle_subtype="${CYCLE_SUBTYPE}" || \
 print_err_msg_exit "\
 Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
 #

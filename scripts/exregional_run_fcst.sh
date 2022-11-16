@@ -67,6 +67,7 @@ specified cycle.
 valid_args=( \
 "cdate" \
 "cycle_type" \
+"cycle_subtype" \
 "cycle_dir" \
 "gridspec_dir" \
 "ensmem_indx" \
@@ -563,6 +564,7 @@ fi
 create_model_configure_file \
   cdate="$cdate" \
   cycle_type="$cycle_type" \
+  cycle_subtype="$cycle_subtype" \
   nthreads=${OMP_NUM_THREADS:-1} \
   run_dir="${run_dir}" || print_err_msg_exit "\
 Call to function to create a model configuration file for the current
