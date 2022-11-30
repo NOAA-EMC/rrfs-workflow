@@ -1185,7 +1185,8 @@ MODULES_RUN_TASK_FP script.
                <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
              {%- endfor %}
              </or>
-            <or>
+           <or>
+           {%- if do_spinup %}
             <and> 
              <or>
              {%- for h in cycl_hrs_prodstart_ens %}
@@ -1206,6 +1207,13 @@ MODULES_RUN_TASK_FP script.
              <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&RRFSE_FG_ROOT;/@Y@m@d@H/mem{{ "%04d" % h  }}/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
              {%- endfor %}
             </and>
+           {%- else %} 
+            <and>
+             {% for h in range(1, num_ens_members+1) %}
+             <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&RRFSE_FG_ROOT;/@Y@m@d@H/mem{{ "%04d" % h  }}/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+             {%- endfor %}
+            </and>
+           {%- endif %} 
            </or>
            </and>
            <and>
@@ -2086,7 +2094,9 @@ MODULES_RUN_TASK_FP script.
     <dependency>
        <and>
          <taskdep task="&PREP_CYC_ENSMEAN_TN;"/>
+         {%- if do_enkf_radar_ref %}
          <taskdep task="&PROCESS_RADAR_REF_TN;_prod"/>
+         {%- endif %}
          {% if machine in ["JET", "HERA"] -%}
          <datadep age="05:00"><cyclestr>&OBSPATH;/@Y@m@d@H.rap.t@Hz.prepbufr.tm00</cyclestr></datadep>
          {% else -%}
@@ -2321,7 +2331,16 @@ MODULES_RUN_TASK_FP script.
     <envar><name>OB_TYPE</name><value>radardbz</value></envar>
 
     <dependency>
+      <and>
         <taskdep task="&RUN_ENKFUPDT_TN;"/>
+        {%- if do_retro %}
+        <and> 
+        {%- for m in range(1, num_ens_members+1) %}
+          <datadep age="00:00:00:01"><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H/mem{{ "%04d" % m }}/observer_gsi/diag_conv_rw_ges.@Y@m@d@H.nc4.gz</cyclestr></datadep>
+        {%- endfor %}
+        </and> 
+        {%- endif %}
+      </and>
     </dependency>
   </task>
 

@@ -435,6 +435,9 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+countdiag=$(ls diag*conv* | wc -l)
+if [ $countdiag -gt $nens ]; then
+
 ${APRUN}  $enkfworkdir/enkf.x < enkf.nml 1>${stdout_name} 2>${stderr_name} || print_err_msg_exit "\
 Call to executable to run EnKF returned with nonzero exit code."
 
@@ -446,6 +449,10 @@ if [ ! -d ${NWGES_DIR}/../enkf_diag ]; then
 fi
 cp_vrfy ${stdout_name} ${NWGES_DIR}/../enkf_diag/${stdout_name}.$vlddate
 cp_vrfy ${stderr_name} ${NWGES_DIR}/../enkf_diag/${stderr_name}.$vlddate
+
+else
+  echo "Warning: EnKF not running due to lack of ${ob_type} obs for cycle $vlddate !!!"
+fi
 
 print_info_msg "
 ========================================================================

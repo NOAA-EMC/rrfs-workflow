@@ -207,6 +207,9 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
   ens_nstarthr=$( printf "%02d" ${DA_CYCLE_INTERV} )
   imem=1
   ifound=0
+  for hrs in ${CYCL_HRS_HYB_FV3LAM_ENS}; do
+  if [ $HH == ${hrs} ]; then
+
   while [[ $imem -le ${NUM_ENS_MEMBERS} ]];do
     memcharv0=$( printf "%03d" $imem )
     memchar=mem$( printf "%04d" $imem )
@@ -215,12 +218,13 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
     restart_prefix="${YYYYMMDD}.${HH}0000."
     slash_ensmem_subdir=$memchar
     bkpathmem=${rrfse_fg_root}/${YYYYMMDDHHmInterv}/${slash_ensmem_subdir}/fcst_fv3lam/RESTART
-    for cycl_hrs in ${CYCL_HRS_PRODSTART_ENS}; do
-     if [ $HH == ${cycl_hrs} ]; then
-       bkpathmem=${rrfse_fg_root}/${YYYYMMDDHHmInterv}/${slash_ensmem_subdir}/fcst_fv3lam_spinup/RESTART
-     fi
-    done
-
+    if [ ${DO_SPINUP} == "TRUE" ]; then
+      for cycl_hrs in ${CYCL_HRS_PRODSTART_ENS}; do
+       if [ $HH == ${cycl_hrs} ]; then
+         bkpathmem=${rrfse_fg_root}/${YYYYMMDDHHmInterv}/${slash_ensmem_subdir}/fcst_fv3lam_spinup/RESTART
+       fi
+      done
+    fi
     dynvarfile=${bkpathmem}/${restart_prefix}fv_core.res.tile1.nc
     tracerfile=${bkpathmem}/${restart_prefix}fv_tracer.res.tile1.nc
     phyvarfile=${bkpathmem}/${restart_prefix}phy_data.nc
@@ -234,6 +238,10 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
     fi
     (( imem += 1 ))
   done
+ 
+  fi
+  done
+
   if [[ $ifound -ne ${NUM_ENS_MEMBERS} ]]; then
     print_info_msg "Not enough FV3_LAM ensembles, will fall to GDAS"
     regional_ensemble_option=1

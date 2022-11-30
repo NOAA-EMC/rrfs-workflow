@@ -306,9 +306,8 @@ COMINgfs=""
 STMP="YourOwnSpace/NCO_dirs/stmp"  # Path to directory STMP that mostly contains input files.
 PTMP="YourOwnSpace/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains input files.
 NWGES="YourOwnSpace/NCO_dirs/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
-if [[ ${DO_RECENTER}  == "TRUE" || ${DO_ENSINIT} == "TRUE" ]]; then
-   ENSCTRL_STMP="YourOwnSpace/NCO_dirs/stmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
-   ENSCTRL_PTMP="YourOwnSpace/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
-   ENSCTRL_NWGES="YourOwnSpace/NCO_dirs/nwges"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
-fi
+ENSCTRL_STMP="YourOwnSpace/NCO_dirs/stmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+ENSCTRL_PTMP="YourOwnSpace/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+ENSCTRL_NWGES="YourOwnSpace/NCO_dirs/nwges"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+
 

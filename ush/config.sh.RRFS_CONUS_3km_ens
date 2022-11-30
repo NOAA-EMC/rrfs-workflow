@@ -55,8 +55,8 @@ RUN_ENVIR="nco"
 PREDEF_GRID_NAME=RRFS_CONUS_3km
 ADDNL_OUTPUT_GRIDS=()
 
-TILE_LABELS="CONUS NE NC NW SE SC SW"
-TILE_SETS="full NE NC NW SE SC SW"
+TILE_LABELS="CONUS REGIONS"
+TILE_SETS="full NE,NC,NW,SE,SC,SW"
 
 DO_ENSEMBLE="TRUE"
 #DO_DACYCLE="TRUE"
@@ -64,6 +64,7 @@ DO_ENSEMBLE="TRUE"
 DO_SPINUP="TRUE"
 #DO_RETRO="TRUE"
 DO_NONVAR_CLDANAL="TRUE"
+DO_SMOKE_DUST="FALSE"
 #DO_REFL2TTEN="FALSE"
 #RADARREFL_TIMELEVEL=(0)
 #FH_DFI_RADAR="0.0,0.25,0.5"
@@ -134,7 +135,7 @@ HYBENSMEM_NMIN=66
 HALO_BLEND=20
 IO_LAYOUT_Y=1
 PPN_RUN_REF2TTEN=1
-PPN_RUN_NONVARCLDANL=1
+PPN_RUN_NONVARCLDANL=${IO_LAYOUT_Y}
 
 MAXTRIES_GET_EXTRN_ICS="2"
 MAXTRIES_GET_EXTRN_LBCS="2"
@@ -181,6 +182,7 @@ TAG="RRFSE_CONUS_3km"
 
 USE_CUSTOM_POST_CONFIG_FILE="TRUE"
 TESTBED_FIELDS_FN="testbed_fields_bgdawp.txt"
+TESTBED_FIELDS_FN2="testbed_fields_bgrd3d.txt"
 CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-fv3lam_rrfs.txt"
 CUSTOM_POST_PARAMS_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/params_grib2_tbl_new"
 ARCHIVEDIR="/1year/BMC/wrfruc/rrfs_dev1"
@@ -255,9 +257,7 @@ COMINgfs=""
 STMP="/mnt/lfs4/BMC/wrfruc/RRFSE/NCO_dirs/stmp"  # Path to directory STMP that mostly contains input files.
 PTMP="/mnt/lfs4/BMC/wrfruc/RRFSE/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains input files.
 NWGES="/mnt/lfs4/BMC/wrfruc/RRFSE/NCO_dirs/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
-if [[ ${DO_RECENTER}  == "TRUE" || ${DO_ENSINIT} == "TRUE" ]]; then
-   ENSCTRL_STMP="/mnt/lfs4/BMC/nrtrr/NCO_dirs/stmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
-   ENSCTRL_PTMP="/mnt/lfs4/BMC/nrtrr/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
-   ENSCTRL_NWGES="/mnt/lfs4/BMC/nrtrr/NCO_dirs/nwges"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
-fi
+ENSCTRL_STMP="/mnt/lfs4/BMC/nrtrr/NCO_dirs/stmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+ENSCTRL_PTMP="/mnt/lfs4/BMC/nrtrr/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+ENSCTRL_NWGES="/mnt/lfs4/BMC/nrtrr/NCO_dirs/nwges"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
 
