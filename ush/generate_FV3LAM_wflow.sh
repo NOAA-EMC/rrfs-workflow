@@ -214,6 +214,7 @@ settings="\
   'prep_cyc_prod': ${PREP_CYC_PROD_TN}
   'prep_cyc_ensmean': ${PREP_CYC_ENSMEAN_TN}
   'prep_cyc': ${PREP_CYC_TN}
+  'calc_ensmean': ${CALC_ENSMEAN_TN}
   'process_radarref': ${PROCESS_RADAR_REF_TN}
   'process_lightning': ${PROCESS_LIGHTNING_TN}
   'process_bufr': ${PROCESS_BUFR_TN}
