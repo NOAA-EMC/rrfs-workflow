@@ -236,9 +236,13 @@ ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgsfcf${fhr}.${tmmark}.grib2  $
 
 net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
 ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2 ${comout}/${net4}.t${cyc}z.prslev.f${fhr}.conus_3km.grib2
+wgrib2 ${comout}/${net4}.t${cyc}z.prslev.f${fhr}.conus_3km.grib2 -s > ${comout}/${net4}.t${cyc}z.prslev.f${fhr}.conus_3km.grib2.idx
 ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgrd3df${fhr}.${tmmark}.grib2 ${comout}/${net4}.t${cyc}z.natlev.f${fhr}.conus_3km.grib2
+wgrib2 ${comout}/${net4}.t${cyc}z.natlev.f${fhr}.conus_3km.grib2 -s > ${comout}/${net4}.t${cyc}z.natlev.f${fhr}.conus_3km.grib2.idx
 ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgifif${fhr}.${tmmark}.grib2 ${comout}/${net4}.t${cyc}z.ififip.f${fhr}.conus_3km.grib2
+wgrib2 ${comout}/${net4}.t${cyc}z.ififip.f${fhr}.conus_3km.grib2 -s > ${comout}/${net4}.t${cyc}z.ififip.f${fhr}.conus_3km.grib2.idx
 ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgsfcf${fhr}.${tmmark}.grib2  ${comout}/${net4}.t${cyc}z.testbed.f${fhr}.conus_3km.grib2
+wgrib2 ${comout}/${net4}.t${cyc}z.testbed.f${fhr}.conus_3km.grib2 -s > ${comout}/${net4}.t${cyc}z.testbed.f${fhr}.conus_3km.grib2.idx
 # Remap to additional output grids if requested
 if [ ${#ADDNL_OUTPUT_GRIDS[@]} -gt 0 ]; then
 
@@ -295,18 +299,22 @@ if [ ${#ADDNL_OUTPUT_GRIDS[@]} -gt 0 ]; then
 
       if [ $leveltype = 'dawp' ]; then
          ln_vrfy -fs --relative ${comout}/${grid}_grid/${NET}.t${cyc}z.bg${leveltype}f${fhr}.${tmmark}.grib2 ${comout}/${net4}.t${cyc}z.prslev.f${fhr}.conus_3km.grib2
+         wgrib2 ${comout}/${net4}.t${cyc}z.prslev.f${fhr}.conus_3km.grib2 -s > ${comout}/${net4}.t${cyc}z.prslev.f${fhr}.conus_3km.grib2.idx
       fi
 
       if [ $leveltype = 'rd3d' ]; then
          ln_vrfy -fs --relative ${comout}/${grid}_grid/${NET}.t${cyc}z.bg${leveltype}f${fhr}.${tmmark}.grib2 ${comout}/${net4}.t${cyc}z.natlev.f${fhr}.conus_3km.grib2
+         wgrib2 ${comout}/${net4}.t${cyc}z.natlev.f${fhr}.conus_3km.grib2 -s > ${comout}/${net4}.t${cyc}z.natlev.f${fhr}.conus_3km.grib2.idx
       fi
 
       if [ $leveltype = 'ifi' ]; then
          ln_vrfy -fs --relative ${comout}/${grid}_grid/${NET}.t${cyc}z.bg${leveltype}f${fhr}.${tmmark}.grib2 ${comout}/${net4}.t${cyc}z.ififip.f${fhr}.conus_3km.grib2
+         wgrib2 ${comout}/${net4}.t${cyc}z.ififip.f${fhr}.conus_3km.grib2 -s > ${comout}/${net4}.t${cyc}z.ififip.f${fhr}.conus_3km.grib2.idx
       fi
 
       if [ $leveltype = 'sfc' ]; then
          ln_vrfy -fs --relative ${comout}/${grid}_grid/${NET}.t${cyc}z.bg${leveltype}f${fhr}.${tmmark}.grib2 ${comout}/${net4}.t${cyc}z.testbed.f${fhr}.conus_3km.grib2
+         wgrib2 ${comout}/${net4}.t${cyc}z.testbed.f${fhr}.conus_3km.grib2 -s > ${comout}/${net4}.t${cyc}z.testbed.f${fhr}.conus_3km.grib2.idx
       fi
 
       # Link output for transfer from Jet to web

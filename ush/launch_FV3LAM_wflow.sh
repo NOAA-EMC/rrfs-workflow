@@ -103,7 +103,7 @@ elif [ "$MACHINE" = "WCOSS2" ]; then
   module load libfabric/1.11.0.0.
   module load craype-network-ofi
   module load envvar/1.0
-  module load core/rocoto/1.3.4
+  module load core/rocoto/1.3.5
 else
   module purge
   module load rocoto

@@ -482,6 +482,8 @@ settings="\
   'do_nonvar_cldanal': ${DO_NONVAR_CLDANAL}
   'do_refl2tten': ${DO_REFL2TTEN}
   'do_spinup': ${DO_SPINUP}
+  'do_post_spinup': ${DO_POST_SPINUP}
+  'do_post_prod': ${DO_POST_PROD}
   'do_nldn_lght': ${DO_NLDN_LGHT}
   'regional_ensemble_option': ${regional_ensemble_option}
   'radar_ref_thinning': ${RADAR_REF_THINNING}

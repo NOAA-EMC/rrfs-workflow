@@ -72,7 +72,7 @@ case $MACHINE in
   ulimit -s unlimited
   ulimit -a
   export FI_OFI_RXM_SAR_LIMIT=3145728
-  export OMP_STACKSIZE=500M
+  export OMP_STACKSIZE=1G
   export OMP_NUM_THREADS=1
   ncores=$(( NNODES_RUN_ENKF*PPN_RUN_ENKF ))
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_ENKF} --cpu-bind core --depth ${OMP_NUM_THREADS}"
@@ -206,14 +206,12 @@ mkdir_vrfy -p ${enkfanal_nwges_dir}
       list_ob_type="conv_dbz"
     fi
     for sub_ob_type in ${list_ob_type} ; do
-      diagfile0=${observer_nwges_dir}/diag_${sub_ob_type}_ges.${YYYYMMDDHH}.nc4.gz
+      diagfile0=${observer_nwges_dir}/diag_${sub_ob_type}_ges.${YYYYMMDDHH}.nc4
       if [ -s $diagfile0 ]; then
         diagfile=$(basename  $diagfile0)
         cp_vrfy  $diagfile0  $diagfile
-        gzip -d $diagfile && rm -f $diagfile
-        ncfile0=$(basename -s .gz $diagfile)
-        ncfile=$(basename -s .nc4 $ncfile0)
-        mv_vrfy $ncfile0 ${ncfile}_${memcharv0}.nc4
+        ncfile=$(basename -s .nc4 $diagfile)
+        mv_vrfy $ncfile.nc4 ${ncfile}_${memcharv0}.nc4
       fi
     done
   else

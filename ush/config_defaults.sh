@@ -2061,9 +2061,17 @@ DO_SMOKE_DUST="FALSE"
 # Flag turn on the runs prepare boundary and cold start initial conditions in
 #      retrospective experiments.
 #
+# DO_POST_SPINUP:
+# Flag turn on the UPP for spin-up cycle.
+#
+# DO_POST_PROD:
+# Flag turn on the UPP for prod cycle.
+#
 DO_RETRO="FALSE"
 DO_SPINUP="FALSE"
 LBCS_ICS_ONLY="FALSE"
+DO_POST_SPINUP="FALSE"
+DO_POST_PROD="TRUE"
 #
 #-----------------------------------------------------------------------
 #

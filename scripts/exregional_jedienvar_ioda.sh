@@ -197,7 +197,6 @@ cp_vrfy ${comout}/jedienvar_ioda/anal_gsi/*ges* ${workdir}/GSI_diags
 #-----------------------------------------------------------------------
 # 
 cd_vrfy ${workdir}/GSI_diags
-gzip -d *.gz
 fl=`ls -1 ncdiag*`
 
 for ifl in $fl

@@ -860,16 +860,22 @@ fi
 $APRUN ./gsi.x < gsiparm.anl > stdout 2>&1 || print_err_msg_exit "\
 Call to executable to run GSI returned with nonzero exit code."
 
-mv fort.207 fit_rad1
-sed -e 's/   asm all/ps asm 900/; s/   rej all/ps rej 900/; s/   mon all/ps mon 900/' fort.201 > fit_p1
-sed -e 's/   asm all/uv asm 900/; s/   rej all/uv rej 900/; s/   mon all/uv mon 900/' fort.202 > fit_w1
-sed -e 's/   asm all/ t asm 900/; s/   rej all/ t rej 900/; s/   mon all/ t mon 900/' fort.203 > fit_t1
-sed -e 's/   asm all/ q asm 900/; s/   rej all/ q rej 900/; s/   mon all/ q mon 900/' fort.204 > fit_q1
-sed -e 's/   asm all/pw asm 900/; s/   rej all/pw rej 900/; s/   mon all/pw mon 900/' fort.205 > fit_pw1
-sed -e 's/   asm all/rw asm 900/; s/   rej all/rw rej 900/; s/   mon all/rw mon 900/' fort.209 > fit_rw1
+if [ ${gsi_type} == "ANALYSIS" ]; then
+  if [ ${ob_type} == "radardbz" ]; then
+    cat fort.238 > $comout/rrfs_a.t${HH}z.fits3.tm00
+  else
+    mv fort.207 fit_rad1
+    sed -e 's/   asm all/ps asm 900/; s/   rej all/ps rej 900/; s/   mon all/ps mon 900/' fort.201 > fit_p1
+    sed -e 's/   asm all/uv asm 900/; s/   rej all/uv rej 900/; s/   mon all/uv mon 900/' fort.202 > fit_w1
+    sed -e 's/   asm all/ t asm 900/; s/   rej all/ t rej 900/; s/   mon all/ t mon 900/' fort.203 > fit_t1
+    sed -e 's/   asm all/ q asm 900/; s/   rej all/ q rej 900/; s/   mon all/ q mon 900/' fort.204 > fit_q1
+    sed -e 's/   asm all/pw asm 900/; s/   rej all/pw rej 900/; s/   mon all/pw mon 900/' fort.205 > fit_pw1
+    sed -e 's/   asm all/rw asm 900/; s/   rej all/rw rej 900/; s/   mon all/rw mon 900/' fort.209 > fit_rw1
 
-cat fit_p1 fit_w1 fit_t1 fit_q1 fit_pw1 fit_rad1 fit_rw1 > $comout/rrfs_a.t${HH}z.fits.tm00
-cat fort.208 fort.210 fort.211 fort.212 fort.213 fort.220 > $comout/rrfs_a.t${HH}z.fits2.tm00
+    cat fit_p1 fit_w1 fit_t1 fit_q1 fit_pw1 fit_rad1 fit_rw1 > $comout/rrfs_a.t${HH}z.fits.tm00
+    cat fort.208 fort.210 fort.211 fort.212 fort.213 fort.220 > $comout/rrfs_a.t${HH}z.fits2.tm00
+  fi
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -941,25 +947,11 @@ if [ $netcdf_diag = ".true." ]; then
    listall_cnv="conv_ps conv_q conv_t conv_uv conv_pw conv_rw conv_sst conv_dbz"
    listall_rad="hirs2_n14 msu_n14 sndr_g08 sndr_g11 sndr_g11 sndr_g12 sndr_g13 sndr_g08_prep sndr_g11_prep sndr_g12_prep sndr_g13_prep sndrd1_g11 sndrd2_g11 sndrd3_g11 sndrd4_g11 sndrd1_g15 sndrd2_g15 sndrd3_g15 sndrd4_g15 sndrd1_g13 sndrd2_g13 sndrd3_g13 sndrd4_g13 hirs3_n15 hirs3_n16 hirs3_n17 amsua_n15 amsua_n16 amsua_n17 amsua_n18 amsua_n19 amsua_metop-a amsua_metop-b amsua_metop-c amsub_n15 amsub_n16 amsub_n17 hsb_aqua airs_aqua amsua_aqua imgr_g08 imgr_g11 imgr_g12 pcp_ssmi_dmsp pcp_tmi_trmm conv sbuv2_n16 sbuv2_n17 sbuv2_n18 omi_aura ssmi_f13 ssmi_f14 ssmi_f15 hirs4_n18 hirs4_metop-a mhs_n18 mhs_n19 mhs_metop-a mhs_metop-b mhs_metop-c amsre_low_aqua amsre_mid_aqua amsre_hig_aqua ssmis_las_f16 ssmis_uas_f16 ssmis_img_f16 ssmis_env_f16 iasi_metop-a iasi_metop-b iasi_metop-c seviri_m08 seviri_m09 seviri_m10 seviri_m11 cris_npp atms_npp ssmis_f17 cris-fsr_npp cris-fsr_n20 atms_n20 abi_g16"
 
-   cat_exec="${EXECDIR}/nc_diag_cat.x"
-
-   if [ -f $cat_exec ]; then
-      print_info_msg "$VERBOSE" "
-        Copying the nc_diag_cat executable to the run directory..."
-      cp_vrfy ${cat_exec} ${analworkdir}/nc_diag_cat.x
-   else
-      print_err_msg_exit "\
-        The nc_diag_cat executable specified in cat_exec does not exist:
-        cat_exec = \"$cat_exec\"
-        Build GSI and rerun."
-   fi
-
    for type in $listall_cnv; do
       count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
       if [[ $count -gt 0 ]]; then
-         ${APRUN} ./nc_diag_cat.x -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4
-         gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4*
-         cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz $comout
+         ${APRUN} nc_diag_cat.x -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4
+         cp diag_${type}_${string}.${YYYYMMDDHH}.nc4 $comout
          echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4*" >> listcnv
          numfile_cnv=`expr ${numfile_cnv} + 1`
       fi
@@ -968,9 +960,8 @@ if [ $netcdf_diag = ".true." ]; then
    for type in $listall_rad; do
       count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
       if [[ $count -gt 0 ]]; then
-         ${APRUN} ./nc_diag_cat.x -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4
-         gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4*
-         cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz $comout
+         ${APRUN} nc_diag_cat.x -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4
+         cp diag_${type}_${string}.${YYYYMMDDHH}.nc4 $comout
          echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4*" >> listrad
          numfile_rad=`expr ${numfile_rad} + 1`
       else

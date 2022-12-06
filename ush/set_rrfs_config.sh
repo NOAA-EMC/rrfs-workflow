@@ -24,14 +24,14 @@ if [[ $MACHINE == "hera" ]] ; then
 fi
 
 if [[ $MACHINE == "wcoss2" ]] ; then
-  EXTRN_MDL_SOURCE_BASEDIR_ICS=/lfs/h1/ops/prod/com/gfs/v16.2
-  EXTRN_MDL_SOURCE_BASEDIR_LBCS=/lfs/h1/ops/prod/com/gfs/v16.2
-  OBSPATH=/lfs/h1/ops/prod/com/obsproc/v1.0
+  EXTRN_MDL_SOURCE_BASEDIR_ICS=/lfs/h1/ops/prod/com/gfs/v16.3
+  EXTRN_MDL_SOURCE_BASEDIR_LBCS=/lfs/h1/ops/prod/com/gfs/v16.3
+  OBSPATH=/lfs/h1/ops/prod/com/obsproc/v1.1
   OBSPATH_NSSLMOSIAC=/lfs/h1/ops/prod/dcom/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC
-  ENKF_FCST=/lfs/h1/ops/prod/com/gfs/v16.2
-  SST_ROOT=/lfs/h1/ops/prod/com/gfs/v16.2
+  ENKF_FCST=/lfs/h1/ops/prod/com/gfs/v16.3
+  SST_ROOT=/lfs/h1/ops/prod/com/gfs/v16.3
   GVF_ROOT=/lfs/h1/ops/prod/dcom/viirs
-  IMSSNOW_ROOT=/lfs/h1/ops/prod/com/obsproc/v1.0
+  IMSSNOW_ROOT=/lfs/h1/ops/prod/com/obsproc/v1.1
   FIRE_RAVE_DIR=/lfs/h2/emc/physics/noscrub/partha.bhattacharjee/RAVE_rawdata/RAVE_NA
 fi
 
