@@ -159,16 +159,92 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 <!ENTITY RSRV_GRAPHICS   "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_GRAPHICS;</queue><native>--exclusive</native>">
 {%- endif %}
 
+
+<!--
+define resources used for each tasks
+-->
+
+<!ENTITY RESOURCES_PROC_SMOKE "<nodes>{{ nnodes_proc_smoke }}:ppn={{ ppn_proc_smoke }}</nodes>">
+<!ENTITY WALLTIME_PROC_SMOKE  "{{ wtime_proc_smoke }}">
+<!ENTITY MEMO_PROC_SMOKE  "80G">
+
+<!ENTITY RESOURCES_PROC_RADAR "<nodes>{{ nnodes_proc_radar }}:ppn={{ ppn_proc_radar }}</nodes>">
+<!ENTITY WALLTIME_PROC_RADAR  "{{ wtime_proc_radar }}">
+
+<!ENTITY RESOURCES_PROC_LIGHTNING "<nodes>{{ nnodes_proc_lightning }}:ppn={{ ppn_proc_lightning }}</nodes>">
+<!ENTITY WALLTIME_PROC_LIGHTNING  "{{ wtime_proc_lightning }}">
+
+<!ENTITY RESOURCES_PROC_BUFR "<nodes>{{ nnodes_proc_bufr }}:ppn={{ ppn_proc_bufr }}</nodes>">
+<!ENTITY WALLTIME_PROC_BUFR  "{{ wtime_proc_bufr }}">
+<!ENTITY MEMO_PROC_BUFR  "{{memo_run_processbufr }}">
+
+<!ENTITY RESOURCES_GET_EXTRN_ICS "<nodes>{{ nnodes_get_extrn_ics }}:ppn={{ ppn_get_extrn_ics }}</nodes>">
+<!ENTITY WALLTIME_GET_EXTRN_ICS  "{{ wtime_get_extrn_ics }}">
+
+<!ENTITY RESOURCES_GET_EXTRN_LBCS "<nodes>{{ nnodes_get_extrn_lbcs }}:ppn={{ ppn_get_extrn_lbcs }}</nodes>">
+<!ENTITY WALLTIME_GET_EXTRN_LBCS  "{{ wtime_get_extrn_lbcs }}">
+
+<!ENTITY RESOURCES_MAKE_ICS "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
+<!ENTITY WALLTIME_MAKE_ICS  "{{ wtime_make_ics }}">
+
+<!ENTITY RESOURCES_MAKE_LBCS "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
+<!ENTITY WALLTIME_MAKE_LBCS  "{{ wtime_make_lbcs }}">
+
+<!ENTITY RESOURCES_PREP_CYC "<nodes>{{ nnodes_run_prepstart }}:ppn={{ ppn_run_prepstart }}</nodes>">
+<!ENTITY WALLTIME_PREP_CYC  "{{ wtime_run_prepstart }}">
+
+<!ENTITY RESOURCES_SAVE_RESTART "<nodes>{{ nnodes_save_restart }}:ppn={{ ppn_save_restart }}</nodes>">
+<!ENTITY WALLTIME_SAVE_RESTART  "{{ wtime_save_restart }}">
+
+<!ENTITY RESOURCES_RUN_RECENTER "<nodes>{{ nnodes_run_recenter }}:ppn={{ ppn_run_recenter }}</nodes>">
+<!ENTITY WALLTIME_RUN_RECENTER  "{{ wtime_run_recenter }}">
+
+<!ENTITY RESOURCES_POSTANAL "<nodes>{{ nnodes_run_postanal }}:ppn={{ ppn_run_postanal }}</nodes>">
+<!ENTITY WALLTIME_POSTANAL  "{{ wtime_run_postanal }}">
+
+<!ENTITY RESOURCES_RUN_POST "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
+<!ENTITY WALLTIME_RUN_POST  "{{ wtime_run_post }}">
+
+<!ENTITY RESOURCES_RUN_WGRIB2 "<nodes>{{ nnodes_run_wgrib2 }}:ppn={{ ppn_run_wgrib2 }}</nodes>">
+<!ENTITY WALLTIME_RUN_WGRIB2  "{{ wtime_run_wgrib2 }}">
+<!ENTITY MEMO_RUN_WGRIB2 "{{ memo_run_wgrib2 }}">
+
+{% if machine in ["JET", "HERA"] %}
+<!ENTITY RESOURCES_ANAL_GSI "<cores>{{ ncores_run_anal }}</cores>">
+<!ENTITY NATIVE_ANAL_GSI    "<native>{{ native_run_anal }} &RRFS_RESERVE;</native>">
+{%- elif machine in ["WCOSS2"]  %}
+<!ENTITY RESOURCES_ANAL_GSI "<nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}</nodes>">
+<!ENTITY NATIVE_ANAL_GSI    "<native>-l place=excl</native>">
+{%- else %}
+<!ENTITY RESOURCES_ANAL_GSI "<nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}</nodes>">
+<!ENTITY NATIVE_ANAL_GSI    "">
+{%- endif %}
+<!ENTITY WALLTIME_ANAL_GSI  "{{ wtime_run_anal }}">
+
+
 <!ENTITY RESOURCES_NONVAR_CLD "<nodes>{{ nnodes_run_nonvarcldanl }}:ppn={{ ppn_run_nonvarcldanl }}</nodes>">
 <!ENTITY WALLTIME_NONVAR_CLD  "{{ wtime_run_nonvarcldanl }}">
 <!ENTITY MEMO_NONVAR_CLD  "{{ memo_run_nonvarcldanl }}">
 {%- if machine in ["WCOSS2"]  %}
-<!ENTITY NATIVE_NONVAR_CLD    "<native>-l place=excl</native>">
+<!ENTITY NATIVE_ALL    "<native>-l place=excl</native>">
 {%- else %}
-<!ENTITY NATIVE_NONVAR_CLD    "">
+<!ENTITY NATIVE_ALL    "">
 {%- endif %}
 
-{% if machine in ["JET", "HERA"] %}
+<!ENTITY WALLTIME_FCST_SPINUP  "{{ wtime_run_fcst }}">
+{%- if machine in ["JET", "HERA"] %}
+<!ENTITY RESOURCES_FCST_SPINUP "<cores>{{ ncores_run_fcst }}</cores>">
+<!ENTITY NATIVE_FCST_SPINUP    "<native>{{ native_run_fcst }} &RRFS_RESERVE;</native>">
+{%- elif machine in ["WCOSS2"]  %}
+<!ENTITY RESOURCES_FCST_SPINUP "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}:tpp=2</nodes>">
+<!ENTITY NATIVE_FCST_SPINUP    "<native>-l place=excl</native>">
+{%- else %}
+<!ENTITY RESOURCES_FCST_SPINUP "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
+<!ENTITY NATIVE_FCST_SPINUP    "">
+{%- endif %}
+
+<!ENTITY WALLTIME_FCST_PROD  "{{ wtime_run_fcst }}">
+{%- if machine in ["JET", "HERA"] %}
 <!ENTITY RESOURCES_FCST_PROD "<cores>{{ ncores_run_fcst }}</cores>">
 <!ENTITY NATIVE_FCST_PROD    "<native>{{ native_run_fcst }} &RRFS_RESERVE;</native>">
 {%- elif machine in ["WCOSS2"]  %}
@@ -178,7 +254,6 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 <!ENTITY RESOURCES_FCST_PROD "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
 <!ENTITY NATIVE_FCST_PROD    "">
 {%- endif %}
-<!ENTITY WALLTIME_FCST_PROD  "{{ wtime_run_fcst }}">
 
 
 {% if do_retro %}
@@ -223,6 +298,7 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 <!ENTITY WALL_LIMIT_FCST '<deadline><cyclestr offset="&DEADLINE_FCST;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_POST '<deadline><cyclestr offset="&DEADLINE_POST;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_BUFR '<deadline><cyclestr offset="&DEADLINE_POST;">@Y@m@d@H@M</cyclestr></deadline>'>
+<!ENTITY WALL_LIMIT_BUFRSND '<deadline><cyclestr offset="&DEADLINE_POST;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_GRAPHICS '<deadline><cyclestr offset="&DEADLINE_GRAPHICS;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_RECENTER '<deadline><cyclestr offset="&DEADLINE_RECENTER;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_SAVE_RESTART '<deadline><cyclestr offset="&DEADLINE_SAVE_RESTART;">@Y@m@d@H@M</cyclestr></deadline>'>
@@ -398,9 +474,10 @@ MODULES_RUN_TASK_FP script.
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_SMOKE_TN;" "&JOBSDIR;/JREGIONAL_PROCESS_SMOKE"</command>
 
-    <nodes>{{ nnodes_proc_smoke }}:ppn={{ ppn_proc_smoke }}</nodes>
-    <walltime>{{ wtime_proc_smoke }}</walltime>
-    <memory>80G</memory>
+    &RESOURCES_PROC_SMOKE;
+    &NATIVE_ALL;
+    <walltime>&WALLTIME_PROC_SMOKE;</walltime>
+    <memory>&MEMO_PROC_SMOKE;</memory>
     <nodesize>&NCORES_PER_NODE;</nodesize>
     <jobname>&TAG;_&PROCESS_SMOKE_TN;_#type#</jobname>
     <join><cyclestr>&LOGDIR;/&PROCESS_SMOKE_TN;_#type#_@Y@m@d@H.log</cyclestr></join>
@@ -436,8 +513,9 @@ MODULES_RUN_TASK_FP script.
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_PROCESS_RADARREF"</command>
       
-    <nodes>{{ nnodes_proc_radar }}:ppn={{ ppn_proc_radar }}</nodes>
-    <walltime>{{ wtime_proc_radar }}</walltime>
+    &RESOURCES_PROC_RADAR;
+    &NATIVE_ALL;
+    <walltime>&WALLTIME_PROC_RADAR;</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
     <jobname>&TAG;_&PROCESS_RADAR_REF_TN;_#type#</jobname>
     <join><cyclestr>&LOGDIR;/&PROCESS_RADAR_REF_TN;_#type#_@Y@m@d@H.log</cyclestr></join>
@@ -470,8 +548,9 @@ MODULES_RUN_TASK_FP script.
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_PROCESS_LIGHTNING"</command>
 
-    <nodes>{{ nnodes_proc_lightning }}:ppn={{ ppn_proc_lightning }}</nodes>
-    <walltime>{{ wtime_proc_lightning }}</walltime>
+    &RESOURCES_PROC_LIGHTNING;
+    &NATIVE_ALL;
+    <walltime>&WALLTIME_PROC_LIGHTNING;</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
     <jobname>&TAG;_&PROCESS_LIGHTNING_TN;_#type#</jobname>
     <join><cyclestr>&LOGDIR;/&PROCESS_LIGHTNING_TN;_#type#_@Y@m@d@H.log</cyclestr></join>
@@ -502,10 +581,11 @@ MODULES_RUN_TASK_FP script.
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_PROCESS_BUFR"</command>
 
-    <nodes>{{ nnodes_proc_bufr }}:ppn={{ ppn_proc_bufr }}</nodes>
-    <walltime>{{ wtime_proc_bufr }}</walltime>
+    &RESOURCES_PROC_BUFR;
+    &NATIVE_ALL;
+    <walltime>&WALLTIME_PROC_BUFR;</walltime>
+    <memory>&MEMO_PROC_BUFR;</memory>
     <nodesize>&NCORES_PER_NODE;</nodesize>
-    <memory>{{ memo_run_processbufr }}</memory>
     <jobname>&TAG;_&PROCESS_BUFR_TN;_#type#</jobname>
     <join><cyclestr>&LOGDIR;/&PROCESS_BUFR_TN;_#type#_@Y@m@d@H.log</cyclestr></join>
 
@@ -553,8 +633,8 @@ MODULES_RUN_TASK_FP script.
     &WALL_LIMIT_PRE;
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_EXTRN_ICS_TN;" "&JOBSDIR;/JREGIONAL_GET_EXTRN_MDL_FILES"</command>
-    <nodes>{{ nnodes_get_extrn_ics }}:ppn={{ ppn_get_extrn_ics }}</nodes>
-    <walltime>{{ wtime_get_extrn_ics }}</walltime>
+    &RESOURCES_GET_EXTRN_ICS;
+    <walltime>&WALLTIME_GET_EXTRN_ICS;</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
     <jobname>&TAG;_&GET_EXTRN_ICS_TN;{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&GET_EXTRN_ICS_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
@@ -619,8 +699,8 @@ MODULES_RUN_TASK_FP script.
     &WALL_LIMIT_PRE;
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_EXTRN_LBCS_TN;" "&JOBSDIR;/JREGIONAL_GET_EXTRN_MDL_FILES"</command>
-    <nodes>{{ nnodes_get_extrn_lbcs }}:ppn={{ ppn_get_extrn_lbcs }}</nodes>
-    <walltime>{{ wtime_get_extrn_lbcs }}</walltime>
+    &RESOURCES_GET_EXTRN_LBCS;
+    <walltime>&WALLTIME_GET_EXTRN_LBCS;</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
     <jobname>&TAG;_&GET_EXTRN_LBCS_TN;{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&GET_EXTRN_LBCS_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
@@ -681,9 +761,10 @@ MODULES_RUN_TASK_FP script.
     &WALL_LIMIT_PRE;
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_EXTRN_LBCS_TN;" "&JOBSDIR;/JREGIONAL_GET_EXTRN_MDL_FILES"</command>
-    <nodes>{{ nnodes_get_extrn_lbcs }}:ppn={{ ppn_get_extrn_lbcs }}</nodes>
-    <walltime>{{ wtime_get_extrn_lbcs }}</walltime>
+    &RESOURCES_GET_EXTRN_LBCS;
+    <walltime>&WALLTIME_GET_EXTRN_LBCS;</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
+
     <jobname>&TAG;_&GET_EXTRN_LBCS_LONG_TN;{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&GET_EXTRN_LBCS_LONG_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
@@ -729,8 +810,9 @@ MODULES_RUN_TASK_FP script.
     &WALL_LIMIT_PRE;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_ICS_TN;" "&JOBSDIR;/JREGIONAL_MAKE_ICS"</command>
-    <nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>
-    <walltime>{{ wtime_make_ics }}</walltime>
+    &RESOURCES_MAKE_ICS;
+    &NATIVE_ALL;
+    <walltime>&WALLTIME_MAKE_ICS;</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
     <jobname>&TAG;_&MAKE_ICS_TN;{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&MAKE_ICS_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
@@ -777,8 +859,9 @@ MODULES_RUN_TASK_FP script.
     &WALL_LIMIT_PRE;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_LBCS_TN;" "&JOBSDIR;/JREGIONAL_MAKE_LBCS"</command>
-    <nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>
-    <walltime>{{ wtime_make_lbcs }}</walltime>
+    &RESOURCES_MAKE_LBCS;
+    &NATIVE_ALL;
+    <walltime>&WALLTIME_MAKE_LBCS;</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
     <jobname>&TAG;_&MAKE_LBCS_TN;_#bcgrp#{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&MAKE_LBCS_TN;{{ uscore_ensmem_name }}_@Y@m@d@H_#bcgrp#.log</cyclestr></join>
@@ -844,9 +927,10 @@ MODULES_RUN_TASK_FP script.
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PREPSTART_TN;" "&JOBSDIR;/JREGIONAL_RUN_PREPSTART"</command>
 
-    <nodes>{{ nnodes_run_prepstart }}:ppn={{ ppn_run_prepstart }}</nodes>
+    &RESOURCES_PREP_CYC;
+    &NATIVE_ALL;
+    <walltime>&WALLTIME_PREP_CYC;</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
-    <walltime>{{ wtime_run_prepstart }}</walltime>
     <jobname>&TAG;_&PREP_CYC_SPINUP_TN;{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&PREP_CYC_SPINUP_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
@@ -914,17 +998,10 @@ MODULES_RUN_TASK_FP script.
     &WALL_LIMIT_FCST;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_FCST_TN;" "&JOBSDIR;/JREGIONAL_RUN_FCST"</command>
-  {% if machine in ["JET", "HERA"]  %}
-    <cores>{{ ncores_run_fcst }}</cores>
-    <native>{{ native_run_fcst }} &RRFS_RESERVE;</native>
-  {% elif machine in ["WCOSS2"]  %}
-    <nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}:tpp=2</nodes>
+    &RESOURCES_FCST_SPINUP;
+    <walltime>&WALLTIME_FCST_SPINUP;</walltime>
+    &NATIVE_FCST_SPINUP;
     <nodesize>&NCORES_PER_NODE;</nodesize>
-  {% else %} 
-    <nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>
-    <nodesize>&NCORES_PER_NODE;</nodesize>
-  {% endif %}
-    <walltime>00:30:00</walltime>
     <jobname>&TAG;_&RUN_FCST_TN;_ensinit{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&RUN_FCST_TN;_ensinit{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
@@ -960,8 +1037,9 @@ MODULES_RUN_TASK_FP script.
       &RSRV_DEFAULT;
       &WALL_LIMIT_SAVE_RESTART;
       <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSDIR;/JREGIONAL_SAVE_RESTART"</command>
-      <nodes>{{ nnodes_save_restart }}:ppn={{ ppn_save_restart }}</nodes>
-      <walltime>{{ wtime_save_restart }}</walltime>
+      &RESOURCES_SAVE_RESTART;
+      &NATIVE_ALL;
+      <walltime>&WALLTIME_SAVE_RESTART;</walltime>
       <nodesize>&NCORES_PER_NODE;</nodesize>
       <jobname>&TAG;_&SAVE_RESTART_TN;_ensinit{{ uscore_ensmem_name }}</jobname>
       <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;_ensinit{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
@@ -995,9 +1073,10 @@ MODULES_RUN_TASK_FP script.
     &WALL_LIMIT_PRE;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PREPSTART_TN;" "&JOBSDIR;/JREGIONAL_RUN_PREPSTART"</command>
-    <nodes>{{ nnodes_run_prepstart }}:ppn={{ ppn_run_prepstart }}</nodes>
+    &RESOURCES_PREP_CYC;
+    &NATIVE_ALL;
+    <walltime>&WALLTIME_PREP_CYC;</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
-    <walltime>{{ wtime_run_prepstart }}</walltime>
     <jobname>&TAG;_&PREP_CYC_SPINUP_TN;_ensinit{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&PREP_CYC_SPINUP_TN;_ensinit{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
@@ -1026,10 +1105,10 @@ MODULES_RUN_TASK_FP script.
     &RSRV_ENKF;
     &WALL_LIMIT_RECENTER;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_RECENTER_TN;" &JOBSDIR;/JREGIONAL_RUN_RECENTER</command>
-
-    <nodes>{{ nnodes_run_recenter }}:ppn={{ ppn_run_recenter }}</nodes>
+    &RESOURCES_RUN_RECENTER;
+    &NATIVE_ALL;
+    <walltime>&WALLTIME_RUN_RECENTER;</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
-    <walltime>{{ wtime_run_recenter }}</walltime>
     <jobname><cyclestr>&TAG;_&RUN_RECENTER_TN;_spinup</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/&RUN_RECENTER_TN;_spinup_@Y@m@d@H.log</cyclestr></join>
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
@@ -1069,14 +1148,10 @@ MODULES_RUN_TASK_FP script.
     &WALL_LIMIT_ANAL;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_RUN_ANAL"</command>
-    {% if machine in ["JET", "HERA"] -%}
-    <cores>{{ ncores_run_anal }}</cores>
-    <native>{{ native_run_anal }} &RRFS_RESERVE;</native>
-    {% else -%}
-    <nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}</nodes>
+    &RESOURCES_ANAL_GSI;
+    &NATIVE_ANAL_GSI;
+    <walltime>&WALLTIME_ANAL_GSI;</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
-    {% endif -%}
-    <walltime>{{ wtime_run_anal }}</walltime>
     <jobname>&TAG;_&ANAL_GSI_TN;_spinup{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&ANAL_GSI_TN;{{ uscore_ensmem_name }}_spinup_@Y@m@d@H.log</cyclestr></join>
 
@@ -1158,9 +1233,10 @@ MODULES_RUN_TASK_FP script.
     &WALL_LIMIT_POST;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_POST_TN;" "&JOBSDIR;/JREGIONAL_RUN_POSTANAL"</command>
-    <nodes>{{ nnodes_run_postanal }}:ppn={{ ppn_run_postanal }}</nodes>
+    &RESOURCES_POSTANAL;
+    &NATIVE_ALL;
+    <walltime>&WALLTIME_POSTANAL;</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
-    <walltime>{{ wtime_run_postanal }}</walltime>
     <jobname>&TAG;_&POSTANAL_TN;_spinup{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&POSTANAL_TN;{{ uscore_ensmem_name }}_spinup_@Y@m@d@H.log</cyclestr></join>
 
@@ -1195,15 +1271,10 @@ MODULES_RUN_TASK_FP script.
     &WALL_LIMIT_ANAL;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&HYBRID_RADAR_REF_TN;" "&JOBSDIR;/JREGIONAL_RUN_ANAL"</command>
-    {% if machine in ["JET", "HERA"] -%}
-    <cores>{{ ncores_run_anal }}</cores>
-    <native>{{ native_run_anal }} &RRFS_RESERVE;</native>
-    {% else -%}
-    <nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}</nodes>
-    <native>-l place=excl</native>
+    &RESOURCES_ANAL_GSI;
+    &NATIVE_ANAL_GSI;
+    <walltime>&WALLTIME_ANAL_GSI;</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
-    {% endif -%}
-    <walltime>{{ wtime_run_anal }}</walltime>
     <jobname>&TAG;_&HYBRID_RADAR_REF_TN;_spinup</jobname>
     <join><cyclestr>&LOGDIR;/&HYBRID_RADAR_REF_TN;_spinup_@Y@m@d@H.log</cyclestr></join>
 
@@ -1330,7 +1401,7 @@ MODULES_RUN_TASK_FP script.
 
     &RESOURCES_NONVAR_CLD;
     <walltime>&WALLTIME_NONVAR_CLD;</walltime>
-    &NATIVE_NONVAR_CLD;
+    &NATIVE_ALL;
     <nodesize>&NCORES_PER_NODE;</nodesize>
     <memory>&MEMO_NONVAR_CLD;</memory>
 
@@ -1393,17 +1464,10 @@ MODULES_RUN_TASK_FP script.
     &WALL_LIMIT_FCST;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_FCST_TN;" "&JOBSDIR;/JREGIONAL_RUN_FCST"</command>
-  {% if machine in ["JET", "HERA"]  %}
-    <cores>{{ ncores_run_fcst }}</cores>
-    <native>{{ native_run_fcst }} &RRFS_RESERVE;</native>
-  {% elif machine in ["WCOSS2"]  %}
-    <nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}:tpp=2</nodes>
+    &RESOURCES_FCST_SPINUP;
+    <walltime>&WALLTIME_FCST_SPINUP;</walltime>
+    &NATIVE_FCST_SPINUP;
     <nodesize>&NCORES_PER_NODE;</nodesize>
-  {% else %}
-    <nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>
-    <nodesize>&NCORES_PER_NODE;</nodesize>
-  {% endif %}
-    <walltime>{{ wtime_run_fcst }}</walltime>
     <jobname>&TAG;_&RUN_FCST_TN;_spinup{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&RUN_FCST_TN;_spinup{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
@@ -1493,8 +1557,9 @@ MODULES_RUN_TASK_FP script.
       &RSRV_DEFAULT;
       &WALL_LIMIT_SAVE_RESTART;
       <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSDIR;/JREGIONAL_SAVE_RESTART"</command>
-      <nodes>{{ nnodes_save_restart }}:ppn={{ ppn_save_restart }}</nodes>
-      <walltime>{{ wtime_save_restart }}</walltime>
+      &RESOURCES_SAVE_RESTART;
+      &NATIVE_ALL;
+      <walltime>&WALLTIME_SAVE_RESTART;</walltime>
       <nodesize>&NCORES_PER_NODE;</nodesize>
       <jobname>&TAG;_&SAVE_RESTART_TN;{{ uscore_ensmem_name }}_f#fhr#</jobname>
       <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;_spinup{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
@@ -1537,8 +1602,9 @@ MODULES_RUN_TASK_FP script.
       &RSRV_POST;
       &WALL_LIMIT_POST;
       <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_POST_TN;" "&JOBSDIR;/JREGIONAL_RUN_POST"</command>
-      <nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>
-      <walltime>{{ wtime_run_post }}</walltime>
+      &RESOURCES_RUN_POST;
+      &NATIVE_ALL;
+      <walltime>&WALLTIME_RUN_POST;</walltime>
       <nodesize>&NCORES_PER_NODE;</nodesize>
       <jobname>&TAG;_&RUN_POST_TN;_spinup{{ uscore_ensmem_name }}_f#fhr#</jobname>
       <join><cyclestr>&LOGDIR;/&RUN_POST_TN;_spinup{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
@@ -1568,10 +1634,11 @@ MODULES_RUN_TASK_FP script.
       &RSRV_WGRIB2;
       &WALL_LIMIT_POST;
       <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_WGRIB2_TN;" "&JOBSDIR;/JREGIONAL_RUN_WGRIB2"</command>
-      <nodes>{{ nnodes_run_wgrib2 }}:ppn={{ ppn_run_wgrib2 }}</nodes>
-      <walltime>{{ wtime_run_wgrib2 }}</walltime>
+      &RESOURCES_RUN_WGRIB2;
+      &NATIVE_ALL;
+      <walltime>&WALLTIME_RUN_WGRIB2;</walltime>
+      <memory>&MEMO_RUN_WGRIB2;</memory>
       <nodesize>&NCORES_PER_NODE;</nodesize>
-      <memory>{{ memo_run_wgrib2 }}</memory>
       <jobname>&TAG;_&RUN_WGRIB2_TN;_spinup{{ uscore_ensmem_name }}_f#fhr#</jobname>
       <join><cyclestr>&LOGDIR;/&RUN_WGRIB2_TN;_spinup{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
@@ -1608,9 +1675,10 @@ MODULES_RUN_TASK_FP script.
     &WALL_LIMIT_PRE;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PREPSTART_TN;" "&JOBSDIR;/JREGIONAL_RUN_PREPSTART"</command>
-    <nodes>{{ nnodes_run_prepstart }}:ppn={{ ppn_run_prepstart }}</nodes>
+    &RESOURCES_PREP_CYC;
+    &NATIVE_ALL;
+    <walltime>&WALLTIME_PREP_CYC;</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
-    <walltime>{{ wtime_run_prepstart }}</walltime>
     <jobname>&TAG;_&PREP_CYC_PROD_TN;{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&PREP_CYC_PROD_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
@@ -1719,9 +1787,10 @@ MODULES_RUN_TASK_FP script.
     &WALL_LIMIT_RECENTER;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PREPSTART_TN;" "&JOBSDIR;/JREGIONAL_CALC_ENSMEAN"</command>
-    <nodes>{{ nnodes_run_recenter }}:ppn={{ ppn_run_recenter }}</nodes>
+    &RESOURCES_RUN_RECENTER;
+    &NATIVE_ALL;
+    <walltime>&WALLTIME_RUN_RECENTER;</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
-    <walltime>{{ wtime_run_recenter }}</walltime>
     <jobname>&TAG;_&CALC_ENSMEAN_TN;</jobname>
     <join><cyclestr>&LOGDIR;/&CALC_ENSMEAN_TN;_@Y@m@d@H.log</cyclestr></join>
 
@@ -1752,14 +1821,10 @@ MODULES_RUN_TASK_FP script.
     &WALL_LIMIT_ANAL;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_RUN_ANAL"</command>
-    {% if machine in ["JET", "HERA"] -%}
-    <cores>{{ ncores_run_observer }}</cores>
-    <native>{{ native_run_anal }} &RRFS_RESERVE;</native>
-    {% else -%}
-    <nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}</nodes>
+    &RESOURCES_ANAL_GSI;
+    &NATIVE_ANAL_GSI;
+    <walltime>&WALLTIME_ANAL_GSI;</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
-    {% endif -%}
-    <walltime>{{ wtime_run_anal }}</walltime>
     <jobname>&TAG;_&OBSERVER_GSI_ENSMEAN_TN;</jobname>
     <join><cyclestr>&LOGDIR;/&OBSERVER_GSI_ENSMEAN_TN;_@Y@m@d@H.log</cyclestr></join>
 
@@ -1808,14 +1873,10 @@ MODULES_RUN_TASK_FP script.
     &WALL_LIMIT_ANAL;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_RUN_ANAL"</command>
-    {% if machine in ["JET", "HERA"] -%}
-    <cores>{{ ncores_run_observer }}</cores>
-    <native>{{ native_run_anal }} &RRFS_RESERVE;</native>
-    {% else -%}
-    <nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}</nodes>
+    &RESOURCES_ANAL_GSI;
+    &NATIVE_ANAL_GSI;
+    <walltime>&WALLTIME_ANAL_GSI;</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
-    {% endif -%}
-    <walltime>{{ wtime_run_anal }}</walltime>
     <jobname>&TAG;_&OBSERVER_GSI_TN;{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&OBSERVER_GSI_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
@@ -1924,10 +1985,10 @@ MODULES_RUN_TASK_FP script.
     &RSRV_ENKF;
     &WALL_LIMIT_RECENTER;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_RECENTER_TN;" &JOBSDIR;/JREGIONAL_RUN_RECENTER</command>
-
-    <nodes>{{ nnodes_run_recenter }}:ppn={{ ppn_run_recenter }}</nodes>
+    &RESOURCES_RUN_RECENTER;
+    &NATIVE_ALL;
+    <walltime>&WALLTIME_RUN_RECENTER;</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
-    <walltime>{{ wtime_run_recenter }}</walltime>
     <jobname><cyclestr>&TAG;_&RUN_RECENTER_TN;</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/&RUN_RECENTER_TN;_@Y@m@d@H.log</cyclestr></join>
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
@@ -1980,14 +2041,11 @@ MODULES_RUN_TASK_FP script.
     &WALL_LIMIT_ANAL;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_RUN_ANAL"</command>
-    {% if machine in ["JET", "HERA"] -%}
-    <cores>{{ ncores_run_anal }}</cores>
-    <native>{{ native_run_anal }} &RRFS_RESERVE;</native>
-    {% else -%}
-    <nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}</nodes>
+
+    &RESOURCES_ANAL_GSI;
+    &NATIVE_ANAL_GSI;
+    <walltime>&WALLTIME_ANAL_GSI;</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
-    {% endif -%}
-    <walltime>{{ wtime_run_anal }}</walltime>
     <jobname>&TAG;_&ANAL_GSI_TN;_prod{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&ANAL_GSI_TN;{{ uscore_ensmem_name }}_prod_@Y@m@d@H.log</cyclestr></join>
 
@@ -2069,9 +2127,10 @@ MODULES_RUN_TASK_FP script.
     &WALL_LIMIT_POST;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_POST_TN;" "&JOBSDIR;/JREGIONAL_RUN_POSTANAL"</command>
-    <nodes>{{ nnodes_run_postanal }}:ppn={{ ppn_run_postanal }}</nodes>
+    &RESOURCES_POSTANAL;
+    &NATIVE_ALL;
+    <walltime>&WALLTIME_POSTANAL;</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
-    <walltime>{{ wtime_run_postanal }}</walltime>
     <jobname>&TAG;_&POSTANAL_TN;_prod{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&POSTANAL_TN;{{ uscore_ensmem_name }}_prod_@Y@m@d@H.log</cyclestr></join>
 
@@ -2106,15 +2165,10 @@ MODULES_RUN_TASK_FP script.
     &WALL_LIMIT_ANAL;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&HYBRID_RADAR_REF_TN;" "&JOBSDIR;/JREGIONAL_RUN_ANAL"</command>
-    {% if machine in ["JET", "HERA"] -%}
-    <cores>{{ ncores_run_anal }}</cores>
-    <native>{{ native_run_anal }} &RRFS_RESERVE;</native>
-    {% else -%}
-    <nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}</nodes>
-    <native>-l place=excl</native>
+    &RESOURCES_ANAL_GSI;
+    &NATIVE_ANAL_GSI;
+    <walltime>&WALLTIME_ANAL_GSI;</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
-    {% endif -%}
-    <walltime>{{ wtime_run_anal }}</walltime>
     <jobname>&TAG;_&HYBRID_RADAR_REF_TN;_prod</jobname>
     <join><cyclestr>&LOGDIR;/&HYBRID_RADAR_REF_TN;_prod_@Y@m@d@H.log</cyclestr></join>
 
@@ -2241,7 +2295,7 @@ MODULES_RUN_TASK_FP script.
 
     &RESOURCES_NONVAR_CLD;
     <walltime>&WALLTIME_NONVAR_CLD;</walltime>
-    &NATIVE_NONVAR_CLD;
+    &NATIVE_ALL;
     <nodesize>&NCORES_PER_NODE;</nodesize>
     <memory>&MEMO_NONVAR_CLD;</memory>
 
@@ -2308,7 +2362,6 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_FCST_PROD;</walltime>
     &NATIVE_FCST_PROD;
     <nodesize>&NCORES_PER_NODE;</nodesize>
-
     <jobname>&TAG;_&RUN_FCST_TN;_prod{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&RUN_FCST_TN;_prod{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
@@ -2454,8 +2507,9 @@ MODULES_RUN_TASK_FP script.
       &RSRV_POST;
       &WALL_LIMIT_POST;
       <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_POST_TN;" "&JOBSDIR;/JREGIONAL_RUN_POST"</command>
-      <nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>
-      <walltime>{{ wtime_run_post }}</walltime>
+      &RESOURCES_RUN_POST;
+      &NATIVE_ALL;
+      <walltime>&WALLTIME_RUN_POST;</walltime>
       <nodesize>&NCORES_PER_NODE;</nodesize>
       <jobname>&TAG;_&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr#</jobname>
       <join><cyclestr>&LOGDIR;/&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
@@ -2506,10 +2560,11 @@ MODULES_RUN_TASK_FP script.
       &RSRV_WGRIB2;
       &WALL_LIMIT_POST;
       <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_WGRIB2_TN;" "&JOBSDIR;/JREGIONAL_RUN_WGRIB2"</command>
-      <nodes>{{ nnodes_run_wgrib2 }}:ppn={{ ppn_run_wgrib2 }}</nodes>
-      <walltime>{{ wtime_run_wgrib2 }}</walltime>
+      &RESOURCES_RUN_WGRIB2;
+      &NATIVE_ALL;
+      <walltime>&WALLTIME_RUN_WGRIB2;</walltime>
       <nodesize>&NCORES_PER_NODE;</nodesize>
-      <memory>{{ memo_run_wgrib2 }}</memory>
+      <memory>&MEMO_RUN_WGRIB2;</memory>
       <jobname>&TAG;_&RUN_WGRIB2_TN;{{ uscore_ensmem_name }}_f#fhr#</jobname>
       <join><cyclestr>&LOGDIR;/&RUN_WGRIB2_TN;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
