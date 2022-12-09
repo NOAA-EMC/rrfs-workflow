@@ -75,9 +75,9 @@ else
 fi
 
 if [ "${IS_RTMA}" = "TRUE" ]; then
-  fcst_length=${FCST_LEN_HRS_CYCLES[$cyc]/%.*/}
+  fcst_length=${FCST_LEN_HRS_CYCLES[$((10#$cyc))]/%.*/}
 else
-  fcst_length=${FCST_LEN_HRS_CYCLES[$cyc]}
+  fcst_length=${FCST_LEN_HRS_CYCLES[$((10#$cyc))]}
 fi
 
 IMAGES_FN=${IMAGES_FN:-$PYTHON_GRAPHICS_YML_FN}
@@ -132,7 +132,7 @@ if [ -d ${postprd_dir}/${subdir} ] ; then
   zip_dir=${zip_dir}/${subdir:-}
 fi
 
-if [ ${ENSPROD:-} = 'ensprod' ] ; then
+if [ "${ENSPROD:-}" = 'ensprod' ] ; then
   file_id="ens"
   start_hour=1
 fi
