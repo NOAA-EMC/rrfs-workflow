@@ -1678,6 +1678,7 @@ PROCESS_SMOKE_TN="process_smoke"
 RADAR_REFL2TTEN_TN="radar_refl2tten"
 CLDANL_NONVAR_TN="cldanl_nonvar"
 SAVE_RESTART_TN="save_restart"
+SAVE_INPUT_TN="save_input"
 JEDI_ENVAR_IODA_TN="jedi_envar_ioda"
 #
 # Number of nodes.
@@ -1823,6 +1824,7 @@ MAXTRIES_PROCESS_SMOKE="1"
 MAXTRIES_RADAR_REF2TTEN="1"
 MAXTRIES_CLDANL_NONVAR="1"
 MAXTRIES_SAVE_RESTART="1"
+MAXTRIES_SAVE_INPUT="1"
 MAXTRIES_JEDI_ENVAR_IODA="1"
 #
 #
@@ -1958,6 +1960,9 @@ TILE_SETS="full"
 # DO_RECENTER:
 # Decide whether or not to run recenter for the ensemble members
 #
+# DO_SAVE_INPUT:
+# Decide whether or not to run save_input after the DA analysis  
+#
 # DO_ENS_GRAPHICS:
 # Flag to turn on/off ensemble graphics. Turns OFF deterministic
 # graphics.
@@ -2003,6 +2008,7 @@ DO_RECENTER="FALSE"
 DO_ENS_GRAPHICS="FALSE"
 DO_ENSPOST="FALSE"
 DO_ENSINIT="FALSE"
+DO_SAVE_INPUT="FALSE"
 #
 #-----------------------------------------------------------------------
 #

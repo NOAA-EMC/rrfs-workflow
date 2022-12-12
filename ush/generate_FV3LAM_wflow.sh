@@ -223,6 +223,7 @@ settings="\
   'cldanl_nonvar': ${CLDANL_NONVAR_TN}
   'run_bufrsnd_tn': ${RUN_BUFRSND_TN}
   'save_restart': ${SAVE_RESTART_TN}
+  'save_input': ${SAVE_INPUT_TN}
   'tag': ${TAG}
   'jedi_envar_ioda': ${JEDI_ENVAR_IODA_TN}
 #
@@ -368,6 +369,7 @@ settings="\
   'maxtries_radar_ref2tten': ${MAXTRIES_RADAR_REF2TTEN}
   'maxtries_cldanl_nonvar': ${MAXTRIES_CLDANL_NONVAR}
   'maxtries_save_restart': ${MAXTRIES_SAVE_RESTART}
+  'maxtries_save_input': ${MAXTRIES_SAVE_INPUT}
   'maxtries_jedi_envar_ioda': ${MAXTRIES_JEDI_ENVAR_IODA}
 #
 # Flags that specify whether to run the preprocessing tasks.
@@ -473,6 +475,7 @@ settings="\
   'do_ens_graphics': ${DO_ENS_GRAPHICS}
   'do_enspost': ${DO_ENSPOST}
   'do_ensinit': ${DO_ENSINIT}
+  'do_save_input': ${DO_SAVE_INPUT}
 #
 # data assimilation related parameters.
 #

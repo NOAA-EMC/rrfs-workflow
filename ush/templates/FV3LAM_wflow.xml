@@ -56,6 +56,7 @@ Workflow task names.
 <!ENTITY RADAR_REFL2TTEN_TN   "{{ radar_refl2tten }}">
 <!ENTITY CLDANL_NONVAR_TN     "{{ cldanl_nonvar }}">
 <!ENTITY SAVE_RESTART_TN     "{{ save_restart }}">
+<!ENTITY SAVE_INPUT_TN     "{{ save_input }}">
 <!ENTITY JEDI_ENVAR_IODA_TN     "{{ jedi_envar_ioda }}">
 <!ENTITY PROCESS_SMOKE_TN "{{ process_smoke }}">
 
@@ -1493,7 +1494,6 @@ MODULES_RUN_TASK_FP script.
         <taskdep task="&POSTANAL_TN;_spinup{{ uscore_ensmem_name }}"/>
         {%- endif %}
       {%- elif do_enkfupdate or do_enkf_radar_ref %}
-        <or>
         <and>
           <or>
           {%- for h in cycl_hrs_spinstart %}
@@ -1508,31 +1508,6 @@ MODULES_RUN_TASK_FP script.
           {%- endif %}
           </or>
         </and>
-        {%- if do_recenter %}
-        <or>
-         <and>
-          <or>
-          {%- for h in cycl_hrs_recenter %}
-          <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
-          {%- endfor %}
-          </or>
-          <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H/recenter/fcst_fv3lam/INPUT/recenter_complete.txt</cyclestr></datadep>
-         </and>
-         <and>
-          {%- for h in cycl_hrs_recenter %}
-          <strneq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></strneq>
-          {%- endfor %}
-          <taskdep task="&CLDANL_NONVAR_TN;_spinup{{ uscore_ensmem_name }}"/>
-         </and>
-        </or>
-        {%- elif do_nonvar_cldanal%}
-        <taskdep task="&CLDANL_NONVAR_TN;_spinup{{ uscore_ensmem_name }}"/>
-        {%- elif do_enkf_radar_ref %}
-        <taskdep task="&ENKF_RADAR_REF_TN;"/>
-        {%- else %}
-        <taskdep task="&RUN_ENKFUPDT_TN;"/>
-       {%- endif %}
-       </or>
       {%- else %}
       <taskdep task="&PREP_CYC_TN;_spinup{{ uscore_ensmem_name }}"/>
       {%- endif %}
@@ -2342,10 +2317,83 @@ MODULES_RUN_TASK_FP script.
   </task>
 
 {%- endif %}
+
+{%- if do_ensemble %}
+ </metatask>
+{%- endif %}
+
+{%- if do_save_input and do_ensemble %}
 <!--
 ************************************************************************
 ************************************************************************
 -->
+{% if do_ensemble %}
+ <metatask name="save_ensda_output">
+  <var name="{{ ensmem_indx_name }}">
+    {%- for m in range(1, num_ens_members_fcst+1) -%}{%- set fmtstr=" %0"~ndigits_ensmem_names~"d" -%}{{- fmtstr%m -}}{%- endfor %} </var>
+{%- endif %}
+
+  <task name="&SAVE_INPUT_TN;_prod{{ uscore_ensmem_name }}" cycledefs="prodcyc" maxtries="{{ maxtries_save_input }}">
+
+    &RSRV_DEFAULT;
+    &WALL_LIMIT_SAVE_RESTART;
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSDIR;/JREGIONAL_SAVE_INPUT"</command>
+    <nodes>{{ nnodes_save_restart }}:ppn={{ ppn_save_restart }}</nodes>
+    <walltime>{{ wtime_save_restart }}</walltime>
+    <nodesize>&NCORES_PER_NODE;</nodesize>
+    <jobname>&TAG;_&SAVE_INPUT_TN;{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr>&LOGDIR;/&SAVE_INPUT_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
+
+    <dependency>
+       {%- if do_recenter %}
+        <or>
+         <and>
+          <or>
+          {%- for h in cycl_hrs_recenter %}
+          <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
+          {%- endfor %}
+          </or>
+          <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H/recenter/fcst_fv3lam/INPUT/recenter_complete.txt</cyclestr></datadep>
+         </and>
+         <and>
+          {%- for h in cycl_hrs_recenter %}
+          <strneq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></strneq>
+          {%- endfor %}
+          <taskdep task="&CLDANL_NONVAR_TN;_prod{{ uscore_ensmem_name }}"/>
+         </and>
+        </or>
+        {%- elif do_nonvar_cldanal%}
+        <taskdep task="&CLDANL_NONVAR_TN;_prod{{ uscore_ensmem_name }}"/>
+        {%- elif do_enkf_radar_ref %}
+        <taskdep task="&ENKF_RADAR_REF_TN;"/>
+        {%- elif do_enkfupdate %}
+        <taskdep task="&RUN_ENKFUPDT_TN;"/>
+       {%- endif %}
+    </dependency>
+
+  </task>
+{% if do_ensemble %}
+ </metatask>
+{%- endif %}
+{%- endif %}
+<!--
+************************************************************************
+************************************************************************
+-->
+{% if do_ensemble %}
+ <metatask name="run_ensemble">
+  <var name="{{ ensmem_indx_name }}">
+    {%- for m in range(1, num_ens_members+1) -%}{%- set fmtstr=" %0"~ndigits_ensmem_names~"d" -%}{{- fmtstr%m -}}{%- endfor %} </var>
+{%- endif %}
   <task name="&RUN_FCST_TN;_prod{{ uscore_ensmem_name }}" cycledefs="prodcyc" maxtries="{{ maxtries_run_fcst }}">
 
     &RSRV_FCST;
@@ -2384,24 +2432,9 @@ MODULES_RUN_TASK_FP script.
         {%- if do_envar_radar_ref %}
         <taskdep task="&HYBRID_RADAR_REF_TN;_prod"/>
         {%- else  %}
-        <taskdep task="&POSTANAL_TN;_prod{{ uscore_ensmem_name }}"/>
+        <taskdep task="&POSTANAL_TN;_prod"/>
         {%- endif %}
       {%- elif do_enkfupdate or do_enkf_radar_ref %}
-        <or>
-        <and>
-          <or>
-          {%- for h in cycl_hrs_spinstart %}
-            <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
-          {%- endfor %}
-          </or>
-          <or>
-          {%- if do_ensinit %}
-          <taskdep task="&RUN_RECENTER_TN;_prod"/>
-          {%- else  %}
-          <taskdep task="&PREP_CYC_TN;_prod{{ uscore_ensmem_name }}"/>
-          {%- endif %}
-          </or>
-        </and>
         {%- if do_recenter %}
         <or>
          <and>
@@ -2426,7 +2459,6 @@ MODULES_RUN_TASK_FP script.
         {%- else %}
         <taskdep task="&RUN_ENKFUPDT_TN;"/>
        {%- endif %}
-       </or>
       {%- else %}
       <taskdep task="&PREP_CYC_TN;_prod{{ uscore_ensmem_name }}"/>
       {%- endif %}

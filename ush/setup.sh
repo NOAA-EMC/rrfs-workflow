@@ -486,6 +486,10 @@ optionList[14]=DO_SMOKE_DUST
 optionList[15]=DO_POST_PROD
 optionList[16]=DO_POST_SPINUP
 optionList[17]=DO_PARALLEL_PRDGEN
+optionList[18]=DO_ENSEMBLE
+optionList[19]=DO_ENSINIT
+optionList[20]=DO_ENSFCST
+optionList[21]=DO_SAVE_INPUT
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));
@@ -1610,69 +1614,6 @@ external model files for generating LBCs should be located does not exist:
   EXTRN_MDL_SOURCE_BASEDIR_LBCS = \"${EXTRN_MDL_SOURCE_BASEDIR_LBCS}\""
   fi
 
-fi
-#
-#-----------------------------------------------------------------------
-#
-# Make sure that DO_ENSEMBLE is set to a valid value.  Then set the names
-# of the ensemble members.  These will be used to set the ensemble member
-# directories.  Also, set the full path to the FV3 namelist file corresponding
-# to each ensemble member.
-#
-#-----------------------------------------------------------------------
-#
-check_var_valid_value "DO_ENSEMBLE" "valid_vals_DO_ENSEMBLE"
-#
-# Set DO_ENSEMBLE to either "TRUE" or "FALSE" so we don't have to consider
-# other valid values later on.
-#
-DO_ENSEMBLE=${DO_ENSEMBLE^^}
-if [ "$DO_ENSEMBLE" = "TRUE" ] || \
-   [ "$DO_ENSEMBLE" = "YES" ]; then
-  DO_ENSEMBLE="TRUE"
-elif [ "$DO_ENSEMBLE" = "FALSE" ] || \
-     [ "$DO_ENSEMBLE" = "NO" ]; then
-  DO_ENSEMBLE="FALSE"
-fi
-#
-#-----------------------------------------------------------------------
-#
-# Make sure that DO_ENSINIT is set to a valid value.
-#
-#-----------------------------------------------------------------------
-#
-check_var_valid_value "DO_ENSINIT" "valid_vals_DO_ENSINIT"
-#
-# Set DO_ENSFCST to either "TRUE" or "FALSE" so we don't have to consider
-# other valid values later on.
-#
-DO_ENSINIT=${DO_ENSINIT^^}
-if [ "$DO_ENSINIT" = "TRUE" ] || \
-   [ "$DO_ENSINIT" = "YES" ]; then 
-  DO_ENSINIT="TRUE"
-elif [ "$DO_ENSINIT" = "FALSE" ] || \
-     [ "$DO_ENSINIT" = "NO" ]; then 
-  DO_ENSINIT="FALSE"
-fi
-#
-#-----------------------------------------------------------------------
-#
-# Make sure that DO_ENSFCST is set to a valid value.
-#
-#-----------------------------------------------------------------------
-#
-check_var_valid_value "DO_ENSFCST" "valid_vals_DO_ENSFCST"
-#
-# Set DO_ENSFCST to either "TRUE" or "FALSE" so we don't have to consider
-# other valid values later on.
-#
-DO_ENSFCST=${DO_ENSFCST^^}
-if [ "$DO_ENSFCST" = "TRUE" ] || \
-   [ "$DO_ENSFCST" = "YES" ]; then 
-  DO_ENSFCST="TRUE"
-elif [ "$DO_ENSFCST" = "FALSE" ] || \
-     [ "$DO_ENSFCST" = "NO" ]; then 
-  DO_ENSFCST="FALSE"
 fi
 
 NDIGITS_ENSMEM_NAMES="0"
