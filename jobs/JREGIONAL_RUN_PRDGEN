@@ -117,7 +117,7 @@ cd_vrfy "${fhr_dir}"
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSDIR/exregional_run_wgrib2.sh \
+$SCRIPTSDIR/exregional_run_prdgen.sh \
   cdate="${CDATE}" \
   run_dir="${run_dir}" \
   postprd_dir="${postprd_dir}" \

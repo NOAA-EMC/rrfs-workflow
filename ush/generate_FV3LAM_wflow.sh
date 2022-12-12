@@ -204,7 +204,7 @@ settings="\
   'make_lbcs_tn': ${MAKE_LBCS_TN}
   'run_fcst_tn': ${RUN_FCST_TN}
   'run_post_tn': ${RUN_POST_TN}
-  'run_wgrib2_tn': ${RUN_WGRIB2_TN}
+  'run_prdgen_tn': ${RUN_PRDGEN_TN}
   'anal_gsi': ${ANAL_GSI_TN}
   'post_anal': ${POSTANAL_TN}
   'observer_gsi_ensmean': ${OBSERVER_GSI_ENSMEAN_TN}
@@ -242,7 +242,7 @@ settings="\
   'nnodes_run_enkf': ${NNODES_RUN_ENKF}
   'nnodes_run_recenter': ${NNODES_RUN_RECENTER}
   'nnodes_run_post': ${NNODES_RUN_POST}
-  'nnodes_run_wgrib2': ${NNODES_RUN_WGRIB2}
+  'nnodes_run_prdgen': ${NNODES_RUN_PRDGEN}
   'nnodes_proc_radar': ${NNODES_PROC_RADAR}
   'nnodes_proc_lightning': ${NNODES_PROC_LIGHTNING}
   'nnodes_proc_bufr': ${NNODES_PROC_BUFR}
@@ -282,7 +282,7 @@ settings="\
   'ppn_run_enkf': ${PPN_RUN_ENKF}
   'ppn_run_recenter': ${PPN_RUN_RECENTER}
   'ppn_run_post': ${PPN_RUN_POST}
-  'ppn_run_wgrib2': ${PPN_RUN_WGRIB2}
+  'ppn_run_prdgen': ${PPN_RUN_PRDGEN}
   'ppn_proc_radar': ${PPN_PROC_RADAR}
   'ppn_proc_lightning': ${PPN_PROC_LIGHTNING}
   'ppn_proc_bufr': ${PPN_PROC_BUFR}
@@ -313,7 +313,7 @@ settings="\
   'wtime_run_recenter': ${WTIME_RUN_RECENTER}
   'wtime_run_post': ${WTIME_RUN_POST}
   'wtime_run_enspost': ${WTIME_RUN_ENSPOST}
-  'wtime_run_wgrib2': ${WTIME_RUN_WGRIB2}
+  'wtime_run_prdgen': ${WTIME_RUN_PRDGEN}
   'wtime_proc_radar': ${WTIME_PROC_RADAR}
   'wtime_proc_lightning': ${WTIME_PROC_LIGHTNING}
   'wtime_proc_bufr': ${WTIME_PROC_BUFR}
@@ -341,7 +341,7 @@ settings="\
   'memo_run_ref2tten': ${MEMO_RUN_REF2TTEN}
   'memo_run_nonvarcldanl': ${MEMO_RUN_NONVARCLDANL}
   'memo_run_prepstart': ${MEMO_RUN_PREPSTART}
-  'memo_run_wgrib2': ${MEMO_RUN_WGRIB2}
+  'memo_run_prdgen': ${MEMO_RUN_PRDGEN}
   'memo_run_jedienvar_ioda': ${MEMO_RUN_JEDIENVAR_IODA}
 #
 # Maximum number of tries for each task.
@@ -360,7 +360,7 @@ settings="\
   'maxtries_anal_enkf': ${MAXTRIES_ANAL_ENKF}
   'maxtries_recenter': ${MAXTRIES_RECENTER}
   'maxtries_run_post': ${MAXTRIES_RUN_POST}
-  'maxtries_run_wgrib2': ${MAXTRIES_RUN_WGRIB2}
+  'maxtries_run_prdgen': ${MAXTRIES_RUN_PRDGEN}
   'maxtries_process_radarref': ${MAXTRIES_PROCESS_RADARREF}
   'maxtries_process_lightning': ${MAXTRIES_PROCESS_LIGHTNING}
   'maxtries_process_bufr': ${MAXTRIES_PROCESS_BUFR}

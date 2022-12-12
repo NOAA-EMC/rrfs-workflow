@@ -1,7 +1,7 @@
 #%Module
 
 module load python/3.8.6
-
+module load cfp/2.0.4
 #module load lsf/10.1
 
 #module use /usrx/local/nceplibs/dev/modulefiles
