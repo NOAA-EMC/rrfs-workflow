@@ -1,7 +1,8 @@
 MACHINE="jet"
+version="v0.3.1"
 ACCOUNT="nrtrr"
 RESERVATION="rrfsdet"
-EXPT_BASEDIR="/home/rtrr/RRFS"
+EXPT_BASEDIR="/home/rtrr/RRFS/rrfs.${version}"
 EXPT_SUBDIR="RRFS_CONUS_3km"
 
 if [[ -n $RESERVATION ]] ; then
@@ -108,10 +109,9 @@ ENDHOUR="23"
 PREEXISTING_DIR_METHOD="upgrade" # "rename"
 INITIAL_CYCLEDEF="${DATE_FIRST_CYCL}0300 ${DATE_LAST_CYCL}2300 12:00:00"
 BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 06:00:00"
-PROD_CYCLEDEF="${DATE_FIRST_CYCL}0900 ${DATE_LAST_CYCL}2300 01:00:00"
-POSTPROC_CYCLEDEF="${DATE_FIRST_CYCL}0900 ${DATE_LAST_CYCL}2300 01:00:00"
-POSTPROC_LONG_CYCLEDEF="${DATE_FIRST_CYCL}1200 ${DATE_LAST_CYCL}2300 12:00:00"
-ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}1400 ${DATE_LAST_CYCL}2300 24:00:00"
+PROD_CYCLEDEF="00 01-11,13-23 ${CYCLEDAY} ${CYCLEMONTH} 2022 *"
+PRODLONG_CYCLEDEF="00 00,12 ${CYCLEDAY} ${CYCLEMONTH} 2022 *"
+#ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}1400 ${DATE_LAST_CYCL}2300 24:00:00"
 if [[ $DO_SPINUP == "TRUE" ]] ; then
   SPINUP_CYCLEDEF="00 03-08,15-20 ${CYCLEDAY} ${CYCLEMONTH} 2022 *"
 fi
@@ -154,7 +154,8 @@ MAXTRIES_CLDANL_NONVAR="3"
 MAXTRIES_RUN_POST="3"
 MAXTRIES_RUN_PRDGEN="3"
 
-WTIME_RUN_FCST="03:45:00"
+WTIME_RUN_FCST="00:45:00"
+WTIME_RUN_FCST_LONG="03:45:00"
 WTIME_MAKE_LBCS="02:00:00"
 WTIME_RUN_ANAL="00:50:00"
 WTIME_RUN_PREPSTART="00:20:00"
@@ -247,17 +248,19 @@ COMINgfs=""
 
 . set_rrfs_config.sh
 
-STMP="/lfs4/BMC/nrtrr/NCO_dirs/stmp"  # Path to directory STMP that mostly contains input files.
-PTMP="/lfs4/BMC/nrtrr/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains input files.
-NWGES="/lfs4/BMC/nrtrr/NCO_dirs/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+STMP="/lfs4/BMC/nrtrr/NCO_dirs/${version}/stmp"  # Path to directory STMP that mostly contains input files.
+PTMP="/lfs4/BMC/nrtrr/NCO_dirs/${version}"  # Path to directory STMP that mostly contains input files.
+NWGES="/lfs4/BMC/nrtrr/NCO_dirs/${version}/nwges/${envir}/${NET}"  # Path to directory NWGES that save boundary, cold initial, restart files
 if [[ ${regional_ensemble_option} == "5" ]]; then
-   RRFSE_NWGES="/lfs4/BMC/wrfruc/RRFSE/NCO_dirs/nwges"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
-   NUM_ENS_MEMBERS=30     # FV3LAM ensemble size for GSI hybrid analysis
+  RRFSE_NWGES="/lfs4/BMC/wrfruc/RRFSE/NCO_dirs/${version}/nwges/${envir}/${NET}"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
+  NUM_ENS_MEMBERS=30     # FV3LAM ensemble size for GSI hybrid analysis
+  CYCL_HRS_PRODSTART_ENS=( "07" "19" )
+  DO_ENVAR_RADAR_REF="TRUE"
 fi
 
 
 if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
-   NUM_ENS_MEMBERS=9
+   NUM_ENS_MEMBERS=30
 #   DO_SPPT=TRUE
 #   SPPT_MAG=0.5
 #   DO_ENSCONTROL="TRUE"

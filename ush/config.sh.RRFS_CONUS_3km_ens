@@ -1,8 +1,9 @@
 MACHINE="jet"
+version="v0.3.1"
 ACCOUNT="nrtrr"
 RESERVATION="rrfsens"
 RESERVATION_POST="rrfsdet"
-EXPT_BASEDIR="/misc/whome/wrfruc/RRFSE/"
+EXPT_BASEDIR="/misc/whome/wrfruc/RRFSE/rrfs.${version}"
 EXPT_SUBDIR="RRFS_CONUS_3km_ens"
 
 if [[ -n $RESERVATION ]] ; then
@@ -34,8 +35,12 @@ if [[ $MACHINE == "hera" ]] ; then
 fi
 
 if [[ $MACHINE == "orion" ]] ; then
-  ACCOUNT=ztrr
+  ACCOUNT=wrfruc
   QUEUE_ANALYSIS="batch"
+  QUEUE_WGRIB2="batch"
+  QUEUE_GRAPHICS="batch"
+  QUEUE_POST="batch"
+  NCORES_PER_NODE=24
 fi
 
 if [[ $MACHINE == "wcoss2" ]] ; then
@@ -97,6 +102,15 @@ CYCL_HRS_STOCH=("00" "12")
 CYCLEMONTH="11"
 CYCLEDAY="10-30"
 
+STARTYEAR=${DATE_FIRST_CYCL:0:4}
+STARTMONTH=${DATE_FIRST_CYCL:4:2}
+STARTDAY=${DATE_FIRST_CYCL:6:2}
+STARTHOUR="00"
+ENDYEAR=${DATE_LAST_CYCL:0:4}
+ENDMONTH=${DATE_LAST_CYCL:4:2}
+ENDDAY=${DATE_LAST_CYCL:6:2}
+ENDHOUR="23"
+
 PREEXISTING_DIR_METHOD="upgrade" # "rename"
 INITIAL_CYCLEDEF="${DATE_FIRST_CYCL}0600 ${DATE_LAST_CYCL}2300 12:00:00"
 BOUNDARY_CYCLEDEF="00 06,18 * 11 2022 *"
@@ -104,10 +118,7 @@ BOUNDARY_LONG_CYCLEDEF="00 00,12 * 11 2022 *"
 PROD_CYCLEDEF="${DATE_FIRST_CYCL}0700 ${DATE_LAST_CYCL}2300 01:00:00"
 ENSFCST_CYCLEDEF="00 00,12 * 11 2022 *"
 #RECENTER_CYCLEDEF="00 19 * 10 2022 *"
-POSTPROC_CYCLEDEF="${DATE_FIRST_CYCL}0700 ${DATE_LAST_CYCL}2300 01:00:00"
-POSTPROC_LONG_CYCLEDEF="${DATE_FIRST_CYCL}1200 ${DATE_LAST_CYCL}2300 12:00:00"
 ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 24:00:00"
-
 if [[ $DO_SPINUP == "TRUE" ]] ; then
   SPINUP_CYCLEDEF="${DATE_FIRST_CYCL}0600 ${DATE_LAST_CYCL}2300 12:00:00"
 fi
@@ -126,9 +137,6 @@ netcdf_diag=.true.
 binary_diag=.false.
 NFHOUT="3"
 NFHMAX_HF="12"
-
-#SST_update_hour=01
-#GVF_update_hour=04
 
 DT_ATMOS=60
 NCORES_RUN_ANAL=360
@@ -256,10 +264,10 @@ COMINgfs=""
 
 . set_rrfs_config.sh
 
-STMP="/mnt/lfs4/BMC/wrfruc/RRFSE/NCO_dirs/stmp"  # Path to directory STMP that mostly contains input files.
-PTMP="/mnt/lfs4/BMC/wrfruc/RRFSE/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains input files.
-NWGES="/mnt/lfs4/BMC/wrfruc/RRFSE/NCO_dirs/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
-ENSCTRL_STMP="/mnt/lfs4/BMC/nrtrr/NCO_dirs/stmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
-ENSCTRL_PTMP="/mnt/lfs4/BMC/nrtrr/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
-ENSCTRL_NWGES="/mnt/lfs4/BMC/nrtrr/NCO_dirs/nwges"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+STMP="/mnt/lfs4/BMC/wrfruc/RRFSE/${version}/stmp"  # Path to directory STMP that mostly contains input files.
+PTMP="/mnt/lfs4/BMC/wrfruc/RRFSE/${version}"  # Path to directory STMP that mostly contains input files.
+NWGES="/mnt/lfs4/BMC/wrfruc/RRFSE/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+ENSCTRL_STMP="/mnt/lfs4/BMC/nrtrr/${version}/stmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+ENSCTRL_PTMP="/mnt/lfs4/BMC/nrtrr/${version}"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+ENSCTRL_NWGES="/mnt/lfs4/BMC/nrtrr/${version}/nwges"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
 

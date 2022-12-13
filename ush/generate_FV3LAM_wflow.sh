@@ -308,6 +308,7 @@ settings="\
   'wtime_run_prepstart': ${WTIME_RUN_PREPSTART}
   'wtime_run_prepstart_ensmean': ${WTIME_RUN_PREPSTART_ENSMEAN}
   'wtime_run_fcst': ${WTIME_RUN_FCST}
+  'wtime_run_fcst_long': ${WTIME_RUN_FCST_LONG}
   'wtime_run_anal': ${WTIME_RUN_ANAL}
   'wtime_run_postanal': ${WTIME_RUN_POSTANAL}
   'wtime_run_enkf': ${WTIME_RUN_ENKF}
@@ -439,8 +440,8 @@ settings="\
   'ensfcst_cycledef': ${ENSFCST_CYCLEDEF}
   'spinup_cycledef': ${SPINUP_CYCLEDEF}
   'prod_cycledef': ${PROD_CYCLEDEF}
+  'prodlong_cycledef': ${PRODLONG_CYCLEDEF}
   'recenter_cycledef': ${RECENTER_CYCLEDEF}
-  'postproc_long_cycledef': ${POSTPROC_LONG_CYCLEDEF}
   'archive_cycledef': ${ARCHIVE_CYCLEDEF}
 #
 # boundary, forecast, and post process length.

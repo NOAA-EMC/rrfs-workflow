@@ -622,7 +622,7 @@ CYCL_HRS_HYB_FV3LAM_ENS=( "99" )
 #
 # PROD_CYCLEDEF:
 # cycle definition for product cycle group
-# This group runs: anal_gsi_input and data process, run_fcst, python_skewt, run_clean
+# This group runs: anal_gsi_input and data process, run_fcst, python_skewt, run_post, run_clean
 #
 # ENSFCST_CYCLEDEF:
 # cycle definition for ensemble free forecast cycle group
@@ -632,13 +632,8 @@ CYCL_HRS_HYB_FV3LAM_ENS=( "99" )
 # cycle definition for recenter cycle group
 # This group runs: recenter
 #
-# POSTPROC_CYCLEDEF:
-# cycle definition for "postproc" group
-# This group runs: run_post, run_ncl, run_ncl_zip
-#
-# POSTPROC_LONG_CYCLEDEF:
-# cycle definition for "postproc" group
-# This group runs: run_post_long, run_ncl_long, run_ncl_long_zip
+# PRODLONG_CYCLEDEF:
+# same as PROD_CYCLEDEF, but for long forecast 
 #
 # ARCHIVE_CYCLEDEF:
 # cycle definition for "archive" group
@@ -656,8 +651,7 @@ SPINUP_CYCLEDEF="00 01 01 01 2100 *"
 PROD_CYCLEDEF="00 01 01 01 2100 *"
 ENSFCST_CYCLEDEF="00 01 01 01 2100 *"
 RECENTER_CYCLEDEF="00 01 01 01 2100 *"
-POSTPROC_CYCLEDEF="00 01 01 01 2100 *"
-POSTPROC_LONG_CYCLEDEF="00 01 01 01 2100 *"
+PRODLONG_CYCLEDEF="00 01 01 01 2100 *"
 ARCHIVE_CYCLEDEF="00 01 01 01 2100 *"
 #
 #-------------------------------------------------------------------------------------
@@ -1759,7 +1753,8 @@ WTIME_MAKE_ICS="00:30:00"
 WTIME_MAKE_LBCS="01:30:00"
 WTIME_RUN_PREPSTART="00:10:00"
 WTIME_RUN_PREPSTART_ENSMEAN="00:10:00"
-WTIME_RUN_FCST="04:30:00"
+WTIME_RUN_FCST="00:30:00"
+WTIME_RUN_FCST_LONG="04:30:00"
 WTIME_RUN_POST="00:15:00"
 WTIME_RUN_PRDGEN="00:40:00"
 WTIME_RUN_ANAL="00:30:00"
