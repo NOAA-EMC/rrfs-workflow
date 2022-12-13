@@ -151,8 +151,46 @@ YYYYMMDDm2=$(date +%Y%m%d -d "${START_DATE} 2 days ago")
 YYJJJ00000000=`date +"%y%j00000000" -d "${START_DATE} 1 day ago"`
 YYJJJ1200=`date +"%y%j1200" -d "${START_DATE} 1 day ago"`
 YYJJJ2200000000=`date +"%y%j2200000000" -d "${START_DATE} 1 day ago"`
+
 #
 #-----------------------------------------------------------------------
+#
+# go to INPUT directory.
+# prepare initial conditions for ensemble free forecast after ensemble DA
+#
+#-----------------------------------------------------------------------
+if [ ${DO_ENSFCST} = "TRUE" ] &&  [ ${DO_ENKFUPDATE} = "TRUE" ]; then
+  cd_vrfy ${modelinputdir}
+  bkpath=${fg_root}/${YYYYMMDDHH}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/DA_OUTPUT  # use DA analysis from DA_OUTPUT
+  filelistn="fv_core.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_tracer.res.tile1.nc phy_data.nc sfc_data.nc"
+  checkfile=${bkpath}/coupler.res
+  n_iolayouty=$(($IO_LAYOUT_Y-1))
+  list_iolayout=$(seq 0 $n_iolayouty)
+  if [ -r "${checkfile}" ] ; then
+    cp_vrfy ${bkpath}/coupler.res                coupler.res
+    cp_vrfy ${bkpath}/gfs_ctrl.nc  gfs_ctrl.nc
+    cp_vrfy ${bkpath}/fv_core.res.nc             fv_core.res.nc
+    if [ "${IO_LAYOUT_Y}" == "1" ]; then
+      for file in ${filelistn}; do
+        cp_vrfy ${bkpath}/${file}     ${file}
+      done
+    else
+      for file in ${filelistn}; do
+         for ii in $list_iolayout
+         do
+           iii=$(printf %4.4i $ii)
+           cp_vrfy ${bkpath}/${file}.${iii}     ${file}.${iii}
+         done
+      done
+    fi
+  else
+    print_err_msg_exit "Error: can not find ensemble DA analysis output for running ensemble free forecast, \
+  check ${bkpath} for needed files."
+  fi
+#
+#-----------------------------------------------------------------------
+#
+else
 #
 # go to INPUT directory.
 # prepare initial conditions for 
@@ -704,6 +742,8 @@ if [ ${HH} -eq ${GVF_update_hour} ] && [ ${cycle_type} == "spinup" ]; then
          echo "${YYYYMMDDHH}(${cycle_type}): update GVF with ${latestGVF} " >> ${EXPTDIR}/log.cycles
       fi
    fi
+fi
+
 fi
 #-----------------------------------------------------------------------
 #

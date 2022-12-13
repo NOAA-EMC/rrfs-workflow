@@ -72,8 +72,6 @@ if [ ${CYCLE_TYPE} == "spinup" ]; then
   if  [ ${CYCLE_SUBTYPE} == "ensinit" ]; then
     run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_ensinit"
   fi
-elif  [ ${CYCLE_TYPE} == "ensfcst" ]; then
-  run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_long"
 else
   run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
 fi

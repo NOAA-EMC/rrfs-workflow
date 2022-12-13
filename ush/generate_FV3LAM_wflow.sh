@@ -428,7 +428,6 @@ settings="\
   'cycl_hrs_prodstart': [ $( printf "\'%s\', " "${CYCL_HRS_PRODSTART[@]}" ) ]
   'cycl_hrs_prodstart_ens': [ $( printf "\'%s\', " "${CYCL_HRS_PRODSTART_ENS[@]}" ) ]
   'cycl_hrs_recenter': [ $( printf "\'%s\', " "${CYCL_HRS_RECENTER[@]}" ) ]
-  'cycl_hrs_ensfcst': [ $( printf "\'%s\', " "${CYCL_HRS_ENSFCST[@]}" ) ]
   'cycl_hrs_stoch': [ $( printf "\'%s\', " "${CYCL_HRS_STOCH[@]}" ) ]
   'cycl_hrs_hyb_fv3lam_ens': [ $( printf "\'%s\', " "${CYCL_HRS_HYB_FV3LAM_ENS[@]}" ) ]
   'restart_hrs_prod': ${RESTART_INTERVAL}
@@ -437,7 +436,6 @@ settings="\
   'initial_cycledef': ${INITIAL_CYCLEDEF}
   'boundary_cycledef': ${BOUNDARY_CYCLEDEF}
   'boundary_long_cycledef': ${BOUNDARY_LONG_CYCLEDEF}
-  'ensfcst_cycledef': ${ENSFCST_CYCLEDEF}
   'spinup_cycledef': ${SPINUP_CYCLEDEF}
   'prod_cycledef': ${PROD_CYCLEDEF}
   'prodlong_cycledef': ${PRODLONG_CYCLEDEF}
@@ -448,7 +446,6 @@ settings="\
 #
   'fcst_len_hrs': ${FCST_LEN_HRS}
   'fcst_len_hrs_spinup': ${FCST_LEN_HRS_SPINUP}
-  'fcst_len_hrs_ensfcst': ${FCST_LEN_HRS_ENSFCST}
   'boundary_len_hrs': ${BOUNDARY_LEN_HRS}
   'boundary_long_len_hrs': ${BOUNDARY_LONG_LEN_HRS}
   'postproc_len_hrs': ${POSTPROC_LEN_HRS}

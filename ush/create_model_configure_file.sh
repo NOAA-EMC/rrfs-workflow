@@ -132,10 +132,6 @@ run directory (run_dir):
     fi
   fi
 
-  if [ ${cycle_type} == "ensfcst" ]; then
-    FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS_ENSFCST}
-  fi
-
 #
 #-----------------------------------------------------------------------
 #

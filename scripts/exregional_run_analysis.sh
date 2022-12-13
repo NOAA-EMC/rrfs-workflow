@@ -242,7 +242,7 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
   fi
   done
 
-  if [[ $ifound -ne ${NUM_ENS_MEMBERS} ]]; then
+  if [[ $ifound -ne ${NUM_ENS_MEMBERS} ]] || [[ ${BKTYPE} -eq 1 ]]; then
     print_info_msg "Not enough FV3_LAM ensembles, will fall to GDAS"
     regional_ensemble_option=1
   fi

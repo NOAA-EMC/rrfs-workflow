@@ -337,7 +337,7 @@ define resources used for each tasks
   <cycledef group="prodcyc"> {{ prod_cycledef }} </cycledef>
   <cycledef group="prodcyc_long"> {{ prodlong_cycledef }} </cycledef>
   <cycledef group="recentercyc"> {{ recenter_cycledef }} </cycledef>
-  <cycledef group="ensfcstcyc"> {{ ensfcst_cycledef }} </cycledef>
+
   <cycledef group="archive">  {{ archive_cycledef }} </cycledef> 
 
   <log>
@@ -912,7 +912,7 @@ MODULES_RUN_TASK_FP script.
 {% endif %}
 
 {%- endif %}
-
+{%- if not do_ensfcst %}
 {%- if do_ensemble %}
  <metatask name="run_ensemble">
   <var name="{{ ensmem_indx_name }}">
@@ -1634,6 +1634,7 @@ MODULES_RUN_TASK_FP script.
 
 <!-- end of spinup block -->
 {%- endif %}
+{%- endif %}
 
 <!-- beginning of prod block -->
 <!--
@@ -1665,6 +1666,9 @@ MODULES_RUN_TASK_FP script.
     <envar><name>NWGES_BASEDIR</name><value>&NWGES_BASEDIR;</value></envar>
 
     <dependency>
+     {%- if do_ensfcst %}
+       <datadep age="00:00:05:00"><cyclestr>&FG_ROOT;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/DA_OUTPUT/coupler.res</cyclestr></datadep>
+     {%- else %}
        <or>
 <!-- for start product cycle -->
          <and>
@@ -1739,6 +1743,7 @@ MODULES_RUN_TASK_FP script.
 {%- endif %}
          </and>
        </or>
+{%- endif %}
     </dependency>
 
   </task>
@@ -1747,6 +1752,7 @@ MODULES_RUN_TASK_FP script.
 </metatask>
 {%- endif %}
 
+{%- if not do_ensfcst %}
 {%- if do_gsiobserver %}
 <!--
 ************************************************************************
@@ -1876,7 +1882,7 @@ MODULES_RUN_TASK_FP script.
 {%- endif %}
 {%- endif %}
 
-{%- if do_enkfupdate and not do_ensfcst %}
+{%- if do_enkfupdate %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -1907,7 +1913,7 @@ MODULES_RUN_TASK_FP script.
 
 {%- endif %}
 
-{%- if do_enkf_radar_ref and not do_ensfcst %}
+{%- if do_enkf_radar_ref %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -1947,7 +1953,7 @@ MODULES_RUN_TASK_FP script.
 
 {%- endif %}
 
-{%- if do_recenter and not do_ensfcst %}
+{%- if do_recenter %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -2175,7 +2181,7 @@ MODULES_RUN_TASK_FP script.
 
 {% endif -%}
 
-{%- if do_refl2tten and not do_ensfcst %}
+{%- if do_refl2tten %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -2252,7 +2258,7 @@ MODULES_RUN_TASK_FP script.
 
 {%- endif %}
 
-{%- if do_nonvar_cldanal and not do_ensfcst %}
+{%- if do_nonvar_cldanal %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -2321,6 +2327,7 @@ MODULES_RUN_TASK_FP script.
 
 {%- if do_ensemble %}
  </metatask>
+{%- endif %}
 {%- endif %}
 
 {%- if do_save_input and do_ensemble %}
@@ -2420,7 +2427,9 @@ MODULES_RUN_TASK_FP script.
     <envar><name>NWGES_BASEDIR</name><value>&NWGES_BASEDIR;</value></envar>
   
     <dependency>
-      {%- if do_dacycle and do_refl2tten and do_nonvar_cldanal%}
+      {%- if do_ensfcst %}
+      <taskdep task="&PREP_CYC_TN;_prod{{ uscore_ensmem_name }}"/>
+      {%- elif do_dacycle and do_refl2tten and do_nonvar_cldanal%}
       <and>
         <taskdep task="&RADAR_REFL2TTEN_TN;_prod"/>
         <taskdep task="&CLDANL_NONVAR_TN;_prod"/>

@@ -511,15 +511,7 @@ if [ "${DO_ENSEMBLE}" = TRUE ] && ([ "${DO_SPP}" = TRUE ] || [ "${DO_SPPT}" = TR
   || [ "${DO_SKEB}" = TRUE ] || [ "${DO_LSM_SPP}" =  TRUE ]); then
    for cyc_start in "${CYCL_HRS_STOCH[@]}"; do
      if [ ${HH} -eq ${cyc_start} ]; then 
-       if [ "${DO_ENSFCST}" = TRUE ]; then
-         if [ ${cycle_type} == "ensfcst" ]; then 
-           STOCH="TRUE"
-         else
-           STOCH="FALSE"
-         fi
-       else
-         STOCH="TRUE"
-       fi
+       STOCH="TRUE"
      fi
    done
 fi

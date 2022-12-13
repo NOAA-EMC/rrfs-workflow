@@ -64,9 +64,13 @@ TILE_LABELS="CONUS REGIONS"
 TILE_SETS="full NE,NC,NW,SE,SC,SW"
 
 DO_ENSEMBLE="TRUE"
+#DO_ENSFCST="TRUE"
 #DO_DACYCLE="TRUE"
 #DO_SURFACE_CYCLE="TRUE"
 DO_SPINUP="TRUE"
+if [ ${DO_ENSFCST} == "TRUE"]; then
+  DO_SPINUP="FALSE"
+fi
 #DO_POST_SPINUP="TRUE"
 DO_POST_PROD="TRUE"
 #DO_RETRO="TRUE"
@@ -85,7 +89,6 @@ EXTRN_MDL_ICS_OFFSET_HRS="30"
 LBC_SPEC_INTVL_HRS="1"
 EXTRN_MDL_LBCS_OFFSET_HRS="6"
 BOUNDARY_LEN_HRS="6"
-BOUNDARY_LONG_LEN_HRS="36"
 BOUNDARY_PROC_GROUP_NUM="10"
 
 # avaialble retro period:
@@ -96,8 +99,7 @@ CYCL_HRS=( "00" "12" )
 CYCL_HRS=( "18" )
 CYCL_HRS_SPINSTART=("06" "18")
 CYCL_HRS_PRODSTART=("07" "19")
-CYCL_HRS_ENSFCST=("00" "12")
-CYCL_HRS_STOCH=("00" "12")
+#CYCL_HRS_STOCH=("00" "12")
 #CYCL_HRS_RECENTER=("19")
 CYCLEMONTH="11"
 CYCLEDAY="10-30"
@@ -113,24 +115,29 @@ ENDHOUR="23"
 
 PREEXISTING_DIR_METHOD="upgrade" # "rename"
 INITIAL_CYCLEDEF="${DATE_FIRST_CYCL}0600 ${DATE_LAST_CYCL}2300 12:00:00"
-BOUNDARY_CYCLEDEF="00 06,18 * 11 2022 *"
-BOUNDARY_LONG_CYCLEDEF="00 00,12 * 11 2022 *"
+BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}0600 ${DATE_LAST_CYCL}2300 06:00:00"
 PROD_CYCLEDEF="${DATE_FIRST_CYCL}0700 ${DATE_LAST_CYCL}2300 01:00:00"
-ENSFCST_CYCLEDEF="00 00,12 * 11 2022 *"
 #RECENTER_CYCLEDEF="00 19 * 10 2022 *"
 ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 24:00:00"
+if [ ${DO_ENSFCST} == "TRUE"]; then
+  BOUNDARY_LEN_HRS="36"
+  DO_SPINUP="FALSE"
+  INITIAL_CYCLEDEF="00 01 01 01 2100 *"
+  PROD_CYCLEDEF="${DATE_FIRST_CYCL}1200 ${DATE_LAST_CYCL}2300 12:00:00"
+fi
 if [[ $DO_SPINUP == "TRUE" ]] ; then
   SPINUP_CYCLEDEF="${DATE_FIRST_CYCL}0600 ${DATE_LAST_CYCL}2300 12:00:00"
 fi
 
 FCST_LEN_HRS="1"
 FCST_LEN_HRS_SPINUP="1"
-FCST_LEN_HRS_ENSFCST="36"
 POSTPROC_LEN_HRS="1"
-POSTPROC_LONG_LEN_HRS="36"
 #FCST_LEN_HRS_CYCLES=(48 18 18 18 18 18 48 18 18 18 18 18 48 18 18 18 18 18 48 18 18 18 18 18)
 for i in {0..23}; do FCST_LEN_HRS_CYCLES[$i]=1; done
-for i in {0..23..3}; do FCST_LEN_HRS_CYCLES[$i]=1; done
+if [ ${DO_ENSFCST} == "TRUE"]; then
+  for i in {0..23..12}; do FCST_LEN_HRS_CYCLES[$i]=24; done 
+  POSTPROC_LEN_HRS="24"
+fi
 DA_CYCLE_INTERV="1"
 RESTART_INTERVAL="1"
 netcdf_diag=.true.
@@ -234,9 +241,6 @@ fi
 
 if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    NUM_ENS_MEMBERS=30
-#   DO_SPPT=TRUE
-   DO_SPP=TRUE
-#   SPPT_MAG=0.5
 #   DO_ENSCONTROL="TRUE"
    DO_GSIOBSERVER="TRUE"
    DO_ENKFUPDATE="TRUE"
@@ -245,8 +249,13 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    DO_ENKF_RADAR_REF="TRUE"
    DO_ENSPOST="TRUE"
    DO_ENSINIT="TRUE"
-   DO_ENSFCST="TRUE"
    NUM_ENS_MEMBERS_FCST=9
+   if [ ${DO_ENSFCST} == "TRUE"]; then
+     NUM_ENS_MEMBERS=${NUM_ENS_MEMBERS_FCST}
+#     DO_SPPT=TRUE
+     DO_SPP=TRUE
+#     SPPT_MAG=0.5
+   fi
    RADAR_REF_THINNING="2"
    ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_ens"
    NNODES_RUN_RECENTER="3"
@@ -258,13 +267,18 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    write_diag_2=.true.
 fi
 
-
-RUN="RRFS_conus_3km"
+RUN="rrfs_conus_3km_ensda"
+if [ ${DO_ENSFCST} == "TRUE"]; then
+  RUN="rrfs_conus_3km_ensfcst"
+fi
 COMINgfs=""
 
 . set_rrfs_config.sh
 
 STMP="/mnt/lfs4/BMC/wrfruc/RRFSE/${version}/stmp"  # Path to directory STMP that mostly contains input files.
+if [ ${DO_ENSFCST} == "TRUE"]; then
+  STMP="/mnt/lfs4/BMC/wrfruc/RRFSE/${version}/stmp_ensfcst"  # Path to directory STMP that mostly contains input files.
+fi
 PTMP="/mnt/lfs4/BMC/wrfruc/RRFSE/${version}"  # Path to directory STMP that mostly contains input files.
 NWGES="/mnt/lfs4/BMC/wrfruc/RRFSE/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 ENSCTRL_STMP="/mnt/lfs4/BMC/nrtrr/${version}/stmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.

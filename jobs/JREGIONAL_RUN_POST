@@ -67,13 +67,6 @@ on the output files corresponding to a specified forecast hour.
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ ${CYCLE_TYPE} == "spinup" ]; then
   run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_spinup"
-elif [ ${DO_ENSFCST} = "TRUE" ]; then
-  run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
-  for cyc_start in "${CYCL_HRS_ENSFCST[@]}"; do
-    if [ ${cyc} -eq ${cyc_start} ]; then
-       run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_long"
-    fi
-  done
 else
   run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
 fi

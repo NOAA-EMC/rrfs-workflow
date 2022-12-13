@@ -507,9 +507,6 @@ WFLOW_LAUNCH_LOG_FN="log.launch_FV3LAM_wflow"
 # CYCL_HRS_RECENTER:
 # An array containing the hours of the day at which the ensemble recenter is on
 #
-# CYCL_HRS_ENSFCST
-# An array containing the hours of the day at which the ensemble free forecast is on
-#
 # CYCL_HRS_STOCH
 # An array containing the hours of the day at which the stochastics physcis is on
 # this might include: SPPT, SHUM, SKEB, SPP, LSM_SPP
@@ -528,9 +525,6 @@ WFLOW_LAUNCH_LOG_FN="log.launch_FV3LAM_wflow"
 #
 # FCST_LEN_HRS_SPINUP:
 # The length of each forecast in spin up cycles, in integer hours.
-#
-# FCST_LEN_HRS_ENSFCST:
-# The length of each forecast in free ensemble forecast cycles, in integer hours.
 #
 # FCST_LEN_HRS_CYCLES:
 # The length of forecast for each cycle, in integer hours.
@@ -569,7 +563,6 @@ CYCL_HRS_SPINSTART=( "HH1" "HH2" )
 CYCL_HRS_PRODSTART=( "HH1" "HH2" )
 CYCL_HRS_PRODSTART_ENS=( "HH1" "HH2" )
 CYCL_HRS_RECENTER=( "HH1" "HH2" )
-CYCL_HRS_ENSFCST=( "HH1" "HH2" )
 CYCL_HRS_STOCH=( "HH1" "HH2" )
 BOUNDARY_LEN_HRS="0"
 BOUNDARY_LONG_LEN_HRS="0"
@@ -578,7 +571,6 @@ POSTPROC_LEN_HRS="1"
 POSTPROC_LONG_LEN_HRS="1"
 FCST_LEN_HRS="24"
 FCST_LEN_HRS_SPINUP="1"
-FCST_LEN_HRS_ENSFCST="1"
 FCST_LEN_HRS_CYCLES=( )
 DA_CYCLE_INTERV="3"
 RESTART_INTERVAL="3,6"
@@ -624,10 +616,6 @@ CYCL_HRS_HYB_FV3LAM_ENS=( "99" )
 # cycle definition for product cycle group
 # This group runs: anal_gsi_input and data process, run_fcst, python_skewt, run_post, run_clean
 #
-# ENSFCST_CYCLEDEF:
-# cycle definition for ensemble free forecast cycle group
-# This group runs: run_fcst
-#
 # RECENTER_CYCLEDEF:
 # cycle definition for recenter cycle group
 # This group runs: recenter
@@ -649,7 +637,6 @@ BOUNDARY_CYCLEDEF="00 01 01 01 2100 *"
 BOUNDARY_LONG_CYCLEDEF="00 01 01 01 2100 *"
 SPINUP_CYCLEDEF="00 01 01 01 2100 *"
 PROD_CYCLEDEF="00 01 01 01 2100 *"
-ENSFCST_CYCLEDEF="00 01 01 01 2100 *"
 RECENTER_CYCLEDEF="00 01 01 01 2100 *"
 PRODLONG_CYCLEDEF="00 01 01 01 2100 *"
 ARCHIVE_CYCLEDEF="00 01 01 01 2100 *"
