@@ -65,7 +65,7 @@ TILE_SETS="full NE,NC,NW,SE,SC,SW"
 DO_DACYCLE="TRUE"
 DO_SURFACE_CYCLE="TRUE"
 DO_SPINUP="TRUE"
-#DO_POST_SPINUP="TRUE"
+DO_POST_SPINUP="FALSE"
 DO_POST_PROD="TRUE"
 DO_RETRO="FALSE"
 DO_NONVAR_CLDANAL="TRUE"
@@ -89,13 +89,13 @@ BOUNDARY_PROC_GROUP_NUM="10"
 
 # avaialble retro period:
 # 20210511-20210531; 20210718-20210801
-DATE_FIRST_CYCL="20221015"
-DATE_LAST_CYCL="20221130"
+DATE_FIRST_CYCL="20221213"
+DATE_LAST_CYCL="20221214"
 CYCL_HRS=( "00" "12" )
 CYCL_HRS_SPINSTART=("03" "15")
 CYCL_HRS_PRODSTART=("09" "21")
-CYCLEMONTH="10,11"
-CYCLEDAY="*"
+CYCLEMONTH="12"
+CYCLEDAY="13-14"
 
 STARTYEAR=${DATE_FIRST_CYCL:0:4}
 STARTMONTH=${DATE_FIRST_CYCL:4:2}
@@ -213,7 +213,7 @@ if [[ $MACHINE == "wcoss2" ]] ; then
   PPN_MAKE_LBCS="64"
   NNODES_MAKE_ICS="2"
   NNODES_MAKE_LBCS="1"
-  PPN_RUN_ANAL="32"
+  PPN_RUN_ANAL="64"
   NNODES_RUN_ANAL="10"
   PPN_RUN_FCST="64"
   NNODES_RUN_FCST="31"
@@ -252,7 +252,7 @@ STMP="/lfs4/BMC/nrtrr/NCO_dirs/${version}/stmp"  # Path to directory STMP that m
 PTMP="/lfs4/BMC/nrtrr/NCO_dirs/${version}"  # Path to directory STMP that mostly contains input files.
 NWGES="/lfs4/BMC/nrtrr/NCO_dirs/${version}/nwges/${envir}/${NET}"  # Path to directory NWGES that save boundary, cold initial, restart files
 if [[ ${regional_ensemble_option} == "5" ]]; then
-  RRFSE_NWGES="/lfs4/BMC/wrfruc/RRFSE/NCO_dirs/${version}/nwges/${envir}/${NET}"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
+  RRFSE_NWGES="/lfs4/BMC/wrfruc/RRFSE/NCO_dirs/${version}"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
   NUM_ENS_MEMBERS=30     # FV3LAM ensemble size for GSI hybrid analysis
   CYCL_HRS_PRODSTART_ENS=( "07" "19" )
   DO_ENVAR_RADAR_REF="TRUE"

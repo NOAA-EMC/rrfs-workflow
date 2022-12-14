@@ -439,6 +439,7 @@ settings="\
   'spinup_cycledef': ${SPINUP_CYCLEDEF}
   'prod_cycledef': ${PROD_CYCLEDEF}
   'prodlong_cycledef': ${PRODLONG_CYCLEDEF}
+  'saveinput_cycledef': ${SAVEINPUT_CYCLEDEF}
   'recenter_cycledef': ${RECENTER_CYCLEDEF}
   'archive_cycledef': ${ARCHIVE_CYCLEDEF}
 #

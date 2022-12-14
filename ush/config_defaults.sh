@@ -616,6 +616,10 @@ CYCL_HRS_HYB_FV3LAM_ENS=( "99" )
 # cycle definition for product cycle group
 # This group runs: anal_gsi_input and data process, run_fcst, python_skewt, run_post, run_clean
 #
+# SAVEINPUT_CYCLEDEF:
+# cycle definition for saving INPUT files
+# This group runs: saveinput
+#
 # RECENTER_CYCLEDEF:
 # cycle definition for recenter cycle group
 # This group runs: recenter
@@ -640,6 +644,7 @@ PROD_CYCLEDEF="00 01 01 01 2100 *"
 RECENTER_CYCLEDEF="00 01 01 01 2100 *"
 PRODLONG_CYCLEDEF="00 01 01 01 2100 *"
 ARCHIVE_CYCLEDEF="00 01 01 01 2100 *"
+SAVEINPUT_CYCLEDEF="00 01 01 01 2100 *"
 #
 #-------------------------------------------------------------------------------------
 #      GSI Namelist parameters configurable across differnt applications

@@ -21,6 +21,8 @@
 #
 currentime=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
 
+listens=$(seq 1 $nens)
+
 #-----------------------------------------------------------------------
 # Delete ptmp directories
 #-----------------------------------------------------------------------
@@ -59,10 +61,22 @@ cd ${CYCLE_BASEDIR}
 set -A XX $(ls -d 20* | sort -r)
 for onetime in ${XX[*]};do
   if [[ ${onetime} =~ ^[0-9]+$ ]] && [[ ${onetime} -le ${deletetime} ]]; then
-    rm -f ${CYCLE_BASEDIR}/${onetime}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/phy*nc
-    rm -f ${CYCLE_BASEDIR}/${onetime}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/dyn*nc
-    rm -rf ${CYCLE_BASEDIR}/${onetime}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART
-    echo "Deleted netCDF files in ${CYCLE_BASEDIR}/${onetime}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
+    if [ ${nens} -gt 1 ]; then
+      for ii in ${listens}
+      do
+        iii=`printf %4.4i $ii`
+        SLASH_ENSMEM_SUBDIR=/mem${iii}
+        rm -f ${CYCLE_BASEDIR}/${onetime}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/phy*nc
+        rm -f ${CYCLE_BASEDIR}/${onetime}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/dyn*nc
+        rm -rf ${CYCLE_BASEDIR}/${onetime}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART
+        echo "Deleted netCDF files in ${CYCLE_BASEDIR}/${onetime}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
+      done
+    else
+        rm -f ${CYCLE_BASEDIR}/${onetime}/fcst_fv3lam/phy*nc
+        rm -f ${CYCLE_BASEDIR}/${onetime}/fcst_fv3lam/dyn*nc
+        rm -rf ${CYCLE_BASEDIR}/${onetime}/fcst_fv3lam/RESTART
+        echo "Deleted netCDF files in ${CYCLE_BASEDIR}/${onetime}/fcst_fv3lam"
+    fi
   fi
 done
 
@@ -75,8 +89,18 @@ cd ${CYCLE_BASEDIR}
 set -A XX $(ls -d 20* | sort -r)
 for onetime in ${XX[*]};do
   if [[ ${onetime} =~ ^[0-9]+$ ]] && [[ ${onetime} -le ${deletetime} ]]; then
-    rm -rf ${CYCLE_BASEDIR}/${onetime}${SLASH_ENSMEM_SUBDIR}/postprd
-    echo "Deleted postprd files in ${CYCLE_BASEDIR}/${onetime}${SLASH_ENSMEM_SUBDIR}/postprd"
+    if [ ${nens} -gt 1 ]; then
+      for ii in ${listens}
+      do
+        iii=`printf %4.4i $ii`
+        SLASH_ENSMEM_SUBDIR=/mem${iii}
+        rm -rf ${CYCLE_BASEDIR}/${onetime}${SLASH_ENSMEM_SUBDIR}/postprd
+        echo "Deleted postprd files in ${CYCLE_BASEDIR}/${onetime}${SLASH_ENSMEM_SUBDIR}/postprd"
+      done
+    else
+        rm -rf ${CYCLE_BASEDIR}/${onetime}/postprd
+        echo "Deleted postprd files in ${CYCLE_BASEDIR}/${onetime}/postprd"
+    fi
   fi
 done
 
@@ -119,4 +143,5 @@ for onetime in ${XX[*]};do
   fi
 done
 
+#-----------------------------------------------------------------------
 exit 0

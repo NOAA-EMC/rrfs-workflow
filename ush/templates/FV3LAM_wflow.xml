@@ -210,14 +210,14 @@ define resources used for each tasks
 <!ENTITY WALLTIME_RUN_PRDGEN  "{{ wtime_run_prdgen }}">
 <!ENTITY MEMO_RUN_PRDGEN "{{ memo_run_prdgen }}">
 
-<!ENTITY RESOURCES_RUN_ENKF "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}</nodes>">
+<!ENTITY RESOURCES_RUN_ENKF "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}:tpp=4</nodes>">
 <!ENTITY WALLTIME_RUN_ENKF  "{{ wtime_run_enkf }}">
 
 {% if machine in ["JET", "HERA"] %}
 <!ENTITY RESOURCES_ANAL_GSI "<cores>{{ ncores_run_anal }}</cores>">
 <!ENTITY NATIVE_ANAL_GSI    "<native>{{ native_run_anal }} &RRFS_RESERVE;</native>">
 {%- elif machine in ["WCOSS2"]  %}
-<!ENTITY RESOURCES_ANAL_GSI "<nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}:tpp=4</nodes>">
+<!ENTITY RESOURCES_ANAL_GSI "<nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}:tpp=2</nodes>">
 <!ENTITY NATIVE_ANAL_GSI    "<native>-l place=excl</native>">
 {%- else %}
 <!ENTITY RESOURCES_ANAL_GSI "<nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}</nodes>">
@@ -336,8 +336,11 @@ define resources used for each tasks
   <cycledef group="spinupcyc"> {{ spinup_cycledef }} </cycledef>
   <cycledef group="prodcyc"> {{ prod_cycledef }} </cycledef>
   <cycledef group="prodcyc_long"> {{ prodlong_cycledef }} </cycledef>
-  <cycledef group="recentercyc"> {{ recenter_cycledef }} </cycledef>
 
+{%- if do_save_input %}
+  <cycledef group="saveinputcyc"> {{ saveinput_cycledef }} </cycledef>
+{%- endif %}
+  <cycledef group="recentercyc"> {{ recenter_cycledef }} </cycledef>
   <cycledef group="archive">  {{ archive_cycledef }} </cycledef> 
 
   <log>
@@ -2341,7 +2344,7 @@ MODULES_RUN_TASK_FP script.
     {%- for m in range(1, num_ens_members_fcst+1) -%}{%- set fmtstr=" %0"~ndigits_ensmem_names~"d" -%}{{- fmtstr%m -}}{%- endfor %} </var>
 {%- endif %}
 
-  <task name="&SAVE_INPUT_TN;_prod{{ uscore_ensmem_name }}" cycledefs="prodcyc" maxtries="{{ maxtries_save_input }}">
+  <task name="&SAVE_INPUT_TN;_prod{{ uscore_ensmem_name }}" cycledefs="saveinputcyc" maxtries="{{ maxtries_save_input }}">
 
     &RSRV_DEFAULT;
     &WALL_LIMIT_SAVE_RESTART;
@@ -2847,31 +2850,35 @@ MODULES_RUN_TASK_FP script.
 
 {%- endif %}
 {%- endif %}
+
+{%- if do_ensemble %}
+  </metatask>
+{%- endif %}
 <!--
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&CLEAN_TN;{{ uscore_ensmem_name }}" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_run_post }}">
+  <task name="&CLEAN_TN;" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_run_post }}">
 
     &RSRV_POST;
 
     <command>&JOBSDIR;/../scripts/exregional_clean.ksh</command>
     <nodes> 1:ppn=1</nodes>
     <walltime>00:15:00</walltime>
-    <jobname>&TAG;_&CLEAN_TN;{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&CLEAN_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&TAG;_&CLEAN_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&CLEAN_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>LOGDIR</name><value>&LOGDIR;</value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>NWGES_BASEDIR</name><value><cyclestr>&NWGES_BASEDIR;</cyclestr></value></envar>
-      <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr></cyclestr></value></envar>
+{%- if do_ensemble %}
+    <envar><name>nens</name><value><cyclestr>{{ num_ens_members }}</cyclestr></value></envar>
+{%- else %}
+    <envar><name>nens</name><value><cyclestr>0</cyclestr></value></envar>
+{%- endif %}
 
   </task>
-
-{%- if do_ensemble %}
-  </metatask>
-{%- endif %}
 
 {%- if machine in ["JET", "HERA"]  %}
 
@@ -3003,7 +3010,7 @@ MODULES_RUN_TASK_FP script.
 {%- endif %}
 {%- endif %}
 
-{%- if do_ensemble and do_enspost %}
+{%- if do_ensemble and do_ensfcst and do_enspost %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -3032,7 +3039,7 @@ MODULES_RUN_TASK_FP script.
       <dependency>
         <and>
           <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/RRFS_CONUS.t@Hz.bgsfcf#fhr#.tm00.grib2</cyclestr></datadep>
-          {%- for m in range(1, 10) %}
+          {%- for m in range(1, num_ens_members_fcst+1) %}
           <taskdep task="&RUN_PRDGEN_TN;_mem{{ "%04d" % m }}_f#fhr#"/>
           {%- endfor %}
         </and>
