@@ -44,12 +44,12 @@ fi
 
 if [[ $MACHINE == "wcoss2" ]] ; then
   ACCOUNT=RRFS-DEV
-  QUEUE_DEFAULT="dev"
-  QUEUE_ANALYSIS="dev"
-  QUEUE_FCST="dev"
+  QUEUE_DEFAULT="devhigh"
+  QUEUE_ANALYSIS="devmax"
+  QUEUE_FCST="devmax"
   QUEUE_HPSS="dev_transfer"
-  QUEUE_WGRIB2="dev"
-  QUEUE_GRAPHICS="dev"
+  QUEUE_WGRIB2="devhigh"
+  QUEUE_GRAPHICS="devhigh"
 fi
 
 VERBOSE="TRUE"

@@ -45,12 +45,12 @@ fi
 
 if [[ $MACHINE == "wcoss2" ]] ; then
   ACCOUNT=RRFS-DEV
-  QUEUE_DEFAULT="dev"
-  QUEUE_ANALYSIS="dev"
-  QUEUE_FCST="dev"
+  QUEUE_DEFAULT="devhigh"
+  QUEUE_ANALYSIS="devmax"
+  QUEUE_FCST="devmax"
   QUEUE_HPSS="dev_transfer"
-  QUEUE_WGRIB2="dev"
-  QUEUE_GRAPHICS="dev"
+  QUEUE_WGRIB2="devhigh"
+  QUEUE_GRAPHICS="devhigh"
 fi
 
 VERBOSE="TRUE"
@@ -68,9 +68,6 @@ DO_ENSEMBLE="TRUE"
 #DO_DACYCLE="TRUE"
 #DO_SURFACE_CYCLE="TRUE"
 DO_SPINUP="TRUE"
-if [ ${DO_ENSFCST} == "TRUE"]; then
-  DO_SPINUP="FALSE"
-fi
 DO_SAVE_INPUT="TRUE"
 DO_POST_SPINUP="FALSE"
 DO_POST_PROD="FALSE"
@@ -82,6 +79,12 @@ DO_SMOKE_DUST="FALSE"
 #FH_DFI_RADAR="0.0,0.25,0.5"
 #DO_SOIL_ADJUST="TRUE"
 #DO_RADDA="FALSE"
+if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
+  DO_SPINUP="FALSE"
+  DO_SAVE_INPUT="FALSE"
+  DO_NONVAR_CLDANAL="FALSE"
+  DO_POST_PROD="TRUE"
+fi
 
 QUILTING="TRUE"
 CCPP_PHYS_SUITE="FV3_HRRR"
@@ -98,8 +101,8 @@ DATE_FIRST_CYCL="20221214"
 DATE_LAST_CYCL="20221215"
 CYCL_HRS=( "00" "12" )
 CYCL_HRS=( "18" )
-CYCL_HRS_SPINSTART=("06" "18")
-CYCL_HRS_PRODSTART=("07" "19")
+CYCL_HRS_SPINSTART=("18")
+CYCL_HRS_PRODSTART=("19")
 #CYCL_HRS_STOCH=("00" "12")
 #CYCL_HRS_RECENTER=("19")
 CYCLEMONTH="12"
@@ -120,11 +123,12 @@ BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}1800 ${DATE_LAST_CYCL}2300 06:00:00"
 PROD_CYCLEDEF="${DATE_FIRST_CYCL}1900 ${DATE_LAST_CYCL}2300 01:00:00"
 #RECENTER_CYCLEDEF="00 19 * 10 2022 *"
 ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 24:00:00"
-if [ ${DO_ENSFCST} == "TRUE"]; then
+if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   BOUNDARY_LEN_HRS="36"
   DO_SPINUP="FALSE"
   INITIAL_CYCLEDEF="00 01 01 01 2100 *"
   PROD_CYCLEDEF="${DATE_FIRST_CYCL}1200 ${DATE_LAST_CYCL}2300 12:00:00"
+  BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}1200 ${DATE_LAST_CYCL}2300 12:00:00"
 fi
 if [[ $DO_SPINUP == "TRUE" ]] ; then
   SPINUP_CYCLEDEF="${DATE_FIRST_CYCL}0600 ${DATE_LAST_CYCL}2300 12:00:00"
@@ -138,9 +142,10 @@ FCST_LEN_HRS_SPINUP="1"
 POSTPROC_LEN_HRS="1"
 #FCST_LEN_HRS_CYCLES=(48 18 18 18 18 18 48 18 18 18 18 18 48 18 18 18 18 18 48 18 18 18 18 18)
 for i in {0..23}; do FCST_LEN_HRS_CYCLES[$i]=1; done
-if [ ${DO_ENSFCST} == "TRUE"]; then
+if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   for i in {0..23..12}; do FCST_LEN_HRS_CYCLES[$i]=24; done 
   POSTPROC_LEN_HRS="24"
+  BOUNDARY_PROC_GROUP_NUM="8"
 fi
 DA_CYCLE_INTERV="1"
 RESTART_INTERVAL="1"
@@ -257,7 +262,7 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    DO_ENSPOST="TRUE"
    DO_ENSINIT="TRUE"
    NUM_ENS_MEMBERS_FCST=9
-   if [ ${DO_ENSFCST} == "TRUE"]; then
+   if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
      NUM_ENS_MEMBERS=${NUM_ENS_MEMBERS_FCST}
 #     DO_SPPT=TRUE
      DO_SPP=TRUE
@@ -277,7 +282,7 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
 fi
 
 RUN="rrfs_conus_3km_ensda"
-if [ ${DO_ENSFCST} == "TRUE"]; then
+if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   RUN="rrfs_conus_3km_ensfcst"
 fi
 COMINgfs=""
@@ -285,7 +290,7 @@ COMINgfs=""
 . set_rrfs_config.sh
 
 STMP="/mnt/lfs4/BMC/wrfruc/RRFSE/${version}/stmp"  # Path to directory STMP that mostly contains input files.
-if [ ${DO_ENSFCST} == "TRUE"]; then
+if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   STMP="/mnt/lfs4/BMC/wrfruc/RRFSE/${version}/stmp_ensfcst"  # Path to directory STMP that mostly contains input files.
 fi
 PTMP="/mnt/lfs4/BMC/wrfruc/RRFSE/${version}"  # Path to directory STMP that mostly contains input files.

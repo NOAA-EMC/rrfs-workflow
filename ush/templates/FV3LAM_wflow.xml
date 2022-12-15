@@ -1637,9 +1637,19 @@ MODULES_RUN_TASK_FP script.
 
 <!-- end of spinup block -->
 {%- endif %}
+
+{%- if do_ensemble %}
+</metatask>
 {%- endif %}
 
+{%- endif %}  <!-- not do_ensfcst -->
+
 <!-- beginning of prod block -->
+{%- if do_ensemble %}
+ <metatask name="run_ensemble">
+  <var name="{{ ensmem_indx_name }}">
+    {%- for m in range(1, num_ens_members+1) -%}{%- set fmtstr=" %0"~ndigits_ensmem_names~"d" -%}{{- fmtstr%m -}}{%- endfor %} </var>
+{%- endif %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -1670,7 +1680,10 @@ MODULES_RUN_TASK_FP script.
 
     <dependency>
      {%- if do_ensfcst %}
-       <datadep age="00:00:05:00"><cyclestr>&FG_ROOT;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/DA_OUTPUT/coupler.res</cyclestr></datadep>
+       <and>
+         <datadep age="00:00:05:00"><cyclestr>&FG_ROOT;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/DA_OUTPUT/coupler.res</cyclestr></datadep>
+         <metataskdep metatask="&MAKE_LBCS_TN;{{ uscore_ensmem_name }}"/>
+       </and>
      {%- else %}
        <or>
 <!-- for start product cycle -->
@@ -2338,11 +2351,9 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-{% if do_ensemble %}
  <metatask name="save_ensda_output">
   <var name="{{ ensmem_indx_name }}">
     {%- for m in range(1, num_ens_members_fcst+1) -%}{%- set fmtstr=" %0"~ndigits_ensmem_names~"d" -%}{{- fmtstr%m -}}{%- endfor %} </var>
-{%- endif %}
 
   <task name="&SAVE_INPUT_TN;_prod{{ uscore_ensmem_name }}" cycledefs="saveinputcyc" maxtries="{{ maxtries_save_input }}">
 
@@ -2392,9 +2403,7 @@ MODULES_RUN_TASK_FP script.
     </dependency>
 
   </task>
-{% if do_ensemble %}
  </metatask>
-{%- endif %}
 {%- endif %}
 <!--
 ************************************************************************
@@ -3016,7 +3025,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 -->
   <metatask name="enspost">
-    <var name="fhr"> {% for h in range(0, postproc_long_len_hrs+1) %}{{ " %03d" % h  }}{% endfor %} </var>
+    <var name="fhr"> {% for h in range(0, postproc_len_hrs+1) %}{{ " %03d" % h  }}{% endfor %} </var>
 
     <task name="enspost_#fhr#" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_run_post }}">
 
