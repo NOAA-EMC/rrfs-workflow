@@ -1135,10 +1135,7 @@ MODULES_RUN_TASK_FP script.
         {%- for m in range(1, num_ens_members+1) %}
           <taskdep task="&PREP_CYC_SPINUP_TN;_ensinit_mem{{ "%04d" % m }}"/>
         {%- endfor %}
-        <or>    
-        <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_CYCLE_BASEDIR;/@Y@m@d@H/nonvar_cldanl/nonvarcldanl_complete.txt</cyclestr></datadep>
         <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_CYCLE_BASEDIR;/@Y@m@d@H/nonvar_cldanl_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
-        </or>   
       </and>
     </dependency>
   </task>
@@ -1430,7 +1427,7 @@ MODULES_RUN_TASK_FP script.
         {%- elif do_envar_radar_ref %}
         <or>
           <and>
-            <taskdep task="&POSTANAL_TN;_spinup"{{ uscore_ensmem_name }}/>
+            <taskdep task="&POSTANAL_TN;_spinup{{ uscore_ensmem_name }}"/>
              {%- for h in cycl_hrs_hyb_fv3lam_ens %}
                 <strneq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></strneq>
              {%- endfor %}
@@ -1445,7 +1442,7 @@ MODULES_RUN_TASK_FP script.
           </and>
         </or>
         {%- else %}
-	<taskdep task="&POSTANAL_TN;_spinup"{{ uscore_ensmem_name }}/>
+	<taskdep task="&POSTANAL_TN;_spinup{{ uscore_ensmem_name }}"/>
         {%- endif %}
       </and>
     </dependency>
@@ -2317,7 +2314,7 @@ MODULES_RUN_TASK_FP script.
         {%- elif do_envar_radar_ref %}
         <or>
           <and>
-            <taskdep task="&POSTANAL_TN;_prod"{{ uscore_ensmem_name }}/>
+            <taskdep task="&POSTANAL_TN;_prod{{ uscore_ensmem_name }}"/>
              {%- for h in cycl_hrs_hyb_fv3lam_ens %}
                 <strneq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></strneq>
              {%- endfor %}
@@ -2332,7 +2329,7 @@ MODULES_RUN_TASK_FP script.
           </and>
         </or>
         {%- else %}
-	<taskdep task="&POSTANAL_TN;_prod"{{ uscore_ensmem_name }}/>
+	<taskdep task="&POSTANAL_TN;_prod{{ uscore_ensmem_name }}"/>
         {%- endif %}
       </and>
     </dependency>

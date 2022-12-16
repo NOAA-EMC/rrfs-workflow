@@ -1,0 +1,297 @@
+
+if [[ -n $RESERVATION ]] ; then
+  ACCOUNT=rtrr
+  SERVICE_ACCOUNT=nrtrr
+  PARTITION_DEFAULT=kjet
+  PARTITION_FCST=kjet
+  PARTITION_GRAPHICS=kjet
+  PARTITION_ANALYSIS=kjet
+  PARTITION_WGRIB2=kjet
+  PARTITION_POST=kjet
+  QUEUE_DEFAULT="rth"
+  QUEUE_FCST="rth"
+  QUEUE_ANALYSIS="rth"
+  QUEUE_WGRIB2="rt"
+  QUEUE_GRAPHICS="rt"
+  QUEUE_HPSS="rt"
+  QUEUE_POST="rt"
+  RESERVATION_POST="rrfsdet"
+  NNODES_MAKE_ICS="3"
+  PPN_MAKE_ICS="20"
+  NNODES_MAKE_LBCS="3"
+  PPN_MAKE_LBCS="20"
+  NNODES_RUN_POST="1"
+  PPN_RUN_POST="40"
+fi
+
+if [[ $MACHINE == "hera" ]] ; then
+  ACCOUNT="wrfruc"
+  PARTITION_DEFAULT=""
+  PARTITION_FCST=""
+  QUEUE_ANALYSIS="batch"
+  QUEUE_WGRIB2="batch"
+  QUEUE_GRAPHICS="batch"
+fi
+
+if [[ $MACHINE == "orion" ]] ; then
+  ACCOUNT=wrfruc
+  QUEUE_ANALYSIS="batch"
+  QUEUE_WGRIB2="batch"
+  QUEUE_GRAPHICS="batch"
+  QUEUE_POST="batch"
+  NCORES_PER_NODE=24
+fi
+
+if [[ $MACHINE == "wcoss2" ]] ; then
+  ACCOUNT=RRFS-DEV
+  QUEUE_DEFAULT="devhigh"
+  QUEUE_ANALYSIS="devmax"
+  QUEUE_FCST="devmax"
+  QUEUE_HPSS="dev_transfer"
+  QUEUE_WGRIB2="devhigh"
+  QUEUE_GRAPHICS="devhigh"
+fi
+
+VERBOSE="TRUE"
+RUN_ENVIR="nco"
+QUILTING="TRUE"
+netcdf_diag=.true.
+binary_diag=.false.
+HYBENSMEM_NMIN=66
+HALO_BLEND=20
+PRINT_DIFF_PGR="TRUE"
+envir="para"
+USE_CUSTOM_POST_CONFIG_FILE="TRUE"
+TESTBED_FIELDS_FN="testbed_fields_bgdawp.txt"
+TESTBED_FIELDS_FN2="testbed_fields_bgrd3d.txt"
+CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-fv3lam_rrfs.txt"
+CUSTOM_POST_PARAMS_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/params_grib2_tbl_new"
+NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
+NCL_HOME="/home/rtrr/RRFS/graphics"
+COMINgfs=""
+
+FV3GFS_FILE_FMT_ICS="grib2"
+FV3GFS_FILE_FMT_LBCS="grib2"
+
+NCORES_RUN_ANAL=360
+NCORES_RUN_OBSERVER=80
+IO_LAYOUT_Y=1
+PPN_RUN_REF2TTEN=1
+PPN_RUN_NONVARCLDANL=${IO_LAYOUT_Y}
+MAXTRIES_GET_EXTRN_ICS="3"
+MAXTRIES_GET_EXTRN_LBCS="3"
+MAXTRIES_MAKE_ICS="3"
+MAXTRIES_MAKE_LBCS="3"
+MAXTRIES_RUN_PREPSTART="3"
+MAXTRIES_RUN_FCST="3"
+MAXTRIES_ANAL_GSI="3"
+MAXTRIES_POSTANAL="3"
+MAXTRIES_ANAL_ENKF="3"
+MAXTRIES_RUN_ANAL="3"
+MAXTRIES_CLDANL_NONVAR="3"
+MAXTRIES_SAVE_INPUT="3"
+MAXTRIES_SAVE_RESTART="3"
+MAXTRIES_RUN_POST="3"
+MAXTRIES_RUN_PRDGEN="3"
+
+WTIME_RUN_FCST="00:45:00"
+WTIME_RUN_FCST_LONG="03:45:00"
+WTIME_MAKE_LBCS="02:00:00"
+WTIME_RUN_ANAL="00:50:00"
+WTIME_RUN_PREPSTART="00:20:00"
+
+START_TIME_SPINUP="02:10:00"
+START_TIME_PROD="08:20:00"
+START_TIME_LATE_ANALYSIS="08:40:00"
+
+if [[ ${PREDEF_GRID_NAME}=="RRFS_CONUS_3km" ]] ; then 
+  DT_ATMOS=60
+  ADDNL_OUTPUT_GRIDS=()
+  TILE_LABELS="CONUS REGIONS"
+  TILE_SETS="full NE,NC,NW,SE,SC,SW"
+  CCPP_PHYS_SUITE="FV3_HRRR"
+
+  if [[ -n $RESERVATION ]] ; then
+    NNODES_MAKE_ICS="3"
+    PPN_MAKE_ICS="20"
+    NNODES_MAKE_LBCS="3"
+    PPN_MAKE_LBCS="20"
+    NNODES_RUN_POST="1"
+    PPN_RUN_POST="40"
+  fi
+
+  if [[ $MACHINE == "wcoss2" ]] ; then
+    LAYOUT_X="48"
+    LAYOUT_Y="40"
+    PPN_MAKE_ICS="32"
+    PPN_MAKE_LBCS="64"
+    NNODES_MAKE_ICS="2"
+    NNODES_MAKE_LBCS="1"
+    PPN_RUN_ANAL="32"
+    NNODES_RUN_ANAL="10"
+    PPN_RUN_FCST="64"
+    NNODES_RUN_FCST="31"
+    PPN_RUN_POST="64"
+    NNODES_RUN_POST="1"
+    PPN_PROC_RADAR="64"
+    NNODES_PROC_RADAR="1"
+
+    MAXTRIES_MAKE_ICS="2"
+    MAXTRIES_MAKE_LBCS="2"
+    MAXTRIES_RUN_PREPSTART="2"
+    MAXTRIES_RUN_FCST="2"
+    MAXTRIES_ANAL_GSI="2"
+    MAXTRIES_ANAL_ENKF="2"
+    MAXTRIES_RUN_POST="2"
+    MAXTRIES_RUN_PRDGEN="2"
+    MAXTRIES_ANAL_GSI="2"
+
+    FV3GFS_FILE_FMT_ICS="netcdf"
+    FV3GFS_FILE_FMT_LBCS="netcdf"
+  fi
+
+  if [[ $MACHINE == "orion" ]] ; then
+    LAYOUT_X="30"
+    LAYOUT_Y="40"
+    PPN_RUN_FCST="40"
+    WTIME_RUN_PRDGEN="00:20:00"
+  fi
+fi
+
+if [[ ${PREDEF_GRID_NAME}=="RRFS_CONUS_13km" ]] ; then 
+  DT_ATMOS=120
+  ADDNL_OUTPUT_GRIDS=()
+  TILE_LABELS="CONUS REGIONS"
+  TILE_SETS="full NE,NC,NW,SE,SC,SW"
+  CCPP_PHYS_SUITE="FV3_HRRR"
+
+  if [[ -n $RESERVATION ]] ; then
+    NNODES_MAKE_ICS="3"
+    PPN_MAKE_ICS="20"
+    NNODES_MAKE_LBCS="3"
+    PPN_MAKE_LBCS="20"
+    NNODES_RUN_POST="1"
+    PPN_RUN_POST="40"
+  fi
+
+  if [[ $MACHINE == "wcoss2" ]] ; then
+    LAYOUT_X="48"
+    LAYOUT_Y="40"
+    PPN_MAKE_ICS="32"
+    PPN_MAKE_LBCS="64"
+    NNODES_MAKE_ICS="2"
+    NNODES_MAKE_LBCS="1"
+    PPN_RUN_ANAL="32"
+    NNODES_RUN_ANAL="10"
+    PPN_RUN_FCST="64"
+    NNODES_RUN_FCST="31"
+    PPN_RUN_POST="64"
+    NNODES_RUN_POST="1"
+    PPN_PROC_RADAR="64"
+    NNODES_PROC_RADAR="1"
+
+    MAXTRIES_MAKE_ICS="2"
+    MAXTRIES_MAKE_LBCS="2"
+    MAXTRIES_RUN_PREPSTART="2"
+    MAXTRIES_RUN_FCST="2"
+    MAXTRIES_ANAL_GSI="2"
+    MAXTRIES_ANAL_ENKF="2"
+    MAXTRIES_RUN_POST="2"
+    MAXTRIES_RUN_PRDGEN="2"
+    MAXTRIES_ANAL_GSI="2"
+
+    FV3GFS_FILE_FMT_ICS="netcdf"
+    FV3GFS_FILE_FMT_LBCS="netcdf"
+  fi
+
+  if [[ $MACHINE == "orion" ]] ; then
+    LAYOUT_X="30"
+    LAYOUT_Y="40"
+    PPN_RUN_FCST="40"
+    WTIME_RUN_PRDGEN="00:20:00"
+  fi
+ 
+  if [[ $MACHINE == "hera" ]] ; then
+    NNODES_MAKE_ICS="1"
+    NNODES_MAKE_LBCS="1"
+    NNODES_RUN_POST="1"
+    NCORES_RUN_ANAL=60
+    NATIVE_RUN_ANAL="--cpus-per-task 4 --exclusive"
+
+    LAYOUT_X=12
+    LAYOUT_Y=6
+
+    PPN_MAKE_ICS="20"
+    PPN_MAKE_LBCS="20"
+    NNODES_MAKE_ICS="1"
+    NNODES_MAKE_LBCS="1"
+    PPN_RUN_ANAL="20"
+    NNODES_RUN_ANAL="3"
+    PPN_RUN_FCST="20"
+    NNODES_RUN_FCST="3"
+    PPN_RUN_POST="20"
+    NNODES_RUN_POST="1"
+    PPN_PROC_RADAR="40"
+    NNODES_PROC_RADAR="1"
+  fi
+
+fi
+
+if [[ ${PREDEF_GRID_NAME}=="RRFS_NA_3km" ]] ; then 
+  DT_ATMOS=60
+  CCPP_PHYS_SUITE="FV3_HRRR"
+  ADDNL_OUTPUT_GRIDS=( "hrrr" "hrrrak" )
+  TILE_LABELS="NA hrrr_regions1 hrrr_regions2 hrrr_tiles1 hrrr_tiles2 hrrr_tiles3 \
+    hrrr_tiles4 hrrrak_tiles"
+  TILE_SETS="full SE,SC,SW NE,NC,NW ATL,CA-NV,CentralCA CHI-DET,DCArea,EastCO \
+    GreatLakes,NYC-BOS,SEA-POR SouthCA,SouthFL,VortexSE AKRange,Anchorage,Juneau"
+
+  if [[ -n $RESERVATION ]] ; then
+    NNODES_MAKE_ICS="10"
+    NNODES_MAKE_LBCS="5"
+    PPN_MAKE_ICS="8"
+    PPN_MAKE_LBCS="10"
+    WTIME_MAKE_LBCS="02:45:00"
+    WTIME_RUN_PREPSTART="00:20:00"
+    PPN_RUN_PREPSTART="5"
+    WRTCMP_write_tasks_per_group="50"
+    NCORES_PER_NODE="40"
+
+    MEMO_RUN_REF2TTEN="60G"
+
+    WTIME_RUN_FCST="04:00:00"
+    LAYOUT_X=50
+    LAYOUT_Y=20
+    IO_LAYOUT_Y=10
+    PPN_RUN_NONVARCLDANL=${IO_LAYOUT_Y}
+    NATIVE_RUN_FCST="--cpus-per-task 4 --exclusive"
+    NATIVE_RUN_ANAL="--cpus-per-task 4 --exclusive"
+
+    PARTITION_POST="kjet"
+    PPN_RUN_POST="20"
+    NNODES_RUN_POST="10"
+    WTIME_RUN_POST="00:35:00"
+  fi
+fi
+
+if [[ ${PREDEF_GRID_NAME}=="RRFS_NA_13km" ]] ; then 
+  DT_ATMOS=120
+  CCPP_PHYS_SUITE="FV3_RAP"
+  ADDNL_OUTPUT_GRIDS=( "130" "242" )
+  TILE_LABELS="NA"
+  TILE_SETS="full"
+  NNODES_RUN_POST="1"
+  grid_ratio_fv3=1.0
+fi
+
+#
+# In NCO mode, the following don't need to be explicitly set to "FALSE" 
+# in this configuration file because the experiment generation script
+# will do this (along with printing out an informational message).
+#
+#RUN_TASK_MAKE_GRID="FALSE"
+#RUN_TASK_MAKE_OROG="FALSE"
+#RUN_TASK_MAKE_SFC_CLIMO="FALSE"
+#
+
+

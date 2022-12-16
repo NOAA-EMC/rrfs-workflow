@@ -107,7 +107,7 @@ case $MACHINE in
 "JET")
   ulimit -s unlimited
   ulimit -a
-  APRUN="srun"
+  APRUN="srun --mem=0"
   ;;
 #
 "ODIN")

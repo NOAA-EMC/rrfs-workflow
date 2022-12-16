@@ -6,62 +6,8 @@ ACCOUNT="nrtrr"
 EXPT_BASEDIR="YourOwnSpace/rrfs.${version}"
 EXPT_SUBDIR="RRFS_CONUS_13km"
 
-if [[ -n $RESERVATION ]] ; then
-  ACCOUNT=rtrr
-  SERVICE_ACCOUNT=nrtrr
-  PARTITION_DEFAULT=kjet
-  PARTITION_FCST=kjet
-  PARTITION_GRAPHICS=kjet
-  PARTITION_ANALYSIS=kjet
-  PARTITION_WGRIB2=kjet
-  PARTITION_POST=kjet
-  QUEUE_DEFAULT="rth"
-  QUEUE_FCST="rth"
-  QUEUE_ANALYSIS="rth"
-  QUEUE_WGRIB2="rt"
-  QUEUE_GRAPHICS="rt"
-  QUEUE_HPSS="rt"
-  QUEUE_POST="rt"
-  RESERVATION_POST="rrfsdet"
-fi
-
-if [[ $MACHINE == "hera" ]] ; then
-  ACCOUNT="wrfruc"
-  PARTITION_DEFAULT=""
-  PARTITION_FCST=""
-  QUEUE_ANALYSIS="batch"
-  QUEUE_WGRIB2="batch"
-  QUEUE_GRAPHICS="batch"
-fi
-
-if [[ $MACHINE == "orion" ]] ; then
-  ACCOUNT=wrfruc
-  QUEUE_ANALYSIS="batch"
-  QUEUE_WGRIB2="batch"
-  QUEUE_GRAPHICS="batch"
-  QUEUE_POST="batch"
-  NCORES_PER_NODE=24
-fi
-
-if [[ $MACHINE == "wcoss2" ]] ; then
-  ACCOUNT=RRFS-DEV
-  QUEUE_DEFAULT="dev"
-  QUEUE_ANALYSIS="dev"
-  QUEUE_FCST="dev"
-  QUEUE_HPSS="dev_transfer"
-  QUEUE_WGRIB2="dev"
-  QUEUE_GRAPHICS="dev"
-fi
-
-VERBOSE="TRUE"
-
-RUN_ENVIR="nco"
-
 PREDEF_GRID_NAME=RRFS_CONUS_13km
-ADDNL_OUTPUT_GRIDS=()
-
-TILE_LABELS="CONUS REGIONS"
-TILE_SETS="full NE,NC,NW,SE,SC,SW"
+. set_rrfs_config_temp.sh
 
 DO_DACYCLE="TRUE"
 DO_SURFACE_CYCLE="TRUE"
@@ -81,8 +27,12 @@ DO_SOIL_ADJUST="TRUE"
 DO_RADDA="FALSE"
 DO_BUFRSND="FALSE"
 
-QUILTING="TRUE"
-CCPP_PHYS_SUITE="FV3_HRRR"
+NET="rrfs_b"
+TAG="RRFS_CONUS_13km"
+ARCHIVEDIR="/1year/BMC/wrfruc/rrfs_dev1"
+NCL_REGION="conus"
+MODEL="RRFS_conus_13km"
+RUN="rrfs_conus_13km"
 
 EXTRN_MDL_ICS_OFFSET_HRS="3"
 LBC_SPEC_INTVL_HRS="1"
@@ -132,145 +82,12 @@ RESTART_INTERVAL="1"
 SST_update_hour=01
 GVF_update_hour=04
 SNOWICE_update_hour=00
-netcdf_diag=.true.
-binary_diag=.false.
 SOIL_SURGERY_time=2022020704
 
-DT_ATMOS=60
-NCORES_RUN_ANAL=360
-NCORES_RUN_OBSERVER=80
-HYBENSMEM_NMIN=66
-HALO_BLEND=20
-IO_LAYOUT_Y=1
-PPN_RUN_REF2TTEN=1
-PPN_RUN_NONVARCLDANL=${IO_LAYOUT_Y}
 regional_ensemble_option=5
-
-MAXTRIES_MAKE_ICS="3"
-MAXTRIES_MAKE_LBCS="3"
-MAXTRIES_RUN_PREPSTART="3"
-MAXTRIES_RUN_FCST="3"
-MAXTRIES_ANAL_GSI="3"
-MAXTRIES_CLDANL_NONVAR="3"
-MAXTRIES_RUN_POST="3"
-MAXTRIES_RUN_PRDGEN="3"
-
-WTIME_RUN_FCST="00:45:00"
-WTIME_RUN_FCST_LONG="03:45:00"
-WTIME_MAKE_LBCS="02:00:00"
-WTIME_RUN_ANAL="00:50:00"
-WTIME_RUN_PREPSTART="00:20:00"
-
-START_TIME_SPINUP="02:10:00"
-START_TIME_PROD="08:20:00"
-START_TIME_LATE_ANALYSIS="08:40:00"
-
-PRINT_DIFF_PGR="TRUE"
-
-if [[ -n $RESERVATION ]] ; then
-  NNODES_MAKE_ICS="3"
-  PPN_MAKE_ICS="20"
-  NNODES_MAKE_LBCS="3"
-  PPN_MAKE_LBCS="20"
-  NNODES_RUN_POST="1"
-  PPN_RUN_POST="40"
-fi
 
 EXTRN_MDL_NAME_ICS="FV3GFS"
 EXTRN_MDL_NAME_LBCS="FV3GFS"
-
-FV3GFS_FILE_FMT_ICS="grib2"
-FV3GFS_FILE_FMT_LBCS="grib2"
-
-envir="para"
-
-NET="rrfs_b"
-TAG="RRFS_CONUS_13km"
-
-USE_CUSTOM_POST_CONFIG_FILE="TRUE"
-TESTBED_FIELDS_FN="testbed_fields_bgdawp.txt"
-TESTBED_FIELDS_FN2="testbed_fields_bgrd3d.txt"
-CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-fv3lam_rrfs.txt"
-CUSTOM_POST_PARAMS_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/params_grib2_tbl_new"
-ARCHIVEDIR="/1year/BMC/wrfruc/rrfs_dev1"
-NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
-NCL_HOME="/home/rtrr/RRFS/graphics"
-NCL_REGION="conus"
-MODEL="RRFS_conus_13km"
-
-#
-# In NCO mode, the following don't need to be explicitly set to "FALSE" 
-# in this configuration file because the experiment generation script
-# will do this (along with printing out an informational message).
-#
-#RUN_TASK_MAKE_GRID="FALSE"
-#RUN_TASK_MAKE_OROG="FALSE"
-#RUN_TASK_MAKE_SFC_CLIMO="FALSE"
-
-if [[ $MACHINE == "wcoss2" ]] ; then
-  LAYOUT_X="48"
-  LAYOUT_Y="40"
-  PPN_MAKE_ICS="32"
-  PPN_MAKE_LBCS="64"
-  NNODES_MAKE_ICS="2"
-  NNODES_MAKE_LBCS="1"
-  PPN_RUN_ANAL="32"
-  NNODES_RUN_ANAL="10"
-  PPN_RUN_FCST="64"
-  NNODES_RUN_FCST="31"
-  PPN_RUN_POST="64"
-  NNODES_RUN_POST="1"
-  PPN_PROC_RADAR="64"
-  NNODES_PROC_RADAR="1"
-
-  MAXTRIES_MAKE_ICS="2"
-  MAXTRIES_MAKE_LBCS="2"
-  MAXTRIES_RUN_PREPSTART="2"
-  MAXTRIES_RUN_FCST="2"
-  MAXTRIES_ANAL_GSI="2"
-  MAXTRIES_ANAL_ENKF="2"
-  MAXTRIES_RUN_POST="2"
-  MAXTRIES_RUN_PRDGEN="2"
-  MAXTRIES_ANAL_GSI="2"
-
-  FV3GFS_FILE_FMT_ICS="netcdf"
-  FV3GFS_FILE_FMT_LBCS="netcdf"
-fi
-
-if [[ $MACHINE == "orion" ]] ; then
-  LAYOUT_X="30"
-  LAYOUT_Y="40"
-  PPN_RUN_FCST="40"
-  WTIME_RUN_PRDGEN="00:20:00"
-fi
-
-if [[ ${PREDEF_GRID_NAME}=="RRFS_CONUS_13km" ]] ; then
-  NNODES_MAKE_ICS="1"
-  NNODES_MAKE_LBCS="1"
-  NNODES_RUN_POST="1"
-  NCORES_RUN_ANAL=60
-  NATIVE_RUN_ANAL="--cpus-per-task 4 --exclusive"
-
-  DT_ATMOS=120
-  LAYOUT_X=12
-  LAYOUT_Y=6
-
-  PPN_MAKE_ICS="20"
-  PPN_MAKE_LBCS="20"
-  NNODES_MAKE_ICS="1"
-  NNODES_MAKE_LBCS="1"
-  PPN_RUN_ANAL="20"
-  NNODES_RUN_ANAL="3"
-  PPN_RUN_FCST="20"
-  NNODES_RUN_FCST="3"
-  PPN_RUN_POST="20"
-  NNODES_RUN_POST="1"
-  PPN_PROC_RADAR="40"
-  NNODES_PROC_RADAR="1"
-fi
-
-RUN="RRFS_conus_13km"
-COMINgfs=""
 
 . set_rrfs_config.sh
 
@@ -280,18 +97,7 @@ NWGES="YourOwnSpace/${version}/nwges/${envir}/${NET}"  # Path to directory NWGES
 if [[ ${regional_ensemble_option} == "5" ]]; then
   RRFSE_NWGES="YourOwnSpace/${version}/nwges/${envir}/${NET}"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
   NUM_ENS_MEMBERS=30     # FV3LAM ensemble size for GSI hybrid analysis
-  CYCL_HRS_PRODSTART_ENS=("19")
+  CYCL_HRS_PRODSTART_ENS=("07" "19")
   DO_ENVAR_RADAR_REF="TRUE"
-fi
-
-
-if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
-   NUM_ENS_MEMBERS=30
-#   DO_SPPT=TRUE
-#   SPPT_MAG=0.5
-#   DO_ENSCONTROL="TRUE"
-   DO_GSIOBSERVER="TRUE"
-   DO_ENKFUPDATE="TRUE"
-   ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_ens"
 fi
 
