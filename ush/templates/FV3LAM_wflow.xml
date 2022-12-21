@@ -2805,7 +2805,7 @@ MODULES_RUN_TASK_FP script.
       &RSRV_GRAPHICS;
       &WALL_LIMIT_GRAPHICS;
 
-      <walltime>{{ wtime_run_fcst }}</walltime>
+      <walltime>{{ wtime_run_fcst_long }}</walltime>
       <nodes>{{ nnodes_run_graphics }}:ppn={{ ppn_run_graphics }}</nodes>
       <jobname><cyclestr>&TAG;_python{{ uscore_ensmem_name }}_@H_#tilelabel#</cyclestr></jobname>
       <join><cyclestr>&LOGDIR;/python{{ uscore_ensmem_name }}_#tilelabel#.log</cyclestr></join>
@@ -2822,7 +2822,10 @@ MODULES_RUN_TASK_FP script.
       <envar><name>ENSCTRL_COMOUT_BASEDIR</name><value>&ENSCTRL_COMOUT_BASEDIR;</value></envar>
 
       <dependency>
-        <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000"/>
+        <or>
+          <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000"/>
+          <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000_long"/>
+        </or>
       </dependency>
     </task>
   </metatask>
@@ -2835,7 +2838,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_GRAPHICS;
     &WALL_LIMIT_GRAPHICS;
 
-    <walltime>{{ wtime_run_fcst }}</walltime>
+    <walltime>{{ wtime_run_fcst_long }}</walltime>
     <nodes>{{ nnodes_run_graphics }}:ppn={{ ppn_run_graphics }}</nodes>
     <jobname><cyclestr>&TAG;_python{{ uscore_ensmem_name }}_@H_skewts</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/python_skewts{{ uscore_ensmem_name }}_@H.log</cyclestr></join>
@@ -2850,7 +2853,10 @@ MODULES_RUN_TASK_FP script.
       <envar><name>ENSCTRL_COMOUT_BASEDIR</name><value>&ENSCTRL_COMOUT_BASEDIR;</value></envar>
 
     <dependency>
-      <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000"/>
+      <or>
+        <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000"/>
+        <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000_long"/>
+      </or>
     </dependency>
   </task>
 
