@@ -6,7 +6,7 @@ EXPT_BASEDIR="/home/rtrr/RRFS/rrfs.${version}"
 EXPT_SUBDIR="RRFS_CONUS_3km"
 
 PREDEF_GRID_NAME=RRFS_CONUS_3km
-. set_rrfs_config_temp.sh
+. set_rrfs_config_general.sh
 
 DO_DACYCLE="TRUE"
 DO_SURFACE_CYCLE="TRUE"

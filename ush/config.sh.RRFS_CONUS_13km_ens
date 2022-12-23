@@ -1,22 +1,22 @@
-MACHINE="jet"
-version="v0.3.1"
+MACHINE="hera"
+version="v0.3.2"
 ACCOUNT="wrfruc"
-RESERVATION="rrfsens"
-RESERVATION_POST="rrfsdet"
-EXPT_BASEDIR="/misc/whome/wrfruc/RRFSE/rrfs.${version}"
+#RESERVATION="rrfsens"
+#RESERVATION_POST="rrfsdet"
+EXPT_BASEDIR="YourOwnSpace/rrfs.${version}"
 EXPT_SUBDIR="RRFS_CONUS_13km_ens"
 
 PREDEF_GRID_NAME=RRFS_CONUS_13km
-. set_rrfs_config_temp.sh
+. set_rrfs_config_general.sh
 
 DO_ENSEMBLE="TRUE"
 #DO_ENSFCST="TRUE"
 #DO_DACYCLE="TRUE"
 #DO_SURFACE_CYCLE="TRUE"
 DO_SPINUP="TRUE"
-DO_POST_SPINUP="TRUE"
+DO_POST_SPINUP="FALSE"
 DO_POST_PROD="TRUE"
-#DO_RETRO="TRUE"
+DO_RETRO="TRUE"
 DO_NONVAR_CLDANAL="TRUE"
 DO_SMOKE_DUST="FALSE"
 #DO_REFL2TTEN="FALSE"
@@ -26,10 +26,16 @@ DO_SMOKE_DUST="FALSE"
 #DO_RADDA="FALSE"
 
 NCL_REGION="conus"
-MODEL="RRFS_B"
+MODEL="rrfs_b"
 NET="RRFS_CONUS"
 TAG="RRFSE_CONUS_13km"
 RUN="rrfs_conus_13km_ensda"
+if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
+  DO_SPINUP="FALSE"
+  DO_SAVE_INPUT="FALSE"
+  DO_NONVAR_CLDANAL="FALSE"
+  DO_POST_PROD="TRUE"
+fi
 if [[ ${DO_ENSFCST} == "TRUE" ]]; then
   RUN="rrfs_conus_13km_ensfcst"
 fi
@@ -40,17 +46,14 @@ EXTRN_MDL_LBCS_OFFSET_HRS="6"
 BOUNDARY_LEN_HRS="6"
 BOUNDARY_PROC_GROUP_NUM="10"
 
-WTIME_RUN_FCST="01:00:00"
-WTIME_MAKE_LBCS="02:00:00"
-
 # avaialble retro period:
 # 20210511-20210531; 20210718-20210801
 DATE_FIRST_CYCL="20221110"
 DATE_LAST_CYCL="20221130"
 CYCL_HRS=( "00" "12" )
 CYCL_HRS=( "18" )
-CYCL_HRS_SPINSTART=("06" "18")
-CYCL_HRS_PRODSTART=("07" "19")
+CYCL_HRS_SPINSTART=("18")
+CYCL_HRS_PRODSTART=("19")
 CYCL_HRS_STOCH=("00" "12")
 #CYCL_HRS_RECENTER=("19")
 CYCLEMONTH="11"
@@ -66,9 +69,9 @@ ENDDAY=${DATE_LAST_CYCL:6:2}
 ENDHOUR="23"
 
 PREEXISTING_DIR_METHOD="upgrade" # "rename"
-INITIAL_CYCLEDEF="${DATE_FIRST_CYCL}0600 ${DATE_LAST_CYCL}2300 12:00:00"
-BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}0600 ${DATE_LAST_CYCL}2300 06:00:00"
-PROD_CYCLEDEF="${DATE_FIRST_CYCL}0700 ${DATE_LAST_CYCL}2300 01:00:00"
+INITIAL_CYCLEDEF="${DATE_FIRST_CYCL}1800 ${DATE_LAST_CYCL}2300 24:00:00"
+BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}1800 ${DATE_LAST_CYCL}2300 06:00:00"
+PROD_CYCLEDEF="${DATE_FIRST_CYCL}1900 ${DATE_LAST_CYCL}2300 01:00:00"
 #RECENTER_CYCLEDEF="00 19 * 10 2022 *"
 ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 24:00:00"
 if [[ ${DO_ENSFCST} == "TRUE" ]]; then
@@ -76,9 +79,13 @@ if [[ ${DO_ENSFCST} == "TRUE" ]]; then
   DO_SPINUP="FALSE"
   INITIAL_CYCLEDEF="00 01 01 01 2100 *"
   PROD_CYCLEDEF="${DATE_FIRST_CYCL}1200 ${DATE_LAST_CYCL}2300 12:00:00"
+  BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}1200 ${DATE_LAST_CYCL}2300 12:00:00"
 fi
 if [[ $DO_SPINUP == "TRUE" ]] ; then
-  SPINUP_CYCLEDEF="${DATE_FIRST_CYCL}0600 ${DATE_LAST_CYCL}2300 12:00:00"
+  SPINUP_CYCLEDEF="${DATE_FIRST_CYCL}1800 ${DATE_LAST_CYCL}2300 24:00:00"
+fi
+if [[ $DO_SAVE_INPUT == "TRUE" ]] ; then
+  SAVEINPUT_CYCLEDEF="${DATE_FIRST_CYCL}1200 ${DATE_LAST_CYCL}2300 12:00:00"
 fi
 
 FCST_LEN_HRS="1"
@@ -91,13 +98,37 @@ if [[ ${DO_ENSFCST} == "TRUE" ]]; then
   POSTPROC_LEN_HRS="24"
   WTIME_RUN_FCST="05:30:00"
 fi
-
-EXTRN_MDL_NAME_ICS="GEFS"
-EXTRN_MDL_NAME_LBCS="GEFS"
 DA_CYCLE_INTERV="1"
 RESTART_INTERVAL="1"
+netcdf_diag=.true.
+binary_diag=.false.
+NFHOUT="3"
+NFHMAX_HF="12"
+
+WTIME_RUN_FCST="00:30:00"
+WTIME_RUN_FCST_LONG="03:45:00"
+WTIME_MAKE_LBCS="00:30:00"
+NNODES_RUN_ANAL="1"
+EXTRN_MDL_NAME_ICS="GEFS"
+EXTRN_MDL_NAME_LBCS="GEFS"
+if [[ $MACHINE == "wcoss2" ]] ; then
+  EXTRN_MDL_NAME_LBCS="FV3GFS"
+fi
+EXTRN_MDL_SOURCE_BASEDIR_ICS="/mnt/lfs4/BMC/wrfruc/RRFSE/data/gens"
+EXTRN_MDL_SOURCE_BASEDIR_LBCS="/mnt/lfs4/BMC/wrfruc/RRFSE/data/gens"
+
+FV3GFS_FILE_FMT_ICS="grib2"
+FV3GFS_FILE_FMT_LBCS="grib2"
+
+envir="para"
+
+NET="rrfs_a"
+TAG="cenkf32"
 
 ARCHIVEDIR="/1year/BMC/wrfruc/rrfs_dev1"
+NCL_REGION="conus"
+MODEL="RRFS_B"
+
 
 if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    NUM_ENS_MEMBERS=30
@@ -107,14 +138,16 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
 #   DO_RECENTER="TRUE"
    DO_ENS_GRAPHICS="TRUE"
    DO_ENKF_RADAR_REF="TRUE"
-   DO_ENSPOST="TRUE"
+   DO_ENSPOST="FALSE"
    DO_ENSINIT="TRUE"
    NUM_ENS_MEMBERS_FCST=9
-   if [[ ${DO_ENSFCST} == "TRUE" ]]; then
+   if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
      NUM_ENS_MEMBERS=${NUM_ENS_MEMBERS_FCST}
 #     DO_SPPT=TRUE
      DO_SPP=TRUE
 #     SPPT_MAG=0.5
+     WTIME_RUN_FCST="04:45:00"
+     WTIME_MAKE_LBCS="01:30:00"
    fi
    RADAR_REF_THINNING="2"
    ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_ens"
@@ -127,15 +160,21 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    write_diag_2=.true.
 fi
 
+RUN="rrfs_a"
+if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
+  RUN="rrfs_a"
+fi
+COMINgfs=""
+
 . set_rrfs_config.sh
 
-STMP="/mnt/lfs4/BMC/wrfruc/RRFSE/${version}/stmp"  # Path to directory STMP that mostly contains input files.
+STMP="YourOwnSpace/${version}/stmp"  # Path to directory STMP that mostly contains input files.
 if [[ ${DO_ENSFCST} == "TRUE" ]]; then
-  STMP="/mnt/lfs4/BMC/wrfruc/RRFSE/${version}/stmp_ensfcst"  # Path to directory STMP that mostly contains input files.
+  STMP="YourOwnSpace/${version}/stmp_ensfcst"  # Path to directory STMP that mostly contains input files.
 fi
-PTMP="/mnt/lfs4/BMC/wrfruc/RRFSE/${version}"  # Path to directory STMP that mostly contains input files.
-NWGES="/mnt/lfs4/BMC/wrfruc/RRFSE/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
-ENSCTRL_STMP="/mnt/lfs4/BMC/nrtrr/${version}/stmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
-ENSCTRL_PTMP="/mnt/lfs4/BMC/nrtrr/${version}"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
-ENSCTRL_NWGES="/mnt/lfs4/BMC/nrtrr/${version}/nwges"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+PTMP="YourOwnSpace/${version}"  # Path to directory STMP that mostly contains input files.
+NWGES="YourOwnSpace/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+ENSCTRL_STMP="YourOwnSpace/${version}/stmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+ENSCTRL_PTMP="YourOwnSpace/${version}"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+ENSCTRL_NWGES="YourOwnSpace/${version}/nwges"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
 

@@ -1,5 +1,5 @@
 MACHINE="jet"
-version="v0.3.1"
+version="v0.3.2"
 ACCOUNT="nrtrr"
 #RESERVATION="rrfsdet"
 #RESERVATION_POST="rrfsdet"
@@ -7,7 +7,7 @@ EXPT_BASEDIR="YourOwnSpace/rrfs.${version}"
 EXPT_SUBDIR="RRFS_CONUS_3km"
 
 PREDEF_GRID_NAME=RRFS_CONUS_3km
-. set_rrfs_config_temp.sh
+. set_rrfs_config_general.sh
 
 DO_DACYCLE="TRUE"
 DO_SURFACE_CYCLE="TRUE"

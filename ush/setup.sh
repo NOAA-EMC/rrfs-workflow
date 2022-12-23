@@ -536,7 +536,7 @@ case $MACHINE in
     QUEUE_HPSS=${QUEUE_HPSS:-"dev_transfer"}
     QUEUE_FCST=${QUEUE_FCST:-"dev"}
     QUEUE_ANALYSIS=${QUEUE_ANALYSIS:-"dev"}
-    QUEUE_WGRIB2=${QUEUE_WGRIB2:-"dev"}
+    QUEUE_PRDGEN=${QUEUE_PRDGEN:-"dev"}
     QUEUE_POST=${QUEUE_POST:-"dev"}
     ;;
 
@@ -549,7 +549,7 @@ case $MACHINE in
     QUEUE_HPSS=${QUEUE_HPSS:-"batch"}
     PARTITION_FCST=${PARTITION_FCST:-"hera"}
     QUEUE_FCST=${QUEUE_FCST:-"batch"}
-    QUEUE_WGRIB2=${QUEUE_WGRIB2:-"batch"}
+    QUEUE_PRDGEN=${QUEUE_PRDGEN:-"batch"}
     QUEUE_POST=${QUEUE_POST:-"batch"}
     ;;
 
@@ -577,8 +577,8 @@ case $MACHINE in
     QUEUE_GRAPHICS=${QUEUE_GRAPHICS:-"batch"}
     PARTITION_ANALYSIS=${PARTITION_ANALYSIS:-"vjet,kjet,xjet"}
     QUEUE_ANALYSIS=${QUEUE_ANALYSIS:-"batch"}
-    PARTITION_WGRIB2=${PARTITION_WGRIB2:-"sjet,vjet,kjet,xjet"}
-    QUEUE_WGRIB2=${QUEUE_WGRIB2:-"batch"}
+    PARTITION_PRDGEN=${PARTITION_PRDGEN:-"sjet,vjet,kjet,xjet"}
+    QUEUE_PRDGEN=${QUEUE_PRDGEN:-"batch"}
     PARTITION_POST=${PARTITION_POST:-"sjet,vjet,kjet,xjet"}
     QUEUE_POST=${QUEUE_POST:-"batch"}
     ;;
@@ -843,6 +843,7 @@ if [ "${RUN_ENVIR}" = "nco" ]; then
   FIX_CRTM=${FIX_CRTM:-"${HOMErrfs}/fix/crtm/CRTM_v2.3.0"}
   FIX_UPP_CRTM=${FIX_UPP_CRTM:-"${HOMErrfs}/fix/crtm/CRTM_v2.4.0"}
   FIX_SMOKE_DUST=${FIX_SMOKE_DUST:-"${HOMErrfs}/fix/smoke_dust"}
+  FIX_BUFRSND=${FIX_BUFRSND:-"${HOMErrfs}/fix/bufrsnd"}
   AIRCRAFT_REJECT=${AIRCRAFT_REJECT:-"${FIX_GSI}"}
   SFCOBS_USELIST=${SFCOBS_USELIST:-"${FIX_GSI}"}
 fi
@@ -850,9 +851,9 @@ fi
 case $MACHINE in
 
   "WCOSS2")
-    FIXgsm=${FIXgsm:-"/lfs/h2/emc/da/noscrub/Shun.Liu/FIX_RRFS/fix_am"}
-    TOPO_DIR=${TOPO_DIR:-"/lfs/h2/emc/da/noscrub/Shun.Liu/FIX_RRFS/fix_orog"}
-    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/lfs/h2/emc/da/noscrub/Shun.Liu/FIX_RRFS/fix_sfc_climo"}
+    FIXgsm=${FIXgsm:-"/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/fix_sfc_climo"}
     FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
     ;;
 
@@ -1384,6 +1385,7 @@ FIXgsi="${EXPTDIR}/fix_gsi"
 FIXcrtm="${EXPTDIR}/fix_crtm"
 FIXuppcrtm="${EXPTDIR}/fix_upp_crtm"
 FIXsmokedust="${EXPTDIR}/fix_smoke_dust"
+FIXbufrsnd="${EXPTDIR}/fix_bufrsnd"
 SST_ROOT="${SST_ROOT}"
 
 if [ "${RUN_ENVIR}" = "nco" ]; then
@@ -1393,9 +1395,9 @@ if [ "${RUN_ENVIR}" = "nco" ]; then
   ENSCTRL_CYCLE_BASEDIR="${ENSCTRL_STMP}"
   COMROOT="$PTMP"
   ENSCTRL_COMROOT="${ENSCTRL_PTMP}"
-  COMOUT_BASEDIR="$COMROOT"
-  ENSCTRL_COMOUT_BASEDIR="${ENSCTRL_COMROOT}"
-  ENSCTRL_COMOUT_DIR="${ENSCTRL_COMROOT}/$RUN.@Y@m@d/@H"
+  COMOUT_BASEDIR="$COMROOT/${envir}"
+  ENSCTRL_COMOUT_BASEDIR="${ENSCTRL_COMROOT}/${envir}"
+  ENSCTRL_COMOUT_DIR="${ENSCTRL_COMOUT_BASEDIR}/$RUN.@Y@m@d/@H"
   NWGES_BASEDIR="$NWGES"
   ENSCTRL_NWGES_BASEDIR="${ENSCTRL_NWGES}"
   RRFSE_NWGES_BASEDIR="${RRFSE_NWGES}"
@@ -2693,6 +2695,7 @@ FIX_GSI="${FIX_GSI}"
 FIX_CRTM="${FIX_CRTM}"
 FIX_UPP_CRTM="${FIX_UPP_CRTM}"
 FIX_SMOKE_DUST="${FIX_SMOKE_DUST}"
+FIX_BUFRSND="${FIX_BUFRSND}"
 AIRCRAFT_REJECT="${AIRCRAFT_REJECT}"
 SFCOBS_USELIST="${SFCOBS_USELIST}"
 

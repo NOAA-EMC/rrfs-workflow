@@ -4,7 +4,7 @@
 #
 if [[ -d /lfs/h2 ]] ; then
     PLATFORM=wcoss2
-    FIX_RRFS_LOCATION="/lfs/h2/emc/da/noscrub/Shun.Liu/FIX_RRFS"
+    FIX_RRFS_LOCATION="/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS"
 elif [[ -d /scratch1 ]] ; then
     PLATFORM=hera
     FIX_RRFS_LOCATION="/scratch2/BMC/rtrr/FIX_RRFS"

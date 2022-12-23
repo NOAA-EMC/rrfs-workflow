@@ -14,13 +14,13 @@ if [[ -n $RESERVATION ]] ; then
   PARTITION_FCST=kjet
   PARTITION_GRAPHICS=kjet
   PARTITION_ANALYSIS=kjet
-  PARTITION_WGRIB2=kjet
+  PARTITION_PRDGEN=kjet
   PARTITION_POST=kjet
   
   QUEUE_DEFAULT="rt"
   QUEUE_FCST="rt"
   QUEUE_ANALYSIS="rt"
-  QUEUE_WGRIB2="rt"
+  QUEUE_PRDGEN="rt"
   QUEUE_GRAPHICS="rt"
   QUEUE_HPSS="rt"
   if [[ -n ${RESERVATION_POST} ]] ; then
@@ -34,7 +34,7 @@ if [[ $MACHINE == "hera" ]] ; then
   PARTITION_DEFAULT=""
   PARTITION_FCST=""
   QUEUE_ANALYSIS="batch"
-  QUEUE_WGRIB2="batch"
+  QUEUE_PRDGEN="batch"
   QUEUE_GRAPHICS="batch"
 fi
 
@@ -250,7 +250,7 @@ if [[ "$MACHINE" == "wcoss_dell_p3" ]]; then
   PARTITION_FCST=""
   PARTITION_ANALYSIS=""
   PARTITION_GRAPHICS=""
-  PARTITION_WGRIB2=""
+  PARTITION_PRDGEN=""
   DO_BUFRSND="FALSE"
 
   OBSPATH_NSSLMOSIAC="/gpfs/dell1/nco/ops/dcom/prod/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC"

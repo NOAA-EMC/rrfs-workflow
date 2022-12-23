@@ -83,7 +83,7 @@ case $MACHINE in
   export OMP_STACKSIZE=500M
   export OMP_NUM_THREADS=1
   ncores=$(( NNODES_RUN_RECENTER*PPN_RUN_RECENTER ))
-  APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_RECENTER} --cpu-bind core --depth ${OMP_NUM_THREADS}"
+  APRUN="mpiexec -n 93 -ppn ${PPN_RUN_RECENTER} --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;
 #
 "THEIA")

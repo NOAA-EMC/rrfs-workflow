@@ -109,15 +109,15 @@ version="0.1.0"
 # If this is not set or set to an empty string, it will be (re)set to a 
 # machine-dependent value.
 #
-# PARTITION_WGRIB2:
+# PARTITION_PRDGEN:
 # If using the slurm job scheduler (i.e. if SCHED is set to "slurm"), 
 # the partition to which the task that remaps output grids is submitted.  If 
 # this is not set or set to an empty string, it will be (re)set to a 
 # machine-dependent value.  This is not used if SCHED is not set to 
 # "slurm".
 #
-# QUEUE_WGRIB2:
-# The queue or QOS to which the task that wgrib2 is submitted.  
+# QUEUE_PRDGEN:
+# The queue or QOS to which the task that prodgen is submitted.  
 # If this is not set or set to an empty string, it will be (re)set to a 
 # machine-dependent value.
 #
@@ -156,8 +156,8 @@ PARTITION_GRAPHICS=""
 QUEUE_GRAPHICS=""
 PARTITION_ANALYSIS=""
 QUEUE_ANALYSIS=""
-PARTITION_WGRIB2=""
-QUEUE_WGRIB2=""
+PARTITION_PRDGEN=""
+QUEUE_PRDGEN=""
 PARTITION_POST=""
 QUEUE_POST=""
 #
@@ -1475,6 +1475,9 @@ SFC_CLIMO_FIELDS=( \
 # FIX_SMOKE_DUST
 # directory in which the smoke and dust fix files are located
 #
+# FIX_BUFRSND
+# directory in which the bufrsnd fix files are located
+#
 # FNGLAC, ..., FNMSKH:
 # Names of (some of the) global data files that are assumed to exist in 
 # a system directory specified (this directory is machine-dependent; 
@@ -1534,6 +1537,7 @@ FIX_UPP=""
 FIX_CRTM=""
 FIX_UPP_CRTM=""
 FIX_SMOKE_DUST=""
+FIX_BUFRSND=""
 
 FNGLAC="global_glacier.2x2.grb"
 FNMXIC="global_maxice.2x2.grb"
@@ -1734,6 +1738,14 @@ PPN_RUN_BUFRSND="28"
 PPN_SAVE_RESTART="1"
 PPN_RUN_JEDIENVAR_IODA="1"
 #
+# Number of TPP for WCOSS2.
+#
+TPP_MAKE_ICS="1"
+TPP_MAKE_LBCS="1"
+TPP_RUN_ANAL="1"
+TPP_RUN_ENKF="1"
+TPP_RUN_FCST="1"
+#
 # Walltimes.
 #
 WTIME_MAKE_GRID="00:20:00"
@@ -1747,6 +1759,7 @@ WTIME_RUN_PREPSTART="00:10:00"
 WTIME_RUN_PREPSTART_ENSMEAN="00:10:00"
 WTIME_RUN_FCST="00:30:00"
 WTIME_RUN_FCST_LONG="04:30:00"
+WTIME_RUN_FCST_SPINUP="00:30:00"
 WTIME_RUN_POST="00:15:00"
 WTIME_RUN_PRDGEN="00:40:00"
 WTIME_RUN_ANAL="00:30:00"

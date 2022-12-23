@@ -187,8 +187,8 @@ settings="\
   'machine': ${MACHINE}
   'partition_analysis': ${PARTITION_ANALYSIS}
   'queue_analysis': ${QUEUE_ANALYSIS}
-  'partition_wgrib2': ${PARTITION_WGRIB2}
-  'queue_wgrib2': ${QUEUE_WGRIB2}
+  'partition_prdgen': ${PARTITION_PRDGEN}
+  'queue_prdgen': ${QUEUE_PRDGEN}
   'partition_post': ${PARTITION_POST}
   'queue_post': ${QUEUE_POST}
 #
@@ -296,6 +296,12 @@ settings="\
   'ppn_save_restart': ${PPN_SAVE_RESTART}
   'ppn_run_jedienvar_ioda': ${PPN_RUN_JEDIENVAR_IODA}
 #
+  'tpp_make_ics': ${TPP_MAKE_ICS}
+  'tpp_make_lbcs': ${TPP_MAKE_LBCS}
+  'tpp_run_anal': ${TPP_RUN_ANAL}
+  'tpp_run_enkf': ${TPP_RUN_ENKF}
+  'tpp_run_fcst': ${TPP_RUN_FCST}
+#
 # Maximum wallclock time for each task.
 #
   'wtime_make_grid': ${WTIME_MAKE_GRID}
@@ -309,6 +315,7 @@ settings="\
   'wtime_run_prepstart_ensmean': ${WTIME_RUN_PREPSTART_ENSMEAN}
   'wtime_run_fcst': ${WTIME_RUN_FCST}
   'wtime_run_fcst_long': ${WTIME_RUN_FCST_LONG}
+  'wtime_run_fcst_spinup': ${WTIME_RUN_FCST_SPINUP}
   'wtime_run_anal': ${WTIME_RUN_ANAL}
   'wtime_run_postanal': ${WTIME_RUN_POSTANAL}
   'wtime_run_enkf': ${WTIME_RUN_ENKF}
@@ -702,6 +709,26 @@ if [ "${RUN_ENVIR}" = "nco" ]; then
   Please ensure that path_resolved is an existing directory and then rerun
   the experiment generation script."
   fi
+
+if [ "${DO_BUFRSND}" = "TRUE" ]; then
+#
+#
+# Resolve the target directory that the FIXbufrsnd symlink points to
+#
+  ln_vrfy -fsn "$FIX_BUFRSND" "$FIXbufrsnd"
+
+  path_resolved=$( readlink -m "$FIXbufrsnd" )
+  if [ ! -d "${path_resolved}" ]; then
+    print_err_msg_exit "\
+  Missing link to FIXsmokedust
+  RUN_ENVIR = \"${RUN_ENVIR}\"
+  FIXsmokedust = \"$FIXbufrsnd\"
+  path_resolved = \"${path_resolved}\"
+  Please ensure that path_resolved is an existing directory and then rerun
+  the experiment generation script."
+  fi
+fi
+
 #
 
   ln_vrfy -fsn "$FIXgsm" "$FIXam"

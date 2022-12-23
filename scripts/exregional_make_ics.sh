@@ -82,7 +82,10 @@ case "$MACHINE" in
   "WCOSS2")
     ulimit -s unlimited
     export OMP_STACKSIZE=1G
-    export OMP_NUM_THREADS=4
+    export OMP_NUM_THREADS=2
+    export FI_OFI_RXM_SAR_LIMIT=3145728
+    export FI_MR_CACHE_MAX_COUNT=0
+    export MPICH_OFI_STARTUP_CONNECT=1
     ncores=$(( NNODES_MAKE_ICS*PPN_MAKE_ICS ))
     APRUN="mpiexec -n ${ncores} -ppn ${PPN_MAKE_ICS} --cpu-bind core --depth ${OMP_NUM_THREADS}"
     ;;

@@ -87,7 +87,8 @@ case $MACHINE in
 
   "WCOSS2")
     ncores=$(( NNODES_RUN_BUFRSND*PPN_RUN_BUFRSND))
-    APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_BUFRSND}"
+    APRUNC="mpiexec -n ${ncores} -ppn ${PPN_RUN_BUFRSND}"
+    APRUNS="time"
     ;;
 
   "HERA")
@@ -160,10 +161,7 @@ cyc=$hh
 dom=conus
 NEST=${dom}
 MODEL=fv3
-FIXsar=/gpfs/dell6/emc/modeling/noscrub/emc.campara/fv3lamda/regional_workflow/fix/fix_sar/conus
-FIXsar_C3359=/gpfs/dell6/emc/modeling/noscrub/emc.campara/fv3lamda/regional_workflow/fix/fix_sar_C3359
-PARMfv3=/gpfs/dell6/emc/modeling/noscrub/emc.campara/fv3lamda/regional_workflow/parm
-
+PARMfv3=${FIX_BUFRSND}  #/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/bufrsnd
 
 DATA=$bufrsnd_dir
 EXECfv3=$EXECDIR
@@ -176,11 +174,11 @@ RUNLOC=${NEST}${MODEL}
 
 export tmmark=tm00
 
-echo FIXsar is $FIXsar
-echo profdat file name is regional_${RUNLOC}_profdat
+#echo FIXsar is $FIXsar
+#echo profdat file name is regional_${RUNLOC}_profdat
 
 
-cp $FIXsar_C3359/regional_${RUNLOC}_profdat regional_profdat
+cp $PARMfv3/${PREDEF_GRID_NAME}/rrfs_profdat regional_profdat
 
 OUTTYP=netcdf
 
@@ -278,6 +276,7 @@ else
   #err_exit $msg
 fi
 
+NSTAT=1850
 datestr=`date`
 echo top of loop after found needed log file for $fhr at $datestr
 
@@ -290,6 +289,7 @@ $STARTDATE
 $NFILE
 $INCR
 $fhr
+$NSTAT
 $OUTFILDYN
 $OUTFILPHYS
 EOF
@@ -304,7 +304,7 @@ export FORT11="itag"
 
 #startmsg
 
-${APRUNC} $EXECfv3/regional_bufr.x  > pgmout.log_${fhr} 2>&1
+${APRUNC} $EXECfv3/rrfs_bufr.x  > pgmout.log_${fhr} 2>&1
 export err=$?
 #err_chk
 
@@ -353,8 +353,11 @@ echo here model $model
 pgmout=sndplog
 
 nlev=65
-echo "${model} $nlev" > itag
-${APRUNS} $EXECfv3/regional_sndp.x  < itag >> $pgmout 2>$pgmout
+#echo "${model} $nlev" > itag
+
+FCST_LEN_HRS=$FHRLIM
+echo "$nlev $NSTAT $FCST_LEN_HRS" > itag
+${APRUNS} $EXECfv3/rrfs_sndp.x  < itag >> $pgmout 2>$pgmout
 #export err=$?
 
 SENDCOM=YES
@@ -395,7 +398,7 @@ EOF
 echo "before stnmlist.x"
 date
 pgmout=stnmlog
-${APRUNS}  $EXECfv3/regional_stnmlist.x < stnmlist_input >> $pgmout 2>errfile
+${APRUNS}  $EXECfv3/rrfs_stnmlist.x < stnmlist_input >> $pgmout 2>errfile
 echo "after stnmlist.x"
 date
 
