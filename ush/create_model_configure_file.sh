@@ -51,6 +51,7 @@ cycle_type \
 cycle_subtype \
 run_dir \
 nthreads \
+restart_hrs \
   )
   process_args valid_args "$@"
 #
@@ -151,7 +152,7 @@ run directory (run_dir):
   'dt_atmos': ${DT_ATMOS}
   'atmos_nthreads': ${nthreads:-1}
   'ncores_per_node': ${NCORES_PER_NODE}
-  'restart_interval': ${RESTART_INTERVAL}
+  'restart_interval': ${restart_hrs}
   'quilting': ${dot_quilting_dot}
   'print_esmf': ${dot_print_esmf_dot}
   'output_grid': ${WRTCMP_output_grid}

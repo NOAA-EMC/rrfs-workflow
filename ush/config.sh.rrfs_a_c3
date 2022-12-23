@@ -107,9 +107,9 @@ COMINgfs=""
 
 . set_rrfs_config.sh
 
-STMP="/lfs/h2/emc/stmp/emc.lam/rrfs/${version}"  # Path to directory STMP that mostly contains input files.
+STMP="/lfs/h2/emc/stmp/emc.lam/rrfs/${version}/stmp"  # Path to directory STMP that mostly contains input files.
 PTMP="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}"  # Path to directory STMP that mostly contains input files.
-NWGES="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+NWGES="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}/nwges/${envir}/${NET}"  # Path to directory NWGES that save boundary, cold initial, restart files
 if [[ ${regional_ensemble_option} == "5" ]]; then
    RRFSE_NWGES=="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}/nwges"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
   NUM_ENS_MEMBERS=30     # FV3LAM ensemble size for GSI hybrid analysis

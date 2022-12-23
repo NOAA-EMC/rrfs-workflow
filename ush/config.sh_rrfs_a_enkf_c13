@@ -36,8 +36,8 @@ fi
 EXTRN_MDL_ICS_OFFSET_HRS="30"
 LBC_SPEC_INTVL_HRS="1"
 EXTRN_MDL_LBCS_OFFSET_HRS="6"
-BOUNDARY_LEN_HRS="8"
-BOUNDARY_PROC_GROUP_NUM="2"
+BOUNDARY_LEN_HRS="12"
+BOUNDARY_PROC_GROUP_NUM="4"
 
 # avaialble retro period:
 # 20210511-20210531; 20210718-20210801
@@ -64,7 +64,8 @@ ENDHOUR="23"
 PREEXISTING_DIR_METHOD="upgrade" # "rename"
 INITIAL_CYCLEDEF="${DATE_FIRST_CYCL}1800 ${DATE_LAST_CYCL}2300 24:00:00"
 BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}1800 ${DATE_LAST_CYCL}2300 06:00:00"
-PROD_CYCLEDEF="${DATE_FIRST_CYCL}1900 ${DATE_LAST_CYCL}2300 01:00:00"
+PROD_CYCLEDEF="00 01-05,07-11,13-17,19-23 19-30 12 2022 *"
+PRODLONG_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 06:00:00"
 #RECENTER_CYCLEDEF="00 19 * 10 2022 *"
 ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 24:00:00"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
@@ -72,6 +73,7 @@ if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   DO_SPINUP="FALSE"
   INITIAL_CYCLEDEF="00 01 01 01 2100 *"
   PROD_CYCLEDEF="${DATE_FIRST_CYCL}1200 ${DATE_LAST_CYCL}2300 12:00:00"
+  PRODLONG_CYCLEDEF="00 01 01 01 2100 *"
   BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}1200 ${DATE_LAST_CYCL}2300 12:00:00"
 fi
 if [[ $DO_SPINUP == "TRUE" ]] ; then
@@ -86,6 +88,7 @@ FCST_LEN_HRS_SPINUP="1"
 POSTPROC_LEN_HRS="1"
 #FCST_LEN_HRS_CYCLES=(48 18 18 18 18 18 48 18 18 18 18 18 48 18 18 18 18 18 48 18 18 18 18 18)
 for i in {0..23}; do FCST_LEN_HRS_CYCLES[$i]=1; done
+for i in {0..23..6}; do FCST_LEN_HRS_CYCLES[$i]=6; done 
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   for i in {0..23..12}; do FCST_LEN_HRS_CYCLES[$i]=36; done 
   POSTPROC_LEN_HRS="36"
@@ -93,14 +96,14 @@ if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
 fi
 DA_CYCLE_INTERV="1"
 RESTART_INTERVAL="1"
+RESTART_INTERVAL_LONG="1 2 3 4 5 6"
 netcdf_diag=.true.
 binary_diag=.false.
 NFHOUT="3"
 NFHMAX_HF="24"
 
 WTIME_RUN_FCST="00:30:00"
-WTIME_RUN_FCST_LONG="03:45:00"
-WTIME_MAKE_LBCS="00:30:00"
+WTIME_RUN_FCST_LONG="01:45:00"
 NNODES_RUN_ANAL="1"
 
 EXTRN_MDL_NAME_ICS="GEFS"
@@ -119,10 +122,6 @@ NCL_REGION="conus"
 MODEL="rrfs_b"
 NET="rrfs_a"
 TAG="c13enkf32"
-RUN="rrfs_conus_13km_ensda"
-if [[ ${DO_ENSFCST} == "TRUE" ]]; then
-  RUN="rrfs_conus_13km_ensfcst"
-fi
 ARCHIVEDIR="/1year/BMC/wrfruc/rrfs_dev1"
 
 if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
@@ -141,7 +140,7 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
 #     DO_SPPT=TRUE
      DO_SPP=TRUE
 #     SPPT_MAG=0.5
-     WTIME_RUN_FCST="04:45:00"
+     WTIME_RUN_FCST="01:45:00"
      WTIME_MAKE_LBCS="01:30:00"
    fi
    RADAR_REF_THINNING="2"
@@ -155,9 +154,9 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    write_diag_2=.true.
 fi
 
-RUN="rrfs_a"
+RUN="rrfs_a_c13_ensda"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
-  RUN="rrfs_a"
+  RUN="rrfs_a_c13_ensfcst"
 fi
 COMINgfs=""
 
@@ -167,8 +166,8 @@ STMP="/lfs/h2/emc/stmp/emc.lam/rrfsx/${version}/stmp"  # Path to directory STMP 
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   STMP="/lfs/h2/emc/stmp/emc.lam/rrfsx/${version}/enfcst"  # Path to directory STMP that mostly contains input files.
 fi
-PTMP="/lfs/h2/emc/ptmp/emc.lam/rrfsx/${version}"  # Path to directory STMP that mostly contains input files.
-NWGES="/lfs/h2/emc/ptmp/emc.lam/rrfsx/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+PTMP="/lfs/h2/emc/stmp/emc.lam/rrfsx/${version}"  # Path to directory STMP that mostly contains input files.
+NWGES="/lfs/h2/emc/stmp/emc.lam/rrfsx/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 ENSCTRL_STMP="/lfs/h2/emc/stmp/emc.lam/rrfsx/${version}/stmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
-ENSCTRL_PTMP="/lfs/h2/emc/ptmp/emc.lam/rrfsx/${version}"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
-ENSCTRL_NWGES="/lfs/h2/emc/ptmp/emc.lam/rrfsx/${version}/nwges"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+ENSCTRL_PTMP="/lfs/h2/emc/stmp/emc.lam/rrfsx/${version}"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+ENSCTRL_NWGES="/lfs/h2/emc/stmp/emc.lam/rrfsx/${version}/nwges"  # Path to directory STMP that mostly contains control input files for ensemble recentering.

@@ -537,6 +537,10 @@ WFLOW_LAUNCH_LOG_FN="log.launch_FV3LAM_wflow"
 # Set up frequenency or list of the forecast hours that FV3 should
 # generate the restart files.
 #
+# RESTART_INTERVAL_LONG:
+# Set up frequenency or list of the forecast hours that FV3 should
+# generate the restart files.
+#
 # POSTPROC_LEN_HRS:
 # The length of post process, in integer hours.
 #
@@ -574,6 +578,7 @@ FCST_LEN_HRS_SPINUP="1"
 FCST_LEN_HRS_CYCLES=( )
 DA_CYCLE_INTERV="3"
 RESTART_INTERVAL="3,6"
+RESTART_INTERVAL_LONG="3,6"
 CYCL_HRS_HYB_FV3LAM_ENS=( "99" )
 
 #-----------------------------------------------------------------------
