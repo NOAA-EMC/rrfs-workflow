@@ -224,6 +224,13 @@ fi
 # and hh are calculated above, i.e. start_date is just cdate but with a
 # space inserted between the dd and hh.  If so, just use "$yyyymmdd $hh"
 # instead of calling sed.
+
+gridname=""
+if [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km" ]; then
+  gridname="conus_3km."
+elif  [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ]; then
+  gridname=""
+fi
 basetime=$( date +%y%j%H%M -d "${yyyymmdd} ${hh}" )
 cp_vrfy ${bgdawp} ${comout}/${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2
 cp_vrfy ${bgrd3d} ${comout}/${NET}.t${cyc}z.bgrd3df${fhr}.${tmmark}.grib2
@@ -235,14 +242,14 @@ ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgifif${fhr}.${tmmark}.grib2 ${
 ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgsfcf${fhr}.${tmmark}.grib2  ${comout}/BGSFC_${basetime}${post_fhr}
 
 net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
-ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2 ${comout}/${net4}.t${cyc}z.prslev.f${fhr}.conus_3km.grib2
-wgrib2 ${comout}/${net4}.t${cyc}z.prslev.f${fhr}.conus_3km.grib2 -s > ${comout}/${net4}.t${cyc}z.prslev.f${fhr}.conus_3km.grib2.idx
-ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgrd3df${fhr}.${tmmark}.grib2 ${comout}/${net4}.t${cyc}z.natlev.f${fhr}.conus_3km.grib2
-wgrib2 ${comout}/${net4}.t${cyc}z.natlev.f${fhr}.conus_3km.grib2 -s > ${comout}/${net4}.t${cyc}z.natlev.f${fhr}.conus_3km.grib2.idx
-ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgifif${fhr}.${tmmark}.grib2 ${comout}/${net4}.t${cyc}z.ififip.f${fhr}.conus_3km.grib2
-wgrib2 ${comout}/${net4}.t${cyc}z.ififip.f${fhr}.conus_3km.grib2 -s > ${comout}/${net4}.t${cyc}z.ififip.f${fhr}.conus_3km.grib2.idx
-ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgsfcf${fhr}.${tmmark}.grib2  ${comout}/${net4}.t${cyc}z.testbed.f${fhr}.conus_3km.grib2
-wgrib2 ${comout}/${net4}.t${cyc}z.testbed.f${fhr}.conus_3km.grib2 -s > ${comout}/${net4}.t${cyc}z.testbed.f${fhr}.conus_3km.grib2.idx
+ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2 ${comout}/${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2
+wgrib2 ${comout}/${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2 -s > ${comout}/${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2.idx
+ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgrd3df${fhr}.${tmmark}.grib2 ${comout}/${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2
+wgrib2 ${comout}/${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2 -s > ${comout}/${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2.idx
+ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgifif${fhr}.${tmmark}.grib2 ${comout}/${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2
+wgrib2 ${comout}/${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2 -s > ${comout}/${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2.idx
+ln_vrfy -sf --relative ${comout}/${NET}.t${cyc}z.bgsfcf${fhr}.${tmmark}.grib2  ${comout}/${net4}.t${cyc}z.testbed.f${fhr}.${gridname}grib2
+wgrib2 ${comout}/${net4}.t${cyc}z.testbed.f${fhr}.${gridname}grib2 -s > ${comout}/${net4}.t${cyc}z.testbed.f${fhr}.${gridname}grib2.idx
 # Remap to additional output grids if requested
 
 if [ ${DO_PARALLEL_PRDGEN} == "TRUE" ]; then
@@ -252,8 +259,9 @@ if [ ${DO_PARALLEL_PRDGEN} == "TRUE" ]; then
 
 if [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ]; then
 
+module load cfp/2.0.4
 DATA=$postprd_dir
-export $DATA
+export DATA=$postprd_dir
 USHrrfs=$USHDIR/prdgen
 
 wgrib2 ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.grib2 >& $DATA/prslevf${fhr}.txt
@@ -440,23 +448,23 @@ if [ ${#ADDNL_OUTPUT_GRIDS[@]} -gt 0 ]; then
       cp_vrfy ${bg_remap} ${comout}/${grid}_grid/${NET}.t${cyc}z.bg${leveltype}f${fhr}.${tmmark}.grib2
 
       if [ $leveltype = 'dawp' ]; then
-         ln_vrfy -fs --relative ${comout}/${grid}_grid/${NET}.t${cyc}z.bg${leveltype}f${fhr}.${tmmark}.grib2 ${comout}/${net4}.t${cyc}z.prslev.f${fhr}.conus_3km.grib2
-         wgrib2 ${comout}/${net4}.t${cyc}z.prslev.f${fhr}.conus_3km.grib2 -s > ${comout}/${net4}.t${cyc}z.prslev.f${fhr}.conus_3km.grib2.idx
+         ln_vrfy -fs --relative ${comout}/${grid}_grid/${NET}.t${cyc}z.bg${leveltype}f${fhr}.${tmmark}.grib2 ${comout}/${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2
+         wgrib2 ${comout}/${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2 -s > ${comout}/${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2.idx
       fi
 
       if [ $leveltype = 'rd3d' ]; then
-         ln_vrfy -fs --relative ${comout}/${grid}_grid/${NET}.t${cyc}z.bg${leveltype}f${fhr}.${tmmark}.grib2 ${comout}/${net4}.t${cyc}z.natlev.f${fhr}.conus_3km.grib2
-         wgrib2 ${comout}/${net4}.t${cyc}z.natlev.f${fhr}.conus_3km.grib2 -s > ${comout}/${net4}.t${cyc}z.natlev.f${fhr}.conus_3km.grib2.idx
+         ln_vrfy -fs --relative ${comout}/${grid}_grid/${NET}.t${cyc}z.bg${leveltype}f${fhr}.${tmmark}.grib2 ${comout}/${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2
+         wgrib2 ${comout}/${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2 -s > ${comout}/${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2.idx
       fi
 
       if [ $leveltype = 'ifi' ]; then
-         ln_vrfy -fs --relative ${comout}/${grid}_grid/${NET}.t${cyc}z.bg${leveltype}f${fhr}.${tmmark}.grib2 ${comout}/${net4}.t${cyc}z.ififip.f${fhr}.conus_3km.grib2
-         wgrib2 ${comout}/${net4}.t${cyc}z.ififip.f${fhr}.conus_3km.grib2 -s > ${comout}/${net4}.t${cyc}z.ififip.f${fhr}.conus_3km.grib2.idx
+         ln_vrfy -fs --relative ${comout}/${grid}_grid/${NET}.t${cyc}z.bg${leveltype}f${fhr}.${tmmark}.grib2 ${comout}/${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2
+         wgrib2 ${comout}/${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2 -s > ${comout}/${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2.idx
       fi
 
       if [ $leveltype = 'sfc' ]; then
-         ln_vrfy -fs --relative ${comout}/${grid}_grid/${NET}.t${cyc}z.bg${leveltype}f${fhr}.${tmmark}.grib2 ${comout}/${net4}.t${cyc}z.testbed.f${fhr}.conus_3km.grib2
-         wgrib2 ${comout}/${net4}.t${cyc}z.testbed.f${fhr}.conus_3km.grib2 -s > ${comout}/${net4}.t${cyc}z.testbed.f${fhr}.conus_3km.grib2.idx
+         ln_vrfy -fs --relative ${comout}/${grid}_grid/${NET}.t${cyc}z.bg${leveltype}f${fhr}.${tmmark}.grib2 ${comout}/${net4}.t${cyc}z.testbed.f${fhr}.${gridname}grib2
+         wgrib2 ${comout}/${net4}.t${cyc}z.testbed.f${fhr}.${gridname}grib2 -s > ${comout}/${net4}.t${cyc}z.testbed.f${fhr}.${gridname}grib2.idx
       fi
 
       # Link output for transfer from Jet to web
