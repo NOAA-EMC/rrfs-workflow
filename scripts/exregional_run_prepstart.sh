@@ -139,6 +139,7 @@ MM=${YYYYMMDDHH:4:2}
 DD=${YYYYMMDDHH:6:2}
 HH=${YYYYMMDDHH:8:2}
 YYYYMMDD=${YYYYMMDDHH:0:8}
+YYYYJJJHH=${YYYY}${JJJ}${HH}
 
 current_time=$(date "+%T")
 
@@ -918,7 +919,25 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-if [ "${USE_FVCOM}" = "TRUE" ]; then
+if [ "${USE_FVCOM}" = "TRUE" ] || [ ${SFC_CYC} -eq 2 ] ; then
+
+# Remap the FVCOM output from the 5 lakes onto the RRFS grid
+  if [ "${PREP_FVCOM}" = "TRUE" ]; then
+    ${SCRIPTSDIR}/exregional_prep_fvcom.sh \
+                  modelinputdir="${modelinputdir}" \
+                  FIXLAM="${FIXLAM}" \
+                  FVCOM_DIR="${FVCOM_DIR}" \
+	          YYYYJJJHH="${YYYYJJJHH}" \
+                  YYYYMMDD="${YYYYMMDD}" \
+                  YYYYMMDDm1="${YYYYMMDDm1}" \
+                  HH="${HH}" || \
+    print_err_msg_exit "\
+    Call to ex-script failed."
+
+    cd_vrfy ${modelinputdir}
+# FVCOM_DIR needs to be redefined here to find 
+    FVCOM_DIR=${modelinputdir}/fvcom_remap
+  fi
 
   set -x
   latest_fvcom_file="${FVCOM_DIR}/${FVCOM_FILE}"

@@ -2212,6 +2212,9 @@ PRINT_DIFF_PGR=FALSE
 # FV3-LAM grid. This flag will be used in make_ics to modify sfc_data.nc
 # after chgres_cube is run by running the routine process_FVCOM.exe
 #
+# PREP_FVCOM:
+# Flag set to interpolate FVCOM data to the desired FV3-LAM grid.
+#
 # FVCOM_DIR:
 # User defined directory where FVCOM data already interpolated to FV3-LAM
 # grid is located. File name in this path should be "fvcom.nc" to allow
@@ -2224,6 +2227,7 @@ PRINT_DIFF_PGR=FALSE
 #------------------------------------------------------------------------
 #
 USE_FVCOM="FALSE"
+PREP_FVCOM="FALSE"
 FVCOM_DIR="/user/defined/dir/to/fvcom/data"
 FVCOM_FILE="fvcom.nc"
 #

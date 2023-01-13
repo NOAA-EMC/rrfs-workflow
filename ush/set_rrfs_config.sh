@@ -1,10 +1,13 @@
 
+#  setup for real-time runs on JET
 OBSPATH_NSSLMOSIAC=/public/data/radar/nssl/mrms/conus
 FFG_DIR=/public/data/grids/ncep/ffg/grib2
 AIRCRAFT_REJECT="/home/amb-verif/acars_RR/amdar_reject_lists"
 SFCOBS_USELIST="/lfs4/BMC/amb-verif/rap_ops_mesonet_uselists"
 SST_ROOT="/lfs4/BMC/public/data/grids/ncep/sst/0p083deg/grib2"
 GVF_ROOT="/public/data/sat/ncep/viirs/gvf/grib2"
+FVCOM_DIR="/mnt/lfs4/BMC/public/data/grids/glerl/owaq"
+FVCOM_FILE="tsfc_fv3grid"
 
 BERROR_FN="rrfs_glb_berror.l127y770.f77"
 
@@ -23,6 +26,7 @@ if [[ $MACHINE == "hera" ]] ; then
   ENKF_FCST=/scratch1/NCEPDEV/rstprod/com/gfs/prod
 fi
 
+# for real-time wcoss2 runs
 if [[ $MACHINE == "wcoss2" ]] ; then
   EXTRN_MDL_SOURCE_BASEDIR_ICS=/lfs/h1/ops/prod/com/gfs/v16.3
   EXTRN_MDL_SOURCE_BASEDIR_LBCS=/lfs/h1/ops/prod/com/gfs/v16.3
@@ -33,6 +37,8 @@ if [[ $MACHINE == "wcoss2" ]] ; then
   GVF_ROOT=/lfs/h1/ops/prod/dcom/viirs
   IMSSNOW_ROOT=/lfs/h1/ops/prod/com/obsproc/v1.1
   FIRE_RAVE_DIR=/lfs/h2/emc/physics/noscrub/partha.bhattacharjee/RAVE_rawdata/RAVE_NA
+  FVCOM_DIR="/lfs/h1/ops/prod/com/nosofs/v3.5"
+  FVCOM_FILE="fvcom"
 fi
 
 # set up for retrospective test:
