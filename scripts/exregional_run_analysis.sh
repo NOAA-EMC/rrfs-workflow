@@ -348,6 +348,8 @@ niter2=50
 lread_obs_save=.false.
 lread_obs_skip=.false.
 if_model_dbz=.false.
+i_use_2mQ4B=2
+i_use_2mT4B=1
 
 # Determine if hybrid option is available
 memname='atmf009'
@@ -499,6 +501,12 @@ else
 
   fi
 
+
+  if [ ${ob_type} == "AERO" ]; then
+    obs_files_source[0]=${OBSPATH_PM}/${YYYYMMDD}/pm25.airnow.${YYYYMMDD}${HH}.bufr
+    obs_files_target[0]=pm25bufr
+  fi
+
 fi
 
 #
@@ -630,6 +638,32 @@ CONVINFO=${FIX_GSI}/${CONVINFO_FN}
 HYBENSINFO=${FIX_GSI}/${HYBENSINFO_FN}
 OBERROR=${FIX_GSI}/${OBERROR_FN}
 BERROR=${FIX_GSI}/${BERROR_FN}
+
+
+if [[ ${gsi_type} == "ANALYSIS" && ${ob_type} == "AERO" ]]; then
+  if [ ${BKTYPE} -eq 1 ]; then
+    echo "cold start, skip GSI SD DA"
+    exit 0
+  fi
+  ANAVINFO=${FIX_GSI}/${ANAVINFO_SD_FN}
+  CONVINFO=${FIX_GSI}/${CONVINFO_SD_FN}
+  BERROR=${FIX_GSI}/${BERROR_SD_FN}
+  miter=1
+  niter1=100
+  niter2=0
+  ifhyb=.false.
+  ifsd_da=.true.
+  l_hyb_ens=.false.
+  nummem=0
+  beta1_inv=0.0
+  i_use_2mQ4B=0
+  i_use_2mT4B=0
+  netcdf_diag=.true.
+  binary_diag=.false.
+  usenewgfsberror=.false.
+  laeroana_fv3smoke=.true.
+  berror_fv3_cmaq_regional=.true.
+fi
 
 SATINFO=${FIX_GSI}/global_satinfo.txt
 OZINFO=${FIX_GSI}/global_ozinfo.txt
@@ -839,6 +873,11 @@ EOF
 #
 gsi_exec="${EXECDIR}/gsi.x"
 
+if [[ ${gsi_type} == "ANALYSIS" && ${ob_type} == "AERO" ]]; then
+  gsi_exec="${EXECDIR}/gsi.x.sd"
+fi
+
+
 if [ -f $gsi_exec ]; then
   print_info_msg "$VERBOSE" "
 Copying the GSI executable to the run directory..."
@@ -867,6 +906,7 @@ fi
 #-----------------------------------------------------------------------
 #
 # comment out for testing
+
 $APRUN ./gsi.x < gsiparm.anl > stdout 2>&1 || print_err_msg_exit "\
 Call to executable to run GSI returned with nonzero exit code."
 

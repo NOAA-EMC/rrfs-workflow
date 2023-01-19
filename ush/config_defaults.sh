@@ -308,6 +308,7 @@ EXPT_SUBDIR=""
 #
 # Setup default locations for FIRE_RRFS files and update time
 #  FIRE_RAVE_DIR
+#  FIRE_RRFS_ROOT
 #  FIRE_RRFS_update_hour
 #-----------------------------------------------------------------------
 #
@@ -334,6 +335,7 @@ MODEL="NO MODEL CHOSEN"
 
 OBSPATH="/public/data/grids/rap/obs"
 OBSPATH_NSSLMOSIAC="/public/data/radar/mrms"
+OBSPATH_PM="/mnt/lfs1/BMC/wrfruc/hwang/rrfs_sd/pm"
 LIGHTNING_ROOT="/public/data/lightning"
 ENKF_FCST="/lfs4/BMC/public/data/grids/enkf/atm"
 FFG_DIR="/public/data/grids/ncep/ffg/grib2"
@@ -346,6 +348,7 @@ SNOWICE_update_hour=99
 RAPHRR_SOIL_ROOT="/mnt/lfs4/BMC/rtwbl/mhu/wcoss/nco/com"
 SOIL_SURGERY_time=9999999999
 FIRE_RAVE_DIR="/lfs4/BMC/public/data/grids/nesdis/3km_fire_emissions"
+FIRE_RRFS_ROOT="/mnt/lfs4/BMC/gsd-fv3-dev/FIRE_RRFS_ROOT"
 FIRE_RRFS_update_hour=99
 
 #
@@ -692,17 +695,23 @@ i_use_2mT4B=0
 i_T_Q_adjust=1
 l_rtma3d=.false.
 i_precip_vertical_check=0
+#  &CHEM 
+laeroana_fv3smoke=.false.
+berror_fv3_cmaq_regional=.false.
 #-----------------------------------------------------------------------
 # HYBENSMEM_NMIN:
 #    Minimum number of ensemble members required a hybrid GSI analysis 
 #
 HYBENSMEM_NMIN=80
 ANAVINFO_FN="anavinfo.rrfs"
+ANAVINFO_SD_FN="anavinfo.rrfs_sd"
 ANAVINFO_DBZ_FN="anavinfo.rrfs_dbz"
 ENKF_ANAVINFO_FN="anavinfo.rrfs"
 ENKF_ANAVINFO_DBZ_FN="anavinfo.enkf.rrfs_dbz"
 CONVINFO_FN="convinfo.rrfs"
+CONVINFO_SD_FN="convinfo.rrfs_sd"
 BERROR_FN="rap_berror_stats_global_RAP_tune" #under $FIX_GSI
+BERROR_SD_FN="berror.rrfs_sd" # for test only
 OBERROR_FN="errtable.rrfs"
 HYBENSINFO_FN="hybens_info.rrfs"
 AIRCRAFT_REJECT=""
@@ -1661,6 +1670,7 @@ RUN_PRDGEN_TN="run_prdgen"
 RUN_BUFRSND_TN="run_bufrsnd"
 
 ANAL_GSI_TN="anal_gsi_input"
+ANAL_SD_GSI_TN="anal_sd_gsi_input"
 POSTANAL_TN="postanal_input"
 OBSERVER_GSI_ENSMEAN_TN="observer_gsi_ensmean"
 OBSERVER_GSI_TN="observer_gsi"
@@ -2027,6 +2037,9 @@ DO_SAVE_INPUT="FALSE"
 # DO_DACYCLE:
 # Flag that determines whether to run a data assimilation cycle.
 #
+# DO_SDDACYCLE:
+# Flag that determines whether to run a SMOKE and DUST data assimilation cycle.
+#
 # DO_SURFACE_CYCLE:
 # Flag that determines whether to continue cycle surface fields.
 #
@@ -2057,6 +2070,7 @@ DO_SAVE_INPUT="FALSE"
 #     Flag turn on smoke and dust for RRFS-SD
 #-----------------------------------------------------------------------
 DO_DACYCLE="FALSE"
+DO_SDDACYCLE="FALSE"
 DO_SURFACE_CYCLE="FALSE"
 SURFACE_CYCLE_DELAY_HRS="1"
 DO_SOIL_ADJUST="FALSE"

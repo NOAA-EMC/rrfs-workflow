@@ -490,6 +490,7 @@ optionList[18]=DO_ENSEMBLE
 optionList[19]=DO_ENSINIT
 optionList[20]=DO_ENSFCST
 optionList[21]=DO_SAVE_INPUT
+optionList[22]=DO_SDDACYCLE
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));
@@ -2687,6 +2688,7 @@ FV3_NML_ENSMEM_FPS=( $( printf "\"%s\" " "${FV3_NML_ENSMEM_FPS[@]}" ))
 
 # for data assimilation
 OBSPATH="${OBSPATH}"
+OBSPATH_PM="${OBSPATH_PM}"
 OBSPATH_NSSLMOSIAC="${OBSPATH_NSSLMOSIAC}"
 LIGHTNING_ROOT="${LIGHTNING_ROOT}"
 ENKF_FCST="${ENKF_FCST}"

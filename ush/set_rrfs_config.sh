@@ -22,6 +22,7 @@ if [[ $MACHINE == "hera" ]] ; then
 # observations
   OBSPATH=/scratch2/BMC/public/data/grids/rap/obs
   OBSPATH_NSSLMOSIAC=/scratch2/BMC/public/data/radar/nssl/mrms/conus
+  OBSPATH_PM=/mnt/lfs1/BMC/wrfruc/hwang/rrfs_sd/pm
   LIGHTNING_ROOT=/scratch2/BMC/public/data/lightning
   ENKF_FCST=/scratch1/NCEPDEV/rstprod/com/gfs/prod
 fi
@@ -60,6 +61,7 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     fi
 
     OBSPATH=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/obs_rap
+    OBSPATH_PM=/mnt/lfs1/BMC/wrfruc/hwang/rrfs_sd/pm
     OBSPATH_NSSLMOSIAC=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/reflectivity
     LIGHTNING_ROOT=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/lightning
     ENKF_FCST=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/enkf/atm
