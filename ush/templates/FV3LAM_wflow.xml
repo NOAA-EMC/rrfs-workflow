@@ -1741,10 +1741,12 @@ MODULES_RUN_TASK_FP script.
            <and>
              <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
              <taskdep task="&MAKE_ICS_TN;{{ uscore_ensmem_name }}"/>
+             {%- if not is_rtma %}
              <or>
                <metataskdep metatask="&MAKE_LBCS_TN;{{ uscore_ensmem_name }}"/>
                <metataskdep metatask="&MAKE_LBCS_TN;{{ uscore_ensmem_name }}" cycle_offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00"/>
              </or>
+             {%- endif %}
            </and>
 {%- endif %}
 {%- endif %}

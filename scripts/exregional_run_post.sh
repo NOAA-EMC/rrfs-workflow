@@ -336,7 +336,9 @@ bgifi=${postprd_dir}/${NET}.t${cyc}z.bgifif${subh_fhr}.${tmmark}.grib2
 
 wgrib2 PRSLEV.GrbF${post_fhr} -set center 7 -grib ${bgdawp}
 wgrib2 NATLEV.GrbF${post_fhr} -set center 7 -grib ${bgrd3d}
-wgrib2 IFIFIP.GrbF${post_fhr} -set center 7 -grib ${bgifi}
+if [ -f IFIFIP.GrbF${post_fhr} ]; then
+  wgrib2 IFIFIP.GrbF${post_fhr} -set center 7 -grib ${bgifi}
+fi
 
 #
 #-----------------------------------------------------------------------

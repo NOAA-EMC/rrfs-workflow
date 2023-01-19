@@ -169,7 +169,7 @@ cp_vrfy $BUFR_TABLE prepobs_prep.bufrtable
 #   set observation soruce 
 #
 #-----------------------------------------------------------------------
-if [[ "${NET}" = "RTMA"* ]]; then
+if [[ "${NET}" = "RTMA"* ]] && [[ "${RTMA_OBS_FEED}" = "NCO" ]]; then
   SUBH=$(date +%M -d "${START_DATE}")
   obs_source="rtma_ru"
   obsfileprefix=${obs_source}

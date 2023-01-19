@@ -432,7 +432,7 @@ sed -i "s/hh/${HH}/"     coupler.res
 # copy observation files to working directory 
 #
 #-----------------------------------------------------------------------
-if [[ "${NET}" = "RTMA"* ]]; then
+if [[ "${NET}" = "RTMA"* ]] && [[ "${RTMA_OBS_FEED}" = "NCO" ]]; then
   SUBH=$(date +%M -d "${START_DATE}")
   obs_source="rtma_ru"
   obsfileprefix=${obs_source}

@@ -1410,6 +1410,10 @@ SAVE_CYCLE_LOG="TRUE"
 #  but we needs to explicitly specify where to find FG for RTMA.
 #  So this parameter only matters for RTMA
 #
+# RTMA_OBS_FEED:
+#   "" or "GSL":  RTMA's observations follow the GSL naming convention
+#         "NCO":  RTMA's observations follow the NCO naming convention
+#
 # PYTHON_GRAPHICS_YML_FN
 #  The name of the yml file under ${PYTHON_GRAPHICS_DIR}/image_lists
 #  to be used by current application
@@ -1430,6 +1434,7 @@ SFC_CLIMO_DIR="/path/to/pregenerated/surface/climo/files"
 NCORES_PER_NODE=24 #Jet default value
 IS_RTMA="FALSE"
 FG_ROOTDIR=""
+RTMA_OBS_FEED=""
 PYTHON_GRAPHICS_YML_FN="rrfs_subset.yml"
 #
 #-----------------------------------------------------------------------
