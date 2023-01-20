@@ -135,7 +135,7 @@ case $MACHINE in
   "JET")
     ulimit -s unlimited
     ulimit -a
-    APRUN="srun"
+    APRUN="srun  --mem=0"
     if [ "${PREDEF_GRID_NAME}" == "RRFS_NA_3km" ]; then
       OMP_NUM_THREADS=4
     else

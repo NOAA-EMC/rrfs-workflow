@@ -353,6 +353,9 @@ settings="\
   'memo_run_prepstart': ${MEMO_RUN_PREPSTART}
   'memo_run_prdgen': ${MEMO_RUN_PRDGEN}
   'memo_run_jedienvar_ioda': ${MEMO_RUN_JEDIENVAR_IODA}
+  'memo_prep_cyc': ${MEMO_PREP_CYC}
+  'memo_save_restart': ${MEMO_SAVE_RESTART}
+  'memo_save_input': ${MEMO_SAVE_INPUT}
 #
 # Maximum number of tries for each task.
 #

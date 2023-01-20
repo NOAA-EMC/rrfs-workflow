@@ -185,6 +185,7 @@ if [ -r "${bkpath}/coupler.res" ]; then
   BKTYPE=0              # warm start
 else
   BKTYPE=1              # cold start
+  regional_ensemble_option=1
 fi
 
 #---------------------------------------------------------------------
@@ -198,7 +199,7 @@ echo "regional_ensemble_option is ",${regional_ensemble_option:-1}
 print_info_msg "$VERBOSE" "FIX_GSI is $FIX_GSI"
 print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
 print_info_msg "$VERBOSE" "default bkpath is $bkpath"
-print_info_msg "$VERBOSE" "background type is is $BKTYPE"
+print_info_msg "$VERBOSE" "background type is $BKTYPE"
 
 #
 # Check if we have enough FV3-LAM ensembles when regional_ensemble_option=5
