@@ -188,6 +188,7 @@ if [ ${DO_ENSFCST} = "TRUE" ] &&  [ ${DO_ENKFUPDATE} = "TRUE" ]; then
     print_err_msg_exit "Error: can not find ensemble DA analysis output for running ensemble free forecast, \
   check ${bkpath} for needed files."
   fi
+  SFC_CYC=0
 #
 #-----------------------------------------------------------------------
 #
@@ -919,7 +920,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-if [ "${USE_FVCOM}" = "TRUE" ] || [ ${SFC_CYC} -eq 2 ] ; then
+if [ "${USE_FVCOM}" = "TRUE" ] && [ ${SFC_CYC} -eq 2 ] ; then
 
 # Remap the FVCOM output from the 5 lakes onto the RRFS grid
   if [ "${PREP_FVCOM}" = "TRUE" ]; then
@@ -937,24 +938,26 @@ if [ "${USE_FVCOM}" = "TRUE" ] || [ ${SFC_CYC} -eq 2 ] ; then
     cd_vrfy ${modelinputdir}
 # FVCOM_DIR needs to be redefined here to find 
     FVCOM_DIR=${modelinputdir}/fvcom_remap
-  fi
-
-  set -x
-  latest_fvcom_file="${FVCOM_DIR}/${FVCOM_FILE}"
-  if [ ${HH} -gt 12 ]; then 
-    starttime_fvcom="$(date +%Y%m%d -d "${START_DATE}") 12"
+    latest_fvcom_file="${FVCOM_DIR}/${FVCOM_FILE}"
+    fvcomtime=${YYYYJJJHH}
+    fvcom_data_fp="${latest_fvcom_file}_${fvcomtime}.nc"
   else
-    starttime_fvcom="$(date +%Y%m%d -d "${START_DATE}") 00"
+    latest_fvcom_file="${FVCOM_DIR}/${FVCOM_FILE}"
+    if [ ${HH} -gt 12 ]; then 
+      starttime_fvcom="$(date +%Y%m%d -d "${START_DATE}") 12"
+    else
+      starttime_fvcom="$(date +%Y%m%d -d "${START_DATE}") 00"
+    fi
+    for ii in $(seq 0 3)
+    do
+       jumphour=$((${ii} * 12))
+       fvcomtime=$(date +%Y%j%H -d "${starttime_fvcom}  ${jumphour} hours ago")
+       fvcom_data_fp="${latest_fvcom_file}_${fvcomtime}.nc"
+       if [ -f "${fvcom_data_fp}" ]; then
+         break 
+       fi
+    done
   fi
-  for ii in $(seq 0 3)
-  do
-     jumphour=$((${ii} * 12))
-     fvcomtime=$(date +%Y%j%H -d "${starttime_fvcom}  ${jumphour} hours ago")
-     fvcom_data_fp="${latest_fvcom_file}_${fvcomtime}.nc"
-     if [ -f "${fvcom_data_fp}" ]; then
-       break 
-     fi
-  done
 
   if [ ! -f "${fvcom_data_fp}" ]; then
     print_info_msg "\

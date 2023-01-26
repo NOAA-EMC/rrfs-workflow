@@ -1206,6 +1206,7 @@ MODULES_RUN_TASK_FP script.
          <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
          <taskdep task="&PREP_CYC_TN;_#type#{{ uscore_ensmem_name }}"/>
          {%- if use_rrfse_ens %}
+         {%- if do_retro %}
          <or>
            <and>
              <or>
@@ -1223,6 +1224,7 @@ MODULES_RUN_TASK_FP script.
               {%- endfor %}
            </and>
          </or>
+         {%- endif %}
          {%- endif %}
        </and>
     </dependency>
@@ -1271,6 +1273,7 @@ MODULES_RUN_TASK_FP script.
          <taskdep task="&ANAL_SD_GSI_TN;_#type#"/>
          {%- endif %}
          {%- if use_rrfse_ens %}
+         {%- if do_retro %}
          <or>
            <and>
              <or>
@@ -1307,6 +1310,7 @@ MODULES_RUN_TASK_FP script.
               {%- endfor %}
            </and>
          </or>
+         {%- endif %}
          {%- endif %}
        </and>
     </dependency>
@@ -2107,6 +2111,7 @@ MODULES_RUN_TASK_FP script.
          <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
          <taskdep task="&PREP_CYC_TN;_prod{{ uscore_ensmem_name }}"/>
          {%- if use_rrfse_ens %}
+         {%- if do_retro %}
          <or>
            <and>
              <or>
@@ -2151,6 +2156,7 @@ MODULES_RUN_TASK_FP script.
               {%- endfor %}
            </and>
          </or>
+         {%- endif %}
          {%- endif %}
        </and>
     </dependency>

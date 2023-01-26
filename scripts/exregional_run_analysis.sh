@@ -84,8 +84,8 @@ case $MACHINE in
   ulimit -s unlimited
   ulimit -a
   export FI_OFI_RXM_SAR_LIMIT=3145728
-  export OMP_STACKSIZE=500M
-  export OMP_NUM_THREADS=1
+  export OMP_STACKSIZE=1G
+  export OMP_NUM_THREADS=${TPP_RUN_ANAL}
   ncores=$(( NNODES_RUN_ANAL*PPN_RUN_ANAL))
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_ANAL} --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;
@@ -360,6 +360,7 @@ if [ ${regional_ensemble_option:-1} -eq 5 ]  && [ ${BKTYPE} != 1  ]; then
   print_info_msg "$VERBOSE" "Do hybrid with FV3LAM ensemble"
   ifhyb=.true.
   print_info_msg "$VERBOSE" " Cycle ${YYYYMMDDHH}: GSI hybrid uses FV3LAM ensemble with n_ens=${nummem}" 
+  echo " ${YYYYMMDDHH}(${cycle_type}): GSI hybrid uses FV3LAM ensemble with n_ens=${nummem}" >> ${EXPTDIR}/log.cycles
   grid_ratio_ens="1"
   ens_fast_read=.true.
 else    
@@ -369,9 +370,11 @@ else
     print_info_msg "$VERBOSE" "Do hybrid with ${memname}"
     ifhyb=.true.
     print_info_msg "$VERBOSE" " Cycle ${YYYYMMDDHH}: GSI hybrid uses ${memname} with n_ens=${nummem}"
+    echo " ${YYYYMMDDHH}(${cycle_type}): GSI hybrid uses ${memname} with n_ens=${nummem}" >> ${EXPTDIR}/log.cycles
   else
     print_info_msg "$VERBOSE" " Cycle ${YYYYMMDDHH}: GSI does pure 3DVAR."
     print_info_msg "$VERBOSE" " Hybrid needs at least ${HYBENSMEM_NMIN} ${memname} ensembles, only ${nummem} available"
+    echo " ${YYYYMMDDHH}(${cycle_type}): GSI dose pure 3DVAR" >> ${EXPTDIR}/log.cycles
   fi
 fi
 

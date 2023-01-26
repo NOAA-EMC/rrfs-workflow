@@ -82,7 +82,7 @@ case "$MACHINE" in
   "WCOSS2")
     ulimit -s unlimited
     export OMP_STACKSIZE=1G
-    export OMP_NUM_THREADS=2
+    export OMP_NUM_THREADS=${TPP_MAKE_ICS}
     export FI_OFI_RXM_SAR_LIMIT=3145728
     export FI_MR_CACHE_MAX_COUNT=0
     export MPICH_OFI_STARTUP_CONNECT=1
