@@ -75,6 +75,7 @@ Workflow task names.
 <!ENTITY RUN_SMOKE_TN         "run_proc_smoke">
 
 <!ENTITY TAG                  "{{ tag }}">
+<!ENTITY NET                  "{{ net }}">
 
 <!--
 Flags that specify whether to run the preprocessing tasks.
@@ -2057,7 +2058,7 @@ MODULES_RUN_TASK_FP script.
         {%- if do_retro %}
         <and> 
         {%- for m in range(1, num_ens_members+1) %}
-          <datadep age="00:00:00:01"><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H/mem{{ "%04d" % m }}/observer_gsi/diag_conv_rw_ges.@Y@m@d@H.nc4</cyclestr></datadep>
+          <datadep age="00:00:00:01"><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H/mem{{ "%04d" % m }}/observer_gsi/diag_conv_dbz_ges.@Y@m@d@H.nc4</cyclestr></datadep>
         {%- endfor %}
         </and> 
         {%- endif %}
@@ -3156,7 +3157,7 @@ MODULES_RUN_TASK_FP script.
 
       <dependency>
         <and>
-          <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/RRFS_CONUS.t@Hz.bgdawpf000.tm00.grib2</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/&NET;.t@Hz.bgdawpf000.tm00.grib2</cyclestr></datadep>
           {%- for m in range(1, 10) %}
           <taskdep task="&RUN_PRDGEN_TN;_mem{{ "%04d" % m }}_f000"/>
           {%- endfor %}
@@ -3196,7 +3197,7 @@ MODULES_RUN_TASK_FP script.
 
       <dependency>
         <and>
-          <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/RRFS_CONUS.t@Hz.bgsfcf#fhr#.tm00.grib2</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/&NET;.t@Hz.bgsfcf#fhr#.tm00.grib2</cyclestr></datadep>
           {%- for m in range(1, num_ens_members_fcst+1) %}
           <taskdep task="&RUN_PRDGEN_TN;_mem{{ "%04d" % m }}_f#fhr#"/>
           {%- endfor %}

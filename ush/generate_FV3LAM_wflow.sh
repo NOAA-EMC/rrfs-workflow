@@ -226,6 +226,7 @@ settings="\
   'save_restart': ${SAVE_RESTART_TN}
   'save_input': ${SAVE_INPUT_TN}
   'tag': ${TAG}
+  'net': ${NET}
   'jedi_envar_ioda': ${JEDI_ENVAR_IODA_TN}
 #
 # Number of nodes to use for each task.
