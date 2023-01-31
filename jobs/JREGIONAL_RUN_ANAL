@@ -108,9 +108,14 @@ gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #-----------------------------------------------------------------------
 
 if [ "${RUN_ENVIR}" = "nco" ]; then
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
   if [ ${CYCLE_TYPE} == "spinup" ]; then
     COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
+  else
+    if [ ${MEM_TYPE} == "MEAN" ]; then
+      COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc/ensmean"
+    else
+      COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}${SLASH_ENSMEM_SUBDIR}"
+    fi
   fi
   mkdir_vrfy -p "${COMOUT}"
 fi
