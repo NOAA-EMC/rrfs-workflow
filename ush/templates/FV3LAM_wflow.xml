@@ -57,7 +57,7 @@ Workflow task names.
 <!ENTITY RADAR_REFL2TTEN_TN   "{{ radar_refl2tten }}">
 <!ENTITY CLDANL_NONVAR_TN     "{{ cldanl_nonvar }}">
 <!ENTITY SAVE_RESTART_TN     "{{ save_restart }}">
-<!ENTITY SAVE_INPUT_TN     "{{ save_input }}">
+<!ENTITY SAVE_DA_OUTPUT_TN   "{{ save_da_output }}">
 <!ENTITY JEDI_ENVAR_IODA_TN     "{{ jedi_envar_ioda }}">
 <!ENTITY PROCESS_SMOKE_TN "{{ process_smoke }}">
 
@@ -356,8 +356,8 @@ define resources used for each tasks
   <cycledef group="prodcyc"> {{ prod_cycledef }} </cycledef>
   <cycledef group="prodcyc_long"> {{ prodlong_cycledef }} </cycledef>
 
-{%- if do_save_input %}
-  <cycledef group="saveinputcyc"> {{ saveinput_cycledef }} </cycledef>
+{%- if do_save_da_output %}
+  <cycledef group="savedacyc"> {{ saveda_cycledef }} </cycledef>
 {%- endif %}
   <cycledef group="recentercyc"> {{ recenter_cycledef }} </cycledef>
   <cycledef group="archive">  {{ archive_cycledef }} </cycledef> 
@@ -2447,7 +2447,7 @@ MODULES_RUN_TASK_FP script.
 
 {%- endif %}
 
-{%- if do_save_input and do_ensemble %}
+{%- if do_save_da_output and do_ensemble %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -2456,17 +2456,17 @@ MODULES_RUN_TASK_FP script.
   <var name="{{ ensmem_indx_name }}">
     {%- for m in range(1, num_ens_members_fcst+1) -%}{%- set fmtstr=" %0"~ndigits_ensmem_names~"d" -%}{{- fmtstr%m -}}{%- endfor %} </var>
 
-  <task name="&SAVE_INPUT_TN;_prod{{ uscore_ensmem_name }}" cycledefs="saveinputcyc" maxtries="{{ maxtries_save_input }}">
+  <task name="&SAVE_DA_OUTPUT_TN;_prod{{ uscore_ensmem_name }}" cycledefs="savedacyc" maxtries="{{ maxtries_save_da_output }}">
 
     &RSRV_DEFAULT;
     &WALL_LIMIT_SAVE_RESTART;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSDIR;/JREGIONAL_SAVE_INPUT"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSDIR;/JREGIONAL_SAVE_DA_OUTPUT"</command>
     <nodes>{{ nnodes_save_restart }}:ppn={{ ppn_save_restart }}</nodes>
     <walltime>{{ wtime_save_restart }}</walltime>
     &NODESIZE_ALL;
-    <memory>{{ memo_save_input }}</memory>
-    <jobname>&TAG;_&SAVE_INPUT_TN;{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&SAVE_INPUT_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <memory>{{ memo_save_da_output }}</memory>
+    <jobname>&TAG;_&SAVE_DA_OUTPUT_TN;{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr>&LOGDIR;/&SAVE_DA_OUTPUT_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>

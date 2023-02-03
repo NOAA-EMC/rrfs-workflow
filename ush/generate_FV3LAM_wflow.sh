@@ -224,7 +224,7 @@ settings="\
   'cldanl_nonvar': ${CLDANL_NONVAR_TN}
   'run_bufrsnd_tn': ${RUN_BUFRSND_TN}
   'save_restart': ${SAVE_RESTART_TN}
-  'save_input': ${SAVE_INPUT_TN}
+  'save_da_output': ${SAVE_DA_OUTPUT_TN}
   'tag': ${TAG}
   'net': ${NET}
   'jedi_envar_ioda': ${JEDI_ENVAR_IODA_TN}
@@ -356,7 +356,7 @@ settings="\
   'memo_run_jedienvar_ioda': ${MEMO_RUN_JEDIENVAR_IODA}
   'memo_prep_cyc': ${MEMO_PREP_CYC}
   'memo_save_restart': ${MEMO_SAVE_RESTART}
-  'memo_save_input': ${MEMO_SAVE_INPUT}
+  'memo_save_da_output': ${MEMO_SAVE_DA_OUTPUT}
 #
 # Maximum number of tries for each task.
 #
@@ -382,7 +382,7 @@ settings="\
   'maxtries_radar_ref2tten': ${MAXTRIES_RADAR_REF2TTEN}
   'maxtries_cldanl_nonvar': ${MAXTRIES_CLDANL_NONVAR}
   'maxtries_save_restart': ${MAXTRIES_SAVE_RESTART}
-  'maxtries_save_input': ${MAXTRIES_SAVE_INPUT}
+  'maxtries_save_da_output': ${MAXTRIES_SAVE_DA_OUTPUT}
   'maxtries_jedi_envar_ioda': ${MAXTRIES_JEDI_ENVAR_IODA}
 #
 # Flags that specify whether to run the preprocessing tasks.
@@ -453,7 +453,7 @@ settings="\
   'spinup_cycledef': ${SPINUP_CYCLEDEF}
   'prod_cycledef': ${PROD_CYCLEDEF}
   'prodlong_cycledef': ${PRODLONG_CYCLEDEF}
-  'saveinput_cycledef': ${SAVEINPUT_CYCLEDEF}
+  'saveda_cycledef': ${SAVEDA_CYCLEDEF}
   'recenter_cycledef': ${RECENTER_CYCLEDEF}
   'archive_cycledef': ${ARCHIVE_CYCLEDEF}
 #
@@ -488,6 +488,7 @@ settings="\
   'do_ens_graphics': ${DO_ENS_GRAPHICS}
   'do_enspost': ${DO_ENSPOST}
   'do_ensinit': ${DO_ENSINIT}
+  'do_save_da_output': ${DO_SAVE_DA_OUTPUT}
   'do_save_input': ${DO_SAVE_INPUT}
 #
 # data assimilation related parameters.

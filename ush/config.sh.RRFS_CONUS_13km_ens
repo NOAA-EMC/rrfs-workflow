@@ -14,7 +14,8 @@ DO_ENSEMBLE="TRUE"
 #DO_DACYCLE="TRUE"
 #DO_SURFACE_CYCLE="TRUE"
 DO_SPINUP="TRUE"
-DO_SAVE_INPUT="TRUE"
+DO_SAVE_DA_OUTPUT="TRUE"
+DO_SAVE_INPUT="FALSE"
 DO_POST_SPINUP="FALSE"
 DO_POST_PROD="FALSE"
 DO_RETRO="TRUE"
@@ -27,7 +28,7 @@ DO_SMOKE_DUST="FALSE"
 #DO_RADDA="FALSE"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   DO_SPINUP="FALSE"
-  DO_SAVE_INPUT="FALSE"
+  DO_SAVE_DA_OUTPUT="FALSE"
   DO_NONVAR_CLDANAL="FALSE"
   DO_POST_PROD="TRUE"
 fi
@@ -78,8 +79,8 @@ fi
 if [[ $DO_SPINUP == "TRUE" ]] ; then
   SPINUP_CYCLEDEF="${DATE_FIRST_CYCL}1800 ${DATE_LAST_CYCL}2300 24:00:00"
 fi
-if [[ $DO_SAVE_INPUT == "TRUE" ]] ; then
-  SAVEINPUT_CYCLEDEF="${DATE_FIRST_CYCL}1200 ${DATE_LAST_CYCL}2300 12:00:00"
+if [[ $DO_SAVE_DA_OUTPUT == "TRUE" ]] ; then
+  SAVEDA_CYCLEDEF="${DATE_FIRST_CYCL}1200 ${DATE_LAST_CYCL}2300 12:00:00"
 fi
 
 FCST_LEN_HRS="1"
@@ -95,6 +96,7 @@ if [[ ${DO_ENSFCST} == "TRUE" ]]; then
 fi
 DA_CYCLE_INTERV="1"
 RESTART_INTERVAL="1"
+RESTART_INTERVAL_LONG="1"
 netcdf_diag=.true.
 binary_diag=.false.
 NFHOUT="3"
@@ -163,13 +165,13 @@ COMINgfs=""
 
 . set_rrfs_config.sh
 
-STMP="YourOwnSpace/${version}/stmp"  # Path to directory STMP that mostly contains input files.
+STMP="YourOwnSpace/${version}/stmp_ensda"  # Path to directory STMP that mostly contains input files.
 if [[ ${DO_ENSFCST} == "TRUE" ]]; then
   STMP="YourOwnSpace/${version}/stmp_ensfcst"  # Path to directory STMP that mostly contains input files.
 fi
 PTMP="YourOwnSpace/${version}"  # Path to directory STMP that mostly contains input files.
-NWGES="YourOwnSpace/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+NWGES="YourOwnSpace/${version}/nwges/${envir}/${NET}"  # Path to directory NWGES that save boundary, cold initial, restart files
 ENSCTRL_STMP="YourOwnSpace/${version}/stmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
 ENSCTRL_PTMP="YourOwnSpace/${version}"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
-ENSCTRL_NWGES="YourOwnSpace/${version}/nwges"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+ENSCTRL_NWGES="YourOwnSpace/${version}/nwges/${envir}/${NET}"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
 

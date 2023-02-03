@@ -625,9 +625,9 @@ CYCL_HRS_HYB_FV3LAM_ENS=( "99" )
 # cycle definition for product cycle group
 # This group runs: anal_gsi_input and data process, run_fcst, python_skewt, run_post, run_clean
 #
-# SAVEINPUT_CYCLEDEF:
-# cycle definition for saving INPUT files
-# This group runs: saveinput
+# SAVEDA_CYCLEDEF:
+# cycle definition for saving DA output files
+# This group runs: save_da_output
 #
 # RECENTER_CYCLEDEF:
 # cycle definition for recenter cycle group
@@ -653,7 +653,7 @@ PROD_CYCLEDEF="00 01 01 01 2100 *"
 RECENTER_CYCLEDEF="00 01 01 01 2100 *"
 PRODLONG_CYCLEDEF="00 01 01 01 2100 *"
 ARCHIVE_CYCLEDEF="00 01 01 01 2100 *"
-SAVEINPUT_CYCLEDEF="00 01 01 01 2100 *"
+SAVEDA_CYCLEDEF="00 01 01 01 2100 *"
 #
 #-------------------------------------------------------------------------------------
 #      GSI Namelist parameters configurable across differnt applications
@@ -1689,7 +1689,7 @@ PROCESS_SMOKE_TN="process_smoke"
 RADAR_REFL2TTEN_TN="radar_refl2tten"
 CLDANL_NONVAR_TN="cldanl_nonvar"
 SAVE_RESTART_TN="save_restart"
-SAVE_INPUT_TN="save_input"
+SAVE_DA_OUTPUT_TN="save_da_output"
 JEDI_ENVAR_IODA_TN="jedi_envar_ioda"
 #
 # Number of nodes.
@@ -1820,7 +1820,7 @@ MEMO_RUN_PRDGEN="24G"
 MEMO_RUN_JEDIENVAR_IODA="20G"
 MEMO_PREP_CYC="40G"
 MEMO_SAVE_RESTART="40G"
-MEMO_SAVE_INPUT="40G"
+MEMO_SAVE_DA_OUTPUT="40G"
 #
 # Maximum number of attempts.
 #
@@ -1848,7 +1848,7 @@ MAXTRIES_PROCESS_SMOKE="1"
 MAXTRIES_RADAR_REF2TTEN="1"
 MAXTRIES_CLDANL_NONVAR="1"
 MAXTRIES_SAVE_RESTART="1"
-MAXTRIES_SAVE_INPUT="1"
+MAXTRIES_SAVE_DA_OUTPUT="1"
 MAXTRIES_JEDI_ENVAR_IODA="1"
 #
 #
@@ -1984,8 +1984,8 @@ TILE_SETS="full"
 # DO_RECENTER:
 # Decide whether or not to run recenter for the ensemble members
 #
-# DO_SAVE_INPUT:
-# Decide whether or not to run save_input after the DA analysis  
+# DO_SAVE_DA_OUTPUT:
+# Decide whether or not to run save_da_output after the DA analysis  
 #
 # DO_ENS_GRAPHICS:
 # Flag to turn on/off ensemble graphics. Turns OFF deterministic
@@ -2032,7 +2032,7 @@ DO_RECENTER="FALSE"
 DO_ENS_GRAPHICS="FALSE"
 DO_ENSPOST="FALSE"
 DO_ENSINIT="FALSE"
-DO_SAVE_INPUT="FALSE"
+DO_SAVE_DA_OUTPUT="FALSE"
 #
 #-----------------------------------------------------------------------
 #
@@ -2107,12 +2107,16 @@ DO_SMOKE_DUST="FALSE"
 # DO_PARALLEL_PRDGEN:
 # Flag turn on parallel wgrib2 runs in prdgen .
 #
+# DO_SAVE_INPUT:
+# Decide whether or not to save input along with saving restart files  
+#
 DO_RETRO="FALSE"
 DO_SPINUP="FALSE"
 LBCS_ICS_ONLY="FALSE"
 DO_POST_SPINUP="FALSE"
 DO_POST_PROD="TRUE"
 DO_PARALLEL_PRDGEN="FALSE"
+DO_SAVE_INPUT="FALSE"
 #
 #-----------------------------------------------------------------------
 #

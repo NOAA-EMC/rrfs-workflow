@@ -3,7 +3,7 @@
 #
 #-----------------------------------------------------------------------
 #
-# This script runs the save_input to save DA analysis files to nwges
+# This script runs the save_da_output to save DA analysis files to nwges
 #
 #-----------------------------------------------------------------------
 #
@@ -84,7 +84,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSDIR/exregional_save_input.sh \
+$SCRIPTSDIR/exregional_save_da_output.sh \
   cdate="${CDATE}" \
   run_dir="${run_dir}" \
   nwges_dir="${nwges_dir}" \

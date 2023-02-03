@@ -491,6 +491,7 @@ optionList[19]=DO_ENSINIT
 optionList[20]=DO_ENSFCST
 optionList[21]=DO_SAVE_INPUT
 optionList[22]=DO_SDDACYCLE
+optionList[23]=DO_SAVE_DA_OUTPUT
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));
