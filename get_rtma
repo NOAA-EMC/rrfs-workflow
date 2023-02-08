@@ -1,5 +1,0 @@
-#!/bin/bash
-#  a helper script to use the checkout_externals command to get RTMA external components
-#
-basedir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-${basedir}/manage_externals/checkout_externals --externals ${basedir}/Externals.rtma
