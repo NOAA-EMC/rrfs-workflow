@@ -170,7 +170,7 @@ define resources used for each tasks
 
 <!ENTITY RESOURCES_PROC_SMOKE "<nodes>{{ nnodes_proc_smoke }}:ppn={{ ppn_proc_smoke }}</nodes>">
 <!ENTITY WALLTIME_PROC_SMOKE  "{{ wtime_proc_smoke }}">
-<!ENTITY MEMO_PROC_SMOKE  "80G">
+<!ENTITY MEMO_PROC_SMOKE  "{{ memo_proc_smoke }}">
 
 <!ENTITY RESOURCES_PROC_RADAR "<nodes>{{ nnodes_proc_radar }}:ppn={{ ppn_proc_radar }}</nodes>">
 <!ENTITY WALLTIME_PROC_RADAR  "{{ wtime_proc_radar }}">
@@ -193,6 +193,7 @@ define resources used for each tasks
 
 <!ENTITY RESOURCES_PREP_CYC "<nodes>{{ nnodes_run_prepstart }}:ppn={{ ppn_run_prepstart }}</nodes>">
 <!ENTITY WALLTIME_PREP_CYC  "{{ wtime_run_prepstart }}">
+<!ENTITY MEMO_PREP_CYC  "<memory>{{ memo_prep_cyc}}</memory>">
 
 <!ENTITY RESOURCES_SAVE_RESTART "<nodes>{{ nnodes_save_restart }}:ppn={{ ppn_save_restart }}</nodes>">
 <!ENTITY WALLTIME_SAVE_RESTART  "{{ wtime_save_restart }}">
@@ -203,15 +204,9 @@ define resources used for each tasks
 <!ENTITY RESOURCES_POSTANAL "<nodes>{{ nnodes_run_postanal }}:ppn={{ ppn_run_postanal }}</nodes>">
 <!ENTITY WALLTIME_POSTANAL  "{{ wtime_run_postanal }}">
 
-<!ENTITY RESOURCES_RUN_POST "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
-<!ENTITY WALLTIME_RUN_POST  "{{ wtime_run_post }}">
-
 <!ENTITY RESOURCES_RUN_PRDGEN "<nodes>{{ nnodes_run_prdgen }}:ppn={{ ppn_run_prdgen }}</nodes>">
 <!ENTITY WALLTIME_RUN_PRDGEN  "{{ wtime_run_prdgen }}">
 <!ENTITY MEMO_RUN_PRDGEN "{{ memo_run_prdgen }}">
-
-<!ENTITY RESOURCES_RUN_ENKF "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}:tpp={{ tpp_run_enkf }}</nodes>">
-<!ENTITY WALLTIME_RUN_ENKF  "{{ wtime_run_enkf }}">
 
 <!ENTITY RESOURCES_NONVAR_CLD "<nodes>{{ nnodes_run_nonvarcldanl }}:ppn={{ ppn_run_nonvarcldanl }}</nodes>">
 <!ENTITY WALLTIME_NONVAR_CLD  "{{ wtime_run_nonvarcldanl }}">
@@ -221,6 +216,20 @@ define resources used for each tasks
 <!ENTITY NATIVE_ALL    "<native>-l place=excl</native>">
 {%- else %}
 <!ENTITY NATIVE_ALL    "">
+{%- endif %}
+
+<!ENTITY WALLTIME_RUN_POST  "{{ wtime_run_post }}">
+{%- if machine in ["WCOSS2"]  %}
+<!ENTITY RESOURCES_RUN_POST "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}:tpp={{ tpp_run_post }}</nodes>">
+{%- else %}
+<!ENTITY RESOURCES_RUN_POST "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
+{%- endif %}
+
+<!ENTITY WALLTIME_RUN_ENKF  "{{ wtime_run_enkf }}">
+{%- if machine in ["WCOSS2"]  %}
+<!ENTITY RESOURCES_RUN_ENKF "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}:tpp={{ tpp_run_enkf }}</nodes>">
+{%- else %}
+<!ENTITY RESOURCES_RUN_ENKF "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}</nodes>">
 {%- endif %}
 
 <!ENTITY WALLTIME_MAKE_ICS  "{{ wtime_make_ics }}">
@@ -958,7 +967,7 @@ MODULES_RUN_TASK_FP script.
     &NATIVE_ALL;
     <walltime>&WALLTIME_PREP_CYC;</walltime>
     &NODESIZE_ALL;
-    <memory>{{ memo_prep_cyc }}</memory>
+    &MEMO_PREP_CYC;
     <jobname>&TAG;_&PREP_CYC_SPINUP_TN;{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&PREP_CYC_SPINUP_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
@@ -1070,7 +1079,7 @@ MODULES_RUN_TASK_FP script.
       &NATIVE_ALL;
       <walltime>&WALLTIME_SAVE_RESTART;</walltime>
       &NODESIZE_ALL;
-      <memory>{{ memo_save_restart }}</memory>
+      &MEMO_PREP_CYC;
       <jobname>&TAG;_&SAVE_RESTART_TN;_ensinit{{ uscore_ensmem_name }}</jobname>
       <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;_ensinit{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
@@ -1088,7 +1097,7 @@ MODULES_RUN_TASK_FP script.
       <dependency>
         <and>
           <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
-          <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam_ensinit/RESTART/coupler.res</cyclestr></datadep>
+          <datadep age="00:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam_ensinit/RESTART/coupler.res</cyclestr></datadep>
         </and>
       </dependency>
 
@@ -1107,7 +1116,7 @@ MODULES_RUN_TASK_FP script.
     &NATIVE_ALL;
     <walltime>&WALLTIME_PREP_CYC;</walltime>
     &NODESIZE_ALL;
-    <memory>{{ memo_prep_cyc }}</memory>
+    &MEMO_PREP_CYC;
     <jobname>&TAG;_&PREP_CYC_SPINUP_TN;_ensinit{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&PREP_CYC_SPINUP_TN;_ensinit{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
@@ -1630,7 +1639,7 @@ MODULES_RUN_TASK_FP script.
       &NATIVE_ALL;
       <walltime>&WALLTIME_SAVE_RESTART;</walltime>
       &NODESIZE_ALL;
-      <memory>{{ memo_save_restart }}</memory>
+      &MEMO_PREP_CYC;
       <jobname>&TAG;_&SAVE_RESTART_TN;{{ uscore_ensmem_name }}_f#fhr#</jobname>
       <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;_spinup{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
@@ -1648,8 +1657,8 @@ MODULES_RUN_TASK_FP script.
         <and>
           <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
           <or>
-            <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam_spinup/RESTART/coupler.res</cyclestr></datadep>
-            <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam_spinup/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+            <datadep age="00:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam_spinup/RESTART/coupler.res</cyclestr></datadep>
+            <datadep age="00:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam_spinup/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
           </or>
         </and>
       </dependency>
@@ -1760,7 +1769,7 @@ MODULES_RUN_TASK_FP script.
     &NATIVE_ALL;
     <walltime>&WALLTIME_PREP_CYC;</walltime>
     &NODESIZE_ALL;
-    <memory>{{ memo_prep_cyc }}</memory>
+    &MEMO_PREP_CYC;
     <jobname>&TAG;_&PREP_CYC_PROD_TN;{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&PREP_CYC_PROD_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
@@ -1938,9 +1947,9 @@ MODULES_RUN_TASK_FP script.
          <taskdep task="&PROCESS_RADAR_REF_TN;_prod"/>
          {%- endif %}
          {% if machine in ["JET", "HERA"] -%}
-         <datadep age="05:00"><cyclestr>&OBSPATH;/@Y@m@d@H.rap.t@Hz.prepbufr.tm00</cyclestr></datadep>
+         <datadep age="02:00"><cyclestr>&OBSPATH;/@Y@m@d@H.rap.t@Hz.prepbufr.tm00</cyclestr></datadep>
          {% else -%}
-	 <datadep age="05:00"><cyclestr>&OBSPATH;/rap.@Y@m@d/rap.t@Hz.prepbufr.tm00</cyclestr></datadep>
+	 <datadep age="02:00"><cyclestr>&OBSPATH;/rap.@Y@m@d/rap.t@Hz.prepbufr.tm00</cyclestr></datadep>
          {% endif -%}
        </and>
     </dependency>
@@ -2683,7 +2692,7 @@ MODULES_RUN_TASK_FP script.
       <nodes>{{ nnodes_save_restart }}:ppn={{ ppn_save_restart }}</nodes>
       <walltime>{{ wtime_save_restart }}</walltime>
       &NODESIZE_ALL;
-      <memory>{{ memo_save_restart }}</memory>
+      &MEMO_PREP_CYC;
       <jobname>&TAG;_&SAVE_RESTART_TN;{{ uscore_ensmem_name }}_f#fhr#</jobname>
       <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
@@ -2701,8 +2710,8 @@ MODULES_RUN_TASK_FP script.
         <and>
           <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
           <or>
-            <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/RESTART/coupler.res</cyclestr></datadep>
-            <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+            <datadep age="00:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/RESTART/coupler.res</cyclestr></datadep>
+            <datadep age="00:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
           </or>
         </and>
       </dependency>
@@ -2722,7 +2731,7 @@ MODULES_RUN_TASK_FP script.
       <nodes>{{ nnodes_save_restart }}:ppn={{ ppn_save_restart }}</nodes>
       <walltime>{{ wtime_save_restart }}</walltime>
       &NODESIZE_ALL;
-      <memory>{{ memo_save_restart }}</memory>
+      &MEMO_PREP_CYC;
       <jobname>&TAG;_&SAVE_RESTART_TN;{{ uscore_ensmem_name }}_f#fhr#</jobname>
       <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
@@ -2740,8 +2749,8 @@ MODULES_RUN_TASK_FP script.
         <and>
           <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
           <or>
-            <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/RESTART/coupler.res</cyclestr></datadep>
-            <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+            <datadep age="00:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/RESTART/coupler.res</cyclestr></datadep>
+            <datadep age="00:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
           </or>
         </and>
       </dependency>

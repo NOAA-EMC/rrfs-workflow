@@ -1,1 +1,0 @@
-../../.agent/smoke_dust/RRFS_NA_3km/RRFS_CONUS_3km_weight_file.nc

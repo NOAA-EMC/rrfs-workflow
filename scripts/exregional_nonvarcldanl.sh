@@ -82,6 +82,7 @@ case $MACHINE in
   APRUN="mpiexec -n ${IO_LAYOUT_Y} -ppn 16"
   ncores=$(( NNODES_RUN_NONVARCLDANL*PPN_RUN_NONVARCLDANL ))
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_NONVARCLDANL}"
+  APRUN="mpiexec -n 1 -ppn 1"
   ;;
 #
 "HERA")

@@ -303,6 +303,7 @@ settings="\
   'tpp_run_anal': ${TPP_RUN_ANAL}
   'tpp_run_enkf': ${TPP_RUN_ENKF}
   'tpp_run_fcst': ${TPP_RUN_FCST}
+  'tpp_run_post': ${TPP_RUN_POST}
 #
 # Maximum wallclock time for each task.
 #
@@ -356,6 +357,8 @@ settings="\
   'memo_run_jedienvar_ioda': ${MEMO_RUN_JEDIENVAR_IODA}
   'memo_prep_cyc': ${MEMO_PREP_CYC}
   'memo_save_restart': ${MEMO_SAVE_RESTART}
+  'memo_save_input': ${MEMO_SAVE_INPUT}
+  'memo_proc_smoke': ${MEMO_PROC_SMOKE}
   'memo_save_da_output': ${MEMO_SAVE_DA_OUTPUT}
 #
 # Maximum number of tries for each task.

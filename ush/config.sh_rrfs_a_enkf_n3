@@ -1,13 +1,11 @@
 MACHINE="wcoss2"
-version="v0.3.6"
+version="v0.3.7"
 ACCOUNT="RRFS_DEV"
-#RESERVATION="rrfsens"
-#RESERVATION_POST="rrfsdet"
-EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/${version}/"
-EXPT_SUBDIR="rrfs_conus_ens"
+#RESERVATION="rrfsdet"
+EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/${version}"
+EXPT_SUBDIR="rrfs_na_ens"
 
-PREDEF_GRID_NAME=RRFS_CONUS_3km
-
+PREDEF_GRID_NAME="RRFS_NA_3km"
 . set_rrfs_config_general.sh
 
 DO_ENSEMBLE="TRUE"
@@ -15,12 +13,13 @@ DO_ENSEMBLE="TRUE"
 #DO_DACYCLE="TRUE"
 #DO_SURFACE_CYCLE="TRUE"
 DO_SPINUP="TRUE"
+DO_SAVE_INPUT="FALSE"
 DO_SAVE_DA_OUTPUT="TRUE"
 DO_POST_SPINUP="FALSE"
 DO_POST_PROD="FALSE"
-#DO_RETRO="TRUE"
+#DO_RETRO="FALSE"
 DO_NONVAR_CLDANAL="TRUE"
-#DO_ENVAR_RADAR_REF="TRUE"
+#DO_ENVAR_RADAR_REF="FALSE"
 DO_SMOKE_DUST="FALSE"
 #DO_REFL2TTEN="FALSE"
 #RADARREFL_TIMELEVEL=(0)
@@ -33,23 +32,30 @@ DO_SMOKE_DUST="FALSE"
 
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   DO_SPINUP="FALSE"
-  DO_SAVE_DA_OUTPUT="FALSE"
+  DO_SAVE_DA_OUPUT="FALSE"
   DO_NONVAR_CLDANAL="FALSE"
   DO_POST_PROD="TRUE"
 fi
+
+NET="rrfs_a"
+TAG="nenkf37"
+ARCHIVEDIR="/NCEPDEV/emc-meso/1year/emc.lam"
+NCL_REGION="conus"
+MODEL="RRFS_A"
+RUN="rrfs_a"
+envir="para"
 
 EXTRN_MDL_ICS_OFFSET_HRS="30"
 LBC_SPEC_INTVL_HRS="1"
 EXTRN_MDL_LBCS_OFFSET_HRS="6"
 BOUNDARY_LEN_HRS="12"
-BOUNDARY_PROC_GROUP_NUM="4"
+BOUNDARY_PROC_GROUP_NUM="12"
 
 # avaialble retro period:
 # 20210511-20210531; 20210718-20210801
-DATE_FIRST_CYCL="20230201"
+DATE_FIRST_CYCL="20230202"
 DATE_LAST_CYCL="20230331"
 CYCL_HRS=( "00" "12" )
-CYCL_HRS=( "18" )
 CYCL_HRS_SPINSTART=("06" "18")
 CYCL_HRS_PRODSTART=("07" "19")
 #CYCL_HRS_STOCH=("00" "12")
@@ -66,13 +72,13 @@ ENDMONTH=${DATE_LAST_CYCL:4:2}
 ENDDAY=${DATE_LAST_CYCL:6:2}
 ENDHOUR="23"
 
-PREEXISTING_DIR_METHOD="upgrade" # "rename"
+PREEXISTING_DIR_METHOD="upgrade"
 INITIAL_CYCLEDEF="${DATE_FIRST_CYCL}1800 ${DATE_LAST_CYCL}2300 12:00:00"
 BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}1800 ${DATE_LAST_CYCL}2300 06:00:00"
 PROD_CYCLEDEF="00 01-05,07-11,13-17,19-23 ${CYCLEDAY} ${CYCLEMONTH} ${STARTYEAR} *"
 PRODLONG_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 06:00:00"
 #RECENTER_CYCLEDEF="00 19 * 10 2022 *"
-ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 24:00:00"
+ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}1400 ${DATE_LAST_CYCL}2300 24:00:00"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   BOUNDARY_LEN_HRS="36"
   DO_SPINUP="FALSE"
@@ -91,11 +97,12 @@ fi
 FCST_LEN_HRS="1"
 FCST_LEN_HRS_SPINUP="1"
 POSTPROC_LEN_HRS="1"
-#FCST_LEN_HRS_CYCLES=(48 18 18 18 18 18 48 18 18 18 18 18 48 18 18 18 18 18 48 18 18 18 18 18)
+POSTPROC_LONG_LEN_HRS="1"
+#FCST_LEN_HRS_CYCLES=(21 21 21 63 21 21 21 21 21 63 21 21 21 21 21 63 21 21 21 21 21 63 21 21)
 for i in {0..23}; do FCST_LEN_HRS_CYCLES[$i]=1; done
-for i in {0..23..6}; do FCST_LEN_HRS_CYCLES[$i]=1; done 
+for i in {0..23..6}; do FCST_LEN_HRS_CYCLES[$i]=1; done
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
-  for i in {0..23..12}; do FCST_LEN_HRS_CYCLES[$i]=36; done 
+  for i in {0..23..12}; do FCST_LEN_HRS_CYCLES[$i]=36; done
   POSTPROC_LEN_HRS="36"
   BOUNDARY_PROC_GROUP_NUM="8"
 fi
@@ -108,7 +115,7 @@ NFHOUT="3"
 NFHMAX_HF="12"
 
 WTIME_RUN_FCST="00:30:00"
-WTIME_RUN_FCST_LONG="03:45:00"
+WTIME_RUN_FCST_LONG="00:45:00"
 NNODES_RUN_ANAL="1"
 
 EXTRN_MDL_NAME_ICS="GEFS"
@@ -122,13 +129,6 @@ EXTRN_MDL_SOURCE_BASEDIR_LBCS="/mnt/lfs4/BMC/wrfruc/RRFSE/data/gens"
 FV3GFS_FILE_FMT_ICS="grib2"
 FV3GFS_FILE_FMT_LBCS="grib2"
 
-envir="para"
-NET="rrfs_a"
-TAG="cenkf36"
-ARCHIVEDIR="/NCEPDEV/emc-meso/1year/emc.lam"
-NCL_REGION="conus"
-MODEL="rrfs_b"
-
 if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    NUM_ENS_MEMBERS=30
 #   DO_ENSCONTROL="TRUE"
@@ -140,6 +140,7 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    DO_ENSPOST="FALSE"
    DO_ENSINIT="TRUE"
    NUM_ENS_MEMBERS_FCST=9
+   LAYOUT_X="20"
    if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
      NUM_ENS_MEMBERS=${NUM_ENS_MEMBERS_FCST}
 #     DO_SPPT=TRUE
@@ -147,24 +148,22 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
 #     SPPT_MAG=0.5
      WTIME_RUN_FCST="04:45:00"
      WTIME_MAKE_LBCS="01:30:00"
-     TAG="cefcst36"
+     TAG="nefcst37"
+     LAYOUT_X="40"
    fi
    RADAR_REF_THINNING="2"
    ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_ens"
    NNODES_RUN_RECENTER="3"
    PPN_RUN_RECENTER="128"
-   CLEAN_OLDFCST_HRS="48"
-   CLEAN_OLDSTMPPOST_HRS="48"
+   CLEAN_OLDFCST_HRS="24"
+   CLEAN_OLDSTMPPOST_HRS="24"
+   CLEAN_OLDRUN_HRS="12"
    cld_bld_hgt=0.0
    l_precip_clear_only=.true.
    write_diag_2=.true.
    START_TIME_SPINUP="00:30:00"
 fi
 
-RUN="rrfs_a"
-if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
-  RUN="rrfs_a"
-fi
 COMINgfs=""
 
 . set_rrfs_config.sh
@@ -178,4 +177,3 @@ NWGES="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}/nwges"  # Path to directory NWGE
 ENSCTRL_STMP="/lfs/h2/emc/stmp/emc.lam/rrfs/${version}"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
 ENSCTRL_PTMP="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
 ENSCTRL_NWGES="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}/nwges"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
-
