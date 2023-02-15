@@ -16,6 +16,19 @@ ncfile_fvcom_eri  = argvs[1]
 ncfile_fvcom_mhs  = argvs[2]
 ncfile_fvcom_sup  = argvs[3]
 ncfile_fvcom_ont  = argvs[4]
+predef_grid_name  = argvs[5]
+
+# Set dimensions for CONUS and NA 3-km grids
+if predef_grid_name == 'RRFS_CONUS_3km':
+  x1 = 674
+  x2 = 955
+  y1 = 1039
+  y2 = 1490
+elif predef_grid_name == 'RRFS_NA_3km':
+  x1 = 960
+  x2 = 1240
+  y1 = 2490
+  y2 = 2960
 
 # read "containar" file
 ncfile='./out_fv3grid.nc'
@@ -159,8 +172,8 @@ for nn in range(len(time)):
 
 	twsfc_fvcom = np.array(temp_fvcom[nn,0,:])
 	# RRFS grid GL subset
-	lon_wrfsubset = lon[674:955,1039:1490]
-	lat_wrfsubset = lat[674:955,1039:1490]
+	lon_wrfsubset = lon[x1:x2,y1:y2]
+	lat_wrfsubset = lat[x1:x2,y1:y2]
 	twsfc_wrf0 = np.array(0. * twsfc[nn,:,:]) # make it all zero. overwritten by interpolated values later. 
 
 	tisfc_fvcom = np.array(tice_fvcom[nn,:])
@@ -183,10 +196,10 @@ for nn in range(len(time)):
 	aicec_wrf=interp.griddata((lon_fvcom,lat_fvcom),aicec_fvcom,(lon_wrfsubset,lat_wrfsubset),method='nearest')#'linear')
 	vicec_wrf=interp.griddata((lon_fvcom,lat_fvcom),vicec_fvcom,(lon_wrfsubset,lat_wrfsubset),method='nearest')#'linear')
 
-	twsfc_wrf0[674:955,1039:1490]=twsfc_wrf
-	tisfc_wrf0[674:955,1039:1490]=tisfc_wrf
-	aicec_wrf0[674:955,1039:1490]=aicec_wrf
-	vicec_wrf0[674:955,1039:1490]=vicec_wrf
+	twsfc_wrf0[x1:x2,y1:y2]=twsfc_wrf
+	tisfc_wrf0[x1:x2,y1:y2]=tisfc_wrf
+	aicec_wrf0[x1:x2,y1:y2]=aicec_wrf
+	vicec_wrf0[x1:x2,y1:y2]=vicec_wrf
 	
 	twsfc_wrf0[lakemask==0.] = missing_value
 	tisfc_wrf0[lakemask==0.] = missing_value
