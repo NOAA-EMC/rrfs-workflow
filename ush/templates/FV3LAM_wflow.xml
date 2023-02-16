@@ -127,7 +127,7 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 <!ENTITY RSRV_DEFAULT "<account>&ACCOUNT;</account><queue>&QUEUE_DEFAULT;</queue>">
 {%- endif %}
 {%- if partition_hpss is not none %}
-<!ENTITY RSRV_HPSS    "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_HPSS;</queue><partition>{{ partition_hpss }}</partition><native>&RRFS_POST_RESERVE;</native>">
+<!ENTITY RSRV_HPSS    "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_HPSS;</queue><partition>{{ partition_hpss }}</partition>">
 {%- else %}
 <!ENTITY RSRV_HPSS    "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_HPSS;</queue>">
 {%- endif %}

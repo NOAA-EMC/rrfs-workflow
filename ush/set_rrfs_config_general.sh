@@ -9,12 +9,13 @@ if [[ $MACHINE == "jet" ]] ; then
     PARTITION_ANALYSIS=kjet
     PARTITION_PRDGEN=kjet
     PARTITION_POST=kjet
+    PARTITION_HPSS=service
     QUEUE_DEFAULT="rth"
     QUEUE_FCST="rth"
     QUEUE_ANALYSIS="rth"
     QUEUE_PRDGEN="rt"
     QUEUE_GRAPHICS="rt"
-    QUEUE_HPSS="rt"
+    QUEUE_HPSS="batch"
     QUEUE_POST="rt"
     RESERVATION_POST="rrfsdet"
     NNODES_MAKE_ICS="3"
