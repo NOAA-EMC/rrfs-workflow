@@ -390,11 +390,9 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then
     MEMO_RUN_NONVARCLDANL="256G"
     MEMO_PROC_SMOKE="256G"
     MEMO_RUN_PREPSTART="120G"
-    MEMO_PREP_CYC="120G"
+    MEMO_PREP_CYC="40G"
     MEMO_SAVE_RESTART="120G"
     MEMO_SAVE_INPUT="120G"                                                                                                     
-
-    WTIME_RUN_FCST="01:45:00"
 
     START_TIME_SPINUP="01:10:00"
     START_TIME_PROD="02:20:00"
@@ -406,6 +404,7 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then
     FV3GFS_FILE_FMT_LBCS="netcdf"
 
     WTIME_RUN_FCST="02:30:00"
+    WTIME_RUN_FCST_LONG="04:30:00"
     WTIME_MAKE_LBCS="02:30:00"
 
     CLEAN_OLDRUN_HRS="24"
