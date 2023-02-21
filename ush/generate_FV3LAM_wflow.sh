@@ -487,6 +487,7 @@ settings="\
   'do_enkfupdate': ${DO_ENKFUPDATE}
   'do_enkf_radar_ref': ${DO_ENKF_RADAR_REF}
   'do_envar_radar_ref': ${DO_ENVAR_RADAR_REF}
+  'do_envar_radar_ref_once': ${DO_ENVAR_RADAR_REF_ONCE}
   'do_recenter': ${DO_RECENTER}
   'do_bufrsnd': ${DO_BUFRSND}
   'do_ens_graphics': ${DO_ENS_GRAPHICS}

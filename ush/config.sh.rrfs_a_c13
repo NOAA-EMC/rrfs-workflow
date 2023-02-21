@@ -9,6 +9,7 @@ EXPT_SUBDIR="rrfs_conus_13km"
 PREDEF_GRID_NAME=RRFS_CONUS_13km
 
 . set_rrfs_config_general.sh
+. set_rrfs_config_SDL_VDL_MixEn.sh
 
 DO_DACYCLE="TRUE"
 DO_SURFACE_CYCLE="TRUE"

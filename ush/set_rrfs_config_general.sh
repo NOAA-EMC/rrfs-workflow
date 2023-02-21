@@ -39,6 +39,7 @@ fi
 
 if [[ $MACHINE == "orion" ]] ; then
   ACCOUNT=wrfruc
+  PARTITION_ANALYSIS=orion
   QUEUE_ANALYSIS="batch"
   QUEUE_PRDGEN="batch"
   QUEUE_GRAPHICS="batch"

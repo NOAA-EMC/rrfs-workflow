@@ -682,16 +682,30 @@ netcdf_diag=.false.
 binary_diag=.true.
 
 # &HYBRID_ENSEMBLE
+l_both_fv3sar_gfs_ens=.false.
 readin_localization=.true.     #if true, it overwrites the "beta1_inv/ens_h/ens_v" setting
 beta1_inv=0.15                 #beata_inv is 1-ensemble_wgt
-ens_h=110
-ens_v=3
+ens_h=110                      #horizontal localization scale of "Gaussian function=exp(-0.5)" for EnVar (km)
+ens_v=3                        #vertical localization scale of "Gaussian function=exp(-0.5)" for EnVar (positive:grids, negative:lnp)
+ens_h_radardbz=4.10790         #horizontal localization scale of "Gaussian function=exp(-0.5)" for radardbz EnVar (km)
+ens_v_radardbz=-0.30125        #vertical localization scale of "Gaussian function=exp(-0.5)" for radardbz EnVar (positive:grids, negative:lnp)
+nsclgrp=1
+ngvarloc=1
+i_ensloccov4tim=0
+i_ensloccov4var=0
+i_ensloccov4scl=0
 regional_ensemble_option=1     #1 for GDAS ; 5 for FV3LAM ensemble
 grid_ratio_fv3=2.0             #fv3 resolution 3km, so analysis=3*2=6km
 grid_ratio_ens=3               #if analysis is 3km, then ensemble=3*3=9km. GDAS ensemble is 20km
 i_en_perts_io=1                #0 or 1: original file   3: pre-processed ensembles
 q_hyb_ens=.false.
 ens_fast_read=.false.
+CORRLENGTH=400                 #horizontal localization scale of "Gaspari-Cohn function=0" for EnKF (km)
+LNSIGCUTOFF=0.5                #vertical localization scale of "Gaspari-Cohn function=0" for EnKF (lnp)
+CORRLENGTH_radardbz=18         #horizontal localization scale of "Gaspari-Cohn function=0" for radardbz EnKF (km)
+LNSIGCUTOFF_radardbz=0.5       #vertical localization scale of "Gaspari-Cohn function=0" for radardbz EnKF (lnp)
+assign_vdl_nml=.false.
+vdl_scale=0
 
 # &RAPIDREFRESH_CLDSURF
 l_PBL_pseudo_SurfobsT=.false.
@@ -712,6 +726,7 @@ HYBENSMEM_NMIN=80
 ANAVINFO_FN="anavinfo.rrfs"
 ANAVINFO_SD_FN="anavinfo.rrfs_sd"
 ANAVINFO_DBZ_FN="anavinfo.rrfs_dbz"
+ANAVINFO_CONV_DBZ_FN="anavinfo.rrfs_conv_dbz"
 ENKF_ANAVINFO_FN="anavinfo.rrfs"
 ENKF_ANAVINFO_DBZ_FN="anavinfo.enkf.rrfs_dbz"
 CONVINFO_FN="convinfo.rrfs"
@@ -1989,6 +2004,9 @@ TILE_SETS="full"
 # DO_ENVAR_RADAR_REF:
 # Decide whether or not to run Radar Reflectivity hybrid analysis
 #
+# DO_ENVAR_RADAR_REF_ONCE:
+# Decide whether or not to run Radar Reflectivity hybrid analysis simultaneously with other observations
+#
 # DO_RECENTER:
 # Decide whether or not to run recenter for the ensemble members
 #
@@ -2036,6 +2054,7 @@ DO_GSIOBSERVER="FALSE"
 DO_ENKFUPDATE="FALSE"
 DO_ENKF_RADAR_REF="FALSE"
 DO_ENVAR_RADAR_REF="FALSE"
+DO_ENVAR_RADAR_REF_ONCE="FALSE"
 DO_RECENTER="FALSE"
 DO_ENS_GRAPHICS="FALSE"
 DO_ENSPOST="FALSE"

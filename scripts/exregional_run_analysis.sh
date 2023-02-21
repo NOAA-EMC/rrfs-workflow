@@ -188,6 +188,10 @@ else
   regional_ensemble_option=1
 fi
 
+if  [ ${ob_type} != "conv" ] || [ ${BKTYPE} -eq 1 ]; then #not using GDAS
+  l_both_fv3sar_gfs_ens=.false.
+fi
+
 #---------------------------------------------------------------------
 #
 # decide regional_ensemble_option: global ensemble (1) or FV3LAM ensemble (5)
@@ -246,10 +250,11 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
   if [[ $ifound -ne ${NUM_ENS_MEMBERS} ]] || [[ ${BKTYPE} -eq 1 ]]; then
     print_info_msg "Not enough FV3_LAM ensembles, will fall to GDAS"
     regional_ensemble_option=1
+    l_both_fv3sar_gfs_ens=.false.
   fi
 fi
 #
-if  [[ ${regional_ensemble_option:-1} -eq 1 ]]; then #using GDAS
+if  [[ ${regional_ensemble_option:-1} -eq 1 || ${l_both_fv3sar_gfs_ens} = ".true." ]]; then #using GDAS
   #-----------------------------------------------------------------------
   # Make a list of the latest GFS EnKF ensemble
   #-----------------------------------------------------------------------
@@ -349,6 +354,9 @@ niter2=50
 lread_obs_save=.false.
 lread_obs_skip=.false.
 if_model_dbz=.false.
+nummem_gfs=0
+nummem_fv3sar=0
+anav_type=${ob_type}
 i_use_2mQ4B=2
 i_use_2mT4B=1
 
@@ -356,7 +364,12 @@ i_use_2mT4B=1
 memname='atmf009'
 
 if [ ${regional_ensemble_option:-1} -eq 5 ]  && [ ${BKTYPE} != 1  ]; then 
-  nummem=$NUM_ENS_MEMBERS
+  if [ ${l_both_fv3sar_gfs_ens} = ".true." ]; then
+    nummem_gfs=$(more filelist03 | wc -l)
+    nummem_gfs=$((nummem_gfs - 3 ))
+  fi
+  nummem_fv3sar=$NUM_ENS_MEMBERS
+  nummem=`expr ${nummem_gfs} + ${nummem_fv3sar}`
   print_info_msg "$VERBOSE" "Do hybrid with FV3LAM ensemble"
   ifhyb=.true.
   print_info_msg "$VERBOSE" " Cycle ${YYYYMMDDHH}: GSI hybrid uses FV3LAM ensemble with n_ens=${nummem}" 
@@ -364,8 +377,9 @@ if [ ${regional_ensemble_option:-1} -eq 5 ]  && [ ${BKTYPE} != 1  ]; then
   grid_ratio_ens="1"
   ens_fast_read=.true.
 else    
-  nummem=$(more filelist03 | wc -l)
-  nummem=$((nummem - 3 ))
+  nummem_gfs=$(more filelist03 | wc -l)
+  nummem_gfs=$((nummem_gfs - 3 ))
+  nummem=${nummem_gfs}
   if [[ ${nummem} -ge ${HYBENSMEM_NMIN} ]]; then
     print_info_msg "$VERBOSE" "Do hybrid with ${memname}"
     ifhyb=.true.
@@ -375,6 +389,9 @@ else
     print_info_msg "$VERBOSE" " Cycle ${YYYYMMDDHH}: GSI does pure 3DVAR."
     print_info_msg "$VERBOSE" " Hybrid needs at least ${HYBENSMEM_NMIN} ${memname} ensembles, only ${nummem} available"
     echo " ${YYYYMMDDHH}(${cycle_type}): GSI dose pure 3DVAR" >> ${EXPTDIR}/log.cycles
+  fi
+  if [[ ${anav_type} == "conv_dbz" ]]; then
+    anav_type="conv"
   fi
 fi
 
@@ -473,7 +490,7 @@ else
   esac
 fi
 
-if [[ ${gsi_type} == "OBSERVER" || ${ob_type} == "conv" ]]; then
+if [[ ${gsi_type} == "OBSERVER" || ${anav_type} == "conv" || ${anav_type} == "conv_dbz" ]]; then
 
   obs_files_source[0]=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.prepbufr.tm00
   obs_files_target[0]=prepbufr
@@ -486,15 +503,19 @@ if [[ ${gsi_type} == "OBSERVER" || ${ob_type} == "conv" ]]; then
   obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.nexrad.tm00.bufr_d
   obs_files_target[${obs_number}]=l2rwbufr
 
-  if [ ${DO_ENKF_RADAR_REF} == "TRUE" ]; then
+  if [[ ${DO_ENKF_RADAR_REF} == "TRUE" || ${anav_type} == "conv_dbz" ]]; then
     obs_number=${#obs_files_source[@]}
-    obs_files_source[${obs_number}]=${cycle_dir}/process_radarref/00/Gridded_ref.nc
+    if [ ${cycle_type} == "spinup" ]; then
+      obs_files_source[${obs_number}]=${cycle_dir}/process_radarref_spinup/00/Gridded_ref.nc
+    else
+      obs_files_source[${obs_number}]=${cycle_dir}/process_radarref/00/Gridded_ref.nc
+    fi
     obs_files_target[${obs_number}]=dbzobs.nc
   fi
 
 else
 
-  if [ ${ob_type} == "radardbz" ]; then
+  if [ ${anav_type} == "radardbz" ]; then
 
     if [ ${cycle_type} == "spinup" ]; then
       obs_files_source[0]=${cycle_dir}/process_radarref_spinup/00/Gridded_ref.nc
@@ -506,7 +527,7 @@ else
   fi
 
 
-  if [ ${ob_type} == "AERO" ]; then
+  if [ ${anav_type} == "AERO" ]; then
     obs_files_source[0]=${OBSPATH_PM}/${YYYYMMDD}/pm25.airnow.${YYYYMMDD}${HH}.bufr
     obs_files_target[0]=pm25bufr
   fi
@@ -624,7 +645,7 @@ if [ ${DO_ENKF_RADAR_REF} == "TRUE" ]; then
   beta1_inv=0.0
   if_model_dbz=.true.
 fi
-if [[ ${gsi_type} == "ANALYSIS" && ${ob_type} == "radardbz" ]]; then
+if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "radardbz" ]]; then
   ANAVINFO=${FIX_GSI}/${ENKF_ANAVINFO_DBZ_FN}
   miter=1
   niter1=100
@@ -632,11 +653,26 @@ if [[ ${gsi_type} == "ANALYSIS" && ${ob_type} == "radardbz" ]]; then
   bkgerr_vs=0.1
   bkgerr_hzscl="0.4,0.5,0.6"
   beta1_inv=0.0
-  ens_h=4.10790
-  ens_v=-0.30125
   readin_localization=.false.
+  ens_h=${ens_h_radardbz}
+  ens_v=${ens_v_radardbz}
+  nsclgrp=1
+  ngvarloc=1
+  i_ensloccov4tim=0
+  i_ensloccov4var=0
+  i_ensloccov4scl=0
   q_hyb_ens=.true.
   if_model_dbz=.true.
+fi
+if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "conv_dbz" ]]; then
+  ANAVINFO=${FIX_GSI}/${ANAVINFO_CONV_DBZ_FN}
+  beta1_inv=0.0
+  if_model_dbz=.true.
+fi
+naensloc=`expr ${nsclgrp} \* ${ngvarloc} + ${nsclgrp} - 1`
+if [ ${assign_vdl_nml} = ".true." ]; then
+  nsclgrp=`expr ${nsclgrp} \* ${ngvarloc}`
+  ngvarloc=1
 fi
 CONVINFO=${FIX_GSI}/${CONVINFO_FN}
 HYBENSINFO=${FIX_GSI}/${HYBENSINFO_FN}
@@ -644,7 +680,7 @@ OBERROR=${FIX_GSI}/${OBERROR_FN}
 BERROR=${FIX_GSI}/${BERROR_FN}
 
 
-if [[ ${gsi_type} == "ANALYSIS" && ${ob_type} == "AERO" ]]; then
+if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "AERO" ]]; then
   if [ ${BKTYPE} -eq 1 ]; then
     echo "cold start, skip GSI SD DA"
     exit 0
@@ -833,7 +869,7 @@ fi
 # skip radar reflectivity analysis if no RRFSE ensemble
 #-----------------------------------------------------------------------
 
-if [[ ${gsi_type} == "ANALYSIS" && ${ob_type} == "radardbz" ]]; then
+if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "radardbz" ]]; then
   if  [[ ${regional_ensemble_option:-1} -eq 1 ]]; then
      echo "No RRFSE ensemble available, cannot do radar reflectivity analysis"
      exit 0
@@ -879,7 +915,7 @@ EOF
 #
 gsi_exec="${EXECDIR}/gsi.x"
 
-if [[ ${gsi_type} == "ANALYSIS" && ${ob_type} == "AERO" ]]; then
+if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "AERO" ]]; then
   gsi_exec="${EXECDIR}/gsi.x.sd"
 fi
 
@@ -916,7 +952,7 @@ fi
 $APRUN ./gsi.x < gsiparm.anl > stdout 2>&1 || print_err_msg_exit "\
 Call to executable to run GSI returned with nonzero exit code."
 
-if [ ${ob_type} == "radardbz" ]; then
+if [ ${anav_type} == "radardbz" ]; then
   cat fort.238 > $comout/rrfs_a.t${HH}z.fits3.tm00
 else
   mv fort.207 fit_rad1
@@ -935,7 +971,7 @@ else
 
 fi
 
-cp stdout $comout/stdout_${ob_type}
+cp stdout $comout/stdout_${anav_type}
 #
 #-----------------------------------------------------------------------
 #
@@ -945,6 +981,9 @@ cp stdout $comout/stdout_${ob_type}
 #-----------------------------------------------------------------------
 #
 touch gsi_complete.txt
+if [[ ${anav_type} == "radardbz" || ${anav_type} == "conv_dbz" ]]; then
+  touch gsi_complete_radar.txt # for nonvarcldanl
+fi
 #
 #-----------------------------------------------------------------------
 #

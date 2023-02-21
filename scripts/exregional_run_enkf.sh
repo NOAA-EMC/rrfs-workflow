@@ -238,14 +238,12 @@ CONVINFO=${FIX_GSI}/convinfo.rrfs
 
 if [ ${ob_type} == "conv" ]; then
   ANAVINFO=${FIX_GSI}/${ENKF_ANAVINFO_FN}
-  CORRLENGTH=400
-  LNSIGCUTOFF=0.5
   found_ob_type=1
 fi
 if [ ${ob_type} == "radardbz" ]; then
   ANAVINFO=${FIX_GSI}/${ENKF_ANAVINFO_DBZ_FN}
-  CORRLENGTH=18
-  LNSIGCUTOFF=0.5
+  CORRLENGTH=${CORRLENGTH_radardbz}
+  LNSIGCUTOFF=${LNSIGCUTOFF_radardbz}
   found_ob_type=1
 fi
 if [ ${found_ob_type} == 0 ]; then

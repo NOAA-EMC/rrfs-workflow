@@ -703,8 +703,6 @@ MODULES_RUN_TASK_FP script.
       <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/gfs.@Y@m@d/@H/atmos/gfs.t@Hz.pgrb2.0p25.f{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
       {%- endif %}
       {%- endif %}
-      {%- elif machine in ["ORION"]  %}
-      <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/@y@j@H000{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
       {% else %}
       {%- if extrn_mdl_name_ics in ["GEFS"] %}
       <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/#subdirGE#/@y@j@H000{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
@@ -716,6 +714,9 @@ MODULES_RUN_TASK_FP script.
       {%- elif machine in ["JET"] %}
         <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/@y@j@H00.gdas.t@Hz.atmf00{{ extrn_mdl_ics_offset_hrs }}.#memNameGDAS#.nc</cyclestr></datadep>
         <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/@y@j@H00.gdas.t@Hz.sfcf00{{ extrn_mdl_ics_offset_hrs }}.#memNameGDAS#.nc</cyclestr></datadep>
+      {%- elif machine in ["ORION"] %}
+        <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/@y@j@H00.gdas.t@Hz.atmf00{{ extrn_mdl_ics_offset_hrs }}.#memNameGDAS#.nc</cyclestr></datadep>
+        <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/@y@j@H00.gdas.t@Hz.sfcf00{{ extrn_mdl_ics_offset_hrs }}.#memNameGDAS#.nc</cyclestr></datadep>
       {%- endif %}
       </and>
       {%- elif extrn_mdl_name_ics in ["HRRRDAS"] %}
@@ -724,6 +725,8 @@ MODULES_RUN_TASK_FP script.
       {%- if machine in ["JET"] %}
       <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/@y@j@H000{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
       {%- elif machine in ["HERA"] %}
+      <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/@y@j@H000{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
+      {%- elif machine in ["ORION"] %}
       <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/@y@j@H000{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
       {%- endif %}
       {%- endif %}
@@ -767,8 +770,6 @@ MODULES_RUN_TASK_FP script.
          {%- else %}
          <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/gfs.@Y@m@d/@H/atmos/gfs.t@Hz.pgrb2.0p25.f{{ "%03d" % h }}</cyclestr></datadep>
          {%- endif %}
-         {%- elif machine in ["ORION"]  %}
-         <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/@y@j@H000{{ "%03d" % h }}</cyclestr></datadep>
          {%- else %}
          {%- if extrn_mdl_name_lbcs in ["GEFS"] %}
          <datadep age="00:00:05:00"> <cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/#subdirGE#/@y@j@H000{{ "%03d" % h }}</cyclestr></datadep>
@@ -779,11 +780,16 @@ MODULES_RUN_TASK_FP script.
          {%- elif machine in ["JET"] %}
           <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/@y@j@H00.gdas.t@Hz.atmf{{ "%03d" % h }}.#memNameGDAS#.nc</cyclestr></datadep>
           <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/@y@j@H00.gdas.t@Hz.sfcf{{ "%03d" % h }}.#memNameGDAS#.nc</cyclestr></datadep>
+         {%- elif machine in ["ORION"] %}
+          <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/@y@j@H00.gdas.t@Hz.atmf{{ "%03d" % h }}.#memNameGDAS#.nc</cyclestr></datadep>
+          <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/@y@j@H00.gdas.t@Hz.sfcf{{ "%03d" % h }}.#memNameGDAS#.nc</cyclestr></datadep>
          {%- endif %}
          {%- else %}
          {%- if machine in ["JET"] %}
          <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/@y@j@H000{{ "%03d" % h }}</cyclestr></datadep>
          {%- elif machine in ["HERA"] %}
+         <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/@y@j@H000{{ "%03d" % h }}</cyclestr></datadep>
+         {%- elif machine in ["ORION"] %}
          <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/@y@j@H000{{ "%03d" % h }}</cyclestr></datadep>
          {%- endif %}
          {%- endif %}
@@ -1279,6 +1285,9 @@ MODULES_RUN_TASK_FP script.
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
     <envar><name>SATBIAS_DIR</name><value><cyclestr>&NWGES_BASEDIR;/satbias</cyclestr></value></envar>
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
+    {%- if do_envar_radar_ref and do_envar_radar_ref_once %}
+    <envar><name>OB_TYPE</name><value>conv_dbz</value></envar>
+    {%- endif %}
 
     <dependency>
        <and>
@@ -1291,6 +1300,9 @@ MODULES_RUN_TASK_FP script.
          {%- if do_retro %}
          <or>
            <and>
+             {%- if do_envar_radar_ref and do_envar_radar_ref_once %}
+             <taskdep task="&PROCESS_RADAR_REF_TN;_spinup"/>
+             {%- endif %}
              <or>
              {%- for h in cycl_hrs_hyb_fv3lam_ens %}
                <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
@@ -1368,7 +1380,7 @@ MODULES_RUN_TASK_FP script.
 
   </task>
 
-{%- if do_envar_radar_ref %}
+{%- if do_envar_radar_ref and not do_envar_radar_ref_once %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -1403,6 +1415,7 @@ MODULES_RUN_TASK_FP script.
 
     <dependency>
        <and>
+         <taskdep task="&PROCESS_RADAR_REF_TN;_spinup"/>
          <taskdep task="&ANAL_GSI_TN;_spinup"/>
          <or>    
             {%- for h in cycl_hrs_hyb_fv3lam_ens %}
@@ -1535,7 +1548,7 @@ MODULES_RUN_TASK_FP script.
              <taskdep task="&RUN_ENKFUPDT_TN;"/>
            {%- endif %}
         </and>
-        {%- elif do_envar_radar_ref %}
+        {%- elif do_envar_radar_ref and not do_envar_radar_ref_once %}
         <or>
           <and>
             <taskdep task="&POSTANAL_TN;_spinup{{ uscore_ensmem_name }}"/>
@@ -1601,7 +1614,7 @@ MODULES_RUN_TASK_FP script.
       {%- elif do_dacycle and do_refl2tten%}
       <taskdep task="&RADAR_REFL2TTEN_TN;_spinup"/>
       {%- elif do_dacycle %}
-        {%- if do_envar_radar_ref %}
+        {%- if do_envar_radar_ref and not do_envar_radar_ref_once %}
         <taskdep task="&HYBRID_RADAR_REF_TN;_spinup"/>
         {%- else  %}
         <taskdep task="&POSTANAL_TN;_spinup{{ uscore_ensmem_name }}"/>
@@ -1951,7 +1964,7 @@ MODULES_RUN_TASK_FP script.
          {%- if do_enkf_radar_ref %}
          <taskdep task="&PROCESS_RADAR_REF_TN;_prod"/>
          {%- endif %}
-         {% if machine in ["JET", "HERA"] -%}
+         {% if machine in ["JET", "HERA", "ORION"] -%}
          <datadep age="02:00"><cyclestr>&OBSPATH;/@Y@m@d@H.rap.t@Hz.prepbufr.tm00</cyclestr></datadep>
          {% else -%}
 	 <datadep age="02:00"><cyclestr>&OBSPATH;/rap.@Y@m@d/rap.t@Hz.prepbufr.tm00</cyclestr></datadep>
@@ -2120,6 +2133,9 @@ MODULES_RUN_TASK_FP script.
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
     <envar><name>SATBIAS_DIR</name><value><cyclestr>&NWGES_BASEDIR;/satbias</cyclestr></value></envar>
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
+    {%- if do_envar_radar_ref and do_envar_radar_ref_once %}
+    <envar><name>OB_TYPE</name><value>conv_dbz</value></envar>
+    {%- endif %}
 
     <dependency>
        <and>
@@ -2129,6 +2145,9 @@ MODULES_RUN_TASK_FP script.
          {%- if do_retro %}
          <or>
            <and>
+             {%- if do_envar_radar_ref and do_envar_radar_ref_once %}
+             <taskdep task="&PROCESS_RADAR_REF_TN;_prod"/>
+             {%- endif %}
              <or>
              {%- for h in cycl_hrs_hyb_fv3lam_ens %}
                <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
@@ -2214,7 +2233,7 @@ MODULES_RUN_TASK_FP script.
 
   </task>
 
-{%- if do_envar_radar_ref %}
+{%- if do_envar_radar_ref and not do_envar_radar_ref_once %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -2249,6 +2268,7 @@ MODULES_RUN_TASK_FP script.
 
     <dependency>
        <and>
+         <taskdep task="&PROCESS_RADAR_REF_TN;_prod"/>
          <taskdep task="&ANAL_GSI_TN;_prod"/>
          <or>    
             {%- for h in cycl_hrs_hyb_fv3lam_ens %}
@@ -2381,7 +2401,7 @@ MODULES_RUN_TASK_FP script.
              <taskdep task="&RUN_ENKFUPDT_TN;"/>
            {%- endif %}
         </and>
-        {%- elif do_envar_radar_ref %}
+        {%- elif do_envar_radar_ref and not do_envar_radar_ref_once %}
         <or>
           <and>
             <taskdep task="&POSTANAL_TN;_prod{{ uscore_ensmem_name }}"/>
@@ -2568,7 +2588,7 @@ MODULES_RUN_TASK_FP script.
       {%- elif do_dacycle and do_refl2tten%}
       <taskdep task="&RADAR_REFL2TTEN_TN;_prod"/>
       {%- elif do_dacycle %}
-        {%- if do_envar_radar_ref %}
+        {%- if do_envar_radar_ref and not do_envar_radar_ref_once %}
         <taskdep task="&HYBRID_RADAR_REF_TN;_prod"/>
         {%- else  %}
         <taskdep task="&POSTANAL_TN;_prod"/>
@@ -2642,7 +2662,7 @@ MODULES_RUN_TASK_FP script.
       {%- elif do_dacycle and do_refl2tten%}
       <taskdep task="&RADAR_REFL2TTEN_TN;_prod"/>
       {%- elif do_dacycle %}
-        {%- if do_envar_radar_ref %}
+        {%- if do_envar_radar_ref and not do_envar_radar_ref_once %}
         <taskdep task="&HYBRID_RADAR_REF_TN;_prod"/>
         {%- else  %}
         <taskdep task="&POSTANAL_TN;_prod"/>

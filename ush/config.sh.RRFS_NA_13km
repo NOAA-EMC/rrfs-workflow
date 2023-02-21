@@ -6,6 +6,7 @@ EXPT_SUBDIR="RRFS_NA_13km_dev1"
 
 PREDEF_GRID_NAME=GSD_RAP13km
 . set_rrfs_config_general.sh
+. set_rrfs_config_SDL_VDL_MixEn.sh
 
 ADDNL_OUTPUT_GRIDS=( "130" "242" )
 
