@@ -15,6 +15,7 @@ Parameters needed by the job scheduler.
 -->
 <!ENTITY ACCOUNT         "{{ account }}">
 <!ENTITY SERVICE_ACCOUNT "{{ service_account }}">
+<!ENTITY HPSS_ACCOUNT    "{{ hpss_account }}">
 <!ENTITY SCHED           "{{ sched }}">
 <!ENTITY QUEUE_DEFAULT   "{{ queue_default }}">
 <!ENTITY QUEUE_HPSS      "{{ queue_hpss }}">
@@ -127,9 +128,9 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 <!ENTITY RSRV_DEFAULT "<account>&ACCOUNT;</account><queue>&QUEUE_DEFAULT;</queue>">
 {%- endif %}
 {%- if partition_hpss is not none %}
-<!ENTITY RSRV_HPSS    "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_HPSS;</queue><partition>{{ partition_hpss }}</partition>">
+<!ENTITY RSRV_HPSS    "<account>&HPSS_ACCOUNT;</account><queue>&QUEUE_HPSS;</queue><partition>{{ partition_hpss }}</partition>">
 {%- else %}
-<!ENTITY RSRV_HPSS    "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_HPSS;</queue>">
+<!ENTITY RSRV_HPSS    "<account>&HPSS_ACCOUNT;</account><queue>&QUEUE_HPSS;</queue>">
 {%- endif %}
 {%- if partition_fcst is not none %}
 <!ENTITY RSRV_FCST    "<account>&ACCOUNT;</account><queue>&QUEUE_FCST;</queue><partition>{{ partition_fcst }}</partition>">
@@ -372,7 +373,11 @@ define resources used for each tasks
   <cycledef group="archive">  {{ archive_cycledef }} </cycledef> 
 
   <log>
+{%- if do_ensemble %}
+    <cyclestr>&LOGDIR;/FV3LAM_wflow_enkf.log</cyclestr>
+{%- else %}
     <cyclestr>&LOGDIR;/FV3LAM_wflow.log</cyclestr>
+{%- endif %}
   </log>
 
 <!-- 

@@ -1,5 +1,5 @@
 MACHINE="wcoss2"
-version="v0.3.6"
+version="v0.3.8"
 ACCOUNT="RRFS_DEV"
 #RESERVATION="rrfsdet"
 EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/$version/"
@@ -93,7 +93,7 @@ EXTRN_MDL_NAME_LBCS="FV3GFS"
 envir="para"
 
 NET="rrfs_a"
-TAG="c3v36"
+TAG="c3v38"
 
 ARCHIVEDIR="/NCEPDEV/emc-meso/1year/emc.lam"
 NCL_REGION="conus"

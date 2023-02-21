@@ -53,6 +53,10 @@ version="0.1.0"
 # The account under which to submit non-reservation jobs to the queue.
 # Defaults to ACCOUNT if not set.
 #
+# HPSS_ACCOUNT:
+# The account under which to submit non-reservation jobs to the queue.
+# Defaults to SERVICE_ACCOUNT if not set.
+#
 # SCHED:
 # The job scheduler to use (e.g. slurm).  Set this to an empty string in
 # order for the experiment generation script to set it depending on the
@@ -143,6 +147,7 @@ version="0.1.0"
 MACHINE="BIG_COMPUTER"
 ACCOUNT="project_name"
 SERVICE_ACCOUNT=""
+HPSS_ACCOUNT=""
 RESERVATION=""
 RESERVATION_POST=""
 SCHED=""

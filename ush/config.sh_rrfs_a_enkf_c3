@@ -1,5 +1,5 @@
 MACHINE="wcoss2"
-version="v0.3.6"
+version="v0.3.8"
 ACCOUNT="RRFS_DEV"
 #RESERVATION="rrfsens"
 #RESERVATION_POST="rrfsdet"
@@ -52,7 +52,9 @@ CYCL_HRS=( "00" "12" )
 CYCL_HRS=( "18" )
 CYCL_HRS_SPINSTART=("06" "18")
 CYCL_HRS_PRODSTART=("07" "19")
-#CYCL_HRS_STOCH=("00" "12")
+if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
+  CYCL_HRS_STOCH=("00" "12")
+fi
 #CYCL_HRS_RECENTER=("19")
 CYCLEMONTH="02,03"
 CYCLEDAY="*"
@@ -124,7 +126,7 @@ FV3GFS_FILE_FMT_LBCS="grib2"
 
 envir="para"
 NET="rrfs_a"
-TAG="cenkf36"
+TAG="cenkf38"
 ARCHIVEDIR="/NCEPDEV/emc-meso/1year/emc.lam"
 NCL_REGION="conus"
 MODEL="rrfs_b"
@@ -139,6 +141,22 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    DO_ENKF_RADAR_REF="TRUE"
    DO_ENSPOST="FALSE"
    DO_ENSINIT="TRUE"
+
+   RADAR_REF_THINNING="2"
+   ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_ens"
+   CLEAN_OLDFCST_HRS="12"
+   CLEAN_OLDSTMPPOST_HRS="12"
+   cld_bld_hgt=0.0
+   l_precip_clear_only=.true.
+   write_diag_2=.true.
+
+   START_TIME_SPINUP="00:30:00"
+   LAYOUT_X="11"
+   LAYOUT_Y="32"
+   NNODES_RUN_FCST="6"
+   NNODES_RUN_RECENTER="10"
+   PPN_RUN_RECENTER="128"
+
    NUM_ENS_MEMBERS_FCST=9
    if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
      NUM_ENS_MEMBERS=${NUM_ENS_MEMBERS_FCST}
@@ -147,18 +165,12 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
 #     SPPT_MAG=0.5
      WTIME_RUN_FCST="04:45:00"
      WTIME_MAKE_LBCS="01:30:00"
-     TAG="cefcst36"
+     TAG="cefcst38"
+
+     LAYOUT_X="31"
+     LAYOUT_Y="32"
+     NNODES_RUN_FCST="16"
    fi
-   RADAR_REF_THINNING="2"
-   ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_ens"
-   NNODES_RUN_RECENTER="3"
-   PPN_RUN_RECENTER="128"
-   CLEAN_OLDFCST_HRS="48"
-   CLEAN_OLDSTMPPOST_HRS="48"
-   cld_bld_hgt=0.0
-   l_precip_clear_only=.true.
-   write_diag_2=.true.
-   START_TIME_SPINUP="00:30:00"
 fi
 
 RUN="rrfs_a"
