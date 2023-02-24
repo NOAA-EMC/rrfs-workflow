@@ -249,10 +249,13 @@ if [[ "$MACHINE" == "wcoss2" ]]; then
   RESERVATION_POST=""
   EXPT_BASEDIR="/lfs/h2/emc/da/noscrub/${USER}/3drtma/rtma.${version}"
   SERVICE_ACCOUNT=""
+  HPSS_ACCOUNT="RTMA-DEV"
   PARTITION_DEFAULT=""
   PARTITION_FCST=""
   PARTITION_ANALYSIS=""
   PARTITION_GRAPHICS=""
+  PARTITION_POST=""
+  PARTITION_PRDGEN=""
   DO_BUFRSND="FALSE"
 # RTMA_OBS_FEED="NCO" # comment out as RTMA will try to use the rtma_ru obs if set to NCO (wcoss2)
   binary_diag=.true.

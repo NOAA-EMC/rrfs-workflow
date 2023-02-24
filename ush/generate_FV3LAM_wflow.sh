@@ -1315,7 +1315,7 @@ edit the cron table):
 
 */3 * * * * cd $EXPTDIR && ./launch_FV3LAM_wflow.sh
 
-NOTE: '-l' was removed from the fist line of launch_FV3LAM_wflow.sh
+NOTE: '-l' was removed from the first line of launch_FV3LAM_wflow.sh
 It is suggested to add the following line to the top of crontab
 
 SHELL=/bin/bash -l
