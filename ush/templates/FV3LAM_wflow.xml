@@ -3108,13 +3108,30 @@ MODULES_RUN_TASK_FP script.
     <command>&JOBSDIR;/../scripts/exregional_archive.ksh</command>
     <nodes> 1:ppn=1</nodes>
     <walltime>08:00:00</walltime>
-    <memory>24G</memory>
+    <memory>80G</memory>
     <jobname>&TAG;_&ARCHIVE_TN;</jobname>
     <join><cyclestr>&LOGDIR;/&ARCHIVE_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
 
+    <dependency>
+       <or>
+         <and>
+           <metataskdep metatask="python_maps"/>
+           <taskdep task="python_skewts"/>
+         </and>
+
+         <and>
+           <taskdep task="&RUN_PRDGEN_TN;_f000"/>
+           <metataskdep metatask="python_maps" state="Dead"/>
+           <taskdep task="python_skewts" state="Dead"/>
+         </and>
+       </or>
+    </dependency>
   </task>
 {%- endif %}
 {%- endif %}

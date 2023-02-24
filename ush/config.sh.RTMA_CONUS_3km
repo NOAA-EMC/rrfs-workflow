@@ -10,6 +10,7 @@ EXPT_SUBDIR="RTMA_CONUS"
 if [[ -n $RESERVATION ]] ; then
   ACCOUNT=rtrr
   SERVICE_ACCOUNT=rtrr
+  HPSS_ACCOUNT=nrtrr
   PARTITION_DEFAULT=kjet
   PARTITION_FCST=kjet
   PARTITION_GRAPHICS=kjet
@@ -21,7 +22,7 @@ if [[ -n $RESERVATION ]] ; then
   QUEUE_ANALYSIS="rt"
   QUEUE_PRDGEN="rt"
   QUEUE_GRAPHICS="rt"
-  QUEUE_HPSS="rt"
+  QUEUE_HPSS="batch"
   QUEUE_POST="rt"
   RESERVATION_POST="rrfsdet"
   NNODES_MAKE_ICS="3"
@@ -74,7 +75,7 @@ DO_SMOKE_DUST="FALSE"
 DO_REFL2TTEN="FALSE"
 RADARREFL_TIMELEVEL=(0)
 #FH_DFI_RADAR="0.0,0.25,0.5"
-DO_SOIL_ADJUST="FALSE"
+DO_SOIL_ADJUST="TRUE"
 DO_RADDA="FALSE"
 DO_BUFRSND="FALSE"
 #
@@ -151,7 +152,7 @@ PREEXISTING_DIR_METHOD="upgrade"
 #BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 06:00:00"
 PROD_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 01:00:00"
 #PRODLONG_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 12:00:00"
-#ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}0700 ${DATE_LAST_CYCL}2300 24:00:00"
+ARCHIVE_CYCLEDEF=$PROD_CYCLEDEF
 if [[ $DO_SPINUP == "TRUE" ]] ; then
   SPINUP_CYCLEDEF="00 03-08,15-20 ${CYCLEDAY} ${CYCLEMONTH} ${STARTYEAR} *"
 fi
@@ -235,48 +236,67 @@ PTMP="/lfs4/BMC/nrtrr/NCO_dirs/rtma.${version}/com"
 NWGES="/lfs4/BMC/nrtrr/NCO_dirs/rtma.${version}/nwges"
 
 # change settings if it is wcoss_dell_p3
-if [[ "$MACHINE" == "wcoss_dell_p3" ]]; then
-  ACCOUNT="RTMA-T2O"
+if [[ "$MACHINE" == "wcoss2" ]]; then
+  ACCOUNT="RTMA-DEV"
+  QUEUE_DEFAULT="dev"
+  QUEUE_ANALYSIS="dev"
+  QUEUE_FCST="dev"
+  QUEUE_POST="dev"
+  QUEUE_HPSS="dev_transfer"
+  QUEUE_PRDGEN="dev"
+  QUEUE_GRAPHICS="dev"
+
   RESERVATION=""
   RESERVATION_POST=""
-  EXPT_BASEDIR="/gpfs/dell2/emc/modeling/save/${USER}/RTMA-CONUS"
+  EXPT_BASEDIR="/lfs/h2/emc/da/noscrub/${USER}/3drtma/rtma.${version}"
   SERVICE_ACCOUNT=""
   PARTITION_DEFAULT=""
   PARTITION_FCST=""
   PARTITION_ANALYSIS=""
   PARTITION_GRAPHICS=""
   DO_BUFRSND="FALSE"
-  RTMA_OBS_FEED="NCO"
+# RTMA_OBS_FEED="NCO" # comment out as RTMA will try to use the rtma_ru obs if set to NCO (wcoss2)
+  binary_diag=.true.
 
-  OBSPATH_NSSLMOSIAC="/gpfs/dell1/nco/ops/dcom/prod/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC"
-  AIRCRAFT_REJECT="/gpfs/dell2/emc/modeling/noscrub/Edward.Colon/FixData/obsuselist/amdar_reject_lists"
-  SFCOBS_USELIST="/gpfs/dell2/emc/modeling/noscrub/Edward.Colon/FixData/obsuselist/mesonet_uselists"
+  ARCHIVEDIR="/NCEPDEV/emc-meso/1year/${USER}"
+  ARCHIVE_CYCLEDEF="00 01 01 01 2100 *"
+
+  OBSPATH_NSSLMOSIAC="/lfs/h1/ops/prod/dcom/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC"
+  AIRCRAFT_REJECT="/lfs/h2/emc/da/noscrub/edward.colon/NOAA_3drtma_legacy/fix/obsuselist/amdar_reject_lists"
+  SFCOBS_USELIST="/lfs/h2/emc/da/noscrub/edward.colon/NOAA_3drtma_legacy/fix/obsuselist/mesonet_uselists"
  
   regional_ensemble_option=1
   USE_RRFSE_ENS="FALSE"
   CYCL_HRS_HYB_FV3LAM_ENS=("99")
 
   WTIME_RUN_ANAL="00:30:00"
-  NNODES_RUN_ANAL="28"
-  PPN_RUN_ANAL="14"
+  PPN_RUN_ANAL="32"
+  TPP_RUN_ANAL="4"
+  NNODES_RUN_ANAL="10"
+  PPN_RUN_FCST="64"
+  TPP_RUN_FCST="2"
+  NNODES_RUN_FCST="16"
+  PPN_RUN_POST="64"
+  NNODES_RUN_POST="2"
+  MEMO_RUN_PRDGEN="80G"
+  MEMO_RUN_PROCESSBUFR="80G"
+  PPN_PROC_RADAR="128"
+  NNODES_PROC_RADAR="1"
 
-  LAYOUT_X=42
-  LAYOUT_Y=40
+  LAYOUT_X=31
+  LAYOUT_Y=32
   WTIME_RUN_FCST="00:20:00"
-  PPN_RUN_FCST="14"
-  WRTCMP_write_groups="3"
-  WRTCMP_write_tasks_per_group="84"
+  WRTCMP_write_groups="1"
+  WRTCMP_write_tasks_per_group="40"
 
-  NNODES_RUN_POST="10"
-  PPN_RUN_POST="28"
 
-  FG_ROOTDIR="/gpfs/dell1/ptmp/emc.campara/nwges/para/rrfs_a"
-  OBSPATH="/gpfs/dell2/ptmp/Ashley.Stanfield/rtma_3d/com/rtma/prod"
-  ENKF_FCST="/gpfs/dell1/nco/ops/com/gfs/prod"
-  LIGHTNING_ROOT="/gpfs/dell2/ptmp/Ashley.Stanfield/rtma_3d/com/rtma/prod"
+  FG_ROOTDIR="/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/nwges"
+  OBSPATH="/lfs/h1/ops/prod/com/obsproc/v1.1"
+  ENKF_FCST="/lfs/h1/ops/prod/com/gfs/v16.3"
+  LIGHTNING_ROOT="/lfs/h1/ops/prod/com/obsproc/v1.1"
 
-  STMP="/gpfs/dell2/ptmp/${USER}/stmp"
-  PTMP="/gpfs/dell2/ptmp/${USER}/ptmp"
-  NWGES="/gpfs/dell2/ptmp/${USER}/nwges"
+  STMP="/lfs/h2/emc/ptmp/${USER}/3drtma/rtma.${version}/stmp"
+  PTMP="/lfs/h2/emc/ptmp/${USER}/3drtma/rtma.${version}"
+  NWGES="/lfs/h2/emc/ptmp/${USER}/3drtma/rtma.${version}/nwges"
 fi
 

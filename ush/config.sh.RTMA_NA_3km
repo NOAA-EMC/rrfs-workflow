@@ -1,10 +1,11 @@
 #!/bin/bash
 source fix_rrfs_locations.sh #determine current platform
 MACHINE=${PLATFORM}
+version="v0.3.1" # odd for NA; even for CONUS
 ACCOUNT="nrtrr"
 RESERVATION="rrfsdet"
 EXPT_BASEDIR="/home/rtrr/RTMA"
-EXPT_SUBDIR="RTMA_NA_3km_dev1"
+EXPT_SUBDIR="RTMA_NA"
 
 if [[ -n $RESERVATION ]] ; then
   ACCOUNT=rtrr
@@ -22,48 +23,61 @@ if [[ -n $RESERVATION ]] ; then
   QUEUE_PRDGEN="rt"
   QUEUE_GRAPHICS="rt"
   QUEUE_HPSS="rt"
+  QUEUE_POST="rt"
+  RESERVATION_POST="rrfsdet"
+  NNODES_MAKE_ICS="3"
+  PPN_MAKE_ICS="20"
+  NNODES_MAKE_LBCS="3"
+  PPN_MAKE_LBCS="20"
+  NNODES_RUN_POST="1"
+  PPN_RUN_POST="40"
 fi
 
 OBSPATH_NSSLMOSIAC=/public/data/radar/nssl/mrms/conus
-FFG_DIR=/public/data/grids/ncep/ffg/grib2
-RADARREFL_TIMELEVEL=(0)
-FH_DFI_RADAR=""
-
 if [[ $MACHINE == "hera" ]] ; then
   ACCOUNT="wrfruc"
   PARTITION_DEFAULT=""
   PARTITION_FCST=""
   QUEUE_ANALYSIS="batch"
-
-# for using RAP as boundary and initial
-#  EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/public/data/grids/rap/full/wrfnat/grib2
-#  EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/public/data/grids/rap/full/wrfnat/grib2
-# for using GFS as boundary and initial
-  EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/public/data/grids/gfs/0p25deg/grib2
-  EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/public/data/grids/gfs/0p25deg/grib2
-# observations
-  OBSPATH=/scratch2/BMC/public/data/grids/rap/obs
-  OBSPATH_NSSLMOSIAC=/scratch2/BMC/public/data/radar/nssl/mrms/conus
-  FFG_DIR=/public/data/grids/ncep/ffg/grib2
-  LIGHTNING_ROOT=/scratch2/BMC/public/data/lightning
-  ENKF_FCST=/scratch1/NCEPDEV/rstprod/com/gfs/prod
+  QUEUE_GRAPHICS="batch"
 fi
 
 VERBOSE="TRUE"
-
 RUN_ENVIR="nco"
-PREDEF_GRID_NAME=RRFS_NA_3km
+QUILTING="TRUE"
+netcdf_diag=.true.
+binary_diag=.false.
+HYBENSMEM_NMIN=66
+HALO_BLEND=20
+#PRINT_DIFF_PGR="TRUE"
+envir="para"
+USE_CUSTOM_POST_CONFIG_FILE="TRUE"
+TESTBED_FIELDS_FN="testbed_fields_rtma.txt"
+TESTBED_FIELDS_FN2="testbed_fields_bgrd3d.txt"
+CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-fv3lam_rrfs.txt"
+CUSTOM_POST_PARAMS_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/params_grib2_tbl_new"
+NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
+NCL_HOME="/home/rtrr/RTMA/graphics"
+COMINgfs=""
+
+FV3GFS_FILE_FMT_ICS="grib2"
+FV3GFS_FILE_FMT_LBCS="grib2"
 
 DO_DACYCLE="TRUE"
-#DO_SURFACE_CYCLE="FALSE"
-#DO_SPINUP="FALSE"
-#DO_RETRO="TRUE"
-#DO_NONVAR_CLDANAL="TRUE"
-#DO_REFL2TTEN="FALSE"
-#RADARREFL_TIMELEVEL=(0)
+DO_SURFACE_CYCLE="FALSE"
+DO_SPINUP="FALSE"
+DO_POST_SPINUP="FALSE"
+DO_POST_PROD="TRUE" ##
+DO_RETRO="FALSE"
+DO_NONVAR_CLDANAL="TRUE" ##
+DO_ENVAR_RADAR_REF="FALSE"
+DO_SMOKE_DUST="FALSE"
+DO_REFL2TTEN="FALSE"
+RADARREFL_TIMELEVEL=(0)
 #FH_DFI_RADAR="0.0,0.25,0.5"
-#DO_SOIL_ADJUST="TRUE"
-#DO_RADDA="FALSE"
+DO_SOIL_ADJUST="TRUE"
+DO_RADDA="FALSE"
+DO_BUFRSND="FALSE"
 #
 #-------------------------------------------------------------------------------------
 #      GSI Namelist parameters configurable across differnt applications
@@ -113,35 +127,34 @@ OBERROR_FN="errtable.rtma"
 HYBENSINFO_FN="hybens_info.rtma"
 AIRCRAFT_REJECT="/home/amb-verif/acars_RR/amdar_reject_lists"
 SFCOBS_USELIST="/lfs4/BMC/amb-verif/rap_ops_mesonet_uselists"
-#
-#
-QUILTING="TRUE"
-CCPP_PHYS_SUITE="FV3_HRRR"
 
-EXTRN_MDL_ICS_OFFSET_HRS="0"
 LBC_SPEC_INTVL_HRS="1"
-EXTRN_MDL_LBCS_OFFSET_HRS="0"
-EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS="0"
-BOUNDARY_LEN_HRS="1"
-BOUNDARY_LONG_LEN_HRS="1"
 
-DATE_FIRST_CYCL="20210826"
-DATE_LAST_CYCL="20220826"
+DATE_FIRST_CYCL="20230206"
+DATE_LAST_CYCL="20230831"
 CYCL_HRS=( "00" "12" )
 CYCL_HRS_SPINSTART=("03" "15")
 CYCL_HRS_PRODSTART=("99") # RTMA always warm-starts
 CYCLEMONTH="8-12"
 #CYCLEDAY="1-4"
 
+STARTYEAR=${DATE_FIRST_CYCL:0:4}
+STARTMONTH=${DATE_FIRST_CYCL:4:2}
+STARTDAY=${DATE_FIRST_CYCL:6:2}
+STARTHOUR="00"
+ENDYEAR=${DATE_LAST_CYCL:0:4}
+ENDMONTH=${DATE_LAST_CYCL:4:2}
+ENDDAY=${DATE_LAST_CYCL:6:2}
+ENDHOUR="23"
+
 PREEXISTING_DIR_METHOD="upgrade"
 #INITIAL_CYCLEDEF="${DATE_FIRST_CYCL}0300 ${DATE_LAST_CYCL}2300 12:00:00"
 #BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 06:00:00"
 PROD_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 01:00:00"
-POSTPROC_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 01:00:00"
-POSTPROC_LONG_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 06:00:00"
-ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}0700 ${DATE_LAST_CYCL}2300 24:00:00"
+#PRODLONG_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 12:00:00"
+#ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}0700 ${DATE_LAST_CYCL}2300 24:00:00"
 if [[ $DO_SPINUP == "TRUE" ]] ; then
-  SPINUP_CYCLEDEF="00 03-08,15-20 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
+  SPINUP_CYCLEDEF="00 03-08,15-20 ${CYCLEDAY} ${CYCLEMONTH} ${STARTYEAR} *"
 fi
 
 FCST_LEN_HRS="0"
@@ -152,124 +165,138 @@ POSTPROC_LONG_LEN_HRS="0"
 for i in {0..23}; do FCST_LEN_HRS_CYCLES[$i]=0.0003; done
 DA_CYCLE_INTERV="1" #need to be 1 to have hourly DA
 RESTART_INTERVAL="1"
+RESTART_INTERVAL_LONG="1"
 
+USE_RRFSE_ENS="FALSE"
+CYCL_HRS_HYB_FV3LAM_ENS=("19" "20" "21" "22" "23" "00")
+
+#SST_update_hour=01
+#GVF_update_hour=04
+#SNOWICE_update_hour=00
+#SOIL_SURGERY_time=2022072404
+
+DT_ATMOS=1
 NCORES_RUN_ANAL=240
-WTIME_RUN_ANAL="01:00:00"
-HYBENSMEM_NMIN=66
-HALO_BLEND=20
-
-NNODES_MAKE_ICS="10"
-NNODES_MAKE_LBCS="5"
-PPN_MAKE_ICS="8"
-PPN_MAKE_LBCS="10"
-WTIME_MAKE_LBCS="01:30:00"
-PPN_RUN_REF2TTEN=1
-
-WTIME_RUN_FCST="01:00:00"
-LAYOUT_X=35
-LAYOUT_Y=20
-IO_LAYOUT_Y=10
+IO_LAYOUT_Y=1
 PPN_RUN_NONVARCLDANL=${IO_LAYOUT_Y}
-NATIVE_RUN_FCST="--cpus-per-task 4 --exclusive"
-NATIVE_RUN_ANAL="--cpus-per-task 4 --exclusive"
 
-NNODES_RUN_POST="6"
-WTIME_RUN_POST="00:35:00"
+MAXTRIES_RUN_PREPSTART="3"
+MAXTRIES_RUN_FCST="3"
+MAXTRIES_ANAL_GSI="3"
+MAXTRIES_POSTANAL="3"
+MAXTRIES_CLDANL_NONVAR="3"
+MAXTRIES_RUN_POST="3"
+MAXTRIES_RUN_PRDGEN="3"
+#adjust to low priority queue and possible preemption, slurm socket error, etc
+MAXTRIES_PROCESS_RADARREF="3"
+MAXTRIES_PROCESS_LIGHTNING="3"
+MAXTRIES_PROCESS_BUFR="3"
+
+WTIME_RUN_FCST="00:20:00"
+WTIME_RUN_FCST_LONG="03:45:00"
+WTIME_MAKE_LBCS="02:00:00"
+WTIME_RUN_ANAL="00:50:00"
+WTIME_RUN_PREPSTART="00:20:00"
+
+START_TIME_SPINUP="02:10:00"
+START_TIME_PROD="08:20:00"
+START_TIME_LATE_ANALYSIS="08:40:00"
+START_TIME_CONVENTIONAL_SPINUP="00:40:00"
+START_TIME_CONVENTIONAL="00:40:00"
+START_TIME_NSSLMOSIAC="00:45:00"
+START_TIME_LIGHTNINGNC="00:45:00"
+START_TIME_PROCSMOKE="00:45:00"
 
 EXTRN_MDL_NAME_ICS="FV3GFS"
 EXTRN_MDL_NAME_LBCS="FV3GFS"
 
-FV3GFS_FILE_FMT_ICS="grib2"
-FV3GFS_FILE_FMT_LBCS="grib2"
-
-envir="para"
-
-NET="RTMA_NA_3km" ##must start with "RTMA". ${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2
-TAG="RTMA_NA_3km_dev1" ## used by job names
-IS_RTMA="TRUE"
-NCORES_PER_NODE=40 #kjet
-FG_ROOTDIR="/lfs4/BMC/nrtrr/NCO_dirs/nwges/para/RRFS_NA_3km" #only needed by RTMA
-DT_ATMOS=1
-MAXTRIES_RUN_FCST="2"
-PYTHON_GRAPHICS_YML_FN="rtma.yml"
-
-USE_CUSTOM_POST_CONFIG_FILE="TRUE"
-TESTBED_FIELDS_FN="testbed_fields_rtma.txt"
-CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-fv3lam_rrfs.txt"
-CUSTOM_POST_PARAMS_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/params_grib2_tbl_new"
-POST_FULL_MODEL_NAME="FV3R"
-POST_SUB_MODEL_NAME="RTMA"
-ARCHIVEDIR="/5year/BMC/wrfruc/rtma_na_3km_dev1"
-NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
-NCL_HOME="/home/rtrr/RTMA/graphics"
-NCL_REGION="conus"
-MODEL="RTMA_NA_3km"
-ADDNL_OUTPUT_GRIDS=( "hrrr" "rrfsak" )
-
+PREDEF_GRID_NAME=RRFS_NA_3km
+ADDNL_OUTPUT_GRIDS=("hrrr" "rrfsak" )
 TILE_LABELS="NA"
 TILE_SETS="full"
+CCPP_PHYS_SUITE="FV3_HRRR"
 
-CLEAN_OLDPROD_HRS="72"
-CLEAN_OLDRUN_HRS="24"
-CLEAN_OLDLOG_HRS="72"
-CLEAN_OLDFCST_HRS="12"
-CLEAN_OLDSTMPPOST_HRS="24"
-CLEAN_NWGES_HRS="72"
-#
-# In NCO mode, the following don't need to be explicitly set to "FALSE" 
-# in this configuration file because the experiment generation script
-# will do this (along with printing out an informational message).
-#
-#RUN_TASK_MAKE_GRID="FALSE"
-#RUN_TASK_MAKE_OROG="FALSE"
-#RUN_TASK_MAKE_SFC_CLIMO="FALSE"
+NET="RTMA_NA" ##must start with "RTMA". ${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2
+TAG="RTMA_NA" ## used by job names
+IS_RTMA="TRUE"
+NCORES_PER_NODE=40 #kjet
+FG_ROOTDIR="/home/rtrr/rrfs_b_nwges" #only needed by RTMA
+PYTHON_GRAPHICS_YML_FN="rtma.yml"
+POST_FULL_MODEL_NAME="FV3R"
+POST_SUB_MODEL_NAME="NONE"
+ARCHIVEDIR="/5year/BMC/wrfruc/rtma_b"
+MODEL="RTMA_B" #used by NCL
+RUN="RTMA_NA"
+#RTMA_OBS_FEED="NCO"
+#OBSPATH="/lfs4/BMC/wrfruc/gge/rtma/wcoss_obs"
 
-RUN="RTMA_NA_3km_dev1"
-COMINgfs=""
-
-STMP="/lfs4/BMC/nrtrr/NCO_dirs/stmp"  # Path to directory STMP that mostly contains input files.
-PTMP="/lfs4/BMC/nrtrr/NCO_dirs/ptmp"  # Path to directory STMP that mostly contains input files.
-NWGES="/lfs4/BMC/nrtrr/NCO_dirs/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+STMP="/lfs4/BMC/nrtrr/NCO_dirs/rtma.${version}/stmp"
+PTMP="/lfs4/BMC/nrtrr/NCO_dirs/rtma.${version}/com" 
+NWGES="/lfs4/BMC/nrtrr/NCO_dirs/rtma.${version}/nwges"
 
 # change settings if it is wcoss_dell_p3
-if [[ "$MACHINE" == "wcoss_dell_p3" ]]; then
-  ACCOUNT="RTMA-T2O"
+if [[ "$MACHINE" == "wcoss2" ]]; then
+  ACCOUNT="RTMA-DEV"
+  QUEUE_DEFAULT="dev"
+  QUEUE_ANALYSIS="dev"
+  QUEUE_FCST="dev"
+  QUEUE_POST="dev"
+  QUEUE_HPSS="dev_transfer"
+  QUEUE_PRDGEN="dev"
+  QUEUE_GRAPHICS="dev"
+
   RESERVATION=""
-  EXPT_BASEDIR="/gpfs/dell2/emc/modeling/save/${USER}/RTMA-NA"
+  RESERVATION_POST=""
+  EXPT_BASEDIR="/lfs/h2/emc/da/noscrub/${USER}/3drtma/rtma.${version}"
   SERVICE_ACCOUNT=""
   PARTITION_DEFAULT=""
   PARTITION_FCST=""
   PARTITION_ANALYSIS=""
+  PARTITION_GRAPHICS=""
+  DO_BUFRSND="FALSE"
+# RTMA_OBS_FEED="NCO" # comment out as RTMA will try to use the rtma_ru obs if set to NCO (wcoss2)
+  binary_diag=.true.
 
-  OBSPATH_NSSLMOSIAC=/gpfs/dell1/nco/ops/dcom/prod/ldmdata/obs/upperair/mrms/conus
-  #FIXLAM_NCO_BASEDIR=/gpfs/dell2/emc/modeling/save/Annette.Gibbs/rrfs/fix/fix_lam.20210128
-  AIRCRAFT_REJECT="" #let the generating step set it to a correct value
-  SFCOBS_USELIST="" #let the generating step set it to a correct value
-  CCPP_PHYS_SUITE="FV3_GFS_v15_thompson_mynn_lam3km"
-  HALO_BLEND=10 # must use 10 as that is what lamdax uses
-  CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-rtma_NOAHLSM.txt"
+  ARCHIVEDIR="/NCEPDEV/emc-meso/1year/${USER}"
+
+  OBSPATH_NSSLMOSIAC="/lfs/h1/ops/prod/dcom/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC"
+  AIRCRAFT_REJECT="/lfs/h2/emc/da/noscrub/edward.colon/NOAA_3drtma_legacy/fix/obsuselist/amdar_reject_lists"
+  SFCOBS_USELIST="/lfs/h2/emc/da/noscrub/edward.colon/NOAA_3drtma_legacy/fix/obsuselist/mesonet_uselists"
+ 
+  regional_ensemble_option=1
+  USE_RRFSE_ENS="FALSE"
+  CYCL_HRS_HYB_FV3LAM_ENS=("99")
 
   WTIME_RUN_ANAL="00:30:00"
-  NNODES_RUN_ANAL="70"
-  PPN_RUN_ANAL="7"
+  PPN_RUN_ANAL="16"
+  TPP_RUN_ANAL="8"
+  NNODES_RUN_ANAL="22"
+  PPN_RUN_FCST="64"
+  TPP_RUN_FCST="2"
+  NNODES_RUN_FCST="31"
+  PPN_RUN_POST="32"
+  TPP_RUN_POST="4"
+  NNODES_RUN_POST="4"
+  MEMO_PREP_CYC="120G"
+  MEMO_RUN_NONVARCLDANL="256G"
+  MEMO_RUN_PRDGEN="80G"
+  MEMO_RUN_PROCESSBUFR="80G"
+  PPN_PROC_RADAR="64"
+  NNODES_PROC_RADAR="1"
 
-  LAYOUT_X=42
-  LAYOUT_Y=45
-  WTIME_RUN_FCST="00:20:00"
-  PPN_RUN_FCST="14"
-  WRTCMP_write_groups="3"
-  WRTCMP_write_tasks_per_group="84"
+  LAYOUT_X=50
+  LAYOUT_Y=64
+  WTIME_RUN_FCST="00:30:00"
+  WRTCMP_write_groups="1"
+  WRTCMP_write_tasks_per_group="64"
 
-  NNODES_RUN_POST="10"
-  PPN_RUN_POST="28"
+  FG_ROOTDIR="/lfs/h2/emc/ptmp/emc.lam/rrfs/na/nwges"
+  OBSPATH="/lfs/h1/ops/prod/com/obsproc/v1.1"
+  ENKF_FCST="/lfs/h1/ops/prod/com/gfs/v16.3"
+  LIGHTNING_ROOT="/lfs/h1/ops/prod/com/obsproc/v1.1"
 
-  FG_ROOTDIR="/gpfs/dell2/ptmp/Annette.Gibbs/nwges/para/RRFS_NA_3km" #only needed by RTMA; Annette is copying files to this directory
-  OBSPATH="/gpfs/hps/nco/ops/com/rap/prod"
-  ENKF_FCST="/gpfs/dell1/nco/ops/com/gfs/prod"
-  LIGHTNING_ROOT="/gpfs/dell2/ptmp/Shelley.Melchior/rtma_3d/com/rtma/prod"
-
-  STMP="/gpfs/dell2/ptmp/${USER}/stmp"
-  PTMP="/gpfs/dell2/ptmp/${USER}/ptmp"
-  NWGES="/gpfs/dell2/ptmp/${USER}/nwges"
+  STMP="/lfs/h2/emc/ptmp/${USER}/3drtma/rtma.${version}/stmp"
+  PTMP="/lfs/h2/emc/ptmp/${USER}/3drtma/rtma.${version}" 
+  NWGES="/lfs/h2/emc/ptmp/${USER}/3drtma/rtma.${version}/nwges"
 fi
 
