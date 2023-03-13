@@ -55,7 +55,7 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_type" "recenterdir" )
+valid_args=( "cycle_type" "comout" "recenterdir" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -266,6 +266,7 @@ fi
 ${APRUN} ${ENSMEAN_EXEC}  < namelist.ens > stdout_recenter 2>&1 || print_err_msg_exit "\
 Call to executable to run ensemble recenter returned with nonzero exit code."
 
+cp stdout_recenter ${comout}/stdout.t${HH}z.recenter
 #
 #-----------------------------------------------------------------------
 #
@@ -282,7 +283,7 @@ done
 #
 # touch a file to show completion of the task
 #
-touch recenter_complete.txt
+touch ${comout}/recenter_complete.txt
 #
 #-----------------------------------------------------------------------
 #

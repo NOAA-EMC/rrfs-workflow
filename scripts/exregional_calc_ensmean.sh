@@ -55,7 +55,7 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_type" "ensmeandir" )
+valid_args=( "cycle_type" "comout" "ensmeandir" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -243,6 +243,7 @@ fi
 ${APRUN} ${ENSMEAN_EXEC}  < namelist.ens > stdout_ensmean 2>&1 || print_err_msg_exit "\
 Call to executable to calculate ensemble ensmean returned with nonzero exit code."
 
+cp stdout_ensmean ${comout}/stdout.t${HH}z.ensmean
 #
 #-----------------------------------------------------------------------
 #
@@ -267,7 +268,7 @@ done
 #
 # touch a file to show completion of the task
 #
-touch calc_ensmean_complete.txt
+touch ${comout}/calc_ensmean_complete.txt
 #
 #-----------------------------------------------------------------------
 #

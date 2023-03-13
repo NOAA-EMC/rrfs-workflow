@@ -55,7 +55,7 @@ with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "CYCLE_DIR" "cycle_type" "gridspec_dir" "WORKDIR" "RADAR_REF_THINNING")
+valid_args=( "CYCLE_DIR" "cycle_type" "gridspec_dir" "WORKDIR" "RADAR_REF_THINNING" "comout")
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -379,7 +379,8 @@ EOF
 #
   $APRUN ./${exect} > stdout 2>&1 || print_info_msg "\
   Call to executable to run radar refl process returned with nonzero exit code."
-
+  cp stdout $comout/stdout.t${HH}z.NSSL_mosaic.${bigmin}
+  cp RefInGSI3D.dat  $comout/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
 done # done with the bigmin for-loop
 #
 #-----------------------------------------------------------------------

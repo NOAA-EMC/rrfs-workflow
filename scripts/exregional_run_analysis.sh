@@ -954,6 +954,7 @@ Call to executable to run GSI returned with nonzero exit code."
 
 if [ ${anav_type} == "radardbz" ]; then
   cat fort.238 > $comout/rrfs_a.t${HH}z.fits3.tm00
+  cp stdout $comout/stdout.t${HH}z.GSI_${anav_type}
 else
   mv fort.207 fit_rad1
   sed -e 's/   asm all/ps asm 900/; s/   rej all/ps rej 900/; s/   mon all/ps mon 900/' fort.201 > fit_p1
@@ -967,11 +968,12 @@ else
   cat fort.208 fort.210 fort.211 fort.212 fort.213 fort.220 > $comout/rrfs_a.t${HH}z.fits2.tm00
   if [ ${gsi_type} == "OBSERVER" ]; then
     cat fort.238 > $comout/rrfs_a.t${HH}z.fits3.tm00
+    cp stdout $comout/stdout.t${HH}z.GSI_observer
+  else
+    cp stdout $comout/stdout.t${HH}z.GSI_${anav_type}
   fi
 
 fi
-
-cp stdout $comout/stdout_${anav_type}
 #
 #-----------------------------------------------------------------------
 #
@@ -980,9 +982,9 @@ cp stdout $comout/stdout_${anav_type}
 #
 #-----------------------------------------------------------------------
 #
-touch gsi_complete.txt
+touch ${comout}/gsi_complete.txt
 if [[ ${anav_type} == "radardbz" || ${anav_type} == "conv_dbz" ]]; then
-  touch gsi_complete_radar.txt # for nonvarcldanl
+  touch ${comout}/gsi_complete_radar.txt # for nonvarcldanl
 fi
 #
 #-----------------------------------------------------------------------

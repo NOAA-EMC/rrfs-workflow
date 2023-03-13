@@ -74,6 +74,21 @@ else
 fi
 rm -fr ${recenterdir}
 mkdir_vrfy -p ${recenterdir}
+#-----------------------------------------------------------------------
+#
+# create COMOUT directory
+#
+#-----------------------------------------------------------------------
+
+if [ "${RUN_ENVIR}" = "nco" ]; then
+  if [ ${CYCLE_TYPE} == "spinup" ]; then
+    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+  else
+    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
+  fi
+  mkdir_vrfy -p "${COMOUT}"
+fi
+
 #
 #-----------------------------------------------------------------------
 #
@@ -84,6 +99,7 @@ mkdir_vrfy -p ${recenterdir}
 #
 $SCRIPTSDIR/exregional_run_recenter.sh \
              cycle_type="${CYCLE_TYPE}" \
+             comout="${COMOUT}" \
              recenterdir="${recenterdir}" || \
 print_err_msg_exit "\
 Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."

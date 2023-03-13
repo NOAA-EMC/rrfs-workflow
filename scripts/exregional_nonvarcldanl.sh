@@ -55,7 +55,7 @@ with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "gridspec_dir" "mem_type" "workdir" "slash_ensmem_subdir" )
+valid_args=( "cycle_dir" "cycle_type" "gridspec_dir" "mem_type" "workdir" "comout" "comin" "slash_ensmem_subdir" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -204,15 +204,15 @@ fi
 #
 #-----------------------------------------------------------------------
 
-process_bufr_path=${CYCLE_DIR}/process_bufr${cycle_tag}
+process_bufr_path=${comin}
 
-obs_files_source[0]=${process_bufr_path}/NASALaRC_cloud4fv3.bin
+obs_files_source[0]=${comin}/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
 obs_files_target[0]=NASALaRC_cloud4fv3.bin
 
-obs_files_source[1]=${process_bufr_path}/fv3_metarcloud.bin
+obs_files_source[1]=${comin}/rrfs.t${HH}z.fv3_metarcloud.bin
 obs_files_target[1]=fv3_metarcloud.bin
 
-obs_files_source[2]=${process_bufr_path}/LightningInFV3LAM.dat
+obs_files_source[2]=${comin}/rrfs.t${HH}z.LightningInFV3LAM.bin
 obs_files_target[2]=LightningInFV3LAM.dat
 
 obs_number=${#obs_files_source[@]}
@@ -232,7 +232,7 @@ process_radarref_path=${cycle_dir}/process_radarref${cycle_tag}
 ss=0
 for bigmin in 0; do
   bigmin=$( printf %2.2i $bigmin )
-  obs_file=${process_radarref_path}/${bigmin}/RefInGSI3D.dat
+  obs_file=${comin}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
   if [ "${IO_LAYOUT_Y}" == "1" ]; then
     obs_file_check=${obs_file}
   else
@@ -347,13 +347,14 @@ fi
 #
 $APRUN ./${exect} > stdout 2>&1 || print_err_msg_exit "\
 Call to executable to run No Var Cloud Analysis returned with nonzero exit code."
-
+cp stdout ${comout}/stdout.t${HH}z.nonvarcloudanalysis
+cp stdout_cloudanalysis.d00 ${comout}/stdout.t${HH}z.nonvarcloudanalysis.d00
 #
 #-----------------------------------------------------------------------
 #
 # touch nonvarcldanl_complete.txt to indicate competion of this task
 #
-touch nonvarcldanl_complete.txt
+touch ${comout}/nonvarcldanl_complete.txt
 #
 #-----------------------------------------------------------------------
 #

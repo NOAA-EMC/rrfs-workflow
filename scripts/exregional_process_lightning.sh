@@ -55,7 +55,7 @@ with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "CYCLE_DIR" "WORKDIR")
+valid_args=( "CYCLE_DIR" "WORKDIR" "comout")
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -250,6 +250,8 @@ fi
 if [[ "$run_lightning" == true ]]; then
   $APRUN ./${exect} < namelist.lightning > stdout 2>&1 || print_err_msg "\
   Call to executable to run lightning (nc) process returned with nonzero exit code."
+  cp stdout $comout/stdout.t${HH}z.lightning
+  cp LightningInFV3LAM.dat ${comin}/rrfs.t${HH}z.LightningInFV3LAM_NLDN.bin
 fi
 #
 #-----------------------------------------------------------------------

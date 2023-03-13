@@ -373,11 +373,7 @@ define resources used for each tasks
   <cycledef group="archive">  {{ archive_cycledef }} </cycledef> 
 
   <log>
-{%- if do_ensemble %}
-    <cyclestr>&LOGDIR;/FV3LAM_wflow_enkf.log</cyclestr>
-{%- else %}
-    <cyclestr>&LOGDIR;/FV3LAM_wflow.log</cyclestr>
-{%- endif %}
+    <cyclestr>&LOGDIR;/FV3LAM_wflow_&TAG;.log</cyclestr>
   </log>
 
 <!-- 
@@ -521,7 +517,7 @@ MODULES_RUN_TASK_FP script.
     <memory>&MEMO_PROC_SMOKE;</memory>
     &NODESIZE_ALL;
     <jobname>&TAG;_&PROCESS_SMOKE_TN;_#type#</jobname>
-    <join><cyclestr>&LOGDIR;/&PROCESS_SMOKE_TN;_#type#_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&PROCESS_SMOKE_TN;_#type#_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -531,6 +527,8 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
     <envar><name>NWGES_BASEDIR</name><value>&NWGES_BASEDIR;</value></envar>
     <envar><name>NWGES_DIR</name><value>&NWGES_BASEDIR;</value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value></value></envar>
 
     <dependency>
       <and>
@@ -559,7 +557,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_PROC_RADAR;</walltime>
     &NODESIZE_ALL;
     <jobname>&TAG;_&PROCESS_RADAR_REF_TN;_#type#</jobname>
-    <join><cyclestr>&LOGDIR;/&PROCESS_RADAR_REF_TN;_#type#_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&PROCESS_RADAR_REF_TN;_#type#_&TAG;_@Y@m@d@H.log</cyclestr></join>
         
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -568,6 +566,8 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
     <envar><name>RADAR_REF_THINNING</name><value>{{ radar_ref_thinning }}</value></envar>
     <envar><name>NWGES_BASEDIR</name><value>&NWGES_BASEDIR;</value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value></value></envar>
         
     <dependency>
       <and>
@@ -594,13 +594,15 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_PROC_LIGHTNING;</walltime>
     &NODESIZE_ALL;
     <jobname>&TAG;_&PROCESS_LIGHTNING_TN;_#type#</jobname>
-    <join><cyclestr>&LOGDIR;/&PROCESS_LIGHTNING_TN;_#type#_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&PROCESS_LIGHTNING_TN;_#type#_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value></value></envar>
 
     <dependency>
       <and>
@@ -628,13 +630,15 @@ MODULES_RUN_TASK_FP script.
     <memory>&MEMO_PROC_BUFR;</memory>
     &NODESIZE_ALL;
     <jobname>&TAG;_&PROCESS_BUFR_TN;_#type#</jobname>
-    <join><cyclestr>&LOGDIR;/&PROCESS_BUFR_TN;_#type#_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&PROCESS_BUFR_TN;_#type#_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value></value></envar>
 
     <dependency>
       <and>
@@ -678,7 +682,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_GET_EXTRN_ICS;</walltime>
     &NODESIZE_ALL;
     <jobname>&TAG;_&GET_EXTRN_ICS_TN;{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&GET_EXTRN_ICS_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&GET_EXTRN_ICS_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -747,7 +751,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_GET_EXTRN_LBCS;</walltime>
     &NODESIZE_ALL;
     <jobname>&TAG;_&GET_EXTRN_LBCS_TN;{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&GET_EXTRN_LBCS_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&GET_EXTRN_LBCS_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -813,7 +817,7 @@ MODULES_RUN_TASK_FP script.
     &NODESIZE_ALL;
 
     <jobname>&TAG;_&GET_EXTRN_LBCS_LONG_TN;{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&GET_EXTRN_LBCS_LONG_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&GET_EXTRN_LBCS_LONG_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -862,7 +866,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_MAKE_ICS;</walltime>
     &NODESIZE_ALL;
     <jobname>&TAG;_&MAKE_ICS_TN;{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&MAKE_ICS_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&MAKE_ICS_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -911,7 +915,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_MAKE_LBCS;</walltime>
     &NODESIZE_ALL;
     <jobname>&TAG;_&MAKE_LBCS_TN;_#bcgrp#{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&MAKE_LBCS_TN;{{ uscore_ensmem_name }}_@Y@m@d@H_#bcgrp#.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&MAKE_LBCS_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H_#bcgrp#.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -980,7 +984,7 @@ MODULES_RUN_TASK_FP script.
     &NODESIZE_ALL;
     &MEMO_PREP_CYC;
     <jobname>&TAG;_&PREP_CYC_SPINUP_TN;{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&PREP_CYC_SPINUP_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&PREP_CYC_SPINUP_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -1051,7 +1055,7 @@ MODULES_RUN_TASK_FP script.
     &NATIVE_FCST_SPINUP;
     &NODESIZE_ALL;
     <jobname>&TAG;_&RUN_FCST_TN;_ensinit{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&RUN_FCST_TN;_ensinit{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&RUN_FCST_TN;_ensinit_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -1092,7 +1096,7 @@ MODULES_RUN_TASK_FP script.
       &NODESIZE_ALL;
       &MEMO_PREP_CYC;
       <jobname>&TAG;_&SAVE_RESTART_TN;_ensinit{{ uscore_ensmem_name }}</jobname>
-      <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;_ensinit{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+      <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;_ensinit_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -1129,7 +1133,7 @@ MODULES_RUN_TASK_FP script.
     &NODESIZE_ALL;
     &MEMO_PREP_CYC;
     <jobname>&TAG;_&PREP_CYC_SPINUP_TN;_ensinit{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&PREP_CYC_SPINUP_TN;_ensinit{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&PREP_CYC_SPINUP_TN;_ensinit_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -1161,11 +1165,13 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_RUN_RECENTER;</walltime>
     &NODESIZE_ALL;
     <jobname><cyclestr>&TAG;_&RUN_RECENTER_TN;_spinup</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/&RUN_RECENTER_TN;_spinup_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&RUN_RECENTER_TN;_spinup__&TAG;@Y@m@d@H.log</cyclestr></join>
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
 
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_ROOT</name><value><cyclestr>&CYCLE_BASEDIR;</cyclestr></value></envar>
     <envar><name>ENSCTRL_CYCLE_DIR</name><value><cyclestr>&ENSCTRL_CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
@@ -1178,7 +1184,7 @@ MODULES_RUN_TASK_FP script.
         {%- for m in range(1, num_ens_members+1) %}
           <taskdep task="&PREP_CYC_SPINUP_TN;_ensinit_mem{{ "%04d" % m }}"/>
         {%- endfor %}
-        <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_CYCLE_BASEDIR;/@Y@m@d@H/nonvar_cldanl_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
+        <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
       </and>
     </dependency>
   </task>
@@ -1205,7 +1211,7 @@ MODULES_RUN_TASK_FP script.
     {% endif -%}
     <walltime>{{ wtime_run_anal }}</walltime>
     <jobname>&TAG;_&ANAL_SD_GSI_TN;_#type#{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&ANAL_SD_GSI_TN;{{ uscore_ensmem_name }}_#type#_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&ANAL_SD_GSI_TN;{{ uscore_ensmem_name }}_#type#_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -1270,7 +1276,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_ANAL_GSI;</walltime>
     &NODESIZE_ALL;
     <jobname>&TAG;_&ANAL_GSI_TN;_spinup{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&ANAL_GSI_TN;{{ uscore_ensmem_name }}_spinup_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&ANAL_GSI_TN;{{ uscore_ensmem_name }}_spinup_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -1358,7 +1364,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_POSTANAL;</walltime>
     &NODESIZE_ALL;
     <jobname>&TAG;_&POSTANAL_TN;_spinup{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&POSTANAL_TN;{{ uscore_ensmem_name }}_spinup_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&POSTANAL_TN;{{ uscore_ensmem_name }}_spinup_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -1396,7 +1402,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_ANAL_GSI;</walltime>
     &NODESIZE_ALL;
     <jobname>&TAG;_&HYBRID_RADAR_REF_TN;_spinup</jobname>
-    <join><cyclestr>&LOGDIR;/&HYBRID_RADAR_REF_TN;_spinup_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&HYBRID_RADAR_REF_TN;spinup__&TAG;@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -1447,7 +1453,7 @@ MODULES_RUN_TASK_FP script.
     <memory>{{ memo_run_ref2tten }}</memory>
     &NODESIZE_ALL;
     <jobname>&TAG;_&RADAR_REFL2TTEN_TN;_spinup</jobname>
-    <join><cyclestr>&LOGDIR;/&RADAR_REFL2TTEN_TN;_spinup_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&RADAR_REFL2TTEN_TN;_spinup_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -1455,6 +1461,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>MEM_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
 
     <dependency>
@@ -1487,7 +1494,7 @@ MODULES_RUN_TASK_FP script.
     &NODESIZE_ALL;
     <memory>{{ memo_run_jedienvar_ioda }}</memory>
     <jobname>&TAG;_&JEDI_ENVAR_IODA_TN;_spinup</jobname>
-    <join><cyclestr>&LOGDIR;/&JEDI_ENVAR_IODA_TN;_spinup_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&JEDI_ENVAR_IODA_TN;_spinup_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -1527,7 +1534,7 @@ MODULES_RUN_TASK_FP script.
     <memory>&MEMO_NONVAR_CLD;</memory>
 
     <jobname>&TAG;_&CLDANL_NONVAR_TN;_spinup{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&CLDANL_NONVAR_TN;_spinup{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&CLDANL_NONVAR_TN;_spinup_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -1535,6 +1542,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>MEM_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
 
     <dependency>
@@ -1590,7 +1598,7 @@ MODULES_RUN_TASK_FP script.
     &NATIVE_FCST_SPINUP;
     &NODESIZE_ALL;
     <jobname>&TAG;_&RUN_FCST_TN;_spinup{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&RUN_FCST_TN;_spinup{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&RUN_FCST_TN;_spinup_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -1659,7 +1667,7 @@ MODULES_RUN_TASK_FP script.
       &NODESIZE_ALL;
       &MEMO_PREP_CYC;
       <jobname>&TAG;_&SAVE_RESTART_TN;{{ uscore_ensmem_name }}_f#fhr#</jobname>
-      <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;_spinup{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
+      <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;_spinup_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -1704,7 +1712,7 @@ MODULES_RUN_TASK_FP script.
       <walltime>&WALLTIME_RUN_POST;</walltime>
       &NODESIZE_ALL;
       <jobname>&TAG;_&RUN_POST_TN;_spinup{{ uscore_ensmem_name }}_f#fhr#</jobname>
-      <join><cyclestr>&LOGDIR;/&RUN_POST_TN;_spinup{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
+      <join><cyclestr>&LOGDIR;/&RUN_POST_TN;_spinup_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -1737,7 +1745,7 @@ MODULES_RUN_TASK_FP script.
       <memory>&MEMO_RUN_PRDGEN;</memory>
       &NODESIZE_ALL;
       <jobname>&TAG;_&RUN_PRDGEN_TN;_spinup{{ uscore_ensmem_name }}_f#fhr#</jobname>
-      <join><cyclestr>&LOGDIR;/&RUN_PRDGEN_TN;_spinup{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
+      <join><cyclestr>&LOGDIR;/&RUN_PRDGEN_TN;_spinup_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -1789,7 +1797,7 @@ MODULES_RUN_TASK_FP script.
     &NODESIZE_ALL;
     &MEMO_PREP_CYC;
     <jobname>&TAG;_&PREP_CYC_PROD_TN;{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&PREP_CYC_PROD_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&PREP_CYC_PROD_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -1911,11 +1919,12 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_RUN_RECENTER;</walltime>
     &NODESIZE_ALL;
     <jobname>&TAG;_&CALC_ENSMEAN_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&CALC_ENSMEAN_TN;_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&CALC_ENSMEAN_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
@@ -1945,7 +1954,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_ANAL_GSI;</walltime>
     &NODESIZE_ALL;
     <jobname>&TAG;_&OBSERVER_GSI_ENSMEAN_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&OBSERVER_GSI_ENSMEAN_TN;_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&OBSERVER_GSI_ENSMEAN_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -1997,7 +2006,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_ANAL_GSI;</walltime>
     &NODESIZE_ALL;
     <jobname>&TAG;_&OBSERVER_GSI_TN;{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&OBSERVER_GSI_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&OBSERVER_GSI_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -2038,7 +2047,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_RUN_ENKF;</walltime>
     &NODESIZE_ALL;
     <jobname><cyclestr>&TAG;_&RUN_ENKFUPDT_TN;</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/&RUN_ENKFUPDT_TN;_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&RUN_ENKFUPDT_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
 
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
@@ -2069,7 +2078,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_RUN_ENKF;</walltime>
     &NODESIZE_ALL;
     <jobname><cyclestr>&TAG;_&ENKF_RADAR_REF_TN;</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/&ENKF_RADAR_REF_TN;_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&ENKF_RADAR_REF_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
 
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
@@ -2118,7 +2127,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_ANAL_GSI;</walltime>
     &NODESIZE_ALL;
     <jobname>&TAG;_&ANAL_GSI_TN;_prod{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&ANAL_GSI_TN;{{ uscore_ensmem_name }}_prod_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&ANAL_GSI_TN;_&TAG;{{ uscore_ensmem_name }}_prod_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -2211,7 +2220,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_POSTANAL;</walltime>
     &NODESIZE_ALL;
     <jobname>&TAG;_&POSTANAL_TN;_prod{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&POSTANAL_TN;{{ uscore_ensmem_name }}_prod_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&POSTANAL_TN;{{ uscore_ensmem_name }}_prod_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -2249,7 +2258,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_ANAL_GSI;</walltime>
     &NODESIZE_ALL;
     <jobname>&TAG;_&HYBRID_RADAR_REF_TN;_prod</jobname>
-    <join><cyclestr>&LOGDIR;/&HYBRID_RADAR_REF_TN;_prod_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&HYBRID_RADAR_REF_TN;_prod_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -2300,7 +2309,7 @@ MODULES_RUN_TASK_FP script.
     <memory>{{ memo_run_ref2tten }}</memory>
     &NODESIZE_ALL;
     <jobname>&TAG;_&RADAR_REFL2TTEN_TN;_prod</jobname>
-    <join><cyclestr>&LOGDIR;/&RADAR_REFL2TTEN_TN;_prod_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&RADAR_REFL2TTEN_TN;_prod_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -2308,6 +2317,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
     <envar><name>MEM_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
 
     <dependency>
@@ -2340,7 +2350,7 @@ MODULES_RUN_TASK_FP script.
     &NODESIZE_ALL;
     <memory>{{ memo_run_jedienvar_ioda }}</memory>
     <jobname>&TAG;_&JEDI_ENVAR_IODA_TN;_prod</jobname>
-    <join><cyclestr>&LOGDIR;/&JEDI_ENVAR_IODA_TN;_prod_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&JEDI_ENVAR_IODA_TN;_prod_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -2349,7 +2359,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
     <envar><name>MEM_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
-	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
 
     <dependency>
       <and>
@@ -2380,7 +2390,7 @@ MODULES_RUN_TASK_FP script.
     <memory>&MEMO_NONVAR_CLD;</memory>
 
     <jobname>&TAG;_&CLDANL_NONVAR_TN;_prod{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&CLDANL_NONVAR_TN;_prod{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&CLDANL_NONVAR_TN;_prod_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -2388,6 +2398,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
     <envar><name>MEM_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
 
     <dependency>
@@ -2447,7 +2458,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_RUN_RECENTER;</walltime>
     &NODESIZE_ALL;
     <jobname><cyclestr>&TAG;_&RUN_RECENTER_TN;</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/&RUN_RECENTER_TN;_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&RUN_RECENTER_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
 
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
@@ -2472,8 +2483,8 @@ MODULES_RUN_TASK_FP script.
         <taskdep task="&RUN_ENKFUPDT_TN;"/>
         {%- endif %}
         <or>
-        <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_CYCLE_BASEDIR;/@Y@m@d@H/nonvar_cldanl/nonvarcldanl_complete.txt</cyclestr></datadep>
-        <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_CYCLE_BASEDIR;/@Y@m@d@H/nonvar_cldanl_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
+        <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H/nonvarcldanl_complete.txt</cyclestr></datadep>
+        <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
         </or>
       </and>
     </dependency>
@@ -2500,7 +2511,7 @@ MODULES_RUN_TASK_FP script.
     &NODESIZE_ALL;
     <memory>{{ memo_save_da_output }}</memory>
     <jobname>&TAG;_&SAVE_DA_OUTPUT_TN;{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&SAVE_DA_OUTPUT_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&SAVE_DA_OUTPUT_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -2562,7 +2573,7 @@ MODULES_RUN_TASK_FP script.
     &NATIVE_FCST_PROD;
     &NODESIZE_ALL;
     <jobname>&TAG;_&RUN_FCST_TN;_prod{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&RUN_FCST_TN;_prod{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&RUN_FCST_TN;_prod_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -2638,7 +2649,7 @@ MODULES_RUN_TASK_FP script.
     &NATIVE_FCST_PROD;
     &NODESIZE_ALL;
     <jobname>&TAG;_&RUN_FCST_TN;_prod{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&RUN_FCST_TN;_prod{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&RUN_FCST_TN;_prod_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -2719,7 +2730,7 @@ MODULES_RUN_TASK_FP script.
       &NODESIZE_ALL;
       &MEMO_PREP_CYC;
       <jobname>&TAG;_&SAVE_RESTART_TN;{{ uscore_ensmem_name }}_f#fhr#</jobname>
-      <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
+      <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -2758,7 +2769,7 @@ MODULES_RUN_TASK_FP script.
       &NODESIZE_ALL;
       &MEMO_PREP_CYC;
       <jobname>&TAG;_&SAVE_RESTART_TN;{{ uscore_ensmem_name }}_f#fhr#</jobname>
-      <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
+      <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -2811,7 +2822,7 @@ MODULES_RUN_TASK_FP script.
       <walltime>&WALLTIME_RUN_POST;</walltime>
       &NODESIZE_ALL;
       <jobname>&TAG;_&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr#</jobname>
-      <join><cyclestr>&LOGDIR;/&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
+      <join><cyclestr>&LOGDIR;/&RUN_POST_TN;_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -2851,7 +2862,7 @@ MODULES_RUN_TASK_FP script.
       <walltime>&WALLTIME_RUN_POST;</walltime>
       &NODESIZE_ALL;
       <jobname>&TAG;_&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr#</jobname>
-      <join><cyclestr>&LOGDIR;/&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
+      <join><cyclestr>&LOGDIR;/&RUN_POST_TN;_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -2889,7 +2900,7 @@ MODULES_RUN_TASK_FP script.
       &NODESIZE_ALL;
       <memory>&MEMO_RUN_PRDGEN;</memory>
       <jobname>&TAG;_&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f#fhr#</jobname>
-      <join><cyclestr>&LOGDIR;/&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
+      <join><cyclestr>&LOGDIR;/&RUN_PRDGEN_TN;_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -2920,7 +2931,7 @@ MODULES_RUN_TASK_FP script.
       &NODESIZE_ALL;
       <memory>&MEMO_RUN_PRDGEN;</memory>
       <jobname>&TAG;_&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f#fhr#</jobname>
-      <join><cyclestr>&LOGDIR;/&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
+      <join><cyclestr>&LOGDIR;/&RUN_PRDGEN_TN;_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -2953,7 +2964,7 @@ MODULES_RUN_TASK_FP script.
         <walltime>{{ wtime_run_bufrsnd }}</walltime>
         &NODESIZE_ALL;
         <jobname>&TAG;_&RUN_BUFRSND_TN;</jobname>
-        <join><cyclestr>&LOGDIR;/&RUN_BUFRSND_TN;_@Y@m@d@H.log</cyclestr></join>
+        <join><cyclestr>&LOGDIR;/&RUN_BUFRSND_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
         <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
         <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -2989,7 +3000,7 @@ MODULES_RUN_TASK_FP script.
       <walltime>{{ wtime_run_fcst_long }}</walltime>
       <nodes>{{ nnodes_run_graphics }}:ppn={{ ppn_run_graphics }}</nodes>
       <jobname><cyclestr>&TAG;_python{{ uscore_ensmem_name }}_@H_#tilelabel#</cyclestr></jobname>
-      <join><cyclestr>&LOGDIR;/python{{ uscore_ensmem_name }}_#tilelabel#.log</cyclestr></join>
+      <join><cyclestr>&LOGDIR;/python_&TAG;{{ uscore_ensmem_name }}_#tilelabel#.log</cyclestr></join>
       <command>&LOAD_MODULES_RUN_TASK_FP; "run_graphics" "&JOBSDIR;/JREGIONAL_RUN_PYTHON_GRAPHICS"</command>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
@@ -3022,7 +3033,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>{{ wtime_run_fcst_long }}</walltime>
     <nodes>{{ nnodes_run_graphics }}:ppn={{ ppn_run_graphics }}</nodes>
     <jobname><cyclestr>&TAG;_python{{ uscore_ensmem_name }}_@H_skewts</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/python_skewts{{ uscore_ensmem_name }}_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/python_skewts_&TAG;{{ uscore_ensmem_name }}_@H.log</cyclestr></join>
     <command>&LOAD_MODULES_RUN_TASK_FP; "run_graphics" "&JOBSDIR;/JREGIONAL_RUN_PYTHON_GRAPHICS"</command>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
@@ -3059,7 +3070,7 @@ MODULES_RUN_TASK_FP script.
     <nodes> 1:ppn=1</nodes>
     <walltime>00:15:00</walltime>
     <jobname>&TAG;_&CLEAN_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&CLEAN_TN;_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&CLEAN_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>LOGDIR</name><value>&LOGDIR;</value></envar>
@@ -3089,7 +3100,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>23:00:00</walltime>
     <memory>24G</memory>
     <jobname>&TAG;_&ARCHIVE_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&ARCHIVE_TN;_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&ARCHIVE_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
@@ -3110,7 +3121,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>08:00:00</walltime>
     <memory>80G</memory>
     <jobname>&TAG;_&ARCHIVE_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&ARCHIVE_TN;_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&ARCHIVE_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -3149,7 +3160,7 @@ MODULES_RUN_TASK_FP script.
     <nodes>1:ppn=1</nodes>
     <walltime>08:00:00</walltime>
     <jobname>&TAG;_&ARCHIVE_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&ARCHIVE_TN;_@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&ARCHIVE_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -3192,7 +3203,7 @@ MODULES_RUN_TASK_FP script.
       <walltime>{{ wtime_run_fcst }}</walltime>
       <nodes>{{ nnodes_run_graphics }}:ppn={{ ppn_run_graphics }}</nodes>
       <jobname><cyclestr>&TAG;_python_@H_#tilelabel#</cyclestr></jobname>
-      <join><cyclestr>&LOGDIR;/python_#tilelabel#.log</cyclestr></join>
+      <join><cyclestr>&LOGDIR;/python_&TAG;_#tilelabel#.log</cyclestr></join>
       <command>&LOAD_MODULES_RUN_TASK_FP; "run_graphics" "&JOBSDIR;/JREGIONAL_RUN_PYTHON_GRAPHICS"</command>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
@@ -3236,7 +3247,7 @@ MODULES_RUN_TASK_FP script.
       <walltime>{{ wtime_run_enspost }}</walltime>
       <nodes>{{ nnodes_run_enspost }}:ppn={{ ppn_run_enspost }}</nodes>
       <jobname><cyclestr>&TAG;_enspost_@H_#fhr#</cyclestr></jobname>
-      <join><cyclestr>&LOGDIR;/enspost_f#fhr#_@Y@m@d@H.log</cyclestr></join>
+      <join><cyclestr>&LOGDIR;/enspost_&TAG;_f#fhr#_@Y@m@d@H.log</cyclestr></join>
       <command>&LOAD_MODULES_RUN_TASK_FP; "run_enspost" "&JOBSDIR;/JREGIONAL_RUN_ENSPOST"</command>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
@@ -3270,7 +3281,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>{{ wtime_run_enspost }}</walltime>
     <nodes>{{ nnodes_run_graphics }}:ppn={{ ppn_run_graphics }}</nodes>
     <jobname><cyclestr>&TAG;_python_@H_enspost_maps</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/python_enspost_maps.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/python_enspost_maps_&TAG;.log</cyclestr></join>
     <command>&LOAD_MODULES_RUN_TASK_FP; "run_graphics" "&JOBSDIR;/JREGIONAL_RUN_PYTHON_GRAPHICS"</command>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>

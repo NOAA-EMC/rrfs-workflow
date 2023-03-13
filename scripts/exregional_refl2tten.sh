@@ -55,7 +55,7 @@ with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "gridspec_dir" "mem_type" "workdir" "slash_ensmem_subdir" )
+valid_args=( "cycle_dir" "cycle_type" "gridspec_dir" "mem_type" "workdir"  "comout" "comin" "slash_ensmem_subdir" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -204,13 +204,11 @@ fi
 # link/copy observation files to working directory
 #
 #-----------------------------------------------------------------------
-process_radarref_path=${cycle_dir}/process_radarref${cycle_tag}
-process_lightning_path=${cycle_dir}/process_lightning${cycle_tag}
 
 ss=0
 for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   bigmin=$( printf %2.2i $bigmin )
-  obs_file=${process_radarref_path}/${bigmin}/RefInGSI3D.dat
+  obs_file=${comin}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
   if [ "${IO_LAYOUT_Y}" == "1" ]; then
     obs_file_check=${obs_file}
   else
@@ -233,7 +231,7 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   fi
 done
 
-obs_file=${process_lightning_path}/LightningInFV3LAM.dat
+obs_file=${comin}/rrfs.t${HH}z.LightningInFV3LAM.bin
 if [ -r "${obs_file}" ]; then
    cp_vrfy "${obs_file}" "LightningInGSI.dat_01"
 else
@@ -308,7 +306,7 @@ fi
 #
 $APRUN ./ref2ttenfv3lam.exe > stdout 2>&1 || print_err_msg_exit "\
 Call to executable to run radar refl tten returned with nonzero exit code."
-
+cp stdout ${comout}/stdout.t${HH}z.ref2ttenfv3lam
 #
 #-----------------------------------------------------------------------
 #

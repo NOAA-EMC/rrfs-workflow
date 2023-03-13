@@ -55,7 +55,7 @@ with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "CYCLE_DIR" "WORKDIR")
+valid_args=( "CYCLE_DIR" "WORKDIR" "comout")
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -272,6 +272,8 @@ fi
 if [[ "$run_lightning" == true ]]; then
    $APRUN ./${exect} > stdout_lightning_bufr 2>&1 || print_err_msg "\
    Call to executable to run lightning process returned with nonzero exit code."
+   cp stdout_lightning_bufr $comout/stdout.t${HH}z.lightning_bufr
+   cp LightningInFV3LAM.dat $comout/rrfs.t${HH}z.LightningInFV3LAM.bin
 fi
 
 #
@@ -355,6 +357,8 @@ fi
 if [[ "$run_cloud" == true ]]; then
   $APRUN ./${exect} > stdout_nasalarc 2>&1 || print_err_msg "\
   Call to executable to run NASA LaRC Cloud process returned with nonzero exit code."
+  cp stdout_nasalarc $comout/stdout.t${HH}z.nasalarc
+  cp NASALaRC_cloud4fv3.bin $comout/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
 fi
 
 #
@@ -426,6 +430,8 @@ fi
 if [[ "$run_metar" == true ]]; then
   $APRUN ./${exect} > stdout_metarcld 2>&1 || print_err_msg "\
   Call to executable to run METAR cloud process returned with nonzero exit code."
+  cp stdout_metarcld $comout/stdout.t${HH}z.metarcld
+  cp fv3_metarcloud.bin $comout/rrfs.t${HH}z.fv3_metarcloud.bin
 fi
 
 #

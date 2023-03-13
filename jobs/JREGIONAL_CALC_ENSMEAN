@@ -74,6 +74,22 @@ else
 fi
 rm -fr ${ensmeandir}
 mkdir_vrfy -p ${ensmeandir}
+
+#-----------------------------------------------------------------------
+#
+# create COMOUT directory
+#
+#-----------------------------------------------------------------------
+
+if [ "${RUN_ENVIR}" = "nco" ]; then
+  if [ ${CYCLE_TYPE} == "spinup" ]; then
+    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+  else
+    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
+  fi
+  mkdir_vrfy -p "${COMOUT}"
+fi
+
 #
 #-----------------------------------------------------------------------
 #
@@ -84,6 +100,7 @@ mkdir_vrfy -p ${ensmeandir}
 #
 $SCRIPTSDIR/exregional_calc_ensmean.sh \
              cycle_type="${CYCLE_TYPE}" \
+             comout="${COMOUT}" \
              ensmeandir="${ensmeandir}" || \
 print_err_msg_exit "\
 Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."

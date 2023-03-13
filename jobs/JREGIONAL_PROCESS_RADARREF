@@ -76,6 +76,21 @@ gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #
 #-----------------------------------------------------------------------
 #
+# create COMOUT directory
+#
+#-----------------------------------------------------------------------
+
+if [ "${RUN_ENVIR}" = "nco" ]; then 
+  if [ ${CYCLE_TYPE} == "spinup" ]; then
+    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+  else
+    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
+  fi
+  mkdir_vrfy -p "${COMOUT}"
+fi
+#
+#-----------------------------------------------------------------------
+#
 # Call the ex-script for this J-job and pass to it the necessary varia-
 # bles.
 #
@@ -83,7 +98,7 @@ gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #
 $SCRIPTSDIR/exregional_process_radarref.sh \
   CYCLE_DIR="${CYCLE_DIR}" cycle_type="${CYCLE_TYPE}" gridspec_dir="${gridspec_dir}" \
-  WORKDIR="${workdir}" RADAR_REF_THINNING="${RADAR_REF_THINNING}" || \
+  WORKDIR="${workdir}" RADAR_REF_THINNING="${RADAR_REF_THINNING}" comout="${COMOUT}" || \
 print_err_msg_exit "\
 Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
 #

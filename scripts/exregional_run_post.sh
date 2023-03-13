@@ -329,10 +329,16 @@ The \${fhr} variable contains too few or too many characters:
 fi
 
 
-bgdawp=${postprd_dir}/${NET}.t${cyc}z.bgdawpf${subh_fhr}.${tmmark}.grib2
-bgrd3d=${postprd_dir}/${NET}.t${cyc}z.bgrd3df${subh_fhr}.${tmmark}.grib2
-bgsfc=${postprd_dir}/${NET}.t${cyc}z.bgsfcf${subh_fhr}.${tmmark}.grib2
-bgifi=${postprd_dir}/${NET}.t${cyc}z.bgifif${subh_fhr}.${tmmark}.grib2
+gridname=""
+if [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km" ]; then
+  gridname="conus_3km."
+elif  [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ]; then
+  gridname=""
+fi
+net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
+bgdawp=${postprd_dir}/${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2
+bgrd3d=${postprd_dir}/${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2
+bgifi=${postprd_dir}/${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2
 
 wgrib2 PRSLEV.GrbF${post_fhr} -set center 7 -grib ${bgdawp}
 wgrib2 NATLEV.GrbF${post_fhr} -set center 7 -grib ${bgrd3d}

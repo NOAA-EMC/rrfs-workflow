@@ -81,6 +81,23 @@ gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #
 #-----------------------------------------------------------------------
 #
+# create COMOUT/COMIN directory
+#
+#-----------------------------------------------------------------------
+
+if [ "${RUN_ENVIR}" = "nco" ]; then
+  if [ ${CYCLE_TYPE} == "spinup" ]; then
+    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
+    COMIN="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+  else
+    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}${SLASH_ENSMEM_SUBDIR}"
+    COMIN="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
+  fi
+  mkdir_vrfy -p "${COMOUT}"
+fi
+#
+#-----------------------------------------------------------------------
+#
 # Call the ex-script for this J-job and pass to it the necessary varia-
 # bles.
 #
@@ -92,6 +109,8 @@ $SCRIPTSDIR/exregional_nonvarcldanl.sh \
              gridspec_dir="${gridspec_dir}" \
              mem_type="${MEM_TYPE}" \
              workdir="${workdir}"  \
+             comout="${COMOUT}" \
+             comin="${COMIN}" \
              slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}" || \
 print_err_msg_exit "\
 Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
