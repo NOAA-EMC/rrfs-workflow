@@ -411,8 +411,12 @@ case "${EXTRN_MDL_NAME_ICS}" in
     input_type="grib2"
     convert_nst=False
     if [ "$MACHINE" == "WCOSS2" ]; then
-      fn_atm_nemsio="${EXTRN_MDL_FNS[0]}"
-      fn_sfc_nemsio="${EXTRN_MDL_FNS[1]}"
+      if [ "${DO_RETRO}" = "TRUE" ]; then
+        fn_atm_nemsio="${EXTRN_MDL_FNS[0]}"
+      else
+        fn_atm_nemsio="${EXTRN_MDL_FNS[0]}"
+        fn_sfc_nemsio="${EXTRN_MDL_FNS[1]}"
+      fi
     fi
   elif [ "${FV3GFS_FILE_FMT_ICS}" = "netcdf" ]; then
     tracers_input="[\"spfh\",\"clwmr\",\"o3mr\",\"icmr\",\"rwmr\",\"snmr\",\"grle\"]"

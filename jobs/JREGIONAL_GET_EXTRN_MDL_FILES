@@ -187,6 +187,11 @@ elif [ "${ICS_OR_LBCS}" = "LBCS" ]; then
   lbs_spec_intvl_hrs="${LBC_SPEC_INTVL_HRS}"
   boundary_len_hrs="${BOUNDARY_LEN}"
 fi
+if [ "${DO_RETRO}" = "TRUE" ]; then
+  retro_or_realtime="RETRO"
+else
+  retro_or_realtime="REALTIME"
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -210,6 +215,7 @@ cd_vrfy "${extrn_mdl_staging_dir}"
 get_extrn_mdl_file_dir_info \
   extrn_mdl_name="${EXTRN_MDL_NAME}" \
   anl_or_fcst="${anl_or_fcst}" \
+  retro_or_realtime="${retro_or_realtime}" \
   cdate_FV3LAM="${CDATE}" \
   lbs_spec_intvl_hrs="${lbs_spec_intvl_hrs}" \
   boundary_len_hrs="${boundary_len_hrs}"\

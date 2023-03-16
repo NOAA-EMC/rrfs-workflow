@@ -133,6 +133,33 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     GVF_ROOT="/work/noaa/wrfruc/mhu/rrfs/data/gvf/grib2"
     IMSSNOW_ROOT="/work/noaa/wrfruc/mhu/rrfs/data/snow/ims96/grib2"
   fi
+  if [[ $MACHINE == "wcoss2" ]] ; then
+    RETRODATAPATH="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs_retro_data"
+    if [[ ${DO_ENSEMBLE} == "TRUE" ]]; then
+      if [[ ${EXTRN_MDL_NAME_ICS} == "GDASENKF" ]]; then
+        EXTRN_MDL_SOURCE_BASEDIR_ICS="${RETRODATAPATH}/enkf/atm"
+      elif [[ ${EXTRN_MDL_NAME_ICS} == "FV3GFS" ]]; then
+        EXTRN_MDL_SOURCE_BASEDIR_ICS="${RETRODATAPATH}/gfs/0p25deg/grib2"
+      fi
+      if [[ ${EXTRN_MDL_NAME_LBCS} == "GDASENKF" ]]; then
+        EXTRN_MDL_SOURCE_BASEDIR_LBCS="${RETRODATAPATH}/enkf/atm"
+      elif [[ ${EXTRN_MDL_NAME_LBCS} == "FV3GFS" ]]; then
+        EXTRN_MDL_SOURCE_BASEDIR_LBCS="${RETRODATAPATH}/gfs/0p25deg/grib2"
+      fi
+    else
+      EXTRN_MDL_SOURCE_BASEDIR_ICS=${RETRODATAPATH}/gfs
+      EXTRN_MDL_SOURCE_BASEDIR_LBCS=${RETRODATAPATH}/gfs
+    fi
+    OBSPATH=${RETRODATAPATH}/obs_rap
+    OBSPATH_NSSLMOSIAC=${RETRODATAPATH}/reflectivity
+    LIGHTNING_ROOT=${RETRODATAPATH}/lightning
+    ENKF_FCST=${RETRODATAPATH}/enkf/atm
+    AIRCRAFT_REJECT="${RETRODATAPATH}/amdar_reject_lists"
+    SFCOBS_USELIST="${RETRODATAPATH}/mesonet_uselists"
+    SST_ROOT="${RETRODATAPATH}/highres_sst"
+    GVF_ROOT="${RETRODATAPATH}/gvf/grib2"
+    IMSSNOW_ROOT="${RETRODATAPATH}/snow/ims96/grib2"
+  fi
 fi
 
 # clean system

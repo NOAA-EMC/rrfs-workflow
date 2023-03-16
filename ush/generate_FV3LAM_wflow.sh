@@ -470,6 +470,9 @@ settings="\
   'postproc_len_hrs': ${POSTPROC_LEN_HRS}
   'postproc_long_len_hrs': ${POSTPROC_LONG_LEN_HRS}
   'postproc_nsout_min': ${NSOUT_MIN}
+  'postproc_nfhmax_hrs': ${NFHMAX_HF}
+  'postproc_nfhout_hrs': ${NFHOUT}
+  'postproc_nfhout_hf_hrs': ${NFHOUT_HF}
   'boundary_proc_group_num': ${BOUNDARY_PROC_GROUP_NUM}
 #
 # Ensemble-related parameters.
@@ -756,7 +759,7 @@ fi
 In order to be able to generate a forecast experiment in NCO mode (i.e.
 when RUN_ENVIR set to \"nco\"), the path specified by FIXam after resolving
 all symlinks (path_resolved) must be an existing directory (but in this
-case isn't):
+case is not):
   RUN_ENVIR = \"${RUN_ENVIR}\"
   FIXam = \"$FIXam\"
   path_resolved = \"${path_resolved}\"
@@ -876,6 +879,20 @@ if [ "${EXTRN_MDL_NAME_ICS}" = "HRRR" -o \
    [ "${SDF_USES_RUC_LSM}" = "TRUE" ]; then
   lsoil="9"
 fi
+# 
+# fhzero = 0.25
+#     get time-max fields like UH to reset at 15-minute intervals
+#
+# avg_max_length=900, sec, 
+#     for needing restart files also output at higher frequency
+#     or other time-max fields output at high frequency
+#
+avg_max_length="3600.0"
+fhzero="1.0"
+if [ "${NSOUT_MIN}" = "15" ]; then
+  avg_max_length="900.0"
+  fhzero="0.25"
+fi
 #
 # Create a multiline variable that consists of a yaml-compliant string
 # specifying the values that the namelist variables that are physics-
@@ -896,6 +913,7 @@ fi
 #
 settings="\
 'atmos_model_nml': {
+    'avg_max_length': ${avg_max_length},
     'blocksize': $BLOCKSIZE,
     'ccpp_suite': ${CCPP_PHYS_SUITE},
   }
@@ -921,6 +939,7 @@ settings="\
     'bc_update_interval': ${LBC_SPEC_INTVL_HRS},
   }
 'gfs_physics_nml': {
+    'fhzero':${fhzero},
     'kice': ${kice:-null},
     'lsoil': ${lsoil:-null},
     'print_diff_pgr': ${PRINT_DIFF_PGR},
@@ -1162,6 +1181,7 @@ settings="$settings
 if [ "${DO_LSM_SPP}" = "TRUE" ]; then
     settings="$settings
     'lndp_type': ${LNDP_TYPE},
+    'lndp_model_type': ${LNDP_TYPE},
     'lndp_tau': [ $( printf "%s, " "${LSM_SPP_TSCALE[@]}" ) ],
     'lndp_lscale': [ $( printf "%s, " "${LSM_SPP_LSCALE[@]}" ) ],
     'iseed_lndp': [ $( printf "%s, " "${ISEED_LSM_SPP[@]}" ) ],

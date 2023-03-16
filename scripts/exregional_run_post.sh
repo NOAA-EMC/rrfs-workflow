@@ -296,7 +296,18 @@ zero exit code."
 # A separate ${subh_fhr} is needed for subhour post.
 #-----------------------------------------------------------------------
 #
+# get the length of the fhr string to decide format of forecast time stamp.
+# 9 is sub-houry forecast and 3 is full hour forecast only.
 len_fhr=${#fhr}
+if [ ${len_fhr} -eq 9 ]; then
+  post_min=${fhr:4:2}
+  if [ ${post_min} -lt 15 ]; then
+    post_min=00
+  fi
+else
+  post_min=00
+fi
+
 subh_fhr=${fhr}
 if [ ${len_fhr} -eq 2 ]; then
   post_fhr=${fhr}
@@ -328,6 +339,9 @@ The \${fhr} variable contains too few or too many characters:
   fhr = \"$fhr\""
 fi
 
+# replace fhr with subh_fhr
+echo "fhr=${fhr} and subh_fhr=${subh_fhr}"
+fhr=${subh_fhr}
 
 gridname=""
 if [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km" ]; then

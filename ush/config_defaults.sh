@@ -2230,8 +2230,8 @@ ISEED_SPP=( "4" "5" "6" "7" "8" )
 # at the moment, and is used for each pattern.
 #
 DO_LSM_SPP="FALSE" #If true, sets lndp_type=2
-LSM_SPP_TSCALE=( "21600" "21600" "21600" "21600" "21600" "21600" "21600" )
-LSM_SPP_LSCALE=( "150000" "150000" "150000" "150000" "150000" "150000" "150000" )
+LSM_SPP_TSCALE=( "21600" "21600" "21600" "21600" "21600" )
+LSM_SPP_LSCALE=( "150000" "150000" "150000" "150000" "150000" )
 ISEED_LSM_SPP=( "9" )
 LSM_SPP_VAR_LIST=( "smc" "vgf" "alb" "sal" "emi" "zol" "stc" )
 LSM_SPP_MAG_LIST=( "0.2" "0.001" "0.001" "0.001" "0.001" "0.001" "0.2" )

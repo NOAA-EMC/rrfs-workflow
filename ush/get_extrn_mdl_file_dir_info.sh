@@ -60,6 +60,7 @@ function get_extrn_mdl_file_dir_info() {
   local valid_args=( \
     "extrn_mdl_name" \
     "anl_or_fcst" \
+    "retro_or_realtime" \
     "cdate_FV3LAM" \
     "lbs_spec_intvl_hrs" \
     "boundary_len_hrs" \
@@ -97,7 +98,7 @@ function get_extrn_mdl_file_dir_info() {
 #
 if [ 0 = 1 ]; then
 
-  if [ "$#" -ne "13" ]; then
+  if [ "$#" -ne "14" ]; then
 
     print_err_msg_exit "
 Incorrect number of arguments specified:
@@ -110,6 +111,7 @@ Usage:
   ${func_name} \
     extrn_mdl_name \
     anl_or_fcst \
+    retro_or_realtime \
     cdate_FV3LAM \
     lbs_spec_intvl_hrs \
     boundary_len_hrs \
@@ -399,6 +401,9 @@ fi
         else
           fns_on_disk=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" "gfs.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
         fi
+        if [ "${MACHINE}" = "WCOSS2" ] && [  "${retro_or_realtime}" = "RETRO" ]; then
+          fns_on_disk=( "${yy}${ddd}${hh}0${fcst_mn}0${fcst_hh}" )
+        fi
         fns_in_arcv=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )  # Get only 0.25 degree files for now.
 
       elif [ "${fv3gfs_file_fmt}" = "netcdf" ]; then
@@ -519,6 +524,10 @@ and analysis or forecast (anl_or_fcst):
           prefix="gfs.t${hh}z.pgrb2.0p25.f"
           fns_on_disk=( "${fcst_hhh[@]/#/$prefix}" )
           fns_in_arcv=( "${fcst_hhh[@]/#/$prefix}" )
+        fi
+        if [ "${MACHINE}" = "WCOSS2" ] && [  "${retro_or_realtime}" = "RETRO" ]; then
+          prefix=( "${yy}${ddd}${hh}${fcst_mn}0" )
+          fns_on_disk=( "${fcst_hhh[@]/#/$prefix}" )
         fi
       elif [ "${fv3gfs_file_fmt}" = "netcdf" ]; then
         fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
@@ -673,7 +682,11 @@ has not been specified for this external model and machine combination:
   "FV3GFS")
     case "$MACHINE" in
     "WCOSS2")
-      sysdir="$sysbasedir/gfs.${yyyymmdd}/${hh}/atmos"
+      if [ "${retro_or_realtime}" = "RETRO" ]; then
+        sysdir="$sysbasedir"
+      else
+        sysdir="$sysbasedir/gfs.${yyyymmdd}/${hh}/atmos"
+      fi
       ;;
     "HERA")
       sysdir="$sysbasedir"
