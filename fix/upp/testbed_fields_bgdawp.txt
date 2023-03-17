@@ -77,3 +77,4 @@ UGRD:30-0 mb above ground:
 VGRD:30-0 mb above ground:
 VVEL:30-0 mb above ground:
 4LFTX:180-0 mb above ground:
+SDEN:surface:
