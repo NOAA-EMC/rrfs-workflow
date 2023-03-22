@@ -35,6 +35,7 @@ Workflow task names.
 <!ENTITY MAKE_SFC_CLIMO_TN "{{ make_sfc_climo_tn }}">
 <!ENTITY GET_EXTRN_ICS_TN  "{{ get_extrn_ics_tn }}">
 <!ENTITY GET_EXTRN_LBCS_TN "{{ get_extrn_lbcs_tn }}">
+<!ENTITY GET_GEFS_LBCS_TN  "{{ get_gefs_lbcs_tn }}">
 <!ENTITY GET_EXTRN_LBCS_LONG_TN "{{ get_extrn_lbcs_long_tn }}">
 <!ENTITY MAKE_ICS_TN       "{{ make_ics_tn }}">
 <!ENTITY MAKE_LBCS_TN      "{{ make_lbcs_tn }}">
@@ -743,6 +744,45 @@ MODULES_RUN_TASK_FP script.
     </dependency>
 
   </task>
+
+{%- if extrn_mdl_name_lbcs in ["GEFS"] and bc_update_interval==1 %}
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&GET_GEFS_LBCS_TN;{{ uscore_ensmem_name }}" cycledefs="boundary" maxtries="{{ maxtries_get_extrn_lbcs }}">
+
+    &WALL_LIMIT_PRE;
+    &RSRV_DEFAULT;
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_EXTRN_LBCS_TN;" "&JOBSDIR;/JREGIONAL_GET_GEFS_LBCS_FILES"</command>
+    &RESOURCES_GET_EXTRN_LBCS;
+    <walltime>&WALLTIME_GET_EXTRN_LBCS;</walltime>
+    &NODESIZE_ALL;
+    <jobname>&TAG;_&GET_GEFS_LBCS_TN;{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr>&LOGDIR;/&GET_GEFS_LBCS_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>EXTRN_MDL_NAME</name><value>{{ extrn_mdl_name_lbcs }}</value></envar>
+    <envar><name>ICS_OR_LBCS</name><value>LBCS</value></envar>
+    <envar><name>BOUNDARY_LEN</name><value>{{ boundary_len_hrs }}</value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value>{{ slash_ensmem_subdir }}</value></envar>
+    <envar><name>GEFS_INPUT_SUBDIR</name><value>#subdirGE#</value></envar>
+    <envar><name>GDASENKF_INPUT_SUBDIR</name><value>#subdirGDAS#</value></envar>
+    <envar><name>GDAS_MEM_NAME</name><value>#memNameGDAS#</value></envar>
+
+    <dependency>
+       <and>
+         {%- for h in range(extrn_mdl_lbcs_offset_hrs, boundary_len_hrs+extrn_mdl_lbcs_offset_hrs+1, 3) %}
+         <datadep age="00:00:05:00"> <cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/#subdirGE#/@y@j@H000{{ "%03d" % h }}</cyclestr></datadep>
+         {%- endfor %}
+       </and>
+    </dependency>
+
+  </task>
+{%- else %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -812,6 +852,7 @@ MODULES_RUN_TASK_FP script.
     </dependency>
 
   </task>
+{%- endif %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -939,6 +980,7 @@ MODULES_RUN_TASK_FP script.
       <and>
         <or>
           <taskdep task="&GET_EXTRN_LBCS_TN;{{ uscore_ensmem_name }}"/>
+          <taskdep task="&GET_GEFS_LBCS_TN;{{ uscore_ensmem_name }}"/>
           <taskdep task="&GET_EXTRN_LBCS_LONG_TN;{{ uscore_ensmem_name }}"/>
         </or>
         <or>

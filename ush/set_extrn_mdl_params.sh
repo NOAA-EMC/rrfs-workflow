@@ -123,7 +123,7 @@ else
       EXTRN_MDL_SYSBASEDIR_ICS=""
       ;;
     "JET")
-      EXTRN_MDL_SYSBASEDIR_ICS="${EXTRN_MDL_SOURCE_BASEDIR_ICS:-/mnt/lfs4/BMC/public/data/grids/gens/pgrb2b}"
+      EXTRN_MDL_SYSBASEDIR_ICS="${EXTRN_MDL_SOURCE_BASEDIR_ICS:-"/mnt/lfs4/BMC/public/data/grids/gens/pgrb2b"}"
       ;;
     "HERA")
       EXTRN_MDL_SYSBASEDIR_ICS="${EXTRN_MDL_SOURCE_BASEDIR_ICS:-/mnt/lfs4/BMC/public/data/grids/gens/pgrb2b}"
@@ -319,7 +319,7 @@ else
   "GEFS")
     case "$MACHINE" in
     "JET")
-      EXTRN_MDL_SYSBASEDIR_LBCS="${EXTRN_MDL_SOURCE_BASEDIR_LBCS:-/mnt/lfs4/BMC/public/data/grids/gens/pgrb2b}"
+      EXTRN_MDL_SYSBASEDIR_LBCS="${EXTRN_MDL_SOURCE_BASEDIR_LBCS:-"/mnt/lfs4/BMC/public/data/grids/gens/pgrb2b"}"
       ;;
     "HERA")
       EXTRN_MDL_SYSBASEDIR_LBCS="${EXTRN_MDL_SOURCE_BASEDIR_LBCS:-/mnt/lfs4/BMC/public/data/grids/gens/pgrb2b}"
