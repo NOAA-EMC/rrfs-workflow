@@ -2044,6 +2044,11 @@ TILE_SETS="full"
 # (GLOBAL_VAR_DEFNS_FN), this variable appear with its leading zeros 
 # stripped.  This variable is not used if DO_ENSEMBLE is not set to "TRUE".
 # 
+# DO_ENS_RADDA:
+# It decides whether to include radiance DA in EnKF or not.  Note that when one sets 
+# 'DO_ENS_RADDA="TRUE"', the radiance DA must be true, i.e., 'DO_RADDA="TRUE"'.  This 
+# is because the radiance DA in EnKF relies the radiance procedures in the GSI-observer, 
+# which is mainly controled by DO_RADDA.
 #-----------------------------------------------------------------------
 #
 DO_ENSEMBLE="FALSE"
@@ -2061,6 +2066,7 @@ DO_ENS_GRAPHICS="FALSE"
 DO_ENSPOST="FALSE"
 DO_ENSINIT="FALSE"
 DO_SAVE_DA_OUTPUT="FALSE"
+DO_ENS_RADDA="FALSE"
 #
 #-----------------------------------------------------------------------
 #

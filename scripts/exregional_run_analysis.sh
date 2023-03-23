@@ -824,34 +824,61 @@ if [ ${DO_RADDA} == "TRUE" ]; then
   while [ $satcounter -lt $maxcounter ]; do
     SAT_TIME=`date +"%Y%m%d%H" -d "${START_DATE}  ${satcounter} hours ago"`
     echo $SAT_TIME
-    if [ -r ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
-      echo " using satellite bias files from ${SAT_TIME}"
-
-      cp_vrfy ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
-      cp_vrfy ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
-      if [ -r ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ]; then
-         cp_vrfy ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ./radstat.rrfs
+	
+    if [ ${DO_ENS_RADDA} == "TRUE" ]; then	
+		
+      # For EnKF.  Note, EnKF does not need radstat file
+      if [ -r ${satbias_dir}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
+        echo " using satellite bias files from ${SAT_TIME}"
+        
+        cp_vrfy ${satbias_dir}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
+        cp_vrfy ${satbias_dir}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
+	    
+        break
       fi
+	  
+    else	
+	  
+      # For EnVar
+      if [ -r ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
+        echo " using satellite bias files from ${SAT_TIME}"
 
-      break
+        cp_vrfy ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
+        cp_vrfy ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
+        if [ -r ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ]; then
+           cp_vrfy ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ./radstat.rrfs
+        fi
+
+        break
+      fi
+	
     fi
     satcounter=` expr $satcounter + 1 `
   done
 
   ## if satbias files (go back to previous 10 dyas) are not available from ${satbias_dir}, use satbias files from the ${FIX_GSI} 
   if [ $satcounter -eq $maxcounter ]; then
-    if [ -r ${FIX_GSI}/rrfs.gdas_satbias ]; then
-      echo "using satllite satbias_in files from ${FIX_GSI}"     
+	  
+  	# satbias_in
+    if [ -r ${FIX_GSI}/rrfs.starting_satbias ]; then
+      echo "using satelite satbias_in files from ${FIX_GSI}"     
       cp_vrfy ${FIX_GSI}/rrfs.starting_satbias ./satbias_in
     fi
-    if [ -r ${FIX_GSI}/rrfs.gdas_satbias_pc ]; then
-      echo "using satllite satbias_pc files from ${FIX_GSI}"     
+	  	  
+    # satbias_pc
+    if [ -r ${FIX_GSI}/rrfs.starting_satbias_pc ]; then
+      echo "using satelite satbias_pc files from ${FIX_GSI}"     
       cp_vrfy ${FIX_GSI}/rrfs.starting_satbias_pc ./satbias_pc
     fi
-    if [ -r ${FIX_GSI}/rrfs.gdas_radstat ]; then
-      echo "using satllite radstat files from ${FIX_GSI}"     
-      cp_vrfy ${FIX_GSI}/rrfs.starting_radstat ./radstat.rrfs
-    fi
+
+    # radstat (only for EnVar)
+    if [ ${DO_ENS_RADDA} != "TRUE" ]; then	
+      if [ -r ${FIX_GSI}/rrfs.starting_radstat ]; then
+        echo "using satelite radstat files from ${FIX_GSI}"     
+        cp_vrfy ${FIX_GSI}/rrfs.starting_radstat ./radstat.rrfs
+      fi
+    fi  
+	
   fi
 
   listdiag=`tar xvf radstat.rrfs | cut -d' ' -f2 | grep _ges`
@@ -1111,8 +1138,18 @@ if [ ${DO_RADDA} == "TRUE" ]; then
      cp_vrfy ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat  ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
   fi
 
-  cp_vrfy ./satbias_out ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
-  cp_vrfy ./satbias_pc.out ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
+  if [ ${DO_ENS_RADDA} == "TRUE" ]; then
+    # For EnKF: ensmean, copy satbias files; ens. member, do nothing  
+    if [ ${mem_type} == "MEAN" ]; then  
+      cp_vrfy ./satbias_out ${satbias_dir}_ensmean/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
+      cp_vrfy ./satbias_pc.out ${satbias_dir}_ensmean/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
+    fi	 
+  else
+    # For EnVar DA  
+    cp_vrfy ./satbias_out ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
+    cp_vrfy ./satbias_pc.out ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
+  fi
+
 fi
 
 #

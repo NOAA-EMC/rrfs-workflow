@@ -93,8 +93,18 @@ rm -fr ${analworkdir}
 mkdir_vrfy -p ${analworkdir}
 
 if [ ! -d "${SATBIAS_DIR}" ]; then
-  echo "makding satbias_dir directory for cycling bias correction files" 
+  echo "making satbias_dir directory for cycling bias correction files" 
   mkdir_vrfy -p ${SATBIAS_DIR}
+fi
+
+# Folder for storing EnKF related satbias files
+if [ ${GSI_TYPE} == "OBSERVER" ]; then
+  if [ ${MEM_TYPE} == "MEAN" ]; then
+    if [ ! -d "${SATBIAS_DIR}_ensmean" ]; then
+      echo "making satbias_dir ensmean directory for cycling bias correction files" 
+      mkdir_vrfy -p ${SATBIAS_DIR}_ensmean
+    fi    	  
+  fi
 fi
 #
 #  directory has grid_spec files for restart subdomains

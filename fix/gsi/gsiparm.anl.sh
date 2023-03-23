@@ -20,6 +20,7 @@ gsi_namelist="
    use_gfs_nemsio=.false.,use_gfs_ncio=.true.,reset_bad_radbc=.true.,
    netcdf_diag=${netcdf_diag},binary_diag=${binary_diag},
    l_obsprvdiag=${l_obsprvdiag},
+   lwrite_peakwt=.true.,
  /     
  &GRIDOPTS
    fv3_regional=.true.,grid_ratio_fv3_regional=${grid_ratio_fv3},nvege_type=20,
