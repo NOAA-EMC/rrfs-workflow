@@ -254,6 +254,13 @@ if [ ${DO_SURFACE_CYCLE} == "TRUE" ]; then  # cycle surface fields
   fi
 fi
 
+# if do surface surgery, then skip surface cycle
+if [ ${YYYYMMDDHH} -eq ${SOIL_SURGERY_time} ] ; then
+  if [ ${cycle_type} == "spinup" ]; then
+    SFC_CYC=3  # skip for soil surgery
+  fi
+fi
+
 cd_vrfy ${modelinputdir}
 
 if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial files from ics
@@ -611,50 +618,54 @@ if_update_ice="TRUE"
 if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
 
 # figure out which surface is available
-      surface_file_dir_name=fcst_fv3lam
-      bkpath_find="missing"
-      restart_prefix_find="missing"
+    surface_file_dir_name=surface
+    restart_prefix_find="missing"
+    restart_suffix_find="missing"
+    bkpath=${fg_root}/${surface_file_dir_name}
+
+    restart_prefix=$( date +%Y%m%d.%H0000. -d "${START_DATE}" )
+    if [ -r "${bkpath}/${restart_prefix}sfc_data.nc.sync" ]; then
+      restart_prefix_find=${restart_prefix}
+      restart_suffix_find="sync"
+    else
       for ndayinhour in 00 24 48 72
       do 
-        if [ "${bkpath_find}" == "missing" ]; then
+        if [ "${restart_suffix_find}" == "missing" ]; then
           restart_prefix=$( date +%Y%m%d.%H0000. -d "${START_DATE} ${ndayinhour} hours ago" )
 
           offset_hours=$(( ${DA_CYCLE_INTERV} + ${ndayinhour} ))
           YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
-          bkpath=${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${surface_file_dir_name}/RESTART  
 
           n=${DA_CYCLE_INTERV}
           while [[ $n -le 6 ]] ; do
              if [ "${IO_LAYOUT_Y}" == "1" ]; then
-               checkfile=${bkpath}/${restart_prefix}sfc_data.nc
+               checkfile=${bkpath}/${restart_prefix}sfc_data.nc.${YYYYMMDDHHmInterv}
              else
-               checkfile=${bkpath}/${restart_prefix}sfc_data.nc.0000
+               checkfile=${bkpath}/${restart_prefix}sfc_data.nc.${YYYYMMDDHHmInterv}.0000
              fi
-             if [ -r "${checkfile}" ] && [ "${bkpath_find}" == "missing" ]; then
-               bkpath_find=${bkpath}
+             if [ -r "${checkfile}" ] && [ "${restart_suffix_find}" == "missing" ]; then
                restart_prefix_find=${restart_prefix}
+               restart_suffix_find=${YYYYMMDDHHmInterv}
                print_info_msg "$VERBOSE" "Found ${checkfile}; Use it as surface for analysis "
              fi
  
              n=$((n + ${DA_CYCLE_INTERV}))
              offset_hours=$(( ${n} + ${ndayinhour} ))
              YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
-             bkpath=${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${surface_file_dir_name}/RESTART  # cycling, use background from RESTART
-             print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
+             print_info_msg "$VERBOSE" "Trying this cycle: ${YYYYMMDDHHmInterv}"
           done
         fi
-
       done
-
+    fi
 # rename the soil mositure and temperature fields in restart file
       rm -f cycle_surface.done
-      if [ "${bkpath_find}" == "missing" ]; then
+      if [ "${restart_suffix_find}" == "missing" ] || [ "${restart_prefix_find}" == "missing" ]; then
         print_info_msg "Warning: cannot find surface from previous cycle"
       else
         if [ "${IO_LAYOUT_Y}" == "1" ]; then
-          checkfile=${bkpath_find}/${restart_prefix_find}sfc_data.nc
+          checkfile=${bkpath}/${restart_prefix_find}sfc_data.nc.${restart_suffix_find}
         else
-          checkfile=${bkpath_find}/${restart_prefix_find}sfc_data.nc.0000
+          checkfile=${bkpath}/${restart_prefix_find}sfc_data.nc.${restart_suffix_find}.0000
         fi
         if [ -r "${checkfile}" ]; then
           if [ ${SFC_CYC} -eq 1 ]; then   # cycle surface at cold start cycle
@@ -678,7 +689,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
                 ${EXECDIR}/update_ice.exe > stdout_cycleICE 2>&1
               fi
             else
-              checkfile=${bkpath_find}/${restart_prefix_find}sfc_data.nc
+              checkfile=${bkpath}/${restart_prefix_find}sfc_data.nc.${restart_suffix_find}
               for ii in ${list_iolayout}
               do
                 iii=$(printf %4.4i $ii)
@@ -838,6 +849,21 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+# conduct surface surgery to get new vtype and stype
+# 
+#-----------------------------------------------------------------------
+if [ ${YYYYMMDDHH} -eq 2023030403 ] ; then
+  if [ ${cycle_type} == "spinup" ]; then
+    cp /mnt/lfs4/BMC/nrtrr/FIX_RRFS/lam/RRFS_CONUS_3km_C3359_svl/C3359_stypdom_double.nc .
+    cp /mnt/lfs4/BMC/nrtrr/FIX_RRFS/lam/RRFS_CONUS_3km_C3359_svl/C3359_vtypdom_double.nc .
+    cp sfc_data.tile7.halo0.nc sfc_data.tile7.halo0.nc_old
+    ncks -A -v stype C3359_stypdom_double.nc sfc_data.tile7.halo0.nc
+    ncks -A -v vtype C3359_vtypdom_double.nc sfc_data.tile7.halo0.nc
+  fi
+fi
+#
+#-----------------------------------------------------------------------
+#
 # condut surface surgery to transfer RAP/HRRR surface fields into RRFS.
 # 
 # This surgery only needs to be done once to give RRFS a good start of the surfcase.
@@ -845,8 +871,7 @@ fi
 #
 #-----------------------------------------------------------------------
 # 
-if [ ${YYYYMMDDHH} -eq ${SOIL_SURGERY_time} ] ; then
-if [ ${cycle_type} == "spinup" ]; then
+if [ ${SFC_CYC} -eq 3 ] ; then
 
 #   raphrrr_com=/mnt/lfs4/BMC/rtwbl/mhu/wcoss/nco/com/
 #   ln -s ${raphrrr_com}/rap/prod/rap.${YYYYMMDD}/rap.t${HH}z.wrf_inout_smoke    sfc_rap

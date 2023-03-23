@@ -261,7 +261,7 @@ define resources used for each tasks
 <!ENTITY WALLTIME_ANAL_GSI  "{{ wtime_run_anal }}">
 
 <!ENTITY WALLTIME_FCST_SPINUP  "{{ wtime_run_fcst_spinup }}">
-{%- if machine in ["JET", "HERA"] %}
+{%- if machine in ["JET"] %}
 <!ENTITY RESOURCES_FCST_SPINUP "<cores>{{ ncores_run_fcst }}</cores>">
 <!ENTITY NATIVE_FCST_SPINUP    "<native>{{ native_run_fcst }} &RRFS_RESERVE;</native>">
 {%- elif machine in ["WCOSS2"]  %}
@@ -274,7 +274,7 @@ define resources used for each tasks
 
 <!ENTITY WALLTIME_FCST_PROD  "{{ wtime_run_fcst }}">
 <!ENTITY WALLTIME_FCST_PROD_LONG  "{{ wtime_run_fcst_long }}">
-{%- if machine in ["JET", "HERA"] %}
+{%- if machine in ["JET"] %}
 <!ENTITY RESOURCES_FCST_PROD "<cores>{{ ncores_run_fcst }}</cores>">
 <!ENTITY NATIVE_FCST_PROD    "<native>{{ native_run_fcst }} &RRFS_RESERVE;</native>">
 {%- elif machine in ["WCOSS2"]  %}
@@ -2788,6 +2788,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
       <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>SURFACE_DIR</name><value><cyclestr>&NWGES_BASEDIR;/surface</cyclestr></value></envar>
       <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
@@ -2827,6 +2828,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
       <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>SURFACE_DIR</name><value><cyclestr>&NWGES_BASEDIR;/surface</cyclestr></value></envar>
       <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>

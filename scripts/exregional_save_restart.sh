@@ -59,6 +59,7 @@ valid_args=( \
 "cdate" \
 "run_dir" \
 "nwges_dir" \
+"surface_dir" \
 "fhr" \
 "cycle_type" \
 "cycle_subtype" \
@@ -190,6 +191,22 @@ else
     echo " ${fhr} forecast from ${yyyymmdd}${hh} is ready " #> ${nwges_dir}/RESTART/restart_done_f${fhr}
   else
     echo "This forecast hour does not need to save restart: ${yyyymmdd}${hh}f${fhr}"
+  fi
+fi
+#
+#-----------------------------------------------------------------------
+# save surface data
+#-----------------------------------------------------------------------
+#
+if [ ${cycle_type} == "prod" ] && [ ${cycle_subtype} == "control" ]; then
+  if [ "${IO_LAYOUT_Y}" == "1" ]; then
+    cp_vrfy ${nwges_dir}/RESTART/${restart_prefix}.sfc_data.nc ${surface_dir}/${restart_prefix}.sfc_data.nc.${cdate}
+  else
+    for ii in ${list_iolayout}
+    do
+      iii=$(printf %4.4i $ii)
+      cp_vrfy ${nwges_dir}/RESTART/${restart_prefix}.sfc_data.nc.${iii} ${surface_dir}/${restart_prefix}.sfc_data.nc.${cdate}.${iii}
+    done
   fi
 fi
 #

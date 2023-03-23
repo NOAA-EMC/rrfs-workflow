@@ -67,6 +67,7 @@ on the output files corresponding to a specified forecast hour.
 #
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
 CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
+SURFACE_DIR=${SURFACE_DIR:-empty}
 if [ ${CYCLE_TYPE} == "spinup" ]; then
   run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_spinup"
   nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_spinup"
@@ -79,9 +80,17 @@ else
   nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
 fi
 
-if [ "${RUN_ENVIR}" = "nco" ]; then
+if [ "${RUN_ENVIR}" == "nco" ]; then
    mkdir_vrfy -p "${nwges_dir}/RESTART"
    mkdir_vrfy -p "${nwges_dir}/INPUT"
+   if [ "${SURFACE_DIR}" != "empty" ]; then
+      mkdir_vrfy -p "${SURFACE_DIR}"
+   fi
+fi
+
+len_ensmem=${#SLASH_ENSMEM_SUBDIR}
+if [ ${len_ensmem} -eq 0 ]; then
+  CYCLE_SUBTYPE="control"
 fi
 
 #
@@ -110,6 +119,7 @@ $SCRIPTSDIR/exregional_save_restart.sh \
   cdate="${CDATE}" \
   run_dir="${run_dir}" \
   nwges_dir="${nwges_dir}" \
+  surface_dir="${SURFACE_DIR}" \
   fhr="${fhr}" \
   cycle_type="${CYCLE_TYPE}"  \
   cycle_subtype="${CYCLE_SUBTYPE}" || \
