@@ -276,130 +276,82 @@ if [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ]; then
 module load cfp/2.0.4
 DATA=$postprd_dir
 export DATA=$postprd_dir
+DATAprdgen=$DATA/prdgen_${fhr}
+mkdir $DATAprdgen
 USHrrfs=$USHDIR/prdgen
 
-wgrib2 ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.grib2 >& $DATA/prslevf${fhr}.txt
+wgrib2 ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.grib2 >& $DATAprdgen/prslevf${fhr}.txt
 
 # Create parm files for subsetting on the fly - do it for each forecast hour
 # 10 subpieces for North American grid
-sed -n -e '1,120p' $DATA/prslevf${fhr}.txt >& $DATA/namerica_1.txt
-sed -n -e '121,240p' $DATA/prslevf${fhr}.txt >& $DATA/namerica_2.txt
-sed -n -e '241,360p' $DATA/prslevf${fhr}.txt >& $DATA/namerica_3.txt
-sed -n -e '361,480p' $DATA/prslevf${fhr}.txt >& $DATA/namerica_4.txt
-sed -n -e '481,600p' $DATA/prslevf${fhr}.txt >& $DATA/namerica_5.txt
-sed -n -e '601,720p' $DATA/prslevf${fhr}.txt >& $DATA/namerica_6.txt
-sed -n -e '721,750p' $DATA/prslevf${fhr}.txt >& $DATA/namerica_7.txt
-sed -n -e '751,780p' $DATA/prslevf${fhr}.txt >& $DATA/namerica_8.txt
-sed -n -e '781,880p' $DATA/prslevf${fhr}.txt >& $DATA/namerica_9.txt
-sed -n -e '881,$p' $DATA/prslevf${fhr}.txt >& $DATA/namerica_10.txt
+sed -n -e '1,120p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/namerica_1.txt
+sed -n -e '121,240p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/namerica_2.txt
+sed -n -e '241,360p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/namerica_3.txt
+sed -n -e '361,480p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/namerica_4.txt
+sed -n -e '481,600p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/namerica_5.txt
+sed -n -e '601,720p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/namerica_6.txt
+sed -n -e '721,750p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/namerica_7.txt
+sed -n -e '751,780p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/namerica_8.txt
+sed -n -e '781,880p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/namerica_9.txt
+sed -n -e '881,$p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/namerica_10.txt
 
 # 4 subpieces for CONUS and Alaska grids
-sed -n -e '1,250p' $DATA/prslevf${fhr}.txt >& $DATA/conus_ak_1.txt
-sed -n -e '251,500p' $DATA/prslevf${fhr}.txt >& $DATA/conus_ak_2.txt
-sed -n -e '501,750p' $DATA/prslevf${fhr}.txt >& $DATA/conus_ak_3.txt
-sed -n -e '751,$p' $DATA/prslevf${fhr}.txt >& $DATA/conus_ak_4.txt
+sed -n -e '1,250p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_1.txt
+sed -n -e '251,500p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_2.txt
+sed -n -e '501,750p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_3.txt
+sed -n -e '751,$p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_4.txt
 
 # 2 subpieces for Hawaii and Puerto Rico grids
-sed -n -e '1,500p' $DATA/prslevf${fhr}.txt >& $DATA/hi_pr_1.txt
-sed -n -e '501,$p' $DATA/prslevf${fhr}.txt >& $DATA/hi_pr_2.txt
+sed -n -e '1,500p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/hi_pr_1.txt
+sed -n -e '501,$p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/hi_pr_2.txt
 
-mkdir -p $DATA/prdgen_conus_1
-mkdir -p $DATA/prdgen_conus_2
-mkdir -p $DATA/prdgen_conus_3
-mkdir -p $DATA/prdgen_conus_4
-mkdir -p $DATA/prdgen_ak_1
-mkdir -p $DATA/prdgen_ak_2
-mkdir -p $DATA/prdgen_ak_3
-mkdir -p $DATA/prdgen_ak_4
-mkdir -p $DATA/prdgen_hi_1
-mkdir -p $DATA/prdgen_hi_2
-mkdir -p $DATA/prdgen_pr_1
-mkdir -p $DATA/prdgen_pr_2
-mkdir -p $DATA/prdgen_namerica_1
-mkdir -p $DATA/prdgen_namerica_2
-mkdir -p $DATA/prdgen_namerica_3
-mkdir -p $DATA/prdgen_namerica_4
-mkdir -p $DATA/prdgen_namerica_5
-mkdir -p $DATA/prdgen_namerica_6
-mkdir -p $DATA/prdgen_namerica_7
-mkdir -p $DATA/prdgen_namerica_8
-mkdir -p $DATA/prdgen_namerica_9
-mkdir -p $DATA/prdgen_namerica_10
+# Create script to execute production generation tasks in parallel using CFP
+echo "#!/bin/bash" > $DATAprdgen/poescript_${fhr}
+echo "export DATA=${DATAprdgen}" >> $DATAprdgen/poescript_${fhr}
+echo "export comout=${comout}" >> $DATAprdgen/poescript_${fhr}
 
-echo "#!/bin/bash" > $DATA/poescript_${fhr}
-echo "export DATA=${DATA}" >> $DATA/poescript_${fhr}
-echo "export comout=${comout}" >> $DATA/poescript_${fhr}
-echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc 1 conus ${DATA} ${comout} &" >> $DATA/poescript_${fhr}
-echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc 2 conus ${DATA} ${comout} &" >> $DATA/poescript_${fhr}
-echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc 3 conus ${DATA} ${comout} &" >> $DATA/poescript_${fhr}
-echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc 4 conus ${DATA} ${comout} &" >> $DATA/poescript_${fhr}
-echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc 1 ak ${DATA} ${comout} &" >> $DATA/poescript_${fhr}
-echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc 2 ak ${DATA} ${comout} &" >> $DATA/poescript_${fhr}
-echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc 3 ak ${DATA} ${comout} &" >> $DATA/poescript_${fhr}
-echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc 4 ak ${DATA} ${comout} &" >> $DATA/poescript_${fhr}
-echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc 1 hi ${DATA} ${comout} &" >> $DATA/poescript_${fhr}
-echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc 2 hi ${DATA} ${comout} &" >> $DATA/poescript_${fhr}
-echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc 1 pr ${DATA} ${comout} &" >> $DATA/poescript_${fhr}
-echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc 2 pr ${DATA} ${comout} &" >> $DATA/poescript_${fhr}
-echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc 1 namerica ${DATA} ${comout} &" >> $DATA/poescript_${fhr}
-echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc 2 namerica ${DATA} ${comout} &" >> $DATA/poescript_${fhr}
-echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc 3 namerica ${DATA} ${comout} &" >> $DATA/poescript_${fhr}
-echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc 4 namerica ${DATA} ${comout} &" >> $DATA/poescript_${fhr}
-echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc 5 namerica ${DATA} ${comout} &" >> $DATA/poescript_${fhr}
-echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc 6 namerica ${DATA} ${comout} &" >> $DATA/poescript_${fhr}
-echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc 7 namerica ${DATA} ${comout} &" >> $DATA/poescript_${fhr}
-echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc 8 namerica ${DATA} ${comout} &" >> $DATA/poescript_${fhr}
-echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc 9 namerica ${DATA} ${comout} &" >> $DATA/poescript_${fhr}
-echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc 10 namerica ${DATA} ${comout} &" >> $DATA/poescript_${fhr}
-echo "wait" >> $DATA/poescript_${fhr}
-chmod 775 $DATA/poescript_${fhr}
+tasks=(4 4 2 2 10)
+domains=(conus ak hi pr namerica)
+count=0
+for domain in ${domains[@]}
+do
+  for task in $(seq ${tasks[count]})
+  do
+    mkdir -p $DATAprdgen/prdgen_${domain}_${task}
+    echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc $task $domain ${DATAprdgen} ${comout} &" >> $DATAprdgen/poescript_${fhr}
+  done
+  count=$count+1
+done
+
+echo "wait" >> $DATAprdgen/poescript_${fhr}
+chmod 775 $DATAprdgen/poescript_${fhr}
 
 #
 # Execute the script
 #
 
-export CMDFILE=$DATA/poescript_${fhr}
+export CMDFILE=$DATAprdgen/poescript_${fhr}
 mpiexec -np 22 --cpu-bind core cfp $CMDFILE
 #export err=$?; err_chk
 
 # reassemble the output grids
 
-cat $DATA/prdgen_conus_1/conus_1.grib2 \
-    $DATA/prdgen_conus_2/conus_2.grib2 \
-    $DATA/prdgen_conus_3/conus_3.grib2 \
-    $DATA/prdgen_conus_4/conus_4.grib2 \
-    > ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.conus_3km.grib2
-wgrib2 ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.conus_3km.grib2 -s > ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.conus_3km.grib2.idx
+tasks=(4 4 2 2 10)
+domains=(conus ak hi pr namerica)
+count=0
+for domain in ${domains[@]}
+do
+  for task in $(seq ${tasks[count]})
+  do
+    cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2
+  done
+  wgrib2 ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2 -s > ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2.idx
+  count=$count+1
+done
 
-cat $DATA/prdgen_ak_1/ak_1.grib2 \
-    $DATA/prdgen_ak_2/ak_2.grib2 \
-    $DATA/prdgen_ak_3/ak_3.grib2 \
-    $DATA/prdgen_ak_4/ak_4.grib2 \
-    > ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.ak.grib2
-wgrib2 ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.ak.grib2 -s > ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.ak.grib2.idx
-
-cat $DATA/prdgen_hi_1/hi_1.grib2 \
-    $DATA/prdgen_hi_2/hi_2.grib2 \
-    > ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.hi.grib2
-wgrib2 ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.hi.grib2 -s > ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.hi.grib2.idx
-
-cat $DATA/prdgen_pr_1/pr_1.grib2 \
-    $DATA/prdgen_pr_2/pr_2.grib2 \
-    > ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.pr.grib2
-wgrib2 ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.pr.grib2 -s > ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.pr.grib2.idx
-
-cat $DATA/prdgen_namerica_1/namerica_1.grib2 \
-    $DATA/prdgen_namerica_2/namerica_2.grib2 \
-    $DATA/prdgen_namerica_3/namerica_3.grib2 \
-    $DATA/prdgen_namerica_4/namerica_4.grib2 \
-    $DATA/prdgen_namerica_5/namerica_5.grib2 \
-    $DATA/prdgen_namerica_6/namerica_6.grib2 \
-    $DATA/prdgen_namerica_7/namerica_7.grib2 \
-    $DATA/prdgen_namerica_8/namerica_8.grib2 \
-    $DATA/prdgen_namerica_9/namerica_9.grib2 \
-    $DATA/prdgen_namerica_10/namerica_10.grib2 \
-    > ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.namerica.grib2
-wgrib2 ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.namerica.grib2 -s > ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.namerica.grib2.idx
+# Rename conus grib2 files to conus_3km
+mv ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.conus.grib2 ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.conus_3km.grib2
+mv ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.conus.grib2.idx ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.conus_3km.grib2.idx
 
 else
   echo "this grid is not ready for parallel prdgen: ${PREDEF_GRID_NAME}"
