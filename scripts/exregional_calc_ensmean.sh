@@ -212,7 +212,7 @@ cat << EOF > namelist.ens
   numvar(3)=14
   varlist(1)="u v W DZ T delp phis"
   varlist(2)="sphum liq_wat ice_wat rainwat snowwat graupel water_nc ice_nc rain_nc o3mr liq_aero ice_aero sgs_tke"
-  varlist(3)="t2m q2m f10m tsea smois tsea tsfc tsfcl alnsf alnwf alvsf alvwf emis_ice emis_lnd"
+  varlist(3)="t2m q2m f10m tslb smois tsea tsfc tsfcl alnsf alnwf alvsf alvwf emis_ice emis_lnd"
   l_write_mean=.true.
   l_recenter=.false.
   beta=1,
