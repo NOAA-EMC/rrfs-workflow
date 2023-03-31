@@ -53,6 +53,7 @@ nfhout:     {{ nfhout }}
 nfhmax_hf:  {{ nfhmax_hf }}
 nfhout_hf:  {{ nfhout_hf }}
 nsout:      {{ nsout }}
+output_fh:  {{ output_fh }}
 #
 # Coordinate system used by the output grid.
 #

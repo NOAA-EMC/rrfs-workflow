@@ -159,7 +159,8 @@ run directory (run_dir):
   'nsout': ${NSOUT}
   'nfhout': ${NFHOUT}
   'nfhmax_hf': ${NFHMAX_HF}
-  'nfhout_hf': ${NFHOUT_HF}"
+  'nfhout_hf': ${NFHOUT_HF}
+  'output_fh': ${OUTPUT_FH}"
 #  'output_grid': \'${WRTCMP_output_grid}\'"
 #
 # If the write-component is to be used, then specify a set of computational

@@ -1245,8 +1245,12 @@ ESGgrid_WIDE_HALO_WIDTH=""
 #
 # NSOUT
 #   setup frequency of writing out forecast files in time steps
+#
 # NSOUT_MIN
 #   setup frequency of writing out forecast files in minutes
+#
+# OUTPUT_FH
+#   setup time of writing out forecast files in hours
 #
 #-----------------------------------------------------------------------
 #
@@ -1262,6 +1266,7 @@ NFHMAX_HF="60"
 NFHOUT_HF="1"
 NSOUT="0"
 NSOUT_MIN="0"
+OUTPUT_FH="-1"
 #
 #-----------------------------------------------------------------------
 #
