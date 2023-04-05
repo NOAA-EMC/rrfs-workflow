@@ -761,7 +761,7 @@ fi
 #-----------------------------------------------------------------------
 #
 # CRTM Spectral and Transmittance coefficients
-#
+# set coefficient under crtm_coeffs_path='./crtm_coeffs/',
 #-----------------------------------------------------------------------
 CRTMFIX=${FIX_CRTM}
 emiscoef_IRwater=${CRTMFIX}/Nalli.IRwater.EmisCoeff.bin
@@ -776,23 +776,24 @@ emiscoef_MWwater=${CRTMFIX}/FASTEM6.MWwater.EmisCoeff.bin
 aercoef=${CRTMFIX}/AerosolCoeff.bin
 cldcoef=${CRTMFIX}/CloudCoeff.bin
 
-ln -s ${emiscoef_IRwater} Nalli.IRwater.EmisCoeff.bin
-ln -s $emiscoef_IRice ./NPOESS.IRice.EmisCoeff.bin
-ln -s $emiscoef_IRsnow ./NPOESS.IRsnow.EmisCoeff.bin
-ln -s $emiscoef_IRland ./NPOESS.IRland.EmisCoeff.bin
-ln -s $emiscoef_VISice ./NPOESS.VISice.EmisCoeff.bin
-ln -s $emiscoef_VISland ./NPOESS.VISland.EmisCoeff.bin
-ln -s $emiscoef_VISsnow ./NPOESS.VISsnow.EmisCoeff.bin
-ln -s $emiscoef_VISwater ./NPOESS.VISwater.EmisCoeff.bin
-ln -s $emiscoef_MWwater ./FASTEM6.MWwater.EmisCoeff.bin
-ln -s $aercoef  ./AerosolCoeff.bin
-ln -s $cldcoef  ./CloudCoeff.bin
+mkdir -p crtm_coeffs
+ln -s ${emiscoef_IRwater} ./crtm_coeffs/Nalli.IRwater.EmisCoeff.bin
+ln -s $emiscoef_IRice ./crtm_coeffs/NPOESS.IRice.EmisCoeff.bin
+ln -s $emiscoef_IRsnow ./crtm_coeffs/NPOESS.IRsnow.EmisCoeff.bin
+ln -s $emiscoef_IRland ./crtm_coeffs/NPOESS.IRland.EmisCoeff.bin
+ln -s $emiscoef_VISice ./crtm_coeffs/NPOESS.VISice.EmisCoeff.bin
+ln -s $emiscoef_VISland ./crtm_coeffs/NPOESS.VISland.EmisCoeff.bin
+ln -s $emiscoef_VISsnow ./crtm_coeffs/NPOESS.VISsnow.EmisCoeff.bin
+ln -s $emiscoef_VISwater ./crtm_coeffs/NPOESS.VISwater.EmisCoeff.bin
+ln -s $emiscoef_MWwater ./crtm_coeffs/FASTEM6.MWwater.EmisCoeff.bin
+ln -s $aercoef  ./crtm_coeffs/AerosolCoeff.bin
+ln -s $cldcoef  ./crtm_coeffs/CloudCoeff.bin
 
 
 # Copy CRTM coefficient files based on entries in satinfo file
 for file in $(awk '{if($1!~"!"){print $1}}' ./satinfo | sort | uniq) ;do
-   ln -s ${CRTMFIX}/${file}.SpcCoeff.bin ./
-   ln -s ${CRTMFIX}/${file}.TauCoeff.bin ./
+   ln -s ${CRTMFIX}/${file}.SpcCoeff.bin ./crtm_coeffs/.
+   ln -s ${CRTMFIX}/${file}.TauCoeff.bin ./crtm_coeffs/.
 done
 
 #-----------------------------------------------------------------------
@@ -871,25 +872,19 @@ if [ ${DO_RADDA} == "TRUE" ]; then
       cp_vrfy ${FIX_GSI}/rrfs.starting_satbias_pc ./satbias_pc
     fi
 
-    # radstat (only for EnVar)
-    if [ ${DO_ENS_RADDA} != "TRUE" ]; then	
-      if [ -r ${FIX_GSI}/rrfs.starting_radstat ]; then
-        echo "using satelite radstat files from ${FIX_GSI}"     
-        cp_vrfy ${FIX_GSI}/rrfs.starting_radstat ./radstat.rrfs
-      fi
-    fi  
-	
   fi
 
-  listdiag=`tar xvf radstat.rrfs | cut -d' ' -f2 | grep _ges`
-  for type in $listdiag; do
-    diag_file=`echo $type | cut -d',' -f1`
-    fname=`echo $diag_file | cut -d'.' -f1`
-    date=`echo $diag_file | cut -d'.' -f2`
-    gunzip $diag_file
-    fnameanl=$(echo $fname|sed 's/_ges//g')
-    mv $fname.$date* $fnameanl
-  done
+  if [ -r radstat.rrfs ]; then
+    listdiag=`tar xvf radstat.rrfs | cut -d' ' -f2 | grep _ges`
+    for type in $listdiag; do
+      diag_file=`echo $type | cut -d',' -f1`
+      fname=`echo $diag_file | cut -d'.' -f1`
+      date=`echo $diag_file | cut -d'.' -f2`
+      gunzip $diag_file
+      fnameanl=$(echo $fname|sed 's/_ges//g')
+      mv $fname.$date* $fnameanl
+    done
+  fi
 fi
 
 #-----------------------------------------------------------------------

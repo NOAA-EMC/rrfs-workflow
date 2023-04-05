@@ -7,7 +7,7 @@ gsi_namelist="
    rmesh_dbz=4.0,rmesh_vr=4.0,zmesh_dbz=1000.0,zmesh_vr=1000.0,
    missing_to_nopcp=.false.,radar_no_thinning=.true.,
    gencode=78,factqmin=0.0,factqmax=0.0,
-   iguess=-1,
+   iguess=-1,crtm_coeffs_path='./crtm_coeffs/',
    lread_obs_save=${lread_obs_save},lread_obs_skip=${lread_obs_skip},
    ${ens_nstarthr:+"ens_nstarthr=$ens_nstarthr,"}
    oneobtest=.false.,retrieval=.false.,

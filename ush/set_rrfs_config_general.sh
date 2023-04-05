@@ -411,6 +411,7 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then
     MEMO_PREP_CYC="40G"
     MEMO_SAVE_RESTART="120G"
     MEMO_SAVE_INPUT="120G"                                                                                                     
+    MEMO_RUN_PRDGEN="256G"
 
     START_TIME_SPINUP="01:10:00"
     START_TIME_PROD="02:20:00"
