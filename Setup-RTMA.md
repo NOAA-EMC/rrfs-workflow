@@ -37,6 +37,8 @@ cd RTMA
 ## 5. generate a RTMA workflow
 ```
 cd RTMA
+module use env
+source env/build_jet_intel.env  (use other build files for different environments)
 source env/wflow_jet.env (use other wflow files for different platforms)
 cd regional_workflow/ush
 cp config.sh.RTMA_NA_3km(or config.sh.RTMA_CONUS_3km)  config.sh
