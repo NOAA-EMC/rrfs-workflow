@@ -1,10 +1,10 @@
 #!/bin/bash
 source fix_rrfs_locations.sh #determine current platform
 MACHINE=${PLATFORM}
-version="v0.3.0"
+version="v0.4.0"
 ACCOUNT="nrtrr"
 RESERVATION="rrfsdet"
-EXPT_BASEDIR="/home/rtrr/RTMA/rtma.${version}"
+EXPT_BASEDIR="/home/role.rtrr/RTMA/rtma.${version}"
 EXPT_SUBDIR="RTMA_CONUS"
 
 if [[ -n $RESERVATION ]] ; then
@@ -57,7 +57,7 @@ TESTBED_FIELDS_FN2="testbed_fields_bgrd3d.txt"
 CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-fv3lam_rrfs.txt"
 CUSTOM_POST_PARAMS_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/params_grib2_tbl_new"
 NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
-NCL_HOME="/home/rtrr/RTMA/graphics"
+NCL_HOME="/home/role.rtrr/RTMA/graphics"
 COMINgfs=""
 
 FV3GFS_FILE_FMT_ICS="grib2"
@@ -94,9 +94,8 @@ l_obsprvdiag=.true.
 diag_radardbz=.false.
 write_diag_2=.true.
 bkgerr_vs=0.125                        #1.0 is default setting
-#bkgerr_hzscl=0.373,0.746,1.5         #default setting, no trailing ,
-bkgerr_hzscl=0.046625,0.09325,0.1875  #hzscl/8
-usenewgfsberror=.false.
+bkgerr_hzscl=0.7,1.4,2.80             #HRRR default: .373,0.746,1.5
+usenewgfsberror=.true.
 
 # &HYBRID_ENSEMBLE
 readin_localization=.true.     #if true, it overwrites the "beta1_inv/ens_h/ens_v" setting
@@ -121,16 +120,16 @@ i_precip_vertical_check=3
 #-------------------------------------------------------------------------------------
 #
 BERROR_FN="berror.rtma"      #under $FIX_GSI
-ANAVINFO_FN="anavinfo.rtma"
+ANAVINFO_FN="anavinfo.rrfs"
 CONVINFO_FN="convinfo.rtma"
 OBERROR_FN="errtable.rtma"
 HYBENSINFO_FN="hybens_info.rtma"
-AIRCRAFT_REJECT="/home/amb-verif/acars_RR/amdar_reject_lists"
+AIRCRAFT_REJECT="/home/role.amb-verif/acars_RR/amdar_reject_lists"
 SFCOBS_USELIST="/lfs4/BMC/amb-verif/rap_ops_mesonet_uselists"
 
 LBC_SPEC_INTVL_HRS="1"
 
-DATE_FIRST_CYCL="20230206"
+DATE_FIRST_CYCL="20230406"
 DATE_LAST_CYCL="20230831"
 CYCL_HRS=( "00" "12" )
 CYCL_HRS_SPINSTART=("03" "15")
@@ -221,7 +220,7 @@ NET="RTMA_CONUS" ##must start with "RTMA". ${NET}.t${cyc}z.bgdawpf${fhr}.${tmmar
 TAG="RTMA_CONUS" ## used by job names
 IS_RTMA="TRUE"
 NCORES_PER_NODE=40 #kjet
-FG_ROOTDIR="/home/rtrr/rrfs_b_nwges" #only needed by RTMA
+FG_ROOTDIR="/home/role.rtrr/rrfs_b_nwges" #only needed by RTMA
 PYTHON_GRAPHICS_YML_FN="rtma.yml"
 POST_FULL_MODEL_NAME="FV3R"
 POST_SUB_MODEL_NAME="NONE"
