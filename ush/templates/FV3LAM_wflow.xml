@@ -2513,31 +2513,43 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
 
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_ROOT</name><value><cyclestr>&CYCLE_BASEDIR;</cyclestr></value></envar>
     <envar><name>ENSCTRL_CYCLE_DIR</name><value><cyclestr>&ENSCTRL_CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>ENSCTRL_CYCLE_ROOT</name><value><cyclestr>&ENSCTRL_CYCLE_BASEDIR;</cyclestr></value></envar>
     <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>ENSCTRL_NWGES_DIR</name><value><cyclestr>&ENSCTRL_NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
 
     <dependency>
-      <and>
-        {%- if do_nonvar_cldanal %}
-        <and>
-        {%- for m in range(1, num_ens_members+1) %}
-          <taskdep task="&CLDANL_NONVAR_TN;_prod_mem{{ "%04d" % m }}"/>
-        {%- endfor %}
-        </and>
-        {%- elif do_enkf_radar_ref %}
-        <taskdep task="&ENKF_RADAR_REF_TN;"/>
-        {%- elif do_enkfupdate %}
-        <taskdep task="&RUN_ENKFUPDT_TN;"/>
-        {%- endif %}
-        <or>
-        <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H/nonvarcldanl_complete.txt</cyclestr></datadep>
-        <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
-        </or>
-      </and>
+        {%- if do_ensfcst %}
+          <and>
+          {%- for m in range(1, num_ens_members+1) %}
+            <taskdep task="&PREP_CYC_TN;_prod_mem{{ "%04d" % m }}"/>
+          {%- endfor %}
+            <datadep age="00:00:05:00"><cyclestr>&ENSCTRL_NWGES_BASEDIR;/@Y@m@d@H/fcst_fv3lam/INPUT/coupler.res</cyclestr></datadep>
+          </and>
+        {%- else %}
+         <and>
+          {%- if do_nonvar_cldanal %}
+          <and>
+          {%- for m in range(1, num_ens_members+1) %}
+            <taskdep task="&CLDANL_NONVAR_TN;_prod_mem{{ "%04d" % m }}"/>
+          {%- endfor %}
+          </and>
+          {%- elif do_enkf_radar_ref %}
+          <taskdep task="&ENKF_RADAR_REF_TN;"/>
+          {%- elif do_enkfupdate %}
+          <taskdep task="&RUN_ENKFUPDT_TN;"/>
+          {%- endif %}
+          <or>
+          <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H/nonvarcldanl_complete.txt</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
+          </or>
+         </and>
+        {% endif %}
     </dependency>
   </task>
 
@@ -2582,7 +2594,7 @@ MODULES_RUN_TASK_FP script.
           <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
           {%- endfor %}
           </or>
-          <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H/recenter/fcst_fv3lam/INPUT/recenter_complete.txt</cyclestr></datadep>
+          <taskdep task="&RUN_RECENTER_TN;"/>
          </and>
          <and>
           {%- for h in cycl_hrs_recenter %}
@@ -2639,8 +2651,13 @@ MODULES_RUN_TASK_FP script.
   
     <dependency>
       {%- if do_ensfcst %}
-      <taskdep task="&PREP_CYC_TN;_prod{{ uscore_ensmem_name }}"/>
-      {%- elif do_dacycle and do_refl2tten and do_nonvar_cldanal%}
+        {%- if do_recenter %}
+          <taskdep task="&RUN_RECENTER_TN;"/>
+        {%- else %}
+          <taskdep task="&PREP_CYC_TN;_prod{{ uscore_ensmem_name }}"/>
+        {%- endif %}
+      {%- else %}
+      {%- if do_dacycle and do_refl2tten and do_nonvar_cldanal%}
       <and>
         <taskdep task="&RADAR_REFL2TTEN_TN;_prod"/>
         <taskdep task="&CLDANL_NONVAR_TN;_prod"/>
@@ -2664,7 +2681,7 @@ MODULES_RUN_TASK_FP script.
           <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
           {%- endfor %}
           </or>
-          <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H/recenter/fcst_fv3lam/INPUT/recenter_complete.txt</cyclestr></datadep>
+          <taskdep task="&RUN_RECENTER_TN;"/>
          </and>
          <and>
           {%- for h in cycl_hrs_recenter %}
@@ -2682,6 +2699,7 @@ MODULES_RUN_TASK_FP script.
        {%- endif %}
       {%- else %}
       <taskdep task="&PREP_CYC_TN;_prod{{ uscore_ensmem_name }}"/>
+      {%- endif %}
       {%- endif %}
     </dependency>
 
@@ -2738,7 +2756,7 @@ MODULES_RUN_TASK_FP script.
           <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
           {%- endfor %}
           </or>
-          <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H/recenter/fcst_fv3lam/INPUT/recenter_complete.txt</cyclestr></datadep>
+          <taskdep task="&RUN_RECENTER_TN;"/>
          </and>
          <and>
           {%- for h in cycl_hrs_recenter %}

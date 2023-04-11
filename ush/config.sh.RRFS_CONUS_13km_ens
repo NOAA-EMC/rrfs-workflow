@@ -138,6 +138,8 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    DO_ENSPOST="FALSE"
    DO_ENSINIT="TRUE"
    NUM_ENS_MEMBERS_FCST=9
+   NNODES_RUN_RECENTER="3"
+   PPN_RUN_RECENTER="$(( ${NUM_ENS_MEMBERS} + 1 ))"
    if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
      NUM_ENS_MEMBERS=${NUM_ENS_MEMBERS_FCST}
 #     DO_SPPT=TRUE
@@ -148,8 +150,6 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    fi
    RADAR_REF_THINNING="2"
    ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_ens"
-   NNODES_RUN_RECENTER="3"
-   PPN_RUN_RECENTER="$(( ${NUM_ENS_MEMBERS} + 1 ))"
    CLEAN_OLDFCST_HRS="48"
    CLEAN_OLDSTMPPOST_HRS="48"
    cld_bld_hgt=0.0
@@ -158,6 +158,7 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
 fi
 
 RUN="rrfs_a_c13_ensda"
+RUN_ensctrl="rrfs"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   RUN="rrfs_a_c13_ensfcst"
 fi

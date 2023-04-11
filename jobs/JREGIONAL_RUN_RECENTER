@@ -89,6 +89,16 @@ if [ "${RUN_ENVIR}" = "nco" ]; then
   mkdir_vrfy -p "${COMOUT}"
 fi
 
+#-----------------------------------------------------------------------
+#
+# Specify the control anaylsis file location
+#
+#-----------------------------------------------------------------------
+if [[ ${DO_ENSFCST} == "TRUE" ]]; then
+  ctrlpath=${ENSCTRL_NWGES_DIR}
+else
+  ctrlpath=${ENSCTRL_CYCLE_DIR}
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -100,7 +110,8 @@ fi
 $SCRIPTSDIR/exregional_run_recenter.sh \
              cycle_type="${CYCLE_TYPE}" \
              comout="${COMOUT}" \
-             recenterdir="${recenterdir}" || \
+             recenterdir="${recenterdir}" \
+             ctrlpath="${ctrlpath}"  || \
 print_err_msg_exit "\
 Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
 #

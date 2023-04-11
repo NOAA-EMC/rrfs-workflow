@@ -55,7 +55,7 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_type" "comout" "recenterdir" )
+valid_args=( "cycle_type" "comout" "recenterdir" "ctrlpath" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -201,18 +201,18 @@ cp_vrfy -f ./fv3sar_tile1_mem001_sfcvar fv3sar_tile1_sfcvar
 #
 # link the control member 
 #
-dynvarfile_control=${ENSCTRL_CYCLE_DIR}/fcst_fv3lam/INPUT/fv_core.res.tile1.nc
-tracerfile_control=${ENSCTRL_CYCLE_DIR}/fcst_fv3lam/INPUT/fv_tracer.res.tile1.nc
-dynvarfile_control_spinup=${ENSCTRL_CYCLE_DIR}/fcst_fv3lam_spinup/INPUT/fv_core.res.tile1.nc
-tracerfile_control_spinup=${ENSCTRL_CYCLE_DIR}/fcst_fv3lam_spinup/INPUT/fv_tracer.res.tile1.nc
-if [ -r "${dynvarfile_control_spinup}" ] && [ -r "${tracerfile_control_spinup}" ] ; then
-  ln -sf ${ENSCTRL_CYCLE_DIR}/fcst_fv3lam_spinup/INPUT/fv_core.res.tile1.nc  ./control_dynvar
-  ln -sf ${ENSCTRL_CYCLE_DIR}/fcst_fv3lam_spinup/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
-  ln -sf ${ENSCTRL_CYCLE_DIR}/fcst_fv3lam_spinup/INPUT/sfc_data.nc  ./control_sfcvar
+dynvarfile_control=${ctrlpath}/fcst_fv3lam/INPUT/fv_core.res.tile1.nc
+tracerfile_control=${ctrlpath}/fcst_fv3lam/INPUT/fv_tracer.res.tile1.nc
+dynvarfile_control_spinup=${ctrlpath}/fcst_fv3lam_spinup/INPUT/fv_core.res.tile1.nc
+tracerfile_control_spinup=${ctrlpath}/fcst_fv3lam_spinup/INPUT/fv_tracer.res.tile1.nc
+if [ -r "${dynvarfile_control_spinup}" ] && [ -r "${tracerfile_control_spinup}" ] && [[ ${DO_ENSFCST} != "TRUE" ]] ; then
+  ln -sf ${ctrlpath}/fcst_fv3lam_spinup/INPUT/fv_core.res.tile1.nc  ./control_dynvar
+  ln -sf ${ctrlpath}/fcst_fv3lam_spinup/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
+  ln -sf ${ctrlpath}/fcst_fv3lam_spinup/INPUT/sfc_data.nc  ./control_sfcvar
 elif [ -r "${dynvarfile_control}" ] && [ -r "${tracerfile_control}" ] ; then
-  ln -sf ${ENSCTRL_CYCLE_DIR}/fcst_fv3lam/INPUT/fv_core.res.tile1.nc  ./control_dynvar
-  ln -sf ${ENSCTRL_CYCLE_DIR}/fcst_fv3lam/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
-  ln -sf ${ENSCTRL_CYCLE_DIR}/fcst_fv3lam/INPUT/sfc_data.nc  ./control_sfcvar
+  ln -sf ${ctrlpath}/fcst_fv3lam/INPUT/fv_core.res.tile1.nc  ./control_dynvar
+  ln -sf ${ctrlpath}/fcst_fv3lam/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
+  ln -sf ${ctrlpath}/fcst_fv3lam/INPUT/sfc_data.nc  ./control_sfcvar
 else
   print_err_msg_exit "Error: cannot find background: ${dynvarfile_control} or ${dynvarfile_control_spinup}"
 fi
