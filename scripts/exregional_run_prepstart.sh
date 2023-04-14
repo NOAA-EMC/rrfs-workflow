@@ -852,13 +852,18 @@ fi
 # conduct surface surgery to get new vtype and stype
 # 
 #-----------------------------------------------------------------------
-if [ ${YYYYMMDDHH} -eq 2023030403 ] ; then
+if [ ${YYYYMMDDHH} -eq 2100010100 ] ; then
   if [ ${cycle_type} == "spinup" ]; then
-    cp /mnt/lfs4/BMC/nrtrr/FIX_RRFS/lam/RRFS_CONUS_3km_C3359_svl/C3359_stypdom_double.nc .
-    cp /mnt/lfs4/BMC/nrtrr/FIX_RRFS/lam/RRFS_CONUS_3km_C3359_svl/C3359_vtypdom_double.nc .
-    cp sfc_data.tile7.halo0.nc sfc_data.tile7.halo0.nc_old
-    ncks -A -v stype C3359_stypdom_double.nc sfc_data.tile7.halo0.nc
-    ncks -A -v vtype C3359_vtypdom_double.nc sfc_data.tile7.halo0.nc
+    cp_vrfy sfc_data.tile7.halo0.nc sfc_data.tile7.halo0.nc_old
+    if [ -r ${FIXLAM}/stypdom_double.nc ]; then
+      ncks -A -v stype ${FIXLAM}/stypdom_double.nc sfc_data.tile7.halo0.nc
+    fi
+    if [ -r ${FIXLAM}/vtypdom_double.nc ]; then
+      ncks -A -v vtype ${FIXLAM}/vtypdom_double.nc sfc_data.tile7.halo0.nc
+    fi
+    if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
+      echo "${YYYYMMDDHH}(${cycle_type}): replace stype and vtype " >> ${EXPTDIR}/log.cycles
+    fi
   fi
 fi
 #

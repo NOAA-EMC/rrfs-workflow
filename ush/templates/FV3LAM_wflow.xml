@@ -3130,8 +3130,13 @@ MODULES_RUN_TASK_FP script.
 
       <dependency>
         <or>
+{%- if postproc_nsout_min > 0 %}
+          <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000-01-00"/>
+          <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000-01-00_long"/>
+{%- else %}
           <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000"/>
           <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000_long"/>
+{%- endif %}
         </or>
       </dependency>
     </task>
@@ -3161,8 +3166,13 @@ MODULES_RUN_TASK_FP script.
 
     <dependency>
       <or>
+{%- if postproc_nsout_min > 0 %}
+        <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000-01-00"/>
+        <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000-01-00_long"/>
+{%- else %}
         <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000"/>
         <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000_long"/>
+{%- endif %}
       </or>
     </dependency>
   </task>
@@ -3252,7 +3262,11 @@ MODULES_RUN_TASK_FP script.
          </and>
 
          <and>
+{%- if postproc_nsout_min > 0 %}
+           <taskdep task="&RUN_PRDGEN_TN;_f000-01-00"/>
+{%- else %}
            <taskdep task="&RUN_PRDGEN_TN;_f000"/>
+{%- endif %}
            <metataskdep metatask="python_maps" state="Dead"/>
            <taskdep task="python_skewts" state="Dead"/>
          </and>
@@ -3335,9 +3349,15 @@ MODULES_RUN_TASK_FP script.
       <dependency>
         <and>
           <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/&NET;.t@Hz.bgdawpf000.tm00.grib2</cyclestr></datadep>
+{%- if postproc_nsout_min > 0 %}
+          {%- for m in range(1, 10) %}
+          <taskdep task="&RUN_PRDGEN_TN;_mem{{ "%04d" % m }}_f000-01-00"/>
+          {%- endfor %}
+{%- else %}
           {%- for m in range(1, 10) %}
           <taskdep task="&RUN_PRDGEN_TN;_mem{{ "%04d" % m }}_f000"/>
           {%- endfor %}
+{%- endif %}
         </and>
       </dependency>
     </task>

@@ -73,7 +73,6 @@ FV3_HRRR:
   gfs_physics_nml: 
     <<: *gsd_sar_phys
     cdmbgwd: [3.5, 1.0]
-    diag_flux: false
     do_gsl_drag_ls_bl: true
     do_gsl_drag_ss: true
     do_gsl_drag_tofd: true
