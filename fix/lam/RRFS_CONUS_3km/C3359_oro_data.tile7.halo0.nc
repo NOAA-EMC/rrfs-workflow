@@ -1,1 +1,1 @@
-../../.agent/lam/RRFS_CONUS_3km_C3359/C3359_oro_data.tile7.halo0.nc
+../../.agent/lam/RRFS_CONUS_3km_C3359_Lake_fracSV/C3359_oro_data.tile7.halo0.nc
