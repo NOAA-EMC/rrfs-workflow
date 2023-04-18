@@ -1,28 +1,28 @@
 #!/bin/bash
 source fix_rrfs_locations.sh #determine current platform
 MACHINE=${PLATFORM}
-version="v0.3.1" # odd for NA; even for CONUS
+version="v0.4.1" # odd for NA; even for CONUS
 ACCOUNT="nrtrr"
 RESERVATION="rrfsdet"
-EXPT_BASEDIR="/home/rtrr/RTMA"
+EXPT_BASEDIR="/home/role.rtrr/RTMA/rtma.${version}"
 EXPT_SUBDIR="RTMA_NA"
 
 if [[ -n $RESERVATION ]] ; then
   ACCOUNT=rtrr
   SERVICE_ACCOUNT=rtrr
+  HPSS_ACCOUNT=nrtrr
   PARTITION_DEFAULT=kjet
   PARTITION_FCST=kjet
   PARTITION_GRAPHICS=kjet
   PARTITION_ANALYSIS=kjet
   PARTITION_PRDGEN=kjet
   PARTITION_POST=kjet
-  
   QUEUE_DEFAULT="rt"
   QUEUE_FCST="rt"
   QUEUE_ANALYSIS="rt"
   QUEUE_PRDGEN="rt"
   QUEUE_GRAPHICS="rt"
-  QUEUE_HPSS="rt"
+  QUEUE_HPSS="batch"
   QUEUE_POST="rt"
   RESERVATION_POST="rrfsdet"
   NNODES_MAKE_ICS="3"
@@ -57,7 +57,7 @@ TESTBED_FIELDS_FN2="testbed_fields_bgrd3d.txt"
 CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-fv3lam_rrfs.txt"
 CUSTOM_POST_PARAMS_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/params_grib2_tbl_new"
 NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
-NCL_HOME="/home/rtrr/RTMA/graphics"
+NCL_HOME="/home/role.rtrr/RTMA/graphics"
 COMINgfs=""
 
 FV3GFS_FILE_FMT_ICS="grib2"
@@ -94,9 +94,8 @@ l_obsprvdiag=.true.
 diag_radardbz=.false.
 write_diag_2=.true.
 bkgerr_vs=0.125                        #1.0 is default setting
-#bkgerr_hzscl=0.373,0.746,1.5         #default setting, no trailing ,
-bkgerr_hzscl=0.046625,0.09325,0.1875  #hzscl/8
-usenewgfsberror=.false.
+bkgerr_hzscl=0.7,1.4,2.80             #HRRR default: .373,0.746,1.5
+usenewgfsberror=.true.
 
 # &HYBRID_ENSEMBLE
 readin_localization=.true.     #if true, it overwrites the "beta1_inv/ens_h/ens_v" setting
@@ -121,16 +120,16 @@ i_precip_vertical_check=3
 #-------------------------------------------------------------------------------------
 #
 BERROR_FN="berror.rtma"      #under $FIX_GSI
-ANAVINFO_FN="anavinfo.rtma"
+ANAVINFO_FN="anavinfo.rrfs"
 CONVINFO_FN="convinfo.rtma"
 OBERROR_FN="errtable.rtma"
 HYBENSINFO_FN="hybens_info.rtma"
-AIRCRAFT_REJECT="/home/amb-verif/acars_RR/amdar_reject_lists"
+AIRCRAFT_REJECT="/home/role.amb-verif/acars_RR/amdar_reject_lists"
 SFCOBS_USELIST="/lfs4/BMC/amb-verif/rap_ops_mesonet_uselists"
 
 LBC_SPEC_INTVL_HRS="1"
 
-DATE_FIRST_CYCL="20230206"
+DATE_FIRST_CYCL="20230416"
 DATE_LAST_CYCL="20230831"
 CYCL_HRS=( "00" "12" )
 CYCL_HRS_SPINSTART=("03" "15")
@@ -152,7 +151,7 @@ PREEXISTING_DIR_METHOD="upgrade"
 #BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 06:00:00"
 PROD_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 01:00:00"
 #PRODLONG_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 12:00:00"
-#ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}0700 ${DATE_LAST_CYCL}2300 24:00:00"
+ARCHIVE_CYCLEDEF="$PROD_CYCLEDEF"
 if [[ $DO_SPINUP == "TRUE" ]] ; then
   SPINUP_CYCLEDEF="00 03-08,15-20 ${CYCLEDAY} ${CYCLEMONTH} ${STARTYEAR} *"
 fi
@@ -220,10 +219,10 @@ NET="RTMA_NA" ##must start with "RTMA". ${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.
 TAG="RTMA_NA" ## used by job names
 IS_RTMA="TRUE"
 NCORES_PER_NODE=40 #kjet
-FG_ROOTDIR="/home/rtrr/rrfs_b_nwges" #only needed by RTMA
+FG_ROOTDIR="/home/role.rtrr/rrfs_b_nwges" #only needed by RTMA
 PYTHON_GRAPHICS_YML_FN="rtma.yml"
 POST_FULL_MODEL_NAME="FV3R"
-POST_SUB_MODEL_NAME="NONE"
+POST_SUB_MODEL_NAME="RTMA"
 ARCHIVEDIR="/5year/BMC/wrfruc/rtma_b"
 MODEL="RTMA_B" #used by NCL
 RUN="RTMA_NA"
@@ -261,6 +260,7 @@ if [[ "$MACHINE" == "wcoss2" ]]; then
   binary_diag=.true.
 
   ARCHIVEDIR="/NCEPDEV/emc-meso/1year/${USER}"
+  ARCHIVE_CYCLEDEF="00 01 01 01 2100 *"
 
   OBSPATH_NSSLMOSIAC="/lfs/h1/ops/prod/dcom/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC"
   AIRCRAFT_REJECT="/lfs/h2/emc/da/noscrub/edward.colon/NOAA_3drtma_legacy/fix/obsuselist/amdar_reject_lists"
@@ -299,7 +299,7 @@ if [[ "$MACHINE" == "wcoss2" ]]; then
   LIGHTNING_ROOT="/lfs/h1/ops/prod/com/obsproc/v1.1"
 
   STMP="/lfs/h2/emc/ptmp/${USER}/3drtma/rtma.${version}/stmp"
-  PTMP="/lfs/h2/emc/ptmp/${USER}/3drtma/rtma.${version}" 
+  PTMP="/lfs/h2/emc/ptmp/${USER}/3drtma/rtma.${version}"
   NWGES="/lfs/h2/emc/ptmp/${USER}/3drtma/rtma.${version}/nwges"
 fi
 

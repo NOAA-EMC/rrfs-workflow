@@ -1,7 +1,7 @@
 #!/bin/bash
 source fix_rrfs_locations.sh #determine current platform
 MACHINE=${PLATFORM}
-version="v0.4.0"
+version="v0.4.2"
 ACCOUNT="nrtrr"
 RESERVATION="rrfsdet"
 EXPT_BASEDIR="/home/role.rtrr/RTMA/rtma.${version}"
@@ -29,8 +29,12 @@ if [[ -n $RESERVATION ]] ; then
   PPN_MAKE_ICS="20"
   NNODES_MAKE_LBCS="3"
   PPN_MAKE_LBCS="20"
-  NNODES_RUN_POST="1"
+  NNODES_RUN_POST="2"
   PPN_RUN_POST="40"
+  PPN_PROC_RADAR="20"
+  LAYOUT_X=15
+  LAYOUT_Y=40
+  NCORES_RUN_ANAL=200
 fi
 
 OBSPATH_NSSLMOSIAC=/public/data/radar/nssl/mrms/conus
@@ -129,7 +133,7 @@ SFCOBS_USELIST="/lfs4/BMC/amb-verif/rap_ops_mesonet_uselists"
 
 LBC_SPEC_INTVL_HRS="1"
 
-DATE_FIRST_CYCL="20230406"
+DATE_FIRST_CYCL="20230415"
 DATE_LAST_CYCL="20230831"
 CYCL_HRS=( "00" "12" )
 CYCL_HRS_SPINSTART=("03" "15")
