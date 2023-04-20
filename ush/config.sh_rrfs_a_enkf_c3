@@ -172,8 +172,8 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
 
      DO_SPP="TRUE"
      DO_SPPT="TRUE"
-     DO_SKEB="TRUE"
-     SPPT_MAG="0.6"
+     DO_SKEB="FALSE"
+     SPPT_MAG="0.7"
      DO_LSM_SPP="TRUE"
 
    fi

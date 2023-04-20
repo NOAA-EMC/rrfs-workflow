@@ -117,7 +117,7 @@ START_TIME_LIGHTNINGNC="00:55:00"
 START_TIME_PROCSMOKE="00:55:00"
 
 if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then 
-  DT_ATMOS=60
+  DT_ATMOS=36
   ADDNL_OUTPUT_GRIDS=()
   TILE_LABELS="CONUS REGIONS"
   TILE_SETS="full NE,NC,NW,SE,SC,SW"
@@ -332,7 +332,7 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then
 fi
 
 if [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then 
-  DT_ATMOS=60
+  DT_ATMOS=36
   CCPP_PHYS_SUITE="FV3_HRRR"
   ADDNL_OUTPUT_GRIDS=( "hrrr" "hrrrak" )
   TILE_LABELS="NA hrrr_regions1 hrrr_regions2 hrrr_tiles1 hrrr_tiles2 hrrr_tiles3 \
