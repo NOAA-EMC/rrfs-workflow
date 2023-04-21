@@ -17,3 +17,6 @@
 :var discipline=3 center=7 local_table=1 parmcat=192 parm=83:top of atmosphere:
 :var discipline=3 center=7 local_table=1 parmcat=192 parm=84:top of atmosphere:
 :var discipline=3 center=7 local_table=1 parmcat=192 parm=85:top of atmosphere:
+:var discipline=0 master_table=2 parmcat=17 parm=0:1 m above ground:
+:var discipline=0 master_table=2 parmcat=17 parm=0:2 m above ground:
+:LTNG:entire atmosphere:
