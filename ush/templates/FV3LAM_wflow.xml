@@ -1777,7 +1777,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>TMMARK</name><value>tm00</value></envar>
 
       <dependency>
-        <datadep age="02:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam_spinup/logf#fhr#</cyclestr></datadep>
+        <datadep age="02:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam_spinup/log.atm.f#fhr#</cyclestr></datadep>
       </dependency>
 
     </task>
@@ -2914,7 +2914,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>TMMARK</name><value>tm00</value></envar>
 
       <dependency>
-          <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/logf#fhr#</cyclestr></datadep>
+          <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/log.atm.f#fhr#</cyclestr></datadep>
       </dependency>
 
     </task>
@@ -2961,7 +2961,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>TMMARK</name><value>tm00</value></envar>
 
       <dependency>
-         <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/logf#fhr#</cyclestr></datadep>
+         <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/log.atm.f#fhr#</cyclestr></datadep>
       </dependency>
 
     </task>
@@ -3091,7 +3091,7 @@ MODULES_RUN_TASK_FP script.
         <envar><name>TMMARK</name><value>tm00</value></envar>
 
         <dependency>
-          <datadep age="00:10"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H/fcst_fv3lam/logf{{ "%03d" % postproc_long_len_hrs }}</cyclestr></datadep>
+          <datadep age="00:10"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H/fcst_fv3lam/log.atm.f{{ "%03d" % postproc_long_len_hrs }}</cyclestr></datadep>
         </dependency>
 
   </task>
