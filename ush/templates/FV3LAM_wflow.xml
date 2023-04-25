@@ -1163,7 +1163,7 @@ MODULES_RUN_TASK_FP script.
       <dependency>
         <and>
           <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
-          <datadep age="00:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam_ensinit/RESTART/coupler.res</cyclestr></datadep>
+          <datadep age="00:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam_ensinit/RESTART/@Y@m@d.@H00{{ dt_atmos }}.coupler.res</cyclestr></datadep>
         </and>
       </dependency>
 

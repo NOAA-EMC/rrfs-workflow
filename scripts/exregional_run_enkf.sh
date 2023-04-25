@@ -356,7 +356,7 @@ use_gfs_nemsio=.true.,
 	cat > enkf.nml << EOFnml
 	&nam_enkf
 	datestring="$vlddate",datapath="$enkfworkdir/",
-	analpertwtnh=0.85,analpertwtsh=0.85,analpertwttr=0.85,
+	analpertwtnh=1.10,analpertwtsh=1.10,analpertwttr=1.10,
 	covinflatemax=1.e2,covinflatemin=1,pseudo_rh=.true.,iassim_order=0,
         corrlengthnh=$CORRLENGTH,corrlengthsh=$CORRLENGTH,corrlengthtr=$CORRLENGTH,
         lnsigcutoffnh=$LNSIGCUTOFF,lnsigcutoffsh=$LNSIGCUTOFF,lnsigcutofftr=$LNSIGCUTOFF,

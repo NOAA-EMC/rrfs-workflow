@@ -302,7 +302,11 @@ else
 #   But the restart files for the forecast length has a name like: fv_core.res.tile1.nc
 #   So the defination of restart_prefix needs a "." at the end.
 #
-  restart_prefix="${YYYYMMDD}.${HH}0000."
+  if [ ${cycle_subtype} == "spinup" ] ; then
+    restart_prefix="${YYYYMMDD}.${HH}00${DT_ATMOS}."
+  else
+    restart_prefix="${YYYYMMDD}.${HH}0000."
+  fi
 
   if [ ${cycle_subtype} == "spinup" ] ; then
 # point to the 0-h cycle for the warm start from the 1 timestep restart files

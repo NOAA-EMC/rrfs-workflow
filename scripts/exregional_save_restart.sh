@@ -109,7 +109,12 @@ filelistcold="gfs_data.tile7.halo0.nc sfc_data.tile7.halo0.nc"
 n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
-restart_prefix=${save_yyyy}${save_mm}${save_dd}.${save_hh}0000
+if [[ ${cycle_subtype} == "ensinit" ]] ; then
+  restart_prefix=${save_yyyy}${save_mm}${save_dd}.${save_hh}00${DT_ATMOS}
+else
+  restart_prefix=${save_yyyy}${save_mm}${save_dd}.${save_hh}0000
+fi
+
 if [ ! -r ${nwges_dir}/INPUT/gfs_ctrl.nc ]; then
   cp_vrfy $run_dir/INPUT/gfs_ctrl.nc ${nwges_dir}/INPUT/gfs_ctrl.nc
   if [ "${DO_SAVE_INPUT}" = TRUE ]; then
@@ -171,7 +176,7 @@ else
   print_info_msg "$VERBOSE" " The forecast length for cycle (\"${hh}\") is
                  ( \"${FCST_LEN_HRS_thiscycle}\") "
 
-  if [ -r "$run_dir/RESTART/coupler.res" ] && ([ ${fhr} -eq ${FCST_LEN_HRS_thiscycle} ] || [ ${cycle_subtype} == "ensinit" ]) ; then
+  if [ -r "$run_dir/RESTART/${restart_prefix}.coupler.res" ] && ([ ${fhr} -eq ${FCST_LEN_HRS_thiscycle} ] || [ ${cycle_subtype} == "ensinit" ]) ; then
     if [ "${IO_LAYOUT_Y}" == "1" ]; then
       for file in ${filelistn}; do
         mv_vrfy $run_dir/RESTART/${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}

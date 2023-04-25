@@ -461,6 +461,7 @@ settings="\
   'saveda_cycledef': ${SAVEDA_CYCLEDEF}
   'recenter_cycledef': ${RECENTER_CYCLEDEF}
   'archive_cycledef': ${ARCHIVE_CYCLEDEF}
+  'dt_atmos': ${DT_ATMOS}
 #
 # boundary, forecast, and post process length.
 #
