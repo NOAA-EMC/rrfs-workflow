@@ -556,10 +556,13 @@ and analysis or forecast (anl_or_fcst):
     "GEFS")
       fcst_hh=( $( printf "%02d " "${lbc_spec_fhrs[@]}" ) )
       prefix="${yy}${ddd}${hh}${mn}${fcst_mn}"
+      prefix2=""
       if [ "${MACHINE}" = "WCOSS2" ] ; then
         prefix="${varname_extrn_mdl_memhead}"".t${hh}z.pgrb2b.0p50.f0"
+        prefix2="${varname_extrn_mdl_memhead}"".t${hh}z.pgrb2a.0p50.f0"
       fi
       fns_on_disk=( "${fcst_hh[@]/#/$prefix}" )
+      fns_on_disk2=( "${fcst_hh[@]/#/$prefix2}" )
       fns_in_arcv=( "${fcst_hh[@]/#/$prefix}" )
       ;;
 

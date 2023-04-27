@@ -1,5 +1,5 @@
 MACHINE="wcoss2"
-version="v0.4.0"
+version="v0.5.0"
 ACCOUNT="RRFS_DEV"
 #RESERVATION="rrfsdet"
 EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/$version/"
@@ -40,12 +40,12 @@ BOUNDARY_PROC_GROUP_NUM="72"
 
 # avaialble retro period:
 # 20210511-20210531; 20210718-20210801
-DATE_FIRST_CYCL="20230301"
-DATE_LAST_CYCL="20230331"
+DATE_FIRST_CYCL="20230501"
+DATE_LAST_CYCL="20230531"
 CYCL_HRS=( "00" "12" )
 CYCL_HRS_SPINSTART=("03" "15")
 CYCL_HRS_PRODSTART=("09" "21")
-CYCLEMONTH="03"
+CYCLEMONTH="05"
 CYCLEDAY="*"
 
 STARTYEAR=${DATE_FIRST_CYCL:0:4}
@@ -80,10 +80,10 @@ POSTPROC_LEN_HRS="18"
 POSTPROC_LONG_LEN_HRS="60"
 NFHOUT_HF="1"
 # 15 min output upto 18 hours
-NFHMAX_HF="18"
-NFHOUT="1"
-NSOUT="15"
-NSOUT_MIN="15"
+#NFHMAX_HF="18"
+#NFHOUT="1"
+#NSOUT="15"
+#NSOUT_MIN="15"
 
 USE_RRFSE_ENS="TRUE"
 CYCL_HRS_HYB_FV3LAM_ENS=("00" "01" "02" "03" "04" "05" "06" "07" "08" "09" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "23")
@@ -102,9 +102,9 @@ EXTRN_MDL_NAME_LBCS="FV3GFS"
 envir="para"
 
 NET="rrfs_a"
-TAG="c3v40"
+TAG="c3v50"
 
-ARCHIVEDIR="/NCEPDEV/emc-meso/1year/emc.lam"
+ARCHIVEDIR="/NCEPDEV/emc-meso/1year/emc.lam/${TAG}"
 NCL_REGION="conus"
 MODEL="rrfs_a"
 RUN="rrfs"

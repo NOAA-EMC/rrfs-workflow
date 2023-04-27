@@ -90,6 +90,7 @@ case $MACHINE in
   "WCOSS2")
     module load wgrib2/2.0.8
     module list
+    wgrib2=/apps/ops/prod/libs/intel/19.1.3.304/wgrib2/2.0.8_wmo/bin/wgrib2
     ;;  
 
   "HERA")
@@ -168,13 +169,23 @@ model files on disk (extrn_mdl_fns_on_disk) in the source directory
   extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
   extrn_mdl_fns_on_disk = ${extrn_mdl_fns_on_disk_str}"
 
-  for fps in "${extrn_mdl_fps_on_disk[@]}" ; do
+ length=${#extrn_mdl_fps_on_disk[@]}
+
+  for (( j=0; j<length; j++ ));
+  do
+    fps=${extrn_mdl_fps_on_disk[$j]}
+    fps2=${extrn_mdl_fps_on_disk2[$j]}
+    fps_name=${extrn_mdl_fns_on_disk[$j]}
     if [ -f "$fps" ]; then
       #
       # Increment the counter that keeps track of the number of external
       # model files found on disk and print out an informational message.
       #
-      ln_vrfy -sf -t ${extrn_mdl_staging_dir} ${fps}
+      cp_vrfy ${fps} ${extrn_mdl_staging_dir}/${fps_name}
+      if [ -f "$fps2" ]; then
+        more ${fps2} >>  ${extrn_mdl_staging_dir}/${fps_name}
+      fi
+
      print_info_msg "
 File fps exists on disk:
   fps = \"$fps\""
