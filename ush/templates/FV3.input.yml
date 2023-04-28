@@ -99,6 +99,7 @@ FV3_HRRR:
     iovr: 3
     ldiag_ugwp: false
     lgfdlmprad: false
+    lightning_threat: true
     mosaic_lu: 1
     mosaic_soil: 1
     isncond_opt: 2
