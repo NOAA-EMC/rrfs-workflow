@@ -971,7 +971,11 @@ fi
 #
 # comment out for testing
 
-$APRUN ./gsi.x < gsiparm.anl > stdout 2>&1 || print_err_msg_exit "\
+$APRUN ./gsi.x < gsiparm.anl > stdout 2>&1 ;  errcode=$?
+echo "----------------------begin of stdout--------------"
+cat ./stdout  #log stdout whether gsi.x succeeds or not
+echo "----------------------end of stdout----------------"
+[ $errcode -eq 0 ]  || print_err_msg_exit "\
 Call to executable to run GSI returned with nonzero exit code."
 
 if [ ${anav_type} == "radardbz" ]; then
