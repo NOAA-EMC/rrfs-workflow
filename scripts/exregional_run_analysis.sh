@@ -503,13 +503,19 @@ if [[ ${gsi_type} == "OBSERVER" || ${anav_type} == "conv" || ${anav_type} == "co
   obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.nexrad.tm00.bufr_d
   obs_files_target[${obs_number}]=l2rwbufr
 
-  if [[ ${DO_ENKF_RADAR_REF} == "TRUE" || ${anav_type} == "conv_dbz" ]]; then
+  if [ ${anav_type} == "conv_dbz" ]; then
     obs_number=${#obs_files_source[@]}
     if [ ${cycle_type} == "spinup" ]; then
       obs_files_source[${obs_number}]=${cycle_dir}/process_radarref_spinup/00/Gridded_ref.nc
     else
       obs_files_source[${obs_number}]=${cycle_dir}/process_radarref/00/Gridded_ref.nc
     fi
+    obs_files_target[${obs_number}]=dbzobs.nc
+  fi
+
+  if [ ${DO_ENKF_RADAR_REF} == "TRUE" ]; then
+    obs_number=${#obs_files_source[@]}
+    obs_files_source[${obs_number}]=${cycle_dir}/process_radarref_enkf/00/Gridded_ref.nc
     obs_files_target[${obs_number}]=dbzobs.nc
   fi
 

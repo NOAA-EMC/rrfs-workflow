@@ -110,7 +110,8 @@ n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
 if [[ ${cycle_subtype} == "ensinit" ]] ; then
-  restart_prefix=${save_yyyy}${save_mm}${save_dd}.${save_hh}00${DT_ATMOS}
+  #restart_prefix=${save_yyyy}${save_mm}${save_dd}.${save_hh}00${DT_ATMOS}
+  restart_prefix=${save_yyyy}${save_mm}${save_dd}.${save_hh}0100
 else
   restart_prefix=${save_yyyy}${save_mm}${save_dd}.${save_hh}0000
 fi
