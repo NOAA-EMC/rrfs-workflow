@@ -3,8 +3,8 @@ PRMSL:mean sea level:
 REFC:entire atmosphere (considered as a single layer):
 REFD:263 K level:
 GUST:surface:
-MAXUVV:100-1000 mb above ground:
-MAXDVV:100-1000 mb above ground:
+MAXUVV:100-1000 mb:
+MAXDVV:100-1000 mb:
 REFD:1000 m above ground:
 MAXREF:1000 m above ground:
 MAXREF:263 K level:
