@@ -303,8 +303,7 @@ else
 #   So the defination of restart_prefix needs a "." at the end.
 #
   if [ ${cycle_subtype} == "spinup" ] ; then
-    #restart_prefix="${YYYYMMDD}.${HH}00${DT_ATMOS}."
-    restart_prefix="${YYYYMMDD}.${HH}0100."
+    restart_prefix=$( date "+%Y%m%d.%H%M%S" -d "${YYYYMMDD} ${HH} + ${DT_ATMOS} seconds" ).
   else
     restart_prefix="${YYYYMMDD}.${HH}0000."
   fi
