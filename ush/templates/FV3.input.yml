@@ -117,7 +117,7 @@ FV3_HRRR:
     coarsepm_settling : 1
     smoke_forecast : 0
     aero_ind_fdb : false
-    aero_dir_fdb : false
+    aero_dir_fdb : true
     addsmoke_flag : 1
     wetdep_ls_opt : 1
     do_plumerise : true
@@ -200,7 +200,7 @@ FV3_HRRR_gf:
     coarsepm_settling : 1
     smoke_forecast : 0
     aero_ind_fdb : false
-    aero_dir_fdb : false
+    aero_dir_fdb : true
     addsmoke_flag : 1
     wetdep_ls_opt : 1
     do_plumerise : true

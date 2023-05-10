@@ -132,6 +132,9 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
       NNODES_RUN_POST="2"
       PPN_RUN_POST="40"
       PPN_PROC_RADAR="20"
+      LAYOUT_X=15
+      LAYOUT_Y=40
+      NCORES_RUN_ANAL=200
     fi
   fi
 
