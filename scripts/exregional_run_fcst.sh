@@ -301,6 +301,7 @@ fi
 # we use below.
 #
 if [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ] || \
+   [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR_gf" ]  || \
    [ "${CCPP_PHYS_SUITE}" = "FV3_RAP" ]  || \
    [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_v15_thompson_mynn_lam3km" ]; then
 

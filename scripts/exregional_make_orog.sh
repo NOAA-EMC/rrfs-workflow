@@ -312,7 +312,7 @@ mv_vrfy "${raw_orog_fp_orig}" "${raw_orog_fp}"
 #
 #-----------------------------------------------------------------------
 #
-if [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ]; then
+if [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR_gf" ] || [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ]; then
   cp_vrfy ${GWD_HRRRsuite_DIR}/${CRES}*_ls.*.nc ${OROG_DIR}
   cp_vrfy ${GWD_HRRRsuite_DIR}/${CRES}*_ss.*.nc ${OROG_DIR}
 fi

@@ -121,7 +121,7 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
   ADDNL_OUTPUT_GRIDS=()
   TILE_LABELS="CONUS REGIONS"
   TILE_SETS="full NE,NC,NW,SE,SC,SW"
-  CCPP_PHYS_SUITE="FV3_HRRR"
+  CCPP_PHYS_SUITE="FV3_HRRR_gf"
 
   if [[ $MACHINE == "jet" ]] ; then
     if [[ -n $RESERVATION ]] ; then
@@ -238,7 +238,7 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then
   ADDNL_OUTPUT_GRIDS=()
   TILE_LABELS="CONUS REGIONS"
   TILE_SETS="full NE,NC,NW,SE,SC,SW"
-  CCPP_PHYS_SUITE="FV3_HRRR"
+  CCPP_PHYS_SUITE="FV3_HRRR_gf"
 
   if [[ $MACHINE == "wcoss2" ]] ; then
     LAYOUT_X="7"
@@ -333,7 +333,7 @@ fi
 
 if [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then 
   DT_ATMOS=60
-  CCPP_PHYS_SUITE="FV3_HRRR"
+  CCPP_PHYS_SUITE="FV3_HRRR_gf"
   ADDNL_OUTPUT_GRIDS=( "hrrr" "hrrrak" )
   TILE_LABELS="NA hrrr_regions1 hrrr_regions2 hrrr_tiles1 hrrr_tiles2 hrrr_tiles3 \
     hrrr_tiles4 hrrrak_tiles"
