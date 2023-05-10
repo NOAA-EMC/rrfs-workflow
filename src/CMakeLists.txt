@@ -9,7 +9,7 @@ ExternalProject_Add(UFS_UTILS
   )
 
 if(NOT CCPP_SUITES)
-  set(CCPP_SUITES "FV3_HRRR,FV3_RAP,FV3_GFS_v15_thompson_mynn_lam3km")
+  set(CCPP_SUITES "FV3_HRRR,FV3_HRRR_gf,FV3_RAP,FV3_GFS_v15_thompson_mynn_lam3km")
 endif()
 
 ExternalProject_Add(ufs_weather_model
