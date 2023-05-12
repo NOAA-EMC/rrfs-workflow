@@ -220,7 +220,7 @@ python -u ${PYTHON_GRAPHICS_DIR}/create_graphics.py \
   -n ${SLURM_CPUS_ON_NODE:-12} \
   -o ${run_dir} \
   -s ${CDATE} \
-  -w ${wait_time:-10} \
+  -w ${wait_time:-30} \
   -z ${zip_dir} \
   ${extra_args} ||
 print_err_msg_exit "\

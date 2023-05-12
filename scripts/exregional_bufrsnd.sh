@@ -255,7 +255,7 @@ icnt=1
 # wait for model restart file
 while [ $icnt -lt 1000 ]
 do
-   if [ -s $INPUT_DATA/logf0${fhr} ]
+   if [ -s $INPUT_DATA/log.atm.f0${fhr} ]
    then
       break
    else
@@ -413,6 +413,43 @@ cd ${COMOUT}/bufr.${NEST}${MODEL}${cyc}
 # Tar and gzip the individual bufr files and send them to /com
   tar -cf - . | /usr/bin/gzip > ../rrfs.t${cyc}z.${RUNLOC}.bufrsnd.tar.gz
 
+GEMPAKrrfs=/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/gempak
+cp $GEMPAKrrfs/fix/snrrfs.prm snrrfs.prm
+err1=$?
+cp $GEMPAKrrfs/fix/sfrrfs.prm_aux sfrrfs.prm_aux
+err2=$?
+cp $GEMPAKrrfs/fix/sfrrfs.prm sfrrfs.prm
+err3=$?
+
+mkdir -p $COMOUT/gempak
+#cd $COMOUT/gempak
+
+if [ $err1 -ne 0 -o $err2 -ne 0 -o $err3 -ne 0 ]
+then
+        msg="FATAL ERROR: Missing GEMPAK BUFR tables"
+        exit
+
+fi
+
+
+#  Set input file name.
+
+INFILE=$COMOUT/rrfs.t${cyc}z.${NEST}${MODEL}.class1.bufr
+export INFILE
+
+outfilbase=rrfs_${MODEL}_${PDY}${cyc}
+
+namsnd << EOF > /dev/null
+SNBUFR   = $INFILE
+SNOUTF   = ${outfilbase}.snd
+SFOUTF   = ${outfilbase}.sfc+
+SNPRMF   = snrrfs.prm
+SFPRMF   = sfrrfs.prm
+TIMSTN   = 61/1600
+r
+
+exit
+EOF
 #files=`ls`
 #for fl in $files
 #do

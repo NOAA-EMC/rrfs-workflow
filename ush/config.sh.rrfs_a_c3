@@ -108,7 +108,6 @@ ARCHIVEDIR="/NCEPDEV/emc-meso/1year/emc.lam/${TAG}"
 NCL_REGION="conus"
 MODEL="rrfs_a"
 RUN="rrfs"
-COMINgfs=""
 
 . set_rrfs_config.sh
 
