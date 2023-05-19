@@ -3354,7 +3354,7 @@ MODULES_RUN_TASK_FP script.
 
       <dependency>
         <and>
-          <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/&NET;.t@Hz.bgdawpf000.tm00.grib2</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H/&NET;.t@Hz.bgdawpf000.tm00.grib2</cyclestr></datadep>
 {%- if postproc_nsout_min > 0 %}
           {%- for m in range(1, 10) %}
           <taskdep task="&RUN_PRDGEN_TN;_mem{{ "%04d" % m }}_f000-01-00"/>
@@ -3400,7 +3400,7 @@ MODULES_RUN_TASK_FP script.
 
       <dependency>
         <and>
-          <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/&NET;.t@Hz.bgsfcf#fhr#.tm00.grib2</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H/&NET;.t@Hz.bgsfcf#fhr#.tm00.grib2</cyclestr></datadep>
           {%- for m in range(1, num_ens_members_fcst+1) %}
           <taskdep task="&RUN_PRDGEN_TN;_mem{{ "%04d" % m }}_f#fhr#"/>
           {%- endfor %}
