@@ -78,3 +78,8 @@ VGRD:30-0 mb above ground:
 VVEL:30-0 mb above ground:
 4LFTX:180-0 mb above ground:
 SDEN:surface:
+MASSDEN:8 m above ground:
+COLMD:entire atmosphere (considered as a single layer):
+AOTK:entire atmosphere (considered as a single layer):
+AEMFLX:surface:
+FWINX:surface:
