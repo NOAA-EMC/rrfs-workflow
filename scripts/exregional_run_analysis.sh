@@ -546,6 +546,7 @@ fi
 # including satellite radiance data
 #
 #-----------------------------------------------------------------------
+if [[ ${gsi_type} == "OBSERVER" || ${anav_type} == "conv" || ${anav_type} == "conv_dbz" ]]; then
 if [ ${DO_RADDA} == "TRUE" ]; then
 
   obs_number=${#obs_files_source[@]}
@@ -608,6 +609,7 @@ if [ ${DO_RADDA} == "TRUE" ]; then
   obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}z.sevcsr.tm00.bufr_d
   obs_files_target[${obs_number}]=sevcsr
 
+fi
 fi
 
 obs_number=${#obs_files_source[@]}

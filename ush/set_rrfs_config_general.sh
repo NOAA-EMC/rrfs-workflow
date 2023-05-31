@@ -122,6 +122,7 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
   TILE_LABELS="CONUS REGIONS"
   TILE_SETS="full NE,NC,NW,SE,SC,SW"
   CCPP_PHYS_SUITE="FV3_HRRR"
+  PPN_RUN_POSTANAL="5"
 
   if [[ $MACHINE == "jet" ]] ; then
     if [[ -n $RESERVATION ]] ; then
@@ -242,6 +243,7 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then
   TILE_LABELS="CONUS REGIONS"
   TILE_SETS="full NE,NC,NW,SE,SC,SW"
   CCPP_PHYS_SUITE="FV3_HRRR_gf"
+  PPN_RUN_POSTANAL="5"
 
   if [[ $MACHINE == "wcoss2" ]] ; then
     LAYOUT_X="7"
@@ -343,6 +345,7 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then
   TILE_SETS="full SE,SC,SW NE,NC,NW ATL,CA-NV,CentralCA CHI-DET,DCArea,EastCO \
     GreatLakes,NYC-BOS,SEA-POR SouthCA,SouthFL,VortexSE AKRange,Anchorage,Juneau"
 
+  PPN_RUN_POSTANAL="5"
   if [[ -n $RESERVATION ]] ; then
     NNODES_MAKE_ICS="10"
     NNODES_MAKE_LBCS="5"
@@ -450,6 +453,7 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_NA_13km" ]] ; then
   TILE_SETS="full"
   NNODES_RUN_POST="1"
   grid_ratio_fv3=1.0
+  PPN_RUN_POSTANAL="5"
 fi
 
 #
