@@ -683,6 +683,8 @@ binary_diag=.true.
 
 # &HYBRID_ENSEMBLE
 l_both_fv3sar_gfs_ens=.false.
+weight_ens_gfs=1.0
+weight_ens_fv3sar=1.0
 readin_localization=.true.     #if true, it overwrites the "beta1_inv/ens_h/ens_v" setting
 beta1_inv=0.15                 #beata_inv is 1-ensemble_wgt
 ens_h=110                      #horizontal localization scale of "Gaussian function=exp(-0.5)" for EnVar (km)
@@ -691,9 +693,9 @@ ens_h_radardbz=4.10790         #horizontal localization scale of "Gaussian funct
 ens_v_radardbz=-0.30125        #vertical localization scale of "Gaussian function=exp(-0.5)" for radardbz EnVar (positive:grids, negative:lnp)
 nsclgrp=1
 ngvarloc=1
-i_ensloccov4tim=0
-i_ensloccov4var=0
-i_ensloccov4scl=0
+r_ensloccov4tim=1.0
+r_ensloccov4var=1.0
+r_ensloccov4scl=1.0
 regional_ensemble_option=1     #1 for GDAS ; 5 for FV3LAM ensemble
 grid_ratio_fv3=2.0             #fv3 resolution 3km, so analysis=3*2=6km
 grid_ratio_ens=3               #if analysis is 3km, then ensemble=3*3=9km. GDAS ensemble is 20km

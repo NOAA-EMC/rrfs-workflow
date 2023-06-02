@@ -4,6 +4,11 @@ nsclgrp=1                     #number of scales for scale-dependent localization
 ngvarloc=1                    #number of scales for variable-dependent localization (VDL)
 assign_vdl_nml=.false.        #if true, vdl_scale and vloc_varlist are used to set VDL
 
+if [ ${l_both_fv3sar_gfs_ens} = ".true." ]; then
+  weight_ens_gfs=0.5
+  weight_ens_fv3sar=0.5
+fi
+
 if [[ ${ngvarloc} == "1" ]] && [[ ${nsclgrp} == "2" ]]; then
   readin_localization=.false.
   ens_h="328.632,82.1580,82.1580"
@@ -18,7 +23,7 @@ elif [[ ${ngvarloc} == "2" ]] && [[ ${nsclgrp} == "1" ]]; then
   if [ ${assign_vdl_nml} = ".true." ]; then
     vdl_scale="2,2"
   else
-    i_ensloccov4var=1
+    r_ensloccov4var=0.05
   fi
 elif [[ ${ngvarloc} == "2" ]] && [[ ${nsclgrp} == "2" ]]; then
   DO_ENVAR_RADAR_REF_ONCE="TRUE"
@@ -30,6 +35,6 @@ elif [[ ${ngvarloc} == "2" ]] && [[ ${nsclgrp} == "2" ]]; then
   else
     ens_h="328.632,82.1580,4.10790,4.10790,82.1580"
     ens_v="-0.30125,-0.30125,-0.30125,-0.30125,0.0"
-    i_ensloccov4var=1
+    r_ensloccov4var=0.05
   fi
 fi

@@ -666,15 +666,14 @@ if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "radardbz" ]]; then
   ens_v=${ens_v_radardbz}
   nsclgrp=1
   ngvarloc=1
-  i_ensloccov4tim=0
-  i_ensloccov4var=0
-  i_ensloccov4scl=0
+  r_ensloccov4tim=1.0
+  r_ensloccov4var=1.0
+  r_ensloccov4scl=1.0
   q_hyb_ens=.true.
   if_model_dbz=.true.
 fi
 if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "conv_dbz" ]]; then
   ANAVINFO=${FIX_GSI}/${ANAVINFO_CONV_DBZ_FN}
-  beta1_inv=0.0
   if_model_dbz=.true.
 fi
 naensloc=`expr ${nsclgrp} \* ${ngvarloc} + ${nsclgrp} - 1`
