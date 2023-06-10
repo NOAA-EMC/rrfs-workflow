@@ -213,6 +213,7 @@ FV3_HRRR_gf:
 FV3_RAP:
   atmos_model_nml:
     avg_max_length: 3600.
+    ignore_rst_cksum: true
   fv_core_nml:
     d_con: 0.5
     d2_bg_k2: 0.04
@@ -230,6 +231,7 @@ FV3_RAP:
     psm_bc: 1
     nord_tr: 0
     nrows_blend: 10
+    range_warn: False
     regional_bcs_from_gsi: false
     rf_cutoff: 2000.0
     vtdm4: 0.02
@@ -237,6 +239,7 @@ FV3_RAP:
   gfs_physics_nml: 
     <<: *gsd_sar_phys
     cdmbgwd: [3.5, 1.0]
+    diag_log: true
     do_gsl_drag_ls_bl: true
     do_gsl_drag_ss: true
     do_gsl_drag_tofd: true
@@ -247,6 +250,7 @@ FV3_RAP:
     do_ugwp_v0 : false
     do_ugwp_v0_nst_only : false
     do_ugwp_v0_orog_only : false
+    do_deep : true
     dt_inner : 30
     effr_in: true
     gwd_opt: 3
@@ -262,8 +266,31 @@ FV3_RAP:
     iovr: 3
     ldiag_ugwp: false
     lgfdlmprad: false
+    lightning_threat: true
+    mosaic_lu: 1
+    mosaic_soil: 1
+    isncond_opt: 2
+    isncovr_opt: 3
     sfclay_compute_flux: true
     thsfc_loc: false 
+    # Smoke/dust options
+    rrfs_sd : false
+    rrfs_smoke_debug : false
+    seas_opt : 0
+    mix_chem : true
+    enh_mix : true
+    dust_opt : 5
+    drydep_opt : 1
+    coarsepm_settling : 1
+    smoke_forecast : 0
+    aero_ind_fdb : false
+    aero_dir_fdb : false
+    addsmoke_flag : 1
+    wetdep_ls_opt : 1
+    do_plumerise : true
+    plumerisefire_frq : 60
+    dust_alpha : 0.01
+    dust_gamma : 1.3
 
 FV3_RRFS_v1beta:
   gfs_physics_nml:

@@ -261,7 +261,7 @@ define resources used for each tasks
 <!ENTITY WALLTIME_ANAL_GSI  "{{ wtime_run_anal }}">
 
 <!ENTITY WALLTIME_FCST_SPINUP  "{{ wtime_run_fcst_spinup }}">
-{%- if machine in ["JET"] %}
+{%- if machine in ["JET", "HERA"] %}
 <!ENTITY RESOURCES_FCST_SPINUP "<cores>{{ ncores_run_fcst }}</cores>">
 <!ENTITY NATIVE_FCST_SPINUP    "<native>{{ native_run_fcst }} &RRFS_RESERVE;</native>">
 {%- elif machine in ["WCOSS2"]  %}
@@ -274,7 +274,7 @@ define resources used for each tasks
 
 <!ENTITY WALLTIME_FCST_PROD  "{{ wtime_run_fcst }}">
 <!ENTITY WALLTIME_FCST_PROD_LONG  "{{ wtime_run_fcst_long }}">
-{%- if machine in ["JET"] %}
+{%- if machine in ["JET", "HERA"] %}
 <!ENTITY RESOURCES_FCST_PROD "<cores>{{ ncores_run_fcst }}</cores>">
 <!ENTITY NATIVE_FCST_PROD    "<native>{{ native_run_fcst }} &RRFS_RESERVE;</native>">
 {%- elif machine in ["WCOSS2"]  %}
@@ -3212,6 +3212,7 @@ MODULES_RUN_TASK_FP script.
 {%- else %}
     <envar><name>nens</name><value><cyclestr>0</cyclestr></value></envar>
 {%- endif %}
+
 
   </task>
 

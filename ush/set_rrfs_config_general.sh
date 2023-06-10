@@ -445,7 +445,7 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then
 
 fi
 
-if [[ ${PREDEF_GRID_NAME} == "RRFS_NA_13km" ]] ; then 
+if [[ ${PREDEF_GRID_NAME} == "GSD_RAP13km" ]] ; then 
   DT_ATMOS=120
   CCPP_PHYS_SUITE="FV3_RAP"
   ADDNL_OUTPUT_GRIDS=( "130" "242" )
@@ -454,6 +454,10 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_NA_13km" ]] ; then
   NNODES_RUN_POST="1"
   grid_ratio_fv3=1.0
   PPN_RUN_POSTANAL="5"
+  LAYOUT_X="16"
+  LAYOUT_Y="16"
+  PPN_RUN_FCST="20"
+  NNODES_RUN_FCST="11"
 fi
 
 #
