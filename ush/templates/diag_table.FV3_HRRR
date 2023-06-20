@@ -119,7 +119,8 @@
 "gfs_dyn",     "hs",          "hgtsfc",    "fv3_history",    "all",  .false.,  "none",  2
 "gfs_phys",    "refl_10cm"    "refl_10cm"  "fv3_history",    "all",  .false.,  "none",  2
 #"gfs_dyn",     "ice_nc",      "nicp",      "fv3_history",  "all",  .false.,  "none",  2
-#"gfs_dyn",     "rain_nc",     "ntrnc",     "fv3_history",  "all",  .false.,  "none",  2
+"gfs_dyn",     "rain_nc",     "rain_nc",    "fv3_history",  "all",  .false.,  "none",  2
+"gfs_dyn",     "water_nc",    "water_nc",   "fv3_history",  "all",  .false.,  "none",  2
 
 "gfs_dyn",   "wmaxup",        "upvvelmax",   "fv3_history",           "all",  .false.,  "none", 2
 "gfs_dyn",   "wmaxdn",        "dnvvelmax",   "fv3_history",           "all",  .false.,  "none", 2
