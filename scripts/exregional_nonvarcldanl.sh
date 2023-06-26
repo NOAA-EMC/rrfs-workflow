@@ -79,10 +79,8 @@ case $MACHINE in
 "WCOSS2")
   ulimit -s unlimited
   ulimit -a
-  APRUN="mpiexec -n ${IO_LAYOUT_Y} -ppn 16"
   ncores=$(( NNODES_RUN_NONVARCLDANL*PPN_RUN_NONVARCLDANL ))
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_NONVARCLDANL}"
-  APRUN="mpiexec -n 1 -ppn 1"
   ;;
 #
 "HERA")
@@ -171,6 +169,7 @@ list_iolayout=$(seq 0 $n_iolayouty)
 cp_vrfy ${fixgriddir}/fv3_akbk                               fv3_akbk
 cp_vrfy ${fixgriddir}/fv3_grid_spec                          fv3_grid_spec
 
+BKTYPE=0
 if [ -r "${bkpath}/coupler.res" ]; then # Use background from warm restart
   if [ "${IO_LAYOUT_Y}" == "1" ]; then
     ln_vrfy -s ${bkpath}/fv_core.res.tile1.nc         fv3_dynvars
@@ -283,6 +282,7 @@ cat << EOF > gsiparm.anl
   ihour=${HH},
   iminute=00,
   fv3_io_layout_y=${n_iolayouty},
+  fv3sar_bg_opt=${BKTYPE}
  /
  &RAPIDREFRESH_CLDSURF
    dfi_radar_latent_heat_time_period=20.0,

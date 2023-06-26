@@ -1231,6 +1231,14 @@ case ${PREDEF_GRID_NAME} in
     WRTCMP_lat_lwr_left="-37.0"
     WRTCMP_lon_upr_rght="61.0"
     WRTCMP_lat_upr_rght="37.0"
+    if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
+      if [[ ${DO_ENSFCST} != "TRUE" ]] ; then
+        WRTCMP_lon_lwr_left="-0.1"
+        WRTCMP_lat_lwr_left="-0.1"
+        WRTCMP_lon_upr_rght="0.1"
+        WRTCMP_lat_upr_rght="0.1"
+      fi
+    fi
     WRTCMP_dlon="0.025"
     WRTCMP_dlat="0.025"
   fi

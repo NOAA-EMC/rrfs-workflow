@@ -73,7 +73,7 @@ case $MACHINE in
   ulimit -a
   export FI_OFI_RXM_SAR_LIMIT=3145728
   export OMP_STACKSIZE=1G
-  export OMP_NUM_THREADS=1
+  export OMP_NUM_THREADS=16
   ncores=$(( NNODES_RUN_ENKF*PPN_RUN_ENKF ))
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_ENKF} --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;

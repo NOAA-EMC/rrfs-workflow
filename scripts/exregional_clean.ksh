@@ -74,6 +74,11 @@ for onetime in ${XX[*]};do
     else
         rm -f ${CYCLE_BASEDIR}/${onetime}/fcst_fv3lam/phy*nc
         rm -f ${CYCLE_BASEDIR}/${onetime}/fcst_fv3lam/dyn*nc
+        rm -f ${CYCLE_BASEDIR}/${onetime}/anal_conv_gsi/pe0*.nc4
+        rm -f ${CYCLE_BASEDIR}/${onetime}/anal_conv_gsi/pe0*_setup
+        rm -f ${CYCLE_BASEDIR}/${onetime}/anal_conv_gsi/obs_input.*
+        rm -f ${CYCLE_BASEDIR}/${onetime}/anal_conv_gsi/diag*
+
         rm -rf ${CYCLE_BASEDIR}/${onetime}/fcst_fv3lam/RESTART
         echo "Deleted netCDF files in ${CYCLE_BASEDIR}/${onetime}/fcst_fv3lam"
     fi

@@ -115,32 +115,11 @@ else
   restart_prefix=${save_yyyy}${save_mm}${save_dd}.${save_hh}0000
 fi
 
+if_save_input=FALSE
+
 if [ ! -r ${nwges_dir}/INPUT/gfs_ctrl.nc ]; then
   cp_vrfy $run_dir/INPUT/gfs_ctrl.nc ${nwges_dir}/INPUT/gfs_ctrl.nc
-  if [ "${DO_SAVE_INPUT}" = TRUE ]; then
-    if [ -r ${run_dir}/INPUT/coupler.res ]; then  # warm start
-      if [ "${IO_LAYOUT_Y}" == "1" ]; then
-        for file in ${filelistn}; do
-          cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
-        done
-      else
-        for file in ${filelistn}; do
-          for ii in ${list_iolayout}
-          do
-            iii=$(printf %4.4i $ii)
-           cp_vrfy $run_dir/INPUT/${file}.${iii} ${nwges_dir}/INPUT/${file}.${iii}
-          done
-        done
-      fi
-      for file in ${filelist}; do
-        cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
-      done
-    else  # cold start
-      for file in ${filelistcold}; do
-        cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
-      done
-    fi
-  fi
+  if_save_input=TRUE
 fi
 
 if [ -r "$run_dir/RESTART/${restart_prefix}.coupler.res" ]; then
@@ -198,6 +177,7 @@ else
     echo "This forecast hour does not need to save restart: ${yyyymmdd}${hh}f${fhr}"
   fi
 fi
+
 #
 #-----------------------------------------------------------------------
 # save surface data
@@ -214,6 +194,39 @@ if [ ${cycle_type} == "prod" ] && [ ${cycle_subtype} == "control" ]; then
     done
   fi
 fi
+
+#
+#-----------------------------------------------------------------------
+# save input
+#-----------------------------------------------------------------------
+#
+if [ "${if_save_input}" = TRUE ]; then
+  if [ "${DO_SAVE_INPUT}" = TRUE ]; then
+    if [ -r ${run_dir}/INPUT/coupler.res ]; then  # warm start
+      if [ "${IO_LAYOUT_Y}" == "1" ]; then
+        for file in ${filelistn}; do
+          cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
+        done
+      else
+        for file in ${filelistn}; do
+          for ii in ${list_iolayout}
+          do
+            iii=$(printf %4.4i $ii)
+           cp_vrfy $run_dir/INPUT/${file}.${iii} ${nwges_dir}/INPUT/${file}.${iii}
+          done
+        done
+      fi
+      for file in ${filelist}; do
+        cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
+      done
+    else  # cold start
+      for file in ${filelistcold}; do
+        cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
+      done
+    fi
+  fi
+fi
+
 #
 #-----------------------------------------------------------------------
 #

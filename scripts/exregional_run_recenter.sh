@@ -249,8 +249,8 @@ EOF
 #
 
 echo pwd is `pwd`
-ENSMEAN_EXEC=${EXECDIR}/gen_ensmean_recenter.exe
-#ENSMEAN_EXEC=${EXECDIR}/ens_mean_recenter_P2DIO.exe
+#ENSMEAN_EXEC=${EXECDIR}/gen_ensmean_recenter.exe
+ENSMEAN_EXEC=${EXECDIR}/ens_mean_recenter_P2DIO.exe
 
 if [ -f ${ENSMEAN_EXEC} ]; then 
   print_info_msg "$VERBOSE" "
