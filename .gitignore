@@ -9,3 +9,7 @@ share/
 src/*
 !src/CMakeLists.txt
 save/
+config.sh
+fix/.agent
+fix/tmp
+fix/INIT_DONE

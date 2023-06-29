@@ -1,0 +1,1 @@
+../../.agent/lam/RRFS_CONUS_3km/C3357.soil_type.tile7.halo4.nc

@@ -1,0 +1,1 @@
+../../.agent/lam/CONUS_25km_GFDLgrid/C96.vegetation_type.tile7.halo4.nc

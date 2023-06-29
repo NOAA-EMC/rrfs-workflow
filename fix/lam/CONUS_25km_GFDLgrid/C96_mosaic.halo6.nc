@@ -1,0 +1,1 @@
+../../.agent/lam/CONUS_25km_GFDLgrid/C96_mosaic.halo6.nc

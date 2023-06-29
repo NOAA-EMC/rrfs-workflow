@@ -1,0 +1,1 @@
+../../.agent/lam/RRFS_SUBCONUS_3km/C3342.maximum_snow_albedo.tile7.halo4.nc

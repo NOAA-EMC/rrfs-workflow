@@ -1,0 +1,193 @@
+#!/bin/bash
+#                      .                                             .
+# Script name:         exregional_bufr.sh
+# Script description:  Trigger sounding post job
+#
+# Author:        Eric Rogers       Org: NP22         Date: 1999-06-23
+#
+# Abstract: This script triggers the sounding post job, which
+#           creates a piece of the model sounding profile whose
+#           time interval is determined by the input forecast hours.
+#
+# Script history log:
+# 2000-05-16  Eric Rogers
+# 2006-01-20  Eric Rogers -- extended to 84-h and modified for WRF-NMM NAM
+# 2009-12-18  Matthew Pyle -- shortened to 48-h and generalized for multiple domains
+#                             and diferent dynamical cores
+# 2019-10-28  Matthew Pyle -- Converted for FV3 SAR and 60 hours
+#
+
+#
+#-----------------------------------------------------------------------
+#
+# This script runs the bufr sounding on the NetCDF output files
+# of the write component of the FV3-LAM model.
+#
+#-----------------------------------------------------------------------
+#
+
+#
+#-----------------------------------------------------------------------
+#
+# Source the variable definitions file and the bash utility functions.
+#
+#-----------------------------------------------------------------------
+#
+. ${GLOBAL_VAR_DEFNS_FP}
+. $USHDIR/source_util_funcs.sh
+#
+#-----------------------------------------------------------------------
+#
+# Save current shell options (in a global array).  Then set new options
+# for this script/function.
+#
+#-----------------------------------------------------------------------
+#
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
+#
+#-----------------------------------------------------------------------
+#
+# Get the full path to the file in which this script/function is located 
+# (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
+# which the file is located (scrfunc_dir).
+#
+#-----------------------------------------------------------------------
+#
+scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
+scrfunc_fn=$( basename "${scrfunc_fp}" )
+scrfunc_dir=$( dirname "${scrfunc_fp}" )
+#
+#-----------------------------------------------------------------------
+#
+# Print message indicating entry into script.
+#
+#-----------------------------------------------------------------------
+#
+print_info_msg "
+========================================================================
+Entering script:  \"${scrfunc_fn}\"
+In directory:     \"${scrfunc_dir}\"
+
+This is the J-job script for the task that runs the bufr sounding
+on the output files corresponding to a specified forecast hour.
+========================================================================"
+#
+#-----------------------------------------------------------------------
+#
+# Set the run directory.
+#
+#-----------------------------------------------------------------------
+# CYCLE_TYPE is to indicate which type of cycle this job for:
+#   spinup: this job is for spin-up cycles
+#   others(prod): this job is for product cycle
+#
+# NWGES_DIR is the directory in which the model restart file will be saved
+#
+CYCLE_TYPE=${CYCLE_TYPE:-prod}
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_spinup"
+  nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_spinup"
+else
+  run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
+  nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
+fi
+
+if [ "${RUN_ENVIR}" = "nco" ]; then
+   mkdir_vrfy -p "${nwges_dir}/RESTART"
+   mkdir_vrfy -p "${nwges_dir}/INPUT"
+fi
+
+#
+#-----------------------------------------------------------------------
+#
+# If it doesn't already exist, create the directory (bufrsnd_dir) in which 
+# to store bufr sounding output.  (Note that bufrsnd_dir may already 
+# have been created by this bufr sounding script run for a different 
+# forecast hour of the same cycle and/or ensemble member.)  Also, create 
+# a temporary work directory (fhr_dir) for the current forecast hour.  
+# fhr_dir will be deleted later after the processing for the current 
+# forecast hour is complete.  Then change location to fhr_dir.
+#
+# Note that there may be a preexisting version of fhr_dir from previous 
+# runs of this script for the current forecast hour (and current cycle), 
+# e.g. from the workflow task that runs this script failing and then being 
+# called again.  Thus, we first make sure preexisting versions are deleted.
+#
+#-----------------------------------------------------------------------
+#
+if [ "${RUN_ENVIR}" = "nco" ]; then
+  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
+  if [ ${CYCLE_TYPE} == "spinup" ]; then
+    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
+  fi
+  mkdir_vrfy -p "${COMOUT}"
+fi
+
+bufrsnd_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/bufrsnd"
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  bufrsnd_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/bufrsnd_spinup"
+fi
+mkdir_vrfy -p "${bufrsnd_dir}"
+
+fhr_dir="${bufrsnd_dir}"
+#check_for_preexist_dir_file "${fhr_dir}" "delete"
+#mkdir_vrfy -p "${fhr_dir}"
+
+cd_vrfy "${bufrsnd_dir}"
+#
+#-----------------------------------------------------------------------
+#
+# Make sure that fhr is a non-empty string consisting of only digits.  
+#
+#-----------------------------------------------------------------------
+#
+#fhr=$( printf "%s" "${fhr}" | sed -n -r -e "s/^([0-9]+)$/\1/p" )
+#if [ -z "$fhr" ]; then
+#  print_err_msg_exit "\
+#The forecast hour (fhr) must be a non-empty string consisting of only 
+#digits:
+#  fhr = \"${fhr}\""
+#fi
+#
+#-----------------------------------------------------------------------
+#
+# Call the ex-script for this J-job and pass to it the necessary varia-
+# bles.
+#
+#-----------------------------------------------------------------------
+#
+fhr=01
+$SCRIPTSDIR/exregional_bufrsnd.sh \
+  cdate="${CDATE}" \
+  run_dir="${run_dir}" \
+  nwges_dir="${nwges_dir}" \
+  bufrsnd_dir="${bufrsnd_dir}" \
+  comout="${COMOUT}" \
+  fhr_dir="${fhr_dir}" \
+  fhr="${fhr}" \
+  tmmark="${TMMARK}" \
+  cycle_type="${CYCLE_TYPE}" || \
+print_err_msg_exit "\
+Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+#
+#-----------------------------------------------------------------------
+#
+# Print exit message.
+#
+#-----------------------------------------------------------------------
+#
+print_info_msg "
+========================================================================
+Exiting script:  \"${scrfunc_fn}\"
+In directory:    \"${scrfunc_dir}\"
+========================================================================"
+#
+#-----------------------------------------------------------------------
+#
+# Restore the shell options saved at the beginning of this script/func-
+# tion.
+#
+#-----------------------------------------------------------------------
+#
+{ restore_shell_opts; } > /dev/null 2>&1
+

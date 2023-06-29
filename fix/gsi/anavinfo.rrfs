@@ -1,0 +1,70 @@
+met_guess::
+!var     level    crtm_use    desc              orig_name
+  ps        1      -1         surface_pressure     ps
+  z         1      -1         geopotential_height  phis
+  u        65       2         zonal_wind           u
+  v        65       2         meridional_wind      v
+  tv       65       2         virtual_temperature  tv
+  q        65       2         specific_humidity    sphu
+  oz       65       2         ozone                ozone
+  delp     65      -1         fv3 del pressure     delp
+  t2m       1      -1         2-m_T                t2m
+  q2m       1      -1         2-m_Q                q2m
+::
+
+state_derivatives::
+!var  level  src
+ ps   1      met_guess
+ u    65     met_guess
+ v    65     met_guess
+ tv   65     met_guess
+ q    65     met_guess
+ oz   65     met_guess
+ cw   65     met_guess
+ prse 66     met_guess
+::
+
+state_tendencies::
+!var  levels  source
+ u    65      met_guess
+ v    65      met_guess
+ tv   65      met_guess
+ q    65      met_guess
+ oz   65      met_guess
+ prse 66      met_guess
+::
+
+state_vector::  
+!var     level  itracer source     funcof
+ u        65      0     met_guess    u
+ v        65      0     met_guess    v
+ tv       65      0     met_guess    tv
+ tsen     65      0     met_guess    tv,q
+ q        65      1     met_guess    q
+ oz       65      1     met_guess    oz
+ prse     66      0     met_guess    prse
+ ps        1      0     met_guess    prse
+ sst       1      0     met_guess    sst
+::
+
+control_vector_enkf::
+!var     level  itracer as/tsfc_sdv  an_amp0   source  funcof
+ u        65      0       1.00        -1.0     state    u,v
+ v        65      0       1.00        -1.0     state    u,v
+ ps        1      0       0.50        -1.0     state    prse
+ t        65      0       0.70        -1.0     state    tv
+ oz       65      0       0.70        -1.0     state    oz
+ q        65      1       0.70        -1.0     state    q
+::
+
+control_vector::
+!var     level  itracer as/tsfc_sdv  an_amp0   source  funcof
+ sf       65      0       0.90        -1.0     state    u,v
+ vp       65      0       0.90        -1.0     state    u,v
+ ps        1      0       1.00        -1.0     state    prse
+ t        65      0       1.40        -1.0     state    tv
+ q        65      1       0.80        -1.0     state    q
+ sst       1      0       1.00        -1.0     state    sst
+ stl       1      0       1.00        -1.0     motley   sst
+ sti       1      0       1.00        -1.0     motley   sst
+::

@@ -1,0 +1,1 @@
+../../.agent/lam/RRFS_NA_3km/C3445.vegetation_greenness.tile1.nc

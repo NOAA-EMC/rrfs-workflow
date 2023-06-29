@@ -1,0 +1,66 @@
+#!/bin/sh
+# pre-commit hook
+#
+FMAXSIZE="1536" #limit of file size for all files, unit kb, 1.5MB
+DATASIZE="5" #limit of binary data file size, unit kb, 5kb
+TEXTTYPE="text"
+#
+mydir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+ushdir="$(dirname "$mydir")"
+basedir="$(dirname "$ushdir")"
+tmpdir=$basedir/.git/tmp
+mkdir -p "$tmpdir"
+#
+function LargeOrNot {
+  local filepath="${1%/}"
+  local filesize=$(du -b $filepath 2>/dev/null |cut -f1  2>/dev/null)
+  if [ -z $filesize ]; then filesize=0; fi
+  local filetype=$(file $filepath)
+
+  if [ -n "$DATASIZE" ] && [ "$DATASIZE" -eq "$DATASIZE" ] 2>/dev/null; then #check if $DATASIZE is a number
+    local qattr=$(( $DATASIZE * 1024 )) #conver to bytes
+    if [[ $filesize -gt $qattr ]] && [[ ! "$filetype" == *"$TEXTTYPE"* ]]; then
+      if_large=true
+    else #also avoid large text files
+      if [ -n "$FMAXSIZE" ] && [ "$FMAXSIZE" -eq "$FMAXSIZE" ] 2>/dev/null; then #check if $FMAXSIZE is a number
+        local qattr=$(( $FMAXSIZE * 1024 )) #conver to bytes
+        if [[ $filesize -gt $qattr ]]; then
+          if_large=true
+        fi
+      else
+        echo "Bad FMAXSIZE setting" >&2
+        if_large=true # set to true and let users handle it
+      fi
+    fi
+  else
+    echo "Bad DATASIZE setting" >&2
+    if_large=true # set to true and let users handle it
+  fi
+}
+#
+#pre-commit operations
+#
+# get staged files except those deleted
+ierr=$(git diff --diff-filter=d --cached --name-only 1>$tmpdir/files.changed 2>/dev/null; echo $? )
+if [ $ierr -ne 0 ]; then
+  echo "fatal: fail to run git diff --diff-filter=d --cached --name-only"
+  exit 1 #stop the commit
+fi
+
+has_large=false
+while read line; do  # <$tmpdir/files.changed
+  if [ ! -z "$line" ]; then
+    myfile=$(echo "${line}" |xargs)  #trim leading whitespaces
+    if_large=false
+    LargeOrNot $myfile #check if it is a large binary file
+    if $if_large; then
+      echo "$myfile is a large or binary file and should be trackted through a link." >&2
+      has_large=true
+    fi
+  fi
+done < $tmpdir/files.changed
+
+if $has_large; then
+  echo " commit failed. " >&2
+  exit 1 #stop the commit
+fi

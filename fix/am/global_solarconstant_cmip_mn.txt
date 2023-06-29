@@ -1,0 +1,1 @@
+../.agent/am/global_solarconstant_cmip_mn.txt
