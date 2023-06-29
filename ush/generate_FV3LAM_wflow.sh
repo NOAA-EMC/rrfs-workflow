@@ -892,8 +892,8 @@ fi
 avg_max_length="3600.0"
 fhzero="1.0"
 if [ "${NSOUT_MIN}" = "15" ]; then
-  avg_max_length="900.0"
-  fhzero="0.25"
+  avg_max_length="3600.0"
+  fhzero="1.0"
 fi
 #
 # Create a multiline variable that consists of a yaml-compliant string

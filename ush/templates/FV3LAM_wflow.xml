@@ -1588,7 +1588,6 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_NONVAR_CLD;</walltime>
     &NATIVE_ALL;
     &NODESIZE_ALL;
-    <memory>&MEMO_NONVAR_CLD;</memory>
 
     <jobname>&TAG;_&CLDANL_NONVAR_TN;_spinup{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&CLDANL_NONVAR_TN;_spinup_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
@@ -2444,7 +2443,6 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_NONVAR_CLD;</walltime>
     &NATIVE_ALL;
     &NODESIZE_ALL;
-    <memory>&MEMO_NONVAR_CLD;</memory>
 
     <jobname>&TAG;_&CLDANL_NONVAR_TN;_prod{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&CLDANL_NONVAR_TN;_prod_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
@@ -2883,10 +2881,10 @@ MODULES_RUN_TASK_FP script.
 
 {%- if postproc_nsout_min > 0 %}
   {%- if postproc_nfhmax_hrs < postproc_len_hrs %}
-    <var name="fhr"> 000-01-00 {% for h in range(postproc_nsout_min, postproc_nfhmax_hrs*60, postproc_nsout_min) %}{{ " %03d-%02d-00 " % ( h//60,h-(h//60)*60 )  }}{% endfor %} 
+    <var name="fhr"> {{ "000-%02d-%02d" % ( dt_atmos//60,dt_atmos%60 )  }}  {% for h in range(postproc_nsout_min, postproc_nfhmax_hrs*60, postproc_nsout_min) %}{{ " %03d-%02d-00 " % ( h//60,h-(h//60)*60 )  }}{% endfor %} 
                                {%- for h in range(postproc_nfhmax_hrs, postproc_len_hrs+1, postproc_nfhout_hrs) %}{{ " %03d-00-00 " % h }}{% endfor %} </var> 
   {%- else %}
-    <var name="fhr"> 000-01-00 {% for h in range(postproc_nsout_min, postproc_len_hrs*60+1, postproc_nsout_min) %}{{ " %03d-%02d-00 " % ( h//60,h-(h//60)*60 )  }}{% endfor %} </var>
+    <var name="fhr"> {{ "000-%02d-%02d" % ( dt_atmos//60,dt_atmos%60 )  }} {% for h in range(postproc_nsout_min, postproc_len_hrs*60+1, postproc_nsout_min) %}{{ " %03d-%02d-00 " % ( h//60,h-(h//60)*60 )  }}{% endfor %} </var>
   {%- endif %}
 {%- else %}
   {%- if postproc_nfhmax_hrs < postproc_len_hrs %}
@@ -2930,10 +2928,10 @@ MODULES_RUN_TASK_FP script.
 
 {%- if postproc_nsout_min > 0 %}
   {%- if postproc_nfhmax_hrs < postproc_long_len_hrs %}
-    <var name="fhr"> 000-01-00 {% for h in range(postproc_nsout_min, postproc_nfhmax_hrs*60, postproc_nsout_min) %}{{ " %03d-%02d-00 " % ( h//60,h-(h//60)*60 )  }}{% endfor %} 
+    <var name="fhr"> {{ "000-%02d-%02d" % ( dt_atmos//60,dt_atmos%60 )  }} {% for h in range(postproc_nsout_min, postproc_nfhmax_hrs*60, postproc_nsout_min) %}{{ " %03d-%02d-00 " % ( h//60,h-(h//60)*60 )  }}{% endfor %} 
                                {%- for h in range(postproc_nfhmax_hrs, postproc_long_len_hrs+1, postproc_nfhout_hrs) %}{{ " %03d-00-00 " % h }}{% endfor %} </var> 
   {%- else %}
-    <var name="fhr"> 000-01-00 {% for h in range(postproc_nsout_min, postproc_long_len_hrs*60+1, postproc_nsout_min) %}{{ " %03d-%02d-00 " % ( h//60,h-(h//60)*60 )  }}{% endfor %} </var>
+    <var name="fhr"> {{ "000-%02d-%02d" % ( dt_atmos//60,dt_atmos%60 )  }} {% for h in range(postproc_nsout_min, postproc_long_len_hrs*60+1, postproc_nsout_min) %}{{ " %03d-%02d-00 " % ( h//60,h-(h//60)*60 )  }}{% endfor %} </var>
   {%- endif %}
 {%- else %}
   {%- if postproc_nfhmax_hrs < postproc_long_len_hrs %}
@@ -2980,10 +2978,10 @@ MODULES_RUN_TASK_FP script.
 
 {%- if postproc_nsout_min > 0 %}
   {%- if postproc_nfhmax_hrs < postproc_len_hrs %}
-    <var name="fhr"> 000-01-00 {% for h in range(postproc_nsout_min, postproc_nfhmax_hrs*60, postproc_nsout_min) %}{{ " %03d-%02d-00 " % ( h//60,h-(h//60)*60 )  }}{% endfor %} 
+    <var name="fhr"> {{ "000-%02d-%02d" % ( dt_atmos//60,dt_atmos%60 )  }} {% for h in range(postproc_nsout_min, postproc_nfhmax_hrs*60, postproc_nsout_min) %}{{ " %03d-%02d-00 " % ( h//60,h-(h//60)*60 )  }}{% endfor %} 
                                {%- for h in range(postproc_nfhmax_hrs, postproc_len_hrs+1, postproc_nfhout_hrs) %}{{ " %03d-00-00 " % h }}{% endfor %} </var> 
   {%- else %}
-    <var name="fhr"> 000-01-00 {% for h in range(postproc_nsout_min, postproc_len_hrs*60+1, postproc_nsout_min) %}{{ " %03d-%02d-00 " % ( h//60,h-(h//60)*60 )  }}{% endfor %} </var>
+    <var name="fhr"> {{ "000-%02d-%02d" % ( dt_atmos//60,dt_atmos%60 )  }} {% for h in range(postproc_nsout_min, postproc_len_hrs*60+1, postproc_nsout_min) %}{{ " %03d-%02d-00 " % ( h//60,h-(h//60)*60 )  }}{% endfor %} </var>
   {%- endif %}
 {%- else %}
   {%- if postproc_nfhmax_hrs < postproc_len_hrs %}
@@ -3027,10 +3025,10 @@ MODULES_RUN_TASK_FP script.
 
 {%- if postproc_nsout_min > 0 %}
   {%- if postproc_nfhmax_hrs < postproc_long_len_hrs %}
-    <var name="fhr"> 000-01-00 {% for h in range(postproc_nsout_min, postproc_nfhmax_hrs*60, postproc_nsout_min) %}{{ " %03d-%02d-00 " % ( h//60,h-(h//60)*60 )  }}{% endfor %} 
+    <var name="fhr"> {{ "000-%02d-%02d" % ( dt_atmos//60,dt_atmos%60 )  }} {% for h in range(postproc_nsout_min, postproc_nfhmax_hrs*60, postproc_nsout_min) %}{{ " %03d-%02d-00 " % ( h//60,h-(h//60)*60 )  }}{% endfor %} 
                                {%- for h in range(postproc_nfhmax_hrs, postproc_long_len_hrs+1, postproc_nfhout_hrs) %}{{ " %03d-00-00 " % h }}{% endfor %} </var> 
   {%- else %}
-    <var name="fhr"> 000-01-00 {% for h in range(postproc_nsout_min, postproc_long_len_hrs*60+1, postproc_nsout_min) %}{{ " %03d-%02d-00 " % ( h//60,h-(h//60)*60 )  }}{% endfor %} </var>
+    <var name="fhr"> {{ "000-%02d-%02d" % ( dt_atmos//60,dt_atmos%60 )  }} {% for h in range(postproc_nsout_min, postproc_long_len_hrs*60+1, postproc_nsout_min) %}{{ " %03d-%02d-00 " % ( h//60,h-(h//60)*60 )  }}{% endfor %} </var>
   {%- endif %}
 {%- else %}
   {%- if postproc_nfhmax_hrs < postproc_long_len_hrs %}
@@ -3137,8 +3135,8 @@ MODULES_RUN_TASK_FP script.
       <dependency>
         <or>
 {%- if postproc_nsout_min > 0 %}
-          <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000-01-00"/>
-          <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000-01-00_long"/>
+          <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f{{ "000-%02d-%02d" % ( dt_atmos//60,dt_atmos%60 )  }}"/>
+          <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f{{ "000-%02d-%02d" % ( dt_atmos//60,dt_atmos%60 )  }}_long"/>
 {%- else %}
           <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000"/>
           <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000_long"/>
@@ -3173,8 +3171,8 @@ MODULES_RUN_TASK_FP script.
     <dependency>
       <or>
 {%- if postproc_nsout_min > 0 %}
-        <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000-01-00"/>
-        <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000-01-00_long"/>
+        <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f{{ "000-%02d-%02d" % ( dt_atmos//60,dt_atmos%60 )  }}"/>
+        <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f{{ "000-%02d-%02d" % ( dt_atmos//60,dt_atmos%60 )  }}_long"/>
 {%- else %}
         <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000"/>
         <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000_long"/>
@@ -3270,7 +3268,7 @@ MODULES_RUN_TASK_FP script.
 
          <and>
 {%- if postproc_nsout_min > 0 %}
-           <taskdep task="&RUN_PRDGEN_TN;_f000-01-00"/>
+           <taskdep task="&RUN_PRDGEN_TN;_f{{ "000-%02d-%02d" % ( dt_atmos//60,dt_atmos%60 )  }}"/>
 {%- else %}
            <taskdep task="&RUN_PRDGEN_TN;_f000"/>
 {%- endif %}
@@ -3358,7 +3356,7 @@ MODULES_RUN_TASK_FP script.
           <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H/&NET;.t@Hz.bgdawpf000.tm00.grib2</cyclestr></datadep>
 {%- if postproc_nsout_min > 0 %}
           {%- for m in range(1, 10) %}
-          <taskdep task="&RUN_PRDGEN_TN;_mem{{ "%04d" % m }}_f000-01-00"/>
+          <taskdep task="&RUN_PRDGEN_TN;_mem{{ "%04d" % m }}_f{{ "000-%02d-%02d" % ( dt_atmos//60,dt_atmos%60 )  }}"/>
           {%- endfor %}
 {%- else %}
           {%- for m in range(1, 10) %}
