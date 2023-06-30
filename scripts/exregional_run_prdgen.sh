@@ -216,7 +216,6 @@ ififip=${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2
 testbed=${net4}.t${cyc}z.testbed.f${fhr}.${gridname}grib2
 
 # extract the output fields for the testbed
-touch ${bgsfc}
 if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
   if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN} ]]; then
     wgrib2 ${postprd_dir}/${prslev} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN} | wgrib2 -i -grib ${postprd_dir}/${testbed} ${postprd_dir}/${prslev}
@@ -247,22 +246,12 @@ if [ -f  ${postprd_dir}/${ififip} ]; then
   cp_vrfy ${postprd_dir}/${ififip} ${comout}/${ififip}
 fi
 cp_vrfy ${postprd_dir}/${testbed}  ${comout}/${testbed}
-ln_vrfy -sf --relative ${comout}/${prslev} ${comout}/BGDAWP_${basetime}${post_fhr}
-ln_vrfy -sf --relative ${comout}/${natlev} ${comout}/BGRD3D_${basetime}${post_fhr}
-if [ -f ${comout}/${ififip} ]; then
-  ln_vrfy -sf --relative ${comout}/${ififip} ${comout}/BGIFI_${basetime}${post_fhr}
-fi
-ln_vrfy -sf --relative ${comout}/${testbed}  ${comout}/BGSFC_${basetime}${post_fhr}
 
-ln_vrfy -sf --relative ${comout}/${prslev} ${comout}/${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2
 wgrib2 ${comout}/${prslev} -s > ${comout}/${prslev}.idx
-ln_vrfy -sf --relative ${comout}/${natlev} ${comout}/${NET}.t${cyc}z.bgrd3df${fhr}.${tmmark}.grib2
 wgrib2 ${comout}/${natlev} -s > ${comout}/${natlev}.idx
 if [ -f ${comout}/${ififip} ]; then
-  ln_vrfy -sf --relative ${comout}/${ififip} ${comout}/${NET}.t${cyc}z.bgifif${fhr}.${tmmark}.grib2
   wgrib2 ${comout}/${ififip} -s > ${comout}/${ififip}.idx
 fi
-ln_vrfy -sf --relative ${comout}/${testbed} ${comout}/${NET}.t${cyc}z.bgsfcf${fhr}.${tmmark}.grib2
 wgrib2 ${comout}/${testbed} -s > ${comout}/${testbed}.idx
 # Remap to additional output grids if requested
 
@@ -413,26 +402,6 @@ if [ ${#ADDNL_OUTPUT_GRIDS[@]} -gt 0 ]; then
       mkdir -p ${comout}/${grid}_grid
       cp_vrfy ${bg_remap} ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2
       wgrib2 ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2 -s > ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2.idx
-
-      if [ $leveltype = 'prslev' ]; then
-         ln_vrfy -fs --relative ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2 ${comout}/${grid}_grid/${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2
-         ln_vrfy -fs --relative ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2 ${comout}/${grid}_grid/BGDAWP_${basetime}${post_fhr}
-      fi
-
-      if [ $leveltype = 'natlev' ]; then
-         ln_vrfy -fs --relative ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2 ${comout}/${grid}_grid/${NET}.t${cyc}z.bgrd3df${fhr}.${tmmark}.grib2
-         ln_vrfy -fs --relative ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2 ${comout}/${grid}_grid/BGRD3D_${basetime}${post_fhr}
-      fi
-
-      if [[ $leveltype = 'ififip' ]] && [[ -f ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2  ]]; then
-         ln_vrfy -fs --relative ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2 ${comout}/${grid}_grid/${NET}.t${cyc}z.bgifif${fhr}.${tmmark}.grib2
-         ln_vrfy -fs --relative ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2 ${comout}/${grid}_grid/BGIFI_${basetime}${post_fhr}
-      fi
-
-      if [ $leveltype = 'testbed' ]; then
-         ln_vrfy -fs --relative ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2 ${comout}/${grid}_grid/${NET}.t${cyc}z.bgsfcf${fhr}.${tmmark}.grib2
-         ln_vrfy -fs --relative ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2 ${comout}/${grid}_grid/BGSFC_${basetime}${post_fhr}
-      fi
 
     done
   done
