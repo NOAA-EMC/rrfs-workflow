@@ -1,0 +1,12 @@
+*****************************
+Use list for mesonet data
+*****************************
+FL-Meso FAWN
+SFWMD   allsprvs
+CAIC    allsprvs
+OK-Meso allsprvs
+WT-Meso allsprvs
+WYDOT   allsprvs
+NOS-PORTallsprvs
+NOS-NWLOallsprvs
+GoMOOS  allsprvs

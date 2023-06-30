@@ -1,0 +1,22 @@
+:SBTA167:top of atmosphere:
+:SBTA168:top of atmosphere:
+:SBTA169:top of atmosphere:
+:SBTA1610:top of atmosphere:
+:SBTA1611:top of atmosphere:
+:SBTA1612:top of atmosphere:
+:SBTA1613:top of atmosphere:
+:SBTA1614:top of atmosphere:
+:SBTA1615:top of atmosphere:
+:SBTA1616:top of atmosphere:
+:var discipline=3 center=7 local_table=1 parmcat=192 parm=77:top of atmosphere:
+:var discipline=3 center=7 local_table=1 parmcat=192 parm=78:top of atmosphere:
+:var discipline=3 center=7 local_table=1 parmcat=192 parm=79:top of atmosphere:
+:var discipline=3 center=7 local_table=1 parmcat=192 parm=80:top of atmosphere:
+:var discipline=3 center=7 local_table=1 parmcat=192 parm=81:top of atmosphere:
+:var discipline=3 center=7 local_table=1 parmcat=192 parm=82:top of atmosphere:
+:var discipline=3 center=7 local_table=1 parmcat=192 parm=83:top of atmosphere:
+:var discipline=3 center=7 local_table=1 parmcat=192 parm=84:top of atmosphere:
+:var discipline=3 center=7 local_table=1 parmcat=192 parm=85:top of atmosphere:
+:var discipline=0 master_table=2 parmcat=17 parm=0:1 m above ground:
+:var discipline=0 master_table=2 parmcat=17 parm=0:2 m above ground:
+:LTNG:entire atmosphere:

@@ -1,0 +1,1 @@
+../../.agent/lam/RRFS_AK_3km/C3352.vegetation_greenness.tile7.halo0.nc
