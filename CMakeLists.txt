@@ -3,29 +3,29 @@
 cmake_minimum_required(VERSION 3.15)
 
 # Set the project name and version.
-project(ufs-srweather-app VERSION 1.0 LANGUAGES C CXX Fortran)
+project(rrfs-workflow VERSION 1.0 LANGUAGES C CXX Fortran)
 
 find_package(MPI REQUIRED COMPONENTS C CXX Fortran)
 
 # Set extended version info.
-SET(SRWA_VERSION_MAJOR 1)
-SET(SRWA_VERSION_MINOR 0)
-SET(SRWA_VERSION_PATCH 0)
-SET(SRWA_VERSION_NOTE "-development")
-SET(SRWA_VERSION ${SRWA_VERSION_MAJOR}.${SRWA_VERSION_MINOR}.${SRWA_VERSION_PATCH}${SRWA_VERSION_NOTE})
+SET(RRFS_VERSION_MAJOR 1)
+SET(RRFS_VERSION_MINOR 0)
+SET(RRFS_VERSION_PATCH 0)
+SET(RRFS_VERSION_NOTE "-development")
+SET(RRFS_VERSION ${RRFS_VERSION_MAJOR}.${RRFS_VERSION_MINOR}.${RRFS_VERSION_PATCH}${RRFS_VERSION_NOTE})
 
 # A function used to create autotools-style 'yes/no' definitions.
 # If a variable is set, it 'yes' is returned. Otherwise, 'no' is
 # returned.
 #
 # Also creates a version of the ret_val prepended with 'NC',
-# when feature is true, which is used to generate ufs_srweather_app_meta.h.
+# when feature is true, which is used to generate rrfs-worklfow_meta.h.
 FUNCTION(is_disabled feature ret_val)
   IF(${feature})
     SET(${ret_val} "no" PARENT_SCOPE)
   ELSE()
     SET(${ret_val} "yes" PARENT_SCOPE)
-    SET("SRWA_${ret_val}" 1 PARENT_SCOPE)
+    SET("RRFS_${ret_val}" 1 PARENT_SCOPE)
   ENDIF(${feature})
 ENDFUNCTION()
 
@@ -34,14 +34,14 @@ ENDFUNCTION()
 # returned.
 #
 # Also creates a version of the ret_val prepended with 'NC',
-# when feature is true, which is used to generate ufs_srweather_app_meta.h.
+# when feature is true, which is used to generate rrfs-workflow_meta.h.
 FUNCTION(is_enabled feature ret_val)
   IF(${feature})
     SET(${ret_val} "yes" PARENT_SCOPE)
-    SET("SRWA_${ret_val}" 1 PARENT_SCOPE)
+    SET("RRFS_${ret_val}" 1 PARENT_SCOPE)
   ELSE()
     SET(${ret_val} "no" PARENT_SCOPE)
-    SET("SRWA_${ret_val}" 0 PARENT_SCOPE)
+    SET("RRFS_${ret_val}" 0 PARENT_SCOPE)
   ENDIF(${feature})
 ENDFUNCTION()
 
@@ -55,7 +55,7 @@ if(NOT DEFINED CMAKE_INSTALL_BINDIR)
 endif()
 
 #####
-# Configure and print the ufs-srweather-app.settings file.
+# Configure and print the rrfs-workflow.settings file.
 #####
 
 # Determine the configure date.
@@ -107,30 +107,30 @@ is_enabled(BUILD_SHARED_LIBS enable_shared)
 is_enabled(STATUS_PARALLEL HAS_PARALLEL)
 
 # Generate file from template.
-CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/ufs_srweather_app.settings.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/ufs_srweather_app.settings"
+CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/rrfs-workflow.settings.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/rrfs-workflow.settings"
   @ONLY)
 
 # Read in settings file, print out.
 # Avoid using system-specific calls so that this
 # might also work on Windows.
-FILE(READ "${CMAKE_CURRENT_BINARY_DIR}/ufs_srweather_app.settings"
-  UFS-SRWEATHER-APP_SETTINGS)
-MESSAGE(${UFS-SRWEATHER-APP_SETTINGS})
+FILE(READ "${CMAKE_CURRENT_BINARY_DIR}/rrfs-workflow.settings"
+  RRFS-WORKFLOW_SETTINGS)
+MESSAGE(${RRFS-WORKFOW_SETTINGS})
 
-# Install ufs_srweather_app.settings file into same location
+# Install rrfs-workflow.settings file into same location
 # as the app.
-INSTALL(FILES "${CMAKE_BINARY_DIR}/ufs_srweather_app.settings"
+INSTALL(FILES "${CMAKE_BINARY_DIR}/rrfs-workflow.settings"
   DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 #####
-# Create 'ufs_srweather_app_meta.h' include file.
+# Create 'rrfs-workflow_meta.h' include file.
 #####
 configure_file(
-  ufs_srweather_app_meta.h.in
-  ufs_srweather_app_meta.h @ONLY)
+  rrfs-workflow_meta.h.in
+  rrfs-workflow_meta.h @ONLY)
 
-FILE(COPY "${CMAKE_CURRENT_BINARY_DIR}/ufs_srweather_app_meta.h" DESTINATION include)
+FILE(COPY "${CMAKE_CURRENT_BINARY_DIR}/rrfs-workflow_meta.h" DESTINATION include)
 
 add_custom_target(build DEPENDS sorc/pbuild)
 
