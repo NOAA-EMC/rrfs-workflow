@@ -1,9 +1,9 @@
 help([[
-This loads libraries for building the UFS SRW App on
-the NOAA operational machine WCOSS2 using Intel-19.1.3.304
+This loads libraries for building the RRFS workflow on the 
+NOAA operational machine WCOSS2 (Catcus/Dogwood)
 ]])
 
-whatis([===[Loads libraries needed for building the UFS SRW App on WCOSS2 ]===])
+whatis([===[Loads libraries needed for building the RRFS workflow on WCOSS2 ]===])
 
 load(pathJoin("envvar", os.getenv("envvar_ver")))
 
