@@ -214,9 +214,11 @@ if [ "${DEFAULT_BUILD}" = true ]; then
   BUILD_UFS="on"
   BUILD_UFS_UTILS="on"
   BUILD_UPP="on"
+  BUILD_GSI="on"
+  BUILD_RRFS_UTILS="on"
 fi
 
-# Choose components to build for air quality modeling (Online-CMAQ)
+# Choose components to build for air quality modeling (RRFS-AQM)
 if [ "${APPLICATION}" = "ATMAQ" ]; then
   if [ "${DEFAULT_BUILD}" = true ]; then
     BUILD_NEXUS="on"

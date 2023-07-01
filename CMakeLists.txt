@@ -51,7 +51,7 @@ include(CTest)
 
 # Default bin directory
 if(NOT DEFINED CMAKE_INSTALL_BINDIR)
-    set(CMAKE_INSTALL_BINDIR bin)
+    set(CMAKE_INSTALL_BINDIR exec)
 endif()
 
 #####
