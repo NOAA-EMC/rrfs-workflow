@@ -1,9 +1,9 @@
-# UFS Short Range Weather App Configuration Summary
+# RRFS workflow Configuration Summary
 ===================================================
 
 # General
 ---------
-SRWA Version:		@SRWA_VERSION@
+RRFS Version:		@RRFS_VERSION@
 Configured On:		@CONFIG_DATE@
 Host System:		@host_cpu@-@host_vendor@-@host_os@
 Build Directory: 	@abs_top_builddir@
@@ -22,4 +22,4 @@ Extra libraries:	@LIBS@
 # Features
 ----------
 Parallel Support:	@HAS_PARALLEL@
-
+RRFS Components:        @ENABLE_RRFS@

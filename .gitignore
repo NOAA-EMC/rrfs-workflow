@@ -6,8 +6,8 @@ lib/
 lib64/
 python_graphics/
 share/
-src/*
-!src/CMakeLists.txt
+sorc/*
+!sorc/CMakeLists.txt
 save/
 ush/config.sh
 ush/*.swp

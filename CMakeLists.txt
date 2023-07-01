@@ -1,4 +1,4 @@
-# This is the main cmake file for ufs-srweather-app.
+# This is the main cmake file for RRFS-workflow.
 
 cmake_minimum_required(VERSION 3.15)
 
@@ -15,9 +15,7 @@ SET(RRFS_VERSION_NOTE "-development")
 SET(RRFS_VERSION ${RRFS_VERSION_MAJOR}.${RRFS_VERSION_MINOR}.${RRFS_VERSION_PATCH}${RRFS_VERSION_NOTE})
 
 # A function used to create autotools-style 'yes/no' definitions.
-# If a variable is set, it 'yes' is returned. Otherwise, 'no' is
-# returned.
-#
+# If a variable is set, it 'yes' is returned. Otherwise, 'no' is returned.
 # Also creates a version of the ret_val prepended with 'NC',
 # when feature is true, which is used to generate rrfs-worklfow_meta.h.
 FUNCTION(is_disabled feature ret_val)
@@ -29,12 +27,6 @@ FUNCTION(is_disabled feature ret_val)
   ENDIF(${feature})
 ENDFUNCTION()
 
-# A function used to create autotools-style 'yes/no' definitions.
-# If a variable is set, it 'yes' is returned. Otherwise, 'no' is
-# returned.
-#
-# Also creates a version of the ret_val prepended with 'NC',
-# when feature is true, which is used to generate rrfs-workflow_meta.h.
 FUNCTION(is_enabled feature ret_val)
   IF(${feature})
     SET(${ret_val} "yes" PARENT_SCOPE)
@@ -51,7 +43,7 @@ include(CTest)
 
 # Default bin directory
 if(NOT DEFINED CMAKE_INSTALL_BINDIR)
-    set(CMAKE_INSTALL_BINDIR exec)
+  set(CMAKE_INSTALL_BINDIR bin)
 endif()
 
 #####
@@ -71,7 +63,7 @@ ELSE()
     )
 ENDIF()
 IF(CONFIG_DATE)
-	string(STRIP ${CONFIG_DATE} CONFIG_DATE)
+  string(STRIP ${CONFIG_DATE} CONFIG_DATE)
 ENDIF()
 
 # Get system configuration, Use it to determine osname, os release, cpu. These
@@ -107,28 +99,16 @@ is_enabled(BUILD_SHARED_LIBS enable_shared)
 is_enabled(STATUS_PARALLEL HAS_PARALLEL)
 
 # Generate file from template.
-CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/rrfs-workflow.settings.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/rrfs-workflow.settings"
-  @ONLY)
+CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/rrfs-workflow.settings.in" "${CMAKE_CURRENT_BINARY_DIR}/rrfs-workflow.settings" @ONLY)
 
-# Read in settings file, print out.
-# Avoid using system-specific calls so that this
-# might also work on Windows.
-FILE(READ "${CMAKE_CURRENT_BINARY_DIR}/rrfs-workflow.settings"
-  RRFS-WORKFLOW_SETTINGS)
-MESSAGE(${RRFS-WORKFOW_SETTINGS})
-
-# Install rrfs-workflow.settings file into same location
-# as the app.
+# Install rrfs-workflow.settings file into same location as the app.
 INSTALL(FILES "${CMAKE_BINARY_DIR}/rrfs-workflow.settings"
   DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 #####
 # Create 'rrfs-workflow_meta.h' include file.
 #####
-configure_file(
-  rrfs-workflow_meta.h.in
-  rrfs-workflow_meta.h @ONLY)
+configure_file(rrfs-workflow_meta.h.in rrfs-workflow_meta.h @ONLY)
 
 FILE(COPY "${CMAKE_CURRENT_BINARY_DIR}/rrfs-workflow_meta.h" DESTINATION include)
 
