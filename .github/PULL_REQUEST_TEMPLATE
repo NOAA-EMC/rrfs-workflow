@@ -14,8 +14,7 @@ Explicitly state what tests were run on these changes.
 
 ## ISSUE: 
 If this PR is resolving or referencing one or more issues, in this repository or elewhere, list them here.
-- Fixes issue mentioned in #123
-- Related to bug in https://github.com/NOAA-EMC/other_repository/pull/63
+- Fixs the issue(s) mentioned in #123
 
 ## CONTRIBUTORS (optional): 
 If others have contributed to this work aside from the PR author, list them here
