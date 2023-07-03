@@ -1,7 +1,7 @@
 valid_vals_RUN_ENVIR=("nco" "community")
 valid_vals_VERBOSE=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
 valid_vals_SAVE_CYCLE_LOG=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
-valid_vals_MACHINE=("WCOSS2" "HERA" "ORION" "JET" "CHEYENNE")
+valid_vals_MACHINE=("WCOSS2" "HERA" "ORION" "JET")
 valid_vals_SCHED=("slurm" "pbspro" "lsf" "lsfcray" "none")
 valid_vals_PREDEF_GRID_NAME=( \
 "RRFS_CONUS_25km" \
