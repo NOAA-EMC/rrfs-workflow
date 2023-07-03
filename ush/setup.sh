@@ -816,15 +816,7 @@ NUM_CYCLES="${#ALL_CDATES[@]}"
 #
 #-----------------------------------------------------------------------
 #
-
-#
-# The current script should be located in the ush subdirectory of the 
-# workflow directory.  Thus, the workflow directory is the one above the
-# directory of the current script.  Get the path to this latter directo-
-# ry and save it in HOMErrfs.
-#
-HOMErrfs=${scrfunc_dir%/*/*}
-
+HOMErrfs=${scrfunc_dir%/*}
 USHDIR="$HOMErrfs/ush"
 SCRIPTSDIR="$HOMErrfs/scripts"
 JOBSDIR="$HOMErrfs/jobs"
@@ -856,45 +848,24 @@ case $MACHINE in
     ;;
 
   "HERA")
-    FIXgsm=${FIXgsm:-"/scratch1/NCEPDEV/global/glopara/fix/fix_am"}
-    TOPO_DIR=${TOPO_DIR:-"/scratch1/NCEPDEV/global/glopara/fix/fix_orog"}
-    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/scratch1/NCEPDEV/global/glopara/fix/fix_sfc_climo"}
-    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/scratch2/BMC/det/FV3LAM_pregen"}
+    FIXgsm=${FIXgsm:-"/scratch1/NCEPDEV/nems/role.epic/UFS_SRW_data/develop/fix/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/scratch1/NCEPDEV/nems/role.epic/UFS_SRW_data/develop/fix/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/scratch1/NCEPDEV/nems/role.epic/UFS_SRW_data/develop/fix/fix_sfc_climo"}
+    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/scratch1/NCEPDEV/nems/role.epic/UFS_SRW_data/develop/FV3LAM_pregen"}
     ;;
 
   "ORION")
-    FIXgsm=${FIXgsm:-"/work/noaa/global/glopara/fix/fix_am"}
-    TOPO_DIR=${TOPO_DIR:-"/work/noaa/global/glopara/fix/fix_orog"}
-    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/work/noaa/global/glopara/fix/fix_sfc_climo"}
-    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
+    FIXgsm=${FIXgsm:-"/work/noaa/epic-ps/role-epic-ps/UFS_SRW_data/develop/fix/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/work/noaa/epic-ps/role-epic-ps/UFS_SRW_data/develop/fix/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/work/noaa/epic-ps/role-epic-ps/UFS_SRW_data/develop/fix/fix_sfc_climo"}
+    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/work/noaa/epic-ps/role-epic-ps/UFS_SRW_data/develop/FV3LAM_pregen"}
     ;;
 
   "JET")
-    FIXgsm=${FIXgsm:-"/lfs4/HFIP/hfv3gfs/glopara/git/fv3gfs/fix/fix_am"}
-    TOPO_DIR=${TOPO_DIR:-"/lfs4/HFIP/hfv3gfs/glopara/git/fv3gfs/fix/fix_orog"}
-    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/lfs4/HFIP/hfv3gfs/glopara/git/fv3gfs/fix/fix_sfc_climo"}
-    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
-    ;;
-
-  "ODIN")
-    FIXgsm=${FIXgsm:-"/scratch/ywang/fix/theia_fix/fix_am"}
-    TOPO_DIR=${TOPO_DIR:-"/scratch/ywang/fix/theia_fix/fix_orog"}
-    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/scratch/ywang/fix/climo_fields_netcdf"}
-    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
-    ;;
-
-  "CHEYENNE")
-    FIXgsm=${FIXgsm:-"/glade/p/ral/jntp/UFS_CAM/fix/fix_am"}
-    TOPO_DIR=${TOPO_DIR:-"/glade/p/ral/jntp/UFS_CAM/fix/fix_orog"}
-    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/glade/p/ral/jntp/UFS_CAM/fix/climo_fields_netcdf"}
-    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
-    ;;
-
-  "STAMPEDE")
-    FIXgsm=${FIXgsm:-"/work/00315/tg455890/stampede2/regional_fv3/fix_am"}
-    TOPO_DIR=${TOPO_DIR:-"/work/00315/tg455890/stampede2/regional_fv3/fix_orog"}
-    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/work/00315/tg455890/stampede2/regional_fv3/climo_fields_netcdf"}
-    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
+    FIXgsm=${FIXgsm:-"/mnt/lfs4/HFIP/hfv3gfs/role.epic/UFS_SRW_data/develop/fix/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/mnt/lfs4/HFIP/hfv3gfs/role.epic/UFS_SRW_data/develop/fix/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/mnt/lfs4/HFIP/hfv3gfs/role.epic/UFS_SRW_data/develop/fix/fix_sfc_climo"}
+    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/mnt/lfs4/HFIP/hfv3gfs/role.epic/UFS_SRW_data/develop/FV3LAM_pregen"}
     ;;
 
   *)
@@ -927,14 +898,7 @@ property_name="local_path"
 #
 # Get the base directory of the FV3 forecast model code.
 #
-external_name="ufs-weather-model"
-UFS_WTHR_MDL_DIR=$( \
-get_manage_externals_config_property \
-"${mng_extrns_cfg_fn}" "${external_name}" "${property_name}" ) || \
-print_err_msg_exit "\
-Call to function get_manage_externals_config_property failed."
-
-UFS_WTHR_MDL_DIR="${SORCDIR}/${UFS_WTHR_MDL_DIR}"
+UFS_WTHR_MDL_DIR="${SORCDIR}/ufs-weather-model"
 if [ ! -d "${UFS_WTHR_MDL_DIR}" ]; then
   print_err_msg_exit "\
 The base directory in which the FV3 source code should be located
@@ -946,14 +910,7 @@ fi
 #
 # Get the base directory of the UFS_UTILS codes.
 #
-external_name="ufs_utils"
-UFS_UTILS_DIR=$( \
-get_manage_externals_config_property \
-"${mng_extrns_cfg_fn}" "${external_name}" "${property_name}" ) || \
-print_err_msg_exit "\
-Call to function get_manage_externals_config_property failed."
-
-UFS_UTILS_DIR="${SORCDIR}/${UFS_UTILS_DIR}"
+UFS_UTILS_DIR="${SORCDIR}/UFS_UTILS"
 if [ ! -d "${UFS_UTILS_DIR}" ]; then
   print_err_msg_exit "\
 The base directory in which the UFS utilities source codes should be lo-
@@ -965,14 +922,7 @@ fi
 #
 # Get the base directory of the UPP code.
 #
-external_name="UPP"
-UPP_DIR=$( \
-get_manage_externals_config_property \
-"${mng_extrns_cfg_fn}" "${external_name}" "${property_name}" ) || \
-print_err_msg_exit "\
-Call to function get_manage_externals_config_property failed."
-
-UPP_DIR="${SORCDIR}/${UPP_DIR}"
+UPP_DIR="${SORCDIR}/UPP"
 if [ ! -d "${UPP_DIR}" ]; then
   print_err_msg_exit "\
 The base directory in which the UPP source code should be located
@@ -984,14 +934,7 @@ fi
 #
 # Get the base directory of the Python Graphics code.
 #
-external_name="python_graphics"
-PYTHON_GRAPHICS_DIR=$( \
-  get_manage_externals_config_property \
-  "${mng_extrns_cfg_fn}" "${external_name}" "${property_name}" ) || \
-  print_err_msg_exit "\
-  Call to function get_manage_externals_config_property failed."
-
-PYTHON_GRAPHICS_DIR="${SORCDIR}/${PYTHON_GRAPHICS_DIR}"
+PYTHON_GRAPHICS_DIR="${HOMErrfs}/python_graphics"
 if [ ! -d "${PYTHON_GRAPHICS_DIR}" ]; then
   print_err_msg_exit "
 The base directory in which the Python Graphics source code should be located
@@ -2647,7 +2590,6 @@ USHDIR="$USHDIR"
 SCRIPTSDIR="$SCRIPTSDIR"
 JOBSDIR="$JOBSDIR"
 SORCDIR="$SORCDIR"
-SRC_DIR="$SRC_DIR"
 PARMDIR="$PARMDIR"
 MODULES_DIR="${MODULES_DIR}"
 EXECDIR="$EXECDIR"

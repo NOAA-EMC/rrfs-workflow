@@ -1906,7 +1906,7 @@ MAXTRIES_JEDI_ENVAR_IODA="1"
 #  "rrfsak" (RRFS 3-km Alaska grid)
 #  "hrrrak" (HRRR 3-km Alaska grid)
 #
-ADDNL_OUTPUT_GRIDS=( )
+ADDNL_OUTPUT_GRIDS=()
 #
 #-----------------------------------------------------------------------
 #

@@ -407,13 +407,13 @@ settings="\
 #
   'jobsdir': $JOBSDIR
   'logdir': $LOGDIR
-  'cycle_basedir': ${CYCLE_BASEDIR}
+  'cycle_basedir': ${CYCLE_BASEDIR:-}
   'ensctrl_cycle_basedir': ${ENSCTRL_CYCLE_BASEDIR:-}
-  'nwges_basedir': ${NWGES_BASEDIR}
-  'ensctrl_nwges_basedir': ${ENSCTRL_NWGES_BASEDIR}
-  'ensctrl_comout_basedir': ${ENSCTRL_COMOUT_BASEDIR}
-  'ensctrl_comout_dir': ${ENSCTRL_COMOUT_DIR}
-  'rrfse_nwges_basedir': ${RRFSE_NWGES_BASEDIR}
+  'nwges_basedir': ${NWGES_BASEDIR:-}
+  'ensctrl_nwges_basedir': ${ENSCTRL_NWGES_BASEDIR:-}
+  'ensctrl_comout_basedir': ${ENSCTRL_COMOUT_BASEDIR:-}
+  'ensctrl_comout_dir': ${ENSCTRL_COMOUT_DIR:-}
+  'rrfse_nwges_basedir': ${RRFSE_NWGES_BASEDIR:-}
   'obspath': ${OBSPATH}
   'obspath_pm': ${OBSPATH_PM}
   'global_var_defns_fp': ${GLOBAL_VAR_DEFNS_FP}
@@ -668,28 +668,23 @@ fi
 if [ "${RUN_ENVIR}" = "nco" ]; then
 
   if [ "${DO_DACYCLE}" = "TRUE" ]; then
-# Resolve the target directory that the FIXgsi symlink points to
+    # Resolve the target directory that the FIXgsi symlink points to
     ln_vrfy -fsn "$FIX_GSI" "$FIXgsi"
-
     path_resolved=$( readlink -m "$FIXgsi" )
     if [ ! -d "${path_resolved}" ]; then
-      print_err_msg_exit "\
-    Missing link to FIXgsi
+      print_err_msg_exit "Missing link to FIXgsi
     RUN_ENVIR = \"${RUN_ENVIR}\"
     FIXgsi = \"$FIXgsi\"
     path_resolved = \"${path_resolved}\"
     Please ensure that path_resolved is an existing directory and then rerun
     the experiment generation script."
     fi
-#
 
-# Resolve the target directory that the FIXcrtm symlink points to
+    # Resolve the target directory that the FIXcrtm symlink points to
     ln_vrfy -fsn "$FIX_CRTM" "$FIXcrtm"
-
     path_resolved=$( readlink -m "$FIXcrtm" )
     if [ ! -d "${path_resolved}" ]; then
-      print_err_msg_exit "\
-    Missing link to FIXcrtm
+      print_err_msg_exit "Missing link to FIXcrtm
     RUN_ENVIR = \"${RUN_ENVIR}\"
     FIXcrtm = \"$FIXcrtm\"
     path_resolved = \"${path_resolved}\"
@@ -697,9 +692,8 @@ if [ "${RUN_ENVIR}" = "nco" ]; then
     the experiment generation script."
     fi
 
-# Resolve the target directory that the FIXuppcrtm symlink points to
+    # Resolve the target directory that the FIXuppcrtm symlink points to
     ln_vrfy -fsn "$FIX_UPP_CRTM" "$FIXuppcrtm"
-
     path_resolved=$( readlink -m "$FIXuppcrtm" )
     if [ ! -d "${path_resolved}" ]; then
       print_err_msg_exit "\
@@ -710,18 +704,13 @@ if [ "${RUN_ENVIR}" = "nco" ]; then
     Please ensure that path_resolved is an existing directory and then rerun
     the experiment generation script."
     fi
-
   fi  # check if DA
 
-#
-# Resolve the target directory that the FIXsmokedust symlink points to
-#
+  # Resolve the target directory that the FIXsmokedust symlink points to
   ln_vrfy -fsn "$FIX_SMOKE_DUST" "$FIXsmokedust"
-
   path_resolved=$( readlink -m "$FIXsmokedust" )
   if [ ! -d "${path_resolved}" ]; then
-    print_err_msg_exit "\
-  Missing link to FIXsmokedust
+    print_err_msg_exit "Missing link to FIXsmokedust
   RUN_ENVIR = \"${RUN_ENVIR}\"
   FIXsmokedust = \"$FIXsmokedust\"
   path_resolved = \"${path_resolved}\"
@@ -729,50 +718,40 @@ if [ "${RUN_ENVIR}" = "nco" ]; then
   the experiment generation script."
   fi
 
-if [ "${DO_BUFRSND}" = "TRUE" ]; then
-#
-#
-# Resolve the target directory that the FIXbufrsnd symlink points to
-#
-  ln_vrfy -fsn "$FIX_BUFRSND" "$FIXbufrsnd"
-
-  path_resolved=$( readlink -m "$FIXbufrsnd" )
-  if [ ! -d "${path_resolved}" ]; then
-    print_err_msg_exit "\
-  Missing link to FIXsmokedust
+  if [ "${DO_BUFRSND}" = "TRUE" ]; then
+    # Resolve the target directory that the FIXbufrsnd symlink points to
+    ln_vrfy -fsn "$FIX_BUFRSND" "$FIXbufrsnd"
+    path_resolved=$( readlink -m "$FIXbufrsnd" )
+    if [ ! -d "${path_resolved}" ]; then
+      print_err_msg_exit "Missing link to FIXsmokedust
   RUN_ENVIR = \"${RUN_ENVIR}\"
   FIXsmokedust = \"$FIXbufrsnd\"
   path_resolved = \"${path_resolved}\"
   Please ensure that path_resolved is an existing directory and then rerun
   the experiment generation script."
+    fi
   fi
-fi
 
-#
-
+  # Resolve target directory that FIXam symlink points to
   ln_vrfy -fsn "$FIXgsm" "$FIXam"
-#
-# Resolve the target directory that the FIXam symlink points to and check 
-# that it exists.
-#
   path_resolved=$( readlink -m "$FIXam" )
   if [ ! -d "${path_resolved}" ]; then
     print_err_msg_exit "\
-In order to be able to generate a forecast experiment in NCO mode (i.e.
-when RUN_ENVIR set to \"nco\"), the path specified by FIXam after resolving
-all symlinks (path_resolved) must be an existing directory (but in this
-case is not):
+  In order to be able to generate a forecast experiment in NCO mode (i.e.
+  when RUN_ENVIR set to \"nco\"), the path specified by FIXam after resolving
+  all symlinks (path_resolved) must be an existing directory (but in this
+  case is not):
   RUN_ENVIR = \"${RUN_ENVIR}\"
   FIXam = \"$FIXam\"
   path_resolved = \"${path_resolved}\"
-Please ensure that path_resolved is an existing directory and then rerun
-the experiment generation script."
+  Please ensure that path_resolved is an existing directory and then rerun
+  the experiment generation script."
   fi
+
 #
-# Now consider community mode.
+# community mode.
 #
 else
-
   print_info_msg "$VERBOSE" "
 Copying fixed files from system directory (FIXgsm) to a subdirectory
 (FIXam) in the experiment directory:
@@ -788,7 +767,6 @@ Copying fixed files from system directory (FIXgsm) to a subdirectory
     fn="${FIXgsm_FILES_TO_COPY_TO_FIXam[$i]}"
     cp_vrfy "$FIXgsm/$fn" "$FIXam/$fn"
   done
-
 fi
 #
 #-----------------------------------------------------------------------
