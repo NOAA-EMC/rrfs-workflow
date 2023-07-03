@@ -62,6 +62,10 @@ version="0.1.0"
 # order for the experiment generation script to set it depending on the
 # machine.
 #
+# WORKFLOW_MANAGER:
+# The workflow manager to use (e.g. rocoto). This is set to "rocoto" by
+# default. Valid options: "rocoto", "ecflow", or "none"
+#
 # PARTITION_DEFAULT:
 # If using the slurm job scheduler (i.e. if SCHED is set to "slurm"), 
 # the default partition to which to submit workflow tasks.  If a task 
@@ -151,6 +155,7 @@ HPSS_ACCOUNT=""
 RESERVATION=""
 RESERVATION_POST=""
 SCHED=""
+WORKFLOW_MANAGER="rocoto"
 PARTITION_DEFAULT=""
 QUEUE_DEFAULT=""
 PARTITION_HPSS=""

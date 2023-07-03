@@ -212,7 +212,7 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-cp_vrfy ${EMC_POST_DIR}/parm/nam_micro_lookup.dat ./eta_micro_lookup.dat
+cp_vrfy ${UPP_DIR}/parm/nam_micro_lookup.dat ./eta_micro_lookup.dat
 ln_vrfy -snf ${FIX_UPP_CRTM}/*bin ./
 if [ ${USE_CUSTOM_POST_CONFIG_FILE} = "TRUE" ]; then
   post_config_fp="${CUSTOM_POST_CONFIG_FP}"
@@ -226,8 +226,8 @@ to the post forecast hour directory (fhr_dir):
   fhr_dir = \"${fhr_dir}\"
 ===================================================================="
 else
-  post_config_fp="${EMC_POST_DIR}/parm/postxconfig-NT-fv3lam.txt"
-  post_params_fp="${EMC_POST_DIR}/parm/params_grib2_tbl_new"
+  post_config_fp="${UPP}/parm/postxconfig-NT-fv3lam.txt"
+  post_params_fp="${UPP}/parm/params_grib2_tbl_new"
   print_info_msg "
 ====================================================================
 Copying the default post flat file specified by post_config_fp to the post

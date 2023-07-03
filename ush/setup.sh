@@ -823,18 +823,15 @@ NUM_CYCLES="${#ALL_CDATES[@]}"
 # directory of the current script.  Get the path to this latter directo-
 # ry and save it in HOMErrfs.
 #
-SR_WX_APP_TOP_DIR=${scrfunc_dir%/*/*}
-# GSK to do:  Get HOMErrfs from Externals.cfg 
-HOMErrfs="${SR_WX_APP_TOP_DIR}/regional_workflow"
+HOMErrfs=${scrfunc_dir%/*/*}
 
 USHDIR="$HOMErrfs/ush"
 SCRIPTSDIR="$HOMErrfs/scripts"
 JOBSDIR="$HOMErrfs/jobs"
 SORCDIR="$HOMErrfs/sorc"
-SRC_DIR="${SR_WX_APP_TOP_DIR}/src"
 PARMDIR="$HOMErrfs/parm"
 MODULES_DIR="$HOMErrfs/modulefiles"
-EXECDIR="${SR_WX_APP_TOP_DIR}/bin"
+EXECDIR="$HOMErrfs/exec"
 TEMPLATE_DIR="$USHDIR/templates"
 if [ "${RUN_ENVIR}" = "nco" ]; then
   FIXgsm=${FIXgsm:-"$HOMErrfs/fix/am"}
@@ -925,19 +922,19 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-mng_extrns_cfg_fn=$( readlink -f "${SR_WX_APP_TOP_DIR}/Externals.cfg" )
+mng_extrns_cfg_fn=$( readlink -f "${HOMErrfs}/Externals.cfg" )
 property_name="local_path"
 #
 # Get the base directory of the FV3 forecast model code.
 #
-external_name="ufs_weather_model"
+external_name="ufs-weather-model"
 UFS_WTHR_MDL_DIR=$( \
 get_manage_externals_config_property \
 "${mng_extrns_cfg_fn}" "${external_name}" "${property_name}" ) || \
 print_err_msg_exit "\
 Call to function get_manage_externals_config_property failed."
 
-UFS_WTHR_MDL_DIR="${SR_WX_APP_TOP_DIR}/${UFS_WTHR_MDL_DIR}"
+UFS_WTHR_MDL_DIR="${SORCDIR}/${UFS_WTHR_MDL_DIR}"
 if [ ! -d "${UFS_WTHR_MDL_DIR}" ]; then
   print_err_msg_exit "\
 The base directory in which the FV3 source code should be located
@@ -956,7 +953,7 @@ get_manage_externals_config_property \
 print_err_msg_exit "\
 Call to function get_manage_externals_config_property failed."
 
-UFS_UTILS_DIR="${SR_WX_APP_TOP_DIR}/${UFS_UTILS_DIR}"
+UFS_UTILS_DIR="${SORCDIR}/${UFS_UTILS_DIR}"
 if [ ! -d "${UFS_UTILS_DIR}" ]; then
   print_err_msg_exit "\
 The base directory in which the UFS utilities source codes should be lo-
@@ -966,21 +963,21 @@ Please clone the external repository containing the code in this direct-
 ory, build the executables, and then rerun the workflow."
 fi
 #
-# Get the base directory of the EMC_post code.
+# Get the base directory of the UPP code.
 #
-external_name="EMC_post"
-EMC_POST_DIR=$( \
+external_name="UPP"
+UPP_DIR=$( \
 get_manage_externals_config_property \
 "${mng_extrns_cfg_fn}" "${external_name}" "${property_name}" ) || \
 print_err_msg_exit "\
 Call to function get_manage_externals_config_property failed."
 
-EMC_POST_DIR="${SR_WX_APP_TOP_DIR}/${EMC_POST_DIR}"
-if [ ! -d "${EMC_POST_DIR}" ]; then
+UPP_DIR="${SORCDIR}/${UPP_DIR}"
+if [ ! -d "${UPP_DIR}" ]; then
   print_err_msg_exit "\
-The base directory in which the EMC_post source code should be located
-(EMC_POST_DIR) does not exist:
-  EMS_POST_DIR = \"${EMC_POST_DIR}\"
+The base directory in which the UPP source code should be located
+(UPP_DIR) does not exist:
+  UPP_DIR = \"${UPP_DIR}\"
 Please clone the external repository containing the code in this directory,
 build the executable, and then rerun the workflow."
 fi
@@ -994,7 +991,7 @@ PYTHON_GRAPHICS_DIR=$( \
   print_err_msg_exit "\
   Call to function get_manage_externals_config_property failed."
 
-PYTHON_GRAPHICS_DIR="${SR_WX_APP_TOP_DIR}/${PYTHON_GRAPHICS_DIR}"
+PYTHON_GRAPHICS_DIR="${SORCDIR}/${PYTHON_GRAPHICS_DIR}"
 if [ ! -d "${PYTHON_GRAPHICS_DIR}" ]; then
   print_err_msg_exit "
 The base directory in which the Python Graphics source code should be located
@@ -1296,7 +1293,7 @@ fi
 #-----------------------------------------------------------------------
 #
 if [ "${EXPT_BASEDIR:0:1}" != "/" ]; then
-  EXPT_BASEDIR="${SR_WX_APP_TOP_DIR}/../expt_dirs/${EXPT_BASEDIR}"
+  EXPT_BASEDIR="${HOMErrfs}/../expt_dirs/${EXPT_BASEDIR}"
 fi
 EXPT_BASEDIR="$( readlink -m ${EXPT_BASEDIR} )"
 mkdir_vrfy -p "${EXPT_BASEDIR}"
@@ -2645,7 +2642,6 @@ CRONTAB_LINE="${CRONTAB_LINE}"
 #
 #-----------------------------------------------------------------------
 #
-SR_WX_APP_TOP_DIR="${SR_WX_APP_TOP_DIR}"
 HOMErrfs="$HOMErrfs"
 USHDIR="$USHDIR"
 SCRIPTSDIR="$SCRIPTSDIR"
@@ -2666,7 +2662,7 @@ UFS_WTHR_MDL_DIR="${UFS_WTHR_MDL_DIR}"
 UFS_UTILS_DIR="${UFS_UTILS_DIR}"
 SFC_CLIMO_INPUT_DIR="${SFC_CLIMO_INPUT_DIR}"
 TOPO_DIR="${TOPO_DIR}"
-EMC_POST_DIR="${EMC_POST_DIR}"
+UPP_DIR="${UPP_DIR}"
 PYTHON_GRAPHICS_DIR="${PYTHON_GRAPHICS_DIR}"
 
 ARCHIVEDIR="${ARCHIVEDIR}"
