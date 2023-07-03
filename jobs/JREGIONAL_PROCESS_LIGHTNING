@@ -16,7 +16,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -91,7 +91,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSDIR/exregional_process_lightning.sh \
+$SCRIPTSdir/exregional_process_lightning.sh \
   CYCLE_DIR="${CYCLE_DIR}" WORKDIR="${workdir}" comout="${COMOUT}" || \
 print_err_msg_exit "\
 Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."

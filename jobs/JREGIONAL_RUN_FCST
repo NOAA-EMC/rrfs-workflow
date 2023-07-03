@@ -18,7 +18,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -90,7 +90,7 @@ mkdir_vrfy -p ${gridspec_dir}
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSDIR/exregional_run_fcst.sh \
+$SCRIPTSdir/exregional_run_fcst.sh \
   cdate="${CDATE}" \
   cycle_type="${CYCLE_TYPE}" \
   cycle_subtype="${CYCLE_SUBTYPE}" \

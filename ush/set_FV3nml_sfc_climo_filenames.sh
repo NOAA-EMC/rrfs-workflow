@@ -201,7 +201,7 @@ $settings"
 fv3_nml_base_fp="${FV3_NML_FP}.base"
 mv_vrfy "${FV3_NML_FP}" "${fv3_nml_base_fp}"
 
-$USHDIR/set_namelist.py -q \
+$USHdir/set_namelist.py -q \
                         -n ${fv3_nml_base_fp} \
                         -u "$settings" \
                         -o ${FV3_NML_FP} || \

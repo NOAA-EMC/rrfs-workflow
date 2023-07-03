@@ -21,7 +21,7 @@ function is_array() {
 #
 #-----------------------------------------------------------------------
 #
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
+  { save_shell_opts; . ${USHdir}/preamble.sh; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -31,7 +31,7 @@ function is_array() {
 #
 #-----------------------------------------------------------------------
 #
-  local scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
+  local scrfunc_fp=$( $READLINK -f "${BASH_SOURCE[0]}" )
   local scrfunc_fn=$( basename "${scrfunc_fp}" )
   local scrfunc_dir=$( dirname "${scrfunc_fp}" )
 #

@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -278,7 +278,7 @@ DATA=$postprd_dir
 export DATA=$postprd_dir
 DATAprdgen=$DATA/prdgen_${fhr}
 mkdir $DATAprdgen
-USHrrfs=$USHDIR/prdgen
+USHrrfs=$USHdir/prdgen
 
 wgrib2 ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.grib2 >& $DATAprdgen/prslevf${fhr}.txt
 

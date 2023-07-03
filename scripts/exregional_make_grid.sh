@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -16,10 +16,10 @@
 #
 #-----------------------------------------------------------------------
 #
-. $USHDIR/make_grid_mosaic_file.sh
-. $USHDIR/link_fix.sh
-. $USHDIR/set_FV3nml_sfc_climo_filenames.sh
-. $USHDIR/set_FV3nml_stoch_params.sh
+. $USHdir/make_grid_mosaic_file.sh
+. $USHdir/link_fix.sh
+. $USHdir/set_FV3nml_sfc_climo_filenames.sh
+. $USHdir/set_FV3nml_stoch_params.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -359,7 +359,7 @@ generation executable (exec_fp):
 #
 # Call the python script to create the namelist file.
 #
-  ${USHDIR}/set_namelist.py -q -u "$settings" -o ${rgnl_grid_nml_fp} || \
+  ${USHdir}/set_namelist.py -q -u "$settings" -o ${rgnl_grid_nml_fp} || \
     print_err_msg_exit "\
 Call to python script set_namelist.py to set the variables in the
 regional_esg_grid namelist file failed.  Parameters passed to this script

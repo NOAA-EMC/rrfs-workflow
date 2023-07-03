@@ -17,7 +17,18 @@ set -u
 #
 #-----------------------------------------------------------------------
 #
-scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
+if [[ $(uname -s) == Darwin ]]; then
+  command -v greadlink >/dev/null 2>&1 || { \
+    echo >&2 "\
+For Darwin-based operating systems (MacOS), the 'greadlink' utility is 
+required to run the UFS SRW Application. Reference the User's Guide for 
+more information about platform requirements. Aborting."; \
+    exit 1; \
+  }
+  scrfunc_fp=$( greadlink -f "${BASH_SOURCE[0]}" )
+else
+  scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
+fi
 scrfunc_fn=$( basename "${scrfunc_fp}" )
 scrfunc_dir=$( dirname "${scrfunc_fp}" )
 #
@@ -25,21 +36,21 @@ scrfunc_dir=$( dirname "${scrfunc_fp}" )
 #
 # Get the experiment directory.  We assume that there is a symlink to 
 # this script in the experiment directory, and this script is called via
-# that symlink.  Thus, finding the directory in which the symlink is lo-
-# cated will give us the experiment directory.  We find this by first 
+# that symlink.  Thus, finding the directory in which the symlink is
+# located will give us the experiment directory.  We find this by first 
 # obtaining the directory portion (i.e. the portion without the name of
 # this script) of the command that was used to called this script (i.e.
-# "$0") and then use the "readlink -f" command to obtain the correspond-
-# ing absolute path.  This will work for all four of the following ways
-# in which the symlink in the experiment directory pointing to this 
-# script may be called:
+# "$0") and then use the "readlink -f" command to obtain the corresponding
+# absolute path.  This will work for all four of the following ways in 
+# which the symlink in the experiment directory pointing to this script 
+# may be called:
 #
 # 1) Call this script from the experiment directory:
 #    > cd /path/to/experiment/directory
 #    > launch_FV3LAM_wflow.sh
 #
-# 2) Call this script from the experiment directory but using "./" be-
-#    fore the script name:
+# 2) Call this script from the experiment directory but using "./" before
+#    the script name:
 #    > cd /path/to/experiment/directory
 #    > ./launch_FV3LAM_wflow.sh
 #
@@ -47,9 +58,8 @@ scrfunc_dir=$( dirname "${scrfunc_fp}" )
 #    symlink in the experiment directory:
 #    > /path/to/experiment/directory/launch_FV3LAM_wflow.sh
 #
-# 4) Call this script from a directory that is several levels up from
-#    the experiment directory (but not necessarily at the root directo-
-#    ry):
+# 4) Call this script from a directory that is several levels up from the
+#    experiment directory (but not necessarily at the root directory):
 #    > cd /path/to
 #    > experiment/directory/launch_FV3LAM_wflow.sh
 #
@@ -65,15 +75,49 @@ scrfunc_dir=$( dirname "${scrfunc_fp}" )
 #-----------------------------------------------------------------------
 #
 exptdir=$( dirname "$0" )
-exptdir=$( readlink -f "$exptdir" )
+if [[ $(uname -s) == Darwin ]]; then
+  command -v greadlink >/dev/null 2>&1 || { \
+    echo >&2 "\
+For Darwin-based operating systems (MacOS), the 'greadlink' utility is 
+required to run the UFS SRW Application. Reference the User's Guide for 
+more information about platform requirements. Aborting."; 
+    exit 1;
+  }
+  exptdir=$( greadlink -f "$exptdir" )
+else
+  exptdir=$( readlink -f "$exptdir" )
+fi
 #
 #-----------------------------------------------------------------------
 #
-# Source the variable definitions file for the experiment.
+# Source necessary files.
 #
 #-----------------------------------------------------------------------
 #
 . $exptdir/var_defns.sh
+. $USHdir/source_util_funcs.sh
+#
+#-----------------------------------------------------------------------
+#
+# Declare arguments.
+#
+#-----------------------------------------------------------------------
+#
+valid_args=( \
+  "called_from_cron" \
+  )
+process_args valid_args "$@"
+print_input_args "valid_args"
+#
+#-----------------------------------------------------------------------
+#
+# Make sure called_from_cron is set to a valid value.
+#
+#-----------------------------------------------------------------------
+#
+called_from_cron=${called_from_cron:-"FALSE"}
+check_var_valid_value "called_from_cron" "valid_vals_BOOLEAN"
+called_from_cron=$(boolify "${called_from_cron}")
 #
 #-----------------------------------------------------------------------
 #
@@ -91,23 +135,10 @@ expt_name="${EXPT_SUBDIR}"
 #
 #-----------------------------------------------------------------------
 #
-if [ "$MACHINE" = "CHEYENNE" ]; then
-  module use -a /glade/p/ral/jntp/UFS_SRW_app/modules/
-  module load rocoto
-elif [ "$MACHINE" = "ORION" ]; then
-  module load contrib rocoto
-elif [ "$MACHINE" = "WCOSS2" ]; then
-  module purge
-  module use /apps/ops/test/nco/modulefiles
-  module load craype-x86-rome
-  module load libfabric/1.11.0.0.
-  module load craype-network-ofi
-  module load envvar/1.0
-  module load core/rocoto/1.3.5
-else
-  module purge
-  module load rocoto
-fi
+machine=$(echo_lowercase $MACHINE)
+
+. ${USHdir}/load_modules_wflow.sh ${machine}
+
 #
 #-----------------------------------------------------------------------
 #
@@ -120,12 +151,6 @@ fi
 rocoto_xml_bn=$( basename "${WFLOW_XML_FN}" ".xml" )
 rocoto_database_fn="${rocoto_xml_bn}.db"
 launch_log_fn="log.launch_${rocoto_xml_bn}"
-
-logs=`echo ${LOGDIR} | rev | cut -f 3- -d / | rev`
-latest=$(ls -td $logs/*/* | head -n 1)
-
-wflow_launch_log_fp=${latest}/${WFLOW_LAUNCH_LOG_FN}
-
 #
 #-----------------------------------------------------------------------
 #
@@ -141,92 +166,52 @@ wflow_status="IN PROGRESS"
 #
 #-----------------------------------------------------------------------
 #
-cd "$exptdir"
+cd_vrfy "$exptdir"
 #
 #-----------------------------------------------------------------------
 #
-# Issue the rocotorun command to (re)launch the next task in the 
-# workflow.  Then check for error messages in the output of rocotorun.  
-# If any are found, it means the end-to-end run of the workflow failed.  
-# In this case, we remove the crontab entry that launches the workflow,
-# and we append an appropriate failure message at the end of the launch
-# log file.
+# Issue the rocotorun command to (re)launch the next task in the workflow.  
+# Then check for error messages in the output of rocotorun.  If any are 
+# found, it means the end-to-end run of the workflow failed, so set the
+# status of the workflow to "FAILURE".
 #
 #-----------------------------------------------------------------------
-#
-
-#rocotorun_output=$( ls -alF )
-#echo
-#echo "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-#echo "${rocotorun_output}"
-#echo "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
-
-#rocotorun_output=$( \
-#rocotorun -w "${WFLOW_XML_FN}" -d "${rocoto_database_fn}" -v 10 \
-#)
-#rocotorun_output=$( (rocotorun -w "${WFLOW_XML_FN}" -d "${rocoto_database_fn}" -v 10) 2>&1 )  # This freezes the script.
-#rocotorun_output=$( (rocotorun -w "${WFLOW_XML_FN}" -d "${rocoto_database_fn}" -v 10) 1>&2 )  # This leaves rocotorun_output empty.
-#rocotorun_output=$( rocotorun -w "${WFLOW_XML_FN}" -d "${rocoto_database_fn}" -v 10 )
-#{ error=$(command 2>&1 1>&$out); } {out}>&1
-#{ rocotorun_output=$( rocotorun -w "${WFLOW_XML_FN}" -d "${rocoto_database_fn}" -v 10 2>&1 1>&$out); } {out}>&1  # This freezes the script.
-
-#
-# Ideally, the following two lines should work, but for some reason the
-# output of rocotorun cannot be captured in a variable using the $(...)
-# notation.  Maybe it's not being written to stdout, although I tried
-# redirecting stderr to stdout and other tricks but nothing seemed to
-# work.  For this reason, below we first redirect the output of rocoto-
-# run to a temporary file and then read in the contents of that file in-
-# to the rocotorun_output variable using the cat command.
-#
-#rocotorun_cmd="rocotorun -w \"${WFLOW_XML_FN}\" -d \"${rocoto_database_fn}\" -v 10"
-#rocotorun_output=$( eval ${rocotorun_cmd} 2>&1 )
 #
 tmp_fn="rocotorun_output.txt"
-#rocotorun_cmd="rocotorun -w \"${WFLOW_XML_FN}\" -d \"${rocoto_database_fn}\" -v 10 > ${tmp_fn}"
 rocotorun_cmd="rocotorun -w \"${WFLOW_XML_FN}\" -d \"${rocoto_database_fn}\" -v 10"
-eval ${rocotorun_cmd} > ${tmp_fn} 2>&1
+eval ${rocotorun_cmd} > ${tmp_fn} 2>&1 || \
+  print_err_msg_exit "\
+Call to \"rocotorun\" failed with return code $?."
 rocotorun_output=$( cat "${tmp_fn}" )
 rm "${tmp_fn}"
 
 error_msg="sbatch: error: Batch job submission failed:"
-# Job violates accounting/QOS policy (job submit limit, user's size and/or time limits)"
 while read -r line; do
-  grep_output=$( echo "$line" | grep "${error_msg}" )
+  grep_output=$( printf "%s" "$line" | grep "${error_msg}" )
   if [ $? -eq 0 ]; then
     wflow_status="FAILURE"
     break
   fi
 done <<< "${rocotorun_output}"
-
 #
 #-----------------------------------------------------------------------
 #
 # Issue the rocotostat command to obtain a table specifying the status 
 # of each task.  Then check for dead tasks in the output of rocotostat.  
-# If any are found, it means the end-to-end run of the workflow failed.  
-# In this case, we remove the crontab entry that launches the workflow,
-# and we append an appropriate failure message at the end of the launch
-# log file.
+# If any are found, it means the end-to-end run of the workflow failed,
+# so set the status of the workflow (wflow_status) to "FAILURE".
 #
 #-----------------------------------------------------------------------
 #
-#rocotostat_cmd="{ pwd; rocotostat -w \"${WFLOW_XML_FN}\" -d \"${rocoto_database_fn}\" -v 10; }"
-#rocotostat_cmd="{ pwd; ls -alF; rocotostat -w ${WFLOW_XML_FN} -d ${rocoto_database_fn} -v 10; }"
-#rocotostat_cmd="{ pwd; ls -alF; rocotostat -w \"${WFLOW_XML_FN}\" -d \"${rocoto_database_fn}\" -v 10; }"
-#rocotostat_cmd="{ pwd; rocotostat -w \"${WFLOW_XML_FN}\" -d \"${rocoto_database_fn}\" -v 10; }"
-#rocotostat_cmd="{ rocotostat -w \"${WFLOW_XML_FN}\" -d \"${rocoto_database_fn}\" -v 10; }"
 rocotostat_cmd="rocotostat -w \"${WFLOW_XML_FN}\" -d \"${rocoto_database_fn}\" -v 10"
+rocotostat_output=$( eval ${rocotostat_cmd} 2>&1 || \
+                     print_err_msg_exit "\
+Call to \"rocotostat\" failed with return code $?."
+                   )
 
-#rocotostat_output=$( pwd; rocotostat -w "${WFLOW_XML_FN}" -d "${rocoto_database_fn}" -v 10 2>&1 )
-#rocotostat_output=$( rocotostat -w "${WFLOW_XML_FN}" -d "${rocoto_database_fn}" -v 10 2>&1 )
-#rocotostat_output=$( eval ${rocotostat_cmd} 2>&1 )
-#rocotostat_output=$( ${rocotostat_cmd} 2>&1 )
-#rocotostat_output=$( { pwd; ls -alF; } 2>&1 )
-rocotostat_output=''
 error_msg="DEAD"
 while read -r line; do
-  grep_output=$( echo "$line" | grep "${error_msg}" )
+  grep_output=$( printf "%s" "$line" | grep "${error_msg}" )
   if [ $? -eq 0 ]; then
     wflow_status="FAILURE"
     break
@@ -240,7 +225,7 @@ done <<< "${rocotostat_output}"
 #
 #-----------------------------------------------------------------------
 #
-printf "
+printf "%s" "
 
 ========================================================================
 Start of output from script \"${scrfunc_fn}\".
@@ -265,7 +250,7 @@ Output of rocotostat_cmd is:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ${rocotostat_output}
-" >> "${wflow_launch_log_fp}" 2>&1
+" >> "${WFLOW_LAUNCH_LOG_FN}" 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -273,20 +258,20 @@ ${rocotostat_output}
 # the status of each cycle in the workflow.  The output of this command
 # has the following format:
 #
-#   CYCLE         STATE           ACTIVATED              DEACTIVATED     
-# 201905200000      Active    Nov 07 2019 00:23:30             -          
+#   CYCLE         STATE           ACTIVATED              DEACTIVATED
+# 201905200000      Active    Nov 07 2019 00:23:30             -
 # ...
 #
 # Thus, the first row is a header line containing the column titles, and
-# the remaining rows each correspond to one cycle in the workflow.  Be-
-# low, we are interested in the first and second columns of each row.
-# The first column is a string containing the start time of the cycle 
-# (in the format YYYYMMDDHHmm, where YYYY is the 4-digit year, MM is the
-# 2-digit month, DD is the 2-digit day of the month, HH is the 2-digit
-# hour of the day, and mm is the 2-digit minute of the hour).  The se-
-# cond column is a string containing the state of the cycle.  This can
-# be "Active" or "Done".  Below, we read in and store these two columns
-# in (1-D) arrays.
+# the remaining rows each correspond to one cycle in the workflow.  Below, 
+# we are interested in the first and second columns of each row.  The 
+# first column is a string containing the start time of the cycle (in the 
+# format YYYYMMDDHHmm, where YYYY is the 4-digit year, MM is the 2-digit 
+# month, DD is the 2-digit day of the month, HH is the 2-digit hour of 
+# the day, and mm is the 2-digit minute of the hour).  The second column 
+# is a string containing the state of the cycle.  This can be "Active" 
+# or "Done".  Below, we read in and store these two columns in (1-D) 
+# arrays.
 #
 #-----------------------------------------------------------------------
 #
@@ -298,14 +283,14 @@ cycle_status=()
 i=0
 while read -r line; do
 #
-# Note that the first line in rocotostat_output is a header line con-
-# taining the column titles.  Thus, we ignore it and consider only the
-# remaining lines (of which there is one per cycle).
+# Note that the first line in rocotostat_output is a header line containing 
+# the column titles.  Thus, we ignore it and consider only the remaining 
+# lines (of which there is one per cycle).
 #
   if [ $i -gt 0 ]; then
     im1=$((i-1))
-    cycle_str[im1]=$( echo "$line" | sed -r -n -e "s/${regex_search}/\1/p" )
-    cycle_status[im1]=$( echo "$line" | sed -r -n -e "s/${regex_search}/\2/p" )
+    cycle_str[im1]=$( echo "$line" | $SED -r -n -e "s/${regex_search}/\1/p" )
+    cycle_status[im1]=$( echo "$line" | $SED -r -n -e "s/${regex_search}/\2/p" )
   fi
   i=$((i+1))
 done <<< "${rocotostat_output}"
@@ -321,16 +306,16 @@ done <<< "${rocotostat_output}"
 num_cycles_total=${#cycle_str[@]}
 num_cycles_completed=0
 for (( i=0; i<=$((num_cycles_total-1)); i++ )); do
-  if [ "${cycle_status}" = "Done" ]; then
+  if [ "${cycle_status[i]}" = "Done" ]; then
     num_cycles_completed=$((num_cycles_completed+1))
   fi
 done
 #
 #-----------------------------------------------------------------------
 #
-# If the number of completed cycles is equal to the total number of cy-
-# cles, it means the end-to-end run of the workflow was successful.  In
-# this case, we reset the wflow_status to "SUCCESS".
+# If the number of completed cycles is equal to the total number of cycles, 
+# it means the end-to-end run of the workflow was successful.  In this 
+# case, we reset the wflow_status to "SUCCESS".
 #
 #-----------------------------------------------------------------------
 #
@@ -340,12 +325,12 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Print informational messages about the workflow to the launch log 
-# file, including the workflow status.
+# Print informational messages about the workflow to the launch log file, 
+# including the workflow status.
 #
 #-----------------------------------------------------------------------
 #
-printf "
+printf "%s" "
 
 Summary of workflow status:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -357,13 +342,13 @@ Summary of workflow status:
 End of output from script \"${scrfunc_fn}\".
 ========================================================================
 
-" >> ${wflow_launch_log_fp} 2>&1
+" >> ${WFLOW_LAUNCH_LOG_FN} 2>&1
 #
 #-----------------------------------------------------------------------
 #
-# If the workflow status is now either "SUCCESS" or "FAILURE", indicate
-# this by appending an appropriate workflow completion message to the 
-# end of the launch log file.
+# If the workflow status (wflow_status) has been set to either "SUCCESS" 
+# or "FAILURE", indicate this by appending an appropriate workflow 
+# completion message to the end of the launch log file.
 #
 #-----------------------------------------------------------------------
 #
@@ -372,59 +357,48 @@ if [ "${wflow_status}" = "SUCCESS" ] || \
 
   msg="
 The end-to-end run of the workflow for the forecast experiment specified 
-by expt_name has completed with the following workflow status (wflow_-
-status):
+by expt_name has completed with the following workflow status (wflow_status):
   expt_name = \"${expt_name}\"
   wflow_status = \"${wflow_status}\"
 "
 #
 # If a cron job was being used to periodically relaunch the workflow, we
-# now remove the entry in the crontab corresponding to the workflow be-
-# cause the end-to-end run of the workflow has now either succeeded or
+# now remove the entry in the crontab corresponding to the workflow 
+# because the end-to-end run of the workflow has now either succeeded or 
 # failed and will remain in that state without manual user intervention.
-# Thus, there is no need to try to relaunch it.  We also append a mes-
-# sage to the completion message above to indicate this.
+# Thus, there is no need to try to relaunch it.  We also append a message 
+# to the completion message above to indicate this.
 #
   if [ "${USE_CRON_TO_RELAUNCH}" = "TRUE" ]; then
 
     msg="${msg}\
-Thus, there is no need to relaunch the workflow via a cron job.  Remo-
-ving from the crontab the line (CRONTAB_LINE) that calls the workflow
-launch script for this experiment:
+Thus, there is no need to relaunch the workflow via a cron job.  Removing 
+from the crontab the line (CRONTAB_LINE) that calls the workflow launch 
+script for this experiment:
   CRONTAB_LINE = \"${CRONTAB_LINE}\"
 "
 #
-# Below, we use "grep" to determine whether the crontab line that the
-# variable CRONTAB_LINE contains is already present in the cron table.
-# For that purpose, we need to escape the asterisks in the string in
-# CRONTAB_LINE with backslashes.  Do this next.
+# Remove CRONTAB_LINE from cron table
 #
-    crontab_line_esc_astr=$( printf "%s" "${CRONTAB_LINE}" | \
-                             sed -r -e "s%[*]%\\\\*%g" )
-#
-# In the string passed to the grep command below, we use the line start
-# and line end anchors ("^" and "$", respectively) to ensure that we on-
-# ly find lines in the crontab that contain exactly the string in cron-
-# tab_line_esc_astr without any leading or trailing characters.
-#
-    ( crontab -l | grep -v "^${crontab_line_esc_astr}$" ) | crontab -
-
+    if [ "${called_from_cron}" = "TRUE" ]; then
+       MACHINE=$MACHINE CRONTAB_LINE=$CRONTAB_LINE \
+           python3 $USHdir/get_crontab_contents.py --delete --called-from-cron
+    else
+       MACHINE=$MACHINE CRONTAB_LINE=$CRONTAB_LINE \
+           python3 $USHdir/get_crontab_contents.py --delete
+    fi
   fi
 #
 # Print the workflow completion message to the launch log file.
 #
-  printf "$msg" >> ${wflow_launch_log_fp} 2>&1
+  printf "%s" "$msg" >> ${WFLOW_LAUNCH_LOG_FN} 2>&1
 #
 # If the stdout from this script is being sent to the screen (e.g. it is
 # not being redirected to a file), then also print out the workflow 
 # completion message to the screen.
 #
   if [ -t 1 ]; then
-    printf "$msg"
+    printf "%s" "$msg"
   fi
 
 fi
-
-
-
-

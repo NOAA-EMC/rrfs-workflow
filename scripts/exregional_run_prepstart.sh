@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -966,7 +966,7 @@ if [ "${USE_FVCOM}" = "TRUE" ] && [ ${SFC_CYC} -eq 2 ] ; then
 
 # Remap the FVCOM output from the 5 lakes onto the RRFS grid
   if [ "${PREP_FVCOM}" = "TRUE" ]; then
-    ${SCRIPTSDIR}/exregional_prep_fvcom.sh \
+    ${SCRIPTSdir}/exregional_prep_fvcom.sh \
                   modelinputdir="${modelinputdir}" \
                   FIXLAM="${FIXLAM}" \
                   FVCOM_DIR="${FVCOM_DIR}" \

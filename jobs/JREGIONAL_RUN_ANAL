@@ -16,7 +16,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -137,7 +137,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSDIR/exregional_run_analysis.sh \
+$SCRIPTSdir/exregional_run_analysis.sh \
              cycle_dir="${CYCLE_DIR}" \
              cycle_type="${CYCLE_TYPE}" \
              gsi_type="${GSI_TYPE}" \

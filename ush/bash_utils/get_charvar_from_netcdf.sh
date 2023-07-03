@@ -7,7 +7,7 @@
 #
 #-----------------------------------------------------------------------
 #
-#. $USHDIR/source_util_funcs.sh
+#. $USHdir/source_util_funcs.sh
 
 #
 #-----------------------------------------------------------------------
@@ -25,7 +25,7 @@ function get_charvar_from_netcdf() {
 #
 #-----------------------------------------------------------------------
 #
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
+  { save_shell_opts; . ${USHdir}/preamble.sh; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -35,7 +35,7 @@ function get_charvar_from_netcdf() {
 #
 #-----------------------------------------------------------------------
 #
-  local scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
+  local scrfunc_fp=$( $READLINK -f "${BASH_SOURCE[0]}" )
   local scrfunc_fn=$( basename "${scrfunc_fp}" )
   local scrfunc_dir=$( dirname "${scrfunc_fp}" )
 #
@@ -173,7 +173,7 @@ The arguments to this function are defined as follows:
 #-----------------------------------------------------------------------
 #
   nc_var_value=$( ncdump -v "${nc_var_name}" "${nc_file}" | \
-                  sed -r -e '1,/data:/d' \
+                  $SED -r -e '1,/data:/d' \
                          -e '/^[ ]*'${nc_var_name}'/d' \
                          -e '/^}$/d' \
                          -e 's/.*"(.*)".*/\1/' \

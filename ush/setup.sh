@@ -788,22 +788,22 @@ NUM_CYCLES="${#ALL_CDATES[@]}"
 # HOMErrfs:
 # Top directory of the clone of the FV3-LAM workflow git repository.
 #
-# USHDIR:
+# USHdir:
 # Directory containing the shell scripts called by the workflow.
 #
-# SCRIPTSDIR:
+# SCRIPTSdir:
 # Directory containing the ex scripts called by the workflow.
 #
-# JOBSSDIR:
+# JOBSdir:
 # Directory containing the jjobs scripts called by the workflow.
 #
-# SORCDIR:
+# SORCdir:
 # Directory containing various source codes.
 #
-# PARMDIR:
+# PARMdir:
 # Directory containing parameter files, template files, etc.
 #
-# EXECDIR:
+# EXECdir:
 # Directory containing various executable files.
 #
 # TEMPLATE_DIR:
@@ -817,14 +817,14 @@ NUM_CYCLES="${#ALL_CDATES[@]}"
 #-----------------------------------------------------------------------
 #
 HOMErrfs=${scrfunc_dir%/*}
-USHDIR="$HOMErrfs/ush"
-SCRIPTSDIR="$HOMErrfs/scripts"
-JOBSDIR="$HOMErrfs/jobs"
-SORCDIR="$HOMErrfs/sorc"
-PARMDIR="$HOMErrfs/parm"
+USHdir="$HOMErrfs/ush"
+SCRIPTSdir="$HOMErrfs/scripts"
+JOBSdir="$HOMErrfs/jobs"
+SORCdir="$HOMErrfs/sorc"
+PARMdir="$HOMErrfs/parm"
 MODULES_DIR="$HOMErrfs/modulefiles"
 EXECDIR="$HOMErrfs/exec"
-TEMPLATE_DIR="$USHDIR/templates"
+TEMPLATE_DIR="$USHdir/templates"
 if [ "${RUN_ENVIR}" = "nco" ]; then
   FIXgsm=${FIXgsm:-"$HOMErrfs/fix/am"}
   FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"$HOMErrfs/fix/lam"}
@@ -898,7 +898,7 @@ property_name="local_path"
 #
 # Get the base directory of the FV3 forecast model code.
 #
-UFS_WTHR_MDL_DIR="${SORCDIR}/ufs-weather-model"
+UFS_WTHR_MDL_DIR="${SORCdir}/ufs-weather-model"
 if [ ! -d "${UFS_WTHR_MDL_DIR}" ]; then
   print_err_msg_exit "\
 The base directory in which the FV3 source code should be located
@@ -910,7 +910,7 @@ fi
 #
 # Get the base directory of the UFS_UTILS codes.
 #
-UFS_UTILS_DIR="${SORCDIR}/UFS_UTILS"
+UFS_UTILS_DIR="${SORCdir}/UFS_UTILS"
 if [ ! -d "${UFS_UTILS_DIR}" ]; then
   print_err_msg_exit "\
 The base directory in which the UFS utilities source codes should be lo-
@@ -922,7 +922,7 @@ fi
 #
 # Get the base directory of the UPP code.
 #
-UPP_DIR="${SORCDIR}/UPP"
+UPP_DIR="${SORCdir}/UPP"
 if [ ! -d "${UPP_DIR}" ]; then
   print_err_msg_exit "\
 The base directory in which the UPP source code should be located
@@ -1053,7 +1053,7 @@ LBC_SPEC_FCST_LONG_HRS=($( seq 0 ${LBC_SPEC_INTVL_HRS} \
 #-----------------------------------------------------------------------
 #
 if [ ! -z "${PREDEF_GRID_NAME}" ]; then
-  . $USHDIR/set_predef_grid_params.sh
+  . $USHdir/set_predef_grid_params.sh
 fi
 #
 #-----------------------------------------------------------------------
@@ -1597,7 +1597,7 @@ FV3_EXEC_FP="${EXECDIR}/${FV3_EXEC_FN}"
 #
 #-----------------------------------------------------------------------
 #
-WFLOW_LAUNCH_SCRIPT_FP="$USHDIR/${WFLOW_LAUNCH_SCRIPT_FN}"
+WFLOW_LAUNCH_SCRIPT_FP="$USHdir/${WFLOW_LAUNCH_SCRIPT_FN}"
 WFLOW_LAUNCH_LOG_FP="$EXPTDIR/${WFLOW_LAUNCH_LOG_FN}"
 if [ "${USE_CRON_TO_RELAUNCH}" = "TRUE" ]; then
   CRONTAB_LINE="*/${CRON_RELAUNCH_INTVL_MNTS} * * * * cd $EXPTDIR && \
@@ -1613,7 +1613,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-LOAD_MODULES_RUN_TASK_FP="$USHDIR/load_modules_run_task.sh"
+LOAD_MODULES_RUN_TASK_FP="$USHdir/load_modules_run_task.sh"
 #
 #-----------------------------------------------------------------------
 #
@@ -2286,13 +2286,13 @@ set_thompson_mp_fix_files \
 #
 # 1) Copying the default workflow/experiment configuration file (speci-
 #    fied by EXPT_DEFAULT_CONFIG_FN and located in the shell script di-
-#    rectory specified by USHDIR) to the experiment directory and rena-
+#    rectory specified by USHdir) to the experiment directory and rena-
 #    ming it to the name specified by GLOBAL_VAR_DEFNS_FN.
 #
 # 2) Resetting the default variable values in this file to their current
 #    values.  This is necessary because these variables may have been 
 #    reset by the user-specified configuration file (if one exists in 
-#    USHDIR) and/or by this setup script, e.g. because predef_domain is
+#    USHdir) and/or by this setup script, e.g. because predef_domain is
 #    set to a valid non-empty value.
 #
 # 3) Appending to the variable definitions file any new variables intro-
@@ -2306,7 +2306,7 @@ set_thompson_mp_fix_files \
 #-----------------------------------------------------------------------
 #
 GLOBAL_VAR_DEFNS_FP="$EXPTDIR/$GLOBAL_VAR_DEFNS_FN"
-cp_vrfy $USHDIR/${EXPT_DEFAULT_CONFIG_FN} ${GLOBAL_VAR_DEFNS_FP}
+cp_vrfy $USHdir/${EXPT_DEFAULT_CONFIG_FN} ${GLOBAL_VAR_DEFNS_FP}
 #
 #-----------------------------------------------------------------------
 #
@@ -2382,9 +2382,9 @@ read -r -d '' str_to_insert << EOM
 #-----------------------------------------------------------------------
 #-----------------------------------------------------------------------
 # Section 1:
-# This section is a copy of the default workflow/experiment configura-
-# tion file config_defaults.sh in the shell scripts directory USHDIR ex-
-# cept that variable values have been updated to those set by the setup
+# This section is a copy of the default workflow/experiment configuration 
+# file config_defaults.sh in the shell scripts directory USHdir except 
+# that variable values have been updated to those set by the setup
 # script (setup.sh).
 #-----------------------------------------------------------------------
 #-----------------------------------------------------------------------
@@ -2586,11 +2586,11 @@ CRONTAB_LINE="${CRONTAB_LINE}"
 #-----------------------------------------------------------------------
 #
 HOMErrfs="$HOMErrfs"
-USHDIR="$USHDIR"
-SCRIPTSDIR="$SCRIPTSDIR"
-JOBSDIR="$JOBSDIR"
-SORCDIR="$SORCDIR"
-PARMDIR="$PARMDIR"
+USHdir="$USHdir"
+SCRIPTSdir="$SCRIPTSdir"
+JOBSdir="$JOBSdir"
+SORCdir="$SORCdir"
+PARMdir="$PARMdir"
 MODULES_DIR="${MODULES_DIR}"
 EXECDIR="$EXECDIR"
 FIXam="$FIXam"

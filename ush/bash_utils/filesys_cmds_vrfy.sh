@@ -2,10 +2,10 @@
 #-----------------------------------------------------------------------
 #
 # This is a generic function that executes the specified command (e.g. 
-# "cp", "mv", etc) with the specified options/arguments and then veri-
-# fies that the command executed without errors.  The first argument to
-# this function is the command to execute while the remaining ones are 
-# the options/arguments to be passed to that command.
+# "cp", "mv", etc) with the specified options/arguments and then verifies
+# that the command executed without errors.  The first argument to this 
+# function is the command to execute while the remaining ones are the 
+# options/arguments to be passed to that command.
 #
 #-----------------------------------------------------------------------
 #
@@ -18,7 +18,7 @@ function filesys_cmd_vrfy() {
 #
 #-----------------------------------------------------------------------
 #
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
+  { save_shell_opts; . ${USHdir}/preamble.sh; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -28,7 +28,7 @@ function filesys_cmd_vrfy() {
 #
 #-----------------------------------------------------------------------
 #
-  local scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
+  local scrfunc_fp=$( $READLINK -f "${BASH_SOURCE[0]}" )
   local scrfunc_fn=$( basename "${scrfunc_fp}" )
   local scrfunc_dir=$( dirname "${scrfunc_fp}" )
 #
@@ -49,27 +49,42 @@ function filesys_cmd_vrfy() {
 #    that function.
 # 2) If the caller is a sourced script, caller_name will be set to 
 #    "script".  Note that a sourced script cannot be the top level 
-#    script since by defintion, it is sourced by another script or func-
-#    tion.
+#    script since by defintion, it is sourced by another script or
+#    function.
 # 3) If the caller is the top-level script, caller_name will be set to
 #    "main".
 #
 # Thus, if caller_name is set to "script" or "main", the caller is a 
 # script, and if it is set to anything else, the caller is a function.
 #
-# Below, the index into FUNCNAME and BASH_SOURCE is 2 (not 1 as is usu-
-# ally the case) because this function is called by functions such as
-# cp_vrfy, mv_vrfy, rm_vrfy, ln_vrfy, mkdir_vrfy, and cd_vrfy, but these
-# are just wrappers, and in the error and informational messages, we are
-# really interested in the scripts/functions that in turn call these 
-# wrappers. 
+# Below, the index into FUNCNAME and BASH_SOURCE is 2 (not 1 as is usually
+# the case) because this function is called by functions such as cp_vrfy, 
+# mv_vrfy, rm_vrfy, ln_vrfy, mkdir_vrfy, and cd_vrfy, but these are just 
+# wrappers, and in the error and informational messages, we are really 
+# interested in the scripts/functions that in turn call these wrappers. 
 #
 #-----------------------------------------------------------------------
 #
-  local caller_fp=$( readlink -f "${BASH_SOURCE[2]}" )
-  local caller_fn=$( basename "${caller_fp}" )
-  local caller_dir=$( dirname "${caller_fp}" )
-  local caller_name="${FUNCNAME[2]}"
+  local caller_name="main"
+  local caller_fp=""
+  if [ -z "${BASH_SOURCE[2]-x}" ]; then
+    caller_fp=$( $READLINK -f "${BASH_SOURCE[2]}" )
+    local caller_fn=$( basename "${caller_fp}" )
+    local caller_dir=$( dirname "${caller_fp}" )
+    caller_name="${FUNCNAME[2]}"
+  fi
+#
+#-----------------------------------------------------------------------
+#
+# Declare local variables that are used later below.
+#
+#-----------------------------------------------------------------------
+#
+  local cmd \
+        output \
+        exit_code \
+        double_space \
+        script_or_function
 #
 #-----------------------------------------------------------------------
 #
@@ -105,7 +120,7 @@ are zero or more options and arguments to pass to that command.
 #
 #-----------------------------------------------------------------------
 #
-  local cmd="$1"
+  cmd="$1"
   shift
 #
 #-----------------------------------------------------------------------
@@ -116,8 +131,8 @@ are zero or more options and arguments to pass to that command.
 #
 #-----------------------------------------------------------------------
 #
-  output=$( "$cmd" "$@" 2>&1 )
-  exit_code=$?
+  local output=$( "$cmd" "$@" 2>&1 )
+  local exit_code=$?
 #
 #-----------------------------------------------------------------------
 #
@@ -128,7 +143,7 @@ are zero or more options and arguments to pass to that command.
 #-----------------------------------------------------------------------
 #
   if [ -n "$output" ]; then
-    double_space="  "
+    local double_space="  "
     output="${double_space}${output}"
     output=${output/$'\n'/$'\n'${double_space}}
   fi
@@ -142,9 +157,9 @@ are zero or more options and arguments to pass to that command.
 #
   if [ "${caller_name}" = "main" ] || \
      [ "${caller_name}" = "script" ]; then
-    script_or_function="the script"
+    local script_or_function="the script"
   else
-    script_or_function="function \"${caller_name}\""
+    local script_or_function="function \"${caller_name}\""
   fi
 
   if [ ${exit_code} -ne 0 ]; then
@@ -210,16 +225,15 @@ $output"
 #
 #-----------------------------------------------------------------------
 #
-# The following are functions are counterparts of common filesystem com-
-# mands "with verification", i.e. they execute a filesystem command
-# (such as "cp" and "mv") and then verify that the execution was suc-
-# cessful.
+# The following are functions are counterparts of common filesystem
+# commands "with verification", i.e. they execute a filesystem command
+# (such as "cp" and "mv") and then verify that the execution was successful.
 #
-# These functions are called using the "filesys_cmd_vrfy" function de-
-# fined above.  In each of these functions, we:
+# These functions are called using the "filesys_cmd_vrfy" function defined 
+# above.  In each of these functions, we:
 #
-# 1) Save current shell options (in a global array) and then set new op-
-#    tions for this script/function.
+# 1) Save current shell options (in a global array) and then set new
+#    options for this script/function.
 # 2) Call the generic function "filesys_cmd_vrfy" with the command of
 #    interest (e.g. "cp") as the first argument and the arguments passed
 #    in as the rest.
@@ -229,43 +243,37 @@ $output"
 #
 
 function cp_vrfy() {
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
+  { save_shell_opts; . ${USHdir}/preamble.sh; } > /dev/null 2>&1
   filesys_cmd_vrfy "cp" "$@"
   { restore_shell_opts; } > /dev/null 2>&1
 }
 
-function rsync_vrfy() {
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
-  filesys_cmd_vrfy "rsync" "$@"
-  { restore_shell_opts; } > /dev/null 2>&1
-}
-
 function mv_vrfy() {
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
+  { save_shell_opts; . ${USHdir}/preamble.sh; } > /dev/null 2>&1
   filesys_cmd_vrfy "mv" "$@"
   { restore_shell_opts; } > /dev/null 2>&1
 }
 
 function rm_vrfy() {
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
+  { save_shell_opts; . ${USHdir}/preamble.sh; } > /dev/null 2>&1
   filesys_cmd_vrfy "rm" "$@"
   { restore_shell_opts; } > /dev/null 2>&1
 }
 
 function ln_vrfy() {
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
-  filesys_cmd_vrfy "ln" "$@"
+  { save_shell_opts; . ${USHdir}/preamble.sh; } > /dev/null 2>&1
+  filesys_cmd_vrfy "$LN_UTIL" "$@"
   { restore_shell_opts; } > /dev/null 2>&1
 }
 
 function mkdir_vrfy() {
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
+  { save_shell_opts; . ${USHdir}/preamble.sh; } > /dev/null 2>&1
   filesys_cmd_vrfy "mkdir" "$@"
   { restore_shell_opts; } > /dev/null 2>&1
 }
 
 function cd_vrfy() {
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
+  { save_shell_opts; . ${USHdir}/preamble.sh; } > /dev/null 2>&1
   filesys_cmd_vrfy "cd" "$@"
   { restore_shell_opts; } > /dev/null 2>&1
 }

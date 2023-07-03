@@ -16,7 +16,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -25,7 +25,7 @@
 #
 #-----------------------------------------------------------------------
 #
-. $USHDIR/get_extrn_mdl_file_dir_info.sh
+. $USHdir/get_extrn_mdl_file_dir_info.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -158,7 +158,7 @@ extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" 
 extrn_mdl_fns_on_disk_str2="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk2[@]}" )")"
 extrn_mdl_fns_in_arcv_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_in_arcv[@]}" )")"
 
-$SCRIPTSDIR/exregional_get_gefs_lbcs_files.sh \
+$SCRIPTSdir/exregional_get_gefs_lbcs_files.sh \
   ics_or_lbcs="${ICS_OR_LBCS}" \
   use_user_staged_extrn_files="${USE_USER_STAGED_EXTRN_FILES}" \
   extrn_mdl_cdate="${extrn_mdl_cdate}" \

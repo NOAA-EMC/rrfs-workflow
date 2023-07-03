@@ -14,7 +14,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 
 #
 #-----------------------------------------------------------------------
@@ -90,7 +90,7 @@ mkdir_vrfy -p "${rave_nwges_dir}"
 #-----------------------------------------------------------------------
 #
 cd_vrfy ${workdir}
-python -u ${SCRIPTSDIR}/preprocess_smoke.py \
+python -u ${SCRIPTSdir}/preprocess_smoke.py \
   "${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}" \
   "${FIRE_RAVE_DIR}" \
   "${workdir}" \

@@ -97,7 +97,7 @@ specifies the number of processes per node being used (the PPN_... entities).
 <!--
 Directories and files.
 -->
-<!ENTITY JOBSDIR                  "{{ jobsdir }}">
+<!ENTITY JOBSdir                  "{{ jobsdir }}">
 <!ENTITY LOGDIR                   "{{ logdir }}">
 <!ENTITY OBSPATH                  "{{ obspath }}">
 <!ENTITY OBSPATH_PM               "{{ obspath_pm }}">
@@ -394,7 +394,7 @@ we are already sourcing other files in the J-job anyway.
 -->
 <!--
     <command>{ . &LOAD_MODULES_RUN_TASK_FP; "&MAKE_GRID_TN;";
-               &JOBSDIR;/JREGIONAL_MAKE_GRID;
+               &JOBSdir;/JREGIONAL_MAKE_GRID;
              }</command>
 -->
 <!--
@@ -413,7 +413,7 @@ MODULES_RUN_TASK_FP script.
   <task name="&MAKE_GRID_TN;" cycledefs="at_start" maxtries="{{ maxtries_make_grid }}">
 
     &RSRV_DEFAULT;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_GRID_TN;" "&JOBSDIR;/JREGIONAL_MAKE_GRID"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_GRID_TN;" "&JOBSdir;/JREGIONAL_MAKE_GRID"</command>
     <nodes>{{ nnodes_make_grid }}:ppn={{ ppn_make_grid }}</nodes>
     <walltime>{{ wtime_make_grid }}</walltime>
     &NODESIZE_ALL;
@@ -433,7 +433,7 @@ MODULES_RUN_TASK_FP script.
   <task name="&MAKE_OROG_TN;" cycledefs="at_start" maxtries="{{ maxtries_make_orog }}">
 
     &RSRV_DEFAULT;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_OROG_TN;" "&JOBSDIR;/JREGIONAL_MAKE_OROG"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_OROG_TN;" "&JOBSdir;/JREGIONAL_MAKE_OROG"</command>
     <nodes>{{ nnodes_make_orog }}:ppn={{ ppn_make_orog }}</nodes>
     <walltime>{{ wtime_make_orog }}</walltime>
     &NODESIZE_ALL;
@@ -461,7 +461,7 @@ MODULES_RUN_TASK_FP script.
   <task name="&MAKE_SFC_CLIMO_TN;" cycledefs="at_start" maxtries="{{ maxtries_make_sfc_climo }}">
 
     &RSRV_DEFAULT;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_SFC_CLIMO_TN;" "&JOBSDIR;/JREGIONAL_MAKE_SFC_CLIMO"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_SFC_CLIMO_TN;" "&JOBSdir;/JREGIONAL_MAKE_SFC_CLIMO"</command>
     <nodes>{{ nnodes_make_sfc_climo }}:ppn={{ ppn_make_sfc_climo }}</nodes>
     <walltime>{{ wtime_make_sfc_climo }}</walltime>
     &NODESIZE_ALL;
@@ -511,7 +511,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_ANAL;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_SMOKE_TN;" "&JOBSDIR;/JREGIONAL_PROCESS_SMOKE"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_SMOKE_TN;" "&JOBSdir;/JREGIONAL_PROCESS_SMOKE"</command>
 
     &RESOURCES_PROC_SMOKE;
     &NATIVE_ALL;
@@ -552,7 +552,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_ANAL;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_PROCESS_RADARREF"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JREGIONAL_PROCESS_RADARREF"</command>
       
     &RESOURCES_PROC_RADAR;
     &NATIVE_ALL;
@@ -589,7 +589,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_ANAL;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_PROCESS_LIGHTNING"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JREGIONAL_PROCESS_LIGHTNING"</command>
 
     &RESOURCES_PROC_LIGHTNING;
     &NATIVE_ALL;
@@ -624,7 +624,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_ANAL;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_PROCESS_BUFR"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JREGIONAL_PROCESS_BUFR"</command>
 
     &RESOURCES_PROC_BUFR;
     &NATIVE_ALL;
@@ -679,7 +679,7 @@ MODULES_RUN_TASK_FP script.
 
     &WALL_LIMIT_PRE;
     &RSRV_DEFAULT;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_EXTRN_ICS_TN;" "&JOBSDIR;/JREGIONAL_GET_EXTRN_MDL_FILES"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_EXTRN_ICS_TN;" "&JOBSdir;/JREGIONAL_GET_EXTRN_MDL_FILES"</command>
     &RESOURCES_GET_EXTRN_ICS;
     <walltime>&WALLTIME_GET_EXTRN_ICS;</walltime>
     &NODESIZE_ALL;
@@ -754,7 +754,7 @@ MODULES_RUN_TASK_FP script.
 
     &WALL_LIMIT_PRE;
     &RSRV_DEFAULT;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_EXTRN_LBCS_TN;" "&JOBSDIR;/JREGIONAL_GET_GEFS_LBCS_FILES"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_EXTRN_LBCS_TN;" "&JOBSdir;/JREGIONAL_GET_GEFS_LBCS_FILES"</command>
     &RESOURCES_GET_EXTRN_LBCS;
     <walltime>&WALLTIME_GET_EXTRN_LBCS;</walltime>
     &NODESIZE_ALL;
@@ -797,7 +797,7 @@ MODULES_RUN_TASK_FP script.
 
     &WALL_LIMIT_PRE;
     &RSRV_DEFAULT;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_EXTRN_LBCS_TN;" "&JOBSDIR;/JREGIONAL_GET_EXTRN_MDL_FILES"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_EXTRN_LBCS_TN;" "&JOBSdir;/JREGIONAL_GET_EXTRN_MDL_FILES"</command>
     &RESOURCES_GET_EXTRN_LBCS;
     <walltime>&WALLTIME_GET_EXTRN_LBCS;</walltime>
     &NODESIZE_ALL;
@@ -867,7 +867,7 @@ MODULES_RUN_TASK_FP script.
 
     &WALL_LIMIT_PRE;
     &RSRV_DEFAULT;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_EXTRN_LBCS_TN;" "&JOBSDIR;/JREGIONAL_GET_EXTRN_MDL_FILES"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_EXTRN_LBCS_TN;" "&JOBSdir;/JREGIONAL_GET_EXTRN_MDL_FILES"</command>
     &RESOURCES_GET_EXTRN_LBCS;
     <walltime>&WALLTIME_GET_EXTRN_LBCS;</walltime>
     &NODESIZE_ALL;
@@ -916,7 +916,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_PRE;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_ICS_TN;" "&JOBSDIR;/JREGIONAL_MAKE_ICS"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_ICS_TN;" "&JOBSdir;/JREGIONAL_MAKE_ICS"</command>
     &RESOURCES_MAKE_ICS;
     &NATIVE_ALL;
     <walltime>&WALLTIME_MAKE_ICS;</walltime>
@@ -965,7 +965,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_PRE;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_LBCS_TN;" "&JOBSDIR;/JREGIONAL_MAKE_LBCS"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_LBCS_TN;" "&JOBSdir;/JREGIONAL_MAKE_LBCS"</command>
     &RESOURCES_MAKE_LBCS;
     &NATIVE_ALL;
     <walltime>&WALLTIME_MAKE_LBCS;</walltime>
@@ -1033,7 +1033,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_PRE;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PREPSTART_TN;" "&JOBSDIR;/JREGIONAL_RUN_PREPSTART"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PREPSTART_TN;" "&JOBSdir;/JREGIONAL_RUN_PREPSTART"</command>
 
     &RESOURCES_PREP_CYC;
     &NATIVE_ALL;
@@ -1106,7 +1106,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_FCST;
     &WALL_LIMIT_FCST;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_FCST_TN;" "&JOBSDIR;/JREGIONAL_RUN_FCST"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_FCST_TN;" "&JOBSdir;/JREGIONAL_RUN_FCST"</command>
     &RESOURCES_FCST_SPINUP;
     <walltime>&WALLTIME_FCST_SPINUP;</walltime>
     &NATIVE_FCST_SPINUP;
@@ -1146,7 +1146,7 @@ MODULES_RUN_TASK_FP script.
 
       &RSRV_DEFAULT;
       &WALL_LIMIT_SAVE_RESTART;
-      <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSDIR;/JREGIONAL_SAVE_RESTART"</command>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSdir;/JREGIONAL_SAVE_RESTART"</command>
       &RESOURCES_SAVE_RESTART;
       &NATIVE_ALL;
       <walltime>&WALLTIME_SAVE_RESTART;</walltime>
@@ -1183,7 +1183,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_PRE;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PREPSTART_TN;" "&JOBSDIR;/JREGIONAL_RUN_PREPSTART"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PREPSTART_TN;" "&JOBSdir;/JREGIONAL_RUN_PREPSTART"</command>
     &RESOURCES_PREP_CYC;
     &NATIVE_ALL;
     <walltime>&WALLTIME_PREP_CYC;</walltime>
@@ -1216,7 +1216,7 @@ MODULES_RUN_TASK_FP script.
   <task name="&RUN_RECENTER_TN;_spinup" cycledefs="spinupcyc" maxtries="{{ maxtries_recenter }}">
     &RSRV_ENKF;
     &WALL_LIMIT_RECENTER;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_RECENTER_TN;" &JOBSDIR;/JREGIONAL_RUN_RECENTER</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_RECENTER_TN;" &JOBSdir;/JREGIONAL_RUN_RECENTER</command>
     &RESOURCES_RUN_RECENTER;
     &NATIVE_ALL;
     <walltime>&WALLTIME_RUN_RECENTER;</walltime>
@@ -1258,7 +1258,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_ANALYSIS;
     &WALL_LIMIT_ANAL;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_RUN_ANAL"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JREGIONAL_RUN_ANAL"</command>
     {% if machine in ["JET", "HERA"] -%}
     <cores>{{ ncores_run_anal }}</cores>
     <native>{{ native_run_anal }} &RRFS_RESERVE;</native>
@@ -1327,7 +1327,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_ANALYSIS;
     &WALL_LIMIT_ANAL;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_RUN_ANAL"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JREGIONAL_RUN_ANAL"</command>
     &RESOURCES_ANAL_GSI;
     &NATIVE_ANAL_GSI;
     <walltime>&WALLTIME_ANAL_GSI;</walltime>
@@ -1415,7 +1415,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_POST;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_POST_TN;" "&JOBSDIR;/JREGIONAL_RUN_POSTANAL"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_POST_TN;" "&JOBSdir;/JREGIONAL_RUN_POSTANAL"</command>
     &RESOURCES_POSTANAL;
     &NATIVE_ALL;
     <walltime>&WALLTIME_POSTANAL;</walltime>
@@ -1453,7 +1453,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_ANALYSIS;
     &WALL_LIMIT_ANAL;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&HYBRID_RADAR_REF_TN;" "&JOBSDIR;/JREGIONAL_RUN_ANAL"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&HYBRID_RADAR_REF_TN;" "&JOBSdir;/JREGIONAL_RUN_ANAL"</command>
     &RESOURCES_ANAL_GSI;
     &NATIVE_ANAL_GSI;
     <walltime>&WALLTIME_ANAL_GSI;</walltime>
@@ -1504,7 +1504,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_ANAL;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_REFL2TTEN"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JREGIONAL_REFL2TTEN"</command>
     <nodes>{{ nnodes_run_ref2tten }}:ppn={{ ppn_run_ref2tten }}</nodes>
     <walltime>{{ wtime_run_ref2tten }}</walltime>
     <memory>{{ memo_run_ref2tten }}</memory>
@@ -1545,7 +1545,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_ANAL;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "jedienvar_ioda" "&JOBSDIR;/JREGIONAL_JEDIENVAR_IODA"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "jedienvar_ioda" "&JOBSdir;/JREGIONAL_JEDIENVAR_IODA"</command>
     <nodes>{{ nnodes_run_jedienvar_ioda }}:ppn={{ ppn_run_jedienvar_ioda }}</nodes>
     <walltime>{{ wtime_run_jedienvar_ioda }}</walltime>
     &NODESIZE_ALL;
@@ -1582,7 +1582,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_ANAL;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_NONVARCLD"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JREGIONAL_NONVARCLD"</command>
 
     &RESOURCES_NONVAR_CLD;
     <walltime>&WALLTIME_NONVAR_CLD;</walltime>
@@ -1648,7 +1648,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_FCST;
     &WALL_LIMIT_FCST;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_FCST_TN;" "&JOBSDIR;/JREGIONAL_RUN_FCST"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_FCST_TN;" "&JOBSdir;/JREGIONAL_RUN_FCST"</command>
     &RESOURCES_FCST_SPINUP;
     <walltime>&WALLTIME_FCST_SPINUP;</walltime>
     &NATIVE_FCST_SPINUP;
@@ -1716,7 +1716,7 @@ MODULES_RUN_TASK_FP script.
 
       &RSRV_DEFAULT;
       &WALL_LIMIT_SAVE_RESTART;
-      <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSDIR;/JREGIONAL_SAVE_RESTART"</command>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSdir;/JREGIONAL_SAVE_RESTART"</command>
       &RESOURCES_SAVE_RESTART;
       &NATIVE_ALL;
       <walltime>&WALLTIME_SAVE_RESTART;</walltime>
@@ -1762,7 +1762,7 @@ MODULES_RUN_TASK_FP script.
 
       &RSRV_POST;
       &WALL_LIMIT_POST;
-      <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_POST_TN;" "&JOBSDIR;/JREGIONAL_RUN_POST"</command>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_POST_TN;" "&JOBSdir;/JREGIONAL_RUN_POST"</command>
       &RESOURCES_RUN_POST;
       &NATIVE_ALL;
       <walltime>&WALLTIME_RUN_POST;</walltime>
@@ -1794,7 +1794,7 @@ MODULES_RUN_TASK_FP script.
 
       &RSRV_PRDGEN;
       &WALL_LIMIT_POST;
-      <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PRDGEN_TN;" "&JOBSDIR;/JREGIONAL_RUN_PRDGEN"</command>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PRDGEN_TN;" "&JOBSdir;/JREGIONAL_RUN_PRDGEN"</command>
       &RESOURCES_RUN_PRDGEN;
       &NATIVE_ALL;
       <walltime>&WALLTIME_RUN_PRDGEN;</walltime>
@@ -1846,7 +1846,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_PRE;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PREPSTART_TN;" "&JOBSDIR;/JREGIONAL_RUN_PREPSTART"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PREPSTART_TN;" "&JOBSdir;/JREGIONAL_RUN_PREPSTART"</command>
     &RESOURCES_PREP_CYC;
     &NATIVE_ALL;
     <walltime>&WALLTIME_PREP_CYC;</walltime>
@@ -1969,7 +1969,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_ENKF;
     &WALL_LIMIT_RECENTER;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PREPSTART_TN;" "&JOBSDIR;/JREGIONAL_CALC_ENSMEAN"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PREPSTART_TN;" "&JOBSdir;/JREGIONAL_CALC_ENSMEAN"</command>
     &RESOURCES_RUN_RECENTER;
     &NATIVE_ALL;
     <walltime>&WALLTIME_RUN_RECENTER;</walltime>
@@ -2004,7 +2004,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_ANALYSIS;
     &WALL_LIMIT_ANAL;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_RUN_ANAL"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JREGIONAL_RUN_ANAL"</command>
     &RESOURCES_ANAL_GSI;
     &NATIVE_ANAL_GSI;
     <walltime>&WALLTIME_ANAL_GSI;</walltime>
@@ -2056,7 +2056,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_ANALYSIS;
     &WALL_LIMIT_ANAL;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_RUN_ANAL"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JREGIONAL_RUN_ANAL"</command>
     &RESOURCES_ANAL_GSI;
     &NATIVE_ANAL_GSI;
     <walltime>&WALLTIME_ANAL_GSI;</walltime>
@@ -2097,7 +2097,7 @@ MODULES_RUN_TASK_FP script.
   <task name="&RUN_ENKFUPDT_TN;" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_anal_enkf }}">
     &RSRV_ENKF;
     &WALL_LIMIT_ANAL;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ENKFUPDT_TN;" &JOBSDIR;/JREGIONAL_RUN_ENKF</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ENKFUPDT_TN;" &JOBSdir;/JREGIONAL_RUN_ENKF</command>
 
     &RESOURCES_RUN_ENKF;
     <walltime>&WALLTIME_RUN_ENKF;</walltime>
@@ -2128,7 +2128,7 @@ MODULES_RUN_TASK_FP script.
   <task name="&ENKF_RADAR_REF_TN;" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_anal_enkf }}">
     &RSRV_ENKF;
     &WALL_LIMIT_ANAL;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&ENKF_RADAR_REF_TN;" &JOBSDIR;/JREGIONAL_RUN_ENKF</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&ENKF_RADAR_REF_TN;" &JOBSdir;/JREGIONAL_RUN_ENKF</command>
 
     &RESOURCES_RUN_ENKF;
     <walltime>&WALLTIME_RUN_ENKF;</walltime>
@@ -2176,7 +2176,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_ANALYSIS;
     &WALL_LIMIT_ANAL;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_RUN_ANAL"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JREGIONAL_RUN_ANAL"</command>
 
     &RESOURCES_ANAL_GSI;
     &NATIVE_ANAL_GSI;
@@ -2270,7 +2270,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_POST;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_POST_TN;" "&JOBSDIR;/JREGIONAL_RUN_POSTANAL"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_POST_TN;" "&JOBSdir;/JREGIONAL_RUN_POSTANAL"</command>
     &RESOURCES_POSTANAL;
     &NATIVE_ALL;
     <walltime>&WALLTIME_POSTANAL;</walltime>
@@ -2308,7 +2308,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_ANALYSIS;
     &WALL_LIMIT_ANAL;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&HYBRID_RADAR_REF_TN;" "&JOBSDIR;/JREGIONAL_RUN_ANAL"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&HYBRID_RADAR_REF_TN;" "&JOBSdir;/JREGIONAL_RUN_ANAL"</command>
     &RESOURCES_ANAL_GSI;
     &NATIVE_ANAL_GSI;
     <walltime>&WALLTIME_ANAL_GSI;</walltime>
@@ -2359,7 +2359,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_ANAL;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_REFL2TTEN"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JREGIONAL_REFL2TTEN"</command>
     <nodes>{{ nnodes_run_ref2tten }}:ppn={{ ppn_run_ref2tten }}</nodes>
     <walltime>{{ wtime_run_ref2tten }}</walltime>
     <memory>{{ memo_run_ref2tten }}</memory>
@@ -2400,7 +2400,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_ANAL;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "jedienvar_ioda" "&JOBSDIR;/JREGIONAL_JEDIENVAR_IODA"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "jedienvar_ioda" "&JOBSdir;/JREGIONAL_JEDIENVAR_IODA"</command>
     <nodes>{{ nnodes_run_jedienvar_ioda }}:ppn={{ ppn_run_jedienvar_ioda }}</nodes>
     <walltime>{{ wtime_run_jedienvar_ioda }}</walltime>
     &NODESIZE_ALL;
@@ -2437,7 +2437,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_ANAL;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_NONVARCLD"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JREGIONAL_NONVARCLD"</command>
 
     &RESOURCES_NONVAR_CLD;
     <walltime>&WALLTIME_NONVAR_CLD;</walltime>
@@ -2507,7 +2507,7 @@ MODULES_RUN_TASK_FP script.
   <task name="&RUN_RECENTER_TN;" cycledefs="recentercyc" maxtries="{{ maxtries_recenter }}">
     &RSRV_ENKF;
     &WALL_LIMIT_RECENTER;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_RECENTER_TN;" &JOBSDIR;/JREGIONAL_RUN_RECENTER</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_RECENTER_TN;" &JOBSdir;/JREGIONAL_RUN_RECENTER</command>
     &RESOURCES_RUN_RECENTER;
     &NATIVE_ALL;
     <walltime>&WALLTIME_RUN_RECENTER;</walltime>
@@ -2572,7 +2572,7 @@ MODULES_RUN_TASK_FP script.
 
     &RSRV_DEFAULT;
     &WALL_LIMIT_SAVE_RESTART;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSDIR;/JREGIONAL_SAVE_DA_OUTPUT"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSdir;/JREGIONAL_SAVE_DA_OUTPUT"</command>
     <nodes>{{ nnodes_save_restart }}:ppn={{ ppn_save_restart }}</nodes>
     <walltime>{{ wtime_save_restart }}</walltime>
     &NODESIZE_ALL;
@@ -2633,7 +2633,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_FCST;
     &WALL_LIMIT_FCST;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_FCST_TN;" "&JOBSDIR;/JREGIONAL_RUN_FCST"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_FCST_TN;" "&JOBSdir;/JREGIONAL_RUN_FCST"</command>
 
     &RESOURCES_FCST_PROD;
     <walltime>&WALLTIME_FCST_PROD;</walltime>
@@ -2715,7 +2715,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_FCST;
     &WALL_LIMIT_FCST;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_FCST_TN;" "&JOBSDIR;/JREGIONAL_RUN_FCST"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_FCST_TN;" "&JOBSdir;/JREGIONAL_RUN_FCST"</command>
 
     &RESOURCES_FCST_PROD;
     <walltime>&WALLTIME_FCST_PROD_LONG;</walltime>
@@ -2797,7 +2797,7 @@ MODULES_RUN_TASK_FP script.
 
       &RSRV_DEFAULT;
       &WALL_LIMIT_SAVE_RESTART;
-      <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSDIR;/JREGIONAL_SAVE_RESTART"</command>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSdir;/JREGIONAL_SAVE_RESTART"</command>
       <nodes>{{ nnodes_save_restart }}:ppn={{ ppn_save_restart }}</nodes>
       <walltime>{{ wtime_save_restart }}</walltime>
       &NODESIZE_ALL;
@@ -2837,7 +2837,7 @@ MODULES_RUN_TASK_FP script.
 
       &RSRV_DEFAULT;
       &WALL_LIMIT_SAVE_RESTART;
-      <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSDIR;/JREGIONAL_SAVE_RESTART"</command>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSdir;/JREGIONAL_SAVE_RESTART"</command>
       <nodes>{{ nnodes_save_restart }}:ppn={{ ppn_save_restart }}</nodes>
       <walltime>{{ wtime_save_restart }}</walltime>
       &NODESIZE_ALL;
@@ -2899,7 +2899,7 @@ MODULES_RUN_TASK_FP script.
 
       &RSRV_POST;
       &WALL_LIMIT_POST;
-      <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_POST_TN;" "&JOBSDIR;/JREGIONAL_RUN_POST"</command>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_POST_TN;" "&JOBSdir;/JREGIONAL_RUN_POST"</command>
       &RESOURCES_RUN_POST;
       &NATIVE_ALL;
       <walltime>&WALLTIME_RUN_POST;</walltime>
@@ -2946,7 +2946,7 @@ MODULES_RUN_TASK_FP script.
 
       &RSRV_POST;
       &WALL_LIMIT_POST;
-      <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_POST_TN;" "&JOBSDIR;/JREGIONAL_RUN_POST"</command>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_POST_TN;" "&JOBSdir;/JREGIONAL_RUN_POST"</command>
       &RESOURCES_RUN_POST;
       &NATIVE_ALL;
       <walltime>&WALLTIME_RUN_POST;</walltime>
@@ -2996,7 +2996,7 @@ MODULES_RUN_TASK_FP script.
 
       &RSRV_PRDGEN;
       &WALL_LIMIT_POST;
-      <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PRDGEN_TN;" "&JOBSDIR;/JREGIONAL_RUN_PRDGEN"</command>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PRDGEN_TN;" "&JOBSdir;/JREGIONAL_RUN_PRDGEN"</command>
       &RESOURCES_RUN_PRDGEN;
       &NATIVE_ALL;
       <walltime>&WALLTIME_RUN_PRDGEN;</walltime>
@@ -3043,7 +3043,7 @@ MODULES_RUN_TASK_FP script.
 
       &RSRV_PRDGEN;
       &WALL_LIMIT_POST;
-      <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PRDGEN_TN;" "&JOBSDIR;/JREGIONAL_RUN_PRDGEN"</command>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PRDGEN_TN;" "&JOBSdir;/JREGIONAL_RUN_PRDGEN"</command>
       &RESOURCES_RUN_PRDGEN;
       &NATIVE_ALL;
       <walltime>&WALLTIME_RUN_PRDGEN;</walltime>
@@ -3078,7 +3078,7 @@ MODULES_RUN_TASK_FP script.
 
         &RSRV_POST;
         &WALL_LIMIT_BUFRSND;
-        <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_BUFRSND_TN;" "&JOBSDIR;/JREGIONAL_BUFRSND"</command>
+        <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_BUFRSND_TN;" "&JOBSdir;/JREGIONAL_BUFRSND"</command>
         <nodes>{{ nnodes_run_bufrsnd }}:ppn={{ ppn_run_bufrsnd }}</nodes>
         <walltime>{{ wtime_run_bufrsnd }}</walltime>
         &NODESIZE_ALL;
@@ -3120,7 +3120,7 @@ MODULES_RUN_TASK_FP script.
       <nodes>{{ nnodes_run_graphics }}:ppn={{ ppn_run_graphics }}</nodes>
       <jobname><cyclestr>&TAG;_python{{ uscore_ensmem_name }}_@H_#tilelabel#</cyclestr></jobname>
       <join><cyclestr>&LOGDIR;/python_&TAG;{{ uscore_ensmem_name }}_#tilelabel#.log</cyclestr></join>
-      <command>&LOAD_MODULES_RUN_TASK_FP; "run_graphics" "&JOBSDIR;/JREGIONAL_RUN_PYTHON_GRAPHICS"</command>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "run_graphics" "&JOBSdir;/JREGIONAL_RUN_PYTHON_GRAPHICS"</command>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -3158,7 +3158,7 @@ MODULES_RUN_TASK_FP script.
     <nodes>{{ nnodes_run_graphics }}:ppn={{ ppn_run_graphics }}</nodes>
     <jobname><cyclestr>&TAG;_python{{ uscore_ensmem_name }}_@H_skewts</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/python_skewts_&TAG;{{ uscore_ensmem_name }}_@H.log</cyclestr></join>
-    <command>&LOAD_MODULES_RUN_TASK_FP; "run_graphics" "&JOBSDIR;/JREGIONAL_RUN_PYTHON_GRAPHICS"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "run_graphics" "&JOBSdir;/JREGIONAL_RUN_PYTHON_GRAPHICS"</command>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -3195,7 +3195,7 @@ MODULES_RUN_TASK_FP script.
 
     &RSRV_POST;
 
-    <command>&JOBSDIR;/../scripts/exregional_clean.ksh</command>
+    <command>&JOBSdir;/../scripts/exregional_clean.ksh</command>
     <nodes> 1:ppn=1</nodes>
     <walltime>00:15:00</walltime>
     <jobname>&TAG;_&CLEAN_TN;</jobname>
@@ -3225,7 +3225,7 @@ MODULES_RUN_TASK_FP script.
 
     &RSRV_HPSS;
 
-    <command>&JOBSDIR;/../scripts/exregional_archive_ens.ksh</command>
+    <command>&JOBSdir;/../scripts/exregional_archive_ens.ksh</command>
     <nodes> 1:ppn=1</nodes>
     <walltime>23:00:00</walltime>
     <memory>24G</memory>
@@ -3246,7 +3246,7 @@ MODULES_RUN_TASK_FP script.
 
     &RSRV_HPSS;
 
-    <command>&JOBSDIR;/../scripts/exregional_archive.ksh</command>
+    <command>&JOBSdir;/../scripts/exregional_archive.ksh</command>
     <nodes> 1:ppn=1</nodes>
     <walltime>08:00:00</walltime>
     <memory>80G</memory>
@@ -3290,7 +3290,7 @@ MODULES_RUN_TASK_FP script.
 
     &RSRV_HPSS;
 
-    <command>&JOBSDIR;/../scripts/exregional_archive_emc.ksh</command>
+    <command>&JOBSdir;/../scripts/exregional_archive_emc.ksh</command>
     <nodes>1:ppn=1</nodes>
     <walltime>08:00:00</walltime>
     <jobname>&TAG;_&ARCHIVE_TN;</jobname>
@@ -3338,7 +3338,7 @@ MODULES_RUN_TASK_FP script.
       <nodes>{{ nnodes_run_graphics }}:ppn={{ ppn_run_graphics }}</nodes>
       <jobname><cyclestr>&TAG;_python_@H_#tilelabel#</cyclestr></jobname>
       <join><cyclestr>&LOGDIR;/python_&TAG;_#tilelabel#.log</cyclestr></join>
-      <command>&LOAD_MODULES_RUN_TASK_FP; "run_graphics" "&JOBSDIR;/JREGIONAL_RUN_PYTHON_GRAPHICS"</command>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "run_graphics" "&JOBSdir;/JREGIONAL_RUN_PYTHON_GRAPHICS"</command>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -3388,7 +3388,7 @@ MODULES_RUN_TASK_FP script.
       <nodes>{{ nnodes_run_enspost }}:ppn={{ ppn_run_enspost }}</nodes>
       <jobname><cyclestr>&TAG;_enspost_@H_#fhr#</cyclestr></jobname>
       <join><cyclestr>&LOGDIR;/enspost_&TAG;_f#fhr#_@Y@m@d@H.log</cyclestr></join>
-      <command>&LOAD_MODULES_RUN_TASK_FP; "run_enspost" "&JOBSDIR;/JREGIONAL_RUN_ENSPOST"</command>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "run_enspost" "&JOBSdir;/JREGIONAL_RUN_ENSPOST"</command>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -3422,7 +3422,7 @@ MODULES_RUN_TASK_FP script.
     <nodes>{{ nnodes_run_graphics }}:ppn={{ ppn_run_graphics }}</nodes>
     <jobname><cyclestr>&TAG;_python_@H_enspost_maps</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/python_enspost_maps_&TAG;.log</cyclestr></join>
-    <command>&LOAD_MODULES_RUN_TASK_FP; "run_graphics" "&JOBSDIR;/JREGIONAL_RUN_PYTHON_GRAPHICS"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "run_graphics" "&JOBSdir;/JREGIONAL_RUN_PYTHON_GRAPHICS"</command>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>

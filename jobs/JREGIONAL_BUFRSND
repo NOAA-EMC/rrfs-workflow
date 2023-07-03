@@ -34,7 +34,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -157,7 +157,7 @@ cd_vrfy "${bufrsnd_dir}"
 #-----------------------------------------------------------------------
 #
 fhr=01
-$SCRIPTSDIR/exregional_bufrsnd.sh \
+$SCRIPTSdir/exregional_bufrsnd.sh \
   cdate="${CDATE}" \
   run_dir="${run_dir}" \
   nwges_dir="${nwges_dir}" \

@@ -21,7 +21,7 @@ function print_input_args() {
 #
 #-----------------------------------------------------------------------
 #
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
+  { save_shell_opts; . ${USHdir}/preamble.sh; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -31,7 +31,7 @@ function print_input_args() {
 #
 #-----------------------------------------------------------------------
 #
-  local scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
+  local scrfunc_fp=$( $READLINK -f "${BASH_SOURCE[0]}" )
   local scrfunc_fn=$( basename "${scrfunc_fp}" )
   local scrfunc_dir=$( dirname "${scrfunc_fp}" )
 #
@@ -62,7 +62,7 @@ function print_input_args() {
 #
 #-----------------------------------------------------------------------
 #
-  local caller_fp=$( readlink -f "${BASH_SOURCE[1]}" )
+  local caller_fp=$( $READLINK -f "${BASH_SOURCE[1]}" )
   local caller_fn=$( basename "${caller_fp}" )
   local caller_dir=$( dirname "${caller_fp}" )
   local caller_name="${FUNCNAME[1]}"
@@ -168,16 +168,15 @@ have been set as follows:
 #
 #-----------------------------------------------------------------------
 #
-# If a global variable named VERBOSE is not defined, print out the mes-
-# sage.  If it is defined, print out the message only if VERBOSE is set
-# to TRUE.
+# If a global variable named DEBUG is not defined, print out the message.  
+# If it is defined, print out the message only if DEBUG is set to "TRUE".
 #
 #-----------------------------------------------------------------------
 #
-  if [ ! -v VERBOSE ]; then
+  if [ -z ${DEBUG+x} ]; then
     print_info_msg "$msg"
   else
-    print_info_msg "$VERBOSE" "$msg"
+    print_info_msg "$DEBUG" "$msg"
   fi
 #
 #-----------------------------------------------------------------------

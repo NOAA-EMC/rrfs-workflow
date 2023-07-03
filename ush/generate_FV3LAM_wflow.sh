@@ -37,7 +37,7 @@ local func_name="${FUNCNAME[0]}"
 #
 #-----------------------------------------------------------------------
 #
-ushdir="${scrfunc_dir}"
+USHdir="${scrfunc_dir}"
 #
 #-----------------------------------------------------------------------
 #
@@ -45,8 +45,8 @@ ushdir="${scrfunc_dir}"
 #
 #-----------------------------------------------------------------------
 #
-. $ushdir/source_util_funcs.sh
-. $ushdir/set_FV3nml_sfc_climo_filenames.sh
+. $USHdir/source_util_funcs.sh
+. $USHdir/set_FV3nml_sfc_climo_filenames.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -120,9 +120,9 @@ fi
 # if not, run Init.sh (otherwise, the workflow generation will fail)
 #-----------------------------------------------------------------------
 #
-if [[ ! -L ${ushdir}/../fix/.agent || ! -e ${ushdir}/../fix/.agent ]] \
-  && [ -e ${ushdir}/../Init.sh ]; then
-    ${ushdir}/../Init.sh
+if [[ ! -L ${USHdir}/../fix/.agent || ! -e ${USHdir}/../fix/.agent ]] \
+  && [ -e ${USHdir}/../Init.sh ]; then
+    ${USHdir}/../Init.sh
 fi
 #
 #-----------------------------------------------------------------------
@@ -136,7 +136,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-. $ushdir/setup.sh
+. $USHdir/setup.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -405,7 +405,7 @@ settings="\
 #
 # Directories and files.
 #
-  'jobsdir': $JOBSDIR
+  'jobsdir': $JOBSdir
   'logdir': $LOGDIR
   'cycle_basedir': ${CYCLE_BASEDIR:-}
   'ensctrl_cycle_basedir': ${ENSCTRL_CYCLE_BASEDIR:-}
@@ -560,7 +560,7 @@ $settings"
 # file.
 #
 template_xml_fp="${TEMPLATE_DIR}/${WFLOW_XML_FN}"
-$USHDIR/fill_jinja_template.py -q \
+$USHdir/fill_jinja_template.py -q \
                                -u "${settings}" \
                                -t ${template_xml_fp} \
                                -o ${WFLOW_XML_FP} || \
@@ -993,7 +993,7 @@ settings="$settings
 #
 #-----------------------------------------------------------------------
 #
-$USHDIR/set_namelist.py -q \
+$USHdir/set_namelist.py -q \
                         -n ${FV3_NML_BASE_SUITE_FP} \
                         -c ${FV3_NML_YAML_CONFIG_FP} ${CCPP_PHYS_SUITE} \
                         -u "$settings" \
@@ -1060,7 +1060,7 @@ if [[ "${DO_DACYCLE}" = "TRUE" || "${DO_ENKFUPDATE}" = "TRUE" ]]; then
 #    'fh_dfi_radar': [${FH_DFI_RADAR[@]}],
 #  }"
  
- $USHDIR/set_namelist.py -q \
+ $USHdir/set_namelist.py -q \
                          -n ${FV3_NML_FP} \
                          -u "$settings" \
                          -o ${FV3_NML_RESTART_FP} || \
@@ -1184,13 +1184,13 @@ $settings"
 if [ "${DO_ENSEMBLE}" = TRUE ] && ([ "${DO_SPP}" = TRUE ] || [ "${DO_SPPT}" = TRUE ] || [ "${DO_SHUM}" = TRUE ] \
   || [ "${DO_SKEB}" = TRUE ] || [ "${DO_LSM_SPP}" =  TRUE ]); then
 
-$USHDIR/set_namelist.py -q \
-                         -n  ${FV3_NML_FP}  \
-                         -u "$settings" \
-                         -o ${FV3_NML_STOCH_FP} || \
-   print_err_msg_exit "\
- Call to python script set_namelist.py to generate an FV3 namelist file with stochastics
- failed.  Parameters passed to this script are:
+  $USHdir/set_namelist.py -q \
+                          -n  ${FV3_NML_FP}  \
+                          -u "$settings" \
+                          -o ${FV3_NML_STOCH_FP} || \
+  print_err_msg_exit "\
+  Call to python script set_namelist.py to generate an FV3 namelist file with stochastics
+  failed.  Parameters passed to this script are:
    Full path to base namelist file:
      FV3_NML_FP = \"${FV3_NML_FP}\"
    Full path to output namelist file for stochastics:
@@ -1202,11 +1202,11 @@ $USHDIR/set_namelist.py -q \
 #-----------------------------------------------------------------------
 #
 if [[ "${DO_DACYCLE}" = "TRUE" || "${DO_ENKFUPDATE}" = "TRUE" ]]; then
-$USHDIR/set_namelist.py -q \
-                         -n  ${FV3_NML_RESTART_FP}  \
-                         -u "$settings" \
-                         -o ${FV3_NML_RESTART_STOCH_FP} || \
-   print_err_msg_exit "\
+  $USHdir/set_namelist.py -q \
+                          -n  ${FV3_NML_RESTART_FP}  \
+                          -u "$settings" \
+                          -o ${FV3_NML_RESTART_STOCH_FP} || \
+  print_err_msg_exit "\
  Call to python script set_namelist.py to generate an restart FV3 namelist file with stochastics
  failed.  Parameters passed to this script are:
    Full path to base namelist file:
@@ -1228,7 +1228,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-cp_vrfy $USHDIR/${EXPT_CONFIG_FN} $EXPTDIR
+cp_vrfy $USHdir/${EXPT_CONFIG_FN} $EXPTDIR
 #
 #-----------------------------------------------------------------------
 #
@@ -1333,7 +1333,7 @@ if [ "${NOMADS}" = "TRUE" ]; then
   echo "Getting NOMADS online data"
   echo "NOMADS_file_type=" $NOMADS_file_type
   cd $EXPTDIR
-  $USHDIR/NOMADS_get_extrn_mdl_files.sh $DATE_FIRST_CYCL $CYCL_HRS $NOMADS_file_type $FCST_LEN_HRS $LBC_SPEC_INTVL_HRS
+  $USHdir/NOMADS_get_extrn_mdl_files.sh $DATE_FIRST_CYCL $CYCL_HRS $NOMADS_file_type $FCST_LEN_HRS $LBC_SPEC_INTVL_HRS
 fi
 #
 #-----------------------------------------------------------------------
@@ -1380,21 +1380,21 @@ scrfunc_dir=$( dirname "${scrfunc_fp}" )
 #
 #-----------------------------------------------------------------------
 #
-ushdir="${scrfunc_dir}"
+USHdir="${scrfunc_dir}"
 #
 # Set the name of and full path to the temporary file in which we will
 # save some experiment/workflow variables.  The need for this temporary
 # file is explained below.
 #
 tmp_fn="tmp"
-tmp_fp="$ushdir/${tmp_fn}"
+tmp_fp="$USHdir/${tmp_fn}"
 rm -f "${tmp_fp}"
 #
 # Set the name of and full path to the log file in which the output from
 # the experiment/workflow generation function will be saved.
 #
 log_fn="log.generate_FV3LAM_wflow"
-log_fp="$ushdir/${log_fn}"
+log_fp="$USHdir/${log_fn}"
 rm -f "${log_fp}"
 #
 # Call the generate_FV3LAM_wflow function defined above to generate the

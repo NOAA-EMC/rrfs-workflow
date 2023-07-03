@@ -15,7 +15,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -103,7 +103,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSDIR/exregional_nonvarcldanl.sh \
+$SCRIPTSdir/exregional_nonvarcldanl.sh \
              cycle_dir="${CYCLE_DIR}" \
              cycle_type="${CYCLE_TYPE}" \
              gridspec_dir="${gridspec_dir}" \

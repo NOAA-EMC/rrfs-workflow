@@ -16,7 +16,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -80,7 +80,7 @@ mkdir_vrfy -p ${enkfworkdir}
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSDIR/exregional_run_enkf.sh \
+$SCRIPTSdir/exregional_run_enkf.sh \
              cycle_dir="${CYCLE_DIR}" \
              cycle_type="${CYCLE_TYPE}" \
              enkfworkdir="${enkfworkdir}" \

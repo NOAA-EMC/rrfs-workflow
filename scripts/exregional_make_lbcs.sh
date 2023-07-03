@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -521,7 +521,7 @@ settings="
 # Call the python script to create the namelist file.
 #
   nml_fn="fort.41"
-  ${USHDIR}/set_namelist.py -q -u "$settings" -o ${nml_fn} || \
+  ${USHdir}/set_namelist.py -q -u "$settings" -o ${nml_fn} || \
     print_err_msg_exit "\
 Call to python script set_namelist.py to set the variables in the namelist
 file read in by the ${exec_fn} executable failed.  Parameters passed to

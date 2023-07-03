@@ -89,7 +89,7 @@ function process_args() {
 #
 #-----------------------------------------------------------------------
 #
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
+  { save_shell_opts; . ${USHdir}/preamble.sh; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -99,7 +99,7 @@ function process_args() {
 #
 #-----------------------------------------------------------------------
 #
-  local scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
+  local scrfunc_fp=$( $READLINK -f "${BASH_SOURCE[0]}" )
   local scrfunc_fn=$( basename "${scrfunc_fp}" )
   local scrfunc_dir=$( dirname "${scrfunc_fp}" )
 #
@@ -263,7 +263,7 @@ ments (num_valid_args) specified in the array valid_arg_names:
 
 # Remove spaces (if any exist) from the current valid argument name.
     valid_arg_name_no_spaces=$( \
-      printf "%s\n" "${valid_arg_name}" | sed -r -e 's/[[:space:]]//g' )
+      printf "%s\n" "${valid_arg_name}" | $SED -r -e 's/[[:space:]]//g' )
 
     if [ "${valid_arg_name_no_spaces}" != "${valid_arg_name}" ]; then
       print_err_msg_exit "\
@@ -307,10 +307,20 @@ but the element with index i=${i} is empty:
 #
 #-----------------------------------------------------------------------
 #
+# Set the separator used in each arg=value pair.  This is simply an equal
+# sign.
+#
+  sep="="
   for arg_val_pair in "${@:2}"; do
-
-    arg_name=$(echo ${arg_val_pair} | cut -f1 -d=)
-    arg_value=$(echo ${arg_val_pair} | cut -f2 -d=)
+#
+# Get the argument name and its value using bash variable substitution/
+# expansion.  The %% operator deletes the longest trailing portion of
+# arg_val_pair that matches the pattern that follows %%, while the #
+# operator deletes the shortest leading portion of arg_val_pair that
+# matches the pattern that follows #.
+#
+    arg_name=${arg_val_pair%%"$sep"*}
+    arg_value=${arg_val_pair#*"$sep"}
 #
 # If the first character of the argument's value is an opening parenthe-
 # sis and its last character is a closing parenthesis, then the argument

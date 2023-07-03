@@ -4,7 +4,7 @@
 # This file sets the experiment's configuration variables (which are
 # global shell variables) to their default values.  For many of these
 # variables, the valid values that they may take on are defined in the
-# file $USHDIR/valid_param_vals.sh.
+# file $USHdir/valid_param_vals.sh.
 #
 #-----------------------------------------------------------------------
 #

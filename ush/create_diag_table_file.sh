@@ -98,7 +98,7 @@ to create:
   cres: ${CRES}
 "
 
-  $USHDIR/fill_jinja_template.py -q -u "${settings}" -t "${DIAG_TABLE_TMPL_FP}" -o "${diag_table_fp}" || \
+  $USHdir/fill_jinja_template.py -q -u "${settings}" -t "${DIAG_TABLE_TMPL_FP}" -o "${diag_table_fp}" || \
   print_err_msg_exit "
 !!!!!!!!!!!!!!!!!
 
