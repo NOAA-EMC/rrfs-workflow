@@ -1,8 +1,0 @@
-#%Module
-
-module purge
-
-module use /contrib/miniconda3/modulefiles
-module load miniconda3/4.5.12
-
-setenv SRW_ENV pygraf
