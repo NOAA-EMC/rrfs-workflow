@@ -16,7 +16,7 @@ cd rrfs-workflow
 ./manage_externals/checkout_externals
 ```
 
-3. Build RRFS workflow:
+3. Build the RRFS workflow:
 ```
 ./devbuild.sh -p=[machine]
 ```
