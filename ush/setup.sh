@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 #-----------------------------------------------------------------------
 #
@@ -41,7 +42,7 @@ local func_name="${FUNCNAME[0]}"
 #
 #-----------------------------------------------------------------------
 #
-cd_vrfy ${scrfunc_dir}
+USHdir="${scrfunc_dir}"
 #
 #-----------------------------------------------------------------------
 #
@@ -49,7 +50,7 @@ cd_vrfy ${scrfunc_dir}
 #
 #-----------------------------------------------------------------------
 #
-. ./source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -57,13 +58,13 @@ cd_vrfy ${scrfunc_dir}
 #
 #-----------------------------------------------------------------------
 #
-. ./set_cycle_dates.sh
-. ./set_gridparams_GFDLgrid.sh
-. ./set_gridparams_ESGgrid.sh
-. ./link_fix.sh
-. ./set_ozone_param.sh
-. ./set_thompson_mp_fix_files.sh
-. ./check_ruc_lsm.sh
+. $USHdir/set_cycle_dates.sh
+. $USHdir/set_gridparams_GFDLgrid.sh
+. $USHdir/set_gridparams_ESGgrid.sh
+. $USHdir/link_fix.sh
+. $USHdir/set_ozone_param.sh
+. $USHdir/set_thompson_mp_fix_files.sh
+. $USHdir/check_ruc_lsm.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -72,7 +73,7 @@ cd_vrfy ${scrfunc_dir}
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; . $USHdir/preamble.sh; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -82,7 +83,7 @@ cd_vrfy ${scrfunc_dir}
 #-----------------------------------------------------------------------
 #
 EXPT_DEFAULT_CONFIG_FN="config_defaults.sh"
-. ./${EXPT_DEFAULT_CONFIG_FN}
+. $USHdir/${EXPT_DEFAULT_CONFIG_FN}
 #
 #-----------------------------------------------------------------------
 #
@@ -105,11 +106,11 @@ if [ -f "${EXPT_CONFIG_FN}" ]; then
 # configuration file are also assigned default values in the default 
 # configuration file.
 #
-  . ./compare_config_scripts.sh
+  . $USHdir/compare_config_scripts.sh
 #
 # Now source the user-specified configuration file.
 #
-  . ./${EXPT_CONFIG_FN}
+  . $USHdir/${EXPT_CONFIG_FN}
 #
 fi
 #
@@ -119,7 +120,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-. ./valid_param_vals.sh
+. $USHdir/valid_param_vals.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -582,36 +583,6 @@ case $MACHINE in
     QUEUE_PRDGEN=${QUEUE_PRDGEN:-"batch"}
     PARTITION_POST=${PARTITION_POST:-"sjet,vjet,kjet,xjet"}
     QUEUE_POST=${QUEUE_POST:-"batch"}
-    ;;
-
-  "ODIN")
-    NCORES_PER_NODE=24
-    SCHED="${SCHED:-slurm}"
-    PARTITION_DEFAULT=${PARTITION_DEFAULT:-"workq"}
-    QUEUE_DEFAULT=${QUEUE_DEFAULT:-"workq"}
-    PARTITION_HPSS=${PARTITION_HPSS:-"workq"}
-    QUEUE_HPSS=${QUEUE_HPSS:-"workq"}
-    PARTITION_FCST=${PARTITION_FCST:-"workq"}
-    QUEUE_FCST=${QUEUE_FCST:-"workq"}
-    ;;
-
-  "CHEYENNE")
-    NCORES_PER_NODE=36
-    SCHED="${SCHED:-pbspro}"
-    QUEUE_DEFAULT=${QUEUE_DEFAULT:-"regular"}
-    QUEUE_HPSS=${QUEUE_HPSS:-"regular"}
-    QUEUE_FCST=${QUEUE_FCST:-"regular"}
-    ;;
-
-  "STAMPEDE")
-    NCORES_PER_NODE=68
-    SCHED="slurm"
-    PARTITION_DEFAULT=${PARTITION_DEFAULT:-"normal"}
-    QUEUE_DEFAULT=${QUEUE_DEFAULT:-"normal"}
-    PARTITION_HPSS=${PARTITION_HPSS:-"normal"}
-    QUEUE_HPSS=${QUEUE_HPSS:-"normal"}
-    PARTITION_FCST=${PARTITION_FCST:-"normal"}
-    QUEUE_FCST=${QUEUE_FCST:-"normal"}
     ;;
 
 esac
@@ -1886,22 +1857,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-. ./set_extrn_mdl_params.sh
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+. $USHdir/set_extrn_mdl_params.sh
 
 #
 #-----------------------------------------------------------------------
@@ -2128,10 +2084,6 @@ if [ "${RUN_TASK_MAKE_GRID}" = "FALSE" ]; then
   CRES="C${RES_IN_FIXLAM_FILENAMES}"
 fi
 
-
-
-
-
 #
 #-----------------------------------------------------------------------
 #
@@ -2229,7 +2181,6 @@ fi
 #-----------------------------------------------------------------------
 #
 NNODES_RUN_FCST=$(( (PE_MEMBER01 + PPN_RUN_FCST - 1)/PPN_RUN_FCST ))
-
 
 #
 #-----------------------------------------------------------------------
@@ -2368,6 +2319,7 @@ The variable \"line_list\" contains:
 
 ${line_list}
 "
+
 #
 #-----------------------------------------------------------------------
 #
@@ -2377,7 +2329,8 @@ ${line_list}
 #
 #-----------------------------------------------------------------------
 #
-read -r -d '' str_to_insert << EOM
+#read -r -d '' str_to_insert << EOM
+read -r str_to_insert << EOM
 #
 #-----------------------------------------------------------------------
 #-----------------------------------------------------------------------
@@ -2404,11 +2357,6 @@ str_to_insert=${str_to_insert//$'\n'/\\n}
 #
 regexp="(^#!.*)"
 sed -i -r -e "s|$regexp|\1\n\n${str_to_insert}\n|g" ${GLOBAL_VAR_DEFNS_FP}
-
-
-
-
-
 
 #
 # Loop through the lines in line_list.

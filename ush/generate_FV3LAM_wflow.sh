@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #
 #-----------------------------------------------------------------------
 #
@@ -96,13 +95,7 @@ done
 
 #Finally, check if the number of errors is >0, and if so exit with helpful message
 if [ $pyerrors -gt 0 ];then
-  print_err_msg_exit "\
-  Errors found: check your python environment
-  
-  Instructions for setting up python environments can be found on the web:
-  https://github.com/ufs-community/ufs-srweather-app/wiki/Getting-Started
-
-"
+  print_err_msg_exit "Errors found: check your python environment"
 fi
 
 #
@@ -113,7 +106,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; . ${USHdir}/preamble.sh; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 # check whether the .agent link is initialized
