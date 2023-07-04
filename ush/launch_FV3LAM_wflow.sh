@@ -99,28 +99,6 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Declare arguments.
-#
-#-----------------------------------------------------------------------
-#
-valid_args=( \
-  "called_from_cron" \
-  )
-process_args valid_args "$@"
-print_input_args "valid_args"
-#
-#-----------------------------------------------------------------------
-#
-# Make sure called_from_cron is set to a valid value.
-#
-#-----------------------------------------------------------------------
-#
-called_from_cron=${called_from_cron:-"FALSE"}
-check_var_valid_value "called_from_cron" "valid_vals_BOOLEAN"
-called_from_cron=$(boolify "${called_from_cron}")
-#
-#-----------------------------------------------------------------------
-#
 # Set the name of the experiment.  We take this to be the name of the 
 # experiment subdirectory (i.e. the string after the last "/" in the 
 # full path to the experiment directory).
@@ -377,17 +355,6 @@ from the crontab the line (CRONTAB_LINE) that calls the workflow launch
 script for this experiment:
   CRONTAB_LINE = \"${CRONTAB_LINE}\"
 "
-#
-# Remove CRONTAB_LINE from cron table
-#
-    if [ "${called_from_cron}" = "TRUE" ]; then
-       MACHINE=$MACHINE CRONTAB_LINE=$CRONTAB_LINE \
-           python3 $USHdir/get_crontab_contents.py --delete --called-from-cron
-    else
-       MACHINE=$MACHINE CRONTAB_LINE=$CRONTAB_LINE \
-           python3 $USHdir/get_crontab_contents.py --delete
-    fi
-  fi
 #
 # Print the workflow completion message to the launch log file.
 #
