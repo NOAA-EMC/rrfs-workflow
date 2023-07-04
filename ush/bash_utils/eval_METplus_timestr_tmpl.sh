@@ -15,7 +15,7 @@ function eval_METplus_timestr_tmpl() {
 #
 #-----------------------------------------------------------------------
 #
-  { save_shell_opts; . ${USHdir}/preamble.sh; } > /dev/null 2>&1
+  { save_shell_opts; set -u +x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
