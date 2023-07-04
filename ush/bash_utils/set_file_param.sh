@@ -90,15 +90,6 @@ where the arguments are defined as follows:
 #
 #-----------------------------------------------------------------------
 #
-# If VERBOSE is set to "TRUE", print out an informational message.
-#
-#-----------------------------------------------------------------------
-#
-  print_info_msg "$DEBUG" "\
-Setting parameter \"$param\" in file \"$file\" to \"$value\" ..."
-#
-#-----------------------------------------------------------------------
-#
 # The procedure we use to set the value of the specified parameter de-
 # pends on the file the parameter is in.  Compare the file name to sev-
 # eral known file names and set the regular expression to search for
