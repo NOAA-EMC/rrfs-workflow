@@ -20,7 +20,7 @@ Conda Environment:
 
     module use /contrib/miniconda3/modulefiles
     module load miniconda3
-    module load regional_workflow
+    module load workflow_tools
 
 Usage:
 

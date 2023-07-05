@@ -150,7 +150,7 @@ define resources used for each tasks
 {%- endfor %}
 
   <log>
-    <cyclestr>&LOGDIR;/FV3LAM_wflow;.log</cyclestr>
+    <cyclestr>&LOGDIR;/FV3LAM_wflow.log</cyclestr>
   </log>
 
 <!-- 
@@ -283,6 +283,9 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>EXTRN_MDL_NAME</name><value>{{ extrn_mdl_name_lbcs }}</value></envar>
     <envar><name>ICS_OR_LBCS</name><value>ICS</value></envar>
+    <envar><name>BOUNDARY_LEN</name><value>{{ boundary_len_hrs }}</value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value>{{ slash_ensmem_subdir }}</value></envar>
+    <envar><name>GEFS_INPUT_SUBDIR</name><value>#subdirGE#</value></envar>
 
   </task>
 
@@ -306,6 +309,9 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>EXTRN_MDL_NAME</name><value>{{ extrn_mdl_name_lbcs }}</value></envar>
     <envar><name>ICS_OR_LBCS</name><value>LBCS</value></envar>
+    <envar><name>BOUNDARY_LEN</name><value>{{ boundary_len_hrs }}</value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value>{{ slash_ensmem_subdir }}</value></envar>
+    <envar><name>GEFS_INPUT_SUBDIR</name><value>#subdirGE#</value></envar>
 
   </task>
 

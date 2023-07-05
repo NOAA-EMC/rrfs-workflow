@@ -28,7 +28,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -113,22 +113,6 @@ case $MACHINE in
 
   "JET")
     APRUN="time"
-    ulimit -a
-    ;;
-
-  "ODIN")
-    export APRUN="srun -n 1"
-    ulimit -s unlimited
-    ulimit -a
-    ;;
-
-  "CHEYENNE")
-    APRUN="time"
-    ;;
-
-  "STAMPEDE")
-    export APRUN="time"
-    ulimit -s unlimited
     ulimit -a
     ;;
 
@@ -354,6 +338,7 @@ generation executable (exec_fp):
     'dely': ${DEL_ANGLE_Y_SG},
     'lx': ${NEG_NX_OF_DOM_WITH_WIDE_HALO},
     'ly': ${NEG_NY_OF_DOM_WITH_WIDE_HALO},
+    'pazi': ${PAZI},
  }
 "
 #

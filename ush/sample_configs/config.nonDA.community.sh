@@ -1,5 +1,6 @@
 MACHINE="hera"
-ACCOUNT="an_account"
+ACCOUNT="fv3-cam"
+HPSS_ACCOUNT="fv3-cam"
 EXPT_SUBDIR="test_nonDA_community"
 
 VERBOSE="TRUE"
