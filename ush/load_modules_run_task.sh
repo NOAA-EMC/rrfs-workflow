@@ -17,7 +17,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u -x; } > /dev/null 2>&1
+{ save_shell_opts; set -u +x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -156,6 +156,7 @@ module use "${modules_dir}" || print_err_msg_exit "\
 Call to \"module use\" command failed."
 
 # source version file (run) only if it is specified in versions directory
+RUN_VER_FN="run.ver.${machine}"
 VERSION_FILE="${HOMErrfs}/versions/${RUN_VER_FN}"
 if [ -f ${VERSION_FILE} ]; then
   . ${VERSION_FILE}

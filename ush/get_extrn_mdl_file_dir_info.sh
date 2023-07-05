@@ -662,15 +662,6 @@ bination of external model (extrn_mdl_name) and analysis or forecast
     "JET")
       sysdir=""
       ;;
-    "ODIN")
-      sysdir="$sysbasedir"
-      ;;
-    "CHEYENNE")
-      sysdir=""
-      ;;
-    "STAMPEDE")
-      sysdir="$sysbasedir"
-      ;;
     *)
       print_err_msg_exit "\
 The system directory in which to look for external model output files 
@@ -700,15 +691,6 @@ has not been specified for this external model and machine combination:
       #sysdir="$sysbasedir/gdas.${yyyymmdd}/${hh}/atmos"
       ;;
     "JET")
-      sysdir="$sysbasedir"
-      ;;
-    "ODIN")
-      sysdir="$sysbasedir/${yyyymmdd}"
-      ;;
-    "CHEYENNE")
-      sysdir="$sysbasedir/gfs.${yyyymmdd}/${hh}"
-      ;;
-    "STAMPEDE")
       sysdir="$sysbasedir"
       ;;
     *)
@@ -796,12 +778,6 @@ has not been specified for this external model and machine combination:
     "JET")
       sysdir="$sysbasedir"
       ;;
-    "ODIN")
-      sysdir="$sysbasedir"
-      ;;
-    "CHEYENNE")
-      sysdir="$sysbasedir"
-      ;;
     *)
       print_err_msg_exit "\
 The system directory in which to look for external model output files 
@@ -827,12 +803,6 @@ has not been specified for this external model and machine combination:
     "JET")
       sysdir="$sysbasedir"
       ;;
-    "ODIN")
-      sysdir="$sysbasedir"
-      ;;
-    "CHEYENNE")
-      sysdir="$sysbasedir"
-      ;;
     *)
       print_err_msg_exit "\
 The system directory in which to look for external model output files 
@@ -855,12 +825,6 @@ has not been specified for this external model and machine combination:
       sysdir="$sysbasedir"
       ;;
     "JET")
-      sysdir="$sysbasedir"
-      ;;
-    "ODIN")
-      sysdir="$sysbasedir"
-      ;;
-    "CHEYENNE")
       sysdir="$sysbasedir"
       ;;
     *)

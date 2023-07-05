@@ -150,7 +150,7 @@ define resources used for each tasks
 {%- endfor %}
 
   <log>
-    <cyclestr>&LOGDIR;/FV3LAM_wflow_&TAG;.log</cyclestr>
+    <cyclestr>&LOGDIR;/FV3LAM_wflow;.log</cyclestr>
   </log>
 
 <!-- 
@@ -192,7 +192,7 @@ MODULES_RUN_TASK_FP script.
     <nodes>{{ nnodes_make_grid }}:ppn={{ ppn_make_grid }}</nodes>
     <walltime>{{ wtime_make_grid }}</walltime>
     &NODESIZE_ALL;
-    <jobname>&TAG;_&MAKE_GRID_TN;</jobname>
+    <jobname>&MAKE_GRID_TN;</jobname>
     <join><cyclestr>&LOGDIR;/&MAKE_GRID_TN;.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
@@ -212,7 +212,7 @@ MODULES_RUN_TASK_FP script.
     <nodes>{{ nnodes_make_orog }}:ppn={{ ppn_make_orog }}</nodes>
     <walltime>{{ wtime_make_orog }}</walltime>
     &NODESIZE_ALL;
-    <jobname>&TAG;_&MAKE_OROG_TN;</jobname>
+    <jobname>&MAKE_OROG_TN;</jobname>
     <join><cyclestr>&LOGDIR;/&MAKE_OROG_TN;.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
@@ -240,7 +240,7 @@ MODULES_RUN_TASK_FP script.
     <nodes>{{ nnodes_make_sfc_climo }}:ppn={{ ppn_make_sfc_climo }}</nodes>
     <walltime>{{ wtime_make_sfc_climo }}</walltime>
     &NODESIZE_ALL;
-    <jobname>&TAG;_&MAKE_SFC_CLIMO_TN;</jobname>
+    <jobname>&MAKE_SFC_CLIMO_TN;</jobname>
     <join><cyclestr>&LOGDIR;/&MAKE_SFC_CLIMO_TN;.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
