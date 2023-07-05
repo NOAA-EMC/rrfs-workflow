@@ -428,6 +428,9 @@ DOT_OR_USCORE="_"
 # Name of the rocoto workflow XML file that the experiment generation
 # script creates and that defines the workflow for the experiment.
 #
+# WFLOW_XML_TMPL_FN:
+# Name of the template file of the rocoto workflow XML file (WFLOW_XML_FN).
+#
 # GLOBAL_VAR_DEFNS_FN:
 # Name of file (a shell script) containing the defintions of the primary 
 # experiment variables (parameters) defined in this default configuration 
@@ -474,8 +477,10 @@ FV3_NML_BASE_ENS_FN="input.nml.base_ens"
 MODEL_CONFIG_FN="model_configure"
 NEMS_CONFIG_FN="nems.configure"
 FV3_EXEC_FN="ufs_model"
-
 WFLOW_XML_FN="FV3LAM_wflow.xml"
+
+WFLOW_XML_TMPL_FN="FV3LAM_wflow.xml"
+
 GLOBAL_VAR_DEFNS_FN="var_defns.sh"
 EXTRN_MDL_ICS_VAR_DEFNS_FN="extrn_mdl_ics_var_defns.sh"
 EXTRN_MDL_LBCS_VAR_DEFNS_FN="extrn_mdl_lbcs_var_defns.sh"

@@ -11,8 +11,11 @@ sorc/*
 save/
 ush/config.sh
 ush/*.swp
+ush/__pycache__/
+ush/python_utils/__pycache__/
 fix/.agent
 fix/tmp
 fix/INIT_DONE
 
+__pycache__
 *.swp

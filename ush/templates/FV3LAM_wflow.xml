@@ -171,125 +171,98 @@ define resources used for each tasks
 -->
 
 <!ENTITY RESOURCES_PROC_SMOKE "<nodes>{{ nnodes_proc_smoke }}:ppn={{ ppn_proc_smoke }}</nodes>">
-<!ENTITY WALLTIME_PROC_SMOKE  "{{ wtime_proc_smoke }}">
-<!ENTITY MEMO_PROC_SMOKE  "{{ memo_proc_smoke }}">
-
 <!ENTITY RESOURCES_PROC_RADAR "<nodes>{{ nnodes_proc_radar }}:ppn={{ ppn_proc_radar }}</nodes>">
-<!ENTITY WALLTIME_PROC_RADAR  "{{ wtime_proc_radar }}">
-
 <!ENTITY RESOURCES_PROC_LIGHTNING "<nodes>{{ nnodes_proc_lightning }}:ppn={{ ppn_proc_lightning }}</nodes>">
-<!ENTITY WALLTIME_PROC_LIGHTNING  "{{ wtime_proc_lightning }}">
-
 <!ENTITY RESOURCES_PROC_BUFR "<nodes>{{ nnodes_proc_bufr }}:ppn={{ ppn_proc_bufr }}</nodes>">
-<!ENTITY WALLTIME_PROC_BUFR  "{{ wtime_proc_bufr }}">
-<!ENTITY MEMO_PROC_BUFR  "{{memo_run_processbufr }}">
-
 <!ENTITY RESOURCES_GET_EXTRN_ICS "<nodes>{{ nnodes_get_extrn_ics }}:ppn={{ ppn_get_extrn_ics }}</nodes>">
-<!ENTITY WALLTIME_GET_EXTRN_ICS  "{{ wtime_get_extrn_ics }}">
-
 <!ENTITY RESOURCES_GET_EXTRN_LBCS "<nodes>{{ nnodes_get_extrn_lbcs }}:ppn={{ ppn_get_extrn_lbcs }}</nodes>">
-<!ENTITY WALLTIME_GET_EXTRN_LBCS  "{{ wtime_get_extrn_lbcs }}">
-
-<!ENTITY RESOURCES_MAKE_LBCS "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
-<!ENTITY WALLTIME_MAKE_LBCS  "{{ wtime_make_lbcs }}">
-
 <!ENTITY RESOURCES_PREP_CYC "<nodes>{{ nnodes_run_prepstart }}:ppn={{ ppn_run_prepstart }}</nodes>">
-<!ENTITY WALLTIME_PREP_CYC  "{{ wtime_run_prepstart }}">
-<!ENTITY MEMO_PREP_CYC  "<memory>{{ memo_prep_cyc}}</memory>">
-
 <!ENTITY RESOURCES_SAVE_RESTART "<nodes>{{ nnodes_save_restart }}:ppn={{ ppn_save_restart }}</nodes>">
-<!ENTITY WALLTIME_SAVE_RESTART  "{{ wtime_save_restart }}">
-
 <!ENTITY RESOURCES_RUN_RECENTER "<nodes>{{ nnodes_run_recenter }}:ppn={{ ppn_run_recenter }}</nodes>">
-<!ENTITY WALLTIME_RUN_RECENTER  "{{ wtime_run_recenter }}">
-
 <!ENTITY RESOURCES_POSTANAL "<nodes>{{ nnodes_run_postanal }}:ppn={{ ppn_run_postanal }}</nodes>">
-<!ENTITY WALLTIME_POSTANAL  "{{ wtime_run_postanal }}">
-
 <!ENTITY RESOURCES_RUN_PRDGEN "<nodes>{{ nnodes_run_prdgen }}:ppn={{ ppn_run_prdgen }}</nodes>">
-<!ENTITY WALLTIME_RUN_PRDGEN  "{{ wtime_run_prdgen }}">
-<!ENTITY MEMO_RUN_PRDGEN "{{ memo_run_prdgen }}">
-
 <!ENTITY RESOURCES_NONVAR_CLD "<nodes>{{ nnodes_run_nonvarcldanl }}:ppn={{ ppn_run_nonvarcldanl }}</nodes>">
-<!ENTITY WALLTIME_NONVAR_CLD  "{{ wtime_run_nonvarcldanl }}">
-<!ENTITY MEMO_NONVAR_CLD  "{{ memo_run_nonvarcldanl }}">
 
 {% if machine in ["WCOSS2"]  %}
-<!ENTITY NATIVE_ALL    "<native>-l place=excl</native>">
-{%- else %}
-<!ENTITY NATIVE_ALL    "">
-{%- endif %}
-
-<!ENTITY WALLTIME_RUN_POST  "{{ wtime_run_post }}">
-{%- if machine in ["WCOSS2"]  %}
 <!ENTITY RESOURCES_RUN_POST "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}:tpp={{ tpp_run_post }}</nodes>">
+<!ENTITY RESOURCES_RUN_ENKF "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}:tpp={{ tpp_run_enkf }}</nodes>">
+<!ENTITY RESOURCES_MAKE_ICS "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}:tpp={{ tpp_make_ics }}</nodes>">
+<!ENTITY RESOURCES_MAKE_LBCS "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}:tpp={{ tpp_make_lbcs }}</nodes>">
+<!ENTITY RESOURCES_ANAL_GSI "<nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}:tpp={{ tpp_run_anal }}</nodes>">
+<!ENTITY RESOURCES_FCST_SPINUP "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}:tpp={{ tpp_run_fcst }}</nodes>">
+<!ENTITY RESOURCES_FCST_PROD "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}:tpp={{ tpp_run_fcst }}</nodes>">
+<!ENTITY NODESIZE_ALL    "">
+<!ENTITY NATIVE_ALL    "<native>-l place=excl</native>">
+<!ENTITY NATIVE_ANAL_GSI    "<native>-l place=excl</native>">
+<!ENTITY NATIVE_FCST_SPINUP    "<native>-l place=excl</native>">
+<!ENTITY NATIVE_FCST_PROD    "<native>-l place=excl</native>">
+{%- elif machine in ["JET"] %}
+<!ENTITY RESOURCES_RUN_POST "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
+<!ENTITY RESOURCES_RUN_ENKF "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}</nodes>">
+<!ENTITY RESOURCES_MAKE_ICS "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
+<!ENTITY RESOURCES_MAKE_LBCS "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
+<!ENTITY RESOURCES_ANAL_GSI "<cores>{{ ncores_run_anal }}</cores>">
+<!ENTITY RESOURCES_FCST_SPINUP "<cores>{{ ncores_run_fcst }}</cores>">
+<!ENTITY RESOURCES_FCST_PROD "<cores>{{ ncores_run_fcst }}</cores>">
+<!ENTITY NODESIZE_ALL    "<nodesize>{{ ncores_per_node }}</nodesize>">
+<!ENTITY NATIVE_ALL    "">
+<!ENTITY NATIVE_ANAL_GSI    "<native>{{ native_run_anal }} &RRFS_RESERVE;</native>">
+<!ENTITY NATIVE_FCST_SPINUP    "<native>{{ native_run_fcst }} &RRFS_RESERVE;</native>">
+<!ENTITY NATIVE_FCST_PROD    "<native>{{ native_run_fcst }} &RRFS_RESERVE;</native>">
+{%- elif machine in ["HERA"] %}
+<!ENTITY RESOURCES_RUN_POST "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
+<!ENTITY RESOURCES_RUN_ENKF "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}</nodes>">
+<!ENTITY RESOURCES_MAKE_ICS "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
+<!ENTITY RESOURCES_MAKE_LBCS "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
+<!ENTITY RESOURCES_ANAL_GSI "<cores>{{ ncores_run_anal }}</cores>">
+<!ENTITY RESOURCES_FCST_SPINUP "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
+<!ENTITY RESOURCES_FCST_PROD "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
+<!ENTITY NODESIZE_ALL    "<nodesize>{{ ncores_per_node }}</nodesize>">
+<!ENTITY NATIVE_ALL    "">
+<!ENTITY NATIVE_ANAL_GSI    "<native>{{ native_run_anal }} &RRFS_RESERVE;</native>">
+<!ENTITY NATIVE_FCST_SPINUP    "">
+<!ENTITY NATIVE_FCST_PROD    "">
 {%- else %}
 <!ENTITY RESOURCES_RUN_POST "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
-{%- endif %}
-
-<!ENTITY WALLTIME_RUN_ENKF  "{{ wtime_run_enkf }}">
-{%- if machine in ["WCOSS2"]  %}
-<!ENTITY RESOURCES_RUN_ENKF "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}:tpp={{ tpp_run_enkf }}</nodes>">
-{%- else %}
 <!ENTITY RESOURCES_RUN_ENKF "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}</nodes>">
-{%- endif %}
-
-<!ENTITY WALLTIME_MAKE_ICS  "{{ wtime_make_ics }}">
-{%- if machine in ["WCOSS2"]  %}
-<!ENTITY RESOURCES_MAKE_ICS "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}:tpp={{ tpp_make_ics }}</nodes>">
-{%- else %}
 <!ENTITY RESOURCES_MAKE_ICS "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
-{%- endif %}
-
-<!ENTITY WALLTIME_MAKE_LBCS  "{{ wtime_make_lbcs }}">
-{%- if machine in ["WCOSS2"]  %}
-<!ENTITY RESOURCES_MAKE_LBCS "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}:tpp={{ tpp_make_lbcs }}</nodes>">
-{%- else %}
 <!ENTITY RESOURCES_MAKE_LBCS "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
-{%- endif %}
-
-{% if machine in ["JET", "HERA"] %}
-<!ENTITY RESOURCES_ANAL_GSI "<cores>{{ ncores_run_anal }}</cores>">
-<!ENTITY NATIVE_ANAL_GSI    "<native>{{ native_run_anal }} &RRFS_RESERVE;</native>">
-{%- elif machine in ["WCOSS2"]  %}
-<!ENTITY RESOURCES_ANAL_GSI "<nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}:tpp={{ tpp_run_anal }}</nodes>">
-<!ENTITY NATIVE_ANAL_GSI    "<native>-l place=excl</native>">
-{%- else %}
 <!ENTITY RESOURCES_ANAL_GSI "<nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}</nodes>">
-<!ENTITY NATIVE_ANAL_GSI    "">
-{%- endif %}
-<!ENTITY WALLTIME_ANAL_GSI  "{{ wtime_run_anal }}">
-
-<!ENTITY WALLTIME_FCST_SPINUP  "{{ wtime_run_fcst_spinup }}">
-{%- if machine in ["JET"] %}
-<!ENTITY RESOURCES_FCST_SPINUP "<cores>{{ ncores_run_fcst }}</cores>">
-<!ENTITY NATIVE_FCST_SPINUP    "<native>{{ native_run_fcst }} &RRFS_RESERVE;</native>">
-{%- elif machine in ["WCOSS2"]  %}
-<!ENTITY RESOURCES_FCST_SPINUP "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}:tpp={{ tpp_run_fcst }}</nodes>">
-<!ENTITY NATIVE_FCST_SPINUP    "<native>-l place=excl</native>">
-{%- else %}
 <!ENTITY RESOURCES_FCST_SPINUP "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
-<!ENTITY NATIVE_FCST_SPINUP    "">
-{%- endif %}
-
-<!ENTITY WALLTIME_FCST_PROD  "{{ wtime_run_fcst }}">
-<!ENTITY WALLTIME_FCST_PROD_LONG  "{{ wtime_run_fcst_long }}">
-{%- if machine in ["JET"] %}
-<!ENTITY RESOURCES_FCST_PROD "<cores>{{ ncores_run_fcst }}</cores>">
-<!ENTITY NATIVE_FCST_PROD    "<native>{{ native_run_fcst }} &RRFS_RESERVE;</native>">
-{%- elif machine in ["WCOSS2"]  %}
-<!ENTITY RESOURCES_FCST_PROD "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}:tpp={{ tpp_run_fcst }}</nodes>">
-<!ENTITY NATIVE_FCST_PROD    "<native>-l place=excl</native>">
-{%- else %}
 <!ENTITY RESOURCES_FCST_PROD "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
+<!ENTITY NODESIZE_ALL    "<nodesize>{{ ncores_per_node }}</nodesize>">
+<!ENTITY NATIVE_ALL    "">
+<!ENTITY NATIVE_ANAL_GSI    "">
+<!ENTITY NATIVE_FCST_SPINUP    "">
 <!ENTITY NATIVE_FCST_PROD    "">
 {%- endif %}
 
-{% if machine in ["WCOSS2"]  %}
-<!ENTITY NODESIZE_ALL    "">
-{%- else %}
-<!ENTITY NODESIZE_ALL    "<nodesize>{{ ncores_per_node }}</nodesize>">
-{%- endif %}
+<!ENTITY WALLTIME_PROC_SMOKE  "{{ wtime_proc_smoke }}">
+<!ENTITY WALLTIME_PROC_RADAR  "{{ wtime_proc_radar }}">
+<!ENTITY WALLTIME_PROC_LIGHTNING  "{{ wtime_proc_lightning }}">
+<!ENTITY WALLTIME_PROC_BUFR  "{{ wtime_proc_bufr }}">
+<!ENTITY WALLTIME_GET_EXTRN_ICS  "{{ wtime_get_extrn_ics }}">
+<!ENTITY WALLTIME_GET_EXTRN_LBCS  "{{ wtime_get_extrn_lbcs }}">
+<!ENTITY WALLTIME_PREP_CYC  "{{ wtime_run_prepstart }}">
+<!ENTITY WALLTIME_SAVE_RESTART  "{{ wtime_save_restart }}">
+<!ENTITY WALLTIME_RUN_RECENTER  "{{ wtime_run_recenter }}">
+<!ENTITY WALLTIME_POSTANAL  "{{ wtime_run_postanal }}">
+<!ENTITY WALLTIME_RUN_PRDGEN  "{{ wtime_run_prdgen }}">
+<!ENTITY WALLTIME_NONVAR_CLD  "{{ wtime_run_nonvarcldanl }}">
+<!ENTITY WALLTIME_RUN_POST  "{{ wtime_run_post }}">
+<!ENTITY WALLTIME_RUN_ENKF  "{{ wtime_run_enkf }}">
+<!ENTITY WALLTIME_MAKE_ICS  "{{ wtime_make_ics }}">
+<!ENTITY WALLTIME_MAKE_LBCS  "{{ wtime_make_lbcs }}">
+<!ENTITY WALLTIME_ANAL_GSI  "{{ wtime_run_anal }}">
+<!ENTITY WALLTIME_FCST_SPINUP  "{{ wtime_run_fcst_spinup }}">
+<!ENTITY WALLTIME_FCST_PROD  "{{ wtime_run_fcst }}">
+<!ENTITY WALLTIME_FCST_PROD_LONG  "{{ wtime_run_fcst_long }}">
+
+<!ENTITY MEMO_PROC_SMOKE  "{{ memo_proc_smoke }}">
+<!ENTITY MEMO_PROC_BUFR  "{{memo_run_processbufr }}">
+<!ENTITY MEMO_PREP_CYC  "<memory>{{ memo_prep_cyc}}</memory>">
+<!ENTITY MEMO_RUN_PRDGEN "{{ memo_run_prdgen }}">
+<!ENTITY MEMO_NONVAR_CLD  "{{ memo_run_nonvarcldanl }}">
 
 {% if do_retro %}
 <!ENTITY DEADLINE_PRE      "999:00:00">
@@ -299,26 +272,6 @@ define resources used for each tasks
 <!ENTITY DEADLINE_GRAPHICS "999:00:00">
 <!ENTITY DEADLINE_RECENTER "999:00:00">
 <!ENTITY DEADLINE_SAVE_RESTART "999:00:00">
-{% else %}
-<!ENTITY DEADLINE_PRE      "16:00:00">
-<!ENTITY DEADLINE_ANAL     "16:00:00">
-<!ENTITY DEADLINE_FCST     "23:30:00">
-<!ENTITY DEADLINE_POST     "24:00:00">
-<!ENTITY DEADLINE_GRAPHICS "24:00:00">
-<!ENTITY DEADLINE_RECENTER "24:00:00">
-<!ENTITY DEADLINE_SAVE_RESTART "24:00:00">
-{% endif %}
-
-<!ENTITY START_TIME_SPINUP "{{ start_time_spinup }}">
-<!ENTITY START_TIME_PROD "{{ start_time_prod }}">
-<!ENTITY START_TIME_CONVENTIONAL_SPINUP "{{ start_time_conventional_spinup }}">
-<!ENTITY START_TIME_LATE_ANALYSIS "{{ start_time_late_analysis }}">
-<!ENTITY START_TIME_CONVENTIONAL "{{ start_time_conventional }}">
-<!ENTITY START_TIME_NSSLMOSIAC   "{{ start_time_nsslmosiac }}">
-<!ENTITY START_TIME_LIGHTNINGNC  "{{ start_time_lightningnc }}">
-<!ENTITY START_TIME_PROCSMOKE  "{{ start_time_procsmoke }}">
-
-{%- if do_retro %}
 <!ENTITY WALL_LIMIT_PRE ''>
 <!ENTITY WALL_LIMIT_ANAL ''>
 <!ENTITY WALL_LIMIT_FCST ''>
@@ -329,6 +282,13 @@ define resources used for each tasks
 <!ENTITY WALL_LIMIT_RECENTER ''>
 <!ENTITY WALL_LIMIT_SAVE_RESTART ''>
 {% else %}
+<!ENTITY DEADLINE_PRE      "16:00:00">
+<!ENTITY DEADLINE_ANAL     "16:00:00">
+<!ENTITY DEADLINE_FCST     "23:30:00">
+<!ENTITY DEADLINE_POST     "24:00:00">
+<!ENTITY DEADLINE_GRAPHICS "24:00:00">
+<!ENTITY DEADLINE_RECENTER "24:00:00">
+<!ENTITY DEADLINE_SAVE_RESTART "24:00:00">
 <!ENTITY WALL_LIMIT_PRE '<deadline><cyclestr offset="&DEADLINE_PRE;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_ANAL '<deadline><cyclestr offset="&DEADLINE_ANAL;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_FCST '<deadline><cyclestr offset="&DEADLINE_FCST;">@Y@m@d@H@M</cyclestr></deadline>'>
@@ -340,11 +300,18 @@ define resources used for each tasks
 <!ENTITY WALL_LIMIT_SAVE_RESTART '<deadline><cyclestr offset="&DEADLINE_SAVE_RESTART;">@Y@m@d@H@M</cyclestr></deadline>'>
 {% endif %}
 
+<!ENTITY START_TIME_SPINUP "{{ start_time_spinup }}">
+<!ENTITY START_TIME_PROD "{{ start_time_prod }}">
+<!ENTITY START_TIME_CONVENTIONAL_SPINUP "{{ start_time_conventional_spinup }}">
+<!ENTITY START_TIME_LATE_ANALYSIS "{{ start_time_late_analysis }}">
+<!ENTITY START_TIME_CONVENTIONAL "{{ start_time_conventional }}">
+<!ENTITY START_TIME_NSSLMOSIAC   "{{ start_time_nsslmosiac }}">
+<!ENTITY START_TIME_LIGHTNINGNC  "{{ start_time_lightningnc }}">
+<!ENTITY START_TIME_PROCSMOKE  "{{ start_time_procsmoke }}">
 <!ENTITY STARTYEAR  "{{ startyear }}">
 <!ENTITY STARTMONTH "{{ startmonth }}">
 <!ENTITY STARTDAY   "{{ startday }}">
 <!ENTITY STARTHOUR  "{{ starthour }}">
-
 <!ENTITY ENDYEAR  "{{ endyear }}">
 <!ENTITY ENDMONTH "{{ endmonth }}">
 <!ENTITY ENDDAY   "{{ endday }}">

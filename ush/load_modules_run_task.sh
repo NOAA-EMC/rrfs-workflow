@@ -106,6 +106,7 @@ fi
 module use "${default_modules_dir}"
 
 if [ "${machine}" != "wcoss2" ]; then
+  BUILD_MOD_FN="build_${machine}_intel"
   module load "${BUILD_MOD_FN}" || print_err_msg_exit "\
   Loading of platform- and compiler-specific module file (BUILD_MOD_FN) 
 for the workflow task specified by task_name failed:

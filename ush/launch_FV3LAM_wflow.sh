@@ -356,6 +356,12 @@ script for this experiment:
   CRONTAB_LINE = \"${CRONTAB_LINE}\"
 "
 #
+# Remove CRONTAB_LINE from cron table
+#
+    MACHINE=$MACHINE CRONTAB_LINE=$CRONTAB_LINE \
+        python3 $USHdir/get_crontab_contents.py --delete
+  fi
+#
 # Print the workflow completion message to the launch log file.
 #
   printf "%s" "$msg" >> ${WFLOW_LAUNCH_LOG_FN} 2>&1
