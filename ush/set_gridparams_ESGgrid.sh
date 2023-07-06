@@ -133,10 +133,10 @@ function set_gridparams_ESGgrid() {
 #-----------------------------------------------------------------------
 #
   del_angle_x_sg=$( bc -l <<< "(${delx}/(2.0*${radius_Earth}))*${degs_per_radian}" )
-  del_angle_x_sg=$( printf "%0.10f\n" ${del_angle_x_sg} )
+  del_angle_x_sg=$( printf "%0.17f\n" ${del_angle_x_sg} )
 
   del_angle_y_sg=$( bc -l <<< "(${dely}/(2.0*${radius_Earth}))*${degs_per_radian}" )
-  del_angle_y_sg=$( printf "%0.10f\n" ${del_angle_y_sg} )
+  del_angle_y_sg=$( printf "%0.17f\n" ${del_angle_y_sg} )
 
   neg_nx_of_dom_with_wide_halo=$( bc -l <<< "-($nx + 2*${halo_width})" )
   neg_nx_of_dom_with_wide_halo=$( printf "%.0f\n" ${neg_nx_of_dom_with_wide_halo} )

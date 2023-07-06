@@ -99,15 +99,18 @@ case $MACHINE in
   "WCOSS2")
     ulimit -s unlimited
     ulimit -a
-    ncores=$(( NNODES_MAKE_GRID*PPN_MAKE_GRID))
-    APRUN="mpiexec -n ${ncores} -ppn ${PPN_MAKE_GRID}"
+    APRUN="time"
     ;;
 
   "HERA")
+    ulimit -s unlimited
+    ulimit -a    
     APRUN="time"
     ;;
 
   "ORION")
+    ulimit -s unlimited
+    ulimit -a
     APRUN="time"
     ;;
 
