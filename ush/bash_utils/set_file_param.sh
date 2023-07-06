@@ -25,7 +25,7 @@ function set_file_param() {
 #
 #-----------------------------------------------------------------------
 #
-  local scrfunc_fp=$( $READLINK -f "${BASH_SOURCE[0]}" )
+  local scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
   local scrfunc_fn=$( basename "${scrfunc_fp}" )
   local scrfunc_dir=$( dirname "${scrfunc_fp}" )
 #
@@ -162,7 +162,7 @@ specified for this file:
   grep -q -E "${regex_search}" "${file_fp}"
 
   if [ $? -eq 0 ]; then
-    $SED -i -r -e "s%${regex_search}%${regex_replace}%" "${file_fp}"
+    sed -i -r -e "s%${regex_search}%${regex_replace}%" "${file_fp}"
   else
     print_err_msg_exit "\
 The specified file (file_fp) does not contain the searched-for regular 

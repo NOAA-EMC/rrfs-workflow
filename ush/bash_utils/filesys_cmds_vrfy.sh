@@ -28,7 +28,7 @@ function filesys_cmd_vrfy() {
 #
 #-----------------------------------------------------------------------
 #
-  local scrfunc_fp=$( $READLINK -f "${BASH_SOURCE[0]}" )
+  local scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
   local scrfunc_fn=$( basename "${scrfunc_fp}" )
   local scrfunc_dir=$( dirname "${scrfunc_fp}" )
 #
@@ -68,7 +68,7 @@ function filesys_cmd_vrfy() {
   local caller_name="main"
   local caller_fp=""
   if [ -z "${BASH_SOURCE[2]-x}" ]; then
-    caller_fp=$( $READLINK -f "${BASH_SOURCE[2]}" )
+    caller_fp=$( readlink -f "${BASH_SOURCE[2]}" )
     local caller_fn=$( basename "${caller_fp}" )
     local caller_dir=$( dirname "${caller_fp}" )
     caller_name="${FUNCNAME[2]}"
@@ -262,7 +262,7 @@ function rm_vrfy() {
 
 function ln_vrfy() {
   { save_shell_opts; set -u +x; } > /dev/null 2>&1
-  filesys_cmd_vrfy "$LN_UTIL" "$@"
+  filesys_cmd_vrfy "ln" "$@"
   { restore_shell_opts; } > /dev/null 2>&1
 }
 

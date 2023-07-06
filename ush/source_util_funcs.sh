@@ -44,15 +44,6 @@ function source_util_funcs() {
 #
 #-----------------------------------------------------------------------
 #
-# Source the file that defines MacOS-specific UNIX command-line
-# utilities, that mimic the functionality of the GNU equivalents
-#
-#-----------------------------------------------------------------------
-#
-  . ${bashutils_dir}/define_macos_utilities.sh
-#
-#-----------------------------------------------------------------------
-#
 # Source the file containing the functions that print out messages.
 #
 #-----------------------------------------------------------------------
@@ -221,15 +212,6 @@ function source_util_funcs() {
 #-----------------------------------------------------------------------
 #
   . ${bashutils_dir}/get_bash_file_contents.sh
-#
-#-----------------------------------------------------------------------
-#
-# Source the file containing the function that evaluates a METplus time
-# string template.
-#
-#-----------------------------------------------------------------------
-#
-  . ${bashutils_dir}/eval_METplus_timestr_tmpl.sh
 #
 #-----------------------------------------------------------------------
 #

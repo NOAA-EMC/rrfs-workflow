@@ -97,4 +97,4 @@ valid_vals_USE_FVCOM=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
 valid_vals_PREP_FVCOM=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
 valid_vals_COMPILER=("intel" "gnu")
 valid_vals_WORKFLOW_MANAGER=("rocoto" "ecflow" "none")
-valid_vals_BOOLEAN: [ "TRUE", "true", "YES", "yes", "FALSE", "false", "NO", "no" ]
+valid_vals_BOOLEAN=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")

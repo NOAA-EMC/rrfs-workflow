@@ -31,7 +31,7 @@ function print_input_args() {
 #
 #-----------------------------------------------------------------------
 #
-  local scrfunc_fp=$( $READLINK -f "${BASH_SOURCE[0]}" )
+  local scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
   local scrfunc_fn=$( basename "${scrfunc_fp}" )
   local scrfunc_dir=$( dirname "${scrfunc_fp}" )
 #
@@ -62,7 +62,7 @@ function print_input_args() {
 #
 #-----------------------------------------------------------------------
 #
-  local caller_fp=$( $READLINK -f "${BASH_SOURCE[1]}" )
+  local caller_fp=$( readlink -f "${BASH_SOURCE[1]}" )
   local caller_fn=$( basename "${caller_fp}" )
   local caller_dir=$( dirname "${caller_fp}" )
   local caller_name="${FUNCNAME[1]}"
@@ -173,10 +173,10 @@ have been set as follows:
 #
 #-----------------------------------------------------------------------
 #
-  if [ -z ${DEBUG+x} ]; then
+  if [ ! -v VERBOSE ]; then
     print_info_msg "$msg"
   else
-    print_info_msg "$DEBUG" "$msg"
+    print_info_msg "$VERBOSE" "$msg"
   fi
 #
 #-----------------------------------------------------------------------
