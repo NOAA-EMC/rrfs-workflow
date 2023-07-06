@@ -156,10 +156,12 @@ module use "${modules_dir}" || print_err_msg_exit "\
 Call to \"module use\" command failed."
 
 # source version file (run) only if it is specified in versions directory
-RUN_VER_FN="run.ver.${machine}"
-VERSION_FILE="${HOMErrfs}/versions/${RUN_VER_FN}"
-if [ -f ${VERSION_FILE} ]; then
-  . ${VERSION_FILE}
+if [ "${machine}" = "wcoss2" ]; then
+  RUN_VER_FN="run.ver.${machine}"
+  VERSION_FILE="${HOMErrfs}/versions/${RUN_VER_FN}"
+  if [ -f ${VERSION_FILE} ]; then
+    . ${VERSION_FILE}
+  fi
 fi
 #
 # Load the .local module file if available for the given task
@@ -189,6 +191,7 @@ if [ -n "${SRW_ENV:-}" ] ; then
   set +u
   conda activate ${SRW_ENV}
   set -u
+  conda list
 fi
 
 #
