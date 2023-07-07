@@ -4,7 +4,7 @@
 usage () {
 cat << EOF_USAGE
 
-Clean the UFS-SRW Application build
+Clean the RRFS workflow build
 Usage: $0 [OPTIONS] ...
 
 OPTIONS

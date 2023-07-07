@@ -126,9 +126,9 @@ fi
 # sets environment variables (including prepending/appending to paths)
 # and loads modules.
 #
-# The UFS SRW App repository contains module files for the
-# workflow tasks in the template rocoto XML file for the FV3-LAM work-
-# flow that need modules not loaded in the BUILD_MOD_FN above.
+# The rrfs-workflow repository contains module files for the workflow 
+# tasks in the template rocoto XML file for the FV3-LAM workflow that 
+# need modules not loaded in the BUILD_MOD_FN above.
 #
 # The full path to a module file for a given task is
 #
