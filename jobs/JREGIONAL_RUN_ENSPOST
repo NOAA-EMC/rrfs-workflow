@@ -17,7 +17,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -77,9 +77,9 @@ ffg_latest="${FFG_DIR}/latest.FFG"
 #-----------------------------------------------------------------------
 #
 
-python -u $SCRIPTSDIR/exregional_enspost.py \
+python -u $SCRIPTSdir/exregional_enspost.py \
   "${FIX_UPP}/enspost" \
-  "${USHDIR}" \
+  "${USHdir}" \
   "${ens_dir}" \
   "${rrfs_dir}" \
   "${enspost_dir}" \

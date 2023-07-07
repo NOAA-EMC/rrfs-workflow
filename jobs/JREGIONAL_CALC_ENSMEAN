@@ -18,7 +18,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -98,7 +98,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSDIR/exregional_calc_ensmean.sh \
+$SCRIPTSdir/exregional_calc_ensmean.sh \
              cycle_type="${CYCLE_TYPE}" \
              comout="${COMOUT}" \
              ensmeandir="${ensmeandir}" || \

@@ -18,7 +18,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -107,7 +107,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSDIR/exregional_run_recenter.sh \
+$SCRIPTSdir/exregional_run_recenter.sh \
              cycle_type="${CYCLE_TYPE}" \
              comout="${COMOUT}" \
              recenterdir="${recenterdir}" \

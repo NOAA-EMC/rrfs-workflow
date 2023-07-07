@@ -65,15 +65,6 @@ else
     "JET")
       EXTRN_MDL_SYSBASEDIR_ICS=""
       ;;
-    "ODIN")
-      EXTRN_MDL_SYSBASEDIR_ICS="/scratch/ywang/EPIC/GDAS/2019053000_mem001"
-      ;;
-    "CHEYENNE")
-      EXTRN_MDL_SYSBASEDIR_ICS="/glade/p/ral/jntp/UFS_CAM/COMGFS"
-      ;;
-    "STAMPEDE")
-      EXTRN_MDL_SYSBASEDIR_ICS="/scratch/00315/tg455890/GDAS/20190530/2019053000_mem001"
-      ;;
     esac
     ;;
 
@@ -90,15 +81,6 @@ else
       ;;
     "JET")
       EXTRN_MDL_SYSBASEDIR_ICS="/public/data/grids/gfs/0p25deg/grib2"
-      ;;
-    "ODIN")
-      EXTRN_MDL_SYSBASEDIR_ICS="/scratch/ywang/test_runs/FV3_regional/gfs"
-      ;;
-    "STAMPEDE")
-      EXTRN_MDL_SYSBASEDIR_ICS="/scratch/00315/tg455890/GDAS/20190530/2019053000_mem001"
-      ;;
-    "CHEYENNE")
-      EXTRN_MDL_SYSBASEDIR_ICS="/glade/p/ral/jntp/UFS_CAM/COMGFS"
       ;;
     esac
     ;;
@@ -142,9 +124,6 @@ else
     "JET")
       EXTRN_MDL_SYSBASEDIR_ICS="/public/data/grids/rap/full/wrfnat/grib2"
       ;;
-    "CHEYENNE")
-      EXTRN_MDL_SYSBASEDIR_ICS="dummy_value"
-      ;;
     esac
     ;;
 
@@ -158,9 +137,6 @@ else
       ;;
     "JET")
       EXTRN_MDL_SYSBASEDIR_ICS="/public/data/grids/hrrr/conus/wrfnat/grib2"
-      ;;
-    "CHEYENNE")
-      EXTRN_MDL_SYSBASEDIR_ICS="dummy_value"
       ;;
     esac
     ;;
@@ -267,15 +243,6 @@ else
     "JET")
       EXTRN_MDL_SYSBASEDIR_LBCS=""
       ;;
-    "ODIN")
-      EXTRN_MDL_SYSBASEDIR_LBCS="/scratch/ywang/EPIC/GDAS/2019053000_mem001"
-      ;;
-    "CHEYENNE")
-      EXTRN_MDL_SYSBASEDIR_LBCS="/glade/p/ral/jntp/UFS_CAM/COMGFS"
-      ;;
-    "STAMPEDE")
-      EXTRN_MDL_SYSBASEDIR_LBCS="/scratch/00315/tg455890/GDAS/20190530/2019053000_mem001"
-      ;;
     esac
     ;;
 
@@ -292,15 +259,6 @@ else
       ;;
     "JET")
       EXTRN_MDL_SYSBASEDIR_LBCS="/public/data/grids/gfs/0p25deg/grib2"
-      ;;
-    "ODIN")
-      EXTRN_MDL_SYSBASEDIR_LBCS="/scratch/ywang/test_runs/FV3_regional/gfs"
-      ;;
-    "CHEYENNE")
-      EXTRN_MDL_SYSBASEDIR_LBCS="/glade/p/ral/jntp/UFS_CAM/COMGFS"
-      ;;
-    "STAMPEDE")
-      EXTRN_MDL_SYSBASEDIR_LBCS="/scratch/00315/tg455890/GDAS/20190530/2019053000_mem001"
       ;;
     esac
     ;;
@@ -340,9 +298,6 @@ else
       ;;
     "JET")
       EXTRN_MDL_SYSBASEDIR_LBCS="/public/data/grids/rap/full/wrfnat/grib2"
-      ;;
-    "CHEYENNE")
-      EXTRN_MDL_SYSBASEDIR_LBCS="dummy_value"
       ;;
     esac
     ;;

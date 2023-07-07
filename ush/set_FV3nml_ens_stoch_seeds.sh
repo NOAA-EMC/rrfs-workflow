@@ -32,7 +32,7 @@ function set_FV3nml_ens_stoch_seeds() {
 #
 #-----------------------------------------------------------------------
 #
-  local scrfunc_fp=$( $READLINK -f "${BASH_SOURCE[0]}" )
+  local scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
   local scrfunc_fn=$( basename "${scrfunc_fp}" )
   local scrfunc_dir=$( dirname "${scrfunc_fp}" )
 #
@@ -161,7 +161,7 @@ function set_FV3nml_ens_stoch_seeds() {
   settings="$settings
     }"
 
-  $USHDIR/set_namelist.py -q \
+  $USHdir/set_namelist.py -q \
                           -n ${fv3_nml_ensmem_fp_base} \
                           -u "$settings" \
                           -o ${fv3_nml_ensmem_fp} || \

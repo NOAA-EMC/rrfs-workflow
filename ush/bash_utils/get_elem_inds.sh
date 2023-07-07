@@ -123,7 +123,7 @@ The arguments to this function are defined as follows:
 #
 #-----------------------------------------------------------------------
 #
-  inds_to_return="${inds_to_return,,}"
+  inds_to_return=$(echo_lowercase $inds_to_return)
   valid_vals_inds_to_return=( "first" "last" "all" )
   check_var_valid_value "inds_to_return" "valid_vals_inds_to_return"
 #

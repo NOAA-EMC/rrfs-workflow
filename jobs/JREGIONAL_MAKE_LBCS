@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -76,7 +76,7 @@ mkdir_vrfy -p "${lbcs_nwges_dir}"
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSDIR/exregional_make_lbcs.sh \
+$SCRIPTSdir/exregional_make_lbcs.sh \
   lbcs_dir="${lbcs_dir}" \
   lbcs_nwges_dir="${lbcs_nwges_dir}" \
   bcgrp="${bcgrp}" \

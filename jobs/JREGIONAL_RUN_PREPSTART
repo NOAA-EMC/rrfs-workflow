@@ -18,7 +18,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -91,7 +91,7 @@ gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSDIR/exregional_run_prepstart.sh \
+$SCRIPTSdir/exregional_run_prepstart.sh \
              cycle_dir="${CYCLE_DIR}" \
              cycle_type="${CYCLE_TYPE}" \
              cycle_subtype="${CYCLE_SUBTYPE}" \

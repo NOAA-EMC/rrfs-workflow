@@ -7,8 +7,8 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
-. $USHDIR/set_FV3nml_ens_stoch_seeds.sh
+. $USHdir/source_util_funcs.sh
+. $USHdir/set_FV3nml_ens_stoch_seeds.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -16,8 +16,8 @@
 #
 #-----------------------------------------------------------------------
 #
-. $USHDIR/create_model_configure_file.sh
-. $USHDIR/create_diag_table_file.sh
+. $USHdir/create_model_configure_file.sh
+. $USHdir/create_diag_table_file.sh
 #
 #-----------------------------------------------------------------------
 #

@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #
 #-----------------------------------------------------------------------
 #
@@ -37,7 +36,7 @@ local func_name="${FUNCNAME[0]}"
 #
 #-----------------------------------------------------------------------
 #
-ushdir="${scrfunc_dir}"
+USHdir="${scrfunc_dir}"
 #
 #-----------------------------------------------------------------------
 #
@@ -45,8 +44,8 @@ ushdir="${scrfunc_dir}"
 #
 #-----------------------------------------------------------------------
 #
-. $ushdir/source_util_funcs.sh
-. $ushdir/set_FV3nml_sfc_climo_filenames.sh
+. $USHdir/source_util_funcs.sh
+. $USHdir/set_FV3nml_sfc_climo_filenames.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -96,13 +95,7 @@ done
 
 #Finally, check if the number of errors is >0, and if so exit with helpful message
 if [ $pyerrors -gt 0 ];then
-  print_err_msg_exit "\
-  Errors found: check your python environment
-  
-  Instructions for setting up python environments can be found on the web:
-  https://github.com/ufs-community/ufs-srweather-app/wiki/Getting-Started
-
-"
+  print_err_msg_exit "Errors found: check your python environment"
 fi
 
 #
@@ -113,16 +106,16 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 # check whether the .agent link is initialized
 # if not, run Init.sh (otherwise, the workflow generation will fail)
 #-----------------------------------------------------------------------
 #
-if [[ ! -L ${ushdir}/../fix/.agent || ! -e ${ushdir}/../fix/.agent ]] \
-  && [ -e ${ushdir}/../Init.sh ]; then
-    ${ushdir}/../Init.sh
+if [[ ! -L ${USHdir}/../fix/.agent || ! -e ${USHdir}/../fix/.agent ]] \
+  && [ -e ${USHdir}/../Init.sh ]; then
+    ${USHdir}/../Init.sh
 fi
 #
 #-----------------------------------------------------------------------
@@ -136,7 +129,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-. $ushdir/setup.sh
+. $USHdir/setup.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -405,15 +398,15 @@ settings="\
 #
 # Directories and files.
 #
-  'jobsdir': $JOBSDIR
+  'jobsdir': $JOBSdir
   'logdir': $LOGDIR
-  'cycle_basedir': ${CYCLE_BASEDIR}
+  'cycle_basedir': ${CYCLE_BASEDIR:-}
   'ensctrl_cycle_basedir': ${ENSCTRL_CYCLE_BASEDIR:-}
-  'nwges_basedir': ${NWGES_BASEDIR}
-  'ensctrl_nwges_basedir': ${ENSCTRL_NWGES_BASEDIR}
-  'ensctrl_comout_basedir': ${ENSCTRL_COMOUT_BASEDIR}
-  'ensctrl_comout_dir': ${ENSCTRL_COMOUT_DIR}
-  'rrfse_nwges_basedir': ${RRFSE_NWGES_BASEDIR}
+  'nwges_basedir': ${NWGES_BASEDIR:-}
+  'ensctrl_nwges_basedir': ${ENSCTRL_NWGES_BASEDIR:-}
+  'ensctrl_comout_basedir': ${ENSCTRL_COMOUT_BASEDIR:-}
+  'ensctrl_comout_dir': ${ENSCTRL_COMOUT_DIR:-}
+  'rrfse_nwges_basedir': ${RRFSE_NWGES_BASEDIR:-}
   'obspath': ${OBSPATH}
   'obspath_pm': ${OBSPATH_PM}
   'global_var_defns_fp': ${GLOBAL_VAR_DEFNS_FP}
@@ -559,8 +552,8 @@ $settings"
 # script to generate the experiment's actual XML file from this template
 # file.
 #
-template_xml_fp="${TEMPLATE_DIR}/${WFLOW_XML_FN}"
-$USHDIR/fill_jinja_template.py -q \
+template_xml_fp="${TEMPLATE_DIR}/${WFLOW_XML_TMPL_FN}"
+$USHdir/fill_jinja_template.py -q \
                                -u "${settings}" \
                                -t ${template_xml_fp} \
                                -o ${WFLOW_XML_FP} || \
@@ -668,28 +661,23 @@ fi
 if [ "${RUN_ENVIR}" = "nco" ]; then
 
   if [ "${DO_DACYCLE}" = "TRUE" ]; then
-# Resolve the target directory that the FIXgsi symlink points to
+    # Resolve the target directory that the FIXgsi symlink points to
     ln_vrfy -fsn "$FIX_GSI" "$FIXgsi"
-
     path_resolved=$( readlink -m "$FIXgsi" )
     if [ ! -d "${path_resolved}" ]; then
-      print_err_msg_exit "\
-    Missing link to FIXgsi
+      print_err_msg_exit "Missing link to FIXgsi
     RUN_ENVIR = \"${RUN_ENVIR}\"
     FIXgsi = \"$FIXgsi\"
     path_resolved = \"${path_resolved}\"
     Please ensure that path_resolved is an existing directory and then rerun
     the experiment generation script."
     fi
-#
 
-# Resolve the target directory that the FIXcrtm symlink points to
+    # Resolve the target directory that the FIXcrtm symlink points to
     ln_vrfy -fsn "$FIX_CRTM" "$FIXcrtm"
-
     path_resolved=$( readlink -m "$FIXcrtm" )
     if [ ! -d "${path_resolved}" ]; then
-      print_err_msg_exit "\
-    Missing link to FIXcrtm
+      print_err_msg_exit "Missing link to FIXcrtm
     RUN_ENVIR = \"${RUN_ENVIR}\"
     FIXcrtm = \"$FIXcrtm\"
     path_resolved = \"${path_resolved}\"
@@ -697,9 +685,8 @@ if [ "${RUN_ENVIR}" = "nco" ]; then
     the experiment generation script."
     fi
 
-# Resolve the target directory that the FIXuppcrtm symlink points to
+    # Resolve the target directory that the FIXuppcrtm symlink points to
     ln_vrfy -fsn "$FIX_UPP_CRTM" "$FIXuppcrtm"
-
     path_resolved=$( readlink -m "$FIXuppcrtm" )
     if [ ! -d "${path_resolved}" ]; then
       print_err_msg_exit "\
@@ -710,18 +697,13 @@ if [ "${RUN_ENVIR}" = "nco" ]; then
     Please ensure that path_resolved is an existing directory and then rerun
     the experiment generation script."
     fi
-
   fi  # check if DA
 
-#
-# Resolve the target directory that the FIXsmokedust symlink points to
-#
+  # Resolve the target directory that the FIXsmokedust symlink points to
   ln_vrfy -fsn "$FIX_SMOKE_DUST" "$FIXsmokedust"
-
   path_resolved=$( readlink -m "$FIXsmokedust" )
   if [ ! -d "${path_resolved}" ]; then
-    print_err_msg_exit "\
-  Missing link to FIXsmokedust
+    print_err_msg_exit "Missing link to FIXsmokedust
   RUN_ENVIR = \"${RUN_ENVIR}\"
   FIXsmokedust = \"$FIXsmokedust\"
   path_resolved = \"${path_resolved}\"
@@ -729,50 +711,40 @@ if [ "${RUN_ENVIR}" = "nco" ]; then
   the experiment generation script."
   fi
 
-if [ "${DO_BUFRSND}" = "TRUE" ]; then
-#
-#
-# Resolve the target directory that the FIXbufrsnd symlink points to
-#
-  ln_vrfy -fsn "$FIX_BUFRSND" "$FIXbufrsnd"
-
-  path_resolved=$( readlink -m "$FIXbufrsnd" )
-  if [ ! -d "${path_resolved}" ]; then
-    print_err_msg_exit "\
-  Missing link to FIXsmokedust
+  if [ "${DO_BUFRSND}" = "TRUE" ]; then
+    # Resolve the target directory that the FIXbufrsnd symlink points to
+    ln_vrfy -fsn "$FIX_BUFRSND" "$FIXbufrsnd"
+    path_resolved=$( readlink -m "$FIXbufrsnd" )
+    if [ ! -d "${path_resolved}" ]; then
+      print_err_msg_exit "Missing link to FIXsmokedust
   RUN_ENVIR = \"${RUN_ENVIR}\"
   FIXsmokedust = \"$FIXbufrsnd\"
   path_resolved = \"${path_resolved}\"
   Please ensure that path_resolved is an existing directory and then rerun
   the experiment generation script."
+    fi
   fi
-fi
 
-#
-
+  # Resolve target directory that FIXam symlink points to
   ln_vrfy -fsn "$FIXgsm" "$FIXam"
-#
-# Resolve the target directory that the FIXam symlink points to and check 
-# that it exists.
-#
   path_resolved=$( readlink -m "$FIXam" )
   if [ ! -d "${path_resolved}" ]; then
     print_err_msg_exit "\
-In order to be able to generate a forecast experiment in NCO mode (i.e.
-when RUN_ENVIR set to \"nco\"), the path specified by FIXam after resolving
-all symlinks (path_resolved) must be an existing directory (but in this
-case is not):
+  In order to be able to generate a forecast experiment in NCO mode (i.e.
+  when RUN_ENVIR set to \"nco\"), the path specified by FIXam after resolving
+  all symlinks (path_resolved) must be an existing directory (but in this
+  case is not):
   RUN_ENVIR = \"${RUN_ENVIR}\"
   FIXam = \"$FIXam\"
   path_resolved = \"${path_resolved}\"
-Please ensure that path_resolved is an existing directory and then rerun
-the experiment generation script."
+  Please ensure that path_resolved is an existing directory and then rerun
+  the experiment generation script."
   fi
+
 #
-# Now consider community mode.
+# community mode.
 #
 else
-
   print_info_msg "$VERBOSE" "
 Copying fixed files from system directory (FIXgsm) to a subdirectory
 (FIXam) in the experiment directory:
@@ -788,7 +760,6 @@ Copying fixed files from system directory (FIXgsm) to a subdirectory
     fn="${FIXgsm_FILES_TO_COPY_TO_FIXam[$i]}"
     cp_vrfy "$FIXgsm/$fn" "$FIXam/$fn"
   done
-
 fi
 #
 #-----------------------------------------------------------------------
@@ -1015,7 +986,7 @@ settings="$settings
 #
 #-----------------------------------------------------------------------
 #
-$USHDIR/set_namelist.py -q \
+$USHdir/set_namelist.py -q \
                         -n ${FV3_NML_BASE_SUITE_FP} \
                         -c ${FV3_NML_YAML_CONFIG_FP} ${CCPP_PHYS_SUITE} \
                         -u "$settings" \
@@ -1082,7 +1053,7 @@ if [[ "${DO_DACYCLE}" = "TRUE" || "${DO_ENKFUPDATE}" = "TRUE" ]]; then
 #    'fh_dfi_radar': [${FH_DFI_RADAR[@]}],
 #  }"
  
- $USHDIR/set_namelist.py -q \
+ $USHdir/set_namelist.py -q \
                          -n ${FV3_NML_FP} \
                          -u "$settings" \
                          -o ${FV3_NML_RESTART_FP} || \
@@ -1206,13 +1177,13 @@ $settings"
 if [ "${DO_ENSEMBLE}" = TRUE ] && ([ "${DO_SPP}" = TRUE ] || [ "${DO_SPPT}" = TRUE ] || [ "${DO_SHUM}" = TRUE ] \
   || [ "${DO_SKEB}" = TRUE ] || [ "${DO_LSM_SPP}" =  TRUE ]); then
 
-$USHDIR/set_namelist.py -q \
-                         -n  ${FV3_NML_FP}  \
-                         -u "$settings" \
-                         -o ${FV3_NML_STOCH_FP} || \
-   print_err_msg_exit "\
- Call to python script set_namelist.py to generate an FV3 namelist file with stochastics
- failed.  Parameters passed to this script are:
+  $USHdir/set_namelist.py -q \
+                          -n  ${FV3_NML_FP}  \
+                          -u "$settings" \
+                          -o ${FV3_NML_STOCH_FP} || \
+  print_err_msg_exit "\
+  Call to python script set_namelist.py to generate an FV3 namelist file with stochastics
+  failed.  Parameters passed to this script are:
    Full path to base namelist file:
      FV3_NML_FP = \"${FV3_NML_FP}\"
    Full path to output namelist file for stochastics:
@@ -1224,11 +1195,11 @@ $USHDIR/set_namelist.py -q \
 #-----------------------------------------------------------------------
 #
 if [[ "${DO_DACYCLE}" = "TRUE" || "${DO_ENKFUPDATE}" = "TRUE" ]]; then
-$USHDIR/set_namelist.py -q \
-                         -n  ${FV3_NML_RESTART_FP}  \
-                         -u "$settings" \
-                         -o ${FV3_NML_RESTART_STOCH_FP} || \
-   print_err_msg_exit "\
+  $USHdir/set_namelist.py -q \
+                          -n  ${FV3_NML_RESTART_FP}  \
+                          -u "$settings" \
+                          -o ${FV3_NML_RESTART_STOCH_FP} || \
+  print_err_msg_exit "\
  Call to python script set_namelist.py to generate an restart FV3 namelist file with stochastics
  failed.  Parameters passed to this script are:
    Full path to base namelist file:
@@ -1250,7 +1221,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-cp_vrfy $USHDIR/${EXPT_CONFIG_FN} $EXPTDIR
+cp_vrfy $USHdir/${EXPT_CONFIG_FN} $EXPTDIR
 #
 #-----------------------------------------------------------------------
 #
@@ -1355,7 +1326,7 @@ if [ "${NOMADS}" = "TRUE" ]; then
   echo "Getting NOMADS online data"
   echo "NOMADS_file_type=" $NOMADS_file_type
   cd $EXPTDIR
-  $USHDIR/NOMADS_get_extrn_mdl_files.sh $DATE_FIRST_CYCL $CYCL_HRS $NOMADS_file_type $FCST_LEN_HRS $LBC_SPEC_INTVL_HRS
+  $USHdir/NOMADS_get_extrn_mdl_files.sh $DATE_FIRST_CYCL $CYCL_HRS $NOMADS_file_type $FCST_LEN_HRS $LBC_SPEC_INTVL_HRS
 fi
 #
 #-----------------------------------------------------------------------
@@ -1402,21 +1373,21 @@ scrfunc_dir=$( dirname "${scrfunc_fp}" )
 #
 #-----------------------------------------------------------------------
 #
-ushdir="${scrfunc_dir}"
+USHdir="${scrfunc_dir}"
 #
 # Set the name of and full path to the temporary file in which we will
 # save some experiment/workflow variables.  The need for this temporary
 # file is explained below.
 #
 tmp_fn="tmp"
-tmp_fp="$ushdir/${tmp_fn}"
+tmp_fp="$USHdir/${tmp_fn}"
 rm -f "${tmp_fp}"
 #
 # Set the name of and full path to the log file in which the output from
 # the experiment/workflow generation function will be saved.
 #
 log_fn="log.generate_FV3LAM_wflow"
-log_fp="$ushdir/${log_fn}"
+log_fp="$USHdir/${log_fn}"
 rm -f "${log_fp}"
 #
 # Call the generate_FV3LAM_wflow function defined above to generate the

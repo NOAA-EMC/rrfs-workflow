@@ -6,13 +6,16 @@ lib/
 lib64/
 python_graphics/
 share/
-src/*
-!src/CMakeLists.txt
+sorc/*
+!sorc/CMakeLists.txt
 save/
 ush/config.sh
 ush/*.swp
+ush/__pycache__/
+ush/python_utils/__pycache__/
 fix/.agent
 fix/tmp
 fix/INIT_DONE
 
+__pycache__
 *.swp

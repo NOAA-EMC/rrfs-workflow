@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 #-----------------------------------------------------------------------
 #
@@ -41,7 +42,7 @@ local func_name="${FUNCNAME[0]}"
 #
 #-----------------------------------------------------------------------
 #
-cd_vrfy ${scrfunc_dir}
+USHdir="${scrfunc_dir}"
 #
 #-----------------------------------------------------------------------
 #
@@ -49,7 +50,7 @@ cd_vrfy ${scrfunc_dir}
 #
 #-----------------------------------------------------------------------
 #
-. ./source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -57,13 +58,13 @@ cd_vrfy ${scrfunc_dir}
 #
 #-----------------------------------------------------------------------
 #
-. ./set_cycle_dates.sh
-. ./set_gridparams_GFDLgrid.sh
-. ./set_gridparams_ESGgrid.sh
-. ./link_fix.sh
-. ./set_ozone_param.sh
-. ./set_thompson_mp_fix_files.sh
-. ./check_ruc_lsm.sh
+. $USHdir/set_cycle_dates.sh
+. $USHdir/set_gridparams_GFDLgrid.sh
+. $USHdir/set_gridparams_ESGgrid.sh
+. $USHdir/link_fix.sh
+. $USHdir/set_ozone_param.sh
+. $USHdir/set_thompson_mp_fix_files.sh
+. $USHdir/check_ruc_lsm.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -72,7 +73,7 @@ cd_vrfy ${scrfunc_dir}
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -82,7 +83,7 @@ cd_vrfy ${scrfunc_dir}
 #-----------------------------------------------------------------------
 #
 EXPT_DEFAULT_CONFIG_FN="config_defaults.sh"
-. ./${EXPT_DEFAULT_CONFIG_FN}
+. $USHdir/${EXPT_DEFAULT_CONFIG_FN}
 #
 #-----------------------------------------------------------------------
 #
@@ -105,11 +106,11 @@ if [ -f "${EXPT_CONFIG_FN}" ]; then
 # configuration file are also assigned default values in the default 
 # configuration file.
 #
-  . ./compare_config_scripts.sh
+  . $USHdir/compare_config_scripts.sh
 #
 # Now source the user-specified configuration file.
 #
-  . ./${EXPT_CONFIG_FN}
+  . $USHdir/${EXPT_CONFIG_FN}
 #
 fi
 #
@@ -119,7 +120,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-. ./valid_param_vals.sh
+. $USHdir/valid_param_vals.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -584,36 +585,6 @@ case $MACHINE in
     QUEUE_POST=${QUEUE_POST:-"batch"}
     ;;
 
-  "ODIN")
-    NCORES_PER_NODE=24
-    SCHED="${SCHED:-slurm}"
-    PARTITION_DEFAULT=${PARTITION_DEFAULT:-"workq"}
-    QUEUE_DEFAULT=${QUEUE_DEFAULT:-"workq"}
-    PARTITION_HPSS=${PARTITION_HPSS:-"workq"}
-    QUEUE_HPSS=${QUEUE_HPSS:-"workq"}
-    PARTITION_FCST=${PARTITION_FCST:-"workq"}
-    QUEUE_FCST=${QUEUE_FCST:-"workq"}
-    ;;
-
-  "CHEYENNE")
-    NCORES_PER_NODE=36
-    SCHED="${SCHED:-pbspro}"
-    QUEUE_DEFAULT=${QUEUE_DEFAULT:-"regular"}
-    QUEUE_HPSS=${QUEUE_HPSS:-"regular"}
-    QUEUE_FCST=${QUEUE_FCST:-"regular"}
-    ;;
-
-  "STAMPEDE")
-    NCORES_PER_NODE=68
-    SCHED="slurm"
-    PARTITION_DEFAULT=${PARTITION_DEFAULT:-"normal"}
-    QUEUE_DEFAULT=${QUEUE_DEFAULT:-"normal"}
-    PARTITION_HPSS=${PARTITION_HPSS:-"normal"}
-    QUEUE_HPSS=${QUEUE_HPSS:-"normal"}
-    PARTITION_FCST=${PARTITION_FCST:-"normal"}
-    QUEUE_FCST=${QUEUE_FCST:-"normal"}
-    ;;
-
 esac
 #
 #-----------------------------------------------------------------------
@@ -788,22 +759,22 @@ NUM_CYCLES="${#ALL_CDATES[@]}"
 # HOMErrfs:
 # Top directory of the clone of the FV3-LAM workflow git repository.
 #
-# USHDIR:
+# USHdir:
 # Directory containing the shell scripts called by the workflow.
 #
-# SCRIPTSDIR:
+# SCRIPTSdir:
 # Directory containing the ex scripts called by the workflow.
 #
-# JOBSSDIR:
+# JOBSdir:
 # Directory containing the jjobs scripts called by the workflow.
 #
-# SORCDIR:
+# SORCdir:
 # Directory containing various source codes.
 #
-# PARMDIR:
+# PARMdir:
 # Directory containing parameter files, template files, etc.
 #
-# EXECDIR:
+# EXECdir:
 # Directory containing various executable files.
 #
 # TEMPLATE_DIR:
@@ -816,26 +787,15 @@ NUM_CYCLES="${#ALL_CDATES[@]}"
 #
 #-----------------------------------------------------------------------
 #
-
-#
-# The current script should be located in the ush subdirectory of the 
-# workflow directory.  Thus, the workflow directory is the one above the
-# directory of the current script.  Get the path to this latter directo-
-# ry and save it in HOMErrfs.
-#
-SR_WX_APP_TOP_DIR=${scrfunc_dir%/*/*}
-# GSK to do:  Get HOMErrfs from Externals.cfg 
-HOMErrfs="${SR_WX_APP_TOP_DIR}/regional_workflow"
-
-USHDIR="$HOMErrfs/ush"
-SCRIPTSDIR="$HOMErrfs/scripts"
-JOBSDIR="$HOMErrfs/jobs"
-SORCDIR="$HOMErrfs/sorc"
-SRC_DIR="${SR_WX_APP_TOP_DIR}/src"
-PARMDIR="$HOMErrfs/parm"
+HOMErrfs=${scrfunc_dir%/*}
+USHdir="$HOMErrfs/ush"
+SCRIPTSdir="$HOMErrfs/scripts"
+JOBSdir="$HOMErrfs/jobs"
+SORCdir="$HOMErrfs/sorc"
+PARMdir="$HOMErrfs/parm"
 MODULES_DIR="$HOMErrfs/modulefiles"
-EXECDIR="${SR_WX_APP_TOP_DIR}/bin"
-TEMPLATE_DIR="$USHDIR/templates"
+EXECDIR="$HOMErrfs/exec"
+TEMPLATE_DIR="$USHdir/templates"
 if [ "${RUN_ENVIR}" = "nco" ]; then
   FIXgsm=${FIXgsm:-"$HOMErrfs/fix/am"}
   FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"$HOMErrfs/fix/lam"}
@@ -859,45 +819,24 @@ case $MACHINE in
     ;;
 
   "HERA")
-    FIXgsm=${FIXgsm:-"/scratch1/NCEPDEV/global/glopara/fix/fix_am"}
-    TOPO_DIR=${TOPO_DIR:-"/scratch1/NCEPDEV/global/glopara/fix/fix_orog"}
-    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/scratch1/NCEPDEV/global/glopara/fix/fix_sfc_climo"}
-    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/scratch2/BMC/det/FV3LAM_pregen"}
+    FIXgsm=${FIXgsm:-"/scratch1/NCEPDEV/nems/role.epic/UFS_SRW_data/develop/fix/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/scratch1/NCEPDEV/nems/role.epic/UFS_SRW_data/develop/fix/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/scratch1/NCEPDEV/nems/role.epic/UFS_SRW_data/develop/fix/fix_sfc_climo"}
+    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/scratch1/NCEPDEV/nems/role.epic/UFS_SRW_data/develop/FV3LAM_pregen"}
     ;;
 
   "ORION")
-    FIXgsm=${FIXgsm:-"/work/noaa/global/glopara/fix/fix_am"}
-    TOPO_DIR=${TOPO_DIR:-"/work/noaa/global/glopara/fix/fix_orog"}
-    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/work/noaa/global/glopara/fix/fix_sfc_climo"}
-    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
+    FIXgsm=${FIXgsm:-"/work/noaa/epic-ps/role-epic-ps/UFS_SRW_data/develop/fix/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/work/noaa/epic-ps/role-epic-ps/UFS_SRW_data/develop/fix/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/work/noaa/epic-ps/role-epic-ps/UFS_SRW_data/develop/fix/fix_sfc_climo"}
+    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/work/noaa/epic-ps/role-epic-ps/UFS_SRW_data/develop/FV3LAM_pregen"}
     ;;
 
   "JET")
-    FIXgsm=${FIXgsm:-"/lfs4/HFIP/hfv3gfs/glopara/git/fv3gfs/fix/fix_am"}
-    TOPO_DIR=${TOPO_DIR:-"/lfs4/HFIP/hfv3gfs/glopara/git/fv3gfs/fix/fix_orog"}
-    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/lfs4/HFIP/hfv3gfs/glopara/git/fv3gfs/fix/fix_sfc_climo"}
-    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
-    ;;
-
-  "ODIN")
-    FIXgsm=${FIXgsm:-"/scratch/ywang/fix/theia_fix/fix_am"}
-    TOPO_DIR=${TOPO_DIR:-"/scratch/ywang/fix/theia_fix/fix_orog"}
-    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/scratch/ywang/fix/climo_fields_netcdf"}
-    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
-    ;;
-
-  "CHEYENNE")
-    FIXgsm=${FIXgsm:-"/glade/p/ral/jntp/UFS_CAM/fix/fix_am"}
-    TOPO_DIR=${TOPO_DIR:-"/glade/p/ral/jntp/UFS_CAM/fix/fix_orog"}
-    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/glade/p/ral/jntp/UFS_CAM/fix/climo_fields_netcdf"}
-    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
-    ;;
-
-  "STAMPEDE")
-    FIXgsm=${FIXgsm:-"/work/00315/tg455890/stampede2/regional_fv3/fix_am"}
-    TOPO_DIR=${TOPO_DIR:-"/work/00315/tg455890/stampede2/regional_fv3/fix_orog"}
-    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/work/00315/tg455890/stampede2/regional_fv3/climo_fields_netcdf"}
-    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
+    FIXgsm=${FIXgsm:-"/mnt/lfs4/HFIP/hfv3gfs/role.epic/UFS_SRW_data/develop/fix/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/mnt/lfs4/HFIP/hfv3gfs/role.epic/UFS_SRW_data/develop/fix/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/mnt/lfs4/HFIP/hfv3gfs/role.epic/UFS_SRW_data/develop/fix/fix_sfc_climo"}
+    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/mnt/lfs4/HFIP/hfv3gfs/role.epic/UFS_SRW_data/develop/FV3LAM_pregen"}
     ;;
 
   *)
@@ -925,19 +864,12 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-mng_extrns_cfg_fn=$( readlink -f "${SR_WX_APP_TOP_DIR}/Externals.cfg" )
+mng_extrns_cfg_fn=$( readlink -f "${HOMErrfs}/Externals.cfg" )
 property_name="local_path"
 #
 # Get the base directory of the FV3 forecast model code.
 #
-external_name="ufs_weather_model"
-UFS_WTHR_MDL_DIR=$( \
-get_manage_externals_config_property \
-"${mng_extrns_cfg_fn}" "${external_name}" "${property_name}" ) || \
-print_err_msg_exit "\
-Call to function get_manage_externals_config_property failed."
-
-UFS_WTHR_MDL_DIR="${SR_WX_APP_TOP_DIR}/${UFS_WTHR_MDL_DIR}"
+UFS_WTHR_MDL_DIR="${SORCdir}/ufs-weather-model"
 if [ ! -d "${UFS_WTHR_MDL_DIR}" ]; then
   print_err_msg_exit "\
 The base directory in which the FV3 source code should be located
@@ -949,14 +881,7 @@ fi
 #
 # Get the base directory of the UFS_UTILS codes.
 #
-external_name="ufs_utils"
-UFS_UTILS_DIR=$( \
-get_manage_externals_config_property \
-"${mng_extrns_cfg_fn}" "${external_name}" "${property_name}" ) || \
-print_err_msg_exit "\
-Call to function get_manage_externals_config_property failed."
-
-UFS_UTILS_DIR="${SR_WX_APP_TOP_DIR}/${UFS_UTILS_DIR}"
+UFS_UTILS_DIR="${SORCdir}/UFS_UTILS"
 if [ ! -d "${UFS_UTILS_DIR}" ]; then
   print_err_msg_exit "\
 The base directory in which the UFS utilities source codes should be lo-
@@ -966,35 +891,21 @@ Please clone the external repository containing the code in this direct-
 ory, build the executables, and then rerun the workflow."
 fi
 #
-# Get the base directory of the EMC_post code.
+# Get the base directory of the UPP code.
 #
-external_name="EMC_post"
-EMC_POST_DIR=$( \
-get_manage_externals_config_property \
-"${mng_extrns_cfg_fn}" "${external_name}" "${property_name}" ) || \
-print_err_msg_exit "\
-Call to function get_manage_externals_config_property failed."
-
-EMC_POST_DIR="${SR_WX_APP_TOP_DIR}/${EMC_POST_DIR}"
-if [ ! -d "${EMC_POST_DIR}" ]; then
+UPP_DIR="${SORCdir}/UPP"
+if [ ! -d "${UPP_DIR}" ]; then
   print_err_msg_exit "\
-The base directory in which the EMC_post source code should be located
-(EMC_POST_DIR) does not exist:
-  EMS_POST_DIR = \"${EMC_POST_DIR}\"
+The base directory in which the UPP source code should be located
+(UPP_DIR) does not exist:
+  UPP_DIR = \"${UPP_DIR}\"
 Please clone the external repository containing the code in this directory,
 build the executable, and then rerun the workflow."
 fi
 #
 # Get the base directory of the Python Graphics code.
 #
-external_name="python_graphics"
-PYTHON_GRAPHICS_DIR=$( \
-  get_manage_externals_config_property \
-  "${mng_extrns_cfg_fn}" "${external_name}" "${property_name}" ) || \
-  print_err_msg_exit "\
-  Call to function get_manage_externals_config_property failed."
-
-PYTHON_GRAPHICS_DIR="${SR_WX_APP_TOP_DIR}/${PYTHON_GRAPHICS_DIR}"
+PYTHON_GRAPHICS_DIR="${HOMErrfs}/python_graphics"
 if [ ! -d "${PYTHON_GRAPHICS_DIR}" ]; then
   print_err_msg_exit "
 The base directory in which the Python Graphics source code should be located
@@ -1113,7 +1024,7 @@ LBC_SPEC_FCST_LONG_HRS=($( seq 0 ${LBC_SPEC_INTVL_HRS} \
 #-----------------------------------------------------------------------
 #
 if [ ! -z "${PREDEF_GRID_NAME}" ]; then
-  . $USHDIR/set_predef_grid_params.sh
+  . $USHdir/set_predef_grid_params.sh
 fi
 #
 #-----------------------------------------------------------------------
@@ -1296,7 +1207,7 @@ fi
 #-----------------------------------------------------------------------
 #
 if [ "${EXPT_BASEDIR:0:1}" != "/" ]; then
-  EXPT_BASEDIR="${SR_WX_APP_TOP_DIR}/../expt_dirs/${EXPT_BASEDIR}"
+  EXPT_BASEDIR="${HOMErrfs}/../expt_dirs/${EXPT_BASEDIR}"
 fi
 EXPT_BASEDIR="$( readlink -m ${EXPT_BASEDIR} )"
 mkdir_vrfy -p "${EXPT_BASEDIR}"
@@ -1657,7 +1568,7 @@ FV3_EXEC_FP="${EXECDIR}/${FV3_EXEC_FN}"
 #
 #-----------------------------------------------------------------------
 #
-WFLOW_LAUNCH_SCRIPT_FP="$USHDIR/${WFLOW_LAUNCH_SCRIPT_FN}"
+WFLOW_LAUNCH_SCRIPT_FP="$USHdir/${WFLOW_LAUNCH_SCRIPT_FN}"
 WFLOW_LAUNCH_LOG_FP="$EXPTDIR/${WFLOW_LAUNCH_LOG_FN}"
 if [ "${USE_CRON_TO_RELAUNCH}" = "TRUE" ]; then
   CRONTAB_LINE="*/${CRON_RELAUNCH_INTVL_MNTS} * * * * cd $EXPTDIR && \
@@ -1673,7 +1584,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-LOAD_MODULES_RUN_TASK_FP="$USHDIR/load_modules_run_task.sh"
+LOAD_MODULES_RUN_TASK_FP="$USHdir/load_modules_run_task.sh"
 #
 #-----------------------------------------------------------------------
 #
@@ -1946,22 +1857,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-. ./set_extrn_mdl_params.sh
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+. $USHdir/set_extrn_mdl_params.sh
 
 #
 #-----------------------------------------------------------------------
@@ -2050,10 +1946,12 @@ elif [ "${GRID_GEN_METHOD}" = "ESGgrid" ]; then
     halo_width="${ESGgrid_WIDE_HALO_WIDTH}" \
     delx="${ESGgrid_DELX}" \
     dely="${ESGgrid_DELY}" \
+    pazi="${ESGgrid_PAZI}" \
     output_varname_lon_ctr="LON_CTR" \
     output_varname_lat_ctr="LAT_CTR" \
     output_varname_nx="NX" \
     output_varname_ny="NY" \
+    output_varname_pazi="PAZI"\
     output_varname_halo_width="NHW" \
     output_varname_stretch_factor="STRETCH_FAC" \
     output_varname_del_angle_x_sg="DEL_ANGLE_X_SG" \
@@ -2188,10 +2086,6 @@ if [ "${RUN_TASK_MAKE_GRID}" = "FALSE" ]; then
   CRES="C${RES_IN_FIXLAM_FILENAMES}"
 fi
 
-
-
-
-
 #
 #-----------------------------------------------------------------------
 #
@@ -2290,7 +2184,6 @@ fi
 #
 NNODES_RUN_FCST=$(( (PE_MEMBER01 + PPN_RUN_FCST - 1)/PPN_RUN_FCST ))
 
-
 #
 #-----------------------------------------------------------------------
 #
@@ -2346,13 +2239,13 @@ set_thompson_mp_fix_files \
 #
 # 1) Copying the default workflow/experiment configuration file (speci-
 #    fied by EXPT_DEFAULT_CONFIG_FN and located in the shell script di-
-#    rectory specified by USHDIR) to the experiment directory and rena-
+#    rectory specified by USHdir) to the experiment directory and rena-
 #    ming it to the name specified by GLOBAL_VAR_DEFNS_FN.
 #
 # 2) Resetting the default variable values in this file to their current
 #    values.  This is necessary because these variables may have been 
 #    reset by the user-specified configuration file (if one exists in 
-#    USHDIR) and/or by this setup script, e.g. because predef_domain is
+#    USHdir) and/or by this setup script, e.g. because predef_domain is
 #    set to a valid non-empty value.
 #
 # 3) Appending to the variable definitions file any new variables intro-
@@ -2366,7 +2259,7 @@ set_thompson_mp_fix_files \
 #-----------------------------------------------------------------------
 #
 GLOBAL_VAR_DEFNS_FP="$EXPTDIR/$GLOBAL_VAR_DEFNS_FN"
-cp_vrfy $USHDIR/${EXPT_DEFAULT_CONFIG_FN} ${GLOBAL_VAR_DEFNS_FP}
+cp_vrfy $USHdir/${EXPT_DEFAULT_CONFIG_FN} ${GLOBAL_VAR_DEFNS_FP}
 #
 #-----------------------------------------------------------------------
 #
@@ -2428,6 +2321,7 @@ The variable \"line_list\" contains:
 
 ${line_list}
 "
+
 #
 #-----------------------------------------------------------------------
 #
@@ -2437,14 +2331,15 @@ ${line_list}
 #
 #-----------------------------------------------------------------------
 #
-read -r -d '' str_to_insert << EOM
+#read -r -d '' str_to_insert << EOM
+read -r str_to_insert << EOM
 #
 #-----------------------------------------------------------------------
 #-----------------------------------------------------------------------
 # Section 1:
-# This section is a copy of the default workflow/experiment configura-
-# tion file config_defaults.sh in the shell scripts directory USHDIR ex-
-# cept that variable values have been updated to those set by the setup
+# This section is a copy of the default workflow/experiment configuration 
+# file config_defaults.sh in the shell scripts directory USHdir except 
+# that variable values have been updated to those set by the setup
 # script (setup.sh).
 #-----------------------------------------------------------------------
 #-----------------------------------------------------------------------
@@ -2464,11 +2359,6 @@ str_to_insert=${str_to_insert//$'\n'/\\n}
 #
 regexp="(^#!.*)"
 sed -i -r -e "s|$regexp|\1\n\n${str_to_insert}\n|g" ${GLOBAL_VAR_DEFNS_FP}
-
-
-
-
-
 
 #
 # Loop through the lines in line_list.
@@ -2645,14 +2535,12 @@ CRONTAB_LINE="${CRONTAB_LINE}"
 #
 #-----------------------------------------------------------------------
 #
-SR_WX_APP_TOP_DIR="${SR_WX_APP_TOP_DIR}"
 HOMErrfs="$HOMErrfs"
-USHDIR="$USHDIR"
-SCRIPTSDIR="$SCRIPTSDIR"
-JOBSDIR="$JOBSDIR"
-SORCDIR="$SORCDIR"
-SRC_DIR="$SRC_DIR"
-PARMDIR="$PARMDIR"
+USHdir="$USHdir"
+SCRIPTSdir="$SCRIPTSdir"
+JOBSdir="$JOBSdir"
+SORCdir="$SORCdir"
+PARMdir="$PARMdir"
 MODULES_DIR="${MODULES_DIR}"
 EXECDIR="$EXECDIR"
 FIXam="$FIXam"
@@ -2666,7 +2554,7 @@ UFS_WTHR_MDL_DIR="${UFS_WTHR_MDL_DIR}"
 UFS_UTILS_DIR="${UFS_UTILS_DIR}"
 SFC_CLIMO_INPUT_DIR="${SFC_CLIMO_INPUT_DIR}"
 TOPO_DIR="${TOPO_DIR}"
-EMC_POST_DIR="${EMC_POST_DIR}"
+UPP_DIR="${UPP_DIR}"
 PYTHON_GRAPHICS_DIR="${PYTHON_GRAPHICS_DIR}"
 
 ARCHIVEDIR="${ARCHIVEDIR}"
@@ -2781,6 +2669,7 @@ LON_CTR="${LON_CTR}"
 LAT_CTR="${LAT_CTR}"
 NX="${NX}"
 NY="${NY}"
+PAZI="${PAZI}"
 NHW="${NHW}"
 STRETCH_FAC="${STRETCH_FAC}"
 

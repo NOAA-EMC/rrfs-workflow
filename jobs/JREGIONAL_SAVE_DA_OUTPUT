@@ -16,7 +16,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -84,7 +84,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSDIR/exregional_save_da_output.sh \
+$SCRIPTSdir/exregional_save_da_output.sh \
   cdate="${CDATE}" \
   run_dir="${run_dir}" \
   nwges_dir="${nwges_dir}" \

@@ -8,7 +8,11 @@ function source_util_funcs() {
 #
 #-----------------------------------------------------------------------
 #
-  local scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
+  if [[ $(uname -s) == Darwin ]]; then
+    local scrfunc_fp=$( greadlink -f "${BASH_SOURCE[0]}" )
+  else
+    local scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
+  fi
   local scrfunc_fn=$( basename "${scrfunc_fp}" )
   local scrfunc_dir=$( dirname "${scrfunc_fp}" )
 #
@@ -22,12 +26,12 @@ function source_util_funcs() {
 #
 #-----------------------------------------------------------------------
 #
-# Set the directory in which the files defining the various utility 
-# functions are located.
+# Set necessary directory variables.
 #
 #-----------------------------------------------------------------------
 #
-  local bashutils_dir="${scrfunc_dir}/bash_utils"
+  local USHdir="${scrfunc_dir}"
+  local bashutils_dir="${USHdir}/bash_utils"
 #
 #-----------------------------------------------------------------------
 #
@@ -74,9 +78,27 @@ function source_util_funcs() {
 #
 #-----------------------------------------------------------------------
 #
+# Source the file containing the function that changes all boolean
+# options to TRUE or FALSE
+#
+#-----------------------------------------------------------------------
+#
+  . ${bashutils_dir}/boolify.sh
+#
+#-----------------------------------------------------------------------
+#
+# Source the file containing the functions that will echo given strings
+# as uppercase or lowercase
+#
+#-----------------------------------------------------------------------
+#
+  . ${bashutils_dir}/change_case.sh
+#
+#-----------------------------------------------------------------------
+#
 # Source the file containing the function that checks for preexisting 
 # directories or files and handles them according to a specified method
-# (which can be one of "delete", "upgrade", "rename", and "quit").
+# (which can be one of "delete", "rename", and "quit").
 #
 #-----------------------------------------------------------------------
 #
@@ -172,6 +194,32 @@ function source_util_funcs() {
 #-----------------------------------------------------------------------
 #
   . ${bashutils_dir}/get_charvar_from_netcdf.sh
+#
+#-----------------------------------------------------------------------
+#
+# Source the file containing the function that creates a symlink to a
+# file (including performing checks).
+#
+#-----------------------------------------------------------------------
+#
+  . ${bashutils_dir}/create_symlink_to_file.sh
+#
+#-----------------------------------------------------------------------
+#
+# Source the file containing the function that gets the stripped contents
+# of a bash script or function.
+#
+#-----------------------------------------------------------------------
+#
+  . ${bashutils_dir}/get_bash_file_contents.sh
+#
+#-----------------------------------------------------------------------
+#
+# Source the file containing the function that sources config files.
+#
+#-----------------------------------------------------------------------
+#
+  . ${bashutils_dir}/source_config.sh
 
 }
 source_util_funcs

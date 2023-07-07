@@ -4,7 +4,7 @@
 # This file sets the experiment's configuration variables (which are
 # global shell variables) to their default values.  For many of these
 # variables, the valid values that they may take on are defined in the
-# file $USHDIR/valid_param_vals.sh.
+# file $USHdir/valid_param_vals.sh.
 #
 #-----------------------------------------------------------------------
 #
@@ -61,6 +61,10 @@ version="0.1.0"
 # The job scheduler to use (e.g. slurm).  Set this to an empty string in
 # order for the experiment generation script to set it depending on the
 # machine.
+#
+# WORKFLOW_MANAGER:
+# The workflow manager to use (e.g. rocoto). This is set to "rocoto" by
+# default. Valid options: "rocoto", "ecflow", or "none"
 #
 # PARTITION_DEFAULT:
 # If using the slurm job scheduler (i.e. if SCHED is set to "slurm"), 
@@ -151,6 +155,7 @@ HPSS_ACCOUNT=""
 RESERVATION=""
 RESERVATION_POST=""
 SCHED=""
+WORKFLOW_MANAGER="rocoto"
 PARTITION_DEFAULT=""
 QUEUE_DEFAULT=""
 PARTITION_HPSS=""
@@ -423,6 +428,9 @@ DOT_OR_USCORE="_"
 # Name of the rocoto workflow XML file that the experiment generation
 # script creates and that defines the workflow for the experiment.
 #
+# WFLOW_XML_TMPL_FN:
+# Name of the template file of the rocoto workflow XML file (WFLOW_XML_FN).
+#
 # GLOBAL_VAR_DEFNS_FN:
 # Name of file (a shell script) containing the defintions of the primary 
 # experiment variables (parameters) defined in this default configuration 
@@ -469,8 +477,10 @@ FV3_NML_BASE_ENS_FN="input.nml.base_ens"
 MODEL_CONFIG_FN="model_configure"
 NEMS_CONFIG_FN="nems.configure"
 FV3_EXEC_FN="ufs_model"
-
 WFLOW_XML_FN="FV3LAM_wflow.xml"
+
+WFLOW_XML_TMPL_FN="FV3LAM_wflow.xml"
+
 GLOBAL_VAR_DEFNS_FN="var_defns.sh"
 EXTRN_MDL_ICS_VAR_DEFNS_FN="extrn_mdl_ics_var_defns.sh"
 EXTRN_MDL_LBCS_VAR_DEFNS_FN="extrn_mdl_lbcs_var_defns.sh"
@@ -1132,6 +1142,9 @@ GFDLgrid_USE_GFDLgrid_RES_IN_FILENAMES=""
 # the regional grid before shaving the halo down to the width(s) expected
 # by the forecast model.  
 #
+# ESGgrid_PAZI:
+# The rotational parameter for the ESG grid (in degrees).
+#
 # In order to generate grid files containing halos that are 3-cell and
 # 4-cell wide and orography files with halos that are 0-cell and 3-cell
 # wide (all of which are required as inputs to the forecast model), the
@@ -1186,6 +1199,7 @@ ESGgrid_DELY=""
 ESGgrid_NX=""
 ESGgrid_NY=""
 ESGgrid_WIDE_HALO_WIDTH=""
+ESGgrid_PAZI=""
 #
 #-----------------------------------------------------------------------
 #
@@ -1901,7 +1915,7 @@ MAXTRIES_JEDI_ENVAR_IODA="1"
 #  "rrfsak" (RRFS 3-km Alaska grid)
 #  "hrrrak" (HRRR 3-km Alaska grid)
 #
-ADDNL_OUTPUT_GRIDS=( )
+ADDNL_OUTPUT_GRIDS=()
 #
 #-----------------------------------------------------------------------
 #

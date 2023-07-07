@@ -15,7 +15,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -97,7 +97,7 @@ mkdir_vrfy -p ${workdir}
 #
 #-----------------------------------------------------------------------
 # 
-$SCRIPTSDIR/exregional_jedienvar_ioda.sh \
+$SCRIPTSdir/exregional_jedienvar_ioda.sh \
              cycle_dir="${CYCLE_DIR}" \
              cycle_type="${CYCLE_TYPE}" \
              mem_type="${MEM_TYPE}" \

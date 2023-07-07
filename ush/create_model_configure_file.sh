@@ -225,7 +225,7 @@ $settings"
 #-----------------------------------------------------------------------
 #
   model_config_fp="${run_dir}/${MODEL_CONFIG_FN}"
-  $USHDIR/fill_jinja_template.py -q \
+  $USHdir/fill_jinja_template.py -q \
                                  -u "${settings}" \
                                  -t ${MODEL_CONFIG_TMPL_FP} \
                                  -o ${model_config_fp} || \

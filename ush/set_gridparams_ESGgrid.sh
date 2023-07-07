@@ -55,10 +55,12 @@ function set_gridparams_ESGgrid() {
 "halo_width" \
 "delx" \
 "dely" \
+"pazi" \
 "output_varname_lon_ctr" \
 "output_varname_lat_ctr" \
 "output_varname_nx" \
 "output_varname_ny" \
+"output_varname_pazi" \
 "output_varname_halo_width" \
 "output_varname_stretch_factor" \
 "output_varname_del_angle_x_sg" \
@@ -85,7 +87,7 @@ function set_gridparams_ESGgrid() {
 #
 #-----------------------------------------------------------------------
 #
-  . ${USHDIR}/constants.sh
+  . ${USHdir}/constants.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -131,10 +133,10 @@ function set_gridparams_ESGgrid() {
 #-----------------------------------------------------------------------
 #
   del_angle_x_sg=$( bc -l <<< "(${delx}/(2.0*${radius_Earth}))*${degs_per_radian}" )
-  del_angle_x_sg=$( printf "%0.10f\n" ${del_angle_x_sg} )
+  del_angle_x_sg=$( printf "%0.17f\n" ${del_angle_x_sg} )
 
   del_angle_y_sg=$( bc -l <<< "(${dely}/(2.0*${radius_Earth}))*${degs_per_radian}" )
-  del_angle_y_sg=$( printf "%0.10f\n" ${del_angle_y_sg} )
+  del_angle_y_sg=$( printf "%0.17f\n" ${del_angle_y_sg} )
 
   neg_nx_of_dom_with_wide_halo=$( bc -l <<< "-($nx + 2*${halo_width})" )
   neg_nx_of_dom_with_wide_halo=$( printf "%.0f\n" ${neg_nx_of_dom_with_wide_halo} )
@@ -152,6 +154,7 @@ function set_gridparams_ESGgrid() {
   eval ${output_varname_lat_ctr}="${lat_ctr}"
   eval ${output_varname_nx}="${nx}"
   eval ${output_varname_ny}="${ny}"
+  eval ${output_varname_pazi}="${pazi}"
   eval ${output_varname_halo_width}="${halo_width}"
   eval ${output_varname_stretch_factor}="${stretch_factor}"
   eval ${output_varname_del_angle_x_sg}="${del_angle_x_sg}"

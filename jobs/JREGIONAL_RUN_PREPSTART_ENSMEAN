@@ -18,7 +18,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -82,7 +82,7 @@ mkdir_vrfy -p ${modelinputdir}
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSDIR/exregional_run_prepstart_ensmean.sh \
+$SCRIPTSdir/exregional_run_prepstart_ensmean.sh \
              cycle_type="${CYCLE_TYPE}" \
              modelinputdir="${modelinputdir}" || \
 print_err_msg_exit "\

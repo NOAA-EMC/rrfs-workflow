@@ -98,37 +98,33 @@ function set_FV3nml_stoch_params() {
   iseed_sppt=$(( cdate*1000 + ensmem_num*10 + 1 ))
   iseed_spp=$(( cdate*1000 + ensmem_num*10 + 4 ))
 
-if [[ "${ENSMEM_INDX}" = "1" && ${DO_ENSCONTROL} == "TRUE" ]]; then
-
+  if [[ "${ENSMEM_INDX}" = "1" && ${DO_ENSCONTROL} == "TRUE" ]]; then
     settings="\
 'nam_stochy': {
     'iseed_shum': ${iseed_shum},
     'iseed_skeb': ${iseed_skeb},
     'iseed_sppt': ${iseed_sppt},  
     'sppt': -999.0
-  }
+    }
 'gfs_physics_nml': {
     'do_sppt': false
-  }
+    }
 'nam_spperts': {
     'iseed_spp': ${iseed_spp},
-  }"
-
-else
-
-  settings="\
+    }"
+  else
+    settings="\
 'nam_stochy': {
     'iseed_shum': ${iseed_shum},
     'iseed_skeb': ${iseed_skeb},
     'iseed_sppt': ${iseed_sppt},
-   }
+    }
 'nam_spperts': {
     'iseed_spp': ${iseed_spp},
-   }"
+    }"
+  fi
 
-fi
-
-  $USHDIR/set_namelist.py -q \
+  $USHdir/set_namelist.py -q \
                           -n ${fv3_nml_ensmem_fp_base} \
                           -u "$settings" \
                           -o ${fv3_nml_ensmem_fp} || \

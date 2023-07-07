@@ -85,20 +85,15 @@ case ${PREDEF_GRID_NAME} in
 "RRFS_CONUS_25km")
 
   GRID_GEN_METHOD="ESGgrid"
-
   ESGgrid_LON_CTR="-97.5"
   ESGgrid_LAT_CTR="38.5"
-
   ESGgrid_DELX="25000.0"
   ESGgrid_DELY="25000.0"
-
-  ESGgrid_NX="202"
-  ESGgrid_NY="116"
-
+  ESGgrid_NX="219"
+  ESGgrid_NY="131"
+  ESGgrid_PAZI="0.0"
   ESGgrid_WIDE_HALO_WIDTH="6"
-
-  DT_ATMOS="${DT_ATMOS:-300}"
-
+  DT_ATMOS="${DT_ATMOS:-150}"
   LAYOUT_X="${LAYOUT_X:-5}"
   LAYOUT_Y="${LAYOUT_Y:-2}"
   BLOCKSIZE="${BLOCKSIZE:-40}"
@@ -111,10 +106,10 @@ case ${PREDEF_GRID_NAME} in
     WRTCMP_cen_lat="${ESGgrid_LAT_CTR}"
     WRTCMP_stdlat1="${ESGgrid_LAT_CTR}"
     WRTCMP_stdlat2="${ESGgrid_LAT_CTR}"
-    WRTCMP_nx="199"
-    WRTCMP_ny="111"
-    WRTCMP_lon_lwr_left="-121.23349066"
-    WRTCMP_lat_lwr_left="23.41731593"
+    WRTCMP_nx="217"
+    WRTCMP_ny="128"
+    WRTCMP_lon_lwr_left="-122.719528"
+    WRTCMP_lat_lwr_left="21.138123"
     WRTCMP_dx="${ESGgrid_DELX}"
     WRTCMP_dy="${ESGgrid_DELY}"
   fi
@@ -129,36 +124,31 @@ case ${PREDEF_GRID_NAME} in
 "RRFS_CONUS_13km")
 
   GRID_GEN_METHOD="ESGgrid"
-
   ESGgrid_LON_CTR="-97.5"
   ESGgrid_LAT_CTR="38.5"
-
   ESGgrid_DELX="13000.0"
   ESGgrid_DELY="13000.0"
-
-  ESGgrid_NX="396"
-  ESGgrid_NY="232"
-
+  ESGgrid_NX="420"
+  ESGgrid_NY="252"
+  ESGgrid_PAZI="0.0"
   ESGgrid_WIDE_HALO_WIDTH="6"
-
-  DT_ATMOS="${DT_ATMOS:-45}"
-
+  DT_ATMOS="${DT_ATMOS:-75}"
   LAYOUT_X="${LAYOUT_X:-16}"
   LAYOUT_Y="${LAYOUT_Y:-10}"
   BLOCKSIZE="${BLOCKSIZE:-32}"
 
   if [ "$QUILTING" = "TRUE" ]; then
     WRTCMP_write_groups="1"
-    WRTCMP_write_tasks_per_group=$(( 1*LAYOUT_Y ))
+    WRTCMP_write_tasks_per_group="10"
     WRTCMP_output_grid="lambert_conformal"
     WRTCMP_cen_lon="${ESGgrid_LON_CTR}"
     WRTCMP_cen_lat="${ESGgrid_LAT_CTR}"
     WRTCMP_stdlat1="${ESGgrid_LAT_CTR}"
     WRTCMP_stdlat2="${ESGgrid_LAT_CTR}"
-    WRTCMP_nx="393"
-    WRTCMP_ny="225"
-    WRTCMP_lon_lwr_left="-121.70231097"
-    WRTCMP_lat_lwr_left="22.57417972"
+    WRTCMP_nx="416"
+    WRTCMP_ny="245"
+    WRTCMP_lon_lwr_left="-121.719528"
+    WRTCMP_lat_lwr_left="21.138123"
     WRTCMP_dx="${ESGgrid_DELX}"
     WRTCMP_dy="${ESGgrid_DELY}"
   fi
@@ -166,34 +156,29 @@ case ${PREDEF_GRID_NAME} in
 #
 #-----------------------------------------------------------------------
 #
-# The RRFS CONUS domain with ~3km cells (C3359)
+# The RRFS CONUS domain with ~3km cells
 #
 #-----------------------------------------------------------------------
 #
 "RRFS_CONUS_3km")
 
   GRID_GEN_METHOD="ESGgrid"
-
   ESGgrid_LON_CTR="-97.5"
   ESGgrid_LAT_CTR="38.5"
-
   ESGgrid_DELX="3000.0"
   ESGgrid_DELY="3000.0"
-
   ESGgrid_NX="1820"
   ESGgrid_NY="1092"
-
+  ESGgrid_PAZI="0.0"
   ESGgrid_WIDE_HALO_WIDTH="6"
-
-  DT_ATMOS="${DT_ATMOS:-40}"
-
-  LAYOUT_X="${LAYOUT_X:-30}"
-  LAYOUT_Y="${LAYOUT_Y:-16}"
-  BLOCKSIZE="${BLOCKSIZE:-32}"
+  DT_ATMOS="${DT_ATMOS:-36}"
+  LAYOUT_X="${LAYOUT_X:-28}"
+  LAYOUT_Y="${LAYOUT_Y:-28}"
+  BLOCKSIZE="${BLOCKSIZE:-28}"
 
   if [ "$QUILTING" = "TRUE" ]; then
     WRTCMP_write_groups="1"
-    WRTCMP_write_tasks_per_group=$(( 1*LAYOUT_Y ))
+    WRTCMP_write_tasks_per_group="28"
     WRTCMP_output_grid="lambert_conformal"
     WRTCMP_cen_lon="${ESGgrid_LON_CTR}"
     WRTCMP_cen_lat="${ESGgrid_LAT_CTR}"
@@ -217,20 +202,15 @@ case ${PREDEF_GRID_NAME} in
 "RRFS_CONUS_3km_HRRRIC")
 
   GRID_GEN_METHOD="ESGgrid"
-
   ESGgrid_LON_CTR="-97.5"
   ESGgrid_LAT_CTR="38.5"
-
   ESGgrid_DELX="3000.0"
   ESGgrid_DELY="3000.0"
-
   ESGgrid_NX="1748"
   ESGgrid_NY="1038"
-
+  ESGgrid_PAZI="0.0"
   ESGgrid_WIDE_HALO_WIDTH="6"
-
   DT_ATMOS="${DT_ATMOS:-40}"
-
   LAYOUT_X="${LAYOUT_X:-30}"
   LAYOUT_Y="${LAYOUT_Y:-16}"
   BLOCKSIZE="${BLOCKSIZE:-32}"
@@ -261,20 +241,15 @@ case ${PREDEF_GRID_NAME} in
 "RRFS_SUBCONUS_3km")
 
   GRID_GEN_METHOD="ESGgrid"
-
   ESGgrid_LON_CTR="-97.5"
   ESGgrid_LAT_CTR="35.0"
-
   ESGgrid_DELX="3000.0"
   ESGgrid_DELY="3000.0"
-
+  ESGgrid_PAZI="0.0"
   ESGgrid_NX="840"
   ESGgrid_NY="600"
-
   ESGgrid_WIDE_HALO_WIDTH="6"
-
   DT_ATMOS="${DT_ATMOS:-40}"
-
   LAYOUT_X="${LAYOUT_X:-30}"
   LAYOUT_Y="${LAYOUT_Y:-24}"
   BLOCKSIZE="${BLOCKSIZE:-35}"
@@ -308,21 +283,15 @@ case ${PREDEF_GRID_NAME} in
 "RRFS_AK_13km")
 
   GRID_GEN_METHOD="ESGgrid"
-
   ESGgrid_LON_CTR="-161.5"
   ESGgrid_LAT_CTR="63.0"
-
   ESGgrid_DELX="13000.0"
   ESGgrid_DELY="13000.0"
-
+  ESGgrid_PAZI="0.0"
   ESGgrid_NX="320"
   ESGgrid_NY="240"
-
   ESGgrid_WIDE_HALO_WIDTH="6"
-
-#  DT_ATMOS="${DT_ATMOS:-50}"
   DT_ATMOS="${DT_ATMOS:-10}"
-
   LAYOUT_X="${LAYOUT_X:-16}"
   LAYOUT_Y="${LAYOUT_Y:-12}"
   BLOCKSIZE="${BLOCKSIZE:-40}"
@@ -335,35 +304,13 @@ case ${PREDEF_GRID_NAME} in
     WRTCMP_cen_lat="${ESGgrid_LAT_CTR}"
     WRTCMP_stdlat1="${ESGgrid_LAT_CTR}"
     WRTCMP_stdlat2="${ESGgrid_LAT_CTR}"
-
-# The following work.  They were obtained using the NCL scripts but only
-# after manually modifying the longitutes of two of the 4 corners of the
-# domain to add 360.0 to them.  Need to automate that procedure.
     WRTCMP_nx="318"
     WRTCMP_ny="234"
-#    WRTCMP_lon_lwr_left="-187.76660836"
     WRTCMP_lon_lwr_left="172.23339164"
     WRTCMP_lat_lwr_left="45.77691870"
-
     WRTCMP_dx="${ESGgrid_DELX}"
     WRTCMP_dy="${ESGgrid_DELY}"
   fi
-
-# The following rotated_latlon coordinate system parameters were obtained
-# using the NCL code and work.
-#    if [ "$QUILTING" = "TRUE" ]; then
-#      WRTCMP_write_groups="1"
-#      WRTCMP_write_tasks_per_group=$(( 1*LAYOUT_Y ))
-#      WRTCMP_output_grid="rotated_latlon"
-#      WRTCMP_cen_lon="${ESGgrid_LON_CTR}"
-#      WRTCMP_cen_lat="${ESGgrid_LAT_CTR}"
-#      WRTCMP_lon_lwr_left="-18.47206579"
-#      WRTCMP_lat_lwr_left="-13.56176982"
-#      WRTCMP_lon_upr_rght="18.47206579"
-#      WRTCMP_lat_upr_rght="13.56176982"
-#      WRTCMP_dlon="0.11691181"
-#      WRTCMP_dlat="0.11691181"
-#    fi
   ;;
 #
 #-----------------------------------------------------------------------
@@ -377,68 +324,16 @@ case ${PREDEF_GRID_NAME} in
 #
 "RRFS_AK_3km")
 
-#  if [ "${GRID_GEN_METHOD}" = "GFDLgrid" ]; then
-#
-#    GFDLgrid_LON_T6_CTR="-160.8"
-#    GFDLgrid_LAT_T6_CTR="63.0"
-#    GFDLgrid_STRETCH_FAC="1.161"
-#    GFDLgrid_RES="768"
-#    GFDLgrid_REFINE_RATIO="4"
-#
-#    num_margin_cells_T6_left="204"
-#    GFDLgrid_ISTART_OF_RGNL_DOM_ON_T6G=$(( num_margin_cells_T6_left + 1 ))
-#
-#    num_margin_cells_T6_right="204"
-#    GFDLgrid_IEND_OF_RGNL_DOM_ON_T6G=$(( GFDLgrid_RES - num_margin_cells_T6_right ))
-#
-#    num_margin_cells_T6_bottom="249"
-#    GFDLgrid_JSTART_OF_RGNL_DOM_ON_T6G=$(( num_margin_cells_T6_bottom + 1 ))
-#
-#    num_margin_cells_T6_top="249"
-#    GFDLgrid_JEND_OF_RGNL_DOM_ON_T6G=$(( GFDLgrid_RES - num_margin_cells_T6_top ))
-#
-#    GFDLgrid_USE_GFDLgrid_RES_IN_FILENAMES="FALSE"
-#
-#    DT_ATMOS="${DT_ATMOS:-18}"
-#
-#    LAYOUT_X="${LAYOUT_X:-24}"
-#    LAYOUT_Y="${LAYOUT_Y:-24}"
-#    BLOCKSIZE="${BLOCKSIZE:-15}"
-#
-#    if [ "$QUILTING" = "TRUE" ]; then
-#      WRTCMP_write_groups="1"
-#      WRTCMP_write_tasks_per_group="2"
-#      WRTCMP_output_grid="lambert_conformal"
-#      WRTCMP_cen_lon="${GFDLgrid_LON_T6_CTR}"
-#      WRTCMP_cen_lat="${GFDLgrid_LAT_T6_CTR}"
-#      WRTCMP_stdlat1="${GFDLgrid_LAT_T6_CTR}"
-#      WRTCMP_stdlat2="${GFDLgrid_LAT_T6_CTR}"
-#      WRTCMP_nx="1320"
-#      WRTCMP_ny="950"
-#      WRTCMP_lon_lwr_left="173.734"
-#      WRTCMP_lat_lwr_left="46.740347"
-#      WRTCMP_dx="3000.0"
-#      WRTCMP_dy="3000.0"
-#    fi
-#
-#  elif [ "${GRID_GEN_METHOD}" = "ESGgrid" ]; then
-
   GRID_GEN_METHOD="ESGgrid"
-
   ESGgrid_LON_CTR="-161.5"
   ESGgrid_LAT_CTR="63.0"
-
   ESGgrid_DELX="3000.0"
   ESGgrid_DELY="3000.0"
-
   ESGgrid_NX="1380"
   ESGgrid_NY="1020"
-
+  ESGgrid_PAZI="0.0"
   ESGgrid_WIDE_HALO_WIDTH="6"
-
-#  DT_ATMOS="${DT_ATMOS:-50}"
   DT_ATMOS="${DT_ATMOS:-10}"
-
   LAYOUT_X="${LAYOUT_X:-30}"
   LAYOUT_Y="${LAYOUT_Y:-17}"
   BLOCKSIZE="${BLOCKSIZE:-40}"
@@ -473,29 +368,21 @@ case ${PREDEF_GRID_NAME} in
 "CONUS_25km_GFDLgrid")
 
   GRID_GEN_METHOD="GFDLgrid"
-
   GFDLgrid_LON_T6_CTR="-97.5"
   GFDLgrid_LAT_T6_CTR="38.5"
   GFDLgrid_STRETCH_FAC="1.4"
   GFDLgrid_RES="96"
   GFDLgrid_REFINE_RATIO="3"
-
   num_margin_cells_T6_left="12"
   GFDLgrid_ISTART_OF_RGNL_DOM_ON_T6G=$(( num_margin_cells_T6_left + 1 ))
-
   num_margin_cells_T6_right="12"
   GFDLgrid_IEND_OF_RGNL_DOM_ON_T6G=$(( GFDLgrid_RES - num_margin_cells_T6_right ))
-
   num_margin_cells_T6_bottom="16"
   GFDLgrid_JSTART_OF_RGNL_DOM_ON_T6G=$(( num_margin_cells_T6_bottom + 1 ))
-
   num_margin_cells_T6_top="16"
   GFDLgrid_JEND_OF_RGNL_DOM_ON_T6G=$(( GFDLgrid_RES - num_margin_cells_T6_top ))
-
   GFDLgrid_USE_GFDLgrid_RES_IN_FILENAMES="TRUE"
-
   DT_ATMOS="${DT_ATMOS:-225}"
-
   LAYOUT_X="${LAYOUT_X:-6}"
   LAYOUT_Y="${LAYOUT_Y:-4}"
   BLOCKSIZE="${BLOCKSIZE:-36}"
@@ -528,29 +415,21 @@ case ${PREDEF_GRID_NAME} in
 "CONUS_3km_GFDLgrid")
 
   GRID_GEN_METHOD="GFDLgrid"
-
   GFDLgrid_LON_T6_CTR="-97.5"
   GFDLgrid_LAT_T6_CTR="38.5"
   GFDLgrid_STRETCH_FAC="1.5"
   GFDLgrid_RES="768"
   GFDLgrid_REFINE_RATIO="3"
-
   num_margin_cells_T6_left="69"
   GFDLgrid_ISTART_OF_RGNL_DOM_ON_T6G=$(( num_margin_cells_T6_left + 1 ))
-
   num_margin_cells_T6_right="69"
   GFDLgrid_IEND_OF_RGNL_DOM_ON_T6G=$(( GFDLgrid_RES - num_margin_cells_T6_right ))
-
   num_margin_cells_T6_bottom="164"
   GFDLgrid_JSTART_OF_RGNL_DOM_ON_T6G=$(( num_margin_cells_T6_bottom + 1 ))
-
   num_margin_cells_T6_top="164"
   GFDLgrid_JEND_OF_RGNL_DOM_ON_T6G=$(( GFDLgrid_RES - num_margin_cells_T6_top ))
-
   GFDLgrid_USE_GFDLgrid_RES_IN_FILENAMES="TRUE"
-
   DT_ATMOS="${DT_ATMOS:-18}"
-
   LAYOUT_X="${LAYOUT_X:-30}"
   LAYOUT_Y="${LAYOUT_Y:-22}"
   BLOCKSIZE="${BLOCKSIZE:-35}"
@@ -578,133 +457,30 @@ case ${PREDEF_GRID_NAME} in
 #
 "EMC_AK")
 
-#  if [ "${GRID_GEN_METHOD}" = "GFDLgrid" ]; then
-
-# Values from an EMC script.
-
-### rocoto items
-#
-#fcstnodes=68
-#bcnodes=11
-#postnodes=2
-#goespostnodes=5
-#goespostthrottle=6
-#sh=06
-#eh=18
-#
-### namelist items
-#
-#task_layout_x=16
-#task_layout_y=48
-#npx=1345
-#npy=1153
-#target_lat=61.0
-#target_lon=-153.0
-#
-### model config items
-#
-#write_groups=2
-#write_tasks_per_group=24
-#cen_lon=$target_lon
-#cen_lat=$target_lat
-#lon1=-18.0
-#lat1=-14.79
-#lon2=18.0
-#lat2=14.79
-#dlon=0.03
-#dlat=0.03
-
-#    GFDLgrid_LON_T6_CTR="-153.0"
-#    GFDLgrid_LAT_T6_CTR="61.0"
-#    GFDLgrid_STRETCH_FAC="1.0"  # ???
-#    GFDLgrid_RES="768"
-#    GFDLgrid_REFINE_RATIO="3"   # ???
-#
-#    num_margin_cells_T6_left="61"
-#    GFDLgrid_ISTART_OF_RGNL_DOM_ON_T6G=$(( num_margin_cells_T6_left + 1 ))
-#
-#    num_margin_cells_T6_right="67"
-#    GFDLgrid_IEND_OF_RGNL_DOM_ON_T6G=$(( GFDLgrid_RES - num_margin_cells_T6_right ))
-#
-#    num_margin_cells_T6_bottom="165"
-#    GFDLgrid_JSTART_OF_RGNL_DOM_ON_T6G=$(( num_margin_cells_T6_bottom + 1 ))
-#
-#    num_margin_cells_T6_top="171"
-#    GFDLgrid_JEND_OF_RGNL_DOM_ON_T6G=$(( GFDLgrid_RES - num_margin_cells_T6_top ))
-#
-#    GFDLgrid_USE_GFDLgrid_RES_IN_FILENAMES="TRUE"
-#
-#    DT_ATMOS="${DT_ATMOS:-18}"
-#
-#    LAYOUT_X="${LAYOUT_X:-16}"
-#    LAYOUT_Y="${LAYOUT_Y:-48}"
-#    WRTCMP_write_groups="2"
-#    WRTCMP_write_tasks_per_group="24"
-#    BLOCKSIZE="${BLOCKSIZE:-32}"
-#
-#  elif [ "${GRID_GEN_METHOD}" = "ESGgrid" ]; then
-
   GRID_GEN_METHOD="ESGgrid"
-
-# Values taken from pre-generated files in /scratch4/NCEPDEV/fv3-cam/save/Benjamin.Blake/regional_workflow/fix/fix_sar
-# With move to Hera, those files were lost; a backup can be found here: /scratch2/BMC/det/kavulich/fix/fix_sar
-
-# Longitude and latitude for center of domain
   ESGgrid_LON_CTR="-153.0"
   ESGgrid_LAT_CTR="61.0"
-
-# Projected grid spacing in meters...in the static files (e.g. "C768_grid.tile7.nc"), the "dx" is actually the resolution
-# of the supergrid, which is HALF of this dx
   ESGgrid_DELX="3000.0"
   ESGgrid_DELY="3000.0"
-
-# Number of x and y points for your domain (halo not included);
-# Divide "supergrid" values from /scratch2/BMC/det/kavulich/fix/fix_sar/ak/C768_grid.tile7.halo4.nc by 2 and subtract 8 to eliminate halo
   ESGgrid_NX="1344" # Supergrid value 2704
   ESGgrid_NY="1152" # Supergrid value 2320
-
-# Number of halo points for a wide grid (before trimming)...this should almost always be 6 for now
-# Within the model we actually have a 4-point halo and a 3-point halo
+  ESGgrid_PAZI="0.0"
   ESGgrid_WIDE_HALO_WIDTH="6"
-
-# Side note: FV3 is lagrangian and vertical coordinates are dynamically remapped during model integration
-# 'ksplit' is the factor that determines the timestep for this process (divided
-
-# Physics timestep in seconds, actual dynamics timestep can be a subset of this.
-# This is the time step for the largest atmosphere model loop.  It corresponds to the frequency with which the
-# top-level routine in the dynamics is called as well as the frequency with which the physics is called.
-#
-# Preliminary standard values: 18 for 3-km runs, 90 for 13-km runs per config_defaults.sh
-
   DT_ATMOS="${DT_ATMOS:-18}"
-
-#Factors for MPI decomposition. ESGgrid_NX must be divisible by LAYOUT_X, ESGgrid_NY must be divisible by LAYOUT_Y
   LAYOUT_X="${LAYOUT_X:-28}"
   LAYOUT_Y="${LAYOUT_Y:-16}"
-
-#Take number of points on a tile (nx/lx*ny/ly), must divide by block size to get an integer.
-#This integer must be small enough to fit into a processor's cache, so it is machine-dependent magic
-# For Theia, must be ~40 or less
-# Check setup.sh for more details
   BLOCKSIZE="${BLOCKSIZE:-24}"
 
-#This section is all for the write component, which you need for output during model integration
   if [ "$QUILTING" = "TRUE" ]; then
-#Write component reserves MPI tasks for writing output. The number of "groups" is usually 1, but if you have a case where group 1 is not done writing before the next write step, you need group 2, etc.
     WRTCMP_write_groups="1"
-#Number of tasks per write group. Ny must be divisible my this number. LAYOUT_Y is usually a good value
     WRTCMP_write_tasks_per_group="24"
-#lambert_conformal or rotated_latlon. lambert_conformal not well tested and probably doesn't work for our purposes
     WRTCMP_output_grid="lambert_conformal"
-#These should always be set the same as compute grid
     WRTCMP_cen_lon="${ESGgrid_LON_CTR}"
     WRTCMP_cen_lat="${ESGgrid_LAT_CTR}"
     WRTCMP_stdlat1="${ESGgrid_LAT_CTR}"
     WRTCMP_stdlat2="${ESGgrid_LAT_CTR}"
-#Write component grid must always be <= compute grid (without haloes)
     WRTCMP_nx="1344"
     WRTCMP_ny="1152"
-#Lower left latlon (southwest corner)
     WRTCMP_lon_lwr_left="-177.0"
     WRTCMP_lat_lwr_left="42.5"
     WRTCMP_dx="$ESGgrid_DELX"
@@ -721,65 +497,29 @@ case ${PREDEF_GRID_NAME} in
 "EMC_HI")
 
   GRID_GEN_METHOD="ESGgrid"
-
-# Values taken from pre-generated files in /scratch4/NCEPDEV/fv3-cam/save/Benjamin.Blake/regional_workflow/fix/fix_sar/hi/C768_grid.tile7.nc
-# With move to Hera, those files were lost; a backup can be found here: /scratch2/BMC/det/kavulich/fix/fix_sar
-# Longitude and latitude for center of domain
   ESGgrid_LON_CTR="-157.0"
   ESGgrid_LAT_CTR="20.0"
-
-# Projected grid spacing in meters...in the static files (e.g. "C768_grid.tile7.nc"), the "dx" is actually the resolution
-# of the supergrid, which is HALF of this dx (plus or minus some grid stretch factor)
   ESGgrid_DELX="3000.0"
   ESGgrid_DELY="3000.0"
-
-# Number of x and y points for your domain (halo not included);
-# Divide "supergrid" values from /scratch2/BMC/det/kavulich/fix/fix_sar/hi/C768_grid.tile7.halo4.nc by 2 and subtract 8 to eliminate halo
+  ESGgrid_PAZI="0.0"
   ESGgrid_NX="432" # Supergrid value 880
   ESGgrid_NY="360" # Supergrid value 736
-
-# Number of halo points for a wide grid (before trimming)...this should almost always be 6 for now
-# Within the model we actually have a 4-point halo and a 3-point halo
   ESGgrid_WIDE_HALO_WIDTH="6"
-
-# Side note: FV3 is lagrangian and vertical coordinates are dynamically remapped during model integration
-# 'ksplit' is the factor that determines the timestep for this process (divided
-
-# Physics timestep in seconds, actual dynamics timestep can be a subset of this.
-# This is the time step for the largest atmosphere model loop.  It corresponds to the frequency with which the
-# top-level routine in the dynamics is called as well as the frequency with which the physics is called.
-#
-# Preliminary standard values: 18 for 3-km runs, 90 for 13-km runs per config_defaults.sh
-
   DT_ATMOS="${DT_ATMOS:-18}"
-
-#Factors for MPI decomposition. ESGgrid_NX must be divisible by LAYOUT_X, ESGgrid_NY must be divisible by LAYOUT_Y
   LAYOUT_X="${LAYOUT_X:-8}"
   LAYOUT_Y="${LAYOUT_Y:-8}"
-#Take number of points on a tile (nx/lx*ny/ly), must divide by block size to get an integer.
-#This integer must be small enough to fit into a processor's cache, so it is machine-dependent magic
-# For Theia, must be ~40 or less
-# Check setup.sh for more details
   BLOCKSIZE="${BLOCKSIZE:-27}"
 
-#This section is all for the write component, which you need for output during model integration
   if [ "$QUILTING" = "TRUE" ]; then
-#Write component reserves MPI tasks for writing output. The number of "groups" is usually 1, but if you have a case where group 1 is not done writing before the next write step, you need group 2, etc.
     WRTCMP_write_groups="1"
-#Number of tasks per write group. Ny must be divisible my this number. LAYOUT_Y is usually a good value
     WRTCMP_write_tasks_per_group="8"
-#lambert_conformal or rotated_latlon. lambert_conformal not well tested and probably doesn't work for our purposes
     WRTCMP_output_grid="lambert_conformal"
-#These should usually be set the same as compute grid
     WRTCMP_cen_lon="${ESGgrid_LON_CTR}"
     WRTCMP_cen_lat="${ESGgrid_LAT_CTR}"
     WRTCMP_stdlat1="${ESGgrid_LAT_CTR}"
     WRTCMP_stdlat2="${ESGgrid_LAT_CTR}"
-#Write component grid should be close to the ESGgrid values unless you are doing something weird
     WRTCMP_nx="420"
     WRTCMP_ny="348"
-
-#Lower left latlon (southwest corner)
     WRTCMP_lon_lwr_left="-162.8"
     WRTCMP_lat_lwr_left="15.2"
     WRTCMP_dx="$ESGgrid_DELX"
@@ -796,65 +536,28 @@ case ${PREDEF_GRID_NAME} in
 "EMC_PR")
 
   GRID_GEN_METHOD="ESGgrid"
-
-# Values taken from pre-generated files in /scratch4/NCEPDEV/fv3-cam/save/Benjamin.Blake/regional_workflow/fix/fix_sar/pr/C768_grid.tile7.nc
-# With move to Hera, those files were lost; a backup can be found here: /scratch2/BMC/det/kavulich/fix/fix_sar
-# Longitude and latitude for center of domain
   ESGgrid_LON_CTR="-69.0"
   ESGgrid_LAT_CTR="18.0"
-
-# Projected grid spacing in meters...in the static files (e.g. "C768_grid.tile7.nc"), the "dx" is actually the resolution
-# of the supergrid, which is HALF of this dx (plus or minus some grid stretch factor)
   ESGgrid_DELX="3000.0"
   ESGgrid_DELY="3000.0"
-
-# Number of x and y points for your domain (halo not included);
-# Divide "supergrid" values from /scratch2/BMC/det/kavulich/fix/fix_sar/pr/C768_grid.tile7.halo4.nc by 2 and subtract 8 to eliminate halo
   ESGgrid_NX="576" # Supergrid value 1168
   ESGgrid_NY="432" # Supergrid value 880
-
-# Number of halo points for a wide grid (before trimming)...this should almost always be 6 for now
-# Within the model we actually have a 4-point halo and a 3-point halo
+  ESGgrid_PAZI="0.0"
   ESGgrid_WIDE_HALO_WIDTH="6"
-
-# Side note: FV3 is lagrangian and vertical coordinates are dynamically remapped during model integration
-# 'ksplit' is the factor that determines the timestep for this process (divided
-
-# Physics timestep in seconds, actual dynamics timestep can be a subset of this.
-# This is the time step for the largest atmosphere model loop.  It corresponds to the frequency with which the
-# top-level routine in the dynamics is called as well as the frequency with which the physics is called.
-#
-# Preliminary standard values: 18 for 3-km runs, 90 for 13-km runs per config_defaults.sh
-
   DT_ATMOS="${DT_ATMOS:-18}"
-
-#Factors for MPI decomposition. ESGgrid_NX must be divisible by LAYOUT_X, ESGgrid_NY must be divisible by LAYOUT_Y
   LAYOUT_X="${LAYOUT_X:-16}"
   LAYOUT_Y="${LAYOUT_Y:-8}"
-
-#Take number of points on a tile (nx/lx*ny/ly), must divide by block size to get an integer.
-#This integer must be small enough to fit into a processor's cache, so it is machine-dependent magic
-# For Theia, must be ~40 or less
-# Check setup.sh for more details
   BLOCKSIZE="${BLOCKSIZE:-24}"
-
-#This section is all for the write component, which you need for output during model integration
   if [ "$QUILTING" = "TRUE" ]; then
-#Write component reserves MPI tasks for writing output. The number of "groups" is usually 1, but if you have a case where group 1 is not done writing before the next write step, you need group 2, etc.
     WRTCMP_write_groups="1"
-#Number of tasks per write group. Ny must be divisible my this number. LAYOUT_Y is usually a good value
     WRTCMP_write_tasks_per_group="24"
-#lambert_conformal or rotated_latlon. lambert_conformal not well tested and probably doesn't work for our purposes
     WRTCMP_output_grid="lambert_conformal"
-#These should always be set the same as compute grid
     WRTCMP_cen_lon="${ESGgrid_LON_CTR}"
     WRTCMP_cen_lat="${ESGgrid_LAT_CTR}"
     WRTCMP_stdlat1="${ESGgrid_LAT_CTR}"
     WRTCMP_stdlat2="${ESGgrid_LAT_CTR}"
-#Write component grid must always be <= compute grid (without haloes)
     WRTCMP_nx="576"
     WRTCMP_ny="432"
-#Lower left latlon (southwest corner)
     WRTCMP_lon_lwr_left="-77"
     WRTCMP_lat_lwr_left="12"
     WRTCMP_dx="$ESGgrid_DELX"
@@ -871,64 +574,29 @@ case ${PREDEF_GRID_NAME} in
 "EMC_GU")
 
   GRID_GEN_METHOD="ESGgrid"
-
-# Values taken from pre-generated files in /scratch4/NCEPDEV/fv3-cam/save/Benjamin.Blake/regional_workflow/fix/fix_sar/guam/C768_grid.tile7.nc
-# With move to Hera, those files were lost; a backup can be found here: /scratch2/BMC/det/kavulich/fix/fix_sar
-# Longitude and latitude for center of domain
   ESGgrid_LON_CTR="146.0"
   ESGgrid_LAT_CTR="15.0"
-
-# Projected grid spacing in meters...in the static files (e.g. "C768_grid.tile7.nc"), the "dx" is actually the resolution
-# of the supergrid, which is HALF of this dx (plus or minus some grid stretch factor)
   ESGgrid_DELX="3000.0"
   ESGgrid_DELY="3000.0"
-
-# Number of x and y points for your domain (halo not included);
-# Divide "supergrid" values from /scratch2/BMC/det/kavulich/fix/fix_sar/guam/C768_grid.tile7.halo4.nc by 2 and subtract 8 to eliminate halo
   ESGgrid_NX="432" # Supergrid value 880
   ESGgrid_NY="360" # Supergrid value 736
-
-# Number of halo points for a wide grid (before trimming)...this should almost always be 6 for now
-# Within the model we actually have a 4-point halo and a 3-point halo
+  ESGgrid_PAZI="0.0"
   ESGgrid_WIDE_HALO_WIDTH="6"
-
-# Side note: FV3 is lagrangian and vertical coordinates are dynamically remapped during model integration
-# 'ksplit' is the factor that determines the timestep for this process (divided
-
-# Physics timestep in seconds, actual dynamics timestep can be a subset of this.
-# This is the time step for the largest atmosphere model loop.  It corresponds to the frequency with which the
-# top-level routine in the dynamics is called as well as the frequency with which the physics is called.
-#
-# Preliminary standard values: 18 for 3-km runs, 90 for 13-km runs per config_defaults.sh
-
   DT_ATMOS="${DT_ATMOS:-18}"
-
-#Factors for MPI decomposition. ESGgrid_NX must be divisible by LAYOUT_X, ESGgrid_NY must be divisible by LAYOUT_Y
   LAYOUT_X="${LAYOUT_X:-16}"
   LAYOUT_Y="${LAYOUT_Y:-12}"
-#Take number of points on a tile (nx/lx*ny/ly), must divide by block size to get an integer.
-#This integer must be small enough to fit into a processor's cache, so it is machine-dependent magic
-# For Theia, must be ~40 or less
-# Check setup.sh for more details
   BLOCKSIZE="${BLOCKSIZE:-27}"
 
-#This section is all for the write component, which you need for output during model integration
   if [ "$QUILTING" = "TRUE" ]; then
-#Write component reserves MPI tasks for writing output. The number of "groups" is usually 1, but if you have a case where group 1 is not done writing before the next write step, you need group 2, etc.
     WRTCMP_write_groups="1"
-#Number of tasks per write group. Ny must be divisible my this number. LAYOUT_Y is usually a good value
     WRTCMP_write_tasks_per_group="24"
-#lambert_conformal or rotated_latlon. lambert_conformal not well tested and probably doesn't work for our purposes
     WRTCMP_output_grid="lambert_conformal"
-#These should always be set the same as compute grid
     WRTCMP_cen_lon="${ESGgrid_LON_CTR}"
     WRTCMP_cen_lat="${ESGgrid_LAT_CTR}"
     WRTCMP_stdlat1="${ESGgrid_LAT_CTR}"
     WRTCMP_stdlat2="${ESGgrid_LAT_CTR}"
-#Write component grid must always be <= compute grid (without haloes)
     WRTCMP_nx="420"
     WRTCMP_ny="348"
-#Lower left latlon (southwest corner) Used /scratch2/NCEPDEV/fv3-cam/Dusan.Jovic/dbrowse/fv3grid utility to find best value
     WRTCMP_lon_lwr_left="140"
     WRTCMP_lat_lwr_left="10"
     WRTCMP_dx="$ESGgrid_DELX"
@@ -945,20 +613,15 @@ case ${PREDEF_GRID_NAME} in
 "GSL_HAFSV0.A_25km")
 
   GRID_GEN_METHOD="ESGgrid"
-
   ESGgrid_LON_CTR="-62.0"
   ESGgrid_LAT_CTR="22.0"
-
   ESGgrid_DELX="25000.0"
   ESGgrid_DELY="25000.0"
-
   ESGgrid_NX="345"
   ESGgrid_NY="230"
-
+  ESGgrid_PAZI="0.0"
   ESGgrid_WIDE_HALO_WIDTH="6"
-
   DT_ATMOS="${DT_ATMOS:-300}"
-
   LAYOUT_X="${LAYOUT_X:-5}"
   LAYOUT_Y="${LAYOUT_Y:-5}"
   BLOCKSIZE="${BLOCKSIZE:-6}"
@@ -987,20 +650,15 @@ case ${PREDEF_GRID_NAME} in
 "GSL_HAFSV0.A_13km")
 
   GRID_GEN_METHOD="ESGgrid"
-
   ESGgrid_LON_CTR="-62.0"
   ESGgrid_LAT_CTR="22.0"
-
   ESGgrid_DELX="13000.0"
   ESGgrid_DELY="13000.0"
-
   ESGgrid_NX="665"
   ESGgrid_NY="444"
-
+  ESGgrid_PAZI="0.0"
   ESGgrid_WIDE_HALO_WIDTH="6"
-
   DT_ATMOS="${DT_ATMOS:-180}"
-
   LAYOUT_X="${LAYOUT_X:-19}"
   LAYOUT_Y="${LAYOUT_Y:-12}"
   BLOCKSIZE="${BLOCKSIZE:-35}"
@@ -1029,20 +687,15 @@ case ${PREDEF_GRID_NAME} in
 "GSL_HAFSV0.A_3km")
 
   GRID_GEN_METHOD="ESGgrid"
-
   ESGgrid_LON_CTR="-62.0"
   ESGgrid_LAT_CTR="22.0"
-
   ESGgrid_DELX="3000.0"
   ESGgrid_DELY="3000.0"
-
   ESGgrid_NX="2880"
   ESGgrid_NY="1920"
-
+  ESGgrid_PAZI="0.0"
   ESGgrid_WIDE_HALO_WIDTH="6"
-
   DT_ATMOS="${DT_ATMOS:-40}"
-
   LAYOUT_X="${LAYOUT_X:-32}"
   LAYOUT_Y="${LAYOUT_Y:-24}"
   BLOCKSIZE="${BLOCKSIZE:-32}"
@@ -1071,20 +724,15 @@ case ${PREDEF_GRID_NAME} in
 "GSD_HRRR_AK_50km")
 
   GRID_GEN_METHOD="ESGgrid"
-
   ESGgrid_LON_CTR="-163.5"
   ESGgrid_LAT_CTR="62.8"
-
   ESGgrid_DELX="50000.0"
   ESGgrid_DELY="50000.0"
-
   ESGgrid_NX="74"
   ESGgrid_NY="51"
-
+  ESGgrid_PAZI="0.0"
   ESGgrid_WIDE_HALO_WIDTH="6"
-
   DT_ATMOS="${DT_ATMOS:-600}"
-
   LAYOUT_X="${LAYOUT_X:-2}"
   LAYOUT_Y="${LAYOUT_Y:-3}"
   BLOCKSIZE="${BLOCKSIZE:-37}"
@@ -1114,65 +762,16 @@ case ${PREDEF_GRID_NAME} in
 #
 "GSD_RAP13km")
 
-#  if [ "${GRID_GEN_METHOD}" = "GFDLgrid" ]; then
-#
-#    GFDLgrid_LON_T6_CTR="-106.0"
-#    GFDLgrid_LAT_T6_CTR="54.0"
-#    GFDLgrid_STRETCH_FAC="0.63"
-#    GFDLgrid_RES="384"
-#    GFDLgrid_REFINE_RATIO="3"
-#
-#    num_margin_cells_T6_left="10"
-#    GFDLgrid_ISTART_OF_RGNL_DOM_ON_T6G=$(( num_margin_cells_T6_left + 1 ))
-#
-#    num_margin_cells_T6_right="10"
-#    GFDLgrid_IEND_OF_RGNL_DOM_ON_T6G=$(( GFDLgrid_RES - num_margin_cells_T6_right ))
-#
-#    num_margin_cells_T6_bottom="10"
-#    GFDLgrid_JSTART_OF_RGNL_DOM_ON_T6G=$(( num_margin_cells_T6_bottom + 1 ))
-#
-#    num_margin_cells_T6_top="10"
-#    GFDLgrid_JEND_OF_RGNL_DOM_ON_T6G=$(( GFDLgrid_RES - num_margin_cells_T6_top ))
-#
-#    GFDLgrid_USE_GFDLgrid_RES_IN_FILENAMES="FALSE"
-#
-#    DT_ATMOS="50"
-#
-#    LAYOUT_X="14"
-#    LAYOUT_Y="14"
-#    BLOCKSIZE="26"
-#
-#    if [ "$QUILTING" = "TRUE" ]; then
-#      WRTCMP_write_groups="1"
-#      WRTCMP_write_tasks_per_group="14"
-#      WRTCMP_output_grid="rotated_latlon"
-#      WRTCMP_cen_lon="${GFDLgrid_LON_T6_CTR}"
-#      WRTCMP_cen_lat="${GFDLgrid_LAT_T6_CTR}"
-#      WRTCMP_lon_lwr_left="-57.9926"
-#      WRTCMP_lat_lwr_left="-50.74344"
-#      WRTCMP_lon_upr_rght="57.99249"
-#      WRTCMP_lat_upr_rght="50.74344"
-#      WRTCMP_dlon="0.1218331"
-#      WRTCMP_dlat="0.121833"
-#    fi
-#
-#  elif [ "${GRID_GEN_METHOD}" = "ESGgrid" ]; then
-
   GRID_GEN_METHOD="ESGgrid"
-
   ESGgrid_LON_CTR="-106.0"
   ESGgrid_LAT_CTR="54.0"
-
   ESGgrid_DELX="13000.0"
   ESGgrid_DELY="13000.0"
-
   ESGgrid_NX="960"
   ESGgrid_NY="960"
-
+  ESGgrid_PAZI="0.0"
   ESGgrid_WIDE_HALO_WIDTH="6"
-
   DT_ATMOS="${DT_ATMOS:-50}"
-
   LAYOUT_X="${LAYOUT_X:-16}"
   LAYOUT_Y="${LAYOUT_Y:-16}"
   BLOCKSIZE="${BLOCKSIZE:-30}"
@@ -1194,6 +793,42 @@ case ${PREDEF_GRID_NAME} in
 #
 #-----------------------------------------------------------------------
 #
+# 13-km AQM NA grid for Online-CMAQ.
+#
+#-----------------------------------------------------------------------
+#
+"AQM_NA_13km")
+
+  GRID_GEN_METHOD="ESGgrid"
+  ESGgrid_LON_CTR="-118.0"
+  ESGgrid_LAT_CTR="50.0"
+  ESGgrid_DELX="13000.0"
+  ESGgrid_DELY="13000.0"
+  ESGgrid_NX="800"
+  ESGgrid_NY="544"
+  ESGgrid_PAZI="0.0"
+  ESGgrid_WIDE_HALO_WIDTH="6"
+  DT_ATMOS="180"
+  LAYOUT_X="50"
+  LAYOUT_Y="34"
+  BLOCKSIZE="16"
+  if [ "$QUILTING" = "TRUE" ]; then
+    WRTCMP_write_groups="2"
+    WRTCMP_write_tasks_per_group="46"
+    WRTCMP_output_grid="rotated_latlon"
+    WRTCMP_cen_lon="-118.0"
+    WRTCMP_cen_lat="50.0"
+    WRTCMP_lon_lwr_left="-45.25"
+    WRTCMP_lat_lwr_left="-28.5"
+    WRTCMP_lon_upr_rght="45.25"
+    WRTCMP_lat_upr_rght="28.5"
+    WRTCMP_dlon="0.116908139"
+    WRTCMP_dlat="0.116908139"
+  fi
+  ;;
+#
+#-----------------------------------------------------------------------
+#
 # The RRFS North America domain with ~3km cells.
 #
 #-----------------------------------------------------------------------
@@ -1201,22 +836,15 @@ case ${PREDEF_GRID_NAME} in
 "RRFS_NA_3km")
 
   GRID_GEN_METHOD="ESGgrid"
-
   ESGgrid_LON_CTR="-112.5"
   ESGgrid_LAT_CTR="55.0"
-
   ESGgrid_DELX="3000.0"
   ESGgrid_DELY="3000.0"
-
   ESGgrid_NX=3950
   ESGgrid_NY=2700
- 
   ESGgrid_PAZI="0.0"
-
   ESGgrid_WIDE_HALO_WIDTH="6"
-
   DT_ATMOS="${DT_ATMOS:-60}"
-
   LAYOUT_X="${LAYOUT_X:-40}"
   LAYOUT_Y="${LAYOUT_Y:-45}"
   BLOCKSIZE="${BLOCKSIZE:-28}"
