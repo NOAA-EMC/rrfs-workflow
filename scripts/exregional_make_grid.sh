@@ -477,7 +477,7 @@ fi
 # generate two new grid files -- one with a 3-grid-wide halo and another
 # with a 4-cell-wide halo.  These are needed as inputs by the forecast
 # model as well as by the code (chgres_cube) that generates the lateral
-# boundary condition files.                                             <== Are these also needed by make_sfc_climo???
+# boundary condition files.
 #
 #-----------------------------------------------------------------------
 #
@@ -557,6 +557,29 @@ The namelist file (nml_fn) used in this call is in directory tmpdir:
   tmpdir = \"${tmpdir}\""
 mv_vrfy ${shaved_fp} ${GRID_DIR}
 #
+# Create an input namelist file for the shave executable to generate a
+# grid file without halo from the one with a wide halo. Then call the shave 
+# executable.  Finally, move the resultant file to the GRID_DIR directory.
+#
+print_info_msg "$VERBOSE" "
+\"Shaving\" grid file with wide halo to obtain grid file without halo..."
+
+nml_fn="input.shave.grid.halo0"
+shaved_fp="${tmpdir}/${CRES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo0.nc"
+printf "%s %s %s %s %s\n" \
+  $NX $NY "0" \"${unshaved_fp}\" \"${shaved_fp}\" \
+  > ${nml_fn}
+
+$APRUN ${exec_fp} < ${nml_fn} || \
+print_err_msg_exit "\
+Call to executable (exec_fp) to generate a grid file without halo from
+the grid file with a ${NHW}-cell-wide halo returned with nonzero exit code:
+  exec_fp = \"${exec_fp}\"
+The namelist file (nml_fn) used in this call is in directory tmpdir:
+  nml_fn = \"${nml_fn}\"
+  tmpdir = \"${tmpdir}\""
+mv_vrfy ${shaved_fp} ${GRID_DIR}
+#
 # Change location to the original directory.
 #
 cd_vrfy -
@@ -602,6 +625,20 @@ make_grid_mosaic_file \
   print_err_msg_exit "\
 Call to function to generate the mosaic file for a grid with a ${NH4}-cell-wide
 halo failed."
+#
+#-----------------------------------------------------------------------
+#
+# Create the grid mosaic file for the grid without halo.
+#
+#-----------------------------------------------------------------------
+#
+make_grid_mosaic_file \
+  grid_dir="${GRID_DIR}" \
+  grid_fn="${CRES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo0.nc" \
+  mosaic_fn="${CRES}${DOT_OR_USCORE}mosaic.halo0.nc" || \
+  print_err_msg_exit "\
+Call to function to generate the mosaic file for a grid without halo
+failed."
 #
 #-----------------------------------------------------------------------
 #

@@ -29,6 +29,8 @@ FV3GFS_FILE_FMT_LBCS="grib2"
 
 WTIME_RUN_FCST="01:00:00"
 
+DO_RETRO="TRUE"
+
 USE_USER_STAGED_EXTRN_FILES="TRUE"
 EXTRN_MDL_SOURCE_BASEDIR_ICS="/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/input_model_data/FV3GFS/grib2"
 EXTRN_MDL_FILES_ICS=( "gfs.t00z.pgrb2.0p25.f000" )
