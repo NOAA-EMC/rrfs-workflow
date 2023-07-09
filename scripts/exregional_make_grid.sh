@@ -79,13 +79,12 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-# The orography code runs with threads.  On Cray, the code is optimized
-# for six threads.  Do not change.
+# OpenMP environment setting
 #
 #-----------------------------------------------------------------------
 #
-export OMP_NUM_THREADS=6
-export OMP_STACKSIZE=2048m
+export OMP_NUM_THREADS=1
+export OMP_STACKSIZE=1024m
 #
 #-----------------------------------------------------------------------
 #
@@ -115,8 +114,9 @@ case $MACHINE in
     ;;
 
   "JET")
-    APRUN="time"
+    ulimit -s unlimited
     ulimit -a
+    APRUN="time"
     ;;
 
   *)

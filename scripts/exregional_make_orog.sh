@@ -25,7 +25,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -76,8 +76,8 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-# The orography code runs with threads.  On Cray, the code is optimized
-# for six threads.  Do not change.
+# OpenMP environment settings.
+# The orography code is optimized for 6 threads.
 #
 #-----------------------------------------------------------------------
 #
@@ -99,8 +99,7 @@ case $MACHINE in
   "WCOSS2")
     ulimit -s unlimited
     ulimit -a
-    ncores=$(( NNODES_MAKE_OROG*PPN_MAKE_OROG ))
-    APRUN="mpiexec -n ${ncores} -ppn ${PPN_MAKE_ORO}"
+    APRUN="time"
     ;;
 
   "HERA")
@@ -118,21 +117,7 @@ case $MACHINE in
   "JET")
     ulimit -s unlimited
     ulimit -a
-    export APRUN="time"
-    ;;
-
-  "ODIN")
-    export APRUN="srun -n 1"
-    ulimit -s unlimited
-    ulimit -a
-    ;;
-
-  "CHEYENNE")
     APRUN="time"
-    ;;
-
-  "STAMPEDE")
-    export APRUN="time"
     ;;
 
   *)
