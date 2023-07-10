@@ -1600,6 +1600,9 @@ SFC_CLIMO_FIELDS=( \
 # specifies its target file in FIXam (where columns are delineated by the
 # pipe symbol "|").
 # 
+# VCOORD_FILE:
+# File name to set the vertical coordinate in make_ics and make_lbcs
+#
 #-----------------------------------------------------------------------
 #
 # Because the default values are dependent on the platform, we set these
@@ -1699,6 +1702,9 @@ CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING=( \
 "solarconstant_noaa_an.txt  | global_solarconstant_noaa_an.txt" \
 "global_o3prdlos.f77        | " \
 )
+
+VCOORD_FILE="global_hyblev_fcst_rrfsL65.txt"
+
 #
 #-----------------------------------------------------------------------
 #

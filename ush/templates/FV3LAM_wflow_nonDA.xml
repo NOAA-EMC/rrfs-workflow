@@ -66,6 +66,7 @@ Directories and files.
 <!ENTITY LOGDIR                   "{{ log_basedir }}/${run}.@Y@m@d/@H">
 {%- endif %}
 <!ENTITY CYCLE_BASEDIR            "{{ cycle_basedir }}">
+<!ENTITY NWGES_BASEDIR            "{{ nwges_basedir }}">
 <!ENTITY GLOBAL_VAR_DEFNS_FP      "{{ global_var_defns_fp }}">
 <!ENTITY LOAD_MODULES_RUN_TASK_FP "{{ load_modules_run_task_fp }}">
 
@@ -339,6 +340,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
 
     <dependency>
@@ -382,6 +384,9 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>bcgrp</name><value>0</value></envar>
+    <envar><name>bcgrpnum</name><value>{{ boundary_proc_group_num }}</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
 
     <dependency>
