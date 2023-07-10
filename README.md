@@ -22,4 +22,41 @@ cd rrfs-workflow
 ```
 where `[machine]` is `wcoss2`, `hera`, `orion`, or `jet`.
 
+## Engineering Test (non-DA)
+
+1. Load the python environment:
+
+- WCOSS2:
+```
+source versions/run.ver.wcoss2
+module use modulefiles
+module load wflow_wcoss2
+```
+
+- Hera, Orion, or Jet:
+```
+module use modulefiles
+module load wflow_[machine]
+conda activate workflow_tools
+```
+where `[machine]` is `hera`, `orion`, or `jet`.
+
+2. Copy the pre-defined configuration file:
+```
+cd ush
+cp sample_configs/[machine]/config.nonDA.community.hera.sh config.sh
+```
+where `[machine]` is `hera` or `wcoss2`. Note that you may need to change `ACCOUNT` in `config.sh`.
+
+3. Generate the workflow:
+```
+./generate_FV3LAM_wflow.sh
+```
+
+4. Launch the workflow:
+```
+cd ../../expt_dir/test_nonDA_community
+./launch_FV3LAM_wflow.sh
+```
+
 
