@@ -222,6 +222,8 @@ settings="\
   'save_da_output': ${SAVE_DA_OUTPUT_TN}
   'tag': ${TAG}
   'net': ${NET}
+  'run': ${RUN}
+  'run_envir': ${RUN_ENVIR}
   'jedi_envar_ioda': ${JEDI_ENVAR_IODA_TN}
 #
 # Number of nodes to use for each task.
@@ -399,7 +401,7 @@ settings="\
 # Directories and files.
 #
   'jobsdir': $JOBSdir
-  'logdir': $LOGDIR
+  'log_basedir': ${LOG_BASEDIR:-}
   'cycle_basedir': ${CYCLE_BASEDIR:-}
   'ensctrl_cycle_basedir': ${ENSCTRL_CYCLE_BASEDIR:-}
   'nwges_basedir': ${NWGES_BASEDIR:-}

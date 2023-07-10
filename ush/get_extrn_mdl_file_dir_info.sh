@@ -198,10 +198,7 @@ where the arguments are defined as follows:
 "
 
   fi
-
 fi
-
-
 #
 #-----------------------------------------------------------------------
 #
@@ -209,12 +206,12 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-  local yyyy mm dd hh mn yyyymmdd \
-        lbc_spec_fhrs i num_fhrs \
-        yy ddd fcst_hhh fcst_hh fcst_mn \
-        prefix suffix fns fns_on_disk fns_on_disk2 fns_in_arcv \
-        sysbasedir sysdir sysdir2 \
-        arcv_dir arcv_fmt arcv_fns arcv_fps arcvrel_dir
+local yyyy mm dd hh mn yyyymmdd \
+      lbc_spec_fhrs i num_fhrs \
+      yy ddd fcst_hhh fcst_hh fcst_mn \
+      prefix suffix fns fns_on_disk fns_on_disk2 fns_in_arcv \
+      sysbasedir sysdir sysdir2 \
+      arcv_dir arcv_fmt arcv_fns arcv_fps arcvrel_dir
 #
 #-----------------------------------------------------------------------
 #
@@ -222,9 +219,9 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-  anl_or_fcst="${anl_or_fcst^^}"
-  valid_vals_anl_or_fcst=( "ANL" "FCST" )
-  check_var_valid_value "anl_or_fcst" "valid_vals_anl_or_fcst"
+anl_or_fcst="${anl_or_fcst^^}"
+valid_vals_anl_or_fcst=( "ANL" "FCST" )
+check_var_valid_value "anl_or_fcst" "valid_vals_anl_or_fcst"
 #
 #-----------------------------------------------------------------------
 #
@@ -237,13 +234,13 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-  yyyy=${cdate_FV3LAM:0:4}
-  mm=${cdate_FV3LAM:4:2}
-  dd=${cdate_FV3LAM:6:2}
-  hh=${cdate_FV3LAM:8:2}
-  yyyymmdd=${cdate_FV3LAM:0:8}
+yyyy=${cdate_FV3LAM:0:4}
+mm=${cdate_FV3LAM:4:2}
+dd=${cdate_FV3LAM:6:2}
+hh=${cdate_FV3LAM:8:2}
+yyyymmdd=${cdate_FV3LAM:0:8}
 
-  cdate=$( date --utc --date "${yyyymmdd} ${hh} UTC - ${time_offset_hrs} hours" "+%Y%m%d%H" )
+cdate=$( date --utc --date "${yyyymmdd} ${hh} UTC - ${time_offset_hrs} hours" "+%Y%m%d%H" )
 #
 #-----------------------------------------------------------------------
 #
@@ -254,12 +251,12 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-  yyyy=${cdate:0:4}
-  mm=${cdate:4:2}
-  dd=${cdate:6:2}
-  hh=${cdate:8:2}
-  mn="00"
-  yyyymmdd=${cdate:0:8}
+yyyy=${cdate:0:4}
+mm=${cdate:4:2}
+dd=${cdate:6:2}
+hh=${cdate:8:2}
+mn="00"
+yyyymmdd=${cdate:0:8}
 #
 #-----------------------------------------------------------------------
 #
@@ -273,34 +270,30 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-  lbc_spec_fhrs=( "" )
-
-  if [ "${anl_or_fcst}" = "ANL" ]; then
-    ic_spec_fhrs=$(( 0 + time_offset_hrs ))
-  elif [ "${anl_or_fcst}" = "FCST" ]; then
-
-# offset is to go back to a previous cycle (for example 3-h) and 
-# use the forecast (3-h) from that cycle valid at this cycle. 
-# Here calculates the forecast and it is adding.
-
-    lbc_spec_fcst_hrs=($( seq 0 ${lbs_spec_intvl_hrs} \
-                          ${boundary_len_hrs} ))
-
-    lbc_spec_fhrs=( "${lbc_spec_fcst_hrs[@]}" )
-#
-# Add the temporal offset specified in time_offset_hrs (assumed to be in 
-# units of hours) to the the array of LBC update forecast hours to make
-# up for shifting the starting hour back in time.  After this addition,
-# lbc_spec_fhrs will contain the LBC update forecast hours relative to
-# the start time of the external model run.
-#
-    num_fhrs=${#lbc_spec_fhrs[@]}
-    for (( i=0; i<=$((num_fhrs-1)); i++ )); do
-      lbc_spec_fhrs[$i]=$(( ${lbc_spec_fhrs[$i]} + time_offset_hrs ))
-    done
-
+lbc_spec_fhrs=( "" )
+if [ "${anl_or_fcst}" = "ANL" ]; then
+  ic_spec_fhrs=$(( 0 + time_offset_hrs ))
+elif [ "${anl_or_fcst}" = "FCST" ]; then
+  # offset is to go back to a previous cycle (for example 3-h) and 
+  # use the forecast (3-h) from that cycle valid at this cycle. 
+  # Here calculates the forecast and it is adding.
+  if [ "${boundary_len_hrs}" = "0" ]; then
+    boundary_len_hrs=${FCST_LEN_HRS}
   fi
-
+  lbc_spec_fcst_hrs=($( seq 0 ${lbs_spec_intvl_hrs} ${boundary_len_hrs} ))
+  lbc_spec_fhrs=( "${lbc_spec_fcst_hrs[@]}" )
+  #
+  # Add the temporal offset specified in time_offset_hrs (assumed to be in 
+  # units of hours) to the the array of LBC update forecast hours to make
+  # up for shifting the starting hour back in time.  After this addition,
+  # lbc_spec_fhrs will contain the LBC update forecast hours relative to
+  # the start time of the external model run.
+  #
+  num_fhrs=${#lbc_spec_fhrs[@]}
+  for (( i=0; i<=$((num_fhrs-1)); i++ )); do
+    lbc_spec_fhrs[$i]=$(( ${lbc_spec_fhrs[$i]} + time_offset_hrs ))
+  done
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -309,17 +302,15 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+# Get the Julian day-of-year of the starting date and time of the 
+# external model forecast.
 #
-# Get the Julian day-of-year of the starting date and time of the exter-
-# nal model forecast.
-#
-    ddd=$( date --utc --date "${yyyy}-${mm}-${dd} ${hh}:${mn} UTC" "+%j" )
+ddd=$( date --utc --date "${yyyy}-${mm}-${dd} ${hh}:${mn} UTC" "+%j" )
 #
 # Get the last two digits of the year of the starting date and time of 
 # the external model forecast.
 #
-    yy=${yyyy:2:4}
-
+yy=${yyyy:2:4}
 #
 #-----------------------------------------------------------------------
 #
@@ -328,18 +319,18 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-  if [ "${anl_or_fcst}" = "ANL" ]; then
-    fv3gfs_file_fmt="${FV3GFS_FILE_FMT_ICS}"
-    gefs_file_fmt="grib2"
-  elif [ "${anl_or_fcst}" = "FCST" ]; then
-    fv3gfs_file_fmt="${FV3GFS_FILE_FMT_LBCS}"
-    gefs_file_fmt="grib2"
-  fi
+if [ "${anl_or_fcst}" = "ANL" ]; then
+  fv3gfs_file_fmt="${FV3GFS_FILE_FMT_ICS}"
+  gefs_file_fmt="grib2"
+elif [ "${anl_or_fcst}" = "FCST" ]; then
+  fv3gfs_file_fmt="${FV3GFS_FILE_FMT_LBCS}"
+  gefs_file_fmt="grib2"
+fi
 
-  fns_on_disk2=( "" )
-  fns_in_arcv=( "" )
+fns_on_disk2=( "" )
+fns_in_arcv=( "" )
 
-  case "${anl_or_fcst}" in
+case "${anl_or_fcst}" in
 #
 #-----------------------------------------------------------------------
 #
@@ -355,7 +346,6 @@ fi
     case "${extrn_mdl_name}" in
 
     "GSMGFS")
-#      fns=( "atm" "sfc" "nst" )
       fns=( "atm" "sfc" )
       prefix="gfs.t${hh}z."
       fns=( "${fns[@]/#/$prefix}" )
@@ -365,50 +355,26 @@ fi
       ;;
 
     "FV3GFS")
-
       if [ "${fv3gfs_file_fmt}" = "nemsio" ]; then
-
         fns=( "atm" "sfc" )
         suffix="anl.nemsio"
         fns=( "${fns[@]/%/$suffix}" )
 
-# Set names of external files if searching on disk.
-        if [ "${MACHINE}" = "JET" ] || [ "${MACHINE}" = "HERA" ]; then
-          prefix="${yy}${ddd}${hh}00.gfs.t${hh}z."
-        else
-          prefix="gfs.t${hh}z."
-        fi
+        # Set names of external files if searching on disk.
+        prefix="gfs.t${hh}z."
         fns_on_disk=( "${fns[@]/#/$prefix}" )
 
-# Set names of external files if searching in an archive file, e.g. from
-# HPSS.
+        # Set names of external files if searching in an archive file from HPSS.
         prefix="gfs.t${hh}z."
         fns_in_arcv=( "${fns[@]/#/$prefix}" )
 
       elif [ "${fv3gfs_file_fmt}" = "grib2" ]; then
-
-# GSK 12/16/2019:
-# Turns out that the .f000 file contains certain necessary fields that
-# are not in the .anl file, so switch to the former.
-#        fns=( "gfs.t${hh}z.pgrb2.0p25.anl" )  # Get only 0.25 degree files for now.
-#        fns=( "gfs.t${hh}z.pgrb2.0p25.f000" )  # Get only 0.25 degree files for now.
-
-        if [ "${MACHINE}" = "JET" ] || [ "${MACHINE}" = "ORION" ]; then
-          fns_on_disk=( "${yy}${ddd}${hh}0${fcst_mn}0${fcst_hh}" )
-        elif [ "${MACHINE}" = "HERA" ] ; then
-          #fns_on_disk=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )
-          fns_on_disk=( "${yy}${ddd}${hh}0${fcst_mn}0${fcst_hh}" )
-        else
-          fns_on_disk=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" "gfs.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
-        fi
-        if [ "${MACHINE}" = "WCOSS2" ] && [  "${retro_or_realtime}" = "RETRO" ]; then
-          fns_on_disk=( "${yy}${ddd}${hh}0${fcst_mn}0${fcst_hh}" )
-        fi
-        fns_in_arcv=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )  # Get only 0.25 degree files for now.
+        fns_on_disk=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )
+        fns_in_arcv=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )
 
       elif [ "${fv3gfs_file_fmt}" = "netcdf" ]; then
         fns_on_disk=( "gfs.t${hh}z.atmf0${fcst_hh}.nc" "gfs.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
-        fns_in_arcv=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )  # Get only 0.25 degree files for now.
+        fns_in_arcv=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )
       fi
       ;;
 
@@ -498,43 +464,23 @@ and analysis or forecast (anl_or_fcst):
 
     "FV3GFS")
       if [ "${fv3gfs_file_fmt}" = "nemsio" ]; then
-
         fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
-        suffix=".nemsio"
-        fns=( "${fcst_hhh[@]/%/$suffix}" )
-
-        if [ "${MACHINE}" = "JET" ] || [ "${MACHINE}" = "HERA" ]; then
-          prefix="${yy}${ddd}${hh}00.gfs.t${hh}z.atmf"
-        else
-          prefix="gfs.t${hh}z.atmf"
-        fi
-        fns_on_disk=( "${fns[@]/#/$prefix}" )
-
         prefix="gfs.t${hh}z.atmf"
-        fns_in_arcv=( "${fns[@]/#/$prefix}" )
-
+        suffix=".nemsio"
+        fns_on_disk_tmp=( "${fcst_hhh[@]/#/${prefix}}" )
+        fns_on_disk=( "${fns_on_disk_tmp[@]/%/${suffix}}" )
+        fns_in_arcv=( "${fcst_hhh[@]/#/${prefix}}" )
       elif [ "${fv3gfs_file_fmt}" = "grib2" ]; then
-
         fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
-
-        if [ "${MACHINE}" = "JET" ] || [ "${MACHINE}" = "ORION" ] || [ "${MACHINE}" = "HERA" ]; then
-          prefix=( "${yy}${ddd}${hh}${fcst_mn}0" )
-          fns_on_disk=( "${fcst_hhh[@]/#/$prefix}" )
-        else
-          prefix="gfs.t${hh}z.pgrb2.0p25.f"
-          fns_on_disk=( "${fcst_hhh[@]/#/$prefix}" )
-          fns_in_arcv=( "${fcst_hhh[@]/#/$prefix}" )
-        fi
-        if [ "${MACHINE}" = "WCOSS2" ] && [  "${retro_or_realtime}" = "RETRO" ]; then
-          prefix=( "${yy}${ddd}${hh}${fcst_mn}0" )
-          fns_on_disk=( "${fcst_hhh[@]/#/$prefix}" )
-        fi
+        prefix="gfs.t${hh}z.pgrb2.0p25.f"
+        fns_on_disk=( "${fcst_hhh[@]/#/$prefix}" )
+        fns_in_arcv=( "${fcst_hhh[@]/#/$prefix}" )
       elif [ "${fv3gfs_file_fmt}" = "netcdf" ]; then
         fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
-        postfix=".nc"
         prefix="gfs.t${hh}z.atmf"
+        suffix=".nc"
         fns_on_disk_tmp=( "${fcst_hhh[@]/#/${prefix}}" )
-        fns_on_disk=( "${fns_on_disk_tmp[@]/%/${postfix}}" )
+        fns_on_disk=( "${fns_on_disk_tmp[@]/%/${suffix}}" )
         fns_in_arcv=( "${fcst_hhh[@]/#/${prefix}}" )
       fi
       ;;
@@ -567,10 +513,7 @@ and analysis or forecast (anl_or_fcst):
       ;;
 
     "RAP")
-#
-# Note that this is GSL RAPX data, not operational NCEP RAP data.  An option for the latter
-# may be added in the future.
-#
+      # Note that this is GSL RAPX data, not operational NCEP RAP data.
       fcst_hh=( $( printf "%02d " "${lbc_spec_fhrs[@]}" ) )
 
       prefix="${yy}${ddd}${hh}${mn}${fcst_mn}"
@@ -584,10 +527,7 @@ and analysis or forecast (anl_or_fcst):
       ;;
 
     "HRRR")
-#
-# Note that this is GSL HRRRX data, not operational NCEP HRRR data.  An option for the latter
-# may be added in the future.
-#
+      # Note that this is GSL HRRRX data, not operational NCEP HRRR data.
       fcst_hh=( $( printf "%02d " "${lbc_spec_fhrs[@]}" ) )
 
       prefix="${yy}${ddd}${hh}${mn}"

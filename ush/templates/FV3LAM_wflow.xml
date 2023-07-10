@@ -98,7 +98,12 @@ specifies the number of processes per node being used (the PPN_... entities).
 Directories and files.
 -->
 <!ENTITY JOBSdir                  "{{ jobsdir }}">
-<!ENTITY LOGDIR                   "{{ logdir }}">
+<!ENTITY LOG_BASEDIR              "{{ log_basedir }}">
+{%- if run_envir == "community" %}
+<!ENTITY LOGDIR                   "{{ log_basedir }}/@Y@m@d/@H">
+{%- else %}
+<!ENTITY LOGDIR                   "{{ log_basedir }}/${run}.@Y@m@d/@H">
+{%- endif %}
 <!ENTITY OBSPATH                  "{{ obspath }}">
 <!ENTITY OBSPATH_PM               "{{ obspath_pm }}">
 <!ENTITY CYCLE_BASEDIR            "{{ cycle_basedir }}">
@@ -412,7 +417,7 @@ MODULES_RUN_TASK_FP script.
     <dependency>
       <or>
 <!--        <taskdep task="make_grid"/> -->
-        <datadep age="00:00:00:05">&LOGDIR;/&MAKE_GRID_TN;_task_complete.txt</datadep>
+        <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
         <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
       </or>
     </dependency>
@@ -441,12 +446,12 @@ MODULES_RUN_TASK_FP script.
       <and>
         <or>
 <!--          <taskdep task="&MAKE_GRID_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_GRID_TN;_task_complete.txt</datadep>
+          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
           <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
         </or>
         <or>
 <!--          <taskdep task="&MAKE_OROG_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_OROG_TN;_task_complete.txt</datadep>
+          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_orog_task_complete.txt</datadep>
           <streq><left>&RUN_TASK_MAKE_OROG;</left><right>FALSE</right></streq>
         </or>
       </and>
