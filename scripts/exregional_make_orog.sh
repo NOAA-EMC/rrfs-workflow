@@ -288,18 +288,61 @@ mv_vrfy "${raw_orog_fp_orig}" "${raw_orog_fp}"
 #
 #-----------------------------------------------------------------------
 #
-# Copy the two orography files needed for the drag suite in the FV3_HRRR
-# physics suite.
-#
-# Note that the following is a temporary fix.  We need a long-term solution
-# that calls a script or program to generates the necessary files (instead
-# of copying them).
+# Call the code to generate the two orography statistics files (large-
+# and small-scale) needed for the drag suite in the FV3_HRRR physics
+# suite.
 #
 #-----------------------------------------------------------------------
 #
-if [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR_gf" ] || [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ]; then
-  cp_vrfy ${GWD_HRRRsuite_DIR}/${CRES}*_ls.*.nc ${OROG_DIR}
-  cp_vrfy ${GWD_HRRRsuite_DIR}/${CRES}*_ss.*.nc ${OROG_DIR}
+suites=( "FV3_RAP" "FV3_HRRR" "FV3_HRRR_gf" "FV3_GFS_v15_thompson_mynn_lam3km" "FV3_GFS_v17_p8" )
+if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" ]] ; then
+  DATA="${DATA:-${OROG_DIR}/temp_orog_data}"
+  mkdir_vrfy -p ${DATA}
+  cd_vrfy ${DATA}
+  mosaic_fn_gwd="${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc"
+  mosaic_fp_gwd="${FIXlam}/${mosaic_fn_gwd}"
+  grid_fn_gwd=$( get_charvar_from_netcdf "${mosaic_fp_gwd}" "gridfiles" ) || \
+    print_err_msg_exit "get_charvar_from_netcdf function failed."
+  grid_fp_gwd="${FIXlam}/${grid_fn_gwd}"
+  ls_fn="geo_em.d01.lat-lon.2.5m.HGT_M.nc"
+  ss_fn="HGT.Beljaars_filtered.lat-lon.30s_res.nc"
+  create_symlink_to_file target="${grid_fp_gwd}" symlink="${DATA}/${grid_fn_gwd}" \
+                         relative="TRUE"
+  create_symlink_to_file target="${FIXam}/${ls_fn}" symlink="${DATA}/${ls_fn}" \
+                         relative="TRUE"
+  create_symlink_to_file target="${FIXam}/${ss_fn}" symlink="${DATA}/${ss_fn}" \
+                         relative="TRUE"
+
+  input_redirect_fn="grid_info.dat"
+  cat > "${input_redirect_fn}" <<EOF
+${TILE_RGNL}
+${CRES:1}
+${NH4}
+EOF
+
+  exec_fn="orog_gsl"
+  exec_fp="$EXECDIR/${exec_fn}"
+  if [ ! -f "${exec_fp}" ]; then
+    print_err_msg_exit "\
+The executable (exec_fp) for generating the GSL orography GWD data files
+does not exist:
+  exec_fp = \"${exec_fp}\"
+Please ensure that you've built this executable."
+  fi
+
+  print_info_msg "$VERBOSE" "
+Starting orography file generation..."
+
+  ${APRUN} "${exec_fp}" < "${input_redirect_fn}"  ${REDIRECT_OUT_ERR} || \
+      print_err_msg_exit "\
+Call to executable (exec_fp) that generates the GSL orography GWD data files
+returned with nonzero exit code:
+  exec_fp = \"${exec_fp}\""
+
+  mv_vrfy "${CRES}${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc" \
+          "${CRES}${DOT_OR_USCORE}oro_data_ls.tile${TILE_RGNL}.halo${NH0}.nc" \
+          "${OROG_DIR}"
+
 fi
 #
 #-----------------------------------------------------------------------
@@ -408,13 +451,11 @@ cp_vrfy "${raw_orog_fp}" "${filtered_orog_fp}"
 # filtering executable will run) with the same name as the grid file and
 # point it to the actual grid file specified by grid_fp.
 #
-
 if [ "${MACHINE}" = "WCOSS2" ]; then
   ln_vrfy -fs "${grid_fp}" "${filter_dir}/${grid_fn}"
 else
   ln_vrfy -fs --relative "${grid_fp}" "${filter_dir}/${grid_fn}"
 fi
-
 #
 # Create the namelist file (in the filter_dir directory) that the orography
 # filtering executable will read in.
@@ -426,7 +467,6 @@ cat > "${filter_dir}/input.nml" <<EOF
   mask_field = "land_frac"
   regional = .true.
   stretch_fac = ${STRETCH_FAC}
-  refine_ratio = ${refine_ratio}
   res = $res
 /
 EOF
