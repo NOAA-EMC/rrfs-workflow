@@ -30,10 +30,7 @@ FV3GFS_FILE_FMT_LBCS="grib2"
 WTIME_RUN_FCST="01:00:00"
 
 DO_RETRO="TRUE"
-BOUNDARY_LEN_HRS="12"
 
 USE_USER_STAGED_EXTRN_FILES="TRUE"
-EXTRN_MDL_SOURCE_BASEDIR_ICS="/scratch2/BMC/det/UFS_SRW_app/v1p0/model_data/FV3GFS"
-EXTRN_MDL_FILES_ICS=( "gfs.pgrb2.0p25.f000" )
-EXTRN_MDL_SOURCE_BASEDIR_LBCS="/scratch2/BMC/det/UFS_SRW_app/v1p0/model_data/FV3GFS"
-EXTRN_MDL_FILES_LBCS=( "gfs.pgrb2.0p25.f006" "gfs.pgrb2.0p25.f012" )
+EXTRN_MDL_SOURCE_BASEDIR_ICS="/scratch1/NCEPDEV/nems/role.epic/UFS_SRW_data/develop/input_model_data/FV3GFS/grib2/2019061500"
+EXTRN_MDL_SOURCE_BASEDIR_LBCS="/scratch1/NCEPDEV/nems/role.epic/UFS_SRW_data/develop/input_model_data/FV3GFS/grib2/2019061500"
