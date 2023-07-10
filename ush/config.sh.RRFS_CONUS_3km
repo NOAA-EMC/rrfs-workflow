@@ -1,5 +1,5 @@
 MACHINE="jet"
-version="v0.4.0"
+version="v0.5.2"
 ACCOUNT="nrtrr"
 #RESERVATION="rrfsdet"
 EXPT_BASEDIR="YourOwnSpace/${version}"
@@ -31,6 +31,7 @@ DO_BUFRSND="FALSE"
 USE_FVCOM="FALSE"
 PREP_FVCOM="FALSE"
 DO_PARALLEL_PRDGEN="FALSE"
+DO_GSIDIAG_OFFLINE="TRUE"
 
 EXTRN_MDL_ICS_OFFSET_HRS="3"
 LBC_SPEC_INTVL_HRS="1"
@@ -103,7 +104,7 @@ EXTRN_MDL_NAME_LBCS="FV3GFS"
 envir="para"
 
 NET="rrfs_b"
-TAG="c3v40"
+TAG="c3v52"
 
 ARCHIVEDIR="/1year/BMC/wrfruc/rrfs_b"
 NCL_REGION="conus"

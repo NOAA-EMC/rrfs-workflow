@@ -1750,6 +1750,7 @@ RUN_PRDGEN_TN="run_prdgen"
 RUN_BUFRSND_TN="run_bufrsnd"
 
 ANAL_GSI_TN="anal_gsi_input"
+ANAL_GSIDIAG_TN="anal_gsi_diag"
 ANAL_SD_GSI_TN="anal_sd_gsi_input"
 POSTANAL_TN="postanal_input"
 OBSERVER_GSI_ENSMEAN_TN="observer_gsi_ensmean"
@@ -1785,6 +1786,7 @@ NNODES_RUN_FCST=""  # This is calculated in the workflow generation scripts, so 
 NNODES_RUN_POST="2"
 NNODES_RUN_PRDGEN="1"
 NNODES_RUN_ANAL="16"
+NNODES_RUN_GSIDIAG="1"
 NNODES_RUN_POSTANAL="1"
 NNODES_RUN_ENKF="90"
 NNODES_RUN_RECENTER="2"
@@ -1823,6 +1825,7 @@ PPN_RUN_FCST="24"  # This may have to be changed depending on the number of thre
 PPN_RUN_POST="24"
 PPN_RUN_PRDGEN="1"
 PPN_RUN_ANAL="24"
+PPN_RUN_GSIDIAG="24"
 PPN_RUN_POSTANAL="1"
 PPN_RUN_ENKF="1"
 PPN_RUN_RECENTER="20"
@@ -1864,6 +1867,7 @@ WTIME_RUN_FCST_SPINUP="00:30:00"
 WTIME_RUN_POST="00:15:00"
 WTIME_RUN_PRDGEN="00:40:00"
 WTIME_RUN_ANAL="00:30:00"
+WTIME_RUN_GSIDIAG="00:15:00"
 WTIME_RUN_POSTANAL="00:30:00"
 WTIME_RUN_ENKF="01:00:00"
 WTIME_RUN_RECENTER="01:00:00"
@@ -2074,6 +2078,9 @@ TILE_SETS="full"
 # DO_SAVE_DA_OUTPUT:
 # Decide whether or not to run save_da_output after the DA analysis  
 #
+# DO_GSIDIAG_OFFLINE:
+# Decide whether or not to run GSI diag generation outside of the GSI task  
+#
 # DO_ENS_GRAPHICS:
 # Flag to turn on/off ensemble graphics. Turns OFF deterministic
 # graphics.
@@ -2130,6 +2137,7 @@ DO_ENS_GRAPHICS="FALSE"
 DO_ENSPOST="FALSE"
 DO_ENSINIT="FALSE"
 DO_SAVE_DA_OUTPUT="FALSE"
+DO_GSIDIAG_OFFLINE="FALSE"
 DO_ENS_RADDA="FALSE"
 #
 #-----------------------------------------------------------------------

@@ -492,6 +492,7 @@ optionList[21]=DO_SAVE_INPUT
 optionList[22]=DO_SDDACYCLE
 optionList[23]=DO_SAVE_DA_OUTPUT
 optionList[24]=DO_ENS_RADDA
+optionList[25]=DO_GSIDIAG_OFFLINE
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));

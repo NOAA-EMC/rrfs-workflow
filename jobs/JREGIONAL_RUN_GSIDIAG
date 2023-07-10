@@ -1,0 +1,149 @@
+#!/bin/bash
+
+#
+#-----------------------------------------------------------------------
+#
+# This J-JOB script runs the GSI analysis 
+#      for the FV3-LAM model
+#
+#-----------------------------------------------------------------------
+
+#
+#-----------------------------------------------------------------------
+#
+# Source the variable definitions file and the bash utility functions.
+#
+#-----------------------------------------------------------------------
+#
+. ${GLOBAL_VAR_DEFNS_FP}
+. $USHDIR/source_util_funcs.sh
+#
+#-----------------------------------------------------------------------
+#
+# Save current shell options (in a global array).  Then set new options
+# for this script/function.
+#
+#-----------------------------------------------------------------------
+#
+{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+#
+#-----------------------------------------------------------------------
+#
+# Get the full path to the file in which this script/function is located 
+# (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
+# which the file is located (scrfunc_dir).
+#
+#-----------------------------------------------------------------------
+#
+scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
+scrfunc_fn=$( basename "${scrfunc_fp}" )
+scrfunc_dir=$( dirname "${scrfunc_fp}" )
+#
+#-----------------------------------------------------------------------
+#
+# Print message indicating entry into script.
+#
+#-----------------------------------------------------------------------
+#
+print_info_msg "
+========================================================================
+Entering script:  \"${scrfunc_fn}\"
+In directory:     \"${scrfunc_dir}\"
+
+This is the J-job script for the task that runs a analysis with FV3 for 
+the specified cycle.
+========================================================================"
+#
+#-----------------------------------------------------------------------
+#
+# Create the working directory under the cycle directory.
+#
+#-----------------------------------------------------------------------
+# CYCLE_TYPE is to indicate which type of cycle this job for:
+#   spinup: this job is for spin-up cycles
+#   others(prod): this job is for product cycle
+#
+CYCLE_TYPE=${CYCLE_TYPE:-prod}
+observer_nwges_dir=""
+
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  analworkname="_gsi_spinup"
+else
+  analworkname="_gsi"
+fi
+
+if [[ ! -v OB_TYPE ]]; then
+  OB_TYPE="conv"
+fi
+if [ ${GSI_TYPE} == "OBSERVER" ]; then
+  echo " Error, GSI_TYPE should no be OBSERVER"
+  exit 1
+else
+  analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/anal_${OB_TYPE}${analworkname}"
+fi
+
+if [ ! -d "${SATBIAS_DIR}" ]; then
+  echo "making satbias_dir directory for cycling bias correction files" 
+  mkdir_vrfy -p ${SATBIAS_DIR}
+fi
+
+#
+#-----------------------------------------------------------------------
+#
+# create COMOUT directory
+#
+#-----------------------------------------------------------------------
+
+if [ "${RUN_ENVIR}" = "nco" ]; then
+  if [ ${CYCLE_TYPE} == "spinup" ]; then
+    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
+  else
+    if [ ${MEM_TYPE} == "MEAN" ]; then
+      COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc/ensmean"
+    else
+      COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}${SLASH_ENSMEM_SUBDIR}"
+    fi
+  fi
+  mkdir_vrfy -p "${COMOUT}"
+fi
+#
+#-----------------------------------------------------------------------
+#
+# Call the ex-script for this J-job and pass to it the necessary varia-
+# bles.
+#
+#-----------------------------------------------------------------------
+#
+$SCRIPTSDIR/exregional_run_gsidiag.sh \
+             cycle_dir="${CYCLE_DIR}" \
+             cycle_type="${CYCLE_TYPE}" \
+             gsi_type="${GSI_TYPE}" \
+             mem_type="${MEM_TYPE}" \
+             analworkdir="${analworkdir}" \
+             observer_nwges_dir="${observer_nwges_dir}" \
+             comout="${COMOUT}" \
+             satbias_dir="${SATBIAS_DIR}" || \
+print_err_msg_exit "\
+Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+#
+#-----------------------------------------------------------------------
+#
+# Print exit message.
+#
+#-----------------------------------------------------------------------
+#
+print_info_msg "
+========================================================================
+Exiting script:  \"${scrfunc_fn}\"
+In directory:    \"${scrfunc_dir}\"
+========================================================================"
+#
+#-----------------------------------------------------------------------
+#
+# Restore the shell options saved at the beginning of this script/func-
+# tion.
+#
+#-----------------------------------------------------------------------
+#
+{ restore_shell_opts; } > /dev/null 2>&1
+
