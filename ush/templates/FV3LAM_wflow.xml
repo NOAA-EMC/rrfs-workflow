@@ -908,17 +908,17 @@ MODULES_RUN_TASK_FP script.
         <taskdep task="&GET_EXTRN_ICS_TN;{{ uscore_ensmem_name }}"/>
         <or>
 <!--          <taskdep task="&MAKE_GRID_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_GRID_TN;_task_complete.txt</datadep>
+          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
           <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
         </or>
         <or>
 <!--          <taskdep task="&MAKE_OROG_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_OROG_TN;_task_complete.txt</datadep>
+          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_orog_task_complete.txt</datadep>
           <streq><left>&RUN_TASK_MAKE_OROG;</left><right>FALSE</right></streq>
         </or>
         <or>
 <!--          <taskdep task="&MAKE_SFC_CLIMO_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_SFC_CLIMO_TN;_task_complete.txt</datadep>
+          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_sfc_climo_task_complete.txt</datadep>
           <streq><left>&RUN_TASK_MAKE_SFC_CLIMO;</left><right>FALSE</right></streq>
         </or>
       </and>
@@ -963,17 +963,17 @@ MODULES_RUN_TASK_FP script.
         </or>
         <or>
 <!--          <taskdep task="&MAKE_GRID_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_GRID_TN;_task_complete.txt</datadep>
+          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
           <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
         </or>
         <or>
 <!--          <taskdep task="&MAKE_OROG_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_OROG_TN;_task_complete.txt</datadep>
+          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_orog_task_complete.txt</datadep>
           <streq><left>&RUN_TASK_MAKE_OROG;</left><right>FALSE</right></streq>
         </or>
         <or>
 <!--          <taskdep task="&MAKE_SFC_CLIMO_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_SFC_CLIMO_TN;_task_complete.txt</datadep>
+          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_sfc_climo_task_complete.txt</datadep>
           <streq><left>&RUN_TASK_MAKE_SFC_CLIMO;</left><right>FALSE</right></streq>
         </or>
       </and>
