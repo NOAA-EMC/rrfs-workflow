@@ -84,6 +84,7 @@ print_input_args valid_args
 #
 export OMP_NUM_THREADS=1
 export OMP_STACKSIZE=1024m
+nprocs=$(( NNODES_MAKE_SFC_CLIMO * PPN_MAKE_SFC_CLIMO ))
 #
 #-----------------------------------------------------------------------
 #
@@ -132,25 +133,25 @@ case $MACHINE in
   "WCOSS2")
     ulimit -s unlimited
     ulimit -a
-    APRUN="time"
+    APRUN="mpiexec -n ${nprocs}"
     ;;
 
   "HERA")
     ulimit -s unlimited
     ulimit -a
-    APRUN="time"
+    APRUN="srun --export=ALL"
     ;;
 
   "ORION")
     ulimit -s unlimited
     ulimit -a
-    APRUN="time"
+    APRUN="srun --export=ALL"
     ;;
 
   "JET")
     ulimit -s unlimited
     ulimit -a
-    APRUN="time"
+    APRUN="srun --export=ALL"
     ;;
 
   *)
