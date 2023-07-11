@@ -597,7 +597,7 @@ POSTPROC_LEN_HRS="1"
 POSTPROC_LONG_LEN_HRS="1"
 FCST_LEN_HRS="24"
 FCST_LEN_HRS_SPINUP="1"
-FCST_LEN_HRS_CYCLES=( )
+FCST_LEN_HRS_CYCLES=()
 DA_CYCLE_INTERV="1"
 RESTART_INTERVAL="1 2"
 RESTART_INTERVAL_LONG="1 2"
@@ -1281,6 +1281,14 @@ ESGgrid_PAZI=""
 # OUTPUT_FH
 # setup time of writing out forecast files in hours
 #
+# FHROT:
+# Forecast hour at restart
+#
+# WRITE_DOPOST:
+# Flag that determines whether or not to use the inline post feature
+# [i.e. calling the Unified Post Processor (UPP) from within the
+# weather model].  If this is set to true, the the run_post task will
+# be deactivated.
 #-----------------------------------------------------------------------
 #
 DT_ATMOS=""
@@ -1296,6 +1304,8 @@ NFHOUT_HF="1"
 NSOUT="0"
 NSOUT_MIN="0"
 OUTPUT_FH="-1"
+FHROT="0"
+WRITE_DOPOST="FALSE"
 #
 #-----------------------------------------------------------------------
 #

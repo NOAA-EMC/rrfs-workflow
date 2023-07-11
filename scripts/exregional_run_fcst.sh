@@ -68,7 +68,7 @@ valid_args=( \
 "cdate" \
 "cycle_type" \
 "cycle_subtype" \
-"cycle_dir" \
+"run_dir" \
 "gridspec_dir" \
 "ensmem_indx" \
 "slash_ensmem_subdir" \
@@ -152,14 +152,6 @@ Run command has not been specified for this machine:
     ;;
 
 esac
-#
-#-----------------------------------------------------------------------
-#
-# Set the forecast run directory.
-#
-#-----------------------------------------------------------------------
-#
-run_dir="${cycle_dir}"
 #
 #-----------------------------------------------------------------------
 #
@@ -326,7 +318,7 @@ n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
 if [ ${BKTYPE} -eq 1 ]; then
-  target="gfs_data.tile${TILE_RGNL}.halo${NH0}.nc"
+  target="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/ics/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc"
 else
   target="fv_core.res.tile1.nc"
 fi
@@ -354,7 +346,7 @@ else
 fi
 
 if [ ${BKTYPE} -eq 1 ]; then
-  target="sfc_data.tile${TILE_RGNL}.halo${NH0}.nc"
+  target="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/ics/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc"
   symlink="sfc_data.nc"
   if [ -f "${target}" ]; then
     ln_vrfy -sf ${relative_or_null} $target $symlink

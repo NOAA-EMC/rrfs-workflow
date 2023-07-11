@@ -102,21 +102,25 @@ run directory (run_dir):
 #
   dot_quilting_dot="."${QUILTING,,}"."
   dot_print_esmf_dot="."${PRINT_ESMF,,}"."
+  dot_write_dopost_dot="."${WRITE_DOPOST,,}"."
 #
 # decide the forecast length for this cycle
 #
-
-  num_fhrs=( "${#FCST_LEN_HRS_CYCLES[@]}" )
-  ihh=`expr ${hh} + 0`
-  if [ ${num_fhrs} -gt ${ihh} ]; then
-     FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS_CYCLES[${ihh}]}
+  if [ -z "${FCST_LEN_HRS_CYCLES}" ]; then
+    FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS}
   else
-     FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS}
+    num_fhrs=( "${#FCST_LEN_HRS_CYCLES[@]}" )
+    ihh=`expr ${hh} + 0`
+    if [ ${num_fhrs} -gt ${ihh} ]; then
+      FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS_CYCLES[${ihh}]}
+    else
+      FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS}
+    fi
   fi
   print_info_msg "$VERBOSE" " The forecast length for cycle (\"${hh}\") is
                  ( \"${FCST_LEN_HRS_thiscycle}\") "
 
-  if [ ${cycle_type} == "spinup" ]; then
+  if [ ${cycle_type} = "spinup" ]; then
     FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS_SPINUP}
     if [ "${cycle_subtype}" == "ensinit" ]; then
       for cyc_start in "${CYCL_HRS_SPINSTART[@]}"; do
@@ -143,25 +147,19 @@ run directory (run_dir):
 #-----------------------------------------------------------------------
 #
   settings="\
-  'PE_MEMBER01': ${PE_MEMBER01}
   'start_year': $yyyy
   'start_month': $mm
   'start_day': $dd
   'start_hour': $hh
   'nhours_fcst': ${FCST_LEN_HRS_thiscycle}
+  'fhrot': ${FHROT}
   'dt_atmos': ${DT_ATMOS}
-  'atmos_nthreads': ${nthreads:-1}
-  'ncores_per_node': ${NCORES_PER_NODE}
   'restart_interval': ${restart_hrs}
+  'write_dopost': ${dot_write_dopost_dot}
   'quilting': ${dot_quilting_dot}
-  'print_esmf': ${dot_print_esmf_dot}
   'output_grid': ${WRTCMP_output_grid}
   'nsout': ${NSOUT}
-  'nfhout': ${NFHOUT}
-  'nfhmax_hf': ${NFHMAX_HF}
-  'nfhout_hf': ${NFHOUT_HF}
   'output_fh': ${OUTPUT_FH}"
-#  'output_grid': \'${WRTCMP_output_grid}\'"
 #
 # If the write-component is to be used, then specify a set of computational
 # parameters and a set of grid parameters.  The latter depends on the type
