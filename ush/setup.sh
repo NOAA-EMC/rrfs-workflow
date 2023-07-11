@@ -812,10 +812,10 @@ fi
 case $MACHINE in
 
   "WCOSS2")
-    FIXgsm=${FIXgsm:-"/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/fix_am"}
-    TOPO_DIR=${TOPO_DIR:-"/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/fix_orog"}
-    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/fix_sfc_climo"}
-    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
+    FIXgsm=${FIXgsm:-"/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/fix/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/fix/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/fix/fix_sfc_climo"}
+    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/FV3LAM_pregen"}
     ;;
 
   "HERA")

@@ -432,6 +432,8 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
+    <envar><name>NWGES_BASEDIR</name><value>&NWGES_BASEDIR;</value></envar>
+    <envar><name>RESTART_HRS</name><value><cyclestr>0</cyclestr></value></envar>
 
     <dependency>
       <and>
