@@ -291,10 +291,6 @@ fi
 #   gfs_bndy*.nc
 #   gfs_ctrl.nc
 #
-# Some of these files (gfs_ctrl.nc, gfs_bndy*.nc) already exist, but
-# others do not.  Thus, create links with these names to the appropriate
-# files (in this case the initial condition and surface files only).
-#
 #-----------------------------------------------------------------------
 #
 print_info_msg "$VERBOSE" "
@@ -348,13 +344,17 @@ fi
 if [ ${BKTYPE} -eq 1 ]; then
   target="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/ics/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc"
   symlink="sfc_data.nc"
-  if [ -f "${target}" ]; then
+  ln_vrfy -sf ${relative_or_null} $target $symlink
+
+  target="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/ics/gfs_ctrl.nc"
+  symlink="gfs_ctrl.nc"
+  ln_vrfy -sf ${relative_or_null} $target $symlink
+
+  for fhr in $(seq -f "%03g" 0 ${LBC_SPEC_INTVL_HRS} ${FCST_LEN_HRS}); do
+    target="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/lbcs/gfs_bndy.tile${TILE_RGNL}.${fhr}.nc"
+    symlink="gfs_bndy.tile${TILE_RGNL}.${fhr}.nc"
     ln_vrfy -sf ${relative_or_null} $target $symlink
-  else
-    print_err_msg_exit "\
-    Cannot create symlink because target does not exist:
-    target = \"$target\""
-  fi
+  done
 else
   if [ -f "sfc_data.nc.0000" ] || [ -f "sfc_data.nc" ]; then
     print_info_msg "$VERBOSE" "
