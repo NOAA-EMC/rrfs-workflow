@@ -44,7 +44,7 @@ where `[machine]` is `hera`, `orion`, or `jet`.
 2. Copy the pre-defined configuration file:
 ```
 cd ush
-cp sample_configs/[machine]/config.nonDA.community.hera.sh config.sh
+cp sample_configs/[machine]/config.nonDA.community.[machine].sh config.sh
 ```
 where `[machine]` is `hera` or `wcoss2`. Note that you may need to change `ACCOUNT` in `config.sh`.
 
