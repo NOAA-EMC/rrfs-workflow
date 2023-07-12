@@ -502,6 +502,8 @@ FV3_GFS_v15_thompson_mynn_lam3km:
 FV3_GFS_v16:
   cires_ugwp_nml:
     launch_level: 27
+  external_ic_nml:
+    levp: 65
   fv_core_nml:
     agrid_vel_rst: False
     d2_bg_k1: 0.2
@@ -526,6 +528,7 @@ FV3_GFS_v16:
     n_sponge: 10
     na_init: 0
     nord_zs_filter: !!python/none
+    npz: 64
     nudge_dz: False
     nudge_qv: True
     psm_bc: 1
