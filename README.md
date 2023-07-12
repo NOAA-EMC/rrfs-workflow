@@ -46,7 +46,7 @@ where `[machine]` is `hera`, `orion`, or `jet`.
 cd ush
 cp sample_configs/non-DA_eng/config.nonDA.community.[machine].sh config.sh
 ```
-where `[machine]` is `hera` or `wcoss2`. Note that you may need to change `ACCOUNT` in `config.sh`.
+where `[machine]` is `wcoss2`, `hera`, `orion`, or `jet`. Note that you may need to change `ACCOUNT` in `config.sh`.
 
 3. Generate the workflow:
 ```
