@@ -466,6 +466,7 @@ MODULES_RUN_TASK_FP script.
         <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
         <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
         <envar><name>fhr</name><value>#fhr#</value></envar>
+        <envar><name>TMMARK</name><value>tm00</value></envar>
 
         <dependency>
           <or>
