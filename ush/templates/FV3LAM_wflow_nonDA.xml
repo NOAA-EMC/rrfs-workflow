@@ -59,8 +59,14 @@ specifies the number of processes per node being used (the PPN_... entities).
 Directories and files.
 -->
 <!ENTITY JOBSdir                  "{{ jobsdir }}">
-<!ENTITY LOGDIR                   "{{ logdir }}">
+<!ENTITY LOG_BASEDIR              "{{ log_basedir }}">
+{%- if run_envir == "community" %}
+<!ENTITY LOGDIR                   "{{ log_basedir }}/@Y@m@d/@H">
+{%- else %}
+<!ENTITY LOGDIR                   "{{ log_basedir }}/${run}.@Y@m@d/@H">
+{%- endif %}
 <!ENTITY CYCLE_BASEDIR            "{{ cycle_basedir }}">
+<!ENTITY NWGES_BASEDIR            "{{ nwges_basedir }}">
 <!ENTITY GLOBAL_VAR_DEFNS_FP      "{{ global_var_defns_fp }}">
 <!ENTITY LOAD_MODULES_RUN_TASK_FP "{{ load_modules_run_task_fp }}">
 
@@ -221,7 +227,7 @@ MODULES_RUN_TASK_FP script.
     <dependency>
       <or>
 <!--        <taskdep task="make_grid"/> -->
-        <datadep age="00:00:00:05">&LOGDIR;/&MAKE_GRID_TN;_task_complete.txt</datadep>
+        <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
         <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
       </or>
     </dependency>
@@ -250,12 +256,12 @@ MODULES_RUN_TASK_FP script.
       <and>
         <or>
 <!--          <taskdep task="&MAKE_GRID_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_GRID_TN;_task_complete.txt</datadep>
+          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
           <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
         </or>
         <or>
 <!--          <taskdep task="&MAKE_OROG_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_OROG_TN;_task_complete.txt</datadep>
+          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_orog_task_complete.txt</datadep>
           <streq><left>&RUN_TASK_MAKE_OROG;</left><right>FALSE</right></streq>
         </or>
       </and>
@@ -334,6 +340,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
 
     <dependency>
@@ -341,17 +348,17 @@ MODULES_RUN_TASK_FP script.
         <taskdep task="&GET_EXTRN_ICS_TN;"/>
         <or>
 <!--          <taskdep task="&MAKE_GRID_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_GRID_TN;_task_complete.txt</datadep>
+          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
           <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
         </or>
         <or>
 <!--          <taskdep task="&MAKE_OROG_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_OROG_TN;_task_complete.txt</datadep>
+          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_orog_task_complete.txt</datadep>
           <streq><left>&RUN_TASK_MAKE_OROG;</left><right>FALSE</right></streq>
         </or>
         <or>
 <!--          <taskdep task="&MAKE_SFC_CLIMO_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_SFC_CLIMO_TN;_task_complete.txt</datadep>
+          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_sfc_climo_task_complete.txt</datadep>
           <streq><left>&RUN_TASK_MAKE_SFC_CLIMO;</left><right>FALSE</right></streq>
         </or>
       </and>
@@ -377,6 +384,9 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>bcgrp</name><value>0</value></envar>
+    <envar><name>bcgrpnum</name><value>{{ boundary_proc_group_num }}</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
 
     <dependency>
@@ -384,17 +394,17 @@ MODULES_RUN_TASK_FP script.
         <taskdep task="&GET_EXTRN_LBCS_TN;"/>
         <or>
 <!--          <taskdep task="&MAKE_GRID_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_GRID_TN;_task_complete.txt</datadep>
+          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
           <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
         </or>
         <or>
 <!--          <taskdep task="&MAKE_OROG_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_OROG_TN;_task_complete.txt</datadep>
+          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_orog_task_complete.txt</datadep>
           <streq><left>&RUN_TASK_MAKE_OROG;</left><right>FALSE</right></streq>
         </or>
         <or>
 <!--          <taskdep task="&MAKE_SFC_CLIMO_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_SFC_CLIMO_TN;_task_complete.txt</datadep>
+          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_sfc_climo_task_complete.txt</datadep>
           <streq><left>&RUN_TASK_MAKE_SFC_CLIMO;</left><right>FALSE</right></streq>
         </or>
       </and>
@@ -422,6 +432,8 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
+    <envar><name>NWGES_BASEDIR</name><value>&NWGES_BASEDIR;</value></envar>
+    <envar><name>RESTART_HRS</name><value><cyclestr>0</cyclestr></value></envar>
 
     <dependency>
       <and>
@@ -454,6 +466,7 @@ MODULES_RUN_TASK_FP script.
         <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
         <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
         <envar><name>fhr</name><value>#fhr#</value></envar>
+        <envar><name>TMMARK</name><value>tm00</value></envar>
 
         <dependency>
           <or>

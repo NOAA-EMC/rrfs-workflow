@@ -26,7 +26,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -68,7 +68,7 @@ valid_args=( \
 "cdate" \
 "cycle_type" \
 "cycle_subtype" \
-"cycle_dir" \
+"run_dir" \
 "gridspec_dir" \
 "ensmem_indx" \
 "slash_ensmem_subdir" \
@@ -98,10 +98,8 @@ case $MACHINE in
   "WCOSS2")
     ulimit -s unlimited
     ulimit -a
-#    export OMP_PROC_BIND=true
     export OMP_NUM_THREADS=2
     export OMP_STACKSIZE=1G
-#    export OMP_PLACES=cores
     export MPICH_ABORT_ON_ERROR=1
     export MALLOC_MMAP_MAX_=0
     export MALLOC_TRIM_THRESHOLD_=134217728
@@ -113,7 +111,6 @@ case $MACHINE in
     export MPICH_OFI_STARTUP_CONNECT=1
     export MPICH_OFI_VERBOSE=1
     export MPICH_OFI_NIC_VERBOSE=1
-    #ncores=$(( NNODES_RUN_FCST*PPN_RUN_FCST))
     ncores=${PE_MEMBER01}
     APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_FCST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
     ;;
@@ -121,8 +118,8 @@ case $MACHINE in
   "HERA")
     ulimit -s unlimited
     ulimit -a
-    APRUN="srun --mem=0"
-    if [ "${PREDEF_GRID_NAME}" == "RRFS_NA_3km" ]; then
+    APRUN="srun --export=ALL --mem=0"
+    if [ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]; then
       OMP_NUM_THREADS=4
     else
       OMP_NUM_THREADS=2
@@ -132,37 +129,19 @@ case $MACHINE in
   "ORION")
     ulimit -s unlimited
     ulimit -a
-    APRUN="srun"
+    APRUN="srun --export=ALL"
     OMP_NUM_THREADS=1
     ;;
 
   "JET")
     ulimit -s unlimited
     ulimit -a
-    APRUN="srun  --mem=0"
-    if [ "${PREDEF_GRID_NAME}" == "RRFS_NA_3km" ]; then
+    APRUN="srun --export=ALL --mem=0"
+    if [ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]; then
       OMP_NUM_THREADS=4
     else
       OMP_NUM_THREADS=2
     fi
-    ;;
-
-  "ODIN")
-    module list
-    ulimit -s unlimited
-    ulimit -a
-    APRUN="srun -n ${PE_MEMBER01}"
-    ;;
-
-  "CHEYENNE")
-    module list
-    nprocs=$(( NNODES_RUN_FCST*PPN_RUN_FCST ))
-    APRUN="mpirun -np $nprocs"
-    ;;
-
-  "STAMPEDE")
-    module list
-    APRUN="ibrun -np ${PE_MEMBER01}"
     ;;
 
   *)
@@ -176,14 +155,6 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-# Set the forecast run directory.
-#
-#-----------------------------------------------------------------------
-#
-run_dir="${cycle_dir}"
-#
-#-----------------------------------------------------------------------
-#
 # Create links in the INPUT subdirectory of the current run directory to
 # the grid and (filtered) orography files.
 #
@@ -193,9 +164,7 @@ print_info_msg "$VERBOSE" "
 Creating links in the INPUT subdirectory of the current run directory to
 the grid and (filtered) orography files ..."
 
-
 # Create links to fix files in the FIXLAM directory.
-
 
 cd_vrfy ${run_dir}/INPUT
 
@@ -211,16 +180,6 @@ else
 Cannot create symlink because target does not exist:
   target = \"$target\""
 fi
-
-## Symlink to halo-3 grid file with "halo3" stripped from name.
-#target="${FIXLAM}/${CRES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH3}.nc"
-#if [ "${RUN_TASK_MAKE_SFC_CLIMO}" = "TRUE" ] && \
-#   [ "${GRID_GEN_METHOD}" = "GFDLgrid" ] && \
-#   [ "${GFDLgrid_USE_GFDLgrid_RES_IN_FILENAMES}" = "FALSE" ]; then
-#  symlink="C${GFDLgrid_RES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.nc"
-#else
-#  symlink="${CRES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.nc"
-#fi
 
 # Symlink to halo-3 grid file with "halo3" stripped from name.
 mosaic_fn="grid_spec.nc"
@@ -257,8 +216,6 @@ else
 Cannot create symlink because target does not exist:
   target = \"$target\""
 fi
-
-
 
 relative_or_null=""
 
@@ -309,7 +266,6 @@ if [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ] || \
    [ "${CCPP_PHYS_SUITE}" = "FV3_RAP" ]  || \
    [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_v15_thompson_mynn_lam3km" ]; then
 
-
   fileids=( "ss" "ls" )
   for fileid in "${fileids[@]}"; do
     target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data_${fileid}.tile${TILE_RGNL}.halo${NH0}.nc"
@@ -323,10 +279,7 @@ Cannot create symlink because target does not exist:
   symlink = \"${symlink}\""
     fi
   done
-
 fi
-
-
 #
 #-----------------------------------------------------------------------
 #
@@ -337,10 +290,6 @@ fi
 #   sfc_data.nc
 #   gfs_bndy*.nc
 #   gfs_ctrl.nc
-#
-# Some of these files (gfs_ctrl.nc, gfs_bndy*.nc) already exist, but
-# others do not.  Thus, create links with these names to the appropriate
-# files (in this case the initial condition and surface files only).
 #
 #-----------------------------------------------------------------------
 #
@@ -358,8 +307,6 @@ print_info_msg "$VERBOSE" "
 The forecast has BKTYPE $BKTYPE (1:cold start ; 0 cycling)"
 
 cd_vrfy ${run_dir}/INPUT
-#ln_vrfy -sf gfs_data.tile${TILE_RGNL}.halo${NH0}.nc gfs_data.nc
-#ln_vrfy -sf sfc_data.tile${TILE_RGNL}.halo${NH0}.nc sfc_data.nc
 
 relative_or_null=""
 
@@ -367,7 +314,7 @@ n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
 if [ ${BKTYPE} -eq 1 ]; then
-  target="gfs_data.tile${TILE_RGNL}.halo${NH0}.nc"
+  target="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/ics/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc"
 else
   target="fv_core.res.tile1.nc"
 fi
@@ -395,15 +342,19 @@ else
 fi
 
 if [ ${BKTYPE} -eq 1 ]; then
-  target="sfc_data.tile${TILE_RGNL}.halo${NH0}.nc"
+  target="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/ics/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc"
   symlink="sfc_data.nc"
-  if [ -f "${target}" ]; then
+  ln_vrfy -sf ${relative_or_null} $target $symlink
+
+  target="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/ics/gfs_ctrl.nc"
+  symlink="gfs_ctrl.nc"
+  ln_vrfy -sf ${relative_or_null} $target $symlink
+
+  for fhr in $(seq -f "%03g" 0 ${LBC_SPEC_INTVL_HRS} ${FCST_LEN_HRS}); do
+    target="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/lbcs/gfs_bndy.tile${TILE_RGNL}.${fhr}.nc"
+    symlink="gfs_bndy.tile${TILE_RGNL}.${fhr}.nc"
     ln_vrfy -sf ${relative_or_null} $target $symlink
-  else
-    print_err_msg_exit "\
-    Cannot create symlink because target does not exist:
-    target = \"$target\""
-  fi
+  done
 else
   if [ -f "sfc_data.nc.0000" ] || [ -f "sfc_data.nc" ]; then
     print_info_msg "$VERBOSE" "
@@ -414,7 +365,6 @@ else
   fi
 fi
 
-#
 if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then
   ln_vrfy -snf  ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/dust12m_data.nc  ${run_dir}/INPUT/dust12m_data.nc
   ln_vrfy -snf  ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/emi_data.nc      ${run_dir}/INPUT/emi_data.nc
@@ -543,7 +493,7 @@ else
   fi
 fi
 
-if [ "${STOCH}" == "TRUE" ]; then
+if [ "${STOCH}" = "TRUE" ]; then
   cp ${run_dir}/${FV3_NML_FN} ${run_dir}/${FV3_NML_FN}_base
   set_FV3nml_ens_stoch_seeds cdate="$cdate" || print_err_msg_exit "\
  Call to function to create the ensemble-based namelist for the current 

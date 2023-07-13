@@ -807,15 +807,17 @@ if [ "${RUN_ENVIR}" = "nco" ]; then
   FIX_BUFRSND=${FIX_BUFRSND:-"${HOMErrfs}/fix/bufrsnd"}
   AIRCRAFT_REJECT=${AIRCRAFT_REJECT:-"${FIX_GSI}"}
   SFCOBS_USELIST=${SFCOBS_USELIST:-"${FIX_GSI}"}
+else
+  FIXgsm=${FIXgsm:-"$HOMErrfs/fix/am"}
 fi
 
 case $MACHINE in
 
   "WCOSS2")
-    FIXgsm=${FIXgsm:-"/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/fix_am"}
-    TOPO_DIR=${TOPO_DIR:-"/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/fix_orog"}
-    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/fix_sfc_climo"}
-    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/needs/to/be/specified"}
+    FIXgsm=${FIXgsm:-"/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/fix/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/fix/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/fix/fix_sfc_climo"}
+    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/FV3LAM_pregen"}
     ;;
 
   "HERA")
@@ -1241,8 +1243,8 @@ check_for_preexist_dir_file "$EXPTDIR" "${PREEXISTING_DIR_METHOD}"
 # on whether we're running in NCO or community mode, i.e. whether RUN_ENVIR 
 # is set to "nco" or "community").  Definitions:
 #
-# LOGDIR:
-# Directory in which the log files from the workflow tasks will be placed.
+# LOG_BASEDIR:
+# Base directory in which the log files from the workflow tasks will be placed.
 #
 # FIXam:
 # This is the directory that will contain the fixed files or symlinks to
@@ -1290,7 +1292,6 @@ check_for_preexist_dir_file "$EXPTDIR" "${PREEXISTING_DIR_METHOD}"
 #
 #-----------------------------------------------------------------------
 #
-LOGDIR="${EXPTDIR}/log/@Y@m@d/@H"
 
 FIXam="${EXPTDIR}/fix_am"
 FIXLAM="${EXPTDIR}/fix_lam"
@@ -1302,7 +1303,6 @@ FIXbufrsnd="${EXPTDIR}/fix_bufrsnd"
 SST_ROOT="${SST_ROOT}"
 
 if [ "${RUN_ENVIR}" = "nco" ]; then
-
   CYCLE_BASEDIR="$STMP"
   check_for_preexist_dir_file "${CYCLE_BASEDIR}" "${PREEXISTING_DIR_METHOD}"
   ENSCTRL_CYCLE_BASEDIR="${ENSCTRL_STMP}"
@@ -1314,16 +1314,13 @@ if [ "${RUN_ENVIR}" = "nco" ]; then
   NWGES_BASEDIR="$NWGES"
   ENSCTRL_NWGES_BASEDIR="${ENSCTRL_NWGES}"
   RRFSE_NWGES_BASEDIR="${RRFSE_NWGES}"
-
-  LOGDIR="${COMROOT}/logs/${RUN}.@Y@m@d/@H"
-
+  LOG_BASEDIR="${COMROOT}/logs"
 else
-
   CYCLE_BASEDIR="$EXPTDIR"
   COMROOT=""
   COMOUT_BASEDIR=""
   NWGES_BASEDIR="$CYCLE_BASEDIR"
-
+  LOG_BASEDIR="${EXPTDIR}/log"
 fi
 #
 #-----------------------------------------------------------------------
@@ -2564,7 +2561,7 @@ NCL_REGION="${NCL_REGION}"
 MODEL="${MODEL}"
 
 EXPTDIR="$EXPTDIR"
-LOGDIR="$LOGDIR"
+LOG_BASEDIR="${LOG_BASEDIR}"
 CYCLE_BASEDIR="${CYCLE_BASEDIR}"
 GRID_DIR="${GRID_DIR}"
 OROG_DIR="${OROG_DIR}"

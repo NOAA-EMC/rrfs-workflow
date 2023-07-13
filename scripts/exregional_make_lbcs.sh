@@ -17,7 +17,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -83,6 +83,7 @@ case "$MACHINE" in
 
   "WCOSS2")
     ulimit -s unlimited
+    ulimit -a
     export OMP_STACKSIZE=1G
     export OMP_NUM_THREADS=2
     ncores=$(( NNODES_MAKE_LBCS*PPN_MAKE_LBCS ))
@@ -91,30 +92,20 @@ case "$MACHINE" in
 
   "HERA")
     ulimit -s unlimited
-    APRUN="srun"
+    ulimit -a
+    APRUN="srun --export=ALL"
     ;;
 
   "ORION")
     ulimit -s unlimited
-    APRUN="srun"
+    ulimit -a
+    APRUN="srun --export=ALL"
     ;;
 
   "JET")
     ulimit -s unlimited
-    APRUN="srun"
-    ;;
-
-  "ODIN")
-    APRUN="srun"
-    ;;
-
-  "CHEYENNE")
-    nprocs=$(( NNODES_MAKE_LBCS*PPN_MAKE_LBCS ))
-    APRUN="mpirun -np $nprocs"
-    ;;
-
-  "STAMPEDE")
-    APRUN="ibrun"
+    ulimit -a
+    APRUN="srun --export=ALL"
     ;;
 
 esac
@@ -153,7 +144,7 @@ case "${CCPP_PHYS_SUITE}" in
 #
   "FV3_GFS_2017_gfdlmp" | \
   "FV3_GFS_2017_gfdlmp_regional" | \
-  "FV3_GFS_v16beta" | \
+  "FV3_GFS_v16" | \
   "FV3_GFS_v15p2" | "FV3_CPT_v0" )
     varmap_file="GFSphys_var_map.txt"
     ;;
@@ -162,6 +153,7 @@ case "${CCPP_PHYS_SUITE}" in
   "FV3_GSD_SAR" | \
   "FV3_RRFS_v1alpha" | \
   "FV3_RRFS_v1beta" | \
+  "FV3_GFS_v15_thompson_mynn_lam3km" | \
   "FV3_HRRR" | \
   "FV3_HRRR_gf" | \
   "FV3_RAP" )
@@ -273,8 +265,8 @@ esac
 # the field_table for CDATE=2017100700 but is a non-prognostic variable.
 
 external_model=""
-fn_atm_nemsio=""
-fn_sfc_nemsio=""
+fn_atm=""
+fn_sfc=""
 fn_grib2=""
 input_type=""
 tracers_input="\"\""
@@ -329,9 +321,8 @@ case "${EXTRN_MDL_NAME_LBCS}" in
   elif [ "${FV3GFS_FILE_FMT_ICS}" = "netcdf" ]; then
     tracers_input="[\"spfh\",\"clwmr\",\"o3mr\",\"icmr\",\"rwmr\",\"snmr\",\"grle\"]"
     tracers="[\"sphum\",\"liq_wat\",\"o3mr\",\"ice_wat\",\"rainwat\",\"snowwat\",\"graupel\"]"
-    external_model="GFS"
+    external_model="FV3GFS"
     input_type="gaussian_netcdf"
-    fn_atm_nemsio="${EXTRN_MDL_FNS[0]}"
   fi
   ;;
 
@@ -340,8 +331,8 @@ case "${EXTRN_MDL_NAME_LBCS}" in
   tracers="[\"sphum\",\"liq_wat\",\"o3mr\",\"ice_wat\",\"rainwat\",\"snowwat\",\"graupel\"]"
   external_model="GFS"
   input_type="gaussian_netcdf"
-  fn_atm_nemsio="${EXTRN_MDL_FNS[0]}"
-  fn_sfc_nemsio="${EXTRN_MDL_FNS[1]}"
+  fn_atm="${EXTRN_MDL_FNS[0]}"
+  fn_sfc="${EXTRN_MDL_FNS[1]}"
   ;;
 
 "GEFS")
@@ -412,25 +403,25 @@ for (( ii=0; ii<${num_fhrs}; ii=ii+bcgrpnum10 )); do
 # Set external model output file name and file type/format.  Note that
 # these are now inputs into chgres_cube.
 #
-  fn_atm_nemsio=""
+  fn_atm=""
   fn_grib2=""
 
   case "${EXTRN_MDL_NAME_LBCS}" in
   "GSMGFS")
-    fn_atm_nemsio="${EXTRN_MDL_FNS[$i]}"
+    fn_atm="${EXTRN_MDL_FNS[$i]}"
     ;;
   "FV3GFS")
     if [ "${FV3GFS_FILE_FMT_LBCS}" = "nemsio" ]; then
-      fn_atm_nemsio="${EXTRN_MDL_FNS[$i]}"
+      fn_atm="${EXTRN_MDL_FNS[$i]}"
     elif [ "${FV3GFS_FILE_FMT_LBCS}" = "grib2" ]; then
       fn_grib2="${EXTRN_MDL_FNS[$i]}"
     elif [ "${FV3GFS_FILE_FMT_LBCS}" = "netcdf" ]; then
-      fn_atm_nemsio="${EXTRN_MDL_FNS[$i]}"
+      fn_atm="${EXTRN_MDL_FNS[$i]}"
     fi
     ;;
   "GDASENKF")
-    fn_atm_nemsio="${EXTRN_MDL_FNS[0][$i]}"
-    fn_sfc_nemsio="${EXTRN_MDL_FNS[1][$i]}"
+    fn_atm="${EXTRN_MDL_FNS[0][$i]}"
+    fn_sfc="${EXTRN_MDL_FNS[1][$i]}"
     ;;
   "GEFS")
     fn_grib2="${EXTRN_MDL_FNS[$i]}"
@@ -497,11 +488,10 @@ settings="
  'mosaic_file_target_grid': ${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo$((10#${NH4})).nc,
  'orog_dir_target_grid': ${FIXLAM},
  'orog_files_target_grid': ${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo$((10#${NH4})).nc,
- 'vcoord_file_target_grid': ${FIXam}/global_hyblev_fcst_rrfsL65.txt,
+ 'vcoord_file_target_grid': ${FIXam}/${VCOORD_FILE},
  'varmap_file': ${UFS_UTILS_DIR}/parm/varmap_tables/${varmap_file},
  'data_dir_input_grid': ${extrn_mdl_staging_dir},
- 'atm_files_input_grid': ${fn_atm_nemsio},
- 'sfc_files_input_grid': ${fn_sfc_nemsio},
+ 'atm_files_input_grid': ${fn_atm},
  'grib2_file_input_grid': \"${fn_grib2}\",
  'cycle_mon': $((10#${mm})),
  'cycle_day': $((10#${dd})),

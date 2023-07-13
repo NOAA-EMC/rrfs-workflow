@@ -17,7 +17,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -78,7 +78,7 @@ Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
 #
 #-----------------------------------------------------------------------
 #
-touch "$LOGDIR/make_orog_task_complete.txt"
+touch "${LOG_BASEDIR}/make_orog_task_complete.txt"
 #
 #-----------------------------------------------------------------------
 #

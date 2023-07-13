@@ -17,7 +17,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -141,14 +141,12 @@ File fp exists on disk:
     if [ "${use_user_staged_extrn_files}" != "TRUE" ]; then
 
       if [ $( find "$fp" -mmin +${min_age} ) ]; then
-
         print_info_msg "
 File fp is older than the minimum required age of min_age minutes:
   fp = \"$fp\"
   min_age = ${min_age} minutes"
 
       else
-
         print_info_msg "
 File fp is NOT older than the minumum required age of min_age minutes:
   fp = \"$fp\"
@@ -156,9 +154,7 @@ File fp is NOT older than the minumum required age of min_age minutes:
 Will try fetching all external model files from HPSS.  Not checking 
 presence and age of remaining external model files on disk."
         break
-
       fi
-
     fi
   #
   # If the external model file does not exist, then...
@@ -211,7 +207,7 @@ else
   data_src="HPSS"
 fi
 
-if [ ${NOMADS} == "TRUE" ]; then
+if [ "${NOMADS}" = "TRUE" ]; then
   data_src="online"
 fi
 #
@@ -227,7 +223,6 @@ extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" 
 if [ "${data_src}" = "disk" ]; then
 
   if [ "${RUN_ENVIR}" = "nco" ]; then
-
     print_info_msg "
 Creating links in staging directory (extrn_mdl_staging_dir) to external 
 model files on disk (extrn_mdl_fns_on_disk) in the source directory 
@@ -248,7 +243,6 @@ model files on disk (extrn_mdl_fns_on_disk) in the source directory
     fi
 
   else
-
     #
     # If the external model files are user-staged, then simply link to 
     # them.  Otherwise, if they are on the system disk, copy them to the

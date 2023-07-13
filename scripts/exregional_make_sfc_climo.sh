@@ -25,7 +25,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -78,11 +78,13 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-# Are these machine dependent??
+# OpenMP environment settings.
 #
 #-----------------------------------------------------------------------
 #
-ulimit -s unlimited
+export OMP_NUM_THREADS=1
+export OMP_STACKSIZE=1024m
+nprocs=$(( NNODES_MAKE_SFC_CLIMO * PPN_MAKE_SFC_CLIMO ))
 #
 #-----------------------------------------------------------------------
 #
@@ -129,35 +131,27 @@ EOF
 case $MACHINE in
 
   "WCOSS2")
-    ncores=$(( NNODES_MAKE_SFC_CLIMO*PPN_MAKE_SFC_CLIMO))
-    APRUN="mpiexec -n ${ncores} -ppn ${PPN_MAKE_SFC_CLIMO}"
+    ulimit -s unlimited
+    ulimit -a
+    APRUN="mpiexec -n ${nprocs}"
     ;;
 
   "HERA")
-    APRUN="srun"
+    ulimit -s unlimited
+    ulimit -a
+    APRUN="srun --export=ALL"
     ;;
 
   "ORION")
-    APRUN="srun"
+    ulimit -s unlimited
+    ulimit -a
+    APRUN="srun --export=ALL"
     ;;
 
   "JET")
-    APRUN="srun"
-    ;;
-
-  "CHEYENNE")
-    nprocs=$(( NNODES_MAKE_SFC_CLIMO*PPN_MAKE_SFC_CLIMO ))
-    APRUN="mpirun -np $nprocs"
-    ;;
-
-  "ODIN")
-    nprocs=$(( NNODES_MAKE_SFC_CLIMO*PPN_MAKE_SFC_CLIMO ))
-    APRUN="srun -n $nprocs"
-    ;;
-
-  "STAMPEDE")
-    nprocs=$(( NNODES_MAKE_SFC_CLIMO*PPN_MAKE_SFC_CLIMO ))
-    APRUN="ibrun -np ${nprocs}"
+    ulimit -s unlimited
+    ulimit -a
+    APRUN="srun --export=ALL"
     ;;
 
   *)

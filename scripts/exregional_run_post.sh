@@ -17,7 +17,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -95,14 +95,14 @@ case $MACHINE in
     export MP_SHARED_MEMORY=yes
     export FI_OFI_RXM_SAR_LIMIT=3145728
     export OMP_STACKSIZE=1G
-    module load wgrib2/2.0.8
-    module list
     ncores=$(( NNODES_RUN_POST*PPN_RUN_POST))
     APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_POST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
     ;;
 
   "HERA")
-    APRUN="srun"
+    ulimit -s unlimited
+    ulimit -a
+    APRUN="srun --export=ALL"
     ;;
 
   "ORION")
@@ -110,26 +110,13 @@ case $MACHINE in
     ulimit -a
     export OMP_NUM_THREADS=1
     export OMP_STACKSIZE=1024M
-    APRUN="srun"
+    APRUN="srun --export=ALL"
     ;;
 
   "JET")
-    APRUN="srun"
-    ;;
-
-  "ODIN")
-    APRUN="srun -n 1"
-    ;;
-
-  "CHEYENNE")
-    module list
-    nprocs=$(( NNODES_RUN_POST*PPN_RUN_POST ))
-    APRUN="mpirun -np $nprocs"
-    ;;
-
-  "STAMPEDE")
-    nprocs=$(( NNODES_RUN_POST*PPN_RUN_POST ))
-    APRUN="ibrun -n $nprocs"
+    ulimit -s unlimited
+    ulimit -a
+    APRUN="srun --export=ALL"
     ;;
 
   *)
@@ -226,8 +213,8 @@ to the post forecast hour directory (fhr_dir):
   fhr_dir = \"${fhr_dir}\"
 ===================================================================="
 else
-  post_config_fp="${UPP}/parm/postxconfig-NT-fv3lam.txt"
-  post_params_fp="${UPP}/parm/params_grib2_tbl_new"
+  post_config_fp="${UPP_DIR}/parm/postxconfig-NT-fv3lam.txt"
+  post_params_fp="${UPP_DIR}/parm/params_grib2_tbl_new"
   print_info_msg "
 ====================================================================
 Copying the default post flat file specified by post_config_fp to the post

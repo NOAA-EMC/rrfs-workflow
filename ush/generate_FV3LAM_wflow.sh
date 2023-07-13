@@ -222,6 +222,8 @@ settings="\
   'save_da_output': ${SAVE_DA_OUTPUT_TN}
   'tag': ${TAG}
   'net': ${NET}
+  'run': ${RUN}
+  'run_envir': ${RUN_ENVIR}
   'jedi_envar_ioda': ${JEDI_ENVAR_IODA_TN}
 #
 # Number of nodes to use for each task.
@@ -399,7 +401,7 @@ settings="\
 # Directories and files.
 #
   'jobsdir': $JOBSdir
-  'logdir': $LOGDIR
+  'log_basedir': ${LOG_BASEDIR:-}
   'cycle_basedir': ${CYCLE_BASEDIR:-}
   'ensctrl_cycle_basedir': ${ENSCTRL_CYCLE_BASEDIR:-}
   'nwges_basedir': ${NWGES_BASEDIR:-}
@@ -752,14 +754,18 @@ Copying fixed files from system directory (FIXgsm) to a subdirectory
   FIXam = \"$FIXam\""
 
   check_for_preexist_dir_file "$FIXam" "delete"
-  mkdir_vrfy -p "$FIXam"
-  mkdir_vrfy -p "$FIXam/fix_co2_proj"
 
-  num_files=${#FIXgsm_FILES_TO_COPY_TO_FIXam[@]}
-  for (( i=0; i<${num_files}; i++ )); do
-    fn="${FIXgsm_FILES_TO_COPY_TO_FIXam[$i]}"
-    cp_vrfy "$FIXgsm/$fn" "$FIXam/$fn"
-  done
+  ln_vrfy -fsn "$FIXgsm" "$FIXam"
+  path_resolved=$( readlink -m "$FIXam" )
+  if [ ! -d "${path_resolved}" ]; then
+    print_err_msg_exit "\
+    The path specified by FIXam after resolving all symlinks (path_resolved) 
+    must be an existing directory:
+    FIXam = \"$FIXam\"
+    path_resolved = \"${path_resolved}\"
+    Please ensure that path_resolved is an existing directory and then rerun
+    the experiment generation script."
+  fi 
 fi
 #
 #-----------------------------------------------------------------------

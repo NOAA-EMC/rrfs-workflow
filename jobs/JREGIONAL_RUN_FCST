@@ -27,7 +27,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -94,7 +94,7 @@ $SCRIPTSdir/exregional_run_fcst.sh \
   cdate="${CDATE}" \
   cycle_type="${CYCLE_TYPE}" \
   cycle_subtype="${CYCLE_SUBTYPE}" \
-  cycle_dir="${run_dir}" \
+  run_dir="${run_dir}" \
   gridspec_dir="${gridspec_dir}" \
   ensmem_indx="${ENSMEM_INDX}" \
   slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}" \

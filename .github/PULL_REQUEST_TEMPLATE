@@ -6,15 +6,16 @@
 
 ## DESCRIPTION OF CHANGES: 
 One or more bullet points describing the changes.
+-
 
 ## TESTS CONDUCTED: 
 Explicitly state what tests were run on these changes.
 - On machines/platforms: wcoss2, hera, orion, or jet
-- Test cases: sample config
+- Test cases: sample configuration
 
 ## ISSUE: 
 If this PR is resolving or referencing one or more issues, in this repository or elewhere, list them here.
-- Fixs the issue(s) mentioned in #123
+- Fixes the issue(s) mentioned in #123
 
 ## CONTRIBUTORS (optional): 
 If others have contributed to this work aside from the PR author, list them here

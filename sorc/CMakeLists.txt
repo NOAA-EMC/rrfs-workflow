@@ -34,7 +34,7 @@ if (BUILD_UFS)
     if(CPL_AQM)
       set(CCPP_SUITES "FV3_GFS_v16")
     else()
-      set(CCPP_SUITES "FV3_HRRR,FV3_HRRR_gf,FV3_RAP,FV3_GFS_v15_thompson_mynn_lam3km,FV3_RRFS_v1beta")
+      set(CCPP_SUITES "FV3_HRRR,FV3_HRRR_gf,FV3_RAP,FV3_GFS_v15_thompson_mynn_lam3km,FV3_RRFS_v1beta,FV3_GFS_v16")
     endif()
   endif()
   
