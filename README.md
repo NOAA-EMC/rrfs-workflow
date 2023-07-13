@@ -55,7 +55,7 @@ where `[machine]` is `wcoss2`, `hera`, `orion`, or `jet`. Note that you may need
 
 4. Launch the workflow:
 ```
-cd ../../expt_dir/test_nonDA_community
+cd ../../expt_dirs/test_nonDA_community
 ./launch_FV3LAM_wflow.sh
 ```
 
