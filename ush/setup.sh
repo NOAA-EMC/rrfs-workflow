@@ -807,6 +807,8 @@ if [ "${RUN_ENVIR}" = "nco" ]; then
   FIX_BUFRSND=${FIX_BUFRSND:-"${HOMErrfs}/fix/bufrsnd"}
   AIRCRAFT_REJECT=${AIRCRAFT_REJECT:-"${FIX_GSI}"}
   SFCOBS_USELIST=${SFCOBS_USELIST:-"${FIX_GSI}"}
+else
+  FIXgsm=${FIXgsm:-"$HOMErrfs/fix/am"}
 fi
 
 case $MACHINE in
