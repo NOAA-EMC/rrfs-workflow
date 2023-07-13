@@ -96,7 +96,7 @@ case $MACHINE in
     export FI_OFI_RXM_SAR_LIMIT=3145728
     export OMP_STACKSIZE=1G
     ncores=$(( NNODES_RUN_POST*PPN_RUN_POST))
-    APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_POST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
+    APRUN="mpiexec -n ${ncores}"
     ;;
 
   "HERA")
