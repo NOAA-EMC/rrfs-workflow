@@ -46,6 +46,9 @@ version="0.1.0"
 # MACHINE:
 # Machine on which the workflow will run.
 #
+# MACHINETYPE:
+# decide Machine type for wcoss2 (backup or primary)
+#
 # ACCOUNT:
 # The account under which to submit jobs to the queue.
 #
@@ -149,6 +152,7 @@ version="0.1.0"
 #-----------------------------------------------------------------------
 #
 MACHINE="BIG_COMPUTER"
+MACHINETYPE="backup"
 ACCOUNT="project_name"
 SERVICE_ACCOUNT=""
 HPSS_ACCOUNT=""

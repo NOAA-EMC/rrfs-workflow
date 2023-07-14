@@ -84,7 +84,7 @@ case $MACHINE in
   ulimit -s unlimited
   ulimit -a
   export FI_OFI_RXM_SAR_LIMIT=3145728
-  export OMP_STACKSIZE=1G
+  export OMP_STACKSIZE=500M
   export OMP_NUM_THREADS=${TPP_RUN_ANAL}
   ncores=$(( NNODES_RUN_ANAL*PPN_RUN_ANAL))
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_ANAL} --cpu-bind core --depth ${OMP_NUM_THREADS}"
@@ -358,7 +358,7 @@ if [ ${regional_ensemble_option:-1} -eq 5 ]  && [ ${BKTYPE} != 1  ]; then
   print_info_msg "$VERBOSE" " Cycle ${YYYYMMDDHH}: GSI hybrid uses FV3LAM ensemble with n_ens=${nummem}" 
   echo " ${YYYYMMDDHH}(${cycle_type}): GSI hybrid uses FV3LAM ensemble with n_ens=${nummem}" >> ${EXPTDIR}/log.cycles
   grid_ratio_ens="1"
-  ens_fast_read=.true.
+  ens_fast_read=.false.
 else    
   nummem_gfs=$(more filelist03 | wc -l)
   nummem_gfs=$((nummem_gfs - 3 ))
@@ -657,6 +657,7 @@ if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "radardbz" ]]; then
 fi
 if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "conv_dbz" ]]; then
   ANAVINFO=${FIX_GSI}/${ANAVINFO_CONV_DBZ_FN}
+  beta1_inv=0.0
   if_model_dbz=.true.
 fi
 naensloc=`expr ${nsclgrp} \* ${ngvarloc} + ${nsclgrp} - 1`

@@ -71,10 +71,13 @@ case $MACHINE in
   ulimit -s unlimited
   ulimit -a
   export FI_OFI_RXM_SAR_LIMIT=3145728
-  export OMP_STACKSIZE=1G
+  export OMP_STACKSIZE=2G
   export OMP_NUM_THREADS=16
+  export OMP_PROC_BIND=close
+  export OMP_PLACES=threads
+  export MPICH_RANK_REORDER_METHOD=0
   ncores=$(( NNODES_RUN_ENKF*PPN_RUN_ENKF ))
-  APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_ENKF} --cpu-bind core --depth ${OMP_NUM_THREADS}"
+  APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_ENKF} --label --line-buffer --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;
 #
 "HERA")
@@ -470,6 +473,7 @@ fi
 countdiag=$(ls diag*conv* | wc -l)
 if [ $countdiag -gt $nens ]; then
 
+    if [ ${ob_type} == "conv" ]; then
 ${APRUN}  $enkfworkdir/enkf.x < enkf.nml 1>${stdout_name} 2>${stderr_name} || print_err_msg_exit "\
 Call to executable to run EnKF returned with nonzero exit code."
 
@@ -481,6 +485,11 @@ if [ ! -d ${NWGES_DIR}/../enkf_diag ]; then
 fi
 cp_vrfy ${stdout_name} ${NWGES_DIR}/../enkf_diag/${stdout_name}.$vlddate
 cp_vrfy ${stderr_name} ${NWGES_DIR}/../enkf_diag/${stderr_name}.$vlddate
+    else
+${APRUN}  $enkfworkdir/enkf.x < enkf.nml 1>${stdout_name} 2>${stderr_name} || print_err_msg_exit "\
+Call to executable to run EnKF returned with nonzero exit code."
+       echo "Warning: EnKF dbz analysis due to lack of ${ob_type} obs for cycle $vlddate !!!"
+    fi
 
 else
   echo "Warning: EnKF not running due to lack of ${ob_type} obs for cycle $vlddate !!!"

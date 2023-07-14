@@ -390,6 +390,8 @@ fi
 fi  # block for parallel or series wgrib2 runs.
 
 rm_vrfy -rf ${fhr_dir}
+rm -fr $DATAprdgen
+rm -f $DATA/*.t${cyc}z.*.f${fhr}.*.grib2
 #
 #-----------------------------------------------------------------------
 #

@@ -1,11 +1,13 @@
 MACHINE="wcoss2"
-version="v0.5.3"
+MACHINETYPE="backup"
+version="v0.6.1"
 ACCOUNT="RRFS_DEV"
 #RESERVATION="rrfsdet"
 EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/${version}"
 EXPT_SUBDIR="rrfs_na_enkf"
 
 PREDEF_GRID_NAME="RRFS_NA_3km"
+
 . set_rrfs_config_general.sh
 
 DO_ENSEMBLE="TRUE"
@@ -28,9 +30,11 @@ DO_SMOKE_DUST="FALSE"
 #DO_BUFRSND="TRUE"
 #USE_FVCOM="TRUE"
 #PREP_FVCOM="TRUE"
+DO_PARALLEL_PRDGEN="TRUE"
+DO_GSIDIAG_OFFLINE="FALSE"
 
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
-  EXPT_SUBDIR="rrfs_conus_enfcst"
+  EXPT_SUBDIR="rrfs_na_enfcst"
   DO_SPINUP="FALSE"
   DO_SAVE_DA_OUTPUT="FALSE"
   DO_NONVAR_CLDANAL="FALSE"
@@ -45,8 +49,8 @@ BOUNDARY_PROC_GROUP_NUM="12"
 
 # avaialble retro period:
 # 20210511-20210531; 20210718-20210801
-DATE_FIRST_CYCL="20230601"
-DATE_LAST_CYCL="20230630"
+DATE_FIRST_CYCL="20230701"
+DATE_LAST_CYCL="20230830"
 CYCL_HRS=( "00" "12" )
 CYCL_HRS=( "18" )
 CYCL_HRS_SPINSTART=("06" "18")
@@ -55,7 +59,7 @@ if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   CYCL_HRS_STOCH=("00" "06" "12" "18")
 fi
 #CYCL_HRS_RECENTER=("19")
-CYCLEMONTH="06"
+CYCLEMONTH="07,08"
 CYCLEDAY="*"
 
 STARTYEAR=${DATE_FIRST_CYCL:0:4}
@@ -76,7 +80,7 @@ PRODLONG_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 06:00:00"
 #ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}1400 ${DATE_LAST_CYCL}2300 24:00:00"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   BOUNDARY_LEN_HRS="60"
-  LBC_SPEC_INTVL_HRS="1"
+  LBC_SPEC_INTVL_HRS="3"
   DO_SPINUP="FALSE"
   INITIAL_CYCLEDEF="00 01 01 01 2100 *"
   BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}1200 ${DATE_LAST_CYCL}2300 06:00:00"
@@ -116,7 +120,9 @@ binary_diag=.false.
 
 WTIME_RUN_FCST="00:30:00"
 WTIME_RUN_FCST_LONG="04:45:00"
+PPN_RUN_ANAL="16"
 NNODES_RUN_ANAL="1"
+TPP_RUN_ANAL="8"
 
 EXTRN_MDL_NAME_ICS="GEFS"
 EXTRN_MDL_NAME_LBCS="GEFS"
@@ -157,16 +163,16 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    NNODES_RUN_FCST="13"
    WRTCMP_write_tasks_per_group="7"
 
-   NUM_ENS_MEMBERS_FCST=9
+   NUM_ENS_MEMBERS_FCST=5
    if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
      NUM_ENS_MEMBERS=${NUM_ENS_MEMBERS_FCST}
      WTIME_RUN_FCST="04:45:00"
      WTIME_MAKE_LBCS="01:30:00"
 
-     LAYOUT_X="15"
-     LAYOUT_Y="52"
-     NNODES_RUN_FCST="13"
-     WRTCMP_write_tasks_per_group="52"
+     LAYOUT_X="50"
+     LAYOUT_Y="64"
+     NNODES_RUN_FCST="51"
+     WRTCMP_write_tasks_per_group="64"
 
      DO_SPP="TRUE"
      DO_SPPT="FALSE"
@@ -184,21 +190,22 @@ fi
 
 RUN_ensctrl="rrfs"
 RUN="enkfrrfs"
-TAG="n3enkf53"
+TAG="n3enkf61"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   RUN="refs"
-  TAG="n3enfcst53"
+  TAG="n3enfcst61"
 fi
 COMINgfs=""
 
 . set_rrfs_config.sh
 
 STMP="/lfs/f2/t2o/ptmp/emc/stmp/emc.lam/rrfs/${version}"  # Path to directory STMP that mostly contains input files.
-if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
-  STMP="/lfs/f2/t2o/ptmp/emc/stmp/emc.lam/rrfs/${version}/enfcst"  # Path to directory STMP that mostly contains input files.
-fi
 PTMP="/lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/rrfs/${version}"  # Path to directory STMP that mostly contains input files.
 NWGES="/lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/rrfs/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
+  STMP="/lfs/f2/t2o/ptmp/emc/stmp/emc.lam/rrfs/${version}/enfcst"  # Path to directory STMP that mostly contains input files.
+  NWGES="/lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/rrfs/${version}/nwges/enfcst"  # Path to directory NWGES that save boundary, cold initial, restart files
+fi
 ENSCTRL_STMP="/lfs/f2/t2o/ptmp/emc/stmp/emc.lam/rrfs/${version}"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
 ENSCTRL_PTMP="/lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/rrfs/${version}"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
 ENSCTRL_NWGES="/lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/rrfs/${version}/nwges"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
