@@ -33,8 +33,6 @@ OPTIONS
       does a "make clean"
   --build
       does a "make" (build only)
-  --move
-      move binaries to final location.
   --build-dir=BUILD_DIR
       build directory
   --install-dir=INSTALL_DIR
@@ -102,9 +100,9 @@ usage_error () {
 # default settings
 LCL_PID=$$
 HOME_DIR=$(cd "$(dirname "$(readlink -f -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
-BUILD_DIR="${HOME_DIR}/build"
-INSTALL_DIR=${HOME_DIR}
-BIN_DIR="exec"
+BUILD_DIR="${HOME_DIR}/sorc/build"
+INSTALL_DIR="${HOME_DIR}/sorc/build"
+BIN_DIR="${HOME_DIR}/exec"
 COMPILER=""
 APPLICATION=""
 CCPP_SUITES=""
@@ -129,7 +127,6 @@ BUILD_AQM_UTILS="off"
 # Make options
 CLEAN=false
 BUILD=false
-MOVE=false
 USE_SUB_MODULES=false #change default to true later
 
 # process required arguments
@@ -160,7 +157,6 @@ while :; do
     --continue=?*|--continue=) usage_error "$1 argument ignored." ;;
     --clean) CLEAN=true ;;
     --build) BUILD=true ;;
-    --move) MOVE=true ;;
     --build-dir=?*) BUILD_DIR=${1#*=} ;;
     --build-dir|--build-dir=) usage_error "$1 requires argument." ;;
     --install-dir=?*) INSTALL_DIR=${1#*=} ;;
@@ -456,14 +452,6 @@ else
 
     printf "... Compile and install executables ...\n"
     make ${MAKE_SETTINGS} install 2>&1 | tee log.make
-
-    if [ "${MOVE}" = true ]; then
-       if [[ ! ${HOME_DIR} -ef ${INSTALL_DIR} ]]; then
-           printf "... Moving executables to final locations ...\n"
-           mkdir -p ${HOME_DIR}/${BIN_DIR}
-           mv ${INSTALL_DIR}/${BIN_DIR}/* ${HOME_DIR}/${BIN_DIR}
-       fi
-    fi
 fi
 
 exit 0
