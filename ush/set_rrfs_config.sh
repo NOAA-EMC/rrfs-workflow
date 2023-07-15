@@ -34,7 +34,7 @@ if [[ $MACHINE == "wcoss2" ]] ; then
   OBSPATH=/lfs/h1/ops/prod/com/obsproc/v1.1
   OBSPATH_NSSLMOSIAC=/lfs/h1/ops/prod/dcom/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC
   ENKF_FCST=/lfs/h1/ops/prod/com/gfs/v16.3
-  SST_ROOT=/lfs/h1/ops/prod/com/gfs/v16.3
+  SST_ROOT=/lfs/h1/ops/prod/com/nsst/v1.2
   GVF_ROOT=/lfs/h1/ops/prod/dcom/viirs
   IMSSNOW_ROOT=/lfs/h1/ops/prod/com/obsproc/v1.1
   FIRE_RAVE_DIR=/lfs/h2/emc/lam/noscrub/emc.lam/RAVE_rawdata/RAVE_NA

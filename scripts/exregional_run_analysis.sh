@@ -657,7 +657,6 @@ if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "radardbz" ]]; then
 fi
 if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "conv_dbz" ]]; then
   ANAVINFO=${FIX_GSI}/${ANAVINFO_CONV_DBZ_FN}
-  beta1_inv=0.0
   if_model_dbz=.true.
 fi
 naensloc=`expr ${nsclgrp} \* ${ngvarloc} + ${nsclgrp} - 1`
