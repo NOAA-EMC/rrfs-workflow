@@ -84,7 +84,7 @@ if (BUILD_UFS)
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ufs-weather-model
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
     CMAKE_ARGS ${UFS_WEATHER_MODEL_ARGS}
-    INSTALL_COMMAND mkdir -p ${CMAKE_INSTALL_BINDIR} && cp ${CMAKE_CURRENT_BINARY_DIR}/ufs-weather-model/src/ufs-weather-model-build/ufs_model ${CMAKE_INSTALL_BINDIR}
+    INSTALL_COMMAND mkdir -p ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR} && cp ${CMAKE_CURRENT_BINARY_DIR}/ufs-weather-model/src/ufs-weather-model-build/ufs_model ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}
     BUILD_ALWAYS TRUE
     STEP_TARGETS build
     )
