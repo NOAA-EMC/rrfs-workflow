@@ -453,7 +453,8 @@ MODULES_RUN_TASK_FP script.
       <task name="&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr#" cycledefs="forecast" maxtries="{{ maxtries_run_post }}">
         &RSRV_DEFAULT;
         <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_POST_TN;" "&JOBSdir;/JREGIONAL_RUN_POST"</command>
-        &RESOURCES_RUN_POST;
+	&RESOURCES_RUN_POST;
+        &NATIVE_ALL;
         <walltime>{{ wtime_run_post }}</walltime>
         <nodesize>&NCORES_PER_NODE;</nodesize>
         <jobname>&RUN_POST_TN;_f#fhr#</jobname>

@@ -138,11 +138,18 @@ if [ "${ENSPROD:-}" = 'ensprod' ] ; then
 fi
 
 # Choose the appropriate file template for graphics type
+net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
+if [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km" ]; then
+  gridname="conus_3km."
+elif  [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ]; then
+  gridname=""
+fi
+
 case ${GRAPHICS_TYPE} in
 
   "maps")
 
-    file_tmpl="${NET}.t${CDATE:8:2}z.bg${file_id:-dawp}f{FCST_TIME:03d}.tm00.grib2"
+    file_tmpl="${net4}.t${CDATE:8:2}z.prslev.f{FCST_TIME:03d}.${gridname}grib2"
     file_type=prs
     extra_args="\
       --tiles $tiles \
@@ -156,7 +163,7 @@ case ${GRAPHICS_TYPE} in
 
   "skewts")
 
-    file_tmpl="${NET}.t${CDATE:8:2}z.bgrd3df{FCST_TIME:03d}.tm00.grib2"
+    file_tmpl="${net4}.t${CDATE:8:2}z.natlev.f{FCST_TIME:03d}.${gridname}grib2"
     file_type=nat
     extra_args="\
       --sites ${PYTHON_GRAPHICS_DIR}/static/${sites_file} \
@@ -165,7 +172,7 @@ case ${GRAPHICS_TYPE} in
 
   "enspanel")
 
-    file_tmpl="${NET}.t${CDATE:8:2}z.bgdawpf{FCST_TIME:03d}.tm00.grib2"
+    file_tmpl="${net4}.t${CDATE:8:2}z.prslev.f{FCST_TIME:03d}.${gridname}grib2"
     file_type=prs
     extra_args="\
       --tiles $tiles \

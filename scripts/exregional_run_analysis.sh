@@ -1049,6 +1049,8 @@ fi
 #-----------------------------------------------------------------------
 #
 
+if [ ${DO_GSIDIAG_OFFLINE} == "FALSE" ]; then
+
 netcdf_diag=${netcdf_diag:-".false."}
 binary_diag=${binary_diag:-".true."}
 
@@ -1158,6 +1160,7 @@ if [ ${DO_RADDA} == "TRUE" ]; then
 
 fi
 
+fi # run diag inline (with GSI)
 #
 #-----------------------------------------------------------------------
 #

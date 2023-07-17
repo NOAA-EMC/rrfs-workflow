@@ -1,7 +1,7 @@
 #!/bin/bash
 source fix_rrfs_locations.sh #determine current platform
 MACHINE=${PLATFORM}
-version="v0.4.1" # odd for NA; even for CONUS
+version="v0.5.3" # odd for NA; even for CONUS
 ACCOUNT="nrtrr"
 RESERVATION="rrfsdet"
 EXPT_BASEDIR="/home/role.rtrr/RTMA/rtma.${version}"
@@ -246,7 +246,7 @@ if [[ "$MACHINE" == "wcoss2" ]]; then
 
   RESERVATION=""
   RESERVATION_POST=""
-  EXPT_BASEDIR="/lfs/h2/emc/da/noscrub/${USER}/3drtma/rtma.${version}"
+  EXPT_BASEDIR="/lfs/h2/emc/da/noscrub/${USER}/3D-RTMA/rtma.${version}"
   SERVICE_ACCOUNT=""
   HPSS_ACCOUNT="RTMA-DEV"
   PARTITION_DEFAULT=""
@@ -263,32 +263,37 @@ if [[ "$MACHINE" == "wcoss2" ]]; then
   ARCHIVE_CYCLEDEF="00 01 01 01 2100 *"
 
   OBSPATH_NSSLMOSIAC="/lfs/h1/ops/prod/dcom/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC"
-  AIRCRAFT_REJECT="/lfs/h2/emc/da/noscrub/edward.colon/NOAA_3drtma_legacy/fix/obsuselist/amdar_reject_lists"
-  SFCOBS_USELIST="/lfs/h2/emc/da/noscrub/edward.colon/NOAA_3drtma_legacy/fix/obsuselist/mesonet_uselists"
+  AIRCRAFT_REJECT="/lfs/h2/emc/da/noscrub/matthew.t.morris/FixData/obsuselist/amdar_reject_lists"
+  SFCOBS_USELIST="/lfs/h2/emc/da/noscrub/matthew.t.morris/FixData/obsuselist/mesonet_uselists"
  
   regional_ensemble_option=1
   USE_RRFSE_ENS="FALSE"
   CYCL_HRS_HYB_FV3LAM_ENS=("99")
 
   WTIME_RUN_ANAL="00:30:00"
-  PPN_RUN_ANAL="16"
-  TPP_RUN_ANAL="8"
-  NNODES_RUN_ANAL="22"
+  PPN_RUN_ANAL="8"
+  TPP_RUN_ANAL="16"
+  NNODES_RUN_ANAL="60"
+  PPN_RUN_POSTANAL="8"
+  NNODES_RUN_NONVARCLDANL="10"
+  PPN_RUN_NONVARCLDANL="32"
   PPN_RUN_FCST="64"
   TPP_RUN_FCST="2"
-  NNODES_RUN_FCST="31"
+  NNODES_RUN_FCST="51"
   PPN_RUN_POST="32"
   TPP_RUN_POST="4"
   NNODES_RUN_POST="4"
-  MEMO_PREP_CYC="120G"
+  PPN_RUN_PRDGEN="128"
+  MEMO_PREP_CYC="40G"
   MEMO_RUN_NONVARCLDANL="256G"
-  MEMO_RUN_PRDGEN="80G"
-  MEMO_RUN_PROCESSBUFR="80G"
+  MEMO_RUN_PRDGEN="256G"
+  MEMO_RUN_PROCESSBUFR="20G"
   PPN_PROC_RADAR="64"
   NNODES_PROC_RADAR="1"
 
   LAYOUT_X=50
   LAYOUT_Y=64
+  WTIME_RUN_ANAL="00:50:00"
   WTIME_RUN_FCST="00:30:00"
   WRTCMP_write_groups="1"
   WRTCMP_write_tasks_per_group="64"
@@ -298,8 +303,8 @@ if [[ "$MACHINE" == "wcoss2" ]]; then
   ENKF_FCST="/lfs/h1/ops/prod/com/gfs/v16.3"
   LIGHTNING_ROOT="/lfs/h1/ops/prod/com/obsproc/v1.1"
 
-  STMP="/lfs/h2/emc/ptmp/${USER}/3drtma/rtma.${version}/stmp"
-  PTMP="/lfs/h2/emc/ptmp/${USER}/3drtma/rtma.${version}"
-  NWGES="/lfs/h2/emc/ptmp/${USER}/3drtma/rtma.${version}/nwges"
+  STMP="/lfs/h2/emc/ptmp/${USER}/3D-RTMA/rtma.${version}/stmp"
+  PTMP="/lfs/h2/emc/ptmp/${USER}/3D-RTMA/rtma.${version}"
+  NWGES="/lfs/h2/emc/ptmp/${USER}/3D-RTMA/rtma.${version}/nwges"
 fi
 

@@ -201,6 +201,7 @@ settings="\
   'run_post_tn': ${RUN_POST_TN}
   'run_prdgen_tn': ${RUN_PRDGEN_TN}
   'anal_gsi': ${ANAL_GSI_TN}
+  'anal_gsidiag': ${ANAL_GSIDIAG_TN}
   'anal_sd_gsi': ${ANAL_SD_GSI_TN}
   'post_anal': ${POSTANAL_TN}
   'observer_gsi_ensmean': ${OBSERVER_GSI_ENSMEAN_TN}
@@ -238,6 +239,7 @@ settings="\
   'nnodes_run_prepstart': ${NNODES_RUN_PREPSTART}
   'nnodes_run_fcst': ${NNODES_RUN_FCST}
   'nnodes_run_anal': ${NNODES_RUN_ANAL}
+  'nnodes_run_gsidiag': ${NNODES_RUN_GSIDIAG}
   'nnodes_run_postanal': ${NNODES_RUN_POSTANAL}
   'nnodes_run_enkf': ${NNODES_RUN_ENKF}
   'nnodes_run_recenter': ${NNODES_RUN_RECENTER}
@@ -278,6 +280,7 @@ settings="\
   'ppn_run_prepstart': ${PPN_RUN_PREPSTART}
   'ppn_run_fcst': ${PPN_RUN_FCST}
   'ppn_run_anal': ${PPN_RUN_ANAL}
+  'ppn_run_gsidiag': ${PPN_RUN_GSIDIAG}
   'ppn_run_postanal': ${PPN_RUN_POSTANAL}
   'ppn_run_enkf': ${PPN_RUN_ENKF}
   'ppn_run_recenter': ${PPN_RUN_RECENTER}
@@ -317,6 +320,7 @@ settings="\
   'wtime_run_fcst_long': ${WTIME_RUN_FCST_LONG}
   'wtime_run_fcst_spinup': ${WTIME_RUN_FCST_SPINUP}
   'wtime_run_anal': ${WTIME_RUN_ANAL}
+  'wtime_run_gsidiag': ${WTIME_RUN_GSIDIAG}
   'wtime_run_postanal': ${WTIME_RUN_POSTANAL}
   'wtime_run_enkf': ${WTIME_RUN_ENKF}
   'wtime_run_recenter': ${WTIME_RUN_RECENTER}
@@ -494,6 +498,7 @@ settings="\
   'do_enspost': ${DO_ENSPOST}
   'do_ensinit': ${DO_ENSINIT}
   'do_save_da_output': ${DO_SAVE_DA_OUTPUT}
+  'do_gsidiag_offline': ${DO_GSIDIAG_OFFLINE}
   'do_save_input': ${DO_SAVE_INPUT}
 #
 # data assimilation related parameters.
