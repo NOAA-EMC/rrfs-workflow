@@ -1,14 +1,7 @@
-bin/
-build/
 exec/
-include/
-lib/
-lib64/
 python_graphics/
-share/
 sorc/*
 !sorc/CMakeLists.txt
-save/
 ush/config.sh
 ush/*.swp
 ush/__pycache__/

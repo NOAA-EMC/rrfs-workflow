@@ -102,8 +102,8 @@ usage_error () {
 # default settings
 LCL_PID=$$
 HOME_DIR=$(cd "$(dirname "$(readlink -f -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
-BUILD_DIR="${HOME_DIR}/build"
-INSTALL_DIR=${HOME_DIR}
+BUILD_DIR="${HOME_DIR}/sorc/build"
+INSTALL_DIR="${HOME_DIR}/sorc/build"
 BIN_DIR="exec"
 COMPILER=""
 APPLICATION=""
@@ -129,7 +129,7 @@ BUILD_AQM_UTILS="off"
 # Make options
 CLEAN=false
 BUILD=false
-MOVE=false
+MOVE=true
 USE_SUB_MODULES=false #change default to true later
 
 # process required arguments
