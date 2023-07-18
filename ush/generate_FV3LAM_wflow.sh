@@ -559,7 +559,7 @@ $settings"
 # script to generate the experiment's actual XML file from this template
 # file.
 #
-template_xml_fp="${TEMPLATE_DIR}/${WFLOW_XML_TMPL_FN}"
+template_xml_fp="${PARMdir}/${WFLOW_XML_TMPL_FN}"
 $USHdir/fill_jinja_template.py -q \
                                -u "${settings}" \
                                -t ${template_xml_fp} \
