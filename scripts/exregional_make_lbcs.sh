@@ -85,7 +85,7 @@ case "$MACHINE" in
     ulimit -s unlimited
     ulimit -a
     export OMP_STACKSIZE=1G
-    export OMP_NUM_THREADS=2
+    export OMP_NUM_THREADS=${TPP_MAKE_LBCS}
     ncores=$(( NNODES_MAKE_LBCS*PPN_MAKE_LBCS ))
     APRUN="mpiexec -n ${ncores} -ppn ${PPN_MAKE_LBCS} --cpu-bind core --depth ${OMP_NUM_THREADS}"
     ;;
