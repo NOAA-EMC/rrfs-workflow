@@ -226,7 +226,7 @@ forecast hour directory (fhr_dir):
 fi
 cp_vrfy ${post_config_fp} ./postxconfig-NT.txt
 cp_vrfy ${post_params_fp} ./params_grib2_tbl_new
-cp_vrfy ${EXECDIR}/upp.x .
+cp_vrfy ${EXECdir}/upp.x .
 if [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km_HRRRIC" ]; then
   grid_specs_rrfs="lambert:-97.5:38.500000 237.826355:1746:3000 21.885885:1014:3000"
 elif [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km" ]; then

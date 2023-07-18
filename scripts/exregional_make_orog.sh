@@ -160,7 +160,7 @@ mkdir_vrfy -p "${shave_dir}"
 # file and make sure that it exists.
 #
 exec_fn="orog"
-exec_fp="$EXECDIR/${exec_fn}"
+exec_fp="$EXECdir/${exec_fn}"
 if [ ! -f "${exec_fp}" ]; then
   print_err_msg_exit "\
 The executable (exec_fp) for generating the orography file does not exist:
@@ -321,7 +321,7 @@ ${NH4}
 EOF
 
   exec_fn="orog_gsl"
-  exec_fp="$EXECDIR/${exec_fn}"
+  exec_fp="$EXECdir/${exec_fn}"
   if [ ! -f "${exec_fp}" ]; then
     print_err_msg_exit "\
 The executable (exec_fp) for generating the GSL orography GWD data files
@@ -409,7 +409,7 @@ fi
 # Set the name and path to the executable and make sure that it exists.
 #
 exec_fn="filter_topo"
-exec_fp="$EXECDIR/${exec_fn}"
+exec_fp="$EXECdir/${exec_fn}"
 if [ ! -f "${exec_fp}" ]; then
   print_err_msg_exit "\
 The executable (exec_fp) for filtering the raw orography does not exist:
@@ -518,7 +518,7 @@ Filtering of orography complete."
 # Set the name and path to the executable and make sure that it exists.
 #
 exec_fn="shave"
-exec_fp="$EXECDIR/${exec_fn}"
+exec_fp="$EXECdir/${exec_fn}"
 if [ ! -f "${exec_fp}" ]; then
   print_err_msg_exit "\
 The executable (exec_fp) for \"shaving\" down the halo in the orography

@@ -942,10 +942,10 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-gsi_exec="${EXECDIR}/gsi.x"
+gsi_exec="${EXECdir}/gsi.x"
 
 if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "AERO" ]]; then
-  gsi_exec="${EXECDIR}/gsi.x.sd"
+  gsi_exec="${EXECdir}/gsi.x.sd"
 fi
 
 

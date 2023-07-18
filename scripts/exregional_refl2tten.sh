@@ -283,7 +283,7 @@ EOF
 #-----------------------------------------------------------------------
 #
 
-exect="${EXECDIR}/ref2tten.exe"
+exect="${EXECdir}/ref2tten.exe"
 
 if [ -f ${exect} ]; then
   print_info_msg "$VERBOSE" "

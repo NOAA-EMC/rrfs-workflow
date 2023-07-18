@@ -359,14 +359,14 @@ EOF
 #
   exect="process_NSSL_mosaic.exe"
 
-  if [ -f ${EXECDIR}/$exect ]; then
+  if [ -f ${EXECdir}/$exect ]; then
     print_info_msg "$VERBOSE" "
     Copying the radar process  executable to the run directory..."
-    cp_vrfy ${EXECDIR}/${exect} .
+    cp_vrfy ${EXECdir}/${exect} .
   else
     print_err_msg_exit "\
     The executable specified in GSI_exect does not exist:
-    exect = \"${EXECDIR}/$exect\"
+    exect = \"${EXECdir}/$exect\"
     Build radar process and rerun."
   fi
 #

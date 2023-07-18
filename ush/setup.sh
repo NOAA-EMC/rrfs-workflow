@@ -778,8 +778,13 @@ NUM_CYCLES="${#ALL_CDATES[@]}"
 # EXECdir:
 # Directory containing various executable files.
 #
+# TEMPLATE_DIR:
+# Directory in which templates of various FV3-LAM input files are locat-
+# ed.
+#
 # UFS_WTHR_MDL_DIR:
-# Directory in which the UFS Weather Model application is located.
+# Directory in which the (NEMS-enabled) FV3-LAM application is located.
+# This directory includes subdirectories for FV3, NEMS, and FMS.
 #
 #-----------------------------------------------------------------------
 #
@@ -790,7 +795,8 @@ JOBSdir="$HOMErrfs/jobs"
 SORCdir="$HOMErrfs/sorc"
 PARMdir="$HOMErrfs/parm"
 MODULES_DIR="$HOMErrfs/modulefiles"
-EXECDIR="$HOMErrfs/exec"
+EXECdir="$HOMErrfs/exec"
+TEMPLATE_DIR="$USHdir/templates"
 if [ "${RUN_ENVIR}" = "nco" ]; then
   FIXgsm=${FIXgsm:-"$HOMErrfs/fix/am"}
   FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"$HOMErrfs/fix/lam"}
@@ -1366,14 +1372,14 @@ FIELD_TABLE_TMPL_FN="${FIELD_TABLE_FN}${dot_ccpp_phys_suite_or_null}"
 MODEL_CONFIG_TMPL_FN="${MODEL_CONFIG_FN}"
 NEMS_CONFIG_TMPL_FN="${NEMS_CONFIG_FN}"
 
-DATA_TABLE_TMPL_FP="${PARMdir}/${DATA_TABLE_TMPL_FN}"
-DIAG_TABLE_TMPL_FP="${PARMdir}/${DIAG_TABLE_TMPL_FN}"
-FIELD_TABLE_TMPL_FP="${PARMdir}/${FIELD_TABLE_TMPL_FN}"
-FV3_NML_BASE_SUITE_FP="${PARMdir}/${FV3_NML_BASE_SUITE_FN}"
-FV3_NML_YAML_CONFIG_FP="${PARMdir}/${FV3_NML_YAML_CONFIG_FN}"
+DATA_TABLE_TMPL_FP="${TEMPLATE_DIR}/${DATA_TABLE_TMPL_FN}"
+DIAG_TABLE_TMPL_FP="${TEMPLATE_DIR}/${DIAG_TABLE_TMPL_FN}"
+FIELD_TABLE_TMPL_FP="${TEMPLATE_DIR}/${FIELD_TABLE_TMPL_FN}"
+FV3_NML_BASE_SUITE_FP="${TEMPLATE_DIR}/${FV3_NML_BASE_SUITE_FN}"
+FV3_NML_YAML_CONFIG_FP="${TEMPLATE_DIR}/${FV3_NML_YAML_CONFIG_FN}"
 FV3_NML_BASE_ENS_FP="${EXPTDIR}/${FV3_NML_BASE_ENS_FN}"
-MODEL_CONFIG_TMPL_FP="${PARMdir}/${MODEL_CONFIG_TMPL_FN}"
-NEMS_CONFIG_TMPL_FP="${PARMdir}/${NEMS_CONFIG_TMPL_FN}"
+MODEL_CONFIG_TMPL_FP="${TEMPLATE_DIR}/${MODEL_CONFIG_TMPL_FN}"
+NEMS_CONFIG_TMPL_FP="${TEMPLATE_DIR}/${NEMS_CONFIG_TMPL_FN}"
 #
 #-----------------------------------------------------------------------
 #
@@ -1548,7 +1554,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-FV3_EXEC_FP="${EXECDIR}/${FV3_EXEC_FN}"
+FV3_EXEC_FP="${EXECdir}/${FV3_EXEC_FN}"
 #
 #-----------------------------------------------------------------------
 #
@@ -2534,13 +2540,14 @@ JOBSdir="$JOBSdir"
 SORCdir="$SORCdir"
 PARMdir="$PARMdir"
 MODULES_DIR="${MODULES_DIR}"
-EXECDIR="$EXECDIR"
+EXECdir="$EXECdir"
 FIXam="$FIXam"
 FIXLAM="$FIXLAM"
 FIXgsm="$FIXgsm"
 COMROOT="$COMROOT"
 COMOUT_BASEDIR="${COMOUT_BASEDIR}"
 NWGES_BASEDIR="${NWGES_BASEDIR}"
+TEMPLATE_DIR="${TEMPLATE_DIR}"
 UFS_WTHR_MDL_DIR="${UFS_WTHR_MDL_DIR}"
 UFS_UTILS_DIR="${UFS_UTILS_DIR}"
 SFC_CLIMO_INPUT_DIR="${SFC_CLIMO_INPUT_DIR}"
