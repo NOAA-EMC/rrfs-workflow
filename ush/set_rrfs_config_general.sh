@@ -50,19 +50,12 @@ fi
 if [[ $MACHINE == "wcoss2" ]] ; then
   ACCOUNT=RRFS-DEV
   HPSS_ACCOUNT="RRFS-DEV"
-#  QUEUE_DEFAULT="pridev"
-#  QUEUE_ANALYSIS="pridev"
-#  QUEUE_FCST="pridev"
-#  QUEUE_HPSS="dev_transfer"
-#  QUEUE_PRDGEN="pridev"
-#  QUEUE_GRAPHICS="pridev"
-
-  QUEUE_DEFAULT="dev"
-  QUEUE_ANALYSIS="dev"
-  QUEUE_FCST="dev"
+  QUEUE_DEFAULT="pridev"
+  QUEUE_ANALYSIS="pridev"
+  QUEUE_FCST="pridev"
   QUEUE_HPSS="dev_transfer"
-  QUEUE_PRDGEN="dev"
-  QUEUE_GRAPHICS="dev"
+  QUEUE_PRDGEN="pridev"
+  QUEUE_GRAPHICS="pridev"
 fi
 
 VERBOSE="TRUE"
