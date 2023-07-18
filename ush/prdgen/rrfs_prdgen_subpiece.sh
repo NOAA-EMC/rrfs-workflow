@@ -25,11 +25,7 @@ export compress_type=c3
 
 cd $DATA/prdgen_${domain}_${subpiece}
 
-if [ $domain == "namerica" ]; then
-  # 3-km NPS North American domain
-  gridspecs="nps:245:60 206.5:5200:3170 -4.0:3268:3170"
-  parmfile=${DATA}/${domain}_${subpiece}.txt
-elif [ $domain == "conus" ]; then
+if [ $domain == "conus" ]; then
   # 3-km Lambert Conformal CONUS domain
   gridspecs="lambert:262.5:38.5:38.5 237.280472:1799:3000 21.138123:1059:3000"
   parmfile=${DATA}/conus_ak_${subpiece}.txt 
