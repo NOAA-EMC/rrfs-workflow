@@ -461,7 +461,7 @@ if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ ${cycle_type} == "prod" ] ; then
 # copy executable
 #
      snowice_exec_fn="process_imssnow_fv3lam.exe"
-     snowice_exec_fp="$EXECDIR/${snowice_exec_fn}"
+     snowice_exec_fp="$EXECdir/${snowice_exec_fn}"
      if [ ! -f "${snowice_exec_fp}" ]; then
       print_err_msg_exit "\
 The executable (snowice_exec_fn) for processing snow/ice data onto FV3-LAM
@@ -523,14 +523,14 @@ cat << EOF > sst.namelist
 EOF
      if [ "${IO_LAYOUT_Y}" == "1" ]; then
        ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
-       ${EXECDIR}/process_updatesst.exe > stdout_sstupdate 2>&1
+       ${EXECdir}/process_updatesst.exe > stdout_sstupdate 2>&1
      else
        for ii in ${list_iolayout}
        do
          iii=$(printf %4.4i $ii)
          ln_vrfy -sf ${gridspec_dir}/fv3_grid_spec.${iii}  fv3_grid_spec
          ln_vrfy -sf sfc_data.nc.${iii} sfc_data.nc
-         ${EXECDIR}/process_updatesst.exe > stdout_sstupdate.${iii} 2>&1
+         ${EXECdir}/process_updatesst.exe > stdout_sstupdate.${iii} 2>&1
          ls -l > list_sstupdate.${iii}
        done
        rm -f sfc_data.nc
@@ -690,7 +690,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
               mv ${restart_prefix_find}sfc_data.nc sfc_data.nc
               ncatted -a checksum,,d,, sfc_data.nc
               if [ "${if_update_ice}" == "TRUE" ]; then
-                ${EXECDIR}/update_ice.exe > stdout_cycleICE 2>&1
+                ${EXECdir}/update_ice.exe > stdout_cycleICE 2>&1
               fi
             else
               checkfile=${bkpath}/${restart_prefix_find}sfc_data.nc.${restart_suffix_find}
@@ -709,7 +709,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
                 ln_vrfy -sf sfc_data.nc.${iii} sfc_data.nc
                 ln_vrfy -sf gfsice.sfc_data.nc.${iii} gfsice.sfc_data.nc
                 if [ "${if_update_ice}" == "TRUE" ]; then
-                  ${EXECDIR}/update_ice.exe > stdout_cycleICE.${iii} 2>&1
+                  ${EXECdir}/update_ice.exe > stdout_cycleICE.${iii} 2>&1
                 fi
               done
               rm -f sfc_data.nc gfsice.sfc_data.nc
@@ -748,14 +748,14 @@ if [ ${HH} -eq ${GVF_update_hour} ] && [ ${cycle_type} == "spinup" ]; then
 
       if [ "${IO_LAYOUT_Y}" == "1" ]; then
         ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
-        ${EXECDIR}/update_GVF.exe > stdout_updateGVF 2>&1
+        ${EXECdir}/update_GVF.exe > stdout_updateGVF 2>&1
       else
         for ii in ${list_iolayout}
         do
           iii=$(printf %4.4i $ii)
           ln_vrfy -sf ${gridspec_dir}/fv3_grid_spec.${iii}  fv3_grid_spec
           ln_vrfy -sf sfc_data.nc.${iii} sfc_data.nc
-          ${EXECDIR}/update_GVF.exe > stdout_updateGVF.${iii} 2>&1
+          ${EXECdir}/update_GVF.exe > stdout_updateGVF.${iii} 2>&1
           ls -l > list_updateGVF.${iii}
         done
         rm -f sfc_data.nc
@@ -922,10 +922,10 @@ rrfsfile='sfc_data.nc'
 EOF
 
    exect="use_raphrrr_sfc.exe"
-   if [ -f ${EXECDIR}/$exect ]; then
+   if [ -f ${EXECdir}/$exect ]; then
      print_info_msg "$VERBOSE" "
      Copying the surface surgery executable to the run directory..."
-     cp_vrfy ${EXECDIR}/${exect} ${exect}
+     cp_vrfy ${EXECdir}/${exect} ${exect}
 
      if [ "${IO_LAYOUT_Y}" == "1" ]; then
        ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
@@ -950,7 +950,7 @@ EOF
    else
      print_info_msg "\
      The executable specified in exect does not exist:
-     exect = \"${EXECDIR}/$exect\"
+     exect = \"${EXECdir}/$exect\"
      Build executable and rerun."
    fi
 fi
@@ -1015,7 +1015,7 @@ Please check the following user defined variables:
 #Format for fvcom_time: YYYY-MM-DDTHH:00:00.000000
     fvcom_time="${YYYY}-${MM}-${DD}T${HH}:00:00.000000"
     fvcom_exec_fn="fvcom_to_FV3"
-    fvcom_exec_fp="$EXECDIR/${fvcom_exec_fn}"
+    fvcom_exec_fp="$EXECdir/${fvcom_exec_fn}"
     if [ ! -f "${fvcom_exec_fp}" ]; then
       print_err_msg_exit "\
 The executable (fvcom_exec_fp) for processing FVCOM data onto FV3-LAM

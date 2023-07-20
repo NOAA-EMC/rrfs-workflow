@@ -10,7 +10,7 @@ fi
 mdirs=( "doc" "jobs" "parm" "scripts" "tests" "ush" )
 
 # model variables to rename
-mvars=( "USH" "SCRIPTS" "JOBS" "SORC" "PARM" )
+mvars=( "USH" "SCRIPTS" "JOBS" "SORC" "PARM" "EXEC" )
 
 function replace() {
     for i in ${mdirs[@]}; do

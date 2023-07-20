@@ -211,7 +211,7 @@ cat << EOF > namelist.soiltq
  /
 EOF
 
-  adjustsoil_exec="${EXECDIR}/adjust_soiltq.exe"
+  adjustsoil_exec="${EXECdir}/adjust_soiltq.exe"
 
   if [ -f $adjustsoil_exec ]; then
     print_info_msg "$VERBOSE" "
@@ -219,7 +219,7 @@ Copying the adjust soil executable to the run directory..."
     cp_vrfy ${adjustsoil_exec} adjust_soiltq.exe
   else
     print_err_msg_exit "\
-The adjust_soiltq.exe specified in ${EXECDIR} does not exist.
+The adjust_soiltq.exe specified in ${EXECdir} does not exist.
 Build adjust_soiltq.exe and rerun."
   fi
 
@@ -247,7 +247,7 @@ cat << EOF > namelist.updatebc
  /
 EOF
 
-  update_bc_exec="${EXECDIR}/update_bc.exe"
+  update_bc_exec="${EXECdir}/update_bc.exe"
   cp gfs_bndy.tile7.000.nc gfs_bndy.tile7.000.nc_before_update
 
   if [ -f $update_bc_exec ]; then
@@ -256,7 +256,7 @@ Copying the update bc executable to the run directory..."
     cp_vrfy ${update_bc_exec} update_bc.exe 
   else
     print_err_msg_exit "\
-The update_bc.exe specified in ${EXECDIR} does not exist.
+The update_bc.exe specified in ${EXECdir} does not exist.
 Build update_bc.exe and rerun."
   fi
 

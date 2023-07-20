@@ -164,7 +164,7 @@ MODEL=fv3
 PARMfv3=${FIX_BUFRSND}  #/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/bufrsnd
 
 DATA=$bufrsnd_dir
-EXECfv3=$EXECDIR
+EXECfv3=$EXECdir
 COMOUT=$comout
 
 mkdir -p $DATA/bufrpost

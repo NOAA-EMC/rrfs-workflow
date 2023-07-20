@@ -256,7 +256,7 @@ elif [ "${GRID_GEN_METHOD}" = "ESGgrid" ]; then
   exec_fn="regional_esg_grid"
 fi
 
-exec_fp="$EXECDIR/${exec_fn}"
+exec_fp="$EXECdir/${exec_fn}"
 if [ ! -f "${exec_fp}" ]; then
   print_err_msg_exit "\
 The executable (exec_fp) for generating the grid file does not exist:
@@ -390,7 +390,7 @@ Grid file generation completed successfully."
 #-----------------------------------------------------------------------
 #
 exec_fn="global_equiv_resol"
-exec_fp="$EXECDIR/${exec_fn}"
+exec_fp="$EXECdir/${exec_fn}"
 if [ ! -f "${exec_fp}" ]; then
   print_err_msg_exit "\
 The executable (exec_fp) for calculating the regional grid's global uniform
@@ -484,7 +484,7 @@ fi
 # Set the name and path to the executable and make sure that it exists.
 #
 exec_fn="shave"
-exec_fp="$EXECDIR/${exec_fn}"
+exec_fp="$EXECdir/${exec_fn}"
 if [ ! -f "${exec_fp}" ]; then
   print_err_msg_exit "\
 The executable (exec_fp) for \"shaving\" down the halo in the grid file

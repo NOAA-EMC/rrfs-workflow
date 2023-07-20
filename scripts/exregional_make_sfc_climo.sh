@@ -172,7 +172,7 @@ esac
 # Set the name and path to the executable and make sure that it exists.
 #
 exec_fn="sfc_climo_gen"
-exec_fp="$EXECDIR/${exec_fn}"
+exec_fp="$EXECdir/${exec_fn}"
 if [ ! -f "${exec_fp}" ]; then
   print_err_msg_exit "\
 The executable (exec_fp) for generating the surface climatology files

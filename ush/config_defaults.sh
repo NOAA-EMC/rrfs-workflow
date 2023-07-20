@@ -402,26 +402,32 @@ DOT_OR_USCORE="_"
 # generated.
 #
 # DIAG_TABLE_FN:
-# Name of file that specifies the fields that the forecast model will 
-# output.
+# Name of a template file that specifies the output fields of the
+# forecast model (ufs-weather-model: diag_table) followed by the name
+# of the ccpp_phys_suite. Its default value is the name of the file
+# that the ufs weather model expects to read in.
 #
-# FIELD_TABLE_FN:
-# Name of file that specifies the tracers that the forecast model will
-# read in from the IC/LBC files.
+# FIELD_TABLE_TMPL_FN:
+# Name of a template file that specifies the tracers in IC/LBC files of the 
+# forecast model (ufs-weather-model: field_table) followed by 
+# [dot_ccpp_phys_suite]. Its default value is the name of the file that the 
+# ufs weather model expects to read in.
 #
-# DATA_TABLE_FN:
-# Name of file that specifies ???
+# MODEL_CONFIG_TMPL_FN:
+# Name of a template file that contains settings and configurations for the 
+# NUOPC/ESMF main component (ufs-weather-model: model_config). Its default 
+# value is the name of the file that the ufs weather model expects to read in.
 #
-# MODEL_CONFIG_FN:
-# Name of file that specifies ???
-#
-# NEMS_CONFIG_FN:
-# Name of file that specifies ???
+# NEMS_CONFIG_TMPL_FN:
+# Name of a template file that contains information about the various NEMS 
+# components and their run sequence (ufs-weather-model: nems.configure). 
+# Its default value is the name of the file that the ufs weather model expects 
+# to read in.
 #
 # FV3_EXEC_FN:
 # Name to use for the forecast model executable when it is copied from
 # the directory in which it is created in the build step to the executables
-# directory (EXECDIR; this is set during experiment generation).
+# directory (EXECdir; this is set during experiment generation).
 #
 # WFLOW_XML_FN:
 # Name of the rocoto workflow XML file that the experiment generation
@@ -1844,7 +1850,7 @@ PPN_RUN_JEDIENVAR_IODA="1"
 # Number of TPP for WCOSS2.
 #
 TPP_MAKE_ICS="1"
-TPP_MAKE_LBCS="1"
+TPP_MAKE_LBCS="2"
 TPP_RUN_ANAL="1"
 TPP_RUN_ENKF="1"
 TPP_RUN_FCST="1"

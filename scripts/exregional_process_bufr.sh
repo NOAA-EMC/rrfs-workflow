@@ -251,14 +251,14 @@ EOF
 #
 exect="process_Lightning.exe"
 
-if [ -f ${EXECDIR}/$exect ]; then
+if [ -f ${EXECdir}/$exect ]; then
   print_info_msg "$VERBOSE" "
 Copying the lightning process  executable to the run directory..."
-  cp_vrfy ${EXECDIR}/${exect} ${WORKDIR}/${exect}
+  cp_vrfy ${EXECdir}/${exect} ${WORKDIR}/${exect}
 else
   print_err_msg_exit "\
 The executable specified in exect does not exist:
-  exect = \"${EXECDIR}/$exect\"
+  exect = \"${EXECdir}/$exect\"
 Build lightning process and rerun."
 fi
 #
@@ -336,14 +336,14 @@ EOF
 #
 exect="process_larccld.exe"
 
-if [ -f ${EXECDIR}/$exect ]; then
+if [ -f ${EXECdir}/$exect ]; then
   print_info_msg "$VERBOSE" "
 Copying the NASA LaRC cloud process  executable to the run directory..."
-  cp_vrfy ${EXECDIR}/${exect} ${WORKDIR}/${exect}
+  cp_vrfy ${EXECdir}/${exect} ${WORKDIR}/${exect}
 else
   print_err_msg_exit "\
 The executable specified in exect does not exist:
-  exect = \"${EXECDIR}/$exect\"
+  exect = \"${EXECdir}/$exect\"
 Build lightning process and rerun."
 fi
 #
@@ -409,14 +409,14 @@ EOF
 #
 exect="process_metarcld.exe"
 
-if [ -f ${EXECDIR}/$exect ]; then
+if [ -f ${EXECdir}/$exect ]; then
   print_info_msg "$VERBOSE" "
 Copying the METAR cloud process  executable to the run directory..."
-  cp_vrfy ${EXECDIR}/${exect} ${WORKDIR}/${exect}
+  cp_vrfy ${EXECdir}/${exect} ${WORKDIR}/${exect}
 else
   print_err_msg_exit "\
 The executable specified in exect does not exist:
-  exect = \"${EXECDIR}/$exect\"
+  exect = \"${EXECdir}/$exect\"
 Build lightning process and rerun."
 fi
 #

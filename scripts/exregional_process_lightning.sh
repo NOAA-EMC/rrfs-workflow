@@ -228,14 +228,14 @@ EOF
 #
 exect="process_Lightning.exe"
 
-if [ -f ${EXECDIR}/$exect ]; then
+if [ -f ${EXECdir}/$exect ]; then
   print_info_msg "$VERBOSE" "
 Copying the lightning process  executable to the run directory..."
-  cp_vrfy ${EXECDIR}/${exect} ${WORKDIR}
+  cp_vrfy ${EXECdir}/${exect} ${WORKDIR}
 else
   print_err_msg_exit "\
 The executable specified in exect does not exist:
-  exect = \"${EXECDIR}/$exect\"
+  exect = \"${EXECdir}/$exect\"
 Build lightning process and rerun."
 fi
 #
