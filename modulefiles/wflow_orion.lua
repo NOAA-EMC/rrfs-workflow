@@ -8,6 +8,7 @@ whatis([===[Loads libraries needed for running RRFS workflow on Orion ]===])
 load("contrib")
 load("rocoto")
 load("wget")
+load(pathJoin("crtm", os.getenv("crtm_ver") or "2.4.0"))
 
 unload("python")
 append_path("MODULEPATH","/work/noaa/epic-ps/role-epic-ps/miniconda3/modulefiles")

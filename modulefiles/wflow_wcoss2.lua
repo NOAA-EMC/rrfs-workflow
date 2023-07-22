@@ -7,6 +7,7 @@ whatis([===[Loads libraries needed for running the RRFS workflow on WCOSS2 ]===]
 
 load(pathJoin("intel", os.getenv("intel_ver")))
 load(pathJoin("python", os.getenv("python_ver")))
+load(pathJoin("crtm", os.getenv("crtm_ver")))
 
 prepend_path("MODULEPATH","/apps/ops/test/nco/modulefiles")
 load(pathJoin("core/rocoto", os.getenv("rocoto_ver")))

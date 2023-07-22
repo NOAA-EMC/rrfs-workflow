@@ -75,15 +75,11 @@ if [[ $MACHINE == "wcoss2" ]] ; then
   fi
 fi
 
-VERBOSE="TRUE"
-RUN_ENVIR="nco"
-QUILTING="TRUE"
 netcdf_diag=.true.
 binary_diag=.false.
 HYBENSMEM_NMIN=66
 HALO_BLEND=20
 PRINT_DIFF_PGR="TRUE"
-envir="para"
 USE_CUSTOM_POST_CONFIG_FILE="TRUE"
 TESTBED_FIELDS_FN="testbed_fields_bgdawp.txt"
 TESTBED_FIELDS_FN2="testbed_fields_bgrd3d.txt"

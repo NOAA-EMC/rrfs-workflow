@@ -171,11 +171,9 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 <!ENTITY RSRV_GRAPHICS   "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_GRAPHICS;</queue><native>--exclusive</native>">
 {%- endif %}
 
-
 <!--
 define resources used for each tasks
 -->
-
 <!ENTITY RESOURCES_PROC_SMOKE "<nodes>{{ nnodes_proc_smoke }}:ppn={{ ppn_proc_smoke }}</nodes>">
 <!ENTITY RESOURCES_PROC_RADAR "<nodes>{{ nnodes_proc_radar }}:ppn={{ ppn_proc_radar }}</nodes>">
 <!ENTITY RESOURCES_PROC_LIGHTNING "<nodes>{{ nnodes_proc_lightning }}:ppn={{ ppn_proc_lightning }}</nodes>">
@@ -190,7 +188,7 @@ define resources used for each tasks
 <!ENTITY RESOURCES_RUN_PRDGEN "<nodes>{{ nnodes_run_prdgen }}:ppn={{ ppn_run_prdgen }}</nodes>">
 <!ENTITY RESOURCES_NONVAR_CLD "<nodes>{{ nnodes_run_nonvarcldanl }}:ppn={{ ppn_run_nonvarcldanl }}</nodes>">
 
-{% if machine in ["WCOSS2"]  %}
+{%- if machine in ["WCOSS2"]  %}
 <!ENTITY RESOURCES_RUN_POST "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}:tpp={{ tpp_run_post }}</nodes>">
 <!ENTITY RESOURCES_RUN_ENKF "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}:tpp={{ tpp_run_enkf }}</nodes>">
 <!ENTITY RESOURCES_MAKE_ICS "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}:tpp={{ tpp_make_ics }}</nodes>">
@@ -273,7 +271,7 @@ define resources used for each tasks
 <!ENTITY MEMO_RUN_PRDGEN "{{ memo_run_prdgen }}">
 <!ENTITY MEMO_NONVAR_CLD  "{{ memo_run_nonvarcldanl }}">
 
-{% if do_retro %}
+{%- if do_retro %}
 <!ENTITY DEADLINE_PRE      "999:00:00">
 <!ENTITY DEADLINE_ANAL     "999:00:00">
 <!ENTITY DEADLINE_FCST     "999:30:00">
@@ -290,7 +288,7 @@ define resources used for each tasks
 <!ENTITY WALL_LIMIT_GRAPHICS ''>
 <!ENTITY WALL_LIMIT_RECENTER ''>
 <!ENTITY WALL_LIMIT_SAVE_RESTART ''>
-{% else %}
+{%- else %}
 <!ENTITY DEADLINE_PRE      "16:00:00">
 <!ENTITY DEADLINE_ANAL     "16:00:00">
 <!ENTITY DEADLINE_FCST     "23:30:00">
@@ -307,7 +305,7 @@ define resources used for each tasks
 <!ENTITY WALL_LIMIT_GRAPHICS '<deadline><cyclestr offset="&DEADLINE_GRAPHICS;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_RECENTER '<deadline><cyclestr offset="&DEADLINE_RECENTER;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_SAVE_RESTART '<deadline><cyclestr offset="&DEADLINE_SAVE_RESTART;">@Y@m@d@H@M</cyclestr></deadline>'>
-{% endif %}
+{%- endif %}
 
 <!ENTITY START_TIME_SPINUP "{{ start_time_spinup }}">
 <!ENTITY START_TIME_PROD "{{ start_time_prod }}">
