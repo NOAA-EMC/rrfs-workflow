@@ -103,7 +103,7 @@ Directories and files.
 {%- if run_envir == "community" %}
 <!ENTITY LOGDIR                   "{{ log_basedir }}/@Y@m@d/@H">
 {%- else %}
-<!ENTITY LOGDIR                   "{{ log_basedir }}/${run}.@Y@m@d/@H">
+<!ENTITY LOGDIR                   "{{ log_basedir }}/{{ run }}.@Y@m@d/@H">
 {%- endif %}
 <!ENTITY OBSPATH                  "{{ obspath }}">
 <!ENTITY OBSPATH_PM               "{{ obspath_pm }}">
