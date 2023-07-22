@@ -1,7 +1,28 @@
 MACHINE="wcoss2"
 #RESERVATION="rrfsdet"
+
+################################################################
 #EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/$version/"
+
 EXPT_SUBDIR="rrfs_test_da"
+
+DATE_FIRST_CYCL="20230722"
+DATE_LAST_CYCL="20230722"
+CYCL_HRS=( "00" "12" )
+CYCL_HRS_SPINSTART=("03" "15")
+CYCL_HRS_PRODSTART=("09" "21")
+CYCLEMONTH="07"
+CYCLEDAY="22"
+
+MODEL="rrfs_a"
+RUN="rrfs"
+envir="test"
+NET="rrfs_a"
+TAG="c0v00"
+
+STMP="/lfs/h2/emc/stmp/${USER}/test_da"
+PTMP="/lfs/h2/emc/ptmp/${USER}/test_da"
+################################################################
 
 PREDEF_GRID_NAME=RRFS_CONUS_3km
 
@@ -39,14 +60,6 @@ LBC_SPEC_INTVL_HRS="1"
 EXTRN_MDL_LBCS_OFFSET_HRS="6"
 BOUNDARY_LEN_HRS="72"
 BOUNDARY_PROC_GROUP_NUM="72"
-
-DATE_FIRST_CYCL="20230722"
-DATE_LAST_CYCL="20230722"
-CYCL_HRS=( "00" "12" )
-CYCL_HRS_SPINSTART=("03" "15")
-CYCL_HRS_PRODSTART=("09" "21")
-CYCLEMONTH="07"
-CYCLEDAY="22"
 
 STARTYEAR=${DATE_FIRST_CYCL:0:4}
 STARTMONTH=${DATE_FIRST_CYCL:4:2}
@@ -94,19 +107,11 @@ regional_ensemble_option=5
 ARCHIVEDIR="/NCEPDEV/emc-meso/1year/emc.lam/${TAG}"
 NCL_REGION="conus"
 
-MODEL="rrfs_a"
-RUN="rrfs"
-envir="test"
-NET="rrfs_a"
-TAG="c0v00"
-
 . set_rrfs_config.sh
 
-STMP="/lfs/h2/emc/stmp/${USER}/test_da"  # Path to directory STMP that mostly contains input files.
-PTMP="/lfs/h2/emc/ptmp/${USER}/test_da"  # Path to directory PTMP that mostly contains input files.
-NWGES="/lfs/h2/emc/ptmp/${USER}/test_da/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+NWGES="${PTMP}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 if [[ ${regional_ensemble_option} == "5" ]]; then
-  RRFSE_NWGES="/lfs/h2/emc/ptmp/${USER}/test_da/nwges"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
+  RRFSE_NWGES="${PTMP}/nwges"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
   NUM_ENS_MEMBERS=30     # FV3LAM ensemble size for GSI hybrid analysis
   CYCL_HRS_PRODSTART_ENS=( "07" "19" )
   DO_ENVAR_RADAR_REF="TRUE"
