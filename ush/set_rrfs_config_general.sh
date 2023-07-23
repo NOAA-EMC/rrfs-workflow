@@ -29,7 +29,7 @@ if [[ $MACHINE == "jet" ]] ; then
 fi
 
 if [[ $MACHINE == "hera" ]] ; then
-  ACCOUNT="wrfruc"
+  ACCOUNT="fv3-cam"
   PARTITION_DEFAULT=""
   PARTITION_FCST=""
   QUEUE_ANALYSIS="batch"
@@ -38,7 +38,7 @@ if [[ $MACHINE == "hera" ]] ; then
 fi
 
 if [[ $MACHINE == "orion" ]] ; then
-  ACCOUNT=wrfruc
+  ACCOUNT="fv3-cam"
   PARTITION_ANALYSIS=orion
   QUEUE_ANALYSIS="batch"
   QUEUE_PRDGEN="batch"

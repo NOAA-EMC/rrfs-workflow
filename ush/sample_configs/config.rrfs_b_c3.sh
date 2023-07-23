@@ -1,9 +1,18 @@
+################################################################
 MACHINE="jet"
 version="v0.5.2"
 ACCOUNT="nrtrr"
 RESERVATION="rrfsdet"
 EXPT_BASEDIR="/home/role.rtrr/RRFS/rrfs.${version}"
 EXPT_SUBDIR="RRFS_CONUS_3km"
+envir="para"
+NET="RRFS_CONUS"
+TAG="c3v52"
+MODEL="rrfs_b"
+RUN="rrfs"
+STMP="/lfs4/BMC/nrtrr/NCO_dirs/${version}/stmp"
+PTMP="/lfs4/BMC/nrtrr/NCO_dirs/${version}/com"
+################################################################
 
 PREDEF_GRID_NAME=RRFS_CONUS_3km
 
@@ -100,23 +109,14 @@ regional_ensemble_option=1
 EXTRN_MDL_NAME_ICS="FV3GFS"
 EXTRN_MDL_NAME_LBCS="FV3GFS"
 
-envir="para"
-
-NET="RRFS_CONUS"
-TAG="c3v52"
-
 ARCHIVEDIR="/1year/BMC/wrfruc/rrfs_b"
 NCL_REGION="conus"
-MODEL="rrfs_b"
-RUN="rrfs"
 
 . set_rrfs_config.sh
 
-STMP="/lfs4/BMC/nrtrr/NCO_dirs/${version}/stmp"  # Path to directory STMP that mostly contains input files.
-PTMP="/lfs4/BMC/nrtrr/NCO_dirs/${version}/com"  # Path to directory STMP that mostly contains input files.
-NWGES="/lfs4/BMC/nrtrr/NCO_dirs/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+NWGES="${PTMP}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 if [[ ${regional_ensemble_option} == "5" ]]; then
-  RRFSE_NWGES="/lfs4/BMC/wrfruc/RRFSE/NCO_dirs/${version}/nwges"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
+  RRFSE_NWGES="{NWGES}"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
   NUM_ENS_MEMBERS=30     # FV3LAM ensemble size for GSI hybrid analysis
   CYCL_HRS_PRODSTART_ENS=( "07" "19" )
   DO_ENVAR_RADAR_REF="TRUE"

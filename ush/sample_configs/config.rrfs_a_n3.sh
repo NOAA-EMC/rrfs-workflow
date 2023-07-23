@@ -1,30 +1,19 @@
-MACHINE="wcoss2"
-
 ################################################################
+MACHINE="wcoss2"
+version="v0.5.3"
 #RESERVATION="rrfsdet"
-#EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/$version/"
-
-EXPT_SUBDIR="rrfs_test_da"
-
-DATE_FIRST_CYCL="20230722"
-DATE_LAST_CYCL="20230722"
-CYCL_HRS=( "00" "12" )
-CYCL_HRS_SPINSTART=("03" "15")
-CYCL_HRS_PRODSTART=("09" "21")
-CYCLEMONTH="07"
-CYCLEDAY="22"
-
+EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/${version}"
+EXPT_SUBDIR="rrfs_na"
+envir="para"
+NET="rrfs_a"
+TAG="n3v53"
 MODEL="rrfs_a"
 RUN="rrfs"
-envir="test"
-NET="rrfs_a"
-TAG="c0v00"
-
-STMP="/lfs/h2/emc/stmp/${USER}/test_da"
-PTMP="/lfs/h2/emc/ptmp/${USER}/test_da"
+STMP="/lfs/h2/emc/stmp/emc.lam/rrfs/${version}"
+PTMP="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}"
 ################################################################
 
-PREDEF_GRID_NAME=RRFS_CONUS_3km
+PREDEF_GRID_NAME="RRFS_NA_3km"
 
 . set_rrfs_config_general.sh
 . set_rrfs_config_SDL_VDL_MixEn.sh
@@ -49,17 +38,24 @@ DO_RADDA="TRUE"
 DO_BUFRSND="TRUE"
 USE_FVCOM="TRUE"
 PREP_FVCOM="TRUE"
-DO_PARALLEL_PRDGEN="FALSE"
+DO_PARALLEL_PRDGEN="TRUE"
 DO_GSIDIAG_OFFLINE="TRUE"
-
-EXTRN_MDL_NAME_ICS="FV3GFS"
-EXTRN_MDL_NAME_LBCS="FV3GFS"
 
 EXTRN_MDL_ICS_OFFSET_HRS="3"
 LBC_SPEC_INTVL_HRS="1"
 EXTRN_MDL_LBCS_OFFSET_HRS="6"
 BOUNDARY_LEN_HRS="72"
 BOUNDARY_PROC_GROUP_NUM="72"
+
+# avaialble retro period:
+# 20210511-20210531; 20210718-20210801
+DATE_FIRST_CYCL="20230501"
+DATE_LAST_CYCL="20230630"
+CYCL_HRS=( "00" "12" )
+CYCL_HRS_SPINSTART=("03" "15")
+CYCL_HRS_PRODSTART=("09" "21")
+CYCLEMONTH="05,06"
+CYCLEDAY="*"
 
 STARTYEAR=${DATE_FIRST_CYCL:0:4}
 STARTMONTH=${DATE_FIRST_CYCL:4:2}
@@ -92,6 +88,11 @@ RESTART_INTERVAL_LONG="1 2"
 POSTPROC_LEN_HRS="18"
 POSTPROC_LONG_LEN_HRS="60"
 NFHOUT_HF="1"
+# 15 min output upto 18 hours
+#NFHMAX_HF="18"
+#NFHOUT="1"
+#NSOUT="15"
+#NSOUT_MIN="15"
 
 USE_RRFSE_ENS="TRUE"
 CYCL_HRS_HYB_FV3LAM_ENS=("00" "01" "02" "03" "04" "05" "06" "07" "08" "09" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "23")
@@ -104,6 +105,9 @@ binary_diag=.false.
 
 regional_ensemble_option=5
 
+EXTRN_MDL_NAME_ICS="FV3GFS"
+EXTRN_MDL_NAME_LBCS="FV3GFS"
+
 ARCHIVEDIR="/NCEPDEV/emc-meso/1year/emc.lam/${TAG}"
 NCL_REGION="conus"
 
@@ -111,7 +115,7 @@ NCL_REGION="conus"
 
 NWGES="${PTMP}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 if [[ ${regional_ensemble_option} == "5" ]]; then
-  RRFSE_NWGES="${NWGES}" # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
+  RRFSE_NWGES="${NWGES}"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
   NUM_ENS_MEMBERS=30     # FV3LAM ensemble size for GSI hybrid analysis
   CYCL_HRS_PRODSTART_ENS=( "07" "19" )
   DO_ENVAR_RADAR_REF="TRUE"

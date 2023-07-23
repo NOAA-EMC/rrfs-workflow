@@ -8,6 +8,11 @@ whatis([===[Loads libraries needed for running RRFS workflow on Orion ]===])
 load("contrib")
 load("rocoto")
 load("wget")
+
+prepend_path("MODULEPATH","/work/noaa/epic-ps/role-epic-ps/hpc-stack/libs/intel-2022.1.2/modulefiles/stack")
+load(pathJoin("hpc", os.getenv("hpc_ver") or "1.2.0"))
+load(pathJoin("hpc-intel", os.getenv("hpc_intel_ver") or "2022.1.2"))
+load(pathJoin("hpc-impi", os.getenv("hpc_impi_ver") or "2022.1.2"))
 load(pathJoin("crtm", os.getenv("crtm_ver") or "2.4.0"))
 
 unload("python")
