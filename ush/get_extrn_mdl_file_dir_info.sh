@@ -375,7 +375,7 @@ case "${anl_or_fcst}" in
         fns_in_arcv=( "${fns[@]/#/$prefix}" )
 
       elif [ "${fv3gfs_file_fmt}" = "grib2" ]; then
-        if [ "${extrn_mdl_date_julina}" = "TURE" ]; then
+        if [ "${extrn_mdl_date_julian}" = "TRUE" ]; then
           fns_on_disk=( "${yy}${ddd}${hh}0${fcst_mn}0${fcst_hh}" )
         else
           fns_on_disk=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )

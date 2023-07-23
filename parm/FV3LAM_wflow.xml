@@ -210,7 +210,7 @@ define resources used for each tasks
 <!ENTITY RESOURCES_FCST_SPINUP "<cores>{{ ncores_run_fcst }}</cores>">
 <!ENTITY RESOURCES_FCST_PROD "<cores>{{ ncores_run_fcst }}</cores>">
 <!ENTITY NODESIZE_ALL    "<nodesize>{{ ncores_per_node }}</nodesize>">
-<!ENTITY NATIVE_ALL    "">
+<!ENTITY NATIVE_ALL    "<native>--export=NONE</native>">
 <!ENTITY NATIVE_ANAL_GSI    "<native>{{ native_run_anal }} &RRFS_RESERVE;</native>">
 <!ENTITY NATIVE_FCST_SPINUP    "<native>{{ native_run_fcst }} &RRFS_RESERVE;</native>">
 <!ENTITY NATIVE_FCST_PROD    "<native>{{ native_run_fcst }} &RRFS_RESERVE;</native>">
@@ -223,7 +223,7 @@ define resources used for each tasks
 <!ENTITY RESOURCES_FCST_SPINUP "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
 <!ENTITY RESOURCES_FCST_PROD "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
 <!ENTITY NODESIZE_ALL    "<nodesize>{{ ncores_per_node }}</nodesize>">
-<!ENTITY NATIVE_ALL    "">
+<!ENTITY NATIVE_ALL    "<native>--export=NONE</native>">
 <!ENTITY NATIVE_ANAL_GSI    "<native>{{ native_run_anal }} &RRFS_RESERVE;</native>">
 <!ENTITY NATIVE_FCST_SPINUP    "">
 <!ENTITY NATIVE_FCST_PROD    "">
@@ -236,7 +236,7 @@ define resources used for each tasks
 <!ENTITY RESOURCES_FCST_SPINUP "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
 <!ENTITY RESOURCES_FCST_PROD "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
 <!ENTITY NODESIZE_ALL    "<nodesize>{{ ncores_per_node }}</nodesize>">
-<!ENTITY NATIVE_ALL    "">
+<!ENTITY NATIVE_ALL    "<native>--export=NONE</native>">
 <!ENTITY NATIVE_ANAL_GSI    "">
 <!ENTITY NATIVE_FCST_SPINUP    "">
 <!ENTITY NATIVE_FCST_PROD    "">

@@ -106,12 +106,12 @@ define resources used for each tasks
 <!ENTITY RESOURCES_GET_EXTRN_LBCS "<nodes>{{ nnodes_get_extrn_lbcs }}:ppn={{ ppn_get_extrn_lbcs }}</nodes>">
 
 {%- if machine in ["WCOSS2"]  %}
-<!ENTITY NATIVE_ALL    "<native>-l place=excl</native>">
 <!ENTITY RESOURCES_MAKE_ICS "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}:tpp={{ tpp_make_ics }}</nodes>">
 <!ENTITY RESOURCES_MAKE_LBCS "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}:tpp={{ tpp_make_lbcs }}</nodes>">
 <!ENTITY RESOURCES_RUN_FCST "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}:tpp={{ tpp_run_fcst }}</nodes>">
 <!ENTITY RESOURCES_RUN_POST "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}:tpp={{ tpp_run_post }}</nodes>">
 <!ENTITY NODESIZE_ALL    "">
+<!ENTITY NATIVE_ALL    "<native>-l place=excl</native>">
 <!ENTITY NATIVE_RUN_FCST    "<native>-l place=excl</native>">
 {%- elif machine in ["JET"] %}
 <!ENTITY RESOURCES_MAKE_ICS "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
