@@ -65,6 +65,7 @@ function get_extrn_mdl_file_dir_info() {
     "lbs_spec_intvl_hrs" \
     "boundary_len_hrs" \
     "time_offset_hrs" \
+    "extrn_mdl_date_julian" \
     "varname_extrn_mdl_memhead" \
     "varname_extrn_mdl_cdate" \
     "varname_extrn_mdl_lbc_spec_fhrs" \
@@ -116,6 +117,7 @@ Usage:
     lbs_spec_intvl_hrs \
     boundary_len_hrs \
     time_offset_hrs \
+    extrn_mdl_date_julian \
     varname_extrn_mdl_cdate \
     varname_extrn_mdl_lbc_spec_fhrs \
     varname_extrn_mdl_fns \
@@ -361,7 +363,11 @@ case "${anl_or_fcst}" in
         fns=( "${fns[@]/%/$suffix}" )
 
         # Set names of external files if searching on disk.
-        prefix="gfs.t${hh}z."
+        if [ "${extrn_mdl_date_julian}" = "TRUE" ]; then
+          prefix="${yy}${ddd}${hh}00.gfs.t${hh}z."
+        else
+          prefix="gfs.t${hh}z."
+        fi
         fns_on_disk=( "${fns[@]/#/$prefix}" )
 
         # Set names of external files if searching in an archive file from HPSS.
@@ -369,7 +375,11 @@ case "${anl_or_fcst}" in
         fns_in_arcv=( "${fns[@]/#/$prefix}" )
 
       elif [ "${fv3gfs_file_fmt}" = "grib2" ]; then
-        fns_on_disk=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )
+        if [ "${extrn_mdl_date_julina}" = "TURE" ]; then
+          fns_on_disk=( "${yy}${ddd}${hh}0${fcst_mn}0${fcst_hh}" )
+        else
+          fns_on_disk=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )
+        fi
         fns_in_arcv=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )
 
       elif [ "${fv3gfs_file_fmt}" = "netcdf" ]; then
@@ -465,14 +475,22 @@ and analysis or forecast (anl_or_fcst):
     "FV3GFS")
       if [ "${fv3gfs_file_fmt}" = "nemsio" ]; then
         fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
-        prefix="gfs.t${hh}z.atmf"
+        if [ "${extrn_mdl_date_julian}" = "TRUE" ]; then
+          prefix="${yy}${ddd}${hh}00.gfs.t${hh}z.atmf"
+        else
+          prefix="gfs.t${hh}z.atmf"
+        fi
         suffix=".nemsio"
         fns_on_disk_tmp=( "${fcst_hhh[@]/#/${prefix}}" )
         fns_on_disk=( "${fns_on_disk_tmp[@]/%/${suffix}}" )
         fns_in_arcv=( "${fcst_hhh[@]/#/${prefix}}" )
       elif [ "${fv3gfs_file_fmt}" = "grib2" ]; then
         fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
-        prefix="gfs.t${hh}z.pgrb2.0p25.f"
+        if [ "${extrn_mdl_date_julian}" = "TRUE" ]; then
+          prefix=( "${yy}${ddd}${hh}${fcst_mn}0" )
+        else
+          prefix="gfs.t${hh}z.pgrb2.0p25.f"
+        fi
         fns_on_disk=( "${fcst_hhh[@]/#/$prefix}" )
         fns_in_arcv=( "${fcst_hhh[@]/#/$prefix}" )
       elif [ "${fv3gfs_file_fmt}" = "netcdf" ]; then

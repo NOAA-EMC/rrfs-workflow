@@ -15,6 +15,8 @@ RUN="rrfs"
 
 STMP="/scratch2/NCEPDEV/stmp3/${USER}/test_da"
 PTMP="/scratch2/NCEPDEV/stmp3/${USER}/test_da"
+
+EXTRN_MDL_DATE_JULIAN="TRUE"
 ################################################################
 
 PREDEF_GRID_NAME=RRFS_CONUS_3km

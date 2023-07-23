@@ -11,6 +11,7 @@ MODEL="rrfs_b"
 RUN="rrfs"
 STMP="YourOwnSpace/${version}/stmp"
 PTMP="YourOwnSpace/${version}/ptmp"
+EXTRN_MDL_DATE_JULIAN="TRUE"
 ################################################################
 
 PREDEF_GRID_NAME=RRFS_CONUS_3km
