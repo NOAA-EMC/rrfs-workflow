@@ -17,7 +17,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -85,27 +85,19 @@ case $MACHINE in
 "HERA")
   ulimit -s unlimited
   ulimit -a
-  APRUN="srun"
+  APRUN="srun --export=ALL"
   ;;
 #
 "JET")
   ulimit -s unlimited
   ulimit -a
-  APRUN="srun"
+  APRUN="srun --export=ALL"
   ;;
 #
 "ORION")
   ulimit -s unlimited
-  APRUN="srun"
-  ;;
-#
-"ODIN")
-#
-  module list
-
-  ulimit -s unlimited
   ulimit -a
-  APRUN="srun"
+  APRUN="srun --export=ALL"
   ;;
 #
 esac
@@ -117,7 +109,6 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-set -x
 START_DATE=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
 YYYYMMDDHH=$(date +%Y%m%d%H -d "${START_DATE}")
 JJJ=$(date +%j -d "${START_DATE}")

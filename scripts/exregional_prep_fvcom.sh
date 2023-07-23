@@ -69,8 +69,6 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 
-set -x
-
 # Working directory
 dir=${modelinputdir}/fvcom_remap
 
