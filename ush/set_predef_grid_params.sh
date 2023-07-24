@@ -171,14 +171,14 @@ case ${PREDEF_GRID_NAME} in
   ESGgrid_NY="1092"
   ESGgrid_PAZI="0.0"
   ESGgrid_WIDE_HALO_WIDTH="6"
-  DT_ATMOS="${DT_ATMOS:-36}"
-  LAYOUT_X="${LAYOUT_X:-28}"
-  LAYOUT_Y="${LAYOUT_Y:-28}"
-  BLOCKSIZE="${BLOCKSIZE:-28}"
+  DT_ATMOS="${DT_ATMOS:-40}"
+  LAYOUT_X="${LAYOUT_X:-30}"
+  LAYOUT_Y="${LAYOUT_Y:-16}"
+  BLOCKSIZE="${BLOCKSIZE:-32}"
 
   if [ "$QUILTING" = "TRUE" ]; then
     WRTCMP_write_groups="1"
-    WRTCMP_write_tasks_per_group="28"
+    WRTCMP_write_tasks_per_group=$(( 1*LAYOUT_Y ))
     WRTCMP_output_grid="lambert_conformal"
     WRTCMP_cen_lon="${ESGgrid_LON_CTR}"
     WRTCMP_cen_lat="${ESGgrid_LAT_CTR}"

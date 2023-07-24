@@ -1083,6 +1083,7 @@ MODULES_RUN_TASK_FP script.
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_FCST_TN;" "&JOBSdir;/JREGIONAL_RUN_FCST"</command>
     &RESOURCES_FCST_SPINUP;
     <walltime>&WALLTIME_FCST_SPINUP;</walltime>
+    &NATIVE_ALL;
     &NATIVE_FCST_SPINUP;
     &NODESIZE_ALL;
     <jobname>&TAG;_&RUN_FCST_TN;_ensinit{{ uscore_ensmem_name }}</jobname>
@@ -1668,6 +1669,7 @@ MODULES_RUN_TASK_FP script.
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_FCST_TN;" "&JOBSdir;/JREGIONAL_RUN_FCST"</command>
     &RESOURCES_FCST_SPINUP;
     <walltime>&WALLTIME_FCST_SPINUP;</walltime>
+    &NATIVE_ALL;
     &NATIVE_FCST_SPINUP;
     &NODESIZE_ALL;
     <jobname>&TAG;_&RUN_FCST_TN;_spinup{{ uscore_ensmem_name }}</jobname>
@@ -2697,6 +2699,7 @@ MODULES_RUN_TASK_FP script.
 
     &RESOURCES_FCST_PROD;
     <walltime>&WALLTIME_FCST_PROD;</walltime>
+    &NATIVE_ALL;
     &NATIVE_FCST_PROD;
     &NODESIZE_ALL;
     <jobname>&TAG;_&RUN_FCST_TN;_prod{{ uscore_ensmem_name }}</jobname>
@@ -2779,6 +2782,7 @@ MODULES_RUN_TASK_FP script.
 
     &RESOURCES_FCST_PROD;
     <walltime>&WALLTIME_FCST_PROD_LONG;</walltime>
+    &NATIVE_ALL;
     &NATIVE_FCST_PROD;
     &NODESIZE_ALL;
     <jobname>&TAG;_&RUN_FCST_TN;_prod{{ uscore_ensmem_name }}</jobname>

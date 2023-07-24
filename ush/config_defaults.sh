@@ -918,7 +918,7 @@ EXTRN_MDL_FILES_LBCS=( "LBCS_file1" "LBCS_file2" "..." )
 #
 #-----------------------------------------------------------------------
 #
-CCPP_PHYS_SUITE="FV3_GFS_v15p2"
+CCPP_PHYS_SUITE="FV3_GFS_v16"
 #
 #-----------------------------------------------------------------------
 #
@@ -2191,6 +2191,9 @@ DO_ENS_RADDA="FALSE"
 # DO_SMOKE_DUST
 # Flag turn on smoke and dust for RRFS-SD
 #
+# DO_NONDA
+# Flag that determines whether to run non-DA case.
+#
 #-----------------------------------------------------------------------
 #
 DO_DACYCLE="FALSE"
@@ -2203,6 +2206,7 @@ DO_RADDA="FALSE"
 DO_BUFRSND="FALSE"
 USE_RRFSE_ENS="FALSE"
 DO_SMOKE_DUST="FALSE"
+DO_NONDA="FALSE"
 #
 #-----------------------------------------------------------------------
 #

@@ -313,10 +313,14 @@ relative_or_null=""
 n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
-if [ ${BKTYPE} -eq 1 ]; then
+if [ "${DO_NONDA}" = "TRUE" ]; then
   target="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/ics/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc"
 else
-  target="fv_core.res.tile1.nc"
+  if [ ${BKTYPE} -eq 1 ]; then
+    target="gfs_data.tile${TILE_RGNL}.halo${NH0}.nc"
+  else
+    target="fv_core.res.tile1.nc"
+  fi
 fi
 symlink="gfs_data.nc"
 if [ -f "${target}.0000" ]; then
@@ -341,7 +345,7 @@ else
   fi
 fi
 
-if [ ${BKTYPE} -eq 1 ]; then
+if [ "${DO_NONDA}" = "TRUE" ]; then
   target="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/ics/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc"
   symlink="sfc_data.nc"
   ln_vrfy -sf ${relative_or_null} $target $symlink
@@ -356,12 +360,24 @@ if [ ${BKTYPE} -eq 1 ]; then
     ln_vrfy -sf ${relative_or_null} $target $symlink
   done
 else
-  if [ -f "sfc_data.nc.0000" ] || [ -f "sfc_data.nc" ]; then
-    print_info_msg "$VERBOSE" "
-    sfc_data.nc is available at INPUT directory"
+  if [ ${BKTYPE} -eq 1 ]; then
+    target="sfc_data.tile${TILE_RGNL}.halo${NH0}.nc"
+    symlink="sfc_data.nc"
+    if [ -f "${target}" ]; then
+      ln_vrfy -sf ${relative_or_null} $target $symlink
+    else
+      print_err_msg_exit "\
+      Cannot create symlink because target does not exist:
+      target = \"$target\""
+    fi
   else
-    print_err_msg_exit "\
-    sfc_data.nc is not available for cycling"
+    if [ -f "sfc_data.nc.0000" ] || [ -f "sfc_data.nc" ]; then
+      print_info_msg "$VERBOSE" "
+      sfc_data.nc is available at INPUT directory"
+    else
+      print_err_msg_exit "\
+      sfc_data.nc is not available for cycling"
+    fi
   fi
 fi
 
