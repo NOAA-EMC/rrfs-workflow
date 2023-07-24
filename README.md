@@ -84,7 +84,7 @@ where `[machine]` is `hera`, `orion`, or `jet`.
 cd ush
 cp sample_configs/DA_eng/config.DA.[type].[machine].sh config.sh
 ```
-where `[type]`=`para` on `machine`=`wcoss2` or `[type]`=`retro` on `machine`=`hera`.
+where `[type]`=`para` on `[machine]`=`wcoss2` or `[type]`=`retro` on `[machine]`=`hera`. Note that you may need to change `ACCOUN` in `config.sh`.
 
 3. Generate the workflow:
 ```

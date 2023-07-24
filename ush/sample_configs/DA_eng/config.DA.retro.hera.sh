@@ -1,6 +1,5 @@
 MACHINE="hera"
 version="v0.00"
-ACCOUNT="nrtrr"
 #RESERVATION="rrfsdet"
 
 ################################################################
@@ -23,6 +22,8 @@ PREDEF_GRID_NAME=RRFS_CONUS_3km
 
 . set_rrfs_config_general.sh
 . set_rrfs_config_SDL_VDL_MixEn.sh
+
+#ACCOUNT="your account on hera"
 
 #DO_ENSEMBLE="TRUE"
 #DO_ENSFCST="TRUE"
