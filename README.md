@@ -84,7 +84,11 @@ where `[machine]` is `hera`, `orion`, or `jet`.
 cd ush
 cp sample_configs/DA_eng/config.DA.[type].[machine].sh config.sh
 ```
-where `[type]`=`para` on `[machine]`=`wcoss2` or `[type]`=`retro` on `[machine]`=`hera`. Note that you may need to change `ACCOUNT` in `config.sh`.
+where `[type]`=`para` on `[machine]`=`wcoss2` or `[type]`=`retro` on `[machine]`=`hera`. 
+
+Notes) 
+- you may need to change `ACCOUNT` in `config.sh`.
+- For the real-time test run on WCOSS2, you should replace the `DATE_FIRST_CYCL`, `DATE_LAST_CYCL`, `CYCLEMONTH`, and `CYCLEDAY` with those of Today's date.
 
 3. Generate the workflow:
 ```
@@ -104,7 +108,21 @@ rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202207200600 -t get_e
 rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202207201200 -t get_extrn_lbcs
 rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202207201800 -t get_extrn_lbcs
 rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202207201500 -t get_extrn_ics
+```
+Once the above tasks are complete,
+```
 rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202207200300 -t prep_cyc_spinup
 ```
 
-- On WCOSSS2: `config.DA.para.wcoss2.sh`
+- On WCOSSS2: `config.DA.para.wcoss2.sh` (in case of today=20230725)
+```
+rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307250000 -t get_extrn_lbcs
+rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307250600 -t get_extrn_lbcs
+rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307251200 -t get_extrn_lbcs
+rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307250300 -t get_extrn_ics
+```
+Once the above tasks are complete,
+```
+rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307250300 -t prep_cyc_spinup
+```
+

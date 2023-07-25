@@ -1,18 +1,17 @@
 MACHINE="wcoss2"
-
-################################################################
 #RESERVATION="rrfsdet"
 #EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/$version/"
 
+################################################################
+# Replace DATE_FIRST_CYCL/DATE_LAST_CYCL/CYCLEMONTH/CYCLEDAY
+# with those of Today's date
+
 EXPT_SUBDIR="rrfs_test_da"
 
-DATE_FIRST_CYCL="20230722"
-DATE_LAST_CYCL="20230722"
-CYCL_HRS=( "00" "12" )
-CYCL_HRS_SPINSTART=("03" "15")
-CYCL_HRS_PRODSTART=("09" "21")
+DATE_FIRST_CYCL="20230725"
+DATE_LAST_CYCL="20230725"
 CYCLEMONTH="07"
-CYCLEDAY="22"
+CYCLEDAY="25"
 
 MODEL="rrfs_a"
 RUN="rrfs"
@@ -23,6 +22,10 @@ TAG="c0v00"
 STMP="/lfs/h2/emc/stmp/${USER}/test_da"
 PTMP="/lfs/h2/emc/ptmp/${USER}/test_da"
 ################################################################
+
+CYCL_HRS=( "00" "12" )
+CYCL_HRS_SPINSTART=("03" "15")
+CYCL_HRS_PRODSTART=("09" "21")
 
 PREDEF_GRID_NAME=RRFS_CONUS_3km
 
