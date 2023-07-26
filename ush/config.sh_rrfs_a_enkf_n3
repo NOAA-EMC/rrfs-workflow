@@ -1,6 +1,6 @@
 MACHINE="wcoss2"
 MACHINETYPE="backup"
-version="v0.6.1"
+version="v0.6.5"
 ACCOUNT="RRFS_DEV"
 #RESERVATION="rrfsdet"
 EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/${version}"
@@ -190,10 +190,10 @@ fi
 
 RUN_ensctrl="rrfs"
 RUN="enkfrrfs"
-TAG="n3enkf61"
+TAG="n3enkf65"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   RUN="refs"
-  TAG="n3enfcst61"
+  TAG="n3enfcst65"
 fi
 COMINgfs=""
 
@@ -204,7 +204,7 @@ PTMP="/lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/rrfs/${version}"  # Path to directory ST
 NWGES="/lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/rrfs/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   STMP="/lfs/h2/emc/stmp/emc.lam/rrfs/${version}/enfcst"  # Path to directory STMP that mostly contains input files.
-  NWGES="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}/nwges/enfcst"  # Path to directory NWGES that save boundary, cold initial, restart files
+  NWGES="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 fi
 ENSCTRL_STMP="/lfs/f2/t2o/ptmp/emc/stmp/emc.lam/rrfs/${version}"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
 ENSCTRL_PTMP="/lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/rrfs/${version}"  # Path to directory STMP that mostly contains control input files for ensemble recentering.

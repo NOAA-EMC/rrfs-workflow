@@ -2226,18 +2226,10 @@ MODULES_RUN_TASK_FP script.
          <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
          <taskdep task="&PREP_CYC_TN;_prod{{ uscore_ensmem_name }}"/>
          {%- if use_rrfse_ens %}
-         {%- if do_retro %}
+         {%- if do_envar_radar_ref and do_envar_radar_ref_once %}
+         <taskdep task="&PROCESS_RADAR_REF_TN;_prod"/>
+         {%- endif %}
          <or>
-           <and>
-             {%- if do_envar_radar_ref and do_envar_radar_ref_once %}
-             <taskdep task="&PROCESS_RADAR_REF_TN;_prod"/>
-             {%- endif %}
-             <or>
-             {%- for h in cycl_hrs_hyb_fv3lam_ens %}
-               <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
-             {%- endfor %}
-             </or>
-           <or>
            {%- if do_spinup %}
             <and> 
              <or>
@@ -2266,15 +2258,7 @@ MODULES_RUN_TASK_FP script.
              {%- endfor %}
             </and>
            {%- endif %} 
-           </or>
-           </and>
-           <and>
-              {%- for h in cycl_hrs_hyb_fv3lam_ens %}
-                <strneq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></strneq>
-              {%- endfor %}
-           </and>
          </or>
-         {%- endif %}
          {%- endif %}
        </and>
     </dependency>
