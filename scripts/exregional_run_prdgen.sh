@@ -325,6 +325,10 @@ fi
 else
   echo "this grid is not ready for parallel prdgen: ${PREDEF_GRID_NAME}"
 fi
+
+rm -fr $DATAprdgen
+rm -f $DATA/*.t${cyc}z.*.f${fhr}.*.grib2
+
 else
 #
 # use single core to process all addition grids.
@@ -390,8 +394,6 @@ fi
 fi  # block for parallel or series wgrib2 runs.
 
 rm_vrfy -rf ${fhr_dir}
-rm -fr $DATAprdgen
-rm -f $DATA/*.t${cyc}z.*.f${fhr}.*.grib2
 #
 #-----------------------------------------------------------------------
 #
