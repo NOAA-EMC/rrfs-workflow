@@ -313,7 +313,7 @@ relative_or_null=""
 n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
-if [ "${DO_NONDA}" = "TRUE" ]; then
+if [ "${DO_NON_DA_RUN}" = "TRUE" ]; then
   target="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/ics/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc"
 else
   if [ ${BKTYPE} -eq 1 ]; then
@@ -345,7 +345,7 @@ else
   fi
 fi
 
-if [ "${DO_NONDA}" = "TRUE" ]; then
+if [ "${DO_NON_DA_RUN}" = "TRUE" ]; then
   target="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/ics/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc"
   symlink="sfc_data.nc"
   ln_vrfy -sf ${relative_or_null} $target $symlink
