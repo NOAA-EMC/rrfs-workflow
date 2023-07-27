@@ -8,10 +8,10 @@ MACHINE="wcoss2"
 
 EXPT_SUBDIR="rrfs_test_da"
 
-DATE_FIRST_CYCL="20230725"
-DATE_LAST_CYCL="20230725"
+DATE_FIRST_CYCL="20230726"
+DATE_LAST_CYCL="20230726"
 CYCLEMONTH="07"
-CYCLEDAY="25"
+CYCLEDAY="26"
 
 MODEL="rrfs_a"
 RUN="rrfs"
@@ -114,7 +114,7 @@ NCL_REGION="conus"
 
 NWGES="${PTMP}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 if [[ ${regional_ensemble_option} == "5" ]]; then
-  RRFSE_NWGES="${NWGES}" # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
+  RRFSE_NWGES="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}/nwges" # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
   NUM_ENS_MEMBERS=30     # FV3LAM ensemble size for GSI hybrid analysis
   CYCL_HRS_PRODSTART_ENS=( "07" "19" )
   DO_ENVAR_RADAR_REF="TRUE"

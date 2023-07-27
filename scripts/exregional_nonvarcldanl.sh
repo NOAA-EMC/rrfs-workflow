@@ -128,7 +128,7 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 #-----------------------------------------------------------------------
 #
 print_info_msg "$VERBOSE" "
-Getting into working directory for radar tten process ..."
+Getting into working directory for non-var cloud analysis ..."
 
 cd_vrfy ${workdir}
 
@@ -354,7 +354,7 @@ touch ${comout}/nonvarcldanl_complete.txt
 #
 print_info_msg "
 ========================================================================
-RADAR REFL TTEN PROCESS completed successfully!!!
+NON-VAR CLOUD ANALYSIS completed successfully!!!
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"

@@ -114,17 +114,23 @@ Once the above tasks are complete,
 rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202207200300 -t prep_cyc_spinup
 ```
 
-- On WCOSS2: `config.DA.para.wcoss2.sh` (in case of today=20230725)
+- On WCOSS2: `config.DA.para.wcoss2.sh` (in case of today=20230726)
 ```
-rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307250000 -t get_extrn_lbcs
-rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307250600 -t get_extrn_lbcs
-rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307251200 -t get_extrn_lbcs
-rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307251800 -t get_extrn_lbcs (only when data is available)
-rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307250300 -t get_extrn_ics 
-rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307251500 -t get_extrn_ics (only when data is available)
+rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307260000 -t get_extrn_lbcs
+rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307260600 -t get_extrn_lbcs
+rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307261200 -t get_extrn_lbcs
+rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307261800 -t get_extrn_lbcs (only when data is available)
+rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307260300 -t get_extrn_ics 
+rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307261500 -t get_extrn_ics (only when data is available)
 ```
-Once the above tasks are complete,
+Note that you may need to run `rocotoboot` for the task `prep_cyc_spinup` at 04z sequentially if it is not launched.
 ```
-rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307250300 -t prep_cyc_spinup
+rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307260400 -t prep_cyc_spinup
 ```
-Note that you may need to run `rocotoboot` for the next cycles sequentially.
+
+6. Check the status of your run with `rocotostat`:
+```
+rocotostat -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 > test.log
+```
+Note that you can open the log file `log.lauch_FV3LAM_wflow` for the entire history but it is sometimes too long.
+
