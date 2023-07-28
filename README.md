@@ -123,10 +123,17 @@ rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307261800 -t get_e
 rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307260300 -t get_extrn_ics 
 rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307261500 -t get_extrn_ics (only when data is available)
 ```
+
 Note that you may need to run `rocotoboot` for the task `prep_cyc_spinup` at 04z sequentially if it is not launched.
 ```
 rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307260400 -t prep_cyc_spinup
 ```
+
+Note that you may need to force the completion of the `cldanl_nonvar_prod` when it fails. 
+```
+rocotocomplete -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307260000 -t cldanl_nonvar_prod
+```
+
 
 6. Check the status of your run with `rocotostat`:
 ```
