@@ -305,8 +305,6 @@ cat << EOF > gsiparm.anl
  /
 EOF
 
-
-
 #
 #-----------------------------------------------------------------------
 #
@@ -326,8 +324,6 @@ The executable specified in exect does not exist:
   exect = \"${EXECdir}/$exect\"
 Build executable and rerun."
 fi
-#
-#
 #
 #-----------------------------------------------------------------------
 #
