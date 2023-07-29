@@ -799,6 +799,9 @@ beta_recenter=1.0
 # lateral boundary condition (LBC) files will be generated for input into
 # the forecast model.
 #
+# EXTRN_MDL_SAVETYPE:
+#`define how EXTRN_MDL_NAME_ICS and EXTRN_MDL_NAME_LBCS were saved (such as GSL, NCO)
+#
 # EXTRN_MDL_ICS_OFFSET_HRS:
 # Initial file offset hours.
 #
@@ -845,6 +848,7 @@ beta_recenter=1.0
 #
 EXTRN_MDL_NAME_ICS="FV3GFS"
 EXTRN_MDL_NAME_LBCS="FV3GFS"
+EXTRN_MDL_SAVETYPE="NONE"
 EXTRN_MDL_ICS_OFFSET_HRS="0"
 LBC_SPEC_INTVL_HRS="6"
 EXTRN_MDL_LBCS_OFFSET_HRS=""

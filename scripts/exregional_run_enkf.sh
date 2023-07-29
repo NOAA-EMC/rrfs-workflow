@@ -72,7 +72,7 @@ case $MACHINE in
   ulimit -a
   export FI_OFI_RXM_SAR_LIMIT=3145728
   export OMP_STACKSIZE=2G
-  export OMP_NUM_THREADS=16
+  export OMP_NUM_THREADS=${TPP_RUN_ENKF}
   export OMP_PROC_BIND=close
   export OMP_PLACES=threads
   export MPICH_RANK_REORDER_METHOD=0

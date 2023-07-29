@@ -99,7 +99,7 @@ else
   "GEFS")
     case "$MACHINE" in
     "WCOSS2")
-      EXTRN_MDL_SYSBASEDIR_ICS="/lfs/h1/ops/prod/com/gefs/v12.3"
+      EXTRN_MDL_SYSBASEDIR_ICS="${EXTRN_MDL_SOURCE_BASEDIR_ICS:-"/lfs/h1/ops/prod/com/gefs/v12.3"}"
       ;;
     "HERA")
       EXTRN_MDL_SYSBASEDIR_ICS=""
@@ -277,7 +277,7 @@ else
   "GEFS")
     case "$MACHINE" in
     "WCOSS2")
-      EXTRN_MDL_SYSBASEDIR_LBCS="/lfs/h1/ops/prod/com/gefs/v12.3"
+      EXTRN_MDL_SYSBASEDIR_LBCS="${EXTRN_MDL_SOURCE_BASEDIR_LBCS:-"/lfs/h1/ops/prod/com/gefs/v12.3"}"
       ;;
     "JET")
       EXTRN_MDL_SYSBASEDIR_LBCS="${EXTRN_MDL_SOURCE_BASEDIR_LBCS:-"/mnt/lfs4/BMC/public/data/grids/gens/pgrb2b"}"
