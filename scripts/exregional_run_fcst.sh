@@ -155,6 +155,13 @@ esac
 #
 #-----------------------------------------------------------------------
 #
+export KMP_AFFINITY=${KMP_AFFINITY:-scatter}
+export KMP_AFFINITY=scatter
+export OMP_NUM_THREADS=${OMP_NUM_THREADS:-1} #Needs to be 1 for dynamic build of CCPP with GFDL fast physics, was 2 before.
+export OMP_STACKSIZE=${OMP_STACKSIZE:-1024m}
+#
+#-----------------------------------------------------------------------
+#
 # Create links in the INPUT subdirectory of the current run directory to
 # the grid and (filtered) orography files.
 #
@@ -456,7 +463,6 @@ relative_or_null=""
 
 ln_vrfy -sf ${relative_or_null} ${DATA_TABLE_FP} ${run_dir}
 ln_vrfy -sf ${relative_or_null} ${FIELD_TABLE_FP} ${run_dir}
-ln_vrfy -sf ${relative_or_null} ${NEMS_CONFIG_FP} ${run_dir}
 ln_vrfy -sf ${relative_or_null} ${NEMS_YAML_FP} ${run_dir}
 
 #
@@ -520,7 +526,6 @@ Call to function to create a model configuration file for the current
 cycle's (cdate) run directory (run_dir) failed:
   cdate = \"${cdate}\"
   run_dir = \"${run_dir}\""
-
 #
 #-----------------------------------------------------------------------
 #
@@ -534,15 +539,24 @@ create_diag_table_file \
   Call to function to create a diag table file for the current.
 cycle's (cdate) run directory (run_dir) failed:
   run_dir = \"${run_dir}\""
-
 #
 #-----------------------------------------------------------------------
 #
-export KMP_AFFINITY=${KMP_AFFINITY:-scatter}
-export KMP_AFFINITY=scatter
-export OMP_NUM_THREADS=${OMP_NUM_THREADS:-1} #Needs to be 1 for dynamic build of CCPP with GFDL fast physics, was 2 before.
-export OMP_STACKSIZE=${OMP_STACKSIZE:-1024m}
-
+# Call the function that creates the NEMS configuration file within each
+# cycle directory.
+#
+#-----------------------------------------------------------------------
+#
+python3 $USHdir/create_nems_configure_file.py \
+  --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
+  --run-dir ${run_dir} 
+export err=$?
+if [ $err -ne 0 ]; then
+  message_txt="Call to function to create a NEMS configuration file for
+the current cycle's (cdate) run directory (DATA) failed:
+  DATA = \"${run_dir}\""
+  err_exit "${message_txt}"
+fi
 #
 #-----------------------------------------------------------------------
 #

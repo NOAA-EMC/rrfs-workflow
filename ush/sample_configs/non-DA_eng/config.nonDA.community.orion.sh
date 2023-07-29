@@ -4,6 +4,7 @@ HPSS_ACCOUNT="fv3-cam"
 EXPT_SUBDIR="test_nonDA_community"
 
 VERBOSE="TRUE"
+PRINT_ESMF="TRUE"
 
 RUN_ENVIR="community"
 PREEXISTING_DIR_METHOD="rename"
