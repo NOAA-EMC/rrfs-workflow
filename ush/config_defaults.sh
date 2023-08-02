@@ -1279,13 +1279,14 @@ ESGgrid_PAZI=""
 # Output frequency in hours until forecast hour "nfhmax_hf".
 #
 # NSOUT
-# setup frequency of writing out forecast files in time steps
+# Frequency of writing out forecast files in time steps
 #
 # NSOUT_MIN
-# setup frequency of writing out forecast files in minutes
+# Frequency of writing out forecast files in minutes
 #
 # OUTPUT_FH
-# setup time of writing out forecast files in hours
+# Output time of writing out forecast files in hours. 
+# Output frequency with the second element -1.
 #
 # FHROT:
 # Forecast hour at restart
@@ -1309,7 +1310,7 @@ NFHMAX_HF="60"
 NFHOUT_HF="1"
 NSOUT="-1"
 NSOUT_MIN="0"
-OUTPUT_FH="1"
+OUTPUT_FH="1 -1"
 FHROT="0"
 WRITE_DOPOST="FALSE"
 #

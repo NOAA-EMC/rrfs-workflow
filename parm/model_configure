@@ -34,11 +34,27 @@ output_file:             'netcdf' 'netcdf'
 #
 # Write-component output frequency parameter definitions:
 #
-# output_fh: Output frequency in hours.
-# nsout: Output frequency in time steps (positive values override "output_fh").
+# nfhout:
+# Output frequency in hours after forecast hour "nfhmax_hf".
 #
-output_fh:  {{ output_fh }}  -1
-nsout:      {{ nsout }}
+# nfhmax_hf:
+# Number of forecast hours until output frequency "nfhout" takes affect.
+#
+# nfhout_hf:
+# Output frequency in hours until forecast hour "nfhmax_hf".
+#
+# nsout: 
+# Output frequency in time steps (positive values override "output_fh").
+#
+# output_fh: 
+# History file output forecast hours or output frequency with -1.
+# For example, 6 9 (output at fh=6 and 9), 6 -1 (every 6 hours)
+#
+nfhout: {{ nfhout }}
+nfhmax_hf: {{ nfhmax_hf }}
+nfhout_hf: {{ nfhout_hf }}
+nsout: {{ nsout }}
+output_fh:  {{ output_fh }}
 #
 # Coordinate system used by the output grid.
 #

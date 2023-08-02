@@ -70,8 +70,10 @@ def create_model_configure_file(
     #
     # Set parameters in the model configure file.
     #
-    dot_quilting_dot=f".{lowercase(str(QUILTING))}."
-    dot_write_dopost=f".{lowercase(str(WRITE_DOPOST))}."
+    dot_quilting_dot = f".{lowercase(str(QUILTING))}."
+    dot_write_dopost = f".{lowercase(str(WRITE_DOPOST))}."
+    restart_interval = RESTART_INTERVAL
+    nsout = NSOUT
     #
     # Decide the forecast length for this cycle
     #
@@ -97,13 +99,13 @@ def create_model_configure_file(
             for cyc_start in CYCL_HRS_SPINSTART:
                 if hh == cyc_start:
                     FCST_LEN_HRS_thiscycle = "{:0.5f}".format(DT_ATMOS/3600)
-                    NSOUT = 1
-                    RESTART_INTERVAL = 0
+                    nsout = 1
+                    restart_interval = "0"
                     print_info_msg(f"""
         "DT_ATMOS ('{DT_ATMOS}') 
          FCST_LEN_HRS_thiscycle ('{FCST_LEN_HRS_thiscycle}')
-         NSOUT ('{NSOUT}')
-         RESTART_INTERVAL ('{RESTART_INTERVAL}')
+         NSOUT ('{nsout}')
+         RESTART_INTERVAL ('{restart_interval}')
                     """, verbose=VERBOSE)
 
     #
@@ -123,11 +125,15 @@ def create_model_configure_file(
         "nhours_fcst": FCST_LEN_HRS_thiscycle,
         "fhrot": fhrot,
         "dt_atmos": DT_ATMOS,
-        "restart_interval": RESTART_INTERVAL,
+        "restart_interval": restart_interval,
         "write_dopost": dot_write_dopost,
         "quilting": dot_quilting_dot,
         "output_grid": WRTCMP_output_grid,
-        "nsout": NSOUT
+        "nfhout": NFHOUT,
+        "nfhmax_hf": NFHMAX_HF,
+        "nfhout_hf": NFHOUT_HF,
+        "nsout": nsout,
+        "output_fh": OUTPUT_FH,
     }
     #
     # If the write-component is to be used, then specify a set of computational
@@ -179,43 +185,6 @@ def create_model_configure_file(
                     "dy": "",
                 }
             )
-    #
-    # If sub_hourly_post is set to "TRUE", then the forecast model must be
-    # directed to generate output files on a sub-hourly interval.  Do this
-    # by specifying the output interval in the model configuration file
-    # (MODEL_CONFIG_FN) in units of number of forecat model time steps (nsout).
-    # nsout is calculated using the user-specified output time interval
-    # dt_subhourly_post_mnts (in units of minutes) and the forecast model's
-    # main time step dt_atmos (in units of seconds).  Note that nsout is
-    # guaranteed to be an integer because the experiment generation scripts
-    # require that dt_subhourly_post_mnts (after conversion to seconds) be
-    # evenly divisible by dt_atmos.  Also, in this case, the variable output_fh
-    # [which specifies the output interval in hours;
-    # see the jinja model_config template file] is set to 0, although this
-    # doesn't matter because any positive of nsout will override output_fh.
-    #
-    # If sub_hourly_post is set to "FALSE", then the workflow is hard-coded
-    # (in the jinja model_config template file) to direct the forecast model
-    # to output files every hour.  This is done by setting (1) output_fh to 1
-    # here, and (2) nsout to -1 here which turns off output by time step interval.
-    #
-    # Note that the approach used here of separating how hourly and subhourly
-    # output is handled should be changed/generalized/simplified such that
-    # the user should only need to specify the output time interval (there
-    # should be no need to specify a flag like sub_hourly_post); the workflow
-    # should then be able to direct the model to output files with that time
-    # interval and to direct the post-processor to process those files
-    # regardless of whether that output time interval is larger than, equal
-    # to, or smaller than one hour.
-    #
-    if sub_hourly_post:
-        nsout = (dt_subhourly_post_mnts * 60) // dt_atmos
-        output_fh = 0
-    else:
-        output_fh = 1
-        nsout = -1
-
-    settings.update({"output_fh": output_fh, "nsout": nsout})
 
     settings_str = cfg_to_yaml_str(settings)
 
