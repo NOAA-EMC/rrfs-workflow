@@ -12,15 +12,6 @@
 #
 #-----------------------------------------------------------------------
 #
-# Source other necessary files.
-#
-#-----------------------------------------------------------------------
-#
-. $USHdir/create_model_configure_file.sh
-. $USHdir/create_diag_table_file.sh
-#
-#-----------------------------------------------------------------------
-#
 # Save current shell options (in a global array).  Then set new options
 # for this script/function.
 #
@@ -515,30 +506,40 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-create_model_configure_file \
-  cdate="$cdate" \
-  cycle_type="$cycle_type" \
-  cycle_subtype="$cycle_subtype" \
-  run_dir="${run_dir}" \
-  nthreads=${OMP_NUM_THREADS:-1} \
-  restart_hrs="${RESTART_HRS}" || print_err_msg_exit "\
-Call to function to create a model configuration file for the current
-cycle's (cdate) run directory (run_dir) failed:
-  cdate = \"${cdate}\"
-  run_dir = \"${run_dir}\""
+python3 $USHdir/create_model_configure_file.py \
+  --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
+  --cdate "${cdate}" \
+  --cycle_type "${cycle_type}" \
+  --cycle_subtype "${cycle_subtype}" \
+  --run-dir "${run_dir}" \
+  --fhrot "${FHROT}" \
+  --nthreads "${OMP_NUM_THREADS}" \
+  --restart_hrs="${RESTART_HRS}"
+export err=$?
+if [ $err -ne 0 ]; then
+  message_txt="Call to function to create the model_configure file for
+the current cycle's (cdate) run directory (DATA) failed:
+  DATA = \"${run_dir}\""
+  err_exit "${message_txt}"
+fi
 #
 #-----------------------------------------------------------------------
 #
-# Call the function that creates the model configuration file within each
+# Call the function that creates the diag_table file within each
 # cycle directory.
 #
 #-----------------------------------------------------------------------
 #
-create_diag_table_file \
-  run_dir="${run_dir}" || print_err_msg_exit "\
-  Call to function to create a diag table file for the current.
-cycle's (cdate) run directory (run_dir) failed:
-  run_dir = \"${run_dir}\""
+python3 $USHdir/create_diag_table_file.py \
+  --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
+  --run-dir ${run_dir}
+export err=$?
+if [ $err -ne 0 ]; then
+  message_txt="Call to function to create the diag_table file for
+the current cycle's (cdate) run directory (DATA) failed:
+  DATA = \"${run_dir}\""
+  err_exit "${message_txt}"
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -552,7 +553,7 @@ python3 $USHdir/create_nems_configure_file.py \
   --run-dir ${run_dir} 
 export err=$?
 if [ $err -ne 0 ]; then
-  message_txt="Call to function to create a NEMS configuration file for
+  message_txt="Call to function to create the NEMS configuration file for
 the current cycle's (cdate) run directory (DATA) failed:
   DATA = \"${run_dir}\""
   err_exit "${message_txt}"
