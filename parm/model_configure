@@ -43,18 +43,18 @@ output_file:             'netcdf' 'netcdf'
 # nfhout_hf:
 # Output frequency in hours until forecast hour "nfhmax_hf".
 #
-# nsout: 
-# Output frequency in time steps (positive values override "output_fh").
-#
 # output_fh: 
 # History file output forecast hours or output frequency with -1.
 # For example, 6 9 (output at fh=6 and 9), 6 -1 (every 6 hours)
 #
+# nsout: 
+# Output frequency in time steps (positive values override "output_fh").
+#
 nfhout: {{ nfhout }}
 nfhmax_hf: {{ nfhmax_hf }}
 nfhout_hf: {{ nfhout_hf }}
+output_fh: {{ output_fh }}
 nsout: {{ nsout }}
-output_fh:  {{ output_fh }}
 #
 # Coordinate system used by the output grid.
 #
