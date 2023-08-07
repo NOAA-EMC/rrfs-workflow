@@ -102,7 +102,7 @@ def create_model_configure_file(
                     nsout = 1
                     restart_interval = "0"
                     print_info_msg(f"""
-        "DT_ATMOS ('{DT_ATMOS}') 
+         DT_ATMOS ('{DT_ATMOS}') 
          FCST_LEN_HRS_thiscycle ('{FCST_LEN_HRS_thiscycle}')
          NSOUT ('{nsout}')
          RESTART_INTERVAL ('{restart_interval}')
