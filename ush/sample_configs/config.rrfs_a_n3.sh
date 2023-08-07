@@ -1,9 +1,17 @@
+################################################################
 MACHINE="wcoss2"
 version="v0.5.3"
-ACCOUNT="RRFS_DEV"
 #RESERVATION="rrfsdet"
 EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/${version}"
 EXPT_SUBDIR="rrfs_na"
+envir="para"
+NET="rrfs_a"
+TAG="n3v53"
+MODEL="rrfs_a"
+RUN="rrfs"
+STMP="/lfs/h2/emc/stmp/emc.lam/rrfs/${version}"
+PTMP="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}"
+################################################################
 
 PREDEF_GRID_NAME="RRFS_NA_3km"
 
@@ -100,21 +108,12 @@ regional_ensemble_option=5
 EXTRN_MDL_NAME_ICS="FV3GFS"
 EXTRN_MDL_NAME_LBCS="FV3GFS"
 
-envir="para"
-
-NET="rrfs_a"
-TAG="n3v53"
-
 ARCHIVEDIR="/NCEPDEV/emc-meso/1year/emc.lam/${TAG}"
 NCL_REGION="conus"
-MODEL="rrfs_a"
-RUN="rrfs"
 
 . set_rrfs_config.sh
 
-STMP="/lfs/h2/emc/stmp/emc.lam/rrfs/${version}"  # Path to directory STMP that mostly contains input files.
-PTMP="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}"  # Path to directory STMP that mostly contains input files.
-NWGES="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+NWGES="${PTMP}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 if [[ ${regional_ensemble_option} == "5" ]]; then
   RRFSE_NWGES="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}/nwges"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
   NUM_ENS_MEMBERS=30     # FV3LAM ensemble size for GSI hybrid analysis

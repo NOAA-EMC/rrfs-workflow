@@ -833,6 +833,10 @@ beta_recenter=1.0
 # EXTRN_MDL_NAME_LBCS is set to "FV3GFS"), this variable specifies the 
 # format of the model files to use when generating the LBCs.
 #
+# EXTRN_MDL_DATE_JULIAN:
+# Flag to determine whether or not the file name of the external model 
+# for IC/LBCS is a Julian date.
+#
 #-----------------------------------------------------------------------
 #
 EXTRN_MDL_NAME_ICS="FV3GFS"
@@ -844,6 +848,7 @@ EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS="0"
 LBCS_SEARCH_HRS="6"
 FV3GFS_FILE_FMT_ICS="nemsio"
 FV3GFS_FILE_FMT_LBCS="nemsio"
+EXTRN_MDL_DATE_JULIAN="FALSE"
 #
 #-----------------------------------------------------------------------
 #
@@ -913,7 +918,7 @@ EXTRN_MDL_FILES_LBCS=( "LBCS_file1" "LBCS_file2" "..." )
 #
 #-----------------------------------------------------------------------
 #
-CCPP_PHYS_SUITE="FV3_GFS_v15p2"
+CCPP_PHYS_SUITE="FV3_GFS_v16"
 #
 #-----------------------------------------------------------------------
 #
@@ -2187,6 +2192,9 @@ DO_ENS_RADDA="FALSE"
 # DO_SMOKE_DUST
 # Flag turn on smoke and dust for RRFS-SD
 #
+# DO_NON_DA_RUN
+# Flag that determines whether to run non-DA case.
+#
 #-----------------------------------------------------------------------
 #
 DO_DACYCLE="FALSE"
@@ -2199,6 +2207,7 @@ DO_RADDA="FALSE"
 DO_BUFRSND="FALSE"
 USE_RRFSE_ENS="FALSE"
 DO_SMOKE_DUST="FALSE"
+DO_NON_DA_RUN="FALSE"
 #
 #-----------------------------------------------------------------------
 #

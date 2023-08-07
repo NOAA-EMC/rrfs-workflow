@@ -24,7 +24,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -59,12 +59,12 @@ analysis with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-if [ ${CYCLE_TYPE} == "spinup" ]; then
+if [ ${CYCLE_TYPE} = "spinup" ]; then
   analworkname="nonvar_cldanl_spinup"
 else
   analworkname="nonvar_cldanl"
 fi
-if [ ${MEM_TYPE} == "MEAN" ]; then
+if [ ${MEM_TYPE} = "MEAN" ]; then
   workdir="${CYCLE_DIR}/ensmean/${analworkname}"
   SLASH_ENSMEM_SUBDIR=""
 else
@@ -86,7 +86,7 @@ gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #-----------------------------------------------------------------------
 
 if [ "${RUN_ENVIR}" = "nco" ]; then
-  if [ ${CYCLE_TYPE} == "spinup" ]; then
+  if [ ${CYCLE_TYPE} = "spinup" ]; then
     COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
     COMIN="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
   else

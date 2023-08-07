@@ -108,21 +108,6 @@ case $MACHINE in
     APRUN="srun"
     ;;
 
-  "ODIN")
-    APRUN="srun -n 1"
-    ;;
-
-  "CHEYENNE")
-    module list
-    nprocs=$(( NNODES_RUN_POST*PPN_RUN_POST ))
-    APRUN="mpirun -np $nprocs"
-    ;;
-
-  "STAMPEDE")
-    nprocs=$(( NNODES_RUN_POST*PPN_RUN_POST ))
-    APRUN="ibrun -n $nprocs"
-    ;;
-
   *)
     print_err_msg_exit "\
 Run command has not been specified for this machine:

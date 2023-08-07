@@ -68,7 +68,6 @@ case $MACHINE in
 #
 "WCOSS2")
 #
-  module list
   ulimit -s unlimited
   ulimit -a
   export FI_OFI_RXM_SAR_LIMIT=3145728
@@ -78,16 +77,7 @@ case $MACHINE in
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_ENKF} --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;
 #
-"THEIA")
-#
-  ulimit -s unlimited
-  ulimit -a
-  np=${SLURM_NTASKS}
-  APRUN="mpirun -np ${np}"
-  ;;
-#
 "HERA")
-  module load nco/4.9.3
   ulimit -s unlimited
   ulimit -v unlimited
   ulimit -a
@@ -108,15 +98,6 @@ case $MACHINE in
   ulimit -s unlimited
   ulimit -a
   APRUN="srun --mem=0"
-  ;;
-#
-"ODIN")
-#
-  module list
-
-  ulimit -s unlimited
-  ulimit -a
-  APRUN="srun -n ${PE_MEMBER01}"
   ;;
 #
 esac

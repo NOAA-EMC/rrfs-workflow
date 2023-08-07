@@ -29,7 +29,7 @@ if [[ $MACHINE == "jet" ]] ; then
 fi
 
 if [[ $MACHINE == "hera" ]] ; then
-  ACCOUNT="wrfruc"
+  ACCOUNT="fv3-cam"
   PARTITION_DEFAULT=""
   PARTITION_FCST=""
   QUEUE_ANALYSIS="batch"
@@ -38,7 +38,7 @@ if [[ $MACHINE == "hera" ]] ; then
 fi
 
 if [[ $MACHINE == "orion" ]] ; then
-  ACCOUNT=wrfruc
+  ACCOUNT="fv3-cam"
   PARTITION_ANALYSIS=orion
   QUEUE_ANALYSIS="batch"
   QUEUE_PRDGEN="batch"
@@ -50,23 +50,36 @@ fi
 if [[ $MACHINE == "wcoss2" ]] ; then
   ACCOUNT=RRFS-DEV
   HPSS_ACCOUNT="RRFS-DEV"
-  QUEUE_DEFAULT="pridev"
-  QUEUE_ANALYSIS="pridev"
-  QUEUE_FCST="pridev"
-  QUEUE_HPSS="dev_transfer"
-  QUEUE_PRDGEN="pridev"
-  QUEUE_GRAPHICS="pridev"
+
+  if [[ "${envir}" == "para" ]]; then
+    QUEUE_DEFAULT="pridev"
+    QUEUE_ANALYSIS="pridev"
+    QUEUE_FCST="pridev"
+    QUEUE_HPSS="dev_transfer"
+    QUEUE_PRDGEN="pridev"
+    QUEUE_GRAPHICS="pridev"
+  elif [[ "${envir}" == "prod" ]]; then
+    QUEUE_DEFAULT="prod"
+    QUEUE_ANALYSIS="prod"
+    QUEUE_FCST="prod"
+    QUEUE_HPSS="prod_transfer"
+    QUEUE_PRDGEN="prod"
+    QUEUE_GRAPHICS="prod"
+  else
+    QUEUE_DEFAULT="dev"
+    QUEUE_ANALYSIS="dev"
+    QUEUE_FCST="dev"
+    QUEUE_HPSS="dev_transfer"
+    QUEUE_PRDGEN="dev"
+    QUEUE_GRAPHICS="dev"
+  fi
 fi
 
-VERBOSE="TRUE"
-RUN_ENVIR="nco"
-QUILTING="TRUE"
 netcdf_diag=.true.
 binary_diag=.false.
 HYBENSMEM_NMIN=66
 HALO_BLEND=20
 PRINT_DIFF_PGR="TRUE"
-envir="para"
 USE_CUSTOM_POST_CONFIG_FILE="TRUE"
 TESTBED_FIELDS_FN="testbed_fields_bgdawp.txt"
 TESTBED_FIELDS_FN2="testbed_fields_bgrd3d.txt"

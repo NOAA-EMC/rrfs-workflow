@@ -90,20 +90,12 @@ case $MACHINE in
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_POSTANAL} --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;
 #
-"THEIA")
-#
-  ulimit -s unlimited
-  ulimit -a
-  np=${SLURM_NTASKS}
-  APRUN="mpirun"
-  ;;
-#
 "HERA")
   ulimit -s unlimited
   ulimit -a
   export OMP_NUM_THREADS=1
   export OMP_STACKSIZE=300M
-  APRUN="srun"
+  APRUN="srun --export=ALL"
   ;;
 #
 "ORION")
@@ -111,7 +103,7 @@ case $MACHINE in
   ulimit -a
   export OMP_NUM_THREADS=1
   export OMP_STACKSIZE=1024M
-  APRUN="srun"
+  APRUN="srun --export=ALL"
   ;;
 #
 "JET")
@@ -119,16 +111,7 @@ case $MACHINE in
   export OMP_STACKSIZE=1024M
   ulimit -s unlimited
   ulimit -a
-  APRUN="srun"
-  ;;
-#
-"ODIN")
-#
-  module list
-
-  ulimit -s unlimited
-  ulimit -a
-  APRUN="srun"
+  APRUN="srun --export=ALL"
   ;;
 #
 esac

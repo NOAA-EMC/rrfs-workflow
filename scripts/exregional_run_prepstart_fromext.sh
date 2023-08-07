@@ -92,19 +92,6 @@ case $MACHINE in
     APRUN="srun"
     ;;
 
-  "ODIN")
-    APRUN="srun -n 1"
-    ;;
-
-  "CHEYENNE")
-    module list
-    APRUN="mpirun -np 1"
-    ;;
-
-  "STAMPEDE")
-    APRUN="ibrun -n 1"
-    ;;
-
   *)
     print_err_msg_exit "\
 Run command has not been specified for this machine:
