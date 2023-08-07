@@ -103,7 +103,7 @@ Directories and files.
 {%- if run_envir == "community" %}
 <!ENTITY LOGDIR                   "{{ log_basedir }}/@Y@m@d/@H">
 {%- else %}
-<!ENTITY LOGDIR                   "{{ log_basedir }}/${run}.@Y@m@d/@H">
+<!ENTITY LOGDIR                   "{{ log_basedir }}/{{ run }}.@Y@m@d/@H">
 {%- endif %}
 <!ENTITY OBSPATH                  "{{ obspath }}">
 <!ENTITY OBSPATH_PM               "{{ obspath_pm }}">
@@ -171,11 +171,9 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 <!ENTITY RSRV_GRAPHICS   "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_GRAPHICS;</queue><native>--exclusive</native>">
 {%- endif %}
 
-
 <!--
 define resources used for each tasks
 -->
-
 <!ENTITY RESOURCES_PROC_SMOKE "<nodes>{{ nnodes_proc_smoke }}:ppn={{ ppn_proc_smoke }}</nodes>">
 <!ENTITY RESOURCES_PROC_RADAR "<nodes>{{ nnodes_proc_radar }}:ppn={{ ppn_proc_radar }}</nodes>">
 <!ENTITY RESOURCES_PROC_LIGHTNING "<nodes>{{ nnodes_proc_lightning }}:ppn={{ ppn_proc_lightning }}</nodes>">
@@ -190,7 +188,7 @@ define resources used for each tasks
 <!ENTITY RESOURCES_RUN_PRDGEN "<nodes>{{ nnodes_run_prdgen }}:ppn={{ ppn_run_prdgen }}</nodes>">
 <!ENTITY RESOURCES_NONVAR_CLD "<nodes>{{ nnodes_run_nonvarcldanl }}:ppn={{ ppn_run_nonvarcldanl }}</nodes>">
 
-{% if machine in ["WCOSS2"]  %}
+{%- if machine in ["WCOSS2"]  %}
 <!ENTITY RESOURCES_RUN_POST "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}:tpp={{ tpp_run_post }}</nodes>">
 <!ENTITY RESOURCES_RUN_ENKF "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}:tpp={{ tpp_run_enkf }}</nodes>">
 <!ENTITY RESOURCES_MAKE_ICS "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}:tpp={{ tpp_make_ics }}</nodes>">
@@ -212,7 +210,7 @@ define resources used for each tasks
 <!ENTITY RESOURCES_FCST_SPINUP "<cores>{{ ncores_run_fcst }}</cores>">
 <!ENTITY RESOURCES_FCST_PROD "<cores>{{ ncores_run_fcst }}</cores>">
 <!ENTITY NODESIZE_ALL    "<nodesize>{{ ncores_per_node }}</nodesize>">
-<!ENTITY NATIVE_ALL    "">
+<!ENTITY NATIVE_ALL    "<native>--export=NONE</native>">
 <!ENTITY NATIVE_ANAL_GSI    "<native>{{ native_run_anal }} &RRFS_RESERVE;</native>">
 <!ENTITY NATIVE_FCST_SPINUP    "<native>{{ native_run_fcst }} &RRFS_RESERVE;</native>">
 <!ENTITY NATIVE_FCST_PROD    "<native>{{ native_run_fcst }} &RRFS_RESERVE;</native>">
@@ -225,7 +223,7 @@ define resources used for each tasks
 <!ENTITY RESOURCES_FCST_SPINUP "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
 <!ENTITY RESOURCES_FCST_PROD "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
 <!ENTITY NODESIZE_ALL    "<nodesize>{{ ncores_per_node }}</nodesize>">
-<!ENTITY NATIVE_ALL    "">
+<!ENTITY NATIVE_ALL    "<native>--export=NONE</native>">
 <!ENTITY NATIVE_ANAL_GSI    "<native>{{ native_run_anal }} &RRFS_RESERVE;</native>">
 <!ENTITY NATIVE_FCST_SPINUP    "">
 <!ENTITY NATIVE_FCST_PROD    "">
@@ -238,7 +236,7 @@ define resources used for each tasks
 <!ENTITY RESOURCES_FCST_SPINUP "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
 <!ENTITY RESOURCES_FCST_PROD "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
 <!ENTITY NODESIZE_ALL    "<nodesize>{{ ncores_per_node }}</nodesize>">
-<!ENTITY NATIVE_ALL    "">
+<!ENTITY NATIVE_ALL    "<native>--export=NONE</native>">
 <!ENTITY NATIVE_ANAL_GSI    "">
 <!ENTITY NATIVE_FCST_SPINUP    "">
 <!ENTITY NATIVE_FCST_PROD    "">
@@ -273,7 +271,7 @@ define resources used for each tasks
 <!ENTITY MEMO_RUN_PRDGEN "{{ memo_run_prdgen }}">
 <!ENTITY MEMO_NONVAR_CLD  "{{ memo_run_nonvarcldanl }}">
 
-{% if do_retro %}
+{%- if do_retro %}
 <!ENTITY DEADLINE_PRE      "999:00:00">
 <!ENTITY DEADLINE_ANAL     "999:00:00">
 <!ENTITY DEADLINE_FCST     "999:30:00">
@@ -290,7 +288,7 @@ define resources used for each tasks
 <!ENTITY WALL_LIMIT_GRAPHICS ''>
 <!ENTITY WALL_LIMIT_RECENTER ''>
 <!ENTITY WALL_LIMIT_SAVE_RESTART ''>
-{% else %}
+{%- else %}
 <!ENTITY DEADLINE_PRE      "16:00:00">
 <!ENTITY DEADLINE_ANAL     "16:00:00">
 <!ENTITY DEADLINE_FCST     "23:30:00">
@@ -307,7 +305,7 @@ define resources used for each tasks
 <!ENTITY WALL_LIMIT_GRAPHICS '<deadline><cyclestr offset="&DEADLINE_GRAPHICS;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_RECENTER '<deadline><cyclestr offset="&DEADLINE_RECENTER;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_SAVE_RESTART '<deadline><cyclestr offset="&DEADLINE_SAVE_RESTART;">@Y@m@d@H@M</cyclestr></deadline>'>
-{% endif %}
+{%- endif %}
 
 <!ENTITY START_TIME_SPINUP "{{ start_time_spinup }}">
 <!ENTITY START_TIME_PROD "{{ start_time_prod }}">
@@ -1085,6 +1083,7 @@ MODULES_RUN_TASK_FP script.
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_FCST_TN;" "&JOBSdir;/JREGIONAL_RUN_FCST"</command>
     &RESOURCES_FCST_SPINUP;
     <walltime>&WALLTIME_FCST_SPINUP;</walltime>
+    &NATIVE_ALL;
     &NATIVE_FCST_SPINUP;
     &NODESIZE_ALL;
     <jobname>&TAG;_&RUN_FCST_TN;_ensinit{{ uscore_ensmem_name }}</jobname>
@@ -1478,7 +1477,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_ANALYSIS;
     &WALL_LIMIT_ANAL;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_RUN_GSIDIAG"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JREGIONAL_RUN_GSIDIAG"</command>
     &RESOURCES_GSIDIAG;
     &NATIVE_ALL;
     <walltime>&WALLTIME_GSIDIAG;</walltime>
@@ -1670,6 +1669,7 @@ MODULES_RUN_TASK_FP script.
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_FCST_TN;" "&JOBSdir;/JREGIONAL_RUN_FCST"</command>
     &RESOURCES_FCST_SPINUP;
     <walltime>&WALLTIME_FCST_SPINUP;</walltime>
+    &NATIVE_ALL;
     &NATIVE_FCST_SPINUP;
     &NODESIZE_ALL;
     <jobname>&TAG;_&RUN_FCST_TN;_spinup{{ uscore_ensmem_name }}</jobname>
@@ -2376,7 +2376,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_ANALYSIS;
     &WALL_LIMIT_ANAL;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_RUN_GSIDIAG"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JREGIONAL_RUN_GSIDIAG"</command>
     &RESOURCES_GSIDIAG;
     &NATIVE_ALL;
     <walltime>&WALLTIME_GSIDIAG;</walltime>
@@ -2699,6 +2699,7 @@ MODULES_RUN_TASK_FP script.
 
     &RESOURCES_FCST_PROD;
     <walltime>&WALLTIME_FCST_PROD;</walltime>
+    &NATIVE_ALL;
     &NATIVE_FCST_PROD;
     &NODESIZE_ALL;
     <jobname>&TAG;_&RUN_FCST_TN;_prod{{ uscore_ensmem_name }}</jobname>
@@ -2781,6 +2782,7 @@ MODULES_RUN_TASK_FP script.
 
     &RESOURCES_FCST_PROD;
     <walltime>&WALLTIME_FCST_PROD_LONG;</walltime>
+    &NATIVE_ALL;
     &NATIVE_FCST_PROD;
     &NODESIZE_ALL;
     <jobname>&TAG;_&RUN_FCST_TN;_prod{{ uscore_ensmem_name }}</jobname>

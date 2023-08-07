@@ -108,15 +108,6 @@ case $MACHINE in
   APRUN="srun"
   ;;
 #
-"ODIN")
-#
-  module list
-
-  ulimit -s unlimited
-  ulimit -a
-  APRUN="srun -n 1"
-  ;;
-#
 esac
 #
 #-----------------------------------------------------------------------
@@ -126,7 +117,6 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-set -x
 
 START_DATE=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
 YYYYMMDDHH=$(date +%Y%m%d%H -d "${START_DATE}")

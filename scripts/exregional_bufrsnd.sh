@@ -17,7 +17,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -92,7 +92,8 @@ case $MACHINE in
     ;;
 
   "HERA")
-    APRUN="srun"
+    APRUNC="srun --export=ALL"
+    APRUNS="time"
     ;;
 
   "ORION")
@@ -100,26 +101,13 @@ case $MACHINE in
     ulimit -a
     export OMP_NUM_THREADS=1
     export OMP_STACKSIZE=1024M
-    APRUN="srun"
+    APRUNC="srun --export=ALL"
+    APRUNS="time"
     ;;
 
   "JET")
-    APRUN="srun"
-    ;;
-
-  "ODIN")
-    APRUN="srun -n 1"
-    ;;
-
-  "CHEYENNE")
-    module list
-    nprocs=$(( NNODES_RUN_POST*PPN_RUN_POST ))
-    APRUN="mpirun -np $nprocs"
-    ;;
-
-  "STAMPEDE")
-    nprocs=$(( NNODES_RUN_POST*PPN_RUN_POST ))
-    APRUN="ibrun -n $nprocs"
+    APRUNC="srun --export=ALL"
+    APRUNS="time"
     ;;
 
   *)
@@ -130,7 +118,6 @@ Run command has not been specified for this machine:
     ;;
 
 esac
-set -x
 #
 #-----------------------------------------------------------------------
 #

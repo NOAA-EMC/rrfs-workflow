@@ -18,7 +18,8 @@
 - Test cases: 
 <!-- Add 'x' inside the brackets (without space). -->
 - [ ] Non-DA engineering test
-- [ ] Sample script:
+- [ ] DA engineering test
+- [ ] Other sample scripts:
 
 ## ISSUE: 
 <!-- If this PR is resolving or referencing one or more issues, in this repository or elsewhere, list them here. -->

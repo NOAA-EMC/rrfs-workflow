@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -86,16 +86,8 @@ case $MACHINE in
   export FI_OFI_RXM_SAR_LIMIT=3145728
   export OMP_STACKSIZE=1G
   export OMP_NUM_THREADS=1
-  ncores=$(( NNODES_RUN_GSIDIAG*PPN_RUN_GSIDIAG))
+  ncores=$(( NNODES_RUN_GSIDIAG*PPN_RUN_GSIDIAG ))
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_GSIDIAG} --cpu-bind core --depth ${OMP_NUM_THREADS}"
-  ;;
-#
-"THEIA")
-#
-  ulimit -s unlimited
-  ulimit -a
-  np=${SLURM_NTASKS}
-  APRUN="mpirun"
   ;;
 #
 "HERA")
@@ -103,7 +95,7 @@ case $MACHINE in
   ulimit -a
   export OMP_NUM_THREADS=1
   export OMP_STACKSIZE=300M
-  APRUN="srun"
+  APRUN="srun --export=ALL"
   ;;
 #
 "ORION")
@@ -111,7 +103,7 @@ case $MACHINE in
   ulimit -a
   export OMP_NUM_THREADS=1
   export OMP_STACKSIZE=1024M
-  APRUN="srun"
+  APRUN="srun --export=ALL"
   ;;
 #
 "JET")
@@ -119,16 +111,7 @@ case $MACHINE in
   export OMP_STACKSIZE=1024M
   ulimit -s unlimited
   ulimit -a
-  APRUN="srun"
-  ;;
-#
-"ODIN")
-#
-  module list
-
-  ulimit -s unlimited
-  ulimit -a
-  APRUN="srun"
+  APRUN="srun --export=ALL"
   ;;
 #
 esac
@@ -163,7 +146,7 @@ cd_vrfy ${analworkdir}
 #-----------------------------------------------------------------------
 # skip if gsi_type is OBSERVER
 #-----------------------------------------------------------------------
-if [ ${gsi_type} == "OBSERVER" ]; then
+if [ ${gsi_type} = "OBSERVER" ]; then
    echo "Observer should not run this job"
    exit 0
 fi

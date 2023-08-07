@@ -17,7 +17,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -86,28 +86,19 @@ case $MACHINE in
 "HERA")
   ulimit -s unlimited
   ulimit -a
-  APRUN="srun"
+  APRUN="srun --export=ALL"
   ;;
 #
 "JET")
   ulimit -s unlimited
   ulimit -a
-  APRUN="srun"
+  APRUN="srun --export=ALL"
   ;;
 #
 "ORION")
   ulimit -s unlimited
   ulimit -a
-  APRUN="srun"
-  ;;
-#
-"ODIN")
-#
-  module list
-
-  ulimit -s unlimited
-  ulimit -a
-  APRUN="srun -n 1"
+  APRUN="srun --export=ALL"
   ;;
 #
 esac
@@ -119,7 +110,6 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-set -x
 START_DATE=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
 YYYYMMDDHH=$(date +%Y%m%d%H -d "${START_DATE}")
 JJJ=$(date +%j -d "${START_DATE}")
@@ -138,7 +128,7 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 #-----------------------------------------------------------------------
 #
 print_info_msg "$VERBOSE" "
-Getting into working directory for radar tten process ..."
+Getting into working directory for non-var cloud analysis ..."
 
 cd_vrfy ${workdir}
 
@@ -315,8 +305,6 @@ cat << EOF > gsiparm.anl
  /
 EOF
 
-
-
 #
 #-----------------------------------------------------------------------
 #
@@ -336,8 +324,6 @@ The executable specified in exect does not exist:
   exect = \"${EXECdir}/$exect\"
 Build executable and rerun."
 fi
-#
-#
 #
 #-----------------------------------------------------------------------
 #
@@ -364,7 +350,7 @@ touch ${comout}/nonvarcldanl_complete.txt
 #
 print_info_msg "
 ========================================================================
-RADAR REFL TTEN PROCESS completed successfully!!!
+NON-VAR CLOUD ANALYSIS completed successfully!!!
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"

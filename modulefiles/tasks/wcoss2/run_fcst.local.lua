@@ -25,3 +25,7 @@ load(pathJoin("w3emc", os.getenv("w3emc_ver")))
 load(pathJoin("pio", os.getenv("pio_ver")))
 load(pathJoin("esmf", os.getenv("esmf_ver")))
 load(pathJoin("libjpeg", os.getenv("libjpeg_ver")))
+
+load(pathJoin("udunits", os.getenv("udunits_ver")))
+load(pathJoin("gsl", os.getenv("gsl_ver")))
+load(pathJoin("nco", os.getenv("nco_ver")))
