@@ -152,7 +152,7 @@ version="0.1.0"
 #-----------------------------------------------------------------------
 #
 MACHINE="BIG_COMPUTER"
-MACHINETYPE="backup"
+MACHINETYPE="primary"
 ACCOUNT="project_name"
 SERVICE_ACCOUNT=""
 HPSS_ACCOUNT=""
