@@ -478,8 +478,6 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then
     CLEAN_OLDSTMPPOST_HRS="12"
     CLEAN_NWGES_HRS="18"
 
-    FV3GFS_FILE_FMT_ICS="netcdf"
-    FV3GFS_FILE_FMT_LBCS="netcdf"
   fi
 
   if [[ $MACHINE == "hera" ]] ; then
