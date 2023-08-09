@@ -84,7 +84,7 @@ case $MACHINE in
   ulimit -s unlimited
   ulimit -a
   export FI_OFI_RXM_SAR_LIMIT=3145728
-  export OMP_STACKSIZE=1G
+  export OMP_STACKSIZE=500M
   export OMP_NUM_THREADS=${TPP_RUN_ANAL}
   ncores=$(( NNODES_RUN_ANAL*PPN_RUN_ANAL))
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_ANAL} --cpu-bind core --depth ${OMP_NUM_THREADS}"
@@ -358,7 +358,7 @@ if [ ${regional_ensemble_option:-1} -eq 5 ]  && [ ${BKTYPE} != 1  ]; then
   print_info_msg "$VERBOSE" " Cycle ${YYYYMMDDHH}: GSI hybrid uses FV3LAM ensemble with n_ens=${nummem}" 
   echo " ${YYYYMMDDHH}(${cycle_type}): GSI hybrid uses FV3LAM ensemble with n_ens=${nummem}" >> ${EXPTDIR}/log.cycles
   grid_ratio_ens="1"
-  ens_fast_read=.true.
+  ens_fast_read=.false.
 else    
   nummem_gfs=$(more filelist03 | wc -l)
   nummem_gfs=$((nummem_gfs - 3 ))
@@ -456,6 +456,10 @@ else
   "WCOSS2")
      obsfileprefix=${obs_source}
      obspath_tmp=${OBSPATH}/${obs_source}.${YYYYMMDD}
+     if [ "${DO_RETRO}" = "TRUE" ]; then
+       obsfileprefix=${YYYYMMDDHH}.${obs_source}
+       obspath_tmp=${OBSPATH}
+     fi
     ;;
   "JET" | "HERA")
      obsfileprefix=${YYYYMMDDHH}.${obs_source}

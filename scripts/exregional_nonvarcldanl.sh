@@ -334,7 +334,10 @@ fi
 $APRUN ./${exect} > stdout 2>&1 || print_err_msg_exit "\
 Call to executable to run No Var Cloud Analysis returned with nonzero exit code."
 cp stdout ${comout}/stdout.t${HH}z.nonvarcloudanalysis
-cp stdout_cloudanalysis.d00 ${comout}/stdout.t${HH}z.nonvarcloudanalysis.d00
+for fcld in stdout_cloudanalysis.*
+do
+    cp ${fcld} ${comout}/stdout.t${HH}z.nonvar${fcld:7}
+done
 #
 #-----------------------------------------------------------------------
 #

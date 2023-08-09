@@ -327,9 +327,9 @@ define resources used for each tasks
 ]>
 
 {%- if do_retro %}
-<workflow realtime="F" scheduler="&SCHED;" cyclethrottle="5">
+<workflow realtime="F" scheduler="&SCHED;" cyclethrottle="12">
 {% else %}
-<workflow realtime="T" scheduler="&SCHED;" cyclethrottle="24" cyclelifespan="01:00:00:00">
+<workflow realtime="T" scheduler="&SCHED;" cyclethrottle="26" cyclelifespan="01:00:00:00">
 {%- endif %}
 {# Double quotes are required inside the strftime! Expect an error from reading the template if using single quotes. #}
   <cycledef group="at_start">{{ at_start_cycledef }} </cycledef>
@@ -678,7 +678,11 @@ MODULES_RUN_TASK_FP script.
       <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/gfs.@Y@m@d/@H/atmos/gfs.t@Hz.atmf{{ "%03d" % extrn_mdl_ics_offset_hrs }}.nc</cyclestr></datadep>
         {% else %}
           {%- if extrn_mdl_name_ics in ["GEFS"] %}
+            {%- if do_retro %}
+      <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/#subdirGE#/@y@j@H000{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
+            {% else %}
       <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/gefs.@Y@m@d/@H/atmos/pgrb2bp5/#subdirGE#.t@Hz.pgrb2b.0p50.f{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
+            {%- endif %}
           {% else %}
             {%- if do_retro %}
       <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/@y@j@H000{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
@@ -719,7 +723,7 @@ MODULES_RUN_TASK_FP script.
 
   </task>
 
-{%- if extrn_mdl_name_lbcs in ["GEFS"] and bc_update_interval==1 %}
+{%- if extrn_mdl_name_lbcs in ["GEFS"] %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -750,9 +754,15 @@ MODULES_RUN_TASK_FP script.
     <dependency>
        <and>
       {%- if machine in ["WCOSS2"]  %}
-         {%- for h in range(extrn_mdl_lbcs_offset_hrs, boundary_len_hrs+extrn_mdl_lbcs_offset_hrs+1, 3) %}
-         <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/gefs.@Y@m@d/@H/atmos/pgrb2bp5/#subdirGE#.t@Hz.pgrb2b.0p50.f{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
-         {%- endfor %}
+         {%- if do_retro %}
+            {%- for h in range(extrn_mdl_lbcs_offset_hrs, boundary_len_hrs+extrn_mdl_lbcs_offset_hrs+1, 3) %}
+         <datadep age="00:00:05:00"> <cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/#subdirGE#/@y@j@H000{{ "%03d" % h }}</cyclestr></datadep>
+            {%- endfor %}
+         {% else %}
+            {%- for h in range(extrn_mdl_lbcs_offset_hrs, boundary_len_hrs+extrn_mdl_lbcs_offset_hrs+1, 3) %}
+         <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/gefs.@Y@m@d/@H/atmos/pgrb2bp5/#subdirGE#.t@Hz.pgrb2b.0p50.f{{ "%03d" % h }}</cyclestr></datadep>
+            {%- endfor %}
+         {%- endif %}
       {% else %}
          {%- for h in range(extrn_mdl_lbcs_offset_hrs, boundary_len_hrs+extrn_mdl_lbcs_offset_hrs+1, 3) %}
          <datadep age="00:00:05:00"> <cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/#subdirGE#/@y@j@H000{{ "%03d" % h }}</cyclestr></datadep>
@@ -1336,16 +1346,10 @@ MODULES_RUN_TASK_FP script.
          {%- endif %}
          {%- if use_rrfse_ens %}
          {%- if do_retro %}
-         <or>
-           <and>
+         <and>
              {%- if do_envar_radar_ref and do_envar_radar_ref_once %}
              <taskdep task="&PROCESS_RADAR_REF_TN;_spinup"/>
              {%- endif %}
-             <or>
-             {%- for h in cycl_hrs_hyb_fv3lam_ens %}
-               <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
-             {%- endfor %}
-             </or>
              <or>
                <and> 
                  <or>
@@ -1358,23 +1362,15 @@ MODULES_RUN_TASK_FP script.
              {%- endfor %}
                </and>
                <and> 
-                 <or>
              {%- for h in cycl_hrs_prodstart_ens %}
                <strneq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></strneq>
              {%- endfor %}
-                 </or>
              {% for h in range(1, num_ens_members+1) %}
              <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&RRFSE_FG_ROOT;/@Y@m@d@H/mem{{ "%04d" % h  }}/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
              {%- endfor %}
                </and>
              </or>
-           </and>
-           <and>
-              {%- for h in cycl_hrs_hyb_fv3lam_ens %}
-                <strneq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></strneq>
-              {%- endfor %}
-           </and>
-         </or>
+         </and>
          {%- endif %}
          {%- endif %}
        </and>
@@ -2048,11 +2044,10 @@ MODULES_RUN_TASK_FP script.
          {%- if do_enkf_radar_ref %}
          <taskdep task="&PROCESS_RADAR_REF_TN;_prod"/>
          {%- endif %}
-         {% if machine in ["JET", "HERA", "ORION"] -%}
-         <datadep age="02:00"><cyclestr>&OBSPATH;/@Y@m@d@H.rap.t@Hz.prepbufr.tm00</cyclestr></datadep>
-         {% else -%}
-	 <datadep age="02:00"><cyclestr>&OBSPATH;/rap.@Y@m@d/rap.t@Hz.prepbufr.tm00</cyclestr></datadep>
-         {% endif -%}
+	 <or>
+           <datadep age="02:00"><cyclestr>&OBSPATH;/@Y@m@d@H.rap.t@Hz.prepbufr.tm00</cyclestr></datadep>
+	   <datadep age="02:00"><cyclestr>&OBSPATH;/rap.@Y@m@d/rap.t@Hz.prepbufr.tm00</cyclestr></datadep>
+	 </or>
        </and>
     </dependency>
 
@@ -2226,18 +2221,10 @@ MODULES_RUN_TASK_FP script.
          <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
          <taskdep task="&PREP_CYC_TN;_prod{{ uscore_ensmem_name }}"/>
          {%- if use_rrfse_ens %}
-         {%- if do_retro %}
+         {%- if do_envar_radar_ref and do_envar_radar_ref_once %}
+         <taskdep task="&PROCESS_RADAR_REF_TN;_prod"/>
+         {%- endif %}
          <or>
-           <and>
-             {%- if do_envar_radar_ref and do_envar_radar_ref_once %}
-             <taskdep task="&PROCESS_RADAR_REF_TN;_prod"/>
-             {%- endif %}
-             <or>
-             {%- for h in cycl_hrs_hyb_fv3lam_ens %}
-               <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
-             {%- endfor %}
-             </or>
-           <or>
            {%- if do_spinup %}
             <and> 
              <or>
@@ -2266,15 +2253,7 @@ MODULES_RUN_TASK_FP script.
              {%- endfor %}
             </and>
            {%- endif %} 
-           </or>
-           </and>
-           <and>
-              {%- for h in cycl_hrs_hyb_fv3lam_ens %}
-                <strneq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></strneq>
-              {%- endfor %}
-           </and>
          </or>
-         {%- endif %}
          {%- endif %}
        </and>
     </dependency>
@@ -3255,7 +3234,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&CLEAN_TN;" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_run_post }}">
+  <task name="&CLEAN_TN;" cycledefs="prodcyc" maxtries="{{ maxtries_run_post }}">
 
     &RSRV_POST;
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 source fix_rrfs_locations.sh #determine current platform
 MACHINE=${PLATFORM}
-version="v0.5.3" # odd for NA; even for CONUS
+version="v0.6.1" # odd for NA; even for CONUS
 ACCOUNT="nrtrr"
 RESERVATION="rrfsdet"
 EXPT_BASEDIR="/home/role.rtrr/RTMA/rtma.${version}"

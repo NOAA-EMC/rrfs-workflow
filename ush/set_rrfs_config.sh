@@ -34,10 +34,10 @@ if [[ $MACHINE == "wcoss2" ]] ; then
   OBSPATH=/lfs/h1/ops/prod/com/obsproc/v1.1
   OBSPATH_NSSLMOSIAC=/lfs/h1/ops/prod/dcom/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC
   ENKF_FCST=/lfs/h1/ops/prod/com/gfs/v16.3
-  SST_ROOT=/lfs/h1/ops/prod/com/gfs/v16.3
+  SST_ROOT=/lfs/h1/ops/prod/com/nsst/v1.2
   GVF_ROOT=/lfs/h1/ops/prod/dcom/viirs
   IMSSNOW_ROOT=/lfs/h1/ops/prod/com/obsproc/v1.1
-  FIRE_RAVE_DIR=/lfs/h2/emc/physics/noscrub/partha.bhattacharjee/RAVE_rawdata/RAVE_NA
+  FIRE_RAVE_DIR=/lfs/h2/emc/lam/noscrub/emc.lam/RAVE_rawdata/RAVE_NA
   FVCOM_DIR="/lfs/h1/ops/prod/com/nosofs/v3.5"
   FVCOM_FILE="fvcom"
 fi
@@ -136,12 +136,16 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
   if [[ $MACHINE == "wcoss2" ]] ; then
     RETRODATAPATH="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs_retro_data"
     if [[ ${DO_ENSEMBLE} == "TRUE" ]]; then
-      if [[ ${EXTRN_MDL_NAME_ICS} == "GDASENKF" ]]; then
+      if [[ ${EXTRN_MDL_NAME_ICS} == "GEFS" ]]; then
+        EXTRN_MDL_SOURCE_BASEDIR_ICS="${RETRODATAPATH}/GEFS/dsg"
+      elif [[ ${EXTRN_MDL_NAME_ICS} == "GDASENKF" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_ICS="${RETRODATAPATH}/enkf/atm"
       elif [[ ${EXTRN_MDL_NAME_ICS} == "FV3GFS" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_ICS="${RETRODATAPATH}/gfs/0p25deg/grib2"
       fi
-      if [[ ${EXTRN_MDL_NAME_LBCS} == "GDASENKF" ]]; then
+      if [[ ${EXTRN_MDL_NAME_LBCS} == "GEFS" ]]; then
+        EXTRN_MDL_SOURCE_BASEDIR_LBCS="${RETRODATAPATH}/GEFS/dsg"
+      elif [[ ${EXTRN_MDL_NAME_LBCS} == "GDASENKF" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_LBCS="${RETRODATAPATH}/enkf/atm"
       elif [[ ${EXTRN_MDL_NAME_LBCS} == "FV3GFS" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_LBCS="${RETRODATAPATH}/gfs/0p25deg/grib2"
@@ -151,7 +155,7 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
       EXTRN_MDL_SOURCE_BASEDIR_LBCS=${RETRODATAPATH}/gfs
     fi
     OBSPATH=${RETRODATAPATH}/obs_rap
-    OBSPATH_NSSLMOSIAC=${RETRODATAPATH}/reflectivity
+    OBSPATH_NSSLMOSIAC=${RETRODATAPATH}/reflectivity/upperair/mrms/conus/MergedReflectivityQC/
     LIGHTNING_ROOT=${RETRODATAPATH}/lightning
     ENKF_FCST=${RETRODATAPATH}/enkf/atm
     AIRCRAFT_REJECT="${RETRODATAPATH}/amdar_reject_lists"

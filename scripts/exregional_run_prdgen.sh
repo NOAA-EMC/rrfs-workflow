@@ -320,11 +320,15 @@ if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
   else
     echo "${FIX_UPP}/${TESTBED_FIELDS_FN} not found"
   fi
-fi 
+fi
 
 else
   echo "this grid is not ready for parallel prdgen: ${PREDEF_GRID_NAME}"
 fi
+
+rm -fr $DATAprdgen
+rm -f $DATA/*.t${cyc}z.*.f${fhr}.*.grib2
+
 else
 #
 # use single core to process all addition grids.

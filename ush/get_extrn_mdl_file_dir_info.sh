@@ -408,6 +408,10 @@ case "${anl_or_fcst}" in
       if [ "${MACHINE}" = "WCOSS2" ] ; then
         prefix="${varname_extrn_mdl_memhead}"".t${hh}z.pgrb2b.0p50.f0"
         prefix2="${varname_extrn_mdl_memhead}"".t${hh}z.pgrb2a.0p50.f0"
+        if [ "${EXTRN_MDL_SAVETYPE}" = "GSL" ] ; then
+          prefix="${yy}${ddd}${hh}${mn}${fcst_mn}"
+          prefix2=""
+        fi
       fi
       echo ${varname_extrn_mdl_memhead}
       fns_on_disk=( "${fcst_hh/#/$prefix}" )
@@ -524,6 +528,10 @@ and analysis or forecast (anl_or_fcst):
       if [ "${MACHINE}" = "WCOSS2" ] ; then
         prefix="${varname_extrn_mdl_memhead}"".t${hh}z.pgrb2b.0p50.f0"
         prefix2="${varname_extrn_mdl_memhead}"".t${hh}z.pgrb2a.0p50.f0"
+        if [ "${EXTRN_MDL_SAVETYPE}" = "GSL" ] ; then
+          prefix="${yy}${ddd}${hh}${mn}${fcst_mn}"
+          prefix2=""
+        fi
       fi
       fns_on_disk=( "${fcst_hh[@]/#/$prefix}" )
       fns_on_disk2=( "${fcst_hh[@]/#/$prefix2}" )
@@ -693,6 +701,10 @@ has not been specified for this external model and machine combination:
     "WCOSS2")
       sysdir="$sysbasedir/gefs.${yyyymmdd}/${hh}/atmos/pgrb2bp5"
       sysdir2="$sysbasedir/gefs.${yyyymmdd}/${hh}/atmos/pgrb2ap5"
+      if [ "${EXTRN_MDL_SAVETYPE}" = "GSL" ] ; then
+         sysdir="$sysbasedir/${GEFS_INPUT_SUBDIR}"
+         sysdir2="$sysdir"
+      fi
       ;;
     *)
       print_err_msg_exit "\
