@@ -1,9 +1,8 @@
-..  UFS SR Weather App Users Guide, created by
-   sphinx-quickstart on Tue Feb 12 08:48:32 2019.
+..  RRFS-WORKFLOW Users Guide, based on the UFS SRWeather App.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-UFS Short-Range Weather App Users Guide
+RRFS-WORKFLOW Users Guide
 =======================================
    
 .. toctree::
@@ -13,19 +12,7 @@ UFS Short-Range Weather App Users Guide
 
    Introduction
    Quickstart
-   ContainerQuickstart
    BuildSRW
    RunSRW
-   Tutorial
-   AQM
    Components
-   InputOutputFiles
-   LAMGrids
-   ConfigWorkflow
-   RocotoInfo
-   DefineWorkflow
-   WE2Etests
-   TemplateVars
-   VXCases
-   FAQ
    Glossary
