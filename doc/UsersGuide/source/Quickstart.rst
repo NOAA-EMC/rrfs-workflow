@@ -23,7 +23,7 @@ Building the RRFS workflow
 
       .. code-block:: console
 
-         cd ufs-srweather-app
+         cd rrfs-workflow
          ./manage_externals/checkout_externals
 
 
@@ -41,7 +41,7 @@ Engineering Tests (non-DA)
 
    #. Load the python environment:
 
-   * On WCOSS2:
+      * On WCOSS2:
 
       .. code-block:: console
          
@@ -49,7 +49,7 @@ Engineering Tests (non-DA)
          module use modulefiles
          module load wflow_wcoss2
 
-   * On Hera | Jet | Orion:
+      * On Hera | Jet | Orion:
 
       .. code-block:: console
          
@@ -98,7 +98,7 @@ Engineering Tests (DA)
 
    #. Load the python environment:
 
-   * On WCOSS2:
+      * On WCOSS2:
 
       .. code-block:: console
          
@@ -106,7 +106,7 @@ Engineering Tests (DA)
          module use modulefiles
          module load wflow_wcoss2
 
-   * On Hera | Jet | Orion:
+      * On Hera | Jet | Orion:
 
       .. code-block:: console
          
@@ -160,10 +160,9 @@ Engineering Tests (DA)
 
       Note that you may need to run ``rocotoboot`` for the task ``prep_cyc_spinup`` at 04z sequentially only if it is not launched:
 
-
       .. conde-block:: console
 
-      rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307260400 -t prep_cyc_spinup
+         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307260400 -t prep_cyc_spinup
 
 
       * On Hera: ``config.DA.retro.hera.sh``
@@ -177,7 +176,7 @@ Engineering Tests (DA)
 
       Once the above tasks are complete, launch the ``prep_cyc_spinup`` task:
 
-      .. conde-block:: console
+      .. code-block:: console
 
          rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202207200300 -t prep_cyc_spinup
 
