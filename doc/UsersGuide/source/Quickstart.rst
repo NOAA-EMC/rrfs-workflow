@@ -9,77 +9,179 @@ This chapter provides a brief summary of how to build and run the RRFS-Workflow.
 
 .. _QuickBuildRun:
 
-Building and Running the RRFS Workflow
+Building the RRFS workflow
 ===============================================
 
-   #. Clone the SRW App from GitHub:
+   #. Clone the ``dev-sci`` branch of the RRFS-Workflow from GitHub:
 
       .. code-block:: console
 
-         git clone -b develop https://github.com/ufs-community/ufs-srweather-app.git
+         git clone -b dev-sci https://github.com/NOAA-EMC/rrfs-workflow.git
 
-   #. Check out the external repositories:
+
+   #. Check out the external components:
 
       .. code-block:: console
 
          cd ufs-srweather-app
          ./manage_externals/checkout_externals
 
+
    #. Set up the build environment and build the executables:
 
       .. code-block:: console
             
-         ./devbuild.sh --platform=<machine_name>
+         ./devbuild.sh --platform=<machine>
 
-      where ``<machine_name>`` is replaced with the name of the user's platform/system. Valid values include: ``cheyenne`` | ``gaea`` | ``hera`` | ``jet`` | ``linux`` | ``macos`` | ``noaacloud`` | ``orion`` | ``wcoss2``
+      where ``<machine>`` is ``wcoss2``, ``hera``, ``jet``, or ``orion``.
 
-   #. Load the python environment for the regional workflow. Users on Level 2-4 systems will need to use one of the existing ``wflow_<platform>`` modulefiles (e.g., ``wflow_macos``) and adapt it to their system. Then, run:
+
+Engineering Tests (non-DA)
+===============================================
+
+   #. Load the python environment:
+
+   * On WCOSS2:
 
       .. code-block:: console
          
-         source <path/to/etc/lmod-setup.sh/or/lmod-setup.csh> <platform>
-         module use <path/to/modulefiles>
-         module load wflow_<platform>
+         source versions/run.ver
+         module use modulefiles
+         module load wflow_wcoss2
 
-      where ``<platform>`` refers to a valid machine name. After loading the workflow, users should follow the instructions printed to the console. For example, if the output says: 
+   * On Hera | Jet | Orion:
 
       .. code-block:: console
+         
+         module use modulefiles
+         module load wflow_<machine>
+         conda activate workflow_tools
 
-         Please do the following to activate conda:
-            > conda activate regional_workflow
-      
-      then the user should run ``conda activate regional_workflow`` to activate the regional workflow environment. 
+      where ``<machine>`` is ``hera``, ``jet``, or ``orion``. 
 
-      .. note::
-         If users source the *lmod-setup* file on a system that doesn't need it, it will not cause any problems (it will simply do a ``module purge``).
 
-   #. Configure the experiment: 
+   #. Copy the pre-defined configuration file: 
 
       .. code-block:: console
 
          cd ush
-         cp config.community.yaml config.yaml
+         cp sample_configs/non-DA_eng/config.nonDA.community.<machine>.sh config.sh
       
-      Users will need to open the ``config.yaml`` file and adjust the experiment parameters in it to suit the needs of their experiment (e.g., date, grid, physics suite). At a minimum, users need to modify the ``MACHINE`` parameter.
- 
-   #. Generate the experiment workflow. 
+      where ``<machine>`` is ``hera``, ``jet``, or ``orion``. Note that you may need to change ``ACCOUNT`` in the configuration file ``config.sh``.
+
+
+   #. Generate the experiment workflow:
 
       .. code-block:: console
 
-         ./generate_FV3LAM_wflow.py
+         ./generate_FV3LAM_wflow.sh
 
-   #. Run the regional workflow. There are several methods available for this step. One possible method is summarized below. 
+
+   #. Launch the workflow:
 
       .. code-block:: console
 
-         cd $EXPTDIR
+         cd ../../expt_dirs/test_nonDA_community
          ./launch_FV3LAM_wflow.sh
 
-      To (re)launch the workflow and check the experiment's progress:
+      .. note::
+         The workflow tasks will be submitted every three minutes by ``cron`` until the log output includes a ``Workflow status: SUCCESS`` message if you did not modify the following parameters in the configuration file:
 
       .. code-block:: console
 
-         ./launch_FV3LAM_wflow.sh; tail -n 40 log.launch_FV3LAM_wflow
+         USE_CRON_TO_RELAUNCH="TRUE"
+         CRON_RELAUNCH_INTVL_MNTS="03"
 
-      The workflow must be relaunched regularly and repeatedly until the log output includes a ``Workflow status: SUCCESS`` message indicating that the experiment has finished.
+
+Engineering Tests (DA)
+===============================================
+
+   #. Load the python environment:
+
+   * On WCOSS2:
+
+      .. code-block:: console
+         
+         source versions/run.ver
+         module use modulefiles
+         module load wflow_wcoss2
+
+   * On Hera | Jet | Orion:
+
+      .. code-block:: console
+         
+         module use modulefiles
+         module load wflow_<machine>
+         conda activate workflow_tools
+
+      where ``<machine>`` is ``hera``, ``jet``, or ``orion``. 
+
+
+   #. Copy the pre-defined configuration file: 
+
+      .. code-block:: console
+
+         cd ush
+         cp sample_configs/DA_eng/config.DA.<type>.<machine>.sh config.sh
+      
+      where ``<type>`` is ``para`` with ``<machine>`` is ``wcoss2`` while ``<type>`` is ``retro`` with ``<machine>`` is ``hera``. Note that you may need to change ``ACCOUNT`` in the configuration file ``config.sh``.
+
+      .. note::
+         For the real-time (``para``) test run on WCOSS2, you should replace ``DATE_FIRST_CYCL``, ``DATE_LAST_CYCL``, ``CYCLEMONTH``, and ``CYCLEDAY`` with those of Today's date.
+
+
+   #. Generate the experiment workflow:
+
+      .. code-block:: console
+
+         ./generate_FV3LAM_wflow.sh
+
+
+   #. Launch the workflow:
+
+      .. code-block:: console
+
+         cd ../../expt_dirs/test_nonDA_community
+         ./launch_FV3LAM_wflow.sh
+
+
+   #. Launch the following tasks as needed:
+
+      * On WCOSS2: ``config.DA.para.wcoss2.sh`` (in case of today=20230726)
+
+      .. code-block:: console
+
+         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307260000 -t get_extrn_lbcs
+         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307260600 -t get_extrn_lbcs
+         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307261200 -t get_extrn_lbcs
+         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307261800 -t get_extrn_lbcs (only when data is available)
+         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307260300 -t get_extrn_ics 
+         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307261500 -t get_extrn_ics (only when data is available)
+
+      Note that you may need to run ``rocotoboot`` for the task ``prep_cyc_spinup`` at 04z sequentially only if it is not launched:
+
+
+      .. conde-block:: console
+
+      rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307260400 -t prep_cyc_spinup
+
+
+      * On Hera: ``config.DA.retro.hera.sh``
+
+      .. code-block:: console
+
+         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202207200600 -t get_extrn_lbcs
+         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202207201200 -t get_extrn_lbcs
+         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202207201800 -t get_extrn_lbcs
+         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202207201500 -t get_extrn_ics
+
+      Once the above tasks are complete, launch the ``prep_cyc_spinup`` task:
+
+      .. conde-block:: console
+
+         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202207200300 -t prep_cyc_spinup
+
+
+
+
 
