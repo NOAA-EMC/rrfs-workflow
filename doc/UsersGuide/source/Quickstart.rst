@@ -18,14 +18,12 @@ Building the RRFS workflow
 
          git clone -b dev-sci https://github.com/NOAA-EMC/rrfs-workflow.git
 
-
    #. Check out the external components:
 
       .. code-block:: console
 
          cd rrfs-workflow
          ./manage_externals/checkout_externals
-
 
    #. Set up the build environment and build the executables:
 
@@ -59,7 +57,6 @@ Engineering Tests (non-DA)
 
       where ``<machine>`` is ``hera``, ``jet``, or ``orion``. 
 
-
    #. Copy the pre-defined configuration file: 
 
       .. code-block:: console
@@ -69,13 +66,11 @@ Engineering Tests (non-DA)
       
       where ``<machine>`` is ``hera``, ``jet``, or ``orion``. Note that you may need to change ``ACCOUNT`` in the configuration file ``config.sh``.
 
-
    #. Generate the experiment workflow:
 
       .. code-block:: console
 
          ./generate_FV3LAM_wflow.sh
-
 
    #. Launch the workflow:
 
@@ -116,7 +111,6 @@ Engineering Tests (DA)
 
       where ``<machine>`` is ``hera``, ``jet``, or ``orion``. 
 
-
    #. Copy the pre-defined configuration file: 
 
       .. code-block:: console
@@ -129,13 +123,11 @@ Engineering Tests (DA)
       .. note::
          For the real-time (``para``) test run on WCOSS2, you should replace ``DATE_FIRST_CYCL``, ``DATE_LAST_CYCL``, ``CYCLEMONTH``, and ``CYCLEDAY`` with those of Today's date.
 
-
    #. Generate the experiment workflow:
 
       .. code-block:: console
 
          ./generate_FV3LAM_wflow.sh
-
 
    #. Launch the workflow:
 
@@ -143,7 +135,6 @@ Engineering Tests (DA)
 
          cd ../../expt_dirs/test_nonDA_community
          ./launch_FV3LAM_wflow.sh
-
 
    #. Launch the following tasks as needed:
 
@@ -160,10 +151,9 @@ Engineering Tests (DA)
 
       Note that you may need to run ``rocotoboot`` for the task ``prep_cyc_spinup`` at 04z sequentially only if it is not launched:
 
-      .. conde-block:: console
+      .. code-block:: console
 
          rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307260400 -t prep_cyc_spinup
-
 
       * On Hera: ``config.DA.retro.hera.sh``
 
@@ -179,8 +169,4 @@ Engineering Tests (DA)
       .. code-block:: console
 
          rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202207200300 -t prep_cyc_spinup
-
-
-
-
 
