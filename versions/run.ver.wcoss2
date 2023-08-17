@@ -51,5 +51,6 @@ export nco_ver=4.9.7
 
 export wgrib2_ver=2.0.8_wmo
 export grib_util_ver=1.2.4
+export gempak_ver=7.15.1
 
 export maillist=""

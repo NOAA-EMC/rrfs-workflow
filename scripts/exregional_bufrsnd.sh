@@ -1,7 +1,6 @@
 #!/bin/bash
 
 #
-module load gempak/7.15.1
 #-----------------------------------------------------------------------
 #
 # Source the variable definitions file and the bash utility functions.
