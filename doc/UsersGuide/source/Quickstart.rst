@@ -34,7 +34,7 @@ Building the RRFS workflow
       where ``<machine>`` is ``wcoss2``, ``hera``, ``jet``, or ``orion``.
 
 
-Engineering Tests (non-DA)
+Engineering Test: Non-DA
 ===============================================
 
    #. Load the python environment:
@@ -88,7 +88,7 @@ Engineering Tests (non-DA)
          CRON_RELAUNCH_INTVL_MNTS="03"
 
 
-Engineering Tests (DA)
+Engineering Test: DA
 ===============================================
 
    #. Load the python environment:
@@ -169,4 +169,13 @@ Engineering Tests (DA)
       .. code-block:: console
 
          rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202207200300 -t prep_cyc_spinup
+
+   #. Check the status of your run with ``rocotostat``:
+
+      .. code-block:: console
+
+         rocotostat -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 > test.log
+
+      .. note::
+         You can open the log file ``log.launch_FV3LAM_wflow`` for the entire history, but it is sometimes too long.
 
