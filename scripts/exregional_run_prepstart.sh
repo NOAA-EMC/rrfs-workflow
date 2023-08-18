@@ -542,8 +542,8 @@ fi
 if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ ${cycle_type} == "spinup" ] ; then  # cycle smoke/dust fields
   if [ ${HH} -eq 4 ] || [ ${HH} -eq 16 ] ; then
 
-# figure out which surface is available
-      surface_file_dir_name=fcst_fv3lam
+# figure out which tracer is available
+      restart_file_dir_name=fcst_fv3lam
       bkpath_find="missing"
       restart_prefix_find="missing"
       if [ "${bkpath_find}" == "missing" ]; then
@@ -551,10 +551,10 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ ${cycle_type} == "spinup" ] ; then  # cy
 
           offset_hours=${DA_CYCLE_INTERV}
           YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
-          bkpath=${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${surface_file_dir_name}/RESTART  
+          bkpath=${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${restart_file_dir_name}/RESTART
 
           n=${DA_CYCLE_INTERV}
-          while [[ $n -le 6 ]] ; do
+          while [[ $n -le 24 ]] ; do
              if [ "${IO_LAYOUT_Y}" == "1" ]; then
                checkfile=${bkpath}/${restart_prefix}fv_tracer.res.tile1.nc
              else
@@ -570,7 +570,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ ${cycle_type} == "spinup" ] ; then  # cy
              n=$((n + ${DA_CYCLE_INTERV}))
              offset_hours=${n}
              YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
-             bkpath=${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${surface_file_dir_name}/RESTART  # cycling, use background from RESTART
+             bkpath=${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${restart_file_dir_name}/RESTART  # cycling, use background from RESTART
              print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
           done
       fi
