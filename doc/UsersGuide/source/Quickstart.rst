@@ -133,7 +133,7 @@ Engineering Test: DA
 
       .. code-block:: console
 
-         cd ../../expt_dirs/test_nonDA_community
+         cd ../../expt_dirs/rrfs_test_da
          ./launch_FV3LAM_wflow.sh
 
    #. Launch the following tasks as needed:
