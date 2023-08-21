@@ -1,1 +1,1 @@
-../../.agent/lam/GSD_RAP13km/C819.maximum_snow_albedo.tile1.nc
+../../.agent/lam/GSD_RAP13km_C819_Lake_fracSV/C819.maximum_snow_albedo.tile1.nc

@@ -977,12 +977,12 @@ if [ ${anav_type} == "radardbz" ]; then
   cp stdout $comout/stdout.t${HH}z.GSI_${anav_type}
 else
   mv fort.207 fit_rad1
-  sed -e 's/   asm all/ps asm 900/; s/   rej all/ps rej 900/; s/   mon all/ps mon 900/' fort.201 > fit_p1
-  sed -e 's/   asm all/uv asm 900/; s/   rej all/uv rej 900/; s/   mon all/uv mon 900/' fort.202 > fit_w1
-  sed -e 's/   asm all/ t asm 900/; s/   rej all/ t rej 900/; s/   mon all/ t mon 900/' fort.203 > fit_t1
-  sed -e 's/   asm all/ q asm 900/; s/   rej all/ q rej 900/; s/   mon all/ q mon 900/' fort.204 > fit_q1
-  sed -e 's/   asm all/pw asm 900/; s/   rej all/pw rej 900/; s/   mon all/pw mon 900/' fort.205 > fit_pw1
-  sed -e 's/   asm all/rw asm 900/; s/   rej all/rw rej 900/; s/   mon all/rw mon 900/' fort.209 > fit_rw1
+  sed -e 's/   asm all     /ps asm 900 0000/; s/   rej all     /ps rej 900 0000/; s/   mon all     /ps mon 900 0000/' fort.201 > fit_p1
+  sed -e 's/   asm all     /uv asm 900 0000/; s/   rej all     /uv rej 900 0000/; s/   mon all     /uv mon 900 0000/' fort.202 > fit_w1
+  sed -e 's/   asm all     / t asm 900 0000/; s/   rej all     / t rej 900 0000/; s/   mon all     / t mon 900 0000/' fort.203 > fit_t1
+  sed -e 's/   asm all     / q asm 900 0000/; s/   rej all     / q rej 900 0000/; s/   mon all     / q mon 900 0000/' fort.204 > fit_q1
+  sed -e 's/   asm all     /pw asm 900 0000/; s/   rej all     /pw rej 900 0000/; s/   mon all     /pw mon 900 0000/' fort.205 > fit_pw1
+  sed -e 's/   asm all     /rw asm 900 0000/; s/   rej all     /rw rej 900 0000/; s/   mon all     /rw mon 900 0000/' fort.209 > fit_rw1
 
   cat fit_p1 fit_w1 fit_t1 fit_q1 fit_pw1 fit_rad1 fit_rw1 > $comout/rrfs_a.t${HH}z.fits.tm00
   cat fort.208 fort.210 fort.211 fort.212 fort.213 fort.220 > $comout/rrfs_a.t${HH}z.fits2.tm00

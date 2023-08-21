@@ -76,6 +76,10 @@ case $MACHINE in
   export OMP_PROC_BIND=close
   export OMP_PLACES=threads
   export MPICH_RANK_REORDER_METHOD=0
+  if [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km" ]; then
+    export OMP_STACKSIZE=1G
+    export OMP_NUM_THREADS=1
+  fi
   ncores=$(( NNODES_RUN_ENKF*PPN_RUN_ENKF ))
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_ENKF} --label --line-buffer --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;

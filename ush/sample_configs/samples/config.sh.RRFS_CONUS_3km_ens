@@ -1,5 +1,5 @@
 MACHINE="jet"
-version="v0.4.0"
+version="v0.6.2"
 ACCOUNT="wrfruc"
 RESERVATION="rrfsens"
 RESERVATION_POST="rrfsdet"
@@ -9,6 +9,7 @@ EXPT_SUBDIR="RRFS_CONUS_3km_ens"
 PREDEF_GRID_NAME=RRFS_CONUS_3km
 
 . set_rrfs_config_general.sh
+. set_rrfs_config_SDL_VDL_MixEn.sh
 
 DO_ENSEMBLE="TRUE"
 #DO_ENSFCST="TRUE"
@@ -16,9 +17,9 @@ DO_ENSEMBLE="TRUE"
 #DO_SURFACE_CYCLE="TRUE"
 DO_SPINUP="TRUE"
 DO_SAVE_DA_OUTPUT="TRUE"
-DO_POST_SPINUP="TRUE"
-DO_POST_PROD="TRUE"
-#DO_RETRO="TRUE"
+DO_POST_SPINUP="FALSE"
+DO_POST_PROD="FALSE"
+DO_RETRO="TRUE"
 DO_NONVAR_CLDANAL="TRUE"
 #DO_ENVAR_RADAR_REF="TRUE"
 DO_SMOKE_DUST="FALSE"
@@ -32,6 +33,7 @@ DO_SMOKE_DUST="FALSE"
 #PREP_FVCOM="TRUE"
 
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
+  EXPT_SUBDIR="rrfs_conus_enfcst"
   DO_SPINUP="FALSE"
   DO_SAVE_DA_OUTPUT="FALSE"
   DO_NONVAR_CLDANAL="FALSE"
@@ -96,6 +98,7 @@ for i in {0..23}; do FCST_LEN_HRS_CYCLES[$i]=1; done
 for i in {0..23..6}; do FCST_LEN_HRS_CYCLES[$i]=1; done 
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   for i in {0..23..06}; do FCST_LEN_HRS_CYCLES[$i]=24; done 
+  FCST_LEN_HRS="6"
   POSTPROC_LEN_HRS="24"
   BOUNDARY_PROC_GROUP_NUM="8"
 fi
@@ -150,7 +153,6 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
      NUM_ENS_MEMBERS=${NUM_ENS_MEMBERS_FCST}
      WTIME_RUN_FCST="04:45:00"
      WTIME_MAKE_LBCS="01:30:00"
-     TAG="cefcst38"
 
 #     LAYOUT_X="31"
 #     LAYOUT_Y="32"
@@ -161,6 +163,7 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
      DO_SKEB="FALSE"
      SPPT_MAG="0.7"
      DO_LSM_SPP="TRUE"
+     DO_RECENTER="TRUE"
 
    fi
    PPN_RUN_RECENTER="$(( ${NUM_ENS_MEMBERS} + 1 ))"
@@ -172,12 +175,12 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    CLEAN_OLDSTMPPOST_HRS="48"
 fi
 
-RUN_ensctrl="rrfs_conus_3km"
+RUN_ensctrl="rrfs"
 RUN="rrfs_conus_3km_ensda"
-TAG="c3enkf40"
+TAG="c3enkf62"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   RUN="rrfs_conus_3km_ensfcst"
-  TAG="c3enfcst40"
+  TAG="c3enfcst62"
 fi
 
 . set_rrfs_config.sh

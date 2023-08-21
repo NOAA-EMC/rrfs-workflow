@@ -1,5 +1,5 @@
 MACHINE="jet"
-version="v0.5.2"
+version="v0.6.2"
 ACCOUNT="nrtrr"
 #RESERVATION="rrfsdet"
 EXPT_BASEDIR="YourOwnSpace/${version}"

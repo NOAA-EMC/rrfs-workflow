@@ -163,6 +163,7 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     SST_ROOT="${RETRODATAPATH}/highres_sst"
     GVF_ROOT="${RETRODATAPATH}/gvf/grib2"
     IMSSNOW_ROOT="${RETRODATAPATH}/snow/ims96/grib2"
+    RAPHRR_SOIL_ROOT="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs_retro_data/rap_hrrr_soil"
   fi
 fi
 
