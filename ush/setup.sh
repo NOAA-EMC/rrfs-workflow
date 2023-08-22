@@ -791,20 +791,17 @@ SORCdir="$HOMErrfs/sorc"
 PARMdir="$HOMErrfs/parm"
 MODULES_DIR="$HOMErrfs/modulefiles"
 EXECdir="$HOMErrfs/exec"
-if [ "${RUN_ENVIR}" = "nco" ]; then
-  FIXgsm=${FIXgsm:-"$HOMErrfs/fix/am"}
-  FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"$HOMErrfs/fix/lam"}
-  FIX_GSI=${FIX_GSI:-"${HOMErrfs}/fix/gsi"}
-  FIX_UPP=${FIX_UPP:-"${HOMErrfs}/fix/upp"}
-  FIX_CRTM=${FIX_CRTM:-"${CRTM_FIX}"}
-  FIX_UPP_CRTM=${FIX_UPP_CRTM:-"${CRTM_FIX}"}
-  FIX_SMOKE_DUST=${FIX_SMOKE_DUST:-"${HOMErrfs}/fix/smoke_dust"}
-  FIX_BUFRSND=${FIX_BUFRSND:-"${HOMErrfs}/fix/bufrsnd"}
-  AIRCRAFT_REJECT=${AIRCRAFT_REJECT:-"${FIX_GSI}"}
-  SFCOBS_USELIST=${SFCOBS_USELIST:-"${FIX_GSI}"}
-else
-  FIXgsm=${FIXgsm:-"$HOMErrfs/fix/am"}
-fi
+
+FIXgsm=${FIXgsm:-"$HOMErrfs/fix/am"}
+FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"$HOMErrfs/fix/lam"}
+FIX_GSI=${FIX_GSI:-"${HOMErrfs}/fix/gsi"}
+FIX_UPP=${FIX_UPP:-"${HOMErrfs}/fix/upp"}
+FIX_CRTM=${FIX_CRTM:-"${HOMErrfs}/fix/crtm/CRTM_v2.4.0"}
+FIX_UPP_CRTM=${FIX_UPP_CRTM:-"${HOMErrfs}/fix/crtm/CRTM_v2.4.0"}
+FIX_SMOKE_DUST=${FIX_SMOKE_DUST:-"${HOMErrfs}/fix/smoke_dust"}
+FIX_BUFRSND=${FIX_BUFRSND:-"${HOMErrfs}/fix/bufrsnd"}
+AIRCRAFT_REJECT=${AIRCRAFT_REJECT:-"${FIX_GSI}"}
+SFCOBS_USELIST=${SFCOBS_USELIST:-"${FIX_GSI}"}
 
 case $MACHINE in
 
