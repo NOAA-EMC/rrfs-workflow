@@ -436,6 +436,17 @@ else
 fi
 module list
 
+#####################################################################
+# Temporary fix for missing SDF file
+#######################################
+UWM_CCPP_DIR="${HOME_DIR}/sorc/ufs-weather-model/FV3/ccpp"
+SDF_GF_FN="suite_FV3_HRRR_gf.xml"
+SDF_GF_FP="${UWM_CCPP_DIR}/suites/${SDF_GF_FN}"
+if [ ! -f "${SDF_GF_FP}" ]; then
+  cp "${UWM_CCPP_DIR}/suites_not_used/${SDF_GF_FN}" "${SDF_GF_FP}"
+fi
+#####################################################################
+
 mkdir -p ${BUILD_DIR}
 cd ${BUILD_DIR}
 
