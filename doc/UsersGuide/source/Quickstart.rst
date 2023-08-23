@@ -9,7 +9,7 @@ This chapter provides a brief summary of how to build and run the RRFS-Workflow.
 
 .. _QuickBuildRun:
 
-Building the RRFS workflow
+Building RRFS workflow
 ===============================================
 
    #. Clone the ``dev-sci`` branch of the RRFS-Workflow from GitHub:
@@ -22,14 +22,14 @@ Building the RRFS workflow
 
       .. code-block:: console
 
-         cd rrfs-workflow
+         cd rrfs-workflow/sorc
          ./manage_externals/checkout_externals
 
    #. Set up the build environment and build the executables:
 
       .. code-block:: console
             
-         ./devbuild.sh --platform=<machine>
+         ./app_build.sh --platform=<machine>
 
       where ``<machine>`` is ``wcoss2``, ``hera``, ``jet``, or ``orion``.
 
