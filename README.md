@@ -26,6 +26,11 @@ cd rrfs-workflow/sorc
 ```
 where `[machine]` is `wcoss2`, `hera`, `orion`, or `jet`.
 
+5. Move to the home directory (rrfs-workflow):
+```
+cd ..
+```
+
 ## Engineering Tests
 
 See the RRFS-Workflow User's guide:

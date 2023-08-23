@@ -33,6 +33,11 @@ Building RRFS workflow
 
       where ``<machine>`` is ``wcoss2``, ``hera``, ``jet``, or ``orion``.
 
+   #. Move to the home directory (rrfs-workflow):
+
+      .. code-block:: console
+
+         cd ..
 
 Engineering Test: Non-DA
 ===============================================
