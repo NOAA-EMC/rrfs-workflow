@@ -3,6 +3,7 @@ python_graphics/
 sorc/*
 !sorc/CMakeLists.txt
 !sorc/Externals.cfg
+!sorc/app_build.sh
 !sorc/manage_externals/
 !sorc/rrfs-workflow_meta.h.in
 !sorc/rrfs-workflow.settings.in
