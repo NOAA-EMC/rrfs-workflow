@@ -10,18 +10,28 @@ Workflow for the Rapid Refresh Forecast System (RRFS)
 git clone -b dev-sci https://github.com/NOAA-EMC/rrfs-workflow
 ```
 
-2. Check out the external components:
+2. Move to the `sorc` directory:
 ```
-cd rrfs-workflow
+cd rrfs-workflow/sorc
+```
+
+3. Check out the external components:
+```
 ./manage_externals/checkout_externals
 ```
 
-3. Build the RRFS workflow:
+4. Build the RRFS workflow:
 ```
-./devbuild.sh -p=[machine]
+./app_build.sh -p=[machine]
 ```
 where `[machine]` is `wcoss2`, `hera`, `orion`, or `jet`.
 
+5. Move to the home directory (rrfs-workflow):
+```
+cd ..
+```
+
 ## Engineering Tests
 
-The RRFS-Workflow User's guide: https://chanhoo-rrfs-workflow.readthedocs.io/en/latest/index.html
+See the RRFS-Workflow User's guide:
+https://chanhoo-rrfs-workflow.readthedocs.io/en/latest/index.html

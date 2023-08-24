@@ -101,9 +101,10 @@ usage_error () {
 
 # default settings
 LCL_PID=$$
-HOME_DIR=$(cd "$(dirname "$(readlink -f -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
-BUILD_DIR="${HOME_DIR}/sorc/build"
-INSTALL_DIR="${HOME_DIR}/sorc/build"
+SORC_DIR=$(cd "$(dirname "$(readlink -f -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
+HOME_DIR="${SORC_DIR}/.."
+BUILD_DIR="${SORC_DIR}/build"
+INSTALL_DIR="${SORC_DIR}/build"
 BIN_DIR="exec"
 COMPILER=""
 APPLICATION=""
@@ -395,22 +396,22 @@ if [ $USE_SUB_MODULES = true ]; then
     }
     if [ $BUILD_UFS = "on" ]; then
         printf "... Loading UFS modules ...\n"
-        module use ${HOME_DIR}/sorc/ufs-weather-model/modulefiles
+        module use ${SORC_DIR}/ufs-weather-model/modulefiles
         load_module "ufs_"
     fi
     if [ $BUILD_UFS_UTILS = "on" ]; then
         printf "... Loading UFS_UTILS modules ...\n"
-        module use ${HOME_DIR}/sorc/UFS_UTILS/modulefiles
+        module use ${SORC_DIR}/UFS_UTILS/modulefiles
         load_module "build."
     fi
     if [ $BUILD_UPP = "on" ]; then
         printf "... Loading UPP modules ...\n"
-        module use ${HOME_DIR}/sorc/UPP/modulefiles
+        module use ${SORC_DIR}/UPP/modulefiles
         load_module ""
     fi
     if [ $BUILD_GSI = "on" ]; then
         printf "... Loading GSI modules ...\n"
-        module use ${HOME_DIR}/sorc/gsi/modulefiles
+        module use ${SORC_DIR}/gsi/modulefiles
         load_module "gsi_"
     fi
     if [ $BUILD_RRFS_UTILS = "on" ]; then
@@ -419,27 +420,24 @@ if [ $USE_SUB_MODULES = true ]; then
     fi
     if [ $BUILD_NEXUS = "on" ]; then
         printf "... Loading NEXUS modules ...\n"
-        module use ${HOME_DIR}/sorc/arl_nexus/modulefiles
+        module use ${SORC_DIR}/arl_nexus/modulefiles
         load_module ""
     fi
     if [ $BUILD_AQM_UTILS = "on" ]; then
         printf "... Loading AQM-utils modules ...\n"
-        module use ${HOME_DIR}/sorc/AQM-utils/modulefiles
+        module use ${SORC_DIR}/AQM-utils/modulefiles
         load_module ""
     fi
 else
     module use ${HOME_DIR}/modulefiles
     module load ${MODULE_FILE}
-    if [[ "${PLATFORM}" == "macos" ]]; then
-        export LDFLAGS+=" -L$MPI_ROOT/lib "
-    fi
 fi
 module list
 
 #####################################################################
 # Temporary fix for missing SDF file
 #######################################
-UWM_CCPP_DIR="${HOME_DIR}/sorc/ufs-weather-model/FV3/ccpp"
+UWM_CCPP_DIR="${SORC_DIR}/ufs-weather-model/FV3/ccpp"
 SDF_GF_FN="suite_FV3_HRRR_gf.xml"
 SDF_GF_FP="${UWM_CCPP_DIR}/suites/${SDF_GF_FN}"
 if [ ! -f "${SDF_GF_FP}" ]; then
@@ -457,13 +455,13 @@ if [ "${CLEAN}" = true ]; then
     fi
 elif [ "${BUILD}" = true ]; then
     printf "... Generate CMAKE configuration ...\n"
-    cmake ${HOME_DIR} ${CMAKE_SETTINGS} 2>&1 | tee log.cmake
+    cmake ${SORC_DIR} ${CMAKE_SETTINGS} 2>&1 | tee log.cmake
 
     printf "... Compile executables ...\n"
     make ${MAKE_SETTINGS} build 2>&1 | tee log.make
 else
     printf "... Generate CMAKE configuration ...\n"
-    cmake ${HOME_DIR} ${CMAKE_SETTINGS} 2>&1 | tee log.cmake
+    cmake ${SORC_DIR} ${CMAKE_SETTINGS} 2>&1 | tee log.cmake
 
     printf "... Compile and install executables ...\n"
     make ${MAKE_SETTINGS} install 2>&1 | tee log.make
