@@ -213,7 +213,7 @@ PREDEF_GRID_NAME=RRFS_NA_3km
 ADDNL_OUTPUT_GRIDS=("hrrr" "rrfsak" )
 TILE_LABELS="NA"
 TILE_SETS="full"
-CCPP_PHYS_SUITE="FV3_HRRR"
+CCPP_PHYS_SUITE="FV3_HRRR_gf"
 
 NET="RTMA_NA" ##must start with "RTMA". ${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2
 TAG="RTMA_NA" ## used by job names
