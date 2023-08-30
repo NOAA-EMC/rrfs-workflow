@@ -1407,6 +1407,9 @@ MODULES_RUN_TASK_FP script.
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
     <envar><name>SATBIAS_DIR</name><value><cyclestr>&NWGES_BASEDIR;/satbias</cyclestr></value></envar>
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
+    {%- if do_envar_radar_ref and do_envar_radar_ref_once %}
+    <envar><name>OB_TYPE</name><value>conv_dbz</value></envar>
+    {%- endif %}
 
     <dependency>
        <taskdep task="&ANAL_GSI_TN;_spinup{{ uscore_ensmem_name }}"/>
@@ -2289,6 +2292,9 @@ MODULES_RUN_TASK_FP script.
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
     <envar><name>SATBIAS_DIR</name><value><cyclestr>&NWGES_BASEDIR;/satbias</cyclestr></value></envar>
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
+    {%- if do_envar_radar_ref and do_envar_radar_ref_once %}
+    <envar><name>OB_TYPE</name><value>conv_dbz</value></envar>
+    {%- endif %}
 
     <dependency>
        <taskdep task="&ANAL_GSI_TN;_prod{{ uscore_ensmem_name }}"/>
