@@ -26,18 +26,16 @@ if [[ $MACHINE == "jet" ]] ; then
     NNODES_RUN_POST="1"
     PPN_RUN_POST="40"
   fi
-fi
 
-if [[ $MACHINE == "hera" ]] ; then
+elif [[ $MACHINE == "hera" ]] ; then
   ACCOUNT="fv3-cam"
   PARTITION_DEFAULT=""
   PARTITION_FCST=""
   QUEUE_ANALYSIS="batch"
   QUEUE_PRDGEN="batch"
   QUEUE_GRAPHICS="batch"
-fi
 
-if [[ $MACHINE == "orion" ]] ; then
+elif [[ $MACHINE == "orion" ]] ; then
   ACCOUNT="fv3-cam"
   PARTITION_ANALYSIS=orion
   QUEUE_ANALYSIS="batch"
@@ -45,9 +43,8 @@ if [[ $MACHINE == "orion" ]] ; then
   QUEUE_GRAPHICS="batch"
   QUEUE_POST="batch"
   NCORES_PER_NODE=24
-fi
 
-if [[ $MACHINE == "wcoss2" ]] ; then
+elif [[ $MACHINE == "wcoss2" ]] ; then
   ACCOUNT=RRFS-DEV
   HPSS_ACCOUNT="RRFS-DEV"
 
