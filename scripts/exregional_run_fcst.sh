@@ -80,16 +80,16 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-# Load modules.
+# Set environments
 #
 #-----------------------------------------------------------------------
 #
+ulimit -s unlimited
+ulimit -a
+
 case $MACHINE in
 
   "WCOSS2")
-    ulimit -s unlimited
-    ulimit -a
-    export OMP_NUM_THREADS=2
     export OMP_STACKSIZE=1G
     export MPICH_ABORT_ON_ERROR=1
     export MALLOC_MMAP_MAX_=0
@@ -101,37 +101,19 @@ case $MACHINE in
     export MPICH_OFI_STARTUP_CONNECT=1
     export MPICH_OFI_VERBOSE=1
     export MPICH_OFI_NIC_VERBOSE=1
-    ncores=${PE_MEMBER01}
-    APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_FCST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
+    APRUN="mpiexec -n ${PE_MEMBER01} -ppn ${PPN_RUN_FCST} --cpu-bind core --depth ${TPP_RUN_FCST}"
     ;;
 
   "HERA")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="srun --export=ALL --mem=0"
-    if [ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]; then
-      OMP_NUM_THREADS=4
-    else
-      OMP_NUM_THREADS=2
-    fi
     ;;
 
   "ORION")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="srun --export=ALL"
-    OMP_NUM_THREADS=1
     ;;
 
   "JET")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="srun --export=ALL --mem=0"
-    if [ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]; then
-      OMP_NUM_THREADS=4
-    else
-      OMP_NUM_THREADS=2
-    fi
     ;;
 
   *)
@@ -145,9 +127,8 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-export KMP_AFFINITY=${KMP_AFFINITY:-scatter}
 export KMP_AFFINITY=scatter
-export OMP_NUM_THREADS=${OMP_NUM_THREADS:-1} #Needs to be 1 for dynamic build of CCPP with GFDL fast physics, was 2 before.
+export OMP_NUM_THREADS=${TPP_RUN_FCST:-1}
 export OMP_STACKSIZE=${OMP_STACKSIZE:-1024m}
 #
 #-----------------------------------------------------------------------

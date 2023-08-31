@@ -26,18 +26,16 @@ if [[ $MACHINE == "jet" ]] ; then
     NNODES_RUN_POST="1"
     PPN_RUN_POST="40"
   fi
-fi
 
-if [[ $MACHINE == "hera" ]] ; then
+elif [[ $MACHINE == "hera" ]] ; then
   ACCOUNT="fv3-cam"
   PARTITION_DEFAULT=""
   PARTITION_FCST=""
   QUEUE_ANALYSIS="batch"
   QUEUE_PRDGEN="batch"
   QUEUE_GRAPHICS="batch"
-fi
 
-if [[ $MACHINE == "orion" ]] ; then
+elif [[ $MACHINE == "orion" ]] ; then
   ACCOUNT="fv3-cam"
   PARTITION_ANALYSIS=orion
   QUEUE_ANALYSIS="batch"
@@ -45,9 +43,8 @@ if [[ $MACHINE == "orion" ]] ; then
   QUEUE_GRAPHICS="batch"
   QUEUE_POST="batch"
   NCORES_PER_NODE=24
-fi
 
-if [[ $MACHINE == "wcoss2" ]] ; then
+elif [[ $MACHINE == "wcoss2" ]] ; then
   ACCOUNT=RRFS-DEV
   HPSS_ACCOUNT="RRFS-DEV"
 
@@ -151,6 +148,7 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
       PPN_MAKE_ICS="20"
       NNODES_MAKE_LBCS="3"
       PPN_MAKE_LBCS="20"
+      TPP_RUN_FCST="2"
       NNODES_RUN_POST="2"
       PPN_RUN_POST="40"
       PPN_PROC_RADAR="20"
@@ -160,9 +158,8 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
       PPN_RUN_NONVARCLDANL="10"
       NNODES_RUN_NONVARCLDANL="12"
     fi
-  fi
 
-  if [[ $MACHINE == "hera" ]] ; then
+  elif [[ $MACHINE == "hera" ]] ; then
     LAYOUT_X="15"
     LAYOUT_Y="20"
     PPN_RUN_FCST="20"
@@ -171,6 +168,7 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
     PPN_MAKE_LBCS="20"
     NNODES_MAKE_ICS="3"
     NNODES_MAKE_LBCS="3"
+    TPP_RUN_FCST="2"
     PPN_RUN_POST="40"
     NNODES_RUN_POST="2"
     PPN_RUN_NONVARCLDANL="10"
@@ -186,9 +184,8 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
     START_TIME_SPINUP="01:10:00"
     START_TIME_PROD="02:10:00"
     START_TIME_LATE_ANALYSIS="01:40:00"
-  fi
 
-  if [[ $MACHINE == "wcoss2" ]] ; then
+  elif [[ $MACHINE == "wcoss2" ]] ; then
     LAYOUT_X="31"
     LAYOUT_Y="32"
     PPN_MAKE_ICS="32"
@@ -256,17 +253,14 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
     CLEAN_OLDSTMPPOST_HRS="6"
     CLEAN_NWGES_HRS="28"
 
-  fi
-
-  if [[ $MACHINE == "orion" ]] ; then
+  elif [[ $MACHINE == "orion" ]] ; then
     LAYOUT_X="30"
     LAYOUT_Y="40"
     PPN_RUN_FCST="40"
     WTIME_RUN_PRDGEN="00:20:00"
   fi
-fi
 
-if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then 
+elif [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then 
   DT_ATMOS=120
   ADDNL_OUTPUT_GRIDS=()
   TILE_LABELS="CONUS REGIONS"
@@ -332,16 +326,14 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then
 
     FV3GFS_FILE_FMT_ICS="netcdf"
     FV3GFS_FILE_FMT_LBCS="netcdf"
-  fi
 
-  if [[ $MACHINE == "orion" ]] ; then
+  elif [[ $MACHINE == "orion" ]] ; then
     LAYOUT_X="30"
     LAYOUT_Y="40"
     PPN_RUN_FCST="40"
     WTIME_RUN_PRDGEN="00:20:00"
-  fi
  
-  if [[ $MACHINE == "hera" ]] ; then
+  elif [[ $MACHINE == "hera" ]] ; then
     NNODES_MAKE_ICS="1"
     NNODES_MAKE_LBCS="1"
     NNODES_RUN_POST="1"
@@ -359,6 +351,7 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then
     NNODES_RUN_ANAL="3"
     PPN_RUN_FCST="20"
     NNODES_RUN_FCST="3"
+    TPP_RUN_FCST="2"
     PPN_RUN_POST="20"
     NNODES_RUN_POST="1"
     PPN_PROC_RADAR="40"
@@ -369,9 +362,7 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then
     PPN_RUN_GSIDIAG=40
   fi
 
-fi
-
-if [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then 
+elif [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then 
   DT_ATMOS=36
   CCPP_PHYS_SUITE="FV3_HRRR"
   ADDNL_OUTPUT_GRIDS=( "hrrr" "hrrrak" )
@@ -391,9 +382,8 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then
     PPN_RUN_PREPSTART="5"
     WRTCMP_write_tasks_per_group="50"
     NCORES_PER_NODE="40"
-
     MEMO_RUN_REF2TTEN="60G"
-
+    TPP_RUN_FCST="4"
     WTIME_RUN_FCST="04:00:00"
     LAYOUT_X=50
     LAYOUT_Y=20
@@ -478,9 +468,7 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then
     CLEAN_OLDSTMPPOST_HRS="12"
     CLEAN_NWGES_HRS="18"
 
-  fi
-
-  if [[ $MACHINE == "hera" ]] ; then
+  elif [[ $MACHINE == "hera" ]] ; then
     CCPP_PHYS_SUITE="FV3_HRRR"
     WRTCMP_write_groups="1"
     WRTCMP_write_tasks_per_group="50"
@@ -488,14 +476,14 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then
     LAYOUT_Y="20"
     PPN_RUN_FCST="10"
     NNODES_RUN_FCST="105"
+    TPP_RUN_FCST="4"
     PPN_RUN_NONVARCLDANL="10"
     NNODES_RUN_NONVARCLDANL="20"
     NATIVE_RUN_ANAL="--cpus-per-task 4 --exclusive"
     PPN_RUN_GSIDIAG=40
   fi
-fi
 
-if [[ ${PREDEF_GRID_NAME} == "GSD_RAP13km" ]] ; then 
+elif [[ ${PREDEF_GRID_NAME} == "GSD_RAP13km" ]] ; then 
   DT_ATMOS=120
   CCPP_PHYS_SUITE="FV3_RAP"
   ADDNL_OUTPUT_GRIDS=( "130" "242" )
@@ -509,15 +497,4 @@ if [[ ${PREDEF_GRID_NAME} == "GSD_RAP13km" ]] ; then
   PPN_RUN_FCST="20"
   NNODES_RUN_FCST="11"
 fi
-
-#
-# In NCO mode, the following don't need to be explicitly set to "FALSE" 
-# in this configuration file because the experiment generation script
-# will do this (along with printing out an informational message).
-#
-#RUN_TASK_MAKE_GRID="FALSE"
-#RUN_TASK_MAKE_OROG="FALSE"
-#RUN_TASK_MAKE_SFC_CLIMO="FALSE"
-#
-
 

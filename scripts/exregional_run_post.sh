@@ -213,7 +213,7 @@ to the post forecast hour directory (fhr_dir):
   fhr_dir = \"${fhr_dir}\"
 ===================================================================="
 else
-  post_config_fp="${UPP_DIR}/parm/postxconfig-NT-fv3lam.txt"
+  post_config_fp="${UPP_DIR}/parm/postxconfig-NT-fv3lam_rrfs.txt"
   post_params_fp="${UPP_DIR}/parm/params_grib2_tbl_new"
   print_info_msg "
 ====================================================================
@@ -226,7 +226,7 @@ forecast hour directory (fhr_dir):
 fi
 cp_vrfy ${post_config_fp} ./postxconfig-NT.txt
 cp_vrfy ${post_params_fp} ./params_grib2_tbl_new
-cp_vrfy ${EXECdir}/upp.x .
+
 if [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km_HRRRIC" ]; then
   grid_specs_rrfs="lambert:-97.5:38.500000 237.826355:1746:3000 21.885885:1014:3000"
 elif [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km" ]; then
@@ -259,6 +259,8 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+cp_vrfy ${EXECdir}/upp.x .
+
 print_info_msg "$VERBOSE" "
 Starting post-processing for fhr = $fhr hr..."
 
