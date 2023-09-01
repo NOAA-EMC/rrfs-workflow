@@ -438,7 +438,7 @@ module list
 # Temporary fix
 #######################################
 
-# CCPP SDF file for FV3_HRRR_gf.xml
+# CCPP SDF file for FV3_HRRR_gf
 UWM_CCPP_DIR="${SORC_DIR}/ufs-weather-model/FV3/ccpp"
 SDF_GF_FN="suite_FV3_HRRR_gf.xml"
 SDF_GF_FP="${UWM_CCPP_DIR}/suites/${SDF_GF_FN}"
