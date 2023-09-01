@@ -879,6 +879,19 @@ settings="\
     'print_diff_pgr': ${PRINT_DIFF_PGR},
     'rrfs_sd': ${DO_SMOKE_DUST},
   }"
+if [ "${USE_CLM}" = "TRUE" ]; then
+    settings="$settings
+'gfs_physics_nml': {
+    'lkm': 1,
+    'iopt_lake': 2,
+    'clm_lake_debug': FALSE,
+    'clm_debug_print': FALSE,
+    'frac_ice': TRUE,
+    'kice': 9,
+    'min_seaice': 0.15,
+    'min_lakeice': 0.15,
+  }"
+fi
 #
 # Add to "settings" the values of those namelist variables that specify
 # the paths to fixed files in the FIXam directory.  As above, these namelist
