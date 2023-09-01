@@ -171,7 +171,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-if [ ${BKTYPE} -eq 0 ] && [ ${ob_type} == "conv" ] && [ "${DO_SOIL_ADJUST}" = "TRUE" ]; then  # warm start
+if [[ ${BKTYPE} -eq 0 ]] && [[ ${ob_type} =~ "conv" ]] && [[ "${DO_SOIL_ADJUST}" = "TRUE" ]]; then  # warm start
   cd ${bkpath}
   if [ "${IO_LAYOUT_Y}" == "1" ]; then
     ln_vrfy -snf ${fixgriddir}/fv3_grid_spec                fv3_grid_spec
