@@ -904,10 +904,10 @@ if [ ${SFC_CYC} -eq 3 ] ; then
    fi
  
    exect="use_raphrrr_sfc.exe"
-   if [ -f ${EXECDIR}/$exect ]; then
+   if [ -f ${EXECdir}/$exect ]; then
      print_info_msg "$VERBOSE" "
      Copying the surface surgery executable to the run directory..."
-     cp_vrfy ${EXECDIR}/${exect} ${exect}
+     cp_vrfy ${EXECdir}/${exect} ${exect}
 
      if [ "${IO_LAYOUT_Y}" == "1" ]; then
        ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
