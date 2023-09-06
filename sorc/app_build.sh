@@ -435,13 +435,45 @@ fi
 module list
 
 #####################################################################
-# Temporary fix for missing SDF file
+# Temporary fix
 #######################################
+
+# CCPP SDF file for FV3_HRRR_gf
 UWM_CCPP_DIR="${SORC_DIR}/ufs-weather-model/FV3/ccpp"
 SDF_GF_FN="suite_FV3_HRRR_gf.xml"
 SDF_GF_FP="${UWM_CCPP_DIR}/suites/${SDF_GF_FN}"
 if [ ! -f "${SDF_GF_FP}" ]; then
   cp "${UWM_CCPP_DIR}/suites_not_used/${SDF_GF_FN}" "${SDF_GF_FP}"
+fi
+
+RRFS_BRIDGELOAN_DIR="${SORC_DIR}/rrfs_bridgeloan"
+if [ -d "${RRFS_BRIDGELOAN_DIR}" ]; then
+  # Temporary fix for specific hash of GSI
+  GSI_HEAD_FP="${SORC_DIR}/gsi/.git/HEAD"
+  GSI_HEAD_VALUE=$(<${GSI_HEAD_FP})
+  GSI_hash="${GSI_HEAD_VALUE:0:7}"
+  printf " *** Hash of GSI: %s \n" ${GSI_hash}
+  if [ "${GSI_hash}" = "00cac54" ]; then
+    cp "${RRFS_BRIDGELOAN_DIR}/gsi/constants.f90" "${SORC_DIR}/gsi/constants.f90"
+    printf " *** Some files of GSI have been replaced. *** \n"
+  fi
+
+  # Temporary fix for specific hash of ufs-weather-model
+  UWM_HEAD_FP="${SORC_DIR}/ufs-weather-model/.git/HEAD"
+  UWM_HEAD_VALUE=$(<${UWM_HEAD_FP})
+  UWM_hash="${UWM_HEAD_VALUE:0:7}"
+  printf " *** Hash of UFS Weather Model: %s \n" ${UWM_hash}
+  if [ "${UWM_hash}" = "f1f0180" ]; then
+    UWM_SRC_DIR="${RRFS_BRIDGELOAN_DIR}/ufs_weather_model/FV3"
+    UWM_DST_DIR="${SORC_DIR}/ufs-weather-model/FV3"
+    cp "${UWM_SRC_DIR}/io/fv3atm_clm_lake_io.F90" "${UWM_DST_DIR}/io/fv3atm_clm_lake_io.F90"
+    cp "${UWM_SRC_DIR}/io/fv3atm_restart_io.F90" "${UWM_DST_DIR}/io/fv3atm_restart_io.F90"
+    cp "${UWM_SRC_DIR}/io/fv3atm_rrfs_sd_io.F90" "${UWM_DST_DIR}/io/fv3atm_rrfs_sd_io.F90"
+    cp "${UWM_SRC_DIR}/io/fv3atm_sfc_io.F90" "${UWM_DST_DIR}/io/fv3atm_sfc_io.F90"
+    cp "${UWM_SRC_DIR}/atmos_cubed_sphere/tools/fv_io.F90" "${UWM_DST_DIR}/atmos_cubed_sphere/tools/fv_io.F90"
+
+    printf " *** Some files of UFS Weather Model have been replaced. *** \n"
+  fi
 fi
 #####################################################################
 

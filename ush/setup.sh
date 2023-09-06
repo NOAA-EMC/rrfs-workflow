@@ -493,6 +493,7 @@ optionList[22]=DO_SDDACYCLE
 optionList[23]=DO_SAVE_DA_OUTPUT
 optionList[24]=DO_ENS_RADDA
 optionList[25]=DO_GSIDIAG_OFFLINE
+optionList[26]=USE_CLM
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));
@@ -1358,7 +1359,11 @@ fi
 dot_ccpp_phys_suite_or_null=".${CCPP_PHYS_SUITE}"
 
 DATA_TABLE_TMPL_FN="${DATA_TABLE_FN}"
+if [ "${USE_CLM}" = "TRUE" ]; then
+DIAG_TABLE_TMPL_FN="${DIAG_TABLE_FN}${dot_ccpp_phys_suite_or_null}_clm"
+else
 DIAG_TABLE_TMPL_FN="${DIAG_TABLE_FN}${dot_ccpp_phys_suite_or_null}"
+fi
 FIELD_TABLE_TMPL_FN="${FIELD_TABLE_FN}${dot_ccpp_phys_suite_or_null}"
 MODEL_CONFIG_TMPL_FN="${MODEL_CONFIG_FN}"
 NEMS_CONFIG_TMPL_FN="${NEMS_CONFIG_FN}"

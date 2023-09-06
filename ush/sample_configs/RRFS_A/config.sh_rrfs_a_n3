@@ -1,11 +1,12 @@
 MACHINE="wcoss2"
-version="v0.5.2"
+MACHINETYPE="primary"
+version="v0.6.5"
 ACCOUNT="RRFS_DEV"
 #RESERVATION="rrfsdet"
-EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/$version/"
-EXPT_SUBDIR="rrfs_conus"
+EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/${version}"
+EXPT_SUBDIR="rrfs_na"
 
-PREDEF_GRID_NAME=RRFS_CONUS_3km
+PREDEF_GRID_NAME="RRFS_NA_3km"
 
 . set_rrfs_config_general.sh
 . set_rrfs_config_SDL_VDL_MixEn.sh
@@ -30,7 +31,7 @@ DO_RADDA="TRUE"
 DO_BUFRSND="TRUE"
 USE_FVCOM="TRUE"
 PREP_FVCOM="TRUE"
-DO_PARALLEL_PRDGEN="FALSE"
+DO_PARALLEL_PRDGEN="TRUE"
 DO_GSIDIAG_OFFLINE="TRUE"
 
 EXTRN_MDL_ICS_OFFSET_HRS="3"
@@ -41,12 +42,12 @@ BOUNDARY_PROC_GROUP_NUM="72"
 
 # avaialble retro period:
 # 20210511-20210531; 20210718-20210801
-DATE_FIRST_CYCL="20230501"
-DATE_LAST_CYCL="20230531"
+DATE_FIRST_CYCL="20230801"
+DATE_LAST_CYCL="20230930"
 CYCL_HRS=( "00" "12" )
 CYCL_HRS_SPINSTART=("03" "15")
 CYCL_HRS_PRODSTART=("09" "21")
-CYCLEMONTH="05"
+CYCLEMONTH="08,09"
 CYCLEDAY="*"
 
 STARTYEAR=${DATE_FIRST_CYCL:0:4}
@@ -68,16 +69,16 @@ if [[ $DO_SPINUP == "TRUE" ]] ; then
   SPINUP_CYCLEDEF="00 03-08,15-20 ${CYCLEDAY} ${CYCLEMONTH} ${STARTYEAR} *"
 fi
 
-FCST_LEN_HRS="18"
+FCST_LEN_HRS="12"
 FCST_LEN_HRS_SPINUP="1"
 #FCST_LEN_HRS_CYCLES=(48 18 18 18 18 18 48 18 18 18 18 18 48 18 18 18 18 18 48 18 18 18 18 18)
-for i in {0..23}; do FCST_LEN_HRS_CYCLES[$i]=18; done
+for i in {0..23}; do FCST_LEN_HRS_CYCLES[$i]=12; done
 for i in {0..23..6}; do FCST_LEN_HRS_CYCLES[$i]=60; done
 DA_CYCLE_INTERV="1"
 RESTART_INTERVAL="1 2"
 RESTART_INTERVAL_LONG="1 2"
 ## set up post
-POSTPROC_LEN_HRS="18"
+POSTPROC_LEN_HRS="12"
 POSTPROC_LONG_LEN_HRS="60"
 NFHOUT_HF="1"
 # 15 min output upto 18 hours
@@ -91,7 +92,7 @@ CYCL_HRS_HYB_FV3LAM_ENS=("00" "01" "02" "03" "04" "05" "06" "07" "08" "09" "10" 
 
 SST_update_hour=01
 GVF_update_hour=04
-SNOWICE_update_hour=00
+SNOWICE_update_hour=01
 netcdf_diag=.true.
 binary_diag=.false.
 
@@ -103,7 +104,7 @@ EXTRN_MDL_NAME_LBCS="FV3GFS"
 envir="para"
 
 NET="rrfs_a"
-TAG="c3v52"
+TAG="n3v65"
 
 ARCHIVEDIR="/NCEPDEV/emc-meso/1year/emc.lam/${TAG}"
 NCL_REGION="conus"
@@ -112,11 +113,11 @@ RUN="rrfs"
 
 . set_rrfs_config.sh
 
-STMP="/lfs/h2/emc/stmp/emc.lam/rrfs/${version}"  # Path to directory STMP that mostly contains input files.
+STMP="/lfs/f2/t2o/ptmp/emc/stmp/emc.lam/rrfs/${version}"  # Path to directory STMP that mostly contains input files.
 PTMP="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}"  # Path to directory STMP that mostly contains input files.
-NWGES="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+NWGES="/lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/rrfs/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 if [[ ${regional_ensemble_option} == "5" ]]; then
-  RRFSE_NWGES="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}/nwges"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
+  RRFSE_NWGES="/lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/rrfs/${version}/nwges"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
   NUM_ENS_MEMBERS=30     # FV3LAM ensemble size for GSI hybrid analysis
   CYCL_HRS_PRODSTART_ENS=( "07" "19" )
   DO_ENVAR_RADAR_REF="TRUE"

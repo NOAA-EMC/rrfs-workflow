@@ -1,15 +1,15 @@
 #!/bin/bash
 source fix_rrfs_locations.sh #determine current platform
 MACHINE=${PLATFORM}
-version="v0.5.0"
+version="v0.6.5" # odd for NA; even for CONUS
 ACCOUNT="nrtrr"
-RESERVATION="rrfsens"
+RESERVATION="rrfsdet"
 EXPT_BASEDIR="/home/role.rtrr/RTMA/rtma.${version}"
-EXPT_SUBDIR="RTMA_CONUS"
+EXPT_SUBDIR="RTMA_NA"
 
 if [[ -n $RESERVATION ]] ; then
-  ACCOUNT=rtwrfruc
-  SERVICE_ACCOUNT=rtwrfruc
+  ACCOUNT=rtrr
+  SERVICE_ACCOUNT=rtrr
   HPSS_ACCOUNT=nrtrr
   PARTITION_DEFAULT=kjet
   PARTITION_FCST=kjet
@@ -17,24 +17,20 @@ if [[ -n $RESERVATION ]] ; then
   PARTITION_ANALYSIS=kjet
   PARTITION_PRDGEN=kjet
   PARTITION_POST=kjet
-  QUEUE_DEFAULT="rth"
-  QUEUE_FCST="rth"
-  QUEUE_ANALYSIS="rth"
-  QUEUE_PRDGEN="rth"
-  QUEUE_GRAPHICS="rth"
+  QUEUE_DEFAULT="rt"
+  QUEUE_FCST="rt"
+  QUEUE_ANALYSIS="rt"
+  QUEUE_PRDGEN="rt"
+  QUEUE_GRAPHICS="rt"
   QUEUE_HPSS="batch"
-  QUEUE_POST="rth"
-  RESERVATION_POST="rrfsens"
+  QUEUE_POST="rt"
+  RESERVATION_POST="rrfsdet"
   NNODES_MAKE_ICS="3"
   PPN_MAKE_ICS="20"
   NNODES_MAKE_LBCS="3"
   PPN_MAKE_LBCS="20"
-  NNODES_RUN_POST="2"
+  NNODES_RUN_POST="1"
   PPN_RUN_POST="40"
-  PPN_PROC_RADAR="20"
-  LAYOUT_X=15
-  LAYOUT_Y=40
-  NCORES_RUN_ANAL=200
 fi
 
 OBSPATH_NSSLMOSIAC=/public/data/radar/nssl/mrms/conus
@@ -106,7 +102,7 @@ readin_localization=.true.     #if true, it overwrites the "beta1_inv/ens_h/ens_
 beta1_inv=0.5                  #beata_inv is 1-ensemble_wgt
 ens_h=20                       #110
 ens_v=1                        #3
-regional_ensemble_option=5     #1 for GDAS, 5 for RRFSDAS
+regional_ensemble_option=1     #1 for GDAS, 5 for RRFSDAS
 grid_ratio_fv3=2.0             #fv3 resolution 3km, so analysis=3*2=6km
 grid_ratio_ens=3               #analysis 6km, so ensemble=6*3=18km. GDAS ensemble is 20km
 ##MEMO1: regional_ensemble_option=5 will be changed to 1 if there are not enough RRFS ensembles at the runtime.
@@ -133,7 +129,7 @@ SFCOBS_USELIST="/lfs4/BMC/amb-verif/rap_ops_mesonet_uselists"
 
 LBC_SPEC_INTVL_HRS="1"
 
-DATE_FIRST_CYCL="20230426"
+DATE_FIRST_CYCL="20230416"
 DATE_LAST_CYCL="20230831"
 CYCL_HRS=( "00" "12" )
 CYCL_HRS_SPINSTART=("03" "15")
@@ -155,7 +151,7 @@ PREEXISTING_DIR_METHOD="upgrade"
 #BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 06:00:00"
 PROD_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 01:00:00"
 #PRODLONG_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 12:00:00"
-ARCHIVE_CYCLEDEF=$PROD_CYCLEDEF
+ARCHIVE_CYCLEDEF="$PROD_CYCLEDEF"
 if [[ $DO_SPINUP == "TRUE" ]] ; then
   SPINUP_CYCLEDEF="00 03-08,15-20 ${CYCLEDAY} ${CYCLEMONTH} ${STARTYEAR} *"
 fi
@@ -182,7 +178,6 @@ DT_ATMOS=1
 NCORES_RUN_ANAL=240
 IO_LAYOUT_Y=1
 PPN_RUN_NONVARCLDANL=${IO_LAYOUT_Y}
-regional_ensemble_option=1
 
 MAXTRIES_RUN_PREPSTART="3"
 MAXTRIES_RUN_FCST="3"
@@ -206,7 +201,7 @@ START_TIME_SPINUP="02:10:00"
 START_TIME_PROD="08:20:00"
 START_TIME_LATE_ANALYSIS="08:40:00"
 START_TIME_CONVENTIONAL_SPINUP="00:40:00"
-START_TIME_CONVENTIONAL="00:50:00"
+START_TIME_CONVENTIONAL="00:40:00"
 START_TIME_NSSLMOSIAC="00:45:00"
 START_TIME_LIGHTNINGNC="00:45:00"
 START_TIME_PROCSMOKE="00:45:00"
@@ -214,14 +209,14 @@ START_TIME_PROCSMOKE="00:45:00"
 EXTRN_MDL_NAME_ICS="FV3GFS"
 EXTRN_MDL_NAME_LBCS="FV3GFS"
 
-PREDEF_GRID_NAME=RRFS_CONUS_3km
-ADDNL_OUTPUT_GRIDS=()
-TILE_LABELS="CONUS REGIONS"
-TILE_SETS="full NE,NC,NW,SE,SC,SW"
-CCPP_PHYS_SUITE="FV3_HRRR"
+PREDEF_GRID_NAME=RRFS_NA_3km
+ADDNL_OUTPUT_GRIDS=("hrrr" "rrfsak" )
+TILE_LABELS="NA"
+TILE_SETS="full"
+CCPP_PHYS_SUITE="FV3_HRRR_gf"
 
-NET="RTMA_CONUS" ##must start with "RTMA". ${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2
-TAG="RTMA_CONUS" ## used by job names
+NET="RTMA_NA" ##must start with "RTMA". ${NET}.t${cyc}z.bgdawpf${fhr}.${tmmark}.grib2
+TAG="RTMA_NA" ## used by job names
 IS_RTMA="TRUE"
 NCORES_PER_NODE=40 #kjet
 FG_ROOTDIR="/home/role.rtrr/rrfs_b_nwges" #only needed by RTMA
@@ -230,7 +225,7 @@ POST_FULL_MODEL_NAME="FV3R"
 POST_SUB_MODEL_NAME="RTMA"
 ARCHIVEDIR="/5year/BMC/wrfruc/rtma_b"
 MODEL="RTMA_B" #used by NCL
-RUN="RTMA_CONUS"
+RUN="RTMA_NA"
 #RTMA_OBS_FEED="NCO"
 #OBSPATH="/lfs4/BMC/wrfruc/gge/rtma/wcoss_obs"
 
@@ -251,7 +246,7 @@ if [[ "$MACHINE" == "wcoss2" ]]; then
 
   RESERVATION=""
   RESERVATION_POST=""
-  EXPT_BASEDIR="/lfs/h2/emc/da/noscrub/${USER}/3drtma/rtma.${version}"
+  EXPT_BASEDIR="/lfs/h2/emc/da/noscrub/${USER}/3D-RTMA/rtma.${version}"
   SERVICE_ACCOUNT=""
   HPSS_ACCOUNT="RTMA-DEV"
   PARTITION_DEFAULT=""
@@ -268,41 +263,48 @@ if [[ "$MACHINE" == "wcoss2" ]]; then
   ARCHIVE_CYCLEDEF="00 01 01 01 2100 *"
 
   OBSPATH_NSSLMOSIAC="/lfs/h1/ops/prod/dcom/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC"
-  AIRCRAFT_REJECT="/lfs/h2/emc/da/noscrub/edward.colon/NOAA_3drtma_legacy/fix/obsuselist/amdar_reject_lists"
-  SFCOBS_USELIST="/lfs/h2/emc/da/noscrub/edward.colon/NOAA_3drtma_legacy/fix/obsuselist/mesonet_uselists"
+  AIRCRAFT_REJECT="/lfs/h2/emc/da/noscrub/matthew.t.morris/FixData/obsuselist/amdar_reject_lists"
+  SFCOBS_USELIST="/lfs/h2/emc/da/noscrub/matthew.t.morris/FixData/obsuselist/mesonet_uselists"
  
   regional_ensemble_option=1
   USE_RRFSE_ENS="FALSE"
   CYCL_HRS_HYB_FV3LAM_ENS=("99")
 
   WTIME_RUN_ANAL="00:30:00"
-  PPN_RUN_ANAL="32"
-  TPP_RUN_ANAL="4"
-  NNODES_RUN_ANAL="10"
+  PPN_RUN_ANAL="8"
+  TPP_RUN_ANAL="16"
+  NNODES_RUN_ANAL="60"
+  PPN_RUN_POSTANAL="8"
+  NNODES_RUN_NONVARCLDANL="10"
+  PPN_RUN_NONVARCLDANL="32"
   PPN_RUN_FCST="64"
   TPP_RUN_FCST="2"
-  NNODES_RUN_FCST="16"
-  PPN_RUN_POST="64"
-  NNODES_RUN_POST="2"
-  MEMO_RUN_PRDGEN="80G"
-  MEMO_RUN_PROCESSBUFR="80G"
-  PPN_PROC_RADAR="128"
+  NNODES_RUN_FCST="51"
+  PPN_RUN_POST="32"
+  TPP_RUN_POST="4"
+  NNODES_RUN_POST="4"
+  PPN_RUN_PRDGEN="128"
+  MEMO_PREP_CYC="40G"
+  MEMO_RUN_NONVARCLDANL="256G"
+  MEMO_RUN_PRDGEN="256G"
+  MEMO_RUN_PROCESSBUFR="20G"
+  PPN_PROC_RADAR="64"
   NNODES_PROC_RADAR="1"
 
-  LAYOUT_X=31
-  LAYOUT_Y=32
-  WTIME_RUN_FCST="00:20:00"
+  LAYOUT_X=50
+  LAYOUT_Y=64
+  WTIME_RUN_ANAL="00:50:00"
+  WTIME_RUN_FCST="00:30:00"
   WRTCMP_write_groups="1"
-  WRTCMP_write_tasks_per_group="40"
+  WRTCMP_write_tasks_per_group="64"
 
-
-  FG_ROOTDIR="/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/nwges"
+  FG_ROOTDIR="/lfs/h2/emc/ptmp/emc.lam/rrfs/na/nwges"
   OBSPATH="/lfs/h1/ops/prod/com/obsproc/v1.1"
   ENKF_FCST="/lfs/h1/ops/prod/com/gfs/v16.3"
   LIGHTNING_ROOT="/lfs/h1/ops/prod/com/obsproc/v1.1"
 
-  STMP="/lfs/h2/emc/ptmp/${USER}/3drtma/rtma.${version}/stmp"
-  PTMP="/lfs/h2/emc/ptmp/${USER}/3drtma/rtma.${version}"
-  NWGES="/lfs/h2/emc/ptmp/${USER}/3drtma/rtma.${version}/nwges"
+  STMP="/lfs/h2/emc/ptmp/${USER}/3D-RTMA/rtma.${version}/stmp"
+  PTMP="/lfs/h2/emc/ptmp/${USER}/3D-RTMA/rtma.${version}"
+  NWGES="/lfs/h2/emc/ptmp/${USER}/3D-RTMA/rtma.${version}/nwges"
 fi
 

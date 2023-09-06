@@ -1813,7 +1813,7 @@ NNODES_RUN_ANAL="16"
 NNODES_RUN_GSIDIAG="1"
 NNODES_RUN_POSTANAL="1"
 NNODES_RUN_ENKF="90"
-NNODES_RUN_RECENTER="2"
+NNODES_RUN_RECENTER="6"
 NNODES_PROC_RADAR="2"
 NNODES_PROC_LIGHTNING="1"
 NNODES_PROC_BUFR="1"
@@ -2201,10 +2201,13 @@ DO_ENS_RADDA="FALSE"
 # USE_RRFSE_ENS:
 # Use rrfse ensemble for hybrid analysis
 #
-# DO_SMOKE_DUST
+# DO_SMOKE_DUST:
 # Flag turn on smoke and dust for RRFS-SD
 #
-# DO_NON_DA_RUN
+# USE_CLM:
+# Use CLM mode in the model
+#
+# DO_NON_DA_RUN:
 # Flag that determines whether to run non-DA case.
 #
 #-----------------------------------------------------------------------
@@ -2219,6 +2222,7 @@ DO_RADDA="FALSE"
 DO_BUFRSND="FALSE"
 USE_RRFSE_ENS="FALSE"
 DO_SMOKE_DUST="FALSE"
+USE_CLM="FALSE"
 DO_NON_DA_RUN="FALSE"
 #
 #-----------------------------------------------------------------------

@@ -53,6 +53,7 @@ elif [[ $MACHINE == "wcoss2" ]] ; then
     QUEUE_ANALYSIS="pridev"
     QUEUE_FCST="pridev"
     QUEUE_HPSS="dev_transfer"
+    QUEUE_POST="pridev"
     QUEUE_PRDGEN="pridev"
     QUEUE_GRAPHICS="pridev"
   elif [[ "${envir}" == "prod" ]]; then
@@ -60,6 +61,7 @@ elif [[ $MACHINE == "wcoss2" ]] ; then
     QUEUE_ANALYSIS="prod"
     QUEUE_FCST="prod"
     QUEUE_HPSS="prod_transfer"
+    QUEUE_POST="prod"
     QUEUE_PRDGEN="prod"
     QUEUE_GRAPHICS="prod"
   else
@@ -67,6 +69,7 @@ elif [[ $MACHINE == "wcoss2" ]] ; then
     QUEUE_ANALYSIS="dev"
     QUEUE_FCST="dev"
     QUEUE_HPSS="dev_transfer"
+    QUEUE_POST="dev"
     QUEUE_PRDGEN="dev"
     QUEUE_GRAPHICS="dev"
   fi
@@ -132,14 +135,14 @@ START_TIME_CONVENTIONAL_SPINUP="00:40:00"
 START_TIME_CONVENTIONAL="00:50:00"
 START_TIME_NSSLMOSIAC="00:55:00"
 START_TIME_LIGHTNINGNC="00:55:00"
-START_TIME_PROCSMOKE="00:55:00"
+START_TIME_PROCSMOKE="00:50:00"
 
 if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then 
   DT_ATMOS=36
   ADDNL_OUTPUT_GRIDS=()
   TILE_LABELS="CONUS REGIONS"
   TILE_SETS="full NE,NC,NW,SE,SC,SW"
-  CCPP_PHYS_SUITE="FV3_HRRR"
+  CCPP_PHYS_SUITE="FV3_HRRR_gf"
   PPN_RUN_POSTANAL="5"
 
   if [[ $MACHINE == "jet" ]] ; then
@@ -210,8 +213,8 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
     NNODES_RUN_ENKF="24"
     MEMO_RUN_PRDGEN="80G"
     MEMO_RUN_PROCESSBUFR="80G"
-    PPN_RUN_NONVARCLDANL="128"
-    NNODES_RUN_NONVARCLDANL="1"
+    PPN_RUN_NONVARCLDANL="64"
+    NNODES_RUN_NONVARCLDANL="10"
     PPN_RUN_GSIDIAG=128
 
     MAXTRIES_GET_EXTRN_ICS="1"
@@ -364,7 +367,7 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then
 
 elif [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then 
   DT_ATMOS=36
-  CCPP_PHYS_SUITE="FV3_HRRR"
+  CCPP_PHYS_SUITE="FV3_HRRR_gf"
   ADDNL_OUTPUT_GRIDS=( "hrrr" "hrrrak" )
   TILE_LABELS="NA hrrr_regions1 hrrr_regions2 hrrr_tiles1 hrrr_tiles2 hrrr_tiles3 \
     hrrr_tiles4 hrrrak_tiles"
@@ -429,6 +432,8 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then
     PPN_RUN_PRDGEN="128"
     PPN_RUN_POSTANAL="8"
     PPN_RUN_GSIDIAG=128
+    NNODES_RUN_BUFRSND="2"
+    PPN_RUN_BUFRSND="14"
 
     MAXTRIES_MAKE_ICS="1"
     MAXTRIES_MAKE_LBCS="1"
@@ -448,7 +453,7 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then
     MEMO_SAVE_INPUT="120G"                                                                                                     
     MEMO_RUN_PRDGEN="256G"
 
-    START_TIME_SPINUP="01:10:00"
+    START_TIME_SPINUP="01:05:00"
     START_TIME_PROD="02:20:00"
     START_TIME_LATE_ANALYSIS="01:20:00"
     START_TIME_CONVENTIONAL="00:45:00"
