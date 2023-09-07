@@ -3138,7 +3138,7 @@ MODULES_RUN_TASK_FP script.
         <envar><name>TMMARK</name><value>tm00</value></envar>
 
         <dependency>
-          <datadep age="00:10"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H/fcst_fv3lam/log.atm.f{{ "%03d" % postproc_long_len_hrs }}</cyclestr></datadep>
+          <datadep age="00:02"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H/fcst_fv3lam/log.atm.f000</cyclestr></datadep>
         </dependency>
 
   </task>
