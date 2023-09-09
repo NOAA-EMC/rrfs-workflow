@@ -79,15 +79,16 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-# Load modules.
+# Set environment
 #
 #-----------------------------------------------------------------------
 #
+ulimit -s unlimited
+ulimit -a
+
 case $MACHINE in
 
   "WCOSS2")
-    ulimit -s unlimited
-    ulimit -a
     export OMP_NUM_THREADS=1
     export MP_IOAGENT_CNT=all
     export MP_IO_BUFFER_SIZE=8M
@@ -100,27 +101,21 @@ case $MACHINE in
     ;;
 
   "HERA")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="srun --export=ALL"
     ;;
 
   "ORION")
-    ulimit -s unlimited
-    ulimit -a
     export OMP_NUM_THREADS=1
     export OMP_STACKSIZE=1024M
     APRUN="srun --export=ALL"
     ;;
 
   "JET")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="srun --export=ALL"
     ;;
 
   *)
-    print_err_msg_exit "\
+    err_exit "\
 Run command has not been specified for this machine:
   MACHINE = \"$MACHINE\"
   APRUN = \"$APRUN\""
@@ -264,9 +259,10 @@ cp_vrfy ${EXECdir}/upp.x .
 print_info_msg "$VERBOSE" "
 Starting post-processing for fhr = $fhr hr..."
 
-${APRUN} ./upp.x < itag || print_err_msg_exit "\
-Call to executable to run post for forecast hour $fhr returned with non-
-zero exit code."
+${APRUN} ./upp.x < itag
+export err=$?
+err_chk
+
 #
 #-----------------------------------------------------------------------
 #
@@ -323,7 +319,7 @@ elif [ ${len_fhr} -eq 9 ]; then
     fi
   fi
 else
-  print_err_msg_exit "\
+  err_exit "\
 The \${fhr} variable contains too few or too many characters:
   fhr = \"$fhr\""
 fi

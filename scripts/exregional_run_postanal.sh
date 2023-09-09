@@ -72,17 +72,17 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-# Load modules.
+# Set environment
 #
 #-----------------------------------------------------------------------
 #
+ulimit -s unlimited
+ulimit -a
+
 case $MACHINE in
 #
 "WCOSS2")
 #
-  module list
-  ulimit -s unlimited
-  ulimit -a
   export FI_OFI_RXM_SAR_LIMIT=3145728
   export OMP_STACKSIZE=500M
   export OMP_NUM_THREADS=1
@@ -91,16 +91,12 @@ case $MACHINE in
   ;;
 #
 "HERA")
-  ulimit -s unlimited
-  ulimit -a
   export OMP_NUM_THREADS=1
   export OMP_STACKSIZE=300M
   APRUN="srun --export=ALL"
   ;;
 #
 "ORION")
-  ulimit -s unlimited
-  ulimit -a
   export OMP_NUM_THREADS=1
   export OMP_STACKSIZE=1024M
   APRUN="srun --export=ALL"
@@ -109,8 +105,6 @@ case $MACHINE in
 "JET")
   export OMP_NUM_THREADS=2
   export OMP_STACKSIZE=1024M
-  ulimit -s unlimited
-  ulimit -a
   APRUN="srun --export=ALL"
   ;;
 #
@@ -201,14 +195,14 @@ EOF
 Copying the adjust soil executable to the run directory..."
     cp_vrfy ${adjustsoil_exec} adjust_soiltq.exe
   else
-    print_err_msg_exit "\
+    err_exit "\
 The adjust_soiltq.exe specified in ${EXECdir} does not exist.
 Build adjust_soiltq.exe and rerun."
   fi
 
-  $APRUN ./adjust_soiltq.exe || print_err_msg_exit "\
-  Call to executable to run adjust soil returned with nonzero exit code."
-
+  $APRUN ./adjust_soiltq.exe
+  export err=$?
+  err_chk
 fi
 
 #
@@ -238,14 +232,14 @@ EOF
 Copying the update bc executable to the run directory..."
     cp_vrfy ${update_bc_exec} update_bc.exe 
   else
-    print_err_msg_exit "\
+    err_exit "\
 The update_bc.exe specified in ${EXECdir} does not exist.
 Build update_bc.exe and rerun."
   fi
 
-  $APRUN ./update_bc.exe || print_err_msg_exit "\
-  Call to executable to run update bc returned with nonzero exit code."
-
+  $APRUN ./update_bc.exe
+  export err=$?
+  err_chk
 fi
 
 #

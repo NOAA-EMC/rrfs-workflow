@@ -117,7 +117,7 @@ case $MACHINE in
     ;;
 
   *)
-    print_err_msg_exit "\
+    err_exit "\
 Run command has not been specified for this machine:
   MACHINE = \"$MACHINE\"
   APRUN = \"$APRUN\""
@@ -154,7 +154,7 @@ symlink="grid_spec.nc"
 if [ -f "${target}" ]; then
   ln_vrfy -sf ${relative_or_null} $target $symlink
 else
-  print_err_msg_exit "\
+  err_exit "\
 Cannot create symlink because target does not exist:
   target = \"$target\""
 fi
@@ -168,7 +168,7 @@ symlink="${grid_fn}"
 if [ -f "${target}" ]; then
   ln_vrfy -sf ${relative_or_null} $target $symlink
 else
-  print_err_msg_exit "\
+  err_exit "\
 Cannot create symlink because target does not exist:
   target = \"$target\""
 fi
@@ -190,7 +190,7 @@ symlink="grid.tile${TILE_RGNL}.halo${NH4}.nc"
 if [ -f "${target}" ]; then
   ln_vrfy -sf ${relative_or_null} $target $symlink
 else
-  print_err_msg_exit "\
+  err_exit "\
 Cannot create symlink because target does not exist:
   target = \"$target\""
 fi
@@ -203,7 +203,7 @@ symlink="oro_data.nc"
 if [ -f "${target}" ]; then
   ln_vrfy -sf ${relative_or_null} $target $symlink
 else
-  print_err_msg_exit "\
+  err_exit "\
 Cannot create symlink because target does not exist:
   target = \"$target\""
 fi
@@ -226,7 +226,7 @@ symlink="oro_data.tile${TILE_RGNL}.halo${NH4}.nc"
 if [ -f "${target}" ]; then
   ln_vrfy -sf ${relative_or_null} $target $symlink
 else
-  print_err_msg_exit "\
+  err_exit "\
 Cannot create symlink because target does not exist:
   target = \"$target\""
 fi
@@ -251,7 +251,7 @@ if [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ] || \
     if [ -f "${target}" ]; then
       ln_vrfy -sf ${relative_or_null} $target $symlink
     else
-      print_err_msg_exit "\
+      err_exit "\
 Cannot create symlink because target does not exist:
   target = \"${target}\"
   symlink = \"${symlink}\""
@@ -308,7 +308,7 @@ if [ -f "${target}.0000" ]; then
     if [ -f "${target}.${iii}" ]; then
       ln_vrfy -sf ${relative_or_null} $target.${iii} $symlink.${iii}
     else
-      print_err_msg_exit "\
+      err_exit "\
       Cannot create symlink because target does not exist:
       target = \"$target.$iii\""
     fi
@@ -317,7 +317,7 @@ else
   if [ -f "${target}" ]; then
     ln_vrfy -sf ${relative_or_null} $target $symlink
   else
-    print_err_msg_exit "\
+    err_exit "\
     Cannot create symlink because target does not exist:
     target = \"$target\""
   fi
@@ -344,7 +344,7 @@ else
     if [ -f "${target}" ]; then
       ln_vrfy -sf ${relative_or_null} $target $symlink
     else
-      print_err_msg_exit "\
+      err_exit "\
       Cannot create symlink because target does not exist:
       target = \"$target\""
     fi
@@ -353,7 +353,7 @@ else
       print_info_msg "$VERBOSE" "
       sfc_data.nc is available at INPUT directory"
     else
-      print_err_msg_exit "\
+      err_exit "\
       sfc_data.nc is not available for cycling"
     fi
   fi
@@ -374,7 +374,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then
     ln_vrfy -snf ${smokefile} ${run_dir}/INPUT/SMOKE_RRFS_data.nc
   else
     ln_vrfy -snf ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/dummy_24hr_smoke.nc ${run_dir}/INPUT/SMOKE_RRFS_data.nc
-    echo "smoke file is not available, use dummy_24hr_smoke.nc instead"
+    echo "WARNING: Smoke file is not available, use dummy_24hr_smoke.nc instead"
   fi
 fi
 #
@@ -413,7 +413,7 @@ for (( i=0; i<${num_symlinks}; i++ )); do
   if [ -f "${target}" ]; then
     ln_vrfy -sf ${relative_or_null} $target $symlink
   else
-    print_err_msg_exit "\
+    err_exit "\
   Cannot create symlink because target does not exist:
     target = \"$target\""
   fi
@@ -469,7 +469,7 @@ if [ ${BKTYPE} -eq 0 ]; then
   # cycling, using namelist for cycling forecast
   if [ "${STOCH}" == "TRUE" ]; then
     cp_vrfy ${FV3_NML_RESTART_STOCH_FP} ${run_dir}/${FV3_NML_FN}
-   else
+  else
     cp_vrfy ${FV3_NML_RESTART_FP} ${run_dir}/${FV3_NML_FN}
   fi
 else
@@ -513,10 +513,9 @@ python3 $USHdir/create_model_configure_file.py \
   --restart_hrs="${RESTART_HRS}"
 export err=$?
 if [ $err -ne 0 ]; then
-  message_txt="Call to function to create the model_configure file for
+  err_exit "Call to function to create the model_configure file for
 the current cycle's (cdate) run directory (DATA) failed:
   DATA = \"${run_dir}\""
-  err_exit "${message_txt}"
 fi
 #
 #-----------------------------------------------------------------------
@@ -531,10 +530,9 @@ python3 $USHdir/create_diag_table_file.py \
   --run-dir ${run_dir}
 export err=$?
 if [ $err -ne 0 ]; then
-  message_txt="Call to function to create the diag_table file for
+  err_exit "Call to function to create the diag_table file for
 the current cycle's (cdate) run directory (DATA) failed:
   DATA = \"${run_dir}\""
-  err_exit "${message_txt}"
 fi
 #
 #-----------------------------------------------------------------------
@@ -549,10 +547,9 @@ python3 $USHdir/create_nems_configure_file.py \
   --run-dir ${run_dir} 
 export err=$?
 if [ $err -ne 0 ]; then
-  message_txt="Call to function to create the NEMS configuration file for
+  err_exit "Call to function to create the NEMS configuration file for
 the current cycle's (cdate) run directory (DATA) failed:
   DATA = \"${run_dir}\""
-  err_exit "${message_txt}"
 fi
 #
 #-----------------------------------------------------------------------
@@ -593,15 +590,16 @@ if [ -f ${FV3_EXEC_FP} ]; then
   Copying the fv3lam  executable to the run directory..."
   cp_vrfy ${FV3_EXEC_FP} ${run_dir}/ufs_model
 else
-  print_err_msg_exit "\
+  err_exit "\
  The GSI executable specified in FV3_EXEC_FP does not exist:
    FV3_EXEC_FP = \"$FV3_EXEC_FP\"
  Build FV3LAM and rerun."
 fi
 
-$APRUN ${run_dir}/ufs_model || print_err_msg_exit "\
-Call to executable to run FV3-LAM forecast returned with nonzero exit
-code."
+$APRUN ${run_dir}/ufs_model
+export err=$?
+err_chk
+
 #
 #-----------------------------------------------------------------------
 #

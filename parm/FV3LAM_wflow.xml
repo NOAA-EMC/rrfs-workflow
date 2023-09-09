@@ -71,8 +71,6 @@ Workflow task names.
 <!ENTITY ENKF_RADAR_REF_TN    "enkf_radarref">
 <!ENTITY RUN_RECENTER_TN      "run_recenter">
 <!ENTITY RUN_BUFR_TN          "run_bufr">
-<!ENTITY RUN_NCL_TN           "run_ncl">
-<!ENTITY RUN_NCL_ZIP_TN       "run_ncl_zip">
 <!ENTITY CLEAN_TN             "run_clean">
 <!ENTITY ARCHIVE_TN           "run_archive">
 <!ENTITY RUN_SMOKE_TN         "run_proc_smoke">
