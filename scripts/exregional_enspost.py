@@ -1,13 +1,5 @@
 ###################################################
-#                                                 #
 # RRFS-E Ensemble Post Processing                 #
-#                                                 #
-# Trevor Alcott                                   #
-# 28 Apr 2017                                     #
-#                                                 #
-# Wrapper: ./pypost.ksh                           #
-# User options: ../../static/UPP/pypost_config.py #
-#                                                 #
 ###################################################
 
 import os, sys, time, math, pygrib

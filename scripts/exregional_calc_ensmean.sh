@@ -70,15 +70,16 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-# Load modules.
+# Set environment
 #
+
+ulimit -s unlimited
+ulimit -a
+
 case $MACHINE in
 #
 "WCOSS2")
 #
-  module list
-  ulimit -s unlimited
-  ulimit -a
   export FI_OFI_RXM_SAR_LIMIT=3145728
   export OMP_STACKSIZE=500M
   export OMP_NUM_THREADS=1
@@ -87,27 +88,18 @@ case $MACHINE in
   ;;
 #
 "HERA")
-  module load nco/4.9.3
-  ulimit -s unlimited
-  ulimit -v unlimited
-  ulimit -a
   export OMP_NUM_THREADS=1
 #  export OMP_STACKSIZE=300M
   APRUN="srun"
   ;;
 #
 "ORION")
-  ulimit -s unlimited
-  ulimit -a
   export OMP_NUM_THREADS=1
   export OMP_STACKSIZE=1024M
   APRUN="srun"
   ;;
 #
 "JET")
-  module load nco/4.9.3
-  ulimit -s unlimited
-  ulimit -a
   APRUN="srun"
   ;;
 #
@@ -216,14 +208,15 @@ if [ -f ${ENSMEAN_EXEC} ]; then
 Copying the ensemble mean executable to the run directory..."
   cp_vrfy ${ENSMEAN_EXEC} ${ensmeandir}/.
 else
-  print_err_msg_exit "\
+  err_exit "\
 The ensemble mean executable specified in ENSMEAN_EXEC does not exist:
   ENSMEAN_EXEC = \"${ENSMEAN_EXEC}\"
 Build ENSMEAN_EXEC and rerun." 
 fi
 
-${APRUN} ${ENSMEAN_EXEC}  < namelist.ens > stdout_ensmean 2>&1 || print_err_msg_exit "\
-Call to executable to calculate ensemble ensmean returned with nonzero exit code."
+${APRUN} ${ENSMEAN_EXEC}  < namelist.ens > stdout_ensmean 2>&1
+export err=$?
+err_chk
 
 cp stdout_ensmean ${comout}/stdout.t${HH}z.ensmean
 #

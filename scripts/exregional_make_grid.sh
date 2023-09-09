@@ -93,29 +93,24 @@ export OMP_STACKSIZE=1024m
 #
 #-----------------------------------------------------------------------
 #
+ulimit -s unlimited
+ulimit -a
+
 case $MACHINE in
 
   "WCOSS2")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="time"
     ;;
 
   "HERA")
-    ulimit -s unlimited
-    ulimit -a    
     APRUN="time"
     ;;
 
   "ORION")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="time"
     ;;
 
   "JET")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="time"
     ;;
 
