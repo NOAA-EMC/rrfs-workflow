@@ -16,6 +16,8 @@ STMP="/scratch2/NCEPDEV/stmp3/${USER}/test_da"
 PTMP="/scratch2/NCEPDEV/stmp3/${USER}/test_da"
 
 EXTRN_MDL_DATE_JULIAN="TRUE"
+USE_CRON_TO_RELAUNCH="TRUE"
+CRON_RELAUNCH_INTVL_MNTS="03"
 ################################################################
 
 PREDEF_GRID_NAME=RRFS_CONUS_3km
