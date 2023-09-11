@@ -3,6 +3,15 @@ ACCOUNT="fv3-cam"
 HPSS_ACCOUNT="fv3-cam"
 EXPT_SUBDIR="test_nonDA_community"
 
+envir="test"
+NET="test"
+TAG="c0v00"
+MODEL="test"
+RUN="test"
+
+STMP="/work/noaa/fv3-cam/${USER}/test_nonDA"
+PTMP="/work/noaa/fv3-cam/${USER}/test_nonDA"
+
 VERBOSE="TRUE"
 PRINT_ESMF="TRUE"
 

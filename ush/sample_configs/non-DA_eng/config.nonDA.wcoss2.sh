@@ -3,6 +3,15 @@ ACCOUNT="RRFS-DEV"
 HPSS_ACCOUNT="RRFS-DEV"
 EXPT_SUBDIR="test_nonDA_community"
 
+envir="test"
+NET="test"
+TAG="c0v00"
+MODEL="test"
+RUN="test"
+
+STMP="/lfs/h2/emc/stmp/${USER}/test_da"
+PTMP="/lfs/h2/emc/ptmp/${USER}/test_da"
+
 VERBOSE="TRUE"
 PRINT_ESMF="TRUE"
 

@@ -3,6 +3,15 @@ ACCOUNT="account"
 HPSS_ACCOUNT="account"
 EXPT_SUBDIR="test_nonDA_community"
 
+envir="test"
+NET="test"
+TAG="c0v00"
+MODEL="test"
+RUN="test"
+
+STMP="/lfs4/BMC/nrtrr/NCO_dirs/stmp"
+PTMP="/lfs4/BMC/nrtrr/NCO_dirs/ptmp"
+
 VERBOSE="TRUE"
 PRINT_ESMF="TRUE"
 
