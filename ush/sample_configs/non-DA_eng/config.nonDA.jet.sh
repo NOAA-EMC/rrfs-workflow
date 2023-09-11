@@ -9,8 +9,8 @@ TAG="c0v00"
 MODEL="test"
 RUN="test"
 
-STMP="/lfs4/BMC/nrtrr/NCO_dirs/stmp"
-PTMP="/lfs4/BMC/nrtrr/NCO_dirs/ptmp"
+STMP="/lfs4/BMC/nrtrr/NCO_dirs/stmp/test_nonDA"
+PTMP="/lfs4/BMC/nrtrr/NCO_dirs/ptmp/test_nonDA"
 
 VERBOSE="TRUE"
 PRINT_ESMF="TRUE"

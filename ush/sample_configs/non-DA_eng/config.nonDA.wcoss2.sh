@@ -9,8 +9,8 @@ TAG="c0v00"
 MODEL="test"
 RUN="test"
 
-STMP="/lfs/h2/emc/stmp/${USER}/test_da"
-PTMP="/lfs/h2/emc/ptmp/${USER}/test_da"
+STMP="/lfs/h2/emc/stmp/${USER}/test_nonDA"
+PTMP="/lfs/h2/emc/ptmp/${USER}/test_nonDA"
 
 VERBOSE="TRUE"
 PRINT_ESMF="TRUE"
