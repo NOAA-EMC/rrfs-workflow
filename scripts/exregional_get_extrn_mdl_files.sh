@@ -221,9 +221,7 @@ fi
 extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" )")"
 
 if [ "${data_src}" = "disk" ]; then
-
-  if [ "${RUN_ENVIR}" = "nco" ]; then
-    print_info_msg "
+  print_info_msg "
 Creating links in staging directory (extrn_mdl_staging_dir) to external 
 model files on disk (extrn_mdl_fns_on_disk) in the source directory 
 (extrn_mdl_source_dir):
@@ -231,42 +229,15 @@ model files on disk (extrn_mdl_fns_on_disk) in the source directory
   extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
   extrn_mdl_fns_on_disk = ${extrn_mdl_fns_on_disk_str}"
 
-    if [ "${ics_or_lbcs}" = "ICS" ]; then
-      if [ ! -z ${extrn_mdl_source_dir2} ]; then
-        cp_vrfy ${extrn_mdl_fps_on_disk[@]} ${extrn_mdl_staging_dir}/.
-        more ${extrn_mdl_fps_on_disk2[@]} >>  ${extrn_mdl_staging_dir}/${extrn_mdl_fns_on_disk[@]}
-      else
-        ln_vrfy -sf -t ${extrn_mdl_staging_dir} ${extrn_mdl_fps_on_disk[@]}
-      fi
+  if [ "${ics_or_lbcs}" = "ICS" ]; then
+    if [ ! -z ${extrn_mdl_source_dir2} ]; then
+      cp_vrfy ${extrn_mdl_fps_on_disk[@]} ${extrn_mdl_staging_dir}/.
+      more ${extrn_mdl_fps_on_disk2[@]} >>  ${extrn_mdl_staging_dir}/${extrn_mdl_fns_on_disk[@]}
     else
       ln_vrfy -sf -t ${extrn_mdl_staging_dir} ${extrn_mdl_fps_on_disk[@]}
     fi
-
   else
-    #
-    # If the external model files are user-staged, then simply link to 
-    # them.  Otherwise, if they are on the system disk, copy them to the
-    # staging directory.
-    #
-    if [ "${use_user_staged_extrn_files}" = "TRUE" ]; then
-      print_info_msg "
-Creating symlinks in the staging directory (extrn_mdl_staging_dir) to the
-external model files on disk (extrn_mdl_fns_on_disk) in the source directory 
-(extrn_mdl_source_dir):
-  extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
-  extrn_mdl_fns_on_disk = ${extrn_mdl_fns_on_disk_str}
-  extrn_mdl_staging_dir = \"${extrn_mdl_staging_dir}\""
-      ln_vrfy -sf -t ${extrn_mdl_staging_dir} ${extrn_mdl_fps_on_disk[@]}
-    else
-      print_info_msg "
-Copying external model files on disk (extrn_mdl_fns_on_disk) from source
-directory (extrn_mdl_source_dir) to staging directory (extrn_mdl_staging_dir):
-  extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
-  extrn_mdl_fns_on_disk = ${extrn_mdl_fns_on_disk_str}
-  extrn_mdl_staging_dir = \"${extrn_mdl_staging_dir}\""
-      cp_vrfy ${extrn_mdl_fps_on_disk[@]} ${extrn_mdl_staging_dir}
-    fi
-
+    ln_vrfy -sf -t ${extrn_mdl_staging_dir} ${extrn_mdl_fps_on_disk[@]}
   fi
 #
 #-----------------------------------------------------------------------

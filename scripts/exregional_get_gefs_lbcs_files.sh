@@ -1,5 +1,5 @@
 #!/bin/bash
-set +x
+
 #
 #-----------------------------------------------------------------------
 #
@@ -17,7 +17,7 @@ set +x
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -159,9 +159,7 @@ data_src="disk"
 #
 extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" )")"
 
-if [ "${RUN_ENVIR}" = "nco" ]; then
-
-    print_info_msg "
+print_info_msg "
 Creating links in staging directory (extrn_mdl_staging_dir) to external 
 model files on disk (extrn_mdl_fns_on_disk) in the source directory 
 (extrn_mdl_source_dir):
@@ -169,53 +167,28 @@ model files on disk (extrn_mdl_fns_on_disk) in the source directory
   extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
   extrn_mdl_fns_on_disk = ${extrn_mdl_fns_on_disk_str}"
 
- length=${#extrn_mdl_fps_on_disk[@]}
+length=${#extrn_mdl_fps_on_disk[@]}
 
-  for (( j=0; j<length; j++ ));
-  do
-    fps=${extrn_mdl_fps_on_disk[$j]}
-    fps2=${extrn_mdl_fps_on_disk2[$j]}
-    fps_name=${extrn_mdl_fns_on_disk[$j]}
-    if [ -f "$fps" ]; then
-      #
-      # Increment the counter that keeps track of the number of external
-      # model files found on disk and print out an informational message.
-      #
-      cp_vrfy ${fps} ${extrn_mdl_staging_dir}/${fps_name}
-      if [ -f "$fps2" ]; then
-        more ${fps2} >>  ${extrn_mdl_staging_dir}/${fps_name}
-      fi
+for (( j=0; j<length; j++ ));
+do
+  fps=${extrn_mdl_fps_on_disk[$j]}
+  fps2=${extrn_mdl_fps_on_disk2[$j]}
+  fps_name=${extrn_mdl_fns_on_disk[$j]}
+  if [ -f "$fps" ]; then
+    #
+    # Increment the counter that keeps track of the number of external
+    # model files found on disk and print out an informational message.
+    #
+    cp_vrfy ${fps} ${extrn_mdl_staging_dir}/${fps_name}
+    if [ -f "$fps2" ]; then
+      more ${fps2} >>  ${extrn_mdl_staging_dir}/${fps_name}
+    fi
 
-     print_info_msg "
+    print_info_msg "
 File fps exists on disk:
   fps = \"$fps\""
-    fi
-  done
-else
-    #
-    # If the external model files are user-staged, then simply link to 
-    # them.  Otherwise, if they are on the system disk, copy them to the
-    # staging directory.
-    #
-    if [ "${use_user_staged_extrn_files}" = "TRUE" ]; then
-      print_info_msg "
-Creating symlinks in the staging directory (extrn_mdl_staging_dir) to the
-external model files on disk (extrn_mdl_fns_on_disk) in the source directory 
-(extrn_mdl_source_dir):
-  extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
-  extrn_mdl_fns_on_disk = ${extrn_mdl_fns_on_disk_str}
-  extrn_mdl_staging_dir = \"${extrn_mdl_staging_dir}\""
-      ln_vrfy -sf -t ${extrn_mdl_staging_dir} ${extrn_mdl_fps_on_disk[@]}
-    else
-      print_info_msg "
-Copying external model files on disk (extrn_mdl_fns_on_disk) from source
-directory (extrn_mdl_source_dir) to staging directory (extrn_mdl_staging_dir):
-  extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
-  extrn_mdl_fns_on_disk = ${extrn_mdl_fns_on_disk_str}
-  extrn_mdl_staging_dir = \"${extrn_mdl_staging_dir}\""
-      cp_vrfy ${extrn_mdl_fps_on_disk[@]} ${extrn_mdl_staging_dir}
-    fi
-fi
+  fi
+done
 #
 #-----------------------------------------------------------------------
 #

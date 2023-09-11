@@ -27,7 +27,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -74,22 +74,19 @@ else
 fi
 rm -fr ${ensmeandir}
 mkdir_vrfy -p ${ensmeandir}
-
+#
 #-----------------------------------------------------------------------
 #
 # create COMOUT directory
 #
 #-----------------------------------------------------------------------
-
-if [ "${RUN_ENVIR}" = "nco" ]; then
-  if [ ${CYCLE_TYPE} == "spinup" ]; then
-    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
-  else
-    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
-  fi
-  mkdir_vrfy -p "${COMOUT}"
+#
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+else
+  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
 fi
-
+mkdir_vrfy -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #

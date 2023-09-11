@@ -43,7 +43,6 @@ if [[ $MACHINE == "hera" ]] ; then
 fi
 
 VERBOSE="TRUE"
-RUN_ENVIR="nco"
 QUILTING="TRUE"
 netcdf_diag=.true.
 binary_diag=.false.

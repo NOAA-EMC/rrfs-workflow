@@ -124,14 +124,6 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Make sure that RUN_ENVIR is set to a valid value.
-#
-#-----------------------------------------------------------------------
-#
-check_var_valid_value "RUN_ENVIR" "valid_vals_RUN_ENVIR"
-#
-#-----------------------------------------------------------------------
-#
 # Make sure that VERBOSE is set to a valid value.
 #
 #-----------------------------------------------------------------------
@@ -1113,20 +1105,15 @@ if [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ] || \
    [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR_gf" ]  || \
    [ "${CCPP_PHYS_SUITE}" = "FV3_RAP" ]  || \
    [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_v15_thompson_mynn_lam3km" ]; then
-#
-# If in NCO mode, make sure that GWD_HRRRsuite_BASEDIR is set equal to  
-# FIXLAM_NCO_BASEDIR
-#
-  if [ "${RUN_ENVIR}" = "nco" ]; then
+  #
+  # Make sure that GWD_HRRRsuite_BASEDIR is set equal to FIXLAM_NCO_BASEDIR
+  #
+  if [ "${GWD_HRRRsuite_BASEDIR}" != "${FIXLAM_NCO_BASEDIR}" ]; then
+    gwd_hrrrsuite_basedir_orig="${GWD_HRRRsuite_BASEDIR}"
+    GWD_HRRRsuite_BASEDIR="${FIXLAM_NCO_BASEDIR}"
 
-    if [ "${GWD_HRRRsuite_BASEDIR}" != "${FIXLAM_NCO_BASEDIR}" ]; then
-
-      gwd_hrrrsuite_basedir_orig="${GWD_HRRRsuite_BASEDIR}"
-      GWD_HRRRsuite_BASEDIR="${FIXLAM_NCO_BASEDIR}"
-
-      if [ ! -z "${gwd_hrrrsuite_basedir_orig}" ]; then
-        print_err_msg_exit "
-When RUN_ENVIR is set to \"nco\", the workflow assumes that the base 
+    if [ ! -z "${gwd_hrrrsuite_basedir_orig}" ]; then
+      print_err_msg_exit "The workflow assumes that the base 
 directory (GWD_HRRRsuite_BASEDIR) under which the grid-specific 
 subdirectories containing the gravity wave drag-related orography 
 statistics files for the FV3_HRRR/FV3_RAP suites are located is the same 
@@ -1136,10 +1123,7 @@ files are located.  Currently, this is not the case:
   FIXLAM_NCO_BASEDIR = \"${FIXLAM_NCO_BASEDIR}\"
 Resetting GWD_HRRRsuite_BASEDIR to FIXLAM_NCO_BASEDIR.  Reset value is:
   GWD_HRRRsuite_BASEDIR = \"${GWD_HRRRsuite_BASEDIR}\""
-      fi
-
     fi
-
   fi
 #
 # Check that GWD_HRRRsuite_BASEDIR exists and is a directory.
@@ -1232,9 +1216,7 @@ check_for_preexist_dir_file "$EXPTDIR" "${PREEXISTING_DIR_METHOD}"
 #
 #-----------------------------------------------------------------------
 #
-# Set other directories, some of which may depend on EXPTDIR (depending
-# on whether we're running in NCO or community mode, i.e. whether RUN_ENVIR 
-# is set to "nco" or "community").  Definitions:
+# Set other directories, Definitions:
 #
 # LOG_BASEDIR:
 # Base directory in which the log files from the workflow tasks will be placed.
@@ -1281,8 +1263,6 @@ check_for_preexist_dir_file "$EXPTDIR" "${PREEXISTING_DIR_METHOD}"
 #
 #   $COMROOT/$NET/$envir
 #
-# COMOUT_BASEDIR is not used by the workflow in community mode.
-#
 #-----------------------------------------------------------------------
 #
 
@@ -1295,26 +1275,18 @@ FIXsmokedust="${EXPTDIR}/fix_smoke_dust"
 FIXbufrsnd="${EXPTDIR}/fix_bufrsnd"
 SST_ROOT="${SST_ROOT}"
 
-if [ "${RUN_ENVIR}" = "nco" ]; then
-  CYCLE_BASEDIR="$STMP"
-  check_for_preexist_dir_file "${CYCLE_BASEDIR}" "${PREEXISTING_DIR_METHOD}"
-  ENSCTRL_CYCLE_BASEDIR="${ENSCTRL_STMP}"
-  COMROOT="$PTMP"
-  ENSCTRL_COMROOT="${ENSCTRL_PTMP}"
-  COMOUT_BASEDIR="$COMROOT/prod"
-  ENSCTRL_COMOUT_BASEDIR="${ENSCTRL_COMROOT}/prod"
-  ENSCTRL_COMOUT_DIR="${ENSCTRL_COMOUT_BASEDIR}/${RUN_ensctrl}.@Y@m@d"
-  NWGES_BASEDIR="$NWGES"
-  ENSCTRL_NWGES_BASEDIR="${ENSCTRL_NWGES}"
-  RRFSE_NWGES_BASEDIR="${RRFSE_NWGES}"
-  LOG_BASEDIR="${COMROOT}/logs"
-else
-  CYCLE_BASEDIR="$EXPTDIR"
-  COMROOT=""
-  COMOUT_BASEDIR=""
-  NWGES_BASEDIR="$CYCLE_BASEDIR"
-  LOG_BASEDIR="${EXPTDIR}/log"
-fi
+CYCLE_BASEDIR="$STMP"
+check_for_preexist_dir_file "${CYCLE_BASEDIR}" "${PREEXISTING_DIR_METHOD}"
+ENSCTRL_CYCLE_BASEDIR="${ENSCTRL_STMP}"
+COMROOT="$PTMP"
+ENSCTRL_COMROOT="${ENSCTRL_PTMP}"
+COMOUT_BASEDIR="$COMROOT/prod"
+ENSCTRL_COMOUT_BASEDIR="${ENSCTRL_COMROOT}/prod"
+ENSCTRL_COMOUT_DIR="${ENSCTRL_COMOUT_BASEDIR}/${RUN_ensctrl}.@Y@m@d"
+NWGES_BASEDIR="$NWGES"
+ENSCTRL_NWGES_BASEDIR="${ENSCTRL_NWGES}"
+RRFSE_NWGES_BASEDIR="${RRFSE_NWGES}"
+LOG_BASEDIR="${COMROOT}/logs"
 #
 #-----------------------------------------------------------------------
 #
@@ -1603,189 +1575,61 @@ LOAD_MODULES_RUN_TASK_FP="$USHdir/load_modules_run_task.sh"
 #
 #----------------------------------------------------------------------
 #
-if [ "${RUN_ENVIR}" = "nco" ]; then
-
-  nco_fix_dir="${FIXLAM_NCO_BASEDIR}/${PREDEF_GRID_NAME}"
-  if [ ! -d "${nco_fix_dir}" ]; then
-    print_err_msg_exit "\
+nco_fix_dir="${FIXLAM_NCO_BASEDIR}/${PREDEF_GRID_NAME}"
+if [ ! -d "${nco_fix_dir}" ]; then
+  print_err_msg_exit "\
 The directory (nco_fix_dir) that should contain the pregenerated grid,
 orography, and surface climatology files does not exist:
   nco_fix_dir = \"${nco_fix_dir}\""
-  fi
+fi
 
-  if [ "${RUN_TASK_MAKE_GRID}" = "TRUE" ] || \
-     [ "${RUN_TASK_MAKE_GRID}" = "FALSE" -a \
-       "${GRID_DIR}" != "${nco_fix_dir}" ]; then
-
-    msg="
-When RUN_ENVIR is set to \"nco\", the workflow assumes that pregenerated
-grid files already exist in the directory 
-
-  \${FIXLAM_NCO_BASEDIR}/\${PREDEF_GRID_NAME}
-
-where
-
-  FIXLAM_NCO_BASEDIR = \"${FIXLAM_NCO_BASEDIR}\"
-  PREDEF_GRID_NAME = \"${PREDEF_GRID_NAME}\"
-
-Thus, the MAKE_GRID_TN task must not be run (i.e. RUN_TASK_MAKE_GRID must 
-be set to \"FALSE\"), and the directory in which to look for the grid 
-files (i.e. GRID_DIR) must be set to the one above.  Current values for 
-these quantities are:
-
-  RUN_TASK_MAKE_GRID = \"${RUN_TASK_MAKE_GRID}\"
-  GRID_DIR = \"${GRID_DIR}\"
-
-Resetting RUN_TASK_MAKE_GRID to \"FALSE\" and GRID_DIR to the one above.
-Reset values are:
-"
-
-    RUN_TASK_MAKE_GRID="FALSE"
-    GRID_DIR="${nco_fix_dir}"
-
-    msg="$msg""
-  RUN_TASK_MAKE_GRID = \"${RUN_TASK_MAKE_GRID}\"
-  GRID_DIR = \"${GRID_DIR}\"
-"
-
-    print_info_msg "$msg"
-
-  fi
-
-  if [ "${RUN_TASK_MAKE_OROG}" = "TRUE" ] || \
-     [ "${RUN_TASK_MAKE_OROG}" = "FALSE" -a \
-       "${OROG_DIR}" != "${nco_fix_dir}" ]; then
-
-    msg="
-When RUN_ENVIR is set to \"nco\", the workflow assumes that pregenerated
-orography files already exist in the directory 
-
-  \${FIXLAM_NCO_BASEDIR}/\${PREDEF_GRID_NAME}
-
-where
-
-  FIXLAM_NCO_BASEDIR = \"${FIXLAM_NCO_BASEDIR}\"
-  PREDEF_GRID_NAME = \"${PREDEF_GRID_NAME}\"
-
-Thus, the MAKE_OROG_TN task must not be run (i.e. RUN_TASK_MAKE_OROG must 
-be set to \"FALSE\"), and the directory in which to look for the orography 
-files (i.e. OROG_DIR) must be set to the one above.  Current values for 
-these quantities are:
-
-  RUN_TASK_MAKE_OROG = \"${RUN_TASK_MAKE_OROG}\"
-  OROG_DIR = \"${OROG_DIR}\"
-
-Resetting RUN_TASK_MAKE_OROG to \"FALSE\" and OROG_DIR to the one above.
-Reset values are:
-"
-
-    RUN_TASK_MAKE_OROG="FALSE"
-    OROG_DIR="${nco_fix_dir}"
-
-    msg="$msg""
-  RUN_TASK_MAKE_OROG = \"${RUN_TASK_MAKE_OROG}\"
-  OROG_DIR = \"${OROG_DIR}\"
-"
-
-    print_info_msg "$msg"
-
-  fi
-
-  if [ "${RUN_TASK_MAKE_SFC_CLIMO}" = "TRUE" ] || \
-     [ "${RUN_TASK_MAKE_SFC_CLIMO}" = "FALSE" -a \
-       "${SFC_CLIMO_DIR}" != "${nco_fix_dir}" ]; then
-
-    msg="
-When RUN_ENVIR is set to \"nco\", the workflow assumes that pregenerated
-surface climatology files already exist in the directory 
-
-  \${FIXLAM_NCO_BASEDIR}/\${PREDEF_GRID_NAME}
-
-where
-
-  FIXLAM_NCO_BASEDIR = \"${FIXLAM_NCO_BASEDIR}\"
-  PREDEF_GRID_NAME = \"${PREDEF_GRID_NAME}\"
-
-Thus, the MAKE_SFC_CLIMO_TN task must not be run (i.e. RUN_TASK_MAKE_SFC_CLIMO 
-must be set to \"FALSE\"), and the directory in which to look for the 
-surface climatology files (i.e. SFC_CLIMO_DIR) must be set to the one 
-above.  Current values for these quantities are:
-
-  RUN_TASK_MAKE_SFC_CLIMO = \"${RUN_TASK_MAKE_SFC_CLIMO}\"
-  SFC_CLIMO_DIR = \"${SFC_CLIMO_DIR}\"
-
-Resetting RUN_TASK_MAKE_SFC_CLIMO to \"FALSE\" and SFC_CLIMO_DIR to the 
-one above.  Reset values are:
-"
-
-    RUN_TASK_MAKE_SFC_CLIMO="FALSE"
-    SFC_CLIMO_DIR="${nco_fix_dir}"
-
-    msg="$msg""
-  RUN_TASK_MAKE_SFC_CLIMO = \"${RUN_TASK_MAKE_SFC_CLIMO}\"
-  SFC_CLIMO_DIR = \"${SFC_CLIMO_DIR}\"
-"
-
-    print_info_msg "$msg"
-
-  fi
-#
-#-----------------------------------------------------------------------
-#
-# Now consider community mode.
-#
-#-----------------------------------------------------------------------
-#
-else
 #
 # If RUN_TASK_MAKE_GRID is set to "FALSE", the workflow will look for 
-# the pregenerated grid files in GRID_DIR.  In this case, make sure that 
-# GRID_DIR exists.  Otherwise, set it to a predefined location under the 
+# the pregenerated grid files in GRID_DIR. In this case, make sure that 
+# GRID_DIR exists. Otherwise, set it to a predefined location under the 
 # experiment directory (EXPTDIR).
 #
-  if [ "${RUN_TASK_MAKE_GRID}" = "FALSE" ]; then
-    if [ ! -d "${GRID_DIR}" ]; then
-      print_err_msg_exit "\
+if [ "${RUN_TASK_MAKE_GRID}" = "FALSE" ]; then
+  if [ ! -d "${GRID_DIR}" ]; then
+    print_err_msg_exit "\
 The directory (GRID_DIR) that should contain the pregenerated grid files 
 does not exist:
   GRID_DIR = \"${GRID_DIR}\""
-    fi
-  else
-    GRID_DIR="$EXPTDIR/grid"
   fi
+else
+  GRID_DIR="$EXPTDIR/grid"
+fi
 #
 # If RUN_TASK_MAKE_OROG is set to "FALSE", the workflow will look for 
 # the pregenerated orography files in OROG_DIR.  In this case, make sure 
 # that OROG_DIR exists.  Otherwise, set it to a predefined location under 
 # the experiment directory (EXPTDIR).
 #
-  if [ "${RUN_TASK_MAKE_OROG}" = "FALSE" ]; then
-    if [ ! -d "${OROG_DIR}" ]; then
-      print_err_msg_exit "\
+if [ "${RUN_TASK_MAKE_OROG}" = "FALSE" ]; then
+  if [ ! -d "${OROG_DIR}" ]; then
+    print_err_msg_exit "\
 The directory (OROG_DIR) that should contain the pregenerated orography
 files does not exist:
   OROG_DIR = \"${OROG_DIR}\""
-    fi
-  else
-    OROG_DIR="$EXPTDIR/orog"
   fi
+else
+  OROG_DIR="$EXPTDIR/orog"
+fi
 #
 # If RUN_TASK_MAKE_SFC_CLIMO is set to "FALSE", the workflow will look 
 # for the pregenerated surface climatology files in SFC_CLIMO_DIR.  In
 # this case, make sure that SFC_CLIMO_DIR exists.  Otherwise, set it to
 # a predefined location under the experiment directory (EXPTDIR).
 #
-  if [ "${RUN_TASK_MAKE_SFC_CLIMO}" = "FALSE" ]; then
-    if [ ! -d "${SFC_CLIMO_DIR}" ]; then
-      print_err_msg_exit "\
+if [ "${RUN_TASK_MAKE_SFC_CLIMO}" = "FALSE" ]; then
+  if [ ! -d "${SFC_CLIMO_DIR}" ]; then
+    print_err_msg_exit "\
 The directory (SFC_CLIMO_DIR) that should contain the pregenerated surface
 climatology files does not exist:
   SFC_CLIMO_DIR = \"${SFC_CLIMO_DIR}\""
-    fi
-  else
-    SFC_CLIMO_DIR="$EXPTDIR/sfc_climo"
   fi
-
+else
+  SFC_CLIMO_DIR="$EXPTDIR/sfc_climo"
 fi
 #
 #-----------------------------------------------------------------------
