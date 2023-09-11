@@ -1,7 +1,7 @@
 MACHINE="jet"
 ACCOUNT="account"
 HPSS_ACCOUNT="account"
-EXPT_SUBDIR="test_nonDA_community"
+EXPT_SUBDIR="test_nonDA"
 
 envir="test"
 NET="test"

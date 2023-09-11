@@ -1,7 +1,7 @@
 MACHINE="wcoss2"
 ACCOUNT="RRFS-DEV"
 HPSS_ACCOUNT="RRFS-DEV"
-EXPT_SUBDIR="test_nonDA_community"
+EXPT_SUBDIR="test_nonDA"
 
 envir="test"
 NET="test"

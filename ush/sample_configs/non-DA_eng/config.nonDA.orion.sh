@@ -1,7 +1,7 @@
 MACHINE="orion"
 ACCOUNT="fv3-cam"
 HPSS_ACCOUNT="fv3-cam"
-EXPT_SUBDIR="test_nonDA_community"
+EXPT_SUBDIR="test_nonDA"
 
 envir="test"
 NET="test"
