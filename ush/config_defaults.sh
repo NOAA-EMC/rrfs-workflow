@@ -1499,14 +1499,14 @@ SAVE_CYCLE_LOG="TRUE"
 #
 #-----------------------------------------------------------------------
 #
-RUN_TASK_MAKE_GRID="TRUE"
-GRID_DIR="/path/to/pregenerated/grid/files"
+RUN_TASK_MAKE_GRID="FALSE"
+GRID_DIR=""
 
-RUN_TASK_MAKE_OROG="TRUE"
-OROG_DIR="/path/to/pregenerated/orog/files"
+RUN_TASK_MAKE_OROG="FALSE"
+OROG_DIR=""
 
-RUN_TASK_MAKE_SFC_CLIMO="TRUE"
-SFC_CLIMO_DIR="/path/to/pregenerated/surface/climo/files"
+RUN_TASK_MAKE_SFC_CLIMO="FALSE"
+SFC_CLIMO_DIR=""
 
 #
 NCORES_PER_NODE=24 #Jet default value

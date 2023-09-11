@@ -1,6 +1,6 @@
-MACHINE="orion"
-ACCOUNT="fv3-cam"
-HPSS_ACCOUNT="fv3-cam"
+MACHINE="jet"
+ACCOUNT="account"
+HPSS_ACCOUNT="account"
 EXPT_SUBDIR="test_nonDA_community"
 
 VERBOSE="TRUE"
@@ -24,6 +24,10 @@ DATE_FIRST_CYCL="20190615"
 DATE_LAST_CYCL="20190615"
 CYCL_HRS=( "00" )
 
+RUN_TASK_MAKE_GRID="TRUE"
+RUN_TASK_MAKE_OROG="TRUE"
+RUN_TASK_MAKE_SFC_CLIMO="TRUE"
+
 EXTRN_MDL_NAME_ICS="FV3GFS"
 EXTRN_MDL_NAME_LBCS="FV3GFS"
 
@@ -38,5 +42,5 @@ DO_RETRO="TRUE"
 VCOORD_FILE="global_hyblev.l65.txt"
 
 USE_USER_STAGED_EXTRN_FILES="TRUE"
-EXTRN_MDL_SOURCE_BASEDIR_ICS="/work/noaa/epic-ps/role-epic-ps/UFS_SRW_data/develop/input_model_data/FV3GFS/grib2/2019061500"
-EXTRN_MDL_SOURCE_BASEDIR_LBCS="/work/noaa/epic-ps/role-epic-ps/UFS_SRW_data/develop/input_model_data/FV3GFS/grib2/2019061500"
+EXTRN_MDL_SOURCE_BASEDIR_ICS="/mnt/lfs4/HFIP/hfv3gfs/role.epic/UFS_SRW_data/develop/input_model_data/FV3GFS/grib2/2019061500"
+EXTRN_MDL_SOURCE_BASEDIR_LBCS="/mnt/lfs4/HFIP/hfv3gfs/role.epic/UFS_SRW_data/develop/input_model_data/FV3GFS/grib2/2019061500"

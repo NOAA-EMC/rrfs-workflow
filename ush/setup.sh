@@ -1585,11 +1585,11 @@ fi
 
 #
 # If RUN_TASK_MAKE_GRID is set to "FALSE", the workflow will look for 
-# the pregenerated grid files in GRID_DIR. In this case, make sure that 
-# GRID_DIR exists. Otherwise, set it to a predefined location under the 
-# experiment directory (EXPTDIR).
+# the pregenerated grid files in GRID_DIR.
 #
 if [ "${RUN_TASK_MAKE_GRID}" = "FALSE" ]; then
+  # Set nco_fix_dir by default
+  GRID_DIR="${GRID_DIR:-${nco_fix_dir}}"
   if [ ! -d "${GRID_DIR}" ]; then
     print_err_msg_exit "\
 The directory (GRID_DIR) that should contain the pregenerated grid files 
@@ -1601,11 +1601,11 @@ else
 fi
 #
 # If RUN_TASK_MAKE_OROG is set to "FALSE", the workflow will look for 
-# the pregenerated orography files in OROG_DIR.  In this case, make sure 
-# that OROG_DIR exists.  Otherwise, set it to a predefined location under 
-# the experiment directory (EXPTDIR).
+# the pregenerated orography files in OROG_DIR.
 #
 if [ "${RUN_TASK_MAKE_OROG}" = "FALSE" ]; then
+  # Set nco_fix_dir by default
+  OROG_DIR="${OROG_DIR:-${nco_fix_dir}}"
   if [ ! -d "${OROG_DIR}" ]; then
     print_err_msg_exit "\
 The directory (OROG_DIR) that should contain the pregenerated orography
@@ -1617,11 +1617,11 @@ else
 fi
 #
 # If RUN_TASK_MAKE_SFC_CLIMO is set to "FALSE", the workflow will look 
-# for the pregenerated surface climatology files in SFC_CLIMO_DIR.  In
-# this case, make sure that SFC_CLIMO_DIR exists.  Otherwise, set it to
-# a predefined location under the experiment directory (EXPTDIR).
+# for the pregenerated surface climatology files in SFC_CLIMO_DIR.
 #
 if [ "${RUN_TASK_MAKE_SFC_CLIMO}" = "FALSE" ]; then
+  # Set nco_fix_dir by default
+  SFC_CLIMO_DIR="${SFC_CLIMO_DIR:-${nco_fix_dir}}"
   if [ ! -d "${SFC_CLIMO_DIR}" ]; then
     print_err_msg_exit "\
 The directory (SFC_CLIMO_DIR) that should contain the pregenerated surface
