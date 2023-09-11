@@ -99,8 +99,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job and pass to it the necessary varia-
-# bles.
+# Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
@@ -112,9 +111,11 @@ $SCRIPTSdir/exregional_refl2tten.sh \
              workdir="${workdir}" \
              comout="${COMOUT}" \
              comin="${COMIN}" \
-             slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}" || \
-print_err_msg_exit "\
-Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+             slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}"
+export err=$?
+if [ $err -ne 0 ]; then
+  err_exit "Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+fi
 #
 #-----------------------------------------------------------------------
 #

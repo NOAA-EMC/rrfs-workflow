@@ -77,16 +77,17 @@ mkdir_vrfy -p ${modelinputdir}
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job and pass to it the necessary varia-
-# bles.
+# Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
 $SCRIPTSdir/exregional_run_prepstart_ensmean.sh \
              cycle_type="${CYCLE_TYPE}" \
-             modelinputdir="${modelinputdir}" || \
-print_err_msg_exit "\
-Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+             modelinputdir="${modelinputdir}"
+export err=$?
+if [ $err -ne 0 ]; then
+  err_exit "Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+fi
 #
 #-----------------------------------------------------------------------
 #

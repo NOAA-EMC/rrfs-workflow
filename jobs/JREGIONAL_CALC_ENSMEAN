@@ -93,17 +93,18 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job and pass to it the necessary varia-
-# bles.
+# Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
 $SCRIPTSdir/exregional_calc_ensmean.sh \
              cycle_type="${CYCLE_TYPE}" \
              comout="${COMOUT}" \
-             ensmeandir="${ensmeandir}" || \
-print_err_msg_exit "\
-Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+             ensmeandir="${ensmeandir}"
+export err=$?
+if [ $err -ne 0 ]; then
+  err_exit "Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+fi
 #
 #-----------------------------------------------------------------------
 #

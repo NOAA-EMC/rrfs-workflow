@@ -84,8 +84,7 @@ rave_nwges_dir=${NWGES_DIR}/RAVE_INTP
 mkdir_vrfy -p "${rave_nwges_dir}"
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job and pass to it the necessary varia-
-# bles.
+# Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
@@ -94,9 +93,11 @@ python -u ${SCRIPTSdir}/preprocess_smoke.py \
   "${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}" \
   "${FIRE_RAVE_DIR}" \
   "${workdir}" \
-  "${PREDEF_GRID_NAME}" \
-print_err_msg_exit "\
-Call to pyscript \"${scrfunc_fn}\" failed."
+  "${PREDEF_GRID_NAME}"
+export err=$?
+if [ $err -ne 0 ]; then
+  err_exit "Call to pyscript \"${scrfunc_fn}\" failed."
+fi
 
 ECHO=/bin/echo
 AWK="/bin/gawk --posix"

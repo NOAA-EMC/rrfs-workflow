@@ -72,7 +72,7 @@ mkdir_vrfy -p "${lbcs_nwges_dir}"
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job and pass to it the necessary variables.
+# Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
@@ -80,9 +80,11 @@ $SCRIPTSdir/exregional_make_lbcs.sh \
   lbcs_dir="${lbcs_dir}" \
   lbcs_nwges_dir="${lbcs_nwges_dir}" \
   bcgrp="${bcgrp}" \
-  bcgrpnum="${bcgrpnum}" || \
-print_err_msg_exit "\
-Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+  bcgrpnum="${bcgrpnum}"
+export err=$?
+if [ $err -ne 0 ]; then
+  err_exit "Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+fi
 #
 #-----------------------------------------------------------------------
 #
