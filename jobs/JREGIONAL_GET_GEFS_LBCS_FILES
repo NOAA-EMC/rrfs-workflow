@@ -137,6 +137,7 @@ get_extrn_mdl_file_dir_info \
 export err=$?
 if [ $err -ne 0 ]; then
   err_exit "Call to function get_extrn_mdl_file_dir_info failed."
+fi
 #
 #-----------------------------------------------------------------------
 #
