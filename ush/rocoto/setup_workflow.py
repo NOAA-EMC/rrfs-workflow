@@ -160,9 +160,6 @@ def get_definitions(base):
         strings.append(get_gfs_dates(base))
         strings.append('\n')
 
-    strings.append('\t<!-- Run Envrionment -->\n')
-    strings.append('\t<!ENTITY RUN_ENVIR "%s">\n' % base['RUN_ENVIR'])
-    strings.append('\n')
     strings.append('\t<!-- Experiment and Rotation directory -->\n')
     strings.append('\t<!ENTITY EXPDIR "%s">\n' % base['EXPDIR'])
     strings.append('\t<!ENTITY ROTDIR "%s">\n' % base['ROTDIR'])
@@ -320,7 +317,6 @@ def get_gdasgfs_tasks(dict_configs, cdump='gdas'):
     '''
 
     envars = []
-    envars.append(rocoto.create_envar(name='RUN_ENVIR', value='&RUN_ENVIR;'))
     envars.append(rocoto.create_envar(name='HOMEgfs', value='&HOMEgfs;'))
     envars.append(rocoto.create_envar(name='EXPDIR', value='&EXPDIR;'))
     envars.append(rocoto.create_envar(name='CDATE', value='<cyclestr>@Y@m@d@H</cyclestr>'))
@@ -503,7 +499,6 @@ def get_hyb_tasks(dict_configs, cycledef='enkf'):
     EARCGROUPS = ' '.join(['%02d' % x for x in range(0, nearc_grps + 1)])
 
     envars = []
-    envars.append(rocoto.create_envar(name='RUN_ENVIR', value='&RUN_ENVIR;'))
     envars.append(rocoto.create_envar(name='HOMEgfs', value='&HOMEgfs;'))
     envars.append(rocoto.create_envar(name='EXPDIR', value='&EXPDIR;'))
     envars.append(rocoto.create_envar(name='CDATE', value='<cyclestr>@Y@m@d@H</cyclestr>'))

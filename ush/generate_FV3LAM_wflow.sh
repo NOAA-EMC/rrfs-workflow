@@ -224,7 +224,6 @@ settings="\
   'tag': ${TAG}
   'net': ${NET}
   'run': ${RUN}
-  'run_envir': ${RUN_ENVIR}
   'jedi_envar_ioda': ${JEDI_ENVAR_IODA_TN}
 #
 # Number of nodes to use for each task.
@@ -923,14 +922,6 @@ for (( i=0; i<${num_nml_vars}; i++ )); do
   fp="\"\""
   if [ ! -z "${FIXam_fn}" ]; then
     fp="$FIXam/${FIXam_fn}"
-#
-# If not in NCO mode, for portability and brevity, change fp so that it
-# is a relative path (relative to any cycle directory immediately under
-# the experiment directory).
-#
-    if [ "${RUN_ENVIR}" != "nco" ]; then
-      fp=$( realpath --canonicalize-missing --relative-to="${dummy_run_dir}" "$fp" )
-    fi
   fi
 #
 # Add a line to the variable "settings" that specifies (in a yaml-compliant

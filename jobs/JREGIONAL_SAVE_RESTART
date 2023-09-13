@@ -80,12 +80,10 @@ else
   nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
 fi
 
-if [ "${RUN_ENVIR}" == "nco" ]; then
-   mkdir_vrfy -p "${nwges_dir}/RESTART"
-   mkdir_vrfy -p "${nwges_dir}/INPUT"
-   if [ "${SURFACE_DIR}" != "empty" ]; then
-      mkdir_vrfy -p "${SURFACE_DIR}"
-   fi
+mkdir_vrfy -p "${nwges_dir}/RESTART"
+mkdir_vrfy -p "${nwges_dir}/INPUT"
+if [ "${SURFACE_DIR}" != "empty" ]; then
+  mkdir_vrfy -p "${SURFACE_DIR}"
 fi
 
 len_ensmem=${#SLASH_ENSMEM_SUBDIR}

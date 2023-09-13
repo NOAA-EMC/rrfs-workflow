@@ -24,7 +24,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -102,14 +102,12 @@ gridspec_dir=${NWGES_BASEDIR}/grid_spec
 # create COMOUT directory
 #
 #-----------------------------------------------------------------------
-
-if [ "${RUN_ENVIR}" = "nco" ]; then
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
-  if [ ${CYCLE_TYPE} == "spinup" ]; then
-    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
-  fi
-  mkdir_vrfy -p "${COMOUT}"
+#
+COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
 fi
+mkdir_vrfy -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #

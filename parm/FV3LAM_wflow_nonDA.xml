@@ -60,11 +60,7 @@ Directories and files.
 -->
 <!ENTITY JOBSdir                  "{{ jobsdir }}">
 <!ENTITY LOG_BASEDIR              "{{ log_basedir }}">
-{%- if run_envir == "community" %}
-<!ENTITY LOGDIR                   "{{ log_basedir }}/@Y@m@d/@H">
-{%- else %}
-<!ENTITY LOGDIR                   "{{ log_basedir }}/${run}.@Y@m@d/@H">
-{%- endif %}
+<!ENTITY LOGDIR                   "{{ log_basedir }}/{{ run }}.@Y@m@d/@H">
 <!ENTITY CYCLE_BASEDIR            "{{ cycle_basedir }}">
 <!ENTITY NWGES_BASEDIR            "{{ nwges_basedir }}">
 <!ENTITY GLOBAL_VAR_DEFNS_FP      "{{ global_var_defns_fp }}">

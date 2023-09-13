@@ -88,7 +88,7 @@ case $MACHINE in
   "WCOSS2")
     ulimit -s unlimited
     ulimit -a
-    export OMP_NUM_THREADS=1
+    export OMP_NUM_THREADS=${TPP_RUN_POST}
     export MP_IOAGENT_CNT=all
     export MP_IO_BUFFER_SIZE=8M
     export MP_BINDPROC=NO

@@ -1,4 +1,3 @@
-valid_vals_RUN_ENVIR=("nco" "community")
 valid_vals_VERBOSE=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
 valid_vals_SAVE_CYCLE_LOG=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
 valid_vals_MACHINE=("WCOSS2" "HERA" "ORION" "JET")
