@@ -69,7 +69,7 @@ Engineering Test: Non-DA
          cd ush
          cp sample_configs/non-DA_eng/config.nonDA.<machine>.sh config.sh
       
-      where ``<machine>`` is ``hera``, ``jet``, or ``orion``. Note that you may need to change ``ACCOUNT`` in the configuration file ``config.sh``.
+      where ``<machine>`` is ``hera``, ``jet``, or ``orion``. Note that you may need to change ``ACCOUNT``, ``STMP``, or ``PTMP`` in the configuration file ``config.sh``.
 
    #. Generate the experiment workflow:
 
