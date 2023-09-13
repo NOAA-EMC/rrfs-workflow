@@ -67,9 +67,9 @@ Engineering Test: Non-DA
       .. code-block:: console
 
          cd ush
-         cp sample_configs/non-DA_eng/config.nonDA.community.<machine>.sh config.sh
+         cp sample_configs/non-DA_eng/config.nonDA.<machine>.sh config.sh
       
-      where ``<machine>`` is ``hera``, ``jet``, or ``orion``. Note that you may need to change ``ACCOUNT`` in the configuration file ``config.sh``.
+      where ``<machine>`` is ``wcoss2``, ``hera``, ``jet``, or ``orion``. Note that you may need to change ``ACCOUNT``, ``STMP``, or ``PTMP`` in the configuration file ``config.sh``.
 
    #. Generate the experiment workflow:
 
@@ -81,7 +81,7 @@ Engineering Test: Non-DA
 
       .. code-block:: console
 
-         cd ../../expt_dirs/test_nonDA_community
+         cd ../../expt_dirs/test_nonDA
          ./launch_FV3LAM_wflow.sh
 
       .. note::
@@ -162,14 +162,7 @@ Engineering Test: DA
 
       * On Hera: ``config.DA.retro.hera.sh``
 
-      .. code-block:: console
-
-         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202207200600 -t get_extrn_lbcs
-         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202207201200 -t get_extrn_lbcs
-         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202207201800 -t get_extrn_lbcs
-         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202207201500 -t get_extrn_ics
-
-      Once the above tasks are complete, launch the ``prep_cyc_spinup`` task:
+      Once the ``make_ics`` task for ``15z`` and ``make_lbcs`` tasks for ``06z``, ``12z``, and ``18z`` are complete, launch the ``prep_cyc_spinup`` task for ``03z`` manually:
 
       .. code-block:: console
 
