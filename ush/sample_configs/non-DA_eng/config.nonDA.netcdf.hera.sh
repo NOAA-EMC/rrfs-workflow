@@ -1,7 +1,7 @@
-MACHINE="wcoss2"
-ACCOUNT="RRFS-DEV"
-HPSS_ACCOUNT="RRFS-DEV"
-EXPT_SUBDIR="test_nonDA"
+MACHINE="hera"
+ACCOUNT="fv3-cam"
+HPSS_ACCOUNT="fv3-cam"
+EXPT_SUBDIR="test_nonDA_netcdf"
 
 envir="test"
 NET="test"
@@ -9,8 +9,8 @@ TAG="c0v00"
 MODEL="test"
 RUN="test"
 
-STMP="/lfs/h2/emc/stmp/${USER}/test_nonDA"
-PTMP="/lfs/h2/emc/ptmp/${USER}/test_nonDA"
+STMP="/scratch2/NCEPDEV/stmp3/${USER}/test_nonDA_netcdf"
+PTMP="/scratch2/NCEPDEV/stmp3/${USER}/test_nonDA_netcdf"
 
 VERBOSE="TRUE"
 PRINT_ESMF="TRUE"
@@ -29,9 +29,9 @@ CCPP_PHYS_SUITE="FV3_GFS_v16"
 FCST_LEN_HRS="6"
 LBC_SPEC_INTVL_HRS="6"
 
-DATE_FIRST_CYCL="20190615"
-DATE_LAST_CYCL="20190615"
-CYCL_HRS=( "00" )
+DATE_FIRST_CYCL="20230217"
+DATE_LAST_CYCL="20230217"
+CYCL_HRS=( "06" )
 
 RUN_TASK_MAKE_GRID="TRUE"
 RUN_TASK_MAKE_OROG="TRUE"
@@ -40,8 +40,8 @@ RUN_TASK_MAKE_SFC_CLIMO="TRUE"
 EXTRN_MDL_NAME_ICS="FV3GFS"
 EXTRN_MDL_NAME_LBCS="FV3GFS"
 
-FV3GFS_FILE_FMT_ICS="grib2"
-FV3GFS_FILE_FMT_LBCS="grib2"
+FV3GFS_FILE_FMT_ICS="netcdf"
+FV3GFS_FILE_FMT_LBCS="netcdf"
 
 WTIME_RUN_FCST="00:30:00"
 PPN_RUN_FCST="12"
@@ -51,5 +51,5 @@ DO_RETRO="TRUE"
 VCOORD_FILE="global_hyblev.l65.txt"
 
 USE_USER_STAGED_EXTRN_FILES="TRUE"
-EXTRN_MDL_SOURCE_BASEDIR_ICS="/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/input_model_data/FV3GFS/grib2/2019061500"
-EXTRN_MDL_SOURCE_BASEDIR_LBCS="/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/input_model_data/FV3GFS/grib2/2019061500"
+EXTRN_MDL_SOURCE_BASEDIR_ICS="/scratch1/NCEPDEV/nems/role.epic/UFS_SRW_data/develop/input_model_data/FV3GFS/netcdf/2023021706"
+EXTRN_MDL_SOURCE_BASEDIR_LBCS="/scratch1/NCEPDEV/nems/role.epic/UFS_SRW_data/develop/input_model_data/FV3GFS/netcdf/2023021706"
