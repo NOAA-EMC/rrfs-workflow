@@ -51,5 +51,5 @@ DO_RETRO="TRUE"
 VCOORD_FILE="global_hyblev.l65.txt"
 
 USE_USER_STAGED_EXTRN_FILES="TRUE"
-EXTRN_MDL_SOURCE_BASEDIR_ICS="/work/noaa/epic-ps/role-epic-ps/UFS_SRW_data/develop/input_model_data/FV3GFS/netcdf/2023021706"
-EXTRN_MDL_SOURCE_BASEDIR_LBCS="/work/noaa/epic-ps/role-epic-ps/UFS_SRW_data/develop/input_model_data/FV3GFS/netcdf/2023021706"
+EXTRN_MDL_SOURCE_BASEDIR_ICS="/work/noaa/epic/role-epic/contrib/UFS_SRW_data/develop/input_model_data/FV3GFS/netcdf/2023021706"
+EXTRN_MDL_SOURCE_BASEDIR_LBCS="/work/noaa/epic/role-epic/contrib/UFS_SRW_data/develop/input_model_data/FV3GFS/netcdf/2023021706"
