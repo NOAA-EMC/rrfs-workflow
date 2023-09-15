@@ -4,7 +4,6 @@
 #-----------------------------------------------------------------------
 #
 # This J-JOB script runs the NetCDF ligthning observation preprocess 
-#      for the FV3-LAM model
 #
 #-----------------------------------------------------------------------
 #
@@ -25,7 +24,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -73,16 +72,13 @@ mkdir_vrfy -p ${workdir}
 # create COMOUT directory
 #
 #-----------------------------------------------------------------------
-
-if [ "${RUN_ENVIR}" = "nco" ]; then 
-  if [ ${CYCLE_TYPE} == "spinup" ]; then
-    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
-  else
-    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc/ensmean"
-  fi
-  mkdir_vrfy -p "${COMOUT}"
+#
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
+else
+  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc/ensmean"
 fi
-
+mkdir_vrfy -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #

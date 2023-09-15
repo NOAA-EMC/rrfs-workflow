@@ -72,10 +72,7 @@ if [ ${CYCLE_TYPE} == "prod" ]; then
   nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
 fi
 
-if [ "${RUN_ENVIR}" = "nco" ]; then
-   mkdir_vrfy -p "${nwges_dir}/DA_OUTPUT"
-fi
-
+mkdir_vrfy -p "${nwges_dir}/DA_OUTPUT"
 #
 #-----------------------------------------------------------------------
 #

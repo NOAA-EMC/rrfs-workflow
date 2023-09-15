@@ -158,14 +158,6 @@ for (( i=0; i<${num_nml_vars}; i++ )); do
 #
   fp="${FIXLAM}/${CRES}.${sfc_climo_field_name}.$suffix"
 #
-# If not in NCO mode, for portability and brevity change fp so that it
-# is a relative path (relative to any cycle directory immediately under
-# the experiment directory).
-#
-  if [ "${RUN_ENVIR}" != "nco" ]; then
-    fp=$( realpath --canonicalize-missing --relative-to="${dummy_run_dir}" "$fp" )
-  fi
-#
 # Add a line to the variable "settings" that specifies (in a yaml-compliant
 # format) the name of the current namelist variable and the value it should
 # be set to.

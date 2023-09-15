@@ -5,7 +5,6 @@
 #-----------------------------------------------------------------------
 #
 # This J-JOB script runs the radar reflectivity preprocess 
-#      for the FV3-LAM model
 #
 #-----------------------------------------------------------------------
 #
@@ -27,7 +26,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -85,15 +84,13 @@ gridspec_dir=${NWGES_BASEDIR}/grid_spec
 # create COMOUT directory
 #
 #-----------------------------------------------------------------------
-
-if [ "${RUN_ENVIR}" = "nco" ]; then 
-  if [ ${CYCLE_TYPE} == "spinup" ]; then
-    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
-  else
-    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
-  fi
-  mkdir_vrfy -p "${COMOUT}"
+#
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+else
+  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
 fi
+mkdir_vrfy -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #

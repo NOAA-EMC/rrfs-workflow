@@ -3,7 +3,6 @@
 #-----------------------------------------------------------------------
 #
 # This J-JOB script runs the standalone JEDI EnVAR IODA task
-#      for the FV3-LAM model
 #
 #-----------------------------------------------------------------------
 
@@ -24,7 +23,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -59,15 +58,11 @@ IODA task with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-
-if [ "${RUN_ENVIR}" = "nco" ]; then
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
-  if [ ${CYCLE_TYPE} == "spinup" ]; then
-    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
-  fi
-  mkdir_vrfy -p "${COMOUT}"
+COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
 fi
-
+mkdir_vrfy -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #

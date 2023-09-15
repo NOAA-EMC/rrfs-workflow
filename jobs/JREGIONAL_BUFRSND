@@ -92,11 +92,8 @@ else
   nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
 fi
 
-if [ "${RUN_ENVIR}" = "nco" ]; then
-   mkdir_vrfy -p "${nwges_dir}/RESTART"
-   mkdir_vrfy -p "${nwges_dir}/INPUT"
-fi
-
+mkdir_vrfy -p "${nwges_dir}/RESTART"
+mkdir_vrfy -p "${nwges_dir}/INPUT"
 #
 #-----------------------------------------------------------------------
 #
@@ -115,13 +112,11 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-if [ "${RUN_ENVIR}" = "nco" ]; then
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
-  if [ ${CYCLE_TYPE} == "spinup" ]; then
-    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
-  fi
-  mkdir_vrfy -p "${COMOUT}"
+COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
 fi
+mkdir_vrfy -p "${COMOUT}"
 
 bufrsnd_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/bufrsnd"
 if [ ${CYCLE_TYPE} == "spinup" ]; then

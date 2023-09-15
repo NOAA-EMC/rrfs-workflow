@@ -43,7 +43,7 @@ local func_name="${FUNCNAME[0]}"
 #
 #-----------------------------------------------------------------------
 #
-if [[ "${RUN_ENVIR}" == "nco" && ! -z ${COMINgfs} ]]; then
+if [ ! -z ${COMINgfs} ]; then
 
   EXTRN_MDL_SYSBASEDIR_ICS="${EXTRN_MDL_SYSBASEDIR_ICS:-$COMINgfs}"
 
@@ -221,7 +221,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-if [[ "${RUN_ENVIR}" == "nco" && ! -z ${COMINgfs} ]]; then
+if [ ! -z ${COMINgfs} ]; then
 
   EXTRN_MDL_SYSBASEDIR_LBCS="$COMINgfs"
 

@@ -88,15 +88,11 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-if [ "${RUN_ENVIR}" = "nco" ]; then
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
-  if [ ${CYCLE_TYPE} = "spinup" ]; then
-    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
-  fi
-  mkdir_vrfy -p "${COMOUT}"
-else
-  COMOUT="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/postprd"
+COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
+if [ ${CYCLE_TYPE} = "spinup" ]; then
+  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
 fi
+mkdir_vrfy -p "${COMOUT}"
 
 postprd_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/postprd"
 if [ "${CYCLE_TYPE}" = "spinup" ]; then

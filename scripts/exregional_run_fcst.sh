@@ -332,7 +332,11 @@ if [ "${DO_NON_DA_RUN}" = "TRUE" ]; then
   symlink="gfs_ctrl.nc"
   ln_vrfy -sf ${relative_or_null} $target $symlink
 
-  for fhr in $(seq -f "%03g" 0 ${LBC_SPEC_INTVL_HRS} ${FCST_LEN_HRS}); do
+  target="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/ics/gfs_bndy.tile${TILE_RGNL}.000.nc"
+  symlink="gfs_bndy.tile${TILE_RGNL}.000.nc"
+  ln_vrfy -sf ${relative_or_null} $target $symlink
+
+  for fhr in $(seq -f "%03g" ${LBC_SPEC_INTVL_HRS} ${LBC_SPEC_INTVL_HRS} ${FCST_LEN_HRS}); do
     target="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/lbcs/gfs_bndy.tile${TILE_RGNL}.${fhr}.nc"
     symlink="gfs_bndy.tile${TILE_RGNL}.${fhr}.nc"
     ln_vrfy -sf ${relative_or_null} $target $symlink
