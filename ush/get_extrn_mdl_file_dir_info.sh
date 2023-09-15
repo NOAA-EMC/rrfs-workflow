@@ -282,7 +282,11 @@ elif [ "${anl_or_fcst}" = "FCST" ]; then
   if [ "${boundary_len_hrs}" = "0" ]; then
     boundary_len_hrs=${FCST_LEN_HRS}
   fi
-  lbc_spec_fcst_hrs=($( seq 0 ${lbs_spec_intvl_hrs} ${boundary_len_hrs} ))
+  if [ "${DO_NON_DA_RUN}" = "TRUE" ]; then
+    lbc_spec_fcst_hrs=($( seq ${lbs_spec_intvl_hrs} ${lbs_spec_intvl_hrs} ${boundary_len_hrs} ))
+  else
+    lbc_spec_fcst_hrs=($( seq 0 ${lbs_spec_intvl_hrs} ${boundary_len_hrs} ))
+  fi
   lbc_spec_fhrs=( "${lbc_spec_fcst_hrs[@]}" )
   #
   # Add the temporal offset specified in time_offset_hrs (assumed to be in 
@@ -383,8 +387,21 @@ case "${anl_or_fcst}" in
         fns_in_arcv=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )
 
       elif [ "${fv3gfs_file_fmt}" = "netcdf" ]; then
-        fns_on_disk=( "gfs.t${hh}z.atmf0${fcst_hh}.nc" "gfs.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
-        fns_in_arcv=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )
+        fns=( "atm" "sfc" )
+        suffix="anl.nc"
+        fns=( "${fns[@]/%/$suffix}" )
+
+        # Set names of external files if searching on disk.
+        if [ "${extrn_mdl_date_julian}" = "TRUE" ]; then
+          prefix="${yy}${ddd}${hh}00.gfs.t${hh}z."
+        else
+          prefix="gfs.t${hh}z."
+        fi
+        fns_on_disk=( "${fns[@]/#/$prefix}" )
+
+        # Set names of external files if searching in an archive file from HPSS.
+        prefix="gfs.t${hh}z."
+        fns_in_arcv=( "${fns[@]/#/$prefix}" )
       fi
       ;;
 
@@ -499,7 +516,11 @@ and analysis or forecast (anl_or_fcst):
         fns_in_arcv=( "${fcst_hhh[@]/#/$prefix}" )
       elif [ "${fv3gfs_file_fmt}" = "netcdf" ]; then
         fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
-        prefix="gfs.t${hh}z.atmf"
+        if [ "${extrn_mdl_date_julian}" = "TRUE" ]; then
+          prefix="${yy}${ddd}${hh}00.gfs.t${hh}z.atmf"
+        else
+          prefix="gfs.t${hh}z.atmf"
+        fi
         suffix=".nc"
         fns_on_disk_tmp=( "${fcst_hhh[@]/#/${prefix}}" )
         fns_on_disk=( "${fns_on_disk_tmp[@]/%/${suffix}}" )

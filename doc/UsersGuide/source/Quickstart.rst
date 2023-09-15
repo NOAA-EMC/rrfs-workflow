@@ -67,9 +67,9 @@ Engineering Test: Non-DA
       .. code-block:: console
 
          cd ush
-         cp sample_configs/non-DA_eng/config.nonDA.<machine>.sh config.sh
+         cp sample_configs/non-DA_eng/config.nonDA.<format>.<machine>.sh config.sh
       
-      where ``<machine>`` is ``wcoss2``, ``hera``, ``jet``, or ``orion``. Note that you may need to change ``ACCOUNT``, ``STMP``, or ``PTMP`` in the configuration file ``config.sh``.
+      where ``<format>`` is ``grib2`` or ``netcdf``, and ``<machine>`` is ``wcoss2``, ``hera``, ``jet``, or ``orion``. Note that you may need to change ``ACCOUNT``, ``STMP``, or ``PTMP`` in the configuration file ``config.sh``.
 
    #. Generate the experiment workflow:
 
