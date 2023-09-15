@@ -328,8 +328,7 @@ fi
 #
 if [ ${BKTYPE} -eq 0 ]; then
   $APRUN ./${exect} > stdout 2>&1
-  export err=$?
-  err_chk
+  export err=$?; err_chk
 
   cp stdout ${comout}/stdout.t${HH}z.nonvarcloudanalysis
   cat stdout_cloudanalysis.* > ${comout}/stdout.t${HH}z.nonvarcloudanalysis.all
@@ -357,8 +356,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

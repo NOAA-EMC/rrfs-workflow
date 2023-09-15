@@ -260,8 +260,7 @@ print_info_msg "$VERBOSE" "
 Starting post-processing for fhr = $fhr hr..."
 
 ${APRUN} ./upp.x < itag
-export err=$?
-err_chk
+export err=$?; err_chk
 
 #
 #-----------------------------------------------------------------------
@@ -379,8 +378,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

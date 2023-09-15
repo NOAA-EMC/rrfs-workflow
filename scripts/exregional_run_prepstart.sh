@@ -452,8 +452,7 @@ Please ensure that you have built this executable."
      cp_vrfy ${snowice_exec_fp} .
 
      ${APRUN} ./${snowice_exec_fn} ${IO_LAYOUT_Y}
-     export err=$?
-     err_chk
+     export err=$?; err_chk
 
      snowice_reference_time=$(wgrib2 -t latest.SNOW_IMS | tail -1) 
      if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
@@ -501,8 +500,7 @@ EOF
      if [ "${IO_LAYOUT_Y}" == "1" ]; then
        ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
        ${EXECdir}/process_updatesst.exe > stdout_sstupdate 2>&1
-       export err=$?
-       err_chk
+       export err=$?; err_chk
      else
        for ii in ${list_iolayout}
        do
@@ -510,8 +508,7 @@ EOF
          ln_vrfy -sf ${gridspec_dir}/fv3_grid_spec.${iii}  fv3_grid_spec
          ln_vrfy -sf sfc_data.nc.${iii} sfc_data.nc
          ${EXECdir}/process_updatesst.exe > stdout_sstupdate.${iii} 2>&1
-         export err=$?
-         err_chk
+         export err=$?; err_chk
          ls -l > list_sstupdate.${iii}
        done
        rm -f sfc_data.nc
@@ -602,7 +599,7 @@ fi
 if_update_ice="TRUE"
 if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
 
-# figure out which surface is available
+    # figure out which surface is available
     surface_file_dir_name=surface
     restart_prefix_find="missing"
     restart_suffix_find="missing"
@@ -642,7 +639,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
         fi
       done
     fi
-# rename the soil mositure and temperature fields in restart file
+    # rename the soil mositure and temperature fields in restart file
       rm -f cycle_surface.done
       if [ "${restart_suffix_find}" == "missing" ] || [ "${restart_prefix_find}" == "missing" ]; then
         print_info_msg "WARNING: cannot find surface from previous cycle"
@@ -672,8 +669,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
               ncatted -a checksum,,d,, sfc_data.nc
               if [ "${if_update_ice}" == "TRUE" ]; then
                 ${EXECdir}/update_ice.exe > stdout_cycleICE 2>&1
-                export err=$?
-                err_chk
+                export err=$?; err_chk
               fi
             else
               checkfile=${bkpath}/${restart_prefix_find}sfc_data.nc.${restart_suffix_find}
@@ -693,8 +689,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
                 ln_vrfy -sf gfsice.sfc_data.nc.${iii} gfsice.sfc_data.nc
                 if [ "${if_update_ice}" == "TRUE" ]; then
                   ${EXECdir}/update_ice.exe > stdout_cycleICE.${iii} 2>&1
-                  export err=$?
-                  err_chk
+                  export err=$?; err_chk
                 fi
               done
               rm -f sfc_data.nc gfsice.sfc_data.nc
@@ -734,8 +729,7 @@ if [ ${HH} -eq ${GVF_update_hour} ] && [ ${cycle_type} == "spinup" ]; then
       if [ "${IO_LAYOUT_Y}" == "1" ]; then
         ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
         ${EXECdir}/update_GVF.exe > stdout_updateGVF 2>&1
-        export err=$?
-        err_chk
+        export err=$?; err_chk
       else
         for ii in ${list_iolayout}
         do
@@ -743,8 +737,7 @@ if [ ${HH} -eq ${GVF_update_hour} ] && [ ${cycle_type} == "spinup" ]; then
           ln_vrfy -sf ${gridspec_dir}/fv3_grid_spec.${iii}  fv3_grid_spec
           ln_vrfy -sf sfc_data.nc.${iii} sfc_data.nc
           ${EXECdir}/update_GVF.exe > stdout_updateGVF.${iii} 2>&1
-          export err=$?
-          err_chk
+          export err=$?; err_chk
           ls -l > list_updateGVF.${iii}
         done
         rm -f sfc_data.nc
@@ -965,8 +958,7 @@ EOF
        if [ "${IO_LAYOUT_Y}" == "1" ]; then
          cp_vrfy sfc_data.nc sfc_data.nc_read
          ./${exect} > stdout_sfc_sugery.${file} 2>&1
-         export err=$?
-         err_chk
+         export err=$?; err_chk
        else
          for ii in ${list_iolayout}
          do
@@ -974,8 +966,7 @@ EOF
            ln_vrfy -sf sfc_data.nc.${iii} sfc_data.nc
            cp_vrfy sfc_data.nc sfc_data.nc_read
            ./${exect} > stdout_sfc_sugery.${iii}.${file} 2>&1
-           export err=$?
-           err_chk
+           export err=$?; err_chk
            ls -l > list_sfc_sugery.${iii}
          done
          rm -f sfc_data.nc
@@ -1062,7 +1053,7 @@ Please ensure that you've built this executable."
     fi
     cp_vrfy ${fvcom_exec_fp} .
 
-# decide surface
+    # decide surface
     if [ ${BKTYPE} -eq 1 ] ; then
       FVCOM_WCSTART='cold'
       surface_file='sfc_data.tile7.halo0.nc'
@@ -1071,10 +1062,8 @@ Please ensure that you've built this executable."
       surface_file='sfc_data.nc'
     fi
 
-#
     ${APRUN} ./${fvcom_exec_fn} ${surface_file} fvcom.nc ${FVCOM_WCSTART} ${fvcom_time} ${IO_LAYOUT_Y}
-    export err=$?
-    err_chk
+    export err=$?; err_chk
   fi
 fi
 
@@ -1095,8 +1084,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

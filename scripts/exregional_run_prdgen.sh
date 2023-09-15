@@ -283,8 +283,7 @@ if [ ${DO_PARALLEL_PRDGEN} == "TRUE" ]; then
     # Execute the script
     export CMDFILE=$DATAprdgen/poescript_${fhr}
     mpiexec -np 12 --cpu-bind core cfp $CMDFILE
-    export err=$?
-    err_chk
+    export err=$?; err_chk
 
     # reassemble the output grids
     tasks=(4 4 2 2)
@@ -402,8 +401,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

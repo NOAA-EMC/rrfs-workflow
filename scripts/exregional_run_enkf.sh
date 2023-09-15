@@ -461,8 +461,7 @@ countdiag=$(ls diag*conv* | wc -l)
 if [ $countdiag -gt $nens ]; then
   if [ ${ob_type} == "conv" ]; then
     ${APRUN}  $enkfworkdir/enkf.x < enkf.nml 1>${stdout_name} 2>${stderr_name}
-    export err=$?
-    err_chk
+    export err=$?; err_chk
 
     cp_vrfy ${stdout_name} ${enkfanal_nwges_dir}/.
     cp_vrfy ${stderr_name} ${enkfanal_nwges_dir}/.
@@ -473,8 +472,7 @@ if [ $countdiag -gt $nens ]; then
     cp_vrfy ${stderr_name} ${NWGES_DIR}/../enkf_diag/${stderr_name}.$vlddate
   else
     ${APRUN}  $enkfworkdir/enkf.x < enkf.nml 1>${stdout_name} 2>${stderr_name}
-    export err=$?
-    err_chk
+    export err=$?; err_chk
 
     echo "WARNING: EnKF dbz analysis due to lack of ${ob_type} obs for cycle $vlddate !!!"
   fi
@@ -493,8 +491,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

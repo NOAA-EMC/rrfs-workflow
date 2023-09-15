@@ -215,8 +215,7 @@ Build ENSMEAN_EXEC and rerun."
 fi
 
 ${APRUN} ${ENSMEAN_EXEC}  < namelist.ens > stdout_ensmean 2>&1
-export err=$?
-err_chk
+export err=$?; err_chk
 
 cp stdout_ensmean ${comout}/stdout.t${HH}z.ensmean
 #
@@ -261,8 +260,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

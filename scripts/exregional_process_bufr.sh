@@ -262,8 +262,7 @@ fi
 #
 if [[ "$run_lightning" == true ]]; then
   $APRUN ./${exect} > stdout_lightning_bufr 2>&1
-  export err=$?
-  err_chk
+  export err=$?; err_chk
 
   cp stdout_lightning_bufr $comout/stdout.t${HH}z.lightning_bufr
   cp LightningInFV3LAM.dat $comout/rrfs.t${HH}z.LightningInFV3LAM.bin
@@ -349,8 +348,7 @@ fi
 #
 if [[ "$run_cloud" == true ]]; then
   $APRUN ./${exect} > stdout_nasalarc 2>&1
-  export err=$?
-  err_chk
+  export err=$?; err_chk
 
   cp stdout_nasalarc $comout/stdout.t${HH}z.nasalarc
   cp NASALaRC_cloud4fv3.bin $comout/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
@@ -424,8 +422,7 @@ fi
 #
 if [[ "$run_metar" == true ]]; then
   $APRUN ./${exect} > stdout_metarcld 2>&1
-  export err=$?
-  err_chk
+  export err=$?; err_chk
 
   cp stdout_metarcld $comout/stdout.t${HH}z.metarcld
   cp fv3_metarcloud.bin $comout/rrfs.t${HH}z.fv3_metarcloud.bin
@@ -448,8 +445,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

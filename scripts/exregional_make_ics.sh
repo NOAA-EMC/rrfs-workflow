@@ -643,8 +643,7 @@ $settings"
 #-----------------------------------------------------------------------
 #
 ${APRUN} ${exec_fp}
-export err=$?
-err_chk
+export err=$?; err_chk
 
 #
 #-----------------------------------------------------------------------
@@ -689,8 +688,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

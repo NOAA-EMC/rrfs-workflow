@@ -261,8 +261,7 @@ print_info_msg "$VERBOSE" "
 Starting orography file generation..."
 
 $APRUN "${exec_fp}" < "${input_redirect_fn}"
-export err=$?
-err_chk
+export err=$?; err_chk
 #
 # Change location to the original directory.
 #
@@ -331,8 +330,7 @@ Please ensure that you've built this executable."
 Starting orography file generation..."
 
   ${APRUN} "${exec_fp}" < "${input_redirect_fn}"  ${REDIRECT_OUT_ERR}
-  export err=$?
-  err_chk
+  export err=$?; err_chk
 
   mv_vrfy "${CRES}${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc" \
           "${CRES}${DOT_OR_USCORE}oro_data_ls.tile${TILE_RGNL}.halo${NH0}.nc" \
@@ -462,8 +460,7 @@ print_info_msg "$VERBOSE" "
 Starting filtering of orography..."
 
 $APRUN "${exec_fp}"
-export err=$?
-err_chk
+export err=$?; err_chk
 #
 # For clarity, rename the filtered orography file in filter_dir
 # such that its new name contains the halo size.
@@ -530,8 +527,7 @@ printf "%s %s %s %s %s\n" \
   > ${nml_fn}
 
 $APRUN ${exec_fp} < ${nml_fn}
-export err=$?
-err_chk
+export err=$?; err_chk
 mv_vrfy ${shaved_fp} ${OROG_DIR}
 #
 # Create an input namelist file for the shave executable to generate an
@@ -550,8 +546,7 @@ printf "%s %s %s %s %s\n" \
   > ${nml_fn}
 
 $APRUN ${exec_fp} < ${nml_fn}
-export err=$?
-err_chk
+export err=$?; err_chk
 mv_vrfy "${shaved_fp}" "${OROG_DIR}"
 #
 # Change location to the original directory.
@@ -593,8 +588,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

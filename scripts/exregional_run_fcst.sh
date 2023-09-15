@@ -601,8 +601,7 @@ else
 fi
 
 $APRUN ${run_dir}/ufs_model
-export err=$?
-err_chk
+export err=$?; err_chk
 
 #
 #-----------------------------------------------------------------------
@@ -641,8 +640,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

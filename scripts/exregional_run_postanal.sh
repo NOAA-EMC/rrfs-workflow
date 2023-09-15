@@ -201,8 +201,7 @@ Build adjust_soiltq.exe and rerun."
   fi
 
   $APRUN ./adjust_soiltq.exe
-  export err=$?
-  err_chk
+  export err=$?; err_chk
 fi
 
 #
@@ -238,8 +237,7 @@ Build update_bc.exe and rerun."
   fi
 
   $APRUN ./update_bc.exe
-  export err=$?
-  err_chk
+  export err=$?; err_chk
 fi
 
 #
@@ -259,8 +257,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

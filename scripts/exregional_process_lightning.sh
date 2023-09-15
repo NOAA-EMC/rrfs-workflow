@@ -235,8 +235,7 @@ fi
 
 if [[ "$run_lightning" == true ]]; then
   $APRUN ./${exect} < namelist.lightning > stdout 2>&1
-  export err=$?
-  err_chk
+  export err=$?; err_chk
 
   cp stdout $comout/stdout.t${HH}z.lightning
   cp LightningInFV3LAM.dat ${comin}/rrfs.t${HH}z.LightningInFV3LAM_NLDN.bin
@@ -258,8 +257,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

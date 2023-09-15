@@ -941,8 +941,7 @@ fi
 #
 
 $APRUN ./gsi.x < gsiparm.anl > stdout 2>&1
-export err=$?
-err_chk
+export err=$?; err_chk
 
 echo "----------------------begin of stdout--------------"
 cat ./stdout  #log stdout whether gsi.x succeeds or not
@@ -1125,8 +1124,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

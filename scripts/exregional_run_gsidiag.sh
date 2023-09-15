@@ -225,8 +225,7 @@ for loop in $loops; do
          count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
          if [[ $count -gt 0 ]]; then
             ${APRUN} ${nc_diag_cat} -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4
-            export err=$?
-            err_chk
+            export err=$?; err_chk
 
             cp diag_${type}_${string}.${YYYYMMDDHH}.nc4 $comout
             echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4*" >> listcnv
@@ -238,8 +237,7 @@ for loop in $loops; do
          count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
          if [[ $count -gt 0 ]]; then
             ${APRUN} ${nc_diag_cat} -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4
-            export err=$?
-            err_chk
+            export err=$?; err_chk
 
             cp diag_${type}_${string}.${YYYYMMDDHH}.nc4 $comout
             echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4*" >> listrad
@@ -258,8 +256,7 @@ for loop in $loops; do
          count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
          if [[ $count -gt 0 ]]; then
             ${APRUN} ${nc_diag_cat} -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4
-            export err=$?
-            err_chk
+            export err=$?; err_chk
 
             cp diag_${type}_${string}.${YYYYMMDDHH}.nc4 $comout
             echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4*" >> listdbz
@@ -323,8 +320,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

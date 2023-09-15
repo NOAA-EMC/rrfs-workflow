@@ -193,17 +193,13 @@ DD=`echo $endtime | cut -c7-8`
 FINALDATE=${YYYY}-${MM}-${DD}_${cyc}:00:00
 
 if [ -e sndpostdone00.tm00 ]; then
+  lasthour=`ls -1rt sndpostdone??.tm00 | tail -1 | cut -c 12-13`
+  typeset -Z2 lasthour
 
-lasthour=`ls -1rt sndpostdone??.tm00 | tail -1 | cut -c 12-13`
-typeset -Z2 lasthour
-
-let "fhr=lasthour+1"
-typeset -Z2 fhr
-
+  let "fhr=lasthour+1"
+  typeset -Z2 fhr
 else
-
-fhr=00
-
+  fhr=00
 fi
 
 echo starting with fhr $fhr
@@ -266,8 +262,7 @@ EOF
   export FORT11="itag"
 
   ${APRUNC} $EXECfv3/rrfs_bufr.x  > pgmout.log_${fhr} 2>&1
-  export err=$?
-  err_chk
+  export err=$?; err_chk
 
   echo DONE $fhr at `date`
 
@@ -312,8 +307,7 @@ nlev=65
 FCST_LEN_HRS=$FHRLIM
 echo "$nlev $NSTAT $FCST_LEN_HRS" > itag
 ${APRUNS} $EXECfv3/rrfs_sndp.x  < itag >> $pgmout 2>$pgmout
-export err=$?
-err_chk
+export err=$?; err_chk
 
 SENDCOM=YES
 
@@ -349,8 +343,7 @@ echo "before stnmlist.x"
 date
 pgmout=stnmlog
 ${APRUNS}  $EXECfv3/rrfs_stnmlist.x < stnmlist_input >> $pgmout 2>errfile
-export err=$?
-err_chk
+export err=$?; err_chk
 
 echo "after stnmlist.x"
 date
@@ -405,8 +398,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

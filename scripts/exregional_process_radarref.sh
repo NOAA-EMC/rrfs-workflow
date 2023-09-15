@@ -363,8 +363,7 @@ EOF
 #-----------------------------------------------------------------------
 #
   $APRUN ./${exect} > stdout 2>&1
-  export err=$?
-  err_chk
+  export err=$?; err_chk
 
   cp stdout $comout/stdout.t${HH}z.NSSL_mosaic.${bigmin}
   cp RefInGSI3D.dat  $comout/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
@@ -386,8 +385,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #
