@@ -81,10 +81,7 @@ $SCRIPTSdir/exregional_make_lbcs.sh \
   lbcs_nwges_dir="${lbcs_nwges_dir}" \
   bcgrp="${bcgrp}" \
   bcgrpnum="${bcgrpnum}"
-export err=$?
-if [ $err -ne 0 ]; then
-  err_exit "Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
-fi
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #

@@ -86,10 +86,7 @@ python -u $SCRIPTSdir/exregional_enspost.py \
   "${fhr}" \
   "${ffg_latest}" \
   "${ffg_local_dir}"
-export err=$?
-if [ $err -ne 0 ]; then
-  err_exit "Call to pyscript \"${scrfunc_fn}\" failed."
-fi
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -105,8 +102,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

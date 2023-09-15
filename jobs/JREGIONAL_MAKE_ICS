@@ -77,10 +77,7 @@ mkdir_vrfy -p "${ics_nwges_dir}"
 $SCRIPTSdir/exregional_make_ics.sh \
   ics_dir="${ics_dir}" \
   ics_nwges_dir="${ics_nwges_dir}"
-export err=$?
-if [ $err -ne 0 ]; then
-  err_exit "Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
-fi
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #

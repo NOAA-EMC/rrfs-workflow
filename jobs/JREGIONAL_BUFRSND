@@ -1,21 +1,4 @@
 #!/bin/bash
-#                      .                                             .
-# Script name:         exregional_bufr.sh
-# Script description:  Trigger sounding post job
-#
-# Author:        Eric Rogers       Org: NP22         Date: 1999-06-23
-#
-# Abstract: This script triggers the sounding post job, which
-#           creates a piece of the model sounding profile whose
-#           time interval is determined by the input forecast hours.
-#
-# Script history log:
-# 2000-05-16  Eric Rogers
-# 2006-01-20  Eric Rogers -- extended to 84-h and modified for WRF-NMM NAM
-# 2009-12-18  Matthew Pyle -- shortened to 48-h and generalized for multiple domains
-#                             and diferent dynamical cores
-# 2019-10-28  Matthew Pyle -- Converted for FV3 SAR and 60 hours
-#
 
 #
 #-----------------------------------------------------------------------
@@ -144,10 +127,7 @@ $SCRIPTSdir/exregional_bufrsnd.sh \
   fhr="${fhr}" \
   tmmark="${TMMARK}" \
   cycle_type="${CYCLE_TYPE}"
-export err=$?
-if [ $err -ne 0 ]; then
-  err_exit "Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
-fi
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -163,8 +143,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

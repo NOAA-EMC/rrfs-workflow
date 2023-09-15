@@ -223,10 +223,7 @@ python -u ${PYTHON_GRAPHICS_DIR}/create_graphics.py \
   -w ${wait_time:-30} \
   -z ${zip_dir} \
   ${extra_args}
-export err=$?
-if [ $err -ne 0 ]; then
-  err_exit "Call to pyscript \"${scrfunc_fn}\" failed."
-fi
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -242,8 +239,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

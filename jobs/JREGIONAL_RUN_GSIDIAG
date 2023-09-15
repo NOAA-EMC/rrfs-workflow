@@ -119,10 +119,7 @@ $SCRIPTSdir/exregional_run_gsidiag.sh \
              observer_nwges_dir="${observer_nwges_dir}" \
              comout="${COMOUT}" \
              satbias_dir="${SATBIAS_DIR}"
-export err=$?
-if [ $err -ne 0 ]; then
-  err_exit "Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
-fi
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -138,8 +135,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

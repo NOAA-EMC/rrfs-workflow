@@ -77,9 +77,7 @@ else
 fi
 mkdir_vrfy -p ${run_dir}/INPUT
 mkdir_vrfy -p ${run_dir}/RESTART
-#
-#
-#
+
 gridspec_dir=${NWGES_BASEDIR}/grid_spec
 mkdir_vrfy -p ${gridspec_dir}
 #
@@ -99,10 +97,7 @@ $SCRIPTSdir/exregional_run_fcst.sh \
   slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}" \
   NWGES_BASEDIR="${NWGES_BASEDIR}" \
   RESTART_HRS="${RESTART_HRS}"
-export err=$?
-if [ $err -ne 0 ]; then
-  err_exit "Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
-fi
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -118,8 +113,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

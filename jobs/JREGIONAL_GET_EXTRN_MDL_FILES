@@ -233,10 +233,7 @@ get_extrn_mdl_file_dir_info \
   varname_extrn_mdl_arcv_fns="extrn_mdl_arcv_fns" \
   varname_extrn_mdl_arcv_fps="extrn_mdl_arcv_fps" \
   varname_extrn_mdl_arcvrel_dir="extrn_mdl_arcvrel_dir"
-export err=$?
-if [ $err -ne 0 ]; then
-  err_exit "Call to function get_extrn_mdl_file_dir_info failed."
-fi
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -277,10 +274,7 @@ $SCRIPTSdir/exregional_get_extrn_mdl_files.sh \
   extrn_mdl_arcv_fns="${extrn_mdl_arcv_fns_str}" \
   extrn_mdl_arcv_fps="${extrn_mdl_arcv_fps_str}" \
   extrn_mdl_arcvrel_dir="${extrn_mdl_arcvrel_dir}"
-export err=$?
-if [ $err -ne 0 ]; then
-  err_exit "Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
-fi
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #

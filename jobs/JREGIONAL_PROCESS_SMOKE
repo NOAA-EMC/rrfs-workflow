@@ -3,7 +3,6 @@
 #-----------------------------------------------------------------------
 #
 # This J-JOB script runs the radar reflectivity preprocess 
-#      for the FV3-LAM model
 #
 #-----------------------------------------------------------------------
 #
@@ -15,7 +14,6 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
-
 #
 #-----------------------------------------------------------------------
 #
@@ -34,7 +32,6 @@
 #
 #-----------------------------------------------------------------------
 #
-
 scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
 scrfunc_fn=$( basename "${scrfunc_fp}" )
 scrfunc_dir=$( dirname "${scrfunc_fp}" )
@@ -67,9 +64,7 @@ else
 fi
 rm -fr ${workdir}
 mkdir_vrfy -p ${workdir}
-#
-#
-#
+
 gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #
 #-----------------------------------------------------------------------
@@ -94,10 +89,7 @@ python -u ${SCRIPTSdir}/preprocess_smoke.py \
   "${FIRE_RAVE_DIR}" \
   "${workdir}" \
   "${PREDEF_GRID_NAME}"
-export err=$?
-if [ $err -ne 0 ]; then
-  err_exit "Call to pyscript \"${scrfunc_fn}\" failed."
-fi
+export err=$?; err_chk
 
 ECHO=/bin/echo
 AWK="/bin/gawk --posix"
@@ -164,8 +156,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

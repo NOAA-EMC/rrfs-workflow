@@ -4,7 +4,6 @@
 #-----------------------------------------------------------------------
 #
 # This J-JOB script runs the EnKF updates 
-#      for the FV3-LAM model
 #
 #-----------------------------------------------------------------------
 
@@ -25,7 +24,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -85,10 +84,7 @@ $SCRIPTSdir/exregional_run_enkf.sh \
              enkfworkdir="${enkfworkdir}" \
              NWGES_DIR="${NWGES_DIR}" \
              ob_type="${OB_TYPE}"
-export err=$?
-if [ $err -ne 0 ]; then
-  err_exit "Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
-fi
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -104,8 +100,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #
