@@ -282,7 +282,11 @@ elif [ "${anl_or_fcst}" = "FCST" ]; then
   if [ "${boundary_len_hrs}" = "0" ]; then
     boundary_len_hrs=${FCST_LEN_HRS}
   fi
-  lbc_spec_fcst_hrs=($( seq ${lbs_spec_intvl_hrs} ${lbs_spec_intvl_hrs} ${boundary_len_hrs} ))
+  if [ "${DO_NON_DA_RUN}" = "TRUE" ]; then
+    lbc_spec_fcst_hrs=($( seq ${lbs_spec_intvl_hrs} ${lbs_spec_intvl_hrs} ${boundary_len_hrs} ))
+  else
+    lbc_spec_fcst_hrs=($( seq 0 ${lbs_spec_intvl_hrs} ${boundary_len_hrs} ))
+  fi
   lbc_spec_fhrs=( "${lbc_spec_fcst_hrs[@]}" )
   #
   # Add the temporal offset specified in time_offset_hrs (assumed to be in 
