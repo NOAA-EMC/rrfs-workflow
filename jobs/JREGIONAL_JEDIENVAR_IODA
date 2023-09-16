@@ -62,7 +62,7 @@ COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
 if [ ${CYCLE_TYPE} == "spinup" ]; then
   COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
 fi
-mkdir_vrfy -p "${COMOUT}"
+mkdir -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #
@@ -83,7 +83,7 @@ else
   workdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/${analworkname}"
 fi
 rm -fr ${workdir}
-mkdir_vrfy -p ${workdir}
+mkdir -p ${workdir}
 #
 #-----------------------------------------------------------------------
 #

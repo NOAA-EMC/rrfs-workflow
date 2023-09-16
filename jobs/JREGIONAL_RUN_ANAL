@@ -83,17 +83,17 @@ if [ ${GSI_TYPE} == "OBSERVER" ]; then
     analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/observer${analworkname}"
     observer_nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/observer${analworkname}"
   fi
-  mkdir_vrfy -p ${observer_nwges_dir}
+  mkdir -p ${observer_nwges_dir}
 else
   analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/anal_${OB_TYPE}${analworkname}"
 fi
 
 rm -fr ${analworkdir}
-mkdir_vrfy -p ${analworkdir}
+mkdir -p ${analworkdir}
 
 if [ ! -d "${SATBIAS_DIR}" ]; then
   echo "making satbias_dir directory for cycling bias correction files" 
-  mkdir_vrfy -p ${SATBIAS_DIR}
+  mkdir -p ${SATBIAS_DIR}
 fi
 
 # Folder for storing EnKF related satbias files
@@ -101,7 +101,7 @@ if [ ${GSI_TYPE} == "OBSERVER" ]; then
   if [ ${MEM_TYPE} == "MEAN" ]; then
     if [ ! -d "${SATBIAS_DIR}_ensmean" ]; then
       echo "making satbias_dir ensmean directory for cycling bias correction files" 
-      mkdir_vrfy -p ${SATBIAS_DIR}_ensmean
+      mkdir -p ${SATBIAS_DIR}_ensmean
     fi    	  
   fi
 fi
@@ -125,7 +125,7 @@ else
     COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}${SLASH_ENSMEM_SUBDIR}"
   fi
 fi
-mkdir_vrfy -p "${COMOUT}"
+mkdir -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #

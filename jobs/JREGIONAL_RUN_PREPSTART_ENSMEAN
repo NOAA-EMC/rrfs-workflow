@@ -73,7 +73,7 @@ else
   modelinputdir=${CYCLE_DIR}/ensmean/fcst_fv3lam/INPUT
 fi
 rm -fr ${modelinputdir}
-mkdir_vrfy -p ${modelinputdir}
+mkdir -p ${modelinputdir}
 #
 #-----------------------------------------------------------------------
 #

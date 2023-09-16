@@ -80,10 +80,10 @@ else
   nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
 fi
 
-mkdir_vrfy -p "${nwges_dir}/RESTART"
-mkdir_vrfy -p "${nwges_dir}/INPUT"
+mkdir -p "${nwges_dir}/RESTART"
+mkdir -p "${nwges_dir}/INPUT"
 if [ "${SURFACE_DIR}" != "empty" ]; then
-  mkdir_vrfy -p "${SURFACE_DIR}"
+  mkdir -p "${SURFACE_DIR}"
 fi
 
 len_ensmem=${#SLASH_ENSMEM_SUBDIR}

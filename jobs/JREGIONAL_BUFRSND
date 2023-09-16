@@ -92,8 +92,8 @@ else
   nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
 fi
 
-mkdir_vrfy -p "${nwges_dir}/RESTART"
-mkdir_vrfy -p "${nwges_dir}/INPUT"
+mkdir -p "${nwges_dir}/RESTART"
+mkdir -p "${nwges_dir}/INPUT"
 #
 #-----------------------------------------------------------------------
 #
@@ -116,19 +116,18 @@ COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
 if [ ${CYCLE_TYPE} == "spinup" ]; then
   COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
 fi
-mkdir_vrfy -p "${COMOUT}"
+mkdir -p "${COMOUT}"
 
 bufrsnd_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/bufrsnd"
 if [ ${CYCLE_TYPE} == "spinup" ]; then
   bufrsnd_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/bufrsnd_spinup"
 fi
-mkdir_vrfy -p "${bufrsnd_dir}"
+mkdir -p "${bufrsnd_dir}"
 
 fhr_dir="${bufrsnd_dir}"
 #check_for_preexist_dir_file "${fhr_dir}" "delete"
-#mkdir_vrfy -p "${fhr_dir}"
 
-cd_vrfy "${bufrsnd_dir}"
+cd "${bufrsnd_dir}"
 #
 #-----------------------------------------------------------------------
 #

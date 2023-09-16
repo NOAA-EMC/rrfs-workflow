@@ -104,8 +104,8 @@ extrn_mdl_staging_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/${EXTRN_MDL_NAME}/for_
 if [ -d "${extrn_mdl_staging_dir}" ]; then
    rm -rf ${extrn_mdl_staging_dir}
 fi
-mkdir_vrfy -p "${extrn_mdl_staging_dir}"
-cd_vrfy "${extrn_mdl_staging_dir}"
+mkdir -p "${extrn_mdl_staging_dir}"
+cd "${extrn_mdl_staging_dir}"
 #
 #-----------------------------------------------------------------------
 #

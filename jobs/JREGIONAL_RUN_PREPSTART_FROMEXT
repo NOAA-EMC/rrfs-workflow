@@ -73,7 +73,7 @@ else
   modelinputdir=${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/INPUT
 fi
 rm -fr ${modelinputdir}
-mkdir_vrfy -p ${modelinputdir}
+mkdir -p ${modelinputdir}
 #
 #-----------------------------------------------------------------------
 #
