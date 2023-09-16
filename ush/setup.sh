@@ -1189,7 +1189,7 @@ if [ "${EXPT_BASEDIR:0:1}" != "/" ]; then
   EXPT_BASEDIR="${HOMErrfs}/../expt_dirs/${EXPT_BASEDIR}"
 fi
 EXPT_BASEDIR="$( readlink -m ${EXPT_BASEDIR} )"
-mkdir_vrfy -p "${EXPT_BASEDIR}"
+mkdir -p "${EXPT_BASEDIR}"
 #
 #-----------------------------------------------------------------------
 #
@@ -1806,7 +1806,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-mkdir_vrfy -p "$EXPTDIR"
+mkdir -p "$EXPTDIR"
 
 
 #
@@ -1821,7 +1821,7 @@ mkdir_vrfy -p "$EXPTDIR"
 #
 #-----------------------------------------------------------------------
 #
-mkdir_vrfy -p "$FIXLAM"
+mkdir -p "$FIXLAM"
 RES_IN_FIXLAM_FILENAMES=""
 #
 #-----------------------------------------------------------------------
@@ -2097,7 +2097,7 @@ set_thompson_mp_fix_files \
 #-----------------------------------------------------------------------
 #
 GLOBAL_VAR_DEFNS_FP="$EXPTDIR/$GLOBAL_VAR_DEFNS_FN"
-cp_vrfy $USHdir/${EXPT_DEFAULT_CONFIG_FN} ${GLOBAL_VAR_DEFNS_FP}
+cp $USHdir/${EXPT_DEFAULT_CONFIG_FN} ${GLOBAL_VAR_DEFNS_FP}
 #
 #-----------------------------------------------------------------------
 #
@@ -2112,7 +2112,7 @@ line_list=$( sed -r -e "s/(.*)/\1/g" ${GLOBAL_VAR_DEFNS_FP} )
 # Loop through the lines in line_list and concatenate lines ending with
 # the line bash continuation character "\".
 #
-rm_vrfy ${GLOBAL_VAR_DEFNS_FP}
+rm ${GLOBAL_VAR_DEFNS_FP}
 while read crnt_line; do
   printf "%s\n" "${crnt_line}" >> ${GLOBAL_VAR_DEFNS_FP}
 done <<< "${line_list}"

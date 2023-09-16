@@ -348,7 +348,7 @@ Please ensure that all files have the same resolution."
 #
 #-----------------------------------------------------------------------
 #
-  cd_vrfy "$FIXLAM"
+  cd "$FIXLAM"
 #
 #-----------------------------------------------------------------------
 #
@@ -364,7 +364,7 @@ Please ensure that all files have the same resolution."
 
   for fp in "${fps[@]}"; do
     if [ -f "$fp" ]; then
-      ln_vrfy -sf ${relative_or_null} $fp .
+      ln -sf ${relative_or_null} $fp .
     else
       print_err_msg_exit "\
 Cannot create symlink because target file (fp) does not exist:
@@ -395,7 +395,7 @@ Cannot create symlink because target file (fp) does not exist:
     target="${cres}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH4}.nc"
     symlink="${cres}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.nc"
     if [ -f "${target}" ]; then
-      ln_vrfy -sf $target $symlink
+      ln -sf $target $symlink
     else
       print_err_msg_exit "\
 Cannot create symlink because the target file (target) in the directory 
@@ -421,7 +421,7 @@ specified by FIXLAM does not exist:
       target="${cres}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH4}.nc"
       symlink="C${GFDLgrid_RES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.nc"
       if [ -f "${target}" ]; then
-        ln_vrfy -sf $target $symlink
+        ln -sf $target $symlink
       else
         print_err_msg_exit "\
 Cannot create symlink because the target file (target) in the directory 
@@ -453,7 +453,7 @@ specified by FIXLAM does not exist:
       target="${fns_sfc_climo_with_halo_in_fn[$i]}"
       symlink="${fns_sfc_climo_no_halo_in_fn[$i]}"
       if [ -f "$target" ]; then
-        ln_vrfy -sf $target $symlink
+        ln -sf $target $symlink
       else
         print_err_msg_exit "\
 Cannot create symlink because target file (target) does not exist:
@@ -475,7 +475,7 @@ Cannot create symlink because target file (target) does not exist:
       target="${fns_sfc_climo_tile7_halo0_in_fn[$i]}"
       symlink="${fns_sfc_climo_tile1_no_halo_in_fn[$i]}"
       if [ -f "$target" ]; then
-        ln_vrfy -sf $target $symlink
+        ln -sf $target $symlink
       else
         print_err_msg_exit "\
 Cannot create symlink because target file (target) does not exist:
