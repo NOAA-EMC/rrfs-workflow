@@ -118,26 +118,26 @@ fi
 if_save_input=FALSE
 
 if [ ! -r ${nwges_dir}/INPUT/gfs_ctrl.nc ]; then
-  cp_vrfy $run_dir/INPUT/gfs_ctrl.nc ${nwges_dir}/INPUT/gfs_ctrl.nc
+  cp $run_dir/INPUT/gfs_ctrl.nc ${nwges_dir}/INPUT/gfs_ctrl.nc
   if_save_input=TRUE
 fi
 
 if [ -r "$run_dir/RESTART/${restart_prefix}.coupler.res" ]; then
   if [ "${IO_LAYOUT_Y}" == "1" ]; then
     for file in ${filelistn}; do
-      mv_vrfy $run_dir/RESTART/${restart_prefix}.${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
+      mv $run_dir/RESTART/${restart_prefix}.${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
     done
   else
     for file in ${filelistn}; do
       for ii in ${list_iolayout}
       do
         iii=$(printf %4.4i $ii)
-        mv_vrfy $run_dir/RESTART/${restart_prefix}.${file}.${iii} ${nwges_dir}/RESTART/${restart_prefix}.${file}.${iii}
+        mv $run_dir/RESTART/${restart_prefix}.${file}.${iii} ${nwges_dir}/RESTART/${restart_prefix}.${file}.${iii}
       done
     done
   fi
   for file in ${filelist}; do
-    mv_vrfy $run_dir/RESTART/${restart_prefix}.${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
+    mv $run_dir/RESTART/${restart_prefix}.${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
   done
   echo " ${fhr} forecast from ${yyyymmdd}${hh} is ready " #> ${nwges_dir}/RESTART/restart_done_f${fhr}
 else
@@ -158,19 +158,19 @@ else
   if [ -r "$run_dir/RESTART/${restart_prefix}.coupler.res" ] && ([ ${fhr} -eq ${FCST_LEN_HRS_thiscycle} ] || [ ${cycle_subtype} == "ensinit" ]) ; then
     if [ "${IO_LAYOUT_Y}" == "1" ]; then
       for file in ${filelistn}; do
-        mv_vrfy $run_dir/RESTART/${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
+        mv $run_dir/RESTART/${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
       done
     else
       for file in ${filelistn}; do
         for ii in ${list_iolayout}
         do
           iii=$(printf %4.4i $ii)
-          mv_vrfy $run_dir/RESTART/${file}.${iii} ${nwges_dir}/RESTART/${restart_prefix}.${file}.${iii}
+          mv $run_dir/RESTART/${file}.${iii} ${nwges_dir}/RESTART/${restart_prefix}.${file}.${iii}
         done
       done
     fi
     for file in ${filelist}; do
-       mv_vrfy $run_dir/RESTART/${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
+       mv $run_dir/RESTART/${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
     done
     echo " ${fhr} forecast from ${yyyymmdd}${hh} is ready " #> ${nwges_dir}/RESTART/restart_done_f${fhr}
   else
@@ -185,12 +185,12 @@ fi
 #
 if [ ${cycle_type} == "prod" ] && [ ${cycle_subtype} == "control" ]; then
   if [ "${IO_LAYOUT_Y}" == "1" ]; then
-    cp_vrfy ${nwges_dir}/RESTART/${restart_prefix}.sfc_data.nc ${surface_dir}/${restart_prefix}.sfc_data.nc.${cdate}
+    cp ${nwges_dir}/RESTART/${restart_prefix}.sfc_data.nc ${surface_dir}/${restart_prefix}.sfc_data.nc.${cdate}
   else
     for ii in ${list_iolayout}
     do
       iii=$(printf %4.4i $ii)
-      cp_vrfy ${nwges_dir}/RESTART/${restart_prefix}.sfc_data.nc.${iii} ${surface_dir}/${restart_prefix}.sfc_data.nc.${cdate}.${iii}
+      cp ${nwges_dir}/RESTART/${restart_prefix}.sfc_data.nc.${iii} ${surface_dir}/${restart_prefix}.sfc_data.nc.${cdate}.${iii}
     done
   fi
 fi
@@ -205,23 +205,23 @@ if [ "${if_save_input}" = TRUE ]; then
     if [ -r ${run_dir}/INPUT/coupler.res ]; then  # warm start
       if [ "${IO_LAYOUT_Y}" == "1" ]; then
         for file in ${filelistn}; do
-          cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
+          cp $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
         done
       else
         for file in ${filelistn}; do
           for ii in ${list_iolayout}
           do
             iii=$(printf %4.4i $ii)
-           cp_vrfy $run_dir/INPUT/${file}.${iii} ${nwges_dir}/INPUT/${file}.${iii}
+           cp $run_dir/INPUT/${file}.${iii} ${nwges_dir}/INPUT/${file}.${iii}
           done
         done
       fi
       for file in ${filelist}; do
-        cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
+        cp $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
       done
     else  # cold start
       for file in ${filelistcold}; do
-        cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
+        cp $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
       done
     fi
   fi

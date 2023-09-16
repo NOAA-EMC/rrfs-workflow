@@ -132,7 +132,7 @@ DD=${YYYYMMDDHH:6:2}
 HH=${YYYYMMDDHH:8:2}
 YYYYMMDD=${YYYYMMDDHH:0:8}
 
-cd_vrfy ${ensmeandir}
+cd ${ensmeandir}
 
 #
 #--------------------------------------------------------------------
@@ -162,14 +162,14 @@ for imem in  $(seq 1 $nens)
     ln -sf ${bkpath}/sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
     if [ $imem -eq 1 ]; then
 # Prepare the data structure for ensemble mean
-      cp_vrfy -f ${bkpath}/fv_core.res.tile1.nc  fv3sar_tile1_dynvar
-      cp_vrfy -f ${bkpath}/fv_tracer.res.tile1.nc  fv3sar_tile1_tracer
-      cp_vrfy -f ${bkpath}/sfc_data.nc  fv3sar_tile1_sfcvar
+      cp -f ${bkpath}/fv_core.res.tile1.nc  fv3sar_tile1_dynvar
+      cp -f ${bkpath}/fv_tracer.res.tile1.nc  fv3sar_tile1_tracer
+      cp -f ${bkpath}/sfc_data.nc  fv3sar_tile1_sfcvar
 # Prepare other needed files for GSI observer run
-      cp_vrfy -f ${bkpath}/coupler.res coupler.res
-      ln_vrfy -snf ${bkpath}/fv_core.res.nc fv_core.res.nc
-      ln_vrfy -snf ${bkpath}/fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
-      ln_vrfy -snf ${bkpath}/phy_data.nc phy_data.nc
+      cp -f ${bkpath}/coupler.res coupler.res
+      ln -snf ${bkpath}/fv_core.res.nc fv_core.res.nc
+      ln -snf ${bkpath}/fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
+      ln -snf ${bkpath}/phy_data.nc phy_data.nc
     fi
   else
     print_err_msg_exit "Error: cannot find background: ${dynvarfile} ${tracerfile}"
@@ -214,7 +214,7 @@ ENSMEAN_EXEC=${EXECdir}/ens_mean_recenter_P2DIO.exe
 if [ -f ${ENSMEAN_EXEC} ]; then 
   print_info_msg "$VERBOSE" "
 Copying the ensemble mean executable to the run directory..."
-  cp_vrfy ${ENSMEAN_EXEC} ${ensmeandir}/.
+  cp ${ENSMEAN_EXEC} ${ensmeandir}/.
 else
   print_err_msg_exit "\
 The ensemble mean executable specified in ENSMEAN_EXEC does not exist:

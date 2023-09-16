@@ -134,7 +134,7 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-rm_vrfy -f fort.*
+rm -f fort.*
 #
 #-----------------------------------------------------------------------
 #
@@ -199,8 +199,8 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-cp_vrfy ${UPP_DIR}/parm/nam_micro_lookup.dat ./eta_micro_lookup.dat
-ln_vrfy -snf ${FIX_UPP_CRTM}/*bin ./
+cp ${UPP_DIR}/parm/nam_micro_lookup.dat ./eta_micro_lookup.dat
+ln -snf ${FIX_UPP_CRTM}/*bin ./
 if [ ${USE_CUSTOM_POST_CONFIG_FILE} = "TRUE" ]; then
   post_config_fp="${CUSTOM_POST_CONFIG_FP}"
   post_params_fp="${CUSTOM_POST_PARAMS_FP}"
@@ -224,8 +224,8 @@ forecast hour directory (fhr_dir):
   fhr_dir = \"${fhr_dir}\"
 ===================================================================="
 fi
-cp_vrfy ${post_config_fp} ./postxconfig-NT.txt
-cp_vrfy ${post_params_fp} ./params_grib2_tbl_new
+cp ${post_config_fp} ./postxconfig-NT.txt
+cp ${post_params_fp} ./params_grib2_tbl_new
 
 if [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km_HRRRIC" ]; then
   grid_specs_rrfs="lambert:-97.5:38.500000 237.826355:1746:3000 21.885885:1014:3000"
@@ -238,7 +238,7 @@ elif [ ${PREDEF_GRID_NAME} = "GSD_RAP13km" ]; then
 fi
 if [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km_HRRRIC" ] || [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km" ] || [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ] || [ ${PREDEF_GRID_NAME} = "GSD_RAP13km" ]; then
   if [ -f ${FFG_DIR}/latest.FFG ]; then
-    cp_vrfy ${FFG_DIR}/latest.FFG .
+    cp ${FFG_DIR}/latest.FFG .
     wgrib2 latest.FFG -match "0-12 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_12h.grib2
     wgrib2 latest.FFG -match "0-6 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_06h.grib2
     wgrib2 latest.FFG -match "0-3 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_03h.grib2
@@ -247,7 +247,7 @@ if [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km_HRRRIC" ] || [ ${PREDEF_GRID_NAME} = 
   for ayear in 100y 10y 5y 2y ; do
     for ahour in 01h 03h 06h 12h 24h; do
       if [ -f ${FIX_UPP}/${PREDEF_GRID_NAME}/ari${ayear}_${ahour}.grib2 ]; then
-        ln_vrfy -snf ${FIX_UPP}/${PREDEF_GRID_NAME}/ari${ayear}_${ahour}.grib2 ari${ayear}_${ahour}.grib2
+        ln -snf ${FIX_UPP}/${PREDEF_GRID_NAME}/ari${ayear}_${ahour}.grib2 ari${ayear}_${ahour}.grib2
       fi
     done
   done
@@ -259,7 +259,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-cp_vrfy ${EXECdir}/upp.x .
+cp ${EXECdir}/upp.x .
 
 print_info_msg "$VERBOSE" "
 Starting post-processing for fhr = $fhr hr..."

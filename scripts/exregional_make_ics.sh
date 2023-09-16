@@ -129,8 +129,8 @@ extrn_mdl_var_defns_fp="${extrn_mdl_staging_dir}/${EXTRN_MDL_ICS_VAR_DEFNS_FN}"
 #-----------------------------------------------------------------------
 #
 workdir="${ics_dir}/tmp_ICS"
-mkdir_vrfy -p "$workdir"
-cd_vrfy $workdir
+mkdir -p "$workdir"
+cd $workdir
 #
 #-----------------------------------------------------------------------
 #
@@ -673,15 +673,15 @@ located in the following directory:
 #
 #-----------------------------------------------------------------------
 #
-mv_vrfy out.atm.tile${TILE_RGNL}.nc \
+mv out.atm.tile${TILE_RGNL}.nc \
         ${ics_dir}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
 
-mv_vrfy out.sfc.tile${TILE_RGNL}.nc \
+mv out.sfc.tile${TILE_RGNL}.nc \
         ${ics_dir}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
 
-mv_vrfy gfs_ctrl.nc ${ics_dir}
+mv gfs_ctrl.nc ${ics_dir}
 
-mv_vrfy gfs.bndy.nc ${ics_dir}/gfs_bndy.tile${TILE_RGNL}.000.nc
+mv gfs.bndy.nc ${ics_dir}/gfs_bndy.tile${TILE_RGNL}.000.nc
 #
 #-----------------------------------------------------------------------
 #
@@ -690,7 +690,7 @@ mv_vrfy gfs.bndy.nc ${ics_dir}/gfs_bndy.tile${TILE_RGNL}.000.nc
 #-----------------------------------------------------------------------
 #
 
-cp_vrfy ${ics_dir}/*.nc ${ics_nwges_dir}/.
+cp ${ics_dir}/*.nc ${ics_nwges_dir}/.
 
 #
 #-----------------------------------------------------------------------

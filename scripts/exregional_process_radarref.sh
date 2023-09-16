@@ -163,7 +163,7 @@ Getting into working directory for radar reflectivity process ..."
 
 for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   bigmin=$( printf %2.2i $bigmin )
-  mkdir_vrfy ${WORKDIR}/${bigmin}
+  mkdir ${WORKDIR}/${bigmin}
   cd ${WORKDIR}/${bigmin}
 
   fixdir=$FIX_GSI/
@@ -180,15 +180,15 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
 #-----------------------------------------------------------------------
 
   if [ ${BKTYPE} -eq 1 ]; then
-    cp_vrfy ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
+    cp ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
   else
     if [ "${IO_LAYOUT_Y}" == "1" ]; then
-      cp_vrfy ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
+      cp ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
     else
       for ii in $list_iolayout
       do
         iii=$(printf %4.4i $ii)
-        cp_vrfy ${gridspec_dir}/fv3_grid_spec.${iii}   fv3sar_grid_spec.nc.${iii}
+        cp ${gridspec_dir}/fv3_grid_spec.${iii}   fv3sar_grid_spec.nc.${iii}
       done
     fi
   fi
@@ -273,7 +273,7 @@ esac
 #-----------------------------------------------------------------------
   BUFR_TABLE=${fixdir}/prepobs_prep_RAP.bufrtable
 
-  cp_vrfy $BUFR_TABLE prepobs_prep.bufrtable
+  cp $BUFR_TABLE prepobs_prep.bufrtable
 
 #-----------------------------------------------------------------------
 #
@@ -353,7 +353,7 @@ EOF
   if [ -f ${EXECdir}/$exect ]; then
     print_info_msg "$VERBOSE" "
     Copying the radar process  executable to the run directory..."
-    cp_vrfy ${EXECdir}/${exect} .
+    cp ${EXECdir}/${exect} .
   else
     print_err_msg_exit "\
     The executable specified in GSI_exect does not exist:

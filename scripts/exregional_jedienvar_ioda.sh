@@ -138,7 +138,7 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 print_info_msg "$VERBOSE" "
 Getting into working directory for JEDI EnVAR IODA ..."
 
-cd_vrfy ${workdir}
+cd ${workdir}
 
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
@@ -174,10 +174,10 @@ mkdir -p ${comout}/jedienvar_ioda/jedi_obs
 gsidiag_path=${cycle_dir}${slash_ensmem_subdir}/anal_conv_gsi${cycle_tag}
 
 # Copy GSI ncdiag files to COMOUT 
-cp_vrfy ${gsidiag_path}/ncdiag* ${comout}/jedienvar_ioda/anal_gsi/
+cp ${gsidiag_path}/ncdiag* ${comout}/jedienvar_ioda/anal_gsi/
 
 # Copy only ncdiag first guess files to the workfing folder
-cp_vrfy ${comout}/jedienvar_ioda/anal_gsi/*ges* ${workdir}/GSI_diags
+cp ${comout}/jedienvar_ioda/anal_gsi/*ges* ${workdir}/GSI_diags
 
 #
 #-----------------------------------------------------------------------
@@ -186,7 +186,7 @@ cp_vrfy ${comout}/jedienvar_ioda/anal_gsi/*ges* ${workdir}/GSI_diags
 #
 #-----------------------------------------------------------------------
 # 
-cd_vrfy ${workdir}/GSI_diags
+cd ${workdir}/GSI_diags
 fl=`ls -1 ncdiag*`
 
 for ifl in $fl
@@ -222,7 +222,7 @@ ${PYTHONEXE} ${IODACDir}/proc_gsi_ncdiag.py -o $workdir/obs -g $workdir/geoval $
 #Call to executable to run No Var Cloud Analysis returned with nonzero exit code."
 
 # Copy IODA obs files to COMOUT
-cp_vrfy ${workdir}/obs/*nc4 ${comout}/jedienvar_ioda/jedi_obs/
+cp ${workdir}/obs/*nc4 ${comout}/jedienvar_ioda/jedi_obs/
 
 #
 #-----------------------------------------------------------------------

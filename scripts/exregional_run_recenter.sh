@@ -132,7 +132,7 @@ DD=${YYYYMMDDHH:6:2}
 HH=${YYYYMMDDHH:8:2}
 YYYYMMDD=${YYYYMMDDHH:0:8}
 
-cd_vrfy ${recenterdir}
+cd ${recenterdir}
 
 #
 #--------------------------------------------------------------------
@@ -175,9 +175,9 @@ for imem in  $(seq 1 $nens)
 #
 # Prepare the data structure for ensemble mean
 #
-cp_vrfy -f ./fv3sar_tile1_mem001_dynvar fv3sar_tile1_dynvar
-cp_vrfy -f ./fv3sar_tile1_mem001_tracer fv3sar_tile1_tracer
-cp_vrfy -f ./fv3sar_tile1_mem001_sfcvar fv3sar_tile1_sfcvar
+cp -f ./fv3sar_tile1_mem001_dynvar fv3sar_tile1_dynvar
+cp -f ./fv3sar_tile1_mem001_tracer fv3sar_tile1_tracer
+cp -f ./fv3sar_tile1_mem001_sfcvar fv3sar_tile1_sfcvar
 
 #
 #-----------------------------------------------------------------------
@@ -238,7 +238,7 @@ ENSMEAN_EXEC=${EXECdir}/ens_mean_recenter_P2DIO.exe
 if [ -f ${ENSMEAN_EXEC} ]; then 
   print_info_msg "$VERBOSE" "
 Copying the ensemble mean executable to the run directory..."
-  cp_vrfy ${ENSMEAN_EXEC} ${recenterdir}/.
+  cp ${ENSMEAN_EXEC} ${recenterdir}/.
 else
   print_err_msg_exit "\
 The ensemble mean executable specified in ENSMEAN_EXEC does not exist:

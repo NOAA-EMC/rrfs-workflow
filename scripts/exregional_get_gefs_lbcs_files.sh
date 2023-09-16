@@ -179,7 +179,7 @@ do
     # Increment the counter that keeps track of the number of external
     # model files found on disk and print out an informational message.
     #
-    cp_vrfy ${fps} ${extrn_mdl_staging_dir}/${fps_name}
+    cp ${fps} ${extrn_mdl_staging_dir}/${fps_name}
     if [ -f "$fps2" ]; then
       more ${fps2} >>  ${extrn_mdl_staging_dir}/${fps_name}
     fi

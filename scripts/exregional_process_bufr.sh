@@ -145,7 +145,7 @@ print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
 #
 #-----------------------------------------------------------------------
 
-cp_vrfy ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
+cp ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
 
 #-----------------------------------------------------------------------
 #
@@ -153,7 +153,7 @@ cp_vrfy ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
 #
 #-----------------------------------------------------------------------
 BUFR_TABLE=${FIX_GSI}/prepobs_prep_RAP.bufrtable
-cp_vrfy $BUFR_TABLE prepobs_prep.bufrtable
+cp $BUFR_TABLE prepobs_prep.bufrtable
 
 #-----------------------------------------------------------------------
 #
@@ -206,7 +206,7 @@ run_lightning=false
 obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.lghtng.tm00.bufr_d
 print_info_msg "$VERBOSE" "obsfile is $obs_file"
 if [ -r "${obs_file}" ]; then
-   cp_vrfy "${obs_file}" "lghtngbufr"
+   cp "${obs_file}" "lghtngbufr"
    run_lightning=true
 else
    print_info_msg "$VERBOSE" "Warning: ${obs_file} does not exist!"
@@ -250,7 +250,7 @@ exect="process_Lightning.exe"
 if [ -f ${EXECdir}/$exect ]; then
   print_info_msg "$VERBOSE" "
 Copying the lightning process  executable to the run directory..."
-  cp_vrfy ${EXECdir}/${exect} ${WORKDIR}/${exect}
+  cp ${EXECdir}/${exect} ${WORKDIR}/${exect}
 else
   print_err_msg_exit "\
 The executable specified in exect does not exist:
@@ -284,7 +284,7 @@ obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.lgycld.tm00.bufr_d
 print_info_msg "$VERBOSE" "obsfile is $obs_file"
 run_cloud=false
 if [ -r "${obs_file}" ]; then
-   cp_vrfy "${obs_file}" "lgycld.bufr_d"
+   cp "${obs_file}" "lgycld.bufr_d"
    run_cloud=true
 else
    print_info_msg "$VERBOSE" "Warning: ${obs_file} does not exist!"
@@ -335,7 +335,7 @@ exect="process_larccld.exe"
 if [ -f ${EXECdir}/$exect ]; then
   print_info_msg "$VERBOSE" "
 Copying the NASA LaRC cloud process  executable to the run directory..."
-  cp_vrfy ${EXECdir}/${exect} ${WORKDIR}/${exect}
+  cp ${EXECdir}/${exect} ${WORKDIR}/${exect}
 else
   print_err_msg_exit "\
 The executable specified in exect does not exist:
@@ -369,7 +369,7 @@ obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.prepbufr.tm00
 print_info_msg "$VERBOSE" "obsfile is $obs_file"
 run_metar=false
 if [ -r "${obs_file}" ]; then
-   cp_vrfy "${obs_file}" "prepbufr"
+   cp "${obs_file}" "prepbufr"
    run_metar=true
 else
    print_info_msg "$VERBOSE" "Warning: ${obs_file} does not exist!"
@@ -408,7 +408,7 @@ exect="process_metarcld.exe"
 if [ -f ${EXECdir}/$exect ]; then
   print_info_msg "$VERBOSE" "
 Copying the METAR cloud process  executable to the run directory..."
-  cp_vrfy ${EXECdir}/${exect} ${WORKDIR}/${exect}
+  cp ${EXECdir}/${exect} ${WORKDIR}/${exect}
 else
   print_err_msg_exit "\
 The executable specified in exect does not exist:

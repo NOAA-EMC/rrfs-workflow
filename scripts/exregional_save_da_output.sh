@@ -102,23 +102,23 @@ n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
 if [ ! -r ${nwges_dir}/DA_OUTPUT/gfs_ctrl.nc ]; then
-  cp_vrfy $run_dir/INPUT/gfs_ctrl.nc ${nwges_dir}/DA_OUTPUT/gfs_ctrl.nc
+  cp $run_dir/INPUT/gfs_ctrl.nc ${nwges_dir}/DA_OUTPUT/gfs_ctrl.nc
   if [ -r ${run_dir}/INPUT/coupler.res ]; then  # warm start
     if [ "${IO_LAYOUT_Y}" == "1" ]; then
       for file in ${filelistn}; do
-        cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/DA_OUTPUT/${file}
+        cp $run_dir/INPUT/${file} ${nwges_dir}/DA_OUTPUT/${file}
       done
     else
       for file in ${filelistn}; do
         for ii in ${list_iolayout}
         do
           iii=$(printf %4.4i $ii)
-         cp_vrfy $run_dir/INPUT/${file}.${iii} ${nwges_dir}/DA_OUTPUT/${file}.${iii}
+         cp $run_dir/INPUT/${file}.${iii} ${nwges_dir}/DA_OUTPUT/${file}.${iii}
         done
       done
     fi
     for file in ${filelist}; do
-      cp_vrfy $run_dir/INPUT/${file} ${nwges_dir}/DA_OUTPUT/${file}
+      cp $run_dir/INPUT/${file} ${nwges_dir}/DA_OUTPUT/${file}
     done
   else  # cold start
     print_info_msg "$VERBOSE" "\
