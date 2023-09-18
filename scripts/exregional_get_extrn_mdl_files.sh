@@ -724,7 +724,7 @@ Getting external model files from nomads:
     cp ../../../${extrn_mdl_fps[$nfile]} .
     export err=$?
     if [ $err -ne 0 ]; then
-      err_exit "onlie file ${extrn_mdl_fps[$nfile]} not found."
+      err_exit "online file ${extrn_mdl_fps[$nfile]} not found."
     fi
   done
 fi

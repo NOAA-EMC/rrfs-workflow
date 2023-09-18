@@ -423,7 +423,7 @@ if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ ${cycle_type} == "prod" ] ; then
       cp ${IMSSNOW_ROOT}/rap_e.${YYYYMMDD}/rap_e.t${HH}z.imssnow.grib2  latest.SNOW_IMS
    else
      echo "${IMSSNOW_ROOT} data does not exist!!"
-     err_exit "No snow update at ${HH}!!!!"
+     echo "WARNING: No snow update at ${HH}!!!!"
    fi
    if [ -r "latest.SNOW_IMS" ]; then
      ln_vrfy -sf ./latest.SNOW_IMS                imssnow2
@@ -459,7 +459,7 @@ Please ensure that you have built this executable."
        echo "${YYYYMMDDHH}(${cycle_type}): update snow/ice using ${snowice_reference_time}" >> ${EXPTDIR}/log.cycles
      fi
    else
-     err_exit "No latest IMS SNOW file for update at ${YYYYMMDDHH}!!!!"
+     echo "WARNING: No latest IMS SNOW file for update at ${YYYYMMDDHH}!!!!"
    fi
 else
    echo "NOTE: No update for IMS SNOW/ICE at ${YYYYMMDDHH}!"
@@ -481,7 +481,7 @@ if [ ${HH} -eq ${SST_update_hour} ] && [ ${cycle_type} == "prod" ] ; then
       cp ${SST_ROOT}/nsst.$YYYYMMDDm1/rtgssthr_grb_0.083.grib2 latest.SST
    else
      echo "${SST_ROOT} data does not exist!!"
-     err_exit "No SST update at ${HH}!!!!"
+     echo "WARNING: No SST update at ${HH}!!!!"
    fi
    if [ -r "latest.SST" ]; then
      cp_vrfy ${FIXgsm}/RTG_SST_landmask.dat                RTG_SST_landmask.dat
@@ -519,7 +519,7 @@ EOF
        echo "${YYYYMMDDHH}(${cycle_type}): update SST using ${sst_reference_time}" >> ${EXPTDIR}/log.cycles
      fi
    else
-     err_exit "No latest SST file for update at ${YYYYMMDDHH}!!!!"
+     echo "WARNING: No latest SST file for update at ${YYYYMMDDHH}!!!!"
    fi
 else
    echo "NOTE: No update for SST at ${YYYYMMDDHH}!"
