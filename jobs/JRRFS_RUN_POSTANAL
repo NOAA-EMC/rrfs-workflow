@@ -1,0 +1,154 @@
+#!/bin/bash
+
+#
+#-----------------------------------------------------------------------
+#
+# This J-JOB script runs the applications after analysis 
+#
+#-----------------------------------------------------------------------
+
+#
+#-----------------------------------------------------------------------
+#
+# Source the variable definitions file and the bash utility functions.
+#
+#-----------------------------------------------------------------------
+#
+. ${GLOBAL_VAR_DEFNS_FP}
+. $USHdir/source_util_funcs.sh
+#
+#-----------------------------------------------------------------------
+#
+# Save current shell options (in a global array).  Then set new options
+# for this script/function.
+#
+#-----------------------------------------------------------------------
+#
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
+#
+#-----------------------------------------------------------------------
+#
+# Get the full path to the file in which this script/function is located 
+# (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
+# which the file is located (scrfunc_dir).
+#
+#-----------------------------------------------------------------------
+#
+scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
+scrfunc_fn=$( basename "${scrfunc_fp}" )
+scrfunc_dir=$( dirname "${scrfunc_fp}" )
+#
+#-----------------------------------------------------------------------
+#
+# Print message indicating entry into script.
+#
+#-----------------------------------------------------------------------
+#
+print_info_msg "
+========================================================================
+Entering script:  \"${scrfunc_fn}\"
+In directory:     \"${scrfunc_dir}\"
+
+This is the J-job script for the task that runs a analysis with FV3 for 
+the specified cycle.
+========================================================================"
+#
+#-----------------------------------------------------------------------
+#
+# Create the working directory under the cycle directory.
+#
+#-----------------------------------------------------------------------
+# CYCLE_TYPE is to indicate which type of cycle this job for:
+#   spinup: this job is for spin-up cycles
+#   others(prod): this job is for product cycle
+#
+CYCLE_TYPE=${CYCLE_TYPE:-prod}
+observer_nwges_dir=""
+
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  analworkname="_gsi_spinup"
+else
+  analworkname="_gsi"
+fi
+
+if [[ ! -v OB_TYPE ]]; then
+  OB_TYPE="conv"
+fi
+if [ ${GSI_TYPE} == "OBSERVER" ]; then
+  if [ ${MEM_TYPE} == "MEAN" ]; then
+    analworkdir="${CYCLE_DIR}/ensmean/observer${analworkname}"
+    SLASH_ENSMEM_SUBDIR=""
+    observer_nwges_dir="${NWGES_DIR}/ensmean/observer${analworkname}"
+  else
+    analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/observer${analworkname}"
+    observer_nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/observer${analworkname}"
+  fi
+  mkdir_vrfy -p ${observer_nwges_dir}
+else
+  analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/anal_${OB_TYPE}${analworkname}"
+fi
+
+if [[ ! -d ${analworkdir} ]]; then
+	echo "cannot find analysis directory"
+	exit 
+fi
+#
+#  directory has grid_spec files for restart subdomains
+#
+gridspec_dir=${NWGES_BASEDIR}/grid_spec
+#
+#-----------------------------------------------------------------------
+#
+# create COMOUT directory
+#
+#-----------------------------------------------------------------------
+#
+COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
+fi
+mkdir_vrfy -p "${COMOUT}"
+#
+#-----------------------------------------------------------------------
+#
+# Call the ex-script for this J-job and pass to it the necessary varia-
+# bles.
+#
+#-----------------------------------------------------------------------
+#
+$SCRIPTSdir/exrrfs_run_postanal.sh \
+             cycle_dir="${CYCLE_DIR}" \
+             cycle_type="${CYCLE_TYPE}" \
+             gsi_type="${GSI_TYPE}" \
+             mem_type="${MEM_TYPE}" \
+             analworkdir="${analworkdir}" \
+             observer_nwges_dir="${observer_nwges_dir}" \
+             slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}" \
+             comout="${COMOUT}" \
+             satbias_dir="${SATBIAS_DIR}" \
+             ob_type="${OB_TYPE}" \
+             gridspec_dir="${gridspec_dir}" || \
+print_err_msg_exit "\
+Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+#
+#-----------------------------------------------------------------------
+#
+# Print exit message.
+#
+#-----------------------------------------------------------------------
+#
+print_info_msg "
+========================================================================
+Exiting script:  \"${scrfunc_fn}\"
+In directory:    \"${scrfunc_dir}\"
+========================================================================"
+#
+#-----------------------------------------------------------------------
+#
+# Restore the shell options saved at the beginning of this script/func-
+# tion.
+#
+#-----------------------------------------------------------------------
+#
+{ restore_shell_opts; } > /dev/null 2>&1
+

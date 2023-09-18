@@ -215,7 +215,7 @@ We need a common location for all of the retrospective data. Need to turn off wr
 # Data assimilation configurations
 ## how to setup new observation
 1) need to make sure the GSI convinfo and satinfo (in fix directory) are set right
-2) need to add more elements to **obs_files_source**  and **obs_files_target** in regional_workflow/scripts/exregional_run_analysis.sh:
+2) need to add more elements to **obs_files_source**  and **obs_files_target** in regional_workflow/scripts/exrrfs_run_analysis.sh:
  obs_files_source[0]=${obspath_tmp}/${obsfileprefix}.t${HH}z.prepbufr.tm00
  obs_files_target[0]=prepbufr
  obs_files_source[1]=${obspath_tmp}/${obsfileprefix}.t${HH}z.satwnd.tm00.bufr_d
