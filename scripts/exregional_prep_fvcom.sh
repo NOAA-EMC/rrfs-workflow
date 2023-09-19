@@ -150,7 +150,11 @@ elif [[ -e "$erie2" && -e "$mh2" && -e "$sup2" && -e "$ont2" ]]; then
   output_sup=$sup2
   output_ont=$ont2
 else
-  err_exit "No FVCOM data is available."
+  message_txt="WARNING: No FVCOM data is available."
+  print_info_msg "${message_txt}"
+  if [ ! -z "${maillist}" ]; then
+    echo "${message_txt}" | mail.py $maillist
+  fi
 fi
 
 # names of missing input files to the Python script

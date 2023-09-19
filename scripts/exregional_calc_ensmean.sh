@@ -88,6 +88,7 @@ case $MACHINE in
   ;;
 #
 "HERA")
+  ulimit -v unlimited
   export OMP_NUM_THREADS=1
 #  export OMP_STACKSIZE=300M
   APRUN="srun"

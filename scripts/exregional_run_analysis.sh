@@ -216,7 +216,7 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
       ln_vrfy -snf ${bkpathmem}/${restart_prefix}phy_data.nc                fv3SAR${ens_nstarthr}_ens_mem${memcharv0}-fv3_phyvars
       (( ifound += 1 ))
     else
-      err_exit "Cannot find ensemble files: ${dynvarfile} ${tracerfile} ${phyvarfile} "
+      print_info_msg "WARNING: Cannot find ensemble files: ${dynvarfile} ${tracerfile} ${phyvarfile} "
     fi
     (( imem += 1 ))
   done
