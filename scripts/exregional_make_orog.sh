@@ -296,10 +296,10 @@ if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" ]] ; then
   mkdir_vrfy -p ${DATA}
   cd_vrfy ${DATA}
   mosaic_fn_gwd="${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc"
-  mosaic_fp_gwd="${FIXlam}/${mosaic_fn_gwd}"
+  mosaic_fp_gwd="${FIXLAM}/${mosaic_fn_gwd}"
   grid_fn_gwd=$( get_charvar_from_netcdf "${mosaic_fp_gwd}" "gridfiles" ) || \
     print_err_msg_exit "get_charvar_from_netcdf function failed."
-  grid_fp_gwd="${FIXlam}/${grid_fn_gwd}"
+  grid_fp_gwd="${FIXLM}/${grid_fn_gwd}"
   ls_fn="geo_em.d01.lat-lon.2.5m.HGT_M.nc"
   ss_fn="HGT.Beljaars_filtered.lat-lon.30s_res.nc"
   create_symlink_to_file target="${grid_fp_gwd}" symlink="${DATA}/${grid_fn_gwd}" \
