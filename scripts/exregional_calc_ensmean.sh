@@ -165,7 +165,7 @@ for imem in  $(seq 1 $nens)
       ln_vrfy -snf ${bkpath}/phy_data.nc phy_data.nc
     fi
   else
-    print_err_msg_exit "Error: cannot find background: ${dynvarfile} ${tracerfile}"
+    err_exit "Cannot find background: ${dynvarfile} ${tracerfile}"
   fi
   (( imem += 1 ))
  done

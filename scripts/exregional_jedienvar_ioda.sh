@@ -218,8 +218,11 @@ export PYTHONPATH=/scratch1/BMC/zrtrr/llin/220501_emc_reg_wflow/dr-jedi-ioda/iod
 
 # Running the python script
 PYTHONEXE=/scratch1/NCEPDEV/da/python/hpc-stack/miniconda3/core/miniconda3/4.6.14/envs/iodaconv/bin/python
-${PYTHONEXE} ${IODACDir}/proc_gsi_ncdiag.py -o $workdir/obs -g $workdir/geoval $workdir/GSI_diags || print_err_msg_exit "\
-#Call to executable to run No Var Cloud Analysis returned with nonzero exit code."
+${PYTHONEXE} ${IODACDir}/proc_gsi_ncdiag.py -o $workdir/obs -g $workdir/geoval $workdir/GSI_diags
+export err=$?
+if [ $err -ne 0 ]; then
+  err_exit "Call to executable to run No Var Cloud Analysis returned with nonzero exit code."
+fi
 
 # Copy IODA obs files to COMOUT
 cp_vrfy ${workdir}/obs/*nc4 ${comout}/jedienvar_ioda/jedi_obs/

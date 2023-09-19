@@ -94,34 +94,29 @@ export OMP_STACKSIZE=2048m
 #
 #-----------------------------------------------------------------------
 #
+ulimit -s unlimited
+ulimit -a
+
 case $MACHINE in
 
   "WCOSS2")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="time"
     ;;
 
   "HERA")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="time"
     ;;
 
   "ORION")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="time"
     ;;
 
   "JET")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="time"
     ;;
 
   *)
-    print_err_msg_exit "\
+    err_exit "\
 Run command has not been specified for this machine:
   MACHINE = \"$MACHINE\"
   APRUN = \"$APRUN\""
@@ -297,8 +292,11 @@ if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" ]] ; then
   cd_vrfy ${DATA}
   mosaic_fn_gwd="${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc"
   mosaic_fp_gwd="${FIXLAM}/${mosaic_fn_gwd}"
-  grid_fn_gwd=$( get_charvar_from_netcdf "${mosaic_fp_gwd}" "gridfiles" ) || \
-    print_err_msg_exit "get_charvar_from_netcdf function failed."
+  grid_fn_gwd=$( get_charvar_from_netcdf "${mosaic_fp_gwd}" "gridfiles" )
+  export err=$?
+  if [ $err -ne 0 ]; then
+    err_exit "get_charvar_from_netcdf function failed."
+  fi
   grid_fp_gwd="${FIXLM}/${grid_fn_gwd}"
   ls_fn="geo_em.d01.lat-lon.2.5m.HGT_M.nc"
   ss_fn="HGT.Beljaars_filtered.lat-lon.30s_res.nc"

@@ -115,7 +115,7 @@ case $MACHINE in
     ;;
 
   *)
-    print_err_msg_exit "\
+    err_exit "\
 Run command has not been specified for this machine:
   MACHINE = \"$MACHINE\"
   APRUN = \"$APRUN\""
@@ -340,8 +340,10 @@ generation executable (exec_fp):
 #
 # Call the python script to create the namelist file.
 #
-  ${USHdir}/set_namelist.py -q -u "$settings" -o ${rgnl_grid_nml_fp} || \
-    print_err_msg_exit "\
+  ${USHdir}/set_namelist.py -q -u "$settings" -o ${rgnl_grid_nml_fp}
+  export err=$?
+  if [ $err -ne 0 ]; then
+    err_exit "\
 Call to python script set_namelist.py to set the variables in the
 regional_esg_grid namelist file failed.  Parameters passed to this script
 are:
@@ -350,6 +352,7 @@ are:
   Namelist settings specified on command line (these have highest precedence):
     settings =
 $settings"
+  fi
 #
 # Call the executable that generates the grid file.
 #

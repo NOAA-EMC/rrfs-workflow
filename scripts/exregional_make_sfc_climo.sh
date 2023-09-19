@@ -128,34 +128,29 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
+ulimit -s unlimited
+ulimit -a
+
 case $MACHINE in
 
   "WCOSS2")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="mpiexec -n ${nprocs}"
     ;;
 
   "HERA")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="srun --export=ALL"
     ;;
 
   "ORION")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="srun --export=ALL"
     ;;
 
   "JET")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="srun --export=ALL"
     ;;
 
   *)
-    print_err_msg_exit "\
+    err_exit "\
 Run command has not been specified for this machine:
   MACHINE = \"$MACHINE\"
   APRUN = \"$APRUN\""

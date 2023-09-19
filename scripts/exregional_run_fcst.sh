@@ -492,11 +492,15 @@ fi
 
 if [ "${STOCH}" = "TRUE" ]; then
   cp ${run_dir}/${FV3_NML_FN} ${run_dir}/${FV3_NML_FN}_base
-  set_FV3nml_ens_stoch_seeds cdate="$cdate" || print_err_msg_exit "\
+  set_FV3nml_ens_stoch_seeds cdate="$cdate"
+  export err=$?
+  if [ $err -ne 0 ]; then
+    err_exit "\
  Call to function to create the ensemble-based namelist for the current 
  cycle's (cdate) run directory (run_dir) failed: 
    cdate = \"${cdate}\"
    run_dir = \"${run_dir}\""
+  fi
 fi
 #
 #-----------------------------------------------------------------------
@@ -631,7 +635,7 @@ if [ ${BKTYPE} -eq 1 ] && [ ${n_iolayouty} -ge 1 ]; then
     if [ -f "grid_spec.nc.${iii}" ]; then
       cp_vrfy grid_spec.nc.${iii} ${gridspec_dir}/fv3_grid_spec.${iii}
     else
-      print_err_msg_exit "\
+      err_exit "\
       Cannot create symlink because target does not exist:
       target = \"grid_spec.nc.$iii\""
     fi
