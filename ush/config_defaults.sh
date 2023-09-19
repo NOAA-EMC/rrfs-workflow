@@ -350,16 +350,23 @@ FIRE_RRFS_update_hour=99
 #
 #-----------------------------------------------------------------------
 #
-# Set the sparator character(s) to use in the names of the grid, mosaic,
-# and orography fixed files.
+# Set workflow environments.
 #
-# Ideally, the same separator should be used in the names of these fixed
-# files as the surface climatology fixed files (which always use a "."
-# as the separator), i.e. ideally, DOT_OR_USCORE should be set to "."
+# DOT_OR_USCORE:
+# Set the sparator character(s) to use in the names of the grid, mosaic,
+# and orography fixed files. Ideally, the same separator should be used 
+# in the names of these fixed files as the surface climatology fixed files 
+# (which always use a "." as the separator), i.e. ideally, DOT_OR_USCORE 
+# should be set to "."
+#
+# RELATIVE_LINK_FLAG:
+# How to make links. Relative links by default. Empty string for
+# absolute paths in links.
 #
 #-----------------------------------------------------------------------
 #
 DOT_OR_USCORE="_"
+RELATIVE_LINK_FLAG="--relative"
 #
 #-----------------------------------------------------------------------
 #
@@ -1859,7 +1866,7 @@ TPP_RUN_POST="1"
 # Walltimes.
 #
 WTIME_MAKE_GRID="00:20:00"
-WTIME_MAKE_OROG="00:20:00"
+WTIME_MAKE_OROG="00:40:00"
 WTIME_MAKE_SFC_CLIMO="00:20:00"
 WTIME_GET_EXTRN_ICS="00:45:00"
 WTIME_GET_EXTRN_LBCS="00:45:00"
