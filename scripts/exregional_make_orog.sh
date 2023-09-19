@@ -327,7 +327,7 @@ Please ensure that you've built this executable."
   print_info_msg "$VERBOSE" "
 Starting orography file generation..."
 
-  ${APRUN} "${exec_fp}" < "${input_redirect_fn}"  ${REDIRECT_OUT_ERR}
+  ${APRUN} "${exec_fp}" < "${input_redirect_fn}"
   export err=$?; err_chk
 
   mv_vrfy "${CRES}${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc" \
