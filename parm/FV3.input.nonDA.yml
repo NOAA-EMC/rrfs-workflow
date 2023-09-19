@@ -1,5 +1,5 @@
 # This configuration file maintains all the supported sets of namelist options
-# for DA. To build a namelist for one of these configurations, use the Python 
+# for non-DA. To build a namelist for one of these configurations, use the Python 
 # helper script ush/set_namelist.py and provide this file and the desired section 
 # via the -c option.
 
@@ -402,4 +402,166 @@ FV3_GFS_v15_thompson_mynn_lam3km:
     use_zmtnblck: !!python/none
   namsfc:
     ldebug: false
+
+FV3_GFS_v16:
+  cires_ugwp_nml:
+    launch_level: 27
+  external_ic_nml:
+    levp: 65
+  fv_core_nml:
+    agrid_vel_rst: False
+    d2_bg_k1: 0.2
+    d2_bg_k2: 0.0
+    delt_max: 0.002
+    dnats: 1
+    do_sat_adj: True
+    dz_min: 6
+    fv_debug: False
+    fv_sg_adj: 450
+    hord_dp: -5
+    hord_mt: 5
+    hord_tm: 5
+    hord_vt: 5
+    k_split: 6
+    kord_mt: 9
+    kord_tm: -9
+    kord_tr: 9
+    kord_wz: 9
+    make_nh: False
+    n_split: 6
+    n_sponge: 10
+    na_init: 0
+    nord_zs_filter: !!python/none
+    npz: 64
+    nudge_dz: False
+    nudge_qv: True
+    psm_bc: 1
+    range_warn: False
+    res_latlon_dynamics: ''
+    rf_cutoff: 750.0
+    sg_cutoff: !!python/none
+    rf_fast: !!python/none
+    tau: 10.0
+  gfdl_cloud_microphysics_nml:
+    c_cracw: 0.8
+    c_paut: 0.5
+    c_pgacs: 0.01
+    c_psaci: 0.05
+    ccn_l: 300.0
+    ccn_o: 100.0
+    const_vg: False
+    const_vi: False
+    const_vr: False
+    const_vs: False
+    de_ice: False
+    do_qa: True
+    do_sedi_heat: False
+    dw_land: 0.16
+    dw_ocean: 0.1
+    fast_sat_adj: True
+    fix_negative: True
+    icloud_f: 1
+    mono_prof: True
+    mp_time: 150.0
+    prog_ccn: False
+    qi0_crt: 8.0e-05
+    qi_lim: 1.0
+    ql_gen: 0.001
+    ql_mlt: 0.001
+    qs0_crt: 0.001
+    rad_graupel: True
+    rad_rain: True
+    rad_snow: True
+    reiflag: 2
+    rh_inc: 0.3
+    rh_inr: 0.3
+    rh_ins: 0.3
+    rthresh: 1.0e-05
+    sedi_transport: True
+    tau_g2v: 900.0
+    tau_i2s: 1000.0
+    tau_l2v: 225.0
+    tau_v2l: 150.0
+    use_ccn: True
+    use_ppm: False
+    vg_max: 12.0
+    vi_max: 1.0
+    vr_max: 12.0
+    vs_max: 2.0
+    z_slope_ice: True
+    z_slope_liq: True
+  gfs_physics_nml:
+    bl_mynn_edmf: !!python/none
+    bl_mynn_edmf_mom: !!python/none
+    bl_mynn_tkeadvect: !!python/none
+    cdmbgwd: [4.0, 0.15, 1.0, 1.0]
+    cnvcld: True
+    cnvgwd: True    
+    cplflx: !!python/none
+    do_myjpbl: !!python/none
+    do_myjsfc: !!python/none
+    do_mynnedmf: !!python/none
+    do_mynnsfclay: !!python/none
+    do_tofd: True
+    do_ugwp: False
+    do_ysu: !!python/none
+    effr_in: True
+    fhcyc: 0.0
+    fhlwr: 3600.0
+    fhswr: 3600.0
+    hybedmf: False
+    iaer: 5111
+    iau_delthrs: !!python/none
+    iaufhrs: !!python/none
+    icliq_sw: 2
+    imfdeepcnv: 2
+    imfshalcnv: 2
+    imp_physics: 11
+    icloud_bl: !!python/none
+    iopt_alb: 2
+    iopt_btr: 1
+    iopt_crs: 1
+    iopt_dveg: 1
+    iopt_frz: 1
+    iopt_inf: 1
+    iopt_rad: 1
+    iopt_run: 1
+    iopt_sfc: 1
+    iopt_snf: 4
+    iopt_stc: 1
+    iopt_tbot: 2
+    iopt_trs: 2
+    iovr: 3
+    isatmedmf: 1
+    ldiag_ugwp: False
+    lgfdlmprad: True
+    lheatstrg: True
+    lndp_type: !!python/none
+    lradar: !!python/none
+    lrefres: !!python/none
+    lsm: 1
+    lsoil: 4
+    lsoil_lsm: !!python/none
+    ltaerosol: !!python/none
+    n_var_lndp: !!python/none
+    nst_anl: True
+    nstf_name: [2, 1, 0, 0, 0]
+    prautco: [0.00015, 0.00015]
+    psautco: [0.0008, 0.0005]
+    rrfs_sd: !!python/none
+    satmedmf: True
+    sfclay_compute_flux: True
+    shal_cnv: True
+    shinhong: !!python/none
+    ttendlim: !!python/none
+    xkzminv: !!python/none
+    xkzm_m: !!python/none
+    xkzm_h: !!python/none
+  mpp_io_nml:
+    deflate_level: 1
+    shuffle: 1
+  namsfc:
+    landice: True
+    ldebug: False
+  surf_map_nml: !!python/none
 
