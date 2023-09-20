@@ -260,7 +260,7 @@ export err=$?; err_chk
 #
 # Change location to the original directory.
 #
-cd_vrfy -
+cd -
 #
 #-----------------------------------------------------------------------
 #
@@ -470,7 +470,7 @@ mv "${filtered_orog_fn_orig}" "${filtered_orog_fn}"
 #
 # Change location to the original directory.
 #
-cd_vrfy -
+cd -
 
 print_info_msg "$VERBOSE" "
 Filtering of orography complete."
@@ -549,7 +549,7 @@ mv "${shaved_fp}" "${OROG_DIR}"
 #
 # Change location to the original directory.
 #
-cd_vrfy -
+cd -
 #
 #-----------------------------------------------------------------------
 #

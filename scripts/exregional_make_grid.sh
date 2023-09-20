@@ -371,7 +371,8 @@ fi
 # to the original directory.
 #
 grid_fp="$tmpdir/${grid_fn}"
-cd_vrfy -
+
+cd -
 
 print_info_msg "$VERBOSE" "
 Grid file generation completed successfully."
@@ -558,7 +559,7 @@ mv ${shaved_fp} ${GRID_DIR}
 #
 # Change location to the original directory.
 #
-cd_vrfy -
+cd -
 #
 #-----------------------------------------------------------------------
 #
