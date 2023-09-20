@@ -124,12 +124,15 @@ OBS_INPUT::
    seviribufr     seviri      m10       seviri_m10           0.0     2     0
    seviribufr     seviri      m11       seviri_m11           0.0     2     0
    iasibufr       iasi        metop-b   iasi_metop-b         0.0     2     0
+   iasibufr       iasi        metop-c   iasi_metop-c         0.0     2     0
    gomebufr       gome        metop-b   gome_metop-b         0.0     2     0
    atmsbufr       atms        npp       atms_npp             0.0     2     0
    atmsbufr       atms        n20       atms_n20             0.0     2     0
+   atmsbufr       atms        n21       atms_n21             0.0     2     0
    crisbufr       cris        npp       cris_npp             0.0     2     0
    crisfsbufr     cris-fsr    npp       cris-fsr_npp         0.0     2     0 
    crisfsbufr     cris-fsr    n20       cris-fsr_n20         0.0     2     0 
+   crisfsbufr     cris-fsr    n21       cris-fsr_n21         0.0     2     0 
    abibufr        abi         g16       abi_g16              0.0     2     0
    mlsbufr        mls30       aura      mls30_aura           0.0     0     0
    oscatbufr      uv          null      uv                   0.0     0     0
