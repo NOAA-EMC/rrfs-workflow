@@ -65,7 +65,7 @@ else
   workdir=${CYCLE_DIR}/process_lightning
 fi
 rm -fr ${workdir}
-mkdir_vrfy -p ${workdir}
+mkdir -p ${workdir}
 #
 #-----------------------------------------------------------------------
 #
@@ -78,7 +78,7 @@ if [ ${CYCLE_TYPE} == "spinup" ]; then
 else
   COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc/ensmean"
 fi
-mkdir_vrfy -p "${COMOUT}"
+mkdir -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #

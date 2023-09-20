@@ -55,7 +55,7 @@ hour zero).
 #-----------------------------------------------------------------------
 #
 lbcs_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/lbcs"
-mkdir_vrfy -p "${lbcs_dir}"
+mkdir -p "${lbcs_dir}"
 
 #
 #-----------------------------------------------------------------------
@@ -67,7 +67,7 @@ mkdir_vrfy -p "${lbcs_dir}"
 #-----------------------------------------------------------------------
 #
 lbcs_nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/lbcs"
-mkdir_vrfy -p "${lbcs_nwges_dir}"
+mkdir -p "${lbcs_nwges_dir}"
 
 #
 #-----------------------------------------------------------------------

@@ -63,7 +63,7 @@ else
   workdir=${CYCLE_DIR}/process_smoke
 fi
 rm -fr ${workdir}
-mkdir_vrfy -p ${workdir}
+mkdir -p ${workdir}
 
 gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #
@@ -76,14 +76,14 @@ gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #-----------------------------------------------------------------------
 #
 rave_nwges_dir=${NWGES_DIR}/RAVE_INTP
-mkdir_vrfy -p "${rave_nwges_dir}"
+mkdir -p "${rave_nwges_dir}"
 #-----------------------------------------------------------------------
 #
 # Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
-cd_vrfy ${workdir}
+cd ${workdir}
 python -u ${SCRIPTSdir}/preprocess_smoke.py \
   "${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}" \
   "${FIRE_RAVE_DIR}" \

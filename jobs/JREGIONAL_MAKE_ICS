@@ -55,7 +55,7 @@ for the FV3 (in NetCDF format).
 #-----------------------------------------------------------------------
 #
 ics_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/ics"
-mkdir_vrfy -p "${ics_dir}"
+mkdir -p "${ics_dir}"
 #
 #-----------------------------------------------------------------------
 #
@@ -66,7 +66,7 @@ mkdir_vrfy -p "${ics_dir}"
 #-----------------------------------------------------------------------
 #
 ics_nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/ics"
-mkdir_vrfy -p "${ics_nwges_dir}"
+mkdir -p "${ics_nwges_dir}"
 #
 #-----------------------------------------------------------------------
 #

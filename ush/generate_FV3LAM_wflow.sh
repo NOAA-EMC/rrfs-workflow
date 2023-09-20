@@ -588,7 +588,7 @@ Creating symlink in the experiment directory (EXPTDIR) that points to the
 workflow launch script (WFLOW_LAUNCH_SCRIPT_FP):
   EXPTDIR = \"${EXPTDIR}\"
   WFLOW_LAUNCH_SCRIPT_FP = \"${WFLOW_LAUNCH_SCRIPT_FP}\""
-ln_vrfy -fs "${WFLOW_LAUNCH_SCRIPT_FP}" "$EXPTDIR"
+ln -fs "${WFLOW_LAUNCH_SCRIPT_FP}" "$EXPTDIR"
 #
 #-----------------------------------------------------------------------
 #
@@ -661,7 +661,7 @@ fi
 #
 if [ "${DO_DACYCLE}" = "TRUE" ]; then
   # Resolve the target directory that the FIXgsi symlink points to
-  ln_vrfy -fsn "$FIX_GSI" "$FIXgsi"
+  ln -fsn "$FIX_GSI" "$FIXgsi"
   path_resolved=$( readlink -m "$FIXgsi" )
   if [ ! -d "${path_resolved}" ]; then
     print_err_msg_exit "Missing link to FIXgsi
@@ -673,7 +673,7 @@ if [ "${DO_DACYCLE}" = "TRUE" ]; then
 fi  # check if DA
 
 # Resolve the target directory that the FIXcrtm symlink points to
-ln_vrfy -fsn "$FIX_CRTM" "$FIXcrtm"
+ln -fsn "$FIX_CRTM" "$FIXcrtm"
 path_resolved=$( readlink -m "$FIXcrtm" )
 if [ ! -d "${path_resolved}" ]; then
   print_err_msg_exit "Missing link to FIXcrtm
@@ -684,7 +684,7 @@ if [ ! -d "${path_resolved}" ]; then
 fi
 
 # Resolve the target directory that the FIXuppcrtm symlink points to
-ln_vrfy -fsn "$FIX_UPP_CRTM" "$FIXuppcrtm"
+ln -fsn "$FIX_UPP_CRTM" "$FIXuppcrtm"
 path_resolved=$( readlink -m "$FIXuppcrtm" )
 if [ ! -d "${path_resolved}" ]; then
   print_err_msg_exit "\
@@ -696,7 +696,7 @@ if [ ! -d "${path_resolved}" ]; then
 fi
 
 # Resolve the target directory that the FIXsmokedust symlink points to
-ln_vrfy -fsn "$FIX_SMOKE_DUST" "$FIXsmokedust"
+ln -fsn "$FIX_SMOKE_DUST" "$FIXsmokedust"
 path_resolved=$( readlink -m "$FIXsmokedust" )
 if [ ! -d "${path_resolved}" ]; then
   print_err_msg_exit "Missing link to FIXsmokedust
@@ -708,7 +708,7 @@ fi
 
 if [ "${DO_BUFRSND}" = "TRUE" ]; then
   # Resolve the target directory that the FIXbufrsnd symlink points to
-  ln_vrfy -fsn "$FIX_BUFRSND" "$FIXbufrsnd"
+  ln -fsn "$FIX_BUFRSND" "$FIXbufrsnd"
   path_resolved=$( readlink -m "$FIXbufrsnd" )
   if [ ! -d "${path_resolved}" ]; then
     print_err_msg_exit "Missing link to FIXbufrsnd
@@ -721,7 +721,7 @@ fi
 
 # Resolve target directory that FIXam symlink points to
 check_for_preexist_dir_file "$FIXam" "delete"
-ln_vrfy -fsn "$FIXgsm" "$FIXam"
+ln -fsn "$FIXgsm" "$FIXam"
 path_resolved=$( readlink -m "$FIXam" )
 if [ ! -d "${path_resolved}" ]; then
   print_err_msg_exit "\
@@ -745,11 +745,11 @@ Copying templates of various input files to the experiment directory..."
 
 print_info_msg "$VERBOSE" "
   Copying the template data table file to the experiment directory..."
-cp_vrfy "${DATA_TABLE_TMPL_FP}" "${DATA_TABLE_FP}"
+cp "${DATA_TABLE_TMPL_FP}" "${DATA_TABLE_FP}"
 
 print_info_msg "$VERBOSE" "
   Copying the template field table file to the experiment directory..."
-cp_vrfy "${FIELD_TABLE_TMPL_FP}" "${FIELD_TABLE_FP}"
+cp "${FIELD_TABLE_TMPL_FP}" "${FIELD_TABLE_FP}"
 
 #
 # Copy the CCPP physics suite definition file from its location in the
@@ -759,7 +759,7 @@ cp_vrfy "${FIELD_TABLE_TMPL_FP}" "${FIELD_TABLE_FP}"
 print_info_msg "$VERBOSE" "
 Copying the CCPP physics suite definition XML file from its location in
 the forecast model directory sturcture to the experiment directory..."
-cp_vrfy "${CCPP_PHYS_SUITE_IN_CCPP_FP}" "${CCPP_PHYS_SUITE_FP}"
+cp "${CCPP_PHYS_SUITE_IN_CCPP_FP}" "${CCPP_PHYS_SUITE_FP}"
 
 #
 # copy nems.yaml from its location in the
@@ -768,7 +768,7 @@ cp_vrfy "${CCPP_PHYS_SUITE_IN_CCPP_FP}" "${CCPP_PHYS_SUITE_FP}"
 print_info_msg "$VERBOSE" "
 Copying the nems.yaml from its location in
 the forecast model directory sturcture to the experiment directory..."
-cp_vrfy "${NEMS_YAML_IN_PARM_FP}" "${NEMS_YAML_FP}"
+cp "${NEMS_YAML_IN_PARM_FP}" "${NEMS_YAML_FP}"
 #
 #-----------------------------------------------------------------------
 #
@@ -1186,7 +1186,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-cp_vrfy $USHdir/${EXPT_CONFIG_FN} $EXPTDIR
+cp $USHdir/${EXPT_CONFIG_FN} $EXPTDIR
 #
 #-----------------------------------------------------------------------
 #

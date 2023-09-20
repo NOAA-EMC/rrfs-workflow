@@ -124,7 +124,8 @@ l_fv3reg_filecombined=.false.
 #
 #-----------------------------------------------------------------------
 #
-cd_vrfy $enkfworkdir
+cd $enkfworkdir
+
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 
 if [ ${cycle_type} == "spinup" ]; then
@@ -132,14 +133,13 @@ if [ ${cycle_type} == "spinup" ]; then
 else
    enkfanal_nwges_dir="${NWGES_DIR}/anal_enkf"
 fi
-mkdir_vrfy -p ${enkfanal_nwges_dir}
+mkdir -p ${enkfanal_nwges_dir}
 #
 #-----------------------------------------------------------------------
 #
-cp_vrfy ${fixgriddir}/fv3_coupler.res    coupler.res
-cp_vrfy ${fixgriddir}/fv3_akbk           fv3sar_tile1_akbk.nc
-cp_vrfy ${fixgriddir}/fv3_grid_spec      fv3sar_tile1_grid_spec.nc
-
+ cp ${fixgriddir}/fv3_coupler.res    coupler.res
+ cp ${fixgriddir}/fv3_akbk           fv3sar_tile1_akbk.nc
+ cp ${fixgriddir}/fv3_grid_spec      fv3sar_tile1_grid_spec.nc
 #
 #-----------------------------------------------------------------------
 #
@@ -166,11 +166,10 @@ for imem in  $(seq 1 $nens) ensmean; do
     observer_nwges_dir="${NWGES_DIR}/${slash_ensmem_subdir}/observer_gsi"
   fi
 
-  ln_vrfy  -snf  ${bkpath}/fv_core.res.tile1.nc         fv3sar_tile1_${memcharv0}_dynvars
-  ln_vrfy  -snf  ${bkpath}/fv_tracer.res.tile1.nc       fv3sar_tile1_${memcharv0}_tracer
-  ln_vrfy  -snf  ${bkpath}/sfc_data.nc                  fv3sar_tile1_${memcharv0}_sfcdata
-  ln_vrfy  -snf  ${bkpath}/phy_data.nc                  fv3sar_tile1_${memcharv0}_phyvar
-
+  ln -snf  ${bkpath}/fv_core.res.tile1.nc      fv3sar_tile1_${memcharv0}_dynvars
+  ln -snf  ${bkpath}/fv_tracer.res.tile1.nc    fv3sar_tile1_${memcharv0}_tracer
+  ln -snf  ${bkpath}/sfc_data.nc               fv3sar_tile1_${memcharv0}_sfcdata
+  ln -snf  ${bkpath}/phy_data.nc               fv3sar_tile1_${memcharv0}_phyvar
 #
 #-----------------------------------------------------------------------
 #
@@ -197,16 +196,16 @@ for imem in  $(seq 1 $nens) ensmean; do
       diagfile0=${observer_nwges_dir}/diag_${sub_ob_type}_ges.${YYYYMMDDHH}.nc4
       if [ -s $diagfile0 ]; then
         diagfile=$(basename  $diagfile0)
-        cp_vrfy  $diagfile0  $diagfile
+        cp  $diagfile0  $diagfile
         ncfile=$(basename -s .nc4 $diagfile)
-        mv_vrfy $ncfile.nc4 ${ncfile}_${memcharv0}.nc4
+        mv $ncfile.nc4 ${ncfile}_${memcharv0}.nc4
       fi
     done
   else
     for diagfile0 in $(ls  ${observer_nwges_dir}/diag*${ob_type}*ges* ) ; do
       if [ -s $diagfile0 ]; then
          diagfile=$(basename  $diagfile0)
-         cp_vrfy  $diagfile0   diag_conv_ges.$memcharv0
+         cp  $diagfile0   diag_conv_ges.$memcharv0
       fi
     done
   fi
@@ -242,10 +241,10 @@ stderr_name=stderr.${ob_type}
 SATINFO=${FIX_GSI}/global_satinfo.txt
 OZINFO=${FIX_GSI}/global_ozinfo.txt
 
-cp_vrfy ${ANAVINFO} anavinfo
-cp_vrfy $SATINFO    satinfo
-cp_vrfy $CONVINFO   convinfo
-cp_vrfy $OZINFO     ozinfo
+cp ${ANAVINFO} anavinfo
+cp $SATINFO    satinfo
+cp $CONVINFO   convinfo
+cp $OZINFO     ozinfo
 
 if [ ${DO_ENS_RADDA} == "TRUE" ]; then
   # This follows the procedure of DO_RADDA=TRUE in exregional_run_analysis.sh, with differences below
@@ -266,8 +265,8 @@ if [ ${DO_ENS_RADDA} == "TRUE" ]; then
     if [ -r ${satbias_dir}/rrfs.prod.${SAT_TIME}_satbias ]; then
       echo " using satellite bias files from ${SAT_TIME}"
       
-      cp_vrfy ${satbias_dir}/rrfs.prod.${SAT_TIME}_satbias ./satbias_in
-      cp_vrfy ${satbias_dir}/rrfs.prod.${SAT_TIME}_satbias_pc ./satbias_pc
+      cp ${satbias_dir}/rrfs.prod.${SAT_TIME}_satbias ./satbias_in
+      cp ${satbias_dir}/rrfs.prod.${SAT_TIME}_satbias_pc ./satbias_pc
     
       break
     fi
@@ -278,11 +277,11 @@ if [ ${DO_ENS_RADDA} == "TRUE" ]; then
   if [ $satcounter -eq $maxcounter ]; then	
     if [ -r ${FIX_GSI}/rrfs.starting_satbias ]; then
       echo "using satllite satbias_in files from ${FIX_GSI}"     
-      cp_vrfy ${FIX_GSI}/rrfs.starting_satbias ./satbias_in
+      cp ${FIX_GSI}/rrfs.starting_satbias ./satbias_in
     fi
     if [ -r ${FIX_GSI}/rrfs.starting_satbias_pc ]; then
       echo "using satllite satbias_pc files from ${FIX_GSI}"     
-      cp_vrfy ${FIX_GSI}/rrfs.starting_satbias_pc ./satbias_pc
+      cp ${FIX_GSI}/rrfs.starting_satbias_pc ./satbias_pc
     fi
   fi
 fi	
@@ -442,7 +441,7 @@ ENKFEXEC=${EXECdir}/enkf.x
 if [ -f ${ENKFEXEC} ]; then
   print_info_msg "$VERBOSE" "
 Copying the EnKF executable to the run directory..."
-  cp_vrfy ${ENKFEXEC} ${enkfworkdir}/enkf.x
+  cp ${ENKFEXEC} ${enkfworkdir}/enkf.x
 else
   err_exit "\
 The EnKF executable specified in ENKFEXEC does not exist:
@@ -463,13 +462,13 @@ if [ $countdiag -gt $nens ]; then
     ${APRUN}  $enkfworkdir/enkf.x < enkf.nml 1>${stdout_name} 2>${stderr_name}
     export err=$?; err_chk
 
-    cp_vrfy ${stdout_name} ${enkfanal_nwges_dir}/.
-    cp_vrfy ${stderr_name} ${enkfanal_nwges_dir}/.
+    cp ${stdout_name} ${enkfanal_nwges_dir}/.
+    cp ${stderr_name} ${enkfanal_nwges_dir}/.
     if [ ! -d ${NWGES_DIR}/../enkf_diag ]; then
       mkdir -p ${NWGES_DIR}/../enkf_diag
     fi
-    cp_vrfy ${stdout_name} ${NWGES_DIR}/../enkf_diag/${stdout_name}.$vlddate
-    cp_vrfy ${stderr_name} ${NWGES_DIR}/../enkf_diag/${stderr_name}.$vlddate
+    cp ${stdout_name} ${NWGES_DIR}/../enkf_diag/${stdout_name}.$vlddate
+    cp ${stderr_name} ${NWGES_DIR}/../enkf_diag/${stderr_name}.$vlddate
   else
     ${APRUN}  $enkfworkdir/enkf.x < enkf.nml 1>${stdout_name} 2>${stderr_name}
     export err=$?; err_chk

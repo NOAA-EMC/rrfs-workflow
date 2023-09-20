@@ -92,7 +92,7 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 #
 #-----------------------------------------------------------------------
 #
-cd_vrfy ${modelinputdir}
+cd ${modelinputdir}
 #
 #--------------------------------------------------------------------
 #
@@ -116,21 +116,21 @@ restart_prefix="${YYYYMMDD}.${HH}0000."
 checkfile=${bkpath}/${restart_prefix}coupler.res
 checkfile_spinup=${bkpath_spinup}/${restart_prefix}coupler.res
 if [ -r "${checkfile}" ] ; then
-  cp_vrfy -f ${checkfile} coupler.res
-  ln_vrfy -snf ${bkpath}/${restart_prefix}fv_core.res.nc fv_core.res.nc
-  ln_vrfy -snf ${bkpath}/${restart_prefix}fv_core.res.tile1.nc fv_core.res.tile1.nc
-  ln_vrfy -snf ${bkpath}/${restart_prefix}fv_tracer.res.tile1.nc fv_tracer.res.tile1.nc
-  ln_vrfy -snf ${bkpath}/${restart_prefix}sfc_data.nc sfc_data.nc
-  ln_vrfy -snf ${bkpath}/${restart_prefix}fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
-  ln_vrfy -snf ${bkpath}/${restart_prefix}phy_data.nc phy_data.nc
+  cp -f ${checkfile} coupler.res
+  ln -snf ${bkpath}/${restart_prefix}fv_core.res.nc fv_core.res.nc
+  ln -snf ${bkpath}/${restart_prefix}fv_core.res.tile1.nc fv_core.res.tile1.nc
+  ln -snf ${bkpath}/${restart_prefix}fv_tracer.res.tile1.nc fv_tracer.res.tile1.nc
+  ln -snf ${bkpath}/${restart_prefix}sfc_data.nc sfc_data.nc
+  ln -snf ${bkpath}/${restart_prefix}fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
+  ln -snf ${bkpath}/${restart_prefix}phy_data.nc phy_data.nc
 elif [ -r "${checkfile_spinup}" ] ; then
-  cp_vrfy -f ${checkfile_spinup} coupler.res
-  ln_vrfy -snf ${bkpath_spinup}/${restart_prefix}fv_core.res.nc fv_core.res.nc
-  ln_vrfy -snf ${bkpath_spinup}/${restart_prefix}fv_core.res.tile1.nc fv_core.res.tile1.nc
-  ln_vrfy -snf ${bkpath_spinup}/${restart_prefix}fv_tracer.res.tile1.nc fv_tracer.res.tile1.nc
-  ln_vrfy -snf ${bkpath_spinup}/${restart_prefix}sfc_data.nc sfc_data.nc
-  ln_vrfy -snf ${bkpath_spinup}/${restart_prefix}fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
-  ln_vrfy -snf ${bkpath_spinup}/${restart_prefix}phy_data.nc phy_data.nc
+  cp -f ${checkfile_spinup} coupler.res
+  ln -snf ${bkpath_spinup}/${restart_prefix}fv_core.res.nc fv_core.res.nc
+  ln -snf ${bkpath_spinup}/${restart_prefix}fv_core.res.tile1.nc fv_core.res.tile1.nc
+  ln -snf ${bkpath_spinup}/${restart_prefix}fv_tracer.res.tile1.nc fv_tracer.res.tile1.nc
+  ln -snf ${bkpath_spinup}/${restart_prefix}sfc_data.nc sfc_data.nc
+  ln -snf ${bkpath_spinup}/${restart_prefix}fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
+  ln -snf ${bkpath_spinup}/${restart_prefix}phy_data.nc phy_data.nc
 else
   err_exit "Cannot find deterministic (control) warm start files from : ${bkpath} or ${bkpath_spinup}"
 fi

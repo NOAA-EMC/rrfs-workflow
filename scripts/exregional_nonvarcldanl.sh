@@ -125,7 +125,7 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 print_info_msg "$VERBOSE" "
 Getting into working directory for non-var cloud analysis ..."
 
-cd_vrfy ${workdir}
+cd ${workdir}
 
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
@@ -151,33 +151,33 @@ fi
 n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
-cp_vrfy ${fixgriddir}/fv3_akbk        fv3_akbk
-cp_vrfy ${fixgriddir}/fv3_grid_spec   fv3_grid_spec
+cp ${fixgriddir}/fv3_akbk       fv3_akbk
+cp ${fixgriddir}/fv3_grid_spec  fv3_grid_spec
 
 BKTYPE=0
 if [ -r "${bkpath}/coupler.res" ]; then # Use background from warm restart
   if [ "${IO_LAYOUT_Y}" == "1" ]; then
-    ln_vrfy -s ${bkpath}/fv_core.res.tile1.nc         fv3_dynvars
-    ln_vrfy -s ${bkpath}/fv_tracer.res.tile1.nc       fv3_tracer
-    ln_vrfy -s ${bkpath}/sfc_data.nc                  fv3_sfcdata
-    ln_vrfy -s ${bkpath}/phy_data.nc                  fv3_phydata
+    ln -s ${bkpath}/fv_core.res.tile1.nc         fv3_dynvars
+    ln -s ${bkpath}/fv_tracer.res.tile1.nc       fv3_tracer
+    ln -s ${bkpath}/sfc_data.nc                  fv3_sfcdata
+    ln -s ${bkpath}/phy_data.nc                  fv3_phydata
   else
     for ii in ${list_iolayout}
     do
       iii=$(printf %4.4i $ii)
-      ln_vrfy -s ${bkpath}/fv_core.res.tile1.nc.${iii}         fv3_dynvars.${iii}
-      ln_vrfy -s ${bkpath}/fv_tracer.res.tile1.nc.${iii}       fv3_tracer.${iii}
-      ln_vrfy -s ${bkpath}/sfc_data.nc.${iii}                  fv3_sfcdata.${iii}
-      ln_vrfy -s ${bkpath}/phy_data.nc.${iii}                  fv3_phydata.${iii}
-      ln_vrfy -s ${gridspec_dir}/fv3_grid_spec.${iii}          fv3_grid_spec.${iii}
+      ln -s ${bkpath}/fv_core.res.tile1.nc.${iii}         fv3_dynvars.${iii}
+      ln -s ${bkpath}/fv_tracer.res.tile1.nc.${iii}       fv3_tracer.${iii}
+      ln -s ${bkpath}/sfc_data.nc.${iii}                  fv3_sfcdata.${iii}
+      ln -s ${bkpath}/phy_data.nc.${iii}                  fv3_phydata.${iii}
+      ln -s ${gridspec_dir}/fv3_grid_spec.${iii}          fv3_grid_spec.${iii}
     done
   fi
   BKTYPE=0
 else                                   # Use background from input (cold start)
-  ln_vrfy -s ${bkpath}/sfc_data.tile7.halo0.nc      fv3_sfcdata
-  ln_vrfy -s ${bkpath}/phy_data.tile7.halo0.nc      fv3_phydata
-  ln_vrfy -s ${bkpath}/gfs_data.tile7.halo0.nc         fv3_dynvars
-  ln_vrfy -s ${bkpath}/gfs_data.tile7.halo0.nc         fv3_tracer
+  ln -s ${bkpath}/sfc_data.tile7.halo0.nc      fv3_sfcdata
+  ln -s ${bkpath}/phy_data.tile7.halo0.nc      fv3_phydata
+  ln -s ${bkpath}/gfs_data.tile7.halo0.nc         fv3_dynvars
+  ln -s ${bkpath}/gfs_data.tile7.halo0.nc         fv3_tracer
   BKTYPE=1
 fi
 
@@ -205,7 +205,7 @@ do
   obs_file=${obs_files_source[$i]}
   obs_file_t=${obs_files_target[$i]}
   if [ -r "${obs_file}" ]; then
-    cp_vrfy "${obs_file}" "${obs_file_t}"
+    cp "${obs_file}" "${obs_file_t}"
   else
     print_info_msg "$VERBOSE" "Warning: ${obs_file} does not exist!"
   fi
@@ -226,12 +226,12 @@ for bigmin in 0; do
   num=$( printf %2.2i ${ss} )
   if [ -r "${obs_file_check}" ]; then
      if [ "${IO_LAYOUT_Y}" == "1" ]; then
-       cp_vrfy "${obs_file}" "RefInGSI3D.dat_${num}"
+       cp "${obs_file}" "RefInGSI3D.dat_${num}"
      else
        for ii in ${list_iolayout}
        do
          iii=$(printf %4.4i $ii)
-         cp_vrfy "${obs_file}.${iii}" "RefInGSI3D.dat.${iii}_${num}"
+         cp "${obs_file}.${iii}" "RefInGSI3D.dat.${iii}_${num}"
        done
      fi
   else
@@ -312,7 +312,7 @@ exect="fv3lam_nonvarcldana.exe"
 if [ -f ${EXECdir}/$exect ]; then
   print_info_msg "$VERBOSE" "
 Copying the nonVar Cloud Analysis executable to the run directory..."
-  cp_vrfy ${EXECdir}/${exect} ${workdir}
+  cp ${EXECdir}/${exect} ${workdir}
 else
   err_exit "\
 The executable specified in exect does not exist:

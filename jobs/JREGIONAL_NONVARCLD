@@ -70,7 +70,7 @@ else
   workdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/${analworkname}"
 fi
 rm -fr ${workdir}
-mkdir_vrfy -p ${workdir}
+mkdir -p ${workdir}
 
 #
 #  directory has grid_spec files for restart subdomains
@@ -91,7 +91,7 @@ else
   COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}${SLASH_ENSMEM_SUBDIR}"
   COMIN="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
 fi
-mkdir_vrfy -p "${COMOUT}"
+mkdir -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #

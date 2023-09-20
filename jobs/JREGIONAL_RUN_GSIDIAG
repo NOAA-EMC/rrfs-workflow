@@ -83,7 +83,7 @@ fi
 
 if [ ! -d "${SATBIAS_DIR}" ]; then
   echo "making satbias_dir directory for cycling bias correction files" 
-  mkdir_vrfy -p ${SATBIAS_DIR}
+  mkdir -p ${SATBIAS_DIR}
 fi
 
 #
@@ -102,7 +102,7 @@ else
     COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}${SLASH_ENSMEM_SUBDIR}"
   fi
 fi
-mkdir_vrfy -p "${COMOUT}"
+mkdir -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #

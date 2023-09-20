@@ -72,7 +72,7 @@ if [ ${CYCLE_TYPE} == "prod" ]; then
   nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
 fi
 
-mkdir_vrfy -p "${nwges_dir}/DA_OUTPUT"
+mkdir -p "${nwges_dir}/DA_OUTPUT"
 #
 #-----------------------------------------------------------------------
 #

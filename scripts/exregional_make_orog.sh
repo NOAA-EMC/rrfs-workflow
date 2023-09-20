@@ -133,16 +133,16 @@ esac
 #-----------------------------------------------------------------------
 #
 check_for_preexist_dir_file "${OROG_DIR}" "${PREEXISTING_DIR_METHOD}"
-mkdir_vrfy -p "${OROG_DIR}"
+mkdir -p "${OROG_DIR}"
 
 raw_dir="${OROG_DIR}/raw_topo"
-mkdir_vrfy -p "${raw_dir}"
+mkdir -p "${raw_dir}"
 
 filter_dir="${OROG_DIR}/filtered_topo"
-mkdir_vrfy -p "${filter_dir}"
+mkdir -p "${filter_dir}"
 
 shave_dir="${OROG_DIR}/shave_tmp"
-mkdir_vrfy -p "${shave_dir}"
+mkdir -p "${shave_dir}"
 #
 #
 #-----------------------------------------------------------------------
@@ -167,15 +167,15 @@ fi
 # file and change location to it.
 #
 tmp_dir="${raw_dir}/tmp"
-mkdir_vrfy -p "${tmp_dir}"
-cd_vrfy "${tmp_dir}"
+mkdir -p "${tmp_dir}"
+cd "${tmp_dir}"
 #
 # Copy topography and related data files from the system directory (TOPO_DIR)
 # to the temporary directory.
 #
-cp_vrfy ${TOPO_DIR}/thirty.second.antarctic.new.bin fort.15
-cp_vrfy ${TOPO_DIR}/landcover30.fixed .
-cp_vrfy ${TOPO_DIR}/gmted2010.30sec.int fort.235
+cp ${TOPO_DIR}/thirty.second.antarctic.new.bin fort.15
+cp ${TOPO_DIR}/landcover30.fixed .
+cp ${TOPO_DIR}/gmted2010.30sec.int fort.235
 #
 #-----------------------------------------------------------------------
 #
@@ -260,7 +260,7 @@ export err=$?; err_chk
 #
 # Change location to the original directory.
 #
-cd_vrfy -
+cd -
 #
 #-----------------------------------------------------------------------
 #
@@ -275,7 +275,7 @@ raw_orog_fn_prefix="${CRES}${DOT_OR_USCORE}raw_orog"
 fn_suffix_with_halo="tile${TILE_RGNL}.halo${NHW}.nc"
 raw_orog_fn="${raw_orog_fn_prefix}.${fn_suffix_with_halo}"
 raw_orog_fp="${raw_dir}/${raw_orog_fn}"
-mv_vrfy "${raw_orog_fp_orig}" "${raw_orog_fp}"
+mv "${raw_orog_fp_orig}" "${raw_orog_fp}"
 #
 #-----------------------------------------------------------------------
 #
@@ -288,8 +288,8 @@ mv_vrfy "${raw_orog_fp_orig}" "${raw_orog_fp}"
 suites=( "FV3_RAP" "FV3_HRRR" "FV3_HRRR_gf" "FV3_GFS_v15_thompson_mynn_lam3km" "FV3_GFS_v17_p8" )
 if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" ]] ; then
   DATA="${DATA:-${OROG_DIR}/temp_orog_data}"
-  mkdir_vrfy -p ${DATA}
-  cd_vrfy ${DATA}
+  mkdir -p ${DATA}
+  cd ${DATA}
   mosaic_fn_gwd="${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc"
   mosaic_fp_gwd="${FIXLAM}/${mosaic_fn_gwd}"
   grid_fn_gwd=$( get_charvar_from_netcdf "${mosaic_fp_gwd}" "gridfiles" )
@@ -330,7 +330,7 @@ Starting orography file generation..."
   ${APRUN} "${exec_fp}" < "${input_redirect_fn}"
   export err=$?; err_chk
 
-  mv_vrfy "${CRES}${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc" \
+  mv "${CRES}${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc" \
           "${CRES}${DOT_OR_USCORE}oro_data_ls.tile${TILE_RGNL}.halo${NH0}.nc" \
           "${OROG_DIR}"
 fi
@@ -412,7 +412,7 @@ fn_suffix_without_halo="tile${TILE_RGNL}.nc"
 filtered_orog_fn_prefix="${CRES}${DOT_OR_USCORE}filtered_orog"
 filtered_orog_fp_prefix="${filter_dir}/${filtered_orog_fn_prefix}"
 filtered_orog_fp="${filtered_orog_fp_prefix}.${fn_suffix_without_halo}"
-cp_vrfy "${raw_orog_fp}" "${filtered_orog_fp}"
+cp "${raw_orog_fp}" "${filtered_orog_fp}"
 #
 # The orography filtering executable looks for the grid file specified
 # in the grid mosaic file (more specifically, specified by the gridfiles
@@ -425,9 +425,9 @@ cp_vrfy "${raw_orog_fp}" "${filtered_orog_fp}"
 # point it to the actual grid file specified by grid_fp.
 #
 if [ "${MACHINE}" = "WCOSS2" ]; then
-  ln_vrfy -fs "${grid_fp}" "${filter_dir}/${grid_fn}"
+  ln -fs "${grid_fp}" "${filter_dir}/${grid_fn}"
 else
-  ln_vrfy -fs --relative "${grid_fp}" "${filter_dir}/${grid_fn}"
+  ln -fs --relative "${grid_fp}" "${filter_dir}/${grid_fn}"
 fi
 #
 # Create the namelist file (in the filter_dir directory) that the orography
@@ -450,7 +450,7 @@ EOF
 # in which it is located).  Thus, since above we created the input.nml
 # file in filter_dir, we must also run the executable out of this directory.
 #
-cd_vrfy "${filter_dir}"
+cd "${filter_dir}"
 #
 # Run the orography filtering executable.
 #
@@ -466,11 +466,11 @@ export err=$?; err_chk
 filtered_orog_fn_orig=$( basename "${filtered_orog_fp}" )
 filtered_orog_fn="${filtered_orog_fn_prefix}.${fn_suffix_with_halo}"
 filtered_orog_fp=$( dirname "${filtered_orog_fp}" )"/${filtered_orog_fn}"
-mv_vrfy "${filtered_orog_fn_orig}" "${filtered_orog_fn}"
+mv "${filtered_orog_fn_orig}" "${filtered_orog_fn}"
 #
 # Change location to the original directory.
 #
-cd_vrfy -
+cd -
 
 print_info_msg "$VERBOSE" "
 Filtering of orography complete."
@@ -507,7 +507,7 @@ unshaved_fp="${filtered_orog_fp}"
 # We perform the work in shave_dir, so change location to that directory.
 # Once it is complete, we move the resultant file from shave_dir to OROG_DIR.
 #
-cd_vrfy "${shave_dir}"
+cd "${shave_dir}"
 #
 # Create an input namelist file for the shave executable to generate an
 # orography file without a halo from the one with a wide halo.  Then call
@@ -526,7 +526,7 @@ printf "%s %s %s %s %s\n" \
 
 $APRUN ${exec_fp} < ${nml_fn}
 export err=$?; err_chk
-mv_vrfy ${shaved_fp} ${OROG_DIR}
+mv ${shaved_fp} ${OROG_DIR}
 #
 # Create an input namelist file for the shave executable to generate an
 # orography file with a 4-cell-wide halo from the one with a wide halo.
@@ -545,11 +545,11 @@ printf "%s %s %s %s %s\n" \
 
 $APRUN ${exec_fp} < ${nml_fn}
 export err=$?; err_chk
-mv_vrfy "${shaved_fp}" "${OROG_DIR}"
+mv "${shaved_fp}" "${OROG_DIR}"
 #
 # Change location to the original directory.
 #
-cd_vrfy -
+cd -
 #
 #-----------------------------------------------------------------------
 #
