@@ -93,7 +93,7 @@ case ${EXTRN_MDL_NAME} in
 # last CDATE for the GSMGFS to the one 6 hours before this.
   cdate_max="2019061206"
   if [ "$CDATE" -gt "$cdate_max" ]; then
-    print_err_msg_exit "\
+    err_exit "\
 Output from the specified external model (EXTRN_MDL_NAME) is not available 
 for the specified cycle date and time (CDATE) because the latter is
 later than the last forecast date and time (cdate_max) with this model:
@@ -110,7 +110,7 @@ later than the last forecast date and time (cdate_max) with this model:
 # for the FV3GFS to this date and time.
   CDATE_min="2018121500"
   if [ "$CDATE" -lt "$CDATE_min" ]; then
-    print_err_msg_exit "\
+    err_exit "\
 Output from the specified external model (EXTRN_MDL_NAME) is not available 
 for the specified cycle date and time (CDATE) because the latter is
 earlier than the implementation date of this model:
@@ -125,7 +125,7 @@ earlier than the implementation date of this model:
 # July 01, 2015.
   CDATE_min="2015070100"
   if [ "$CDATE" -lt "$CDATE_min" ]; then
-    print_err_msg_exit "\
+    err_exit "\
 Output from the specified external model (EXTRN_MDL_NAME) is not available 
 for the specified cycle date and time (CDATE) because the latter is
 earlier than the implementation date of this model:
@@ -141,7 +141,7 @@ earlier than the implementation date of this model:
 # September 30, 2014.
   CDATE_min="2014103000"
   if [ "$CDATE" -lt "$CDATE_min" ]; then
-    print_err_msg_exit "\
+    err_exit "\
 Output from the specified external model (EXTRN_MDL_NAME) is not available 
 for the specified cycle date and time (CDATE) because the latter is
 earlier than the implementation date of this model:
@@ -232,9 +232,8 @@ get_extrn_mdl_file_dir_info \
   varname_extrn_mdl_arcv_fmt="extrn_mdl_arcv_fmt" \
   varname_extrn_mdl_arcv_fns="extrn_mdl_arcv_fns" \
   varname_extrn_mdl_arcv_fps="extrn_mdl_arcv_fps" \
-  varname_extrn_mdl_arcvrel_dir="extrn_mdl_arcvrel_dir" || \
-print_err_msg_exit "\
-Call to function get_extrn_mdl_file_dir_info failed."
+  varname_extrn_mdl_arcvrel_dir="extrn_mdl_arcvrel_dir"
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -249,7 +248,7 @@ extrn_mdl_source_dir2="${extrn_mdl_sysdir2}"
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job and pass to it the necessary variables.
+# Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
@@ -274,9 +273,8 @@ $SCRIPTSdir/exrrfs_get_extrn_mdl_files.sh \
   extrn_mdl_arcv_fmt="${extrn_mdl_arcv_fmt}" \
   extrn_mdl_arcv_fns="${extrn_mdl_arcv_fns_str}" \
   extrn_mdl_arcv_fps="${extrn_mdl_arcv_fps_str}" \
-  extrn_mdl_arcvrel_dir="${extrn_mdl_arcvrel_dir}" || \
-print_err_msg_exit "\
-Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+  extrn_mdl_arcvrel_dir="${extrn_mdl_arcvrel_dir}"
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #

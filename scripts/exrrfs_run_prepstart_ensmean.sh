@@ -70,10 +70,6 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-# Load modules.
-#
-#-----------------------------------------------------------------------
-#
 # Extract from CDATE the starting year, month, day, and hour of the
 # forecast.  These are needed below for various operations.
 #
@@ -95,9 +91,8 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 # go to INPUT directory.
 #
 #-----------------------------------------------------------------------
-
+#
 cd_vrfy ${modelinputdir}
-
 #
 #--------------------------------------------------------------------
 #
@@ -106,7 +101,6 @@ cd_vrfy ${modelinputdir}
 #
 #--------------------------------------------------------------------
 #
-
 fg_restart_dirname=fcst_fv3lam
 fg_restart_dirname_spinup=fcst_fv3lam_spinup
 
@@ -138,7 +132,7 @@ elif [ -r "${checkfile_spinup}" ] ; then
   ln_vrfy -snf ${bkpath_spinup}/${restart_prefix}fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
   ln_vrfy -snf ${bkpath_spinup}/${restart_prefix}phy_data.nc phy_data.nc
 else
-  print_err_msg_exit "Error: cannot find deterministic (control) warm start files from : ${bkpath} or ${bkpath_spinup}"
+  err_exit "Cannot find deterministic (control) warm start files from : ${bkpath} or ${bkpath_spinup}"
 fi
 
 #

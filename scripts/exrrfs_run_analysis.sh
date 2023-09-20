@@ -72,17 +72,17 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-# Load modules.
+# Set environment
 #
 #-----------------------------------------------------------------------
 #
+ulimit -s unlimited
+ulimit -a
+
 case $MACHINE in
 #
 "WCOSS2")
 #
-  module list
-  ulimit -s unlimited
-  ulimit -a
   export FI_OFI_RXM_SAR_LIMIT=3145728
   export OMP_STACKSIZE=500M
   export OMP_NUM_THREADS=${TPP_RUN_ANAL}
@@ -91,26 +91,20 @@ case $MACHINE in
   ;;
 #
 "HERA")
-  ulimit -s unlimited
-  ulimit -a
-  export OMP_NUM_THREADS=1
+  export OMP_NUM_THREADS=${TPP_RUN_ANAL}
   export OMP_STACKSIZE=300M
   APRUN="srun"
   ;;
 #
 "ORION")
-  ulimit -s unlimited
-  ulimit -a
-  export OMP_NUM_THREADS=1
+  export OMP_NUM_THREADS=${TPP_RUN_ANAL}
   export OMP_STACKSIZE=1024M
   APRUN="srun"
   ;;
 #
 "JET")
-  export OMP_NUM_THREADS=2
+  export OMP_NUM_THREADS=${TPP_RUN_ANAL}
   export OMP_STACKSIZE=1024M
-  ulimit -s unlimited
-  ulimit -a
   APRUN="srun"
   ;;
 #
@@ -222,7 +216,7 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
       ln_vrfy -snf ${bkpathmem}/${restart_prefix}phy_data.nc                fv3SAR${ens_nstarthr}_ens_mem${memcharv0}-fv3_phyvars
       (( ifound += 1 ))
     else
-      print_info_msg "Error: cannot find ensemble files: ${dynvarfile} ${tracerfile} ${phyvarfile} "
+      print_info_msg "WARNING: Cannot find ensemble files: ${dynvarfile} ${tracerfile} ${phyvarfile} "
     fi
     (( imem += 1 ))
   done
@@ -509,16 +503,13 @@ if [[ ${gsi_type} == "OBSERVER" || ${anav_type} == "conv" || ${anav_type} == "co
 else
 
   if [ ${anav_type} == "radardbz" ]; then
-
     if [ ${cycle_type} == "spinup" ]; then
       obs_files_source[0]=${cycle_dir}/process_radarref_spinup/00/Gridded_ref.nc
     else
       obs_files_source[0]=${cycle_dir}/process_radarref/00/Gridded_ref.nc
     fi
     obs_files_target[0]=dbzobs.nc
-
   fi
-
 
   if [ ${anav_type} == "AERO" ]; then
     obs_files_source[0]=${OBSPATH_PM}/${YYYYMMDD}/pm25.airnow.${YYYYMMDD}${HH}.bufr
@@ -534,7 +525,7 @@ fi
 #
 #-----------------------------------------------------------------------
 if [[ ${gsi_type} == "OBSERVER" || ${anav_type} == "conv" || ${anav_type} == "conv_dbz" ]]; then
-if [ ${DO_RADDA} == "TRUE" ]; then
+  if [ ${DO_RADDA} == "TRUE" ]; then
 
   obs_number=${#obs_files_source[@]}
   obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}z.1bamua.tm00.bufr_d
@@ -596,7 +587,7 @@ if [ ${DO_RADDA} == "TRUE" ]; then
   obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}z.sevcsr.tm00.bufr_d
   obs_files_target[${obs_number}]=sevcsr
 
-fi
+  fi
 fi
 
 obs_number=${#obs_files_source[@]}
@@ -607,7 +598,7 @@ do
   if [ -r "${obs_file}" ]; then
     ln -s "${obs_file}" "${obs_file_t}"
   else
-    print_info_msg "$VERBOSE" "Warning: ${obs_file} does not exist!"
+    print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist!"
   fi
 done
 
@@ -673,7 +664,6 @@ HYBENSINFO=${FIX_GSI}/${HYBENSINFO_FN}
 OBERROR=${FIX_GSI}/${OBERROR_FN}
 BERROR=${FIX_GSI}/${BERROR_FN}
 
-
 if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "AERO" ]]; then
   if [ ${BKTYPE} -eq 1 ]; then
     echo "cold start, skip GSI SD DA"
@@ -719,7 +709,7 @@ cp_vrfy ${HYBENSINFO} hybens_info
 if [ -r ${FIX_GSI}/gsd_sfcobs_provider.txt ]; then
   cp_vrfy ${FIX_GSI}/gsd_sfcobs_provider.txt gsd_sfcobs_provider.txt
 else
-  print_info_msg "$VERBOSE" "Warning: gsd surface observation provider does not exist!" 
+  print_info_msg "$VERBOSE" "WARNING: gsd surface observation provider does not exist!" 
 fi
 
 # Get aircraft reject list
@@ -733,7 +723,7 @@ do
   fi
 done
 if [ ! -r $reject_list ] ; then 
-  print_info_msg "$VERBOSE" "Warning: gsd aircraft reject list does not exist!" 
+  print_info_msg "$VERBOSE" "WARNING: gsd aircraft reject list does not exist!" 
 fi
 
 # Get mesonet uselist
@@ -749,7 +739,7 @@ do
   fi
 done
 if [ ! -r $use_list ] ; then 
-  print_info_msg "$VERBOSE" "Warning: gsd surface observation uselist does not exist!" 
+  print_info_msg "$VERBOSE" "WARNING: gsd surface observation uselist does not exist!" 
 fi
 
 #-----------------------------------------------------------------------
@@ -782,7 +772,6 @@ ln -s $emiscoef_VISwater ./crtm_coeffs/NPOESS.VISwater.EmisCoeff.bin
 ln -s $emiscoef_MWwater ./crtm_coeffs/FASTEM6.MWwater.EmisCoeff.bin
 ln -s $aercoef  ./crtm_coeffs/AerosolCoeff.bin
 ln -s $cldcoef  ./crtm_coeffs/CloudCoeff.bin
-
 
 # Copy CRTM coefficient files based on entries in satinfo file
 for file in $(awk '{if($1!~"!"){print $1}}' ./satinfo | sort | uniq) ;do
@@ -820,24 +809,20 @@ if [ ${DO_RADDA} == "TRUE" ]; then
     SAT_TIME=`date +"%Y%m%d%H" -d "${START_DATE}  ${satcounter} hours ago"`
     echo $SAT_TIME
 	
-    if [ ${DO_ENS_RADDA} == "TRUE" ]; then	
-		
+    if [ ${DO_ENS_RADDA} == "TRUE" ]; then			
       # For EnKF.  Note, EnKF does not need radstat file
       if [ -r ${satbias_dir}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
         echo " using satellite bias files from ${SAT_TIME}"
-        
         cp_vrfy ${satbias_dir}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
         cp_vrfy ${satbias_dir}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
 	    
         break
       fi
 	  
-    else	
-	  
+    else
       # For EnVar
       if [ -r ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
         echo " using satellite bias files from ${SAT_TIME}"
-
         cp_vrfy ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
         cp_vrfy ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
         if [ -r ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ]; then
@@ -853,8 +838,7 @@ if [ ${DO_RADDA} == "TRUE" ]; then
 
   ## if satbias files (go back to previous 10 dyas) are not available from ${satbias_dir}, use satbias files from the ${FIX_GSI} 
   if [ $satcounter -eq $maxcounter ]; then
-	  
-  	# satbias_in
+    # satbias_in
     if [ -r ${FIX_GSI}/rrfs.starting_satbias ]; then
       echo "using satelite satbias_in files from ${FIX_GSI}"     
       cp_vrfy ${FIX_GSI}/rrfs.starting_satbias ./satbias_in
@@ -935,24 +919,16 @@ if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "AERO" ]]; then
   gsi_exec="${EXECdir}/gsi.x.sd"
 fi
 
-
 if [ -f $gsi_exec ]; then
   print_info_msg "$VERBOSE" "
 Copying the GSI executable to the run directory..."
   cp_vrfy ${gsi_exec} ${analworkdir}/gsi.x
 else
-  print_err_msg_exit "\
+  err_exit "\
 The GSI executable specified in GSI_EXEC does not exist:
   GSI_EXEC = \"$gsi_exec\"
 Build GSI and rerun."
 fi
-#
-#-----------------------------------------------------------------------
-#
-# Set and export variables.
-#
-#-----------------------------------------------------------------------
-#
 
 #
 #-----------------------------------------------------------------------
@@ -963,14 +939,13 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# comment out for testing
 
-$APRUN ./gsi.x < gsiparm.anl > stdout 2>&1 ;  errcode=$?
+$APRUN ./gsi.x < gsiparm.anl > stdout 2>&1
+export err=$?; err_chk
+
 echo "----------------------begin of stdout--------------"
 cat ./stdout  #log stdout whether gsi.x succeeds or not
 echo "----------------------end of stdout----------------"
-[ $errcode -eq 0 ]  || print_err_msg_exit "\
-Call to executable to run GSI returned with nonzero exit code."
 
 if [ ${anav_type} == "radardbz" ]; then
   cat fort.238 > $comout/rrfs_a.t${HH}z.fits3.tm00
@@ -1007,22 +982,6 @@ if [[ ${anav_type} == "radardbz" || ${anav_type} == "conv_dbz" ]]; then
   touch ${comout}/gsi_complete_radar.txt # for nonvarcldanl
 fi
 #
-#-----------------------------------------------------------------------
-#
-# Copy analysis results to INPUT for model forecast.
-#
-#-----------------------------------------------------------------------
-#
-#
-#if [ ${BKTYPE} -eq 1 ]; then  # cold start, put analysis back to current INPUT 
-#  cp_vrfy ${analworkdir}/fv3_dynvars                  ${bkpath}/gfs_data.tile7.halo0.nc
-#  cp_vrfy ${analworkdir}/fv3_sfcdata                  ${bkpath}/sfc_data.tile7.halo0.nc
-#else                          # cycling
-#  cp_vrfy ${analworkdir}/fv3_dynvars             ${bkpath}/fv_core.res.tile1.nc
-#  cp_vrfy ${analworkdir}/fv3_tracer              ${bkpath}/fv_tracer.res.tile1.nc
-#  cp_vrfy ${analworkdir}/fv3_sfcdata             ${bkpath}/sfc_data.nc
-#fi
-
 #-----------------------------------------------------------------------
 # Loop over first and last outer loops to generate innovation
 # diagnostic files for indicated observation types (groups)
@@ -1165,8 +1124,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

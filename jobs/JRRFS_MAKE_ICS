@@ -70,15 +70,14 @@ mkdir_vrfy -p "${ics_nwges_dir}"
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job and pass to it the necessary variables.
+# Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
 $SCRIPTSdir/exrrfs_make_ics.sh \
   ics_dir="${ics_dir}" \
-  ics_nwges_dir="${ics_nwges_dir}" || \
-print_err_msg_exit "\
-Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+  ics_nwges_dir="${ics_nwges_dir}"
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #

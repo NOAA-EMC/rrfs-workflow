@@ -133,9 +133,8 @@ get_extrn_mdl_file_dir_info \
   varname_extrn_mdl_arcv_fmt="extrn_mdl_arcv_fmt" \
   varname_extrn_mdl_arcv_fns="extrn_mdl_arcv_fns" \
   varname_extrn_mdl_arcv_fps="extrn_mdl_arcv_fps" \
-  varname_extrn_mdl_arcvrel_dir="extrn_mdl_arcvrel_dir" || \
-print_err_msg_exit "\
-Call to function get_extrn_mdl_file_dir_info failed."
+  varname_extrn_mdl_arcvrel_dir="extrn_mdl_arcvrel_dir"
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -150,7 +149,7 @@ extrn_mdl_source_dir2="${extrn_mdl_sysdir2}"
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job and pass to it the necessary variables.
+# Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
@@ -169,9 +168,8 @@ $SCRIPTSdir/exrrfs_get_gefs_lbcs_files.sh \
   extrn_mdl_fns_in_arcv="${extrn_mdl_fns_in_arcv_str}" \
   extrn_mdl_source_dir="${extrn_mdl_source_dir}" \
   extrn_mdl_source_dir2="${extrn_mdl_source_dir2}" \
-  extrn_mdl_staging_dir="${extrn_mdl_staging_dir}" || \
-print_err_msg_exit "\
-Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+  extrn_mdl_staging_dir="${extrn_mdl_staging_dir}"
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
