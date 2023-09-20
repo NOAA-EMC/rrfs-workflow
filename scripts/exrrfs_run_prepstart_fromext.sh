@@ -136,7 +136,7 @@ YYYYMMDDm2=$(date +%Y%m%d -d "${START_DATE} 2 days ago")
 #       valid at this time from the closet previous cycle.
 #
 #-----------------------------------------------------------------------
-cd_vrfy ${modelinputdir}
+cd ${modelinputdir}
 bkpath=${fg_root}/${YYYYMMDDHH}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/INPUT  # cycling, use background from INPUT
 
 checkfile=${bkpath}/coupler.res
@@ -146,22 +146,22 @@ filelistn="fv_core.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_tracer.res.tile1.nc p
 n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 if [ -r "${checkfile}" ] ; then
-  cp_vrfy ${bkpath}/${restart_prefix}coupler.res                bk_coupler.res
-  cp_vrfy ${bkpath}/${restart_prefix}fv_core.res.nc             fv_core.res.nc
+  cp ${bkpath}/${restart_prefix}coupler.res                bk_coupler.res
+  cp ${bkpath}/${restart_prefix}fv_core.res.nc             fv_core.res.nc
   if [ "${IO_LAYOUT_Y}" == "1" ]; then
     for file in ${filelistn}; do
-      cp_vrfy ${bkpath}/${restart_prefix}${file}     ${file}
+      cp ${bkpath}/${restart_prefix}${file}     ${file}
     done
   else
     for file in ${filelistn}; do
       for ii in $list_iolayout
       do
         iii=$(printf %4.4i $ii)
-        cp_vrfy ${bkpath}/${restart_prefix}${file}.${iii}     ${file}.${iii}
+        cp ${bkpath}/${restart_prefix}${file}.${iii}     ${file}.${iii}
       done
     done
   fi
-  cp_vrfy ${fg_root}/${YYYYMMDDHH}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
+  cp ${fg_root}/${YYYYMMDDHH}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
   if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
     echo "${YYYYMMDDHH}(${cycle_type}): warm start at ${current_time} from ${checkfile} " >> ${EXPTDIR}/log.cycles
   fi
@@ -210,8 +210,8 @@ if [[ "${NET}" = "RTMA"* ]]; then
         [[ age -gt 300 ]] && break
       fi
     done
-    ln_vrfy -snf ${lbcDIR}/gfs_bndy.tile7.000.nc .
-    ln_vrfy -snf ${lbcDIR}/gfs_bndy.tile7.001.nc .
+    ln -snf ${lbcDIR}/gfs_bndy.tile7.000.nc .
+    ln -snf ${lbcDIR}/gfs_bndy.tile7.001.nc .
 
 else
   num_fhrs=( "${#FCST_LEN_HRS_CYCLES[@]}" )
@@ -257,7 +257,7 @@ else
       local_bdy=$(printf %3.3i $nb)
 
       if [ -f "${lbcs_path}/${bndy_prefix}.${this_bdy}.nc" ]; then
-        ln_vrfy -sf ${relative_or_null} ${lbcs_path}/${bndy_prefix}.${this_bdy}.nc ${bndy_prefix}.${local_bdy}.nc
+        ln -sf ${relative_or_null} ${lbcs_path}/${bndy_prefix}.${this_bdy}.nc ${bndy_prefix}.${local_bdy}.nc
       fi
 
       nb=$((nb + 1))
@@ -265,7 +265,7 @@ else
 # check 0-h boundary condition
     if [ ! -f "${bndy_prefix}.000.nc" ]; then
       this_bdy=$(printf %3.3i ${n})
-      cp_vrfy ${lbcs_path}/${bndy_prefix}.${this_bdy}.nc ${bndy_prefix}.000.nc 
+      cp ${lbcs_path}/${bndy_prefix}.${this_bdy}.nc ${bndy_prefix}.000.nc 
     fi
   else
     err_exit "Cannot find boundary file: ${checkfile}"

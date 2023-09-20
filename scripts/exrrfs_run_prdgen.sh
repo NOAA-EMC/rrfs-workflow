@@ -220,12 +220,12 @@ fi
 # instead of calling sed.
 
 basetime=$( date +%y%j%H%M -d "${yyyymmdd} ${hh}" )
-cp_vrfy ${postprd_dir}/${prslev} ${comout}/${prslev}
-cp_vrfy ${postprd_dir}/${natlev} ${comout}/${natlev}
+cp ${postprd_dir}/${prslev} ${comout}/${prslev}
+cp ${postprd_dir}/${natlev} ${comout}/${natlev}
 if [ -f  ${postprd_dir}/${ififip} ]; then
-  cp_vrfy ${postprd_dir}/${ififip} ${comout}/${ififip}
+  cp ${postprd_dir}/${ififip} ${comout}/${ififip}
 fi
-cp_vrfy ${postprd_dir}/${testbed}  ${comout}/${testbed}
+cp ${postprd_dir}/${testbed}  ${comout}/${testbed}
 
 wgrib2 ${comout}/${prslev} -s > ${comout}/${prslev}.idx
 wgrib2 ${comout}/${natlev} -s > ${comout}/${natlev}.idx
@@ -326,7 +326,7 @@ else
   # use single core to process all addition grids.
   #
   if [ ${#ADDNL_OUTPUT_GRIDS[@]} -gt 0 ]; then
-    cd_vrfy ${comout}
+    cd ${comout}
 
     grid_specs_130="lambert:265:25.000000 233.862000:451:13545.000000 16.281000:337:13545.000000"
     grid_specs_200="lambert:253:50.000000 285.720000:108:16232.000000 16.201000:94:16232.000000"
@@ -375,7 +375,7 @@ else
 
         # Save to com directory 
         mkdir -p ${comout}/${grid}_grid
-        cp_vrfy ${bg_remap} ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2
+        cp ${bg_remap} ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2
         wgrib2 ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2 -s > ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2.idx
 
       done
@@ -383,7 +383,7 @@ else
   fi
 fi  # block for parallel or series wgrib2 runs.
 
-rm_vrfy -rf ${fhr_dir}
+rm -rf ${fhr_dir}
 #
 #-----------------------------------------------------------------------
 #

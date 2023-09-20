@@ -142,7 +142,7 @@ print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
 #
 #-----------------------------------------------------------------------
 
-cp_vrfy ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
+cp ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
 
 #-----------------------------------------------------------------------
 #
@@ -181,7 +181,7 @@ echo "found GLD360 files: ${filenum}"
 #-----------------------------------------------------------------------
 BUFR_TABLE=${fixdir}/prepobs_prep_RAP.bufrtable
 
-cp_vrfy $BUFR_TABLE prepobs_prep.bufrtable
+cp $BUFR_TABLE prepobs_prep.bufrtable
 
 #-----------------------------------------------------------------------
 #
@@ -217,7 +217,7 @@ exect="process_Lightning.exe"
 if [ -f ${EXECdir}/$exect ]; then
   print_info_msg "$VERBOSE" "
 Copying the lightning process  executable to the run directory..."
-  cp_vrfy ${EXECdir}/${exect} ${WORKDIR}
+  cp ${EXECdir}/${exect} ${WORKDIR}
 else
   err_exit "\
 The executable specified in exect does not exist:

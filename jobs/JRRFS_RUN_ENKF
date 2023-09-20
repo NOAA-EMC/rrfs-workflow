@@ -69,7 +69,7 @@ else
   enkfworkdir="${CYCLE_DIR}/enkfupdt_${OB_TYPE}"
 fi
 rm -fr ${enkfworkdir}
-mkdir_vrfy -p ${enkfworkdir}
+mkdir -p ${enkfworkdir}
 
 #
 #-----------------------------------------------------------------------

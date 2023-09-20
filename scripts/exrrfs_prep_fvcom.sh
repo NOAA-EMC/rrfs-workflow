@@ -76,7 +76,7 @@ print_input_args valid_args
 dir=${modelinputdir}/fvcom_remap
 
 mkdir -m 775 -p ${dir}
-cd_vrfy ${dir}
+cd ${dir}
 
 # FVCOM output files
 # PDY and cycle of forecast period - if most recent files are not available, look back one cycle

@@ -63,10 +63,10 @@ the member files corresponding to a specified forecast hour.
 ens_dir="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc"
 rrfs_dir="${ENSCTRL_COMOUT_BASEDIR}/$RUN.$PDY/$cyc"
 enspost_dir="${ens_dir}/ensprod"
-mkdir_vrfy -p "${enspost_dir}"
-cd_vrfy "${enspost_dir}"
+mkdir -p "${enspost_dir}"
+cd "${enspost_dir}"
 ffg_local_dir="${ens_dir}/ensprod/ffg"
-mkdir_vrfy -p "${ffg_local_dir}"
+mkdir -p "${ffg_local_dir}"
 ffg_latest="${FFG_DIR}/latest.FFG"
 #
 #-----------------------------------------------------------------------

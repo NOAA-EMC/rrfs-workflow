@@ -144,7 +144,7 @@ the grid and (filtered) orography files ..."
 
 # Create links to fix files in the FIXLAM directory.
 
-cd_vrfy ${run_dir}/INPUT
+cd ${run_dir}/INPUT
 
 relative_or_null=""
 
@@ -152,7 +152,7 @@ relative_or_null=""
 target="${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo${NH3}.nc" # must use *mosaic.halo3.nc
 symlink="grid_spec.nc"
 if [ -f "${target}" ]; then
-  ln_vrfy -sf ${relative_or_null} $target $symlink
+  ln -sf ${relative_or_null} $target $symlink
 else
   err_exit "\
 Cannot create symlink because target does not exist:
@@ -166,7 +166,7 @@ grid_fn=$( get_charvar_from_netcdf "${mosaic_fn}" "gridfiles" )
 target="${FIXLAM}/${grid_fn}"
 symlink="${grid_fn}"
 if [ -f "${target}" ]; then
-  ln_vrfy -sf ${relative_or_null} $target $symlink
+  ln -sf ${relative_or_null} $target $symlink
 else
   err_exit "\
 Cannot create symlink because target does not exist:
@@ -188,7 +188,7 @@ fi
 target="${FIXLAM}/${CRES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH4}.nc"
 symlink="grid.tile${TILE_RGNL}.halo${NH4}.nc"
 if [ -f "${target}" ]; then
-  ln_vrfy -sf ${relative_or_null} $target $symlink
+  ln -sf ${relative_or_null} $target $symlink
 else
   err_exit "\
 Cannot create symlink because target does not exist:
@@ -201,7 +201,7 @@ relative_or_null=""
 target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH0}.nc"
 symlink="oro_data.nc"
 if [ -f "${target}" ]; then
-  ln_vrfy -sf ${relative_or_null} $target $symlink
+  ln -sf ${relative_or_null} $target $symlink
 else
   err_exit "\
 Cannot create symlink because target does not exist:
@@ -224,7 +224,7 @@ fi
 target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH4}.nc"
 symlink="oro_data.tile${TILE_RGNL}.halo${NH4}.nc"
 if [ -f "${target}" ]; then
-  ln_vrfy -sf ${relative_or_null} $target $symlink
+  ln -sf ${relative_or_null} $target $symlink
 else
   err_exit "\
 Cannot create symlink because target does not exist:
@@ -249,7 +249,7 @@ if [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ] || \
     target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data_${fileid}.tile${TILE_RGNL}.halo${NH0}.nc"
     symlink="oro_data_${fileid}.nc"
     if [ -f "${target}" ]; then
-      ln_vrfy -sf ${relative_or_null} $target $symlink
+      ln -sf ${relative_or_null} $target $symlink
     else
       err_exit "\
 Cannot create symlink because target does not exist:
@@ -284,7 +284,7 @@ fi
 print_info_msg "$VERBOSE" "
 The forecast has BKTYPE $BKTYPE (1:cold start ; 0 cycling)"
 
-cd_vrfy ${run_dir}/INPUT
+cd ${run_dir}/INPUT
 
 relative_or_null=""
 
@@ -306,7 +306,7 @@ if [ -f "${target}.0000" ]; then
   do
     iii=$(printf %4.4i $ii)
     if [ -f "${target}.${iii}" ]; then
-      ln_vrfy -sf ${relative_or_null} $target.${iii} $symlink.${iii}
+      ln -sf ${relative_or_null} $target.${iii} $symlink.${iii}
     else
       err_exit "\
       Cannot create symlink because target does not exist:
@@ -315,7 +315,7 @@ if [ -f "${target}.0000" ]; then
   done
 else
   if [ -f "${target}" ]; then
-    ln_vrfy -sf ${relative_or_null} $target $symlink
+    ln -sf ${relative_or_null} $target $symlink
   else
     err_exit "\
     Cannot create symlink because target does not exist:
@@ -326,27 +326,27 @@ fi
 if [ "${DO_NON_DA_RUN}" = "TRUE" ]; then
   target="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/ics/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc"
   symlink="sfc_data.nc"
-  ln_vrfy -sf ${relative_or_null} $target $symlink
+  ln -sf ${relative_or_null} $target $symlink
 
   target="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/ics/gfs_ctrl.nc"
   symlink="gfs_ctrl.nc"
-  ln_vrfy -sf ${relative_or_null} $target $symlink
+  ln -sf ${relative_or_null} $target $symlink
 
   target="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/ics/gfs_bndy.tile${TILE_RGNL}.000.nc"
   symlink="gfs_bndy.tile${TILE_RGNL}.000.nc"
-  ln_vrfy -sf ${relative_or_null} $target $symlink
+  ln -sf ${relative_or_null} $target $symlink
 
   for fhr in $(seq -f "%03g" ${LBC_SPEC_INTVL_HRS} ${LBC_SPEC_INTVL_HRS} ${FCST_LEN_HRS}); do
     target="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/lbcs/gfs_bndy.tile${TILE_RGNL}.${fhr}.nc"
     symlink="gfs_bndy.tile${TILE_RGNL}.${fhr}.nc"
-    ln_vrfy -sf ${relative_or_null} $target $symlink
+    ln -sf ${relative_or_null} $target $symlink
   done
 else
   if [ ${BKTYPE} -eq 1 ]; then
     target="sfc_data.tile${TILE_RGNL}.halo${NH0}.nc"
     symlink="sfc_data.nc"
     if [ -f "${target}" ]; then
-      ln_vrfy -sf ${relative_or_null} $target $symlink
+      ln -sf ${relative_or_null} $target $symlink
     else
       err_exit "\
       Cannot create symlink because target does not exist:
@@ -364,8 +364,8 @@ else
 fi
 
 if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then
-  ln_vrfy -snf  ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/dust12m_data.nc  ${run_dir}/INPUT/dust12m_data.nc
-  ln_vrfy -snf  ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/emi_data.nc      ${run_dir}/INPUT/emi_data.nc
+  ln -snf  ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/dust12m_data.nc  ${run_dir}/INPUT/dust12m_data.nc
+  ln -snf  ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/emi_data.nc      ${run_dir}/INPUT/emi_data.nc
   yyyymmddhh=${cdate:0:10}
   echo ${yyyymmddhh}
   if [ ${cycle_type} == "spinup" ]; then
@@ -375,9 +375,9 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then
   fi
   echo "try to use smoke file=",${smokefile}
   if [ -f ${smokefile} ]; then
-    ln_vrfy -snf ${smokefile} ${run_dir}/INPUT/SMOKE_RRFS_data.nc
+    ln -snf ${smokefile} ${run_dir}/INPUT/SMOKE_RRFS_data.nc
   else
-    ln_vrfy -snf ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/dummy_24hr_smoke.nc ${run_dir}/INPUT/SMOKE_RRFS_data.nc
+    ln -snf ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/dummy_24hr_smoke.nc ${run_dir}/INPUT/SMOKE_RRFS_data.nc
     echo "WARNING: Smoke file is not available, use dummy_24hr_smoke.nc instead"
   fi
 fi
@@ -392,7 +392,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-cd_vrfy ${run_dir}
+cd ${run_dir}
 
 print_info_msg "$VERBOSE" "
 Creating links in the current run directory (run_dir) to fixed (i.e.
@@ -415,7 +415,7 @@ for (( i=0; i<${num_symlinks}; i++ )); do
   symlink="${run_dir}/$symlink"
   target="$FIXam/$target"
   if [ -f "${target}" ]; then
-    ln_vrfy -sf ${relative_or_null} $target $symlink
+    ln -sf ${relative_or_null} $target $symlink
   else
     err_exit "\
   Cannot create symlink because target does not exist:
@@ -424,8 +424,8 @@ for (( i=0; i<${num_symlinks}; i++ )); do
 
 done
 
-ln_vrfy -sf ${relative_or_null} ${FIXam}/optics_??.dat ${run_dir}
-ln_vrfy -sf ${relative_or_null} ${FIXam}/aeroclim.m??.nc ${run_dir}
+ln -sf ${relative_or_null} ${FIXam}/optics_??.dat ${run_dir}
+ln -sf ${relative_or_null} ${FIXam}/aeroclim.m??.nc ${run_dir}
 #
 #-----------------------------------------------------------------------
 #
@@ -435,8 +435,8 @@ ln_vrfy -sf ${relative_or_null} ${FIXam}/aeroclim.m??.nc ${run_dir}
 #
 #-----------------------------------------------------------------------
 #
-cd_vrfy ${run_dir}
-rm_vrfy -f time_stamp.out
+cd ${run_dir}
+rm -f time_stamp.out
 #
 #-----------------------------------------------------------------------
 #
@@ -452,9 +452,9 @@ input files in the main experiment directory..."
 
 relative_or_null=""
 
-ln_vrfy -sf ${relative_or_null} ${DATA_TABLE_FP} ${run_dir}
-ln_vrfy -sf ${relative_or_null} ${FIELD_TABLE_FP} ${run_dir}
-ln_vrfy -sf ${relative_or_null} ${NEMS_YAML_FP} ${run_dir}
+ln -sf ${relative_or_null} ${DATA_TABLE_FP} ${run_dir}
+ln -sf ${relative_or_null} ${FIELD_TABLE_FP} ${run_dir}
+ln -sf ${relative_or_null} ${NEMS_YAML_FP} ${run_dir}
 
 #
 # Determine if running stochastic physics for the specified cycles in CYCL_HRS_STOCH
@@ -472,20 +472,20 @@ fi
 if [ ${BKTYPE} -eq 0 ]; then
   # cycling, using namelist for cycling forecast
   if [ "${STOCH}" == "TRUE" ]; then
-    cp_vrfy ${FV3_NML_RESTART_STOCH_FP} ${run_dir}/${FV3_NML_FN}
-  else
-    cp_vrfy ${FV3_NML_RESTART_FP} ${run_dir}/${FV3_NML_FN}
+    cp ${FV3_NML_RESTART_STOCH_FP} ${run_dir}/${FV3_NML_FN}
+   else
+    cp ${FV3_NML_RESTART_FP} ${run_dir}/${FV3_NML_FN}
   fi
 else
   if [ -f "INPUT/cycle_surface.done" ]; then
   # namelist for cold start with surface cycle
-    cp_vrfy ${FV3_NML_CYCSFC_FP} ${run_dir}/${FV3_NML_FN}
+    cp ${FV3_NML_CYCSFC_FP} ${run_dir}/${FV3_NML_FN}
   else
   # cold start, using namelist for cold start
     if [ "${STOCH}" == "TRUE" ]; then
-      cp_vrfy ${FV3_NML_STOCH_FP} ${run_dir}/${FV3_NML_FN}
+      cp ${FV3_NML_STOCH_FP} ${run_dir}/${FV3_NML_FN}
      else
-      cp_vrfy ${FV3_NML_FP} ${run_dir}/${FV3_NML_FN}
+      cp ${FV3_NML_FP} ${run_dir}/${FV3_NML_FN}
     fi
   fi
 fi
@@ -596,7 +596,7 @@ fi
 if [ -f ${FV3_EXEC_FP} ]; then
    print_info_msg "$VERBOSE" "
   Copying the fv3lam  executable to the run directory..."
-  cp_vrfy ${FV3_EXEC_FP} ${run_dir}/ufs_model
+  cp ${FV3_EXEC_FP} ${run_dir}/ufs_model
 else
   err_exit "\
  The GSI executable specified in FV3_EXEC_FP does not exist:
@@ -633,7 +633,7 @@ if [ ${BKTYPE} -eq 1 ] && [ ${n_iolayouty} -ge 1 ]; then
   do
     iii=$(printf %4.4i $ii)
     if [ -f "grid_spec.nc.${iii}" ]; then
-      cp_vrfy grid_spec.nc.${iii} ${gridspec_dir}/fv3_grid_spec.${iii}
+      cp grid_spec.nc.${iii} ${gridspec_dir}/fv3_grid_spec.${iii}
     else
       err_exit "\
       Cannot create symlink because target does not exist:

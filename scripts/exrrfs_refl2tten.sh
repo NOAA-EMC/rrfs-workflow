@@ -124,7 +124,7 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 print_info_msg "$VERBOSE" "
 Getting into working directory for radar tten process ..."
 
-cd_vrfy ${workdir}
+cd ${workdir}
 
 fixdir=$FIX_GSI
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
@@ -154,31 +154,31 @@ fi
 n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
-cp_vrfy ${fixgriddir}/fv3_akbk        fv3_akbk
-cp_vrfy ${fixgriddir}/fv3_grid_spec   fv3_grid_spec
+cp ${fixgriddir}/fv3_akbk        fv3_akbk
+cp ${fixgriddir}/fv3_grid_spec   fv3_grid_spec
 
 if [ -r "${bkpath}/coupler.res" ]; then # Use background from warm restart
   if [ "${IO_LAYOUT_Y}" == "1" ]; then
-    ln_vrfy -s ${bkpath}/fv_core.res.tile1.nc         fv3_dynvars
-    ln_vrfy -s ${bkpath}/fv_tracer.res.tile1.nc       fv3_tracer
-    ln_vrfy -s ${bkpath}/sfc_data.nc                  fv3_sfcdata
-    ln_vrfy -s ${bkpath}/phy_data.nc                  fv3_phydata
+    ln -s ${bkpath}/fv_core.res.tile1.nc         fv3_dynvars
+    ln -s ${bkpath}/fv_tracer.res.tile1.nc       fv3_tracer
+    ln -s ${bkpath}/sfc_data.nc                  fv3_sfcdata
+    ln -s ${bkpath}/phy_data.nc                  fv3_phydata
   else
     for ii in ${list_iolayout}
     do
       iii=$(printf %4.4i $ii)
-      ln_vrfy -s ${bkpath}/fv_core.res.tile1.nc.${iii}         fv3_dynvars.${iii}
-      ln_vrfy -s ${bkpath}/fv_tracer.res.tile1.nc.${iii}       fv3_tracer.${iii}
-      ln_vrfy -s ${bkpath}/sfc_data.nc.${iii}                  fv3_sfcdata.${iii}
-      ln_vrfy -s ${bkpath}/phy_data.nc.${iii}                  fv3_phydata.${iii}
-      ln_vrfy -s ${gridspec_dir}/fv3_grid_spec.${iii}          fv3_grid_spec.${iii}
+      ln -s ${bkpath}/fv_core.res.tile1.nc.${iii}         fv3_dynvars.${iii}
+      ln -s ${bkpath}/fv_tracer.res.tile1.nc.${iii}       fv3_tracer.${iii}
+      ln -s ${bkpath}/sfc_data.nc.${iii}                  fv3_sfcdata.${iii}
+      ln -s ${bkpath}/phy_data.nc.${iii}                  fv3_phydata.${iii}
+      ln -s ${gridspec_dir}/fv3_grid_spec.${iii}          fv3_grid_spec.${iii}
     done
   fi
   BKTYPE=0
 else                                   # Use background from cold start
-  ln_vrfy -s ${bkpath}/sfc_data.tile7.halo0.nc      fv3_sfcdata
-  ln_vrfy -s ${bkpath}/gfs_data.tile7.halo0.nc      fv3_dynvars
-  ln_vrfy -s ${bkpath}/gfs_data.tile7.halo0.nc      fv3_tracer
+  ln -s ${bkpath}/sfc_data.tile7.halo0.nc      fv3_sfcdata
+  ln -s ${bkpath}/gfs_data.tile7.halo0.nc      fv3_dynvars
+  ln -s ${bkpath}/gfs_data.tile7.halo0.nc      fv3_tracer
   print_info_msg "$VERBOSE" "radar2tten is not ready for cold start"
   BKTYPE=1
   exit 0
@@ -204,12 +204,12 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   num=$( printf %2.2i ${ss} )
   if [ -r "${obs_file_check}" ]; then
      if [ "${IO_LAYOUT_Y}" == "1" ]; then
-       cp_vrfy "${obs_file}" "RefInGSI3D.dat_${num}"
+       cp "${obs_file}" "RefInGSI3D.dat_${num}"
      else
        for ii in ${list_iolayout}
        do
          iii=$(printf %4.4i $ii)
-         cp_vrfy "${obs_file}.${iii}" "RefInGSI3D.dat.${iii}_${num}"
+         cp "${obs_file}.${iii}" "RefInGSI3D.dat.${iii}_${num}"
        done
      fi
   else
@@ -219,7 +219,7 @@ done
 
 obs_file=${comin}/rrfs.t${HH}z.LightningInFV3LAM.bin
 if [ -r "${obs_file}" ]; then
-   cp_vrfy "${obs_file}" "LightningInGSI.dat_01"
+   cp "${obs_file}" "LightningInGSI.dat_01"
 else
    print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist!"
 fi
@@ -233,7 +233,7 @@ fi
 bufr_table=${fixdir}/prepobs_prep_RAP.bufrtable
 
 # Fixed fields
-cp_vrfy $bufr_table prepobs_prep.bufrtable
+cp $bufr_table prepobs_prep.bufrtable
 
 #-----------------------------------------------------------------------
 #
@@ -272,7 +272,7 @@ exect="${EXECdir}/ref2tten.exe"
 if [ -f ${exect} ]; then
   print_info_msg "$VERBOSE" "
 Copying the radar refl tten  executable to the run directory..."
-  cp_vrfy ${exect} ${workdir}/ref2ttenfv3lam.exe
+  cp ${exect} ${workdir}/ref2ttenfv3lam.exe
 else
   err_exit "\
 The radar refl tten executable specified in exect does not exist:

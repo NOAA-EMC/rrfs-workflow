@@ -227,13 +227,13 @@ model files on disk (extrn_mdl_fns_on_disk) in the source directory
 
   if [ "${ics_or_lbcs}" = "ICS" ]; then
     if [ ! -z ${extrn_mdl_source_dir2} ]; then
-      cp_vrfy ${extrn_mdl_fps_on_disk[@]} ${extrn_mdl_staging_dir}/.
+      cp ${extrn_mdl_fps_on_disk[@]} ${extrn_mdl_staging_dir}/.
       more ${extrn_mdl_fps_on_disk2[@]} >>  ${extrn_mdl_staging_dir}/${extrn_mdl_fns_on_disk[@]}
     else
-      ln_vrfy -sf -t ${extrn_mdl_staging_dir} ${extrn_mdl_fps_on_disk[@]}
+      ln -sf -t ${extrn_mdl_staging_dir} ${extrn_mdl_fps_on_disk[@]}
     fi
   else
-    ln_vrfy -sf -t ${extrn_mdl_staging_dir} ${extrn_mdl_fps_on_disk[@]}
+    ln -sf -t ${extrn_mdl_staging_dir} ${extrn_mdl_fps_on_disk[@]}
   fi
 #
 #-----------------------------------------------------------------------
@@ -505,7 +505,7 @@ not happen."
 #
         rel_dir=$( printf "%s" "${extrn_mdl_arcvrel_dir}" | \
                    sed -r 's%^(\/|\.\/)([^/]*)(.*)%\2\3%' ) 
-        mv_vrfy ${rel_dir}/* .
+        mv ${rel_dir}/* .
 #
 # Get the first subdirectory in rel_dir, i.e. the subdirectory before the 
 # first forward slash.  This is the subdirectory that we want to remove 
@@ -514,7 +514,7 @@ not happen."
 #
         subdir_to_remove=$( printf "%s" "${rel_dir}" | \
                             sed -r 's%^([^/]*)(.*)%\1%' ) 
-        rm_vrfy -rf ./${subdir_to_remove}
+        rm -rf ./${subdir_to_remove}
 #
 # If extrn_mdl_arcvrel_dir does not start with a "/" (and it is not 
 # equal to "."), then print out an error message and exit.

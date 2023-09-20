@@ -54,7 +54,7 @@ climatology.
 #-----------------------------------------------------------------------
 #
 check_for_preexist_dir_file "${SFC_CLIMO_DIR}" "${PREEXISTING_DIR_METHOD}"
-mkdir_vrfy -p "${SFC_CLIMO_DIR}"
+mkdir -p "${SFC_CLIMO_DIR}"
 #
 #-----------------------------------------------------------------------
 #
@@ -64,7 +64,7 @@ mkdir_vrfy -p "${SFC_CLIMO_DIR}"
 #
 workdir="${SFC_CLIMO_DIR}/tmp"
 check_for_preexist_dir_file "$workdir" "delete"
-mkdir_vrfy $workdir
+mkdir $workdir
 #
 #-----------------------------------------------------------------------
 #
