@@ -98,7 +98,6 @@
     mountain = .false.
     n_split = 5
     n_sponge = 9 
-    sg_cutoff = 10000.0
     n_zs_filter = 0
     na_init = 1
     ncep_ic = .false.
@@ -119,6 +118,7 @@
     res_latlon_dynamics = 'fv3_increment.nc'
     reset_eta = .false.
     rf_cutoff = 20.e2
+    sg_cutoff = 10000.0
     tau = 5.0
     use_hydro_pressure = .false.
     vtdm4 = 0.075

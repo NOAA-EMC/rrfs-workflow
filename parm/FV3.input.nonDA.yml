@@ -4,11 +4,13 @@
 # via the -c option.
 
 FV3_HRRR:
-  atmos_model_nml:
-    avg_max_length: 3600.
-    ignore_rst_cksum: true
+  diag_manager_nml:
+    max_output_fields: 450
+  external_ic_nml:
+    levp: 65
+  fms_nml:
+    domains_stack_size: 12000000
   fv_core_nml:
-    agrid_vel_rst: true
     d_con: 0.5
     d2_bg_k2: 0.04
     dz_min: 2.0
@@ -23,12 +25,14 @@ FV3_HRRR:
     kord_tr: 9
     kord_wz: 9
     n_split: 5
-    psm_bc: 1
     nord_tr: 0
+    npz: 64
     nrows_blend: 10
+    psm_bc: 1
     range_warn: False
     regional_bcs_from_gsi: false
     rf_cutoff: 2000.0
+    sg_cutoff: !!python/none
     vtdm4: 0.02
     write_restart_with_bcs: false
   gfs_physics_nml: 
@@ -39,20 +43,10 @@ FV3_HRRR:
     do_gsl_drag_ss: true
     do_gsl_drag_tofd: true
     do_mynnsfclay: true
-    do_sfcperts: !!python/none
-    do_tofd : false
-    do_ugwp : false
-    do_ugwp_v0 : false
-    do_ugwp_v0_nst_only : false
-    do_ugwp_v0_orog_only : false
-    dt_inner : 36
     effr_in: true
     gwd_opt: 3
-    fhlwr: 900.0
-    fhswr: 900.0
-    iaer: 1011
+    iaer: 5111
     ialb: 2 
-    iccn: 2
     icliq_sw: 2
     iems: 2 
     imfdeepcnv: -1
@@ -69,41 +63,22 @@ FV3_HRRR:
     iopt_snf: 4
     iopt_stc: 1
     iopt_tbot: 2
+    iopt_trs: 2
     iovr: 3
-    ldiag_ugwp: false
-    lgfdlmprad: false
-    lightning_threat: true
-    mosaic_lu: 1
-    mosaic_soil: 1
-    isncond_opt: 2
-    isncovr_opt: 3
+    lrefres: !!python/none
+    mosaic_lu: 0
+    mosaic_soil: 0
     sfclay_compute_flux: true
     thsfc_loc: false 
-    # Smoke/dust options
-    rrfs_sd : false
-    rrfs_smoke_debug : false
-    seas_opt : 0
-    mix_chem : true
-    enh_mix : true
-    dust_opt : 5
-    drydep_opt : 1
-    coarsepm_settling : 1
-    smoke_forecast : 0
-    aero_ind_fdb : false
-    aero_dir_fdb : true
-    addsmoke_flag : 1
-    wetdep_ls_opt : 1
-    do_plumerise : true
-    plumerisefire_frq : 60
-    dust_alpha : 0.01
-    dust_gamma : 1.3
 
 FV3_HRRR_gf:
-  atmos_model_nml:
-    avg_max_length: 3600.
-    ignore_rst_cksum: true
+  diag_manager_nml:
+    max_output_fields: 450
+  external_ic_nml:
+    levp: 65
+  fms_nml:
+    domains_stack_size: 12000000
   fv_core_nml:
-    agrid_vel_rst: true
     d_con: 0.5
     d2_bg_k2: 0.04
     dz_min: 2.0
@@ -118,12 +93,14 @@ FV3_HRRR_gf:
     kord_tr: 9
     kord_wz: 9
     n_split: 5
-    psm_bc: 1
     nord_tr: 0
+    npz: 64
     nrows_blend: 10
+    psm_bc: 1
     range_warn: False
     regional_bcs_from_gsi: false
     rf_cutoff: 2000.0
+    sg_cutoff: !!python/none
     vtdm4: 0.02
     write_restart_with_bcs: false
   gfs_physics_nml: 
@@ -134,20 +111,10 @@ FV3_HRRR_gf:
     do_gsl_drag_ss: true
     do_gsl_drag_tofd: true
     do_mynnsfclay: true
-    do_sfcperts: !!python/none
-    do_tofd : false
-    do_ugwp : false
-    do_ugwp_v0 : false
-    do_ugwp_v0_nst_only : false
-    do_ugwp_v0_orog_only : false
-    dt_inner : 36
     effr_in: true
     gwd_opt: 3
-    fhlwr: 900.0
-    fhswr: 900.0
-    iaer: 1011
+    iaer: 5111
     ialb: 2 
-    iccn: 2
     icliq_sw: 2
     iems: 2 
     imfdeepcnv: 3
@@ -164,87 +131,48 @@ FV3_HRRR_gf:
     iopt_snf: 4
     iopt_stc: 1
     iopt_tbot: 2
+    iopt_trs: 2
     iovr: 3
-    ldiag_ugwp: false
-    lgfdlmprad: false
-    lightning_threat: true
-    mosaic_lu: 1
-    mosaic_soil: 1
-    isncond_opt: 2
-    isncovr_opt: 3
+    lrefres: !!python/none
+    mosaic_lu: 0
+    mosaic_soil: 0
     sfclay_compute_flux: true
     thsfc_loc: false 
-    # Smoke/dust options
-    rrfs_sd : false
-    rrfs_smoke_debug : false
-    seas_opt : 0
-    mix_chem : true
-    enh_mix : true
-    dust_opt : 5
-    drydep_opt : 1
-    coarsepm_settling : 1
-    smoke_forecast : 0
-    aero_ind_fdb : false
-    aero_dir_fdb : true
-    addsmoke_flag : 1
-    wetdep_ls_opt : 1
-    do_plumerise : true
-    plumerisefire_frq : 60
-    dust_alpha : 0.01
-    dust_gamma : 1.3
 
 FV3_RAP:
-  atmos_model_nml:
-    avg_max_length: 3600.
-    ignore_rst_cksum: true
+  diag_manager_nml:
+    max_output_fields: 450
+  external_ic_nml:
+    levp: 65
+  fms_nml:
+    domains_stack_size: 12000000
   fv_core_nml:
     d_con: 0.5
-    d2_bg_k2: 0.04
     dz_min: 2.0
-    hord_dp: 6
-    hord_mt: 6
-    hord_tm: 6
-    hord_vt: 6
-    k_split: 6
-    kord_mt: 9
-    kord_tm: -9
-    kord_tr: 9
-    kord_wz: 9
-    n_split: 3
-    psm_bc: 1
+    hord_tr: 8
+    k_split: 2
     nord_tr: 0
+    npz: 64
     nrows_blend: 10
-    range_warn: False
+    psm_bc: 1
     regional_bcs_from_gsi: false
     rf_cutoff: 2000.0
+    sg_cutoff: !!python/none
     vtdm4: 0.02
     write_restart_with_bcs: false
   gfs_physics_nml: 
     cdmbgwd: [3.5, 1.0]
     diag_log: true
+    do_deep: true
     do_gsl_drag_ls_bl: true
     do_gsl_drag_ss: true
     do_gsl_drag_tofd: true
     do_mynnsfclay: true
-    do_sfcperts: !!python/none
-    do_tofd : false
-    do_ugwp : false
-    do_ugwp_v0 : false
-    do_ugwp_v0_nst_only : false
-    do_ugwp_v0_orog_only : false
-    do_deep : true
-    dt_inner : 30
     effr_in: true
     gwd_opt: 3
-    fhlwr: 900.0
-    fhswr: 900.0
-    iaer: 1011
-    ialb: 2 
-    iccn: 2
-    icliq_sw: 2
-    iems: 2 
-    imfdeepcnv:  3
-    imfshalcnv: -1
+    iaer: 5111
+    ialb: 1
+    icliq_sw: 2 
     iopt_alb: 2
     iopt_btr: 1
     iopt_crs: 1
@@ -257,36 +185,30 @@ FV3_RAP:
     iopt_snf: 4
     iopt_stc: 1
     iopt_tbot: 2
+    iopt_trs: 2
     iovr: 3
-    ldiag_ugwp: false
-    lgfdlmprad: false
-    lightning_threat: true
-    mosaic_lu: 1
-    mosaic_soil: 1
-    isncond_opt: 2
-    isncovr_opt: 3
-    sfclay_compute_flux: true
-    thsfc_loc: false 
-    # Smoke/dust options
-    rrfs_sd : false
-    rrfs_smoke_debug : false
-    seas_opt : 0
-    mix_chem : true
-    enh_mix : true
-    dust_opt : 5
-    drydep_opt : 1
-    coarsepm_settling : 1
-    smoke_forecast : 0
-    aero_ind_fdb : false
-    aero_dir_fdb : false
-    addsmoke_flag : 1
-    wetdep_ls_opt : 1
-    do_plumerise : true
-    plumerisefire_frq : 60
-    dust_alpha : 0.01
-    dust_gamma : 1.3
+    lrefres: !!python/none
+    lsoil: 4
+    nst_anl: true
+    nstf_name: [2, 1, 0, 0, 0]
+    sfclay_compute_flux: false
+    shal_cnv: false
 
 FV3_RRFS_v1beta:
+  diag_manager_nml:
+    max_output_fields: 450
+  external_ic_nml:
+    levp: 65
+  fms_nml:
+    domains_stack_size: 12000000
+  fv_core_nml:
+    dz_min: 2
+    k_split: 2
+    n_sponge: 24
+    npz: 64
+    psm_bc: 1
+    vtdm4: 0.02
+    write_restart_with_bcs: false
   gfs_physics_nml:
     do_deep: False
     do_mynnsfclay: True
@@ -305,52 +227,58 @@ FV3_RRFS_v1beta:
     iopt_snf: 4
     iopt_stc: 1
     iopt_tbot: 2
+    iopt_trs: 2
+    lrefres: !!python/none
     lsm: 2
+    lsoil: 4
     lsoil_lsm: 4
-  atmos_model_nml:
-    fdiag: 3
+    nst_anl: true
+    nstf_name: [2, 1, 0, 0, 0]
 
 FV3_GFS_v15_thompson_mynn_lam3km:
   atmos_model_nml:
-    fdiag: !!python/none
+    avg_max_length: 3600.0
+  external_ic_nml:
+    levp: 65
+  fms_nml:
+    domains_stack_size: 12000000
   fv_core_nml:
-    full_zs_filter: !!python/none
+    agrid_vel_rst: true
     dz_min: 2.0
-    psm_bc: 1
-    external_ic: false
-    nord_tr: 2
-    nrows_blend: 10
-    regional_bcs_from_gsi: false
-    write_restart_with_bcs: false
+    full_zs_filter: !!python/none
     k_split: 2
-    make_nh: false
-    mountain: true
     na_init: 0
     nggps_ic: false
+    nord_tr: 2
+    nrows_blend: 10
+    npz: 64
     npz_type: ''
+    psm_bc: 1
+    regional_bcs_from_gsi: false
+    rf_fast: false
     stretch_fac: 0.999
     vtdm4: 0.02
-    warm_start: true
-    agrid_vel_rst: false
+    write_restart_with_bcs: false
   gfs_physics_nml:
+    avg_max_length: 3600
     cdmbgwd: [0.88, 0.04]
-    cplflx: false
-    do_mynnsfclay: true
-    lgfdlmprad: false
-    do_deep: False
+    debug: true
+    do_deep: false
     do_gsl_drag_ls_bl: false
     do_gsl_drag_ss: true
     do_gsl_drag_tofd: true
+    do_mynnsfclay: true
     do_tofd: false
     do_ugwp: false
     do_ugwp_v0: false
     do_ugwp_v0_nst_only: false
     do_ugwp_v0_orog_only: false
-    ldiag_ugwp: false
-    do_sfcperts: !!python/none
     effr_in: true
+    fhlwr: 900.0
+    fhswr: 900.0
     gwd_opt: 2
-    iaer: 5111
+    iaer: 1011
+    iccn: 2
     icliq_sw: 2
     imfdeepcnv: 2
     imfshalcnv: 2
@@ -367,41 +295,18 @@ FV3_GFS_v15_thompson_mynn_lam3km:
     iopt_stc: 1
     iopt_tbot: 2
     iovr: 3
-    fhlwr: 900.0
-    fhswr: 900.0
-    xkzminv: 0.3
-    xkzm_m: 1.0
-    xkzm_h: 1.0
-    avg_max_length: 3600
+    ldiag_ugwp: false
+    lgfdlmprad: false
+    lrefres: !!python/none
     lsm: 1
-    lsoil: !!python/none
     lsoil_lsm: !!python/none
     ltaerosol: false
-    nstf_name: [2, 0, 0, 0, 0]
-  nam_sfcperts:
-    iseed_lndp: !!python/none
-    lndp_lscale: !!python/none
-    lndp_prt_list: !!python/none
-    lndp_tau: !!python/none
-    lndp_type: !!python/none
-    lndp_var_list: !!python/none
-  nam_stochy:
-    shum: !!python/none
-    shum_lscale: !!python/none
-    shum_tau: !!python/none
-    shumint: !!python/none
-    skeb: !!python/none
-    skeb_lscale: !!python/none
-    skeb_tau: !!python/none
-    skeb_vdof: !!python/none
-    skebint: !!python/none
-    sppt: !!python/none
-    sppt_lscale: !!python/none
-    sppt_tau: !!python/none
-    spptint: !!python/none
-    use_zmtnblck: !!python/none
-  namsfc:
-    ldebug: false
+    nst_anl: true
+    nstf_name: [2, 1, 0, 0, 0]
+    print_diff_pgr: false
+    xkzm_h: 1.0
+    xkzm_m: 1.0
+    xkzminv: 0.3
 
 FV3_GFS_v16:
   cires_ugwp_nml:
