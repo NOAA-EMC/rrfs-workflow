@@ -742,6 +742,3 @@ softlink = outdir + '/BGENS_%02d'%(cy-2000)+'%03d'%jul+'%02d'%ch+'00%02d'%fhour+
 print('Creating softlink:',softlink)
 os.system('ln -s '+finalfile+' '+softlink)
 
-
-
-

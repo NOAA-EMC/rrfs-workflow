@@ -74,30 +74,25 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
+ulimit -s unlimited
+ulimit -a
+
 case $MACHINE in
 #
 "WCOSS2")
-  ulimit -s unlimited
-  ulimit -a
   ncores=$(( NNODES_RUN_NONVARCLDANL*PPN_RUN_NONVARCLDANL ))
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_NONVARCLDANL}"
   ;;
 #
 "HERA")
-  ulimit -s unlimited
-  ulimit -a
   APRUN="srun --export=ALL"
   ;;
 #
 "JET")
-  ulimit -s unlimited
-  ulimit -a
   APRUN="srun --export=ALL"
   ;;
 #
 "ORION")
-  ulimit -s unlimited
-  ulimit -a
   APRUN="srun --export=ALL"
   ;;
 #
@@ -148,16 +143,16 @@ else
   cycle_tag=""
 fi
 if [ ${mem_type} == "MEAN" ]; then
-    bkpath=${cycle_dir}/ensmean/fcst_fv3lam${cycle_tag}/INPUT
+  bkpath=${cycle_dir}/ensmean/fcst_fv3lam${cycle_tag}/INPUT
 else
-    bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam${cycle_tag}/INPUT
+  bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam${cycle_tag}/INPUT
 fi
 
 n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
-cp_vrfy ${fixgriddir}/fv3_akbk                               fv3_akbk
-cp_vrfy ${fixgriddir}/fv3_grid_spec                          fv3_grid_spec
+cp_vrfy ${fixgriddir}/fv3_akbk        fv3_akbk
+cp_vrfy ${fixgriddir}/fv3_grid_spec   fv3_grid_spec
 
 BKTYPE=0
 if [ -r "${bkpath}/coupler.res" ]; then # Use background from warm restart
@@ -319,7 +314,7 @@ if [ -f ${EXECdir}/$exect ]; then
 Copying the nonVar Cloud Analysis executable to the run directory..."
   cp_vrfy ${EXECdir}/${exect} ${workdir}
 else
-  print_err_msg_exit "\
+  err_exit "\
 The executable specified in exect does not exist:
   exect = \"${EXECdir}/$exect\"
 Build executable and rerun."
@@ -332,10 +327,11 @@ fi
 #-----------------------------------------------------------------------
 #
 if [ ${BKTYPE} -eq 0 ]; then
-$APRUN ./${exect} > stdout 2>&1 || print_err_msg_exit "\
-Call to executable to run No Var Cloud Analysis returned with nonzero exit code."
-cp stdout ${comout}/stdout.t${HH}z.nonvarcloudanalysis
-cat stdout_cloudanalysis.* > ${comout}/stdout.t${HH}z.nonvarcloudanalysis.all
+  $APRUN ./${exect} > stdout 2>&1
+  export err=$?; err_chk
+
+  cp stdout ${comout}/stdout.t${HH}z.nonvarcloudanalysis
+  cat stdout_cloudanalysis.* > ${comout}/stdout.t${HH}z.nonvarcloudanalysis.all
 fi
 #
 #-----------------------------------------------------------------------
@@ -360,8 +356,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

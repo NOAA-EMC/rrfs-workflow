@@ -78,15 +78,16 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-# Load modules.
+# Set environment
 #
 #-----------------------------------------------------------------------
 #
+ulimit -s unlimited
+ulimit -a
+
 case $MACHINE in
 
   "WCOSS2")
-    ulimit -s unlimited
-    ulimit -a
     export OMP_NUM_THREADS=1
     ncores=$(( NNODES_RUN_PRDGEN*PPN_RUN_PRDGEN))
     APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_PRDGEN}"
@@ -97,8 +98,6 @@ case $MACHINE in
     ;;
 
   "ORION")
-    ulimit -s unlimited
-    ulimit -a
     export OMP_NUM_THREADS=1
     export OMP_STACKSIZE=1024M
     APRUN="srun"
@@ -109,7 +108,7 @@ case $MACHINE in
     ;;
 
   *)
-    print_err_msg_exit "\
+    err_exit "\
 Run command has not been specified for this machine:
   MACHINE = \"$MACHINE\"
   APRUN = \"$APRUN\""
@@ -172,7 +171,7 @@ elif [ ${len_fhr} -eq 9 ]; then
     fi
   fi
 else
-  print_err_msg_exit "\
+  err_exit "\
 The \${fhr} variable contains too few or too many characters:
   fhr = \"$fhr\""
 fi
@@ -240,157 +239,148 @@ if [ ${DO_PARALLEL_PRDGEN} == "TRUE" ]; then
 #
 #  parallel run wgrib2 for product generation
 #
+  if [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ]; then
+    DATA=$postprd_dir
+    export DATA=$postprd_dir
+    DATAprdgen=$DATA/prdgen_${fhr}
+    mkdir $DATAprdgen
+    USHrrfs=$USHdir/prdgen
 
-if [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ]; then
+    wgrib2 ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.grib2 >& $DATAprdgen/prslevf${fhr}.txt
 
-module load cfp/2.0.4
-DATA=$postprd_dir
-export DATA=$postprd_dir
-DATAprdgen=$DATA/prdgen_${fhr}
-mkdir $DATAprdgen
-USHrrfs=$USHdir/prdgen
+    # Create parm files for subsetting on the fly - do it for each forecast hour
+    # 4 subpieces for CONUS and Alaska grids
+    sed -n -e '1,250p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_1.txt
+    sed -n -e '251,500p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_2.txt
+    sed -n -e '501,750p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_3.txt
+    sed -n -e '751,$p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_4.txt
 
-wgrib2 ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.grib2 >& $DATAprdgen/prslevf${fhr}.txt
+    # 2 subpieces for Hawaii and Puerto Rico grids
+    sed -n -e '1,500p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/hi_pr_1.txt
+    sed -n -e '501,$p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/hi_pr_2.txt
 
-# Create parm files for subsetting on the fly - do it for each forecast hour
-# 4 subpieces for CONUS and Alaska grids
-sed -n -e '1,250p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_1.txt
-sed -n -e '251,500p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_2.txt
-sed -n -e '501,750p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_3.txt
-sed -n -e '751,$p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_4.txt
+    # Create script to execute production generation tasks in parallel using CFP
+    echo "#!/bin/bash" > $DATAprdgen/poescript_${fhr}
+    echo "export DATA=${DATAprdgen}" >> $DATAprdgen/poescript_${fhr}
+    echo "export comout=${comout}" >> $DATAprdgen/poescript_${fhr}
 
-# 2 subpieces for Hawaii and Puerto Rico grids
-sed -n -e '1,500p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/hi_pr_1.txt
-sed -n -e '501,$p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/hi_pr_2.txt
-
-# Create script to execute production generation tasks in parallel using CFP
-echo "#!/bin/bash" > $DATAprdgen/poescript_${fhr}
-echo "export DATA=${DATAprdgen}" >> $DATAprdgen/poescript_${fhr}
-echo "export comout=${comout}" >> $DATAprdgen/poescript_${fhr}
-
-tasks=(4 4 2 2)
-domains=(conus ak hi pr)
-count=0
-for domain in ${domains[@]}
-do
-  for task in $(seq ${tasks[count]})
-  do
-    mkdir -p $DATAprdgen/prdgen_${domain}_${task}
-    echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc $task $domain ${DATAprdgen} ${comout} &" >> $DATAprdgen/poescript_${fhr}
-  done
-  count=$count+1
-done
-
-echo "wait" >> $DATAprdgen/poescript_${fhr}
-chmod 775 $DATAprdgen/poescript_${fhr}
-
-#
-# Execute the script
-#
-
-export CMDFILE=$DATAprdgen/poescript_${fhr}
-mpiexec -np 12 --cpu-bind core cfp $CMDFILE
-#export err=$?; err_chk
-
-# reassemble the output grids
-
-tasks=(4 4 2 2)
-domains=(conus ak hi pr)
-count=0
-for domain in ${domains[@]}
-do
-  for task in $(seq ${tasks[count]})
-  do
-    cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2
-  done
-  wgrib2 ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2 -s > ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2.idx
-  count=$count+1
-done
-
-# Rename conus grib2 files to conus_3km
-mv ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.conus.grib2 ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.conus_3km.grib2
-mv ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.conus.grib2.idx ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.conus_3km.grib2.idx
-
-# create testbed files on 3-km CONUS grid
-prslev_conus=${net4}.t${cyc}z.prslev.f${fhr}.conus_3km.grib2
-testbed_conus=${net4}.t${cyc}z.testbed.f${fhr}.conus_3km.grib2
-if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
-  if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN} ]]; then
-    wgrib2 ${comout}/${prslev_conus} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN} | wgrib2 -i -grib ${comout}/${testbed_conus} ${comout}/${prslev_conus}
-  else
-    echo "${FIX_UPP}/${TESTBED_FIELDS_FN} not found"
-  fi
-fi
-
-else
-  echo "this grid is not ready for parallel prdgen: ${PREDEF_GRID_NAME}"
-fi
-
-rm -fr $DATAprdgen
-rm -f $DATA/*.t${cyc}z.*.f${fhr}.*.grib2
-
-else
-#
-# use single core to process all addition grids.
-#
-if [ ${#ADDNL_OUTPUT_GRIDS[@]} -gt 0 ]; then
-
-  cd_vrfy ${comout}
-
-  grid_specs_130="lambert:265:25.000000 233.862000:451:13545.000000 16.281000:337:13545.000000"
-  grid_specs_200="lambert:253:50.000000 285.720000:108:16232.000000 16.201000:94:16232.000000"
-  grid_specs_221="lambert:253:50.000000 214.500000:349:32463.000000 1.000000:277:32463.000000"
-  grid_specs_242="nps:225:60.000000 187.000000:553:11250.000000 30.000000:425:11250.000000"
-  grid_specs_243="latlon 190.0:126:0.400 10.000:101:0.400"
-  grid_specs_clue="lambert:262.5:38.5 239.891:1620:3000.0 20.971:1120:3000.0"
-  grid_specs_hrrr="lambert:-97.5:38.5 -122.719528:1799:3000.0 21.138123:1059:3000.0"
-  grid_specs_hrrre="lambert:-97.5:38.5 -122.719528:1800:3000.0 21.138123:1060:3000.0"
-  grid_specs_rrfsak="lambert:-161.5:63.0 172.102615:1379:3000.0 45.84576:1003:3000.0"
-  grid_specs_hrrrak="nps:225:60.000000 185.117126:1299:3000.0 41.612949:919:3000.0"
-
-  for grid in ${ADDNL_OUTPUT_GRIDS[@]}
-  do
-    for leveltype in prslev natlev ififip testbed
+    tasks=(4 4 2 2)
+    domains=(conus ak hi pr)
+    count=0
+    for domain in ${domains[@]}
     do
-      
-      eval grid_specs=\$grid_specs_${grid}
-      subdir=${postprd_dir}/${grid}_grid
-      mkdir -p ${subdir}/${fhr}
-      bg_remap=${subdir}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2
+      for task in $(seq ${tasks[count]})
+      do
+        mkdir -p $DATAprdgen/prdgen_${domain}_${task}
+        echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc $task $domain ${DATAprdgen} ${comout} &" >> $DATAprdgen/poescript_${fhr}
+      done
+      count=$count+1
+    done
 
-      # Interpolate fields to new grid
-      eval infile=${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${gridname}grib2
-      if [ ${PREDEF_GRID_NAME} = "RRFS_NA_13km" ]; then
-         wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
+    echo "wait" >> $DATAprdgen/poescript_${fhr}
+    chmod 775 $DATAprdgen/poescript_${fhr}
+
+    # Execute the script
+    export CMDFILE=$DATAprdgen/poescript_${fhr}
+    mpiexec -np 12 --cpu-bind core cfp $CMDFILE
+    export err=$?; err_chk
+
+    # reassemble the output grids
+    tasks=(4 4 2 2)
+    domains=(conus ak hi pr)
+    count=0
+    for domain in ${domains[@]}
+    do
+      for task in $(seq ${tasks[count]})
+      do
+        cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2
+      done
+      wgrib2 ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2 -s > ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2.idx
+      count=$count+1
+    done
+
+    # Rename conus grib2 files to conus_3km
+    mv ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.conus.grib2 ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.conus_3km.grib2
+    mv ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.conus.grib2.idx ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.conus_3km.grib2.idx
+
+    # create testbed files on 3-km CONUS grid
+    prslev_conus=${net4}.t${cyc}z.prslev.f${fhr}.conus_3km.grib2
+    testbed_conus=${net4}.t${cyc}z.testbed.f${fhr}.conus_3km.grib2
+    if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
+      if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN} ]]; then
+        wgrib2 ${comout}/${prslev_conus} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN} | wgrib2 -i -grib ${comout}/${testbed_conus} ${comout}/${prslev_conus}
+      else
+        echo "WARNING: ${FIX_UPP}/${TESTBED_FIELDS_FN} not found"
+      fi
+    fi
+
+  else
+    echo "WARNING: this grid is not ready for parallel prdgen: ${PREDEF_GRID_NAME}"
+  fi
+
+  rm -fr $DATAprdgen
+  rm -f $DATA/*.t${cyc}z.*.f${fhr}.*.grib2
+
+else
+  #
+  # use single core to process all addition grids.
+  #
+  if [ ${#ADDNL_OUTPUT_GRIDS[@]} -gt 0 ]; then
+    cd_vrfy ${comout}
+
+    grid_specs_130="lambert:265:25.000000 233.862000:451:13545.000000 16.281000:337:13545.000000"
+    grid_specs_200="lambert:253:50.000000 285.720000:108:16232.000000 16.201000:94:16232.000000"
+    grid_specs_221="lambert:253:50.000000 214.500000:349:32463.000000 1.000000:277:32463.000000"
+    grid_specs_242="nps:225:60.000000 187.000000:553:11250.000000 30.000000:425:11250.000000"
+    grid_specs_243="latlon 190.0:126:0.400 10.000:101:0.400"
+    grid_specs_clue="lambert:262.5:38.5 239.891:1620:3000.0 20.971:1120:3000.0"
+    grid_specs_hrrr="lambert:-97.5:38.5 -122.719528:1799:3000.0 21.138123:1059:3000.0"
+    grid_specs_hrrre="lambert:-97.5:38.5 -122.719528:1800:3000.0 21.138123:1060:3000.0"
+    grid_specs_rrfsak="lambert:-161.5:63.0 172.102615:1379:3000.0 45.84576:1003:3000.0"
+    grid_specs_hrrrak="nps:225:60.000000 185.117126:1299:3000.0 41.612949:919:3000.0"
+
+    for grid in ${ADDNL_OUTPUT_GRIDS[@]}
+    do
+      for leveltype in prslev natlev ififip testbed
+      do
+      
+        eval grid_specs=\$grid_specs_${grid}
+        subdir=${postprd_dir}/${grid}_grid
+        mkdir -p ${subdir}/${fhr}
+        bg_remap=${subdir}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2
+
+        # Interpolate fields to new grid
+        eval infile=${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${gridname}grib2
+        if [ ${PREDEF_GRID_NAME} = "RRFS_NA_13km" ]; then
+          wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
            -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
            -new_grid_interpolation bilinear \
            -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
            -if ":(NCONCD|NCCICE|SPNCR|CLWMR|CICE|RWMR|SNMR|GRLE|PMTF|PMTC|REFC|CSNOW|CICEP|CFRZR|CRAIN|LAND|ICEC|TMP:surface|VEG|CCOND|SFEXC|MSLMA|PRES:tropopause|LAI|HPBL|HGT:planetary boundary layer):|ICPRB|SIPD|ICSEV" -new_grid_interpolation neighbor -fi \
            -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2 &
-      else
-         wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
+        else
+          wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
            -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
            -new_grid_interpolation neighbor \
            -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2 &
-      fi
-      wait 
+        fi
+        wait 
 
-      # Merge vector field records
-      wgrib2 ${subdir}/${fhr}/tmp_${grid}.grib2 -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" -submsg_uv ${bg_remap} &
-      wait 
+        # Merge vector field records
+        wgrib2 ${subdir}/${fhr}/tmp_${grid}.grib2 -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" -submsg_uv ${bg_remap} &
+        wait 
 
-      # Remove temporary files
-      rm -f ${subdir}/${fhr}/tmp_${grid}.grib2
+        # Remove temporary files
+        rm -f ${subdir}/${fhr}/tmp_${grid}.grib2
 
-      # Save to com directory 
-      mkdir -p ${comout}/${grid}_grid
-      cp_vrfy ${bg_remap} ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2
-      wgrib2 ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2 -s > ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2.idx
+        # Save to com directory 
+        mkdir -p ${comout}/${grid}_grid
+        cp_vrfy ${bg_remap} ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2
+        wgrib2 ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2 -s > ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2.idx
 
+      done
     done
-  done
-fi
-
+  fi
 fi  # block for parallel or series wgrib2 runs.
 
 rm_vrfy -rf ${fhr_dir}
@@ -411,8 +401,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

@@ -196,7 +196,7 @@ case ${GRAPHICS_TYPE} in
     ;;
 
   *)
-    print_err_msg_exit "\
+    err_exit "\
       GRAPHICS_TYPE \"${GRAPHICS_TYPE}\" is not recognized."
     ;;
 esac
@@ -222,9 +222,8 @@ python -u ${PYTHON_GRAPHICS_DIR}/create_graphics.py \
   -s ${CDATE} \
   -w ${wait_time:-30} \
   -z ${zip_dir} \
-  ${extra_args} ||
-print_err_msg_exit "\
-Call to pyscript \"${scrfunc_fn}\" failed."
+  ${extra_args}
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -240,8 +239,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

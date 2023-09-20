@@ -11,7 +11,7 @@
 
 function ncvarlst_noaxis_time { ncks --trd -m ${1} | grep -E ': type' | cut -f 1 -d ' ' | sed 's/://' | sort |grep -v -i -E "axis|time" ;  }
 function ncvarlst_noaxis_time_new { ncks -m  ${1} | grep -E 'float' | cut -d "(" -f 1 | cut -c 10- ;  }
-export  HDF5_USE_FILE_LOCKING=FALSE #clt to avoild recenter's error "NetCDF: HDF error"
+export HDF5_USE_FILE_LOCKING=FALSE #clt to avoild recenter's error "NetCDF: HDF error"
 export MPICH_COLL_OPT_OFF=1  # to fix non-physical EnKF analysis increments
 #
 #-----------------------------------------------------------------------
@@ -64,12 +64,13 @@ process_args valid_args "$@"
 
 cycle_type=${cycle_type:-prod}
 
+ulimit -s unlimited
+ulimit -a
+
 case $MACHINE in
 #
 "WCOSS2")
 #
-  ulimit -s unlimited
-  ulimit -a
   export FI_OFI_RXM_SAR_LIMIT=3145728
   export OMP_STACKSIZE=2G
   export OMP_NUM_THREADS=${TPP_RUN_ENKF}
@@ -85,25 +86,18 @@ case $MACHINE in
   ;;
 #
 "HERA")
-  ulimit -s unlimited
-  ulimit -v unlimited
-  ulimit -a
-  export OMP_NUM_THREADS=1
+  export OMP_NUM_THREADS=${TPP_RUN_ENKF}
 #  export OMP_STACKSIZE=300M
   APRUN="srun"
   ;;
 #
 "ORION")
-  ulimit -s unlimited
-  ulimit -a
-  export OMP_NUM_THREADS=1
+  export OMP_NUM_THREADS=${TPP_RUN_ENKF}
   export OMP_STACKSIZE=1024M
   APRUN="srun"
   ;;
 #
 "JET")
-  ulimit -s unlimited
-  ulimit -a
   APRUN="srun --mem=0"
   ;;
 #
@@ -130,7 +124,6 @@ l_fv3reg_filecombined=.false.
 #
 #-----------------------------------------------------------------------
 #
-
 cd_vrfy $enkfworkdir
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 
@@ -143,9 +136,9 @@ mkdir_vrfy -p ${enkfanal_nwges_dir}
 #
 #-----------------------------------------------------------------------
 #
- cp_vrfy ${fixgriddir}/fv3_coupler.res    coupler.res
- cp_vrfy ${fixgriddir}/fv3_akbk           fv3sar_tile1_akbk.nc
- cp_vrfy ${fixgriddir}/fv3_grid_spec      fv3sar_tile1_grid_spec.nc
+cp_vrfy ${fixgriddir}/fv3_coupler.res    coupler.res
+cp_vrfy ${fixgriddir}/fv3_akbk           fv3sar_tile1_akbk.nc
+cp_vrfy ${fixgriddir}/fv3_grid_spec      fv3sar_tile1_grid_spec.nc
 
 #
 #-----------------------------------------------------------------------
@@ -155,28 +148,28 @@ mkdir_vrfy -p ${enkfanal_nwges_dir}
 #
 #-----------------------------------------------------------------------
 #
- for imem in  $(seq 1 $nens) ensmean; do
+for imem in  $(seq 1 $nens) ensmean; do
 
-     if [ ${imem} == "ensmean" ]; then
-        memchar="ensmean"
-        memcharv0="ensmean"
-     else
-        memchar="mem"$(printf %04i $imem)
-        memcharv0="mem"$(printf %03i $imem)
-     fi
-     slash_ensmem_subdir=$memchar
-     if [ ${cycle_type} == "spinup" ]; then
-        bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam_spinup/INPUT
-        observer_nwges_dir="${NWGES_DIR}/${slash_ensmem_subdir}/observer_gsi_spinup"
-     else
-        bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam/INPUT
-        observer_nwges_dir="${NWGES_DIR}/${slash_ensmem_subdir}/observer_gsi"
-     fi
+  if [ ${imem} == "ensmean" ]; then
+    memchar="ensmean"
+    memcharv0="ensmean"
+  else
+    memchar="mem"$(printf %04i $imem)
+    memcharv0="mem"$(printf %03i $imem)
+  fi
+  slash_ensmem_subdir=$memchar
+  if [ ${cycle_type} == "spinup" ]; then
+    bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam_spinup/INPUT
+    observer_nwges_dir="${NWGES_DIR}/${slash_ensmem_subdir}/observer_gsi_spinup"
+  else
+    bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam/INPUT
+    observer_nwges_dir="${NWGES_DIR}/${slash_ensmem_subdir}/observer_gsi"
+  fi
 
-     ln_vrfy  -snf  ${bkpath}/fv_core.res.tile1.nc         fv3sar_tile1_${memcharv0}_dynvars
-     ln_vrfy  -snf  ${bkpath}/fv_tracer.res.tile1.nc       fv3sar_tile1_${memcharv0}_tracer
-     ln_vrfy  -snf  ${bkpath}/sfc_data.nc                  fv3sar_tile1_${memcharv0}_sfcdata
-     ln_vrfy  -snf  ${bkpath}/phy_data.nc                  fv3sar_tile1_${memcharv0}_phyvar
+  ln_vrfy  -snf  ${bkpath}/fv_core.res.tile1.nc         fv3sar_tile1_${memcharv0}_dynvars
+  ln_vrfy  -snf  ${bkpath}/fv_tracer.res.tile1.nc       fv3sar_tile1_${memcharv0}_tracer
+  ln_vrfy  -snf  ${bkpath}/sfc_data.nc                  fv3sar_tile1_${memcharv0}_sfcdata
+  ln_vrfy  -snf  ${bkpath}/phy_data.nc                  fv3sar_tile1_${memcharv0}_phyvar
 
 #
 #-----------------------------------------------------------------------
@@ -185,9 +178,7 @@ mkdir_vrfy -p ${enkfanal_nwges_dir}
 #
 #-----------------------------------------------------------------------
 #
-
   if [ ${netcdf_diag} == ".true." ] ; then
-
     # Note, listall_rad is copied from exregional_run_analysis.sh
     listall_rad="hirs2_n14 msu_n14 sndr_g08 sndr_g11 sndr_g11 sndr_g12 sndr_g13 sndr_g08_prep sndr_g11_prep sndr_g12_prep sndr_g13_prep sndrd1_g11 sndrd2_g11 sndrd3_g11 sndrd4_g11 sndrd1_g15 sndrd2_g15 sndrd3_g15 sndrd4_g15 sndrd1_g13 sndrd2_g13 sndrd3_g13 sndrd4_g13 hirs3_n15 hirs3_n16 hirs3_n17 amsua_n15 amsua_n16 amsua_n17 amsua_n18 amsua_n19 amsua_metop-a amsua_metop-b amsua_metop-c amsub_n15 amsub_n16 amsub_n17 hsb_aqua airs_aqua amsua_aqua imgr_g08 imgr_g11 imgr_g12 pcp_ssmi_dmsp pcp_tmi_trmm conv sbuv2_n16 sbuv2_n17 sbuv2_n18 omi_aura ssmi_f13 ssmi_f14 ssmi_f15 hirs4_n18 hirs4_metop-a mhs_n18 mhs_n19 mhs_metop-a mhs_metop-b mhs_metop-c amsre_low_aqua amsre_mid_aqua amsre_hig_aqua ssmis_las_f16 ssmis_uas_f16 ssmis_img_f16 ssmis_env_f16 iasi_metop-a iasi_metop-b iasi_metop-c seviri_m08 seviri_m09 seviri_m10 seviri_m11 cris_npp atms_npp ssmis_f17 cris-fsr_npp cris-fsr_n20 atms_n20 abi_g16"
     
@@ -197,7 +188,6 @@ mkdir_vrfy -p ${enkfanal_nwges_dir}
       if [ ${DO_ENS_RADDA} == "TRUE" ]; then
         list_ob_type="$list_ob_type $listall_rad"
       fi	
-      
     fi
 	
     if [ ${ob_type} == "radardbz" ]; then
@@ -220,7 +210,6 @@ mkdir_vrfy -p ${enkfanal_nwges_dir}
       fi
     done
   fi
-
 done
 
 #
@@ -245,7 +234,7 @@ if [ ${ob_type} == "radardbz" ]; then
   found_ob_type=1
 fi
 if [ ${found_ob_type} == 0 ]; then
-  print_err_msg_exit "Error: unknown observation type: ${ob_type}"
+  err_exit "Unknown observation type: ${ob_type}"
 fi
 stdout_name=stdout.${ob_type}
 stderr_name=stderr.${ob_type}
@@ -258,9 +247,7 @@ cp_vrfy $SATINFO    satinfo
 cp_vrfy $CONVINFO   convinfo
 cp_vrfy $OZINFO     ozinfo
 
-
 if [ ${DO_ENS_RADDA} == "TRUE" ]; then
-
   # This follows the procedure of DO_RADDA=TRUE in exregional_run_analysis.sh, with differences below
   #   - The check for "spinup" or "prod" is not performed, as there is only one spinup cycle.
   #   - The file check is back in time for up to 72 hours only.  EnVar checks up to 240 hours back.
@@ -288,8 +275,7 @@ if [ ${DO_ENS_RADDA} == "TRUE" ]; then
   done
 
   # if satbias files are not available from ${satbias_dir}, use satbias files from the ${FIX_GSI} 
-  if [ $satcounter -eq $maxcounter ]; then
-	
+  if [ $satcounter -eq $maxcounter ]; then	
     if [ -r ${FIX_GSI}/rrfs.starting_satbias ]; then
       echo "using satllite satbias_in files from ${FIX_GSI}"     
       cp_vrfy ${FIX_GSI}/rrfs.starting_satbias ./satbias_in
@@ -298,9 +284,7 @@ if [ ${DO_ENS_RADDA} == "TRUE" ]; then
       echo "using satllite satbias_pc files from ${FIX_GSI}"     
       cp_vrfy ${FIX_GSI}/rrfs.starting_satbias_pc ./satbias_pc
     fi
-
   fi
-  
 fi	
 
 #
@@ -452,7 +436,6 @@ EOFnml
 #
 #-----------------------------------------------------------------------
 #
-
 echo pwd is `pwd`
 ENKFEXEC=${EXECdir}/enkf.x
 
@@ -461,7 +444,7 @@ if [ -f ${ENKFEXEC} ]; then
 Copying the EnKF executable to the run directory..."
   cp_vrfy ${ENKFEXEC} ${enkfworkdir}/enkf.x
 else
-  print_err_msg_exit "\
+  err_exit "\
 The EnKF executable specified in ENKFEXEC does not exist:
   EnKF_EXEC = \"${ENKFEXEC}\"
 Build EnKF and rerun."
@@ -476,27 +459,26 @@ fi
 #
 countdiag=$(ls diag*conv* | wc -l)
 if [ $countdiag -gt $nens ]; then
+  if [ ${ob_type} == "conv" ]; then
+    ${APRUN}  $enkfworkdir/enkf.x < enkf.nml 1>${stdout_name} 2>${stderr_name}
+    export err=$?; err_chk
 
-    if [ ${ob_type} == "conv" ]; then
-${APRUN}  $enkfworkdir/enkf.x < enkf.nml 1>${stdout_name} 2>${stderr_name} || print_err_msg_exit "\
-Call to executable to run EnKF returned with nonzero exit code."
-
-
-cp_vrfy ${stdout_name} ${enkfanal_nwges_dir}/.
-cp_vrfy ${stderr_name} ${enkfanal_nwges_dir}/.
-if [ ! -d ${NWGES_DIR}/../enkf_diag ]; then
-  mkdir -p ${NWGES_DIR}/../enkf_diag
-fi
-cp_vrfy ${stdout_name} ${NWGES_DIR}/../enkf_diag/${stdout_name}.$vlddate
-cp_vrfy ${stderr_name} ${NWGES_DIR}/../enkf_diag/${stderr_name}.$vlddate
-    else
-${APRUN}  $enkfworkdir/enkf.x < enkf.nml 1>${stdout_name} 2>${stderr_name} || print_err_msg_exit "\
-Call to executable to run EnKF returned with nonzero exit code."
-       echo "Warning: EnKF dbz analysis due to lack of ${ob_type} obs for cycle $vlddate !!!"
+    cp_vrfy ${stdout_name} ${enkfanal_nwges_dir}/.
+    cp_vrfy ${stderr_name} ${enkfanal_nwges_dir}/.
+    if [ ! -d ${NWGES_DIR}/../enkf_diag ]; then
+      mkdir -p ${NWGES_DIR}/../enkf_diag
     fi
+    cp_vrfy ${stdout_name} ${NWGES_DIR}/../enkf_diag/${stdout_name}.$vlddate
+    cp_vrfy ${stderr_name} ${NWGES_DIR}/../enkf_diag/${stderr_name}.$vlddate
+  else
+    ${APRUN}  $enkfworkdir/enkf.x < enkf.nml 1>${stdout_name} 2>${stderr_name}
+    export err=$?; err_chk
+
+    echo "WARNING: EnKF dbz analysis due to lack of ${ob_type} obs for cycle $vlddate !!!"
+  fi
 
 else
-  echo "Warning: EnKF not running due to lack of ${ob_type} obs for cycle $vlddate !!!"
+  echo "WARNING: EnKF not running due to lack of ${ob_type} obs for cycle $vlddate !!!"
 fi
 
 print_info_msg "
@@ -509,8 +491,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

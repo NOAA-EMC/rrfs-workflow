@@ -125,29 +125,11 @@ fi
 mkdir_vrfy -p "${bufrsnd_dir}"
 
 fhr_dir="${bufrsnd_dir}"
-#check_for_preexist_dir_file "${fhr_dir}" "delete"
-#mkdir_vrfy -p "${fhr_dir}"
-
 cd_vrfy "${bufrsnd_dir}"
 #
 #-----------------------------------------------------------------------
 #
-# Make sure that fhr is a non-empty string consisting of only digits.  
-#
-#-----------------------------------------------------------------------
-#
-#fhr=$( printf "%s" "${fhr}" | sed -n -r -e "s/^([0-9]+)$/\1/p" )
-#if [ -z "$fhr" ]; then
-#  print_err_msg_exit "\
-#The forecast hour (fhr) must be a non-empty string consisting of only 
-#digits:
-#  fhr = \"${fhr}\""
-#fi
-#
-#-----------------------------------------------------------------------
-#
-# Call the ex-script for this J-job and pass to it the necessary varia-
-# bles.
+# Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
@@ -161,9 +143,8 @@ $SCRIPTSdir/exregional_bufrsnd.sh \
   fhr_dir="${fhr_dir}" \
   fhr="${fhr}" \
   tmmark="${TMMARK}" \
-  cycle_type="${CYCLE_TYPE}" || \
-print_err_msg_exit "\
-Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+  cycle_type="${CYCLE_TYPE}"
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -179,8 +160,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

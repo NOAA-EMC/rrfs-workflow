@@ -70,7 +70,7 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-# Load modules.
+# Set environment
 #
 #-----------------------------------------------------------------------
 #
@@ -94,20 +94,13 @@ case $MACHINE in
     ;;
 
   *)
-    print_err_msg_exit "\
+    err_exit "\
 Run command has not been specified for this machine:
   MACHINE = \"$MACHINE\"
   APRUN = \"$APRUN\""
     ;;
 
 esac
-
-#
-#-----------------------------------------------------------------------
-#
-# Load modules.
-#
-#-----------------------------------------------------------------------
 #
 #-----------------------------------------------------------------------
 #
@@ -172,7 +165,7 @@ if [ ${DO_ENSFCST} = "TRUE" ] &&  [ ${DO_ENKFUPDATE} = "TRUE" ]; then
       done
     fi
   else
-    print_err_msg_exit "Error: can not find ensemble DA analysis output for running ensemble free forecast, \
+    err_exit "Can not find ensemble DA analysis output for running ensemble free forecast, \
   check ${bkpath} for needed files."
   fi
   SFC_CYC=0
@@ -265,7 +258,7 @@ if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial file
         echo "${YYYYMMDDHH}(${cycle_type}): cold start at ${current_time} from $bkpath " >> ${EXPTDIR}/log.cycles
       fi
     else
-      print_err_msg_exit "Error: cannot find cold start initial condition from : ${bkpath}"
+      err_exit "Cannot find cold start initial condition from : ${bkpath}"
     fi
 
 else
@@ -408,7 +401,7 @@ else
       tail -1 bk_coupler.res >> coupler.res
     fi
   else
-    print_err_msg_exit "Error: cannot find background: ${checkfile}"
+    err_exit "Cannot find background: ${checkfile}"
   fi
 fi
 
@@ -430,7 +423,7 @@ if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ ${cycle_type} == "prod" ] ; then
       cp ${IMSSNOW_ROOT}/rap_e.${YYYYMMDD}/rap_e.t${HH}z.imssnow.grib2  latest.SNOW_IMS
    else
      echo "${IMSSNOW_ROOT} data does not exist!!"
-     echo "ERROR: No snow update at ${HH}!!!!"
+     echo "WARNING: No snow update at ${HH}!!!!"
    fi
    if [ -r "latest.SNOW_IMS" ]; then
      ln_vrfy -sf ./latest.SNOW_IMS                imssnow2
@@ -450,7 +443,7 @@ if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ ${cycle_type} == "prod" ] ; then
      snowice_exec_fn="process_imssnow_fv3lam.exe"
      snowice_exec_fp="$EXECdir/${snowice_exec_fn}"
      if [ ! -f "${snowice_exec_fp}" ]; then
-      print_err_msg_exit "\
+       err_exit "\
 The executable (snowice_exec_fn) for processing snow/ice data onto FV3-LAM
 native grid does not exist:
   snowice_exec_fp= \"${snowice_exec_fp}\"
@@ -458,19 +451,15 @@ Please ensure that you have built this executable."
      fi
      cp_vrfy ${snowice_exec_fp} .
 
-     ${APRUN} ./${snowice_exec_fn} ${IO_LAYOUT_Y} || \
-     print_err_msg_exit "\
- Call to executable (fvcom_exe) to modify sfc fields for FV3-LAM failed:
-   snowice_exe = \"${snowice_exec_fp}\"
- The following variables were being used:
-   list_iolayout = \"${list_iolayout}\""
+     ${APRUN} ./${snowice_exec_fn} ${IO_LAYOUT_Y}
+     export err=$?; err_chk
 
      snowice_reference_time=$(wgrib2 -t latest.SNOW_IMS | tail -1) 
      if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
        echo "${YYYYMMDDHH}(${cycle_type}): update snow/ice using ${snowice_reference_time}" >> ${EXPTDIR}/log.cycles
      fi
    else
-     echo "ERROR: No latest IMS SNOW file for update at ${YYYYMMDDHH}!!!!"
+     echo "WARNING: No latest IMS SNOW file for update at ${YYYYMMDDHH}!!!!"
    fi
 else
    echo "NOTE: No update for IMS SNOW/ICE at ${YYYYMMDDHH}!"
@@ -492,7 +481,7 @@ if [ ${HH} -eq ${SST_update_hour} ] && [ ${cycle_type} == "prod" ] ; then
       cp ${SST_ROOT}/nsst.$YYYYMMDDm1/rtgssthr_grb_0.083.grib2 latest.SST
    else
      echo "${SST_ROOT} data does not exist!!"
-     echo "ERROR: No SST update at ${HH}!!!!"
+     echo "WARNING: No SST update at ${HH}!!!!"
    fi
    if [ -r "latest.SST" ]; then
      cp_vrfy ${FIXgsm}/RTG_SST_landmask.dat                RTG_SST_landmask.dat
@@ -511,6 +500,7 @@ EOF
      if [ "${IO_LAYOUT_Y}" == "1" ]; then
        ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
        ${EXECdir}/process_updatesst.exe > stdout_sstupdate 2>&1
+       export err=$?; err_chk
      else
        for ii in ${list_iolayout}
        do
@@ -518,6 +508,7 @@ EOF
          ln_vrfy -sf ${gridspec_dir}/fv3_grid_spec.${iii}  fv3_grid_spec
          ln_vrfy -sf sfc_data.nc.${iii} sfc_data.nc
          ${EXECdir}/process_updatesst.exe > stdout_sstupdate.${iii} 2>&1
+         export err=$?; err_chk
          ls -l > list_sstupdate.${iii}
        done
        rm -f sfc_data.nc
@@ -528,7 +519,7 @@ EOF
        echo "${YYYYMMDDHH}(${cycle_type}): update SST using ${sst_reference_time}" >> ${EXPTDIR}/log.cycles
      fi
    else
-     echo "ERROR: No latest SST file for update at ${YYYYMMDDHH}!!!!"
+     echo "WARNING: No latest SST file for update at ${YYYYMMDDHH}!!!!"
    fi
 else
    echo "NOTE: No update for SST at ${YYYYMMDDHH}!"
@@ -608,7 +599,7 @@ fi
 if_update_ice="TRUE"
 if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
 
-# figure out which surface is available
+    # figure out which surface is available
     surface_file_dir_name=surface
     restart_prefix_find="missing"
     restart_suffix_find="missing"
@@ -648,10 +639,10 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
         fi
       done
     fi
-# rename the soil mositure and temperature fields in restart file
+    # rename the soil mositure and temperature fields in restart file
       rm -f cycle_surface.done
       if [ "${restart_suffix_find}" == "missing" ] || [ "${restart_prefix_find}" == "missing" ]; then
-        print_info_msg "Warning: cannot find surface from previous cycle"
+        print_info_msg "WARNING: cannot find surface from previous cycle"
       else
         if [ "${IO_LAYOUT_Y}" == "1" ]; then
           checkfile=${bkpath}/${restart_prefix_find}sfc_data.nc.${restart_suffix_find}
@@ -668,7 +659,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
               ncks --append geolonlat.nc sfc_data.tile7.halo0.nc
               ncrename -v tslb,stc -v smois,smc -v sh2o,slc sfc_data.tile7.halo0.nc
             else
-              print_info_msg "Warning: cannot do surface cycle in cold start with sudomain restart files"
+              print_info_msg "WARNING: cannot do surface cycle in cold start with sudomain restart files"
             fi
           else
             if [ "${IO_LAYOUT_Y}" == "1" ]; then 
@@ -678,6 +669,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
               ncatted -a checksum,,d,, sfc_data.nc
               if [ "${if_update_ice}" == "TRUE" ]; then
                 ${EXECdir}/update_ice.exe > stdout_cycleICE 2>&1
+                export err=$?; err_chk
               fi
             else
               checkfile=${bkpath}/${restart_prefix_find}sfc_data.nc.${restart_suffix_find}
@@ -697,6 +689,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
                 ln_vrfy -sf gfsice.sfc_data.nc.${iii} gfsice.sfc_data.nc
                 if [ "${if_update_ice}" == "TRUE" ]; then
                   ${EXECdir}/update_ice.exe > stdout_cycleICE.${iii} 2>&1
+                  export err=$?; err_chk
                 fi
               done
               rm -f sfc_data.nc gfsice.sfc_data.nc
@@ -707,7 +700,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
             echo "${YYYYMMDDHH}(${cycle_type}): cycle surface with ${checkfile} " >> ${EXPTDIR}/log.cycles
           fi
         else
-          print_info_msg "Warning: cannot find surface from previous cycle"
+          print_info_msg "WARNING: cannot find surface from previous cycle"
         fi
       fi
 fi
@@ -724,7 +717,7 @@ if [ ${HH} -eq ${GVF_update_hour} ] && [ ${cycle_type} == "spinup" ]; then
      if [ -r "${latestGVF2}" ]; then
        latestGVF=${latestGVF2}
      else
-       print_info_msg "Warning: cannot find GVF observation file"
+       print_info_msg "WARNING: cannot find GVF observation file"
      fi
    fi
 
@@ -736,6 +729,7 @@ if [ ${HH} -eq ${GVF_update_hour} ] && [ ${cycle_type} == "spinup" ]; then
       if [ "${IO_LAYOUT_Y}" == "1" ]; then
         ln_vrfy -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
         ${EXECdir}/update_GVF.exe > stdout_updateGVF 2>&1
+        export err=$?; err_chk
       else
         for ii in ${list_iolayout}
         do
@@ -743,6 +737,7 @@ if [ ${HH} -eq ${GVF_update_hour} ] && [ ${cycle_type} == "spinup" ]; then
           ln_vrfy -sf ${gridspec_dir}/fv3_grid_spec.${iii}  fv3_grid_spec
           ln_vrfy -sf sfc_data.nc.${iii} sfc_data.nc
           ${EXECdir}/update_GVF.exe > stdout_updateGVF.${iii} 2>&1
+          export err=$?; err_chk
           ls -l > list_updateGVF.${iii}
         done
         rm -f sfc_data.nc
@@ -832,9 +827,8 @@ else
       cp_vrfy ${lbcs_path}/${bndy_prefix}.${this_bdy}.nc ${bndy_prefix}.000.nc 
     fi
   else
-    print_err_msg_exit "Error: cannot find boundary file: ${checkfile}"
+    err_exit "Cannot find boundary file: ${checkfile}"
   fi
-
 fi 
 
 #
@@ -873,10 +867,6 @@ if [ ${SFC_CYC} -eq 3 ] ; then
    if [ "${USE_CLM}" = "TRUE" ]; then
      do_lake_surgery=".true."
    fi
-#   raphrrr_com=/mnt/lfs4/BMC/rtwbl/mhu/wcoss/nco/com/
-#   ln -s ${raphrrr_com}/rap/prod/rap.${YYYYMMDD}/rap.t${HH}z.wrf_inout_smoke    sfc_rap
-#   ln -s ${raphrrr_com}/hrrr/prod/hrrr.${YYYYMMDD}/conus/hrrr.t${HH}z.wrf_inout sfc_hrrr
-#   ln -s ${raphrrr_com}/hrrr/prod/hrrr.${YYYYMMDD}/alaska/hrrrak.t${HH}z.wrf_inout sfc_hrrrak
    raphrrr_com=${RAPHRR_SOIL_ROOT}
    rapfile='missing'
    hrrrfile='missing'
@@ -967,16 +957,16 @@ EOF
        fi
        if [ "${IO_LAYOUT_Y}" == "1" ]; then
          cp_vrfy sfc_data.nc sfc_data.nc_read
-         ./${exect} > stdout_sfc_sugery.${file} 2>&1 || print_info_msg "\
-         Call to executable to run surface surgery returned with nonzero exit code."
+         ./${exect} > stdout_sfc_sugery.${file} 2>&1
+         export err=$?; err_chk
        else
          for ii in ${list_iolayout}
          do
            iii=$(printf %4.4i $ii)
            ln_vrfy -sf sfc_data.nc.${iii} sfc_data.nc
            cp_vrfy sfc_data.nc sfc_data.nc_read
-           ./${exect} > stdout_sfc_sugery.${iii}.${file} 2>&1 || print_info_msg "\
-           Call to executable to run surface surgery returned with nonzero exit code."
+           ./${exect} > stdout_sfc_sugery.${iii}.${file} 2>&1
+           export err=$?; err_chk
            ls -l > list_sfc_sugery.${iii}
          done
          rm -f sfc_data.nc
@@ -1013,8 +1003,7 @@ if [ "${USE_FVCOM}" = "TRUE" ] && [ ${SFC_CYC} -eq 2 ] ; then
                   YYYYMMDD="${YYYYMMDD}" \
                   YYYYMMDDm1="${YYYYMMDDm1}" \
                   HH="${HH}" || \
-    print_err_msg_exit "\
-    Call to ex-script failed."
+    err_exit "Call to ex-script failed."
 
     cd_vrfy ${modelinputdir}
 # FVCOM_DIR needs to be redefined here to find 
@@ -1056,7 +1045,7 @@ Please check the following user defined variables:
     fvcom_exec_fn="fvcom_to_FV3"
     fvcom_exec_fp="$EXECdir/${fvcom_exec_fn}"
     if [ ! -f "${fvcom_exec_fp}" ]; then
-      print_err_msg_exit "\
+      err_exit "\
 The executable (fvcom_exec_fp) for processing FVCOM data onto FV3-LAM
 native grid does not exist:
   fvcom_exec_fp = \"${fvcom_exec_fp}\"
@@ -1064,7 +1053,7 @@ Please ensure that you've built this executable."
     fi
     cp_vrfy ${fvcom_exec_fp} .
 
-# decide surface
+    # decide surface
     if [ ${BKTYPE} -eq 1 ] ; then
       FVCOM_WCSTART='cold'
       surface_file='sfc_data.tile7.halo0.nc'
@@ -1073,17 +1062,8 @@ Please ensure that you've built this executable."
       surface_file='sfc_data.nc'
     fi
 
-#
-    ${APRUN} ./${fvcom_exec_fn} ${surface_file} fvcom.nc ${FVCOM_WCSTART} ${fvcom_time} ${IO_LAYOUT_Y} || \
-    print_err_msg_exit "\
-Call to executable (fvcom_exe) to modify sfc fields for FV3-LAM failed:
-  fvcom_exe = \"${fvcom_exec_fn}\"
-The following variables were being used:
-  FVCOM_DIR = \"${FVCOM_DIR}\"
-  FVCOM_FILE = \"${FVCOM_FILE}\"
-  fvcom_time = \"${fvcom_time}\"
-  FVCOM_WCSTART = \"${FVCOM_WCSTART}\"
-  "
+    ${APRUN} ./${fvcom_exec_fn} ${surface_file} fvcom.nc ${FVCOM_WCSTART} ${fvcom_time} ${IO_LAYOUT_Y}
+    export err=$?; err_chk
   fi
 fi
 
@@ -1104,8 +1084,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

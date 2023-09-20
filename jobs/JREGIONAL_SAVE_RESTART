@@ -100,7 +100,7 @@ fi
 #
 fhr=$( printf "%s" "${fhr}" | sed -n -r -e "s/^([0-9]+)$/\1/p" )
 if [ -z "$fhr" ]; then
-  print_err_msg_exit "\
+  err_exit "\
 The forecast hour (fhr) must be a non-empty string consisting of only 
 digits:
   fhr = \"${fhr}\""
@@ -108,8 +108,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job and pass to it the necessary varia-
-# bles.
+# Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
@@ -120,9 +119,8 @@ $SCRIPTSdir/exregional_save_restart.sh \
   surface_dir="${SURFACE_DIR}" \
   fhr="${fhr}" \
   cycle_type="${CYCLE_TYPE}"  \
-  cycle_subtype="${CYCLE_SUBTYPE}" || \
-print_err_msg_exit "\
-Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+  cycle_subtype="${CYCLE_SUBTYPE}"
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -138,8 +136,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #
