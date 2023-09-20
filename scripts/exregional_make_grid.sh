@@ -516,7 +516,7 @@ printf "%s %s %s %s %s\n" \
 $APRUN ${exec_fp} < ${nml_fn}
 export err=$?; err_chk
 
-mv_vrfy ${shaved_fp} ${GRID_DIR}
+mv ${shaved_fp} ${GRID_DIR}
 #
 # Create an input namelist file for the shave executable to generate a
 # grid file with a 4-cell-wide halo from the one with a wide halo.  Then
@@ -536,7 +536,7 @@ printf "%s %s %s %s %s\n" \
 $APRUN ${exec_fp} < ${nml_fn}
 export err=$?; err_chk
 
-mv_vrfy ${shaved_fp} ${GRID_DIR}
+mv ${shaved_fp} ${GRID_DIR}
 #
 # Create an input namelist file for the shave executable to generate a
 # grid file without halo from the one with a wide halo. Then call the shave 
@@ -554,7 +554,7 @@ printf "%s %s %s %s %s\n" \
 $APRUN ${exec_fp} < ${nml_fn}
 export err=$?; err_chk
 
-mv_vrfy ${shaved_fp} ${GRID_DIR}
+mv ${shaved_fp} ${GRID_DIR}
 #
 # Change location to the original directory.
 #
