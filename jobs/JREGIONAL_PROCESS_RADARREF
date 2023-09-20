@@ -73,7 +73,7 @@ else
   fi
 fi
 rm -fr ${workdir}
-mkdir_vrfy -p ${workdir}
+mkdir -p ${workdir}
 #
 #
 #
@@ -90,20 +90,18 @@ if [ ${CYCLE_TYPE} == "spinup" ]; then
 else
   COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
 fi
-mkdir_vrfy -p "${COMOUT}"
+mkdir -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job and pass to it the necessary varia-
-# bles.
+# Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
 $SCRIPTSdir/exregional_process_radarref.sh \
   CYCLE_DIR="${CYCLE_DIR}" cycle_type="${CYCLE_TYPE}" gridspec_dir="${gridspec_dir}" \
-  WORKDIR="${workdir}" RADAR_REF_THINNING="${RADAR_REF_THINNING}" comout="${COMOUT}" || \
-print_err_msg_exit "\
-Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+  WORKDIR="${workdir}" RADAR_REF_THINNING="${RADAR_REF_THINNING}" comout="${COMOUT}"
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -119,8 +117,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

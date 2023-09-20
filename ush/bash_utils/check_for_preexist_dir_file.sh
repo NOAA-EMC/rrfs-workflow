@@ -107,7 +107,7 @@ where the arguments are defined as follows:
 #
     "delete")
 
-      rm_vrfy -rf "${dir_or_file}"
+      rm -rf "${dir_or_file}"
       ;;
 #
 #-----------------------------------------------------------------------
@@ -146,7 +146,7 @@ where the arguments are defined as follows:
   Moving (renaming) preexisting directory or file to:
     old_dir_or_file = \"${old_dir_or_file}\""
 
-        rsync_vrfy -a "${dir_or_file}/" "${old_dir_or_file}"
+        rsync -a "${dir_or_file}/" "${old_dir_or_file}"
       fi
       ;;
 #
@@ -174,7 +174,7 @@ Specified directory or file (dir_or_file) already exists:
 Moving (renaming) preexisting directory or file to:
   old_dir_or_file = \"${old_dir_or_file}\""
 
-      mv_vrfy "${dir_or_file}" "${old_dir_or_file}"
+      mv "${dir_or_file}" "${old_dir_or_file}"
       ;;
 #
 #-----------------------------------------------------------------------

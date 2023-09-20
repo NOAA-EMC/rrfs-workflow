@@ -83,17 +83,17 @@ if [ ${GSI_TYPE} == "OBSERVER" ]; then
     analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/observer${analworkname}"
     observer_nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/observer${analworkname}"
   fi
-  mkdir_vrfy -p ${observer_nwges_dir}
+  mkdir -p ${observer_nwges_dir}
 else
   analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/anal_${OB_TYPE}${analworkname}"
 fi
 
 rm -fr ${analworkdir}
-mkdir_vrfy -p ${analworkdir}
+mkdir -p ${analworkdir}
 
 if [ ! -d "${SATBIAS_DIR}" ]; then
   echo "making satbias_dir directory for cycling bias correction files" 
-  mkdir_vrfy -p ${SATBIAS_DIR}
+  mkdir -p ${SATBIAS_DIR}
 fi
 
 # Folder for storing EnKF related satbias files
@@ -101,7 +101,7 @@ if [ ${GSI_TYPE} == "OBSERVER" ]; then
   if [ ${MEM_TYPE} == "MEAN" ]; then
     if [ ! -d "${SATBIAS_DIR}_ensmean" ]; then
       echo "making satbias_dir ensmean directory for cycling bias correction files" 
-      mkdir_vrfy -p ${SATBIAS_DIR}_ensmean
+      mkdir -p ${SATBIAS_DIR}_ensmean
     fi    	  
   fi
 fi
@@ -125,12 +125,11 @@ else
     COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}${SLASH_ENSMEM_SUBDIR}"
   fi
 fi
-mkdir_vrfy -p "${COMOUT}"
+mkdir -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job and pass to it the necessary varia-
-# bles.
+# Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
@@ -146,9 +145,8 @@ $SCRIPTSdir/exregional_run_analysis.sh \
              rrfse_fg_root="${RRFSE_NWGES_BASEDIR}" \
              satbias_dir="${SATBIAS_DIR}" \
              ob_type="${OB_TYPE}" \
-             gridspec_dir="${gridspec_dir}" || \
-print_err_msg_exit "\
-Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+             gridspec_dir="${gridspec_dir}"
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -164,8 +162,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

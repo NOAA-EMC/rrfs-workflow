@@ -79,14 +79,17 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-# Load modules.
+# Set environment
 #
 #-----------------------------------------------------------------------
 #
+ulimit -s unlimited
+ulimit -a
+
 case $MACHINE in
 
   "WCOSS2")
-    ncores=$(( NNODES_RUN_BUFRSND*PPN_RUN_BUFRSND))
+    ncores=$(( NNODES_RUN_BUFRSND*PPN_RUN_BUFRSND ))
     APRUNC="mpiexec -n ${ncores} -ppn ${PPN_RUN_BUFRSND}"
     APRUNS="time"
     ;;
@@ -97,10 +100,6 @@ case $MACHINE in
     ;;
 
   "ORION")
-    ulimit -s unlimited
-    ulimit -a
-    export OMP_NUM_THREADS=1
-    export OMP_STACKSIZE=1024M
     APRUNC="srun --export=ALL"
     APRUNS="time"
     ;;
@@ -111,7 +110,7 @@ case $MACHINE in
     ;;
 
   *)
-    print_err_msg_exit "\
+    err_exit "\
 Run command has not been specified for this machine:
   MACHINE = \"$MACHINE\"
   APRUN = \"$APRUN\""
@@ -125,7 +124,7 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-rm_vrfy -f fort.*
+rm -f fort.*
 #
 #-----------------------------------------------------------------------
 #
@@ -161,10 +160,6 @@ RUNLOC=${NEST}${MODEL}
 
 export tmmark=tm00
 
-#echo FIXsar is $FIXsar
-#echo profdat file name is regional_${RUNLOC}_profdat
-
-
 cp $PARMfv3/${PREDEF_GRID_NAME}/rrfs_profdat regional_profdat
 
 OUTTYP=netcdf
@@ -173,7 +168,6 @@ model=FV3S
 
 INCR=01
 FHRLIM=60
-#FHRLIM=1
 
 let NFILE=1
 
@@ -190,7 +184,6 @@ startd=$YYYY$MM$DD
 startdate=$CYCLE
 
 STARTDATE=${YYYY}-${MM}-${DD}_${cyc}:00:00
-#endtime=`$NDATE $FHRLIM $CYCLE`
 endtime=$(date +%Y%m%d%H -d "${START_DATE} +60 hours")
 
 YYYY=`echo $endtime | cut -c1-4`
@@ -199,25 +192,17 @@ DD=`echo $endtime | cut -c7-8`
 
 FINALDATE=${YYYY}-${MM}-${DD}_${cyc}:00:00
 
-if [ -e sndpostdone00.tm00 ]
-then
+if [ -e sndpostdone00.tm00 ]; then
+  lasthour=`ls -1rt sndpostdone??.tm00 | tail -1 | cut -c 12-13`
+  typeset -Z2 lasthour
 
-lasthour=`ls -1rt sndpostdone??.tm00 | tail -1 | cut -c 12-13`
-typeset -Z2 lasthour
-
-let "fhr=lasthour+1"
-typeset -Z2 fhr
-
+  let "fhr=lasthour+1"
+  typeset -Z2 fhr
 else
-
-fhr=00
-
+  fhr=00
 fi
 
 echo starting with fhr $fhr
-
-#cd $DATA/bufrpost
-
 
 INPUT_DATA=$run_dir
 ########################################################
@@ -225,49 +210,40 @@ INPUT_DATA=$run_dir
 while [ $fhr -le $FHRLIM ]
 do
 
-#date=`$NDATE $fhr $CYCLE`
-date=$(date +%Y%m%d%H -d "${START_DATE} +${fhr} hours")
+  date=$(date +%Y%m%d%H -d "${START_DATE} +${fhr} hours")
 
-let fhrold="$fhr - 1"
+  let fhrold="$fhr - 1"
 
-if [ $model == "FV3S" ]
-then
+  if [ $model == "FV3S" ]; then
 
-OUTFILDYN=$INPUT_DATA/dynf0${fhr}.nc
-OUTFILPHYS=$INPUT_DATA/phyf0${fhr}.nc
+    OUTFILDYN=$INPUT_DATA/dynf0${fhr}.nc
+    OUTFILPHYS=$INPUT_DATA/phyf0${fhr}.nc
 
-icnt=1
+    icnt=1
 
+    # wait for model restart file
+    while [ $icnt -lt 1000 ]
+    do
+      if [ -s $INPUT_DATA/log.atm.f0${fhr} ]; then
+        break
+      else
+        icnt=$((icnt + 1))
+        sleep 9
+      fi
+      if [ $icnt -ge 200 ]; then
+        err_exit "ABORTING after 30 minutes of waiting for FV3S ${RUNLOC} FCST F${fhr} to end."
+      fi
+    done
 
-# wait for model restart file
-while [ $icnt -lt 1000 ]
-do
-   if [ -s $INPUT_DATA/log.atm.f0${fhr} ]
-   then
-      break
-   else
-      icnt=$((icnt + 1))
-      sleep 9
-   fi
-if [ $icnt -ge 200 ]
-then
-    msg="FATAL ERROR: ABORTING after 30 minutes of waiting for FV3S ${RUNLOC} FCST F${fhr} to end."
-    exit
-    #err_exit $msg
-fi
-done
+  else
+    err_exit "ABORTING due to bad model selection for this script."
+  fi
 
-else
-  msg="FATAL ERROR: ABORTING due to bad model selection for this script"
-  exit
-  #err_exit $msg
-fi
+  NSTAT=1850
+  datestr=`date`
+  echo top of loop after found needed log file for $fhr at $datestr
 
-NSTAT=1850
-datestr=`date`
-echo top of loop after found needed log file for $fhr at $datestr
-
-cat > itag <<EOF
+  cat > itag <<EOF
 $OUTFILDYN
 $OUTFILPHYS
 $model
@@ -281,44 +257,33 @@ $OUTFILDYN
 $OUTFILPHYS
 EOF
 
-#export pgm=regional_bufr.x
+  export FORT19="$DATA/bufrpost/regional_profdat"
+  export FORT79="$DATA/bufrpost/profilm.c1.${tmmark}"
+  export FORT11="itag"
 
-#. prep_step
+  ${APRUNC} $EXECfv3/rrfs_bufr.x  > pgmout.log_${fhr} 2>&1
+  export err=$?; err_chk
 
-export FORT19="$DATA/bufrpost/regional_profdat"
-export FORT79="$DATA/bufrpost/profilm.c1.${tmmark}"
-export FORT11="itag"
+  echo DONE $fhr at `date`
 
-#startmsg
+  mv $DATA/bufrpost/profilm.c1.${tmmark} $DATA/profilm.c1.${tmmark}.f${fhr}
+  echo done > $DATA/sndpostdone${fhr}.${tmmark}
 
-${APRUNC} $EXECfv3/rrfs_bufr.x  > pgmout.log_${fhr} 2>&1
-export err=$?
-#err_chk
+  cat $DATA/profilm.c1.${tmmark}  $DATA/profilm.c1.${tmmark}.f${fhr} > $DATA/profilm_int
+  mv $DATA/profilm_int $DATA/profilm.c1.${tmmark}
 
-echo DONE $fhr at `date`
+  fhr=`expr $fhr + $INCR`
 
-mv $DATA/bufrpost/profilm.c1.${tmmark} $DATA/profilm.c1.${tmmark}.f${fhr}
-echo done > $DATA/sndpostdone${fhr}.${tmmark}
-
-cat $DATA/profilm.c1.${tmmark}  $DATA/profilm.c1.${tmmark}.f${fhr} > $DATA/profilm_int
-mv $DATA/profilm_int $DATA/profilm.c1.${tmmark}
-
-fhr=`expr $fhr + $INCR`
-
-
-if [ $fhr -lt 10 ]
-then
-fhr=0$fhr
-fi
-
-#wdate=`$NDATE ${fhr} $CYCLE`
+  if [ $fhr -lt 10 ]; then
+    fhr=0$fhr
+  fi
 
 done
 
 cd $DATA
 
 ########################################################
-############### SNDP code
+# SNDP code
 ########################################################
 
 export pgm=hiresw_sndp_${RUNLOC}
@@ -331,8 +296,6 @@ export FORT32="$DATA/regional_bufr.tbl"
 export FORT66="$DATA/profilm.c1.${tmmark}"
 export FORT78="$DATA/class1.bufr"
 
-#startmsg
-
 echo here RUNLOC  $RUNLOC
 echo here MODEL $MODEL
 echo here model $model
@@ -340,30 +303,26 @@ echo here model $model
 pgmout=sndplog
 
 nlev=65
-#echo "${model} $nlev" > itag
 
 FCST_LEN_HRS=$FHRLIM
 echo "$nlev $NSTAT $FCST_LEN_HRS" > itag
 ${APRUNS} $EXECfv3/rrfs_sndp.x  < itag >> $pgmout 2>$pgmout
-#export err=$?
+export err=$?; err_chk
 
 SENDCOM=YES
 
-if [ $SENDCOM == "YES" ]
-then
-cp $DATA/class1.bufr $COMOUT/rrfs.t${cyc}z.${RUNLOC}.class1.bufr
-cp $DATA/profilm.c1.${tmmark} ${COMOUT}/rrfs.t${cyc}z.${RUNLOC}.profilm.c1
+if [ $SENDCOM == "YES" ]; then
+  cp $DATA/class1.bufr $COMOUT/rrfs.t${cyc}z.${RUNLOC}.class1.bufr
+  cp $DATA/profilm.c1.${tmmark} ${COMOUT}/rrfs.t${cyc}z.${RUNLOC}.profilm.c1
 fi
 
 # remove bufr file breakout directory in $COMOUT if it exists
 
-if [ -d ${COMOUT}/bufr.${NEST}${MODEL}${cyc} ]
-then
+if [ -d ${COMOUT}/bufr.${NEST}${MODEL}${cyc} ]; then
   cd $COMOUT
   rm -r bufr.${NEST}${MODEL}${cyc}
   cd $DATA
 fi
-
 
 rm stnmlist_input
 
@@ -373,32 +332,28 @@ $DATA/class1.bufr
 ${COMOUT}/bufr.${NEST}${MODEL}${cyc}/${NEST}${MODEL}bufr
 EOF
 
-  mkdir -p ${COMOUT}/bufr.${NEST}${MODEL}${cyc}
+mkdir -p ${COMOUT}/bufr.${NEST}${MODEL}${cyc}
 
-  export pgm=regional_stnmlist
-# . prep_step
+export pgm=regional_stnmlist
 
-  export FORT20=$DATA/class1.bufr
-  export DIRD=${COMOUT}/bufr.${NEST}${MODEL}${cyc}/${NEST}${MODEL}bufr
+export FORT20=$DATA/class1.bufr
+export DIRD=${COMOUT}/bufr.${NEST}${MODEL}${cyc}/${NEST}${MODEL}bufr
 
-# startmsg
 echo "before stnmlist.x"
 date
 pgmout=stnmlog
 ${APRUNS}  $EXECfv3/rrfs_stnmlist.x < stnmlist_input >> $pgmout 2>errfile
+export err=$?; err_chk
+
 echo "after stnmlist.x"
 date
 
-  export err=$?
-
-  echo ${COMOUT}/bufr.${NEST}${MODEL}${cyc} > ${COMOUT}/bufr.${NEST}${MODEL}${cyc}/bufrloc
-
-#   cp class1.bufr.tm00 $COMOUT/${RUN}.${cyc}.class1.bufr
+echo ${COMOUT}/bufr.${NEST}${MODEL}${cyc} > ${COMOUT}/bufr.${NEST}${MODEL}${cyc}/bufrloc
 
 cd ${COMOUT}/bufr.${NEST}${MODEL}${cyc}
 
 # Tar and gzip the individual bufr files and send them to /com
-  tar -cf - . | /usr/bin/gzip > ../rrfs.t${cyc}z.${RUNLOC}.bufrsnd.tar.gz
+tar -cf - . | /usr/bin/gzip > ../rrfs.t${cyc}z.${RUNLOC}.bufrsnd.tar.gz
 
 GEMPAKrrfs=/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/gempak
 cp $GEMPAKrrfs/fix/snrrfs.prm snrrfs.prm
@@ -409,15 +364,10 @@ cp $GEMPAKrrfs/fix/sfrrfs.prm sfrrfs.prm
 err3=$?
 
 mkdir -p $COMOUT/gempak
-#cd $COMOUT/gempak
 
-if [ $err1 -ne 0 -o $err2 -ne 0 -o $err3 -ne 0 ]
-then
-        msg="FATAL ERROR: Missing GEMPAK BUFR tables"
-        exit
-
+if [ $err1 -ne 0 -o $err2 -ne 0 -o $err3 -ne 0 ]; then
+  err_exit "Missing GEMPAK BUFR tables"
 fi
-
 
 #  Set input file name.
 
@@ -437,16 +387,7 @@ r
 
 exit
 EOF
-#files=`ls`
-#for fl in $files
-#do
-#${USHobsproc_shared_bufr_cword}/bufr_cword.sh unblk ${fl} ${fl}.unb
-#${USHobsproc_shared_bufr_cword}/bufr_cword.sh block ${fl}.unb ${fl}.wcoss
-#rm ${fl}.unb
-#done
 
-exit
-#
 print_info_msg "
 ========================================================================
 BUFR-sounding -processing completed successfully.
@@ -457,8 +398,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

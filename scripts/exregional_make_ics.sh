@@ -77,11 +77,12 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
+ulimit -s unlimited
+ulimit -a
+
 case "$MACHINE" in
 
   "WCOSS2")
-    ulimit -s unlimited
-    ulimit -a
     export OMP_STACKSIZE=1G
     export OMP_NUM_THREADS=${TPP_MAKE_ICS}
     export FI_OFI_RXM_SAR_LIMIT=3145728
@@ -92,20 +93,14 @@ case "$MACHINE" in
     ;;
 
   "HERA")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="srun --export=ALL"
     ;;
 
   "ORION")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="srun --export=ALL"
     ;;
 
   "JET")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="srun --export=ALL"
     ;;
 
@@ -129,8 +124,8 @@ extrn_mdl_var_defns_fp="${extrn_mdl_staging_dir}/${EXTRN_MDL_ICS_VAR_DEFNS_FN}"
 #-----------------------------------------------------------------------
 #
 workdir="${ics_dir}/tmp_ICS"
-mkdir_vrfy -p "$workdir"
-cd_vrfy $workdir
+mkdir -p "$workdir"
+cd $workdir
 #
 #-----------------------------------------------------------------------
 #
@@ -167,7 +162,7 @@ case "${CCPP_PHYS_SUITE}" in
     ;;
 #
   *)
-    print_err_msg_exit "\
+    err_exit "\
 The variable \"varmap_file\" has not yet been specified for this physics
 suite (CCPP_PHYS_SUITE):
   CCPP_PHYS_SUITE = \"${CCPP_PHYS_SUITE}\""
@@ -521,7 +516,7 @@ case "${EXTRN_MDL_NAME_ICS}" in
   ;;
 
 *)
-  print_err_msg_exit "\
+  err_exit "\
 External-model-dependent namelist variables have not yet been specified
 for this external IC model (EXTRN_MDL_NAME_ICS):
   EXTRN_MDL_NAME_ICS = \"${EXTRN_MDL_NAME_ICS}\""
@@ -546,9 +541,9 @@ cdate_crnt_fhr=$( date --utc --date "${yyyymmdd} ${hh} UTC + ${fhr} hours" "+%Y%
 # Get the month, day, and hour corresponding to the current forecast time
 # of the the external model.
 #
-  mm="${cdate_crnt_fhr:4:2}"
-  dd="${cdate_crnt_fhr:6:2}"
-  hh="${cdate_crnt_fhr:8:2}"
+mm="${cdate_crnt_fhr:4:2}"
+dd="${cdate_crnt_fhr:6:2}"
+hh="${cdate_crnt_fhr:8:2}"
 
 #
 #-----------------------------------------------------------------------
@@ -560,7 +555,7 @@ cdate_crnt_fhr=$( date --utc --date "${yyyymmdd} ${hh} UTC + ${fhr} hours" "+%Y%
 exec_fn="chgres_cube"
 exec_fp="$EXECdir/${exec_fn}"
 if [ ! -f "${exec_fp}" ]; then
-  print_err_msg_exit "\
+  err_exit "\
 The executable (exec_fp) for generating initial conditions on the FV3-LAM
 native grid does not exist:
   exec_fp = \"${exec_fp}\"
@@ -631,7 +626,7 @@ settings="
 #
 nml_fn="fort.41"
 ${USHdir}/set_namelist.py -q -u "$settings" -o ${nml_fn} || \
-  print_err_msg_exit "\
+  err_exit "\
 Call to python script set_namelist.py to set the variables in the namelist
 file read in by the ${exec_fn} executable failed.  Parameters passed to
 this script are:
@@ -647,24 +642,9 @@ $settings"
 #
 #-----------------------------------------------------------------------
 #
-# NOTE:
-# Often when the chgres_cube.exe run fails, it still returns a zero re-
-# turn code, so the failure isn't picked up the the logical OR (||) be-
-# low.  That should be fixed.  This might be due to the APRUN command -
-# maybe that is returning a zero exit code even though the exit code
-# of chgres_cube is nonzero.
-# A similar thing happens in the forecast task.
-#
-${APRUN} ${exec_fp} || \
-  print_err_msg_exit "\
-Call to executable (exec_fp) to generate surface and initial conditions
-(ICs) files for the FV3-LAM failed:
-  exec_fp = \"${exec_fp}\"
-The external model from which the ICs files are to be generated is:
-  EXTRN_MDL_NAME_ICS = \"${EXTRN_MDL_NAME_ICS}\"
-The external model files that are inputs to the executable (exec_fp) are
-located in the following directory:
-  extrn_mdl_staging_dir = \"${extrn_mdl_staging_dir}\""
+${APRUN} ${exec_fp}
+export err=$?; err_chk
+
 #
 #-----------------------------------------------------------------------
 #
@@ -673,15 +653,15 @@ located in the following directory:
 #
 #-----------------------------------------------------------------------
 #
-mv_vrfy out.atm.tile${TILE_RGNL}.nc \
+mv out.atm.tile${TILE_RGNL}.nc \
         ${ics_dir}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
 
-mv_vrfy out.sfc.tile${TILE_RGNL}.nc \
+mv out.sfc.tile${TILE_RGNL}.nc \
         ${ics_dir}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
 
-mv_vrfy gfs_ctrl.nc ${ics_dir}
+mv gfs_ctrl.nc ${ics_dir}
 
-mv_vrfy gfs.bndy.nc ${ics_dir}/gfs_bndy.tile${TILE_RGNL}.000.nc
+mv gfs.bndy.nc ${ics_dir}/gfs_bndy.tile${TILE_RGNL}.000.nc
 #
 #-----------------------------------------------------------------------
 #
@@ -689,9 +669,7 @@ mv_vrfy gfs.bndy.nc ${ics_dir}/gfs_bndy.tile${TILE_RGNL}.000.nc
 #
 #-----------------------------------------------------------------------
 #
-
-cp_vrfy ${ics_dir}/*.nc ${ics_nwges_dir}/.
-
+cp ${ics_dir}/*.nc ${ics_nwges_dir}/.
 #
 #-----------------------------------------------------------------------
 #
@@ -710,8 +688,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

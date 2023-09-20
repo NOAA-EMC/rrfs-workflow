@@ -191,7 +191,7 @@ $settings"
 #-----------------------------------------------------------------------
 #
 fv3_nml_base_fp="${FV3_NML_FP}.base"
-mv_vrfy "${FV3_NML_FP}" "${fv3_nml_base_fp}"
+mv "${FV3_NML_FP}" "${fv3_nml_base_fp}"
 
 $USHdir/set_namelist.py -q \
                         -n ${fv3_nml_base_fp} \
@@ -209,7 +209,7 @@ failed.  Parameters passed to this script are:
     settings =
 $settings"
 
-rm_vrfy "${fv3_nml_base_fp}"
+rm "${fv3_nml_base_fp}"
 #
 #-----------------------------------------------------------------------
 #

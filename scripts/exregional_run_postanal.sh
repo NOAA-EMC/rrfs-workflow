@@ -72,17 +72,17 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-# Load modules.
+# Set environment
 #
 #-----------------------------------------------------------------------
 #
+ulimit -s unlimited
+ulimit -a
+
 case $MACHINE in
 #
 "WCOSS2")
 #
-  module list
-  ulimit -s unlimited
-  ulimit -a
   export FI_OFI_RXM_SAR_LIMIT=3145728
   export OMP_STACKSIZE=500M
   export OMP_NUM_THREADS=1
@@ -91,16 +91,12 @@ case $MACHINE in
   ;;
 #
 "HERA")
-  ulimit -s unlimited
-  ulimit -a
   export OMP_NUM_THREADS=1
   export OMP_STACKSIZE=300M
   APRUN="srun --export=ALL"
   ;;
 #
 "ORION")
-  ulimit -s unlimited
-  ulimit -a
   export OMP_NUM_THREADS=1
   export OMP_STACKSIZE=1024M
   APRUN="srun --export=ALL"
@@ -109,8 +105,6 @@ case $MACHINE in
 "JET")
   export OMP_NUM_THREADS=2
   export OMP_STACKSIZE=1024M
-  ulimit -s unlimited
-  ulimit -a
   APRUN="srun --export=ALL"
   ;;
 #
@@ -141,7 +135,7 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 #
 #-----------------------------------------------------------------------
 
-cd_vrfy ${analworkdir}
+cd ${analworkdir}
 
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 if [ ${cycle_type} == "spinup" ]; then
@@ -174,12 +168,12 @@ fi
 if [[ ${BKTYPE} -eq 0 ]] && [[ ${ob_type} =~ "conv" ]] && [[ "${DO_SOIL_ADJUST}" = "TRUE" ]]; then  # warm start
   cd ${bkpath}
   if [ "${IO_LAYOUT_Y}" == "1" ]; then
-    ln_vrfy -snf ${fixgriddir}/fv3_grid_spec                fv3_grid_spec
+    ln -snf ${fixgriddir}/fv3_grid_spec                fv3_grid_spec
   else
     for ii in ${list_iolayout}
     do
       iii=`printf %4.4i $ii`
-      ln_vrfy  -snf ${gridspec_dir}/fv3_grid_spec.${iii}    fv3_grid_spec.${iii}
+      ln  -snf ${gridspec_dir}/fv3_grid_spec.${iii}    fv3_grid_spec.${iii}
     done
   fi
 
@@ -199,16 +193,15 @@ EOF
   if [ -f $adjustsoil_exec ]; then
     print_info_msg "$VERBOSE" "
 Copying the adjust soil executable to the run directory..."
-    cp_vrfy ${adjustsoil_exec} adjust_soiltq.exe
+    cp ${adjustsoil_exec} adjust_soiltq.exe
   else
-    print_err_msg_exit "\
+    err_exit "\
 The adjust_soiltq.exe specified in ${EXECdir} does not exist.
 Build adjust_soiltq.exe and rerun."
   fi
 
-  $APRUN ./adjust_soiltq.exe || print_err_msg_exit "\
-  Call to executable to run adjust soil returned with nonzero exit code."
-
+  $APRUN ./adjust_soiltq.exe
+  export err=$?; err_chk
 fi
 
 #
@@ -236,16 +229,15 @@ EOF
   if [ -f $update_bc_exec ]; then
     print_info_msg "$VERBOSE" "
 Copying the update bc executable to the run directory..."
-    cp_vrfy ${update_bc_exec} update_bc.exe 
+    cp ${update_bc_exec} update_bc.exe 
   else
-    print_err_msg_exit "\
+    err_exit "\
 The update_bc.exe specified in ${EXECdir} does not exist.
 Build update_bc.exe and rerun."
   fi
 
-  $APRUN ./update_bc.exe || print_err_msg_exit "\
-  Call to executable to run update bc returned with nonzero exit code."
-
+  $APRUN ./update_bc.exe
+  export err=$?; err_chk
 fi
 
 #
@@ -265,8 +257,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #
