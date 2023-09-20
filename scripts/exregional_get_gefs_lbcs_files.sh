@@ -106,7 +106,7 @@ case $MACHINE in
     ;;  
 
   *)  
-    print_err_msg_exit "\
+    err_exit "\
 Wgrib2 has not been specified for this machine:
   MACHINE = \"$MACHINE\"
   wgrib2 = `which wgrib2` "
@@ -309,11 +309,15 @@ EXTRN_MDL_LBC_SPEC_FHRS=${extrn_mdl_lbc_spec_fhrs_str}"
 { cat << EOM >> ${extrn_mdl_var_defns_fp}
 $settings
 EOM
-} || print_err_msg_exit "\
+}
+export err=$?
+if [ $err -ne 0 ]; then
+  err_exit "\
 Heredoc (cat) command to create a variable definitions file associated
 with the external model from which to generate ${ics_or_lbcs} returned with a 
 nonzero status.  The full path to this variable definitions file is:
   extrn_mdl_var_defns_fp = \"${extrn_mdl_var_defns_fp}\""
+fi
 #
 #-----------------------------------------------------------------------
 #

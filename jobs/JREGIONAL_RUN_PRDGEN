@@ -110,8 +110,7 @@ cd "${fhr_dir}"
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job and pass to it the necessary varia-
-# bles.
+# Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
@@ -122,9 +121,8 @@ $SCRIPTSdir/exregional_run_prdgen.sh \
   comout="${COMOUT}" \
   fhr_dir="${fhr_dir}" \
   fhr="${fhr}" \
-  tmmark="${TMMARK}" || \
-print_err_msg_exit "\
-Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+  tmmark="${TMMARK}"
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -140,8 +138,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

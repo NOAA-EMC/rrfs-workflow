@@ -55,7 +55,7 @@ This is the ex-script for the task that generates orography files.
 #
 #-----------------------------------------------------------------------
 #
-# Specify the set of valid argument names for this script/function.  Then
+# Specify the set of valid argument names for this script/function. Then
 # process the arguments provided to this script/function (which should
 # consist of a set of name-value pairs of the form arg1="value1", etc).
 #
@@ -94,34 +94,29 @@ export OMP_STACKSIZE=2048m
 #
 #-----------------------------------------------------------------------
 #
+ulimit -s unlimited
+ulimit -a
+
 case $MACHINE in
 
   "WCOSS2")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="time"
     ;;
 
   "HERA")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="time"
     ;;
 
   "ORION")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="time"
     ;;
 
   "JET")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="time"
     ;;
 
   *)
-    print_err_msg_exit "\
+    err_exit "\
 Run command has not been specified for this machine:
   MACHINE = \"$MACHINE\"
   APRUN = \"$APRUN\""
@@ -162,7 +157,7 @@ mkdir -p "${shave_dir}"
 exec_fn="orog"
 exec_fp="$EXECdir/${exec_fn}"
 if [ ! -f "${exec_fp}" ]; then
-  print_err_msg_exit "\
+  err_exit "\
 The executable (exec_fp) for generating the orography file does not exist:
   exec_fp = \"${exec_fp}\"
 Please ensure that you've built this executable."
@@ -260,12 +255,8 @@ cat "${input_redirect_fn}"
 print_info_msg "$VERBOSE" "
 Starting orography file generation..."
 
-$APRUN "${exec_fp}" < "${input_redirect_fn}" || \
-      print_err_msg_exit "\
-Call to executable (exec_fp) that generates the raw orography file returned
-with nonzero exit code:
-  exec_fp = \"${exec_fp}\""
-
+$APRUN "${exec_fp}" < "${input_redirect_fn}"
+export err=$?; err_chk
 #
 # Change location to the original directory.
 #
@@ -300,10 +291,13 @@ if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" ]] ; then
   mkdir -p ${DATA}
   cd ${DATA}
   mosaic_fn_gwd="${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc"
-  mosaic_fp_gwd="${FIXlam}/${mosaic_fn_gwd}"
-  grid_fn_gwd=$( get_charvar_from_netcdf "${mosaic_fp_gwd}" "gridfiles" ) || \
-    print_err_msg_exit "get_charvar_from_netcdf function failed."
-  grid_fp_gwd="${FIXlam}/${grid_fn_gwd}"
+  mosaic_fp_gwd="${FIXLAM}/${mosaic_fn_gwd}"
+  grid_fn_gwd=$( get_charvar_from_netcdf "${mosaic_fp_gwd}" "gridfiles" )
+  export err=$?
+  if [ $err -ne 0 ]; then
+    err_exit "get_charvar_from_netcdf function failed."
+  fi
+  grid_fp_gwd="${FIXLM}/${grid_fn_gwd}"
   ls_fn="geo_em.d01.lat-lon.2.5m.HGT_M.nc"
   ss_fn="HGT.Beljaars_filtered.lat-lon.30s_res.nc"
   create_symlink_to_file target="${grid_fp_gwd}" symlink="${DATA}/${grid_fn_gwd}" \
@@ -323,7 +317,7 @@ EOF
   exec_fn="orog_gsl"
   exec_fp="$EXECdir/${exec_fn}"
   if [ ! -f "${exec_fp}" ]; then
-    print_err_msg_exit "\
+    err_exit "\
 The executable (exec_fp) for generating the GSL orography GWD data files
 does not exist:
   exec_fp = \"${exec_fp}\"
@@ -333,16 +327,12 @@ Please ensure that you've built this executable."
   print_info_msg "$VERBOSE" "
 Starting orography file generation..."
 
-  ${APRUN} "${exec_fp}" < "${input_redirect_fn}"  ${REDIRECT_OUT_ERR} || \
-      print_err_msg_exit "\
-Call to executable (exec_fp) that generates the GSL orography GWD data files
-returned with nonzero exit code:
-  exec_fp = \"${exec_fp}\""
+  ${APRUN} "${exec_fp}" < "${input_redirect_fn}"
+  export err=$?; err_chk
 
   mv "${CRES}${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc" \
           "${CRES}${DOT_OR_USCORE}oro_data_ls.tile${TILE_RGNL}.halo${NH0}.nc" \
           "${OROG_DIR}"
-
 fi
 #
 #-----------------------------------------------------------------------
@@ -382,28 +372,11 @@ fi
 #-----------------------------------------------------------------------
 #
 if [ "${GRID_GEN_METHOD}" = "GFDLgrid" ]; then
-
-# Note:
-# It is also possible to use the equivalent global uniform cubed-sphere
-# resolution when filtering on a GFDLgrid type grid by setting the namelist
-# parameters as follows:
-#
-#  res="${CRES:1}"
-#  stretch_fac="1" (or "0.999" if "1" makes it crash)
-#  refine_ratio="1"
-#
-# Really depends on what EMC wants to do.
-
   res="${GFDLgrid_RES}"
-#  stretch_fac="${GFDLgrid_STRETCH_FAC}"
   refine_ratio="${GFDLgrid_REFINE_RATIO}"
-
 elif [ "${GRID_GEN_METHOD}" = "ESGgrid" ]; then
-
   res="${CRES:1}"
-#  stretch_fac="${STRETCH_FAC}"
   refine_ratio="1"
-
 fi
 #
 # Set the name and path to the executable and make sure that it exists.
@@ -411,7 +384,7 @@ fi
 exec_fn="filter_topo"
 exec_fp="$EXECdir/${exec_fn}"
 if [ ! -f "${exec_fp}" ]; then
-  print_err_msg_exit "\
+  err_exit "\
 The executable (exec_fp) for filtering the raw orography does not exist:
   exec_fp = \"${exec_fp}\"
 Please ensure that you've built this executable."
@@ -484,10 +457,8 @@ cd "${filter_dir}"
 print_info_msg "$VERBOSE" "
 Starting filtering of orography..."
 
-$APRUN "${exec_fp}" || \
-  print_err_msg_exit "\
-Call to executable that generates filtered orography file returned with
-non-zero exit code."
+$APRUN "${exec_fp}"
+export err=$?; err_chk
 #
 # For clarity, rename the filtered orography file in filter_dir
 # such that its new name contains the halo size.
@@ -520,7 +491,7 @@ Filtering of orography complete."
 exec_fn="shave"
 exec_fp="$EXECdir/${exec_fn}"
 if [ ! -f "${exec_fp}" ]; then
-  print_err_msg_exit "\
+  err_exit "\
 The executable (exec_fp) for \"shaving\" down the halo in the orography
 file does not exist:
   exec_fp = \"${exec_fp}\"
@@ -553,15 +524,8 @@ printf "%s %s %s %s %s\n" \
   $NX $NY ${NH0} \"${unshaved_fp}\" \"${shaved_fp}\" \
   > ${nml_fn}
 
-$APRUN ${exec_fp} < ${nml_fn} || \
-print_err_msg_exit "\
-Call to executable (exec_fp) to generate a (filtered) orography file with
-a ${NH0}-cell-wide halo from the orography file with a {NHW}-cell-wide halo
-returned with nonzero exit code:
-  exec_fp = \"${exec_fp}\"
-The namelist file (nml_fn) used in this call is in directory shave_dir:
-  nml_fn = \"${nml_fn}\"
-  shave_dir = \"${shave_dir}\""
+$APRUN ${exec_fp} < ${nml_fn}
+export err=$?; err_chk
 mv ${shaved_fp} ${OROG_DIR}
 #
 # Create an input namelist file for the shave executable to generate an
@@ -579,15 +543,8 @@ printf "%s %s %s %s %s\n" \
   $NX $NY ${NH4} \"${unshaved_fp}\" \"${shaved_fp}\" \
   > ${nml_fn}
 
-$APRUN ${exec_fp} < ${nml_fn} || \
-print_err_msg_exit "\
-Call to executable (exec_fp) to generate a (filtered) orography file with
-a ${NH4}-cell-wide halo from the orography file with a {NHW}-cell-wide halo
-returned with nonzero exit code:
-  exec_fp = \"${exec_fp}\"
-The namelist file (nml_fn) used in this call is in directory shave_dir:
-  nml_fn = \"${nml_fn}\"
-  shave_dir = \"${shave_dir}\""
+$APRUN ${exec_fp} < ${nml_fn}
+export err=$?; err_chk
 mv "${shaved_fp}" "${OROG_DIR}"
 #
 # Change location to the original directory.
@@ -607,9 +564,11 @@ cd_vrfy -
 #
 link_fix \
   verbose="$VERBOSE" \
-  file_group="orog" || \
-print_err_msg_exit "\
-Call to function to create links to orography files failed."
+  file_group="orog"
+export err=$?
+if [ $err -ne 0 ]; then
+  err_exit "Call to function to create links to orography files failed."
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -627,11 +586,8 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #
 { restore_shell_opts; } > /dev/null 2>&1
-
-

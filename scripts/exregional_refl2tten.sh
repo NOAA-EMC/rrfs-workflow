@@ -70,34 +70,29 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-# Load modules.
+# Set environment
 #
 #-----------------------------------------------------------------------
 #
+ulimit -s unlimited
+ulimit -a
+
 case $MACHINE in
 #
 "WCOSS2")
-  ulimit -s unlimited
-  ulimit -a
   ncores=$(( NNODES_RUN_REF2TTEN*PPN_RUN_NONVARCLDANL))
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_NONVARCLDANL}"
   ;;
 #
 "HERA")
-  ulimit -s unlimited
-  ulimit -a
   APRUN="srun --export=ALL"
   ;;
 #
 "JET")
-  ulimit -s unlimited
-  ulimit -a
   APRUN="srun --export=ALL"
   ;;
 #
 "ORION")
-  ulimit -s unlimited
-  ulimit -a
   APRUN="srun --export=ALL"
   ;;
 #
@@ -159,8 +154,8 @@ fi
 n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
-cp ${fixgriddir}/fv3_akbk                               fv3_akbk
-cp ${fixgriddir}/fv3_grid_spec                          fv3_grid_spec
+cp ${fixgriddir}/fv3_akbk        fv3_akbk
+cp ${fixgriddir}/fv3_grid_spec   fv3_grid_spec
 
 if [ -r "${bkpath}/coupler.res" ]; then # Use background from warm restart
   if [ "${IO_LAYOUT_Y}" == "1" ]; then
@@ -218,7 +213,7 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
        done
      fi
   else
-     print_info_msg "$VERBOSE" "Warning: ${obs_file} does not exist!"
+     print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist!"
   fi
 done
 
@@ -226,7 +221,7 @@ obs_file=${comin}/rrfs.t${HH}z.LightningInFV3LAM.bin
 if [ -r "${obs_file}" ]; then
    cp "${obs_file}" "LightningInGSI.dat_01"
 else
-   print_info_msg "$VERBOSE" "Warning: ${obs_file} does not exist!"
+   print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist!"
 fi
 
 
@@ -239,7 +234,6 @@ bufr_table=${fixdir}/prepobs_prep_RAP.bufrtable
 
 # Fixed fields
 cp $bufr_table prepobs_prep.bufrtable
-
 
 #-----------------------------------------------------------------------
 #
@@ -273,7 +267,6 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-
 exect="${EXECdir}/ref2tten.exe"
 
 if [ -f ${exect} ]; then
@@ -281,7 +274,7 @@ if [ -f ${exect} ]; then
 Copying the radar refl tten  executable to the run directory..."
   cp ${exect} ${workdir}/ref2ttenfv3lam.exe
 else
-  print_err_msg_exit "\
+  err_exit "\
 The radar refl tten executable specified in exect does not exist:
   exect = \"$exect\"
 Build radar refl tten and rerun."
@@ -295,8 +288,9 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-$APRUN ./ref2ttenfv3lam.exe > stdout 2>&1 || print_err_msg_exit "\
-Call to executable to run radar refl tten returned with nonzero exit code."
+$APRUN ./ref2ttenfv3lam.exe > stdout 2>&1
+export err=$?; err_chk
+
 cp stdout ${comout}/stdout.t${HH}z.ref2ttenfv3lam
 #
 #-----------------------------------------------------------------------
@@ -315,8 +309,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

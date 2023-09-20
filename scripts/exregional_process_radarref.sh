@@ -70,34 +70,29 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-# Load modules.
+# Set environment
 #
 #-----------------------------------------------------------------------
 #
+ulimit -s unlimited
+ulimit -a
+
 case $MACHINE in
 #
 "WCOSS2")
-  ulimit -s unlimited
-  ulimit -a
   ncores=$(( NNODES_PROC_RADAR*PPN_PROC_RADAR))
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_PROC_RADAR}"
   ;;
 #
 "HERA")
-  ulimit -s unlimited
-  ulimit -a
   APRUN="srun --export=ALL"
   ;;
 #
 "JET")
-  ulimit -s unlimited
-  ulimit -a
   APRUN="srun --export=ALL"
   ;;
 #
 "ORION")
-  ulimit -s unlimited
-  ulimit -a
   APRUN="srun --export=ALL"
   ;;
 #
@@ -178,7 +173,7 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
 # link or copy background files
 #
 #-----------------------------------------------------------------------
-
+#
   if [ ${BKTYPE} -eq 1 ]; then
     cp ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
   else
@@ -199,8 +194,7 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
 # link/copy observation files to working directory 
 #
 #-----------------------------------------------------------------------
-
-
+#
 case $MACHINE in
 
 "WCOSS2")
@@ -355,7 +349,7 @@ EOF
     Copying the radar process  executable to the run directory..."
     cp ${EXECdir}/${exect} .
   else
-    print_err_msg_exit "\
+    err_exit "\
     The executable specified in GSI_exect does not exist:
     exect = \"${EXECdir}/$exect\"
     Build radar process and rerun."
@@ -364,12 +358,13 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-# Run the process.
+# Run the radar refl process.
 #
 #-----------------------------------------------------------------------
 #
-  $APRUN ./${exect} > stdout 2>&1 || print_info_msg "\
-  Call to executable to run radar refl process returned with nonzero exit code."
+  $APRUN ./${exect} > stdout 2>&1
+  export err=$?; err_chk
+
   cp stdout $comout/stdout.t${HH}z.NSSL_mosaic.${bigmin}
   cp RefInGSI3D.dat  $comout/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
 done # done with the bigmin for-loop
@@ -390,8 +385,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

@@ -70,15 +70,15 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-# Load modules.
+# Set environment
 #
+ulimit -s unlimited
+ulimit -a
+
 case $MACHINE in
 #
 "WCOSS2")
 #
-  module list
-  ulimit -s unlimited
-  ulimit -a
   export FI_OFI_RXM_SAR_LIMIT=3145728
   export OMP_STACKSIZE=500M
   export OMP_NUM_THREADS=1
@@ -87,27 +87,18 @@ case $MACHINE in
   ;;
 #
 "HERA")
-  module load nco/4.9.3
-  ulimit -s unlimited
-  ulimit -v unlimited
-  ulimit -a
   export OMP_NUM_THREADS=1
 #  export OMP_STACKSIZE=300M
   APRUN="srun"
   ;;
 #
 "ORION")
-  ulimit -s unlimited
-  ulimit -a
   export OMP_NUM_THREADS=1
   export OMP_STACKSIZE=1024M
   APRUN="srun"
   ;;
 #
 "JET")
-  module load nco/4.9.3
-  ulimit -s unlimited
-  ulimit -a
   APRUN="srun"
   ;;
 #
@@ -164,7 +155,7 @@ for imem in  $(seq 1 $nens)
     ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./rec_fv3sar_tile1_mem${memberstring}_tracer
     ln -sf ${bkpath}/sfc_data.nc  ./rec_fv3sar_tile1_mem${memberstring}_sfcvar
   else
-    print_err_msg_exit "Error: cannot find background: ${dynvarfile} ${tracerfile}"
+    err_exit "Cannot find background: ${dynvarfile} ${tracerfile}"
   fi
 
   (( imem += 1 ))
@@ -197,7 +188,7 @@ elif [ -r "${dynvarfile_control}" ] && [ -r "${tracerfile_control}" ] ; then
   ln -sf ${ctrlpath}/fcst_fv3lam/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
   ln -sf ${ctrlpath}/fcst_fv3lam/INPUT/sfc_data.nc  ./control_sfcvar
 else
-  print_err_msg_exit "Error: cannot find background: ${dynvarfile_control} or ${dynvarfile_control_spinup}"
+  err_exit "Cannot find background: ${dynvarfile_control} or ${dynvarfile_control_spinup}"
 fi
 
 #
@@ -232,7 +223,6 @@ EOF
 #
 
 echo pwd is `pwd`
-#ENSMEAN_EXEC=${EXECdir}/gen_ensmean_recenter.exe
 ENSMEAN_EXEC=${EXECdir}/ens_mean_recenter_P2DIO.exe
 
 if [ -f ${ENSMEAN_EXEC} ]; then 
@@ -240,14 +230,14 @@ if [ -f ${ENSMEAN_EXEC} ]; then
 Copying the ensemble mean executable to the run directory..."
   cp ${ENSMEAN_EXEC} ${recenterdir}/.
 else
-  print_err_msg_exit "\
+  err_exit "\
 The ensemble mean executable specified in ENSMEAN_EXEC does not exist:
   ENSMEAN_EXEC = \"${ENSMEAN_EXEC}\"
 Build ENSMEAN_EXEC and rerun." 
 fi
 
-${APRUN} ${ENSMEAN_EXEC}  < namelist.ens > stdout_recenter 2>&1 || print_err_msg_exit "\
-Call to executable to run ensemble recenter returned with nonzero exit code."
+${APRUN} ${ENSMEAN_EXEC}  < namelist.ens > stdout_recenter 2>&1
+export err=$?; err_chk
 
 cp stdout_recenter ${comout}/stdout.t${HH}z.recenter
 #
@@ -258,7 +248,7 @@ cp stdout_recenter ${comout}/stdout.t${HH}z.recenter
 #-----------------------------------------------------------------------
 #
 for files in $(ls rec_fv3sar_tile1_mem*)  ; do
- ncatted -a checksum,,d,,  $files
+  ncatted -a checksum,,d,,  $files
 done
 
 #
@@ -284,8 +274,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

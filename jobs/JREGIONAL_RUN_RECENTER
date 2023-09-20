@@ -101,8 +101,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job and pass to it the necessary varia-
-# bles.
+# Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
@@ -110,9 +109,8 @@ $SCRIPTSdir/exregional_run_recenter.sh \
              cycle_type="${CYCLE_TYPE}" \
              comout="${COMOUT}" \
              recenterdir="${recenterdir}" \
-             ctrlpath="${ctrlpath}"  || \
-print_err_msg_exit "\
-Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+             ctrlpath="${ctrlpath}"
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -128,8 +126,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

@@ -117,7 +117,7 @@ case $MACHINE in
     ;;
 
   *)
-    print_err_msg_exit "\
+    err_exit "\
 Run command has not been specified for this machine:
   MACHINE = \"$MACHINE\"
   APRUN = \"$APRUN\""
@@ -154,7 +154,7 @@ symlink="grid_spec.nc"
 if [ -f "${target}" ]; then
   ln -sf ${relative_or_null} $target $symlink
 else
-  print_err_msg_exit "\
+  err_exit "\
 Cannot create symlink because target does not exist:
   target = \"$target\""
 fi
@@ -168,7 +168,7 @@ symlink="${grid_fn}"
 if [ -f "${target}" ]; then
   ln -sf ${relative_or_null} $target $symlink
 else
-  print_err_msg_exit "\
+  err_exit "\
 Cannot create symlink because target does not exist:
   target = \"$target\""
 fi
@@ -190,7 +190,7 @@ symlink="grid.tile${TILE_RGNL}.halo${NH4}.nc"
 if [ -f "${target}" ]; then
   ln -sf ${relative_or_null} $target $symlink
 else
-  print_err_msg_exit "\
+  err_exit "\
 Cannot create symlink because target does not exist:
   target = \"$target\""
 fi
@@ -203,7 +203,7 @@ symlink="oro_data.nc"
 if [ -f "${target}" ]; then
   ln -sf ${relative_or_null} $target $symlink
 else
-  print_err_msg_exit "\
+  err_exit "\
 Cannot create symlink because target does not exist:
   target = \"$target\""
 fi
@@ -226,7 +226,7 @@ symlink="oro_data.tile${TILE_RGNL}.halo${NH4}.nc"
 if [ -f "${target}" ]; then
   ln -sf ${relative_or_null} $target $symlink
 else
-  print_err_msg_exit "\
+  err_exit "\
 Cannot create symlink because target does not exist:
   target = \"$target\""
 fi
@@ -251,7 +251,7 @@ if [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ] || \
     if [ -f "${target}" ]; then
       ln -sf ${relative_or_null} $target $symlink
     else
-      print_err_msg_exit "\
+      err_exit "\
 Cannot create symlink because target does not exist:
   target = \"${target}\"
   symlink = \"${symlink}\""
@@ -308,7 +308,7 @@ if [ -f "${target}.0000" ]; then
     if [ -f "${target}.${iii}" ]; then
       ln -sf ${relative_or_null} $target.${iii} $symlink.${iii}
     else
-      print_err_msg_exit "\
+      err_exit "\
       Cannot create symlink because target does not exist:
       target = \"$target.$iii\""
     fi
@@ -317,7 +317,7 @@ else
   if [ -f "${target}" ]; then
     ln -sf ${relative_or_null} $target $symlink
   else
-    print_err_msg_exit "\
+    err_exit "\
     Cannot create symlink because target does not exist:
     target = \"$target\""
   fi
@@ -348,7 +348,7 @@ else
     if [ -f "${target}" ]; then
       ln -sf ${relative_or_null} $target $symlink
     else
-      print_err_msg_exit "\
+      err_exit "\
       Cannot create symlink because target does not exist:
       target = \"$target\""
     fi
@@ -357,7 +357,7 @@ else
       print_info_msg "$VERBOSE" "
       sfc_data.nc is available at INPUT directory"
     else
-      print_err_msg_exit "\
+      err_exit "\
       sfc_data.nc is not available for cycling"
     fi
   fi
@@ -378,7 +378,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then
     ln -snf ${smokefile} ${run_dir}/INPUT/SMOKE_RRFS_data.nc
   else
     ln -snf ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/dummy_24hr_smoke.nc ${run_dir}/INPUT/SMOKE_RRFS_data.nc
-    echo "smoke file is not available, use dummy_24hr_smoke.nc instead"
+    echo "WARNING: Smoke file is not available, use dummy_24hr_smoke.nc instead"
   fi
 fi
 #
@@ -417,7 +417,7 @@ for (( i=0; i<${num_symlinks}; i++ )); do
   if [ -f "${target}" ]; then
     ln -sf ${relative_or_null} $target $symlink
   else
-    print_err_msg_exit "\
+    err_exit "\
   Cannot create symlink because target does not exist:
     target = \"$target\""
   fi
@@ -492,11 +492,15 @@ fi
 
 if [ "${STOCH}" = "TRUE" ]; then
   cp ${run_dir}/${FV3_NML_FN} ${run_dir}/${FV3_NML_FN}_base
-  set_FV3nml_ens_stoch_seeds cdate="$cdate" || print_err_msg_exit "\
+  set_FV3nml_ens_stoch_seeds cdate="$cdate"
+  export err=$?
+  if [ $err -ne 0 ]; then
+    err_exit "\
  Call to function to create the ensemble-based namelist for the current 
  cycle's (cdate) run directory (run_dir) failed: 
    cdate = \"${cdate}\"
    run_dir = \"${run_dir}\""
+  fi
 fi
 #
 #-----------------------------------------------------------------------
@@ -517,10 +521,9 @@ python3 $USHdir/create_model_configure_file.py \
   --restart_hrs="${RESTART_HRS}"
 export err=$?
 if [ $err -ne 0 ]; then
-  message_txt="Call to function to create the model_configure file for
+  err_exit "Call to function to create the model_configure file for
 the current cycle's (cdate) run directory (DATA) failed:
   DATA = \"${run_dir}\""
-  err_exit "${message_txt}"
 fi
 #
 #-----------------------------------------------------------------------
@@ -535,10 +538,9 @@ python3 $USHdir/create_diag_table_file.py \
   --run-dir ${run_dir}
 export err=$?
 if [ $err -ne 0 ]; then
-  message_txt="Call to function to create the diag_table file for
+  err_exit "Call to function to create the diag_table file for
 the current cycle's (cdate) run directory (DATA) failed:
   DATA = \"${run_dir}\""
-  err_exit "${message_txt}"
 fi
 #
 #-----------------------------------------------------------------------
@@ -553,10 +555,9 @@ python3 $USHdir/create_nems_configure_file.py \
   --run-dir ${run_dir} 
 export err=$?
 if [ $err -ne 0 ]; then
-  message_txt="Call to function to create the NEMS configuration file for
+  err_exit "Call to function to create the NEMS configuration file for
 the current cycle's (cdate) run directory (DATA) failed:
   DATA = \"${run_dir}\""
-  err_exit "${message_txt}"
 fi
 #
 #-----------------------------------------------------------------------
@@ -597,15 +598,15 @@ if [ -f ${FV3_EXEC_FP} ]; then
   Copying the fv3lam  executable to the run directory..."
   cp ${FV3_EXEC_FP} ${run_dir}/ufs_model
 else
-  print_err_msg_exit "\
+  err_exit "\
  The GSI executable specified in FV3_EXEC_FP does not exist:
    FV3_EXEC_FP = \"$FV3_EXEC_FP\"
  Build FV3LAM and rerun."
 fi
 
-$APRUN ${run_dir}/ufs_model || print_err_msg_exit "\
-Call to executable to run FV3-LAM forecast returned with nonzero exit
-code."
+$APRUN ${run_dir}/ufs_model
+export err=$?; err_chk
+
 #
 #-----------------------------------------------------------------------
 #
@@ -634,7 +635,7 @@ if [ ${BKTYPE} -eq 1 ] && [ ${n_iolayouty} -ge 1 ]; then
     if [ -f "grid_spec.nc.${iii}" ]; then
       cp grid_spec.nc.${iii} ${gridspec_dir}/fv3_grid_spec.${iii}
     else
-      print_err_msg_exit "\
+      err_exit "\
       Cannot create symlink because target does not exist:
       target = \"grid_spec.nc.$iii\""
     fi
@@ -643,8 +644,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

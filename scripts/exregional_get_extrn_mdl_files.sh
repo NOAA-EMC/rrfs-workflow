@@ -165,8 +165,7 @@ presence and age of remaining external model files on disk."
     # in a user-specified directory, print out an error message and exit.
     #
     if [ "${use_user_staged_extrn_files}" = "TRUE" ]; then
-
-      print_err_msg_exit "\
+      err_exit "\
 File fp does NOT exist on disk:
   fp = \"$fp\"
 Please ensure that the directory specified by extrn_mdl_source_dir exists 
@@ -180,7 +179,6 @@ within it:
     # to get all the external model files from HPSS.
     #
     else
-
       print_info_msg "
 File fp does NOT exist on disk:
   fp = \"$fp\"
@@ -189,9 +187,7 @@ presence and age of remaining external model files on disk."
       break
 
     fi
-
   fi
-
 done
 #
 #-----------------------------------------------------------------------
@@ -349,18 +345,20 @@ directory to which they will be copied (extrn_mdl_staging_dir) are:
 # file.
 #
       htar_log_fn="log.htar_tvf.${narcv_formatted}"
-      htar -tvf ${arcv_fp} ${extrn_mdl_fps_in_arcv[@]} >& ${htar_log_fn} || \
-      print_err_msg_exit "\
+      htar -tvf ${arcv_fp} ${extrn_mdl_fps_in_arcv[@]} >& ${htar_log_fn}
+      export err=$?
+      if [ $err -ne 0 ]; then
+        err_exit "\
 htar file list operation (\"htar -tvf ...\") failed.  Check the log file 
 htar_log_fn in the staging directory (extrn_mdl_staging_di)r for details:
   extrn_mdl_staging_dir = \"${extrn_mdl_staging_dir}\"
   htar_log_fn = \"${htar_log_fn}\""
+      fi
 
       i=0
       files_in_crnt_arcv=()
       for (( nfile=0; nfile<${num_files_to_extract}; nfile++ )); do
         extrn_mdl_fp="${extrn_mdl_fps_in_arcv[$nfile]}"
-#        grep -n ${extrn_mdl_fp} ${htar_log_fn} 2>&1 && { \
         grep -n ${extrn_mdl_fp} ${htar_log_fn} > /dev/null 2>&1 && { \
           files_in_crnt_arcv[$i]="${extrn_mdl_fp}"; \
           i=$((i+1)); \
@@ -373,7 +371,7 @@ htar_log_fn in the staging directory (extrn_mdl_staging_di)r for details:
       num_files_in_crnt_arcv=${#files_in_crnt_arcv[@]}
       if [ ${num_files_in_crnt_arcv} -eq 0 ]; then
         extrn_mdl_fps_in_arcv_str="( "$( printf "\"%s\" " "${extrn_mdl_fps_in_arcv[@]}" )")"
-        print_err_msg_exit "\
+        err_exit "\
 The current archive file (arcv_fp) does not contain any of the external 
 model files listed in extrn_mdl_fps_in_arcv:
   arcv_fp = \"${arcv_fp}\"
@@ -387,13 +385,16 @@ it would not be needed."
 # "htar -xvf" command in a log file for debugging (if necessary).
 #
       htar_log_fn="log.htar_xvf.${narcv_formatted}"
-      htar -xvf ${arcv_fp} ${files_in_crnt_arcv[@]} >& ${htar_log_fn} || \
-      print_err_msg_exit "\
+      htar -xvf ${arcv_fp} ${files_in_crnt_arcv[@]} >& ${htar_log_fn}
+      export err=$?
+      if [ $err -ne 0 ]; then
+        err_exit "\
 htar file extract operation (\"htar -xvf ...\") failed.  Check the log 
 file htar_log_fn in the staging directory (extrn_mdl_staging_dir) for 
 details:
   extrn_mdl_staging_dir = \"${extrn_mdl_staging_dir}\"
   htar_log_fn = \"${htar_log_fn}\""
+      fi
 #
 # Note that the htar file extract operation above may return with a 0 
 # exit code (success) even if one or more (or all) external model files 
@@ -413,8 +414,10 @@ details:
 #
         fp=${fp#/}
 
-        grep -n "${fp}" "${htar_log_fn}" > /dev/null 2>&1 || \
-        print_err_msg_exit "\
+        grep -n "${fp}" "${htar_log_fn}" > /dev/null 2>&1
+        export err=$?
+        if [ $err -ne 0 ]; then
+          err_exit "\
 External model file fp not extracted from tar archive file arcv_fp:
   arcv_fp = \"${arcv_fp}\"
   fp = \"$fp\"
@@ -422,7 +425,7 @@ Check the log file htar_log_fn in the staging directory (extrn_mdl_staging_dir)
 for details:
   extrn_mdl_staging_dir = \"${extrn_mdl_staging_dir}\"
   htar_log_fn = \"${htar_log_fn}\""
-
+        fi
       done
 
     done
@@ -457,14 +460,14 @@ for details:
       done
 
       if [ ${num_occurs} -eq 0 ]; then
-        print_err_msg_exit "\
+        err_exit "\
 The current external model file (extrn_mdl_fp) does not appear in any of
 the archive extraction log files:
   extrn_mdl_fp = \"${extrn_mdl_fp}\"
 Thus, it was not extracted, likely because it doesn't exist in any of the 
 archive files."
       elif [ ${num_occurs} -gt 1 ]; then
-        print_err_msg_exit "\
+        err_exit "\
 The current external model file (extrn_mdl_fp) appears more than once in
 the archive extraction log files:
   extrn_mdl_fp = \"${extrn_mdl_fp}\"
@@ -474,7 +477,6 @@ Thus, it was extracted from more than one archive file, with the last one
 that was extracted overwriting all previous ones.  This should normally 
 not happen."
       fi
-
     done
 #
 #-----------------------------------------------------------------------
@@ -518,8 +520,7 @@ not happen."
 # equal to "."), then print out an error message and exit.
 #
       else
-
-        print_err_msg_exit "\
+        err_exit "\
 The archive-relative directory specified by extrn_mdl_arcvrel_dir [i.e. 
 the directory \"within\" the tar file(s) listed in extrn_mdl_arcv_fps] is
 not the current directory (i.e. it is not \".\"), and it does not start 
@@ -529,7 +530,6 @@ with a \"/\" or a \"./\":
 This script must be modified to account for this case."
 
       fi
-
     fi
 #
 #-----------------------------------------------------------------------
@@ -553,7 +553,7 @@ This script must be modified to account for this case."
 #-----------------------------------------------------------------------
 #
     if [ "${num_arcv_files}" -gt 1 ]; then
-      print_err_msg_exit "\
+      err_exit "\
 Currently, this script is coded to handle only one archive file if the 
 archive file format is specified to be \"zip\", but the number of archive 
 files (num_arcv_files) passed to this script is greater than 1:
@@ -575,12 +575,15 @@ that can be used as a guide for the \"zip\" case."
 #-----------------------------------------------------------------------
 #
     hsi_log_fn="log.hsi_get"
-    hsi get "${arcv_fp}" >& ${hsi_log_fn} || \
-    print_err_msg_exit "\
+    hsi get "${arcv_fp}" >& ${hsi_log_fn}
+    export err=$?
+    if [ $err -ne 0 ]; then
+      err_exit "\
 hsi file get operation (\"hsi get ...\") failed.  Check the log file 
 hsi_log_fn in the staging directory (extrn_mdl_staging_dir) for details:
   extrn_mdl_staging_dir = \"${extrn_mdl_staging_dir}\"
   hsi_log_fn = \"${hsi_log_fn}\""
+    fi
 #
 #-----------------------------------------------------------------------
 #
@@ -590,14 +593,17 @@ hsi_log_fn in the staging directory (extrn_mdl_staging_dir) for details:
 #-----------------------------------------------------------------------
 #
     unzip_log_fn="log.unzip_lv"
-    unzip -l -v ${arcv_fn} >& ${unzip_log_fn} || \
-    print_err_msg_exit "\
+    unzip -l -v ${arcv_fn} >& ${unzip_log_fn}
+    export err=$?
+    if [ $err -ne 0 ]; then
+      err_exit "\
 unzip operation to list the contents of the zip archive file arcv_fn in
 the staging directory (extrn_mdl_staging_dir) failed.  Check the log 
 file unzip_log_fn in that directory for details:
   arcv_fn = \"${arcv_fn}\"
   extrn_mdl_staging_dir = \"${extrn_mdl_staging_dir}\"
   unzip_log_fn = \"${unzip_log_fn}\""
+    fi
 #
 #-----------------------------------------------------------------------
 #
@@ -611,8 +617,10 @@ file unzip_log_fn in that directory for details:
 #-----------------------------------------------------------------------
 #
     for fp in "${extrn_mdl_fps_in_arcv[@]}"; do
-      grep -n "${fp}" "${unzip_log_fn}" > /dev/null 2>&1 || \
-      print_err_msg_exit "\
+      grep -n "${fp}" "${unzip_log_fn}" > /dev/null 2>&1
+      export err=$?
+      if [ $err -ne 0 ]; then
+        err_exit "\
 External model file fp does not exist in the zip archive file arcv_fn in 
 the staging directory (extrn_mdl_staging_dir).  Check the log file 
 unzip_log_fn in that directory for the contents of the zip archive:
@@ -620,6 +628,7 @@ unzip_log_fn in that directory for the contents of the zip archive:
   arcv_fn = \"${arcv_fn}\"
   fp = \"$fp\"
   unzip_log_fn = \"${unzip_log_fn}\""
+      fi
     done
 #
 #-----------------------------------------------------------------------
@@ -632,13 +641,16 @@ unzip_log_fn in that directory for the contents of the zip archive:
 #-----------------------------------------------------------------------
 #
     unzip_log_fn="log.unzip"
-    unzip -o "${arcv_fn}" ${extrn_mdl_fps_in_arcv[@]} >& ${unzip_log_fn} || \
-    print_err_msg_exit "\
+    unzip -o "${arcv_fn}" ${extrn_mdl_fps_in_arcv[@]} >& ${unzip_log_fn}
+    export err=$?
+    if [ $err -ne 0 ]; then
+      err_exit "\
 unzip file extract operation (\"unzip -o ...\") failed.  Check the log 
 file unzip_log_fn in the staging directory (extrn_mdl_staging_dir) for 
 details:
   extrn_mdl_staging_dir = \"${extrn_mdl_staging_dir}\"
   unzip_log_fn = \"${unzip_log_fn}\""
+    fi
 #
 # NOTE:
 # If extrn_mdl_arcvrel_dir is not empty, the unzip command above will 
@@ -649,8 +661,7 @@ details:
 # the subdirectory up to extrn_mdl_staging_dir and then the subdirectory 
 # (analogous to what is done above for the case of extrn_mdl_arcv_fmt set 
 # to "tar".
-#
- 
+# 
   fi
 #
 #-----------------------------------------------------------------------
@@ -710,12 +721,12 @@ Getting external model files from nomads:
   num_files_to_extract="${#extrn_mdl_fps[@]}"
   wget_LOG_FN="log.wget.txt"
   for (( nfile=0; nfile<${num_files_to_extract}; nfile++ )); do
-    cp ../../../${extrn_mdl_fps[$nfile]} . || \
-    print_err_msg_exit "\
-    onlie file ${extrn_mdl_fps[$nfile]} not found."
+    cp ../../../${extrn_mdl_fps[$nfile]} .
+    export err=$?
+    if [ $err -ne 0 ]; then
+      err_exit "online file ${extrn_mdl_fps[$nfile]} not found."
+    fi
   done
-
-
 fi
 #
 #-----------------------------------------------------------------------
@@ -762,11 +773,15 @@ fi
 { cat << EOM >> ${extrn_mdl_var_defns_fp}
 $settings
 EOM
-} || print_err_msg_exit "\
+}
+export err=$?
+if [ $err -ne 0 ]; then
+  err_exit "\
 Heredoc (cat) command to create a variable definitions file associated
 with the external model from which to generate ${ics_or_lbcs} returned with a 
 nonzero status.  The full path to this variable definitions file is:
   extrn_mdl_var_defns_fp = \"${extrn_mdl_var_defns_fp}\""
+fi
 #
 #-----------------------------------------------------------------------
 #

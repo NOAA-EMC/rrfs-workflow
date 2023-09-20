@@ -70,7 +70,7 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-# Load modules.
+# Set environment
 #
 #-----------------------------------------------------------------------
 #
@@ -93,7 +93,7 @@ case $MACHINE in
     ;;
 
   *)
-    print_err_msg_exit "\
+    err_exit "\
 Run command has not been specified for this machine:
   MACHINE = \"$MACHINE\"
   APRUN = \"$APRUN\""
@@ -104,14 +104,8 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-# Load modules.
-#
-#-----------------------------------------------------------------------
-#
-#-----------------------------------------------------------------------
-#
 # Extract from CDATE the starting year, month, day, and hour of the
-# forecast.  These are needed below for various operations.
+# forecast. These are needed below for various operations.
 #
 #-----------------------------------------------------------------------
 #
@@ -194,7 +188,7 @@ if [ -r "${checkfile}" ] ; then
   tail -1 bk_coupler.res >> coupler.res
   tail -1 bk_coupler.res >> coupler.res
 else
-  print_err_msg_exit "Error: cannot find background: ${checkfile}"
+  err_exit "Cannot find background: ${checkfile}"
 fi
 
 #-----------------------------------------------------------------------
@@ -274,7 +268,7 @@ else
       cp ${lbcs_path}/${bndy_prefix}.${this_bdy}.nc ${bndy_prefix}.000.nc 
     fi
   else
-    print_err_msg_exit "Error: cannot find boundary file: ${checkfile}"
+    err_exit "Cannot find boundary file: ${checkfile}"
   fi
 
 fi 

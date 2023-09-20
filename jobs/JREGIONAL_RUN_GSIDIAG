@@ -106,8 +106,7 @@ mkdir -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job and pass to it the necessary varia-
-# bles.
+# Call the ex-script for this J-job
 #
 #-----------------------------------------------------------------------
 #
@@ -119,9 +118,8 @@ $SCRIPTSdir/exregional_run_gsidiag.sh \
              analworkdir="${analworkdir}" \
              observer_nwges_dir="${observer_nwges_dir}" \
              comout="${COMOUT}" \
-             satbias_dir="${SATBIAS_DIR}" || \
-print_err_msg_exit "\
-Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+             satbias_dir="${SATBIAS_DIR}"
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -137,8 +135,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

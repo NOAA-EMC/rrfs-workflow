@@ -70,33 +70,28 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-# Load modules.
+# Set environment
 #
 #-----------------------------------------------------------------------
 #
+ulimit -s unlimited
+ulimit -a
+
 case $MACHINE in
 #
 "WCOSS2")
-  ulimit -s unlimited
-  ulimit -a
   APRUN="mpiexec -n 1 -ppn 1"
   ;;
 #
 "HERA")
-  ulimit -s unlimited
-  ulimit -a
   APRUN="srun --export=ALL"
   ;;
 #
 "JET")
-  ulimit -s unlimited
-  ulimit -a
   APRUN="srun --export=ALL"
   ;;
 #
 "ORION")
-  ulimit -s unlimited
-  ulimit -a
   APRUN="srun --export=ALL"
   ;;
 #
@@ -209,7 +204,7 @@ if [ -r "${obs_file}" ]; then
    cp "${obs_file}" "lghtngbufr"
    run_lightning=true
 else
-   print_info_msg "$VERBOSE" "Warning: ${obs_file} does not exist!"
+   print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist!"
 fi
 
 
@@ -252,7 +247,7 @@ if [ -f ${EXECdir}/$exect ]; then
 Copying the lightning process  executable to the run directory..."
   cp ${EXECdir}/${exect} ${WORKDIR}/${exect}
 else
-  print_err_msg_exit "\
+  err_exit "\
 The executable specified in exect does not exist:
   exect = \"${EXECdir}/$exect\"
 Build lightning process and rerun."
@@ -266,10 +261,11 @@ fi
 #-----------------------------------------------------------------------
 #
 if [[ "$run_lightning" == true ]]; then
-   $APRUN ./${exect} > stdout_lightning_bufr 2>&1 || print_err_msg "\
-   Call to executable to run lightning process returned with nonzero exit code."
-   cp stdout_lightning_bufr $comout/stdout.t${HH}z.lightning_bufr
-   cp LightningInFV3LAM.dat $comout/rrfs.t${HH}z.LightningInFV3LAM.bin
+  $APRUN ./${exect} > stdout_lightning_bufr 2>&1
+  export err=$?; err_chk
+
+  cp stdout_lightning_bufr $comout/stdout.t${HH}z.lightning_bufr
+  cp LightningInFV3LAM.dat $comout/rrfs.t${HH}z.LightningInFV3LAM.bin
 fi
 
 #
@@ -287,7 +283,7 @@ if [ -r "${obs_file}" ]; then
    cp "${obs_file}" "lgycld.bufr_d"
    run_cloud=true
 else
-   print_info_msg "$VERBOSE" "Warning: ${obs_file} does not exist!"
+   print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist!"
 fi
 
 #-----------------------------------------------------------------------
@@ -337,7 +333,7 @@ if [ -f ${EXECdir}/$exect ]; then
 Copying the NASA LaRC cloud process  executable to the run directory..."
   cp ${EXECdir}/${exect} ${WORKDIR}/${exect}
 else
-  print_err_msg_exit "\
+  err_exit "\
 The executable specified in exect does not exist:
   exect = \"${EXECdir}/$exect\"
 Build lightning process and rerun."
@@ -351,8 +347,9 @@ fi
 #-----------------------------------------------------------------------
 #
 if [[ "$run_cloud" == true ]]; then
-  $APRUN ./${exect} > stdout_nasalarc 2>&1 || print_err_msg "\
-  Call to executable to run NASA LaRC Cloud process returned with nonzero exit code."
+  $APRUN ./${exect} > stdout_nasalarc 2>&1
+  export err=$?; err_chk
+
   cp stdout_nasalarc $comout/stdout.t${HH}z.nasalarc
   cp NASALaRC_cloud4fv3.bin $comout/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
 fi
@@ -372,7 +369,7 @@ if [ -r "${obs_file}" ]; then
    cp "${obs_file}" "prepbufr"
    run_metar=true
 else
-   print_info_msg "$VERBOSE" "Warning: ${obs_file} does not exist!"
+   print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist!"
 fi
 
 #-----------------------------------------------------------------------
@@ -410,7 +407,7 @@ if [ -f ${EXECdir}/$exect ]; then
 Copying the METAR cloud process  executable to the run directory..."
   cp ${EXECdir}/${exect} ${WORKDIR}/${exect}
 else
-  print_err_msg_exit "\
+  err_exit "\
 The executable specified in exect does not exist:
   exect = \"${EXECdir}/$exect\"
 Build lightning process and rerun."
@@ -424,8 +421,9 @@ fi
 #-----------------------------------------------------------------------
 #
 if [[ "$run_metar" == true ]]; then
-  $APRUN ./${exect} > stdout_metarcld 2>&1 || print_err_msg "\
-  Call to executable to run METAR cloud process returned with nonzero exit code."
+  $APRUN ./${exect} > stdout_metarcld 2>&1
+  export err=$?; err_chk
+
   cp stdout_metarcld $comout/stdout.t${HH}z.metarcld
   cp fv3_metarcloud.bin $comout/rrfs.t${HH}z.fv3_metarcloud.bin
 fi
@@ -447,8 +445,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #
