@@ -806,7 +806,7 @@ fi
 # the parameter lsoil_lsm (not set here but set in input.nml.FV3 and/or 
 # FV3.input.yml) is the number of soil levels that the LSM scheme in the
 # forecast model will run with.]  Here, we use the same approach to set
-# lsoil as the one used to set nsoill_out in exregional_make_ics.sh.  
+# lsoil as the one used to set nsoill_out in exrrfs_make_ics.sh.  
 # See that script for details.
 #
 # NOTE:
