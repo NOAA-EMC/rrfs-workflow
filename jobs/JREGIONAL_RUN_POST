@@ -92,24 +92,23 @@ COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
 if [ ${CYCLE_TYPE} = "spinup" ]; then
   COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
 fi
-mkdir_vrfy -p "${COMOUT}"
+mkdir -p "${COMOUT}"
 
 postprd_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/postprd"
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   postprd_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/postprd_spinup"
 fi
-mkdir_vrfy -p "${postprd_dir}"
+mkdir -p "${postprd_dir}"
 
 fhr_dir="${postprd_dir}/$fhr"
 check_for_preexist_dir_file "${fhr_dir}" "delete"
-mkdir_vrfy -p "${fhr_dir}"
+mkdir -p "${fhr_dir}"
 
-cd_vrfy "${fhr_dir}"
+cd "${fhr_dir}"
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job and pass to it the necessary varia-
-# bles.
+# Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
@@ -121,9 +120,8 @@ $SCRIPTSdir/exregional_run_post.sh \
   fhr_dir="${fhr_dir}" \
   fhr="${fhr}" \
   tmmark="${TMMARK}" \
-  cycle_type="${CYCLE_TYPE}" || \
-print_err_msg_exit "\
-Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+  cycle_type="${CYCLE_TYPE}"
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -139,8 +137,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

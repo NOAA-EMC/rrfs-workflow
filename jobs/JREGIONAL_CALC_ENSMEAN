@@ -73,7 +73,7 @@ else
   ensmeandir=${CYCLE_DIR}/ensmean/fcst_fv3lam/INPUT
 fi
 rm -fr ${ensmeandir}
-mkdir_vrfy -p ${ensmeandir}
+mkdir -p ${ensmeandir}
 #
 #-----------------------------------------------------------------------
 #
@@ -86,21 +86,19 @@ if [ ${CYCLE_TYPE} == "spinup" ]; then
 else
   COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
 fi
-mkdir_vrfy -p "${COMOUT}"
+mkdir -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job and pass to it the necessary varia-
-# bles.
+# Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
 $SCRIPTSdir/exregional_calc_ensmean.sh \
              cycle_type="${CYCLE_TYPE}" \
              comout="${COMOUT}" \
-             ensmeandir="${ensmeandir}" || \
-print_err_msg_exit "\
-Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+             ensmeandir="${ensmeandir}"
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -116,8 +114,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

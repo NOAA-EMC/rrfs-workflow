@@ -54,7 +54,7 @@ climatology.
 #-----------------------------------------------------------------------
 #
 check_for_preexist_dir_file "${SFC_CLIMO_DIR}" "${PREEXISTING_DIR_METHOD}"
-mkdir_vrfy -p "${SFC_CLIMO_DIR}"
+mkdir -p "${SFC_CLIMO_DIR}"
 #
 #-----------------------------------------------------------------------
 #
@@ -64,19 +64,16 @@ mkdir_vrfy -p "${SFC_CLIMO_DIR}"
 #
 workdir="${SFC_CLIMO_DIR}/tmp"
 check_for_preexist_dir_file "$workdir" "delete"
-mkdir_vrfy $workdir
+mkdir $workdir
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job and pass to it the necessary varia-
-# bles.
+# Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
-${SCRIPTSdir}/exregional_make_sfc_climo.sh \
-  workdir="$workdir" || \
-print_err_msg_exit "\
-Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+${SCRIPTSdir}/exregional_make_sfc_climo.sh workdir="$workdir"
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -116,8 +113,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

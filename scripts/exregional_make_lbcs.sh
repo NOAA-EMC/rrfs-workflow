@@ -79,11 +79,12 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
+ulimit -s unlimited
+ulimit -a
+
 case "$MACHINE" in
 
   "WCOSS2")
-    ulimit -s unlimited
-    ulimit -a
     export OMP_STACKSIZE=1G
     export OMP_NUM_THREADS=${TPP_MAKE_LBCS}
     ncores=$(( NNODES_MAKE_LBCS*PPN_MAKE_LBCS ))
@@ -91,20 +92,14 @@ case "$MACHINE" in
     ;;
 
   "HERA")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="srun --export=ALL"
     ;;
 
   "ORION")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="srun --export=ALL"
     ;;
 
   "JET")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="srun --export=ALL"
     ;;
 
@@ -123,13 +118,9 @@ extrn_mdl_var_defns_fp="${extrn_mdl_staging_dir}/${EXTRN_MDL_LBCS_VAR_DEFNS_FN}"
 #
 #-----------------------------------------------------------------------
 #
-#
-#
-#-----------------------------------------------------------------------
-#
 workdir="${lbcs_dir}/tmp_LBCS_${bcgrp}"
-mkdir_vrfy -p "$workdir"
-cd_vrfy $workdir
+mkdir -p "$workdir"
+cd $workdir
 #
 #-----------------------------------------------------------------------
 #
@@ -165,7 +156,7 @@ case "${CCPP_PHYS_SUITE}" in
     ;;
 #
   *)
-  print_err_msg_exit "\
+  err_exit "\
 The variable \"varmap_file\" has not yet been specified for this physics
 suite (CCPP_PHYS_SUITE):
   CCPP_PHYS_SUITE = \"${CCPP_PHYS_SUITE}\""
@@ -352,7 +343,7 @@ case "${EXTRN_MDL_NAME_LBCS}" in
   ;;
 
 *)
-  print_err_msg_exit "\
+  err_exit "\
 External-model-dependent namelist variables have not yet been specified
 for this external LBC model (EXTRN_MDL_NAME_LBCS):
   EXTRN_MDL_NAME_LBCS = \"${EXTRN_MDL_NAME_LBCS}\""
@@ -369,7 +360,7 @@ esac
 exec_fn="chgres_cube"
 exec_fp="$EXECdir/${exec_fn}"
 if [ ! -f "${exec_fp}" ]; then
-  print_err_msg_exit "\
+  err_exit "\
 The executable (exec_fp) for generating initial conditions on the FV3-LAM
 native grid does not exist:
   exec_fp = \"${exec_fp}\"
@@ -431,7 +422,7 @@ for (( ii=0; ii<${num_fhrs}; ii=ii+bcgrpnum10 )); do
     fn_grib2="${EXTRN_MDL_FNS[$i]}"
     ;;
   *)
-    print_err_msg_exit "\
+    err_exit "\
 The external model output file name to use in the chgres_cube FORTRAN name-
 list file has not specified for this external LBC model (EXTRN_MDL_NAME_LBCS):
   EXTRN_MDL_NAME_LBCS = \"${EXTRN_MDL_NAME_LBCS}\""
@@ -477,7 +468,7 @@ list file has not specified for this external LBC model (EXTRN_MDL_NAME_LBCS):
 # It turns out that setting the variable to an empty string also works
 # to remove it from the namelist!  Which is better to use??
 #
-settings="
+  settings="
 'config': {
  'fix_dir_target_grid': ${FIXLAM},
  'mosaic_file_target_grid': ${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo$((10#${NH4})).nc,
@@ -507,7 +498,7 @@ settings="
 #
   nml_fn="fort.41"
   ${USHdir}/set_namelist.py -q -u "$settings" -o ${nml_fn} || \
-    print_err_msg_exit "\
+    err_exit "\
 Call to python script set_namelist.py to set the variables in the namelist
 file read in by the ${exec_fn} executable failed.  Parameters passed to
 this script are:
@@ -523,25 +514,9 @@ $settings"
 #
 #-----------------------------------------------------------------------
 #
-# NOTE:
-# Often when the chgres_cube.exe run fails, it still returns a zero re-
-# turn code, so the failure isn't picked up the the logical OR (||) be-
-# low.  That should be fixed.  This might be due to the APRUN command -
-# maybe that is returning a zero exit code even though the exit code
-# of chgres_cube is nonzero.
-# A similar thing happens in the forecast task.
-#
-  ${APRUN} ${exec_fp} || \
-    print_err_msg_exit "\
-Call to executable (exec_fp) to generate lateral boundary conditions (LBCs)
-file for the FV3-LAM for forecast hour fhr failed:
-  exec_fp = \"${exec_fp}\"
-  fhr = \"$fhr\"
-The external model from which the LBCs files are to be generated is:
-  EXTRN_MDL_NAME_LBCS = \"${EXTRN_MDL_NAME_LBCS}\"
-The external model files that are inputs to the executable (exec_fp) are
-located in the following directory:
-  extrn_mdl_staging_dir = \"${extrn_mdl_staging_dir}\""
+  ${APRUN} ${exec_fp}
+  export err=$?; err_chk
+
 #
 # Move LBCs file for the current lateral boundary update time to the LBCs
 # work directory.  Note that we rename the file by including in its name
@@ -551,9 +526,9 @@ located in the following directory:
   lbc_spec_fhrs=( "${EXTRN_MDL_LBC_SPEC_FHRS[$i]}" ) 
   fcst_hhh=$(( ${lbc_spec_fhrs} - ${EXTRN_MDL_LBCS_OFFSET_HRS} ))
   fcst_hhh_FV3LAM=`printf %3.3i $fcst_hhh`
-  mv_vrfy gfs.bndy.nc ${lbcs_dir}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc
+  mv gfs.bndy.nc ${lbcs_dir}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc
 # copy results to nwges for longe time disk storage.
-  cp_vrfy ${lbcs_dir}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc ${lbcs_nwges_dir}/.
+  cp ${lbcs_dir}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc ${lbcs_nwges_dir}/.
 
   fi
 done
@@ -576,8 +551,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

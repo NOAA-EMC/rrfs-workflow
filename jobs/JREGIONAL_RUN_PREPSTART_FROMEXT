@@ -27,7 +27,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -73,12 +73,11 @@ else
   modelinputdir=${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/INPUT
 fi
 rm -fr ${modelinputdir}
-mkdir_vrfy -p ${modelinputdir}
+mkdir -p ${modelinputdir}
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job and pass to it the necessary varia-
-# bles.
+# Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
@@ -87,9 +86,8 @@ $SCRIPTSdir/exregional_run_prepstart_fromext.sh \
              cycle_type="${CYCLE_TYPE}" \
              modelinputdir="${modelinputdir}" \
              lbcs_root="${LBCS_ROOT}" \
-             fg_root="${FG_ROOT}" || \
-print_err_msg_exit "\
-Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+             fg_root="${FG_ROOT}"
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -105,8 +103,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

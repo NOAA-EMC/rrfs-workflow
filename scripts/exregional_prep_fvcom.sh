@@ -42,7 +42,10 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This script, along with the python script it calls, is used to remap the fvcom output from the 5 lakes onto the RRFS grid.  It maps skin temp and ice concentration.  The resulting file is used by RRFS for improving lake effect snow forecasts.
+This script, along with the python script it calls, is used to remap the 
+fvcom output from the 5 lakes onto the RRFS grid. It maps skin temp and 
+ice concentration. The resulting file is used by RRFS for improving lake 
+effect snow forecasts.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -73,7 +76,7 @@ print_input_args valid_args
 dir=${modelinputdir}/fvcom_remap
 
 mkdir -m 775 -p ${dir}
-cd_vrfy ${dir}
+cd ${dir}
 
 # FVCOM output files
 # PDY and cycle of forecast period - if most recent files are not available, look back one cycle
@@ -147,10 +150,12 @@ elif [[ -e "$erie2" && -e "$mh2" && -e "$sup2" && -e "$ont2" ]]; then
   output_sup=$sup2
   output_ont=$ont2
 else
-  echo "WARNING: No FVCOM data is available."
-  exit
+  message_txt="WARNING: No FVCOM data is available."
+  print_info_msg "${message_txt}"
+  if [ ! -z "${maillist}" ]; then
+    echo "${message_txt}" | mail.py $maillist
+  fi
 fi
-
 
 # names of missing input files to the Python script
 siglay0_tmp1="erie_siglay0_missing.nc"
@@ -224,10 +229,8 @@ echo 'now running the Python script for remapping ...'
 echo $siglay0_tmp1 $siglay0_tmp2 $siglay0_tmp3 $siglay0_tmp4
 python ${USHdir}/fvcom_remap.py $siglay0_tmp1 $siglay0_tmp2 $siglay0_tmp3 $siglay0_tmp4 $PREDEF_GRID_NAME > python.log
 cat python.log
-if [ "`tail -1 python.log`" != "fvcom_remap.py completed successfully" ]
-then
-   echo 'WARNING: Problem with fvcom_remap.py - ABORT'
-   exit
+if [ "`tail -1 python.log`" != "fvcom_remap.py completed successfully" ]; then
+  err_exit "WARNING: Problem with fvcom_remap.py - ABORT"
 fi
 
 # extract skin temp info

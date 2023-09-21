@@ -92,7 +92,7 @@ nprocs=$(( NNODES_MAKE_SFC_CLIMO * PPN_MAKE_SFC_CLIMO ))
 #
 #-----------------------------------------------------------------------
 #
-cd_vrfy $workdir
+cd $workdir
 #
 #-----------------------------------------------------------------------
 #
@@ -128,34 +128,29 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
+ulimit -s unlimited
+ulimit -a
+
 case $MACHINE in
 
   "WCOSS2")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="mpiexec -n ${nprocs}"
     ;;
 
   "HERA")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="srun --export=ALL"
     ;;
 
   "ORION")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="srun --export=ALL"
     ;;
 
   "JET")
-    ulimit -s unlimited
-    ulimit -a
     APRUN="srun --export=ALL"
     ;;
 
   *)
-    print_err_msg_exit "\
+    err_exit "\
 Run command has not been specified for this machine:
   MACHINE = \"$MACHINE\"
   APRUN = \"$APRUN\""
@@ -174,18 +169,15 @@ esac
 exec_fn="sfc_climo_gen"
 exec_fp="$EXECdir/${exec_fn}"
 if [ ! -f "${exec_fp}" ]; then
-  print_err_msg_exit "\
+  err_exit "\
 The executable (exec_fp) for generating the surface climatology files
 does not exist:
   exec_fp = \"${exec_fp}\"
 Please ensure that you've built this executable."
 fi
 
-$APRUN ${exec_fp} || \
-print_err_msg_exit "\
-Call to executable (exec_fp) to generate surface climatology files returned
-with nonzero exit code:
-  exec_fp = \"${exec_fp}\""
+$APRUN ${exec_fp}
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -206,7 +198,7 @@ case "$GTYPE" in
 #
   for fn in *.nc; do
     if [[ -f $fn ]]; then
-      mv_vrfy $fn ${SFC_CLIMO_DIR}/${CRES}_${fn}
+      mv $fn ${SFC_CLIMO_DIR}/${CRES}_${fn}
     fi
   done
   ;;
@@ -225,7 +217,7 @@ case "$GTYPE" in
   for fn in *.halo.nc; do
     if [ -f $fn ]; then
       bn="${fn%.halo.nc}"
-      mv_vrfy $fn ${SFC_CLIMO_DIR}/${CRES}.${bn}.halo${NH4}.nc
+      mv $fn ${SFC_CLIMO_DIR}/${CRES}.${bn}.halo${NH4}.nc
     fi
   done
 #
@@ -238,7 +230,7 @@ case "$GTYPE" in
   for fn in *.nc; do
     if [ -f $fn ]; then
       bn="${fn%.nc}"
-      mv_vrfy $fn ${SFC_CLIMO_DIR}/${CRES}.${bn}.halo${NH0}.nc
+      mv $fn ${SFC_CLIMO_DIR}/${CRES}.${bn}.halo${NH0}.nc
     fi
   done
   ;;
@@ -255,9 +247,12 @@ esac
 #
 link_fix \
   verbose="$VERBOSE" \
-  file_group="sfc_climo" || \
-print_err_msg_exit "\
+  file_group="sfc_climo"
+export err=$?
+if [ $err -ne 0 ]; then
+  err_exit "\
 Call to function to create links to surface climatology files failed."
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -275,8 +270,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

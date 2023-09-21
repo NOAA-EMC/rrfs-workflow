@@ -140,15 +140,9 @@ not exist or is not a file:
 #
 # Create the symlink.
 #
-# Important note:
-# In the ln_vrfy command below, do not quote ${relative_flag} because if 
-# is quoted (either single or double quotes) but happens to be a null 
-# string, it will be treated as the (empty) name of (or path to) the 
-# target and will cause an error.
-#
 #-----------------------------------------------------------------------
 #
-  ln_vrfy -sf ${relative_flag} "$target" "$symlink"
+  ln -sf ${relative_flag} "$target" "$symlink"
 #
 #-----------------------------------------------------------------------
 #

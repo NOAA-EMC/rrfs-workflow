@@ -176,13 +176,13 @@ case ${GRAPHICS_TYPE} in
     mem0_fp=${COMOUT_mem0}
     mem0_fn=${file_tmpl/'{FCST_TIME:03d}'/'*'}
 
-    mkdir_vrfy -p ${ens_mem0}
+    mkdir -p ${ens_mem0}
     pushd ${ens_mem0}
 
     rm *.grib2
 
     for mem0_file in $( find ${mem0_fp} -name ${mem0_fn} ) ; do
-      cp_vrfy ${mem0_file} .
+      cp ${mem0_file} .
     done
     popd
 
@@ -196,11 +196,11 @@ case ${GRAPHICS_TYPE} in
     ;;
 
   *)
-    print_err_msg_exit "\
+    err_exit "\
       GRAPHICS_TYPE \"${GRAPHICS_TYPE}\" is not recognized."
     ;;
 esac
-mkdir_vrfy -p "${run_dir}"
+mkdir -p "${run_dir}"
 #
 #-----------------------------------------------------------------------
 #
@@ -208,7 +208,7 @@ mkdir_vrfy -p "${run_dir}"
 #
 #-----------------------------------------------------------------------
 #
-cd_vrfy ${PYTHON_GRAPHICS_DIR}
+cd ${PYTHON_GRAPHICS_DIR}
 python -u ${PYTHON_GRAPHICS_DIR}/create_graphics.py \
   ${GRAPHICS_TYPE} \
   -a ${age:-3} \
@@ -222,9 +222,8 @@ python -u ${PYTHON_GRAPHICS_DIR}/create_graphics.py \
   -s ${CDATE} \
   -w ${wait_time:-30} \
   -z ${zip_dir} \
-  ${extra_args} ||
-print_err_msg_exit "\
-Call to pyscript \"${scrfunc_fn}\" failed."
+  ${extra_args}
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -240,8 +239,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

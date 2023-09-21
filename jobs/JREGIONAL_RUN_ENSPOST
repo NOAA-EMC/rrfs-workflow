@@ -63,20 +63,18 @@ the member files corresponding to a specified forecast hour.
 ens_dir="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc"
 rrfs_dir="${ENSCTRL_COMOUT_BASEDIR}/$RUN.$PDY/$cyc"
 enspost_dir="${ens_dir}/ensprod"
-mkdir_vrfy -p "${enspost_dir}"
-cd_vrfy "${enspost_dir}"
+mkdir -p "${enspost_dir}"
+cd "${enspost_dir}"
 ffg_local_dir="${ens_dir}/ensprod/ffg"
-mkdir_vrfy -p "${ffg_local_dir}"
+mkdir -p "${ffg_local_dir}"
 ffg_latest="${FFG_DIR}/latest.FFG"
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job and pass to it the necessary varia-
-# bles.
+# Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
-
 python -u $SCRIPTSdir/exregional_enspost.py \
   "${FIX_UPP}/enspost" \
   "${USHdir}" \
@@ -87,10 +85,8 @@ python -u $SCRIPTSdir/exregional_enspost.py \
   "${cyc}" \
   "${fhr}" \
   "${ffg_latest}" \
-  "${ffg_local_dir}" \
-print_err_msg_exit "\
-Call to pyscript \"${scrfunc_fn}\" failed."
-
+  "${ffg_local_dir}"
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -106,8 +102,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #

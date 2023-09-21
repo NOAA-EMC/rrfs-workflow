@@ -70,10 +70,6 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-# Load modules.
-#
-#-----------------------------------------------------------------------
-#
 # Extract from CDATE the starting year, month, day, and hour of the
 # forecast.  These are needed below for various operations.
 #
@@ -95,9 +91,8 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 # go to INPUT directory.
 #
 #-----------------------------------------------------------------------
-
-cd_vrfy ${modelinputdir}
-
+#
+cd ${modelinputdir}
 #
 #--------------------------------------------------------------------
 #
@@ -106,7 +101,6 @@ cd_vrfy ${modelinputdir}
 #
 #--------------------------------------------------------------------
 #
-
 fg_restart_dirname=fcst_fv3lam
 fg_restart_dirname_spinup=fcst_fv3lam_spinup
 
@@ -122,23 +116,23 @@ restart_prefix="${YYYYMMDD}.${HH}0000."
 checkfile=${bkpath}/${restart_prefix}coupler.res
 checkfile_spinup=${bkpath_spinup}/${restart_prefix}coupler.res
 if [ -r "${checkfile}" ] ; then
-  cp_vrfy -f ${checkfile} coupler.res
-  ln_vrfy -snf ${bkpath}/${restart_prefix}fv_core.res.nc fv_core.res.nc
-  ln_vrfy -snf ${bkpath}/${restart_prefix}fv_core.res.tile1.nc fv_core.res.tile1.nc
-  ln_vrfy -snf ${bkpath}/${restart_prefix}fv_tracer.res.tile1.nc fv_tracer.res.tile1.nc
-  ln_vrfy -snf ${bkpath}/${restart_prefix}sfc_data.nc sfc_data.nc
-  ln_vrfy -snf ${bkpath}/${restart_prefix}fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
-  ln_vrfy -snf ${bkpath}/${restart_prefix}phy_data.nc phy_data.nc
+  cp -f ${checkfile} coupler.res
+  ln -snf ${bkpath}/${restart_prefix}fv_core.res.nc fv_core.res.nc
+  ln -snf ${bkpath}/${restart_prefix}fv_core.res.tile1.nc fv_core.res.tile1.nc
+  ln -snf ${bkpath}/${restart_prefix}fv_tracer.res.tile1.nc fv_tracer.res.tile1.nc
+  ln -snf ${bkpath}/${restart_prefix}sfc_data.nc sfc_data.nc
+  ln -snf ${bkpath}/${restart_prefix}fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
+  ln -snf ${bkpath}/${restart_prefix}phy_data.nc phy_data.nc
 elif [ -r "${checkfile_spinup}" ] ; then
-  cp_vrfy -f ${checkfile_spinup} coupler.res
-  ln_vrfy -snf ${bkpath_spinup}/${restart_prefix}fv_core.res.nc fv_core.res.nc
-  ln_vrfy -snf ${bkpath_spinup}/${restart_prefix}fv_core.res.tile1.nc fv_core.res.tile1.nc
-  ln_vrfy -snf ${bkpath_spinup}/${restart_prefix}fv_tracer.res.tile1.nc fv_tracer.res.tile1.nc
-  ln_vrfy -snf ${bkpath_spinup}/${restart_prefix}sfc_data.nc sfc_data.nc
-  ln_vrfy -snf ${bkpath_spinup}/${restart_prefix}fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
-  ln_vrfy -snf ${bkpath_spinup}/${restart_prefix}phy_data.nc phy_data.nc
+  cp -f ${checkfile_spinup} coupler.res
+  ln -snf ${bkpath_spinup}/${restart_prefix}fv_core.res.nc fv_core.res.nc
+  ln -snf ${bkpath_spinup}/${restart_prefix}fv_core.res.tile1.nc fv_core.res.tile1.nc
+  ln -snf ${bkpath_spinup}/${restart_prefix}fv_tracer.res.tile1.nc fv_tracer.res.tile1.nc
+  ln -snf ${bkpath_spinup}/${restart_prefix}sfc_data.nc sfc_data.nc
+  ln -snf ${bkpath_spinup}/${restart_prefix}fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
+  ln -snf ${bkpath_spinup}/${restart_prefix}phy_data.nc phy_data.nc
 else
-  print_err_msg_exit "Error: cannot find deterministic (control) warm start files from : ${bkpath} or ${bkpath_spinup}"
+  err_exit "Cannot find deterministic (control) warm start files from : ${bkpath} or ${bkpath_spinup}"
 fi
 
 #

@@ -70,33 +70,28 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-# Load modules.
+# Set environment
 #
 #-----------------------------------------------------------------------
 #
+ulimit -s unlimited
+ulimit -a
+
 case $MACHINE in
 #
 "WCOSS2")
-  ulimit -s unlimited
-  ulimit -a
   APRUN="mpiexec -n 1 -ppn 1"
   ;;
 #
 "HERA")
-  ulimit -s unlimited
-  ulimit -a
   APRUN="srun --export=ALL"
   ;;
 #
 "JET")
-  ulimit -s unlimited
-  ulimit -a
   APRUN="srun --export=ALL"
   ;;
 #
 "ORION")
-  ulimit -s unlimited
-  ulimit -a
   APRUN="srun --export=ALL"
   ;;
 #
@@ -147,7 +142,7 @@ print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
 #
 #-----------------------------------------------------------------------
 
-cp_vrfy ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
+cp ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
 
 #-----------------------------------------------------------------------
 #
@@ -186,7 +181,7 @@ echo "found GLD360 files: ${filenum}"
 #-----------------------------------------------------------------------
 BUFR_TABLE=${fixdir}/prepobs_prep_RAP.bufrtable
 
-cp_vrfy $BUFR_TABLE prepobs_prep.bufrtable
+cp $BUFR_TABLE prepobs_prep.bufrtable
 
 #-----------------------------------------------------------------------
 #
@@ -222,9 +217,9 @@ exect="process_Lightning.exe"
 if [ -f ${EXECdir}/$exect ]; then
   print_info_msg "$VERBOSE" "
 Copying the lightning process  executable to the run directory..."
-  cp_vrfy ${EXECdir}/${exect} ${WORKDIR}
+  cp ${EXECdir}/${exect} ${WORKDIR}
 else
-  print_err_msg_exit "\
+  err_exit "\
 The executable specified in exect does not exist:
   exect = \"${EXECdir}/$exect\"
 Build lightning process and rerun."
@@ -233,14 +228,15 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Run the process
+# Run the lightning (nc) process
 #
 #-----------------------------------------------------------------------
 #
 
 if [[ "$run_lightning" == true ]]; then
-  $APRUN ./${exect} < namelist.lightning > stdout 2>&1 || print_err_msg "\
-  Call to executable to run lightning (nc) process returned with nonzero exit code."
+  $APRUN ./${exect} < namelist.lightning > stdout 2>&1
+  export err=$?; err_chk
+
   cp stdout $comout/stdout.t${HH}z.lightning
   cp LightningInFV3LAM.dat ${comin}/rrfs.t${HH}z.LightningInFV3LAM_NLDN.bin
 fi
@@ -261,8 +257,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
+# Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
 #
