@@ -1002,8 +1002,8 @@ if [ "${USE_FVCOM}" = "TRUE" ] && [ ${SFC_CYC} -eq 2 ] ; then
 	          YYYYJJJHH="${YYYYJJJHH}" \
                   YYYYMMDD="${YYYYMMDD}" \
                   YYYYMMDDm1="${YYYYMMDDm1}" \
-                  HH="${HH}" || \
-    err_exit "Call to ex-script failed."
+                  HH="${HH}"
+    export err=$?; err_chk
 
     cd ${modelinputdir}
 # FVCOM_DIR needs to be redefined here to find 
