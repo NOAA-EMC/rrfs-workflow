@@ -297,15 +297,12 @@ if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" ]] ; then
   if [ $err -ne 0 ]; then
     err_exit "get_charvar_from_netcdf function failed."
   fi
-  grid_fp_gwd="${FIXLM}/${grid_fn_gwd}"
+  grid_fp_gwd="${FIXLAM}/${grid_fn_gwd}"
   ls_fn="geo_em.d01.lat-lon.2.5m.HGT_M.nc"
   ss_fn="HGT.Beljaars_filtered.lat-lon.30s_res.nc"
-  create_symlink_to_file target="${grid_fp_gwd}" symlink="${DATA}/${grid_fn_gwd}" \
-                         relative="TRUE"
-  create_symlink_to_file target="${FIXam}/${ls_fn}" symlink="${DATA}/${ls_fn}" \
-                         relative="TRUE"
-  create_symlink_to_file target="${FIXam}/${ss_fn}" symlink="${DATA}/${ss_fn}" \
-                         relative="TRUE"
+  create_symlink_to_file target="${grid_fp_gwd}" symlink="${DATA}/${grid_fn_gwd}" relative="FALSE"
+  create_symlink_to_file target="${FIXam}/${ls_fn}" symlink="${DATA}/${ls_fn}" relative="FALSE"
+  create_symlink_to_file target="${FIXam}/${ss_fn}" symlink="${DATA}/${ss_fn}" relative="FALSE"
 
   input_redirect_fn="grid_info.dat"
   cat > "${input_redirect_fn}" <<EOF
@@ -424,11 +421,7 @@ cp "${raw_orog_fp}" "${filtered_orog_fp}"
 # filtering executable will run) with the same name as the grid file and
 # point it to the actual grid file specified by grid_fp.
 #
-if [ "${MACHINE}" = "WCOSS2" ]; then
-  ln -fs "${grid_fp}" "${filter_dir}/${grid_fn}"
-else
-  ln -fs --relative "${grid_fp}" "${filter_dir}/${grid_fn}"
-fi
+ln -fs "${grid_fp}" "${filter_dir}/${grid_fn}"
 #
 # Create the namelist file (in the filter_dir directory) that the orography
 # filtering executable will read in.
@@ -591,3 +584,4 @@ In directory:    \"${scrfunc_dir}\"
 #-----------------------------------------------------------------------
 #
 { restore_shell_opts; } > /dev/null 2>&1
+

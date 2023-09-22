@@ -232,18 +232,13 @@ Cannot create symlink because target does not exist:
 fi
 
 #
-# If using the FV3_HRRR or FV3_RAP physics suites, there are two files 
+# If using some specific physics suites such as FV3_HRRR or FV3_RAP, there are two files 
 # (that contain statistics of the orography) that are needed by the gravity 
 # wave drag parameterization in that suite.  Below, create symlinks to these 
-# files in the run directory.  Note that the symlinks must have specific names 
-# that the FV3 model is hardcoded to recognize, and those are the names 
-# we use below.
+# files in the run directory.
 #
-if [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ] || \
-   [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR_gf" ]  || \
-   [ "${CCPP_PHYS_SUITE}" = "FV3_RAP" ]  || \
-   [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_v15_thompson_mynn_lam3km" ]; then
-
+suites=( "FV3_RAP" "FV3_HRRR" "FV3_HRRR_gf" "FV3_GFS_v15_thompson_mynn_lam3km" "FV3_GFS_v17_p8" )
+if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" ]] ; then
   fileids=( "ss" "ls" )
   for fileid in "${fileids[@]}"; do
     target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data_${fileid}.tile${TILE_RGNL}.halo${NH0}.nc"
