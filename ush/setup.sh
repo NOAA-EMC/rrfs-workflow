@@ -486,6 +486,7 @@ optionList[23]=DO_SAVE_DA_OUTPUT
 optionList[24]=DO_ENS_RADDA
 optionList[25]=DO_GSIDIAG_OFFLINE
 optionList[26]=USE_CLM
+optionList[27]=DO_PM_DA
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));
