@@ -391,8 +391,8 @@ else
     ncatted -a checksum,,d,, fv_core.res.nc
 
 # generate coupler.res with right date
-    if [ ${cycle_subtype} == "spinup" ]; then
-# from the 1 timestep restart files
+    if [ ${cycle_subtype} == "spinup" ] && [ ${DO_ENSINIT} == "TRUE" ] ; then
+# from the 1 timestep restart files, when doing the ensemble initialization
       head -2 bk_coupler.res > coupler.res
       head -2 bk_coupler.res | tail -1 >> coupler.res
     else

@@ -2162,7 +2162,9 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
 
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_ROOT</name><value><cyclestr>&CYCLE_BASEDIR;</cyclestr></value></envar>
     <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
@@ -2193,7 +2195,9 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
 
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_ROOT</name><value><cyclestr>&CYCLE_BASEDIR;</cyclestr></value></envar>
     <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
@@ -3440,7 +3444,7 @@ MODULES_RUN_TASK_FP script.
 
       <dependency>
         <and>
-          <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H/&NET;.t@Hz.bgdawpf000.tm00.grib2</cyclestr></datadep>
+          <sh>find <cyclestr>&ENSCTRL_COMOUT_DIR;/@H/&NET;.t@Hz.natlev.f000*grib2</cyclestr> -mmin +5 </sh>
 {%- if postproc_nsout_min > 0 %}
           {%- for m in range(1, 10) %}
           <taskdep task="&RUN_PRDGEN_TN;_mem{{ "%04d" % m }}_f{{ "000-%02d-%02d" % ( dt_atmos//60,dt_atmos%60 )  }}"/>
@@ -3486,7 +3490,7 @@ MODULES_RUN_TASK_FP script.
 
       <dependency>
         <and>
-          <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H/&NET;.t@Hz.bgsfcf#fhr#.tm00.grib2</cyclestr></datadep>
+          <sh>find <cyclestr>&ENSCTRL_COMOUT_DIR;/@H/&NET;.t@Hz.natlev.f#fhr#*grib2</cyclestr> -mmin +5 </sh>
           {%- for m in range(1, num_ens_members_fcst+1) %}
           <taskdep task="&RUN_PRDGEN_TN;_mem{{ "%04d" % m }}_f#fhr#"/>
           {%- endfor %}
