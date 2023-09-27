@@ -61,6 +61,11 @@ PRATE:surface:
 PWAT:entire atmosphere (considered as a single layer):
 WEASD:surface:
 SNOD:surface:
+SNOWC:surface:
+ASNOW:surface:
+FROZR:surface:
+FRZR:surface:
+TSNOWP:surface:
 REFD:4000 m above ground:
 VVEL:700 mb:
 TMAX:2 m above ground:
