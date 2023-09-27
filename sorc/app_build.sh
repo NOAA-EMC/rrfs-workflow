@@ -200,6 +200,10 @@ PLATFORM="${PLATFORM,,}"
 COMPILER="${COMPILER,,}"
 EXTERNALS="${EXTERNALS^^}"
 
+# Automatically detect HPC platforms for
+# wcoss2, hera, jet, orion, etc
+source ../ush/fix_rrfs_locations.sh
+
 # check if PLATFORM is set
 if [ -z $PLATFORM ] ; then
   printf "\nERROR: Please set PLATFORM.\n\n"
