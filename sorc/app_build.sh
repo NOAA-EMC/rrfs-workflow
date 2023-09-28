@@ -203,7 +203,7 @@ EXTERNALS="${EXTERNALS^^}"
 # check if PLATFORM is set
 if [ -z $PLATFORM ] ; then
   # Automatically detect HPC platforms for wcoss2, hera, jet, orion, etc
-  source ../ush/fix_rrfs_locations.sh
+  source ${HOME_DIR}/ush/fix_rrfs_locations.sh
   if [[ "$PLATFORM" == "unknown" ]]; then
     printf "\nERROR: Please set PLATFORM.\n\n"
     usage
