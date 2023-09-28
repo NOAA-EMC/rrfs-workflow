@@ -60,7 +60,6 @@ valid_vals_DO_SAVE_DA_OUTPUT=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no
 valid_vals_DO_GSIDIAG_OFFLINE=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
 valid_vals_DO_ENSFCST=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
 valid_vals_DO_DACYCLE=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
-valid_vals_DO_SDDACYCLE=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
 valid_vals_DO_SURFACE_CYCLE=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
 valid_vals_DO_SOIL_ADJUST=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
 valid_vals_DO_UPDATE_BC=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")

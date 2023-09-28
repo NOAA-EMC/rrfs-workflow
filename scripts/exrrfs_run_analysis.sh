@@ -400,19 +400,27 @@ if [ ${BKTYPE} -eq 1 ]; then  # cold start uses background from INPUT
   fv3lam_bg_type=1
 else                          # cycle uses background from restart
   if [ "${IO_LAYOUT_Y}" == "1" ]; then
-    ln  -snf ${bkpath}/fv_core.res.tile1.nc             fv3_dynvars
-    ln  -snf ${bkpath}/fv_tracer.res.tile1.nc           fv3_tracer
-    ln  -snf ${bkpath}/sfc_data.nc                      fv3_sfcdata
-    ln  -snf ${bkpath}/phy_data.nc                      fv3_phyvars
+    ln -snf ${bkpath}/fv_core.res.tile1.nc       fv3_dynvars
+    if [ ${anav_type} = "AERO" ]; then
+      cp ${bkpath}/fv_tracer.res.tile1.nc        fv3_tracer
+    else
+      ln -snf ${bkpath}/fv_tracer.res.tile1.nc   fv3_tracer
+    fi
+    ln -snf ${bkpath}/sfc_data.nc                fv3_sfcdata
+    ln -snf ${bkpath}/phy_data.nc                fv3_phyvars
   else
     for ii in ${list_iolayout}
     do
       iii=`printf %4.4i $ii`
-      ln  -snf ${bkpath}/fv_core.res.tile1.nc.${iii}     fv3_dynvars.${iii}
-      ln  -snf ${bkpath}/fv_tracer.res.tile1.nc.${iii}   fv3_tracer.${iii}
-      ln  -snf ${bkpath}/sfc_data.nc.${iii}              fv3_sfcdata.${iii}
-      ln  -snf ${bkpath}/phy_data.nc.${iii}              fv3_phyvars.${iii}
-      ln  -snf ${gridspec_dir}/fv3_grid_spec.${iii}      fv3_grid_spec.${iii}
+      ln -snf ${bkpath}/fv_core.res.tile1.nc.${iii}      fv3_dynvars.${iii}
+      if [ ${anav_type} = "AERO" ]; then
+        cp ${bkpath}/fv_tracer.res.tile1.nc.${iii}       fv3_tracer.${iii}
+      else
+        ln -snf ${bkpath}/fv_tracer.res.tile1.nc.${iii}  fv3_tracer.${iii}
+      fi
+      ln -snf ${bkpath}/sfc_data.nc.${iii}               fv3_sfcdata.${iii}
+      ln -snf ${bkpath}/phy_data.nc.${iii}               fv3_phyvars.${iii}
+      ln -snf ${gridspec_dir}/fv3_grid_spec.${iii}       fv3_grid_spec.${iii}
     done
   fi
   fv3lam_bg_type=0
@@ -512,7 +520,13 @@ else
   fi
 
   if [ ${anav_type} == "AERO" ]; then
-    obs_files_source[0]=${OBSPATH_PM}/${YYYYMMDD}/pm25.airnow.${YYYYMMDD}${HH}.bufr
+# for previous retro runs
+#    obs_files_source[0]=${OBSPATH_PM}/${YYYYMMDD}/pm25.airnow.${YYYYMMDD}${HH}.bufr
+    if [ ${cycle_type} == "spinup" ]; then
+      obs_files_source[0]=${cycle_dir}/process_pm_spinup/pm.bufr
+    else
+      obs_files_source[0]=${cycle_dir}/process_pm/pm.bufr
+    fi 
     obs_files_target[0]=pm25bufr
   fi
 
@@ -675,6 +689,7 @@ if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "AERO" ]]; then
   miter=1
   niter1=100
   niter2=0
+  write_diag_2=.true.
   ifhyb=.false.
   ifsd_da=.true.
   l_hyb_ens=.false.
@@ -686,7 +701,9 @@ if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "AERO" ]]; then
   binary_diag=.false.
   usenewgfsberror=.false.
   laeroana_fv3smoke=.true.
+#remove cmaq when GSL GSI is update in future
   berror_fv3_cmaq_regional=.true.
+  berror_fv3_sd_regional=.true.
 fi
 
 SATINFO=${FIX_GSI}/global_satinfo.txt

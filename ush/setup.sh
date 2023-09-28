@@ -481,12 +481,11 @@ optionList[18]=DO_ENSEMBLE
 optionList[19]=DO_ENSINIT
 optionList[20]=DO_ENSFCST
 optionList[21]=DO_SAVE_INPUT
-optionList[22]=DO_SDDACYCLE
-optionList[23]=DO_SAVE_DA_OUTPUT
-optionList[24]=DO_ENS_RADDA
-optionList[25]=DO_GSIDIAG_OFFLINE
-optionList[26]=USE_CLM
-optionList[27]=DO_PM_DA
+optionList[22]=DO_SAVE_DA_OUTPUT
+optionList[23]=DO_ENS_RADDA
+optionList[24]=DO_GSIDIAG_OFFLINE
+optionList[25]=USE_CLM
+optionList[26]=DO_PM_DA
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));

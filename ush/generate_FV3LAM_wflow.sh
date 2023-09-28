@@ -510,7 +510,6 @@ settings="\
 # data assimilation related parameters.
 #
   'do_dacycle': ${DO_DACYCLE}
-  'do_sddacycle': ${DO_SDDACYCLE}
   'do_surface_cycle': ${DO_SURFACE_CYCLE}
   'da_cycle_interval_hrs': ${DA_CYCLE_INTERV}
   'do_nonvar_cldanal': ${DO_NONVAR_CLDANAL}

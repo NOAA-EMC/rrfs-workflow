@@ -127,6 +127,7 @@ MM=${YYYYMMDDHH:4:2}
 DD=${YYYYMMDDHH:6:2}
 HH=${YYYYMMDDHH:8:2}
 YYYYMMDD=${YYYYMMDDHH:0:8}
+
 #
 #-----------------------------------------------------------------------
 #
@@ -156,6 +157,40 @@ if [ -r "${bkpath}/coupler.res" ]; then
   BKTYPE=0              # warm start
 else
   BKTYPE=1              # cold start
+fi
+
+
+#
+#-----------------------------------------------------------------------
+#
+# Update smoke and dust from aerosal data assimilation 
+#
+#-----------------------------------------------------------------------
+#
+
+
+if [ ${cycle_type} == "spinup" ]; then
+  analworkname="_gsi_spinup"
+else
+  analworkname="_gsi"
+fi
+
+if [[ ${BKTYPE} -eq 0 ]] && [[ "${DO_PM_DA}" = "TRUE" ]]; then  # warm start
+  analworkdir_aero="${cycle_dir}/anal_AERO_${analworkname}"
+# Assume the GSI analysis files are in current dir
+  if [ "${IO_LAYOUT_Y}" == "1" ]; then
+    ln_vrfy  -snf ${analworkdir_aero}/fv3_tracer  fv3_tracer_sdp
+    ncrename -v smoke,smoke_ori -v dust,dust_ori  fv3_tracer
+    ncks -A  -v smoke,dust        fv3_tracer_sdp  fv3_tracer
+  else
+    for ii in ${list_iolayout}
+    do
+      iii=`printf %4.4i $ii`
+      ln_vrfy  -snf ${analworkdir_aero}/fv3_tracer.${iii} fv3_tracer_sdp.${iii}
+      ncrename -v smoke,smoke_ori -v dust,dust_ori  fv3_tracer.${iii}
+      ncks -A  -v smoke,dust fv3_tracer_sdp.${iii}  fv3_tracer.${iii}
+    done
+  fi
 fi
 
 #
