@@ -15,6 +15,6 @@ elif [[ -d /work ]]; then
     PLATFORM=orion
     FIX_RRFS_LOCATION="/work/noaa/rtrr/FIX_RRFS"
 else
-    PLATFORM=unknow
-    FIX_RRFS_LOCATION="/this/is/an/unknow/platform"
+    PLATFORM=unknown
+    FIX_RRFS_LOCATION="/this/is/an/unknown/platform"
 fi
