@@ -55,7 +55,7 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "gsi_type" "mem_type" "analworkdir" \
+valid_args=( "cycle_dir" "cycle_type" "gsi_type" "mem_type" \
              "observer_nwges_dir" "comout" \
              "satbias_dir" )
 process_args valid_args "$@"
@@ -129,21 +129,14 @@ HH=${YYYYMMDDHH:8:2}
 YYYYMMDD=${YYYYMMDDHH:0:8}
 #
 #-----------------------------------------------------------------------
-#
-# go to working directory.
-# define fix and background path
-#
-#-----------------------------------------------------------------------
-
-cd ${analworkdir}
-
-#-----------------------------------------------------------------------
 # skip if gsi_type is OBSERVER
 #-----------------------------------------------------------------------
+#
 if [ ${gsi_type} = "OBSERVER" ]; then
    echo "Observer should not run this job"
    exit 0
 fi
+#
 #-----------------------------------------------------------------------
 # Loop over first and last outer loops to generate innovation
 # diagnostic files for indicated observation types (groups)
@@ -156,7 +149,6 @@ fi
 #        innovation files.
 #-----------------------------------------------------------------------
 #
-
 netcdf_diag=${netcdf_diag:-".false."}
 binary_diag=${binary_diag:-".true."}
 
@@ -166,8 +158,14 @@ else
   analworkname="_gsi"
 fi
 
-analworkdir_conv="${cycle_dir}/anal_conv${analworkname}"
-analworkdir_dbz="${cycle_dir}/anal_radardbz${analworkname}"
+analworkdir_conv_dbz="${cycle_dir}/anal_conv_dbz${analworkname}"
+if [ -r ${analworkdir_conv_dbz} ] ; then
+  analworkdir_conv="${analworkdir_conv_dbz}"
+  analworkdir_dbz="${analworkdir_conv_dbz}"
+else
+  analworkdir_conv="${cycle_dir}/anal_conv${analworkname}"
+  analworkdir_dbz="${cycle_dir}/anal_radardbz${analworkname}"
+fi
 
 loops="01 03"
 for loop in $loops; do

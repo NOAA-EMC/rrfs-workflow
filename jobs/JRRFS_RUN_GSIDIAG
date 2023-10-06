@@ -65,22 +65,6 @@ the specified cycle.
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
 observer_nwges_dir=""
 
-if [ ${CYCLE_TYPE} == "spinup" ]; then
-  analworkname="_gsi_spinup"
-else
-  analworkname="_gsi"
-fi
-
-if [[ ! -v OB_TYPE ]]; then
-  OB_TYPE="conv"
-fi
-if [ ${GSI_TYPE} == "OBSERVER" ]; then
-  echo " Error, GSI_TYPE should no be OBSERVER"
-  exit 1
-else
-  analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/anal_${OB_TYPE}${analworkname}"
-fi
-
 if [ ! -d "${SATBIAS_DIR}" ]; then
   echo "making satbias_dir directory for cycling bias correction files" 
   mkdir -p ${SATBIAS_DIR}
@@ -115,7 +99,6 @@ $SCRIPTSdir/exrrfs_run_gsidiag.sh \
              cycle_type="${CYCLE_TYPE}" \
              gsi_type="${GSI_TYPE}" \
              mem_type="${MEM_TYPE}" \
-             analworkdir="${analworkdir}" \
              observer_nwges_dir="${observer_nwges_dir}" \
              comout="${COMOUT}" \
              satbias_dir="${SATBIAS_DIR}"
