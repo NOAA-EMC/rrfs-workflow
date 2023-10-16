@@ -74,6 +74,11 @@ def create_model_configure_file(
     dot_write_dopost = f".{lowercase(str(WRITE_DOPOST))}."
     restart_interval = RESTART_INTERVAL
     nsout = NSOUT
+
+    if WRTCMP_output_file == "netcdf_parallel":
+        WRTCMP_ideflate = "1"
+    else:
+        WRTCMP_ideflate = "0"
     #
     # Decide the forecast length for this cycle
     #
@@ -129,6 +134,8 @@ def create_model_configure_file(
         "write_dopost": dot_write_dopost,
         "quilting": dot_quilting_dot,
         "output_grid": WRTCMP_output_grid,
+        "output_file": WRTCMP_output_file,
+        "ideflate": WRTCMP_ideflate,
         "nfhout": NFHOUT,
         "nfhmax_hf": NFHMAX_HF,
         "nfhout_hf": NFHOUT_HF,

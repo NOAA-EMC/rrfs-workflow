@@ -40,6 +40,7 @@ if [[ $MACHINE == "wcoss2" ]] ; then
   FIRE_RAVE_DIR=/lfs/h2/emc/lam/noscrub/emc.lam/RAVE_rawdata/RAVE_NA
   FVCOM_DIR="/lfs/h1/ops/prod/com/nosofs/v3.5"
   FVCOM_FILE="fvcom"
+  RAPHRR_SOIL_ROOT="/lfs/h1/ops/prod/com"
 fi
 
 # set up for retrospective test:

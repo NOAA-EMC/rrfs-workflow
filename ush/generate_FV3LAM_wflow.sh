@@ -899,6 +899,10 @@ if [ "${USE_CLM}" = "TRUE" ]; then
     'kice': 9,
     'min_seaice': 0.15,
     'min_lakeice': 0.15,
+    'fhzero':${fhzero},
+    'lsoil': ${lsoil:-null},
+    'print_diff_pgr': ${PRINT_DIFF_PGR},
+    'rrfs_sd': ${DO_SMOKE_DUST},
   }"
 fi
 #

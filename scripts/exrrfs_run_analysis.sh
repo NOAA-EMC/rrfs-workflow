@@ -839,7 +839,7 @@ if [ ${DO_RADDA} == "TRUE" ]; then
     else
       # For EnVar
       if [ -r ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
-        echo " using satellite bias files from ${SAT_TIME}"
+        echo " using satellite bias files from ${satbias_dir} ${spinup_or_prod_rrfs}.${SAT_TIME}"
         cp ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
         cp ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
         if [ -r ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ]; then
@@ -852,6 +852,48 @@ if [ ${DO_RADDA} == "TRUE" ]; then
     fi
     satcounter=` expr $satcounter + 1 `
   done
+
+  ## if satbias files (go back to previous 10 dyas) are not available from ${satbias_dir}, use satbias files from the ${FIX_GSI} 
+  ## now check if there are satbias files in continue cycle data space
+  if [ $satcounter -eq $maxcounter ]; then
+    satcounter=1
+    maxcounter=240
+    satbias_dir_cont=${CONT_CYCLE_DATA_ROOT}/satbias
+    while [ $satcounter -lt $maxcounter ]; do
+      SAT_TIME=`date +"%Y%m%d%H" -d "${START_DATE}  ${satcounter} hours ago"`
+      echo $SAT_TIME
+	
+      if [ ${DO_ENS_RADDA} == "TRUE" ]; then	
+		
+      # For EnKF.  Note, EnKF does not need radstat file
+        if [ -r ${satbias_dir_cont}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
+          echo " using satellite bias files from ${SAT_TIME}"
+        
+          cp_vrfy ${satbias_dir_cont}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
+          cp_vrfy ${satbias_dir_cont}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
+	    
+          break
+        fi
+	  
+      else	
+	  
+      # For EnVar
+        if [ -r ${satbias_dir_cont}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
+          echo " using satellite bias files from ${satbias_dir_cont} ${spinup_or_prod_rrfs}.${SAT_TIME}"
+
+          cp_vrfy ${satbias_dir_cont}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
+          cp_vrfy ${satbias_dir_cont}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
+          if [ -r ${satbias_dir_cont}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ]; then
+             cp_vrfy ${satbias_dir_cont}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ./radstat.rrfs
+          fi
+
+          break
+        fi
+	
+      fi
+      satcounter=` expr $satcounter + 1 `
+    done
+  fi
 
   ## if satbias files (go back to previous 10 dyas) are not available from ${satbias_dir}, use satbias files from the ${FIX_GSI} 
   if [ $satcounter -eq $maxcounter ]; then
@@ -956,13 +998,16 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+if [ ${BKTYPE} -eq 1 ] && [ $MACHINE == "WCOSS2" ]; then
+  echo " skip cold start GSI for now on WCOSS2"
+else
+  $APRUN ./gsi.x < gsiparm.anl > stdout 2>&1
+  export err=$?; err_chk
 
-$APRUN ./gsi.x < gsiparm.anl > stdout 2>&1
-export err=$?; err_chk
-
-echo "----------------------begin of stdout--------------"
-cat ./stdout  #log stdout whether gsi.x succeeds or not
-echo "----------------------end of stdout----------------"
+  echo "----------------------begin of stdout--------------"
+  cat ./stdout  #log stdout whether gsi.x succeeds or not
+  echo "----------------------end of stdout----------------"
+fi
 
 if [ ${anav_type} == "radardbz" ]; then
   cat fort.238 > $comout/rrfs_a.t${HH}z.fits3.tm00

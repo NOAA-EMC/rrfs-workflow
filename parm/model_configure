@@ -14,7 +14,7 @@ memuse_verbose:          .false.
 restart_interval:        {{ restart_interval }}
 output_1st_tstep_rst:    .false.
 write_dopost:            {{ write_dopost }}
-ideflate:                0
+ideflate:                {{ ideflate }}
 nbits:                   0
 ichunk2d:                -1
 jchunk2d:                -1
@@ -30,7 +30,7 @@ write_groups:            {{ write_groups }}
 write_tasks_per_group:   {{ write_tasks_per_group }}
 num_files:               2
 filename_base:           'dyn' 'phy'
-output_file:             'netcdf' 'netcdf'
+output_file:             '{{ output_file }}'
 #
 # Write-component output frequency parameter definitions:
 #
