@@ -129,15 +129,29 @@ elif [ $HH -eq 05 -o $HH -eq 11 -o $HH -eq 17 -o $HH -eq 23 ]; then
 fi
 
 # Find the most recent FVCOM files
-erie="${FVCOM_DIR}/leofs.${PDYf}/nos.leofs.fields.f${fhr}.${PDYf}.t${cycf}z.nc"
-mh="${FVCOM_DIR}/lmhofs.${PDYf}/nos.lmhofs.fields.f${fhr}.${PDYf}.t${cycf}z.nc"
-sup="${FVCOM_DIR}/lsofs.${PDYf}/nos.lsofs.fields.f${fhr}.${PDYf}.t${cycf}z.nc"
-ont="${FVCOM_DIR}/loofs.${PDYf}/nos.loofs.fields.f${fhr}.${PDYf}.t${cycf}z.nc"
+if [ "$MACHINE" == "WCOSS2" ]; then
+  erie="${FVCOM_DIR}/leofs.${PDYf}/nos.leofs.fields.f${fhr}.${PDYf}.t${cycf}z.nc"
+  mh="${FVCOM_DIR}/lmhofs.${PDYf}/nos.lmhofs.fields.f${fhr}.${PDYf}.t${cycf}z.nc"
+  sup="${FVCOM_DIR}/lsofs.${PDYf}/nos.lsofs.fields.f${fhr}.${PDYf}.t${cycf}z.nc"
+  ont="${FVCOM_DIR}/loofs.${PDYf}/nos.loofs.fields.f${fhr}.${PDYf}.t${cycf}z.nc"
 
-erie2="${FVCOM_DIR}/leofs.${PDYfm1}/nos.leofs.fields.f${fhrm1}.${PDYfm1}.t${cycfm1}z.nc"
-mh2="${FVCOM_DIR}/lmhofs.${PDYfm1}/nos.lmhofs.fields.f${fhrm1}.${PDYfm1}.t${cycfm1}z.nc"
-sup2="${FVCOM_DIR}/lsofs.${PDYfm1}/nos.lsofs.fields.f${fhrm1}.${PDYfm1}.t${cycfm1}z.nc"
-ont2="${FVCOM_DIR}/loofs.${PDYfm1}/nos.loofs.fields.f${fhrm1}.${PDYfm1}.t${cycfm1}z.nc"
+  erie2="${FVCOM_DIR}/leofs.${PDYfm1}/nos.leofs.fields.f${fhrm1}.${PDYfm1}.t${cycfm1}z.nc"
+  mh2="${FVCOM_DIR}/lmhofs.${PDYfm1}/nos.lmhofs.fields.f${fhrm1}.${PDYfm1}.t${cycfm1}z.nc"
+  sup2="${FVCOM_DIR}/lsofs.${PDYfm1}/nos.lsofs.fields.f${fhrm1}.${PDYfm1}.t${cycfm1}z.nc"
+  ont2="${FVCOM_DIR}/loofs.${PDYfm1}/nos.loofs.fields.f${fhrm1}.${PDYfm1}.t${cycfm1}z.nc"
+
+else
+
+  erie="${FVCOM_DIR}/leofs/nos.leofs.fields.f${fhr}.${PDYf}.${cycf}z.nc"
+  mh="${FVCOM_DIR}/lmhofs/nos.lmhofs.fields.f${fhr}.${PDYf}.${cycf}z.nc"
+  sup="${FVCOM_DIR}/lsofs/nos.lsofs.fields.f${fhr}.${PDYf}.${cycf}z.nc"
+  ont="${FVCOM_DIR}/loofs/nos.loofs.fields.f${fhr}.${PDYf}.${cycf}z.nc"
+
+  erie2="${FVCOM_DIR}/leofs/nos.leofs.fields.f${fhrm1}.${PDYfm1}.${cycfm1}z.nc"
+  mh2="${FVCOM_DIR}/lmhofs/nos.lmhofs.fields.f${fhrm1}.${PDYfm1}.${cycfm1}z.nc"
+  sup2="${FVCOM_DIR}/lsofs/nos.lsofs.fields.f${fhrm1}.${PDYfm1}.${cycfm1}z.nc"
+  ont2="${FVCOM_DIR}/loofs/nos.loofs.fields.f${fhrm1}.${PDYfm1}.${cycfm1}z.nc"
+fi
 
 if [[ -e "$erie" && -e "$mh" && -e "$sup" && -e "$ont" ]]; then
   output_erie=$erie

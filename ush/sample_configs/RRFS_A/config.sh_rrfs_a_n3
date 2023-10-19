@@ -97,6 +97,7 @@ SNOWICE_update_hour=01
 SOIL_SURGERY_time=202310916
 netcdf_diag=.true.
 binary_diag=.false.
+WRTCMP_output_file="netcdf_parallel"
 
 regional_ensemble_option=5
 

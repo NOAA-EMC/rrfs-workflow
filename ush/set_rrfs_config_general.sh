@@ -161,6 +161,12 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
       NCORES_RUN_ANAL=200
       PPN_RUN_NONVARCLDANL="10"
       NNODES_RUN_NONVARCLDANL="12"
+
+      NCORES_PER_NODE=40
+      PPN_RUN_GSIDIAG=20
+      START_TIME_PROCSMOKE="00:55:00"
+
+      CLEAN_OLDFCST_HRS="18"
     fi
 
   elif [[ $MACHINE == "hera" ]] ; then

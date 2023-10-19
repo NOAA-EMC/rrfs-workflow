@@ -104,6 +104,7 @@ EXTRN_MDL_NAME_LBCS="FV3GFS"
 
 envir="para"
 
+NET="rrfs_b"
 TAG="c3v52"
 
 ARCHIVEDIR="/1year/BMC/wrfruc/rrfs_b"
