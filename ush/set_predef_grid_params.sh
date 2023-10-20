@@ -101,17 +101,32 @@ case ${PREDEF_GRID_NAME} in
   if [ "$QUILTING" = "TRUE" ]; then
     WRTCMP_write_groups="1"
     WRTCMP_write_tasks_per_group="2"
-    WRTCMP_output_grid="lambert_conformal"
-    WRTCMP_cen_lon="${ESGgrid_LON_CTR}"
-    WRTCMP_cen_lat="${ESGgrid_LAT_CTR}"
-    WRTCMP_stdlat1="${ESGgrid_LAT_CTR}"
-    WRTCMP_stdlat2="${ESGgrid_LAT_CTR}"
-    WRTCMP_nx="217"
-    WRTCMP_ny="128"
-    WRTCMP_lon_lwr_left="-122.719528"
-    WRTCMP_lat_lwr_left="21.138123"
-    WRTCMP_dx="${ESGgrid_DELX}"
-    WRTCMP_dy="${ESGgrid_DELY}"
+    WRTCMP_output_grid="${WRTCMP_output_grid:-lambert_conformal}"
+    if [ "${WRTCMP_output_grid}" = "lambert_conformal" ]; then
+      WRTCMP_cen_lon="${ESGgrid_LON_CTR}"
+      WRTCMP_cen_lat="${ESGgrid_LAT_CTR}"
+      WRTCMP_stdlat1="${ESGgrid_LAT_CTR}"
+      WRTCMP_stdlat2="${ESGgrid_LAT_CTR}"
+      WRTCMP_nx="217"
+      WRTCMP_ny="128"
+      WRTCMP_lon_lwr_left="-122.719528"
+      WRTCMP_lat_lwr_left="21.138123"
+      WRTCMP_dx="${ESGgrid_DELX}"
+      WRTCMP_dy="${ESGgrid_DELY}"
+    elif [ "${WRTCMP_output_grid}" = "rotated_latlon" ] || [ "${WRTCMP_output_grid}" = "regional_latlon" ]; then
+      if [ "${WRTCMP_output_grid}" = "rotated_latlon" ]; then
+        WRTCMP_cen_lon="${ESGgrid_LON_CTR}"
+        WRTCMP_cen_lat="${ESGgrid_LAT_CTR}"
+      fi
+      WRTCMP_lon_lwr_left="-122.719528"
+      WRTCMP_lat_lwr_left="21.138123"
+      WRTCMP_lon_upr_rght="-72.280472"
+      WRTCMP_lat_upr_rght="55.861877"
+      WRTCMP_dlon="0.112412"
+      WRTCMP_dlat="0.112412"
+    else
+      err_exit "The parameters for this output grid are not set."
+    fi
   fi
   ;;
 #

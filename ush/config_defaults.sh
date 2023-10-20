@@ -1324,13 +1324,6 @@ WRITE_DOPOST="FALSE"
 # Flag that determines whether or not to use the write component for 
 # writing output files to disk.
 #
-# WRTCMP_write_groups:
-# The number of write groups (i.e. groups of MPI tasks) to use in the
-# write component.
-#
-# WRTCMP_write_tasks_per_group:
-# The number of MPI tasks to allocate for each write group.
-#
 # PRINT_ESMF:
 # Flag for whether or not to output extra (debugging) information from
 # ESMF routines.  Must be "TRUE" or "FALSE".  Note that the write
@@ -1338,6 +1331,28 @@ WRITE_DOPOST="FALSE"
 # forecast model grid to the user-specified output grid (which is defined 
 # in the model configuration file MODEL_CONFIG_FN in the forecast's run 
 # directory).
+#
+# WRTCMP_write_groups:
+# The number of write groups (i.e. groups of MPI tasks) to use in the
+# write component.
+#
+# WRTCMP_write_tasks_per_group:
+# The number of MPI tasks to allocate for each write group.
+#
+# WRTCMP_ouptup_grid:
+# Output grid (regional_latlon, rotated_latlon, lambert_conformal); the
+# grid-specific parameters are set in 'ush/set_predef_grid_params.sh'.
+#
+# (1) regional_latlon
+# lon_lwr_left, lat_lwr_left, lon_upr_rght, lat_upr_rght, dlon, dlat
+#
+# (2) rotated_latlon
+# cen_lon, cen_lat
+# lon_lwr_left, lat_lwr_left, lon_upr_rght, lat_upr_rght, dlon, dlat
+#
+# (3) lambert_conformal
+# cen_lon, cen_lat, stdlat1, stdlat2, nx, ny
+# lon_lwr_left, lat_lwr_left, dx, dy
 #
 #-----------------------------------------------------------------------
 #
@@ -1347,23 +1362,15 @@ PRINT_ESMF="FALSE"
 WRTCMP_write_groups="1"
 WRTCMP_write_tasks_per_group="20"
 
-WRTCMP_output_grid="''"
+WRTCMP_output_grid=""
 WRTCMP_cen_lon=""
 WRTCMP_cen_lat=""
 WRTCMP_lon_lwr_left=""
 WRTCMP_lat_lwr_left=""
-#
-# The following are used only for the case of WRTCMP_output_grid set to
-# "'rotated_latlon'".
-#
 WRTCMP_lon_upr_rght=""
 WRTCMP_lat_upr_rght=""
 WRTCMP_dlon=""
 WRTCMP_dlat=""
-#
-# The following are used only for the case of WRTCMP_output_grid set to
-# "'lambert_conformal'".
-#
 WRTCMP_stdlat1=""
 WRTCMP_stdlat2=""
 WRTCMP_nx=""
