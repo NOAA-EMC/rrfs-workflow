@@ -99,8 +99,8 @@ case ${PREDEF_GRID_NAME} in
   BLOCKSIZE="${BLOCKSIZE:-40}"
 
   if [ "$QUILTING" = "TRUE" ]; then
-    WRTCMP_write_groups="1"
-    WRTCMP_write_tasks_per_group="2"
+    WRTCMP_write_groups="${WRTCMP_write_groups:-1}"
+    WRTCMP_write_tasks_per_group="${WRTCMP_write_tasks_per_group:-2}"
     WRTCMP_output_grid="${WRTCMP_output_grid:-lambert_conformal}"
     if [ "${WRTCMP_output_grid}" = "lambert_conformal" ]; then
       WRTCMP_cen_lon="${ESGgrid_LON_CTR}"
@@ -153,9 +153,9 @@ case ${PREDEF_GRID_NAME} in
   BLOCKSIZE="${BLOCKSIZE:-32}"
 
   if [ "$QUILTING" = "TRUE" ]; then
-    WRTCMP_write_groups="1"
-    WRTCMP_write_tasks_per_group="10"
-    WRTCMP_output_grid="lambert_conformal"
+    WRTCMP_write_groups="${WRTCMP_write_groups:-1}"
+    WRTCMP_write_tasks_per_group="${WRTCMP_write_tasks_per_group:-10}"
+    WRTCMP_output_grid="${WRTCMP_output_grid:-lambert_conformal}"
     WRTCMP_cen_lon="${ESGgrid_LON_CTR}"
     WRTCMP_cen_lat="${ESGgrid_LAT_CTR}"
     WRTCMP_stdlat1="${ESGgrid_LAT_CTR}"
@@ -192,9 +192,9 @@ case ${PREDEF_GRID_NAME} in
   BLOCKSIZE="${BLOCKSIZE:-32}"
 
   if [ "$QUILTING" = "TRUE" ]; then
-    WRTCMP_write_groups="1"
+    WRTCMP_write_groups="${WRTCMP_write_groups:-1}"
     WRTCMP_write_tasks_per_group=$(( 1*LAYOUT_Y ))
-    WRTCMP_output_grid="lambert_conformal"
+    WRTCMP_output_grid="${WRTCMP_output_grid:-lambert_conformal}"
     WRTCMP_cen_lon="${ESGgrid_LON_CTR}"
     WRTCMP_cen_lat="${ESGgrid_LAT_CTR}"
     WRTCMP_stdlat1="${ESGgrid_LAT_CTR}"
@@ -233,7 +233,7 @@ case ${PREDEF_GRID_NAME} in
   if [ "$QUILTING" = "TRUE" ]; then
     WRTCMP_write_groups="1"
     WRTCMP_write_tasks_per_group=$(( 1*LAYOUT_Y ))
-    WRTCMP_output_grid="lambert_conformal"
+    WRTCMP_output_grid="${WRTCMP_output_grid:-lambert_conformal}"
     WRTCMP_cen_lon="${ESGgrid_LON_CTR}"
     WRTCMP_cen_lat="${ESGgrid_LAT_CTR}"
     WRTCMP_stdlat1="${ESGgrid_LAT_CTR}"
@@ -272,7 +272,7 @@ case ${PREDEF_GRID_NAME} in
   if [ "$QUILTING" = "TRUE" ]; then
     WRTCMP_write_groups="1"
     WRTCMP_write_tasks_per_group=$(( 1*LAYOUT_Y ))
-    WRTCMP_output_grid="lambert_conformal"
+    WRTCMP_output_grid="${WRTCMP_output_grid:-lambert_conformal}"
     WRTCMP_cen_lon="${ESGgrid_LON_CTR}"
     WRTCMP_cen_lat="${ESGgrid_LAT_CTR}"
     WRTCMP_stdlat1="${ESGgrid_LAT_CTR}"
@@ -314,7 +314,7 @@ case ${PREDEF_GRID_NAME} in
   if [ "$QUILTING" = "TRUE" ]; then
     WRTCMP_write_groups="1"
     WRTCMP_write_tasks_per_group=$(( 1*LAYOUT_Y ))
-    WRTCMP_output_grid="lambert_conformal"
+    WRTCMP_output_grid="${WRTCMP_output_grid:-lambert_conformal}"
     WRTCMP_cen_lon="${ESGgrid_LON_CTR}"
     WRTCMP_cen_lat="${ESGgrid_LAT_CTR}"
     WRTCMP_stdlat1="${ESGgrid_LAT_CTR}"
@@ -356,7 +356,7 @@ case ${PREDEF_GRID_NAME} in
   if [ "$QUILTING" = "TRUE" ]; then
     WRTCMP_write_groups="1"
     WRTCMP_write_tasks_per_group=$(( 1*LAYOUT_Y ))
-    WRTCMP_output_grid="lambert_conformal"
+    WRTCMP_output_grid="${WRTCMP_output_grid:-lambert_conformal}"
     WRTCMP_cen_lon="${ESGgrid_LON_CTR}"
     WRTCMP_cen_lat="${ESGgrid_LAT_CTR}"
     WRTCMP_stdlat1="${ESGgrid_LAT_CTR}"
@@ -792,8 +792,8 @@ case ${PREDEF_GRID_NAME} in
   BLOCKSIZE="${BLOCKSIZE:-30}"
 
   if [ "$QUILTING" = "TRUE" ]; then
-    WRTCMP_write_groups="1"
-    WRTCMP_write_tasks_per_group="16"
+    WRTCMP_write_groups="${WRTCMP_write_groups:-1}"
+    WRTCMP_write_tasks_per_group="${WRTCMP_write_tasks_per_group:-16}"
     WRTCMP_output_grid="rotated_latlon"
     WRTCMP_cen_lon="${ESGgrid_LON_CTR}"
     WRTCMP_cen_lat="${ESGgrid_LAT_CTR}"
@@ -828,9 +828,9 @@ case ${PREDEF_GRID_NAME} in
   LAYOUT_Y="34"
   BLOCKSIZE="16"
   if [ "$QUILTING" = "TRUE" ]; then
-    WRTCMP_write_groups="2"
-    WRTCMP_write_tasks_per_group="46"
-    WRTCMP_output_grid="rotated_latlon"
+    WRTCMP_write_groups="${WRTCMP_write_groups:-2}"
+    WRTCMP_write_tasks_per_group="${WRTCMP_write_tasks_per_group:-46}"
+    WRTCMP_output_grid="${WRTCMP_output_grid:-rotated_latlon}"
     WRTCMP_cen_lon="-118.0"
     WRTCMP_cen_lat="50.0"
     WRTCMP_lon_lwr_left="-45.25"
@@ -867,23 +867,32 @@ case ${PREDEF_GRID_NAME} in
   if [ "$QUILTING" = "TRUE" ]; then
     WRTCMP_write_groups="${WRTCMP_write_groups:-1}"
     WRTCMP_write_tasks_per_group="${WRTCMP_write_tasks_per_group:-50}"
-    WRTCMP_output_grid="rotated_latlon"
-    WRTCMP_cen_lon="-113.0"
-    WRTCMP_cen_lat="55.0"
-    WRTCMP_lon_lwr_left="-61.0"
-    WRTCMP_lat_lwr_left="-37.0"
-    WRTCMP_lon_upr_rght="61.0"
-    WRTCMP_lat_upr_rght="37.0"
-    if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
-      if [[ ${DO_ENSFCST} != "TRUE" ]] ; then
-        WRTCMP_lon_lwr_left="-0.1"
-        WRTCMP_lat_lwr_left="-0.1"
-        WRTCMP_lon_upr_rght="0.1"
-        WRTCMP_lat_upr_rght="0.1"
+    WRTCMP_output_grid="${WRTCMP_output_grid:-rotated_latlon}"
+    if [ "${WRTCMP_output_grid}" = "rotated_latlon" ]; then
+      WRTCMP_cen_lon="-113.0"
+      WRTCMP_cen_lat="55.0"
+      WRTCMP_lon_lwr_left="-61.0"
+      WRTCMP_lat_lwr_left="-37.0"
+      WRTCMP_lon_upr_rght="61.0"
+      WRTCMP_lat_upr_rght="37.0"
+      if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
+        if [[ ${DO_ENSFCST} != "TRUE" ]] ; then
+          WRTCMP_lon_lwr_left="-0.1"
+          WRTCMP_lat_lwr_left="-0.1"
+          WRTCMP_lon_upr_rght="0.1"
+          WRTCMP_lat_upr_rght="0.1"
+        fi
       fi
+      WRTCMP_dlon="0.025"
+      WRTCMP_dlat="0.025"
+    elif [ "${WRTCMP_output_grid}" = "regional_latlon" ]; then
+      WRTCMP_lon_lwr_left="-135.0"
+      WRTCMP_lat_lwr_left="22.0"
+      WRTCMP_lon_upr_rght="-60.0"
+      WRTCMP_lat_upr_rght="53.5"
+      WRTCMP_dlon="0.03"
+      WRTCMP_dlat="0.03"
     fi
-    WRTCMP_dlon="0.025"
-    WRTCMP_dlat="0.025"
   fi
   ;;
 
