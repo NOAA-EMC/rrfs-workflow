@@ -261,19 +261,13 @@ EOF
   export FORT79="$DATA/bufrpost/profilm.c1.${tmmark}"
   export FORT11="itag"
 
-  ${APRUNC} $EXECfv3/rrfs_bufr.x  > pgmout.log_${fhr} 2>&1
+  ${APRUNC} $EXECfv3/rrfs_bufr.exe  > pgmout.log_${fhr} 2>&1
   export err=$?; err_chk
 
   echo DONE $fhr at `date`
 
-<<<<<<< HEAD:scripts/exrrfs_bufrsnd.sh
   mv $DATA/bufrpost/profilm.c1.${tmmark} $DATA/profilm.c1.${tmmark}.f${fhr}
   echo done > $DATA/sndpostdone${fhr}.${tmmark}
-=======
-${APRUNC} $EXECfv3/rrfs_bufr.exe  > pgmout.log_${fhr} 2>&1
-export err=$?
-#err_chk
->>>>>>> 97dab1ad... Update workflow based non RRFS_A v0.6.7. (#572):scripts/exregional_bufrsnd.sh
 
   cat $DATA/profilm.c1.${tmmark}  $DATA/profilm.c1.${tmmark}.f${fhr} > $DATA/profilm_int
   mv $DATA/profilm_int $DATA/profilm.c1.${tmmark}
