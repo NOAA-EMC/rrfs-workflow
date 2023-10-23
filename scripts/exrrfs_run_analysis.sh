@@ -826,7 +826,7 @@ if [ ${DO_RADDA} == "TRUE" ]; then
     SAT_TIME=`date +"%Y%m%d%H" -d "${START_DATE}  ${satcounter} hours ago"`
     echo $SAT_TIME
 	
-    if [ ${DO_ENS_RADDA} == "TRUE" ]; then			
+    if [ ${DO_ENS_RADDA} = "TRUE" ]; then			
       # For EnKF.  Note, EnKF does not need radstat file
       if [ -r ${satbias_dir}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
         echo " using satellite bias files from ${SAT_TIME}" 
@@ -863,33 +863,25 @@ if [ ${DO_RADDA} == "TRUE" ]; then
       SAT_TIME=`date +"%Y%m%d%H" -d "${START_DATE}  ${satcounter} hours ago"`
       echo $SAT_TIME
 	
-      if [ ${DO_ENS_RADDA} == "TRUE" ]; then	
-		
-      # For EnKF.  Note, EnKF does not need radstat file
+      if [ ${DO_ENS_RADDA} = "TRUE" ]; then			
+        # For EnKF.  Note, EnKF does not need radstat file
         if [ -r ${satbias_dir_cont}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
           echo " using satellite bias files from ${SAT_TIME}"
-        
-          cp_vrfy ${satbias_dir_cont}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
-          cp_vrfy ${satbias_dir_cont}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
-	    
+          cp ${satbias_dir_cont}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
+          cp ${satbias_dir_cont}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
           break
         fi
-	  
       else	
-	  
-      # For EnVar
+        # For EnVar
         if [ -r ${satbias_dir_cont}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
           echo " using satellite bias files from ${satbias_dir_cont} ${spinup_or_prod_rrfs}.${SAT_TIME}"
-
-          cp_vrfy ${satbias_dir_cont}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
-          cp_vrfy ${satbias_dir_cont}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
+          cp ${satbias_dir_cont}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
+          cp ${satbias_dir_cont}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
           if [ -r ${satbias_dir_cont}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ]; then
-             cp_vrfy ${satbias_dir_cont}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ./radstat.rrfs
+             cp ${satbias_dir_cont}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ./radstat.rrfs
           fi
-
           break
         fi
-	
       fi
       satcounter=` expr $satcounter + 1 `
     done
@@ -908,7 +900,6 @@ if [ ${DO_RADDA} == "TRUE" ]; then
       echo "using satelite satbias_pc files from ${FIX_GSI}"     
       cp ${FIX_GSI}/rrfs.starting_satbias_pc ./satbias_pc
     fi
-
   fi
 
   if [ -r radstat.rrfs ]; then
@@ -930,8 +921,8 @@ fi
 
 if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "radardbz" ]]; then
   if  [[ ${regional_ensemble_option:-1} -eq 1 ]]; then
-     echo "No RRFSE ensemble available, cannot do radar reflectivity analysis"
-     exit 0
+    echo "No RRFSE ensemble available, cannot do radar reflectivity analysis"
+    exit 0
   fi
 fi
 #-----------------------------------------------------------------------

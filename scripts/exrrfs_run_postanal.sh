@@ -139,14 +139,14 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 cd ${analworkdir}
 
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
-if [ ${cycle_type} == "spinup" ]; then
-  if [ ${mem_type} == "MEAN" ]; then
+if [ "${cycle_type}" = "spinup" ]; then
+  if [ "${mem_type}" = "MEAN" ]; then
     bkpath=${cycle_dir}/ensmean/fcst_fv3lam_spinup/INPUT
   else
     bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam_spinup/INPUT
   fi
 else
-  if [ ${mem_type} == "MEAN" ]; then
+  if [ "${mem_type}" = "MEAN" ]; then
     bkpath=${cycle_dir}/ensmean/fcst_fv3lam/INPUT
   else
     bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam/INPUT
@@ -169,7 +169,7 @@ fi
 #
 
 
-if [ ${cycle_type} == "spinup" ]; then
+if [ "${cycle_type}" = "spinup" ]; then
   analworkname="_gsi_spinup"
 else
   analworkname="_gsi"
@@ -177,16 +177,16 @@ fi
 
 if [[ ${BKTYPE} -eq 0 ]] && [[ "${DO_PM_DA}" = "TRUE" ]]; then  # warm start
   analworkdir_aero="${cycle_dir}/anal_AERO_${analworkname}"
-# Assume the GSI analysis files are in current dir
-  if [ "${IO_LAYOUT_Y}" == "1" ]; then
-    ln_vrfy  -snf ${analworkdir_aero}/fv3_tracer  fv3_tracer_sdp
+  # Assume the GSI analysis files are in current dir
+  if [ "${IO_LAYOUT_Y}" = "1" ]; then
+    ln -snf ${analworkdir_aero}/fv3_tracer  fv3_tracer_sdp
     ncrename -v smoke,smoke_ori -v dust,dust_ori  fv3_tracer
     ncks -A  -v smoke,dust        fv3_tracer_sdp  fv3_tracer
   else
     for ii in ${list_iolayout}
     do
       iii=`printf %4.4i $ii`
-      ln_vrfy  -snf ${analworkdir_aero}/fv3_tracer.${iii} fv3_tracer_sdp.${iii}
+      ln -snf ${analworkdir_aero}/fv3_tracer.${iii} fv3_tracer_sdp.${iii}
       ncrename -v smoke,smoke_ori -v dust,dust_ori  fv3_tracer.${iii}
       ncks -A  -v smoke,dust fv3_tracer_sdp.${iii}  fv3_tracer.${iii}
     done
@@ -202,7 +202,7 @@ fi
 #
 if [[ ${BKTYPE} -eq 0 ]] && [[ ${ob_type} =~ "conv" ]] && [[ "${DO_SOIL_ADJUST}" = "TRUE" ]]; then  # warm start
   cd ${bkpath}
-  if [ "${IO_LAYOUT_Y}" == "1" ]; then
+  if [ "${IO_LAYOUT_Y}" = "1" ]; then
     ln -snf ${fixgriddir}/fv3_grid_spec                fv3_grid_spec
   else
     for ii in ${list_iolayout}
