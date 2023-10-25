@@ -82,15 +82,15 @@ case $MACHINE in
     ;;
 
   "HERA")
-    APRUN="srun"
+    APRUN="srun --export=ALL"
     ;;
 
   "ORION")
-    APRUN="srun"
+    APRUN="srun --export=ALL"
     ;;
 
   "JET")
-    APRUN="srun"
+    APRUN="srun --export=ALL"
     ;;
 
   *)
@@ -765,6 +765,9 @@ if [ ${HH} -eq ${GVF_update_hour} ] && [ ${cycle_type} == "spinup" ]; then
         ln -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
         ${APRUN} ${EXECdir}/update_GVF.exe > stdout_updateGVF 2>&1
         export err=$?; err_chk
+        if [ $err -ne 0 ] && [ "${WORKFLOW_MANAGER}" = "rocoto" ]; then
+          print_err_msg_exit "Running \"update_GVF.exe\" failed."
+        fi
       else
         for ii in ${list_iolayout}
         do
@@ -773,6 +776,10 @@ if [ ${HH} -eq ${GVF_update_hour} ] && [ ${cycle_type} == "spinup" ]; then
           ln -sf sfc_data.nc.${iii} sfc_data.nc
           ${APRUN} ${EXECdir}/update_GVF.exe > stdout_updateGVF.${iii} 2>&1
           export err=$?; err_chk
+          if [ $err -ne 0 ] && [ "${WORKFLOW_MANAGER}" = "rocoto" ]; then
+            print_err_msg_exit "Running \"update_GVF.exe\" failed."
+          fi
+
           ls -l > list_updateGVF.${iii}
         done
         rm -f sfc_data.nc
