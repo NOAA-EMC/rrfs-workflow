@@ -76,9 +76,9 @@ def create_model_configure_file(
     nsout = NSOUT
 
     if WRTCMP_output_file == "netcdf_parallel":
-        WRTCMP_ideflate = "1"
+        WRTCMP_ideflate = 1
     else:
-        WRTCMP_ideflate = "0"
+        WRTCMP_ideflate = 0
     #
     # Decide the forecast length for this cycle
     #
