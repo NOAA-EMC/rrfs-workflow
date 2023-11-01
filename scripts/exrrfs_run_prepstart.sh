@@ -77,20 +77,19 @@ print_input_args valid_args
 case $MACHINE in
 
   "WCOSS2")
-    ncores=$(( NNODES_RUN_PREPSTART*PPN_RUN_PREPSTART))
-    APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_PREPSTART}"
+    APRUN="time"
     ;;
 
   "HERA")
-    APRUN="srun --export=ALL"
+    APRUN="time"
     ;;
 
   "ORION")
-    APRUN="srun --export=ALL"
+    APRUN="time"
     ;;
 
   "JET")
-    APRUN="srun --export=ALL"
+    APRUN="time"
     ;;
 
   *)

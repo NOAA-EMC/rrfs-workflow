@@ -8,10 +8,10 @@ MACHINE="wcoss2"
 
 EXPT_SUBDIR="rrfs_test_da"
 
-DATE_FIRST_CYCL="20230726"
-DATE_LAST_CYCL="20230726"
-CYCLEMONTH="07"
-CYCLEDAY="26"
+DATE_FIRST_CYCL="20231031"
+DATE_LAST_CYCL="20231031"
+CYCLEMONTH="10"
+CYCLEDAY="31"
 
 MODEL="rrfs_a"
 RUN="rrfs"
@@ -52,6 +52,7 @@ DO_RADDA="TRUE"
 DO_BUFRSND="TRUE"
 USE_FVCOM="TRUE"
 PREP_FVCOM="TRUE"
+USE_CLM="TRUE"
 DO_PARALLEL_PRDGEN="FALSE"
 DO_GSIDIAG_OFFLINE="TRUE"
 
@@ -102,8 +103,10 @@ CYCL_HRS_HYB_FV3LAM_ENS=("00" "01" "02" "03" "04" "05" "06" "07" "08" "09" "10" 
 SST_update_hour=01
 GVF_update_hour=04
 SNOWICE_update_hour=00
+SOIL_SURGERY_time=2023100916
 netcdf_diag=.true.
 binary_diag=.false.
+WRTCMP_output_file="netcdf_parallel"
 
 regional_ensemble_option=5
 
