@@ -9,8 +9,8 @@ load(pathJoin("cmake", os.getenv("cmake_ver") or "3.20.1"))
 
 prepend_path("MODULEPATH", "/scratch1/NCEPDEV/nems/role.epic/hpc-stack/libs/intel-2022.1.2/modulefiles/stack")
 load(pathJoin("hpc", os.getenv("hpc_ver") or "1.2.0"))
-load(pathJoin("hpc-intel", os.getenv("hpc-intel_ver") or "2022.1.2"))
-load(pathJoin("hpc-impi", os.getenv("hpc-impi_ver") or "2022.1.2"))
+load(pathJoin("hpc-intel", os.getenv("hpc_intel_ver") or "2022.1.2"))
+load(pathJoin("hpc-impi", os.getenv("hpc_impi_ver") or "2022.1.2"))
 
 load(pathJoin("jasper", os.getenv("jasper_ver") or "2.0.25"))
 load(pathJoin("zlib", os.getenv("zlib_ver") or "1.2.11"))
