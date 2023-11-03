@@ -65,8 +65,10 @@ the specified cycle.
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ ${CYCLE_TYPE} == "spinup" ]; then
   enkfworkdir="${CYCLE_DIR}/enkfupdt_${OB_TYPE}_spinup"
+  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
 else
   enkfworkdir="${CYCLE_DIR}/enkfupdt_${OB_TYPE}"
+  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
 fi
 rm -fr ${enkfworkdir}
 mkdir -p ${enkfworkdir}
@@ -83,6 +85,7 @@ $SCRIPTSdir/exrrfs_run_enkf.sh \
              cycle_type="${CYCLE_TYPE}" \
              enkfworkdir="${enkfworkdir}" \
              NWGES_DIR="${NWGES_DIR}" \
+             comout="${COMOUT}" \
              ob_type="${OB_TYPE}"
 export err=$?; err_chk
 #

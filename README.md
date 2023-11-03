@@ -23,9 +23,13 @@ cd rrfs-workflow/sorc
 
 4. Build the RRFS workflow:
 ```
+./app_build.sh
+```
+Alternatively, the above command can be followed by the platform (machine) name as follows:
+```
 ./app_build.sh -p=[machine]
 ```
-where `[machine]` is `wcoss2`, `hera`, `orion`, or `jet`.
+where `[machine]` is `wcoss2`, `hera`, `jet`, or `orion`.
 
 5. Move to the home directory (rrfs-workflow):
 ```

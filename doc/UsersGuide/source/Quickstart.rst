@@ -29,6 +29,12 @@ Building RRFS workflow
 
       .. code-block:: console
             
+         ./app_build.sh
+
+      Alternatively, the above command can be followed by the platform (machine) name as follows:
+
+      .. code-block:: console
+            
          ./app_build.sh --platform=<machine>
 
       where ``<machine>`` is ``wcoss2``, ``hera``, ``jet``, or ``orion``.

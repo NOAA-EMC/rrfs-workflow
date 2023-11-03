@@ -3,7 +3,7 @@ version="v0.6.2"
 ACCOUNT="wrfruc"
 RESERVATION="rrfsens"
 RESERVATION_POST="rrfsdet"
-EXPT_BASEDIR="/misc/whome/wrfruc/RRFSE/rrfs.${version}"
+EXPT_BASEDIR="YourOwnSpace/${version}"
 EXPT_SUBDIR="RRFS_CONUS_3km_ens"
 
 PREDEF_GRID_NAME=RRFS_CONUS_3km
@@ -119,7 +119,6 @@ WTIME_MAKE_LBCS="02:00:00"
 EXTRN_MDL_NAME_ICS="GEFS"
 EXTRN_MDL_NAME_LBCS="GEFS"
 envir="para"
-NET="rrfs_b"
 ARCHIVEDIR="/1year/BMC/wrfruc/rrfs_b"
 NCL_REGION="conus"
 MODEL="RRFS_conus_3km"
@@ -166,8 +165,8 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
      DO_RECENTER="TRUE"
 
    fi
-   PPN_RUN_RECENTER="$(( ${NUM_ENS_MEMBERS} + 1 ))"
-   NNODES_RUN_RECENTER="6"
+   PPN_RUN_RECENTER="3"
+   NNODES_RUN_RECENTER="$(( ${NUM_ENS_MEMBERS} + 1 ))"
 #   NNODES_RUN_RECENTER="10"
 #   PPN_RUN_RECENTER="128"
 
@@ -185,12 +184,12 @@ fi
 
 . set_rrfs_config.sh
 
-STMP="/mnt/lfs4/BMC/wrfruc/RRFSE/${version}/stmp_ensda"  # Path to directory STMP that mostly contains input files.
+STMP="YourOwnSpace/${version}/stmp_ensda"  # Path to directory STMP that mostly contains input files.
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
-  STMP="/mnt/lfs4/BMC/wrfruc/RRFSE/${version}/stmp_ensfcst"  # Path to directory STMP that mostly contains input files.
+  STMP="YourOwnSpace/${version}/stmp_ensfcst"  # Path to directory STMP that mostly contains input files.
 fi
-PTMP="/mnt/lfs4/BMC/wrfruc/RRFSE/${version}"  # Path to directory STMP that mostly contains input files.
-NWGES="/mnt/lfs4/BMC/wrfruc/RRFSE/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
-ENSCTRL_STMP="/mnt/lfs4/BMC/nrtrr/${version}/stmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
-ENSCTRL_PTMP="/mnt/lfs4/BMC/nrtrr/${version}"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
-ENSCTRL_NWGES="/mnt/lfs4/BMC/nrtrr/${version}/nwges"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+PTMP="YourOwnSpace/${version}"  # Path to directory STMP that mostly contains input files.
+NWGES="YourOwnSpace/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+ENSCTRL_STMP="YourOwnSpace/${version}/stmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+ENSCTRL_PTMP="YourOwnSpace/${version}"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+ENSCTRL_NWGES="YourOwnSpace/${version}/nwges"  # Path to directory STMP that mostly contains control input files for ensemble recentering.

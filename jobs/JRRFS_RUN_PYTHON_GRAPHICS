@@ -62,7 +62,7 @@ on the output files corresponding to a specified forecast hour.
 #-----------------------------------------------------------------------
 #
 COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
-COMOUT_mem0="${ENSCTRL_COMOUT_BASEDIR}/$RUN.$PDY/$cyc"
+COMOUT_mem0="${ENSCTRL_COMOUT_BASEDIR}/${RUN_ensctrl}.$PDY/$cyc"
 postprd_dir="${COMOUT}/${ENSPROD:-}"
 run_dir="${COMOUT}/pyprd"
 zip_dir="${COMOUT}/nclprd"

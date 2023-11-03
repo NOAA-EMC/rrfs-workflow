@@ -302,6 +302,10 @@ EXPT_SUBDIR=""
 #   RAPHRR_SOIL_ROOT: locations of RAP/HRRR forecast netcdf files
 #   SOIL_SURGERY_time: cycle time for soil surgery 
 #
+# Setup default data locations for cycle surface/bias correction coefficient
+#   smoke/dust during machine switch and version update
+#   CONT_CYCLE_DATA_ROOT: locations of surface, bias correction coefficient files
+#
 # Setup default locations for FIRE_RRFS files and update time
 #  FIRE_RAVE_DIR
 #  FIRE_RRFS_ROOT
@@ -347,6 +351,7 @@ SOIL_SURGERY_time=9999999999
 FIRE_RAVE_DIR="/lfs4/BMC/public/data/grids/nesdis/3km_fire_emissions"
 FIRE_RRFS_ROOT="/mnt/lfs4/BMC/gsd-fv3-dev/FIRE_RRFS_ROOT"
 FIRE_RRFS_update_hour=99
+CONT_CYCLE_DATA_ROOT="/lfs/h2/emc/lam/noscrub/emc.lam/nwges"
 #
 #-----------------------------------------------------------------------
 #
@@ -736,6 +741,7 @@ i_precip_vertical_check=0
 #  &CHEM 
 laeroana_fv3smoke=.false.
 berror_fv3_cmaq_regional=.false.
+berror_fv3_sd_regional=.false.
 #-----------------------------------------------------------------------
 # HYBENSMEM_NMIN:
 #    Minimum number of ensemble members required a hybrid GSI analysis 
@@ -1331,6 +1337,9 @@ WRITE_DOPOST="FALSE"
 # WRTCMP_write_tasks_per_group:
 # The number of MPI tasks to allocate for each write group.
 #
+# WRTCMP_output_file:
+# The output file format.
+#
 # PRINT_ESMF:
 # Flag for whether or not to output extra (debugging) information from
 # ESMF routines.  Must be "TRUE" or "FALSE".  Note that the write
@@ -1346,6 +1355,7 @@ PRINT_ESMF="FALSE"
 
 WRTCMP_write_groups="1"
 WRTCMP_write_tasks_per_group="20"
+WRTCMP_output_file="netcdf"
 
 WRTCMP_output_grid="''"
 WRTCMP_cen_lon=""
@@ -1779,6 +1789,7 @@ PROCESS_LIGHTNING_TN="process_lightning"
 RADAR_REF_THINNING="1"
 PROCESS_BUFR_TN="process_bufr"
 PROCESS_SMOKE_TN="process_smoke"
+PROCESS_PM_TN="process_pm"
 RADAR_REFL2TTEN_TN="radar_refl2tten"
 CLDANL_NONVAR_TN="cldanl_nonvar"
 SAVE_RESTART_TN="save_restart"
@@ -1807,6 +1818,7 @@ NNODES_PROC_RADAR="2"
 NNODES_PROC_LIGHTNING="1"
 NNODES_PROC_BUFR="1"
 NNODES_PROC_SMOKE="1"
+NNODES_PROC_PM="1"
 NNODES_RUN_REF2TTEN="1"
 NNODES_RUN_NONVARCLDANL="1"
 NNODES_RUN_GRAPHICS="1"
@@ -1846,6 +1858,7 @@ PPN_PROC_RADAR="24"
 PPN_PROC_LIGHTNING="1"
 PPN_PROC_BUFR="1"
 PPN_PROC_SMOKE="1"
+PPN_PROC_PM="1"
 PPN_RUN_REF2TTEN="1"
 PPN_RUN_NONVARCLDANL="1"
 PPN_RUN_GRAPHICS="12"
@@ -1888,6 +1901,7 @@ WTIME_PROC_RADAR="00:25:00"
 WTIME_PROC_LIGHTNING="00:25:00"
 WTIME_PROC_BUFR="00:25:00"
 WTIME_PROC_SMOKE="00:25:00"
+WTIME_PROC_PM="00:25:00"
 WTIME_RUN_REF2TTEN="00:20:00"
 WTIME_RUN_NONVARCLDANL="00:20:00"
 WTIME_RUN_BUFRSND="00:45:00"
@@ -1905,6 +1919,7 @@ START_TIME_CONVENTIONAL="00:40:00"
 START_TIME_NSSLMOSIAC="00:45:00"
 START_TIME_LIGHTNINGNC="00:45:00"
 START_TIME_PROCSMOKE="00:45:00"
+START_TIME_PROCPM="00:45:00"
 #
 # Memory.
 #
@@ -1918,6 +1933,7 @@ MEMO_PREP_CYC="40G"
 MEMO_SAVE_RESTART="40G"
 MEMO_SAVE_INPUT="40G"
 MEMO_PROC_SMOKE="40G"
+MEMO_PROC_PM="40G"
 MEMO_SAVE_DA_OUTPUT="40G"
 #
 # Maximum number of attempts.
@@ -1943,6 +1959,7 @@ MAXTRIES_PROCESS_RADARREF="1"
 MAXTRIES_PROCESS_LIGHTNING="1"
 MAXTRIES_PROCESS_BUFR="1"
 MAXTRIES_PROCESS_SMOKE="1"
+MAXTRIES_PROCESS_PM="1"
 MAXTRIES_RADAR_REF2TTEN="1"
 MAXTRIES_CLDANL_NONVAR="1"
 MAXTRIES_SAVE_RESTART="1"
@@ -2160,10 +2177,6 @@ DO_ENS_RADDA="FALSE"
 # DO_DACYCLE:
 # Flag that determines whether to run a data assimilation cycle.
 #
-# DO_SDDACYCLE:
-# Flag that determines whether to run a SMOKE and DUST data assimilation 
-# cycle.
-#
 # DO_SURFACE_CYCLE:
 # Flag that determines whether to continue cycle surface fields.
 #
@@ -2202,7 +2215,6 @@ DO_ENS_RADDA="FALSE"
 #-----------------------------------------------------------------------
 #
 DO_DACYCLE="FALSE"
-DO_SDDACYCLE="FALSE"
 DO_SURFACE_CYCLE="FALSE"
 SURFACE_CYCLE_DELAY_HRS="1"
 DO_SOIL_ADJUST="FALSE"
@@ -2211,6 +2223,7 @@ DO_RADDA="FALSE"
 DO_BUFRSND="FALSE"
 USE_RRFSE_ENS="FALSE"
 DO_SMOKE_DUST="FALSE"
+DO_PM_DA="FALSE"
 USE_CLM="FALSE"
 DO_NON_DA_RUN="FALSE"
 #
@@ -2449,6 +2462,7 @@ DO_NONVAR_CLDANAL="FALSE"
 DO_REFL2TTEN="FALSE"
 DO_NLDN_LGHT="FALSE"
 DO_SMOKE_DUST="FALSE"
+DO_PM_DA="FALSE"
 #
 #-----------------------------------------------------------------------
 #

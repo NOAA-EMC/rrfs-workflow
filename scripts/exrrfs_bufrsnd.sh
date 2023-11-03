@@ -261,7 +261,7 @@ EOF
   export FORT79="$DATA/bufrpost/profilm.c1.${tmmark}"
   export FORT11="itag"
 
-  ${APRUNC} $EXECfv3/rrfs_bufr.x  > pgmout.log_${fhr} 2>&1
+  ${APRUNC} $EXECfv3/rrfs_bufr.exe  > pgmout.log_${fhr} 2>&1
   export err=$?; err_chk
 
   echo DONE $fhr at `date`
@@ -306,7 +306,7 @@ nlev=65
 
 FCST_LEN_HRS=$FHRLIM
 echo "$nlev $NSTAT $FCST_LEN_HRS" > itag
-${APRUNS} $EXECfv3/rrfs_sndp.x  < itag >> $pgmout 2>$pgmout
+${APRUNS} $EXECfv3/rrfs_sndp.exe  < itag >> $pgmout 2>$pgmout
 export err=$?; err_chk
 
 SENDCOM=YES
@@ -339,13 +339,13 @@ export pgm=regional_stnmlist
 export FORT20=$DATA/class1.bufr
 export DIRD=${COMOUT}/bufr.${NEST}${MODEL}${cyc}/${NEST}${MODEL}bufr
 
-echo "before stnmlist.x"
+echo "before stnmlist.exe"
 date
 pgmout=stnmlog
-${APRUNS}  $EXECfv3/rrfs_stnmlist.x < stnmlist_input >> $pgmout 2>errfile
+${APRUNS}  $EXECfv3/rrfs_stnmlist.exe < stnmlist_input >> $pgmout 2>errfile
 export err=$?; err_chk
 
-echo "after stnmlist.x"
+echo "after stnmlist.exe"
 date
 
 echo ${COMOUT}/bufr.${NEST}${MODEL}${cyc} > ${COMOUT}/bufr.${NEST}${MODEL}${cyc}/bufrloc

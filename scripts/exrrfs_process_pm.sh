@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHDIR/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -42,22 +42,20 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs a analysis with FV3 for the
-specified cycle.
+This is the ex-script for the task that runs PM (cloud, metar, lightning, 
+pm) preprocess for the specified cycle.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
 #
-# Specify the set of valid argument names for this script/function.
+# Specify the set of valid argument names for this script/function.  
 # Then process the arguments provided to this script/function (which 
 # should consist of a set of name-value pairs of the form arg1="value1",
 # etc).
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "gsi_type" "mem_type" "analworkdir" \
-             "observer_nwges_dir" "slash_ensmem_subdir" "comout" \
-             "satbias_dir" "ob_type" "gridspec_dir" )
+valid_args=( "CYCLE_DIR" "WORKDIR" "comout")
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -72,7 +70,7 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-# Set environment
+# Set environment.
 #
 #-----------------------------------------------------------------------
 #
@@ -80,33 +78,23 @@ ulimit -s unlimited
 ulimit -a
 
 case $MACHINE in
-
+#
 "WCOSS2")
-  export FI_OFI_RXM_SAR_LIMIT=3145728
-  export OMP_STACKSIZE=500M
-  export OMP_NUM_THREADS=1
-  ncores=$(( NNODES_RUN_POSTANAL*PPN_RUN_POSTANAL))
-  APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_POSTANAL} --cpu-bind core --depth ${OMP_NUM_THREADS}"
+  APRUN="mpiexec -n 1 -ppn 1"
   ;;
-
+#
 "HERA")
-  export OMP_NUM_THREADS=1
-  export OMP_STACKSIZE=300M
-  APRUN="srun --export=ALL"
+  APRUN="srun"
   ;;
-
-"ORION")
-  export OMP_NUM_THREADS=1
-  export OMP_STACKSIZE=1024M
-  APRUN="srun --export=ALL"
-  ;;
-
+#
 "JET")
-  export OMP_NUM_THREADS=2
-  export OMP_STACKSIZE=1024M
-  APRUN="srun --export=ALL"
+  APRUN="srun"
   ;;
-
+#
+"ORION")
+  APRUN="srun"
+  ;;
+#
 esac
 #
 #-----------------------------------------------------------------------
@@ -117,7 +105,6 @@ esac
 #-----------------------------------------------------------------------
 #
 START_DATE=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
-
 YYYYMMDDHH=$(date +%Y%m%d%H -d "${START_DATE}")
 JJJ=$(date +%j -d "${START_DATE}")
 
@@ -126,145 +113,121 @@ MM=${YYYYMMDDHH:4:2}
 DD=${YYYYMMDDHH:6:2}
 HH=${YYYYMMDDHH:8:2}
 YYYYMMDD=${YYYYMMDDHH:0:8}
+
+YYJJJHH=$(date +"%y%j%H" -d "${START_DATE}")
+PREYYJJJHH=$(date +"%y%j%H" -d "${START_DATE} 1 hours ago")
+
 #
 #-----------------------------------------------------------------------
 #
-# go to working directory.
-# define fix and background path
+# Get into working directory
 #
 #-----------------------------------------------------------------------
 #
-cd ${analworkdir}
+print_info_msg "$VERBOSE" "
+Getting into working directory for BUFR obseration process ..."
+
+cd ${WORKDIR}
 
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
-if [ "${cycle_type}" = "spinup" ]; then
-  if [ "${mem_type}" = "MEAN" ]; then
-    bkpath=${cycle_dir}/ensmean/fcst_fv3lam_spinup/INPUT
-  else
-    bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam_spinup/INPUT
-  fi
-else
-  if [ "${mem_type}" = "MEAN" ]; then
-    bkpath=${cycle_dir}/ensmean/fcst_fv3lam/INPUT
-  else
-    bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam/INPUT
-  fi
-fi
-# decide background type
-if [ -r "${bkpath}/coupler.res" ]; then
-  BKTYPE=0              # warm start
-else
-  BKTYPE=1              # cold start
-fi
+print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
 #
 #-----------------------------------------------------------------------
 #
-# Update smoke and dust from aerosol data assimilation 
+# copy bufr table
 #
 #-----------------------------------------------------------------------
 #
-if [ "${cycle_type}" = "spinup" ]; then
-  analworkname="_gsi_spinup"
-else
-  analworkname="_gsi"
-fi
+BUFR_TABLE=${FIX_GSI}/pm.bufrtable
+cp $BUFR_TABLE .
+#
+#-----------------------------------------------------------------------
+#
+# check PM CSV files from current cycle to previous 3 hours, 
+# if one file found, get Station ID, Latitude, Longitude, Elevation, 
+# PM25_AQI, PM25_Measured, PM25, PM25_Unit, PM10,PM10_Unit
+#
+#-----------------------------------------------------------------------
+#
+run_pm=false
+AQObs=HourlyAQObs
+obs_file=${AQObs}.dat
+pm_dat=pm.dat
+pm_bufr=pm.bufr
 
-if [[ ${BKTYPE} -eq 0 ]] && [[ "${DO_PM_DA}" = "TRUE" ]]; then  # warm start
-  analworkdir_aero="${cycle_dir}/anal_AERO_${analworkname}"
-  # Assume the GSI analysis files are in current dir
-  if [ "${IO_LAYOUT_Y}" = "1" ]; then
-    ln -snf ${analworkdir_aero}/fv3_tracer  fv3_tracer_sdp
-    ncrename -v smoke,smoke_ori -v dust,dust_ori  fv3_tracer
-    ncks -A  -v smoke,dust        fv3_tracer_sdp  fv3_tracer
+n=0
+checkfile=${OBSPATH_PM}/${AQObs}_${YYYYMMDD}${HH}.dat
+while [[ $n -le 2 ]] ; do
+  if [ -r "${checkfile}" ] ; then
+    print_info_msg "$VERBOSE" "Found ${checkfile}; Use it as observation "
+    break
   else
-    for ii in ${list_iolayout}
-    do
-      iii=`printf %4.4i $ii`
-      ln -snf ${analworkdir_aero}/fv3_tracer.${iii} fv3_tracer_sdp.${iii}
-      ncrename -v smoke,smoke_ori -v dust,dust_ori  fv3_tracer.${iii}
-      ncks -A  -v smoke,dust fv3_tracer_sdp.${iii}  fv3_tracer.${iii}
-    done
+    n=$((n + 1))
+    YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${n} hours ago" )
+    checkfile=${OBSPATH_PM}/${AQObs}_${YYYYMMDDHHmInterv}.dat
+    print_info_msg "$VERBOSE" "Trying this file: ${checkfile}"
   fi
+done
+
+pm_cnt=0
+if [ -r "${checkfile}" ]; then
+   cp ${checkfile} ${obs_file}
+   grep 'UG/M3' ${obs_file} | awk '-F",' '{ printf "%-15s %-15s %-15s %-15s %-15s %-15s %-15s %-15s %-15s %s\n", $1, $5, $6,$7,$17,$21,$27,$28,$33,$34}' > ${pm_dat}
+   pm_cnt=`wc  -l < ${pm_dat}`
+   run_pm=true
+else
+   print_info_msg "$VERBOSE" "Warning: ${obs_file} does not exist!"
 fi
 #
 #-----------------------------------------------------------------------
 #
-# adjust soil T/Q based on analysis increment
+# Build namelist and run executable for pm
+#
+#   analysis_time : process obs used for this analysis date (YYYYMMDDHH)
+#   infile      : PM ASCII  file name
+#   outfile     : PM BUFR file name
+#   cnt         : count of PM observation
 #
 #-----------------------------------------------------------------------
 #
-if [[ ${BKTYPE} -eq 0 ]] && [[ ${ob_type} =~ "conv" ]] && [[ "${DO_SOIL_ADJUST}" = "TRUE" ]]; then  # warm start
-  cd ${bkpath}
-  if [ "${IO_LAYOUT_Y}" = "1" ]; then
-    ln -snf ${fixgriddir}/fv3_grid_spec                fv3_grid_spec
-  else
-    for ii in ${list_iolayout}
-    do
-      iii=`printf %4.4i $ii`
-      ln  -snf ${gridspec_dir}/fv3_grid_spec.${iii}    fv3_grid_spec.${iii}
-    done
-  fi
-
-cat << EOF > namelist.soiltq
+cat << EOF > namelist.pm
  &setup
-  fv3_io_layout_y=${IO_LAYOUT_Y},
-  iyear=${YYYY},
-  imonth=${MM},
-  iday=${DD},
-  ihour=${HH},
-  iminute=0,
+  analysis_time = "${YYYYMMDDHH}",
+  infile="${pm_dat}",
+  outfile="${pm_bufr}",
+  cnt=${pm_cnt},
  /
 EOF
+#
+#-----------------------------------------------------------------------
+#
+# Copy the executable to the run directory.
+#
+#-----------------------------------------------------------------------
+#
+exect="process_pm.exe"
 
-  adjustsoil_exec="${EXECdir}/adjust_soiltq.exe"
-
-  if [ -f $adjustsoil_exec ]; then
-    print_info_msg "$VERBOSE" "
-Copying the adjust soil executable to the run directory..."
-    cp ${adjustsoil_exec} adjust_soiltq.exe
-  else
-    err_exit "\
-The adjust_soiltq.exe specified in ${EXECdir} does not exist.
-Build adjust_soiltq.exe and rerun."
-  fi
-
-  $APRUN ./adjust_soiltq.exe
-  export err=$?; err_chk
+if [ -f ${EXECDIR}/$exect ]; then
+  print_info_msg "$VERBOSE" "
+Copying the PM process executable to the run directory..."
+  cp ${EXECDIR}/${exect} ${WORKDIR}/${exect}
+else
+  err_exit "\
+The executable specified in exect does not exist:
+  exect = \"${EXECDIR}/$exect\"
+Build PM process and rerun."
 fi
 #
 #-----------------------------------------------------------------------
 #
-# update boundary condition absed on analysis results.
-# This will generate a new boundary file at 0-hour
+# Run the process for NASA LaRc cloud  bufr file 
 #
 #-----------------------------------------------------------------------
 #
-if [ ${BKTYPE} -eq 0 ] && [ "${DO_UPDATE_BC}" = "TRUE" ]; then  # warm start
-  cd ${bkpath}
-
-cat << EOF > namelist.updatebc
- &setup
-  fv3_io_layout_y=${IO_LAYOUT_Y},
-  bdy_update_type=1,
-  grid_type_fv3_regional=2,
- /
-EOF
-
-  update_bc_exec="${EXECdir}/update_bc.exe"
-  cp gfs_bndy.tile7.000.nc gfs_bndy.tile7.000.nc_before_update
-
-  if [ -f $update_bc_exec ]; then
-    print_info_msg "$VERBOSE" "
-Copying the update bc executable to the run directory..."
-    cp ${update_bc_exec} update_bc.exe 
-  else
-    err_exit "\
-The update_bc.exe specified in ${EXECdir} does not exist.
-Build update_bc.exe and rerun."
-  fi
-
-  $APRUN ./update_bc.exe
+if [[ "$run_pm" == true ]]; then
+  $APRUN ./${exect}  > stdout_pm 2>&1
   export err=$?; err_chk
+  cp stdout_pm $comout/stdout.t${HH}z.pm
 fi
 #
 #-----------------------------------------------------------------------
@@ -275,7 +238,7 @@ fi
 #
 print_info_msg "
 ========================================================================
-post analysis completed successfully!!!
+PM PROCESS completed successfully!!!
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
