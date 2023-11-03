@@ -80,34 +80,33 @@ ulimit -s unlimited
 ulimit -a
 
 case $MACHINE in
-#
+
 "WCOSS2")
-#
   export FI_OFI_RXM_SAR_LIMIT=3145728
   export OMP_STACKSIZE=500M
   export OMP_NUM_THREADS=1
   ncores=$(( NNODES_RUN_POSTANAL*PPN_RUN_POSTANAL))
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_POSTANAL} --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;
-#
+
 "HERA")
   export OMP_NUM_THREADS=1
   export OMP_STACKSIZE=300M
   APRUN="srun --export=ALL"
   ;;
-#
+
 "ORION")
   export OMP_NUM_THREADS=1
   export OMP_STACKSIZE=1024M
   APRUN="srun --export=ALL"
   ;;
-#
+
 "JET")
   export OMP_NUM_THREADS=2
   export OMP_STACKSIZE=1024M
   APRUN="srun --export=ALL"
   ;;
-#
+
 esac
 #
 #-----------------------------------------------------------------------
@@ -127,7 +126,6 @@ MM=${YYYYMMDDHH:4:2}
 DD=${YYYYMMDDHH:6:2}
 HH=${YYYYMMDDHH:8:2}
 YYYYMMDD=${YYYYMMDDHH:0:8}
-
 #
 #-----------------------------------------------------------------------
 #
@@ -135,7 +133,7 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 # define fix and background path
 #
 #-----------------------------------------------------------------------
-
+#
 cd ${analworkdir}
 
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
@@ -158,17 +156,13 @@ if [ -r "${bkpath}/coupler.res" ]; then
 else
   BKTYPE=1              # cold start
 fi
-
-
 #
 #-----------------------------------------------------------------------
 #
-# Update smoke and dust from aerosal data assimilation 
+# Update smoke and dust from aerosol data assimilation 
 #
 #-----------------------------------------------------------------------
 #
-
-
 if [ "${cycle_type}" = "spinup" ]; then
   analworkname="_gsi_spinup"
 else
@@ -192,7 +186,6 @@ if [[ ${BKTYPE} -eq 0 ]] && [[ "${DO_PM_DA}" = "TRUE" ]]; then  # warm start
     done
   fi
 fi
-
 #
 #-----------------------------------------------------------------------
 #
@@ -238,7 +231,6 @@ Build adjust_soiltq.exe and rerun."
   $APRUN ./adjust_soiltq.exe
   export err=$?; err_chk
 fi
-
 #
 #-----------------------------------------------------------------------
 #
@@ -274,7 +266,6 @@ Build update_bc.exe and rerun."
   $APRUN ./update_bc.exe
   export err=$?; err_chk
 fi
-
 #
 #-----------------------------------------------------------------------
 #
