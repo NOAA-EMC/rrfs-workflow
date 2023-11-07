@@ -3,10 +3,10 @@
 #
 #-----------------------------------------------------------------------
 #
-# This J-JOB script runs the GSI analysis 
+# This J-JOB script runs the preprocess of PM observation
 #
 #-----------------------------------------------------------------------
-
+#
 #
 #-----------------------------------------------------------------------
 #
@@ -15,7 +15,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHDIR/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -49,7 +49,7 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs a analysis with FV3 for 
+This is the J-job script for the task that runs a PM preprocess for 
 the specified cycle.
 ========================================================================"
 #
@@ -58,18 +58,20 @@ the specified cycle.
 # Create the working directory under the cycle directory.
 #
 #-----------------------------------------------------------------------
-# CYCLE_TYPE is to indicate which type of cycle this job for:
-#   spinup: this job is for spin-up cycles
-#   others(prod): this job is for product cycle
 #
-CYCLE_TYPE=${CYCLE_TYPE:-prod}
-observer_nwges_dir=""
-
-if [ ! -d "${SATBIAS_DIR}" ]; then
-  echo "making satbias_dir directory for cycling bias correction files" 
-  mkdir -p ${SATBIAS_DIR}
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  workdir=${CYCLE_DIR}/process_pm_spinup
+  if [ ${DO_ENSEMBLE} == "TRUE" ]; then
+     workdir=${CYCLE_DIR}/process_pm_spinup_enkf
+  fi
+else
+  workdir=${CYCLE_DIR}/process_pm
+  if [ ${DO_ENSEMBLE} == "TRUE" ]; then
+     workdir=${CYCLE_DIR}/process_pm_enkf
+  fi
 fi
-
+rm -fr ${workdir}
+mkdir -p ${workdir}
 #
 #-----------------------------------------------------------------------
 #
@@ -78,30 +80,20 @@ fi
 #-----------------------------------------------------------------------
 #
 if [ ${CYCLE_TYPE} == "spinup" ]; then
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
+  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
 else
-  if [ ${MEM_TYPE} == "MEAN" ]; then
-    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc/ensmean"
-  else
-    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}${SLASH_ENSMEM_SUBDIR}"
-  fi
+  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
 fi
 mkdir -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job
+# Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSdir/exrrfs_run_gsidiag.sh \
-             cycle_dir="${CYCLE_DIR}" \
-             cycle_type="${CYCLE_TYPE}" \
-             gsi_type="${GSI_TYPE}" \
-             mem_type="${MEM_TYPE}" \
-             observer_nwges_dir="${observer_nwges_dir}" \
-             comout="${COMOUT}" \
-             satbias_dir="${SATBIAS_DIR}"
+$SCRIPTSDIR/exrrfs_process_pm.sh \
+  CYCLE_DIR="${CYCLE_DIR}" WORKDIR="${workdir}" comout="${COMOUT}"
 export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
@@ -118,7 +110,8 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/function.
+# Restore the shell options saved at the beginning of this script/func-
+# tion.
 #
 #-----------------------------------------------------------------------
 #

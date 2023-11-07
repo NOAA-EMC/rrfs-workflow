@@ -8,7 +8,7 @@ SST_ROOT="/lfs4/BMC/public/data/grids/ncep/sst/0p083deg/grib2"
 GVF_ROOT="/public/data/sat/ncep/viirs/gvf/grib2"
 FVCOM_DIR="/mnt/lfs4/BMC/public/data/grids/glerl/owaq"
 FVCOM_FILE="tsfc_fv3grid"
-
+OBSPATH_PM="/lfs4/BMC/public/data/airnow/hourly_aqobs"
 BERROR_FN="rrfs_glb_berror.l127y770.f77"
 
 if [[ $MACHINE == "hera" ]] ; then
@@ -22,7 +22,7 @@ if [[ $MACHINE == "hera" ]] ; then
 # observations
   OBSPATH=/scratch2/BMC/public/data/grids/rap/obs
   OBSPATH_NSSLMOSIAC=/scratch2/BMC/public/data/radar/nssl/mrms/conus
-  OBSPATH_PM=/mnt/lfs1/BMC/wrfruc/hwang/rrfs_sd/pm
+  OBSPATH_PM=/scratch2/BMC/public/data/airnow/hourly_aqobs
   LIGHTNING_ROOT=/scratch2/BMC/public/data/lightning
   ENKF_FCST=/scratch1/NCEPDEV/rstprod/com/gfs/prod
 fi
@@ -40,6 +40,7 @@ if [[ $MACHINE == "wcoss2" ]] ; then
   FIRE_RAVE_DIR=/lfs/h2/emc/lam/noscrub/emc.lam/RAVE_rawdata/RAVE_NA
   FVCOM_DIR="/lfs/h1/ops/prod/com/nosofs/v3.5"
   FVCOM_FILE="fvcom"
+  RAPHRR_SOIL_ROOT="/lfs/h1/ops/prod/com"
 fi
 
 # set up for retrospective test:
@@ -98,6 +99,7 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
 
     OBSPATH=/scratch2/BMC/zrtrr/rli/data/obs_rap
     OBSPATH_NSSLMOSIAC=/scratch2/BMC/zrtrr/rli/data/reflectivity
+    OBSPATH_PM=/scratch2/BMC/zrtrr/rli/data/pm
     LIGHTNING_ROOT=/scratch2/BMC/zrtrr/rli/data/lightning
     ENKF_FCST=/scratch2/BMC/zrtrr/rli/data/enkf/atm
     AIRCRAFT_REJECT="/scratch2/BMC/zrtrr/rli/data/amdar_reject_lists"

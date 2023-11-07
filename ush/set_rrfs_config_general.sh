@@ -77,8 +77,9 @@ elif [[ $MACHINE == "wcoss2" ]] ; then
     QUEUE_DEFAULT="devhigh"
     QUEUE_FCST="devmax"
     QUEUE_ANALYSIS="devmax"
-    QUEUE_PRDGEN="devhigh"
     QUEUE_POST="devhigh"
+    QUEUE_PRDGEN="devhigh"
+    QUEUE_GRAPHICS="devhigh"
   fi
 fi
 
@@ -160,6 +161,12 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
       NCORES_RUN_ANAL=200
       PPN_RUN_NONVARCLDANL="10"
       NNODES_RUN_NONVARCLDANL="12"
+
+      NCORES_PER_NODE=40
+      PPN_RUN_GSIDIAG=20
+      START_TIME_PROCSMOKE="00:55:00"
+
+      CLEAN_OLDFCST_HRS="18"
     fi
 
   elif [[ $MACHINE == "hera" ]] ; then
@@ -465,6 +472,7 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then
     WTIME_RUN_FCST="02:30:00"
     WTIME_RUN_FCST_LONG="05:30:00"
     WTIME_MAKE_LBCS="02:30:00"
+    WTIME_RUN_BUFRSND="04:45:00"
 
     CLEAN_OLDPROD_HRS="120"
     CLEAN_OLDLOG_HRS="120"

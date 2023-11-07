@@ -1,0 +1,72 @@
+.------------------------------------------------------------------------------.
+| ------------   USER DEFINITIONS FOR TABLE-A TABLE-B TABLE D   -------------- |
+|------------------------------------------------------------------------------|
+| MNEMONIC | NUMBER | DESCRIPTION                                              |
+|----------|--------|----------------------------------------------------------|
+|          |        |                                                          |
+| AIRNOW   | A62206 | AIRNOW OZONE CONCENTRATION REPORTS                       |
+| ANOWPM   | A62207 | AIRNOW FINE PARTICULATE MATTER REPORTS                   |
+|          |        |                                                          |
+| HEADR1   | 361001 | AIRNOW REPORT HEADER SEQUENCE                            |
+| AOZSEQ   | 361101 | AIRNOW OZONE SEQUENCE                                    |
+| AOZEVN   | 361102 | AIRNOW OZONE EVENT SEQUENCE                              |
+| APMSEQ   | 361105 | AIRNOW PMFINE (FINE PARTICULATE MATTER) SEQUENCE         |
+| APMEVN   | 361106 | AIRNOW PMFINE (FINE PARTICULATE MATTER) EVENT SEQUENCE   |
+|          |        |                                                          |
+| SID      | 001194 | STATION IDENTIFICATION                                   |
+| TPHR     | 004024 | TIME PERIOD OR DISPLACEMENT                              |
+| RPT      | 004214 | REPORTED OBSERVATION TIME                                |
+| DHR      | 004215 | OBSERVATION TIME MINUS CYCLE TIME                        |
+| YOB      | 005002 | LATITUDE                                                 |
+| XOB      | 006002 | LONGITUDE                                                |
+| TSIG     | 008021 | TIME SIGNIFICANCE                                        |
+| QCIND    | 033020 | QUALITY CONTROL INDICATION OF FOLLOWING DATA             |
+| SQN      | 050001 | REPORT SEQUENCE NUMBER                                   |
+| PROCN    | 050003 | PROCESS NUMBER FOR THIS MPI RUN (OBTAINED FROM SCRIPT)   |
+| TYP      | 055007 | PREPBUFR REPORT TYPE                                     |
+| T29      | 055008 | DATA DUMP REPORT TYPE                                    |
+| CAT      | 008193 | PREPBUFR DATA LEVEL CATEGORY                             |
+| TYPO     | 015025 | TYPE OF POLLUTANT                                        |
+| COPO     | 015026 | CONCENTRATION OF POLLUTANT                               |
+| COPOPM   | 015027 | CONCENTRATION OF POLLUTANT (PARTICULATE MATTER DENSITY)  |
+|          |        |                                                          |
+|------------------------------------------------------------------------------|
+| MNEMONIC | SEQUENCE                                                          |
+|----------|-------------------------------------------------------------------|
+|          |                                                                   |
+| AIRNOW   | HEADR1  CAT  TYPO  TSIG  {AOZSEQ}                                 |
+|          |                                                                   |
+| ANOWPM   | HEADR1  CAT  TYPO  TSIG  APMSEQ                                   |
+|          |                                                                   |
+| HEADR1   | SID  XOB  YOB  DHR  TYP  T29  SQN  PROCN  RPT                     |
+|          |                                                                   |
+| AOZSEQ   | [AOZEVN]                                                          |
+|          |                                                                   |
+| AOZEVN   | TPHR  QCIND  COPO                                                 |
+|          |                                                                   |
+| APMSEQ   | [APMEVN]                                                          |
+|          |                                                                   |
+| APMEVN   | TPHR  QCIND  201131  202129  COPOPM  202000  201000               |
+|          |                                                                   |
+|------------------------------------------------------------------------------|
+| MNEMONIC | SCAL | REFERENCE   | BIT | UNITS                    |-------------|
+|----------|------|-------------|-----|--------------------------|-------------|
+|          |      |             |     |                          |-------------|
+| SID      |    0 |           0 |  64 | CCITT IA5                |-------------|
+| TPHR     |    0 |       -2048 |  12 | HOURS                    |-------------|
+| RPT      |    3 |           0 |  16 | HOURS                    |-------------|
+| DHR      |    3 |      -24000 |  16 | HOURS                    |-------------|
+| YOB      |    2 |       -9000 |  15 | DEG N                    |-------------|
+| XOB      |    2 |      -18000 |  16 | DEG E                    |-------------|
+| TSIG     |    0 |           0 |   5 | CODE TABLE               |-------------|
+| QCIND    |    0 |           0 |   3 | CODE TABLE               |-------------|
+| SQN      |    0 |           0 |  19 | NUMERIC                  |-------------|
+| PROCN    |    0 |           0 |   7 | NUMERIC                  |-------------|
+| TYP      |    0 |           0 |   9 | CODE TABLE               |-------------|
+| T29      |    0 |           0 |  10 | CODE TABLE               |-------------|
+| CAT      |    0 |           0 |   6 | CODE TABLE               |-------------|
+| TYPO     |    0 |           0 |   4 | CODE TABLE               |-------------|
+| COPO     |    9 |           0 |   9 | MOLE/MOLE                |-------------|
+| COPOPM   |    9 |           0 |  10 | KG/(M**3)                |-------------|
+|          |      |             |     |                          |-------------|
+`------------------------------------------------------------------------------'
