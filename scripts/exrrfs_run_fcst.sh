@@ -505,7 +505,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-python3 $USHdir/create_model_configure_file.py \
+$USHdir/create_model_configure_file.py \
   --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
   --cdate "${cdate}" \
   --cycle_type "${cycle_type}" \
@@ -528,7 +528,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-python3 $USHdir/create_diag_table_file.py \
+$USHdir/create_diag_table_file.py \
   --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
   --run-dir ${run_dir}
 export err=$?
@@ -545,7 +545,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-python3 $USHdir/create_nems_configure_file.py \
+$USHdir/create_nems_configure_file.py \
   --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
   --run-dir ${run_dir} 
 export err=$?
