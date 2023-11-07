@@ -1,5 +1,5 @@
 MACHINE="wcoss2"
-MACHINETYPE="primary"
+MACHINETYPE="backup"
 version="v0.7.3"
 ACCOUNT="RRFS_DEV"
 #RESERVATION="rrfsdet"
@@ -18,7 +18,7 @@ DO_SPINUP="TRUE"
 DO_SAVE_DA_OUTPUT="TRUE"
 DO_POST_SPINUP="FALSE"
 DO_POST_PROD="FALSE"
-#DO_RETRO="TRUE"
+DO_RETRO="TRUE"
 DO_NONVAR_CLDANAL="TRUE"
 #DO_ENVAR_RADAR_REF="TRUE"
 DO_SMOKE_DUST="FALSE"
@@ -50,8 +50,8 @@ BOUNDARY_PROC_GROUP_NUM="12"
 
 # avaialble retro period:
 # 20210511-20210531; 20210718-20210801
-DATE_FIRST_CYCL="20231101"
-DATE_LAST_CYCL="20231130"
+DATE_FIRST_CYCL="20220720"
+DATE_LAST_CYCL="20220720"
 CYCL_HRS=( "00" "12" )
 CYCL_HRS=( "18" )
 CYCL_HRS_SPINSTART=("06" "18")
@@ -60,8 +60,8 @@ if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   CYCL_HRS_STOCH=("00" "06" "12" "18")
 fi
 #CYCL_HRS_RECENTER=("19")
-CYCLEMONTH="11"
-CYCLEDAY="*"
+CYCLEMONTH="07"
+CYCLEDAY="20"
 
 STARTYEAR=${DATE_FIRST_CYCL:0:4}
 STARTMONTH=${DATE_FIRST_CYCL:4:2}
@@ -74,9 +74,9 @@ ENDHOUR="23"
 
 PREEXISTING_DIR_METHOD="upgrade" # "rename"
 INITIAL_CYCLEDEF="${DATE_FIRST_CYCL}0600 ${DATE_LAST_CYCL}2300 12:00:00"
-BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 06:00:00"
-PROD_CYCLEDEF="00 01-05,07-11,13-17,19-23 ${CYCLEDAY} ${CYCLEMONTH} ${STARTYEAR} *"
-PRODLONG_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 06:00:00"
+BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}0600 ${DATE_LAST_CYCL}2300 06:00:00"
+PROD_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 01:00:00"
+PRODLONG_CYCLEDEF="00 01 01 01 2100 *"
 #RECENTER_CYCLEDEF="00 19 * 10 2022 *"
 #ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}1400 ${DATE_LAST_CYCL}2300 24:00:00"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
@@ -86,7 +86,6 @@ if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   INITIAL_CYCLEDEF="00 01 01 01 2100 *"
   BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 06:00:00"
   PROD_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 06:00:00"
-  PRODLONG_CYCLEDEF="00 01 01 01 2100 *"
   RECENTER_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 06:00:00"
 fi
 if [[ $DO_SPINUP == "TRUE" ]] ; then
@@ -130,6 +129,7 @@ EXTRN_MDL_NAME_ICS="GEFS"
 EXTRN_MDL_NAME_LBCS="GEFS"
 FV3GFS_FILE_FMT_ICS="grib2"
 FV3GFS_FILE_FMT_LBCS="grib2"
+EXTRN_MDL_SAVETYPE="GSL"
 
 envir="para"
 NET="rrfs_a"
@@ -198,15 +198,11 @@ COMINgfs=""
 
 . set_rrfs_config.sh
 
-EXTRN_MDL_SOURCE_BASEDIR_ICS=/lfs/h1/ops/prod/com/gefs/v12.3
-EXTRN_MDL_SOURCE_BASEDIR_LBCS=/lfs/h1/ops/prod/com/gefs/v12.3
-
 STMP="/lfs/f2/t2o/ptmp/emc/stmp/emc.lam/rrfs/${version}"  # Path to directory STMP that mostly contains input files.
 PTMP="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}"  # Path to directory STMP that mostly contains input files.
 NWGES="/lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/rrfs/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   STMP="/lfs/h2/emc/stmp/emc.lam/rrfs/${version}/enfcst"  # Path to directory STMP that mostly contains input files.
-  PTMP="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}"  # Path to directory STMP that mostly contains input files.
   NWGES="/lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/rrfs/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 fi
 ENSCTRL_STMP="/lfs/f2/t2o/ptmp/emc/stmp/emc.lam/rrfs/${version}"  # Path to directory STMP that mostly contains control input files for ensemble recentering.

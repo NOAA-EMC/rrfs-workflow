@@ -229,6 +229,7 @@ Creating links in the FIXLAM directory to the grid files..."
 #
   "grid")
     fns=( \
+    "C*${DOT_OR_USCORE}fvcom_mask.nc" \
     "C*${DOT_OR_USCORE}mosaic.halo${NHW}.nc" \
     "C*${DOT_OR_USCORE}mosaic.halo${NH4}.nc" \
     "C*${DOT_OR_USCORE}mosaic.halo${NH3}.nc" \
