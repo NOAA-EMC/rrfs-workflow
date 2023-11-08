@@ -106,7 +106,7 @@ case $MACHINE in
     ;;
 
   "HERA")
-    APRUN="srun -n ${PE_MEMBER01} --export=ALL --mem=0"
+    APRUN="srun --export=ALL --mem=0"
     ;;
 
   "ORION")
