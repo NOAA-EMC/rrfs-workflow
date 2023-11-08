@@ -130,6 +130,7 @@ def create_model_configure_file(
         "nhours_fcst": FCST_LEN_HRS_thiscycle,
         "fhrot": fhrot,
         "dt_atmos": DT_ATMOS,
+        'atmos_nthreads': nthreads,
         "restart_interval": restart_interval,
         "write_dopost": dot_write_dopost,
         "quilting": dot_quilting_dot,

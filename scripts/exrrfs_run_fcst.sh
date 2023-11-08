@@ -90,7 +90,8 @@ ulimit -a
 case $MACHINE in
 
   "WCOSS2")
-    export OMP_STACKSIZE=1G
+    OMP_NUM_THREADS=${TPP_RUN_FCST}
+    OMP_STACKSIZE=1G
     export MPICH_ABORT_ON_ERROR=1
     export MALLOC_MMAP_MAX_=0
     export MALLOC_TRIM_THRESHOLD_=134217728
@@ -101,7 +102,7 @@ case $MACHINE in
     export MPICH_OFI_STARTUP_CONNECT=1
     export MPICH_OFI_VERBOSE=1
     export MPICH_OFI_NIC_VERBOSE=1
-    APRUN="mpiexec -n ${PE_MEMBER01} -ppn ${PPN_RUN_FCST} --cpu-bind core --depth ${TPP_RUN_FCST}"
+    APRUN="mpiexec -n ${PE_MEMBER01} -ppn ${PPN_RUN_FCST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
     ;;
 
   "HERA")
@@ -128,7 +129,7 @@ esac
 #-----------------------------------------------------------------------
 #
 export KMP_AFFINITY=scatter
-export OMP_NUM_THREADS=${TPP_RUN_FCST:-1}
+export OMP_NUM_THREADS=${OMP_NUM_THREADS:-1}
 export OMP_STACKSIZE=${OMP_STACKSIZE:-1024m}
 #
 #-----------------------------------------------------------------------
