@@ -148,6 +148,12 @@ else
   bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam${cycle_tag}/INPUT
 fi
 
+if [ ${l_cld_uncertainty} == ".true." ]; then
+  # Copy analysis fields into uncertainties - data will be overwritten
+  echo "EXREGIONAL_NONVARCLDANL.SH: copy tracer file into uncertainty file "
+  cp ${bkpath}/fv_tracer.res.tile1.nc  ${bkpath}/fv_tracer.unc.tile1.nc
+fi
+
 n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
@@ -159,6 +165,9 @@ if [ -r "${bkpath}/coupler.res" ]; then # Use background from warm restart
   if [ "${IO_LAYOUT_Y}" == "1" ]; then
     ln -s ${bkpath}/fv_core.res.tile1.nc         fv3_dynvars
     ln -s ${bkpath}/fv_tracer.res.tile1.nc       fv3_tracer
+    if [ ${l_cld_uncertainty} == ".true." ]; then
+      ln -s ${bkpath}/fv_tracer.unc.tile1.nc       fv3_tracer_unc
+    fi
     ln -s ${bkpath}/sfc_data.nc                  fv3_sfcdata
     ln -s ${bkpath}/phy_data.nc                  fv3_phydata
   else
@@ -167,6 +176,9 @@ if [ -r "${bkpath}/coupler.res" ]; then # Use background from warm restart
       iii=$(printf %4.4i $ii)
       ln -s ${bkpath}/fv_core.res.tile1.nc.${iii}         fv3_dynvars.${iii}
       ln -s ${bkpath}/fv_tracer.res.tile1.nc.${iii}       fv3_tracer.${iii}
+      if [ ${l_cld_uncertainty} == ".true." ]; then
+        ln -s ${bkpath}/fv_tracer.unc.tile1.nc.${iii}       fv3_tracer_unc.${iii}
+      fi
       ln -s ${bkpath}/sfc_data.nc.${iii}                  fv3_sfcdata.${iii}
       ln -s ${bkpath}/phy_data.nc.${iii}                  fv3_phydata.${iii}
       ln -s ${gridspec_dir}/fv3_grid_spec.${iii}          fv3_grid_spec.${iii}
@@ -297,6 +309,7 @@ cat << EOF > gsiparm.anl
    i_T_Q_adjust=${i_T_Q_adjust},
    l_rtma3d=${l_rtma3d},
    i_precip_vertical_check=${i_precip_vertical_check},
+   l_cld_uncertainty=${l_cld_uncertainty},
  /
 EOF
 

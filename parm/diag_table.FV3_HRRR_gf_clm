@@ -131,6 +131,7 @@
 "gfs_dyn",   "maxvort01",     "maxvort01",   "fv3_history",           "all",  .false.,  "none", 2
 "gfs_dyn",   "maxvort02",     "maxvort02",   "fv3_history",           "all",  .false.,  "none", 2
 "gfs_dyn",   "maxvorthy1",    "maxvorthy1",  "fv3_history",           "all",  .false.,  "none", 2
+"gfs_dyn",   "hailcast_dhail_max", "hailcast_dhail", "fv3_history2d", "all",  .false.,  "none", 2
 
 "gfs_phys",  "ALBDO_ave",     "albdo_ave",   "fv3_history2d",         "all",  .false.,  "none",  2
 #"gfs_phys",  "cnvprcp_ave",   "cprat_ave",   "fv3_history2d",         "all",  .false.,  "none",  2
