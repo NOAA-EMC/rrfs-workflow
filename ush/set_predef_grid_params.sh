@@ -871,13 +871,6 @@ case ${PREDEF_GRID_NAME} in
     WRTCMP_dlat="0.025"
   fi
   ;;
-
-*)
-  if [ "$QUILTING" = "TRUE" ]; then
-    WRTCMP_write_groups="${WRTCMP_write_groups:-1}"
-    WRTCMP_write_tasks_per_group="${WRTCMP_write_tasks_per_group:-20}"
-  fi
-  ;;
 #
 #-----------------------------------------------------------------------
 #
@@ -913,6 +906,13 @@ case ${PREDEF_GRID_NAME} in
     WRTCMP_lat_upr_rght="2.5"
     WRTCMP_dlon="0.0125"
     WRTCMP_dlat="0.0125"
+  fi
+  ;;
+
+*)
+  if [ "$QUILTING" = "TRUE" ]; then
+    WRTCMP_write_groups="${WRTCMP_write_groups:-1}"
+    WRTCMP_write_tasks_per_group="${WRTCMP_write_tasks_per_group:-20}"
   fi
   ;;
 
