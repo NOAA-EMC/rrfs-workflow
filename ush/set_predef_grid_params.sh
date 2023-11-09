@@ -878,7 +878,7 @@ case ${PREDEF_GRID_NAME} in
 #
 #-----------------------------------------------------------------------
 #
-"RRFS_firewx_1.5km")
+"RRFS_FIREWX_1.5km")
 
   GRID_GEN_METHOD="ESGgrid"
   ESGgrid_LON_CTR="${CENTLON:--106.0}"
