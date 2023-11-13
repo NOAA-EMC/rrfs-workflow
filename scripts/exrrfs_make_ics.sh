@@ -406,7 +406,7 @@ case "${EXTRN_MDL_NAME_ICS}" in
     tracers="[\"sphum\",\"liq_wat\",\"o3mr\",\"ice_wat\",\"rainwat\",\"snowwat\",\"graupel\"]"
     external_model="FV3GFS"
     input_type="gaussian_netcdf"
-    convert_nst=True
+    convert_nst=False
     fn_atm="${EXTRN_MDL_FNS[0]}"
     fn_sfc="${EXTRN_MDL_FNS[1]}"
   fi
@@ -415,7 +415,7 @@ case "${EXTRN_MDL_NAME_ICS}" in
   vgfrc_from_climo=True
   minmax_vgfrc_from_climo=True
   lai_from_climo=True
-  tg3_from_soil=False
+  tg3_from_soil=True
   ;;
 
 "GDASENKF")

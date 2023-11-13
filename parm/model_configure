@@ -9,9 +9,14 @@ fhrot:                   {{ fhrot }}
 RUN_CONTINUE:            .false.
 ENS_SPS:                 .false.
 dt_atmos:                {{ dt_atmos }}
+cpl:                     .false.
 calendar:                'julian'
 memuse_verbose:          .false.
+atmos_nthreads:          {{ atmos_nthreads }}
+use_hyper_thread:        .false.
+debug_affinity:          .true.
 restart_interval:        {{ restart_interval }}
+use_hyper_thread:        .false.
 output_1st_tstep_rst:    .false.
 write_dopost:            {{ write_dopost }}
 ideflate:                {{ ideflate }}
@@ -74,16 +79,16 @@ output_grid:  '{{ output_grid }}'
 # dx: Grid cell size in x direction (meters).
 # dy: Grid cell size in y direction (meters).
 #
-  {%- elif output_grid == "regional_latlon" %}
-# cen_lon: Longitude of center of grid (degrees).
-# cen_lat: Latitude of center of grid (degrees).
-# lon1: Longitude of center of lower-left (southwest) grid cell (degrees).
-# lat1: Latitude of center of lower-left (southwest) grid cell (degrees).
-# lon2: Longitude of center of upper-right (northeast) grid cell (degrees).
-# lat2: Latitude of center of upper-right (northeast) grid cell (degrees).
-# dlon: Longitudinal grid size (degrees).
-# dlat: Latitudinal grid size (degrees).
-#
+cen_lon:  {{ cen_lon }}
+cen_lat:  {{ cen_lat }}
+stdlat1:  {{ stdlat1 }}
+stdlat2:  {{ stdlat2 }}
+nx:       {{ nx }}
+ny:       {{ ny }}
+lon1:     {{ lon1 }}
+lat1:     {{ lat1 }}
+dx:       {{ dx }}
+dy:       {{ dy }}
   {%- elif output_grid == "rotated_latlon" %}
 # cen_lon: Longitude of center of grid, expressed in the NON-ROTATED latlon coordinate 
 #          system (degrees).  This is also the longitude of the point at which the 
@@ -106,21 +111,22 @@ output_grid:  '{{ output_grid }}'
 # dlon: Longitudinal grid size in the ROTATED latlon coordinate system (degrees).
 # dlat: Latitudinal grid size in the ROTATED latlon coordinate system (degrees).
 #
-  {%- endif %}
-  {%- if output_grid == "lambert_conformal" %}
 cen_lon:  {{ cen_lon }}
 cen_lat:  {{ cen_lat }}
-stdlat1:  {{ stdlat1 }}
-stdlat2:  {{ stdlat2 }}
-nx:       {{ nx }}
-ny:       {{ ny }}
-lon1:     {{ lon1 }}
-lat1:     {{ lat1 }}
-dx:       {{ dx }}
-dy:       {{ dy }}
-  {%- elif (output_grid == "regional_latlon") or (output_grid == "rotated_latlon") %}
-cen_lon:  {{ cen_lon }}
-cen_lat:  {{ cen_lat }}
+lon1:     {{ lon1 }}            
+lat1:     {{ lat1 }}            
+lon2:     {{ lon2 }}            
+lat2:     {{ lat2 }}            
+dlon:     {{ dlon }}
+dlat:     {{ dlat }}
+  {%- elif output_grid == "regional_latlon" %}
+# lon1: Longitude of center of lower-left (southwest) grid cell (degrees).
+# lat1: Latitude of center of lower-left (southwest) grid cell (degrees).
+# lon2: Longitude of center of upper-right (northeast) grid cell (degrees).
+# lat2: Latitude of center of upper-right (northeast) grid cell (degrees).
+# dlon: Longitudinal grid size (degrees).
+# dlat: Latitudinal grid size (degrees).
+#
 lon1:     {{ lon1 }}            
 lat1:     {{ lat1 }}            
 lon2:     {{ lon2 }}            

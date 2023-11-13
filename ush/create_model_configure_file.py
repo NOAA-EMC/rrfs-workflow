@@ -130,6 +130,7 @@ def create_model_configure_file(
         "nhours_fcst": FCST_LEN_HRS_thiscycle,
         "fhrot": fhrot,
         "dt_atmos": DT_ATMOS,
+        'atmos_nthreads': nthreads,
         "restart_interval": restart_interval,
         "write_dopost": dot_write_dopost,
         "quilting": dot_quilting_dot,
@@ -152,8 +153,6 @@ def create_model_configure_file(
             {
                 "write_groups": WRTCMP_write_groups,
                 "write_tasks_per_group": WRTCMP_write_tasks_per_group,
-                "cen_lon": WRTCMP_cen_lon,
-                "cen_lat": WRTCMP_cen_lat,
                 "lon1": WRTCMP_lon_lwr_left,
                 "lat1": WRTCMP_lat_lwr_left,
             }
@@ -162,6 +161,8 @@ def create_model_configure_file(
         if WRTCMP_output_grid == "lambert_conformal":
             settings.update(
                 {
+                    "cen_lon": WRTCMP_cen_lon,
+                    "cen_lat": WRTCMP_cen_lat,
                     "stdlat1": WRTCMP_stdlat1,
                     "stdlat2": WRTCMP_stdlat2,
                     "nx": WRTCMP_nx,
@@ -174,16 +175,32 @@ def create_model_configure_file(
                     "dlat": "",
                 }
             )
-        elif (
-            WRTCMP_output_grid == "regional_latlon"
-            or WRTCMP_output_grid == "rotated_latlon"
-        ):
+        elif WRTCMP_output_grid == "rotated_latlon":
+            settings.update(
+                {
+                    "cen_lon": WRTCMP_cen_lon,
+                    "cen_lat": WRTCMP_cen_lat,
+                    "lon2": WRTCMP_lon_upr_rght,
+                    "lat2": WRTCMP_lat_upr_rght,
+                    "dlon": WRTCMP_dlon,
+                    "dlat": WRTCMP_dlat,
+                    "stdlat1": "",
+                    "stdlat2": "",
+                    "nx": "",
+                    "ny": "",
+                    "dx": "",
+                    "dy": "",
+                }
+            )
+        elif WRTCMP_output_grid == "regional_latlon":
             settings.update(
                 {
                     "lon2": WRTCMP_lon_upr_rght,
                     "lat2": WRTCMP_lat_upr_rght,
                     "dlon": WRTCMP_dlon,
                     "dlat": WRTCMP_dlat,
+                    "cen_lon": "",
+                    "cen_lat": "",
                     "stdlat1": "",
                     "stdlat2": "",
                     "nx": "",
