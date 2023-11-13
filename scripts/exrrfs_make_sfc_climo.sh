@@ -102,15 +102,27 @@ cd $workdir
 #
 #-----------------------------------------------------------------------
 #
+if [ "${PREDEF_GRID_NAME}" = "RRFS_FIREWX_1.5km" ]; then
+  input_substrate_temperature_file="${SFC_CLIMO_INPUT_DIR}/substrate_temperature.gfs.0.5.nc"
+  input_soil_type_file="${SFC_CLIMO_INPUT_DIR}/soil_type.bnu.v2.30s.nc"
+  input_vegetation_type_file="${SFC_CLIMO_INPUT_DIR}/vegetation_type.viirs.v2.igbp.30s.nc"
+  vegsoilt_frac=.true.
+else
+  input_substrate_temperature_file="${SFC_CLIMO_INPUT_DIR}/substrate_temperature.2.6x1.5.nc"
+  input_soil_type_file="${SFC_CLIMO_INPUT_DIR}/soil_type.statsgo.0.05.nc"
+  input_vegetation_type_file="${SFC_CLIMO_INPUT_DIR}/vegetation_type.igbp.0.05.nc"
+  vegsoilt_frac=.false.
+fi
+
 cat << EOF > ./fort.41
 &config
 input_facsf_file="${SFC_CLIMO_INPUT_DIR}/facsf.1.0.nc"
-input_substrate_temperature_file="${SFC_CLIMO_INPUT_DIR}/substrate_temperature.gfs.0.5.nc"
+input_substrate_temperature_file="${input_substrate_temperature_file}"
 input_maximum_snow_albedo_file="${SFC_CLIMO_INPUT_DIR}/maximum_snow_albedo.0.05.nc"
 input_snowfree_albedo_file="${SFC_CLIMO_INPUT_DIR}/snowfree_albedo.4comp.0.05.nc"
 input_slope_type_file="${SFC_CLIMO_INPUT_DIR}/slope_type.1.0.nc"
-input_soil_type_file="${SFC_CLIMO_INPUT_DIR}/soil_type.bnu.v2.30s.nc"
-input_vegetation_type_file="${SFC_CLIMO_INPUT_DIR}/vegetation_type.viirs.v2.igbp.30s.nc"
+input_soil_type_file="${input_soil_type_file}"
+input_vegetation_type_file="${input_vegetation_type_file}"
 input_vegetation_greenness_file="${SFC_CLIMO_INPUT_DIR}/vegetation_greenness.0.144.nc"
 mosaic_file_mdl="${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc"
 orog_dir_mdl="${FIXLAM}"
@@ -119,7 +131,7 @@ halo=${NH4}
 maximum_snow_albedo_method="bilinear"
 snowfree_albedo_method="bilinear"
 vegetation_greenness_method="bilinear"
-fract_vegsoil_type=.true.
+fract_vegsoil_type=${vegsoilt_frac}
 /
 EOF
 #

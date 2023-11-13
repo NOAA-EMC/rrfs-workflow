@@ -280,13 +280,13 @@ mv "${raw_orog_fp_orig}" "${raw_orog_fp}"
 #-----------------------------------------------------------------------
 #
 # Call the code to generate the two orography statistics files (large-
-# and small-scale) needed for the drag suite in the FV3_HRRR physics
-# suite.
+# and small-scale) needed for the drag suite.  Do not generate these
+# files for the RRFS_FIREWX_1.5km grid.
 #
 #-----------------------------------------------------------------------
 #
 suites=( "FV3_RAP" "FV3_HRRR" "FV3_HRRR_gf" "FV3_GFS_v15_thompson_mynn_lam3km" "FV3_GFS_v17_p8" )
-if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" ]] ; then
+if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" && ${PREDEF_GRID_NAME} != "RRFS_FIREWX_1.5km" ]] ; then
   DATA="${DATA:-${OROG_DIR}/temp_orog_data}"
   mkdir -p ${DATA}
   cd ${DATA}
