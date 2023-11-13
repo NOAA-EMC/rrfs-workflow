@@ -770,7 +770,7 @@ fi
 # system.
 #-----------------------------------------------------------------------
 #
-if [[ ($cdate_crnt_fhr -lt ${FIRST_BLENDED_CYCLE_DATE} && $DO_ENS_BLENDING = "TRUE") || $DO_ENS_BLENDING = "FALSE" ]]; then
+if [[ $DO_ENS_BLENDING = "FALSE" || ($DO_ENS_BLENDING = "TRUE" && $cdate_crnt_fhr -lt ${FIRST_BLENDED_CYCLE_DATE}) ]]; then
   mv out.atm.tile${TILE_RGNL}.nc \
         ${ics_dir}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
 

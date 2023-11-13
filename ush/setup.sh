@@ -787,7 +787,7 @@ SORCdir="$HOMErrfs/sorc"
 PARMdir="$HOMErrfs/parm"
 MODULES_DIR="$HOMErrfs/modulefiles"
 EXECdir="$HOMErrfs/exec"
-LIB64dir="${SR_WX_APP_TOP_DIR}/lib64"
+LIB64dir="$HOMErrfs/sorc/build/lib64"
 
 FIXgsm=${FIXgsm:-"$HOMErrfs/fix/am"}
 FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"$HOMErrfs/fix/lam"}
