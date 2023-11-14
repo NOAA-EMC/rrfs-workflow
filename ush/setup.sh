@@ -1101,6 +1101,10 @@ fi
 #-----------------------------------------------------------------------
 #
 GWD_HRRRsuite_DIR=""
+#
+# Do not use GWD with the fire weather grid
+#
+if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
 if [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ] || \
    [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR_gf" ]  || \
    [ "${CCPP_PHYS_SUITE}" = "FV3_RAP" ]  || \
@@ -1168,6 +1172,7 @@ drag related orography files for the FV3_HRRR/FV3_RAP suites is empty:
     fi      
   fi
 
+fi
 fi
 #
 #-----------------------------------------------------------------------
@@ -1576,11 +1581,17 @@ LOAD_MODULES_RUN_TASK_FP="$USHdir/load_modules_run_task.sh"
 #----------------------------------------------------------------------
 #
 nco_fix_dir="${FIXLAM_NCO_BASEDIR}/${PREDEF_GRID_NAME}"
-if [ ! -d "${nco_fix_dir}" ]; then
-  print_err_msg_exit "\
-The directory (nco_fix_dir) that should contain the pregenerated grid,
-orography, and surface climatology files does not exist:
-  nco_fix_dir = \"${nco_fix_dir}\""
+#
+# The grid, orography, and surface climatology files are not pregenerated
+# for the fire weather grid.  Do not produce an error when using this grid.
+#
+if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
+  if [ ! -d "${nco_fix_dir}" ]; then
+    print_err_msg_exit "\
+  The directory (nco_fix_dir) that should contain the pregenerated grid,
+  orography, and surface climatology files does not exist:
+    nco_fix_dir = \"${nco_fix_dir}\""
+  fi
 fi
 
 #

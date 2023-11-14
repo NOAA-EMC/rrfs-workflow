@@ -895,6 +895,43 @@ case ${PREDEF_GRID_NAME} in
     fi
   fi
   ;;
+#
+#-----------------------------------------------------------------------
+#
+# The RRFS Fire Weather domain with ~1.5km cells.
+#
+#-----------------------------------------------------------------------
+#
+"RRFS_FIREWX_1.5km")
+
+  GRID_GEN_METHOD="ESGgrid"
+  ESGgrid_LON_CTR="${CENTLON:--106.0}"
+  ESGgrid_LAT_CTR="${CENTLAT:-39.2}"
+  ESGgrid_DELX="1501.18"
+  ESGgrid_DELY="1501.18"
+  ESGgrid_NX=350
+  ESGgrid_NY=350
+  ESGgrid_PAZI="0.0"
+  ESGgrid_WIDE_HALO_WIDTH="6"
+  DT_ATMOS="${DT_ATMOS:-12}"
+  LAYOUT_X="${LAYOUT_X:-14}"
+  LAYOUT_Y="${LAYOUT_Y:-14}"
+  BLOCKSIZE="${BLOCKSIZE:-32}"
+
+  if [ "$QUILTING" = "TRUE" ]; then
+    WRTCMP_write_groups="2"
+    WRTCMP_write_tasks_per_group="$(( 2*LAYOUT_Y ))"
+    WRTCMP_output_grid="rotated_latlon"
+    WRTCMP_cen_lon="${CENTLON:--106.0}"
+    WRTCMP_cen_lat="${CENTLAT:-39.2}"
+    WRTCMP_lon_lwr_left="-2.5"
+    WRTCMP_lat_lwr_left="-2.5"
+    WRTCMP_lon_upr_rght="2.5"
+    WRTCMP_lat_upr_rght="2.5"
+    WRTCMP_dlon="0.0125"
+    WRTCMP_dlat="0.0125"
+  fi
+  ;;
 
 *)
   if [ "$QUILTING" = "TRUE" ]; then
