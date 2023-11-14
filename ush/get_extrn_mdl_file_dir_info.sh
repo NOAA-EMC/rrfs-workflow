@@ -460,6 +460,11 @@ case "${anl_or_fcst}" in
       fns_in_arcv=( "${fns[@]/%/$suffix}" )
       ;;
 
+    "RRFS")
+      fns_on_disk=( "rrfs.t${hh}z.prslev.f0${fcst_hh}.conus_3km.grib2" )
+      fns_in_arcv=( "rrfs.t${hh}z.prslev.f0${fcst_hh}.conus_3km.grib2" )
+      ;;
+
     *)
       print_err_msg_exit "\
 The external model file names (either on disk or in archive files) have 
@@ -593,6 +598,15 @@ and analysis or forecast (anl_or_fcst):
       prefix="nam.t${hh}z.bgrdsf"
       fns=( "${fcst_hhh[@]/#/$prefix}" )
       suffix=""
+      fns_on_disk=( "${fns[@]/%/$suffix}" )
+      fns_in_arcv=( "${fns[@]/%/$suffix}" )
+      ;;
+
+    "RRFS")
+      fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
+      prefix="rrfs.t${hh}z.prslev.f"
+      fns=( "${fcst_hhh[@]/#/$prefix}" )
+      suffix=".conus_3km.grib2"
       fns_on_disk=( "${fns[@]/%/$suffix}" )
       fns_in_arcv=( "${fns[@]/%/$suffix}" )
       ;;
@@ -828,6 +842,30 @@ has not been specified for this external model and machine combination:
     esac
     ;;
 
+  "RRFS")
+    case "$MACHINE" in
+    "WCOSS2")
+      sysdir="$sysbasedir"
+      ;;
+    "HERA")
+      sysdir="$sysbasedir"
+      ;;
+    "ORION")
+      sysdir="$sysbasedir"
+      ;;
+    "JET")
+      sysdir="$sysbasedir"
+      ;;
+    *)
+      print_err_msg_exit "\
+The system directory in which to look for external model output files
+has not been specified for this external model and machine combination:
+  extrn_mdl_name = \"${extrn_mdl_name}\"
+  MACHINE = \"$MACHINE\""
+      ;;
+    esac
+    ;;
+
 
   *)
     print_err_msg_exit "\
@@ -1006,6 +1044,14 @@ has not been specified for this external model:
      arcv_fps="$arcv_dir/$arcv_fns"
      arcvrel_dir=""
      ;;
+
+  "RRFS")
+    arcv_dir=""
+    arcv_fmt=""
+    arcv_fns=""
+    arcv_fps=""
+    arcvrel_dir=""
+    ;;
 
   *)
     print_err_msg_exit "\
