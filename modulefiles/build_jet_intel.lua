@@ -50,7 +50,7 @@ load(pathJoin("nco", os.getenv("nco_ver") or "4.9.3"))
 --load(pathJoin("prod_util", os.getenv("prod_util_ver") or "2.0.14"))
 load(pathJoin("wgrib2", os.getenv("wgrib2_ver") or "2.0.8"))
 
-prepend_path("MODULEPATH", "/lfs4/BMC/nrtrr/FIX_EXEC_MODULE")
+prepend_path("MODULEPATH", "/lfs4/BMC/nrtrr/FIX_EXEC_MODULE/lua")
 load("prod_util/2.0.15")
 
 prepend_path("MODULEPATH", "/lfs4/BMC/ifi/modulefiles")
