@@ -367,48 +367,51 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&MAKE_LBCS_TN;" cycledefs="forecast" maxtries="{{ maxtries_make_lbcs }}">
+  <metatask name="&MAKE_LBCS_TN;">
+    <var name="bcgrp">{% for h in range(0, boundary_proc_group_num) %}{{ " %02d" % h }}{% endfor %}</var>
+    <task name="&MAKE_LBCS_TN;_#bcgrp#" cycledefs="forecast" maxtries="{{ maxtries_make_lbcs }}">
 
-    &RSRV_DEFAULT;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_LBCS_TN;" "&JOBSdir;/JRRFS_MAKE_LBCS"</command>
-    &RESOURCES_MAKE_LBCS;
-    <walltime>{{ wtime_make_lbcs }}</walltime>
-    &NATIVE_ALL;
-    &NODESIZE_ALL;
-    <jobname>&MAKE_LBCS_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&MAKE_LBCS_TN;_@Y@m@d@H.log</cyclestr></join>
+      &RSRV_DEFAULT;
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_LBCS_TN;" "&JOBSdir;/JRRFS_MAKE_LBCS"</command>
+      &RESOURCES_MAKE_LBCS;
+      <walltime>{{ wtime_make_lbcs }}</walltime>
+      &NATIVE_ALL;
+      &NODESIZE_ALL;
+      <jobname>&MAKE_LBCS_TN;_#bcgrp#</jobname>
+      <join><cyclestr>&LOGDIR;/&MAKE_LBCS_TN;_@Y@m@d@H_#bcgrp#.log</cyclestr></join>
 
-    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>bcgrp</name><value>0</value></envar>
-    <envar><name>bcgrpnum</name><value>{{ boundary_proc_group_num }}</value></envar>
-    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+      <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+      <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+      <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>bcgrp</name><value>#bcgrp#</value></envar>
+      <envar><name>bcgrpnum</name><value>{{ boundary_proc_group_num }}</value></envar>
+      <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
 
-    <dependency>
-      <and>
-        <taskdep task="&GET_EXTRN_LBCS_TN;"/>
-        <or>
-<!--          <taskdep task="&MAKE_GRID_TN;"/> -->
-          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
-          <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
-        </or>
-        <or>
-<!--          <taskdep task="&MAKE_OROG_TN;"/> -->
-          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_orog_task_complete.txt</datadep>
-          <streq><left>&RUN_TASK_MAKE_OROG;</left><right>FALSE</right></streq>
-        </or>
-        <or>
-<!--          <taskdep task="&MAKE_SFC_CLIMO_TN;"/> -->
-          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_sfc_climo_task_complete.txt</datadep>
-          <streq><left>&RUN_TASK_MAKE_SFC_CLIMO;</left><right>FALSE</right></streq>
-        </or>
-      </and>
-    </dependency>
+      <dependency>
+        <and>
+          <taskdep task="&GET_EXTRN_LBCS_TN;"/>
+          <or>
+<!--            <taskdep task="&MAKE_GRID_TN;"/> -->
+            <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
+            <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
+          </or>
+          <or>
+<!--            <taskdep task="&MAKE_OROG_TN;"/> -->
+            <datadep age="00:00:00:05">&LOG_BASEDIR;/make_orog_task_complete.txt</datadep>
+            <streq><left>&RUN_TASK_MAKE_OROG;</left><right>FALSE</right></streq>
+          </or>
+          <or>
+<!--            <taskdep task="&MAKE_SFC_CLIMO_TN;"/> -->
+            <datadep age="00:00:00:05">&LOG_BASEDIR;/make_sfc_climo_task_complete.txt</datadep>
+            <streq><left>&RUN_TASK_MAKE_SFC_CLIMO;</left><right>FALSE</right></streq>
+          </or>
+        </and>
+      </dependency>
 
-  </task>
+    </task>
+  </metatask>
 <!--
 ************************************************************************
 ************************************************************************
@@ -436,7 +439,7 @@ MODULES_RUN_TASK_FP script.
     <dependency>
       <and>
         <taskdep task="&MAKE_ICS_TN;"/>
-        <taskdep task="&MAKE_LBCS_TN;"/>
+        <metataskdep metatask="&MAKE_LBCS_TN;"/>
       </and>
     </dependency>
 

@@ -155,6 +155,13 @@ else
     esac
     ;;
 
+  "RRFS")
+    case "$MACHINE" in
+    "WCOSS2")
+      EXTRN_MDL_SYSBASEDIR_ICS="/lfs/h2/emc/ptmp/emc.lam/rrfs/na/prod"
+    esac
+    ;;
+
   esac
 
 fi
@@ -205,6 +212,9 @@ if [[ -z ${EXTRN_MDL_LBCS_OFFSET_HRS} ]]; then
       EXTRN_MDL_LBCS_OFFSET_HRS="3"
       ;;
     "HRRR")
+      EXTRN_MDL_LBCS_OFFSET_HRS="0"
+      ;;
+    "RRFS")
       EXTRN_MDL_LBCS_OFFSET_HRS="0"
       ;;
   esac
@@ -315,6 +325,14 @@ else
       ;;
     "JET")
       EXTRN_MDL_SYSBASEDIR_LBCS="/public/data/grids/hrrr/conus/wrfnat/grib2"
+      ;;
+    esac
+    ;;
+
+  "RRFS")
+    case $MACHINE in
+    "WCOSS2")
+      EXTRN_MDL_SYSBASEDIR_LBCS="/lfs/h2/emc/ptmp/emc.lam/rrfs/na/prod"
       ;;
     esac
     ;;
