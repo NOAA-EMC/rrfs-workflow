@@ -89,17 +89,17 @@ case $MACHINE in
 "HERA")
   export OMP_NUM_THREADS=1
 #  export OMP_STACKSIZE=300M
-  APRUN="srun"
+  APRUN="srun --export=ALL"
   ;;
 #
 "ORION")
   export OMP_NUM_THREADS=1
   export OMP_STACKSIZE=1024M
-  APRUN="srun"
+  APRUN="srun --export=ALL"
   ;;
 #
 "JET")
-  APRUN="srun"
+  APRUN="srun --export=ALL"
   ;;
 #
 esac

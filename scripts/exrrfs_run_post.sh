@@ -225,7 +225,7 @@ cp ${post_params_fp} ./params_grib2_tbl_new
 if [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km_HRRRIC" ]; then
   grid_specs_rrfs="lambert:-97.5:38.500000 237.826355:1746:3000 21.885885:1014:3000"
 elif [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km" ]; then
-  grid_specs_rrfs="lambert:-97.5:38.500000 237.280472:1799:3000 21.138123:1059:3000"
+  grid_specs_rrfs="lambert:-97.5:38.500000 237.280472:1799:3000 21.138115:1059:3000"
 elif [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ]; then
   grid_specs_rrfs="rot-ll:247.000000:-35.000000:0.000000 299.000000:4881:0.025000 -37.0000000:2961:0.025000"
 elif [ ${PREDEF_GRID_NAME} = "GSD_RAP13km" ]; then

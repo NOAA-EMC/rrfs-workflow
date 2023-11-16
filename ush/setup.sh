@@ -771,6 +771,9 @@ NUM_CYCLES="${#ALL_CDATES[@]}"
 # EXECdir:
 # Directory containing various executable files.
 #
+# LIB64dir:
+# Directory containing various library files.
+#
 # UFS_WTHR_MDL_DIR:
 # Directory in which the UFS Weather Model application is located.
 #
@@ -784,6 +787,7 @@ SORCdir="$HOMErrfs/sorc"
 PARMdir="$HOMErrfs/parm"
 MODULES_DIR="$HOMErrfs/modulefiles"
 EXECdir="$HOMErrfs/exec"
+LIB64dir="$HOMErrfs/sorc/build/lib64"
 
 FIXgsm=${FIXgsm:-"$HOMErrfs/fix/am"}
 FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"$HOMErrfs/fix/lam"}
@@ -2392,6 +2396,7 @@ SORCdir="$SORCdir"
 PARMdir="$PARMdir"
 MODULES_DIR="${MODULES_DIR}"
 EXECdir="$EXECdir"
+LIB64dir="$LIB64dir"
 FIXam="$FIXam"
 FIXLAM="$FIXLAM"
 FIXgsm="$FIXgsm"

@@ -87,6 +87,9 @@ else
 
   "GDASENKF")
      case "$MACHINE" in
+     "WCOSS2")
+       EXTRN_MDL_SYSBASEDIR_ICS="/lfs/h1/ops/prod/com/gfs/v16.3"
+       ;;
      "HERA")
        EXTRN_MDL_SYSBASEDIR_ICS="/scratch1/NCEPDEV/rstprod/com/gfs/prod"
        ;;

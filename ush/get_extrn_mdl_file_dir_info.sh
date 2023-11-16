@@ -406,7 +406,10 @@ case "${anl_or_fcst}" in
       ;;
 
     "GDASENKF")
-      if [ "${MACHINE}" = "HERA" ] ; then
+      if [ "${MACHINE}" = "WCOSS2" ] ; then
+        fns_on_disk=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
+        fns_in_arcv=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
+      elif [ "${MACHINE}" = "HERA" ] ; then
         fns_on_disk=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
         fns_in_arcv=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
       elif [ "${MACHINE}" = "JET" ] ; then
@@ -706,6 +709,9 @@ has not been specified for this external model and machine combination:
 
   "GDASENKF")
     case "$MACHINE" in
+    "WCOSS2")
+       sysdir="$sysbasedir/enkfgdas.${yyyymmdd}/${hh}/atmos/${GDASENKF_INPUT_SUBDIR}"
+       ;;
     "HERA")
        sysdir="$sysbasedir/enkfgdas.${yyyymmdd}/${hh}/atmos/${GDASENKF_INPUT_SUBDIR}"
        ;;
