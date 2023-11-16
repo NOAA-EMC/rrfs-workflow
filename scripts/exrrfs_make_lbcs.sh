@@ -146,7 +146,8 @@ case "${CCPP_PHYS_SUITE}" in
     if [ "${EXTRN_MDL_NAME_LBCS}" = "RAP" ] || \
        [ "${EXTRN_MDL_NAME_LBCS}" = "HRRR" ]; then
       varmap_file="GSDphys_var_map.txt"
-    elif [ "${EXTRN_MDL_NAME_LBCS}" = "NAM" ] || \
+    elif [ "${EXTRN_MDL_NAME_LBCS}" = "RRFS" ] || \
+         [ "${EXTRN_MDL_NAME_LBCS}" = "NAM" ] || \
          [ "${EXTRN_MDL_NAME_LBCS}" = "FV3GFS" ] || \
          [ "${EXTRN_MDL_NAME_LBCS}" = "GEFS" ] || \
          [ "${EXTRN_MDL_NAME_LBCS}" = "GDASENKF" ] || \
@@ -342,6 +343,11 @@ case "${EXTRN_MDL_NAME_LBCS}" in
   input_type="grib2"
   ;;
 
+"RRFS")
+  external_model="NAM"
+  input_type="grib2"
+  ;;
+
 *)
   err_exit "\
 External-model-dependent namelist variables have not yet been specified
@@ -419,6 +425,9 @@ for (( ii=0; ii<${num_fhrs}; ii=ii+bcgrpnum10 )); do
     fn_grib2="${EXTRN_MDL_FNS[$i]}"
     ;;
   "NAM")
+    fn_grib2="${EXTRN_MDL_FNS[$i]}"
+    ;;
+  "RRFS")
     fn_grib2="${EXTRN_MDL_FNS[$i]}"
     ;;
   *)

@@ -152,7 +152,8 @@ case "${CCPP_PHYS_SUITE}" in
        [ "${EXTRN_MDL_NAME_ICS}" = "HRRRDAS" ] || \
        [ "${EXTRN_MDL_NAME_ICS}" = "HRRR" ]; then
       varmap_file="GSDphys_var_map.txt"
-    elif [ "${EXTRN_MDL_NAME_ICS}" = "NAM" ] || \
+    elif [ "${EXTRN_MDL_NAME_ICS}" = "RRFS" ] || \
+         [ "${EXTRN_MDL_NAME_ICS}" = "NAM" ] || \
          [ "${EXTRN_MDL_NAME_ICS}" = "FV3GFS" ] || \
          [ "${EXTRN_MDL_NAME_ICS}" = "GEFS" ] || \
          [ "${EXTRN_MDL_NAME_ICS}" = "GDASENKF" ] || \
@@ -296,39 +297,41 @@ convert_nst=""
 #
 # If the external model is not one that uses the RUC land surface model
 # (LSM) -- which currently includes all valid external models except the
-# HRRR and the RAP -- then we set the number of soil levels to include
-# in the output NetCDF file that chgres_cube generates (nsoill_out; this
-# is a variable in the namelist that chgres_cube reads in) to 4.  This 
-# is because FV3 can handle this regardless of the LSM that it is using
-# (which is specified in the suite definition file, or SDF), as follows.  
+# HRRR, the RAP, and the RRFS -- then we set the number of soil levels 
+# to include in the output NetCDF file that chgres_cube generates 
+# (nsoill_out; this is a variable in the namelist that chgres_cube reads
+# in) to 4.  This is because FV3 can handle this regardless of the LSM
+# that it is using (which is specified in the suite definition file, or
+# SDF), as follows.  
 # If the SDF does not use the RUC LSM (i.e. it uses the Noah or Noah MP 
 # LSM), then it will expect to see 4 soil layers; and if the SDF uses 
 # the RUC LSM, then the RUC LSM itself has the capability to regrid from 
 # 4 soil layers to the 9 layers that it uses.
 #
 # On the other hand, if the external model is one that uses the RUC LSM
-# (currently meaning that it is either the HRRR or the RAP), then what
-# we set nsoill_out to depends on whether the RUC or the Noah/Noah MP
-# LSM is used in the SDF.  If the SDF uses RUC, then both the external
-# model and FV3 use RUC (which expects 9 soil levels), so we simply set
-# nsoill_out to 9.  In this case, chgres_cube does not need to do any
-# regridding of soil levels (because the number of levels in is the same
-# as the number out).  If the SDF uses the Noah or Noah MP LSM, then the
-# output from chgres_cube must contain 4 soil levels because that is what
-# these LSMs expect, and the code in FV3 does not have the capability to
-# regrid from the 9 levels in the external model to the 4 levels expected
-# by Noah/Noah MP.  In this case, chgres_cube does the regridding from 
-# 9 to 4 levels.
+# (currently meaning that it is either the HRRR, the RAP, or the RRFS),
+# then what we set nsoill_out to depends on whether the RUC or the 
+# Noah/Noah MP LSM is used in the SDF.  If the SDF uses RUC, then both
+# the external model and FV3 use RUC (which expects 9 soil levels), so 
+# we simply set nsoill_out to 9.  In this case, chgres_cube does not 
+# need to do any regridding of soil levels (because the number of levels
+# in is the same as the number out).  If the SDF uses the Noah or Noah 
+# MP LSM, then the output from chgres_cube must contain 4 soil levels
+# because that is what these LSMs expect, and the code in FV3 does not 
+# have the capability to regrid from the 9 levels in the external model
+# to the 4 levels expected by Noah/Noah MP.  In this case, chgres_cube
+# does the regridding from 9 to 4 levels.
 #
 # In summary, we can set nsoill_out to 4 unless the external model is
-# the HRRR or RAP AND the forecast model is using the RUC LSM.
+# the HRRR, RAP, or RRFS AND the forecast model is using the RUC LSM.
 #
 #-----------------------------------------------------------------------
 #
 nsoill_out="4"
 if [ "${EXTRN_MDL_NAME_ICS}" = "HRRR" -o \
      "${EXTRN_MDL_NAME_ICS}" = "HRRRDAS" -o \
-     "${EXTRN_MDL_NAME_ICS}" = "RAP" ] && \
+     "${EXTRN_MDL_NAME_ICS}" = "RAP" -o \
+     "${EXTRN_MDL_NAME_ICS}" = "RRFS" ] && \
    [ "${SDF_USES_RUC_LSM}" = "TRUE" ]; then
   nsoill_out="9"
 fi
@@ -406,7 +409,7 @@ case "${EXTRN_MDL_NAME_ICS}" in
     tracers="[\"sphum\",\"liq_wat\",\"o3mr\",\"ice_wat\",\"rainwat\",\"snowwat\",\"graupel\"]"
     external_model="FV3GFS"
     input_type="gaussian_netcdf"
-    convert_nst=False
+    convert_nst=True
     fn_atm="${EXTRN_MDL_FNS[0]}"
     fn_sfc="${EXTRN_MDL_FNS[1]}"
   fi
@@ -415,7 +418,7 @@ case "${EXTRN_MDL_NAME_ICS}" in
   vgfrc_from_climo=True
   minmax_vgfrc_from_climo=True
   lai_from_climo=True
-  tg3_from_soil=True
+  tg3_from_soil=False
   ;;
 
 "GDASENKF")
@@ -503,6 +506,19 @@ case "${EXTRN_MDL_NAME_ICS}" in
   ;;
 
 "NAM")
+  external_model="NAM"
+  fn_grib2="${EXTRN_MDL_FNS[0]}"
+  input_type="grib2"
+  vgtyp_from_climo=True
+  sotyp_from_climo=True
+  vgfrc_from_climo=True
+  minmax_vgfrc_from_climo=True
+  lai_from_climo=True
+  tg3_from_soil=False
+  convert_nst=False
+  ;;
+
+"RRFS")
   external_model="NAM"
   fn_grib2="${EXTRN_MDL_FNS[0]}"
   input_type="grib2"
