@@ -47,8 +47,11 @@ load(pathJoin("w3emc", os.getenv("w3emc_ver") or "2.9.2"))
 load(pathJoin("w3nco", os.getenv("w3nco_ver") or "2.4.1"))
 
 load(pathJoin("nco", os.getenv("nco_ver") or "4.9.3"))
-load(pathJoin("prod_util", os.getenv("prod_util_ver") or "2.0.14"))
+--load(pathJoin("prod_util", os.getenv("prod_util_ver") or "2.0.14"))
 load(pathJoin("wgrib2", os.getenv("wgrib2_ver") or "2.0.8"))
+
+prepend_path("MODULEPATH", "/lfs4/BMC/nrtrr/FIX_EXEC_MODULE/lua")
+load("prod_util/2.0.15")
 
 prepend_path("MODULEPATH", "/lfs4/BMC/ifi/modulefiles")
 try_load("ifi/20230511-intel-2022.1.2")
@@ -57,3 +60,4 @@ setenv("CMAKE_C_COMPILER","mpiicc")
 setenv("CMAKE_CXX_COMPILER","mpiicpc")
 setenv("CMAKE_Fortran_COMPILER","mpiifort")
 setenv("CMAKE_Platform","jet.intel")
+setenv("BLENDINGPYTHON","/contrib/miniconda3/4.5.12/envs/pygraf/bin/python")

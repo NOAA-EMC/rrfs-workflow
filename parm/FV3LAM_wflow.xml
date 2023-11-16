@@ -712,8 +712,13 @@ MODULES_RUN_TASK_FP script.
 
     <dependency>
       {%- if machine in ["WCOSS2"]  %}
-        {%- if fv3gfs_file_fmt_ics in ["netcdf"] %}
+        {%- if extrn_mdl_name_ics in ["FV3GFS"] %}
       <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/gfs.@Y@m@d/@H/atmos/gfs.t@Hz.atmf{{ "%03d" % extrn_mdl_ics_offset_hrs }}.nc</cyclestr></datadep>
+        {%- elif extrn_mdl_name_ics in ["GDASENKF"] %}
+        <and>
+          <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/enkfgdas.@Y@m@d/@H/atmos/#subdirGDAS#/gdas.t@Hz.atmf00{{ extrn_mdl_ics_offset_hrs }}.nc</cyclestr></datadep>
+          <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/enkfgdas.@Y@m@d/@H/atmos/#subdirGDAS#/gdas.t@Hz.sfcf00{{ extrn_mdl_ics_offset_hrs }}.nc</cyclestr></datadep>
+        </and>
         {% else %}
           {%- if extrn_mdl_name_ics in ["GEFS"] %}
             {%- if do_retro %}
@@ -951,11 +956,15 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>FG_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
 
     <dependency>
       <and>
         <taskdep task="&GET_EXTRN_ICS_TN;{{ uscore_ensmem_name }}"/>
+        {% if do_ens_blending %}
+        <datadep age="00:00:01:00"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem#mem#/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr> </datadep>
+        {% endif %}
         <or>
 <!--          <taskdep task="&MAKE_GRID_TN;"/> -->
           <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
@@ -1232,6 +1241,8 @@ MODULES_RUN_TASK_FP script.
     </dependency>
 
   </task>
+{%- endif %}
+{%- if do_ens_blending or do_ensinit %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -1262,7 +1273,11 @@ MODULES_RUN_TASK_FP script.
     <dependency>
       <and>
         {%- for m in range(1, num_ens_members+1) %}
+        {%- if do_ensinit %}
           <taskdep task="&PREP_CYC_SPINUP_TN;_ensinit_mem{{ "%04d" % m }}"/>
+        {%- elif do_ens_blending %}
+          <taskdep task="&PREP_CYC_SPINUP_TN;_mem{{ "%04d" % m }}"/>
+        {%- endif %}
         {%- endfor %}
         <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
       </and>
@@ -1726,7 +1741,7 @@ MODULES_RUN_TASK_FP script.
           {%- endfor %}
           </or>
           <or>
-          {%- if do_ensinit %}
+          {%- if do_ensinit or do_ens_blending %}
           <taskdep task="&RUN_RECENTER_TN;_spinup"/>
           {%- else  %}
           <taskdep task="&PREP_CYC_TN;_spinup{{ uscore_ensmem_name }}"/>

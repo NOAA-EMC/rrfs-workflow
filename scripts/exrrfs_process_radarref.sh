@@ -302,13 +302,13 @@ if [ ${RADAR_REF_THINNING} -eq 2 ]; then
   # heavy data thinning, typically used for EnKF
   precipdbzhorizskip=1
   precipdbzvertskip=2
-  clearairdbzhorizskip=5
-  clearairdbzvertskip=-1
+  clearairdbzhorizskip=2
+  clearairdbzvertskip=4
 else
   if [ ${RADAR_REF_THINNING} -eq 1 ]; then
     # light data thinning, typically used for hybrid EnVar
-    precipdbzhorizskip=0
-    precipdbzvertskip=0
+    precipdbzhorizskip=1
+    precipdbzvertskip=1
     clearairdbzhorizskip=1
     clearairdbzvertskip=1
   else
