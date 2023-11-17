@@ -406,7 +406,10 @@ case "${anl_or_fcst}" in
       ;;
 
     "GDASENKF")
-      if [ "${MACHINE}" = "HERA" ] ; then
+      if [ "${MACHINE}" = "WCOSS2" ] ; then
+        fns_on_disk=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
+        fns_in_arcv=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
+      elif [ "${MACHINE}" = "HERA" ] ; then
         fns_on_disk=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
         fns_in_arcv=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
       elif [ "${MACHINE}" = "JET" ] ; then
@@ -458,6 +461,11 @@ case "${anl_or_fcst}" in
       suffix=".tm${hh}"
       fns_on_disk=( "${fns[@]/%/$suffix}" )
       fns_in_arcv=( "${fns[@]/%/$suffix}" )
+      ;;
+
+    "RRFS")
+      fns_on_disk=( "rrfs.t${hh}z.prslev.f0${fcst_hh}.conus_3km.grib2" )
+      fns_in_arcv=( "rrfs.t${hh}z.prslev.f0${fcst_hh}.conus_3km.grib2" )
       ;;
 
     *)
@@ -597,6 +605,15 @@ and analysis or forecast (anl_or_fcst):
       fns_in_arcv=( "${fns[@]/%/$suffix}" )
       ;;
 
+    "RRFS")
+      fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
+      prefix="rrfs.t${hh}z.prslev.f"
+      fns=( "${fcst_hhh[@]/#/$prefix}" )
+      suffix=".conus_3km.grib2"
+      fns_on_disk=( "${fns[@]/%/$suffix}" )
+      fns_in_arcv=( "${fns[@]/%/$suffix}" )
+      ;;
+
     *)
       print_err_msg_exit "\
 The external model file names have not yet been specified for this com-
@@ -692,6 +709,9 @@ has not been specified for this external model and machine combination:
 
   "GDASENKF")
     case "$MACHINE" in
+    "WCOSS2")
+       sysdir="$sysbasedir/enkfgdas.${yyyymmdd}/${hh}/atmos/${GDASENKF_INPUT_SUBDIR}"
+       ;;
     "HERA")
        sysdir="$sysbasedir/enkfgdas.${yyyymmdd}/${hh}/atmos/${GDASENKF_INPUT_SUBDIR}"
        ;;
@@ -805,6 +825,30 @@ has not been specified for this external model and machine combination:
     ;;
 
   "NAM")
+    case "$MACHINE" in
+    "WCOSS2")
+      sysdir="$sysbasedir"
+      ;;
+    "HERA")
+      sysdir="$sysbasedir"
+      ;;
+    "ORION")
+      sysdir="$sysbasedir"
+      ;;
+    "JET")
+      sysdir="$sysbasedir"
+      ;;
+    *)
+      print_err_msg_exit "\
+The system directory in which to look for external model output files
+has not been specified for this external model and machine combination:
+  extrn_mdl_name = \"${extrn_mdl_name}\"
+  MACHINE = \"$MACHINE\""
+      ;;
+    esac
+    ;;
+
+  "RRFS")
     case "$MACHINE" in
     "WCOSS2")
       sysdir="$sysbasedir"
@@ -1006,6 +1050,14 @@ has not been specified for this external model:
      arcv_fps="$arcv_dir/$arcv_fns"
      arcvrel_dir=""
      ;;
+
+  "RRFS")
+    arcv_dir=""
+    arcv_fmt=""
+    arcv_fns=""
+    arcv_fps=""
+    arcvrel_dir=""
+    ;;
 
   *)
     print_err_msg_exit "\

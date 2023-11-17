@@ -152,7 +152,8 @@ case "${CCPP_PHYS_SUITE}" in
        [ "${EXTRN_MDL_NAME_ICS}" = "HRRRDAS" ] || \
        [ "${EXTRN_MDL_NAME_ICS}" = "HRRR" ]; then
       varmap_file="GSDphys_var_map.txt"
-    elif [ "${EXTRN_MDL_NAME_ICS}" = "NAM" ] || \
+    elif [ "${EXTRN_MDL_NAME_ICS}" = "RRFS" ] || \
+         [ "${EXTRN_MDL_NAME_ICS}" = "NAM" ] || \
          [ "${EXTRN_MDL_NAME_ICS}" = "FV3GFS" ] || \
          [ "${EXTRN_MDL_NAME_ICS}" = "GEFS" ] || \
          [ "${EXTRN_MDL_NAME_ICS}" = "GDASENKF" ] || \
@@ -296,39 +297,41 @@ convert_nst=""
 #
 # If the external model is not one that uses the RUC land surface model
 # (LSM) -- which currently includes all valid external models except the
-# HRRR and the RAP -- then we set the number of soil levels to include
-# in the output NetCDF file that chgres_cube generates (nsoill_out; this
-# is a variable in the namelist that chgres_cube reads in) to 4.  This 
-# is because FV3 can handle this regardless of the LSM that it is using
-# (which is specified in the suite definition file, or SDF), as follows.  
+# HRRR, the RAP, and the RRFS -- then we set the number of soil levels 
+# to include in the output NetCDF file that chgres_cube generates 
+# (nsoill_out; this is a variable in the namelist that chgres_cube reads
+# in) to 4.  This is because FV3 can handle this regardless of the LSM
+# that it is using (which is specified in the suite definition file, or
+# SDF), as follows.  
 # If the SDF does not use the RUC LSM (i.e. it uses the Noah or Noah MP 
 # LSM), then it will expect to see 4 soil layers; and if the SDF uses 
 # the RUC LSM, then the RUC LSM itself has the capability to regrid from 
 # 4 soil layers to the 9 layers that it uses.
 #
 # On the other hand, if the external model is one that uses the RUC LSM
-# (currently meaning that it is either the HRRR or the RAP), then what
-# we set nsoill_out to depends on whether the RUC or the Noah/Noah MP
-# LSM is used in the SDF.  If the SDF uses RUC, then both the external
-# model and FV3 use RUC (which expects 9 soil levels), so we simply set
-# nsoill_out to 9.  In this case, chgres_cube does not need to do any
-# regridding of soil levels (because the number of levels in is the same
-# as the number out).  If the SDF uses the Noah or Noah MP LSM, then the
-# output from chgres_cube must contain 4 soil levels because that is what
-# these LSMs expect, and the code in FV3 does not have the capability to
-# regrid from the 9 levels in the external model to the 4 levels expected
-# by Noah/Noah MP.  In this case, chgres_cube does the regridding from 
-# 9 to 4 levels.
+# (currently meaning that it is either the HRRR, the RAP, or the RRFS),
+# then what we set nsoill_out to depends on whether the RUC or the 
+# Noah/Noah MP LSM is used in the SDF.  If the SDF uses RUC, then both
+# the external model and FV3 use RUC (which expects 9 soil levels), so 
+# we simply set nsoill_out to 9.  In this case, chgres_cube does not 
+# need to do any regridding of soil levels (because the number of levels
+# in is the same as the number out).  If the SDF uses the Noah or Noah 
+# MP LSM, then the output from chgres_cube must contain 4 soil levels
+# because that is what these LSMs expect, and the code in FV3 does not 
+# have the capability to regrid from the 9 levels in the external model
+# to the 4 levels expected by Noah/Noah MP.  In this case, chgres_cube
+# does the regridding from 9 to 4 levels.
 #
 # In summary, we can set nsoill_out to 4 unless the external model is
-# the HRRR or RAP AND the forecast model is using the RUC LSM.
+# the HRRR, RAP, or RRFS AND the forecast model is using the RUC LSM.
 #
 #-----------------------------------------------------------------------
 #
 nsoill_out="4"
 if [ "${EXTRN_MDL_NAME_ICS}" = "HRRR" -o \
      "${EXTRN_MDL_NAME_ICS}" = "HRRRDAS" -o \
-     "${EXTRN_MDL_NAME_ICS}" = "RAP" ] && \
+     "${EXTRN_MDL_NAME_ICS}" = "RAP" -o \
+     "${EXTRN_MDL_NAME_ICS}" = "RRFS" ] && \
    [ "${SDF_USES_RUC_LSM}" = "TRUE" ]; then
   nsoill_out="9"
 fi
@@ -515,6 +518,19 @@ case "${EXTRN_MDL_NAME_ICS}" in
   convert_nst=False
   ;;
 
+"RRFS")
+  external_model="NAM"
+  fn_grib2="${EXTRN_MDL_FNS[0]}"
+  input_type="grib2"
+  vgtyp_from_climo=True
+  sotyp_from_climo=True
+  vgfrc_from_climo=True
+  minmax_vgfrc_from_climo=True
+  lai_from_climo=True
+  tg3_from_soil=False
+  convert_nst=False
+  ;;
+
 *)
   err_exit "\
 External-model-dependent namelist variables have not yet been specified
@@ -644,24 +660,143 @@ $settings"
 #
 ${APRUN} ${exec_fp}
 export err=$?; err_chk
+#
+#-----------------------------------------------------------------------
+#
+# Run large-scale blending
+#
+#-----------------------------------------------------------------------
+# NOTES:
+# * The large-scale blending is broken down into 4 major parts
+#   1) chgres_winds: This part rotates the coldstart winds from chgres to the model D-grid.
+#                    It is based on atmos_cubed_sphere/tools/external_ic.F90#L433, and it
+#                    is equivalent to the fv3jedi tool called ColdStartWinds.
+#   2) remap_dwinds: This part vertically remaps the D-grid winds.
+#                    It is based on atmos_cubed_sphere/tools/external_ic.F90#L3485, and it
+#                    is part of the fv3jedi tool called VertRemap.
+#   3) remap_scalar: This part vertically remaps all other variables.
+#                    It is based on atmos_cubed_sphere/tools/external_ic.F90#L2942, and it
+#                    is the other part of the fv3jedi tool called VertRemap.
+#   4) raymond:      This is the actual blending code which uses the raymond filter. The
+#                    raymond filter is a sixth-order tangent low-pass implicit filter
+#                    and can be controlled via the cutoff length scale (Lx).
+#
+# * Currently blended fields: u, v, t, dpres, and sphum
+#     -) Blending only works with GDASENKF (netcdf)
+#
+# * Two RRFS EnKF member files are needed: fv_core and fv_tracer.
+#     -) fv_core contains u, v, t, and dpres
+#     -) fv_tracer contains sphum
+#
+# * Before we can do any blending, the coldstart files from chgres need to be
+#   processed. This includes rotating the winds and vertically remapping all the
+#   variables. The cold start file has u_w, v_w, u_s, and v_s which correspond
+#   to the D-grid staggering.
+#     -) u_s is the D-grid south tangential wind component (m/s)
+#     -) v_s is the D-grid south face normal wind component (m/s)
+#     -) u_w is the D-grid west  face tangential wind component (m/s)
+#     -) v_w is the D-grid west  face normal wind component (m/s)
+#     -) https://github.com/NOAA-GFDL/GFDL_atmos_cubed_sphere/blob/bdeee64e860c5091da2d169b1f4307ad466eca2c/tools/external_ic.F90
+#     -) https://dtcenter.org/sites/default/files/events/2020/20201105-1300p-fv3-gfdl-1.pdf
+#
+cdate_crnt_fhr_m1=$( date --utc --date "$yyyymmdd $hh UTC - 1 hours" "+%Y%m%d%H" )
+if [ $DO_ENS_BLENDING = "TRUE" ] &&
+   [ $cdate_crnt_fhr -ge ${FIRST_BLENDED_CYCLE_DATE} ] &&
+   [ $EXTRN_MDL_NAME_ICS = "GDASENKF" ]; then
+
+   echo "Blending Starting."
+   ulimit -s unlimited
+   export OMP_STACKSIZE=2G
+   ncores=$(( NNODES_MAKE_ICS*PPN_MAKE_ICS ))  # OMP_NUM_THREADS=ntasks*cpus-per-task
+   export OMP_NUM_THREADS=$ncores #WCOSS2:"96", Hera/Orion:"80"
+   export FI_OFI_RXM_SAR_LIMIT=3145728
+   export FI_MR_CACHE_MAX_COUNT=0
+   export MPICH_OFI_STARTUP_CONNECT=1
+
+   # Python/F2Py scripts
+   cp $SCRIPTSdir/exrrfs_blending_fv3.py .
+   cp $SCRIPTSdir/exrrfs_chgres_cold2fv3.py .
+
+   # F2Py shared object files
+   ln -sf $LIB64dir/raymond.so .
+   ln -sf $LIB64dir/chgres_winds.so .
+   ln -sf $LIB64dir/remap_scalar.so .
+   ln -sf $LIB64dir/remap_dwinds.so .
+
+   # Required NETCDF files -  HOST MODEL (e.g., GDAS; these files should already be present)
+   #cp_vrfy out.atm.tile${TILE_RGNL}.nc .
+   #cp_vrfy out.sfc.tile${TILE_RGNL}.nc .
+   #cp_vrfy gfs_ctrl.nc .
+
+   # Required NETCDF files - RRFS
+   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.tile1.nc ./fv_core.res.tile1.nc
+   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_tracer.res.tile1.nc ./fv_tracer.res.tile1.nc
+   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc ./fv_core.res.nc
+
+   # Required FIX files
+   cp $FIXLAM/C3359_grid.tile7.nc .
+   cp $FIXLAM/C3359_oro_data.tile7.halo0.nc .
+
+   # Shortcut the file names
+   warm=./fv_core.res.tile1.nc
+   cold=./out.atm.tile7.nc
+   grid=./C3359_grid.tile7.nc
+   akbk=./fv_core.res.nc
+   akbkcold=./gfs_ctrl.nc
+   orog=./C3359_oro_data.tile7.halo0.nc
+   bndy=./gfs.bndy.nc
+
+   # Run convert coldstart files to fv3 restart (rotate winds and remap).
+   ${BLENDINGPYTHON} exrrfs_chgres_cold2fv3.py $warm $cold $grid $akbk $akbkcold $orog
+
+   # Shortcut the file names/arguments.
+   Lx=$ENS_BLENDING_LENGTHSCALE
+   glb=./out.atm.tile${TILE_RGNL}.nc
+   reg=./fv_core.res.tile1.nc
+   trcr=./fv_tracer.res.tile1.nc
+
+   # Blend OR finish convert cold2warm start without blending.
+   blend=${BLEND}                 # TRUE:  Blend RRFS and GDAS EnKF
+                                  # FALSE: Don't blend, activate cold2warm start only, and use either GDAS or RRFS
+   use_host_enkf=${USE_HOST_ENKF} # ignored if blend="TRUE".
+                                  # TRUE:  Final EnKF will be GDAS (no blending)
+                                  # FALSE: Final EnKF will be RRFS (no blending)
+   ${BLENDINGPYTHON} exrrfs_blending_fv3.py $Lx $glb $reg $trcr $blend $use_host_enkf
+   cp ./fv_core.res.tile1.nc ${ics_dir}/.
+   cp ./fv_tracer.res.tile1.nc ${ics_dir}/.
+
+   # Move the remaining RESTART files to INPUT
+   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.coupler.res             ${ics_dir}/coupler.res
+   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc          ${ics_dir}/fv_core.res.nc
+   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_srf_wnd.res.tile1.nc ${ics_dir}/fv_srf_wnd.res.tile1.nc
+   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.phy_data.nc             ${ics_dir}/phy_data.nc
+   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.sfc_data.nc             ${ics_dir}/sfc_data.nc
+   cp gfs_ctrl.nc ${ics_dir}
+   cp gfs.bndy.nc ${ics_dir}/gfs_bndy.tile${TILE_RGNL}.000.nc
+
+
+fi
 
 #
 #-----------------------------------------------------------------------
 #
 # Move initial condition, surface, control, and 0-th hour lateral bound-
-# ary files to ICs_BCs directory.
-#
+# ary files to ICs_BCs directory. Only do this if blending is off or on-
+# ly for the first DA cycle if blending is on inorder to coldstart the
+# system.
 #-----------------------------------------------------------------------
 #
-mv out.atm.tile${TILE_RGNL}.nc \
+if [[ $DO_ENS_BLENDING = "FALSE" || ($DO_ENS_BLENDING = "TRUE" && $cdate_crnt_fhr -lt ${FIRST_BLENDED_CYCLE_DATE}) ]]; then
+  mv out.atm.tile${TILE_RGNL}.nc \
         ${ics_dir}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
 
-mv out.sfc.tile${TILE_RGNL}.nc \
+  mv out.sfc.tile${TILE_RGNL}.nc \
         ${ics_dir}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
 
-mv gfs_ctrl.nc ${ics_dir}
+  mv gfs_ctrl.nc ${ics_dir}
 
-mv gfs.bndy.nc ${ics_dir}/gfs_bndy.tile${TILE_RGNL}.000.nc
+  mv gfs.bndy.nc ${ics_dir}/gfs_bndy.tile${TILE_RGNL}.000.nc
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -669,7 +804,12 @@ mv gfs.bndy.nc ${ics_dir}/gfs_bndy.tile${TILE_RGNL}.000.nc
 #
 #-----------------------------------------------------------------------
 #
+
 cp ${ics_dir}/*.nc ${ics_nwges_dir}/.
+if [ $DO_ENS_BLENDING = "TRUE" ] && [ $cdate_crnt_fhr -ge ${FIRST_BLENDED_CYCLE_DATE} ]; then
+  cp ${ics_dir}/coupler.res ${ics_nwges_dir}/.
+fi
+
 #
 #-----------------------------------------------------------------------
 #

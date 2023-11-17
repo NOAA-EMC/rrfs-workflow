@@ -1,5 +1,5 @@
 MACHINE="jet"
-version="v0.6.2"
+version="v0.7.5"
 ACCOUNT="nrtrr"
 #RESERVATION="rrfsdet"
 EXPT_BASEDIR="YourOwnSpace/${version}"
@@ -101,11 +101,12 @@ regional_ensemble_option=1   # 5 for RRFS ensemble
 
 EXTRN_MDL_NAME_ICS="FV3GFS"
 EXTRN_MDL_NAME_LBCS="FV3GFS"
+EXTRN_MDL_DATE_JULIAN="TRUE"
 
 envir="para"
 
 NET="rrfs_b"
-TAG="c3v52"
+TAG="c3v75"
 
 ARCHIVEDIR="/1year/BMC/wrfruc/rrfs_b"
 NCL_REGION="conus"
