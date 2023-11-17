@@ -817,10 +817,10 @@ case $MACHINE in
     ;;
 
   "ORION")
-    FIXgsm=${FIXgsm:-"/work/noaa/epic-ps/role-epic-ps/UFS_SRW_data/develop/fix/fix_am"}
-    TOPO_DIR=${TOPO_DIR:-"/work/noaa/epic-ps/role-epic-ps/UFS_SRW_data/develop/fix/fix_orog"}
-    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/work/noaa/epic-ps/role-epic-ps/UFS_SRW_data/develop/fix/fix_sfc_climo"}
-    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/work/noaa/epic-ps/role-epic-ps/UFS_SRW_data/develop/FV3LAM_pregen"}
+    FIXgsm=${FIXgsm:-"/work/noaa/epic/role-epic/contrib/UFS_SRW_data/develop/fix/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/work/noaa/epic/role-epic/contrib/UFS_SRW_data/develop/fix/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/work/noaa/epic/role-epic/contrib/UFS_SRW_data/develop/fix/fix_sfc_climo"}
+    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/work/noaa/epic/role-epic/contrib/UFS_SRW_data/develop/FV3LAM_pregen"}
     ;;
 
   "JET")
