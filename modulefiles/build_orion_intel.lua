@@ -48,9 +48,12 @@ load(pathJoin("sfcio", os.getenv("sfcio_ver") or "1.4.1"))
 load(pathJoin("w3emc", os.getenv("w3emc_ver") or "2.9.2"))
 load(pathJoin("w3nco", os.getenv("w3nco_ver") or "2.4.1"))
 load(pathJoin("wgrib2", os.getenv("wgrib2_ver") or "2.0.8"))
-load(pathJoin("prod_util", os.getenv("prod_util_ver") or "1.2.2"))
+--load(pathJoin("prod_util", os.getenv("prod_util_ver") or "1.2.2"))
 load(pathJoin("nccmp", os.getenv("nccmp_ver") or "1.8.9.0"))
 load(pathJoin("nco", os.getenv("nco_ver") or "5.0.6"))
+
+prepend_path("MODULEPATH", "/work/noaa/rtrr/gge/prod_util/lua")
+load("prod_util/2.0.15")
 
 setenv("CMAKE_C_COMPILER","mpiicc")
 setenv("CMAKE_CXX_COMPILER","mpiicpc")
