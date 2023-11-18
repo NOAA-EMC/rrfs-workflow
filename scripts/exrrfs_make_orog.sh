@@ -151,18 +151,6 @@ mkdir -p "${shave_dir}"
 #
 #-----------------------------------------------------------------------
 #
-# Set the name and path to the executable that generates the raw orography
-# file and make sure that it exists.
-#
-exec_fn="orog"
-exec_fp="$EXECdir/${exec_fn}"
-if [ ! -f "${exec_fp}" ]; then
-  err_exit "\
-The executable (exec_fp) for generating the orography file does not exist:
-  exec_fp = \"${exec_fp}\"
-Please ensure that you've built this executable."
-fi
-#
 # Create a temporary (work) directory in which to generate the raw orography
 # file and change location to it.
 #
@@ -255,7 +243,10 @@ cat "${input_redirect_fn}"
 print_info_msg "$VERBOSE" "
 Starting orography file generation..."
 
-$APRUN "${exec_fp}" < "${input_redirect_fn}"
+export pgm="orog"
+. prep_step
+
+$APRUN ${EXECdir}/$pgm < "${input_redirect_fn}" >>$pgmout 2>errfile
 export err=$?; err_chk
 #
 # Change location to the original directory.
@@ -311,20 +302,12 @@ ${CRES:1}
 ${NH4}
 EOF
 
-  exec_fn="orog_gsl"
-  exec_fp="$EXECdir/${exec_fn}"
-  if [ ! -f "${exec_fp}" ]; then
-    err_exit "\
-The executable (exec_fp) for generating the GSL orography GWD data files
-does not exist:
-  exec_fp = \"${exec_fp}\"
-Please ensure that you've built this executable."
-  fi
-
   print_info_msg "$VERBOSE" "
 Starting orography file generation..."
 
-  ${APRUN} "${exec_fp}" < "${input_redirect_fn}"
+  export pgm="orog_gsl"
+
+  ${APRUN} ${EXECdir}/$pgm < "${input_redirect_fn}" >>$pgmout 2>>errfile
   export err=$?; err_chk
 
   mv "${CRES}${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc" \
@@ -374,17 +357,6 @@ if [ "${GRID_GEN_METHOD}" = "GFDLgrid" ]; then
 elif [ "${GRID_GEN_METHOD}" = "ESGgrid" ]; then
   res="${CRES:1}"
   refine_ratio="1"
-fi
-#
-# Set the name and path to the executable and make sure that it exists.
-#
-exec_fn="filter_topo"
-exec_fp="$EXECdir/${exec_fn}"
-if [ ! -f "${exec_fp}" ]; then
-  err_exit "\
-The executable (exec_fp) for filtering the raw orography does not exist:
-  exec_fp = \"${exec_fp}\"
-Please ensure that you've built this executable."
 fi
 #
 # The orography filtering executable replaces the contents of the given
@@ -450,7 +422,9 @@ cd "${filter_dir}"
 print_info_msg "$VERBOSE" "
 Starting filtering of orography..."
 
-$APRUN "${exec_fp}"
+export pgm="filter_topo"
+
+$APRUN ${EXECdir}/$pgm >>$pgmout 2>>errfile
 export err=$?; err_chk
 #
 # For clarity, rename the filtered orography file in filter_dir
@@ -479,18 +453,6 @@ Filtering of orography complete."
 #
 #-----------------------------------------------------------------------
 #
-# Set the name and path to the executable and make sure that it exists.
-#
-exec_fn="shave"
-exec_fp="$EXECdir/${exec_fn}"
-if [ ! -f "${exec_fp}" ]; then
-  err_exit "\
-The executable (exec_fp) for \"shaving\" down the halo in the orography
-file does not exist:
-  exec_fp = \"${exec_fp}\"
-Please ensure that you've built this executable."
-fi
-#
 # Set the full path to the "unshaved" orography file, i.e. the one with
 # a wide halo.  This is the input orography file for generating both the
 # orography file without a halo and the one with a 4-cell-wide halo.
@@ -517,7 +479,9 @@ printf "%s %s %s %s %s\n" \
   $NX $NY ${NH0} \"${unshaved_fp}\" \"${shaved_fp}\" \
   > ${nml_fn}
 
-$APRUN ${exec_fp} < ${nml_fn}
+export pgm="shave"
+
+$APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>>errfile
 export err=$?; err_chk
 mv ${shaved_fp} ${OROG_DIR}
 #
@@ -536,7 +500,7 @@ printf "%s %s %s %s %s\n" \
   $NX $NY ${NH4} \"${unshaved_fp}\" \"${shaved_fp}\" \
   > ${nml_fn}
 
-$APRUN ${exec_fp} < ${nml_fn}
+$APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>>errfile
 export err=$?; err_chk
 mv "${shaved_fp}" "${OROG_DIR}"
 #

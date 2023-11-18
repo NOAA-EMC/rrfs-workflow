@@ -242,22 +242,7 @@ mkdir -p "$tmpdir"
 #
 #-----------------------------------------------------------------------
 #
-# Set the name and path to the executable that generates the grid file
-# and make sure that it exists.
-#
-if [ "${GRID_GEN_METHOD}" = "GFDLgrid" ]; then
-  exec_fn="make_hgrid"
-elif [ "${GRID_GEN_METHOD}" = "ESGgrid" ]; then
-  exec_fn="regional_esg_grid"
-fi
 
-exec_fp="$EXECdir/${exec_fn}"
-if [ ! -f "${exec_fp}" ]; then
-  err_exit "\
-The executable (exec_fp) for generating the grid file does not exist:
-  exec_fp = \"${exec_fp}\"
-Please ensure that you've built this executable."
-fi
 #
 # Change location to the temporary (work) directory.
 #
@@ -281,7 +266,10 @@ if [ "${GRID_GEN_METHOD}" = "GFDLgrid" ]; then
 # for the 6 global tiles.  However, after this call we will only need the
 # regional grid file.
 #
-  $APRUN ${exec_fp} \
+  export pgm="make_hgrid"
+  . prep_step
+
+  $APRUN ${EXECdir}/${pgm} \
     --grid_type gnomonic_ed \
     --nlon ${nx_t6sg} \
     --grid_name ${grid_name} \
@@ -297,7 +285,7 @@ if [ "${GRID_GEN_METHOD}" = "GFDLgrid" ]; then
     --iend_nest ${IEND_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG} \
     --jend_nest ${JEND_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG} \
     --halo 1 \
-    --great_circle_algorithm
+    --great_circle_algorithm >>$pgmout 2>errfile
   export err=$?; err_chk
 
 #
@@ -313,12 +301,6 @@ elif [ "${GRID_GEN_METHOD}" = "ESGgrid" ]; then
 # code in the temporary subdirectory.
 #
   rgnl_grid_nml_fp="$tmpdir/${RGNL_GRID_NML_FN}"
-
-  print_info_msg "$VERBOSE" "
-Creating namelist file (rgnl_grid_nml_fp) to be read in by the grid
-generation executable (exec_fp):
-  rgnl_grid_nml_fp = \"${rgnl_grid_nml_fp}\"
-  exec_fp = \"${exec_fp}\""
 #
 # Create a multiline variable that consists of a yaml-compliant string
 # specifying the values that the namelist variables need to be set to
@@ -356,7 +338,10 @@ $settings"
 #
 # Call the executable that generates the grid file.
 #
-  $APRUN ${exec_fp} ${rgnl_grid_nml_fp}
+  export pgm="regional_esg_grid"
+  . prep_step
+
+  $APRUN ${EXECdir}/$pgm ${rgnl_grid_nml_fp} >>$pgmout 2>errfile
   export err=$?; err_chk
 
 #
@@ -384,17 +369,8 @@ Grid file generation completed successfully."
 #
 #-----------------------------------------------------------------------
 #
-exec_fn="global_equiv_resol"
-exec_fp="$EXECdir/${exec_fn}"
-if [ ! -f "${exec_fp}" ]; then
-  err_exit "\
-The executable (exec_fp) for calculating the regional grid's global uniform
-cubed-sphere grid equivalent resolution does not exist:
-  exec_fp = \"${exec_fp}\"
-Please ensure that you've built this executable."
-fi
-
-$APRUN ${exec_fp} "${grid_fp}"
+export pgm="global_equiv_resol"
+$APRUN ${EXECdir}/$pgm "${grid_fp}" >>$pgmout 2>>errfile
 export err=$?; err_chk
 
 # Make the following (reading of res_equiv) a function in another file
@@ -475,18 +451,6 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Set the name and path to the executable and make sure that it exists.
-#
-exec_fn="shave"
-exec_fp="$EXECdir/${exec_fn}"
-if [ ! -f "${exec_fp}" ]; then
-  err_exit "\
-The executable (exec_fp) for \"shaving\" down the halo in the grid file
-does not exist:
-  exec_fp = \"${exec_fp}\"
-Please ensure that you've built this executable."
-fi
-#
 # Set the full path to the "unshaved" grid file, i.e. the one with a wide
 # halo.  This is the input grid file for generating both the grid file
 # with a 3-cell-wide halo and the one with a 4-cell-wide halo.
@@ -514,7 +478,8 @@ printf "%s %s %s %s %s\n" \
   $NX $NY ${NH3} \"${unshaved_fp}\" \"${shaved_fp}\" \
   > ${nml_fn}
 
-$APRUN ${exec_fp} < ${nml_fn}
+export pgm="shave"
+$APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>>errfile
 export err=$?; err_chk
 
 mv ${shaved_fp} ${GRID_DIR}
@@ -534,7 +499,7 @@ printf "%s %s %s %s %s\n" \
   $NX $NY ${NH4} \"${unshaved_fp}\" \"${shaved_fp}\" \
   > ${nml_fn}
 
-$APRUN ${exec_fp} < ${nml_fn}
+$APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>>errfile
 export err=$?; err_chk
 
 mv ${shaved_fp} ${GRID_DIR}
@@ -552,7 +517,7 @@ printf "%s %s %s %s %s\n" \
   $NX $NY "0" \"${unshaved_fp}\" \"${shaved_fp}\" \
   > ${nml_fn}
 
-$APRUN ${exec_fp} < ${nml_fn}
+$APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>>errfile
 export err=$?; err_chk
 
 mv ${shaved_fp} ${GRID_DIR}

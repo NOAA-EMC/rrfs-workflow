@@ -177,19 +177,10 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-# Set the name and path to the executable and make sure that it exists.
-#
-exec_fn="sfc_climo_gen"
-exec_fp="$EXECdir/${exec_fn}"
-if [ ! -f "${exec_fp}" ]; then
-  err_exit "\
-The executable (exec_fp) for generating the surface climatology files
-does not exist:
-  exec_fp = \"${exec_fp}\"
-Please ensure that you've built this executable."
-fi
+export pgm="sfc_climo_gen"
+. prep_step
 
-$APRUN ${exec_fp}
+$APRUN $EXECdir/$pgm >>$pgmout 2>errfile
 export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
