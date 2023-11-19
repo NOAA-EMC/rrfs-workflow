@@ -17,6 +17,9 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
+
+date
+export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
@@ -102,7 +105,7 @@ boundary_len_hrs="${BOUNDARY_LEN}"
 #
 extrn_mdl_staging_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/${EXTRN_MDL_NAME}/for_LBCS"
 if [ -d "${extrn_mdl_staging_dir}" ]; then
-   rm -rf ${extrn_mdl_staging_dir}
+  rm -rf ${extrn_mdl_staging_dir}
 fi
 mkdir -p "${extrn_mdl_staging_dir}"
 cd "${extrn_mdl_staging_dir}"
@@ -158,6 +161,9 @@ extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" 
 extrn_mdl_fns_on_disk_str2="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk2[@]}" )")"
 extrn_mdl_fns_in_arcv_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_in_arcv[@]}" )")"
 
+export pgmout="${extrn_mdl_staging_dir}/OUTPUT.$$"
+env
+
 $SCRIPTSdir/exrrfs_get_gefs_lbcs_files.sh \
   ics_or_lbcs="${ICS_OR_LBCS}" \
   use_user_staged_extrn_files="${USE_USER_STAGED_EXTRN_FILES}" \
@@ -170,6 +176,10 @@ $SCRIPTSdir/exrrfs_get_gefs_lbcs_files.sh \
   extrn_mdl_source_dir2="${extrn_mdl_source_dir2}" \
   extrn_mdl_staging_dir="${extrn_mdl_staging_dir}"
 export err=$?; err_chk
+
+if [ -e "$pgmout" ]; then
+  cat $pgmout
+fi
 #
 #-----------------------------------------------------------------------
 #

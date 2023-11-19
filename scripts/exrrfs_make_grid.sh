@@ -249,7 +249,7 @@ if [ "${GRID_GEN_METHOD}" = "GFDLgrid" ]; then
   export pgm="make_hgrid"
   . prep_step
 
-  $APRUN ${EXECdir}/${pgm} \
+  $APRUN ${EXECdir}/$pgm \
     --grid_type gnomonic_ed \
     --nlon ${nx_t6sg} \
     --grid_name ${grid_name} \

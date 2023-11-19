@@ -35,6 +35,9 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
+
+date
+export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
@@ -112,19 +115,19 @@ mkdir -p "${nwges_dir}/INPUT"
 #
 #-----------------------------------------------------------------------
 #
-COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
+export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
 if [ ${CYCLE_TYPE} == "spinup" ]; then
   COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
 fi
 mkdir -p "${COMOUT}"
 
-bufrsnd_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/bufrsnd"
+export bufrsnd_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/bufrsnd"
 if [ ${CYCLE_TYPE} == "spinup" ]; then
   bufrsnd_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/bufrsnd_spinup"
 fi
 mkdir -p "${bufrsnd_dir}"
 
-fhr_dir="${bufrsnd_dir}"
+export fhr_dir="${bufrsnd_dir}"
 
 cd "${bufrsnd_dir}"
 #
@@ -135,17 +138,22 @@ cd "${bufrsnd_dir}"
 #-----------------------------------------------------------------------
 #
 fhr=01
+
+export pgmout="${bufrsnd_dir}/OUTPUT.$$"
+env
+
 $SCRIPTSdir/exrrfs_bufrsnd.sh \
   cdate="${CDATE}" \
   run_dir="${run_dir}" \
   nwges_dir="${nwges_dir}" \
-  bufrsnd_dir="${bufrsnd_dir}" \
-  comout="${COMOUT}" \
-  fhr_dir="${fhr_dir}" \
   fhr="${fhr}" \
   tmmark="${TMMARK}" \
   cycle_type="${CYCLE_TYPE}"
 export err=$?; err_chk
+
+if [ -e "$pgmout" ]; then
+  cat $pgmout
+fi
 #
 #-----------------------------------------------------------------------
 #

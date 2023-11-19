@@ -58,9 +58,6 @@ valid_args=( \
 "cdate" \
 "run_dir" \
 "nwges_dir" \
-"bufrsnd_dir" \
-"comout" \
-"fhr_dir" \
 "fhr" \
 "tmmark" \
 "cycle_type" \
@@ -150,8 +147,6 @@ MODEL=fv3
 PARMfv3=${FIX_BUFRSND}  #/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/bufrsnd
 
 DATA=$bufrsnd_dir
-EXECfv3=$EXECdir
-COMOUT=$comout
 
 mkdir -p $DATA/bufrpost
 cd $DATA/bufrpost
@@ -214,7 +209,7 @@ do
 
   let fhrold="$fhr - 1"
 
-  if [ $model == "FV3S" ]; then
+  if [ $model = "FV3S" ]; then
 
     OUTFILDYN=$INPUT_DATA/dynf0${fhr}.nc
     OUTFILPHYS=$INPUT_DATA/phyf0${fhr}.nc
@@ -261,7 +256,10 @@ EOF
   export FORT79="$DATA/bufrpost/profilm.c1.${tmmark}"
   export FORT11="itag"
 
-  ${APRUNC} $EXECfv3/rrfs_bufr.exe  > pgmout.log_${fhr} 2>&1
+  export pgm="rrfs_bufr.exe"
+  . prep_step
+
+  ${APRUNC} ${EXECdir}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
 
   echo DONE $fhr at `date`
@@ -286,8 +284,6 @@ cd $DATA
 # SNDP code
 ########################################################
 
-export pgm=hiresw_sndp_${RUNLOC}
-
 cp $PARMfv3/regional_sndp.parm.mono $DATA/regional_sndp.parm.mono
 cp $PARMfv3/regional_bufr.tbl $DATA/regional_bufr.tbl
 
@@ -296,28 +292,28 @@ export FORT32="$DATA/regional_bufr.tbl"
 export FORT66="$DATA/profilm.c1.${tmmark}"
 export FORT78="$DATA/class1.bufr"
 
-echo here RUNLOC  $RUNLOC
+echo here RUNLOC $RUNLOC
 echo here MODEL $MODEL
 echo here model $model
-
-pgmout=sndplog
 
 nlev=65
 
 FCST_LEN_HRS=$FHRLIM
 echo "$nlev $NSTAT $FCST_LEN_HRS" > itag
-${APRUNS} $EXECfv3/rrfs_sndp.exe  < itag >> $pgmout 2>$pgmout
+
+export pgm="rrfs_sndp.exe"
+
+${APRUNS} ${EXECdir}/$pgm < itag >>$pgmout 2>>errfile
 export err=$?; err_chk
 
 SENDCOM=YES
 
-if [ $SENDCOM == "YES" ]; then
+if [ $SENDCOM = "YES" ]; then
   cp $DATA/class1.bufr $COMOUT/rrfs.t${cyc}z.${RUNLOC}.class1.bufr
   cp $DATA/profilm.c1.${tmmark} ${COMOUT}/rrfs.t${cyc}z.${RUNLOC}.profilm.c1
 fi
 
 # remove bufr file breakout directory in $COMOUT if it exists
-
 if [ -d ${COMOUT}/bufr.${NEST}${MODEL}${cyc} ]; then
   cd $COMOUT
   rm -r bufr.${NEST}${MODEL}${cyc}
@@ -334,19 +330,17 @@ EOF
 
 mkdir -p ${COMOUT}/bufr.${NEST}${MODEL}${cyc}
 
-export pgm=regional_stnmlist
-
 export FORT20=$DATA/class1.bufr
 export DIRD=${COMOUT}/bufr.${NEST}${MODEL}${cyc}/${NEST}${MODEL}bufr
 
 echo "before stnmlist.exe"
-date
-pgmout=stnmlog
-${APRUNS}  $EXECfv3/rrfs_stnmlist.exe < stnmlist_input >> $pgmout 2>errfile
+
+export pgm="rrfs_stnmlist.exe"
+
+${APRUNS} ${EXECdir}/$pgm < stnmlist_input >>$pgmout 2>>errfile
 export err=$?; err_chk
 
 echo "after stnmlist.exe"
-date
 
 echo ${COMOUT}/bufr.${NEST}${MODEL}${cyc} > ${COMOUT}/bufr.${NEST}${MODEL}${cyc}/bufrloc
 
@@ -370,7 +364,6 @@ if [ $err1 -ne 0 -o $err2 -ne 0 -o $err3 -ne 0 ]; then
 fi
 
 #  Set input file name.
-
 INFILE=$COMOUT/rrfs.t${cyc}z.${NEST}${MODEL}.class1.bufr
 export INFILE
 

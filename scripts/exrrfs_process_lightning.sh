@@ -55,7 +55,7 @@ with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "CYCLE_DIR" "WORKDIR" "comout")
+valid_args=( "CYCLE_DIR" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -116,39 +116,33 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 
 YYJJJHH=$(date +"%y%j%H" -d "${START_DATE}")
 PREYYJJJHH=$(date +"%y%j%H" -d "${START_DATE} 1 hours ago")
-
 #
 #-----------------------------------------------------------------------
 #
-# Get into working directory
+# Define fix directory
 #
 #-----------------------------------------------------------------------
 #
-print_info_msg "$VERBOSE" "
-Getting into working directory for lightning process ..."
-
-cd ${WORKDIR}
-
 fixdir=$FIX_GSI
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 
 print_info_msg "$VERBOSE" "fixdir is $fixdir"
 print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
-
 #
 #-----------------------------------------------------------------------
 #
 # link or copy background and grid files
 #
 #-----------------------------------------------------------------------
-
-cp ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
-
+#
+cp ${fixgriddir}/fv3_grid_spec  fv3sar_grid_spec.nc
+#
 #-----------------------------------------------------------------------
 #
 # Link to the NLDN data
 #
 #-----------------------------------------------------------------------
+#
 run_lightning=false
 filenum=0
 LIGHTNING_FILE=${LIGHTNING_ROOT}/vaisala/netcdf
@@ -173,16 +167,17 @@ for n in 55 50 45 40 35 ; do
 done
 
 echo "found GLD360 files: ${filenum}"
-
+#
 #-----------------------------------------------------------------------
 #
 # copy bufr table from fix directory
 #
 #-----------------------------------------------------------------------
+#
 BUFR_TABLE=${fixdir}/prepobs_prep_RAP.bufrtable
 
 cp $BUFR_TABLE prepobs_prep.bufrtable
-
+#
 #-----------------------------------------------------------------------
 #
 # Build namelist and run executable
@@ -194,7 +189,7 @@ cp $BUFR_TABLE prepobs_prep.bufrtable
 #                   = 0 for ARW  (default)
 #                   = 1 for FV3LAM
 #-----------------------------------------------------------------------
-
+#
 cat << EOF > namelist.lightning
  &setup
   analysis_time = ${YYYYMMDDHH},
@@ -204,27 +199,6 @@ cat << EOF > namelist.lightning
  /
 
 EOF
-
-#
-#-----------------------------------------------------------------------
-#
-# Copy the executable to the run directory.
-#
-#-----------------------------------------------------------------------
-#
-exect="process_Lightning.exe"
-
-if [ -f ${EXECdir}/$exect ]; then
-  print_info_msg "$VERBOSE" "
-Copying the lightning process  executable to the run directory..."
-  cp ${EXECdir}/${exect} ${WORKDIR}
-else
-  err_exit "\
-The executable specified in exect does not exist:
-  exect = \"${EXECdir}/$exect\"
-Build lightning process and rerun."
-fi
-#
 #
 #-----------------------------------------------------------------------
 #
@@ -232,13 +206,14 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+export pgm="process_Lightning.exe"
+. prep_step
 
 if [[ "$run_lightning" == true ]]; then
-  $APRUN ./${exect} < namelist.lightning > stdout 2>&1
+  $APRUN ${EXECdir}/$pgm < namelist.lightning >>$pgmout 2>errfile
   export err=$?; err_chk
 
-  cp stdout $comout/stdout.t${HH}z.lightning
-  cp LightningInFV3LAM.dat ${comin}/rrfs.t${HH}z.LightningInFV3LAM_NLDN.bin
+  cp LightningInFV3LAM.dat ${COMOUT}/rrfs.t${HH}z.LightningInFV3LAM_NLDN.bin
 fi
 #
 #-----------------------------------------------------------------------

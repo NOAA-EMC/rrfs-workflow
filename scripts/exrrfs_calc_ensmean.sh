@@ -48,28 +48,6 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-# Specify the set of valid argument names for this script/function.  
-# Then process the arguments provided to this script/function (which 
-# should consist of a set of name-value pairs of the form arg1="value1",
-# etc).
-#
-#-----------------------------------------------------------------------
-#
-valid_args=( "cycle_type" "comout" "ensmeandir" )
-process_args valid_args "$@"
-#
-#-----------------------------------------------------------------------
-#
-# For debugging purposes, print out values of arguments passed to this
-# script.  Note that these will be printed out only if VERBOSE is set to
-# TRUE.
-#
-#-----------------------------------------------------------------------
-#
-print_input_args valid_args
-#
-#-----------------------------------------------------------------------
-#
 # Set environment
 #
 
@@ -105,7 +83,6 @@ case $MACHINE in
   ;;
 #
 esac
-
 #
 #-----------------------------------------------------------------------
 #
@@ -124,16 +101,13 @@ MM=${YYYYMMDDHH:4:2}
 DD=${YYYYMMDDHH:6:2}
 HH=${YYYYMMDDHH:8:2}
 YYYYMMDD=${YYYYMMDDHH:0:8}
-
-cd ${ensmeandir}
-
 #
 #--------------------------------------------------------------------
 #
 # loop through ensemble members to link all the member files
 #
 
-if [ ${cycle_type} == "spinup" ]; then
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
   fg_restart_dirname=fcst_fv3lam_spinup
 else
   fg_restart_dirname=fcst_fv3lam
@@ -154,11 +128,11 @@ for imem in  $(seq 1 $nens)
     ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem${memberstring}_tracer
     ln -sf ${bkpath}/sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
     if [ $imem -eq 1 ]; then
-# Prepare the data structure for ensemble mean
+      # Prepare the data structure for ensemble mean
       cp -f ${bkpath}/fv_core.res.tile1.nc  fv3sar_tile1_dynvar
       cp -f ${bkpath}/fv_tracer.res.tile1.nc  fv3sar_tile1_tracer
       cp -f ${bkpath}/sfc_data.nc  fv3sar_tile1_sfcvar
-# Prepare other needed files for GSI observer run
+      # Prepare other needed files for GSI observer run
       cp -f ${bkpath}/coupler.res coupler.res
       ln -snf ${bkpath}/fv_core.res.nc fv_core.res.nc
       ln -snf ${bkpath}/fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
@@ -200,25 +174,15 @@ EOF
 #
 # Run executable to calculate the ensemble mean
 #
+#-----------------------------------------------------------------------
+#
+export pgm="ens_mean_recenter_P2DIO.exe"
+. prep_step
 
-echo pwd is `pwd`
-ENSMEAN_EXEC=${EXECdir}/ens_mean_recenter_P2DIO.exe
-
-if [ -f ${ENSMEAN_EXEC} ]; then 
-  print_info_msg "$VERBOSE" "
-Copying the ensemble mean executable to the run directory..."
-  cp ${ENSMEAN_EXEC} ${ensmeandir}/.
-else
-  err_exit "\
-The ensemble mean executable specified in ENSMEAN_EXEC does not exist:
-  ENSMEAN_EXEC = \"${ENSMEAN_EXEC}\"
-Build ENSMEAN_EXEC and rerun." 
-fi
-
-${APRUN} ${ENSMEAN_EXEC}  < namelist.ens > stdout_ensmean 2>&1
+${APRUN} ${EXECdir}/$pgm < namelist.ens >>$pgmout 2>errfile
 export err=$?; err_chk
 
-cp stdout_ensmean ${comout}/stdout.t${HH}z.ensmean
+#cp stdout_ensmean ${COMOUT}/stdout.t${HH}z.ensmean
 #
 #-----------------------------------------------------------------------
 #
@@ -237,13 +201,12 @@ ln -s fv3sar_tile1_sfcvar sfc_data.nc
 for files in fv3sar_tile1_dynvar  fv3sar_tile1_sfcvar  fv3sar_tile1_tracer  ; do
   ncatted -a checksum,,d,,  $files
 done
-
 #
 #-----------------------------------------------------------------------
 #
 # touch a file to show completion of the task
 #
-touch ${comout}/calc_ensmean_complete.txt
+touch ${COMOUT}/calc_ensmean_complete.txt
 #
 #-----------------------------------------------------------------------
 #
