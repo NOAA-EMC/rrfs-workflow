@@ -148,6 +148,22 @@ This is the J-job script for the task that generates grid files.
 #
 #-----------------------------------------------------------------------
 #
+# Create the (cycle-independent) subdirectories under the experiment
+# directory (EXPTDIR) that are needed by the various steps and substeps
+# in this script.
+#
+#-----------------------------------------------------------------------
+#
+check_for_preexist_dir_file "${GRID_DIR}" "${PREEXISTING_DIR_METHOD}"
+mkdir -p "${GRID_DIR}"
+
+export tmpdir="${GRID_DIR}/tmp"
+mkdir -p "$tmpdir"
+
+cd "$tmpdir"
+#
+#-----------------------------------------------------------------------
+#
 # Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------

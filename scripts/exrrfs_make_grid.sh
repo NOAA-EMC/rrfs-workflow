@@ -125,20 +125,6 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-# Create the (cycle-independent) subdirectories under the experiment
-# directory (EXPTDIR) that are needed by the various steps and substeps
-# in this script.
-#
-#-----------------------------------------------------------------------
-#
-check_for_preexist_dir_file "${GRID_DIR}" "${PREEXISTING_DIR_METHOD}"
-mkdir -p "${GRID_DIR}"
-
-tmpdir="${GRID_DIR}/tmp"
-mkdir -p "$tmpdir"
-#
-#-----------------------------------------------------------------------
-#
 # Generate grid files.
 #
 # The following will create 7 grid files (one per tile, where the 7th
@@ -242,12 +228,6 @@ mkdir -p "$tmpdir"
 #
 #-----------------------------------------------------------------------
 #
-
-#
-# Change location to the temporary (work) directory.
-#
-cd "$tmpdir"
-
 print_info_msg "$VERBOSE" "
 Starting grid file generation..."
 #

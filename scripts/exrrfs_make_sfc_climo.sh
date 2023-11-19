@@ -88,14 +88,6 @@ nprocs=$(( NNODES_MAKE_SFC_CLIMO * PPN_MAKE_SFC_CLIMO ))
 #
 #-----------------------------------------------------------------------
 #
-# Change location to the temporary directory.
-#
-#-----------------------------------------------------------------------
-#
-cd $workdir
-#
-#-----------------------------------------------------------------------
-#
 # Create the namelist that the sfc_climo_gen code will read in.
 #
 # Question: Should this instead be created from a template file?

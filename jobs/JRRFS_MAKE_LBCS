@@ -9,6 +9,9 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
+
+date
+export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
@@ -54,9 +57,8 @@ hour zero).
 #
 #-----------------------------------------------------------------------
 #
-lbcs_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/lbcs"
+export lbcs_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/lbcs"
 mkdir -p "${lbcs_dir}"
-
 #
 #-----------------------------------------------------------------------
 #
@@ -66,9 +68,12 @@ mkdir -p "${lbcs_dir}"
 #
 #-----------------------------------------------------------------------
 #
-lbcs_nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/lbcs"
+export lbcs_nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/lbcs"
 mkdir -p "${lbcs_nwges_dir}"
 
+export workdir="${lbcs_dir}/tmp_LBCS_${bcgrp}"
+mkdir -p "$workdir"
+cd $workdir
 #
 #-----------------------------------------------------------------------
 #
@@ -76,12 +81,17 @@ mkdir -p "${lbcs_nwges_dir}"
 #
 #-----------------------------------------------------------------------
 #
+export pgmout=OUTPUT.$$
+env
+
 $SCRIPTSdir/exrrfs_make_lbcs.sh \
-  lbcs_dir="${lbcs_dir}" \
-  lbcs_nwges_dir="${lbcs_nwges_dir}" \
   bcgrp="${bcgrp}" \
   bcgrpnum="${bcgrpnum}"
 export err=$?; err_chk
+
+if [ -e "$pgmout" ]; then
+  cat $pgmout
+fi
 #
 #-----------------------------------------------------------------------
 #

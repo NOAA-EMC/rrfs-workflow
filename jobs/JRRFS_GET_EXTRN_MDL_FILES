@@ -30,6 +30,9 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
+
+date
+export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
@@ -259,6 +262,9 @@ extrn_mdl_fns_in_arcv_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_in_arcv[@]}" 
 extrn_mdl_arcv_fns_str="( "$( printf "\"%s\" " "${extrn_mdl_arcv_fns[@]}" )")"
 extrn_mdl_arcv_fps_str="( "$( printf "\"%s\" " "${extrn_mdl_arcv_fps[@]}" )")"
 
+export pgmout=OUTPUT.$$
+env
+
 $SCRIPTSdir/exrrfs_get_extrn_mdl_files.sh \
   ics_or_lbcs="${ICS_OR_LBCS}" \
   use_user_staged_extrn_files="${USE_USER_STAGED_EXTRN_FILES}" \
@@ -275,6 +281,10 @@ $SCRIPTSdir/exrrfs_get_extrn_mdl_files.sh \
   extrn_mdl_arcv_fps="${extrn_mdl_arcv_fps_str}" \
   extrn_mdl_arcvrel_dir="${extrn_mdl_arcvrel_dir}"
 export err=$?; err_chk
+
+if [ -e "$pgmout" ]; then
+  cat $pgmout
+fi
 #
 #-----------------------------------------------------------------------
 #

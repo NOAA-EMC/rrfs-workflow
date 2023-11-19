@@ -126,37 +126,9 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-# Create the (cycle-independent) subdirectories under the experiment
-# directory (EXPTDIR) that are needed by the various steps and substeps
-# in this script.
-#
-#-----------------------------------------------------------------------
-#
-check_for_preexist_dir_file "${OROG_DIR}" "${PREEXISTING_DIR_METHOD}"
-mkdir -p "${OROG_DIR}"
-
-raw_dir="${OROG_DIR}/raw_topo"
-mkdir -p "${raw_dir}"
-
-filter_dir="${OROG_DIR}/filtered_topo"
-mkdir -p "${filter_dir}"
-
-shave_dir="${OROG_DIR}/shave_tmp"
-mkdir -p "${shave_dir}"
-#
-#
-#-----------------------------------------------------------------------
-#
 # Preparatory steps before calling raw orography generation code.
 #
 #-----------------------------------------------------------------------
-#
-# Create a temporary (work) directory in which to generate the raw orography
-# file and change location to it.
-#
-tmp_dir="${raw_dir}/tmp"
-mkdir -p "${tmp_dir}"
-cd "${tmp_dir}"
 #
 # Copy topography and related data files from the system directory (TOPO_DIR)
 # to the temporary directory.
@@ -200,8 +172,6 @@ grid_fp="${FIXLAM}/${grid_fn}"
 #-----------------------------------------------------------------------
 #
 mtnres=1
-#lonb=$res
-#latb=$res
 lonb=0
 latb=0
 jcap=0
