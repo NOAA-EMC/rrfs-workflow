@@ -75,10 +75,10 @@ cd $workdir
 #
 #-----------------------------------------------------------------------
 #
-export pgmout=OUTPUT.$$
+export pgmout="${workdir}/OUTPUT.$$"
 env
 
-${SCRIPTSdir}/exrrfs_make_sfc_climo.sh workdir="$workdir"
+${SCRIPTSdir}/exrrfs_make_sfc_climo.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

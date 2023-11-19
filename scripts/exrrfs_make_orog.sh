@@ -55,27 +55,6 @@ This is the ex-script for the task that generates orography files.
 #
 #-----------------------------------------------------------------------
 #
-# Specify the set of valid argument names for this script/function. Then
-# process the arguments provided to this script/function (which should
-# consist of a set of name-value pairs of the form arg1="value1", etc).
-#
-#-----------------------------------------------------------------------
-#
-valid_args=()
-process_args valid_args "$@"
-#
-#-----------------------------------------------------------------------
-#
-# For debugging purposes, print out values of arguments passed to this
-# script.  Note that these will be printed out only if VERBOSE is set to
-# TRUE.
-#
-#-----------------------------------------------------------------------
-#
-print_input_args valid_args
-#
-#-----------------------------------------------------------------------
-#
 # OpenMP environment settings.
 # The orography code is optimized for 6 threads.
 #
@@ -216,7 +195,7 @@ Starting orography file generation..."
 export pgm="orog"
 . prep_step
 
-$APRUN ${EXECdir}/$pgm < "${input_redirect_fn}" >>$pgmout 2>errfile
+$APRUN ${EXECdir}/$pgm < "${input_redirect_fn}" >>$pgmout 2>${tmp_dir}/errfile
 export err=$?; err_chk
 #
 # Change location to the original directory.
@@ -277,7 +256,7 @@ Starting orography file generation..."
 
   export pgm="orog_gsl"
 
-  ${APRUN} ${EXECdir}/$pgm < "${input_redirect_fn}" >>$pgmout 2>>errfile
+  ${APRUN} ${EXECdir}/$pgm < "${input_redirect_fn}" >>$pgmout 2>>${tmp_dir}/errfile
   export err=$?; err_chk
 
   mv "${CRES}${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc" \
@@ -394,7 +373,7 @@ Starting filtering of orography..."
 
 export pgm="filter_topo"
 
-$APRUN ${EXECdir}/$pgm >>$pgmout 2>>errfile
+$APRUN ${EXECdir}/$pgm >>$pgmout 2>>${tmp_dir}/errfile
 export err=$?; err_chk
 #
 # For clarity, rename the filtered orography file in filter_dir
@@ -451,7 +430,7 @@ printf "%s %s %s %s %s\n" \
 
 export pgm="shave"
 
-$APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>>errfile
+$APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>>${tmp_dir}/errfile
 export err=$?; err_chk
 mv ${shaved_fp} ${OROG_DIR}
 #
@@ -470,7 +449,7 @@ printf "%s %s %s %s %s\n" \
   $NX $NY ${NH4} \"${unshaved_fp}\" \"${shaved_fp}\" \
   > ${nml_fn}
 
-$APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>>errfile
+$APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>>${tmp_dir}/errfile
 export err=$?; err_chk
 mv "${shaved_fp}" "${OROG_DIR}"
 #

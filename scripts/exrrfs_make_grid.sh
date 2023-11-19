@@ -265,7 +265,7 @@ if [ "${GRID_GEN_METHOD}" = "GFDLgrid" ]; then
     --iend_nest ${IEND_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG} \
     --jend_nest ${JEND_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG} \
     --halo 1 \
-    --great_circle_algorithm >>$pgmout 2>errfile
+    --great_circle_algorithm >>$pgmout 2>${tmpdir}/errfile
   export err=$?; err_chk
 
 #
@@ -321,7 +321,7 @@ $settings"
   export pgm="regional_esg_grid"
   . prep_step
 
-  $APRUN ${EXECdir}/$pgm ${rgnl_grid_nml_fp} >>$pgmout 2>errfile
+  $APRUN ${EXECdir}/$pgm ${rgnl_grid_nml_fp} >>$pgmout 2>${tmpdir}/errfile
   export err=$?; err_chk
 
 #
@@ -350,7 +350,7 @@ Grid file generation completed successfully."
 #-----------------------------------------------------------------------
 #
 export pgm="global_equiv_resol"
-$APRUN ${EXECdir}/$pgm "${grid_fp}" >>$pgmout 2>>errfile
+$APRUN ${EXECdir}/$pgm "${grid_fp}" >>$pgmout 2>>${tmpdir}/errfile
 export err=$?; err_chk
 
 # Make the following (reading of res_equiv) a function in another file
@@ -459,7 +459,7 @@ printf "%s %s %s %s %s\n" \
   > ${nml_fn}
 
 export pgm="shave"
-$APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>>errfile
+$APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>>${tmpdir}/errfile
 export err=$?; err_chk
 
 mv ${shaved_fp} ${GRID_DIR}
@@ -479,7 +479,7 @@ printf "%s %s %s %s %s\n" \
   $NX $NY ${NH4} \"${unshaved_fp}\" \"${shaved_fp}\" \
   > ${nml_fn}
 
-$APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>>errfile
+$APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>>${tmpdir}/errfile
 export err=$?; err_chk
 
 mv ${shaved_fp} ${GRID_DIR}
@@ -497,7 +497,7 @@ printf "%s %s %s %s %s\n" \
   $NX $NY "0" \"${unshaved_fp}\" \"${shaved_fp}\" \
   > ${nml_fn}
 
-$APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>>errfile
+$APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>>${tmpdir}/errfile
 export err=$?; err_chk
 
 mv ${shaved_fp} ${GRID_DIR}

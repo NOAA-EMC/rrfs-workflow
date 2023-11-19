@@ -78,7 +78,7 @@ cd "${tmp_dir}"
 #
 #-----------------------------------------------------------------------
 #
-export pgmout=OUTPUT.$$
+export pgmout="${tmp_dir}/OUTPUT.$$"
 env
 
 ${SCRIPTSdir}/exrrfs_make_orog.sh

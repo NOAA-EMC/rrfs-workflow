@@ -168,7 +168,7 @@ cd "$tmpdir"
 #
 #-----------------------------------------------------------------------
 #
-export pgmout=OUTPUT.$$
+export pgmout="${tmpdir}/OUTPUT.$$"
 env
 
 ${SCRIPTSdir}/exrrfs_make_grid.sh

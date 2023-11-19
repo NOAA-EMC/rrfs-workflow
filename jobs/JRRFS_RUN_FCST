@@ -93,7 +93,7 @@ cd ${run_dir}
 #
 #-----------------------------------------------------------------------
 #
-export pgmout=OUTPUT.$$
+export pgmout="${run_dir}/OUTPUT.$$"
 env
 
 $SCRIPTSdir/exrrfs_run_fcst.sh \
@@ -101,7 +101,7 @@ $SCRIPTSdir/exrrfs_run_fcst.sh \
   cycle_type="${CYCLE_TYPE}" \
   cycle_subtype="${CYCLE_SUBTYPE}" \
   ensmem_indx="${ENSMEM_INDX}" \
-  slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}" \
+  slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}"
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

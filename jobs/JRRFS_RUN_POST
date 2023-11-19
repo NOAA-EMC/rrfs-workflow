@@ -115,7 +115,7 @@ cd "${fhr_dir}"
 #
 #-----------------------------------------------------------------------
 #
-export pgmout=OUTPUT.$$
+export pgmout="${fhr_dir}/OUTPUT.$$"
 env
 
 $SCRIPTSdir/exrrfs_run_post.sh \

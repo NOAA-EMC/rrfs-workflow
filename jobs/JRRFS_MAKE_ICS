@@ -81,7 +81,7 @@ cd $workdir
 #
 #-----------------------------------------------------------------------
 #
-export pgmout=OUTPUT.$$
+export pgmout="${workdir}/OUTPUT.$$"
 env
 
 $SCRIPTSdir/exrrfs_make_ics.sh
