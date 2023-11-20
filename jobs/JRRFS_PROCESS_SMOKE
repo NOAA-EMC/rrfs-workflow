@@ -14,6 +14,9 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
+
+date
+export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
@@ -57,15 +60,16 @@ preprocess with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-if [ ${CYCLE_TYPE} == "spinup" ]; then
-  workdir=${CYCLE_DIR}/process_smoke_spinup
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export workdir=${CYCLE_DIR}/process_smoke_spinup
 else
-  workdir=${CYCLE_DIR}/process_smoke
+  export workdir=${CYCLE_DIR}/process_smoke
 fi
 rm -fr ${workdir}
 mkdir -p ${workdir}
+cd ${workdir}
 
-gridspec_dir=${NWGES_BASEDIR}/grid_spec
+export gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #
 #-----------------------------------------------------------------------
 #
@@ -75,15 +79,18 @@ gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #
 #-----------------------------------------------------------------------
 #
-rave_nwges_dir=${NWGES_DIR}/RAVE_INTP
+export rave_nwges_dir=${NWGES_DIR}/RAVE_INTP
 mkdir -p "${rave_nwges_dir}"
+#
 #-----------------------------------------------------------------------
 #
 # Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
-cd ${workdir}
+export pgmout="${workdir}/OUTPUT.$$"
+env
+
 python -u ${SCRIPTSdir}/exrrfs_process_smoke.py \
   "${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}" \
   "${FIRE_RAVE_DIR}" \
@@ -140,7 +147,6 @@ done
 echo ${files2cat[*]}
 ncrcat ${files2cat[*]} ${output_filename} 
 cp ${output_filename}  ${rave_nwges_dir}
-
 #
 #-----------------------------------------------------------------------
 #

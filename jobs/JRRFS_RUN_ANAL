@@ -16,6 +16,9 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
+
+date
+export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
@@ -62,10 +65,10 @@ the specified cycle.
 #   spinup: this job is for spin-up cycles
 #   others(prod): this job is for product cycle
 #
-CYCLE_TYPE=${CYCLE_TYPE:-prod}
-observer_nwges_dir=""
+export CYCLE_TYPE=${CYCLE_TYPE:-prod}
+export observer_nwges_dir=""
 
-if [ ${CYCLE_TYPE} == "spinup" ]; then
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
   analworkname="_gsi_spinup"
 else
   analworkname="_gsi"
@@ -74,22 +77,23 @@ fi
 if [[ ! -v OB_TYPE ]]; then
   OB_TYPE="conv"
 fi
-if [ ${GSI_TYPE} == "OBSERVER" ]; then
-  if [ ${MEM_TYPE} == "MEAN" ]; then
-    analworkdir="${CYCLE_DIR}/ensmean/observer${analworkname}"
+if [ "${GSI_TYPE}" = "OBSERVER" ]; then
+  if [ "${MEM_TYPE}" = "MEAN" ]; then
+    export analworkdir="${CYCLE_DIR}/ensmean/observer${analworkname}"
     SLASH_ENSMEM_SUBDIR=""
     observer_nwges_dir="${NWGES_DIR}/ensmean/observer${analworkname}"
   else
-    analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/observer${analworkname}"
+    export analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/observer${analworkname}"
     observer_nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/observer${analworkname}"
   fi
   mkdir -p ${observer_nwges_dir}
 else
-  analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/anal_${OB_TYPE}${analworkname}"
+  export analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/anal_${OB_TYPE}${analworkname}"
 fi
 
 rm -fr ${analworkdir}
 mkdir -p ${analworkdir}
+cd ${analworkdir}
 
 if [ ! -d "${SATBIAS_DIR}" ]; then
   echo "making satbias_dir directory for cycling bias correction files" 
@@ -97,8 +101,8 @@ if [ ! -d "${SATBIAS_DIR}" ]; then
 fi
 
 # Folder for storing EnKF related satbias files
-if [ ${GSI_TYPE} == "OBSERVER" ]; then
-  if [ ${MEM_TYPE} == "MEAN" ]; then
+if [ "${GSI_TYPE}" = "OBSERVER" ]; then
+  if [ "${MEM_TYPE}" = "MEAN" ]; then
     if [ ! -d "${SATBIAS_DIR}_ensmean" ]; then
       echo "making satbias_dir ensmean directory for cycling bias correction files" 
       mkdir -p ${SATBIAS_DIR}_ensmean
@@ -108,7 +112,7 @@ fi
 #
 #  directory has grid_spec files for restart subdomains
 #
-gridspec_dir=${NWGES_BASEDIR}/grid_spec
+export gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #
 #-----------------------------------------------------------------------
 #
@@ -116,13 +120,13 @@ gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #
 #-----------------------------------------------------------------------
 #
-if [ ${CYCLE_TYPE} == "spinup" ]; then
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
 else
-  if [ ${MEM_TYPE} == "MEAN" ]; then
-    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc/ensmean"
+  if [ "${MEM_TYPE}" = "MEAN" ]; then
+    export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc/ensmean"
   else
-    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}${SLASH_ENSMEM_SUBDIR}"
+    export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}${SLASH_ENSMEM_SUBDIR}"
   fi
 fi
 mkdir -p "${COMOUT}"
@@ -133,20 +137,22 @@ mkdir -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #
+export pgmout="${analworkdir}/OUTPUT.$$"
+env
+
 $SCRIPTSdir/exrrfs_run_analysis.sh \
              cycle_dir="${CYCLE_DIR}" \
-             cycle_type="${CYCLE_TYPE}" \
              gsi_type="${GSI_TYPE}" \
              mem_type="${MEM_TYPE}" \
-             analworkdir="${analworkdir}" \
-             observer_nwges_dir="${observer_nwges_dir}" \
              slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}" \
-             comout="${COMOUT}" \
              rrfse_fg_root="${RRFSE_NWGES_BASEDIR}" \
              satbias_dir="${SATBIAS_DIR}" \
-             ob_type="${OB_TYPE}" \
-             gridspec_dir="${gridspec_dir}"
+             ob_type="${OB_TYPE}"
 export err=$?; err_chk
+
+if [ -e "$pgmout" ]; then
+  cat $pgmout
+fi
 #
 #-----------------------------------------------------------------------
 #

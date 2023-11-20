@@ -181,8 +181,6 @@ export pgm="ens_mean_recenter_P2DIO.exe"
 
 ${APRUN} ${EXECdir}/$pgm < namelist.ens >>$pgmout 2>errfile
 export err=$?; err_chk
-
-#cp stdout_ensmean ${COMOUT}/stdout.t${HH}z.ensmean
 #
 #-----------------------------------------------------------------------
 #
