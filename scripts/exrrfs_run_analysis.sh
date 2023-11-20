@@ -1072,6 +1072,7 @@ if [ $binary_diag = ".true." ]; then
       count=$(ls pe*.${type}_${loop} | wc -l)
       if [[ $count -gt 0 ]]; then
          $(cat pe*.${type}_${loop} > diag_${type}_${string}.${YYYYMMDDHH})
+         cp diag_${type}_${string}.${YYYYMMDDHH} $comout
          echo "diag_${type}_${string}.${YYYYMMDDHH}" >> listrad_bin
          numfile_rad_bin=`expr ${numfile_rad_bin} + 1`
       fi
