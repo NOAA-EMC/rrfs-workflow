@@ -197,6 +197,7 @@ export pgm="orog"
 
 $APRUN ${EXECdir}/$pgm < "${input_redirect_fn}" >>$pgmout 2>${tmp_dir}/errfile
 export err=$?; err_chk
+mv ${tmpdir}/errfile ${tmpdir}/errfile_orog
 #
 # Change location to the original directory.
 #
@@ -255,9 +256,11 @@ EOF
 Starting orography file generation..."
 
   export pgm="orog_gsl"
+  . prep_step
 
-  ${APRUN} ${EXECdir}/$pgm < "${input_redirect_fn}" >>$pgmout 2>>${tmp_dir}/errfile
+  ${APRUN} ${EXECdir}/$pgm < "${input_redirect_fn}" >>$pgmout 2>${tmp_dir}/errfile
   export err=$?; err_chk
+  mv ${tmpdir}/errfile ${tmpdir}/errfile_orog_gsl
 
   mv "${CRES}${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc" \
           "${CRES}${DOT_OR_USCORE}oro_data_ls.tile${TILE_RGNL}.halo${NH0}.nc" \
@@ -372,9 +375,11 @@ print_info_msg "$VERBOSE" "
 Starting filtering of orography..."
 
 export pgm="filter_topo"
+. prep_step
 
-$APRUN ${EXECdir}/$pgm >>$pgmout 2>>${tmp_dir}/errfile
+$APRUN ${EXECdir}/$pgm >>$pgmout 2>${tmp_dir}/errfile
 export err=$?; err_chk
+mv ${tmpdir}/errfile ${tmpdir}/errfile_filter_topo
 #
 # For clarity, rename the filtered orography file in filter_dir
 # such that its new name contains the halo size.
@@ -429,9 +434,12 @@ printf "%s %s %s %s %s\n" \
   > ${nml_fn}
 
 export pgm="shave"
+. prep_step
 
-$APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>>${tmp_dir}/errfile
+$APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>${tmp_dir}/errfile
 export err=$?; err_chk
+mv ${tmpdir}/errfile ${tmpdir}/errfile_shave_nh0
+
 mv ${shaved_fp} ${OROG_DIR}
 #
 # Create an input namelist file for the shave executable to generate an
@@ -449,8 +457,12 @@ printf "%s %s %s %s %s\n" \
   $NX $NY ${NH4} \"${unshaved_fp}\" \"${shaved_fp}\" \
   > ${nml_fn}
 
-$APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>>${tmp_dir}/errfile
+. prep_step
+
+$APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>${tmp_dir}/errfile
 export err=$?; err_chk
+mv ${tmpdir}/errfile ${tmpdir}/errfile_shave_nh4
+
 mv "${shaved_fp}" "${OROG_DIR}"
 #
 # Change location to the original directory.

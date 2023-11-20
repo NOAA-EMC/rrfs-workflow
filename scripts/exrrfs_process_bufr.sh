@@ -235,6 +235,7 @@ export pgm="process_Lightning.exe"
 if [[ "$run_lightning" == true ]]; then
   $APRUN ${EXECdir}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
+  mv errfile errfile_lightning
 
   cp LightningInFV3LAM.dat ${COMOUT}/rrfs.t${HH}z.LightningInFV3LAM.bin
 fi
@@ -296,9 +297,11 @@ EOF
 #-----------------------------------------------------------------------
 #
 export pgm="process_larccld.exe"
+. prep_step
 if [[ "$run_cloud" == true ]]; then
-  $APRUN ${EXECdir} >>pgmout 2>>errfile
+  $APRUN ${EXECdir}/$pgm >>pgmout 2>errfile
   export err=$?; err_chk
+  mv errfile errfile_larccld
 
   cp NASALaRC_cloud4fv3.bin $COMOUT/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
 fi
@@ -348,9 +351,11 @@ EOF
 #-----------------------------------------------------------------------
 #
 export pgm="process_metarcld.exe"
+. prep_step
 if [[ "$run_metar" == true ]]; then
-  $APRUN ${EXECdir}/$pgm >>$pgmout 2>>errfile
+  $APRUN ${EXECdir}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
+  mv errfile errfile_metarcld
 
   cp fv3_metarcloud.bin $COMOUT/rrfs.t${HH}z.fv3_metarcloud.bin
 fi

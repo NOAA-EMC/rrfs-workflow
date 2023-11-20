@@ -261,6 +261,7 @@ EOF
 
   ${APRUNC} ${EXECdir}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
+  mv errfile errfile_rrfs_bufr
 
   echo DONE $fhr at `date`
 
@@ -302,9 +303,11 @@ FCST_LEN_HRS=$FHRLIM
 echo "$nlev $NSTAT $FCST_LEN_HRS" > itag
 
 export pgm="rrfs_sndp.exe"
+. prep_step
 
-${APRUNS} ${EXECdir}/$pgm < itag >>$pgmout 2>>errfile
+${APRUNS} ${EXECdir}/$pgm < itag >>$pgmout 2>errfile
 export err=$?; err_chk
+mv errfile errfile_rrfs_sndp
 
 SENDCOM=YES
 
@@ -336,9 +339,11 @@ export DIRD=${COMOUT}/bufr.${NEST}${MODEL}${cyc}/${NEST}${MODEL}bufr
 echo "before stnmlist.exe"
 
 export pgm="rrfs_stnmlist.exe"
+. prep_step
 
-${APRUNS} ${EXECdir}/$pgm < stnmlist_input >>$pgmout 2>>errfile
+${APRUNS} ${EXECdir}/$pgm < stnmlist_input >>$pgmout 2>errfile
 export err=$?; err_chk
+mv errfile errfile_rrfs_stnmlist
 
 echo "after stnmlist.exe"
 
