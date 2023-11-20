@@ -36,8 +36,6 @@ HLCY:3000-0 m above ground:
 HLCY:1000-0 m above ground:
 UPHL:5000-2000 m above ground:
 RETOP:entire atmosphere (considered as a single layer):
-VIL:entire atmosphere:
-VIL:entire atmosphere (considered as a single layer):
 HGT:300 mb:
 UGRD:300 mb:
 VGRD:300 mb:
@@ -77,6 +75,9 @@ CICEP:surface:
 CFRZR:surface:
 CRAIN:surface:
 CPOFP:surface:
+HGT:0C isotherm:
+HGT:highest tropospheric freezing level:
+LAYTH:261 K level - 256 K level:
 TMP:30-0 mb above ground:
 RH:30-0 mb above ground:
 DPT:30-0 mb above ground:
