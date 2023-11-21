@@ -57,12 +57,6 @@ the output files corresponding to a specified forecast hour.
 #
 valid_args=( \
 "cdate" \
-"run_dir" \
-"nwges_dir" \
-"surface_dir" \
-"fhr" \
-"cycle_type" \
-"cycle_subtype" \
 )
 process_args valid_args "$@"
 #
@@ -92,7 +86,6 @@ save_yyyy=${save_time:0:4}
 save_mm=${save_time:4:2}
 save_dd=${save_time:6:2}
 save_hh=${save_time:8:2}
-
 # 
 #-----------------------------------------------------------------------
 #
@@ -108,7 +101,7 @@ filelistcold="gfs_data.tile7.halo0.nc sfc_data.tile7.halo0.nc"
 n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
-if [[ ${cycle_subtype} == "ensinit" ]] ; then
+if [ "${CYCLE_SUBTYPE} = "ensinit" ]; then
   restart_prefix=$( date "+%Y%m%d.%H%M%S" -d "${save_yyyy}${save_mm}${save_dd} ${save_hh} + ${DT_ATMOS} seconds" )
 else
   restart_prefix=${save_yyyy}${save_mm}${save_dd}.${save_hh}0000
@@ -122,7 +115,7 @@ if [ ! -r ${nwges_dir}/INPUT/gfs_ctrl.nc ]; then
 fi
 
 if [ -r "$run_dir/RESTART/${restart_prefix}.coupler.res" ]; then
-  if [ "${IO_LAYOUT_Y}" == "1" ]; then
+  if [ "${IO_LAYOUT_Y}" = "1" ]; then
     for file in ${filelistn}; do
       mv $run_dir/RESTART/${restart_prefix}.${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
     done
@@ -142,7 +135,7 @@ if [ -r "$run_dir/RESTART/${restart_prefix}.coupler.res" ]; then
 else
 
   FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS}
-  if [ ${cycle_type} == "spinup" ]; then
+  if [ "${CYCLE_TYPE}" = "spinup" ]; then
     FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS_SPINUP}
   else
     num_fhrs=( "${#FCST_LEN_HRS_CYCLES[@]}" )
@@ -154,8 +147,8 @@ else
   print_info_msg "$VERBOSE" " The forecast length for cycle (\"${hh}\") is
                  ( \"${FCST_LEN_HRS_thiscycle}\") "
 
-  if [ -r "$run_dir/RESTART/${restart_prefix}.coupler.res" ] && ([ ${fhr} -eq ${FCST_LEN_HRS_thiscycle} ] || [ ${cycle_subtype} == "ensinit" ]) ; then
-    if [ "${IO_LAYOUT_Y}" == "1" ]; then
+  if [ -r "$run_dir/RESTART/${restart_prefix}.coupler.res" ] && ([ ${fhr} -eq ${FCST_LEN_HRS_thiscycle} ] || [ "${CYCLE_SUBTYPE}" = "ensinit" ]); then
+    if [ "${IO_LAYOUT_Y}" = "1" ]; then
       for file in ${filelistn}; do
         mv $run_dir/RESTART/${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
       done
@@ -176,14 +169,13 @@ else
     echo "This forecast hour does not need to save restart: ${yyyymmdd}${hh}f${fhr}"
   fi
 fi
-
 #
 #-----------------------------------------------------------------------
 # save surface data
 #-----------------------------------------------------------------------
 #
-if [ ${cycle_type} == "prod" ] && [ ${cycle_subtype} == "control" ]; then
-  if [ "${IO_LAYOUT_Y}" == "1" ]; then
+if [ "${CYCLE_TYPE}" = "prod" ] && [ "${CYCLE_SUBTYPE}" = "control" ]; then
+  if [ "${IO_LAYOUT_Y}" = "1" ]; then
     cp ${nwges_dir}/RESTART/${restart_prefix}.sfc_data.nc ${surface_dir}/${restart_prefix}.sfc_data.nc.${cdate}
   else
     for ii in ${list_iolayout}
@@ -193,7 +185,6 @@ if [ ${cycle_type} == "prod" ] && [ ${cycle_subtype} == "control" ]; then
     done
   fi
 fi
-
 #
 #-----------------------------------------------------------------------
 # save input
@@ -202,7 +193,7 @@ fi
 if [ "${if_save_input}" = TRUE ]; then
   if [ "${DO_SAVE_INPUT}" = TRUE ]; then
     if [ -r ${run_dir}/INPUT/coupler.res ]; then  # warm start
-      if [ "${IO_LAYOUT_Y}" == "1" ]; then
+      if [ "${IO_LAYOUT_Y}" = "1" ]; then
         for file in ${filelistn}; do
           cp $run_dir/INPUT/${file} ${nwges_dir}/INPUT/${file}
         done
@@ -225,7 +216,6 @@ if [ "${if_save_input}" = TRUE ]; then
     fi
   fi
 fi
-
 #
 #-----------------------------------------------------------------------
 #

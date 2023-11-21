@@ -17,6 +17,9 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
+
+date
+export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
@@ -65,14 +68,14 @@ on the output files corresponding to a specified forecast hour.
 #
 # NWGES_DIR is the directory in which the model IC file (DA analysis) will be saved
 #
-CYCLE_TYPE=${CYCLE_TYPE:-prod}
-CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
-if [ ${CYCLE_TYPE} == "prod" ]; then
-  run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
-  nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
+export CYCLE_TYPE=${CYCLE_TYPE:-prod}
+if [ "${CYCLE_TYPE}" = "prod" ]; then
+  export run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
+  export nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
 fi
 
 mkdir -p "${nwges_dir}/DA_OUTPUT"
+cd "${nwges_dir}/DA_OUTPUT"
 #
 #-----------------------------------------------------------------------
 #
@@ -80,13 +83,18 @@ mkdir -p "${nwges_dir}/DA_OUTPUT"
 #
 #-----------------------------------------------------------------------
 #
+export pgmout="${nwges_dir}/DA_OUTPUT/OUTPUT.$$"
+env
+
 $SCRIPTSdir/exrrfs_save_da_output.sh \
   cdate="${CDATE}" \
   run_dir="${run_dir}" \
-  nwges_dir="${nwges_dir}" \
-  cycle_type="${CYCLE_TYPE}"  \
-  cycle_subtype="${CYCLE_SUBTYPE}"
+  nwges_dir="${nwges_dir}"
 export err=$?; err_chk
+
+if [ -e "$pgmout" ]; then
+  cat $pgmout
+fi
 #
 #-----------------------------------------------------------------------
 #
