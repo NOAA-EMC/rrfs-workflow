@@ -388,7 +388,11 @@ case "${anl_or_fcst}" in
 
       elif [ "${fv3gfs_file_fmt}" = "netcdf" ]; then
         fns=( "atm" "sfc" )
-        suffix="anl.nc"
+        if [ "${fcst_hh}" = "00" ]; then
+          suffix="anl.nc"
+        else
+          suffix="f0${fcst_hh}.nc"
+        fi
         fns=( "${fns[@]/%/$suffix}" )
 
         # Set names of external files if searching on disk.
