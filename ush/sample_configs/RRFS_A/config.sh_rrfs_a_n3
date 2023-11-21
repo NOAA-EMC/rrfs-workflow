@@ -123,6 +123,6 @@ NWGES="/lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/rrfs/${version}/nwges"  # Path to direc
 if [[ ${regional_ensemble_option} == "5" ]]; then
   RRFSE_NWGES="/lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/rrfs/${version}/nwges"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
   NUM_ENS_MEMBERS=30     # FV3LAM ensemble size for GSI hybrid analysis
-  CYCL_HRS_PRODSTART_ENS=( "07" "19" )
+  CYCL_HRS_PRODSTART_ENS=( "08" "20" )
   DO_ENVAR_RADAR_REF="TRUE"
 fi
