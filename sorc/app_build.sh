@@ -498,12 +498,6 @@ if [ "${CLEAN}" = true ]; then
        printf "... Clean executables ...\n"
        make ${MAKE_SETTINGS} clean 2>&1 | tee log.make
     fi
-elif [ "${BUILD}" = true ]; then
-    printf "... Generate CMAKE configuration ...\n"
-    cmake ${SORC_DIR} ${CMAKE_SETTINGS} 2>&1 | tee log.cmake
-
-    printf "... Compile executables ...\n"
-    make ${MAKE_SETTINGS} build 2>&1 | tee log.make
 else
     printf "... Generate CMAKE configuration ...\n"
     cmake ${SORC_DIR} ${CMAKE_SETTINGS} 2>&1 | tee log.cmake
