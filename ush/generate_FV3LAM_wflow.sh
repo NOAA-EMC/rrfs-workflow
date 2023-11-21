@@ -597,15 +597,25 @@ $settings"
 #
 #-----------------------------------------------------------------------
 #
-print_info_msg "Generating the workflow launch script
-${EXPTDIR}/${WFLOW_LAUNCH_SCRIPT_FN}"
+print_info_msg "
+Creating symlink in the experiment directory (EXPTDIR) that points to the
+workflow launch script (WFLOW_LAUNCH_SCRIPT_FP):
+  EXPTDIR = \"${EXPTDIR}\"
+  WFLOW_LAUNCH_SCRIPT_FP = \"${WFLOW_LAUNCH_SCRIPT_FP}\""
+ln -fs "${WFLOW_LAUNCH_SCRIPT_FP}" "$EXPTDIR"
 
-cat > ${EXPTDIR}/${WFLOW_LAUNCH_SCRIPT_FN} <<EOF
-#!/bin/bash
-module load rocoto
-rocotorun -w "${WFLOW_XML_FN}" -d "${WFLOW_XML_FN%.*}.db"
-EOF
+print_info_msg "Generating an alternate simple launch script
+${EXPTDIR}/run_rocoto.sh"
 
+echo "#!/bin/bash" > ${EXPTDIR}/run_rocoto.sh
+if [[ $MACHINE == "wcoss2" ]] ; then
+  echo "module use /apps/ops/test/nco/modulefiles" >> ${EXPTDIR}/run_rocoto.sh
+  echo "module load core/rocoto/${rocoto_ver}" >> ${EXPTDIR}/run_rocoto.sh
+else
+  echo "module load rocoto" >> ${EXPTDIR}/run_rocoto.sh
+fi
+echo "rocotorun -w ${WFLOW_XML_FN} -d ${WFLOW_XML_FN%.*}.db" >> ${EXPTDIR}/run_rocoto.sh
+chmod +x ${EXPTDIR}/run_rocoto.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -1271,6 +1281,8 @@ For automatic resubmission of the workflow (say every 3 minutes), the
 following line can be added to the user's crontab (use \"crontab -e\" to
 edit the cron table):
 
+*/3 * * * * cd $EXPTDIR && ./run_rocoto.sh
+or
 */3 * * * * cd $EXPTDIR && ./launch_FV3LAM_wflow.sh
 
 NOTE: '-l' was removed from the first line of launch_FV3LAM_wflow.sh
