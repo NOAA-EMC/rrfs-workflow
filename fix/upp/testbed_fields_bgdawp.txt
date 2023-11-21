@@ -77,6 +77,9 @@ CICEP:surface:
 CFRZR:surface:
 CRAIN:surface:
 CPOFP:surface:
+HGT:0C isotherm:
+HGT:highest tropospheric freezing level:
+LAYTH:261 K level - 256 K level:
 TMP:30-0 mb above ground:
 RH:30-0 mb above ground:
 DPT:30-0 mb above ground:
