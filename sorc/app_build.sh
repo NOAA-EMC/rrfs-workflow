@@ -25,6 +25,8 @@ OPTIONS
   --disable-options="OPTION1,OPTION2,..."
       disable ufs-weather-model options; delimited with ','
       (e.g. 32BIT | INLINE_POST | UFS_GOCART | MOM6 | CICE6 | WW3 | CMEPS)
+  --extrn
+      check out external components
   --continue
       continue with existing build
   --remove
@@ -76,6 +78,7 @@ Settings:
   CCPP=${CCPP_SUITES}
   ENABLE_OPTIONS=${ENABLE_OPTIONS}
   DISABLE_OPTIONS=${DISABLE_OPTIONS}
+  EXTRN=${EXTRN}
   REMOVE=${REMOVE}
   CONTINUE=${CONTINUE}
   BUILD_TYPE=${BUILD_TYPE}
@@ -113,6 +116,7 @@ ENABLE_OPTIONS=""
 DISABLE_OPTIONS=""
 BUILD_TYPE="RELEASE"
 BUILD_JOBS=4
+EXTRN=false
 REMOVE=false
 CONTINUE=false
 VERBOSE=false
@@ -130,7 +134,7 @@ BUILD_AQM_UTILS="off"
 # Make options
 CLEAN=false
 BUILD=false
-MOVE=true
+MOVE=false
 USE_SUB_MODULES=false #change default to true later
 
 # process required arguments
@@ -155,6 +159,8 @@ while :; do
     --enable-options|--enable-options=) usage_error "$1 requires argument." ;;
     --disable-options=?*) DISABLE_OPTIONS=${1#*=} ;;
     --disable-options|--disable-options=) usage_error "$1 requires argument." ;;
+    --extrn) EXTRN=true ;;
+    --extrn=?*|--extrn=) usage_error "$1 argument ignored." ;;
     --remove) REMOVE=true ;;
     --remove=?*|--remove=) usage_error "$1 argument ignored." ;;
     --continue) CONTINUE=true ;;
@@ -200,6 +206,19 @@ PLATFORM="${PLATFORM,,}"
 COMPILER="${COMPILER,,}"
 EXTERNALS="${EXTERNALS^^}"
 
+# move the pre-compiled executables to the designated location and exit
+if [ "${BUILD}" = false ] && [ "${MOVE}" = true ]; then
+  if [[ ! ${HOME_DIR} -ef ${INSTALL_DIR} ]]; then
+    printf "... Moving pre-compiled executables to designated location ...\n"
+    mkdir -p ${HOME_DIR}/${BIN_DIR}
+    cd "${INSTALL_DIR}/${BIN_DIR}"
+    for file in *; do
+      [ -x "${file}" ] && mv "${file}" "${HOME_DIR}/${BIN_DIR}"
+    done
+  fi
+  exit 0
+fi
+
 # check if PLATFORM is set
 if [ -z $PLATFORM ] ; then
   # Automatically detect HPC platforms for wcoss2, hera, jet, orion, etc
@@ -213,6 +232,41 @@ fi
 # set PLATFORM (MACHINE)
 MACHINE="${PLATFORM}"
 printf "PLATFORM(MACHINE)=${PLATFORM}\n" >&2
+
+# check out external components specified in External.cfg
+if [ "${EXTRN}" = true ]; then
+  cd ${SORC_DIR}
+  # remove existing components
+  printf "... checking if external components exist ...\n"
+  if [ -d "${SORC_DIR}/UFS_UTILS" ]; then
+    printf "... removing UFS_UTILS ...\n"
+    rm -rf "${SORC_DIR}/UFS_UTILS"
+  fi
+  if [ -d "${SORC_DIR}/ufs-weather-model" ]; then
+    printf "... removing ufs-weather-model ...\n"
+    rm -rf "${SORC_DIR}/ufs-weather-model"
+  fi
+  if [ -d "${SORC_DIR}/UPP" ]; then
+    printf "... removing UPP ...\n"
+    rm -rf "${SORC_DIR}/UPP"
+  fi
+  if [ -d "${SORC_DIR}/rrfs_utl" ]; then
+    printf "... removing rrfs_utl ...\n"
+    rm -rf "${SORC_DIR}/rrfs_utl"
+  fi
+  if [ -d "${SORC_DIR}/GSI" ]; then
+    printf "... removing GSI ...\n"
+    rm -rf "${SORC_DIR}/GSI"
+  fi
+  if [ -d "${SORC_DIR}/python_graphics" ]; then
+    printf "... removing python_graphics ...\n"
+    rm -rf "${SORC_DIR}/python_graphics"
+  fi
+
+  # run check-out
+  printf "... checking out external components ...\n"
+  ./manage_externals/checkout_externals
+fi
 
 # choose default apps to build
 if [ "${DEFAULT_BUILD}" = true ]; then
@@ -262,13 +316,11 @@ if [ "${VERBOSE}" = true ] ; then
 fi
 
 # source version file only if it is specified in versions directory
-BUILD_VERSION_FILE="${HOME_DIR}/versions/build.ver.${PLATFORM}"
-if [ -f ${BUILD_VERSION_FILE} ]; then
-  . ${BUILD_VERSION_FILE}
-fi
-RUN_VERSION_FILE="${HOME_DIR}/versions/run.ver.${PLATFORM}"
-if [ -f ${RUN_VERSION_FILE} ]; then
-  . ${RUN_VERSION_FILE}
+if [ "${PLATFORM}" = "wcoss2" ]; then
+  BUILD_VERSION_FILE="${HOME_DIR}/versions/build.ver"
+  if [ -f ${BUILD_VERSION_FILE} ]; then
+    . ${BUILD_VERSION_FILE}
+  fi
 fi
 
 # set MODULE_FILE for this platform/compiler combination
@@ -459,12 +511,17 @@ else
     printf "... Compile and install executables ...\n"
     make ${MAKE_SETTINGS} install 2>&1 | tee log.make
 
-    if [ "${MOVE}" = true ]; then
-       if [[ ! ${HOME_DIR} -ef ${INSTALL_DIR} ]]; then
-           printf "... Moving executables to final locations ...\n"
-           mkdir -p ${HOME_DIR}/${BIN_DIR}
-           mv ${INSTALL_DIR}/${BIN_DIR}/* ${HOME_DIR}/${BIN_DIR}
-       fi
+    # move executables to the designated location (HOMEdir/exec) only when 
+    # both --build and --move are not set (no additional arguments) or
+    # both --build and --move are set in the build command line
+    if [[ "${BUILD}" = false && "${MOVE}" = false ]] || 
+       [[ "${BUILD}" = true && "${MOVE}" = true ]]; then
+      printf "... Moving pre-compiled executables to designated location ...\n"
+      mkdir -p ${HOME_DIR}/${BIN_DIR}
+      cd "${INSTALL_DIR}/${BIN_DIR}"
+      for file in *; do
+        [ -x "${file}" ] && mv "${file}" "${HOME_DIR}/${BIN_DIR}"
+      done
     fi
 fi
 
