@@ -597,12 +597,15 @@ $settings"
 #
 #-----------------------------------------------------------------------
 #
-print_info_msg "
-Creating symlink in the experiment directory (EXPTDIR) that points to the
-workflow launch script (WFLOW_LAUNCH_SCRIPT_FP):
-  EXPTDIR = \"${EXPTDIR}\"
-  WFLOW_LAUNCH_SCRIPT_FP = \"${WFLOW_LAUNCH_SCRIPT_FP}\""
-ln -fs "${WFLOW_LAUNCH_SCRIPT_FP}" "$EXPTDIR"
+print_info_msg "Generating the workflow launch script
+${EXPTDIR}/${WFLOW_LAUNCH_SCRIPT_FN}"
+
+cat > ${EXPTDIR}/${WFLOW_LAUNCH_SCRIPT_FN} <<EOF
+#!/bin/bash
+module load rocoto
+rocotorun -w "${WFLOW_XML_FN}" -d "${WFLOW_XML_FN%.*}.db"
+EOF
+
 #
 #-----------------------------------------------------------------------
 #
