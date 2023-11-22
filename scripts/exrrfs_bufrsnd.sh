@@ -144,9 +144,8 @@ cyc=$hh
 #
 #-----------------------------------------------------------------------
 #
-dom=conus
+dom=na
 NEST=${dom}
-MODEL=fv3
 PARMfv3=${FIX_BUFRSND}  #/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/bufrsnd
 
 DATA=$bufrsnd_dir
@@ -156,7 +155,7 @@ COMOUT=$comout
 mkdir -p $DATA/bufrpost
 cd $DATA/bufrpost
 
-RUNLOC=${NEST}${MODEL}
+RUNLOC=${NEST}
 
 export tmmark=tm00
 
@@ -297,7 +296,6 @@ export FORT66="$DATA/profilm.c1.${tmmark}"
 export FORT78="$DATA/class1.bufr"
 
 echo here RUNLOC  $RUNLOC
-echo here MODEL $MODEL
 echo here model $model
 
 pgmout=sndplog
@@ -318,9 +316,9 @@ fi
 
 # remove bufr file breakout directory in $COMOUT if it exists
 
-if [ -d ${COMOUT}/bufr.${NEST}${MODEL}${cyc} ]; then
+if [ -d ${COMOUT}/bufr.${NEST}${cyc} ]; then
   cd $COMOUT
-  rm -r bufr.${NEST}${MODEL}${cyc}
+  rm -r bufr.${NEST}${cyc}
   cd $DATA
 fi
 
@@ -329,15 +327,15 @@ rm stnmlist_input
 cat <<EOF > stnmlist_input
 1
 $DATA/class1.bufr
-${COMOUT}/bufr.${NEST}${MODEL}${cyc}/${NEST}${MODEL}bufr
+${COMOUT}/bufr.${NEST}${cyc}/${NEST}bufr
 EOF
 
-mkdir -p ${COMOUT}/bufr.${NEST}${MODEL}${cyc}
+mkdir -p ${COMOUT}/bufr.${NEST}${cyc}
 
 export pgm=regional_stnmlist
 
 export FORT20=$DATA/class1.bufr
-export DIRD=${COMOUT}/bufr.${NEST}${MODEL}${cyc}/${NEST}${MODEL}bufr
+export DIRD=${COMOUT}/bufr.${NEST}${cyc}/${NEST}bufr
 
 echo "before stnmlist.exe"
 date
@@ -348,9 +346,9 @@ export err=$?; err_chk
 echo "after stnmlist.exe"
 date
 
-echo ${COMOUT}/bufr.${NEST}${MODEL}${cyc} > ${COMOUT}/bufr.${NEST}${MODEL}${cyc}/bufrloc
+echo ${COMOUT}/bufr.${NEST}${cyc} > ${COMOUT}/bufr.${NEST}${cyc}/bufrloc
 
-cd ${COMOUT}/bufr.${NEST}${MODEL}${cyc}
+cd ${COMOUT}/bufr.${NEST}${cyc}
 
 # Tar and gzip the individual bufr files and send them to /com
 tar -cf - . | /usr/bin/gzip > ../rrfs.t${cyc}z.${RUNLOC}.bufrsnd.tar.gz
@@ -371,10 +369,10 @@ fi
 
 #  Set input file name.
 
-INFILE=$COMOUT/rrfs.t${cyc}z.${NEST}${MODEL}.class1.bufr
+INFILE=$COMOUT/rrfs.t${cyc}z.${NEST}.class1.bufr
 export INFILE
 
-outfilbase=rrfs_${MODEL}_${PDY}${cyc}
+outfilbase=rrfs_${PDY}${cyc}
 
 namsnd << EOF > /dev/null
 SNBUFR   = $INFILE
