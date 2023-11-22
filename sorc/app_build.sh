@@ -254,13 +254,13 @@ if [ "${EXTRN}" = true ]; then
     printf "... removing rrfs_utl ...\n"
     rm -rf "${SORC_DIR}/rrfs_utl"
   fi
-  if [ -d "${SORC_DIR}/GSI" ]; then
+  if [ -d "${SORC_DIR}/gsi" ]; then
     printf "... removing GSI ...\n"
-    rm -rf "${SORC_DIR}/GSI"
+    rm -rf "${SORC_DIR}/gsi"
   fi
-  if [ -d "${SORC_DIR}/python_graphics" ]; then
+  if [ -d "${HOME_DIR}/python_graphics" ]; then
     printf "... removing python_graphics ...\n"
-    rm -rf "${SORC_DIR}/python_graphics"
+    rm -rf "${HOME_DIR}/python_graphics"
   fi
 
   # run check-out
