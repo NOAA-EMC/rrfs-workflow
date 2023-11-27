@@ -4,7 +4,7 @@ met_guess::
   z         1      -1         geopotential_height  phis
   u        65       2         zonal_wind           u
   v        65       2         meridional_wind      v
-  w        65       2         vertical_velocity    w
+  w        65      -1         vertical_velocity    w
   tv       65       2         virtual_temperature  tv
   q        65       2         specific_humidity    sphu
   oz       65       2         ozone                ozone
