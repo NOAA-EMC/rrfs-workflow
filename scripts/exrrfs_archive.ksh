@@ -28,6 +28,7 @@ FORTEST
   mkdir -p $workdir
   cd $workdir
   mkdir -p bkg com.prod rundir
+  touch $version
   
   #bkg
   cd bkg
@@ -93,9 +94,10 @@ FORTEST
   hsi mkdir -p ${ARCHIVEDIR}/$YYYY/$MM/$DD
   htar -cvf ${ARCHIVEDIR}/$YYYY/$MM/$DD/$CDATE.tar *
   
-  cd ..
-  rm -rf $workdir
-
+  if [[ ! -f ./keepdata.yes ]]; then
+    cd ..
+    rm -rf $workdir
+  fi
   exit 0
 fi
 
