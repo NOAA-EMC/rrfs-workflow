@@ -16,22 +16,18 @@ git clone -b dev-sci https://github.com/NOAA-EMC/rrfs-workflow
 cd rrfs-workflow/sorc
 ```
 
-3. Check out the external components:
+3. Build the RRFS workflow:
+```
+./app_build.sh --extrn
+```
+The above command is equal to:
 ```
 ./manage_externals/checkout_externals
-```
-
-4. Build the RRFS workflow:
-```
-./app_build.sh
-```
-Alternatively, the above command can be followed by the platform (machine) name as follows:
-```
 ./app_build.sh -p=[machine]
 ```
 where `[machine]` is `wcoss2`, `hera`, `jet`, or `orion`.
 
-5. Move to the home directory (rrfs-workflow):
+4. Move to the home directory (rrfs-workflow):
 ```
 cd ..
 ```
