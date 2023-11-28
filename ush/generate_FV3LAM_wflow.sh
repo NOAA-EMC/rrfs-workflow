@@ -986,9 +986,9 @@ settings="$settings
 # For generating the namelist for the fire weather grid, do not use a yaml file.
 #
 if [ "${PREDEF_GRID_NAME}" = "RRFS_FIREWX_1.5km" ]; then
-$USHdir/set_namelist.py -q \ 
+$USHdir/set_namelist.py -q \
                         -n ${FV3_NML_BASE_SUITE_FP} \
-                        -u "$settings" \ 
+                        -u "$settings" \
                         -o ${FV3_NML_FP} || \
   print_err_msg_exit "\
 Call to python script set_namelist.py to generate an FV3 namelist file
