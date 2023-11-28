@@ -843,7 +843,8 @@ fi
 lsoil="4"
 if [ "${EXTRN_MDL_NAME_ICS}" = "HRRR" -o \
      "${EXTRN_MDL_NAME_ICS}" = "RAP" -o \
-     "${EXTRN_MDL_NAME_ICS}" = "HRRRDAS" ] && \
+     "${EXTRN_MDL_NAME_ICS}" = "HRRRDAS" -o \
+     "${EXTRN_MDL_NAME_ICS}" = "RRFS" ] && \
    [ "${SDF_USES_RUC_LSM}" = "TRUE" ]; then
   lsoil="9"
 fi
@@ -982,6 +983,25 @@ settings="$settings
 #
 #-----------------------------------------------------------------------
 #
+# For generating the namelist for the fire weather grid, do not use a yaml file.
+#
+if [ "${PREDEF_GRID_NAME}" = "RRFS_FIREWX_1.5km" ]; then
+$USHdir/set_namelist.py -q \
+                        -n ${FV3_NML_BASE_SUITE_FP} \
+                        -u "$settings" \
+                        -o ${FV3_NML_FP} || \
+  print_err_msg_exit "\
+Call to python script set_namelist.py to generate an FV3 namelist file
+failed.  Parameters passed to this script are:
+  Full path to base namelist file:
+    FV3_NML_BASE_SUITE_FP = \"${FV3_NML_BASE_SUITE_FP}\"
+  Full path to output namelist file: 
+    FV3_NML_FP = \"${FV3_NML_FP}\"
+  Namelist settings specified on command line:
+    settings =
+$settings"
+
+else
 $USHdir/set_namelist.py -q \
                         -n ${FV3_NML_BASE_SUITE_FP} \
                         -c ${FV3_NML_YAML_CONFIG_FP} ${CCPP_PHYS_SUITE} \
@@ -1207,6 +1227,7 @@ if [[ "${DO_DACYCLE}" = "TRUE" || "${DO_ENKFUPDATE}" = "TRUE" ]]; then
  $settings"
 fi
 
+fi
 fi
 #
 #-----------------------------------------------------------------------

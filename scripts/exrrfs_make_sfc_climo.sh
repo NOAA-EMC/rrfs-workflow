@@ -230,6 +230,28 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+# Add fractional vegetation/soil information to the halo0 and halo4 
+# orography files.  For the fire weather grid, vegsoilt_frac = true.
+#
+#-----------------------------------------------------------------------
+#
+if [ $vegsoilt_frac = .true. ]; then
+  ncrename -d nx,lon -d ny,lat ${SFC_CLIMO_DIR}/${CRES}.soil_type.tile7.halo0.nc
+  ncrename -d nx,lon -d ny,lat ${SFC_CLIMO_DIR}/${CRES}.soil_type.tile7.halo4.nc
+  ncrename -d nx,lon -d ny,lat ${SFC_CLIMO_DIR}/${CRES}.vegetation_type.tile7.halo0.nc
+  ncrename -d nx,lon -d ny,lat ${SFC_CLIMO_DIR}/${CRES}.vegetation_type.tile7.halo4.nc
+  ncrename -d num_categories,num_veg_cat ${SFC_CLIMO_DIR}/${CRES}.vegetation_type.tile7.halo0.nc
+  ncrename -d num_categories,num_veg_cat ${SFC_CLIMO_DIR}/${CRES}.vegetation_type.tile7.halo4.nc
+  ncrename -d num_categories,num_soil_cat ${SFC_CLIMO_DIR}/${CRES}.soil_type.tile7.halo0.nc
+  ncrename -d num_categories,num_soil_cat ${SFC_CLIMO_DIR}/${CRES}.soil_type.tile7.halo4.nc
+  ncks -v vegetation_type_pct ${SFC_CLIMO_DIR}/${CRES}.vegetation_type.tile7.halo0.nc -A ${OROG_DIR}/${CRES}_oro_data.tile7.halo0.nc
+  ncks -v vegetation_type_pct ${SFC_CLIMO_DIR}/${CRES}.vegetation_type.tile7.halo4.nc -A ${OROG_DIR}/${CRES}_oro_data.tile7.halo4.nc
+  ncks -v soil_type_pct ${SFC_CLIMO_DIR}/${CRES}.soil_type.tile7.halo0.nc -A ${OROG_DIR}/${CRES}_oro_data.tile7.halo0.nc
+  ncks -v soil_type_pct ${SFC_CLIMO_DIR}/${CRES}.soil_type.tile7.halo4.nc -A ${OROG_DIR}/${CRES}_oro_data.tile7.halo4.nc
+fi
+#
+#-----------------------------------------------------------------------
+#
 # Print message indicating successful completion of script.
 #
 #-----------------------------------------------------------------------
