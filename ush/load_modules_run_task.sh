@@ -157,7 +157,7 @@ Call to \"module use\" command failed."
 
 # source version file (run) only if it is specified in versions directory
 if [ "${machine}" = "wcoss2" ]; then
-  RUN_VER_FN="run.ver.${machine}"
+  RUN_VER_FN="run.ver"
   VERSION_FILE="${HOMErrfs}/versions/${RUN_VER_FN}"
   if [ -f ${VERSION_FILE} ]; then
     . ${VERSION_FILE}
