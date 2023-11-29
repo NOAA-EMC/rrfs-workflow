@@ -1399,7 +1399,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-NEMS_YAML_FN="fd_nems.yaml"
+NEMS_YAML_FN="fd_ufs.yaml"
 NEMS_YAML_IN_PARM_FP="${UFS_WTHR_MDL_DIR}/tests/parm/${NEMS_YAML_FN}"
 NEMS_YAML_FP="${EXPTDIR}/${NEMS_YAML_FN}"
 if [ ! -f "${NEMS_YAML_IN_PARM_FP}" ]; then

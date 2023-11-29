@@ -1,0 +1,13 @@
+#############################################
+####  NEMS Run-time Configuration File  #####
+#############################################
+
+# EARTH #
+EARTH_component_list: ATM
+# ATM #
+ATM_model:            fv3
+# Run Sequence #
+runSeq::
+  ATM
+::
+
