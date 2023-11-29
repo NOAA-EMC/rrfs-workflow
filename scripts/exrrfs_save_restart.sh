@@ -175,12 +175,12 @@ fi
 #
 if [ "${CYCLE_TYPE}" = "prod" ] && [ "${CYCLE_SUBTYPE}" = "control" ]; then
   if [ "${IO_LAYOUT_Y}" = "1" ]; then
-    cp ${nwges_dir}/RESTART/${restart_prefix}.sfc_data.nc ${surface_dir}/${restart_prefix}.sfc_data.nc.${cdate}
+    cp ${nwges_dir}/RESTART/${restart_prefix}.sfc_data.nc ${SURFACE_DIR}/${restart_prefix}.sfc_data.nc.${cdate}
   else
     for ii in ${list_iolayout}
     do
       iii=$(printf %4.4i $ii)
-      cp ${nwges_dir}/RESTART/${restart_prefix}.sfc_data.nc.${iii} ${surface_dir}/${restart_prefix}.sfc_data.nc.${cdate}.${iii}
+      cp ${nwges_dir}/RESTART/${restart_prefix}.sfc_data.nc.${iii} ${SURFACE_DIR}/${restart_prefix}.sfc_data.nc.${cdate}.${iii}
     done
   fi
 fi
