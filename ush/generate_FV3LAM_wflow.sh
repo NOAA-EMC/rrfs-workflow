@@ -486,6 +486,7 @@ settings="\
 #
   'do_ensemble': ${DO_ENSEMBLE}
   'do_ensfcst': ${DO_ENSFCST}
+  'do_ensfcst_mulphy': ${DO_ENSFCST_MULPHY}
   'num_ens_members': ${NUM_ENS_MEMBERS}
   'num_ens_members_fcst': ${NUM_ENS_MEMBERS_FCST}
   'ndigits_ensmem_names': !!str ${NDIGITS_ENSMEM_NAMES}
@@ -1225,6 +1226,17 @@ if [[ "${DO_DACYCLE}" = "TRUE" || "${DO_ENKFUPDATE}" = "TRUE" ]]; then
    Namelist settings specified on command line:
      settings =
  $settings"
+
+ if [ "${DO_ENSFCST_MULPHY}" = "TRUE" ]; then
+   for i in {1..5}
+   do
+     $USHdir/set_namelist.py -q \
+                             -n  ${FV3_NML_RESTART_STOCH_FP}  \
+                             -c ${FV3_NML_YAML_CONFIG_FP}_ensphy rrfsens_phy${i}  \
+                             -o ${FV3_NML_RESTART_STOCH_FP}_ensphy${i}
+   done
+ fi
+
 fi
 
 fi

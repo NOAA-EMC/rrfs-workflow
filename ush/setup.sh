@@ -486,6 +486,7 @@ optionList[23]=DO_ENS_RADDA
 optionList[24]=DO_GSIDIAG_OFFLINE
 optionList[25]=USE_CLM
 optionList[26]=DO_PM_DA
+optionList[27]=DO_ENSFCST_MULPHY
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));
