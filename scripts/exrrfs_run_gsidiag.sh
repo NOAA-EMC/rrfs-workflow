@@ -55,7 +55,7 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "gsi_type" "mem_type" \
+valid_args=( "gsi_type" "mem_type" \
              "satbias_dir" )
 process_args valid_args "$@"
 #

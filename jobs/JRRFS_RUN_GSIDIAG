@@ -72,13 +72,13 @@ if [ "${CYCLE_TYPE}" = "spinup" ]; then
 else
   analworkname="_gsi"
 fi
-analworkdir_conv_dbz="${cycle_dir}/anal_conv_dbz${analworkname}"
+analworkdir_conv_dbz="${CYCLE_DIR}/anal_conv_dbz${analworkname}"
 if [ -r ${analworkdir_conv_dbz} ] ; then
   export analworkdir_conv="${analworkdir_conv_dbz}"
   export analworkdir_dbz="${analworkdir_conv_dbz}"
 else
-  export analworkdir_conv="${cycle_dir}/anal_conv${analworkname}"
-  export analworkdir_dbz="${cycle_dir}/anal_radardbz${analworkname}"
+  export analworkdir_conv="${CYCLE_DIR}/anal_conv${analworkname}"
+  export analworkdir_dbz="${CYCLE_DIR}/anal_radardbz${analworkname}"
 fi
 
 if [ ! -d "${SATBIAS_DIR}" ]; then
@@ -114,8 +114,6 @@ export pgmout="${COMOUT}/OUTPUT.$$"
 env
 
 $SCRIPTSdir/exrrfs_run_gsidiag.sh \
-             cycle_dir="${CYCLE_DIR}" \
-             cycle_type="${CYCLE_TYPE}" \
              gsi_type="${GSI_TYPE}" \
              mem_type="${MEM_TYPE}" \
              satbias_dir="${SATBIAS_DIR}"

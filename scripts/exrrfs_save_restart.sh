@@ -101,7 +101,7 @@ filelistcold="gfs_data.tile7.halo0.nc sfc_data.tile7.halo0.nc"
 n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
-if [ "${CYCLE_SUBTYPE} = "ensinit" ]; then
+if [ "${CYCLE_SUBTYPE}" = "ensinit" ]; then
   restart_prefix=$( date "+%Y%m%d.%H%M%S" -d "${save_yyyy}${save_mm}${save_dd} ${save_hh} + ${DT_ATMOS} seconds" )
 else
   restart_prefix=${save_yyyy}${save_mm}${save_dd}.${save_hh}0000
@@ -144,8 +144,7 @@ else
        FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS_CYCLES[${ihh}]}
     fi
   fi
-  print_info_msg "$VERBOSE" " The forecast length for cycle (\"${hh}\") is
-                 ( \"${FCST_LEN_HRS_thiscycle}\") "
+  print_info_msg "The forecast length for cycle (\"${hh}\") is (\"${FCST_LEN_HRS_thiscycle}\")."
 
   if [ -r "$run_dir/RESTART/${restart_prefix}.coupler.res" ] && ([ ${fhr} -eq ${FCST_LEN_HRS_thiscycle} ] || [ "${CYCLE_SUBTYPE}" = "ensinit" ]); then
     if [ "${IO_LAYOUT_Y}" = "1" ]; then
