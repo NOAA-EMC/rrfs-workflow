@@ -25,6 +25,8 @@ OPTIONS
   --disable-options="OPTION1,OPTION2,..."
       disable ufs-weather-model options; delimited with ','
       (e.g. 32BIT | INLINE_POST | UFS_GOCART | MOM6 | CICE6 | WW3 | CMEPS)
+  --rrfsfw
+      build ufs-weather-model for RRFSFW - no GWD
   --extrn
       check out external components
   --continue
@@ -44,8 +46,8 @@ OPTIONS
   --bin-dir=BIN_DIR
       installation binary directory name ("exec" by default; any name is available)
   --build-type=BUILD_TYPE
-      build type; defaults to RELEASE
-      (e.g. DEBUG | RELEASE | RELWITHDEBINFO)
+      build type; defaults to Release
+      (e.g. Debug | Release | RelWithDebInfo)
   --build-jobs=BUILD_JOBS
       number of build jobs; defaults to 4
   --use-sub-modules
@@ -78,6 +80,7 @@ Settings:
   CCPP=${CCPP_SUITES}
   ENABLE_OPTIONS=${ENABLE_OPTIONS}
   DISABLE_OPTIONS=${DISABLE_OPTIONS}
+  RRFSFW=${RRFSFW}
   EXTRN=${EXTRN}
   REMOVE=${REMOVE}
   CONTINUE=${CONTINUE}
@@ -114,8 +117,9 @@ APPLICATION=""
 CCPP_SUITES=""
 ENABLE_OPTIONS=""
 DISABLE_OPTIONS=""
-BUILD_TYPE="RELEASE"
+BUILD_TYPE="Release"
 BUILD_JOBS=4
+RRFSFW=false
 EXTRN=false
 REMOVE=false
 CONTINUE=false
@@ -159,6 +163,8 @@ while :; do
     --enable-options|--enable-options=) usage_error "$1 requires argument." ;;
     --disable-options=?*) DISABLE_OPTIONS=${1#*=} ;;
     --disable-options|--disable-options=) usage_error "$1 requires argument." ;;
+    --rrfsfw) RRFSFW=true ;;
+    --rrfsfw=?*|--rrfsfw=) usage_error "$1 argument ignored." ;;
     --extrn) EXTRN=true ;;
     --extrn=?*|--extrn=) usage_error "$1 argument ignored." ;;
     --remove) REMOVE=true ;;
@@ -419,7 +425,7 @@ if [ $USE_SUB_MODULES = true ]; then
         set +e
         #try most specialized modulefile first
         MODF="$1${PLATFORM}.${COMPILER}"
-        if [ $BUILD_TYPE != "RELEASE" ]; then
+        if [ $BUILD_TYPE != "Release" ]; then
             MODF="${MODF}.debug"
         else
             MODF="${MODF}.release"
@@ -489,6 +495,10 @@ else
     module load ${MODULE_FILE}
 fi
 module list
+
+if [ "${BUILD_UFS}" = "on" ] && [ "${RRFSFW}" = true ]; then
+  cp ${HOME_DIR}/parm/suite_FV3_HRRR_gf_rrfsfw.xml ${SORC_DIR}/ufs-weather-model/FV3/ccpp/suites/suite_FV3_HRRR_gf.xml
+fi
 
 mkdir -p ${BUILD_DIR}
 cd ${BUILD_DIR}
