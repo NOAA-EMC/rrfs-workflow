@@ -158,9 +158,9 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
 
    START_TIME_SPINUP="00:30:00"
    LAYOUT_X="15"
-   LAYOUT_Y="55"
+   LAYOUT_Y="54"
    NNODES_RUN_FCST="13"
-   WRTCMP_write_tasks_per_group="7"
+   WRTCMP_write_tasks_per_group="22"
 
    NUM_ENS_MEMBERS_FCST=5
    if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
