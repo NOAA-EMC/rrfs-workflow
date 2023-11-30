@@ -144,8 +144,6 @@ cyc=$hh
 #
 #-----------------------------------------------------------------------
 #
-dom=na
-NEST=${dom}
 PARMfv3=${FIX_BUFRSND}  #/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/bufrsnd
 
 DATA=$bufrsnd_dir
@@ -154,8 +152,6 @@ COMOUT=$comout
 
 mkdir -p $DATA/bufrpost
 cd $DATA/bufrpost
-
-RUNLOC=${NEST}
 
 export tmmark=tm00
 
@@ -230,7 +226,7 @@ do
         sleep 9
       fi
       if [ $icnt -ge 200 ]; then
-        err_exit "ABORTING after 30 minutes of waiting for FV3S ${RUNLOC} FCST F${fhr} to end."
+        err_exit "ABORTING after 30 minutes of waiting for RRFS FCST F${fhr} to end."
       fi
     done
 
@@ -285,7 +281,7 @@ cd $DATA
 # SNDP code
 ########################################################
 
-export pgm=hiresw_sndp_${RUNLOC}
+export pgm=rrfs_sndp
 
 cp $PARMfv3/regional_sndp.parm.mono $DATA/regional_sndp.parm.mono
 cp $PARMfv3/regional_bufr.tbl $DATA/regional_bufr.tbl
@@ -295,7 +291,6 @@ export FORT32="$DATA/regional_bufr.tbl"
 export FORT66="$DATA/profilm.c1.${tmmark}"
 export FORT78="$DATA/class1.bufr"
 
-echo here RUNLOC  $RUNLOC
 echo here model $model
 
 pgmout=sndplog
@@ -310,15 +305,15 @@ export err=$?; err_chk
 SENDCOM=YES
 
 if [ $SENDCOM == "YES" ]; then
-  cp $DATA/class1.bufr $COMOUT/rrfs.t${cyc}z.${RUNLOC}.class1.bufr
-  cp $DATA/profilm.c1.${tmmark} ${COMOUT}/rrfs.t${cyc}z.${RUNLOC}.profilm.c1
+  cp $DATA/class1.bufr $COMOUT/rrfs.t${cyc}z.class1.bufr
+  cp $DATA/profilm.c1.${tmmark} ${COMOUT}/rrfs.t${cyc}z.profilm.c1
 fi
 
 # remove bufr file breakout directory in $COMOUT if it exists
 
-if [ -d ${COMOUT}/bufr.${NEST}${cyc} ]; then
+if [ -d ${COMOUT}/bufr.${cyc} ]; then
   cd $COMOUT
-  rm -r bufr.${NEST}${cyc}
+  rm -r bufr.${cyc}
   cd $DATA
 fi
 
@@ -327,15 +322,15 @@ rm stnmlist_input
 cat <<EOF > stnmlist_input
 1
 $DATA/class1.bufr
-${COMOUT}/bufr.${NEST}${cyc}/${NEST}bufr
+${COMOUT}/bufr.${cyc}/bufr
 EOF
 
-mkdir -p ${COMOUT}/bufr.${NEST}${cyc}
+mkdir -p ${COMOUT}/bufr.${cyc}
 
 export pgm=regional_stnmlist
 
 export FORT20=$DATA/class1.bufr
-export DIRD=${COMOUT}/bufr.${NEST}${cyc}/${NEST}bufr
+export DIRD=${COMOUT}/bufr.${cyc}/bufr
 
 echo "before stnmlist.exe"
 date
@@ -346,12 +341,12 @@ export err=$?; err_chk
 echo "after stnmlist.exe"
 date
 
-echo ${COMOUT}/bufr.${NEST}${cyc} > ${COMOUT}/bufr.${NEST}${cyc}/bufrloc
+echo ${COMOUT}/bufr.${cyc} > ${COMOUT}/bufr.${cyc}/bufrloc
 
-cd ${COMOUT}/bufr.${NEST}${cyc}
+cd ${COMOUT}/bufr.${cyc}
 
 # Tar and gzip the individual bufr files and send them to /com
-tar -cf - . | /usr/bin/gzip > ../rrfs.t${cyc}z.${RUNLOC}.bufrsnd.tar.gz
+tar -cf - . | /usr/bin/gzip > ../rrfs.t${cyc}z.bufrsnd.tar.gz
 
 GEMPAKrrfs=/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/gempak
 cp $GEMPAKrrfs/fix/snrrfs.prm snrrfs.prm
@@ -369,7 +364,7 @@ fi
 
 #  Set input file name.
 
-INFILE=$COMOUT/rrfs.t${cyc}z.${NEST}.class1.bufr
+INFILE=$COMOUT/rrfs.t${cyc}z.class1.bufr
 export INFILE
 
 outfilbase=rrfs_${PDY}${cyc}
