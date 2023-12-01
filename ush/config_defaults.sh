@@ -416,8 +416,8 @@ RELATIVE_LINK_FLAG="--relative"
 # NUOPC/ESMF main component (ufs-weather-model: model_config). Its default 
 # value is the name of the file that the ufs weather model expects to read in.
 #
-# NEMS_CONFIG_TMPL_FN:
-# Name of a template file that contains information about the various NEMS 
+# UFS_CONFIG_TMPL_FN:
+# Name of a template file that contains information about the various UFS 
 # components and their run sequence (ufs-weather-model: nems.configure). 
 # Its default value is the name of the file that the ufs weather model expects 
 # to read in.
@@ -478,7 +478,7 @@ FV3_NML_BASE_SUITE_FN="input.nml.FV3"
 FV3_NML_YAML_CONFIG_FN="FV3.input.yml"
 FV3_NML_BASE_ENS_FN="input.nml.base_ens"
 MODEL_CONFIG_FN="model_configure"
-NEMS_CONFIG_FN="ufs.configure"
+UFS_CONFIG_FN="ufs.configure"
 FV3_EXEC_FN="ufs_model"
 WFLOW_XML_FN="FV3LAM_wflow.xml"
 
