@@ -49,6 +49,7 @@ rrfsens_phy2:
   atmos_model_nml:
     ccpp_suite: 'RRFSens_phy2'
   gfs_physics_nml:
+    betadcu: 1.0
     imfdeepcnv: 2
     lkm: 1
     progsigma: true
@@ -167,6 +168,7 @@ rrfsens_phy5:
   fv_core_nml:
     nwat: 7
   gfs_physics_nml:
+    betadcu: 1.0
     imfdeepcnv: 2
     imp_physics: 17
     lkm: 1
