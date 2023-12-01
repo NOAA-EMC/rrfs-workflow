@@ -796,7 +796,7 @@ cp "${CCPP_PHYS_SUITE_IN_CCPP_FP}" "${CCPP_PHYS_SUITE_FP}"
 print_info_msg "$VERBOSE" "
 Copying the nems.yaml from its location in
 the forecast model directory sturcture to the experiment directory..."
-cp "${NEMS_YAML_IN_PARM_FP}" "${NEMS_YAML_FP}"
+cp "${UFS_YAML_IN_PARM_FP}" "${UFS_YAML_FP}"
 #
 #-----------------------------------------------------------------------
 #

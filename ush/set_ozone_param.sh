@@ -137,11 +137,9 @@ function set_ozone_param() {
   elif [ "${ozone_param}" = "ozphys" ]; then
     fixgsm_ozone_fn="global_o3prdlos.f77"
   else
-    print_err_msg_exit "\
-Unknown ozone parameterization (ozone_param) or no ozone parameterization 
-specified in the CCPP physics suite file (ccpp_phys_suite_fp):
-  ccpp_phys_suite_fp = \"${ccpp_phys_suite_fp}\"
-  ozone_param = \"${ozone_param}\""
+    fixgsm_ozone_fn="ozprdlos_2015_new_sbuvO3_tclm15_nuchem.f77"
+    echo "
+       force ozone parameterization (ozone_param) to ${fixgsm_ozone_fn}"
   fi
 #
 #-----------------------------------------------------------------------
