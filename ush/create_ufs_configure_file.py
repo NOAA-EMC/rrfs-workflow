@@ -40,18 +40,18 @@ def create_nems_configure_file(run_dir):
     #
     #-----------------------------------------------------------------------
     #
-    # Create a NEMS configuration file in the specified run directory.
+    # Create a UFS configuration file in the specified run directory.
     #
     #-----------------------------------------------------------------------
     #
     print_info_msg(f'''
-        Creating a nems.configure file (\"{NEMS_CONFIG_FN}\") in the specified 
+        Creating a nems.configure file (\"{UFS_CONFIG_FN}\") in the specified 
         run directory (run_dir):
           run_dir = \"{run_dir}\"''', verbose=VERBOSE)
     #
     # Set output file path
     #
-    nems_config_fp = os.path.join(run_dir, NEMS_CONFIG_FN)
+    nems_config_fp = os.path.join(run_dir, UFS_CONFIG_FN)
     #
     #-----------------------------------------------------------------------
     #
@@ -69,7 +69,7 @@ def create_nems_configure_file(run_dir):
     print_info_msg(
         dedent(
             f"""
-            The variable \"settings\" specifying values to be used in the \"{NEMS_CONFIG_FN}\"
+            The variable \"settings\" specifying values to be used in the \"{UFS_CONFIG_FN}\"
             file has been set as follows:\n
             settings =\n\n"""
         ) 
@@ -79,13 +79,13 @@ def create_nems_configure_file(run_dir):
     #
     #-----------------------------------------------------------------------
     #
-    # Call a python script to generate the experiment's actual NEMS_CONFIG_FN
+    # Call a python script to generate the experiment's actual UFS_CONFIG_FN
     # file from the template file.
     #
     #-----------------------------------------------------------------------
     #
     try:
-        fill_jinja_template(["-q", "-u", settings_str, "-t", NEMS_CONFIG_TMPL_FP, "-o", nems_config_fp])
+        fill_jinja_template(["-q", "-u", settings_str, "-t", UFS_CONFIG_TMPL_FP, "-o", nems_config_fp])
     except:
         print_err_msg_exit(
             dedent(
@@ -93,7 +93,7 @@ def create_nems_configure_file(run_dir):
             Call to python script fill_jinja_template.py to create the nems.configure
             file from a jinja2 template failed.  Parameters passed to this script are:
               Full path to template nems.configure file:
-                NEMS_CONFIG_TMPL_FP = \"{NEMS_CONFIG_TMPL_FP}\"
+                UFS_CONFIG_TMPL_FP = \"{UFS_CONFIG_TMPL_FP}\"
               Full path to output nems.configure file:
                 nems_config_fp = \"{nems_config_fp}\"
               Namelist settings specified on command line:\n
@@ -108,7 +108,7 @@ def create_nems_configure_file(run_dir):
 def parse_args(argv):
     """ Parse command line arguments"""
     parser = argparse.ArgumentParser(
-        description='Creates NEMS configuration file.'
+        description='Creates UFS configuration file.'
     )
 
     parser.add_argument("-r", "--run-dir",

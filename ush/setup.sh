@@ -1307,7 +1307,7 @@ LOG_BASEDIR="${COMROOT}/logs"
 #   (3) The field table file
 #   (4) The FV3 namelist file
 #   (5) The model configuration file
-#   (6) The NEMS configuration file
+#   (6) The UFS configuration file
 #
 # If using CCPP, it also needs:
 #
@@ -1347,7 +1347,7 @@ DIAG_TABLE_TMPL_FN="${DIAG_TABLE_FN}${dot_ccpp_phys_suite_or_null}"
 fi
 FIELD_TABLE_TMPL_FN="${FIELD_TABLE_FN}${dot_ccpp_phys_suite_or_null}"
 MODEL_CONFIG_TMPL_FN="${MODEL_CONFIG_FN}"
-NEMS_CONFIG_TMPL_FN="${NEMS_CONFIG_FN}"
+UFS_CONFIG_TMPL_FN="${UFS_CONFIG_FN}"
 
 DATA_TABLE_TMPL_FP="${PARMdir}/${DATA_TABLE_TMPL_FN}"
 DIAG_TABLE_TMPL_FP="${PARMdir}/${DIAG_TABLE_TMPL_FN}"
@@ -1356,7 +1356,7 @@ FV3_NML_BASE_SUITE_FP="${PARMdir}/${FV3_NML_BASE_SUITE_FN}"
 FV3_NML_YAML_CONFIG_FP="${PARMdir}/${FV3_NML_YAML_CONFIG_FN}"
 FV3_NML_BASE_ENS_FP="${EXPTDIR}/${FV3_NML_BASE_ENS_FN}"
 MODEL_CONFIG_TMPL_FP="${PARMdir}/${MODEL_CONFIG_TMPL_FN}"
-NEMS_CONFIG_TMPL_FP="${PARMdir}/${NEMS_CONFIG_TMPL_FN}"
+UFS_CONFIG_TMPL_FP="${PARMdir}/${UFS_CONFIG_TMPL_FN}"
 #
 #-----------------------------------------------------------------------
 #
@@ -1391,22 +1391,22 @@ fi
 #
 # Set:
 #
-# 1) the variable NEMS_YAML_FN to the name of the fd_nems.yaml 
-# 2) the variable NEMS_YAML_IN_PARM_FP to the full path of this 
+# 1) the variable UFS_YAML_FN to the name of the fd_ufs.yaml 
+# 2) the variable UFS_YAML_IN_PARM_FP to the full path of this 
 #    file in the forecast model's directory structure.
-# 3) the variable NEMS_YAML_FP to the full path of this file in 
+# 3) the variable UFS_YAML_FP to the full path of this file in 
 #    the experiment directory.
 #
 #-----------------------------------------------------------------------
 #
-NEMS_YAML_FN="fd_nems.yaml"
-NEMS_YAML_IN_PARM_FP="${UFS_WTHR_MDL_DIR}/tests/parm/${NEMS_YAML_FN}"
-NEMS_YAML_FP="${EXPTDIR}/${NEMS_YAML_FN}"
-if [ ! -f "${NEMS_YAML_IN_PARM_FP}" ]; then
+UFS_YAML_FN="fd_ufs.yaml"
+UFS_YAML_IN_PARM_FP="${UFS_WTHR_MDL_DIR}/tests/parm/${UFS_YAML_FN}"
+UFS_YAML_FP="${EXPTDIR}/${UFS_YAML_FN}"
+if [ ! -f "${UFS_YAML_IN_PARM_FP}" ]; then
   print_err_msg_exit "\
-The (NEMS_YAML_IN_PARM_FP) does not exist
+The (UFS_YAML_IN_PARM_FP) does not exist
 in the local clone of the ufs-weather-model:
-  NEMS_YAML_IN_PARM_FP= \"${NEMS_YAML_IN_PARM_FP}\""
+  UFS_YAML_IN_PARM_FP= \"${UFS_YAML_IN_PARM_FP}\""
 fi
 
 #
@@ -1430,7 +1430,7 @@ set_ozone_param \
 #   * The data table file [(1) in the list above)]
 #   * The field table file [(3) in the list above)]
 #   * The FV3 namelist file [(4) in the list above)]
-#   * The NEMS configuration file [(6) in the list above)]
+#   * The UFS configuration file [(6) in the list above)]
 #
 # Since they are cycle-independent, the experiment/workflow generation
 # scripts will place them in the main experiment directory (EXPTDIR).
@@ -1460,7 +1460,7 @@ FV3_NML_CYCSFC_FP="${EXPTDIR}/${FV3_NML_FN}_cycsfc"
 FV3_NML_RESTART_FP="${EXPTDIR}/${FV3_NML_FN}_restart"
 FV3_NML_STOCH_FP="${EXPTDIR}/${FV3_NML_FN}_stoch"
 FV3_NML_RESTART_STOCH_FP="${EXPTDIR}/${FV3_NML_FN}_restart_stoch"
-NEMS_CONFIG_FP="${EXPTDIR}/${NEMS_CONFIG_FN}"
+UFS_CONFIG_FP="${EXPTDIR}/${UFS_CONFIG_FN}"
 #
 #-----------------------------------------------------------------------
 #
@@ -2462,7 +2462,7 @@ DATA_TABLE_TMPL_FN="${DATA_TABLE_TMPL_FN}"
 DIAG_TABLE_TMPL_FN="${DIAG_TABLE_TMPL_FN}"
 FIELD_TABLE_TMPL_FN="${FIELD_TABLE_TMPL_FN}"
 MODEL_CONFIG_TMPL_FN="${MODEL_CONFIG_TMPL_FN}"
-NEMS_CONFIG_TMPL_FN="${NEMS_CONFIG_TMPL_FN}"
+UFS_CONFIG_TMPL_FN="${UFS_CONFIG_TMPL_FN}"
 
 DATA_TABLE_TMPL_FP="${DATA_TABLE_TMPL_FP}"
 DIAG_TABLE_TMPL_FP="${DIAG_TABLE_TMPL_FP}"
@@ -2471,7 +2471,7 @@ FV3_NML_BASE_SUITE_FP="${FV3_NML_BASE_SUITE_FP}"
 FV3_NML_YAML_CONFIG_FP="${FV3_NML_YAML_CONFIG_FP}"
 FV3_NML_BASE_ENS_FP="${FV3_NML_BASE_ENS_FP}"
 MODEL_CONFIG_TMPL_FP="${MODEL_CONFIG_TMPL_FP}"
-NEMS_CONFIG_TMPL_FP="${NEMS_CONFIG_TMPL_FP}"
+UFS_CONFIG_TMPL_FP="${UFS_CONFIG_TMPL_FP}"
 
 CCPP_PHYS_SUITE_FN="${CCPP_PHYS_SUITE_FN}"
 CCPP_PHYS_SUITE_IN_CCPP_FP="${CCPP_PHYS_SUITE_IN_CCPP_FP}"
@@ -2485,8 +2485,8 @@ FV3_NML_CYCSFC_FP="${FV3_NML_CYCSFC_FP}"
 FV3_NML_RESTART_FP="${FV3_NML_RESTART_FP}"
 FV3_NML_STOCH_FP="${FV3_NML_STOCH_FP}"
 FV3_NML_RESTART_STOCH_FP="${FV3_NML_RESTART_STOCH_FP}"
-NEMS_CONFIG_FP="${NEMS_CONFIG_FP}"
-NEMS_YAML_FP="${NEMS_YAML_FP}"
+UFS_CONFIG_FP="${UFS_CONFIG_FP}"
+UFS_YAML_FP="${UFS_YAML_FP}"
 
 FV3_EXEC_FP="${FV3_EXEC_FP}"
 

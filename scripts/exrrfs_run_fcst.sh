@@ -452,7 +452,7 @@ relative_or_null=""
 
 ln -sf ${relative_or_null} ${DATA_TABLE_FP} ${run_dir}
 ln -sf ${relative_or_null} ${FIELD_TABLE_FP} ${run_dir}
-ln -sf ${relative_or_null} ${NEMS_YAML_FP} ${run_dir}
+ln -sf ${relative_or_null} ${UFS_YAML_FP} ${run_dir}
 
 #
 # Determine if running stochastic physics for the specified cycles in CYCL_HRS_STOCH
@@ -543,17 +543,17 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Call the function that creates the NEMS configuration file within each
+# Call the function that creates the UFS configuration file within each
 # cycle directory.
 #
 #-----------------------------------------------------------------------
 #
-$USHdir/create_nems_configure_file.py \
+$USHdir/create_ufs_configure_file.py \
   --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
   --run-dir ${run_dir} 
 export err=$?
 if [ $err -ne 0 ]; then
-  err_exit "Call to function to create the NEMS configuration file for
+  err_exit "Call to function to create the UFS configuration file for
 the current cycle's (cdate) run directory (DATA) failed:
   DATA = \"${run_dir}\""
 fi

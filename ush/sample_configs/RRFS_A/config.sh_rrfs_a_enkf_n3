@@ -1,6 +1,6 @@
 MACHINE="wcoss2"
 MACHINETYPE="primary"
-version="v0.7.5"
+version="v0.7.7"
 ACCOUNT="RRFS_DEV"
 #RESERVATION="rrfsdet"
 EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/${version}"
@@ -159,9 +159,9 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
 
    START_TIME_SPINUP="00:30:00"
    LAYOUT_X="15"
-   LAYOUT_Y="55"
+   LAYOUT_Y="54"
    NNODES_RUN_FCST="13"
-   WRTCMP_write_tasks_per_group="7"
+   WRTCMP_write_tasks_per_group="22"
 
    NUM_ENS_MEMBERS_FCST=5
    if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
@@ -190,10 +190,10 @@ fi
 
 RUN_ensctrl="rrfs"
 RUN="enkfrrfs"
-TAG="n3enkf75"
+TAG="n3enkf77"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   RUN="refs"
-  TAG="n3enfcst75"
+  TAG="n3enfcst77"
 fi
 COMINgfs=""
 
