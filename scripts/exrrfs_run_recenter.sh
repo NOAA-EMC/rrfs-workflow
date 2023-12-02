@@ -182,10 +182,10 @@ cat << EOF > namelist.ens
   filetail(3)='sfcvar'
   numvar(1)=7
   numvar(2)=13
-  numvar(3)=14
+  numvar(3)=50
   varlist(1)="u v W DZ T delp phis"
   varlist(2)="sphum liq_wat ice_wat rainwat snowwat graupel water_nc ice_nc rain_nc o3mr liq_aero ice_aero sgs_tke"
-  varlist(3)="t2m q2m f10m tslb smois tsea tsfc tsfcl alnsf alnwf alvsf alvwf emis_ice emis_lnd"
+  varlist(3)="tsea sheleg tg3 zorl vfrac canopy f10m t2m q2m uustar ffmm ffhh hice fice tisfc srflag snwdph shdmin shdmax snoalb sncovr snodl weasdl tsfc tsfcl zorlw zorll zorli emis_lnd emis_ice sncovr_ice snodi weasdi clw_surf_land clw_surf_ice  qwv_surf_land qwv_surf_ice tsnow_land tsnow_ice snowfall_acc_land snowfall_acc_ice sfalb_lnd sfalb_lnd_bck sfalb_ice  tiice tslb smois sh2o smfr flfr"
   l_write_mean=.false.
   l_recenter=.true.
   beta=${beta_recenter},

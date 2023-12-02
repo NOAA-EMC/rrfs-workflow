@@ -193,7 +193,7 @@ case ${PREDEF_GRID_NAME} in
 
   if [ "$QUILTING" = "TRUE" ]; then
     WRTCMP_write_groups="${WRTCMP_write_groups:-1}"
-    WRTCMP_write_tasks_per_group=$(( 1*LAYOUT_Y ))
+    WRTCMP_write_tasks_per_group=$(( 2*LAYOUT_Y ))
     WRTCMP_output_grid="${WRTCMP_output_grid:-lambert_conformal}"
     WRTCMP_cen_lon="${ESGgrid_LON_CTR}"
     WRTCMP_cen_lat="${ESGgrid_LAT_CTR}"

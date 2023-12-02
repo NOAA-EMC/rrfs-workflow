@@ -27,6 +27,8 @@ ichunk3d:                -1
 jchunk3d:                -1
 kchunk3d:                -1
 quilting:                {{ quilting }}
+quilting_restart:        .true.
+zstandard_level:         0
 {% if quilting  %}
 #
 # Write-component (quilting) computational parameters.
