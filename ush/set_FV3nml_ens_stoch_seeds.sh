@@ -133,6 +133,16 @@ function set_FV3nml_ens_stoch_seeds() {
 
   if [ ${DO_SPP} = TRUE ]; then
 
+    if [ ${DO_ENSFCST_MULPHY} = TRUE ]; then
+      if [ $((ENSMEM_INDX)) = 1 ] || [ $((ENSMEM_INDX)) = 5 ]; then
+          ISEED_SPP=(4 5 6 7)
+      elif [ $((ENSMEM_INDX)) = 2 ] || [ $((ENSMEM_INDX)) = 3 ]; then
+          ISEED_SPP=(4 5 6 7 8)
+      else
+          ISEED_SPP=(4 5 6)
+      fi
+    fi
+
   num_iseed_spp=${#ISEED_SPP[@]}
   for (( i=0; i<${num_iseed_spp}; i++ )); do
     iseed_spp[$i]=$(( cdate*1000 + ensmem_num*10 + ${ISEED_SPP[$i]} ))
