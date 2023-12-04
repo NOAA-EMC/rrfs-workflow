@@ -171,8 +171,8 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
 
      LAYOUT_X="50"
      LAYOUT_Y="64"
-     NNODES_RUN_FCST="51"
-     WRTCMP_write_tasks_per_group="64"
+     NNODES_RUN_FCST="52"
+     WRTCMP_write_tasks_per_group="128"
 
      DO_SPP="TRUE"
      DO_SPPT="FALSE"

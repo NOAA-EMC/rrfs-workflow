@@ -7,10 +7,9 @@ whatis([===[Loads libraries needed for running the RRFS workflow on Hera ]===])
 
 load("rocoto")
 
-prepend_path("MODULEPATH","/scratch1/NCEPDEV/nems/role.epic/hpc-stack/libs/intel-2022.1.2/modulefiles/stack")
-load(pathJoin("hpc", os.getenv("hpc_ver") or "1.2.0"))
-load(pathJoin("hpc-intel", os.getenv("hpc_intel_ver") or "2022.1.2"))
-load(pathJoin("hpc-impi", os.getenv("hpc_impi_ver") or "2022.1.2"))
+prepend_path("MODULEPATH", "/scratch1/NCEPDEV/nems/role.epic/spack-stack/spack-stack-1.5.0/envs/unified-env-noavx512/install/modulefiles/Core")
+load(pathJoin("stack-intel", os.getenv("stack_intel_ver") or "2021.5.0"))
+load(pathJoin("stack-intel-oneapi-mpi", os.getenv("stack_impi_ver") or "2021.5.1"))
 load(pathJoin("crtm", os.getenv("crtm_ver") or "2.4.0"))
 
 prepend_path("MODULEPATH","/scratch1/NCEPDEV/nems/role.epic/miniconda3/modulefiles")
