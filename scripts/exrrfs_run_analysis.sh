@@ -990,7 +990,7 @@ fi
 #-----------------------------------------------------------------------
 #
 if [ ${BKTYPE} -eq 1 ] ; then
-  echo " skip cold start GSI for now on WCOSS2"
+  echo " skip cold start GSI for now"
 else
   $APRUN ./gsi.x < gsiparm.anl > stdout 2>&1
   export err=$?; err_chk
