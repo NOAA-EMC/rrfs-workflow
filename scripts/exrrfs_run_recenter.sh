@@ -204,12 +204,12 @@ cat << EOF > namelist.ens
   filetail(1)='dynvar'
   filetail(2)='tracer'
   filetail(3)='sfcvar'
-  numvar(1)=7
+  numvar(1)=9
   numvar(2)=13
-  numvar(3)=19
-  varlist(1)="u v W DZ T delp phis"
+  numvar(3)=10
+  varlist(1)="u v W DZ T delp phis ua va"
   varlist(2)="sphum liq_wat ice_wat rainwat snowwat graupel water_nc ice_nc rain_nc o3mr liq_aero ice_aero sgs_tke"
-  varlist(3)="t2m q2m f10m tslb smois tsea tsfc tsfcl alnsf alnwf alvsf alvwf emis_ice emis_lnd snwdph sncovr_ice snodi sncovr snodl"
+  varlist(3)="t2m q2m f10m tslb smois tsea tsfc tsfcl emis_ice emis_lnd"
   l_write_mean=.false.
   l_recenter=.true.
 /
