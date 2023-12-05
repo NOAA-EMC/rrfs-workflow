@@ -55,7 +55,7 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "cycle_subtype" "gridspec_dir" "modelinputdir" "lbcs_root" "fg_root")
+valid_args=( "cycle_dir" "cycle_type" "cycle_subtype" "gridspec_dir" "modelinputdir" "lbcs_root" "ctrlpath"  "fg_root")
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -338,6 +338,7 @@ else
     # point to the 0-h cycle for the warm start from the 1 timestep restart files
     fg_restart_dirname=fcst_fv3lam_ensinit
     bkpath=${fg_root}/${YYYYMMDDHH}${SLASH_ENSMEM_SUBDIR}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+    ctrl_bkpath=${ctrlpath}/fcst_fv3lam_spinup/INPUT
   else
     YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
     bkpath=${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
@@ -390,7 +391,11 @@ else
     cp ${bkpath}/${restart_prefix}fv_core.res.nc   fv_core.res.nc
     if [ "${IO_LAYOUT_Y}" == "1" ]; then
       for file in ${filelistn}; do
-        cp ${bkpath}/${restart_prefix}${file}     ${file}
+        if [ ${cycle_subtype} == "spinup" ] ; then
+          cp_vrfy ${ctrl_bkpath}/${file}     ${file}
+        else
+          cp_vrfy ${bkpath}/${restart_prefix}${file}     ${file}
+        fi
         ln -s ${bkpath}/${restart_prefix}${file}  bk_${file}
       done
     else
@@ -398,7 +403,11 @@ else
         for ii in $list_iolayout
         do
           iii=$(printf %4.4i $ii)
-          cp ${bkpath}/${restart_prefix}${file}.${iii}     ${file}.${iii}
+          if [ ${cycle_subtype} == "spinup" ] ; then
+            cp_vrfy ${ctrl_bkpath}/${file}.${iii}     ${file}.${iii}
+          else
+            cp ${bkpath}/${restart_prefix}${file}.${iii}     ${file}.${iii}
+          fi
           ln -s ${bkpath}/${restart_prefix}${file}.${iii}  bk_${file}.${iii}
         done
       done

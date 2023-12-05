@@ -73,8 +73,10 @@ if [ ${CYCLE_TYPE} == "spinup" ]; then
   if [ ${DO_ENSINIT} == "TRUE" ] && [ ${CYCLE_SUBTYPE} == "ensinit" ]; then
      modelinputdir=${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_ensinit/INPUT
   fi
+  ctrlpath=${ENSCTRL_CYCLE_DIR}
 else
   modelinputdir=${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/INPUT
+  ctrlpath=""
 fi
 
 rm -fr ${modelinputdir}
@@ -97,6 +99,7 @@ $SCRIPTSdir/exrrfs_run_prepstart.sh \
              gridspec_dir="${gridspec_dir}" \
              modelinputdir="${modelinputdir}" \
              lbcs_root="${LBCS_ROOT}" \
+             ctrlpath="${ctrlpath}" \
              fg_root="${FG_ROOT}"
 export err=$?; err_chk
 #

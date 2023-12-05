@@ -1235,9 +1235,14 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_SUBTYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
     <envar><name>NWGES_BASEDIR</name><value>&NWGES_BASEDIR;</value></envar>
+    <envar><name>ENSCTRL_CYCLE_DIR</name><value><cyclestr>&ENSCTRL_CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>ENSCTRL_CYCLE_ROOT</name><value><cyclestr>&ENSCTRL_CYCLE_BASEDIR;</cyclestr></value></envar>
 
     <dependency>
+      <and>
        <taskdep task="&SAVE_RESTART_TN;_ensinit{{ uscore_ensmem_name }}"/>
+       <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
+      </and>
     </dependency>
 
   </task>
