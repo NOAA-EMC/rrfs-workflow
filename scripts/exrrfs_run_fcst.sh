@@ -489,7 +489,14 @@ else
 fi
 
 if [ "${STOCH}" = "TRUE" ]; then
-  cp ${run_dir}/${FV3_NML_FN} ${run_dir}/${FV3_NML_FN}_base
+  if [ ${BKTYPE} -eq 0 ] && [ ${DO_ENSFCST_MULPHY} = "TRUE" ]; then
+    ensmem_indx_sgl=$(echo "${ensmem_indx}" | awk '{print $1+0}')
+    cp ${FV3_NML_RESTART_STOCH_FP}_ensphy${ensmem_indx_sgl} ${run_dir}/${FV3_NML_FN}_base 
+    rm -fr ${run_dir}/field_table
+    cp ${PARMdir}/field_table.rrfsens_phy${ensmem_indx} ${run_dir}/field_table
+  else
+    cp ${run_dir}/${FV3_NML_FN} ${run_dir}/${FV3_NML_FN}_base
+  fi
   set_FV3nml_ens_stoch_seeds cdate="$cdate"
   export err=$?
   if [ $err -ne 0 ]; then
@@ -540,6 +547,13 @@ if [ $err -ne 0 ]; then
 the current cycle's (cdate) run directory (DATA) failed:
   DATA = \"${run_dir}\""
 fi
+
+# copy over diag_table for multiphysics ensemble
+if [ "${STOCH}" = "TRUE" ] && [ ${BKTYPE} -eq 0 ] && [ ${DO_ENSFCST_MULPHY} = "TRUE" ]; then
+  rm -fr ${run_dir}/diag_table
+  cp ${PARMdir}/diag_table.rrfsens_phy${ensmem_indx} ${run_dir}/diag_table
+fi
+
 #
 #-----------------------------------------------------------------------
 #
