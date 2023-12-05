@@ -966,20 +966,16 @@ cp ${gsi_exec} ${analworkdir}/gsi.x
 export pgm="gsi.x"
 . prep_step
 
-if [ ${BKTYPE} -eq 1 ] && [ $MACHINE == "WCOSS2" ]; then
-  echo " skip cold start GSI for now on WCOSS2"
+if [ ${BKTYPE} -eq 1 ] ; then
+  echo " skip cold start GSI for now"
 else
   $APRUN $pgm < gsiparm.anl >>$pgmout 2>errfile
   export err=$?; err_chk
   mv errfile errfile_gsi
-
-  echo "----------------------begin of stdout--------------"
-  cat ./stdout  #log stdout whether gsi.x succeeds or not
-  echo "----------------------end of stdout----------------"
 fi
 
 if [ "${anav_type}" = "radardbz" ]; then
-  cat fort.238 > $COMOUT/rrfs_a.t${HH}z.fits3.tm00
+  cat fort.238 > $COMOUT/rrfs.t${HH}z.fits3.tm00
 else
   mv fort.207 fit_rad1
   sed -e 's/   asm all     /ps asm 900 0000/; s/   rej all     /ps rej 900 0000/; s/   mon all     /ps mon 900 0000/' fort.201 > fit_p1
@@ -989,9 +985,9 @@ else
   sed -e 's/   asm all     /pw asm 900 0000/; s/   rej all     /pw rej 900 0000/; s/   mon all     /pw mon 900 0000/' fort.205 > fit_pw1
   sed -e 's/   asm all     /rw asm 900 0000/; s/   rej all     /rw rej 900 0000/; s/   mon all     /rw mon 900 0000/' fort.209 > fit_rw1
 
-  cat fit_p1 fit_w1 fit_t1 fit_q1 fit_pw1 fit_rad1 fit_rw1 > ${COMOUT}/rrfs_a.t${HH}z.fits.tm00
-  cat fort.208 fort.210 fort.211 fort.212 fort.213 fort.220 > ${COMOUT}/rrfs_a.t${HH}z.fits2.tm00
-  cat fort.238 > ${COMOUT}/rrfs_a.t${HH}z.fits3.tm00
+  cat fit_p1 fit_w1 fit_t1 fit_q1 fit_pw1 fit_rad1 fit_rw1 > $COMOUT/rrfs.t${HH}z.fits.tm00
+  cat fort.208 fort.210 fort.211 fort.212 fort.213 fort.220 > $COMOUT/rrfs.t${HH}z.fits2.tm00
+  cat fort.238 > $COMOUT/rrfs.t${HH}z.fits3.tm00
 fi
 #
 #-----------------------------------------------------------------------
