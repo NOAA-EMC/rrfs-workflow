@@ -143,7 +143,7 @@ YYJJJ2200000000=`date +"%y%j2200000000" -d "${START_DATE} 1 day ago"`
 #
 #-----------------------------------------------------------------------
 #
-if [ ${DO_ENSFCST} = "TRUE" ] &&  [ ${DO_ENKFUPDATE} = "TRUE" ]; then
+if [ "${DO_ENSFCST}" = "TRUE" ] &&  [ "${DO_ENKFUPDATE}" = "TRUE" ]; then
   cd ${modelinputdir}
   bkpath=${fg_root}/${YYYYMMDDHH}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/DA_OUTPUT  # use DA analysis from DA_OUTPUT
   filelistn="fv_core.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_tracer.res.tile1.nc phy_data.nc sfc_data.nc"
@@ -223,7 +223,7 @@ if [ "${DO_SURFACE_CYCLE}" = "TRUE" ]; then  # cycle surface fields
       for cyc_start in "${CYCL_HRS_SPINSTART[@]}"; do
         SFC_CYCL_HH=$(( ${cyc_start} + ${SURFACE_CYCLE_DELAY_HRS} ))
         if [ ${HH} -eq ${SFC_CYCL_HH} ]; then
-          if [ ${SURFACE_CYCLE_DELAY_HRS} == "0" ]; then
+          if [ "${SURFACE_CYCLE_DELAY_HRS}" = "0" ]; then
             SFC_CYC=1  # cold start
           else
             SFC_CYC=2  # delayed surface cycle
