@@ -236,10 +236,13 @@ Creating links in the FIXLAM directory to the grid files..."
     "C*${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH3}.nc" \
     "C*${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH4}.nc" \
         )
-    if [ "${PREDEF_GRID_NAME}" = "RRFS_CONUS_3km" ] || [ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]; then
-      fns+=( \
-      "C*${DOT_OR_USCORE}fvcom_mask.nc" \
-           )
+    if [ "${DO_NON_DA_RUN}" = "FALSE" ] && [ "${RUN_TASK_MAKE_GRID}" = "FALSE" ]; then
+      grid_name=( "RRFS_CONUS_3km" "RRFS_NA_3km" )
+      if [[ ${grid_name[@]} =~ "${PREDEF_GRID_NAME}" ]] ; then
+        fns+=( \
+        "C*${DOT_OR_USCORE}fvcom_mask.nc" \
+             )
+      fi
     fi
     fps=( "${fns[@]/#/${GRID_DIR}/}" )
     run_task="${RUN_TASK_MAKE_GRID}"
@@ -251,8 +254,8 @@ Creating links in the FIXLAM directory to the grid files..."
     "C*${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH4}.nc" \
         )
     if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
-      if [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ] || [ "${CCPP_PHYS_SUITE}" = "FV3_RAP" ] || [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR_gf" ] || \
-         [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_v15_thompson_mynn_lam3km" ]; then
+      suites=( "FV3_HRRR" "FV3_RAP" "FV3_HRRR_gf" "FV3_GFS_v15_thompson_mynn_lam3km" )
+      if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" ]] ; then
         fns+=( \
         "C*${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc" \
         "C*${DOT_OR_USCORE}oro_data_ls.tile${TILE_RGNL}.halo${NH0}.nc" \
