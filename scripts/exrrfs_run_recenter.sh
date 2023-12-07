@@ -121,9 +121,15 @@ for imem in  $(seq 1 $nens)
   dynvarfile=${bkpath}/fv_core.res.tile1.nc
   tracerfile=${bkpath}/fv_tracer.res.tile1.nc
   if [ -r "${dynvarfile}" ] && [ -r "${tracerfile}" ] ; then
-    ln -sf ${bkpath}/fv_core.res.tile1.nc  ./fv3sar_tile1_mem${memberstring}_dynvar
-    ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem${memberstring}_tracer
-    ln -sf ${bkpath}/sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
+    if [ ${DO_ENSFCST} = "TRUE" ] ; then
+      ln -sf ${bkpath}/fv_core.res.tile1.nc  ./fv3sar_tile1_mem${memberstring}_dynvar
+      ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem${memberstring}_tracer
+      ln -sf ${bkpath}/sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
+    else
+      ln -sf ${bkpath}/bk_fv_core.res.tile1.nc  ./fv3sar_tile1_mem${memberstring}_dynvar
+      ln -sf ${bkpath}/bk_fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem${memberstring}_tracer
+      ln -sf ${bkpath}/bk_sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
+    fi
     ln -sf ${bkpath}/fv_core.res.tile1.nc  ./rec_fv3sar_tile1_mem${memberstring}_dynvar
     ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./rec_fv3sar_tile1_mem${memberstring}_tracer
     ln -sf ${bkpath}/sfc_data.nc  ./rec_fv3sar_tile1_mem${memberstring}_sfcvar
@@ -180,15 +186,14 @@ cat << EOF > namelist.ens
   filetail(1)='dynvar'
   filetail(2)='tracer'
   filetail(3)='sfcvar'
-  numvar(1)=7
+  numvar(1)=9
   numvar(2)=13
-  numvar(3)=19
-  varlist(1)="u v W DZ T delp phis"
+  numvar(3)=10
+  varlist(1)="u v W DZ T delp phis ua va"
   varlist(2)="sphum liq_wat ice_wat rainwat snowwat graupel water_nc ice_nc rain_nc o3mr liq_aero ice_aero sgs_tke"
-  varlist(3)="t2m q2m f10m tslb smois tsea tsfc tsfcl alnsf alnwf alvsf alvwf emis_ice emis_lnd snwdph sncovr_ice snodi sncovr snodl"
+  varlist(3)="t2m q2m f10m tslb smois tsea tsfc tsfcl emis_ice emis_lnd"
   l_write_mean=.false.
   l_recenter=.true.
-  beta=${beta_recenter},
 /
 EOF
 #
