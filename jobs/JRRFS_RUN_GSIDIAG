@@ -15,7 +15,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHDIR/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -94,7 +94,7 @@ mkdir -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSdir/exrrfs_run_gsidiag.sh \
+$SCRIPTSDIR/exrrfs_run_gsidiag.sh \
              cycle_dir="${CYCLE_DIR}" \
              cycle_type="${CYCLE_TYPE}" \
              gsi_type="${GSI_TYPE}" \

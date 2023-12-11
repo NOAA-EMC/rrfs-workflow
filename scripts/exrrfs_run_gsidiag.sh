@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHDIR/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -226,8 +226,9 @@ for loop in $loops; do
             ${APRUN} ${nc_diag_cat} -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4
             export err=$?; err_chk
 
-            cp diag_${type}_${string}.${YYYYMMDDHH}.nc4 $comout
-            echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4*" >> listcnv
+            gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4
+            cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz $comout
+            echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listcnv
             numfile_cnv=`expr ${numfile_cnv} + 1`
          fi
       done
@@ -238,8 +239,9 @@ for loop in $loops; do
             ${APRUN} ${nc_diag_cat} -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4
             export err=$?; err_chk
 
-            cp diag_${type}_${string}.${YYYYMMDDHH}.nc4 $comout
-            echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4*" >> listrad
+            gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4
+            cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz $comout
+            echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listrad
             numfile_rad=`expr ${numfile_rad} + 1`
          else
             echo 'No diag_' ${type} 'exist'
@@ -257,8 +259,9 @@ for loop in $loops; do
             ${APRUN} ${nc_diag_cat} -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4
             export err=$?; err_chk
 
-            cp diag_${type}_${string}.${YYYYMMDDHH}.nc4 $comout
-            echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4*" >> listdbz
+            gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4 
+            cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz $comout
+            echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listdbz
             numfile_dbz=`expr ${numfile_dbz} + 1`
          fi
       done
@@ -304,7 +307,54 @@ if [ ${DO_RADDA} == "TRUE" ]; then
        cp ./satbias_pc.out ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
      fi
   fi
+
 fi
+
+#------------------------------------------------------------------------
+# set up local dirs and run run radmon to generate radiance monitor data
+#------------------------------------------------------------------------
+DO_RADMON=TRUE
+
+if [ DO_RADMON ]; then
+   echo "Run EMC Radmon package to generate daily monitoring data for satellite"
+
+   envir=${envir:-prod}
+   REGIONAL_RR=${REGIONAL_RR:-1}
+
+   export TANKverf=${TANKverf:-$NWGES_BASEDIR/radmon}
+   export TANKverf_rad=$TANKverf/radmon.$PDY
+
+
+   if [ ! -d $TANKverf_rad ]; then
+       mkdir -p -m 775 $TANKverf_rad
+   fi
+
+
+   export RAD_AREA=${RAD_AREA:-rgn}
+   export CYCLE_INTERVAL=${CYCLE_INTERVAL:-1}
+   export DATA=${analworkdir_conv}/radmon
+   export TANKverf_radM1=${TANKverf_radM1:-${TANKverf}/radmon.${PDY}}
+
+   export GSI_MON_BIN=$EXECDIR
+   export FIXgdas=$FIX_GSI
+
+   export RADMON_SUFFIX=rrfs
+   export rgnHH=${PDY}${cyc}
+   export biascr=${biascr:-${SATBIAS_DIR}/${RADMON_SUFFIX}.${CYCLE_TYPE}.${rgnHH}_satbias}
+   export radstat=${radstat:-${SATBIAS_DIR}/${RADMON_SUFFIX}.${CYCLE_TYPE}.${rgnHH}_radstat}
+
+   echo "radstat: $radstat"
+   echo "biascr:  $biascr"
+
+   export COMPRESS=gzip
+
+   CLEAN_TANKVERF=1
+
+   . $USHDIR/rrfs_radmon/exnam_verfrad.sh ${PDY} ${cyc}
+fi
+#------------------------------------------------------------------------
+# radmon complete
+#------------------------------------------------------------------------
 
 #
 #-----------------------------------------------------------------------

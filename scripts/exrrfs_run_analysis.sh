@@ -1088,8 +1088,9 @@ if [ $netcdf_diag = ".true." ]; then
       count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
       if [[ $count -gt 0 ]]; then
          ${APRUN} ${nc_diag_cat} -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4
-         cp diag_${type}_${string}.${YYYYMMDDHH}.nc4 $comout
-         echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4*" >> listcnv
+         gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4
+         cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz $comout
+         echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listcnv
          numfile_cnv=`expr ${numfile_cnv} + 1`
       fi
    done
@@ -1098,8 +1099,9 @@ if [ $netcdf_diag = ".true." ]; then
       count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
       if [[ $count -gt 0 ]]; then
          ${APRUN} ${nc_diag_cat} -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4
-         cp diag_${type}_${string}.${YYYYMMDDHH}.nc4 $comout
-         echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4*" >> listrad
+         gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4
+         cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz $comout
+         echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listrad
          numfile_rad=`expr ${numfile_rad} + 1`
       else
          echo 'No diag_' ${type} 'exist'
