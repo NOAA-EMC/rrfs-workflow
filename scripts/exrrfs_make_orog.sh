@@ -75,33 +75,7 @@ export OMP_STACKSIZE=2048m
 #
 ulimit -s unlimited
 ulimit -a
-
-case $MACHINE in
-
-  "WCOSS2")
-    APRUN="time"
-    ;;
-
-  "HERA")
-    APRUN="time"
-    ;;
-
-  "ORION")
-    APRUN="time"
-    ;;
-
-  "JET")
-    APRUN="time"
-    ;;
-
-  *)
-    err_exit "\
-Run command has not been specified for this machine:
-  MACHINE = \"$MACHINE\"
-  APRUN = \"$APRUN\""
-    ;;
-
-esac
+APRUN="time"
 #
 #-----------------------------------------------------------------------
 #
@@ -130,6 +104,7 @@ cp ${TOPO_DIR}/gmted2010.30sec.int fort.235
 #
 #-----------------------------------------------------------------------
 #
+# Set the maximum value of halos in GRID_DIR
 mosaic_fn="${CRES}${DOT_OR_USCORE}mosaic.halo${NHW}.nc"
 mosaic_fp="$FIXLAM/${mosaic_fn}"
 
@@ -174,23 +149,16 @@ cat "${input_redirect_fn}"
 #
 #-----------------------------------------------------------------------
 #
-# Call the executable to generate the raw orography file corresponding
-# to tile 7 (the regional domain) only.
-#
 # The following will create an orography file named
 #
 #   oro.${CRES}.tile7.nc
 #
 # and will place it in OROG_DIR.  Note that this file will include
-# orography for a halo of width NHW cells around tile 7.  The follow-
-# ing will also create a work directory called tile7 under OROG_DIR.
-# This work directory can be removed after the orography file has been
-# created (it is currently not deleted).
+# orography for a wide NHW cells around tile 7 (regional domain).
 #
 #-----------------------------------------------------------------------
 #
-print_info_msg "$VERBOSE" "
-Starting orography file generation..."
+print_info_msg "Starting orography file generation..."
 
 export pgm="orog"
 . prep_step
@@ -198,10 +166,8 @@ export pgm="orog"
 $APRUN ${EXECdir}/$pgm < "${input_redirect_fn}" >>$pgmout 2>${tmp_dir}/errfile
 export err=$?; err_chk
 mv ${tmp_dir}/errfile ${tmp_dir}/errfile_orog
-#
-# Change location to the original directory.
-#
-cd -
+
+cd ${OROG_DIR}
 #
 #-----------------------------------------------------------------------
 #
@@ -228,9 +194,7 @@ mv "${raw_orog_fp_orig}" "${raw_orog_fp}"
 #
 suites=( "FV3_RAP" "FV3_HRRR" "FV3_HRRR_gf" "FV3_GFS_v15_thompson_mynn_lam3km" "FV3_GFS_v17_p8" )
 if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" && ${PREDEF_GRID_NAME} != "RRFS_FIREWX_1.5km" ]] ; then
-  DATA="${DATA:-${OROG_DIR}/temp_orog_data}"
-  mkdir -p ${DATA}
-  cd ${DATA}
+  cd ${tmp_orog_data}
   mosaic_fn_gwd="${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc"
   mosaic_fp_gwd="${FIXLAM}/${mosaic_fn_gwd}"
   grid_fn_gwd=$( get_charvar_from_netcdf "${mosaic_fp_gwd}" "gridfiles" )
@@ -241,9 +205,9 @@ if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" && ${PREDEF_GRID_NAME} != "RRFS_FIREW
   grid_fp_gwd="${FIXLAM}/${grid_fn_gwd}"
   ls_fn="geo_em.d01.lat-lon.2.5m.HGT_M.nc"
   ss_fn="HGT.Beljaars_filtered.lat-lon.30s_res.nc"
-  create_symlink_to_file target="${grid_fp_gwd}" symlink="${DATA}/${grid_fn_gwd}" relative="FALSE"
-  create_symlink_to_file target="${FIXam}/${ls_fn}" symlink="${DATA}/${ls_fn}" relative="FALSE"
-  create_symlink_to_file target="${FIXam}/${ss_fn}" symlink="${DATA}/${ss_fn}" relative="FALSE"
+  create_symlink_to_file target="${grid_fp_gwd}" symlink="${tmp_orog_data}/${grid_fn_gwd}" relative="FALSE"
+  create_symlink_to_file target="${FIXam}/${ls_fn}" symlink="${tmp_orog_data}/${ls_fn}" relative="FALSE"
+  create_symlink_to_file target="${FIXam}/${ss_fn}" symlink="${tmp_orog_data}/${ss_fn}" relative="FALSE"
 
   input_redirect_fn="grid_info.dat"
   cat > "${input_redirect_fn}" <<EOF
@@ -252,8 +216,7 @@ ${CRES:1}
 ${NH4}
 EOF
 
-  print_info_msg "$VERBOSE" "
-Starting orography file generation..."
+  print_info_msg "Starting orography file generation..."
 
   export pgm="orog_gsl"
   . prep_step
@@ -263,8 +226,8 @@ Starting orography file generation..."
   mv ${tmp_dir}/errfile ${tmp_dir}/errfile_orog_gsl
 
   mv "${CRES}${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc" \
-          "${CRES}${DOT_OR_USCORE}oro_data_ls.tile${TILE_RGNL}.halo${NH0}.nc" \
-          "${OROG_DIR}"
+     "${CRES}${DOT_OR_USCORE}oro_data_ls.tile${TILE_RGNL}.halo${NH0}.nc" \
+     "${OROG_DIR}"
 fi
 #
 #-----------------------------------------------------------------------
@@ -311,6 +274,8 @@ elif [ "${GRID_GEN_METHOD}" = "ESGgrid" ]; then
   refine_ratio="1"
 fi
 #
+#-----------------------------------------------------------------------
+#
 # The orography filtering executable replaces the contents of the given
 # raw orography file with a file containing the filtered orography.  The
 # name of the input raw orography file is in effect specified by the
@@ -329,11 +294,15 @@ fi
 # (2) ends with the string ".tile${N}.nc" expected by the orography
 #     filtering code.
 #
+#-----------------------------------------------------------------------
+#
 fn_suffix_without_halo="tile${TILE_RGNL}.nc"
 filtered_orog_fn_prefix="${CRES}${DOT_OR_USCORE}filtered_orog"
 filtered_orog_fp_prefix="${filter_dir}/${filtered_orog_fn_prefix}"
 filtered_orog_fp="${filtered_orog_fp_prefix}.${fn_suffix_without_halo}"
 cp "${raw_orog_fp}" "${filtered_orog_fp}"
+#
+#-----------------------------------------------------------------------
 #
 # The orography filtering executable looks for the grid file specified
 # in the grid mosaic file (more specifically, specified by the gridfiles
@@ -345,10 +314,16 @@ cp "${raw_orog_fp}" "${filtered_orog_fp}"
 # filtering executable will run) with the same name as the grid file and
 # point it to the actual grid file specified by grid_fp.
 #
+#-----------------------------------------------------------------------
+#
 ln -fs "${grid_fp}" "${filter_dir}/${grid_fn}"
+#
+#-----------------------------------------------------------------------
 #
 # Create the namelist file (in the filter_dir directory) that the orography
 # filtering executable will read in.
+#
+#-----------------------------------------------------------------------
 #
 cat > "${filter_dir}/input.nml" <<EOF
 &filter_topo_nml
@@ -361,18 +336,20 @@ cat > "${filter_dir}/input.nml" <<EOF
 /
 EOF
 #
+#-----------------------------------------------------------------------
+#
 # Change location to the filter_dir directory.  This must be done because
 # the orography filtering executable looks for a namelist file named
 # input.nml in the directory in which it is running (not the directory
 # in which it is located).  Thus, since above we created the input.nml
 # file in filter_dir, we must also run the executable out of this directory.
 #
+#-----------------------------------------------------------------------
+#
 cd "${filter_dir}"
-#
+
 # Run the orography filtering executable.
-#
-print_info_msg "$VERBOSE" "
-Starting filtering of orography..."
+print_info_msg "Starting filtering of orography..."
 
 export pgm="filter_topo"
 . prep_step
@@ -388,13 +365,11 @@ filtered_orog_fn_orig=$( basename "${filtered_orog_fp}" )
 filtered_orog_fn="${filtered_orog_fn_prefix}.${fn_suffix_with_halo}"
 filtered_orog_fp=$( dirname "${filtered_orog_fp}" )"/${filtered_orog_fn}"
 mv "${filtered_orog_fn_orig}" "${filtered_orog_fn}"
-#
-# Change location to the original directory.
-#
-cd -
+cp "${filtered_orog_fp}" "${OROG_DIR}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NHW}.nc"
 
-print_info_msg "$VERBOSE" "
-Filtering of orography complete."
+cd ${OROG_DIR}
+
+print_info_msg "Filtering of orography complete."
 #
 #-----------------------------------------------------------------------
 #
@@ -418,56 +393,31 @@ unshaved_fp="${filtered_orog_fp}"
 #
 cd "${shave_dir}"
 #
-# Create an input namelist file for the shave executable to generate an
-# orography file without a halo from the one with a wide halo.  Then call
-# the shave executable.  Finally, move the resultant file to the OROG_DIR
-# directory.
+# Create an input namelist file for the shave executable to generate
+# orography files with varios halos from the one with a wide halo.
 #
-print_info_msg "$VERBOSE" "
-\"Shaving\" filtered orography file with a ${NHW}-cell-wide halo to obtain
-a filtered orography file with a ${NH0}-cell-wide halo..."
-
-nml_fn="input.shave.orog.halo${NH0}"
-shaved_fp="${shave_dir}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH0}.nc"
-printf "%s %s %s %s %s\n" \
-  $NX $NY ${NH0} \"${unshaved_fp}\" \"${shaved_fp}\" \
-  > ${nml_fn}
-
 export pgm="shave"
-. prep_step
 
-$APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>${tmp_dir}/errfile
-export err=$?; err_chk
-mv ${tmp_dir}/errfile ${tmp_dir}/errfile_shave_nh0
+halo_num_list=('0' '4')
+halo_num_list[${#halo_num_list[@]}]="${NHW}"
+for halo_num in "${halo_num_list[@]}"; do
 
-mv ${shaved_fp} ${OROG_DIR}
-#
-# Create an input namelist file for the shave executable to generate an
-# orography file with a 4-cell-wide halo from the one with a wide halo.
-# Then call the shave executable.  Finally, move the resultant file to
-# the OROG_DIR directory.
-#
-print_info_msg "$VERBOSE" "
-\"Shaving\" filtered orography file with a ${NHW}-cell-wide halo to obtain
-a filtered orography file with a ${NH4}-cell-wide halo..."
-
-nml_fn="input.shave.orog.halo${NH4}"
-shaved_fp="${shave_dir}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH4}.nc"
-printf "%s %s %s %s %s\n" \
-  $NX $NY ${NH4} \"${unshaved_fp}\" \"${shaved_fp}\" \
+  print_info_msg "Shaving filtered orography file with ${halo_num}-cell-wide halo..."
+  nml_fn="input.shave.orog.halo${halo_num}"
+  shaved_fp="${shave_dir}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${halo_num}.nc"
+  printf "%s %s %s %s %s\n" \
+  $NX $NY ${halo_num} \"${unshaved_fp}\" \"${shaved_fp}\" \
   > ${nml_fn}
 
-. prep_step
+  . prep_step
 
-$APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>${tmp_dir}/errfile
-export err=$?; err_chk
-mv ${tmp_dir}/errfile ${tmp_dir}/errfile_shave_nh4
+  $APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>${tmp_dir}/errfile
+  export err=$?; err_chk
+  mv ${tmp_dir}/errfile ${tmp_dir}/errfile_shave_${halo_num}
+  mv ${shaved_fp} ${OROG_DIR}
+done
 
-mv "${shaved_fp}" "${OROG_DIR}"
-#
-# Change location to the original directory.
-#
-cd -
+cd ${OROG_DIR}
 #
 #-----------------------------------------------------------------------
 #
