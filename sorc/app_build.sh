@@ -25,8 +25,6 @@ OPTIONS
   --disable-options="OPTION1,OPTION2,..."
       disable ufs-weather-model options; delimited with ','
       (e.g. 32BIT | INLINE_POST | UFS_GOCART | MOM6 | CICE6 | WW3 | CMEPS)
-  --rrfsfw
-      build ufs-weather-model for RRFSFW - no GWD
   --extrn
       check out external components
   --continue
@@ -163,8 +161,6 @@ while :; do
     --enable-options|--enable-options=) usage_error "$1 requires argument." ;;
     --disable-options=?*) DISABLE_OPTIONS=${1#*=} ;;
     --disable-options|--disable-options=) usage_error "$1 requires argument." ;;
-    --rrfsfw) RRFSFW=true ;;
-    --rrfsfw=?*|--rrfsfw=) usage_error "$1 argument ignored." ;;
     --extrn) EXTRN=true ;;
     --extrn=?*|--extrn=) usage_error "$1 argument ignored." ;;
     --remove) REMOVE=true ;;
@@ -495,10 +491,6 @@ else
     module load ${MODULE_FILE}
 fi
 module list
-
-if [ "${BUILD_UFS}" = "on" ] && [ "${RRFSFW}" = true ]; then
-  cp ${HOME_DIR}/parm/suite_FV3_HRRR_gf_rrfsfw.xml ${SORC_DIR}/ufs-weather-model/FV3/ccpp/suites/suite_FV3_HRRR_gf.xml
-fi
 
 mkdir -p ${BUILD_DIR}
 cd ${BUILD_DIR}

@@ -253,14 +253,12 @@ Creating links in the FIXLAM directory to the grid files..."
     "C*${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH0}.nc" \
     "C*${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH4}.nc" \
         )
-    if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
-      suites=( "FV3_HRRR" "FV3_RAP" "FV3_HRRR_gf" "FV3_GFS_v15_thompson_mynn_lam3km" )
-      if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" ]] ; then
-        fns+=( \
-        "C*${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc" \
-        "C*${DOT_OR_USCORE}oro_data_ls.tile${TILE_RGNL}.halo${NH0}.nc" \
-             )
-      fi
+    suites=( "FV3_HRRR" "FV3_RAP" "FV3_HRRR_gf" "FV3_GFS_v15_thompson_mynn_lam3km" )
+    if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" ]] ; then
+      fns+=( \
+      "C*${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc" \
+      "C*${DOT_OR_USCORE}oro_data_ls.tile${TILE_RGNL}.halo${NH0}.nc" \
+           )
     fi
     fps=( "${fns[@]/#/${OROG_DIR}/}" )
     run_task="${RUN_TASK_MAKE_OROG}"

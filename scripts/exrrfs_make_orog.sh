@@ -187,13 +187,12 @@ mv "${raw_orog_fp_orig}" "${raw_orog_fp}"
 #-----------------------------------------------------------------------
 #
 # Call the code to generate the two orography statistics files (large-
-# and small-scale) needed for the drag suite.  Do not generate these
-# files for the RRFS_FIREWX_1.5km grid.
+# and small-scale) needed for the drag suite.
 #
 #-----------------------------------------------------------------------
 #
 suites=( "FV3_RAP" "FV3_HRRR" "FV3_HRRR_gf" "FV3_GFS_v15_thompson_mynn_lam3km" "FV3_GFS_v17_p8" )
-if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" && ${PREDEF_GRID_NAME} != "RRFS_FIREWX_1.5km" ]] ; then
+if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" ]] ; then
   cd ${tmp_orog_data}
   mosaic_fn_gwd="${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc"
   mosaic_fp_gwd="${FIXLAM}/${mosaic_fn_gwd}"
