@@ -6,7 +6,6 @@ echo "--> radmon_verf_time.sh"
 export PDATE=${1:-${PDATE:?}}
 
 radmon_err_rpt=${radmon_err_rpt:-${USHnam}/radmon_err_rpt.sh}
-base_file=${base_file:-$FIXgdas/gdas_radmon_base.tar}
 report=report.txt
 disclaimer=disclaimer.txt
 

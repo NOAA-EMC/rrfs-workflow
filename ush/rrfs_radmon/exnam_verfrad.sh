@@ -8,23 +8,18 @@ export PDY=${1:-${PDY:?}}
 export cyc=${2:-${cyc:?}}
 
 #################################################################################
-# Set the required Directories by x.zhang
+# Set the required Directories 
 #################################################################################
 
-#export Homeradmon=/scratch2/NCEPDEV/fv3-cam/Xiaoyan.Zhang/save/plot/RadMon_rrfs/GSI-Monitor
-#export Homenam=$Homeradmon/src/Radiance_Monitor/nwprod
 export FIXnam=${FIXnam:-${FIX_GSI}}
 
 #################################################################################
 
-#export USHnam=${USHnam:-${HOMEnam}/ush}
 export USHnam=${USHnam:-${USHDIR}/rrfs_radmon}
-#export USHradmon=${USHradmon:-$HOMEradmon/ush}
 export USHradmon=${USHradmon:-${USHnam}}
 
 #  Filenames
 export satype_file=${satype_file:-rrfs_radmon_satype.txt}
-export base_file=${base_file:-${FIXnam}/nam_radmon_base.tar}
 
 #  Other variables
 export PDATE=${PDY}${cyc}
