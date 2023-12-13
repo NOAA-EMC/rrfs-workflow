@@ -102,7 +102,7 @@ EOF
    done     # type in $SATYPE loop
 
 
-   ${USHnam}/rstprod.sh
+   ${USHradmon}/rstprod.sh
 
    tar_file=radmon_bcoef.tar
    tar -cf $tar_file bcoef*.ieee_d* bcoef*.ctl*

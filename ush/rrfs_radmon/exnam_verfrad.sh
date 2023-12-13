@@ -15,8 +15,7 @@ export FIXnam=${FIXnam:-${FIX_GSI}}
 
 #################################################################################
 
-export USHnam=${USHnam:-${USHDIR}/rrfs_radmon}
-export USHradmon=${USHradmon:-${USHnam}}
+export USHradmon=${USHradmon:-${USHDIR}/rrfs_radmon}
 
 #  Filenames
 export satype_file=${satype_file:-rrfs_radmon_satype.txt}
@@ -156,16 +155,16 @@ if [[ -s ${radstat} && -s ${biascr} ]]; then
    #------------------------------------------------------------------
    echo "PDATE === " ${PDATE}
    echo "PDATE SATYPE=== " ${SATYPE}
-   ${USHnam}/radmon_verf_angle.sh ${PDATE}
+   ${USHradmon}/radmon_verf_angle.sh ${PDATE}
    rc_angle=$?
 
-   ${USHnam}/radmon_verf_bcoef.sh ${PDATE}
+   ${USHradmon}/radmon_verf_bcoef.sh ${PDATE}
    rc_bcoef=$?
 
-   ${USHnam}/radmon_verf_bcor.sh ${PDATE}
+   ${USHradmon}/radmon_verf_bcor.sh ${PDATE}
    rc_bcor=$?
 
-   ${USHnam}/radmon_verf_time.sh ${PDATE}
+   ${USHradmon}/radmon_verf_time.sh ${PDATE}
    rc_time=$?
 
    #--------------------------------------

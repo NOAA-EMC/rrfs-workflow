@@ -5,7 +5,7 @@ echo "--> radmon_verf_time.sh"
 #  Command line arguments.
 export PDATE=${1:-${PDATE:?}}
 
-radmon_err_rpt=${radmon_err_rpt:-${USHnam}/radmon_err_rpt.sh}
+radmon_err_rpt=${radmon_err_rpt:-${USHradmon}/radmon_err_rpt.sh}
 report=report.txt
 disclaimer=disclaimer.txt
 
@@ -143,7 +143,7 @@ EOF
    done
 
 
-   ${USHnam}/rstprod.sh
+   ${USHradmon}/rstprod.sh
 
    tar_file=radmon_time.tar
    tar -cf $tar_file time*.ieee_d* time*.ctl*

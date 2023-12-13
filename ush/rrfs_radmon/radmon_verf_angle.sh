@@ -121,7 +121,7 @@ EOF
    done    # for type in ${SATYPE} loop
 
 
-   ${USHnam}/rstprod.sh
+   ${USHradmon}/rstprod.sh
 
    echo TANKverf_rad = $TANKverf_rad
    
