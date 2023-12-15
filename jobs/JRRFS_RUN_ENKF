@@ -75,7 +75,7 @@ else
 fi
 rm -fr ${enkfworkdir}
 mkdir -p ${enkfworkdir}
-cd -p ${enkfworkdir}
+cd ${enkfworkdir}
 #
 #-----------------------------------------------------------------------
 #

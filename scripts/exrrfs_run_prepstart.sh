@@ -387,10 +387,10 @@ else
     cp ${bkpath}/${restart_prefix}fv_core.res.nc   fv_core.res.nc
     if [ "${IO_LAYOUT_Y}" = "1" ]; then
       for file in ${filelistn}; do
-        if [ ${cycle_subtype} == "spinup" ] ; then
-          cp_vrfy ${ctrl_bkpath}/${file}     ${file}
+        if [ "${CYCLE_SUBTYPE}" = "spinup" ]; then
+          cp_vrfy ${ctrl_bkpath}/${file}  ${file}
         else
-          cp_vrfy ${bkpath}/${restart_prefix}${file}     ${file}
+          cp_vrfy ${bkpath}/${restart_prefix}${file}  ${file}
         fi
         ln -s ${bkpath}/${restart_prefix}${file}  bk_${file}
       done
@@ -399,10 +399,10 @@ else
         for ii in $list_iolayout
         do
           iii=$(printf %4.4i $ii)
-          if [ ${cycle_subtype} == "spinup" ] ; then
-            cp_vrfy ${ctrl_bkpath}/${file}.${iii}     ${file}.${iii}
+          if [ "${CYCLE_SUBTYPE}" = "spinup" ]; then
+            cp_vrfy ${ctrl_bkpath}/${file}.${iii}  ${file}.${iii}
           else
-            cp ${bkpath}/${restart_prefix}${file}.${iii}     ${file}.${iii}
+            cp ${bkpath}/${restart_prefix}${file}.${iii}  ${file}.${iii}
           fi
           ln -s ${bkpath}/${restart_prefix}${file}.${iii}  bk_${file}.${iii}
         done
