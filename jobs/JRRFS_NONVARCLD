@@ -15,6 +15,9 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
+
+date
+export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
@@ -58,25 +61,24 @@ analysis with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-if [ ${CYCLE_TYPE} = "spinup" ]; then
-  analworkname="nonvar_cldanl_spinup"
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export analworkname="nonvar_cldanl_spinup"
 else
-  analworkname="nonvar_cldanl"
+  export analworkname="nonvar_cldanl"
 fi
 if [ ${MEM_TYPE} = "MEAN" ]; then
-  workdir="${CYCLE_DIR}/ensmean/${analworkname}"
+  export workdir="${CYCLE_DIR}/ensmean/${analworkname}"
   SLASH_ENSMEM_SUBDIR=""
 else
-  workdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/${analworkname}"
+  export workdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/${analworkname}"
 fi
 rm -fr ${workdir}
 mkdir -p ${workdir}
-
+cd ${workdir}
 #
 #  directory has grid_spec files for restart subdomains
 #
-gridspec_dir=${NWGES_BASEDIR}/grid_spec
-
+export gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #
 #-----------------------------------------------------------------------
 #
@@ -85,11 +87,11 @@ gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #-----------------------------------------------------------------------
 #
 if [ ${CYCLE_TYPE} = "spinup" ]; then
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
-  COMIN="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
+  export COMIN="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
 else
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}${SLASH_ENSMEM_SUBDIR}"
-  COMIN="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}${SLASH_ENSMEM_SUBDIR}"
+  export COMIN="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
 fi
 mkdir -p "${COMOUT}"
 #
@@ -99,16 +101,19 @@ mkdir -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #
+export pgmout="${workdir}/OUTPUT.$$"
+env
+
 $SCRIPTSdir/exrrfs_nonvarcldanl.sh \
              cycle_dir="${CYCLE_DIR}" \
              cycle_type="${CYCLE_TYPE}" \
-             gridspec_dir="${gridspec_dir}" \
              mem_type="${MEM_TYPE}" \
-             workdir="${workdir}"  \
-             comout="${COMOUT}" \
-             comin="${COMIN}" \
              slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}"
 export err=$?; err_chk
+
+if [ -e "$pgmout" ]; then
+  cat $pgmout
+fi
 #
 #-----------------------------------------------------------------------
 #

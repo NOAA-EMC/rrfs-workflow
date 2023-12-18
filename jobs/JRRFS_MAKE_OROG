@@ -9,6 +9,9 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
+
+date
+export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
@@ -47,12 +50,47 @@ This is the J-job script for the task that generates orography files.
 #
 #-----------------------------------------------------------------------
 #
+# Create the (cycle-independent) subdirectories under the experiment
+# directory (EXPTDIR) that are needed by the various steps and substeps
+# in this script.
+#
+#-----------------------------------------------------------------------
+#
+check_for_preexist_dir_file "${OROG_DIR}" "${PREEXISTING_DIR_METHOD}"
+mkdir -p "${OROG_DIR}"
+
+export raw_dir="${OROG_DIR}/raw_topo"
+mkdir -p "${raw_dir}"
+
+export filter_dir="${OROG_DIR}/filtered_topo"
+mkdir -p "${filter_dir}"
+
+export shave_dir="${OROG_DIR}/shave_tmp"
+mkdir -p "${shave_dir}"
+
+export tmp_orog_data="${OROG_DIR}/temp_orog_data"
+mkdir -p "${tmp_orog_data}"
+
+export tmp_dir="${raw_dir}/tmp"
+mkdir -p "${tmp_dir}"
+
+cd "${tmp_dir}"
+#
+#-----------------------------------------------------------------------
+#
 # Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
+export pgmout="${tmp_dir}/OUTPUT.$$"
+env
+
 ${SCRIPTSdir}/exrrfs_make_orog.sh
 export err=$?; err_chk
+
+if [ -e "$pgmout" ]; then
+  cat $pgmout
+fi
 #
 #-----------------------------------------------------------------------
 #

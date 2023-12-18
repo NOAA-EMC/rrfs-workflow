@@ -48,28 +48,6 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-# Specify the set of valid argument names for this script/function.  
-# Then process the arguments provided to this script/function (which 
-# should consist of a set of name-value pairs of the form arg1="value1",
-# etc).
-#
-#-----------------------------------------------------------------------
-#
-valid_args=( "cycle_type" "modelinputdir" )
-process_args valid_args "$@"
-#
-#-----------------------------------------------------------------------
-#
-# For debugging purposes, print out values of arguments passed to this
-# script.  Note that these will be printed out only if VERBOSE is set to
-# TRUE.
-#
-#-----------------------------------------------------------------------
-#
-print_input_args valid_args
-#
-#-----------------------------------------------------------------------
-#
 # Extract from CDATE the starting year, month, day, and hour of the
 # forecast.  These are needed below for various operations.
 #
@@ -86,14 +64,6 @@ DD=${YYYYMMDDHH:6:2}
 HH=${YYYYMMDDHH:8:2}
 YYYYMMDD=${YYYYMMDDHH:0:8}
 #
-#-----------------------------------------------------------------------
-#
-# go to INPUT directory.
-#
-#-----------------------------------------------------------------------
-#
-cd ${modelinputdir}
-#
 #--------------------------------------------------------------------
 #
 # link the deterministic (control) member restart files as the ensemble mean
@@ -107,11 +77,9 @@ fg_restart_dirname_spinup=fcst_fv3lam_spinup
 YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
 bkpath=${ENSCTRL_NWGES_BASEDIR}/${YYYYMMDDHHmInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
 bkpath_spinup=${ENSCTRL_NWGES_BASEDIR}/${YYYYMMDDHHmInterv}/${fg_restart_dirname_spinup}/RESTART  # cycling, use background from RESTART
-
 #
 #   the restart file from FV3 has a name like: ${YYYYMMDD}.${HH}0000.fv_core.res.tile1.nc
 #
-
 restart_prefix="${YYYYMMDD}.${HH}0000."
 checkfile=${bkpath}/${restart_prefix}coupler.res
 checkfile_spinup=${bkpath_spinup}/${restart_prefix}coupler.res
@@ -134,7 +102,6 @@ elif [ -r "${checkfile_spinup}" ] ; then
 else
   err_exit "Cannot find deterministic (control) warm start files from : ${bkpath} or ${bkpath_spinup}"
 fi
-
 #
 #-----------------------------------------------------------------------
 #

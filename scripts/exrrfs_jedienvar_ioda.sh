@@ -59,9 +59,7 @@ valid_args=( \
 "cycle_dir" \
 "cycle_type" \
 "mem_type" \
-"workdir" \
 "slash_ensmem_subdir" \
-"comout" \
 )
 process_args valid_args "$@"
 #
@@ -117,7 +115,6 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-
 START_DATE=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
 YYYYMMDDHH=$(date +%Y%m%d%H -d "${START_DATE}")
 JJJ=$(date +%j -d "${START_DATE}")
@@ -127,22 +124,15 @@ MM=${YYYYMMDDHH:4:2}
 DD=${YYYYMMDDHH:6:2}
 HH=${YYYYMMDDHH:8:2}
 YYYYMMDD=${YYYYMMDDHH:0:8}
-
 #
 #-----------------------------------------------------------------------
 #
-# Get into working directory and define fix directory
+# Define fix directory
 #
 #-----------------------------------------------------------------------
 #
-print_info_msg "$VERBOSE" "
-Getting into working directory for JEDI EnVAR IODA ..."
-
-cd ${workdir}
-
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
-
 #
 #-----------------------------------------------------------------------
 #
@@ -156,29 +146,25 @@ mkdir -p obs
 mkdir -p geoval
 
 # Define either "spinup" or "prod" cycle
-if [ ${cycle_type} == "spinup" ]; then
+if [ "${cycle_type}" = "spinup" ]; then
   cycle_tag="_spinup"
 else
   cycle_tag=""
 fi
 
-# 
-echo "comout="$comout
-
 # Create folders under COMOUT
-mkdir -p ${comout}/jedienvar_ioda
-mkdir -p ${comout}/jedienvar_ioda/anal_gsi
-mkdir -p ${comout}/jedienvar_ioda/jedi_obs
+mkdir -p ${COMOUT}/jedienvar_ioda
+mkdir -p ${COMOUT}/jedienvar_ioda/anal_gsi
+mkdir -p ${COMOUT}/jedienvar_ioda/jedi_obs
 
 # Specify the path of the GSI Analysis working folder
 gsidiag_path=${cycle_dir}${slash_ensmem_subdir}/anal_conv_gsi${cycle_tag}
 
 # Copy GSI ncdiag files to COMOUT 
-cp ${gsidiag_path}/ncdiag* ${comout}/jedienvar_ioda/anal_gsi/
+cp ${gsidiag_path}/ncdiag* ${COMOUT}/jedienvar_ioda/anal_gsi/
 
 # Copy only ncdiag first guess files to the workfing folder
-cp ${comout}/jedienvar_ioda/anal_gsi/*ges* ${workdir}/GSI_diags
-
+cp ${COMOUT}/jedienvar_ioda/anal_gsi/*ges* ${workdir}/GSI_diags
 #
 #-----------------------------------------------------------------------
 #
@@ -206,10 +192,6 @@ done
 #  
 cd ${workdir}
 
-module list
-ulimit -v unlimited
-which python
-
 # Specify the IODA python script
 IODACDir=/scratch1/BMC/zrtrr/llin/220601_jedi/ioda-bundle_20220530/ioda-bundle/build/bin
 
@@ -225,7 +207,7 @@ if [ $err -ne 0 ]; then
 fi
 
 # Copy IODA obs files to COMOUT
-cp ${workdir}/obs/*nc4 ${comout}/jedienvar_ioda/jedi_obs/
+cp ${workdir}/obs/*nc4 ${COMOUT}/jedienvar_ioda/jedi_obs/
 
 #
 #-----------------------------------------------------------------------

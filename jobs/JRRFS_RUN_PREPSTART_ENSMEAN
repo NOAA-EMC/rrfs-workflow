@@ -19,6 +19,9 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
+
+date
+export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
@@ -66,14 +69,15 @@ the specified cycle.
 #   spinup: this job is for spin-up cycles
 #   others(prod): this job is for product cycle
 #
-CYCLE_TYPE=${CYCLE_TYPE:-prod}
-if [ ${CYCLE_TYPE} == "spinup" ]; then
-  modelinputdir=${CYCLE_DIR}/ensmean/fcst_fv3lam_spinup/INPUT
+export CYCLE_TYPE=${CYCLE_TYPE:-prod}
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export modelinputdir=${CYCLE_DIR}/ensmean/fcst_fv3lam_spinup/INPUT
 else
-  modelinputdir=${CYCLE_DIR}/ensmean/fcst_fv3lam/INPUT
+  export modelinputdir=${CYCLE_DIR}/ensmean/fcst_fv3lam/INPUT
 fi
 rm -fr ${modelinputdir}
 mkdir -p ${modelinputdir}
+cd ${modelinputdir}
 #
 #-----------------------------------------------------------------------
 #
@@ -81,10 +85,15 @@ mkdir -p ${modelinputdir}
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSdir/exrrfs_run_prepstart_ensmean.sh \
-             cycle_type="${CYCLE_TYPE}" \
-             modelinputdir="${modelinputdir}"
+export pgmout="${modelinputdir}/OUTPUT.$$"
+env
+
+$SCRIPTSdir/exrrfs_run_prepstart_ensmean.sh
 export err=$?; err_chk
+
+if [ -e "$pgmout" ]; then
+  cat $pgmout
+fi
 #
 #-----------------------------------------------------------------------
 #

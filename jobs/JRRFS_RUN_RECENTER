@@ -19,6 +19,9 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
+
+date
+export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
@@ -66,14 +69,15 @@ the specified cycle.
 #   spinup: this job is for spin-up cycles
 #   others(prod): this job is for product cycle
 #
-CYCLE_TYPE=${CYCLE_TYPE:-prod}
-if [ ${CYCLE_TYPE} == "spinup" ]; then
-  recenterdir=${CYCLE_DIR}/recenter/fcst_fv3lam_spinup/INPUT
+export CYCLE_TYPE=${CYCLE_TYPE:-prod}
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export recenterdir=${CYCLE_DIR}/recenter/fcst_fv3lam_spinup/INPUT
 else
-  recenterdir=${CYCLE_DIR}/recenter/fcst_fv3lam/INPUT
+  export recenterdir=${CYCLE_DIR}/recenter/fcst_fv3lam/INPUT
 fi
 rm -fr ${recenterdir}
 mkdir -p ${recenterdir}
+cd ${recenterdir}
 #
 #-----------------------------------------------------------------------
 #
@@ -81,10 +85,10 @@ mkdir -p ${recenterdir}
 #
 #-----------------------------------------------------------------------
 #
-if [ ${CYCLE_TYPE} == "spinup" ]; then
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
 else
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
 fi
 mkdir -p "${COMOUT}"
 #
@@ -93,10 +97,10 @@ mkdir -p "${COMOUT}"
 # Specify the control anaylsis file location
 #
 #-----------------------------------------------------------------------
-if [[ ${DO_ENSFCST} == "TRUE" ]]; then
-  ctrlpath=${ENSCTRL_NWGES_DIR}
+if [ "${DO_ENSFCST}" = "TRUE" ]; then
+  export ctrlpath=${ENSCTRL_NWGES_DIR}
 else
-  ctrlpath=${ENSCTRL_CYCLE_DIR}
+  export ctrlpath=${ENSCTRL_CYCLE_DIR}
 fi
 #
 #-----------------------------------------------------------------------
@@ -105,12 +109,15 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSdir/exrrfs_run_recenter.sh \
-             cycle_type="${CYCLE_TYPE}" \
-             comout="${COMOUT}" \
-             recenterdir="${recenterdir}" \
-             ctrlpath="${ctrlpath}"
+export pgmout="${recenterdir}/OUTPUT.$$"
+env
+
+$SCRIPTSdir/exrrfs_run_recenter.sh
 export err=$?; err_chk
+
+if [ -e "$pgmout" ]; then
+  cat $pgmout
+fi
 #
 #-----------------------------------------------------------------------
 #
