@@ -339,7 +339,7 @@ if [ DO_RADMON ]; then
 
    CLEAN_TANKVERF=1
 
-   . $USHDIR/rrfs_radmon/exnam_verfrad.sh ${PDY} ${cyc}
+   . $USHDIR/rrfs_radmon/exrrfs_verfrad.sh ${PDY} ${cyc}
 fi
 #
 #-----------------------------------------------------------------------
