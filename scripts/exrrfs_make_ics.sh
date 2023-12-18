@@ -687,16 +687,16 @@ if [ $DO_ENS_BLENDING = "TRUE" ] &&
    cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc ./fv_core.res.nc
 
    # Required FIX files
-   cp $FIXLAM/C3359_grid.tile7.nc .
-   cp $FIXLAM/C3359_oro_data.tile7.halo0.nc .
+   cp $FIXLAM/${CRES}_grid.tile7.nc .
+   cp $FIXLAM/${CRES}_oro_data.tile7.halo0.nc .
 
    # Shortcut the file names
    warm=./fv_core.res.tile1.nc
    cold=./out.atm.tile7.nc
-   grid=./C3359_grid.tile7.nc
+   grid=./${CRES}_grid.tile7.nc
    akbk=./fv_core.res.nc
    akbkcold=./gfs_ctrl.nc
-   orog=./C3359_oro_data.tile7.halo0.nc
+   orog=./${CRES}_oro_data.tile7.halo0.nc
    bndy=./gfs.bndy.nc
 
    # Run convert coldstart files to fv3 restart (rotate winds and remap).

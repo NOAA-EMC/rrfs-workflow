@@ -122,6 +122,7 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 YYYYJJJHH=${YYYY}${JJJ}${HH}
 
 current_time=$(date "+%T")
+cdate_crnt_fhr=$( date --utc --date "${YYYYMMDD} ${HH} UTC" "+%Y%m%d%H" )
 
 YYYYMMDDm1=$(date +%Y%m%d -d "${START_DATE} 1 days ago")
 YYYYMMDDm2=$(date +%Y%m%d -d "${START_DATE} 2 days ago")
