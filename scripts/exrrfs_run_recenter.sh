@@ -46,30 +46,6 @@ This is the ex-script for the task that recenters ensemble analysis with FV3 for
 specified cycle.
 ========================================================================"
 #
-#-----------------------------------------------------------------------
-#
-# Specify the set of valid argument names for this script/function.  
-# Then process the arguments provided to this script/function (which 
-# should consist of a set of name-value pairs of the form arg1="value1",
-# etc).
-#
-#-----------------------------------------------------------------------
-#
-valid_args=( "cycle_type" "comout" "recenterdir" "ctrlpath" )
-process_args valid_args "$@"
-#
-#-----------------------------------------------------------------------
-#
-# For debugging purposes, print out values of arguments passed to this
-# script.  Note that these will be printed out only if VERBOSE is set to
-# TRUE.
-#
-#-----------------------------------------------------------------------
-#
-print_input_args valid_args
-#
-#-----------------------------------------------------------------------
-#
 # Set environment
 #
 ulimit -s unlimited
@@ -103,7 +79,6 @@ case $MACHINE in
   ;;
 #
 esac
-
 #
 #-----------------------------------------------------------------------
 #
@@ -122,16 +97,14 @@ MM=${YYYYMMDDHH:4:2}
 DD=${YYYYMMDDHH:6:2}
 HH=${YYYYMMDDHH:8:2}
 YYYYMMDD=${YYYYMMDDHH:0:8}
-
-cd ${recenterdir}
-
 #
 #--------------------------------------------------------------------
 #
 # loop through ensemble members to link all the member files
 #
-
-if [ ${cycle_type} == "spinup" ]; then
+#--------------------------------------------------------------------
+#
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
   fg_restart_dirname=fcst_fv3lam_spinup
 else
   fg_restart_dirname=fcst_fv3lam
@@ -148,9 +121,15 @@ for imem in  $(seq 1 $nens)
   dynvarfile=${bkpath}/fv_core.res.tile1.nc
   tracerfile=${bkpath}/fv_tracer.res.tile1.nc
   if [ -r "${dynvarfile}" ] && [ -r "${tracerfile}" ] ; then
-    ln -sf ${bkpath}/fv_core.res.tile1.nc  ./fv3sar_tile1_mem${memberstring}_dynvar
-    ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem${memberstring}_tracer
-    ln -sf ${bkpath}/sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
+    if [ ${DO_ENSFCST} = "TRUE" ] ; then
+      ln -sf ${bkpath}/fv_core.res.tile1.nc  ./fv3sar_tile1_mem${memberstring}_dynvar
+      ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem${memberstring}_tracer
+      ln -sf ${bkpath}/sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
+    else
+      ln -sf ${bkpath}/bk_fv_core.res.tile1.nc  ./fv3sar_tile1_mem${memberstring}_dynvar
+      ln -sf ${bkpath}/bk_fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem${memberstring}_tracer
+      ln -sf ${bkpath}/bk_sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
+    fi
     ln -sf ${bkpath}/fv_core.res.tile1.nc  ./rec_fv3sar_tile1_mem${memberstring}_dynvar
     ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./rec_fv3sar_tile1_mem${memberstring}_tracer
     ln -sf ${bkpath}/sfc_data.nc  ./rec_fv3sar_tile1_mem${memberstring}_sfcvar
@@ -160,20 +139,22 @@ for imem in  $(seq 1 $nens)
 
   (( imem += 1 ))
  done
-
 #
 #-----------------------------------------------------------------------
 #
 # Prepare the data structure for ensemble mean
 #
+#-----------------------------------------------------------------------
+#
 cp -f ./fv3sar_tile1_mem001_dynvar fv3sar_tile1_dynvar
 cp -f ./fv3sar_tile1_mem001_tracer fv3sar_tile1_tracer
 cp -f ./fv3sar_tile1_mem001_sfcvar fv3sar_tile1_sfcvar
-
 #
 #-----------------------------------------------------------------------
 #
 # link the control member 
+#
+#-----------------------------------------------------------------------
 #
 dynvarfile_control=${ctrlpath}/fcst_fv3lam/INPUT/fv_core.res.tile1.nc
 tracerfile_control=${ctrlpath}/fcst_fv3lam/INPUT/fv_tracer.res.tile1.nc
@@ -190,11 +171,12 @@ elif [ -r "${dynvarfile_control}" ] && [ -r "${tracerfile_control}" ] ; then
 else
   err_exit "Cannot find background: ${dynvarfile_control} or ${dynvarfile_control_spinup}"
 fi
-
 #
 #-----------------------------------------------------------------------
 #
 # prepare the namelist.ens
+#
+#-----------------------------------------------------------------------
 #
 cat << EOF > namelist.ens
 &setup
@@ -204,42 +186,28 @@ cat << EOF > namelist.ens
   filetail(1)='dynvar'
   filetail(2)='tracer'
   filetail(3)='sfcvar'
-  numvar(1)=7
+  numvar(1)=9
   numvar(2)=13
-  numvar(3)=19
-  varlist(1)="u v W DZ T delp phis"
+  numvar(3)=10
+  varlist(1)="u v W DZ T delp phis ua va"
   varlist(2)="sphum liq_wat ice_wat rainwat snowwat graupel water_nc ice_nc rain_nc o3mr liq_aero ice_aero sgs_tke"
-  varlist(3)="t2m q2m f10m tslb smois tsea tsfc tsfcl alnsf alnwf alvsf alvwf emis_ice emis_lnd snwdph sncovr_ice snodi sncovr snodl"
+  varlist(3)="t2m q2m f10m tslb smois tsea tsfc tsfcl emis_ice emis_lnd"
   l_write_mean=.false.
   l_recenter=.true.
-  beta=${beta_recenter},
 /
 EOF
-
 #
 #-----------------------------------------------------------------------
 #
 # Run executable to recenter the ensemble
 #
-
+#-----------------------------------------------------------------------
+#
 echo pwd is `pwd`
-ENSMEAN_EXEC=${EXECdir}/ens_mean_recenter_P2DIO.exe
+export pgm="ens_mean_recenter_P2DIO.exe"
 
-if [ -f ${ENSMEAN_EXEC} ]; then 
-  print_info_msg "$VERBOSE" "
-Copying the ensemble mean executable to the run directory..."
-  cp ${ENSMEAN_EXEC} ${recenterdir}/.
-else
-  err_exit "\
-The ensemble mean executable specified in ENSMEAN_EXEC does not exist:
-  ENSMEAN_EXEC = \"${ENSMEAN_EXEC}\"
-Build ENSMEAN_EXEC and rerun." 
-fi
-
-${APRUN} ${ENSMEAN_EXEC}  < namelist.ens > stdout_recenter 2>&1
+${APRUN} ${EXECdir}/$pgm < namelist.ens >>$pgmout 2>errfile
 export err=$?; err_chk
-
-cp stdout_recenter ${comout}/stdout.t${HH}z.recenter
 #
 #-----------------------------------------------------------------------
 #
@@ -250,13 +218,12 @@ cp stdout_recenter ${comout}/stdout.t${HH}z.recenter
 for files in $(ls rec_fv3sar_tile1_mem*)  ; do
   ncatted -a checksum,,d,,  $files
 done
-
 #
 #-----------------------------------------------------------------------
 #
 # touch a file to show completion of the task
 #
-touch ${comout}/recenter_complete.txt
+touch ${COMOUT}/recenter_complete.txt
 #
 #-----------------------------------------------------------------------
 #

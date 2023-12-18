@@ -9,6 +9,9 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
+
+date
+export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
@@ -54,7 +57,7 @@ for the FV3 (in NetCDF format).
 #
 #-----------------------------------------------------------------------
 #
-ics_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/ics"
+export ics_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/ics"
 mkdir -p "${ics_dir}"
 #
 #-----------------------------------------------------------------------
@@ -65,8 +68,12 @@ mkdir -p "${ics_dir}"
 #
 #-----------------------------------------------------------------------
 #
-ics_nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/ics"
+export ics_nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/ics"
 mkdir -p "${ics_nwges_dir}"
+
+export workdir="${ics_dir}/tmp_ICS"
+mkdir -p "$workdir"
+cd $workdir
 #
 #-----------------------------------------------------------------------
 #
@@ -74,10 +81,15 @@ mkdir -p "${ics_nwges_dir}"
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSdir/exrrfs_make_ics.sh \
-  ics_dir="${ics_dir}" \
-  ics_nwges_dir="${ics_nwges_dir}"
+export pgmout="${workdir}/OUTPUT.$$"
+env
+
+$SCRIPTSdir/exrrfs_make_ics.sh
 export err=$?; err_chk
+
+if [ -e "$pgmout" ]; then
+  cat $pgmout
+fi
 #
 #-----------------------------------------------------------------------
 #

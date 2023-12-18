@@ -1106,10 +1106,6 @@ fi
 #-----------------------------------------------------------------------
 #
 GWD_HRRRsuite_DIR=""
-#
-# Do not use GWD with the fire weather grid
-#
-if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
 if [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ] || \
    [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR_gf" ]  || \
    [ "${CCPP_PHYS_SUITE}" = "FV3_RAP" ]  || \
@@ -1177,7 +1173,6 @@ drag related orography files for the FV3_HRRR/FV3_RAP suites is empty:
     fi      
   fi
 
-fi
 fi
 #
 #-----------------------------------------------------------------------

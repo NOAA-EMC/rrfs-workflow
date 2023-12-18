@@ -55,9 +55,9 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "gsi_type" "mem_type" "analworkdir" \
-             "observer_nwges_dir" "slash_ensmem_subdir" "comout" \
-             "rrfse_fg_root" "satbias_dir" "ob_type" "gridspec_dir" )
+valid_args=( "cycle_dir" "gsi_type" "mem_type" \
+             "slash_ensmem_subdir" \
+             "rrfse_fg_root" "satbias_dir" "ob_type" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -136,22 +136,19 @@ AIR_REJECT_FN=$(date +%Y%m%d -d "${START_DATE} -1 day")_rejects.txt
 #
 #-----------------------------------------------------------------------
 #
-# go to working directory.
 # define fix and background path
 #
 #-----------------------------------------------------------------------
-
-cd ${analworkdir}
-
+#
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
-if [ ${cycle_type} == "spinup" ]; then
-  if [ ${mem_type} == "MEAN" ]; then
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  if [ "${mem_type}" = "MEAN" ]; then
     bkpath=${cycle_dir}/ensmean/fcst_fv3lam_spinup/INPUT
   else
     bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam_spinup/INPUT
   fi
 else
-  if [ ${mem_type} == "MEAN" ]; then
+  if [ "${mem_type}" = "MEAN" ]; then
     bkpath=${cycle_dir}/ensmean/fcst_fv3lam/INPUT
   else
     bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam/INPUT
@@ -168,7 +165,7 @@ fi
 if  [ ${ob_type} != "conv" ] || [ ${BKTYPE} -eq 1 ]; then #not using GDAS
   l_both_fv3sar_gfs_ens=.false.
 fi
-
+#
 #---------------------------------------------------------------------
 #
 # decide regional_ensemble_option: global ensemble (1) or FV3LAM ensemble (5)
@@ -176,12 +173,10 @@ fi
 #---------------------------------------------------------------------
 #
 echo "regional_ensemble_option is ",${regional_ensemble_option:-1}
-
 print_info_msg "$VERBOSE" "FIX_GSI is $FIX_GSI"
 print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
 print_info_msg "$VERBOSE" "default bkpath is $bkpath"
 print_info_msg "$VERBOSE" "background type is $BKTYPE"
-
 #
 # Check if we have enough FV3-LAM ensembles when regional_ensemble_option=5
 #
@@ -321,7 +316,7 @@ fi
 # set default values for namelist
 #
 #-----------------------------------------------------------------------
-
+#
 ifsatbufr=.false.
 ifsoilnudge=.false.
 ifhyb=.false.
@@ -350,7 +345,7 @@ if [ ${regional_ensemble_option:-1} -eq 5 ]  && [ ${BKTYPE} != 1  ]; then
   print_info_msg "$VERBOSE" "Do hybrid with FV3LAM ensemble"
   ifhyb=.true.
   print_info_msg "$VERBOSE" " Cycle ${YYYYMMDDHH}: GSI hybrid uses FV3LAM ensemble with n_ens=${nummem}" 
-  echo " ${YYYYMMDDHH}(${cycle_type}): GSI hybrid uses FV3LAM ensemble with n_ens=${nummem}" >> ${EXPTDIR}/log.cycles
+  echo " ${YYYYMMDDHH}(${CYCLE_TYPE}): GSI hybrid uses FV3LAM ensemble with n_ens=${nummem}" >> ${EXPTDIR}/log.cycles
   grid_ratio_ens="1"
   ens_fast_read=.false.
 else    
@@ -361,17 +356,16 @@ else
     print_info_msg "$VERBOSE" "Do hybrid with ${memname}"
     ifhyb=.true.
     print_info_msg "$VERBOSE" " Cycle ${YYYYMMDDHH}: GSI hybrid uses ${memname} with n_ens=${nummem}"
-    echo " ${YYYYMMDDHH}(${cycle_type}): GSI hybrid uses ${memname} with n_ens=${nummem}" >> ${EXPTDIR}/log.cycles
+    echo " ${YYYYMMDDHH}(${CYCLE_TYPE}): GSI hybrid uses ${memname} with n_ens=${nummem}" >> ${EXPTDIR}/log.cycles
   else
     print_info_msg "$VERBOSE" " Cycle ${YYYYMMDDHH}: GSI does pure 3DVAR."
     print_info_msg "$VERBOSE" " Hybrid needs at least ${HYBENSMEM_NMIN} ${memname} ensembles, only ${nummem} available"
-    echo " ${YYYYMMDDHH}(${cycle_type}): GSI dose pure 3DVAR" >> ${EXPTDIR}/log.cycles
+    echo " ${YYYYMMDDHH}(${CYCLE_TYPE}): GSI dose pure 3DVAR" >> ${EXPTDIR}/log.cycles
   fi
-  if [[ ${anav_type} == "conv_dbz" ]]; then
+  if [ "${anav_type}" = "conv_dbz" ]; then
     anav_type="conv"
   fi
 fi
-
 #
 #-----------------------------------------------------------------------
 #
@@ -382,57 +376,56 @@ fi
 #  Adding radar_tten array to fv3_tracer. Should remove this after add this array in
 #           radar_tten converting code.
 #-----------------------------------------------------------------------
-
+#
 n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
-ln -snf ${fixgriddir}/fv3_akbk                     fv3_akbk
-ln -snf ${fixgriddir}/fv3_grid_spec                fv3_grid_spec
+ln -snf ${fixgriddir}/fv3_akbk  fv3_akbk
+ln -snf ${fixgriddir}/fv3_grid_spec  fv3_grid_spec
 
 if [ ${BKTYPE} -eq 1 ]; then  # cold start uses background from INPUT
-  ln -snf ${fixgriddir}/phis.nc               phis.nc
-  ncks -A -v  phis               phis.nc           ${bkpath}/gfs_data.tile7.halo0.nc 
+  ln -snf ${fixgriddir}/phis.nc  phis.nc
+  ncks -A -v  phis  phis.nc  ${bkpath}/gfs_data.tile7.halo0.nc 
 
-  ln -snf ${bkpath}/sfc_data.tile7.halo0.nc   fv3_sfcdata
-  ln -snf ${bkpath}/gfs_data.tile7.halo0.nc   fv3_dynvars
-  ln -s fv3_dynvars                           fv3_tracer
+  ln -snf ${bkpath}/sfc_data.tile7.halo0.nc  fv3_sfcdata
+  ln -snf ${bkpath}/gfs_data.tile7.halo0.nc  fv3_dynvars
+  ln -s fv3_dynvars  fv3_tracer
 
   fv3lam_bg_type=1
 else                          # cycle uses background from restart
   if [ "${IO_LAYOUT_Y}" == "1" ]; then
-    ln -snf ${bkpath}/fv_core.res.tile1.nc       fv3_dynvars
-    if [ ${anav_type} = "AERO" ]; then
-      cp ${bkpath}/fv_tracer.res.tile1.nc        fv3_tracer
+    ln -snf ${bkpath}/fv_core.res.tile1.nc  fv3_dynvars
+    if [ "${anav_type}" = "AERO" ]; then
+      cp ${bkpath}/fv_tracer.res.tile1.nc  fv3_tracer
     else
-      ln -snf ${bkpath}/fv_tracer.res.tile1.nc   fv3_tracer
+      ln -snf ${bkpath}/fv_tracer.res.tile1.nc  fv3_tracer
     fi
-    ln -snf ${bkpath}/sfc_data.nc                fv3_sfcdata
-    ln -snf ${bkpath}/phy_data.nc                fv3_phyvars
+    ln -snf ${bkpath}/sfc_data.nc  fv3_sfcdata
+    ln -snf ${bkpath}/phy_data.nc  fv3_phyvars
   else
     for ii in ${list_iolayout}
     do
       iii=`printf %4.4i $ii`
-      ln -snf ${bkpath}/fv_core.res.tile1.nc.${iii}      fv3_dynvars.${iii}
-      if [ ${anav_type} = "AERO" ]; then
-        cp ${bkpath}/fv_tracer.res.tile1.nc.${iii}       fv3_tracer.${iii}
+      ln -snf ${bkpath}/fv_core.res.tile1.nc.${iii}  fv3_dynvars.${iii}
+      if [ "${anav_type}" = "AERO" ]; then
+        cp ${bkpath}/fv_tracer.res.tile1.nc.${iii}  fv3_tracer.${iii}
       else
         ln -snf ${bkpath}/fv_tracer.res.tile1.nc.${iii}  fv3_tracer.${iii}
       fi
-      ln -snf ${bkpath}/sfc_data.nc.${iii}               fv3_sfcdata.${iii}
-      ln -snf ${bkpath}/phy_data.nc.${iii}               fv3_phyvars.${iii}
-      ln -snf ${gridspec_dir}/fv3_grid_spec.${iii}       fv3_grid_spec.${iii}
+      ln -snf ${bkpath}/sfc_data.nc.${iii}  fv3_sfcdata.${iii}
+      ln -snf ${bkpath}/phy_data.nc.${iii}  fv3_phyvars.${iii}
+      ln -snf ${gridspec_dir}/fv3_grid_spec.${iii}  fv3_grid_spec.${iii}
     done
   fi
   fv3lam_bg_type=0
 fi
 
 # update times in coupler.res to current cycle time
-cp ${fixgriddir}/fv3_coupler.res          coupler.res
+cp ${fixgriddir}/fv3_coupler.res  coupler.res
 sed -i "s/yyyy/${YYYY}/" coupler.res
 sed -i "s/mm/${MM}/"     coupler.res
 sed -i "s/dd/${DD}/"     coupler.res
 sed -i "s/hh/${HH}/"     coupler.res
-
 #
 #-----------------------------------------------------------------------
 #
@@ -445,7 +438,6 @@ if [[ "${NET}" = "RTMA"* ]] && [[ "${RTMA_OBS_FEED}" = "NCO" ]]; then
   obs_source="rtma_ru"
   obsfileprefix=${obs_source}
   obspath_tmp=${OBSPATH}/${obs_source}.${YYYYMMDD}
-
 else
   SUBH=""
   obs_source=rap
@@ -492,9 +484,9 @@ if [[ ${gsi_type} == "OBSERVER" || ${anav_type} == "conv" || ${anav_type} == "co
   obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.nexrad.tm00.bufr_d
   obs_files_target[${obs_number}]=l2rwbufr
 
-  if [ ${anav_type} == "conv_dbz" ]; then
+  if [ "${anav_type}" = "conv_dbz" ]; then
     obs_number=${#obs_files_source[@]}
-    if [ ${cycle_type} == "spinup" ]; then
+    if [ "${CYCLE_TYPE}" = "spinup" ]; then
       obs_files_source[${obs_number}]=${cycle_dir}/process_radarref_spinup/00/Gridded_ref.nc
     else
       obs_files_source[${obs_number}]=${cycle_dir}/process_radarref/00/Gridded_ref.nc
@@ -502,7 +494,7 @@ if [[ ${gsi_type} == "OBSERVER" || ${anav_type} == "conv" || ${anav_type} == "co
     obs_files_target[${obs_number}]=dbzobs.nc
   fi
 
-  if [ ${DO_ENKF_RADAR_REF} == "TRUE" ]; then
+  if [ "${DO_ENKF_RADAR_REF}" = "TRUE" ]; then
     obs_number=${#obs_files_source[@]}
     obs_files_source[${obs_number}]=${cycle_dir}/process_radarref_enkf/00/Gridded_ref.nc
     obs_files_target[${obs_number}]=dbzobs.nc
@@ -510,8 +502,8 @@ if [[ ${gsi_type} == "OBSERVER" || ${anav_type} == "conv" || ${anav_type} == "co
 
 else
 
-  if [ ${anav_type} == "radardbz" ]; then
-    if [ ${cycle_type} == "spinup" ]; then
+  if [ "${anav_type}" = "radardbz" ]; then
+    if [ "${CYCLE_TYPE}" = "spinup" ]; then
       obs_files_source[0]=${cycle_dir}/process_radarref_spinup/00/Gridded_ref.nc
     else
       obs_files_source[0]=${cycle_dir}/process_radarref/00/Gridded_ref.nc
@@ -519,10 +511,10 @@ else
     obs_files_target[0]=dbzobs.nc
   fi
 
-  if [ ${anav_type} == "AERO" ]; then
+  if [ "${anav_type}" = "AERO" ]; then
 # for previous retro runs
 #    obs_files_source[0]=${OBSPATH_PM}/${YYYYMMDD}/pm25.airnow.${YYYYMMDD}${HH}.bufr
-    if [ ${cycle_type} == "spinup" ]; then
+    if [ "${CYCLE_TYPE}" = "spinup" ]; then
       obs_files_source[0]=${cycle_dir}/process_pm_spinup/pm.bufr
     else
       obs_files_source[0]=${cycle_dir}/process_pm/pm.bufr
@@ -531,7 +523,6 @@ else
   fi
 
 fi
-
 #
 #-----------------------------------------------------------------------
 #
@@ -539,7 +530,7 @@ fi
 #
 #-----------------------------------------------------------------------
 if [[ ${gsi_type} == "OBSERVER" || ${anav_type} == "conv" || ${anav_type} == "conv_dbz" ]]; then
-  if [ ${DO_RADDA} == "TRUE" ]; then
+  if [ "${DO_RADDA}" = "TRUE" ]; then
 
   obs_number=${#obs_files_source[@]}
   obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}z.1bamua.tm00.bufr_d
@@ -637,9 +628,9 @@ done
 #   bftab_sst= bufr table for sst ONLY needed for sst retrieval (retrieval=.true.)
 #
 #-----------------------------------------------------------------------
-
+#
 ANAVINFO=${FIX_GSI}/${ANAVINFO_FN}
-if [ ${DO_ENKF_RADAR_REF} == "TRUE" ]; then
+if [ "${DO_ENKF_RADAR_REF}" = "TRUE" ]; then
   ANAVINFO=${FIX_GSI}/${ANAVINFO_DBZ_FN}
   diag_radardbz=.true.
   beta1_inv=0.0
@@ -758,12 +749,13 @@ done
 if [ ! -r $use_list ] ; then 
   print_info_msg "$VERBOSE" "WARNING: gsd surface observation uselist does not exist!" 
 fi
-
+#
 #-----------------------------------------------------------------------
 #
 # CRTM Spectral and Transmittance coefficients
 # set coefficient under crtm_coeffs_path='./crtm_coeffs/',
 #-----------------------------------------------------------------------
+#
 CRTMFIX=${FIX_CRTM}
 emiscoef_IRwater=${CRTMFIX}/Nalli.IRwater.EmisCoeff.bin
 emiscoef_IRice=${CRTMFIX}/NPOESS.IRice.EmisCoeff.bin
@@ -801,8 +793,8 @@ done
 # cycling radiance bias corretion files
 #
 #-----------------------------------------------------------------------
-if [ ${DO_RADDA} == "TRUE" ]; then
-  if [ ${cycle_type} == "spinup" ]; then
+if [ "${DO_RADDA}" = "TRUE" ]; then
+  if [ "${CYCLE_TYPE}" = "spinup" ]; then
     echo "spin up cycle"
     spinup_or_prod_rrfs=spinup
     for cyc_start in "${CYCL_HRS_SPINSTART[@]}"; do
@@ -826,7 +818,7 @@ if [ ${DO_RADDA} == "TRUE" ]; then
     SAT_TIME=`date +"%Y%m%d%H" -d "${START_DATE}  ${satcounter} hours ago"`
     echo $SAT_TIME
 	
-    if [ ${DO_ENS_RADDA} = "TRUE" ]; then			
+    if [ "${DO_ENS_RADDA}" = "TRUE" ]; then			
       # For EnKF.  Note, EnKF does not need radstat file
       if [ -r ${satbias_dir}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
         echo " using satellite bias files from ${SAT_TIME}" 
@@ -863,7 +855,7 @@ if [ ${DO_RADDA} == "TRUE" ]; then
       SAT_TIME=`date +"%Y%m%d%H" -d "${START_DATE}  ${satcounter} hours ago"`
       echo $SAT_TIME
 	
-      if [ ${DO_ENS_RADDA} = "TRUE" ]; then			
+      if [ "${DO_ENS_RADDA}" = "TRUE" ]; then			
         # For EnKF.  Note, EnKF does not need radstat file
         if [ -r ${satbias_dir_cont}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
           echo " using satellite bias files from ${SAT_TIME}"
@@ -933,10 +925,10 @@ fi
 #
 #-----------------------------------------------------------------------
 # 
-if [ ${gsi_type} == "OBSERVER" ]; then
+if [ "${gsi_type}" = "OBSERVER" ]; then
   miter=0
   ifhyb=.false.
-  if [ ${mem_type} == "MEAN" ]; then
+  if [ "${mem_type}" = "MEAN" ]; then
     lread_obs_save=.true.
     lread_obs_skip=.false.
   else
@@ -955,31 +947,6 @@ fi
 cat << EOF > gsiparm.anl
 $gsi_namelist
 EOF
-
-#
-#-----------------------------------------------------------------------
-#
-# Copy the GSI executable to the run directory.
-#
-#-----------------------------------------------------------------------
-#
-gsi_exec="${EXECdir}/gsi.x"
-
-if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "AERO" ]]; then
-  gsi_exec="${EXECdir}/gsi.x.sd"
-fi
-
-if [ -f $gsi_exec ]; then
-  print_info_msg "$VERBOSE" "
-Copying the GSI executable to the run directory..."
-  cp ${gsi_exec} ${analworkdir}/gsi.x
-else
-  err_exit "\
-The GSI executable specified in GSI_EXEC does not exist:
-  GSI_EXEC = \"$gsi_exec\"
-Build GSI and rerun."
-fi
-
 #
 #-----------------------------------------------------------------------
 #
@@ -989,20 +956,26 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "AERO" ]]; then
+  gsi_exec="${EXECdir}/gsi.x.sd"
+else
+  gsi_exec="${EXECdir}/gsi.x"
+fi
+cp ${gsi_exec} ${analworkdir}/gsi.x
+
+export pgm="gsi.x"
+. prep_step
+
 if [ ${BKTYPE} -eq 1 ] ; then
   echo " skip cold start GSI for now"
 else
-  $APRUN ./gsi.x < gsiparm.anl > stdout 2>&1
+  $APRUN $pgm < gsiparm.anl >>$pgmout 2>errfile
   export err=$?; err_chk
-
-  echo "----------------------begin of stdout--------------"
-  cat ./stdout  #log stdout whether gsi.x succeeds or not
-  echo "----------------------end of stdout----------------"
+  mv errfile errfile_gsi
 fi
 
-if [ ${anav_type} == "radardbz" ]; then
-  cat fort.238 > $comout/rrfs.t${HH}z.fits3.tm00
-  cp stdout $comout/stdout.t${HH}z.GSI_${anav_type}
+if [ "${anav_type}" = "radardbz" ]; then
+  cat fort.238 > $COMOUT/rrfs.t${HH}z.fits3.tm00
 else
   mv fort.207 fit_rad1
   sed -e 's/   asm all     /ps asm 900 0000/; s/   rej all     /ps rej 900 0000/; s/   mon all     /ps mon 900 0000/' fort.201 > fit_p1
@@ -1012,15 +985,9 @@ else
   sed -e 's/   asm all     /pw asm 900 0000/; s/   rej all     /pw rej 900 0000/; s/   mon all     /pw mon 900 0000/' fort.205 > fit_pw1
   sed -e 's/   asm all     /rw asm 900 0000/; s/   rej all     /rw rej 900 0000/; s/   mon all     /rw mon 900 0000/' fort.209 > fit_rw1
 
-  cat fit_p1 fit_w1 fit_t1 fit_q1 fit_pw1 fit_rad1 fit_rw1 > $comout/rrfs.t${HH}z.fits.tm00
-  cat fort.208 fort.210 fort.211 fort.212 fort.213 fort.220 > $comout/rrfs.t${HH}z.fits2.tm00
-  cat fort.238 > $comout/rrfs.t${HH}z.fits3.tm00
-  if [ ${gsi_type} == "OBSERVER" ]; then
-    cp stdout $comout/stdout.t${HH}z.GSI_observer
-  else
-    cp stdout $comout/stdout.t${HH}z.GSI_${anav_type}
-  fi
-
+  cat fit_p1 fit_w1 fit_t1 fit_q1 fit_pw1 fit_rad1 fit_rw1 > $COMOUT/rrfs.t${HH}z.fits.tm00
+  cat fort.208 fort.210 fort.211 fort.212 fort.213 fort.220 > $COMOUT/rrfs.t${HH}z.fits2.tm00
+  cat fort.238 > $COMOUT/rrfs.t${HH}z.fits3.tm00
 fi
 #
 #-----------------------------------------------------------------------
@@ -1030,9 +997,9 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-touch ${comout}/gsi_complete.txt
+touch ${COMOUT}/gsi_complete.txt
 if [[ ${anav_type} == "radardbz" || ${anav_type} == "conv_dbz" ]]; then
-  touch ${comout}/gsi_complete_radar.txt # for nonvarcldanl
+  touch ${COMOUT}/gsi_complete_radar.txt # for nonvarcldanl
 fi
 #
 #-----------------------------------------------------------------------
@@ -1047,28 +1014,26 @@ fi
 #        innovation files.
 #-----------------------------------------------------------------------
 #
+if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
+  netcdf_diag=${netcdf_diag:-".false."}
+  binary_diag=${binary_diag:-".true."}
 
-if [ ${DO_GSIDIAG_OFFLINE} == "FALSE" ]; then
+  loops="01 03"
+  for loop in $loops; do
 
-netcdf_diag=${netcdf_diag:-".false."}
-binary_diag=${binary_diag:-".true."}
+  case $loop in
+    01) string=ges;;
+    03) string=anl;;
+     *) string=$loop;;
+  esac
 
-loops="01 03"
-for loop in $loops; do
-
-case $loop in
-  01) string=ges;;
-  03) string=anl;;
-   *) string=$loop;;
-esac
-
-#  Collect diagnostic files for obs types (groups) below
-numfile_rad_bin=0
-numfile_cnv=0
-numfile_rad=0
-if [ $binary_diag = ".true." ]; then
-   listall="hirs2_n14 msu_n14 sndr_g08 sndr_g11 sndr_g11 sndr_g12 sndr_g13 sndr_g08_prep sndr_g11_prep sndr_g12_prep sndr_g13_prep sndrd1_g11 sndrd2_g11 sndrd3_g11 sndrd4_g11 sndrd1_g15 sndrd2_g15 sndrd3_g15 sndrd4_g15 sndrd1_g13 sndrd2_g13 sndrd3_g13 sndrd4_g13 hirs3_n15 hirs3_n16 hirs3_n17 amsua_n15 amsua_n16 amsua_n17 amsua_n18 amsua_n19 amsua_metop-a amsua_metop-b amsua_metop-c amsub_n15 amsub_n16 amsub_n17 hsb_aqua airs_aqua amsua_aqua imgr_g08 imgr_g11 imgr_g12 pcp_ssmi_dmsp pcp_tmi_trmm conv sbuv2_n16 sbuv2_n17 sbuv2_n18 omi_aura ssmi_f13 ssmi_f14 ssmi_f15 hirs4_n18 hirs4_metop-a mhs_n18 mhs_n19 mhs_metop-a mhs_metop-b mhs_metop-c amsre_low_aqua amsre_mid_aqua amsre_hig_aqua ssmis_las_f16 ssmis_uas_f16 ssmis_img_f16 ssmis_env_f16 iasi_metop-a iasi_metop-b iasi_metop-c seviri_m08 seviri_m09 seviri_m10 seviri_m11 cris_npp atms_npp ssmis_f17 cris-fsr_npp cris-fsr_n20 atms_n20 abi_g16 abi_g18 radardbz atms_n21 cris-fsr_n21"
-   for type in $listall; do
+  #  Collect diagnostic files for obs types (groups) below
+  numfile_rad_bin=0
+  numfile_cnv=0
+  numfile_rad=0
+  if [ $binary_diag = ".true." ]; then
+    listall="hirs2_n14 msu_n14 sndr_g08 sndr_g11 sndr_g11 sndr_g12 sndr_g13 sndr_g08_prep sndr_g11_prep sndr_g12_prep sndr_g13_prep sndrd1_g11 sndrd2_g11 sndrd3_g11 sndrd4_g11 sndrd1_g15 sndrd2_g15 sndrd3_g15 sndrd4_g15 sndrd1_g13 sndrd2_g13 sndrd3_g13 sndrd4_g13 hirs3_n15 hirs3_n16 hirs3_n17 amsua_n15 amsua_n16 amsua_n17 amsua_n18 amsua_n19 amsua_metop-a amsua_metop-b amsua_metop-c amsub_n15 amsub_n16 amsub_n17 hsb_aqua airs_aqua amsua_aqua imgr_g08 imgr_g11 imgr_g12 pcp_ssmi_dmsp pcp_tmi_trmm conv sbuv2_n16 sbuv2_n17 sbuv2_n18 omi_aura ssmi_f13 ssmi_f14 ssmi_f15 hirs4_n18 hirs4_metop-a mhs_n18 mhs_n19 mhs_metop-a mhs_metop-b mhs_metop-c amsre_low_aqua amsre_mid_aqua amsre_hig_aqua ssmis_las_f16 ssmis_uas_f16 ssmis_img_f16 ssmis_env_f16 iasi_metop-a iasi_metop-b iasi_metop-c seviri_m08 seviri_m09 seviri_m10 seviri_m11 cris_npp atms_npp ssmis_f17 cris-fsr_npp cris-fsr_n20 atms_n20 abi_g16 abi_g18 radardbz atms_n21 cris-fsr_n21"
+    for type in $listall; do
       count=$(ls pe*.${type}_${loop} | wc -l)
       if [[ $count -gt 0 ]]; then
          $(cat pe*.${type}_${loop} > diag_${type}_${string}.${YYYYMMDDHH})
@@ -1076,92 +1041,95 @@ if [ $binary_diag = ".true." ]; then
          echo "diag_${type}_${string}.${YYYYMMDDHH}" >> listrad_bin
          numfile_rad_bin=`expr ${numfile_rad_bin} + 1`
       fi
-   done
-fi
+    done
+  fi
 
-if [ $netcdf_diag = ".true." ]; then
-   nc_diag_cat="nc_diag_cat.x"
-   listall_cnv="conv_ps conv_q conv_t conv_uv conv_pw conv_rw conv_sst conv_dbz"
-   listall_rad="hirs2_n14 msu_n14 sndr_g08 sndr_g11 sndr_g11 sndr_g12 sndr_g13 sndr_g08_prep sndr_g11_prep sndr_g12_prep sndr_g13_prep sndrd1_g11 sndrd2_g11 sndrd3_g11 sndrd4_g11 sndrd1_g15 sndrd2_g15 sndrd3_g15 sndrd4_g15 sndrd1_g13 sndrd2_g13 sndrd3_g13 sndrd4_g13 hirs3_n15 hirs3_n16 hirs3_n17 amsua_n15 amsua_n16 amsua_n17 amsua_n18 amsua_n19 amsua_metop-a amsua_metop-b amsua_metop-c amsub_n15 amsub_n16 amsub_n17 hsb_aqua airs_aqua amsua_aqua imgr_g08 imgr_g11 imgr_g12 pcp_ssmi_dmsp pcp_tmi_trmm conv sbuv2_n16 sbuv2_n17 sbuv2_n18 omi_aura ssmi_f13 ssmi_f14 ssmi_f15 hirs4_n18 hirs4_metop-a mhs_n18 mhs_n19 mhs_metop-a mhs_metop-b mhs_metop-c amsre_low_aqua amsre_mid_aqua amsre_hig_aqua ssmis_las_f16 ssmis_uas_f16 ssmis_img_f16 ssmis_env_f16 iasi_metop-a iasi_metop-b iasi_metop-c seviri_m08 seviri_m09 seviri_m10 seviri_m11 cris_npp atms_npp ssmis_f17 cris-fsr_npp cris-fsr_n20 atms_n20 abi_g16 abi_g18 atms_n21 cris-fsr_n21"
+  if [ "$netcdf_diag" = ".true." ]; then
+    export pgm="nc_diag_cat.x"
 
-   for type in $listall_cnv; do
+    listall_cnv="conv_ps conv_q conv_t conv_uv conv_pw conv_rw conv_sst conv_dbz"
+    listall_rad="hirs2_n14 msu_n14 sndr_g08 sndr_g11 sndr_g11 sndr_g12 sndr_g13 sndr_g08_prep sndr_g11_prep sndr_g12_prep sndr_g13_prep sndrd1_g11 sndrd2_g11 sndrd3_g11 sndrd4_g11 sndrd1_g15 sndrd2_g15 sndrd3_g15 sndrd4_g15 sndrd1_g13 sndrd2_g13 sndrd3_g13 sndrd4_g13 hirs3_n15 hirs3_n16 hirs3_n17 amsua_n15 amsua_n16 amsua_n17 amsua_n18 amsua_n19 amsua_metop-a amsua_metop-b amsua_metop-c amsub_n15 amsub_n16 amsub_n17 hsb_aqua airs_aqua amsua_aqua imgr_g08 imgr_g11 imgr_g12 pcp_ssmi_dmsp pcp_tmi_trmm conv sbuv2_n16 sbuv2_n17 sbuv2_n18 omi_aura ssmi_f13 ssmi_f14 ssmi_f15 hirs4_n18 hirs4_metop-a mhs_n18 mhs_n19 mhs_metop-a mhs_metop-b mhs_metop-c amsre_low_aqua amsre_mid_aqua amsre_hig_aqua ssmis_las_f16 ssmis_uas_f16 ssmis_img_f16 ssmis_env_f16 iasi_metop-a iasi_metop-b iasi_metop-c seviri_m08 seviri_m09 seviri_m10 seviri_m11 cris_npp atms_npp ssmis_f17 cris-fsr_npp cris-fsr_n20 atms_n20 abi_g16 abi_g18 atms_n21 cris-fsr_n21"
+
+    for type in $listall_cnv; do
       count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
       if [[ $count -gt 0 ]]; then
-         ${APRUN} ${nc_diag_cat} -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4
+	 . prep_step
+         ${APRUN} $pgm -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4 >>$pgmout 2>errfile
+	 export err=$?; err_chk
+	 mv errfile errfile_nc_diag_cat_$type
          gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4
-         cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz $comout
+         cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
          echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listcnv
          numfile_cnv=`expr ${numfile_cnv} + 1`
       fi
-   done
+    done
 
-   for type in $listall_rad; do
+    for type in $listall_rad; do
       count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
       if [[ $count -gt 0 ]]; then
-         ${APRUN} ${nc_diag_cat} -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4
-         gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4
-         cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz $comout
-         echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listrad
-         numfile_rad=`expr ${numfile_rad} + 1`
+        . prep_step
+        ${APRUN} $pgm -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4 >>$pgmout 2>errfile
+	export err=$?; err_chk
+	mv errfile errfile_nc_diag_cat_$type
+        gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4
+        cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
+        echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listrad
+        numfile_rad=`expr ${numfile_rad} + 1`
       else
-         echo 'No diag_' ${type} 'exist'
+        echo 'No diag_' ${type} 'exist'
       fi
-   done
-fi
-
-done
-
-if [ ${gsi_type} == "OBSERVER" ]; then
-  cp *diag*ges* ${observer_nwges_dir}/.
-  if [ ${mem_type} == "MEAN" ]; then
-  mkdir -p ${observer_nwges_dir}/../../../observer_diag/${YYYYMMDDHH}/ensmean/observer_gsi
-  cp *diag*ges* ${observer_nwges_dir}/../../../observer_diag/${YYYYMMDDHH}/ensmean/observer_gsi/.
-  else
-  mkdir -p ${observer_nwges_dir}/../../../observer_diag/${YYYYMMDDHH}/${slash_ensmem_subdir}/observer_gsi
-  cp *diag*ges* ${observer_nwges_dir}/../../../observer_diag/${YYYYMMDDHH}/${slash_ensmem_subdir}/observer_gsi/.
+    done
   fi
-fi
+  done
 
-#
-#-----------------------------------------------------------------------
-#
-# cycling radiance bias corretion files
-#
-#-----------------------------------------------------------------------
+  if [ "${gsi_type}" = "OBSERVER" ]; then
+    cp *diag*ges* ${observer_nwges_dir}/.
+    if [ "${mem_type}" = "MEAN" ]; then
+      mkdir -p ${observer_nwges_dir}/../../../observer_diag/${YYYYMMDDHH}/ensmean/observer_gsi
+      cp *diag*ges* ${observer_nwges_dir}/../../../observer_diag/${YYYYMMDDHH}/ensmean/observer_gsi/.
+    else
+      mkdir -p ${observer_nwges_dir}/../../../observer_diag/${YYYYMMDDHH}/${slash_ensmem_subdir}/observer_gsi
+      cp *diag*ges* ${observer_nwges_dir}/../../../observer_diag/${YYYYMMDDHH}/${slash_ensmem_subdir}/observer_gsi/.
+    fi
+  fi
+  #
+  #-----------------------------------------------------------------------
+  #
+  # cycling radiance bias corretion files
+  #
+  #-----------------------------------------------------------------------
+  #
+  if [ "${DO_RADDA}" = "TRUE" ]; then
+    if [ "${CYCLE_TYPE}" = "spinup" ]; then
+      spinup_or_prod_rrfs=spinup
+    else
+      spinup_or_prod_rrfs=prod
+    fi
+    if [ ${numfile_cnv} -gt 0 ]; then
+      tar -cvzf rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat_nc `cat listcnv`
+      cp ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat_nc  ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat
+    fi
+    if [ ${numfile_rad} -gt 0 ]; then
+      tar -cvzf rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat_nc `cat listrad`
+      cp ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat_nc  ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
+    fi
+    if [ ${numfile_rad_bin} -gt 0 ]; then
+      tar -cvzf rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat `cat listrad_bin`
+      cp ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat  ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
+    fi
 
-if [ ${DO_RADDA} == "TRUE" ]; then
-  if [ ${cycle_type} == "spinup" ]; then
-    spinup_or_prod_rrfs=spinup
-  else
-    spinup_or_prod_rrfs=prod
+    if [ "${DO_ENS_RADDA}" = "TRUE" ]; then
+      # For EnKF: ensmean, copy satbias files; ens. member, do nothing  
+      if [ ${mem_type} == "MEAN" ]; then  
+        cp ./satbias_out ${satbias_dir}_ensmean/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
+        cp ./satbias_pc.out ${satbias_dir}_ensmean/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
+      fi	 
+    else
+      # For EnVar DA  
+      cp ./satbias_out ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
+      cp ./satbias_pc.out ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
+    fi
   fi
-  if [ ${numfile_cnv} -gt 0 ]; then
-     tar -cvzf rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat_nc `cat listcnv`
-     cp ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat_nc  ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat
-  fi
-  if [ ${numfile_rad} -gt 0 ]; then
-     tar -cvzf rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat_nc `cat listrad`
-     cp ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat_nc  ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
-  fi
-  if [ ${numfile_rad_bin} -gt 0 ]; then
-     tar -cvzf rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat `cat listrad_bin`
-     cp ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat  ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
-  fi
-
-  if [ ${DO_ENS_RADDA} == "TRUE" ]; then
-    # For EnKF: ensmean, copy satbias files; ens. member, do nothing  
-    if [ ${mem_type} == "MEAN" ]; then  
-      cp ./satbias_out ${satbias_dir}_ensmean/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
-      cp ./satbias_pc.out ${satbias_dir}_ensmean/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
-    fi	 
-  else
-    # For EnVar DA  
-    cp ./satbias_out ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
-    cp ./satbias_pc.out ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
-  fi
-
-fi
-
 fi # run diag inline (with GSI)
 #
 #-----------------------------------------------------------------------

@@ -55,7 +55,7 @@ with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "gridspec_dir" "mem_type" "workdir" "comout" "comin" "slash_ensmem_subdir" )
+valid_args=( "cycle_dir" "cycle_type" "mem_type" "slash_ensmem_subdir" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -114,35 +114,28 @@ MM=${YYYYMMDDHH:4:2}
 DD=${YYYYMMDDHH:6:2}
 HH=${YYYYMMDDHH:8:2}
 YYYYMMDD=${YYYYMMDDHH:0:8}
-
 #
 #-----------------------------------------------------------------------
 #
-# Get into working directory and define fix directory
+# Define fix directory
 #
 #-----------------------------------------------------------------------
 #
-print_info_msg "$VERBOSE" "
-Getting into working directory for non-var cloud analysis ..."
-
-cd ${workdir}
-
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
-
 #
 #-----------------------------------------------------------------------
 #
 # link or copy background and grid configuration files
 #
 #-----------------------------------------------------------------------
-
-if [ ${cycle_type} == "spinup" ]; then
+#
+if [ "${cycle_type}" = "spinup" ]; then
   cycle_tag="_spinup"
 else
   cycle_tag=""
 fi
-if [ ${mem_type} == "MEAN" ]; then
+if [ "${mem_type}" = "MEAN" ]; then
   bkpath=${cycle_dir}/ensmean/fcst_fv3lam${cycle_tag}/INPUT
 else
   bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam${cycle_tag}/INPUT
@@ -192,23 +185,22 @@ else                                   # Use background from input (cold start)
   ln -s ${bkpath}/gfs_data.tile7.halo0.nc         fv3_tracer
   BKTYPE=1
 fi
-
 #
 #-----------------------------------------------------------------------
 #
 # link/copy observation files to working directory
 #
 #-----------------------------------------------------------------------
+#
+process_bufr_path=${COMIN}
 
-process_bufr_path=${comin}
-
-obs_files_source[0]=${comin}/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
+obs_files_source[0]=${COMIN}/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
 obs_files_target[0]=NASALaRC_cloud4fv3.bin
 
-obs_files_source[1]=${comin}/rrfs.t${HH}z.fv3_metarcloud.bin
+obs_files_source[1]=${COMIN}/rrfs.t${HH}z.fv3_metarcloud.bin
 obs_files_target[1]=fv3_metarcloud.bin
 
-obs_files_source[2]=${comin}/rrfs.t${HH}z.LightningInFV3LAM.bin
+obs_files_source[2]=${COMIN}/rrfs.t${HH}z.LightningInFV3LAM.bin
 obs_files_target[2]=LightningInFV3LAM.dat
 
 obs_number=${#obs_files_source[@]}
@@ -228,7 +220,7 @@ process_radarref_path=${cycle_dir}/process_radarref${cycle_tag}
 ss=0
 for bigmin in 0; do
   bigmin=$( printf %2.2i $bigmin )
-  obs_file=${comin}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
+  obs_file=${COMIN}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
   if [ "${IO_LAYOUT_Y}" == "1" ]; then
     obs_file_check=${obs_file}
   else
@@ -250,22 +242,22 @@ for bigmin in 0; do
      print_info_msg "$VERBOSE" "Warning: ${obs_file} does not exist!"
   fi
 done
-
+#
 #-----------------------------------------------------------------------
 #
 # Build namelist 
 #
 #-----------------------------------------------------------------------
-
+#
 if [ ${BKTYPE} -eq 1 ]; then
   n_iolayouty=1
 else
   n_iolayouty=$(($IO_LAYOUT_Y))
 fi
-if [ ${DO_ENKF_RADAR_REF} == "TRUE" ]; then
+if [ "${DO_ENKF_RADAR_REF}" = "TRUE" ]; then
   l_qnr_from_qr=".true."
 fi
-if [ -r "${comout}/gsi_complete_radar.txt" ] ; then
+if [ -r "${COMOUT}/gsi_complete_radar.txt" ] ; then
   l_precip_clear_only=".true."
   l_qnr_from_qr=".true."
 fi
@@ -312,26 +304,6 @@ cat << EOF > gsiparm.anl
    l_cld_uncertainty=${l_cld_uncertainty},
  /
 EOF
-
-#
-#-----------------------------------------------------------------------
-#
-# Copy the executable to the run directory.
-#
-#-----------------------------------------------------------------------
-#
-exect="fv3lam_nonvarcldana.exe"
-
-if [ -f ${EXECdir}/$exect ]; then
-  print_info_msg "$VERBOSE" "
-Copying the nonVar Cloud Analysis executable to the run directory..."
-  cp ${EXECdir}/${exect} ${workdir}
-else
-  err_exit "\
-The executable specified in exect does not exist:
-  exect = \"${EXECdir}/$exect\"
-Build executable and rerun."
-fi
 #
 #-----------------------------------------------------------------------
 #
@@ -339,19 +311,21 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-if [ ${BKTYPE} -eq 0 ]; then
-  $APRUN ./${exect} > stdout 2>&1
-  export err=$?; err_chk
+export pgm="fv3lam_nonvarcldana.exe"
+. prep_step
 
-  cp stdout ${comout}/stdout.t${HH}z.nonvarcloudanalysis
-  cat stdout_cloudanalysis.* > ${comout}/stdout.t${HH}z.nonvarcloudanalysis.all
+if [ ${BKTYPE} -eq 0 ]; then
+  $APRUN ${EXECdir}/$pgm >>$pgmout 2>errfile
+  export err=$?; err_chk
 fi
 #
 #-----------------------------------------------------------------------
 #
 # touch nonvarcldanl_complete.txt to indicate competion of this task
 #
-touch ${comout}/nonvarcldanl_complete.txt
+#-----------------------------------------------------------------------
+#
+touch ${COMOUT}/nonvarcldanl_complete.txt
 #
 #-----------------------------------------------------------------------
 #

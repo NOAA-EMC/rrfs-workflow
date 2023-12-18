@@ -15,6 +15,9 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
+
+date
+export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
@@ -58,8 +61,8 @@ IODA task with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
-if [ ${CYCLE_TYPE} == "spinup" ]; then
+export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
   COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
 fi
 mkdir -p "${COMOUT}"
@@ -70,20 +73,21 @@ mkdir -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #
-if [ ${CYCLE_TYPE} == "spinup" ]; then
-  analworkname="jedienvar_ioda_spinup"
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export analworkname="jedienvar_ioda_spinup"
 else
-  analworkname="jedienvar_ioda"
+  export analworkname="jedienvar_ioda"
 fi
 
-if [ ${MEM_TYPE} == "MEAN" ]; then
-  workdir="${CYCLE_DIR}/ensmean/${analworkname}"
+if [ "${MEM_TYPE}" = "MEAN" ]; then
+  export workdir="${CYCLE_DIR}/ensmean/${analworkname}"
   SLASH_ENSMEM_SUBDIR=""
 else
-  workdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/${analworkname}"
+  export workdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/${analworkname}"
 fi
 rm -fr ${workdir}
 mkdir -p ${workdir}
+cd ${workdir}
 #
 #-----------------------------------------------------------------------
 #
@@ -95,9 +99,7 @@ $SCRIPTSdir/exrrfs_jedienvar_ioda.sh \
              cycle_dir="${CYCLE_DIR}" \
              cycle_type="${CYCLE_TYPE}" \
              mem_type="${MEM_TYPE}" \
-             workdir="${workdir}"  \
-             slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}" \
-			 comout="${COMOUT}"
+             slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}"
 export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
