@@ -55,7 +55,7 @@ with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "CYCLE_DIR" "WORKDIR" "comout")
+valid_args=( "CYCLE_DIR" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -116,40 +116,33 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 
 YYJJJHH=$(date +"%y%j%H" -d "${START_DATE}")
 PREYYJJJHH=$(date +"%y%j%H" -d "${START_DATE} 1 hours ago")
-
 #
 #-----------------------------------------------------------------------
 #
-# Get into working directory
+# Define fix dir
 #
 #-----------------------------------------------------------------------
 #
-print_info_msg "$VERBOSE" "
-Getting into working directory for BUFR obseration process ..."
-
-cd ${WORKDIR}
-
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
-
 print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
-
 #
 #-----------------------------------------------------------------------
 #
 # link or copy background files
 #
 #-----------------------------------------------------------------------
-
-cp ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
-
-#-----------------------------------------------------------------------
 #
-#   copy bufr table
+cp ${fixgriddir}/fv3_grid_spec  fv3sar_grid_spec.nc
 #
 #-----------------------------------------------------------------------
+#
+# copy bufr table
+#
+#-----------------------------------------------------------------------
+#
 BUFR_TABLE=${FIX_GSI}/prepobs_prep_RAP.bufrtable
 cp $BUFR_TABLE prepobs_prep.bufrtable
-
+#
 #-----------------------------------------------------------------------
 #
 #   set observation soruce 
@@ -160,7 +153,6 @@ if [[ "${NET}" = "RTMA"* ]] && [[ "${RTMA_OBS_FEED}" = "NCO" ]]; then
   obs_source="rtma_ru"
   obsfileprefix=${obs_source}
   obspath_tmp=${OBSPATH}/${obs_source}.${YYYYMMDD}
-
 else
   SUBH=""
   obs_source=rap
@@ -188,15 +180,13 @@ else
 
   esac
 fi
-
 #
-#-----------------------------------------------------------------------
 #-----------------------------------------------------------------------
 #
 # Link to the observation lightning bufr files
 #
 #-----------------------------------------------------------------------
-
+#
 run_lightning=false
 obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.lghtng.tm00.bufr_d
 print_info_msg "$VERBOSE" "obsfile is $obs_file"
@@ -206,8 +196,7 @@ if [ -r "${obs_file}" ]; then
 else
    print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist!"
 fi
-
-
+#
 #-----------------------------------------------------------------------
 #
 # Build namelist and run executable for lightning
@@ -220,7 +209,7 @@ fi
 #                   0 for ARW  (default)
 #                   1 for FV3LAM
 #-----------------------------------------------------------------------
-
+#
 cat << EOF > namelist.lightning
  &setup
   analysis_time = ${YYYYMMDDHH},
@@ -236,46 +225,27 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-# link/copy executable file to working directory 
-#
-#-----------------------------------------------------------------------
-#
-exect="process_Lightning.exe"
-
-if [ -f ${EXECdir}/$exect ]; then
-  print_info_msg "$VERBOSE" "
-Copying the lightning process  executable to the run directory..."
-  cp ${EXECdir}/${exect} ${WORKDIR}/${exect}
-else
-  err_exit "\
-The executable specified in exect does not exist:
-  exect = \"${EXECdir}/$exect\"
-Build lightning process and rerun."
-fi
-#
-#
-#-----------------------------------------------------------------------
-#
 # Run the process for lightning bufr file 
 #
 #-----------------------------------------------------------------------
 #
+export pgm="process_Lightning.exe"
+. prep_step
+
 if [[ "$run_lightning" == true ]]; then
-  $APRUN ./${exect} > stdout_lightning_bufr 2>&1
+  $APRUN ${EXECdir}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
+  mv errfile errfile_lightning
 
-  cp stdout_lightning_bufr $comout/stdout.t${HH}z.lightning_bufr
-  cp LightningInFV3LAM.dat $comout/rrfs.t${HH}z.LightningInFV3LAM.bin
+  cp LightningInFV3LAM.dat ${COMOUT}/rrfs.t${HH}z.LightningInFV3LAM.bin
 fi
-
 #
-#-----------------------------------------------------------------------
 #-----------------------------------------------------------------------
 #
 # Link to the observation NASA LaRC cloud bufr file
 #
 #-----------------------------------------------------------------------
-
+#
 obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.lgycld.tm00.bufr_d
 print_info_msg "$VERBOSE" "obsfile is $obs_file"
 run_cloud=false
@@ -285,7 +255,7 @@ if [ -r "${obs_file}" ]; then
 else
    print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist!"
 fi
-
+#
 #-----------------------------------------------------------------------
 #
 # Build namelist and run executable for NASA LaRC cloud
@@ -300,8 +270,8 @@ fi
 #                   = 0 for ARW  (default)
 #                   = 1 for FV3LAM
 #-----------------------------------------------------------------------
-
-if [ ${PREDEF_GRID_NAME} == "GSD_RAP13km" ] || [ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ] ; then
+#
+if [ "${PREDEF_GRID_NAME}" = "GSD_RAP13km" ] || [ "${PREDEF_GRID_NAME}" = "RRFS_CONUS_13km" ]; then
    npts_rad_number=1
    metar_impact_radius_number=9
 else
@@ -322,46 +292,26 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-# Copy the executable to the run directory.
-#
-#-----------------------------------------------------------------------
-#
-exect="process_larccld.exe"
-
-if [ -f ${EXECdir}/$exect ]; then
-  print_info_msg "$VERBOSE" "
-Copying the NASA LaRC cloud process  executable to the run directory..."
-  cp ${EXECdir}/${exect} ${WORKDIR}/${exect}
-else
-  err_exit "\
-The executable specified in exect does not exist:
-  exect = \"${EXECdir}/$exect\"
-Build lightning process and rerun."
-fi
-#
-#
-#-----------------------------------------------------------------------
-#
 # Run the process for NASA LaRc cloud  bufr file 
 #
 #-----------------------------------------------------------------------
 #
+export pgm="process_larccld.exe"
+. prep_step
 if [[ "$run_cloud" == true ]]; then
-  $APRUN ./${exect} > stdout_nasalarc 2>&1
+  $APRUN ${EXECdir}/$pgm >>pgmout 2>errfile
   export err=$?; err_chk
+  mv errfile errfile_larccld
 
-  cp stdout_nasalarc $comout/stdout.t${HH}z.nasalarc
-  cp NASALaRC_cloud4fv3.bin $comout/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
+  cp NASALaRC_cloud4fv3.bin $COMOUT/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
 fi
-
 #
-#-----------------------------------------------------------------------
 #-----------------------------------------------------------------------
 #
 # Link to the observation prepbufr bufr file for METAR cloud
 #
 #-----------------------------------------------------------------------
-
+#
 obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.prepbufr.tm00 
 print_info_msg "$VERBOSE" "obsfile is $obs_file"
 run_metar=false
@@ -371,7 +321,7 @@ if [ -r "${obs_file}" ]; then
 else
    print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist!"
 fi
-
+#
 #-----------------------------------------------------------------------
 #
 # Build namelist for METAR cloud
@@ -382,7 +332,7 @@ fi
 #   twindin         : observation time window (real: hours before and after analysis time)
 #
 #-----------------------------------------------------------------------
-
+#
 cat << EOF > namelist.metarcld
  &setup
   analysis_time = ${YYYYMMDDHH},
@@ -396,38 +346,19 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-# Copy the executable to the run directory.
-#
-#-----------------------------------------------------------------------
-#
-exect="process_metarcld.exe"
-
-if [ -f ${EXECdir}/$exect ]; then
-  print_info_msg "$VERBOSE" "
-Copying the METAR cloud process  executable to the run directory..."
-  cp ${EXECdir}/${exect} ${WORKDIR}/${exect}
-else
-  err_exit "\
-The executable specified in exect does not exist:
-  exect = \"${EXECdir}/$exect\"
-Build lightning process and rerun."
-fi
-#
-#
-#-----------------------------------------------------------------------
-#
 # Run the process for METAR cloud bufr file 
 #
 #-----------------------------------------------------------------------
 #
+export pgm="process_metarcld.exe"
+. prep_step
 if [[ "$run_metar" == true ]]; then
-  $APRUN ./${exect} > stdout_metarcld 2>&1
+  $APRUN ${EXECdir}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
+  mv errfile errfile_metarcld
 
-  cp stdout_metarcld $comout/stdout.t${HH}z.metarcld
-  cp fv3_metarcloud.bin $comout/rrfs.t${HH}z.fv3_metarcloud.bin
+  cp fv3_metarcloud.bin $COMOUT/rrfs.t${HH}z.fv3_metarcloud.bin
 fi
-
 #
 #-----------------------------------------------------------------------
 #

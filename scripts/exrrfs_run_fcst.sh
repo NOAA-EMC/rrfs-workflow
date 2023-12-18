@@ -59,12 +59,8 @@ valid_args=( \
 "cdate" \
 "cycle_type" \
 "cycle_subtype" \
-"run_dir" \
-"gridspec_dir" \
 "ensmem_indx" \
 "slash_ensmem_subdir" \
-"NWGES_BASEDIR" \
-"RESTART_HRS" \
 )
 process_args valid_args "$@"
 #
@@ -364,7 +360,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then
   ln -snf  ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/emi_data.nc      ${run_dir}/INPUT/emi_data.nc
   yyyymmddhh=${cdate:0:10}
   echo ${yyyymmddhh}
-  if [ ${cycle_type} == "spinup" ]; then
+  if [ ${cycle_type} = "spinup" ]; then
     smokefile=${NWGES_BASEDIR}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00_spinup.nc
   else
     smokefile=${NWGES_BASEDIR}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc
@@ -467,7 +463,7 @@ fi
 
 if [ ${BKTYPE} -eq 0 ]; then
   # cycling, using namelist for cycling forecast
-  if [ "${STOCH}" == "TRUE" ]; then
+  if [ "${STOCH}" = "TRUE" ]; then
     cp ${FV3_NML_RESTART_STOCH_FP} ${run_dir}/${FV3_NML_FN}
    else
     cp ${FV3_NML_RESTART_FP} ${run_dir}/${FV3_NML_FN}
@@ -478,7 +474,7 @@ else
     cp ${FV3_NML_CYCSFC_FP} ${run_dir}/${FV3_NML_FN}
   else
   # cold start, using namelist for cold start
-    if [ "${STOCH}" == "TRUE" ]; then
+    if [ "${STOCH}" = "TRUE" ]; then
       cp ${FV3_NML_STOCH_FP} ${run_dir}/${FV3_NML_FN}
      else
       cp ${FV3_NML_FP} ${run_dir}/${FV3_NML_FN}
@@ -596,27 +592,18 @@ fi
 #
 # Run the FV3-LAM model.  Note that we have to launch the forecast from
 # the current cycle's directory because the FV3 executable will look for
-# input files in the current directory.  Since those files have been
+# input files in the current directory. Since those files have been
 # staged in the cycle directory, the current directory must be the cycle
-# directory (which it already is).
+# directory.
 #
 #-----------------------------------------------------------------------
 #
-# Copy the executable to the run directory.
-if [ -f ${FV3_EXEC_FP} ]; then
-   print_info_msg "$VERBOSE" "
-  Copying the fv3lam  executable to the run directory..."
-  cp ${FV3_EXEC_FP} ${run_dir}/ufs_model
-else
-  err_exit "\
- The GSI executable specified in FV3_EXEC_FP does not exist:
-   FV3_EXEC_FP = \"$FV3_EXEC_FP\"
- Build FV3LAM and rerun."
-fi
+export pgm="ufs_model"
+cp ${FV3_EXEC_FP} ${run_dir}/$pgm
+. prep_step
 
-$APRUN ${run_dir}/ufs_model
+$APRUN ${run_dir}/$pgm >>$pgmout 2>errfile
 export err=$?; err_chk
-
 #
 #-----------------------------------------------------------------------
 #

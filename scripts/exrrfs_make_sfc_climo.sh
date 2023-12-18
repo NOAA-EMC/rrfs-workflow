@@ -56,28 +56,6 @@ climatology.
 #
 #-----------------------------------------------------------------------
 #
-# Specify the set of valid argument names for this script/function.  
-# Then process the arguments provided to this script/function (which 
-# should consist of a set of name-value pairs of the form arg1="value1",
-# etc).
-#
-#-----------------------------------------------------------------------
-#
-valid_args=( "workdir" )
-process_args valid_args "$@"
-#
-#-----------------------------------------------------------------------
-#
-# For debugging purposes, print out values of arguments passed to this
-# script.  Note that these will be printed out only if VERBOSE is set to
-# TRUE.
-#
-#-----------------------------------------------------------------------
-#
-print_input_args valid_args
-#
-#-----------------------------------------------------------------------
-#
 # OpenMP environment settings.
 #
 #-----------------------------------------------------------------------
@@ -85,14 +63,6 @@ print_input_args valid_args
 export OMP_NUM_THREADS=1
 export OMP_STACKSIZE=1024m
 nprocs=$(( NNODES_MAKE_SFC_CLIMO * PPN_MAKE_SFC_CLIMO ))
-#
-#-----------------------------------------------------------------------
-#
-# Change location to the temporary directory.
-#
-#-----------------------------------------------------------------------
-#
-cd $workdir
 #
 #-----------------------------------------------------------------------
 #
@@ -177,19 +147,10 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-# Set the name and path to the executable and make sure that it exists.
-#
-exec_fn="sfc_climo_gen"
-exec_fp="$EXECdir/${exec_fn}"
-if [ ! -f "${exec_fp}" ]; then
-  err_exit "\
-The executable (exec_fp) for generating the surface climatology files
-does not exist:
-  exec_fp = \"${exec_fp}\"
-Please ensure that you've built this executable."
-fi
+export pgm="sfc_climo_gen"
+. prep_step
 
-$APRUN ${exec_fp}
+$APRUN $EXECdir/$pgm >>$pgmout 2>errfile
 export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
