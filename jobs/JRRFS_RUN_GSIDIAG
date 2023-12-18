@@ -94,7 +94,7 @@ mkdir -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSDIR/exrrfs_run_gsidiag.sh \
+$SCRIPTSdir/exrrfs_run_gsidiag.sh \
              cycle_dir="${CYCLE_DIR}" \
              cycle_type="${CYCLE_TYPE}" \
              gsi_type="${GSI_TYPE}" \
