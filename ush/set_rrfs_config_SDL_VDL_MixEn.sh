@@ -1,7 +1,5 @@
 
 l_both_fv3sar_gfs_ens=.false. #if true, ensemble size is increased with GDAS ensemble (MixEn)
-nsclgrp=1                     #number of scales for scale-dependent localization (SDL)
-ngvarloc=1                    #number of scales for variable-dependent localization (VDL)
 assign_vdl_nml=.false.        #if true, vdl_scale and vloc_varlist are used to set VDL
 
 if [ ${l_both_fv3sar_gfs_ens} = ".true." ]; then
