@@ -106,11 +106,16 @@ case $MACHINE in
     ;;
 
   "ORION")
-    APRUN="srun --export=ALL"
+    APRUN="srun --export=ALL --mem=0"
     ;;
 
   "JET")
     APRUN="srun --export=ALL --mem=0"
+    if [ "${PREDEF_GRID_NAME}" == "RRFS_NA_3km" ]; then
+      OMP_NUM_THREADS=4
+    else
+      OMP_NUM_THREADS=2
+    fi
     ;;
 
   *)
