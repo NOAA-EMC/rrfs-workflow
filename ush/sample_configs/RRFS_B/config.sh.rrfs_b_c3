@@ -1,5 +1,5 @@
 MACHINE="jet"
-version="v0.7.0"
+version="v0.7.6"
 ACCOUNT="nrtrr"
 RESERVATION="rrfsdet"
 EXPT_BASEDIR="/home/role.rtrr/RRFS/rrfs.${version}"
@@ -30,8 +30,10 @@ DO_RADDA="TRUE"
 DO_BUFRSND="FALSE"
 USE_FVCOM="TRUE"
 PREP_FVCOM="TRUE"
+USE_CLM="TRUE"
 DO_PARALLEL_PRDGEN="FALSE"
 DO_GSIDIAG_OFFLINE="TRUE"
+DO_UPDATE_BC="TRUE"
 
 EXTRN_MDL_ICS_OFFSET_HRS="3"
 LBC_SPEC_INTVL_HRS="1"
@@ -95,6 +97,7 @@ SNOWICE_update_hour=00
 SOIL_SURGERY_time=2023101804
 netcdf_diag=.true.
 binary_diag=.false.
+WRTCMP_output_file="netcdf_parallel"
 
 regional_ensemble_option=1
 
@@ -104,7 +107,7 @@ EXTRN_MDL_NAME_LBCS="FV3GFS"
 envir="para"
 
 NET="RRFS_CONUS"
-TAG="c3v70"
+TAG="c3v76"
 
 ARCHIVEDIR="/1year/BMC/wrfruc/rrfs_b"
 NCL_REGION="conus"

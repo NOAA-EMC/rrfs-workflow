@@ -288,9 +288,11 @@ if [ "${DO_RADDA}" = "TRUE" ]; then
      # For EnVar DA  
      if [ -r ./satbias_out ]; then
        cp ./satbias_out ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
+       cp ./satbias_out ${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
      fi
      if [ -r ./satbias_pc.out ]; then
        cp ./satbias_pc.out ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
+       cp ./satbias_pc.out ${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
      fi
   fi
 fi
