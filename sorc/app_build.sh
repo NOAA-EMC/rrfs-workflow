@@ -266,6 +266,10 @@ if [ "${EXTRN}" = true ]; then
   fi
 
   # run check-out
+  python --version
+  if [[ $? -ne 0 ]]; then
+       module load python
+  fi
   printf "... checking out external components ...\n"
   ./manage_externals/checkout_externals
 fi
