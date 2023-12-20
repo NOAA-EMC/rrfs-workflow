@@ -1,9 +1,9 @@
 help([[
 This module loads libraries for building the RRFS workflow on
-the MSU machine Orion using Intel-2022.1.2
+the MSU machine Hercules using Intel-2021.9.0
 ]])
 
-whatis([===[Loads libraries needed for building the RRFS worfklow on Orion ]===])
+whatis([===[Loads libraries needed for building the RRFS worfklow on Hercules ]===])
 
 load("contrib")
 load("noaatools")
@@ -61,4 +61,4 @@ unload("python/3.10.8")
 setenv("CMAKE_C_COMPILER","mpiicc")
 setenv("CMAKE_CXX_COMPILER","mpiicpc")
 setenv("CMAKE_Fortran_COMPILER","mpiifort")
-setenv("CMAKE_Platform","orion.intel")
+setenv("CMAKE_Platform","hercules.intel")
