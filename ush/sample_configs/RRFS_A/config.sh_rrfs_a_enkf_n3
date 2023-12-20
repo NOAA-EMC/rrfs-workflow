@@ -1,6 +1,6 @@
 MACHINE="wcoss2"
 MACHINETYPE="primary"
-version="v0.7.7"
+version="v0.7.9"
 ACCOUNT="RRFS_DEV"
 #RESERVATION="rrfsdet"
 EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/${version}"
@@ -118,9 +118,7 @@ binary_diag=.false.
 WRTCMP_output_file="netcdf_parallel"
 
 ## set up post
-#NFHOUT_HF="1"
-#NFHMAX_HF="18"
-#NFHOUT="3"
+OUTPUT_FH="1 -1"
 
 WTIME_RUN_FCST="00:30:00"
 WTIME_RUN_FCST_LONG="04:45:00"
@@ -145,7 +143,7 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    DO_GSIOBSERVER="TRUE"
    DO_ENKFUPDATE="TRUE"
 #   DO_RECENTER="TRUE"
-   DO_ENS_GRAPHICS="TRUE"
+   DO_ENS_GRAPHICS="FALSE"
    DO_ENKF_RADAR_REF="TRUE"
    DO_ENSPOST="FALSE"
    DO_ENSINIT="TRUE"
@@ -190,10 +188,10 @@ fi
 
 RUN_ensctrl="rrfs"
 RUN="enkfrrfs"
-TAG="n3enkf77"
+TAG="n3enkf79"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   RUN="refs"
-  TAG="n3enfcst77"
+  TAG="n3enfcst79"
 fi
 COMINgfs=""
 
