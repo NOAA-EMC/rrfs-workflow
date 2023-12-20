@@ -1,6 +1,5 @@
 MACHINE="jet"
-version="v0.7.6"
-ACCOUNT="wrfruc"
+version="v0.7.9"
 #RESERVATION="rrfsens"
 #RESERVATION_POST="rrfsdet"
 EXPT_BASEDIR="YourOwnSpace/${version}"
@@ -118,9 +117,7 @@ binary_diag=.false.
 WRTCMP_output_file="netcdf_parallel"
 
 ## set up post
-NFHOUT_HF="1"
-NFHMAX_HF="12"
-NFHOUT="3"
+OUTPUT_FH="1 -1"
 
 WTIME_RUN_FCST="01:00:00"
 WTIME_MAKE_LBCS="02:00:00"
@@ -138,7 +135,7 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    DO_GSIOBSERVER="TRUE"
    DO_ENKFUPDATE="TRUE"
 #   DO_RECENTER="TRUE"
-   DO_ENS_GRAPHICS="TRUE"
+   DO_ENS_GRAPHICS="FALSE"
    DO_ENKF_RADAR_REF="TRUE"
    DO_ENSPOST="TRUE"
    DO_ENSINIT="TRUE"
@@ -182,10 +179,10 @@ fi
 
 RUN_ensctrl="rrfs"
 RUN="enkfrrfs"
-TAG="c3enkf76"
+TAG="c3enkf79"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   RUN="refs"
-  TAG="c3enfcst76"
+  TAG="c3enfcst79"
 fi
 
 . set_rrfs_config.sh

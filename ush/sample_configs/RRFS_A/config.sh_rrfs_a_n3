@@ -1,6 +1,6 @@
 MACHINE="wcoss2"
 MACHINETYPE="primary"
-version="v0.7.7"
+version="v0.7.9"
 ACCOUNT="RRFS_DEV"
 #RESERVATION="rrfsdet"
 EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/${version}"
@@ -83,12 +83,9 @@ RESTART_INTERVAL_LONG="1 2"
 ## set up post
 POSTPROC_LEN_HRS="18"
 POSTPROC_LONG_LEN_HRS="60"
-NFHOUT_HF="1"
+
 # 15 min output upto 18 hours
-#NFHMAX_HF="18"
-#NFHOUT="1"
-#NSOUT="15"
-#NSOUT_MIN="15"
+OUTPUT_FH="1 -1"
 
 USE_RRFSE_ENS="TRUE"
 CYCL_HRS_HYB_FV3LAM_ENS=("00" "01" "02" "03" "04" "05" "06" "07" "08" "09" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "23")
@@ -109,7 +106,7 @@ EXTRN_MDL_NAME_LBCS="FV3GFS"
 envir="para"
 
 NET="rrfs_a"
-TAG="n3v77"
+TAG="n3v79"
 
 ARCHIVEDIR="/NCEPDEV/emc-meso/1year/emc.lam/${TAG}"
 NCL_REGION="conus"

@@ -54,7 +54,7 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
       EXTRN_MDL_SOURCE_BASEDIR_ICS=${RETRODATAPATH}/GEFS
     elif [[ ${EXTRN_MDL_NAME_ICS} == "GDASENKF" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_ICS="${RETRODATAPATH}/enkf/atm"
-    if
+    fi
     if [ ${EXTRN_MDL_NAME_LBCS} == "FV3GFS" ] ; then
       EXTRN_MDL_SOURCE_BASEDIR_LBCS=${RETRODATAPATH}/gfs/0p25deg/grib2
     elif [ ${EXTRN_MDL_NAME_LBCS} == "GEFS" ] ; then
