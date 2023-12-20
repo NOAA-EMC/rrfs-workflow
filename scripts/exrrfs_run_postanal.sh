@@ -55,9 +55,9 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "gsi_type" "mem_type" "analworkdir" \
-             "observer_nwges_dir" "slash_ensmem_subdir" "comout" \
-             "satbias_dir" "ob_type" "gridspec_dir" )
+valid_args=( "cycle_dir" "gsi_type" "mem_type" "analworkdir" \
+             "slash_ensmem_subdir" \
+             "satbias_dir" "ob_type" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -129,15 +129,12 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 #
 #-----------------------------------------------------------------------
 #
-# go to working directory.
-# define fix and background path
+# Define fix and background path
 #
 #-----------------------------------------------------------------------
 #
-cd ${analworkdir}
-
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
-if [ "${cycle_type}" = "spinup" ]; then
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
   if [ "${mem_type}" = "MEAN" ]; then
     bkpath=${cycle_dir}/ensmean/fcst_fv3lam_spinup/INPUT
   else
@@ -163,7 +160,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-if [ "${cycle_type}" = "spinup" ]; then
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
   analworkname="_gsi_spinup"
 else
   analworkname="_gsi"
@@ -216,20 +213,12 @@ cat << EOF > namelist.soiltq
  /
 EOF
 
-  adjustsoil_exec="${EXECdir}/adjust_soiltq.exe"
+  export pgm="adjust_soiltq.exe"
+  . prep_step
 
-  if [ -f $adjustsoil_exec ]; then
-    print_info_msg "$VERBOSE" "
-Copying the adjust soil executable to the run directory..."
-    cp ${adjustsoil_exec} adjust_soiltq.exe
-  else
-    err_exit "\
-The adjust_soiltq.exe specified in ${EXECdir} does not exist.
-Build adjust_soiltq.exe and rerun."
-  fi
-
-  $APRUN ./adjust_soiltq.exe
+  $APRUN ${EXECdir}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
+  mv errfile errfile_adjust_soiltq
 fi
 #
 #-----------------------------------------------------------------------
@@ -250,21 +239,14 @@ cat << EOF > namelist.updatebc
  /
 EOF
 
-  update_bc_exec="${EXECdir}/update_bc.exe"
   cp gfs_bndy.tile7.000.nc gfs_bndy.tile7.000.nc_before_update
 
-  if [ -f $update_bc_exec ]; then
-    print_info_msg "$VERBOSE" "
-Copying the update bc executable to the run directory..."
-    cp ${update_bc_exec} update_bc.exe 
-  else
-    err_exit "\
-The update_bc.exe specified in ${EXECdir} does not exist.
-Build update_bc.exe and rerun."
-  fi
+  export pgm="update_bc.exe"
+  . prep_step
 
-  $APRUN ./update_bc.exe
+  $APRUN ${EXECdir}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
+  mv errfile errfile_update_bc
 fi
 #
 #-----------------------------------------------------------------------

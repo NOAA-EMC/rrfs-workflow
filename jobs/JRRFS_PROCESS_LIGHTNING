@@ -16,6 +16,9 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
+
+date
+export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
@@ -59,13 +62,14 @@ the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-if [ ${CYCLE_TYPE} == "spinup" ]; then
-  workdir=${CYCLE_DIR}/process_lightning_spinup
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export workdir=${CYCLE_DIR}/process_lightning_spinup
 else
-  workdir=${CYCLE_DIR}/process_lightning
+  export workdir=${CYCLE_DIR}/process_lightning
 fi
 rm -fr ${workdir}
 mkdir -p ${workdir}
+cd ${workdir}
 #
 #-----------------------------------------------------------------------
 #
@@ -73,10 +77,10 @@ mkdir -p ${workdir}
 #
 #-----------------------------------------------------------------------
 #
-if [ ${CYCLE_TYPE} == "spinup" ]; then
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
 else
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc/ensmean"
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc/ensmean"
 fi
 mkdir -p "${COMOUT}"
 #
@@ -86,9 +90,16 @@ mkdir -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #
+export pgmout="${workdir}/OUTPUT.$$"
+env
+
 $SCRIPTSdir/exrrfs_process_lightning.sh \
-  CYCLE_DIR="${CYCLE_DIR}" WORKDIR="${workdir}" comout="${COMOUT}"
+  CYCLE_DIR="${CYCLE_DIR}"
 export err=$?; err_chk
+
+if [ -e "$pgmout" ]; then
+  cat $pgmout
+fi
 #
 #-----------------------------------------------------------------------
 #

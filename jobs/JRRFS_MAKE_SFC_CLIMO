@@ -9,6 +9,9 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
+
+date
+export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
@@ -58,13 +61,13 @@ mkdir -p "${SFC_CLIMO_DIR}"
 #
 #-----------------------------------------------------------------------
 #
-# Create a work directory.  If it already exists, delete it.
+# Create a work directory.
 #
 #-----------------------------------------------------------------------
 #
-workdir="${SFC_CLIMO_DIR}/tmp"
-check_for_preexist_dir_file "$workdir" "delete"
-mkdir $workdir
+export workdir="${SFC_CLIMO_DIR}/tmp"
+mkdir -p $workdir
+cd $workdir
 #
 #-----------------------------------------------------------------------
 #
@@ -72,8 +75,15 @@ mkdir $workdir
 #
 #-----------------------------------------------------------------------
 #
-${SCRIPTSdir}/exrrfs_make_sfc_climo.sh workdir="$workdir"
+export pgmout="${workdir}/OUTPUT.$$"
+env
+
+${SCRIPTSdir}/exrrfs_make_sfc_climo.sh
 export err=$?; err_chk
+
+if [ -e "$pgmout" ]; then
+  cat $pgmout
+fi
 #
 #-----------------------------------------------------------------------
 #

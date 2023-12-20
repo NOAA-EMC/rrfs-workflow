@@ -49,30 +49,6 @@ This is the ex-script for the task that generates initial condition
 #
 #-----------------------------------------------------------------------
 #
-# Specify the set of valid argument names for this script/function.  Then
-# process the arguments provided to this script/function (which should
-# consist of a set of name-value pairs of the form arg1="value1", etc).
-#
-#-----------------------------------------------------------------------
-#
-valid_args=( \
-"ics_dir" \
-"ics_nwges_dir" \
-)
-process_args valid_args "$@"
-#
-#-----------------------------------------------------------------------
-#
-# For debugging purposes, print out values of arguments passed to this
-# script.  Note that these will be printed out only if VERBOSE is set to
-# TRUE.
-#
-#-----------------------------------------------------------------------
-#
-print_input_args valid_args
-#
-#-----------------------------------------------------------------------
-#
 # Set machine-dependent parameters.
 #
 #-----------------------------------------------------------------------
@@ -119,16 +95,6 @@ extrn_mdl_var_defns_fp="${extrn_mdl_staging_dir}/${EXTRN_MDL_ICS_VAR_DEFNS_FN}"
 #
 #-----------------------------------------------------------------------
 #
-#
-#
-#-----------------------------------------------------------------------
-#
-workdir="${ics_dir}/tmp_ICS"
-mkdir -p "$workdir"
-cd $workdir
-#
-#-----------------------------------------------------------------------
-#
 # Set physics-suite-dependent variable mapping table needed in the FORTRAN
 # namelist file that the chgres_cube executable will read in.
 #
@@ -147,6 +113,7 @@ case "${CCPP_PHYS_SUITE}" in
   "FV3_GFS_v15_thompson_mynn_lam3km" | \
   "FV3_HRRR" | \
   "FV3_HRRR_gf" | \
+  "FV3_HRRR_gf_nogwd" | \
   "FV3_RAP" )
     if [ "${EXTRN_MDL_NAME_ICS}" = "RAP" ] || \
        [ "${EXTRN_MDL_NAME_ICS}" = "HRRRDAS" ] || \
@@ -560,23 +527,6 @@ cdate_crnt_fhr=$( date --utc --date "${yyyymmdd} ${hh} UTC + ${fhr} hours" "+%Y%
 mm="${cdate_crnt_fhr:4:2}"
 dd="${cdate_crnt_fhr:6:2}"
 hh="${cdate_crnt_fhr:8:2}"
-
-#
-#-----------------------------------------------------------------------
-#
-# Check that the executable that generates the ICs exists.
-#
-#-----------------------------------------------------------------------
-#
-exec_fn="chgres_cube"
-exec_fp="$EXECdir/${exec_fn}"
-if [ ! -f "${exec_fp}" ]; then
-  err_exit "\
-The executable (exec_fp) for generating initial conditions on the FV3-LAM
-native grid does not exist:
-  exec_fp = \"${exec_fp}\"
-Please ensure that you've built this executable."
-fi
 #
 #-----------------------------------------------------------------------
 #
@@ -658,7 +608,10 @@ $settings"
 #
 #-----------------------------------------------------------------------
 #
-${APRUN} ${exec_fp}
+export pgm="chgres_cube"
+. prep_step
+
+${APRUN} ${EXECdir}/$pgm >>$pgmout 2>errfile
 export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
@@ -734,16 +687,16 @@ if [ $DO_ENS_BLENDING = "TRUE" ] &&
    cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc ./fv_core.res.nc
 
    # Required FIX files
-   cp $FIXLAM/C3359_grid.tile7.nc .
-   cp $FIXLAM/C3359_oro_data.tile7.halo0.nc .
+   cp $FIXLAM/${CRES}_grid.tile7.nc .
+   cp $FIXLAM/${CRES}_oro_data.tile7.halo0.nc .
 
    # Shortcut the file names
    warm=./fv_core.res.tile1.nc
    cold=./out.atm.tile7.nc
-   grid=./C3359_grid.tile7.nc
+   grid=./${CRES}_grid.tile7.nc
    akbk=./fv_core.res.nc
    akbkcold=./gfs_ctrl.nc
-   orog=./C3359_oro_data.tile7.halo0.nc
+   orog=./${CRES}_oro_data.tile7.halo0.nc
    bndy=./gfs.bndy.nc
 
    # Run convert coldstart files to fv3 restart (rotate winds and remap).
@@ -773,10 +726,7 @@ if [ $DO_ENS_BLENDING = "TRUE" ] &&
    cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.sfc_data.nc             ${ics_dir}/sfc_data.nc
    cp gfs_ctrl.nc ${ics_dir}
    cp gfs.bndy.nc ${ics_dir}/gfs_bndy.tile${TILE_RGNL}.000.nc
-
-
 fi
-
 #
 #-----------------------------------------------------------------------
 #
@@ -804,12 +754,10 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-
 cp ${ics_dir}/*.nc ${ics_nwges_dir}/.
 if [ $DO_ENS_BLENDING = "TRUE" ] && [ $cdate_crnt_fhr -ge ${FIRST_BLENDED_CYCLE_DATE} ]; then
   cp ${ics_dir}/coupler.res ${ics_nwges_dir}/.
 fi
-
 #
 #-----------------------------------------------------------------------
 #

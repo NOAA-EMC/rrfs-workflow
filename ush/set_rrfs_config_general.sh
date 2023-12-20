@@ -1,5 +1,6 @@
 
 if [[ $MACHINE == "jet" ]] ; then
+  ACCOUNT=nrtrr
   if [[ -n $RESERVATION ]] ; then
     ACCOUNT=rtrr
     SERVICE_ACCOUNT=rtrr
@@ -28,7 +29,7 @@ if [[ $MACHINE == "jet" ]] ; then
   fi
 
 elif [[ $MACHINE == "hera" ]] ; then
-  ACCOUNT="wrfruc"
+  ACCOUNT="zrtrr"
   PARTITION_DEFAULT=""
   PARTITION_FCST=""
   QUEUE_ANALYSIS="batch"

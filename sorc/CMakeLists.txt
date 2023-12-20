@@ -150,7 +150,7 @@ if (BUILD_UFS)
     if(CPL_AQM)
       set(CCPP_SUITES "FV3_GFS_v16")
     else()
-      set(CCPP_SUITES "FV3_HRRR,FV3_HRRR_gf,FV3_RAP,FV3_GFS_v15_thompson_mynn_lam3km,FV3_RRFS_v1beta,FV3_GFS_v16,RRFSens_phy1,RRFSens_phy2,RRFSens_phy3,RRFSens_phy4,RRFSens_phy5")
+      set(CCPP_SUITES "FV3_HRRR,FV3_HRRR_gf,FV3_HRRR_gf_nogwd,FV3_RAP,FV3_GFS_v15_thompson_mynn_lam3km,FV3_RRFS_v1beta,FV3_GFS_v16,RRFSens_phy1,RRFSens_phy2,RRFSens_phy3,RRFSens_phy4,RRFSens_phy5")
 
     endif()
   endif()
@@ -252,6 +252,7 @@ if (BUILD_UPP)
     "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
     "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
     "-Dexec_dir=${CMAKE_INSTALL_BINDIR}"
+#    "-DINTERNAL_IFI=ON"
   )
 
   ExternalProject_Add(UPP

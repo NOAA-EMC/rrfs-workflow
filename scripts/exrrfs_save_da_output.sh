@@ -59,8 +59,6 @@ valid_args=( \
 "cdate" \
 "run_dir" \
 "nwges_dir" \
-"cycle_type" \
-"cycle_subtype" \
 )
 process_args valid_args "$@"
 #
@@ -84,7 +82,6 @@ print_input_args valid_args
 yyyymmdd=${cdate:0:8}
 hh=${cdate:8:2}
 cyc=$hh
-
 # 
 #-----------------------------------------------------------------------
 #
@@ -104,7 +101,7 @@ list_iolayout=$(seq 0 $n_iolayouty)
 if [ ! -r ${nwges_dir}/DA_OUTPUT/gfs_ctrl.nc ]; then
   cp $run_dir/INPUT/gfs_ctrl.nc ${nwges_dir}/DA_OUTPUT/gfs_ctrl.nc
   if [ -r ${run_dir}/INPUT/coupler.res ]; then  # warm start
-    if [ "${IO_LAYOUT_Y}" == "1" ]; then
+    if [ "${IO_LAYOUT_Y}" = "1" ]; then
       for file in ${filelistn}; do
         cp $run_dir/INPUT/${file} ${nwges_dir}/DA_OUTPUT/${file}
       done

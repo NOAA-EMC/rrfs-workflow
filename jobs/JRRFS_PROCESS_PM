@@ -16,6 +16,9 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHDIR/source_util_funcs.sh
+
+date
+export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
@@ -59,19 +62,20 @@ the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-if [ ${CYCLE_TYPE} == "spinup" ]; then
-  workdir=${CYCLE_DIR}/process_pm_spinup
-  if [ ${DO_ENSEMBLE} == "TRUE" ]; then
-     workdir=${CYCLE_DIR}/process_pm_spinup_enkf
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export workdir=${CYCLE_DIR}/process_pm_spinup
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    workdir=${CYCLE_DIR}/process_pm_spinup_enkf
   fi
 else
-  workdir=${CYCLE_DIR}/process_pm
-  if [ ${DO_ENSEMBLE} == "TRUE" ]; then
-     workdir=${CYCLE_DIR}/process_pm_enkf
+  export workdir=${CYCLE_DIR}/process_pm
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    workdir=${CYCLE_DIR}/process_pm_enkf
   fi
 fi
 rm -fr ${workdir}
 mkdir -p ${workdir}
+cd ${workdir}
 #
 #-----------------------------------------------------------------------
 #
@@ -79,10 +83,10 @@ mkdir -p ${workdir}
 #
 #-----------------------------------------------------------------------
 #
-if [ ${CYCLE_TYPE} == "spinup" ]; then
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
 else
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
 fi
 mkdir -p "${COMOUT}"
 #
@@ -92,9 +96,16 @@ mkdir -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #
+export pgmout="${workdir}/OUTPUT.$$"
+env
+
 $SCRIPTSDIR/exrrfs_process_pm.sh \
-  CYCLE_DIR="${CYCLE_DIR}" WORKDIR="${workdir}" comout="${COMOUT}"
+  CYCLE_DIR="${CYCLE_DIR}"
 export err=$?; err_chk
+
+if [ -e "$pgmout" ]; then
+  cat $pgmout
+fi
 #
 #-----------------------------------------------------------------------
 #
