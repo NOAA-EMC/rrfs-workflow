@@ -11,6 +11,7 @@ load("noaatools")
 prepend_path("MODULEPATH","/work/noaa/epic/role-epic/spack-stack/hercules/spack-stack-1.5.0/envs/unified-env/install/modulefiles/Core")
 load(pathJoin("stack-intel", os.getenv("stack_intel_ver") or "2021.9.0"))
 load(pathJoin("stack-intel-oneapi-mpi", os.getenv("stack_impi_ver") or "2021.9.0"))
+load("intel-oneapi-mkl/2022.2.1")
 load(pathJoin("cmake", os.getenv("cmake_ver") or "3.23.1"))
 
 load(pathJoin("jasper", os.getenv("jasper_ver") or "2.0.32"))
