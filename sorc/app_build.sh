@@ -266,7 +266,7 @@ if [ "${EXTRN}" = true ]; then
   fi
 
   # run check-out
-  python --version
+  python --version 1>/dev/null 2>/dev/null
   if [[ $? -ne 0 ]]; then
        module load python
   fi
