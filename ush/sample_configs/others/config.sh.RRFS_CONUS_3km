@@ -1,6 +1,5 @@
 MACHINE="jet"
-version="v0.7.6"
-ACCOUNT="nrtrr"
+version="v0.7.9"
 #RESERVATION="rrfsdet"
 EXPT_BASEDIR="YourOwnSpace/${version}"
 EXPT_SUBDIR="RRFS_CONUS_3km"
@@ -82,11 +81,8 @@ RESTART_INTERVAL_LONG="1"
 ## set up post
 POSTPROC_LEN_HRS="3"
 POSTPROC_LONG_LEN_HRS="12"
-NFHOUT_HF="1"
 # 15 min output upto 18 hours
-#NFHMAX_HF="2"
-#NFHOUT="1"
-#NSOUT_MIN="15"
+OUTPUT_FH="1 -1"
 #OUTPUT_FH="0.0 0.25 0.50 0.75 1.0 1.25 1.50 1.75 2.0 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0 11.0 12.0"
 
 USE_RRFSE_ENS="FALSE"
@@ -109,7 +105,7 @@ EXTRN_MDL_DATE_JULIAN="TRUE"
 envir="para"
 
 NET="rrfs_b"
-TAG="c3v76"
+TAG="c3v79"
 
 ARCHIVEDIR="/1year/BMC/wrfruc/rrfs_b"
 NCL_REGION="conus"
