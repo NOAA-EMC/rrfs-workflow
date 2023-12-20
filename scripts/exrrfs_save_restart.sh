@@ -86,7 +86,20 @@ save_yyyy=${save_time:0:4}
 save_mm=${save_time:4:2}
 save_dd=${save_time:6:2}
 save_hh=${save_time:8:2}
-# 
+#cdate_crnt_fhr=$( date --utc --date "${yyyymmdd} ${hh} UTC" "+%Y%m%d%H" )
+#
+#-----------------------------------------------------------------------
+#
+# Determine early exit for running blending vs 1 time step ensinit.
+#
+#-----------------------------------------------------------------------
+#
+run_blending=${NWGES_BASEDIR}/${cdate}/run_blending
+run_ensinit=${NWGES_BASEDIR}/${cdate}/run_ensinit
+if [[ ${CYCLE_SUBTYPE} == "ensinit" && -e $run_blending ]]; then
+   echo "clean exit ensinit, blending used instead of ensinit."
+   exit 0
+fi
 #-----------------------------------------------------------------------
 #
 # Let save the restart files if needed before run post.
@@ -100,6 +113,7 @@ filelistn="fv_core.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_tracer.res.tile1.nc p
 filelistcold="gfs_data.tile7.halo0.nc sfc_data.tile7.halo0.nc"
 n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
+
 
 if [ "${CYCLE_SUBTYPE}" = "ensinit" ]; then
   restart_prefix=$( date "+%Y%m%d.%H%M%S" -d "${save_yyyy}${save_mm}${save_dd} ${save_hh} + ${DT_ATMOS} seconds" )

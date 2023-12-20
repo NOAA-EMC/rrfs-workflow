@@ -139,6 +139,19 @@ YYJJJ2200000000=`date +"%y%j2200000000" -d "${START_DATE} 1 day ago"`
 #
 #-----------------------------------------------------------------------
 #
+# Determine early exit for running blending vs 1 time step ensinit.
+#
+#-----------------------------------------------------------------------
+#
+run_blending=${NWGES_BASEDIR}/${cdate_crnt_fhr}/run_blending
+run_ensinit=${NWGES_BASEDIR}/${cdate_crnt_fhr}/run_ensinit
+if [[ $CYCLE_SUBTYPE == "ensinit" && -e $run_blending && ! -e $run_ensinit ]]; then
+   echo "clean exit ensinit, blending used instead of ensinit."
+   exit 0
+fi
+#
+#-----------------------------------------------------------------------
+#
 # go to INPUT directory.
 # prepare initial conditions for ensemble free forecast after ensemble DA
 #
@@ -193,7 +206,8 @@ if [ "${CYCLE_TYPE}" = "spinup" ]; then
   for cyc_start in "${CYCL_HRS_SPINSTART[@]}"; do
     if [ ${HH} -eq ${cyc_start} ]; then
       BKTYPE=1
-      if [ "${DO_ENS_BLENDING}" = "TRUE" ] && [ $cdate_crnt_fhr -ge ${FIRST_BLENDED_CYCLE_DATE} ]; then
+     #if [ "${DO_ENS_BLENDING}" = "TRUE" ] && [ $cdate_crnt_fhr -ge ${FIRST_BLENDED_CYCLE_DATE} ]; then
+      if [ "${DO_ENS_BLENDING}" = "TRUE" ] && [ -e $run_blending ] && [ ! -e $run_ensinit ]; then
         echo "do blending"
         BKTYPE=3   # warm start from blended ics
       fi
@@ -333,7 +347,11 @@ else
 
   if [ "${CYCLE_SUBTYPE}" = "spinup" ] ; then
     # point to the 0-h cycle for the warm start from the 1 timestep restart files
-    fg_restart_dirname=fcst_fv3lam_ensinit
+    if [[ -e $run_blending ]]; then
+      fg_restart_dirname=fcst_fv3lam
+    elif [[ -e $run_ensinit ]]; then
+      fg_restart_dirname=fcst_fv3lam_ensinit
+    fi
     bkpath=${fg_root}/${YYYYMMDDHH}${SLASH_ENSMEM_SUBDIR}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
     ctrl_bkpath=${ctrlpath}/fcst_fv3lam_spinup/INPUT
   else

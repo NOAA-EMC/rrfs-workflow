@@ -652,16 +652,32 @@ export err=$?; err_chk
 #     -) https://github.com/NOAA-GFDL/GFDL_atmos_cubed_sphere/blob/bdeee64e860c5091da2d169b1f4307ad466eca2c/tools/external_ic.F90
 #     -) https://dtcenter.org/sites/default/files/events/2020/20201105-1300p-fv3-gfdl-1.pdf
 #
+
 cdate_crnt_fhr_m1=$( date --utc --date "$yyyymmdd $hh UTC - 1 hours" "+%Y%m%d%H" )
+
+# check for 1h RRFS EnKF file, if none then use 1tstep ensemble initialization
+if [[ -e ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.tile1.nc ]]; then
+   touch ${NWGES_BASEDIR}/${cdate_crnt_fhr}/run_blending
+else
+   touch ${NWGES_BASEDIR}/${cdate_crnt_fhr}/run_ensinit
+   echo "Will skip blending and run 1tstep ensinit"
+fi
+run_blending=${NWGES_BASEDIR}/${cdate_crnt_fhr}/run_blending
+run_ensinit=${NWGES_BASEDIR}/${cdate_crnt_fhr}/run_ensinit
+
 if [ $DO_ENS_BLENDING = "TRUE" ] &&
+   [ -e $run_blending ] &&
+   [ ! -e $run_ensinit ] &&
    [ $cdate_crnt_fhr -ge ${FIRST_BLENDED_CYCLE_DATE} ] &&
    [ $EXTRN_MDL_NAME_ICS = "GDASENKF" ]; then
 
    echo "Blending Starting."
    ulimit -s unlimited
    export OMP_STACKSIZE=2G
-   ncores=$(( NNODES_MAKE_ICS*PPN_MAKE_ICS ))  # OMP_NUM_THREADS=ntasks*cpus-per-task
-   export OMP_NUM_THREADS=$ncores #WCOSS2:"96", Hera/Orion:"80"
+   export OMP_NUM_THREADS=$NCPUS #WCOSS2:"96", Hera/Orion:"80"
+   if [[ $NCPUS -gt 96 ]]; then
+      export OMP_NUM_THREADS="96"
+   fi
    export FI_OFI_RXM_SAR_LIMIT=3145728
    export FI_MR_CACHE_MAX_COUNT=0
    export MPICH_OFI_STARTUP_CONNECT=1
@@ -736,7 +752,8 @@ fi
 # system.
 #-----------------------------------------------------------------------
 #
-if [[ $DO_ENS_BLENDING = "FALSE" || ($DO_ENS_BLENDING = "TRUE" && $cdate_crnt_fhr -lt ${FIRST_BLENDED_CYCLE_DATE}) ]]; then
+#if [[ $DO_ENS_BLENDING = "FALSE" || ($DO_ENS_BLENDING = "TRUE" && $cdate_crnt_fhr -lt ${FIRST_BLENDED_CYCLE_DATE}) ]]; then
+if [[ $DO_ENS_BLENDING = "FALSE" || ($DO_ENS_BLENDING = "TRUE" && -e $run_ensinit ) ]]; then
   mv out.atm.tile${TILE_RGNL}.nc \
         ${ics_dir}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
 
@@ -755,7 +772,8 @@ fi
 #-----------------------------------------------------------------------
 #
 cp ${ics_dir}/*.nc ${ics_nwges_dir}/.
-if [ $DO_ENS_BLENDING = "TRUE" ] && [ $cdate_crnt_fhr -ge ${FIRST_BLENDED_CYCLE_DATE} ]; then
+#if [ $DO_ENS_BLENDING = "TRUE" ] && [ $cdate_crnt_fhr -ge ${FIRST_BLENDED_CYCLE_DATE} ]; then
+if [ $DO_ENS_BLENDING = "TRUE" ] && [ -e $run_blending ] && [ ! -e $run_ensinit ]; then
   cp ${ics_dir}/coupler.res ${ics_nwges_dir}/.
 fi
 #
