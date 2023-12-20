@@ -105,7 +105,7 @@ EXTRN_MDL_DATE_JULIAN="TRUE"
 envir="para"
 
 NET="rrfs_b"
-TAG="c3v76"
+TAG="c3v79"
 
 ARCHIVEDIR="/1year/BMC/wrfruc/rrfs_b"
 NCL_REGION="conus"
