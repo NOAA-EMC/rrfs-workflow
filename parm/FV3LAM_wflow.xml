@@ -963,7 +963,10 @@ MODULES_RUN_TASK_FP script.
       <and>
         <taskdep task="&GET_EXTRN_ICS_TN;{{ uscore_ensmem_name }}"/>
         {% if do_ens_blending %}
-        <datadep age="00:00:01:00"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem#mem#/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr> </datadep>
+        <or>
+          <streq><left>06</left><right><cyclestr>@H</cyclestr></right></streq>
+          <streq><left>18</left><right><cyclestr>@H</cyclestr></right></streq>
+        </or>
         {% endif %}
         <or>
 <!--          <taskdep task="&MAKE_GRID_TN;"/> -->
@@ -1201,7 +1204,10 @@ MODULES_RUN_TASK_FP script.
       <dependency>
         <and>
           <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
-          <datadep age="00:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam_ensinit/RESTART/</cyclestr><cyclestr offset="{{ dt_atmos }}">@Y@m@d.@H@M@S.coupler.res</cyclestr></datadep>
+          <or>
+            <datadep age="00:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam_ensinit/RESTART/</cyclestr><cyclestr offset="{{ dt_atmos }}">@Y@m@d.@H@M@S.coupler.res</cyclestr></datadep>
+            <datadep age="00:00:00:05"><cyclestr>&FG_ROOT;/@Y@m@d@H/run_blending</cyclestr> </datadep>
+          </or>
         </and>
       </dependency>
 
@@ -1279,8 +1285,6 @@ MODULES_RUN_TASK_FP script.
         {%- for m in range(1, num_ens_members+1) %}
         {%- if do_ensinit %}
           <taskdep task="&PREP_CYC_SPINUP_TN;_ensinit_mem{{ "%04d" % m }}"/>
-        {%- elif do_ens_blending %}
-          <taskdep task="&PREP_CYC_SPINUP_TN;_mem{{ "%04d" % m }}"/>
         {%- endif %}
         {%- endfor %}
         <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
