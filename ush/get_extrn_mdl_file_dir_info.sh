@@ -419,7 +419,7 @@ case "${anl_or_fcst}" in
       elif [ "${MACHINE}" = "JET" ] ; then
         fns_on_disk=( "${yy}${ddd}${hh}${mn}.gdas.t${hh}z.atmf0${fcst_hh}.${GDAS_MEM_NAME}.nc" "${yy}${ddd}${hh}${mn}.gdas.t${hh}z.sfcf0${fcst_hh}.${GDAS_MEM_NAME}.nc")  # use netcdf
         fns_in_arcv=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
-      elif [ "${MACHINE}" = "ORION" ] ; then
+      elif [[ "${MACHINE}" = "ORION" ]] || [[ "${MACHINE}" = "HERCULES" ]]; then
         fns_on_disk=( "${yy}${ddd}${hh}${mn}.gdas.t${hh}z.atmf0${fcst_hh}.${GDAS_MEM_NAME}.nc" "${yy}${ddd}${hh}${mn}.gdas.t${hh}z.sfcf0${fcst_hh}.${GDAS_MEM_NAME}.nc")  # use netcdf
         fns_in_arcv=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
       fi
@@ -548,7 +548,7 @@ and analysis or forecast (anl_or_fcst):
       elif  [ "${MACHINE}" = "JET" ]; then
         fns_on_disk=( "${yy}${ddd}${hh}${mn}.gdas.t${hh}z.atmf0${fcst_hh}.${GDAS_MEM_NAME}.nc" "${yy}${ddd}${hh}${mn}.gdas.t${hh}z.sfcf0${fcst_hh}.${GDAS_MEM_NAME}.nc")  # use netcdf
         fns_in_arcv=( "gdas.t${hh}z.atmf${fcst_hhh}.nc" "gdas.t${hh}z.sfcf${fcst_hhh}.nc" )  #  for now.
-      elif  [ "${MACHINE}" = "ORION" ]; then
+      elif [[ "${MACHINE}" = "ORION" ]] || [[ "${MACHINE}" = "HERCULES" ]]; then
         fns_on_disk=( "${yy}${ddd}${hh}${mn}.gdas.t${hh}z.atmf0${fcst_hh}.${GDAS_MEM_NAME}.nc" "${yy}${ddd}${hh}${mn}.gdas.t${hh}z.sfcf0${fcst_hh}.${GDAS_MEM_NAME}.nc")  # use netcdf
         fns_in_arcv=( "gdas.t${hh}z.atmf${fcst_hhh}.nc" "gdas.t${hh}z.sfcf${fcst_hhh}.nc" )  #  for now.
       fi
@@ -664,7 +664,7 @@ bination of external model (extrn_mdl_name) and analysis or forecast
     "HERA")
       sysdir=""
       ;;
-    "ORION")
+    "ORION"|"HERCULES")
       sysdir="$sysbasedir"
       ;;
     "JET")
@@ -694,7 +694,7 @@ has not been specified for this external model and machine combination:
       sysdir="$sysbasedir"
       #sysdir="$sysbasedir/gfs.${yyyymmdd}/${hh}/atmos"
       ;;
-    "ORION")
+    "ORION"|"HERCULES")
       sysdir="$sysbasedir"
       #sysdir="$sysbasedir/gdas.${yyyymmdd}/${hh}/atmos"
       ;;
@@ -722,7 +722,7 @@ has not been specified for this external model and machine combination:
     "JET")
        sysdir="$sysbasedir"
        ;;
-    "ORION")
+    "ORION"|"HERCULES")
        sysdir="$sysbasedir"
        ;;
     *)
@@ -787,7 +787,7 @@ has not been specified for this external model and machine combination:
     "HERA")
       sysdir="$sysbasedir"
       ;;
-    "ORION")
+    "ORION"|"HERCULES")
       sysdir="$sysbasedir"
       ;;
     "JET")
@@ -812,7 +812,7 @@ has not been specified for this external model and machine combination:
     "HERA")
       sysdir="$sysbasedir"
       ;;
-    "ORION")
+    "ORION"|"HERCULES")
       sysdir="$sysbasedir"
       ;;
     "JET")
@@ -836,7 +836,7 @@ has not been specified for this external model and machine combination:
     "HERA")
       sysdir="$sysbasedir"
       ;;
-    "ORION")
+    "ORION"|"HERCULES")
       sysdir="$sysbasedir"
       ;;
     "JET")
@@ -860,7 +860,7 @@ has not been specified for this external model and machine combination:
     "HERA")
       sysdir="$sysbasedir"
       ;;
-    "ORION")
+    "ORION"|"HERCULES")
       sysdir="$sysbasedir"
       ;;
     "JET")
