@@ -561,6 +561,17 @@ case $MACHINE in
     QUEUE_FCST=${QUEUE_FCST:-"batch"}
     ;;
 
+  "HERCULES")
+    NCORES_PER_NODE=40
+    SCHED="${SCHED:-slurm}"
+    PARTITION_DEFAULT=${PARTITION_DEFAULT:-"hercules"}
+    QUEUE_DEFAULT=${QUEUE_DEFAULT:-"batch"}
+    PARTITION_HPSS=${PARTITION_HPSS:-"service"}
+    QUEUE_HPSS=${QUEUE_HPSS:-"batch"}
+    PARTITION_FCST=${PARTITION_FCST:-"hercules"}
+    QUEUE_FCST=${QUEUE_FCST:-"batch"}
+    ;;
+
   "JET")
     NCORES_PER_NODE=${NCORES_PER_NODE}
     SCHED="${SCHED:-slurm}"
@@ -817,7 +828,7 @@ case $MACHINE in
     FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/scratch1/NCEPDEV/nems/role.epic/UFS_SRW_data/develop/FV3LAM_pregen"}
     ;;
 
-  "ORION")
+  "ORION"|"HERCULES")
     FIXgsm=${FIXgsm:-"/work/noaa/epic/role-epic/contrib/UFS_SRW_data/develop/fix/fix_am"}
     TOPO_DIR=${TOPO_DIR:-"/work/noaa/epic/role-epic/contrib/UFS_SRW_data/develop/fix/fix_orog"}
     SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/work/noaa/epic/role-epic/contrib/UFS_SRW_data/develop/fix/fix_sfc_climo"}

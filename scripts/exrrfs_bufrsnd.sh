@@ -101,6 +101,11 @@ case $MACHINE in
     APRUNS="time"
     ;;
 
+  "HERCULES")
+    APRUNC="srun --export=ALL"
+    APRUNS="time"
+    ;;
+
   "JET")
     APRUNC="srun --export=ALL"
     APRUNS="time"

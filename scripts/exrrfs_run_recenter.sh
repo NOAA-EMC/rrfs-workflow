@@ -74,6 +74,12 @@ case $MACHINE in
   APRUN="srun --export=ALL"
   ;;
 #
+"HERCULES")
+  export OMP_NUM_THREADS=1
+  export OMP_STACKSIZE=1024M
+  APRUN="srun --export=ALL"
+  ;;
+#
 "JET")
   APRUN="srun --export=ALL"
   ;;
