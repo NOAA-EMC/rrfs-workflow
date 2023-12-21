@@ -206,7 +206,6 @@ if [ "${CYCLE_TYPE}" = "spinup" ]; then
   for cyc_start in "${CYCL_HRS_SPINSTART[@]}"; do
     if [ ${HH} -eq ${cyc_start} ]; then
       BKTYPE=1
-     #if [ "${DO_ENS_BLENDING}" = "TRUE" ] && [ $cdate_crnt_fhr -ge ${FIRST_BLENDED_CYCLE_DATE} ]; then
       if [ "${DO_ENS_BLENDING}" = "TRUE" ] && [ -e $run_blending ] && [ ! -e $run_ensinit ]; then
         echo "do blending"
         BKTYPE=3   # warm start from blended ics

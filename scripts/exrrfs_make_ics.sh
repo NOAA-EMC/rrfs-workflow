@@ -679,7 +679,6 @@ done
 if [ $DO_ENS_BLENDING = "TRUE" ] &&
    [ -e $run_blending ] &&
    [ ! -e $run_ensinit ] &&
-   [ $cdate_crnt_fhr -ge ${FIRST_BLENDED_CYCLE_DATE} ] &&
    [ $EXTRN_MDL_NAME_ICS = "GDASENKF" ]; then
 
    echo "Blending Starting."
@@ -763,7 +762,6 @@ fi
 # system.
 #-----------------------------------------------------------------------
 #
-#if [[ $DO_ENS_BLENDING = "FALSE" || ($DO_ENS_BLENDING = "TRUE" && $cdate_crnt_fhr -lt ${FIRST_BLENDED_CYCLE_DATE}) ]]; then
 if [[ $DO_ENS_BLENDING = "FALSE" || ($DO_ENS_BLENDING = "TRUE" && -e $run_ensinit ) ]]; then
   mv out.atm.tile${TILE_RGNL}.nc \
         ${ics_dir}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
@@ -783,7 +781,6 @@ fi
 #-----------------------------------------------------------------------
 #
 cp ${ics_dir}/*.nc ${ics_nwges_dir}/.
-#if [ $DO_ENS_BLENDING = "TRUE" ] && [ $cdate_crnt_fhr -ge ${FIRST_BLENDED_CYCLE_DATE} ]; then
 if [ $DO_ENS_BLENDING = "TRUE" ] && [ -e $run_blending ] && [ ! -e $run_ensinit ]; then
   cp ${ics_dir}/coupler.res ${ics_nwges_dir}/.
 fi
