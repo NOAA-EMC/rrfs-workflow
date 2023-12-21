@@ -653,17 +653,28 @@ export err=$?; err_chk
 #     -) https://dtcenter.org/sites/default/files/events/2020/20201105-1300p-fv3-gfdl-1.pdf
 #
 
-cdate_crnt_fhr_m1=$( date --utc --date "$yyyymmdd $hh UTC - 1 hours" "+%Y%m%d%H" )
-
-# check for 1h RRFS EnKF file, if none then use 1tstep ensemble initialization
-if [[ -e ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.tile1.nc ]]; then
-   touch ${NWGES_BASEDIR}/${cdate_crnt_fhr}/run_blending
-else
-   touch ${NWGES_BASEDIR}/${cdate_crnt_fhr}/run_ensinit
-   echo "Will skip blending and run 1tstep ensinit"
-fi
+# check for 1h RRFS EnKF files, if at least one missing then use 1tstep initialization
 run_blending=${NWGES_BASEDIR}/${cdate_crnt_fhr}/run_blending
 run_ensinit=${NWGES_BASEDIR}/${cdate_crnt_fhr}/run_ensinit
+
+cdate_crnt_fhr_m1=$( date --utc --date "$yyyymmdd $hh UTC - 1 hours" "+%Y%m%d%H" )
+imem=1
+for imem in $(seq 1 30); do
+  ensmem=$( printf "%04d" $imem )
+  rrfs1hfcst_check="${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}/mem${ensmem}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
+  if [[ -e $rrfs1hfcst_check ]]; then
+      echo "We will run blending (instead of ensinit)"
+      if [[ ! -e $run_blending ]]; then # prevent 30 jobs from overwritting same file
+        touch $run_blending
+      fi
+  else
+      echo "We will run ensinit (instead of blending)"
+      if [[ ! -e $run_ensinit ]]; then # prevent 30 jobs from overwritting same file
+        touch $run_ensinit
+      fi
+  fi
+done
+
 
 if [ $DO_ENS_BLENDING = "TRUE" ] &&
    [ -e $run_blending ] &&
