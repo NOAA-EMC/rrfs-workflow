@@ -109,6 +109,10 @@ case $MACHINE in
     APRUN="srun --export=ALL --mem=0"
     ;;
 
+  "HERCULES")
+    APRUN="srun --export=ALL"
+    ;;
+
   "JET")
     APRUN="srun --export=ALL --mem=0"
     if [ "${PREDEF_GRID_NAME}" == "RRFS_NA_3km" ]; then

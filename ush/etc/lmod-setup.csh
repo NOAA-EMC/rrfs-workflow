@@ -6,7 +6,7 @@ Usage: source etc/lmod-setup.csh PLATFORM
 
 OPTIONS:
    PLATFORM - name of machine you are building on
-      (e.g. wcoss2 | hera | jet | orion )
+      (e.g. wcoss2 | hera | jet | orion | hercules )
 EOF_USAGE
    exit 1
 else

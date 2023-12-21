@@ -22,7 +22,7 @@ Parameters needed by the job scheduler.
 <!ENTITY QUEUE_FCST      "{{ queue_fcst }}">
 <!ENTITY QUEUE_POST      "{{ queue_post }}">
 <!ENTITY RRFS_RESERVE  {% if reservation %}"--reservation={{ reservation }}"{% else %}""{% endif %}>
-<!ENTITY SCHED_NATIVE_CMD  {% if machine in ["HERA", "JET", "ORION"] %}"--export=NONE"{% else %}""{% endif %}>
+<!ENTITY SCHED_NATIVE_CMD  {% if machine in ["HERA", "JET", "ORION", "HERCULES"] %}"--export=NONE"{% else %}""{% endif %}>
 
 <!--
 Workflow task names.

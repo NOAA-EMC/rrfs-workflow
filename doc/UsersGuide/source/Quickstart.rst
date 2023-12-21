@@ -37,7 +37,7 @@ Building RRFS workflow
             
          ./app_build.sh --platform=<machine>
 
-      where ``<machine>`` is ``wcoss2``, ``hera``, ``jet``, or ``orion``.
+      where ``<machine>`` is ``wcoss2``, ``hera``, ``jet``, ``orion``, or ``hercules``.
 
    #. Move to the home directory (rrfs-workflow):
 
@@ -58,7 +58,7 @@ Engineering Test: Non-DA
          module use modulefiles
          module load wflow_wcoss2
 
-      * On Hera | Jet | Orion:
+      * On Hera | Jet | Orion | Hercules:
 
       .. code-block:: console
          
@@ -66,7 +66,7 @@ Engineering Test: Non-DA
          module load wflow_<machine>
          conda activate workflow_tools
 
-      where ``<machine>`` is ``hera``, ``jet``, or ``orion``. 
+      where ``<machine>`` is ``hera``, ``jet``, ``orion``, or ``hercules``.
 
    #. Copy the pre-defined configuration file: 
 
@@ -75,7 +75,7 @@ Engineering Test: Non-DA
          cd ush
          cp sample_configs/non-DA_eng/config.nonDA.<format>.<machine>.sh config.sh
       
-      where ``<format>`` is ``grib2`` or ``netcdf``, and ``<machine>`` is ``wcoss2``, ``hera``, ``jet``, or ``orion``. Note that you may need to change ``ACCOUNT``, ``STMP``, or ``PTMP`` in the configuration file ``config.sh``.
+      where ``<format>`` is ``grib2`` or ``netcdf``, and ``<machine>`` is ``wcoss2``, ``hera``, ``jet``, ``orion``, or ``hercules``. Note that you may need to change ``ACCOUNT``, ``STMP``, or ``PTMP`` in the configuration file ``config.sh``.
 
    #. Generate the experiment workflow:
 
@@ -112,7 +112,7 @@ Engineering Test: DA
          module use modulefiles
          module load wflow_wcoss2
 
-      * On Hera | Jet | Orion:
+      * On Hera | Jet | Orion | Hercules :
 
       .. code-block:: console
          
@@ -120,7 +120,7 @@ Engineering Test: DA
          module load wflow_<machine>
          conda activate workflow_tools
 
-      where ``<machine>`` is ``hera``, ``jet``, or ``orion``. 
+      where ``<machine>`` is ``hera``, ``jet``, ``orion``, or ``hercules``. 
 
    #. Copy the pre-defined configuration file: 
 

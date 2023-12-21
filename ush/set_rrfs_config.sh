@@ -110,7 +110,7 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     RAPHRR_SOIL_ROOT=${RETRODATAPATH}/rap_hrrr_soil
     FIRE_RAVE_DIR=${RETRODATAPATH}/RAVE_RAW
   fi
-  if [[ $MACHINE == "orion" ]] ; then
+  if [[ $MACHINE == "orion" ]] || [[ $MACHINE == "hercules" ]] ; then
     if [[ ${DO_ENSEMBLE} == "TRUE" ]]; then
       if [[ ${EXTRN_MDL_NAME_ICS} == "GDASENKF" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_ICS="/work/noaa/wrfruc/mhu/rrfs/data/enkf/atm"
