@@ -3208,7 +3208,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-<task name="&RUN_BUFRSND_TN;{{ uscore_ensmem_name }}" cycledefs="prodcyc_long" maxtries="1">
+<task name="&RUN_BUFRSND_TN;{{ uscore_ensmem_name }}" cycledefs="prodcyc" maxtries="1">
 
         &RSRV_POST;
         &WALL_LIMIT_BUFRSND;
