@@ -25,7 +25,7 @@ The above command is equal to:
 ./manage_externals/checkout_externals
 ./app_build.sh -p=[machine]
 ```
-where `[machine]` is `wcoss2`, `hera`, `jet`, or `orion`.
+where `[machine]` is `wcoss2`, `hera`, `jet`, `orion`, or `hercules`.
 
 4. Move to the home directory (rrfs-workflow):
 ```
