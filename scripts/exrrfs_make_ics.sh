@@ -657,105 +657,119 @@ export err=$?; err_chk
 #     -) https://dtcenter.org/sites/default/files/events/2020/20201105-1300p-fv3-gfdl-1.pdf
 #
 
-# check for 1h RRFS EnKF files, if at least one missing then use 1tstep initialization
-run_blending=${NWGES_BASEDIR}/${cdate_crnt_fhr}/run_blending
-run_ensinit=${NWGES_BASEDIR}/${cdate_crnt_fhr}/run_ensinit
-
 cdate_crnt_fhr_m1=$( date --utc --date "$yyyymmdd $hh UTC - 1 hours" "+%Y%m%d%H" )
-imem=1
-for imem in $(seq 1 30); do
-  ensmem=$( printf "%04d" $imem )
-  rrfs1hfcst_check="${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}/mem${ensmem}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
-  if [[ -e $rrfs1hfcst_check ]]; then
-      echo "We will run blending (instead of ensinit)"
-      if [[ ! -e $run_blending ]]; then # prevent 30 jobs from overwritting same file
-        touch $run_blending
+
+# Check for 1h RRFS EnKF files, if at least one missing then use 1tstep initialization
+if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
+
+  # Files to denote whether running blending or ensinit
+  run_blending=${NWGES_BASEDIR}/${cdate_crnt_fhr}/run_blending
+  run_ensinit=${NWGES_BASEDIR}/${cdate_crnt_fhr}/run_ensinit
+
+  # Initialize a counter for the number of existing files
+  existing_files=0
+  nens=30
+
+  # Loop through each ensemble member and check if the 1h RRFS EnKF files exist
+  for imem in $(seq 1 ${nens}); do
+      ensmem=$( printf "%04d" $imem )
+      checkfile="${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}/mem${ensmem}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
+      if [[ -f $checkfile ]]; then
+          ((existing_files++))
+      fi
+  done
+
+  # Check if the number of existing files is equal to the total number of ensemble members
+  if [[ $existing_files -eq ${nens} ]]; then
+      # Check if run_blending file exists, and if not, touch it
+      if [[ ! -f $run_blending ]]; then
+          touch $run_blending
       fi
   else
-      echo "We will run ensinit (instead of blending)"
-      if [[ ! -e $run_ensinit ]]; then # prevent 30 jobs from overwritting same file
-        touch $run_ensinit
+      # Check if run_ensinit file exists, and if not, touch it
+      if [[ ! -f $run_ensinit ]]; then
+          touch $run_ensinit
       fi
   fi
-done
 
 
-if [ $DO_ENS_BLENDING = "TRUE" ] &&
-   [ -e $run_blending ] &&
-   [ ! -e $run_ensinit ] &&
-   [ $EXTRN_MDL_NAME_ICS = "GDASENKF" ]; then
+  #if [ $DO_ENS_BLENDING = "TRUE" ] &&
+  if [ -f $run_blending ] &&
+     [ ! -f $run_ensinit ] &&
+     [ $EXTRN_MDL_NAME_ICS = "GDASENKF" ]; then
 
-   echo "Blending Starting."
-   ulimit -s unlimited
-   export OMP_STACKSIZE=2G
-   export OMP_NUM_THREADS=$NCPUS #WCOSS2:"96", Hera/Orion:"80"
-   if [[ $NCPUS -gt 96 ]]; then
-      export OMP_NUM_THREADS="96"
-   fi
-   export FI_OFI_RXM_SAR_LIMIT=3145728
-   export FI_MR_CACHE_MAX_COUNT=0
-   export MPICH_OFI_STARTUP_CONNECT=1
+     echo "Blending Starting."
+     ulimit -s unlimited
+     export OMP_STACKSIZE=2G
+     export OMP_NUM_THREADS=$NCPUS #WCOSS2:"96", Hera/Orion:"80"
+     if [[ $NCPUS -gt 96 ]]; then
+        export OMP_NUM_THREADS="96"
+     fi
+     export FI_OFI_RXM_SAR_LIMIT=3145728
+     export FI_MR_CACHE_MAX_COUNT=0
+     export MPICH_OFI_STARTUP_CONNECT=1
 
-   # Python/F2Py scripts
-   cp $SCRIPTSdir/exrrfs_blending_fv3.py .
-   cp $SCRIPTSdir/exrrfs_chgres_cold2fv3.py .
+     # Python/F2Py scripts
+     cp $SCRIPTSdir/exrrfs_blending_fv3.py .
+     cp $SCRIPTSdir/exrrfs_chgres_cold2fv3.py .
 
-   # F2Py shared object files
-   ln -sf $LIB64dir/raymond.so .
-   ln -sf $LIB64dir/chgres_winds.so .
-   ln -sf $LIB64dir/remap_scalar.so .
-   ln -sf $LIB64dir/remap_dwinds.so .
+     # F2Py shared object files
+     ln -sf $LIB64dir/raymond.so .
+     ln -sf $LIB64dir/chgres_winds.so .
+     ln -sf $LIB64dir/remap_scalar.so .
+     ln -sf $LIB64dir/remap_dwinds.so .
 
-   # Required NETCDF files -  HOST MODEL (e.g., GDAS; these files should already be present)
-   #cp_vrfy out.atm.tile${TILE_RGNL}.nc .
-   #cp_vrfy out.sfc.tile${TILE_RGNL}.nc .
-   #cp_vrfy gfs_ctrl.nc .
+     # Required NETCDF files -  HOST MODEL (e.g., GDAS; these files should already be present)
+     #cp_vrfy out.atm.tile${TILE_RGNL}.nc .
+     #cp_vrfy out.sfc.tile${TILE_RGNL}.nc .
+     #cp_vrfy gfs_ctrl.nc .
 
-   # Required NETCDF files - RRFS
-   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.tile1.nc ./fv_core.res.tile1.nc
-   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_tracer.res.tile1.nc ./fv_tracer.res.tile1.nc
-   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc ./fv_core.res.nc
+     # Required NETCDF files - RRFS
+     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.tile1.nc ./fv_core.res.tile1.nc
+     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_tracer.res.tile1.nc ./fv_tracer.res.tile1.nc
+     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc ./fv_core.res.nc
 
-   # Required FIX files
-   cp $FIXLAM/${CRES}_grid.tile7.nc .
-   cp $FIXLAM/${CRES}_oro_data.tile7.halo0.nc .
+     # Required FIX files
+     cp $FIXLAM/${CRES}_grid.tile7.nc .
+     cp $FIXLAM/${CRES}_oro_data.tile7.halo0.nc .
 
-   # Shortcut the file names
-   warm=./fv_core.res.tile1.nc
-   cold=./out.atm.tile7.nc
-   grid=./${CRES}_grid.tile7.nc
-   akbk=./fv_core.res.nc
-   akbkcold=./gfs_ctrl.nc
-   orog=./${CRES}_oro_data.tile7.halo0.nc
-   bndy=./gfs.bndy.nc
+     # Shortcut the file names
+     warm=./fv_core.res.tile1.nc
+     cold=./out.atm.tile7.nc
+     grid=./${CRES}_grid.tile7.nc
+     akbk=./fv_core.res.nc
+     akbkcold=./gfs_ctrl.nc
+     orog=./${CRES}_oro_data.tile7.halo0.nc
+     bndy=./gfs.bndy.nc
 
-   # Run convert coldstart files to fv3 restart (rotate winds and remap).
-   ${BLENDINGPYTHON} exrrfs_chgres_cold2fv3.py $warm $cold $grid $akbk $akbkcold $orog
+     # Run convert coldstart files to fv3 restart (rotate winds and remap).
+     ${BLENDINGPYTHON} exrrfs_chgres_cold2fv3.py $warm $cold $grid $akbk $akbkcold $orog
 
-   # Shortcut the file names/arguments.
-   Lx=$ENS_BLENDING_LENGTHSCALE
-   glb=./out.atm.tile${TILE_RGNL}.nc
-   reg=./fv_core.res.tile1.nc
-   trcr=./fv_tracer.res.tile1.nc
+     # Shortcut the file names/arguments.
+     Lx=$ENS_BLENDING_LENGTHSCALE
+     glb=./out.atm.tile${TILE_RGNL}.nc
+     reg=./fv_core.res.tile1.nc
+     trcr=./fv_tracer.res.tile1.nc
 
-   # Blend OR finish convert cold2warm start without blending.
-   blend=${BLEND}                 # TRUE:  Blend RRFS and GDAS EnKF
-                                  # FALSE: Don't blend, activate cold2warm start only, and use either GDAS or RRFS
-   use_host_enkf=${USE_HOST_ENKF} # ignored if blend="TRUE".
-                                  # TRUE:  Final EnKF will be GDAS (no blending)
-                                  # FALSE: Final EnKF will be RRFS (no blending)
-   ${BLENDINGPYTHON} exrrfs_blending_fv3.py $Lx $glb $reg $trcr $blend $use_host_enkf
-   cp ./fv_core.res.tile1.nc ${ics_dir}/.
-   cp ./fv_tracer.res.tile1.nc ${ics_dir}/.
+     # Blend OR finish convert cold2warm start without blending.
+     blend=${BLEND}                 # TRUE:  Blend RRFS and GDAS EnKF
+                                    # FALSE: Don't blend, activate cold2warm start only, and use either GDAS or RRFS
+     use_host_enkf=${USE_HOST_ENKF} # ignored if blend="TRUE".
+                                    # TRUE:  Final EnKF will be GDAS (no blending)
+                                    # FALSE: Final EnKF will be RRFS (no blending)
+     ${BLENDINGPYTHON} exrrfs_blending_fv3.py $Lx $glb $reg $trcr $blend $use_host_enkf
+     cp ./fv_core.res.tile1.nc ${ics_dir}/.
+     cp ./fv_tracer.res.tile1.nc ${ics_dir}/.
 
-   # Move the remaining RESTART files to INPUT
-   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.coupler.res             ${ics_dir}/coupler.res
-   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc          ${ics_dir}/fv_core.res.nc
-   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_srf_wnd.res.tile1.nc ${ics_dir}/fv_srf_wnd.res.tile1.nc
-   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.phy_data.nc             ${ics_dir}/phy_data.nc
-   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.sfc_data.nc             ${ics_dir}/sfc_data.nc
-   cp gfs_ctrl.nc ${ics_dir}
-   cp gfs.bndy.nc ${ics_dir}/gfs_bndy.tile${TILE_RGNL}.000.nc
+     # Move the remaining RESTART files to INPUT
+     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.coupler.res             ${ics_dir}/coupler.res
+     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc          ${ics_dir}/fv_core.res.nc
+     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_srf_wnd.res.tile1.nc ${ics_dir}/fv_srf_wnd.res.tile1.nc
+     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.phy_data.nc             ${ics_dir}/phy_data.nc
+     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.sfc_data.nc             ${ics_dir}/sfc_data.nc
+     cp gfs_ctrl.nc ${ics_dir}
+     cp gfs.bndy.nc ${ics_dir}/gfs_bndy.tile${TILE_RGNL}.000.nc
+  fi
 fi
 #
 #-----------------------------------------------------------------------
@@ -766,7 +780,7 @@ fi
 # system.
 #-----------------------------------------------------------------------
 #
-if [[ $DO_ENS_BLENDING = "FALSE" || ($DO_ENS_BLENDING = "TRUE" && -e $run_ensinit ) ]]; then
+if [[ $DO_ENS_BLENDING = "FALSE" || ($DO_ENS_BLENDING = "TRUE" && -f $run_ensinit ) ]]; then
   mv out.atm.tile${TILE_RGNL}.nc \
         ${ics_dir}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
 
@@ -785,7 +799,7 @@ fi
 #-----------------------------------------------------------------------
 #
 cp ${ics_dir}/*.nc ${ics_nwges_dir}/.
-if [ $DO_ENS_BLENDING = "TRUE" ] && [ -e $run_blending ] && [ ! -e $run_ensinit ]; then
+if [ $DO_ENS_BLENDING = "TRUE" ] && [ -f $run_blending ] && [ ! -f $run_ensinit ]; then
   cp ${ics_dir}/coupler.res ${ics_nwges_dir}/.
 fi
 #
