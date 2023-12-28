@@ -21,6 +21,7 @@ if [[ -n $RESERVATION ]] ; then
   QUEUE_FCST="rth"
   QUEUE_ANALYSIS="rth"
   QUEUE_PRDGEN="rth"
+  QUEUE_MINMAXTRH="rt"   `
   QUEUE_GRAPHICS="rth"
   QUEUE_HPSS="batch"
   QUEUE_POST="rth"
@@ -59,6 +60,7 @@ envir="para"
 USE_CUSTOM_POST_CONFIG_FILE="TRUE"
 TESTBED_FIELDS_FN="testbed_fields_rtma.txt"
 TESTBED_FIELDS_FN2="testbed_fields_bgrd3d.txt"
+SPC_FIELDS_FN="spc_fields_rtma.txt"
 CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-fv3lam_rrfs.txt"
 CUSTOM_POST_PARAMS_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/params_grib2_tbl_new"
 NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
@@ -131,7 +133,7 @@ OBERROR_FN="errtable.rtma"
 HYBENSINFO_FN="hybens_info.rtma"
 AIRCRAFT_REJECT="/home/role.amb-verif/acars_RR/amdar_reject_lists"
 SFCOBS_USELIST="/lfs4/BMC/amb-verif/rap_ops_mesonet_uselists"
-
+RRFS_GRIBDIR="/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.7.7/prod"
 LBC_SPEC_INTVL_HRS="1"
 
 DATE_FIRST_CYCL="20231116"
@@ -269,8 +271,8 @@ if [[ "$MACHINE" == "wcoss2" ]]; then
   ARCHIVE_CYCLEDEF="00 01 01 01 2100 *"
 
   OBSPATH_NSSLMOSIAC="/lfs/h1/ops/prod/dcom/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC"
-  AIRCRAFT_REJECT="/lfs/h2/emc/da/noscrub/edward.colon/NOAA_3drtma_legacy/fix/obsuselist/amdar_reject_lists"
-  SFCOBS_USELIST="/lfs/h2/emc/da/noscrub/edward.colon/NOAA_3drtma_legacy/fix/obsuselist/mesonet_uselists"
+  AIRCRAFT_REJECT="/lfs/h2/emc/da/noscrub/matthew.t.morris/NOAA_3drtma_legacy/fix/obsuselist/amdar_reject_lists"
+  SFCOBS_USELIST="/lfs/h2/emc/da/noscrub/matthew.t.morris/NOAA_3drtma_legacy/fix/obsuselist/mesonet_uselists"
  
   regional_ensemble_option=1
   USE_RRFSE_ENS="FALSE"
@@ -295,7 +297,6 @@ if [[ "$MACHINE" == "wcoss2" ]]; then
   WTIME_RUN_FCST="00:20:00"
   WRTCMP_write_groups="1"
   WRTCMP_write_tasks_per_group="40"
-
 
   FG_ROOTDIR="/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/nwges"
   OBSPATH="/lfs/h1/ops/prod/com/obsproc/v1.1"

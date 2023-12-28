@@ -535,6 +535,7 @@ case $MACHINE in
     QUEUE_ANALYSIS=${QUEUE_ANALYSIS:-"dev"}
     QUEUE_PRDGEN=${QUEUE_PRDGEN:-"dev"}
     QUEUE_POST=${QUEUE_POST:-"dev"}
+    QUEUE_MINMAXTRH=${QUEUE_MINMAXTRH:-"dev"}
     ;;
 
   "HERA")
@@ -548,6 +549,7 @@ case $MACHINE in
     QUEUE_FCST=${QUEUE_FCST:-"batch"}
     QUEUE_PRDGEN=${QUEUE_PRDGEN:-"batch"}
     QUEUE_POST=${QUEUE_POST:-"batch"}
+    QUEUE_MINMAXTRH=${QUEUE_MINMAXTRH:-"batch"}
     ;;
 
   "ORION")
@@ -559,6 +561,7 @@ case $MACHINE in
     QUEUE_HPSS=${QUEUE_HPSS:-"batch"}
     PARTITION_FCST=${PARTITION_FCST:-"orion"}
     QUEUE_FCST=${QUEUE_FCST:-"batch"}
+    QUEUE_MINMAXTRH=${QUEUE_MINMAXTRH:-"batch"}
     ;;
 
   "JET")
@@ -578,6 +581,8 @@ case $MACHINE in
     QUEUE_PRDGEN=${QUEUE_PRDGEN:-"batch"}
     PARTITION_POST=${PARTITION_POST:-"sjet,vjet,kjet,xjet"}
     QUEUE_POST=${QUEUE_POST:-"batch"}
+    PARTITION_MINMAXTRH=${PARTITION_MINMAXTRH:-"sjet,vjet,kjet,xjet"}
+    QUEUE_MINMAXTRH=${QUEUE_MINMAXTRH:-"batch"}
     ;;
 
 esac
@@ -800,6 +805,7 @@ FIX_SMOKE_DUST=${FIX_SMOKE_DUST:-"${HOMErrfs}/fix/smoke_dust"}
 FIX_BUFRSND=${FIX_BUFRSND:-"${HOMErrfs}/fix/bufrsnd"}
 AIRCRAFT_REJECT=${AIRCRAFT_REJECT:-"${FIX_GSI}"}
 SFCOBS_USELIST=${SFCOBS_USELIST:-"${FIX_GSI}"}
+FIX_MINMAXTRH=${FIX_MINMAXTRH:-"${HOMErrfs}/fix/minmaxtrh"}
 
 case $MACHINE in
 

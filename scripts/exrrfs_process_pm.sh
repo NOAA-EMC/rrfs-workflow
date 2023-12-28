@@ -207,14 +207,14 @@ EOF
 #
 exect="process_pm.exe"
 
-if [ -f ${EXECDIR}/$exect ]; then
+if [ -f ${EXECdir}/$exect ]; then
   print_info_msg "$VERBOSE" "
 Copying the PM process executable to the run directory..."
-  cp ${EXECDIR}/${exect} ${WORKDIR}/${exect}
+  cp ${EXECdir}/${exect} ${WORKDIR}/${exect}
 else
   err_exit "\
 The executable specified in exect does not exist:
-  exect = \"${EXECDIR}/$exect\"
+  exect = \"${EXECdir}/$exect\"
 Build PM process and rerun."
 fi
 #

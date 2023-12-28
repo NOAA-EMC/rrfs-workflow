@@ -77,6 +77,7 @@ valid_vals_DO_NONVAR_CLDANAL=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no
 valid_vals_DO_JEDI_ENVAR_IODA=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
 valid_vals_DO_SMOKE_DUST=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
 valid_vals_DO_PM_DA=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
+valid_vals_DO_MINMAXTRH=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
 valid_vals_DO_REFL2TTEN=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
 valid_vals_DO_NLDN_LGHT=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
 valid_vals_DO_RADDA=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")

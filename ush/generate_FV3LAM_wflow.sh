@@ -183,6 +183,8 @@ settings="\
   'queue_analysis': ${QUEUE_ANALYSIS}
   'partition_prdgen': ${PARTITION_PRDGEN}
   'queue_prdgen': ${QUEUE_PRDGEN}
+  'partition_minmaxtrh': ${PARTITION_MINMAXTRH}
+  'queue_minmaxtrh': ${QUEUE_MINMAXTRH}
   'partition_post': ${PARTITION_POST}
   'queue_post': ${QUEUE_POST}
 #
@@ -200,6 +202,8 @@ settings="\
   'run_fcst_tn': ${RUN_FCST_TN}
   'run_post_tn': ${RUN_POST_TN}
   'run_prdgen_tn': ${RUN_PRDGEN_TN}
+  'run_mintmaxrh_tn': ${RUN_MINTMAXRH_TN}
+  'run_maxtminrh_tn': ${RUN_MAXTMINRH_TN}
   'anal_gsi': ${ANAL_GSI_TN}
   'anal_gsidiag': ${ANAL_GSIDIAG_TN}
   'anal_sd_gsi': ${ANAL_SD_GSI_TN}
@@ -245,6 +249,7 @@ settings="\
   'nnodes_run_recenter': ${NNODES_RUN_RECENTER}
   'nnodes_run_post': ${NNODES_RUN_POST}
   'nnodes_run_prdgen': ${NNODES_RUN_PRDGEN}
+  'nnodes_run_minmaxtrh': ${NNODES_RUN_MINMAXTRH}
   'nnodes_proc_radar': ${NNODES_PROC_RADAR}
   'nnodes_proc_lightning': ${NNODES_PROC_LIGHTNING}
   'nnodes_proc_bufr': ${NNODES_PROC_BUFR}
@@ -287,6 +292,7 @@ settings="\
   'ppn_run_recenter': ${PPN_RUN_RECENTER}
   'ppn_run_post': ${PPN_RUN_POST}
   'ppn_run_prdgen': ${PPN_RUN_PRDGEN}
+  'ppn_run_minmaxtrh': ${PPN_RUN_MINMAXTRH}
   'ppn_proc_radar': ${PPN_PROC_RADAR}
   'ppn_proc_lightning': ${PPN_PROC_LIGHTNING}
   'ppn_proc_bufr': ${PPN_PROC_BUFR}
@@ -329,6 +335,7 @@ settings="\
   'wtime_run_post': ${WTIME_RUN_POST}
   'wtime_run_enspost': ${WTIME_RUN_ENSPOST}
   'wtime_run_prdgen': ${WTIME_RUN_PRDGEN}
+  'wtime_run_minmaxtrh': ${WTIME_RUN_MINMAXTRH}
   'wtime_proc_radar': ${WTIME_PROC_RADAR}
   'wtime_proc_lightning': ${WTIME_PROC_LIGHTNING}
   'wtime_proc_bufr': ${WTIME_PROC_BUFR}
@@ -359,6 +366,7 @@ settings="\
   'memo_run_nonvarcldanl': ${MEMO_RUN_NONVARCLDANL}
   'memo_run_prepstart': ${MEMO_RUN_PREPSTART}
   'memo_run_prdgen': ${MEMO_RUN_PRDGEN}
+  'memo_run_minmaxtrh': ${MEMO_RUN_MINMAXTRH}
   'memo_run_jedienvar_ioda': ${MEMO_RUN_JEDIENVAR_IODA}
   'memo_prep_cyc': ${MEMO_PREP_CYC}
   'memo_save_restart': ${MEMO_SAVE_RESTART}
@@ -384,6 +392,7 @@ settings="\
   'maxtries_recenter': ${MAXTRIES_RECENTER}
   'maxtries_run_post': ${MAXTRIES_RUN_POST}
   'maxtries_run_prdgen': ${MAXTRIES_RUN_PRDGEN}
+  'maxtries_run_minmaxtrh': ${MAXTRIES_RUN_MINMAXTRH}
   'maxtries_process_radarref': ${MAXTRIES_PROCESS_RADARREF}
   'maxtries_process_lightning': ${MAXTRIES_PROCESS_LIGHTNING}
   'maxtries_process_bufr': ${MAXTRIES_PROCESS_BUFR}
@@ -403,6 +412,7 @@ settings="\
 #
   'is_rtma':  ${IS_RTMA}
   'fg_rootdir': ${FG_ROOTDIR}
+  'rrfs_gribdir': ${RRFS_GRIBDIR}
 #
 # Number of physical cores per node for the current machine.
 #
@@ -501,6 +511,7 @@ settings="\
   'do_envar_radar_ref_once': ${DO_ENVAR_RADAR_REF_ONCE}
   'do_recenter': ${DO_RECENTER}
   'do_bufrsnd': ${DO_BUFRSND}
+  'do_minmaxtrh': ${DO_MINMAXTRH}
   'do_ens_graphics': ${DO_ENS_GRAPHICS}
   'do_enspost': ${DO_ENSPOST}
   'do_ensinit': ${DO_ENSINIT}
@@ -610,6 +621,7 @@ ${EXPTDIR}/run_rocoto.sh"
 
 echo "#!/bin/bash" > ${EXPTDIR}/run_rocoto.sh
 if [[ "${MACHINE,,}" == "wcoss2" ]] ; then
+  rocoto_ver=1.3.5
   echo "module use /apps/ops/test/nco/modulefiles" >> ${EXPTDIR}/run_rocoto.sh
   echo "module load core/rocoto/${rocoto_ver}" >> ${EXPTDIR}/run_rocoto.sh
 else
