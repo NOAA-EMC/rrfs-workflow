@@ -668,10 +668,10 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
 
   # Initialize a counter for the number of existing files
   existing_files=0
-  nens=30
+  #NUM_ENS_MEMBERS=30
 
   # Loop through each ensemble member and check if the 1h RRFS EnKF files exist
-  for imem in $(seq 1 ${nens}); do
+  for imem in $(seq 1 ${NUM_ENS_MEMBERS}); do
       ensmem=$( printf "%04d" $imem )
       checkfile="${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}/mem${ensmem}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
       if [[ -f $checkfile ]]; then
@@ -680,20 +680,22 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
   done
 
   # Check if the number of existing files is equal to the total number of ensemble members
-  if [[ $existing_files -eq ${nens} ]]; then
+  if [[ $existing_files -eq ${NUM_ENS_MEMBERS} ]]; then
       # Check if run_blending file exists, and if not, touch it
       if [[ ! -f $run_blending ]]; then
           touch $run_blending
       fi
+      blendmsg="Do blending!"
   else
       # Check if run_ensinit file exists, and if not, touch it
       if [[ ! -f $run_ensinit ]]; then
           touch $run_ensinit
       fi
+      blendmsg="Do ensinit!"
   fi
+  echo "`date`"
+  echo "Blending check: There are ${existing_files}/${NUM_ENS_MEMBERS} ensemble members. $blendmsg"
 
-
-  #if [ $DO_ENS_BLENDING = "TRUE" ] &&
   if [ -f $run_blending ] &&
      [ ! -f $run_ensinit ] &&
      [ $EXTRN_MDL_NAME_ICS = "GDASENKF" ]; then
@@ -701,13 +703,44 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
      echo "Blending Starting."
      ulimit -s unlimited
      export OMP_STACKSIZE=2G
-     export OMP_NUM_THREADS=$NCPUS #WCOSS2:"96", Hera/Orion:"80"
-     if [[ $NCPUS -gt 96 ]]; then
-        export OMP_NUM_THREADS="96"
-     fi
+     export OMP_NUM_THREADS=$NCORES_PER_NODE
      export FI_OFI_RXM_SAR_LIMIT=3145728
      export FI_MR_CACHE_MAX_COUNT=0
      export MPICH_OFI_STARTUP_CONNECT=1
+
+     case "$MACHINE" in
+
+       "WCOSS2")
+          if [[ $NCORES_PER_NODE -gt 96 ]]; then
+             export OMP_NUM_THREADS="96"
+          fi
+         ;;
+
+       "HERA")
+          if [[ $NCORES_PER_NODE -gt 80 ]]; then
+             export OMP_NUM_THREADS="80"
+          fi
+         ;;
+
+       "ORION")
+          if [[ $NCORES_PER_NODE -gt 80 ]]; then
+             export OMP_NUM_THREADS="80"
+          fi
+         ;;
+
+       "HERCULES")
+          if [[ $NCORES_PER_NODE -gt 80 ]]; then
+             export OMP_NUM_THREADS="80"
+          fi
+         ;;
+
+       "JET")
+          if [[ $NCORES_PER_NODE -gt 80 ]]; then
+             export OMP_NUM_THREADS="80"
+          fi
+         ;;
+
+     esac
 
      # Python/F2Py scripts
      cp $SCRIPTSdir/exrrfs_blending_fv3.py .
