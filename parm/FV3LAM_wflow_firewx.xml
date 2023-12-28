@@ -1,0 +1,525 @@
+{#
+
+This is a Jinja-enabled Rocoto XML template. It is filled in using the
+fill_template.py script, and is done automatically by the
+generate_workflow.sh step of preparing a regional workflow configured
+experiment.
+
+See README.xml_templating.md for information on using the Templating mechanisms.
+-#}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow [
+
+<!--
+Parameters needed by the job scheduler.
+-->
+<!ENTITY ACCOUNT         "{{ account }}">
+<!ENTITY SERVICE_ACCOUNT "{{ service_account }}">
+<!ENTITY HPSS_ACCOUNT    "{{ hpss_account }}">
+<!ENTITY SCHED           "{{ sched }}">
+<!ENTITY QUEUE_DEFAULT   "{{ queue_default }}">
+<!ENTITY QUEUE_HPSS      "{{ queue_hpss }}">
+<!ENTITY QUEUE_FCST      "{{ queue_fcst }}">
+<!ENTITY QUEUE_POST      "{{ queue_post }}">
+<!ENTITY RRFS_RESERVE  {% if reservation %}"--reservation={{ reservation }}"{% else %}""{% endif %}>
+<!ENTITY SCHED_NATIVE_CMD  {% if machine in ["HERA", "JET", "ORION", "HERCULES"] %}"--export=NONE"{% else %}""{% endif %}>
+
+<!--
+Workflow task names.
+-->
+<!ENTITY MAKE_GRID_TN      "{{ make_grid_tn }}">
+<!ENTITY MAKE_OROG_TN      "{{ make_orog_tn }}">
+<!ENTITY MAKE_SFC_CLIMO_TN "{{ make_sfc_climo_tn }}">
+<!ENTITY GET_EXTRN_ICS_TN  "{{ get_extrn_ics_tn }}">
+<!ENTITY GET_EXTRN_LBCS_TN "{{ get_extrn_lbcs_tn }}">
+<!ENTITY MAKE_ICS_TN       "{{ make_ics_tn }}">
+<!ENTITY MAKE_LBCS_TN      "{{ make_lbcs_tn }}">
+<!ENTITY RUN_FCST_TN       "{{ run_fcst_tn }}">
+<!ENTITY RUN_POST_TN       "{{ run_post_tn }}">
+<!ENTITY RUN_PRDGEN_TN     "{{ run_prdgen_tn }}">
+
+<!ENTITY TAG                  "{{ tag }}">
+<!ENTITY NET                  "{{ net }}">
+
+<!--
+Flags that specify whether to run the preprocessing tasks.
+-->
+<!ENTITY RUN_TASK_MAKE_GRID      "{{ run_task_make_grid | upper }}">
+<!ENTITY RUN_TASK_MAKE_OROG      "{{ run_task_make_orog | upper }}">
+<!ENTITY RUN_TASK_MAKE_SFC_CLIMO "{{ run_task_make_sfc_climo | upper }}">
+
+<!--
+Number of physical cores per node for the current machine.  This is used
+below in the <nodesize> tag, but that tag is not clearly documented.  This
+parameter may be unnecessary since each task now has its own variable that
+specifies the number of processes per node being used (the PPN_... entities).
+-->
+<!ENTITY NCORES_PER_NODE "{{ ncores_per_node }}">
+
+<!--
+Directories and files.
+-->
+<!ENTITY JOBSdir                  "{{ jobsdir }}">
+<!ENTITY LOG_BASEDIR              "{{ log_basedir }}">
+<!ENTITY LOGDIR                   "{{ log_basedir }}/{{ run }}.@Y@m@d/@H">
+<!ENTITY CYCLE_BASEDIR            "{{ cycle_basedir }}">
+<!ENTITY NWGES_BASEDIR            "{{ nwges_basedir }}">
+<!ENTITY GLOBAL_VAR_DEFNS_FP      "{{ global_var_defns_fp }}">
+<!ENTITY LOAD_MODULES_RUN_TASK_FP "{{ load_modules_run_task_fp }}">
+
+<!--
+Reservation types.  Reservations specify the queue/partition and account
+to use for a given task.  The "DEFAULT" reservation type is used for all 
+tasks other than GET_EXTRN_ICS_TN, GET_EXTRN_LBCS_TN, and RUN_FCST_TN; 
+the "HPSS" type is used for the GET_EXTRN_ICS_TN and GET_EXTRN_LBCS_TN 
+tasks; and the "FCST" type is used for the RUN_FCST_TN task.
+-->
+{%- if partition_default is not none %}
+<!ENTITY RSRV_DEFAULT "<account>&ACCOUNT;</account><queue>&QUEUE_DEFAULT;</queue><partition>{{ partition_default }}</partition><native>&RRFS_RESERVE;</native><native>&SCHED_NATIVE_CMD;</native>">
+{%- else %}
+<!ENTITY RSRV_DEFAULT "<account>&ACCOUNT;</account><queue>&QUEUE_DEFAULT;</queue>">
+{%- endif %}
+{%- if partition_hpss is not none %}
+<!ENTITY RSRV_HPSS    "<account>&HPSS_ACCOUNT;</account><queue>&QUEUE_HPSS;</queue><partition>{{ partition_hpss }}</partition><native>&SCHED_NATIVE_CMD;</native>">
+{%- else %}
+<!ENTITY RSRV_HPSS    "<account>&HPSS_ACCOUNT;</account><queue>&QUEUE_HPSS;</queue>">
+{%- endif %}
+{%- if partition_fcst is not none %}
+<!ENTITY RSRV_FCST    "<account>&ACCOUNT;</account><queue>&QUEUE_FCST;</queue><partition>{{ partition_fcst }}</partition><native>&SCHED_NATIVE_CMD;</native>">
+{%- else %}
+<!ENTITY RSRV_FCST    "<account>&ACCOUNT;</account><queue>&QUEUE_FCST;</queue>">
+{%- endif %}
+{%- if partition_post is not none %}
+<!ENTITY RSRV_POST    "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_POST;</queue><partition>{{ partition_post }}</partition><native>&RRFS_POST_RESERVE;</native><native>&SCHED_NATIVE_CMD;</native>">
+{%- else %}
+<!ENTITY RSRV_POST    "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_POST;</queue>">
+{%- endif %}
+
+<!--
+define resources used for each tasks
+-->
+
+<!ENTITY RESOURCES_GET_EXTRN_ICS "<nodes>{{ nnodes_get_extrn_ics }}:ppn={{ ppn_get_extrn_ics }}</nodes>">
+<!ENTITY RESOURCES_GET_EXTRN_LBCS "<nodes>{{ nnodes_get_extrn_lbcs }}:ppn={{ ppn_get_extrn_lbcs }}</nodes>">
+
+{%- if machine in ["WCOSS2"]  %}
+<!ENTITY RESOURCES_MAKE_ICS "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}:tpp={{ tpp_make_ics }}</nodes>">
+<!ENTITY RESOURCES_MAKE_LBCS "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}:tpp={{ tpp_make_lbcs }}</nodes>">
+<!ENTITY RESOURCES_RUN_FCST "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}:tpp={{ tpp_run_fcst }}</nodes>">
+<!ENTITY RESOURCES_RUN_POST "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}:tpp={{ tpp_run_post }}</nodes>">
+<!ENTITY RESOURCES_RUN_PRDGEN "<nodes>{{ nnodes_run_prdgen }}:ppn={{ ppn_run_prdgen }}</nodes>">
+<!ENTITY NODESIZE_ALL    "">
+<!ENTITY NATIVE_ALL    "<native>-l place=excl</native>">
+<!ENTITY NATIVE_MAKE_ICS    "<native>-l place=vscatter</native>">
+<!ENTITY NATIVE_RUN_FCST    "<native>-l place=excl</native>">
+{%- elif machine in ["JET"] %}
+<!ENTITY RESOURCES_MAKE_ICS "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
+<!ENTITY RESOURCES_MAKE_LBCS "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
+<!ENTITY RESOURCES_RUN_FCST "<cores>{{ ncores_run_fcst }}</cores>">
+<!ENTITY RESOURCES_RUN_POST "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
+<!ENTITY RESOURCES_RUN_PRDGEN "<nodes>{{ nnodes_run_prdgen }}:ppn={{ ppn_run_prdgen }}</nodes>">
+<!ENTITY NODESIZE_ALL    "<nodesize>{{ ncores_per_node }}</nodesize>">
+<!ENTITY NATIVE_ALL    "">
+<!ENTITY NATIVE_MAKE_ICS    "">
+<!ENTITY NATIVE_RUN_FCST    "<native>{{ native_run_fcst }} &RRFS_RESERVE;</native>">
+{%- elif machine in ["HERA"] %}
+<!ENTITY RESOURCES_MAKE_ICS "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
+<!ENTITY RESOURCES_MAKE_LBCS "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
+<!ENTITY RESOURCES_RUN_FCST "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
+<!ENTITY RESOURCES_RUN_POST "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
+<!ENTITY RESOURCES_RUN_PRDGEN "<nodes>{{ nnodes_run_prdgen }}:ppn={{ ppn_run_prdgen }}</nodes>">
+<!ENTITY NODESIZE_ALL    "<nodesize>{{ ncores_per_node }}</nodesize>">
+<!ENTITY NATIVE_ALL    "">
+<!ENTITY NATIVE_MAKE_ICS    "">
+<!ENTITY NATIVE_RUN_FCST    "">
+{%- else %}
+<!ENTITY RESOURCES_MAKE_ICS "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
+<!ENTITY RESOURCES_MAKE_LBCS "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
+<!ENTITY RESOURCES_RUN_FCST "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
+<!ENTITY RESOURCES_RUN_POST "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
+<!ENTITY RESOURCES_RUN_PRDGEN "<nodes>{{ nnodes_run_prdgen }}:ppn={{ ppn_run_prdgen }}</nodes>">
+<!ENTITY NODESIZE_ALL    "<nodesize>{{ ncores_per_node }}</nodesize>">
+<!ENTITY NATIVE_ALL    "">
+<!ENTITY NATIVE_MAKE_ICS    "">
+<!ENTITY NATIVE_RUN_FCST    "">
+{%- endif %}
+
+<!ENTITY DEADLINE_FCST     "999:30:00">
+<!ENTITY DEADLINE_POST     "999:00:00">
+<!ENTITY WALL_LIMIT_FCST ''>
+<!ENTITY WALL_LIMIT_POST ''>
+]>
+
+<workflow realtime="F" scheduler="&SCHED;" cyclethrottle="5">
+{# Double quotes are required inside the strftime! Expect an error from reading the template if using single quotes. #}
+  <cycledef group="at_start">{{ cdate_first_cycl.strftime("%M %H %d %m %Y *") }}</cycledef>
+{% for c in cycl_hrs %}
+  <cycledef group="forecast">
+  {%- set cdate_first=date_first_cycl ~ c ~ "00" -%}
+  {%- set cdate_last=date_last_cycl ~ c ~ "00" -%}
+  {{- cdate_first ~ " " ~ cdate_last ~ " " ~ cycl_freq -}}
+  </cycledef>
+{%- endfor %}
+
+  <log>
+    <cyclestr>&LOGDIR;/FV3LAM_wflow.log</cyclestr>
+  </log>
+
+<!-- 
+The following command works to call the J-job for a given task (in this
+case the MAKE_GRID_TN task) if in the script LOAD_MODULES_RUN_TASK_FP we 
+do NOT call exec to run the J-job.  The command first sources the script
+LOAD_MODULES_RUN_TASK_FP and then runs the J-job, so it is simpler than
+calling exec and thus preferred if NCO accepts it.  Note that the portion
+of the command that sources LOAD_MODULES_RUN_TASK_FP also passes an 
+argument to it (the argument being the name of the task).  This works in
+bash but it probably won't work in sh.
+
+If this method is acceptable to NCO, then for clarity maybe we can
+source LOAD_MODULES_RUN_TASK_FP within the J-job instead of here since
+we are already sourcing other files in the J-job anyway.
+-->
+<!--
+    <command>{ . &LOAD_MODULES_RUN_TASK_FP; "&MAKE_GRID_TN;";
+               &JOBSdir;/JRRFS_MAKE_GRID;
+             }</command>
+-->
+<!--
+The following command works if we call exec in LOAD_MODULES_RUN_TASK_FP
+to run the J-job.  This passes the J-job script as the second argument
+to LOAD_MODULES_RUN_TASK_FP (the first argument is the task name).  The
+J-job then uses exec to run the J-job (while also terminating the LOAD_-
+MODULES_RUN_TASK_FP script.
+-->
+
+{%- if run_task_make_grid %}
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&MAKE_GRID_TN;" cycledefs="at_start" maxtries="{{ maxtries_make_grid }}">
+
+    &RSRV_DEFAULT;
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_GRID_TN;" "&JOBSdir;/JRRFS_MAKE_GRID"</command>
+    <nodes>{{ nnodes_make_grid }}:ppn={{ ppn_make_grid }}</nodes>
+    <walltime>{{ wtime_make_grid }}</walltime>
+    &NODESIZE_ALL;
+    <jobname>&MAKE_GRID_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&MAKE_GRID_TN;.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+
+  </task>
+{%- endif %}
+
+{%- if run_task_make_orog %}
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&MAKE_OROG_TN;" cycledefs="at_start" maxtries="{{ maxtries_make_orog }}">
+
+    &RSRV_DEFAULT;
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_OROG_TN;" "&JOBSdir;/JRRFS_MAKE_OROG"</command>
+    <nodes>{{ nnodes_make_orog }}:ppn={{ ppn_make_orog }}</nodes>
+    <walltime>{{ wtime_make_orog }}</walltime>
+    &NODESIZE_ALL;
+    <jobname>&MAKE_OROG_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&MAKE_OROG_TN;.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+
+    <dependency>
+      <or>
+<!--        <taskdep task="make_grid"/> -->
+        <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
+        <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
+      </or>
+    </dependency>
+
+  </task>
+{%- endif %}
+
+{%- if run_task_make_sfc_climo %}
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&MAKE_SFC_CLIMO_TN;" cycledefs="at_start" maxtries="{{ maxtries_make_sfc_climo }}">
+
+    &RSRV_DEFAULT;
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_SFC_CLIMO_TN;" "&JOBSdir;/JRRFS_MAKE_SFC_CLIMO"</command>
+    <nodes>{{ nnodes_make_sfc_climo }}:ppn={{ ppn_make_sfc_climo }}</nodes>
+    <walltime>{{ wtime_make_sfc_climo }}</walltime>
+    &NODESIZE_ALL;
+    <jobname>&MAKE_SFC_CLIMO_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&MAKE_SFC_CLIMO_TN;.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+
+    <dependency>
+      <and>
+        <or>
+<!--          <taskdep task="&MAKE_GRID_TN;"/> -->
+          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
+          <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
+        </or>
+        <or>
+<!--          <taskdep task="&MAKE_OROG_TN;"/> -->
+          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_orog_task_complete.txt</datadep>
+          <streq><left>&RUN_TASK_MAKE_OROG;</left><right>FALSE</right></streq>
+        </or>
+      </and>
+    </dependency>
+
+  </task>
+{%- endif %}
+
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&GET_EXTRN_ICS_TN;" cycledefs="forecast" maxtries="{{ maxtries_get_extrn_ics }}">
+
+    &RSRV_HPSS;
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_EXTRN_ICS_TN;" "&JOBSdir;/JRRFS_GET_EXTRN_MDL_FILES"</command>
+    &RESOURCES_GET_EXTRN_ICS;
+    <walltime>{{ wtime_get_extrn_ics }}</walltime>
+    &NODESIZE_ALL;
+    <jobname>&GET_EXTRN_ICS_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&GET_EXTRN_ICS_TN;_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>EXTRN_MDL_NAME</name><value>{{ extrn_mdl_name_lbcs }}</value></envar>
+    <envar><name>ICS_OR_LBCS</name><value>ICS</value></envar>
+    <envar><name>BOUNDARY_LEN</name><value>{{ boundary_len_hrs }}</value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value>{{ slash_ensmem_subdir }}</value></envar>
+    <envar><name>GEFS_INPUT_SUBDIR</name><value>#subdirGE#</value></envar>
+
+  </task>
+
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&GET_EXTRN_LBCS_TN;" cycledefs="forecast" maxtries="{{ maxtries_get_extrn_lbcs }}">
+
+    &RSRV_HPSS;
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_EXTRN_LBCS_TN;" "&JOBSdir;/JRRFS_GET_EXTRN_MDL_FILES"</command>
+    &RESOURCES_GET_EXTRN_LBCS;
+    <walltime>{{ wtime_get_extrn_lbcs }}</walltime>
+    &NODESIZE_ALL;
+    <jobname>&GET_EXTRN_LBCS_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&GET_EXTRN_LBCS_TN;_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>EXTRN_MDL_NAME</name><value>{{ extrn_mdl_name_lbcs }}</value></envar>
+    <envar><name>ICS_OR_LBCS</name><value>LBCS</value></envar>
+    <envar><name>BOUNDARY_LEN</name><value>{{ boundary_len_hrs }}</value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value>{{ slash_ensmem_subdir }}</value></envar>
+    <envar><name>GEFS_INPUT_SUBDIR</name><value>#subdirGE#</value></envar>
+
+  </task>
+
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&MAKE_ICS_TN;" cycledefs="forecast" maxtries="{{ maxtries_make_ics }}">
+
+    &RSRV_DEFAULT;
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_ICS_TN;" "&JOBSdir;/JRRFS_MAKE_ICS"</command>
+    &RESOURCES_MAKE_ICS;
+    <walltime>{{ wtime_make_ics }}</walltime>
+    &NATIVE_MAKE_ICS;
+    &NODESIZE_ALL;
+    <jobname>&MAKE_ICS_TN;{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr>&LOGDIR;/&MAKE_ICS_TN;_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+
+    <dependency>
+      <and>
+        <taskdep task="&GET_EXTRN_ICS_TN;"/>
+        <or>
+<!--          <taskdep task="&MAKE_GRID_TN;"/> -->
+          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
+          <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
+        </or>
+        <or>
+<!--          <taskdep task="&MAKE_OROG_TN;"/> -->
+          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_orog_task_complete.txt</datadep>
+          <streq><left>&RUN_TASK_MAKE_OROG;</left><right>FALSE</right></streq>
+        </or>
+        <or>
+<!--          <taskdep task="&MAKE_SFC_CLIMO_TN;"/> -->
+          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_sfc_climo_task_complete.txt</datadep>
+          <streq><left>&RUN_TASK_MAKE_SFC_CLIMO;</left><right>FALSE</right></streq>
+        </or>
+      </and>
+    </dependency>
+
+  </task>
+
+<!--
+************************************************************************
+************************************************************************
+-->
+  <metatask name="&MAKE_LBCS_TN;">
+    <var name="bcgrp">{% for h in range(0, boundary_proc_group_num) %}{{ " %02d" % h }}{% endfor %}</var>
+    <task name="&MAKE_LBCS_TN;_#bcgrp#" cycledefs="forecast" maxtries="{{ maxtries_make_lbcs }}">
+
+      &RSRV_DEFAULT;
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_LBCS_TN;" "&JOBSdir;/JRRFS_MAKE_LBCS"</command>
+      &RESOURCES_MAKE_LBCS;
+      <walltime>{{ wtime_make_lbcs }}</walltime>
+      &NATIVE_ALL;
+      &NODESIZE_ALL;
+      <jobname>&MAKE_LBCS_TN;_#bcgrp#</jobname>
+      <join><cyclestr>&LOGDIR;/&MAKE_LBCS_TN;_@Y@m@d@H_#bcgrp#.log</cyclestr></join>
+
+      <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+      <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+      <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>bcgrp</name><value>#bcgrp#</value></envar>
+      <envar><name>bcgrpnum</name><value>{{ boundary_proc_group_num }}</value></envar>
+      <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+
+      <dependency>
+        <and>
+          <taskdep task="&GET_EXTRN_LBCS_TN;"/>
+          <or>
+<!--            <taskdep task="&MAKE_GRID_TN;"/> -->
+            <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
+            <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
+          </or>
+          <or>
+<!--            <taskdep task="&MAKE_OROG_TN;"/> -->
+            <datadep age="00:00:00:05">&LOG_BASEDIR;/make_orog_task_complete.txt</datadep>
+            <streq><left>&RUN_TASK_MAKE_OROG;</left><right>FALSE</right></streq>
+          </or>
+          <or>
+<!--            <taskdep task="&MAKE_SFC_CLIMO_TN;"/> -->
+            <datadep age="00:00:00:05">&LOG_BASEDIR;/make_sfc_climo_task_complete.txt</datadep>
+            <streq><left>&RUN_TASK_MAKE_SFC_CLIMO;</left><right>FALSE</right></streq>
+          </or>
+        </and>
+      </dependency>
+
+    </task>
+  </metatask>
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&RUN_FCST_TN;" cycledefs="forecast" maxtries="{{ maxtries_run_fcst }}">
+
+    &RSRV_FCST;
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_FCST_TN;" "&JOBSdir;/JRRFS_RUN_FCST"</command>
+    &RESOURCES_RUN_FCST;
+    &NATIVE_RUN_FCST;
+    &NODESIZE_ALL;
+    <walltime>{{ wtime_run_fcst }}</walltime>
+    <jobname>&RUN_FCST_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&RUN_FCST_TN;_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+    <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
+    <envar><name>NWGES_BASEDIR</name><value>&NWGES_BASEDIR;</value></envar>
+    <envar><name>RESTART_HRS</name><value><cyclestr>0</cyclestr></value></envar>
+
+    <dependency>
+      <and>
+        <taskdep task="&MAKE_ICS_TN;"/>
+        <metataskdep metatask="&MAKE_LBCS_TN;"/>
+      </and>
+    </dependency>
+
+  </task>
+
+<!--
+************************************************************************
+************************************************************************
+-->
+  <metatask name="&RUN_POST_TN;">
+    <var name="fhr">{% for h in range(0, fcst_len_hrs+1) %}{{ " %03d" % h }}{% endfor %}</var>
+      <task name="&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr#" cycledefs="forecast" maxtries="{{ maxtries_run_post }}">
+        &RSRV_DEFAULT;
+        <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_POST_TN;" "&JOBSdir;/JRRFS_RUN_POST"</command>
+	&RESOURCES_RUN_POST;
+        &NATIVE_ALL;
+        <walltime>{{ wtime_run_post }}</walltime>
+        &NODESIZE_ALL;
+        <jobname>&RUN_POST_TN;_f#fhr#</jobname>
+        <join><cyclestr>&LOGDIR;/&RUN_POST_TN;_f#fhr#_@Y@m@d@H.log</cyclestr></join>
+
+        <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+        <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+        <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+        <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+        <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+        <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+        <envar><name>fhr</name><value>#fhr#</value></envar>
+        <envar><name>TMMARK</name><value>tm00</value></envar>
+
+        <dependency>
+          <or>
+            <taskdep task="&RUN_FCST_TN;"/>
+            <and>
+              <datadep age="05:00"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/log.atm.f#fhr#</cyclestr></datadep>
+            </and>
+          </or>
+        </dependency>
+
+      </task>
+  </metatask>
+<!--
+************************************************************************
+************************************************************************
+-->
+  <metatask name="&RUN_PRDGEN_TN;">
+    <var name="fhr">{% for h in range(0, fcst_len_hrs+1) %}{{ " %03d" % h }}{% endfor %}</var>
+      <task name="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f#fhr#" cycledefs="forecast" maxtries="{{ maxtries_run_prdgen }}">
+        &RSRV_DEFAULT;
+        <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PRDGEN_TN;" "&JOBSdir;/JRRFS_RUN_PRDGEN"</command>
+	&RESOURCES_RUN_PRDGEN;
+        &NATIVE_ALL;
+        <walltime>{{ wtime_run_prdgen }}</walltime>
+        &NODESIZE_ALL;
+        <jobname>&RUN_PRDGEN_TN;_f#fhr#</jobname>
+        <join><cyclestr>&LOGDIR;/&RUN_PRDGEN_TN;_f#fhr#_@Y@m@d@H.log</cyclestr></join>
+
+        <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+        <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+        <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+        <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+        <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+        <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+        <envar><name>fhr</name><value>#fhr#</value></envar>
+        <envar><name>TMMARK</name><value>tm00</value></envar>
+
+        <dependency>
+          <taskdep task="&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr#"/>
+        </dependency>
+
+      </task>
+  </metatask>
+
+</workflow>
