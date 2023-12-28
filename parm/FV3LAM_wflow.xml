@@ -309,6 +309,7 @@ define resources used for each tasks
 <!ENTITY START_TIME_SPINUP "{{ start_time_spinup }}">
 <!ENTITY START_TIME_PROD "{{ start_time_prod }}">
 <!ENTITY START_TIME_CONVENTIONAL_SPINUP "{{ start_time_conventional_spinup }}">
+<!ENTITY START_TIME_BLENDING "{{ start_time_blending }}">
 <!ENTITY START_TIME_LATE_ANALYSIS "{{ start_time_late_analysis }}">
 <!ENTITY START_TIME_CONVENTIONAL "{{ start_time_conventional }}">
 <!ENTITY START_TIME_NSSLMOSIAC   "{{ start_time_nsslmosiac }}">
@@ -966,8 +967,8 @@ MODULES_RUN_TASK_FP script.
         <taskdep task="&GET_EXTRN_ICS_TN;{{ uscore_ensmem_name }}"/>
         {% if do_ens_blending %}
         <or>
-          <streq><left>06</left><right><cyclestr>@H</cyclestr></right></streq>
-          <streq><left>18</left><right><cyclestr>@H</cyclestr></right></streq>
+          <timedep><cyclestr offset="&START_TIME_BLENDING;">@Y@m@d@H@M00</cyclestr></timedep>
+          <datadep age="00:00:01:00"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem#mem#/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
         </or>
         {% endif %}
         <or>
