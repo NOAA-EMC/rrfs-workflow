@@ -57,10 +57,6 @@ the output files corresponding to a specified forecast hour.
 #
 valid_args=( \
 "cdate" \
-"run_dir" \
-"postprd_dir" \
-"comout" \
-"fhr_dir" \
 "fhr" \
 "tmmark" \
 )
@@ -103,6 +99,12 @@ case $MACHINE in
     APRUN="srun"
     ;;
 
+  "HERCULES")
+    export OMP_NUM_THREADS=1
+    export OMP_STACKSIZE=1024M
+    APRUN="srun"
+    ;;
+
   "JET")
     APRUN="srun"
     ;;
@@ -126,6 +128,7 @@ esac
 yyyymmdd=${cdate:0:8}
 hh=${cdate:8:2}
 cyc=$hh
+#
 #-----------------------------------------------------------------------
 #
 # A separate ${post_fhr} forecast hour variable is required for the post
@@ -134,7 +137,6 @@ cyc=$hh
 #
 #-----------------------------------------------------------------------
 #
-
 len_fhr=${#fhr}
 if [ ${len_fhr} -eq 9 ]; then
   post_min=${fhr:4:2}
@@ -181,15 +183,14 @@ echo "fhr=${fhr} and subh_fhr=${subh_fhr}"
 fhr=${subh_fhr}
 #
 gridname=""
-if [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km" ]; then
+if [ "${PREDEF_GRID_NAME}" = "RRFS_CONUS_3km" ]; then
   gridname="conus_3km."
-elif  [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ]; then
+elif  [ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]; then
   gridname=""
 fi
 #
 net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
 #
-
 prslev=${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2
 natlev=${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2
 ififip=${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2
@@ -230,11 +231,12 @@ fi
 # instead of calling sed.
 
 basetime=$( date +%y%j%H%M -d "${yyyymmdd} ${hh}" )
-cp ${postprd_dir}/${prslev} ${comout}/${prslev}
-cp ${postprd_dir}/${natlev} ${comout}/${natlev}
+cp ${postprd_dir}/${prslev} ${COMOUT}/${prslev}
+cp ${postprd_dir}/${natlev} ${COMOUT}/${natlev}
 if [ -f  ${postprd_dir}/${ififip} ]; then
-  cp ${postprd_dir}/${ififip} ${comout}/${ififip}
+  cp ${postprd_dir}/${ififip} ${COMOUT}/${ififip}
 fi
+
 cp ${postprd_dir}/${testbed}  ${comout}/${testbed}
 cp ${postprd_dir}/${spc} ${comout}/${spc}
 wgrib2 ${comout}/${prslev} -s > ${comout}/${prslev}.idx
@@ -244,20 +246,19 @@ if [ -f ${comout}/${ififip} ]; then
 fi
 wgrib2 ${comout}/${testbed} -s > ${comout}/${testbed}.idx
 wgrib2 ${comout}/${spc} -s > ${comout}/${spc}.idx
+
 # Remap to additional output grids if requested
 
-if [ ${DO_PARALLEL_PRDGEN} == "TRUE" ]; then
-#
-#  parallel run wgrib2 for product generation
-#
-  if [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ]; then
+if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
+  #  parallel run wgrib2 for product generation
+  if [ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]; then
     DATA=$postprd_dir
     export DATA=$postprd_dir
     DATAprdgen=$DATA/prdgen_${fhr}
     mkdir $DATAprdgen
     USHrrfs=$USHdir/prdgen
 
-    wgrib2 ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.grib2 >& $DATAprdgen/prslevf${fhr}.txt
+    wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.grib2 >& $DATAprdgen/prslevf${fhr}.txt
 
     # Create parm files for subsetting on the fly - do it for each forecast hour
     # 4 subpieces for CONUS and Alaska grids
@@ -273,7 +274,7 @@ if [ ${DO_PARALLEL_PRDGEN} == "TRUE" ]; then
     # Create script to execute production generation tasks in parallel using CFP
     echo "#!/bin/bash" > $DATAprdgen/poescript_${fhr}
     echo "export DATA=${DATAprdgen}" >> $DATAprdgen/poescript_${fhr}
-    echo "export comout=${comout}" >> $DATAprdgen/poescript_${fhr}
+    echo "export COMOUT=${COMOUT}" >> $DATAprdgen/poescript_${fhr}
 
     tasks=(4 4 2 2)
     domains=(conus ak hi pr)
@@ -283,7 +284,7 @@ if [ ${DO_PARALLEL_PRDGEN} == "TRUE" ]; then
       for task in $(seq ${tasks[count]})
       do
         mkdir -p $DATAprdgen/prdgen_${domain}_${task}
-        echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc $task $domain ${DATAprdgen} ${comout} &" >> $DATAprdgen/poescript_${fhr}
+        echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc $task $domain ${DATAprdgen} ${COMOUT} &" >> $DATAprdgen/poescript_${fhr}
       done
       count=$count+1
     done
@@ -292,8 +293,8 @@ if [ ${DO_PARALLEL_PRDGEN} == "TRUE" ]; then
     chmod 775 $DATAprdgen/poescript_${fhr}
 
     # Execute the script
-    export CMDFILE=$DATAprdgen/poescript_${fhr}
-    mpiexec -np 12 --cpu-bind core cfp $CMDFILE
+    export CMDFILE=$DATAprdgen/poescript_${fhr} 
+    mpiexec -np 12 --cpu-bind core cfp $CMDFILE >>$pgmout 2>errfile
     export err=$?; err_chk
 
     # reassemble the output grids
@@ -304,15 +305,15 @@ if [ ${DO_PARALLEL_PRDGEN} == "TRUE" ]; then
     do
       for task in $(seq ${tasks[count]})
       do
-        cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2
+        cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2
       done
-      wgrib2 ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2 -s > ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2.idx
+      wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2.idx
       count=$count+1
     done
 
     # Rename conus grib2 files to conus_3km
-    mv ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.conus.grib2 ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.conus_3km.grib2
-    mv ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.conus.grib2.idx ${comout}/rrfs.t${cyc}z.prslev.f${fhr}.conus_3km.grib2.idx
+    mv ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.conus.grib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.conus_3km.grib2
+    mv ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.conus.grib2.idx ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.conus_3km.grib2.idx
 
     # create testbed files on 3-km CONUS grid
     prslev_conus=${net4}.t${cyc}z.prslev.f${fhr}.conus_3km.grib2
@@ -320,7 +321,7 @@ if [ ${DO_PARALLEL_PRDGEN} == "TRUE" ]; then
     spc_conus=${net4}.t${cyc}z.spc.f${fhr}.conus_3km.grib2
     if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
       if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN} ]]; then
-        wgrib2 ${comout}/${prslev_conus} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN} | wgrib2 -i -grib ${comout}/${testbed_conus} ${comout}/${prslev_conus}
+        wgrib2 ${COMOUT}/${prslev_conus} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN} | wgrib2 -i -grib ${COMOUT}/${testbed_conus} ${COMOUT}/${prslev_conus}
       else
         echo "WARNING: ${FIX_UPP}/${TESTBED_FIELDS_FN} not found"
       fi
@@ -345,7 +346,7 @@ else
   # use single core to process all addition grids.
   #
   if [ ${#ADDNL_OUTPUT_GRIDS[@]} -gt 0 ]; then
-    cd ${comout}
+    cd ${COMOUT}
 
     grid_specs_130="lambert:265:25.000000 233.862000:451:13545.000000 16.281000:337:13545.000000"
     grid_specs_200="lambert:253:50.000000 285.720000:108:16232.000000 16.201000:94:16232.000000"
@@ -369,8 +370,8 @@ else
         bg_remap=${subdir}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2
 
         # Interpolate fields to new grid
-        eval infile=${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${gridname}grib2
-        if [ ${PREDEF_GRID_NAME} = "RRFS_NA_13km" ]; then
+        eval infile=${COMOUT}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${gridname}grib2
+        if [ "${PREDEF_GRID_NAME}" = "RRFS_NA_13km" ]; then
           wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
            -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
            -new_grid_interpolation bilinear \
@@ -393,9 +394,9 @@ else
         rm -f ${subdir}/${fhr}/tmp_${grid}.grib2
 
         # Save to com directory 
-        mkdir -p ${comout}/${grid}_grid
-        cp ${bg_remap} ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2
-        wgrib2 ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2 -s > ${comout}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2.idx
+        mkdir -p ${COMOUT}/${grid}_grid
+        cp ${bg_remap} ${COMOUT}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2
+        wgrib2 ${COMOUT}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2 -s > ${COMOUT}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2.idx
 
       done
     done

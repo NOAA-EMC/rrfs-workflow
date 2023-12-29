@@ -55,7 +55,7 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "modelinputdir" "lbcs_root" "fg_root")
+valid_args=( "cycle_dir" "lbcs_root" "fg_root")
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -85,6 +85,10 @@ case $MACHINE in
     ;;
 
   "ORION")
+    APRUN="srun"
+    ;;
+
+  "HERCULES")
     APRUN="srun"
     ;;
 
@@ -127,7 +131,6 @@ YYYYMMDDm2=$(date +%Y%m%d -d "${START_DATE} 2 days ago")
 #
 #-----------------------------------------------------------------------
 #
-# go to INPUT directory.
 # prepare initial conditions for 
 #     cold start if BKTYPE=1 
 #     warm start if BKTYPE=0
@@ -136,7 +139,7 @@ YYYYMMDDm2=$(date +%Y%m%d -d "${START_DATE} 2 days ago")
 #       valid at this time from the closet previous cycle.
 #
 #-----------------------------------------------------------------------
-cd ${modelinputdir}
+#
 bkpath=${fg_root}/${YYYYMMDDHH}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/INPUT  # cycling, use background from INPUT
 
 checkfile=${bkpath}/coupler.res
@@ -146,29 +149,29 @@ filelistn="fv_core.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_tracer.res.tile1.nc p
 n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 if [ -r "${checkfile}" ] ; then
-  cp ${bkpath}/${restart_prefix}coupler.res                bk_coupler.res
-  cp ${bkpath}/${restart_prefix}fv_core.res.nc             fv_core.res.nc
-  if [ "${IO_LAYOUT_Y}" == "1" ]; then
+  cp ${bkpath}/${restart_prefix}coupler.res  bk_coupler.res
+  cp ${bkpath}/${restart_prefix}fv_core.res.nc  fv_core.res.nc
+  if [ "${IO_LAYOUT_Y}" = "1" ]; then
     for file in ${filelistn}; do
-      cp ${bkpath}/${restart_prefix}${file}     ${file}
+      cp ${bkpath}/${restart_prefix}${file}  ${file}
     done
   else
     for file in ${filelistn}; do
       for ii in $list_iolayout
       do
         iii=$(printf %4.4i $ii)
-        cp ${bkpath}/${restart_prefix}${file}.${iii}     ${file}.${iii}
+        cp ${bkpath}/${restart_prefix}${file}.${iii}  ${file}.${iii}
       done
     done
   fi
   cp ${fg_root}/${YYYYMMDDHH}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
-  if [ ${SAVE_CYCLE_LOG} == "TRUE" ] ; then
-    echo "${YYYYMMDDHH}(${cycle_type}): warm start at ${current_time} from ${checkfile} " >> ${EXPTDIR}/log.cycles
+  if [ "${SAVE_CYCLE_LOG}" = "TRUE" ]; then
+    echo "${YYYYMMDDHH}(${CYCLE_TYPE}): warm start at ${current_time} from ${checkfile} " >> ${EXPTDIR}/log.cycles
   fi
 #
 # remove checksum from restart files. Checksum will cause trouble if model initializes from analysis
 #
-  if [ "${IO_LAYOUT_Y}" == "1" ]; then
+  if [ "${IO_LAYOUT_Y}" = "1" ]; then
     for file in ${filelistn}; do
       ncatted -a checksum,,d,, ${file}
     done
@@ -183,7 +186,7 @@ if [ -r "${checkfile}" ] ; then
   fi
   ncatted -a checksum,,d,, fv_core.res.nc
 
-# generate coupler.res with right date
+  # generate coupler.res with right date
   head -1 bk_coupler.res > coupler.res
   tail -1 bk_coupler.res >> coupler.res
   tail -1 bk_coupler.res >> coupler.res
@@ -193,7 +196,6 @@ fi
 
 #-----------------------------------------------------------------------
 #
-# go to INPUT directory.
 # prepare boundary conditions:
 #       the previous 12 cycles are searched to find the boundary files
 #       that can cover the forecast length.
@@ -221,13 +223,13 @@ else
   else
      FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS}
   fi
-  if [ ${cycle_type} == "spinup" ]; then
+  if [ "${CYCLE_TYPE}" = "spinup" ]; then
      FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS_SPINUP}
   fi 
   print_info_msg "$VERBOSE" " The forecast length for cycle (\"${HH}\") is
                  ( \"${FCST_LEN_HRS_thiscycle}\") "
 
-#   let us figure out which boundary file is available
+  # let us figure out which boundary file is available
   bndy_prefix=gfs_bndy.tile7
   n=${EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS}
   end_search_hr=$(( 12 + ${EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS} ))
@@ -262,7 +264,7 @@ else
 
       nb=$((nb + 1))
     done
-# check 0-h boundary condition
+    # check 0-h boundary condition
     if [ ! -f "${bndy_prefix}.000.nc" ]; then
       this_bdy=$(printf %3.3i ${n})
       cp ${lbcs_path}/${bndy_prefix}.${this_bdy}.nc ${bndy_prefix}.000.nc 

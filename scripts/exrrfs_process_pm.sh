@@ -55,7 +55,7 @@ pm) preprocess for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "CYCLE_DIR" "WORKDIR" "comout")
+valid_args=( "CYCLE_DIR" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -95,6 +95,10 @@ case $MACHINE in
   APRUN="srun"
   ;;
 #
+"HERCULES")
+  APRUN="srun"
+  ;;
+#
 esac
 #
 #-----------------------------------------------------------------------
@@ -116,19 +120,13 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 
 YYJJJHH=$(date +"%y%j%H" -d "${START_DATE}")
 PREYYJJJHH=$(date +"%y%j%H" -d "${START_DATE} 1 hours ago")
-
 #
 #-----------------------------------------------------------------------
 #
-# Get into working directory
+# Define fix directory
 #
 #-----------------------------------------------------------------------
 #
-print_info_msg "$VERBOSE" "
-Getting into working directory for BUFR obseration process ..."
-
-cd ${WORKDIR}
-
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
 #
@@ -201,33 +199,16 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-# Copy the executable to the run directory.
-#
-#-----------------------------------------------------------------------
-#
-exect="process_pm.exe"
-
-if [ -f ${EXECdir}/$exect ]; then
-  print_info_msg "$VERBOSE" "
-Copying the PM process executable to the run directory..."
-  cp ${EXECdir}/${exect} ${WORKDIR}/${exect}
-else
-  err_exit "\
-The executable specified in exect does not exist:
-  exect = \"${EXECdir}/$exect\"
-Build PM process and rerun."
-fi
-#
-#-----------------------------------------------------------------------
-#
 # Run the process for NASA LaRc cloud  bufr file 
 #
 #-----------------------------------------------------------------------
 #
+export pgm="process_pm.exe"
+. prep_step
+
 if [[ "$run_pm" == true ]]; then
-  $APRUN ./${exect}  > stdout_pm 2>&1
+  $APRUN ${EXECdir}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
-  cp stdout_pm $comout/stdout.t${HH}z.pm
 fi
 #
 #-----------------------------------------------------------------------

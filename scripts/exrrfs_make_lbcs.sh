@@ -56,8 +56,6 @@ hour zero).
 #-----------------------------------------------------------------------
 #
 valid_args=( \
-"lbcs_dir" \
-"lbcs_nwges_dir" \
 "bcgrp" \
 "bcgrpnum" \
 )
@@ -99,6 +97,10 @@ case "$MACHINE" in
     APRUN="srun --export=ALL"
     ;;
 
+  "HERCULES")
+    APRUN="srun --export=ALL"
+    ;;
+
   "JET")
     APRUN="srun --export=ALL"
     ;;
@@ -115,12 +117,6 @@ esac
 extrn_mdl_staging_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/${EXTRN_MDL_NAME_LBCS}/for_LBCS"
 extrn_mdl_var_defns_fp="${extrn_mdl_staging_dir}/${EXTRN_MDL_LBCS_VAR_DEFNS_FN}"
 . ${extrn_mdl_var_defns_fp}
-#
-#-----------------------------------------------------------------------
-#
-workdir="${lbcs_dir}/tmp_LBCS_${bcgrp}"
-mkdir -p "$workdir"
-cd $workdir
 #
 #-----------------------------------------------------------------------
 #
@@ -142,6 +138,7 @@ case "${CCPP_PHYS_SUITE}" in
   "FV3_GFS_v15_thompson_mynn_lam3km" | \
   "FV3_HRRR" | \
   "FV3_HRRR_gf" | \
+  "FV3_HRRR_gf_nogwd" | \
   "FV3_RAP" )
     if [ "${EXTRN_MDL_NAME_LBCS}" = "RAP" ] || \
        [ "${EXTRN_MDL_NAME_LBCS}" = "HRRR" ]; then
@@ -359,22 +356,6 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-# Check that the executable that generates the LBCs exists.
-#
-#-----------------------------------------------------------------------
-#
-exec_fn="chgres_cube"
-exec_fp="$EXECdir/${exec_fn}"
-if [ ! -f "${exec_fp}" ]; then
-  err_exit "\
-The executable (exec_fp) for generating initial conditions on the FV3-LAM
-native grid does not exist:
-  exec_fp = \"${exec_fp}\"
-Please ensure that you've built this executable."
-fi
-#
-#-----------------------------------------------------------------------
-#
 # Loop through the LBC update times and run chgres_cube for each such time to
 # obtain an LBC file for each that can be used as input to the FV3-LAM.
 #
@@ -523,9 +504,11 @@ $settings"
 #
 #-----------------------------------------------------------------------
 #
-  ${APRUN} ${exec_fp}
-  export err=$?; err_chk
+  export pgm="chgres_cube"
+  . prep_step
 
+  ${APRUN} ${EXECdir}/$pgm >>$pgmout 2>errfile
+  export err=$?; err_chk
 #
 # Move LBCs file for the current lateral boundary update time to the LBCs
 # work directory.  Note that we rename the file by including in its name
@@ -541,7 +524,6 @@ $settings"
 
   fi
 done
-
 #
 #-----------------------------------------------------------------------
 #

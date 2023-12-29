@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 #
 #-----------------------------------------------------------------------
 #
@@ -18,6 +17,9 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
+
+date
+export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
@@ -61,23 +63,22 @@ preprocess with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-if [ ${CYCLE_TYPE} == "spinup" ]; then
-  workdir=${CYCLE_DIR}/process_radarref_spinup
-  if [ ${DO_ENSEMBLE} == "TRUE" ]; then
-     workdir=${CYCLE_DIR}/process_radarref_spinup_enkf
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export workdir=${CYCLE_DIR}/process_radarref_spinup
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    workdir=${CYCLE_DIR}/process_radarref_spinup_enkf
   fi
 else
-  workdir=${CYCLE_DIR}/process_radarref
-  if [ ${DO_ENSEMBLE} == "TRUE" ]; then
-     workdir=${CYCLE_DIR}/process_radarref_enkf
+  export workdir=${CYCLE_DIR}/process_radarref
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    workdir=${CYCLE_DIR}/process_radarref_enkf
   fi
 fi
 rm -fr ${workdir}
 mkdir -p ${workdir}
+cd ${workdir}
 #
-#
-#
-gridspec_dir=${NWGES_BASEDIR}/grid_spec
+export gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #
 #-----------------------------------------------------------------------
 #
@@ -85,10 +86,10 @@ gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #
 #-----------------------------------------------------------------------
 #
-if [ ${CYCLE_TYPE} == "spinup" ]; then
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
 else
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
 fi
 mkdir -p "${COMOUT}"
 #
@@ -98,10 +99,17 @@ mkdir -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #
+export pgmout="${workdir}/OUTPUT.$$"
+env
+
 $SCRIPTSdir/exrrfs_process_radarref.sh \
-  CYCLE_DIR="${CYCLE_DIR}" cycle_type="${CYCLE_TYPE}" gridspec_dir="${gridspec_dir}" \
-  WORKDIR="${workdir}" RADAR_REF_THINNING="${RADAR_REF_THINNING}" comout="${COMOUT}"
+  CYCLE_DIR="${CYCLE_DIR}" cycle_type="${CYCLE_TYPE}" \
+  RADAR_REF_THINNING="${RADAR_REF_THINNING}"
 export err=$?; err_chk
+
+if [ -e "$pgmout" ]; then
+  cat $pgmout
+fi
 #
 #-----------------------------------------------------------------------
 #

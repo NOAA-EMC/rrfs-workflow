@@ -1,6 +1,6 @@
 valid_vals_VERBOSE=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
 valid_vals_SAVE_CYCLE_LOG=("TRUE" "true" "YES" "yes" "FALSE" "false" "NO" "no")
-valid_vals_MACHINE=("WCOSS2" "HERA" "ORION" "JET")
+valid_vals_MACHINE=("WCOSS2" "HERA" "ORION" "JET" "HERCULES")
 valid_vals_SCHED=("slurm" "pbspro" "lsf" "lsfcray" "none")
 valid_vals_PREDEF_GRID_NAME=( \
 "RRFS_CONUS_25km" \
@@ -29,6 +29,7 @@ valid_vals_CCPP_PHYS_SUITE=( \
 "FV3_RRFS_v1beta" \
 "FV3_HRRR" \
 "FV3_HRRR_gf" \
+"FV3_HRRR_gf_nogwd" \
 "FV3_RAP" \
 "FV3_GFS_v15_thompson_mynn_lam3km" \
 ) 

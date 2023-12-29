@@ -58,9 +58,6 @@ valid_args=( \
 "cdate" \
 "run_dir" \
 "nwges_dir" \
-"bufrsnd_dir" \
-"comout" \
-"fhr_dir" \
 "fhr" \
 "tmmark" \
 "cycle_type" \
@@ -100,6 +97,11 @@ case $MACHINE in
     ;;
 
   "ORION")
+    APRUNC="srun --export=ALL"
+    APRUNS="time"
+    ;;
+
+  "HERCULES")
     APRUNC="srun --export=ALL"
     APRUNS="time"
     ;;
@@ -147,8 +149,6 @@ cyc=$hh
 PARMfv3=${FIX_BUFRSND}  #/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/bufrsnd
 
 DATA=$bufrsnd_dir
-EXECfv3=$EXECdir
-COMOUT=$comout
 
 mkdir -p $DATA/bufrpost
 cd $DATA/bufrpost
@@ -209,7 +209,7 @@ do
 
   let fhrold="$fhr - 1"
 
-  if [ $model == "FV3S" ]; then
+  if [ $model = "FV3S" ]; then
 
     OUTFILDYN=$INPUT_DATA/dynf0${fhr}.nc
     OUTFILPHYS=$INPUT_DATA/phyf0${fhr}.nc
@@ -256,8 +256,12 @@ EOF
   export FORT79="$DATA/bufrpost/profilm.c1.${tmmark}"
   export FORT11="itag"
 
-  ${APRUNC} $EXECfv3/rrfs_bufr.exe  > pgmout.log_${fhr} 2>&1
+  export pgm="rrfs_bufr.exe"
+  . prep_step
+
+  ${APRUNC} ${EXECdir}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
+  mv errfile errfile_rrfs_bufr
 
   echo DONE $fhr at `date`
 
@@ -293,18 +297,21 @@ export FORT78="$DATA/class1.bufr"
 
 echo here model $model
 
-pgmout=sndplog
-
 nlev=65
 
 FCST_LEN_HRS=$FHRLIM
 echo "$nlev $NSTAT $FCST_LEN_HRS" > itag
-${APRUNS} $EXECfv3/rrfs_sndp.exe  < itag >> $pgmout 2>$pgmout
+
+export pgm="rrfs_sndp.exe"
+. prep_step
+
+${APRUNS} ${EXECdir}/$pgm < itag >>$pgmout 2>errfile
 export err=$?; err_chk
+mv errfile errfile_rrfs_sndp
 
 SENDCOM=YES
 
-if [ $SENDCOM == "YES" ]; then
+if [ "${SENDCOM}" = "YES" ]; then
   cp $DATA/class1.bufr $COMOUT/rrfs.t${cyc}z.class1.bufr
   cp $DATA/profilm.c1.${tmmark} ${COMOUT}/rrfs.t${cyc}z.profilm.c1
 fi
@@ -327,19 +334,19 @@ EOF
 
 mkdir -p ${COMOUT}/bufr.${cyc}
 
-export pgm=regional_stnmlist
-
 export FORT20=$DATA/class1.bufr
 export DIRD=${COMOUT}/bufr.${cyc}/bufr
 
 echo "before stnmlist.exe"
-date
-pgmout=stnmlog
-${APRUNS}  $EXECfv3/rrfs_stnmlist.exe < stnmlist_input >> $pgmout 2>errfile
+
+export pgm="rrfs_stnmlist.exe"
+. prep_step
+
+${APRUNS} ${EXECdir}/$pgm < stnmlist_input >>$pgmout 2>errfile
 export err=$?; err_chk
+mv errfile errfile_rrfs_stnmlist
 
 echo "after stnmlist.exe"
-date
 
 echo ${COMOUT}/bufr.${cyc} > ${COMOUT}/bufr.${cyc}/bufrloc
 
@@ -363,7 +370,6 @@ if [ $err1 -ne 0 -o $err2 -ne 0 -o $err3 -ne 0 ]; then
 fi
 
 #  Set input file name.
-
 INFILE=$COMOUT/rrfs.t${cyc}z.class1.bufr
 export INFILE
 

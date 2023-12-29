@@ -55,7 +55,7 @@ with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "CYCLE_DIR" "cycle_type" "gridspec_dir" "WORKDIR" "RADAR_REF_THINNING" "comout")
+valid_args=( "CYCLE_DIR" "cycle_type" "RADAR_REF_THINNING" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -96,6 +96,10 @@ case $MACHINE in
   APRUN="srun --export=ALL"
   ;;
 #
+"HERCULES")
+  APRUN="srun --export=ALL"
+  ;;
+#
 esac
 
 #
@@ -115,7 +119,6 @@ MM=${YYYYMMDDHH:4:2}
 DD=${YYYYMMDDHH:6:2}
 HH=${YYYYMMDDHH:8:2}
 YYYYMMDD=${YYYYMMDDHH:0:8}
-
 #
 #-----------------------------------------------------------------------
 #
@@ -126,8 +129,8 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 #-----------------------------------------------------------------------
 #
 BKTYPE=0
-if [ ${DO_SPINUP} == "TRUE" ]; then
-  if [ ${cycle_type} == "spinup" ]; then
+if [ "${DO_SPINUP}" = "TRUE" ]; then
+  if [ "${cycle_type}" = "spinup" ]; then
     for cyc_start in "${CYCL_HRS_SPINSTART[@]}"; do
       if [ ${HH} -eq ${cyc_start} ]; then
         BKTYPE=1
@@ -144,7 +147,6 @@ fi
 
 n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
-
 #
 #-----------------------------------------------------------------------
 #
@@ -156,65 +158,73 @@ list_iolayout=$(seq 0 $n_iolayouty)
 print_info_msg "$VERBOSE" "
 Getting into working directory for radar reflectivity process ..."
 
+export pgm="process_NSSL_mosaic.exe"
+. prep_step
+
 for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   bigmin=$( printf %2.2i $bigmin )
-  mkdir ${WORKDIR}/${bigmin}
-  cd ${WORKDIR}/${bigmin}
+  mkdir ${workdir}/${bigmin}
+  cd ${workdir}/${bigmin}
 
   fixdir=$FIX_GSI/
   fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 
   print_info_msg "$VERBOSE" "fixdir is $fixdir"
   print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
-
-#
-#-----------------------------------------------------------------------
-#
-# link or copy background files
-#
-#-----------------------------------------------------------------------
-#
+  #
+  #-----------------------------------------------------------------------
+  #  
+  # link or copy background files
+  #
+  #-----------------------------------------------------------------------
+  #
   if [ ${BKTYPE} -eq 1 ]; then
-    cp ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
+    cp ${fixgriddir}/fv3_grid_spec  fv3sar_grid_spec.nc
   else
     if [ "${IO_LAYOUT_Y}" == "1" ]; then
-      cp ${fixgriddir}/fv3_grid_spec          fv3sar_grid_spec.nc
+      cp ${fixgriddir}/fv3_grid_spec  fv3sar_grid_spec.nc
     else
       for ii in $list_iolayout
       do
         iii=$(printf %4.4i $ii)
-        cp ${gridspec_dir}/fv3_grid_spec.${iii}   fv3sar_grid_spec.nc.${iii}
+        cp ${gridspec_dir}/fv3_grid_spec.${iii}  fv3sar_grid_spec.nc.${iii}
       done
     fi
   fi
-
-#
-#-----------------------------------------------------------------------
-#
-# link/copy observation files to working directory 
-#
-#-----------------------------------------------------------------------
-#
-case $MACHINE in
-
-"WCOSS2")
-
-  obs_appendix=grib2.gz
-  ;;
-"JET" | "HERA" | "ORION")
-
-  obs_appendix=grib2
-esac
+  #
+  #-----------------------------------------------------------------------
+  #
+  # link/copy observation files to working directory 
+  #
+  #-----------------------------------------------------------------------
+  #
+  case $MACHINE in
+  "WCOSS2")
+    obs_appendix=grib2.gz
+    ;;
+  "JET" | "HERA" | "ORION" | "HERCULES")
+    obs_appendix=grib2
+  esac
 
   NSSL=${OBSPATH_NSSLMOSIAC}
 
   mrms="MergedReflectivityQC"
-
-# Link to the MRMS operational data
+  #
+  #-----------------------------------------------------------------------
+  #
+  # Link to the MRMS operational data
+  #
+  #-----------------------------------------------------------------------
+  #
   echo "bigmin = ${bigmin}"
   echo "RADARREFL_MINS = ${RADARREFL_MINS[@]}"
-
-# Link to the MRMS operational data
+  #
+  #-----------------------------------------------------------------------
+  #
+  # Link to the MRMS operational data
+  #
+  #-----------------------------------------------------------------------
+  #
   for min in ${RADARREFL_MINS[@]}
   do
     min=$( printf %2.2i $((bigmin+min)) )
@@ -237,14 +247,18 @@ esac
       ((s+=1))
     done
   done
-
-# remove filelist_mrms if zero bytes
+  #
+  #-----------------------------------------------------------------------
+  #
+  # remove filelist_mrms if zero bytes
+  #
+  #-----------------------------------------------------------------------
+  #
   if [ ! -s filelist_mrms ]; then
     rm -f filelist_mrms
   fi
 
   if [ -s filelist_mrms ]; then
-
      if [ ${obs_appendix} == "grib2.gz" ]; then
         gzip -d *.gz
         mv filelist_mrms filelist_mrms_org
@@ -258,36 +272,35 @@ esac
      echo "WARNING: Not enough radar reflectivity files available for loop ${bigmin}."
      continue
   fi
-
-
-#-----------------------------------------------------------------------
-#
-# copy bufr table from fix directory
-#
-#-----------------------------------------------------------------------
+  #
+  #-----------------------------------------------------------------------
+  #
+  # copy bufr table from fix directory
+  #
+  #-----------------------------------------------------------------------
   BUFR_TABLE=${fixdir}/prepobs_prep_RAP.bufrtable
 
   cp $BUFR_TABLE prepobs_prep.bufrtable
-
-#-----------------------------------------------------------------------
-#
-# Build namelist and run executable 
-#
-#   tversion      : data source version
-#                   = 1 NSSL 1 tile grib2 for single level
-#                   = 4 NSSL 4 tiles binary
-#                   = 8 NSSL 8 tiles netcdf
-#   fv3_io_layout_y : subdomain of restart files
-#   analysis_time : process obs used for this analysis date (YYYYMMDDHH)
-#   dataPath      : path of the radar reflectivity mosaic files.
-#
-#-----------------------------------------------------------------------
-
-if [ ${BKTYPE} -eq 1 ]; then
-  n_iolayouty=1
-else
-  n_iolayouty=$(($IO_LAYOUT_Y))
-fi
+  #
+  #-----------------------------------------------------------------------
+  #
+  # Build namelist and run executable 
+  #
+  #   tversion      : data source version
+  #                   = 1 NSSL 1 tile grib2 for single level
+  #                   = 4 NSSL 4 tiles binary
+  #                   = 8 NSSL 8 tiles netcdf
+  #   fv3_io_layout_y : subdomain of restart files
+  #   analysis_time : process obs used for this analysis date (YYYYMMDDHH)
+  #   dataPath      : path of the radar reflectivity mosaic files.
+  #
+  #-----------------------------------------------------------------------
+  #
+  if [ ${BKTYPE} -eq 1 ]; then
+    n_iolayouty=1
+  else
+    n_iolayouty=$(($IO_LAYOUT_Y))
+  fi
 
 cat << EOF > namelist.mosaic
    &setup
@@ -298,27 +311,27 @@ cat << EOF > namelist.mosaic
    /
 EOF
 
-if [ ${RADAR_REF_THINNING} -eq 2 ]; then
-  # heavy data thinning, typically used for EnKF
-  precipdbzhorizskip=1
-  precipdbzvertskip=2
-  clearairdbzhorizskip=2
-  clearairdbzvertskip=4
-else
-  if [ ${RADAR_REF_THINNING} -eq 1 ]; then
-    # light data thinning, typically used for hybrid EnVar
+  if [ ${RADAR_REF_THINNING} -eq 2 ]; then
+    # heavy data thinning, typically used for EnKF
     precipdbzhorizskip=1
-    precipdbzvertskip=1
-    clearairdbzhorizskip=1
-    clearairdbzvertskip=1
+    precipdbzvertskip=2
+    clearairdbzhorizskip=2
+    clearairdbzvertskip=4
   else
-    # no data thinning
-    precipdbzhorizskip=0
-    precipdbzvertskip=0
-    clearairdbzhorizskip=0
-    clearairdbzvertskip=0
+    if [ ${RADAR_REF_THINNING} -eq 1 ]; then
+      # light data thinning, typically used for hybrid EnVar
+      precipdbzhorizskip=1
+      precipdbzvertskip=1
+      clearairdbzhorizskip=1
+      clearairdbzvertskip=1
+    else
+      # no data thinning
+      precipdbzhorizskip=0
+      precipdbzvertskip=0
+      clearairdbzhorizskip=0
+      clearairdbzvertskip=0
+    fi
   fi
-fi
 
 cat << EOF > namelist.mosaic_netcdf
    &setup_netcdf
@@ -334,39 +347,17 @@ cat << EOF > namelist.mosaic_netcdf
     clear_air_dbz_vert_skip = ${clearairdbzvertskip},
    / 
 EOF
-
-#
-#-----------------------------------------------------------------------
-#
-# Copy the executable to the run directory.
-#
-#-----------------------------------------------------------------------
-#
-  exect="process_NSSL_mosaic.exe"
-
-  if [ -f ${EXECdir}/$exect ]; then
-    print_info_msg "$VERBOSE" "
-    Copying the radar process  executable to the run directory..."
-    cp ${EXECdir}/${exect} .
-  else
-    err_exit "\
-    The executable specified in GSI_exect does not exist:
-    exect = \"${EXECdir}/$exect\"
-    Build radar process and rerun."
-  fi
-#
-#
-#-----------------------------------------------------------------------
-#
-# Run the radar refl process.
-#
-#-----------------------------------------------------------------------
-#
-  $APRUN ./${exect} > stdout 2>&1
+  #
+  #-----------------------------------------------------------------------
+  #
+  # Run the radar refl process.
+  #
+  #-----------------------------------------------------------------------
+  # 
+  $APRUN ${EXECdir}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
 
-  cp stdout $comout/stdout.t${HH}z.NSSL_mosaic.${bigmin}
-  cp RefInGSI3D.dat  $comout/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
+  cp RefInGSI3D.dat  ${COMOUT}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
 done # done with the bigmin for-loop
 #
 #-----------------------------------------------------------------------

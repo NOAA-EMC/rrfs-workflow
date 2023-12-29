@@ -47,69 +47,70 @@ fi
 if [[ $DO_RETRO == "TRUE" ]] ; then
 
   if [[ $MACHINE == "jet" ]] ; then
-#    EXTRN_MDL_SOURCE_BASEDIR_ICS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/hrrr/conus/wrfnat/grib2
-#    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/rap/full/wrfnat/grib2
-
+    RETRODATAPATH="/lfs4/BMC/wrfruc/RRFS_RETRO_DATA"
     if [ ${EXTRN_MDL_NAME_ICS} == "FV3GFS" ] ; then
-      EXTRN_MDL_SOURCE_BASEDIR_ICS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/gfs/0p25deg/grib2
+      EXTRN_MDL_SOURCE_BASEDIR_ICS=${RETRODATAPATH}/gfs/0p25deg/grib2
     elif [ ${EXTRN_MDL_NAME_ICS} == "GEFS" ] ; then
-      EXTRN_MDL_SOURCE_BASEDIR_ICS="/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/GEFS/dsg"
+      EXTRN_MDL_SOURCE_BASEDIR_ICS=${RETRODATAPATH}/GEFS
+    elif [[ ${EXTRN_MDL_NAME_ICS} == "GDASENKF" ]]; then
+        EXTRN_MDL_SOURCE_BASEDIR_ICS="${RETRODATAPATH}/enkf/atm"
     fi
     if [ ${EXTRN_MDL_NAME_LBCS} == "FV3GFS" ] ; then
-      EXTRN_MDL_SOURCE_BASEDIR_LBCS=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/gfs/0p25deg/grib2
+      EXTRN_MDL_SOURCE_BASEDIR_LBCS=${RETRODATAPATH}/gfs/0p25deg/grib2
     elif [ ${EXTRN_MDL_NAME_LBCS} == "GEFS" ] ; then
-      EXTRN_MDL_SOURCE_BASEDIR_LBCS="/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/GEFS/dsg"
+      EXTRN_MDL_SOURCE_BASEDIR_LBCS=${RETRODATAPATH}/GEFS
     fi
 
-    OBSPATH=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/obs_rap
-    OBSPATH_PM=/mnt/lfs1/BMC/wrfruc/hwang/rrfs_sd/pm
-    OBSPATH_NSSLMOSIAC=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/reflectivity
-    LIGHTNING_ROOT=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/lightning
-    ENKF_FCST=/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/enkf/atm
-    AIRCRAFT_REJECT="/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/amdar_reject_lists"
-    SFCOBS_USELIST="/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/mesonet_uselists"
-    SST_ROOT="/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/highres_sst"
-    GVF_ROOT="/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/gvf/grib2"
-    IMSSNOW_ROOT="/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/snow/ims96/grib2"
-    RAPHRR_SOIL_ROOT="/mnt/lfs4/BMC/wrfruc/Ruifang.Li/data/rap_hrrr_soil"
+    OBSPATH=${RETRODATAPATH}/obs_rap
+    OBSPATH_PM=${RETRODATAPATH}/pm
+    OBSPATH_NSSLMOSIAC=${RETRODATAPATH}/reflectivity
+    LIGHTNING_ROOT=${RETRODATAPATH}/lightning
+    ENKF_FCST=${RETRODATAPATH}/enkf/atm
+    AIRCRAFT_REJECT=${RETRODATAPATH}/amdar_reject_lists
+    SFCOBS_USELIST=${RETRODATAPATH}/mesonet_uselists
+    SST_ROOT=${RETRODATAPATH}/highres_sst
+    GVF_ROOT=${RETRODATAPATH}/gvf/grib2
+    IMSSNOW_ROOT=${RETRODATAPATH}/snow/ims96/grib2
+    RAPHRR_SOIL_ROOT=${RETRODATAPATH}/rap_hrrr_soil
+    FIRE_RAVE_DIR=${RETRODATAPATH}/RAVE_RAW
   fi
-  if [[ $MACHINE == "hera" ]] ; then
 
+  if [[ $MACHINE == "hera" ]] ; then
+    RETRODATAPATH="/scratch2/BMC/zrtrr/RRFS_RETRO_DATA"
     if [[ ${DO_ENSEMBLE} == "TRUE" ]]; then
       if [[ ${EXTRN_MDL_NAME_ICS} == "GEFS" ]]; then
-        EXTRN_MDL_SOURCE_BASEDIR_ICS="/scratch2/BMC/zrtrr/rli/data/GEFS/dsg"
+        EXTRN_MDL_SOURCE_BASEDIR_ICS="${RETRODATAPATH}/GEFS"
       elif [[ ${EXTRN_MDL_NAME_ICS} == "HRRRDAS" ]]; then
-        EXTRN_MDL_SOURCE_BASEDIR_ICS="/scratch1/BMC/wrfruc/chunhua/data/HRRRDAS"
+        EXTRN_MDL_SOURCE_BASEDIR_ICS="${RETRODATAPATH}/HRRRDAS"
       elif [[ ${EXTRN_MDL_NAME_ICS} == "GDASENKF" ]]; then
-        EXTRN_MDL_SOURCE_BASEDIR_ICS="/scratch1/BMC/wrfruc/chunhua/data/GDASENKF"
+        EXTRN_MDL_SOURCE_BASEDIR_ICS="${RETRODATAPATH}/enkf/atm"
       fi
       if [[ ${EXTRN_MDL_NAME_LBCS} == "GEFS" ]]; then
-        EXTRN_MDL_SOURCE_BASEDIR_LBCS="/scratch2/BMC/zrtrr/rli/data/GEFS/dsg"
+        EXTRN_MDL_SOURCE_BASEDIR_LBCS="${RETRODATAPATH}/GEFS"
       elif [[ ${EXTRN_MDL_NAME_LBCS} == "GDASENKF" ]]; then
-        EXTRN_MDL_SOURCE_BASEDIR_LBCS="/scratch1/BMC/wrfruc/chunhua/data/GDASENKF"
+        EXTRN_MDL_SOURCE_BASEDIR_LBCS="${RETRODATAPATH}/GDASENKF"
       elif [[ ${EXTRN_MDL_NAME_LBCS} == "FV3GFS" ]]; then
-        EXTRN_MDL_SOURCE_BASEDIR_LBCS="/scratch1/BMC/wrfruc/chunhua/data/FV3GFS"
+        EXTRN_MDL_SOURCE_BASEDIR_LBCS="${RETRODATAPATH}/FV3GFS"
       fi
     else
-#    EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/zrtrr/rli/data/hrrr/conus/wrfnat/grib2
-#    EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/zrtrr/rli/data/rap/full/wrfnat/grib2
-      EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/zrtrr/rli/data/gfs/0p25deg/grib2
-      EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/zrtrr/rli/data/gfs/0p25deg/grib2
+      EXTRN_MDL_SOURCE_BASEDIR_ICS=${RETRODATAPATH}/gfs/0p25deg/grib2
+      EXTRN_MDL_SOURCE_BASEDIR_LBCS=${RETRODATAPATH}/gfs/0p25deg/grib2
     fi
 
-    OBSPATH=/scratch2/BMC/zrtrr/rli/data/obs_rap
-    OBSPATH_NSSLMOSIAC=/scratch2/BMC/zrtrr/rli/data/reflectivity
-    OBSPATH_PM=/scratch2/BMC/zrtrr/rli/data/pm
-    LIGHTNING_ROOT=/scratch2/BMC/zrtrr/rli/data/lightning
-    ENKF_FCST=/scratch2/BMC/zrtrr/rli/data/enkf/atm
-    AIRCRAFT_REJECT="/scratch2/BMC/zrtrr/rli/data/amdar_reject_lists"
-    SFCOBS_USELIST="/scratch2/BMC/zrtrr/rli/data/mesonet_uselists"
-    SST_ROOT="/scratch2/BMC/zrtrr/rli/data/highres_sst"
-    GVF_ROOT="/scratch2/BMC/zrtrr/rli/data/gvf/grib2"
-    IMSSNOW_ROOT="/scratch2/BMC/zrtrr/rli/data/snow/ims96/grib2"
-    RAPHRR_SOIL_ROOT="/scratch2/BMC/zrtrr/rli/data/rap_hrrr_soil"
+    OBSPATH=${RETRODATAPATH}/obs_rap
+    OBSPATH_NSSLMOSIAC=${RETRODATAPATH}/reflectivity
+    OBSPATH_PM=${RETRODATAPATH}/pm
+    LIGHTNING_ROOT=${RETRODATAPATH}/lightning
+    ENKF_FCST=${RETRODATAPATH}/enkf/atm
+    AIRCRAFT_REJECT=${RETRODATAPATH}/amdar_reject_lists
+    SFCOBS_USELIST=${RETRODATAPATH}/mesonet_uselists
+    SST_ROOT=${RETRODATAPATH}/highres_sst
+    GVF_ROOT=${RETRODATAPATH}/gvf/grib2
+    IMSSNOW_ROOT=${RETRODATAPATH}/snow/ims96/grib2
+    RAPHRR_SOIL_ROOT=${RETRODATAPATH}/rap_hrrr_soil
+    FIRE_RAVE_DIR=${RETRODATAPATH}/RAVE_RAW
   fi
-  if [[ $MACHINE == "orion" ]] ; then
+  if [[ $MACHINE == "orion" ]] || [[ $MACHINE == "hercules" ]] ; then
     if [[ ${DO_ENSEMBLE} == "TRUE" ]]; then
       if [[ ${EXTRN_MDL_NAME_ICS} == "GDASENKF" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_ICS="/work/noaa/wrfruc/mhu/rrfs/data/enkf/atm"

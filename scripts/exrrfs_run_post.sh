@@ -57,10 +57,6 @@ the output files corresponding to a specified forecast hour.
 #
 valid_args=( \
 "cdate" \
-"run_dir" \
-"postprd_dir" \
-"comout" \
-"fhr_dir" \
 "fhr" \
 "tmmark" \
 "cycle_type" \
@@ -105,6 +101,12 @@ case $MACHINE in
     ;;
 
   "ORION")
+    export OMP_NUM_THREADS=1
+    export OMP_STACKSIZE=1024M
+    APRUN="srun --export=ALL"
+    ;;
+
+  "HERCULES")
     export OMP_NUM_THREADS=1
     export OMP_STACKSIZE=1024M
     APRUN="srun --export=ALL"
@@ -183,7 +185,7 @@ cat > itag <<EOF
 /
 
  &NAMPGB
- KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,slrutah_on=.true.,
  /
 EOF
 
@@ -250,18 +252,17 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Copy the UPP executable to fhr_dir and run the post-processor.
+# Run the post-processor.
 #
 #-----------------------------------------------------------------------
 #
-cp ${EXECdir}/upp.x .
+print_info_msg "$VERBOSE" "Starting post-processing for fhr = $fhr hr..."
 
-print_info_msg "$VERBOSE" "
-Starting post-processing for fhr = $fhr hr..."
+export pgm="upp.x"
+. prep_step
 
-${APRUN} ./upp.x < itag
+${APRUN} $EXECdir/$pgm < itag >>$pgmout 2>errfile
 export err=$?; err_chk
-
 #
 #-----------------------------------------------------------------------
 #
@@ -338,10 +339,10 @@ bgdawp=${postprd_dir}/${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2
 bgrd3d=${postprd_dir}/${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2
 bgifi=${postprd_dir}/${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2
 
-wgrib2 PRSLEV.GrbF${post_fhr} -set center 7 -grib ${bgdawp}
-wgrib2 NATLEV.GrbF${post_fhr} -set center 7 -grib ${bgrd3d}
+wgrib2 PRSLEV.GrbF${post_fhr} -set center 7 -grib ${bgdawp} >>$pgmout 2>>errfile
+wgrib2 NATLEV.GrbF${post_fhr} -set center 7 -grib ${bgrd3d} >>$pgmout 2>>errfile
 if [ -f IFIFIP.GrbF${post_fhr} ]; then
-  wgrib2 IFIFIP.GrbF${post_fhr} -set center 7 -grib ${bgifi}
+  wgrib2 IFIFIP.GrbF${post_fhr} -set center 7 -grib ${bgifi} >>$pgmout 2>>errfile
 fi
 
 #

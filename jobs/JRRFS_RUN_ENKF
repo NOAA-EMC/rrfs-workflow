@@ -16,6 +16,9 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
+
+date
+export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
@@ -62,17 +65,17 @@ the specified cycle.
 #   spinup: this job is for spin-up cycles
 #   others(prod): this job is for product cycle
 #
-CYCLE_TYPE=${CYCLE_TYPE:-prod}
-if [ ${CYCLE_TYPE} == "spinup" ]; then
-  enkfworkdir="${CYCLE_DIR}/enkfupdt_${OB_TYPE}_spinup"
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+export CYCLE_TYPE=${CYCLE_TYPE:-prod}
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export enkfworkdir="${CYCLE_DIR}/enkfupdt_${OB_TYPE}_spinup"
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
 else
-  enkfworkdir="${CYCLE_DIR}/enkfupdt_${OB_TYPE}"
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
+  export enkfworkdir="${CYCLE_DIR}/enkfupdt_${OB_TYPE}"
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
 fi
 rm -fr ${enkfworkdir}
 mkdir -p ${enkfworkdir}
-
+cd ${enkfworkdir}
 #
 #-----------------------------------------------------------------------
 #
@@ -80,14 +83,18 @@ mkdir -p ${enkfworkdir}
 #
 #-----------------------------------------------------------------------
 #
+export pgmout="${enkfworkdir}/OUTPUT.$$"
+env
+
 $SCRIPTSdir/exrrfs_run_enkf.sh \
              cycle_dir="${CYCLE_DIR}" \
-             cycle_type="${CYCLE_TYPE}" \
-             enkfworkdir="${enkfworkdir}" \
              NWGES_DIR="${NWGES_DIR}" \
-             comout="${COMOUT}" \
              ob_type="${OB_TYPE}"
 export err=$?; err_chk
+
+if [ -e "$pgmout" ]; then
+  cat $pgmout
+fi
 #
 #-----------------------------------------------------------------------
 #

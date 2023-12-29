@@ -35,7 +35,7 @@ version="0.1.0"
 # decide Machine type for wcoss2 (backup or primary)
 #
 # ACCOUNT:
-# The account under which to submit jobs to the queue.
+# The account under which to submit jobs to the queue (project name).
 #
 # SERVICE_ACCOUNT:
 # The account under which to submit non-reservation jobs to the queue.
@@ -138,7 +138,7 @@ version="0.1.0"
 #
 MACHINE="BIG_COMPUTER"
 MACHINETYPE="primary"
-ACCOUNT="project_name"
+ACCOUNT=""
 SERVICE_ACCOUNT=""
 HPSS_ACCOUNT=""
 RESERVATION=""

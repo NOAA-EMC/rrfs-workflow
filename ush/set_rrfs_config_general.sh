@@ -1,5 +1,6 @@
 
 if [[ $MACHINE == "jet" ]] ; then
+  ACCOUNT=nrtrr
   if [[ -n $RESERVATION ]] ; then
     ACCOUNT=rtrr
     SERVICE_ACCOUNT=rtrr
@@ -30,7 +31,7 @@ if [[ $MACHINE == "jet" ]] ; then
   fi
 
 elif [[ $MACHINE == "hera" ]] ; then
-  ACCOUNT="wrfruc"
+  ACCOUNT="zrtrr"
   PARTITION_DEFAULT=""
   PARTITION_FCST=""
   QUEUE_ANALYSIS="batch"
@@ -39,11 +40,20 @@ elif [[ $MACHINE == "hera" ]] ; then
   QUEUE_MINMAXTRH="batch"
 
 elif [[ $MACHINE == "orion" ]] ; then
-  ACCOUNT="fv3-cam"
+  ACCOUNT="${ACCOUNT:-fv3-cam}"
   PARTITION_ANALYSIS=orion
   QUEUE_ANALYSIS="batch"
   QUEUE_PRDGEN="batch"
   QUEUE_MINMAXTRH="batch"
+  QUEUE_GRAPHICS="batch"
+  QUEUE_POST="batch"
+  NCORES_PER_NODE=24
+
+elif [[ $MACHINE == "hercules" ]] ; then
+  ACCOUNT="${ACCOUNT:-rtrr}"
+  PARTITION_ANALYSIS=hercules
+  QUEUE_ANALYSIS="batch"
+  QUEUE_PRDGEN="batch"
   QUEUE_GRAPHICS="batch"
   QUEUE_POST="batch"
   NCORES_PER_NODE=24
@@ -284,8 +294,15 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
     LAYOUT_X="30"
     LAYOUT_Y="40"
     PPN_RUN_FCST="40"
+    WTIME_RUN_PRDGEN="00:20:00
+
+  elif [[ $MACHINE == "hercules" ]] ; then
+    LAYOUT_X="30"
+    LAYOUT_Y="40"
+    PPN_RUN_FCST="40"
     WTIME_RUN_PRDGEN="00:20:00"
-  fi 
+  fi
+
 
 elif [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then 
   DT_ATMOS=120
@@ -357,6 +374,12 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then
     FV3GFS_FILE_FMT_LBCS="netcdf"
 
   elif [[ $MACHINE == "orion" ]] ; then
+    LAYOUT_X="30"
+    LAYOUT_Y="40"
+    PPN_RUN_FCST="40"
+    WTIME_RUN_PRDGEN="00:20:00"
+ 
+  elif [[ $MACHINE == "hercules" ]] ; then
     LAYOUT_X="30"
     LAYOUT_Y="40"
     PPN_RUN_FCST="40"

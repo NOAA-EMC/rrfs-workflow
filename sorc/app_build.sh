@@ -10,7 +10,7 @@ OPTIONS
       show this help guide
   -p, --platform=PLATFORM
       name of machine you are building on
-      (e.g. cheyenne | hera | jet | orion | wcoss2)
+      (e.g. cheyenne | hera | jet | orion | hercules | wcoss2)
   -c, --compiler=COMPILER
       compiler to use; default depends on platform
       (e.g. intel | gnu | cray | gccgfortran)
@@ -25,8 +25,6 @@ OPTIONS
   --disable-options="OPTION1,OPTION2,..."
       disable ufs-weather-model options; delimited with ','
       (e.g. 32BIT | INLINE_POST | UFS_GOCART | MOM6 | CICE6 | WW3 | CMEPS)
-  --rrfsfw
-      build ufs-weather-model for RRFSFW - no GWD
   --extrn
       check out external components
   --continue
@@ -163,8 +161,6 @@ while :; do
     --enable-options|--enable-options=) usage_error "$1 requires argument." ;;
     --disable-options=?*) DISABLE_OPTIONS=${1#*=} ;;
     --disable-options|--disable-options=) usage_error "$1 requires argument." ;;
-    --rrfsfw) RRFSFW=true ;;
-    --rrfsfw=?*|--rrfsfw=) usage_error "$1 argument ignored." ;;
     --extrn) EXTRN=true ;;
     --extrn=?*|--extrn=) usage_error "$1 argument ignored." ;;
     --remove) REMOVE=true ;;
@@ -227,7 +223,7 @@ fi
 
 # check if PLATFORM is set
 if [ -z $PLATFORM ] ; then
-  # Automatically detect HPC platforms for wcoss2, hera, jet, orion, etc
+  # Automatically detect HPC platforms for wcoss2, hera, jet, orion, hercules, etc
   source ${HOME_DIR}/ush/fix_rrfs_locations.sh
   if [[ "$PLATFORM" == "unknown" ]]; then
     printf "\nERROR: Please set PLATFORM.\n\n"
@@ -270,6 +266,10 @@ if [ "${EXTRN}" = true ]; then
   fi
 
   # run check-out
+  python --version 1>/dev/null 2>/dev/null
+  if [[ $? -ne 0 ]]; then
+       module load python
+  fi
   printf "... checking out external components ...\n"
   ./manage_externals/checkout_externals
 fi
@@ -302,7 +302,7 @@ set -eu
 if [ -z "${COMPILER}" ] ; then
   case ${PLATFORM} in
     jet|hera|gaea) COMPILER=intel ;;
-    orion) COMPILER=intel ;;
+    orion|hercules) COMPILER=intel ;;
     wcoss2) COMPILER=intel ;;
     cheyenne) COMPILER=intel ;;
     macos|singularity) COMPILER=gnu ;;
@@ -495,10 +495,6 @@ else
     module load ${MODULE_FILE}
 fi
 module list
-
-if [ "${BUILD_UFS}" = "on" ] && [ "${RRFSFW}" = true ]; then
-  cp ${HOME_DIR}/parm/suite_FV3_HRRR_gf_rrfsfw.xml ${SORC_DIR}/ufs-weather-model/FV3/ccpp/suites/suite_FV3_HRRR_gf.xml
-fi
 
 mkdir -p ${BUILD_DIR}
 cd ${BUILD_DIR}

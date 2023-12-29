@@ -33,7 +33,7 @@ if [[ $MACHINE == "hera" ]] ; then
   QUEUE_GRAPHICS="batch"
 fi
 
-if [[ $MACHINE == "orion" ]] ; then
+if [[ $MACHINE == "orion" ]] || [[ $MACHINE == "hercules" ]]; then
   ACCOUNT=wrfruc
   QUEUE_ANALYSIS="batch"
   QUEUE_WGRIB2="batch"
@@ -205,7 +205,7 @@ if [[ $MACHINE == "wcoss2" ]] ; then
   FV3GFS_FILE_FMT_LBCS="netcdf"
 fi
 
-if [[ $MACHINE == "orion" ]] ; then
+if [[ $MACHINE == "orion" ]] || [[ $MACHINE == "hercules" ]]; then
   LAYOUT_X="30"
   LAYOUT_Y="40"
   PPN_RUN_FCST="40"
