@@ -273,7 +273,7 @@ if [[ "$MACHINE" == "wcoss2" ]]; then
   OBSPATH_NSSLMOSIAC="/lfs/h1/ops/prod/dcom/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC"
   AIRCRAFT_REJECT="/lfs/h2/emc/da/noscrub/matthew.t.morris/NOAA_3drtma_legacy/fix/obsuselist/amdar_reject_lists"
   SFCOBS_USELIST="/lfs/h2/emc/da/noscrub/matthew.t.morris/NOAA_3drtma_legacy/fix/obsuselist/mesonet_uselists"
- 
+  FIX_MINMAXTRH="/lfs/h2/emc/da/noscrub/edward.colon/FixData/minmaxtrh" 
   regional_ensemble_option=1
   USE_RRFSE_ENS="FALSE"
   CYCL_HRS_HYB_FV3LAM_ENS=("99")
