@@ -65,6 +65,8 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     OBSPATH_PM=${RETRODATAPATH}/pm
     OBSPATH_NSSLMOSIAC=${RETRODATAPATH}/reflectivity
     LIGHTNING_ROOT=${RETRODATAPATH}/lightning
+    GLMFED_EAST_ROOT=${RETRODATAPATH}/sat/nesdis/goes-east/glm/full-disk
+    GLMFED_WEST_ROOT=${RETRODATAPATH}/sat/nesdis/goes-east/glm/full-disk
     ENKF_FCST=${RETRODATAPATH}/enkf/atm
     AIRCRAFT_REJECT=${RETRODATAPATH}/amdar_reject_lists
     SFCOBS_USELIST=${RETRODATAPATH}/mesonet_uselists
@@ -101,6 +103,8 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     OBSPATH_NSSLMOSIAC=${RETRODATAPATH}/reflectivity
     OBSPATH_PM=${RETRODATAPATH}/pm
     LIGHTNING_ROOT=${RETRODATAPATH}/lightning
+    GLMFED_EAST_ROOT=${RETRODATAPATH}/sat/nesdis/goes-east/glm/full-disk
+    GLMFED_WEST_ROOT=${RETRODATAPATH}/sat/nesdis/goes-east/glm/full-disk
     ENKF_FCST=${RETRODATAPATH}/enkf/atm
     AIRCRAFT_REJECT=${RETRODATAPATH}/amdar_reject_lists
     SFCOBS_USELIST=${RETRODATAPATH}/mesonet_uselists
