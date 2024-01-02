@@ -302,7 +302,6 @@ fi
 #------------------------------------------------------------------------
 # set up local dirs and run run radmon to generate radiance monitor data
 #------------------------------------------------------------------------
-DO_RADMON=TRUE
 
 if [ DO_RADMON ]; then
    echo "Run EMC Radmon package to generate daily monitoring data for satellite"
