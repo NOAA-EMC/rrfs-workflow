@@ -28,7 +28,6 @@ export jasper_ver=2.0.25
 export landsfcutil=2.4.1
 export libjpeg_ver=9c
 export libpng_ver=1.6.37
-export maillist=""
 export mapl_ver=2.35.2-esmf-8.4.2
 export module_ver=8.5.2
 export ncdiag_ver=1.1.1

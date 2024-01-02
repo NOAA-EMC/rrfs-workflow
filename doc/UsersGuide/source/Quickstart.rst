@@ -145,7 +145,7 @@ Engineering Test: DA
       .. code-block:: console
 
          cd ../../expt_dirs/rrfs_test_da
-         ./launch_FV3LAM_wflow.sh
+         ./run_rocoto.sh
 
    #. Launch the following tasks as needed:
 
@@ -166,13 +166,13 @@ Engineering Test: DA
 
          rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307260400 -t prep_cyc_spinup
 
-      * On Hera: ``config.DA.retro.hera.sh``
+      * On Hera: ``config.DA.retro.hera.sh`` (in case of cycle_date=20230611)
 
       Once the ``make_ics`` task for ``15z`` and ``make_lbcs`` tasks for ``06z``, ``12z``, and ``18z`` are complete, launch the ``prep_cyc_spinup`` task for ``03z`` manually:
 
       .. code-block:: console
 
-         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202207200300 -t prep_cyc_spinup
+         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202306110300 -t prep_cyc_spinup
 
    #. Check the status of your run with ``rocotostat``:
 
@@ -180,6 +180,4 @@ Engineering Test: DA
 
          rocotostat -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 > test.log
 
-      .. note::
-         You can open the log file ``log.launch_FV3LAM_wflow`` for the entire history, but it is sometimes too long.
 
