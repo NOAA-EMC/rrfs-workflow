@@ -18,7 +18,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -83,22 +83,6 @@ export RRFSE_NWGES_BASEDIR=$RRFSE_NWGES_BASEDIR
 export NUM_ENS_MEMBERS=$NUM_ENS_MEMBERS
 export DA_CYCLE_INTERV=$DA_CYCLE_INTERV
 #
-#
-#-----------------------------------------------------------------------
-#
-# create COMOUT directory
-#
-#-----------------------------------------------------------------------
-
-if [ "${RUN_ENVIR}" = "nco" ]; then 
-  if [ ${CYCLE_TYPE} == "spinup" ]; then
-    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
-  else
-    COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
-  fi
-  mkdir_vrfy -p "${COMOUT}"
-fi
-#
 #-----------------------------------------------------------------------
 #
 # Call the ex-script for this J-job and pass to it the necessary varia-
@@ -106,7 +90,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-python -u ${SCRIPTSDIR}/exregional_prep_glmfed.py \
+python -u ${SCRIPTSdir}/exrrfs_prep_glmfed.py \
 #
 #-----------------------------------------------------------------------
 #
