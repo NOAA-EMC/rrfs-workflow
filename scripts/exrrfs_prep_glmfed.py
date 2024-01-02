@@ -137,7 +137,8 @@ if __name__=="__main__":
     lon = glmll['lon'][:]
     glmll.close()
     thin_by = np.zeros(np.shape(lat),dtype=np.uint8)
-    thin_by[::6,::6] = 1
+    thin_by[::8,::8] = 1 # this thinning matches how it was done for tiles
+    # thin_by[::6,::6] = 1
     lat = np.ndarray.flatten(lat)
     lon = np.ndarray.flatten(lon)
     thin_by = np.ndarray.flatten(thin_by)
