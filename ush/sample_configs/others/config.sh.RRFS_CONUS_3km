@@ -50,6 +50,7 @@ CYCL_HRS_SPINSTART=("03" "15")
 CYCL_HRS_PRODSTART=("09" "21")
 CYCLEMONTH="2"
 CYCLEDAY="01-02"
+SOIL_SURGERY_time="${DATE_FIRST_CYCL}04"
 
 STARTYEAR=${DATE_FIRST_CYCL:0:4}
 STARTMONTH=${DATE_FIRST_CYCL:4:2}
@@ -91,7 +92,6 @@ CYCL_HRS_HYB_FV3LAM_ENS=("00" "01" "02" "03" "04" "05" "06" "07" "08" "09" "10" 
 SST_update_hour=01
 GVF_update_hour=04
 SNOWICE_update_hour=01
-SOIL_SURGERY_time=2022020104
 netcdf_diag=.true.
 binary_diag=.false.
 WRTCMP_output_file="netcdf_parallel"
