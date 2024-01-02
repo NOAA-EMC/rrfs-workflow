@@ -76,6 +76,19 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
+# Determine early exit for running blending vs 1 time step ensinit.
+#
+#-----------------------------------------------------------------------
+#
+run_blending=${NWGES_BASEDIR}/${cdate}/run_blending
+run_ensinit=${NWGES_BASEDIR}/${cdate}/run_ensinit
+if [[ ${cycle_subtype} == "ensinit" && -e $run_blending && ! -e $run_ensinit ]]; then
+   echo "clean exit ensinit, blending used instead of ensinit."
+   exit 0
+fi
+#
+#-----------------------------------------------------------------------
+#
 # Set environments
 #
 #-----------------------------------------------------------------------
