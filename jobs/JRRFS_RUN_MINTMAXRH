@@ -10,7 +10,7 @@ export PS4=' $SECONDS + '
 set -x
 
 if [ ${cyc} != "19" ] ; then
-    echo -e "\nWARNING: GETMINT only runs at 19z. Exiting.\n"
+    echo -e "\nNOTICE: MINTMAXTH only runs at 19z. Exiting.\n"
     exit 0
 fi
 
