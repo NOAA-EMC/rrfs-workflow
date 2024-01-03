@@ -45,35 +45,6 @@ In directory:     \"${scrfunc_dir}\"
 This is the ex-script for the task that runs the post-processor (UPP) on
 the output files corresponding to a specified forecast hour.
 ========================================================================"
-case $MACHINE in
-
-  "WCOSS2")
-    module load wgrib2/2.0.8
-    module list
-    wgrib2=/apps/ops/prod/libs/intel/19.1.3.304/wgrib2/2.0.8_wmo/bin/wgrib2
-    ;;
-
-  "HERA")
-    module load gnu/9.2.0
-    module load wgrib2/3.1.0
-    wgrib2=/apps/wgrib2/3.1.0/gnu/9.2.0_ncep/bin/wgrib2
-    ;;
-
-  "JET")
-    module load intel/18.0.5.274
-    module load wgrib2/2.0.8
-    wgrib2=/apps/wgrib2/2.0.8/intel/18.0.5.274/bin/wgrib2
-    ;;
-
-  *)
-    err_exit "\
-Wgrib2 has not been specified for this machine:
-  MACHINE = \"$MACHINE\"
-  wgrib2 = `which wgrib2` "
-    ;;
-
-esac
-
 
 #
 #-----------------------------------------------------------------------
@@ -229,9 +200,9 @@ cp $FIX_MINMAXTRH/bin_files/conustz.bin .
 cp $FIX_MINMAXTRH/bin_files/conustz_ndfdonly.bin .
 
 export pgm=rrfs_maxt.exe
-#startmsg
-${EXECdir}/rrfs_maxt.exe > stdout 2>&1 
-export err=$?
+
+${EXECdir}/pgm > stdout 2>&1 
+export err=$?; err_chk
 #cat $pgmout
 
 if [[ $Tur = yes ]]; then
