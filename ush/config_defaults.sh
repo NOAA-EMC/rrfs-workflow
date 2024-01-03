@@ -1541,7 +1541,7 @@ SFC_CLIMO_DIR=""
 NCORES_PER_NODE=24 #Jet default value
 IS_RTMA="FALSE"
 FG_ROOTDIR=""
-RRFS_GRIBDIR=""
+RRFS_PRODDIR=""
 RTMA_OBS_FEED=""
 PYTHON_GRAPHICS_YML_FN="rrfs_subset.yml"
 #
@@ -2052,7 +2052,6 @@ POST_FULL_MODEL_NAME="FV3R"
 POST_SUB_MODEL_NAME="NONE"
 TESTBED_FIELDS_FN=""
 TESTBED_FIELDS_FN2=""
-SPC_FIELDS_FN=""
 #
 #-----------------------------------------------------------------------
 #
