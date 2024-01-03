@@ -14,27 +14,6 @@ if [ ${cyc} != "19" ] ; then
     exit 0
 fi
 
-
-#######################################################
-## The following variable could be defined in the
-## submission script (the ecf script), if
-## not they will take the default values which is set
-## for the NCO running enviroment
-########################################################
-export RUN_ENVIR=${RUN_ENVIR:-nco}
-#
-##################
-## Set RUN
-##################
-export RUN=rtma3d
-#
-## Note: grib_util module loaded in submission (lsf or ecFlow) script
-#
-###########################################################
-## obtain unique process id (pid) and make temp directories
-#
-#
-#
 #-----------------------------------------------------------------------
 #
 # Source the variable definitions file and the bash utility functions.
