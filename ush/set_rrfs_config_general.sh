@@ -294,7 +294,7 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
     LAYOUT_X="30"
     LAYOUT_Y="40"
     PPN_RUN_FCST="40"
-    WTIME_RUN_PRDGEN="00:20:00
+    WTIME_RUN_PRDGEN="00:20:00"
 
   elif [[ $MACHINE == "hercules" ]] ; then
     LAYOUT_X="30"
