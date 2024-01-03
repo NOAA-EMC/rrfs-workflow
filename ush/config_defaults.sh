@@ -2507,7 +2507,10 @@ DO_JEDI_ENVAR_IODA="FALSE"
 # DO_NLDN_LGHT
 # Flag turn on processing NLDN NetCDF lightning data
 # DO_GLM_FED_DA
-#     Flag turn on processing gridded GLM lightning data
+# Flag turn on processing gridded GLM lightning data
+# GLMFED_DATA_MODE
+# Incomping lightning data format: FULL (full-disk), TILES, or EMC (tiles
+# with different naming convention)      
 #
 #-----------------------------------------------------------------------
 #
@@ -2515,6 +2518,7 @@ DO_NONVAR_CLDANAL="FALSE"
 DO_REFL2TTEN="FALSE"
 DO_NLDN_LGHT="FALSE"
 DO_GLM_FED_DA="FALSE"
+GLMFED_DATA_MODE="FULL"
 DO_SMOKE_DUST="FALSE"
 DO_PM_DA="FALSE"
 #

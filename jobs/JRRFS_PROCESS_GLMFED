@@ -82,6 +82,7 @@ export OBS_WEST=$GLMFED_WEST_ROOT
 export RRFSE_NWGES_BASEDIR=$RRFSE_NWGES_BASEDIR
 export NUM_ENS_MEMBERS=$NUM_ENS_MEMBERS
 export DA_CYCLE_INTERV=$DA_CYCLE_INTERV
+export MODE=$GLMFED_DATA_MODE
 #
 #-----------------------------------------------------------------------
 #

@@ -488,6 +488,7 @@ optionList[25]=USE_CLM
 optionList[26]=DO_PM_DA
 optionList[27]=DO_ENSFCST_MULPHY
 optionList[28]=DO_GLM_FED_DA
+optionList[29]=GLMFED_DATA_MODE
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));

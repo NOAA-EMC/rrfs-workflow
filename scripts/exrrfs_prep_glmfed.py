@@ -95,7 +95,7 @@ def addmodelfed(restartpath):
   u.close()
   return()
 
-if __name__=="__main__":
+def process_fulldisk_fed():
 
   #####################################################################
   #                                                                   #
@@ -120,7 +120,6 @@ if __name__=="__main__":
   obs_paths = [obs_east,obs_west]
   goes_i = [16,18]
   domains = ['east','west']
-  tilenames = ['AA','AB','AC','AD','AF','AG','AH','AI','AK','AL','AM','AN','AO','AP','AQ','AR','AS','AT','AU','AV','AW','AX','AY','AZ','BA','BB']
 
   # initialize arrays
   out_fed = []
@@ -148,7 +147,7 @@ if __name__=="__main__":
     # open obs files and process
     this_glm = np.zeros(len(lat))
     count = 0
-    for m in range(5):
+    for m in range(1,6):
         this_date = myDate-dt.timedelta(minutes=m)
         jday = (this_date-dt.datetime(this_date.year-1,12,31)).days
         f = glob.glob(p+'/*G%02d_s%04d%03d%02d%02d000*.nc'%(gi,this_date.year,jday,this_date.hour,this_date.minute))
@@ -182,6 +181,181 @@ if __name__=="__main__":
   fout.variables['value'][:] = out_fed
   fout.close()
   print('FED obs found:',len(out_lats))
+  return()
+
+def process_emc_tiles():
+
+  #####################################################################
+  #                                                                   #
+  # preprocess GLM observations into thinned list of nonzero elements #
+  #                                                                   #
+  #####################################################################
+
+  # read in environment variables
+  inDate   = os.environ.get("CDATE")
+  out_path = os.getcwd()
+  obs_west = os.environ.get("OBS_WEST")
+  obs_east = os.environ.get("OBS_EAST")
+  fixdir   = os.environ.get("FIX_GSI")
+
+  # format datetime obj
+  myDate = dt.datetime(int(inDate[:4]),int(inDate[4:6]),int(inDate[6:8]),int(inDate[8:10]))
+
+  # open static conversion file from tile to lat/lon coordinate
+  glmmaps = pickle.load(open(fixdir+'/glmtiles.pkl','rb'))
+
+  # define some variables
+  outFile = out_path+'/fedobs.nc'
+  print(outFile)
+  obs_paths = [obs_east,obs_west]
+  goes_i = ['l','m']
+  domains = ['east','west']
+  tilenames = ['AA','AB','AC','AD','AF','AG','AH','AI','AK','AL','AM','AN','AO','AP','AQ','AR','AS','AT','AU','AV','AW','AX','AY','AZ','BA','BB']
+  tilelocs  = ['NW11','NW12','NE11','NE12','NW14','NW15','NE13','NE14','NW21','NW22','NW23','NE21','NE22','NE23','NW24','NW25','NW26','NE24','NE25','NE26','NW27','NW28','NW29','NE27','NE28','NE29']
+
+  # initialize arrays
+  out_fed = []
+  out_lats = []
+  out_lons = []
+
+  # open tile files and process
+  for i in range(2):
+    g = goes_i[i]
+    p = obs_paths[i]
+    d = domains[i]
+    for t in range(len(tilenames)):
+      lat = glmmaps[tilenames[t]][d]['lat']
+      lon = glmmaps[tilenames[t]][d]['lon']
+      thin_by = glmmaps[tilenames[t]][d]['thin_by']
+      this_glm = np.zeros(len(lat))
+      count = 0
+      for m in range(5):
+        this_date = myDate-dt.timedelta(minutes=m)
+        f = p + '/00'+g+'f1_'+tilelocs[t]+'_%04d%02d%02d%02d%02d00'%(this_date.year,this_date.month,this_date.day,this_date.hour,this_date.minute)
+        if os.path.exists(f): 
+          u = nc.Dataset(f,'r')
+          this_glm = this_glm + np.ndarray.flatten(np.ma.getdata(u['Flash_extent_density'][:]))[np.where(thin_by>0)]
+          u.close()
+          count = count + 1
+      if count>0:
+        lat = lat[np.where(this_glm>0)]
+        lon = lon[np.where(this_glm>0)]
+        this_glm = this_glm[np.where(this_glm>0)]
+        this_glm = this_glm/5. # average
+        out_fed = out_fed + [z for z in this_glm]
+        out_lats = out_lats + [z for z in lat]
+        out_lons = out_lons + [z for z in lon]
+  # write output to NetCDF
+  fout = nc.Dataset(outFile, 'w')
+  fout.createDimension('ntime', 1)
+  fout.createDimension('nobs', len(out_lats))
+  fout.createVariable('time', 'f8', 'ntime') #seconds since 2000-01-01 12:00:00
+  fout.createVariable('lat', 'f8', 'nobs')
+  fout.createVariable('lon', 'f8', 'nobs')
+  fout.createVariable('numobs', 'i4', ('ntime'))
+  fout.createVariable('value', 'f8', ('nobs'))
+
+  fout.variables['time'][:] = float((myDate-dt.datetime(2000,1,1,12)).total_seconds())
+  fout.variables['lat'][:] = out_lats
+  fout.variables['lon'][:] = out_lons
+  fout.variables['numobs'][:] = len(out_lats)
+  fout.variables['value'][:] = out_fed
+  fout.close()
+  print('FED obs found:',len(out_lats))
+  return()
+
+def process_gsl_tiles():
+
+  #####################################################################
+  #                                                                   #
+  # preprocess GLM observations into thinned list of nonzero elements #
+  #                                                                   #
+  #####################################################################
+
+  # read in environment variables
+  inDate   = os.environ.get("CDATE")
+  out_path = os.getcwd()
+  obs_west = os.environ.get("OBS_WEST")
+  obs_east = os.environ.get("OBS_EAST")
+  fixdir   = os.environ.get("FIX_GSI")
+
+  # format datetime obj
+  myDate = dt.datetime(int(inDate[:4]),int(inDate[4:6]),int(inDate[6:8]),int(inDate[8:10]))
+
+  # open static conversion file from tile to lat/lon coordinate
+  glmmaps = pickle.load(open(fixdir+'/glmtiles.pkl','rb'))
+
+  # define some variables
+  outFile = out_path+'/fedobs.nc'
+  print(outFile)
+  obs_paths = [obs_east,obs_west]
+  goes_i = ['S','T']
+  domains = ['east','west']
+  tilenames = ['AA','AB','AC','AD','AF','AG','AH','AI','AK','AL','AM','AN','AO','AP','AQ','AR','AS','AT','AU','AV','AW','AX','AY','AZ','BA','BB']
+
+  # initialize arrays
+  out_fed = []
+  out_lats = []
+  out_lons = []
+
+  # open tile files and process
+  for i in range(2):
+    g = goes_i[i]
+    p = obs_paths[i]
+    d = domains[i]
+    for t in tilenames:
+      lat = glmmaps[t][d]['lat']
+      lon = glmmaps[t][d]['lon']
+      thin_by = glmmaps[t][d]['thin_by']
+      this_glm = np.zeros(len(lat))
+      count = 0
+      for m in range(1,6):
+        this_date = myDate-dt.timedelta(minutes=m)
+        f = p+'/%04d%02d%02d_%02d%02d.TIR'%(this_date.year,this_date.month,this_date.day,this_date.hour,this_date.minute)+g+'00.KNES.P'+t+'.nc'
+        if os.path.exists(f): 
+          u = nc.Dataset(f,'r')
+          this_glm = this_glm + np.ndarray.flatten(np.ma.getdata(u['Flash_extent_density'][:]))[np.where(thin_by>0)]
+          u.close()
+          count = count + 1
+      if count>0:
+        lat = lat[np.where(this_glm>0)]
+        lon = lon[np.where(this_glm>0)]
+        this_glm = this_glm[np.where(this_glm>0)]
+        this_glm = this_glm/5. # average
+        out_fed = out_fed + [z for z in this_glm]
+        out_lats = out_lats + [z for z in lat]
+        out_lons = out_lons + [z for z in lon]
+  # write output to NetCDF
+  fout = nc.Dataset(outFile, 'w')
+  fout.createDimension('ntime', 1)
+  fout.createDimension('nobs', len(out_lats))
+  fout.createVariable('time', 'f8', 'ntime') #seconds since 2000-01-01 12:00:00
+  fout.createVariable('lat', 'f8', 'nobs')
+  fout.createVariable('lon', 'f8', 'nobs')
+  fout.createVariable('numobs', 'i4', ('ntime'))
+  fout.createVariable('value', 'f8', ('nobs'))
+
+  fout.variables['time'][:] = float((myDate-dt.datetime(2000,1,1,12)).total_seconds())
+  fout.variables['lat'][:] = out_lats
+  fout.variables['lon'][:] = out_lons
+  fout.variables['numobs'][:] = len(out_lats)
+  fout.variables['value'][:] = out_fed
+  fout.close()
+  print('FED obs found:',len(out_lats))
+  return()
+
+if __name__=="__main__":
+
+  mode = os.environ.get("MODE")
+  if mode=="FULL":
+    process_fulldisk_fed()
+  elif mode=="TILES":
+    process_gsl_tiles()
+  elif mode=="EMC":
+    process_emc_tiles()
+  else:
+    print("Invalid MODE specified. Valid MODES are FULL, TILES, EMC.")
+    quit()
 
   ########################################################
   #                                                      #
