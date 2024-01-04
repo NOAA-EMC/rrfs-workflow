@@ -3254,11 +3254,11 @@ MODULES_RUN_TASK_FP script.
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
       <envar><name>TMMARK</name><value>tm00</value></envar>
-      <envar><name>RRFS_GRIBDIR</name><value>&RRFS_GRIBDIR;</value></envar>
+      <envar><name>RRFS_PRODDIR</name><value>&RRFS_PRODDIR;</value></envar>
       <dependency>
             <and>
 	      <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f#fhr#"/>
-              <datadep age="00:05"><cyclestr offset="-60:00">&RRFS_GRIBDIR;/rrfs.@Y@m@d/@H/rrfs.t@Hz.prslev.f001.conus_3km.grib2</cyclestr></datadep>
+              <datadep age="00:05"><cyclestr offset="-60:00">&RRFS_PRODDIR;/rrfs.@Y@m@d/@H/rrfs.t@Hz.prslev.f001.conus_3km.grib2</cyclestr></datadep>
             </and>
       </dependency>
      </task>
@@ -3306,15 +3306,15 @@ MODULES_RUN_TASK_FP script.
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
       <envar><name>TMMARK</name><value>tm00</value></envar>
-      <envar><name>RRFS_GRIBDIR</name><value>&RRFS_GRIBDIR;</value></envar>
+      <envar><name>RRFS_PRODDIR</name><value>&RRFS_PRODDIR;</value></envar>
       <dependency>
             <and>
 	      <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f#fhr#_long"/>
-	      <datadep age="00:05"><cyclestr offset="-60:00">&RRFS_GRIBDIR;/rrfs.@Y@m@d/@H/rrfs.t@Hz.prslev.f001.conus_3km.grib2</cyclestr></datadep>
+	      <datadep age="00:05"><cyclestr offset="-60:00">&RRFS_PRODDIR;/rrfs.@Y@m@d/@H/rrfs.t@Hz.prslev.f001.conus_3km.grib2</cyclestr></datadep>
             </and>
       </dependency>
      </task>
-  </metatask>
+  </metatask>n
 
    <metatask name="&RUN_MAXTMINRH_TN;{{ uscore_ensmem_name }}">
 
@@ -3354,11 +3354,11 @@ MODULES_RUN_TASK_FP script.
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
       <envar><name>TMMARK</name><value>tm00</value></envar>
-      <envar><name>RRFS_GRIBDIR</name><value>&RRFS_GRIBDIR;</value></envar>
+      <envar><name>RRFS_PRODDIR</name><value>&RRFS_PRODDIR;</value></envar>
       <dependency>
             <and>
 	      <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f#fhr#"/>
-	      <datadep age="00:05"><cyclestr offset="-60:00">&RRFS_GRIBDIR;/rrfs.@Y@m@d/@H/rrfs.t@Hz.prslev.f001.conus_3km.grib2</cyclestr></datadep>
+	      <datadep age="00:05"><cyclestr offset="-60:00">&RRFS_PRODDIR;/rrfs.@Y@m@d/@H/rrfs.t@Hz.prslev.f001.conus_3km.grib2</cyclestr></datadep>
             </and>
       </dependency>
      </task>
@@ -3405,11 +3405,11 @@ MODULES_RUN_TASK_FP script.
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
       <envar><name>TMMARK</name><value>tm00</value></envar>
-      <envar><name>RRFS_GRIBDIR</name><value>&RRFS_GRIBDIR;</value></envar>
+      <envar><name>RRFS_PRODDIR</name><value>&RRFS_PRODDIR;</value></envar>
       <dependency>
             <and>
 	      <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f#fhr#_long"/> 
-	      <datadep age="00:05"><cyclestr offset="-60:00">&RRFS_GRIBDIR;/rrfs.@Y@m@d/@H/rrfs.t@Hz.prslev.f001.conus_3km.grib2</cyclestr></datadep>
+	      <datadep age="00:05"><cyclestr offset="-60:00">&RRFS_PRODDIR;/rrfs.@Y@m@d/@H/rrfs.t@Hz.prslev.f001.conus_3km.grib2</cyclestr></datadep>
             </and>
       </dependency>
      </task>
