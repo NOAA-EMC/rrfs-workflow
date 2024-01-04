@@ -1279,7 +1279,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_ROOT</name><value><cyclestr>&CYCLE_BASEDIR;</cyclestr></value></envar>
-    <envar><name>ENSCTRL_CYCLE_DIR</name><value><cyclestr>&ENSCTRL_CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>ENSCTRL_CYCLE_DIR</name><value><cyclestr>&ENSCTRL_CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar> 
     <envar><name>ENSCTRL_CYCLE_ROOT</name><value><cyclestr>&ENSCTRL_CYCLE_BASEDIR;</cyclestr></value></envar>
     <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
