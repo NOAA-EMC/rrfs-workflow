@@ -21,7 +21,7 @@ if [[ -n $RESERVATION ]] ; then
   QUEUE_FCST="rth"
   QUEUE_ANALYSIS="rth"
   QUEUE_PRDGEN="rth"
-  QUEUE_MINMAXTRH="rth"   `
+  QUEUE_MINMAXTRH="rth"   
   QUEUE_GRAPHICS="rth"
   QUEUE_HPSS="batch"
   QUEUE_POST="rth"
@@ -132,7 +132,7 @@ OBERROR_FN="errtable.rtma"
 HYBENSINFO_FN="hybens_info.rtma"
 AIRCRAFT_REJECT="/home/role.amb-verif/acars_RR/amdar_reject_lists"
 SFCOBS_USELIST="/lfs4/BMC/amb-verif/rap_ops_mesonet_uselists"
-RRFS_GRIBDIR="/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.7.7/prod"
+RRFS_PRODDIR="/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.7.7/prod"
 LBC_SPEC_INTVL_HRS="1"
 
 DATE_FIRST_CYCL="20231116"
@@ -178,7 +178,7 @@ CYCL_HRS_HYB_FV3LAM_ENS=("19" "20" "21" "22" "23" "00")
 #SST_update_hour=01
 #GVF_update_hour=04
 #SNOWICE_update_hour=00
-#SOIL_SURGERY_time=2022072404
+#SOIL_SURGERY_time=2022072404:set nu
 
 DT_ATMOS=1
 NCORES_RUN_ANAL=240
