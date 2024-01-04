@@ -127,7 +127,7 @@ OBERROR_FN="errtable.rtma"
 HYBENSINFO_FN="hybens_info.rtma"
 AIRCRAFT_REJECT="/home/role.amb-verif/acars_RR/amdar_reject_lists"
 SFCOBS_USELIST="/lfs4/BMC/amb-verif/rap_ops_mesonet_uselists"
-RRFS_GRIBDIR="/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.7.7/prod"
+RRFS_PRODDIR="/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.7.7/prod"
 LBC_SPEC_INTVL_HRS="1"
 
 DATE_FIRST_CYCL="20231120"
