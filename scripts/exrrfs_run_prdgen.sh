@@ -90,7 +90,7 @@ case $MACHINE in
     ;;
 
   "HERA")
-    APRUN="srun"
+    APRUN="srun --export=ALL"
     ;;
 
   "ORION")
