@@ -145,7 +145,7 @@ while [[ $nn -lt $num ]] ; do
         if [[ $run = "rtma3d" ]] ; then
             if [[ $dname == "hrrr" ]] ; then
                 opsfile=${COMOUT_BASEDIR}/RTMA_NA.${YYYYMMDD}/${HH}/rtma.t${HH}z.prslev.f000.hrrr.grib2
-                gesfile=${RRFS_GRIBDIR}/rrfs.${YYYYMMDDm1}/${HHm1}/rrfs.t${HHm1}z.prslev.f001.conus_3km.grib2
+                gesfile=${RRFS_PRODDIR}/rrfs.${YYYYMMDDm1}/${HHm1}/rrfs.t${HHm1}z.prslev.f001.conus_3km.grib2
                 if [[ ! -s $opsfile ]] ; then
                    if [[ ! -d ${COMOUT_BASEDIR}/RTMA_NA.${YYYYMMDD}/${HH} ]]; then
                     mkdir -p ${COMOUT_BASEDIR}/RTMA_NA.${YYYYMMDD}/${HH}
