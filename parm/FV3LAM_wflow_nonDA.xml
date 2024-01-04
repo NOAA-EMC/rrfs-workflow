@@ -49,6 +49,11 @@ Flags that specify whether to run the preprocessing tasks.
 <!ENTITY RUN_TASK_MAKE_SFC_CLIMO "{{ run_task_make_sfc_climo | upper }}">
 
 <!--
+Flag that specifies whether to run the product generation task.
+-->
+<!ENTITY RUN_TASK_RUN_PRDGEN "{{ run_task_run_prdgen | upper }}">
+
+<!--
 Number of physical cores per node for the current machine.  This is used
 below in the <nodesize> tag, but that tag is not clearly documented.  This
 parameter may be unnecessary since each task now has its own variable that
@@ -486,6 +491,8 @@ MODULES_RUN_TASK_FP script.
 
       </task>
   </metatask>
+
+{%- if run_task_run_prdgen %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -517,5 +524,6 @@ MODULES_RUN_TASK_FP script.
 
       </task>
   </metatask>
+{%- endif %}
 
 </workflow>
