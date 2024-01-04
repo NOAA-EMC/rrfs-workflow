@@ -9,8 +9,8 @@ TAG="c0v00"
 MODEL="rrfsfw"
 RUN="rrfsfw"
 
-STMP="/scratch2/NCEPDEV/stmp3/Benjamin.Blake/test_firewx"
-PTMP="/scratch2/NCEPDEV/stmp3/Benjamin.Blake/test_firewx"
+STMP=""
+PTMP=""
 
 VERBOSE="TRUE"
 PRINT_ESMF="TRUE"
