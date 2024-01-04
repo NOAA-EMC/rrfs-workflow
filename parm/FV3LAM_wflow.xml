@@ -118,7 +118,7 @@ Directories and files.
 {%- else %}
 <!ENTITY FG_ROOT                  "{{ nwges_basedir }}">
 {%- endif %}
-<!ENTITY RRFS_GRIBDIR             "{{ rrfs_gribdir }}">
+<!ENTITY RRFS_PRODDIR             "{{ rrfs_proddir }}">
 <!ENTITY GLOBAL_VAR_DEFNS_FP      "{{ global_var_defns_fp }}">
 <!ENTITY LOAD_MODULES_RUN_TASK_FP "{{ load_modules_run_task_fp }}">
 
