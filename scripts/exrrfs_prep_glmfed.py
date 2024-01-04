@@ -373,6 +373,8 @@ if __name__=="__main__":
     cycle_len_H = int(os.environ.get("DA_CYCLE_INTERV"))
     print("number of ensembles is ",num_ens)
     print("cycle length is ",cycle_len_H)
+    # format datetime obj
+    myDate = dt.datetime(int(inDate[:4]),int(inDate[4:6]),int(inDate[6:8]),int(inDate[8:10]))
     myDatemInterv = myDate-dt.timedelta(hours=cycle_len_H)
     myDateStr = '%04d%02d%02d.%02d0000.'%(myDate.year,myDate.month,myDate.day,myDate.hour)
     myDatemIntervStr = '%04d%02d%02d%02d'%(myDatemInterv.year,myDatemInterv.month,myDatemInterv.day,myDatemInterv.hour)
