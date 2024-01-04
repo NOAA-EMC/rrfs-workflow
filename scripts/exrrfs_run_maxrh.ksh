@@ -219,7 +219,7 @@ if [[ $Tur = yes ]] ; then
 	fi
     fi
     if [[ $bnum -eq "1" || $bnum -eq "3" ]] ; then
-	if [ -s $DATAmaxrh/${run}..${PDYm1}.maxrh_bg.dat ] ; then 
+	if [ -s $DATAmaxrh/${run}.${PDYm1}.maxrh_bg.dat ] ; then 
             wgrib2 $DATAmaxrh/gesfileus.grb2 -match ":RH:" -grib_out $DATAmaxrh/tempgribus.grb2
             wgrib2 $DATAmaxrh/tempgribus.grb2 -import_ieee rtma3d.${PDYm1}.maxrh_bg.dat -set_date ${PDYm1}18 -set_var MAXRH -set_ftime '12 hour fcst' -undefine_val 0 -grib_out $DATAmaxrh/${run}.${PDYm1}.maxRH.grb2
             cp $DATAmaxrh/${run}.${PDYm1}.maxrh_bg.dat $DATAmaxrh/${run}.${PDYm1}.maxrh_bg.dat
