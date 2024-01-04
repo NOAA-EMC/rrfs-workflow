@@ -412,7 +412,7 @@ settings="\
 #
   'is_rtma':  ${IS_RTMA}
   'fg_rootdir': ${FG_ROOTDIR}
-  'rrfs_gribdir': ${RRFS_GRIBDIR}
+  'rrfs_proddir': ${RRFS_PRODDIR}
 #
 # Number of physical cores per node for the current machine.
 #
