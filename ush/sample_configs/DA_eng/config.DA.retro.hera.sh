@@ -18,7 +18,7 @@ PTMP="/scratch2/NCEPDEV/stmp3/${USER}/test_da"
 EXTRN_MDL_DATE_JULIAN="TRUE"
 
 #USE_CRON_TO_RELAUNCH="TRUE"
-#CRON_RELAUNCH_INTVL_MNTS="03"
+#CRON_RELAUNCH_INTVL_MNTS="05"
 ################################################################
 
 PREDEF_GRID_NAME=RRFS_CONUS_3km
@@ -26,7 +26,7 @@ PREDEF_GRID_NAME=RRFS_CONUS_3km
 . set_rrfs_config_general.sh
 
 ################################################################
-#ACCOUNT="fv3-cam"
+ACCOUNT="fv3-cam"
 ################################################################
 
 . set_rrfs_config_SDL_VDL_MixEn.sh
@@ -50,7 +50,7 @@ DO_SOIL_ADJUST="TRUE"
 DO_RADDA="TRUE"
 DO_BUFRSND="FALSE"
 USE_FVCOM="FALSE"
-PREP_FVCOM="TRUE"
+PREP_FVCOM="FALSE"
 DO_PARALLEL_PRDGEN="FALSE"
 DO_GSIDIAG_OFFLINE="TRUE"
 DO_UPDATE_BC="TRUE"
@@ -58,8 +58,9 @@ DO_UPDATE_BC="TRUE"
 EXTRN_MDL_ICS_OFFSET_HRS="3"
 LBC_SPEC_INTVL_HRS="1"
 EXTRN_MDL_LBCS_OFFSET_HRS="6"
-BOUNDARY_LEN_HRS="24"
-BOUNDARY_PROC_GROUP_NUM="12"
+
+BOUNDARY_LEN_HRS="8"
+BOUNDARY_PROC_GROUP_NUM="4"
 
 DATE_FIRST_CYCL="20230611"
 DATE_LAST_CYCL="20230611"
@@ -87,18 +88,18 @@ ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}1400 ${DATE_LAST_CYCL}2300 24:00:00"
 if [[ $DO_SPINUP == "TRUE" ]] ; then
   SPINUP_CYCLEDEF="00 03-08,15-20 ${CYCLEDAY} ${CYCLEMONTH} ${STARTYEAR} *"
 fi
-FCST_LEN_HRS="9"
+FCST_LEN_HRS="3"
 FCST_LEN_HRS_SPINUP="1"
-for i in {0..23}; do FCST_LEN_HRS_CYCLES[$i]=9; done
-for i in {0..23..3}; do FCST_LEN_HRS_CYCLES[$i]=24; done
+for i in {0..23}; do FCST_LEN_HRS_CYCLES[$i]=3; done
+for i in {0..23..12}; do FCST_LEN_HRS_CYCLES[$i]=6; done
 DA_CYCLE_INTERV="1"
 RESTART_INTERVAL="1"
 RESTART_INTERVAL_LONG="1"
 ## set up post
-POSTPROC_LEN_HRS="9"
-POSTPROC_LONG_LEN_HRS="24"
-# 15 min output upto 18 hours
-OUTPUT_FH="0.0 0.25 0.50 0.75 1.0 1.25 1.50 1.75 2.0 2.25 2.50 2.75 3.0 3.25 3.50 3.75 4.0 4.25 4.50 4.75 5.0 5.25 5.50 5.75 6.0 6.25 6.50 6.75 7.0 7.25 7.50 7.75 8.0 8.25 8.50 8.75 9.0 9.25 9.50 9.75 10.0 10.25 10.50 10.75 11.0 11.25 11.50 11.75 12.0 13.0 14.0 15.0 16.0 17.0 18.0 19.0 20.0 21.0 22.0 23.0 24.0"
+POSTPROC_LEN_HRS="3"
+POSTPROC_LONG_LEN_HRS="6"
+# 30 min output upto 1 hours
+OUTPUT_FH="0.0 0.50 1.0 2.0 3.0 4.0 5.0 6.0"
 
 USE_RRFSE_ENS="FALSE"
 CYCL_HRS_HYB_FV3LAM_ENS=("00" "01" "02" "03" "04" "05" "06" "07" "08" "09" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "23")
@@ -106,7 +107,7 @@ CYCL_HRS_HYB_FV3LAM_ENS=("00" "01" "02" "03" "04" "05" "06" "07" "08" "09" "10" 
 SST_update_hour=01
 GVF_update_hour=04
 SNOWICE_update_hour=01
-SOIL_SURGERY_time=2023061004
+SOIL_SURGERY_time=${DATE_FIRST_CYCL}04
 netcdf_diag=.true.
 binary_diag=.false.
 WRTCMP_output_file="netcdf_parallel"
