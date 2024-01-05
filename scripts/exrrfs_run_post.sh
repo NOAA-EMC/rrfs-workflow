@@ -345,6 +345,11 @@ if [ -f IFIFIP.GrbF${post_fhr} ]; then
   wgrib2 IFIFIP.GrbF${post_fhr} -set center 7 -grib ${bgifi} >>$pgmout 2>>errfile
 fi
 
+# Keep latlons_corners.txt file for RRFS fire weather grid
+if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
+  cp ${postprd_dir}/${fhr}/latlons_corners.txt.f${fhr} ${postprd_dir}
+fi
+
 #
 #-----------------------------------------------------------------------
 #   clean forecast netcdf files for saving space

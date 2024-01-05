@@ -88,6 +88,13 @@ version="0.1.0"
 # or is set to an empty string, it will be (re)set to a machine-dependent 
 # value.
 #
+# PARTITION_SFC_CLIMO:
+# If using the slurm job scheduler (i.e. if SCHED is set to "slurm"), 
+# the partition to which the task that generates the surface climatology
+# files is submitted.  If this is not set or set to an empty string, it
+# wil be (re)set to a machine-dependent value.  This is not used if SCHED
+# is not set to "slurm."
+#
 # PARTITION_FCST:
 # If using the slurm job scheduler (i.e. if SCHED is set to "slurm"), 
 # the partition to which the task that runs forecasts is submitted.  If 
@@ -149,6 +156,7 @@ PARTITION_DEFAULT=""
 QUEUE_DEFAULT=""
 PARTITION_HPSS=""
 QUEUE_HPSS=""
+PARTITION_SFC_CLIMO=""
 PARTITION_FCST=""
 QUEUE_FCST=""
 PARTITION_GRAPHICS=""
@@ -1507,6 +1515,9 @@ SAVE_CYCLE_LOG="TRUE"
 # SFC_CLIMO_DIR:
 # Same as GRID_DIR but for the surface climatology generation task.
 #
+# RUN_TASK_RUN_PRDGEN:
+# Same as RUN_TASK_MAKE_GRID but for the product generation task.
+#
 # IS_RTMA:
 # If true, some ICs,LBCs,GSI rocoto tasks will be turned off
 #
@@ -1534,6 +1545,8 @@ OROG_DIR=""
 
 RUN_TASK_MAKE_SFC_CLIMO="FALSE"
 SFC_CLIMO_DIR=""
+
+RUN_TASK_RUN_PRDGEN="TRUE"
 
 #
 NCORES_PER_NODE=24 #Jet default value
