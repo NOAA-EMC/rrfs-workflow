@@ -98,8 +98,10 @@ RESTART_INTERVAL_LONG="1"
 ## set up post
 POSTPROC_LEN_HRS="3"
 POSTPROC_LONG_LEN_HRS="6"
-# 30 min output upto 1 hours
-OUTPUT_FH="0.0 0.50 1.0 2.0 3.0 4.0 5.0 6.0"
+# 15 min output upto 1 hours
+#OUTPUT_FH="0.0 0.25 0.50 0.75 1.0 2.0 3.0 4.0 5.0 6.0"
+# every hour output
+OUTPUT_FH="1 -1"
 
 USE_RRFSE_ENS="FALSE"
 CYCL_HRS_HYB_FV3LAM_ENS=("00" "01" "02" "03" "04" "05" "06" "07" "08" "09" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "23")
