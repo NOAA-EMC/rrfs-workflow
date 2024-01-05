@@ -89,6 +89,7 @@ mkdir -p ${modelinputdir}
 cd ${modelinputdir}
 #
 export gridspec_dir=${NWGES_BASEDIR}/grid_spec
+export MAILTO="${MAILTO:-}"
 #
 #-----------------------------------------------------------------------
 #
