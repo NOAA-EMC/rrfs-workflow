@@ -168,7 +168,7 @@ Engineering Test: DA
 
       * On Hera: ``config.DA.retro.hera.sh`` (in case of cycle_date=20230611)
 
-      Launch the ``get_extrn_lbcs`` tasks for ``12z`` and ``18z`` and the ``get_extrn_ics`` task for ``15z`` manually: , launch the ``prep_cyc_spinup`` task for ``03z`` manually:
+      If you want to run beyond ``11z``, you should launch the ``get_extrn_lbcs`` tasks for ``12z`` and ``18z`` and the ``get_extrn_ics`` task for ``15z`` manually:
 
       .. code-block:: console
 
@@ -176,11 +176,17 @@ Engineering Test: DA
          rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202306111800 -t get_extrn_lbcs
          rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202306111500 -t get_extrn_ics
 
-      Once the ``make_lbcs`` tasks for ``12z`` and ``18z`` and the ``make_ics`` task for ``15z`` are complete, launch the ``prep_cyc_spinup`` task for ``03z`` manually:
+      Once both ``make_lbcs`` and ``make_ics`` tasks are complete, launch the ``prep_cyc_spinup`` task for ``03z`` manually:
 
       .. code-block:: console
 
          rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202306110300 -t prep_cyc_spinup
+
+      Keep monitoring and launching the workflow if ``USE_CRON_TO_RELAUNCH`` was NOT set to ``TRUE`` in ``config.sh``. If ``USE_CRON_TO_RELAUNCH`` was set to ``TRUE``, you should remove the crontab line manually once all tasks are complete.
+
+      .. code-block:: console
+
+         ./run_rocoto.sh
 
    #. Check the status of your run with ``rocotostat``:
 
