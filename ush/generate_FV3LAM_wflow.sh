@@ -174,6 +174,7 @@ settings="\
   'queue_default': ${QUEUE_DEFAULT}
   'partition_hpss': ${PARTITION_HPSS}
   'queue_hpss': ${QUEUE_HPSS}
+  'partition_sfc_climo': ${PARTITION_SFC_CLIMO}
   'partition_fcst': ${PARTITION_FCST}
   'queue_fcst': ${QUEUE_FCST}
   'partition_graphics': ${PARTITION_GRAPHICS}

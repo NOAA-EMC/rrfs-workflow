@@ -41,6 +41,7 @@ RUN_TASK_MAKE_SFC_CLIMO="TRUE"
 RUN_TASK_RUN_PRDGEN="TRUE"
 NNODES_MAKE_SFC_CLIMO="6"
 PPN_MAKE_SFC_CLIMO="12"
+PARTITION_SFC_CLIMO="bigmem"
 
 # Temporary solution until high resolution fix files are added to common directory
 SFC_CLIMO_INPUT_DIR="/scratch2/NCEPDEV/fv3-cam/Benjamin.Blake/fix_sfc_climo"

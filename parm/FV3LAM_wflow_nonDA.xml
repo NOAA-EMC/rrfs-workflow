@@ -80,14 +80,19 @@ the "HPSS" type is used for the GET_EXTRN_ICS_TN and GET_EXTRN_LBCS_TN
 tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 -->
 {%- if partition_default is not none %}
-<!ENTITY RSRV_DEFAULT "<account>&ACCOUNT;</account><queue>&QUEUE_DEFAULT;</queue><partition>{{ partition_default }}</partition><native>&RRFS_RESERVE;</native><native>&SCHED_NATIVE_CMD;</native>">
+<!ENTITY RSRV_DEFAULT   "<account>&ACCOUNT;</account><queue>&QUEUE_DEFAULT;</queue><partition>{{ partition_default }}</partition><native>&RRFS_RESERVE;</native><native>&SCHED_NATIVE_CMD;</native>">
 {%- else %}
-<!ENTITY RSRV_DEFAULT "<account>&ACCOUNT;</account><queue>&QUEUE_DEFAULT;</queue>">
+<!ENTITY RSRV_DEFAULT   "<account>&ACCOUNT;</account><queue>&QUEUE_DEFAULT;</queue>">
 {%- endif %}
 {%- if partition_hpss is not none %}
-<!ENTITY RSRV_HPSS    "<account>&HPSS_ACCOUNT;</account><queue>&QUEUE_HPSS;</queue><partition>{{ partition_hpss }}</partition><native>&SCHED_NATIVE_CMD;</native>">
+<!ENTITY RSRV_HPSS      "<account>&HPSS_ACCOUNT;</account><queue>&QUEUE_HPSS;</queue><partition>{{ partition_hpss }}</partition><native>&SCHED_NATIVE_CMD;</native>">
 {%- else %}
-<!ENTITY RSRV_HPSS    "<account>&HPSS_ACCOUNT;</account><queue>&QUEUE_HPSS;</queue>">
+<!ENTITY RSRV_HPSS      "<account>&HPSS_ACCOUNT;</account><queue>&QUEUE_HPSS;</queue>">
+{%- endif %}
+{%- if partition_sfc_climo is not none %}
+<!ENTITY RSRV_SFC_CLIMO "<account>&ACCOUNT;</account><queue>&QUEUE_DEFAULT;</queue><partition>{{ partition_sfc_climo }}</partition><native>&SCHED_NATIVE_CMD;</native>">
+{%- else %}
+<!ENTITY RSRV_SFC_CLIMO "<account>&ACCOUNT;</account><queue>&QUEUE_DEFAULT;</queue>">
 {%- endif %}
 {%- if partition_fcst is not none %}
 <!ENTITY RSRV_FCST    "<account>&ACCOUNT;</account><queue>&QUEUE_FCST;</queue><partition>{{ partition_fcst }}</partition><native>&SCHED_NATIVE_CMD;</native>">
@@ -248,7 +253,7 @@ MODULES_RUN_TASK_FP script.
 -->
   <task name="&MAKE_SFC_CLIMO_TN;" cycledefs="at_start" maxtries="{{ maxtries_make_sfc_climo }}">
 
-    &RSRV_DEFAULT;
+    &RSRV_SFC_CLIMO;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_SFC_CLIMO_TN;" "&JOBSdir;/JRRFS_MAKE_SFC_CLIMO"</command>
     <nodes>{{ nnodes_make_sfc_climo }}:ppn={{ ppn_make_sfc_climo }}</nodes>
     <walltime>{{ wtime_make_sfc_climo }}</walltime>
