@@ -331,7 +331,7 @@ if [ DO_RADMON ]; then
    export DATA=${analworkdir_conv}/radmon
    export TANKverf_radM1=${TANKverf_radM1:-${TANKverf}/radmon.${PDY}}
 
-   export GSI_MON_BIN=$EXECDIR
+   export GSI_MON_BIN=$EXECdir
    export FIXgdas=$FIX_GSI
 
    export RADMON_SUFFIX=rrfs
@@ -346,7 +346,7 @@ if [ DO_RADMON ]; then
 
    CLEAN_TANKVERF=1
 
-   . $USHDIR/rrfs_radmon/exrrfs_verfrad.sh ${PDY} ${cyc}
+   . $USHdir/rrfs_radmon/exrrfs_verfrad.sh ${PDY} ${cyc}
 fi
 #
 #-----------------------------------------------------------------------

@@ -15,7 +15,7 @@ export FIXnam=${FIXnam:-${FIX_GSI}}
 
 #################################################################################
 
-export USHradmon=${USHradmon:-${USHDIR}/rrfs_radmon}
+export USHradmon=${USHradmon:-${USHdir}/rrfs_radmon}
 
 #  Filenames
 export satype_file=${satype_file:-rrfs_radmon_satype.txt}
