@@ -182,7 +182,7 @@ bnum=3
 /
 EOF
 
-#. prep_step
+. prep_step
 
 export FORT71=${run}.${PDYm1}.mint_diag_bg.dat
 export FORT72=${run}.${PDYm1}.mint_diag_anl.dat
@@ -194,9 +194,8 @@ cp $FIX_MINMAXTRH/bin_files/conustz_ndfdonly.bin .
 
 export pgm=rrfs_mint.exe
 
-${EXECdir}/pgm  > stdout 2>&1 
+${EXECdir}/pgm  > $pgmout 2>&errfile 
 export err=$?; err_chk
-#cat $pgmout
 
 if [[ $Tur = yes ]]; then
 if [ -s $DATAmint/mint_${run}_bg.bin ] ; then

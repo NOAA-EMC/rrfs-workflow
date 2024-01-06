@@ -228,15 +228,15 @@ if [ -f  ${postprd_dir}/${ififip} ]; then
   cp ${postprd_dir}/${ififip} ${COMOUT}/${ififip}
 fi
 
-cp ${postprd_dir}/${testbed}  ${comout}/${testbed}
-cp ${postprd_dir}/${spc} ${comout}/${spc}
-wgrib2 ${comout}/${prslev} -s > ${comout}/${prslev}.idx
-wgrib2 ${comout}/${natlev} -s > ${comout}/${natlev}.idx
-if [ -f ${comout}/${ififip} ]; then
-  wgrib2 ${comout}/${ififip} -s > ${comout}/${ififip}.idx
+cp ${postprd_dir}/${testbed}  ${COMOUT}/${testbed}
+cp ${postprd_dir}/${spc} ${COMOUT}/${spc}
+wgrib2 ${COMOUT}/${prslev} -s > ${COMOUT}/${prslev}.idx
+wgrib2 ${COMOUT}/${natlev} -s > ${COMOUT}/${natlev}.idx
+if [ -f ${COMOUT}/${ififip} ]; then
+  wgrib2 ${COMOUT}/${ififip} -s > ${COMOUT}/${ififip}.idx
 fi
-wgrib2 ${comout}/${testbed} -s > ${comout}/${testbed}.idx
-wgrib2 ${comout}/${spc} -s > ${comout}/${spc}.idx
+wgrib2 ${COMOUT}/${testbed} -s > ${COMOUT}/${testbed}.idx
+wgrib2 ${COMOUT}/${spc} -s > ${COMOUT}/${spc}.idx
 
 # Remap to additional output grids if requested
 

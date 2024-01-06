@@ -7,7 +7,6 @@
 
 date
 export PS4=' $SECONDS + ' 
-set -x
 
 if [ ${cyc} != "07" ] ; then
     echo -e "\nNOTICE: MAXTMINRH only runs at 07z. Exiting.\n"

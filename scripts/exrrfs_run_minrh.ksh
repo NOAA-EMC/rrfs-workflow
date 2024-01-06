@@ -195,14 +195,14 @@ bnum=${bnum}
 /
 EOF
 
-#. prep_step
+. prep_step
 
 ln -sf ${run}.${PDYm1}.minrh_anl.dat fort.61
 ln -sf ${run}.${PDYm1}.minrh_bg.dat fort.62
 
 export pgm=rtma_minrh.exe
 
-${EXECdir}/pgm > stdout 2>&1
+${EXECdir}/pgm  > $pgmout 2>&errfile
 export err=$?; err_chk
 
 #wgrib2 options: -set_byte 4 48 1 ensures we are dealing with succession of analyses

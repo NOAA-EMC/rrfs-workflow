@@ -3314,7 +3314,7 @@ MODULES_RUN_TASK_FP script.
             </and>
       </dependency>
      </task>
-  </metatask>n
+  </metatask>
 
    <metatask name="&RUN_MAXTMINRH_TN;{{ uscore_ensmem_name }}">
 
