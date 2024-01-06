@@ -54,7 +54,7 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
       EXTRN_MDL_SOURCE_BASEDIR_ICS=${RETRODATAPATH}/GEFS
     elif [[ ${EXTRN_MDL_NAME_ICS} == "GDASENKF" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_ICS="${RETRODATAPATH}/enkf/atm"
-    if
+    fi
     if [ ${EXTRN_MDL_NAME_LBCS} == "FV3GFS" ] ; then
       EXTRN_MDL_SOURCE_BASEDIR_LBCS=${RETRODATAPATH}/gfs/0p25deg/grib2
     elif [ ${EXTRN_MDL_NAME_LBCS} == "GEFS" ] ; then
@@ -110,7 +110,7 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     RAPHRR_SOIL_ROOT=${RETRODATAPATH}/rap_hrrr_soil
     FIRE_RAVE_DIR=${RETRODATAPATH}/RAVE_RAW
   fi
-  if [[ $MACHINE == "orion" ]] ; then
+  if [[ $MACHINE == "orion" ]] || [[ $MACHINE == "hercules" ]] ; then
     if [[ ${DO_ENSEMBLE} == "TRUE" ]]; then
       if [[ ${EXTRN_MDL_NAME_ICS} == "GDASENKF" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_ICS="/work/noaa/wrfruc/mhu/rrfs/data/enkf/atm"

@@ -10,7 +10,7 @@ OPTIONS
       show this help guide
   -p, --platform=PLATFORM
       name of machine you are building on
-      (e.g. cheyenne | hera | jet | orion | wcoss2)
+      (e.g. cheyenne | hera | jet | orion | hercules | wcoss2)
   -c, --compiler=COMPILER
       compiler to use; default depends on platform
       (e.g. intel | gnu | cray | gccgfortran)
@@ -223,7 +223,7 @@ fi
 
 # check if PLATFORM is set
 if [ -z $PLATFORM ] ; then
-  # Automatically detect HPC platforms for wcoss2, hera, jet, orion, etc
+  # Automatically detect HPC platforms for wcoss2, hera, jet, orion, hercules, etc
   source ${HOME_DIR}/ush/fix_rrfs_locations.sh
   if [[ "$PLATFORM" == "unknown" ]]; then
     printf "\nERROR: Please set PLATFORM.\n\n"
@@ -266,6 +266,10 @@ if [ "${EXTRN}" = true ]; then
   fi
 
   # run check-out
+  python --version 1>/dev/null 2>/dev/null
+  if [[ $? -ne 0 ]]; then
+       module load python
+  fi
   printf "... checking out external components ...\n"
   ./manage_externals/checkout_externals
 fi
@@ -298,7 +302,7 @@ set -eu
 if [ -z "${COMPILER}" ] ; then
   case ${PLATFORM} in
     jet|hera|gaea) COMPILER=intel ;;
-    orion) COMPILER=intel ;;
+    orion|hercules) COMPILER=intel ;;
     wcoss2) COMPILER=intel ;;
     cheyenne) COMPILER=intel ;;
     macos|singularity) COMPILER=gnu ;;

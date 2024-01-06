@@ -16,7 +16,7 @@ Usage: source $0 PLATFORM
 
 OPTIONS:
    PLATFORM - name of machine you are on
-      (e.g. wcoss2 | hera | jet | orion )
+      (e.g. wcoss2 | hera | jet | orion | hercules )
 EOF_USAGE
 }
 

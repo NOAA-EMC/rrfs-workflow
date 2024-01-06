@@ -96,6 +96,10 @@ case $MACHINE in
   APRUN="srun --export=ALL"
   ;;
 #
+"HERCULES")
+  APRUN="srun --export=ALL"
+  ;;
+#
 esac
 
 #
@@ -198,7 +202,7 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   "WCOSS2")
     obs_appendix=grib2.gz
     ;;
-  "JET" | "HERA" | "ORION")
+  "JET" | "HERA" | "ORION" | "HERCULES")
     obs_appendix=grib2
   esac
 

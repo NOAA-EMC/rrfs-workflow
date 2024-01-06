@@ -12,8 +12,13 @@ elif [[ -d /jetmon ]] ; then
     PLATFORM=jet
     FIX_RRFS_LOCATION="/lfs4/BMC/nrtrr/FIX_RRFS"
 elif [[ -d /work ]]; then
-    PLATFORM=orion
     FIX_RRFS_LOCATION="/work/noaa/rtrr/FIX_RRFS"
+    hoststr=$(hostname)
+    if [[ "$hoststr" == "hercules"* ]]; then                                                                                                                           
+      PLATFORM=hercules
+    else
+      PLATFORM=orion
+    fi
 else
     PLATFORM=unknown
     FIX_RRFS_LOCATION="/this/is/an/unknown/platform"
