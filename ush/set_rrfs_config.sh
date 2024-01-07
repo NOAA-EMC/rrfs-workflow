@@ -10,6 +10,14 @@ FVCOM_DIR="/mnt/lfs4/BMC/public/data/grids/glerl/owaq"
 FVCOM_FILE="tsfc_fv3grid"
 OBSPATH_PM="/lfs4/BMC/public/data/airnow/hourly_aqobs"
 BERROR_FN="rrfs_glb_berror.l127y770.f77"
+if [[ $GLMFED_DATA_MODE == "FULL" ]] ; then
+  GLMFED_EAST_ROOT="/public/data/sat/nesdis/goes-east/glm/full-disk"
+  GLMFED_WEST_ROOT="/public/data/sat/nesdis/goes-east/glm/full-disk"
+else
+  GLMFED_EAST_ROOT="/public/data/sat/noaaport/goes-east/glm/tiled"
+  GLMFED_WEST_ROOT="/public/data/sat/noaaport/goes-west/glm/tiled"
+fi
+
 
 if [[ $MACHINE == "hera" ]] ; then
 
@@ -60,6 +68,13 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     elif [ ${EXTRN_MDL_NAME_LBCS} == "GEFS" ] ; then
       EXTRN_MDL_SOURCE_BASEDIR_LBCS=${RETRODATAPATH}/GEFS
     fi
+    if [[ $GLMFED_DATA_MODE == "FULL" ]] ; then
+      GLMFED_EAST_ROOT=${RETRODATAPATH}/sat/nesdis/goes-east/glm/full-disk
+      GLMFED_WEST_ROOT=${RETRODATAPATH}/sat/nesdis/goes-east/glm/full-disk
+    else
+      GLMFED_EAST_ROOT=${RETRODATAPATH}/sat/noaaport/goes-east/glm/tiled
+      GLMFED_WEST_ROOT=${RETRODATAPATH}/sat/noaaport/goes-west/glm/tiled
+    fi
 
     OBSPATH=${RETRODATAPATH}/obs_rap
     OBSPATH_PM=${RETRODATAPATH}/pm
@@ -101,6 +116,8 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     OBSPATH_NSSLMOSIAC=${RETRODATAPATH}/reflectivity
     OBSPATH_PM=${RETRODATAPATH}/pm
     LIGHTNING_ROOT=${RETRODATAPATH}/lightning
+    GLMFED_EAST_ROOT=${RETRODATAPATH}/sat/nesdis/goes-east/glm/full-disk
+    GLMFED_WEST_ROOT=${RETRODATAPATH}/sat/nesdis/goes-east/glm/full-disk
     ENKF_FCST=${RETRODATAPATH}/enkf/atm
     AIRCRAFT_REJECT=${RETRODATAPATH}/amdar_reject_lists
     SFCOBS_USELIST=${RETRODATAPATH}/mesonet_uselists
