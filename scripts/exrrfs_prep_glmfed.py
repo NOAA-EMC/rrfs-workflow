@@ -18,6 +18,7 @@ import numpy as np
 import datetime as dt
 import netCDF4 as nc
 import time
+import pickle
 
 
 def addmodelfed(restartpath):
