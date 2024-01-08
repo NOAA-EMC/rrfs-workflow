@@ -816,7 +816,6 @@ FIX_SMOKE_DUST=${FIX_SMOKE_DUST:-"${HOMErrfs}/fix/smoke_dust"}
 FIX_BUFRSND=${FIX_BUFRSND:-"${HOMErrfs}/fix/bufrsnd"}
 AIRCRAFT_REJECT=${AIRCRAFT_REJECT:-"${FIX_GSI}"}
 SFCOBS_USELIST=${SFCOBS_USELIST:-"${FIX_GSI}"}
-FIX_MINMAXTRH=${FIX_MINMAXTRH:-"${HOMErrfs}/fix/minmaxtrh"}
 
 case $MACHINE in
 
@@ -825,6 +824,7 @@ case $MACHINE in
     TOPO_DIR=${TOPO_DIR:-"/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/fix/fix_orog"}
     SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/fix/fix_sfc_climo"}
     FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/FV3LAM_pregen"}
+    FIX_MINMAXTRH=${FIX_MINMAXTRH:-"/lfs/h2/emc/da/noscrub/edward.colon/FixData/fix/minmaxtrh"}
     ;;
 
   "HERA")
@@ -832,6 +832,7 @@ case $MACHINE in
     TOPO_DIR=${TOPO_DIR:-"/scratch1/NCEPDEV/nems/role.epic/UFS_SRW_data/develop/fix/fix_orog"}
     SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/scratch1/NCEPDEV/nems/role.epic/UFS_SRW_data/develop/fix/fix_sfc_climo"}
     FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/scratch1/NCEPDEV/nems/role.epic/UFS_SRW_data/develop/FV3LAM_pregen"}
+    FIX_MINMAXTRH=${FIX_MINMAXTRH:-"/scratch2/NCEPDEV/fv3-cam/noscrub/Edward.Colon/FixData/minmaxtrh"}
     ;;
 
   "ORION"|"HERCULES")
@@ -839,6 +840,7 @@ case $MACHINE in
     TOPO_DIR=${TOPO_DIR:-"/work/noaa/epic/role-epic/contrib/UFS_SRW_data/develop/fix/fix_orog"}
     SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/work/noaa/epic/role-epic/contrib/UFS_SRW_data/develop/fix/fix_sfc_climo"}
     FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/work/noaa/epic/role-epic/contrib/UFS_SRW_data/develop/FV3LAM_pregen"}
+    FIX_MINMAXTRH=${FIX_MINMAXTRH:-" "}
     ;;
 
   "JET")
@@ -846,6 +848,7 @@ case $MACHINE in
     TOPO_DIR=${TOPO_DIR:-"/mnt/lfs4/HFIP/hfv3gfs/role.epic/UFS_SRW_data/develop/fix/fix_orog"}
     SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/mnt/lfs4/HFIP/hfv3gfs/role.epic/UFS_SRW_data/develop/fix/fix_sfc_climo"}
     FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/mnt/lfs4/HFIP/hfv3gfs/role.epic/UFS_SRW_data/develop/FV3LAM_pregen"}
+    FIX_MINMAXTRH=${FIX_MINMAXTRH:-"/mnt/lfs4/HFIP/hfv3gfs/Edward.Colon/FixData/minmaxtrh"}
     ;;
 
   *)
