@@ -174,6 +174,7 @@ settings="\
   'queue_default': ${QUEUE_DEFAULT}
   'partition_hpss': ${PARTITION_HPSS}
   'queue_hpss': ${QUEUE_HPSS}
+  'partition_sfc_climo': ${PARTITION_SFC_CLIMO}
   'partition_fcst': ${PARTITION_FCST}
   'queue_fcst': ${QUEUE_FCST}
   'partition_graphics': ${PARTITION_GRAPHICS}
@@ -407,6 +408,8 @@ settings="\
   'run_task_make_grid': ${RUN_TASK_MAKE_GRID}
   'run_task_make_orog': ${RUN_TASK_MAKE_OROG}
   'run_task_make_sfc_climo': ${RUN_TASK_MAKE_SFC_CLIMO}
+#
+  'run_task_run_prdgen': ${RUN_TASK_RUN_PRDGEN}
 #
   'is_rtma':  ${IS_RTMA}
   'fg_rootdir': ${FG_ROOTDIR}
