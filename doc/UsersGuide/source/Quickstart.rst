@@ -145,7 +145,7 @@ Engineering Test: DA
       .. code-block:: console
 
          cd ../../expt_dirs/rrfs_test_da
-         ./launch_FV3LAM_wflow.sh
+         ./run_rocoto.sh
 
    #. Launch the following tasks as needed:
 
@@ -166,13 +166,27 @@ Engineering Test: DA
 
          rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307260400 -t prep_cyc_spinup
 
-      * On Hera: ``config.DA.retro.hera.sh``
+      * On Hera: ``config.DA.retro.hera.sh`` (in case of cycle_date=20230611)
 
-      Once the ``make_ics`` task for ``15z`` and ``make_lbcs`` tasks for ``06z``, ``12z``, and ``18z`` are complete, launch the ``prep_cyc_spinup`` task for ``03z`` manually:
+      If you want to run beyond ``11z``, you should launch the ``get_extrn_lbcs`` tasks for ``12z`` and ``18z`` and the ``get_extrn_ics`` task for ``15z`` manually:
 
       .. code-block:: console
 
-         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202207200300 -t prep_cyc_spinup
+         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202306111200 -t get_extrn_lbcs
+         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202306111800 -t get_extrn_lbcs
+         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202306111500 -t get_extrn_ics
+
+      Once both ``make_lbcs`` and ``make_ics`` tasks are complete, launch the ``prep_cyc_spinup`` task for ``03z`` manually:
+
+      .. code-block:: console
+
+         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202306110300 -t prep_cyc_spinup
+
+      Keep monitoring and launching the workflow if ``USE_CRON_TO_RELAUNCH`` was NOT set to ``TRUE`` in ``config.sh``. If ``USE_CRON_TO_RELAUNCH`` was set to ``TRUE``, you should remove the crontab line manually once all tasks are complete.
+
+      .. code-block:: console
+
+         ./run_rocoto.sh
 
    #. Check the status of your run with ``rocotostat``:
 
@@ -180,6 +194,4 @@ Engineering Test: DA
 
          rocotostat -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 > test.log
 
-      .. note::
-         You can open the log file ``log.launch_FV3LAM_wflow`` for the entire history, but it is sometimes too long.
 

@@ -90,7 +90,7 @@ case $MACHINE in
     ;;
 
   "HERA")
-    APRUN="srun"
+    APRUN="srun --export=ALL"
     ;;
 
   "ORION")
@@ -226,14 +226,19 @@ cp ${postprd_dir}/${natlev} ${COMOUT}/${natlev}
 if [ -f  ${postprd_dir}/${ififip} ]; then
   cp ${postprd_dir}/${ififip} ${COMOUT}/${ififip}
 fi
-cp ${postprd_dir}/${testbed}  ${COMOUT}/${testbed}
+if [ -f  ${postprd_dir}/${testbed} ]; then
+  cp ${postprd_dir}/${testbed}  ${COMOUT}/${testbed}
+fi
 
 wgrib2 ${COMOUT}/${prslev} -s > ${COMOUT}/${prslev}.idx
 wgrib2 ${COMOUT}/${natlev} -s > ${COMOUT}/${natlev}.idx
 if [ -f ${COMOUT}/${ififip} ]; then
   wgrib2 ${COMOUT}/${ififip} -s > ${COMOUT}/${ififip}.idx
 fi
-wgrib2 ${COMOUT}/${testbed} -s > ${COMOUT}/${testbed}.idx
+if [ -f ${COMOUT}/${testbed} ]; then
+  wgrib2 ${COMOUT}/${testbed} -s > ${COMOUT}/${testbed}.idx
+fi
+
 # Remap to additional output grids if requested
 
 if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
@@ -319,6 +324,39 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
 
   rm -fr $DATAprdgen
   rm -f $DATA/*.t${cyc}z.*.f${fhr}.*.grib2
+
+elif [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
+  #
+  # Processing for the RRFS fire weather grid
+  #
+  DATA=${postprd_dir}/${fhr}
+  cd $DATA
+
+  # set GTYPE=2 for GRIB2
+  GTYPE=2
+
+  cat > itagfw <<EOF
+CONUS
+$GTYPE
+EOF
+
+  # Read in corner lat lons from UPP text file
+  export FORT11=${postprd_dir}/latlons_corners.txt.f${fhr}
+  export FORT45=itagfw
+
+  # Calculate the wgrib2 gridspecs for the fire weather grid
+  $APRUN $EXECdir/firewx_gridspecs.exe >> $pgmout 2>errfile
+  export err=$?; err_chk
+
+  grid_specs_firewx=`head $DATA/copygb_gridnavfw.txt`
+  eval infile=${postprd_dir}/${net4}.t${cyc}z.prslev.f${fhr}.grib2
+
+  wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
+   -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
+   -new_grid_interpolation neighbor \
+   -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
+   -new_grid ${grid_specs_firewx} ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.firewx.grib2
+  wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.firewx.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.firewx.grib2.idx
 
 else
   #
