@@ -215,6 +215,7 @@ settings="\
   'calc_ensmean': ${CALC_ENSMEAN_TN}
   'process_radarref': ${PROCESS_RADAR_REF_TN}
   'process_lightning': ${PROCESS_LIGHTNING_TN}
+  'process_glmfed': ${PROCESS_GLMFED_TN}
   'process_bufr': ${PROCESS_BUFR_TN}
   'process_smoke': ${PROCESS_SMOKE_TN}
   'process_pm': ${PROCESS_PM_TN}
@@ -248,6 +249,7 @@ settings="\
   'nnodes_run_prdgen': ${NNODES_RUN_PRDGEN}
   'nnodes_proc_radar': ${NNODES_PROC_RADAR}
   'nnodes_proc_lightning': ${NNODES_PROC_LIGHTNING}
+  'nnodes_proc_glmfed': ${NNODES_PROC_GLMFED}
   'nnodes_proc_bufr': ${NNODES_PROC_BUFR}
   'nnodes_proc_smoke': ${NNODES_PROC_SMOKE}
   'nnodes_proc_pm': ${NNODES_PROC_PM}
@@ -290,6 +292,7 @@ settings="\
   'ppn_run_prdgen': ${PPN_RUN_PRDGEN}
   'ppn_proc_radar': ${PPN_PROC_RADAR}
   'ppn_proc_lightning': ${PPN_PROC_LIGHTNING}
+  'ppn_proc_glmfed': ${PPN_PROC_GLMFED}
   'ppn_proc_bufr': ${PPN_PROC_BUFR}
   'ppn_proc_smoke': ${PPN_PROC_SMOKE}
   'ppn_proc_pm': ${PPN_PROC_PM}
@@ -332,6 +335,7 @@ settings="\
   'wtime_run_prdgen': ${WTIME_RUN_PRDGEN}
   'wtime_proc_radar': ${WTIME_PROC_RADAR}
   'wtime_proc_lightning': ${WTIME_PROC_LIGHTNING}
+  'wtime_proc_glmfed': ${WTIME_PROC_GLMFED}
   'wtime_proc_bufr': ${WTIME_PROC_BUFR}
   'wtime_proc_smoke': ${WTIME_PROC_SMOKE}
   'wtime_proc_pm': ${WTIME_PROC_PM}
@@ -350,6 +354,7 @@ settings="\
   'start_time_conventional': ${START_TIME_CONVENTIONAL}
   'start_time_nsslmosiac': ${START_TIME_NSSLMOSIAC}
   'start_time_lightningnc': ${START_TIME_LIGHTNINGNC}
+  'start_time_proc_glmfed': ${START_TIME_GLMFED}
   'start_time_procsmoke': ${START_TIME_PROCSMOKE}
   'start_time_procpm': ${START_TIME_PROCPM}
 #
@@ -365,6 +370,7 @@ settings="\
   'memo_save_restart': ${MEMO_SAVE_RESTART}
   'memo_save_input': ${MEMO_SAVE_INPUT}
   'memo_proc_smoke': ${MEMO_PROC_SMOKE}
+  'memo_proc_glmfed': ${MEMO_PROC_GLMFED}
   'memo_proc_pm': ${MEMO_PROC_PM}
   'memo_save_da_output': ${MEMO_SAVE_DA_OUTPUT}
 #
@@ -387,6 +393,7 @@ settings="\
   'maxtries_run_prdgen': ${MAXTRIES_RUN_PRDGEN}
   'maxtries_process_radarref': ${MAXTRIES_PROCESS_RADARREF}
   'maxtries_process_lightning': ${MAXTRIES_PROCESS_LIGHTNING}
+  'maxtries_proc_glmfed': ${MAXTRIES_PROC_GLMFED}
   'maxtries_process_bufr': ${MAXTRIES_PROCESS_BUFR}
   'maxtries_process_smoke': ${MAXTRIES_PROCESS_SMOKE}
   'maxtries_process_pm': ${MAXTRIES_PROCESS_PM}
@@ -522,6 +529,7 @@ settings="\
   'do_post_spinup': ${DO_POST_SPINUP}
   'do_post_prod': ${DO_POST_PROD}
   'do_nldn_lght': ${DO_NLDN_LGHT}
+  'do_glmfed_da': ${DO_GLM_FED_DA}
   'regional_ensemble_option': ${regional_ensemble_option}
   'radar_ref_thinning': ${RADAR_REF_THINNING}
   'ensctrl_stmp': ${ENSCTRL_STMP}

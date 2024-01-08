@@ -22,6 +22,8 @@ DO_NONVAR_CLDANAL="TRUE"
 #DO_ENVAR_RADAR_REF="TRUE"
 DO_SMOKE_DUST="FALSE"
 DO_PM_DA="FALSE"
+DO_GLM_FED_DA="FALSE"
+GLMFED_DATA_MODE="EMC"  # retros 20220608-now use FULL; retros 20230714-now and real-time on Jet use FULL or TILES
 #DO_REFL2TTEN="FALSE"
 #RADARREFL_TIMELEVEL=(0)
 #FH_DFI_RADAR="0.0,0.25,0.5"
@@ -52,8 +54,8 @@ EXTRN_MDL_NAME_ICS="GDASENKF"
 FV3GFS_FILE_FMT_ICS="netcdf"
 EXTRN_MDL_NAME_LBCS="GEFS"
 
-# avaialble retro period:
-# 20210511-20210531; 20210718-20210801
+# available retro period:
+# 20230419-27; 20230610-18; 20230729-0807; 20230826-31; 20220720-27; 20220429-0506; 20220201-07
 DATE_FIRST_CYCL="20220201"
 DATE_LAST_CYCL="20220202"
 CYCL_HRS=( "00" "12" )
@@ -192,7 +194,7 @@ STMP="YourOwnSpace/${version}/stmp_ensda"  # Path to directory STMP that mostly 
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   STMP="YourOwnSpace/${version}/stmp_ensfcst"  # Path to directory STMP that mostly contains input files.
 fi
-PTMP="YourOwnSpace/${version}"  # Path to directory STMP that mostly contains input files.
+PTMP="YourOwnSpace/${version}"  # Path to directory PTMP that mostly contains output files.
 NWGES="YourOwnSpace/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 ENSCTRL_STMP="YourOwnSpace/${version}/stmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
 ENSCTRL_PTMP="YourOwnSpace/${version}"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
