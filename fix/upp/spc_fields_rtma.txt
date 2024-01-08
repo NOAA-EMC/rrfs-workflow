@@ -1,14 +1,3 @@
-REFC:entire atmosphere (considered as a single layer)
-CAPE:90-0 mb above ground
-CAPE:255-0 mb above ground
-CAPE:surface
-CIN:90-0 mb above ground
-CIN:255-0 mb above ground
-CIN:surface
-parmcat=7 parm=207
-parmcat=7 parm=208
-parmcat=2 parm=234
-parmcat=2 parm=235
 PRES:surface:
 HGT:surface:
 TMP:2 m above ground
@@ -352,3 +341,7 @@ DZDT:925 mb
 DZDT:950 mb
 DZDT:975 mb
 DZDT:1000 mb
+
+
+
+

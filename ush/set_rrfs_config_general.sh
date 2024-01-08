@@ -10,12 +10,14 @@ if [[ $MACHINE == "jet" ]] ; then
     PARTITION_GRAPHICS=kjet
     PARTITION_ANALYSIS=kjet
     PARTITION_PRDGEN=kjet
+    PARTITION_MINMAXTRH=kjet
     PARTITION_POST=kjet
     PARTITION_HPSS=service
     QUEUE_DEFAULT="rth"
     QUEUE_FCST="rth"
     QUEUE_ANALYSIS="rth"
     QUEUE_PRDGEN="rt"
+    QUEUE_MINMAXTRH="rt"
     QUEUE_GRAPHICS="rt"
     QUEUE_HPSS="batch"
     QUEUE_POST="rt"
@@ -35,12 +37,14 @@ elif [[ $MACHINE == "hera" ]] ; then
   QUEUE_ANALYSIS="batch"
   QUEUE_PRDGEN="batch"
   QUEUE_GRAPHICS="batch"
+  QUEUE_MINMAXTRH="batch"
 
 elif [[ $MACHINE == "orion" ]] ; then
   ACCOUNT="${ACCOUNT:-fv3-cam}"
   PARTITION_ANALYSIS=orion
   QUEUE_ANALYSIS="batch"
   QUEUE_PRDGEN="batch"
+  QUEUE_MINMAXTRH="batch"
   QUEUE_GRAPHICS="batch"
   QUEUE_POST="batch"
   NCORES_PER_NODE=24
@@ -65,6 +69,7 @@ elif [[ $MACHINE == "wcoss2" ]] ; then
     QUEUE_HPSS="dev_transfer"
     QUEUE_POST="pridev"
     QUEUE_PRDGEN="pridev"
+    QUEUE_MINMAXTRH="pridev"
     QUEUE_GRAPHICS="pridev"
   elif [[ "${envir}" == "prod" ]]; then
     QUEUE_DEFAULT="prod"
@@ -73,6 +78,7 @@ elif [[ $MACHINE == "wcoss2" ]] ; then
     QUEUE_HPSS="prod_transfer"
     QUEUE_POST="prod"
     QUEUE_PRDGEN="prod"
+    QUEUE_MINMAXTRH="prod"
     QUEUE_GRAPHICS="prod"
   else
     QUEUE_DEFAULT="dev"
@@ -81,6 +87,7 @@ elif [[ $MACHINE == "wcoss2" ]] ; then
     QUEUE_HPSS="dev_transfer"
     QUEUE_POST="dev"
     QUEUE_PRDGEN="dev"
+    QUEUE_MINMAXTRH="dev"
     QUEUE_GRAPHICS="dev"
   fi
   if [[ $MACHINETYPE == "backup" ]] ; then
@@ -89,6 +96,7 @@ elif [[ $MACHINE == "wcoss2" ]] ; then
     QUEUE_ANALYSIS="devmax"
     QUEUE_POST="devhigh"
     QUEUE_PRDGEN="devhigh"
+    QUEUE_MINMAXTRH="devhigh"
     QUEUE_GRAPHICS="devhigh"
   fi
 fi
@@ -132,7 +140,7 @@ MAXTRIES_SAVE_DA_OUTPUT="2"
 MAXTRIES_SAVE_RESTART="2"
 MAXTRIES_RUN_POST="2"
 MAXTRIES_RUN_PRDGEN="2"
-
+MAXTRIES_RUN_MINMAXTRH="2"
 WTIME_RUN_FCST="00:45:00"
 WTIME_RUN_FCST_LONG="03:45:00"
 WTIME_MAKE_LBCS="02:00:00"
@@ -234,6 +242,7 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
     TPP_RUN_ENKF="4"
     NNODES_RUN_ENKF="24"
     MEMO_RUN_PRDGEN="80G"
+    MEMO_RUN_MINMAXTRH="80G"
     MEMO_RUN_PROCESSBUFR="80G"
     PPN_RUN_NONVARCLDANL="64"
     NNODES_RUN_NONVARCLDANL="10"
@@ -257,6 +266,7 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
     MAXTRIES_RUN_POST="2"
     MAXTRIES_RUN_PRDGEN="1"
     MAXTRIES_ANAL_GSI="1"
+    MAXTRIES_RUN_MINMAXTRH="1"
 
     WTIME_RUN_FCST="01:15:00"
     WTIME_RUN_FCST_LONG="03:15:00"
@@ -292,6 +302,7 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
     PPN_RUN_FCST="40"
     WTIME_RUN_PRDGEN="00:20:00"
   fi
+
 
 elif [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then 
   DT_ATMOS=120
@@ -346,6 +357,7 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then
     WTIME_PROC_BUFR="00:05:00"
     WTIME_RUN_NONVARCLDANL="00:10:00"
     WTIME_SAVE_RESTART="00:05:00"
+    WTIME_RUN_MINMAXTRH="00:15:00"
 
     MAXTRIES_MAKE_ICS="2"
     MAXTRIES_MAKE_LBCS="2"
@@ -356,6 +368,7 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then
     MAXTRIES_RUN_POST="2"
     MAXTRIES_RUN_PRDGEN="2"
     MAXTRIES_ANAL_GSI="2"
+    MAXTRIES_RUN_MINMAXTRH="2"
 
     FV3GFS_FILE_FMT_ICS="netcdf"
     FV3GFS_FILE_FMT_LBCS="netcdf"
@@ -466,6 +479,7 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then
     PPN_RUN_NONVARCLDANL="128"
     NNODES_RUN_NONVARCLDANL="1"
     PPN_RUN_PRDGEN="128"
+    PPN_RUN_MINMAXTRH="128"
     PPN_RUN_POSTANAL="8"
     PPN_RUN_GSIDIAG=128
     NNODES_RUN_BUFRSND="2"
@@ -482,7 +496,7 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then
     MAXTRIES_RUN_POST="2"
     MAXTRIES_RUN_PRDGEN="1"
     MAXTRIES_ANAL_GSI="1"
-
+    MAXTRIES_RUN_MINMAXTRH="1" 
     MEMO_RUN_NONVARCLDANL="256G"
     MEMO_PROC_SMOKE="256G"
     MEMO_RUN_PREPSTART="120G"
@@ -490,7 +504,7 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then
     MEMO_SAVE_RESTART="120G"
     MEMO_SAVE_INPUT="120G"                                                                                                     
     MEMO_RUN_PRDGEN="256G"
-
+    MEMO_RUN_MINMAXTRH="80G"
     START_TIME_SPINUP="01:05:00"
     START_TIME_PROD="02:20:00"
     START_TIME_LATE_ANALYSIS="01:20:00"
