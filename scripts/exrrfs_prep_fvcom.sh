@@ -129,7 +129,7 @@ elif [ $HH -eq 05 -o $HH -eq 11 -o $HH -eq 17 -o $HH -eq 23 ]; then
 fi
 
 # Find the most recent FVCOM files
-if [ "$MACHINE" == "WCOSS2" ]; then
+if [ "$MACHINE" = "WCOSS2" ]; then
   erie="${FVCOM_DIR}/leofs.${PDYf}/nos.leofs.fields.f${fhr}.${PDYf}.t${cycf}z.nc"
   mh="${FVCOM_DIR}/lmhofs.${PDYf}/nos.lmhofs.fields.f${fhr}.${PDYf}.t${cycf}z.nc"
   sup="${FVCOM_DIR}/lsofs.${PDYf}/nos.lsofs.fields.f${fhr}.${PDYf}.t${cycf}z.nc"
@@ -166,8 +166,8 @@ elif [[ -e "$erie2" && -e "$mh2" && -e "$sup2" && -e "$ont2" ]]; then
 else
   message_txt="WARNING: No FVCOM data is available."
   print_info_msg "${message_txt}"
-  if [ ! -z "${maillist}" ]; then
-    echo "${message_txt}" | mail.py $maillist
+  if [ ! -z "${MAILTO}" ] && [ "${MACHINE}" = "WCOSS2" ]; then
+    echo "${message_txt}" | mail.py ${MAILTO}
   fi
 fi
 
