@@ -249,7 +249,7 @@ if [[ "$MACHINE" == "wcoss2" ]]; then
 
   RESERVATION=""
   RESERVATION_POST=""
-  EXPT_BASEDIR="/lfs/h2/emc/da/noscrub/${USER}/3drtma/rtma.${version}"
+  EXPT_BASEDIR="/lfs/h2/emc/da/noscrub/${USER}/3D-RTMA/rtma.${version}"
   SERVICE_ACCOUNT=""
   HPSS_ACCOUNT="RTMA-DEV"
   PARTITION_DEFAULT=""
