@@ -1,14 +1,14 @@
 #!/bin/bash
 
+
 #
 #-----------------------------------------------------------------------
 #
-# This J-JOB script stages initial and boundary conditions for
-#      the analysis and model of the cycle it is running. The initial
-#      could come from external model or previous cycles forecast.
-#      The boundary could come from previous many cycles.
+# This J-JOB script runs the GLM gridded lightning data preprocess 
+#      for the FV3-LAM model
 #
 #-----------------------------------------------------------------------
+#
 
 #
 #-----------------------------------------------------------------------
@@ -19,9 +19,6 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
-
-date
-export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
@@ -30,7 +27,7 @@ export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u -x; } > /dev/null 2>&1
+{ save_shell_opts; set -u +x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -55,8 +52,8 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs a analysis with FV3 for 
-the specified cycle.
+This is the J-job script for the task that runs a GLM FED 
+preprocess with FV3 for the specified cycle.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -65,50 +62,38 @@ the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-# CYCLE_TYPE is to indicate which type of cycle this job for:
-#   spinup: this job is for spin-up cycles
-#   others(prod): this job is for product cycle
-#
-export CYCLE_TYPE=${CYCLE_TYPE:-prod}
-export CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
-export ctrlpath=""
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export modelinputdir=${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_spinup/INPUT
-  if [ "${DO_ENSINIT}" = "TRUE" ] && [ "${CYCLE_SUBTYPE}" = "ensinit" ]; then
-    modelinputdir=${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_ensinit/INPUT
-  fi
-  if [ "${DO_ENSINIT}" = "TRUE" ] && [ "${CYCLE_SUBTYPE}" = "spinup" ]; then
-    ctrlpath=${ENSCTRL_CYCLE_DIR}
-  fi
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  workdir=${CYCLE_DIR}/process_glmfed_spinup
 else
-  export modelinputdir=${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/INPUT
+  workdir=${CYCLE_DIR}/process_glmfed
+fi
+if [ ${IS_ENSEMBLE} == "1" ]; then
+  workdir=${CYCLE_DIR}/process_glmfed_enkf
 fi
 
-rm -fr ${modelinputdir}
-mkdir -p ${modelinputdir}
-cd ${modelinputdir}
-#
-export gridspec_dir=${NWGES_BASEDIR}/grid_spec
-export MAILTO="${MAILTO:-}"
+rm -fr ${workdir}
+mkdir_vrfy -p ${workdir}
+
+cd ${workdir}
+
+export FIX_GSI=$FIX_GSI
+export OBS_EAST=$GLMFED_EAST_ROOT
+export OBS_WEST=$GLMFED_WEST_ROOT
+export RRFSE_NWGES_BASEDIR=$RRFSE_NWGES_BASEDIR
+export NUM_ENS_MEMBERS=$NUM_ENS_MEMBERS
+export DA_CYCLE_INTERV=$DA_CYCLE_INTERV
+export MODE=$GLMFED_DATA_MODE
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job.
+# Call the ex-script for this J-job and pass to it the necessary varia-
+# bles.
 #
 #-----------------------------------------------------------------------
 #
-export pgmout="${modelinputdir}/OUTPUT.$$"
-env
-
-$SCRIPTSdir/exrrfs_run_prepstart.sh \
-             cycle_dir="${CYCLE_DIR}" \
-             lbcs_root="${LBCS_ROOT}" \
-             fg_root="${FG_ROOT}"
-export err=$?; err_chk
-
-if [ -e "$pgmout" ]; then
-  cat $pgmout
-fi
+python -u ${SCRIPTSdir}/exrrfs_prep_glmfed.py \
+#
+#-----------------------------------------------------------------------
 #
 #-----------------------------------------------------------------------
 #
@@ -124,7 +109,8 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/function.
+# Restore the shell options saved at the beginning of this script/func-
+# tion.
 #
 #-----------------------------------------------------------------------
 #
