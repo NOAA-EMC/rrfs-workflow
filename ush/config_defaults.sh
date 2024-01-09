@@ -291,6 +291,7 @@ EXPT_SUBDIR=""
 #    OBSPATH:   observation BUFR file path
 #    OBSPATH_NSSLMOSIAC: location of NSSL radar reflectivity 
 #    LIGHTNING_ROOT: location of lightning observations
+#    GLMFED_[EAST/WEST]_ROOT: location of lightning observations
 #    ENKF_FCSTL: location of global ensemble forecast
 #    FFG_DIR: location of flash flood guidance for QPF comparison
 #
@@ -346,6 +347,8 @@ OBSPATH="/public/data/grids/rap/obs"
 OBSPATH_NSSLMOSIAC="/public/data/radar/mrms"
 OBSPATH_PM="/mnt/lfs1/BMC/wrfruc/hwang/rrfs_sd/pm"
 LIGHTNING_ROOT="/public/data/lightning"
+GLMFED_EAST_ROOT="/public/data/sat/nesdis/goes-east/glm/full-disk/"
+GLMFED_WEST_ROOT="/public/data/sat/nesdis/goes-east/glm/full-disk/"
 ENKF_FCST="/lfs4/BMC/public/data/grids/enkf/atm"
 FFG_DIR="/public/data/grids/ncep/ffg/grib2"
 SST_ROOT="/lfs4/BMC/public/data/grids/ncep/sst/0p083deg/grib2"
@@ -702,6 +705,9 @@ niter1=50
 niter2=50
 l_obsprvdiag=.false.
 diag_radardbz=.false.
+diag_fed=.false.
+if_model_fed=.false.
+innov_use_model_fed=.false.
 write_diag_2=.false.
 bkgerr_vs=1.0
 bkgerr_hzscl=0.7,1.4,2.80   #no trailing ,
@@ -1817,6 +1823,7 @@ CLDANL_NONVAR_TN="cldanl_nonvar"
 SAVE_RESTART_TN="save_restart"
 SAVE_DA_OUTPUT_TN="save_da_output"
 JEDI_ENVAR_IODA_TN="jedi_envar_ioda"
+PROCESS_GLMFED_TN="process_glmfed"
 #
 # Number of nodes.
 #
@@ -1838,6 +1845,7 @@ NNODES_RUN_ENKF="90"
 NNODES_RUN_RECENTER="6"
 NNODES_PROC_RADAR="2"
 NNODES_PROC_LIGHTNING="1"
+NNODES_PROC_GLMFED="1"
 NNODES_PROC_BUFR="1"
 NNODES_PROC_SMOKE="1"
 NNODES_PROC_PM="1"
@@ -1878,6 +1886,7 @@ PPN_RUN_ENKF="1"
 PPN_RUN_RECENTER="20"
 PPN_PROC_RADAR="24"
 PPN_PROC_LIGHTNING="1"
+PPN_PROC_GLMFED="1"
 PPN_PROC_BUFR="1"
 PPN_PROC_SMOKE="1"
 PPN_PROC_PM="1"
@@ -1921,6 +1930,7 @@ WTIME_RUN_ENKF="01:00:00"
 WTIME_RUN_RECENTER="01:00:00"
 WTIME_PROC_RADAR="00:25:00"
 WTIME_PROC_LIGHTNING="00:25:00"
+WTIME_PROC_GLMFED="00:25:00"
 WTIME_PROC_BUFR="00:25:00"
 WTIME_PROC_SMOKE="00:25:00"
 WTIME_PROC_PM="00:25:00"
@@ -1941,6 +1951,7 @@ START_TIME_LATE_ANALYSIS="01:40:00"
 START_TIME_CONVENTIONAL="00:40:00"
 START_TIME_NSSLMOSIAC="00:45:00"
 START_TIME_LIGHTNINGNC="00:45:00"
+START_TIME_GLMFED="00:45:00"
 START_TIME_PROCSMOKE="00:45:00"
 START_TIME_PROCPM="00:45:00"
 #
@@ -1956,6 +1967,7 @@ MEMO_PREP_CYC="40G"
 MEMO_SAVE_RESTART="40G"
 MEMO_SAVE_INPUT="40G"
 MEMO_PROC_SMOKE="40G"
+MEMO_PROC_GLMFED="70G"
 MEMO_PROC_PM="40G"
 MEMO_SAVE_DA_OUTPUT="40G"
 #
@@ -1980,6 +1992,7 @@ MAXTRIES_RUN_POSTANAL="1"
 MAXTRIES_RECENTER="1"
 MAXTRIES_PROCESS_RADARREF="1"
 MAXTRIES_PROCESS_LIGHTNING="1"
+MAXTRIES_PROC_GLMFED="1"
 MAXTRIES_PROCESS_BUFR="1"
 MAXTRIES_PROCESS_SMOKE="1"
 MAXTRIES_PROCESS_PM="1"
@@ -2504,12 +2517,19 @@ DO_JEDI_ENVAR_IODA="FALSE"
 #
 # DO_NLDN_LGHT
 # Flag turn on processing NLDN NetCDF lightning data
+# DO_GLM_FED_DA
+# Flag turn on processing gridded GLM lightning data
+# GLMFED_DATA_MODE
+# Incomping lightning data format: FULL (full-disk), TILES, or EMC (tiles
+# with different naming convention)      
 #
 #-----------------------------------------------------------------------
 #
 DO_NONVAR_CLDANAL="FALSE"
 DO_REFL2TTEN="FALSE"
 DO_NLDN_LGHT="FALSE"
+DO_GLM_FED_DA="FALSE"
+GLMFED_DATA_MODE="FULL"
 DO_SMOKE_DUST="FALSE"
 DO_PM_DA="FALSE"
 #

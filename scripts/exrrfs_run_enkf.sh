@@ -185,7 +185,11 @@ for imem in  $(seq 1 $nens) ensmean; do
     fi
 	
     if [ "${ob_type}" = "radardbz" ]; then
-      list_ob_type="conv_dbz"
+      if [ ${DO_GLM_FED_DA} == "TRUE" ]; then
+        list_ob_type="conv_dbz conv_fed"
+      else
+        list_ob_type="conv_dbz"
+      fi
     fi
     for sub_ob_type in ${list_ob_type} ; do
       diagfile0=${observer_nwges_dir}/diag_${sub_ob_type}_ges.${YYYYMMDDHH}.nc4
