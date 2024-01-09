@@ -3,11 +3,11 @@ ACCOUNT="RRFS-DEV"
 HPSS_ACCOUNT="RRFS-DEV"
 EXPT_SUBDIR="test_firewx"
 
-envir="test"
-NET="test"
+envir="rrfsfw"
+NET="rrfsfw"
 TAG="c0v00"
-MODEL="test"
-RUN="test"
+MODEL="rrfsfw"
+RUN="rrfsfw"
 
 STMP=""
 PTMP=""
@@ -38,6 +38,7 @@ CYCL_HRS=( "18" )
 RUN_TASK_MAKE_GRID="TRUE"
 RUN_TASK_MAKE_OROG="TRUE"
 RUN_TASK_MAKE_SFC_CLIMO="TRUE"
+RUN_TASK_RUN_PRDGEN="TRUE"
 NNODES_MAKE_SFC_CLIMO="6"
 PPN_MAKE_SFC_CLIMO="12"
 

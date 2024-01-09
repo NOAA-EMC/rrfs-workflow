@@ -225,6 +225,27 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+# Make sure that RUN_TASK_RUN_PRDGEN is set to a valid value.
+#
+#-----------------------------------------------------------------------
+#
+check_var_valid_value \
+  "RUN_TASK_RUN_PRDGEN" "valid_vals_RUN_TASK_RUN_PRDGEN"
+#
+# Set RUN_TASK_RUN_PRDGEN to either "TRUE" or "FALSE" so we don't
+# have to consider other valid values later on.
+#
+RUN_TASK_RUN_PRDGEN=${RUN_TASK_RUN_PRDGEN^^}
+if [ "${RUN_TASK_RUN_PRDGEN}" = "TRUE" ] || \
+   [ "${RUN_TASK_RUN_PRDGEN}" = "YES" ]; then
+  RUN_TASK_RUN_PRDGEN="TRUE"
+elif [ "${RUN_TASK_RUN_PRDGEN}" = "FALSE" ] || \
+     [ "${RUN_TASK_RUN_PRDGEN}" = "NO" ]; then
+  RUN_TASK_RUN_PRDGEN="FALSE"
+fi
+#
+#-----------------------------------------------------------------------
+#
 # Make sure that DO_SHUM is set to a valid value.
 #
 #-----------------------------------------------------------------------
@@ -487,6 +508,8 @@ optionList[24]=DO_GSIDIAG_OFFLINE
 optionList[25]=USE_CLM
 optionList[26]=DO_PM_DA
 optionList[27]=DO_ENSFCST_MULPHY
+optionList[28]=DO_GLM_FED_DA
+optionList[29]=GLMFED_DATA_MODE
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));
@@ -2449,6 +2472,8 @@ OBSPATH="${OBSPATH}"
 OBSPATH_PM="${OBSPATH_PM}"
 OBSPATH_NSSLMOSIAC="${OBSPATH_NSSLMOSIAC}"
 LIGHTNING_ROOT="${LIGHTNING_ROOT}"
+GLMFED_EAST_ROOT="${GLMFED_EAST_ROOT}"
+GLMFED_WEST_ROOT="${GLMFED_WEST_ROOT}"
 ENKF_FCST="${ENKF_FCST}"
 
 FIX_GSI="${FIX_GSI}"
