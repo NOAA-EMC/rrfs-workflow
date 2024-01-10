@@ -20,6 +20,7 @@ PREDEF_GRID_NAME=RRFS_CONUS_3km
 . set_rrfs_config_general.sh
 
 ACCOUNT="fv3-cam"
+
 #USE_CRON_TO_RELAUNCH="TRUE"
 #CRON_RELAUNCH_INTVL_MNTS="05"
 ################################################################
