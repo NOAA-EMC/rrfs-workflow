@@ -22,6 +22,7 @@ PREDEF_GRID_NAME=RRFS_CONUS_3km
 . set_rrfs_config_general.sh
 
 ACCOUNT="fv3-cam"
+
 #USE_CRON_TO_RELAUNCH="TRUE"
 #CRON_RELAUNCH_INTVL_MNTS="05"
 ################################################################
@@ -39,8 +40,8 @@ DO_NONVAR_CLDANAL="TRUE"
 #DO_ENVAR_RADAR_REF="TRUE"
 DO_SMOKE_DUST="FALSE"
 DO_PM_DA="FALSE"
-#DO_GLM_FED_DA="TRUE"
-#GLMFED_DATA_MODE="EMC"  # retros 20220608-now use FULL; retros 20230714-now and real-time on Jet use FULL or TILES
+DO_GLM_FED_DA="TRUE"
+GLMFED_DATA_MODE="EMC"  # retros 20220608-now use FULL; retros 20230714-now and real-time on Jet use FULL or TILES
 #DO_REFL2TTEN="FALSE"
 #RADARREFL_TIMELEVEL=(0)
 #FH_DFI_RADAR="0.0,0.25,0.5"
