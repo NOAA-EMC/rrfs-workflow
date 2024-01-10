@@ -204,7 +204,7 @@ Engineering Test: DA
 
          rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202306100600 -t run_recenter_spinup
 
-      Keep monitoring and launching the workflow if ``USE_CRON_TO_RELAUNCH`` was NOT set to ``TRUE`` in ``config.sh``. If ``USE_CRON_TO_RELAUNCH`` was set to ``TRUE``, you should remove the crontab line manually once all tasks are complete.
+      Keep monitoring and launching the workflow if ``USE_CRON_TO_RELAUNCH`` was NOT set to ``TRUE`` in ``config.sh``:
 
       .. code-block:: console
 
