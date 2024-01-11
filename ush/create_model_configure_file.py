@@ -75,7 +75,6 @@ def create_model_configure_file(
     restart_interval = RESTART_INTERVAL
     nsout = NSOUT
 
-
     #
     # Decide the forecast length for this cycle
     #
