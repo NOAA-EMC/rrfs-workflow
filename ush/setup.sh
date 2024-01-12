@@ -832,6 +832,7 @@ LIB64dir="$HOMErrfs/sorc/build/lib64"
 FIXgsm=${FIXgsm:-"$HOMErrfs/fix/am"}
 FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"$HOMErrfs/fix/lam"}
 FIX_GSI=${FIX_GSI:-"${HOMErrfs}/fix/gsi"}
+FIX_MINMAXTRH=${FIX_MINMAXTRH:-"${HOMErrfs}/fix/minmaxtrh"}
 FIX_UPP=${FIX_UPP:-"${HOMErrfs}/fix/upp"}
 FIX_CRTM=${FIX_CRTM:-"${CRTM_FIX}"}
 FIX_UPP_CRTM=${FIX_UPP_CRTM:-"${CRTM_FIX}"}
@@ -847,7 +848,6 @@ case $MACHINE in
     TOPO_DIR=${TOPO_DIR:-"/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/fix/fix_orog"}
     SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/fix/fix_sfc_climo"}
     FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/FV3LAM_pregen"}
-    FIX_MINMAXTRH=${FIX_MINMAXTRH:-"/lfs/h2/emc/da/noscrub/edward.colon/FixData/fix/minmaxtrh"}
     ;;
 
   "HERA")
@@ -855,7 +855,6 @@ case $MACHINE in
     TOPO_DIR=${TOPO_DIR:-"/scratch1/NCEPDEV/nems/role.epic/UFS_SRW_data/develop/fix/fix_orog"}
     SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/scratch1/NCEPDEV/nems/role.epic/UFS_SRW_data/develop/fix/fix_sfc_climo"}
     FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/scratch1/NCEPDEV/nems/role.epic/UFS_SRW_data/develop/FV3LAM_pregen"}
-    FIX_MINMAXTRH=${FIX_MINMAXTRH:-"/scratch2/NCEPDEV/fv3-cam/noscrub/Edward.Colon/FixData/minmaxtrh"}
     ;;
 
   "ORION"|"HERCULES")
@@ -863,7 +862,6 @@ case $MACHINE in
     TOPO_DIR=${TOPO_DIR:-"/work/noaa/epic/role-epic/contrib/UFS_SRW_data/develop/fix/fix_orog"}
     SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/work/noaa/epic/role-epic/contrib/UFS_SRW_data/develop/fix/fix_sfc_climo"}
     FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/work/noaa/epic/role-epic/contrib/UFS_SRW_data/develop/FV3LAM_pregen"}
-    FIX_MINMAXTRH=${FIX_MINMAXTRH:-" "}
     ;;
 
   "JET")
@@ -871,7 +869,6 @@ case $MACHINE in
     TOPO_DIR=${TOPO_DIR:-"/mnt/lfs4/HFIP/hfv3gfs/role.epic/UFS_SRW_data/develop/fix/fix_orog"}
     SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/mnt/lfs4/HFIP/hfv3gfs/role.epic/UFS_SRW_data/develop/fix/fix_sfc_climo"}
     FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/mnt/lfs4/HFIP/hfv3gfs/role.epic/UFS_SRW_data/develop/FV3LAM_pregen"}
-    FIX_MINMAXTRH=${FIX_MINMAXTRH:-"/mnt/lfs4/HFIP/hfv3gfs/Edward.Colon/FixData/minmaxtrh"}
     ;;
 
   *)
