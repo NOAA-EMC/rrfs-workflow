@@ -127,7 +127,7 @@ OBERROR_FN="errtable.rtma"
 HYBENSINFO_FN="hybens_info.rtma"
 AIRCRAFT_REJECT="/home/role.amb-verif/acars_RR/amdar_reject_lists"
 SFCOBS_USELIST="/lfs4/BMC/amb-verif/rap_ops_mesonet_uselists"
-RRFS_PRODDIR="/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.7.7/prod"
+RRFS_PRODDIR="/home/role.rtrr/rrfs_b"
 LBC_SPEC_INTVL_HRS="1"
 
 DATE_FIRST_CYCL="20231120"
@@ -269,7 +269,6 @@ if [[ "$MACHINE" == "wcoss2" ]]; then
   OBSPATH_NSSLMOSIAC="/lfs/h1/ops/prod/dcom/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC"
   AIRCRAFT_REJECT="/lfs/h2/emc/da/noscrub/matthew.t.morris/FixData/obsuselist/amdar_reject_lists"
   SFCOBS_USELIST="/lfs/h2/emc/da/noscrub/matthew.t.morris/FixData/obsuselist/mesonet_uselists"
-  FIX_MINMAXTRH="/lfs/h2/emc/da/noscrub/edward.colon/FixData/minmaxtrh" 
   regional_ensemble_option=1
   USE_RRFSE_ENS="FALSE"
   CYCL_HRS_HYB_FV3LAM_ENS=("99")
@@ -307,9 +306,10 @@ if [[ "$MACHINE" == "wcoss2" ]]; then
   OBSPATH="/lfs/h1/ops/prod/com/obsproc/v1.1"
   ENKF_FCST="/lfs/h1/ops/prod/com/gfs/v16.3"
   LIGHTNING_ROOT="/lfs/h1/ops/prod/com/obsproc/v1.1"
+  RRFS_PRODDIR="/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.7.7/prod"
 
-  STMP="/lfs/h2/emc/ptmp/${USER}/3drtma/rtma.${version}/stmp"
-  PTMP="/lfs/h2/emc/ptmp/${USER}/3drtma/rtma.${version}"
-  NWGES="/lfs/h2/emc/ptmp/${USER}/3drtma/rtma.${version}/nwges"
+  STMP="/lfs/h2/emc/ptmp/${USER}/3D-RTMA/rtma.${version}/stmp"
+  PTMP="/lfs/h2/emc/ptmp/${USER}/3D-RTMA/rtma.${version}"
+  NWGES="/lfs/h2/emc/ptmp/${USER}/3D-RTMA/rtma.${version}/nwges"
 fi
 
