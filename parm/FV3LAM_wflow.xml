@@ -1330,6 +1330,7 @@ MODULES_RUN_TASK_FP script.
 
     <dependency>
       <and>
+       <taskdep task="&MAKE_ICS_TN;_mem#mem#"/>
        <taskdep task="&SAVE_RESTART_TN;_ensinit{{ uscore_ensmem_name }}"/>
        <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
       </and>
