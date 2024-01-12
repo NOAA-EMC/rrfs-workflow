@@ -303,7 +303,7 @@ EOF
 export pgm="process_larccld.exe"
 . prep_step
 if [[ "$run_cloud" == true ]]; then
-  $APRUN ${EXECdir}/$pgm >>pgmout 2>errfile
+  $APRUN ${EXECdir}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
   mv errfile errfile_larccld
 
