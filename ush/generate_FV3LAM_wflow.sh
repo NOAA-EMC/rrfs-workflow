@@ -631,7 +631,12 @@ print_info_msg "Generating an alternate simple launch script
 ${EXPTDIR}/run_rocoto.sh"
 
 echo "#!/bin/bash" > ${EXPTDIR}/run_rocoto.sh
-echo "module load rocoto" >> ${EXPTDIR}/run_rocoto.sh
+if [[ "${MACHINE,,}" == "wcoss2" ]] ; then
+  echo "module use /apps/ops/test/nco/modulefiles" >> ${EXPTDIR}/run_rocoto.sh
+  echo "module load core/rocoto/${rocoto_ver}" >> ${EXPTDIR}/run_rocoto.sh
+else
+  echo "module load rocoto" >> ${EXPTDIR}/run_rocoto.sh
+fi
 echo "rocotorun -w ${WFLOW_XML_FN} -d ${WFLOW_XML_FN%.*}.db" >> ${EXPTDIR}/run_rocoto.sh
 chmod +x ${EXPTDIR}/run_rocoto.sh
 #

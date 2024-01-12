@@ -196,7 +196,6 @@ natlev=${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2
 ififip=${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2
 testbed=${net4}.t${cyc}z.testbed.f${fhr}.${gridname}grib2
 
-
 # extract the output fields for the testbed
 if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
   if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN} ]]; then
@@ -227,24 +226,18 @@ cp ${postprd_dir}/${natlev} ${COMOUT}/${natlev}
 if [ -f  ${postprd_dir}/${ififip} ]; then
   cp ${postprd_dir}/${ififip} ${COMOUT}/${ififip}
 fi
-
 if [ -f  ${postprd_dir}/${testbed} ]; then
   cp ${postprd_dir}/${testbed}  ${COMOUT}/${testbed}
 fi
 
-
-cp ${postprd_dir}/${testbed}  ${COMOUT}/${testbed}
-cp ${postprd_dir}/${spc} ${COMOUT}/${spc}
 wgrib2 ${COMOUT}/${prslev} -s > ${COMOUT}/${prslev}.idx
 wgrib2 ${COMOUT}/${natlev} -s > ${COMOUT}/${natlev}.idx
 if [ -f ${COMOUT}/${ififip} ]; then
   wgrib2 ${COMOUT}/${ififip} -s > ${COMOUT}/${ififip}.idx
 fi
-
 if [ -f ${COMOUT}/${testbed} ]; then
   wgrib2 ${COMOUT}/${testbed} -s > ${COMOUT}/${testbed}.idx
 fi
-
 
 # Remap to additional output grids if requested
 
@@ -317,7 +310,6 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
     # create testbed files on 3-km CONUS grid
     prslev_conus=${net4}.t${cyc}z.prslev.f${fhr}.conus_3km.grib2
     testbed_conus=${net4}.t${cyc}z.testbed.f${fhr}.conus_3km.grib2
-    
     if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
       if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN} ]]; then
         wgrib2 ${COMOUT}/${prslev_conus} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN} | wgrib2 -i -grib ${COMOUT}/${testbed_conus} ${COMOUT}/${prslev_conus}
@@ -325,7 +317,7 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
         echo "WARNING: ${FIX_UPP}/${TESTBED_FIELDS_FN} not found"
       fi
     fi
-    
+
   else
     echo "WARNING: this grid is not ready for parallel prdgen: ${PREDEF_GRID_NAME}"
   fi
