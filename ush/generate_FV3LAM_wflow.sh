@@ -350,6 +350,7 @@ settings="\
   'start_time_spinup': ${START_TIME_SPINUP}
   'start_time_prod': ${START_TIME_PROD}
   'start_time_conventional_spinup': ${START_TIME_CONVENTIONAL_SPINUP}
+  'start_time_blending': ${START_TIME_BLENDING}
   'start_time_late_analysis': ${START_TIME_LATE_ANALYSIS}
   'start_time_conventional': ${START_TIME_CONVENTIONAL}
   'start_time_nsslmosiac': ${START_TIME_NSSLMOSIAC}
