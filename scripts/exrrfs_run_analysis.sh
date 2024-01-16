@@ -992,7 +992,7 @@ export pgm="gsi.x"
 if [ ${BKTYPE} -eq 1 ] ; then
   echo " skip cold start GSI for now"
 else
-  $APRUN $pgm < gsiparm.anl >>$pgmout 2>errfile
+  $APRUN ./$pgm < gsiparm.anl >>$pgmout 2>errfile
   export err=$?; err_chk
   mv errfile errfile_gsi
 fi
