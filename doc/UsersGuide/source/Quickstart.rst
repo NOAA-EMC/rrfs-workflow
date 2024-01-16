@@ -129,7 +129,7 @@ Engineering Test: DA
          cd ush
          cp sample_configs/DA_eng/config.DA.<type>.<machine>.sh config.sh
       
-      where ``<type>`` is ``para`` with ``<machine>`` is ``wcoss2`` while ``<type>`` is ``retro`` with ``<machine>`` is ``hera``. Note that you may need to change ``ACCOUNT`` in the configuration file ``config.sh``.
+      where ``<type>`` is ``para`` with ``<machine>`` is ``wcoss2``, or ``<type>`` is ``retro`` or ``ens`` with ``<machine>`` is ``hera``. Note that you may need to change ``ACCOUNT`` in the configuration file ``config.sh``.
 
       .. note::
          For the real-time (``para``) test run on WCOSS2, you should replace ``DATE_FIRST_CYCL``, ``DATE_LAST_CYCL``, ``CYCLEMONTH``, and ``CYCLEDAY`` with those of Today's date.
@@ -149,7 +149,7 @@ Engineering Test: DA
 
    #. Launch the following tasks as needed:
 
-      * On WCOSS2: ``config.DA.para.wcoss2.sh`` (in case of today=20230726)
+      * On WCOSS2: with ``config.DA.para.wcoss2.sh`` (in case of today=20230726)
 
       .. code-block:: console
 
@@ -166,7 +166,7 @@ Engineering Test: DA
 
          rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202307260400 -t prep_cyc_spinup
 
-      * On Hera: ``config.DA.retro.hera.sh`` (in case of cycle_date=20230611)
+      * On Hera: with ``config.DA.retro.hera.sh`` (in case of cycle_date=20230611)
 
       If you want to run beyond ``11z``, you should launch the ``get_extrn_lbcs`` tasks for ``12z`` and ``18z`` and the ``get_extrn_ics`` task for ``15z`` manually:
 
@@ -188,10 +188,34 @@ Engineering Test: DA
 
          ./run_rocoto.sh
 
+      * On Hera: with ``config.DA.ens.hera.sh`` (in case of cycle_date=20230610)
+
+      Once the ``save_restart_ensinit_mem000X`` tasks are complete, launch the following tasks for ``06z`` manually:
+
+      .. code-block:: console
+
+         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202306100600 -t prep_cyc_spinup_ensinit_mem0001
+         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202306100600 -t prep_cyc_spinup_ensinit_mem0002
+         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202306100600 -t prep_cyc_spinup_ensinit_mem0003
+
+      Once the above three tasks are complete, launch the ``run_recenter_spinup`` task for ``06z`` manually:
+
+      .. code-block:: console
+
+         rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 -c 202306100600 -t run_recenter_spinup
+
+      Keep monitoring and launching the workflow if ``USE_CRON_TO_RELAUNCH`` was NOT set to ``TRUE`` in ``config.sh``:
+
+      .. code-block:: console
+
+         ./run_rocoto.sh
+
+      .. note::
+         You should manually launch the above tasks for ``18z`` as well (due to the incorrect path to the dependency ``nonvarcldana_complete.txt``).
+
    #. Check the status of your run with ``rocotostat``:
 
       .. code-block:: console
 
          rocotostat -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -v 10 > test.log
-
 

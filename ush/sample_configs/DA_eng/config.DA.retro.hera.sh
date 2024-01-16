@@ -1,11 +1,11 @@
 MACHINE="hera"
-version="v0.00"
 #RESERVATION="rrfsdet"
 
 ################################################################
 #EXPT_BASEDIR="YourOwnSpace"
 EXPT_SUBDIR="rrfs_test_da"
 
+version="v0.0.0"
 envir="test"
 NET="rrfs"
 TAG="c0v00"
@@ -16,17 +16,13 @@ STMP="/scratch2/NCEPDEV/stmp3/${USER}/test_da"
 PTMP="/scratch2/NCEPDEV/stmp3/${USER}/test_da"
 
 EXTRN_MDL_DATE_JULIAN="TRUE"
+PREDEF_GRID_NAME=RRFS_CONUS_3km
+. set_rrfs_config_general.sh
+
+ACCOUNT="fv3-cam"
 
 #USE_CRON_TO_RELAUNCH="TRUE"
 #CRON_RELAUNCH_INTVL_MNTS="05"
-################################################################
-
-PREDEF_GRID_NAME=RRFS_CONUS_3km
-
-. set_rrfs_config_general.sh
-
-################################################################
-ACCOUNT="fv3-cam"
 ################################################################
 
 . set_rrfs_config_SDL_VDL_MixEn.sh
