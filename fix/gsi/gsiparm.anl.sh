@@ -2,8 +2,8 @@ gsi_namelist="
  &SETUP
    miter=${miter},niter(1)=${niter1},niter(2)=${niter2},
    write_diag(1)=.true.,write_diag(2)=${write_diag_2},write_diag(3)=.true.,
-   qoption=2,print_obs_para=.true.,diag_radardbz=${diag_radardbz},
-   if_model_dbz=${if_model_dbz},static_gsi_nopcp_dbz=0.0,if_use_w_vr=.false.,
+   qoption=2,print_obs_para=.true.,diag_fed=${diag_fed},diag_radardbz=${diag_radardbz},
+   if_model_dbz=${if_model_dbz},if_model_fed=${if_model_fed},static_gsi_nopcp_dbz=0.0,if_use_w_vr=.false.,
    rmesh_dbz=4.0,rmesh_vr=4.0,zmesh_dbz=1000.0,zmesh_vr=1000.0,
    inflate_dbz_obserr=.true.,missing_to_nopcp=.false.,radar_no_thinning=.true.,
    gencode=78,factqmin=0.0,factqmax=0.0,
@@ -21,6 +21,7 @@ gsi_namelist="
    netcdf_diag=${netcdf_diag},binary_diag=${binary_diag},
    l_obsprvdiag=${l_obsprvdiag},
    lwrite_peakwt=.true.,
+   innov_use_model_fed=${innov_use_model_fed},
  /     
  &GRIDOPTS
    fv3_regional=.true.,grid_ratio_fv3_regional=${grid_ratio_fv3},nvege_type=20,
@@ -50,6 +51,7 @@ OBS_INPUT::
 !  dfile          dtype       dplat     dsis                 dval    dthin dsfcalc
    pm25bufr       pm2_5       null      TEOM                 1.0     0     0
    dbzobs.nc      dbz         null      dbz                  1.0     0     0
+   fedobs.nc      fed         null      fed                  1.0     0     0
    prepbufr       ps          null      ps                   1.0     0     0
    prepbufr       t           null      t                    1.0     0     0
    prepbufr       q           null      q                    1.0     0     0
