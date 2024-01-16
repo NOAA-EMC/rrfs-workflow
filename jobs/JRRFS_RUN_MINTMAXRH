@@ -105,9 +105,9 @@ if [ ${CYCLE_TYPE} == "spinup" ]; then
 fi
 mkdir -p "${postprd_dir}"
 
-fhr_dir="${postprd_dir}/$fhr"
+#fhr_dir="${postprd_dir}/$fhr"
 #check_for_preexist_dir_file "${fhr_dir}" "delete"
-mkdir -p "${fhr_dir}"
+#mkdir -p "${fhr_dir}"
 ######################
 ## Execute the scripts.
 #######################
@@ -117,12 +117,15 @@ mkdir -p "${fhr_dir}"
 ## Compute Min T
 #######################
 #
+
+pgmout="${postprd_dir}/mint_000/OUTPUT.$$"
+env
+
 $SCRIPTSdir/exrrfs_run_mintbg.ksh \
   cdate="${CDATE}" \
   run_dir="${run_dir}" \
   postprd_dir="${postprd_dir}" \
   comout="${COMOUT}" \
-  fhr_dir="${fhr_dir}" \
   fhr="${fhr}" \
   tmmark="${TMMARK}" || \
 print_err_msg_exit "\
@@ -136,7 +139,6 @@ $SCRIPTSdir/exrrfs_run_maxrh.ksh \
   run_dir="${run_dir}" \
   postprd_dir="${postprd_dir}" \
   comout="${COMOUT}" \
-  fhr_dir="${fhr_dir}" \
   fhr="${fhr}" \
   tmmark="${TMMARK}" || \
 print_err_msg_exit "\

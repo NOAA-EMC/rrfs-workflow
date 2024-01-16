@@ -510,7 +510,7 @@ optionList[26]=DO_PM_DA
 optionList[27]=DO_ENSFCST_MULPHY
 optionList[28]=DO_GLM_FED_DA
 optionList[29]=GLMFED_DATA_MODE
-
+optionList[30]=DO_MINMAXTRH
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));
 do
@@ -832,7 +832,7 @@ LIB64dir="$HOMErrfs/sorc/build/lib64"
 FIXgsm=${FIXgsm:-"$HOMErrfs/fix/am"}
 FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"$HOMErrfs/fix/lam"}
 FIX_GSI=${FIX_GSI:-"${HOMErrfs}/fix/gsi"}
-FIX_MINMAXTRH=${FIX_MINMAXTRH:-"${HOMErrfs}/fix/minmaxtrh"}
+FIX_MINMAXTRH=${FIX_MINMAXTRH:-"${HOMErrfs}/fix/minmaxt"}
 FIX_UPP=${FIX_UPP:-"${HOMErrfs}/fix/upp"}
 FIX_CRTM=${FIX_CRTM:-"${CRTM_FIX}"}
 FIX_UPP_CRTM=${FIX_UPP_CRTM:-"${CRTM_FIX}"}
@@ -1318,6 +1318,7 @@ FIXcrtm="${EXPTDIR}/fix_crtm"
 FIXuppcrtm="${EXPTDIR}/fix_upp_crtm"
 FIXsmokedust="${EXPTDIR}/fix_smoke_dust"
 FIXbufrsnd="${EXPTDIR}/fix_bufrsnd"
+FIXminmaxtrh="${EXPTDIR}/fix_minmaxt"
 SST_ROOT="${SST_ROOT}"
 
 CYCLE_BASEDIR="$STMP"
@@ -2478,6 +2479,7 @@ FIX_CRTM="${FIX_CRTM}"
 FIX_UPP_CRTM="${FIX_UPP_CRTM}"
 FIX_SMOKE_DUST="${FIX_SMOKE_DUST}"
 FIX_BUFRSND="${FIX_BUFRSND}"
+FIX_MINMAXTRH="${FIX_MINMAXTRH}"
 AIRCRAFT_REJECT="${AIRCRAFT_REJECT}"
 SFCOBS_USELIST="${SFCOBS_USELIST}"
 

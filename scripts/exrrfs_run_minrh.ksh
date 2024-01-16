@@ -61,7 +61,6 @@ valid_args=( \
 "postprd_dir" \
 "comout" \
 "fixminmax" \
-"fhr_dir" \
 "fhr" \
 "tmmark" \
 )
@@ -195,15 +194,15 @@ bnum=${bnum}
 /
 EOF
 
-. prep_step
 
 ln -sf ${run}.${PDYm1}.minrh_anl.dat fort.61
 ln -sf ${run}.${PDYm1}.minrh_bg.dat fort.62
 
-export pgm=rtma_minrh.exe
-
-${EXECdir}/pgm  > $pgmout 2>&errfile
+export pgm=rrfs_minrh.exe
+. prep_step
+${EXECdir}/$pgm  > $pgmout 2>errfile
 export err=$?; err_chk
+mv errfile errfile_minrh
 
 #wgrib2 options: -set_byte 4 48 1 ensures we are dealing with succession of analyses
 #-set_byte 4 47 3 ensures we are dealing with maximum value

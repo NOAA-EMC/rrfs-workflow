@@ -61,7 +61,6 @@ valid_args=( \
 "run_dir" \
 "postprd_dir" \
 "comout" \
-"fhr_dir" \
 "fhr" \
 "tmmark" \
 )
@@ -189,20 +188,22 @@ bnum=3
 /
 EOF
 
-. prep_step
 
 export FORT71=${run}.${PDYm1}.maxt_diag_bg.dat
 export FORT72=${run}.${PDYm1}.maxt_diag_anl.dat
 
-cp $FIX_MINMAXTRH/bin_files/aktz.bin .
-cp $FIX_MINMAXTRH/bin_files/conusexttz.bin .
-cp $FIX_MINMAXTRH/bin_files/conustz.bin .
-cp $FIX_MINMAXTRH/bin_files/conustz_ndfdonly.bin .
+cp $FIX_MINMAXTRH/aktz.bin .
+cp $FIX_MINMAXTRH/conusexttz.bin .
+cp $FIX_MINMAXTRH/conustz.bin .
+cp $FIX_MINMAXTRH/conustz_ndfdonly.bin .
 
 export pgm=rrfs_maxt.exe
 
-${EXECdir}/pgm  > $pgmout 2>&errfile
+. prep_step
+
+${EXECdir}/$pgm  > $pgmout 2>errfile
 export err=$?; err_chk
+mv errfile errfile_maxt
 
 if [[ $Tur = yes ]]; then
 if [ -s $DATAmaxt/maxt_${run}_bg.bin ] ; then

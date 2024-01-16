@@ -82,6 +82,7 @@ else
   fi
 fi
 
+
 #Next, check for the non-standard python packages: jinja2, yaml, and f90nml
 pkgs=(jinja2 yaml f90nml)
 for pkg in ${pkgs[@]}  ; do
@@ -590,6 +591,15 @@ has been set as follows:
 settings =
 $settings"
 
+if [[ "${MACHINE,,}" == "wcoss2" ]] ; then
+  RUN_VER_FN="run.ver"
+  VERSION_FILE="${PARMdir}/../versions/${RUN_VER_FN}"
+  if [ -f ${VERSION_FILE} ]; then
+    . ${VERSION_FILE}
+  fi
+fi
+
+
 #
 # Set the full path to the template rocoto XML file.  Then call a python
 # script to generate the experiment's actual XML file from this template
@@ -756,13 +766,26 @@ if [ ! -d "${path_resolved}" ]; then
   the experiment generation script."
 fi
 
+# Resolve the target directory that the FIXminmaxtrh symlink points to 
+ln -fsn "$FIX_MINMAXTRH" "$FIXminmaxtrh"
+path_resolved=$( readlink -m "$FIXminmaxtrh" )
+if [ ! -d "${path_resolved}" ]; then
+  print_err_msg_exit "\
+  Missing link to FIXminmaxtrh
+  FIXminmaxtrh = \"$FIXminmaxtrh\"
+  path_resolved = \"${path_resolved}\"
+  Please ensure that path_resolved is an existing directory and then rerun
+  the experiment generation script."
+fi
+
+
 if [ "${DO_BUFRSND}" = "TRUE" ]; then
   # Resolve the target directory that the FIXbufrsnd symlink points to
   ln -fsn "$FIX_BUFRSND" "$FIXbufrsnd"
   path_resolved=$( readlink -m "$FIXbufrsnd" )
   if [ ! -d "${path_resolved}" ]; then
     print_err_msg_exit "Missing link to FIXbufrsnd
-    FIXsmokedust = \"$FIXbufrsnd\"
+    FIXbufrsnd = \"$FIXbufrsnd\"
     path_resolved = \"${path_resolved}\"
     Please ensure that path_resolved is an existing directory and then rerun
     the experiment generation script."
