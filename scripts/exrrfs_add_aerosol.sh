@@ -48,7 +48,7 @@ to LBCs.
 #
 #-----------------------------------------------------------------------
 #
-# Set environment
+# Set environment variables.
 #
 #-----------------------------------------------------------------------
 #
@@ -85,22 +85,20 @@ yyyymmdd=${CDATE_MOD:0:8}
 mm="${CDATE_MOD:4:2}"
 hh="${CDATE_MOD:8:2}"
 
-GEFS_FILE_CYC=${GEFS_FILE_CYC:-"${hh}"}
-GEFS_FILE_CYC=$( printf "%02d" "${GEFS_FILE_CYC}" )
-
-GEFS_CYC_DIFF=$(( cyc - GEFS_FILE_CYC ))
-if [ "${GEFS_CYC_DIFF}" -lt "0" ]; then
-  TSTEPDIFF=$( printf "%02d" $(( 24 + ${GEFS_CYC_DIFF} )) )
+gefs_file_cyc=$( printf "%02d" "${hh}" )
+gefs_cyc_diff=$(( cyc - gefs_file_cyc ))
+if [ "${gefs_cyc_diff}" -lt "0" ]; then
+  tstepdiff=$( printf "%02d" $(( 24 + ${gefs_cyc_diff} )) )
 else
-  TSTEPDIFF=$( printf "%02d" ${GEFS_CYC_DIFF} )
+  tstepdiff=$( printf "%02d" ${gefs_cyc_diff} )
 fi
 
-GEFS_AEROSOL_MOFILE_FN="${GEFS_AEROSOL_FILE_PREFIX}.t${GEFS_FILE_CYC}z.atmf"
-GEFS_AEROSOL_MOFILE_FP="${COMINgefs}/gefs.${yyyymmdd}/${GEFS_FILE_CYC}/chem/sfcsig/${GEFS_AEROSOL_MOFILE_FN}"
+gefs_aerosol_mofile_fn="${GEFS_AEROSOL_FILE_PREFIX}.t${gefs_file_cyc}z.atmf"
+gefs_aerosol_mofile_fp="${COMINgefs}/gefs.${yyyymmdd}/${gefs_file_cyc}/chem/sfcsig/${gefs_aerosol_mofile_fn}"
 
-GEFS_SPEC_FCST_HRS=()
-for i_lbc in $(seq ${GEFS_SPEC_INTVL_HRS} ${GEFS_SPEC_INTVL_HRS} ${FCST_LEN_HRS} ); do
-  GEFS_SPEC_FCST_HRS+=("$i_lbc")
+gefs_aerosol_fcst_hrs=()
+for i_lbc in $(seq ${GEFS_AEROSOL_INTVL_HRS} ${GEFS_AEROSOL_INTVL_HRS} ${FCST_LEN_HRS} ); do
+  gefs_aerosol_fcst_hrs+=("$i_lbc")
 done
 #
 #-----------------------------------------------------------------------
@@ -109,15 +107,15 @@ done
 #
 #-----------------------------------------------------------------------
 #
-for hr in 0 ${GEFS_SPEC_FCST_HRS[@]}; do
+for hr in 0 ${gefs_aerosol_fcst_hrs[@]}; do
   hr_mod=$(( hr + EXTRN_MDL_LBCS_OFFSET_HRS ))
   fhr=$( printf "%03d" "${hr_mod}" )
-  GEFS_AEROSOL_MOFILE_FHR_FP="${GEFS_AEROSOL_MOFILE_FP}${fhr}.nemsio"
-  if [ -e "${GEFS_AEROSOL_MOFILE_FHR_FP}" ]; then
-    ls -nsf "${GEFS_AEROSOL_MOFILE_FHR_FP}" .
-    echo "File exists: ${GEFS_AEROSOL_MOFILE_FHR_FP}"
+  gefs_aerosol_mofile_fhr_fp="${gefs_aerosol_mofile_fp}${fhr}.${GEFS_AEROSOL_FILE_FMT}"
+  if [ -e "${gefs_aerosol_mofile_fhr_fp}" ]; then
+    ls -nsf "${gefs_aerosol_mofile_fhr_fp}" .
+    echo "File exists: ${gefs_aerosol_mofile_fhr_fp}"
   else
-    message_warning="File was not found even after rechecks: ${GEFS_AEROSOL_MOFILE_FHR_FP}"
+    message_warning="File was not found even after rechecks: ${gefs_aerosol_mofile_fhr_fp}"
     echo "${message_warning}"
     if [ ! -z "${MAILTO}" ] && [ "${MACHINE}" = "WCOSS2" ]; then
       echo "${message_warning}" | mail.py ${MAILTO}
@@ -133,10 +131,10 @@ done
 #
 cat > gefs2lbc-nemsio.ini <<EOF
 &control
- tstepdiff=${TSTEPDDIFF}
- dtstep=${LBC_SPEC_INTVL_HRS}
+ tstepdiff=${tstepdiff}
+ dtstep=${GEFS_AEROSOL_INTVL_HRS}
  bndname='dust','coarsepm'
- mofile='${GEFS_AEROSOL_MOFILE_FP}','.nemsio'
+ mofile='${gefs_aerosol_mofile_fp}','.${GEFS_AEROSOL_FILE_FMT}'
  lbcfile='${COMIN}/gfs_bndy.tile7.','.nc'
  topofile='${OROG_DIR}/${CRES}_oro_data.tile7.halo4.nc'
  inblend=${HALO_BLEND}

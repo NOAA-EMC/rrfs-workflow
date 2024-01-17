@@ -2478,6 +2478,25 @@ FVCOM_FILE="fvcom.nc"
 #
 #-----------------------------------------------------------------------
 #
+# Set parameters associated with aerosol LBCs.
+#
+# GEFS_AEROSOL_FILE_PREFIX:
+# Prefix of GEFS aerosol data files (default: geaer)
+#
+# GEFS_AEROSOL_FILE_FMT:
+# File format of GEFS aerosol data (default: nemsio)
+#
+# GEFS_AEROSOL_INTVL_HRS:
+# The interval (in integer hous) of the GEFS aerosol data files
+#
+#-----------------------------------------------------------------------
+#
+GEFS_AEROSOL_FILE_PREFIX="geaer"
+GEFS_AEROSOL_FILE_FMT="nemsio"
+GEFS_AEROSOL_INTVL_HRS="3"
+#
+#-----------------------------------------------------------------------
+#
 # COMPILER:
 # Type of compiler invoked during the build step. 
 #
