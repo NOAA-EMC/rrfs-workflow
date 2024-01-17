@@ -322,6 +322,7 @@ EXPT_SUBDIR=""
 #-----------------------------------------------------------------------
 #
 COMINgfs="/base/path/of/directory/containing/gfs/input/files"
+COMINgefs=""
 FIXLAM_NCO_BASEDIR=""
 STMP="/base/path/of/directory/containing/model/input/and/raw/output/files"
 ENSCTRL_STMP="/base/path/of/directory/containing/model/input/and/raw/output/files"
@@ -1519,7 +1520,11 @@ SAVE_CYCLE_LOG="TRUE"
 # Same as GRID_DIR but for the surface climatology generation task.
 #
 # RUN_TASK_RUN_PRDGEN:
-# Same as RUN_TASK_MAKE_GRID but for the product generation task.
+# Flag that determines whether the product generation task is to run.
+#
+# RUN_TASK_ADD_AEROSOL:
+# Flag that determines whether the task for adding dusk in the GEFS 
+# aerosol data to LBCs task is to run.
 #
 # IS_RTMA:
 # If true, some ICs,LBCs,GSI rocoto tasks will be turned off
@@ -1550,7 +1555,7 @@ RUN_TASK_MAKE_SFC_CLIMO="FALSE"
 SFC_CLIMO_DIR=""
 
 RUN_TASK_RUN_PRDGEN="TRUE"
-
+RUN_TASK_ADD_AEROSOL="FALSE"
 #
 NCORES_PER_NODE=24 #Jet default value
 IS_RTMA="FALSE"
@@ -1824,6 +1829,7 @@ SAVE_RESTART_TN="save_restart"
 SAVE_DA_OUTPUT_TN="save_da_output"
 JEDI_ENVAR_IODA_TN="jedi_envar_ioda"
 PROCESS_GLMFED_TN="process_glmfed"
+ADD_AEROSOL_TN="add_aerosol"
 #
 # Number of nodes.
 #
@@ -1856,6 +1862,7 @@ NNODES_RUN_ENSPOST="1"
 NNODES_RUN_BUFRSND="1"
 NNODES_SAVE_RESTART="1"
 NNODES_RUN_JEDIENVAR_IODA="1"
+NNODES_ADD_AEROSOL="1"
 #
 # Number of cores.
 #
@@ -1897,6 +1904,7 @@ PPN_RUN_ENSPOST="1"
 PPN_RUN_BUFRSND="28"
 PPN_SAVE_RESTART="1"
 PPN_RUN_JEDIENVAR_IODA="1"
+PPN_ADD_AEROSOL="9"
 #
 # Number of TPP for WCOSS2.
 #
@@ -1940,6 +1948,7 @@ WTIME_RUN_BUFRSND="00:45:00"
 WTIME_SAVE_RESTART="00:15:00"
 WTIME_RUN_ENSPOST="00:30:00"
 WTIME_RUN_JEDIENVAR_IODA="00:30:00"
+WTIME_ADD_AEROSOL="00:30:00"
 #
 # Start times.
 #
@@ -1970,6 +1979,7 @@ MEMO_PROC_SMOKE="40G"
 MEMO_PROC_GLMFED="70G"
 MEMO_PROC_PM="40G"
 MEMO_SAVE_DA_OUTPUT="40G"
+MEMO_ADD_AEROSOL="70G"
 #
 # Maximum number of attempts.
 #
@@ -2001,6 +2011,7 @@ MAXTRIES_CLDANL_NONVAR="1"
 MAXTRIES_SAVE_RESTART="1"
 MAXTRIES_SAVE_DA_OUTPUT="1"
 MAXTRIES_JEDI_ENVAR_IODA="1"
+MAXTRIES_ADD_AEROSOL="1"
 #
 #-----------------------------------------------------------------------
 #
