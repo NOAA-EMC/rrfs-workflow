@@ -9,7 +9,7 @@ load("contrib")
 load("rocoto")
 load("wget")
 
-prepend_path("MODULEPATH","/work/noaa/epic/role-epic/spack-stack/orion/spack-stack-1.5.0/envs/unified-env/install/modulefiles/Core")
+prepend_path("MODULEPATH", "/work/noaa/epic/role-epic/spack-stack/orion/spack-stack-1.5.1/envs/gsi-addon/install/modulefiles/Core")
 load(pathJoin("stack-intel", os.getenv("stack_intel_ver") or "2022.0.2"))
 load(pathJoin("stack-intel-oneapi-mpi", os.getenv("stack_impi_ver") or "2021.5.1"))
 load(pathJoin("crtm", os.getenv("crtm_ver") or "2.4.0"))
