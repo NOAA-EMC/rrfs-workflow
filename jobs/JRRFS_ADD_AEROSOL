@@ -60,9 +60,6 @@ data to LBCs.
 #
 #-----------------------------------------------------------------------
 #
-# Flag for shared working directory
-flag_shared_working_dir="FALSE"
-
 # Define job and jobid by default for rocoto
 WORKFLOW_MANAGER="${WORKFLOW_MANAGER:-rocoto}"
 if [ "${WORKFLOW_MANAGER}" = "rocoto" ]; then
@@ -76,11 +73,7 @@ if [ "${WORKFLOW_MANAGER}" = "rocoto" ]; then
     job="task"
     pid=$$
   fi
-  if [ "${flag_shared_working_dir}" = "TRUE" ]; then
-    jobid="${job}.${PDY}${cyc}"
-  else
-    jobid="${job}.${PDY}${cyc}.${pid}"
-  fi
+  jobid="${job}.${PDY}${cyc}.${pid}"
 fi
 
 export DATAROOT="${DATAROOT:-${PTMP}/${envir}/tmp}"
@@ -119,7 +112,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-if [ "${KEEPDATA}" = "NO" ] && [ "${flag_shared_working_dir}" = "FALSE" ]; then
+if [ "${KEEPDATA}" = "NO" ]; then
   rm -rf ${DATA}
 fi
 date
