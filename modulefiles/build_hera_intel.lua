@@ -12,6 +12,9 @@ load(pathJoin("cmake", os.getenv("cmake_ver") or "3.23.1"))
 
 load("rrfs_common")
 
+prepend_path("MODULEPATH", "/scratch2/BMC/rtrr/gge/lua")
+load("prod_util/2.0.15")
+
 unload("python/3.10.8")
 
 setenv("CMAKE_C_COMPILER","mpiicc")
