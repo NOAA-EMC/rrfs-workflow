@@ -198,6 +198,7 @@ settings="\
   'get_gefs_lbcs_tn': ${GET_GEFS_LBCS_TN}
   'make_ics_tn': ${MAKE_ICS_TN}
   'make_lbcs_tn': ${MAKE_LBCS_TN}
+  'add_aerosol_tn': ${ADD_AEROSOL_TN}
   'run_fcst_tn': ${RUN_FCST_TN}
   'run_post_tn': ${RUN_POST_TN}
   'run_prdgen_tn': ${RUN_PRDGEN_TN}
