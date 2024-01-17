@@ -80,6 +80,11 @@ case $MACHINE in
 #
 esac
 
+CDATE_MOD=$( $DATE_UTIL --utc --date "${PDY} ${cyc} UTC - ${EXTRN_MDL_LBCS_OFFSET_HRS} hours" "+%Y%m%d%H" )
+yyyymmdd=${CDATE_MOD:0:8}
+mm="${CDATE_MOD:4:2}"
+hh="${CDATE_MOD:8:2}"
+
 GEFS_FILE_CYC=${GEFS_FILE_CYC:-"${hh}"}
 GEFS_FILE_CYC=$( printf "%02d" "${GEFS_FILE_CYC}" )
 
@@ -92,6 +97,11 @@ fi
 
 GEFS_AEROSOL_MOFILE_FN="${GEFS_AEROSOL_FILE_PREFIX}.t${GEFS_FILE_CYC}z.atmf"
 GEFS_AEROSOL_MOFILE_FP="${COMINgefs}/gefs.${yyyymmdd}/${GEFS_FILE_CYC}/chem/sfcsig/${GEFS_AEROSOL_MOFILE_FN}"
+
+GEFS_SPEC_FCST_HRS=()
+for i_lbc in $(seq ${GEFS_SPEC_INTVL_HRS} ${GEFS_SPEC_INTVL_HRS} ${FCST_LEN_HRS} ); do
+  GEFS_SPEC_FCST_HRS+=("$i_lbc")
+done
 #
 #-----------------------------------------------------------------------
 #
@@ -99,7 +109,7 @@ GEFS_AEROSOL_MOFILE_FP="${COMINgefs}/gefs.${yyyymmdd}/${GEFS_FILE_CYC}/chem/sfcs
 #
 #-----------------------------------------------------------------------
 #
-for hr in 0 ${LBC_SPEC_FCST_HRS[@]}; do
+for hr in 0 ${GEFS_SPEC_FCST_HRS[@]}; do
   hr_mod=$(( hr + EXTRN_MDL_LBCS_OFFSET_HRS ))
   fhr=$( printf "%03d" "${hr_mod}" )
   GEFS_AEROSOL_MOFILE_FHR_FP="${GEFS_AEROSOL_MOFILE_FP}${fhr}.nemsio"

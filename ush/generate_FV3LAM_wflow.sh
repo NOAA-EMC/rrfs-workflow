@@ -377,7 +377,7 @@ settings="\
   'memo_proc_glmfed': ${MEMO_PROC_GLMFED}
   'memo_proc_pm': ${MEMO_PROC_PM}
   'memo_save_da_output': ${MEMO_SAVE_DA_OUTPUT}
-  'memo_add_aerosol': ${MEMO_add_aerosol}
+  'memo_add_aerosol': ${MEMO_ADD_AEROSOL}
 #
 # Maximum number of tries for each task.
 #
@@ -409,7 +409,7 @@ settings="\
   'maxtries_jedi_envar_ioda': ${MAXTRIES_JEDI_ENVAR_IODA}
   'maxtries_add_aerosol': ${MAXTRIES_ADD_AEROSOL}
 #
-# Flags that specify whether to run the specific tasks.
+# Flags that determine whether to run the specific tasks.
 #
   'run_task_make_grid': ${RUN_TASK_MAKE_GRID}
   'run_task_make_orog': ${RUN_TASK_MAKE_OROG}
