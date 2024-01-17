@@ -322,7 +322,6 @@ EXPT_SUBDIR=""
 #-----------------------------------------------------------------------
 #
 COMINgfs="/base/path/of/directory/containing/gfs/input/files"
-COMINgefs=""
 FIXLAM_NCO_BASEDIR=""
 STMP="/base/path/of/directory/containing/model/input/and/raw/output/files"
 ENSCTRL_STMP="/base/path/of/directory/containing/model/input/and/raw/output/files"
@@ -2480,6 +2479,11 @@ FVCOM_FILE="fvcom.nc"
 #
 # Set parameters associated with aerosol LBCs.
 #
+# COMINgefs:
+# Path to GEFS aerosol data files
+# Typical path: COMINgefs/gefs.YYYYMMDD/HH/chem/sfcsig/
+# Typical file name: geaer.t00z.atmf000.nemsio
+#
 # GEFS_AEROSOL_FILE_PREFIX:
 # Prefix of GEFS aerosol data files (default: geaer)
 #
@@ -2491,6 +2495,7 @@ FVCOM_FILE="fvcom.nc"
 #
 #-----------------------------------------------------------------------
 #
+COMINgefs=""
 GEFS_AEROSOL_FILE_PREFIX="geaer"
 GEFS_AEROSOL_FILE_FMT="nemsio"
 GEFS_AEROSOL_INTVL_HRS="3"
