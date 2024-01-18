@@ -510,6 +510,7 @@ optionList[26]=DO_PM_DA
 optionList[27]=DO_ENSFCST_MULPHY
 optionList[28]=DO_GLM_FED_DA
 optionList[29]=GLMFED_DATA_MODE
+optionList[30]=DO_IODA_PREPBUFR
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));
@@ -834,6 +835,7 @@ FIX_SMOKE_DUST=${FIX_SMOKE_DUST:-"${HOMErrfs}/fix/smoke_dust"}
 FIX_BUFRSND=${FIX_BUFRSND:-"${HOMErrfs}/fix/bufrsnd"}
 AIRCRAFT_REJECT=${AIRCRAFT_REJECT:-"${FIX_GSI}"}
 SFCOBS_USELIST=${SFCOBS_USELIST:-"${FIX_GSI}"}
+PARM_IODACONV=${PARM_IODACONV:-"${HOMErrfs}/parm/iodaconv"}
 
 case $MACHINE in
 
@@ -2474,6 +2476,7 @@ FIX_SMOKE_DUST="${FIX_SMOKE_DUST}"
 FIX_BUFRSND="${FIX_BUFRSND}"
 AIRCRAFT_REJECT="${AIRCRAFT_REJECT}"
 SFCOBS_USELIST="${SFCOBS_USELIST}"
+PARM_IODACONV="${PARM_IODACONV}"
 
 RADARREFL_MINS=( $(printf "\"%s\" " "${RADARREFL_MINS[@]}" ))
 RADARREFL_TIMELEVEL=( $(printf "\"%s\" " "${RADARREFL_TIMELEVEL[@]}" ))
