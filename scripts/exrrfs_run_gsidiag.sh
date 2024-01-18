@@ -311,42 +311,46 @@ fi
 # set up local dirs and run run radmon to generate radiance monitor data
 #------------------------------------------------------------------------
 
-if [ DO_RADMON ]; then
-   echo "Run EMC Radmon package to generate daily monitoring data for satellite"
+if [ "${DO_RADMON}" = "TRUE" ]; then 
+   if [ ! -f ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat ]; then
+     echo "***radstat file for " ${YYYYMMDDHH} "is not existing, skipping radmon job***"
+   else
+     echo "Run EMC Radmon package to generate daily monitoring data for satellite"
 
-   envir=${envir:-prod}
-   REGIONAL_RR=${REGIONAL_RR:-1}
+     envir=${envir:-prod}
+     REGIONAL_RR=${REGIONAL_RR:-1}
 
-   export TANKverf=${TANKverf:-$NWGES_BASEDIR/radmon}
-   export TANKverf_rad=$TANKverf/radmon.$PDY
+     export TANKverf=${TANKverf:-$NWGES_BASEDIR/radmon}
+     export TANKverf_rad=$TANKverf/radmon.$PDY
 
 
-   if [ ! -d $TANKverf_rad ]; then
+     if [ ! -d $TANKverf_rad ]; then
        mkdir -p -m 775 $TANKverf_rad
+     fi
+
+
+     export RAD_AREA=${RAD_AREA:-rgn}
+     export CYCLE_INTERVAL=${CYCLE_INTERVAL:-1}
+     export DATA=${analworkdir_conv}/radmon
+     export TANKverf_radM1=${TANKverf_radM1:-${TANKverf}/radmon.${PDY}}
+
+     export GSI_MON_BIN=$EXECdir
+     export FIXgdas=$FIX_GSI
+
+     export RADMON_SUFFIX=rrfs
+     export rgnHH=${PDY}${cyc}
+     export biascr=${biascr:-${SATBIAS_DIR}/${RADMON_SUFFIX}.${CYCLE_TYPE}.${rgnHH}_satbias}
+     export radstat=${radstat:-${SATBIAS_DIR}/${RADMON_SUFFIX}.${CYCLE_TYPE}.${rgnHH}_radstat}
+
+     echo "radstat: $radstat"
+     echo "biascr:  $biascr"
+
+     export COMPRESS=gzip
+
+     CLEAN_TANKVERF=1
+
+     . $USHdir/rrfs_radmon/exrrfs_verfrad.sh ${PDY} ${cyc}
    fi
-
-
-   export RAD_AREA=${RAD_AREA:-rgn}
-   export CYCLE_INTERVAL=${CYCLE_INTERVAL:-1}
-   export DATA=${analworkdir_conv}/radmon
-   export TANKverf_radM1=${TANKverf_radM1:-${TANKverf}/radmon.${PDY}}
-
-   export GSI_MON_BIN=$EXECdir
-   export FIXgdas=$FIX_GSI
-
-   export RADMON_SUFFIX=rrfs
-   export rgnHH=${PDY}${cyc}
-   export biascr=${biascr:-${SATBIAS_DIR}/${RADMON_SUFFIX}.${CYCLE_TYPE}.${rgnHH}_satbias}
-   export radstat=${radstat:-${SATBIAS_DIR}/${RADMON_SUFFIX}.${CYCLE_TYPE}.${rgnHH}_radstat}
-
-   echo "radstat: $radstat"
-   echo "biascr:  $biascr"
-
-   export COMPRESS=gzip
-
-   CLEAN_TANKVERF=1
-
-   . $USHdir/rrfs_radmon/exrrfs_verfrad.sh ${PDY} ${cyc}
 fi
 #
 #-----------------------------------------------------------------------
