@@ -1,13 +1,32 @@
-MACHINE="jet"
-version="v0.7.9"
+MACHINE="hera"
 #RESERVATION="rrfsens"
 #RESERVATION_POST="rrfsdet"
-EXPT_BASEDIR="YourOwnSpace/${version}"
-EXPT_SUBDIR="RRFS_CONUS_3km_ens"
 
+################################################################
+#EXPT_BASEDIR="YourOwnSpace"
+EXPT_SUBDIR="rrfs_test_da_ens"
+
+version="v0.0.0"
+envir="test"
+NET="rrfs"
+TAG="c0v00"
+MODEL="rrfs"
+RUN="rrfs"
+RUN_ensctrl="rrfs"
+
+PTMP="/scratch2/NCEPDEV/stmp3/${USER}/rrfs_test_da_ens"
+STMP="${PTMP}"
+
+EXTRN_MDL_DATE_JULIAN="TRUE"
 PREDEF_GRID_NAME=RRFS_CONUS_3km
-
 . set_rrfs_config_general.sh
+
+ACCOUNT="fv3-cam"
+HPSS_ACCOUNT="fv3-cam"
+
+#USE_CRON_TO_RELAUNCH="TRUE"
+#CRON_RELAUNCH_INTVL_MNTS="05"
+################################################################
 
 DO_ENSEMBLE="TRUE"
 #DO_ENSFCST="TRUE"
@@ -22,7 +41,7 @@ DO_NONVAR_CLDANAL="TRUE"
 #DO_ENVAR_RADAR_REF="TRUE"
 DO_SMOKE_DUST="FALSE"
 DO_PM_DA="FALSE"
-DO_GLM_FED_DA="FALSE"
+DO_GLM_FED_DA="TRUE"
 GLMFED_DATA_MODE="EMC"  # retros 20220608-now use FULL; retros 20230714-now and real-time on Jet use FULL or TILES
 #DO_REFL2TTEN="FALSE"
 #RADARREFL_TIMELEVEL=(0)
@@ -37,7 +56,6 @@ DO_PARALLEL_PRDGEN="FALSE"
 DO_GSIDIAG_OFFLINE="FALSE"
 
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
-  EXPT_SUBDIR="rrfs_conus_enfcst"
   DO_SPINUP="FALSE"
   DO_SAVE_DA_OUTPUT="FALSE"
   DO_NONVAR_CLDANAL="FALSE"
@@ -56,9 +74,8 @@ EXTRN_MDL_NAME_LBCS="GEFS"
 
 # available retro period:
 # 20230419-27; 20230610-18; 20230729-0807; 20230826-31; 20220720-27; 20220429-0506; 20220201-07
-DATE_FIRST_CYCL="20220201"
-DATE_LAST_CYCL="20220202"
-CYCL_HRS=( "00" "12" )
+DATE_FIRST_CYCL="20230610"
+DATE_LAST_CYCL="20230610"
 CYCL_HRS=( "18" )
 CYCL_HRS_SPINSTART=("06" "18")
 CYCL_HRS_PRODSTART=("07" "19")
@@ -66,8 +83,8 @@ if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   CYCL_HRS_STOCH=("00" "06" "12" "18")
 fi
 #CYCL_HRS_RECENTER=("19")
-CYCLEMONTH="02"
-CYCLEDAY="01-02"
+CYCLEMONTH="06"
+CYCLEDAY="10"
 
 STARTYEAR=${DATE_FIRST_CYCL:0:4}
 STARTMONTH=${DATE_FIRST_CYCL:4:2}
@@ -84,7 +101,8 @@ BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}0600 ${DATE_LAST_CYCL}2300 06:00:00"
 PROD_CYCLEDEF="${DATE_FIRST_CYCL}0700 ${DATE_LAST_CYCL}2300 01:00:00"
 PRODLONG_CYCLEDEF="00 01 01 01 2100 *"
 #RECENTER_CYCLEDEF="00 19 * 10 2022 *"
-ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 24:00:00"
+#ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 24:00:00"
+ARCHIVE_CYCLEDEF="${DATE_LAST_CYCL}2300 ${DATE_LAST_CYCL}2300 24:00:00"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   BOUNDARY_LEN_HRS="36"
   LBC_SPEC_INTVL_HRS="3"
@@ -109,7 +127,7 @@ POSTPROC_LEN_HRS="1"
 for i in {0..23}; do FCST_LEN_HRS_CYCLES[$i]=1; done
 for i in {0..23..6}; do FCST_LEN_HRS_CYCLES[$i]=1; done
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
-  for i in {0..23..06}; do FCST_LEN_HRS_CYCLES[$i]=24; done 
+  for i in {0..23..06}; do FCST_LEN_HRS_CYCLES[$i]=24; done
   FCST_LEN_HRS="6"
   POSTPROC_LEN_HRS="24"
   BOUNDARY_PROC_GROUP_NUM="8"
@@ -127,13 +145,11 @@ OUTPUT_FH="1 -1"
 WTIME_RUN_FCST="01:00:00"
 WTIME_MAKE_LBCS="02:00:00"
 
-envir="para"
 ARCHIVEDIR="/1year/BMC/wrfruc/rrfs_b"
 NCL_REGION="conus"
-MODEL="RRFS_conus_3km"
 
 if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
-   NUM_ENS_MEMBERS=30
+   NUM_ENS_MEMBERS=3
 #   DO_ENSCONTROL="TRUE"
    DO_GSIOBSERVER="TRUE"
    DO_ENKFUPDATE="TRUE"
@@ -152,19 +168,12 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    write_diag_2=.true.
 
    START_TIME_SPINUP="00:30:00"
-#   LAYOUT_X="11"
-#   LAYOUT_Y="32"
-#   NNODES_RUN_FCST="6"
 
-   NUM_ENS_MEMBERS_FCST=5
+   NUM_ENS_MEMBERS_FCST=3
    if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
      NUM_ENS_MEMBERS=${NUM_ENS_MEMBERS_FCST}
      WTIME_RUN_FCST="04:45:00"
      WTIME_MAKE_LBCS="01:30:00"
-
-#     LAYOUT_X="31"
-#     LAYOUT_Y="32"
-#     NNODES_RUN_FCST="16"
 
      DO_ENSFCST_MULPHY="TRUE"
      DO_SPP="TRUE"
@@ -173,29 +182,19 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
      SPPT_MAG="0.5"
      DO_LSM_SPP="TRUE"
      DO_RECENTER="TRUE"
-
    fi
-
    CLEAN_OLDFCST_HRS="48"
    CLEAN_OLDSTMPPOST_HRS="48"
 fi
 
-RUN_ensctrl="rrfs"
-RUN="enkfrrfs"
-TAG="c3enkf79"
-if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
-  RUN="refs"
-  TAG="c3enfcst79"
-fi
-
 . set_rrfs_config.sh
 
-STMP="YourOwnSpace/${version}/stmp_ensda"  # Path to directory STMP that mostly contains input files.
+STMP="${PTMP}/stmp_ensda"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
-  STMP="YourOwnSpace/${version}/stmp_ensfcst"  # Path to directory STMP that mostly contains input files.
+  STMP="${PTMP}/stmp_ensfcst"
 fi
-PTMP="YourOwnSpace/${version}"  # Path to directory PTMP that mostly contains output files.
-NWGES="YourOwnSpace/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
-ENSCTRL_STMP="YourOwnSpace/${version}/stmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
-ENSCTRL_PTMP="YourOwnSpace/${version}"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
-ENSCTRL_NWGES="YourOwnSpace/${version}/nwges"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+NWGES="${PTMP}/nwges"
+ENSCTRL_STMP="/scratch2/NCEPDEV/fv3-cam/Chan-hoo.Jeon/DATA_RRFS"
+ENSCTRL_PTMP="${PTMP}"
+ENSCTRL_NWGES="${NWGES}"
+
