@@ -2493,12 +2493,18 @@ FVCOM_FILE="fvcom.nc"
 # GEFS_AEROSOL_INTVL_HRS:
 # The interval (in integer hous) of the GEFS aerosol data files
 #
+# GEFS_AEROSOL_FILE_CYC:
+# Cycle of GEFS aerosol data files (HH in the above file path).
+# This is useful in case that limited cycle data are available. If this 
+# is not set, the current cycle (cyc) will be used for this variable.
+#
 #-----------------------------------------------------------------------
 #
 COMINgefs=""
 GEFS_AEROSOL_FILE_PREFIX="geaer"
 GEFS_AEROSOL_FILE_FMT="nemsio"
 GEFS_AEROSOL_INTVL_HRS="3"
+GEFS_AEROSOL_FILE_CYC="00"
 #
 #-----------------------------------------------------------------------
 #

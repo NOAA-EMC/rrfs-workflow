@@ -58,47 +58,50 @@ ulimit -a
 case $MACHINE in
 #
 "WCOSS2")
-  ncores=$(( NNODES_ADD_AEROSOL*PPN_ADD_AEROSOL ))
-  APRUN="mpiexec -n ${ncores} -ppn ${PPN_ADD_AEROSOL}"
+  APRUN="mpiexec -n ${nprocs}"
   ;;
 #
 "HERA")
-  APRUN="srun --export=ALL"
+  APRUN="srun -n ${nprocs} --export=ALL"
   ;;
 #
 "JET")
-  APRUN="srun --export=ALL"
+  APRUN="srun -n ${nprocs} --export=ALL"
   ;;
 #
 "ORION")
-  APRUN="srun --export=ALL"
+  APRUN="srun -n ${nprocs} --export=ALL"
   ;;
 #
 "HERCULES")
-  APRUN="srun --export=ALL"
+  APRUN="srun -n ${nprocs} --export=ALL"
   ;;
 #
 esac
 
-CDATE_MOD=$( $DATE_UTIL --utc --date "${PDY} ${cyc} UTC - ${EXTRN_MDL_LBCS_OFFSET_HRS} hours" "+%Y%m%d%H" )
+CDATE_MOD=`$NDATE -${EXTRN_MDL_LBCS_OFFSET_HRS} ${PDY}${cyc}`
 YYYYMMDD="${CDATE_MOD:0:8}"
+MM="${CDATE_MOD:4:2}"
 HH="${CDATE_MOD:8:2}"
 
-gefs_file_cyc=$( printf "%02d" "${HH}" )
-gefs_cyc_diff=$(( cyc - gefs_file_cyc ))
+GEFS_AEROSOL_FILE_CYC="${GEFS_AEROSOL_FILE_CYC:-${HH}}"
+GEFS_AEROSOL_FILE_CYC=$( printf "%02d" "${GEFS_AEROSOL_FILE_CYC}" )
+gefs_cyc_diff=$(( cyc - GEFS_AEROSOL_FILE_CYC ))
 if [ "${gefs_cyc_diff}" -lt "0" ]; then
   tstepdiff=$( printf "%02d" $(( 24 + ${gefs_cyc_diff} )) )
 else
   tstepdiff=$( printf "%02d" ${gefs_cyc_diff} )
 fi
 
-gefs_aerosol_mofile_fn="${GEFS_AEROSOL_FILE_PREFIX}.t${gefs_file_cyc}z.atmf"
-gefs_aerosol_mofile_fp="${COMINgefs}/gefs.${YYYYMMDD}/${gefs_file_cyc}/chem/sfcsig/${gefs_aerosol_mofile_fn}"
+gefs_aerosol_mofile_fn="${GEFS_AEROSOL_FILE_PREFIX}.t${GEFS_AEROSOL_FILE_CYC}z.atmf"
+gefs_aerosol_mofile_fp="${COMINgefs}/gefs.${YYYYMMDD}/${GEFS_AEROSOL_FILE_CYC}/chem/sfcsig/${gefs_aerosol_mofile_fn}"
 
 gefs_aerosol_fcst_hrs=()
 for i_lbc in $(seq ${GEFS_AEROSOL_INTVL_HRS} ${GEFS_AEROSOL_INTVL_HRS} ${FCST_LEN_HRS} ); do
   gefs_aerosol_fcst_hrs+=("$i_lbc")
 done
+
+nprocs="$(( FCST_LEN_HRS / GEFS_AEROSOL_INTVL_HRS + 1 ))"
 #
 #-----------------------------------------------------------------------
 #
@@ -124,6 +127,17 @@ done
 #
 #-----------------------------------------------------------------------
 #
+# Copy or link input LBC data files.
+#
+#-----------------------------------------------------------------------
+#
+for hr in 0 ${gefs_aerosol_fcst_hrs[@]}; do
+  fhr=$( printf "%03d" "${hr}" )
+  ln -nsf ${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/lbcs/gfs_bndy.tile7.${fhr}.nc ${DATA}/gfs_bndy.tile7.ogri.${fhr}.nc
+done
+#
+#-----------------------------------------------------------------------
+#
 # Set up input namelist file.
 #
 #-----------------------------------------------------------------------
@@ -134,7 +148,7 @@ cat > gefs2lbc-nemsio.ini <<EOF
  dtstep=${GEFS_AEROSOL_INTVL_HRS}
  bndname='dust','coarsepm'
  mofile='${gefs_aerosol_mofile_fp}','.${GEFS_AEROSOL_FILE_FMT}'
- lbcfile='${DATA}/gfs_bndy.tile7.','.nc'
+ lbcfile='${DATA}/gfs_bndy.tile7.orgi.','.nc'
  topofile='${OROG_DIR}/${CRES}_oro_data.tile7.halo4.nc'
  inblend=${HALO_BLEND}
 &end
@@ -165,7 +179,7 @@ export pgm="gefs2lbc_para"
 ${APRUN} ${EXECdir}/$pgm >>$pgmout 2>errfile
 export err=$?; err_chk
 
-cp -rp gfs_bndy.tile7.f*.nc ${COMOUT}
+cp -rp ${DATA}/gfs_bndy.tile7.f*.nc ${COMOUT}
 #
 #-----------------------------------------------------------------------
 #
