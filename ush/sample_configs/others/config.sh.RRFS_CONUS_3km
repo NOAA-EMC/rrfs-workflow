@@ -1,7 +1,7 @@
-MACHINE="hera"
+MACHINE="jet"
 version="v0.7.9"
 #RESERVATION="rrfsdet"
-EXPT_BASEDIR="/scratch2/BMC/wrfruc/Sijie.Pan/test/${version}"
+EXPT_BASEDIR="YourOwnSpace/${version}"
 EXPT_SUBDIR="RRFS_CONUS_3km"
 
 PREDEF_GRID_NAME=RRFS_CONUS_3km
@@ -34,7 +34,6 @@ USE_CLM="TRUE"
 DO_PARALLEL_PRDGEN="FALSE"
 DO_GSIDIAG_OFFLINE="TRUE"
 DO_UPDATE_BC="TRUE"
-DO_IODA_PREPBUFR="FALSE"
 
 EXTRN_MDL_ICS_OFFSET_HRS="3"
 LBC_SPEC_INTVL_HRS="1"
@@ -44,13 +43,13 @@ BOUNDARY_PROC_GROUP_NUM="3"
 
 # avaialble retro period:
 # 20210511-20210531; 20210718-20210801
-DATE_FIRST_CYCL="20230614"
-DATE_LAST_CYCL="20230614"
+DATE_FIRST_CYCL="20220201"
+DATE_LAST_CYCL="20220202"
 CYCL_HRS=( "00" "12" )
 CYCL_HRS_SPINSTART=("03" "15")
 CYCL_HRS_PRODSTART=("09" "21")
-CYCLEMONTH="6"
-CYCLEDAY="14-14"
+CYCLEMONTH="2"
+CYCLEDAY="01-02"
 SOIL_SURGERY_time="${DATE_FIRST_CYCL}04"
 
 STARTYEAR=${DATE_FIRST_CYCL:0:4}
@@ -115,9 +114,9 @@ RUN="rrfs"
 
 . set_rrfs_config.sh
 
-STMP="${EXPT_BASEDIR}/stmp"  # Path to directory STMP that mostly contains input files.
-PTMP="${EXPT_BASEDIR}"  # Path to directory STMP that mostly contains input files.
-NWGES="${EXPT_BASEDIR}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+STMP="YourOwnSpace/${version}/stmp"  # Path to directory STMP that mostly contains input files.
+PTMP="YourOwnSpace/${version}"  # Path to directory STMP that mostly contains input files.
+NWGES="YourOwnSpace/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 if [[ ${regional_ensemble_option} == "5" ]]; then
   RRFSE_NWGES="YourOwnSpace/${version}/nwges"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
   NUM_ENS_MEMBERS=30     # FV3LAM ensemble size for GSI hybrid analysis
