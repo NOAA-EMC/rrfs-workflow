@@ -992,7 +992,7 @@ export pgm="gsi.x"
 if [ ${BKTYPE} -eq 1 ] ; then
   echo " skip cold start GSI for now"
 else
-  $APRUN $pgm < gsiparm.anl >>$pgmout 2>errfile
+  $APRUN ./$pgm < gsiparm.anl >>$pgmout 2>errfile
   export err=$?; err_chk
   mv errfile errfile_gsi
 fi
@@ -1080,9 +1080,9 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
          ${APRUN} $pgm -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4 >>$pgmout 2>errfile
 	 export err=$?; err_chk
 	 mv errfile errfile_nc_diag_cat_$type
-
-         cp diag_${type}_${string}.${YYYYMMDDHH}.nc4 ${COMOUT}
-         echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4*" >> listcnv
+         gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4
+         cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
+         echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listcnv
          numfile_cnv=`expr ${numfile_cnv} + 1`
       fi
     done
@@ -1094,9 +1094,9 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
         ${APRUN} $pgm -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4 >>$pgmout 2>errfile
 	export err=$?; err_chk
 	mv errfile errfile_nc_diag_cat_$type
-
-        cp diag_${type}_${string}.${YYYYMMDDHH}.nc4 ${COMOUT}
-        echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4*" >> listrad
+        gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4
+        cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
+        echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listrad
         numfile_rad=`expr ${numfile_rad} + 1`
       else
         echo 'No diag_' ${type} 'exist'
