@@ -73,6 +73,10 @@ if [ "${CYCLE_TYPE}" = "prod" ]; then
   export run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
   export nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
 fi
+if [ ${CYCLE_TYPE} == "enfcst" ]; then
+  run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
+  nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_enfcst"
+fi
 
 mkdir -p "${nwges_dir}/DA_OUTPUT"
 cd "${nwges_dir}/DA_OUTPUT"

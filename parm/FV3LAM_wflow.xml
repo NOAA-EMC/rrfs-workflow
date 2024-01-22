@@ -2809,9 +2809,16 @@ MODULES_RUN_TASK_FP script.
     <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    {%- if do_ensfcst %}
+    <envar><name>CYCLE_TYPE</name><value><cyclestr>enfcst</cyclestr></value></envar>
+    {%- else %}
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
+    {%- endif %}
 
     <dependency>
+    {%- if do_ensfcst %}
+          <taskdep task="&RUN_RECENTER_TN;"/>
+    {%- else %}
        {%- if do_recenter %}
         <or>
          <and>
@@ -2836,6 +2843,7 @@ MODULES_RUN_TASK_FP script.
         {%- elif do_enkfupdate %}
         <taskdep task="&RUN_ENKFUPDT_TN;"/>
        {%- endif %}
+    {%- endif %}
     </dependency>
 
   </task>
