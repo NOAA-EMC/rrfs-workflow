@@ -327,6 +327,7 @@ define resources used for each tasks
 <!ENTITY START_TIME_SPINUP "{{ start_time_spinup }}">
 <!ENTITY START_TIME_PROD "{{ start_time_prod }}">
 <!ENTITY START_TIME_CONVENTIONAL_SPINUP "{{ start_time_conventional_spinup }}">
+<!ENTITY START_TIME_BLENDING "{{ start_time_blending }}">
 <!ENTITY START_TIME_LATE_ANALYSIS "{{ start_time_late_analysis }}">
 <!ENTITY START_TIME_CONVENTIONAL "{{ start_time_conventional }}">
 <!ENTITY START_TIME_NSSLMOSIAC   "{{ start_time_nsslmosiac }}">
@@ -809,26 +810,28 @@ MODULES_RUN_TASK_FP script.
     <dependency>
       {%- if machine in ["WCOSS2"]  %}
         {%- if extrn_mdl_name_ics in ["FV3GFS"] %}
+            {%- if do_retro %}
+      <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/@y@j@H000{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
+            {% else %}
       <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/gfs.@Y@m@d/@H/atmos/gfs.t@Hz.atmf{{ "%03d" % extrn_mdl_ics_offset_hrs }}.nc</cyclestr></datadep>
+            {%- endif %}
         {%- elif extrn_mdl_name_ics in ["GDASENKF"] %}
         <and>
           <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/enkfgdas.@Y@m@d/@H/atmos/#subdirGDAS#/gdas.t@Hz.atmf00{{ extrn_mdl_ics_offset_hrs }}.nc</cyclestr></datadep>
           <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/enkfgdas.@Y@m@d/@H/atmos/#subdirGDAS#/gdas.t@Hz.sfcf00{{ extrn_mdl_ics_offset_hrs }}.nc</cyclestr></datadep>
         </and>
-        {% else %}
-          {%- if extrn_mdl_name_ics in ["GEFS"] %}
+        {%- elif extrn_mdl_name_ics in ["GEFS"] %}
             {%- if do_retro %}
       <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/#subdirGE#/@y@j@H000{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
             {% else %}
       <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/gefs.@Y@m@d/@H/atmos/pgrb2bp5/#subdirGE#.t@Hz.pgrb2b.0p50.f{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
             {%- endif %}
-          {% else %}
+        {% else %}
             {%- if do_retro %}
       <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/@y@j@H000{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
             {% else %}
       <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/gfs.@Y@m@d/@H/atmos/gfs.t@Hz.pgrb2.0p25.f{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
             {%- endif %}
-          {%- endif %}
         {%- endif %}
       {% else %}
       {%- if extrn_mdl_name_ics in ["GEFS"] %}
@@ -1059,7 +1062,10 @@ MODULES_RUN_TASK_FP script.
       <and>
         <taskdep task="&GET_EXTRN_ICS_TN;{{ uscore_ensmem_name }}"/>
         {% if do_ens_blending %}
-        <datadep age="00:00:01:00"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem#mem#/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr> </datadep>
+        <or>
+          <timedep><cyclestr offset="&START_TIME_BLENDING;">@Y@m@d@H@M00</cyclestr></timedep>
+          <datadep age="00:00:01:00"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem#mem#/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+        </or>
         {% endif %}
         <or>
 <!--          <taskdep task="&MAKE_GRID_TN;"/> -->
@@ -1297,7 +1303,10 @@ MODULES_RUN_TASK_FP script.
       <dependency>
         <and>
           <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
-          <datadep age="00:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam_ensinit/RESTART/</cyclestr><cyclestr offset="{{ dt_atmos }}">@Y@m@d.@H@M@S.coupler.res</cyclestr></datadep>
+          <or>
+            <datadep age="00:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam_ensinit/RESTART/</cyclestr><cyclestr offset="{{ dt_atmos }}">@Y@m@d.@H@M@S.coupler.res</cyclestr></datadep>
+            <datadep age="00:00:00:05"><cyclestr>&FG_ROOT;/@Y@m@d@H/run_blending</cyclestr> </datadep>
+          </or>
         </and>
       </dependency>
 
@@ -1335,6 +1344,7 @@ MODULES_RUN_TASK_FP script.
 
     <dependency>
       <and>
+       <taskdep task="&MAKE_ICS_TN;_mem#mem#"/>
        <taskdep task="&SAVE_RESTART_TN;_ensinit{{ uscore_ensmem_name }}"/>
        <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
       </and>
@@ -1375,8 +1385,6 @@ MODULES_RUN_TASK_FP script.
         {%- for m in range(1, num_ens_members+1) %}
         {%- if do_ensinit %}
           <taskdep task="&PREP_CYC_SPINUP_TN;_ensinit_mem{{ "%04d" % m }}"/>
-        {%- elif do_ens_blending %}
-          <taskdep task="&PREP_CYC_SPINUP_TN;_mem{{ "%04d" % m }}"/>
         {%- endif %}
         {%- endfor %}
         <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
