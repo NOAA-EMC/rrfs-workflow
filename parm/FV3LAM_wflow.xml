@@ -1147,8 +1147,8 @@ MODULES_RUN_TASK_FP script.
     &RESOURCES_ADD_AEROSOL;
     &NATIVE_ALL;
     <walltime>&WALLTIME_ADD_AEROSOL;</walltime>
+    <memory>&MEMO_ADD_AEROSOL;</memory>
     &NODESIZE_ALL;
-    &MEMO_ADD_AEROSOL;
     <jobname>&TAG;_&ADD_AEROSOL_TN;{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&ADD_AEROSOL_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
@@ -1165,9 +1165,9 @@ MODULES_RUN_TASK_FP script.
   </task>
 {%- endif %}
 
-{% if do_ensemble %}
+{%- if do_ensemble %}
 </metatask>
-{% endif %}
+{%- endif %}
 
 {%- endif %}
 {%- if not do_ensfcst %}
