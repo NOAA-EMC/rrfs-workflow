@@ -16,6 +16,9 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
+
+date
+export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
@@ -72,6 +75,7 @@ else
 fi
 rm -fr ${workdir}
 mkdir -p ${workdir}
+cd ${workdir}
 #
 #-----------------------------------------------------------------------
 #
@@ -92,9 +96,16 @@ mkdir -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #
+export pgmout="${workdir}/OUTPUT.$$"
+env
+
 $SCRIPTSdir/exrrfs_ioda_prepbufr.sh \
-  CYCLE_DIR="${CYCLE_DIR}" WORKDIR="${workdir}" comout="${COMOUT}"
+  CYCLE_DIR="${CYCLE_DIR}" comout="${COMOUT}"
 export err=$?; err_chk
+
+if [ -e "$pgmout" ]; then
+  cat $pgmout
+fi
 #
 #-----------------------------------------------------------------------
 #

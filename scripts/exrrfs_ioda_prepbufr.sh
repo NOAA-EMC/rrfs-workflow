@@ -55,7 +55,7 @@ preprocess for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "CYCLE_DIR" "WORKDIR" "comout")
+valid_args=( "CYCLE_DIR" "comout")
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -126,8 +126,6 @@ PREYYJJJHH=$(date +"%y%j%H" -d "${START_DATE} 1 hours ago")
 #
 print_info_msg "$VERBOSE" "
 Getting into working directory for PrepBUFR obseration process ..."
-
-cd ${WORKDIR}
 #
 #-----------------------------------------------------------------------
 #
@@ -136,6 +134,16 @@ cd ${WORKDIR}
 #-----------------------------------------------------------------------
 #
 cp ${PARM_IODACONV}/*.yaml .
+#
+#-----------------------------------------------------------------------
+#
+# link the executable file
+#
+#-----------------------------------------------------------------------
+#
+export pgm="bufr2ioda.x"
+. prep_step
+#
 #
 #-----------------------------------------------------------------------
 #
@@ -165,7 +173,6 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-exect="bufr2ioda.x"
 formatted_time=$(date -d"${YYYYMMDDHH:0:8} ${YYYYMMDDHH:8:2}" '+%Y-%m-%dT%H:%M:%SZ')
 
 for yamlfile in *.yaml; do
@@ -176,7 +183,7 @@ for yamlfile in *.yaml; do
   fi
 
   if [[ ${run_process_prepbufr} ]]; then
-    $APRUN ${EXECdir}/${exect} ${yamlfile} > stdout_prepbufr_${message_type} 2>&1
+    $APRUN ${EXECdir}/$pgm ${yamlfile} >> $pgmout 2>errfile
     export err=$?; err_chk
     cp stdout_prepbufr_${message_type} $comout/stdout.t${HH}z.prepbufr_${message_type}
   fi
