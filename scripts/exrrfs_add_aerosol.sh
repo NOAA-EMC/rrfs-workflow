@@ -126,14 +126,13 @@ done
 #
 #-----------------------------------------------------------------------
 #
-# Copy or link input LBC data files.
+# Copy input LBC data files.
 #
 #-----------------------------------------------------------------------
 #
 for hr in 0 ${gefs_aerosol_bc_hrs[@]}; do
   fhr=$( printf "%03d" "${hr}" )
   cpreq ${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/lbcs/gfs_bndy.tile7.${fhr}.nc ${DATA}/gfs_bndy.tile7.${fhr}.nc
-  cpreq ${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/lbcs/gfs_bndy.tile7.${fhr}.nc ${DATA}/gfs_bndy.tile7.${fhr}.nc_orgi
 done
 #
 #-----------------------------------------------------------------------
@@ -178,8 +177,18 @@ export pgm="gefs2lbc_para"
 
 ${APRUN} -n ${nprocs} ${EXECdir}/$pgm >>$pgmout 2>errfile
 export err=$?; err_chk
-
-cp -rp ${DATA}/gfs_bndy.tile7.*.nc ${COMOUT}
+#
+#
+#-----------------------------------------------------------------------
+#
+# Copy updated LBC data files to COMOUT.
+#
+#-----------------------------------------------------------------------
+#
+for hr in 0 ${gefs_aerosol_bc_hrs[@]}; do
+  fhr=$( printf "%03d" "${hr}" )
+  cpreq ${DATA}/gfs_bndy.tile7.${fhr}.nc ${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/lbcs/gfs_bndy.tile7.${fhr}.nc
+done
 #
 #-----------------------------------------------------------------------
 #
