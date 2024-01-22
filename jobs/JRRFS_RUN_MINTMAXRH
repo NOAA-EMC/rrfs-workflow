@@ -118,7 +118,7 @@ mkdir -p "${postprd_dir}"
 #######################
 #
 
-pgmout="${postprd_dir}/mint_000/OUTPUT.$$"
+export pgmout="${postprd_dir}/mint_000/OUTPUT.$$"
 env
 
 $SCRIPTSdir/exrrfs_run_mintbg.ksh \
@@ -134,6 +134,8 @@ Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
 ## Compute Max RH
 #######################
 #
+
+
 $SCRIPTSdir/exrrfs_run_maxrh.ksh \
   cdate="${CDATE}" \
   run_dir="${run_dir}" \

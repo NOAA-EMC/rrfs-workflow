@@ -184,10 +184,10 @@ EOF
 export FORT71=${run}.${PDYm1}.mint_diag_bg.dat
 export FORT72=${run}.${PDYm1}.mint_diag_anl.dat
 
-cp $FIX_MINMAXTRH/bin_files/aktz.bin .
-cp $FIX_MINMAXTRH/bin_files/conusexttz.bin .
-cp $FIX_MINMAXTRH/bin_files/conustz.bin .
-cp $FIX_MINMAXTRH/bin_files/conustz_ndfdonly.bin .
+cp $FIX_MINMAXTRH/aktz.bin .
+cp $FIX_MINMAXTRH/conusexttz.bin .
+cp $FIX_MINMAXTRH/conustz.bin .
+cp $FIX_MINMAXTRH/conustz_ndfdonly.bin .
 
 export pgm=rrfs_mint.exe
 . prep_step
