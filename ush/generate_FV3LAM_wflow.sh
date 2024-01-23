@@ -198,6 +198,7 @@ settings="\
   'get_gefs_lbcs_tn': ${GET_GEFS_LBCS_TN}
   'make_ics_tn': ${MAKE_ICS_TN}
   'make_lbcs_tn': ${MAKE_LBCS_TN}
+  'add_aerosol_tn': ${ADD_AEROSOL_TN}
   'run_fcst_tn': ${RUN_FCST_TN}
   'run_post_tn': ${RUN_POST_TN}
   'run_prdgen_tn': ${RUN_PRDGEN_TN}
@@ -260,6 +261,7 @@ settings="\
   'nnodes_run_bufrsnd': ${NNODES_RUN_BUFRSND}
   'nnodes_save_restart': ${NNODES_SAVE_RESTART}
   'nnodes_run_jedienvar_ioda': ${NNODES_RUN_JEDIENVAR_IODA}
+  'nnodes_add_aerosol': ${NNODES_ADD_AEROSOL}
 #
 # Number of cores used for a task
 #
@@ -303,6 +305,7 @@ settings="\
   'ppn_run_bufrsnd': ${PPN_RUN_BUFRSND}
   'ppn_save_restart': ${PPN_SAVE_RESTART}
   'ppn_run_jedienvar_ioda': ${PPN_RUN_JEDIENVAR_IODA}
+  'ppn_add_aerosol': ${PPN_ADD_AEROSOL}
 #
   'tpp_make_ics': ${TPP_MAKE_ICS}
   'tpp_make_lbcs': ${TPP_MAKE_LBCS}
@@ -344,6 +347,7 @@ settings="\
   'wtime_run_bufrsnd': ${WTIME_RUN_BUFRSND}
   'wtime_save_restart': ${WTIME_SAVE_RESTART}
   'wtime_run_jedienvar_ioda': ${WTIME_RUN_JEDIENVAR_IODA}
+  'wtime_add_aerosol': ${WTIME_ADD_AEROSOL}
 #
 # start time for each task.
 #
@@ -374,6 +378,7 @@ settings="\
   'memo_proc_glmfed': ${MEMO_PROC_GLMFED}
   'memo_proc_pm': ${MEMO_PROC_PM}
   'memo_save_da_output': ${MEMO_SAVE_DA_OUTPUT}
+  'memo_add_aerosol': ${MEMO_ADD_AEROSOL}
 #
 # Maximum number of tries for each task.
 #
@@ -403,14 +408,15 @@ settings="\
   'maxtries_save_restart': ${MAXTRIES_SAVE_RESTART}
   'maxtries_save_da_output': ${MAXTRIES_SAVE_DA_OUTPUT}
   'maxtries_jedi_envar_ioda': ${MAXTRIES_JEDI_ENVAR_IODA}
+  'maxtries_add_aerosol': ${MAXTRIES_ADD_AEROSOL}
 #
-# Flags that specify whether to run the preprocessing tasks.
+# Flags that determine whether to run the specific tasks.
 #
   'run_task_make_grid': ${RUN_TASK_MAKE_GRID}
   'run_task_make_orog': ${RUN_TASK_MAKE_OROG}
   'run_task_make_sfc_climo': ${RUN_TASK_MAKE_SFC_CLIMO}
-#
   'run_task_run_prdgen': ${RUN_TASK_RUN_PRDGEN}
+  'run_task_add_aerosol': ${RUN_TASK_ADD_AEROSOL}
 #
   'is_rtma':  ${IS_RTMA}
   'fg_rootdir': ${FG_ROOTDIR}
