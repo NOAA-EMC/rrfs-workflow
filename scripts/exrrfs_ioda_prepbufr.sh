@@ -120,15 +120,6 @@ PREYYJJJHH=$(date +"%y%j%H" -d "${START_DATE} 1 hours ago")
 #
 #-----------------------------------------------------------------------
 #
-# Get into working directory
-#
-#-----------------------------------------------------------------------
-#
-print_info_msg "$VERBOSE" "
-Getting into working directory for PrepBUFR obseration process ..."
-#
-#-----------------------------------------------------------------------
-#
 # copy template yaml files
 #
 #-----------------------------------------------------------------------
@@ -185,7 +176,7 @@ for yamlfile in *.yaml; do
   if [[ ${run_process_prepbufr} ]]; then
     $APRUN ${EXECdir}/$pgm ${yamlfile} >> $pgmout 2>errfile
     export err=$?; err_chk
-    cp stdout_prepbufr_${message_type} $comout/stdout.t${HH}z.prepbufr_${message_type}
+    mv errfile errfile_${message_type}
   fi
 done
 #
