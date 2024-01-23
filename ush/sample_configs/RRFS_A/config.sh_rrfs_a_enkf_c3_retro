@@ -10,7 +10,6 @@ EXPT_SUBDIR="rrfs_conus_enkf"
 PREDEF_GRID_NAME=RRFS_CONUS_3km
 
 . set_rrfs_config_general.sh
-. set_rrfs_config_SDL_VDL_MixEn.sh
 
 QUEUE_DEFAULT="dev"
 QUEUE_ANALYSIS="dev"
