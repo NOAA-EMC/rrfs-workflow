@@ -182,7 +182,7 @@ fi
 mosaic_fn="grid_spec.nc"
 grid_fn=$( get_charvar_from_netcdf "${mosaic_fn}" "gridfiles" )
 
-target="${FIXLAM}/${grid_fn}"
+target="${FIXLAM}/${CRES}${DOT_OR_USCORE}grid.tile7.halo${NH3}.nc"
 symlink="${grid_fn}"
 if [ -f "${target}" ]; then
   ln -sf ${relative_or_null} $target $symlink

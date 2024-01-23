@@ -100,7 +100,8 @@ list_iolayout=$(seq 0 $n_iolayouty)
 
 if [ ! -r ${nwges_dir}/DA_OUTPUT/gfs_ctrl.nc ]; then
   cp $run_dir/INPUT/gfs_ctrl.nc ${nwges_dir}/DA_OUTPUT/gfs_ctrl.nc
-  if [ -r ${run_dir}/INPUT/coupler.res ]; then  # warm start
+fi
+if [ -r ${run_dir}/INPUT/coupler.res ]; then  # warm start
     if [ "${IO_LAYOUT_Y}" = "1" ]; then
       for file in ${filelistn}; do
         cp $run_dir/INPUT/${file} ${nwges_dir}/DA_OUTPUT/${file}
@@ -117,10 +118,9 @@ if [ ! -r ${nwges_dir}/DA_OUTPUT/gfs_ctrl.nc ]; then
     for file in ${filelist}; do
       cp $run_dir/INPUT/${file} ${nwges_dir}/DA_OUTPUT/${file}
     done
-  else  # cold start
+else  # cold start
     print_info_msg "$VERBOSE" "\
 The DA analysis does not exist, no files to save to DA_OUTPUT."
-  fi
 fi
 #
 #-----------------------------------------------------------------------
