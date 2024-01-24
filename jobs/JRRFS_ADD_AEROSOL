@@ -1,13 +1,13 @@
 #!/bin/bash
-
 #
 #-----------------------------------------------------------------------
 #
-# This script runs the save_da_output to save DA analysis files to nwges
+# This J-JOB script adds dust in GEFS aerosol data to LBCs 
 #
 #-----------------------------------------------------------------------
 #
-
+date
+export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
@@ -17,9 +17,6 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
-
-date
-export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
@@ -53,33 +50,69 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs the post-processor (UPP)
-on the output files corresponding to a specified forecast hour.
+This is the J-job script for the task that adds dust in GEFS aerosol
+data to LBCs.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
 #
-# Set the run directory.
+# Set the NCO standard environment variables (Table 1, pp.4)
 #
 #-----------------------------------------------------------------------
-# CYCLE_TYPE is to indicate which type of cycle this job for:
-#   spinup: this job is for spin-up cycles
-#   others(prod): this job is for product cycle
 #
-# NWGES_DIR is the directory in which the model IC file (DA analysis) will be saved
-#
-export CYCLE_TYPE=${CYCLE_TYPE:-prod}
-if [ "${CYCLE_TYPE}" = "prod" ]; then
-  export run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
-  export nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
-fi
-if [ ${CYCLE_TYPE} == "enfcst" ]; then
-  run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
-  nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_enfcst"
+# Define job and jobid by default for rocoto
+WORKFLOW_MANAGER="${WORKFLOW_MANAGER:-rocoto}"
+if [ "${WORKFLOW_MANAGER}" = "rocoto" ]; then
+  if [ "${SCHED}" = "slurm" ]; then
+    job=${SLURM_JOB_NAME}
+    pid=${SLURM_JOB_ID}
+  elif [ "${SCHED}" = "pbspro" ]; then
+    job=${PBS_JOBNAME}
+    pid=${PBS_JOBID}
+  else
+    job="task"
+    pid=$$
+  fi
+  jobid="${job}.${PDY}${cyc}.${pid}"
 fi
 
-mkdir -p "${nwges_dir}/DA_OUTPUT"
-cd "${nwges_dir}/DA_OUTPUT"
+export model_ver="${model_ver:-v0.0.0}"
+export COMROOT="${COMROOT:-${PTMP}/${envir}/com}"
+export DATAROOT="${DATAROOT:-${PTMP}/${envir}/tmp}"
+export KEEPDATA="${KEEPDATA:-YES}"
+export MAILTO="${MAILTO:-}"
+#
+#-----------------------------------------------------------------------
+#
+# Create a temp working directory (DATA) and cd into it.
+#
+#-----------------------------------------------------------------------
+#
+export DATA="${DATA:-${DATAROOT}/${jobid}}"
+mkdir -p $DATA
+cd $DATA
+#
+#-----------------------------------------------------------------------
+#
+# Set COM type definitions.
+#
+#-----------------------------------------------------------------------
+#
+[[ "$WORKFLOW_MANAGER" = "rocoto" ]] && export COMROOT=$COMROOT
+if [ "${MACHINE}" = "WCOSS2" ]; then
+  export COMIN="${COMIN:-$(compath.py -o ${NET}/${model_ver}/${RUN}.${PDY}/${cyc}${SLASH_ENSMEM_SUBDIR})}"
+  export COMOUT="${COMOUT:-$(compath.py -o ${NET}/${model_ver}/${RUN}.${PDY}/${cyc}${SLASH_ENSMEM_SUBDIR})}"
+else
+  export COMIN="${COMIN:-${COMROOT}/${NET}/${model_ver}/${RUN}.${PDY}/${cyc}${SLASH_ENSMEM_SUBDIR}}"
+  export COMOUT="${COMOUT:-${COMROOT}/${NET}/${model_ver}/${RUN}.${PDY}/${cyc}${SLASH_ENSMEM_SUBDIR}}"
+fi
+
+mkdir -p ${COMOUT}
+
+# Run setpdy to initialize PDYm and PDYp variables
+export cycle="${cycle:-t${cyc}z}"
+setpdy.sh
+. ./PDY
 #
 #-----------------------------------------------------------------------
 #
@@ -87,18 +120,26 @@ cd "${nwges_dir}/DA_OUTPUT"
 #
 #-----------------------------------------------------------------------
 #
-export pgmout="${nwges_dir}/DA_OUTPUT/OUTPUT.$$"
+export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_save_da_output.sh \
-  cdate="${CDATE}" \
-  run_dir="${run_dir}" \
-  nwges_dir="${nwges_dir}"
+$SCRIPTSdir/exrrfs_add_aerosol.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then
   cat $pgmout
 fi
+#
+#-----------------------------------------------------------------------
+#
+# Whether or not working directory DATA should be kept.
+#
+#-----------------------------------------------------------------------
+#
+if [ "${KEEPDATA}" = "NO" ]; then
+  rm -rf ${DATA}
+fi
+date
 #
 #-----------------------------------------------------------------------
 #

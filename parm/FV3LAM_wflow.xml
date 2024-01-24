@@ -30,42 +30,42 @@ Parameters needed by the job scheduler.
 <!--
 Workflow task names.
 -->
-<!ENTITY MAKE_GRID_TN      "{{ make_grid_tn }}">
-<!ENTITY MAKE_OROG_TN      "{{ make_orog_tn }}">
-<!ENTITY MAKE_SFC_CLIMO_TN "{{ make_sfc_climo_tn }}">
-<!ENTITY GET_EXTRN_ICS_TN  "{{ get_extrn_ics_tn }}">
-<!ENTITY GET_EXTRN_LBCS_TN "{{ get_extrn_lbcs_tn }}">
-<!ENTITY GET_GEFS_LBCS_TN  "{{ get_gefs_lbcs_tn }}">
-<!ENTITY GET_EXTRN_LBCS_LONG_TN "{{ get_extrn_lbcs_long_tn }}">
-<!ENTITY MAKE_ICS_TN       "{{ make_ics_tn }}">
-<!ENTITY MAKE_LBCS_TN      "{{ make_lbcs_tn }}">
-<!ENTITY RUN_FCST_TN       "{{ run_fcst_tn }}">
-<!ENTITY RUN_POST_TN       "{{ run_post_tn }}">
-<!ENTITY RUN_PRDGEN_TN     "{{ run_prdgen_tn }}">
-<!ENTITY RUN_BUFRSND_TN    "{{ run_bufrsnd_tn }}">
-<!ENTITY ANAL_GSI_TN       "{{ anal_gsi }}">
-<!ENTITY ANAL_GSIDIAG_TN   "{{ anal_gsidiag }}">
-<!ENTITY ANAL_SD_GSI_TN    "{{ anal_sd_gsi }}">
-<!ENTITY POSTANAL_TN       "{{ post_anal }}">
-<!ENTITY OBSERVER_GSI_ENSMEAN_TN       "{{ observer_gsi_ensmean }}">
-<!ENTITY OBSERVER_GSI_TN       "{{ observer_gsi }}">
-<!ENTITY PREP_CYC_SPINUP_TN "{{ prep_cyc_spinup }}">
-<!ENTITY PREP_CYC_PROD_TN  "{{ prep_cyc_prod }}">
-<!ENTITY PREP_CYC_TN  "{{ prep_cyc }}">
-<!ENTITY CALC_ENSMEAN_TN  "{{ calc_ensmean }}">
-
-<!ENTITY PROCESS_RADAR_REF_TN "{{ process_radarref }}">
-<!ENTITY PROCESS_LIGHTNING_TN "{{ process_lightning }}">
-<!ENTITY PROCESS_GLMFED_TN "{{ process_glmfed }}">
-<!ENTITY PROCESS_BUFR_TN      "{{ process_bufr }}">
-<!ENTITY RADAR_REFL2TTEN_TN   "{{ radar_refl2tten }}">
-<!ENTITY CLDANL_NONVAR_TN     "{{ cldanl_nonvar }}">
-<!ENTITY SAVE_RESTART_TN     "{{ save_restart }}">
-<!ENTITY SAVE_DA_OUTPUT_TN   "{{ save_da_output }}">
-<!ENTITY JEDI_ENVAR_IODA_TN     "{{ jedi_envar_ioda }}">
-<!ENTITY IODA_PREPBUFR_TN     "{{ ioda_prepbufr }}">
-<!ENTITY PROCESS_SMOKE_TN "{{ process_smoke }}">
-<!ENTITY PROCESS_PM_TN    "{{ process_pm }}">
+<!ENTITY MAKE_GRID_TN            "{{ make_grid_tn }}">
+<!ENTITY MAKE_OROG_TN            "{{ make_orog_tn }}">
+<!ENTITY MAKE_SFC_CLIMO_TN       "{{ make_sfc_climo_tn }}">
+<!ENTITY GET_EXTRN_ICS_TN        "{{ get_extrn_ics_tn }}">
+<!ENTITY GET_EXTRN_LBCS_TN       "{{ get_extrn_lbcs_tn }}">
+<!ENTITY GET_GEFS_LBCS_TN        "{{ get_gefs_lbcs_tn }}">
+<!ENTITY GET_EXTRN_LBCS_LONG_TN  "{{ get_extrn_lbcs_long_tn }}">
+<!ENTITY MAKE_ICS_TN             "{{ make_ics_tn }}">
+<!ENTITY MAKE_LBCS_TN            "{{ make_lbcs_tn }}">
+<!ENTITY RUN_FCST_TN             "{{ run_fcst_tn }}">
+<!ENTITY RUN_POST_TN             "{{ run_post_tn }}">
+<!ENTITY RUN_PRDGEN_TN           "{{ run_prdgen_tn }}">
+<!ENTITY RUN_BUFRSND_TN          "{{ run_bufrsnd_tn }}">
+<!ENTITY ANAL_GSI_TN             "{{ anal_gsi }}">
+<!ENTITY ANAL_GSIDIAG_TN         "{{ anal_gsidiag }}">
+<!ENTITY ANAL_SD_GSI_TN          "{{ anal_sd_gsi }}">
+<!ENTITY POSTANAL_TN             "{{ post_anal }}">
+<!ENTITY OBSERVER_GSI_ENSMEAN_TN "{{ observer_gsi_ensmean }}">
+<!ENTITY OBSERVER_GSI_TN         "{{ observer_gsi }}">
+<!ENTITY PREP_CYC_SPINUP_TN      "{{ prep_cyc_spinup }}">
+<!ENTITY PREP_CYC_PROD_TN        "{{ prep_cyc_prod }}">
+<!ENTITY PREP_CYC_TN             "{{ prep_cyc }}">
+<!ENTITY CALC_ENSMEAN_TN         "{{ calc_ensmean }}">
+<!ENTITY PROCESS_RADAR_REF_TN    "{{ process_radarref }}">
+<!ENTITY PROCESS_LIGHTNING_TN    "{{ process_lightning }}">
+<!ENTITY PROCESS_GLMFED_TN       "{{ process_glmfed }}">
+<!ENTITY PROCESS_BUFR_TN         "{{ process_bufr }}">
+<!ENTITY RADAR_REFL2TTEN_TN      "{{ radar_refl2tten }}">
+<!ENTITY CLDANL_NONVAR_TN        "{{ cldanl_nonvar }}">
+<!ENTITY SAVE_RESTART_TN         "{{ save_restart }}">
+<!ENTITY SAVE_DA_OUTPUT_TN       "{{ save_da_output }}">
+<!ENTITY JEDI_ENVAR_IODA_TN      "{{ jedi_envar_ioda }}">
+<!ENTITY IODA_PREPBUFR_TN        "{{ ioda_prepbufr }}">
+<!ENTITY PROCESS_SMOKE_TN        "{{ process_smoke }}">
+<!ENTITY PROCESS_PM_TN           "{{ process_pm }}">
+<!ENTITY ADD_AEROSOL_TN          "{{ add_aerosol_tn }}">
 
 <!ENTITY RUN_PREPSTART_TN     "run_prepstart">
 <!ENTITY RUN_ANAL_TN          "run_anal_gsi">
@@ -80,11 +80,11 @@ Workflow task names.
 <!ENTITY RUN_PM_TN            "run_proc_pm">
 <!ENTITY RUN_PREPBUFR_TN      "run_ioda_prepbufr">
 
-<!ENTITY TAG                  "{{ tag }}">
-<!ENTITY NET                  "{{ net }}">
+<!ENTITY TAG  "{{ tag }}">
+<!ENTITY NET  "{{ net }}">
 
 <!--
-Flags that specify whether to run the preprocessing tasks.
+Flags that determine whether to run the specific tasks.
 -->
 <!ENTITY RUN_TASK_MAKE_GRID      "{{ run_task_make_grid | upper }}">
 <!ENTITY RUN_TASK_MAKE_OROG      "{{ run_task_make_orog | upper }}">
@@ -173,108 +173,111 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 <!--
 define resources used for each tasks
 -->
-<!ENTITY RESOURCES_PROC_SMOKE "<nodes>{{ nnodes_proc_smoke }}:ppn={{ ppn_proc_smoke }}</nodes>">
-<!ENTITY RESOURCES_PROC_PM "<nodes>{{ nnodes_proc_pm }}:ppn={{ ppn_proc_pm }}</nodes>">
-<!ENTITY RESOURCES_PROC_RADAR "<nodes>{{ nnodes_proc_radar }}:ppn={{ ppn_proc_radar }}</nodes>">
+<!ENTITY RESOURCES_PROC_SMOKE     "<nodes>{{ nnodes_proc_smoke }}:ppn={{ ppn_proc_smoke }}</nodes>">
+<!ENTITY RESOURCES_PROC_PM        "<nodes>{{ nnodes_proc_pm }}:ppn={{ ppn_proc_pm }}</nodes>">
+<!ENTITY RESOURCES_PROC_RADAR     "<nodes>{{ nnodes_proc_radar }}:ppn={{ ppn_proc_radar }}</nodes>">
 <!ENTITY RESOURCES_PROC_LIGHTNING "<nodes>{{ nnodes_proc_lightning }}:ppn={{ ppn_proc_lightning }}</nodes>">
-<!ENTITY RESOURCES_PROC_GLMFED "<nodes>{{ nnodes_proc_glmfed }}:ppn={{ ppn_proc_glmfed }}</nodes>">
-<!ENTITY RESOURCES_PROC_BUFR "<nodes>{{ nnodes_proc_bufr }}:ppn={{ ppn_proc_bufr }}</nodes>">
-<!ENTITY RESOURCES_GET_EXTRN_ICS "<nodes>{{ nnodes_get_extrn_ics }}:ppn={{ ppn_get_extrn_ics }}</nodes>">
+<!ENTITY RESOURCES_PROC_GLMFED    "<nodes>{{ nnodes_proc_glmfed }}:ppn={{ ppn_proc_glmfed }}</nodes>">
+<!ENTITY RESOURCES_PROC_BUFR      "<nodes>{{ nnodes_proc_bufr }}:ppn={{ ppn_proc_bufr }}</nodes>">
+<!ENTITY RESOURCES_GET_EXTRN_ICS  "<nodes>{{ nnodes_get_extrn_ics }}:ppn={{ ppn_get_extrn_ics }}</nodes>">
 <!ENTITY RESOURCES_GET_EXTRN_LBCS "<nodes>{{ nnodes_get_extrn_lbcs }}:ppn={{ ppn_get_extrn_lbcs }}</nodes>">
-<!ENTITY RESOURCES_PREP_CYC "<nodes>{{ nnodes_run_prepstart }}:ppn={{ ppn_run_prepstart }}</nodes>">
-<!ENTITY RESOURCES_SAVE_RESTART "<nodes>{{ nnodes_save_restart }}:ppn={{ ppn_save_restart }}</nodes>">
-<!ENTITY RESOURCES_RUN_RECENTER "<nodes>{{ nnodes_run_recenter }}:ppn={{ ppn_run_recenter }}</nodes>">
-<!ENTITY RESOURCES_POSTANAL "<nodes>{{ nnodes_run_postanal }}:ppn={{ ppn_run_postanal }}</nodes>">
-<!ENTITY RESOURCES_GSIDIAG "<nodes>{{ nnodes_run_gsidiag }}:ppn={{ ppn_run_gsidiag }}</nodes>">
-<!ENTITY RESOURCES_RUN_PRDGEN "<nodes>{{ nnodes_run_prdgen }}:ppn={{ ppn_run_prdgen }}</nodes>">
-<!ENTITY RESOURCES_NONVAR_CLD "<nodes>{{ nnodes_run_nonvarcldanl }}:ppn={{ ppn_run_nonvarcldanl }}</nodes>">
+<!ENTITY RESOURCES_ADD_AEROSOL    "<nodes>{{ nnodes_add_aerosol }}:ppn={{ ppn_add_aerosol }}</nodes>">
+<!ENTITY RESOURCES_PREP_CYC       "<nodes>{{ nnodes_run_prepstart }}:ppn={{ ppn_run_prepstart }}</nodes>">
+<!ENTITY RESOURCES_SAVE_RESTART   "<nodes>{{ nnodes_save_restart }}:ppn={{ ppn_save_restart }}</nodes>">
+<!ENTITY RESOURCES_RUN_RECENTER   "<nodes>{{ nnodes_run_recenter }}:ppn={{ ppn_run_recenter }}</nodes>">
+<!ENTITY RESOURCES_POSTANAL       "<nodes>{{ nnodes_run_postanal }}:ppn={{ ppn_run_postanal }}</nodes>">
+<!ENTITY RESOURCES_GSIDIAG        "<nodes>{{ nnodes_run_gsidiag }}:ppn={{ ppn_run_gsidiag }}</nodes>">
+<!ENTITY RESOURCES_RUN_PRDGEN     "<nodes>{{ nnodes_run_prdgen }}:ppn={{ ppn_run_prdgen }}</nodes>">
+<!ENTITY RESOURCES_NONVAR_CLD     "<nodes>{{ nnodes_run_nonvarcldanl }}:ppn={{ ppn_run_nonvarcldanl }}</nodes>">
 
 {%- if machine in ["WCOSS2"]  %}
-<!ENTITY RESOURCES_RUN_POST "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}:tpp={{ tpp_run_post }}</nodes>">
-<!ENTITY RESOURCES_RUN_ENKF "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}:tpp={{ tpp_run_enkf }}</nodes>">
-<!ENTITY RESOURCES_MAKE_ICS "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}:tpp={{ tpp_make_ics }}</nodes>">
-<!ENTITY RESOURCES_MAKE_LBCS "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}:tpp={{ tpp_make_lbcs }}</nodes>">
-<!ENTITY RESOURCES_ANAL_GSI "<nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}:tpp={{ tpp_run_anal }}</nodes>">
+<!ENTITY RESOURCES_RUN_POST    "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}:tpp={{ tpp_run_post }}</nodes>">
+<!ENTITY RESOURCES_RUN_ENKF    "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}:tpp={{ tpp_run_enkf }}</nodes>">
+<!ENTITY RESOURCES_MAKE_ICS    "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}:tpp={{ tpp_make_ics }}</nodes>">
+<!ENTITY RESOURCES_MAKE_LBCS   "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}:tpp={{ tpp_make_lbcs }}</nodes>">
+<!ENTITY RESOURCES_ANAL_GSI    "<nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}:tpp={{ tpp_run_anal }}</nodes>">
 <!ENTITY RESOURCES_FCST_SPINUP "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}:tpp={{ tpp_run_fcst }}</nodes>">
-<!ENTITY RESOURCES_FCST_PROD "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}:tpp={{ tpp_run_fcst }}</nodes>">
+<!ENTITY RESOURCES_FCST_PROD   "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}:tpp={{ tpp_run_fcst }}</nodes>">
 <!ENTITY NODESIZE_ALL    "">
-<!ENTITY NATIVE_ALL    "<native>-l place=excl</native>">
+<!ENTITY NATIVE_ALL         "<native>-l place=excl</native>">
 <!ENTITY NATIVE_ANAL_GSI    "<native>-l place=excl</native>">
-<!ENTITY NATIVE_FCST_SPINUP    "<native>-l place=excl</native>">
-<!ENTITY NATIVE_FCST_PROD    "<native>-l place=excl</native>">
+<!ENTITY NATIVE_FCST_SPINUP "<native>-l place=excl</native>">
+<!ENTITY NATIVE_FCST_PROD   "<native>-l place=excl</native>">
 {%- elif machine in ["JET"] %}
-<!ENTITY RESOURCES_RUN_POST "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
-<!ENTITY RESOURCES_RUN_ENKF "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}</nodes>">
-<!ENTITY RESOURCES_MAKE_ICS "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
-<!ENTITY RESOURCES_MAKE_LBCS "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
-<!ENTITY RESOURCES_ANAL_GSI "<cores>{{ ncores_run_anal }}</cores>">
+<!ENTITY RESOURCES_RUN_POST    "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
+<!ENTITY RESOURCES_RUN_ENKF    "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}</nodes>">
+<!ENTITY RESOURCES_MAKE_ICS    "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
+<!ENTITY RESOURCES_MAKE_LBCS   "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
+<!ENTITY RESOURCES_ANAL_GSI    "<cores>{{ ncores_run_anal }}</cores>">
 <!ENTITY RESOURCES_FCST_SPINUP "<cores>{{ ncores_run_fcst }}</cores>">
-<!ENTITY RESOURCES_FCST_PROD "<cores>{{ ncores_run_fcst }}</cores>">
+<!ENTITY RESOURCES_FCST_PROD   "<cores>{{ ncores_run_fcst }}</cores>">
 <!ENTITY NODESIZE_ALL    "<nodesize>{{ ncores_per_node }}</nodesize>">
-<!ENTITY NATIVE_ALL    "<native>--export=NONE</native>">
+<!ENTITY NATIVE_ALL         "<native>--export=NONE</native>">
 <!ENTITY NATIVE_ANAL_GSI    "<native>{{ native_run_anal }} &RRFS_RESERVE;</native>">
-<!ENTITY NATIVE_FCST_SPINUP    "<native>{{ native_run_fcst }} &RRFS_RESERVE;</native>">
-<!ENTITY NATIVE_FCST_PROD    "<native>{{ native_run_fcst }} &RRFS_RESERVE;</native>">
+<!ENTITY NATIVE_FCST_SPINUP "<native>{{ native_run_fcst }} &RRFS_RESERVE;</native>">
+<!ENTITY NATIVE_FCST_PROD   "<native>{{ native_run_fcst }} &RRFS_RESERVE;</native>">
 {%- elif machine in ["HERA"] %}
-<!ENTITY RESOURCES_RUN_POST "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
-<!ENTITY RESOURCES_RUN_ENKF "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}</nodes>">
-<!ENTITY RESOURCES_MAKE_ICS "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
-<!ENTITY RESOURCES_MAKE_LBCS "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
-<!ENTITY RESOURCES_ANAL_GSI "<cores>{{ ncores_run_anal }}</cores>">
+<!ENTITY RESOURCES_RUN_POST    "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
+<!ENTITY RESOURCES_RUN_ENKF    "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}</nodes>">
+<!ENTITY RESOURCES_MAKE_ICS    "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
+<!ENTITY RESOURCES_MAKE_LBCS   "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
+<!ENTITY RESOURCES_ANAL_GSI    "<cores>{{ ncores_run_anal }}</cores>">
 <!ENTITY RESOURCES_FCST_SPINUP "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
-<!ENTITY RESOURCES_FCST_PROD "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
+<!ENTITY RESOURCES_FCST_PROD   "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
 <!ENTITY NODESIZE_ALL    "<nodesize>{{ ncores_per_node }}</nodesize>">
-<!ENTITY NATIVE_ALL    "<native>--export=NONE</native>">
+<!ENTITY NATIVE_ALL         "<native>--export=NONE</native>">
 <!ENTITY NATIVE_ANAL_GSI    "<native>{{ native_run_anal }} &RRFS_RESERVE;</native>">
-<!ENTITY NATIVE_FCST_SPINUP    "">
-<!ENTITY NATIVE_FCST_PROD    "">
+<!ENTITY NATIVE_FCST_SPINUP "">
+<!ENTITY NATIVE_FCST_PROD   "">
 {%- else %}
-<!ENTITY RESOURCES_RUN_POST "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
-<!ENTITY RESOURCES_RUN_ENKF "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}</nodes>">
-<!ENTITY RESOURCES_MAKE_ICS "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
-<!ENTITY RESOURCES_MAKE_LBCS "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
-<!ENTITY RESOURCES_ANAL_GSI "<nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}</nodes>">
+<!ENTITY RESOURCES_RUN_POST    "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
+<!ENTITY RESOURCES_RUN_ENKF    "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}</nodes>">
+<!ENTITY RESOURCES_MAKE_ICS    "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
+<!ENTITY RESOURCES_MAKE_LBCS   "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
+<!ENTITY RESOURCES_ANAL_GSI    "<nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}</nodes>">
 <!ENTITY RESOURCES_FCST_SPINUP "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
-<!ENTITY RESOURCES_FCST_PROD "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
+<!ENTITY RESOURCES_FCST_PROD   "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
 <!ENTITY NODESIZE_ALL    "<nodesize>{{ ncores_per_node }}</nodesize>">
-<!ENTITY NATIVE_ALL    "<native>--export=NONE</native>">
+<!ENTITY NATIVE_ALL         "<native>--export=NONE</native>">
 <!ENTITY NATIVE_ANAL_GSI    "">
-<!ENTITY NATIVE_FCST_SPINUP    "">
-<!ENTITY NATIVE_FCST_PROD    "">
+<!ENTITY NATIVE_FCST_SPINUP "">
+<!ENTITY NATIVE_FCST_PROD   "">
 {%- endif %}
 
-<!ENTITY WALLTIME_PROC_SMOKE  "{{ wtime_proc_smoke }}">
-<!ENTITY WALLTIME_PROC_PM  "{{ wtime_proc_pm }}">
-<!ENTITY WALLTIME_PROC_RADAR  "{{ wtime_proc_radar }}">
+<!ENTITY WALLTIME_PROC_SMOKE      "{{ wtime_proc_smoke }}">
+<!ENTITY WALLTIME_PROC_PM         "{{ wtime_proc_pm }}">
+<!ENTITY WALLTIME_PROC_RADAR      "{{ wtime_proc_radar }}">
 <!ENTITY WALLTIME_PROC_LIGHTNING  "{{ wtime_proc_lightning }}">
-<!ENTITY WALLTIME_PROC_BUFR  "{{ wtime_proc_bufr }}">
-<!ENTITY WALLTIME_GET_EXTRN_ICS  "{{ wtime_get_extrn_ics }}">
+<!ENTITY WALLTIME_PROC_BUFR       "{{ wtime_proc_bufr }}">
+<!ENTITY WALLTIME_GET_EXTRN_ICS   "{{ wtime_get_extrn_ics }}">
 <!ENTITY WALLTIME_GET_EXTRN_LBCS  "{{ wtime_get_extrn_lbcs }}">
-<!ENTITY WALLTIME_PREP_CYC  "{{ wtime_run_prepstart }}">
-<!ENTITY WALLTIME_SAVE_RESTART  "{{ wtime_save_restart }}">
-<!ENTITY WALLTIME_RUN_RECENTER  "{{ wtime_run_recenter }}">
-<!ENTITY WALLTIME_POSTANAL  "{{ wtime_run_postanal }}">
-<!ENTITY WALLTIME_RUN_PRDGEN  "{{ wtime_run_prdgen }}">
-<!ENTITY WALLTIME_NONVAR_CLD  "{{ wtime_run_nonvarcldanl }}">
-<!ENTITY WALLTIME_RUN_POST  "{{ wtime_run_post }}">
-<!ENTITY WALLTIME_RUN_ENKF  "{{ wtime_run_enkf }}">
-<!ENTITY WALLTIME_MAKE_ICS  "{{ wtime_make_ics }}">
-<!ENTITY WALLTIME_MAKE_LBCS  "{{ wtime_make_lbcs }}">
-<!ENTITY WALLTIME_ANAL_GSI  "{{ wtime_run_anal }}">
-<!ENTITY WALLTIME_FCST_SPINUP  "{{ wtime_run_fcst_spinup }}">
-<!ENTITY WALLTIME_FCST_PROD  "{{ wtime_run_fcst }}">
+<!ENTITY WALLTIME_PREP_CYC        "{{ wtime_run_prepstart }}">
+<!ENTITY WALLTIME_SAVE_RESTART    "{{ wtime_save_restart }}">
+<!ENTITY WALLTIME_RUN_RECENTER    "{{ wtime_run_recenter }}">
+<!ENTITY WALLTIME_POSTANAL        "{{ wtime_run_postanal }}">
+<!ENTITY WALLTIME_RUN_PRDGEN      "{{ wtime_run_prdgen }}">
+<!ENTITY WALLTIME_NONVAR_CLD      "{{ wtime_run_nonvarcldanl }}">
+<!ENTITY WALLTIME_RUN_POST        "{{ wtime_run_post }}">
+<!ENTITY WALLTIME_RUN_ENKF        "{{ wtime_run_enkf }}">
+<!ENTITY WALLTIME_MAKE_ICS        "{{ wtime_make_ics }}">
+<!ENTITY WALLTIME_MAKE_LBCS       "{{ wtime_make_lbcs }}">
+<!ENTITY WALLTIME_ANAL_GSI        "{{ wtime_run_anal }}">
+<!ENTITY WALLTIME_FCST_SPINUP     "{{ wtime_run_fcst_spinup }}">
+<!ENTITY WALLTIME_FCST_PROD       "{{ wtime_run_fcst }}">
 <!ENTITY WALLTIME_FCST_PROD_LONG  "{{ wtime_run_fcst_long }}">
-<!ENTITY WALLTIME_POSTANAL  "{{ wtime_run_postanal }}">
-<!ENTITY WALLTIME_GSIDIAG  "{{ wtime_run_gsidiag }}">
-<!ENTITY WALLTIME_PROC_GLMFED  "{{ wtime_proc_glmfed }}">
+<!ENTITY WALLTIME_POSTANAL        "{{ wtime_run_postanal }}">
+<!ENTITY WALLTIME_GSIDIAG         "{{ wtime_run_gsidiag }}">
+<!ENTITY WALLTIME_PROC_GLMFED     "{{ wtime_proc_glmfed }}">
+<!ENTITY WALLTIME_ADD_AEROSOL     "{{ wtime_add_aerosol }}">
 
-<!ENTITY MEMO_PROC_SMOKE  "{{ memo_proc_smoke }}">
-<!ENTITY MEMO_PROC_PM     "{{ memo_proc_pm }}">
-<!ENTITY MEMO_PROC_BUFR  "{{memo_run_processbufr }}">
-<!ENTITY MEMO_PREP_CYC  "<memory>{{ memo_prep_cyc}}</memory>">
-<!ENTITY MEMO_RUN_PRDGEN "{{ memo_run_prdgen }}">
-<!ENTITY MEMO_NONVAR_CLD  "{{ memo_run_nonvarcldanl }}">
+<!ENTITY MEMO_PROC_SMOKE   "{{ memo_proc_smoke }}">
+<!ENTITY MEMO_PROC_PM      "{{ memo_proc_pm }}">
+<!ENTITY MEMO_PROC_BUFR    "{{memo_run_processbufr }}">
+<!ENTITY MEMO_PREP_CYC     "<memory>{{ memo_prep_cyc}}</memory>">
+<!ENTITY MEMO_RUN_PRDGEN   "{{ memo_run_prdgen }}">
+<!ENTITY MEMO_NONVAR_CLD   "{{ memo_run_nonvarcldanl }}">
 <!ENTITY MEMO_PROC_GLMFED  "{{ memo_proc_glmfed }}">
+<!ENTITY MEMO_ADD_AEROSOL  "{{ memo_add_aerosol }}">
 
 {%- if do_retro %}
 <!ENTITY DEADLINE_PRE      "999:00:00">
@@ -677,7 +680,7 @@ MODULES_RUN_TASK_FP script.
 
 {%- if do_ensemble %}
 <!--
-     ************************************************************************
+************************************************************************
 ************************************************************************
 -->
   <task name="&PROCESS_GLMFED_TN;_#type#" cycledefs="#cycletype#"  maxtries="{{ maxtries_proc_glmfed }}">
@@ -1170,9 +1173,42 @@ MODULES_RUN_TASK_FP script.
   </task>
 </metatask>
 
-{% if do_ensemble %}
+{%- if run_task_add_aerosol %}
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&ADD_AEROSOL_TN;{{ uscore_ensmem_name }}" cycledefs="boundary,boundary_long" maxtries="{{ maxtries_add_aerosol }}">
+
+    &RSRV_DEFAULT;
+    &WALL_LIMIT_PRE;
+
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&ADD_AEROSOL_TN;" "&JOBSdir;/JRRFS_ADD_AEROSOL"</command>
+
+    &RESOURCES_ADD_AEROSOL;
+    &NATIVE_ALL;
+    <walltime>&WALLTIME_ADD_AEROSOL;</walltime>
+    <memory>&MEMO_ADD_AEROSOL;</memory>
+    &NODESIZE_ALL;
+    <jobname>&TAG;_&ADD_AEROSOL_TN;{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr>&LOGDIR;/&ADD_AEROSOL_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+    <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+
+    <dependency>
+      <metataskdep metatask="&MAKE_LBCS_TN;{{ uscore_ensmem_name }}"/>
+    </dependency>
+  </task>
+{%- endif %}
+
+{%- if do_ensemble %}
 </metatask>
-{% endif %}
+{%- endif %}
 
 {%- endif %}
 {%- if not do_ensfcst %}
@@ -1231,6 +1267,9 @@ MODULES_RUN_TASK_FP script.
              <metataskdep metatask="&MAKE_LBCS_TN;{{ uscore_ensmem_name }}" cycle_offset="-{{ h }}:00:00"/>
              {%- endfor %}
            </or>
+{%- if run_task_add_aerosol %}
+           <taskdep task="&ADD_AEROSOL_TN;{{ uscore_ensmem_name }}"/>
+{%- endif %}
 {%- if do_retro %}
   {%- if not do_ensemble %}
            <datadep age="00:00:10:00"><cyclestr offset="00:00:00">&FG_ROOT;/@Y@m@d@H/{{ slash_ensmem_subdir }}/fcst_fv3lam/INPUT/gfs_ctrl.nc</cyclestr></datadep>
@@ -2056,6 +2095,9 @@ MODULES_RUN_TASK_FP script.
        <and>
          <datadep age="00:00:05:00"><cyclestr>&FG_ROOT;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/DA_OUTPUT/coupler.res</cyclestr></datadep>
          <metataskdep metatask="&MAKE_LBCS_TN;{{ uscore_ensmem_name }}"/>
+{%- if run_task_add_aerosol %}
+         <taskdep task="&ADD_AEROSOL_TN;{{ uscore_ensmem_name }}"/>
+{%- endif %}
        </and>
      {%- else %}
        <or>
@@ -2104,6 +2146,9 @@ MODULES_RUN_TASK_FP script.
                <metataskdep metatask="&MAKE_LBCS_TN;{{ uscore_ensmem_name }}"/>
                <metataskdep metatask="&MAKE_LBCS_TN;{{ uscore_ensmem_name }}" cycle_offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00"/>
              </or>
+{%- if run_task_add_aerosol %}
+             <taskdep task="&ADD_AEROSOL_TN;{{ uscore_ensmem_name }}"/>
+{%- endif %}
              {%- endif %}
            </and>
 {%- endif %}
@@ -2850,9 +2895,16 @@ MODULES_RUN_TASK_FP script.
     <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    {%- if do_ensfcst %}
+    <envar><name>CYCLE_TYPE</name><value><cyclestr>enfcst</cyclestr></value></envar>
+    {%- else %}
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
+    {%- endif %}
 
     <dependency>
+    {%- if do_ensfcst %}
+          <taskdep task="&RUN_RECENTER_TN;"/>
+    {%- else %}
        {%- if do_recenter %}
         <or>
          <and>
@@ -2877,6 +2929,7 @@ MODULES_RUN_TASK_FP script.
         {%- elif do_enkfupdate %}
         <taskdep task="&RUN_ENKFUPDT_TN;"/>
        {%- endif %}
+    {%- endif %}
     </dependency>
 
   </task>
