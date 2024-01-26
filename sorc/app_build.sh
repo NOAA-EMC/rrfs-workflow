@@ -264,6 +264,10 @@ if [ "${EXTRN}" = true ]; then
     printf "... removing python_graphics ...\n"
     rm -rf "${HOME_DIR}/python_graphics"
   fi
+  if [ -d "${SORC_DIR}/AQM-utils" ]; then
+    printf "... removing AQM-utils ...\n"
+    rm -rf "${SORC_DIR}/AQM-utils"
+  fi
 
   # run check-out
   python --version 1>/dev/null 2>/dev/null
@@ -281,13 +285,13 @@ if [ "${DEFAULT_BUILD}" = true ]; then
   BUILD_UPP="on"
   BUILD_GSI="on"
   BUILD_RRFS_UTILS="on"
+  BUILD_AQM_UTILS="on"
 fi
 
 # Choose components to build for air quality modeling (RRFS-AQM)
 if [ "${APPLICATION}" = "ATMAQ" ]; then
   if [ "${DEFAULT_BUILD}" = true ]; then
     BUILD_NEXUS="on"
-    BUILD_AQM_UTILS="on"
   fi
   if [ "${PLATFORM}" = "wcoss2" ]; then
     BUILD_POST_STAT="on"

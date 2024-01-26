@@ -86,7 +86,20 @@ save_yyyy=${save_time:0:4}
 save_mm=${save_time:4:2}
 save_dd=${save_time:6:2}
 save_hh=${save_time:8:2}
-# 
+#cdate_crnt_fhr=$( date --utc --date "${yyyymmdd} ${hh} UTC" "+%Y%m%d%H" )
+#
+#-----------------------------------------------------------------------
+#
+# Determine early exit for running blending vs 1 time step ensinit.
+#
+#-----------------------------------------------------------------------
+#
+run_blending=${NWGES_BASEDIR}/${cdate}/run_blending
+run_ensinit=${NWGES_BASEDIR}/${cdate}/run_ensinit
+if [[ ${CYCLE_SUBTYPE} == "ensinit" && -e $run_blending ]]; then
+   echo "clean exit ensinit, blending used instead of ensinit."
+   exit 0
+fi
 #-----------------------------------------------------------------------
 #
 # Let save the restart files if needed before run post.

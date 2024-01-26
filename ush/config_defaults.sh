@@ -617,9 +617,6 @@ DA_CYCLE_INTERV="1"
 RESTART_INTERVAL="1 2"
 RESTART_INTERVAL_LONG="1 2"
 CYCL_HRS_HYB_FV3LAM_ENS=( "99" )
-FIRST_BLENDED_CYCLE="18"
-FIRST_BLENDED_CYCLE_DATE="YYYYMMDDHH"
-
 #-----------------------------------------------------------------------
 #
 # Set cycle definition for each group.  The cycle definition sets the cycle
@@ -1526,7 +1523,11 @@ SAVE_CYCLE_LOG="TRUE"
 # Same as GRID_DIR but for the surface climatology generation task.
 #
 # RUN_TASK_RUN_PRDGEN:
-# Same as RUN_TASK_MAKE_GRID but for the product generation task.
+# Flag that determines whether the product generation task is to run.
+#
+# RUN_TASK_ADD_AEROSOL:
+# Flag that determines whether the task for adding dusk in the GEFS 
+# aerosol data to LBCs task is to run.
 #
 # IS_RTMA:
 # If true, some ICs,LBCs,GSI rocoto tasks will be turned off
@@ -1557,7 +1558,7 @@ RUN_TASK_MAKE_SFC_CLIMO="FALSE"
 SFC_CLIMO_DIR=""
 
 RUN_TASK_RUN_PRDGEN="TRUE"
-
+RUN_TASK_ADD_AEROSOL="FALSE"
 #
 NCORES_PER_NODE=24 #Jet default value
 IS_RTMA="FALSE"
@@ -1831,6 +1832,7 @@ SAVE_RESTART_TN="save_restart"
 SAVE_DA_OUTPUT_TN="save_da_output"
 JEDI_ENVAR_IODA_TN="jedi_envar_ioda"
 PROCESS_GLMFED_TN="process_glmfed"
+ADD_AEROSOL_TN="add_aerosol"
 #
 # Number of nodes.
 #
@@ -1863,6 +1865,7 @@ NNODES_RUN_ENSPOST="1"
 NNODES_RUN_BUFRSND="1"
 NNODES_SAVE_RESTART="1"
 NNODES_RUN_JEDIENVAR_IODA="1"
+NNODES_ADD_AEROSOL="1"
 #
 # Number of cores.
 #
@@ -1904,6 +1907,7 @@ PPN_RUN_ENSPOST="1"
 PPN_RUN_BUFRSND="28"
 PPN_SAVE_RESTART="1"
 PPN_RUN_JEDIENVAR_IODA="1"
+PPN_ADD_AEROSOL="9"
 #
 # Number of TPP for WCOSS2.
 #
@@ -1947,12 +1951,14 @@ WTIME_RUN_BUFRSND="00:45:00"
 WTIME_SAVE_RESTART="00:15:00"
 WTIME_RUN_ENSPOST="00:30:00"
 WTIME_RUN_JEDIENVAR_IODA="00:30:00"
+WTIME_ADD_AEROSOL="00:30:00"
 #
 # Start times.
 #
 START_TIME_SPINUP="01:10:00"
 START_TIME_PROD="02:20:00"
 START_TIME_CONVENTIONAL_SPINUP="00:40:00"
+START_TIME_BLENDING="01:00:00"
 START_TIME_LATE_ANALYSIS="01:40:00"
 START_TIME_CONVENTIONAL="00:40:00"
 START_TIME_NSSLMOSIAC="00:45:00"
@@ -1976,6 +1982,7 @@ MEMO_PROC_SMOKE="40G"
 MEMO_PROC_GLMFED="70G"
 MEMO_PROC_PM="40G"
 MEMO_SAVE_DA_OUTPUT="40G"
+MEMO_ADD_AEROSOL="70G"
 #
 # Maximum number of attempts.
 #
@@ -2007,6 +2014,7 @@ MAXTRIES_CLDANL_NONVAR="1"
 MAXTRIES_SAVE_RESTART="1"
 MAXTRIES_SAVE_DA_OUTPUT="1"
 MAXTRIES_JEDI_ENVAR_IODA="1"
+MAXTRIES_ADD_AEROSOL="1"
 #
 #-----------------------------------------------------------------------
 #
@@ -2232,6 +2240,7 @@ DO_ENSPOST="FALSE"
 DO_ENSINIT="FALSE"
 DO_SAVE_DA_OUTPUT="FALSE"
 DO_GSIDIAG_OFFLINE="FALSE"
+DO_RADMON="FALSE"
 DO_ENS_RADDA="FALSE"
 DO_ENS_BLENDING="FALSE"
 ENS_BLENDING_LENGTHSCALE="960" # (Lx) in kilometers
@@ -2470,6 +2479,37 @@ USE_FVCOM="FALSE"
 PREP_FVCOM="FALSE"
 FVCOM_DIR="/user/defined/dir/to/fvcom/data"
 FVCOM_FILE="fvcom.nc"
+#
+#-----------------------------------------------------------------------
+#
+# Set parameters associated with aerosol LBCs.
+#
+# COMINgefs:
+# Path to GEFS aerosol data files
+# Typical path: COMINgefs/gefs.YYYYMMDD/HH/chem/sfcsig/
+# Typical file name: geaer.t00z.atmf000.nemsio
+#
+# GEFS_AEROSOL_FILE_PREFIX:
+# Prefix of GEFS aerosol data files (default: geaer)
+#
+# GEFS_AEROSOL_FILE_FMT:
+# File format of GEFS aerosol data (default: nemsio)
+#
+# GEFS_AEROSOL_INTVL_HRS:
+# The interval (in integer hous) of the GEFS aerosol data files
+#
+# GEFS_AEROSOL_FILE_CYC:
+# Cycle of GEFS aerosol data files (HH in the above file path).
+# This is useful in case that limited cycle data are available. If this 
+# is not set, the current cycle (cyc) will be used for this variable.
+#
+#-----------------------------------------------------------------------
+#
+COMINgefs=""
+GEFS_AEROSOL_FILE_PREFIX="geaer"
+GEFS_AEROSOL_FILE_FMT="nemsio"
+GEFS_AEROSOL_INTVL_HRS="3"
+GEFS_AEROSOL_FILE_CYC="00"
 #
 #-----------------------------------------------------------------------
 #
