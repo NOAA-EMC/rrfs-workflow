@@ -77,6 +77,17 @@ APRUN="time"
 #
 #-----------------------------------------------------------------------
 #
+# For the fire weather grid, call Python script to determine if the nest
+# falls inside the RRFS computational grid based on the center lat/lon.
+#
+#-----------------------------------------------------------------------
+#
+if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
+  python ${SCRIPTSdir}/exrrfsfw_domain.py $LAT_CTR $LON_CTR
+fi
+#
+#-----------------------------------------------------------------------
+#
 # Generate grid file.
 #
 #-----------------------------------------------------------------------
