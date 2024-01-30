@@ -59,6 +59,8 @@ export OMP_NUM_THREADS=$NCORES_PER_NODE
 export FI_OFI_RXM_SAR_LIMIT=3145728
 export FI_MR_CACHE_MAX_COUNT=0
 export MPICH_OFI_STARTUP_CONNECT=1
+
+#This needs removed, but for some reason it fails without it.
 export BLENDINGPYTHON="/apps/spack/python/3.8.6/intel/19.1.3.304/pjn2nzkjvqgmjw4hmyz43v5x4jbxjzpk/bin/python"
 
 case "$MACHINE" in
@@ -193,7 +195,6 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
 
   # Initialize a counter for the number of existing files
   existing_files=0
-  #NUM_ENS_MEMBERS=30
 
   # Loop through each ensemble member and check if the 1h RRFS EnKF files exist
   for imem in $(seq 1 ${NUM_ENS_MEMBERS}); do
@@ -232,39 +233,14 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
 
      # Python/F2Py scripts
      cp $SCRIPTSdir/exrrfs_blending_fv3.py .
-#     cp $SCRIPTSdir/exrrfs_chgres_cold2fv3.py .
 
      # F2Py shared object files
      ln -sf $LIB64dir/raymond.so .
-#     ln -sf $LIB64dir/chgres_winds.so .
-#     ln -sf $LIB64dir/remap_scalar.so .
-#     ln -sf $LIB64dir/remap_dwinds.so .
-
-     # Required NETCDF files -  HOST MODEL (e.g., GDAS; these files should already be present)
-     #cp_vrfy out.atm.tile${TILE_RGNL}.nc .
-     #cp_vrfy out.sfc.tile${TILE_RGNL}.nc .
-     #cp_vrfy gfs_ctrl.nc .
 
      # Required NETCDF files - RRFS
      cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.tile1.nc ./fv_core.res.tile1.nc
      cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_tracer.res.tile1.nc ./fv_tracer.res.tile1.nc
      cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc ./fv_core.res.nc
-
-     # Required FIX files
-#     cp $FIXLAM/${CRES}_grid.tile7.nc .
-#     cp $FIXLAM/${CRES}_oro_data.tile7.halo0.nc .
-
-#     # Shortcut the file names
-#     warm=./fv_core.res.tile1.nc
-#     cold=./out.atm.tile7.nc
-#     grid=./${CRES}_grid.tile7.nc
-#     akbk=./fv_core.res.nc
-#     akbkcold=./gfs_ctrl.nc
-#     orog=./${CRES}_oro_data.tile7.halo0.nc
-#     bndy=./gfs.bndy.nc
-
-     # Run convert coldstart files to fv3 restart (rotate winds and remap).
-#     ${BLENDINGPYTHON} exrrfs_chgres_cold2fv3.py $warm $cold $grid $akbk $akbkcold $orog
 
      # Shortcut the file names/arguments.
      Lx=$ENS_BLENDING_LENGTHSCALE

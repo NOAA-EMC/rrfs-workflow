@@ -5,15 +5,24 @@ import remap_scalar
 import chgres_winds   # might need to rename in the future
 import sys
 
+def nan_check(arr, name, check_id):
+    nan_count = 0
+    nan_count = np.sum(np.isnan(arr))
+    print(f"coldstartwinds({check_id}) nan_count({name}): {nan_count}")
+    if nan_count > 0:
+        nan_indices = np.argwhere(np.isnan(arr))
+        print("Indices of NaN values:")
+        for index in nan_indices:
+            print(index)
+    return nan_count
+
 print("Reading in NETCDF4 Files... ", end="\r")
-#warm = str(sys.argv[1])
 cold = str(sys.argv[1])
 grid = str(sys.argv[2])
 akbk = str(sys.argv[3])
 akbkcold = str(sys.argv[4])
 orog = str(sys.argv[5])
 
-#warmnc = Dataset(warm)
 coldnc = Dataset(cold, mode="a")
 akbknc = Dataset(akbk)
 gridnc = Dataset(grid)
@@ -29,15 +38,7 @@ WriteData = True
 # STEP 1. ROTATE THE WINDS FROM CHGRES
 if ColdStartWinds:
     print("Starting ColdStartWinds.... ", end="\r")
-    # Data from warm restarts
-    #u = np.float64(warmnc["u"][0, :, :, :])
-    #v = np.float64(warmnc["v"][0, :, :, :])
-    #nlev = np.shape(u)[0]  # 65,z   127,z
-    #nlat = np.shape(u)[1]  # 2701,y 769,y
-    #nlon = np.shape(u)[2]  # 3950,x 768,x
-
     nlev = 65
-    km = nlev
     nlev = coldnc.createDimension("nlev", nlev)  # 127
 
     # Data from cold chgres
@@ -138,6 +139,10 @@ if VertRemapWinds:
     # vertically remap the dwinds
     remap_dwinds.main(levp, npz, ak0, bk0, ak, bk, ps, ud, vd,
                       isrt, iend, jsrt, jend, Atm_u, Atm_v, Atm_ps)
+    nan_count = nan_check(Atm_u, "Atm_u", 1)
+    if nan_count > 0:
+       print(f"NaNs present after remap_dwinds")
+       sys.exit(1)
 
     print("Starting VertRemapWinds.... Done.")
 
@@ -190,5 +195,4 @@ if WriteData:
         coldnc.variables[new_var][:, :, :] = sphum
 
 # close the nc files
-#warmnc.close()
 coldnc.close()

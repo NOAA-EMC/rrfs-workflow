@@ -2,7 +2,25 @@ import numpy as np
 from netCDF4 import Dataset
 import raymond
 import sys
+import os
 
+def check_file_nans(test_nc, vars_fg, vars_bg, name):
+    nans = False
+    for (var_fg, var_bg) in zip(vars_fg, vars_bg):
+        i = vars_fg.index(var_fg)
+        if var_fg == "sphum":
+           continue
+        if name == "glb":
+           test = np.float64(test_nc[var_bg][:, :, :])
+        if name == "reg":
+           test = np.float64(test_nc[var_fg][:, :, :, :])  # (1, 65, 1093, 1820)
+        nan_count = np.sum(np.isnan(test))
+        print(f"Checking for NaNs: {name}({var_fg}), nan count: {nan_count}")
+        if nan_count > 0:
+           nans = True
+        return nans
+
+err = 0
 print("Starting blending code")
 
 Lx = float(sys.argv[1])  # BLENDING_LENGTHSCALE
@@ -44,6 +62,10 @@ vars_bg = ["u_cold2fv3", "v_cold2fv3", "t_cold2fv3", "sphum_cold2fv3", "delp_col
 # grid staggering and have the same orientation as the RRFS winds.
 glb_fg = str(sys.argv[2])
 glb_fg_nc = Dataset(glb_fg)
+nans = check_file_nans(glb_fg_nc, vars_fg, vars_bg, "glb")
+if nans:
+   err = 1
+   sys.exit(err)
 glb_nlon = glb_fg_nc.dimensions["lon"].size  # 1820   (lonp=1821)
 glb_nlat = glb_fg_nc.dimensions["lat"].size  # 1092   (latp=1093)
 glb_nlev = glb_fg_nc.dimensions["lev"].size  # 66     (levp=67)
@@ -53,6 +75,10 @@ glb_Dx = 3.0
 reg_fg = str(sys.argv[3])
 # Open the blended file for updating the required vars (use a copy of the regional file)
 reg_fg_nc = Dataset(reg_fg, mode="a")
+nans = check_file_nans(reg_fg_nc, vars_fg, vars_bg, "reg")
+if nans:
+   err = 2
+   sys.exit(err)
 nlon = reg_fg_nc.dimensions["xaxis_1"].size  # 1820   (xaxis_2=1821)
 nlat = reg_fg_nc.dimensions["yaxis_2"].size  # 1092   (yaxis_1=1093)
 nlev = reg_fg_nc.dimensions["zaxis_1"].size  # 65
@@ -110,7 +136,6 @@ for (var_fg, var_bg) in zip(vars_fg, vars_bg):
         nlev = 1
         glb = np.reshape(glb, [ntim, nlat, nlon])  # add time dim bc missing from chgres
         var_out = np.zeros(shape=(nlon, nlat, 1), dtype=np.float64)
-        field = np.zeros(shape=(nlon*nlat), dtype=np.float64)
         var_work = np.zeros(shape=((nlon+nbdy), (nlat+nbdy), 1), dtype=np.float64)
         field_work = np.zeros(shape=((nlon+nbdy)*(nlat+nbdy)), dtype=np.float64)
     if dim == 3:  # 3D vars
@@ -122,7 +147,6 @@ for (var_fg, var_bg) in zip(vars_fg, vars_bg):
         nlon = np.shape(reg)[3]
         glb = np.reshape(glb, [ntim, nlev, nlat, nlon])  # add time dim bc missing from chgres
         var_out = np.zeros(shape=(nlon, nlat, nlev, 1), dtype=np.float64)
-        field = np.zeros(shape=(nlon*nlat, nlev), dtype=np.float64)
         var_work = np.zeros(shape=((nlon+nbdy), (nlat+nbdy), nlev, 1), dtype=np.float64)
         field_work = np.zeros(shape=((nlon+nbdy)*(nlat+nbdy), nlev), dtype=np.float64)
     glbT = np.transpose(glb)        # (1820, 1093, 65)
@@ -157,6 +181,54 @@ for (var_fg, var_bg) in zip(vars_fg, vars_bg):
             var_out = regT
 
     var_out = np.transpose(var_out)  # (1, 50, 834, 954)
+
+    # Error checking
+    var_out_max = np.max(var_out)
+    var_out_min = np.min(var_out)
+    #print(f" Print max/mins:")
+    print(f"   var_out_max({var_fg}): {var_out_max}")
+    print(f"   var_out_min({var_fg}): {var_out_min}")
+    if var_fg == 'u' or var_fg == 'v':
+       val_max = 160
+       val_min = -160
+    if var_fg == 'T':
+       val_max = 350
+       val_min = 0
+    if var_fg == 'sphum':
+       val_max = 1
+       val_min = -1  # slightly negative values possible with blending
+    if var_fg == 'delp':
+       val_max = 5000
+       val_min = 0
+
+    if var_out_max > val_max:
+       err = 1
+       exceed_threshold = var_out > val_max
+       count = np.sum(exceed_threshold)
+       print(f"Number of elements that exceed val_max: {count}")
+
+    if var_out_min < val_min:
+       err = 2
+       exceed_threshold = var_out < val_min
+       count = np.sum(exceed_threshold)
+       print(f"Number of elements that exceed val_min: {count}")
+
+    # Check for NaN values
+    if np.isnan(var_out).any():
+       err = 3
+       array_list = [regT, glbT, var_out, field_work, var_work]
+       array_list_str = ["regT", "glbT", "var_out", "field_work", "var_work"]
+       for i, array in enumerate(array_list):
+          print(f" Printing NaN stats for {array_list_str[i]}({var_fg}):")
+          print(f"   Max value of the array: {np.max(array)}")
+          print(f"   Min value of the array: {np.min(array)}")
+          nan_count = np.sum(np.isnan(array))
+          print(f"   Count of NaN values: {nan_count}")
+
+    if err > 0:
+       print(f"An error ocurred in {sys.argv[0]}. Blending failed!!!")
+       print(f"err={err}")
+       sys.exit(err)
 
     # Overwrite blended fields to blended file.
     if dim == 2:  # 2D vars
