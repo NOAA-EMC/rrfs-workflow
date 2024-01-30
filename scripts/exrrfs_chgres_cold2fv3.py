@@ -6,14 +6,14 @@ import chgres_winds   # might need to rename in the future
 import sys
 
 print("Reading in NETCDF4 Files... ", end="\r")
-warm = str(sys.argv[1])
-cold = str(sys.argv[2])
-grid = str(sys.argv[3])
-akbk = str(sys.argv[4])
-akbkcold = str(sys.argv[5])
-orog = str(sys.argv[6])
+#warm = str(sys.argv[1])
+cold = str(sys.argv[1])
+grid = str(sys.argv[2])
+akbk = str(sys.argv[3])
+akbkcold = str(sys.argv[4])
+orog = str(sys.argv[5])
 
-warmnc = Dataset(warm)
+#warmnc = Dataset(warm)
 coldnc = Dataset(cold, mode="a")
 akbknc = Dataset(akbk)
 gridnc = Dataset(grid)
@@ -30,12 +30,13 @@ WriteData = True
 if ColdStartWinds:
     print("Starting ColdStartWinds.... ", end="\r")
     # Data from warm restarts
-    u = np.float64(warmnc["u"][0, :, :, :])
-    v = np.float64(warmnc["v"][0, :, :, :])
-    nlev = np.shape(u)[0]  # 127,z
-    nlat = np.shape(u)[1]  # 769,y
-    nlon = np.shape(u)[2]  # 768,x
+    #u = np.float64(warmnc["u"][0, :, :, :])
+    #v = np.float64(warmnc["v"][0, :, :, :])
+    #nlev = np.shape(u)[0]  # 65,z   127,z
+    #nlat = np.shape(u)[1]  # 2701,y 769,y
+    #nlon = np.shape(u)[2]  # 3950,x 768,x
 
+    nlev = 65
     km = nlev
     nlev = coldnc.createDimension("nlev", nlev)  # 127
 
@@ -189,5 +190,5 @@ if WriteData:
         coldnc.variables[new_var][:, :, :] = sphum
 
 # close the nc files
-warmnc.close()
+#warmnc.close()
 coldnc.close()

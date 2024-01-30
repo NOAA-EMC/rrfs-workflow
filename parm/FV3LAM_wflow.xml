@@ -38,6 +38,7 @@ Workflow task names.
 <!ENTITY GET_GEFS_LBCS_TN        "{{ get_gefs_lbcs_tn }}">
 <!ENTITY GET_EXTRN_LBCS_LONG_TN  "{{ get_extrn_lbcs_long_tn }}">
 <!ENTITY MAKE_ICS_TN             "{{ make_ics_tn }}">
+<!ENTITY BLEND_ICS_TN            "{{ blend_ics_tn }}">
 <!ENTITY MAKE_LBCS_TN            "{{ make_lbcs_tn }}">
 <!ENTITY RUN_FCST_TN             "{{ run_fcst_tn }}">
 <!ENTITY RUN_POST_TN             "{{ run_post_tn }}">
@@ -192,6 +193,7 @@ define resources used for each tasks
 <!ENTITY RESOURCES_RUN_POST    "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}:tpp={{ tpp_run_post }}</nodes>">
 <!ENTITY RESOURCES_RUN_ENKF    "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}:tpp={{ tpp_run_enkf }}</nodes>">
 <!ENTITY RESOURCES_MAKE_ICS    "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}:tpp={{ tpp_make_ics }}</nodes>">
+<!ENTITY RESOURCES_BLEND_ICS   "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}:tpp={{ tpp_make_ics }}</nodes>">
 <!ENTITY RESOURCES_MAKE_LBCS   "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}:tpp={{ tpp_make_lbcs }}</nodes>">
 <!ENTITY RESOURCES_ANAL_GSI    "<nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}:tpp={{ tpp_run_anal }}</nodes>">
 <!ENTITY RESOURCES_FCST_SPINUP "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}:tpp={{ tpp_run_fcst }}</nodes>">
@@ -205,6 +207,7 @@ define resources used for each tasks
 <!ENTITY RESOURCES_RUN_POST    "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
 <!ENTITY RESOURCES_RUN_ENKF    "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}</nodes>">
 <!ENTITY RESOURCES_MAKE_ICS    "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
+<!ENTITY RESOURCES_BLEND_ICS   "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
 <!ENTITY RESOURCES_MAKE_LBCS   "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
 <!ENTITY RESOURCES_ANAL_GSI    "<cores>{{ ncores_run_anal }}</cores>">
 <!ENTITY RESOURCES_FCST_SPINUP "<cores>{{ ncores_run_fcst }}</cores>">
@@ -218,6 +221,7 @@ define resources used for each tasks
 <!ENTITY RESOURCES_RUN_POST    "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
 <!ENTITY RESOURCES_RUN_ENKF    "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}</nodes>">
 <!ENTITY RESOURCES_MAKE_ICS    "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
+<!ENTITY RESOURCES_BLEND_ICS   "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
 <!ENTITY RESOURCES_MAKE_LBCS   "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
 <!ENTITY RESOURCES_ANAL_GSI    "<cores>{{ ncores_run_anal }}</cores>">
 <!ENTITY RESOURCES_FCST_SPINUP "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
@@ -231,6 +235,7 @@ define resources used for each tasks
 <!ENTITY RESOURCES_RUN_POST    "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
 <!ENTITY RESOURCES_RUN_ENKF    "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}</nodes>">
 <!ENTITY RESOURCES_MAKE_ICS    "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
+<!ENTITY RESOURCES_BLEND_ICS   "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
 <!ENTITY RESOURCES_MAKE_LBCS   "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
 <!ENTITY RESOURCES_ANAL_GSI    "<nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}</nodes>">
 <!ENTITY RESOURCES_FCST_SPINUP "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
@@ -258,6 +263,7 @@ define resources used for each tasks
 <!ENTITY WALLTIME_RUN_POST        "{{ wtime_run_post }}">
 <!ENTITY WALLTIME_RUN_ENKF        "{{ wtime_run_enkf }}">
 <!ENTITY WALLTIME_MAKE_ICS        "{{ wtime_make_ics }}">
+<!ENTITY WALLTIME_BLEND_ICS       "{{ wtime_make_ics }}">
 <!ENTITY WALLTIME_MAKE_LBCS       "{{ wtime_make_lbcs }}">
 <!ENTITY WALLTIME_ANAL_GSI        "{{ wtime_run_anal }}">
 <!ENTITY WALLTIME_FCST_SPINUP     "{{ wtime_run_fcst_spinup }}">
@@ -1050,12 +1056,6 @@ MODULES_RUN_TASK_FP script.
     <dependency>
       <and>
         <taskdep task="&GET_EXTRN_ICS_TN;{{ uscore_ensmem_name }}"/>
-        {% if do_ens_blending %}
-        <or>
-          <timedep><cyclestr offset="&START_TIME_BLENDING;">@Y@m@d@H@M00</cyclestr></timedep>
-          <datadep age="00:00:01:00"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem#mem#/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
-        </or>
-        {% endif %}
         <or>
 <!--          <taskdep task="&MAKE_GRID_TN;"/> -->
           <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
@@ -1075,6 +1075,42 @@ MODULES_RUN_TASK_FP script.
     </dependency>
 
   </task>
+
+  <task name="&BLEND_ICS_TN;{{ uscore_ensmem_name }}" cycledefs="initial" maxtries="{{ maxtries_make_ics }}">
+
+    &RSRV_DEFAULT;
+    &WALL_LIMIT_PRE;
+
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&BLEND_ICS_TN;" "&JOBSdir;/JRRFS_BLEND_ICS"</command>
+    &RESOURCES_BLEND_ICS;
+    &NATIVE_ALL;
+    <walltime>&WALLTIME_BLEND_ICS;</walltime>
+    &NODESIZE_ALL;
+    <jobname>&TAG;_&BLEND_ICS_TN;{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr>&LOGDIR;/&BLEND_ICS_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>FG_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+
+    <dependency>
+      <and>
+        <taskdep task="&MAKE_ICS_TN;{{ uscore_ensmem_name }}"/>
+        {% if do_ens_blending %}
+        <or>
+          <timedep><cyclestr offset="&START_TIME_BLENDING;">@Y@m@d@H@M00</cyclestr></timedep>
+          <datadep age="00:00:01:00"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem#mem#/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+        </or>
+        {% endif %}
+      </and>
+    </dependency>
+
+  </task>
+
 <!--
 ************************************************************************
 ************************************************************************
@@ -1220,7 +1256,7 @@ MODULES_RUN_TASK_FP script.
              <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
              {%- endfor %}
            </or>
-           <taskdep task="&MAKE_ICS_TN;{{ uscore_ensmem_name }}"/>
+           <taskdep task="&BLEND_ICS_TN;{{ uscore_ensmem_name }}"/>
            <or>
              {%- for h in range(0,lbcs_search_hrs) %} 
              <metataskdep metatask="&MAKE_LBCS_TN;{{ uscore_ensmem_name }}" cycle_offset="-{{ h }}:00:00"/>
@@ -1369,7 +1405,7 @@ MODULES_RUN_TASK_FP script.
 
     <dependency>
       <and>
-       <taskdep task="&MAKE_ICS_TN;_mem#mem#"/>
+       <taskdep task="&BLEND_ICS_TN;_mem#mem#"/>
        <taskdep task="&SAVE_RESTART_TN;_ensinit{{ uscore_ensmem_name }}"/>
        <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
       </and>
@@ -2099,7 +2135,7 @@ MODULES_RUN_TASK_FP script.
 {% else %}
            <and>
              <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
-             <taskdep task="&MAKE_ICS_TN;{{ uscore_ensmem_name }}"/>
+             <taskdep task="&BLEND_ICS_TN;{{ uscore_ensmem_name }}"/>
              {%- if not is_rtma %}
              <or>
                <metataskdep metatask="&MAKE_LBCS_TN;{{ uscore_ensmem_name }}"/>

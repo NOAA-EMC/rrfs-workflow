@@ -197,6 +197,7 @@ settings="\
   'get_extrn_lbcs_long_tn': ${GET_EXTRN_LBCS_LONG_TN}
   'get_gefs_lbcs_tn': ${GET_GEFS_LBCS_TN}
   'make_ics_tn': ${MAKE_ICS_TN}
+  'blend_ics_tn': ${BLEND_ICS_TN}
   'make_lbcs_tn': ${MAKE_LBCS_TN}
   'add_aerosol_tn': ${ADD_AEROSOL_TN}
   'run_fcst_tn': ${RUN_FCST_TN}
