@@ -60,9 +60,6 @@ export FI_OFI_RXM_SAR_LIMIT=3145728
 export FI_MR_CACHE_MAX_COUNT=0
 export MPICH_OFI_STARTUP_CONNECT=1
 
-#This needs removed, but for some reason it fails without it.
-export BLENDINGPYTHON="/apps/spack/python/3.8.6/intel/19.1.3.304/pjn2nzkjvqgmjw4hmyz43v5x4jbxjzpk/bin/python"
-
 case "$MACHINE" in
 
   "WCOSS2")
@@ -176,10 +173,10 @@ export pgm="chgres_cube"
 #   processed. This includes rotating the winds and vertically remapping all the
 #   variables. The cold start file has u_w, v_w, u_s, and v_s which correspond
 #   to the D-grid staggering.
-#     -) u_s is the D-grid south tangential wind component (m/s)
+#     -) u_s is the D-grid south face tangential wind component (m/s)
 #     -) v_s is the D-grid south face normal wind component (m/s)
-#     -) u_w is the D-grid west  face tangential wind component (m/s)
-#     -) v_w is the D-grid west  face normal wind component (m/s)
+#     -) u_w is the D-grid west  face normal wind component (m/s)
+#     -) v_w is the D-grid west  face tangential wind component (m/s)
 #     -) https://github.com/NOAA-GFDL/GFDL_atmos_cubed_sphere/blob/bdeee64e860c5091da2d169b1f4307ad466eca2c/tools/external_ic.F90
 #     -) https://dtcenter.org/sites/default/files/events/2020/20201105-1300p-fv3-gfdl-1.pdf
 #
