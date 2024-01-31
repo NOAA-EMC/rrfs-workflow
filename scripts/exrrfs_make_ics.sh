@@ -649,10 +649,10 @@ export err=$?; err_chk
 #   processed. This includes rotating the winds and vertically remapping all the
 #   variables. The cold start file has u_w, v_w, u_s, and v_s which correspond
 #   to the D-grid staggering.
-#     -) u_s is the D-grid south tangential wind component (m/s)
+#     -) u_s is the D-grid south face tangential wind component (m/s)
 #     -) v_s is the D-grid south face normal wind component (m/s)
-#     -) u_w is the D-grid west  face tangential wind component (m/s)
-#     -) v_w is the D-grid west  face normal wind component (m/s)
+#     -) u_w is the D-grid west  face normal wind component (m/s)
+#     -) v_w is the D-grid west  face tangential wind component (m/s)
 #     -) https://github.com/NOAA-GFDL/GFDL_atmos_cubed_sphere/blob/bdeee64e860c5091da2d169b1f4307ad466eca2c/tools/external_ic.F90
 #     -) https://dtcenter.org/sites/default/files/events/2020/20201105-1300p-fv3-gfdl-1.pdf
 #
@@ -715,9 +715,7 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
   # Required FIX files
   cp $FIXLAM/${CRES}_grid.tile7.nc .
   cp $FIXLAM/${CRES}_oro_data.tile7.halo0.nc .
-
-  # NEW FIX FILES
-  cp /lfs/h2/emc/lam/noscrub/donald.e.lippi/bugfix/fix/fv_core.res.nc .
+  cp $FIX_GSI/$PREDEF_GRID_NAME/fv3_akbk fv_core.res.nc
 
   # Shortcut the file names
   warm=./fv_core.res.tile1.nc
