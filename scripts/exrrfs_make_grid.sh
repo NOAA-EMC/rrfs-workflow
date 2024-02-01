@@ -83,7 +83,7 @@ APRUN="time"
 #-----------------------------------------------------------------------
 #
 if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
-  python ${SCRIPTSdir}/exrrfsfw_domain.py $LAT_CTR $LON_CTR
+  python ${USHdir}/rrfsfw_domain.py $LAT_CTR $LON_CTR
   if [[ $? != 0 ]]; then
     err_exit "WARNING: Problem with the requested fire weather grid - ABORT"
   fi
