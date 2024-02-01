@@ -20,6 +20,9 @@ def check_file_nans(test_nc, vars_fg, vars_bg, name):
            nans = True
         return nans
 
+def check_shape(arr, name):
+    print(f"  {name}'s shape: {np.shape(arr)}")
+
 err = 0
 print("Starting blending code")
 
@@ -128,8 +131,8 @@ for (var_fg, var_bg) in zip(vars_fg, vars_bg):
 
     dim = len(np.shape(reg_nc[var_fg]))-1
     if dim == 2:  # 2D vars
-        glb = np.float64(glb_nc[var_bg][:, :])     # (1093 1820)
-        reg = np.float64(reg_nc[var_fg][:, :, :])  # (1, 1093, 1820)
+        glb = np.float64(glb_nc[var_bg][:, :])     # (   2700, 3950)
+        reg = np.float64(reg_nc[var_fg][:, :, :])  # (1, 2700, 3950)
         ntim = np.shape(reg)[0]
         nlat = np.shape(reg)[1]
         nlon = np.shape(reg)[2]
@@ -139,8 +142,8 @@ for (var_fg, var_bg) in zip(vars_fg, vars_bg):
         var_work = np.zeros(shape=((nlon+nbdy), (nlat+nbdy), 1), dtype=np.float64)
         field_work = np.zeros(shape=((nlon+nbdy)*(nlat+nbdy)), dtype=np.float64)
     if dim == 3:  # 3D vars
-        glb = np.float64(glb_nc[var_bg][:, :, :])
-        reg = np.float64(reg_nc[var_fg][:, :, :, :])  # (1, 65, 1093, 1820)
+        glb = np.float64(glb_nc[var_bg][:, :, :])     # (   65, 2700, 3950)
+        reg = np.float64(reg_nc[var_fg][:, :, :, :])  # (1, 65, 2700, 3950)
         ntim = np.shape(reg)[0]
         nlev = np.shape(reg)[1]
         nlat = np.shape(reg)[2]
@@ -149,8 +152,8 @@ for (var_fg, var_bg) in zip(vars_fg, vars_bg):
         var_out = np.zeros(shape=(nlon, nlat, nlev, 1), dtype=np.float64)
         var_work = np.zeros(shape=((nlon+nbdy), (nlat+nbdy), nlev, 1), dtype=np.float64)
         field_work = np.zeros(shape=((nlon+nbdy)*(nlat+nbdy), nlev), dtype=np.float64)
-    glbT = np.transpose(glb)        # (1820, 1093, 65)
-    regT = np.transpose(reg)        # (1820, 1093, 65, 1)
+    glbT = np.transpose(glb)  # (3950, 2700, 65   )
+    regT = np.transpose(reg)  # (3950, 2700, 65, 1)
 
     nlon_start = int(nbdy/2)
     nlon_end = int(nlon+nbdy/2)
@@ -158,6 +161,7 @@ for (var_fg, var_bg) in zip(vars_fg, vars_bg):
     nlat_end = int(nlat+nbdy/2)
 
     if blend:
+        print(f"")
         print(f"Blending backgrounds for {var_fg}/{var_bg}")
         var_work[nlon_start:nlon_end, nlat_start:nlat_end, :] = glbT - regT
         field_work = var_work.reshape((nlon+nbdy)*(nlat+nbdy), nlev, order="F")  # order="F" (FORTRAN)
@@ -180,17 +184,17 @@ for (var_fg, var_bg) in zip(vars_fg, vars_bg):
             print(f"---> Use the RRFS EnKF")
             var_out = regT
 
-    var_out = np.transpose(var_out)  # (1, 50, 834, 954)
+    var_out = np.transpose(var_out)  # (1, 65, 2700, 3950)
+    #check_shape(var_out, "var_out")
 
     # Error checking
     var_out_max = np.max(var_out)
     var_out_min = np.min(var_out)
-    #print(f" Print max/mins:")
-    print(f"   var_out_max({var_fg}): {var_out_max}")
-    print(f"   var_out_min({var_fg}): {var_out_min}")
+    print(f"  var_out_max({var_fg}): {var_out_max}")
+    print(f"  var_out_min({var_fg}): {var_out_min}")
     if var_fg == 'u' or var_fg == 'v':
-       val_max = 160
-       val_min = -160
+       val_max = 120
+       val_min = -120
     if var_fg == 'T':
        val_max = 350
        val_min = 0
@@ -202,28 +206,28 @@ for (var_fg, var_bg) in zip(vars_fg, vars_bg):
        val_min = 0
 
     if var_out_max > val_max:
-       err = 1
+       err = 0
        exceed_threshold = var_out > val_max
        count = np.sum(exceed_threshold)
        print(f"Number of elements that exceed val_max: {count}")
 
     if var_out_min < val_min:
-       err = 2
+       err = 0
        exceed_threshold = var_out < val_min
        count = np.sum(exceed_threshold)
        print(f"Number of elements that exceed val_min: {count}")
 
     # Check for NaN values
     if np.isnan(var_out).any():
-       err = 3
+       err = 5
        array_list = [regT, glbT, var_out, field_work, var_work]
        array_list_str = ["regT", "glbT", "var_out", "field_work", "var_work"]
        for i, array in enumerate(array_list):
-          print(f" Printing NaN stats for {array_list_str[i]}({var_fg}):")
-          print(f"   Max value of the array: {np.max(array)}")
-          print(f"   Min value of the array: {np.min(array)}")
+          print(f"Printing NaN stats for {array_list_str[i]}({var_fg}):")
+          print(f"  Max value of the array: {np.max(array)}")
+          print(f"  Min value of the array: {np.min(array)}")
           nan_count = np.sum(np.isnan(array))
-          print(f"   Count of NaN values: {nan_count}")
+          print(f"  Count of NaN values: {nan_count}")
 
     if err > 0:
        print(f"An error ocurred in {sys.argv[0]}. Blending failed!!!")

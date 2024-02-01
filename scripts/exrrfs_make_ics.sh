@@ -662,7 +662,7 @@ cdate_crnt_fhr_m1=$( date --utc --date "$yyyymmdd $hh UTC - 1 hours" "+%Y%m%d%H"
 # Check for 1h RRFS EnKF files, if at least one missing then use 1tstep initialization
 if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
 
-  echo "Blending Starting."
+  echo "Pre-Blending Starting."
   ulimit -s unlimited
   export OMP_STACKSIZE=3G
   export OMP_NUM_THREADS=$NCORES_PER_NODE
