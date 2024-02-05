@@ -78,7 +78,7 @@ Workflow task names.
 <!ENTITY ARCHIVE_TN           "run_archive">
 <!ENTITY RUN_SMOKE_TN         "run_proc_smoke">
 <!ENTITY RUN_PM_TN            "run_proc_pm">
-<!ENTITY RUN_PREPBUFR_TN      "run_ioda_prepbufr">
+<!ENTITY RUN_IODA_PREPBUFR_TN      "run_ioda_prepbufr">
 
 <!ENTITY TAG  "{{ tag }}">
 <!ENTITY NET  "{{ net }}">
@@ -321,7 +321,7 @@ define resources used for each tasks
 <!ENTITY START_TIME_BLENDING "{{ start_time_blending }}">
 <!ENTITY START_TIME_LATE_ANALYSIS "{{ start_time_late_analysis }}">
 <!ENTITY START_TIME_CONVENTIONAL "{{ start_time_conventional }}">
-<!ENTITY START_TIME_PREPBUFR "{{ start_time_prepbufr }}">
+<!ENTITY START_TIME_IODA_PREPBUFR "{{ start_time_ioda_prepbufr }}">
 <!ENTITY START_TIME_NSSLMOSIAC   "{{ start_time_nsslmosiac }}">
 <!ENTITY START_TIME_LIGHTNINGNC  "{{ start_time_lightningnc }}">
 <!ENTITY START_TIME_PROC_GLMFED  "{{ start_time_proc_glmfed }}">
@@ -764,7 +764,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_ANAL;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PREPBUFR_TN;" "&JOBSdir;/JRRFS_IODA_PREPBUFR"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_IODA_PREPBUFR_TN;" "&JOBSdir;/JRRFS_IODA_PREPBUFR"</command>
 
     <nodes>{{ nnodes_run_ioda_prepbufr }}:ppn={{ ppn_run_ioda_prepbufr }}</nodes>
     <walltime>{{ wtime_run_ioda_prepbufr }}</walltime>
@@ -783,7 +783,7 @@ MODULES_RUN_TASK_FP script.
 
     <dependency>
       <and>
-        <timedep><cyclestr offset="&START_TIME_PREPBUFR;">@Y@m@d@H@M00</cyclestr></timedep>
+        <timedep><cyclestr offset="&START_TIME_IODA_PREPBUFR;">@Y@m@d@H@M00</cyclestr></timedep>
       </and>
     </dependency>
 

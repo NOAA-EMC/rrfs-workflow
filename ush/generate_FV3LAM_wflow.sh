@@ -361,7 +361,7 @@ settings="\
   'start_time_blending': ${START_TIME_BLENDING}
   'start_time_late_analysis': ${START_TIME_LATE_ANALYSIS}
   'start_time_conventional': ${START_TIME_CONVENTIONAL}
-  'start_time_prepbufr': ${START_TIME_PREPBUFR}
+  'start_time_ioda_prepbufr': ${START_TIME_IODA_PREPBUFR}
   'start_time_nsslmosiac': ${START_TIME_NSSLMOSIAC}
   'start_time_lightningnc': ${START_TIME_LIGHTNINGNC}
   'start_time_proc_glmfed': ${START_TIME_GLMFED}
