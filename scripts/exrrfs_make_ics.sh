@@ -657,14 +657,13 @@ export err=$?; err_chk
 #     -) https://dtcenter.org/sites/default/files/events/2020/20201105-1300p-fv3-gfdl-1.pdf
 #
 
-cdate_crnt_fhr_m1=$( date --utc --date "$yyyymmdd $hh UTC - 1 hours" "+%Y%m%d%H" )
-
 # Check for 1h RRFS EnKF files, if at least one missing then use 1tstep initialization
 if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
 
   echo "Pre-Blending Starting."
   ulimit -s unlimited
-  export OMP_STACKSIZE=3G
+  #Add the size of the variables declared as private and multiply by the OMP_NUMTHREADS
+  export OMP_STACKSIZE=600M #(8*[2701*(npz+(km+1)+(npz+1))]*96)/1048576  *1.5
   export OMP_NUM_THREADS=$NCORES_PER_NODE
   export FI_OFI_RXM_SAR_LIMIT=3145728
   export FI_MR_CACHE_MAX_COUNT=0
