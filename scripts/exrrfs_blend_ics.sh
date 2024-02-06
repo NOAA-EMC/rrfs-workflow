@@ -181,7 +181,10 @@ export pgm="chgres_cube"
 #     -) https://dtcenter.org/sites/default/files/events/2020/20201105-1300p-fv3-gfdl-1.pdf
 #
 
-cdate_crnt_fhr_m1=$( date --utc --date "$yyyymmdd $hh UTC - 1 hours" "+%Y%m%d%H" )
+export pgm="blending"
+yyyymmdd="${cdate_crnt_fhr:0:8}"
+hh="${cdate_crnt_fhr:8:2}"
+cdate_crnt_fhr_m1=$( date --utc --date "${yyyymmdd} ${hh} UTC - 1 hours" "+%Y%m%d%H" )
 
 # Check for 1h RRFS EnKF files, if at least one missing then use 1tstep initialization
 if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
@@ -199,6 +202,9 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
       checkfile="${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}/mem${ensmem}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
       if [[ -f $checkfile ]]; then
           ((existing_files++))
+          echo "checkfile count: $existing_files"
+      else
+          echo "File missing: $checkfile"
       fi
   done
 
@@ -237,7 +243,7 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
      # Required NETCDF files - RRFS
      cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.tile1.nc ./fv_core.res.tile1.nc
      cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_tracer.res.tile1.nc ./fv_tracer.res.tile1.nc
-     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc ./fv_core.res.nc
+     #cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc ./fv_core.res.nc
 
      # Shortcut the file names/arguments.
      Lx=$ENS_BLENDING_LENGTHSCALE
