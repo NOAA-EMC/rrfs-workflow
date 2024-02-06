@@ -133,6 +133,8 @@ RESTART_INTERVAL_LONG="1"
 netcdf_diag=.true.
 binary_diag=.false.
 WRTCMP_output_file="netcdf_parallel"
+WRTCMP_ideflate="1"
+WRTCMP_quantize_nsd="18"
 
 ## set up post
 OUTPUT_FH="1 -1"
