@@ -175,6 +175,7 @@ if (BUILD_UFS)
     "-DNETCDF_DIR=$ENV{NETCDF}"
     "-D32BIT=ON"
     "-DCCPP_32BIT=ON"
+    "-DMPI=ON" 
     "-DFASTER=ON"
     "-DINLINE_POST=ON"
     "-DAPP=${APP}"

@@ -194,7 +194,7 @@ if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   STMP="${PTMP}/stmp_ensfcst"
 fi
 NWGES="${PTMP}/nwges"
-ENSCTRL_STMP="/scratch2/NCEPDEV/fv3-cam/Chan-hoo.Jeon/DATA_RRFS"
+ENSCTRL_STMP="/scratch2/NCEPDEV/fv3-cam/UFS_SRW_App/develop/input_model_data/DAeng_ens_restart"
 ENSCTRL_PTMP="${PTMP}"
 ENSCTRL_NWGES="${NWGES}"
 
