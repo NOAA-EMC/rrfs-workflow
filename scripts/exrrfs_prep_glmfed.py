@@ -366,6 +366,9 @@ if __name__=="__main__":
   
   prepmodel = int(os.environ.get("PREP_MODEL"))
   if prepmodel==1:
+    # format datetime obj
+    inDate   = os.environ.get("CDATE")
+    myDate = dt.datetime(int(inDate[:4]),int(inDate[4:6]),int(inDate[6:8]),int(inDate[8:10]))
     # format paths to model data
     cycle_dir = os.environ.get("CYCLE_DIR")
     cycle_type = os.environ.get("CYCLE_TYPE")
