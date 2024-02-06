@@ -663,7 +663,7 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
   echo "Pre-Blending Starting."
   ulimit -s unlimited
   #Add the size of the variables declared as private and multiply by the OMP_NUMTHREADS
-  export OMP_STACKSIZE=600M #(8*[2701*(npz+(km+1)+(npz+1))]*96)/1048576  *1.5
+  export OMP_STACKSIZE=600M #8*[3951*{65+67+66}]*96/1048576 = 600804864/1048576 = 573 MB
   export OMP_NUM_THREADS=$NCORES_PER_NODE
   export FI_OFI_RXM_SAR_LIMIT=3145728
   export FI_MR_CACHE_MAX_COUNT=0
