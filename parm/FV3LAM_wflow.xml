@@ -1103,7 +1103,38 @@ MODULES_RUN_TASK_FP script.
         {% if do_ens_blending %}
         <or>
           <timedep><cyclestr offset="&START_TIME_BLENDING;">@Y@m@d@H@M00</cyclestr></timedep>
-          <datadep age="00:00:01:00"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem#mem#/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <and>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0001/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0002/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0003/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0004/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0005/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0006/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0007/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0008/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0009/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0010/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0011/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0012/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0013/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0014/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0015/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0016/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0017/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0018/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0019/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0020/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0021/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0022/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0023/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0024/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0025/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0026/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0027/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0028/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0029/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0030/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+          </and>
         </or>
         {% endif %}
       </and>
