@@ -187,52 +187,57 @@ for (var_fg, var_bg) in zip(vars_fg, vars_bg):
     var_out = np.transpose(var_out)  # (1, 65, 2700, 3950)
     #check_shape(var_out, "var_out")
 
+    # Clip negative values
+    clip_sphum = True
+    if clip_sphum and var_fg == "sphum":
+        var_out = np.where(var_out < 0, 0, var_out)
+
     # Error checking
     var_out_max = np.max(var_out)
     var_out_min = np.min(var_out)
     print(f"  var_out_max({var_fg}): {var_out_max}")
     print(f"  var_out_min({var_fg}): {var_out_min}")
     if var_fg == 'u' or var_fg == 'v':
-       val_max = 120
-       val_min = -120
+        val_max = 120
+        val_min = -120
     if var_fg == 'T':
-       val_max = 350
-       val_min = 0
+        val_max = 350
+        val_min = 0
     if var_fg == 'sphum':
-       val_max = 1
-       val_min = -1  # slightly negative values possible with blending
+        val_max = 1
+        val_min = 0
     if var_fg == 'delp':
-       val_max = 5000
-       val_min = 0
+        val_max = 5000
+        val_min = 0
 
     if var_out_max > val_max:
-       err = 0
-       exceed_threshold = var_out > val_max
-       count = np.sum(exceed_threshold)
-       print(f"Number of elements that exceed val_max: {count}")
+        err = 0
+        exceed_threshold = var_out > val_max
+        count = np.sum(exceed_threshold)
+        print(f"Number of elements that exceed val_max: {count}")
 
     if var_out_min < val_min:
-       err = 0
-       exceed_threshold = var_out < val_min
-       count = np.sum(exceed_threshold)
-       print(f"Number of elements that exceed val_min: {count}")
+        err = 0
+        exceed_threshold = var_out < val_min
+        count = np.sum(exceed_threshold)
+        print(f"Number of elements that exceed val_min: {count}")
 
     # Check for NaN values
     if np.isnan(var_out).any():
-       err = 5
-       array_list = [regT, glbT, var_out, field_work, var_work]
-       array_list_str = ["regT", "glbT", "var_out", "field_work", "var_work"]
-       for i, array in enumerate(array_list):
-          print(f"Printing NaN stats for {array_list_str[i]}({var_fg}):")
-          print(f"  Max value of the array: {np.max(array)}")
-          print(f"  Min value of the array: {np.min(array)}")
-          nan_count = np.sum(np.isnan(array))
-          print(f"  Count of NaN values: {nan_count}")
+        err = 5
+        array_list = [regT, glbT, var_out, field_work, var_work]
+        array_list_str = ["regT", "glbT", "var_out", "field_work", "var_work"]
+        for i, array in enumerate(array_list):
+            print(f"Printing NaN stats for {array_list_str[i]}({var_fg}):")
+            print(f"  Max value of the array: {np.max(array)}")
+            print(f"  Min value of the array: {np.min(array)}")
+            nan_count = np.sum(np.isnan(array))
+            print(f"  Count of NaN values: {nan_count}")
 
     if err > 0:
-       print(f"An error ocurred in {sys.argv[0]}. Blending failed!!!")
-       print(f"err={err}")
-       sys.exit(err)
+        print(f"An error ocurred in {sys.argv[0]}. Blending failed!!!")
+        print(f"err={err}")
+        sys.exit(err)
 
     # Overwrite blended fields to blended file.
     if dim == 2:  # 2D vars
