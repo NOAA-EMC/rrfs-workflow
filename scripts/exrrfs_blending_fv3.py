@@ -2,7 +2,6 @@ import numpy as np
 from netCDF4 import Dataset
 import raymond
 import sys
-import os
 
 def check_file_nans(test_nc, vars_fg, vars_bg, name):
     nans = False
@@ -20,8 +19,11 @@ def check_file_nans(test_nc, vars_fg, vars_bg, name):
            nans = True
         return nans
 
-def check_shape(arr, name):
-    print(f"  {name}'s shape: {np.shape(arr)}")
+def err_check(err):
+    if err > 0:
+        print(f"An error ocurred in {sys.argv[0]}. Blending failed!!!")
+        print(f"err={err}")
+        sys.exit(err)
 
 err = 0
 print("Starting blending code")
@@ -68,7 +70,8 @@ glb_fg_nc = Dataset(glb_fg)
 nans = check_file_nans(glb_fg_nc, vars_fg, vars_bg, "glb")
 if nans:
    err = 1
-   sys.exit(err)
+   err_check(err)
+
 glb_nlon = glb_fg_nc.dimensions["lon"].size  # 1820   (lonp=1821)
 glb_nlat = glb_fg_nc.dimensions["lat"].size  # 1092   (latp=1093)
 glb_nlev = glb_fg_nc.dimensions["lev"].size  # 66     (levp=67)
@@ -81,7 +84,7 @@ reg_fg_nc = Dataset(reg_fg, mode="a")
 nans = check_file_nans(reg_fg_nc, vars_fg, vars_bg, "reg")
 if nans:
    err = 2
-   sys.exit(err)
+   err_check(err)
 nlon = reg_fg_nc.dimensions["xaxis_1"].size  # 1820   (xaxis_2=1821)
 nlat = reg_fg_nc.dimensions["yaxis_2"].size  # 1092   (yaxis_1=1093)
 nlev = reg_fg_nc.dimensions["zaxis_1"].size  # 65
@@ -185,11 +188,9 @@ for (var_fg, var_bg) in zip(vars_fg, vars_bg):
             var_out = regT
 
     var_out = np.transpose(var_out)  # (1, 65, 2700, 3950)
-    #check_shape(var_out, "var_out")
 
     # Clip negative values
-    clip_sphum = True
-    if clip_sphum and var_fg == "sphum":
+    if var_fg == "sphum":
         var_out = np.where(var_out < 0, 0, var_out)
 
     # Error checking
@@ -215,29 +216,14 @@ for (var_fg, var_bg) in zip(vars_fg, vars_bg):
         exceed_threshold = var_out > val_max
         count = np.sum(exceed_threshold)
         print(f"Number of elements that exceed val_max: {count}")
+        err_check(err)
 
     if var_out_min < val_min:
         err = 0
         exceed_threshold = var_out < val_min
         count = np.sum(exceed_threshold)
         print(f"Number of elements that exceed val_min: {count}")
-
-    # Check for NaN values
-    if np.isnan(var_out).any():
-        err = 5
-        array_list = [regT, glbT, var_out, field_work, var_work]
-        array_list_str = ["regT", "glbT", "var_out", "field_work", "var_work"]
-        for i, array in enumerate(array_list):
-            print(f"Printing NaN stats for {array_list_str[i]}({var_fg}):")
-            print(f"  Max value of the array: {np.max(array)}")
-            print(f"  Min value of the array: {np.min(array)}")
-            nan_count = np.sum(np.isnan(array))
-            print(f"  Count of NaN values: {nan_count}")
-
-    if err > 0:
-        print(f"An error ocurred in {sys.argv[0]}. Blending failed!!!")
-        print(f"err={err}")
-        sys.exit(err)
+        err_check(err)
 
     # Overwrite blended fields to blended file.
     if dim == 2:  # 2D vars
