@@ -229,6 +229,7 @@ settings="\
   'net': ${NET}
   'run': ${RUN}
   'jedi_envar_ioda': ${JEDI_ENVAR_IODA_TN}
+  'ioda_prepbufr': ${IODA_PREPBUFR_TN}
 #
 # Number of nodes to use for each task.
 #
@@ -261,6 +262,7 @@ settings="\
   'nnodes_run_bufrsnd': ${NNODES_RUN_BUFRSND}
   'nnodes_save_restart': ${NNODES_SAVE_RESTART}
   'nnodes_run_jedienvar_ioda': ${NNODES_RUN_JEDIENVAR_IODA}
+  'nnodes_run_ioda_prepbufr': ${NNODES_RUN_IODA_PREPBUFR}
   'nnodes_add_aerosol': ${NNODES_ADD_AEROSOL}
 #
 # Number of cores used for a task
@@ -305,6 +307,7 @@ settings="\
   'ppn_run_bufrsnd': ${PPN_RUN_BUFRSND}
   'ppn_save_restart': ${PPN_SAVE_RESTART}
   'ppn_run_jedienvar_ioda': ${PPN_RUN_JEDIENVAR_IODA}
+  'ppn_run_ioda_prepbufr': ${PPN_RUN_IODA_PREPBUFR}
   'ppn_add_aerosol': ${PPN_ADD_AEROSOL}
 #
   'tpp_make_ics': ${TPP_MAKE_ICS}
@@ -347,6 +350,7 @@ settings="\
   'wtime_run_bufrsnd': ${WTIME_RUN_BUFRSND}
   'wtime_save_restart': ${WTIME_SAVE_RESTART}
   'wtime_run_jedienvar_ioda': ${WTIME_RUN_JEDIENVAR_IODA}
+  'wtime_run_ioda_prepbufr': ${WTIME_RUN_IODA_PREPBUFR}
   'wtime_add_aerosol': ${WTIME_ADD_AEROSOL}
 #
 # start time for each task.
@@ -357,6 +361,7 @@ settings="\
   'start_time_blending': ${START_TIME_BLENDING}
   'start_time_late_analysis': ${START_TIME_LATE_ANALYSIS}
   'start_time_conventional': ${START_TIME_CONVENTIONAL}
+  'start_time_ioda_prepbufr': ${START_TIME_IODA_PREPBUFR}
   'start_time_nsslmosiac': ${START_TIME_NSSLMOSIAC}
   'start_time_lightningnc': ${START_TIME_LIGHTNINGNC}
   'start_time_proc_glmfed': ${START_TIME_GLMFED}
@@ -371,6 +376,7 @@ settings="\
   'memo_run_prepstart': ${MEMO_RUN_PREPSTART}
   'memo_run_prdgen': ${MEMO_RUN_PRDGEN}
   'memo_run_jedienvar_ioda': ${MEMO_RUN_JEDIENVAR_IODA}
+  'memo_run_ioda_prepbufr': ${MEMO_RUN_IODA_PREPBUFR}
   'memo_prep_cyc': ${MEMO_PREP_CYC}
   'memo_save_restart': ${MEMO_SAVE_RESTART}
   'memo_save_input': ${MEMO_SAVE_INPUT}
@@ -408,6 +414,7 @@ settings="\
   'maxtries_save_restart': ${MAXTRIES_SAVE_RESTART}
   'maxtries_save_da_output': ${MAXTRIES_SAVE_DA_OUTPUT}
   'maxtries_jedi_envar_ioda': ${MAXTRIES_JEDI_ENVAR_IODA}
+  'maxtries_ioda_prepbufr': ${MAXTRIES_IODA_PREPBUFR}
   'maxtries_add_aerosol': ${MAXTRIES_ADD_AEROSOL}
 #
 # Flags that determine whether to run the specific tasks.
@@ -556,6 +563,10 @@ settings="\
 # JEDI related parameters (liaofan)
 #
   'do_jedi_envar_ioda': ${DO_JEDI_ENVAR_IODA}
+#
+# IODA related parameters
+#
+  'do_ioda_prepbufr': ${DO_IODA_PREPBUFR}
 #
 # smoke and dust related parameters.
 #
