@@ -143,7 +143,9 @@ if VertRemapWinds:
                       isrt, iend, jsrt, jend, Atm_u, Atm_v, Atm_ps)
 
     # Perform a NaN check - sometimes will get NaNs at this point.
-    nan_count = nan_check(Atm_u, "Atm_u", 1)
+    nan_count1 = nan_check(Atm_u, "Atm_u", 1)
+    nan_count2 = nan_check(Atm_v, "Atm_v", 2)
+    nan_count = nan_count1 + nan_count2
     if nan_count > 0:
        print(f"NaNs present after remap_dwinds")
        err = 1
