@@ -1,0 +1,130 @@
+#!/bin/bash
+
+#
+#-----------------------------------------------------------------------
+#
+# This J-JOB script runs the preprocess of PREPBUFR observation
+#
+#-----------------------------------------------------------------------
+#
+#
+#-----------------------------------------------------------------------
+#
+# Source the variable definitions file and the bash utility functions.
+#
+#-----------------------------------------------------------------------
+#
+. ${GLOBAL_VAR_DEFNS_FP}
+. $USHdir/source_util_funcs.sh
+
+date
+export PS4='+ $SECONDS + '
+#
+#-----------------------------------------------------------------------
+#
+# Save current shell options (in a global array).  Then set new options
+# for this script/function.
+#
+#-----------------------------------------------------------------------
+#
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
+#
+#-----------------------------------------------------------------------
+#
+# Get the full path to the file in which this script/function is located 
+# (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
+# which the file is located (scrfunc_dir).
+#
+#-----------------------------------------------------------------------
+#
+scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
+scrfunc_fn=$( basename "${scrfunc_fp}" )
+scrfunc_dir=$( dirname "${scrfunc_fp}" )
+#
+#-----------------------------------------------------------------------
+#
+# Print message indicating entry into script.
+#
+#-----------------------------------------------------------------------
+#
+print_info_msg "
+========================================================================
+Entering script:  \"${scrfunc_fn}\"
+In directory:     \"${scrfunc_dir}\"
+
+This is the J-job script for the task that runs a PREPBUFR preprocess for 
+the specified cycle.
+========================================================================"
+#
+#-----------------------------------------------------------------------
+#
+# Create the working directory under the cycle directory.
+#
+#-----------------------------------------------------------------------
+#
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  workdir=${CYCLE_DIR}/ioda_prepbufr_spinup
+  if [ ${DO_ENSEMBLE} == "TRUE" ]; then
+     workdir=${CYCLE_DIR}/ioda_prepbufr_spinup_enkf
+  fi
+else
+  workdir=${CYCLE_DIR}/ioda_prepbufr
+  if [ ${DO_ENSEMBLE} == "TRUE" ]; then
+     workdir=${CYCLE_DIR}/ioda_prepbufr_enkf
+  fi
+fi
+rm -fr ${workdir}
+mkdir -p ${workdir}
+cd ${workdir}
+#
+#-----------------------------------------------------------------------
+#
+# create COMOUT directory
+#
+#-----------------------------------------------------------------------
+#
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+else
+  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
+fi
+mkdir -p "${COMOUT}"
+#
+#-----------------------------------------------------------------------
+#
+# Call the ex-script for this J-job.
+#
+#-----------------------------------------------------------------------
+#
+export pgmout="${workdir}/OUTPUT.$$"
+env
+
+$SCRIPTSdir/exrrfs_ioda_prepbufr.sh \
+  CYCLE_DIR="${CYCLE_DIR}" comout="${COMOUT}"
+export err=$?; err_chk
+
+if [ -e "$pgmout" ]; then
+  cat $pgmout
+fi
+#
+#-----------------------------------------------------------------------
+#
+# Print exit message.
+#
+#-----------------------------------------------------------------------
+#
+print_info_msg "
+========================================================================
+Exiting script:  \"${scrfunc_fn}\"
+In directory:    \"${scrfunc_dir}\"
+========================================================================"
+#
+#-----------------------------------------------------------------------
+#
+# Restore the shell options saved at the beginning of this script/func-
+# tion.
+#
+#-----------------------------------------------------------------------
+#
+{ restore_shell_opts; } > /dev/null 2>&1
+
