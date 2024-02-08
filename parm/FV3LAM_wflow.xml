@@ -193,7 +193,7 @@ define resources used for each tasks
 <!ENTITY RESOURCES_RUN_POST    "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}:tpp={{ tpp_run_post }}</nodes>">
 <!ENTITY RESOURCES_RUN_ENKF    "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}:tpp={{ tpp_run_enkf }}</nodes>">
 <!ENTITY RESOURCES_MAKE_ICS    "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}:tpp={{ tpp_make_ics }}</nodes>">
-<!ENTITY RESOURCES_BLEND_ICS   "<nodes>{{ nnodes_blend_ics }}:ppn={{ ppn_blend_ics }}:tpp={{ tpp_blend_ics }}</nodes>">
+<!ENTITY RESOURCES_BLEND_ICS   "<nodes>{{ nnodes_blend_ics }}:ppn={{ ppn_blend_ics }}</nodes>">
 <!ENTITY RESOURCES_MAKE_LBCS   "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}:tpp={{ tpp_make_lbcs }}</nodes>">
 <!ENTITY RESOURCES_ANAL_GSI    "<nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}:tpp={{ tpp_run_anal }}</nodes>">
 <!ENTITY RESOURCES_FCST_SPINUP "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}:tpp={{ tpp_run_fcst }}</nodes>">

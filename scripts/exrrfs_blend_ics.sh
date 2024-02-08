@@ -49,53 +49,6 @@ This is the ex-script for the task that generates initial condition
 #
 #-----------------------------------------------------------------------
 #
-# Set machine-dependent parameters.
-#
-#-----------------------------------------------------------------------
-#
-ulimit -s unlimited
-export OMP_STACKSIZE=3G
-export OMP_NUM_THREADS=$NCORES_PER_NODE
-export FI_OFI_RXM_SAR_LIMIT=3145728
-export FI_MR_CACHE_MAX_COUNT=0
-export MPICH_OFI_STARTUP_CONNECT=1
-
-case "$MACHINE" in
-
-  "WCOSS2")
-     if [[ $NCORES_PER_NODE -gt 96 ]]; then
-        export OMP_NUM_THREADS="96"
-     fi
-    ;;
-
-  "HERA")
-     if [[ $NCORES_PER_NODE -gt 80 ]]; then
-        export OMP_NUM_THREADS="80"
-     fi
-    ;;
-
-  "ORION")
-     if [[ $NCORES_PER_NODE -gt 80 ]]; then
-        export OMP_NUM_THREADS="80"
-     fi
-    ;;
-
-  "HERCULES")
-     if [[ $NCORES_PER_NODE -gt 80 ]]; then
-        export OMP_NUM_THREADS="80"
-     fi
-    ;;
-
-  "JET")
-     if [[ $NCORES_PER_NODE -gt 80 ]]; then
-        export OMP_NUM_THREADS="80"
-     fi
-    ;;
-
-esac
-#
-#-----------------------------------------------------------------------
-#
 # Source the file containing definitions of variables associated with the
 # external model for ICs.
 #
@@ -125,22 +78,6 @@ cdate_crnt_fhr=$( date --utc --date "${yyyymmdd} ${hh} UTC + ${fhr} hours" "+%Y%
 mm="${cdate_crnt_fhr:4:2}"
 dd="${cdate_crnt_fhr:6:2}"
 hh="${cdate_crnt_fhr:8:2}"
-#
-#-----------------------------------------------------------------------
-#
-# Build the FORTRAN namelist file that chgres_cube will read in.
-#
-#-----------------------------------------------------------------------
-#
-# Run chgres_cube.
-#
-#-----------------------------------------------------------------------
-#
-export pgm="chgres_cube"
-. prep_step
-
-#${APRUN} ${EXECdir}/$pgm >>$pgmout 2>errfile
-#export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
@@ -180,8 +117,8 @@ export pgm="chgres_cube"
 #     -) https://github.com/NOAA-GFDL/GFDL_atmos_cubed_sphere/blob/bdeee64e860c5091da2d169b1f4307ad466eca2c/tools/external_ic.F90
 #     -) https://dtcenter.org/sites/default/files/events/2020/20201105-1300p-fv3-gfdl-1.pdf
 #
+. prep_step
 
-export pgm="blending"
 yyyymmdd="${cdate_crnt_fhr:0:8}"
 hh="${cdate_crnt_fhr:8:2}"
 cdate_crnt_fhr_m1=$( date --utc --date "${yyyymmdd} ${hh} UTC - 1 hours" "+%Y%m%d%H" )

@@ -311,7 +311,6 @@ settings="\
   'ppn_add_aerosol': ${PPN_ADD_AEROSOL}
 #
   'tpp_make_ics': ${TPP_MAKE_ICS}
-  'tpp_blend_ics': ${TPP_BLEND_ICS}
   'tpp_make_lbcs': ${TPP_MAKE_LBCS}
   'tpp_run_anal': ${TPP_RUN_ANAL}
   'tpp_run_enkf': ${TPP_RUN_ENKF}
