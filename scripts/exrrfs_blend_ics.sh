@@ -117,6 +117,7 @@ hh="${cdate_crnt_fhr:8:2}"
 #     -) https://github.com/NOAA-GFDL/GFDL_atmos_cubed_sphere/blob/bdeee64e860c5091da2d169b1f4307ad466eca2c/tools/external_ic.F90
 #     -) https://dtcenter.org/sites/default/files/events/2020/20201105-1300p-fv3-gfdl-1.pdf
 #
+pgm="blending"
 . prep_step
 
 yyyymmdd="${cdate_crnt_fhr:0:8}"
