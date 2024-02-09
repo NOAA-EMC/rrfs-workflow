@@ -1117,6 +1117,7 @@ MODULES_RUN_TASK_FP script.
 
   </task>
 
+  {% if do_ens_blending %}
   <task name="&BLEND_ICS_TN;{{ uscore_ensmem_name }}" cycledefs="initial" maxtries="{{ maxtries_blend_ics }}">
 
     &RSRV_DEFAULT;
@@ -1141,7 +1142,6 @@ MODULES_RUN_TASK_FP script.
     <dependency>
       <and>
         <taskdep task="&MAKE_ICS_TN;{{ uscore_ensmem_name }}"/>
-        {% if do_ens_blending %}
         <or>
           <timedep><cyclestr offset="&START_TIME_BLENDING;">@Y@m@d@H@M00</cyclestr></timedep>
           <and>
@@ -1177,11 +1177,11 @@ MODULES_RUN_TASK_FP script.
           <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0030/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
           </and>
         </or>
-        {% endif %}
       </and>
     </dependency>
 
   </task>
+  {% endif %}
 
 <!--
 ************************************************************************
@@ -1328,7 +1328,11 @@ MODULES_RUN_TASK_FP script.
              <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
              {%- endfor %}
            </or>
+           {% if do_ens_blending %}
            <taskdep task="&BLEND_ICS_TN;{{ uscore_ensmem_name }}"/>
+           {% else %}
+           <taskdep task="&MAKE_ICS_TN;{{ uscore_ensmem_name }}"/>
+           {% endif %}
            <or>
              {%- for h in range(0,lbcs_search_hrs) %} 
              <metataskdep metatask="&MAKE_LBCS_TN;{{ uscore_ensmem_name }}" cycle_offset="-{{ h }}:00:00"/>
@@ -1477,7 +1481,11 @@ MODULES_RUN_TASK_FP script.
 
     <dependency>
       <and>
+       {% if do_ens_blending %}
        <taskdep task="&BLEND_ICS_TN;_mem#mem#"/>
+       {% else %}
+       <taskdep task="&MAKE_ICS_TN;_mem#mem#"/>
+       {% endif %}
        <taskdep task="&SAVE_RESTART_TN;_ensinit{{ uscore_ensmem_name }}"/>
        <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
       </and>
@@ -2207,7 +2215,11 @@ MODULES_RUN_TASK_FP script.
 {% else %}
            <and>
              <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
+             {% if do_ens_blending %}
              <taskdep task="&BLEND_ICS_TN;{{ uscore_ensmem_name }}"/>
+             {% else %}
+             <taskdep task="&MAKE_ICS_TN;{{ uscore_ensmem_name }}"/>
+             {% endif %}
              {%- if not is_rtma %}
              <or>
                <metataskdep metatask="&MAKE_LBCS_TN;{{ uscore_ensmem_name }}"/>
