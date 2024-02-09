@@ -97,9 +97,7 @@ SOIL_SURGERY_time=202310916
 netcdf_diag=.true.
 binary_diag=.false.
 WRTCMP_output_file="netcdf_parallel"
-WRTCMP_zstandard_level="0"
 WRTCMP_ideflate="1"
-WRTCMP_quantize_mode="quantize_bitround"
 WRTCMP_quantize_nsd="18"
 
 
