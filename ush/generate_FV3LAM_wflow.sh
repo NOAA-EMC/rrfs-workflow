@@ -197,6 +197,7 @@ settings="\
   'get_extrn_lbcs_long_tn': ${GET_EXTRN_LBCS_LONG_TN}
   'get_gefs_lbcs_tn': ${GET_GEFS_LBCS_TN}
   'make_ics_tn': ${MAKE_ICS_TN}
+  'blend_ics_tn': ${BLEND_ICS_TN}
   'make_lbcs_tn': ${MAKE_LBCS_TN}
   'add_aerosol_tn': ${ADD_AEROSOL_TN}
   'run_fcst_tn': ${RUN_FCST_TN}
@@ -239,6 +240,7 @@ settings="\
   'nnodes_get_extrn_ics': ${NNODES_GET_EXTRN_ICS}
   'nnodes_get_extrn_lbcs': ${NNODES_GET_EXTRN_LBCS}
   'nnodes_make_ics': ${NNODES_MAKE_ICS}
+  'nnodes_blend_ics': ${NNODES_BLEND_ICS}
   'nnodes_make_lbcs': ${NNODES_MAKE_LBCS}
   'nnodes_run_prepstart': ${NNODES_RUN_PREPSTART}
   'nnodes_run_fcst': ${NNODES_RUN_FCST}
@@ -284,6 +286,7 @@ settings="\
   'ppn_get_extrn_ics': ${PPN_GET_EXTRN_ICS}
   'ppn_get_extrn_lbcs': ${PPN_GET_EXTRN_LBCS}
   'ppn_make_ics': ${PPN_MAKE_ICS}
+  'ppn_blend_ics': ${PPN_BLEND_ICS}
   'ppn_make_lbcs': ${PPN_MAKE_LBCS}
   'ppn_run_prepstart': ${PPN_RUN_PREPSTART}
   'ppn_run_fcst': ${PPN_RUN_FCST}
@@ -325,6 +328,7 @@ settings="\
   'wtime_get_extrn_ics': ${WTIME_GET_EXTRN_ICS}
   'wtime_get_extrn_lbcs': ${WTIME_GET_EXTRN_LBCS}
   'wtime_make_ics': ${WTIME_MAKE_ICS}
+  'wtime_blend_ics': ${WTIME_BLEND_ICS}
   'wtime_make_lbcs': ${WTIME_MAKE_LBCS}
   'wtime_run_prepstart': ${WTIME_RUN_PREPSTART}
   'wtime_run_prepstart_ensmean': ${WTIME_RUN_PREPSTART_ENSMEAN}
@@ -394,6 +398,7 @@ settings="\
   'maxtries_get_extrn_ics': ${MAXTRIES_GET_EXTRN_ICS}
   'maxtries_get_extrn_lbcs': ${MAXTRIES_GET_EXTRN_LBCS}
   'maxtries_make_ics': ${MAXTRIES_MAKE_ICS}
+  'maxtries_blend_ics': ${MAXTRIES_BLEND_ICS}
   'maxtries_make_lbcs': ${MAXTRIES_MAKE_LBCS}
   'maxtries_run_prepstart': ${MAXTRIES_RUN_PREPSTART}
   'maxtries_run_fcst': ${MAXTRIES_RUN_FCST}

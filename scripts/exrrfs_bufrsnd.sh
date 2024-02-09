@@ -252,9 +252,13 @@ $OUTFILDYN
 $OUTFILPHYS
 EOF
 
-  export FORT19="$DATA/bufrpost/regional_profdat"
-  export FORT79="$DATA/bufrpost/profilm.c1.${tmmark}"
-  export FORT11="itag"
+#  export FORT19="$DATA/bufrpost/regional_profdat"
+#  export FORT79="$DATA/bufrpost/profilm.c1.${tmmark}"
+#  export FORT11="./itag"
+
+ln -sf $DATA/bufrpost/regional_profdat     fort.19
+ln -sf $DATA/bufrpost/profilm.c1.${tmmark} fort.79
+ln -sf ./itag                              fort.11
 
   export pgm="rrfs_bufr.exe"
   . prep_step
@@ -290,10 +294,15 @@ export pgm=rrfs_sndp
 cp $PARMfv3/regional_sndp.parm.mono $DATA/regional_sndp.parm.mono
 cp $PARMfv3/regional_bufr.tbl $DATA/regional_bufr.tbl
 
-export FORT11="$DATA/regional_sndp.parm.mono"
-export FORT32="$DATA/regional_bufr.tbl"
-export FORT66="$DATA/profilm.c1.${tmmark}"
-export FORT78="$DATA/class1.bufr"
+ln -sf $DATA/regional_sndp.parm.mono fort.11
+ln -sf $DATA/regional_bufr.tbl       fort.32
+ln -sf $DATA/profilm.c1.${tmmark}    fort.66
+ln -sf $DATA/class1.bufr             fort.78
+
+# export FORT11="$DATA/regional_sndp.parm.mono"
+# export FORT32="$DATA/regional_bufr.tbl"
+# export FORT66="$DATA/profilm.c1.${tmmark}"
+# export FORT78="$DATA/class1.bufr"
 
 echo here model $model
 
@@ -334,7 +343,9 @@ EOF
 
 mkdir -p ${COMOUT}/bufr.${cyc}
 
-export FORT20=$DATA/class1.bufr
+# export FORT20=$DATA/class1.bufr
+ln -sf $DATA/class1.bufr fort.20
+
 export DIRD=${COMOUT}/bufr.${cyc}/bufr
 
 echo "before stnmlist.exe"
