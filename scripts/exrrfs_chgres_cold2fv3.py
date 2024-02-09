@@ -38,7 +38,7 @@ WriteData = True
 # STEP 1. ROTATE THE WINDS FROM CHGRES
 if ColdStartWinds:
     print("Starting ColdStartWinds....")
-    nlev = 65
+    nlev = len(akbknc["ak"][0,:]) - 1
     nlev = coldnc.createDimension("nlev", nlev) # 65
 
     # Data from cold chgres
