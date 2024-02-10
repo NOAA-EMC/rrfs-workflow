@@ -673,6 +673,7 @@ if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "radardbz" ]]; then
     ANAVINFO=${FIX_GSI}/${ANAVINFO_DBZ_FED_FN}
     diag_fed=.true.
     if_model_fed=.true.
+    innov_use_model_fed=.true.
   fi
   miter=1
   niter1=100
