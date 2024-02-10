@@ -53,6 +53,7 @@ state_vector::
  prse     66      0     met_guess    prse
  ps        1      0     met_guess    prse
  qr       65      1     met_guess    qr
+ sst       1      0     met_guess    sst 
  ql       65      1     met_guess    qc
  qs       65      1     met_guess    qs
  qi       65      1     met_guess    qi
@@ -78,6 +79,7 @@ control_vector::
  sf       65      0       0.5         -1.0     state    u,v
  vp       65      0       0.5         -1.0     state    u,v
  ps        1      0       0.50        -1.0     state    prse
+ sst       1      0       1.00        -1.0     state    sst
  t        65      0       0.70        -1.0     state    tv
  q        65      1       0.40        -1.0     state    q
  w        65      0       1.0         -1.0     state    w
