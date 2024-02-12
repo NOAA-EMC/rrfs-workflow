@@ -42,7 +42,6 @@ RUN_TASK_RUN_PRDGEN="TRUE"
 NNODES_MAKE_SFC_CLIMO="6"
 PPN_MAKE_SFC_CLIMO="12"
 
-# Temporary solution until high resolution fix files are added to common directory
 SFC_CLIMO_INPUT_DIR="/lfs/h2/emc/lam/noscrub/RRFS_input/fix/fix_sfc_climo"
 
 EXTRN_MDL_NAME_ICS="RRFS"
