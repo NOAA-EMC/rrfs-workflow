@@ -49,6 +49,7 @@ def addmodelfed(restartpath):
   # open tracer file to read graupel, then close
   u = nc.Dataset(tracerfile,'r')
   graupel = u['graupel'][0] # units kg/kg 
+  u.close()
 
   # open physics file to write FED
   u = nc.Dataset(physfile,'r+')
@@ -91,7 +92,7 @@ def addmodelfed(restartpath):
 
   # add 4D FED grid to tracer NetCDF and close
   # Time,zaxis_1,yaxis_1,xaxis_1 are dimensions to write
-  fed_out = u.createVariable('flash_extent_density',np.float32,('Time','zaxis_1','yaxis_1','xaxis_1'))
+  fed_out = u.createVariable('flash_extent_density',np.float32,('Time','zaxis_1','yaxis_1','xaxis_1'),chunksizes=(1,1,u.dimensions['yaxis_1'].size,u.dimensions['xaxis_1'].size))
   fed_out[:] = fed.astype('float32')
   u.close()
   return()
