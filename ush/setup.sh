@@ -840,10 +840,10 @@ PARM_IODACONV=${PARM_IODACONV:-"${HOMErrfs}/parm/iodaconv"}
 case $MACHINE in
 
   "WCOSS2")
-    FIXgsm=${FIXgsm:-"/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/fix/fix_am"}
-    TOPO_DIR=${TOPO_DIR:-"/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/fix/fix_orog"}
-    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/fix/fix_sfc_climo"}
-    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/FV3LAM_pregen"}
+    FIXgsm=${FIXgsm:-"/lfs/h2/emc/lam/noscrub/RRFS_inputs/fix/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/lfs/h2/emc/lam/noscrub/RRFS_inputs/fix/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/lfs/h2/emc/lam/noscrub/RRFS_inputs/fix/fix_sfc_climo"}
+    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/lfs/h2/emc/lam/noscrub/RRFS_inputs/FV3LAM_pregen"}
     ;;
 
   "HERA")

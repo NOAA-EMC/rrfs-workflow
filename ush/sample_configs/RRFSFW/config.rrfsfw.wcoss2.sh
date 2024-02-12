@@ -68,5 +68,5 @@ FV3_NML_YAML_CONFIG_FN=""
 FV3_NML_BASE_SUITE_FN="input.nml.RRFSFW"
 
 USE_USER_STAGED_EXTRN_FILES="TRUE"
-EXTRN_MDL_SOURCE_BASEDIR_ICS="/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/input_model_data/RRFS/2023111118"
-EXTRN_MDL_SOURCE_BASEDIR_LBCS="/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/input_model_data/RRFS/2023111118"
+EXTRN_MDL_SOURCE_BASEDIR_ICS="/lfs/h2/emc/lam/noscrub/RRFS_inputs/input_model_data/RRFS/2023111118"
+EXTRN_MDL_SOURCE_BASEDIR_LBCS="/lfs/h2/emc/lam/noscrub/RRFS_inputs/input_model_data/RRFS/2023111118"
