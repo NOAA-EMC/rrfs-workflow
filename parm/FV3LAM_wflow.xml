@@ -1619,6 +1619,9 @@ MODULES_RUN_TASK_FP script.
        <and>
          <taskdep task="&PROCESS_RADAR_REF_TN;_spinup"/>
          <taskdep task="&ANAL_GSI_TN;_spinup"/>
+       {%- if do_glmfed_da and not do_ensemble %}
+         <taskdep task="&PROCESS_GLMFED_TN;_spinup"/>
+       {% endif -%}
          <or>    
             {%- for h in cycl_hrs_hyb_fv3lam_ens %}
                <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
@@ -2559,6 +2562,9 @@ MODULES_RUN_TASK_FP script.
        <and>
          <taskdep task="&PROCESS_RADAR_REF_TN;_prod"/>
          <taskdep task="&ANAL_GSI_TN;_prod"/>
+       {%- if do_glmfed_da and not do_ensemble %}
+         <taskdep task="&PROCESS_GLMFED_TN;_prod"/>
+       {% endif -%}
          <or>    
             {%- for h in cycl_hrs_hyb_fv3lam_ens %}
                <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
