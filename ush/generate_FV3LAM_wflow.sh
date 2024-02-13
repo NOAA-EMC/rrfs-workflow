@@ -576,6 +576,7 @@ settings="\
 # smoke and dust related parameters.
 #
   'do_smoke_dust': ${DO_SMOKE_DUST}
+  'ebb_dcycle'   : ${EBB_DCYCLE}
 #
 # PM related parameters.
 #
@@ -940,6 +941,7 @@ settings="\
     'lsoil': ${lsoil:-null},
     'print_diff_pgr': ${PRINT_DIFF_PGR},
     'rrfs_sd': ${DO_SMOKE_DUST},
+    'ebb_dcycle': ${EBB_DCYCLE},
   }"
 if [ "${USE_CLM}" = "TRUE" ]; then
     settings="$settings
@@ -956,6 +958,7 @@ if [ "${USE_CLM}" = "TRUE" ]; then
     'lsoil': ${lsoil:-null},
     'print_diff_pgr': ${PRINT_DIFF_PGR},
     'rrfs_sd': ${DO_SMOKE_DUST},
+    'ebb_dcycle': ${EBB_DCYCLE},
   }"
 fi
 #

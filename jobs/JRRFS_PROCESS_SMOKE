@@ -81,6 +81,45 @@ export gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #
 export rave_nwges_dir=${NWGES_DIR}/RAVE_INTP
 mkdir -p "${rave_nwges_dir}"
+#JR STARTS
+export hourly_hwpdir=${NWGES_BASEDIR}/HOURLY_HWP
+mkdir -p "${hourly_hwpdir}"
+#
+#-----------------------------------------------------------------------
+#
+# Link the the hourly, interpolated RAVE data from $rave_nwges_dir so it
+# is reused
+#
+#-----------------------------------------------------------------------
+ECHO=/bin/echo
+SED=/bin/sed
+DATE=/bin/date
+LN=/bin/ln
+START_DATE=$(${ECHO} "${CDATE}" | ${SED} 's/\([[:digit:]]\{2\}\)$/ \1/')
+YYYYMMDDHH=$(${DATE} +%Y%m%d%H -d "${START_DATE}")
+YYYYMMDD=${YYYYMMDDHH:0:8}
+HH=${YYYYMMDDHH:8:2}
+${ECHO} ${YYYYMMDD}
+${ECHO} ${HH}
+current_day=`${DATE} -d "${YYYYMMDD}"`
+current_hh=`${DATE} -d ${HH} +"%H"`
+prev_hh=`${DATE} -d "$current_hh -24 hour" +"%H"`
+previous_day=`${DATE} '+%C%y%m%d' -d "$current_day-1 days"`
+previous_day="${previous_day} ${prev_hh}"
+nfiles=24
+smokeFile=SMOKE_RRFS_data_${YYYYMMDDHH}00.nc
+
+for i in $(seq 0 $(($nfiles - 1)) )
+do
+   timestr=`date +%Y%m%d%H -d "$previous_day + $i hours"`
+   intp_fname=${PREDEF_GRID_NAME}_intp_${timestr}00_${timestr}59.nc
+   if  [ -f ${rave_nwges_dir}/${intp_fname} ]; then
+      ${LN} -sf ${rave_nwges_dir}/${intp_fname} ${workdir}/${intp_fname}
+      echo "${rave_nwges_dir}/${intp_fname} interoplated file available to reuse"
+   else
+      echo "${rave_nwges_dir}/${intp_fname} interoplated file non available to reuse"  
+   fi
+done
 #
 #-----------------------------------------------------------------------
 #
@@ -91,62 +130,28 @@ mkdir -p "${rave_nwges_dir}"
 export pgmout="${workdir}/OUTPUT.$$"
 env
 
-python -u ${SCRIPTSdir}/exrrfs_process_smoke.py \
+python -u ${SCRIPTSdir}/generate_fire_emissions.py \
   "${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}" \
   "${FIRE_RAVE_DIR}" \
   "${workdir}" \
-  "${PREDEF_GRID_NAME}"
+  "${PREDEF_GRID_NAME}" \
+  "${EBB_DCYCLE}"
 export err=$?; err_chk
 
-ECHO=/bin/echo
-AWK="/bin/gawk --posix"
-SED=/bin/sed
-DATE=/bin/date
-
-START_DATE=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
-YYYYMMDDHH=$(date +%Y%m%d%H -d "${START_DATE}")
-YYYYMMDD=${YYYYMMDDHH:0:8}
-HH=${YYYYMMDDHH:8:2}
-echo ${YYYYMMDD}
-echo ${HH}
-
-current_day=`${DATE} -d "${YYYYMMDD}"`
-HH=${HH}
-current_hh=`${DATE} -d ${HH} +"%H"`
-prev_hh=`${DATE} -d "$current_hh -24 hour" +"%H"`
-previous_day=`${DATE} '+%C%y%m%d' -d "$current_day-1 days"`
-previous_day=${previous_day}${prev_hh}
-if [ ${CYCLE_TYPE} == "spinup" ]; then
-  output_filename=SMOKE_RRFS_data_${YYYYMMDDHH}00_spinup.nc
-else
-  output_filename=SMOKE_RRFS_data_${YYYYMMDDHH}00.nc
-fi
-echo ${previous_day}
-echo ${output_filename}
-
-cd ${workdir}
-
-# Convert START_TIME from 'YYYYMMDDHH' format to Unix date format, e.g. "Fri May  6 19:50:23 GMT 2005"
-if [ `${ECHO} "${previous_day}" | ${AWK} '/^[[:digit:]]{10}$/'` ]; then
-  previous_day=`${ECHO} "${previous_day}" | ${SED} 's/\([[:digit:]]\{2\}\)$/ \1/'`
-else
-  ${ECHO} "ERROR: start time, '${previous_day}', is not in 'yyyymmddhh' or 'yyyymmdd hh' format"
-  exit 1
-fi
-previous_day=`${DATE} -d "${previous_day}"`
-echo ${previous_day}
-
-nfiles=24
-files2cat=()
-for i in $(seq 0 $(($nfiles - 1)) )
-do
-timestr=`date +%Y%m%d%H -d "$previous_day + $i hours"`
-echo ${timestr}
-files2cat[$i]=${PREDEF_GRID_NAME}_intp_${timestr}00_${timestr}00.nc
+#Copy the the hourly, interpolated RAVE data to $rave_nwges_dir so it
+# is maintained there for future cycles.
+for file in ${workdir}/*; do
+   filename=$(basename "$file")
+   if [ ! -f ${rave_nwges_dir}/${filename} ]; then
+      cp ${file} ${rave_nwges_dir}
+      echo "Copied missing file: $filename" 
+   fi
 done
-echo ${files2cat[*]}
-ncrcat ${files2cat[*]} ${output_filename} 
-cp ${output_filename}  ${rave_nwges_dir}
+
+echo "Copy RAVE interpolated files completed"
+
+
+#cp ${workdir}/* ${rave_nwges_dir}
 #
 #-----------------------------------------------------------------------
 #

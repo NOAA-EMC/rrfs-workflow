@@ -628,7 +628,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
                print_info_msg "$VERBOSE" "Found ${checkfile}; Use it for smoke/dust cycle "
                break
              fi
- 
+
              n=$((n + ${DA_CYCLE_INTERV}))
              offset_hours=${n}
              YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
@@ -661,6 +661,122 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
       fi
   fi
 fi
+#
+#JR starts  smoke/dust cycling RETROS
+if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then   #JR  && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cycle smoke/dust fields
+  #if [ ${HH} -eq 4 ] || [ ${HH} -eq 16 ] ; then
+      # figure out which surface is available
+      surface_file_dir_name=fcst_fv3lam
+      bkpath_find="missing"
+      restart_prefix_find="missing"
+      if [ "${bkpath_find}" = "missing" ]; then
+          restart_prefix=$( date +%Y%m%d.%H0000. -d "${START_DATE}" )
+
+          offset_hours=${DA_CYCLE_INTERV}
+          YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
+          bkpath=${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${surface_file_dir_name}/RESTART
+
+          n=${DA_CYCLE_INTERV}
+          while [[ $n -le 6 ]] ; do
+             if [ "${IO_LAYOUT_Y}" = "1" ]; then
+               checkfile=${bkpath}/${restart_prefix}fv_tracer.res.tile1.nc
+             else
+               checkfile=${bkpath}/${restart_prefix}fv_tracer.res.tile1.nc.0000
+             fi
+             if [ -r "${checkfile}" ] && [ "${bkpath_find}" = "missing" ]; then
+               bkpath_find=${bkpath}
+               restart_prefix_find=${restart_prefix}
+               print_info_msg "$VERBOSE" "Found ${checkfile}; Use it for smoke/dust cycle "
+               break
+             fi
+ 
+             n=$((n + ${DA_CYCLE_INTERV}))
+             offset_hours=${n}
+             YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
+             bkpath=${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${surface_file_dir_name}/RESTART  # cycling, use background from RESTART
+             print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
+          done
+      fi
+
+      # cycle smoke/dust
+      rm -f cycle_smoke_dust.done
+      if [ "${bkpath_find}" = "missing" ]; then
+        print_info_msg "Warning: cannot find smoke/dust files from previous cycle"
+      else
+        if [ "${IO_LAYOUT_Y}" = "1" ]; then
+          checkfile=${bkpath_find}/${restart_prefix_find}fv_tracer.res.tile1.nc
+          if [ -r "${checkfile}" ]; then
+            ncks -A -v smoke,dust,coarsepm ${checkfile}  fv_tracer.res.tile1.nc
+          fi
+        else
+          for ii in ${list_iolayout}
+          do
+            iii=$(printf %4.4i $ii)
+            checkfile=${bkpath_find}/${restart_prefix_find}fv_tracer.res.tile1.nc.${iii}
+            if [ -r "${checkfile}" ]; then
+              ncks -A -v smoke,dust,coarsepm ${checkfile}  fv_tracer.res.tile1.nc.${iii}
+            fi
+          done
+        fi
+        echo "${YYYYMMDDHH}(${CYCLE_TYPE}): cycle smoke/dust from ${checkfile} " >> ${EXPTDIR}/log.cycles
+      fi
+
+
+
+cat << EOF > add_smoke.py
+import os
+import netCDF4 as nc
+from netCDF4 import Dataset
+
+#Add smoke and dust to re-start file
+
+file_to_extract= "fv_tracer.res.tile1.nc"
+open_fext=nc.Dataset(file_to_extract)
+smoke_2_add=open_fext['smoke'][0,:,:,:]
+print('SMOKE MAX to ADD',smoke_2_add.max())
+dust_2_add=open_fext['dust'][0,:,:,:]
+dust_3_add=open_fext['coarsepm'][0,:,:,:]
+file='gfs_data.tile7.halo0.nc'
+file_input= nc.Dataset(file,'r+',format='NETCED4')
+smoke=file_input.createVariable('smoke', 'f8',('lev','lat', 'lon'))
+smoke[:,:,:]=0
+smoke[1:66,:,:]=smoke_2_add
+smoke.units = " ug/kg"
+dust=file_input.createVariable('dust', 'f8',('lev','lat', 'lon'))
+dust[:,:,:]=0
+dust[1:66,:,:]=dust_2_add
+dust.units = " ug/kg"
+coarsepm=file_input.createVariable('coarsepm', 'f8',('lev','lat', 'lon'))
+coarsepm[:,:,:]=0
+coarsepm[1:66,:,:]=dust_3_add
+dust.units = " ug/kg"
+coarsepm=file_input.createVariable('coarsepm', 'f8',('lev','lat', 'lon'))
+coarsepm[:,:,:]=0
+coarsepm[1:66,:,:]=dust_3_add
+coarsepm.units = " ug/kg"
+#print('SMOKE MAX ADDED',smoke.max)
+#print('DUST MAX ADDED',dust.max)
+#print('COARSEPM MAX ADDED',coarsepm.max)
+file_input.variables
+#
+
+EOF
+
+cat << EOF > driver_add_smoke.sh
+#!/bin/ksh -f
+module purge
+module use -a /contrib/anaconda/modulefiles
+module load intel/18.0.5.274
+module load anaconda/latest
+
+/contrib/anaconda/anaconda3/latest/bin/python  add_smoke.py
+
+EOF
+chmod +x driver_add_smoke.sh
+
+./driver_add_smoke.sh
+fi
+#JR ends  smoke/dust cycling RETROS
 #
 #-----------------------------------------------------------------------
 #

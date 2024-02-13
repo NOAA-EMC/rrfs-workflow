@@ -67,14 +67,14 @@
   "TRACER", "atmos_mod", "smoke"
             "longname",     "smoke mixing ratio"
             "units",        "ug/kg"
-       "profile_type", "fixed", "surface_value=1.e-7" /
+       "profile_type", "fixed", "surface_value=1.e-12" /
 # prognostic dust mixing ratio tracer
             "TRACER", "atmos_mod", "dust"
             "longname",     "dust mixing ratio"
             "units",        "ug/kg"
-       "profile_type", "fixed", "surface_value=1.e-7" /
+       "profile_type", "fixed", "surface_value=1.e-12" /
 # prognostic coarsepm mixing ratio tracer
   "TRACER", "atmos_mod", "coarsepm"
             "longname",     "coarsepm mixing ratio"
             "units",        "ug/kg"
-       "profile_type", "fixed", "surface_value=1.e-7" /
+       "profile_type", "fixed", "surface_value=1.e-12" /
