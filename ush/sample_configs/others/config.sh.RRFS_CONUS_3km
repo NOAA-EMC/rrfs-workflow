@@ -104,7 +104,7 @@ binary_diag=.false.
 WRTCMP_output_file="netcdf_parallel"
 
 regional_ensemble_option=1   # 5 for RRFS ensemble
-if [[ ${USE_RRFS_ENS} == "TRUE" ]]; then
+if [[ ${USE_RRFSE_ENS} == "TRUE" ]]; then
   regional_ensemble_option=5   # 5 for RRFS ensemble
 fi
 
