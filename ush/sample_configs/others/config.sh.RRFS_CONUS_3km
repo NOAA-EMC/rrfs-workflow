@@ -20,7 +20,6 @@ DO_POST_PROD="TRUE"
 DO_RETRO="TRUE"
 DO_NONVAR_CLDANAL="TRUE"
 DO_ENVAR_RADAR_REF="TRUE"
-DO_ENVAR_RADAR_REF_ONCE="TRUE" # set this to TRUE to turn on SDL/VDL and assimilate radar ref with other obs
 DO_SMOKE_DUST="TRUE"
 DO_PM_DA="FALSE"
 DO_REFL2TTEN="FALSE"
@@ -35,6 +34,8 @@ USE_CLM="TRUE"
 DO_PARALLEL_PRDGEN="FALSE"
 DO_GSIDIAG_OFFLINE="TRUE"
 DO_UPDATE_BC="TRUE"
+DO_GLM_FED_DA="FALSE"
+GLMFED_DATA_MODE="EMC"  # retros 20220608-now use FULL; retros 20230714-now and real-time on Jet use FULL or TILES
 
 EXTRN_MDL_ICS_OFFSET_HRS="3"
 LBC_SPEC_INTVL_HRS="1"
@@ -103,6 +104,9 @@ binary_diag=.false.
 WRTCMP_output_file="netcdf_parallel"
 
 regional_ensemble_option=1   # 5 for RRFS ensemble
+if [[ ${USE_RRFS_ENS} == "TRUE" ]]; then
+  regional_ensemble_option=5   # 5 for RRFS ensemble
+fi
 
 EXTRN_MDL_NAME_ICS="FV3GFS"
 EXTRN_MDL_NAME_LBCS="FV3GFS"
@@ -120,11 +124,11 @@ RUN="rrfs"
 
 . set_rrfs_config.sh
 
-STMP="YourOwnSpace/${version}/stmp"  # Path to directory STMP that mostly contains input files.
-PTMP="YourOwnSpace/${version}"  # Path to directory STMP that mostly contains input files.
-NWGES="YourOwnSpace/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+STMP="${EXPT_BASEDIR}/stmp"  # Path to directory STMP that mostly contains input files.
+PTMP="${EXPT_BASEDIR}"  # Path to directory STMP that mostly contains input files.
+NWGES="${EXPT_BASEDIR}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 if [[ ${regional_ensemble_option} == "5" ]]; then
-  RRFSE_NWGES="YourOwnSpace/${version}/nwges"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
+  RRFSE_NWGES="${EXPT_BASEDIR}/nwges"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
   NUM_ENS_MEMBERS=30     # FV3LAM ensemble size for GSI hybrid analysis
   CYCL_HRS_PRODSTART_ENS=( "07" "19" )
   DO_ENVAR_RADAR_REF="TRUE"

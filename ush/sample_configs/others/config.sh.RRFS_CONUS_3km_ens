@@ -24,6 +24,7 @@ DO_SMOKE_DUST="FALSE"
 DO_PM_DA="FALSE"
 DO_GLM_FED_DA="FALSE"
 GLMFED_DATA_MODE="EMC"  # retros 20220608-now use FULL; retros 20230714-now and real-time on Jet use FULL or TILES
+PREP_MODEL_FOR_FED="FALSE" # adds field to ens restart files to be used by control member EnVar
 #DO_REFL2TTEN="FALSE"
 #RADARREFL_TIMELEVEL=(0)
 #FH_DFI_RADAR="0.0,0.25,0.5"
@@ -190,12 +191,12 @@ fi
 
 . set_rrfs_config.sh
 
-STMP="YourOwnSpace/${version}/stmp_ensda"  # Path to directory STMP that mostly contains input files.
+STMP="${EXPT_BASEDIR}/stmp_ensda"  # Path to directory STMP that mostly contains input files.
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
-  STMP="YourOwnSpace/${version}/stmp_ensfcst"  # Path to directory STMP that mostly contains input files.
+  STMP="${EXPT_BASEDIR}/stmp_ensfcst"  # Path to directory STMP that mostly contains input files.
 fi
-PTMP="YourOwnSpace/${version}"  # Path to directory PTMP that mostly contains output files.
-NWGES="YourOwnSpace/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
-ENSCTRL_STMP="YourOwnSpace/${version}/stmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
-ENSCTRL_PTMP="YourOwnSpace/${version}"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
-ENSCTRL_NWGES="YourOwnSpace/${version}/nwges"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+PTMP="${EXPT_BASEDIR}"  # Path to directory PTMP that mostly contains output files.
+NWGES="${EXPT_BASEDIR}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+ENSCTRL_STMP="${EXPT_BASEDIR}/stmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+ENSCTRL_PTMP="${EXPT_BASEDIR}"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
+ENSCTRL_NWGES="${EXPT_BASEDIR}/nwges"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
