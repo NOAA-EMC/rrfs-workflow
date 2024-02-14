@@ -159,9 +159,9 @@ if [[ "${NET}" = "RTMA"* ]] && [[ "${RTMA_OBS_FEED}" = "NCO" ]]; then
   obspath_tmp=${OBSPATH}/${obs_source}.${YYYYMMDD}
 else
   SUBH=""
-  obs_source=rap
+  obs_source=${OBSTYPE_SOURCE}
   if [[ ${HH} -eq '00' || ${HH} -eq '12' ]]; then
-    obs_source=rap_e
+    obs_source=${OBSTYPE_SOURCE}_e
   fi
 
   case $MACHINE in

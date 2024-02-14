@@ -486,10 +486,10 @@ if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
       cp ${IMSSNOW_ROOT}/latest.SNOW_IMS .
    elif [ -r "${IMSSNOW_ROOT}/${YYJJJ2200000000}" ]; then
       cp ${IMSSNOW_ROOT}/${YYJJJ2200000000} latest.SNOW_IMS
-   elif [ -r "${IMSSNOW_ROOT}/rap.${YYYYMMDD}/rap.t${HH}z.imssnow.grib2" ]; then
-      cp ${IMSSNOW_ROOT}/rap.${YYYYMMDD}/rap.t${HH}z.imssnow.grib2  latest.SNOW_IMS
-   elif [ -r "${IMSSNOW_ROOT}/rap.${YYYYMMDD}/rap_e.t${HH}z.imssnow.grib2" ]; then
-      cp ${IMSSNOW_ROOT}/rap_e.${YYYYMMDD}/rap_e.t${HH}z.imssnow.grib2  latest.SNOW_IMS
+   elif [ -r "${IMSSNOW_ROOT}/${OBSTYPE_SOURCE}.${YYYYMMDD}/${OBSTYPE_SOURCE}.t${HH}z.imssnow.grib2" ]; then
+      cp ${IMSSNOW_ROOT}/${OBSTYPE_SOURCE}.${YYYYMMDD}/${OBSTYPE_SOURCE}.t${HH}z.imssnow.grib2  latest.SNOW_IMS
+   elif [ -r "${IMSSNOW_ROOT}/${OBSTYPE_SOURCE}_e.${YYYYMMDD}/rap_e.t${HH}z.imssnow.grib2" ]; then
+      cp ${IMSSNOW_ROOT}/${OBSTYPE_SOURCE}_e.${YYYYMMDD}/${OBSTYPE_SOURCE}_e.t${HH}z.imssnow.grib2  latest.SNOW_IMS
    else
      echo "${IMSSNOW_ROOT} data does not exist!!"
      echo "WARNING: No snow update at ${HH}!!!!"
