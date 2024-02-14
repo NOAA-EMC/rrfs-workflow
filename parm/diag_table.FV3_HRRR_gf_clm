@@ -149,6 +149,7 @@
 "gfs_phys",  "DSWRFtoa",      "dswrf_avetoa","fv3_history2d",         "all",  .false.,  "none",  2
 "gfs_phys",  "USWRFtoa",      "uswrf_avetoa","fv3_history2d",         "all",  .false.,  "none",  2
 "gfs_phys",  "ULWRFtoa",      "ulwrf_avetoa","fv3_history2d",         "all",  .false.,  "none",  2
+"gfs_phys",  "ULWRFItoa",     "ulwrf_toa",   "fv3_history2d",         "all",  .false.,  "none",  2
 "gfs_phys",  "gflux_ave",     "gflux_ave",   "fv3_history2d",         "all",  .false.,  "none",  2
 "gfs_phys",  "hpbl",          "hpbl",        "fv3_history2d",         "all",  .false.,  "none",  2
 "gfs_phys",  "lhtfl_ave",     "lhtfl_ave",   "fv3_history2d",         "all",  .false.,  "none",  2
