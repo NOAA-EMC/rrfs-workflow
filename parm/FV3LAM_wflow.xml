@@ -2339,8 +2339,8 @@ MODULES_RUN_TASK_FP script.
          <taskdep task="&PROCESS_RADAR_REF_TN;_prod"/>
          {%- endif %}
 	 <or>
-           <datadep age="02:00"><cyclestr>&OBSPATH;/@Y@m@d@H.rap.t@Hz.prepbufr.tm00</cyclestr></datadep>
-	   <datadep age="02:00"><cyclestr>&OBSPATH;/rap.@Y@m@d/rap.t@Hz.prepbufr.tm00</cyclestr></datadep>
+           <datadep age="02:00"><cyclestr>&OBSPATH;/@Y@m@d@H.{{obstype_source}}.t@Hz.prepbufr.tm00</cyclestr></datadep>
+	   <datadep age="02:00"><cyclestr>&OBSPATH;/{{obstype_source}}.@Y@m@d/{{obstype_source}}.t@Hz.prepbufr.tm00</cyclestr></datadep>
 	 </or>
        </and>
     </dependency>

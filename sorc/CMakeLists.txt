@@ -255,6 +255,7 @@ if (BUILD_UPP)
     "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
     "-Dexec_dir=${CMAKE_INSTALL_BINDIR}"
 #    "-DINTERNAL_IFI=ON"
+#    "-DBUILD_WITH_GTG=ON"
   )
 
   ExternalProject_Add(UPP
