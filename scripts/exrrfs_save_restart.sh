@@ -235,6 +235,17 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+if [[ ${DO_ENSEMBLE} = TRUE && ${PREP_MODEL} = "2" ]]; then
+  export restart_prefix=${restart_prefix}  
+  python -u ${SCRIPTSdir}/exrrfs_prep_glmfed.py
+fi
+#
+#-----------------------------------------------------------------------
+#
+# Print message indicating successful completion of script.
+#
+#-----------------------------------------------------------------------
+#
 print_info_msg "
 ========================================================================
 save restart for forecast hour $fhr completed successfully.

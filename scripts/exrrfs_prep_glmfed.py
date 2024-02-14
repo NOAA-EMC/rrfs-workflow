@@ -348,66 +348,60 @@ def process_gsl_tiles():
 
 if __name__=="__main__":
 
-  mode = os.environ.get("MODE")
-  if mode=="FULL":
-    process_fulldisk_fed()
-  elif mode=="TILES":
-    process_gsl_tiles()
-  elif mode=="EMC":
-    process_emc_tiles()
-  else:
-    print("Invalid MODE specified. Valid MODES are FULL, TILES, EMC.")
-    quit()
+  ########################################################
+  #                                                      #
+  # Driver for FED observation preprocessing and adding  #
+  # the 3D FED field to the models.                      #
+  #                                                      #
+  # PREP_MODEL=0: preprocess observations; don't modify  #
+  #               any model NetCDFs (used for ens DA)    #
+  # PREP_MODEL=1: preprocess observations and add FED    #
+  #               to the control member (used for EnVar) #
+  # PREP_MODEL=2: don't preprocess observations, add FED #
+  #               to one ens member (for EnVar BEC)      # 
+  #                                                      #
+  ########################################################
+  prepmodel = int(os.environ.get("PREP_MODEL"))
+  if prepmodel<2:
+    mode = os.environ.get("MODE")
+    if mode=="FULL":
+      process_fulldisk_fed()
+    elif mode=="TILES":
+      process_gsl_tiles()
+    elif mode=="EMC":
+      process_emc_tiles()
+    else:
+      print("Invalid MODE specified. Valid MODES are FULL, TILES, EMC.")
+      quit()
 
   ########################################################
   #                                                      #
-  # add model FED to restart and ensemble files in place #
+  # add model FED to input or ensemble files in place    #
   #                                                      #
   ########################################################
-  
-  prepmodel = int(os.environ.get("PREP_MODEL"))
+
+  if prepmodel==0:
+    print('FED observations processed. Exiting.')
+    quit() 
   if prepmodel==1:
-    # format datetime obj
-    inDate   = os.environ.get("CDATE")
-    myDate = dt.datetime(int(inDate[:4]),int(inDate[4:6]),int(inDate[6:8]),int(inDate[8:10]))
     # format paths to model data
     cycle_dir = os.environ.get("CYCLE_DIR")
     cycle_type = os.environ.get("CYCLE_TYPE")
-    rrfse_dir = os.environ.get("RRFSE_NWGES_BASEDIR")
-    num_ens = int(os.environ.get("NUM_ENS_MEMBERS"))
-    cycle_len_H = int(os.environ.get("DA_CYCLE_INTERV"))
-    print("number of ensembles is ",num_ens)
-    print("cycle length is ",cycle_len_H)
-    # format datetime obj
-    myDate = dt.datetime(int(inDate[:4]),int(inDate[4:6]),int(inDate[6:8]),int(inDate[8:10]))
-    myDatemInterv = myDate-dt.timedelta(hours=cycle_len_H)
-    myDateStr = '%04d%02d%02d.%02d0000.'%(myDate.year,myDate.month,myDate.day,myDate.hour)
-    myDatemIntervStr = '%04d%02d%02d%02d'%(myDatemInterv.year,myDatemInterv.month,myDatemInterv.day,myDatemInterv.hour)
-
-    # add deterministic path
     this_path = cycle_dir+'/fcst_fv3lam/INPUT/'
     if cycle_type=="spinup":
       this_path = cycle_dir+'/fcst_fv3lam_'+cycle_type+'/INPUT/'
     if os.path.exists(this_path+'phy_data.nc'):
-      restartpathlist = [this_path]
+      addmodelfed(this_path)
     else:
       print('No background for assimilation! Exiting.')
       quit()
-    for i in range(1,num_ens+1):
-      this_path = rrfse_dir+'/'+myDatemIntervStr+'/mem%04d/fcst_fv3lam/RESTART/'%i+myDateStr
-      if os.path.exists(this_path+'phy_data.nc'):
-        restartpathlist = restartpathlist+[this_path]
-      else:
-        this_path = rrfse_dir+'/'+myDatemIntervStr+'/mem%04d/fcst_fv3lam_spinup/RESTART/'%i+myDateStr
-        if os.path.exists(this_path+'phy_data.nc'):
-          restartpathlist = restartpathlist+[this_path]
-    print('Ens members found: %d'%(len(restartpathlist)-1))
-    for p in restartpathlist:
-      try:
-        addmodelfed(p)
-      except:
-        print("spinup and prod may be running simultaneously; wait 100")
-        time.sleep(100)
-        addmodelfed(p)
+  elif prepmodel==2:
+    nwges_dir = os.environ.get("nwges_dir")
+    restart_prefix = os.environ.get("restart_prefix")
+    this_path = nwges_dir+'/RESTART/'+restart_prefix+'.'
+    if os.path.exists(this_path+'phy_data.nc'):
+      addmodelfed(this_path)
+    else:
+      print('Model data not found at '+this_path+'*')
 
   quit()
