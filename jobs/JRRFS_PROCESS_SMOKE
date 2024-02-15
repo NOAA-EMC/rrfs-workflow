@@ -130,7 +130,7 @@ done
 export pgmout="${workdir}/OUTPUT.$$"
 env
 
-python -u ${SCRIPTSdir}/generate_fire_emissions.py \
+python -u ${USHdir}/generate_fire_emissions.py \
   "${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}" \
   "${FIRE_RAVE_DIR}" \
   "${workdir}" \
