@@ -231,12 +231,13 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Print message indicating successful completion of script.
+# If EnVar will need flash extent density field in ensembles, add it 
 #
 #-----------------------------------------------------------------------
 #
-if [[ ${DO_ENSEMBLE} = TRUE && ${PREP_MODEL} = "2" ]]; then
+if [[ ${DO_ENSEMBLE} = TRUE && ${fhr} -eq 1 && ${PREP_MODEL_FOR_FED} = TRUE ]]; then
   export restart_prefix=${restart_prefix}  
+  export PREP_MODEL=2
   python -u ${SCRIPTSdir}/exrrfs_prep_glmfed.py
 fi
 #
