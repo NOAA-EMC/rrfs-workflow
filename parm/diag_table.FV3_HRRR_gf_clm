@@ -149,6 +149,7 @@
 "gfs_phys",  "DSWRFtoa",      "dswrf_avetoa","fv3_history2d",         "all",  .false.,  "none",  2
 "gfs_phys",  "USWRFtoa",      "uswrf_avetoa","fv3_history2d",         "all",  .false.,  "none",  2
 "gfs_phys",  "ULWRFtoa",      "ulwrf_avetoa","fv3_history2d",         "all",  .false.,  "none",  2
+"gfs_phys",  "ULWRFItoa",     "ulwrf_toa",   "fv3_history2d",         "all",  .false.,  "none",  2
 "gfs_phys",  "gflux_ave",     "gflux_ave",   "fv3_history2d",         "all",  .false.,  "none",  2
 "gfs_phys",  "hpbl",          "hpbl",        "fv3_history2d",         "all",  .false.,  "none",  2
 "gfs_phys",  "lhtfl_ave",     "lhtfl_ave",   "fv3_history2d",         "all",  .false.,  "none",  2
@@ -351,6 +352,8 @@
 "gfs_sfc",     "acsnow_land",       "accswe_land",  "fv3_history2d",  "all",  .false.,  "none",  2
 "gfs_sfc",     "snowfall_acc_ice",  "snacc_ice",    "fv3_history2d",  "all",  .false.,  "none",  2
 "gfs_sfc",     "acsnow_ice",        "accswe_ice",   "fv3_history2d",  "all",  .false.,  "none",  2
+"gfs_sfc",     "xlaixy",            "xlaixy",       "fv3_history2d",  "all",  .false.,  "none",  2
+"gfs_sfc",     "sfalb",             "sfalb",        "fv3_history2d",  "all",  .false.,  "none",  2
 # Stochastic physics
 #"gfs_phys",    "sppt_wts",      "sppt_wts",      "fv3_history",  "all", .false., "none", 2
 #"gfs_phys",    "skebu_wts",     "skebu_wts",     "fv3_history",  "all", .false., "none", 2

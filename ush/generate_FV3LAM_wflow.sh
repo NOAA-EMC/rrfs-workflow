@@ -448,6 +448,7 @@ settings="\
   'ensctrl_comout_basedir': ${ENSCTRL_COMOUT_BASEDIR:-}
   'ensctrl_comout_dir': ${ENSCTRL_COMOUT_DIR:-}
   'rrfse_nwges_basedir': ${RRFSE_NWGES_BASEDIR:-}
+  'obstype_source': ${OBSTYPE_SOURCE}
   'obspath': ${OBSPATH}
   'obspath_pm': ${OBSPATH_PM}
   'global_var_defns_fp': ${GLOBAL_VAR_DEFNS_FP}
