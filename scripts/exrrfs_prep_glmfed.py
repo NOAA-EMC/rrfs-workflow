@@ -54,10 +54,10 @@ def addmodelfed(restartpath):
   # open physics file to write FED
   u = nc.Dataset(physfile,'r+')
 
-  if 'flash_extent_density' in u.variables.keys():
-    print('FED field exists! Exiting')
-    u.close()
-    return()
+  #if 'flash_extent_density' in u.variables.keys():
+  #  print('FED field exists! Exiting')
+  #  u.close()
+  #  return()
 
 
   # units of [delp/g] = Pa*s^2/m = N*s^2/m^3 = kg/m^2 = dry air mass per m^2 in the cell
@@ -92,8 +92,12 @@ def addmodelfed(restartpath):
 
   # add 4D FED grid to tracer NetCDF and close
   # Time,zaxis_1,yaxis_1,xaxis_1 are dimensions to write
-  fed_out = u.createVariable('flash_extent_density',np.float32,('Time','zaxis_1','yaxis_1','xaxis_1'),chunksizes=(1,1,u.dimensions['yaxis_1'].size,u.dimensions['xaxis_1'].size))
-  fed_out[:] = fed.astype('float32')
+  if 'flash_extent_density' in u.variables.keys():
+    print('Overwriting FED values.')
+    u['flash_extent_density'][:] = fed.astype('float32') 
+  else:
+    fed_out = u.createVariable('flash_extent_density',np.float32,('Time','zaxis_1','yaxis_1','xaxis_1'),chunksizes=(1,1,u.dimensions['yaxis_1'].size,u.dimensions['xaxis_1'].size))
+    fed_out[:] = fed.astype('float32')
   u.close()
   return()
 
