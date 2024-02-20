@@ -2652,22 +2652,3 @@ CLEAN_OLDFCST_HRS="24"
 CLEAN_OLDSTMPPOST_HRS="24"
 CLEAN_NWGES_HRS="72"
 
-#
-#-----------------------------------------------------------------------
-#
-# Parameters for RRFS OSSE configuration
-# DO_OSSE:
-#   Sets observation paths to point to directories with synthetic obs
-# USE_REAL_RED:
-#   Sets observation paths to point to ob BUFR files with real, reduced obs
-# OSSE_PERIOD:
-#   OSSE period ("spring" or "winter")
-# OBSPATH_OSSE:
-#    OBSPATH for OSSE. Onlye used if DO_OSSE = True or USE_REAL_RED = True
-#-----------------------------------------------------------------------
-#
-
-DO_OSSE="FALSE"
-USE_REAL_RED="FALSE"
-OSSE_PERIOD="spring"
-OBSPATH_OSSE="/work2/noaa/wrfruc/murdzek/nature_run_${OSSE_PERIOD}/obs/perfect_conv/syn_bufr"
