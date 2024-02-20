@@ -288,6 +288,7 @@ EXPT_SUBDIR=""
 # 
 # Setup default observation locations for data assimilation:
 #
+#    OBSTYPE_SOURCE: observation file source: rap or rrfs
 #    OBSPATH:   observation BUFR file path
 #    OBSPATH_NSSLMOSIAC: location of NSSL radar reflectivity 
 #    LIGHTNING_ROOT: location of lightning observations
@@ -343,6 +344,7 @@ NCL_HOME="/home/rtrr/RRFS/graphics"
 NCL_REGION="conus"
 MODEL="NO MODEL CHOSEN"
 
+OBSTYPE_SOURCE="rap"
 OBSPATH="/public/data/grids/rap/obs"
 OBSPATH_NSSLMOSIAC="/public/data/radar/mrms"
 OBSPATH_PM="/mnt/lfs1/BMC/wrfruc/hwang/rrfs_sd/pm"
@@ -2089,7 +2091,7 @@ USE_CUSTOM_POST_CONFIG_FILE="FALSE"
 CUSTOM_POST_CONFIG_FP=""
 CUSTOM_POST_PARAMS_FP=""
 POST_FULL_MODEL_NAME="FV3R"
-POST_SUB_MODEL_NAME="NONE"
+POST_SUB_MODEL_NAME="FV3R"
 TESTBED_FIELDS_FN=""
 TESTBED_FIELDS_FN2=""
 #
