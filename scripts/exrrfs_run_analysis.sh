@@ -446,9 +446,9 @@ if [[ "${NET}" = "RTMA"* ]] && [[ "${RTMA_OBS_FEED}" = "NCO" ]]; then
   obspath_tmp=${OBSPATH}/${obs_source}.${YYYYMMDD}
 else
   SUBH=""
-  obs_source=rap
+  obs_source=${OBSTYPE_SOURCE}
   if [ ${HH} -eq '00' ] || [ ${HH} -eq '12' ]; then
-    obs_source=rap_e
+    obs_source=${OBSTYPE_SOURCE}_e
   fi
 
   case $MACHINE in
@@ -466,8 +466,8 @@ else
      obspath_tmp=${OBSPATH}
     ;;
   "ORION" | "HERCULES")
-     obs_source=rap
-     obsfileprefix=${YYYYMMDDHH}.${obs_source}               # rap observation from JET.
+     obs_source=${OBSTYPE_SOURCE}
+     obsfileprefix=${YYYYMMDDHH}.${obs_source}               # observation from JET.
      #obsfileprefix=${obs_source}.${YYYYMMDD}/${obs_source}    # observation from operation.
      obspath_tmp=${OBSPATH}
     ;;
@@ -992,7 +992,7 @@ export pgm="gsi.x"
 if [ ${BKTYPE} -eq 1 ] ; then
   echo " skip cold start GSI for now"
 else
-  $APRUN $pgm < gsiparm.anl >>$pgmout 2>errfile
+  $APRUN ./$pgm < gsiparm.anl >>$pgmout 2>errfile
   export err=$?; err_chk
   mv errfile errfile_gsi
 fi
@@ -1080,9 +1080,9 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
          ${APRUN} $pgm -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4 >>$pgmout 2>errfile
 	 export err=$?; err_chk
 	 mv errfile errfile_nc_diag_cat_$type
-
-         cp diag_${type}_${string}.${YYYYMMDDHH}.nc4 ${COMOUT}
-         echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4*" >> listcnv
+         gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4
+         cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
+         echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listcnv
          numfile_cnv=`expr ${numfile_cnv} + 1`
       fi
     done
@@ -1094,9 +1094,9 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
         ${APRUN} $pgm -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4 >>$pgmout 2>errfile
 	export err=$?; err_chk
 	mv errfile errfile_nc_diag_cat_$type
-
-        cp diag_${type}_${string}.${YYYYMMDDHH}.nc4 ${COMOUT}
-        echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4*" >> listrad
+        gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4
+        cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
+        echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listrad
         numfile_rad=`expr ${numfile_rad} + 1`
       else
         echo 'No diag_' ${type} 'exist'

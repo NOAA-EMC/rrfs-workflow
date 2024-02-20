@@ -49,6 +49,12 @@ if [[ $MACHINE == "wcoss2" ]] ; then
   FVCOM_DIR="/lfs/h1/ops/prod/com/nosofs/v3.5"
   FVCOM_FILE="fvcom"
   RAPHRR_SOIL_ROOT="/lfs/h1/ops/prod/com"
+  GLMFED_EAST_ROOT="/lfs/h1/ops/prod/dcom/ldmdata/obs/GOES-16/GLM/tiles"
+  GLMFED_WEST_ROOT="/lfs/h1/ops/prod/dcom/ldmdata/obs/GOES-17/GLM/tiles"
+  if [[ $OBSTYPE_SOURCE == "rrfs" ]]; then
+    OBSPATH=/lfs/h2/emc/lam/noscrub/emc.lam/obsproc.DATA/CRON/rrfs/com/obsproc/v1.0
+    IMSSNOW_ROOT=/lfs/h2/emc/lam/noscrub/emc.lam/obsproc.DATA/CRON/rrfs/com/obsproc/v1.0
+  fi
 fi
 
 # set up for retrospective test:

@@ -649,87 +649,85 @@ export err=$?; err_chk
 #   processed. This includes rotating the winds and vertically remapping all the
 #   variables. The cold start file has u_w, v_w, u_s, and v_s which correspond
 #   to the D-grid staggering.
-#     -) u_s is the D-grid south tangential wind component (m/s)
+#     -) u_s is the D-grid south face tangential wind component (m/s)
 #     -) v_s is the D-grid south face normal wind component (m/s)
-#     -) u_w is the D-grid west  face tangential wind component (m/s)
-#     -) v_w is the D-grid west  face normal wind component (m/s)
+#     -) u_w is the D-grid west  face normal wind component (m/s)
+#     -) v_w is the D-grid west  face tangential wind component (m/s)
 #     -) https://github.com/NOAA-GFDL/GFDL_atmos_cubed_sphere/blob/bdeee64e860c5091da2d169b1f4307ad466eca2c/tools/external_ic.F90
 #     -) https://dtcenter.org/sites/default/files/events/2020/20201105-1300p-fv3-gfdl-1.pdf
 #
-cdate_crnt_fhr_m1=$( date --utc --date "$yyyymmdd $hh UTC - 1 hours" "+%Y%m%d%H" )
-if [ $DO_ENS_BLENDING = "TRUE" ] &&
-   [ $cdate_crnt_fhr -ge ${FIRST_BLENDED_CYCLE_DATE} ] &&
-   [ $EXTRN_MDL_NAME_ICS = "GDASENKF" ]; then
 
-   echo "Blending Starting."
-   ulimit -s unlimited
-   export OMP_STACKSIZE=2G
-   ncores=$(( NNODES_MAKE_ICS*PPN_MAKE_ICS ))  # OMP_NUM_THREADS=ntasks*cpus-per-task
-   export OMP_NUM_THREADS=$ncores #WCOSS2:"96", Hera/Orion:"80"
-   export FI_OFI_RXM_SAR_LIMIT=3145728
-   export FI_MR_CACHE_MAX_COUNT=0
-   export MPICH_OFI_STARTUP_CONNECT=1
+# Check for 1h RRFS EnKF files, if at least one missing then use 1tstep initialization
+if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
 
-   # Python/F2Py scripts
-   cp $SCRIPTSdir/exrrfs_blending_fv3.py .
-   cp $SCRIPTSdir/exrrfs_chgres_cold2fv3.py .
+  echo "Pre-Blending Starting."
+  ulimit -s unlimited
+  #Add the size of the variables declared as private and multiply by the OMP_NUMTHREADS
+  export OMP_STACKSIZE=600M #8*[3951*{65+67+66}]*96/1048576 = 600804864/1048576 = 573 MB
+  export OMP_NUM_THREADS=$NCORES_PER_NODE
+  export FI_OFI_RXM_SAR_LIMIT=3145728
+  export FI_MR_CACHE_MAX_COUNT=0
+  export MPICH_OFI_STARTUP_CONNECT=1
 
-   # F2Py shared object files
-   ln -sf $LIB64dir/raymond.so .
-   ln -sf $LIB64dir/chgres_winds.so .
-   ln -sf $LIB64dir/remap_scalar.so .
-   ln -sf $LIB64dir/remap_dwinds.so .
+  case "$MACHINE" in
 
-   # Required NETCDF files -  HOST MODEL (e.g., GDAS; these files should already be present)
-   #cp_vrfy out.atm.tile${TILE_RGNL}.nc .
-   #cp_vrfy out.sfc.tile${TILE_RGNL}.nc .
-   #cp_vrfy gfs_ctrl.nc .
+    "WCOSS2")
+       if [[ $NCORES_PER_NODE -gt 96 ]]; then
+          export OMP_NUM_THREADS="96"
+       fi
+      ;;
 
-   # Required NETCDF files - RRFS
-   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.tile1.nc ./fv_core.res.tile1.nc
-   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_tracer.res.tile1.nc ./fv_tracer.res.tile1.nc
-   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc ./fv_core.res.nc
+    "HERA")
+       if [[ $NCORES_PER_NODE -gt 80 ]]; then
+          export OMP_NUM_THREADS="80"
+       fi
+      ;;
 
-   # Required FIX files
-   cp $FIXLAM/${CRES}_grid.tile7.nc .
-   cp $FIXLAM/${CRES}_oro_data.tile7.halo0.nc .
+    "ORION")
+       if [[ $NCORES_PER_NODE -gt 80 ]]; then
+          export OMP_NUM_THREADS="80"
+       fi
+      ;;
 
-   # Shortcut the file names
-   warm=./fv_core.res.tile1.nc
-   cold=./out.atm.tile7.nc
-   grid=./${CRES}_grid.tile7.nc
-   akbk=./fv_core.res.nc
-   akbkcold=./gfs_ctrl.nc
-   orog=./${CRES}_oro_data.tile7.halo0.nc
-   bndy=./gfs.bndy.nc
+    "HERCULES")
+       if [[ $NCORES_PER_NODE -gt 80 ]]; then
+          export OMP_NUM_THREADS="80"
+       fi
+      ;;
 
-   # Run convert coldstart files to fv3 restart (rotate winds and remap).
-   ${BLENDINGPYTHON} exrrfs_chgres_cold2fv3.py $warm $cold $grid $akbk $akbkcold $orog
+    "JET")
+       if [[ $NCORES_PER_NODE -gt 80 ]]; then
+          export OMP_NUM_THREADS="80"
+       fi
+      ;;
 
-   # Shortcut the file names/arguments.
-   Lx=$ENS_BLENDING_LENGTHSCALE
-   glb=./out.atm.tile${TILE_RGNL}.nc
-   reg=./fv_core.res.tile1.nc
-   trcr=./fv_tracer.res.tile1.nc
+  esac
 
-   # Blend OR finish convert cold2warm start without blending.
-   blend=${BLEND}                 # TRUE:  Blend RRFS and GDAS EnKF
-                                  # FALSE: Don't blend, activate cold2warm start only, and use either GDAS or RRFS
-   use_host_enkf=${USE_HOST_ENKF} # ignored if blend="TRUE".
-                                  # TRUE:  Final EnKF will be GDAS (no blending)
-                                  # FALSE: Final EnKF will be RRFS (no blending)
-   ${BLENDINGPYTHON} exrrfs_blending_fv3.py $Lx $glb $reg $trcr $blend $use_host_enkf
-   cp ./fv_core.res.tile1.nc ${ics_dir}/.
-   cp ./fv_tracer.res.tile1.nc ${ics_dir}/.
+  # Python/F2Py scripts
+  cp $SCRIPTSdir/exrrfs_chgres_cold2fv3.py .
 
-   # Move the remaining RESTART files to INPUT
-   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.coupler.res             ${ics_dir}/coupler.res
-   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc          ${ics_dir}/fv_core.res.nc
-   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_srf_wnd.res.tile1.nc ${ics_dir}/fv_srf_wnd.res.tile1.nc
-   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.phy_data.nc             ${ics_dir}/phy_data.nc
-   cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.sfc_data.nc             ${ics_dir}/sfc_data.nc
-   cp gfs_ctrl.nc ${ics_dir}
-   cp gfs.bndy.nc ${ics_dir}/gfs_bndy.tile${TILE_RGNL}.000.nc
+  # F2Py shared object files
+  ln -sf $LIB64dir/chgres_winds.so .
+  ln -sf $LIB64dir/remap_scalar.so .
+  ln -sf $LIB64dir/remap_dwinds.so .
+
+  # Required FIX files
+  cp $FIXLAM/${CRES}_grid.tile7.nc .
+  cp $FIXLAM/${CRES}_oro_data.tile7.halo0.nc .
+  cp $FIX_GSI/$PREDEF_GRID_NAME/fv3_akbk fv_core.res.nc
+
+  # Shortcut the file names
+  warm=./fv_core.res.tile1.nc
+  cold=./out.atm.tile7.nc
+  grid=./${CRES}_grid.tile7.nc
+  akbk=./fv_core.res.nc
+  akbkcold=./gfs_ctrl.nc
+  orog=./${CRES}_oro_data.tile7.halo0.nc
+  bndy=./gfs.bndy.nc
+
+  # Run convert coldstart files to fv3 restart (rotate winds and remap).
+  ${BLENDINGPYTHON} exrrfs_chgres_cold2fv3.py $cold $grid $akbk $akbkcold $orog
+
 fi
 #
 #-----------------------------------------------------------------------
@@ -740,7 +738,7 @@ fi
 # system.
 #-----------------------------------------------------------------------
 #
-if [[ $DO_ENS_BLENDING = "FALSE" || ($DO_ENS_BLENDING = "TRUE" && $cdate_crnt_fhr -lt ${FIRST_BLENDED_CYCLE_DATE}) ]]; then
+if [[ $DO_ENS_BLENDING = "FALSE" ]]; then
   mv out.atm.tile${TILE_RGNL}.nc \
         ${ics_dir}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
 
@@ -758,9 +756,8 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+if [ $DO_ENS_BLENDING = "FALSE" ]; then
 cp ${ics_dir}/*.nc ${ics_nwges_dir}/.
-if [ $DO_ENS_BLENDING = "TRUE" ] && [ $cdate_crnt_fhr -ge ${FIRST_BLENDED_CYCLE_DATE} ]; then
-  cp ${ics_dir}/coupler.res ${ics_nwges_dir}/.
 fi
 #
 #-----------------------------------------------------------------------

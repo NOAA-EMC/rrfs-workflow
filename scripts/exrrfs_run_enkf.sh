@@ -192,12 +192,14 @@ for imem in  $(seq 1 $nens) ensmean; do
       fi
     fi
     for sub_ob_type in ${list_ob_type} ; do
-      diagfile0=${observer_nwges_dir}/diag_${sub_ob_type}_ges.${YYYYMMDDHH}.nc4
+      diagfile0=${observer_nwges_dir}/diag_${sub_ob_type}_ges.${YYYYMMDDHH}.nc4.gz
       if [ -s $diagfile0 ]; then
         diagfile=$(basename  $diagfile0)
         cp  $diagfile0  $diagfile
-        ncfile=$(basename -s .nc4 $diagfile)
-        mv $ncfile.nc4 ${ncfile}_${memcharv0}.nc4
+        gzip -d $diagfile && rm -f $diagfile
+        ncfile0=$(basename -s .gz $diagfile)
+        ncfile=$(basename -s .nc4 $ncfile0)
+        mv $ncfile0 ${ncfile}_${memcharv0}.nc4
       fi
     done
   else

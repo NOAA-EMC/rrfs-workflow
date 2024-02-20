@@ -159,9 +159,9 @@ if [[ "${NET}" = "RTMA"* ]] && [[ "${RTMA_OBS_FEED}" = "NCO" ]]; then
   obspath_tmp=${OBSPATH}/${obs_source}.${YYYYMMDD}
 else
   SUBH=""
-  obs_source=rap
+  obs_source=${OBSTYPE_SOURCE}
   if [[ ${HH} -eq '00' || ${HH} -eq '12' ]]; then
-    obs_source=rap_e
+    obs_source=${OBSTYPE_SOURCE}_e
   fi
 
   case $MACHINE in
@@ -303,7 +303,7 @@ EOF
 export pgm="process_larccld.exe"
 . prep_step
 if [[ "$run_cloud" == true ]]; then
-  $APRUN ${EXECdir}/$pgm >>pgmout 2>errfile
+  $APRUN ${EXECdir}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
   mv errfile errfile_larccld
 

@@ -197,7 +197,9 @@ settings="\
   'get_extrn_lbcs_long_tn': ${GET_EXTRN_LBCS_LONG_TN}
   'get_gefs_lbcs_tn': ${GET_GEFS_LBCS_TN}
   'make_ics_tn': ${MAKE_ICS_TN}
+  'blend_ics_tn': ${BLEND_ICS_TN}
   'make_lbcs_tn': ${MAKE_LBCS_TN}
+  'add_aerosol_tn': ${ADD_AEROSOL_TN}
   'run_fcst_tn': ${RUN_FCST_TN}
   'run_post_tn': ${RUN_POST_TN}
   'run_prdgen_tn': ${RUN_PRDGEN_TN}
@@ -228,6 +230,7 @@ settings="\
   'net': ${NET}
   'run': ${RUN}
   'jedi_envar_ioda': ${JEDI_ENVAR_IODA_TN}
+  'ioda_prepbufr': ${IODA_PREPBUFR_TN}
 #
 # Number of nodes to use for each task.
 #
@@ -237,6 +240,7 @@ settings="\
   'nnodes_get_extrn_ics': ${NNODES_GET_EXTRN_ICS}
   'nnodes_get_extrn_lbcs': ${NNODES_GET_EXTRN_LBCS}
   'nnodes_make_ics': ${NNODES_MAKE_ICS}
+  'nnodes_blend_ics': ${NNODES_BLEND_ICS}
   'nnodes_make_lbcs': ${NNODES_MAKE_LBCS}
   'nnodes_run_prepstart': ${NNODES_RUN_PREPSTART}
   'nnodes_run_fcst': ${NNODES_RUN_FCST}
@@ -260,6 +264,8 @@ settings="\
   'nnodes_run_bufrsnd': ${NNODES_RUN_BUFRSND}
   'nnodes_save_restart': ${NNODES_SAVE_RESTART}
   'nnodes_run_jedienvar_ioda': ${NNODES_RUN_JEDIENVAR_IODA}
+  'nnodes_run_ioda_prepbufr': ${NNODES_RUN_IODA_PREPBUFR}
+  'nnodes_add_aerosol': ${NNODES_ADD_AEROSOL}
 #
 # Number of cores used for a task
 #
@@ -280,6 +286,7 @@ settings="\
   'ppn_get_extrn_ics': ${PPN_GET_EXTRN_ICS}
   'ppn_get_extrn_lbcs': ${PPN_GET_EXTRN_LBCS}
   'ppn_make_ics': ${PPN_MAKE_ICS}
+  'ppn_blend_ics': ${PPN_BLEND_ICS}
   'ppn_make_lbcs': ${PPN_MAKE_LBCS}
   'ppn_run_prepstart': ${PPN_RUN_PREPSTART}
   'ppn_run_fcst': ${PPN_RUN_FCST}
@@ -303,6 +310,8 @@ settings="\
   'ppn_run_bufrsnd': ${PPN_RUN_BUFRSND}
   'ppn_save_restart': ${PPN_SAVE_RESTART}
   'ppn_run_jedienvar_ioda': ${PPN_RUN_JEDIENVAR_IODA}
+  'ppn_run_ioda_prepbufr': ${PPN_RUN_IODA_PREPBUFR}
+  'ppn_add_aerosol': ${PPN_ADD_AEROSOL}
 #
   'tpp_make_ics': ${TPP_MAKE_ICS}
   'tpp_make_lbcs': ${TPP_MAKE_LBCS}
@@ -319,6 +328,7 @@ settings="\
   'wtime_get_extrn_ics': ${WTIME_GET_EXTRN_ICS}
   'wtime_get_extrn_lbcs': ${WTIME_GET_EXTRN_LBCS}
   'wtime_make_ics': ${WTIME_MAKE_ICS}
+  'wtime_blend_ics': ${WTIME_BLEND_ICS}
   'wtime_make_lbcs': ${WTIME_MAKE_LBCS}
   'wtime_run_prepstart': ${WTIME_RUN_PREPSTART}
   'wtime_run_prepstart_ensmean': ${WTIME_RUN_PREPSTART_ENSMEAN}
@@ -344,14 +354,18 @@ settings="\
   'wtime_run_bufrsnd': ${WTIME_RUN_BUFRSND}
   'wtime_save_restart': ${WTIME_SAVE_RESTART}
   'wtime_run_jedienvar_ioda': ${WTIME_RUN_JEDIENVAR_IODA}
+  'wtime_run_ioda_prepbufr': ${WTIME_RUN_IODA_PREPBUFR}
+  'wtime_add_aerosol': ${WTIME_ADD_AEROSOL}
 #
 # start time for each task.
 #
   'start_time_spinup': ${START_TIME_SPINUP}
   'start_time_prod': ${START_TIME_PROD}
   'start_time_conventional_spinup': ${START_TIME_CONVENTIONAL_SPINUP}
+  'start_time_blending': ${START_TIME_BLENDING}
   'start_time_late_analysis': ${START_TIME_LATE_ANALYSIS}
   'start_time_conventional': ${START_TIME_CONVENTIONAL}
+  'start_time_ioda_prepbufr': ${START_TIME_IODA_PREPBUFR}
   'start_time_nsslmosiac': ${START_TIME_NSSLMOSIAC}
   'start_time_lightningnc': ${START_TIME_LIGHTNINGNC}
   'start_time_proc_glmfed': ${START_TIME_GLMFED}
@@ -366,6 +380,7 @@ settings="\
   'memo_run_prepstart': ${MEMO_RUN_PREPSTART}
   'memo_run_prdgen': ${MEMO_RUN_PRDGEN}
   'memo_run_jedienvar_ioda': ${MEMO_RUN_JEDIENVAR_IODA}
+  'memo_run_ioda_prepbufr': ${MEMO_RUN_IODA_PREPBUFR}
   'memo_prep_cyc': ${MEMO_PREP_CYC}
   'memo_save_restart': ${MEMO_SAVE_RESTART}
   'memo_save_input': ${MEMO_SAVE_INPUT}
@@ -373,6 +388,7 @@ settings="\
   'memo_proc_glmfed': ${MEMO_PROC_GLMFED}
   'memo_proc_pm': ${MEMO_PROC_PM}
   'memo_save_da_output': ${MEMO_SAVE_DA_OUTPUT}
+  'memo_add_aerosol': ${MEMO_ADD_AEROSOL}
 #
 # Maximum number of tries for each task.
 #
@@ -382,6 +398,7 @@ settings="\
   'maxtries_get_extrn_ics': ${MAXTRIES_GET_EXTRN_ICS}
   'maxtries_get_extrn_lbcs': ${MAXTRIES_GET_EXTRN_LBCS}
   'maxtries_make_ics': ${MAXTRIES_MAKE_ICS}
+  'maxtries_blend_ics': ${MAXTRIES_BLEND_ICS}
   'maxtries_make_lbcs': ${MAXTRIES_MAKE_LBCS}
   'maxtries_run_prepstart': ${MAXTRIES_RUN_PREPSTART}
   'maxtries_run_fcst': ${MAXTRIES_RUN_FCST}
@@ -402,14 +419,16 @@ settings="\
   'maxtries_save_restart': ${MAXTRIES_SAVE_RESTART}
   'maxtries_save_da_output': ${MAXTRIES_SAVE_DA_OUTPUT}
   'maxtries_jedi_envar_ioda': ${MAXTRIES_JEDI_ENVAR_IODA}
+  'maxtries_ioda_prepbufr': ${MAXTRIES_IODA_PREPBUFR}
+  'maxtries_add_aerosol': ${MAXTRIES_ADD_AEROSOL}
 #
-# Flags that specify whether to run the preprocessing tasks.
+# Flags that determine whether to run the specific tasks.
 #
   'run_task_make_grid': ${RUN_TASK_MAKE_GRID}
   'run_task_make_orog': ${RUN_TASK_MAKE_OROG}
   'run_task_make_sfc_climo': ${RUN_TASK_MAKE_SFC_CLIMO}
-#
   'run_task_run_prdgen': ${RUN_TASK_RUN_PRDGEN}
+  'run_task_add_aerosol': ${RUN_TASK_ADD_AEROSOL}
 #
   'is_rtma':  ${IS_RTMA}
   'fg_rootdir': ${FG_ROOTDIR}
@@ -429,6 +448,7 @@ settings="\
   'ensctrl_comout_basedir': ${ENSCTRL_COMOUT_BASEDIR:-}
   'ensctrl_comout_dir': ${ENSCTRL_COMOUT_DIR:-}
   'rrfse_nwges_basedir': ${RRFSE_NWGES_BASEDIR:-}
+  'obstype_source': ${OBSTYPE_SOURCE}
   'obspath': ${OBSPATH}
   'obspath_pm': ${OBSPATH_PM}
   'global_var_defns_fp': ${GLOBAL_VAR_DEFNS_FP}
@@ -549,6 +569,10 @@ settings="\
 # JEDI related parameters (liaofan)
 #
   'do_jedi_envar_ioda': ${DO_JEDI_ENVAR_IODA}
+#
+# IODA related parameters
+#
+  'do_ioda_prepbufr': ${DO_IODA_PREPBUFR}
 #
 # smoke and dust related parameters.
 #

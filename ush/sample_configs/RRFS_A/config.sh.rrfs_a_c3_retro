@@ -1,6 +1,6 @@
 MACHINE="wcoss2"
 MACHINETYPE="backup"
-version="v0.6.4"
+version="v0.7.9"
 ACCOUNT="RRFS_DEV"
 #RESERVATION="rrfsdet"
 EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/${version}"
@@ -10,6 +10,14 @@ PREDEF_GRID_NAME=RRFS_CONUS_3km
 
 . set_rrfs_config_general.sh
 . set_rrfs_config_SDL_VDL_MixEn.sh
+
+QUEUE_DEFAULT="dev"
+QUEUE_ANALYSIS="dev"
+QUEUE_FCST="dev"
+QUEUE_HPSS="dev_transfer"
+QUEUE_PRDGEN="dev"
+QUEUE_GRAPHICS="dev"
+QUEUE_POST="dev"
 
 #DO_ENSEMBLE="TRUE"
 #DO_ENSFCST="TRUE"
@@ -23,16 +31,19 @@ DO_RETRO="TRUE"
 DO_NONVAR_CLDANAL="TRUE"
 DO_ENVAR_RADAR_REF="TRUE"
 DO_SMOKE_DUST="TRUE"
+DO_PM_DA="FALSE"
 DO_REFL2TTEN="FALSE"
 RADARREFL_TIMELEVEL=(0)
 FH_DFI_RADAR="0.0,0.25,0.5"
 DO_SOIL_ADJUST="TRUE"
 DO_RADDA="TRUE"
-DO_BUFRSND="TRUE"
-USE_FVCOM="TRUE"
-PREP_FVCOM="TRUE"
+DO_BUFRSND="FALSE"
+USE_FVCOM="FALSE"
+PREP_FVCOM="FALSE"
+USE_CLM="TRUE"
 DO_PARALLEL_PRDGEN="FALSE"
 DO_GSIDIAG_OFFLINE="TRUE"
+DO_UPDATE_BC="TRUE"
 
 EXTRN_MDL_ICS_OFFSET_HRS="3"
 LBC_SPEC_INTVL_HRS="1"
@@ -80,12 +91,9 @@ RESTART_INTERVAL_LONG="1"
 ## set up post
 POSTPROC_LEN_HRS="18"
 POSTPROC_LONG_LEN_HRS="60"
-NFHOUT_HF="1"
+
 # 15 min output upto 18 hours
-#NFHMAX_HF="18"
-#NFHOUT="1"
-#NSOUT="15"
-#NSOUT_MIN="15"
+OUTPUT_FH="1 -1"
 
 USE_RRFSE_ENS="FALSE"
 CYCL_HRS_HYB_FV3LAM_ENS=("00" "01" "02" "03" "04" "05" "06" "07" "08" "09" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "23")
@@ -96,6 +104,9 @@ SNOWICE_update_hour=01
 SOIL_SURGERY_time=2022072004
 netcdf_diag=.true.
 binary_diag=.false.
+WRTCMP_output_file="netcdf_parallel"
+WRTCMP_ideflate="1"
+WRTCMP_quantize_nsd="18"
 
 regional_ensemble_option=1
 
@@ -103,11 +114,12 @@ EXTRN_MDL_NAME_ICS="FV3GFS"
 EXTRN_MDL_NAME_LBCS="FV3GFS"
 FV3GFS_FILE_FMT_ICS="grib2"
 FV3GFS_FILE_FMT_LBCS="grib2"
+EXTRN_MDL_DATE_JULIAN="TRUE"
 
 envir="para"
 
 NET="rrfs_a"
-TAG="c3v64"
+TAG="c3v79"
 
 ARCHIVEDIR="/NCEPDEV/emc-meso/1year/emc.lam/${TAG}"
 NCL_REGION="conus"

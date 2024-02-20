@@ -1,11 +1,11 @@
 MACHINE="hera"
-version="v0.00"
 #RESERVATION="rrfsdet"
 
 ################################################################
 #EXPT_BASEDIR="YourOwnSpace"
 EXPT_SUBDIR="rrfs_test_da"
 
+version="v0.0.0"
 envir="test"
 NET="rrfs"
 TAG="c0v00"
@@ -16,17 +16,13 @@ STMP="/scratch2/NCEPDEV/stmp3/${USER}/test_da"
 PTMP="/scratch2/NCEPDEV/stmp3/${USER}/test_da"
 
 EXTRN_MDL_DATE_JULIAN="TRUE"
+PREDEF_GRID_NAME=RRFS_CONUS_3km
+. set_rrfs_config_general.sh
+
+ACCOUNT="fv3-cam"
 
 #USE_CRON_TO_RELAUNCH="TRUE"
 #CRON_RELAUNCH_INTVL_MNTS="05"
-################################################################
-
-PREDEF_GRID_NAME=RRFS_CONUS_3km
-
-. set_rrfs_config_general.sh
-
-################################################################
-ACCOUNT="fv3-cam"
 ################################################################
 
 . set_rrfs_config_SDL_VDL_MixEn.sh
@@ -113,6 +109,8 @@ SOIL_SURGERY_time=${DATE_FIRST_CYCL}04
 netcdf_diag=.true.
 binary_diag=.false.
 WRTCMP_output_file="netcdf_parallel"
+WRTCMP_ideflate="1"
+WRTCMP_quantize_nsd="18"
 
 regional_ensemble_option=1   # 5 for RRFS ensemble
 
@@ -123,6 +121,10 @@ ARCHIVEDIR="/1year/BMC/wrfruc/rrfs_b"
 NCL_REGION="conus"
 
 . set_rrfs_config.sh
+
+RUN_TASK_ADD_AEROSOL="FALSE"
+COMINgefs="/scratch2/NCEPDEV/fv3-cam/UFS_SRW_App/develop/input_model_data/GEFS_aerosol"
+GEFS_AEROSOL_FILE_CYC="00"
 
 NWGES="${PTMP}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 if [[ ${regional_ensemble_option} == "5" ]]; then
