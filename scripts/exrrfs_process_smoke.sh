@@ -96,10 +96,6 @@ done
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job.
-#
-#-----------------------------------------------------------------------
-#
 python -u  ${USHdir}/generate_fire_emissions.py \
   "${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}" \
   "${FIRE_RAVE_DIR}" \
