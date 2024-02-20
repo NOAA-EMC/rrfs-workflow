@@ -158,6 +158,7 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     SST_ROOT="/work/noaa/wrfruc/mhu/rrfs/data/highres_sst"
     GVF_ROOT="/work/noaa/wrfruc/mhu/rrfs/data/gvf/grib2"
     IMSSNOW_ROOT="/work/noaa/wrfruc/mhu/rrfs/data/snow/ims96/grib2"
+    RAPHRRR_SOIL_ROOT="/work2/noaa/wrfruc/murdzek/RRFS_input_data/rap_hrrr_soil"
   fi
   if [[ $MACHINE == "wcoss2" ]] ; then
     RETRODATAPATH="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs_retro_data"
