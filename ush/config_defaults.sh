@@ -2297,6 +2297,9 @@ USE_HOST_ENKF="TRUE"
 # DO_SMOKE_DUST:
 # Flag turn on smoke and dust for RRFS-SD
 #
+# EBB_DCYCLE:
+# 1: for retro, 2: for forecast
+#
 # USE_CLM:
 # Use CLM mode in the model
 #
@@ -2314,6 +2317,7 @@ DO_RADDA="FALSE"
 DO_BUFRSND="FALSE"
 USE_RRFSE_ENS="FALSE"
 DO_SMOKE_DUST="FALSE"
+EBB_DCYCLE="2"
 DO_PM_DA="FALSE"
 USE_CLM="FALSE"
 DO_NON_DA_RUN="FALSE"
@@ -2601,6 +2605,7 @@ DO_NLDN_LGHT="FALSE"
 DO_GLM_FED_DA="FALSE"
 GLMFED_DATA_MODE="FULL"
 DO_SMOKE_DUST="FALSE"
+EBB_DCYCLE="2"
 DO_PM_DA="FALSE"
 #
 #-----------------------------------------------------------------------

@@ -645,7 +645,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
         if [ "${IO_LAYOUT_Y}" = "1" ]; then
           checkfile=${bkpath_find}/${restart_prefix_find}fv_tracer.res.tile1.nc
           if [ -r "${checkfile}" ]; then
-            ncks -A -v smoke,dust ${checkfile}  fv_tracer.res.tile1.nc
+            ncks -A -v smoke,dust,coarsepm ${checkfile}  fv_tracer.res.tile1.nc
           fi
         else
           for ii in ${list_iolayout}
@@ -653,7 +653,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
             iii=$(printf %4.4i $ii)
             checkfile=${bkpath_find}/${restart_prefix_find}fv_tracer.res.tile1.nc.${iii}
             if [ -r "${checkfile}" ]; then
-              ncks -A -v smoke,dust ${checkfile}  fv_tracer.res.tile1.nc.${iii}
+              ncks -A -v smoke,dust,coarsepm ${checkfile}  fv_tracer.res.tile1.nc.${iii}
             fi
           done
         fi
