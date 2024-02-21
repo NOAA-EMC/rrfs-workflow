@@ -214,6 +214,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&MAKE_GRID_TN;.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
   </task>
 {%- endif %}
