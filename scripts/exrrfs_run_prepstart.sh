@@ -86,10 +86,14 @@ case $MACHINE in
     ;;
 
   "ORION")
+    ulimit -s unlimited
+    ulimit -a
     APRUN="srun --export=ALL"
     ;;
 
   "HERCULES")
+    ulimit -s unlimited
+    ulimit -a
     APRUN="srun --export=ALL"
     ;;
 
