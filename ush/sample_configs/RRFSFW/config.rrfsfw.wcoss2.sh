@@ -31,9 +31,9 @@ LBC_SPEC_INTVL_HRS="1"
 BOUNDARY_LEN_HRS="36"
 BOUNDARY_PROC_GROUP_NUM="36"
 
-DATE_FIRST_CYCL="20231111"
-DATE_LAST_CYCL="20231111"
-CYCL_HRS=( "18" )
+DATE_FIRST_CYCL="20240209"
+DATE_LAST_CYCL="20240209"
+CYCL_HRS=( "06" )
 
 RUN_TASK_MAKE_GRID="TRUE"
 RUN_TASK_MAKE_OROG="TRUE"
@@ -42,8 +42,7 @@ RUN_TASK_RUN_PRDGEN="TRUE"
 NNODES_MAKE_SFC_CLIMO="6"
 PPN_MAKE_SFC_CLIMO="12"
 
-# Temporary solution until high resolution fix files are added to common directory
-SFC_CLIMO_INPUT_DIR="/lfs/h2/emc/lam/noscrub/Benjamin.Blake/fix_sfc_climo"
+SFC_CLIMO_INPUT_DIR="/lfs/h2/emc/lam/noscrub/RRFS_input/fix/fix_sfc_climo"
 
 EXTRN_MDL_NAME_ICS="RRFS"
 EXTRN_MDL_NAME_LBCS="RRFS"
@@ -68,5 +67,5 @@ FV3_NML_YAML_CONFIG_FN=""
 FV3_NML_BASE_SUITE_FN="input.nml.RRFSFW"
 
 USE_USER_STAGED_EXTRN_FILES="TRUE"
-EXTRN_MDL_SOURCE_BASEDIR_ICS="/lfs/h2/emc/lam/noscrub/RRFS_input/input_model_data/RRFS/2023111118"
-EXTRN_MDL_SOURCE_BASEDIR_LBCS="/lfs/h2/emc/lam/noscrub/RRFS_input/input_model_data/RRFS/2023111118"
+EXTRN_MDL_SOURCE_BASEDIR_ICS="/lfs/h2/emc/lam/noscrub/RRFS_input/input_model_data/RRFS/2024020906"
+EXTRN_MDL_SOURCE_BASEDIR_LBCS="/lfs/h2/emc/lam/noscrub/RRFS_input/input_model_data/RRFS/2024020906"
