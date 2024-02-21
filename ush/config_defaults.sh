@@ -309,7 +309,7 @@ EXPT_SUBDIR=""
 #   SNOWICE_update_hour: cycle time for updating snow/ice 
 #
 # Setup default resource data locations for soil surgery and time:
-#   RAPHRR_SOIL_ROOT: locations of RAP/HRRR forecast netcdf files
+#   RAPHRRR_SOIL_ROOT: locations of RAP/HRRR forecast netcdf files
 #   SOIL_SURGERY_time: cycle time for soil surgery 
 #
 # Setup default data locations for cycle surface/bias correction coefficient
@@ -359,7 +359,7 @@ GVF_ROOT="/public/data/sat/ncep/viirs/gvf/grib2"
 GVF_update_hour=99
 IMSSNOW_ROOT="/public/data/grids/ncep/snow/ims96/grib2"
 SNOWICE_update_hour=99
-RAPHRR_SOIL_ROOT="/mnt/lfs4/BMC/rtwbl/mhu/wcoss/nco/com"
+RAPHRRR_SOIL_ROOT="/mnt/lfs4/BMC/rtwbl/mhu/wcoss/nco/com"
 SOIL_SURGERY_time=9999999999
 FIRE_RAVE_DIR="/lfs4/BMC/public/data/grids/nesdis/3km_fire_emissions"
 FIRE_RRFS_ROOT="/mnt/lfs4/BMC/gsd-fv3-dev/FIRE_RRFS_ROOT"
