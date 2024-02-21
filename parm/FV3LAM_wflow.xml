@@ -44,9 +44,9 @@ Workflow task names.
 <!ENTITY RUN_POST_TN             "{{ run_post_tn }}">
 <!ENTITY RUN_PRDGEN_TN           "{{ run_prdgen_tn }}">
 <!ENTITY RUN_BUFRSND_TN          "{{ run_bufrsnd_tn }}">
-<!ENTITY ANAL_GSI_TN             "{{ anal_gsi }}">
-<!ENTITY ANAL_GSIDIAG_TN         "{{ anal_gsidiag }}">
-<!ENTITY ANAL_SD_GSI_TN          "{{ anal_sd_gsi }}">
+<!ENTITY ANALYSIS_GSI_TN         "{{ analysis_gsi }}">
+<!ENTITY ANALYSIS_GSIDIAG_TN     "{{ analysis_gsidiag }}">
+<!ENTITY ANALYSIS_SD_GSI_TN      "{{ analysis_sd_gsi }}">
 <!ENTITY POSTANAL_TN             "{{ post_anal }}">
 <!ENTITY OBSERVER_GSI_ENSMEAN_TN "{{ observer_gsi_ensmean }}">
 <!ENTITY OBSERVER_GSI_TN         "{{ observer_gsi }}">
@@ -69,7 +69,7 @@ Workflow task names.
 <!ENTITY ADD_AEROSOL_TN          "{{ add_aerosol_tn }}">
 
 <!ENTITY RUN_PREPSTART_TN     "run_prepstart">
-<!ENTITY RUN_ANAL_TN          "run_anal_gsi">
+<!ENTITY RUN_ANALYSIS_TN      "run_analysis_gsi">
 <!ENTITY HYBRID_RADAR_REF_TN  "hybrid_radar_ref">
 <!ENTITY RUN_ENKFUPDT_TN      "run_enkfupdt">
 <!ENTITY ENKF_RADAR_REF_TN    "enkf_radarref">
@@ -192,59 +192,59 @@ define resources used for each tasks
 <!ENTITY RESOURCES_NONVAR_CLD     "<nodes>{{ nnodes_run_nonvarcldanl }}:ppn={{ ppn_run_nonvarcldanl }}</nodes>">
 
 {%- if machine in ["WCOSS2"]  %}
-<!ENTITY RESOURCES_RUN_POST    "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}:tpp={{ tpp_run_post }}</nodes>">
-<!ENTITY RESOURCES_RUN_ENKF    "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}:tpp={{ tpp_run_enkf }}</nodes>">
-<!ENTITY RESOURCES_MAKE_ICS    "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}:tpp={{ tpp_make_ics }}</nodes>">
-<!ENTITY RESOURCES_BLEND_ICS   "<nodes>{{ nnodes_blend_ics }}:ppn={{ ppn_blend_ics }}</nodes>">
-<!ENTITY RESOURCES_MAKE_LBCS   "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}:tpp={{ tpp_make_lbcs }}</nodes>">
-<!ENTITY RESOURCES_ANAL_GSI    "<nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}:tpp={{ tpp_run_anal }}</nodes>">
-<!ENTITY RESOURCES_FCST_SPINUP "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}:tpp={{ tpp_run_fcst }}</nodes>">
-<!ENTITY RESOURCES_FCST_PROD   "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}:tpp={{ tpp_run_fcst }}</nodes>">
+<!ENTITY RESOURCES_RUN_POST     "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}:tpp={{ tpp_run_post }}</nodes>">
+<!ENTITY RESOURCES_RUN_ENKF     "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}:tpp={{ tpp_run_enkf }}</nodes>">
+<!ENTITY RESOURCES_MAKE_ICS     "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}:tpp={{ tpp_make_ics }}</nodes>">
+<!ENTITY RESOURCES_BLEND_ICS    "<nodes>{{ nnodes_blend_ics }}:ppn={{ ppn_blend_ics }}</nodes>">
+<!ENTITY RESOURCES_MAKE_LBCS    "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}:tpp={{ tpp_make_lbcs }}</nodes>">
+<!ENTITY RESOURCES_ANALYSIS_GSI "<nodes>{{ nnodes_run_analysis }}:ppn={{ ppn_run_analysis }}:tpp={{ tpp_run_analysis }}</nodes>">
+<!ENTITY RESOURCES_FCST_SPINUP  "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}:tpp={{ tpp_run_fcst }}</nodes>">
+<!ENTITY RESOURCES_FCST_PROD    "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}:tpp={{ tpp_run_fcst }}</nodes>">
 <!ENTITY NODESIZE_ALL    "">
-<!ENTITY NATIVE_ALL         "<native>-l place=excl</native>">
-<!ENTITY NATIVE_ANAL_GSI    "<native>-l place=excl</native>">
-<!ENTITY NATIVE_FCST_SPINUP "<native>-l place=excl</native>">
-<!ENTITY NATIVE_FCST_PROD   "<native>-l place=excl</native>">
+<!ENTITY NATIVE_ALL          "<native>-l place=excl</native>">
+<!ENTITY NATIVE_ANALYSIS_GSI "<native>-l place=excl</native>">
+<!ENTITY NATIVE_FCST_SPINUP  "<native>-l place=excl</native>">
+<!ENTITY NATIVE_FCST_PROD    "<native>-l place=excl</native>">
 {%- elif machine in ["JET"] %}
 <!ENTITY RESOURCES_RUN_POST    "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
 <!ENTITY RESOURCES_RUN_ENKF    "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}</nodes>">
 <!ENTITY RESOURCES_MAKE_ICS    "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
 <!ENTITY RESOURCES_BLEND_ICS   "<nodes>{{ nnodes_blend_ics }}:ppn={{ ppn_blend_ics }}</nodes>">
 <!ENTITY RESOURCES_MAKE_LBCS   "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
-<!ENTITY RESOURCES_ANAL_GSI    "<cores>{{ ncores_run_anal }}</cores>">
+<!ENTITY RESOURCES_ANALYSIS_GSI    "<cores>{{ ncores_run_analysis }}</cores>">
 <!ENTITY RESOURCES_FCST_SPINUP "<cores>{{ ncores_run_fcst }}</cores>">
 <!ENTITY RESOURCES_FCST_PROD   "<cores>{{ ncores_run_fcst }}</cores>">
 <!ENTITY NODESIZE_ALL    "<nodesize>{{ ncores_per_node }}</nodesize>">
 <!ENTITY NATIVE_ALL         "<native>--export=NONE</native>">
-<!ENTITY NATIVE_ANAL_GSI    "<native>{{ native_run_anal }} &RRFS_RESERVE;</native>">
+<!ENTITY NATIVE_ANALYSIS_GSI    "<native>{{ native_run_analysis }} &RRFS_RESERVE;</native>">
 <!ENTITY NATIVE_FCST_SPINUP "<native>{{ native_run_fcst }} &RRFS_RESERVE;</native>">
 <!ENTITY NATIVE_FCST_PROD   "<native>{{ native_run_fcst }} &RRFS_RESERVE;</native>">
 {%- elif machine in ["HERA"] %}
-<!ENTITY RESOURCES_RUN_POST    "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
-<!ENTITY RESOURCES_RUN_ENKF    "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}</nodes>">
-<!ENTITY RESOURCES_MAKE_ICS    "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
-<!ENTITY RESOURCES_BLEND_ICS   "<nodes>{{ nnodes_blend_ics }}:ppn={{ ppn_blend_ics }}</nodes>">
-<!ENTITY RESOURCES_MAKE_LBCS   "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
-<!ENTITY RESOURCES_ANAL_GSI    "<cores>{{ ncores_run_anal }}</cores>">
-<!ENTITY RESOURCES_FCST_SPINUP "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
-<!ENTITY RESOURCES_FCST_PROD   "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
+<!ENTITY RESOURCES_RUN_POST     "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
+<!ENTITY RESOURCES_RUN_ENKF     "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}</nodes>">
+<!ENTITY RESOURCES_MAKE_ICS     "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
+<!ENTITY RESOURCES_BLEND_ICS    "<nodes>{{ nnodes_blend_ics }}:ppn={{ ppn_blend_ics }}</nodes>">
+<!ENTITY RESOURCES_MAKE_LBCS    "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
+<!ENTITY RESOURCES_ANALYSIS_GSI "<cores>{{ ncores_run_analysis }}</cores>">
+<!ENTITY RESOURCES_FCST_SPINUP  "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
+<!ENTITY RESOURCES_FCST_PROD    "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
 <!ENTITY NODESIZE_ALL    "<nodesize>{{ ncores_per_node }}</nodesize>">
 <!ENTITY NATIVE_ALL         "<native>--export=NONE</native>">
-<!ENTITY NATIVE_ANAL_GSI    "<native>{{ native_run_anal }} &RRFS_RESERVE;</native>">
+<!ENTITY NATIVE_ANALYSIS_GSI    "<native>{{ native_run_analysis }} &RRFS_RESERVE;</native>">
 <!ENTITY NATIVE_FCST_SPINUP "">
 <!ENTITY NATIVE_FCST_PROD   "">
 {%- else %}
-<!ENTITY RESOURCES_RUN_POST    "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
-<!ENTITY RESOURCES_RUN_ENKF    "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}</nodes>">
-<!ENTITY RESOURCES_MAKE_ICS    "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
-<!ENTITY RESOURCES_BLEND_ICS   "<nodes>{{ nnodes_blend_ics }}:ppn={{ ppn_blend_ics }}</nodes>">
-<!ENTITY RESOURCES_MAKE_LBCS   "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
-<!ENTITY RESOURCES_ANAL_GSI    "<nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}</nodes>">
-<!ENTITY RESOURCES_FCST_SPINUP "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
-<!ENTITY RESOURCES_FCST_PROD   "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
+<!ENTITY RESOURCES_RUN_POST     "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
+<!ENTITY RESOURCES_RUN_ENKF     "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}</nodes>">
+<!ENTITY RESOURCES_MAKE_ICS     "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
+<!ENTITY RESOURCES_BLEND_ICS    "<nodes>{{ nnodes_blend_ics }}:ppn={{ ppn_blend_ics }}</nodes>">
+<!ENTITY RESOURCES_MAKE_LBCS    "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
+<!ENTITY RESOURCES_ANALYSIS_GSI "<nodes>{{ nnodes_run_analysis }}:ppn={{ ppn_run_analysis }}</nodes>">
+<!ENTITY RESOURCES_FCST_SPINUP  "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
+<!ENTITY RESOURCES_FCST_PROD    "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
 <!ENTITY NODESIZE_ALL    "<nodesize>{{ ncores_per_node }}</nodesize>">
 <!ENTITY NATIVE_ALL         "<native>--export=NONE</native>">
-<!ENTITY NATIVE_ANAL_GSI    "">
+<!ENTITY NATIVE_ANALYSIS_GSI    "">
 <!ENTITY NATIVE_FCST_SPINUP "">
 <!ENTITY NATIVE_FCST_PROD   "">
 {%- endif %}
@@ -267,7 +267,7 @@ define resources used for each tasks
 <!ENTITY WALLTIME_MAKE_ICS        "{{ wtime_make_ics }}">
 <!ENTITY WALLTIME_BLEND_ICS       "{{ wtime_blend_ics }}">
 <!ENTITY WALLTIME_MAKE_LBCS       "{{ wtime_make_lbcs }}">
-<!ENTITY WALLTIME_ANAL_GSI        "{{ wtime_run_anal }}">
+<!ENTITY WALLTIME_ANALYSIS_GSI    "{{ wtime_run_analysis }}">
 <!ENTITY WALLTIME_FCST_SPINUP     "{{ wtime_run_fcst_spinup }}">
 <!ENTITY WALLTIME_FCST_PROD       "{{ wtime_run_fcst }}">
 <!ENTITY WALLTIME_FCST_PROD_LONG  "{{ wtime_run_fcst_long }}">
@@ -287,14 +287,14 @@ define resources used for each tasks
 
 {%- if do_retro %}
 <!ENTITY DEADLINE_PRE      "999:00:00">
-<!ENTITY DEADLINE_ANAL     "999:00:00">
+<!ENTITY DEADLINE_ANALYSIS "999:00:00">
 <!ENTITY DEADLINE_FCST     "999:30:00">
 <!ENTITY DEADLINE_POST     "999:00:00">
 <!ENTITY DEADLINE_GRAPHICS "999:00:00">
 <!ENTITY DEADLINE_RECENTER "999:00:00">
 <!ENTITY DEADLINE_SAVE_RESTART "999:00:00">
 <!ENTITY WALL_LIMIT_PRE ''>
-<!ENTITY WALL_LIMIT_ANAL ''>
+<!ENTITY WALL_LIMIT_ANALYSIS ''>
 <!ENTITY WALL_LIMIT_FCST ''>
 <!ENTITY WALL_LIMIT_POST ''>
 <!ENTITY WALL_LIMIT_BUFR ''>
@@ -304,14 +304,14 @@ define resources used for each tasks
 <!ENTITY WALL_LIMIT_SAVE_RESTART ''>
 {%- else %}
 <!ENTITY DEADLINE_PRE      "16:00:00">
-<!ENTITY DEADLINE_ANAL     "16:00:00">
+<!ENTITY DEADLINE_ANALYSIS "16:00:00">
 <!ENTITY DEADLINE_FCST     "23:30:00">
 <!ENTITY DEADLINE_POST     "24:00:00">
 <!ENTITY DEADLINE_GRAPHICS "24:00:00">
 <!ENTITY DEADLINE_RECENTER "24:00:00">
 <!ENTITY DEADLINE_SAVE_RESTART "24:00:00">
 <!ENTITY WALL_LIMIT_PRE '<deadline><cyclestr offset="&DEADLINE_PRE;">@Y@m@d@H@M</cyclestr></deadline>'>
-<!ENTITY WALL_LIMIT_ANAL '<deadline><cyclestr offset="&DEADLINE_ANAL;">@Y@m@d@H@M</cyclestr></deadline>'>
+<!ENTITY WALL_LIMIT_ANALYSIS '<deadline><cyclestr offset="&DEADLINE_ANALYSIS;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_FCST '<deadline><cyclestr offset="&DEADLINE_FCST;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_POST '<deadline><cyclestr offset="&DEADLINE_POST;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_BUFR '<deadline><cyclestr offset="&DEADLINE_POST;">@Y@m@d@H@M</cyclestr></deadline>'>
@@ -501,7 +501,7 @@ MODULES_RUN_TASK_FP script.
   <task name="&PROCESS_SMOKE_TN;_#type#" cycledefs="#cycletype#"  maxtries="{{ maxtries_process_smoke }}">
 
     &RSRV_DEFAULT;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_SMOKE_TN;" "&JOBSdir;/JRRFS_PROCESS_SMOKE"</command>
 
@@ -540,7 +540,7 @@ MODULES_RUN_TASK_FP script.
   <task name="&PROCESS_PM_TN;_#type#" cycledefs="#cycletype#"  maxtries="{{ maxtries_process_pm }}">
 
     &RSRV_DEFAULT;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_PM_TN;" "&JOBSDIR;/JRRFS_PROCESS_PM"</command>
 
@@ -580,9 +580,9 @@ MODULES_RUN_TASK_FP script.
   <task name="&PROCESS_RADAR_REF_TN;_#type#" cycledefs="#cycletype#"  maxtries="{{ maxtries_process_radarref }}">
     
     &RSRV_DEFAULT;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JRRFS_PROCESS_RADARREF"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANALYSIS_TN;" "&JOBSdir;/JRRFS_PROCESS_RADARREF"</command>
       
     &RESOURCES_PROC_RADAR;
     &NATIVE_ALL;
@@ -617,9 +617,9 @@ MODULES_RUN_TASK_FP script.
   <task name="&PROCESS_LIGHTNING_TN;_#type#" cycledefs="#cycletype#"  maxtries="{{ maxtries_process_lightning }}">
 
     &RSRV_DEFAULT;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JRRFS_PROCESS_LIGHTNING"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANALYSIS_TN;" "&JOBSdir;/JRRFS_PROCESS_LIGHTNING"</command>
 
     &RESOURCES_PROC_LIGHTNING;
     &NATIVE_ALL;
@@ -654,7 +654,7 @@ MODULES_RUN_TASK_FP script.
   <task name="&PROCESS_GLMFED_TN;_#type#" cycledefs="#cycletype#"  maxtries="{{ maxtries_proc_glmfed }}">
 
     &RSRV_DEFAULT;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_SMOKE_TN;" "&JOBSdir;/JRRFS_PROCESS_GLMFED"</command>
 
@@ -677,7 +677,7 @@ MODULES_RUN_TASK_FP script.
     <dependency>
       <and>
         <timedep><cyclestr offset="&START_TIME_PROC_GLMFED;">@Y@m@d@H@M00</cyclestr></timedep>
-        <taskdep task="&ANAL_GSI_TN;_#type#"/>
+        <taskdep task="&ANALYSIS_GSI_TN;_#type#"/>
       </and>
     </dependency>
 
@@ -692,7 +692,7 @@ MODULES_RUN_TASK_FP script.
   <task name="&PROCESS_GLMFED_TN;_#type#" cycledefs="#cycletype#"  maxtries="{{ maxtries_proc_glmfed }}">
 
     &RSRV_DEFAULT;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_SMOKE_TN;" "&JOBSdir;/JRRFS_PROCESS_GLMFED"</command>
 
@@ -729,9 +729,9 @@ MODULES_RUN_TASK_FP script.
   <task name="&PROCESS_BUFR_TN;_#type#" cycledefs="#cycletype#"  maxtries="{{ maxtries_process_bufr }}">
 
     &RSRV_DEFAULT;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JRRFS_PROCESS_BUFR"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANALYSIS_TN;" "&JOBSdir;/JRRFS_PROCESS_BUFR"</command>
 
     &RESOURCES_PROC_BUFR;
     &NATIVE_ALL;
@@ -768,7 +768,7 @@ MODULES_RUN_TASK_FP script.
   <task name="&IODA_PREPBUFR_TN;_#type#" cycledefs="#cycletype#"  maxtries="{{ maxtries_ioda_prepbufr }}">
 
     &RSRV_DEFAULT;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_IODA_PREPBUFR_TN;" "&JOBSdir;/JRRFS_IODA_PREPBUFR"</command>
 
@@ -1540,22 +1540,22 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&ANAL_SD_GSI_TN;_spinup{{ uscore_ensmem_name }}" cycledefs="spinupcyc" maxtries="{{ maxtries_anal_gsi }}">
+  <task name="&ANALYSIS_SD_GSI_TN;_spinup{{ uscore_ensmem_name }}" cycledefs="spinupcyc" maxtries="{{ maxtries_analysis_gsi }}">
 
     &RSRV_ANALYSIS;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JRRFS_RUN_ANAL"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANALYSIS_TN;" "&JOBSdir;/JRRFS_RUN_ANALYSIS"</command>
     {% if machine in ["JET", "HERA"] -%}
-    <cores>{{ ncores_run_anal }}</cores>
-    <native>{{ native_run_anal }} &RRFS_RESERVE;</native>
+    <cores>{{ ncores_run_analysis }}</cores>
+    <native>{{ native_run_analysis }} &RRFS_RESERVE;</native>
     {% else -%}
-    <nodes>{{ nnodes_run_anal }}:ppn={{ ppn_run_anal }}</nodes>
+    <nodes>{{ nnodes_run_analysis }}:ppn={{ ppn_run_analysis }}</nodes>
     <nodesize>&NCORES_PER_NODE;</nodesize>
     {% endif -%}
-    <walltime>{{ wtime_run_anal }}</walltime>
-    <jobname>&TAG;_&ANAL_SD_GSI_TN;_spinup{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&ANAL_SD_GSI_TN;{{ uscore_ensmem_name }}_spinup_&TAG;_@Y@m@d@H.log</cyclestr></join>
+    <walltime>{{ wtime_run_analysis }}</walltime>
+    <jobname>&TAG;_&ANALYSIS_SD_GSI_TN;_spinup{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr>&LOGDIR;/&ANALYSIS_SD_GSI_TN;{{ uscore_ensmem_name }}_spinup_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -1588,18 +1588,18 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&ANAL_GSI_TN;_spinup{{ uscore_ensmem_name }}" cycledefs="spinupcyc" maxtries="{{ maxtries_anal_gsi }}">
+  <task name="&ANALYSIS_GSI_TN;_spinup{{ uscore_ensmem_name }}" cycledefs="spinupcyc" maxtries="{{ maxtries_analysis_gsi }}">
 
     &RSRV_ANALYSIS;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JRRFS_RUN_ANAL"</command>
-    &RESOURCES_ANAL_GSI;
-    &NATIVE_ANAL_GSI;
-    <walltime>&WALLTIME_ANAL_GSI;</walltime>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANALYSIS_TN;" "&JOBSdir;/JRRFS_RUN_ANALYSIS"</command>
+    &RESOURCES_ANALYSIS_GSI;
+    &NATIVE_ANALYSIS_GSI;
+    <walltime>&WALLTIME_ANALYSIS_GSI;</walltime>
     &NODESIZE_ALL;
-    <jobname>&TAG;_&ANAL_GSI_TN;_spinup{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&ANAL_GSI_TN;{{ uscore_ensmem_name }}_spinup_&TAG;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&TAG;_&ANALYSIS_GSI_TN;_spinup{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr>&LOGDIR;/&ANALYSIS_GSI_TN;{{ uscore_ensmem_name }}_spinup_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -1690,9 +1690,9 @@ MODULES_RUN_TASK_FP script.
     {%- endif %}
 
     <dependency>
-       <taskdep task="&ANAL_GSI_TN;_spinup{{ uscore_ensmem_name }}"/>
+       <taskdep task="&ANALYSIS_GSI_TN;_spinup{{ uscore_ensmem_name }}"/>
        {%- if do_pm_da %}
-         <taskdep task="&ANAL_SD_GSI_TN;_spinup{{ uscore_ensmem_name }}"/>
+         <taskdep task="&ANALYSIS_SD_GSI_TN;_spinup{{ uscore_ensmem_name }}"/>
        {%- endif %}
     </dependency>
 
@@ -1703,15 +1703,15 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&HYBRID_RADAR_REF_TN;_spinup" cycledefs="spinupcyc" maxtries="{{ maxtries_anal_gsi }}">
+  <task name="&HYBRID_RADAR_REF_TN;_spinup" cycledefs="spinupcyc" maxtries="{{ maxtries_analysis_gsi }}">
 
     &RSRV_ANALYSIS;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&HYBRID_RADAR_REF_TN;" "&JOBSdir;/JRRFS_RUN_ANAL"</command>
-    &RESOURCES_ANAL_GSI;
-    &NATIVE_ANAL_GSI;
-    <walltime>&WALLTIME_ANAL_GSI;</walltime>
+    &RESOURCES_ANALYSIS_GSI;
+    &NATIVE_ANALYSIS_GSI;
+    <walltime>&WALLTIME_ANALYSIS_GSI;</walltime>
     &NODESIZE_ALL;
     <jobname>&TAG;_&HYBRID_RADAR_REF_TN;_spinup</jobname>
     <join><cyclestr>&LOGDIR;/&HYBRID_RADAR_REF_TN;spinup_&TAG;@Y@m@d@H.log</cyclestr></join>
@@ -1734,7 +1734,7 @@ MODULES_RUN_TASK_FP script.
     <dependency>
        <and>
          <taskdep task="&PROCESS_RADAR_REF_TN;_spinup"/>
-         <taskdep task="&ANAL_GSI_TN;_spinup"/>
+         <taskdep task="&ANALYSIS_GSI_TN;_spinup"/>
          <or>    
             {%- for h in cycl_hrs_hyb_fv3lam_ens %}
                <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
@@ -1752,18 +1752,18 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&ANAL_GSIDIAG_TN;_spinup" cycledefs="spinupcyc" maxtries="{{ maxtries_anal_gsi }}">
+  <task name="&ANALYSIS_GSIDIAG_TN;_spinup" cycledefs="spinupcyc" maxtries="{{ maxtries_analysis_gsi }}">
 
     &RSRV_DEFAULT;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JRRFS_RUN_GSIDIAG"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANALYSIS_TN;" "&JOBSdir;/JRRFS_RUN_GSIDIAG"</command>
     &RESOURCES_GSIDIAG;
     &NATIVE_ALL;
     <walltime>&WALLTIME_GSIDIAG;</walltime>
     &NODESIZE_ALL;
-    <jobname>&TAG;_&ANAL_GSIDIAG_TN;_spinup</jobname>
-    <join><cyclestr>&LOGDIR;/&ANAL_GSIDIAG_TN;spinup_&TAG;@Y@m@d@H.log</cyclestr></join>
+    <jobname>&TAG;_&ANALYSIS_GSIDIAG_TN;_spinup</jobname>
+    <join><cyclestr>&LOGDIR;/&ANALYSIS_GSIDIAG_TN;spinup_&TAG;@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -1779,7 +1779,7 @@ MODULES_RUN_TASK_FP script.
 
     <dependency>
        <and>
-         <taskdep task="&ANAL_GSI_TN;_spinup"/>
+         <taskdep task="&ANALYSIS_GSI_TN;_spinup"/>
 {%- if do_envar_radar_ref and not do_envar_radar_ref_once %}
          <taskdep task="&HYBRID_RADAR_REF_TN;_spinup"/>
 {%- endif %}
@@ -1800,9 +1800,9 @@ MODULES_RUN_TASK_FP script.
   <task name="&RADAR_REFL2TTEN_TN;_spinup" cycledefs="spinupcyc"  maxtries="{{ maxtries_radar_ref2tten }}">
 
     &RSRV_DEFAULT;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JRRFS_REFL2TTEN"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANALYSIS_TN;" "&JOBSdir;/JRRFS_REFL2TTEN"</command>
     <nodes>{{ nnodes_run_ref2tten }}:ppn={{ ppn_run_ref2tten }}</nodes>
     <walltime>{{ wtime_run_ref2tten }}</walltime>
     <memory>{{ memo_run_ref2tten }}</memory>
@@ -1825,7 +1825,7 @@ MODULES_RUN_TASK_FP script.
           <taskdep task="&PROCESS_RADAR_REF_TN;_spinup"/>
           <taskdep task="&PROCESS_BUFR_TN;_spinup"/>
         </or>
-        <taskdep task="&ANAL_GSI_TN;_spinup"/>
+        <taskdep task="&ANALYSIS_GSI_TN;_spinup"/>
       </and>
     </dependency>
 
@@ -1841,7 +1841,7 @@ MODULES_RUN_TASK_FP script.
   <task name="&JEDI_ENVAR_IODA_TN;_spinup{{ uscore_ensmem_name }}" cycledefs="spinupcyc"  maxtries="{{ maxtries_jedi_envar_ioda }}">
 
     &RSRV_DEFAULT;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "jedienvar_ioda" "&JOBSdir;/JRRFS_JEDIENVAR_IODA"</command>
     <nodes>{{ nnodes_run_jedienvar_ioda }}:ppn={{ ppn_run_jedienvar_ioda }}</nodes>
@@ -1862,7 +1862,7 @@ MODULES_RUN_TASK_FP script.
 
     <dependency>
       <and>
-        <taskdep task="&ANAL_GSI_TN;_spinup"/>
+        <taskdep task="&ANALYSIS_GSI_TN;_spinup"/>
       </and>
     </dependency>
 
@@ -1878,9 +1878,9 @@ MODULES_RUN_TASK_FP script.
   <task name="&CLDANL_NONVAR_TN;_spinup{{ uscore_ensmem_name }}" cycledefs="spinupcyc"  maxtries="{{ maxtries_cldanl_nonvar }}">
 
     &RSRV_DEFAULT;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JRRFS_NONVARCLD"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANALYSIS_TN;" "&JOBSdir;/JRRFS_NONVARCLDANL"</command>
 
     &RESOURCES_NONVAR_CLD;
     <walltime>&WALLTIME_NONVAR_CLD;</walltime>
@@ -2308,15 +2308,15 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&OBSERVER_GSI_ENSMEAN_TN;" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_anal_gsi }}">
+  <task name="&OBSERVER_GSI_ENSMEAN_TN;" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_analysis_gsi }}">
 
     &RSRV_ANALYSIS;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JRRFS_RUN_ANAL"</command>
-    &RESOURCES_ANAL_GSI;
-    &NATIVE_ANAL_GSI;
-    <walltime>&WALLTIME_ANAL_GSI;</walltime>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANALYSIS_TN;" "&JOBSdir;/JRRFS_RUN_ANAL"</command>
+    &RESOURCES_ANALYSIS_GSI;
+    &NATIVE_ANALYSIS_GSI;
+    <walltime>&WALLTIME_ANALYSIS_GSI;</walltime>
     &NODESIZE_ALL;
     <jobname>&TAG;_&OBSERVER_GSI_ENSMEAN_TN;</jobname>
     <join><cyclestr>&LOGDIR;/&OBSERVER_GSI_ENSMEAN_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
@@ -2359,15 +2359,15 @@ MODULES_RUN_TASK_FP script.
    {%- endfor %} </var>
  {%- endif %}
 
-  <task name="&OBSERVER_GSI_TN;{{ uscore_ensmem_name }}" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_anal_gsi }}">
+  <task name="&OBSERVER_GSI_TN;{{ uscore_ensmem_name }}" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_analysis_gsi }}">
 
     &RSRV_ANALYSIS;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JRRFS_RUN_ANAL"</command>
-    &RESOURCES_ANAL_GSI;
-    &NATIVE_ANAL_GSI;
-    <walltime>&WALLTIME_ANAL_GSI;</walltime>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANALYSIS_TN;" "&JOBSdir;/JRRFS_RUN_ANALYSIS"</command>
+    &RESOURCES_ANALYSIS_GSI;
+    &NATIVE_ANALYSIS_GSI;
+    <walltime>&WALLTIME_ANALYSIS_GSI;</walltime>
     &NODESIZE_ALL;
     <jobname>&TAG;_&OBSERVER_GSI_TN;{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&OBSERVER_GSI_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
@@ -2402,9 +2402,9 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&RUN_ENKFUPDT_TN;" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_anal_enkf }}">
+  <task name="&RUN_ENKFUPDT_TN;" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_analysis_enkf }}">
     &RSRV_ENKF;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ENKFUPDT_TN;" &JOBSdir;/JRRFS_RUN_ENKF</command>
 
     &RESOURCES_RUN_ENKF;
@@ -2435,9 +2435,9 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&ENKF_RADAR_REF_TN;" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_anal_enkf }}">
+  <task name="&ENKF_RADAR_REF_TN;" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_analysis_enkf }}">
     &RSRV_ENKF;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&ENKF_RADAR_REF_TN;" &JOBSdir;/JRRFS_RUN_ENKF</command>
 
     &RESOURCES_RUN_ENKF;
@@ -2484,19 +2484,19 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&ANAL_SD_GSI_TN;_prod{{ uscore_ensmem_name }}" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_anal_gsi }}">
+  <task name="&ANALYSIS_SD_GSI_TN;_prod{{ uscore_ensmem_name }}" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_analysis_gsi }}">
 
     &RSRV_ANALYSIS;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSDIR;/JREGIONAL_RUN_ANAL"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANALYSIS_TN;" "&JOBSDIR;/JRRRFS_RUN_ANALYSIS"</command>
 
-    &RESOURCES_ANAL_GSI;
-    &NATIVE_ANAL_GSI;
-    <walltime>&WALLTIME_ANAL_GSI;</walltime>
+    &RESOURCES_ANALYSIS_GSI;
+    &NATIVE_ANALYSIS_GSI;
+    <walltime>&WALLTIME_ANALYSIS_GSI;</walltime>
     &NODESIZE_ALL;
-    <jobname>&TAG;_&ANAL_SD_GSI_TN;_prod{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&ANAL_SD_GSI_TN;_&TAG;{{ uscore_ensmem_name }}_prod_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&TAG;_&ANALYSIS_SD_GSI_TN;_prod{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr>&LOGDIR;/&ANALYSIS_SD_GSI_TN;_&TAG;{{ uscore_ensmem_name }}_prod_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -2525,19 +2525,19 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&ANAL_GSI_TN;_prod{{ uscore_ensmem_name }}" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_anal_gsi }}">
+  <task name="&ANALYSIS_GSI_TN;_prod{{ uscore_ensmem_name }}" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_analysis_gsi }}">
 
     &RSRV_ANALYSIS;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JRRFS_RUN_ANAL"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANALYSIS_TN;" "&JOBSdir;/JRRFS_RUN_ANALYSIS"</command>
 
-    &RESOURCES_ANAL_GSI;
-    &NATIVE_ANAL_GSI;
-    <walltime>&WALLTIME_ANAL_GSI;</walltime>
+    &RESOURCES_ANALYSIS_GSI;
+    &NATIVE_ANALYSIS_GSI;
+    <walltime>&WALLTIME_ANALYSIS_GSI;</walltime>
     &NODESIZE_ALL;
-    <jobname>&TAG;_&ANAL_GSI_TN;_prod{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&ANAL_GSI_TN;_&TAG;{{ uscore_ensmem_name }}_prod_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&TAG;_&ANALYSIS_GSI_TN;_prod{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr>&LOGDIR;/&ANALYSIS_GSI_TN;_&TAG;{{ uscore_ensmem_name }}_prod_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -2634,9 +2634,9 @@ MODULES_RUN_TASK_FP script.
     {%- endif %}
 
     <dependency>
-       <taskdep task="&ANAL_GSI_TN;_prod{{ uscore_ensmem_name }}"/>
+       <taskdep task="&ANALYSIS_GSI_TN;_prod{{ uscore_ensmem_name }}"/>
        {%- if do_pm_da %}
-         <taskdep task="&ANAL_SD_GSI_TN;_prod{{ uscore_ensmem_name }}"/>
+         <taskdep task="&ANALYSIS_SD_GSI_TN;_prod{{ uscore_ensmem_name }}"/>
        {%- endif %}
     </dependency>
 
@@ -2647,15 +2647,15 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&HYBRID_RADAR_REF_TN;_prod" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_anal_gsi }}">
+  <task name="&HYBRID_RADAR_REF_TN;_prod" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_analysis_gsi }}">
 
     &RSRV_ANALYSIS;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&HYBRID_RADAR_REF_TN;" "&JOBSdir;/JRRFS_RUN_ANAL"</command>
-    &RESOURCES_ANAL_GSI;
-    &NATIVE_ANAL_GSI;
-    <walltime>&WALLTIME_ANAL_GSI;</walltime>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&HYBRID_RADAR_REF_TN;" "&JOBSdir;/JRRFS_RUN_ANALYSIS"</command>
+    &RESOURCES_ANALYSIS_GSI;
+    &NATIVE_ANALYSIS_GSI;
+    <walltime>&WALLTIME_ANALYSIS_GSI;</walltime>
     &NODESIZE_ALL;
     <jobname>&TAG;_&HYBRID_RADAR_REF_TN;_prod</jobname>
     <join><cyclestr>&LOGDIR;/&HYBRID_RADAR_REF_TN;_prod_&TAG;_@Y@m@d@H.log</cyclestr></join>
@@ -2678,7 +2678,7 @@ MODULES_RUN_TASK_FP script.
     <dependency>
        <and>
          <taskdep task="&PROCESS_RADAR_REF_TN;_prod"/>
-         <taskdep task="&ANAL_GSI_TN;_prod"/>
+         <taskdep task="&ANALYSIS_GSI_TN;_prod"/>
          <or>    
             {%- for h in cycl_hrs_hyb_fv3lam_ens %}
                <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
@@ -2696,18 +2696,18 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&ANAL_GSIDIAG_TN;_prod" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_anal_gsi }}">
+  <task name="&ANALYSIS_GSIDIAG_TN;_prod" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_analysis_gsi }}">
 
     &RSRV_DEFAULT;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JRRFS_RUN_GSIDIAG"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANALYSIS_TN;" "&JOBSdir;/JRRFS_RUN_GSIDIAG"</command>
     &RESOURCES_GSIDIAG;
     &NATIVE_ALL;
     <walltime>&WALLTIME_GSIDIAG;</walltime>
     &NODESIZE_ALL;
-    <jobname>&TAG;_&ANAL_GSIDIAG_TN;_prod</jobname>
-    <join><cyclestr>&LOGDIR;/&ANAL_GSIDIAG_TN;prod_&TAG;@Y@m@d@H.log</cyclestr></join>
+    <jobname>&TAG;_&ANALYSIS_GSIDIAG_TN;_prod</jobname>
+    <join><cyclestr>&LOGDIR;/&ANALYSIS_GSIDIAG_TN;prod_&TAG;@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -2723,7 +2723,7 @@ MODULES_RUN_TASK_FP script.
 
     <dependency>
        <and>
-         <taskdep task="&ANAL_GSI_TN;_prod"/>
+         <taskdep task="&ANALYSIS_GSI_TN;_prod"/>
 {%- if do_envar_radar_ref and not do_envar_radar_ref_once %}
          <taskdep task="&HYBRID_RADAR_REF_TN;_prod"/>
 {%- endif %}
@@ -2744,9 +2744,9 @@ MODULES_RUN_TASK_FP script.
   <task name="&RADAR_REFL2TTEN_TN;_prod" cycledefs="prodcyc,prodcyc_long"  maxtries="{{ maxtries_radar_ref2tten }}">
 
     &RSRV_DEFAULT;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JRRFS_REFL2TTEN"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANALYSIS_TN;" "&JOBSdir;/JRRFS_REFL2TTEN"</command>
     <nodes>{{ nnodes_run_ref2tten }}:ppn={{ ppn_run_ref2tten }}</nodes>
     <walltime>{{ wtime_run_ref2tten }}</walltime>
     <memory>{{ memo_run_ref2tten }}</memory>
@@ -2769,7 +2769,7 @@ MODULES_RUN_TASK_FP script.
           <taskdep task="&PROCESS_RADAR_REF_TN;_prod"/>
           <taskdep task="&PROCESS_BUFR_TN;_prod"/>
         </or>
-        <taskdep task="&ANAL_GSI_TN;_prod"/>
+        <taskdep task="&ANALYSIS_GSI_TN;_prod"/>
       </and>
     </dependency>
 
@@ -2785,7 +2785,7 @@ MODULES_RUN_TASK_FP script.
   <task name="&JEDI_ENVAR_IODA_TN;_prod{{ uscore_ensmem_name }}" cycledefs="prodcyc,prodcyc_long"  maxtries="{{ maxtries_jedi_envar_ioda }}">
 
     &RSRV_DEFAULT;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "jedienvar_ioda" "&JOBSdir;/JRRFS_JEDIENVAR_IODA"</command>
     <nodes>{{ nnodes_run_jedienvar_ioda }}:ppn={{ ppn_run_jedienvar_ioda }}</nodes>
@@ -2806,7 +2806,7 @@ MODULES_RUN_TASK_FP script.
 
     <dependency>
       <and>
-        <taskdep task="&ANAL_GSI_TN;_prod"/>
+        <taskdep task="&ANALYSIS_GSI_TN;_prod"/>
       </and>
     </dependency>
 
@@ -2822,9 +2822,9 @@ MODULES_RUN_TASK_FP script.
   <task name="&CLDANL_NONVAR_TN;_prod{{ uscore_ensmem_name }}" cycledefs="prodcyc,prodcyc_long"  maxtries="{{ maxtries_cldanl_nonvar }}">
 
     &RSRV_DEFAULT;
-    &WALL_LIMIT_ANAL;
+    &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANAL_TN;" "&JOBSdir;/JRRFS_NONVARCLD"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANALYSIS_TN;" "&JOBSdir;/JRRFS_NONVARCLDANL"</command>
 
     &RESOURCES_NONVAR_CLD;
     <walltime>&WALLTIME_NONVAR_CLD;</walltime>

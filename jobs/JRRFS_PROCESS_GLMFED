@@ -91,7 +91,7 @@ export MODE=$GLMFED_DATA_MODE
 #
 #-----------------------------------------------------------------------
 #
-python -u ${SCRIPTSdir}/exrrfs_prep_glmfed.py \
+python -u ${SCRIPTSdir}/exrrfs_process_glmfed.py \
 #
 #-----------------------------------------------------------------------
 #
