@@ -511,6 +511,7 @@ optionList[27]=DO_ENSFCST_MULPHY
 optionList[28]=DO_GLM_FED_DA
 optionList[29]=GLMFED_DATA_MODE
 optionList[30]=DO_IODA_PREPBUFR
+optionList[31]=EBB_DCYCLE
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));

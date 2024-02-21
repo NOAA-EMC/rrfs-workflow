@@ -1,10 +1,6 @@
 #!/bin/bash
+
 #
-#-----------------------------------------------------------------------
-#
-# This J-JOB script runs the smoke preprocessing
-#
-#-----------------------------------------------------------------------
 #
 #-----------------------------------------------------------------------
 #
@@ -14,9 +10,6 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
-
-date
-export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
@@ -50,38 +43,79 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs the smoke preprocessing
-for the specified cycle.
+This is the script for the task that runs smoke emissions preprocessing.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
 #
-# Create the working directory under the cycle directory.
+# Set the name of and create the directory in which the output from this
+# script will be saved for long time (if that directory doesn't already exist).
 #
 #-----------------------------------------------------------------------
 #
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export workdir=${CYCLE_DIR}/process_smoke_spinup
-else
-  export workdir=${CYCLE_DIR}/process_smoke
-fi
-rm -fr ${workdir}
-mkdir -p ${workdir}
-cd ${workdir}
+export rave_nwges_dir=${NWGES_DIR}/RAVE_INTP
+mkdir -p "${rave_nwges_dir}"
+export hourly_hwpdir=${NWGES_BASEDIR}/HOURLY_HWP
+mkdir -p "${hourly_hwpdir}"
+#
+#-----------------------------------------------------------------------
+#
+# Link the the hourly, interpolated RAVE data from $rave_nwges_dir so it
+# is reused
+#
+#-----------------------------------------------------------------------
+ECHO=/bin/echo
+SED=/bin/sed
+DATE=/bin/date
+LN=/bin/ln
+START_DATE=$(${ECHO} "${CDATE}" | ${SED} 's/\([[:digit:]]\{2\}\)$/ \1/')
+YYYYMMDDHH=$(${DATE} +%Y%m%d%H -d "${START_DATE}")
+YYYYMMDD=${YYYYMMDDHH:0:8}
+HH=${YYYYMMDDHH:8:2}
+${ECHO} ${YYYYMMDD}
+${ECHO} ${HH}
+current_day=`${DATE} -d "${YYYYMMDD}"`
+current_hh=`${DATE} -d ${HH} +"%H"`
+prev_hh=`${DATE} -d "$current_hh -24 hour" +"%H"`
+previous_day=`${DATE} '+%C%y%m%d' -d "$current_day-1 days"`
+previous_day="${previous_day} ${prev_hh}"
+nfiles=24
+smokeFile=SMOKE_RRFS_data_${YYYYMMDDHH}00.nc
 
-export gridspec_dir=${NWGES_BASEDIR}/grid_spec
+for i in $(seq 0 $(($nfiles - 1)) )
+do
+   timestr=`date +%Y%m%d%H -d "$previous_day + $i hours"`
+   intp_fname=${PREDEF_GRID_NAME}_intp_${timestr}00_${timestr}59.nc
+   if  [ -f ${rave_nwges_dir}/${intp_fname} ]; then
+      ${LN} -sf ${rave_nwges_dir}/${intp_fname} ${workdir}/${intp_fname}
+      echo "${rave_nwges_dir}/${intp_fname} interoplated file available to reuse"
+   else
+      echo "${rave_nwges_dir}/${intp_fname} interoplated file non available to reuse"  
+   fi
+done
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job.
-#
-#-----------------------------------------------------------------------
-#
-export pgmout="${workdir}/OUTPUT.$$"
-env
-
-$SCRIPTSdir/exrrfs_process_smoke.sh
+python -u  ${USHdir}/generate_fire_emissions.py \
+  "${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}" \
+  "${FIRE_RAVE_DIR}" \
+  "${workdir}" \
+  "${PREDEF_GRID_NAME}" \
+  "${EBB_DCYCLE}" 
 export err=$?; err_chk
+
+#Copy the the hourly, interpolated RAVE data to $rave_nwges_dir so it
+# is maintained there for future cycles.
+for file in ${workdir}/*; do
+   filename=$(basename "$file")
+   if [ ! -f ${rave_nwges_dir}/${filename} ]; then
+      cp ${file} ${rave_nwges_dir}
+      echo "Copied missing file: $filename" 
+   fi
+done
+
+echo "Copy RAVE interpolated files completed"
+
 #
 #-----------------------------------------------------------------------
 #

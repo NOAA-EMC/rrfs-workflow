@@ -85,9 +85,7 @@ FV3_HRRR:
     rrfs_smoke_debug : false
     seas_opt : 0
     mix_chem : true
-    enh_mix : false
     dust_opt : 1
-    drydep_opt : 3
     coarsepm_settling : 1
     smoke_conv_wet_coef : [0.5, 0.5, 0.5]
     smoke_forecast : 0
@@ -99,10 +97,17 @@ FV3_HRRR:
     do_smoke_transport : true
     plumerisefire_frq : 60
     plume_wind_eff : 1
+    dust_moist_correction : 2.0
+    dust_drylimit_factor : 0.5
     dust_alpha : 10.0
     dust_gamma : 1.3
-    dust_drylimit_factor : 0.5
-    dust_moist_correction : 2.0
+    drydep_opt : 1
+    enh_mix : false
+    wetdep_ls_alpha : 0.5
+    smoke_conv_wet_coef : [ 0.50, 0.50, 0.50 ]
+    do_smoke_transport : true
+    ebb_dcycle : 2
+
   fv_diagnostics_nml:
     do_hailcast: true
 
@@ -188,9 +193,7 @@ FV3_HRRR_gf:
     rrfs_smoke_debug : false
     seas_opt : 0
     mix_chem : true
-    enh_mix : false
     dust_opt : 1
-    drydep_opt : 3
     coarsepm_settling : 1
     smoke_conv_wet_coef : [0.5, 0.5, 0.5]
     smoke_forecast : 0
@@ -202,10 +205,17 @@ FV3_HRRR_gf:
     do_smoke_transport : true
     plumerisefire_frq : 60
     plume_wind_eff : 1
+    dust_moist_correction : 2.0
+    dust_drylimit_factor : 0.5
     dust_alpha : 10.0
     dust_gamma : 1.3
-    dust_drylimit_factor : 0.5
-    dust_moist_correction : 2.0
+    drydep_opt : 1
+    enh_mix : false
+    wetdep_ls_alpha : 0.5
+    smoke_conv_wet_coef : [ 0.50, 0.50, 0.50 ]
+    do_smoke_transport : true
+    ebb_dcycle : 2
+
   fv_diagnostics_nml:
     do_hailcast: true
 
@@ -289,9 +299,7 @@ FV3_RAP:
     rrfs_smoke_debug : false
     seas_opt : 0
     mix_chem : true
-    enh_mix : false
     dust_opt : 1
-    drydep_opt : 3
     coarsepm_settling : 1
     smoke_conv_wet_coef : [0.5, 0.5, 0.5]
     smoke_forecast : 0
@@ -303,10 +311,17 @@ FV3_RAP:
     do_smoke_transport : true
     plumerisefire_frq : 60
     plume_wind_eff : 1
+    dust_moist_correction : 2.0
+    dust_drylimit_factor : 0.5
     dust_alpha : 10.0
     dust_gamma : 1.3
-    dust_drylimit_factor : 0.5
-    dust_moist_correction : 2.0
+    drydep_opt : 1
+    enh_mix : false
+    wetdep_ls_alpha : 0.5
+    smoke_conv_wet_coef : [ 0.50, 0.50, 0.50 ]
+    do_smoke_transport : true
+    ebb_dcycle : 2
+
 
 FV3_RRFS_v1beta:
   gfs_physics_nml:
