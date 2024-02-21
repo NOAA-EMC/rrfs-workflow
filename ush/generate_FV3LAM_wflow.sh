@@ -203,9 +203,9 @@ settings="\
   'run_fcst_tn': ${RUN_FCST_TN}
   'run_post_tn': ${RUN_POST_TN}
   'run_prdgen_tn': ${RUN_PRDGEN_TN}
-  'anal_gsi': ${ANAL_GSI_TN}
-  'anal_gsidiag': ${ANAL_GSIDIAG_TN}
-  'anal_sd_gsi': ${ANAL_SD_GSI_TN}
+  'analysis_gsi': ${ANALYSIS_GSI_TN}
+  'analysis_gsidiag': ${ANALYSIS_GSIDIAG_TN}
+  'analysis_sd_gsi': ${ANALYSIS_SD_GSI_TN}
   'post_anal': ${POSTANAL_TN}
   'observer_gsi_ensmean': ${OBSERVER_GSI_ENSMEAN_TN}
   'observer_gsi': ${OBSERVER_GSI_TN}
@@ -244,7 +244,7 @@ settings="\
   'nnodes_make_lbcs': ${NNODES_MAKE_LBCS}
   'nnodes_run_prepstart': ${NNODES_RUN_PREPSTART}
   'nnodes_run_fcst': ${NNODES_RUN_FCST}
-  'nnodes_run_anal': ${NNODES_RUN_ANAL}
+  'nnodes_run_analysis': ${NNODES_RUN_ANALYSIS}
   'nnodes_run_gsidiag': ${NNODES_RUN_GSIDIAG}
   'nnodes_run_postanal': ${NNODES_RUN_POSTANAL}
   'nnodes_run_enkf': ${NNODES_RUN_ENKF}
@@ -271,9 +271,9 @@ settings="\
 #
   'ncores_run_fcst': ${PE_MEMBER01}
   'native_run_fcst': ${NATIVE_RUN_FCST}
-  'ncores_run_anal': ${NCORES_RUN_ANAL}
+  'ncores_run_analysis': ${NCORES_RUN_ANALYSIS}
   'ncores_run_observer': ${NCORES_RUN_OBSERVER}
-  'native_run_anal': ${NATIVE_RUN_ANAL}
+  'native_run_analysis': ${NATIVE_RUN_ANALYSIS}
   'ncores_run_enkf': ${NCORES_RUN_ENKF}
   'native_run_enkf': ${NATIVE_RUN_ENKF}
 #
@@ -290,7 +290,7 @@ settings="\
   'ppn_make_lbcs': ${PPN_MAKE_LBCS}
   'ppn_run_prepstart': ${PPN_RUN_PREPSTART}
   'ppn_run_fcst': ${PPN_RUN_FCST}
-  'ppn_run_anal': ${PPN_RUN_ANAL}
+  'ppn_run_analysis': ${PPN_RUN_ANALYSIS}
   'ppn_run_gsidiag': ${PPN_RUN_GSIDIAG}
   'ppn_run_postanal': ${PPN_RUN_POSTANAL}
   'ppn_run_enkf': ${PPN_RUN_ENKF}
@@ -315,7 +315,7 @@ settings="\
 #
   'tpp_make_ics': ${TPP_MAKE_ICS}
   'tpp_make_lbcs': ${TPP_MAKE_LBCS}
-  'tpp_run_anal': ${TPP_RUN_ANAL}
+  'tpp_run_analysis': ${TPP_RUN_ANALYSIS}
   'tpp_run_enkf': ${TPP_RUN_ENKF}
   'tpp_run_fcst': ${TPP_RUN_FCST}
   'tpp_run_post': ${TPP_RUN_POST}
@@ -335,7 +335,7 @@ settings="\
   'wtime_run_fcst': ${WTIME_RUN_FCST}
   'wtime_run_fcst_long': ${WTIME_RUN_FCST_LONG}
   'wtime_run_fcst_spinup': ${WTIME_RUN_FCST_SPINUP}
-  'wtime_run_anal': ${WTIME_RUN_ANAL}
+  'wtime_run_analysis': ${WTIME_RUN_ANALYSIS}
   'wtime_run_gsidiag': ${WTIME_RUN_GSIDIAG}
   'wtime_run_postanal': ${WTIME_RUN_POSTANAL}
   'wtime_run_enkf': ${WTIME_RUN_ENKF}
@@ -402,9 +402,9 @@ settings="\
   'maxtries_make_lbcs': ${MAXTRIES_MAKE_LBCS}
   'maxtries_run_prepstart': ${MAXTRIES_RUN_PREPSTART}
   'maxtries_run_fcst': ${MAXTRIES_RUN_FCST}
-  'maxtries_anal_gsi': ${MAXTRIES_ANAL_GSI}
+  'maxtries_analysis_gsi': ${MAXTRIES_ANALYSIS_GSI}
   'maxtries_postanal': ${MAXTRIES_POSTANAL}
-  'maxtries_anal_enkf': ${MAXTRIES_ANAL_ENKF}
+  'maxtries_analysis_enkf': ${MAXTRIES_ANALYSIS_ENKF}
   'maxtries_recenter': ${MAXTRIES_RECENTER}
   'maxtries_run_post': ${MAXTRIES_RUN_POST}
   'maxtries_run_prdgen': ${MAXTRIES_RUN_PRDGEN}
