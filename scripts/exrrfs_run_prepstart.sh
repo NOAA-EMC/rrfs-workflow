@@ -996,7 +996,7 @@ if [ ${SFC_CYC} -eq 3 ] ; then
    if [ "${USE_CLM}" = "TRUE" ]; then
      do_lake_surgery=".true."
    fi
-   raphrrr_com=${RAPHRR_SOIL_ROOT}
+   raphrrr_com=${RAPHRRR_SOIL_ROOT}
    rapfile='missing'
    hrrrfile='missing'
    hrrr_akfile='missing'
