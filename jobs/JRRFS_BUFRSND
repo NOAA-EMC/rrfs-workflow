@@ -1,27 +1,9 @@
 #!/bin/bash
-#                      .                                             .
-# Script name:         exrrfs_bufr.sh
-# Script description:  Trigger sounding post job
-#
-# Author:        Eric Rogers       Org: NP22         Date: 1999-06-23
-#
-# Abstract: This script triggers the sounding post job, which
-#           creates a piece of the model sounding profile whose
-#           time interval is determined by the input forecast hours.
-#
-# Script history log:
-# 2000-05-16  Eric Rogers
-# 2006-01-20  Eric Rogers -- extended to 84-h and modified for WRF-NMM NAM
-# 2009-12-18  Matthew Pyle -- shortened to 48-h and generalized for multiple domains
-#                             and diferent dynamical cores
-# 2019-10-28  Matthew Pyle -- Converted for FV3 SAR and 60 hours
-#
-
 #
 #-----------------------------------------------------------------------
 #
-# This script runs the bufr sounding on the NetCDF output files
-# of the write component of the FV3-LAM model.
+# This J-job script runs the bufr sounding on the NetCDF output files
+# of the write component of the RRFS model.
 #
 #-----------------------------------------------------------------------
 #
@@ -36,7 +18,7 @@
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
 
-date
+$NDATE
 export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------

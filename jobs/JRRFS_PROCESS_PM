@@ -17,7 +17,7 @@
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHDIR/source_util_funcs.sh
 
-date
+$NDATE
 export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
