@@ -85,31 +85,31 @@ case $MACHINE in
 #
   export FI_OFI_RXM_SAR_LIMIT=3145728
   export OMP_STACKSIZE=500M
-  export OMP_NUM_THREADS=${TPP_RUN_ANAL}
+  export OMP_NUM_THREADS=${TPP_RUN_ANALYSIS}
   ncores=$(( NNODES_RUN_ANAL*PPN_RUN_ANAL))
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_ANAL} --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;
 #
 "HERA")
-  export OMP_NUM_THREADS=${TPP_RUN_ANAL}
+  export OMP_NUM_THREADS=${TPP_RUN_ANALYSIS}
   export OMP_STACKSIZE=300M
   APRUN="srun"
   ;;
 #
 "ORION")
-  export OMP_NUM_THREADS=${TPP_RUN_ANAL}
+  export OMP_NUM_THREADS=${TPP_RUN_ANALYSIS}
   export OMP_STACKSIZE=1024M
   APRUN="srun"
   ;;
 #
 "HERCULES")
-  export OMP_NUM_THREADS=${TPP_RUN_ANAL}
+  export OMP_NUM_THREADS=${TPP_RUN_ANALYSIS}
   export OMP_STACKSIZE=1024M
   APRUN="srun"
   ;;
 #
 "JET")
-  export OMP_NUM_THREADS=${TPP_RUN_ANAL}
+  export OMP_NUM_THREADS=${TPP_RUN_ANALYSIS}
   export OMP_STACKSIZE=1024M
   APRUN="srun"
   ;;
