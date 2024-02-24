@@ -67,7 +67,7 @@ if [ ${CYCLE_TYPE} == "spinup" ]; then
 else
   workdir=${CYCLE_DIR}/process_glmfed
 fi
-if [ ${IS_ENSEMBLE} == "1" ]; then
+if [ ${DO_ENSEMBLE} = TRUE ]; then
   workdir=${CYCLE_DIR}/process_glmfed_enkf
 fi
 
