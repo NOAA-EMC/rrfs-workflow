@@ -134,8 +134,8 @@
 "gfs_dyn",   "hailcast_dhail_max", "hailcast_dhail", "fv3_history2d", "all",  .false.,  "none", 2
 
 "gfs_phys",  "ALBDO_ave",     "albdo_ave",   "fv3_history2d",         "all",  .false.,  "none",  2
-#"gfs_phys",  "cnvprcp_ave",   "cprat_ave",   "fv3_history2d",         "all",  .false.,  "none",  2
-#"gfs_phys",  "cnvprcpb_ave",  "cpratb_ave",  "fv3_history2d",         "all",  .false.,  "none",  2
+"gfs_phys",  "cnvprcp_ave",   "cprat_ave",   "fv3_history2d",         "all",  .false.,  "none",  2
+"gfs_phys",  "cnvprcpb_ave",  "cpratb_ave",  "fv3_history2d",         "all",  .false.,  "none",  2
 "gfs_phys",  "totprcp_ave",   "prate_ave",   "fv3_history2d",         "all",  .false.,  "none",  2
 "gfs_phys",  "totprcpb_ave",  "prateb_ave",  "fv3_history2d",         "all",  .false.,  "none",  2
 "gfs_phys",  "DLWRF",         "dlwrf_ave",   "fv3_history2d",         "all",  .false.,  "none",  2
@@ -149,6 +149,7 @@
 "gfs_phys",  "DSWRFtoa",      "dswrf_avetoa","fv3_history2d",         "all",  .false.,  "none",  2
 "gfs_phys",  "USWRFtoa",      "uswrf_avetoa","fv3_history2d",         "all",  .false.,  "none",  2
 "gfs_phys",  "ULWRFtoa",      "ulwrf_avetoa","fv3_history2d",         "all",  .false.,  "none",  2
+"gfs_phys",  "ULWRFItoa",     "ulwrf_toa",   "fv3_history2d",         "all",  .false.,  "none",  2
 "gfs_phys",  "gflux_ave",     "gflux_ave",   "fv3_history2d",         "all",  .false.,  "none",  2
 "gfs_phys",  "hpbl",          "hpbl",        "fv3_history2d",         "all",  .false.,  "none",  2
 "gfs_phys",  "lhtfl_ave",     "lhtfl_ave",   "fv3_history2d",         "all",  .false.,  "none",  2
@@ -351,6 +352,8 @@
 "gfs_sfc",     "acsnow_land",       "accswe_land",  "fv3_history2d",  "all",  .false.,  "none",  2
 "gfs_sfc",     "snowfall_acc_ice",  "snacc_ice",    "fv3_history2d",  "all",  .false.,  "none",  2
 "gfs_sfc",     "acsnow_ice",        "accswe_ice",   "fv3_history2d",  "all",  .false.,  "none",  2
+"gfs_sfc",     "xlaixy",            "xlaixy",       "fv3_history2d",  "all",  .false.,  "none",  2
+"gfs_sfc",     "sfalb",             "sfalb",        "fv3_history2d",  "all",  .false.,  "none",  2
 # Stochastic physics
 #"gfs_phys",    "sppt_wts",      "sppt_wts",      "fv3_history",  "all", .false., "none", 2
 #"gfs_phys",    "skebu_wts",     "skebu_wts",     "fv3_history",  "all", .false., "none", 2
@@ -507,16 +510,11 @@
 
 # Aerosols emission for smoke
 "gfs_sfc",     "emdust",       "emdust",        "fv3_history2d",  "all",  .false.,  "none",  2
-"gfs_sfc",     "emseas",       "emseas",        "fv3_history2d",  "all",  .false.,  "none",  2
-"gfs_sfc",     "emanoc",       "emanoc",        "fv3_history2d",  "all",  .false.,  "none",  2
-"gfs_sfc",     "coef_bb_dc",   "coef_bb_c",     "fv3_history2d",  "all",  .false.,  "none",  2
+"gfs_sfc",     "coef_bb_dc",   "coef_bb_dc",    "fv3_history2d",  "all",  .false.,  "none",  2
 "gfs_sfc",     "min_fplume",   "min_fplume",    "fv3_history2d",  "all",  .false.,  "none",  2
 "gfs_sfc",     "max_fplume",   "max_fplume",    "fv3_history2d",  "all",  .false.,  "none",  2
 "gfs_sfc",     "hwp",          "hwp",           "fv3_history2d",  "all",  .false.,  "none",  2
-"gfs_sfc",     "ebb_smoke_hr", "ebb_smoke_hr",  "fv3_history2d",  "all",  .false.,  "none",  2
-"gfs_sfc",     "frp_hr",       "frp_hr",        "fv3_history2d",  "all",  .false.,  "none",  2
-"gfs_sfc",     "frp_std_hr",   "frp_std_hr",    "fv3_history2d",  "all",  .false.,  "none",  2
+"gfs_sfc",     "hwp_ave",      "hwp_ave",       "fv3_history2d",  "all",  .false.,  "none",  2
+"gfs_sfc",     "frp_output",   "frp_output",    "fv3_history2d",  "all",  .false.,  "none",  2
 "gfs_phys",    "ebu_smoke",    "ebu_smoke",     "fv3_history",    "all",  .false.,  "none",  2
-"gfs_phys",    "smoke_ext",    "smoke_ext",     "fv3_history",    "all",  .false.,  "none",  2
-"gfs_phys",    "dust_ext",     "dust_ext",      "fv3_history",    "all",  .false.,  "none",  2
 "gfs_phys",    "ext550",       "ext550",        "fv3_history",    "all",  .false.,  "none",  2

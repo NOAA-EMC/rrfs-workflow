@@ -21,6 +21,7 @@ DO_RETRO="TRUE"
 DO_NONVAR_CLDANAL="TRUE"
 DO_ENVAR_RADAR_REF="TRUE"
 DO_SMOKE_DUST="TRUE"
+EBB_DCYCLE="2"
 DO_PM_DA="FALSE"
 DO_REFL2TTEN="FALSE"
 RADARREFL_TIMELEVEL=(0)
@@ -102,6 +103,8 @@ SNOWICE_update_hour=01
 netcdf_diag=.true.
 binary_diag=.false.
 WRTCMP_output_file="netcdf_parallel"
+WRTCMP_ideflate="1"
+WRTCMP_quantize_nsd="18"
 
 regional_ensemble_option=1   # 5 for RRFS ensemble
 if [[ ${USE_RRFSE_ENS} == "TRUE" ]]; then

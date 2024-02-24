@@ -19,8 +19,10 @@ restart_interval:        {{ restart_interval }}
 use_hyper_thread:        .false.
 output_1st_tstep_rst:    .false.
 write_dopost:            {{ write_dopost }}
+zstandard_level:         {{ zstandard_level }}
 ideflate:                {{ ideflate }}
-nbits:                   0
+quantize_mode:           {{ quantize_mode }}
+quantize_nsd:            {{ quantize_nsd }}
 ichunk2d:                -1
 jchunk2d:                -1
 ichunk3d:                -1
@@ -28,7 +30,6 @@ jchunk3d:                -1
 kchunk3d:                -1
 quilting:                {{ quilting }}
 quilting_restart:        .true.
-zstandard_level:         0
 {% if quilting  %}
 #
 # Write-component (quilting) computational parameters.

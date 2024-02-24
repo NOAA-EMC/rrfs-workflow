@@ -14,6 +14,7 @@ load(pathJoin("stack-intel-oneapi-mpi", os.getenv("stack_impi_ver") or "2021.5.1
 load(pathJoin("cmake", os.getenv("cmake_ver") or "3.23.1"))
 
 load("rrfs_common")
+load(pathJoin("wgrib2", os.getenv("wgrib2_ver") or "2.0.8"))
 
 prepend_path("MODULEPATH", "/work/noaa/rtrr/gge/lua")
 load("prod_util/2.0.15")

@@ -77,6 +77,35 @@ APRUN="time"
 #
 #-----------------------------------------------------------------------
 #
+# For the fire weather grid, read in the center lat/lon from the
+# operational NAM fire weather nest.  The center lat/lon is set by the
+# SDM.  When RRFS is implemented, a similar file will be needed.
+# Rewrite the default center lat/lon values in input.nml and 
+# var_defns.sh.
+# Then call a Python script to determine if the nest falls inside the
+# RRFS computational grid based on the center lat/lon.
+#
+#-----------------------------------------------------------------------
+#
+if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
+  hh="${CDATE:8:2}"
+  firewx_loc="/lfs/h1/ops/prod/com/nam/v4.2/input/nam_firewx_loc"
+  LAT_CTR=`grep ${hh}z $firewx_loc | awk '{print $2}'`
+  LON_CTR=`grep ${hh}z $firewx_loc | awk '{print $3}'`
+
+  sed -i -e "s/39.2/${LAT_CTR}/g" ${FV3_NML_FP}
+  sed -i -e "s/39.2/${LAT_CTR}/g" ${GLOBAL_VAR_DEFNS_FP}
+  sed -i -e "s/-106.0/${LON_CTR}/g" ${FV3_NML_FP}
+  sed -i -e "s/-106.0/${LON_CTR}/g" ${GLOBAL_VAR_DEFNS_FP}
+
+  python ${USHdir}/rrfsfw_domain.py $LAT_CTR $LON_CTR
+  if [[ $? != 0 ]]; then
+    err_exit "WARNING: Problem with the requested fire weather grid - ABORT"
+  fi
+fi
+#
+#-----------------------------------------------------------------------
+#
 # Generate grid file.
 #
 #-----------------------------------------------------------------------

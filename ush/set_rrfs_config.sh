@@ -48,7 +48,13 @@ if [[ $MACHINE == "wcoss2" ]] ; then
   FIRE_RAVE_DIR=/lfs/h2/emc/lam/noscrub/emc.lam/RAVE_rawdata/RAVE_NA
   FVCOM_DIR="/lfs/h1/ops/prod/com/nosofs/v3.5"
   FVCOM_FILE="fvcom"
-  RAPHRR_SOIL_ROOT="/lfs/h1/ops/prod/com"
+  RAPHRRR_SOIL_ROOT="/lfs/h1/ops/prod/com"
+  GLMFED_EAST_ROOT="/lfs/h1/ops/prod/dcom/ldmdata/obs/GOES-16/GLM/tiles"
+  GLMFED_WEST_ROOT="/lfs/h1/ops/prod/dcom/ldmdata/obs/GOES-17/GLM/tiles"
+  if [[ $OBSTYPE_SOURCE == "rrfs" ]]; then
+    OBSPATH=/lfs/h2/emc/lam/noscrub/emc.lam/obsproc.DATA/CRON/rrfs/com/obsproc/v1.0
+    IMSSNOW_ROOT=/lfs/h2/emc/lam/noscrub/emc.lam/obsproc.DATA/CRON/rrfs/com/obsproc/v1.0
+  fi
 fi
 
 # set up for retrospective test:
@@ -86,7 +92,7 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     SST_ROOT=${RETRODATAPATH}/highres_sst
     GVF_ROOT=${RETRODATAPATH}/gvf/grib2
     IMSSNOW_ROOT=${RETRODATAPATH}/snow/ims96/grib2
-    RAPHRR_SOIL_ROOT=${RETRODATAPATH}/rap_hrrr_soil
+    RAPHRRR_SOIL_ROOT=${RETRODATAPATH}/rap_hrrr_soil
     FIRE_RAVE_DIR=${RETRODATAPATH}/RAVE_RAW
   fi
 
@@ -124,7 +130,7 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     SST_ROOT=${RETRODATAPATH}/highres_sst
     GVF_ROOT=${RETRODATAPATH}/gvf/grib2
     IMSSNOW_ROOT=${RETRODATAPATH}/snow/ims96/grib2
-    RAPHRR_SOIL_ROOT=${RETRODATAPATH}/rap_hrrr_soil
+    RAPHRRR_SOIL_ROOT=${RETRODATAPATH}/rap_hrrr_soil
     FIRE_RAVE_DIR=${RETRODATAPATH}/RAVE_RAW
   fi
   if [[ $MACHINE == "orion" ]] || [[ $MACHINE == "hercules" ]] ; then
@@ -152,6 +158,7 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     SST_ROOT="/work/noaa/wrfruc/mhu/rrfs/data/highres_sst"
     GVF_ROOT="/work/noaa/wrfruc/mhu/rrfs/data/gvf/grib2"
     IMSSNOW_ROOT="/work/noaa/wrfruc/mhu/rrfs/data/snow/ims96/grib2"
+    RAPHRRR_SOIL_ROOT="/work2/noaa/wrfruc/murdzek/RRFS_input_data/rap_hrrr_soil"
   fi
   if [[ $MACHINE == "wcoss2" ]] ; then
     RETRODATAPATH="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs_retro_data"
@@ -183,7 +190,7 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     SST_ROOT="${RETRODATAPATH}/highres_sst"
     GVF_ROOT="${RETRODATAPATH}/gvf/grib2"
     IMSSNOW_ROOT="${RETRODATAPATH}/snow/ims96/grib2"
-    RAPHRR_SOIL_ROOT="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs_retro_data/rap_hrrr_soil"
+    RAPHRRR_SOIL_ROOT="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs_retro_data/rap_hrrr_soil"
   fi
 fi
 

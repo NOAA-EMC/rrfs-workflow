@@ -185,11 +185,19 @@ cat > itag <<EOF
 /
 
  &NAMPGB
- KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,slrutah_on=.true.,
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,slrutah_on=.true.,gtg_on=.true.,
  /
 EOF
 
+#-----------------------------------------------------------------------
 #
+# GTG_rrfs config file in UPP source code sub directory
+#
+#-----------------------------------------------------------------------
+
+cp ${UPP_DIR}/sorc/ncep_post.fd/post_gtg.fd/gtg.config.rrfs ./gtg.config.rrfs
+cp ${UPP_DIR}/sorc/ncep_post.fd/post_gtg.fd/gtg.input.rrfs ./gtg.input.rrfs
+
 #-----------------------------------------------------------------------
 #
 # stage necessary files in fhr_dir.
@@ -197,6 +205,7 @@ EOF
 #-----------------------------------------------------------------------
 #
 cp ${UPP_DIR}/parm/nam_micro_lookup.dat ./eta_micro_lookup.dat
+
 ln -snf ${FIX_UPP_CRTM}/*bin ./
 if [ ${USE_CUSTOM_POST_CONFIG_FILE} = "TRUE" ]; then
   post_config_fp="${CUSTOM_POST_CONFIG_FP}"
@@ -335,14 +344,21 @@ elif  [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ]; then
   gridname=""
 fi
 net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
+
 bgdawp=${postprd_dir}/${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2
 bgrd3d=${postprd_dir}/${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2
 bgifi=${postprd_dir}/${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2
+bgavi=${postprd_dir}/${net4}.t${cyc}z.aviati.f${fhr}.${gridname}grib2
 
 wgrib2 PRSLEV.GrbF${post_fhr} -set center 7 -grib ${bgdawp} >>$pgmout 2>>errfile
 wgrib2 NATLEV.GrbF${post_fhr} -set center 7 -grib ${bgrd3d} >>$pgmout 2>>errfile
+
 if [ -f IFIFIP.GrbF${post_fhr} ]; then
   wgrib2 IFIFIP.GrbF${post_fhr} -set center 7 -grib ${bgifi} >>$pgmout 2>>errfile
+fi
+
+if [ -f AVIATI.GrbF${post_fhr} ]; then
+  wgrib2 AVIATI.GrbF${post_fhr} -set center 7 -grib ${bgavi} >>$pgmout 2>>errfile
 fi
 
 # Keep latlons_corners.txt file for RRFS fire weather grid

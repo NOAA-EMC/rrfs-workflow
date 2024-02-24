@@ -500,6 +500,27 @@ $settings"
 #
 #-----------------------------------------------------------------------
 #
+# Subset RRFS North America grib2 file for fire weather grid.
+# +/- 10 degrees latitude/longitude around center lat/lon point.
+#
+#-----------------------------------------------------------------------
+#
+  if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
+    sp_lon=$(echo "$LON_CTR + 360" | bc -l)
+    sp_lat=$(echo "(90 - $LAT_CTR) * -1" | bc -l)
+    gridspecs="rot-ll:${sp_lon}:${sp_lat}:0 -10:801:0.025 -10:801:0.025"
+    lbc_spec_fhrs=( "${EXTRN_MDL_LBC_SPEC_FHRS[$i]}" ) 
+    fcst_hhh=$(( ${lbc_spec_fhrs} - ${EXTRN_MDL_LBCS_OFFSET_HRS} ))
+    fcst_hhh_FV3LAM=`printf %3.3i $fcst_hhh`
+    fn_grib2_subset=rrfs.t${hh}z.prslev.f${fcst_hhh_FV3LAM}.subset.grib2
+
+    wgrib2 ${extrn_mdl_staging_dir}/${fn_grib2} -set_grib_type c3b \
+      -new_grid_winds grid -new_grid ${gridspecs} ${extrn_mdl_staging_dir}/${fn_grib2_subset}
+    mv ${extrn_mdl_staging_dir}/${fn_grib2_subset} ${extrn_mdl_staging_dir}/${fn_grib2}
+  fi
+#
+#-----------------------------------------------------------------------
+#
 # Run chgres_cube.
 #
 #-----------------------------------------------------------------------

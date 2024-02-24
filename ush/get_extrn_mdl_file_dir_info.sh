@@ -468,8 +468,8 @@ case "${anl_or_fcst}" in
       ;;
 
     "RRFS")
-      fns_on_disk=( "rrfs.t${hh}z.prslev.f0${fcst_hh}.conus_3km.grib2" )
-      fns_in_arcv=( "rrfs.t${hh}z.prslev.f0${fcst_hh}.conus_3km.grib2" )
+      fns_on_disk=( "rrfs.t${hh}z.prslev.f0${fcst_hh}.grib2" )
+      fns_in_arcv=( "rrfs.t${hh}z.prslev.f0${fcst_hh}.grib2" )
       ;;
 
     *)
@@ -613,7 +613,7 @@ and analysis or forecast (anl_or_fcst):
       fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
       prefix="rrfs.t${hh}z.prslev.f"
       fns=( "${fcst_hhh[@]/#/$prefix}" )
-      suffix=".conus_3km.grib2"
+      suffix=".grib2"
       fns_on_disk=( "${fns[@]/%/$suffix}" )
       fns_in_arcv=( "${fns[@]/%/$suffix}" )
       ;;

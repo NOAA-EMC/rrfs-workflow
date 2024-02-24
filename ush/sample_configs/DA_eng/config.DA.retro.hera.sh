@@ -109,6 +109,8 @@ SOIL_SURGERY_time=${DATE_FIRST_CYCL}04
 netcdf_diag=.true.
 binary_diag=.false.
 WRTCMP_output_file="netcdf_parallel"
+WRTCMP_ideflate="1"
+WRTCMP_quantize_nsd="18"
 
 regional_ensemble_option=1   # 5 for RRFS ensemble
 

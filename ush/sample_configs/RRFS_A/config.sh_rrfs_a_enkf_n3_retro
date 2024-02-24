@@ -113,6 +113,8 @@ RESTART_INTERVAL_LONG="1"
 netcdf_diag=.true.
 binary_diag=.false.
 WRTCMP_output_file="netcdf_parallel"
+WRTCMP_ideflate="1"
+WRTCMP_quantize_nsd="18"
 
 ## set up post
 #NFHOUT_HF="1"
@@ -121,9 +123,9 @@ WRTCMP_output_file="netcdf_parallel"
 
 WTIME_RUN_FCST="00:30:00"
 WTIME_RUN_FCST_LONG="04:45:00"
-PPN_RUN_ANAL="16"
-NNODES_RUN_ANAL="1"
-TPP_RUN_ANAL="8"
+PPN_RUN_ANALYSIS="16"
+NNODES_RUN_ANALYSIS="1"
+TPP_RUN_ANALYSIS="8"
 
 EXTRN_MDL_NAME_ICS="GEFS"
 EXTRN_MDL_NAME_LBCS="GEFS"

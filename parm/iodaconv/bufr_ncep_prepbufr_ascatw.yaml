@@ -1,0 +1,207 @@
+# (C) Copyright 2020 NOAA/NWS/NCEP/EMC
+#
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+
+observations:
+  - obs space:
+      name: bufr
+
+      obsdatain: "./prepbufr"
+
+      exports:
+        #group_by_variable: prepbufrDataLvlCat
+        subsets:
+          - ASCATW    # ASCAT SCATTEROMETER DATA (REPROCESSED, SAID)
+        variables:
+          timestamp:
+            timeoffset:
+              timeOffset: "*/DHR"
+              transforms:
+                - scale: 3600
+              referenceTime: standardReferenceTime
+          longitude:
+            query: "*/XOB"
+          latitude:
+            query: "*/YOB"
+          stationIdentification:
+            query: "*/SID"
+          stationElevation:
+            query: "*/ELV"
+          prepbufrReportType:
+            query: "*/TYP"
+          dumpReportType:
+            query: "*/T29"
+          satelliteID:
+            query: "*/SAID"
+
+          prepbufrDataLvlCat:
+            query: "*/CAT"
+
+          pressure:
+            query: "*/P___INFO/P__EVENT{1}/POB"
+            transforms:
+              - scale: 100
+          pressureQualityMarker:
+            query: "*/P___INFO/P__EVENT{1}/PQM"
+          pressureError:
+            query: "*/P___INFO/P__BACKG/POE"
+            transforms:
+              - scale: 100
+          pressureTunedError:
+            query: "*/P___INFO/P__POSTP/POETU"
+            transforms:
+              - scale: 100
+
+          windEastward:
+            query: "*/W___INFO/W__EVENT{1}/UOB"
+          windNorthward:
+            query: "*/W___INFO/W__EVENT{1}/VOB"
+          windQualityMarker:
+            query: "*/W___INFO/W__EVENT{1}/WQM"
+          windError:
+            query: "*/W___INFO/W__BACKG/WOE"
+          windTunedError:
+            query: "*/W___INFO/W__POSTP/WOETU"
+            transform:
+              - scale: 0.514444
+
+    ioda:
+      backend: netcdf
+      obsdataout: "./prepbufr.ascatw.nc"
+
+
+      dimensions:
+        - name: pevent_Dim
+          path: "*/P___INFO/P__EVENT"
+        - name: wevent_Dim
+          path: "*/W___INFO/W__EVENT"
+
+
+      variables:
+
+        # MetaData
+        - name: "MetaData/dateTime"
+          coordinates: "longitude latitude"
+          source: variables/timestamp
+          longName: "Observation Time"
+          units: "seconds since 1970-01-01T00:00:00Z"
+
+        - name: "MetaData/stationIdentification"
+          coordinates: "longitude latitude"
+          source: variables/stationIdentification
+          longName: "Station ID"
+          units: ""
+
+        - name: "MetaData/SatelliteIdentification"
+          coordinates: "longitude latitude"
+          source: variables/satelliteID
+          longName: "Satellite Identification"
+          units: ""
+
+        - name: "MetaData/longitude"
+          coordinates: "longitude latitude"
+          source: variables/longitude
+          longName: "Longitude"
+          units: "degrees_east"
+          range: [0, 360]
+
+        - name: "MetaData/latitude"
+          coordinates: "longitude latitude"
+          source: variables/latitude
+          longName: "Latitude"
+          units: "degrees_north"
+          range: [-90, 90]
+
+        - name: "MetaData/stationElevation"
+          coordinates: "longitude latitude"
+          source: variables/stationElevation
+          longName: "Height of Station"
+          units: "Meter"
+
+        - name: "MetaData/prepbufrReportType"
+          coordinates: "longitude latitude"
+          source: variables/prepbufrReportType
+          longName: "Prepbufr Report Type"
+          units: ""
+
+        - name: "MetaData/dumpReportType"
+          coordinates: "longitude latitude"
+          source: variables/dumpReportType
+          longName: "Data Dump Report Type"
+          units: ""
+
+        - name: "MetaData/prepbufrDataLvlCat"
+          coordinates: "longitude latitude"
+          source: variables/prepbufrDataLvlCat
+          longName: "Prepbufr Data Level Category"
+          units: ""
+
+        - name: "MetaData/pressure"
+          coordinates: "longitude latitude"
+          source: variables/pressure
+          longName: "Pressure"
+          units: "Pa"
+
+        # ObsType
+        - name: "ObsType/windEastward"
+          coordinates: "longitude latitude"
+          source: variables/prepbufrReportType
+          longName: "windEastward Report Type"
+          units: ""
+
+        - name: "ObsType/windNorthward"
+          coordinates: "longitude latitude"
+          source: variables/prepbufrReportType
+          longName: "windNorthward Report Type"
+          units: ""
+
+        # ObsValue
+        - name: "ObsValue/windEastward"
+          coordinates: "longitude latitude"
+          source: variables/windEastward
+          longName: "Eastward Wind"
+          units: "Meter Second-1"
+
+        - name: "ObsValue/windNorthward"
+          coordinates: "longitude latitude"
+          source: variables/windNorthward
+          longName: "Northward Wind"
+          units: "Meter Second-1"
+
+        # Quality Marker
+        - name: "QualityMarker/pressure"
+          coordinates: "longitude latitude"
+          source: variables/pressureQualityMarker
+          longName: "Pressure Quality Marker"
+          
+        - name: "QualityMarker/wind"
+          coordinates: "longitude latitude"
+          source: variables/windQualityMarker
+          longName: "U, V-Component of Wind Quality Marker"
+
+        # ObsError
+        - name: "ObsError/pressure"
+          coordinates: "longitude latitude"
+          source: variables/pressureError
+          longName: "Pressure Observation Error"
+          units: "Pa"
+          
+        - name: "ObsError/wind"
+          coordinates: "longitude latitude"
+          source: variables/windError
+          longName: "East and Northward wind error"
+          units: "Meter Second-1"        
+          
+        # Tuned ObsError
+        - name: "TunedObsError/pressure"
+          coordinates: "longitude latitude"
+          source: variables/pressureTunedError
+          longName: "Analysis-Tuned Pressure Observation Error"
+          units: "Pa"
+          
+        - name: "TunedObsError/wind"
+          coordinates: "longitude latitude"
+          source: variables/windTunedError
+          longName: "Analysis-Tuned East and Northward wind error"
+          units: "Meter Second-1"

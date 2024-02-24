@@ -78,7 +78,7 @@ ffg_latest="${FFG_DIR}/latest.FFG"
 #
 #-----------------------------------------------------------------------
 #
-python -u $SCRIPTSdir/exrrfs_enspost.py \
+python -u $SCRIPTSdir/exrrfs_run_enspost.py \
   "${FIX_UPP}/enspost" \
   "${USHdir}" \
   "${ens_dir}" \
