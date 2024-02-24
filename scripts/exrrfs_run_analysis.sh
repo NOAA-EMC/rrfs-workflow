@@ -497,7 +497,7 @@ if [[ ${gsi_type} == "OBSERVER" || ${anav_type} == "conv" || ${anav_type} == "co
     else
       obs_files_source[${obs_number}]=${cycle_dir}/process_radarref/00/Gridded_ref.nc
     fi
-    obs_files_target[${obs_number}]=Zdbzobs.nc
+    obs_files_target[${obs_number}]=dbzobs.nc
     if [ "${DO_GLM_FED_DA}" = "TRUE" ]; then
       obs_number=${#obs_files_source[@]}
       if [ "${CYCLE_TYPE}" = "spinup" ]; then
@@ -528,7 +528,7 @@ else
     else
       obs_files_source[0]=${cycle_dir}/process_radarref/00/Gridded_ref.nc
     fi
-    obs_files_target[0]=Zdbzobs.nc
+    obs_files_target[0]=dbzobs.nc
     if [ "${DO_GLM_FED_DA}" = "TRUE" ]; then
       if [ "${CYCLE_TYPE}" = "spinup" ]; then
         obs_files_source[1]=${cycle_dir}/process_glmfed_spinup/fedobs.nc
