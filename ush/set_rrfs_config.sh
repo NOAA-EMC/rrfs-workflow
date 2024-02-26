@@ -2,7 +2,7 @@
 #  setup for real-time runs on JET
 OBSPATH_NSSLMOSIAC=/public/data/radar/nssl/mrms/conus
 FFG_DIR=/public/data/grids/ncep/ffg/grib2
-AIRCRAFT_REJECT="/home/amb-verif/acars_RR/amdar_reject_lists"
+AIRCRAFT_REJECT="/home/role.amb-verif/acars_RR/amdar_reject_lists"
 SFCOBS_USELIST="/lfs4/BMC/amb-verif/rap_ops_mesonet_uselists"
 SST_ROOT="/lfs4/BMC/public/data/grids/ncep/sst/0p083deg/grib2"
 GVF_ROOT="/public/data/sat/ncep/viirs/gvf/grib2"
