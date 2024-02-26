@@ -23,7 +23,7 @@ load(pathJoin("hdf5", os.getenv("hdf5_ver")))
 load(pathJoin("netcdf", os.getenv("netcdf_ver")))
 load(pathJoin("pio", os.getenv("pio_ver")))
 load(pathJoin("esmf", os.getenv("esmf_ver")))
-load(pathJoin("fms", os.getenv("fms_ver")))
+--load(pathJoin("fms", os.getenv("fms_ver")))
 load(pathJoin("gftl-shared", os.getenv("gftl_shared_ver")))
 load(pathJoin("mapl", os.getenv("mapl_ver")))
 
@@ -49,6 +49,10 @@ load(pathJoin("nemsio", os.getenv("nemsio_ver")))
 
 prepend_path("MODULEPATH", os.getenv("modulepath_scotch"))
 load(pathJoin("scotch", os.getenv("scotch_ver")))
+
+setenv("FMS_ROOT","/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/lib/fms.ParallelStartup")
+--setenv("FMS_ROOT","/u/daniel.kokron/fms.ParallelStartup")
+setenv("FMS_VERSION","2023.02")
 
 setenv("CMAKE_C_COMPILER","cc")
 setenv("CMAKE_CXX_COMPILER","CC")
