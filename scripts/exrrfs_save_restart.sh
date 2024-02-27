@@ -242,7 +242,7 @@ if [[ ${DO_GLM_FED_DA} = TRUE && ${DO_ENSEMBLE} != TRUE ]]; then
   ncap2 -O -v -s 'flash_extent_density=ref_f3d' ${nwges_dir}/RESTART/${restart_prefix}.phy_data.nc ${nwges_dir}/RESTART/tmp.nc
   ncks -A -C -v flash_extent_density ${nwges_dir}/RESTART/tmp.nc ${nwges_dir}/RESTART/${restart_prefix}.phy_data.nc
   rm ${nwges_dir}/RESTART/tmp.nc
-  python -u ${SCRIPTSdir}/exrrfs_prep_glmfed.py
+  python -u ${SCRIPTSdir}/exrrfs_process_glmfed.py
 fi
 #
 #-----------------------------------------------------------------------
@@ -258,7 +258,7 @@ if [[ ${DO_ENSEMBLE} = TRUE && ${fhr} -eq 1 && ${PREP_MODEL_FOR_FED} = TRUE ]]; 
   ncap2 -O -v -s 'flash_extent_density=ref_f3d' ${nwges_dir}/RESTART/${restart_prefix}.phy_data.nc ${nwges_dir}/RESTART/tmp.nc
   ncks -A -C -v flash_extent_density ${nwges_dir}/RESTART/tmp.nc ${nwges_dir}/RESTART/${restart_prefix}.phy_data.nc
   rm ${nwges_dir}/RESTART/tmp.nc
-  python -u ${SCRIPTSdir}/exrrfs_prep_glmfed.py
+  python -u ${SCRIPTSdir}/exrrfs_process_glmfed.py
 fi
 #
 #-----------------------------------------------------------------------
