@@ -2596,7 +2596,7 @@ DO_IODA_PREPBUFR="FALSE"
 # DO_GLM_FED_DA
 # Flag turn on processing gridded GLM lightning data
 # GLMFED_DATA_MODE
-# Incoming lightning data format: FULL (full-disk), TILES, or EMC (tiles
+# Incoming lightning data format: FULL (full-disk), TILES, or PROD (tiles
 # with different naming convention)      
 # PREP_MODEL_FOR_FED
 # For the ensemble workflow: add flash_extent_density field to ensemble

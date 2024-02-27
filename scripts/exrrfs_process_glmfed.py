@@ -189,7 +189,7 @@ def process_fulldisk_fed():
   print('FED obs found:',len(out_lats))
   return()
 
-def process_emc_tiles():
+def process_prod_tiles():
 
   #####################################################################
   #                                                                   #
@@ -372,10 +372,10 @@ if __name__=="__main__":
       process_fulldisk_fed()
     elif mode=="TILES":
       process_gsl_tiles()
-    elif mode=="EMC":
-      process_emc_tiles()
+    elif mode=="PROD":
+      process_prod_tiles()
     else:
-      print("Invalid MODE specified. Valid MODES are FULL, TILES, EMC.")
+      print("Invalid MODE specified. Valid MODES are FULL, TILES, PROD.")
       quit()
 
   ########################################################
