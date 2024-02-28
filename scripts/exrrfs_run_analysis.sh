@@ -511,7 +511,11 @@ if [[ ${gsi_type} == "OBSERVER" || ${anav_type} == "conv" || ${anav_type} == "co
 
   if [ "${DO_ENKF_RADAR_REF}" = "TRUE" ]; then
     obs_number=${#obs_files_source[@]}
-    obs_files_source[${obs_number}]=${cycle_dir}/process_radarref_enkf/00/Gridded_ref.nc
+    if [ "${CYCLE_TYPE}" = "spinup" ]; then
+      obs_files_source[${obs_number}]=${cycle_dir}/process_radarref_spinup_enkf/00/Gridded_ref.nc
+    else
+      obs_files_source[${obs_number}]=${cycle_dir}/process_radarref_enkf/00/Gridded_ref.nc
+    fi
     obs_files_target[${obs_number}]=dbzobs.nc
     if [ "${DO_GLM_FED_DA}" = "TRUE" ]; then
       obs_number=${#obs_files_source[@]}
@@ -957,7 +961,11 @@ if [ "${gsi_type}" = "OBSERVER" ]; then
   else
     lread_obs_save=.false.
     lread_obs_skip=.true.
-    ln -s ../../ensmean/observer_gsi/obs_input.* .
+    if [ "${CYCLE_TYPE}" = "spinup" ]; then
+      ln -s ../../ensmean/observer_gsi_spinup/obs_input.* .
+    else
+      ln -s ../../ensmean/observer_gsi/obs_input.* .
+    fi
   fi
 fi
 if [ ${BKTYPE} -eq 1 ]; then
