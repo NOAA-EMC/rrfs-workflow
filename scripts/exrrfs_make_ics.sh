@@ -744,7 +744,7 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
   bndy=./gfs.bndy.nc
 
   # Run convert coldstart files to fv3 restart (rotate winds and remap).
-  ${BLENDINGPYTHON} exrrfs_chgres_cold2fv3.py $cold $grid $akbk $akbkcold $orog
+  python exrrfs_chgres_cold2fv3.py $cold $grid $akbk $akbkcold $orog
 
 fi
 #
