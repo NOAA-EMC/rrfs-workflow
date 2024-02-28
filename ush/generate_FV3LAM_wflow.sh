@@ -550,6 +550,7 @@ settings="\
   'do_post_prod': ${DO_POST_PROD}
   'do_nldn_lght': ${DO_NLDN_LGHT}
   'do_glmfed_da': ${DO_GLM_FED_DA}
+  'prep_model_for_fed': ${PREP_MODEL_FOR_FED}
   'regional_ensemble_option': ${regional_ensemble_option}
   'radar_ref_thinning': ${RADAR_REF_THINNING}
   'ensctrl_stmp': ${ENSCTRL_STMP}

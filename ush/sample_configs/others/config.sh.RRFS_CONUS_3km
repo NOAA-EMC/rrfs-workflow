@@ -35,6 +35,8 @@ USE_CLM="TRUE"
 DO_PARALLEL_PRDGEN="FALSE"
 DO_GSIDIAG_OFFLINE="TRUE"
 DO_UPDATE_BC="TRUE"
+DO_GLM_FED_DA="FALSE"
+GLMFED_DATA_MODE="PROD"  # retros 20220608-now use FULL; retros 20230714-now and real-time on Jet use FULL or TILES
 
 EXTRN_MDL_ICS_OFFSET_HRS="3"
 LBC_SPEC_INTVL_HRS="1"
@@ -42,8 +44,8 @@ EXTRN_MDL_LBCS_OFFSET_HRS="6"
 BOUNDARY_LEN_HRS="42"
 BOUNDARY_PROC_GROUP_NUM="3"
 
-# avaialble retro period:
-# 20210511-20210531; 20210718-20210801
+# available retro period:
+# 20230419-27; 20230610-18; 20230729-0807; 20230826-31; 20220720-27; 20220429-0506; 20220201-07
 DATE_FIRST_CYCL="20220201"
 DATE_LAST_CYCL="20220202"
 CYCL_HRS=( "00" "12" )
@@ -105,6 +107,9 @@ WRTCMP_ideflate="1"
 WRTCMP_quantize_nsd="18"
 
 regional_ensemble_option=1   # 5 for RRFS ensemble
+if [[ ${USE_RRFSE_ENS} == "TRUE" ]]; then
+  regional_ensemble_option=5   # 5 for RRFS ensemble
+fi
 
 EXTRN_MDL_NAME_ICS="FV3GFS"
 EXTRN_MDL_NAME_LBCS="FV3GFS"
@@ -122,11 +127,11 @@ RUN="rrfs"
 
 . set_rrfs_config.sh
 
-STMP="YourOwnSpace/${version}/stmp"  # Path to directory STMP that mostly contains input files.
-PTMP="YourOwnSpace/${version}"  # Path to directory STMP that mostly contains input files.
-NWGES="YourOwnSpace/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+STMP="${EXPT_BASEDIR}/stmp"  # Path to directory STMP that mostly contains input files.
+PTMP="${EXPT_BASEDIR}"  # Path to directory STMP that mostly contains input files.
+NWGES="${EXPT_BASEDIR}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 if [[ ${regional_ensemble_option} == "5" ]]; then
-  RRFSE_NWGES="YourOwnSpace/${version}/nwges"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
+  RRFSE_NWGES="${EXPT_BASEDIR}/nwges"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
   NUM_ENS_MEMBERS=30     # FV3LAM ensemble size for GSI hybrid analysis
   CYCL_HRS_PRODSTART_ENS=( "07" "19" )
   DO_ENVAR_RADAR_REF="TRUE"

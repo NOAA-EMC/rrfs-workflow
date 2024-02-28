@@ -529,6 +529,14 @@ else
       obs_files_source[0]=${cycle_dir}/process_radarref/00/Gridded_ref.nc
     fi
     obs_files_target[0]=dbzobs.nc
+    if [ "${DO_GLM_FED_DA}" = "TRUE" ]; then
+      if [ "${CYCLE_TYPE}" = "spinup" ]; then
+        obs_files_source[1]=${cycle_dir}/process_glmfed_spinup/fedobs.nc
+      else
+        obs_files_source[1]=${cycle_dir}/process_glmfed/fedobs.nc
+      fi
+      obs_files_target[1]=fedobs.nc
+    fi
   fi
 
   if [ "${anav_type}" = "AERO" ]; then
@@ -661,6 +669,12 @@ if [ "${DO_ENKF_RADAR_REF}" = "TRUE" ]; then
 fi
 if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "radardbz" ]]; then
   ANAVINFO=${FIX_GSI}/${ENKF_ANAVINFO_DBZ_FN}
+  if [ "${DO_GLM_FED_DA}" = "TRUE" ]; then
+    ANAVINFO=${FIX_GSI}/${ANAVINFO_DBZ_FED_FN}
+    diag_fed=.true.
+    if_model_fed=.true.
+    innov_use_model_fed=.true.
+  fi
   miter=1
   niter1=100
   niter2=0
@@ -681,6 +695,12 @@ fi
 if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "conv_dbz" ]]; then
   ANAVINFO=${FIX_GSI}/${ANAVINFO_CONV_DBZ_FN}
   if_model_dbz=.true.
+  if [ "${DO_GLM_FED_DA}" = "TRUE" ]; then
+    ANAVINFO=${FIX_GSI}/${ANAVINFO_CONV_DBZ_FED_FN}
+    diag_fed=.true.
+    if_model_fed=.true.
+    innov_use_model_fed=.true.
+  fi
 fi
 naensloc=`expr ${nsclgrp} \* ${ngvarloc} + ${nsclgrp} - 1`
 if [ ${assign_vdl_nml} = ".true." ]; then
