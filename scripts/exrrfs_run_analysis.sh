@@ -670,10 +670,13 @@ fi
 if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "radardbz" ]]; then
   ANAVINFO=${FIX_GSI}/${ENKF_ANAVINFO_DBZ_FN}
   if [ "${DO_GLM_FED_DA}" = "TRUE" ]; then
-    ANAVINFO=${FIX_GSI}/${ANAVINFO_DBZ_FED_FN}
-    diag_fed=.true.
-    if_model_fed=.true.
-    innov_use_model_fed=.true.
+    myStr=$( ncdump -h fv3_phyvars | grep flash_extent_density );
+    if [ ${#myStr} -ge 5 ]; then
+      ANAVINFO=${FIX_GSI}/${ANAVINFO_DBZ_FED_FN}
+      diag_fed=.true.
+      if_model_fed=.true.
+      innov_use_model_fed=.true.
+    fi
   fi
   miter=1
   niter1=100
@@ -696,10 +699,13 @@ if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "conv_dbz" ]]; then
   ANAVINFO=${FIX_GSI}/${ANAVINFO_CONV_DBZ_FN}
   if_model_dbz=.true.
   if [ "${DO_GLM_FED_DA}" = "TRUE" ]; then
-    ANAVINFO=${FIX_GSI}/${ANAVINFO_CONV_DBZ_FED_FN}
-    diag_fed=.true.
-    if_model_fed=.true.
-    innov_use_model_fed=.true.
+    myStr=$( ncdump -h fv3_dynvars | grep flash_extent_density );
+    if [ ${#myStr} -ge 5 ]; then
+      ANAVINFO=${FIX_GSI}/${ANAVINFO_CONV_DBZ_FED_FN}
+      diag_fed=.true.
+      if_model_fed=.true.
+      innov_use_model_fed=.true.
+    fi
   fi
 fi
 naensloc=`expr ${nsclgrp} \* ${ngvarloc} + ${nsclgrp} - 1`
