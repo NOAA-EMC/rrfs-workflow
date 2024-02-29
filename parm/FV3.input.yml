@@ -224,19 +224,21 @@ FV3_RAP:
     avg_max_length: 3600.
     ignore_rst_cksum: true
   fv_core_nml:
+    agrid_vel_rst: true
     d_con: 0.5
     d2_bg_k2: 0.04
     dz_min: 2.0
     hord_dp: 6
     hord_mt: 6
     hord_tm: 6
+    hord_tr: 8
     hord_vt: 6
-    k_split: 6
+    k_split: 2
     kord_mt: 9
     kord_tm: -9
     kord_tr: 9
     kord_wz: 9
-    n_split: 3
+    n_split: 4
     psm_bc: 1
     nord_tr: 0
     nrows_blend: 10
