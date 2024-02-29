@@ -25,7 +25,7 @@ OPTIONS
   --disable-options="OPTION1,OPTION2,..."
       disable ufs-weather-model options; delimited with ','
       (e.g. 32BIT | INLINE_POST | UFS_GOCART | MOM6 | CICE6 | WW3 | CMEPS)
-  --gtg
+  --nogtg
       build without GTG and libIFI (default is true, this option turns it off)
   --extrn
       check out external components
@@ -81,7 +81,7 @@ Settings:
   ENABLE_OPTIONS=${ENABLE_OPTIONS}
   DISABLE_OPTIONS=${DISABLE_OPTIONS}
   EXTRN=${EXTRN}
-  GTG=${GTG}
+  NOGTG=${NOGTG}
   REMOVE=${REMOVE}
   CONTINUE=${CONTINUE}
   BUILD_TYPE=${BUILD_TYPE}
@@ -120,7 +120,7 @@ DISABLE_OPTIONS=""
 BUILD_TYPE="Release"
 BUILD_JOBS=4
 EXTRN=false
-GTG=true
+NOGTG=false
 REMOVE=false
 CONTINUE=false
 VERBOSE=false
@@ -165,7 +165,7 @@ while :; do
     --disable-options|--disable-options=) usage_error "$1 requires argument." ;;
     --extrn) EXTRN=true ;;
     --extrn=?*|--extrn=) usage_error "$1 argument ignored." ;;
-    --gtg) GTG=false ;;
+    --nogtg) NOGTG=true ;;
     --remove) REMOVE=true ;;
     --remove=?*|--remove=) usage_error "$1 argument ignored." ;;
     --continue) CONTINUE=true ;;
@@ -239,8 +239,7 @@ MACHINE="${PLATFORM}"
 printf "PLATFORM(MACHINE)=${PLATFORM}\n" >&2
 
 # Determine whether to build GTG and IFI with UPP
-# Default is true
-if [ "${GTG}" = false ]; then
+if [ "${NOGTG}" = true ]; then
   cd ${SORC_DIR}
   cp ./CMakeLists_withoutgtg.txt ./CMakeLists.txt
 fi
