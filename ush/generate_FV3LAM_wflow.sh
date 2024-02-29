@@ -1192,6 +1192,7 @@ if [ "${DO_SPP}" = "TRUE" ]; then
     settings="$settings
     'iseed_spp': [ $( printf "%s, " "${ISEED_SPP[@]}" ) ],
     'spp_lscale': [ $( printf "%s, " "${SPP_LSCALE[@]}" ) ],
+    'sppint': ${SPPINT},
     'spp_prt_list': [ $( printf "%s, " "${SPP_MAG_LIST[@]}" ) ],
     'spp_sigtop1': [ $( printf "%s, " "${SPP_SIGTOP1[@]}" ) ],
     'spp_sigtop2': [ $( printf "%s, " "${SPP_SIGTOP2[@]}" ) ],
@@ -1210,6 +1211,7 @@ settings="$settings
 if [ "${DO_LSM_SPP}" = "TRUE" ]; then
     settings="$settings
     'lndp_type': ${LNDP_TYPE},
+    'lndpint':  ${LNDPINT},
     'lndp_model_type': ${LNDP_TYPE},
     'lndp_tau': [ $( printf "%s, " "${LSM_SPP_TSCALE[@]}" ) ],
     'lndp_lscale': [ $( printf "%s, " "${LSM_SPP_LSCALE[@]}" ) ],
