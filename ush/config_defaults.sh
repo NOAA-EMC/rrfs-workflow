@@ -767,6 +767,8 @@ ANAVINFO_FN="anavinfo.rrfs"
 ANAVINFO_SD_FN="anavinfo.rrfs_sd"
 ANAVINFO_DBZ_FN="anavinfo.rrfs_dbz"
 ANAVINFO_CONV_DBZ_FN="anavinfo.rrfs_conv_dbz"
+ANAVINFO_CONV_DBZ_FED_FN="anavinfo.rrfs_conv_dbz_fed"
+ANAVINFO_DBZ_FED_FN="anavinfo.rrfs_dbz_fed"
 ENKF_ANAVINFO_FN="anavinfo.rrfs"
 ENKF_ANAVINFO_DBZ_FN="anavinfo.enkf.rrfs_dbz"
 CONVINFO_FN="convinfo.rrfs"
@@ -2417,6 +2419,8 @@ SPP_SIGTOP1=( "0.1" "0.1" "0.1" "0.1" "0.1")
 SPP_SIGTOP2=( "0.025" "0.025" "0.025" "0.025" "0.025" )
 SPP_STDDEV_CUTOFF=( "1.5" "1.5" "2.5" "1.5" "1.5" ) 
 ISEED_SPP=( "4" "5" "6" "7" "8" )
+LNDPINT="3600"
+SPPINT="3600"
 #
 #-----------------------------------------------------------------------
 #
@@ -2594,8 +2598,11 @@ DO_IODA_PREPBUFR="FALSE"
 # DO_GLM_FED_DA
 # Flag turn on processing gridded GLM lightning data
 # GLMFED_DATA_MODE
-# Incomping lightning data format: FULL (full-disk), TILES, or EMC (tiles
+# Incoming lightning data format: FULL (full-disk), TILES, or PROD (tiles
 # with different naming convention)      
+# PREP_MODEL_FOR_FED
+# For the ensemble workflow: add flash_extent_density field to ensemble
+# member RESTART files so control member EnVar can use as BEC
 #
 #-----------------------------------------------------------------------
 #
@@ -2604,6 +2611,7 @@ DO_REFL2TTEN="FALSE"
 DO_NLDN_LGHT="FALSE"
 DO_GLM_FED_DA="FALSE"
 GLMFED_DATA_MODE="FULL"
+PREP_MODEL_FOR_FED="FALSE"
 DO_SMOKE_DUST="FALSE"
 EBB_DCYCLE="2"
 DO_PM_DA="FALSE"
