@@ -39,7 +39,7 @@ def addmodelfed(restartpath):
   # make variables for names of model files
   corefile = restartpath+'fv_core.res.tile1.nc' # need diff names for ensembles?
   tracerfile = restartpath+'fv_tracer.res.tile1.nc'
-  physfile = restartpath+'phy_data.nc'
+  physfile = restartpath+'tmp.nc'
 
   # open core file to read in delta pressure, then close
   u = nc.Dataset(corefile,'r')
@@ -394,7 +394,7 @@ if __name__=="__main__":
     this_path = cycle_dir+'/fcst_fv3lam/INPUT/'
     if cycle_type=="spinup":
       this_path = cycle_dir+'/fcst_fv3lam_'+cycle_type+'/INPUT/'
-    if os.path.exists(this_path+'phy_data.nc'):
+    if os.path.exists(this_path+'tmp.nc'):
       addmodelfed(this_path)
     else:
       print('No background for assimilation! Exiting.')
@@ -403,7 +403,7 @@ if __name__=="__main__":
     nwges_dir = os.environ.get("nwges_dir")
     restart_prefix = os.environ.get("restart_prefix")
     this_path = nwges_dir+'/RESTART/'+restart_prefix+'.'
-    if os.path.exists(this_path+'phy_data.nc'):
+    if os.path.exists(this_path+'tmp.nc'):
       addmodelfed(this_path)
     else:
       print('Model data not found at '+this_path+'*')
