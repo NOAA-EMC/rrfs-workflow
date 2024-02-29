@@ -699,7 +699,7 @@ if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "conv_dbz" ]]; then
   ANAVINFO=${FIX_GSI}/${ANAVINFO_CONV_DBZ_FN}
   if_model_dbz=.true.
   if [ "${DO_GLM_FED_DA}" = "TRUE" ]; then
-    myStr=$( ncdump -h fv3_dynvars | grep flash_extent_density );
+    myStr=$( ncdump -h fv3_phyvars | grep flash_extent_density );
     if [ ${#myStr} -ge 5 ]; then
       ANAVINFO=${FIX_GSI}/${ANAVINFO_CONV_DBZ_FED_FN}
       diag_fed=.true.
