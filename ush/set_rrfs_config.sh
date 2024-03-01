@@ -48,6 +48,8 @@ if [[ $MACHINE == "wcoss2" ]] ; then
   FIRE_RAVE_DIR=/lfs/h2/emc/lam/noscrub/emc.lam/RAVE_rawdata/RAVE_NA
   FVCOM_DIR="/lfs/h1/ops/prod/com/nosofs/v3.5"
   FVCOM_FILE="fvcom"
+  FVCOM_DIR="/lfs/h2/emc/lam/noscrub/emc.lam/OWAQ_fv3"
+  FVCOM_FILE="tsfc_fv3grid"
   RAPHRRR_SOIL_ROOT="/lfs/h1/ops/prod/com"
   GLMFED_EAST_ROOT="/lfs/h1/ops/prod/dcom/ldmdata/obs/GOES-16/GLM/tiles"
   GLMFED_WEST_ROOT="/lfs/h1/ops/prod/dcom/ldmdata/obs/GOES-17/GLM/tiles"
