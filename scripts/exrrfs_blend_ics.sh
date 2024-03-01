@@ -172,11 +172,8 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
 
      echo "Blending Starting."
 
-     # Python/F2Py scripts
-     cp $USHdir/blending_fv3.py .
-
-     # F2Py shared object files
-     ln -sf $LIB64dir/raymond.so .
+     # F2Py shared object files to PYTHONPATH
+     export PYTHONPATH=$PYTHONPATH:$LIB64dir
 
      # Required NETCDF files - RRFS
      cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.tile1.nc ./fv_core.res.tile1.nc
@@ -195,7 +192,7 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
      use_host_enkf=${USE_HOST_ENKF} # ignored if blend="TRUE".
                                     # TRUE:  Final EnKF will be GDAS (no blending)
                                     # FALSE: Final EnKF will be RRFS (no blending)
-     python blending_fv3.py $Lx $glb $reg $trcr $blend $use_host_enkf
+     python ${USHdir}/blending_fv3.py $Lx $glb $reg $trcr $blend $use_host_enkf
      cp ./fv_core.res.tile1.nc ${ics_dir}/.
      cp ./fv_tracer.res.tile1.nc ${ics_dir}/.
 
