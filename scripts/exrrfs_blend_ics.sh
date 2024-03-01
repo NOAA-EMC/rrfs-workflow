@@ -195,7 +195,7 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
      use_host_enkf=${USE_HOST_ENKF} # ignored if blend="TRUE".
                                     # TRUE:  Final EnKF will be GDAS (no blending)
                                     # FALSE: Final EnKF will be RRFS (no blending)
-     ${BLENDINGPYTHON} exrrfs_blending_fv3.py $Lx $glb $reg $trcr $blend $use_host_enkf
+     python exrrfs_blending_fv3.py $Lx $glb $reg $trcr $blend $use_host_enkf
      cp ./fv_core.res.tile1.nc ${ics_dir}/.
      cp ./fv_tracer.res.tile1.nc ${ics_dir}/.
 
