@@ -721,13 +721,8 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
 
   esac
 
-  # Python/F2Py scripts
-  cp $SCRIPTSdir/exrrfs_chgres_cold2fv3.py .
-
-  # F2Py shared object files
-  ln -sf $LIB64dir/chgres_winds.so .
-  ln -sf $LIB64dir/remap_scalar.so .
-  ln -sf $LIB64dir/remap_dwinds.so .
+  # F2Py shared object files to PYTHONPATH
+  export PYTHONPATH=$PYTHONPATH:$LIB64dir
 
   # Required FIX files
   cp $FIXLAM/${CRES}_grid.tile7.nc .
@@ -744,7 +739,7 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
   bndy=./gfs.bndy.nc
 
   # Run convert coldstart files to fv3 restart (rotate winds and remap).
-  python exrrfs_chgres_cold2fv3.py $cold $grid $akbk $akbkcold $orog
+  python ${USHdir}/chgres_cold2fv3.py $cold $grid $akbk $akbkcold $orog
 
 fi
 #

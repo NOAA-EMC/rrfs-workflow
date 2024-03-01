@@ -1697,13 +1697,11 @@ MODULES_RUN_TASK_FP script.
 
 {%- endif %}
 
-{% if do_ensemble %}
+{% if do_ensemble and do_nonvar_cldanal %}
  <metatask name="run_ensemble">
   <var name="{{ ensmem_indx_name }}">
     {%- for m in range(1, num_ens_members+1) -%}{%- set fmtstr=" %0"~ndigits_ensmem_names~"d" -%}{{- fmtstr%m -}}{%- endfor %} </var>
-{%- endif %}
 
-{%- if do_nonvar_cldanal %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -1767,9 +1765,7 @@ MODULES_RUN_TASK_FP script.
     </dependency>
 
   </task>
-{%- if do_ensemble %}
  </metatask>
-{%- endif %}
 {%- endif %}
 
 {%- if not do_ensemble %}
