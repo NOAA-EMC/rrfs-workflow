@@ -141,6 +141,44 @@ if [ -r "$run_dir/RESTART/${restart_prefix}.coupler.res" ]; then
       done
     done
   fi
+#
+#-----------------------------------------------------------------------
+#
+# If EnVar needs flash extent density field in control member, add it 
+#
+#-----------------------------------------------------------------------
+#
+if [[ ${DO_GLM_FED_DA} = TRUE && ${DO_ENSEMBLE} != TRUE ]]; then
+  export restart_prefix=${restart_prefix} 
+  export PREP_MODEL=2
+  ncap2 -O -v -s 'flash_extent_density=ref_f3d' ${nwges_dir}/RESTART/${restart_prefix}.phy_data.nc ${nwges_dir}/RESTART/${restart_prefix}.tmp.nc
+  python -u ${SCRIPTSdir}/exrrfs_process_glmfed.py
+  ncks -A -C -v flash_extent_density ${nwges_dir}/RESTART/${restart_prefix}.tmp.nc ${nwges_dir}/RESTART/${restart_prefix}.phy_data.nc
+  rm ${nwges_dir}/RESTART/${restart_prefix}.tmp.nc
+fi
+#
+#-----------------------------------------------------------------------
+#
+# If EnVar will need flash extent density field in ensembles, add it 
+#
+#-----------------------------------------------------------------------
+#
+if [[ ${DO_ENSEMBLE} = TRUE && ${fhr} -eq 1 && ${PREP_MODEL_FOR_FED} = TRUE ]]; then
+  export restart_prefix=${restart_prefix}  
+  export PREP_MODEL=2
+
+  ncap2 -O -v -s 'flash_extent_density=ref_f3d' ${nwges_dir}/RESTART/${restart_prefix}.phy_data.nc ${nwges_dir}/RESTART/${restart_prefix}.tmp.nc
+  python -u ${SCRIPTSdir}/exrrfs_process_glmfed.py
+  ncks -A -C -v flash_extent_density ${nwges_dir}/RESTART/${restart_prefix}.tmp.nc ${nwges_dir}/RESTART/${restart_prefix}.phy_data.nc
+  rm ${nwges_dir}/RESTART/${restart_prefix}.tmp.nc
+fi
+#
+#-----------------------------------------------------------------------
+#
+# Back to our regularly scheduled programming 
+#
+#-----------------------------------------------------------------------
+#
   for file in ${filelist}; do
     mv $run_dir/RESTART/${restart_prefix}.${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
   done
@@ -173,6 +211,62 @@ else
         done
       done
     fi
+#
+#-----------------------------------------------------------------------
+#
+# If EnVar needs flash extent density field in control member, add it 
+#
+#-----------------------------------------------------------------------
+#
+if [[ ${DO_GLM_FED_DA} = TRUE && ${DO_ENSEMBLE} != TRUE ]]; then
+  export restart_prefix=${restart_prefix} 
+  export PREP_MODEL=2
+  time_0=`date +%s`
+  ncap2 -O -v -s 'flash_extent_density=ref_f3d' ${nwges_dir}/RESTART/${restart_prefix}.phy_data.nc ${nwges_dir}/RESTART/${restart_prefix}.tmp.nc
+  time_1=`date +%s`
+  python -u ${SCRIPTSdir}/exrrfs_process_glmfed.py
+  time_2=`date +%s`
+  ncks -A -C -v flash_extent_density ${nwges_dir}/RESTART/${restart_prefix}.tmp.nc ${nwges_dir}/RESTART/${restart_prefix}.phy_data.nc
+  time_3=`date +%s`
+  rm ${nwges_dir}/RESTART/${restart_prefix}.tmp.nc
+  time_4=`date +%s`
+  echo ncaps2 execution time was `expr $time_1 - $time_0` s.
+  echo python execution time was `expr $time_2 - $time_1` s.
+  echo ncks execution time was `expr $time_3 - $time_2` s.
+  echo rm execution time was `expr $time_4 - $time_3` s.
+fi
+#
+#-----------------------------------------------------------------------
+#
+# If EnVar will need flash extent density field in ensembles, add it 
+#
+#-----------------------------------------------------------------------
+#
+if [[ ${DO_ENSEMBLE} = TRUE && ${fhr} -eq 1 && ${PREP_MODEL_FOR_FED} = TRUE ]]; then
+  export restart_prefix=${restart_prefix}  
+  export PREP_MODEL=2
+
+  time_0=`date +%s`
+  ncap2 -O -v -s 'flash_extent_density=ref_f3d' ${nwges_dir}/RESTART/${restart_prefix}.phy_data.nc ${nwges_dir}/RESTART/${restart_prefix}.tmp.nc
+  time_1=`date +%s`
+  python -u ${SCRIPTSdir}/exrrfs_process_glmfed.py
+  time_2=`date +%s`
+  ncks -A -C -v flash_extent_density ${nwges_dir}/RESTART/${restart_prefix}.tmp.nc ${nwges_dir}/RESTART/${restart_prefix}.phy_data.nc
+  time_3=`date +%s`
+  rm ${nwges_dir}/RESTART/${restart_prefix}.tmp.nc
+  time_4=`date +%s`
+  echo ncaps2 execution time was `expr $time_1 - $time_0` s.
+  echo python execution time was `expr $time_2 - $time_1` s.
+  echo ncks execution time was `expr $time_3 - $time_2` s.
+  echo rm execution time was `expr $time_4 - $time_3` s.
+fi
+#
+#-----------------------------------------------------------------------
+#
+# Back to our regularly scheduled programming 
+#
+#-----------------------------------------------------------------------
+#
     for file in ${filelist}; do
        mv $run_dir/RESTART/${file} ${nwges_dir}/RESTART/${restart_prefix}.${file}
     done

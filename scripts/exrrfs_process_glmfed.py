@@ -39,7 +39,7 @@ def addmodelfed(restartpath):
   # make variables for names of model files
   corefile = restartpath+'fv_core.res.tile1.nc' # need diff names for ensembles?
   tracerfile = restartpath+'fv_tracer.res.tile1.nc'
-  physfile = restartpath+'phy_data.nc'
+  physfile = restartpath+'tmp.nc'
 
   # open core file to read in delta pressure, then close
   u = nc.Dataset(corefile,'r')
@@ -49,14 +49,15 @@ def addmodelfed(restartpath):
   # open tracer file to read graupel, then close
   u = nc.Dataset(tracerfile,'r')
   graupel = u['graupel'][0] # units kg/kg 
+  u.close()
 
   # open physics file to write FED
   u = nc.Dataset(physfile,'r+')
 
-  if 'flash_extent_density' in u.variables.keys():
-    print('FED field exists! Exiting')
-    u.close()
-    return()
+  #if 'flash_extent_density' in u.variables.keys():
+  #  print('FED field exists! Exiting')
+  #  u.close()
+  #  return()
 
 
   # units of [delp/g] = Pa*s^2/m = N*s^2/m^3 = kg/m^2 = dry air mass per m^2 in the cell
@@ -91,8 +92,12 @@ def addmodelfed(restartpath):
 
   # add 4D FED grid to tracer NetCDF and close
   # Time,zaxis_1,yaxis_1,xaxis_1 are dimensions to write
-  fed_out = u.createVariable('flash_extent_density',np.float32,('Time','zaxis_1','yaxis_1','xaxis_1'))
-  fed_out[:] = fed.astype('float32')
+  if 'flash_extent_density' in u.variables.keys():
+    print('Overwriting FED values.')
+    u['flash_extent_density'][:] = fed.astype('float32') 
+  else:
+    fed_out = u.createVariable('flash_extent_density',np.float32,('Time','zaxis_1','yaxis_1','xaxis_1'),chunksizes=(1,1,u.dimensions['yaxis_1'].size,u.dimensions['xaxis_1'].size))
+    fed_out[:] = fed.astype('float32')
   u.close()
   return()
 
@@ -184,7 +189,7 @@ def process_fulldisk_fed():
   print('FED obs found:',len(out_lats))
   return()
 
-def process_emc_tiles():
+def process_prod_tiles():
 
   #####################################################################
   #                                                                   #
@@ -347,63 +352,60 @@ def process_gsl_tiles():
 
 if __name__=="__main__":
 
-  mode = os.environ.get("MODE")
-  if mode=="FULL":
-    process_fulldisk_fed()
-  elif mode=="TILES":
-    process_gsl_tiles()
-  elif mode=="EMC":
-    process_emc_tiles()
-  else:
-    print("Invalid MODE specified. Valid MODES are FULL, TILES, EMC.")
-    quit()
+  ########################################################
+  #                                                      #
+  # Driver for FED observation preprocessing and adding  #
+  # the 3D FED field to the models.                      #
+  #                                                      #
+  # PREP_MODEL=0: preprocess observations; don't modify  #
+  #               any model NetCDFs (used for ens DA)    #
+  # PREP_MODEL=1: preprocess observations and add FED    #
+  #               to the control member (used for EnVar) #
+  # PREP_MODEL=2: don't preprocess observations, add FED #
+  #               to one ens member (for EnVar BEC)      # 
+  #                                                      #
+  ########################################################
+  prepmodel = int(os.environ.get("PREP_MODEL"))
+  if prepmodel<2:
+    mode = os.environ.get("MODE")
+    if mode=="FULL":
+      process_fulldisk_fed()
+    elif mode=="TILES":
+      process_gsl_tiles()
+    elif mode=="PROD":
+      process_prod_tiles()
+    else:
+      print("Invalid MODE specified. Valid MODES are FULL, TILES, PROD.")
+      quit()
 
   ########################################################
   #                                                      #
-  # add model FED to restart and ensemble files in place #
+  # add model FED to input or ensemble files in place    #
   #                                                      #
   ########################################################
-  
-  prepmodel = int(os.environ.get("PREP_MODEL"))
+
+  if prepmodel==0:
+    print('FED observations processed. Exiting.')
+    quit() 
   if prepmodel==1:
     # format paths to model data
     cycle_dir = os.environ.get("CYCLE_DIR")
     cycle_type = os.environ.get("CYCLE_TYPE")
-    rrfse_dir = os.environ.get("RRFSE_NWGES_BASEDIR")
-    num_ens = int(os.environ.get("NUM_ENS_MEMBERS"))
-    cycle_len_H = int(os.environ.get("DA_CYCLE_INTERV"))
-    print("number of ensembles is ",num_ens)
-    print("cycle length is ",cycle_len_H)
-    # format datetime obj
-    myDate = dt.datetime(int(inDate[:4]),int(inDate[4:6]),int(inDate[6:8]),int(inDate[8:10]))
-    myDatemInterv = myDate-dt.timedelta(hours=cycle_len_H)
-    myDateStr = '%04d%02d%02d.%02d0000.'%(myDate.year,myDate.month,myDate.day,myDate.hour)
-    myDatemIntervStr = '%04d%02d%02d%02d'%(myDatemInterv.year,myDatemInterv.month,myDatemInterv.day,myDatemInterv.hour)
-
-    # add deterministic path
     this_path = cycle_dir+'/fcst_fv3lam/INPUT/'
     if cycle_type=="spinup":
       this_path = cycle_dir+'/fcst_fv3lam_'+cycle_type+'/INPUT/'
-    if os.path.exists(this_path+'phy_data.nc'):
-      restartpathlist = [this_path]
+    if os.path.exists(this_path+'tmp.nc'):
+      addmodelfed(this_path)
     else:
       print('No background for assimilation! Exiting.')
       quit()
-    for i in range(1,num_ens+1):
-      this_path = rrfse_dir+'/'+myDatemIntervStr+'/mem%04d/fcst_fv3lam/RESTART/'%i+myDateStr
-      if os.path.exists(this_path+'phy_data.nc'):
-        restartpathlist = restartpathlist+[this_path]
-      else:
-        this_path = rrfse_dir+'/'+myDatemIntervStr+'/mem%04d/fcst_fv3lam_spinup/RESTART/'%i+myDateStr
-        if os.path.exists(this_path+'phy_data.nc'):
-          restartpathlist = restartpathlist+[this_path]
-    print('Ens members found: %d'%(len(restartpathlist)-1))
-    for p in restartpathlist:
-      try:
-        addmodelfed(p)
-      except:
-        print("spinup and prod may be running simultaneously; wait 100")
-        time.sleep(100)
-        addmodelfed(p)
+  elif prepmodel==2:
+    nwges_dir = os.environ.get("nwges_dir")
+    restart_prefix = os.environ.get("restart_prefix")
+    this_path = nwges_dir+'/RESTART/'+restart_prefix+'.'
+    if os.path.exists(this_path+'tmp.nc'):
+      addmodelfed(this_path)
+    else:
+      print('Model data not found at '+this_path+'*')
 
   quit()
