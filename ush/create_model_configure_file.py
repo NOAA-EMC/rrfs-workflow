@@ -72,7 +72,7 @@ def create_model_configure_file(
     #
     dot_quilting_dot = f".{lowercase(str(QUILTING))}."
     dot_write_dopost = f".{lowercase(str(WRITE_DOPOST))}."
-    restart_interval = RESTART_INTERVAL
+    restart_interval = restart_hrs
     nsout = NSOUT
 
     #

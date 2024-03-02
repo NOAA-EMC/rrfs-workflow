@@ -1,5 +1,5 @@
 MACHINE="jet"
-version="v0.7.9"
+version="v0.8.4"
 #RESERVATION="rrfsens"
 #RESERVATION_POST="rrfsdet"
 EXPT_BASEDIR="YourOwnSpace/${version}"
@@ -36,6 +36,15 @@ PREP_MODEL_FOR_FED="FALSE" # adds field to ens restart files to be used by contr
 USE_CLM="TRUE"
 DO_PARALLEL_PRDGEN="FALSE"
 DO_GSIDIAG_OFFLINE="FALSE"
+
+DO_ENS_BLENDING="TRUE"
+if [[ ${DO_ENS_BLENDING} == "TRUE" ]] ; then
+  ENS_BLENDING_LENGTHSCALE=960
+  BLEND="TRUE"          # TRUE:  Blend RRFS and GDAS EnKF
+                      # FALSE: Don't blend, activate cold2warm start only, and use either GDAS or RRFS
+  USE_HOST_ENKF="TRUE"  # TRUE:  Final EnKF (u,v,t,delp,sphum) will be GDAS (no blending)
+                      # FALSE: Final EnKF (u,v,t,delp,sphum) will be RRFS (no blending)
+fi
 
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   EXPT_SUBDIR="rrfs_conus_enfcst"
@@ -185,10 +194,10 @@ fi
 
 RUN_ensctrl="rrfs"
 RUN="enkfrrfs"
-TAG="c3enkf79"
+TAG="c3enkf84"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   RUN="refs"
-  TAG="c3enfcst79"
+  TAG="c3enfcst84"
 fi
 
 . set_rrfs_config.sh
