@@ -45,7 +45,7 @@ if [[ $MACHINE == "wcoss2" ]] ; then
   SST_ROOT=/lfs/h1/ops/prod/com/nsst/v1.2
   GVF_ROOT=/lfs/h1/ops/prod/dcom/viirs
   IMSSNOW_ROOT=/lfs/h1/ops/prod/com/obsproc/v1.1
-  FIRE_RAVE_DIR=/lfs/h2/emc/lam/noscrub/emc.lam/RAVE_rawdata/RAVE_NA
+  FIRE_RAVE_DIR=/lfs/h1/ops/prod/dcom
   FVCOM_DIR="/lfs/h1/ops/prod/com/nosofs/v3.5"
   FVCOM_FILE="fvcom"
   FVCOM_DIR="/lfs/h2/emc/lam/noscrub/emc.lam/OWAQ_fv3"

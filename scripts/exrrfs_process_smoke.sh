@@ -93,12 +93,24 @@ do
       echo "${rave_nwges_dir}/${intp_fname} interoplated file non available to reuse"  
    fi
 done
+
+#
+#  link RAVE data to work directory  $workdir
+#
+previous_2day=`${DATE} '+%C%y%m%d' -d "$current_day-2 days"`
+YYYYMMDDm1=${previous_day:0:8}
+YYYYMMDDm2=${previous_2day:0:8}
+fire_rave_dir_work=${workdir}
+ln -s ${FIRE_RAVE_DIR}/${YYYYMMDD}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
+ln -s ${FIRE_RAVE_DIR}/${YYYYMMDDm1}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
+ln -s ${FIRE_RAVE_DIR}/${YYYYMMDDm2}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
+
 #
 #-----------------------------------------------------------------------
 #
 python -u  ${USHdir}/generate_fire_emissions.py \
   "${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}" \
-  "${FIRE_RAVE_DIR}" \
+  "${fire_rave_dir_work}" \
   "${workdir}" \
   "${PREDEF_GRID_NAME}" \
   "${EBB_DCYCLE}" 
