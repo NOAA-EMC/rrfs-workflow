@@ -1100,7 +1100,9 @@ MODULES_RUN_TASK_FP script.
       <and>
         <taskdep task="&MAKE_ICS_TN;{{ uscore_ensmem_name }}"/>
         <or>
+        {%- if not do_retro %}
           <timedep><cyclestr offset="&START_TIME_BLENDING;">@Y@m@d@H@M00</cyclestr></timedep>
+        {%- endif %}
           <and>
           <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0001/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
           <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/mem0002/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
@@ -1519,10 +1521,6 @@ MODULES_RUN_TASK_FP script.
          <and>
          <taskdep task="&RUN_RECENTER_TN;_spinup"/>
          <datadep age="00:00:00:05"><cyclestr>&FG_ROOT;/@Y@m@d@H/run_blending</cyclestr></datadep>
-         <or>
-           <streq><left>07</left><right><cyclestr>@H</cyclestr></right></streq>
-           <streq><left>19</left><right><cyclestr>@H</cyclestr></right></streq>
-         </or>
          </and>
     </dependency>
 
@@ -1574,14 +1572,12 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
- {%- if do_ensemble %}
  <metatask name="run_ensemble_observer_spinup">
    <var name="{{ ensmem_indx_name }}">
     {%- for m in range(1, num_ens_members+1) -%}
     {%- set fmtstr=" %0"~ndigits_ensmem_names~"d" -%}
     {{- fmtstr%m -}}
    {%- endfor %} </var>
- {%- endif %}
 
   <task name="&OBSERVER_GSI_TN;_spinup{{ uscore_ensmem_name }}" cycledefs="spinupcyc" maxtries="{{ maxtries_analysis_gsi }}">
 
@@ -1617,8 +1613,8 @@ MODULES_RUN_TASK_FP script.
 
   </task>
 
-{%- if do_ensemble %}
-  </metatask>{%- endif %}{%- endif %}
+  </metatask>
+{%- endif %}
 
 {%- if do_enkfupdate %}
 <!--
