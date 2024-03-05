@@ -194,6 +194,8 @@ net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
 prslev=${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2
 natlev=${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2
 ififip=${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2
+aviati=${net4}.t${cyc}z.aviati.f${fhr}.${gridname}grib2
+
 testbed=${net4}.t${cyc}z.testbed.f${fhr}.${gridname}grib2
 
 # extract the output fields for the testbed
@@ -223,18 +225,30 @@ fi
 basetime=$( date +%y%j%H%M -d "${yyyymmdd} ${hh}" )
 cp ${postprd_dir}/${prslev} ${COMOUT}/${prslev}
 cp ${postprd_dir}/${natlev} ${COMOUT}/${natlev}
+
 if [ -f  ${postprd_dir}/${ififip} ]; then
   cp ${postprd_dir}/${ififip} ${COMOUT}/${ififip}
 fi
+
+if [ -f  ${postprd_dir}/${aviati} ]; then
+  cp ${postprd_dir}/${aviati} ${COMOUT}/${aviati}
+fi
+
 if [ -f  ${postprd_dir}/${testbed} ]; then
   cp ${postprd_dir}/${testbed}  ${COMOUT}/${testbed}
 fi
 
 wgrib2 ${COMOUT}/${prslev} -s > ${COMOUT}/${prslev}.idx
 wgrib2 ${COMOUT}/${natlev} -s > ${COMOUT}/${natlev}.idx
+
 if [ -f ${COMOUT}/${ififip} ]; then
   wgrib2 ${COMOUT}/${ififip} -s > ${COMOUT}/${ififip}.idx
 fi
+
+if [ -f ${COMOUT}/${aviati} ]; then
+  wgrib2 ${COMOUT}/${aviati} -s > ${COMOUT}/${aviati}.idx
+fi
+
 if [ -f ${COMOUT}/${testbed} ]; then
   wgrib2 ${COMOUT}/${testbed} -s > ${COMOUT}/${testbed}.idx
 fi
@@ -318,6 +332,12 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
       fi
     fi
 
+    #-- Upscale & subset FAA requested information
+    
+     # echo "$USHrrfs/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT} &" >> $DATAprdgen/poescript_faa_${fhr}
+
+    ${USHrrfs}/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT}
+
   else
     echo "WARNING: this grid is not ready for parallel prdgen: ${PREDEF_GRID_NAME}"
   fi
@@ -378,7 +398,7 @@ else
 
     for grid in ${ADDNL_OUTPUT_GRIDS[@]}
     do
-      for leveltype in prslev natlev ififip testbed
+      for leveltype in prslev natlev ififip aviati testbed
       do
       
         eval grid_specs=\$grid_specs_${grid}
@@ -393,7 +413,7 @@ else
            -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
            -new_grid_interpolation bilinear \
            -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
-           -if ":(NCONCD|NCCICE|SPNCR|CLWMR|CICE|RWMR|SNMR|GRLE|PMTF|PMTC|REFC|CSNOW|CICEP|CFRZR|CRAIN|LAND|ICEC|TMP:surface|VEG|CCOND|SFEXC|MSLMA|PRES:tropopause|LAI|HPBL|HGT:planetary boundary layer):|ICPRB|SIPD|ICSEV" -new_grid_interpolation neighbor -fi \
+           -if ":(NCONCD|NCCICE|SPNCR|CLWMR|CICE|RWMR|SNMR|GRLE|PMTF|PMTC|REFC|CSNOW|CICEP|CFRZR|CRAIN|LAND|ICEC|TMP:surface|VEG|CCOND|SFEXC|MSLMA|PRES:tropopause|LAI|HPBL|HGT:planetary boundary layer):|ICPRB|SIPD|ICESEV" -new_grid_interpolation neighbor -fi \
            -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2 &
         else
           wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
