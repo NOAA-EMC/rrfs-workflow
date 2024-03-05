@@ -13,7 +13,8 @@ aviati=$6
 COMOUT=$7
 
 # FAA request variable to be extracted from UPP output
-  parmdir=${USHdir}/prdgen/fix_file
+  parmdir=${USHdir}/prdgen
+  # parmdir=${USHdir}/prdgen/fix_file
 
 # Grid 91 for the IFI AK 
   grid_specs_91="nps:210:60 181.429:1649:2976.000000 40.530:1105:2976.000000"
