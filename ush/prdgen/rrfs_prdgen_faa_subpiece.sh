@@ -176,11 +176,11 @@ COMOUT=$7
     wgrib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.ak_3km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.ak_3km.grib2.idx
 
     #-- GRID 237: PR 32km
-    wgrib2 ${COMOUT}/${ififip} -s | egrep '(:ICPRB:|:SIPD:|:var discipline=0 master_table=2 parmcat=19 parm=37:)' | \
-    wgrib2 ${COMOUT}/${ififip} -set_bitmap 1 -set_grib_type c3 \
-       -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
-       -new_grid_interpolation neighbor \
-       -new_grid ${grid_specs_237}  rrfs.t${cyc}z.ififip.f${fhr}.pr_32km.grib2
-    mv rrfs.t${cyc}z.ififip.f${fhr}.pr_32km.grib2 ${COMOUT}
-    wgrib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.pr_32km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.pr_32km.grib2.idx
+    #wgrib2 ${COMOUT}/${ififip} -s | egrep '(:ICPRB:|:SIPD:|:var discipline=0 master_table=2 parmcat=19 parm=37:)' | \
+    #wgrib2 ${COMOUT}/${ififip} -set_bitmap 1 -set_grib_type c3 \
+    #   -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
+    #   -new_grid_interpolation neighbor \
+    #   -new_grid ${grid_specs_237}  rrfs.t${cyc}z.ififip.f${fhr}.pr_32km.grib2
+    #mv rrfs.t${cyc}z.ififip.f${fhr}.pr_32km.grib2 ${COMOUT}
+    #wgrib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.pr_32km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.pr_32km.grib2.idx
   fi
