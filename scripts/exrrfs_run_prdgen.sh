@@ -398,7 +398,7 @@ else
 
     for grid in ${ADDNL_OUTPUT_GRIDS[@]}
     do
-      for leveltype in prslev natlev ififip aviati testbed
+      for leveltype in prslev natlev ififip testbed
       do
       
         eval grid_specs=\$grid_specs_${grid}
