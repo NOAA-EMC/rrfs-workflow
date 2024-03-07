@@ -22,9 +22,6 @@ DO_NONVAR_CLDANAL="TRUE"
 #DO_ENVAR_RADAR_REF="TRUE"
 DO_SMOKE_DUST="FALSE"
 DO_PM_DA="FALSE"
-DO_GLM_FED_DA="FALSE"
-GLMFED_DATA_MODE="PROD"  # retros 20220608-now use FULL; retros 20230714-now and real-time on Jet use FULL or TILES
-PREP_MODEL_FOR_FED="FALSE" # adds field to ens restart files to be used by control member EnVar
 #DO_REFL2TTEN="FALSE"
 #RADARREFL_TIMELEVEL=(0)
 #FH_DFI_RADAR="0.0,0.25,0.5"
@@ -33,6 +30,9 @@ PREP_MODEL_FOR_FED="FALSE" # adds field to ens restart files to be used by contr
 #DO_BUFRSND="TRUE"
 #USE_FVCOM="TRUE"
 #PREP_FVCOM="TRUE"
+DO_GLM_FED_DA="TRUE"
+GLMFED_DATA_MODE="FULL"  # retros 20220608-now use FULL; retros 20230714-now and real-time on Jet use FULL or TILES
+PREP_MODEL_FOR_FED="TRUE" # adds field to ens restart files to be used by control member EnVar
 USE_CLM="TRUE"
 DO_PARALLEL_PRDGEN="FALSE"
 DO_GSIDIAG_OFFLINE="FALSE"
@@ -96,7 +96,7 @@ PRODLONG_CYCLEDEF="00 01 01 01 2100 *"
 #RECENTER_CYCLEDEF="00 19 * 10 2022 *"
 ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}1500 ${DATE_LAST_CYCL}2300 24:00:00"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
-  BOUNDARY_LEN_HRS="36"
+  BOUNDARY_LEN_HRS="60"
   LBC_SPEC_INTVL_HRS="3"
   DO_SPINUP="FALSE"
   INITIAL_CYCLEDEF="00 01 01 01 2100 *"
@@ -119,10 +119,10 @@ POSTPROC_LEN_HRS="1"
 for i in {0..23}; do FCST_LEN_HRS_CYCLES[$i]=1; done
 for i in {0..23..6}; do FCST_LEN_HRS_CYCLES[$i]=1; done
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
-  for i in {0..23..06}; do FCST_LEN_HRS_CYCLES[$i]=24; done 
-  FCST_LEN_HRS="6"
-  POSTPROC_LEN_HRS="24"
-  BOUNDARY_PROC_GROUP_NUM="8"
+  for i in {0..23..06}; do FCST_LEN_HRS_CYCLES[$i]=60; done
+  FCST_LEN_HRS="60"
+  POSTPROC_LEN_HRS="60"
+  BOUNDARY_PROC_GROUP_NUM="10"
 fi
 DA_CYCLE_INTERV="1"
 RESTART_INTERVAL="1"
@@ -137,7 +137,7 @@ WRTCMP_quantize_nsd="18"
 OUTPUT_FH="1 -1"
 
 WTIME_RUN_FCST="01:00:00"
-WTIME_MAKE_LBCS="02:00:00"
+WTIME_MAKE_LBCS="04:00:00"
 
 envir="para"
 ARCHIVEDIR="/1year/BMC/wrfruc/rrfs_b"
@@ -192,6 +192,9 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    CLEAN_OLDSTMPPOST_HRS="48"
 fi
 
+SPPINT=3600
+LNDPINT=3600
+
 RUN_ensctrl="rrfs"
 RUN="enkfrrfs"
 TAG="c3enkf84"
@@ -203,11 +206,13 @@ fi
 . set_rrfs_config.sh
 
 STMP="${EXPT_BASEDIR}/stmp_ensda"  # Path to directory STMP that mostly contains input files.
-if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
-  STMP="${EXPT_BASEDIR}/stmp_ensfcst"  # Path to directory STMP that mostly contains input files.
-fi
 PTMP="${EXPT_BASEDIR}"  # Path to directory PTMP that mostly contains output files.
 NWGES="${EXPT_BASEDIR}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
+  STMP="${EXPT_BASEDIR}/stmp_enfcst"  # Path to directory STMP that mostly contains input files.
+  PTMP="${EXPT_BASEDIR}"  # Path to directory STMP that mostly contains input files.
+  NWGES="${EXPT_BASEDIR}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+fi
 ENSCTRL_STMP="${EXPT_BASEDIR}/stmp"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
 ENSCTRL_PTMP="${EXPT_BASEDIR}"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
 ENSCTRL_NWGES="${EXPT_BASEDIR}/nwges"  # Path to directory STMP that mostly contains control input files for ensemble recentering.
