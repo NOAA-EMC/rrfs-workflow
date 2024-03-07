@@ -1596,6 +1596,9 @@ SFC_CLIMO_FIELDS=( \
 # System directory in which the majority of fixed (i.e. time-independent) 
 # files that are needed to run the FV3-LAM model are located
 #
+# FIXprdgen:
+# directory where prdgen fix files are located
+#
 # TOPO_DIR:
 # The location on disk of the static input files used by the make_orog
 # task (orog.x and shave.x). Can be the same as FIXgsm.
@@ -1676,6 +1679,7 @@ SFC_CLIMO_FIELDS=( \
 # to a null string which will then be overwritten in setup.sh unless the
 # user has specified a different value in config.sh
 FIXgsm=""
+FIXprdgen=""
 TOPO_DIR=""
 SFC_CLIMO_INPUT_DIR=""
 FIX_GSI=""
