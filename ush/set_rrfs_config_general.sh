@@ -15,10 +15,10 @@ if [[ $MACHINE == "jet" ]] ; then
     QUEUE_DEFAULT="rth"
     QUEUE_FCST="rth"
     QUEUE_ANALYSIS="rth"
-    QUEUE_PRDGEN="rt"
-    QUEUE_GRAPHICS="rt"
+    QUEUE_PRDGEN="rth"
+    QUEUE_GRAPHICS="rth"
     QUEUE_HPSS="batch"
-    QUEUE_POST="rt"
+    QUEUE_POST="rth"
     RESERVATION_POST="rrfsdet"
     NNODES_MAKE_ICS="3"
     PPN_MAKE_ICS="20"
@@ -178,6 +178,7 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
       NCORES_RUN_ANALYSIS=200
       PPN_RUN_NONVARCLDANL="10"
       NNODES_RUN_NONVARCLDANL="12"
+      PPN_RUN_ENKF="2"
       NNODES_RUN_RECENTER="5"
       PPN_RUN_RECENTER="40"
 

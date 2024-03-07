@@ -55,8 +55,8 @@ def check_for_raw_rave(RAVE, intp_non_avail_hours, intp_avail_hours):
     rave_nonavail_hours_test = []
     for date in intp_non_avail_hours:
         wildcard_name = f'*-3km*{date}*{date}59590*.nc'
-        matching_files = [f for f in os.listdir(RAVE) if fnmatch.fnmatch(f, wildcard_name)]
-
+        name_retro = f'*3km*{date}*{date}*.nc'
+        matching_files = [f for f in os.listdir(RAVE) if fnmatch.fnmatch(f, wildcard_name) or fnmatch.fnmatch(f, name_retro)]
         print(f'Find raw RAVE: {matching_files}')
         if not matching_files:
             print(f'Raw RAVE non_available for interpolation {date}')
