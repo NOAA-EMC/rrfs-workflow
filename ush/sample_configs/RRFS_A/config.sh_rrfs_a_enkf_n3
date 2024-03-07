@@ -211,7 +211,6 @@ if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   RUN="refs"
   TAG="n3enfcst85"
 fi
-COMINgfs=""
 
 . set_rrfs_config.sh
 
