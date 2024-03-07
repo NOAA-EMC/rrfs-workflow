@@ -1,1 +1,0 @@
-../../.agent/smoke_dust/RRFS_CONUS_3km/veg_map.nc
