@@ -145,6 +145,8 @@ echo $mtnres $lonb $latb $jcap $NR $NF1 $NF2 $efac $blat > "${input_redirect_fn}
 #
 echo "\"${grid_fp}\"" >> "${input_redirect_fn}"
 echo "\"$orogfile\"" >> "${input_redirect_fn}"
+echo ".false." >> "${input_redirect_fn}"
+echo "none" >> "${input_redirect_fn}"
 cat "${input_redirect_fn}"
 #
 #-----------------------------------------------------------------------

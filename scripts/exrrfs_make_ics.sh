@@ -493,9 +493,9 @@ case "${EXTRN_MDL_NAME_ICS}" in
   external_model="NAM"
   fn_grib2="${EXTRN_MDL_FNS[0]}"
   input_type="grib2"
-  vgtyp_from_climo=True
-  sotyp_from_climo=True
-  vgfrc_from_climo=True
+  vgtyp_from_climo=False
+  sotyp_from_climo=False
+  vgfrc_from_climo=False
   minmax_vgfrc_from_climo=True
   lai_from_climo=True
   tg3_from_soil=False
