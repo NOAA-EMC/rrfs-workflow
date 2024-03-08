@@ -13,6 +13,7 @@ load(pathJoin("w3emc", os.getenv("w3emc_ver")))
 load(pathJoin("sp", os.getenv("sp_ver")))
 load(pathJoin("ip", os.getenv("ip_ver")))
 load(pathJoin("nemsio", os.getenv("nemsio_ver")))
+load(pathJoin("ncdiag", os.getenv("ncdiag_ver")))
 load(pathJoin("libjpeg", os.getenv("libjpeg_ver")))
 
 load(pathJoin("udunits", os.getenv("udunits_ver")))
