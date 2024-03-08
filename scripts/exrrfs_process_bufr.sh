@@ -280,7 +280,7 @@ if [ "${PREDEF_GRID_NAME}" = "GSD_RAP13km" ] || [ "${PREDEF_GRID_NAME}" = "RRFS_
    metar_impact_radius_number=9
 else
    npts_rad_number=3
-   metar_impact_radius_number=15
+   metar_impact_radius_number=20
 fi
 
 cat << EOF > namelist.nasalarc
