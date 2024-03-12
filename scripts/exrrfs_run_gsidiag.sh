@@ -243,7 +243,7 @@ for loop in $loops; do
       done
     fi
 
-    listall="conv_dbz"
+    listall="conv_dbz conv_fed"
     if [ -r ${analworkdir_dbz} ]; then
       cd ${analworkdir_dbz}
 
