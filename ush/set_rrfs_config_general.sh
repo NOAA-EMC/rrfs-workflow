@@ -92,6 +92,13 @@ elif [[ $MACHINE == "wcoss2" ]] ; then
     QUEUE_POST="devhigh"
     QUEUE_PRDGEN="devhigh"
     QUEUE_GRAPHICS="devhigh"
+  elif [[ $MACHINETYPE == "person" ]] ; then
+    QUEUE_DEFAULT="dev"
+    QUEUE_FCST="dev"
+    QUEUE_ANALYSIS="dev"
+    QUEUE_POST="dev"
+    QUEUE_PRDGEN="dev"
+    QUEUE_GRAPHICS="dev"
   fi
 fi
 

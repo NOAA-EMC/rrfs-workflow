@@ -163,7 +163,10 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     RAPHRRR_SOIL_ROOT="/work2/noaa/wrfruc/murdzek/RRFS_input_data/rap_hrrr_soil"
   fi
   if [[ $MACHINE == "wcoss2" ]] ; then
-    RETRODATAPATH="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs_retro_data"
+  # for winter 2022  
+    #RETRODATAPATH="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs_retro_data"
+  # for spring 2023  
+    RETRODATAPATH="/lfs/h2/emc/lam/noscrub/donald.e.lippi/rrfs-stagedata"
     if [[ ${DO_ENSEMBLE} == "TRUE" ]]; then
       if [[ ${EXTRN_MDL_NAME_ICS} == "GEFS" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_ICS="${RETRODATAPATH}/GEFS/dsg"
@@ -180,8 +183,8 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
         EXTRN_MDL_SOURCE_BASEDIR_LBCS="${RETRODATAPATH}/gfs/0p25deg/grib2"
       fi
     else
-      EXTRN_MDL_SOURCE_BASEDIR_ICS=${RETRODATAPATH}/gfs
-      EXTRN_MDL_SOURCE_BASEDIR_LBCS=${RETRODATAPATH}/gfs
+      EXTRN_MDL_SOURCE_BASEDIR_ICS=${RETRODATAPATH}/gfs/0p25deg/grib2
+      EXTRN_MDL_SOURCE_BASEDIR_LBCS=${RETRODATAPATH}/gfs/0p25deg/grib2
     fi
     OBSPATH=${RETRODATAPATH}/obs_rap
     OBSPATH_NSSLMOSIAC=${RETRODATAPATH}/reflectivity/upperair/mrms/conus/MergedReflectivityQC/
@@ -192,7 +195,10 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     SST_ROOT="${RETRODATAPATH}/highres_sst"
     GVF_ROOT="${RETRODATAPATH}/gvf/grib2"
     IMSSNOW_ROOT="${RETRODATAPATH}/snow/ims96/grib2"
-    RAPHRRR_SOIL_ROOT="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs_retro_data/rap_hrrr_soil"
+    RAPHRRR_SOIL_ROOT="${RETRODATAPATH}/rap_hrrr_soil"
+    GLMFED_EAST_ROOT="${RETRODATAPATH}/sat/nesdis/goes-east/glm/full-disk"
+    GLMFED_WEST_ROOT="${RETRODATAPATH}/sat/nesdis/goes-east/glm/full-disk"
+    FIRE_RAVE_DIR=${RETRODATAPATH}/RAVE_RAW
   fi
 fi
 
