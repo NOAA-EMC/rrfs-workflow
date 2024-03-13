@@ -201,6 +201,9 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   case $MACHINE in
   "WCOSS2")
     obs_appendix=grib2.gz
+    if [ "${DO_RETRO}" = "TRUE" ]; then
+      obs_appendix=grib2
+    fi
     ;;
   "JET" | "HERA" | "ORION" | "HERCULES")
     obs_appendix=grib2
