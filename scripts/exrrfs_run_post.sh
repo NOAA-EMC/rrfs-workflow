@@ -207,7 +207,17 @@ cp ${UPP_DIR}/sorc/ncep_post.fd/post_gtg.fd/gtg.input.rrfs ./gtg.input.rrfs
 cp ${UPP_DIR}/parm/nam_micro_lookup.dat ./eta_micro_lookup.dat
 
 ln -snf ${FIX_UPP_CRTM}/*bin ./
+
 if [ ${USE_CUSTOM_POST_CONFIG_FILE} = "TRUE" ]; then
+# For RRFS: use special postcntrl for fhr=0,1 to eliminate duplicate 
+# max/min hourly (f000 only) and accumulation fields (f000 and f001)
+  if [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ] || [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
+    if [ ${fhr} -eq 000 ]; then
+      CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-rrfs_f00.txt"
+    elif [ ${fhr} -eq 001 ]; then
+      CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-rrfs_f01.txt"
+    fi
+  fi
   post_config_fp="${CUSTOM_POST_CONFIG_FP}"
   post_params_fp="${CUSTOM_POST_PARAMS_FP}"
   print_info_msg "

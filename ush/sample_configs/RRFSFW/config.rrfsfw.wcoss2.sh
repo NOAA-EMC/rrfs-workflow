@@ -58,6 +58,10 @@ PPN_RUN_FCST="63"
 NNODES_RUN_FCST="4"
 TPP_RUN_FCST="2"
 
+USE_CUSTOM_POST_CONFIG_FILE="TRUE"
+CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-rrfs.txt"
+CUSTOM_POST_PARAMS_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/params_grib2_tbl_new"
+
 DO_NON_DA_RUN="TRUE"
 DO_RETRO="TRUE"
 DO_SMOKE_DUST="FALSE"
