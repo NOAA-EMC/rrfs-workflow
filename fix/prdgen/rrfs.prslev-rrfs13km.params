@@ -233,29 +233,22 @@
 :UGRD:1000 mb:
 :VGRD:1000 mb:
 :VIS:surface:
-:GUST:surface:
 :MSLET:mean sea level:
 :PRES:surface:
 :TMP:surface:
+:HGT:surface:
 :TMP:2 m above ground:
 :RH:2 m above ground:
 :SPFH:2 m above ground:
 :UGRD:10 m above ground:
 :VGRD:10 m above ground:
-:PRATE:surface:
-:APCP:surface:
+:PRATE:surface:FCSTVAR_4_FHR1
+:APCP:surface:FCSTVAR_4_FHR2
 :CSNOW:surface:
 :CICEP:surface:
 :CFRZR:surface:
 :CRAIN:surface:
 :CAPE:surface:
 :CIN:surface:
-:LCDC:low cloud layer:
-:MCDC:middle cloud layer:
-:HCDC:high cloud layer:
-:TCDC:entire atmosphere (considered as a single layer):
+:LFTX:500-1000 mb:
 :HGT:cloud base:
-:HGT:cloud top:
-:UGRD:80 m above ground:
-:VGRD:80 m above ground:
-:TMP:30-0 mb above ground:
