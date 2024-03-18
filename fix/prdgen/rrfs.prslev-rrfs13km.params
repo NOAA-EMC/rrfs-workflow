@@ -242,8 +242,8 @@
 :SPFH:2 m above ground:
 :UGRD:10 m above ground:
 :VGRD:10 m above ground:
-:PRATE:surface:FCSTVAR_4_FHR1
-:APCP:surface:FCSTVAR_4_FHR2
+:PRATE:surface:FCSTVARS1
+:APCP:surface:FCSTVARS2
 :CSNOW:surface:
 :CICEP:surface:
 :CFRZR:surface:

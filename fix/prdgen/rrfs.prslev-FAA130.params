@@ -229,8 +229,8 @@
 :RH:2 m above ground:
 :UGRD:10 m above ground:
 :VGRD:10 m above ground:
-:PRATE:surface:FCSTVAR_4_FHR1
-:APCP:surface:FCSTVAR_4_FHR2
+:PRATE:surface:FCSTVARS1
+:APCP:surface:FCSTVARS2
 :CSNOW:surface:
 :CICEP:surface:
 :CFRZR:surface:
@@ -241,7 +241,7 @@
 :PWAT:entire atmosphere (considered as a single layer):
 :HGT:cloud base:
 :HGT:cloud top:
-:ULWRF:top of atmosphere:FCSTVAR_4_FHR1
+:ULWRF:top of atmosphere:FCSTVARS1
 :HLCY:3000-0 m above ground:
 :HLCY:1000-0 m above ground:
 :USTM:6000-0 m above ground:
