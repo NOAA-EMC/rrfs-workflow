@@ -24,14 +24,14 @@ COMOUT=$7
   fcstvar2="0-${ifhr} hour acc fcst"
 
   #-- replace undifined variables in "*parmas" files in /fix/prdgen
-  sed "s/FCSTVAR_4_FHR1/${fcstvar1}/" ${parmdir}/rrfs.prslev-FAA130.params > rrfs.prslev-FAA130.params
-  sed -i "s/FCSTVAR_4_FHR2/${fcstvar2}/" rrfs.prslev-FAA130.params
+  sed "s/FCSTVARS1/${fcstvar1}/" ${parmdir}/rrfs.prslev-FAA130.params > rrfs.prslev-FAA130.params
+  sed -i "s/FCSTVARS2/${fcstvar2}/" rrfs.prslev-FAA130.params
 
-  sed "s/FCSTVAR_4_FHR1/${fcstvar1}/" ${parmdir}/rrfs.prslev-FAA237.params > rrfs.prslev-FAA237.params
-  sed -i "s/FCSTVAR_4_FHR2/${fcstvar2}/" rrfs.prslev-FAA237.params
+  sed "s/FCSTVARS1/${fcstvar1}/" ${parmdir}/rrfs.prslev-FAA237.params > rrfs.prslev-FAA237.params
+  sed -i "s/FCSTVARS2/${fcstvar2}/" rrfs.prslev-FAA237.params
 
-  sed "s/FCSTVAR_4_FHR1/${fcstvar1}/" ${parmdir}/rrfs.prslev-rrfs13km.params > rrfs.prslev-rrfs13km.params
-  sed -i "s/FCSTVAR_4_FHR2/${fcstvar2}/" rrfs.prslev-rrfs13km.params
+  sed "s/FCSTVARS1/${fcstvar1}/" ${parmdir}/rrfs.prslev-rrfs13km.params > rrfs.prslev-rrfs13km.params
+  sed -i "s/FCSTVARS2/${fcstvar2}/" rrfs.prslev-rrfs13km.params
 
 # Grid 91 for the IFI AK 
   grid_specs_91="nps:210:60 181.429:1649:2976.000000 40.530:1105:2976.000000"
