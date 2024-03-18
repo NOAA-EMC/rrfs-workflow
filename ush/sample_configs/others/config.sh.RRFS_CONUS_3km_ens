@@ -192,8 +192,8 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    CLEAN_OLDSTMPPOST_HRS="48"
 fi
 
-SPPINT=3600
-LNDPINT=3600
+SPPINT=720
+LNDPINT=720
 
 RUN_ensctrl="rrfs"
 RUN="enkfrrfs"
