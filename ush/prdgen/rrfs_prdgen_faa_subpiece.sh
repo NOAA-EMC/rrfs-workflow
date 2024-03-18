@@ -16,6 +16,23 @@ COMOUT=$7
   parmdir=${FIXprdgen}
   # parmdir=${USHdir}/../fix/prdgen
 
+  #-- remove the leading 0"
+  ifhr=$(expr $fhr + 0)
+
+  #-- fcst string in wrgib2 inv file. Set to "" for all ins & ave
+  fcstvar1="${ifhr} hour fcst"
+  fcstvar2="0-${ifhr} hour acc fcst"
+
+  #-- replace undifined variables in "*parmas" files in /fix/prdgen
+  sed "s/FCSTVAR_4_FHR1/${fcstvar1}/" ${parmdir}/rrfs.prslev-FAA130.params > rrfs.prslev-FAA130.params
+  sed -i "s/FCSTVAR_4_FHR2/${fcstvar2}/" rrfs.prslev-FAA130.params
+
+  sed "s/FCSTVAR_4_FHR1/${fcstvar1}/" ${parmdir}/rrfs.prslev-FAA237.params > rrfs.prslev-FAA237.params
+  sed -i "s/FCSTVAR_4_FHR2/${fcstvar2}/" rrfs.prslev-FAA237.params
+
+  sed "s/FCSTVAR_4_FHR1/${fcstvar1}/" ${parmdir}/rrfs.prslev-rrfs13km.params > rrfs.prslev-rrfs13km.params
+  sed -i "s/FCSTVAR_4_FHR2/${fcstvar2}/" rrfs.prslev-rrfs13km.params
+
 # Grid 91 for the IFI AK 
   grid_specs_91="nps:210:60 181.429:1649:2976.000000 40.530:1105:2976.000000"
 
@@ -36,7 +53,7 @@ COMOUT=$7
   if [[ -f ${COMOUT}/${prslev} ]]; then
 
     #-- GRID 130: CONUS 13km
-    wgrib2 ${COMOUT}/${prslev} | grep -F -f ${parmdir}/rrfs.prslev-FAA130.params | \
+    wgrib2 ${COMOUT}/${prslev} | grep -F -f rrfs.prslev-FAA130.params | \
     wgrib2 -i ${COMOUT}/${prslev} -set_bitmap 1 -set_grib_type c3 \
        -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
        -new_grid_interpolation bilinear \
@@ -45,7 +62,7 @@ COMOUT=$7
     wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.conus_13km.faa.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.conus_13km.faa.grib2.idx
 
     #-- 13km Rotated Lat Lon
-    wgrib2 ${COMOUT}/${prslev} | grep -F -f ${parmdir}/rrfs.prslev-rrfs13km.params | \
+    wgrib2 ${COMOUT}/${prslev} | grep -F -f rrfs.prslev-rrfs13km.params | \
     wgrib2 -i ${COMOUT}/${prslev} -set_bitmap 1 -set_grib_type c3 \
        -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
        -new_grid_interpolation bilinear \
@@ -54,7 +71,7 @@ COMOUT=$7
     wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.rotate_13km.faa.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.rotate_13km.faa.grib2.idx
 
     #-- GRID 237: PR 32 km
-    wgrib2 ${COMOUT}/${prslev} | grep -F -f ${parmdir}/rrfs.prslev-FAA237.params | \
+    wgrib2 ${COMOUT}/${prslev} | grep -F -f rrfs.prslev-FAA237.params | \
     wgrib2 -i ${COMOUT}/${prslev} -set_bitmap 1 -set_grib_type c3 \
        -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
        -new_grid_interpolation bilinear \
