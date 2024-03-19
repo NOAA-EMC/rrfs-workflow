@@ -1,5 +1,5 @@
 MACHINE="wcoss2"
-version="v9.9.9"
+version="v0.8.5"
 ACCOUNT="RRFS-DEV"
 HPSS_ACCOUNT="RRFS-DEV"
 EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/${version}"
