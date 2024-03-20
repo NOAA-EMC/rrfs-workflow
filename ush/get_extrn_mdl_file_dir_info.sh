@@ -855,7 +855,7 @@ has not been specified for this external model and machine combination:
   "RRFS")
     case "$MACHINE" in
     "WCOSS2")
-      sysdir="$sysbasedir"
+      sysdir="$sysbasedir/rrfs.${yyyymmdd}/${hh}"
       ;;
     "HERA")
       sysdir="$sysbasedir"
