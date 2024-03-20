@@ -15,10 +15,8 @@ Parameters needed by the job scheduler.
 -->
 <!ENTITY ACCOUNT         "{{ account }}">
 <!ENTITY SERVICE_ACCOUNT "{{ service_account }}">
-<!ENTITY HPSS_ACCOUNT    "{{ hpss_account }}">
 <!ENTITY SCHED           "{{ sched }}">
 <!ENTITY QUEUE_DEFAULT   "{{ queue_default }}">
-<!ENTITY QUEUE_HPSS      "{{ queue_hpss }}">
 <!ENTITY QUEUE_FCST      "{{ queue_fcst }}">
 <!ENTITY QUEUE_POST      "{{ queue_post }}">
 <!ENTITY RRFS_RESERVE  {% if reservation %}"--reservation={{ reservation }}"{% else %}""{% endif %}>
@@ -30,8 +28,6 @@ Workflow task names.
 <!ENTITY MAKE_GRID_TN      "{{ make_grid_tn }}">
 <!ENTITY MAKE_OROG_TN      "{{ make_orog_tn }}">
 <!ENTITY MAKE_SFC_CLIMO_TN "{{ make_sfc_climo_tn }}">
-<!ENTITY GET_EXTRN_ICS_TN  "{{ get_extrn_ics_tn }}">
-<!ENTITY GET_EXTRN_LBCS_TN "{{ get_extrn_lbcs_tn }}">
 <!ENTITY MAKE_ICS_TN       "{{ make_ics_tn }}">
 <!ENTITY MAKE_LBCS_TN      "{{ make_lbcs_tn }}">
 <!ENTITY RUN_FCST_TN       "{{ run_fcst_tn }}">
@@ -75,19 +71,12 @@ Directories and files.
 <!--
 Reservation types.  Reservations specify the queue/partition and account
 to use for a given task.  The "DEFAULT" reservation type is used for all 
-tasks other than GET_EXTRN_ICS_TN, GET_EXTRN_LBCS_TN, and RUN_FCST_TN; 
-the "HPSS" type is used for the GET_EXTRN_ICS_TN and GET_EXTRN_LBCS_TN 
-tasks; and the "FCST" type is used for the RUN_FCST_TN task.
+tasks other than the make_sfc_climo, run_fcst, and run_post tasks.
 -->
 {%- if partition_default is not none %}
 <!ENTITY RSRV_DEFAULT   "<account>&ACCOUNT;</account><queue>&QUEUE_DEFAULT;</queue><partition>{{ partition_default }}</partition><native>&RRFS_RESERVE;</native><native>&SCHED_NATIVE_CMD;</native>">
 {%- else %}
 <!ENTITY RSRV_DEFAULT   "<account>&ACCOUNT;</account><queue>&QUEUE_DEFAULT;</queue>">
-{%- endif %}
-{%- if partition_hpss is not none %}
-<!ENTITY RSRV_HPSS      "<account>&HPSS_ACCOUNT;</account><queue>&QUEUE_HPSS;</queue><partition>{{ partition_hpss }}</partition><native>&SCHED_NATIVE_CMD;</native>">
-{%- else %}
-<!ENTITY RSRV_HPSS      "<account>&HPSS_ACCOUNT;</account><queue>&QUEUE_HPSS;</queue>">
 {%- endif %}
 {%- if partition_sfc_climo is not none %}
 <!ENTITY RSRV_SFC_CLIMO "<account>&ACCOUNT;</account><queue>&QUEUE_DEFAULT;</queue><partition>{{ partition_sfc_climo }}</partition><native>&SCHED_NATIVE_CMD;</native>">
@@ -108,9 +97,6 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 <!--
 define resources used for each tasks
 -->
-
-<!ENTITY RESOURCES_GET_EXTRN_ICS "<nodes>{{ nnodes_get_extrn_ics }}:ppn={{ ppn_get_extrn_ics }}</nodes>">
-<!ENTITY RESOURCES_GET_EXTRN_LBCS "<nodes>{{ nnodes_get_extrn_lbcs }}:ppn={{ ppn_get_extrn_lbcs }}</nodes>">
 
 {%- if machine in ["WCOSS2"]  %}
 <!ENTITY RESOURCES_MAKE_ICS "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}:tpp={{ tpp_make_ics }}</nodes>">
@@ -286,58 +272,6 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&GET_EXTRN_ICS_TN;" cycledefs="forecast" maxtries="{{ maxtries_get_extrn_ics }}">
-
-    &RSRV_HPSS;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_EXTRN_ICS_TN;" "&JOBSdir;/JRRFS_GET_EXTRN_MDL_FILES"</command>
-    &RESOURCES_GET_EXTRN_ICS;
-    <walltime>{{ wtime_get_extrn_ics }}</walltime>
-    &NODESIZE_ALL;
-    <jobname>&GET_EXTRN_ICS_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&GET_EXTRN_ICS_TN;_@Y@m@d@H.log</cyclestr></join>
-
-    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>EXTRN_MDL_NAME</name><value>{{ extrn_mdl_name_lbcs }}</value></envar>
-    <envar><name>ICS_OR_LBCS</name><value>ICS</value></envar>
-    <envar><name>BOUNDARY_LEN</name><value>{{ boundary_len_hrs }}</value></envar>
-    <envar><name>SLASH_ENSMEM_SUBDIR</name><value>{{ slash_ensmem_subdir }}</value></envar>
-    <envar><name>GEFS_INPUT_SUBDIR</name><value>#subdirGE#</value></envar>
-
-  </task>
-
-<!--
-************************************************************************
-************************************************************************
--->
-  <task name="&GET_EXTRN_LBCS_TN;" cycledefs="forecast" maxtries="{{ maxtries_get_extrn_lbcs }}">
-
-    &RSRV_HPSS;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_EXTRN_LBCS_TN;" "&JOBSdir;/JRRFS_GET_EXTRN_MDL_FILES"</command>
-    &RESOURCES_GET_EXTRN_LBCS;
-    <walltime>{{ wtime_get_extrn_lbcs }}</walltime>
-    &NODESIZE_ALL;
-    <jobname>&GET_EXTRN_LBCS_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&GET_EXTRN_LBCS_TN;_@Y@m@d@H.log</cyclestr></join>
-
-    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>EXTRN_MDL_NAME</name><value>{{ extrn_mdl_name_lbcs }}</value></envar>
-    <envar><name>ICS_OR_LBCS</name><value>LBCS</value></envar>
-    <envar><name>BOUNDARY_LEN</name><value>{{ boundary_len_hrs }}</value></envar>
-    <envar><name>SLASH_ENSMEM_SUBDIR</name><value>{{ slash_ensmem_subdir }}</value></envar>
-    <envar><name>GEFS_INPUT_SUBDIR</name><value>#subdirGE#</value></envar>
-
-  </task>
-
-<!--
-************************************************************************
-************************************************************************
--->
   <task name="&MAKE_ICS_TN;" cycledefs="forecast" maxtries="{{ maxtries_make_ics }}">
 
     &RSRV_DEFAULT;
@@ -354,11 +288,12 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>EXTRN_MDL_NAME</name><value>{{ extrn_mdl_name_lbcs }}</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+    <envar><name>GEFS_INPUT_SUBDIR</name><value>#subdirGE#</value></envar>
 
     <dependency>
       <and>
-        <taskdep task="&GET_EXTRN_ICS_TN;"/>
         <or>
 <!--          <taskdep task="&MAKE_GRID_TN;"/> -->
           <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
@@ -401,13 +336,15 @@ MODULES_RUN_TASK_FP script.
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
       <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>EXTRN_MDL_NAME</name><value>{{ extrn_mdl_name_lbcs }}</value></envar>
+      <envar><name>BOUNDARY_LEN</name><value>{{ boundary_len_hrs }}</value></envar>
+      <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+      <envar><name>GEFS_INPUT_SUBDIR</name><value>#subdirGE#</value></envar>
       <envar><name>bcgrp</name><value>#bcgrp#</value></envar>
       <envar><name>bcgrpnum</name><value>{{ boundary_proc_group_num }}</value></envar>
-      <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
 
       <dependency>
         <and>
-          <taskdep task="&GET_EXTRN_LBCS_TN;"/>
           <or>
 <!--            <taskdep task="&MAKE_GRID_TN;"/> -->
             <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
