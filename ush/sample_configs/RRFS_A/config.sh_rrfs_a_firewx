@@ -7,7 +7,7 @@ EXPT_SUBDIR="rrfs_firewx"
 
 envir="para"
 NET="rrfsfw"
-TAG="n3v99"
+TAG="n3v85"
 MODEL="rrfsfw"
 RUN="rrfsfw"
 
