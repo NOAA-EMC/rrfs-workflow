@@ -30,13 +30,18 @@ def copy_missing_restart(nwges_dir, hwp_non_avail_hours, hourly_hwpdir):
 
     for cycle in hwp_non_avail_hours:
         YYYYMMDDHH = dt.datetime.strptime(cycle, "%Y%m%d%H")
+        HH = cycle[8:10]
         prev_hr = YYYYMMDDHH - timedelta(hours=1)
         prev_hr_str = prev_hr.strftime("%Y%m%d%H")
 
         source_restart_dir = os.path.join(nwges_dir, prev_hr_str, 'fcst_fv3lam', 'RESTART')
-        wildcard_name = '*.phy_data.nc'
+        wildcard_name = f'*{HH}0000.phy_data.nc'
         try:
             matching_files = [f for f in os.listdir(source_restart_dir) if fnmatch.fnmatch(f, wildcard_name)]
+            if not matching_files:
+                print(f"No matching files for cycle {cycle} in {source_restart_dir}")
+                restart_nonavail_hours_test.append(cycle)
+                continue
             for matching_file in matching_files:
                 source_file_path = os.path.join(source_restart_dir, matching_file)
                 target_file_path = os.path.join(hourly_hwpdir, matching_file)
@@ -44,15 +49,16 @@ def copy_missing_restart(nwges_dir, hwp_non_avail_hours, hourly_hwpdir):
  
                 if os.path.exists(source_file_path):
                     with xr.open_dataset(source_file_path) as ds:
-                        ds = ds[[var1, var2]]
-                        ds.to_netcdf(target_file_path)
-                        restart_avail_hours.append(cycle)
-                        print(f'Restart file copied: {matching_file}')
+                        if var1 in ds.variables and var2 in ds.variables:
+                           ds = ds[[var1, var2]]
+                           ds.to_netcdf(target_file_path)
+                           restart_avail_hours.append(cycle)
+                           print(f'Restart file copied: {matching_file}')
+                        else:
+                           print(f'Missing variables in {matching_file}. Skipping file.')
                 else:
                     raise FileNotFoundError(f"Source file not found: {source_file_path}")
-        except (FileNotFoundError, AttributeError) as e:
-            restart_nonavail_hours_test.append(cycle)
-            print(f'Issue with file for cycle {cycle}: {e}')
+        
 
         except Exception as e:  # Catch-all for unexpected errors
             restart_nonavail_hours_test.append(cycle)
@@ -63,7 +69,8 @@ def copy_missing_restart(nwges_dir, hwp_non_avail_hours, hourly_hwpdir):
 def process_hwp(fcst_dates, hourly_hwpdir, cols, rows, intp_dir, rave_to_intp):
     hwp_ave = [] 
     totprcp = np.zeros((cols*rows))
-    
+    var1, var2 = 'rrfs_hwp_ave', 'totprcp_ave' 
+
     for cycle in fcst_dates:
         print(f'Processing restart file for date: {cycle}')
         file_path = os.path.join(hourly_hwpdir, f"{cycle[:8]}.{cycle[8:10]}0000.phy_data.nc")
@@ -71,10 +78,14 @@ def process_hwp(fcst_dates, hourly_hwpdir, cols, rows, intp_dir, rave_to_intp):
 
         if os.path.exists(file_path) and os.path.exists(rave_path):
             with xr.open_dataset(file_path) as nc:
-                hwp_values = nc.rrfs_hwp_ave.values.ravel()  # Keeping as numpy array for efficiency
-                tprcp_values = nc.totprcp_ave.values.ravel()  # Ensure you extract numpy array
-                totprcp += np.where(tprcp_values > 0, tprcp_values, 0)
-                hwp_ave.append(hwp_values) 
+                if var1 in nc.variables and var2 in nc.variables: 
+                   hwp_values = nc.rrfs_hwp_ave.values.ravel()  # Keeping as numpy array 
+                   tprcp_values = nc.totprcp_ave.values.ravel()  
+                   totprcp += np.where(tprcp_values > 0, tprcp_values, 0)
+                   hwp_ave.append(hwp_values) 
+                   print(f'Restart file processed for:{cycle}') 
+                else:
+                   print(f'File corrupted: {cycle}')
         else:
             print('One or more files non-available for this cycle.')
     # Calculate the mean HWP values if available
