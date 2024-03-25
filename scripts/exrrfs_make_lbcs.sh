@@ -316,7 +316,7 @@ and
 ${extrn_mdl_staging_dir}/$in2
 ========================================================================"
 
-      $wgrib2 ${extrn_mdl_staging_dir}/$in1 -rpn sto_1 -import_grib ${extrn_mdl_staging_dir}/$in2 -rpn sto_2 -set_grib_type same \
+      wgrib2 ${extrn_mdl_staging_dir}/$in1 -rpn sto_1 -import_grib ${extrn_mdl_staging_dir}/$in2 -rpn sto_2 -set_grib_type same \
     -if ":$a:" \
        -rpn "rcl_1:$b1:*:rcl_2:$c1:*:+" -set_ftime "$d1" -set_scaling same same -grib_out ${extrn_mdl_staging_dir}/$file
 
