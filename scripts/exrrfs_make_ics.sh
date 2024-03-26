@@ -966,8 +966,7 @@ extrn_mdl_var_defns_fn="${EXTRN_MDL_ICS_VAR_DEFNS_FN}"
 extrn_mdl_var_defns_fp="${extrn_mdl_staging_dir}/${extrn_mdl_var_defns_fn}"
 check_for_preexist_dir_file "${extrn_mdl_var_defns_fp}" "delete"
 
-settings="\
-EXTRN_MDL_CDATE=\"${extrn_mdl_cdate}\"
+settings="EXTRN_MDL_CDATE=${extrn_mdl_cdate}"
 
 { cat << EOM >> ${extrn_mdl_var_defns_fp}
 $settings
