@@ -344,7 +344,6 @@ define resources used for each tasks
 
   <cycledef group="initial"> {{ initial_cycledef }} </cycledef>
   <cycledef group="boundary"> {{ boundary_cycledef }} </cycledef>
-  <cycledef group="boundary_long"> {{ boundary_long_cycledef }} </cycledef>
 
   <cycledef group="spinupcyc"> {{ spinup_cycledef }} </cycledef>
   <cycledef group="prodcyc"> {{ prod_cycledef }} </cycledef>
@@ -1064,7 +1063,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&ADD_AEROSOL_TN;{{ uscore_ensmem_name }}" cycledefs="boundary,boundary_long" maxtries="{{ maxtries_add_aerosol }}">
+  <task name="&ADD_AEROSOL_TN;{{ uscore_ensmem_name }}" cycledefs="boundary" maxtries="{{ maxtries_add_aerosol }}">
 
     &RSRV_DEFAULT;
     &WALL_LIMIT_PRE;
