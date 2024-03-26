@@ -448,7 +448,7 @@ else
   SUBH=""
   obs_source=${OBSTYPE_SOURCE}
   if [ ${HH} -eq '00' ] || [ ${HH} -eq '12' ]; then
-    obs_source=${OBSTYPE_SOURCE}_e
+    obs_source=${OBSTYPE_SOURCE}
   fi
 
   case $MACHINE in
