@@ -1,5 +1,5 @@
 MACHINE="wcoss2"
-version="v0.8.5"
+version="v0.8.9"
 ACCOUNT="RRFS-DEV"
 HPSS_ACCOUNT="RRFS-DEV"
 EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/${version}"
@@ -7,7 +7,7 @@ EXPT_SUBDIR="rrfs_firewx"
 
 envir="para"
 NET="rrfsfw"
-TAG="n3v85"
+TAG="n3v89"
 MODEL="rrfsfw"
 RUN="rrfsfw"
 
@@ -33,9 +33,10 @@ LBC_SPEC_INTVL_HRS="1"
 BOUNDARY_LEN_HRS="36"
 BOUNDARY_PROC_GROUP_NUM="36"
 
-DATE_FIRST_CYCL="20240314"
-DATE_LAST_CYCL="20240314"
+DATE_FIRST_CYCL="20240328"
+DATE_LAST_CYCL="20240428"
 CYCL_HRS=( "00" "06" "12" "18" )
+PROD_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}1800 06:00:00"
 
 RUN_TASK_MAKE_GRID="TRUE"
 RUN_TASK_MAKE_OROG="TRUE"
@@ -65,13 +66,13 @@ CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&p
 CUSTOM_POST_PARAMS_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/params_grib2_tbl_new"
 
 DO_NON_DA_RUN="TRUE"
-DO_RETRO="TRUE"
+DO_RETRO="FALSE"
 DO_SMOKE_DUST="FALSE"
 VCOORD_FILE="global_hyblev_fcst_rrfsL65.txt"
-WFLOW_XML_TMPL_FN="FV3LAM_wflow_nonDA.xml"
+WFLOW_XML_TMPL_FN="FV3LAM_wflow_firewx.xml"
 FV3_NML_YAML_CONFIG_FN=""
 FV3_NML_BASE_SUITE_FN="input.nml.RRFSFW"
 
 USE_USER_STAGED_EXTRN_FILES="FALSE"
-EXTRN_MDL_SOURCE_BASEDIR_ICS="/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.8.5/prod"
-EXTRN_MDL_SOURCE_BASEDIR_LBCS="/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.8.5/prod"
+EXTRN_MDL_SOURCE_BASEDIR_ICS="/lfs/h2/emc/ptmp/emc.lam/rrfs/na/prod"
+EXTRN_MDL_SOURCE_BASEDIR_LBCS="/lfs/h2/emc/ptmp/emc.lam/rrfs/na/prod"
