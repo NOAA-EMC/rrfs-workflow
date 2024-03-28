@@ -344,7 +344,6 @@ define resources used for each tasks
 
   <cycledef group="initial"> {{ initial_cycledef }} </cycledef>
   <cycledef group="boundary"> {{ boundary_cycledef }} </cycledef>
-  <cycledef group="boundary_long"> {{ boundary_long_cycledef }} </cycledef>
 
   <cycledef group="spinupcyc"> {{ spinup_cycledef }} </cycledef>
   <cycledef group="prodcyc"> {{ prod_cycledef }} </cycledef>
@@ -1064,7 +1063,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&ADD_AEROSOL_TN;{{ uscore_ensmem_name }}" cycledefs="boundary,boundary_long" maxtries="{{ maxtries_add_aerosol }}">
+  <task name="&ADD_AEROSOL_TN;{{ uscore_ensmem_name }}" cycledefs="boundary" maxtries="{{ maxtries_add_aerosol }}">
 
     &RSRV_DEFAULT;
     &WALL_LIMIT_PRE;
@@ -2656,6 +2655,10 @@ MODULES_RUN_TASK_FP script.
     <dependency>
        <and>
          <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
+         <or>
+           <datadep age="02:00"><cyclestr>&OBSPATH;/@Y@m@d@H.{{obstype_source}}.t@Hz.prepbufr.tm00</cyclestr></datadep>
+           <datadep age="02:00"><cyclestr>&OBSPATH;/{{obstype_source}}.@Y@m@d/{{obstype_source}}.t@Hz.prepbufr.tm00</cyclestr></datadep>
+         </or>
          <taskdep task="&PREP_CYC_TN;_prod{{ uscore_ensmem_name }}"/>
          {%- if use_rrfse_ens %}
          {%- if do_envar_radar_ref and do_envar_radar_ref_once %}
@@ -3588,34 +3591,6 @@ MODULES_RUN_TASK_FP script.
 
         <dependency>
           <datadep age="00:02"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H/fcst_fv3lam/log.atm.f000</cyclestr></datadep>
-        </dependency>
-
-  </task>
-
-<task name="&RUN_BUFRSND_TN;{{ uscore_ensmem_name }}" cycledefs="prodcyc" maxtries="1">
-
-        &RSRV_POST;
-        &WALL_LIMIT_BUFRSND;
-        <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_BUFRSND_TN;" "&JOBSdir;/JRRFS_BUFRSND"</command>
-        <nodes>{{ nnodes_run_bufrsnd }}:ppn={{ ppn_run_bufrsnd }}</nodes>
-        <walltime>{{ wtime_run_bufrsnd }}</walltime>
-        &NODESIZE_ALL;
-	<jobname>&TAG;_&RUN_BUFRSND_TN;{{ uscore_ensmem_name }}</jobname>
-	<join><cyclestr>&LOGDIR;/&RUN_BUFRSND_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
-
-        <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-        <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-        <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-        <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-        <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-	<envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
-	<envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
-
-        <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-        <envar><name>TMMARK</name><value>tm00</value></envar>
-
-        <dependency>
-	<datadep age="00:02"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/log.atm.f000</cyclestr></datadep>
         </dependency>
 
   </task>

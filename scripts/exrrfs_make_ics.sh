@@ -956,6 +956,33 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
+# Create a variable definitions file (a shell script) and save in it the
+# values of several external-model-associated variables generated in this
+# script that will be needed by downstream workflow tasks.
+#
+#-----------------------------------------------------------------------
+#
+extrn_mdl_var_defns_fn="${EXTRN_MDL_ICS_VAR_DEFNS_FN}"
+extrn_mdl_var_defns_fp="${extrn_mdl_staging_dir}/${extrn_mdl_var_defns_fn}"
+check_for_preexist_dir_file "${extrn_mdl_var_defns_fp}" "delete"
+
+settings="EXTRN_MDL_CDATE=${extrn_mdl_cdate}"
+
+{ cat << EOM >> ${extrn_mdl_var_defns_fp}
+$settings
+EOM
+}
+export err=$?
+if [ $err -ne 0 ]; then
+  err_exit "\
+Heredoc (cat) command to create a variable definitions file associated
+with the external model from which to generate ${ics_or_lbcs} returned with a
+nonzero status.  The full path to this variable definitions file is:
+  extrn_mdl_var_defns_fp = \"${extrn_mdl_var_defns_fp}\""
+fi
+#
+#-----------------------------------------------------------------------
+#
 # Restore the shell options saved at the beginning of this script/function.
 #
 #-----------------------------------------------------------------------
