@@ -94,12 +94,12 @@ def create_model_configure_file(
     OUTPUT_FH_thiscycle = OUTPUT_FH
 
     if FCST_LEN_HRS_thiscycle == 18:
-        OUTPUT_FH_thiscycle = OUTPUT_FH_18h
+        OUTPUT_FH_thiscycle = OUTPUT_FH_15min
     if FCST_LEN_HRS_thiscycle == 60:
       if stoch:
         OUTPUT_FH_thiscycle = OUTPUT_FH
       else:
-        OUTPUT_FH_thiscycle = OUTPUT_FH_60h
+        OUTPUT_FH_thiscycle = OUTPUT_FH_15min
 
     print_info_msg(
         f"""

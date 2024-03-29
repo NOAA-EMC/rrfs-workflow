@@ -471,8 +471,8 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then
   if [[ $MACHINE == "wcoss2" ]] ; then
     WRTCMP_write_groups="1"
     WRTCMP_write_tasks_per_group="128"
-    LAYOUT_X=50
-    LAYOUT_Y=64
+    LAYOUT_X="50"
+    LAYOUT_Y="64"
     PPN_MAKE_ICS="32"
     TPP_MAKE_ICS="4"
     PPN_BLEND_ICS="8"
