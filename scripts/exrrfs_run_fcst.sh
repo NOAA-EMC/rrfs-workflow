@@ -536,6 +536,7 @@ $USHdir/create_model_configure_file.py \
   --cdate "${cdate}" \
   --cycle_type "${cycle_type}" \
   --cycle_subtype "${cycle_subtype}" \
+  --stoch "${STOCH}" \
   --run-dir "${run_dir}" \
   --fhrot "${FHROT}" \
   --nthreads "${OMP_NUM_THREADS}" \
