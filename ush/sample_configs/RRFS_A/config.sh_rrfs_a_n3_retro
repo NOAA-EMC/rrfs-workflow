@@ -99,6 +99,13 @@ GVF_update_hour=04
 SNOWICE_update_hour=01
 netcdf_diag=.true.
 binary_diag=.false.
+
+LAYOUT_X="42"
+LAYOUT_Y="64"
+NNODES_RUN_FCST="51"
+WRTCMP_write_groups="3"
+WRTCMP_write_tasks_per_group="192"
+
 WRTCMP_output_file="netcdf_parallel"
 WRTCMP_ideflate="1"
 WRTCMP_quantize_nsd="18"
