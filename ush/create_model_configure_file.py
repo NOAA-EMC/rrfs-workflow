@@ -24,7 +24,7 @@ from fill_jinja_template import fill_jinja_template
 
 
 def create_model_configure_file(
-    cdate, cycle_type, cycle_subtype, run_dir, fhrot, nthreads, restart_hrs
+    cdate, cycle_type, cycle_subtype, stoch, run_dir, fhrot, nthreads, restart_hrs
 ):
     """Creates a model configuration file in the specified
     run directory
@@ -95,9 +95,11 @@ def create_model_configure_file(
 
     if FCST_LEN_HRS_thiscycle == 18:
         OUTPUT_FH_thiscycle = OUTPUT_FH_18h
-    if stoch == FALSE:
-        if FCST_LEN_HRS_thiscycle == 60:
-            OUTPUT_FH_thiscycle = OUTPUT_FH_60h
+    if FCST_LEN_HRS_thiscycle == 60:
+      if stoch:
+        OUTPUT_FH_thiscycle = OUTPUT_FH
+      else:
+        OUTPUT_FH_thiscycle = OUTPUT_FH_60h
 
     print_info_msg(
         f"""
@@ -314,6 +316,14 @@ def parse_args(argv):
     )
 
     parser.add_argument(
+        "-e",
+        "--stoch",
+        dest="stoch",
+        required=True,
+        help="Logical for stochastic perturbations.",
+    )
+
+    parser.add_argument(
         "-f",
         "--fhrot",
         dest="fhrot",
@@ -357,6 +367,7 @@ if __name__ == "__main__":
         run_dir=args.run_dir,
         cdate=str_to_type(args.cdate),
         cycle_type=str_to_type(args.cycle_type),
+        stoch=str_to_type(args.stoch),
         cycle_subtype=str_to_type(args.cycle_subtype),
         fhrot=str_to_type(args.fhrot),
         nthreads=str_to_type(args.nthreads),
