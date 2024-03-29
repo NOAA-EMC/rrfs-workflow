@@ -33,6 +33,7 @@ def create_model_configure_file(
         cdate: cycle date
         cycle_type: type of cycle
         cycle_subtype: sub-type of cycle
+        stoch: logical indicating it is an ensemble forecast
         run_dir: run directory
         fhrot: forecast hour at restart
         nthreads: omp_num_threads
@@ -88,6 +89,16 @@ def create_model_configure_file(
         else:
             FCST_LEN_HRS_thiscycle = FCST_LEN_HRS
 
+
+
+    OUTPUT_FH_thiscycle = OUTPUT_FH
+
+    if FCST_LEN_HRS_thiscycle == 18:
+        OUTPUT_FH_thiscycle = OUTPUT_FH_18h
+    if stoch == FALSE:
+        if FCST_LEN_HRS_thiscycle == 60:
+            OUTPUT_FH_thiscycle = OUTPUT_FH_60h
+
     print_info_msg(
         f"""
         The forecast length for cycle ('{hh}') is ('{FCST_LEN_HRS_thiscycle}').
@@ -96,6 +107,7 @@ def create_model_configure_file(
 
     if cycle_type == "spinup":
         FCST_LEN_HRS_thiscycle = FCST_LEN_HRS_SPINUP
+        OUTPUT_FH_thiscycle = OUTPUT_FH
         if cycle_subtype == "ensinit":
             for cyc_start in CYCL_HRS_SPINSTART:
                 if hh == cyc_start:
@@ -140,7 +152,7 @@ def create_model_configure_file(
         "nfhmax_hf": NFHMAX_HF,
         "nfhout_hf": NFHOUT_HF,
         "nsout": nsout,
-        "output_fh": OUTPUT_FH,
+        "output_fh": OUTPUT_FH_thiscycle,
     }
     #
     # If the write-component is to be used, then specify a set of computational
