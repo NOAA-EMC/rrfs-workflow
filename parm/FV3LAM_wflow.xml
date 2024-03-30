@@ -992,7 +992,7 @@ MODULES_RUN_TASK_FP script.
           <datadep age="00:00:00:05">&LOG_BASEDIR;/make_sfc_climo_task_complete.txt</datadep>
           <streq><left>&RUN_TASK_MAKE_SFC_CLIMO;</left><right>FALSE</right></streq>
         </or>
-        <or> 
+        <and> 
 <!-- Dependencies from the GET_GEFS_LBCS task -->
         {%- if extrn_mdl_name_lbcs in ["GEFS"] %}
           {%- if machine in ["WCOSS2"]  %}
@@ -1050,7 +1050,7 @@ MODULES_RUN_TASK_FP script.
           {%- endfor %}
 
         {%- endif %}
-        </or>
+        </and>
       </and>
     </dependency>
 

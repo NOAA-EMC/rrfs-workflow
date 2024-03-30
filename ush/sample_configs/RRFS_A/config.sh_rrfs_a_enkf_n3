@@ -1,6 +1,6 @@
 MACHINE="wcoss2"
 MACHINETYPE="primary"
-version="v0.8.9"
+version="v0.9.1"
 ACCOUNT="RRFS_DEV"
 #RESERVATION="rrfsdet"
 EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/${version}"
@@ -208,10 +208,10 @@ LNDPINT=360
 
 RUN_ensctrl="rrfs"
 RUN="enkfrrfs"
-TAG="n3enkf89"
+TAG="n3enkf91"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   RUN="refs"
-  TAG="n3enfcst89"
+  TAG="n3enfcst91"
 fi
 
 . set_rrfs_config.sh
