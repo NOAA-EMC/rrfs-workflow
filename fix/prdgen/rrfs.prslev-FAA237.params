@@ -259,7 +259,7 @@
 :TCDC:entire atmosphere (considered as a single layer):FCSTVARS1
 :HGT:cloud base:
 :HGT:cloud top:
-:ULWRF:top of atmosphere:FCSTVARS1
+:ULWRF:surface:FCSTVARS1
 :HLCY:3000-0 m above ground:
 :HLCY:1000-0 m above ground:
 :USTM:6000-0 m above ground:
