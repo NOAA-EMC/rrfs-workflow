@@ -448,7 +448,7 @@ else
   SUBH=""
   obs_source=${OBSTYPE_SOURCE}
   if [ ${HH} -eq '00' ] || [ ${HH} -eq '12' ]; then
-    obs_source=${OBSTYPE_SOURCE}_e
+    obs_source=${OBSTYPE_SOURCE}
   fi
 
   case $MACHINE in
@@ -1023,13 +1023,9 @@ cp ${gsi_exec} ${analworkdir}/gsi.x
 export pgm="gsi.x"
 . prep_step
 
-if [ ${BKTYPE} -eq 1 ] ; then
-  echo " skip cold start GSI for now"
-else
-  $APRUN ./$pgm < gsiparm.anl >>$pgmout 2>errfile
-  export err=$?; err_chk
-  mv errfile errfile_gsi
-fi
+$APRUN ./$pgm < gsiparm.anl >>$pgmout 2>errfile
+export err=$?; err_chk
+mv errfile errfile_gsi
 
 if [ "${anav_type}" = "radardbz" ]; then
   cat fort.238 > $COMOUT/rrfs.t${HH}z.fits3.tm00

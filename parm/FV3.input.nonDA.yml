@@ -7,7 +7,7 @@ FV3_HRRR:
   diag_manager_nml:
     max_output_fields: 450
   external_ic_nml:
-    levp: 65
+    levp: 66
   fms_nml:
     domains_stack_size: 12000000
   fv_core_nml:
@@ -26,7 +26,7 @@ FV3_HRRR:
     kord_wz: 9
     n_split: 5
     nord_tr: 0
-    npz: 64
+    npz: 65
     nrows_blend: 10
     psm_bc: 1
     range_warn: False
@@ -75,7 +75,7 @@ FV3_HRRR_gf:
   diag_manager_nml:
     max_output_fields: 450
   external_ic_nml:
-    levp: 65
+    levp: 66
   fms_nml:
     domains_stack_size: 12000000
   fv_core_nml:
@@ -94,7 +94,7 @@ FV3_HRRR_gf:
     kord_wz: 9
     n_split: 5
     nord_tr: 0
-    npz: 64
+    npz: 65
     nrows_blend: 10
     psm_bc: 1
     range_warn: False
@@ -143,7 +143,7 @@ FV3_RAP:
   diag_manager_nml:
     max_output_fields: 450
   external_ic_nml:
-    levp: 65
+    levp: 66
   fms_nml:
     domains_stack_size: 12000000
   fv_core_nml:
@@ -152,7 +152,7 @@ FV3_RAP:
     hord_tr: 8
     k_split: 2
     nord_tr: 0
-    npz: 64
+    npz: 65
     nrows_blend: 10
     psm_bc: 1
     regional_bcs_from_gsi: false
@@ -198,14 +198,14 @@ FV3_RRFS_v1beta:
   diag_manager_nml:
     max_output_fields: 450
   external_ic_nml:
-    levp: 65
+    levp: 66
   fms_nml:
     domains_stack_size: 12000000
   fv_core_nml:
     dz_min: 2
     k_split: 2
     n_sponge: 24
-    npz: 64
+    npz: 65
     psm_bc: 1
     vtdm4: 0.02
     write_restart_with_bcs: false
@@ -239,7 +239,7 @@ FV3_GFS_v15_thompson_mynn_lam3km:
   atmos_model_nml:
     avg_max_length: 3600.0
   external_ic_nml:
-    levp: 65
+    levp: 66
   fms_nml:
     domains_stack_size: 12000000
   fv_core_nml:
@@ -251,7 +251,7 @@ FV3_GFS_v15_thompson_mynn_lam3km:
     nggps_ic: false
     nord_tr: 2
     nrows_blend: 10
-    npz: 64
+    npz: 65
     npz_type: ''
     psm_bc: 1
     regional_bcs_from_gsi: false
@@ -312,7 +312,7 @@ FV3_GFS_v16:
   cires_ugwp_nml:
     launch_level: 27
   external_ic_nml:
-    levp: 65
+    levp: 66
   fv_core_nml:
     agrid_vel_rst: False
     d2_bg_k1: 0.2
@@ -337,7 +337,7 @@ FV3_GFS_v16:
     n_sponge: 10
     na_init: 0
     nord_zs_filter: !!python/none
-    npz: 64
+    npz: 65
     nudge_dz: False
     nudge_qv: True
     psm_bc: 1

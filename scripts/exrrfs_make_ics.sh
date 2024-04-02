@@ -44,8 +44,38 @@ In directory:     \"${scrfunc_dir}\"
 
 This is the ex-script for the task that generates initial condition
 (IC), surface, and zeroth hour lateral boundary condition (LBC0) files
-(in NetCDF format) for the FV3-LAM.
+(in NetCDF format) for the RRFS.
 ========================================================================"
+#
+#-----------------------------------------------------------------------
+#
+# Specify the set of valid argument names for this script/function.  Then
+# process the arguments provided to this script/function (which should
+# consist of a set of name-value pairs of the form arg1="value1", etc).
+#
+#-----------------------------------------------------------------------
+#
+valid_args=( \
+"use_user_staged_extrn_files" \
+"extrn_mdl_cdate" \
+"extrn_mdl_lbc_spec_fhrs" \
+"extrn_mdl_fns_on_disk" \
+"extrn_mdl_fns_on_disk2" \
+"extrn_mdl_source_dir" \
+"extrn_mdl_source_dir2" \
+"extrn_mdl_staging_dir" \
+)
+process_args valid_args "$@"
+#
+#-----------------------------------------------------------------------
+#
+# For debugging purposes, print out values of arguments passed to this
+# script.  Note that these will be printed out only if VERBOSE is set to
+# TRUE.
+#
+#-----------------------------------------------------------------------
+#
+print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
@@ -88,14 +118,150 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-# Source the file containing definitions of variables associated with the
-# external model for ICs.
+# Set num_files_to_copy to the number of external model files that need
+# to be copied or linked to from/at a location on disk.  Then set
+# extrn_mdl_fps_on_disk to the full paths of the external model files
+# on disk.
 #
 #-----------------------------------------------------------------------
 #
-extrn_mdl_staging_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/${EXTRN_MDL_NAME_ICS}/for_ICS"
-extrn_mdl_var_defns_fp="${extrn_mdl_staging_dir}/${EXTRN_MDL_ICS_VAR_DEFNS_FN}"
-. ${extrn_mdl_var_defns_fp}
+num_files_to_copy="${#extrn_mdl_fns_on_disk[@]}"
+prefix="${extrn_mdl_source_dir}/"
+extrn_mdl_fps_on_disk=( "${extrn_mdl_fns_on_disk[@]/#/$prefix}" )
+prefix2="${extrn_mdl_source_dir2}"
+extrn_mdl_fps_on_disk2=( "${extrn_mdl_fns_on_disk2[@]/#/$prefix2}" )
+#
+#-----------------------------------------------------------------------
+#
+# Loop through the list of external model files and check whether they
+# all exist on disk.  The counter num_files_found_on_disk keeps track of
+# the number of external model files that were actually found on disk in
+# the directory specified by extrn_mdl_source_dir.
+#
+# If the location extrn_mdl_source_dir is a user-specified directory
+# (i.e. if use_user_staged_extrn_files is set to "TRUE"), then if/when we
+# encounter the first file that does not exist, we exit the script with
+# an error message.  If extrn_mdl_source_dir is a system directory (i.e.
+# if use_user_staged_extrn_files is not set to "TRUE"), then if/when we
+# encounter the first file that does not exist or exists but is younger
+# than a certain age, we break out of the loop.  The age cutoff is to 
+# ensure that files are not still being written to.
+#
+#-----------------------------------------------------------------------
+#
+num_files_found_on_disk="0"
+min_age="5"  # Minimum file age, in minutes.
+
+for fp in "${extrn_mdl_fps_on_disk[@]}"; do
+  #
+  # If the external model file exists, then...
+  #
+  if [ -f "$fp" ]; then
+    #
+    # Increment the counter that keeps track of the number of external
+    # model files found on disk and print out an informational message.
+    #
+    num_files_found_on_disk=$(( num_files_found_on_disk+1 ))
+    print_info_msg "
+File fp exists on disk:
+  fp = \"$fp\""
+    #
+    # If we are NOT searching for user-staged external model files, then
+    # we also check that the current file is at least min_age minutes old.
+    #
+    if [ "${use_user_staged_extrn_files}" != "TRUE" ]; then
+
+      if [ $( find "$fp" -mmin +${min_age} ) ]; then
+        print_info_msg "
+File fp is older than the minimum required age of min_age minutes:
+  fp = \"$fp\"
+  min_age = ${min_age} minutes"
+
+      else
+        print_info_msg "
+File fp is NOT older than the minumum required age of min_age minutes:
+  fp = \"$fp\"
+  min_age = ${min_age} minutes
+Not checking presence and age of remaining external model files on disk."
+        break
+      fi
+    fi
+  #
+  # If the external model file does not exist, then...
+  #
+  else
+    #
+    # If an external model file is not found and we are searching for it
+    # in a user-specified directory, print out an error message and exit.
+    #
+    if [ "${use_user_staged_extrn_files}" = "TRUE" ]; then
+      err_exit "\
+File fp does NOT exist on disk:
+  fp = \"$fp\"
+Please ensure that the directory specified by extrn_mdl_source_dir exists
+and that all the files specified in the array extrn_mdl_fns_on_disk exist
+within it:
+  extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
+  extrn_mdl_fns_on_disk = ( $( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" ))"
+    #
+    # If an external model file is not found and we are searching for it
+    # in a system directory, give up on the system directory.
+    #
+    else
+      print_info_msg "
+File fp does NOT exist on disk:
+  fp = \"$fp\"
+Not checking presence and age of remaining external model files on disk."
+      break
+
+    fi
+  fi
+done
+#
+#-----------------------------------------------------------------------
+#
+# Copy the files from the source directory on disk to a staging directory.
+#
+#-----------------------------------------------------------------------
+#
+extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" )")"
+
+print_info_msg "
+Creating links in staging directory (extrn_mdl_staging_dir) to external
+model files on disk (extrn_mdl_fns_on_disk) in the source directory
+(extrn_mdl_source_dir):
+extrn_mdl_staging_dir = \"${extrn_mdl_staging_dir}\"
+extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
+extrn_mdl_fns_on_disk = ${extrn_mdl_fns_on_disk_str}"
+
+if [ ! -z ${extrn_mdl_source_dir2} ]; then
+  cp ${extrn_mdl_fps_on_disk[@]} ${extrn_mdl_staging_dir}/.
+  more ${extrn_mdl_fps_on_disk2[@]} >>  ${extrn_mdl_staging_dir}/${extrn_mdl_fns_on_disk[@]}
+else
+  ln -sf -t ${extrn_mdl_staging_dir} ${extrn_mdl_fps_on_disk[@]}
+fi
+#
+#-----------------------------------------------------------------------
+#
+# Print message indicating successful completion of retrieving model files.
+#
+#-----------------------------------------------------------------------
+#
+print_info_msg "
+========================================================================
+Successfully copied or linked to external model files on disk needed for
+generating initial conditions and surface fields for the RRFS forecast!!!
+========================================================================"
+#
+#-----------------------------------------------------------------------
+#
+# Set values of several external-model-associated variables.
+#
+#-----------------------------------------------------------------------
+#
+eval EXTRN_MDL_CDATE=${extrn_mdl_cdate}
+extrn_mdl_fns_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" )")"
+eval EXTRN_MDL_FNS=${extrn_mdl_fns_str}
 #
 #-----------------------------------------------------------------------
 #
@@ -787,6 +953,33 @@ files (in NetCDF format) for FV3 generated successfully!!!
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
+#
+#-----------------------------------------------------------------------
+#
+# Create a variable definitions file (a shell script) and save in it the
+# values of several external-model-associated variables generated in this
+# script that will be needed by downstream workflow tasks.
+#
+#-----------------------------------------------------------------------
+#
+extrn_mdl_var_defns_fn="${EXTRN_MDL_ICS_VAR_DEFNS_FN}"
+extrn_mdl_var_defns_fp="${extrn_mdl_staging_dir}/${extrn_mdl_var_defns_fn}"
+check_for_preexist_dir_file "${extrn_mdl_var_defns_fp}" "delete"
+
+settings="EXTRN_MDL_CDATE=${extrn_mdl_cdate}"
+
+{ cat << EOM >> ${extrn_mdl_var_defns_fp}
+$settings
+EOM
+}
+export err=$?
+if [ $err -ne 0 ]; then
+  err_exit "\
+Heredoc (cat) command to create a variable definitions file associated
+with the external model from which to generate ${ics_or_lbcs} returned with a
+nonzero status.  The full path to this variable definitions file is:
+  extrn_mdl_var_defns_fp = \"${extrn_mdl_var_defns_fp}\""
+fi
 #
 #-----------------------------------------------------------------------
 #

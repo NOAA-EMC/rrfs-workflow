@@ -47,7 +47,7 @@ PPN_RUN_FCST="12"
 
 DO_NON_DA_RUN="TRUE"
 DO_RETRO="TRUE"
-VCOORD_FILE="global_hyblev.l65.txt"
+VCOORD_FILE="global_hyblev_fcst_rrfsL65.txt"
 WFLOW_XML_TMPL_FN="FV3LAM_wflow_nonDA.xml"
 FV3_NML_YAML_CONFIG_FN="FV3.input.nonDA.yml"
 

@@ -1,6 +1,6 @@
 MACHINE="wcoss2"
 MACHINETYPE="primary"
-version="v0.8.5"
+version="v0.9.1"
 ACCOUNT="RRFS_DEV"
 #RESERVATION="rrfsdet"
 EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/${version}"
@@ -88,8 +88,12 @@ RESTART_INTERVAL_LONG="1 2 12 24 36 48"
 POSTPROC_LEN_HRS="18"
 POSTPROC_LONG_LEN_HRS="60"
 
-# 15 min output upto 18 hours
+# default 
 OUTPUT_FH="1 -1"
+#set UPP/prodgen for 15 min output
+NFHMAX_HF="18"
+NFHOUT="1"
+NSOUT_MIN="15"
 
 USE_RRFSE_ENS="TRUE"
 CYCL_HRS_HYB_FV3LAM_ENS=("00" "01" "02" "03" "04" "05" "06" "07" "08" "09" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "23")
@@ -103,6 +107,13 @@ WRTCMP_output_file="netcdf_parallel"
 WRTCMP_ideflate="1"
 WRTCMP_quantize_nsd="18"
 
+LAYOUT_X="43"
+LAYOUT_Y="64"
+NNODES_RUN_FCST="52"
+WRTCMP_write_groups="3"
+WRTCMP_write_tasks_per_group="192"
+
+
 regional_ensemble_option=5
 
 EXTRN_MDL_NAME_ICS="FV3GFS"
@@ -111,7 +122,7 @@ EXTRN_MDL_NAME_LBCS="FV3GFS"
 envir="para"
 
 NET="rrfs_a"
-TAG="n3v85"
+TAG="n3v91"
 
 ARCHIVEDIR="/NCEPDEV/emc-meso/1year/emc.lam/${TAG}"
 NCL_REGION="conus"

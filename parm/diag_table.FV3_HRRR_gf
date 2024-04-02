@@ -413,6 +413,9 @@
 "gfs_dyn",     "smoke",       "smoke",     "fv3_history",  "all",  .false.,  "none",  2
 "gfs_dyn",     "dust",        "dust",      "fv3_history",  "all",  .false.,  "none",  2
 "gfs_dyn",     "coarsepm",    "coarsepm",  "fv3_history",  "all",  .false.,  "none",  2
+"gfs_dyn",     "smoke_ave",       "smoke_ave",     "fv3_history2d",  "all",  .false.,  "none",  2
+"gfs_dyn",     "dust_ave",        "dust_ave",      "fv3_history2d",  "all",  .false.,  "none",  2
+"gfs_dyn",     "coarsepm_ave",    "coarsepm_ave",  "fv3_history2d",  "all",  .false.,  "none",  2
 
 # Aerosols emission for smoke
 "gfs_sfc",     "emdust",       "emdust",        "fv3_history2d",  "all",  .false.,  "none",  2
