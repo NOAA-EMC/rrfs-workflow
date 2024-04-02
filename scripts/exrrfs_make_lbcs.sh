@@ -56,6 +56,15 @@ hour zero).
 #-----------------------------------------------------------------------
 #
 valid_args=( \
+"use_user_staged_extrn_files" \
+"extrn_mdl_name" \
+"extrn_mdl_cdate" \
+"extrn_mdl_lbc_spec_fhrs" \
+"extrn_mdl_fns_on_disk" \
+"extrn_mdl_fns_on_disk2" \
+"extrn_mdl_source_dir" \
+"extrn_mdl_source_dir2" \
+"extrn_mdl_staging_dir" \
 "bcgrp" \
 "bcgrpnum" \
 )
@@ -109,14 +118,240 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-# Source the file containing definitions of variables associated with the
-# external model for LBCs.
+# Set num_files_to_copy to the number of external model files that need
+# to be copied or linked to from/at a location on disk.  Then set
+# extrn_mdl_fps_on_disk to the full paths of the external model files
+# on disk.
 #
 #-----------------------------------------------------------------------
 #
-extrn_mdl_staging_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/${EXTRN_MDL_NAME_LBCS}/for_LBCS"
-extrn_mdl_var_defns_fp="${extrn_mdl_staging_dir}/${EXTRN_MDL_LBCS_VAR_DEFNS_FN}"
-. ${extrn_mdl_var_defns_fp}
+num_files_to_copy="${#extrn_mdl_fns_on_disk[@]}"
+prefix="${extrn_mdl_source_dir}/"
+extrn_mdl_fps_on_disk=( "${extrn_mdl_fns_on_disk[@]/#/$prefix}" )
+prefix2="${extrn_mdl_source_dir2}"
+extrn_mdl_fps_on_disk2=( "${extrn_mdl_fns_on_disk2[@]/#/$prefix2}" )
+#
+#-----------------------------------------------------------------------
+#
+# Loop through the list of external model files and check whether they
+# all exist on disk.  The counter num_files_found_on_disk keeps track of
+# the number of external model files that were actually found on disk in
+# the directory specified by extrn_mdl_source_dir.
+#
+# If the location extrn_mdl_source_dir is a user-specified directory
+# (i.e. if use_user_staged_extrn_files is set to "TRUE"), then if/when we
+# encounter the first file that does not exist, we exit the script with
+# an error message.  If extrn_mdl_source_dir is a system directory (i.e.
+# if use_user_staged_extrn_files is not set to "TRUE"), then if/when we
+# encounter the first file that does not exist or exists but is younger
+# than a certain age, we break out of the loop.  The age cutoff is to
+# ensure that files are not still being written to.
+#
+#-----------------------------------------------------------------------
+#
+num_files_found_on_disk="0"
+min_age="5"  # Minimum file age, in minutes.
+
+for fp in "${extrn_mdl_fps_on_disk[@]}"; do
+  #
+  # If the external model file exists, then...
+  #
+  if [ -f "$fp" ]; then
+    #
+    # Increment the counter that keeps track of the number of external
+    # model files found on disk and print out an informational message.
+    #
+    num_files_found_on_disk=$(( num_files_found_on_disk+1 ))
+    print_info_msg "
+File fp exists on disk:
+  fp = \"$fp\""
+    #
+    # If we are NOT searching for user-staged external model files, then
+    # we also check that the current file is at least min_age minutes old.
+    #
+    if [ "${use_user_staged_extrn_files}" != "TRUE" ]; then
+
+      if [ $( find "$fp" -mmin +${min_age} ) ]; then
+        print_info_msg "
+File fp is older than the minimum required age of min_age minutes:
+  fp = \"$fp\"
+  min_age = ${min_age} minutes"
+
+      else
+        print_info_msg "
+File fp is NOT older than the minumum required age of min_age minutes:
+  fp = \"$fp\"
+  min_age = ${min_age} minutes
+Not checking presence and age of remaining external model files on disk."
+        break
+      fi
+    fi
+  #
+  # If the external model file does not exist, then...
+  #
+  else
+    #
+    # If an external model file is not found and we are searching for it
+    # in a user-specified directory, print out an error message and exit.
+    #
+    if [ "${use_user_staged_extrn_files}" = "TRUE" ]; then
+      err_exit "\
+File fp does NOT exist on disk:
+  fp = \"$fp\"
+Please ensure that the directory specified by extrn_mdl_source_dir exists
+and that all the files specified in the array extrn_mdl_fns_on_disk exist
+within it:
+  extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
+  extrn_mdl_fns_on_disk = ( $( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" ))"
+    #
+    # If an external model file is not found and we are searching for it
+    # in a system directory, give up on the system directory.
+    #
+    else
+      print_info_msg "
+File fp does NOT exist on disk:
+  fp = \"$fp\"
+Not checking presence and age of remaining external model files on disk."
+      break
+
+    fi
+  fi
+done
+#
+#-----------------------------------------------------------------------
+#
+# Copy the files from the source directory on disk to a staging directory.
+#
+#-----------------------------------------------------------------------
+#
+extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" )")"
+
+print_info_msg "
+Creating links in staging directory (extrn_mdl_staging_dir) to external
+model files on disk (extrn_mdl_fns_on_disk) in the source directory
+(extrn_mdl_source_dir):
+extrn_mdl_staging_dir = \"${extrn_mdl_staging_dir}\"
+extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
+extrn_mdl_fns_on_disk = ${extrn_mdl_fns_on_disk_str}"
+
+if [ ${extrn_mdl_name} != GEFS ] ; then
+  ln -sf -t ${extrn_mdl_staging_dir} ${extrn_mdl_fps_on_disk[@]}
+elif [ ${extrn_mdl_name} = GEFS ] ; then
+# Get GEFS files and do time interpolation using wgrib2
+  length=${#extrn_mdl_fps_on_disk[@]}
+
+  for (( j=0; j<length; j++ ));
+  do
+    fps=${extrn_mdl_fps_on_disk[$j]}
+    fps2=${extrn_mdl_fps_on_disk2[$j]}
+    fps_name=${extrn_mdl_fns_on_disk[$j]}
+    if [ -f "$fps" ]; then
+      #
+      # Increment the counter that keeps track of the number of external
+      # model files found on disk and print out an informational message.
+      #
+      cp ${fps} ${extrn_mdl_staging_dir}/${fps_name}
+      if [ -f "$fps2" ]; then
+        more ${fps2} >>  ${extrn_mdl_staging_dir}/${fps_name}
+      fi
+
+      print_info_msg "
+File fps exists on disk:
+  fps = \"$fps\""
+    fi
+  done
+
+  yyyymmdd=${extrn_mdl_cdate:0:8}
+  hh=${extrn_mdl_cdate:8:2}
+
+  echo extrn_mdl_cdate=${extrn_mdl_cdate}
+  echo " yyyymmddhh= ${yyyymmdd} ${hh} "
+
+  for files in "${extrn_mdl_fps_on_disk[@]}"; do
+    file=$( basename "$files" )
+    echo " Checking for $file "
+    if [[ -f ${extrn_mdl_staging_dir}/$file ]]; then
+      echo "Found ${extrn_mdl_staging_dir}/$file "
+    else
+      fcsthr=$( echo $file | awk '{print substr($0, length($0)-2)}' | sed 's/^0*//'  )
+
+print_info_msg "
+========================================================================
+
+Missing $files for forecast hour $fcsthr !
+Need to do time interpolation!
+
+========================================================================"
+
+      fcsthr_0=$(( fcsthr % 3 ))
+      echo fcsthr_0=${fcsthr_0}
+      fcsthr_m=$(( fcsthr - fcsthr_0 ))
+      echo fcsthr_m=${fcsthr_m}
+      fcsthr_p=$(( fcsthr - fcsthr_0 + 3 ))
+      echo fcsthr_p=${fcsthr_p}
+      fhrm=$( printf "%03d" ${fcsthr_m} )
+      echo fhrm=${fhrm}
+      fhrp=$( printf "%03d" ${fcsthr_p} )
+      echo fhrp=${fhrp}
+      in1=$( echo $file | sed 's/...$/'${fhrm}'/g' )
+      echo in1=${in1}
+      in2=$( echo $file | sed 's/...$/'${fhrp}'/g' )
+      echo in2=${in2}
+      vtime=$( date +%Y%m%d%H -d "${yyyymmdd} ${hh} +${fcsthr_m} hours" )
+      echo vtime = $vtime
+      a="vt=${vtime}"
+      d1="${fcsthr} hour forecast"
+      echo $d1
+      c=$( expr ${fcsthr_0}/3 | bc -l )
+      c1=$( printf "%.5f\n"  $c )
+      b1=$( expr 1-$c1 | bc -l )
+      echo " b1,c1= $b1 $c1 "
+
+print_info_msg "
+========================================================================
+Deriving ${extrn_mdl_staging_dir}/$file
+based on
+${extrn_mdl_staging_dir}/$in1
+and
+${extrn_mdl_staging_dir}/$in2
+========================================================================"
+
+      wgrib2 ${extrn_mdl_staging_dir}/$in1 -rpn sto_1 -import_grib ${extrn_mdl_staging_dir}/$in2 -rpn sto_2 -set_grib_type same \
+    -if ":$a:" \
+       -rpn "rcl_1:$b1:*:rcl_2:$c1:*:+" -set_ftime "$d1" -set_scaling same same -grib_out ${extrn_mdl_staging_dir}/$file
+
+print_info_msg "
+========================================================================
+Done interpolating the GEFS lbcs files for hour \"${fcsthr}\"
+========================================================================"
+    fi
+  done
+fi
+
+#
+#-----------------------------------------------------------------------
+#
+# Print message indicating successful completion of retrieving model files.
+#
+#-----------------------------------------------------------------------
+#
+print_info_msg "
+========================================================================
+Successfully copied or linked to external model files on disk needed for
+generating lateral boundary conditions for the RRFS forecast!!!
+========================================================================"
+#
+#-----------------------------------------------------------------------
+#
+# Set values of several external-model-associated variables.
+#
+#-----------------------------------------------------------------------
+#
+eval EXTRN_MDL_CDATE=${extrn_mdl_cdate}
+extrn_mdl_fns_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" )")"
+eval EXTRN_MDL_FNS=${extrn_mdl_fns_str}
+extrn_mdl_lbc_spec_fhrs_str="( "$( printf "\"%s\" " "${extrn_mdl_lbc_spec_fhrs[@]}" )")"
+eval EXTRN_MDL_LBC_SPEC_FHRS=${extrn_mdl_lbc_spec_fhrs_str}
 #
 #-----------------------------------------------------------------------
 #

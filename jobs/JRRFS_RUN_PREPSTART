@@ -93,6 +93,19 @@ export MAILTO="${MAILTO:-}"
 #
 #-----------------------------------------------------------------------
 #
+# create COMOUT directory
+#
+#-----------------------------------------------------------------------
+#
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${HH}_spinup"
+else
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${HH}"
+fi
+mkdir -p "${COMOUT}"
+#
+#-----------------------------------------------------------------------
+#
 # Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
