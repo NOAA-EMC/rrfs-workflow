@@ -62,7 +62,7 @@ Directories and files.
 -->
 <!ENTITY JOBSdir                  "{{ jobsdir }}">
 <!ENTITY LOG_BASEDIR              "{{ log_basedir }}">
-<!ENTITY LOGDIR                   "{{ log_basedir }}/{{ run }}.@Y@m@d/@H">
+<!ENTITY LOGDIR                   "{{ log_basedir }}/rrfsfw.@Y@m@d/@H">
 <!ENTITY CYCLE_BASEDIR            "{{ cycle_basedir }}">
 <!ENTITY NWGES_BASEDIR            "{{ nwges_basedir }}">
 <!ENTITY GLOBAL_VAR_DEFNS_FP      "{{ global_var_defns_fp }}">
@@ -148,7 +148,7 @@ define resources used for each tasks
 <workflow realtime="T" scheduler="&SCHED;" cyclethrottle="1" cyclelifespan="00:12:00:00">
 {%- endif %}
 {# Double quotes are required inside the strftime! Expect an error from reading the template if using single quotes. #}
-  <cycledef group="at_start">{{ cdate_first_cycl.strftime("%M %H %d %m %Y *") }}</cycledef>
+
   <cycledef group="prod"> {{ prod_cycledef }} </cycledef>
 
   <log>
@@ -187,7 +187,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&MAKE_GRID_TN;" cycledefs="at_start" maxtries="{{ maxtries_make_grid }}">
+  <task name="&MAKE_GRID_TN;" cycledefs="prod" maxtries="{{ maxtries_make_grid }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_GRID_TN;" "&JOBSdir;/JRRFS_MAKE_GRID"</command>
@@ -208,7 +208,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&MAKE_OROG_TN;" cycledefs="at_start" maxtries="{{ maxtries_make_orog }}">
+  <task name="&MAKE_OROG_TN;" cycledefs="prod" maxtries="{{ maxtries_make_orog }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_OROG_TN;" "&JOBSdir;/JRRFS_MAKE_OROG"</command>
@@ -221,11 +221,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
 
     <dependency>
-      <or>
-<!--        <taskdep task="make_grid"/> -->
-        <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
-        <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
-      </or>
+      <taskdep task="&MAKE_GRID_TN;"/>
     </dependency>
 
   </task>
@@ -236,7 +232,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&MAKE_SFC_CLIMO_TN;" cycledefs="at_start" maxtries="{{ maxtries_make_sfc_climo }}">
+  <task name="&MAKE_SFC_CLIMO_TN;" cycledefs="prod" maxtries="{{ maxtries_make_sfc_climo }}">
 
     &RSRV_SFC_CLIMO;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_SFC_CLIMO_TN;" "&JOBSdir;/JRRFS_MAKE_SFC_CLIMO"</command>
@@ -250,16 +246,8 @@ MODULES_RUN_TASK_FP script.
 
     <dependency>
       <and>
-        <or>
-<!--          <taskdep task="&MAKE_GRID_TN;"/> -->
-          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
-          <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
-        </or>
-        <or>
-<!--          <taskdep task="&MAKE_OROG_TN;"/> -->
-          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_orog_task_complete.txt</datadep>
-          <streq><left>&RUN_TASK_MAKE_OROG;</left><right>FALSE</right></streq>
-        </or>
+        <taskdep task="&MAKE_GRID_TN;"/>
+        <taskdep task="&MAKE_OROG_TN;"/>
       </and>
     </dependency>
 
@@ -292,26 +280,10 @@ MODULES_RUN_TASK_FP script.
 
     <dependency>
       <and>
-        <or>
-<!--          <taskdep task="&MAKE_GRID_TN;"/> -->
-          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
-          <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
-        </or>
-        <or>
-<!--          <taskdep task="&MAKE_OROG_TN;"/> -->
-          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_orog_task_complete.txt</datadep>
-          <streq><left>&RUN_TASK_MAKE_OROG;</left><right>FALSE</right></streq>
-        </or>
-        <or>
-<!--          <taskdep task="&MAKE_SFC_CLIMO_TN;"/> -->
-          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_sfc_climo_task_complete.txt</datadep>
-          <streq><left>&RUN_TASK_MAKE_SFC_CLIMO;</left><right>FALSE</right></streq>
-        </or>
-        <or>
-        {%- if extrn_mdl_name_ics in ["RRFS"] %}
-          <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/rrfs.@Y@m@d/@H/rrfs.t@Hz.natlev.f{{ "%03d" % extrn_mdl_ics_offset_hrs }}.grib2</cyclestr></datadep>
-        {%- endif %}
-        </or>
+        <taskdep task="&MAKE_GRID_TN;"/>
+        <taskdep task="&MAKE_OROG_TN;"/>
+        <taskdep task="&MAKE_SFC_CLIMO_TN;"/>
+        <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/rrfs.@Y@m@d/@H/rrfs.t@Hz.natlev.f{{ "%03d" % extrn_mdl_ics_offset_hrs }}.grib2</cyclestr></datadep>
       </and>
     </dependency>
 
@@ -348,29 +320,12 @@ MODULES_RUN_TASK_FP script.
 
       <dependency>
         <and>
-          <or>
-<!--            <taskdep task="&MAKE_GRID_TN;"/> -->
-            <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
-            <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
-          </or>
-          <or>
-<!--            <taskdep task="&MAKE_OROG_TN;"/> -->
-            <datadep age="00:00:00:05">&LOG_BASEDIR;/make_orog_task_complete.txt</datadep>
-            <streq><left>&RUN_TASK_MAKE_OROG;</left><right>FALSE</right></streq>
-          </or>
-          <or>
-<!--            <taskdep task="&MAKE_SFC_CLIMO_TN;"/> -->
-            <datadep age="00:00:00:05">&LOG_BASEDIR;/make_sfc_climo_task_complete.txt</datadep>
-            <streq><left>&RUN_TASK_MAKE_SFC_CLIMO;</left><right>FALSE</right></streq>
-          </or>
-          <or>
-<!-- Dependencies needed for RRFSFW real-time run -->
-          {%- if extrn_mdl_name_lbcs in ["RRFS"] %}
-            {%- for h in range(extrn_mdl_lbcs_offset_hrs, boundary_len_hrs+extrn_mdl_lbcs_offset_hrs+1, 1) %}
-              <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/rrfs.@Y@m@d/@H/rrfs.t@Hz.natlev.f{{ "%03d" % h }}.grib2</cyclestr></datadep>
-            {%- endfor %}
-          {%- endif %}
-          </or>
+          <taskdep task="&MAKE_GRID_TN;"/>
+          <taskdep task="&MAKE_OROG_TN;"/>
+          <taskdep task="&MAKE_SFC_CLIMO_TN;"/>
+          {%- for h in range(extrn_mdl_lbcs_offset_hrs, boundary_len_hrs+extrn_mdl_lbcs_offset_hrs+1, 1) %}
+            <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/rrfs.@Y@m@d/@H/rrfs.t@Hz.natlev.f{{ "%03d" % h }}.grib2</cyclestr></datadep>
+          {%- endfor %}
         </and>
       </dependency>
 

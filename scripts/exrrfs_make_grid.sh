@@ -93,10 +93,12 @@ if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
   LAT_CTR=`grep ${hh}z $firewx_loc | awk '{print $2}'`
   LON_CTR=`grep ${hh}z $firewx_loc | awk '{print $3}'`
 
-  sed -i -e "s/39.2/${LAT_CTR}/g" ${FV3_NML_FP}
-  sed -i -e "s/39.2/${LAT_CTR}/g" ${GLOBAL_VAR_DEFNS_FP}
-  sed -i -e "s/-106.0/${LON_CTR}/g" ${FV3_NML_FP}
-  sed -i -e "s/-106.0/${LON_CTR}/g" ${GLOBAL_VAR_DEFNS_FP}
+  sed -i "/    target_lat = */c\    target_lat = ${LAT_CTR}" ${FV3_NML_FP}
+  sed -i "/ESGgrid_LAT_CTR=\"*/c\ESGgrid_LAT_CTR=\"${LAT_CTR}\"" ${GLOBAL_VAR_DEFNS_FP}
+  sed -i "/\(^LAT_CTR\)/c\LAT_CTR=\"${LAT_CTR}\"" ${GLOBAL_VAR_DEFNS_FP}
+  sed -i "/    target_lon = */c\    target_lon = ${LON_CTR}" ${FV3_NML_FP}
+  sed -i "/ESGgrid_LON_CTR=\"*/c\ESGgrid_LON_CTR=\"${LON_CTR}\"" ${GLOBAL_VAR_DEFNS_FP}
+  sed -i "/\(^LON_CTR\)/c\LON_CTR=\"${LON_CTR}\"" ${GLOBAL_VAR_DEFNS_FP}
 
   python ${USHdir}/rrfsfw_domain.py $LAT_CTR $LON_CTR
   if [[ $? != 0 ]]; then
