@@ -6,12 +6,12 @@ EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/${version}"
 EXPT_SUBDIR="rrfs_firewx"
 
 envir="para"
-NET="rrfsfw"
+NET="rrfs"
 TAG="n3v89"
-MODEL="rrfsfw"
-RUN="rrfsfw"
+MODEL="rrfs"
+RUN="rrfs"
 
-STMP="/lfs/h2/emc/stmp/emc.lam/rrfs/${version}"
+STMP="/lfs/h2/emc/stmp/emc.lam/rrfs/${version}/rrfsfw"
 PTMP="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}"
 
 VERBOSE="TRUE"
@@ -33,7 +33,7 @@ LBC_SPEC_INTVL_HRS="1"
 BOUNDARY_LEN_HRS="36"
 BOUNDARY_PROC_GROUP_NUM="36"
 
-DATE_FIRST_CYCL="20240328"
+DATE_FIRST_CYCL="20240402"
 DATE_LAST_CYCL="20240428"
 CYCL_HRS=( "00" "06" "12" "18" )
 PROD_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}1800 06:00:00"
