@@ -11,8 +11,7 @@ natlev=$4
 ififip=$5
 aviati=$6
 COMOUT=$7
-
-USHrrfs=$USHdir/prdgen
+USHrrfs=$8
 
 # FAA request variable to be extracted from UPP output
   parmdir=${FIXprdgen}
@@ -32,9 +31,6 @@ USHrrfs=$USHdir/prdgen
   fi 
 
   fcstvar2="${jfhr}-${ifhr} hour acc fcst"
-
-  #-- accumulation from "0"
-  # fcstvar2="0-${ifhr} hour acc fcst"
 
   #-- replace undifined variables in "*parmas" files in /fix/prdgen
   sed "s/FCSTVARS1/${fcstvar1}/" ${parmdir}/rrfs.prslev-FAA130.params > rrfs.prslev-FAA130.params
@@ -204,7 +200,7 @@ USHrrfs=$USHdir/prdgen
       if [ $ifhr = 1 -o  $ifhr = 2 -o  $ifhr = 3 -o  $ifhr = 6 -o  $ifhr = 9 -o  $ifhr = 12 -o  $ifhr = 15 -o  $ifhr = 18 ]; then
         IFIFILE=rrfs.t${cyc}z.ififip.f${fhr}.conus_13km.grib2
         IFIDOMAIN=conus_13km
-        ${USHrrfs}/subset_ifi_304m.sh $fhr $cyc ${COMOUT} ${IFIFILE} ${IFIDOMAIN}
+        ${USHrrfs}/rrfs_subset_ifi_304m.sh $fhr $cyc ${COMOUT} ${IFIFILE} ${IFIDOMAIN}
       fi
     fi
 
@@ -233,7 +229,7 @@ USHrrfs=$USHdir/prdgen
       if [ $ifhr = 1 -o  $ifhr = 2 -o  $ifhr = 3 -o  $ifhr = 6 -o  $ifhr = 9 -o  $ifhr = 12 -o  $ifhr = 15 -o  $ifhr = 18 ]; then
         IFIFILE=rrfs.t${cyc}z.ififip.f${fhr}.ak_3km.grib2
         IFIDOMAIN=ak_3km
-        ${USHrrfs}/subset_ifi_304m.sh $fhr $cyc ${COMOUT} ${IFIFILE} ${IFIDOMAIN}
+        ${USHrrfs}/rrfs_subset_ifi_304m.sh $fhr $cyc ${COMOUT} ${IFIFILE} ${IFIDOMAIN}
       fi
     fi
 
