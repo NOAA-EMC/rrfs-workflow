@@ -350,6 +350,8 @@ fhr=${subh_fhr}
 gridname=""
 if [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km" ]; then
   gridname="conus_3km."
+elif [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
+  gridname="firewx."
 elif  [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ]; then
   gridname=""
 fi

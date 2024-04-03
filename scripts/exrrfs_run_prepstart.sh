@@ -607,7 +607,15 @@ fi
 #
 #-----------------------------------------------------------------------
 if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cycle smoke/dust fields
+  if_cycle_smoke_dust="FALSE"
   if [ ${HH} -eq 4 ] || [ ${HH} -eq 16 ] ; then
+     if_cycle_smoke_dust="TRUE"
+  elif [ ${HH} -eq 6 ] && [ -f ${COMOUT}/../04_spinup/cycle_smoke_dust_skipped.txt ]; then
+     if_cycle_smoke_dust="TRUE"
+  elif [ ${HH} -eq 18 ] && [ -f ${COMOUT}/../16_spinup/cycle_smoke_dust_skipped.txt ]; then
+     if_cycle_smoke_dust="TRUE"
+  fi
+  if [ "${if_cycle_smoke_dust}" = "TRUE" ] ; then
       # figure out which surface is available
       surface_file_dir_name=fcst_fv3lam
       bkpath_find="missing"
@@ -620,7 +628,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
           bkpath=${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${surface_file_dir_name}/RESTART
 
           n=${DA_CYCLE_INTERV}
-          while [[ $n -le 6 ]] ; do
+          while [[ $n -le 25 ]] ; do
              if [ "${IO_LAYOUT_Y}" = "1" ]; then
                checkfile=${bkpath}/${restart_prefix}fv_tracer.res.tile1.nc
              else
@@ -645,6 +653,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
       rm -f cycle_smoke_dust.done
       if [ "${bkpath_find}" = "missing" ]; then
         print_info_msg "Warning: cannot find smoke/dust files from previous cycle"
+        touch ${COMOUT}/cycle_smoke_dust_skipped.txt
       else
         if [ "${IO_LAYOUT_Y}" = "1" ]; then
           checkfile=${bkpath_find}/${restart_prefix_find}fv_tracer.res.tile1.nc

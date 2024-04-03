@@ -425,8 +425,7 @@ MODULES_RUN_TASK_FP script.
 
     <dependency>
       <or>
-<!--        <taskdep task="make_grid"/> -->
-        <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
+        <taskdep task="&MAKE_GRID_TN;"/>
         <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
       </or>
     </dependency>
@@ -454,13 +453,11 @@ MODULES_RUN_TASK_FP script.
     <dependency>
       <and>
         <or>
-<!--          <taskdep task="&MAKE_GRID_TN;"/> -->
-          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
+          <taskdep task="&MAKE_GRID_TN;"/>
           <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
         </or>
         <or>
-<!--          <taskdep task="&MAKE_OROG_TN;"/> -->
-          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_orog_task_complete.txt</datadep>
+          <taskdep task="&MAKE_OROG_TN;"/>
           <streq><left>&RUN_TASK_MAKE_OROG;</left><right>FALSE</right></streq>
         </or>
       </and>
@@ -799,18 +796,15 @@ MODULES_RUN_TASK_FP script.
     <dependency>
       <and>
         <or>
-<!--          <taskdep task="&MAKE_GRID_TN;"/> -->
-          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
+          <taskdep task="&MAKE_GRID_TN;"/>
           <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
         </or>
         <or>
-<!--          <taskdep task="&MAKE_OROG_TN;"/> -->
-          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_orog_task_complete.txt</datadep>
+          <taskdep task="&MAKE_OROG_TN;"/>
           <streq><left>&RUN_TASK_MAKE_OROG;</left><right>FALSE</right></streq>
         </or>
         <or>
-<!--          <taskdep task="&MAKE_SFC_CLIMO_TN;"/> -->
-          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_sfc_climo_task_complete.txt</datadep>
+          <taskdep task="&MAKE_SFC_CLIMO_TN;"/>
           <streq><left>&RUN_TASK_MAKE_SFC_CLIMO;</left><right>FALSE</right></streq>
         </or>
         <or>
@@ -978,21 +972,18 @@ MODULES_RUN_TASK_FP script.
     <dependency>
       <and>
         <or>
-<!--          <taskdep task="&MAKE_GRID_TN;"/> -->
-          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_grid_task_complete.txt</datadep>
+          <taskdep task="&MAKE_GRID_TN;"/>
           <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
         </or>
         <or>
-<!--          <taskdep task="&MAKE_OROG_TN;"/> -->
-          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_orog_task_complete.txt</datadep>
+          <taskdep task="&MAKE_OROG_TN;"/>
           <streq><left>&RUN_TASK_MAKE_OROG;</left><right>FALSE</right></streq>
         </or>
         <or>
-<!--          <taskdep task="&MAKE_SFC_CLIMO_TN;"/> -->
-          <datadep age="00:00:00:05">&LOG_BASEDIR;/make_sfc_climo_task_complete.txt</datadep>
+          <taskdep task="&MAKE_SFC_CLIMO_TN;"/>
           <streq><left>&RUN_TASK_MAKE_SFC_CLIMO;</left><right>FALSE</right></streq>
         </or>
-        <or> 
+        <and> 
 <!-- Dependencies from the GET_GEFS_LBCS task -->
         {%- if extrn_mdl_name_lbcs in ["GEFS"] %}
           {%- if machine in ["WCOSS2"]  %}
@@ -1050,7 +1041,7 @@ MODULES_RUN_TASK_FP script.
           {%- endfor %}
 
         {%- endif %}
-        </or>
+        </and>
       </and>
     </dependency>
 
@@ -1126,6 +1117,7 @@ MODULES_RUN_TASK_FP script.
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>FG_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
