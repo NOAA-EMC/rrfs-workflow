@@ -16,8 +16,6 @@ load(pathJoin("wgrib2", os.getenv("wgrib2_ver") or "2.0.8"))
 prepend_path("MODULEPATH", "/scratch2/BMC/rtrr/gge/lua")
 load("prod_util/2.0.15")
 
-unload("python/3.10.8")
-
 setenv("CMAKE_C_COMPILER","mpiicc")
 setenv("CMAKE_CXX_COMPILER","mpiicpc")
 setenv("CMAKE_Fortran_COMPILER","mpiifort")
