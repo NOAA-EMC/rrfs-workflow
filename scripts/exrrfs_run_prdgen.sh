@@ -185,8 +185,6 @@ fhr=${subh_fhr}
 gridname=""
 if [ "${PREDEF_GRID_NAME}" = "RRFS_CONUS_3km" ]; then
   gridname="conus_3km."
-elif [ "${PREDEF_GRID_NAME}" = "RRFS_FIREWX_1.5km" ]; then
-  gridname="firewx."
 elif  [ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]; then
   gridname=""
 fi
@@ -228,35 +226,31 @@ basetime=$( date +%y%j%H%M -d "${yyyymmdd} ${hh}" )
 cp ${postprd_dir}/${prslev} ${COMOUT}/${prslev}
 cp ${postprd_dir}/${natlev} ${COMOUT}/${natlev}
 
-if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
-  if [ -f  ${postprd_dir}/${ififip} ]; then
-    cp ${postprd_dir}/${ififip} ${COMOUT}/${ififip}
-  fi
+if [ -f  ${postprd_dir}/${ififip} ]; then
+  cp ${postprd_dir}/${ififip} ${COMOUT}/${ififip}
+fi
 
-  if [ -f  ${postprd_dir}/${aviati} ]; then
-    cp ${postprd_dir}/${aviati} ${COMOUT}/${aviati}
-  fi
+if [ -f  ${postprd_dir}/${aviati} ]; then
+  cp ${postprd_dir}/${aviati} ${COMOUT}/${aviati}
+fi
 
-  if [ -f  ${postprd_dir}/${testbed} ]; then
-    cp ${postprd_dir}/${testbed}  ${COMOUT}/${testbed}
-  fi
+if [ -f  ${postprd_dir}/${testbed} ]; then
+  cp ${postprd_dir}/${testbed}  ${COMOUT}/${testbed}
 fi
 
 wgrib2 ${COMOUT}/${prslev} -s > ${COMOUT}/${prslev}.idx
 wgrib2 ${COMOUT}/${natlev} -s > ${COMOUT}/${natlev}.idx
 
-if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
-  if [ -f ${COMOUT}/${ififip} ]; then
-    wgrib2 ${COMOUT}/${ififip} -s > ${COMOUT}/${ififip}.idx
-  fi
+if [ -f ${COMOUT}/${ififip} ]; then
+  wgrib2 ${COMOUT}/${ififip} -s > ${COMOUT}/${ififip}.idx
+fi
 
-  if [ -f ${COMOUT}/${aviati} ]; then
-    wgrib2 ${COMOUT}/${aviati} -s > ${COMOUT}/${aviati}.idx
-  fi
+if [ -f ${COMOUT}/${aviati} ]; then
+  wgrib2 ${COMOUT}/${aviati} -s > ${COMOUT}/${aviati}.idx
+fi
 
-  if [ -f ${COMOUT}/${testbed} ]; then
-    wgrib2 ${COMOUT}/${testbed} -s > ${COMOUT}/${testbed}.idx
-  fi
+if [ -f ${COMOUT}/${testbed} ]; then
+  wgrib2 ${COMOUT}/${testbed} -s > ${COMOUT}/${testbed}.idx
 fi
 
 # Remap to additional output grids if requested
@@ -342,7 +336,7 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
     
      # echo "$USHrrfs/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT} &" >> $DATAprdgen/poescript_faa_${fhr}
 
-    ${USHrrfs}/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT}
+    ${USHrrfs}/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT} ${USHrrfs}
 
   else
     echo "WARNING: this grid is not ready for parallel prdgen: ${PREDEF_GRID_NAME}"
@@ -375,14 +369,14 @@ EOF
   export err=$?; err_chk
 
   grid_specs_firewx=`head $DATA/copygb_gridnavfw.txt`
-  eval infile=${postprd_dir}/${net4}.t${cyc}z.prslev.f${fhr}.firewx.grib2
+  eval infile=${postprd_dir}/${net4}.t${cyc}z.prslev.f${fhr}.grib2
 
   wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
    -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
    -new_grid_interpolation neighbor \
    -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
-   -new_grid ${grid_specs_firewx} ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.firewx_lcc.grib2
-  wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.firewx_lcc.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.firewx_lcc.grib2.idx
+   -new_grid ${grid_specs_firewx} ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.firewx.grib2
+  wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.firewx.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.firewx.grib2.idx
 
 else
   #
