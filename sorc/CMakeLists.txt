@@ -123,6 +123,8 @@ option(BUILD_UPP "Build UPP" ON)
 option(BUILD_GSI "Build GSI" ON)
 option(BUILD_RRFS_UTILS "Build RRFS utilities" ON)
 option(BUILD_AQM_UTILS "Build AQM utilities" ON)
+option(BUILD_IFI "Build IFI in UPP" ON)
+option(BUILD_GTG "Build IFI in GTG" ON)
 
 message(STATUS "BUILD_UFS ............... ${BUILD_UFS}")
 message(STATUS "BUILD_UFS_UTILS ......... ${BUILD_UFS_UTILS}")
@@ -131,6 +133,8 @@ message(STATUS "BUILD_UPP ............... ${BUILD_UPP}")
 message(STATUS "BUILD_RRFS_UTILS ........ ${BUILD_RRFS_UTILS}")
 message(STATUS "BUILD_NEXUS ............. ${BUILD_NEXUS}")
 message(STATUS "BUILD_AQM_UTILS ......... ${BUILD_AQM_UTILS}")
+message(STATUS "BUILD_IFI ............... ${BUILD_IFI}")
+message(STATUS "BUILD_GTG ............... ${BUILD_GTG}")
 
 # Set dependency of ufs weather model only for coupled model
 if (NOT APP)
@@ -254,8 +258,8 @@ if (BUILD_UPP)
     "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
     "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
     "-Dexec_dir=${CMAKE_INSTALL_BINDIR}"
-    "-DINTERNAL_IFI=ON"
-    "-DBUILD_WITH_GTG=ON"
+    "-DINTERNAL_IFI=${BUILD_IFI}"
+    "-DBUILD_WITH_GTG=${BUILD_GTG}"
   )
 
   ExternalProject_Add(UPP
