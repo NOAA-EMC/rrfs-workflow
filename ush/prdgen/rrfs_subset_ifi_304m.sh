@@ -32,6 +32,12 @@ set -xv
 
   mkdir -p ${data}/wmo
 
-  wgrib2 -for   2:60:2  ${data}/${fnamei} -GRIB ${data}/wmo/${fname1}
-  wgrib2 -for  62:120:2 ${data}/${fnamei} -GRIB ${data}/wmo/${fname2}
-  wgrib2 -for 122:180:2 ${data}/${fnamei} -GRIB ${data}/wmo/${fname3}
+  wgrib2 ${data}/${fnamei} -s | grep ":ICPRB:" | grep -F -f ${FIXprdgen}/rrfs.ifi.sub304m.params | \
+  wgrib2 -i ${data}/${fnamei} -GRIB ${data}/wmo/${fname1}
+
+  wgrib2 ${data}/${fnamei} -s | grep ":SIPD:"  | grep -F -f ${FIXprdgen}/rrfs.ifi.sub304m.params | \
+  wgrib2 -i ${data}/${fnamei} -GRIB ${data}/wmo/${fname2}
+
+  # wgrib2 ${data}/${fnamei} -s | grep ":ICESEV:"  | grep -F -f ${FIXprdgen}/rrfs.ifi.sub304m.params | \
+  wgrib2 ${data}/${fnamei} -s | grep ":var discipline=0 master_table=2 parmcat=19 parm=37:" | grep -F -f ${FIXprdgen}/rrfs.ifi.sub304m.params | \
+  wgrib2 -i ${data}/${fnamei} -GRIB ${data}/wmo/${fname3}
