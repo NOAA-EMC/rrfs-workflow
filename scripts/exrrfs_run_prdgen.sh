@@ -342,7 +342,7 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
     
      # echo "$USHrrfs/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT} &" >> $DATAprdgen/poescript_faa_${fhr}
 
-    ${USHrrfs}/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT}
+    ${USHrrfs}/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT} ${USHrrfs}
 
   else
     echo "WARNING: this grid is not ready for parallel prdgen: ${PREDEF_GRID_NAME}"
