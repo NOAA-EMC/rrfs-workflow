@@ -231,7 +231,7 @@ if [ ${USE_CUSTOM_POST_CONFIG_FILE} = "TRUE" ]; then
     fi
   fi
   if [ ${post_min} -ge ${nsout_min} ]; then
-     CUSTOM_POST_CONFIG_FP="${FIX_UPP}/postxconfig-NT-fv3lam_rrfs_subh.txt"
+     CUSTOM_POST_CONFIG_FP="${FIX_UPP}/postxconfig-NT-rrfs_subh.txt"
   fi
   post_config_fp="${CUSTOM_POST_CONFIG_FP}"
   post_params_fp="${CUSTOM_POST_PARAMS_FP}"
@@ -244,10 +244,10 @@ to the post forecast hour directory (fhr_dir):
   fhr_dir = \"${fhr_dir}\"
 ===================================================================="
 else
-  post_config_fp="${UPP_DIR}/parm/postxconfig-NT-fv3lam_rrfs.txt"
+  post_config_fp="${UPP_DIR}/parm/postxconfig-NT-rrfs.txt"
   post_params_fp="${UPP_DIR}/parm/params_grib2_tbl_new"
   if [ ${post_min} -ge ${nsout_min} ]; then
-     post_config_fp="${UPP_DIR}/parm/postxconfig-NT-fv3lam_rrfs_subh.txt"
+     post_config_fp="${UPP_DIR}/parm/postxconfig-NT-rrfs_subh.txt"
   fi
   print_info_msg "
 ====================================================================
