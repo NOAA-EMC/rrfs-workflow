@@ -133,14 +133,6 @@
        </param>
 
        <param>
-       <shortname>BMIXL_ON_HYBRID_LVL</shortname>
-       <pname>BMIXL</pname>
-       <table_info>NCEP</table_info>
-       <level>1.</level>
-       <scale>3.0</scale>
-       </param>
-
-       <param>
        <shortname>HGT_ON_ISOBARIC_SFC</shortname>
        <pname>HGT</pname>
        <level>200. 500. 700. 1000. 2000. 3000. 5000. 7000. 7500. 10000. 12500. 15000. 17500. 20000. 22500. 25000. 27500. 30000. 32500. 35000. 37500. 40000. 42500. 45000. 
@@ -194,14 +186,6 @@
        <level>200. 500. 700. 1000. 2000. 3000. 5000. 7000. 7500. 10000. 12500. 15000. 17500. 20000. 22500. 25000. 27500. 30000. 32500. 35000. 37500. 40000. 42500. 45000. 
 47500. 50000. 52500. 55000. 57500. 60000. 62500. 65000. 67500. 70000. 72500. 75000. 77500. 80000. 82500. 85000. 87500. 90000. 92500. 95000. 97500. 100000.</level>
        <scale>4.0</scale>
-       </param>
-
-       <param>
-       <shortname>VVEL_ON_ISOBARIC_SFC</shortname>
-       <pname>VVEL</pname>
-       <level>200. 500. 700. 1000. 2000. 3000. 5000. 7000. 7500. 10000. 12500. 15000. 17500. 20000. 22500. 25000. 27500. 30000. 32500. 35000. 37500. 40000. 42500. 45000. 
-47500. 50000. 52500. 55000. 57500. 60000. 62500. 65000. 67500. 70000. 72500. 75000. 77500. 80000. 82500. 85000. 87500. 90000. 92500. 95000. 97500. 100000.</level>
-        <scale>5.0</scale>
        </param>
 
        <param>
@@ -356,20 +340,6 @@
        </param>
 
        <param>
-       <shortname>POT_ON_SPEC_HGT_LVL_ABOVE_GRND_10m</shortname>
-       <pname>POT</pname>
-       <level>10.</level>
-        <scale>5.0</scale>
-       </param>
-
-       <param>
-       <shortname>SPFH_ON_SPEC_HGT_LVL_ABOVE_GRND_10m</shortname>
-       <pname>SPFH</pname>
-       <level>10.</level>
-       <scale>3.0</scale>
-       </param>
-
-       <param>
        <shortname>PRES_ON_SURFACE</shortname>
        <pname>PRES</pname>
         <scale>6.0</scale>
@@ -400,8 +370,8 @@
        </param>
 
        <param>
-       <shortname>SOILM_ON_DEPTH_BEL_LAND_SFC</shortname>
-       <pname>SOILMOI</pname>
+       <shortname>CISOILM_ON_DEPTH_BEL_LAND_SFC</shortname>
+       <pname>CISOILM</pname>
        <scale>3.0</scale>
        </param>
 
@@ -438,7 +408,6 @@
        <param>
        <shortname>CNWAT_ON_SURFACE</shortname>
        <pname>CNWAT</pname>
-       <table_info>NCEP</table_info>
         <scale>1.0</scale>
        </param>
 
@@ -449,16 +418,8 @@
        </param>
 
        <param>
-       <shortname>SNOWC_ON_SURFACE</shortname>
-       <pname>SNOWC</pname>
-       <table_info>NCEP</table_info>
-       <scale>3.0</scale>
-       </param>
-
-       <param>
        <shortname>SFEXC_ON_SURFACE</shortname>
        <pname>SFEXC</pname>
-       <table_info>NCEP</table_info>
        <scale>3.0</scale>
        </param>
 
@@ -482,13 +443,6 @@
        </param>
 
        <param>
-       <shortname>SNFALB_ON_SURFACE</shortname>
-       <pname>SNFALB</pname>
-       <table_info>NCEP</table_info>
-       <scale>3.0</scale>
-       </param>
-
-       <param>
        <shortname>MXSALB_ON_SURFACE</shortname>
        <pname>MXSALB</pname>
        <table_info>NCEP</table_info>
@@ -498,34 +452,6 @@
        <param>
        <shortname>CCOND_ON_SURFACE</shortname>
        <pname>CCOND</pname>
-       <table_info>NCEP</table_info>
-       <scale>3.0</scale>
-       </param>
-
-       <param>
-       <shortname>RCS_ON_SURFACE</shortname>
-       <pname>RCS</pname>
-       <table_info>NCEP</table_info>
-       <scale>3.0</scale>
-       </param>
-
-       <param>
-       <shortname>RCT_ON_SURFACE</shortname>
-       <pname>RCT</pname>
-       <table_info>NCEP</table_info>
-        <scale>5.0</scale>
-       </param>
-
-       <param>
-       <shortname>RCQ_ON_SURFACE</shortname>
-       <pname>RCQ</pname>
-       <table_info>NCEP</table_info>
-       <scale>3.0</scale>
-       </param>
-
-       <param>
-       <shortname>RCSOL_ON_SURFACE</shortname>
-       <pname>RCSOL</pname>
        <table_info>NCEP</table_info>
        <scale>3.0</scale>
        </param>
@@ -837,7 +763,6 @@
        <param>
        <shortname>INST_USWRF_ON_SURFACE</shortname>
        <pname>USWRF</pname>
-       <table_info>NCEP</table_info>
        <scale>4.0</scale>
        </param>
 
@@ -862,14 +787,12 @@
        <param>
        <shortname>INST_DSWRF_ON_SURFACE</shortname>
        <pname>DSWRF</pname>
-       <table_info>NCEP</table_info>
        <scale>4.0</scale>
        </param>
 
        <param>
        <shortname>INST_DLWRF_ON_SURFACE</shortname>
        <pname>DLWRF</pname>
-       <table_info>NCEP</table_info>
        <scale>4.0</scale>
        </param>
 
@@ -903,26 +826,12 @@
        <param>
        <shortname>FRICV_ON_SURFACE</shortname>
        <pname>FRICV</pname>
-       <table_info>NCEP</table_info>
        <scale>4.0</scale>
        </param>
 
        <param>
        <shortname>CD_ON_SURFACE</shortname>
        <pname>CD</pname>
-       <table_info>NCEP</table_info>
-       <scale>3.0</scale>
-       </param>
-
-       <param>
-       <shortname>UFLX_ON_SURFACE</shortname>
-       <pname>UFLX</pname>
-       <scale>3.0</scale>
-       </param>
-
-       <param>
-       <shortname>VFLX_ON_SURFACE</shortname>
-       <pname>VFLX</pname>
        <scale>3.0</scale>
        </param>
 
@@ -1015,7 +924,6 @@
        <param>
        <shortname>VWSH_ON_TROPOPAUSE</shortname>
        <pname>VWSH</pname>
-       <table_info>NCEP</table_info>
        <scale>3.0</scale>
        </param>
 
@@ -1091,20 +999,6 @@
        <level>305.</level>
         <scale>5.0</scale>
        </param>
-
-       <param>
-       <shortname>SPFH_ON_SPEC_HGT_LVL_ABOVE_GRND_FDHGT</shortname>
-       <pname>SPFH</pname>
-       <level>30. 50. 80. 100. 160. 320.</level>
-       <scale>5.0</scale>
-        </param>
-
-       <param>
-       <shortname>PRES_ON_SPEC_HGT_LVL_ABOVE_GRND_FDHGT</shortname>
-       <pname>PRES</pname>
-       <level>30. 50. 80. 100. 160. 320.</level>
-       <scale>3.0</scale>
-        </param>
 
        <param>
        <shortname>HGT_ON_0C_ISOTHERM</shortname>
@@ -1221,14 +1115,6 @@
        </param>
 
        <param>
-       <shortname>VVEL_ON_SPEC_PRES_ABOVE_GRND</shortname>
-       <pname>VVEL</pname>
-       <level>3000. 9000. 18000.</level>
-       <level2>0. 6000. 15000.</level2>
-        <scale>5.0</scale>
-       </param>
-
-       <param>
        <shortname>PRES_ON_CLOUD_BASE</shortname>
        <pname>PRES</pname>
         <scale>6.0</scale>
@@ -1265,23 +1151,33 @@
        </param>
 
        <param>
+       <shortname>PRES_ON_MAX_WIND</shortname>
+       <pname>PRES</pname>
+       <scale>6.0</scale>
+       </param>
+		         
+        <param>
+        <shortname>HGT_ON_MAX_WIND</shortname>
+        <pname>HGT</pname>
+        <scale>6.0</scale>
+        </param>
+							             
+        <param>
+        <shortname>UGRD_ON_MAX_WIND</shortname>
+        <pname>UGRD</pname>
+        <scale>4.0</scale>
+        </param>
+
+         <param>
+         <shortname>VGRD_ON_MAX_WIND</shortname>
+         <pname>VGRD</pname>
+         <scale>4.0</scale>
+         </param>
+
+       <param>
        <shortname>REFC_ON_ENTIRE_ATMOS</shortname>
        <pname>REFC</pname>
        <scale>4.0</scale>
-       </param>
-
-       <param>
-       <shortname>REFZR_ON_ENTIRE_ATMOS</shortname>
-       <pname>REFZR</pname>
-       <table_info>NCEP</table_info>
-        <scale>-4.0</scale>
-       </param>
-
-       <param>
-       <shortname>REFZI_ON_ENTIRE_ATMOS</shortname>
-       <pname>REFZI</pname>
-       <table_info>NCEP</table_info>
-        <scale>-4.0</scale>
        </param>
 
        <param>
@@ -1289,22 +1185,6 @@
        <pname>REFD</pname>
        <level>4000. 1000.</level>
        <scale>4.0</scale>
-       </param>
-
-       <param>
-       <shortname>REFZR_ON_SPEC_HGT_LVL_ABOVE_GRND</shortname>
-       <pname>REFZR</pname>
-       <table_info>NCEP</table_info>
-       <level>4000. 1000.</level>
-        <scale>-4.0</scale>
-       </param>
-
-       <param>
-       <shortname>REFZI_ON_SPEC_HGT_LVL_ABOVE_GRND</shortname>
-       <pname>REFZI</pname>
-       <table_info>NCEP</table_info>
-       <level>4000. 1000.</level>
-        <scale>-4.0</scale>
        </param>
 
        <param>
@@ -1335,7 +1215,6 @@
        <param>
        <shortname>TCOLI_ON_ENTIRE_ATMOS</shortname>
        <pname>TCOLI</pname>
-       <table_info>NCEP</table_info>
         <scale>5.0</scale>
        </param>
 
@@ -1412,14 +1291,12 @@
        <param>
        <shortname>TCOLR_ON_ENTIRE_ATMOS</shortname>
        <pname>TCOLR</pname>
-       <table_info>NCEP</table_info>
         <scale>5.0</scale>
        </param>
 
        <param>
        <shortname>TCOLS_ON_ENTIRE_ATMOS</shortname>
        <pname>TCOLS</pname>
-       <table_info>NCEP</table_info>
         <scale>5.0</scale>
        </param>
 
@@ -1487,34 +1364,6 @@
        </param>
 
        <param>
-       <shortname>SWHR_ON_ENTIRE_ATMOS</shortname>
-       <pname>SWHR</pname>
-       <table_info>NCEP</table_info>
-        <scale>5.0</scale>
-       </param>
-
-       <param>
-       <shortname>LWHR_ON_ENTIRE_ATMOS</shortname>
-       <pname>LWHR</pname>
-       <table_info>NCEP</table_info>
-        <scale>5.0</scale>
-       </param>
-
-       <param>
-       <shortname>TMP_ON_SIGMA_LVL_HPC</shortname>
-       <pname>TMP</pname>
-       <scale_fact_fixed_sfc1>4</scale_fact_fixed_sfc1>
-       <level>9000. 8500. 8000. 7500. 7000.</level>
-        <scale>-4.0</scale>
-       </param>
-
-       <param>
-       <shortname>PBLREG_ON_SURFACE</shortname>
-       <pname>PBLREG</pname>
-       <scale>2.0</scale>
-       </param>
-
-       <param>
        <shortname>UGRD_ON_PLANETARY_BOUND_LYR</shortname>
        <pname>UGRD</pname>
         <scale>-4.0</scale>
@@ -1572,7 +1421,6 @@
        <param>
        <shortname>UPHL_ON_SPEC_HGT_LVL_ABOVE_GRND_2-5km</shortname>
        <pname>UPHL</pname>
-       <table_info>NCEP</table_info>
        <scale>-3.0</scale>
        </param>
 
@@ -1582,55 +1430,6 @@
        <fixed_sfc1_type>isothermal</fixed_sfc1_type>
        <level>263.</level>
        <scale>-4.0</scale>
-       </param>
-
-       <param>
-           <shortname>1H_FFG_EXCEEDANCE</shortname>
-           <scale>5.0</scale>
-       </param>
-
-       <param>
-           <shortname>ACM_FFG_EXCEEDANCE</shortname>
-           <scale>5.0</scale>
-       </param>
-
-       <param>
-           <shortname>1H_2YARI_EXCEEDANCE</shortname>
-           <scale>5.0</scale>
-       </param>
-
-       <param>
-           <shortname>ACM_2YARI_EXCEEDANCE</shortname>
-           <scale>5.0</scale>
-       </param>
-
-       <param>
-           <shortname>1H_5YARI_EXCEEDANCE</shortname>
-           <scale>5.0</scale>
-       </param>
-
-       <param>
-           <shortname>ACM_5YARI_EXCEEDANCE</shortname>
-           <scale>5.0</scale>
-       </param>
-       <param>
-           <shortname>1H_10YARI_EXCEEDANCE</shortname>
-           <scale>5.0</scale>
-       </param>
-
-       <param>
-           <shortname>ACM_10YARI_EXCEEDANCE</shortname>
-           <scale>5.0</scale>
-       </param>
-
-       <param>
-           <shortname>1H_100YARI_EXCEEDANCE</shortname>
-           <scale>5.0</scale>
-       </param>
-
-       <param>
-           <shortname>ACM_100YARI_EXCEEDANCE</shortname>
-           <scale>5.0</scale>
        </param>
 
        <param>
@@ -1762,13 +1561,6 @@
        <pname>VGRD</pname>
        <level>25000. 50000. 70000. 85000.</level>
        <scale>4.0</scale>
-       </param>
-
-       <param>
-       <shortname>VVEL_ON_ISOBARIC_SFC</shortname>
-       <pname>VVEL</pname>
-       <level>25000. 50000. 70000. 85000.</level>
-        <scale>5.0</scale>
        </param>
 
        <param>
@@ -1910,20 +1702,6 @@
        </param>
 
        <param>
-       <shortname>POT_ON_SPEC_HGT_LVL_ABOVE_GRND_10m</shortname>
-       <pname>POT</pname>
-       <level>10.</level>
-        <scale>5.0</scale>
-       </param>
-
-       <param>
-       <shortname>SPFH_ON_SPEC_HGT_LVL_ABOVE_GRND_10m</shortname>
-       <pname>SPFH</pname>
-       <level>10.</level>
-       <scale>3.0</scale>
-       </param>
-
-       <param>
        <shortname>PRES_ON_SURFACE</shortname>
        <pname>PRES</pname>
         <scale>6.0</scale>
@@ -1980,8 +1758,8 @@
        </param>
 
        <param>
-       <shortname>SOILM_ON_DEPTH_BEL_LAND_SFC</shortname>
-       <pname>SOILMOI</pname>
+       <shortname>CISOILM_ON_DEPTH_BEL_LAND_SFC</shortname>
+       <pname>CISOILM</pname>
        <scale>3.0</scale>
        </param>
 
@@ -2018,7 +1796,6 @@
        <param>
        <shortname>SFEXC_ON_SURFACE</shortname>
        <pname>SFEXC</pname>
-       <table_info>NCEP</table_info>
        <scale>3.0</scale>
        </param>
 
@@ -2043,7 +1820,6 @@
        <param>
        <shortname>CNWAT_ON_SURFACE</shortname>
        <pname>CNWAT</pname>
-       <table_info>NCEP</table_info>
         <scale>1.0</scale>
        </param>
 
@@ -2241,7 +2017,6 @@
        <param>
        <shortname>INST_USWRF_ON_SURFACE</shortname>
        <pname>USWRF</pname>
-       <table_info>NCEP</table_info>
        <scale>4.0</scale>
        </param>
 
@@ -2254,14 +2029,12 @@
        <param>
        <shortname>INST_DSWRF_ON_SURFACE</shortname>
        <pname>DSWRF</pname>
-       <table_info>NCEP</table_info>
        <scale>4.0</scale>
        </param>
 
        <param>
        <shortname>INST_DLWRF_ON_SURFACE</shortname>
        <pname>DLWRF</pname>
-       <table_info>NCEP</table_info>
        <scale>4.0</scale>
        </param>
 
@@ -2295,26 +2068,12 @@
        <param>
        <shortname>FRICV_ON_SURFACE</shortname>
        <pname>FRICV</pname>
-       <table_info>NCEP</table_info>
        <scale>4.0</scale>
        </param>
 
        <param>
        <shortname>CD_ON_SURFACE</shortname>
        <pname>CD</pname>
-       <table_info>NCEP</table_info>
-       <scale>3.0</scale>
-       </param>
-
-       <param>
-       <shortname>UFLX_ON_SURFACE</shortname>
-       <pname>UFLX</pname>
-       <scale>3.0</scale>
-       </param>
-
-       <param>
-       <shortname>VFLX_ON_SURFACE</shortname>
-       <pname>VFLX</pname>
        <scale>3.0</scale>
        </param>
 
@@ -2458,13 +2217,6 @@
        <shortname>PRES_ON_TOP_OF_ATMOS</shortname>
        <pname>PRES</pname>
        <scale>3.0</scale>
-       </param>
-
-       <param>
-       <shortname>CNWAT_ON_SURFACE</shortname>
-       <pname>CNWAT</pname>
-       <table_info>NCEP</table_info>
-        <scale>1.0</scale>
        </param>
 
        <param>
@@ -2736,6 +2488,30 @@
         <scale>3.0</scale>
        </param>
 
+        <param>
+        <shortname>PRES_ON_MAX_WIND</shortname>
+        <pname>PRES</pname>
+        <scale>6.0</scale>
+        </param>
+
+        <param>
+        <shortname>HGT_ON_MAX_WIND</shortname>
+        <pname>HGT</pname>
+        <scale>6.0</scale>
+        </param>
+
+        <param>
+        <shortname>UGRD_ON_MAX_WIND</shortname>
+        <pname>UGRD</pname>
+        <scale>4.0</scale>
+        </param>
+
+        <param>
+        <shortname>VGRD_ON_MAX_WIND</shortname>
+        <pname>VGRD</pname>
+        <scale>4.0</scale>
+        </param>
+
        <param>
        <shortname>HGT_ON_CLOUD_BASE</shortname>
        <pname>HGT</pname>
@@ -2782,21 +2558,18 @@
        <param>
        <shortname>TCOLI_ON_ENTIRE_ATMOS</shortname>
        <pname>TCOLI</pname>
-       <table_info>NCEP</table_info>
         <scale>5.0</scale>
        </param>
 
        <param>
        <shortname>TCOLR_ON_ENTIRE_ATMOS</shortname>
        <pname>TCOLR</pname>
-       <table_info>NCEP</table_info>
         <scale>5.0</scale>
        </param>
 
        <param>
        <shortname>TCOLS_ON_ENTIRE_ATMOS</shortname>
        <pname>TCOLS</pname>
-       <table_info>NCEP</table_info>
         <scale>5.0</scale>
        </param>
 
@@ -2895,34 +2668,6 @@
        </param>
 
        <param>
-       <shortname>RCS_ON_SURFACE</shortname>
-       <pname>RCS</pname>
-       <table_info>NCEP</table_info>
-       <scale>3.0</scale>
-       </param>
-
-       <param>
-       <shortname>RCT_ON_SURFACE</shortname>
-       <pname>RCT</pname>
-       <table_info>NCEP</table_info>
-        <scale>5.0</scale>
-       </param>
-
-       <param>
-       <shortname>RCQ_ON_SURFACE</shortname>
-       <pname>RCQ</pname>
-       <table_info>NCEP</table_info>
-       <scale>3.0</scale>
-       </param>
-
-       <param>
-       <shortname>RCSOL_ON_SURFACE</shortname>
-       <pname>RCSOL</pname>
-       <table_info>NCEP</table_info>
-       <scale>3.0</scale>
-       </param>
-
-       <param>
        <shortname>PEVPR_ON_SURFACE</shortname>
        <pname>PEVPR</pname>
        <table_info>NCEP</table_info>
@@ -2953,14 +2698,6 @@
        <pname>CSDSF</pname>
        <table_info>NCEP</table_info>
        <scale>4.0</scale>
-       </param>
-
-       <param>
-       <shortname>TCDC_ON_SIGMA_LVLS</shortname>
-       <pname>TCDC</pname>
-        <scale_fact_fixed_sfc1>4</scale_fact_fixed_sfc1>
-       <level>9975. 9915. 9835. 9745. 9650. 9490. 9260. 9015. 8755. 8480. 8190. 7890. 7585. 7185. 6690. 6180. 5470. 4550. 3595. 2605. 1580. 530.</level>
-       <scale>3.0</scale>
        </param>
 
        <param>
@@ -3109,7 +2846,7 @@
       <gen_proc_type>fcst</gen_proc_type>
       <time_range_unit>hour</time_range_unit>
       <orig_center>nws_ncep</orig_center>
-      <gen_proc>hrrr</gen_proc>
+      <gen_proc>rrfs</gen_proc>
       <packing_method>complex_packing_spatial_diff</packing_method>
       <order_of_sptdiff>2nd_ord_sptdiff</order_of_sptdiff>
       <field_datatype>fltng_pnt</field_datatype>
