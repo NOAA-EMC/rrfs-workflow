@@ -210,7 +210,9 @@ if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
 fi
 if [[ ! -z ${TESTBED_FIELDS_FN2} ]]; then
   if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN2} ]]; then
-    wgrib2 ${postprd_dir}/${natlev} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN2} | wgrib2 -i -append -grib ${postprd_dir}/${testbed} ${postprd_dir}/${natlev}
+    if [[ -f ${postprd_dir}/${natlev} ]]; then
+      wgrib2 ${postprd_dir}/${natlev} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN2} | wgrib2 -i -append -grib ${postprd_dir}/${testbed} ${postprd_dir}/${natlev}
+    fi
   else
     echo "${FIX_UPP}/${TESTBED_FIELDS_FN2} not found"
   fi
@@ -225,8 +227,12 @@ fi
 # instead of calling sed.
 
 basetime=$( date +%y%j%H%M -d "${yyyymmdd} ${hh}" )
-cp ${postprd_dir}/${prslev} ${COMOUT}/${prslev}
-cp ${postprd_dir}/${natlev} ${COMOUT}/${natlev}
+if [[ -f ${postprd_dir}/${prslev} ]]; then
+  cp ${postprd_dir}/${prslev} ${COMOUT}/${prslev}
+fi
+if [[ -f ${postprd_dir}/${natlev} ]]; then
+  cp ${postprd_dir}/${natlev} ${COMOUT}/${natlev}
+fi
 
 if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
   if [ -f  ${postprd_dir}/${ififip} ]; then
@@ -242,8 +248,12 @@ if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
   fi
 fi
 
-wgrib2 ${COMOUT}/${prslev} -s > ${COMOUT}/${prslev}.idx
-wgrib2 ${COMOUT}/${natlev} -s > ${COMOUT}/${natlev}.idx
+if [ -f ${COMOUT}/${prslev} ]; then
+  wgrib2 ${COMOUT}/${prslev} -s > ${COMOUT}/${prslev}.idx
+fi
+if [ -f ${COMOUT}/${natlev} ]; then
+  wgrib2 ${COMOUT}/${natlev} -s > ${COMOUT}/${natlev}.idx
+fi
 
 if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
   if [ -f ${COMOUT}/${ififip} ]; then
@@ -414,33 +424,34 @@ else
 
         # Interpolate fields to new grid
         eval infile=${COMOUT}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${gridname}grib2
-        if [ "${PREDEF_GRID_NAME}" = "RRFS_NA_13km" ]; then
-          wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
-           -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
-           -new_grid_interpolation bilinear \
-           -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
-           -if ":(NCONCD|NCCICE|SPNCR|CLWMR|CICE|RWMR|SNMR|GRLE|PMTF|PMTC|REFC|CSNOW|CICEP|CFRZR|CRAIN|LAND|ICEC|TMP:surface|VEG|CCOND|SFEXC|MSLMA|PRES:tropopause|LAI|HPBL|HGT:planetary boundary layer):|ICPRB|SIPD|ICESEV" -new_grid_interpolation neighbor -fi \
-           -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2 &
-        else
-          wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
-           -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
-           -new_grid_interpolation neighbor \
-           -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2 &
-        fi
-        wait 
+	if [ -f ${infile} ]; then
+          if [ "${PREDEF_GRID_NAME}" = "RRFS_NA_13km" ]; then
+            wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
+             -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
+             -new_grid_interpolation bilinear \
+             -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
+             -if ":(NCONCD|NCCICE|SPNCR|CLWMR|CICE|RWMR|SNMR|GRLE|PMTF|PMTC|REFC|CSNOW|CICEP|CFRZR|CRAIN|LAND|ICEC|TMP:surface|VEG|CCOND|SFEXC|MSLMA|PRES:tropopause|LAI|HPBL|HGT:planetary boundary layer):|ICPRB|SIPD|ICESEV" -new_grid_interpolation neighbor -fi \
+             -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2 &
+          else
+            wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
+             -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
+             -new_grid_interpolation neighbor \
+             -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2 &
+          fi
+          wait 
 
         # Merge vector field records
-        wgrib2 ${subdir}/${fhr}/tmp_${grid}.grib2 -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" -submsg_uv ${bg_remap} &
-        wait 
+          wgrib2 ${subdir}/${fhr}/tmp_${grid}.grib2 -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" -submsg_uv ${bg_remap} &
+          wait 
 
         # Remove temporary files
-        rm -f ${subdir}/${fhr}/tmp_${grid}.grib2
+          rm -f ${subdir}/${fhr}/tmp_${grid}.grib2
 
         # Save to com directory 
-        mkdir -p ${COMOUT}/${grid}_grid
-        cp ${bg_remap} ${COMOUT}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2
-        wgrib2 ${COMOUT}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2 -s > ${COMOUT}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2.idx
-
+          mkdir -p ${COMOUT}/${grid}_grid
+          cp ${bg_remap} ${COMOUT}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2
+          wgrib2 ${COMOUT}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2 -s > ${COMOUT}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2.idx
+        fi
       done
     done
   fi

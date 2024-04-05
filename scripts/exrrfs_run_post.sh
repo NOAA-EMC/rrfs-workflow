@@ -151,6 +151,18 @@ cyc=$hh
 #
 #-----------------------------------------------------------------------
 #
+#  set to 15 minute output for subhour
+if [ "${NSOUT_MIN}" = "0" ]; then
+  nsout_min=61
+else
+  if [ "${NSOUT_MIN}" = "15" ]; then
+    nsout_min=15
+  else
+    sout_min=61
+    echo " WARNING: unknown subhour output frequency (NSOUT_MIN) value, set nsout_min to 61"
+  fi
+fi
+#
 dyn_file="${run_dir}/dynf${fhr}.nc"
 phy_file="${run_dir}/phyf${fhr}.nc"
 
@@ -158,7 +170,7 @@ len_fhr=${#fhr}
 if [ ${len_fhr} -eq 9 ]; then
   post_fhr=${fhr:0:3}
   post_min=${fhr:4:2}
-  if [ ${post_min} -lt 15 ]; then # should use $nsout_min instead of 15
+  if [ ${post_min} -lt ${nsout_min} ]; then
     post_min=00
   fi
 else
@@ -218,6 +230,9 @@ if [ ${USE_CUSTOM_POST_CONFIG_FILE} = "TRUE" ]; then
       CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-rrfs_f01.txt"
     fi
   fi
+  if [ ${post_min} -ge ${nsout_min} ]; then
+     CUSTOM_POST_CONFIG_FP="${FIX_UPP}/postxconfig-NT-fv3lam_rrfs_subh.txt"
+  fi
   post_config_fp="${CUSTOM_POST_CONFIG_FP}"
   post_params_fp="${CUSTOM_POST_PARAMS_FP}"
   print_info_msg "
@@ -231,6 +246,9 @@ to the post forecast hour directory (fhr_dir):
 else
   post_config_fp="${UPP_DIR}/parm/postxconfig-NT-fv3lam_rrfs.txt"
   post_params_fp="${UPP_DIR}/parm/params_grib2_tbl_new"
+  if [ ${post_min} -ge ${nsout_min} ]; then
+     post_config_fp="${UPP_DIR}/parm/postxconfig-NT-fv3lam_rrfs_subh.txt"
+  fi
   print_info_msg "
 ====================================================================
 Copying the default post flat file specified by post_config_fp to the post
@@ -305,7 +323,7 @@ export err=$?; err_chk
 len_fhr=${#fhr}
 if [ ${len_fhr} -eq 9 ]; then
   post_min=${fhr:4:2}
-  if [ ${post_min} -lt 15 ]; then
+  if [ ${post_min} -lt ${nsout_min} ]; then
     post_min=00
   fi
 else
@@ -362,8 +380,12 @@ bgrd3d=${postprd_dir}/${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2
 bgifi=${postprd_dir}/${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2
 bgavi=${postprd_dir}/${net4}.t${cyc}z.aviati.f${fhr}.${gridname}grib2
 
-wgrib2 PRSLEV.GrbF${post_fhr} -set center 7 -grib ${bgdawp} >>$pgmout 2>>errfile
-wgrib2 NATLEV.GrbF${post_fhr} -set center 7 -grib ${bgrd3d} >>$pgmout 2>>errfile
+if [ -f PRSLEV.GrbF${post_fhr} ]; then
+  wgrib2 PRSLEV.GrbF${post_fhr} -set center 7 -grib ${bgdawp} >>$pgmout 2>>errfile
+fi
+if [ -f NATLEV.GrbF${post_fhr} ]; then
+  wgrib2 NATLEV.GrbF${post_fhr} -set center 7 -grib ${bgrd3d} >>$pgmout 2>>errfile
+fi
 
 if [ -f IFIFIP.GrbF${post_fhr} ]; then
   wgrib2 IFIFIP.GrbF${post_fhr} -set center 7 -grib ${bgifi} >>$pgmout 2>>errfile
