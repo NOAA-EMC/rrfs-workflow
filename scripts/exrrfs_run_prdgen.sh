@@ -183,22 +183,27 @@ echo "fhr=${fhr} and subh_fhr=${subh_fhr}"
 fhr=${subh_fhr}
 #
 gridname=""
-if [ "${PREDEF_GRID_NAME}" = "RRFS_CONUS_3km" ]; then
-  gridname="conus_3km."
-elif [ "${PREDEF_GRID_NAME}" = "RRFS_FIREWX_1.5km" ]; then
+if [ "${PREDEF_GRID_NAME}" = "RRFS_FIREWX_1.5km" ]; then
   gridname="firewx."
-elif  [ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]; then
-  gridname=""
 fi
 #
 net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
 #
-prslev=${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2
-natlev=${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2
-ififip=${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2
-aviati=${net4}.t${cyc}z.aviati.f${fhr}.${gridname}grib2
-
-testbed=${net4}.t${cyc}z.testbed.f${fhr}.${gridname}grib2
+# Include member number with ensemble forecast output
+if [ ${DO_ENSFCST} = "TRUE" ]; then
+  ensmem_indx_sgl=$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')   # 1,2,3,4,5 for REFS
+  prslev=${net4}.t${cyc}z.m0${ensmem_indx_sgl}.prslev.f${fhr}.${gridname}grib2
+  natlev=${net4}.t${cyc}z.m0${ensmem_indx_sgl}.natlev.f${fhr}.${gridname}grib2
+  ififip=${net4}.t${cyc}z.m0${ensmem_indx_sgl}.ififip.f${fhr}.${gridname}grib2
+  aviati=${net4}.t${cyc}z.m0${ensmem_indx_sgl}.aviati.f${fhr}.${gridname}grib2
+  testbed=${net4}.t${cyc}z.m0${ensmem_indx_sgl}.testbed.f${fhr}.${gridname}grib2
+else
+  prslev=${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2
+  natlev=${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2
+  ififip=${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2
+  aviati=${net4}.t${cyc}z.aviati.f${fhr}.${gridname}grib2
+  testbed=${net4}.t${cyc}z.testbed.f${fhr}.${gridname}grib2
+fi
 
 # extract the output fields for the testbed
 if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
@@ -280,7 +285,7 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
     mkdir $DATAprdgen
     USHrrfs=$USHdir/prdgen
 
-    wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.grib2 >& $DATAprdgen/prslevf${fhr}.txt
+    wgrib2 ${COMOUT}/${prslev} >& $DATAprdgen/prslevf${fhr}.txt
 
     # Create parm files for subsetting on the fly - do it for each forecast hour
     # 4 subpieces for CONUS and Alaska grids
@@ -325,21 +330,30 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
     count=0
     for domain in ${domains[@]}
     do
-      for task in $(seq ${tasks[count]})
-      do
-        cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2
-      done
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2.idx
+      if [ ${DO_ENSFCST} = "TRUE" ]; then
+        for task in $(seq ${tasks[count]})
+        do
+          cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.m0${ensmem_indx_sgl}.prslev.f${fhr}.${domain}.grib2
+        done
+        wgrib2 ${COMOUT}/rrfs.t${cyc}z.m0${ensmem_indx_sgl}.prslev.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.m0${ensmem_indx_sgl}.prslev.f${fhr}.${domain}.grib2.idx
+      else
+        for task in $(seq ${tasks[count]})
+        do
+          cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2
+        done
+        wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2.idx
+      fi
       count=$count+1
     done
 
-    # Rename conus grib2 files to conus_3km
-    mv ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.conus.grib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.conus_3km.grib2
-    mv ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.conus.grib2.idx ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.conus_3km.grib2.idx
-
     # create testbed files on 3-km CONUS grid
-    prslev_conus=${net4}.t${cyc}z.prslev.f${fhr}.conus_3km.grib2
-    testbed_conus=${net4}.t${cyc}z.testbed.f${fhr}.conus_3km.grib2
+    if [ ${DO_ENSFCST} = "TRUE" ]; then
+      prslev_conus=${net4}.t${cyc}z.m0${ensmem_indx_sgl}.prslev.f${fhr}.conus_3km.grib2
+      testbed_conus=${net4}.t${cyc}z.m0${ensmem_indx_sgl}.testbed.f${fhr}.conus_3km.grib2
+    else
+      prslev_conus=${net4}.t${cyc}z.prslev.f${fhr}.conus_3km.grib2
+      testbed_conus=${net4}.t${cyc}z.testbed.f${fhr}.conus_3km.grib2
+    fi
     if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
       if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN} ]]; then
         wgrib2 ${COMOUT}/${prslev_conus} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN} | wgrib2 -i -grib ${COMOUT}/${testbed_conus} ${COMOUT}/${prslev_conus}

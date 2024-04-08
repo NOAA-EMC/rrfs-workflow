@@ -366,19 +366,24 @@ echo "fhr=${fhr} and subh_fhr=${subh_fhr}"
 fhr=${subh_fhr}
 
 gridname=""
-if [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km" ]; then
-  gridname="conus_3km."
-elif [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
+if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
   gridname="firewx."
-elif  [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ]; then
-  gridname=""
 fi
 net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
 
-bgdawp=${postprd_dir}/${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2
-bgrd3d=${postprd_dir}/${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2
-bgifi=${postprd_dir}/${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2
-bgavi=${postprd_dir}/${net4}.t${cyc}z.aviati.f${fhr}.${gridname}grib2
+# Include member number with ensemble forecast output
+if [ ${DO_ENSFCST} = "TRUE" ]; then
+  ensmem_indx_sgl=$(echo "${ENSMEM_INDX}" | qwk '{print $1+0}')	  # 1,2,3,4,5 for REFS
+  bgdawp=${postprd_dir}/${net4}.t${cyc}z.m0${ensmem_indx_sgl}.prslev.f${fhr}.${gridname}grib2
+  bgrd3d=${postprd_dir}/${net4}.t${cyc}z.m0${ensmem_indx_sgl}.natlev.f${fhr}.${gridname}grib2
+  bgifi=${postprd_dir}/${net4}.t${cyc}z.m0${ensmem_indx_sgl}.ififip.f${fhr}.${gridname}grib2
+  bgavi=${postprd_dir}/${net4}.t${cyc}z.m0${ensmem_indx_sgl}.aviati.f${fhr}.${gridname}grib2
+else
+  bgdawp=${postprd_dir}/${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2
+  bgrd3d=${postprd_dir}/${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2
+  bgifi=${postprd_dir}/${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2
+  bgavi=${postprd_dir}/${net4}.t${cyc}z.aviati.f${fhr}.${gridname}grib2
+fi
 
 if [ -f PRSLEV.GrbF${post_fhr} ]; then
   wgrib2 PRSLEV.GrbF${post_fhr} -set center 7 -grib ${bgdawp} >>$pgmout 2>>errfile

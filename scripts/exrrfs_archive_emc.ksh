@@ -25,15 +25,15 @@ echo $runcount
 
 if [[ $runcount -gt 0 ]];then
   hsi mkdir -p $ARCHIVEDIR/rh$year/$year$month/$year$month$day/$hour/prod
-  htar -chvf $ARCHIVEDIR/rh$year/$year$month/$year$month$day/$hour/prod/rrfs.t${hour}z.prslev.conus_3km.grib2.tar rrfs.t${hour}z.prslev.f*.conus_3km.grib2
-  htar -chvf $ARCHIVEDIR/rh$year/$year$month/$year$month$day/$hour/prod/rrfs.t${hour}z.natlev.conus_3km.grib2.tar rrfs.t${hour}z.natlev.f*.conus_3km.grib2
-  htar -chvf $ARCHIVEDIR/rh$year/$year$month/$year$month$day/$hour/prod/rrfs.t${hour}z.testbed.conus_3km.grib2.tar rrfs.t${hour}z.testbed.f*.conus_3km.grib2
+  htar -chvf $ARCHIVEDIR/rh$year/$year$month/$year$month$day/$hour/prod/rrfs.t${hour}z.prslev.conus.grib2.tar rrfs.t${hour}z.prslev.f*.conus.grib2
+  htar -chvf $ARCHIVEDIR/rh$year/$year$month/$year$month$day/$hour/prod/rrfs.t${hour}z.natlev.conus.grib2.tar rrfs.t${hour}z.natlev.f*.conus.grib2
+  htar -chvf $ARCHIVEDIR/rh$year/$year$month/$year$month$day/$hour/prod/rrfs.t${hour}z.testbed.conus.grib2.tar rrfs.t${hour}z.testbed.f*.conus.grib2
 fi
 
 files3=`ls -1 rrfs.*.conusfv3*`
 runcount3=${#files3}
 if [[ $runcount3 -gt 0 ]];then
-  htar -chvf $ARCHIVEDIR/rh$year/$year$month/$year$month$day/$hour/prod/rrfs.t${hour}z.conus_3km.bufrsnd.tar rrfs.t${hour}z.conusfv3.bufrsnd.tar.gz rrfs.t${hour}z.conusfv3.class1.bufr rrfs.t${hour}z.conusfv3.profilm.c1
+  htar -chvf $ARCHIVEDIR/rh$year/$year$month/$year$month$day/$hour/prod/rrfs.t${hour}z.conus.bufrsnd.tar rrfs.t${hour}z.conusfv3.bufrsnd.tar.gz rrfs.t${hour}z.conusfv3.class1.bufr rrfs.t${hour}z.conusfv3.profilm.c1
 fi
 
 files4=`ls -1 rrfs.*.fits*`
