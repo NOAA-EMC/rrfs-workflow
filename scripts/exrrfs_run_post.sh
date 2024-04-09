@@ -224,9 +224,9 @@ if [ ${USE_CUSTOM_POST_CONFIG_FILE} = "TRUE" ]; then
 # For RRFS: use special postcntrl for fhr=0,1 to eliminate duplicate 
 # max/min hourly (f000 only) and accumulation fields (f000 and f001)
   if [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ] || [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
-    if [ ${fhr} -eq 000 ]; then
+    if [ ${post_fhr} -eq 000 ]; then
       CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-rrfs_f00.txt"
-    elif [ ${fhr} -eq 001 ]; then
+    elif [ ${post_fhr} -eq 001 ]; then
       CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-rrfs_f01.txt"
     fi
   fi
