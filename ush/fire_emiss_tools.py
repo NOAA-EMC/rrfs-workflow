@@ -38,13 +38,17 @@ def averaging_FRP(fcst_dates, cols, rows, intp_dir, rave_to_intp, veg_map, tgt_a
     if num_files > 0:
         summed_array = np.sum(np.array(ebb_smoke_total), axis=0)
         # Count the total number of zeros
-        num_zeros = np.sum([arr == 0 for arr in ebb_smoke_total], axis=0)
+        num_zeros = len(ebb_smoke_total) - np.sum([arr == 0 for arr in ebb_smoke_total], axis=0) #Estimate number of observations in 24 hrs
         safe_zero_count = np.where(num_zeros == 0, 1, num_zeros) 
-        result_array = summed_array / safe_zero_count 
+
+        #Estimate ebb rate
+        result_array = [summed_array[i]/2 if safe_zero_count[i] == 1 else summed_array[i]/safe_zero_count[i] for i in range(len(safe_zero_count))]
+        result_array = np.array(result_array)
         result_array[num_zeros == 0] = summed_array[num_zeros == 0]
         ebb_total =result_array.reshape(cols, rows)
         ebb_total_reshaped = ebb_total / 3600
 
+        #Estimate frp avg
         temp_frp=[frp_daily[i]/2 if safe_zero_count[i] == 1 else frp_daily[i]/safe_zero_count[i] for i in range(len(safe_zero_count))]
         temp_frp=np.array(temp_frp) 
         temp_frp[num_zeros == 0] = frp_daily[num_zeros == 0]
@@ -89,9 +93,19 @@ def save_fire_dur(cols, rows, te):
     return(fire_dur)
 
 def produce_emiss_file(xarr_hwp, frp_avg_reshaped, totprcp_ave_arr, xarr_totprcp, intp_dir, current_day, tgt_latt, tgt_lont, ebb_tot_reshaped, fire_age, cols, rows):
-    # Filter HWP
-    filtered_hwp = xarr_hwp.where(frp_avg_reshaped > 0, 0)
-    filtered_prcp = xarr_totprcp.where(frp_avg_reshaped > 0, 0)
+    # Ensure arrays are not negative or NaN
+    frp_avg_reshaped = np.clip(frp_avg_reshaped, 0, None)
+    frp_avg_reshaped = np.nan_to_num(frp_avg_reshaped)
+ 
+    ebb_tot_reshaped = np.clip(ebb_tot_reshaped, 0, None)
+    ebb_tot_reshaped = np.nan_to_num(ebb_tot_reshaped)
+ 
+    fire_age = np.clip(fire_age, 0, None)
+    fire_age = np.nan_to_num(fire_age)
+    
+    # Filter HWP Prcp arrays to be non-negative and replace NaNs
+    filtered_hwp = xarr_hwp.where(frp_avg_reshaped > 0, 0).fillna(0)
+    filtered_prcp = xarr_totprcp.where(frp_avg_reshaped > 0, 0).fillna(0)
 
     # Produce emiss file
     file_path = os.path.join(intp_dir, f'SMOKE_RRFS_data_{current_day}00.nc')
@@ -114,4 +128,3 @@ def produce_emiss_file(xarr_hwp, frp_avg_reshaped, totprcp_ave_arr, xarr_totprcp
         fout.variables['totprcp_24hrs'][0, :, :] = filtered_prcp  
 
     return "Emissions file created successfully"
-
