@@ -259,20 +259,6 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# For the RRFS fire weather nest, delete the flag files from the
-# make_grid, make_orog, and make_sfc_climo tasks.  These tasks need to
-# run for every cycle.
-#
-#-----------------------------------------------------------------------
-#
-if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
-  rm -f ${LOG_BASEDIR}/make_grid_task_complete.txt
-  rm -f ${LOG_BASEDIR}/make_orog_task_complete.txt
-  rm -f ${LOG_BASEDIR}/make_sfc_climo_task_complete.txt
-fi
-#
-#-----------------------------------------------------------------------
-#
 # Print exit message.
 #
 #-----------------------------------------------------------------------
