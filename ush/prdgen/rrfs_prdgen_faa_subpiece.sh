@@ -78,9 +78,9 @@ USHrrfs=$8
       wgrib2 -i ${COMOUT}/${prslev} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation bilinear \
-         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.prslevfaa.f${fhr}.rotate13km.grib2
-      mv rrfs.t${cyc}z.prslevfaa.f${fhr}.rotate13km.grib2 ${COMOUT}
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.rotate13km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.rotate13km.grib2.idx
+         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.prslevfaa.f${fhr}.na13km.grib2
+      mv rrfs.t${cyc}z.prslevfaa.f${fhr}.na13km.grib2 ${COMOUT}
+      wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.na13km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.na13km.grib2.idx
     fi
 
     #-- GRID 237: PR 32 km
@@ -110,17 +110,17 @@ USHrrfs=$8
       wgrib2 -i ${COMOUT}/${natlev} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation bilinear \
-         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.natlevfaa.f${fhr}.rotate13km.grib2
+         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.grib2
 
       wgrib2 ${COMOUT}/${natlev} -s | grep ":LTNG:entire atmosphere:" | \
       wgrib2 -i ${COMOUT}/${natlev} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation bilinear \
-         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.natlevfaa.f${fhr}.rotate13km.tmp.grib2
-      cat rrfs.t${cyc}z.natlevfaa.f${fhr}.rotate13km.tmp.grib2 >> rrfs.t${cyc}z.natlevfaa.f${fhr}.rotate13km.grib2
-      rm rrfs.t${cyc}z.natlevfaa.f${fhr}.rotate13km.tmp.grib2
-      mv rrfs.t${cyc}z.natlevfaa.f${fhr}.rotate13km.grib2 ${COMOUT}
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.natlevfaa.f${fhr}.rotate13km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.natlevfaa.f${fhr}.rotate13km.grib2.idx
+         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.tmp.grib2
+      cat rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.tmp.grib2 >> rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.grib2
+      rm rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.tmp.grib2
+      mv rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.grib2 ${COMOUT}
+      wgrib2 ${COMOUT}/rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.grib2.idx
     fi
 
     #-- GRID 237
