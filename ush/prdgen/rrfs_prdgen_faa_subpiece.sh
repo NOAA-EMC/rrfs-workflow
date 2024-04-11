@@ -14,8 +14,8 @@ COMOUT=$7
 USHrrfs=$8
 
 # FAA request variable to be extracted from UPP output
-#  parmdir=${FIXprdgen}
-  parmdir=${USHrrfs}/../../fix/prdgen
+#  fixdir=${FIXprdgen}
+  fixdir=${USHrrfs}/../../fix/prdgen
 
   #-- remove the leading 0"
   ifhr=$(expr $fhr + 0)
@@ -33,13 +33,13 @@ USHrrfs=$8
   fcstvar2="${jfhr}-${ifhr} hour acc fcst"
 
   #-- replace undifined variables in "*parmas" files in /fix/prdgen
-  sed "s/FCSTVARS1/${fcstvar1}/" ${parmdir}/rrfs.prslev-FAA130.params > rrfs.prslev-FAA130.params
+  sed "s/FCSTVARS1/${fcstvar1}/" ${fixdir}/rrfs.prslev-FAA130.params > rrfs.prslev-FAA130.params
   sed -i "s/FCSTVARS2/${fcstvar2}/" rrfs.prslev-FAA130.params
 
-  sed "s/FCSTVARS1/${fcstvar1}/" ${parmdir}/rrfs.prslev-FAA237.params > rrfs.prslev-FAA237.params
+  sed "s/FCSTVARS1/${fcstvar1}/" ${fixdir}/rrfs.prslev-FAA237.params > rrfs.prslev-FAA237.params
   sed -i "s/FCSTVARS2/${fcstvar2}/" rrfs.prslev-FAA237.params
 
-  sed "s/FCSTVARS1/${fcstvar1}/" ${parmdir}/rrfs.prslev-rrfs13km.params > rrfs.prslev-rrfs13km.params
+  sed "s/FCSTVARS1/${fcstvar1}/" ${fixdir}/rrfs.prslev-rrfs13km.params > rrfs.prslev-rrfs13km.params
   sed -i "s/FCSTVARS2/${fcstvar2}/" rrfs.prslev-rrfs13km.params
 
 # Grid 91 for the IFI AK 
@@ -97,7 +97,7 @@ USHrrfs=$8
   if [[ -f ${COMOUT}/${natlev} ]]; then
 
     #-- GRID 130
-    #wgrib2 ${COMOUT}/${natlev} -s | grep "hybrid level:" | grep -F -f ${parmdir}/rrfs.natlev-FAA130.params | \
+    #wgrib2 ${COMOUT}/${natlev} -s | grep "hybrid level:" | grep -F -f ${fixdir}/rrfs.natlev-FAA130.params | \
     #wgrib2 -i ${COMOUT}/${natlev} -set_bitmap 1 -set_grib_type c3 \
     #   -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
     #   -new_grid_interpolation bilinear \
@@ -106,7 +106,7 @@ USHrrfs=$8
 
     #-- 13km Rotated Lat Lon
     if [ $ifhr -le 6 ]; then
-      wgrib2 ${COMOUT}/${natlev} -s | grep "hybrid level:" | grep -F -f ${parmdir}/rrfs.natlev-FAA130.params | \
+      wgrib2 ${COMOUT}/${natlev} -s | grep "hybrid level:" | grep -F -f ${fixdir}/rrfs.natlev-FAA130.params | \
       wgrib2 -i ${COMOUT}/${natlev} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation bilinear \
@@ -125,7 +125,7 @@ USHrrfs=$8
 
     #-- GRID 237
     if [ $ifhr -le 12 ]; then
-      #wgrib2 ${COMOUT}/${natlev} -s | grep "hybrid level:" | grep -F -f ${parmdir}/rrfs.natlev-FAA130.params | \
+      #wgrib2 ${COMOUT}/${natlev} -s | grep "hybrid level:" | grep -F -f ${fixdir}/rrfs.natlev-FAA130.params | \
       #wgrib2 -i ${COMOUT}/${natlev} -set_bitmap 1 -set_grib_type c3 \
       #   -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
       #   -new_grid_interpolation bilinear \
@@ -200,7 +200,7 @@ USHrrfs=$8
       if [ $ifhr = 1 -o  $ifhr = 2 -o  $ifhr = 3 -o  $ifhr = 6 -o  $ifhr = 9 -o  $ifhr = 12 -o  $ifhr = 15 -o  $ifhr = 18 ]; then
         IFIFILE=rrfs.t${cyc}z.ififip.f${fhr}.conus13km.grib2
         IFIDOMAIN=conus13km
-        ${USHrrfs}/rrfs_subset_ifi_304m.sh $fhr $cyc ${COMOUT} ${IFIFILE} ${IFIDOMAIN} ${parmdir}
+        ${USHrrfs}/rrfs_subset_ifi_304m.sh $fhr $cyc ${COMOUT} ${IFIFILE} ${IFIDOMAIN} ${fixdir}
       fi
     fi
 
@@ -229,7 +229,7 @@ USHrrfs=$8
       if [ $ifhr = 1 -o  $ifhr = 2 -o  $ifhr = 3 -o  $ifhr = 6 -o  $ifhr = 9 -o  $ifhr = 12 -o  $ifhr = 15 -o  $ifhr = 18 ]; then
         IFIFILE=rrfs.t${cyc}z.ififip.f${fhr}.ak3km.grib2
         IFIDOMAIN=ak3km
-        ${USHrrfs}/rrfs_subset_ifi_304m.sh $fhr $cyc ${COMOUT} ${IFIFILE} ${IFIDOMAIN} ${parmdir}
+        ${USHrrfs}/rrfs_subset_ifi_304m.sh $fhr $cyc ${COMOUT} ${IFIFILE} ${IFIDOMAIN} ${fixdir}
       fi
     fi
 
