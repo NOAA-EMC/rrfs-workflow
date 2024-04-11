@@ -13,6 +13,7 @@ set -xv
   data=$3
   fnamei=$4
   gridid=$5
+  FIXprdgen=$6
 
   #-- remove the leading 0"
   ifhr=$(expr $fhr + 0)

@@ -348,11 +348,11 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
 
     # create testbed files on 3-km CONUS grid
     if [ ${DO_ENSFCST} = "TRUE" ]; then
-      prslev_conus=${net4}.t${cyc}z.m0${ensmem_num}.prslev.f${fhr}.conus_3km.grib2
-      testbed_conus=${net4}.t${cyc}z.m0${ensmem_num}.testbed.f${fhr}.conus_3km.grib2
+      prslev_conus=${net4}.t${cyc}z.m0${ensmem_num}.prslev.f${fhr}.conus.grib2
+      testbed_conus=${net4}.t${cyc}z.m0${ensmem_num}.testbed.f${fhr}.conus.grib2
     else
-      prslev_conus=${net4}.t${cyc}z.prslev.f${fhr}.conus_3km.grib2
-      testbed_conus=${net4}.t${cyc}z.testbed.f${fhr}.conus_3km.grib2
+      prslev_conus=${net4}.t${cyc}z.prslev.f${fhr}.conus.grib2
+      testbed_conus=${net4}.t${cyc}z.testbed.f${fhr}.conus.grib2
     fi
     if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
       if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN} ]]; then
