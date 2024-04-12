@@ -120,6 +120,10 @@ NCL_REGION="conus"
 
 . set_rrfs_config.sh
 
+RUN_TASK_ADD_AEROSOL="FALSE"
+COMINgefs="/scratch2/NCEPDEV/fv3-cam/UFS_SRW_App/develop/input_model_data/GEFS_aerosol"
+GEFS_AEROSOL_FILE_CYC="00"
+
 NWGES="${PTMP}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 if [[ ${regional_ensemble_option} == "5" ]]; then
   RRFSE_NWGES="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}/nwges"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.

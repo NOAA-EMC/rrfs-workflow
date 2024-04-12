@@ -8,19 +8,31 @@
 
 ## TESTS CONDUCTED: 
 <!-- Explicitly state what tests were run on these changes. -->
-- On machines/platforms:
-<!-- Add 'x' inside the brackets (without space). -->
-- [ ] WCOSS2
-- [ ] Hera
-- [ ] Orion
-- [ ] Hercules
-- [ ] Jet
 
-- Test cases: 
+### Machines/Platforms:
 <!-- Add 'x' inside the brackets (without space). -->
-- [ ] Non-DA engineering test
-- [ ] DA engineering test
-- [ ] Other sample scripts:
+- WCOSS2
+  - [ ] Cactus/Dogwood
+  - [ ] Acorn
+- RDHPCS
+  - [ ] Hera
+  - [ ] Jet
+  - [ ] Orion
+  - [ ] Hercules
+
+### Test cases: 
+<!-- Add 'x' inside the brackets (without space). -->
+- [ ] Engineering tests
+  - [ ] Non-DA engineering test
+  - [ ] DA engineering test
+    - [ ] Retro
+    - [ ] Ensemble
+    - [ ] Parallel
+- [ ] RRFS fire weather
+- [ ] RRFS_A:
+- [ ] RRFS_B:
+- [ ] RTMA:
+- [ ] Others:
 
 ## ISSUE: 
 <!-- If this PR is resolving or referencing one or more issues, in this repository or elsewhere, list them here. -->
