@@ -1,6 +1,6 @@
 MACHINE="wcoss2"
 MACHINETYPE="backup"
-version="v0.7.3"
+version="v0.8.5"
 ACCOUNT="RRFS_DEV"
 #RESERVATION="rrfsdet"
 EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/${version}"
@@ -22,6 +22,7 @@ DO_RETRO="TRUE"
 DO_NONVAR_CLDANAL="TRUE"
 #DO_ENVAR_RADAR_REF="TRUE"
 DO_SMOKE_DUST="FALSE"
+DO_PM_DA="FALSE"
 #DO_REFL2TTEN="FALSE"
 #RADARREFL_TIMELEVEL=(0)
 #FH_DFI_RADAR="0.0,0.25,0.5"
@@ -30,19 +31,33 @@ DO_SMOKE_DUST="FALSE"
 #DO_BUFRSND="TRUE"
 #USE_FVCOM="TRUE"
 #PREP_FVCOM="TRUE"
+DO_GLM_FED_DA="TRUE"
+GLMFED_DATA_MODE="FULL"
+PREP_MODEL_FOR_FED="TRUE"
 USE_CLM="TRUE"
 DO_PARALLEL_PRDGEN="TRUE"
 DO_GSIDIAG_OFFLINE="FALSE"
 
+# Options for blending or cold2warm start conversion.
+DO_ENS_BLENDING="TRUE"
+if [[ ${DO_ENS_BLENDING} == "TRUE" ]] ; then
+  ENS_BLENDING_LENGTHSCALE=960
+  BLEND="TRUE"          # TRUE:  Blend RRFS and GDAS EnKF
+                      # FALSE: Don't blend, activate cold2warm start only, and use either GDAS or RRFS
+  USE_HOST_ENKF="TRUE"  # TRUE:  Final EnKF (u,v,t,delp,sphum) will be GDAS (no blending)
+                      # FALSE: Final EnKF (u,v,t,delp,sphum) will be RRFS (no blending)
+fi
+
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   EXPT_SUBDIR="rrfs_na_enfcst"
   DO_SPINUP="FALSE"
-  DO_SAVE_DA_OUTPUT="FALSE"
+  DO_SAVE_DA_OUTPUT="TRUE"
   DO_NONVAR_CLDANAL="FALSE"
   DO_POST_PROD="TRUE"
+  DO_BUFRSND="TRUE"
 fi
 
-EXTRN_MDL_ICS_OFFSET_HRS="30"
+EXTRN_MDL_ICS_OFFSET_HRS="6"
 LBC_SPEC_INTVL_HRS="1"
 EXTRN_MDL_LBCS_OFFSET_HRS="6"
 BOUNDARY_LEN_HRS="12"
@@ -50,8 +65,8 @@ BOUNDARY_PROC_GROUP_NUM="12"
 
 # avaialble retro period:
 # 20210511-20210531; 20210718-20210801
-DATE_FIRST_CYCL="20220720"
-DATE_LAST_CYCL="20220720"
+DATE_FIRST_CYCL="20230610"
+DATE_LAST_CYCL="20230611"
 CYCL_HRS=( "00" "12" )
 CYCL_HRS=( "18" )
 CYCL_HRS_SPINSTART=("06" "18")
@@ -60,8 +75,8 @@ if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   CYCL_HRS_STOCH=("00" "06" "12" "18")
 fi
 #CYCL_HRS_RECENTER=("19")
-CYCLEMONTH="07"
-CYCLEDAY="20"
+CYCLEMONTH="06"
+CYCLEDAY="10-11"
 
 STARTYEAR=${DATE_FIRST_CYCL:0:4}
 STARTMONTH=${DATE_FIRST_CYCL:4:2}
@@ -75,8 +90,8 @@ ENDHOUR="23"
 PREEXISTING_DIR_METHOD="upgrade" # "rename"
 INITIAL_CYCLEDEF="${DATE_FIRST_CYCL}0600 ${DATE_LAST_CYCL}2300 12:00:00"
 BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}0600 ${DATE_LAST_CYCL}2300 06:00:00"
-PROD_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 01:00:00"
-PRODLONG_CYCLEDEF="00 01 01 01 2100 *"
+PROD_CYCLEDEF="00 01-05,07,08-11,13-17,19,20-23 ${CYCLEDAY} ${CYCLEMONTH} ${STARTYEAR} *"
+PRODLONG_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 06:00:00"
 #RECENTER_CYCLEDEF="00 19 * 10 2022 *"
 #ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}1400 ${DATE_LAST_CYCL}2300 24:00:00"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
@@ -86,6 +101,7 @@ if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   INITIAL_CYCLEDEF="00 01 01 01 2100 *"
   BOUNDARY_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 06:00:00"
   PROD_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 06:00:00"
+  PRODLONG_CYCLEDEF="00 01 01 01 2100 *"
   RECENTER_CYCLEDEF="${DATE_FIRST_CYCL}0000 ${DATE_LAST_CYCL}2300 06:00:00"
 fi
 if [[ $DO_SPINUP == "TRUE" ]] ; then
@@ -113,21 +129,21 @@ RESTART_INTERVAL_LONG="1"
 netcdf_diag=.true.
 binary_diag=.false.
 WRTCMP_output_file="netcdf_parallel"
+WRTCMP_ideflate="1"
+WRTCMP_quantize_nsd="18"
 
 ## set up post
-#NFHOUT_HF="1"
-#NFHMAX_HF="18"
-#NFHOUT="3"
+OUTPUT_FH="1 -1"
 
 WTIME_RUN_FCST="00:30:00"
 WTIME_RUN_FCST_LONG="04:45:00"
-PPN_RUN_ANAL="16"
-NNODES_RUN_ANAL="1"
-TPP_RUN_ANAL="8"
+PPN_RUN_ANALYSIS="16"
+NNODES_RUN_ANALYSIS="1"
+TPP_RUN_ANALYSIS="8"
 
-EXTRN_MDL_NAME_ICS="GEFS"
+EXTRN_MDL_NAME_ICS="GDASENKF"
+FV3GFS_FILE_FMT_ICS="netcdf"
 EXTRN_MDL_NAME_LBCS="GEFS"
-FV3GFS_FILE_FMT_ICS="grib2"
 FV3GFS_FILE_FMT_LBCS="grib2"
 EXTRN_MDL_SAVETYPE="GSL"
 
@@ -143,7 +159,7 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    DO_GSIOBSERVER="TRUE"
    DO_ENKFUPDATE="TRUE"
 #   DO_RECENTER="TRUE"
-   DO_ENS_GRAPHICS="TRUE"
+   DO_ENS_GRAPHICS="FALSE"
    DO_ENKF_RADAR_REF="TRUE"
    DO_ENSPOST="FALSE"
    DO_ENSINIT="TRUE"
@@ -158,9 +174,9 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
 
    START_TIME_SPINUP="00:30:00"
    LAYOUT_X="15"
-   LAYOUT_Y="55"
+   LAYOUT_Y="54"
    NNODES_RUN_FCST="13"
-   WRTCMP_write_tasks_per_group="7"
+   WRTCMP_write_tasks_per_group="22"
 
    NUM_ENS_MEMBERS_FCST=5
    if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
@@ -170,8 +186,9 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
 
      LAYOUT_X="50"
      LAYOUT_Y="64"
-     NNODES_RUN_FCST="51"
-     WRTCMP_write_tasks_per_group="64"
+     NNODES_RUN_FCST="52"
+     WRTCMP_write_groups="1"
+     WRTCMP_write_tasks_per_group="128"
 
      DO_ENSFCST_MULPHY="TRUE"
      DO_SPP="TRUE"
@@ -182,20 +199,20 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
      DO_RECENTER="TRUE"
 
    fi
-#   PPN_RUN_RECENTER="$(( ${NUM_ENS_MEMBERS} + 1 ))"
-#   NNODES_RUN_RECENTER="3"
    PPN_RUN_RECENTER="128"
    NNODES_RUN_RECENTER="10"
 fi
 
+SPPINT=360
+LNDPINT=360
+
 RUN_ensctrl="rrfs"
 RUN="enkfrrfs"
-TAG="n3enkf73"
+TAG="n3enkf85"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   RUN="refs"
-  TAG="n3enfcst73"
+  TAG="n3enfcst85"
 fi
-COMINgfs=""
 
 . set_rrfs_config.sh
 
@@ -204,6 +221,7 @@ PTMP="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}"  # Path to directory STMP that m
 NWGES="/lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/rrfs/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   STMP="/lfs/h2/emc/stmp/emc.lam/rrfs/${version}/enfcst"  # Path to directory STMP that mostly contains input files.
+  PTMP="/lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/rrfs/${version}"  # Path to directory STMP that mostly contains input files.
   NWGES="/lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/rrfs/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 fi
 ENSCTRL_STMP="/lfs/f2/t2o/ptmp/emc/stmp/emc.lam/rrfs/${version}"  # Path to directory STMP that mostly contains control input files for ensemble recentering.

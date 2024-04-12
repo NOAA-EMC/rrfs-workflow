@@ -1,6 +1,6 @@
 MACHINE="wcoss2"
 MACHINETYPE="backup"
-version="v0.7.3"
+version="v0.8.5"
 ACCOUNT="RRFS_DEV"
 #RESERVATION="rrfsdet"
 EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/${version}"
@@ -23,17 +23,22 @@ DO_RETRO="TRUE"
 DO_NONVAR_CLDANAL="TRUE"
 DO_ENVAR_RADAR_REF="TRUE"
 DO_SMOKE_DUST="TRUE"
+EBB_DCYCLE="2"
+DO_PM_DA="FALSE"
 DO_REFL2TTEN="FALSE"
 RADARREFL_TIMELEVEL=(0)
 FH_DFI_RADAR="0.0,0.25,0.5"
 DO_SOIL_ADJUST="TRUE"
 DO_RADDA="TRUE"
 DO_BUFRSND="TRUE"
-USE_FVCOM="TRUE"
-PREP_FVCOM="TRUE"
+USE_FVCOM="FALSE"
+PREP_FVCOM="FALSE"
 USE_CLM="TRUE"
 DO_PARALLEL_PRDGEN="TRUE"
 DO_GSIDIAG_OFFLINE="TRUE"
+DO_UPDATE_BC="TRUE"
+DO_GLM_FED_DA="TRUE"
+GLMFED_DATA_MODE="FULL"
 
 EXTRN_MDL_ICS_OFFSET_HRS="3"
 LBC_SPEC_INTVL_HRS="1"
@@ -43,13 +48,14 @@ BOUNDARY_PROC_GROUP_NUM="72"
 
 # avaialble retro period:
 # 20210511-20210531; 20210718-20210801
-DATE_FIRST_CYCL="20220720"
-DATE_LAST_CYCL="20230721"
+DATE_FIRST_CYCL="20230610"
+DATE_LAST_CYCL="20230611"
 CYCL_HRS=( "00" "12" )
 CYCL_HRS_SPINSTART=("03" "15")
 CYCL_HRS_PRODSTART=("09" "21")
-CYCLEMONTH="07"
-CYCLEDAY="20-21"
+CYCLEMONTH="06"
+CYCLEDAY="10-11"
+SOIL_SURGERY_time=2023061004
 
 STARTYEAR=${DATE_FIRST_CYCL:0:4}
 STARTMONTH=${DATE_FIRST_CYCL:4:2}
@@ -81,12 +87,9 @@ RESTART_INTERVAL_LONG="1"
 ## set up post
 POSTPROC_LEN_HRS="18"
 POSTPROC_LONG_LEN_HRS="60"
-NFHOUT_HF="1"
+
 # 15 min output upto 18 hours
-#NFHMAX_HF="18"
-#NFHOUT="1"
-#NSOUT="15"
-#NSOUT_MIN="15"
+OUTPUT_FH="1 -1"
 
 USE_RRFSE_ENS="FALSE"
 CYCL_HRS_HYB_FV3LAM_ENS=("00" "01" "02" "03" "04" "05" "06" "07" "08" "09" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "23")
@@ -94,12 +97,23 @@ CYCL_HRS_HYB_FV3LAM_ENS=("00" "01" "02" "03" "04" "05" "06" "07" "08" "09" "10" 
 SST_update_hour=01
 GVF_update_hour=04
 SNOWICE_update_hour=01
-SOIL_SURGERY_time=2022072004
 netcdf_diag=.true.
 binary_diag=.false.
+
+LAYOUT_X="43"
+LAYOUT_Y="64"
+NNODES_RUN_FCST="52"
+WRTCMP_write_groups="3"
+WRTCMP_write_tasks_per_group="192"
+
 WRTCMP_output_file="netcdf_parallel"
+WRTCMP_ideflate="1"
+WRTCMP_quantize_nsd="18"
 
 regional_ensemble_option=1
+if [[ ${USE_RRFSE_ENS} == "TRUE" ]]; then
+  regional_ensemble_option=5   # 5 for RRFS ensemble
+fi
 
 EXTRN_MDL_NAME_ICS="FV3GFS"
 EXTRN_MDL_NAME_LBCS="FV3GFS"
@@ -110,9 +124,9 @@ EXTRN_MDL_DATE_JULIAN="TRUE"
 envir="para"
 
 NET="rrfs_a"
-TAG="n3v73"
+TAG="n3v85"
 
-ARCHIVEDIR="/NCEPDEV/emc-meso/1year/emc.lam"
+ARCHIVEDIR="/NCEPDEV/emc-meso/1year/emc.lam/${TAG}"
 NCL_REGION="conus"
 MODEL="rrfs_a"
 RUN="rrfs"
@@ -125,6 +139,6 @@ NWGES="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}/nwges"  # Path to directory NWGE
 if [[ ${regional_ensemble_option} == "5" ]]; then
   RRFSE_NWGES="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}/nwges"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
   NUM_ENS_MEMBERS=30     # FV3LAM ensemble size for GSI hybrid analysis
-  CYCL_HRS_PRODSTART_ENS=( "19" )
+  CYCL_HRS_PRODSTART_ENS=( "07" "19" )
   DO_ENVAR_RADAR_REF="TRUE"
 fi

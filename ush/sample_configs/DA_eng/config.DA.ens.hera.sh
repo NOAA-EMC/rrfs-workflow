@@ -42,7 +42,7 @@ DO_NONVAR_CLDANAL="TRUE"
 DO_SMOKE_DUST="FALSE"
 DO_PM_DA="FALSE"
 DO_GLM_FED_DA="TRUE"
-GLMFED_DATA_MODE="EMC"  # retros 20220608-now use FULL; retros 20230714-now and real-time on Jet use FULL or TILES
+GLMFED_DATA_MODE="PROD"  # retros 20220608-now use FULL; retros 20230714-now and real-time on Jet use FULL or TILES
 #DO_REFL2TTEN="FALSE"
 #RADARREFL_TIMELEVEL=(0)
 #FH_DFI_RADAR="0.0,0.25,0.5"
@@ -138,6 +138,8 @@ RESTART_INTERVAL_LONG="1"
 netcdf_diag=.true.
 binary_diag=.false.
 WRTCMP_output_file="netcdf_parallel"
+WRTCMP_ideflate="1"
+WRTCMP_quantize_nsd="18"
 
 ## set up post
 OUTPUT_FH="1 -1"
@@ -194,7 +196,7 @@ if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   STMP="${PTMP}/stmp_ensfcst"
 fi
 NWGES="${PTMP}/nwges"
-ENSCTRL_STMP="/scratch2/NCEPDEV/fv3-cam/Chan-hoo.Jeon/DATA_RRFS"
+ENSCTRL_STMP="/scratch2/NCEPDEV/fv3-cam/UFS_SRW_App/develop/input_model_data/DAeng_ens_restart"
 ENSCTRL_PTMP="${PTMP}"
 ENSCTRL_NWGES="${NWGES}"
 

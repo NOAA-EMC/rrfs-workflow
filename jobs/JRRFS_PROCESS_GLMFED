@@ -27,7 +27,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -67,7 +67,7 @@ if [ ${CYCLE_TYPE} == "spinup" ]; then
 else
   workdir=${CYCLE_DIR}/process_glmfed
 fi
-if [ ${IS_ENSEMBLE} == "1" ]; then
+if [ ${DO_ENSEMBLE} = TRUE ]; then
   workdir=${CYCLE_DIR}/process_glmfed_enkf
 fi
 
@@ -79,7 +79,7 @@ cd ${workdir}
 export FIX_GSI=$FIX_GSI
 export OBS_EAST=$GLMFED_EAST_ROOT
 export OBS_WEST=$GLMFED_WEST_ROOT
-export RRFSE_NWGES_BASEDIR=$RRFSE_NWGES_BASEDIR
+export RRFSE_NWGES_BASEDIR=$NWGES
 export NUM_ENS_MEMBERS=$NUM_ENS_MEMBERS
 export DA_CYCLE_INTERV=$DA_CYCLE_INTERV
 export MODE=$GLMFED_DATA_MODE
@@ -91,7 +91,7 @@ export MODE=$GLMFED_DATA_MODE
 #
 #-----------------------------------------------------------------------
 #
-python -u ${SCRIPTSdir}/exrrfs_prep_glmfed.py \
+python -u ${SCRIPTSdir}/exrrfs_process_glmfed.py \
 #
 #-----------------------------------------------------------------------
 #

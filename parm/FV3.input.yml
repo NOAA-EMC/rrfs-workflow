@@ -46,6 +46,7 @@ FV3_HRRR:
     do_ugwp_v0_nst_only : false
     do_ugwp_v0_orog_only : false
     dt_inner : 36
+    ebb_dcycle : 1
     effr_in: true
     gwd_opt: 3
     fhlwr: 900.0
@@ -84,19 +85,29 @@ FV3_HRRR:
     rrfs_smoke_debug : false
     seas_opt : 0
     mix_chem : true
-    enh_mix : true
-    dust_opt : 5
-    drydep_opt : 1
+    dust_opt : 1
     coarsepm_settling : 1
-    smoke_forecast : 0
+    smoke_conv_wet_coef : [0.5, 0.5, 0.5]
+    smoke_forecast : 1
     aero_ind_fdb : false
     aero_dir_fdb : true
     addsmoke_flag : 1
     wetdep_ls_opt : 1
     do_plumerise : true
+    do_smoke_transport : true
     plumerisefire_frq : 60
-    dust_alpha : 0.01
+    plume_wind_eff : 1
+    dust_moist_correction : 2.0
+    dust_drylimit_factor : 0.5
+    dust_alpha : 10.0
     dust_gamma : 1.3
+    drydep_opt : 1
+    enh_mix : false
+    wetdep_ls_alpha : 0.5
+    smoke_conv_wet_coef : [ 0.50, 0.50, 0.50 ]
+    do_smoke_transport : true
+    ebb_dcycle : 2
+
   fv_diagnostics_nml:
     do_hailcast: true
 
@@ -143,6 +154,7 @@ FV3_HRRR_gf:
     do_ugwp_v0_nst_only : false
     do_ugwp_v0_orog_only : false
     dt_inner : 36
+    ebb_dcycle : 1
     effr_in: true
     gwd_opt: 3
     fhlwr: 900.0
@@ -181,19 +193,29 @@ FV3_HRRR_gf:
     rrfs_smoke_debug : false
     seas_opt : 0
     mix_chem : true
-    enh_mix : true
-    dust_opt : 5
-    drydep_opt : 1
+    dust_opt : 1
     coarsepm_settling : 1
+    smoke_conv_wet_coef : [0.5, 0.5, 0.5]
     smoke_forecast : 0
     aero_ind_fdb : false
     aero_dir_fdb : true
     addsmoke_flag : 1
     wetdep_ls_opt : 1
     do_plumerise : true
+    do_smoke_transport : true
     plumerisefire_frq : 60
-    dust_alpha : 0.01
+    plume_wind_eff : 1
+    dust_moist_correction : 2.0
+    dust_drylimit_factor : 0.5
+    dust_alpha : 10.0
     dust_gamma : 1.3
+    drydep_opt : 1
+    enh_mix : false
+    wetdep_ls_alpha : 0.5
+    smoke_conv_wet_coef : [ 0.50, 0.50, 0.50 ]
+    do_smoke_transport : true
+    ebb_dcycle : 2
+
   fv_diagnostics_nml:
     do_hailcast: true
 
@@ -202,19 +224,21 @@ FV3_RAP:
     avg_max_length: 3600.
     ignore_rst_cksum: true
   fv_core_nml:
+    agrid_vel_rst: true
     d_con: 0.5
     d2_bg_k2: 0.04
     dz_min: 2.0
     hord_dp: 6
     hord_mt: 6
     hord_tm: 6
+    hord_tr: 8
     hord_vt: 6
-    k_split: 6
+    k_split: 2
     kord_mt: 9
     kord_tm: -9
     kord_tr: 9
     kord_wz: 9
-    n_split: 3
+    n_split: 4
     psm_bc: 1
     nord_tr: 0
     nrows_blend: 10
@@ -238,6 +262,7 @@ FV3_RAP:
     do_ugwp_v0_orog_only : false
     do_deep : true
     dt_inner : 30
+    ebb_dcycle : 1
     effr_in: true
     gwd_opt: 3
     fhlwr: 900.0
@@ -276,19 +301,29 @@ FV3_RAP:
     rrfs_smoke_debug : false
     seas_opt : 0
     mix_chem : true
-    enh_mix : true
-    dust_opt : 5
-    drydep_opt : 1
+    dust_opt : 1
     coarsepm_settling : 1
+    smoke_conv_wet_coef : [0.5, 0.5, 0.5]
     smoke_forecast : 0
     aero_ind_fdb : false
     aero_dir_fdb : false
     addsmoke_flag : 1
     wetdep_ls_opt : 1
     do_plumerise : true
+    do_smoke_transport : true
     plumerisefire_frq : 60
-    dust_alpha : 0.01
+    plume_wind_eff : 1
+    dust_moist_correction : 2.0
+    dust_drylimit_factor : 0.5
+    dust_alpha : 10.0
     dust_gamma : 1.3
+    drydep_opt : 1
+    enh_mix : false
+    wetdep_ls_alpha : 0.5
+    smoke_conv_wet_coef : [ 0.50, 0.50, 0.50 ]
+    do_smoke_transport : true
+    ebb_dcycle : 2
+
 
 FV3_RRFS_v1beta:
   gfs_physics_nml:

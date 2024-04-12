@@ -1,0 +1,93 @@
+met_guess::
+!var     level    crtm_use    desc              orig_name
+  ps        1      -1         surface_pressure     ps
+  z         1      -1         geopotential_height  phis
+  u        65       2         zonal_wind           u
+  v        65       2         meridional_wind      v
+  w        65      -1         vertical_velocity    w
+  tv       65       2         virtual_temperature  tv
+  q        65       2         specific_humidity    sphu
+  oz       65       2         ozone                ozone
+  delp     65      -1         fv3 del pressure     delp
+  t2m       1      -1         2-m_T                t2m
+  q2m       1      -1         2-m_Q                q2m
+  ql       65      10         cloud_condensate  QCLOUD
+  qr       65      10         rain              QRAIN
+  qs       65      10         snow              QSNOW
+  qi       65      10         ice               QICE
+  qg       65      10         graupel           QGRAUP
+  dbz      65      10         reflectivity      REFL_10CM
+  fed      65      10         lightning flash_extent_density
+::
+
+state_derivatives::
+!var  level  src
+ ps   1      met_guess
+ u    65     met_guess
+ v    65     met_guess
+ tv   65     met_guess
+ q    65     met_guess
+ oz   65     met_guess
+ cw   65     met_guess
+ prse 66     met_guess
+::
+
+state_tendencies::
+!var  levels  source
+ u    65      met_guess
+ v    65      met_guess
+ tv   65      met_guess
+ q    65      met_guess
+ oz   65      met_guess
+ prse 66      met_guess
+::
+
+state_vector::  
+!var     level  itracer source     funcof
+ u        65      0     met_guess    u
+ v        65      0     met_guess    v
+ w        65      0     met_guess    w
+ tv       65      0     met_guess    tv
+ tsen     65      0     met_guess    tv,q
+ q        65      1     met_guess    q
+ prse     66      0     met_guess    prse
+ ps        1      0     met_guess    prse
+ qr       65      1     met_guess    qr
+ sst       1      0     met_guess    sst 
+ ql       65      1     met_guess    qc
+ qs       65      1     met_guess    qs
+ qi       65      1     met_guess    qi
+ qg       65      1     met_guess    qg
+ dbz      65      1     met_guess    dbz
+ fed      65      1     met_guess    fed
+::
+control_vector_enkf::
+!var     level  itracer as/tsfc_sdv  an_amp0   source  funcof
+ u        65      0       1.00        -1.0     state    u,v
+ v        65      0       1.00        -1.0     state    u,v
+ ps        1      0       0.50        -1.0     state    prse
+ t        65      0       0.70        -1.0     state    tv
+ q        65      1       0.70        -1.0     state    q
+ qr       65      1       1.0         -1.0     state    qr
+ qs       65      1       1.0         -1.0     state    qs
+ qg       65      1       1.0         -1.0     state    qg
+ ql       65      1       1.0         -1.0     state    cw
+::
+
+control_vector::
+!var     level  itracer as/tsfc_sdv  an_amp0   source  funcof
+ sf       65      0       0.5         -1.0     state    u,v
+ vp       65      0       0.5         -1.0     state    u,v
+ ps        1      0       0.50        -1.0     state    prse
+ sst       1      0       1.00        -1.0     state    sst
+ t        65      0       0.70        -1.0     state    tv
+ q        65      1       0.40        -1.0     state    q
+ w        65      0       1.0         -1.0     state    w
+ dbz      65      1       1.00        -1.0     state    dbz
+ qr       65      1       1.0         -1.0     state    qr
+ qs       65      1       1.0         -1.0     state    qs
+ qi       65      1       1.0         -1.0     state    qi
+ qg       65      1       1.0         -1.0     state    qg
+ ql       65      1       1.0         -1.0     state    qc
+ fed      65      1       1.00        -1.0     state    fed
+::

@@ -44,8 +44,38 @@ In directory:     \"${scrfunc_dir}\"
 
 This is the ex-script for the task that generates initial condition
 (IC), surface, and zeroth hour lateral boundary condition (LBC0) files
-(in NetCDF format) for the FV3-LAM.
+(in NetCDF format) for the RRFS.
 ========================================================================"
+#
+#-----------------------------------------------------------------------
+#
+# Specify the set of valid argument names for this script/function.  Then
+# process the arguments provided to this script/function (which should
+# consist of a set of name-value pairs of the form arg1="value1", etc).
+#
+#-----------------------------------------------------------------------
+#
+valid_args=( \
+"use_user_staged_extrn_files" \
+"extrn_mdl_cdate" \
+"extrn_mdl_lbc_spec_fhrs" \
+"extrn_mdl_fns_on_disk" \
+"extrn_mdl_fns_on_disk2" \
+"extrn_mdl_source_dir" \
+"extrn_mdl_source_dir2" \
+"extrn_mdl_staging_dir" \
+)
+process_args valid_args "$@"
+#
+#-----------------------------------------------------------------------
+#
+# For debugging purposes, print out values of arguments passed to this
+# script.  Note that these will be printed out only if VERBOSE is set to
+# TRUE.
+#
+#-----------------------------------------------------------------------
+#
+print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
@@ -88,14 +118,150 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-# Source the file containing definitions of variables associated with the
-# external model for ICs.
+# Set num_files_to_copy to the number of external model files that need
+# to be copied or linked to from/at a location on disk.  Then set
+# extrn_mdl_fps_on_disk to the full paths of the external model files
+# on disk.
 #
 #-----------------------------------------------------------------------
 #
-extrn_mdl_staging_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/${EXTRN_MDL_NAME_ICS}/for_ICS"
-extrn_mdl_var_defns_fp="${extrn_mdl_staging_dir}/${EXTRN_MDL_ICS_VAR_DEFNS_FN}"
-. ${extrn_mdl_var_defns_fp}
+num_files_to_copy="${#extrn_mdl_fns_on_disk[@]}"
+prefix="${extrn_mdl_source_dir}/"
+extrn_mdl_fps_on_disk=( "${extrn_mdl_fns_on_disk[@]/#/$prefix}" )
+prefix2="${extrn_mdl_source_dir2}"
+extrn_mdl_fps_on_disk2=( "${extrn_mdl_fns_on_disk2[@]/#/$prefix2}" )
+#
+#-----------------------------------------------------------------------
+#
+# Loop through the list of external model files and check whether they
+# all exist on disk.  The counter num_files_found_on_disk keeps track of
+# the number of external model files that were actually found on disk in
+# the directory specified by extrn_mdl_source_dir.
+#
+# If the location extrn_mdl_source_dir is a user-specified directory
+# (i.e. if use_user_staged_extrn_files is set to "TRUE"), then if/when we
+# encounter the first file that does not exist, we exit the script with
+# an error message.  If extrn_mdl_source_dir is a system directory (i.e.
+# if use_user_staged_extrn_files is not set to "TRUE"), then if/when we
+# encounter the first file that does not exist or exists but is younger
+# than a certain age, we break out of the loop.  The age cutoff is to 
+# ensure that files are not still being written to.
+#
+#-----------------------------------------------------------------------
+#
+num_files_found_on_disk="0"
+min_age="5"  # Minimum file age, in minutes.
+
+for fp in "${extrn_mdl_fps_on_disk[@]}"; do
+  #
+  # If the external model file exists, then...
+  #
+  if [ -f "$fp" ]; then
+    #
+    # Increment the counter that keeps track of the number of external
+    # model files found on disk and print out an informational message.
+    #
+    num_files_found_on_disk=$(( num_files_found_on_disk+1 ))
+    print_info_msg "
+File fp exists on disk:
+  fp = \"$fp\""
+    #
+    # If we are NOT searching for user-staged external model files, then
+    # we also check that the current file is at least min_age minutes old.
+    #
+    if [ "${use_user_staged_extrn_files}" != "TRUE" ]; then
+
+      if [ $( find "$fp" -mmin +${min_age} ) ]; then
+        print_info_msg "
+File fp is older than the minimum required age of min_age minutes:
+  fp = \"$fp\"
+  min_age = ${min_age} minutes"
+
+      else
+        print_info_msg "
+File fp is NOT older than the minumum required age of min_age minutes:
+  fp = \"$fp\"
+  min_age = ${min_age} minutes
+Not checking presence and age of remaining external model files on disk."
+        break
+      fi
+    fi
+  #
+  # If the external model file does not exist, then...
+  #
+  else
+    #
+    # If an external model file is not found and we are searching for it
+    # in a user-specified directory, print out an error message and exit.
+    #
+    if [ "${use_user_staged_extrn_files}" = "TRUE" ]; then
+      err_exit "\
+File fp does NOT exist on disk:
+  fp = \"$fp\"
+Please ensure that the directory specified by extrn_mdl_source_dir exists
+and that all the files specified in the array extrn_mdl_fns_on_disk exist
+within it:
+  extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
+  extrn_mdl_fns_on_disk = ( $( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" ))"
+    #
+    # If an external model file is not found and we are searching for it
+    # in a system directory, give up on the system directory.
+    #
+    else
+      print_info_msg "
+File fp does NOT exist on disk:
+  fp = \"$fp\"
+Not checking presence and age of remaining external model files on disk."
+      break
+
+    fi
+  fi
+done
+#
+#-----------------------------------------------------------------------
+#
+# Copy the files from the source directory on disk to a staging directory.
+#
+#-----------------------------------------------------------------------
+#
+extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" )")"
+
+print_info_msg "
+Creating links in staging directory (extrn_mdl_staging_dir) to external
+model files on disk (extrn_mdl_fns_on_disk) in the source directory
+(extrn_mdl_source_dir):
+extrn_mdl_staging_dir = \"${extrn_mdl_staging_dir}\"
+extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
+extrn_mdl_fns_on_disk = ${extrn_mdl_fns_on_disk_str}"
+
+if [ ! -z ${extrn_mdl_source_dir2} ]; then
+  cp ${extrn_mdl_fps_on_disk[@]} ${extrn_mdl_staging_dir}/.
+  more ${extrn_mdl_fps_on_disk2[@]} >>  ${extrn_mdl_staging_dir}/${extrn_mdl_fns_on_disk[@]}
+else
+  ln -sf -t ${extrn_mdl_staging_dir} ${extrn_mdl_fps_on_disk[@]}
+fi
+#
+#-----------------------------------------------------------------------
+#
+# Print message indicating successful completion of retrieving model files.
+#
+#-----------------------------------------------------------------------
+#
+print_info_msg "
+========================================================================
+Successfully copied or linked to external model files on disk needed for
+generating initial conditions and surface fields for the RRFS forecast!!!
+========================================================================"
+#
+#-----------------------------------------------------------------------
+#
+# Set values of several external-model-associated variables.
+#
+#-----------------------------------------------------------------------
+#
+eval EXTRN_MDL_CDATE=${extrn_mdl_cdate}
+extrn_mdl_fns_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" )")"
+eval EXTRN_MDL_FNS=${extrn_mdl_fns_str}
 #
 #-----------------------------------------------------------------------
 #
@@ -493,9 +659,9 @@ case "${EXTRN_MDL_NAME_ICS}" in
   external_model="NAM"
   fn_grib2="${EXTRN_MDL_FNS[0]}"
   input_type="grib2"
-  vgtyp_from_climo=True
-  sotyp_from_climo=True
-  vgfrc_from_climo=True
+  vgtyp_from_climo=False
+  sotyp_from_climo=False
+  vgfrc_from_climo=False
   minmax_vgfrc_from_climo=True
   lai_from_climo=True
   tg3_from_soil=False
@@ -608,6 +774,24 @@ $settings"
 #
 #-----------------------------------------------------------------------
 #
+# Subset RRFS North America grib2 file for fire weather grid.
+# +/- 10 degrees latitude/longitude around center lat/lon point.
+#
+#-----------------------------------------------------------------------
+#
+if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
+  sp_lon=$(echo "$LON_CTR + 360" | bc -l)
+  sp_lat=$(echo "(90 - $LAT_CTR) * -1" | bc -l)
+  gridspecs="rot-ll:${sp_lon}:${sp_lat}:0 -10:801:0.025 -10:801:0.025"
+  fn_grib2_subset=rrfs.t${hh}z.prslev.f000.subset.grib2
+
+  wgrib2 ${extrn_mdl_staging_dir}/${fn_grib2} -set_grib_type c3b -new_grid_winds grid \
+    -new_grid ${gridspecs} ${extrn_mdl_staging_dir}/${fn_grib2_subset}
+  mv ${extrn_mdl_staging_dir}/${fn_grib2_subset} ${extrn_mdl_staging_dir}/${fn_grib2}
+fi
+#
+#-----------------------------------------------------------------------
+#
 # Run chgres_cube.
 #
 #-----------------------------------------------------------------------
@@ -649,160 +833,80 @@ export err=$?; err_chk
 #   processed. This includes rotating the winds and vertically remapping all the
 #   variables. The cold start file has u_w, v_w, u_s, and v_s which correspond
 #   to the D-grid staggering.
-#     -) u_s is the D-grid south tangential wind component (m/s)
+#     -) u_s is the D-grid south face tangential wind component (m/s)
 #     -) v_s is the D-grid south face normal wind component (m/s)
-#     -) u_w is the D-grid west  face tangential wind component (m/s)
-#     -) v_w is the D-grid west  face normal wind component (m/s)
+#     -) u_w is the D-grid west  face normal wind component (m/s)
+#     -) v_w is the D-grid west  face tangential wind component (m/s)
 #     -) https://github.com/NOAA-GFDL/GFDL_atmos_cubed_sphere/blob/bdeee64e860c5091da2d169b1f4307ad466eca2c/tools/external_ic.F90
 #     -) https://dtcenter.org/sites/default/files/events/2020/20201105-1300p-fv3-gfdl-1.pdf
 #
 
-cdate_crnt_fhr_m1=$( date --utc --date "$yyyymmdd $hh UTC - 1 hours" "+%Y%m%d%H" )
-
 # Check for 1h RRFS EnKF files, if at least one missing then use 1tstep initialization
-if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
+if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
 
-  # Files to denote whether running blending or ensinit
-  run_blending=${NWGES_BASEDIR}/${cdate_crnt_fhr}/run_blending
-  run_ensinit=${NWGES_BASEDIR}/${cdate_crnt_fhr}/run_ensinit
+  echo "Pre-Blending Starting."
+  ulimit -s unlimited
+  #Add the size of the variables declared as private and multiply by the OMP_NUMTHREADS
+  export OMP_STACKSIZE=600M #8*[3951*{65+67+66}]*96/1048576 = 600804864/1048576 = 573 MB
+  export OMP_NUM_THREADS=$NCORES_PER_NODE
+  export FI_OFI_RXM_SAR_LIMIT=3145728
+  export FI_MR_CACHE_MAX_COUNT=0
+  export MPICH_OFI_STARTUP_CONNECT=1
 
-  # Initialize a counter for the number of existing files
-  existing_files=0
-  #NUM_ENS_MEMBERS=30
+  case "$MACHINE" in
 
-  # Loop through each ensemble member and check if the 1h RRFS EnKF files exist
-  for imem in $(seq 1 ${NUM_ENS_MEMBERS}); do
-      ensmem=$( printf "%04d" $imem )
-      checkfile="${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}/mem${ensmem}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
-      if [[ -f $checkfile ]]; then
-          ((existing_files++))
-      fi
-  done
+    "WCOSS2")
+       if [[ $NCORES_PER_NODE -gt 96 ]]; then
+          export OMP_NUM_THREADS="96"
+       fi
+      ;;
 
-  # Check if the number of existing files is equal to the total number of ensemble members
-  if [[ $existing_files -eq ${NUM_ENS_MEMBERS} ]]; then
-      # Check if run_blending file exists, and if not, touch it
-      if [[ ! -f $run_blending ]]; then
-          touch $run_blending
-      fi
-      blendmsg="Do blending!"
-  else
-      # Check if run_ensinit file exists, and if not, touch it
-      if [[ ! -f $run_ensinit ]]; then
-          touch $run_ensinit
-      fi
-      blendmsg="Do ensinit!"
-  fi
-  echo "`date`"
-  echo "Blending check: There are ${existing_files}/${NUM_ENS_MEMBERS} ensemble members. $blendmsg"
+    "HERA")
+       if [[ $NCORES_PER_NODE -gt 80 ]]; then
+          export OMP_NUM_THREADS="80"
+       fi
+      ;;
 
-  if [ -f $run_blending ] &&
-     [ ! -f $run_ensinit ] &&
-     [ $EXTRN_MDL_NAME_ICS = "GDASENKF" ]; then
+    "ORION")
+       if [[ $NCORES_PER_NODE -gt 80 ]]; then
+          export OMP_NUM_THREADS="80"
+       fi
+      ;;
 
-     echo "Blending Starting."
-     ulimit -s unlimited
-     export OMP_STACKSIZE=2G
-     export OMP_NUM_THREADS=$NCORES_PER_NODE
-     export FI_OFI_RXM_SAR_LIMIT=3145728
-     export FI_MR_CACHE_MAX_COUNT=0
-     export MPICH_OFI_STARTUP_CONNECT=1
+    "HERCULES")
+       if [[ $NCORES_PER_NODE -gt 80 ]]; then
+          export OMP_NUM_THREADS="80"
+       fi
+      ;;
 
-     case "$MACHINE" in
+    "JET")
+       if [[ $NCORES_PER_NODE -gt 80 ]]; then
+          export OMP_NUM_THREADS="80"
+       fi
+      ;;
 
-       "WCOSS2")
-          if [[ $NCORES_PER_NODE -gt 96 ]]; then
-             export OMP_NUM_THREADS="96"
-          fi
-         ;;
+  esac
 
-       "HERA")
-          if [[ $NCORES_PER_NODE -gt 80 ]]; then
-             export OMP_NUM_THREADS="80"
-          fi
-         ;;
+  # F2Py shared object files to PYTHONPATH
+  export PYTHONPATH=$PYTHONPATH:$LIB64dir
 
-       "ORION")
-          if [[ $NCORES_PER_NODE -gt 80 ]]; then
-             export OMP_NUM_THREADS="80"
-          fi
-         ;;
+  # Required FIX files
+  cp $FIXLAM/${CRES}_grid.tile7.nc .
+  cp $FIXLAM/${CRES}_oro_data.tile7.halo0.nc .
+  cp $FIX_GSI/$PREDEF_GRID_NAME/fv3_akbk fv_core.res.nc
 
-       "HERCULES")
-          if [[ $NCORES_PER_NODE -gt 80 ]]; then
-             export OMP_NUM_THREADS="80"
-          fi
-         ;;
+  # Shortcut the file names
+  warm=./fv_core.res.tile1.nc
+  cold=./out.atm.tile7.nc
+  grid=./${CRES}_grid.tile7.nc
+  akbk=./fv_core.res.nc
+  akbkcold=./gfs_ctrl.nc
+  orog=./${CRES}_oro_data.tile7.halo0.nc
+  bndy=./gfs.bndy.nc
 
-       "JET")
-          if [[ $NCORES_PER_NODE -gt 80 ]]; then
-             export OMP_NUM_THREADS="80"
-          fi
-         ;;
+  # Run convert coldstart files to fv3 restart (rotate winds and remap).
+  python ${USHdir}/chgres_cold2fv3.py $cold $grid $akbk $akbkcold $orog
 
-     esac
-
-     # Python/F2Py scripts
-     cp $SCRIPTSdir/exrrfs_blending_fv3.py .
-     cp $SCRIPTSdir/exrrfs_chgres_cold2fv3.py .
-
-     # F2Py shared object files
-     ln -sf $LIB64dir/raymond.so .
-     ln -sf $LIB64dir/chgres_winds.so .
-     ln -sf $LIB64dir/remap_scalar.so .
-     ln -sf $LIB64dir/remap_dwinds.so .
-
-     # Required NETCDF files -  HOST MODEL (e.g., GDAS; these files should already be present)
-     #cp_vrfy out.atm.tile${TILE_RGNL}.nc .
-     #cp_vrfy out.sfc.tile${TILE_RGNL}.nc .
-     #cp_vrfy gfs_ctrl.nc .
-
-     # Required NETCDF files - RRFS
-     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.tile1.nc ./fv_core.res.tile1.nc
-     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_tracer.res.tile1.nc ./fv_tracer.res.tile1.nc
-     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc ./fv_core.res.nc
-
-     # Required FIX files
-     cp $FIXLAM/${CRES}_grid.tile7.nc .
-     cp $FIXLAM/${CRES}_oro_data.tile7.halo0.nc .
-
-     # Shortcut the file names
-     warm=./fv_core.res.tile1.nc
-     cold=./out.atm.tile7.nc
-     grid=./${CRES}_grid.tile7.nc
-     akbk=./fv_core.res.nc
-     akbkcold=./gfs_ctrl.nc
-     orog=./${CRES}_oro_data.tile7.halo0.nc
-     bndy=./gfs.bndy.nc
-
-     # Run convert coldstart files to fv3 restart (rotate winds and remap).
-     ${BLENDINGPYTHON} exrrfs_chgres_cold2fv3.py $warm $cold $grid $akbk $akbkcold $orog
-
-     # Shortcut the file names/arguments.
-     Lx=$ENS_BLENDING_LENGTHSCALE
-     glb=./out.atm.tile${TILE_RGNL}.nc
-     reg=./fv_core.res.tile1.nc
-     trcr=./fv_tracer.res.tile1.nc
-
-     # Blend OR finish convert cold2warm start without blending.
-     blend=${BLEND}                 # TRUE:  Blend RRFS and GDAS EnKF
-                                    # FALSE: Don't blend, activate cold2warm start only, and use either GDAS or RRFS
-     use_host_enkf=${USE_HOST_ENKF} # ignored if blend="TRUE".
-                                    # TRUE:  Final EnKF will be GDAS (no blending)
-                                    # FALSE: Final EnKF will be RRFS (no blending)
-     ${BLENDINGPYTHON} exrrfs_blending_fv3.py $Lx $glb $reg $trcr $blend $use_host_enkf
-     cp ./fv_core.res.tile1.nc ${ics_dir}/.
-     cp ./fv_tracer.res.tile1.nc ${ics_dir}/.
-
-     # Move the remaining RESTART files to INPUT
-     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.coupler.res             ${ics_dir}/coupler.res
-     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc          ${ics_dir}/fv_core.res.nc
-     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_srf_wnd.res.tile1.nc ${ics_dir}/fv_srf_wnd.res.tile1.nc
-     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.phy_data.nc             ${ics_dir}/phy_data.nc
-     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.sfc_data.nc             ${ics_dir}/sfc_data.nc
-     cp gfs_ctrl.nc ${ics_dir}
-     cp gfs.bndy.nc ${ics_dir}/gfs_bndy.tile${TILE_RGNL}.000.nc
-  fi
 fi
 #
 #-----------------------------------------------------------------------
@@ -813,7 +917,7 @@ fi
 # system.
 #-----------------------------------------------------------------------
 #
-if [[ $DO_ENS_BLENDING = "FALSE" || ($DO_ENS_BLENDING = "TRUE" && -f $run_ensinit ) ]]; then
+if [[ $DO_ENS_BLENDING = "FALSE" ]]; then
   mv out.atm.tile${TILE_RGNL}.nc \
         ${ics_dir}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
 
@@ -831,9 +935,8 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+if [ $DO_ENS_BLENDING = "FALSE" ]; then
 cp ${ics_dir}/*.nc ${ics_nwges_dir}/.
-if [ $DO_ENS_BLENDING = "TRUE" ] && [ -f $run_blending ] && [ ! -f $run_ensinit ]; then
-  cp ${ics_dir}/coupler.res ${ics_nwges_dir}/.
 fi
 #
 #-----------------------------------------------------------------------
@@ -850,6 +953,33 @@ files (in NetCDF format) for FV3 generated successfully!!!
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
+#
+#-----------------------------------------------------------------------
+#
+# Create a variable definitions file (a shell script) and save in it the
+# values of several external-model-associated variables generated in this
+# script that will be needed by downstream workflow tasks.
+#
+#-----------------------------------------------------------------------
+#
+extrn_mdl_var_defns_fn="${EXTRN_MDL_ICS_VAR_DEFNS_FN}"
+extrn_mdl_var_defns_fp="${extrn_mdl_staging_dir}/${extrn_mdl_var_defns_fn}"
+check_for_preexist_dir_file "${extrn_mdl_var_defns_fp}" "delete"
+
+settings="EXTRN_MDL_CDATE=${extrn_mdl_cdate}"
+
+{ cat << EOM >> ${extrn_mdl_var_defns_fp}
+$settings
+EOM
+}
+export err=$?
+if [ $err -ne 0 ]; then
+  err_exit "\
+Heredoc (cat) command to create a variable definitions file associated
+with the external model from which to generate ${ics_or_lbcs} returned with a
+nonzero status.  The full path to this variable definitions file is:
+  extrn_mdl_var_defns_fp = \"${extrn_mdl_var_defns_fp}\""
+fi
 #
 #-----------------------------------------------------------------------
 #

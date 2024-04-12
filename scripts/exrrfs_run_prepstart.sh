@@ -86,10 +86,14 @@ case $MACHINE in
     ;;
 
   "ORION")
+    ulimit -s unlimited
+    ulimit -a
     APRUN="srun --export=ALL"
     ;;
 
   "HERCULES")
+    ulimit -s unlimited
+    ulimit -a
     APRUN="srun --export=ALL"
     ;;
 
@@ -486,10 +490,10 @@ if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
       cp ${IMSSNOW_ROOT}/latest.SNOW_IMS .
    elif [ -r "${IMSSNOW_ROOT}/${YYJJJ2200000000}" ]; then
       cp ${IMSSNOW_ROOT}/${YYJJJ2200000000} latest.SNOW_IMS
-   elif [ -r "${IMSSNOW_ROOT}/rap.${YYYYMMDD}/rap.t${HH}z.imssnow.grib2" ]; then
-      cp ${IMSSNOW_ROOT}/rap.${YYYYMMDD}/rap.t${HH}z.imssnow.grib2  latest.SNOW_IMS
-   elif [ -r "${IMSSNOW_ROOT}/rap.${YYYYMMDD}/rap_e.t${HH}z.imssnow.grib2" ]; then
-      cp ${IMSSNOW_ROOT}/rap_e.${YYYYMMDD}/rap_e.t${HH}z.imssnow.grib2  latest.SNOW_IMS
+   elif [ -r "${IMSSNOW_ROOT}/${OBSTYPE_SOURCE}.${YYYYMMDD}/${OBSTYPE_SOURCE}.t${HH}z.imssnow.grib2" ]; then
+      cp ${IMSSNOW_ROOT}/${OBSTYPE_SOURCE}.${YYYYMMDD}/${OBSTYPE_SOURCE}.t${HH}z.imssnow.grib2  latest.SNOW_IMS
+   elif [ -r "${IMSSNOW_ROOT}/${OBSTYPE_SOURCE}_e.${YYYYMMDD}/rap_e.t${HH}z.imssnow.grib2" ]; then
+      cp ${IMSSNOW_ROOT}/${OBSTYPE_SOURCE}_e.${YYYYMMDD}/${OBSTYPE_SOURCE}_e.t${HH}z.imssnow.grib2  latest.SNOW_IMS
    else
      echo "${IMSSNOW_ROOT} data does not exist!!"
      echo "WARNING: No snow update at ${HH}!!!!"
@@ -603,7 +607,15 @@ fi
 #
 #-----------------------------------------------------------------------
 if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cycle smoke/dust fields
+  if_cycle_smoke_dust="FALSE"
   if [ ${HH} -eq 4 ] || [ ${HH} -eq 16 ] ; then
+     if_cycle_smoke_dust="TRUE"
+  elif [ ${HH} -eq 6 ] && [ -f ${COMOUT}/../04_spinup/cycle_smoke_dust_skipped.txt ]; then
+     if_cycle_smoke_dust="TRUE"
+  elif [ ${HH} -eq 18 ] && [ -f ${COMOUT}/../16_spinup/cycle_smoke_dust_skipped.txt ]; then
+     if_cycle_smoke_dust="TRUE"
+  fi
+  if [ "${if_cycle_smoke_dust}" = "TRUE" ] ; then
       # figure out which surface is available
       surface_file_dir_name=fcst_fv3lam
       bkpath_find="missing"
@@ -616,7 +628,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
           bkpath=${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${surface_file_dir_name}/RESTART
 
           n=${DA_CYCLE_INTERV}
-          while [[ $n -le 6 ]] ; do
+          while [[ $n -le 25 ]] ; do
              if [ "${IO_LAYOUT_Y}" = "1" ]; then
                checkfile=${bkpath}/${restart_prefix}fv_tracer.res.tile1.nc
              else
@@ -641,11 +653,12 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
       rm -f cycle_smoke_dust.done
       if [ "${bkpath_find}" = "missing" ]; then
         print_info_msg "Warning: cannot find smoke/dust files from previous cycle"
+        touch ${COMOUT}/cycle_smoke_dust_skipped.txt
       else
         if [ "${IO_LAYOUT_Y}" = "1" ]; then
           checkfile=${bkpath_find}/${restart_prefix_find}fv_tracer.res.tile1.nc
           if [ -r "${checkfile}" ]; then
-            ncks -A -v smoke,dust ${checkfile}  fv_tracer.res.tile1.nc
+            ncks -A -v smoke,dust,coarsepm ${checkfile}  fv_tracer.res.tile1.nc
           fi
         else
           for ii in ${list_iolayout}
@@ -653,7 +666,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
             iii=$(printf %4.4i $ii)
             checkfile=${bkpath_find}/${restart_prefix_find}fv_tracer.res.tile1.nc.${iii}
             if [ -r "${checkfile}" ]; then
-              ncks -A -v smoke,dust ${checkfile}  fv_tracer.res.tile1.nc.${iii}
+              ncks -A -v smoke,dust,coarsepm ${checkfile}  fv_tracer.res.tile1.nc.${iii}
             fi
           done
         fi
@@ -992,7 +1005,7 @@ if [ ${SFC_CYC} -eq 3 ] ; then
    if [ "${USE_CLM}" = "TRUE" ]; then
      do_lake_surgery=".true."
    fi
-   raphrrr_com=${RAPHRR_SOIL_ROOT}
+   raphrrr_com=${RAPHRRR_SOIL_ROOT}
    rapfile='missing'
    hrrrfile='missing'
    hrrr_akfile='missing'

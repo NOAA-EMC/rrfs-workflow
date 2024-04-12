@@ -15,6 +15,7 @@ load("intel-oneapi-mkl/2022.2.1")
 load(pathJoin("cmake", os.getenv("cmake_ver") or "3.23.1"))
 
 load("rrfs_common")
+load(pathJoin("wgrib2", os.getenv("wgrib2_ver") or "3.1.1"))
 
 prepend_path("MODULEPATH", "/work/noaa/rtrr/gge/hercules/lua")
 load("prod_util/2.0.15")

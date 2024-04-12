@@ -510,7 +510,14 @@ optionList[26]=DO_PM_DA
 optionList[27]=DO_ENSFCST_MULPHY
 optionList[28]=DO_GLM_FED_DA
 optionList[29]=GLMFED_DATA_MODE
+
 optionList[30]=DO_MINMAXTRH
+
+optionList[30]=DO_IODA_PREPBUFR
+optionList[31]=EBB_DCYCLE
+optionList[32]=PREP_MODEL_FOR_FED
+
+
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));
 do
@@ -834,20 +841,22 @@ FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"$HOMErrfs/fix/lam"}
 FIX_GSI=${FIX_GSI:-"${HOMErrfs}/fix/gsi"}
 FIX_MINMAXTRH=${FIX_MINMAXTRH:-"${HOMErrfs}/fix/minmaxt"}
 FIX_UPP=${FIX_UPP:-"${HOMErrfs}/fix/upp"}
+FIXprdgen=${FIXprdgen:-"$HOMErrfs/fix/prdgen"}
 FIX_CRTM=${FIX_CRTM:-"${CRTM_FIX}"}
 FIX_UPP_CRTM=${FIX_UPP_CRTM:-"${CRTM_FIX}"}
 FIX_SMOKE_DUST=${FIX_SMOKE_DUST:-"${HOMErrfs}/fix/smoke_dust"}
 FIX_BUFRSND=${FIX_BUFRSND:-"${HOMErrfs}/fix/bufrsnd"}
 AIRCRAFT_REJECT=${AIRCRAFT_REJECT:-"${FIX_GSI}"}
 SFCOBS_USELIST=${SFCOBS_USELIST:-"${FIX_GSI}"}
+PARM_IODACONV=${PARM_IODACONV:-"${HOMErrfs}/parm/iodaconv"}
 
 case $MACHINE in
 
   "WCOSS2")
-    FIXgsm=${FIXgsm:-"/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/fix/fix_am"}
-    TOPO_DIR=${TOPO_DIR:-"/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/fix/fix_orog"}
-    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/fix/fix_sfc_climo"}
-    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/FV3LAM_pregen"}
+    FIXgsm=${FIXgsm:-"/lfs/h2/emc/lam/noscrub/RRFS_input/fix/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/lfs/h2/emc/lam/noscrub/RRFS_input/fix/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/lfs/h2/emc/lam/noscrub/RRFS_input/fix/fix_sfc_climo"}
+    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/lfs/h2/emc/lam/noscrub/RRFS_input/FV3LAM_pregen"}
     ;;
 
   "HERA")
@@ -2437,6 +2446,7 @@ LIB64dir="$LIB64dir"
 FIXam="$FIXam"
 FIXLAM="$FIXLAM"
 FIXgsm="$FIXgsm"
+FIXprdgen="$FIXprdgen"
 COMROOT="$COMROOT"
 COMOUT_BASEDIR="${COMOUT_BASEDIR}"
 NWGES_BASEDIR="${NWGES_BASEDIR}"
@@ -2482,6 +2492,7 @@ FIX_BUFRSND="${FIX_BUFRSND}"
 FIX_MINMAXTRH="${FIX_MINMAXTRH}"
 AIRCRAFT_REJECT="${AIRCRAFT_REJECT}"
 SFCOBS_USELIST="${SFCOBS_USELIST}"
+PARM_IODACONV="${PARM_IODACONV}"
 
 RADARREFL_MINS=( $(printf "\"%s\" " "${RADARREFL_MINS[@]}" ))
 RADARREFL_TIMELEVEL=( $(printf "\"%s\" " "${RADARREFL_TIMELEVEL[@]}" ))

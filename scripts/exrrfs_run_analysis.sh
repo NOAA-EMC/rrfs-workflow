@@ -85,31 +85,31 @@ case $MACHINE in
 #
   export FI_OFI_RXM_SAR_LIMIT=3145728
   export OMP_STACKSIZE=500M
-  export OMP_NUM_THREADS=${TPP_RUN_ANAL}
-  ncores=$(( NNODES_RUN_ANAL*PPN_RUN_ANAL))
-  APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_ANAL} --cpu-bind core --depth ${OMP_NUM_THREADS}"
+  export OMP_NUM_THREADS=${TPP_RUN_ANALYSIS}
+  ncores=$(( NNODES_RUN_ANALYSIS*PPN_RUN_ANALYSIS))
+  APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_ANALYSIS} --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;
 #
 "HERA")
-  export OMP_NUM_THREADS=${TPP_RUN_ANAL}
+  export OMP_NUM_THREADS=${TPP_RUN_ANALYSIS}
   export OMP_STACKSIZE=300M
   APRUN="srun"
   ;;
 #
 "ORION")
-  export OMP_NUM_THREADS=${TPP_RUN_ANAL}
+  export OMP_NUM_THREADS=${TPP_RUN_ANALYSIS}
   export OMP_STACKSIZE=1024M
   APRUN="srun"
   ;;
 #
 "HERCULES")
-  export OMP_NUM_THREADS=${TPP_RUN_ANAL}
+  export OMP_NUM_THREADS=${TPP_RUN_ANALYSIS}
   export OMP_STACKSIZE=1024M
   APRUN="srun"
   ;;
 #
 "JET")
-  export OMP_NUM_THREADS=${TPP_RUN_ANAL}
+  export OMP_NUM_THREADS=${TPP_RUN_ANALYSIS}
   export OMP_STACKSIZE=1024M
   APRUN="srun"
   ;;
@@ -446,9 +446,9 @@ if [[ "${NET}" = "RTMA"* ]] && [[ "${RTMA_OBS_FEED}" = "NCO" ]]; then
   obspath_tmp=${OBSPATH}/${obs_source}.${YYYYMMDD}
 else
   SUBH=""
-  obs_source=rap
+  obs_source=${OBSTYPE_SOURCE}
   if [ ${HH} -eq '00' ] || [ ${HH} -eq '12' ]; then
-    obs_source=rap_e
+    obs_source=${OBSTYPE_SOURCE}
   fi
 
   case $MACHINE in
@@ -466,8 +466,8 @@ else
      obspath_tmp=${OBSPATH}
     ;;
   "ORION" | "HERCULES")
-     obs_source=rap
-     obsfileprefix=${YYYYMMDDHH}.${obs_source}               # rap observation from JET.
+     obs_source=${OBSTYPE_SOURCE}
+     obsfileprefix=${YYYYMMDDHH}.${obs_source}               # observation from JET.
      #obsfileprefix=${obs_source}.${YYYYMMDD}/${obs_source}    # observation from operation.
      obspath_tmp=${OBSPATH}
     ;;
@@ -511,7 +511,11 @@ if [[ ${gsi_type} == "OBSERVER" || ${anav_type} == "conv" || ${anav_type} == "co
 
   if [ "${DO_ENKF_RADAR_REF}" = "TRUE" ]; then
     obs_number=${#obs_files_source[@]}
-    obs_files_source[${obs_number}]=${cycle_dir}/process_radarref_enkf/00/Gridded_ref.nc
+    if [ "${CYCLE_TYPE}" = "spinup" ]; then
+      obs_files_source[${obs_number}]=${cycle_dir}/process_radarref_spinup_enkf/00/Gridded_ref.nc
+    else
+      obs_files_source[${obs_number}]=${cycle_dir}/process_radarref_enkf/00/Gridded_ref.nc
+    fi
     obs_files_target[${obs_number}]=dbzobs.nc
     if [ "${DO_GLM_FED_DA}" = "TRUE" ]; then
       obs_number=${#obs_files_source[@]}
@@ -529,6 +533,14 @@ else
       obs_files_source[0]=${cycle_dir}/process_radarref/00/Gridded_ref.nc
     fi
     obs_files_target[0]=dbzobs.nc
+    if [ "${DO_GLM_FED_DA}" = "TRUE" ]; then
+      if [ "${CYCLE_TYPE}" = "spinup" ]; then
+        obs_files_source[1]=${cycle_dir}/process_glmfed_spinup/fedobs.nc
+      else
+        obs_files_source[1]=${cycle_dir}/process_glmfed/fedobs.nc
+      fi
+      obs_files_target[1]=fedobs.nc
+    fi
   fi
 
   if [ "${anav_type}" = "AERO" ]; then
@@ -661,6 +673,15 @@ if [ "${DO_ENKF_RADAR_REF}" = "TRUE" ]; then
 fi
 if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "radardbz" ]]; then
   ANAVINFO=${FIX_GSI}/${ENKF_ANAVINFO_DBZ_FN}
+  if [ "${DO_GLM_FED_DA}" = "TRUE" ]; then
+    myStr=$( ncdump -h fv3_phyvars | grep flash_extent_density );
+    if [ ${#myStr} -ge 5 ]; then
+      ANAVINFO=${FIX_GSI}/${ANAVINFO_DBZ_FED_FN}
+      diag_fed=.true.
+      if_model_fed=.true.
+      innov_use_model_fed=.true.
+    fi
+  fi
   miter=1
   niter1=100
   niter2=0
@@ -681,6 +702,15 @@ fi
 if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "conv_dbz" ]]; then
   ANAVINFO=${FIX_GSI}/${ANAVINFO_CONV_DBZ_FN}
   if_model_dbz=.true.
+  if [ "${DO_GLM_FED_DA}" = "TRUE" ]; then
+    myStr=$( ncdump -h fv3_phyvars | grep flash_extent_density );
+    if [ ${#myStr} -ge 5 ]; then
+      ANAVINFO=${FIX_GSI}/${ANAVINFO_CONV_DBZ_FED_FN}
+      diag_fed=.true.
+      if_model_fed=.true.
+      innov_use_model_fed=.true.
+    fi
+  fi
 fi
 naensloc=`expr ${nsclgrp} \* ${ngvarloc} + ${nsclgrp} - 1`
 if [ ${assign_vdl_nml} = ".true." ]; then
@@ -957,7 +987,11 @@ if [ "${gsi_type}" = "OBSERVER" ]; then
   else
     lread_obs_save=.false.
     lread_obs_skip=.true.
-    ln -s ../../ensmean/observer_gsi/obs_input.* .
+    if [ "${CYCLE_TYPE}" = "spinup" ]; then
+      ln -s ../../ensmean/observer_gsi_spinup/obs_input.* .
+    else
+      ln -s ../../ensmean/observer_gsi/obs_input.* .
+    fi
   fi
 fi
 if [ ${BKTYPE} -eq 1 ]; then
@@ -989,13 +1023,9 @@ cp ${gsi_exec} ${analworkdir}/gsi.x
 export pgm="gsi.x"
 . prep_step
 
-if [ ${BKTYPE} -eq 1 ] ; then
-  echo " skip cold start GSI for now"
-else
-  $APRUN ./$pgm < gsiparm.anl >>$pgmout 2>errfile
-  export err=$?; err_chk
-  mv errfile errfile_gsi
-fi
+$APRUN ./$pgm < gsiparm.anl >>$pgmout 2>errfile
+export err=$?; err_chk
+mv errfile errfile_gsi
 
 if [ "${anav_type}" = "radardbz" ]; then
   cat fort.238 > $COMOUT/rrfs.t${HH}z.fits3.tm00

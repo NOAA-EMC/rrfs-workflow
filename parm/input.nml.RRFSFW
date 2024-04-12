@@ -82,7 +82,7 @@
     fill = .true.
     full_zs_filter = .false.
     fv_debug = .false.
-    fv_sg_adj = 300
+    fv_sg_adj = 7200
     gfs_phil = .false.
     hord_dp = 6
     hord_mt = 6
@@ -100,7 +100,7 @@
     make_nh = .true.
     mountain = .false.
     n_split = 5
-    n_sponge = 9
+    n_sponge = 65
     n_zs_filter = 0
     na_init = 1
     ncep_ic = .false.
@@ -123,7 +123,7 @@
     res_latlon_dynamics = 'fv3_increment.nc'
     reset_eta = .false.
     rf_cutoff = 2000.0
-    sg_cutoff = 10000.0
+    sg_cutoff = -1
     tau = 5.0
     use_hydro_pressure = .false.
     vtdm4 = 0.02
@@ -160,7 +160,7 @@
     dspheat = .true.
     dt_inner = 20
     effr_in = .true.
-    enh_mix = .true.
+    enh_mix = .false.
     fhcyc = 0
     fhlwr = 900.0
     fhswr = 900.0
@@ -249,45 +249,28 @@
 /
 
 &namsfc
-    FNALBC2  = "C6667.facsf.tileX.nc",
-    FNALBC   = "C6667.snowfree_albedo.tileX.nc",
-    FNTG3C   = "C6667.substrate_temperature.tileX.nc",
-    FNVEGC   = "C6667.vegetation_greenness.tileX.nc",
-    FNVETC   = "C6667.vegetation_type.tileX.nc",
-    FNSOTC   = "C6667.soil_type.tileX.nc",
-    FNVMNC   = "C6667.vegetation_greenness.tileX.nc",
-    FNVMXC   = "C6667.vegetation_greenness.tileX.nc",
-    FNSLPC   = "C6667.slope_type.tileX.nc",
-    FNABSC   = "C6667.maximum_snow_albedo.tileX.nc",
-    FNGLAC   = "global_glacier.2x2.grb",
-    FNMXIC   = "global_maxice.2x2.grb",
-    FNTSFC   = "RTGSST.1982.2012.monthly.clim.grb",
-    FNSNOC   = "global_snoclim.1.875.grb",
-    FNZORC   = "igbp"
-    FNAISC   = "CFSR.SEAICE.1982.2012.monthly.clim.grb",
-    FNSMCC   = "global_soilmgldas.t1534.3072.1536.grb",
-    FNMSKH   = "seaice_newland.grb",
-    FNTSFA   = "",
-    FNACNA   = "",
-    FNSNOA   = "",
-    LDEBUG   =.true.,
-    FSMCL(2) = 99999
-    FSMCL(3) = 99999
-    FSMCL(4) = 99999
-    FTSFS    = 90
-    FAISS    = 99999
-    FSNOL    = 99999
-    FSICL    = 99999
-    FTSFL    = 99999,
-    FAISL    = 99999,
-    FVETL    = 99999,
-    FSOTL    = 99999,
-    FvmnL    = 99999,
-    FvmxL    = 99999,
-    FSLPL    = 99999,
-    FABSL    = 99999,
-    FSNOS    = 99999,
-    FSICS    = 99999,
+    fabsl = 99999
+    faisl = 99999
+    faiss = 99999
+    fnacna = ''
+    fnsnoa = ''
+    fntsfa = ''
+    fnzorc = 'igbp'
+    fsicl = 99999
+    fsics = 99999
+    fslpl = 99999
+    fsmcl(2) = 99999
+    fsmcl(3) = 99999
+    fsmcl(4) = 99999
+    fsnol = 99999
+    fsnos = 99999
+    fsotl = 99999 
+    ftsfl = 99999 
+    ftsfs = 90
+    fvetl = 99999
+    fvmnl = 99999
+    fvmxl = 99999
+    ldebug = .true.
 /
 
 &surf_map_nml

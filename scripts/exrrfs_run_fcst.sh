@@ -506,8 +506,8 @@ fi
 
 if [ "${STOCH}" = "TRUE" ]; then
   if [ ${BKTYPE} -eq 0 ] && [ ${DO_ENSFCST_MULPHY} = "TRUE" ]; then
-    ensmem_indx_sgl=$(echo "${ensmem_indx}" | awk '{print $1+0}')
-    cp ${FV3_NML_RESTART_STOCH_FP}_ensphy${ensmem_indx_sgl} ${run_dir}/${FV3_NML_FN}_base 
+    ensmem_num=$(echo "${ensmem_indx}" | awk '{print $1+0}')
+    cp ${FV3_NML_RESTART_STOCH_FP}_ensphy${ensmem_num} ${run_dir}/${FV3_NML_FN}_base 
     rm -fr ${run_dir}/field_table
     cp ${PARMdir}/field_table.rrfsens_phy${ensmem_indx} ${run_dir}/field_table
   else
@@ -536,6 +536,7 @@ $USHdir/create_model_configure_file.py \
   --cdate "${cdate}" \
   --cycle_type "${cycle_type}" \
   --cycle_subtype "${cycle_subtype}" \
+  --stoch "${STOCH}" \
   --run-dir "${run_dir}" \
   --fhrot "${FHROT}" \
   --nthreads "${OMP_NUM_THREADS}" \

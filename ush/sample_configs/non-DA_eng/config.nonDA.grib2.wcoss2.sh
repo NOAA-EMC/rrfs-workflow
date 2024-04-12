@@ -46,10 +46,10 @@ PPN_RUN_FCST="12"
 
 DO_NON_DA_RUN="TRUE"
 DO_RETRO="TRUE"
-VCOORD_FILE="global_hyblev.l65.txt"
+VCOORD_FILE="global_hyblev_fcst_rrfsL65.txt"
 WFLOW_XML_TMPL_FN="FV3LAM_wflow_nonDA.xml"
 FV3_NML_YAML_CONFIG_FN="FV3.input.nonDA.yml"
 
 USE_USER_STAGED_EXTRN_FILES="TRUE"
-EXTRN_MDL_SOURCE_BASEDIR_ICS="/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/input_model_data/FV3GFS/grib2/2019061500"
-EXTRN_MDL_SOURCE_BASEDIR_LBCS="/lfs/h2/emc/lam/noscrub/UFS_SRW_App/develop/input_model_data/FV3GFS/grib2/2019061500"
+EXTRN_MDL_SOURCE_BASEDIR_ICS="/lfs/h2/emc/lam/noscrub/RRFS_input/input_model_data/FV3GFS/grib2/2019061500"
+EXTRN_MDL_SOURCE_BASEDIR_LBCS="/lfs/h2/emc/lam/noscrub/RRFS_input/input_model_data/FV3GFS/grib2/2019061500"

@@ -2,7 +2,7 @@
 #
 #-----------------------------------------------------------------------
 #
-# This J-JOB script runs the radar reflectivity preprocess 
+# This J-JOB script runs the smoke preprocessing
 #
 #-----------------------------------------------------------------------
 #
@@ -50,8 +50,8 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs a radar reflectivity 
-preprocess with FV3 for the specified cycle.
+This is the J-job script for the task that runs the smoke preprocessing
+for the specified cycle.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -73,17 +73,6 @@ export gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #
 #-----------------------------------------------------------------------
 #
-# Set the name of and create the directory in which the output from this
-# script will be saved for long time (if that directory doesn't already exist).
-# Usually ics_dir under tmpnwprd should be purged fairly soon after cycle done
-#
-#-----------------------------------------------------------------------
-#
-export rave_nwges_dir=${NWGES_DIR}/RAVE_INTP
-mkdir -p "${rave_nwges_dir}"
-#
-#-----------------------------------------------------------------------
-#
 # Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
@@ -91,62 +80,8 @@ mkdir -p "${rave_nwges_dir}"
 export pgmout="${workdir}/OUTPUT.$$"
 env
 
-python -u ${SCRIPTSdir}/exrrfs_process_smoke.py \
-  "${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}" \
-  "${FIRE_RAVE_DIR}" \
-  "${workdir}" \
-  "${PREDEF_GRID_NAME}"
+$SCRIPTSdir/exrrfs_process_smoke.sh
 export err=$?; err_chk
-
-ECHO=/bin/echo
-AWK="/bin/gawk --posix"
-SED=/bin/sed
-DATE=/bin/date
-
-START_DATE=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
-YYYYMMDDHH=$(date +%Y%m%d%H -d "${START_DATE}")
-YYYYMMDD=${YYYYMMDDHH:0:8}
-HH=${YYYYMMDDHH:8:2}
-echo ${YYYYMMDD}
-echo ${HH}
-
-current_day=`${DATE} -d "${YYYYMMDD}"`
-HH=${HH}
-current_hh=`${DATE} -d ${HH} +"%H"`
-prev_hh=`${DATE} -d "$current_hh -24 hour" +"%H"`
-previous_day=`${DATE} '+%C%y%m%d' -d "$current_day-1 days"`
-previous_day=${previous_day}${prev_hh}
-if [ ${CYCLE_TYPE} == "spinup" ]; then
-  output_filename=SMOKE_RRFS_data_${YYYYMMDDHH}00_spinup.nc
-else
-  output_filename=SMOKE_RRFS_data_${YYYYMMDDHH}00.nc
-fi
-echo ${previous_day}
-echo ${output_filename}
-
-cd ${workdir}
-
-# Convert START_TIME from 'YYYYMMDDHH' format to Unix date format, e.g. "Fri May  6 19:50:23 GMT 2005"
-if [ `${ECHO} "${previous_day}" | ${AWK} '/^[[:digit:]]{10}$/'` ]; then
-  previous_day=`${ECHO} "${previous_day}" | ${SED} 's/\([[:digit:]]\{2\}\)$/ \1/'`
-else
-  ${ECHO} "ERROR: start time, '${previous_day}', is not in 'yyyymmddhh' or 'yyyymmdd hh' format"
-  exit 1
-fi
-previous_day=`${DATE} -d "${previous_day}"`
-echo ${previous_day}
-
-nfiles=24
-files2cat=()
-for i in $(seq 0 $(($nfiles - 1)) )
-do
-timestr=`date +%Y%m%d%H -d "$previous_day + $i hours"`
-echo ${timestr}
-files2cat[$i]=${PREDEF_GRID_NAME}_intp_${timestr}00_${timestr}00.nc
-done
-echo ${files2cat[*]}
-ncrcat ${files2cat[*]} ${output_filename} 
-cp ${output_filename}  ${rave_nwges_dir}
 #
 #-----------------------------------------------------------------------
 #

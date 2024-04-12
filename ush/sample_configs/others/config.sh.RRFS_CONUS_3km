@@ -1,5 +1,5 @@
 MACHINE="jet"
-version="v0.7.9"
+version="v0.8.4"
 #RESERVATION="rrfsdet"
 EXPT_BASEDIR="YourOwnSpace/${version}"
 EXPT_SUBDIR="RRFS_CONUS_3km"
@@ -21,6 +21,7 @@ DO_RETRO="TRUE"
 DO_NONVAR_CLDANAL="TRUE"
 DO_ENVAR_RADAR_REF="TRUE"
 DO_SMOKE_DUST="TRUE"
+EBB_DCYCLE="2"
 DO_PM_DA="FALSE"
 DO_REFL2TTEN="FALSE"
 RADARREFL_TIMELEVEL=(0)
@@ -34,15 +35,17 @@ USE_CLM="TRUE"
 DO_PARALLEL_PRDGEN="FALSE"
 DO_GSIDIAG_OFFLINE="TRUE"
 DO_UPDATE_BC="TRUE"
+DO_GLM_FED_DA="TRUE"
+GLMFED_DATA_MODE="FULL"  # retros 20220608-now use FULL; retros 20230714-now and real-time on Jet use FULL or TILES
 
 EXTRN_MDL_ICS_OFFSET_HRS="3"
 LBC_SPEC_INTVL_HRS="1"
 EXTRN_MDL_LBCS_OFFSET_HRS="6"
-BOUNDARY_LEN_HRS="42"
-BOUNDARY_PROC_GROUP_NUM="3"
+BOUNDARY_LEN_HRS="66"
+BOUNDARY_PROC_GROUP_NUM="6"
 
-# avaialble retro period:
-# 20210511-20210531; 20210718-20210801
+# available retro period:
+# 20230419-27; 20230610-18; 20230729-0807; 20230826-31; 20220720-27; 20220429-0506; 20220201-07
 DATE_FIRST_CYCL="20220201"
 DATE_LAST_CYCL="20220202"
 CYCL_HRS=( "00" "12" )
@@ -50,7 +53,7 @@ CYCL_HRS_SPINSTART=("03" "15")
 CYCL_HRS_PRODSTART=("09" "21")
 CYCLEMONTH="2"
 CYCLEDAY="01-02"
-SOIL_SURGERY_time="${DATE_FIRST_CYCL}04"
+SOIL_SURGERY_time="2022020104"
 
 STARTYEAR=${DATE_FIRST_CYCL:0:4}
 STARTMONTH=${DATE_FIRST_CYCL:4:2}
@@ -76,18 +79,18 @@ FCST_LEN_HRS_SPINUP="1"
 #FCST_LEN_HRS_CYCLES=(48 18 18 18 18 18 48 18 18 18 18 18 48 18 18 18 18 18 48 18 18 18 18 18)
 for i in {0..23}; do FCST_LEN_HRS_CYCLES[$i]=3; done
 for i in {0..23..3}; do FCST_LEN_HRS_CYCLES[$i]=12; done
-for i in {0..23..6}; do FCST_LEN_HRS_CYCLES[$i]=42; done
+for i in {0..23..6}; do FCST_LEN_HRS_CYCLES[$i]=60; done
 WTIME_RUN_FCST_LONG="06:30:00"
 DA_CYCLE_INTERV="1"
 RESTART_INTERVAL="1"
 RESTART_INTERVAL_LONG="1"
 ## set up post
 POSTPROC_LEN_HRS="3"
-POSTPROC_LONG_LEN_HRS="42"
+POSTPROC_LONG_LEN_HRS="60"
 # 15 min output upto 18 hours
 #OUTPUT_FH="1 -1"
 #OUTPUT_FH="0.0 0.25 0.50 0.75 1.0 1.25 1.50 1.75 2.0 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0 11.0 12.0"
-OUTPUT_FH="0.0 1.0 2.0 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0 11.0 12.0 15.0 18.0 21.0 24.0 27.0 30.0 33.0 36.0 39.0 42.0"
+OUTPUT_FH="0.0 1.0 2.0 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0 11.0 12.0 15.0 18.0 21.0 24.0 27.0 30.0 33.0 36.0 39.0 42.0 45.0 48.0 51.0 54.0 57.0 60.0"
 NFHMAX_HF="12"
 NFHOUT="3"
 
@@ -100,8 +103,13 @@ SNOWICE_update_hour=01
 netcdf_diag=.true.
 binary_diag=.false.
 WRTCMP_output_file="netcdf_parallel"
+WRTCMP_ideflate="1"
+WRTCMP_quantize_nsd="18"
 
 regional_ensemble_option=1   # 5 for RRFS ensemble
+if [[ ${USE_RRFSE_ENS} == "TRUE" ]]; then
+  regional_ensemble_option=5   # 5 for RRFS ensemble
+fi
 
 EXTRN_MDL_NAME_ICS="FV3GFS"
 EXTRN_MDL_NAME_LBCS="FV3GFS"
@@ -110,7 +118,7 @@ EXTRN_MDL_DATE_JULIAN="TRUE"
 envir="para"
 
 NET="rrfs_beta"
-TAG="c3v79"
+TAG="c3v84"
 
 ARCHIVEDIR="/1year/BMC/wrfruc/rrfs_b"
 NCL_REGION="conus"
@@ -119,11 +127,11 @@ RUN="rrfs"
 
 . set_rrfs_config.sh
 
-STMP="YourOwnSpace/${version}/stmp"  # Path to directory STMP that mostly contains input files.
-PTMP="YourOwnSpace/${version}"  # Path to directory STMP that mostly contains input files.
-NWGES="YourOwnSpace/${version}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+STMP="${EXPT_BASEDIR}/stmp"  # Path to directory STMP that mostly contains input files.
+PTMP="${EXPT_BASEDIR}"  # Path to directory STMP that mostly contains input files.
+NWGES="${EXPT_BASEDIR}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
 if [[ ${regional_ensemble_option} == "5" ]]; then
-  RRFSE_NWGES="YourOwnSpace/${version}/nwges"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
+  RRFSE_NWGES="${EXPT_BASEDIR}/nwges"  # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
   NUM_ENS_MEMBERS=30     # FV3LAM ensemble size for GSI hybrid analysis
   CYCL_HRS_PRODSTART_ENS=( "07" "19" )
   DO_ENVAR_RADAR_REF="TRUE"

@@ -133,13 +133,15 @@ RESTART_INTERVAL_LONG="1"
 netcdf_diag=.true.
 binary_diag=.false.
 WRTCMP_output_file="netcdf_parallel"
+WRTCMP_ideflate="1"
+WRTCMP_quantize_nsd="18"
 
 ## set up post
 OUTPUT_FH="1 -1"
 
 WTIME_RUN_FCST="00:30:00"
 WTIME_RUN_FCST_LONG="03:45:00"
-NNODES_RUN_ANAL="1"
+NNODES_RUN_ANALYSIS="1"
 
 EXTRN_MDL_NAME_ICS="GDASENKF"
 EXTRN_MDL_NAME_LBCS="GEFS"
@@ -152,6 +154,9 @@ NET="rrfs_a"
 ARCHIVEDIR="/NCEPDEV/emc-meso/1year/emc.lam"
 NCL_REGION="conus"
 MODEL="RRFS_A"
+
+SPPINT=360
+LNDPINT=360
 
 if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    NUM_ENS_MEMBERS=30

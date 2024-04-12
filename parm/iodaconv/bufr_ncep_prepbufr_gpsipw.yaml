@@ -1,0 +1,152 @@
+# (C) Copyright 2020 NOAA/NWS/NCEP/EMC
+#
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+
+observations:
+  - obs space:
+      name: bufr
+
+      obsdatain: "./prepbufr"
+
+      exports:
+        #group_by_variable: prepbufrDataLvlCat
+        subsets:
+          - GPSIPW    # GPS - INTEGRATED PRECIPITABLE WATER AND TOTAL ZENITH DELAY REPORTS
+        variables:
+          timestamp:
+            timeoffset:
+              timeOffset: "*/DHR"
+              transforms:
+                - scale: 3600
+              referenceTime: standardReferenceTime
+          longitude:
+            query: "*/XOB"
+          latitude:
+            query: "*/YOB"
+          stationIdentification:
+            query: "*/SID"
+          stationElevation:
+            query: "*/ELV"
+          prepbufrReportType:
+            query: "*/TYP"
+          dumpReportType:
+            query: "*/T29"
+
+          prepbufrDataLvlCat:
+            query: "*/CAT"
+
+          surfacePressure:
+            query: "*/PRSS"
+
+          totalPrecipitableWater:
+            query: "*/PWT_INFO/PWTEVENT{1}/PWO"
+          pwQualityMarker:
+            query: "*/PWT_INFO/PWTEVENT{1}/PWQ"
+          pwError:
+            query: "*/PWT_INFO/PWTBACKG/PWE"
+          pwTunedError:
+            query: "*/PWT_INFO/PWTPOSTP/PWETU"
+
+    ioda:
+      backend: netcdf
+      obsdataout: "./prepbufr.gpsipw.nc"
+
+
+      dimensions:
+        - name: pwevent_Dim
+          path: "*/PWT_INFO/PWTEVENT"
+
+
+      variables:
+
+        # MetaData
+        - name: "MetaData/dateTime"
+          coordinates: "longitude latitude"
+          source: variables/timestamp
+          longName: "Observation Time"
+          units: "seconds since 1970-01-01T00:00:00Z"
+
+        - name: "MetaData/stationIdentification"
+          coordinates: "longitude latitude"
+          source: variables/stationIdentification
+          longName: "Station ID"
+          units: ""
+
+        - name: "MetaData/longitude"
+          coordinates: "longitude latitude"
+          source: variables/longitude
+          longName: "Longitude"
+          units: "degrees_east"
+          range: [0, 360]
+
+        - name: "MetaData/latitude"
+          coordinates: "longitude latitude"
+          source: variables/latitude
+          longName: "Latitude"
+          units: "degrees_north"
+          range: [-90, 90]
+
+        - name: "MetaData/stationElevation"
+          coordinates: "longitude latitude"
+          source: variables/stationElevation
+          longName: "Height of Station"
+          units: "Meter"
+
+        - name: "MetaData/prepbufrReportType"
+          coordinates: "longitude latitude"
+          source: variables/prepbufrReportType
+          longName: "Prepbufr Report Type"
+          units: ""
+
+        - name: "MetaData/dumpReportType"
+          coordinates: "longitude latitude"
+          source: variables/dumpReportType
+          longName: "Data Dump Report Type"
+          units: ""
+
+        - name: "MetaData/prepbufrDataLvlCat"
+          coordinates: "longitude latitude"
+          source: variables/prepbufrDataLvlCat
+          longName: "Prepbufr Data Level Category"
+          units: ""
+
+        - name: "MetaData/surfacePressure"
+          coordinates: "longitude latitude"
+          source: variables/surfacePressure
+          longName: "Surface Pressure"
+          units: "Pa"
+
+        # ObsType
+        - name: "ObsType/totalPrecipitableWater"
+          coordinates: "longitude latitude"
+          source: variables/prepbufrReportType
+          longName: "Total Precipitable Water Report Type"
+          units: ""
+
+        # ObsValue
+        - name: "ObsValue/totalPrecipitableWater"
+          coordinates: "longitude latitude"
+          source: variables/totalPrecipitableWater
+          longName: "Total Precipitable Water"
+          units: "Millimeter"
+
+        # Quality Marker
+        - name: "QualityMarker/totalPrecipitableWater"
+          coordinates: "longitude latitude"
+          source: variables/pwQualityMarker
+          longName: "Total Precipitable Water Quality Marker"
+          
+        # ObsError
+        - name: "ObsError/totalPrecipitableWater"
+          coordinates: "longitude latitude"
+          source: variables/pwError
+          longName: "Total Precipitable Water Observation Error"
+          units: "Millimeter"
+          
+        # Tuned ObsError
+        - name: "TunedObsError/totalPrecipitableWater"
+          coordinates: "longitude latitude"
+          source: variables/pwTunedError
+          longName: "Analysis-Tuned Total Precipitable Water Observation Error"
+          units: "Millimeter"

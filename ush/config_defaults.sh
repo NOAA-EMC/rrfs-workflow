@@ -290,6 +290,7 @@ EXPT_SUBDIR=""
 # 
 # Setup default observation locations for data assimilation:
 #
+#    OBSTYPE_SOURCE: observation file source: rap or rrfs
 #    OBSPATH:   observation BUFR file path
 #    OBSPATH_NSSLMOSIAC: location of NSSL radar reflectivity 
 #    LIGHTNING_ROOT: location of lightning observations
@@ -310,7 +311,7 @@ EXPT_SUBDIR=""
 #   SNOWICE_update_hour: cycle time for updating snow/ice 
 #
 # Setup default resource data locations for soil surgery and time:
-#   RAPHRR_SOIL_ROOT: locations of RAP/HRRR forecast netcdf files
+#   RAPHRRR_SOIL_ROOT: locations of RAP/HRRR forecast netcdf files
 #   SOIL_SURGERY_time: cycle time for soil surgery 
 #
 # Setup default data locations for cycle surface/bias correction coefficient
@@ -345,6 +346,7 @@ NCL_HOME="/home/rtrr/RRFS/graphics"
 NCL_REGION="conus"
 MODEL="NO MODEL CHOSEN"
 
+OBSTYPE_SOURCE="rap"
 OBSPATH="/public/data/grids/rap/obs"
 OBSPATH_NSSLMOSIAC="/public/data/radar/mrms"
 OBSPATH_PM="/mnt/lfs1/BMC/wrfruc/hwang/rrfs_sd/pm"
@@ -359,7 +361,7 @@ GVF_ROOT="/public/data/sat/ncep/viirs/gvf/grib2"
 GVF_update_hour=99
 IMSSNOW_ROOT="/public/data/grids/ncep/snow/ims96/grib2"
 SNOWICE_update_hour=99
-RAPHRR_SOIL_ROOT="/mnt/lfs4/BMC/rtwbl/mhu/wcoss/nco/com"
+RAPHRRR_SOIL_ROOT="/mnt/lfs4/BMC/rtwbl/mhu/wcoss/nco/com"
 SOIL_SURGERY_time=9999999999
 FIRE_RAVE_DIR="/lfs4/BMC/public/data/grids/nesdis/3km_fire_emissions"
 FIRE_RRFS_ROOT="/mnt/lfs4/BMC/gsd-fv3-dev/FIRE_RRFS_ROOT"
@@ -615,6 +617,9 @@ POSTPROC_LONG_LEN_HRS="1"
 FCST_LEN_HRS="24"
 FCST_LEN_HRS_SPINUP="1"
 FCST_LEN_HRS_CYCLES=()
+
+OUTPUT_FH_15min="0 0.25 0.5 0.75 1 1.25 1.5 1.75 2 2.25 2.5 2.75 3 3.25 3.5 3.75 4 4.25 4.5 4.75 5 5.25 5.5 5.75 6 6.25 6.5 6.75 7 7.25 7.5 7.75 8 8.25 8.5 8.75 9 9.25 9.5 9.75 10 10.25 10.5 10.75 11 11.25 11.5 11.75 12 12.25 12.5 12.75 13 13.25 13.5 13.75 14 14.25 14.5 14.75 15 15.25 15.5 15.75 16 16.25 16.5 16.75 17 17.25 17.5 17.75 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60"
+
 DA_CYCLE_INTERV="1"
 RESTART_INTERVAL="1 2"
 RESTART_INTERVAL_LONG="1 2"
@@ -767,6 +772,8 @@ ANAVINFO_FN="anavinfo.rrfs"
 ANAVINFO_SD_FN="anavinfo.rrfs_sd"
 ANAVINFO_DBZ_FN="anavinfo.rrfs_dbz"
 ANAVINFO_CONV_DBZ_FN="anavinfo.rrfs_conv_dbz"
+ANAVINFO_CONV_DBZ_FED_FN="anavinfo.rrfs_conv_dbz_fed"
+ANAVINFO_DBZ_FED_FN="anavinfo.rrfs_dbz_fed"
 ENKF_ANAVINFO_FN="anavinfo.rrfs"
 ENKF_ANAVINFO_DBZ_FN="anavinfo.enkf.rrfs_dbz"
 CONVINFO_FN="convinfo.rrfs"
@@ -1387,6 +1394,10 @@ PRINT_ESMF="FALSE"
 WRTCMP_write_groups="1"
 WRTCMP_write_tasks_per_group="20"
 WRTCMP_output_file="netcdf"
+WRTCMP_zstandard_level="0"
+WRTCMP_ideflate="0"
+WRTCMP_quantize_mode="quantize_bitround"
+WRTCMP_quantize_nsd="0"
 
 WRTCMP_output_grid=""
 WRTCMP_cen_lon=""
@@ -1591,6 +1602,9 @@ SFC_CLIMO_FIELDS=( \
 # System directory in which the majority of fixed (i.e. time-independent) 
 # files that are needed to run the FV3-LAM model are located
 #
+# FIXprdgen:
+# directory where prdgen fix files are located
+#
 # TOPO_DIR:
 # The location on disk of the static input files used by the make_orog
 # task (orog.x and shave.x). Can be the same as FIXgsm.
@@ -1671,6 +1685,7 @@ SFC_CLIMO_FIELDS=( \
 # to a null string which will then be overwritten in setup.sh unless the
 # user has specified a different value in config.sh
 FIXgsm=""
+FIXprdgen=""
 TOPO_DIR=""
 SFC_CLIMO_INPUT_DIR=""
 FIX_GSI=""
@@ -1801,6 +1816,7 @@ GET_EXTRN_LBCS_TN="get_extrn_lbcs"
 GET_EXTRN_LBCS_LONG_TN="get_extrn_lbcs_long"
 GET_GEFS_LBCS_TN="get_gefs_lbcs"
 MAKE_ICS_TN="make_ics"
+BLEND_ICS_TN="blend_ics"
 MAKE_LBCS_TN="make_lbcs"
 RUN_FCST_TN="run_fcst"
 RUN_POST_TN="run_post"
@@ -1809,9 +1825,9 @@ RUN_MINTMAXRH_TN="run_mintmaxrh"
 RUN_MAXTMINRH_TN="run_maxtminrh"
 RUN_BUFRSND_TN="run_bufrsnd"
 
-ANAL_GSI_TN="anal_gsi_input"
-ANAL_GSIDIAG_TN="anal_gsi_diag"
-ANAL_SD_GSI_TN="anal_sd_gsi_input"
+ANALYSIS_GSI_TN="analysis_gsi_input"
+ANALYSIS_GSIDIAG_TN="analysis_gsi_diag"
+ANALYSIS_SD_GSI_TN="analysis_sd_gsi_input"
 POSTANAL_TN="postanal_input"
 OBSERVER_GSI_ENSMEAN_TN="observer_gsi_ensmean"
 OBSERVER_GSI_TN="observer_gsi"
@@ -1832,6 +1848,7 @@ CLDANL_NONVAR_TN="cldanl_nonvar"
 SAVE_RESTART_TN="save_restart"
 SAVE_DA_OUTPUT_TN="save_da_output"
 JEDI_ENVAR_IODA_TN="jedi_envar_ioda"
+IODA_PREPBUFR_TN="ioda_prepbufr"
 PROCESS_GLMFED_TN="process_glmfed"
 ADD_AEROSOL_TN="add_aerosol"
 #
@@ -1843,13 +1860,16 @@ NNODES_MAKE_SFC_CLIMO="2"
 NNODES_GET_EXTRN_ICS="1"
 NNODES_GET_EXTRN_LBCS="1"
 NNODES_MAKE_ICS="4"
+NNODES_BLEND_ICS="1"
 NNODES_MAKE_LBCS="4"
 NNODES_RUN_PREPSTART="1"
 NNODES_RUN_FCST=""  # This is calculated in the workflow generation scripts, so no need to set here.
 NNODES_RUN_POST="2"
 NNODES_RUN_PRDGEN="1"
+
 NNODES_RUN_MINMAXTRH="1"
 NNODES_RUN_ANAL="16"
+
 NNODES_RUN_GSIDIAG="1"
 NNODES_RUN_POSTANAL="1"
 NNODES_RUN_ENKF="90"
@@ -1867,15 +1887,16 @@ NNODES_RUN_ENSPOST="1"
 NNODES_RUN_BUFRSND="1"
 NNODES_SAVE_RESTART="1"
 NNODES_RUN_JEDIENVAR_IODA="1"
+NNODES_RUN_IODA_PREPBUFR="1"
 NNODES_ADD_AEROSOL="1"
 #
 # Number of cores.
 #
-NCORES_RUN_ANAL="4"
+NCORES_RUN_ANALYSIS="4"
 NCORES_RUN_OBSERVER="4"
 NCORES_RUN_ENKF="4"
 NATIVE_RUN_FCST="--cpus-per-task 2 --exclusive"
-NATIVE_RUN_ANAL="--cpus-per-task 2 --exclusive"
+NATIVE_RUN_ANALYSIS="--cpus-per-task 2 --exclusive"
 NATIVE_RUN_ENKF="--cpus-per-task 4 --exclusive"
 #
 # Number of MPI processes per node.
@@ -1886,13 +1907,16 @@ PPN_MAKE_SFC_CLIMO="24"
 PPN_GET_EXTRN_ICS="1"
 PPN_GET_EXTRN_LBCS="1"
 PPN_MAKE_ICS="12"
+PPN_BLEND_ICS="8"
 PPN_MAKE_LBCS="12"
 PPN_RUN_PREPSTART="1"
 PPN_RUN_FCST="24"  # This may have to be changed depending on the number of threads used.
 PPN_RUN_POST="24"
 PPN_RUN_PRDGEN="1"
+
 PPN_RUN_MINMAXTRH="1"
 PPN_RUN_ANAL="24"
+
 PPN_RUN_GSIDIAG="24"
 PPN_RUN_POSTANAL="1"
 PPN_RUN_ENKF="1"
@@ -1910,13 +1934,14 @@ PPN_RUN_ENSPOST="1"
 PPN_RUN_BUFRSND="28"
 PPN_SAVE_RESTART="1"
 PPN_RUN_JEDIENVAR_IODA="1"
+PPN_RUN_IODA_PREPBUFR="1"
 PPN_ADD_AEROSOL="9"
 #
 # Number of TPP for WCOSS2.
 #
 TPP_MAKE_ICS="1"
 TPP_MAKE_LBCS="2"
-TPP_RUN_ANAL="1"
+TPP_RUN_ANALYSIS="1"
 TPP_RUN_ENKF="1"
 TPP_RUN_FCST="1"
 TPP_RUN_POST="1"
@@ -1929,6 +1954,7 @@ WTIME_MAKE_SFC_CLIMO="00:20:00"
 WTIME_GET_EXTRN_ICS="00:45:00"
 WTIME_GET_EXTRN_LBCS="00:45:00"
 WTIME_MAKE_ICS="00:30:00"
+WTIME_BLEND_ICS="00:30:00"
 WTIME_MAKE_LBCS="01:30:00"
 WTIME_RUN_PREPSTART="00:10:00"
 WTIME_RUN_PREPSTART_ENSMEAN="00:10:00"
@@ -1937,8 +1963,10 @@ WTIME_RUN_FCST_LONG="04:30:00"
 WTIME_RUN_FCST_SPINUP="00:30:00"
 WTIME_RUN_POST="00:15:00"
 WTIME_RUN_PRDGEN="00:40:00"
+
 WTIME_RUN_MINMAXTRH="00:40:00"
 WTIME_RUN_ANAL="00:30:00"
+
 WTIME_RUN_GSIDIAG="00:15:00"
 WTIME_RUN_POSTANAL="00:30:00"
 WTIME_RUN_ENKF="01:00:00"
@@ -1955,6 +1983,7 @@ WTIME_RUN_BUFRSND="00:45:00"
 WTIME_SAVE_RESTART="00:15:00"
 WTIME_RUN_ENSPOST="00:30:00"
 WTIME_RUN_JEDIENVAR_IODA="00:30:00"
+WTIME_RUN_IODA_PREPBUFR="00:20:00"
 WTIME_ADD_AEROSOL="00:30:00"
 #
 # Start times.
@@ -1965,6 +1994,7 @@ START_TIME_CONVENTIONAL_SPINUP="00:40:00"
 START_TIME_BLENDING="01:00:00"
 START_TIME_LATE_ANALYSIS="01:40:00"
 START_TIME_CONVENTIONAL="00:40:00"
+START_TIME_IODA_PREPBUFR="00:40:00"
 START_TIME_NSSLMOSIAC="00:45:00"
 START_TIME_LIGHTNINGNC="00:45:00"
 START_TIME_GLMFED="00:45:00"
@@ -1980,6 +2010,7 @@ MEMO_RUN_PREPSTART="24G"
 MEMO_RUN_PRDGEN="24G"
 MEMO_RUN_MINMAXTRH="40G"
 MEMO_RUN_JEDIENVAR_IODA="20G"
+MEMO_RUN_IODA_PREPBUFR="20G"
 MEMO_PREP_CYC="40G"
 MEMO_SAVE_RESTART="40G"
 MEMO_SAVE_INPUT="40G"
@@ -1997,16 +2028,19 @@ MAXTRIES_MAKE_SFC_CLIMO="2"
 MAXTRIES_GET_EXTRN_ICS="2"
 MAXTRIES_GET_EXTRN_LBCS="2"
 MAXTRIES_MAKE_ICS="2"
+MAXTRIES_BLEND_ICS="2"
 MAXTRIES_MAKE_LBCS="2"
 MAXTRIES_RUN_PREPSTART="1"
 MAXTRIES_RUN_FCST="1"
-MAXTRIES_ANAL_GSI="1"
+MAXTRIES_ANALYSIS_GSI="1"
 MAXTRIES_POSTANAL="1"
-MAXTRIES_ANAL_ENKF="1"
+MAXTRIES_ANALYSIS_ENKF="1"
 MAXTRIES_RUN_POST="2"
 MAXTRIES_RUN_PRDGEN="1"
+
 MAXTRIES_RUN_MINMAXTRH="1"
 MAXTRIES_RUN_ANAL="1"
+
 MAXTRIES_RUN_POSTANAL="1"
 MAXTRIES_RECENTER="1"
 MAXTRIES_PROCESS_RADARREF="1"
@@ -2020,6 +2054,7 @@ MAXTRIES_CLDANL_NONVAR="1"
 MAXTRIES_SAVE_RESTART="1"
 MAXTRIES_SAVE_DA_OUTPUT="1"
 MAXTRIES_JEDI_ENVAR_IODA="1"
+MAXTRIES_IODA_PREPBUFR="1"
 MAXTRIES_ADD_AEROSOL="1"
 #
 #-----------------------------------------------------------------------
@@ -2083,7 +2118,7 @@ USE_CUSTOM_POST_CONFIG_FILE="FALSE"
 CUSTOM_POST_CONFIG_FP=""
 CUSTOM_POST_PARAMS_FP=""
 POST_FULL_MODEL_NAME="FV3R"
-POST_SUB_MODEL_NAME="NONE"
+POST_SUB_MODEL_NAME="FV3R"
 TESTBED_FIELDS_FN=""
 TESTBED_FIELDS_FN2=""
 #
@@ -2289,6 +2324,9 @@ USE_HOST_ENKF="TRUE"
 # DO_SMOKE_DUST:
 # Flag turn on smoke and dust for RRFS-SD
 #
+# EBB_DCYCLE:
+# 1: for retro, 2: for forecast
+#
 # USE_CLM:
 # Use CLM mode in the model
 #
@@ -2306,7 +2344,11 @@ DO_RADDA="FALSE"
 DO_BUFRSND="FALSE"
 USE_RRFSE_ENS="FALSE"
 DO_SMOKE_DUST="FALSE"
+
 DO_MINMAXTRH="FALSE"
+
+EBB_DCYCLE="2"
+
 DO_PM_DA="FALSE"
 USE_CLM="FALSE"
 DO_NON_DA_RUN="FALSE"
@@ -2406,6 +2448,8 @@ SPP_SIGTOP1=( "0.1" "0.1" "0.1" "0.1" "0.1")
 SPP_SIGTOP2=( "0.025" "0.025" "0.025" "0.025" "0.025" )
 SPP_STDDEV_CUTOFF=( "1.5" "1.5" "2.5" "1.5" "1.5" ) 
 ISEED_SPP=( "4" "5" "6" "7" "8" )
+LNDPINT="3600"
+SPPINT="3600"
 #
 #-----------------------------------------------------------------------
 #
@@ -2560,6 +2604,16 @@ DO_JEDI_ENVAR_IODA="FALSE"
 #
 #-----------------------------------------------------------------------
 #
+# Parameters for IODA options
+#
+# DO_IODA_PREPBUFR:
+# Flag turn on the IODA converters for conventional observations in prepbufr files.
+#-----------------------------------------------------------------------
+#
+DO_IODA_PREPBUFR="FALSE"
+#
+#-----------------------------------------------------------------------
+#
 # Parameters for analysis options
 #
 # DO_NONVAR_CLDANAL: 
@@ -2573,8 +2627,11 @@ DO_JEDI_ENVAR_IODA="FALSE"
 # DO_GLM_FED_DA
 # Flag turn on processing gridded GLM lightning data
 # GLMFED_DATA_MODE
-# Incomping lightning data format: FULL (full-disk), TILES, or EMC (tiles
+# Incoming lightning data format: FULL (full-disk), TILES, or PROD (tiles
 # with different naming convention)      
+# PREP_MODEL_FOR_FED
+# For the ensemble workflow: add flash_extent_density field to ensemble
+# member RESTART files so control member EnVar can use as BEC
 #
 #-----------------------------------------------------------------------
 #
@@ -2583,8 +2640,11 @@ DO_REFL2TTEN="FALSE"
 DO_NLDN_LGHT="FALSE"
 DO_GLM_FED_DA="FALSE"
 GLMFED_DATA_MODE="FULL"
+PREP_MODEL_FOR_FED="FALSE"
 DO_SMOKE_DUST="FALSE"
+
 DO_MINMAXTRH="FALSE"
+
 DO_PM_DA="FALSE"
 #
 #-----------------------------------------------------------------------

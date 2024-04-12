@@ -151,6 +151,18 @@ cyc=$hh
 #
 #-----------------------------------------------------------------------
 #
+#  set to 15 minute output for subhour
+if [ "${NSOUT_MIN}" = "0" ]; then
+  nsout_min=61
+else
+  if [ "${NSOUT_MIN}" = "15" ]; then
+    nsout_min=15
+  else
+    sout_min=61
+    echo " WARNING: unknown subhour output frequency (NSOUT_MIN) value, set nsout_min to 61"
+  fi
+fi
+#
 dyn_file="${run_dir}/dynf${fhr}.nc"
 phy_file="${run_dir}/phyf${fhr}.nc"
 
@@ -158,7 +170,7 @@ len_fhr=${#fhr}
 if [ ${len_fhr} -eq 9 ]; then
   post_fhr=${fhr:0:3}
   post_min=${fhr:4:2}
-  if [ ${post_min} -lt 15 ]; then # should use $nsout_min instead of 15
+  if [ ${post_min} -lt ${nsout_min} ]; then
     post_min=00
   fi
 else
@@ -185,11 +197,19 @@ cat > itag <<EOF
 /
 
  &NAMPGB
- KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,slrutah_on=.true.,
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,slrutah_on=.true.,gtg_on=.true.,
  /
 EOF
 
+#-----------------------------------------------------------------------
 #
+# GTG_rrfs config file in UPP source code sub directory
+#
+#-----------------------------------------------------------------------
+
+cp ${UPP_DIR}/sorc/ncep_post.fd/post_gtg.fd/gtg.config.rrfs ./gtg.config.rrfs
+cp ${UPP_DIR}/sorc/ncep_post.fd/post_gtg.fd/gtg.input.rrfs ./gtg.input.rrfs
+
 #-----------------------------------------------------------------------
 #
 # stage necessary files in fhr_dir.
@@ -197,8 +217,22 @@ EOF
 #-----------------------------------------------------------------------
 #
 cp ${UPP_DIR}/parm/nam_micro_lookup.dat ./eta_micro_lookup.dat
+
 ln -snf ${FIX_UPP_CRTM}/*bin ./
+
 if [ ${USE_CUSTOM_POST_CONFIG_FILE} = "TRUE" ]; then
+# For RRFS: use special postcntrl for fhr=0,1 to eliminate duplicate 
+# max/min hourly (f000 only) and accumulation fields (f000 and f001)
+  if [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ] || [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
+    if [ ${post_fhr} -eq 000 ]; then
+      CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-rrfs_f00.txt"
+    elif [ ${post_fhr} -eq 001 ]; then
+      CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-rrfs_f01.txt"
+    fi
+  fi
+  if [ ${post_min} -ge ${nsout_min} ]; then
+     CUSTOM_POST_CONFIG_FP="${FIX_UPP}/postxconfig-NT-rrfs_subh.txt"
+  fi
   post_config_fp="${CUSTOM_POST_CONFIG_FP}"
   post_params_fp="${CUSTOM_POST_PARAMS_FP}"
   print_info_msg "
@@ -210,8 +244,11 @@ to the post forecast hour directory (fhr_dir):
   fhr_dir = \"${fhr_dir}\"
 ===================================================================="
 else
-  post_config_fp="${UPP_DIR}/parm/postxconfig-NT-fv3lam_rrfs.txt"
+  post_config_fp="${UPP_DIR}/parm/postxconfig-NT-rrfs.txt"
   post_params_fp="${UPP_DIR}/parm/params_grib2_tbl_new"
+  if [ ${post_min} -ge ${nsout_min} ]; then
+     post_config_fp="${UPP_DIR}/parm/postxconfig-NT-rrfs_subh.txt"
+  fi
   print_info_msg "
 ====================================================================
 Copying the default post flat file specified by post_config_fp to the post
@@ -286,7 +323,7 @@ export err=$?; err_chk
 len_fhr=${#fhr}
 if [ ${len_fhr} -eq 9 ]; then
   post_min=${fhr:4:2}
-  if [ ${post_min} -lt 15 ]; then
+  if [ ${post_min} -lt ${nsout_min} ]; then
     post_min=00
   fi
 else
@@ -329,20 +366,38 @@ echo "fhr=${fhr} and subh_fhr=${subh_fhr}"
 fhr=${subh_fhr}
 
 gridname=""
-if [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km" ]; then
-  gridname="conus_3km."
-elif  [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ]; then
-  gridname=""
+if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
+  gridname="firewx."
 fi
 net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
-bgdawp=${postprd_dir}/${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2
-bgrd3d=${postprd_dir}/${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2
-bgifi=${postprd_dir}/${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2
 
-wgrib2 PRSLEV.GrbF${post_fhr} -set center 7 -grib ${bgdawp} >>$pgmout 2>>errfile
-wgrib2 NATLEV.GrbF${post_fhr} -set center 7 -grib ${bgrd3d} >>$pgmout 2>>errfile
+# Include member number with ensemble forecast output
+if [ ${DO_ENSFCST} = "TRUE" ]; then
+  ensmem_num=$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')	  # 1,2,3,4,5 for REFS
+  bgdawp=${postprd_dir}/${net4}.t${cyc}z.m0${ensmem_num}.prslev.f${fhr}.${gridname}grib2
+  bgrd3d=${postprd_dir}/${net4}.t${cyc}z.m0${ensmem_num}.natlev.f${fhr}.${gridname}grib2
+  bgifi=${postprd_dir}/${net4}.t${cyc}z.m0${ensmem_num}.ififip.f${fhr}.${gridname}grib2
+  bgavi=${postprd_dir}/${net4}.t${cyc}z.m0${ensmem_num}.aviati.f${fhr}.${gridname}grib2
+else
+  bgdawp=${postprd_dir}/${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2
+  bgrd3d=${postprd_dir}/${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2
+  bgifi=${postprd_dir}/${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2
+  bgavi=${postprd_dir}/${net4}.t${cyc}z.aviati.f${fhr}.${gridname}grib2
+fi
+
+if [ -f PRSLEV.GrbF${post_fhr} ]; then
+  wgrib2 PRSLEV.GrbF${post_fhr} -set center 7 -grib ${bgdawp} >>$pgmout 2>>errfile
+fi
+if [ -f NATLEV.GrbF${post_fhr} ]; then
+  wgrib2 NATLEV.GrbF${post_fhr} -set center 7 -grib ${bgrd3d} >>$pgmout 2>>errfile
+fi
+
 if [ -f IFIFIP.GrbF${post_fhr} ]; then
   wgrib2 IFIFIP.GrbF${post_fhr} -set center 7 -grib ${bgifi} >>$pgmout 2>>errfile
+fi
+
+if [ -f AVIATI.GrbF${post_fhr} ]; then
+  wgrib2 AVIATI.GrbF${post_fhr} -set center 7 -grib ${bgavi} >>$pgmout 2>>errfile
 fi
 
 # Keep latlons_corners.txt file for RRFS fire weather grid
