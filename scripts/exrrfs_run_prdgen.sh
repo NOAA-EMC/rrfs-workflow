@@ -268,8 +268,8 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
     echo "export DATA=${DATAprdgen}" >> $DATAprdgen/poescript_${fhr}
     echo "export COMOUT=${COMOUT}" >> $DATAprdgen/poescript_${fhr}
 
-    tasks=(4 4 2 2)
-    domains=(conus ak hi pr)
+    tasks=(4 4 2 2 4)
+    domains=(conus ak hi pr nwrfc)
     count=0
     for domain in ${domains[@]}
     do
@@ -291,7 +291,7 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
 
     # reassemble the output grids
     tasks=(4 4 2 2)
-    domains=(conus ak hi pr)
+    domains=(conus ak hi pr nwrfc)
     count=0
     for domain in ${domains[@]}
     do
@@ -375,10 +375,16 @@ else
     grid_specs_hrrre="lambert:-97.5:38.5 -122.719528:1800:3000.0 21.138123:1060:3000.0"
     grid_specs_rrfsak="lambert:-161.5:63.0 172.102615:1379:3000.0 45.84576:1003:3000.0"
     grid_specs_hrrrak="nps:225:60.000000 185.117126:1299:3000.0 41.612949:919:3000.0"
-
+    grid_specs_ak="nps:210:60 181.429:1649:2976.563 40.530101:1105:2976.563"
+    grid_specs_hi="mercator:20 198.474999:321:2500:206.130999 18.072699:225:2500:23.087799"
+#    grid_specs_pr="mercator:20.000000 291.804700:353:1250.000000:296.015500 16.828700:257:1250.000000:19.736200"
+    grid_specs_pr="mercator:20.000000 284.500000:544:2500.000000:297.491000 15.000000:310:2500.000000:22.005000"
+# Hires CONUS grid
+    grid_specs_conus="lambert:265:25:25 238.446:2145:2539.703 20.192:1377:2539.703"
+    grid_specs_nwrfc="lambert:265:25:25 234.042704:709:2539.703 37.979684:795:2539.703"
     for grid in ${ADDNL_OUTPUT_GRIDS[@]}
     do
-      for leveltype in prslev natlev ififip testbed
+      for leveltype in prslev natlev ififip testbed 
       do
       
         eval grid_specs=\$grid_specs_${grid}

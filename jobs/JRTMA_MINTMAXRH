@@ -8,18 +8,11 @@
 date
 export PS4=' $SECONDS + ' 
 
-if [ ${cyc} != "07" ] ; then
-    echo -e "\nNOTICE: MAXTMINRH only runs at 07z. Exiting.\n"
+if [ ${cyc} != "19" ] ; then
+    echo -e "\nNOTICE: MINTMAXTH only runs at 19z. Exiting.\n"
     exit 0
 fi
-#
-## Note: grib_util module loaded in submission (lsf or ecFlow) script
-#
-###########################################################
-## obtain unique process id (pid) and make temp directories
-#
-#
-#
+
 #-----------------------------------------------------------------------
 #
 # Source the variable definitions file and the bash utility functions.
@@ -119,16 +112,16 @@ mkdir -p "${postprd_dir}"
 ## Execute the scripts.
 #######################
 #
+
 ######################
-## Compute Max T
+## Compute Min T
 #######################
 #
 
-export pgmout="${postprd_dir}/maxt_000/OUTPUT.$$"
+export pgmout="${postprd_dir}/mint_000/OUTPUT.$$"
 env
 
-
-$SCRIPTSdir/exrrfs_run_maxtbg.ksh \
+$SCRIPTSdir/exrtma_run_mintbg.ksh \
   cdate="${CDATE}" \
   run_dir="${run_dir}" \
   postprd_dir="${postprd_dir}" \
@@ -138,13 +131,12 @@ $SCRIPTSdir/exrrfs_run_maxtbg.ksh \
 print_err_msg_exit "\
 Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
 ######################
-## Compute Min RH
+## Compute Max RH
 #######################
 #
 
 
-
-$SCRIPTSdir/exrrfs_run_minrh.ksh \
+$SCRIPTSdir/exrtma_run_maxrh.ksh \
   cdate="${CDATE}" \
   run_dir="${run_dir}" \
   postprd_dir="${postprd_dir}" \

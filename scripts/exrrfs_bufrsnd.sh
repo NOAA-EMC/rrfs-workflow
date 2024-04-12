@@ -162,7 +162,7 @@ OUTTYP=netcdf
 model=FV3S
 
 INCR=01
-FHRLIM=60
+FHRLIM=00
 
 let NFILE=1
 
@@ -253,9 +253,11 @@ $OUTFILPHYS
 EOF
 
   export FORT19="$DATA/bufrpost/regional_profdat"
-  export FORT79="$DATA/bufrpost/profilm.c1.${tmmark}"
+  ln -sf $DATA/bufrpost/regional_profdat fort.19
+  export FORT79="$DATA/profilm.c1.${tmmark}"
+  ln -sf $DATA/profilm.c1.${tmmark} fort.79
   export FORT11="itag"
-
+  ln -sf itag fort.11
   export pgm="rrfs_bufr.exe"
   . prep_step
 
@@ -265,7 +267,7 @@ EOF
 
   echo DONE $fhr at `date`
 
-  mv $DATA/bufrpost/profilm.c1.${tmmark} $DATA/profilm.c1.${tmmark}.f${fhr}
+  cp $DATA/profilm.c1.${tmmark} $DATA/profilm.c1.${tmmark}.f${fhr}
   echo done > $DATA/sndpostdone${fhr}.${tmmark}
 
   cat $DATA/profilm.c1.${tmmark}  $DATA/profilm.c1.${tmmark}.f${fhr} > $DATA/profilm_int
@@ -291,9 +293,13 @@ cp $PARMfv3/regional_sndp.parm.mono $DATA/regional_sndp.parm.mono
 cp $PARMfv3/regional_bufr.tbl $DATA/regional_bufr.tbl
 
 export FORT11="$DATA/regional_sndp.parm.mono"
+ln -sf $DATA/regional_sndp.parm.mono fort.11
 export FORT32="$DATA/regional_bufr.tbl"
+ln -sf $DATA/regional_bufr.tbl fort.32
 export FORT66="$DATA/profilm.c1.${tmmark}"
+ln -sf $DATA/profilm.c1.${tmmark} fort.66
 export FORT78="$DATA/class1.bufr"
+ln -sf $DATA/class1.bufr fort.78
 
 echo here model $model
 
@@ -335,6 +341,7 @@ EOF
 mkdir -p ${COMOUT}/bufr.${cyc}
 
 export FORT20=$DATA/class1.bufr
+ln -sf $DATA/class1.bufr fort.20
 export DIRD=${COMOUT}/bufr.${cyc}/bufr
 
 echo "before stnmlist.exe"
