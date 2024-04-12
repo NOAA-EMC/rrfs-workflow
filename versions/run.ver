@@ -1,5 +1,6 @@
 #!/bin/bash
 
+export bacio_ver=2.4.1
 export cray_mpich_ver=8.1.12
 export cray_pals_ver=1.1.3
 export craype_ver=2.7.13
@@ -21,6 +22,7 @@ export nco_ver=5.0.6
 export nemsio_ver=2.5.2
 export netcdf_ver=4.9.2
 export pio_ver=2.5.10
+export PrgEnv_intel_ver=8.1.0
 export prod_util_ver=2.0.14
 export python_ver=3.8.6
 export rocoto_ver=1.3.5
