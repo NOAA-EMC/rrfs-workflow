@@ -162,7 +162,13 @@ OUTTYP=netcdf
 model=FV3S
 
 INCR=01
-FHRLIM=00
+
+if [[ "${NET}" = "RTMA"* ]]; then
+  FHRLIM=00
+else
+  FHRLIM=60
+fi
+
 
 let NFILE=1
 
@@ -252,15 +258,15 @@ $OUTFILDYN
 $OUTFILPHYS
 EOF
 
-
-#  export FORT19="$DATA/bufrpost/regional_profdat"
-#  export FORT79="$DATA/bufrpost/profilm.c1.${tmmark}"
-#  export FORT11="./itag"
-
-ln -sf $DATA/bufrpost/regional_profdat     fort.19
-ln -sf $DATA/bufrpost/profilm.c1.${tmmark} fort.79
-ln -sf ./itag                              fort.11
-
+  if [[ "${NET}" = "RTMA"* ]]; then
+    ln -sf $DATA/bufrpost/regional_profdat     fort.19
+    ln -sf $DATA/bufrpost/profilm.c1.${tmmark} fort.79
+    ln -sf ./itag                              fort.11
+  else
+    export FORT19="$DATA/bufrpost/regional_profdat"
+    export FORT79="$DATA/bufrpost/profilm.c1.${tmmark}"
+    export FORT11="./itag"
+  fi
 
   export pgm="rrfs_bufr.exe"
   . prep_step
@@ -275,8 +281,9 @@ ln -sf ./itag                              fort.11
   echo done > $DATA/sndpostdone${fhr}.${tmmark}
 
   cat $DATA/profilm.c1.${tmmark}  $DATA/profilm.c1.${tmmark}.f${fhr} > $DATA/profilm_int
-  mv $DATA/profilm_int $DATA/profilm.c1.${tmmark}
-
+  if [[ "${NET}" = "RTMA"* ]]; then
+    mv $DATA/profilm_int $DATA/profilm.c1.${tmmark}
+  fi 
   fhr=`expr $fhr + $INCR`
 
   if [ $fhr -lt 10 ]; then
@@ -296,17 +303,17 @@ export pgm=rrfs_sndp
 cp $PARMfv3/regional_sndp.parm.mono $DATA/regional_sndp.parm.mono
 cp $PARMfv3/regional_bufr.tbl $DATA/regional_bufr.tbl
 
-
-ln -sf $DATA/regional_sndp.parm.mono fort.11
-ln -sf $DATA/regional_bufr.tbl       fort.32
-ln -sf $DATA/profilm.c1.${tmmark}    fort.66
-ln -sf $DATA/class1.bufr             fort.78
-
-# export FORT11="$DATA/regional_sndp.parm.mono"
-# export FORT32="$DATA/regional_bufr.tbl"
-# export FORT66="$DATA/profilm.c1.${tmmark}"
-# export FORT78="$DATA/class1.bufr"
-
+if [[ "${NET}" = "RTMA"* ]]; then
+ ln -sf $DATA/regional_sndp.parm.mono fort.11
+ ln -sf $DATA/regional_bufr.tbl       fort.32
+ ln -sf $DATA/profilm.c1.${tmmark}    fort.66
+ ln -sf $DATA/class1.bufr             fort.78
+else
+ export FORT11="$DATA/regional_sndp.parm.mono"
+ export FORT32="$DATA/regional_bufr.tbl"
+ export FORT66="$DATA/profilm.c1.${tmmark}"
+ export FORT78="$DATA/class1.bufr"
+fi
 echo here model $model
 
 nlev=65
@@ -346,10 +353,11 @@ EOF
 
 mkdir -p ${COMOUT}/bufr.${cyc}
 
-
-# export FORT20=$DATA/class1.bufr
-ln -sf $DATA/class1.bufr fort.20
-
+if [[ "${NET}" = "RTMA"* ]]; then
+  ln -sf $DATA/class1.bufr fort.20
+else
+  export FORT20=$DATA/class1.bufr
+fi
 
 export DIRD=${COMOUT}/bufr.${cyc}/bufr
 
