@@ -16,11 +16,9 @@ if [[ $MACHINE == "jet" ]] ; then
     QUEUE_DEFAULT="rth"
     QUEUE_FCST="rth"
     QUEUE_ANALYSIS="rth"
-
-    QUEUE_PRDGEN="rt"
-    QUEUE_MINMAXTRH="rt"
-    QUEUE_GRAPHICS="rt"
-
+    QUEUE_PRDGEN="rth"
+    QUEUE_MINMAXTRH="rth"
+    QUEUE_GRAPHICS="rth"
     QUEUE_HPSS="batch"
     QUEUE_POST="rth"
     RESERVATION_POST="rrfsdet"
