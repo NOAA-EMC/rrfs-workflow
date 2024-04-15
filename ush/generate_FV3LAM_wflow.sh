@@ -209,9 +209,9 @@ settings="\
 
   'run_mintmaxrh_tn': ${RUN_MINTMAXRH_TN}
   'run_maxtminrh_tn': ${RUN_MAXTMINRH_TN}
-  'anal_gsi': ${ANAL_GSI_TN}
-  'anal_gsidiag': ${ANAL_GSIDIAG_TN}
-  'anal_sd_gsi': ${ANAL_SD_GSI_TN}
+  'anal_gsi': ${ANALYSIS_GSI_TN}
+  'anal_gsidiag': ${ANALYSIS_GSIDIAG_TN}
+  'anal_sd_gsi': ${ANALYSIS_SD_GSI_TN}
 
   'post_anal': ${POSTANAL_TN}
   'observer_gsi_ensmean': ${OBSERVER_GSI_ENSMEAN_TN}
