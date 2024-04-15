@@ -619,15 +619,6 @@ has been set as follows:
 settings =
 $settings"
 
-if [[ "${MACHINE,,}" == "wcoss2" ]] ; then
-  RUN_VER_FN="run.ver"
-  VERSION_FILE="${PARMdir}/../versions/${RUN_VER_FN}"
-  if [ -f ${VERSION_FILE} ]; then
-    . ${VERSION_FILE}
-  fi
-fi
-
-
 #
 # Set the full path to the template rocoto XML file.  Then call a python
 # script to generate the experiment's actual XML file from this template
