@@ -244,10 +244,10 @@ to the post forecast hour directory (fhr_dir):
   fhr_dir = \"${fhr_dir}\"
 ===================================================================="
 else
-  post_config_fp="${UPP_DIR}/parm/postxconfig-NT-rrfs.txt"
-  post_params_fp="${UPP_DIR}/parm/params_grib2_tbl_new"
+  post_config_fp="${FIX_UPP}/postxconfig-NT-rrfs.txt"
+  post_params_fp="${FIX_UPP}/params_grib2_tbl_new"
   if [ ${post_min} -ge ${nsout_min} ]; then
-     post_config_fp="${UPP_DIR}/parm/postxconfig-NT-rrfs_subh.txt"
+     post_config_fp="${FIX_UPP}/postxconfig-NT-rrfs_subh.txt"
   fi
   print_info_msg "
 ====================================================================
