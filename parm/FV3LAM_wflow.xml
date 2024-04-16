@@ -184,6 +184,7 @@ define resources used for each tasks
 <!ENTITY RESOURCES_NONVAR_CLD     "<nodes>{{ nnodes_run_nonvarcldanl }}:ppn={{ ppn_run_nonvarcldanl }}</nodes>">
 
 {%- if machine in ["WCOSS2"]  %}
+<!ENTITY RESOURCES_RUN_BUFRSND  "<nodes>{{ nnodes_run_bufrsnd }}:ppn={{ ppn_run_bufrsnd }}:tpp={{ tpp_run_bufrsnd }}</nodes>">
 <!ENTITY RESOURCES_RUN_POST     "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}:tpp={{ tpp_run_post }}</nodes>">
 <!ENTITY RESOURCES_RUN_ENKF     "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}:tpp={{ tpp_run_enkf }}</nodes>">
 <!ENTITY RESOURCES_MAKE_ICS     "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}:tpp={{ tpp_make_ics }}</nodes>">
@@ -201,6 +202,7 @@ define resources used for each tasks
 <!ENTITY NATIVE_NONVAR_CLD   "<native>-l place=excl:scatter</native>">
 {%- endif %}
 {%- elif machine in ["JET"] %}
+<!ENTITY RESOURCES_RUN_BUFRSND  "<nodes>{{ nnodes_run_bufrsnd }}:ppn={{ ppn_run_bufrsnd }}</nodes>">
 <!ENTITY RESOURCES_RUN_POST    "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
 <!ENTITY RESOURCES_RUN_ENKF    "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}</nodes>">
 <!ENTITY RESOURCES_MAKE_ICS    "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
@@ -215,6 +217,7 @@ define resources used for each tasks
 <!ENTITY NATIVE_FCST_SPINUP "<native>{{ native_run_fcst }} &RRFS_RESERVE;</native>">
 <!ENTITY NATIVE_FCST_PROD   "<native>{{ native_run_fcst }} &RRFS_RESERVE;</native>">
 {%- elif machine in ["HERA"] %}
+<!ENTITY RESOURCES_RUN_BUFRSND  "<nodes>{{ nnodes_run_bufrsnd }}:ppn={{ ppn_run_bufrsnd }}</nodes>">
 <!ENTITY RESOURCES_RUN_POST     "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
 <!ENTITY RESOURCES_RUN_ENKF     "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}</nodes>">
 <!ENTITY RESOURCES_MAKE_ICS     "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
@@ -229,6 +232,7 @@ define resources used for each tasks
 <!ENTITY NATIVE_FCST_SPINUP "">
 <!ENTITY NATIVE_FCST_PROD   "">
 {%- else %}
+<!ENTITY RESOURCES_RUN_BUFRSND  "<nodes>{{ nnodes_run_bufrsnd }}:ppn={{ ppn_run_bufrsnd }}</nodes>">
 <!ENTITY RESOURCES_RUN_POST     "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
 <!ENTITY RESOURCES_RUN_ENKF     "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}</nodes>">
 <!ENTITY RESOURCES_MAKE_ICS     "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
@@ -3585,7 +3589,7 @@ MODULES_RUN_TASK_FP script.
         &RSRV_POST;
         &WALL_LIMIT_BUFRSND;
         <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_BUFRSND_TN;" "&JOBSdir;/JRRFS_BUFRSND"</command>
-        <nodes>{{ nnodes_run_bufrsnd }}:ppn={{ ppn_run_bufrsnd }}</nodes>
+        &RESOURCES_RUN_BUFRSND;
         <walltime>{{ wtime_run_bufrsnd }}</walltime>
         &NODESIZE_ALL;
         <jobname>&TAG;_&RUN_BUFRSND_TN;</jobname>
@@ -3601,7 +3605,11 @@ MODULES_RUN_TASK_FP script.
         <envar><name>TMMARK</name><value>tm00</value></envar>
 
         <dependency>
+{%- if postproc_nsout_min > 0 %}
+          <datadep age="00:02"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H/fcst_fv3lam/log.atm.f000-00-36</cyclestr></datadep>
+{%- else %}
           <datadep age="00:02"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H/fcst_fv3lam/log.atm.f000</cyclestr></datadep>
+{%- endif %}
         </dependency>
 
   </task>
@@ -3612,7 +3620,7 @@ MODULES_RUN_TASK_FP script.
         &RSRV_POST;
         &WALL_LIMIT_BUFRSND;
         <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_BUFRSND_TN;" "&JOBSdir;/JRRFS_BUFRSND"</command>
-        <nodes>{{ nnodes_run_bufrsnd }}:ppn={{ ppn_run_bufrsnd }}</nodes>
+        &RESOURCES_RUN_BUFRSND;
         <walltime>{{ wtime_run_bufrsnd }}</walltime>
         &NODESIZE_ALL;
 	<jobname>&TAG;_&RUN_BUFRSND_TN;{{ uscore_ensmem_name }}</jobname>
