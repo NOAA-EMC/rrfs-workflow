@@ -277,7 +277,7 @@ EOF
 
   echo DONE $fhr at `date`
 
-  cp $DATA/profilm.c1.${tmmark} $DATA/profilm.c1.${tmmark}.f${fhr}
+  mv $DATA/profilm.c1.${tmmark} $DATA/profilm.c1.${tmmark}.f${fhr}
   echo done > $DATA/sndpostdone${fhr}.${tmmark}
 
   cat $DATA/profilm.c1.${tmmark}  $DATA/profilm.c1.${tmmark}.f${fhr} > $DATA/profilm_int
