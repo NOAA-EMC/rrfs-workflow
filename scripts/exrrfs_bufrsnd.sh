@@ -207,6 +207,17 @@ echo starting with fhr $fhr
 
 INPUT_DATA=$run_dir
 ########################################################
+#  set to 15 minute output for subhour
+if [ "${NSOUT_MIN}" = "0" ]; then
+  nsout_min=61
+else
+  if [ "${NSOUT_MIN}" = "15" ]; then
+    nsout_min=15
+  else
+    sout_min=61
+    echo " WARNING: unknown subhour output frequency (NSOUT_MIN) value, set nsout_min to 61"
+  fi
+fi
 
 while [ $fhr -le $FHRLIM ]
 do
@@ -215,17 +226,31 @@ do
 
   let fhrold="$fhr - 1"
 
+  LOGFILE=log.atm.f0${fhr}
   if [ $model = "FV3S" ]; then
 
-    OUTFILDYN=$INPUT_DATA/dynf0${fhr}.nc
-    OUTFILPHYS=$INPUT_DATA/phyf0${fhr}.nc
+    if [ ${nsout_min} -ge 60 ]; then
+      OUTFILDYN=$INPUT_DATA/dynf0${fhr}.nc
+      OUTFILPHYS=$INPUT_DATA/phyf0${fhr}.nc
+      LOGFILE=log.atm.f0${fhr}
+    else
+      if [ ${fhr} -eq 00 ]; then
+        OUTFILDYN=$INPUT_DATA/dynf0${fhr}-00-36.nc
+        OUTFILPHYS=$INPUT_DATA/phyf0${fhr}-00-36.nc
+        LOGFILE=log.atm.f0${fhr}-00-36
+      else
+        OUTFILDYN=$INPUT_DATA/dynf0${fhr}-00-00.nc
+        OUTFILPHYS=$INPUT_DATA/phyf0${fhr}-00-00.nc
+        LOGFILE=log.atm.f0${fhr}-00-00
+      fi
+    fi
 
     icnt=1
 
     # wait for model restart file
     while [ $icnt -lt 1000 ]
     do
-      if [ -s $INPUT_DATA/log.atm.f0${fhr} ]; then
+      if [ -s $INPUT_DATA/${LOGFILE} ]; then
         break
       else
         icnt=$((icnt + 1))
