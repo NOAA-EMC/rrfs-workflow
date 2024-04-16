@@ -197,6 +197,9 @@ define resources used for each tasks
 <!ENTITY NATIVE_ANALYSIS_GSI "<native>-l place=excl</native>">
 <!ENTITY NATIVE_FCST_SPINUP  "<native>-l place=excl</native>">
 <!ENTITY NATIVE_FCST_PROD    "<native>-l place=excl</native>">
+{%- if is_rtma %}
+<!ENTITY NATIVE_NONVAR_CLD   "<native>-l place=excl:scatter</native>">
+{%- endif %}
 {%- elif machine in ["JET"] %}
 <!ENTITY RESOURCES_RUN_POST    "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">
 <!ENTITY RESOURCES_RUN_ENKF    "<nodes>{{ nnodes_run_enkf }}:ppn={{ ppn_run_enkf }}</nodes>">
@@ -2333,6 +2336,14 @@ MODULES_RUN_TASK_FP script.
              <and>
                <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
                <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&FG_ROOT;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+{%- if is_rtma %}
+{%- if machine in ["WCOSS2"]  %}
+               <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&FG_ROOT;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.fv_tracer.res.tile1.nc</cyclestr></datadep>
+               <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&FG_ROOT;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.phy_data.nc</cyclestr></datadep>
+               <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&FG_ROOT;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.fv_core.res.tile1.nc</cyclestr></datadep>
+               <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&FG_ROOT;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.sfc_data.nc</cyclestr></datadep>
+{%- endif %}
+{%- endif %}
              </and>
              <and>
                <timedep><cyclestr offset="&START_TIME_LATE_ANALYSIS;">@Y@m@d@H@M00</cyclestr></timedep>
@@ -2918,7 +2929,15 @@ MODULES_RUN_TASK_FP script.
 
     &RESOURCES_NONVAR_CLD;
     <walltime>&WALLTIME_NONVAR_CLD;</walltime>
+    {%- if is_rtma %}
+    {%- if machine in ["WCOSS2"]  %}
+    &NATIVE_NONVAR_CLD;
+    {%- else %}
     &NATIVE_ALL;
+    {%- endif %}
+    {%- else %}
+    &NATIVE_ALL;
+    {%- endif %}
     &NODESIZE_ALL;
 
     <jobname>&TAG;_&CLDANL_NONVAR_TN;_prod{{ uscore_ensmem_name }}</jobname>
