@@ -191,8 +191,10 @@ if [ -e sndpostdone00.tm00 ]; then
   lasthour=`ls -1rt sndpostdone??.tm00 | tail -1 | cut -c 12-13`
   typeset -Z2 lasthour
 
-  let "fhr=lasthour+1"
-  typeset -Z2 fhr
+  let "fhr=$(( ${fhr#0} + 1 ))"
+  if [ $fhr -le 10 ]; then
+     fhr=$(printf "%02d" $fhr)
+  fi
 else
   fhr=00
 fi
@@ -218,7 +220,10 @@ do
 
   date=$(date +%Y%m%d%H -d "${START_DATE} +${fhr} hours")
 
-  let fhrold="$fhr - 1"
+  let "fhrold=$(( ${fhr#0} - 1 ))"
+  if [ $fhrold -le 10 ]; then
+     fhrold=$(printf "%02d" $fhrold)
+  fi
 
   LOGFILE=log.atm.f0${fhr}
   if [ $model = "FV3S" ]; then
@@ -229,14 +234,18 @@ do
       LOGFILE=log.atm.f0${fhr}
     else
       if [ ${fhr} -eq 00 ]; then
-        OUTFILDYN=$INPUT_DATA/dynf0${fhr}-00-36.nc
-        OUTFILPHYS=$INPUT_DATA/phyf0${fhr}-00-36.nc
+        SUBOUTFILDYN=$INPUT_DATA/dynf0${fhr}-00-36.nc
+        SUBOUTFILPHYS=$INPUT_DATA/phyf0${fhr}-00-36.nc
         LOGFILE=log.atm.f0${fhr}-00-36
       else
-        OUTFILDYN=$INPUT_DATA/dynf0${fhr}-00-00.nc
-        OUTFILPHYS=$INPUT_DATA/phyf0${fhr}-00-00.nc
+        SUBOUTFILDYN=$INPUT_DATA/dynf0${fhr}-00-00.nc
+        SUBOUTFILPHYS=$INPUT_DATA/phyf0${fhr}-00-00.nc
         LOGFILE=log.atm.f0${fhr}-00-00
       fi
+      OUTFILDYN=$INPUT_DATA/dynf0${fhr}.nc
+      OUTFILPHYS=$INPUT_DATA/phyf0${fhr}.nc
+      ln -s ${SUBOUTFILDYN} ${OUTFILDYN}
+      ln -s ${SUBOUTFILPHYS} ${OUTFILPHYS}
     fi
 
     icnt=1
