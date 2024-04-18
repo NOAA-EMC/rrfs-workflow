@@ -16,11 +16,9 @@ if [[ $MACHINE == "jet" ]] ; then
     QUEUE_DEFAULT="rth"
     QUEUE_FCST="rth"
     QUEUE_ANALYSIS="rth"
-
-    QUEUE_PRDGEN="rt"
-    QUEUE_MINMAXTRH="rt"
-    QUEUE_GRAPHICS="rt"
-
+    QUEUE_PRDGEN="rth"
+    QUEUE_MINMAXTRH="rth"
+    QUEUE_GRAPHICS="rth"
     QUEUE_HPSS="batch"
     QUEUE_POST="rth"
     RESERVATION_POST="rrfsdet"
@@ -522,6 +520,7 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then
     PPN_RUN_GSIDIAG=128
     NNODES_RUN_BUFRSND="2"
     PPN_RUN_BUFRSND="64"
+    TPP_RUN_BUFRSND="2"
     NNODES_RUN_RECENTER="10"
     PPN_RUN_RECENTER="128"
 

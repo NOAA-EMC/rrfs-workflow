@@ -443,7 +443,7 @@ else
     grid_specs_nwrfc="lambert:265:25:25 234.042704:709:2539.703 37.979684:795:2539.703"
     for grid in ${ADDNL_OUTPUT_GRIDS[@]}
     do
-      for leveltype in prslev natlev ififip testbed 
+      for leveltype in prslev natlev ififip testbed
       do
       
         eval grid_specs=\$grid_specs_${grid}

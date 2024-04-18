@@ -209,6 +209,9 @@ define resources used for each tasks
 <!ENTITY NATIVE_ANALYSIS_GSI "<native>-l place=excl</native>">
 <!ENTITY NATIVE_FCST_SPINUP  "<native>-l place=excl</native>">
 <!ENTITY NATIVE_FCST_PROD    "<native>-l place=excl</native>">
+{%- if is_rtma %}
+<!ENTITY NATIVE_NONVAR_CLD   "<native>-l place=excl:scatter</native>">
+{%- endif %}
 {%- elif machine in ["JET"] %}
 <!ENTITY RESOURCES_RUN_BUFRSND  "<nodes>{{ nnodes_run_bufrsnd }}:ppn={{ ppn_run_bufrsnd }}</nodes>">
 <!ENTITY RESOURCES_RUN_POST    "<nodes>{{ nnodes_run_post }}:ppn={{ ppn_run_post }}</nodes>">

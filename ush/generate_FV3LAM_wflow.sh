@@ -209,9 +209,9 @@ settings="\
 
   'run_mintmaxrh_tn': ${RUN_MINTMAXRH_TN}
   'run_maxtminrh_tn': ${RUN_MAXTMINRH_TN}
-  'anal_gsi': ${ANALYSIS_GSI_TN}
-  'anal_gsidiag': ${ANALYSIS_GSIDIAG_TN}
-  'anal_sd_gsi': ${ANALYSIS_SD_GSI_TN}
+  'analysis_gsi': ${ANALYSIS_GSI_TN}
+  'analysis_gsidiag': ${ANALYSIS_GSIDIAG_TN}
+  'analysis_sd_gsi': ${ANALYSIS_SD_GSI_TN}
 
   'post_anal': ${POSTANAL_TN}
   'observer_gsi_ensmean': ${OBSERVER_GSI_ENSMEAN_TN}
@@ -328,6 +328,7 @@ settings="\
   'tpp_run_enkf': ${TPP_RUN_ENKF}
   'tpp_run_fcst': ${TPP_RUN_FCST}
   'tpp_run_post': ${TPP_RUN_POST}
+  'tpp_run_bufrsnd': ${TPP_RUN_BUFRSND}
 #
 # Maximum wallclock time for each task.
 #
@@ -618,15 +619,6 @@ has been set as follows:
 #-----------------------------------------------------------------------
 settings =
 $settings"
-
-if [[ "${MACHINE,,}" == "wcoss2" ]] ; then
-  RUN_VER_FN="run.ver"
-  VERSION_FILE="${PARMdir}/../versions/${RUN_VER_FN}"
-  if [ -f ${VERSION_FILE} ]; then
-    . ${VERSION_FILE}
-  fi
-fi
-
 
 #
 # Set the full path to the template rocoto XML file.  Then call a python
