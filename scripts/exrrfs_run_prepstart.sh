@@ -1131,7 +1131,7 @@ if [ "${USE_FVCOM}" = "TRUE" ] && [ ${SFC_CYC} -eq 2 ] ; then
 
   # Remap the FVCOM output from the 5 lakes onto the RRFS grid
   if [ "${PREP_FVCOM}" = "TRUE" ]; then
-    ${SCRIPTSdir}/exrrfs_prep_fvcom.sh \
+    ${USHdir}/fvcom_prep.sh \
                   modelinputdir="${modelinputdir}" \
                   FIXLAM="${FIXLAM}" \
                   FVCOM_DIR="${FVCOM_DIR}" \
