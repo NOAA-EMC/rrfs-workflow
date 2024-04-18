@@ -162,13 +162,11 @@ OUTTYP=netcdf
 model=FV3S
 
 INCR=01
-
 if [[ "${NET}" = "RTMA"* ]]; then
-  FHRLIM=00
+FHRLIM=00
 else
-  FHRLIM=60
-fi
-
+FHRLIM=60
+fi   
 
 let NFILE=1
 
@@ -197,8 +195,10 @@ if [ -e sndpostdone00.tm00 ]; then
   lasthour=`ls -1rt sndpostdone??.tm00 | tail -1 | cut -c 12-13`
   typeset -Z2 lasthour
 
-  let "fhr=lasthour+1"
-  typeset -Z2 fhr
+  let "fhr=$(( ${fhr#0} + 1 ))"
+  if [ $fhr -le 10 ]; then
+     fhr=$(printf "%02d" $fhr)
+  fi
 else
   fhr=00
 fi
@@ -207,25 +207,57 @@ echo starting with fhr $fhr
 
 INPUT_DATA=$run_dir
 ########################################################
+#  set to 15 minute output for subhour
+if [ "${NSOUT_MIN}" = "0" ]; then
+  nsout_min=61
+else
+  if [ "${NSOUT_MIN}" = "15" ]; then
+    nsout_min=15
+  else
+    sout_min=61
+    echo " WARNING: unknown subhour output frequency (NSOUT_MIN) value, set nsout_min to 61"
+  fi
+fi
 
 while [ $fhr -le $FHRLIM ]
 do
 
   date=$(date +%Y%m%d%H -d "${START_DATE} +${fhr} hours")
 
-  let fhrold="$fhr - 1"
+  let "fhrold=$(( ${fhr#0} - 1 ))"
+  if [ $fhrold -le 10 ]; then
+     fhrold=$(printf "%02d" $fhrold)
+  fi
 
+  LOGFILE=log.atm.f0${fhr}
   if [ $model = "FV3S" ]; then
 
-    OUTFILDYN=$INPUT_DATA/dynf0${fhr}.nc
-    OUTFILPHYS=$INPUT_DATA/phyf0${fhr}.nc
+    if [ ${nsout_min} -ge 60 ]; then
+      OUTFILDYN=$INPUT_DATA/dynf0${fhr}.nc
+      OUTFILPHYS=$INPUT_DATA/phyf0${fhr}.nc
+      LOGFILE=log.atm.f0${fhr}
+    else
+      if [ ${fhr} -eq 00 ]; then
+        SUBOUTFILDYN=$INPUT_DATA/dynf0${fhr}-00-36.nc
+        SUBOUTFILPHYS=$INPUT_DATA/phyf0${fhr}-00-36.nc
+        LOGFILE=log.atm.f0${fhr}-00-36
+      else
+        SUBOUTFILDYN=$INPUT_DATA/dynf0${fhr}-00-00.nc
+        SUBOUTFILPHYS=$INPUT_DATA/phyf0${fhr}-00-00.nc
+        LOGFILE=log.atm.f0${fhr}-00-00
+      fi
+      OUTFILDYN=$INPUT_DATA/dynf0${fhr}.nc
+      OUTFILPHYS=$INPUT_DATA/phyf0${fhr}.nc
+      ln -s ${SUBOUTFILDYN} ${OUTFILDYN}
+      ln -s ${SUBOUTFILPHYS} ${OUTFILPHYS}
+    fi
 
     icnt=1
 
     # wait for model restart file
     while [ $icnt -lt 1000 ]
     do
-      if [ -s $INPUT_DATA/log.atm.f0${fhr} ]; then
+      if [ -s $INPUT_DATA/${LOGFILE} ]; then
         break
       else
         icnt=$((icnt + 1))
@@ -258,15 +290,13 @@ $OUTFILDYN
 $OUTFILPHYS
 EOF
 
-  if [[ "${NET}" = "RTMA"* ]]; then
-    ln -sf $DATA/bufrpost/regional_profdat     fort.19
-    ln -sf $DATA/bufrpost/profilm.c1.${tmmark} fort.79
-    ln -sf ./itag                              fort.11
-  else
-    export FORT19="$DATA/bufrpost/regional_profdat"
-    export FORT79="$DATA/bufrpost/profilm.c1.${tmmark}"
-    export FORT11="./itag"
-  fi
+#  export FORT19="$DATA/bufrpost/regional_profdat"
+#  export FORT79="$DATA/bufrpost/profilm.c1.${tmmark}"
+#  export FORT11="./itag"
+
+ln -sf $DATA/bufrpost/regional_profdat     fort.19
+ln -sf $DATA/bufrpost/profilm.c1.${tmmark} fort.79
+ln -sf ./itag                              fort.11
 
   export pgm="rrfs_bufr.exe"
   . prep_step
@@ -277,13 +307,12 @@ EOF
 
   echo DONE $fhr at `date`
 
-  cp $DATA/profilm.c1.${tmmark} $DATA/profilm.c1.${tmmark}.f${fhr}
+  mv $DATA/bufrpost/profilm.c1.${tmmark} $DATA/profilm.c1.${tmmark}.f${fhr}
   echo done > $DATA/sndpostdone${fhr}.${tmmark}
 
   cat $DATA/profilm.c1.${tmmark}  $DATA/profilm.c1.${tmmark}.f${fhr} > $DATA/profilm_int
-  if [[ "${NET}" = "RTMA"* ]]; then
-    mv $DATA/profilm_int $DATA/profilm.c1.${tmmark}
-  fi 
+  mv $DATA/profilm_int $DATA/profilm.c1.${tmmark}
+
   fhr=`expr $fhr + $INCR`
 
   if [ $fhr -lt 10 ]; then
@@ -303,17 +332,16 @@ export pgm=rrfs_sndp
 cp $PARMfv3/regional_sndp.parm.mono $DATA/regional_sndp.parm.mono
 cp $PARMfv3/regional_bufr.tbl $DATA/regional_bufr.tbl
 
-if [[ "${NET}" = "RTMA"* ]]; then
- ln -sf $DATA/regional_sndp.parm.mono fort.11
- ln -sf $DATA/regional_bufr.tbl       fort.32
- ln -sf $DATA/profilm.c1.${tmmark}    fort.66
- ln -sf $DATA/class1.bufr             fort.78
-else
- export FORT11="$DATA/regional_sndp.parm.mono"
- export FORT32="$DATA/regional_bufr.tbl"
- export FORT66="$DATA/profilm.c1.${tmmark}"
- export FORT78="$DATA/class1.bufr"
-fi
+ln -sf $DATA/regional_sndp.parm.mono fort.11
+ln -sf $DATA/regional_bufr.tbl       fort.32
+ln -sf $DATA/profilm.c1.${tmmark}    fort.66
+ln -sf $DATA/class1.bufr             fort.78
+
+# export FORT11="$DATA/regional_sndp.parm.mono"
+# export FORT32="$DATA/regional_bufr.tbl"
+# export FORT66="$DATA/profilm.c1.${tmmark}"
+# export FORT78="$DATA/class1.bufr"
+
 echo here model $model
 
 nlev=65
@@ -353,11 +381,8 @@ EOF
 
 mkdir -p ${COMOUT}/bufr.${cyc}
 
-if [[ "${NET}" = "RTMA"* ]]; then
-  ln -sf $DATA/class1.bufr fort.20
-else
-  export FORT20=$DATA/class1.bufr
-fi
+# export FORT20=$DATA/class1.bufr
+ln -sf $DATA/class1.bufr fort.20
 
 export DIRD=${COMOUT}/bufr.${cyc}/bufr
 
