@@ -122,7 +122,8 @@ $SCRIPTSdir/exrrfs_run_post.sh \
   cdate="${CDATE}" \
   fhr="${fhr}" \
   tmmark="${TMMARK}" \
-  cycle_type="${CYCLE_TYPE}"
+  cycle_type="${CYCLE_TYPE}" \
+  ensmem_indx="${ENSMEM_INDX}"
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then
