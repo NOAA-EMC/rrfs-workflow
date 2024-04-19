@@ -513,6 +513,7 @@ optionList[29]=GLMFED_DATA_MODE
 optionList[30]=DO_IODA_PREPBUFR
 optionList[31]=EBB_DCYCLE
 optionList[32]=PREP_MODEL_FOR_FED
+optionList[33]=DO_MINMAXTRH
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));
@@ -561,6 +562,7 @@ case $MACHINE in
     QUEUE_ANALYSIS=${QUEUE_ANALYSIS:-"dev"}
     QUEUE_PRDGEN=${QUEUE_PRDGEN:-"dev"}
     QUEUE_POST=${QUEUE_POST:-"dev"}
+    QUEUE_MINMAXTRH=${QUEUE_MINMAXTRH:-"dev"}
     ;;
 
   "HERA")
@@ -574,6 +576,7 @@ case $MACHINE in
     QUEUE_FCST=${QUEUE_FCST:-"batch"}
     QUEUE_PRDGEN=${QUEUE_PRDGEN:-"batch"}
     QUEUE_POST=${QUEUE_POST:-"batch"}
+    QUEUE_MINMAXTRH=${QUEUE_MINMAXTRH:-"batch"}
     ;;
 
   "ORION")
@@ -585,6 +588,7 @@ case $MACHINE in
     QUEUE_HPSS=${QUEUE_HPSS:-"batch"}
     PARTITION_FCST=${PARTITION_FCST:-"orion"}
     QUEUE_FCST=${QUEUE_FCST:-"batch"}
+    QUEUE_MINMAXTRH=${QUEUE_MINMAXTRH:-"batch"}
     ;;
 
   "HERCULES")
@@ -615,6 +619,8 @@ case $MACHINE in
     QUEUE_PRDGEN=${QUEUE_PRDGEN:-"batch"}
     PARTITION_POST=${PARTITION_POST:-"sjet,vjet,kjet,xjet"}
     QUEUE_POST=${QUEUE_POST:-"batch"}
+    PARTITION_MINMAXTRH=${PARTITION_MINMAXTRH:-"sjet,vjet,kjet,xjet"}
+    QUEUE_MINMAXTRH=${QUEUE_MINMAXTRH:-"batch"}
     ;;
 
 esac
@@ -830,6 +836,7 @@ LIB64dir="$HOMErrfs/sorc/build/lib64"
 FIXgsm=${FIXgsm:-"$HOMErrfs/fix/am"}
 FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"$HOMErrfs/fix/lam"}
 FIX_GSI=${FIX_GSI:-"${HOMErrfs}/fix/gsi"}
+FIX_MINMAXTRH=${FIX_MINMAXTRH:-"${HOMErrfs}/fix/minmaxt"}
 FIX_UPP=${FIX_UPP:-"${HOMErrfs}/fix/upp"}
 FIXprdgen=${FIXprdgen:-"$HOMErrfs/fix/prdgen"}
 FIX_CRTM=${FIX_CRTM:-"${CRTM_FIX}"}
@@ -1317,6 +1324,7 @@ FIXcrtm="${EXPTDIR}/fix_crtm"
 FIXuppcrtm="${EXPTDIR}/fix_upp_crtm"
 FIXsmokedust="${EXPTDIR}/fix_smoke_dust"
 FIXbufrsnd="${EXPTDIR}/fix_bufrsnd"
+FIXminmaxtrh="${EXPTDIR}/fix_minmaxt"
 SST_ROOT="${SST_ROOT}"
 
 CYCLE_BASEDIR="$STMP"
@@ -2478,6 +2486,7 @@ FIX_CRTM="${FIX_CRTM}"
 FIX_UPP_CRTM="${FIX_UPP_CRTM}"
 FIX_SMOKE_DUST="${FIX_SMOKE_DUST}"
 FIX_BUFRSND="${FIX_BUFRSND}"
+FIX_MINMAXTRH="${FIX_MINMAXTRH}"
 AIRCRAFT_REJECT="${AIRCRAFT_REJECT}"
 SFCOBS_USELIST="${SFCOBS_USELIST}"
 PARM_IODACONV="${PARM_IODACONV}"
