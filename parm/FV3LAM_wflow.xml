@@ -515,6 +515,9 @@ MODULES_RUN_TASK_FP script.
     <dependency>
       <and>
         <timedep><cyclestr offset="&START_TIME_PROCSMOKE;">@Y@m@d@H@M00</cyclestr></timedep>
+      {%- if do_retro %}
+      <datadep age="00:00:01:00"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/fcst_fv3lam/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+      {%- endif %}
       </and>
     </dependency>
 

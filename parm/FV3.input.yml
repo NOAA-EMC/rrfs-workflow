@@ -196,7 +196,7 @@ FV3_HRRR_gf:
     dust_opt : 1
     coarsepm_settling : 1
     smoke_conv_wet_coef : [0.5, 0.5, 0.5]
-    smoke_forecast : 0
+    smoke_forecast : 1
     aero_ind_fdb : false
     aero_dir_fdb : true
     addsmoke_flag : 1
@@ -304,7 +304,7 @@ FV3_RAP:
     dust_opt : 1
     coarsepm_settling : 1
     smoke_conv_wet_coef : [0.5, 0.5, 0.5]
-    smoke_forecast : 0
+    smoke_forecast : 1
     aero_ind_fdb : false
     aero_dir_fdb : false
     addsmoke_flag : 1
