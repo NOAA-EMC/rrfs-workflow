@@ -19,8 +19,9 @@ fhr=$1
 cyc=$2
 subpiece=$3
 domain=$4
-DATA=$5
-comout=$6
+prslev=$5
+DATA=$6
+comout=$7
 export compress_type=c3
 
 cd $DATA/prdgen_${domain}_${subpiece}
@@ -44,7 +45,7 @@ elif [ $domain == "pr" ]; then
 fi
 
 # Use different parm file for each subpiece
-wgrib2 $comout/rrfs.t${cyc}z.prslev.f${fhr}.grib2 | grep -F -f ${parmfile} | wgrib2 -i -grib inputs.grib${domain} $comout/rrfs.t${cyc}z.prslev.f${fhr}.grib2
+wgrib2 $comout/${prslev} | grep -F -f ${parmfile} | wgrib2 -i -grib inputs.grib${domain} $comout/${prslev}
 wgrib2 inputs.grib${domain} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib${domain}.uv
 wgrib2 inputs.grib${domain}.uv -set_bitmap 1 -set_grib_type ${compress_type} \
   -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
