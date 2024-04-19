@@ -60,6 +60,7 @@ valid_args=( \
 "fhr" \
 "tmmark" \
 "cycle_type" \
+"ensmem_indx" \
 )
 process_args valid_args "$@"
 #
@@ -373,7 +374,7 @@ net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
 
 # Include member number with ensemble forecast output
 if [ ${DO_ENSFCST} = "TRUE" ]; then
-  ensmem_num=$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')	  # 1,2,3,4,5 for REFS
+  ensmem_num=$(echo "${ensmem_indx}" | awk '{print $1+0}')	  # 1,2,3,4,5 for REFS
   bgdawp=${postprd_dir}/${net4}.t${cyc}z.m0${ensmem_num}.prslev.f${fhr}.${gridname}grib2
   bgrd3d=${postprd_dir}/${net4}.t${cyc}z.m0${ensmem_num}.natlev.f${fhr}.${gridname}grib2
   bgifi=${postprd_dir}/${net4}.t${cyc}z.m0${ensmem_num}.ififip.f${fhr}.${gridname}grib2
