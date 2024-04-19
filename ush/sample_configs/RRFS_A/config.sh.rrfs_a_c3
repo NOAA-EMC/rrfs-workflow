@@ -105,7 +105,6 @@ envir="para"
 NET="rrfs_a"
 TAG="c3v52"
 
-NCL_REGION="conus"
 MODEL="rrfs_a"
 RUN="rrfs"
 

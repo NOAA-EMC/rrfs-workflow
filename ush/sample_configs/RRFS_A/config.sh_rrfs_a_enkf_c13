@@ -117,7 +117,6 @@ FV3GFS_FILE_FMT_ICS="grib2"
 FV3GFS_FILE_FMT_LBCS="grib2"
 
 envir="para"
-NCL_REGION="conus"
 MODEL="rrfs_b"
 NET="rrfs_a"
 TAG="c13enkf32"

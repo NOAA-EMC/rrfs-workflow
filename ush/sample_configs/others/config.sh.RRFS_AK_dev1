@@ -124,9 +124,6 @@ envir="para"
 NET="RRFS_AK"
 TAG="RRFS_dev1_AK"
 
-NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
-NCL_HOME="/home/rtrr/RRFS/graphics"
-NCL_REGION="alaska"
 MODEL="RRFS_AK (dev1)"
 
 #

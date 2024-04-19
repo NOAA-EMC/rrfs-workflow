@@ -111,8 +111,6 @@ WRTCMP_quantize_nsd="18"
 
 regional_ensemble_option=5
 
-NCL_REGION="conus"
-
 . set_rrfs_config.sh
 
 NWGES="${PTMP}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files

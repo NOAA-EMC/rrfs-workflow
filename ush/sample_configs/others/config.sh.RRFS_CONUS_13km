@@ -92,7 +92,6 @@ envir="para"
 
 NET="rrfs"
 TAG="rrfs_c13v33"
-NCL_REGION="conus"
 MODEL="rrfs_c13v33"
 RUN="rrfs"
 

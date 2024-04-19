@@ -102,8 +102,6 @@ TESTBED_FIELDS_FN="testbed_fields_bgdawp.txt"
 TESTBED_FIELDS_FN2="testbed_fields_bgrd3d.txt"
 CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-rrfs.txt"
 CUSTOM_POST_PARAMS_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/params_grib2_tbl_new"
-NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
-NCL_HOME="/home/rtrr/RRFS/graphics"
 COMINgfs=""
 
 FV3GFS_FILE_FMT_ICS="grib2"

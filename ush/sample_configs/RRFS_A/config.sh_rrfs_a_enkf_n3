@@ -147,7 +147,6 @@ FV3GFS_FILE_FMT_LBCS="grib2"
 
 envir="para"
 NET="rrfs_a"
-NCL_REGION="na"
 MODEL="RRFS_A"
 
 if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then

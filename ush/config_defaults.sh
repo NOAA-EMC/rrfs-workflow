@@ -336,9 +336,6 @@ NWGES="/base/path/of/directory/containing/model/output/files"
 ENSCTRL_NWGES="/base/path/of/directory/containing/model/restart/files"
 RRFSE_NWGES="/base/path/of/directory/containing/model/output/files"
 
-NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
-NCL_HOME="/home/rtrr/RRFS/graphics"
-NCL_REGION="conus"
 MODEL="NO MODEL CHOSEN"
 
 OBSTYPE_SOURCE="rap"

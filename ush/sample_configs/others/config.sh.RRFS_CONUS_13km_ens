@@ -120,7 +120,6 @@ if [[ ${DO_ENSFCST} == "TRUE" ]]; then
   RUN="rrfs_conus_13km_ensfcst"
 fi
 envir="para"
-NCL_REGION="conus"
 MODEL="rrfs_b"
 NET="rrfs_a"
 TAG="c13enkf32"

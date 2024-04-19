@@ -106,7 +106,6 @@ envir="para"
 NET="RRFS_NA_3km"
 TAG="n3v47"
 
-NCL_REGION="conus"
 MODEL="rrfs_b"
 RUN="rrfs"
 

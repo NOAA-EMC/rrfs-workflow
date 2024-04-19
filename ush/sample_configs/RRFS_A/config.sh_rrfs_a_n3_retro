@@ -125,7 +125,6 @@ envir="para"
 NET="rrfs_a"
 TAG="n3v85"
 
-NCL_REGION="conus"
 MODEL="rrfs_a"
 RUN="rrfs"
 

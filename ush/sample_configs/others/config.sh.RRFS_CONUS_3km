@@ -119,7 +119,6 @@ envir="para"
 NET="rrfs_beta"
 TAG="c3v84"
 
-NCL_REGION="conus"
 MODEL="rrfs_beta"
 RUN="rrfs"
 

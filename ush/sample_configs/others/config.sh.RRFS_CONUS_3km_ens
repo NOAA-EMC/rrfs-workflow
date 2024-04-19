@@ -139,7 +139,6 @@ WTIME_RUN_FCST="01:00:00"
 WTIME_MAKE_LBCS="04:00:00"
 
 envir="para"
-NCL_REGION="conus"
 MODEL="RRFS_conus_3km"
 
 if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then

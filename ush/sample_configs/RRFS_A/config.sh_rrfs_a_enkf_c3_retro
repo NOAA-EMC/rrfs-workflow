@@ -149,7 +149,6 @@ EXTRN_MDL_SAVETYPE="GSL"
 
 envir="para"
 NET="rrfs_a"
-NCL_REGION="conus"
 MODEL="RRFS_A"
 
 SPPINT=360

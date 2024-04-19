@@ -129,7 +129,6 @@ FV3GFS_FILE_FMT_LBCS="grib2"
 
 envir="para"
 NET="rrfs_a"
-NCL_REGION="conus"
 MODEL="rrfs_b"
 
 SPPINT=360
