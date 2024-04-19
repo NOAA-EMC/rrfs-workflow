@@ -48,9 +48,6 @@ The log files and grib2 and plot products are located at:
 The log files are in: "/mnt/lfs4/BMC/rtwbl/mhu/rrfs/com/logs/${NET}/${RUN}.${YYYYMMDD}/${HH}"
 The products are in: "/mnt/lfs4/BMC/rtwbl/mhu/rrfs/com/${NET}/para/${RUN}.${YYYYMMDD}/${HH}"
 
-## archive directory
-ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_dev1"
-
 
 # Use group cycldef to construct cycles
 The current workflow uses groups to control which task should be in certain cycle (run time).
@@ -68,7 +65,6 @@ We have defined 10 groups and here is a list of the group:
 *   FORECAST_CYCLEDEF: cycle to run fv3lam; tasks include run_fcst, python_skewt, clean
 *   POSTPROC_CYCLEDEF: cycle to run postprocess; tasks include run_post, run_ncl, run_ncl_zip
 *   POSTPROC_LONG_CYCLEDEF: same as POSTPROC_CYCLEDEF but add more post-process tasks
-*   ARCHIVE_CYCLEDEF: cycle to run archive
 
 ## setup cycles using CYCLEDEF and related parameters
 The setup of CYCLEDEF is decided by experiment target and available data. We will discuss this topic in three sections: analysis and forecast; prepare initial and boundary; postprocess
@@ -238,4 +234,4 @@ RADARREFL_TIMELEVEL will set how often and which minutes after the cycle hour to
 FH_DFI_RADAR will decide when radar tten will be used in the forecast. Here the example is to use radar tten 
 in the first 30 minutes of the forecast and read the radar tten at 00 and 15 minutes of the forecast.
 
-# Archive (levels of archive) and clean (control how many cycles we need to clean) process in retro 
+# Clean (control how many cycles we need to clean) process in retro

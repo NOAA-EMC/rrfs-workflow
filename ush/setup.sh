@@ -605,8 +605,6 @@ case $MACHINE in
     QUEUE_HPSS=${QUEUE_HPSS:-"batch"}
     PARTITION_FCST=${PARTITION_FCST:-"sjet,vjet,kjet,xjet"}
     QUEUE_FCST=${QUEUE_FCST:-"batch"}
-    PARTITION_GRAPHICS=${PARTITION_GRAPHICS:-"kjet,xjet"}
-    QUEUE_GRAPHICS=${QUEUE_GRAPHICS:-"batch"}
     PARTITION_ANALYSIS=${PARTITION_ANALYSIS:-"vjet,kjet,xjet"}
     QUEUE_ANALYSIS=${QUEUE_ANALYSIS:-"batch"}
     PARTITION_PRDGEN=${PARTITION_PRDGEN:-"sjet,vjet,kjet,xjet"}
@@ -927,18 +925,6 @@ if [ ! -d "${UPP_DIR}" ]; then
 The base directory in which the UPP source code should be located
 (UPP_DIR) does not exist:
   UPP_DIR = \"${UPP_DIR}\"
-Please clone the external repository containing the code in this directory,
-build the executable, and then rerun the workflow."
-fi
-#
-# Get the base directory of the Python Graphics code.
-#
-PYTHON_GRAPHICS_DIR="${HOMErrfs}/python_graphics"
-if [ ! -d "${PYTHON_GRAPHICS_DIR}" ]; then
-  print_err_msg_exit "
-The base directory in which the Python Graphics source code should be located
-(PYTHON_GRAPHICS_DIR) does not exist:
-  PYTHON_GRAPHICS_DIR = \"${PYTHON_GRAPHICS_DIR}\"
 Please clone the external repository containing the code in this directory,
 build the executable, and then rerun the workflow."
 fi
@@ -2441,12 +2427,7 @@ UFS_UTILS_DIR="${UFS_UTILS_DIR}"
 SFC_CLIMO_INPUT_DIR="${SFC_CLIMO_INPUT_DIR}"
 TOPO_DIR="${TOPO_DIR}"
 UPP_DIR="${UPP_DIR}"
-PYTHON_GRAPHICS_DIR="${PYTHON_GRAPHICS_DIR}"
 
-ARCHIVEDIR="${ARCHIVEDIR}"
-NCARG_ROOT="${NCARG_ROOT}"
-NCL_HOME="${NCL_HOME}"
-NCL_REGION="${NCL_REGION}"
 MODEL="${MODEL}"
 
 EXPTDIR="$EXPTDIR"

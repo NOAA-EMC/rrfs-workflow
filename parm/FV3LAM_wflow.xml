@@ -23,7 +23,6 @@ Parameters needed by the job scheduler.
 <!ENTITY QUEUE_POST      "{{ queue_post }}">
 <!ENTITY QUEUE_PRDGEN    "{{ queue_prdgen }}">
 <!ENTITY QUEUE_ANALYSIS  "{{ queue_analysis }}">
-<!ENTITY QUEUE_GRAPHICS  "{{ queue_graphics }}">
 <!ENTITY RRFS_RESERVE  {% if reservation %}"--reservation={{ reservation }}"{% else %}""{% endif %}>
 <!ENTITY RRFS_POST_RESERVE  {% if reservation_post %}"--reservation={{ reservation_post }}"{% else %}""{% endif %}>
 
@@ -70,7 +69,6 @@ Workflow task names.
 <!ENTITY RUN_RECENTER_TN      "run_recenter">
 <!ENTITY RUN_BUFR_TN          "run_bufr">
 <!ENTITY CLEAN_TN             "run_clean">
-<!ENTITY ARCHIVE_TN           "run_archive">
 <!ENTITY RUN_SMOKE_TN         "run_proc_smoke">
 <!ENTITY RUN_PM_TN            "run_proc_pm">
 
@@ -151,15 +149,6 @@ tasks.
 <!ENTITY RSRV_PRDGEN    "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_PRDGEN;</queue><partition>{{ partition_prdgen }}</partition><native>&RRFS_POST_RESERVE;</native>">
 {%- else %}
 <!ENTITY RSRV_PRDGEN    "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_PRDGEN;</queue>">
-{%- endif %}
-{%- if partition_graphics is not none %}
-{%- if do_ens_graphics %}
-<!ENTITY RSRV_GRAPHICS   "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_GRAPHICS;</queue><partition>{{ partition_graphics }}</partition><native>&RRFS_POST_RESERVE;</native>">
-{%- else %}
-<!ENTITY RSRV_GRAPHICS   "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_GRAPHICS;</queue><partition>{{ partition_graphics }}</partition><native>&RRFS_POST_RESERVE;</native>">
-{%- endif %}
-{%- else %}
-<!ENTITY RSRV_GRAPHICS   "<account>&SERVICE_ACCOUNT;</account><queue>&QUEUE_GRAPHICS;</queue><native>--exclusive</native>">
 {%- endif %}
 
 <!--
@@ -284,7 +273,6 @@ define resources used for each tasks
 <!ENTITY DEADLINE_ANALYSIS "999:00:00">
 <!ENTITY DEADLINE_FCST     "999:30:00">
 <!ENTITY DEADLINE_POST     "999:00:00">
-<!ENTITY DEADLINE_GRAPHICS "999:00:00">
 <!ENTITY DEADLINE_RECENTER "999:00:00">
 <!ENTITY DEADLINE_SAVE_RESTART "999:00:00">
 <!ENTITY WALL_LIMIT_PRE ''>
@@ -293,7 +281,6 @@ define resources used for each tasks
 <!ENTITY WALL_LIMIT_POST ''>
 <!ENTITY WALL_LIMIT_BUFR ''>
 <!ENTITY WALL_LIMIT_BUFRSND ''>
-<!ENTITY WALL_LIMIT_GRAPHICS ''>
 <!ENTITY WALL_LIMIT_RECENTER ''>
 <!ENTITY WALL_LIMIT_SAVE_RESTART ''>
 {%- else %}
@@ -301,7 +288,6 @@ define resources used for each tasks
 <!ENTITY DEADLINE_ANALYSIS "16:00:00">
 <!ENTITY DEADLINE_FCST     "23:30:00">
 <!ENTITY DEADLINE_POST     "24:00:00">
-<!ENTITY DEADLINE_GRAPHICS "24:00:00">
 <!ENTITY DEADLINE_RECENTER "24:00:00">
 <!ENTITY DEADLINE_SAVE_RESTART "24:00:00">
 <!ENTITY WALL_LIMIT_PRE '<deadline><cyclestr offset="&DEADLINE_PRE;">@Y@m@d@H@M</cyclestr></deadline>'>
@@ -310,7 +296,6 @@ define resources used for each tasks
 <!ENTITY WALL_LIMIT_POST '<deadline><cyclestr offset="&DEADLINE_POST;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_BUFR '<deadline><cyclestr offset="&DEADLINE_POST;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_BUFRSND '<deadline><cyclestr offset="&DEADLINE_POST;">@Y@m@d@H@M</cyclestr></deadline>'>
-<!ENTITY WALL_LIMIT_GRAPHICS '<deadline><cyclestr offset="&DEADLINE_GRAPHICS;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_RECENTER '<deadline><cyclestr offset="&DEADLINE_RECENTER;">@Y@m@d@H@M</cyclestr></deadline>'>
 <!ENTITY WALL_LIMIT_SAVE_RESTART '<deadline><cyclestr offset="&DEADLINE_SAVE_RESTART;">@Y@m@d@H@M</cyclestr></deadline>'>
 {%- endif %}
@@ -356,7 +341,6 @@ define resources used for each tasks
   <cycledef group="savedacyc"> {{ saveda_cycledef }} </cycledef>
 {%- endif %}
   <cycledef group="recentercyc"> {{ recenter_cycledef }} </cycledef>
-  <cycledef group="archive">  {{ archive_cycledef }} </cycledef> 
 
   <log>
     <cyclestr>&LOGDIR;/FV3LAM_wflow_&TAG;.log</cyclestr>
@@ -3537,89 +3521,6 @@ MODULES_RUN_TASK_FP script.
 
 {%- endif %}
 
-{%- if machine in ["JET", "HERA"]  %}
-{%- if not do_ensemble %}
-<!--
-************************************************************************
-************************************************************************
--->
-  <metatask name="python_maps">
-
-    <var name="tilelabel"> {{ tilelabels }} </var>
-    <var name="tileset"> {{ tilesets }} </var>
-    <task name="python_maps{{ uscore_ensmem_name }}_#tilelabel#" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_run_post }}">
-
-      &RSRV_GRAPHICS;
-      &WALL_LIMIT_GRAPHICS;
-
-      <walltime>{{ wtime_run_fcst_long }}</walltime>
-      <nodes>{{ nnodes_run_graphics }}:ppn={{ ppn_run_graphics }}</nodes>
-      <jobname><cyclestr>&TAG;_python{{ uscore_ensmem_name }}_@H_#tilelabel#</cyclestr></jobname>
-      <join><cyclestr>&LOGDIR;/python_&TAG;{{ uscore_ensmem_name }}_#tilelabel#.log</cyclestr></join>
-      <command>&LOAD_MODULES_RUN_TASK_FP; "run_graphics" "&JOBSdir;/JRRFS_RUN_PYTHON_GRAPHICS"</command>
-
-      <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-      <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-      <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-      <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-      <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
-      <envar><name>GRAPHICS_TYPE</name><value>maps</value></envar>
-      <envar><name>TILES</name><value>#tileset#</value></envar>
-      <envar><name>TILELABEL</name><value>#tilelabel#</value></envar>
-      <envar><name>ENSCTRL_COMOUT_BASEDIR</name><value>&ENSCTRL_COMOUT_BASEDIR;</value></envar>
-
-      <dependency>
-        <or>
-{%- if postproc_nsout_min > 0 %}
-          <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f{{ "000-%02d-%02d" % ( dt_atmos//60,dt_atmos%60 )  }}"/>
-          <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f{{ "000-%02d-%02d" % ( dt_atmos//60,dt_atmos%60 )  }}_long"/>
-{%- else %}
-          <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000"/>
-          <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000_long"/>
-{%- endif %}
-        </or>
-      </dependency>
-    </task>
-  </metatask>
-<!--
-************************************************************************
-************************************************************************
--->
-  <task name="python_skewts{{ uscore_ensmem_name }}" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_run_post }}">
-
-    &RSRV_GRAPHICS;
-    &WALL_LIMIT_GRAPHICS;
-
-    <walltime>{{ wtime_run_fcst_long }}</walltime>
-    <nodes>{{ nnodes_run_graphics }}:ppn={{ ppn_run_graphics }}</nodes>
-    <jobname><cyclestr>&TAG;_python{{ uscore_ensmem_name }}_@H_skewts</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/python_skewts_&TAG;{{ uscore_ensmem_name }}_@H.log</cyclestr></join>
-    <command>&LOAD_MODULES_RUN_TASK_FP; "run_graphics" "&JOBSdir;/JRRFS_RUN_PYTHON_GRAPHICS"</command>
-
-    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
-    <envar><name>GRAPHICS_TYPE</name><value>skewts</value></envar>
-      <envar><name>ENSCTRL_COMOUT_BASEDIR</name><value>&ENSCTRL_COMOUT_BASEDIR;</value></envar>
-
-    <dependency>
-      <or>
-{%- if postproc_nsout_min > 0 %}
-        <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f{{ "000-%02d-%02d" % ( dt_atmos//60,dt_atmos%60 )  }}"/>
-        <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f{{ "000-%02d-%02d" % ( dt_atmos//60,dt_atmos%60 )  }}_long"/>
-{%- else %}
-        <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000"/>
-        <taskdep task="&RUN_PRDGEN_TN;{{ uscore_ensmem_name }}_f000_long"/>
-{%- endif %}
-      </or>
-    </dependency>
-  </task>
-
-{%- endif %}
-{%- endif %}
-
 {%- if do_ensemble %}
   </metatask>
 {%- endif %}
@@ -3649,163 +3550,6 @@ MODULES_RUN_TASK_FP script.
 
 
   </task>
-
-{%- if machine in ["JET", "HERA"]  %}
-
-{%- if do_ensemble %}
-<!--
-************************************************************************
-************************************************************************
--->
-  <task name="&ARCHIVE_TN;_ens" cycledefs="archive" maxtries="{{ maxtries_run_post }}">
-
-    &RSRV_HPSS;
-
-    <command>&JOBSdir;/../scripts/exrrfs_archive_ens.ksh</command>
-    <nodes> 1:ppn=1</nodes>
-    <walltime>23:00:00</walltime>
-    <memory>24G</memory>
-    <jobname>&TAG;_&ARCHIVE_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&ARCHIVE_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
-
-    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
-
-  </task>
-
-{%- else %}
-<!--
-************************************************************************
-************************************************************************
--->
-  <task name="&ARCHIVE_TN;" cycledefs="archive" maxtries="{{ maxtries_run_post }}">
-
-    &RSRV_HPSS;
-
-    <command>&JOBSdir;/../scripts/exrrfs_archive.ksh</command>
-    <nodes> 1:ppn=1</nodes>
-    <walltime>08:00:00</walltime>
-    <memory>80G</memory>
-    <jobname>&TAG;_&ARCHIVE_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&ARCHIVE_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
-
-    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-
-    <dependency>
-       <or>
-         <and>
-           <metataskdep metatask="python_maps"/>
-           <taskdep task="python_skewts"/>
-         </and>
-
-         <and>
-{%- if postproc_nsout_min > 0 %}
-           <taskdep task="&RUN_PRDGEN_TN;_f{{ "000-%02d-%02d" % ( dt_atmos//60,dt_atmos%60 )  }}"/>
-{%- else %}
-           <taskdep task="&RUN_PRDGEN_TN;_f000"/>
-{%- endif %}
-           <metataskdep metatask="python_maps" state="Dead"/>
-           <taskdep task="python_skewts" state="Dead"/>
-         </and>
-       </or>
-    </dependency>
-  </task>
-{%- endif %}
-{%- endif %}
-
-{%- if machine in ["WCOSS2"]  %}
-<!--
-************************************************************************
-************************************************************************
--->
-  <task name="&ARCHIVE_TN;" cycledefs="archive" maxtries="{{ maxtries_run_post }}">
-
-    &RSRV_HPSS;
-
-    <command>&JOBSdir;/../scripts/exrrfs_archive_emc.ksh</command>
-    <nodes>1:ppn=1</nodes>
-    <walltime>08:00:00</walltime>
-    <jobname>&TAG;_&ARCHIVE_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&ARCHIVE_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
-
-    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-
-    <dependency>
-       <or>
-          <and>
-            <or>
-             <streq><left>00</left><right><cyclestr>@H</cyclestr></right></streq>
-             <streq><left>12</left><right><cyclestr>@H</cyclestr></right></streq>
-            </or>
-            <taskdep task="&RUN_PRDGEN_TN;_f060"/>
-          </and>
-          <and>
-            <strneq><left>00</left><right><cyclestr>@H</cyclestr></right></strneq>
-            <strneq><left>12</left><right><cyclestr>@H</cyclestr></right></strneq>
-            <taskdep task="&RUN_PRDGEN_TN;_f003"/>
-          </and>
-       </or>
-    </dependency>
-
-  </task>
-{%- endif %}
-
-{% if do_ensemble and do_ens_graphics %}
-{%- if machine in ["JET", "HERA"] %}
-<!--
-************************************************************************
-************************************************************************
--->
-  <metatask name="ensemble_maps">
-
-    <var name="tilelabel"> {{ tilelabels }} </var>
-    <var name="tileset"> {{ tilesets }} </var>
-    <task name="python_maps_#tilelabel#" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_run_post }}">
-
-      &RSRV_GRAPHICS;
-      &WALL_LIMIT_GRAPHICS;
-
-      <walltime>{{ wtime_run_fcst }}</walltime>
-      <nodes>{{ nnodes_run_graphics }}:ppn={{ ppn_run_graphics }}</nodes>
-      <jobname><cyclestr>&TAG;_python_@H_#tilelabel#</cyclestr></jobname>
-      <join><cyclestr>&LOGDIR;/python_&TAG;_#tilelabel#.log</cyclestr></join>
-      <command>&LOAD_MODULES_RUN_TASK_FP; "run_graphics" "&JOBSdir;/JRRFS_RUN_PYTHON_GRAPHICS"</command>
-
-      <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-      <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-      <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-      <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-      <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
-      <envar><name>GRAPHICS_TYPE</name><value>enspanel</value></envar>
-      <envar><name>TILES</name><value>#tileset#</value></envar>
-      <envar><name>TILELABEL</name><value>#tilelabel#</value></envar>
-      <envar><name>ALL_LEADS</name><value>FALSE</value></envar>
-      <envar><name>ENSCTRL_COMOUT_BASEDIR</name><value>&ENSCTRL_COMOUT_BASEDIR;</value></envar>
-
-      <dependency>
-        <and>
-          <sh>find <cyclestr>&ENSCTRL_COMOUT_DIR;/@H/&NET;.t@Hz.natlev.f000*grib2</cyclestr> -mmin +5 </sh>
-{%- if postproc_nsout_min > 0 %}
-          {%- for m in range(1, 10) %}
-          <taskdep task="&RUN_PRDGEN_TN;_mem{{ "%04d" % m }}_f{{ "000-%02d-%02d" % ( dt_atmos//60,dt_atmos%60 )  }}"/>
-          {%- endfor %}
-{%- else %}
-          {%- for m in range(1, 10) %}
-          <taskdep task="&RUN_PRDGEN_TN;_mem{{ "%04d" % m }}_f000"/>
-          {%- endfor %}
-{%- endif %}
-        </and>
-      </dependency>
-    </task>
-  </metatask>
-
-{%- endif %}
-{%- endif %}
 
 {%- if do_ensemble and do_ensfcst and do_enspost %}
 <!--
@@ -3844,41 +3588,6 @@ MODULES_RUN_TASK_FP script.
     </task>
   </metatask>
 
-{% if machine in ["JET", "HERA"] %}
-<!--
-************************************************************************
-************************************************************************
--->
-  <task name="python_enspost_maps" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_run_post }}">
-
-    &RSRV_GRAPHICS;
-    &WALL_LIMIT_GRAPHICS;
-
-    <walltime>{{ wtime_run_enspost }}</walltime>
-    <nodes>{{ nnodes_run_graphics }}:ppn={{ ppn_run_graphics }}</nodes>
-    <jobname><cyclestr>&TAG;_python_@H_enspost_maps</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/python_enspost_maps_&TAG;.log</cyclestr></join>
-    <command>&LOAD_MODULES_RUN_TASK_FP; "run_graphics" "&JOBSdir;/JRRFS_RUN_PYTHON_GRAPHICS"</command>
-
-    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
-    <envar><name>GRAPHICS_TYPE</name><value>maps</value></envar>
-    <envar><name>TILES</name><value>full</value></envar>
-    <envar><name>TILELABEL</name><value>full</value></envar>
-    <envar><name>ALL_LEADS</name><value>FALSE</value></envar>
-    <envar><name>ENSCTRL_COMOUT_BASEDIR</name><value>&ENSCTRL_COMOUT_BASEDIR;</value></envar>
-    <envar><name>ENSPROD</name><value>ensprod</value></envar>
-    <envar><name>IMAGES_FN</name><value>rrfs_ensprod.yml</value></envar>
-
-    <dependency>
-      <metataskdep metatask='enspost'/>
-    </dependency>
-  </task>
-
-{%- endif %}
 {%- endif %}
 
 </workflow>

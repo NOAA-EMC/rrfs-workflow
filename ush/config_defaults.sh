@@ -159,8 +159,6 @@ QUEUE_HPSS=""
 PARTITION_SFC_CLIMO=""
 PARTITION_FCST=""
 QUEUE_FCST=""
-PARTITION_GRAPHICS=""
-QUEUE_GRAPHICS=""
 PARTITION_ANALYSIS=""
 QUEUE_ANALYSIS=""
 PARTITION_PRDGEN=""
@@ -338,10 +336,6 @@ NWGES="/base/path/of/directory/containing/model/output/files"
 ENSCTRL_NWGES="/base/path/of/directory/containing/model/restart/files"
 RRFSE_NWGES="/base/path/of/directory/containing/model/output/files"
 
-ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_dev1"
-NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
-NCL_HOME="/home/rtrr/RRFS/graphics"
-NCL_REGION="conus"
 MODEL="NO MODEL CHOSEN"
 
 OBSTYPE_SOURCE="rap"
@@ -673,10 +667,6 @@ CYCL_HRS_HYB_FV3LAM_ENS=( "99" )
 # PRODLONG_CYCLEDEF:
 # same as PROD_CYCLEDEF, but for long forecast 
 #
-# ARCHIVE_CYCLEDEF:
-# cycle definition for "archive" group
-# This group runs: run_archive
-#
 #-----------------------------------------------------------------------
 #
 CYCLEDAY="*"
@@ -689,7 +679,6 @@ SPINUP_CYCLEDEF="00 01 01 01 2100 *"
 PROD_CYCLEDEF="00 01 01 01 2100 *"
 RECENTER_CYCLEDEF="00 01 01 01 2100 *"
 PRODLONG_CYCLEDEF="00 01 01 01 2100 *"
-ARCHIVE_CYCLEDEF="00 01 01 01 2100 *"
 SAVEDA_CYCLEDEF="00 01 01 01 2100 *"
 #
 #-----------------------------------------------------------------------
@@ -1549,10 +1538,6 @@ SAVE_CYCLE_LOG="TRUE"
 # "" or "GSL":  RTMA's observations follow the GSL naming convention
 #       "NCO":  RTMA's observations follow the NCO naming convention
 #
-# PYTHON_GRAPHICS_YML_FN:
-# The name of the yml file under ${PYTHON_GRAPHICS_DIR}/image_lists
-# to be used by current application
-#
 #-----------------------------------------------------------------------
 #
 RUN_TASK_MAKE_GRID="FALSE"
@@ -1571,7 +1556,6 @@ NCORES_PER_NODE=24 #Jet default value
 IS_RTMA="FALSE"
 FG_ROOTDIR=""
 RTMA_OBS_FEED=""
-PYTHON_GRAPHICS_YML_FN="rrfs_subset.yml"
 #
 #-----------------------------------------------------------------------
 #
@@ -1872,7 +1856,6 @@ NNODES_PROC_SMOKE="1"
 NNODES_PROC_PM="1"
 NNODES_RUN_REF2TTEN="1"
 NNODES_RUN_NONVARCLDANL="1"
-NNODES_RUN_GRAPHICS="1"
 NNODES_RUN_ENSPOST="1"
 NNODES_RUN_BUFRSND="1"
 NNODES_SAVE_RESTART="1"
@@ -1914,7 +1897,6 @@ PPN_PROC_SMOKE="1"
 PPN_PROC_PM="1"
 PPN_RUN_REF2TTEN="1"
 PPN_RUN_NONVARCLDANL="1"
-PPN_RUN_GRAPHICS="12"
 PPN_RUN_ENSPOST="1"
 PPN_RUN_BUFRSND="28"
 PPN_SAVE_RESTART="1"
@@ -2172,10 +2154,6 @@ TILE_SETS="full"
 # DO_GSIDIAG_OFFLINE:
 # Decide whether or not to run GSI diag generation outside of the GSI task  
 #
-# DO_ENS_GRAPHICS:
-# Flag to turn on/off ensemble graphics. Turns OFF deterministic
-# graphics.
-#
 # DO_ENSPOST:
 # Flag to turn on/off python ensemble postprocessing for WPC testbeds.
 #
@@ -2246,7 +2224,6 @@ DO_ENKF_RADAR_REF="FALSE"
 DO_ENVAR_RADAR_REF="FALSE"
 DO_ENVAR_RADAR_REF_ONCE="FALSE"
 DO_RECENTER="FALSE"
-DO_ENS_GRAPHICS="FALSE"
 DO_ENSPOST="FALSE"
 DO_ENSINIT="FALSE"
 DO_SAVE_DA_OUTPUT="FALSE"
