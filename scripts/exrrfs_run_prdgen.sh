@@ -59,6 +59,7 @@ valid_args=( \
 "cdate" \
 "fhr" \
 "tmmark" \
+"ensmem_indx" \
 )
 process_args valid_args "$@"
 #
@@ -191,7 +192,7 @@ net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
 #
 # Include member number with ensemble forecast output
 if [ ${DO_ENSFCST} = "TRUE" ]; then
-  ensmem_num=$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')   # 1,2,3,4,5 for REFS
+  ensmem_num=$(echo "${ensmem_indx}" | awk '{print $1+0}')   # 1,2,3,4,5 for REFS
   prslev=${net4}.t${cyc}z.m0${ensmem_num}.prslev.f${fhr}.${gridname}grib2
   natlev=${net4}.t${cyc}z.m0${ensmem_num}.natlev.f${fhr}.${gridname}grib2
   ififip=${net4}.t${cyc}z.m0${ensmem_num}.ififip.f${fhr}.${gridname}grib2
@@ -311,7 +312,7 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
       for task in $(seq ${tasks[count]})
       do
         mkdir -p $DATAprdgen/prdgen_${domain}_${task}
-        echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc $task $domain ${DATAprdgen} ${COMOUT} &" >> $DATAprdgen/poescript_${fhr}
+        echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc $task $domain $prslev ${DATAprdgen} ${COMOUT} &" >> $DATAprdgen/poescript_${fhr}
       done
       count=$count+1
     done
