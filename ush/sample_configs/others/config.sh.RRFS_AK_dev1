@@ -9,7 +9,6 @@ if [[ -n $RESERVATION ]] ; then
   SERVICE_ACCOUNT=nrtrr
   PARTITION_DEFAULT=kjet
   PARTITION_FCST=kjet
-  PARTITION_GRAPHICS=kjet,xjet,tjet,ujet,vjet
   PARTITION_ANALYSIS=kjet
 fi
 
@@ -89,7 +88,6 @@ else
   if [[ $DO_SPINUP == "TRUE" ]] ; then
     SPINUP_CYCLEDEF="00 03-08,15-20 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
   fi
-  ARCHIVE_CYCLEDEF="${DATE_FIRST_CYCL}0700 ${DATE_LAST_CYCL}2300 24:00:00"
 fi
 
 FCST_LEN_HRS="18"
@@ -126,7 +124,6 @@ envir="para"
 NET="RRFS_AK"
 TAG="RRFS_dev1_AK"
 
-ARCHIVEDIR="/5year/BMC/wrfruc/rrfs_ak_dev1"
 NCARG_ROOT="/apps/ncl/6.5.0-CentOS6.10_64bit_nodap_gnu447"
 NCL_HOME="/home/rtrr/RRFS/graphics"
 NCL_REGION="alaska"

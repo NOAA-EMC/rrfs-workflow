@@ -177,8 +177,6 @@ settings="\
   'partition_sfc_climo': ${PARTITION_SFC_CLIMO}
   'partition_fcst': ${PARTITION_FCST}
   'queue_fcst': ${QUEUE_FCST}
-  'partition_graphics': ${PARTITION_GRAPHICS}
-  'queue_graphics': ${QUEUE_GRAPHICS}
   'machine': ${MACHINE}
   'partition_analysis': ${PARTITION_ANALYSIS}
   'queue_analysis': ${QUEUE_ANALYSIS}
@@ -259,7 +257,6 @@ settings="\
   'nnodes_proc_pm': ${NNODES_PROC_PM}
   'nnodes_run_ref2tten': ${NNODES_RUN_REF2TTEN}
   'nnodes_run_nonvarcldanl': ${NNODES_RUN_NONVARCLDANL}
-  'nnodes_run_graphics': ${NNODES_RUN_GRAPHICS}
   'nnodes_run_enspost': ${NNODES_RUN_ENSPOST}
   'nnodes_run_bufrsnd': ${NNODES_RUN_BUFRSND}
   'nnodes_save_restart': ${NNODES_SAVE_RESTART}
@@ -305,7 +302,6 @@ settings="\
   'ppn_proc_pm': ${PPN_PROC_PM}
   'ppn_run_ref2tten': ${PPN_RUN_REF2TTEN}
   'ppn_run_nonvarcldanl': ${PPN_RUN_NONVARCLDANL}
-  'ppn_run_graphics': ${PPN_RUN_GRAPHICS}
   'ppn_run_enspost': ${PPN_RUN_ENSPOST}
   'ppn_run_bufrsnd': ${PPN_RUN_BUFRSND}
   'ppn_save_restart': ${PPN_SAVE_RESTART}
@@ -496,7 +492,6 @@ settings="\
   'prodlong_cycledef': ${PRODLONG_CYCLEDEF}
   'saveda_cycledef': ${SAVEDA_CYCLEDEF}
   'recenter_cycledef': ${RECENTER_CYCLEDEF}
-  'archive_cycledef': ${ARCHIVE_CYCLEDEF}
   'dt_atmos': ${DT_ATMOS}
 #
 # boundary, forecast, and post process length.
@@ -532,7 +527,6 @@ settings="\
   'do_envar_radar_ref_once': ${DO_ENVAR_RADAR_REF_ONCE}
   'do_recenter': ${DO_RECENTER}
   'do_bufrsnd': ${DO_BUFRSND}
-  'do_ens_graphics': ${DO_ENS_GRAPHICS}
   'do_enspost': ${DO_ENSPOST}
   'do_ensinit': ${DO_ENSINIT}
   'do_save_da_output': ${DO_SAVE_DA_OUTPUT}
@@ -584,11 +578,6 @@ settings="\
 # PM related parameters.
 #
   'do_pm_da': ${DO_PM_DA}
-#
-# graphics related parameters
-#
-  'tilelabels': \"${TILE_LABELS}\"
-  'tilesets': \"${TILE_SETS}\"
 #
 #  retrospective experiments
 #

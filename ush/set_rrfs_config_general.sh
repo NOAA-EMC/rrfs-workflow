@@ -7,7 +7,6 @@ if [[ $MACHINE == "jet" ]] ; then
     HPSS_ACCOUNT=nrtrr
     PARTITION_DEFAULT=kjet
     PARTITION_FCST=kjet
-    PARTITION_GRAPHICS=kjet
     PARTITION_ANALYSIS=kjet
     PARTITION_PRDGEN=kjet
     PARTITION_POST=kjet
@@ -16,7 +15,6 @@ if [[ $MACHINE == "jet" ]] ; then
     QUEUE_FCST="rth"
     QUEUE_ANALYSIS="rth"
     QUEUE_PRDGEN="rth"
-    QUEUE_GRAPHICS="rth"
     QUEUE_HPSS="batch"
     QUEUE_POST="rth"
     RESERVATION_POST="rrfsdet"
@@ -36,14 +34,12 @@ elif [[ $MACHINE == "hera" ]] ; then
   PARTITION_FCST=""
   QUEUE_ANALYSIS="batch"
   QUEUE_PRDGEN="batch"
-  QUEUE_GRAPHICS="batch"
 
 elif [[ $MACHINE == "orion" ]] ; then
   ACCOUNT="${ACCOUNT:-fv3-cam}"
   PARTITION_ANALYSIS=orion
   QUEUE_ANALYSIS="batch"
   QUEUE_PRDGEN="batch"
-  QUEUE_GRAPHICS="batch"
   QUEUE_POST="batch"
   NCORES_PER_NODE=24
 
@@ -52,7 +48,6 @@ elif [[ $MACHINE == "hercules" ]] ; then
   PARTITION_ANALYSIS=hercules
   QUEUE_ANALYSIS="batch"
   QUEUE_PRDGEN="batch"
-  QUEUE_GRAPHICS="batch"
   QUEUE_POST="batch"
   NCORES_PER_NODE=24
 
@@ -67,7 +62,6 @@ elif [[ $MACHINE == "wcoss2" ]] ; then
     QUEUE_HPSS="dev_transfer"
     QUEUE_POST="pridev"
     QUEUE_PRDGEN="pridev"
-    QUEUE_GRAPHICS="pridev"
   elif [[ "${envir}" == "prod" ]]; then
     QUEUE_DEFAULT="prod"
     QUEUE_ANALYSIS="prod"
@@ -75,7 +69,6 @@ elif [[ $MACHINE == "wcoss2" ]] ; then
     QUEUE_HPSS="prod_transfer"
     QUEUE_POST="prod"
     QUEUE_PRDGEN="prod"
-    QUEUE_GRAPHICS="prod"
   else
     QUEUE_DEFAULT="dev"
     QUEUE_ANALYSIS="dev"
@@ -83,7 +76,6 @@ elif [[ $MACHINE == "wcoss2" ]] ; then
     QUEUE_HPSS="dev_transfer"
     QUEUE_POST="dev"
     QUEUE_PRDGEN="dev"
-    QUEUE_GRAPHICS="dev"
   fi
   if [[ $MACHINETYPE == "backup" ]] ; then
     QUEUE_DEFAULT="devhigh"
@@ -91,14 +83,12 @@ elif [[ $MACHINE == "wcoss2" ]] ; then
     QUEUE_ANALYSIS="devmax"
     QUEUE_POST="devhigh"
     QUEUE_PRDGEN="devhigh"
-    QUEUE_GRAPHICS="devhigh"
   elif [[ $MACHINETYPE == "person" ]] ; then
     QUEUE_DEFAULT="dev"
     QUEUE_FCST="dev"
     QUEUE_ANALYSIS="dev"
     QUEUE_POST="dev"
     QUEUE_PRDGEN="dev"
-    QUEUE_GRAPHICS="dev"
   fi
 fi
 

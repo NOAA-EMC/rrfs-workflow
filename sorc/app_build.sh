@@ -278,10 +278,6 @@ if [ "${EXTRN}" = true ]; then
     printf "... removing GSI ...\n"
     rm -rf "${SORC_DIR}/gsi"
   fi
-  if [ -d "${HOME_DIR}/python_graphics" ]; then
-    printf "... removing python_graphics ...\n"
-    rm -rf "${HOME_DIR}/python_graphics"
-  fi
   if [ -d "${SORC_DIR}/AQM-utils" ]; then
     printf "... removing AQM-utils ...\n"
     rm -rf "${SORC_DIR}/AQM-utils"
