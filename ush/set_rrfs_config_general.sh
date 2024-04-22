@@ -402,11 +402,11 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then
     NNODES_BLEND_ICS="1"
     NNODES_MAKE_LBCS="1"
     NNODES_RUN_POST="1"
-    NCORES_RUN_ANALYSIS=60
-    NATIVE_RUN_ANALYSIS="--cpus-per-task 4 --exclusive"
+    NCORES_RUN_ANALYSIS=120
+    NATIVE_RUN_ANALYSIS="--cpus-per-task 8 --exclusive"
 
-    LAYOUT_X=12
-    LAYOUT_Y=6
+    LAYOUT_X=8
+    LAYOUT_Y=10
 
     PPN_MAKE_ICS="20"
     PPN_BLEND_ICS="8"
@@ -417,7 +417,7 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then
     PPN_RUN_ANALYSIS="20"
     NNODES_RUN_ANALYSIS="3"
     PPN_RUN_FCST="20"
-    NNODES_RUN_FCST="3"
+    NNODES_RUN_FCST="5"
     TPP_RUN_FCST="2"
     PPN_RUN_POST="20"
     NNODES_RUN_POST="1"

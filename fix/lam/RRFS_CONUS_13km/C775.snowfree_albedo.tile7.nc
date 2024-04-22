@@ -1,0 +1,1 @@
+../../.agent/lam/RRFS_CONUS_13km_Lake_fracSV/C775.snowfree_albedo.tile7.nc
