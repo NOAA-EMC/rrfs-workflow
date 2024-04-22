@@ -162,7 +162,15 @@ OUTTYP=netcdf
 model=FV3S
 
 INCR=01
+
+#FHRLIM set to 00 for hourly RTMA cycles
+
+if [[ "${NET}" = "RTMA"* ]]; then
+FHRLIM=00
+else
 FHRLIM=60
+fi   
+
 
 let NFILE=1
 

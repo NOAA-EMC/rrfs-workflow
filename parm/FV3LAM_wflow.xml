@@ -3623,7 +3623,7 @@ MODULES_RUN_TASK_FP script.
 
   </task>
 
-  {%- if do_ensfcst %}
+  {%- if do_ensfcst or is_rtma %}
   <task name="&RUN_BUFRSND_TN;{{ uscore_ensmem_name }}" cycledefs="prodcyc" maxtries="1">
 
         &RSRV_POST;
