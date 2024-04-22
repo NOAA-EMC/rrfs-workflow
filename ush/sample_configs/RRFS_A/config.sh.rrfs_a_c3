@@ -97,8 +97,8 @@ binary_diag=.false.
 
 regional_ensemble_option=5
 
-EXTRN_MDL_NAME_ICS="FV3GFS"
-EXTRN_MDL_NAME_LBCS="FV3GFS"
+EXTRN_MDL_NAME_ICS="GFS"
+EXTRN_MDL_NAME_LBCS="GFS"
 
 envir="para"
 

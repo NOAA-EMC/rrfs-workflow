@@ -124,8 +124,8 @@ EXTRN_MDL_NAME_LBCS="GEFS"
 EXTRN_MDL_SOURCE_BASEDIR_ICS="/mnt/lfs4/BMC/wrfruc/RRFSE/data/gens"
 EXTRN_MDL_SOURCE_BASEDIR_LBCS="/mnt/lfs4/BMC/wrfruc/RRFSE/data/gens"
 
-FV3GFS_FILE_FMT_ICS="grib2"
-FV3GFS_FILE_FMT_LBCS="grib2"
+GFS_FILE_FMT_ICS="grib2"
+GFS_FILE_FMT_LBCS="grib2"
 
 envir="para"
 NET="rrfs_a"

@@ -27,15 +27,6 @@ export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
-# Source the file defining the function that will be used to set various
-# external-model-associated variables.
-#
-#-----------------------------------------------------------------------
-#
-. $USHdir/get_extrn_mdl_file_dir_info.sh
-#
-#-----------------------------------------------------------------------
-#
 # Save current shell options (in a global array).  Then set new options
 # for this script/function.
 #
@@ -73,100 +64,75 @@ for the RRFS (in NetCDF format).
 #
 #-----------------------------------------------------------------------
 #
-# Check whether output files from the specified external model
-# (EXTRN_MDL_NAME) are available on the specified cycle date and time
-# (CDATE).
+# Set the parameters for the external model files.
 #
 #-----------------------------------------------------------------------
 #
-case ${EXTRN_MDL_NAME} in
+extrn_mdl_name="${EXTRN_MDL_NAME}"
+sysbasedir="${EXTRN_MDL_SYSBASEDIR_ICS}"
+gfs_file_fmt="${GFS_FILE_FMT_ICS}"
+time_offset_hrs="${EXTRN_MDL_ICS_OFFSET_HRS}"
+ic_spec_fhrs=$(( 0 + time_offset_hrs ))
 
-"GSMGFS")
-# The transition date from the GSMGFS to the FV3GFS was 2019061212, i.e.
-# this was the first official forecast with the FV3GFS. So we set the
-# last CDATE for the GSMGFS to the one 6 hours before this.
-  cdate_max="2019061206"
-  if [ "$CDATE" -gt "$cdate_max" ]; then
-    err_exit "\
-Output from the specified external model (EXTRN_MDL_NAME) is not available
-for the specified cycle date and time (CDATE) because the latter is
-later than the last forecast date and time (cdate_max) with this model:
-  EXTRN_MDL_NAME = \"${EXTRN_MDL_NAME}\"
-  cdate_max = \"${cdate_max}\"
-  CDATE = \"${CDATE}\""
-  fi
-  ;;
+hh=${CDATE:8:2}
+yyyymmdd=${CDATE:0:8}
+cdate=$( date --utc --date "${yyyymmdd} ${hh} UTC - ${time_offset_hrs} hours" "+%Y%m%d%H" )
+extrn_mdl_cdate="$cdate"
 
-"FV3GFS")
-# The transition date from the GSMGFS to the FV3GFS was 2019061212, i.e.
-# this was the first official forecast with the FV3GFS. However, parallel
-# runs with the FV3GFS go back to 2018121500. So we set the first CDATE
-# for the FV3GFS to this date and time.
-  CDATE_min="2018121500"
-  if [ "$CDATE" -lt "$CDATE_min" ]; then
-    err_exit "\
-Output from the specified external model (EXTRN_MDL_NAME) is not available
-for the specified cycle date and time (CDATE) because the latter is
-earlier than the implementation date of this model:
-  EXTRN_MDL_NAME = \"${EXTRN_MDL_NAME}\"
-  CDATE_min = \"${CDATE_min}\"
-  CDATE = \"${CDATE}\""
-  fi
-  ;;
+# Starting year, month, day, and hour of the external model forecast.
+yyyy=${cdate:0:4}
+mm=${cdate:4:2}
+dd=${cdate:6:2}
+hh=${cdate:8:2}
+mn="00"
+yyyymmdd=${cdate:0:8}
 
-"RAP")
-# Examination of the HPSS archives shows that the RAP data goes back to
-# July 01, 2015.
-  CDATE_min="2015070100"
-  if [ "$CDATE" -lt "$CDATE_min" ]; then
-    err_exit "\
-Output from the specified external model (EXTRN_MDL_NAME) is not available
-for the specified cycle date and time (CDATE) because the latter is
-earlier than the implementation date of this model:
-  EXTRN_MDL_NAME = \"${EXTRN_MDL_NAME}\"
-  CDATE_min = \"${CDATE_min}\"
-  CDATE = \"${CDATE}\""
-  fi
-  ;;
 
-"HRRR")
-# From the HRRR home page (https://rapidrefresh.noaa.gov/hrrr), the
-# implementation of the first version of the operational HRRR was
-# September 30, 2014.
-  CDATE_min="2014103000"
-  if [ "$CDATE" -lt "$CDATE_min" ]; then
-    err_exit "\
-Output from the specified external model (EXTRN_MDL_NAME) is not available
-for the specified cycle date and time (CDATE) because the latter is
-earlier than the implementation date of this model:
-  EXTRN_MDL_NAME = \"${EXTRN_MDL_NAME}\"
-  CDATE_min = \"${CDATE_min}\"
-  CDATE = \"${CDATE}\""
-  fi
-  ;;
+fcst_hh=$( printf "%02d" "${ic_spec_fhrs}" )
+fcst_mn="00"
+
+case "${extrn_mdl_name}" in
+
+  "GFS")
+    if [ "${DO_RETRO}" = "TRUE" ]; then
+      sysdir="$sysbasedir"
+    else
+      sysdir="$sysbasedir/gfs.${yyyymmdd}/${hh}/atmos"
+    fi
+    if [ "${gfs_file_fmt}" = "grib2" ]; then
+      fns_on_disk=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )
+    elif [ "${gfs_file_fmt}" = "netcdf" ]; then
+      fns=( "atm" "sfc" )
+      if [ "${fcst_hh}" = "00" ]; then
+        suffix="anl.nc"
+      else
+        suffix="f0${fcst_hh}.nc"
+      fi
+      fns=( "${fns[@]/%/$suffix}" )
+      prefix="gfs.t${hh}z."
+      fns_on_disk=( "${fns[@]/#/$prefix}" )
+    fi
+    ;;
+
+  "GDASENKF")
+    sysdir="$sysbasedir/enkfgdas.${yyyymmdd}/${hh}/atmos/${GDASENKF_INPUT_SUBDIR}"
+    fns_on_disk=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")
+    ;;
+
+  "RRFS")
+    if [ "${DO_RETRO}" = "TRUE" ]; then
+      sysdir="$sysbasedir"
+    else
+      sysdir="$sysbasedir/rrfs.${yyyymmdd}/${hh}"
+    fi
+    fns_on_disk=( "rrfs.t${hh}z.natlev.f0${fcst_hh}.grib2" )
+    ;;
+
+  *)
 
 esac
-#
-#-----------------------------------------------------------------------
-#
-# Set the parameter anl_or_fcst that determines whether we want to get
-# analysis or forecast files.  This depends on whether we want these files
-# to generate initial condition and surface field files or lateral boundary
-# condition files.  Also, set time_offset_hrs, which is the offset in
-# hours between the current cycle's starting time and the starting time
-# of the external model providing the LBCs.
-#
-#-----------------------------------------------------------------------
-#
-anl_or_fcst="ANL"
-time_offset_hrs="${EXTRN_MDL_ICS_OFFSET_HRS}"
-lbs_spec_intvl_hrs="${LBC_SPEC_INTVL_HRS}"
-boundary_len_hrs="0"
-if [ "${DO_RETRO}" = "TRUE" ]; then
-  retro_or_realtime="RETRO"
-else
-  retro_or_realtime="REALTIME"
-fi
+
+extrn_mdl_sysdir="${sysdir}"
 #
 #-----------------------------------------------------------------------
 #
@@ -195,31 +161,6 @@ cd $workdir
 #
 #-----------------------------------------------------------------------
 #
-# Call the function that sets various external-model-associated variables.
-# See the function defintion file for the definitions of these variables.
-#
-#-----------------------------------------------------------------------
-#
-get_extrn_mdl_file_dir_info \
-  extrn_mdl_name="${EXTRN_MDL_NAME}" \
-  anl_or_fcst="${anl_or_fcst}" \
-  retro_or_realtime="${retro_or_realtime}" \
-  cdate_FV3LAM="${CDATE}" \
-  lbs_spec_intvl_hrs="${lbs_spec_intvl_hrs}" \
-  boundary_len_hrs="${boundary_len_hrs}"\
-  time_offset_hrs="${time_offset_hrs}" \
-  extrn_mdl_date_julian="${EXTRN_MDL_DATE_JULIAN}" \
-  varname_extrn_mdl_memhead="${GEFS_INPUT_SUBDIR}" \
-  varname_extrn_mdl_cdate="extrn_mdl_cdate" \
-  varname_extrn_mdl_lbc_spec_fhrs="extrn_mdl_lbc_spec_fhrs" \
-  varname_extrn_mdl_fns_on_disk="extrn_mdl_fns_on_disk" \
-  varname_extrn_mdl_fns_on_disk2="extrn_mdl_fns_on_disk2" \
-  varname_extrn_mdl_sysdir="extrn_mdl_sysdir" \
-  varname_extrn_mdl_sysdir2="extrn_mdl_sysdir2"
-export err=$?; err_chk
-#
-#-----------------------------------------------------------------------
-#
 # Set the directory in which to check for the external model files (which
 # we refer to here as the "source" directory) to the default one set above
 # for the current machine and external model.
@@ -227,7 +168,6 @@ export err=$?; err_chk
 #-----------------------------------------------------------------------
 #
 extrn_mdl_source_dir="${extrn_mdl_sysdir}"
-extrn_mdl_source_dir2="${extrn_mdl_sysdir2}"
 #
 #-----------------------------------------------------------------------
 #
@@ -235,9 +175,7 @@ extrn_mdl_source_dir2="${extrn_mdl_sysdir2}"
 #
 #-----------------------------------------------------------------------
 #
-extrn_mdl_lbc_spec_fhrs_str="( "$( printf "\"%s\" " "${extrn_mdl_lbc_spec_fhrs[@]}" )")"
-extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" )")"
-extrn_mdl_fns_on_disk_str2="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk2[@]}" )")"
+extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
 
 export pgmout="${workdir}/OUTPUT.$$"
 env
@@ -245,11 +183,8 @@ env
 $SCRIPTSdir/exrrfs_make_ics.sh \
   use_user_staged_extrn_files="${USE_USER_STAGED_EXTRN_FILES}" \
   extrn_mdl_cdate="${extrn_mdl_cdate}" \
-  extrn_mdl_lbc_spec_fhrs="${extrn_mdl_lbc_spec_fhrs_str}" \
   extrn_mdl_fns_on_disk="${extrn_mdl_fns_on_disk_str}" \
-  extrn_mdl_fns_on_disk2="${extrn_mdl_fns_on_disk_str2}" \
   extrn_mdl_source_dir="${extrn_mdl_source_dir}" \
-  extrn_mdl_source_dir2="${extrn_mdl_source_dir2}" \
   extrn_mdl_staging_dir="${workdir}"
 export err=$?; err_chk
 

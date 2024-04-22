@@ -96,7 +96,7 @@ We need to decide how to prepare boundary and cold start initial conditions base
 Here are related parameters for setting up cold start initial conditions:
 * EXTRN_MDL_ICS_OFFSET_HRS="3"
 * INITIAL_CYCLEDEF="00 03,15 ${CYCLEDAY} ${CYCLEMONTH} 2021 *"
-* EXTRN_MDL_NAME_ICS="FV3GFS"
+* EXTRN_MDL_NAME_ICS="GFS"
 Those three decide we want to generate cold start initial condition for cycle hours (INITIAL_CYCLEDEF) using the forecast hour (EXTRN_MDL_ICS_OFFSET_HRS) results from the model (EXTRN_MDL_NAME_ICS), which should valid at the cycle time. In this example, the GFS 3-h forecast from 0/12Z cycle will be used to generate cold start initial condition for 03/15Z RRFS cycles.
 
 Here are related parameters for setting up boundary conditions:

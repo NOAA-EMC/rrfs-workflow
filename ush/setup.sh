@@ -1693,32 +1693,32 @@ check_var_valid_value \
 #
 #-----------------------------------------------------------------------
 #
-# Make sure FV3GFS_FILE_FMT_ICS is set to a valid value.
+# Make sure GFS_FILE_FMT_ICS is set to a valid value.
 #
 #-----------------------------------------------------------------------
 #
-if [ "${EXTRN_MDL_NAME_ICS}" = "FV3GFS" ]; then
+if [ "${EXTRN_MDL_NAME_ICS}" = "GFS" ]; then
   err_msg="\
-The file format for FV3GFS external model files specified in FV3GFS_-
+The file format for GFS external model files specified in GFS_-
 FILE_FMT_ICS is not supported:
-  FV3GFS_FILE_FMT_ICS = \"${FV3GFS_FILE_FMT_ICS}\""
+  GFS_FILE_FMT_ICS = \"${GFS_FILE_FMT_ICS}\""
   check_var_valid_value \
-    "FV3GFS_FILE_FMT_ICS" "valid_vals_FV3GFS_FILE_FMT_ICS" "${err_msg}"
+    "GFS_FILE_FMT_ICS" "valid_vals_GFS_FILE_FMT_ICS" "${err_msg}"
 fi
 #
 #-----------------------------------------------------------------------
 #
-# Make sure FV3GFS_FILE_FMT_LBCS is set to a valid value.
+# Make sure GFS_FILE_FMT_LBCS is set to a valid value.
 #
 #-----------------------------------------------------------------------
 #
-if [ "${EXTRN_MDL_NAME_LBCS}" = "FV3GFS" ]; then
+if [ "${EXTRN_MDL_NAME_LBCS}" = "GFS" ]; then
   err_msg="\
-The file format for FV3GFS external model files specified in FV3GFS_-
+The file format for GFS external model files specified in GFS_-
 FILE_FMT_LBCS is not supported:
-  FV3GFS_FILE_FMT_LBCS = \"${FV3GFS_FILE_FMT_LBCS}\""
+  GFS_FILE_FMT_LBCS = \"${GFS_FILE_FMT_LBCS}\""
   check_var_valid_value \
-    "FV3GFS_FILE_FMT_LBCS" "valid_vals_FV3GFS_FILE_FMT_LBCS" "${err_msg}"
+    "GFS_FILE_FMT_LBCS" "valid_vals_GFS_FILE_FMT_LBCS" "${err_msg}"
 fi
 #
 #-----------------------------------------------------------------------

@@ -375,15 +375,9 @@ case "${CCPP_PHYS_SUITE}" in
   "FV3_HRRR_gf" | \
   "FV3_HRRR_gf_nogwd" | \
   "FV3_RAP" )
-    if [ "${EXTRN_MDL_NAME_LBCS}" = "RAP" ] || \
-       [ "${EXTRN_MDL_NAME_LBCS}" = "HRRR" ]; then
-      varmap_file="GSDphys_var_map.txt"
-    elif [ "${EXTRN_MDL_NAME_LBCS}" = "RRFS" ] || \
-         [ "${EXTRN_MDL_NAME_LBCS}" = "NAM" ] || \
-         [ "${EXTRN_MDL_NAME_LBCS}" = "FV3GFS" ] || \
-         [ "${EXTRN_MDL_NAME_LBCS}" = "GEFS" ] || \
-         [ "${EXTRN_MDL_NAME_LBCS}" = "GDASENKF" ] || \
-         [ "${EXTRN_MDL_NAME_LBCS}" = "GSMGFS" ]; then
+    if [ "${EXTRN_MDL_NAME_LBCS}" = "RRFS" ] || \
+       [ "${EXTRN_MDL_NAME_LBCS}" = "GFS" ] || \
+       [ "${EXTRN_MDL_NAME_LBCS}" = "GEFS" ]; then
       varmap_file="GFSphys_var_map.txt"
     fi
     ;;
@@ -440,49 +434,6 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-
-# GSK comments about chgres_cube:
-#
-# The following are the three atmsopheric tracers that are in the atmo-
-# spheric analysis (atmanl) nemsio file for CDATE=2017100700:
-#
-#   "spfh","o3mr","clwmr"
-#
-# Note also that these are hardcoded in the code (file input_data.F90,
-# subroutine read_input_atm_gfs_spectral_file), so that subroutine will
-# break if tracers_input(:) is not specified as above.
-#
-# Note that there are other fields too ["hgt" (surface height (togography?)),
-# pres (surface pressure), ugrd, vgrd, and tmp (temperature)] in the atmanl file, but those
-# are not considered tracers (they're categorized as dynamics variables,
-# I guess).
-#
-# Another note:  The way things are set up now, tracers_input(:) and
-# tracers(:) are assumed to have the same number of elements (just the
-# atmospheric tracer names in the input and output files may be differ-
-# ent).  There needs to be a check for this in the chgres_cube code!!
-# If there was a varmap table that specifies how to handle missing
-# fields, that would solve this problem.
-#
-# Also, it seems like the order of tracers in tracers_input(:) and
-# tracers(:) must match, e.g. if ozone mixing ratio is 3rd in
-# tracers_input(:), it must also be 3rd in tracers(:).  How can this be checked?
-#
-# NOTE: Really should use a varmap table for GFS, just like we do for
-# RAP/HRRR.
-#
-
-# A non-prognostic variable that appears in the field_table for GSD physics
-# is cld_amt.  Why is that in the field_table at all (since it is a non-
-# prognostic field), and how should we handle it here??
-
-# I guess this works for FV3GFS but not for the spectral GFS since these
-# variables won't exist in the spectral GFS atmanl files.
-#  tracers_input="\"sphum\",\"liq_wat\",\"ice_wat\",\"rainwat\",\"snowwat\",\"graupel\",\"o3mr\""
-#
-# Not sure if tracers(:) should include "cld_amt" since that is also in
-# the field_table for CDATE=2017100700 but is a non-prognostic variable.
-
 external_model=""
 fn_atm=""
 fn_sfc=""
@@ -505,11 +456,6 @@ tracers="\"\""
 #-----------------------------------------------------------------------
 #
 thomp_mp_climo_file=""
-if [ "${EXTRN_MDL_NAME_LBCS}" != "HRRR" -a \
-     "${EXTRN_MDL_NAME_LBCS}" != "RAP" ] && \
-   [ "${SDF_USES_THOMPSON_MP}" = "TRUE" ]; then
-  thomp_mp_climo_file="${THOMPSON_MP_CLIMO_FP}"
-fi
 #
 #-----------------------------------------------------------------------
 #
@@ -520,24 +466,12 @@ fi
 #
 case "${EXTRN_MDL_NAME_LBCS}" in
 
-"GSMGFS")
-  external_model="GSMGFS"
-  input_type="gfs_gaussian_nemsio" # For spectral GFS Gaussian grid in nemsio format.
-  tracers_input="[\"spfh\",\"clwmr\",\"o3mr\"]"
-  tracers="[\"sphum\",\"liq_wat\",\"o3mr\"]"
-  ;;
-
-"FV3GFS")
-  if [ "${FV3GFS_FILE_FMT_LBCS}" = "nemsio" ]; then
-    external_model="FV3GFS"
-    input_type="gaussian_nemsio"     # For FV3-GFS Gaussian grid in nemsio format.
-    tracers_input="[\"spfh\",\"clwmr\",\"o3mr\",\"icmr\",\"rwmr\",\"snmr\",\"grle\"]"
-    tracers="[\"sphum\",\"liq_wat\",\"o3mr\",\"ice_wat\",\"rainwat\",\"snowwat\",\"graupel\"]"
-  elif [ "${FV3GFS_FILE_FMT_LBCS}" = "grib2" ]; then
+"GFS")
+  if [ "${GFS_FILE_FMT_LBCS}" = "grib2" ]; then
     external_model="GFS"
     fn_grib2="${EXTRN_MDL_FNS[0]}"
     input_type="grib2"
-  elif [ "${FV3GFS_FILE_FMT_ICS}" = "netcdf" ]; then
+  elif [ "${GFS_FILE_FMT_LBCS}" = "netcdf" ]; then
     tracers_input="[\"spfh\",\"clwmr\",\"o3mr\",\"icmr\",\"rwmr\",\"snmr\",\"grle\"]"
     tracers="[\"sphum\",\"liq_wat\",\"o3mr\",\"ice_wat\",\"rainwat\",\"snowwat\",\"graupel\"]"
     external_model="FV3GFS"
@@ -545,33 +479,9 @@ case "${EXTRN_MDL_NAME_LBCS}" in
   fi
   ;;
 
-"GDASENKF")
-  tracers_input="[\"spfh\",\"clwmr\",\"o3mr\",\"icmr\",\"rwmr\",\"snmr\",\"grle\"]"
-  tracers="[\"sphum\",\"liq_wat\",\"o3mr\",\"ice_wat\",\"rainwat\",\"snowwat\",\"graupel\"]"
-  external_model="GFS"
-  input_type="gaussian_netcdf"
-  fn_atm="${EXTRN_MDL_FNS[0]}"
-  fn_sfc="${EXTRN_MDL_FNS[1]}"
-  ;;
-
 "GEFS")
   external_model="GFS"
   fn_grib2="${EXTRN_MDL_FNS[0]}"
-  input_type="grib2"
-  ;;
-
-"RAP")
-  external_model="RAP"
-  input_type="grib2"
-  ;;
-
-"HRRR")
-  external_model="HRRR"
-  input_type="grib2"
-;;
-
-"NAM")
-  external_model="NAM"
   input_type="grib2"
   ;;
 
@@ -615,32 +525,14 @@ for (( ii=0; ii<${num_fhrs}; ii=ii+bcgrpnum10 )); do
   fn_grib2=""
 
   case "${EXTRN_MDL_NAME_LBCS}" in
-  "GSMGFS")
-    fn_atm="${EXTRN_MDL_FNS[$i]}"
-    ;;
-  "FV3GFS")
-    if [ "${FV3GFS_FILE_FMT_LBCS}" = "nemsio" ]; then
-      fn_atm="${EXTRN_MDL_FNS[$i]}"
-    elif [ "${FV3GFS_FILE_FMT_LBCS}" = "grib2" ]; then
+  "GFS")
+    if [ "${GFS_FILE_FMT_LBCS}" = "grib2" ]; then
       fn_grib2="${EXTRN_MDL_FNS[$i]}"
-    elif [ "${FV3GFS_FILE_FMT_LBCS}" = "netcdf" ]; then
+    elif [ "${GFS_FILE_FMT_LBCS}" = "netcdf" ]; then
       fn_atm="${EXTRN_MDL_FNS[$i]}"
     fi
     ;;
-  "GDASENKF")
-    fn_atm="${EXTRN_MDL_FNS[0][$i]}"
-    fn_sfc="${EXTRN_MDL_FNS[1][$i]}"
-    ;;
   "GEFS")
-    fn_grib2="${EXTRN_MDL_FNS[$i]}"
-    ;;
-  "RAP")
-    fn_grib2="${EXTRN_MDL_FNS[$i]}"
-    ;;
-  "HRRR")
-    fn_grib2="${EXTRN_MDL_FNS[$i]}"
-    ;;
-  "NAM")
     fn_grib2="${EXTRN_MDL_FNS[$i]}"
     ;;
   "RRFS")
@@ -747,7 +639,7 @@ $settings"
     lbc_spec_fhrs=( "${EXTRN_MDL_LBC_SPEC_FHRS[$i]}" ) 
     fcst_hhh=$(( ${lbc_spec_fhrs} - ${EXTRN_MDL_LBCS_OFFSET_HRS} ))
     fcst_hhh_FV3LAM=`printf %3.3i $fcst_hhh`
-    fn_grib2_subset=rrfs.t${hh}z.prslev.f${fcst_hhh_FV3LAM}.subset.grib2
+    fn_grib2_subset=rrfs.t${hh}z.natlev.f${fcst_hhh_FV3LAM}.subset.grib2
 
     wgrib2 ${extrn_mdl_staging_dir}/${fn_grib2} -set_grib_type c3b \
       -new_grid_winds grid -new_grid ${gridspecs} ${extrn_mdl_staging_dir}/${fn_grib2_subset}
