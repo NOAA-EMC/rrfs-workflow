@@ -203,6 +203,7 @@ def process_prod_tiles():
   obs_west = os.environ.get("OBS_WEST")
   obs_east = os.environ.get("OBS_EAST")
   fixdir   = os.environ.get("FIX_GSI")
+  fedcutoff = 8
 
   # format datetime obj
   myDate = dt.datetime(int(inDate[:4]),int(inDate[4:6]),int(inDate[6:8]),int(inDate[8:10]))
@@ -248,7 +249,7 @@ def process_prod_tiles():
         lon = lon[np.where(this_glm>0)]
         this_glm = this_glm[np.where(this_glm>0)]
         this_glm = this_glm/5. # average
-        out_fed = out_fed + [z for z in this_glm]
+        out_fed = out_fed + [min(fedcutoff,z) for z in this_glm]
         out_lats = out_lats + [z for z in lat]
         out_lons = out_lons + [z for z in lon]
   # write output to NetCDF
@@ -284,6 +285,7 @@ def process_gsl_tiles():
   obs_west = os.environ.get("OBS_WEST")
   obs_east = os.environ.get("OBS_EAST")
   fixdir   = os.environ.get("FIX_GSI")
+  fedcutoff = 8
 
   # format datetime obj
   myDate = dt.datetime(int(inDate[:4]),int(inDate[4:6]),int(inDate[6:8]),int(inDate[8:10]))
@@ -328,7 +330,7 @@ def process_gsl_tiles():
         lon = lon[np.where(this_glm>0)]
         this_glm = this_glm[np.where(this_glm>0)]
         this_glm = this_glm/5. # average
-        out_fed = out_fed + [z for z in this_glm]
+        out_fed = out_fed + [min(fedcutoff,z) for z in this_glm]
         out_lats = out_lats + [z for z in lat]
         out_lons = out_lons + [z for z in lon]
   # write output to NetCDF
