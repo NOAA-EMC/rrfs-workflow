@@ -762,7 +762,7 @@ MODULES_RUN_TASK_FP script.
         </or>
         <or>
           {%- if machine in ["WCOSS2"]  %}
-            {%- if extrn_mdl_name_ics in ["FV3GFS"] %}
+            {%- if extrn_mdl_name_ics in ["GFS"] %}
                 {%- if do_retro %}
           <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_ics_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_ics }}/@y@j@H000{{ "%03d" % extrn_mdl_ics_offset_hrs }}</cyclestr></datadep>
                 {% else %}
@@ -958,7 +958,7 @@ MODULES_RUN_TASK_FP script.
         {%- else %}
           {%- for h in range(extrn_mdl_lbcs_offset_hrs, boundary_len_hrs+extrn_mdl_lbcs_offset_hrs+1, bc_update_interval) %}
           {%- if machine in ["WCOSS2"]  %}
-            {%- if fv3gfs_file_fmt_lbcs in ["netcdf"]  %}
+            {%- if gfs_file_fmt_lbcs in ["netcdf"]  %}
           <datadep age="00:00:05:00"><cyclestr offset="-{{ extrn_mdl_lbcs_offset_hrs }}:00:00">{{ extrn_mdl_sysbasedir_lbcs }}/gfs.@Y@m@d/@H/atmos/gfs.t@Hz.atmf{{ "%03d" % h }}.nc</cyclestr></datadep>
             {%- else %}
               {%- if do_retro %}

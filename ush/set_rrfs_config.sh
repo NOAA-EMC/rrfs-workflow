@@ -64,14 +64,14 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
 
   if [[ $MACHINE == "jet" ]] ; then
     RETRODATAPATH="/lfs4/BMC/wrfruc/RRFS_RETRO_DATA"
-    if [ ${EXTRN_MDL_NAME_ICS} == "FV3GFS" ] ; then
+    if [ ${EXTRN_MDL_NAME_ICS} == "GFS" ] ; then
       EXTRN_MDL_SOURCE_BASEDIR_ICS=${RETRODATAPATH}/gfs/0p25deg/grib2
     elif [ ${EXTRN_MDL_NAME_ICS} == "GEFS" ] ; then
       EXTRN_MDL_SOURCE_BASEDIR_ICS=${RETRODATAPATH}/GEFS
     elif [[ ${EXTRN_MDL_NAME_ICS} == "GDASENKF" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_ICS="${RETRODATAPATH}/enkf/atm"
     fi
-    if [ ${EXTRN_MDL_NAME_LBCS} == "FV3GFS" ] ; then
+    if [ ${EXTRN_MDL_NAME_LBCS} == "GFS" ] ; then
       EXTRN_MDL_SOURCE_BASEDIR_LBCS=${RETRODATAPATH}/gfs/0p25deg/grib2
     elif [ ${EXTRN_MDL_NAME_LBCS} == "GEFS" ] ; then
       EXTRN_MDL_SOURCE_BASEDIR_LBCS=${RETRODATAPATH}/GEFS
@@ -112,8 +112,8 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
         EXTRN_MDL_SOURCE_BASEDIR_LBCS="${RETRODATAPATH}/GEFS"
       elif [[ ${EXTRN_MDL_NAME_LBCS} == "GDASENKF" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_LBCS="${RETRODATAPATH}/GDASENKF"
-      elif [[ ${EXTRN_MDL_NAME_LBCS} == "FV3GFS" ]]; then
-        EXTRN_MDL_SOURCE_BASEDIR_LBCS="${RETRODATAPATH}/FV3GFS"
+      elif [[ ${EXTRN_MDL_NAME_LBCS} == "GFS" ]]; then
+        EXTRN_MDL_SOURCE_BASEDIR_LBCS="${RETRODATAPATH}/GFS"
       fi
     else
       EXTRN_MDL_SOURCE_BASEDIR_ICS=${RETRODATAPATH}/gfs/0p25deg/grib2
@@ -139,12 +139,12 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     if [[ ${DO_ENSEMBLE} == "TRUE" ]]; then
       if [[ ${EXTRN_MDL_NAME_ICS} == "GDASENKF" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_ICS="/work/noaa/wrfruc/mhu/rrfs/data/enkf/atm"
-      elif [[ ${EXTRN_MDL_NAME_ICS} == "FV3GFS" ]]; then
+      elif [[ ${EXTRN_MDL_NAME_ICS} == "GFS" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_ICS="/work/noaa/wrfruc/mhu/rrfs/data/gfs/0p25deg/grib2"
       fi
       if [[ ${EXTRN_MDL_NAME_LBCS} == "GDASENKF" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_LBCS="/work/noaa/wrfruc/mhu/rrfs/data/enkf/atm"
-      elif [[ ${EXTRN_MDL_NAME_LBCS} == "FV3GFS" ]]; then
+      elif [[ ${EXTRN_MDL_NAME_LBCS} == "GFS" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_LBCS="/work/noaa/wrfruc/mhu/rrfs/data/gfs/0p25deg/grib2"
       fi
     else
@@ -172,14 +172,14 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
         EXTRN_MDL_SOURCE_BASEDIR_ICS="${RETRODATAPATH}/GEFS/dsg"
       elif [[ ${EXTRN_MDL_NAME_ICS} == "GDASENKF" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_ICS="${RETRODATAPATH}/enkf/atm"
-      elif [[ ${EXTRN_MDL_NAME_ICS} == "FV3GFS" ]]; then
+      elif [[ ${EXTRN_MDL_NAME_ICS} == "GFS" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_ICS="${RETRODATAPATH}/gfs/0p25deg/grib2"
       fi
       if [[ ${EXTRN_MDL_NAME_LBCS} == "GEFS" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_LBCS="${RETRODATAPATH}/GEFS/dsg"
       elif [[ ${EXTRN_MDL_NAME_LBCS} == "GDASENKF" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_LBCS="${RETRODATAPATH}/enkf/atm"
-      elif [[ ${EXTRN_MDL_NAME_LBCS} == "FV3GFS" ]]; then
+      elif [[ ${EXTRN_MDL_NAME_LBCS} == "GFS" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_LBCS="${RETRODATAPATH}/gfs/0p25deg/grib2"
       fi
     else

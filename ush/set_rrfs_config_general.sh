@@ -104,8 +104,8 @@ CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&p
 CUSTOM_POST_PARAMS_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/params_grib2_tbl_new"
 COMINgfs=""
 
-FV3GFS_FILE_FMT_ICS="grib2"
-FV3GFS_FILE_FMT_LBCS="grib2"
+GFS_FILE_FMT_ICS="grib2"
+GFS_FILE_FMT_LBCS="grib2"
 
 NCORES_RUN_ANALYSIS=360
 NCORES_RUN_OBSERVER=80
@@ -278,8 +278,8 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
     START_TIME_PROD="02:20:00"
     START_TIME_LATE_ANALYSIS="01:40:00"
 
-    FV3GFS_FILE_FMT_ICS="netcdf"
-    FV3GFS_FILE_FMT_LBCS="netcdf"
+    GFS_FILE_FMT_ICS="netcdf"
+    GFS_FILE_FMT_LBCS="netcdf"
 
     CLEAN_OLDPROD_HRS="120"
     CLEAN_OLDLOG_HRS="120"
@@ -369,8 +369,8 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then
     MAXTRIES_RUN_PRDGEN="2"
     MAXTRIES_ANALYSIS_GSI="2"
 
-    FV3GFS_FILE_FMT_ICS="netcdf"
-    FV3GFS_FILE_FMT_LBCS="netcdf"
+    GFS_FILE_FMT_ICS="netcdf"
+    GFS_FILE_FMT_LBCS="netcdf"
 
   elif [[ $MACHINE == "orion" ]] ; then
     LAYOUT_X="30"
@@ -518,8 +518,8 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then
     START_TIME_CONVENTIONAL="00:45:00"
     START_TIME_NSSLMOSIAC="00:45:00"
 
-    FV3GFS_FILE_FMT_ICS="netcdf"
-    FV3GFS_FILE_FMT_LBCS="netcdf"
+    GFS_FILE_FMT_ICS="netcdf"
+    GFS_FILE_FMT_LBCS="netcdf"
 
     WTIME_RUN_FCST="02:30:00"
     WTIME_RUN_FCST_LONG="05:30:00"

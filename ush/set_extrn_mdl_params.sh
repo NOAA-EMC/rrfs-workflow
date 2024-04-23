@@ -45,24 +45,7 @@ local func_name="${FUNCNAME[0]}"
 #
 case ${EXTRN_MDL_NAME_ICS} in
 
-"GSMGFS")
-  case $MACHINE in
-  "WCOSS2")
-    EXTRN_MDL_SYSBASEDIR_ICS=""
-    ;;
-  "HERA")
-    EXTRN_MDL_SYSBASEDIR_ICS=""
-    ;;
-  "ORION"|"HERCULES")
-    EXTRN_MDL_SYSBASEDIR_ICS=""
-    ;;
-  "JET")
-    EXTRN_MDL_SYSBASEDIR_ICS=""
-    ;;
-  esac
-  ;;
-
-"FV3GFS")
+"GFS")
   case $MACHINE in
   "WCOSS2")
     EXTRN_MDL_SYSBASEDIR_ICS="/lfs/h1/ops/prod/com/gfs/v16.3"
@@ -89,62 +72,6 @@ case ${EXTRN_MDL_NAME_ICS} in
     ;;
   "JET")
     EXTRN_MDL_SYSBASEDIR_ICS="/mnt/lfs4/BMC/public/data/grids/enkf/atm"
-    ;;
-  esac
-  ;;
-
-"GEFS")
-  case "$MACHINE" in
-  "WCOSS2")
-    EXTRN_MDL_SYSBASEDIR_ICS="${EXTRN_MDL_SOURCE_BASEDIR_ICS:-"/lfs/h1/ops/prod/com/gefs/v12.3"}"
-    ;;
-  "HERA")
-    EXTRN_MDL_SYSBASEDIR_ICS=""
-    ;;
-  "JET")
-    EXTRN_MDL_SYSBASEDIR_ICS="${EXTRN_MDL_SOURCE_BASEDIR_ICS:-"/mnt/lfs4/BMC/public/data/grids/gens/pgrb2b"}"
-    ;;
-  "HERA")
-    EXTRN_MDL_SYSBASEDIR_ICS="${EXTRN_MDL_SOURCE_BASEDIR_ICS:-/mnt/lfs4/BMC/public/data/grids/gens/pgrb2b}"
-    ;;
-  esac
-  ;;
-
-"RAP")
-  case $MACHINE in
-  "HERA")
-    EXTRN_MDL_SYSBASEDIR_ICS="/scratch2/BMC/public/data/gsd/rap/full/wrfnat"
-    ;;
-  "ORION"|"HERCULES")
-    EXTRN_MDL_SYSBASEDIR_ICS=""
-    ;;
-  "JET")
-    EXTRN_MDL_SYSBASEDIR_ICS="/public/data/grids/rap/full/wrfnat/grib2"
-    ;;
-  esac
-  ;;
-
-"HRRR")
-  case $MACHINE in
-  "HERA")
-    EXTRN_MDL_SYSBASEDIR_ICS="/scratch2/BMC/public/data/gsd/hrrr/conus/wrfnat"
-    ;;
-  "ORION"|"HERCULES")
-    EXTRN_MDL_SYSBASEDIR_ICS=""
-    ;;
-  "JET")
-    EXTRN_MDL_SYSBASEDIR_ICS="/public/data/grids/hrrr/conus/wrfnat/grib2"
-    ;;
-  esac
-  ;;
-
-"HRRRDAS")
-  case "$MACHINE" in
-  "HERA")
-    EXTRN_MDL_SYSBASEDIR_ICS=""
-    ;;
-  "JET")
-    EXTRN_MDL_SYSBASEDIR_ICS="/mnt/lfs1/BMC/wrfruc/HRRRE/cycle"
     ;;
   esac
   ;;
@@ -189,23 +116,11 @@ fi
 #
 if [[ -z ${EXTRN_MDL_LBCS_OFFSET_HRS} ]]; then
   case ${EXTRN_MDL_NAME_LBCS} in
-    "GSMGFS")
+    "GFS")
       EXTRN_MDL_LBCS_OFFSET_HRS="0"
-      ;;
-    "FV3GFS")
-      EXTRN_MDL_LBCS_OFFSET_HRS="0"
-      ;;
-    "GDASENKF")
-      EXTRN_MDL_LBCS_OFFSET_HRS="6"
       ;;
     "GEFS")
       EXTRN_MDL_LBCS_OFFSET_HRS="6"
-      ;;
-    "RAP")
-      EXTRN_MDL_LBCS_OFFSET_HRS="3"
-      ;;
-    "HRRR")
-      EXTRN_MDL_LBCS_OFFSET_HRS="0"
       ;;
     "RRFS")
       EXTRN_MDL_LBCS_OFFSET_HRS="0"
@@ -229,24 +144,7 @@ fi
 #
 case ${EXTRN_MDL_NAME_LBCS} in
 
-"GSMGFS")
-  case $MACHINE in
-  "WCOSS2")
-    EXTRN_MDL_SYSBASEDIR_LBCS=""
-    ;;
-  "HERA")
-    EXTRN_MDL_SYSBASEDIR_LBCS=""
-    ;;
-  "ORION"|"HERCULES")
-    EXTRN_MDL_SYSBASEDIR_LBCS=""
-    ;;
-  "JET")
-    EXTRN_MDL_SYSBASEDIR_LBCS=""
-    ;;
-  esac
-  ;;
-
-"FV3GFS")
+"GFS")
   case $MACHINE in
   "WCOSS2")
     EXTRN_MDL_SYSBASEDIR_LBCS="/lfs/h1/ops/prod/com/gfs/v16.3"
@@ -263,17 +161,6 @@ case ${EXTRN_MDL_NAME_LBCS} in
   esac
   ;;
 
-"GDASENKF")
-  case "$MACHINE" in
-  "HERA")
-    EXTRN_MDL_SYSBASEDIR_LBCS="/scratch1/NCEPDEV/rstprod/com/gfs/prod"
-    ;;
-  "JET")
-    EXTRN_MDL_SYSBASEDIR_LBCS="/mnt/lfs4/BMC/public/data/grids/enkf/atm"
-    ;;
-  esac
-  ;;
-
 "GEFS")
   case "$MACHINE" in
   "WCOSS2")
@@ -284,34 +171,6 @@ case ${EXTRN_MDL_NAME_LBCS} in
     ;;
   "HERA")
     EXTRN_MDL_SYSBASEDIR_LBCS="${EXTRN_MDL_SOURCE_BASEDIR_LBCS:-/mnt/lfs4/BMC/public/data/grids/gens/pgrb2b}"
-    ;;
-  esac
-  ;;
-
-"RAP")
-  case $MACHINE in
-  "HERA")
-    EXTRN_MDL_SYSBASEDIR_LBCS="/scratch2/BMC/public/data/gsd/rap/full/wrfnat"
-    ;;
-  "ORION"|"HERCULES")
-    EXTRN_MDL_SYSBASEDIR_LBCS=""
-    ;;
-  "JET")
-    EXTRN_MDL_SYSBASEDIR_LBCS="/public/data/grids/rap/full/wrfnat/grib2"
-    ;;
-  esac
-  ;;
-
-"HRRR")
-  case $MACHINE in
-  "HERA")
-    EXTRN_MDL_SYSBASEDIR_LBCS="/scratch2/BMC/public/data/gsd/hrrr/conus/wrfnat"
-    ;;
-  "ORION"|"HERCULES")
-    EXTRN_MDL_SYSBASEDIR_LBCS=""
-    ;;
-  "JET")
-    EXTRN_MDL_SYSBASEDIR_LBCS="/public/data/grids/hrrr/conus/wrfnat/grib2"
     ;;
   esac
   ;;
