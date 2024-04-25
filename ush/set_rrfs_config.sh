@@ -53,6 +53,8 @@ if [[ $MACHINE == "wcoss2" ]] ; then
   RAPHRRR_SOIL_ROOT="/lfs/h1/ops/prod/com"
   GLMFED_EAST_ROOT="/lfs/h1/ops/prod/dcom/ldmdata/obs/GOES-16/GLM/tiles"
   GLMFED_WEST_ROOT="/lfs/h1/ops/prod/dcom/ldmdata/obs/GOES-17/GLM/tiles"
+  AIRCRAFT_REJECT="/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/gsi"
+  SFCOBS_USELIST="/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/gsi"
   if [[ $OBSTYPE_SOURCE == "rrfs" ]]; then
     OBSPATH=/lfs/h2/emc/lam/noscrub/emc.lam/obsproc.DATA/CRON/rrfs/com/obsproc/v1.0
     IMSSNOW_ROOT=/lfs/h2/emc/lam/noscrub/emc.lam/obsproc.DATA/CRON/rrfs/com/obsproc/v1.0
