@@ -319,6 +319,7 @@ settings="\
   'tpp_run_enkf': ${TPP_RUN_ENKF}
   'tpp_run_fcst': ${TPP_RUN_FCST}
   'tpp_run_post': ${TPP_RUN_POST}
+  'tpp_run_bufrsnd': ${TPP_RUN_BUFRSND}
 #
 # Maximum wallclock time for each task.
 #

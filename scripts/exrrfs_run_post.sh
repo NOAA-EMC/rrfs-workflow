@@ -60,6 +60,7 @@ valid_args=( \
 "fhr" \
 "tmmark" \
 "cycle_type" \
+"ensmem_indx" \
 )
 process_args valid_args "$@"
 #
@@ -224,9 +225,9 @@ if [ ${USE_CUSTOM_POST_CONFIG_FILE} = "TRUE" ]; then
 # For RRFS: use special postcntrl for fhr=0,1 to eliminate duplicate 
 # max/min hourly (f000 only) and accumulation fields (f000 and f001)
   if [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ] || [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
-    if [ ${fhr} -eq 000 ]; then
+    if [ ${post_fhr} -eq 000 ]; then
       CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-rrfs_f00.txt"
-    elif [ ${fhr} -eq 001 ]; then
+    elif [ ${post_fhr} -eq 001 ]; then
       CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-rrfs_f01.txt"
     fi
   fi
@@ -244,10 +245,10 @@ to the post forecast hour directory (fhr_dir):
   fhr_dir = \"${fhr_dir}\"
 ===================================================================="
 else
-  post_config_fp="${UPP_DIR}/parm/postxconfig-NT-rrfs.txt"
-  post_params_fp="${UPP_DIR}/parm/params_grib2_tbl_new"
+  post_config_fp="${FIX_UPP}/postxconfig-NT-rrfs.txt"
+  post_params_fp="${FIX_UPP}/params_grib2_tbl_new"
   if [ ${post_min} -ge ${nsout_min} ]; then
-     post_config_fp="${UPP_DIR}/parm/postxconfig-NT-rrfs_subh.txt"
+     post_config_fp="${FIX_UPP}/postxconfig-NT-rrfs_subh.txt"
   fi
   print_info_msg "
 ====================================================================
@@ -373,7 +374,7 @@ net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
 
 # Include member number with ensemble forecast output
 if [ ${DO_ENSFCST} = "TRUE" ]; then
-  ensmem_num=$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')	  # 1,2,3,4,5 for REFS
+  ensmem_num=$(echo "${ensmem_indx}" | awk '{print $1+0}')	  # 1,2,3,4,5 for REFS
   bgdawp=${postprd_dir}/${net4}.t${cyc}z.m0${ensmem_num}.prslev.f${fhr}.${gridname}grib2
   bgrd3d=${postprd_dir}/${net4}.t${cyc}z.m0${ensmem_num}.natlev.f${fhr}.${gridname}grib2
   bgifi=${postprd_dir}/${net4}.t${cyc}z.m0${ensmem_num}.ififip.f${fhr}.${gridname}grib2

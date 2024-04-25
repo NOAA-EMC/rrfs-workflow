@@ -122,7 +122,8 @@ env
 $SCRIPTSdir/exrrfs_run_prdgen.sh \
   cdate="${CDATE}" \
   fhr="${fhr}" \
-  tmmark="${TMMARK}"
+  tmmark="${TMMARK}" \
+  ensmem_indx="${ENSMEM_INDX}"
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

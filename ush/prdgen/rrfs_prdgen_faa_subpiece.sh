@@ -14,8 +14,8 @@ COMOUT=$7
 USHrrfs=$8
 
 # FAA request variable to be extracted from UPP output
-  parmdir=${FIXprdgen}
-  # parmdir=${USHdir}/../fix/prdgen
+#  fixdir=${FIXprdgen}
+  fixdir=${USHrrfs}/../../fix/prdgen
 
   #-- remove the leading 0"
   ifhr=$(expr $fhr + 0)
@@ -33,13 +33,13 @@ USHrrfs=$8
   fcstvar2="${jfhr}-${ifhr} hour acc fcst"
 
   #-- replace undifined variables in "*parmas" files in /fix/prdgen
-  sed "s/FCSTVARS1/${fcstvar1}/" ${parmdir}/rrfs.prslev-FAA130.params > rrfs.prslev-FAA130.params
+  sed "s/FCSTVARS1/${fcstvar1}/" ${fixdir}/rrfs.prslev-FAA130.params > rrfs.prslev-FAA130.params
   sed -i "s/FCSTVARS2/${fcstvar2}/" rrfs.prslev-FAA130.params
 
-  sed "s/FCSTVARS1/${fcstvar1}/" ${parmdir}/rrfs.prslev-FAA237.params > rrfs.prslev-FAA237.params
+  sed "s/FCSTVARS1/${fcstvar1}/" ${fixdir}/rrfs.prslev-FAA237.params > rrfs.prslev-FAA237.params
   sed -i "s/FCSTVARS2/${fcstvar2}/" rrfs.prslev-FAA237.params
 
-  sed "s/FCSTVARS1/${fcstvar1}/" ${parmdir}/rrfs.prslev-rrfs13km.params > rrfs.prslev-rrfs13km.params
+  sed "s/FCSTVARS1/${fcstvar1}/" ${fixdir}/rrfs.prslev-rrfs13km.params > rrfs.prslev-rrfs13km.params
   sed -i "s/FCSTVARS2/${fcstvar2}/" rrfs.prslev-rrfs13km.params
 
 # Grid 91 for the IFI AK 
@@ -67,9 +67,9 @@ USHrrfs=$8
       wgrib2 -i ${COMOUT}/${prslev} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation bilinear \
-         -new_grid ${grid_specs_130} rrfs.t${cyc}z.prslev.f${fhr}.conus_13km.faa.grib2
-      mv rrfs.t${cyc}z.prslev.f${fhr}.conus_13km.faa.grib2 ${COMOUT}
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.conus_13km.faa.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.conus_13km.faa.grib2.idx
+         -new_grid ${grid_specs_130} rrfs.t${cyc}z.prslevfaa.f${fhr}.conus13km.grib2
+      mv rrfs.t${cyc}z.prslevfaa.f${fhr}.conus13km.grib2 ${COMOUT}
+      wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.conus13km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.conus13km.grib2.idx
     fi
 
     #-- 13km Rotated Lat Lon
@@ -78,9 +78,9 @@ USHrrfs=$8
       wgrib2 -i ${COMOUT}/${prslev} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation bilinear \
-         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.prslev.f${fhr}.rotate_13km.faa.grib2
-      mv rrfs.t${cyc}z.prslev.f${fhr}.rotate_13km.faa.grib2 ${COMOUT}
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.rotate_13km.faa.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.rotate_13km.faa.grib2.idx
+         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.prslevfaa.f${fhr}.na13km.grib2
+      mv rrfs.t${cyc}z.prslevfaa.f${fhr}.na13km.grib2 ${COMOUT}
+      wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.na13km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.na13km.grib2.idx
     fi
 
     #-- GRID 237: PR 32 km
@@ -89,67 +89,67 @@ USHrrfs=$8
       wgrib2 -i ${COMOUT}/${prslev} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation bilinear \
-         -new_grid ${grid_specs_237} rrfs.t${cyc}z.prslev.f${fhr}.pr_32km.faa.grib2
-      mv rrfs.t${cyc}z.prslev.f${fhr}.pr_32km.faa.grib2 ${COMOUT}
+         -new_grid ${grid_specs_237} rrfs.t${cyc}z.prslevfaa.f${fhr}.pr32km.grib2
+      mv rrfs.t${cyc}z.prslevfaa.f${fhr}.pr32km.grib2 ${COMOUT}
     fi
   fi
 
   if [[ -f ${COMOUT}/${natlev} ]]; then
 
     #-- GRID 130
-    #wgrib2 ${COMOUT}/${natlev} -s | grep "hybrid level:" | grep -F -f ${parmdir}/rrfs.natlev-FAA130.params | \
+    #wgrib2 ${COMOUT}/${natlev} -s | grep "hybrid level:" | grep -F -f ${fixdir}/rrfs.natlev-FAA130.params | \
     #wgrib2 -i ${COMOUT}/${natlev} -set_bitmap 1 -set_grib_type c3 \
     #   -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
     #   -new_grid_interpolation bilinear \
-    #   -new_grid ${grid_specs_130} rrfs.t${cyc}z.natlev.f${fhr}.conus_13km.faa.grib2
-    #mv rrfs.t${cyc}z.natlev.f${fhr}.conus_13km.faa.grib2 ${COMOUT}
+    #   -new_grid ${grid_specs_130} rrfs.t${cyc}z.natlevfaa.f${fhr}.conus13km.grib2
+    #mv rrfs.t${cyc}z.natlevfaa.f${fhr}.conus13km.grib2 ${COMOUT}
 
     #-- 13km Rotated Lat Lon
     if [ $ifhr -le 6 ]; then
-      wgrib2 ${COMOUT}/${natlev} -s | grep "hybrid level:" | grep -F -f ${parmdir}/rrfs.natlev-FAA130.params | \
+      wgrib2 ${COMOUT}/${natlev} -s | grep "hybrid level:" | grep -F -f ${fixdir}/rrfs.natlev-FAA130.params | \
       wgrib2 -i ${COMOUT}/${natlev} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation bilinear \
-         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.natlev.f${fhr}.rotate_13km.faa.grib2
+         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.grib2
 
       wgrib2 ${COMOUT}/${natlev} -s | grep ":LTNG:entire atmosphere:" | \
       wgrib2 -i ${COMOUT}/${natlev} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation bilinear \
-         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.natlev.f${fhr}.rotate_13km.tmp.grib2
-      cat rrfs.t${cyc}z.natlev.f${fhr}.rotate_13km.tmp.grib2 >> rrfs.t${cyc}z.natlev.f${fhr}.rotate_13km.faa.grib2
-      rm rrfs.t${cyc}z.natlev.f${fhr}.rotate_13km.tmp.grib2
-      mv rrfs.t${cyc}z.natlev.f${fhr}.rotate_13km.faa.grib2 ${COMOUT}
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.natlev.f${fhr}.rotate_13km.faa.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.natlev.f${fhr}.rotate_13km.faa.grib2.idx
+         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.tmp.grib2
+      cat rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.tmp.grib2 >> rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.grib2
+      rm rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.tmp.grib2
+      mv rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.grib2 ${COMOUT}
+      wgrib2 ${COMOUT}/rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.grib2.idx
     fi
 
     #-- GRID 237
     if [ $ifhr -le 12 ]; then
-      #wgrib2 ${COMOUT}/${natlev} -s | grep "hybrid level:" | grep -F -f ${parmdir}/rrfs.natlev-FAA130.params | \
+      #wgrib2 ${COMOUT}/${natlev} -s | grep "hybrid level:" | grep -F -f ${fixdir}/rrfs.natlev-FAA130.params | \
       #wgrib2 -i ${COMOUT}/${natlev} -set_bitmap 1 -set_grib_type c3 \
       #   -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
       #   -new_grid_interpolation bilinear \
-      #   -new_grid ${grid_specs_237} rrfs.t${cyc}z.natlev.f${fhr}.pr_32km.faa.grib2
+      #   -new_grid ${grid_specs_237} rrfs.t${cyc}z.natlevfaa.f${fhr}.pr32km.grib2
 
       wgrib2 ${COMOUT}/${natlev} -s | grep ":LTNG:entire atmosphere:" | \
       wgrib2 -i ${COMOUT}/${natlev} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation bilinear \
-         -new_grid ${grid_specs_237} rrfs.t${cyc}z.natlev.f${fhr}.pr_32km.tmp.grib2
-      #cat rrfs.t${cyc}z.natlev.f${fhr}.pr_32km.tmp.grib2 >> rrfs.t${cyc}z.natlev.f${fhr}.pr_32km.faa.grib2
-      cat rrfs.t${cyc}z.natlev.f${fhr}.pr_32km.tmp.grib2 >> ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.pr_32km.faa.grib2
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.pr_32km.faa.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.pr_32km.faa.grib2.idx
+         -new_grid ${grid_specs_237} rrfs.t${cyc}z.natlevfaa.f${fhr}.pr32km.tmp.grib2
+      #cat rrfs.t${cyc}z.natlevfaa.f${fhr}.pr32km.tmp.grib2 >> rrfs.t${cyc}z.natlevfaa.f${fhr}.pr32km.grib2
+      cat rrfs.t${cyc}z.natlevfaa.f${fhr}.pr32km.tmp.grib2 >> ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.pr32km.grib2
+      wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.pr32km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.pr32km.grib2.idx
 
-      rm rrfs.t${cyc}z.natlev.f${fhr}.pr_32km.tmp.grib2
-      #mv rrfs.t${cyc}z.natlev.f${fhr}.pr_32km.faa.grib2 ${COMOUT}
+      rm rrfs.t${cyc}z.natlevfaa.f${fhr}.pr32km.tmp.grib2
+      #mv rrfs.t${cyc}z.natlevfaa.f${fhr}.pr32km.grib2 ${COMOUT}
     fi 
   fi
 
-  #if [[ -f ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.conus_13km.faa.grib2  || -f ${COMOUT}/rrfs.t${cyc}z.natlev.f${fhr}.conus_13km.faa.grib2 ]]; then
-  #  cat ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.conus_13km.faa.grib2 ${COMOUT}/rrfs.t${cyc}z.natlev.f${fhr}.conus_13km.faa.grib2 \
-  #      > ${COMOUT}/rrfs.t${cyc}z.f${fhr}.conus_13km.faa.grib2
-  #  rm ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.conus_13km.faa.grib2 ${COMOUT}/rrfs.t${cyc}z.natlev.f${fhr}.conus_13km.faa.grib2
-  #  wgrib2 ${COMOUT}/rrfs.t${cyc}z.f${fhr}.conus_13km.faa.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.f${fhr}.conus_13km.faa.grib2.idx
+  #if [[ -f ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.conus13km.grib2  || -f ${COMOUT}/rrfs.t${cyc}z.natlevfaa.f${fhr}.conus13km.grib2 ]]; then
+  #  cat ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.conus13km.grib2 ${COMOUT}/rrfs.t${cyc}z.natlevfaa.f${fhr}.conus13km.grib2 \
+  #      > ${COMOUT}/rrfs.t${cyc}z.f${fhr}.conus13km.grib2
+  #  rm ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.conus13km.grib2 ${COMOUT}/rrfs.t${cyc}z.natlevfaa.f${fhr}.conus13km.grib2
+  #  wgrib2 ${COMOUT}/rrfs.t${cyc}z.f${fhr}.conus13km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.f${fhr}.conus13km.grib2.idx
   #fi
 
   #if [[ -f ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.rotate_13km.faa.grib2  || -f ${COMOUT}/rrfs.t${cyc}z.natlev.f${fhr}.rotate_13km.faa.grib2 ]]; then
@@ -176,8 +176,8 @@ USHrrfs=$8
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation bilinear \
          -new_grid ${grid_specs_130} GTG_grid_130.grib2
-      mv GTG_grid_130.grib2 ${COMOUT}/rrfs.t${cyc}z.aviati.f${fhr}.conus_13km.grib2
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.aviati.f${fhr}.conus_13km.grib2  -s > ${COMOUT}/rrfs.t${cyc}z.aviati.f${fhr}.conus_13km.grib2.idx
+      mv GTG_grid_130.grib2 ${COMOUT}/rrfs.t${cyc}z.aviati.f${fhr}.conus13km.grib2
+      wgrib2 ${COMOUT}/rrfs.t${cyc}z.aviati.f${fhr}.conus13km.grib2  -s > ${COMOUT}/rrfs.t${cyc}z.aviati.f${fhr}.conus13km.grib2.idx
     fi
   fi
 
@@ -193,14 +193,14 @@ USHrrfs=$8
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation neighbor \
          -new_grid ${grid_specs_130} IFI_grid_130.grib2
-      mv IFI_grid_130.grib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.conus_13km.grib2
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.conus_13km.grib2  -s > ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.conus_13km.grib2.idx
+      mv IFI_grid_130.grib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.conus13km.grib2
+      wgrib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.conus13km.grib2  -s > ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.conus13km.grib2.idx
 
       #-- subset IFI data at every 304 m only at certain forcast hour
       if [ $ifhr = 1 -o  $ifhr = 2 -o  $ifhr = 3 -o  $ifhr = 6 -o  $ifhr = 9 -o  $ifhr = 12 -o  $ifhr = 15 -o  $ifhr = 18 ]; then
-        IFIFILE=rrfs.t${cyc}z.ififip.f${fhr}.conus_13km.grib2
-        IFIDOMAIN=conus_13km
-        ${USHrrfs}/rrfs_subset_ifi_304m.sh $fhr $cyc ${COMOUT} ${IFIFILE} ${IFIDOMAIN}
+        IFIFILE=rrfs.t${cyc}z.ififip.f${fhr}.conus13km.grib2
+        IFIDOMAIN=conus13km
+        ${USHrrfs}/rrfs_subset_ifi_304m.sh $fhr $cyc ${COMOUT} ${IFIFILE} ${IFIDOMAIN} ${fixdir}
       fi
     fi
 
@@ -221,15 +221,15 @@ USHrrfs=$8
       wgrib2 ${COMOUT}/${ififip} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation neighbor \
-         -new_grid ${grid_specs_91}  rrfs.t${cyc}z.ififip.f${fhr}.ak_3km.grib2
-      mv rrfs.t${cyc}z.ififip.f${fhr}.ak_3km.grib2 ${COMOUT}
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.ak_3km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.ak_3km.grib2.idx
+         -new_grid ${grid_specs_91}  rrfs.t${cyc}z.ififip.f${fhr}.ak3km.grib2
+      mv rrfs.t${cyc}z.ififip.f${fhr}.ak3km.grib2 ${COMOUT}
+      wgrib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.ak3km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.ak3km.grib2.idx
 
       #-- subset IFI data at every 304 m only at certain forcast hour
       if [ $ifhr = 1 -o  $ifhr = 2 -o  $ifhr = 3 -o  $ifhr = 6 -o  $ifhr = 9 -o  $ifhr = 12 -o  $ifhr = 15 -o  $ifhr = 18 ]; then
-        IFIFILE=rrfs.t${cyc}z.ififip.f${fhr}.ak_3km.grib2
-        IFIDOMAIN=ak_3km
-        ${USHrrfs}/rrfs_subset_ifi_304m.sh $fhr $cyc ${COMOUT} ${IFIFILE} ${IFIDOMAIN}
+        IFIFILE=rrfs.t${cyc}z.ififip.f${fhr}.ak3km.grib2
+        IFIDOMAIN=ak3km
+        ${USHrrfs}/rrfs_subset_ifi_304m.sh $fhr $cyc ${COMOUT} ${IFIFILE} ${IFIDOMAIN} ${fixdir}
       fi
     fi
 
