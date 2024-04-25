@@ -165,25 +165,25 @@ print_info_msg "Starting orography file generation..."
 export pgm="orog"
 . prep_step
 
-$APRUN ${EXECdir}/$pgm < "${input_redirect_fn}" >>$pgmout 2>${tmp_dir}/errfile
+$APRUN ${EXECdir}/$pgm < "${input_redirect_fn}" >>$pgmout 2>${DATA}/raw_topo/tmp/errfile
 export err=$?; err_chk
-mv ${tmp_dir}/errfile ${tmp_dir}/errfile_orog
+mv ${DATA}/raw_topo/tmp/errfile ${DATA}/raw_topo/tmp/errfile_orog
 
-cd ${OROG_DIR}
+cd ${DATA}
 #
 #-----------------------------------------------------------------------
 #
-# Move the raw orography file from the temporary directory to raw_dir.
+# Move the raw orography file from the temporary directory to raw_topo.
 # In the process, rename it such that its name includes CRES and the halo
 # width.
 #
 #-----------------------------------------------------------------------
 #
-raw_orog_fp_orig="${tmp_dir}/out.oro.nc"
+raw_orog_fp_orig="${DATA}/raw_topo/tmp/out.oro.nc"
 raw_orog_fn_prefix="${CRES}${DOT_OR_USCORE}raw_orog"
 fn_suffix_with_halo="tile${TILE_RGNL}.halo${NHW}.nc"
 raw_orog_fn="${raw_orog_fn_prefix}.${fn_suffix_with_halo}"
-raw_orog_fp="${raw_dir}/${raw_orog_fn}"
+raw_orog_fp="${DATA}/raw_topo/${raw_orog_fn}"
 mv "${raw_orog_fp_orig}" "${raw_orog_fp}"
 #
 #-----------------------------------------------------------------------
@@ -195,7 +195,7 @@ mv "${raw_orog_fp_orig}" "${raw_orog_fp}"
 #
 suites=( "FV3_RAP" "FV3_HRRR" "FV3_HRRR_gf" "FV3_GFS_v15_thompson_mynn_lam3km" "FV3_GFS_v17_p8" )
 if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" ]] ; then
-  cd ${tmp_orog_data}
+  cd ${DATA}/temp_orog_data
   mosaic_fn_gwd="${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc"
   mosaic_fp_gwd="${FIXLAM}/${mosaic_fn_gwd}"
   grid_fn_gwd=$( get_charvar_from_netcdf "${mosaic_fp_gwd}" "gridfiles" )
@@ -222,9 +222,9 @@ EOF
   export pgm="orog_gsl"
   . prep_step
 
-  ${APRUN} ${EXECdir}/$pgm < "${input_redirect_fn}" >>$pgmout 2>${tmp_dir}/errfile
+  ${APRUN} ${EXECdir}/$pgm < "${input_redirect_fn}" >>$pgmout 2>${DATA}/raw_topo/tmp/errfile
   export err=$?; err_chk
-  mv ${tmp_dir}/errfile ${tmp_dir}/errfile_orog_gsl
+  mv ${DATA}/raw_topo/tmp/errfile ${DATA}/raw_topo/tmp/errfile_orog_gsl
 
   mv "${CRES}${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc" \
      "${CRES}${DOT_OR_USCORE}oro_data_ls.tile${TILE_RGNL}.halo${NH0}.nc" \
@@ -299,7 +299,7 @@ fi
 #
 fn_suffix_without_halo="tile${TILE_RGNL}.nc"
 filtered_orog_fn_prefix="${CRES}${DOT_OR_USCORE}filtered_orog"
-filtered_orog_fp_prefix="${filter_dir}/${filtered_orog_fn_prefix}"
+filtered_orog_fp_prefix="${DATA}/filtered_topo/${filtered_orog_fn_prefix}"
 filtered_orog_fp="${filtered_orog_fp_prefix}.${fn_suffix_without_halo}"
 cp "${raw_orog_fp}" "${filtered_orog_fp}"
 #
@@ -317,16 +317,16 @@ cp "${raw_orog_fp}" "${filtered_orog_fp}"
 #
 #-----------------------------------------------------------------------
 #
-ln -fs "${grid_fp}" "${filter_dir}/${grid_fn}"
+ln -fs "${grid_fp}" "${DATA}/filtered_topo/${grid_fn}"
 #
 #-----------------------------------------------------------------------
 #
-# Create the namelist file (in the filter_dir directory) that the orography
-# filtering executable will read in.
+# Create the namelist file (in the filtered_topo directory) that the
+# orography filtering executable will read in.
 #
 #-----------------------------------------------------------------------
 #
-cat > "${filter_dir}/input.nml" <<EOF
+cat > "${DATA}/filtered_topo/input.nml" <<EOF
 &filter_topo_nml
   grid_file = "${mosaic_fp}"
   topo_file = "${filtered_orog_fp_prefix}"
@@ -339,7 +339,7 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-# Change location to the filter_dir directory.  This must be done because
+# Change location to the filtered_topo directory.  This must be done because
 # the orography filtering executable looks for a namelist file named
 # input.nml in the directory in which it is running (not the directory
 # in which it is located).  Thus, since above we created the input.nml
@@ -347,7 +347,7 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-cd "${filter_dir}"
+cd "${DATA}/filtered_topo"
 
 # Run the orography filtering executable.
 print_info_msg "Starting filtering of orography..."
@@ -355,9 +355,9 @@ print_info_msg "Starting filtering of orography..."
 export pgm="filter_topo"
 . prep_step
 
-$APRUN ${EXECdir}/$pgm >>$pgmout 2>${tmp_dir}/errfile
+$APRUN ${EXECdir}/$pgm >>$pgmout 2>${DATA}/raw_topo/tmp/errfile
 export err=$?; err_chk
-mv ${tmp_dir}/errfile ${tmp_dir}/errfile_filter_topo
+mv ${DATA}/raw_topo/tmp/errfile ${DATA}/raw_topo/tmp/errfile_filter_topo
 #
 # For clarity, rename the filtered orography file in filter_dir
 # such that its new name contains the halo size.
@@ -368,7 +368,7 @@ filtered_orog_fp=$( dirname "${filtered_orog_fp}" )"/${filtered_orog_fn}"
 mv "${filtered_orog_fn_orig}" "${filtered_orog_fn}"
 cp "${filtered_orog_fp}" "${OROG_DIR}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NHW}.nc"
 
-cd ${OROG_DIR}
+cd ${DATA}
 
 print_info_msg "Filtering of orography complete."
 #
@@ -392,7 +392,7 @@ unshaved_fp="${filtered_orog_fp}"
 # We perform the work in shave_dir, so change location to that directory.
 # Once it is complete, we move the resultant file from shave_dir to OROG_DIR.
 #
-cd "${shave_dir}"
+cd "${DATA}/shave_tmp"
 #
 # Create an input namelist file for the shave executable to generate
 # orography files with varios halos from the one with a wide halo.
@@ -405,20 +405,20 @@ for halo_num in "${halo_num_list[@]}"; do
 
   print_info_msg "Shaving filtered orography file with ${halo_num}-cell-wide halo..."
   nml_fn="input.shave.orog.halo${halo_num}"
-  shaved_fp="${shave_dir}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${halo_num}.nc"
+  shaved_fp="${DATA}/shave_tmp/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${halo_num}.nc"
   printf "%s %s %s %s %s\n" \
   $NX $NY ${halo_num} \"${unshaved_fp}\" \"${shaved_fp}\" \
   > ${nml_fn}
 
   . prep_step
 
-  $APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>${tmp_dir}/errfile
+  $APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>${DATA}/raw_topo/tmp/errfile
   export err=$?; err_chk
-  mv ${tmp_dir}/errfile ${tmp_dir}/errfile_shave_${halo_num}
+  mv ${DATA}/raw_topo/tmp/errfile ${DATA}/raw_topo/tmp/errfile_shave_${halo_num}
   mv ${shaved_fp} ${OROG_DIR}
 done
 
-cd ${OROG_DIR}
+cd ${DATA}
 #
 #-----------------------------------------------------------------------
 #

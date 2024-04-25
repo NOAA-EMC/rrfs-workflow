@@ -1264,9 +1264,8 @@ check_for_preexist_dir_file "$EXPTDIR" "${PREEXISTING_DIR_METHOD}"
 # FIXcrtm:
 # This is the directory that will contain the coefficient files for CRTM
 #
-# CYCLE_BASEDIR:
-# The base directory in which the directories for the various cycles will
-# be placed.
+# DATAROOT:
+# The directory containing the working directories.
 #
 # ENSCTRL_CYCLE_BASEDIR:
 # The base directory of the control member for EnKF recentering, in which
@@ -1302,8 +1301,8 @@ FIXsmokedust="${EXPTDIR}/fix_smoke_dust"
 FIXbufrsnd="${EXPTDIR}/fix_bufrsnd"
 SST_ROOT="${SST_ROOT}"
 
-CYCLE_BASEDIR="$STMP"
-check_for_preexist_dir_file "${CYCLE_BASEDIR}" "${PREEXISTING_DIR_METHOD}"
+DATAROOT="$STMP"
+check_for_preexist_dir_file "${DATAROOT}" "${PREEXISTING_DIR_METHOD}"
 ENSCTRL_CYCLE_BASEDIR="${ENSCTRL_STMP}"
 COMROOT="$PTMP"
 ENSCTRL_COMROOT="${ENSCTRL_PTMP}"
@@ -2432,7 +2431,7 @@ MODEL="${MODEL}"
 
 EXPTDIR="$EXPTDIR"
 LOG_BASEDIR="${LOG_BASEDIR}"
-CYCLE_BASEDIR="${CYCLE_BASEDIR}"
+DATAROOT="${DATAROOT}"
 GRID_DIR="${GRID_DIR}"
 OROG_DIR="${OROG_DIR}"
 SFC_CLIMO_DIR="${SFC_CLIMO_DIR}"

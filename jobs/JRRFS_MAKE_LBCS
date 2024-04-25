@@ -1,56 +1,40 @@
 #!/bin/bash
+ 
+#-----------------------------------------------------------------------
+# RRFS Make LBCs
+#-----------------------------------------------------------------------
 
-# 
 #-----------------------------------------------------------------------
-#
-# This script generates the lateral boundary conditions (LBCs) for the RRFS.
-#
-# Note that when we refer to LBCs, we are referring to the LBCs excluding the one 
-# at the 0-th hour.
-# 
-#-----------------------------------------------------------------------
-#
-
-#
-#-----------------------------------------------------------------------
-#
 # Source the variable definitions file and the bash utility functions.
-#
 #-----------------------------------------------------------------------
-#
+
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
 
 date
 export PS4='+ $SECONDS + '
-#
+
 #-----------------------------------------------------------------------
-#
 # Save current shell options (in a global array).  Then set new options
 # for this script/function.
-#
 #-----------------------------------------------------------------------
-#
+
 { save_shell_opts; set -u -x; } > /dev/null 2>&1
-#
+
 #-----------------------------------------------------------------------
-#
 # Get the full path to the file in which this script/function is located 
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
-#
 #-----------------------------------------------------------------------
-#
+
 scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
 scrfunc_fn=$( basename "${scrfunc_fp}" )
 scrfunc_dir=$( dirname "${scrfunc_fp}" )
-#
+
 #-----------------------------------------------------------------------
-#
 # Print message indicating entry into script.
-#
 #-----------------------------------------------------------------------
-#
+
 print_info_msg "
 ========================================================================
 Entering script:  \"${scrfunc_fn}\"
@@ -60,13 +44,11 @@ This is the J-job script for the task that generates lateral boundary
 condition (LBC) files (in NetCDF format) for all LBC update hours (except 
 hour zero). 
 ========================================================================"
-#
+
 #-----------------------------------------------------------------------
-#
 # Set the parameters for the external model files.
-#
 #-----------------------------------------------------------------------
-#
+
 extrn_mdl_name="${EXTRN_MDL_NAME}"
 sysbasedir="${EXTRN_MDL_SYSBASEDIR_LBCS}"
 gfs_file_fmt="${GFS_FILE_FMT_LBCS}"
@@ -88,7 +70,6 @@ dd=${cdate:6:2}
 hh=${cdate:8:2}
 mn="00"
 yyyymmdd=${cdate:0:8}
-
 
 # offset is to go back to a previous cycle (for example 3-h) and
 # use the forecast (3-h) from that cycle valid at this cycle.
@@ -168,55 +149,36 @@ esac
 
 extrn_mdl_sysdir="${sysdir}"
 extrn_mdl_sysdir2="${sysdir2}"
-#
-#-----------------------------------------------------------------------
-#
-# Set the name of and create the directory in which the output from this
-# script will be placed (if it doesn't already exist).
-#
-#-----------------------------------------------------------------------
-#
-export lbcs_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/lbcs"
-mkdir -p "${lbcs_dir}"
-#
-#-----------------------------------------------------------------------
-#
-# Set the name of and create the directory in which the output from this
-# script will be saved for a long time (if it doesn't already exist).
-# Usually lbcs_dir under tmpnwprd should be purged fairly soon after cycle done
-#
-#-----------------------------------------------------------------------
-#
-export lbcs_nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/lbcs"
-mkdir -p "${lbcs_nwges_dir}"
-
-export workdir="${lbcs_dir}/tmp_LBCS_${bcgrp}"
-mkdir -p "$workdir"
-cd $workdir
-#
-#-----------------------------------------------------------------------
-#
-# Set the directory in which to check for the external model files (which
-# we refer to here as the "source" directory) to the default one set above
-# for the current machine and external model.
-#
-#-----------------------------------------------------------------------
-#
 extrn_mdl_source_dir="${extrn_mdl_sysdir}"
 extrn_mdl_source_dir2="${extrn_mdl_sysdir2}"
-#
-#-----------------------------------------------------------------------
-#
-# Call the ex-script for this J-job.
-#
-#-----------------------------------------------------------------------
-#
 extrn_mdl_lbc_spec_fhrs_str="( "$( printf "\"%s\" " "${lbc_spec_fhrs[@]}" )")"
 extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
 extrn_mdl_fns_on_disk_str2="( "$( printf "\"%s\" " "${fns_on_disk2[@]}" )")"
 
-export pgmout="${workdir}/OUTPUT.$$"
+#-----------------------------------------------------------------------
+# Obtain unique process id (pid) and create the run directory (DATA).
+#-----------------------------------------------------------------------
+
+export pid=${pid:-$$}
+export envir=${envir:-prod}
+export RUN=${RUN:-rrfs}
+export jobid=${RUN}_make_lbcs_${envir}_${cyc}
+
+export DATA=${DATAROOT}/${jobid}
+mkdir -p $DATA
+
+mkdir -p ${DATA}/tmp_LBCS_${bcgrp}
+cd ${DATA}/tmp_LBCS_${bcgrp}
+
+export lbcs_nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/lbcs"
+mkdir -p "${lbcs_nwges_dir}"
+
+export pgmout="${DATA}/tmp_LBCS_${bcgrp}/OUTPUT.$$"
 env
+
+#-----------------------------------------------------------------------
+# Execute the script.
+#-----------------------------------------------------------------------
 
 $SCRIPTSdir/exrrfs_make_lbcs.sh \
   use_user_staged_extrn_files="${USE_USER_STAGED_EXTRN_FILES}" \
@@ -227,7 +189,7 @@ $SCRIPTSdir/exrrfs_make_lbcs.sh \
   extrn_mdl_fns_on_disk2="${extrn_mdl_fns_on_disk_str2}" \
   extrn_mdl_source_dir="${extrn_mdl_source_dir}" \
   extrn_mdl_source_dir2="${extrn_mdl_source_dir2}" \
-  extrn_mdl_staging_dir="${workdir}" \
+  extrn_mdl_staging_dir="${DATA}/tmp_LBCS_${bcgrp}" \
   bcgrp="${bcgrp}" \
   bcgrpnum="${bcgrpnum}"
 export err=$?; err_chk
@@ -235,24 +197,24 @@ export err=$?; err_chk
 if [ -e "$pgmout" ]; then
   cat $pgmout
 fi
-#
+
+if [ "${KEEPDATA}" = "NO" ]; then
+  rm -rf ${DATA}
+fi
+
 #-----------------------------------------------------------------------
-#
 # Print exit message.
-#
 #-----------------------------------------------------------------------
-#
+
 print_info_msg "
 ========================================================================
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-#
+
 #-----------------------------------------------------------------------
-#
 # Restore the shell options saved at the beginning of this script/function.
-#
 #-----------------------------------------------------------------------
-#
+
 { restore_shell_opts; } > /dev/null 2>&1
 

@@ -68,8 +68,6 @@ nprocs=$(( NNODES_MAKE_SFC_CLIMO * PPN_MAKE_SFC_CLIMO ))
 #
 # Create the namelist that the sfc_climo_gen code will read in.
 #
-# Question: Should this instead be created from a template file?
-#
 #-----------------------------------------------------------------------
 #
 if [ "${PREDEF_GRID_NAME}" = "RRFS_FIREWX_1.5km" ]; then
@@ -159,7 +157,7 @@ export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
-# Move output files out of the temporary directory.
+# Move output files out of the run directory.
 #
 #-----------------------------------------------------------------------
 #

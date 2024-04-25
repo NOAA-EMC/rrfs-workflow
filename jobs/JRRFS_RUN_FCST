@@ -1,55 +1,40 @@
 #!/bin/bash
 
-#
 #-----------------------------------------------------------------------
-#
-# This script copies files from various directories into the experiment
-# directory, creates links to some of them, and modifies others (e.g. 
-# templates) to customize them for the current experiment setup.
-#
+# RRFS Forecast
 #-----------------------------------------------------------------------
-#
 
-#
 #-----------------------------------------------------------------------
-#
 # Source the variable definitions file and the bash utility functions.
-#
 #-----------------------------------------------------------------------
-#
+
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
 
 date
 export PS4='+ $SECONDS + '
-#
+
 #-----------------------------------------------------------------------
-#
 # Save current shell options (in a global array).  Then set new options
 # for this script/function.
-#
 #-----------------------------------------------------------------------
-#
+
 { save_shell_opts; set -u -x; } > /dev/null 2>&1
-#
+
 #-----------------------------------------------------------------------
-#
 # Get the full path to the file in which this script/function is located 
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
-#
 #-----------------------------------------------------------------------
-#
+
 scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
 scrfunc_fn=$( basename "${scrfunc_fp}" )
 scrfunc_dir=$( dirname "${scrfunc_fp}" )
-#
+
 #-----------------------------------------------------------------------
-#
 # Print message indicating entry into script.
-#
 #-----------------------------------------------------------------------
-#
+
 print_info_msg "
 ========================================================================
 Entering script:  \"${scrfunc_fn}\"
@@ -58,43 +43,44 @@ In directory:     \"${scrfunc_dir}\"
 This is the J-job script for the task that runs a forecast with FV3 for 
 the specified cycle.
 ========================================================================"
-#
+
 #-----------------------------------------------------------------------
-#
+# Obtain unique process id (pid) and create the run directory (DATA).
 # Create the INPUT and RESTART directories under the run directory.
-#
 #-----------------------------------------------------------------------
-# CYCLE_TYPE is to indicate which type of cycle this job for:
-#   spinup: this job is for spin-up cycles
-#   others(prod): this job is for product cycle
-#
+
+export pid=${pid:-$$}
+export envir=${envir:-prod}
+export RUN=${RUN:-rrfs}
+
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
 CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
 if [ ${CYCLE_TYPE} == "spinup" ]; then
-  export run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_spinup"
+  export jobid=${RUN}_forecast_spinup_${envir}_${cyc}
   if  [ ${CYCLE_SUBTYPE} == "ensinit" ]; then
-    run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_ensinit"
+    export jobid=${RUN}_forecast_ensinit_${envir}_${cyc}
   fi
 else
-  export run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
+  export jobid=${RUN}_forecast_${envir}_${cyc}
 fi
 
-mkdir -p ${run_dir}/INPUT
-mkdir -p ${run_dir}/RESTART
+export DATA=${DATAROOT}/${jobid}
+mkdir -p ${DATA}
+
+mkdir -p ${DATA}/INPUT
+mkdir -p ${DATA}/RESTART
 
 export gridspec_dir=${NWGES_BASEDIR}/grid_spec
 mkdir -p ${gridspec_dir}
 
-cd ${run_dir}
-#
-#-----------------------------------------------------------------------
-#
-# Call the ex-script for this J-job.
-#
-#-----------------------------------------------------------------------
-#
-export pgmout="${run_dir}/OUTPUT.$$"
+cd ${DATA}
+
+export pgmout="${DATA}/OUTPUT.$$"
 env
+
+#-----------------------------------------------------------------------
+# Execute the script.
+#-----------------------------------------------------------------------
 
 $SCRIPTSdir/exrrfs_run_fcst.sh \
   cdate="${CDATE}" \
@@ -107,24 +93,24 @@ export err=$?; err_chk
 if [ -e "$pgmout" ]; then
   cat $pgmout
 fi
-#
+
+if [ "${KEEPDATA}" = "NO" ]; then
+  rm -rf ${DATA}
+fi
+
 #-----------------------------------------------------------------------
-#
 # Print exit message.
-#
 #-----------------------------------------------------------------------
-#
+
 print_info_msg "
 ========================================================================
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-#
+
 #-----------------------------------------------------------------------
-#
 # Restore the shell options saved at the beginning of this script/function.
-#
 #-----------------------------------------------------------------------
-#
+
 { restore_shell_opts; } > /dev/null 2>&1
 

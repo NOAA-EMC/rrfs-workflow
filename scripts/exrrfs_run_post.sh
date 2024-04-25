@@ -164,8 +164,8 @@ else
   fi
 fi
 #
-dyn_file="${run_dir}/dynf${fhr}.nc"
-phy_file="${run_dir}/phyf${fhr}.nc"
+dyn_file="${INPUT_DATA}/dynf${fhr}.nc"
+phy_file="${INPUT_DATA}/phyf${fhr}.nc"
 
 len_fhr=${#fhr}
 if [ ${len_fhr} -eq 9 ]; then
@@ -213,7 +213,7 @@ cp ${UPP_DIR}/sorc/ncep_post.fd/post_gtg.fd/gtg.input.rrfs ./gtg.input.rrfs
 
 #-----------------------------------------------------------------------
 #
-# stage necessary files in fhr_dir.
+# stage necessary files in run directory.
 #
 #-----------------------------------------------------------------------
 #
@@ -239,10 +239,10 @@ if [ ${USE_CUSTOM_POST_CONFIG_FILE} = "TRUE" ]; then
   print_info_msg "
 ====================================================================
 Copying the user-defined post flat file specified by CUSTOM_POST_CONFIG_FP
-to the post forecast hour directory (fhr_dir):
+to the post forecast hour directory (DATA):
   CUSTOM_POST_CONFIG_FP = \"${CUSTOM_POST_CONFIG_FP}\"
   CUSTOM_POST_PARAMS_FP = \"${CUSTOM_POST_PARAMS_FP}\"
-  fhr_dir = \"${fhr_dir}\"
+  DATA = \"${DATA}\"
 ===================================================================="
 else
   post_config_fp="${FIX_UPP}/postxconfig-NT-rrfs.txt"
@@ -253,10 +253,10 @@ else
   print_info_msg "
 ====================================================================
 Copying the default post flat file specified by post_config_fp to the post
-forecast hour directory (fhr_dir):
+forecast hour directory (DATA):
   post_config_fp = \"${post_config_fp}\"
   post_params_fp = \"${post_params_fp}\"
-  fhr_dir = \"${fhr_dir}\"
+  DATA = \"${DATA}\"
 ===================================================================="
 fi
 cp ${post_config_fp} ./postxconfig-NT.txt
@@ -304,8 +304,7 @@ export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
-# Move (and rename) the output files from the work directory to their
-# final location (postprd_dir).  Then delete the work directory.
+# Move (and rename) the output files.
 #
 #-----------------------------------------------------------------------
 #
@@ -375,15 +374,15 @@ net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
 # Include member number with ensemble forecast output
 if [ ${DO_ENSFCST} = "TRUE" ]; then
   ensmem_num=$(echo "${ensmem_indx}" | awk '{print $1+0}')	  # 1,2,3,4,5 for REFS
-  bgdawp=${postprd_dir}/${net4}.t${cyc}z.m0${ensmem_num}.prslev.f${fhr}.${gridname}grib2
-  bgrd3d=${postprd_dir}/${net4}.t${cyc}z.m0${ensmem_num}.natlev.f${fhr}.${gridname}grib2
-  bgifi=${postprd_dir}/${net4}.t${cyc}z.m0${ensmem_num}.ififip.f${fhr}.${gridname}grib2
-  bgavi=${postprd_dir}/${net4}.t${cyc}z.m0${ensmem_num}.aviati.f${fhr}.${gridname}grib2
+  bgdawp=${DATA}/${net4}.t${cyc}z.m0${ensmem_num}.prslev.f${fhr}.${gridname}grib2
+  bgrd3d=${DATA}/${net4}.t${cyc}z.m0${ensmem_num}.natlev.f${fhr}.${gridname}grib2
+  bgifi=${DATA}/${net4}.t${cyc}z.m0${ensmem_num}.ififip.f${fhr}.${gridname}grib2
+  bgavi=${DATA}/${net4}.t${cyc}z.m0${ensmem_num}.aviati.f${fhr}.${gridname}grib2
 else
-  bgdawp=${postprd_dir}/${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2
-  bgrd3d=${postprd_dir}/${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2
-  bgifi=${postprd_dir}/${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2
-  bgavi=${postprd_dir}/${net4}.t${cyc}z.aviati.f${fhr}.${gridname}grib2
+  bgdawp=${DATA}/${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2
+  bgrd3d=${DATA}/${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2
+  bgifi=${DATA}/${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2
+  bgavi=${DATA}/${net4}.t${cyc}z.aviati.f${fhr}.${gridname}grib2
 fi
 
 if [ -f PRSLEV.GrbF${post_fhr} ]; then
@@ -402,9 +401,9 @@ if [ -f AVIATI.GrbF${post_fhr} ]; then
 fi
 
 # Keep latlons_corners.txt file for RRFS fire weather grid
-if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
-  cp ${postprd_dir}/${fhr}/latlons_corners.txt.f${fhr} ${postprd_dir}
-fi
+#if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
+#  cp ${postprd_dir}/${fhr}/latlons_corners.txt.f${fhr} ${postprd_dir}
+#fi
 
 #
 #-----------------------------------------------------------------------
