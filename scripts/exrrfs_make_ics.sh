@@ -407,7 +407,7 @@ convert_nst=""
 #-----------------------------------------------------------------------
 #
 nsoill_out="4"
-if [ "${EXTRN_MDL_NAME_ICS}" = "RRFS" && \
+if [ "${EXTRN_MDL_NAME_ICS}" = "RRFS" ] && \
    [ "${SDF_USES_RUC_LSM}" = "TRUE" ]; then
   nsoill_out="9"
 fi
@@ -442,8 +442,12 @@ case "${EXTRN_MDL_NAME_ICS}" in
     fn_grib2="${EXTRN_MDL_FNS[0]}"
     input_type="grib2"
     convert_nst=False
-    fn_atm="${EXTRN_MDL_FNS[0]}"
-    fn_sfc="${EXTRN_MDL_FNS[1]}"
+    if [ "${DO_RETRO}" = "TRUE" ]; then
+      fn_atm="${EXTRN_MDL_FNS[0]}"
+    else
+      fn_atm="${EXTRN_MDL_FNS[0]}"
+      fn_sfc="${EXTRN_MDL_FNS[1]}"
+    fi
   elif [ "${GFS_FILE_FMT_ICS}" = "netcdf" ]; then
     tracers_input="[\"spfh\",\"clwmr\",\"o3mr\",\"icmr\",\"rwmr\",\"snmr\",\"grle\"]"
     tracers="[\"sphum\",\"liq_wat\",\"o3mr\",\"ice_wat\",\"rainwat\",\"snowwat\",\"graupel\"]"
@@ -741,14 +745,14 @@ fi
 #
 if [[ $DO_ENS_BLENDING = "FALSE" ]]; then
   mv out.atm.tile${TILE_RGNL}.nc \
-        ${ics_dir}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
+        ${DATA}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
 
   mv out.sfc.tile${TILE_RGNL}.nc \
-        ${ics_dir}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
+        ${DATA}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
 
-  mv gfs_ctrl.nc ${ics_dir}
+  mv gfs_ctrl.nc ${DATA}
 
-  mv gfs.bndy.nc ${ics_dir}/gfs_bndy.tile${TILE_RGNL}.000.nc
+  mv gfs.bndy.nc ${DATA}/gfs_bndy.tile${TILE_RGNL}.000.nc
 fi
 #
 #-----------------------------------------------------------------------
@@ -758,7 +762,7 @@ fi
 #-----------------------------------------------------------------------
 #
 if [ $DO_ENS_BLENDING = "FALSE" ]; then
-cp ${ics_dir}/*.nc ${ics_nwges_dir}/.
+cp ${DATA}/*.nc ${ics_nwges_dir}/.
 fi
 #
 #-----------------------------------------------------------------------

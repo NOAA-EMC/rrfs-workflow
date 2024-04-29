@@ -425,7 +425,7 @@ settings="\
 #
   'jobsdir': $JOBSdir
   'log_basedir': ${LOG_BASEDIR:-}
-  'cycle_basedir': ${CYCLE_BASEDIR:-}
+  'dataroot': ${DATAROOT:-}
   'ensctrl_cycle_basedir': ${ENSCTRL_CYCLE_BASEDIR:-}
   'nwges_basedir': ${NWGES_BASEDIR:-}
   'ensctrl_nwges_basedir': ${ENSCTRL_NWGES_BASEDIR:-}

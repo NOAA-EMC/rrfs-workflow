@@ -209,15 +209,15 @@ fi
 # extract the output fields for the testbed
 if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
   if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN} ]]; then
-    wgrib2 ${postprd_dir}/${prslev} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN} | wgrib2 -i -grib ${postprd_dir}/${testbed} ${postprd_dir}/${prslev}
+    wgrib2 ${DATA}/${prslev} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN} | wgrib2 -i -grib ${DATA}/${testbed} ${DATA}/${prslev}
   else
     echo "${FIX_UPP}/${TESTBED_FIELDS_FN} not found"
   fi
 fi
 if [[ ! -z ${TESTBED_FIELDS_FN2} ]]; then
   if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN2} ]]; then
-    if [[ -f ${postprd_dir}/${natlev} ]]; then
-      wgrib2 ${postprd_dir}/${natlev} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN2} | wgrib2 -i -append -grib ${postprd_dir}/${testbed} ${postprd_dir}/${natlev}
+    if [[ -f ${DATA}/${natlev} ]]; then
+      wgrib2 ${DATA}/${natlev} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN2} | wgrib2 -i -append -grib ${DATA}/${testbed} ${DATA}/${natlev}
     fi
   else
     echo "${FIX_UPP}/${TESTBED_FIELDS_FN2} not found"
@@ -233,24 +233,24 @@ fi
 # instead of calling sed.
 
 basetime=$( date +%y%j%H%M -d "${yyyymmdd} ${hh}" )
-if [[ -f ${postprd_dir}/${prslev} ]]; then
-  cp ${postprd_dir}/${prslev} ${COMOUT}/${prslev}
+if [[ -f ${DATA}/${prslev} ]]; then
+  cp ${DATA}/${prslev} ${COMOUT}/${prslev}
 fi
-if [[ -f ${postprd_dir}/${natlev} ]]; then
-  cp ${postprd_dir}/${natlev} ${COMOUT}/${natlev}
+if [[ -f ${DATA}/${natlev} ]]; then
+  cp ${DATA}/${natlev} ${COMOUT}/${natlev}
 fi
 
 if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
-  if [ -f  ${postprd_dir}/${ififip} ]; then
-    cp ${postprd_dir}/${ififip} ${COMOUT}/${ififip}
+  if [ -f  ${DATA}/${ififip} ]; then
+    cp ${DATA}/${ififip} ${COMOUT}/${ififip}
   fi
 
-  if [ -f  ${postprd_dir}/${aviati} ]; then
-    cp ${postprd_dir}/${aviati} ${COMOUT}/${aviati}
+  if [ -f  ${DATA}/${aviati} ]; then
+    cp ${DATA}/${aviati} ${COMOUT}/${aviati}
   fi
 
-  if [ -f  ${postprd_dir}/${testbed} ]; then
-    cp ${postprd_dir}/${testbed}  ${COMOUT}/${testbed}
+  if [ -f  ${DATA}/${testbed} ]; then
+    cp ${DATA}/${testbed}  ${COMOUT}/${testbed}
   fi
 fi
 
@@ -280,8 +280,6 @@ fi
 if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
   #  parallel run wgrib2 for product generation
   if [ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]; then
-    DATA=$postprd_dir
-    export DATA=$postprd_dir
     DATAprdgen=$DATA/prdgen_${fhr}
     mkdir $DATAprdgen
     USHrrfs=$USHdir/prdgen
@@ -380,8 +378,8 @@ elif [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
   #
   # Processing for the RRFS fire weather grid
   #
-  DATA=${postprd_dir}/${fhr}
-  cd $DATA
+#  DATA=${postprd_dir}/${fhr}
+#  cd $DATA
 
   # set GTYPE=2 for GRIB2
   GTYPE=2
@@ -392,7 +390,7 @@ $GTYPE
 EOF
 
   # Read in corner lat lons from UPP text file
-  export FORT11=${postprd_dir}/latlons_corners.txt.f${fhr}
+  export FORT11=${DATA}/latlons_corners.txt.f${fhr}
   export FORT45=itagfw
 
   # Calculate the wgrib2 gridspecs for the fire weather grid
@@ -400,7 +398,7 @@ EOF
   export err=$?; err_chk
 
   grid_specs_firewx=`head $DATA/copygb_gridnavfw.txt`
-  eval infile=${postprd_dir}/${net4}.t${cyc}z.prslev.f${fhr}.firewx.grib2
+  eval infile=${DATA}/${net4}.t${cyc}z.prslev.f${fhr}.firewx.grib2
 
   wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
    -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
@@ -433,7 +431,7 @@ else
       do
       
         eval grid_specs=\$grid_specs_${grid}
-        subdir=${postprd_dir}/${grid}_grid
+        subdir=${DATA}/${grid}_grid
         mkdir -p ${subdir}/${fhr}
         bg_remap=${subdir}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2
 
@@ -472,7 +470,6 @@ else
   fi
 fi  # block for parallel or series wgrib2 runs.
 
-rm -rf ${fhr_dir}
 #
 #-----------------------------------------------------------------------
 #
