@@ -290,8 +290,8 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
 
     # Create parm files for subsetting on the fly - do it for each forecast hour
     # 4 subpieces for CONUS and Alaska grids
-    sed -n -e '1,250p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_1.txt
-    sed -n -e '251,500p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_2.txt
+    sed -n -e '1,251p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_1.txt
+    sed -n -e '252,500p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_2.txt
     sed -n -e '501,750p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_3.txt
     sed -n -e '751,$p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_4.txt
 
