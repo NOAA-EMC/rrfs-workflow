@@ -206,9 +206,9 @@ if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" ]] ; then
   grid_fp_gwd="${FIXLAM}/${grid_fn_gwd}"
   ls_fn="geo_em.d01.lat-lon.2.5m.HGT_M.nc"
   ss_fn="HGT.Beljaars_filtered.lat-lon.30s_res.nc"
-  create_symlink_to_file target="${grid_fp_gwd}" symlink="${tmp_orog_data}/${grid_fn_gwd}" relative="FALSE"
-  create_symlink_to_file target="${FIXam}/${ls_fn}" symlink="${tmp_orog_data}/${ls_fn}" relative="FALSE"
-  create_symlink_to_file target="${FIXam}/${ss_fn}" symlink="${tmp_orog_data}/${ss_fn}" relative="FALSE"
+  create_symlink_to_file target="${grid_fp_gwd}" symlink="${DATA}/temp_orog_data/${grid_fn_gwd}" relative="FALSE"
+  create_symlink_to_file target="${FIXam}/${ls_fn}" symlink="${DATA}/temp_orog_data/${ls_fn}" relative="FALSE"
+  create_symlink_to_file target="${FIXam}/${ss_fn}" symlink="${DATA}/temp_orog_data/${ss_fn}" relative="FALSE"
 
   input_redirect_fn="grid_info.dat"
   cat > "${input_redirect_fn}" <<EOF
