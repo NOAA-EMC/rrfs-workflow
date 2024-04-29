@@ -620,8 +620,8 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
       surface_file_dir_name=fcst_fv3lam
       bkpath_find="missing"
       restart_prefix_find="missing"
+      restart_prefix=$( date +%Y%m%d.%H0000. -d "${START_DATE}" )
       if [ "${bkpath_find}" = "missing" ]; then
-          restart_prefix=$( date +%Y%m%d.%H0000. -d "${START_DATE}" )
 
           offset_hours=${DA_CYCLE_INTERV}
           YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
@@ -647,6 +647,16 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
              bkpath=${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${surface_file_dir_name}/RESTART  # cycling, use background from RESTART
              print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
           done
+      fi
+
+      # check if there are tracer file in continue cycle data space:
+      if [ "${bkpath_find}" = "missing" ]; then
+         checkfile=${CONT_CYCLE_DATA_ROOT}/tracer/${restart_prefix}fv_tracer.res.tile1.nc
+         if [ -r "${checkfile}" ]; then
+            bkpath_find=${CONT_CYCLE_DATA_ROOT}/tracer
+            restart_prefix_find=${restart_prefix}
+            print_info_msg "$VERBOSE" "Found ${checkfile}; Use it for smoke/dust cycle "
+         fi
       fi
 
       # cycle smoke/dust

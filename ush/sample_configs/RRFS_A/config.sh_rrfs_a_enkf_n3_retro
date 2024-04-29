@@ -1,6 +1,6 @@
 MACHINE="wcoss2"
 MACHINETYPE="backup"
-version="v0.8.5"
+version="v0.9.2"
 ACCOUNT="RRFS_DEV"
 #RESERVATION="rrfsdet"
 EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/${version}"
@@ -65,8 +65,8 @@ BOUNDARY_PROC_GROUP_NUM="12"
 
 # avaialble retro period:
 # 20210511-20210531; 20210718-20210801
-DATE_FIRST_CYCL="20230610"
-DATE_LAST_CYCL="20230611"
+DATE_FIRST_CYCL="20230701"
+DATE_LAST_CYCL="20230701"
 CYCL_HRS=( "00" "12" )
 CYCL_HRS=( "18" )
 CYCL_HRS_SPINSTART=("06" "18")
@@ -75,8 +75,8 @@ if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   CYCL_HRS_STOCH=("00" "06" "12" "18")
 fi
 #CYCL_HRS_RECENTER=("19")
-CYCLEMONTH="06"
-CYCLEDAY="10-11"
+CYCLEMONTH="07"
+CYCLEDAY="01-01"
 
 STARTYEAR=${DATE_FIRST_CYCL:0:4}
 STARTMONTH=${DATE_FIRST_CYCL:4:2}
@@ -203,10 +203,10 @@ LNDPINT=360
 
 RUN_ensctrl="rrfs"
 RUN="enkfrrfs"
-TAG="n3enkf85"
+TAG="n3enkf92"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   RUN="refs"
-  TAG="n3enfcst85"
+  TAG="n3enfcst92"
 fi
 
 . set_rrfs_config.sh
