@@ -407,7 +407,7 @@ convert_nst=""
 #-----------------------------------------------------------------------
 #
 nsoill_out="4"
-if [ "${EXTRN_MDL_NAME_ICS}" = "RRFS" ]; && \
+if [ "${EXTRN_MDL_NAME_ICS}" = "RRFS" ] && \
    [ "${SDF_USES_RUC_LSM}" = "TRUE" ]; then
   nsoill_out="9"
 fi
