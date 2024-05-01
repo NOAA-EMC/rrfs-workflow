@@ -36,6 +36,8 @@ Workflow task names.
 
 <!ENTITY TAG                  "{{ tag }}">
 <!ENTITY NET                  "{{ net }}">
+<!ENTITY RUN                  "{{ run }}">
+<!ENTITY envir                "{{ envir }}">
 
 <!--
 Flags that specify whether to run the preprocessing tasks.
@@ -423,7 +425,7 @@ MODULES_RUN_TASK_FP script.
           <or>
             <taskdep task="&RUN_FCST_TN;"/>
             <and>
-              <datadep age="05:00"><cyclestr>&DATAROOT;/rrfs_forecast_prod_@H/log.atm.f#fhr#</cyclestr></datadep>
+              <datadep age="05:00"><cyclestr>&DATAROOT;/&RUN;_forecast_&envir;_@H/log.atm.f#fhr#</cyclestr></datadep>
             </and>
           </or>
         </dependency>

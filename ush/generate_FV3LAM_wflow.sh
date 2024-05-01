@@ -227,6 +227,7 @@ settings="\
   'tag': ${TAG}
   'net': ${NET}
   'run': ${RUN}
+  'envir': ${envir}
 #
 # Number of nodes to use for each task.
 #
