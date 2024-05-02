@@ -64,7 +64,6 @@ mkdir -p ${DATA}
 cd ${DATA}
 
 export pgmout="${DATA}/OUTPUT.$$"
-env
 
 #-----------------------------------------------------------------------
 # Define COM directories
@@ -75,6 +74,7 @@ if [ "${CYCLE_TYPE}" = "spinup" ]; then
   COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
 fi
 mkdir -p "${COMOUT}"
+env
 
 #-----------------------------------------------------------------------
 # Execute the script.

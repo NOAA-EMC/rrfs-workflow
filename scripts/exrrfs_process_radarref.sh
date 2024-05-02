@@ -43,7 +43,7 @@ Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
 This is the ex-script for the task that runs radar reflectivity preprocess
-with FV3 for the specified cycle.
+with RRFS for the specified cycle.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -55,7 +55,7 @@ with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "CYCLE_DIR" "cycle_type" "RADAR_REF_THINNING" )
+valid_args=( "cycle_type" "RADAR_REF_THINNING" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -163,8 +163,8 @@ export pgm="process_NSSL_mosaic.exe"
 
 for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   bigmin=$( printf %2.2i $bigmin )
-  mkdir ${workdir}/${bigmin}
-  cd ${workdir}/${bigmin}
+  mkdir ${DATA}/${bigmin}
+  cd ${DATA}/${bigmin}
 
   fixdir=$FIX_GSI/
   fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}

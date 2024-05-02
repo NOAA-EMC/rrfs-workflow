@@ -1,52 +1,40 @@
 #!/bin/bash
 
-#
 #-----------------------------------------------------------------------
-#
-# This J-JOB script runs the NetCDF ligthning observation preprocess 
-#
+# RRFS Lightning Observation Preprocessing
 #-----------------------------------------------------------------------
-#
-#
+
 #-----------------------------------------------------------------------
-#
 # Source the variable definitions file and the bash utility functions.
-#
 #-----------------------------------------------------------------------
-#
+
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
 
 date
 export PS4='+ $SECONDS + '
-#
+
 #-----------------------------------------------------------------------
-#
 # Save current shell options (in a global array).  Then set new options
 # for this script/function.
-#
 #-----------------------------------------------------------------------
-#
+
 { save_shell_opts; set -u -x; } > /dev/null 2>&1
-#
+
 #-----------------------------------------------------------------------
-#
 # Get the full path to the file in which this script/function is located 
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
-#
 #-----------------------------------------------------------------------
-#
+
 scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
 scrfunc_fn=$( basename "${scrfunc_fp}" )
 scrfunc_dir=$( dirname "${scrfunc_fp}" )
-#
+
 #-----------------------------------------------------------------------
-#
 # Print message indicating entry into script.
-#
 #-----------------------------------------------------------------------
-#
+
 print_info_msg "
 ========================================================================
 Entering script:  \"${scrfunc_fn}\"
@@ -55,69 +43,67 @@ In directory:     \"${scrfunc_dir}\"
 This is the J-job script for the task that runs a lightning preprocess for 
 the specified cycle.
 ========================================================================"
-#
+
 #-----------------------------------------------------------------------
-#
-# Create the working directory under the cycle directory.
-#
+# Obtain unique process id (pid) and create the run directory (DATA).
 #-----------------------------------------------------------------------
-#
+
+export pid=${pid:-$$}
+export envir=${envir:-prod}
+export RUN=${RUN:-rrfs}
+
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export workdir=${CYCLE_DIR}/process_lightning_spinup
+  export jobid=${RUN}_process_lightning_spinup_${envir}_${cyc}
 else
-  export workdir=${CYCLE_DIR}/process_lightning
+  export jobid=${RUN}_process_lightning_${envir}_${cyc}
 fi
-rm -fr ${workdir}
-mkdir -p ${workdir}
-cd ${workdir}
-#
+
+export DATA=${DATAROOT}/${jobid}
+mkdir -p ${DATA}
+cd ${DATA}
+
+export pgmout="${DATA}/OUTPUT.$$"
+
 #-----------------------------------------------------------------------
-#
-# create COMOUT directory
-#
+# Define COM directories
 #-----------------------------------------------------------------------
-#
+
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
 else
   export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc/ensmean"
 fi
 mkdir -p "${COMOUT}"
-#
-#-----------------------------------------------------------------------
-#
-# Call the ex-script for this J-job.
-#
-#-----------------------------------------------------------------------
-#
-export pgmout="${workdir}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_process_lightning.sh \
-  CYCLE_DIR="${CYCLE_DIR}"
+#-----------------------------------------------------------------------
+# Execute the script.
+#-----------------------------------------------------------------------
+
+$SCRIPTSdir/exrrfs_process_lightning.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then
   cat $pgmout
 fi
-#
+
+if [ "${KEEPDATA}" = "NO" ]; then
+  rm -rf ${DATA}
+fi
+
 #-----------------------------------------------------------------------
-#
 # Print exit message.
-#
 #-----------------------------------------------------------------------
-#
+
 print_info_msg "
 ========================================================================
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-#
+
 #-----------------------------------------------------------------------
-#
 # Restore the shell options saved at the beginning of this script/function.
-#
 #-----------------------------------------------------------------------
-#
+
 { restore_shell_opts; } > /dev/null 2>&1
 

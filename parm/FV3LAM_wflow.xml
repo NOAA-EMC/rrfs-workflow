@@ -72,8 +72,10 @@ Workflow task names.
 <!ENTITY RUN_SMOKE_TN         "run_proc_smoke">
 <!ENTITY RUN_PM_TN            "run_proc_pm">
 
-<!ENTITY TAG  "{{ tag }}">
-<!ENTITY NET  "{{ net }}">
+<!ENTITY TAG   "{{ tag }}">
+<!ENTITY NET   "{{ net }}">
+<!ENTITY RUN   "{{ run }}">
+<!ENTITY envir "{{ envir }}">
 
 <!--
 Flags that determine whether to run the specific tasks.
@@ -98,6 +100,7 @@ Directories and files.
 <!ENTITY LOGDIR                   "{{ log_basedir }}/{{ run }}.@Y@m@d/@H">
 <!ENTITY OBSPATH                  "{{ obspath }}">
 <!ENTITY OBSPATH_PM               "{{ obspath_pm }}">
+<!ENTITY DATAROOT                 "{{ dataroot }}">
 <!ENTITY CYCLE_BASEDIR            "{{ cycle_basedir }}">
 <!ENTITY NWGES_BASEDIR            "{{ nwges_basedir }}">
 <!ENTITY ENSCTRL_CYCLE_BASEDIR    "{{ ensctrl_cycle_basedir }}">
@@ -389,6 +392,9 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&MAKE_GRID_TN;.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>KEEPDATA</name><value>YES</value></envar>
 
   </task>
 {% endif %}
@@ -409,6 +415,8 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&MAKE_OROG_TN;.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
       <or>
@@ -436,6 +444,8 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&MAKE_SFC_CLIMO_TN;.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
       <and>
@@ -489,12 +499,13 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
     <envar><name>NWGES_BASEDIR</name><value>&NWGES_BASEDIR;</value></envar>
     <envar><name>NWGES_DIR</name><value>&NWGES_BASEDIR;</value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value></value></envar>
+    <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
       <and>
@@ -531,12 +542,13 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
     <envar><name>NWGES_BASEDIR</name><value>&NWGES_BASEDIR;</value></envar>
     <envar><name>NWGES_DIR</name><value>&NWGES_BASEDIR;</value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value></value></envar>
+    <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
       <and>
@@ -570,12 +582,13 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
     <envar><name>RADAR_REF_THINNING</name><value>{{ radar_ref_thinning }}</value></envar>
     <envar><name>NWGES_BASEDIR</name><value>&NWGES_BASEDIR;</value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value></value></envar>
+    <envar><name>KEEPDATA</name><value>YES</value></envar>
         
     <dependency>
       <and>
@@ -607,10 +620,11 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value></value></envar>
+    <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
       <and>
@@ -643,10 +657,11 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>PREP_MODEL</name><value>0</value></envar>
+    <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
         <timedep><cyclestr offset="&START_TIME_PROC_GLMFED;">@Y@m@d@H@M00</cyclestr></timedep>
@@ -677,10 +692,11 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value></value></envar>
+    <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
       <and>
@@ -736,7 +752,8 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>FG_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
     <envar><name>EXTRN_MDL_NAME</name><value>{{ extrn_mdl_name_ics }}</value></envar>
@@ -745,6 +762,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>WRF_MEM_NAME</name><value>#memNameWRF#</value></envar>
     <envar><name>GDASENKF_INPUT_SUBDIR</name><value>#subdirGDAS#</value></envar>
     <envar><name>GDAS_MEM_NAME</name><value>#memNameGDAS#</value></envar>
+    <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
       <and>
@@ -911,7 +929,8 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>EXTRN_MDL_NAME</name><value>{{ extrn_mdl_name_lbcs }}</value></envar>
     <envar><name>BOUNDARY_LEN</name><value>{{ boundary_len_hrs }}</value></envar>
@@ -921,6 +940,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GDAS_MEM_NAME</name><value>#memNameGDAS#</value></envar>
     <envar><name>bcgrp</name><value>#bcgrp#</value></envar>
     <envar><name>bcgrpnum</name><value>{{ boundary_proc_group_num }}</value></envar>
+    <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
       <and>
@@ -1151,14 +1171,16 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>CYCLE_SUBTYPE</name><value><cyclestr>ensinit</cyclestr></value></envar>
     <envar><name>NWGES_BASEDIR</name><value>&NWGES_BASEDIR;</value></envar>
     <envar><name>RESTART_HRS</name><value><cyclestr>0</cyclestr></value></envar>
+    <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
         <and>   
@@ -1956,12 +1978,14 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>NWGES_BASEDIR</name><value>&NWGES_BASEDIR;</value></envar>
     <envar><name>RESTART_HRS</name><value><cyclestr>1</cyclestr></value></envar>
+    <envar><name>KEEPDATA</name><value>YES</value></envar>
   
     <dependency>
       {%- if do_dacycle and do_refl2tten and do_nonvar_cldanal%}
@@ -2076,7 +2100,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-      <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
       <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
       <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
@@ -2084,9 +2108,10 @@ MODULES_RUN_TASK_FP script.
       <envar><name>fhr</name><value>#fhr#</value></envar>
       <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
       <envar><name>TMMARK</name><value>tm00</value></envar>
+      <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
-        <datadep age="02:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam_spinup/log.atm.f#fhr#</cyclestr></datadep>
+        <datadep age="02:30"><cyclestr>&DATAROOT;/&RUN;_forecast_spinup_&envir;_@H/log.atm.f#fhr#</cyclestr></datadep>
       </dependency>
 
     </task>
@@ -2110,13 +2135,14 @@ MODULES_RUN_TASK_FP script.
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-      <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
       <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
       <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
       <envar><name>TMMARK</name><value>tm00</value></envar>
+      <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
         <taskdep task="&RUN_POST_TN;_spinup{{ uscore_ensmem_name }}_f#fhr#"/>
@@ -3029,12 +3055,14 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
     <envar><name>NWGES_BASEDIR</name><value>&NWGES_BASEDIR;</value></envar>
     <envar><name>RESTART_HRS</name><value><cyclestr>{{ restart_hrs_prod }}</cyclestr></value></envar>
+    <envar><name>KEEPDATA</name><value>YES</value></envar>
   
     <dependency>
       {%- if do_ensfcst %}
@@ -3112,12 +3140,14 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
     <envar><name>NWGES_BASEDIR</name><value>&NWGES_BASEDIR;</value></envar>
     <envar><name>RESTART_HRS</name><value><cyclestr>{{ restart_hrs_prod_long }}</cyclestr></value></envar>
+    <envar><name>KEEPDATA</name><value>YES</value></envar>
   
     <dependency>
       {%- if do_dacycle and do_refl2tten and do_nonvar_cldanal%}
@@ -3294,16 +3324,17 @@ MODULES_RUN_TASK_FP script.
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-      <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
       <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
       <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
       <envar><name>TMMARK</name><value>tm00</value></envar>
+      <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
-          <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/log.atm.f#fhr#</cyclestr></datadep>
+          <datadep age="01:30"><cyclestr>&DATAROOT;/&RUN;_forecast_&envir;_@H/log.atm.f#fhr#</cyclestr></datadep>
       </dependency>
 
     </task>
@@ -3342,16 +3373,17 @@ MODULES_RUN_TASK_FP script.
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-      <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
       <envar><name>NWGES_DIR</name><value><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
       <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
       <envar><name>TMMARK</name><value>tm00</value></envar>
+      <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
-         <datadep age="01:30"><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H{{ slash_ensmem_subdir }}/fcst_fv3lam/log.atm.f#fhr#</cyclestr></datadep>
+         <datadep age="01:30"><cyclestr>&DATAROOT;/&RUN;_forecast_&envir;_@H/log.atm.f#fhr#</cyclestr></datadep>
       </dependency>
 
     </task>
@@ -3394,12 +3426,13 @@ MODULES_RUN_TASK_FP script.
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-      <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
       <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
       <envar><name>TMMARK</name><value>tm00</value></envar>
+      <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
         <taskdep task="&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr#"/>
@@ -3442,12 +3475,13 @@ MODULES_RUN_TASK_FP script.
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-      <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>DATAROOT</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
       <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
       <envar><name>TMMARK</name><value>tm00</value></envar>
+      <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
         <taskdep task="&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr#_long"/>
