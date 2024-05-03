@@ -78,6 +78,7 @@ env
 #-----------------------------------------------------------------------
 
 python -u ${SCRIPTSdir}/exrrfs_process_glmfed.py
+export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then
   cat $pgmout
