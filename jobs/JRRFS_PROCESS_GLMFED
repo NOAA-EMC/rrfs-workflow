@@ -1,80 +1,66 @@
 #!/bin/bash
 
+#-----------------------------------------------------------------------
+# RRFS GLM Gridded Lightning Data Preprocessing
+#-----------------------------------------------------------------------
 
-#
 #-----------------------------------------------------------------------
-#
-# This J-JOB script runs the GLM gridded lightning data preprocess 
-#      for the FV3-LAM model
-#
-#-----------------------------------------------------------------------
-#
-
-#
-#-----------------------------------------------------------------------
-#
 # Source the variable definitions file and the bash utility functions.
-#
 #-----------------------------------------------------------------------
-#
+
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
-#
+
 #-----------------------------------------------------------------------
-#
 # Save current shell options (in a global array).  Then set new options
 # for this script/function.
-#
 #-----------------------------------------------------------------------
-#
+
 { save_shell_opts; set -u -x; } > /dev/null 2>&1
-#
+
 #-----------------------------------------------------------------------
-#
 # Get the full path to the file in which this script/function is located 
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
-#
 #-----------------------------------------------------------------------
-#
+
 scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
 scrfunc_fn=$( basename "${scrfunc_fp}" )
 scrfunc_dir=$( dirname "${scrfunc_fp}" )
-#
+
 #-----------------------------------------------------------------------
-#
 # Print message indicating entry into script.
-#
 #-----------------------------------------------------------------------
-#
+
 print_info_msg "
 ========================================================================
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
 This is the J-job script for the task that runs a GLM FED 
-preprocess with FV3 for the specified cycle.
+preprocess with RRFS for the specified cycle.
 ========================================================================"
-#
+
 #-----------------------------------------------------------------------
-#
-# Create the working directory under the cycle directory.
-#
+# Obtain unique process id (pid) and create the run directory (DATA).
 #-----------------------------------------------------------------------
-#
+
+export pid=${pid:-$$}
+export envir=${envir:-prod}
+export RUN=${RUN:-rrfs}
+
 if [ ${CYCLE_TYPE} == "spinup" ]; then
-  workdir=${CYCLE_DIR}/process_glmfed_spinup
+  export jobid=${RUN}_process_glmfed_spinup_${envir}_${cyc}
 else
-  workdir=${CYCLE_DIR}/process_glmfed
+  export jobid=${RUN}_process_glmfed_${envir}_${cyc}
 fi
 if [ ${DO_ENSEMBLE} = TRUE ]; then
-  workdir=${CYCLE_DIR}/process_glmfed_enkf
+  export jobid=${RUN}_process_glmfed_enkf_${envir}_${cyc}
 fi
 
-rm -fr ${workdir}
-mkdir_vrfy -p ${workdir}
-
-cd ${workdir}
+export DATA=${DATAROOT}/${jobid}
+mkdir -p ${DATA}
+cd ${DATA}
 
 export FIX_GSI=$FIX_GSI
 export OBS_EAST=$GLMFED_EAST_ROOT
@@ -83,36 +69,38 @@ export RRFSE_NWGES_BASEDIR=$NWGES
 export NUM_ENS_MEMBERS=$NUM_ENS_MEMBERS
 export DA_CYCLE_INTERV=$DA_CYCLE_INTERV
 export MODE=$GLMFED_DATA_MODE
-#
+
+export pgmout="${DATA}/OUTPUT.$$"
+env
+
 #-----------------------------------------------------------------------
-#
-# Call the ex-script for this J-job and pass to it the necessary varia-
-# bles.
-#
+# Execute the script.
 #-----------------------------------------------------------------------
-#
-python -u ${SCRIPTSdir}/exrrfs_process_glmfed.py \
-#
+
+python -u ${SCRIPTSdir}/exrrfs_process_glmfed.py
+export err=$?; err_chk
+
+if [ -e "$pgmout" ]; then
+  cat $pgmout
+fi
+
+if [ "${KEEPDATA}" = "NO" ]; then
+  rm -rf ${DATA}
+fi
+
 #-----------------------------------------------------------------------
-#
-#-----------------------------------------------------------------------
-#
 # Print exit message.
-#
 #-----------------------------------------------------------------------
-#
+
 print_info_msg "
 ========================================================================
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-#
+
 #-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
-#
+# Restore the shell options saved at the beginning of this script/funcion.
 #-----------------------------------------------------------------------
-#
+
 { restore_shell_opts; } > /dev/null 2>&1
 

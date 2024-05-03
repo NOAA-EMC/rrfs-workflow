@@ -87,16 +87,16 @@ do
    timestr=`date +%Y%m%d%H -d "$previous_day + $i hours"`
    intp_fname=${PREDEF_GRID_NAME}_intp_${timestr}00_${timestr}59.nc
    if  [ -f ${rave_nwges_dir}/${intp_fname} ]; then
-      ${LN} -sf ${rave_nwges_dir}/${intp_fname} ${workdir}/${intp_fname}
-      echo "${rave_nwges_dir}/${intp_fname} interoplated file available to reuse"
+      ${LN} -sf ${rave_nwges_dir}/${intp_fname} ${DATA}/${intp_fname}
+      echo "${rave_nwges_dir}/${intp_fname} interpolated file available to reuse"
    else
-      echo "${rave_nwges_dir}/${intp_fname} interoplated file non available to reuse"  
+      echo "${rave_nwges_dir}/${intp_fname} interpolated file not available to reuse"  
    fi
 done
 
 #-----------------------------------------------------------------------
 #
-#  link RAVE data to work directory  $workdir
+#  link RAVE data to work directory  $DATA
 #
 #-----------------------------------------------------------------------
 
@@ -104,7 +104,7 @@ previous_2day=`${DATE} '+%C%y%m%d' -d "$current_day-2 days"`
 YYYYMMDDm1=${previous_day:0:8}
 YYYYMMDDm2=${previous_2day:0:8}
 if [ -d ${FIRE_RAVE_DIR}/${YYYYMMDDm1}/rave ]; then
-   fire_rave_dir_work=${workdir}
+   fire_rave_dir_work=${DATA}
    ln -s ${FIRE_RAVE_DIR}/${YYYYMMDD}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
    ln -s ${FIRE_RAVE_DIR}/${YYYYMMDDm1}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
    ln -s ${FIRE_RAVE_DIR}/${YYYYMMDDm2}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
@@ -115,21 +115,21 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job.
+# Call the Python script for this job.
 #
 #-----------------------------------------------------------------------
 #
 python -u  ${USHdir}/generate_fire_emissions.py \
   "${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}" \
   "${fire_rave_dir_work}" \
-  "${workdir}" \
+  "${DATA}" \
   "${PREDEF_GRID_NAME}" \
   "${EBB_DCYCLE}" 
 export err=$?; err_chk
 
 #Copy the the hourly, interpolated RAVE data to $rave_nwges_dir so it
 # is maintained there for future cycles.
-for file in ${workdir}/*; do
+for file in ${DATA}/*; do
    filename=$(basename "$file")
    if [ ! -f ${rave_nwges_dir}/${filename} ]; then
       cp ${file} ${rave_nwges_dir}
