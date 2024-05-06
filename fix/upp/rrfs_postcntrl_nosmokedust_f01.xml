@@ -661,17 +661,7 @@
        </param>
 
        <param>
-       <shortname>ACM_GRAUPEL_ON_SURFACE</shortname>
-       <scale>6.0</scale>
-       </param>
-
-       <param>
        <shortname>BUCKET_GRAUPEL_ON_SURFACE</shortname>
-       <scale>6.0</scale>
-       </param>
-
-       <param>
-       <shortname>ACM_FRAIN_ON_SURFACE</shortname>
        <scale>6.0</scale>
        </param>
 
@@ -681,19 +671,8 @@
        </param>
 
        <param>
-       <shortname>ACM_SNOWFALL_ON_SURFACE</shortname>
-       <scale>6.0</scale>
-       </param>
-
-       <param>
        <shortname>BUCKET_SNOWFALL_ON_SURFACE</shortname>
        <scale>6.0</scale>
-       </param>
-
-       <param>
-       <shortname>CACM_APCP_ON_SURFACE</shortname>
-       <pname>APCP</pname>
-       <scale>-4.0</scale>
        </param>
 
        <param>
@@ -1710,41 +1689,6 @@
        </param>
 
        <param>
-           <shortname>BIOMASS_BURNING_EMISSIONS</shortname>
-           <scale>5.0</scale>
-       </param>
-
-       <param>
-           <shortname>SMOKE_ON_SPEC_HGT_LVL_ABOVE_GRND_8m</shortname>
-           <scale>6.0</scale>
-       </param>
-
-       <param>
-           <shortname>SMOKE_ON_ENTIRE_ATMOS_SINGLE_LYR</shortname>
-           <scale>5.0</scale>
-       </param>
-
-       <param>
-           <shortname>DUST_ON_SPEC_HGT_LVL_ABOVE_GRND_8m</shortname>
-           <scale>6.0</scale>
-       </param>
-
-       <param>
-           <shortname>DUST_ON_ENTIRE_ATMOS_SINGLE_LYR</shortname>
-           <scale>5.0</scale>
-       </param>
-
-       <param>
-           <shortname>COARSEPM_ON_SPEC_HGT_LVL_ABOVE_GRND_8m</shortname>
-           <scale>6.0</scale>
-       </param>
-
-       <param>
-           <shortname>COARSEPM_ON_ENTIRE_ATMOS_SINGLE_LYR</shortname>
-           <scale>5.0</scale>
-       </param>
-
-       <param>
            <shortname>AOD_ON_ENTIRE_ATMOS_SINGLE_LYR</shortname>
            <scale>5.0</scale>
        </param>
@@ -1789,7 +1733,8 @@
        <shortname>GSD_MAX_LTG_THREAT3_ON_ENTIRE_ATMOS</shortname>
        <pname>LTNG</pname>
        <scale>4.0</scale>
-       </param>   
+       </param>
+
 
     </paramset>
 
@@ -2250,12 +2195,6 @@
        </param>
 
        <param>
-       <shortname>CACM_APCP_ON_SURFACE</shortname>
-       <pname>APCP</pname>
-       <scale>-4.0</scale>
-       </param>
-
-       <param>
        <shortname>ACM_SNOWFALL_ON_SURFACE</shortname>
        <pname>TSNOWP</pname>
        <scale>4.0</scale>
@@ -2273,11 +2212,6 @@
        <scale>6.0</scale>
        </param>
 
-       <param>
-       <shortname>ACM_SNOM_ON_SURFACE</shortname>
-       <pname>SNOM</pname>
-       <scale>4.0</scale>
-       </param>
 
        <param>
        <shortname>GSD_INST_CRAIN_ON_SURFACE</shortname>
@@ -2394,30 +2328,6 @@
 25. 26. 27. 28. 29. 30. 31. 32. 33. 34. 35. 36. 37. 38. 39. 40. 41. 42. 43. 44. 45. 46. 47. 48. 
 49. 50. 51. 52. 53. 54. 55. 56. 57. 58. 59. 60. 61. 62. 63. 64. 65.</level>
        <scale>3.0</scale>
-       </param>
-
-       <param>
-       <shortname>SMOKE_ON_HYBRID_LVL</shortname>
-       <level>1. 2. 3. 4. 5. 6. 7. 8. 9. 10. 11. 12. 13. 14. 15. 16. 17. 18. 19. 20. 21. 22. 23. 24.
-25. 26. 27. 28. 29. 30. 31. 32. 33. 34. 35. 36. 37. 38. 39. 40. 41. 42. 43. 44. 45. 46. 47. 48.
-49. 50. 51. 52. 53. 54. 55. 56. 57. 58. 59. 60. 61. 62. 63. 64. 65.</level>
-       <scale>6.0</scale>
-       </param>
-
-       <param>
-       <shortname>DUST_ON_HYBRID_LVL</shortname>
-       <level>1. 2. 3. 4. 5. 6. 7. 8. 9. 10. 11. 12. 13. 14. 15. 16. 17. 18. 19. 20. 21. 22. 23. 24.
-25. 26. 27. 28. 29. 30. 31. 32. 33. 34. 35. 36. 37. 38. 39. 40. 41. 42. 43. 44. 45. 46. 47. 48.
-49. 50. 51. 52. 53. 54. 55. 56. 57. 58. 59. 60. 61. 62. 63. 64. 65.</level>
-       <scale>6.0</scale>
-       </param>
-
-       <param>
-       <shortname>COARSEPM_ON_HYBRID_LVL</shortname>
-       <level>1. 2. 3. 4. 5. 6. 7. 8. 9. 10. 11. 12. 13. 14. 15. 16. 17. 18. 19. 20. 21. 22. 23. 24.
-25. 26. 27. 28. 29. 30. 31. 32. 33. 34. 35. 36. 37. 38. 39. 40. 41. 42. 43. 44. 45. 46. 47. 48.
-49. 50. 51. 52. 53. 54. 55. 56. 57. 58. 59. 60. 61. 62. 63. 64. 65.</level>
-       <scale>6.0</scale>
        </param>
 
        <param>
