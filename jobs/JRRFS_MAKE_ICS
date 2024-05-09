@@ -123,7 +123,15 @@ extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
 export pid=${pid:-$$}
 export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
-export jobid=${RUN}_make_ics_${envir}_${cyc}
+
+mem_num=m0$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')
+if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  export jobid=${RUN}_make_ics_${mem_num}_${envir}_${cyc}
+  export NWGES_DIR="${NWGES}/ics_${mem_num}"
+else
+  export jobid=${RUN}_make_ics_${envir}_${cyc}
+  export NWGES_DIR="${NWGES}/ics"
+fi
 
 export DATA=${DATAROOT}/${jobid}
 mkdir -p $DATA
@@ -131,8 +139,7 @@ mkdir -p $DATA
 mkdir -p ${DATA}/tmp_ICS
 cd ${DATA}/tmp_ICS
 
-export ics_nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/ics"
-mkdir -p "${ics_nwges_dir}"
+mkdir -p "${NWGES_DIR}"
 
 export pgmout="${DATA}/tmp_ICS/OUTPUT.$$"
 env
