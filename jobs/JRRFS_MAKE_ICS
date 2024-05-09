@@ -124,8 +124,14 @@ export pid=${pid:-$$}
 export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
-export jobid=${RUN}_make_ics_${envir}_${cyc}
-export NWGES_DIR="${NWGES}/ics"
+mem_num=m0$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')
+if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  export jobid=${RUN}_make_ics_${mem_num}_${envir}_${cyc}
+  export NWGES_DIR="${NWGES}/ics_${mem_num}"
+else
+  export jobid=${RUN}_make_ics_${envir}_${cyc}
+  export NWGES_DIR="${NWGES}/ics"
+fi
 
 export DATA=${DATAROOT}/${jobid}
 mkdir -p $DATA
