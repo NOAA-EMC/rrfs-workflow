@@ -163,7 +163,7 @@ export pid=${pid:-$$}
 export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
-mem_num=m0$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')
+export mem_num=m0$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   export jobid=${RUN}_make_lbcs_${mem_num}_${envir}_${cyc}
   export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/lbcs"

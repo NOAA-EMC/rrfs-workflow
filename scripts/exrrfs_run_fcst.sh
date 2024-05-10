@@ -79,7 +79,6 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-mem_num=m0$(echo "${ensmem_indx}" | awk '{print $1+0}')
 run_blending=${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/run_blending
 run_ensinit=${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/run_ensinit
 if [[ ${cycle_subtype} == "ensinit" && -e $run_blending && ! -e $run_ensinit ]]; then

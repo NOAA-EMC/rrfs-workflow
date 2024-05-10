@@ -52,7 +52,7 @@ export pid=${pid:-$$}
 export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
-mem_num=m0$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')
+export mem_num=m0$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')
 
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
