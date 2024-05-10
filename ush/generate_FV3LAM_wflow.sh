@@ -426,11 +426,11 @@ settings="\
   'log_basedir': ${LOG_BASEDIR:-}
   'dataroot': ${DATAROOT:-}
   'ensctrl_dataroot': ${ENSCTRL_DATAROOT:-}
-  'nwges': ${NWGES:-}
-  'ensctrl_nwges': ${ENSCTRL_NWGES:-}
+  'gesroot': ${GESROOT:-}
+  'ensctrl_gesroot': ${ENSCTRL_GESROOT:-}
   'ensctrl_comout_basedir': ${ENSCTRL_COMOUT_BASEDIR:-}
   'ensctrl_comout_dir': ${ENSCTRL_COMOUT_DIR:-}
-  'rrfse_nwges': ${RRFSE_NWGES:-}
+  'rrfse_gesroot': ${RRFSE_GESROOT:-}
   'obstype_source': ${OBSTYPE_SOURCE}
   'obspath': ${OBSPATH}
   'obspath_pm': ${OBSPATH_PM}

@@ -276,13 +276,13 @@ EXPT_SUBDIR=""
 # 
 #   $PTMP/com/$NET/$envir/$RUN.$yyyymmdd/$hh
 #
-# NWGES:
+# GESROOT:
 # The beginning portion of the directory that will contain the output 
 # files from the forecast for a given cycle.  For a cycle 
 # that starts on the date specified by yyyymmdd and hour specified by hh
 # (where yyyymmdd and hh are as described above), the directory in which
 # the forecast output files will be placed will be:
-#   $NWGES/$NET/$envir/$RUN.$yyyymmdd/$hh
+#   $GESROOT/$RUN.$yyyymmdd/$hh
 # 
 # Setup default observation locations for data assimilation:
 #
@@ -324,7 +324,7 @@ COMINgfs="/base/path/of/directory/containing/gfs/input/files"
 FIXLAM_NCO_BASEDIR=""
 STMP="/base/path/of/directory/containing/model/input/and/raw/output/files"
 ENSCTRL_STMP="/base/path/of/directory/containing/model/input/and/raw/output/files"
-RRFSE_NWGES_BASEDIR="/base/path/of/directory/containing/model/restart/files"
+RRFSE_GESROOT="/base/path/of/directory/containing/model/restart/files"
 NET="rrfs"
 envir="para"
 RUN="experiment_name"
@@ -332,9 +332,9 @@ RUN_ensctrl="experiment_name"
 TAG="dev_grid"
 PTMP="/base/path/of/directory/containing/postprocessed/output/files"
 ENSCTRL_PTMP="/base/path/of/directory/containing/postprocessed/output/files"
-NWGES="/base/path/of/directory/containing/model/output/files"
-ENSCTRL_NWGES="/base/path/of/directory/containing/model/restart/files"
-RRFSE_NWGES="/base/path/of/directory/containing/model/output/files"
+GESROOT="/base/path/of/directory/containing/model/output/files"
+ENSCTRL_GESROOT="/base/path/of/directory/containing/model/restart/files"
+RRFSE_GESROOT="/base/path/of/directory/containing/model/output/files"
 
 MODEL="NO MODEL CHOSEN"
 
@@ -1530,7 +1530,7 @@ SAVE_CYCLE_LOG="TRUE"
 #
 # FG_ROOTDIR:
 # First Guess Root Directory, APP will find corresponding first guess
-# fields from this directory. RRFS will find FG under NWGES_BASEDIR,
+# fields from this directory. RRFS will find FG under GESROOT,
 # but we needs to explicitly specify where to find FG for RTMA.
 # So this parameter only matters for RTMA
 #

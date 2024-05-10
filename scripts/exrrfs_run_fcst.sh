@@ -80,8 +80,8 @@ print_input_args valid_args
 #-----------------------------------------------------------------------
 #
 mem_num=m0$(echo "${ensmem_indx}" | awk '{print $1+0}')
-run_blending=${NWGES}/${RUN}.${PDY}/${cyc}/${mem_num}/run_blending
-run_ensinit=${NWGES}/${RUN}.${PDY}/${cyc}/${mem_num}/run_ensinit
+run_blending=${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/run_blending
+run_ensinit=${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/run_ensinit
 if [[ ${cycle_subtype} == "ensinit" && -e $run_blending && ! -e $run_ensinit ]]; then
    echo "clean exit ensinit, blending used instead of ensinit."
    exit 0
@@ -383,9 +383,9 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then
   yyyymmddhh=${cdate:0:10}
   echo ${yyyymmddhh}
   if [ ${cycle_type} = "spinup" ]; then
-    smokefile=${NWGES}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00_spinup.nc
+    smokefile=${GESROOT}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00_spinup.nc
   else
-    smokefile=${NWGES}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc
+    smokefile=${GESROOT}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc
   fi
   echo "try to use smoke file=",${smokefile}
   if [ -f ${smokefile} ]; then

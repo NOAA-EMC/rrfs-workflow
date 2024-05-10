@@ -80,7 +80,7 @@ mkdir -p ${DATA}
 mkdir -p ${DATA}/INPUT
 mkdir -p ${DATA}/RESTART
 
-export gridspec_dir=${NWGES}/grid_spec
+export gridspec_dir=${GESROOT}/grid_spec
 mkdir -p ${gridspec_dir}
 
 cd ${DATA}
