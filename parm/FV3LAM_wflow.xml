@@ -1544,7 +1544,7 @@ MODULES_RUN_TASK_FP script.
         {%- if do_retro %}
         <and> 
         {%- for m in range(1, num_ens_members+1) %}
-          <datadep age="00:00:00:01"><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H/mem{{ "%04d" % m }}/observer_gsi/diag_conv_dbz_ges.@Y@m@d@H.nc4.gz</cyclestr></datadep>
+          <datadep age="00:00:00:01"><cyclestr>&NWGES_BASEDIR;/@Y@m@d@H/mem{{ "%04d" % m }}/observer_gsi_spinup/diag_conv_dbz_ges.@Y@m@d@H.nc4.gz</cyclestr></datadep>
         {%- endfor %}
         </and> 
         {%- endif %}
