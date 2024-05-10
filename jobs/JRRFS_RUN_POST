@@ -87,6 +87,9 @@ export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc"
 if [ ${CYCLE_TYPE} = "spinup" ]; then
   COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
 fi
+if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  COMOUT=${COMOUT}/${mem_num}
+fi
 mkdir -p "${COMOUT}"
 env
 

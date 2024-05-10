@@ -79,8 +79,9 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-run_blending=${NWGES}/run_blending/${cdate}
-run_ensinit=${NWGES}/run_ensinit/${cdate}
+mem_num=m0$(echo "${ensmem_indx}" | awk '{print $1+0}')
+run_blending=${NWGES}/${RUN}.${PDY}/${cyc}/${mem_num}/run_blending
+run_ensinit=${NWGES}/${RUN}.${PDY}/${cyc}/${mem_num}/run_ensinit
 if [[ ${cycle_subtype} == "ensinit" && -e $run_blending && ! -e $run_ensinit ]]; then
    echo "clean exit ensinit, blending used instead of ensinit."
    exit 0
