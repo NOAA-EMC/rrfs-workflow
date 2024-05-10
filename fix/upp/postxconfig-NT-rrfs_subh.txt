@@ -1,5 +1,5 @@
 1
-40
+41
 PRSLEV
 32769
 ncep_nco
@@ -9,7 +9,7 @@ fcst
 oper
 fcst
 fcst
-hour
+minute
 nws_ncep
 rrfs
 complex_packing_spatial_diff
@@ -312,9 +312,9 @@ surface
 ?
 ?
 ?
-725
-GSD_ACM_SNOD_ON_SURFACE
-?
+525
+BUCKET1_ASNOW_ON_SURFACE
+bucket Var density snowfall on surface
 1
 tmpl4_8
 ASNOW
@@ -349,9 +349,9 @@ surface
 ?
 ?
 ?
-417
-CACM_APCP_ON_SURFACE
-?
+526
+BUCKET1_APCP_ON_SURFACE
+bucket Total precipitation on surface
 1
 tmpl4_8
 APCP
@@ -386,9 +386,9 @@ surface
 ?
 ?
 ?
-1004
-ACM_SNOWFALL_ON_SURFACE
-?
+528
+BUCKET1_TSNOWP_ON_SURFACE
+bucket snow on surface
 1
 tmpl4_8
 TSNOWP
@@ -423,12 +423,49 @@ surface
 ?
 ?
 ?
-782
-ACM_FRAIN_ON_SURFACE
-?
+527
+BUCKET1_FRZR_ON_SURFACE
+bucket Freezing rain on surface
 1
 tmpl4_8
 FRZR
+NCEP
+ACM
+surface
+0
+?
+0
+?
+?
+0
+?
+0
+?
+?
+?
+0
+0.0
+0
+0.0
+?
+0
+0.0
+0
+0.0
+1
+6.0
+0
+0
+0
+?
+?
+?
+530
+BUCKET1_GRAUPEL_ON_SURFACE
+bucket graupel precipitation on surface
+1
+tmpl4_8
+FROZR
 NCEP
 ACM
 surface
