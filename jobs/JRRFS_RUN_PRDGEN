@@ -56,11 +56,7 @@ export mem_num=m0$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')
 
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    jobid=${RUN}_post_spinup_${mem_num}_${envir}_${cyc}_f${fhr}
-  else
-    jobid=${RUN}_post_spinup_${envir}_${cyc}_f${fhr}
-  fi
+  jobid=${RUN}_post_spinup_${envir}_${cyc}_f${fhr}
 else
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
     jobid=${RUN}_post_${mem_num}_${envir}_${cyc}_f${fhr}
