@@ -14,11 +14,35 @@ COMOUT=$7
 USHrrfs=$8
 
 # FAA request variable to be extracted from UPP output
-#  fixdir=${FIXprdgen}
-  fixdir=${USHrrfs}/../../fix/prdgen
 
-  #-- remove the leading 0"
-  ifhr=$(expr $fhr + 0)
+# fixdir=${FIXprdgen}
+fixdir=${USHrrfs}/../../fix/prdgen
+
+#-- remove the leading 0"
+ifhr=$(expr ${fhr:0:3} + 0)    ## (eg. f013-15-00)
+ifmn=${fhr:4:2}
+ifhrmn=${ifhr}${ifmn}
+
+# Grid 91 for the IFI AK 
+  grid_specs_91="nps:210:60 181.429:1649:2976.000000 40.530:1105:2976.000000"
+
+# Grid 130 for the GTG & ICING process
+  grid_specs_130="lambert:265:25.000000 233.862000:451:13545.000000 16.281000:337:13545.000000"
+
+# 13km Rotated Lat Lon   
+  grid_specs_rrfs_13km="rot-ll:247.0:-35.0:0.0 -61.0:1127:0.1083 -37.0:684:0.1083"
+
+# Grid 195: 2.5 km Mercator Puerto Rico domain
+  grid_specs_195="mercator:20 284.5:544:2500:297.491 15.0:310:2500:22.005"
+
+# Grid 237: Puerto Rico FAA Regional Grid (Lambert Conformal)
+  grid_specs_237="lambert:253:50.000000 285.720000:54:32463.410000 16.201000:47:32463.410000"
+
+
+##########################################################
+##== Start to generate customerized data ====
+
+if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
 
   #-- fcst string in wrgib2 inv file. Set to "" for all ins & ave
   fcstvar1="${ifhr} hour fcst"
@@ -42,20 +66,8 @@ USHrrfs=$8
   sed "s/FCSTVARS1/${fcstvar1}/" ${fixdir}/rrfs.prslev-rrfs13km.params > rrfs.prslev-rrfs13km.params
   sed -i "s/FCSTVARS2/${fcstvar2}/" rrfs.prslev-rrfs13km.params
 
-# Grid 91 for the IFI AK 
-  grid_specs_91="nps:210:60 181.429:1649:2976.000000 40.530:1105:2976.000000"
-
-# Grid 130 for the GTG & ICING process
-  grid_specs_130="lambert:265:25.000000 233.862000:451:13545.000000 16.281000:337:13545.000000"
-
-# 13km Rotated Lat Lon   
-  grid_specs_rrfs_13km="rot-ll:247.0:-35.0:0.0 -61.0:1127:0.1083 -37.0:684:0.1083"
-
-# Grid 195: 2.5 km Mercator Puerto Rico domain
-  grid_specs_195="mercator:20 284.5:544:2500:297.491 15.0:310:2500:22.005"
-
-# Grid 237: Puerto Rico FAA Regional Grid (Lambert Conformal)
-  grid_specs_237="lambert:253:50.000000 285.720000:54:32463.410000 16.201000:47:32463.410000"
+  sed "s/FCSTVARS1/${fcstvar1}/" ${fixdir}/rrfs.prslev-rrfs3km.params > rrfs.prslev-rrfs3km.params
+  sed -i "s/FCSTVARS2/${fcstvar2}/" rrfs.prslev-rrfs3km.params
 
 # FAA requested ATM
 
@@ -70,10 +82,27 @@ USHrrfs=$8
          -new_grid ${grid_specs_130} rrfs.t${cyc}z.prslevfaa.f${fhr}.conus13km.grib2
       mv rrfs.t${cyc}z.prslevfaa.f${fhr}.conus13km.grib2 ${COMOUT}
       wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.conus13km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.conus13km.grib2.idx
+
+      #-- add wmo header
+      infile=rrfs.t${cyc}z.prslevfaa.f${fhr}.conus13km.grib2
+      ${USHrrfs}/rrfs.wmo-header.sh WARP ${fhr} ${cyc} ${infile} 130 ${fixdir} ${COMOUT}
+    fi
+
+    #-- 3km Rotated Lat Lon (subset of the original RRFS output)
+    if [ $ifhr -le 15 ]; then
+      wgrib2 ${COMOUT}/${prslev} | grep -F -f rrfs.prslev-rrfs3km.params | \
+      wgrib2 -i ${COMOUT}/${prslev} -set_bitmap 1 -set_grib_type c3 \
+         -grib  rrfs.t${cyc}z.prslev.f${fhr}.na3km.grib2
+      mv rrfs.t${cyc}z.prslev.f${fhr}.na3km.grib2 ${COMOUT}
+      wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.na3km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.na3km.grib2.idx
+
+      #-- add wmo header
+      infile=rrfs.t${cyc}z.prslev.f${fhr}.na3km.grib2
+      ${USHrrfs}/rrfs.wmo-header.sh AWIPS ${fhr} ${cyc} ${infile} na3km ${fixdir} ${COMOUT}
     fi
 
     #-- 13km Rotated Lat Lon
-    if [ $ifhr -le 15 ]; then
+    if [ $ifhr -le 18 ]; then
       wgrib2 ${COMOUT}/${prslev} | grep -F -f rrfs.prslev-rrfs13km.params | \
       wgrib2 -i ${COMOUT}/${prslev} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
@@ -81,6 +110,16 @@ USHrrfs=$8
          -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.prslevfaa.f${fhr}.na13km.grib2
       mv rrfs.t${cyc}z.prslevfaa.f${fhr}.na13km.grib2 ${COMOUT}
       wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.na13km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.na13km.grib2.idx
+
+      #-- additional process for adding fields to the sub-hourly
+      
+      export ifhrmn=$(printf "%02d" $ifhrmn)
+      wgrib2 ${COMOUT}/${prslev} -s | egrep '(:VIL:entire atmosphere:|:RETOP:)' | \
+      wgrib2 -i ${COMOUT}/${prslev} -set_bitmap 1 -set_grib_type c3 \
+         -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
+         -new_grid_interpolation bilinear \
+         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.prslevfaa.subh.f${ifhrmn}00.na13km.grib2
+      mv rrfs.t${cyc}z.prslevfaa.subh.f${ifhrmn}00.na13km.grib2 ${COMOUT}
     fi
 
     #-- GRID 237: PR 32 km
@@ -142,6 +181,11 @@ USHrrfs=$8
 
       rm rrfs.t${cyc}z.natlevfaa.f${fhr}.pr32km.tmp.grib2
       #mv rrfs.t${cyc}z.natlevfaa.f${fhr}.pr32km.grib2 ${COMOUT}
+      
+      #-- add wmo header
+      infile=rrfs.t${cyc}z.prslevfaa.f${fhr}.pr32km.grib2
+      ${USHrrfs}/rrfs.wmo-header.sh WARP ${fhr} ${cyc} ${infile} 237 ${fixdir} ${COMOUT}
+
     fi 
   fi
 
@@ -244,3 +288,20 @@ USHrrfs=$8
     #wgrib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.pr_32km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.pr_32km.grib2.idx
     
   fi
+
+else     # sub-hourly upp data  (eg. f013-15-00)
+
+  if [[ -f ${COMOUT}/${prslev} ]]; then
+
+    #-- 13km Rotated Lat Lon
+    if [ $ifhrmn -le 1800 ]; then
+      export ifhrmn=$(printf "%04d" $ifhrmn)
+      wgrib2 ${COMOUT}/${prslev} -s | egrep '(:VIL:entire atmosphere:|:RETOP:)' | \
+      wgrib2 -i ${COMOUT}/${prslev} -set_bitmap 1 -set_grib_type c3 \
+         -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
+         -new_grid_interpolation bilinear \
+         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.prslevfaa.subh.f${ifhrmn}.na13km.grib2
+      mv rrfs.t${cyc}z.prslevfaa.subh.f${ifhrmn}.na13km.grib2 ${COMOUT}
+    fi
+  fi
+fi
