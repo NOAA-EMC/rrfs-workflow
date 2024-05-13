@@ -60,7 +60,7 @@ CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
 if [ ${CYCLE_TYPE} == "spinup" ]; then
   export jobid=${RUN}_forecast_spinup_${envir}_${cyc}
   if  [ ${CYCLE_SUBTYPE} == "ensinit" ]; then
-    export jobid=${RUN}_forecast_ensinit_${mem_num}_${envir}_${cyc}
+    export jobid=${RUN}_forecast_ensinit_${envir}_${cyc}
   fi
 else
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
