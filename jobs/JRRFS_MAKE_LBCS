@@ -162,7 +162,15 @@ extrn_mdl_fns_on_disk_str2="( "$( printf "\"%s\" " "${fns_on_disk2[@]}" )")"
 export pid=${pid:-$$}
 export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
-export jobid=${RUN}_make_lbcs_${envir}_${cyc}
+
+export mem_num=m0$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')
+if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  export jobid=${RUN}_make_lbcs_${mem_num}_${envir}_${cyc}
+  export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/lbcs"
+else
+  export jobid=${RUN}_make_lbcs_${envir}_${cyc}
+  export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/lbcs"
+fi
 
 export DATA=${DATAROOT}/${jobid}
 mkdir -p $DATA
@@ -170,8 +178,7 @@ mkdir -p $DATA
 mkdir -p ${DATA}/tmp_LBCS_${bcgrp}
 cd ${DATA}/tmp_LBCS_${bcgrp}
 
-export lbcs_nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/lbcs"
-mkdir -p "${lbcs_nwges_dir}"
+mkdir -p "${NWGES_DIR}"
 
 export pgmout="${DATA}/tmp_LBCS_${bcgrp}/OUTPUT.$$"
 env

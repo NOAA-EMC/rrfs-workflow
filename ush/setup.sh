@@ -1267,9 +1267,8 @@ check_for_preexist_dir_file "$EXPTDIR" "${PREEXISTING_DIR_METHOD}"
 # DATAROOT:
 # The directory containing the working directories.
 #
-# ENSCTRL_CYCLE_BASEDIR:
-# The base directory of the control member for EnKF recentering, in which
-# the directories for the various cycles will be placed.
+# ENSCTRL_DATAROOT:
+# The base directory of the control member for EnKF recentering.
 #
 # COMROOT:
 # In NCO mode, this is the full path to the "com" directory under which 
@@ -1303,15 +1302,12 @@ SST_ROOT="${SST_ROOT}"
 
 DATAROOT="$STMP"
 check_for_preexist_dir_file "${DATAROOT}" "${PREEXISTING_DIR_METHOD}"
-ENSCTRL_CYCLE_BASEDIR="${ENSCTRL_STMP}"
+ENSCTRL_DATAROOT="${ENSCTRL_STMP}"
 COMROOT="$PTMP"
 ENSCTRL_COMROOT="${ENSCTRL_PTMP}"
 COMOUT_BASEDIR="$COMROOT/prod"
 ENSCTRL_COMOUT_BASEDIR="${ENSCTRL_COMROOT}/prod"
 ENSCTRL_COMOUT_DIR="${ENSCTRL_COMOUT_BASEDIR}/${RUN_ensctrl}.@Y@m@d"
-NWGES_BASEDIR="$NWGES"
-ENSCTRL_NWGES_BASEDIR="${ENSCTRL_NWGES}"
-RRFSE_NWGES_BASEDIR="${RRFSE_NWGES}"
 LOG_BASEDIR="${COMROOT}/logs"
 #
 #-----------------------------------------------------------------------
@@ -2420,7 +2416,7 @@ FIXgsm="$FIXgsm"
 FIXprdgen="$FIXprdgen"
 COMROOT="$COMROOT"
 COMOUT_BASEDIR="${COMOUT_BASEDIR}"
-NWGES_BASEDIR="${NWGES_BASEDIR}"
+GESROOT="${GESROOT}"
 UFS_WTHR_MDL_DIR="${UFS_WTHR_MDL_DIR}"
 UFS_UTILS_DIR="${UFS_UTILS_DIR}"
 SFC_CLIMO_INPUT_DIR="${SFC_CLIMO_INPUT_DIR}"

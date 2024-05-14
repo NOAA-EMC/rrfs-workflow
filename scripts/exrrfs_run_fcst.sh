@@ -60,7 +60,6 @@ valid_args=( \
 "cycle_type" \
 "cycle_subtype" \
 "ensmem_indx" \
-"slash_ensmem_subdir" \
 )
 process_args valid_args "$@"
 #
@@ -80,8 +79,8 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-run_blending=${NWGES_BASEDIR}/${cdate}/run_blending
-run_ensinit=${NWGES_BASEDIR}/${cdate}/run_ensinit
+run_blending=${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/run_blending
+run_ensinit=${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/run_ensinit
 if [[ ${cycle_subtype} == "ensinit" && -e $run_blending && ! -e $run_ensinit ]]; then
    echo "clean exit ensinit, blending used instead of ensinit."
    exit 0
@@ -383,9 +382,9 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then
   yyyymmddhh=${cdate:0:10}
   echo ${yyyymmddhh}
   if [ ${cycle_type} = "spinup" ]; then
-    smokefile=${NWGES_BASEDIR}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00_spinup.nc
+    smokefile=${GESROOT}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00_spinup.nc
   else
-    smokefile=${NWGES_BASEDIR}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc
+    smokefile=${GESROOT}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc
   fi
   echo "try to use smoke file=",${smokefile}
   if [ -f ${smokefile} ]; then
@@ -653,7 +652,7 @@ if [ ${BKTYPE} -eq 1 ] && [ ${n_iolayouty} -ge 1 ]; then
   do
     iii=$(printf %4.4i $ii)
     if [ -f "grid_spec.nc.${iii}" ]; then
-      cp grid_spec.nc.${iii} ${gridspec_dir}/fv3_grid_spec.${iii}
+      cp grid_spec.nc.${iii} ${gridspec_dir}/${PDY}${cyc}.fv3_grid_spec.${iii}
     else
       err_exit "\
       Cannot create symlink because target does not exist:

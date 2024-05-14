@@ -667,8 +667,8 @@ $settings"
   fcst_hhh=$(( ${lbc_spec_fhrs} - ${EXTRN_MDL_LBCS_OFFSET_HRS} ))
   fcst_hhh_FV3LAM=`printf %3.3i $fcst_hhh`
   mv gfs.bndy.nc ${DATA}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc
-# copy results to nwges for longe time disk storage.
-  cp ${DATA}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc ${lbcs_nwges_dir}/.
+# copy results to nwges for longer time disk storage.
+  cp ${DATA}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc ${NWGES_DIR}/${PDY}${cyc}.gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc
 
   fi
 done

@@ -153,11 +153,9 @@ WFLOW_XML_FP="$EXPTDIR/${WFLOW_XML_FN}"
 #
 ensmem_indx_name="\"\""
 uscore_ensmem_name="\"\""
-slash_ensmem_subdir="\"\""
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   ensmem_indx_name="mem"
   uscore_ensmem_name="_mem#${ensmem_indx_name}#"
-  slash_ensmem_subdir="/mem#${ensmem_indx_name}#"
 fi
 
 settings="\
@@ -427,12 +425,12 @@ settings="\
   'jobsdir': $JOBSdir
   'log_basedir': ${LOG_BASEDIR:-}
   'dataroot': ${DATAROOT:-}
-  'ensctrl_cycle_basedir': ${ENSCTRL_CYCLE_BASEDIR:-}
-  'nwges_basedir': ${NWGES_BASEDIR:-}
-  'ensctrl_nwges_basedir': ${ENSCTRL_NWGES_BASEDIR:-}
+  'ensctrl_dataroot': ${ENSCTRL_DATAROOT:-}
+  'gesroot': ${GESROOT:-}
+  'ensctrl_gesroot': ${ENSCTRL_GESROOT:-}
   'ensctrl_comout_basedir': ${ENSCTRL_COMOUT_BASEDIR:-}
   'ensctrl_comout_dir': ${ENSCTRL_COMOUT_DIR:-}
-  'rrfse_nwges_basedir': ${RRFSE_NWGES_BASEDIR:-}
+  'rrfse_gesroot': ${RRFSE_GESROOT:-}
   'obstype_source': ${OBSTYPE_SOURCE}
   'obspath': ${OBSPATH}
   'obspath_pm': ${OBSPATH_PM}
@@ -506,7 +504,6 @@ settings="\
   'ndigits_ensmem_names': !!str ${NDIGITS_ENSMEM_NAMES}
   'ensmem_indx_name': ${ensmem_indx_name}
   'uscore_ensmem_name': ${uscore_ensmem_name}
-  'slash_ensmem_subdir': ${slash_ensmem_subdir}
   'do_enscontrol': ${DO_ENSCONTROL}
   'do_gsiobserver': ${DO_GSIOBSERVER}
   'do_enkfupdate': ${DO_ENKFUPDATE}

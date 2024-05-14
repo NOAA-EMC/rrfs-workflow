@@ -53,6 +53,8 @@ export pid=${pid:-$$}
 export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
+export mem_num=m0$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')
+
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
 CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
 if [ ${CYCLE_TYPE} == "spinup" ]; then
@@ -61,7 +63,11 @@ if [ ${CYCLE_TYPE} == "spinup" ]; then
     export jobid=${RUN}_forecast_ensinit_${envir}_${cyc}
   fi
 else
-  export jobid=${RUN}_forecast_${envir}_${cyc}
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    export jobid=${RUN}_forecast_${mem_num}_${envir}_${cyc}
+  else
+    export jobid=${RUN}_forecast_${envir}_${cyc}
+  fi
 fi
 
 export DATA=${DATAROOT}/${jobid}
@@ -70,7 +76,7 @@ mkdir -p ${DATA}
 mkdir -p ${DATA}/INPUT
 mkdir -p ${DATA}/RESTART
 
-export gridspec_dir=${NWGES_BASEDIR}/grid_spec
+export gridspec_dir=${GESROOT}/grid_spec
 mkdir -p ${gridspec_dir}
 
 cd ${DATA}
@@ -86,8 +92,7 @@ $SCRIPTSdir/exrrfs_run_fcst.sh \
   cdate="${CDATE}" \
   cycle_type="${CYCLE_TYPE}" \
   cycle_subtype="${CYCLE_SUBTYPE}" \
-  ensmem_indx="${ENSMEM_INDX}" \
-  slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}"
+  ensmem_indx="${ENSMEM_INDX}"
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

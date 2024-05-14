@@ -52,11 +52,17 @@ export pid=${pid:-$$}
 export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
+export mem_num=m0$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')
+
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   jobid=${RUN}_post_spinup_${envir}_${cyc}_f${fhr}
 else
-  jobid=${RUN}_post_${envir}_${cyc}_f${fhr}
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    jobid=${RUN}_post_${mem_num}_${envir}_${cyc}_f${fhr}
+  else
+    jobid=${RUN}_post_${envir}_${cyc}_f${fhr}
+  fi
 fi
 
 export DATA=${DATAROOT}/${jobid}
@@ -69,9 +75,12 @@ export pgmout="${DATA}/OUTPUT.$$"
 # Define COM directories
 #-----------------------------------------------------------------------
 
-export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
+export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc"
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
+  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+fi
+if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  COMOUT=${COMOUT}/${mem_num}
 fi
 mkdir -p "${COMOUT}"
 env
