@@ -1734,6 +1734,16 @@
        </param>
 
        <param>
+	   <shortname>AVE_SMOKE_ON_SPEC_HGT_LVL_ABOVE_GRND_8m</shortname>
+	   <scale>6.0</scale>
+       </param>
+
+       <param>
+	   <shortname>AVE_DUST_ON_SPEC_HGT_LVL_ABOVE_GRND_8m</shortname>
+	   <scale>6.0</scale>
+       </param>
+
+       <param>
            <shortname>DENDRITIC_LAYER_DEPTH</shortname>
            <pname>LAYTH</pname>
            <table_info>NCEP</table_info>
@@ -1768,8 +1778,7 @@
        <shortname>GSD_MAX_LTG_THREAT3_ON_ENTIRE_ATMOS</shortname>
        <pname>LTNG</pname>
        <scale>4.0</scale>
-       </param>
-
+       </param>   
 
     </paramset>
 
@@ -2236,17 +2245,16 @@
        </param>
 
        <param>
-       <shortname>ACM_SNOM_ON_SURFACE</shortname>
-       <pname>SNOM</pname>
-       <scale>4.0</scale>
-       </param>
-
-       <param>
        <shortname>ACM_SSRUN_ON_SURFACE</shortname>
        <pname>SSRUN</pname>
        <scale>6.0</scale>
        </param>
 
+       <param>
+       <shortname>ACM_SNOM_ON_SURFACE</shortname>
+       <pname>SNOM</pname>
+       <scale>4.0</scale>
+       </param>
 
        <param>
        <shortname>GSD_INST_CRAIN_ON_SURFACE</shortname>
