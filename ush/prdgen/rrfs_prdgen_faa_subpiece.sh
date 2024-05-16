@@ -32,12 +32,14 @@ ifhrmn=${ifhr}${ifmn}
 # 13km Rotated Lat Lon   
   grid_specs_rrfs_13km="rot-ll:247.0:-35.0:0.0 -61.0:1127:0.1083 -37.0:684:0.1083"
 
+# CONUS_3km Lambert Conformal
+  grid_specs_rrfs="lambert:-97.5:38.500000 237.280472:1799:3000 21.138115:1059:3000"
+
 # Grid 195: 2.5 km Mercator Puerto Rico domain
   grid_specs_195="mercator:20 284.5:544:2500:297.491 15.0:310:2500:22.005"
 
 # Grid 237: Puerto Rico FAA Regional Grid (Lambert Conformal)
   grid_specs_237="lambert:253:50.000000 285.720000:54:32463.410000 16.201000:47:32463.410000"
-
 
 ##########################################################
 ##== Start to generate customerized data ====
@@ -210,8 +212,23 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
   #  wgrib2 ${COMOUT}/rrfs.t${cyc}z.f${fhr}.pr_32km.faa.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.f${fhr}.pr_32km.faa.grib2.idx
   #fi
 
-  # GTG process
+# GTG process
+  
+  #-- GRID 130: CONUS 13km
+  #if [[ -f ${COMOUT}/${aviati} ]]; then
+  #  if [ $ifhr -le 21 ]; then
+  #    # wgrib2 ${COMOUT}/${aviati} -s | egrep '(:EDPARM:|:CATEDR:|:MWTURB:|:CITEDR:)' | \
+  #    wgrib2 ${COMOUT}/${aviati} -s | egrep '(:EDPARM:|:CATEDR:|:MWTURB:|:var discipline=0 master_table=2 parmcat=19 parm=50:)' | \
+  #    wgrib2 -i ${COMOUT}/${aviati} -set_bitmap 1 -set_grib_type c3 \
+  #       -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
+  #       -new_grid_interpolation bilinear \
+  #       -new_grid ${grid_specs_130} GTG_grid_130.grib2
+  #    mv GTG_grid_130.grib2 ${COMOUT}/rrfs.t${cyc}z.aviati.f${fhr}.conus13km.grib2
+  #    wgrib2 ${COMOUT}/rrfs.t${cyc}z.aviati.f${fhr}.conus13km.grib2  -s > ${COMOUT}/rrfs.t${cyc}z.aviati.f${fhr}.conus13km.grib2.idx
+  #  fi
+  #fi
 
+  #-- CONUS_3km Lambert Conformal
   if [[ -f ${COMOUT}/${aviati} ]]; then
     if [ $ifhr -le 21 ]; then
       # wgrib2 ${COMOUT}/${aviati} -s | egrep '(:EDPARM:|:CATEDR:|:MWTURB:|:CITEDR:)' | \
@@ -219,31 +236,50 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
       wgrib2 -i ${COMOUT}/${aviati} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation bilinear \
-         -new_grid ${grid_specs_130} GTG_grid_130.grib2
-      mv GTG_grid_130.grib2 ${COMOUT}/rrfs.t${cyc}z.aviati.f${fhr}.conus13km.grib2
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.aviati.f${fhr}.conus13km.grib2  -s > ${COMOUT}/rrfs.t${cyc}z.aviati.f${fhr}.conus13km.grib2.idx
+         -new_grid ${grid_specs_rrfs} GTG_grid_conus3km.grib2
+      mv GTG_grid_conus3km.grib2 ${COMOUT}/rrfs.t${cyc}z.aviati.f${fhr}.conus3km.grib2
+      wgrib2 ${COMOUT}/rrfs.t${cyc}z.aviati.f${fhr}.conus3km.grib2  -s > ${COMOUT}/rrfs.t${cyc}z.aviati.f${fhr}.conus3km.grib2.idx
     fi
   fi
 
-  # IFI icing process
+# IFI icing process
    
   if [[ -f ${COMOUT}/${ififip} ]]; then
 
     #-- GRID 130: CONUS 13km
+    #if [ $ifhr -le 21 ]; then
+    #  # wgrib2 ${COMOUT}/${ififip} -s | egrep '(:ICPRB:|:SIPD:|:ICESEV:)' | \
+    #  wgrib2 ${COMOUT}/${ififip} -s | egrep '(:ICPRB:|:SIPD:|:var discipline=0 master_table=2 parmcat=19 parm=37:)' | \
+    #  wgrib2 -i ${COMOUT}/${ififip} -set_bitmap 1 -set_grib_type c3 \
+    #     -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
+    #     -new_grid_interpolation neighbor \
+    #     -new_grid ${grid_specs_130} IFI_grid_130.grib2
+    #  mv IFI_grid_130.grib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.conus13km.grib2
+    #  wgrib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.conus13km.grib2  -s > ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.conus13km.grib2.idx
+
+    #  #-- subset IFI data at every 304 m only at certain forcast hour
+    #  if [ $ifhr = 1 -o  $ifhr = 2 -o  $ifhr = 3 -o  $ifhr = 6 -o  $ifhr = 9 -o  $ifhr = 12 -o  $ifhr = 15 -o  $ifhr = 18 ]; then
+    #    IFIFILE=rrfs.t${cyc}z.ififip.f${fhr}.conus13km.grib2
+    #    IFIDOMAIN=conus13km
+    #    ${USHrrfs}/rrfs_subset_ifi_304m.sh $fhr $cyc ${COMOUT} ${IFIFILE} ${IFIDOMAIN} ${fixdir}
+    #  fi
+    #fi
+
+    #-- CONUS_3km Lambert Conformal
     if [ $ifhr -le 21 ]; then
       # wgrib2 ${COMOUT}/${ififip} -s | egrep '(:ICPRB:|:SIPD:|:ICESEV:)' | \
       wgrib2 ${COMOUT}/${ififip} -s | egrep '(:ICPRB:|:SIPD:|:var discipline=0 master_table=2 parmcat=19 parm=37:)' | \
       wgrib2 -i ${COMOUT}/${ififip} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation neighbor \
-         -new_grid ${grid_specs_130} IFI_grid_130.grib2
-      mv IFI_grid_130.grib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.conus13km.grib2
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.conus13km.grib2  -s > ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.conus13km.grib2.idx
+         -new_grid ${grid_specs_rrfs} IFI_grid_conus3km.grib2
+      mv IFI_grid_conus3km.grib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.conus3km.grib2
+      wgrib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.conus3km.grib2  -s > ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.conus3km.grib2.idx
 
       #-- subset IFI data at every 304 m only at certain forcast hour
       if [ $ifhr = 1 -o  $ifhr = 2 -o  $ifhr = 3 -o  $ifhr = 6 -o  $ifhr = 9 -o  $ifhr = 12 -o  $ifhr = 15 -o  $ifhr = 18 ]; then
-        IFIFILE=rrfs.t${cyc}z.ififip.f${fhr}.conus13km.grib2
-        IFIDOMAIN=conus13km
+        IFIFILE=rrfs.t${cyc}z.ififip.f${fhr}.conus3km.grib2
+        IFIDOMAIN=conus3km
         ${USHrrfs}/rrfs_subset_ifi_304m.sh $fhr $cyc ${COMOUT} ${IFIFILE} ${IFIDOMAIN} ${fixdir}
       fi
     fi
