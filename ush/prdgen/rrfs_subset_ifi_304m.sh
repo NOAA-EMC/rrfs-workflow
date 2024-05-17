@@ -32,10 +32,10 @@ set -xv
   fname3=grib2.ifi.t${cyc}z.sev.f${fcst}.${gridid}
 
   mkdir -p ${data}/ifi-304m
-  mkdir -p ${data}/wmo-header
+  mkdir -p ${data}/wmo
 
   ifi_outdir=${data}/ifi-304m
-  wmo_outdir=${data}/wmo-header
+  wmo_outdir=${data}/wmo
 
   #-- ICPRB
   
@@ -62,7 +62,7 @@ set -xv
 
   parmfile=${parm_dir}/grib2.rrfs.ifi.icprb.${fhr}      # parm file w/ header info
   infile=${ifi_outdir}/${fname1}
-  outfile=${wmo_outdir}/headers.grib2.ifi.t${cyc}z.f${fcst}.ak3km.icprb
+  outfile=${wmo_outdir}/grib2.ifi_icprb.t${cyc}z.f${fcst}.ak3km
 
   export FORT11=${infile}             # input file 
   export FORT12=                      # optional index file
@@ -74,7 +74,7 @@ set -xv
   
   parmfile=${parm_dir}/grib2.rrfs.ifi.sipd.${fhr}      # parm file w/ header info
   infile=${ifi_outdir}/${fname2}
-  outfile=${wmo_outdir}/headers.grib2.ifi.t${cyc}z.f${fcst}.ak3km.sipd
+  outfile=${wmo_outdir}/grib2.ifi_sipd.t${cyc}z.f${fcst}.ak3km
 
   export FORT11=${infile}             # input file 
   export FORT12=                      # optional index file
@@ -86,7 +86,7 @@ set -xv
 
   parmfile=${parm_dir}/grib2.rrfs.ifi.icesev.${fhr}      # parm file w/ header info
   infile=${ifi_outdir}/${fname3}
-  outfile=${wmo_outdir}/headers.grib2.ifi.t${cyc}z.f${fcst}.ak3km.icesev
+  outfile=${wmo_outdir}/grib2.ifi_icesev.t${cyc}z.f${fcst}.ak3km
 
   export FORT11=${infile}               # input file 
   export FORT12=                        # optional index file

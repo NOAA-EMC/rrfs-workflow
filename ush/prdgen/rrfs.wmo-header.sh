@@ -16,9 +16,9 @@ data=$7
 
 #-- remove the leading 0"
 
-mkdir -p ${data}/wmo-header
+mkdir -p ${data}/wmo
 
-wmo_outdir=${data}/wmo-header
+wmo_outdir=${data}/wmo
 
 #--------------------------------------------------------------- 
 #-- process WMO header
@@ -29,8 +29,14 @@ if [ "${case}" == "AWIPS" ]; then
   parm_dir=${fixdir}/wmo-header-awips
   parmfile=grib2.awips.rrfs.${fhr}
 
+  #-- remove ".grib2"
+  
+  suffix=".grib2"
+  string=${file}
+  infilex=${string::${#string}-${#suffix}}
+ 
   infile=${file}
-  outfile=headers.$infile
+  outfile=grib2.$infilex
 
   export FORT11=${data}/${infile}           # input file
   export FORT12=                            # optional index file
@@ -44,8 +50,14 @@ elif [ "${case}" == "WARP" ]; then
   parm_dir=${fixdir}/wmo-header-warp
   parmfile=grib2.faa.warp${gridid}.rrfs.${fhr}
 
+  #-- remove ".grib2"
+    
+  suffix=".grib2"
+  string=${file}
+  infilex=${string::${#string}-${#suffix}}
+
   infile=${file}
-  outfile=headers.$infile
+  outfile=grib2.$infilex
 
   export FORT11=${data}/${infile}            # input file
   export FORT12=                             # optional index file
