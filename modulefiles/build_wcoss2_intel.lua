@@ -30,7 +30,7 @@ load(pathJoin("mapl", os.getenv("mapl_ver")))
 load(pathJoin("bacio", os.getenv("bacio_ver")))
 load(pathJoin("crtm", os.getenv("crtm_ver")))
 load(pathJoin("g2", os.getenv("g2_ver")))
-load(pathJoin("g2tmpl", os.getenv("g2tmpl_ver")))
+--load(pathJoin("g2tmpl", os.getenv("g2tmpl_ver")))
 load(pathJoin("ip", os.getenv("ip_ver")))
 load(pathJoin("sp", os.getenv("sp_ver")))
 
@@ -49,6 +49,9 @@ load(pathJoin("nemsio", os.getenv("nemsio_ver")))
 
 prepend_path("MODULEPATH", os.getenv("modulepath_scotch"))
 load(pathJoin("scotch", os.getenv("scotch_ver")))
+
+prepend_path("MODULEPATH","/u/wen.meng/noscrub/ncep_post/g2tmpl/libs/modulefiles/compiler/intel/19.1.3.304")
+load(pathJoin("g2tmpl", os.getenv("g2tmpl_ver")))
 
 setenv("FMS_ROOT","/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/lib/fms.2024.01/build")
 setenv("FMS_VERSION","2024.01")
