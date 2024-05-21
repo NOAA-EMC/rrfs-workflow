@@ -50,9 +50,11 @@ load(pathJoin("nemsio", os.getenv("nemsio_ver")))
 prepend_path("MODULEPATH", os.getenv("modulepath_scotch"))
 load(pathJoin("scotch", os.getenv("scotch_ver")))
 
-setenv("FMS_ROOT","/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/lib/fms.ParallelStartup")
---setenv("FMS_ROOT","/u/daniel.kokron/fms.ParallelStartup")
-setenv("FMS_VERSION","2023.02")
+setenv("FMS_ROOT","/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/lib/fms.2024.01/build")
+setenv("FMS_VERSION","2024.01")
+
+--setenv("FMS_ROOT","/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/lib/fms.ParallelStartup")
+--setenv("FMS_VERSION","2023.02")
 
 setenv("CMAKE_C_COMPILER","cc")
 setenv("CMAKE_CXX_COMPILER","CC")
