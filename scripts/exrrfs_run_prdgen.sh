@@ -300,9 +300,9 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
     sed -n -e '501,$p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/hi_pr_2.txt
 
     # Create script to execute production generation tasks in parallel using CFP
-    echo "#!/bin/bash" > $DATAprdgen/poescript_${fhr}
-    echo "export DATA=${DATAprdgen}" >> $DATAprdgen/poescript_${fhr}
-    echo "export COMOUT=${COMOUT}" >> $DATAprdgen/poescript_${fhr}
+#    echo "#!/bin/bash" > $DATAprdgen/poescript_${fhr}
+#    echo "export DATA=${DATAprdgen}" >> $DATAprdgen/poescript_${fhr}
+#    echo "export COMOUT=${COMOUT}" >> $DATAprdgen/poescript_${fhr}
 
     tasks=(4 4 2 2)
     domains=(conus ak hi pr)
@@ -317,7 +317,7 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
       count=$count+1
     done
 
-    echo "wait" >> $DATAprdgen/poescript_${fhr}
+#    echo "wait" >> $DATAprdgen/poescript_${fhr}
     chmod 775 $DATAprdgen/poescript_${fhr}
 
     # Execute the script
@@ -376,7 +376,7 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
     echo "WARNING: this grid is not ready for parallel prdgen: ${PREDEF_GRID_NAME}"
   fi
 
-  rm -fr $DATAprdgen
+#  rm -fr $DATAprdgen
   rm -f $DATA/*.t${cyc}z.*.f${fhr}.*.grib2
 
 elif [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
