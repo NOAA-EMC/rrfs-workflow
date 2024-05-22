@@ -18,6 +18,10 @@ prepend_path("MODULEPATH", "/lfs4/BMC/nrtrr/FIX_EXEC_MODULE/lua")
 load("prod_util/2.0.15")
 
 unload("python/3.10.8")
+unload("fms/2023.02.01")
+unload("g2tmpl/1.10.2")
+setenv("g2tmpl_ROOT","/mnt/lfs4/BMC/rtwbl/mhu/rrfs/lib/g2tmpl/install")
+setenv("FMS_ROOT","/mnt/lfs4/BMC/rtwbl/mhu/rrfs/lib/fms.2024.01/build")
 
 setenv("CMAKE_C_COMPILER","mpiicc")
 setenv("CMAKE_CXX_COMPILER","mpiicpc")
