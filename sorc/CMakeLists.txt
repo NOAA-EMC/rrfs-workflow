@@ -125,6 +125,8 @@ option(BUILD_RRFS_UTILS "Build RRFS utilities" ON)
 option(BUILD_AQM_UTILS "Build AQM utilities" ON)
 option(BUILD_IFI "Build IFI in UPP" ON)
 option(BUILD_GTG "Build IFI in GTG" ON)
+option(ENABLE_PARALLELRESTART "Build PARALLEL RESTART" OFF)
+option(ENABLE_RRFS_WAR "Build PARALLEL RESTART" ON)
 
 message(STATUS "BUILD_UFS ............... ${BUILD_UFS}")
 message(STATUS "BUILD_UFS_UTILS ......... ${BUILD_UFS_UTILS}")
@@ -135,6 +137,8 @@ message(STATUS "BUILD_NEXUS ............. ${BUILD_NEXUS}")
 message(STATUS "BUILD_AQM_UTILS ......... ${BUILD_AQM_UTILS}")
 message(STATUS "BUILD_IFI ............... ${BUILD_IFI}")
 message(STATUS "BUILD_GTG ............... ${BUILD_GTG}")
+message(STATUS "ENABLE_PARALLELRESTART ............... ${ENABLE_PARALLELRESTART}")
+message(STATUS "ENABLE_RRFS_WAR ...................... ${ENABLE_RRFS_WAR}")
 
 # Set dependency of ufs weather model only for coupled model
 if (NOT APP)
@@ -179,6 +183,8 @@ if (BUILD_UFS)
     "-DNETCDF_DIR=$ENV{NETCDF}"
     "-D32BIT=ON"
     "-DCCPP_32BIT=ON"
+    "-DENABLE_PARALLELRESTART=${ENABLE_PARALLELRESTART}"
+    "-DENABLE_RRFS_WAR=${ENABLE_RRFS_WAR}"
     "-DMPI=ON" 
     "-DFASTER=ON"
     "-DINLINE_POST=ON"

@@ -11,7 +11,7 @@
     <prod_status>oper</prod_status>
     <data_type>fcst</data_type>
     <gen_proc_type>fcst</gen_proc_type>
-    <time_range_unit>hour</time_range_unit>
+    <time_range_unit>minute</time_range_unit>
     <orig_center>nws_ncep</orig_center>
     <gen_proc>rrfs</gen_proc>
     <packing_method>complex_packing_spatial_diff</packing_method>
@@ -71,25 +71,29 @@
        </param>
 
        <param>
-       <shortname>GSD_ACM_SNOD_ON_SURFACE</shortname>
+       <shortname>BUCKET1_ASNOW_ON_SURFACE</shortname>
        <scale>9.0</scale>
        </param>
 
        <param>
-       <shortname>CACM_APCP_ON_SURFACE</shortname>
-       <pname>APCP</pname>
+       <shortname>BUCKET1_APCP_ON_SURFACE</shortname>
        <scale>-4.0</scale>
        </param>
 
        <param>
-       <shortname>ACM_SNOWFALL_ON_SURFACE</shortname>
+       <shortname>BUCKET1_TSNOWP_ON_SURFACE</shortname>
        <scale>6.0</scale>
        </param>
 
-        <param>
-        <shortname>ACM_FRAIN_ON_SURFACE</shortname>
-        <scale>6.0</scale>
-        </param>
+       <param>
+       <shortname>BUCKET1_FRZR_ON_SURFACE</shortname>
+       <scale>6.0</scale>
+       </param>
+
+       <param>
+       <shortname>BUCKET1_GRAUPEL_ON_SURFACE</shortname>
+       <scale>6.0</scale>
+       </param>
 
        <param>
        <shortname>GSD_INST_CRAIN_ON_SURFACE</shortname>

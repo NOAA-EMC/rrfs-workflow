@@ -290,8 +290,8 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
 
     # Create parm files for subsetting on the fly - do it for each forecast hour
     # 4 subpieces for CONUS and Alaska grids
-    sed -n -e '1,250p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_1.txt
-    sed -n -e '251,500p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_2.txt
+    sed -n -e '1,251p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_1.txt
+    sed -n -e '252,500p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_2.txt
     sed -n -e '501,750p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_3.txt
     sed -n -e '751,$p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_4.txt
 
@@ -300,9 +300,9 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
     sed -n -e '501,$p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/hi_pr_2.txt
 
     # Create script to execute production generation tasks in parallel using CFP
-    echo "#!/bin/bash" > $DATAprdgen/poescript_${fhr}
-    echo "export DATA=${DATAprdgen}" >> $DATAprdgen/poescript_${fhr}
-    echo "export COMOUT=${COMOUT}" >> $DATAprdgen/poescript_${fhr}
+#    echo "#!/bin/bash" > $DATAprdgen/poescript_${fhr}
+#    echo "export DATA=${DATAprdgen}" >> $DATAprdgen/poescript_${fhr}
+#    echo "export COMOUT=${COMOUT}" >> $DATAprdgen/poescript_${fhr}
 
     tasks=(4 4 2 2)
     domains=(conus ak hi pr)
@@ -317,7 +317,7 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
       count=$count+1
     done
 
-    echo "wait" >> $DATAprdgen/poescript_${fhr}
+#    echo "wait" >> $DATAprdgen/poescript_${fhr}
     chmod 775 $DATAprdgen/poescript_${fhr}
 
     # Execute the script
@@ -364,16 +364,19 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
     fi
 
     #-- Upscale & subset FAA requested information
+    #-- FAA grib2 output is not generated for ensemble forecasts
     
      # echo "$USHrrfs/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT} &" >> $DATAprdgen/poescript_faa_${fhr}
 
-    ${USHrrfs}/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT} ${USHrrfs}
+    if [ ${DO_ENSFCST} = "FALSE" ]; then
+      ${USHrrfs}/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT} ${USHrrfs}
+    fi
 
   else
     echo "WARNING: this grid is not ready for parallel prdgen: ${PREDEF_GRID_NAME}"
   fi
 
-  rm -fr $DATAprdgen
+#  rm -fr $DATAprdgen
   rm -f $DATA/*.t${cyc}z.*.f${fhr}.*.grib2
 
 elif [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
