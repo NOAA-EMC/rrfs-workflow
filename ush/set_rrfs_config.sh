@@ -39,12 +39,12 @@ fi
 if [[ $MACHINE == "wcoss2" ]] ; then
   EXTRN_MDL_SOURCE_BASEDIR_ICS=/lfs/h1/ops/prod/com/gfs/v16.3
   EXTRN_MDL_SOURCE_BASEDIR_LBCS=/lfs/h1/ops/prod/com/gfs/v16.3
-  OBSPATH=/lfs/h1/ops/prod/com/obsproc/v1.1
+  OBSPATH=/lfs/h1/ops/prod/com/obsproc/v1.2
   OBSPATH_NSSLMOSIAC=/lfs/h1/ops/prod/dcom/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC
   ENKF_FCST=/lfs/h1/ops/prod/com/gfs/v16.3
   SST_ROOT=/lfs/h1/ops/prod/com/nsst/v1.2
   GVF_ROOT=/lfs/h1/ops/prod/dcom/viirs
-  IMSSNOW_ROOT=/lfs/h1/ops/prod/com/obsproc/v1.1
+  IMSSNOW_ROOT=/lfs/h1/ops/prod/com/obsproc/v1.2
   FIRE_RAVE_DIR=/lfs/h1/ops/prod/dcom
   FVCOM_DIR="/lfs/h1/ops/prod/com/nosofs/v3.5"
   FVCOM_FILE="fvcom"
@@ -169,6 +169,8 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     #RETRODATAPATH="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs_retro_data"
   # for spring 2023  
     RETRODATAPATH="/lfs/h2/emc/lam/noscrub/donald.e.lippi/rrfs-stagedata"
+  #for Feb 2022
+#    RETRODATAPATH="/lfs/h2/emc/da/noscrub/donald.e.lippi/rrfs-stagedata"
     if [[ ${DO_ENSEMBLE} == "TRUE" ]]; then
       if [[ ${EXTRN_MDL_NAME_ICS} == "GEFS" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_ICS="${RETRODATAPATH}/GEFS/dsg"
