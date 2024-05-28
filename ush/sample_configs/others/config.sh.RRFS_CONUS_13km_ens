@@ -2,7 +2,7 @@ MACHINE="hera"
 version="v0.8.6"
 #RESERVATION="rrfsens"
 #RESERVATION_POST="rrfsdet"
-EXPT_BASEDIR="YourOwnSpace/${version}"
+EXPT_BASEDIR="YourOwnSpace/rrfs.${version}"
 EXPT_SUBDIR="RRFS_CONUS_13km_ens"
 
 PREDEF_GRID_NAME=RRFS_CONUS_13km
