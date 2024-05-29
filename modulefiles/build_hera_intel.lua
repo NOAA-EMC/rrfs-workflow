@@ -16,6 +16,11 @@ load(pathJoin("wgrib2", os.getenv("wgrib2_ver") or "2.0.8"))
 prepend_path("MODULEPATH", "/scratch2/BMC/rtrr/gge/lua")
 load("prod_util/2.0.15")
 
+unload("fms/2023.02.01")
+unload("g2tmpl/1.10.2")
+setenv("g2tmpl_ROOT","/scratch1/BMC/wrfruc/mhu/rrfs/lib/g2tmpl/install")
+setenv("FMS_ROOT","/scratch1/BMC/wrfruc/mhu/rrfs/lib/fms.2024.01/build")
+
 setenv("CMAKE_C_COMPILER","mpiicc")
 setenv("CMAKE_CXX_COMPILER","mpiicpc")
 setenv("CMAKE_Fortran_COMPILER","mpiifort")
