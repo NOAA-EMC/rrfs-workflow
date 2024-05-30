@@ -23,6 +23,7 @@ WIND:10 m above ground:
 APCP:surface:
 CEIL:cloud base:
 HGT:cloud ceiling:
+CEIL:cloud ceiling:
 VIS:surface:
 CAPE:surface:
 CIN:surface:

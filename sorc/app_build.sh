@@ -29,6 +29,8 @@ OPTIONS
       build without GTG (default is true, this option turns it off)
   --noifi
       build without IFI (default is true, this option turns it off)
+  --paralstart
+      build module with enabled parallel start (default is off)
   --extrn
       check out external components
   --continue
@@ -85,6 +87,7 @@ Settings:
   EXTRN=${EXTRN}
   NOGTG=${NOGTG}
   NOIFI=${NOIFI}
+  PARALSTART=${PARALSTART}
   REMOVE=${REMOVE}
   CONTINUE=${CONTINUE}
   BUILD_TYPE=${BUILD_TYPE}
@@ -125,6 +128,7 @@ BUILD_JOBS=4
 EXTRN=false
 NOGTG=false
 NOIFI=false
+PARALSTART=false
 REMOVE=false
 CONTINUE=false
 VERBOSE=false
@@ -171,6 +175,7 @@ while :; do
     --extrn=?*|--extrn=) usage_error "$1 argument ignored." ;;
     --nogtg) NOGTG=true ;;
     --noifi) NOIFI=true ;;
+    --paralstart) PARALSTART=true ;;
     --remove) REMOVE=true ;;
     --remove=?*|--remove=) usage_error "$1 argument ignored." ;;
     --continue) CONTINUE=true ;;
@@ -251,6 +256,12 @@ if [ "${NOGTG}" = true ]; then
 fi
 if [ "${NOIFI}" = true ]; then
   BUILD_IFI="off"
+fi
+ENABLE_PARALLELRESTART="off"
+ENABLE_RRFS_WAR="on"
+if [ "${PARALSTART}" = true ]; then
+  ENABLE_PARALLELRESTART="on"
+  ENABLE_RRFS_WAR="off"
 fi
 
 # check out external components specified in External.cfg
@@ -408,7 +419,9 @@ CMAKE_SETTINGS="\
  -DBUILD_NEXUS=${BUILD_NEXUS}\
  -DBUILD_AQM_UTILS=${BUILD_AQM_UTILS}\
  -DBUILD_IFI=${BUILD_IFI}\
- -DBUILD_GTG=${BUILD_GTG}"
+ -DBUILD_GTG=${BUILD_GTG}\
+ -DENABLE_PARALLELRESTART=${ENABLE_PARALLELRESTART}\
+ -DENABLE_RRFS_WAR=${ENABLE_RRFS_WAR}"
 
 if [ ! -z "${APPLICATION}" ]; then
   CMAKE_SETTINGS="${CMAKE_SETTINGS} -DAPP=${APPLICATION}"
