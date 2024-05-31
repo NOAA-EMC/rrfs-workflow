@@ -14,6 +14,7 @@ set -xv
   fnamei=$4
   gridid=$5
   FIXprdgen=$6
+  parmdir=$7
 
   #-- remove the leading 0"
   ifhr=$(expr $fhr + 0)
@@ -56,7 +57,7 @@ set -xv
   #================================================================
   #-- add WMO header
   
-  parm_dir=${FIXprdgen}/wmo-header-ifi
+  parm_dir=${parmdir}/wmo
 
   #-- icprb
 

@@ -17,6 +17,7 @@ USHrrfs=$8
 
 # fixdir=${FIXprdgen}
 fixdir=${USHrrfs}/../../fix/prdgen
+parmdir=${USHrrfs}/../../parm
 
 #-- remove the leading 0"
 ifhr=$(expr ${fhr:0:3} + 0)    ## (eg. f013-15-00)
@@ -87,7 +88,7 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
 
       #-- add wmo header
       infile=rrfs.t${cyc}z.prslevfaa.f${fhr}.conus13km.grib2
-      ${USHrrfs}/rrfs.wmo-header.sh WARP ${fhr} ${cyc} ${infile} 130 ${fixdir} ${COMOUT}
+      ${USHrrfs}/rrfs.wmo-header.sh WARP ${fhr} ${cyc} ${infile} 130 ${parmdir} ${COMOUT}
     fi
 
     #-- 3km Rotated Lat Lon (subset of the original RRFS output)
@@ -100,7 +101,7 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
 
       #-- add wmo header
       infile=rrfs.t${cyc}z.prslev.f${fhr}.na3km.grib2
-      ${USHrrfs}/rrfs.wmo-header.sh AWIPS ${fhr} ${cyc} ${infile} na3km ${fixdir} ${COMOUT}
+      ${USHrrfs}/rrfs.wmo-header.sh AWIPS ${fhr} ${cyc} ${infile} na3km ${parmdir} ${COMOUT}
     fi
 
     #-- 13km Rotated Lat Lon
@@ -186,7 +187,7 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
       
       #-- add wmo header
       infile=rrfs.t${cyc}z.prslevfaa.f${fhr}.pr32km.grib2
-      ${USHrrfs}/rrfs.wmo-header.sh WARP ${fhr} ${cyc} ${infile} 237 ${fixdir} ${COMOUT}
+      ${USHrrfs}/rrfs.wmo-header.sh WARP ${fhr} ${cyc} ${infile} 237 ${parmdir} ${COMOUT}
 
     fi 
   fi
@@ -261,7 +262,7 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
     #  if [ $ifhr = 1 -o  $ifhr = 2 -o  $ifhr = 3 -o  $ifhr = 6 -o  $ifhr = 9 -o  $ifhr = 12 -o  $ifhr = 15 -o  $ifhr = 18 ]; then
     #    IFIFILE=rrfs.t${cyc}z.ififip.f${fhr}.conus13km.grib2
     #    IFIDOMAIN=conus13km
-    #    ${USHrrfs}/rrfs_subset_ifi_304m.sh $fhr $cyc ${COMOUT} ${IFIFILE} ${IFIDOMAIN} ${fixdir}
+    #    ${USHrrfs}/rrfs_subset_ifi_304m.sh $fhr $cyc ${COMOUT} ${IFIFILE} ${IFIDOMAIN} ${fixdir} ${parmdir}
     #  fi
     #fi
 
@@ -280,7 +281,7 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
       if [ $ifhr = 1 -o  $ifhr = 2 -o  $ifhr = 3 -o  $ifhr = 6 -o  $ifhr = 9 -o  $ifhr = 12 -o  $ifhr = 15 -o  $ifhr = 18 ]; then
         IFIFILE=rrfs.t${cyc}z.ififip.f${fhr}.conus3km.grib2
         IFIDOMAIN=conus3km
-        ${USHrrfs}/rrfs_subset_ifi_304m.sh $fhr $cyc ${COMOUT} ${IFIFILE} ${IFIDOMAIN} ${fixdir}
+        ${USHrrfs}/rrfs_subset_ifi_304m.sh $fhr $cyc ${COMOUT} ${IFIFILE} ${IFIDOMAIN} ${fixdir} ${parmdir}
       fi
     fi
 
@@ -309,7 +310,7 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
       if [ $ifhr = 1 -o  $ifhr = 2 -o  $ifhr = 3 -o  $ifhr = 6 -o  $ifhr = 9 -o  $ifhr = 12 -o  $ifhr = 15 -o  $ifhr = 18 ]; then
         IFIFILE=rrfs.t${cyc}z.ififip.f${fhr}.ak3km.grib2
         IFIDOMAIN=ak3km
-        ${USHrrfs}/rrfs_subset_ifi_304m.sh $fhr $cyc ${COMOUT} ${IFIFILE} ${IFIDOMAIN} ${fixdir}
+        ${USHrrfs}/rrfs_subset_ifi_304m.sh $fhr $cyc ${COMOUT} ${IFIFILE} ${IFIDOMAIN} ${fixdir} ${parmdir}
       fi
     fi
 

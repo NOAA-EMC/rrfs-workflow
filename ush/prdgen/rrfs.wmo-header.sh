@@ -11,7 +11,7 @@ fhr=$2
 cyc=$3
 file=$4
 gridid=$5
-fixdir=$6
+parmdir=$6
 data=$7
 
 #-- remove the leading 0"
@@ -26,7 +26,7 @@ wmo_outdir=${data}/wmo
 if [ "${case}" == "AWIPS" ]; then
   echo "PLACING HEADERS for t${cyc}z f${fhr}, RUNNING TOCGRIB2"
 
-  parm_dir=${fixdir}/wmo-header-awips
+  parm_dir=${parmdir}/wmo
   parmfile=grib2.awips.rrfs.${fhr}
 
   #-- remove ".grib2"
@@ -47,7 +47,7 @@ if [ "${case}" == "AWIPS" ]; then
 elif [ "${case}" == "WARP" ]; then
   echo "PLACING HEADERS for t${cyc}z f${fhr}, RUNNING TOCGRIB2"
 
-  parm_dir=${fixdir}/wmo-header-warp
+  parm_dir=${parmdir}/wmo
   parmfile=grib2.faa.warp${gridid}.rrfs.${fhr}
 
   #-- remove ".grib2"
