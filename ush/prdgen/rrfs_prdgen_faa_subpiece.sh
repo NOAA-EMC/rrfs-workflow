@@ -12,12 +12,15 @@ ififip=$5
 aviati=$6
 COMOUT=$7
 USHrrfs=$8
+fixdir=$9
+parmdir=${10}
 
 # FAA request variable to be extracted from UPP output
 
-# fixdir=${FIXprdgen}
-fixdir=${USHrrfs}/../../fix/prdgen
-parmdir=${USHrrfs}/../../parm
+ # fixdir=${FIXprdgen}
+ # parmdir=${PARMdir}
+# fixdir=${USHrrfs}/../../fix/prdgen
+# parmdir=${USHrrfs}/../../parm
 
 #-- remove the leading 0"
 ifhr=$(expr ${fhr:0:3} + 0)    ## (eg. f013-15-00)
