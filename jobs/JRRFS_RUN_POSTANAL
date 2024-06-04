@@ -1,76 +1,65 @@
 #!/bin/bash
 
-#
 #-----------------------------------------------------------------------
-#
-# This J-JOB script runs the applications after analysis 
-#
+# RRFS Post Analysis
 #-----------------------------------------------------------------------
 
-#
 #-----------------------------------------------------------------------
-#
 # Source the variable definitions file and the bash utility functions.
-#
 #-----------------------------------------------------------------------
-#
+
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
 
 date
 export PS4='+ $SECONDS + '
-#
+
 #-----------------------------------------------------------------------
-#
 # Save current shell options (in a global array).  Then set new options
 # for this script/function.
-#
 #-----------------------------------------------------------------------
-#
+
 { save_shell_opts; set -u -x; } > /dev/null 2>&1
-#
+
 #-----------------------------------------------------------------------
-#
 # Get the full path to the file in which this script/function is located 
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
-#
 #-----------------------------------------------------------------------
-#
+
 scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
 scrfunc_fn=$( basename "${scrfunc_fp}" )
 scrfunc_dir=$( dirname "${scrfunc_fp}" )
-#
+
 #-----------------------------------------------------------------------
-#
 # Print message indicating entry into script.
-#
 #-----------------------------------------------------------------------
-#
+
 print_info_msg "
 ========================================================================
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs a analysis with FV3 for 
-the specified cycle.
+This is the J-job script for the task that runs the applications after
+analysis with RRFS for the specified cycle.
 ========================================================================"
-#
+
 #-----------------------------------------------------------------------
-#
-# Create the working directory under the cycle directory.
-#
+# Obtain unique process id (pid) and create the run directory (DATA).
 #-----------------------------------------------------------------------
-# CYCLE_TYPE is to indicate which type of cycle this job for:
-#   spinup: this job is for spin-up cycles
-#   others(prod): this job is for product cycle
-#
+
+export pid=${pid:-$$}
+export envir=${envir:-prod}
+export RUN=${RUN:-rrfs}
+
+export mem_num=m$(echo "${ENSMEM_INDX}")
+
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  analworkname="_gsi_spinup"
+  workname="_gsi_spinup"
 else
-  analworkname="_gsi"
+  workname="_gsi"
 fi
 
 if [[ ! -v OB_TYPE ]]; then
@@ -78,51 +67,61 @@ if [[ ! -v OB_TYPE ]]; then
 fi
 if [ "${GSI_TYPE}" = "OBSERVER" ]; then
   if [ "${MEM_TYPE}" = "MEAN" ]; then
-    analworkdir="${CYCLE_DIR}/ensmean/observer${analworkname}"
-    SLASH_ENSMEM_SUBDIR=""
+    export jobid=${RUN}_observer${workname}_ensmean_${envir}_${cyc}
   else
-    analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/observer${analworkname}"
+    export jobid=${RUN}_observer${workname}_${mem_num}_${envir}_${cyc}
   fi
 else
-  analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/anal_${OB_TYPE}${analworkname}"
+  export jobid=${RUN}_analysis_${OB_TYPE}${workname}_${envir}_${cyc}
 fi
 
-if [[ ! -d ${analworkdir} ]]; then
-  echo "cannot find analysis directory"
+export DATA=${DATAROOT}/${jobid}
+
+if [[ ! -d ${DATA} ]]; then
+  echo "cannot find analysis run directory"
   exit 
 fi
-cd ${analworkdir}
-#
+cd ${DATA}
+
 #  directory has grid_spec files for restart subdomains
-#
-export gridspec_dir=${NWGES_BASEDIR}/grid_spec
-#
+export gridspec_dir=${GESROOT}/grid_spec
+
 #-----------------------------------------------------------------------
-#
-# create COMOUT directory
-#
+# Define COM directories
 #-----------------------------------------------------------------------
-#
-export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
+
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup/${mem_num}"
+  else
+    export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+  fi
+else
+  if [ "${MEM_TYPE}" = "MEAN" ]; then
+    export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc/ensmean"
+  else
+    if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+      export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}/${mem_num}"
+    else
+      export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
+    fi
+  fi
 fi
 mkdir -p "${COMOUT}"
-#
+
 #-----------------------------------------------------------------------
-#
-# Call the ex-script for this J-job
-#
+# Execute the script.
 #-----------------------------------------------------------------------
-#
-export pgmout="${analworkdir}/OUTPUT.$$"
+
+export pgmout="${DATA}/OUTPUT.$$"
 env
 
 $SCRIPTSdir/exrrfs_run_postanal.sh \
-             cycle_dir="${CYCLE_DIR}" \
+             DATAROOT="${DATAROOT}" \
              gsi_type="${GSI_TYPE}" \
+             cycle_type="${CYCLE_TYPE}" \
              mem_type="${MEM_TYPE}" \
-             slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}" \
+             mem_num="${mem_num}" \
              satbias_dir="${SATBIAS_DIR}" \
              ob_type="${OB_TYPE}"
 export err=$?; err_chk
@@ -130,24 +129,24 @@ export err=$?; err_chk
 if [ -e "$pgmout" ]; then
   cat $pgmout
 fi
-#
+
+if [ "${KEEPDATA}" = "NO" ]; then
+  rm -rf ${DATA}
+fi
+
 #-----------------------------------------------------------------------
-#
 # Print exit message.
-#
 #-----------------------------------------------------------------------
-#
+
 print_info_msg "
 ========================================================================
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-#
+
 #-----------------------------------------------------------------------
-#
 # Restore the shell options saved at the beginning of this script/function.
-#
 #-----------------------------------------------------------------------
-#
+
 { restore_shell_opts; } > /dev/null 2>&1
 

@@ -53,14 +53,18 @@ export pid=${pid:-$$}
 export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
-export mem_num=m0$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')
+export mem_num=m$(echo "${ENSMEM_INDX}")
 
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
 CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
 if [ ${CYCLE_TYPE} == "spinup" ]; then
-  export jobid=${RUN}_forecast_spinup_${envir}_${cyc}
-  if  [ ${CYCLE_SUBTYPE} == "ensinit" ]; then
-    export jobid=${RUN}_forecast_ensinit_${envir}_${cyc}
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then	# EnKF has spinup forecasts
+    export jobid=${RUN}_forecast_spinup_${mem_num}_${envir}_${cyc}
+    if  [ ${CYCLE_SUBTYPE} == "ensinit" ]; then
+      export jobid=${RUN}_forecast_ensinit_${mem_num}_${envir}_${cyc}
+    fi
+  else
+    export jobid=${RUN}_forecast_spinup_${envir}_${cyc}
   fi
 else
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
@@ -81,12 +85,12 @@ mkdir -p ${gridspec_dir}
 
 cd ${DATA}
 
-export pgmout="${DATA}/OUTPUT.$$"
-env
-
 #-----------------------------------------------------------------------
 # Execute the script.
 #-----------------------------------------------------------------------
+
+export pgmout="${DATA}/OUTPUT.$$"
+env
 
 $SCRIPTSdir/exrrfs_run_fcst.sh \
   cdate="${CDATE}" \

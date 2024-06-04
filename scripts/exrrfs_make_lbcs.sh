@@ -668,7 +668,7 @@ $settings"
   fcst_hhh_FV3LAM=`printf %3.3i $fcst_hhh`
   mv gfs.bndy.nc ${DATA}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc
 # copy results to nwges for longer time disk storage.
-  cp ${DATA}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc ${NWGES_DIR}/${PDY}${cyc}.gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc
+  cp ${DATA}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc ${NWGES_DIR}/.
 
   fi
 done

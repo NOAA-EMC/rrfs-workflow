@@ -40,8 +40,8 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs a radar reflectivity 
-preprocess with RRFS for the specified cycle.
+This is the J-job script for the task that runs the radar reflectivity 
+preprocessing with RRFS for the specified cycle.
 ========================================================================"
 
 #-----------------------------------------------------------------------
@@ -68,9 +68,7 @@ export DATA=${DATAROOT}/${jobid}
 mkdir -p ${DATA}
 cd ${DATA}
 
-export gridspec_dir=${NWGES_BASEDIR}/grid_spec
-
-export pgmout="${DATA}/OUTPUT.$$"
+export gridspec_dir=${GESROOT}/grid_spec
 
 #-----------------------------------------------------------------------
 # Define COM directories
@@ -82,11 +80,13 @@ else
   export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
 fi
 mkdir -p "${COMOUT}"
-env
 
 #-----------------------------------------------------------------------
 # Execute the script.
 #-----------------------------------------------------------------------
+
+export pgmout="${DATA}/OUTPUT.$$"
+env
 
 $SCRIPTSdir/exrrfs_process_radarref.sh \
   cycle_type="${CYCLE_TYPE}" \

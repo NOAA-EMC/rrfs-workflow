@@ -42,7 +42,7 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs a analysis with FV3 for the
+This is the ex-script for the task that runs a analysis with RRFS for the
 specified cycle.
 ========================================================================"
 #
@@ -55,8 +55,7 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "gsi_type" "mem_type" \
-             "slash_ensmem_subdir" \
+valid_args=( "dataroot" "gsi_type" "mem_type" \
              "rrfse_fg_root" "satbias_dir" "ob_type" )
 process_args valid_args "$@"
 #
@@ -149,15 +148,23 @@ AIR_REJECT_FN=$(date +%Y%m%d -d "${START_DATE} -1 day")_rejects.txt
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   if [ "${mem_type}" = "MEAN" ]; then
-    bkpath=${cycle_dir}/ensmean/fcst_fv3lam_spinup/INPUT
+    bkpath=${dataroot}/${RUN}_calc_ensmean_spinup_${envir}_${cyc}
   else
-    bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam_spinup/INPUT
+    if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+      bkpath=${dataroot}/${RUN}_forecast_spinup_${mem_num}_${envir}_${cyc}/INPUT
+    else
+      bkpath=${dataroot}/${RUN}_forecast_spinup_${envir}_${cyc}/INPUT
+    fi
   fi
 else
   if [ "${mem_type}" = "MEAN" ]; then
-    bkpath=${cycle_dir}/ensmean/fcst_fv3lam/INPUT
+    bkpath=${dataroot}/${RUN}_calc_ensmean_${envir}_${cyc}
   else
-    bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam/INPUT
+    if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+      bkpath=${dataroot}/${RUN}_forecast_${mem_num}_${envir}_${cyc}/INPUT
+    else
+      bkpath=${dataroot}/${RUN}_forecast_${envir}_${cyc}/INPUT
+    fi
   fi
 fi
 # decide background type
@@ -199,12 +206,11 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
 
     YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
     restart_prefix="${YYYYMMDD}.${HH}0000."
-    slash_ensmem_subdir=$memchar
-    bkpathmem=${rrfse_fg_root}/${YYYYMMDDHHmInterv}/${slash_ensmem_subdir}/fcst_fv3lam/RESTART
+    bkpathmem=${rrfse_fg_root}/${YYYYMMDDHHmInterv}/${memchar}/forecast/RESTART
     if [ ${DO_SPINUP} == "TRUE" ]; then
       for cycl_hrs in ${CYCL_HRS_PRODSTART_ENS[@]}; do
        if [ $HH == ${cycl_hrs} ]; then
-         bkpathmem=${rrfse_fg_root}/${YYYYMMDDHHmInterv}/${slash_ensmem_subdir}/fcst_fv3lam_spinup/RESTART
+         bkpathmem=${rrfse_fg_root}/${YYYYMMDDHHmInterv}/${memchar}/forecast_spinup/RESTART
        fi
       done
     fi
@@ -493,17 +499,17 @@ if [[ ${gsi_type} == "OBSERVER" || ${anav_type} == "conv" || ${anav_type} == "co
   if [ "${anav_type}" = "conv_dbz" ]; then
     obs_number=${#obs_files_source[@]}
     if [ "${CYCLE_TYPE}" = "spinup" ]; then
-      obs_files_source[${obs_number}]=${cycle_dir}/process_radarref_spinup/00/Gridded_ref.nc
+      obs_files_source[${obs_number}]=${dataroot}/${RUN}_process_radarref_spinup_${envir}_${cyc}/Gridded_ref.nc
     else
-      obs_files_source[${obs_number}]=${cycle_dir}/process_radarref/00/Gridded_ref.nc
+      obs_files_source[${obs_number}]=${dataroot}/${RUN}_process_radarref_${envir}_${cyc}/Gridded_ref.nc
     fi
     obs_files_target[${obs_number}]=dbzobs.nc
     if [ "${DO_GLM_FED_DA}" = "TRUE" ]; then
       obs_number=${#obs_files_source[@]}
       if [ "${CYCLE_TYPE}" = "spinup" ]; then
-        obs_files_source[${obs_number}]=${cycle_dir}/process_glmfed_spinup/fedobs.nc
+        obs_files_source[${obs_number}]=${dataroot}/${RUN}_process_glmfed_spinup_${envir}_${cyc}/fedobs.nc
       else
-        obs_files_source[${obs_number}]=${cycle_dir}/process_glmfed/fedobs.nc
+        obs_files_source[${obs_number}]=${dataroot}/${RUN}_process_glmfed_${envir}_${cyc}/fedobs.nc
       fi
       obs_files_target[${obs_number}]=fedobs.nc
     fi
@@ -512,14 +518,14 @@ if [[ ${gsi_type} == "OBSERVER" || ${anav_type} == "conv" || ${anav_type} == "co
   if [ "${DO_ENKF_RADAR_REF}" = "TRUE" ]; then
     obs_number=${#obs_files_source[@]}
     if [ "${CYCLE_TYPE}" = "spinup" ]; then
-      obs_files_source[${obs_number}]=${cycle_dir}/process_radarref_spinup_enkf/00/Gridded_ref.nc
+      obs_files_source[${obs_number}]=${dataroot}/${RUN}_process_radarref_spinup_enkf_${envir}_${cyc}/Gridded_ref.nc
     else
-      obs_files_source[${obs_number}]=${cycle_dir}/process_radarref_enkf/00/Gridded_ref.nc
+      obs_files_source[${obs_number}]=${dataroot}/${RUN}_process_radarref_enkf_${envir}_${cyc}/Gridded_ref.nc
     fi
     obs_files_target[${obs_number}]=dbzobs.nc
     if [ "${DO_GLM_FED_DA}" = "TRUE" ]; then
       obs_number=${#obs_files_source[@]}
-      obs_files_source[${obs_number}]=${cycle_dir}/process_glmfed_enkf/fedobs.nc
+      obs_files_source[${obs_number}]=${dataroot}/${RUN}_process_glmfed_enkf_${envir}_${cyc}/fedobs.nc
       obs_files_target[${obs_number}]=fedobs.nc
     fi
   fi
@@ -528,30 +534,19 @@ else
 
   if [ "${anav_type}" = "radardbz" ]; then
     if [ "${CYCLE_TYPE}" = "spinup" ]; then
-      obs_files_source[0]=${cycle_dir}/process_radarref_spinup/00/Gridded_ref.nc
+      obs_files_source[0]=${dataroot}/${RUN}_process_radarref_spinup_${envir}_${cyc}/Gridded_ref.nc
     else
-      obs_files_source[0]=${cycle_dir}/process_radarref/00/Gridded_ref.nc
+      obs_files_source[0]=${dataroot}/${RUN}_process_radarref_${envir}_${cyc}/Gridded_ref.nc
     fi
     obs_files_target[0]=dbzobs.nc
     if [ "${DO_GLM_FED_DA}" = "TRUE" ]; then
       if [ "${CYCLE_TYPE}" = "spinup" ]; then
-        obs_files_source[1]=${cycle_dir}/process_glmfed_spinup/fedobs.nc
+        obs_files_source[1]=${dataroot}/${RUN}_process_glmfed_spinup_${envir}_${cyc}/fedobs.nc
       else
-        obs_files_source[1]=${cycle_dir}/process_glmfed/fedobs.nc
+        obs_files_source[1]=${dataroot}/${RUN}_process_glmfed_${envir}_${cyc}/fedobs.nc
       fi
       obs_files_target[1]=fedobs.nc
     fi
-  fi
-
-  if [ "${anav_type}" = "AERO" ]; then
-# for previous retro runs
-#    obs_files_source[0]=${OBSPATH_PM}/${YYYYMMDD}/pm25.airnow.${YYYYMMDD}${HH}.bufr
-    if [ "${CYCLE_TYPE}" = "spinup" ]; then
-      obs_files_source[0]=${cycle_dir}/process_pm_spinup/pm.bufr
-    else
-      obs_files_source[0]=${cycle_dir}/process_pm/pm.bufr
-    fi 
-    obs_files_target[0]=pm25bufr
   fi
 
 fi
@@ -1013,12 +1008,8 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "AERO" ]]; then
-  gsi_exec="${EXECdir}/gsi.x.sd"
-else
-  gsi_exec="${EXECdir}/gsi.x"
-fi
-cp ${gsi_exec} ${analworkdir}/gsi.x
+gsi_exec="${EXECdir}/gsi.x"
+cp ${gsi_exec} ${DATA}/gsi.x
 
 export pgm="gsi.x"
 . prep_step
@@ -1138,11 +1129,11 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
   if [ "${gsi_type}" = "OBSERVER" ]; then
     cp *diag*ges* ${observer_nwges_dir}/.
     if [ "${mem_type}" = "MEAN" ]; then
-      mkdir -p ${observer_nwges_dir}/../../../observer_diag/${YYYYMMDDHH}/ensmean/observer_gsi
-      cp *diag*ges* ${observer_nwges_dir}/../../../observer_diag/${YYYYMMDDHH}/ensmean/observer_gsi/.
+      mkdir -p ${observer_nwges_dir}/../../../../observer_diag/${YYYYMMDDHH}/ensmean/observer_gsi
+      cp *diag*ges* ${observer_nwges_dir}/../../../../observer_diag/${YYYYMMDDHH}/ensmean/observer_gsi/.
     else
-      mkdir -p ${observer_nwges_dir}/../../../observer_diag/${YYYYMMDDHH}/${slash_ensmem_subdir}/observer_gsi
-      cp *diag*ges* ${observer_nwges_dir}/../../../observer_diag/${YYYYMMDDHH}/${slash_ensmem_subdir}/observer_gsi/.
+      mkdir -p ${observer_nwges_dir}/../../../../observer_diag/${YYYYMMDDHH}/${mem_num}/observer_gsi
+      cp *diag*ges* ${observer_nwges_dir}/../../../../observer_diag/${YYYYMMDDHH}/${mem_num}/observer_gsi/.
     fi
   fi
   #

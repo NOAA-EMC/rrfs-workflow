@@ -56,8 +56,8 @@ This is the ex-script for the task that runs the bufr-sounding
 #
 valid_args=( \
 "cdate" \
-"run_dir" \
-"nwges_dir" \
+"INPUT_DATA" \
+"NWGES_DIR" \
 "fhr" \
 "tmmark" \
 "cycle_type" \
@@ -148,8 +148,6 @@ cyc=$hh
 #
 PARMfv3=${FIX_BUFRSND}  #/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/bufrsnd
 
-DATA=$bufrsnd_dir
-
 mkdir -p $DATA/bufrpost
 cd $DATA/bufrpost
 
@@ -201,7 +199,6 @@ fi
 
 echo starting with fhr $fhr
 
-INPUT_DATA=$run_dir
 ########################################################
 #  set to 15 minute output for subhour
 if [ "${NSOUT_MIN}" = "0" ]; then

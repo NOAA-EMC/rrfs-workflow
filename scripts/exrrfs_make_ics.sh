@@ -762,10 +762,7 @@ fi
 #-----------------------------------------------------------------------
 #
 if [ $DO_ENS_BLENDING = "FALSE" ]; then
-  cp ${DATA}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc ${NWGES_DIR}/${PDY}${cyc}.gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
-  cp ${DATA}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc ${NWGES_DIR}/${PDY}${cyc}.sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
-  cp ${DATA}/gfs_ctrl.nc ${NWGES_DIR}/${PDY}${cyc}.gfs_ctrl.nc
-  cp ${DATA}/gfs_bndy.tile${TILE_RGNL}.000.nc ${NWGES_DIR}/${PDY}${cyc}.gfs_bndy.tile${TILE_RGNL}.000.nc
+  cp ${DATA}/*.nc ${NWGES_DIR}/.
 fi
 #
 #-----------------------------------------------------------------------

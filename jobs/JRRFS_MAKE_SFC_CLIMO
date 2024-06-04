@@ -60,12 +60,12 @@ cd ${DATA}
 check_for_preexist_dir_file "${SFC_CLIMO_DIR}" "${PREEXISTING_DIR_METHOD}"
 mkdir -p "${SFC_CLIMO_DIR}"
 
-export pgmout="${DATA}/OUTPUT.$$"
-env
-
 #-----------------------------------------------------------------------
 # Execute the script.
 #-----------------------------------------------------------------------
+
+export pgmout="${DATA}/OUTPUT.$$"
+env
 
 ${SCRIPTSdir}/exrrfs_make_sfc_climo.sh
 export err=$?; err_chk

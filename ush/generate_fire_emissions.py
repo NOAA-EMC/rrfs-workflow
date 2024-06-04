@@ -27,7 +27,7 @@ def generate_emiss_workflow(staticdir, ravedir, newges_dir, predef_grid):
    beta = 0.3
    fg_to_ug = 1e6
    current_day = os.environ.get("CDATE")
-   nwges_dir = os.environ.get("NWGES_DIR")    
+   nwges_dir = os.environ.get("GESROOT")    
    vars_emis = ["FRP_MEAN","FRE"]
    cols, rows = (2700, 3950) if predef_grid == 'RRFS_NA_3km' else (1092, 1820) 
    print('PREDEF GRID',predef_grid,'cols,rows',cols,rows)

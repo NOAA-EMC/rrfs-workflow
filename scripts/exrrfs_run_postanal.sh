@@ -55,8 +55,8 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "gsi_type" "mem_type" "analworkdir" \
-             "slash_ensmem_subdir" \
+valid_args=( "DATAROOT" "gsi_type" "cycle_type" \
+             "mem_type" "mem_num" \
              "satbias_dir" "ob_type" )
 process_args valid_args "$@"
 #
@@ -140,54 +140,26 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 #-----------------------------------------------------------------------
 #
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  if [ "${mem_type}" = "MEAN" ]; then
-    bkpath=${cycle_dir}/ensmean/fcst_fv3lam_spinup/INPUT
-  else
-    bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam_spinup/INPUT
-  fi
+if [ "${cycle_type}" = "spinup" ]; then
+  cycle_tag="_spinup"
 else
-  if [ "${mem_type}" = "MEAN" ]; then
-    bkpath=${cycle_dir}/ensmean/fcst_fv3lam/INPUT
+  cycle_tag=""
+fi
+if [ "${mem_type}" = "MEAN" ]; then
+  bkpath=${DATAROOT}/${RUN}_calc_ensmean${cycle_tag}_${envir}_${cyc}/INPUT
+else
+  if [ ${DO_ENSEMBLE} = "TRUE" ]; then
+    bkpath=${DATAROOT}/${RUN}_forecast${cycle_tag}_${mem_num}_${envir}_${cyc}/INPUT
   else
-    bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam/INPUT
+    bkpath=${DATAROOT}/${RUN}_forecast${cycle_tag}_${envir}_${cyc}/INPUT
   fi
 fi
+
 # decide background type
 if [ -r "${bkpath}/coupler.res" ]; then
   BKTYPE=0              # warm start
 else
   BKTYPE=1              # cold start
-fi
-#
-#-----------------------------------------------------------------------
-#
-# Update smoke and dust from aerosol data assimilation 
-#
-#-----------------------------------------------------------------------
-#
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  analworkname="_gsi_spinup"
-else
-  analworkname="_gsi"
-fi
-
-if [[ ${BKTYPE} -eq 0 ]] && [[ "${DO_PM_DA}" = "TRUE" ]]; then  # warm start
-  analworkdir_aero="${cycle_dir}/anal_AERO_${analworkname}"
-  # Assume the GSI analysis files are in current dir
-  if [ "${IO_LAYOUT_Y}" = "1" ]; then
-    ln -snf ${analworkdir_aero}/fv3_tracer  fv3_tracer_sdp
-    ncrename -v smoke,smoke_ori -v dust,dust_ori  fv3_tracer
-    ncks -A  -v smoke,dust        fv3_tracer_sdp  fv3_tracer
-  else
-    for ii in ${list_iolayout}
-    do
-      iii=`printf %4.4i $ii`
-      ln -snf ${analworkdir_aero}/fv3_tracer.${iii} fv3_tracer_sdp.${iii}
-      ncrename -v smoke,smoke_ori -v dust,dust_ori  fv3_tracer.${iii}
-      ncks -A  -v smoke,dust fv3_tracer_sdp.${iii}  fv3_tracer.${iii}
-    done
-  fi
 fi
 #
 #-----------------------------------------------------------------------

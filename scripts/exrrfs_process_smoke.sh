@@ -53,9 +53,9 @@ This is the script for the task that runs smoke emissions preprocessing.
 #
 #-----------------------------------------------------------------------
 #
-export rave_nwges_dir=${NWGES_DIR}/RAVE_INTP
+export rave_nwges_dir=${GESROOT}/RAVE_INTP
 mkdir -p "${rave_nwges_dir}"
-export hourly_hwpdir=${NWGES_BASEDIR}/HOURLY_HWP
+export hourly_hwpdir=${GESROOT}/HOURLY_HWP
 mkdir -p "${hourly_hwpdir}"
 #
 #-----------------------------------------------------------------------
@@ -105,9 +105,9 @@ YYYYMMDDm1=${previous_day:0:8}
 YYYYMMDDm2=${previous_2day:0:8}
 if [ -d ${FIRE_RAVE_DIR}/${YYYYMMDDm1}/rave ]; then
    fire_rave_dir_work=${DATA}
-   ln -s ${FIRE_RAVE_DIR}/${YYYYMMDD}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
-   ln -s ${FIRE_RAVE_DIR}/${YYYYMMDDm1}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
-   ln -s ${FIRE_RAVE_DIR}/${YYYYMMDDm2}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
+   ln -snf ${FIRE_RAVE_DIR}/${YYYYMMDD}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
+   ln -snf ${FIRE_RAVE_DIR}/${YYYYMMDDm1}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
+   ln -snf ${FIRE_RAVE_DIR}/${YYYYMMDDm2}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
 else
    fire_rave_dir_work=${FIRE_RAVE_DIR}
 fi

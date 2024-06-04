@@ -52,7 +52,7 @@ export pid=${pid:-$$}
 export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
-export mem_num=m0$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')
+export mem_num=m$(echo "${ENSMEM_INDX}")
 
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ ${CYCLE_TYPE} == "spinup" ]; then
@@ -72,8 +72,6 @@ export DATA=${DATAROOT}/${jobid}
 mkdir -p ${DATA}
 cd ${DATA}
 
-export pgmout="${DATA}/OUTPUT.$$"
-
 #-----------------------------------------------------------------------
 # Define COM directories
 #-----------------------------------------------------------------------
@@ -86,11 +84,13 @@ if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   COMOUT=${COMOUT}/${mem_num}
 fi
 mkdir -p "${COMOUT}"
-env
 
 #-----------------------------------------------------------------------
 # Execute the script.
 #-----------------------------------------------------------------------
+
+export pgmout="${DATA}/OUTPUT.$$"
+env
 
 $SCRIPTSdir/exrrfs_run_post.sh \
   cdate="${CDATE}" \
