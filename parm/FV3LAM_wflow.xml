@@ -3037,7 +3037,7 @@ MODULES_RUN_TASK_FP script.
         {%- if do_ensemble %}
           <datadep age="01:30"><cyclestr>&DATAROOT;/&RUN;_forecast_m#mem#_&envir;_@H/log.atm.f#fhr#</cyclestr></datadep>
         {%- else %}
-          <datadep age="01:30"><cyclestr>&DATAROOT;/&RUN;_forecast_m#mem#_&envir;_@H/log.atm.f#fhr#</cyclestr></datadep>
+          <datadep age="01:30"><cyclestr>&DATAROOT;/&RUN;_forecast_&envir;_@H/log.atm.f#fhr#</cyclestr></datadep>
         {%- endif %}
       </dependency>
 
