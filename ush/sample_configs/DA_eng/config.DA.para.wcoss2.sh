@@ -93,7 +93,13 @@ RESTART_INTERVAL_LONG="1 2"
 ## set up post
 POSTPROC_LEN_HRS="18"
 POSTPROC_LONG_LEN_HRS="60"
-NFHOUT_HF="1"
+
+# default
+OUTPUT_FH="1 -1"
+#set UPP/prdgen for 15 min output
+NFHMAX_HF="18"
+NFHOUT="1"
+NSOUT_MIN="15"
 
 USE_RRFSE_ENS="TRUE"
 CYCL_HRS_HYB_FV3LAM_ENS=("00" "01" "02" "03" "04" "05" "06" "07" "08" "09" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "23")
