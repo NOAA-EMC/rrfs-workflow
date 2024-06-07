@@ -57,7 +57,7 @@ effect snow forecasts.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "modelinputdir" "FIXLAM" "FVCOM_DIR" "YYYYJJJHH" "YYYYMMDD" "YYYYMMDDm1" "HH")
+valid_args=( "INPUT_DATA" "FIXLAM" "FVCOM_DIR" "YYYYJJJHH" "YYYYMMDD" "YYYYMMDDm1" "HH")
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -73,7 +73,7 @@ print_input_args valid_args
 #-----------------------------------------------------------------------
 
 # Working directory
-dir=${modelinputdir}/fvcom_remap
+dir=${INPUT_DATA}/fvcom_remap
 
 mkdir -m 775 -p ${dir}
 cd ${dir}

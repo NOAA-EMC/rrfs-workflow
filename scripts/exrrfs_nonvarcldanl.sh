@@ -42,8 +42,8 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that conduct non-var cloud analysis
-with FV3 for the specified cycle.
+This is the ex-script for the task that conducts non-var cloud analysis
+with RRFS for the specified cycle.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -55,7 +55,7 @@ with FV3 for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "cycle_type" "mem_type" "slash_ensmem_subdir" )
+valid_args=( "DATAROOT" "cycle_type" "mem_type" "mem_num" )
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -140,14 +140,18 @@ else
   cycle_tag=""
 fi
 if [ "${mem_type}" = "MEAN" ]; then
-  bkpath=${cycle_dir}/ensmean/fcst_fv3lam${cycle_tag}/INPUT
+  bkpath=${DATAROOT}/${RUN}_calc_ensmean${cycle_tag}_${envir}_${cyc}/INPUT
 else
-  bkpath=${cycle_dir}${slash_ensmem_subdir}/fcst_fv3lam${cycle_tag}/INPUT
+  if [ ${DO_ENSEMBLE} = "TRUE" ]; then
+    bkpath=${DATAROOT}/${RUN}_forecast${cycle_tag}_${mem_num}_${envir}_${cyc}/INPUT
+  else
+    bkpath=${DATAROOT}/${RUN}_forecast${cycle_tag}_${envir}_${cyc}/INPUT
+  fi
 fi
 
 if [ ${l_cld_uncertainty} == ".true." ]; then
   # Copy analysis fields into uncertainties - data will be overwritten
-  echo "EXREGIONAL_NONVARCLDANL.SH: copy tracer file into uncertainty file "
+  echo "exrrfs_nonvarcldanl.sh: copy tracer file into uncertainty file "
   cp ${bkpath}/fv_tracer.res.tile1.nc  ${bkpath}/fv_tracer.unc.tile1.nc
 fi
 
@@ -220,7 +224,7 @@ do
 done
 
 # radar reflectivity on esg grid over each subdomain.
-process_radarref_path=${cycle_dir}/process_radarref${cycle_tag}
+process_radarref_path=${DATAROOT}/${RUN}_process_radarref${cycle_tag}_${envir}_${cyc}
 ss=0
 for bigmin in 0; do
   bigmin=$( printf %2.2i $bigmin )

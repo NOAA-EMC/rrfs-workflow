@@ -59,12 +59,12 @@ cd ${DATA}
 check_for_preexist_dir_file "${GRID_DIR}" "${PREEXISTING_DIR_METHOD}"
 mkdir -p "${GRID_DIR}"
 
-export pgmout="${DATA}/OUTPUT.$$"
-env
-
 #-----------------------------------------------------------------------
 # Execute the script.
 #-----------------------------------------------------------------------
+
+export pgmout="${DATA}/OUTPUT.$$"
+env
 
 ${SCRIPTSdir}/exrrfs_make_grid.sh
 export err=$?; err_chk

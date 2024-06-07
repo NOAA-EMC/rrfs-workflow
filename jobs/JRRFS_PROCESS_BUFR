@@ -68,8 +68,6 @@ export DATA=${DATAROOT}/${jobid}
 mkdir -p ${DATA}
 cd ${DATA}
 
-export pgmout="${DATA}/OUTPUT.$$"
-
 #-----------------------------------------------------------------------
 # Define COM directories
 #-----------------------------------------------------------------------
@@ -80,11 +78,13 @@ else
   export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
 fi
 mkdir -p "${COMOUT}"
-env
 
 #-----------------------------------------------------------------------
 # Execute the script.
 #-----------------------------------------------------------------------
+
+export pgmout="${DATA}/OUTPUT.$$"
+env
 
 $SCRIPTSdir/exrrfs_process_bufr.sh
 export err=$?; err_chk

@@ -110,19 +110,17 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 #
 #--------------------------------------------------------------------
 #
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  fg_restart_dirname=fcst_fv3lam_spinup
-else
-  fg_restart_dirname=fcst_fv3lam
-fi
-
 imem=1
 for imem in  $(seq 1 $nens)
   do
   ensmem=$( printf "%04d" $imem ) 
   memberstring=$( printf "%03d" $imem )
 
-  bkpath=${CYCLE_DIR}/mem${ensmem}/${fg_restart_dirname}/INPUT  # cycling, use background from RESTART
+  if [ "${CYCLE_TYPE}" = "spinup" ]; then
+    bkpath=${DATAROOT}/${RUN}_forecast_spinup_${mem_num}_${envir}_${cyc}/INPUT  # cycling, use background from RESTART
+  else
+    bkpath=${DATAROOT}/${RUN}_forecast_${mem_num}_${envir}_${cyc}/INPUT  # cycling, use background from RESTART
+  fi
 
   dynvarfile=${bkpath}/fv_core.res.tile1.nc
   tracerfile=${bkpath}/fv_tracer.res.tile1.nc
@@ -162,18 +160,18 @@ cp -f ./fv3sar_tile1_mem001_sfcvar fv3sar_tile1_sfcvar
 #
 #-----------------------------------------------------------------------
 #
-dynvarfile_control=${ctrlpath}/fcst_fv3lam/INPUT/fv_core.res.tile1.nc
-tracerfile_control=${ctrlpath}/fcst_fv3lam/INPUT/fv_tracer.res.tile1.nc
-dynvarfile_control_spinup=${ctrlpath}/fcst_fv3lam_spinup/INPUT/fv_core.res.tile1.nc
-tracerfile_control_spinup=${ctrlpath}/fcst_fv3lam_spinup/INPUT/fv_tracer.res.tile1.nc
+dynvarfile_control=${ctrlpath}/forecast/INPUT/fv_core.res.tile1.nc
+tracerfile_control=${ctrlpath}/forecast/INPUT/fv_tracer.res.tile1.nc
+dynvarfile_control_spinup=${ctrlpath}/forecast_spinup/INPUT/fv_core.res.tile1.nc
+tracerfile_control_spinup=${ctrlpath}/forecast_spinup/INPUT/fv_tracer.res.tile1.nc
 if [ -r "${dynvarfile_control_spinup}" ] && [ -r "${tracerfile_control_spinup}" ] && [[ ${DO_ENSFCST} != "TRUE" ]] ; then
-  ln -sf ${ctrlpath}/fcst_fv3lam_spinup/INPUT/fv_core.res.tile1.nc  ./control_dynvar
-  ln -sf ${ctrlpath}/fcst_fv3lam_spinup/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
-  ln -sf ${ctrlpath}/fcst_fv3lam_spinup/INPUT/sfc_data.nc  ./control_sfcvar
+  ln -sf ${ctrlpath}/forecast_spinup/INPUT/fv_core.res.tile1.nc  ./control_dynvar
+  ln -sf ${ctrlpath}/forecast_spinup/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
+  ln -sf ${ctrlpath}/forecast_spinup/INPUT/sfc_data.nc  ./control_sfcvar
 elif [ -r "${dynvarfile_control}" ] && [ -r "${tracerfile_control}" ] ; then
-  ln -sf ${ctrlpath}/fcst_fv3lam/INPUT/fv_core.res.tile1.nc  ./control_dynvar
-  ln -sf ${ctrlpath}/fcst_fv3lam/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
-  ln -sf ${ctrlpath}/fcst_fv3lam/INPUT/sfc_data.nc  ./control_sfcvar
+  ln -sf ${ctrlpath}/forecast/INPUT/fv_core.res.tile1.nc  ./control_dynvar
+  ln -sf ${ctrlpath}/forecast/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
+  ln -sf ${ctrlpath}/forecast/INPUT/sfc_data.nc  ./control_sfcvar
 else
   err_exit "Cannot find background: ${dynvarfile_control} or ${dynvarfile_control_spinup}"
 fi

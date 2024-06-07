@@ -1,120 +1,105 @@
 #!/bin/bash
 
-#
 #-----------------------------------------------------------------------
-#
-# This J-JOB script stages initial and boundary conditions for
-#      the analysis and model of the cycle it is running. The initial
-#      could come from external model or previous cycles forecast.
-#      The boundary could come from previous many cycles.
-#
+# RRFS Run Prepstart
 #-----------------------------------------------------------------------
 
-#
 #-----------------------------------------------------------------------
-#
 # Source the variable definitions file and the bash utility functions.
-#
 #-----------------------------------------------------------------------
-#
+
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
 
 date
 export PS4='+ $SECONDS + '
-#
+
 #-----------------------------------------------------------------------
-#
 # Save current shell options (in a global array).  Then set new options
 # for this script/function.
-#
 #-----------------------------------------------------------------------
-#
+
 { save_shell_opts; set -u -x; } > /dev/null 2>&1
-#
+
 #-----------------------------------------------------------------------
-#
 # Get the full path to the file in which this script/function is located 
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
-#
 #-----------------------------------------------------------------------
-#
+
 scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
 scrfunc_fn=$( basename "${scrfunc_fp}" )
 scrfunc_dir=$( dirname "${scrfunc_fp}" )
-#
+
 #-----------------------------------------------------------------------
-#
 # Print message indicating entry into script.
-#
 #-----------------------------------------------------------------------
-#
+
 print_info_msg "
 ========================================================================
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs a analysis with FV3 for 
-the specified cycle.
+This is the J-job script for the prepstart tasks for the specified cycle.
 ========================================================================"
-#
+
 #-----------------------------------------------------------------------
-#
-# Create the working directory under the cycle directory.
-#
+# Obtain unique process id (pid) and create the run directory (DATA).
 #-----------------------------------------------------------------------
-#
-# CYCLE_TYPE is to indicate which type of cycle this job for:
-#   spinup: this job is for spin-up cycles
-#   others(prod): this job is for product cycle
-#
+
+export pid=${pid:-$$}
+export envir=${envir:-prod}
+export RUN=${RUN:-rrfs}
+
+export mem_num=m$(echo "${ENSMEM_INDX}")
+
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
 export ctrlpath=""
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export modelinputdir=${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_spinup/INPUT
+  export INPUT_DATA=${DATAROOT}/${RUN}_forecast_spinup_${envir}_${cyc}/INPUT
   if [ "${DO_ENSINIT}" = "TRUE" ] && [ "${CYCLE_SUBTYPE}" = "ensinit" ]; then
-    modelinputdir=${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_ensinit/INPUT
+    export INPUT_DATA=${DATAROOT}/${RUN}_forecast_ensinit_${envir}_${cyc}/INPUT
   fi
   if [ "${DO_ENSINIT}" = "TRUE" ] && [ "${CYCLE_SUBTYPE}" = "spinup" ]; then
-    ctrlpath=${ENSCTRL_CYCLE_DIR}
+    ctrlpath=${ENSCTRL_DATAROOT}
   fi
 else
-  export modelinputdir=${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/INPUT
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    export INPUT_DATA=${DATAROOT}/${RUN}_forecast_${mem_num}_${envir}_${cyc}/INPUT
+  else
+    export INPUT_DATA=${DATAROOT}/${RUN}_forecast_${envir}_${cyc}/INPUT
+  fi
 fi
 
-rm -fr ${modelinputdir}
-mkdir -p ${modelinputdir}
-cd ${modelinputdir}
-#
-export gridspec_dir=${NWGES_BASEDIR}/grid_spec
+rm -fr ${INPUT_DATA}
+mkdir -p ${INPUT_DATA}
+cd ${INPUT_DATA}
+
+export gridspec_dir=${GESROOT}/grid_spec
 export MAILTO="${MAILTO:-}"
-#
+
 #-----------------------------------------------------------------------
-#
-# create COMOUT directory
-#
+# Define COM directories
 #-----------------------------------------------------------------------
-#
+
+export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${HH}_spinup"
-else
-  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${HH}"
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+fi
+if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  export COMOUT=${COMOUT}/${mem_num}
 fi
 mkdir -p "${COMOUT}"
-#
+
 #-----------------------------------------------------------------------
-#
-# Call the ex-script for this J-job.
-#
+# Execute the script.
 #-----------------------------------------------------------------------
-#
-export pgmout="${modelinputdir}/OUTPUT.$$"
+
+export pgmout="${INPUT_DATA}/OUTPUT.$$"
 env
 
 $SCRIPTSdir/exrrfs_run_prepstart.sh \
-             cycle_dir="${CYCLE_DIR}" \
              lbcs_root="${LBCS_ROOT}" \
              fg_root="${FG_ROOT}"
 export err=$?; err_chk
@@ -122,24 +107,24 @@ export err=$?; err_chk
 if [ -e "$pgmout" ]; then
   cat $pgmout
 fi
-#
+
+if [ "${KEEPDATA}" = "NO" ]; then
+  rm -rf ${INPUT_DATA}
+fi
+
 #-----------------------------------------------------------------------
-#
 # Print exit message.
-#
 #-----------------------------------------------------------------------
-#
+
 print_info_msg "
 ========================================================================
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-#
+
 #-----------------------------------------------------------------------
-#
 # Restore the shell options saved at the beginning of this script/function.
-#
 #-----------------------------------------------------------------------
-#
+
 { restore_shell_opts; } > /dev/null 2>&1
 

@@ -42,9 +42,8 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that generates initial condition
-(IC), surface, and zeroth hour lateral boundary condition (LBC0) files
-(in NetCDF format) for the FV3-LAM.
+This is the ex-script for the task that runs the large-scale blending
+on the RRFS initial conditions.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -54,7 +53,7 @@ This is the ex-script for the task that generates initial condition
 #
 #-----------------------------------------------------------------------
 #
-extrn_mdl_staging_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/ics/tmp_ICS"
+extrn_mdl_staging_dir="${DATA}/tmp_ICS"
 extrn_mdl_var_defns_fp="${extrn_mdl_staging_dir}/${EXTRN_MDL_ICS_VAR_DEFNS_FN}"
 . ${extrn_mdl_var_defns_fp}
 #
@@ -123,13 +122,15 @@ pgm="blending"
 yyyymmdd="${cdate_crnt_fhr:0:8}"
 hh="${cdate_crnt_fhr:8:2}"
 cdate_crnt_fhr_m1=$( date --utc --date "${yyyymmdd} ${hh} UTC - 1 hours" "+%Y%m%d%H" )
+yyyymmdd_m1="${cdate_crnt_fhr_m1:0:8}"
+hh_m1="${cdate_crnt_fhr_m1:8:2}"
 
 # Check for 1h RRFS EnKF files, if at least one missing then use 1tstep initialization
 if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
 
   # Files to denote whether running blending or ensinit
-  run_blending=${NWGES_BASEDIR}/${cdate_crnt_fhr}/run_blending
-  run_ensinit=${NWGES_BASEDIR}/${cdate_crnt_fhr}/run_ensinit
+  run_blending=${GESROOT}/${RUN}.${yyyymmdd}/${hh}/${mem_num}/run_blending
+  run_ensinit=${GESROOT}/${RUN}.${yyyymmdd}/${hh}/${mem_num}/run_ensinit
 
   # Initialize a counter for the number of existing files
   existing_files=0
@@ -137,7 +138,7 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
   # Loop through each ensemble member and check if the 1h RRFS EnKF files exist
   for imem in $(seq 1 ${NUM_ENS_MEMBERS}); do
       ensmem=$( printf "%04d" $imem )
-      checkfile="${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}/mem${ensmem}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
+      checkfile="${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
       if [[ -f $checkfile ]]; then
           ((existing_files++))
           echo "checkfile count: $existing_files"
@@ -176,8 +177,8 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
      export PYTHONPATH=$PYTHONPATH:$LIB64dir
 
      # Required NETCDF files - RRFS
-     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.tile1.nc ./fv_core.res.tile1.nc
-     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_tracer.res.tile1.nc ./fv_tracer.res.tile1.nc
+     cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.tile1.nc ./fv_core.res.tile1.nc
+     cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_tracer.res.tile1.nc ./fv_tracer.res.tile1.nc
      #cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc ./fv_core.res.nc
 
      # Shortcut the file names/arguments.
@@ -193,17 +194,17 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
                                     # TRUE:  Final EnKF will be GDAS (no blending)
                                     # FALSE: Final EnKF will be RRFS (no blending)
      python ${USHdir}/blending_fv3.py $Lx $glb $reg $trcr $blend $use_host_enkf
-     cp ./fv_core.res.tile1.nc ${ics_dir}/.
-     cp ./fv_tracer.res.tile1.nc ${ics_dir}/.
+     cp ./fv_core.res.tile1.nc ${DATA}/.
+     cp ./fv_tracer.res.tile1.nc ${DATA}/.
 
      # Move the remaining RESTART files to INPUT
-     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.coupler.res             ${ics_dir}/coupler.res
-     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc          ${ics_dir}/fv_core.res.nc
-     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_srf_wnd.res.tile1.nc ${ics_dir}/fv_srf_wnd.res.tile1.nc
-     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.phy_data.nc             ${ics_dir}/phy_data.nc
-     cp ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.sfc_data.nc             ${ics_dir}/sfc_data.nc
-     cp gfs_ctrl.nc ${ics_dir}
-     cp gfs.bndy.nc ${ics_dir}/gfs_bndy.tile${TILE_RGNL}.000.nc
+     cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res             ${DATA}/coupler.res
+     cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc          ${DATA}/fv_core.res.nc
+     cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_srf_wnd.res.tile1.nc ${DATA}/fv_srf_wnd.res.tile1.nc
+     cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.phy_data.nc             ${DATA}/phy_data.nc
+     cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.sfc_data.nc             ${DATA}/sfc_data.nc
+     cp gfs_ctrl.nc ${DATA}
+     cp gfs.bndy.nc ${DATA}/gfs_bndy.tile${TILE_RGNL}.000.nc
   fi
 fi
 #
@@ -217,25 +218,26 @@ fi
 #
 if [[ $DO_ENS_BLENDING = "FALSE" || ($DO_ENS_BLENDING = "TRUE" && -f $run_ensinit ) ]]; then
   mv out.atm.tile${TILE_RGNL}.nc \
-        ${ics_dir}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
+        ${DATA}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
 
   mv out.sfc.tile${TILE_RGNL}.nc \
-        ${ics_dir}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
+        ${DATA}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
 
-  mv gfs_ctrl.nc ${ics_dir}
+  mv gfs_ctrl.nc ${DATA}
 
-  mv gfs.bndy.nc ${ics_dir}/gfs_bndy.tile${TILE_RGNL}.000.nc
+  mv gfs.bndy.nc ${DATA}/gfs_bndy.tile${TILE_RGNL}.000.nc
 fi
 #
 #-----------------------------------------------------------------------
 #
-# copy results to nwges for longe time disk storage.
+# copy results to nwges for longer time disk storage.
 #
 #-----------------------------------------------------------------------
 #
-cp ${ics_dir}/*.nc ${ics_nwges_dir}/.
+cp ${DATA}/*.nc ${NWGES_DIR}/.
+
 if [ $DO_ENS_BLENDING = "TRUE" ] && [ -f $run_blending ] && [ ! -f $run_ensinit ]; then
-  cp ${ics_dir}/coupler.res ${ics_nwges_dir}/.
+  cp ${DATA}/coupler.res ${NWGES_DIR}/.
 fi
 #
 #-----------------------------------------------------------------------

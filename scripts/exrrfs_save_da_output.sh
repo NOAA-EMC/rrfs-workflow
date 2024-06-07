@@ -42,8 +42,7 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs the post-processor (UPP) on
-the output files corresponding to a specified forecast hour.
+This is the ex-script for the task that saves DA analysis files to nwges.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -57,8 +56,8 @@ the output files corresponding to a specified forecast hour.
 #
 valid_args=( \
 "cdate" \
-"run_dir" \
-"nwges_dir" \
+"DATA" \
+"NWGES_DIR" \
 )
 process_args valid_args "$@"
 #
@@ -86,8 +85,8 @@ cyc=$hh
 #-----------------------------------------------------------------------
 #
 # Let's save the DA analysis files if needed before run fcst.
-# This will copy the data assimilation analysis files from $run_dir/INPUT/
-# to ${nwges_dir}/DA_OUTPUT/, 
+# This will copy the data assimilation analysis files from $DATA/INPUT/
+# to ${NWGES_DIR}/DA_OUTPUT/, 
 # this is to prepare for ensemble free forecast after the ensemble data assimilation
 #
 #-----------------------------------------------------------------------
@@ -98,25 +97,25 @@ filelistcold="gfs_data.tile7.halo0.nc sfc_data.tile7.halo0.nc"
 n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
-if [ ! -r ${nwges_dir}/DA_OUTPUT/gfs_ctrl.nc ]; then
-  cp $run_dir/INPUT/gfs_ctrl.nc ${nwges_dir}/DA_OUTPUT/gfs_ctrl.nc
+if [ ! -r ${NWGES_DIR}/DA_OUTPUT/gfs_ctrl.nc ]; then
+  cp $DATA/INPUT/gfs_ctrl.nc ${NWGES_DIR}/DA_OUTPUT/gfs_ctrl.nc
 fi
-if [ -r ${run_dir}/INPUT/coupler.res ]; then  # warm start
+if [ -r ${DATA}/INPUT/coupler.res ]; then  # warm start
     if [ "${IO_LAYOUT_Y}" = "1" ]; then
       for file in ${filelistn}; do
-        cp $run_dir/INPUT/${file} ${nwges_dir}/DA_OUTPUT/${file}
+        cp $DATA/INPUT/${file} ${NWGES_DIR}/DA_OUTPUT/${file}
       done
     else
       for file in ${filelistn}; do
         for ii in ${list_iolayout}
         do
           iii=$(printf %4.4i $ii)
-         cp $run_dir/INPUT/${file}.${iii} ${nwges_dir}/DA_OUTPUT/${file}.${iii}
+         cp $DATA/INPUT/${file}.${iii} ${NWGES_DIR}/DA_OUTPUT/${file}.${iii}
         done
       done
     fi
     for file in ${filelist}; do
-      cp $run_dir/INPUT/${file} ${nwges_dir}/DA_OUTPUT/${file}
+      cp $DATA/INPUT/${file} ${NWGES_DIR}/DA_OUTPUT/${file}
     done
 else  # cold start
     print_info_msg "$VERBOSE" "\

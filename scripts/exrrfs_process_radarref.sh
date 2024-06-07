@@ -42,8 +42,8 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs radar reflectivity preprocess
-with RRFS for the specified cycle.
+This is the ex-script for the task that runs the radar reflectivity
+preprocessing with RRFS for the specified cycle.
 ========================================================================"
 #
 #-----------------------------------------------------------------------

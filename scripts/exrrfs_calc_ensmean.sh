@@ -42,8 +42,8 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that calculates ensemble mean with FV3 for the
-specified cycle.
+This is the ex-script for the task that calculates ensemble mean with 
+RRFS for the specified cycle.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -112,20 +112,19 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 #
 # loop through ensemble members to link all the member files
 #
-
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  fg_restart_dirname=fcst_fv3lam_spinup
-else
-  fg_restart_dirname=fcst_fv3lam
-fi
-
+#--------------------------------------------------------------------
+#
 imem=1
 for imem in  $(seq 1 $nens)
   do
   ensmem=$( printf "%04d" $imem ) 
   memberstring=$( printf "%03d" $imem )
 
-  bkpath=${CYCLE_DIR}/mem${ensmem}/${fg_restart_dirname}/INPUT  # cycling, use background from RESTART
+  if [ "${CYCLE_TYPE}" = "spinup" ]; then
+    bkpath=${DATAROOT}/${RUN}_forecast_spinup_${mem_num}_${envir}_${cyc}/INPUT  # cycling, use background from RESTART
+  else
+    bkpath=${DATAROOT}/${RUN}_forecast_${mem_num}_${envir}_${cyc}/INPUT  # cycling, use background from RESTART
+  fi
 
   dynvarfile=${bkpath}/fv_core.res.tile1.nc
   tracerfile=${bkpath}/fv_tracer.res.tile1.nc

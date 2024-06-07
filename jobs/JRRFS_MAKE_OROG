@@ -66,12 +66,12 @@ mkdir -p "${DATA}/temp_orog_data"
 check_for_preexist_dir_file "${OROG_DIR}" "${PREEXISTING_DIR_METHOD}"
 mkdir -p "${OROG_DIR}"
 
-export pgmout="${DATA}/raw_topo/tmp/OUTPUT.$$"
-env
-
 #-----------------------------------------------------------------------
 # Execute the script.
 #-----------------------------------------------------------------------
+
+export pgmout="${DATA}/raw_topo/tmp/OUTPUT.$$"
+env
 
 ${SCRIPTSdir}/exrrfs_make_orog.sh
 export err=$?; err_chk

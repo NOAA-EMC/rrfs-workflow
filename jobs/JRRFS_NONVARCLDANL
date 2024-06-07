@@ -1,137 +1,138 @@
 #!/bin/bash
 
 #-----------------------------------------------------------------------
-#
-# This J-JOB script runs the standalone No-Var Cloud Analysis
-#
+# RRFS Non-Var Cloud Analysis
 #-----------------------------------------------------------------------
 
-#
 #-----------------------------------------------------------------------
-#
 # Source the variable definitions file and the bash utility functions.
-#
 #-----------------------------------------------------------------------
-#
+
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
 
 date
 export PS4='+ $SECONDS + '
-#
+
 #-----------------------------------------------------------------------
-#
 # Save current shell options (in a global array).  Then set new options
 # for this script/function.
-#
 #-----------------------------------------------------------------------
-#
+
 { save_shell_opts; set -u -x; } > /dev/null 2>&1
-#
+
 #-----------------------------------------------------------------------
-#
 # Get the full path to the file in which this script/function is located 
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
-#
 #-----------------------------------------------------------------------
-#
+
 scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
 scrfunc_fn=$( basename "${scrfunc_fp}" )
 scrfunc_dir=$( dirname "${scrfunc_fp}" )
-#
+
 #-----------------------------------------------------------------------
-#
 # Print message indicating entry into script.
-#
 #-----------------------------------------------------------------------
-#
+
 print_info_msg "
 ========================================================================
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs a standalone No-Var cloud
-analysis with FV3 for the specified cycle.
+This is the J-job script for the task that runs a standalone Non-Var cloud
+analysis with RRFS for the specified cycle.
 ========================================================================"
-#
+
 #-----------------------------------------------------------------------
-#
-# Create the working directory under the cycle directory.
-#
+# Obtain unique process id (pid) and create the run directory (DATA).
 #-----------------------------------------------------------------------
-#
+
+export pid=${pid:-$$}
+export envir=${envir:-prod}
+export RUN=${RUN:-rrfs}
+
+export mem_num=m$(echo "${ENSMEM_INDX}")
+
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export analworkname="nonvar_cldanl_spinup"
+  export workname="nonvar_cldanl_spinup"
 else
-  export analworkname="nonvar_cldanl"
+  export workname="nonvar_cldanl"
 fi
 if [ ${MEM_TYPE} = "MEAN" ]; then
-  export workdir="${CYCLE_DIR}/ensmean/${analworkname}"
-  SLASH_ENSMEM_SUBDIR=""
+  export jobid=${RUN}_${workname}_ensmean_${envir}_${cyc}
 else
-  export workdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/${analworkname}"
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    export jobid=${RUN}_${workname}_${mem_num}_${envir}_${cyc}
+  else
+    export jobid=${RUN}_${workname}_${envir}_${cyc}
+  fi
 fi
-rm -fr ${workdir}
-mkdir -p ${workdir}
-cd ${workdir}
-#
+
+export DATA=${DATAROOT}/${jobid}
+rm -fr ${DATA}
+mkdir -p ${DATA}
+cd ${DATA}
+
 #  directory has grid_spec files for restart subdomains
-#
-export gridspec_dir=${NWGES_BASEDIR}/grid_spec
-#
+export gridspec_dir=${GESROOT}/grid_spec
+
 #-----------------------------------------------------------------------
-#
-# create COMOUT/COMIN directory
-#
+# Define COM directories
 #-----------------------------------------------------------------------
-#
+
 if [ ${CYCLE_TYPE} = "spinup" ]; then
-  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
+  if [ "${MEM_TYPE}" = "MEAN" ]; then
+    export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup/ensmean"
+  else
+    export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup/${mem_num}"
+  fi
   export COMIN="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
 else
-  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}${SLASH_ENSMEM_SUBDIR}"
+  if [ "${MEM_TYPE}" = "MEAN" ]; then
+    export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}/ensmean"
+  else
+    export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}/${mem_num}"
+  fi
   export COMIN="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
 fi
 mkdir -p "${COMOUT}"
-#
+
 #-----------------------------------------------------------------------
-#
-# Call the ex-script for this J-job.
-#
+# Execute the script.
 #-----------------------------------------------------------------------
-#
-export pgmout="${workdir}/OUTPUT.$$"
+
+export pgmout="${DATA}/OUTPUT.$$"
 env
 
 $SCRIPTSdir/exrrfs_nonvarcldanl.sh \
-             cycle_dir="${CYCLE_DIR}" \
+             DATAROOT="${DATAROOT}" \
              cycle_type="${CYCLE_TYPE}" \
              mem_type="${MEM_TYPE}" \
-             slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}"
+             mem_num="${mem_num}"
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then
   cat $pgmout
 fi
-#
+
+if [ "${KEEPDATA}" = "NO" ]; then
+  rm -rf ${DATA}
+fi
+
 #-----------------------------------------------------------------------
-#
 # Print exit message.
-#
 #-----------------------------------------------------------------------
-#
+
 print_info_msg "
 ========================================================================
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-#
+
 #-----------------------------------------------------------------------
-#
 # Restore the shell options saved at the beginning of this script/function.
-#
 #-----------------------------------------------------------------------
-#
+
 { restore_shell_opts; } > /dev/null 2>&1
 

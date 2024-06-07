@@ -42,8 +42,7 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs a analysis with FV3 for the
-specified cycle.
+This is the ex-script for the prepstart tasks for the specified cycle.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -55,7 +54,7 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "lbcs_root" "fg_root")
+valid_args=( "lbcs_root" "fg_root")
 process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
@@ -152,8 +151,8 @@ YYJJJ2200000000=`date +"%y%j2200000000" -d "${START_DATE} 1 day ago"`
 #
 #-----------------------------------------------------------------------
 #
-run_blending=${NWGES_BASEDIR}/${cdate_crnt_fhr}/run_blending
-run_ensinit=${NWGES_BASEDIR}/${cdate_crnt_fhr}/run_ensinit
+run_blending=${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/run_blending
+run_ensinit=${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/run_ensinit
 if [[ $CYCLE_SUBTYPE == "ensinit" && -e $run_blending && ! -e $run_ensinit ]]; then
    echo "clean exit ensinit, blending used instead of ensinit."
    exit 0
@@ -167,8 +166,8 @@ fi
 #-----------------------------------------------------------------------
 #
 if [ "${DO_ENSFCST}" = "TRUE" ] &&  [ "${DO_ENKFUPDATE}" = "TRUE" ]; then
-  cd ${modelinputdir}
-  bkpath=${fg_root}/${YYYYMMDDHH}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/DA_OUTPUT  # use DA analysis from DA_OUTPUT
+  cd ${INPUT_DATA}
+  bkpath=${fg_root}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast/DA_OUTPUT  # use DA analysis from DA_OUTPUT
   filelistn="fv_core.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_tracer.res.tile1.nc phy_data.nc sfc_data.nc"
   checkfile=${bkpath}/coupler.res
   n_iolayouty=$(($IO_LAYOUT_Y-1))
@@ -272,7 +271,11 @@ if [ ${YYYYMMDDHH} -eq ${SOIL_SURGERY_time} ] ; then
 fi
 
 if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial files from ics
-    bkpath=${lbcs_root}/$YYYYMMDD$HH${SLASH_ENSMEM_SUBDIR}/ics
+    if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+      bkpath=${lbcs_root}/${RUN}.${PDY}/${cyc}/${mem_num}/ics
+    else
+      bkpath=${lbcs_root}/${RUN}.${PDY}/${cyc}/ics
+    fi
     if [ -r "${bkpath}/gfs_data.tile7.halo0.nc" ]; then
       cp ${bkpath}/gfs_bndy.tile7.000.nc gfs_bndy.tile7.000.nc        
       cp ${bkpath}/gfs_ctrl.nc gfs_ctrl.nc        
@@ -290,7 +293,11 @@ if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial file
     fi
 
 elif [[ $BKTYPE == 3 ]]; then
-    bkpath=${lbcs_root}/$YYYYMMDD$HH${SLASH_ENSMEM_SUBDIR}/ics
+    if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+      bkpath=${lbcs_root}/${RUN}.${PDY}/${cyc}/${mem_num}/ics
+    else
+      bkpath=${lbcs_root}/${RUN}.${PDY}/${cyc}/ics
+    fi
     if [ -r "${bkpath}/coupler.res" ]; then
       cp ${bkpath}/fv_core.res.nc fv_core.res.nc
       cp ${bkpath}/fv_core.res.tile1.nc fv_core.res.tile1.nc
@@ -337,12 +344,12 @@ else
   #  2. Others, looking for the first guess from product forecast (fcst_fv3lam)
   #
   if [ "${CYCLE_TYPE}" = "spinup" ] || [ ${BKTYPE} -eq 2 ]; then
-     fg_restart_dirname=fcst_fv3lam_spinup
+     fg_restart_dirname=forecast_spinup
   else
-     fg_restart_dirname=fcst_fv3lam
+     fg_restart_dirname=forecast
   fi
   #
-  #   let us figure out which backgound is available
+  #   let us figure out which background is available
   #
   #   the restart file from FV3 has a name like: ${YYYYMMDD}.${HH}0000.fv_core.res.tile1.nc
   #   But the restart files for the forecast length has a name like: fv_core.res.tile1.nc
@@ -356,12 +363,18 @@ else
 
   if [ "${CYCLE_SUBTYPE}" = "spinup" ] ; then
     # point to the 0-h cycle for the warm start from the 1 timestep restart files
-    fg_restart_dirname=fcst_fv3lam_ensinit
-    bkpath=${fg_root}/${YYYYMMDDHH}${SLASH_ENSMEM_SUBDIR}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
-    ctrl_bkpath=${ctrlpath}/fcst_fv3lam_spinup/INPUT
+    fg_restart_dirname=forecast_ensinit
+    bkpath=${fg_root}/${RUN}.${PDY}/${cyc}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+    ctrl_bkpath=${ctrlpath}/forecast_spinup/INPUT
   else
     YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
-    bkpath=${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+    YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
+    HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
+    if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+      bkpath=${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+    else
+      bkpath=${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+    fi
 
     n=${DA_CYCLE_INTERV}
     while [[ $n -le 6 ]] ; do
@@ -372,7 +385,13 @@ else
     else
       n=$((n + ${DA_CYCLE_INTERV}))
       YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${n} hours ago" )
-      bkpath=${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+      YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
+      HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
+      if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+        bkpath=${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+      else
+        bkpath=${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+      fi
       print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
     fi
     done
@@ -381,9 +400,15 @@ else
     # spin-up cycle is not success, try to find background from full cycle
     if [ ! -r "${checkfile}" ] && [ ${BKTYPE} -eq 2 ]; then
      print_info_msg "$VERBOSE" "cannot find background from spin-up cycle, try product cycle"
-     fg_restart_dirname=fcst_fv3lam
+     fg_restart_dirname=forecast
      YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
-     bkpath=${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+     YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
+     HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
+     if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+       bkpath=${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+     else
+       bkpath=${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+     fi
 
      restart_prefix="${YYYYMMDD}.${HH}0000."
      n=${DA_CYCLE_INTERV}
@@ -395,7 +420,13 @@ else
        else
          n=$((n + ${DA_CYCLE_INTERV}))
          YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${n} hours ago" )
-         bkpath=${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+         YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
+         HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
+         if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+           bkpath=${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+         else
+           bkpath=${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+         fi
          print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
        fi
      done
@@ -433,9 +464,13 @@ else
       done
     fi
     if [ "${CYCLE_SUBTYPE}" = "spinup" ] ; then
-      cp ${fg_root}/${YYYYMMDDHH}${SLASH_ENSMEM_SUBDIR}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
+      cp ${fg_root}/${RUN}.${PDY}/${cyc}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
     else
-      cp ${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
+      if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+        cp ${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
+      else
+        cp ${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
+      fi
     fi
     if [ "${SAVE_CYCLE_LOG}" = "TRUE" ] ; then
       echo "${YYYYMMDDHH}(${CYCLE_TYPE}): warm start at ${current_time} from ${checkfile} " >> ${EXPTDIR}/log.cycles
@@ -626,7 +661,9 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
 
           offset_hours=${DA_CYCLE_INTERV}
           YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
-          bkpath=${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${surface_file_dir_name}/RESTART
+          YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
+          HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
+          bkpath=${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${surface_file_dir_name}/RESTART
 
           n=${DA_CYCLE_INTERV}
           while [[ $n -le 25 ]] ; do
@@ -645,7 +682,9 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
              n=$((n + ${DA_CYCLE_INTERV}))
              offset_hours=${n}
              YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
-             bkpath=${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${surface_file_dir_name}/RESTART  # cycling, use background from RESTART
+             YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
+             HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
+             bkpath=${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${surface_file_dir_name}/RESTART  # cycling, use background from RESTART
              print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
           done
       fi
@@ -966,7 +1005,13 @@ else
   n=${EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS}
   end_search_hr=$(( 12 + ${EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS} ))
   YYYYMMDDHHmInterv=$(date +%Y%m%d%H -d "${START_DATE} ${n} hours ago")
-  lbcs_path=${lbcs_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/lbcs
+  YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
+  HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    lbcs_path=${lbcs_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/lbcs
+  else
+    lbcs_path=${lbcs_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/lbcs
+  fi
   while [[ $n -le ${end_search_hr} ]] ; do
     last_bdy_time=$(( n + ${FCST_LEN_HRS_thiscycle} ))
     last_bdy=$(printf %3.3i $last_bdy_time)
@@ -977,7 +1022,13 @@ else
     else
       n=$((n + 1))
       YYYYMMDDHHmInterv=$(date +%Y%m%d%H -d "${START_DATE} ${n} hours ago")
-      lbcs_path=${lbcs_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/lbcs
+      YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
+      HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
+      if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+        lbcs_path=${lbcs_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/lbcs
+      else
+        lbcs_path=${lbcs_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/lbcs
+      fi
     fi
   done
 #
@@ -1168,7 +1219,7 @@ if [ "${USE_FVCOM}" = "TRUE" ] && [ ${SFC_CYC} -eq 2 ] ; then
   # Remap the FVCOM output from the 5 lakes onto the RRFS grid
   if [ "${PREP_FVCOM}" = "TRUE" ]; then
     ${USHdir}/fvcom_prep.sh \
-                  modelinputdir="${modelinputdir}" \
+                  INPUT_DATA="${INPUT_DATA}" \
                   FIXLAM="${FIXLAM}" \
                   FVCOM_DIR="${FVCOM_DIR}" \
 	          YYYYJJJHH="${YYYYJJJHH}" \
@@ -1177,9 +1228,9 @@ if [ "${USE_FVCOM}" = "TRUE" ] && [ ${SFC_CYC} -eq 2 ] ; then
                   HH="${HH}"
     export err=$?; err_chk
 
-    cd ${modelinputdir}
+    cd ${INPUT_DATA}
     # FVCOM_DIR needs to be redefined here to find 
-    FVCOM_DIR=${modelinputdir}/fvcom_remap
+    FVCOM_DIR=${INPUT_DATA}/fvcom_remap
     latest_fvcom_file="${FVCOM_DIR}/${FVCOM_FILE}"
     fvcomtime=${YYYYJJJHH}
     fvcom_data_fp="${latest_fvcom_file}_${fvcomtime}.nc"

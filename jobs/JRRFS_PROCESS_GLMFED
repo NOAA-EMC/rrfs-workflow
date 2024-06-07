@@ -50,12 +50,17 @@ export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
 if [ ${CYCLE_TYPE} == "spinup" ]; then
-  export jobid=${RUN}_process_glmfed_spinup_${envir}_${cyc}
+  if [ ${DO_ENSEMBLE} = TRUE ]; then
+    export jobid=${RUN}_process_glmfed_enkf_spinup_${envir}_${cyc}
+  else
+    export jobid=${RUN}_process_glmfed_spinup_${envir}_${cyc}
+  fi
 else
-  export jobid=${RUN}_process_glmfed_${envir}_${cyc}
-fi
-if [ ${DO_ENSEMBLE} = TRUE ]; then
-  export jobid=${RUN}_process_glmfed_enkf_${envir}_${cyc}
+  if [ ${DO_ENSEMBLE} = TRUE ]; then
+    export jobid=${RUN}_process_glmfed_enkf_${envir}_${cyc}
+  else
+    export jobid=${RUN}_process_glmfed_${envir}_${cyc}
+  fi
 fi
 
 export DATA=${DATAROOT}/${jobid}
@@ -65,17 +70,17 @@ cd ${DATA}
 export FIX_GSI=$FIX_GSI
 export OBS_EAST=$GLMFED_EAST_ROOT
 export OBS_WEST=$GLMFED_WEST_ROOT
-export RRFSE_NWGES_BASEDIR=$NWGES
+export RRFSE_NWGES=$GESROOT
 export NUM_ENS_MEMBERS=$NUM_ENS_MEMBERS
 export DA_CYCLE_INTERV=$DA_CYCLE_INTERV
 export MODE=$GLMFED_DATA_MODE
 
-export pgmout="${DATA}/OUTPUT.$$"
-env
-
 #-----------------------------------------------------------------------
 # Execute the script.
 #-----------------------------------------------------------------------
+
+export pgmout="${DATA}/OUTPUT.$$"
+env
 
 python -u ${SCRIPTSdir}/exrrfs_process_glmfed.py
 export err=$?; err_chk

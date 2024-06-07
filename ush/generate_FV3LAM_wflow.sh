@@ -155,7 +155,7 @@ ensmem_indx_name="\"\""
 uscore_ensmem_name="\"\""
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   ensmem_indx_name="mem"
-  uscore_ensmem_name="_mem#${ensmem_indx_name}#"
+  uscore_ensmem_name="_m#${ensmem_indx_name}#"
 fi
 
 settings="\
@@ -195,13 +195,11 @@ settings="\
   'make_ics_tn': ${MAKE_ICS_TN}
   'blend_ics_tn': ${BLEND_ICS_TN}
   'make_lbcs_tn': ${MAKE_LBCS_TN}
-  'add_aerosol_tn': ${ADD_AEROSOL_TN}
   'run_fcst_tn': ${RUN_FCST_TN}
   'run_post_tn': ${RUN_POST_TN}
   'run_prdgen_tn': ${RUN_PRDGEN_TN}
   'analysis_gsi': ${ANALYSIS_GSI_TN}
   'analysis_gsidiag': ${ANALYSIS_GSIDIAG_TN}
-  'analysis_sd_gsi': ${ANALYSIS_SD_GSI_TN}
   'post_anal': ${POSTANAL_TN}
   'observer_gsi_ensmean': ${OBSERVER_GSI_ENSMEAN_TN}
   'observer_gsi': ${OBSERVER_GSI_TN}
@@ -212,12 +210,9 @@ settings="\
   'prep_cyc': ${PREP_CYC_TN}
   'calc_ensmean': ${CALC_ENSMEAN_TN}
   'process_radarref': ${PROCESS_RADAR_REF_TN}
-  'process_lightning': ${PROCESS_LIGHTNING_TN}
   'process_glmfed': ${PROCESS_GLMFED_TN}
   'process_bufr': ${PROCESS_BUFR_TN}
   'process_smoke': ${PROCESS_SMOKE_TN}
-  'process_pm': ${PROCESS_PM_TN}
-  'radar_refl2tten': ${RADAR_REFL2TTEN_TN}
   'cldanl_nonvar': ${CLDANL_NONVAR_TN}
   'run_bufrsnd_tn': ${RUN_BUFRSND_TN}
   'save_restart': ${SAVE_RESTART_TN}
@@ -247,17 +242,14 @@ settings="\
   'nnodes_run_post': ${NNODES_RUN_POST}
   'nnodes_run_prdgen': ${NNODES_RUN_PRDGEN}
   'nnodes_proc_radar': ${NNODES_PROC_RADAR}
-  'nnodes_proc_lightning': ${NNODES_PROC_LIGHTNING}
   'nnodes_proc_glmfed': ${NNODES_PROC_GLMFED}
   'nnodes_proc_bufr': ${NNODES_PROC_BUFR}
   'nnodes_proc_smoke': ${NNODES_PROC_SMOKE}
-  'nnodes_proc_pm': ${NNODES_PROC_PM}
   'nnodes_run_ref2tten': ${NNODES_RUN_REF2TTEN}
   'nnodes_run_nonvarcldanl': ${NNODES_RUN_NONVARCLDANL}
   'nnodes_run_enspost': ${NNODES_RUN_ENSPOST}
   'nnodes_run_bufrsnd': ${NNODES_RUN_BUFRSND}
   'nnodes_save_restart': ${NNODES_SAVE_RESTART}
-  'nnodes_add_aerosol': ${NNODES_ADD_AEROSOL}
 #
 # Number of cores used for a task
 #
@@ -290,17 +282,14 @@ settings="\
   'ppn_run_post': ${PPN_RUN_POST}
   'ppn_run_prdgen': ${PPN_RUN_PRDGEN}
   'ppn_proc_radar': ${PPN_PROC_RADAR}
-  'ppn_proc_lightning': ${PPN_PROC_LIGHTNING}
   'ppn_proc_glmfed': ${PPN_PROC_GLMFED}
   'ppn_proc_bufr': ${PPN_PROC_BUFR}
   'ppn_proc_smoke': ${PPN_PROC_SMOKE}
-  'ppn_proc_pm': ${PPN_PROC_PM}
   'ppn_run_ref2tten': ${PPN_RUN_REF2TTEN}
   'ppn_run_nonvarcldanl': ${PPN_RUN_NONVARCLDANL}
   'ppn_run_enspost': ${PPN_RUN_ENSPOST}
   'ppn_run_bufrsnd': ${PPN_RUN_BUFRSND}
   'ppn_save_restart': ${PPN_SAVE_RESTART}
-  'ppn_add_aerosol': ${PPN_ADD_AEROSOL}
 #
   'tpp_make_ics': ${TPP_MAKE_ICS}
   'tpp_make_lbcs': ${TPP_MAKE_LBCS}
@@ -334,16 +323,13 @@ settings="\
   'wtime_run_enspost': ${WTIME_RUN_ENSPOST}
   'wtime_run_prdgen': ${WTIME_RUN_PRDGEN}
   'wtime_proc_radar': ${WTIME_PROC_RADAR}
-  'wtime_proc_lightning': ${WTIME_PROC_LIGHTNING}
   'wtime_proc_glmfed': ${WTIME_PROC_GLMFED}
   'wtime_proc_bufr': ${WTIME_PROC_BUFR}
   'wtime_proc_smoke': ${WTIME_PROC_SMOKE}
-  'wtime_proc_pm': ${WTIME_PROC_PM}
   'wtime_run_ref2tten': ${WTIME_RUN_REF2TTEN}
   'wtime_run_nonvarcldanl': ${WTIME_RUN_NONVARCLDANL}
   'wtime_run_bufrsnd': ${WTIME_RUN_BUFRSND}
   'wtime_save_restart': ${WTIME_SAVE_RESTART}
-  'wtime_add_aerosol': ${WTIME_ADD_AEROSOL}
 #
 # start time for each task.
 #
@@ -354,10 +340,8 @@ settings="\
   'start_time_late_analysis': ${START_TIME_LATE_ANALYSIS}
   'start_time_conventional': ${START_TIME_CONVENTIONAL}
   'start_time_nsslmosiac': ${START_TIME_NSSLMOSIAC}
-  'start_time_lightningnc': ${START_TIME_LIGHTNINGNC}
   'start_time_proc_glmfed': ${START_TIME_GLMFED}
   'start_time_procsmoke': ${START_TIME_PROCSMOKE}
-  'start_time_procpm': ${START_TIME_PROCPM}
 #
 # Maximum memory for each task.
 #
@@ -371,9 +355,7 @@ settings="\
   'memo_save_input': ${MEMO_SAVE_INPUT}
   'memo_proc_smoke': ${MEMO_PROC_SMOKE}
   'memo_proc_glmfed': ${MEMO_PROC_GLMFED}
-  'memo_proc_pm': ${MEMO_PROC_PM}
   'memo_save_da_output': ${MEMO_SAVE_DA_OUTPUT}
-  'memo_add_aerosol': ${MEMO_ADD_AEROSOL}
 #
 # Maximum number of tries for each task.
 #
@@ -394,16 +376,13 @@ settings="\
   'maxtries_run_post': ${MAXTRIES_RUN_POST}
   'maxtries_run_prdgen': ${MAXTRIES_RUN_PRDGEN}
   'maxtries_process_radarref': ${MAXTRIES_PROCESS_RADARREF}
-  'maxtries_process_lightning': ${MAXTRIES_PROCESS_LIGHTNING}
   'maxtries_proc_glmfed': ${MAXTRIES_PROC_GLMFED}
   'maxtries_process_bufr': ${MAXTRIES_PROCESS_BUFR}
   'maxtries_process_smoke': ${MAXTRIES_PROCESS_SMOKE}
-  'maxtries_process_pm': ${MAXTRIES_PROCESS_PM}
   'maxtries_radar_ref2tten': ${MAXTRIES_RADAR_REF2TTEN}
   'maxtries_cldanl_nonvar': ${MAXTRIES_CLDANL_NONVAR}
   'maxtries_save_restart': ${MAXTRIES_SAVE_RESTART}
   'maxtries_save_da_output': ${MAXTRIES_SAVE_DA_OUTPUT}
-  'maxtries_add_aerosol': ${MAXTRIES_ADD_AEROSOL}
 #
 # Flags that determine whether to run the specific tasks.
 #
@@ -411,7 +390,6 @@ settings="\
   'run_task_make_orog': ${RUN_TASK_MAKE_OROG}
   'run_task_make_sfc_climo': ${RUN_TASK_MAKE_SFC_CLIMO}
   'run_task_run_prdgen': ${RUN_TASK_RUN_PRDGEN}
-  'run_task_add_aerosol': ${RUN_TASK_ADD_AEROSOL}
 #
   'is_rtma':  ${IS_RTMA}
   'fg_rootdir': ${FG_ROOTDIR}
@@ -524,11 +502,9 @@ settings="\
   'do_surface_cycle': ${DO_SURFACE_CYCLE}
   'da_cycle_interval_hrs': ${DA_CYCLE_INTERV}
   'do_nonvar_cldanal': ${DO_NONVAR_CLDANAL}
-  'do_refl2tten': ${DO_REFL2TTEN}
   'do_spinup': ${DO_SPINUP}
   'do_post_spinup': ${DO_POST_SPINUP}
   'do_post_prod': ${DO_POST_PROD}
-  'do_nldn_lght': ${DO_NLDN_LGHT}
   'do_glmfed_da': ${DO_GLM_FED_DA}
   'prep_model_for_fed': ${PREP_MODEL_FOR_FED}
   'regional_ensemble_option': ${regional_ensemble_option}
@@ -551,10 +527,6 @@ settings="\
 #
   'do_smoke_dust': ${DO_SMOKE_DUST}
   'ebb_dcycle'   : ${EBB_DCYCLE}
-#
-# PM related parameters.
-#
-  'do_pm_da': ${DO_PM_DA}
 #
 #  retrospective experiments
 #

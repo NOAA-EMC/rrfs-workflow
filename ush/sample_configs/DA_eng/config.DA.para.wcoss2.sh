@@ -44,7 +44,6 @@ DO_RETRO="FALSE"
 DO_NONVAR_CLDANAL="TRUE"
 DO_ENVAR_RADAR_REF="TRUE"
 DO_SMOKE_DUST="TRUE"
-DO_REFL2TTEN="FALSE"
 RADARREFL_TIMELEVEL=(0)
 FH_DFI_RADAR="0.0,0.25,0.5"
 DO_SOIL_ADJUST="TRUE"
@@ -94,7 +93,13 @@ RESTART_INTERVAL_LONG="1 2"
 ## set up post
 POSTPROC_LEN_HRS="18"
 POSTPROC_LONG_LEN_HRS="60"
-NFHOUT_HF="1"
+
+# default
+OUTPUT_FH="1 -1"
+#set UPP/prdgen for 15 min output
+NFHMAX_HF="18"
+NFHOUT="1"
+NSOUT_MIN="15"
 
 USE_RRFSE_ENS="TRUE"
 CYCL_HRS_HYB_FV3LAM_ENS=("00" "01" "02" "03" "04" "05" "06" "07" "08" "09" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "23")
@@ -113,9 +118,9 @@ regional_ensemble_option=5
 
 . set_rrfs_config.sh
 
-NWGES="${PTMP}/nwges"  # Path to directory NWGES that save boundary, cold initial, restart files
+GESROOT="${PTMP}/nwges"  # Path to directory GESROOT that save boundary, cold initial, restart files
 if [[ ${regional_ensemble_option} == "5" ]]; then
-  RRFSE_NWGES="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}/nwges" # Path to RRFSE directory NWGES that mostly contains ensemble restart files for GSI hybrid.
+  RRFSE_GESROOT="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}/nwges" # Path to RRFSE directory GESROOT that mostly contains ensemble restart files for GSI hybrid.
   NUM_ENS_MEMBERS=30     # FV3LAM ensemble size for GSI hybrid analysis
   CYCL_HRS_PRODSTART_ENS=( "07" "19" )
   DO_ENVAR_RADAR_REF="TRUE"

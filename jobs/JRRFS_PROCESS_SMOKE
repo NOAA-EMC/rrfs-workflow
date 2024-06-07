@@ -62,14 +62,14 @@ export DATA=${DATAROOT}/${jobid}
 mkdir -p ${DATA}
 cd ${DATA}
 
-export gridspec_dir=${NWGES_BASEDIR}/grid_spec
-
-export pgmout="${DATA}/OUTPUT.$$"
-env
+export gridspec_dir=${GESROOT}/grid_spec
 
 #-----------------------------------------------------------------------
 # Execute the script.
 #-----------------------------------------------------------------------
+
+export pgmout="${DATA}/OUTPUT.$$"
+env
 
 $SCRIPTSdir/exrrfs_process_smoke.sh
 export err=$?; err_chk

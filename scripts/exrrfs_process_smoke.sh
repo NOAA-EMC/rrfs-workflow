@@ -53,9 +53,9 @@ This is the script for the task that runs smoke emissions preprocessing.
 #
 #-----------------------------------------------------------------------
 #
-export rave_nwges_dir=${NWGES_DIR}/RAVE_INTP
+export rave_nwges_dir=${GESROOT}/RAVE_INTP
 mkdir -p "${rave_nwges_dir}"
-export hourly_hwpdir=${NWGES_BASEDIR}/HOURLY_HWP
+export hourly_hwpdir=${GESROOT}/HOURLY_HWP
 mkdir -p "${hourly_hwpdir}"
 #
 #-----------------------------------------------------------------------

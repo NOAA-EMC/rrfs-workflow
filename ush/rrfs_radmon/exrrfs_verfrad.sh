@@ -151,7 +151,7 @@ if [[ -s ${radstat} && -s ${biascr} ]]; then
    done
 
    #------------------------------------------------------------------
-   #   Run the child sccripts.
+   #   Run the child scripts.
    #------------------------------------------------------------------
    echo "PDATE === " ${PDATE}
    echo "PDATE SATYPE=== " ${SATYPE}

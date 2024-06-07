@@ -1,116 +1,91 @@
 #!/bin/bash
 
-#
 #-----------------------------------------------------------------------
-#
-# This J-JOB script runs the GSI analysis 
-#
+# RRFS GSIDIAG
 #-----------------------------------------------------------------------
 
-#
 #-----------------------------------------------------------------------
-#
 # Source the variable definitions file and the bash utility functions.
-#
 #-----------------------------------------------------------------------
-#
+
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
 
 date
 export PS4='+ $SECONDS + '
-#
+
 #-----------------------------------------------------------------------
-#
 # Save current shell options (in a global array).  Then set new options
 # for this script/function.
-#
 #-----------------------------------------------------------------------
-#
+
 { save_shell_opts; set -u -x; } > /dev/null 2>&1
-#
+
 #-----------------------------------------------------------------------
-#
 # Get the full path to the file in which this script/function is located 
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
-#
 #-----------------------------------------------------------------------
-#
+
 scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
 scrfunc_fn=$( basename "${scrfunc_fp}" )
 scrfunc_dir=$( dirname "${scrfunc_fp}" )
-#
+
 #-----------------------------------------------------------------------
-#
 # Print message indicating entry into script.
-#
 #-----------------------------------------------------------------------
-#
+
 print_info_msg "
 ========================================================================
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs a analysis with FV3 for 
+This is the J-job script for the task that runs an analysis with RRFS for 
 the specified cycle.
 ========================================================================"
-#
+
 #-----------------------------------------------------------------------
-#
-# Create the working directory under the cycle directory.
-#
+# Obtain unique process id (pid) and create the run directory (DATA).
 #-----------------------------------------------------------------------
-# CYCLE_TYPE is to indicate which type of cycle this job for:
-#   spinup: this job is for spin-up cycles
-#   others(prod): this job is for product cycle
-#
+
+export pid=${pid:-$$}
+export envir=${envir:-prod}
+export RUN=${RUN:-rrfs}
+
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  analworkname="_gsi_spinup"
+  workname="gsi_spinup"
 else
-  analworkname="_gsi"
+  workname="gsi"
 fi
-analworkdir_conv_dbz="${CYCLE_DIR}/anal_conv_dbz${analworkname}"
-if [ -r ${analworkdir_conv_dbz} ] ; then
-  export analworkdir_conv="${analworkdir_conv_dbz}"
-  export analworkdir_dbz="${analworkdir_conv_dbz}"
-else
-  export analworkdir_conv="${CYCLE_DIR}/anal_conv${analworkname}"
-  export analworkdir_dbz="${CYCLE_DIR}/anal_radardbz${analworkname}"
-fi
+
+export jobid=${RUN}_analysis_conv_dbz_${workname}_${envir}_${cyc}
+export DATA="${DATAROOT}/${jobid}"
+rm -rf ${DATA}
+mkdir -p ${DATA}
 
 if [ ! -d "${SATBIAS_DIR}" ]; then
   echo "making satbias_dir directory for cycling bias correction files" 
   mkdir -p ${SATBIAS_DIR}
 fi
-#
+
 #-----------------------------------------------------------------------
-#
-# create COMOUT directory
-#
+# Define COM directories
 #-----------------------------------------------------------------------
-#
+
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
 else
-  if [ "${MEM_TYPE}" = "MEAN" ]; then
-    export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc/ensmean"
-  else
-    export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}${SLASH_ENSMEM_SUBDIR}"
-  fi
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
 fi
 mkdir -p "${COMOUT}"
-#
+
 #-----------------------------------------------------------------------
-#
-# Call the ex-script for this J-job
-#
+# Execute the script.
 #-----------------------------------------------------------------------
-#
-# Below path to pgmout is temporary. It should be modified later
-export pgmout="${COMOUT}/OUTPUT.$$"
+
+export pgmout="${DATA}/OUTPUT.$$"
 env
 
 $SCRIPTSdir/exrrfs_run_gsidiag.sh \

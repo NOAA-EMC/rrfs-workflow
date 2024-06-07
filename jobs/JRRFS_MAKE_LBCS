@@ -163,7 +163,7 @@ export pid=${pid:-$$}
 export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
-export mem_num=m0$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')
+export mem_num=m$(echo "${ENSMEM_INDX}")
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   export jobid=${RUN}_make_lbcs_${mem_num}_${envir}_${cyc}
   export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/lbcs"
@@ -180,12 +180,12 @@ cd ${DATA}/tmp_LBCS_${bcgrp}
 
 mkdir -p "${NWGES_DIR}"
 
-export pgmout="${DATA}/tmp_LBCS_${bcgrp}/OUTPUT.$$"
-env
-
 #-----------------------------------------------------------------------
 # Execute the script.
 #-----------------------------------------------------------------------
+
+export pgmout="${DATA}/tmp_LBCS_${bcgrp}/OUTPUT.$$"
+env
 
 $SCRIPTSdir/exrrfs_make_lbcs.sh \
   use_user_staged_extrn_files="${USE_USER_STAGED_EXTRN_FILES}" \

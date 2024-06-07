@@ -46,7 +46,7 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs EnKF analysis with FV3 for the
+This is the ex-script for the task that runs EnKF analysis with RRFS for the
 specified cycle.
 ========================================================================"
 #
@@ -59,7 +59,7 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "cycle_dir" "NWGES_DIR" "ob_type" )
+valid_args=( "DATAROOT" "GESROOT" "ob_type" )
 process_args valid_args "$@"
 
 ulimit -s unlimited
@@ -126,9 +126,9 @@ l_fv3reg_filecombined=.false.
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-   enkfanal_nwges_dir="${NWGES_DIR}/anal_enkf_spinup"
+   enkfanal_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}_spinup/anal_enkf_spinup"
 else
-   enkfanal_nwges_dir="${NWGES_DIR}/anal_enkf"
+   enkfanal_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}/anal_enkf"
 fi
 mkdir -p ${enkfanal_nwges_dir}
 
@@ -147,18 +147,15 @@ for imem in  $(seq 1 $nens) ensmean; do
 
   if [ "${imem}" = "ensmean" ]; then
     memchar="ensmean"
-    memcharv0="ensmean"
   else
-    memchar="mem"$(printf %04i $imem)
-    memcharv0="mem"$(printf %03i $imem)
+    memchar="m"$(printf %03i $imem)
   fi
-  slash_ensmem_subdir=$memchar
   if [ "${CYCLE_TYPE}" = "spinup" ]; then
-    bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam_spinup/INPUT
-    observer_nwges_dir="${NWGES_DIR}/${slash_ensmem_subdir}/observer_gsi_spinup"
+    bkpath=${DATAROOT}/${RUN}_forecast_spinup_${memchar}_${envir}_${cyc}/INPUT
+    observer_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}_spinup/${memchar}/observer_gsi_spinup"
   else
-    bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam/INPUT
-    observer_nwges_dir="${NWGES_DIR}/${slash_ensmem_subdir}/observer_gsi"
+    bkpath=${DATAROOT}/${RUN}_forecast_${memchar}_${envir}_${cyc}/INPUT
+    observer_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}/${memchar}/observer_gsi"
   fi
 
   ln -snf  ${bkpath}/fv_core.res.tile1.nc      fv3sar_tile1_${memcharv0}_dynvars
@@ -253,7 +250,7 @@ if [ "${DO_ENS_RADDA}" = "TRUE" ]; then
   #   - No $satbias_dir is defined in EnKF.  Thus, it is defined as below.
   #   - No use of radstat file in EnKF
 
-  satbias_dir=$NWGES_DIR/../satbias_ensmean
+  satbias_dir=${GESROOT}/satbias_ensmean
   
   # Searching the satbias files from ${satbias_dir}
   satcounter=1
@@ -456,10 +453,10 @@ if [ $countdiag -gt $nens ]; then
   export err=$?; err_chk
 
   cp ${pgmout} ${enkfanal_nwges_dir}/.
-  if [ ! -d ${NWGES_DIR}/../enkf_diag ]; then
-    mkdir -p ${NWGES_DIR}/../enkf_diag
+  if [ ! -d ${GESROOT}/enkf_diag ]; then
+    mkdir -p ${GESROOT}/enkf_diag
   fi
-  cp ${pgmout} ${NWGES_DIR}/../enkf_diag/${stdout_name}.$vlddate
+  cp ${pgmout} ${GESROOT}/enkf_diag/${stdout_name}.$vlddate
 else
   echo "WARNING: EnKF not running due to lack of ${ob_type} obs for cycle $vlddate !!!"
 fi

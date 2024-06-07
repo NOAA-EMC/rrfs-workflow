@@ -385,11 +385,10 @@ net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
 
 # Include member number with ensemble forecast output
 if [ ${DO_ENSFCST} = "TRUE" ]; then
-  ensmem_num=$(echo "${ensmem_indx}" | awk '{print $1+0}')	  # 1,2,3,4,5 for REFS
-  bgdawp=${DATA}/${net4}.t${cyc}z.m0${ensmem_num}.prslev.f${fhr}.${gridname}grib2
-  bgrd3d=${DATA}/${net4}.t${cyc}z.m0${ensmem_num}.natlev.f${fhr}.${gridname}grib2
-  bgifi=${DATA}/${net4}.t${cyc}z.m0${ensmem_num}.ififip.f${fhr}.${gridname}grib2
-  bgavi=${DATA}/${net4}.t${cyc}z.m0${ensmem_num}.aviati.f${fhr}.${gridname}grib2
+  bgdawp=${DATA}/${net4}.t${cyc}z.${mem_num}.prslev.f${fhr}.${gridname}grib2
+  bgrd3d=${DATA}/${net4}.t${cyc}z.${mem_num}.natlev.f${fhr}.${gridname}grib2
+  bgifi=${DATA}/${net4}.t${cyc}z.${mem_num}.ififip.f${fhr}.${gridname}grib2
+  bgavi=${DATA}/${net4}.t${cyc}z.${mem_num}.aviati.f${fhr}.${gridname}grib2
 else
   bgdawp=${DATA}/${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2
   bgrd3d=${DATA}/${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2

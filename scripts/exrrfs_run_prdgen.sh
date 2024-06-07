@@ -192,12 +192,11 @@ net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
 #
 # Include member number with ensemble forecast output
 if [ ${DO_ENSFCST} = "TRUE" ]; then
-  ensmem_num=$(echo "${ensmem_indx}" | awk '{print $1+0}')   # 1,2,3,4,5 for REFS
-  prslev=${net4}.t${cyc}z.m0${ensmem_num}.prslev.f${fhr}.${gridname}grib2
-  natlev=${net4}.t${cyc}z.m0${ensmem_num}.natlev.f${fhr}.${gridname}grib2
-  ififip=${net4}.t${cyc}z.m0${ensmem_num}.ififip.f${fhr}.${gridname}grib2
-  aviati=${net4}.t${cyc}z.m0${ensmem_num}.aviati.f${fhr}.${gridname}grib2
-  testbed=${net4}.t${cyc}z.m0${ensmem_num}.testbed.f${fhr}.${gridname}grib2
+  prslev=${net4}.t${cyc}z.${mem_num}.prslev.f${fhr}.${gridname}grib2
+  natlev=${net4}.t${cyc}z.${mem_num}.natlev.f${fhr}.${gridname}grib2
+  ififip=${net4}.t${cyc}z.${mem_num}.ififip.f${fhr}.${gridname}grib2
+  aviati=${net4}.t${cyc}z.${mem_num}.aviati.f${fhr}.${gridname}grib2
+  testbed=${net4}.t${cyc}z.${mem_num}.testbed.f${fhr}.${gridname}grib2
 else
   prslev=${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2
   natlev=${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2
@@ -327,9 +326,9 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
       if [ ${DO_ENSFCST} = "TRUE" ]; then
         for task in $(seq ${tasks[count]})
         do
-          cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.m0${ensmem_num}.prslev.f${fhr}.${domain}.grib2
+          cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.f${fhr}.${domain}.grib2
         done
-        wgrib2 ${COMOUT}/rrfs.t${cyc}z.m0${ensmem_num}.prslev.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.m0${ensmem_num}.prslev.f${fhr}.${domain}.grib2.idx
+        wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.f${fhr}.${domain}.grib2.idx
       else
         for task in $(seq ${tasks[count]})
         do
@@ -342,8 +341,8 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
 
     # create testbed files on 3-km CONUS grid
     if [ ${DO_ENSFCST} = "TRUE" ]; then
-      prslev_conus=${net4}.t${cyc}z.m0${ensmem_num}.prslev.f${fhr}.conus.grib2
-      testbed_conus=${net4}.t${cyc}z.m0${ensmem_num}.testbed.f${fhr}.conus.grib2
+      prslev_conus=${net4}.t${cyc}z.${mem_num}.prslev.f${fhr}.conus.grib2
+      testbed_conus=${net4}.t${cyc}z.${mem_num}.testbed.f${fhr}.conus.grib2
     else
       prslev_conus=${net4}.t${cyc}z.prslev.f${fhr}.conus.grib2
       testbed_conus=${net4}.t${cyc}z.testbed.f${fhr}.conus.grib2
