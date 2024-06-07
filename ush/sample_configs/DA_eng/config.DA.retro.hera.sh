@@ -114,8 +114,8 @@ WRTCMP_quantize_nsd="18"
 
 regional_ensemble_option=1   # 5 for RRFS ensemble
 
-EXTRN_MDL_NAME_ICS="FV3GFS"
-EXTRN_MDL_NAME_LBCS="FV3GFS"
+EXTRN_MDL_NAME_ICS="GFS"
+EXTRN_MDL_NAME_LBCS="GFS"
 
 ARCHIVEDIR="/1year/BMC/wrfruc/rrfs_b"
 NCL_REGION="conus"

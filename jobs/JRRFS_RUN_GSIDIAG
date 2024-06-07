@@ -55,12 +55,12 @@ export RUN=${RUN:-rrfs}
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  workname="_gsi_spinup"
+  workname="gsi_spinup"
 else
-  workname="_gsi"
+  workname="gsi"
 fi
 
-export jobid=${RUN}_analysis_conv_dbz${workname}_${envir}_${cyc}
+export jobid=${RUN}_analysis_conv_dbz_${workname}_${envir}_${cyc}
 export DATA="${DATAROOT}/${jobid}"
 rm -rf ${DATA}
 mkdir -p ${DATA}

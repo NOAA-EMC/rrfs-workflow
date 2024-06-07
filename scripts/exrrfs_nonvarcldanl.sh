@@ -151,7 +151,7 @@ fi
 
 if [ ${l_cld_uncertainty} == ".true." ]; then
   # Copy analysis fields into uncertainties - data will be overwritten
-  echo "EXRRFS_NONVARCLDANL.SH: copy tracer file into uncertainty file "
+  echo "exrrfs_nonvarcldanl.sh: copy tracer file into uncertainty file "
   cp ${bkpath}/fv_tracer.res.tile1.nc  ${bkpath}/fv_tracer.unc.tile1.nc
 fi
 
