@@ -150,6 +150,9 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    cld_bld_hgt=0.0
    l_precip_clear_only=.true.
    write_diag_2=.true.
+   SPPINT=72
+   LNDPINT=180
+
 fi
 
 RUN="rrfs_a_c13_ensda"

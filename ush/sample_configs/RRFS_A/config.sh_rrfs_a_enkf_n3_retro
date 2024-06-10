@@ -198,8 +198,8 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    NNODES_RUN_RECENTER="10"
 fi
 
-SPPINT=360
-LNDPINT=360
+SPPINT=72
+LNDPINT=180
 
 RUN_ensctrl="rrfs"
 RUN="enkfrrfs"
