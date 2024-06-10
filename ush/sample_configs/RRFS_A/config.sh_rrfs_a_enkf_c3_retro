@@ -155,7 +155,7 @@ ARCHIVEDIR="/NCEPDEV/emc-meso/1year/emc.lam"
 NCL_REGION="conus"
 MODEL="RRFS_A"
 
-SPPINT=180
+SPPINT=72
 LNDPINT=180
 
 if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
