@@ -80,12 +80,12 @@ rrfsens_phy3:
   gfs_physics_nml:
     imp_physics: 17
     lkm: 1
-    nssl_alphah: 2.62
-    nssl_alphar: 0.63
-    nssl_cccn: 390000000.0
+    nssl_alphah: 2.32
+    nssl_alphar: 0.83
+    nssl_cccn: 550000000.0
     nssl_ccn_on: true
-    nssl_ehlw0: 0.89
-    nssl_ehw0: 0.83
+    nssl_ehlw0: 0.82
+    nssl_ehw0: 0.79
     nssl_hail_on: true
     nssl_invertccn: true
     rrfs_sd :
@@ -126,12 +126,12 @@ rrfsens_phy4:
     isatmedmf: 1
     lkm: 1
     n_var_spp: 3 
-    nssl_alphah: 0.75
-    nssl_alphar: 1.44
-    nssl_cccn: 930000000.0
+    nssl_alphah: 0.95
+    nssl_alphar: 1.38
+    nssl_cccn: 880000000.0
     nssl_ccn_on: true
-    nssl_ehlw0: 0.95
-    nssl_ehw0: 0.59
+    nssl_ehlw0: 0.87
+    nssl_ehw0: 0.62
     nssl_hail_on: true
     nssl_invertccn: true
     satmedmf: true
@@ -175,12 +175,12 @@ rrfsens_phy5:
     imp_physics: 17
     lkm: 1
     n_var_spp: 4
-    nssl_alphah: 1.35
-    nssl_alphar: 2.4
-    nssl_cccn: 1110000000.0
+    nssl_alphah: 1.39
+    nssl_alphar: 2.03
+    nssl_cccn: 990000000.0
     nssl_ccn_on: true
-    nssl_ehlw0: 0.85
-    nssl_ehw0: 0.67
+    nssl_ehlw0: 0.80
+    nssl_ehw0: 0.68
     nssl_hail_on: true
     nssl_invertccn: true
     progsigma: true
