@@ -478,10 +478,10 @@ fi
 
 if [ "${STOCH}" = "TRUE" ]; then
   if [ ${BKTYPE} -eq 0 ] && [ ${DO_ENSFCST_MULPHY} = "TRUE" ]; then
-    ensmem_num=$(echo "${ensmem_indx}" | awk '{print $1+0}')
+    ensmem_num=$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')
     cp ${FV3_NML_RESTART_STOCH_FP}_ensphy${ensmem_num} ${DATA}/${FV3_NML_FN}_base 
     rm -fr ${DATA}/field_table
-    cp ${PARMdir}/field_table.rrfsens_phy${ensmem_indx} ${DATA}/field_table
+    cp ${PARMdir}/field_table.rrfsens_phy${ENSMEM_INDX} ${DATA}/field_table
   else
     cp ${DATA}/${FV3_NML_FN} ${DATA}/${FV3_NML_FN}_base
   fi
@@ -540,7 +540,7 @@ fi
 # copy over diag_table for multiphysics ensemble
 if [ "${STOCH}" = "TRUE" ] && [ ${BKTYPE} -eq 0 ] && [ ${DO_ENSFCST_MULPHY} = "TRUE" ]; then
   rm -fr ${DATA}/diag_table
-  cp ${PARMdir}/diag_table.rrfsens_phy${ensmem_indx} ${DATA}/diag_table
+  cp ${PARMdir}/diag_table.rrfsens_phy${ENSMEM_INDX} ${DATA}/diag_table
 fi
 
 #

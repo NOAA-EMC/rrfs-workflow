@@ -55,7 +55,7 @@ export RUN=${RUN:-rrfs}
 export CDATE="${CDATE}"
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
-export ensmem_indx="${ENSMEM_INDX}"
+export ENSMEM_INDX="${ENSMEM_INDX}"
 
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
