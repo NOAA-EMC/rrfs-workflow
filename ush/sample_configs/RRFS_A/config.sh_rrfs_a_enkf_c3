@@ -130,7 +130,7 @@ envir="para"
 NET="rrfs_a"
 MODEL="rrfs_b"
 
-SPPINT=180
+SPPINT=72
 LNDPINT=180
 if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    NUM_ENS_MEMBERS=30
