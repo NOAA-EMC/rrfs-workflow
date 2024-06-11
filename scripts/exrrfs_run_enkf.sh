@@ -162,22 +162,22 @@ for imem in  $(seq 1 $nens) ensmean; do
     listall_rad="hirs2_n14 msu_n14 sndr_g08 sndr_g11 sndr_g11 sndr_g12 sndr_g13 sndr_g08_prep sndr_g11_prep sndr_g12_prep sndr_g13_prep sndrd1_g11 sndrd2_g11 sndrd3_g11 sndrd4_g11 sndrd1_g15 sndrd2_g15 sndrd3_g15 sndrd4_g15 sndrd1_g13 sndrd2_g13 sndrd3_g13 sndrd4_g13 hirs3_n15 hirs3_n16 hirs3_n17 amsua_n15 amsua_n16 amsua_n17 amsua_n18 amsua_n19 amsua_metop-a amsua_metop-b amsua_metop-c amsub_n15 amsub_n16 amsub_n17 hsb_aqua airs_aqua amsua_aqua imgr_g08 imgr_g11 imgr_g12 pcp_ssmi_dmsp pcp_tmi_trmm conv sbuv2_n16 sbuv2_n17 sbuv2_n18 omi_aura ssmi_f13 ssmi_f14 ssmi_f15 hirs4_n18 hirs4_metop-a mhs_n18 mhs_n19 mhs_metop-a mhs_metop-b mhs_metop-c amsre_low_aqua amsre_mid_aqua amsre_hig_aqua ssmis_las_f16 ssmis_uas_f16 ssmis_img_f16 ssmis_env_f16 iasi_metop-a iasi_metop-b iasi_metop-c seviri_m08 seviri_m09 seviri_m10 seviri_m11 cris_npp atms_npp ssmis_f17 cris-fsr_npp cris-fsr_n20 atms_n20 abi_g16"
     
     if [ "${OB_TYPE}" = "conv" ]; then
-      list_OB_TYPE="conv_ps conv_q conv_t conv_uv conv_pw conv_rw conv_sst"	
+      list_ob_type="conv_ps conv_q conv_t conv_uv conv_pw conv_rw conv_sst"	
 
       if [ "${DO_ENS_RADDA}" = "TRUE" ]; then
-        list_OB_TYPE="$list_OB_TYPE $listall_rad"
+        list_ob_type="$list_ob_type $listall_rad"
       fi	
     fi
 	
     if [ "${OB_TYPE}" = "radardbz" ]; then
       if [ ${DO_GLM_FED_DA} == "TRUE" ]; then
-        list_OB_TYPE="conv_dbz conv_fed"
+        list_ob_type="conv_dbz conv_fed"
       else
-        list_OB_TYPE="conv_dbz"
+        list_ob_type="conv_dbz"
       fi
     fi
-    for sub_OB_TYPE in ${list_OB_TYPE} ; do
-      diagfile0=${observer_nwges_dir}/diag_${sub_OB_TYPE}_ges.${YYYYMMDDHH}.nc4.gz
+    for sub_ob_type in ${list_ob_type} ; do
+      diagfile0=${observer_nwges_dir}/diag_${sub_ob_type}_ges.${YYYYMMDDHH}.nc4.gz
       if [ -s $diagfile0 ]; then
         diagfile=$(basename  $diagfile0)
         cp  $diagfile0  $diagfile
@@ -203,21 +203,21 @@ done
 #
 #----------------------------------------------------------------------
 #
-found_OB_TYPE=0
+found_ob_type=0
 
 CONVINFO=${FIX_GSI}/convinfo.rrfs
 
 if [ "${OB_TYPE}" = "conv" ]; then
   ANAVINFO=${FIX_GSI}/${ENKF_ANAVINFO_FN}
-  found_OB_TYPE=1
+  found_ob_type=1
 fi
 if [ "${OB_TYPE}" = "radardbz" ]; then
   ANAVINFO=${FIX_GSI}/${ENKF_ANAVINFO_DBZ_FN}
   CORRLENGTH=${CORRLENGTH_radardbz}
   LNSIGCUTOFF=${LNSIGCUTOFF_radardbz}
-  found_OB_TYPE=1
+  found_ob_type=1
 fi
-if [ ${found_OB_TYPE} == 0 ]; then
+if [ ${found_ob_type} == 0 ]; then
   err_exit "Unknown observation type: ${OB_TYPE}"
 fi
 stdout_name=stdout.${OB_TYPE}
