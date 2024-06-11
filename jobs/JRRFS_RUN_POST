@@ -51,10 +51,12 @@ on the output files corresponding to a specified forecast hour.
 export pid=${pid:-$$}
 export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
+export CDATE="${CDATE}"
+export fhr="${fhr}"
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
 
-CYCLE_TYPE=${CYCLE_TYPE:-prod}
+export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ ${CYCLE_TYPE} == "spinup" ]; then
   export INPUT_DATA="${DATAROOT}/${RUN}_forecast_spinup_${envir}_${cyc}"
   jobid=${RUN}_post_spinup_${envir}_${cyc}_f${fhr}
@@ -92,12 +94,7 @@ mkdir -p "${COMOUT}"
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_run_post.sh \
-  cdate="${CDATE}" \
-  fhr="${fhr}" \
-  tmmark="${TMMARK}" \
-  cycle_type="${CYCLE_TYPE}" \
-  ensmem_indx="${ENSMEM_INDX}"
+$SCRIPTSdir/exrrfs_run_post.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

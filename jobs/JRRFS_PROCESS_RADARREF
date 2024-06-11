@@ -52,6 +52,9 @@ export pid=${pid:-$$}
 export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
+export CYCLE_TYPE="${CYCLE_TYPE}"
+export RADAR_REF_THINNING="${RADAR_REF_THINNING}"
+
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   export jobid=${RUN}_process_radarref_spinup_${envir}_${cyc}
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
@@ -88,9 +91,7 @@ mkdir -p "${COMOUT}"
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_process_radarref.sh \
-  cycle_type="${CYCLE_TYPE}" \
-  RADAR_REF_THINNING="${RADAR_REF_THINNING}"
+$SCRIPTSdir/exrrfs_process_radarref.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

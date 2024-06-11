@@ -48,30 +48,6 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-# Specify the set of valid argument names for this script/function.
-# Then process the arguments provided to this script/function (which 
-# should consist of a set of name-value pairs of the form arg1="value1",
-# etc).
-#
-#-----------------------------------------------------------------------
-#
-valid_args=( "DATAROOT" "gsi_type" "cycle_type" \
-             "mem_type" "mem_num" \
-             "satbias_dir" "ob_type" )
-process_args valid_args "$@"
-#
-#-----------------------------------------------------------------------
-#
-# For debugging purposes, print out values of arguments passed to this
-# script.  Note that these will be printed out only if VERBOSE is set to
-# TRUE.
-#
-#-----------------------------------------------------------------------
-#
-print_input_args valid_args
-#
-#-----------------------------------------------------------------------
-#
 # Set environment
 #
 #-----------------------------------------------------------------------
@@ -140,12 +116,12 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 #-----------------------------------------------------------------------
 #
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
-if [ "${cycle_type}" = "spinup" ]; then
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
   cycle_tag="_spinup"
 else
   cycle_tag=""
 fi
-if [ "${mem_type}" = "MEAN" ]; then
+if [ "${MEM_TYPE}" = "MEAN" ]; then
   bkpath=${DATAROOT}/${RUN}_calc_ensmean${cycle_tag}_${envir}_${cyc}/INPUT
 else
   if [ ${DO_ENSEMBLE} = "TRUE" ]; then
@@ -168,7 +144,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-if [[ ${BKTYPE} -eq 0 ]] && [[ ${ob_type} =~ "conv" ]] && [[ "${DO_SOIL_ADJUST}" = "TRUE" ]]; then  # warm start
+if [[ ${BKTYPE} -eq 0 ]] && [[ ${OB_TYPE} =~ "conv" ]] && [[ "${DO_SOIL_ADJUST}" = "TRUE" ]]; then  # warm start
   cd ${bkpath}
   if [ "${IO_LAYOUT_Y}" = "1" ]; then
     ln -snf ${fixgriddir}/fv3_grid_spec                fv3_grid_spec

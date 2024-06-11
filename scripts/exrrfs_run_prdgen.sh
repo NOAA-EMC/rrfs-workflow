@@ -48,33 +48,6 @@ the output files corresponding to a specified forecast hour.
 #
 #-----------------------------------------------------------------------
 #
-# Specify the set of valid argument names for this script/function.  
-# Then process the arguments provided to this script/function (which 
-# should consist of a set of name-value pairs of the form arg1="value1",
-# etc).
-#
-#-----------------------------------------------------------------------
-#
-valid_args=( \
-"cdate" \
-"fhr" \
-"tmmark" \
-"ensmem_indx" \
-)
-process_args valid_args "$@"
-#
-#-----------------------------------------------------------------------
-#
-# For debugging purposes, print out values of arguments passed to this
-# script.  Note that these will be printed out only if VERBOSE is set to
-# TRUE.
-#
-#-----------------------------------------------------------------------
-#
-print_input_args valid_args
-#
-#-----------------------------------------------------------------------
-#
 # Set environment
 #
 #-----------------------------------------------------------------------
@@ -122,12 +95,12 @@ esac
 #-----------------------------------------------------------------------
 #
 # Get the cycle date and hour (in formats of yyyymmdd and hh, respectively)
-# from cdate.
+# from CDATE.
 #
 #-----------------------------------------------------------------------
 #
-yyyymmdd=${cdate:0:8}
-hh=${cdate:8:2}
+yyyymmdd=${CDATE:0:8}
+hh=${CDATE:8:2}
 cyc=$hh
 #
 #-----------------------------------------------------------------------
@@ -227,7 +200,7 @@ fi
 # Should the following be done only if on jet??
 
 # Seems like start_date is the same as "$yyyymmdd $hh", where yyyymmdd
-# and hh are calculated above, i.e. start_date is just cdate but with a
+# and hh are calculated above, i.e. start_date is just CDATE but with a
 # space inserted between the dd and hh.  If so, just use "$yyyymmdd $hh"
 # instead of calling sed.
 

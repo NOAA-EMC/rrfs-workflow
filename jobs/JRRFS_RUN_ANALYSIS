@@ -80,6 +80,7 @@ else	# For control member, GSI_TYPE is always ANALYSIS
   export jobid=${RUN}_analysis_${OB_TYPE}_${workname}_${envir}_${cyc}
 fi
 
+export DATAROOT=${DATAROOT}
 export DATA=${DATAROOT}/${jobid}
 rm -fr ${DATA}
 mkdir -p ${DATA}
@@ -101,6 +102,12 @@ if [ "${GSI_TYPE}" = "OBSERVER" ]; then
 fi
 
 export gridspec_dir=${GESROOT}/grid_spec
+
+export GSI_TYPE="${GSI_TYPE}"
+export MEM_TYPE="${MEM_TYPE}"
+export RRFSE_FG_ROOT="${RRFSE_FG_ROOT}"
+export SATBIAS_DIR="${SATBIAS_DIR}"
+export OB_TYPE="${OB_TYPE}"
 
 #-----------------------------------------------------------------------
 # Define COM directories
@@ -132,13 +139,7 @@ mkdir -p "${COMOUT}"
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_run_analysis.sh \
-             dataroot="${DATAROOT}" \
-             gsi_type="${GSI_TYPE}" \
-             mem_type="${MEM_TYPE}" \
-             rrfse_fg_root="${RRFSE_FG_ROOT}" \
-             satbias_dir="${SATBIAS_DIR}" \
-             ob_type="${OB_TYPE}"
+$SCRIPTSdir/exrrfs_run_analysis.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

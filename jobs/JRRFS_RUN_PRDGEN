@@ -52,6 +52,10 @@ export pid=${pid:-$$}
 export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
+export CDATE="${CDATE}"
+export fhr="${fhr}"
+export tmmark="${tmmark}"
+
 export mem_num=m$(echo "${ENSMEM_INDX}")
 
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
@@ -89,11 +93,7 @@ mkdir -p "${COMOUT}"
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_run_prdgen.sh \
-  cdate="${CDATE}" \
-  fhr="${fhr}" \
-  tmmark="${TMMARK}" \
-  ensmem_indx="${ENSMEM_INDX}"
+$SCRIPTSdir/exrrfs_run_prdgen.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

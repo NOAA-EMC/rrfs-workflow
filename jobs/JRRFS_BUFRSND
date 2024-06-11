@@ -52,16 +52,20 @@ export pid=${pid:-$$}
 export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
+export CDATE=${CDATE}
+export fhr=01
+export tmmark=tm00
+
 export mem_num=m$(echo "${ENSMEM_INDX}")
 
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  INPUT_DATA="${DATAROOT}/${RUN}_forecast_${mem_num}_${envir}_${cyc}"
-  NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast"
+  export INPUT_DATA="${DATAROOT}/${RUN}_forecast_${mem_num}_${envir}_${cyc}"
+  export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast"
   export jobid=${RUN}_bufrsnd_${mem_num}_${envir}_${cyc}
 else
-  INPUT_DATA="${DATAROOT}/${RUN}_forecast_${envir}_${cyc}"
-  NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/forecast"
+  export INPUT_DATA="${DATAROOT}/${RUN}_forecast_${envir}_${cyc}"
+  export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/forecast"
   export jobid=${RUN}_bufrsnd_${envir}_${cyc}
 fi
 
@@ -88,18 +92,10 @@ mkdir -p "${COMOUT}"
 # Execute the script.
 #-----------------------------------------------------------------------
 
-fhr=01
-
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_bufrsnd.sh \
-  cdate="${CDATE}" \
-  INPUT_DATA="${INPUT_DATA}" \
-  NWGES_DIR="${NWGES_DIR}" \
-  fhr="${fhr}" \
-  tmmark="${TMMARK}" \
-  cycle_type="${CYCLE_TYPE}"
+$SCRIPTSdir/exrrfs_bufrsnd.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

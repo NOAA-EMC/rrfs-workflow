@@ -17,7 +17,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u -x; } > /dev/null 2>&1
+{ save_shell_opts; set -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -55,30 +55,8 @@ hour zero).
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( \
-"use_user_staged_extrn_files" \
-"extrn_mdl_name" \
-"extrn_mdl_cdate" \
-"extrn_mdl_lbc_spec_fhrs" \
-"extrn_mdl_fns_on_disk" \
-"extrn_mdl_fns_on_disk2" \
-"extrn_mdl_source_dir" \
-"extrn_mdl_source_dir2" \
-"extrn_mdl_staging_dir" \
-"bcgrp" \
-"bcgrpnum" \
-)
+valid_args=( "extrn_mdl_lbc_spec_fhrs" "extrn_mdl_fns_on_disk" "extrn_mdl_fns_on_disk2" )
 process_args valid_args "$@"
-#
-#-----------------------------------------------------------------------
-#
-# For debugging purposes, print out values of arguments passed to this
-# script.  Note that these will be printed out only if VERBOSE is set to
-# TRUE.
-#
-#-----------------------------------------------------------------------
-#
-print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #

@@ -1892,7 +1892,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
       <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
-      <envar><name>TMMARK</name><value>tm00</value></envar>
+      <envar><name>tmmark</name><value>tm00</value></envar>
       <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
@@ -1929,7 +1929,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
       <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
-      <envar><name>TMMARK</name><value>tm00</value></envar>
+      <envar><name>tmmark</name><value>tm00</value></envar>
       <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
@@ -3030,7 +3030,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
-      <envar><name>TMMARK</name><value>tm00</value></envar>
+      <envar><name>tmmark</name><value>tm00</value></envar>
       <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
@@ -3082,7 +3082,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
-      <envar><name>TMMARK</name><value>tm00</value></envar>
+      <envar><name>tmmark</name><value>tm00</value></envar>
       <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
@@ -3133,7 +3133,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
-      <envar><name>TMMARK</name><value>tm00</value></envar>
+      <envar><name>tmmark</name><value>tm00</value></envar>
       <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
@@ -3181,7 +3181,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
-      <envar><name>TMMARK</name><value>tm00</value></envar>
+      <envar><name>tmmark</name><value>tm00</value></envar>
       <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
@@ -3215,7 +3215,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>TMMARK</name><value>tm00</value></envar>
+    <envar><name>tmmark</name><value>tm00</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -3248,7 +3248,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>TMMARK</name><value>tm00</value></envar>
+    <envar><name>tmmark</name><value>tm00</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>

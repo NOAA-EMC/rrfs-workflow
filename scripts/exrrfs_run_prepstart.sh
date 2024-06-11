@@ -47,28 +47,6 @@ This is the ex-script for the prepstart tasks for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-# Specify the set of valid argument names for this script/function.  
-# Then process the arguments provided to this script/function (which 
-# should consist of a set of name-value pairs of the form arg1="value1",
-# etc).
-#
-#-----------------------------------------------------------------------
-#
-valid_args=( "lbcs_root" "fg_root")
-process_args valid_args "$@"
-#
-#-----------------------------------------------------------------------
-#
-# For debugging purposes, print out values of arguments passed to this
-# script.  Note that these will be printed out only if VERBOSE is set to
-# TRUE.
-#
-#-----------------------------------------------------------------------
-#
-print_input_args valid_args
-#
-#-----------------------------------------------------------------------
-#
 # Set environment
 #
 #-----------------------------------------------------------------------
@@ -167,7 +145,7 @@ fi
 #
 if [ "${DO_ENSFCST}" = "TRUE" ] &&  [ "${DO_ENKFUPDATE}" = "TRUE" ]; then
   cd ${INPUT_DATA}
-  bkpath=${fg_root}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast/DA_OUTPUT  # use DA analysis from DA_OUTPUT
+  bkpath=${FG_ROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast/DA_OUTPUT  # use DA analysis from DA_OUTPUT
   filelistn="fv_core.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_tracer.res.tile1.nc phy_data.nc sfc_data.nc"
   checkfile=${bkpath}/coupler.res
   n_iolayouty=$(($IO_LAYOUT_Y-1))
@@ -272,9 +250,9 @@ fi
 
 if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial files from ics
     if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-      bkpath=${lbcs_root}/${RUN}.${PDY}/${cyc}/${mem_num}/ics
+      bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/ics
     else
-      bkpath=${lbcs_root}/${RUN}.${PDY}/${cyc}/ics
+      bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/ics
     fi
     if [ -r "${bkpath}/gfs_data.tile7.halo0.nc" ]; then
       cp ${bkpath}/gfs_bndy.tile7.000.nc gfs_bndy.tile7.000.nc        
@@ -294,9 +272,9 @@ if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial file
 
 elif [[ $BKTYPE == 3 ]]; then
     if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-      bkpath=${lbcs_root}/${RUN}.${PDY}/${cyc}/${mem_num}/ics
+      bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/ics
     else
-      bkpath=${lbcs_root}/${RUN}.${PDY}/${cyc}/ics
+      bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/ics
     fi
     if [ -r "${bkpath}/coupler.res" ]; then
       cp ${bkpath}/fv_core.res.nc fv_core.res.nc
@@ -364,16 +342,16 @@ else
   if [ "${CYCLE_SUBTYPE}" = "spinup" ] ; then
     # point to the 0-h cycle for the warm start from the 1 timestep restart files
     fg_restart_dirname=forecast_ensinit
-    bkpath=${fg_root}/${RUN}.${PDY}/${cyc}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+    bkpath=${FG_ROOT}/${RUN}.${PDY}/${cyc}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
     ctrl_bkpath=${ctrlpath}/forecast_spinup/INPUT
   else
     YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
     YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
     HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
     if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-      bkpath=${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+      bkpath=${FG_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
     else
-      bkpath=${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+      bkpath=${FG_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
     fi
 
     n=${DA_CYCLE_INTERV}
@@ -388,9 +366,9 @@ else
       YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
       HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
       if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-        bkpath=${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+        bkpath=${FG_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
       else
-        bkpath=${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+        bkpath=${FG_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
       fi
       print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
     fi
@@ -405,9 +383,9 @@ else
      YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
      HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
      if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-       bkpath=${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+       bkpath=${FG_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
      else
-       bkpath=${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+       bkpath=${FG_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
      fi
 
      restart_prefix="${YYYYMMDD}.${HH}0000."
@@ -423,9 +401,9 @@ else
          YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
          HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
          if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-           bkpath=${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+           bkpath=${FG_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
          else
-           bkpath=${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+           bkpath=${FG_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
          fi
          print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
        fi
@@ -464,12 +442,12 @@ else
       done
     fi
     if [ "${CYCLE_SUBTYPE}" = "spinup" ] ; then
-      cp ${fg_root}/${RUN}.${PDY}/${cyc}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
+      cp ${FG_ROOT}/${RUN}.${PDY}/${cyc}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
     else
       if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-        cp ${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
+        cp ${FG_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
       else
-        cp ${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
+        cp ${FG_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
       fi
     fi
     if [ "${SAVE_CYCLE_LOG}" = "TRUE" ] ; then
@@ -663,7 +641,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
           YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
           YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
           HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
-          bkpath=${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${surface_file_dir_name}/RESTART
+          bkpath=${FG_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${surface_file_dir_name}/RESTART
 
           n=${DA_CYCLE_INTERV}
           while [[ $n -le 25 ]] ; do
@@ -684,7 +662,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
              YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
              YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
              HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
-             bkpath=${fg_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${surface_file_dir_name}/RESTART  # cycling, use background from RESTART
+             bkpath=${FG_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${surface_file_dir_name}/RESTART  # cycling, use background from RESTART
              print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
           done
       fi
@@ -739,7 +717,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
     surface_file_dir_name=surface
     restart_prefix_find="missing"
     restart_suffix_find="missing"
-    bkpath=${fg_root}/${surface_file_dir_name}
+    bkpath=${FG_ROOT}/${surface_file_dir_name}
 
     restart_prefix=$( date +%Y%m%d.%H0000. -d "${START_DATE}" )
     if [ -r "${bkpath}/${restart_prefix}sfc_data.nc.sync" ]; then
@@ -977,7 +955,7 @@ fi
 if [[ "${NET}" = "RTMA"* ]]; then
     #find a bdry file, make sure it exists and was written out completely.
     for i in $(seq 0 24); do #track back up to 24 cycles to find bdry files
-      lbcDIR="${lbcs_root}/$(date -d "${START_DATE} ${i} hours ago" +"%Y%m%d%H")/lbcs"
+      lbcDIR="${LBCS_ROOT}/$(date -d "${START_DATE} ${i} hours ago" +"%Y%m%d%H")/lbcs"
       if [[  -f ${lbcDIR}/gfs_bndy.tile7.001.nc ]]; then
         age=$(( $(date +%s) - $(date -r ${lbcDIR}/gfs_bndy.tile7.001.nc +%s) ))
         [[ age -gt 300 ]] && break
@@ -1008,9 +986,9 @@ else
   YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
   HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    lbcs_path=${lbcs_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/lbcs
+    lbcs_path=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/lbcs
   else
-    lbcs_path=${lbcs_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/lbcs
+    lbcs_path=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/lbcs
   fi
   while [[ $n -le ${end_search_hr} ]] ; do
     last_bdy_time=$(( n + ${FCST_LEN_HRS_thiscycle} ))
@@ -1025,9 +1003,9 @@ else
       YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
       HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
       if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-        lbcs_path=${lbcs_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/lbcs
+        lbcs_path=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/lbcs
       else
-        lbcs_path=${lbcs_root}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/lbcs
+        lbcs_path=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/lbcs
       fi
     fi
   done
