@@ -53,8 +53,6 @@ export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
-export MEM_TYPE="${MEM_TYPE}"
-export OB_TYPE="${OB_TYPE}"
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
@@ -76,7 +74,6 @@ else
   export jobid=${RUN}_analysis_${OB_TYPE}_${workname}_${envir}_${cyc}
 fi
 
-export DATAROOT=${DATAROOT}
 export DATA=${DATAROOT}/${jobid}
 
 if [[ ! -d ${DATA} ]]; then
@@ -88,7 +85,7 @@ cd ${DATA}
 #  directory has grid_spec files for restart subdomains
 export gridspec_dir=${GESROOT}/grid_spec
 
-export SATBIAS_DIR="${SATBIAS_DIR}"
+export ${OB_TYPE}
 
 #-----------------------------------------------------------------------
 # Define COM directories

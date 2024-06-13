@@ -49,7 +49,7 @@ hour zero).
 # Set the parameters for the external model files.
 #-----------------------------------------------------------------------
 
-extrn_mdl_name="${EXTRN_MDL_NAME}"
+export extrn_mdl_name="${EXTRN_MDL_NAME}"
 sysbasedir="${EXTRN_MDL_SYSBASEDIR_LBCS}"
 gfs_file_fmt="${GFS_FILE_FMT_LBCS}"
 extrn_mdl_memhead="${GEFS_INPUT_SUBDIR}"
@@ -61,7 +61,7 @@ boundary_len_hrs="${BOUNDARY_LEN}"
 hh=${CDATE:8:2}
 yyyymmdd=${CDATE:0:8}
 cdate=$( date --utc --date "${yyyymmdd} ${hh} UTC - ${time_offset_hrs} hours" "+%Y%m%d%H" )
-extrn_mdl_cdate="$cdate"
+export extrn_mdl_cdate="$cdate"
 
 # Starting year, month, day, and hour of the external model forecast.
 yyyy=${cdate:0:4}
@@ -149,8 +149,8 @@ esac
 
 extrn_mdl_sysdir="${sysdir}"
 extrn_mdl_sysdir2="${sysdir2}"
-extrn_mdl_source_dir="${extrn_mdl_sysdir}"
-extrn_mdl_source_dir2="${extrn_mdl_sysdir2}"
+export extrn_mdl_source_dir="${extrn_mdl_sysdir}"
+export extrn_mdl_source_dir2="${extrn_mdl_sysdir2}"
 extrn_mdl_lbc_spec_fhrs_str="( "$( printf "\"%s\" " "${lbc_spec_fhrs[@]}" )")"
 extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
 extrn_mdl_fns_on_disk_str2="( "$( printf "\"%s\" " "${fns_on_disk2[@]}" )")"
@@ -181,13 +181,7 @@ cd ${DATA}/tmp_LBCS_${bcgrp}
 mkdir -p "${NWGES_DIR}"
 
 export use_user_staged_extrn_files="${USE_USER_STAGED_EXTRN_FILES}"
-export extrn_mdl_name="${extrn_mdl_name}"
-export extrn_mdl_cdate="${extrn_mdl_cdate}"
-export extrn_mdl_source_dir="${extrn_mdl_source_dir}"
-export extrn_mdl_source_dir2="${extrn_mdl_source_dir2}"
 export extrn_mdl_staging_dir="${DATA}/tmp_LBCS_${bcgrp}"
-export bcgrp="${bcgrp}"
-export bcgrpnum="${bcgrpnum}"
 
 #-----------------------------------------------------------------------
 # Execute the script.

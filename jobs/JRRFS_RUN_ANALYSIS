@@ -80,7 +80,6 @@ else	# For control member, GSI_TYPE is always ANALYSIS
   export jobid=${RUN}_analysis_${OB_TYPE}_${workname}_${envir}_${cyc}
 fi
 
-export DATAROOT=${DATAROOT}
 export DATA=${DATAROOT}/${jobid}
 rm -fr ${DATA}
 mkdir -p ${DATA}
@@ -103,11 +102,7 @@ fi
 
 export gridspec_dir=${GESROOT}/grid_spec
 
-export GSI_TYPE="${GSI_TYPE}"
-export MEM_TYPE="${MEM_TYPE}"
-export RRFSE_FG_ROOT="${RRFSE_FG_ROOT}"
-export SATBIAS_DIR="${SATBIAS_DIR}"
-export OB_TYPE="${OB_TYPE}"
+export ${OB_TYPE}
 
 #-----------------------------------------------------------------------
 # Define COM directories

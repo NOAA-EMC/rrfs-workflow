@@ -50,7 +50,6 @@ This is the J-job script for the task that saves DA analysis files to nwges.
 export pid=${pid:-$$}
 export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
-export CDATE="${CDATE}"
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
 

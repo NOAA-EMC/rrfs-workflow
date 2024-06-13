@@ -53,8 +53,6 @@ export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
-export MEM_TYPE=${MEM_TYPE}
-export CYCLE_TYPE=${CYCLE_TYPE}
 
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   export workname="nonvar_cldanl_spinup"
@@ -71,7 +69,6 @@ else
   fi
 fi
 
-export DATAROOT=${DATAROOT}
 export DATA=${DATAROOT}/${jobid}
 rm -fr ${DATA}
 mkdir -p ${DATA}

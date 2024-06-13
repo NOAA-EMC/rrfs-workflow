@@ -52,7 +52,6 @@ export pid=${pid:-$$}
 export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
-export CDATE=${CDATE}
 export fhr=01
 export tmmark=tm00
 

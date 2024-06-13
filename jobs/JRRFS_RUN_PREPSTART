@@ -79,9 +79,6 @@ cd ${INPUT_DATA}
 export gridspec_dir=${GESROOT}/grid_spec
 export MAILTO="${MAILTO:-}"
 
-export LBCS_ROOT="${LBCS_ROOT}"
-export FG_ROOT="${FG_ROOT}"
-
 #-----------------------------------------------------------------------
 # Define COM directories
 #-----------------------------------------------------------------------

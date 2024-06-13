@@ -52,7 +52,6 @@ export pid=${pid:-$$}
 export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
-export OB_TYPE="${OB_TYPE}"
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   export jobid=${RUN}_enkfupdt_${OB_TYPE}_spinup_${envir}_${cyc}
@@ -62,8 +61,6 @@ else
   export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
 fi
 
-export GESROOT="${GESROOT}"
-export DATAROOT="${DATAROOT}"
 export DATA=${DATAROOT}/${jobid}
 rm -fr ${DATA}
 mkdir -p ${DATA}

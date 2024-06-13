@@ -52,7 +52,6 @@ export pid=${pid:-$$}
 export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
-export GSI_TYPE="${GSI_TYPE}"
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
@@ -70,7 +69,6 @@ if [ ! -d "${SATBIAS_DIR}" ]; then
   echo "making satbias_dir directory for cycling bias correction files" 
   mkdir -p ${SATBIAS_DIR}
 fi
-export SATBIAS_DIR="${SATBIAS_DIR}"
 
 #-----------------------------------------------------------------------
 # Define COM directories
