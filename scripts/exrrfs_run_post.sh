@@ -398,6 +398,33 @@ else
   bgavi=${postprd_dir}/${net4}.t${cyc}z.aviati.f${fhr}.${gridname}grib2
 fi
 
+# do bucket here?  How know what the old time is?
+#
+if [  ${post_fhr} -le 18 ]
+then
+echo thinking about it for post_fhr $post_fhr
+
+
+ls -l $EXECdir/rrfs_bucket.exe
+
+len_fhr=${#fhr}
+
+if [ ${len_fhr} -eq 9 ]; then
+  post_min=${fhr:4:2}
+
+  if [ $post_min -eq 45 ]; then
+	  post_min_old=30
+  elif [ $post_min -eq 30 ]; then
+	  post_min_old=15
+
+else
+  echo not subhourly time
+  post_min_old=45
+  let post_fhr=post_fhr-1
+fi
+
+fi #post_fhr
+
 if [ -f PRSLEV.GrbF${post_fhr} ]; then
   wgrib2 PRSLEV.GrbF${post_fhr} -set center 7 -grib ${bgdawp} >>$pgmout 2>>errfile
 fi
