@@ -150,7 +150,7 @@ envir="para"
 NET="rrfs_a"
 MODEL="RRFS_A"
 
-SPPINT=72
+SPPINT=36
 LNDPINT=180
 
 if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
