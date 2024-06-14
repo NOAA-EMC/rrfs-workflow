@@ -97,10 +97,10 @@ Directories and files.
 <!ENTITY OBSPATH_PM               "{{ obspath_pm }}">
 <!ENTITY DATAROOT                 "{{ dataroot }}">
 <!ENTITY GESROOT                  "{{ gesroot }}">
+<!ENTITY COMROOT                  "{{ comroot }}">
 <!ENTITY ENSCTRL_DATAROOT         "{{ ensctrl_dataroot }}">
 <!ENTITY ENSCTRL_GESROOT          "{{ ensctrl_gesroot }}">
-<!ENTITY ENSCTRL_COMOUT_BASEDIR   "{{ ensctrl_comout_basedir }}">
-<!ENTITY ENSCTRL_COMOUT_DIR       "{{ ensctrl_comout_dir }}">
+<!ENTITY ENSCTRL_COMOUT           "{{ ensctrl_comout }}">
 <!ENTITY RRFSE_FG_ROOT            "{{ rrfse_gesroot }}">
 {%- if is_rtma %}
 <!ENTITY FG_ROOT                  "{{ fg_rootdir }}">
@@ -522,6 +522,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
     <envar><name>RADAR_REF_THINNING</name><value>{{ radar_ref_thinning }}</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
         
@@ -591,6 +592,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
@@ -966,6 +968,7 @@ MODULES_RUN_TASK_FP script.
  {%- endif %}
     <envar><name>ENSMEM_INDX</name><value><cyclestr>{{ ensmem_indx_name }}</cyclestr></value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -1134,6 +1137,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_SUBTYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>{{ ensmem_indx_name }}</cyclestr></value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>ENSCTRL_DATAROOT</name><value>&ENSCTRL_DATAROOT;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
@@ -1145,7 +1149,7 @@ MODULES_RUN_TASK_FP script.
        <taskdep task="&MAKE_ICS_TN;_m#mem#"/>
        {% endif %}
        <taskdep task="&SAVE_RESTART_TN;_ensinit{{ uscore_ensmem_name }}"/>
-       <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
+       <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT;/@H_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
       </and>
     </dependency>
 
@@ -1176,6 +1180,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>ENSCTRL_DATAROOT</name><value>&ENSCTRL_DATAROOT;</value></envar>
     <envar><name>ENSCTRL_GESROOT</name><value><cyclestr>&ENSCTRL_GESROOT;</cyclestr></value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
@@ -1186,7 +1191,7 @@ MODULES_RUN_TASK_FP script.
           <taskdep task="&PREP_CYC_SPINUP_TN;_ensinit_mem{{ "%04d" % m }}"/>
         {%- endif %}
         {%- endfor %}
-        <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
+        <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT;/@H_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
       </and>
     </dependency>
   </task>
@@ -1215,6 +1220,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -1248,6 +1254,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>GSI_TYPE</name><value><cyclestr>OBSERVER</cyclestr></value></envar>
     <envar><name>MEM_TYPE</name><value><cyclestr>MEAN</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
@@ -1298,6 +1305,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</cyclestr></value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</cyclestr></value></envar>
     <envar><name>GSI_TYPE</name><value><cyclestr>OBSERVER</cyclestr></value></envar>
     <envar><name>MEM_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
@@ -1338,6 +1346,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>OB_TYPE</name><value>conv</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
@@ -1372,6 +1381,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>OB_TYPE</name><value>radardbz</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
@@ -1422,6 +1432,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>MEM_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -1491,6 +1502,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>RRFSE_FG_ROOT</name><value><cyclestr>&RRFSE_FG_ROOT;</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>GSI_TYPE</name><value><cyclestr>ANALYSIS</cyclestr></value></envar>
@@ -1563,6 +1575,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>RRFSE_FG_ROOT</name><value><cyclestr>&RRFSE_FG_ROOT;</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>GSI_TYPE</name><value><cyclestr>ANALYSIS</cyclestr></value></envar>
@@ -1604,7 +1617,8 @@ MODULES_RUN_TASK_FP script.
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
-    <envar><name>GESROOT</name><value>GESROOT;</value></envar>
+    <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>RRFSE_FG_ROOT</name><value><cyclestr>&RRFSE_FG_ROOT;</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>GSI_TYPE</name><value><cyclestr>ANALYSIS</cyclestr></value></envar>
@@ -1654,6 +1668,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>GSI_TYPE</name><value><cyclestr>ANALYSIS</cyclestr></value></envar>
     <envar><name>MEM_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
@@ -1700,6 +1715,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>MEM_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -1888,6 +1904,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
       <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+      <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
@@ -1925,6 +1942,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
+      <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
@@ -1985,6 +2003,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>{{ ensmem_indx_name }}</cyclestr></value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -2118,6 +2137,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -2152,6 +2172,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>GSI_TYPE</name><value><cyclestr>OBSERVER</cyclestr></value></envar>
     <envar><name>MEM_TYPE</name><value><cyclestr>MEAN</cyclestr></value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>{{ ensmem_indx_name }}</cyclestr></value></envar>
@@ -2204,6 +2225,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>GSI_TYPE</name><value><cyclestr>OBSERVER</cyclestr></value></envar>
     <envar><name>MEM_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>{{ ensmem_indx_name }}</cyclestr></value></envar>
@@ -2246,6 +2268,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>OB_TYPE</name><value>conv</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
@@ -2279,6 +2302,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>OB_TYPE</name><value>radardbz</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
@@ -2329,6 +2353,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>RRFSE_FG_ROOT</name><value><cyclestr>&RRFSE_FG_ROOT;</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
     <envar><name>GSI_TYPE</name><value><cyclestr>ANALYSIS</cyclestr></value></envar>
@@ -2409,6 +2434,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>RRFSE_FG_ROOT</name><value><cyclestr>&RRFSE_FG_ROOT;</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
     <envar><name>GSI_TYPE</name><value><cyclestr>ANALYSIS</cyclestr></value></envar>
@@ -2451,6 +2477,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>RRFSE_FG_ROOT</name><value><cyclestr>&RRFSE_FG_ROOT;</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
     <envar><name>GSI_TYPE</name><value><cyclestr>ANALYSIS</cyclestr></value></envar>
@@ -2500,6 +2527,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
     <envar><name>GSI_TYPE</name><value><cyclestr>ANALYSIS</cyclestr></value></envar>
     <envar><name>MEM_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
@@ -2554,6 +2582,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
     <envar><name>MEM_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -2627,6 +2656,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>ENSCTRL_DATAROOT</name><value>&ENSCTRL_DATAROOT;</value></envar>
     <envar><name>ENSCTRL_GESROOT</name><value>&ENSCTRL_GESROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>{{ ensmem_indx_name }}</cyclestr></value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
@@ -2653,8 +2683,8 @@ MODULES_RUN_TASK_FP script.
           <taskdep task="&RUN_ENKFUPDT_TN;"/>
           {%- endif %}
           <or>
-          <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H/nonvarcldanl_complete.txt</cyclestr></datadep>
-          <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT_DIR;/@H_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT;/@H/nonvarcldanl_complete.txt</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT;/@H_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
           </or>
          </and>
         {% endif %}
@@ -3027,6 +3057,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
       <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+      <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
@@ -3079,6 +3110,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
       <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+      <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
@@ -3130,6 +3162,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
+      <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
@@ -3178,6 +3211,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
+      <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
@@ -3213,6 +3247,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>tmmark</name><value>tm00</value></envar>
@@ -3246,6 +3281,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>tmmark</name><value>tm00</value></envar>

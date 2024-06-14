@@ -93,18 +93,19 @@ export ${OB_TYPE}
 
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup/${mem_num}"
+    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup/${mem_num})}
   else
-    export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
   fi
 else
   if [ "${MEM_TYPE}" = "MEAN" ]; then
-    export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc/ensmean"
+    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/ensmean)}
   else
     if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-      export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}/${mem_num}"
+      export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/${mem_num})}
     else
       export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
+      export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
     fi
   fi
 fi

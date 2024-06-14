@@ -83,18 +83,18 @@ export gridspec_dir=${GESROOT}/grid_spec
 
 if [ ${CYCLE_TYPE} = "spinup" ]; then
   if [ "${MEM_TYPE}" = "MEAN" ]; then
-    export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup/ensmean"
+    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup/ensmean)}
   else
-    export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup/${mem_num}"
+    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup/${mem_num})}
   fi
-  export COMIN="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+  export COMIN=${COMIN:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
 else
   if [ "${MEM_TYPE}" = "MEAN" ]; then
-    export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}/ensmean"
+    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/ensmean)}
   else
-    export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}/${mem_num}"
+    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
   fi
-  export COMIN="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
+  export COMIN=${COMIN:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
 fi
 mkdir -p "${COMOUT}"
 
