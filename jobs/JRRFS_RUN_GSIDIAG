@@ -88,33 +88,30 @@ mkdir -p "${COMOUT}"
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_run_gsidiag.sh \
-             gsi_type="${GSI_TYPE}" \
-             mem_type="${MEM_TYPE}" \
-             satbias_dir="${SATBIAS_DIR}"
+$SCRIPTSdir/exrrfs_run_gsidiag.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then
   cat $pgmout
 fi
-#
+
+if [ "${KEEPDATA}" = "NO" ]; then
+  rm -rf ${DATA}
+fi
+
 #-----------------------------------------------------------------------
-#
 # Print exit message.
-#
 #-----------------------------------------------------------------------
-#
+
 print_info_msg "
 ========================================================================
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-#
+
 #-----------------------------------------------------------------------
-#
 # Restore the shell options saved at the beginning of this script/function.
-#
 #-----------------------------------------------------------------------
-#
+
 { restore_shell_opts; } > /dev/null 2>&1
 

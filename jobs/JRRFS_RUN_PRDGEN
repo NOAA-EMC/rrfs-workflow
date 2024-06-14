@@ -75,10 +75,10 @@ cd ${DATA}
 
 export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc"
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
 fi
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  COMOUT=${COMOUT}/${mem_num}
+  export COMOUT=${COMOUT}/${mem_num}
 fi
 mkdir -p "${COMOUT}"
 
@@ -89,11 +89,7 @@ mkdir -p "${COMOUT}"
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_run_prdgen.sh \
-  cdate="${CDATE}" \
-  fhr="${fhr}" \
-  tmmark="${TMMARK}" \
-  ensmem_indx="${ENSMEM_INDX}"
+$SCRIPTSdir/exrrfs_run_prdgen.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

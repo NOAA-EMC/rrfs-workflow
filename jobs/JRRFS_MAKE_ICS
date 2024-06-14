@@ -58,7 +58,7 @@ ic_spec_fhrs=$(( 0 + time_offset_hrs ))
 hh=${CDATE:8:2}
 yyyymmdd=${CDATE:0:8}
 cdate=$( date --utc --date "${yyyymmdd} ${hh} UTC - ${time_offset_hrs} hours" "+%Y%m%d%H" )
-extrn_mdl_cdate="$cdate"
+export extrn_mdl_cdate="$cdate"
 
 # Starting year, month, day, and hour of the external model forecast.
 yyyy=${cdate:0:4}
@@ -113,7 +113,6 @@ case "${extrn_mdl_name}" in
 esac
 
 extrn_mdl_sysdir="${sysdir}"
-extrn_mdl_source_dir="${extrn_mdl_sysdir}"
 extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
 
 #-----------------------------------------------------------------------
@@ -141,6 +140,10 @@ cd ${DATA}/tmp_ICS
 
 mkdir -p "${NWGES_DIR}"
 
+export use_user_staged_extrn_files="${USE_USER_STAGED_EXTRN_FILES}"
+export extrn_mdl_source_dir="${extrn_mdl_sysdir}"
+export extrn_mdl_staging_dir="${DATA}/tmp_ICS"
+
 #-----------------------------------------------------------------------
 # Execute the script.
 #-----------------------------------------------------------------------
@@ -149,11 +152,7 @@ export pgmout="${DATA}/tmp_ICS/OUTPUT.$$"
 env
 
 $SCRIPTSdir/exrrfs_make_ics.sh \
-  use_user_staged_extrn_files="${USE_USER_STAGED_EXTRN_FILES}" \
-  extrn_mdl_cdate="${extrn_mdl_cdate}" \
-  extrn_mdl_fns_on_disk="${extrn_mdl_fns_on_disk_str}" \
-  extrn_mdl_source_dir="${extrn_mdl_source_dir}" \
-  extrn_mdl_staging_dir="${DATA}/tmp_ICS"
+  extrn_mdl_fns_on_disk="${extrn_mdl_fns_on_disk_str}"
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

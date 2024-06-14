@@ -105,11 +105,7 @@ mkdir -p "${COMOUT}"
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_nonvarcldanl.sh \
-             DATAROOT="${DATAROOT}" \
-             cycle_type="${CYCLE_TYPE}" \
-             mem_type="${MEM_TYPE}" \
-             mem_num="${mem_num}"
+$SCRIPTSdir/exrrfs_nonvarcldanl.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

@@ -88,9 +88,7 @@ mkdir -p "${COMOUT}"
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_process_radarref.sh \
-  cycle_type="${CYCLE_TYPE}" \
-  RADAR_REF_THINNING="${RADAR_REF_THINNING}"
+$SCRIPTSdir/exrrfs_process_radarref.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

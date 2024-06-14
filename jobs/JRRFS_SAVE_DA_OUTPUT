@@ -80,10 +80,7 @@ cd "${NWGES_DIR}/DA_OUTPUT"
 export pgmout="${NWGES_DIR}/DA_OUTPUT/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_save_da_output.sh \
-  cdate="${CDATE}" \
-  DATA="${DATA}" \
-  NWGES_DIR="${NWGES_DIR}"
+$SCRIPTSdir/exrrfs_save_da_output.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

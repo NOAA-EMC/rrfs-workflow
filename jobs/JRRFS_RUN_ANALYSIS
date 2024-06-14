@@ -102,6 +102,8 @@ fi
 
 export gridspec_dir=${GESROOT}/grid_spec
 
+export ${OB_TYPE}
+
 #-----------------------------------------------------------------------
 # Define COM directories
 #-----------------------------------------------------------------------
@@ -132,13 +134,7 @@ mkdir -p "${COMOUT}"
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_run_analysis.sh \
-             dataroot="${DATAROOT}" \
-             gsi_type="${GSI_TYPE}" \
-             mem_type="${MEM_TYPE}" \
-             rrfse_fg_root="${RRFSE_FG_ROOT}" \
-             satbias_dir="${SATBIAS_DIR}" \
-             ob_type="${OB_TYPE}"
+$SCRIPTSdir/exrrfs_run_analysis.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

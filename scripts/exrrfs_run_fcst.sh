@@ -48,40 +48,13 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-# Specify the set of valid argument names for this script/function.  
-# Then process the arguments provided to this script/function (which 
-# should consist of a set of name-value pairs of the form arg1="value1",
-# etc).
-#
-#-----------------------------------------------------------------------
-#
-valid_args=( \
-"cdate" \
-"cycle_type" \
-"cycle_subtype" \
-"ensmem_indx" \
-)
-process_args valid_args "$@"
-#
-#-----------------------------------------------------------------------
-#
-# For debugging purposes, print out values of arguments passed to this
-# script.  Note that these will be printed out only if VERBOSE is set to
-# TRUE.
-#
-#-----------------------------------------------------------------------
-#
-print_input_args valid_args
-#
-#-----------------------------------------------------------------------
-#
 # Determine early exit for running blending vs 1 time step ensinit.
 #
 #-----------------------------------------------------------------------
 #
 run_blending=${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/run_blending
 run_ensinit=${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/run_ensinit
-if [[ ${cycle_subtype} == "ensinit" && -e $run_blending && ! -e $run_ensinit ]]; then
+if [[ ${CYCLE_SUBTYPE} == "ensinit" && -e $run_blending && ! -e $run_ensinit ]]; then
    echo "clean exit ensinit, blending used instead of ensinit."
    exit 0
 fi
@@ -379,9 +352,9 @@ fi
 if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then
   ln -snf  ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/dust12m_data.nc  ${DATA}/INPUT/dust12m_data.nc
   ln -snf  ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/emi_data.nc      ${DATA}/INPUT/emi_data.nc
-  yyyymmddhh=${cdate:0:10}
+  yyyymmddhh=${CDATE:0:10}
   echo ${yyyymmddhh}
-  if [ ${cycle_type} = "spinup" ]; then
+  if [ ${CYCLE_TYPE} = "spinup" ]; then
     smokefile=${GESROOT}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00_spinup.nc
   else
     smokefile=${GESROOT}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc
@@ -505,20 +478,20 @@ fi
 
 if [ "${STOCH}" = "TRUE" ]; then
   if [ ${BKTYPE} -eq 0 ] && [ ${DO_ENSFCST_MULPHY} = "TRUE" ]; then
-    ensmem_num=$(echo "${ensmem_indx}" | awk '{print $1+0}')
+    ensmem_num=$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')
     cp ${FV3_NML_RESTART_STOCH_FP}_ensphy${ensmem_num} ${DATA}/${FV3_NML_FN}_base 
     rm -fr ${DATA}/field_table
-    cp ${PARMdir}/field_table.rrfsens_phy${ensmem_indx} ${DATA}/field_table
+    cp ${PARMdir}/field_table.rrfsens_phy${ENSMEM_INDX} ${DATA}/field_table
   else
     cp ${DATA}/${FV3_NML_FN} ${DATA}/${FV3_NML_FN}_base
   fi
-  set_FV3nml_ens_stoch_seeds cdate="$cdate"
+  set_FV3nml_ens_stoch_seeds cdate="$CDATE"
   export err=$?
   if [ $err -ne 0 ]; then
     err_exit "\
  Call to function to create the ensemble-based namelist for the current 
- cycle's (cdate) run directory (DATA) failed: 
-   cdate = \"${cdate}\"
+ cycle's (CDATE) run directory (DATA) failed: 
+   cdate = \"${CDATE}\"
    DATA = \"${DATA}\""
   fi
 fi
@@ -532,9 +505,9 @@ fi
 #
 $USHdir/create_model_configure_file.py \
   --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
-  --cdate "${cdate}" \
-  --cycle_type "${cycle_type}" \
-  --cycle_subtype "${cycle_subtype}" \
+  --cdate "${CDATE}" \
+  --cycle_type "${CYCLE_TYPE}" \
+  --cycle_subtype "${CYCLE_SUBTYPE}" \
   --stoch "${STOCH}" \
   --run-dir "${DATA}" \
   --fhrot "${FHROT}" \
@@ -543,7 +516,7 @@ $USHdir/create_model_configure_file.py \
 export err=$?
 if [ $err -ne 0 ]; then
   err_exit "Call to function to create the model_configure file for
-the current cycle's (cdate) run directory (DATA) failed:
+the current cycle's (CDATE) run directory (DATA) failed:
   DATA = \"${DATA}\""
 fi
 #
@@ -560,14 +533,14 @@ $USHdir/create_diag_table_file.py \
 export err=$?
 if [ $err -ne 0 ]; then
   err_exit "Call to function to create the diag_table file for
-the current cycle's (cdate) run directory (DATA) failed:
+the current cycle's (CDATE) run directory (DATA) failed:
   DATA = \"${DATA}\""
 fi
 
 # copy over diag_table for multiphysics ensemble
 if [ "${STOCH}" = "TRUE" ] && [ ${BKTYPE} -eq 0 ] && [ ${DO_ENSFCST_MULPHY} = "TRUE" ]; then
   rm -fr ${DATA}/diag_table
-  cp ${PARMdir}/diag_table.rrfsens_phy${ensmem_indx} ${DATA}/diag_table
+  cp ${PARMdir}/diag_table.rrfsens_phy${ENSMEM_INDX} ${DATA}/diag_table
 fi
 
 #
@@ -584,7 +557,7 @@ $USHdir/create_ufs_configure_file.py \
 export err=$?
 if [ $err -ne 0 ]; then
   err_exit "Call to function to create the UFS configuration file for
-the current cycle's (cdate) run directory (DATA) failed:
+the current cycle's (CDATE) run directory (DATA) failed:
   DATA = \"${DATA}\""
 fi
 #

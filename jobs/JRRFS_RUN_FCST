@@ -55,8 +55,9 @@ export RUN=${RUN:-rrfs}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
 
-CYCLE_TYPE=${CYCLE_TYPE:-prod}
-CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
+export CYCLE_TYPE=${CYCLE_TYPE:-prod}
+export CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
+
 if [ ${CYCLE_TYPE} == "spinup" ]; then
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then	# EnKF has spinup forecasts
     export jobid=${RUN}_forecast_spinup_${mem_num}_${envir}_${cyc}
@@ -92,11 +93,7 @@ cd ${DATA}
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_run_fcst.sh \
-  cdate="${CDATE}" \
-  cycle_type="${CYCLE_TYPE}" \
-  cycle_subtype="${CYCLE_SUBTYPE}" \
-  ensmem_indx="${ENSMEM_INDX}"
+$SCRIPTSdir/exrrfs_run_fcst.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

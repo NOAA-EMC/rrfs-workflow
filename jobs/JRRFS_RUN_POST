@@ -54,7 +54,7 @@ export RUN=${RUN:-rrfs}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
 
-CYCLE_TYPE=${CYCLE_TYPE:-prod}
+export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ ${CYCLE_TYPE} == "spinup" ]; then
   export INPUT_DATA="${DATAROOT}/${RUN}_forecast_spinup_${envir}_${cyc}"
   jobid=${RUN}_post_spinup_${envir}_${cyc}_f${fhr}
@@ -78,10 +78,10 @@ cd ${DATA}
 
 export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc"
 if [ ${CYCLE_TYPE} = "spinup" ]; then
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
 fi
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  COMOUT=${COMOUT}/${mem_num}
+  export COMOUT=${COMOUT}/${mem_num}
 fi
 mkdir -p "${COMOUT}"
 
@@ -92,12 +92,7 @@ mkdir -p "${COMOUT}"
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_run_post.sh \
-  cdate="${CDATE}" \
-  fhr="${fhr}" \
-  tmmark="${TMMARK}" \
-  cycle_type="${CYCLE_TYPE}" \
-  ensmem_indx="${ENSMEM_INDX}"
+$SCRIPTSdir/exrrfs_run_post.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

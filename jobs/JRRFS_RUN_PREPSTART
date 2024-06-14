@@ -99,9 +99,7 @@ mkdir -p "${COMOUT}"
 export pgmout="${INPUT_DATA}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_run_prepstart.sh \
-             lbcs_root="${LBCS_ROOT}" \
-             fg_root="${FG_ROOT}"
+$SCRIPTSdir/exrrfs_run_prepstart.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

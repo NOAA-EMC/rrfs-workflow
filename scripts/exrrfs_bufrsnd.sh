@@ -47,35 +47,6 @@ This is the ex-script for the task that runs the bufr-sounding
 #
 #-----------------------------------------------------------------------
 #
-# Specify the set of valid argument names for this script/function.  
-# Then process the arguments provided to this script/function (which 
-# should consist of a set of name-value pairs of the form arg1="value1",
-# etc).
-#
-#-----------------------------------------------------------------------
-#
-valid_args=( \
-"cdate" \
-"INPUT_DATA" \
-"NWGES_DIR" \
-"fhr" \
-"tmmark" \
-"cycle_type" \
-)
-process_args valid_args "$@"
-#
-#-----------------------------------------------------------------------
-#
-# For debugging purposes, print out values of arguments passed to this
-# script.  Note that these will be printed out only if VERBOSE is set to
-# TRUE.
-#
-#-----------------------------------------------------------------------
-#
-print_input_args valid_args
-#
-#-----------------------------------------------------------------------
-#
 # Set environment
 #
 #-----------------------------------------------------------------------
@@ -131,12 +102,12 @@ rm -f fort.*
 #-----------------------------------------------------------------------
 #
 # Get the cycle date and hour (in formats of yyyymmdd and hh, respectively)
-# from cdate.
+# from CDATE.
 #
 #-----------------------------------------------------------------------
 #
-yyyymmdd=${cdate:0:8}
-hh=${cdate:8:2}
+yyyymmdd=${CDATE:0:8}
+hh=${CDATE:8:2}
 cyc=$hh
 #
 #-----------------------------------------------------------------------
@@ -151,8 +122,6 @@ PARMfv3=${FIX_BUFRSND}  #/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/bufrsnd
 mkdir -p $DATA/bufrpost
 cd $DATA/bufrpost
 
-export tmmark=tm00
-
 cp $PARMfv3/${PREDEF_GRID_NAME}/rrfs_profdat regional_profdat
 
 OUTTYP=netcdf
@@ -166,7 +135,7 @@ let NFILE=1
 
 START_DATE=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
 
-PDY=$cdate
+PDY=$CDATE
 
 YYYY=`echo $PDY | cut -c1-4`
 MM=`echo $PDY | cut -c5-6`

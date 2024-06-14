@@ -109,8 +109,7 @@ fi
 export pgmout="${SURFACE_DIR}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_save_restart.sh \
-  cdate="${CDATE}"
+$SCRIPTSdir/exrrfs_save_restart.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

@@ -48,24 +48,6 @@ preprocessing with RRFS for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-# Specify the set of valid argument names for this script/function.  
-# Then process the arguments provided to this script/function (which 
-# should consist of a set of name-value pairs of the form arg1="value1",
-# etc).
-#
-#-----------------------------------------------------------------------
-#
-valid_args=( "cycle_type" "RADAR_REF_THINNING" )
-process_args valid_args "$@"
-#
-#-----------------------------------------------------------------------
-#
-# For debugging purposes, print out values of arguments passed to this
-# script.  Note that these will be printed out only if VERBOSE is set to
-# TRUE.
-#
-#-----------------------------------------------------------------------
-#
 print_input_args valid_args
 #
 #-----------------------------------------------------------------------
@@ -130,7 +112,7 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 #
 BKTYPE=0
 if [ "${DO_SPINUP}" = "TRUE" ]; then
-  if [ "${cycle_type}" = "spinup" ]; then
+  if [ "${CYCLE_TYPE}" = "spinup" ]; then
     for cyc_start in "${CYCL_HRS_SPINSTART[@]}"; do
       if [ ${HH} -eq ${cyc_start} ]; then
         BKTYPE=1
