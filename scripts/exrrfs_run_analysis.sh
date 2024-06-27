@@ -1012,18 +1012,6 @@ else
 fi
 #
 #-----------------------------------------------------------------------
-#
-# touch a file "gsi_complete.txt" after the successful GSI run. This is to inform
-# the successful analysis for the EnKF recentering
-#
-#-----------------------------------------------------------------------
-#
-touch ${COMOUT}/gsi_complete.txt
-if [[ ${anav_type} == "radardbz" || ${anav_type} == "conv_dbz" ]]; then
-  touch ${COMOUT}/gsi_complete_radar.txt # for nonvarcldanl
-fi
-#
-#-----------------------------------------------------------------------
 # Loop over first and last outer loops to generate innovation
 # diagnostic files for indicated observation types (groups)
 #

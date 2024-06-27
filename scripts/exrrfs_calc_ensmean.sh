@@ -206,12 +206,6 @@ done
 #
 #-----------------------------------------------------------------------
 #
-# touch a file to show completion of the task
-#
-touch ${COMOUT}/calc_ensmean_complete.txt
-#
-#-----------------------------------------------------------------------
-#
 # Print message indicating successful completion of script.
 #
 #-----------------------------------------------------------------------

@@ -243,10 +243,8 @@ fi
 if [ "${DO_ENKF_RADAR_REF}" = "TRUE" ]; then
   l_qnr_from_qr=".true."
 fi
-if [ -r "${COMOUT}/gsi_complete_radar.txt" ] ; then
-  l_precip_clear_only=".true."
-  l_qnr_from_qr=".true."
-fi
+l_precip_clear_only=".true."
+l_qnr_from_qr=".true."
 
 cat << EOF > gsiparm.anl
 
@@ -304,14 +302,6 @@ if [ ${BKTYPE} -eq 0 ]; then
   $APRUN ${EXECdir}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
 fi
-#
-#-----------------------------------------------------------------------
-#
-# touch nonvarcldanl_complete.txt to indicate competion of this task
-#
-#-----------------------------------------------------------------------
-#
-touch ${COMOUT}/nonvarcldanl_complete.txt
 #
 #-----------------------------------------------------------------------
 #

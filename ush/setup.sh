@@ -1294,8 +1294,6 @@ DATAROOT="$STMP"
 check_for_preexist_dir_file "${DATAROOT}" "${PREEXISTING_DIR_METHOD}"
 ENSCTRL_DATAROOT="${ENSCTRL_STMP}"
 COMROOT="${PTMP}/com"
-ENSCTRL_COMROOT="${ENSCTRL_PTMP}/com"
-ENSCTRL_COMOUT="${ENSCTRL_COMROOT}/${NET}/${envir}/${RUN_ensctrl}.@Y@m@d"
 LOG_BASEDIR="${PTMP}/logs"
 #
 #-----------------------------------------------------------------------

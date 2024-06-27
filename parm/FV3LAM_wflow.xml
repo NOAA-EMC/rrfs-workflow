@@ -100,7 +100,6 @@ Directories and files.
 <!ENTITY COMROOT                  "{{ comroot }}">
 <!ENTITY ENSCTRL_DATAROOT         "{{ ensctrl_dataroot }}">
 <!ENTITY ENSCTRL_GESROOT          "{{ ensctrl_gesroot }}">
-<!ENTITY ENSCTRL_COMOUT           "{{ ensctrl_comout }}">
 <!ENTITY RRFSE_FG_ROOT            "{{ rrfse_gesroot }}">
 {%- if is_rtma %}
 <!ENTITY FG_ROOT                  "{{ fg_rootdir }}">
@@ -1149,7 +1148,7 @@ MODULES_RUN_TASK_FP script.
        <taskdep task="&MAKE_ICS_TN;_m#mem#"/>
        {% endif %}
        <taskdep task="&SAVE_RESTART_TN;_ensinit{{ uscore_ensmem_name }}"/>
-       <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT;/@H_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
+       <taskdep task="&CLDANL_NONVAR_TN;_spinup{{ uscore_ensmem_name }}"/>
       </and>
     </dependency>
 
@@ -1191,7 +1190,7 @@ MODULES_RUN_TASK_FP script.
           <taskdep task="&PREP_CYC_SPINUP_TN;_ensinit_mem{{ "%04d" % m }}"/>
         {%- endif %}
         {%- endfor %}
-        <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT;/@H_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
+        <taskdep task="&CLDANL_NONVAR_TN;_spinup{{ uscore_ensmem_name }}"/>
       </and>
     </dependency>
   </task>
@@ -2683,8 +2682,8 @@ MODULES_RUN_TASK_FP script.
           <taskdep task="&RUN_ENKFUPDT_TN;"/>
           {%- endif %}
           <or>
-          <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT;/@H/nonvarcldanl_complete.txt</cyclestr></datadep>
-          <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT;/@H_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
+          <taskdep task="&CLDANL_NONVAR_TN;_prod{{ uscore_ensmem_name }}"/>
+          <taskdep task="&CLDANL_NONVAR_TN;_spinup{{ uscore_ensmem_name }}"/>
           </or>
          </and>
         {% endif %}

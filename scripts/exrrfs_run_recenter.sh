@@ -225,19 +225,13 @@ done
 #
 #-----------------------------------------------------------------------
 #
-# touch a file to show completion of the task
-#
-touch ${COMOUT}/recenter_complete.txt
-#
-#-----------------------------------------------------------------------
-#
 # Print message indicating successful completion of script.
 #
 #-----------------------------------------------------------------------
 #
 print_info_msg "
 ========================================================================
-Prepare start completed successfully!!!
+Run recenter completed successfully!!!
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"

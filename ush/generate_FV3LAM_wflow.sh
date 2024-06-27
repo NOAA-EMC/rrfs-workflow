@@ -407,7 +407,6 @@ settings="\
   'gesroot': ${GESROOT:-}
   'ensctrl_gesroot': ${ENSCTRL_GESROOT:-}
   'comroot': ${COMROOT:-}
-  'ensctrl_comout': ${ENSCTRL_COMOUT:-}
   'rrfse_gesroot': ${RRFSE_GESROOT:-}
   'obstype_source': ${OBSTYPE_SOURCE}
   'obspath': ${OBSPATH}
