@@ -1269,22 +1269,14 @@ check_for_preexist_dir_file "$EXPTDIR" "${PREEXISTING_DIR_METHOD}"
 # The base directory of the control member for EnKF recentering.
 #
 # COMROOT:
-# In NCO mode, this is the full path to the "com" directory under which 
+# This is the full path to the "com" directory under which 
 # output from the RUN_POST_TN task will be placed.  Note that this output
 # is not placed directly under COMROOT but several directories further
 # down.  More specifically, for a cycle starting at yyyymmddhh, it is at
 #
 #   $COMROOT/$NET/$envir/$RUN.$yyyymmdd/$hh
 #
-# Below, we set COMROOT in terms of PTMP as COMROOT="$PTMP/com".  COMOROOT 
-# is not used by the workflow in community mode.
-#
-# COMOUT_BASEDIR:
-# In NCO mode, this is the base directory directly under which the output 
-# from the RUN_POST_TN task will be placed, i.e. it is the cycle-independent 
-# portion of the RUN_POST_TN task's output directory.  It is given by
-#
-#   $COMROOT/$NET/$envir
+# Below, we set COMROOT in terms of PTMP as COMROOT="$PTMP/com".
 #
 #-----------------------------------------------------------------------
 #
@@ -1301,17 +1293,15 @@ SST_ROOT="${SST_ROOT}"
 DATAROOT="$STMP"
 check_for_preexist_dir_file "${DATAROOT}" "${PREEXISTING_DIR_METHOD}"
 ENSCTRL_DATAROOT="${ENSCTRL_STMP}"
-COMROOT="$PTMP"
-ENSCTRL_COMROOT="${ENSCTRL_PTMP}"
-COMOUT_BASEDIR="$COMROOT/prod"
-ENSCTRL_COMOUT_BASEDIR="${ENSCTRL_COMROOT}/prod"
-ENSCTRL_COMOUT_DIR="${ENSCTRL_COMOUT_BASEDIR}/${RUN_ensctrl}.@Y@m@d"
-LOG_BASEDIR="${COMROOT}/logs"
+COMROOT="${PTMP}/com"
+ENSCTRL_COMROOT="${ENSCTRL_PTMP}/com"
+ENSCTRL_COMOUT="${ENSCTRL_COMROOT}/${NET}/${envir}/${RUN_ensctrl}.@Y@m@d"
+LOG_BASEDIR="${PTMP}/logs"
 #
 #-----------------------------------------------------------------------
 #
-# The FV3 forecast model needs the following input files in the run di-
-# rectory to start a forecast:
+# The RRFS model needs the following input files in the run directory
+# to start a forecast:
 #
 #   (1) The data table file
 #   (2) The diagnostics table file
@@ -2413,7 +2403,6 @@ FIXLAM="$FIXLAM"
 FIXgsm="$FIXgsm"
 FIXprdgen="$FIXprdgen"
 COMROOT="$COMROOT"
-COMOUT_BASEDIR="${COMOUT_BASEDIR}"
 GESROOT="${GESROOT}"
 UFS_WTHR_MDL_DIR="${UFS_WTHR_MDL_DIR}"
 UFS_UTILS_DIR="${UFS_UTILS_DIR}"

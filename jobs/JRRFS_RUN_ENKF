@@ -55,10 +55,10 @@ export RUN=${RUN:-rrfs}
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   export jobid=${RUN}_enkfupdt_${OB_TYPE}_spinup_${envir}_${cyc}
-  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
 else
   export jobid=${RUN}_enkfupdt_${OB_TYPE}_${envir}_${cyc}
-  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
+  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
 fi
 
 export DATA=${DATAROOT}/${jobid}

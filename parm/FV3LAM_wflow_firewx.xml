@@ -67,6 +67,7 @@ Directories and files.
 <!ENTITY LOGDIR                   "{{ log_basedir }}/rrfsfw.@Y@m@d/@H">
 <!ENTITY DATAROOT                 "{{ dataroot }}">
 <!ENTITY GESROOT                  "{{ gesroot }}">
+<!ENTITY COMROOT                  "{{ comroot }}">
 <!ENTITY GLOBAL_VAR_DEFNS_FP      "{{ global_var_defns_fp }}">
 <!ENTITY LOAD_MODULES_RUN_TASK_FP "{{ load_modules_run_task_fp }}">
 
@@ -397,6 +398,7 @@ MODULES_RUN_TASK_FP script.
         <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
         <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
         <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
+        <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
         <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
         <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
         <envar><name>fhr</name><value>#fhr#</value></envar>
@@ -436,6 +438,7 @@ MODULES_RUN_TASK_FP script.
         <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
         <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
         <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
+        <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
         <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
         <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
         <envar><name>fhr</name><value>#fhr#</value></envar>

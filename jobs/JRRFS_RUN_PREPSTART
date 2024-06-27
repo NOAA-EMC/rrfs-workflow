@@ -83,9 +83,9 @@ export MAILTO="${MAILTO:-}"
 # Define COM directories
 #-----------------------------------------------------------------------
 
-export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
+export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
 fi
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   export COMOUT=${COMOUT}/${mem_num}

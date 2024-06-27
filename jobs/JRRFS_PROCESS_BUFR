@@ -73,9 +73,9 @@ cd ${DATA}
 #-----------------------------------------------------------------------
 
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
 else
-  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
+  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
 fi
 mkdir -p "${COMOUT}"
 

@@ -406,8 +406,8 @@ settings="\
   'ensctrl_dataroot': ${ENSCTRL_DATAROOT:-}
   'gesroot': ${GESROOT:-}
   'ensctrl_gesroot': ${ENSCTRL_GESROOT:-}
-  'ensctrl_comout_basedir': ${ENSCTRL_COMOUT_BASEDIR:-}
-  'ensctrl_comout_dir': ${ENSCTRL_COMOUT_DIR:-}
+  'comroot': ${COMROOT:-}
+  'ensctrl_comout': ${ENSCTRL_COMOUT:-}
   'rrfse_gesroot': ${RRFSE_GESROOT:-}
   'obstype_source': ${OBSTYPE_SOURCE}
   'obspath': ${OBSPATH}
