@@ -350,22 +350,36 @@ echo "fhr=${fhr} and subh_fhr=${subh_fhr}"
 fhr=${subh_fhr}
 
 gridname=""
+gridspacing=""
 if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
-  gridname="firewx."
+  gridname="firewx"
+  gridspacing="1p5km"
+elif [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_25km" ]; then
+  gridname="conus"
+  gridspacing="25km"
+elif [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_13km" ]; then
+  gridname="conus"
+  gridspacing="13km"
+elif [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km" ]; then
+  gridname="conus"
+  gridspacing="3km"
+elif [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ]; then
+  gridname="na"
+  gridspacing="3km"
 fi
 net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
 
 # Include member number with ensemble forecast output
 if [ ${DO_ENSFCST} = "TRUE" ]; then
-  bgdawp=${DATA}/${net4}.t${cyc}z.${mem_num}.prslev.f${fhr}.${gridname}grib2
-  bgrd3d=${DATA}/${net4}.t${cyc}z.${mem_num}.natlev.f${fhr}.${gridname}grib2
-  bgifi=${DATA}/${net4}.t${cyc}z.${mem_num}.ififip.f${fhr}.${gridname}grib2
-  bgavi=${DATA}/${net4}.t${cyc}z.${mem_num}.aviati.f${fhr}.${gridname}grib2
+  bgdawp=${DATA}/${net4}.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
+  bgrd3d=${DATA}/${net4}.t${cyc}z.${mem_num}.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
+  bgifi=${DATA}/${net4}.t${cyc}z.${mem_num}.ififip.${gridspacing}.f${fhr}.${gridname}.grib2
+  bgavi=${DATA}/${net4}.t${cyc}z.${mem_num}.aviati.${gridspacing}.f${fhr}.${gridname}.grib2
 else
-  bgdawp=${DATA}/${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2
-  bgrd3d=${DATA}/${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2
-  bgifi=${DATA}/${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2
-  bgavi=${DATA}/${net4}.t${cyc}z.aviati.f${fhr}.${gridname}grib2
+  bgdawp=${DATA}/${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
+  bgrd3d=${DATA}/${net4}.t${cyc}z.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
+  bgifi=${DATA}/${net4}.t${cyc}z.ififip.${gridspacing}.f${fhr}.${gridname}.grib2
+  bgavi=${DATA}/${net4}.t${cyc}z.aviati.${gridspacing}.f${fhr}.${gridname}.grib2
 fi
 
 if [ -f PRSLEV.GrbF${post_fhr} ]; then

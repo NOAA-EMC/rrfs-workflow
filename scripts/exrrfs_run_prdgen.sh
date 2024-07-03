@@ -157,25 +157,39 @@ echo "fhr=${fhr} and subh_fhr=${subh_fhr}"
 fhr=${subh_fhr}
 #
 gridname=""
+gridspacing=""
 if [ "${PREDEF_GRID_NAME}" = "RRFS_FIREWX_1.5km" ]; then
-  gridname="firewx."
+  gridname="firewx"
+  gridspacing="1p5km"
+elif [ "${PREDEF_GRID_NAME}" = "RRFS_CONUS_25km" ]; then
+  gridname="conus"
+  gridspacing="25km"
+elif [ "${PREDEF_GRID_NAME}" = "RRFS_CONUS_13km" ]; then
+  gridname="conus"
+  gridspacing="13km"
+elif [ "${PREDEF_GRID_NAME}" = "RRFS_CONUS_3km" ]; then
+  gridname="conus"
+  gridspacing="3km"
+elif [ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]; then
+  gridname="na"
+  gridspacing="3km"
 fi
 #
 net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
 #
 # Include member number with ensemble forecast output
 if [ ${DO_ENSFCST} = "TRUE" ]; then
-  prslev=${net4}.t${cyc}z.${mem_num}.prslev.f${fhr}.${gridname}grib2
-  natlev=${net4}.t${cyc}z.${mem_num}.natlev.f${fhr}.${gridname}grib2
-  ififip=${net4}.t${cyc}z.${mem_num}.ififip.f${fhr}.${gridname}grib2
-  aviati=${net4}.t${cyc}z.${mem_num}.aviati.f${fhr}.${gridname}grib2
-  testbed=${net4}.t${cyc}z.${mem_num}.testbed.f${fhr}.${gridname}grib2
+  prslev=${net4}.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
+  natlev=${net4}.t${cyc}z.${mem_num}.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
+  ififip=${net4}.t${cyc}z.${mem_num}.ififip.${gridspacing}.f${fhr}.${gridname}.grib2
+  aviati=${net4}.t${cyc}z.${mem_num}.aviati.${gridspacing}.f${fhr}.${gridname}.grib2
+  testbed=${net4}.t${cyc}z.${mem_num}.testbed.${gridspacing}.f${fhr}.${gridname}.grib2
 else
-  prslev=${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2
-  natlev=${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2
-  ififip=${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2
-  aviati=${net4}.t${cyc}z.aviati.f${fhr}.${gridname}grib2
-  testbed=${net4}.t${cyc}z.testbed.f${fhr}.${gridname}grib2
+  prslev=${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
+  natlev=${net4}.t${cyc}z.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
+  ififip=${net4}.t${cyc}z.ififip.${gridspacing}.f${fhr}.${gridname}.grib2
+  aviati=${net4}.t${cyc}z.aviati.${gridspacing}.f${fhr}.${gridname}.grib2
+  testbed=${net4}.t${cyc}z.testbed.${gridspacing}.f${fhr}.${gridname}.grib2
 fi
 
 # extract the output fields for the testbed
@@ -299,26 +313,26 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
       if [ ${DO_ENSFCST} = "TRUE" ]; then
         for task in $(seq ${tasks[count]})
         do
-          cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.f${fhr}.${domain}.grib2
+          cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${domain}.grib2
         done
-        wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.f${fhr}.${domain}.grib2.idx
+        wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${domain}.grib2.idx
       else
         for task in $(seq ${tasks[count]})
         do
-          cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2
+          cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.${domain}.grib2
         done
-        wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2.idx
+        wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.${domain}.grib2.idx
       fi
       count=$count+1
     done
 
     # create testbed files on 3-km CONUS grid
     if [ ${DO_ENSFCST} = "TRUE" ]; then
-      prslev_conus=${net4}.t${cyc}z.${mem_num}.prslev.f${fhr}.conus.grib2
-      testbed_conus=${net4}.t${cyc}z.${mem_num}.testbed.f${fhr}.conus.grib2
+      prslev_conus=${net4}.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.conus.grib2
+      testbed_conus=${net4}.t${cyc}z.${mem_num}.testbed.${gridspacing}.f${fhr}.conus.grib2
     else
-      prslev_conus=${net4}.t${cyc}z.prslev.f${fhr}.conus.grib2
-      testbed_conus=${net4}.t${cyc}z.testbed.f${fhr}.conus.grib2
+      prslev_conus=${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.conus.grib2
+      testbed_conus=${net4}.t${cyc}z.testbed.${gridspacing}.f${fhr}.conus.grib2
     fi
     if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
       if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN} ]]; then
@@ -368,14 +382,14 @@ EOF
   export err=$?; err_chk
 
   grid_specs_firewx=`head $DATA/copygb_gridnavfw.txt`
-  eval infile=${DATA}/${net4}.t${cyc}z.prslev.f${fhr}.firewx.grib2
+  eval infile=${DATA}/${net4}.t${cyc}z.prslev.1p5km.f${fhr}.firewx.grib2
 
   wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
    -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
    -new_grid_interpolation neighbor \
    -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
-   -new_grid ${grid_specs_firewx} ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.firewx_lcc.grib2
-  wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.firewx_lcc.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.firewx_lcc.grib2.idx
+   -new_grid ${grid_specs_firewx} ${COMOUT}/rrfs.t${cyc}z.prslev.1p5km.f${fhr}.firewx_lcc.grib2
+  wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.1p5km.f${fhr}.firewx_lcc.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.1p5km.f${fhr}.firewx_lcc.grib2.idx
 
 else
   #
@@ -403,10 +417,10 @@ else
         eval grid_specs=\$grid_specs_${grid}
         subdir=${DATA}/${grid}_grid
         mkdir -p ${subdir}/${fhr}
-        bg_remap=${subdir}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2
+        bg_remap=${subdir}/${net4}.t${cyc}z.${leveltype}.${gridspacing}.f${fhr}.${grid}.grib2
 
         # Interpolate fields to new grid
-        eval infile=${COMOUT}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${gridname}grib2
+        eval infile=${COMOUT}/${net4}.t${cyc}z.${leveltype}.${gridspacing}.f${fhr}.${gridname}.grib2
 	if [ -f ${infile} ]; then
           if [ "${PREDEF_GRID_NAME}" = "RRFS_NA_13km" ]; then
             wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
@@ -432,8 +446,8 @@ else
 
         # Save to com directory 
           mkdir -p ${COMOUT}/${grid}_grid
-          cp ${bg_remap} ${COMOUT}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2
-          wgrib2 ${COMOUT}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2 -s > ${COMOUT}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2.idx
+          cp ${bg_remap} ${COMOUT}/${net4}.t${cyc}z.${leveltype}.${gridspacing}.f${fhr}.${grid}.grib2
+          wgrib2 ${COMOUT}/${net4}.t${cyc}z.${leveltype}.${gridspacing}.f${fhr}.${grid}.grib2 -s > ${COMOUT}/${net4}.t${cyc}z.${leveltype}.${gridspacing}.f${fhr}.${grid}.grib2.idx
         fi
       done
     done
