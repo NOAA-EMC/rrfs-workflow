@@ -147,16 +147,23 @@ def create_dummy(intp_dir, current_day, tgt_latt, tgt_lont, cols, rows):
 def generate_regrider(rave_avail_hours, srcfield, tgtfield, weightfile, inp_files_2use, intp_avail_hours):
     print('Checking conditions for generating regridder.')
     use_dummy_emiss = len(rave_avail_hours) == 0 and len(intp_avail_hours) == 0
-    regridder = 0
+    regridder = None
+
     if not use_dummy_emiss:
         try:
             print('Generating regridder.')
             regridder = ESMF.RegridFromFile(srcfield, tgtfield, weightfile)
             print('Regridder generated successfully.')
         except ValueError as e:
-            print(f'Regridder failed due to a ValueError: {e}. Using dummy emissions.')
-            if not inp_files_2use:
-               use_dummy_emiss = True
+            print(f'Regridder failed due to a ValueError: {e}.')
+        except OSError as e:
+            print(f'Regridder failed due to an OSError: {e}. Check if the weight file exists and is accessible.')
+        except (FileNotFoundError, IOError, RuntimeError, TypeError, KeyError, IndexError, MemoryError) as e:
+            print(f'Regridder failed due to corrupted file: {e}. Check if RAVE file has a different grid or format. ')
+        except Exception as e:
+            print(f'An unexpected error occurred while generating regridder: {e}.')
+    else:
+        use_dummy_emiss = True
 
     return(regridder, use_dummy_emiss)
 
@@ -166,38 +173,52 @@ def interpolate_rave(RAVE, rave_avail, rave_avail_hours, use_dummy_emiss, vars_e
     for index, current_hour in enumerate(rave_avail_hours):
         file_name = rave_avail[index]
         rave_file_path = os.path.join(RAVE, file_name[0])  
-    #lista_rave=range(len(rave_avail))
-    #for lista_rave, current_hour in zip(lista_rave, rave_avail_hours):
-    #    file_name= rave_avail[lista_rave]
-    #    rave_file_path = os.path.join(RAVE, file_name[0])
+        
         print(f"Processing file: {rave_file_path} for hour: {current_hour}")
+
         if not use_dummy_emiss and os.path.exists(rave_file_path):
             try:
-                with xr.open_dataset(rave_file_path) as ds_togrid:
-                    ds_togrid = ds_togrid[['FRP_MEAN', 'FRE']]
+                with xr.open_dataset(rave_file_path, decode_times=False) as ds_togrid:
+                    try:
+                        ds_togrid = ds_togrid[['FRP_MEAN', 'FRE']]
+                    except KeyError as e:
+                        print(f"Missing required variables in {rave_file_path}: {e}")
+                        continue
+
                     output_file_path = os.path.join(intp_dir, f'{rave_to_intp}{current_hour}00_{current_hour}59.nc')
-                    print('=============before regridding===========','FRP_MEAN')
-                    print(np.sum(ds_togrid['FRP_MEAN'],axis=(1,2)))
-                    with Dataset(output_file_path, 'w') as fout:
-                        create_emiss_file(fout, cols, rows)
-                        Store_latlon_by_Level(fout, 'geolat', tgt_latt, 'cell center latitude', 'degrees_north', '2D', '-9999.f', '1.f')
-                        Store_latlon_by_Level(fout, 'geolon', tgt_lont, 'cell center longitude', 'degrees_east', '2D', '-9999.f', '1.f')
-                        for svar in vars_emis:
-                            srcfield = ESMF.Field(srcgrid, name=svar, staggerloc=ESMF.StaggerLoc.CENTER)
-                            tgtfield = ESMF.Field(tgtgrid, name=svar, staggerloc=ESMF.StaggerLoc.CENTER)
-                            src_rate = ds_togrid[svar].fillna(0)
-                            src_QA = xr.where(ds_togrid['FRE'] > 1000, src_rate, 0.0)
-                            srcfield.data[...] = src_QA[0, :, :]
-                            tgtfield = regridder(srcfield, tgtfield)
-                            if svar=='FRP_MEAN':
-                               Store_by_Level(fout,'frp_avg_hr','Mean Fire Radiative Power','MW','3D','0.f','1.f')
-                               tgt_rate = tgtfield.data
-                               fout.variables['frp_avg_hr'][0,:,:] = tgt_rate
-                               print('=============after regridding==========='+svar)
-                               print(np.sum(tgt_rate))
-                            elif svar=='FRE':
-                               Store_by_Level(fout,'FRE','FRE','MJ','3D','0.f','1.f')
-                               tgt_rate = tgtfield.data
-                               fout.variables['FRE'][0,:,:] = tgt_rate
-            except (ValueError, KeyError) as e:
-                print(f'Error processing RAVE file {rave_file_path}: {e}')
+                    print('=============before regridding===========', 'FRP_MEAN')
+                    print(np.sum(ds_togrid['FRP_MEAN'], axis=(1, 2)))
+
+                    try:
+                        with Dataset(output_file_path, 'w') as fout:
+                            create_emiss_file(fout, cols, rows)
+                            Store_latlon_by_Level(fout, 'geolat', tgt_latt, 'cell center latitude', 'degrees_north', '2D', '-9999.f', '1.f')
+                            Store_latlon_by_Level(fout, 'geolon', tgt_lont, 'cell center longitude', 'degrees_east', '2D', '-9999.f', '1.f')
+
+                            for svar in vars_emis:
+                                try:
+                                    srcfield = ESMF.Field(srcgrid, name=svar, staggerloc=ESMF.StaggerLoc.CENTER)
+                                    tgtfield = ESMF.Field(tgtgrid, name=svar, staggerloc=ESMF.StaggerLoc.CENTER)
+                                    src_rate = ds_togrid[svar].fillna(0)
+                                    src_QA = xr.where(ds_togrid['FRE'] > 1000, src_rate, 0.0)
+                                    srcfield.data[...] = src_QA[0, :, :]
+                                    tgtfield = regridder(srcfield, tgtfield)
+
+                                    if svar == 'FRP_MEAN':
+                                        Store_by_Level(fout, 'frp_avg_hr', 'Mean Fire Radiative Power', 'MW', '3D', '0.f', '1.f')
+                                        tgt_rate = tgtfield.data
+                                        fout.variables['frp_avg_hr'][0, :, :] = tgt_rate
+                                        print('=============after regridding===========' + svar)
+                                        print(np.sum(tgt_rate))
+                                    elif svar == 'FRE':
+                                        Store_by_Level(fout, 'FRE', 'FRE', 'MJ', '3D', '0.f', '1.f')
+                                        tgt_rate = tgtfield.data
+                                        fout.variables['FRE'][0, :, :] = tgt_rate
+                                except (ValueError, KeyError) as e:
+                                    print(f"Error processing variable {svar} in {rave_file_path}: {e}")
+                    except (OSError, IOError, RuntimeError, FileNotFoundError, TypeError, IndexError, MemoryError) as e:
+                        print(f"Error creating or writing to NetCDF file {output_file_path}: {e}")
+            except (OSError, IOError, RuntimeError, FileNotFoundError, TypeError, IndexError, MemoryError) as e:
+                print(f"Error reading NetCDF file {rave_file_path}: {e}")
+        else:
+            print(f"File not found or dummy emissions required: {rave_file_path}")
