@@ -1,6 +1,7 @@
 load("python_srw")
 load(pathJoin("cfp", os.getenv("cfp_ver")))
 
+load(pathJoin("PrgEnv-intel", os.getenv("PrgEnv_intel_ver")))
 load(pathJoin("intel", os.getenv("intel_ver")))
 load(pathJoin("craype", os.getenv("craype_ver")))
 load(pathJoin("cray-mpich", os.getenv("cray_mpich_ver")))

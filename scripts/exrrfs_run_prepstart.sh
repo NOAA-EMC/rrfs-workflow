@@ -134,6 +134,7 @@ cdate_crnt_fhr=$( date --utc --date "${YYYYMMDD} ${HH} UTC" "+%Y%m%d%H" )
 
 YYYYMMDDm1=$(date +%Y%m%d -d "${START_DATE} 1 days ago")
 YYYYMMDDm2=$(date +%Y%m%d -d "${START_DATE} 2 days ago")
+YYYYMMDDm3=$(date +%Y%m%d -d "${START_DATE} 3 days ago")
 #
 #-----------------------------------------------------------------------
 #
@@ -620,8 +621,8 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
       surface_file_dir_name=fcst_fv3lam
       bkpath_find="missing"
       restart_prefix_find="missing"
+      restart_prefix=$( date +%Y%m%d.%H0000. -d "${START_DATE}" )
       if [ "${bkpath_find}" = "missing" ]; then
-          restart_prefix=$( date +%Y%m%d.%H0000. -d "${START_DATE}" )
 
           offset_hours=${DA_CYCLE_INTERV}
           YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
@@ -647,6 +648,16 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
              bkpath=${fg_root}/${YYYYMMDDHHmInterv}${SLASH_ENSMEM_SUBDIR}/${surface_file_dir_name}/RESTART  # cycling, use background from RESTART
              print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
           done
+      fi
+
+      # check if there are tracer file in continue cycle data space:
+      if [ "${bkpath_find}" = "missing" ]; then
+         checkfile=${CONT_CYCLE_DATA_ROOT}/tracer/${restart_prefix}fv_tracer.res.tile1.nc
+         if [ -r "${checkfile}" ]; then
+            bkpath_find=${CONT_CYCLE_DATA_ROOT}/tracer
+            restart_prefix_find=${restart_prefix}
+            print_info_msg "$VERBOSE" "Found ${checkfile}; Use it for smoke/dust cycle "
+         fi
       fi
 
       # cycle smoke/dust
@@ -837,14 +848,28 @@ fi
 # do update_GVF at ${GVF_update_hour}z for the restart sfc_data.nc
 #
 #-----------------------------------------------------------------------
-if [ ${HH} -eq ${GVF_update_hour} ] && [ "${CYCLE_TYPE}" = "spinup" ]; then
+Update_GVF=0
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  if [ ${HH} -eq ${GVF_update_hour} ]; then
+    Update_GVF=1
+  fi
+  if [ ${HH} -eq "03" ] ||  [ ${HH} -eq "15" ]; then
+    Update_GVF=2
+  fi
+fi
+if [ ${Update_GVF} -ge 1 ]; then
    latestGVF=$(ls ${GVF_ROOT}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm1}_c${YYYYMMDD}*.grib2)
    latestGVF2=$(ls ${GVF_ROOT}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm2}_c${YYYYMMDDm1}*.grib2)
+   latestGVF3=$(ls ${GVF_ROOT}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm3}_c${YYYYMMDDm2}*.grib2)
    if [ ! -r "${latestGVF}" ]; then
      if [ -r "${latestGVF2}" ]; then
        latestGVF=${latestGVF2}
      else
-       print_info_msg "WARNING: cannot find GVF observation file"
+       if [ -r "${latestGVF3}" ]; then
+         latestGVF=${latestGVF3}
+       else
+         print_info_msg "WARNING: cannot find GVF observation file"
+       fi
      fi
    fi
 
@@ -853,11 +878,18 @@ if [ ${HH} -eq ${GVF_update_hour} ] && [ "${CYCLE_TYPE}" = "spinup" ]; then
       ln -sf ${FIX_GSI}/gvf_VIIRS_4KM.MAX.1gd4r.new  gvf_VIIRS_4KM.MAX.1gd4r.new
       ln -sf ${FIX_GSI}/gvf_VIIRS_4KM.MIN.1gd4r.new  gvf_VIIRS_4KM.MIN.1gd4r.new
 
+      if [ ${Update_GVF} -eq 2 ]; then
+        ln -sf sfc_data.tile7.halo0.nc sfc_data.nc
+      fi
       export pgm="update_GVF.exe"
       if [ "${IO_LAYOUT_Y}" = "1" ]; then
         ln -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
         . prep_step
-        ${APRUN} ${EXECdir}/$pgm >>$pgmout 2>errfile
+        if [ ${Update_GVF} -eq 2 ]; then
+          ${APRUN} ${EXECdir}/$pgm "cold" >>$pgmout 2>errfile
+        else
+          ${APRUN} ${EXECdir}/$pgm "warm" >>$pgmout 2>errfile
+        fi
         export err=$?; err_chk
 	mv errfile errfile_updateGVF
         if [ $err -ne 0 ]; then
@@ -870,7 +902,11 @@ if [ ${HH} -eq ${GVF_update_hour} ] && [ "${CYCLE_TYPE}" = "spinup" ]; then
           ln -sf ${gridspec_dir}/fv3_grid_spec.${iii}  fv3_grid_spec
           ln -sf sfc_data.nc.${iii} sfc_data.nc
 	  . prep_step
-          ${APRUN} ${EXECdir}/$pgm >>$pgmout 2>errfile
+          if [ ${Update_GVF} -eq 2 ]; then
+            ${APRUN} ${EXECdir}/$pgm "cold" >>$pgmout 2>errfile
+          else
+            ${APRUN} ${EXECdir}/$pgm "warm" >>$pgmout 2>errfile
+          fi
           export err=$?; err_chk
 	  mv errfile errfile_updateGVF.${iii}
           if [ $err -ne 0 ]; then
@@ -1119,7 +1155,7 @@ EOF
      if [ "${SAVE_CYCLE_LOG}" = "TRUE" ] ; then
        echo "${YYYYMMDDHH}(${CYCLE_TYPE}): run surface surgery" >> ${EXPTDIR}/log.cycles
      fi
-  fi
+fi
 #
 #-----------------------------------------------------------------------
 #

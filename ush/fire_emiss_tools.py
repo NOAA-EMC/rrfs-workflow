@@ -160,4 +160,3 @@ def produce_emiss_file(xarr_hwp, frp_avg_reshaped, totprcp_ave_arr, xarr_totprcp
         return f"Error creating or writing to NetCDF file {file_path}: {e}"
 
     return "Emissions file created successfully"
-

@@ -81,7 +81,7 @@ APRUN="time"
 # operational NAM fire weather nest.  The center lat/lon is set by the
 # SDM.  When RRFS is implemented, a similar file will be needed.
 # Rewrite the default center lat/lon values in input.nml and 
-# var_defns.sh.
+# var_defns.sh, if needed.
 # Then call a Python script to determine if the nest falls inside the
 # RRFS computational grid based on the center lat/lon.
 #
@@ -90,15 +90,19 @@ APRUN="time"
 if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
   hh="${CDATE:8:2}"
   firewx_loc="/lfs/h1/ops/prod/com/nam/v4.2/input/nam_firewx_loc"
+  center_lat=${LAT_CTR}
+  center_lon=${LON_CTR}
   LAT_CTR=`grep ${hh}z $firewx_loc | awk '{print $2}'`
   LON_CTR=`grep ${hh}z $firewx_loc | awk '{print $3}'`
 
-  sed -i -e "s/39.2/${LAT_CTR}/g" ${FV3_NML_FP}
-  sed -i -e "s/39.2/${LAT_CTR}/g" ${GLOBAL_VAR_DEFNS_FP}
-  sed -i -e "s/-106.0/${LON_CTR}/g" ${FV3_NML_FP}
-  sed -i -e "s/-106.0/${LON_CTR}/g" ${GLOBAL_VAR_DEFNS_FP}
+  if [ ${center_lat} != ${LAT_CTR} ] || [ ${center_lon} != ${LON_CTR} ]; then
+    sed -i -e "s/${center_lat}/${LAT_CTR}/g" ${FV3_NML_FP}
+    sed -i -e "s/${center_lat}/${LAT_CTR}/g" ${GLOBAL_VAR_DEFNS_FP}
+    sed -i -e "s/${center_lon}/${LON_CTR}/g" ${FV3_NML_FP}
+    sed -i -e "s/${center_lon}/${LON_CTR}/g" ${GLOBAL_VAR_DEFNS_FP}
+  fi
 
-  python ${USHdir}/rrfsfw_domain.py $LAT_CTR $LON_CTR
+  python ${USHdir}/rrfsfw_domain.py ${LAT_CTR} ${LON_CTR}
   if [[ $? != 0 ]]; then
     err_exit "WARNING: Problem with the requested fire weather grid - ABORT"
   fi

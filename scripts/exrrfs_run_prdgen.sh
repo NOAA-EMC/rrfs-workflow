@@ -59,6 +59,7 @@ valid_args=( \
 "cdate" \
 "fhr" \
 "tmmark" \
+"ensmem_indx" \
 )
 process_args valid_args "$@"
 #
@@ -183,20 +184,27 @@ echo "fhr=${fhr} and subh_fhr=${subh_fhr}"
 fhr=${subh_fhr}
 #
 gridname=""
-if [ "${PREDEF_GRID_NAME}" = "RRFS_CONUS_3km" ]; then
-  gridname="conus_3km."
-elif  [ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]; then
-  gridname=""
+if [ "${PREDEF_GRID_NAME}" = "RRFS_FIREWX_1.5km" ]; then
+  gridname="firewx."
 fi
 #
 net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
 #
-prslev=${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2
-natlev=${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2
-ififip=${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2
-aviati=${net4}.t${cyc}z.aviati.f${fhr}.${gridname}grib2
-
-testbed=${net4}.t${cyc}z.testbed.f${fhr}.${gridname}grib2
+# Include member number with ensemble forecast output
+if [ ${DO_ENSFCST} = "TRUE" ]; then
+  ensmem_num=$(echo "${ensmem_indx}" | awk '{print $1+0}')   # 1,2,3,4,5 for REFS
+  prslev=${net4}.t${cyc}z.m0${ensmem_num}.prslev.f${fhr}.${gridname}grib2
+  natlev=${net4}.t${cyc}z.m0${ensmem_num}.natlev.f${fhr}.${gridname}grib2
+  ififip=${net4}.t${cyc}z.m0${ensmem_num}.ififip.f${fhr}.${gridname}grib2
+  aviati=${net4}.t${cyc}z.m0${ensmem_num}.aviati.f${fhr}.${gridname}grib2
+  testbed=${net4}.t${cyc}z.m0${ensmem_num}.testbed.f${fhr}.${gridname}grib2
+else
+  prslev=${net4}.t${cyc}z.prslev.f${fhr}.${gridname}grib2
+  natlev=${net4}.t${cyc}z.natlev.f${fhr}.${gridname}grib2
+  ififip=${net4}.t${cyc}z.ififip.f${fhr}.${gridname}grib2
+  aviati=${net4}.t${cyc}z.aviati.f${fhr}.${gridname}grib2
+  testbed=${net4}.t${cyc}z.testbed.f${fhr}.${gridname}grib2
+fi
 
 # extract the output fields for the testbed
 if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
@@ -208,7 +216,9 @@ if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
 fi
 if [[ ! -z ${TESTBED_FIELDS_FN2} ]]; then
   if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN2} ]]; then
-    wgrib2 ${postprd_dir}/${natlev} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN2} | wgrib2 -i -append -grib ${postprd_dir}/${testbed} ${postprd_dir}/${natlev}
+    if [[ -f ${postprd_dir}/${natlev} ]]; then
+      wgrib2 ${postprd_dir}/${natlev} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN2} | wgrib2 -i -append -grib ${postprd_dir}/${testbed} ${postprd_dir}/${natlev}
+    fi
   else
     echo "${FIX_UPP}/${TESTBED_FIELDS_FN2} not found"
   fi
@@ -223,34 +233,46 @@ fi
 # instead of calling sed.
 
 basetime=$( date +%y%j%H%M -d "${yyyymmdd} ${hh}" )
-cp ${postprd_dir}/${prslev} ${COMOUT}/${prslev}
-cp ${postprd_dir}/${natlev} ${COMOUT}/${natlev}
-
-if [ -f  ${postprd_dir}/${ififip} ]; then
-  cp ${postprd_dir}/${ififip} ${COMOUT}/${ififip}
+if [[ -f ${postprd_dir}/${prslev} ]]; then
+  cp ${postprd_dir}/${prslev} ${COMOUT}/${prslev}
+fi
+if [[ -f ${postprd_dir}/${natlev} ]]; then
+  cp ${postprd_dir}/${natlev} ${COMOUT}/${natlev}
 fi
 
-if [ -f  ${postprd_dir}/${aviati} ]; then
-  cp ${postprd_dir}/${aviati} ${COMOUT}/${aviati}
+if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
+  if [ -f  ${postprd_dir}/${ififip} ]; then
+    cp ${postprd_dir}/${ififip} ${COMOUT}/${ififip}
+  fi
+
+  if [ -f  ${postprd_dir}/${aviati} ]; then
+    cp ${postprd_dir}/${aviati} ${COMOUT}/${aviati}
+  fi
+
+  if [ -f  ${postprd_dir}/${testbed} ]; then
+    cp ${postprd_dir}/${testbed}  ${COMOUT}/${testbed}
+  fi
 fi
 
-if [ -f  ${postprd_dir}/${testbed} ]; then
-  cp ${postprd_dir}/${testbed}  ${COMOUT}/${testbed}
+if [ -f ${COMOUT}/${prslev} ]; then
+  wgrib2 ${COMOUT}/${prslev} -s > ${COMOUT}/${prslev}.idx
+fi
+if [ -f ${COMOUT}/${natlev} ]; then
+  wgrib2 ${COMOUT}/${natlev} -s > ${COMOUT}/${natlev}.idx
 fi
 
-wgrib2 ${COMOUT}/${prslev} -s > ${COMOUT}/${prslev}.idx
-wgrib2 ${COMOUT}/${natlev} -s > ${COMOUT}/${natlev}.idx
+if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
+  if [ -f ${COMOUT}/${ififip} ]; then
+    wgrib2 ${COMOUT}/${ififip} -s > ${COMOUT}/${ififip}.idx
+  fi
 
-if [ -f ${COMOUT}/${ififip} ]; then
-  wgrib2 ${COMOUT}/${ififip} -s > ${COMOUT}/${ififip}.idx
-fi
+  if [ -f ${COMOUT}/${aviati} ]; then
+    wgrib2 ${COMOUT}/${aviati} -s > ${COMOUT}/${aviati}.idx
+  fi
 
-if [ -f ${COMOUT}/${aviati} ]; then
-  wgrib2 ${COMOUT}/${aviati} -s > ${COMOUT}/${aviati}.idx
-fi
-
-if [ -f ${COMOUT}/${testbed} ]; then
-  wgrib2 ${COMOUT}/${testbed} -s > ${COMOUT}/${testbed}.idx
+  if [ -f ${COMOUT}/${testbed} ]; then
+    wgrib2 ${COMOUT}/${testbed} -s > ${COMOUT}/${testbed}.idx
+  fi
 fi
 
 # Remap to additional output grids if requested
@@ -264,12 +286,12 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
     mkdir $DATAprdgen
     USHrrfs=$USHdir/prdgen
 
-    wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.grib2 >& $DATAprdgen/prslevf${fhr}.txt
+    wgrib2 ${COMOUT}/${prslev} >& $DATAprdgen/prslevf${fhr}.txt
 
     # Create parm files for subsetting on the fly - do it for each forecast hour
     # 4 subpieces for CONUS and Alaska grids
-    sed -n -e '1,250p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_1.txt
-    sed -n -e '251,500p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_2.txt
+    sed -n -e '1,251p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_1.txt
+    sed -n -e '252,500p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_2.txt
     sed -n -e '501,750p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_3.txt
     sed -n -e '751,$p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_4.txt
 
@@ -278,9 +300,9 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
     sed -n -e '501,$p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/hi_pr_2.txt
 
     # Create script to execute production generation tasks in parallel using CFP
-    echo "#!/bin/bash" > $DATAprdgen/poescript_${fhr}
-    echo "export DATA=${DATAprdgen}" >> $DATAprdgen/poescript_${fhr}
-    echo "export COMOUT=${COMOUT}" >> $DATAprdgen/poescript_${fhr}
+#    echo "#!/bin/bash" > $DATAprdgen/poescript_${fhr}
+#    echo "export DATA=${DATAprdgen}" >> $DATAprdgen/poescript_${fhr}
+#    echo "export COMOUT=${COMOUT}" >> $DATAprdgen/poescript_${fhr}
 
     tasks=(4 4 2 2)
     domains=(conus ak hi pr)
@@ -290,12 +312,12 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
       for task in $(seq ${tasks[count]})
       do
         mkdir -p $DATAprdgen/prdgen_${domain}_${task}
-        echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc $task $domain ${DATAprdgen} ${COMOUT} &" >> $DATAprdgen/poescript_${fhr}
+        echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc $task $domain $prslev ${DATAprdgen} ${COMOUT} &" >> $DATAprdgen/poescript_${fhr}
       done
       count=$count+1
     done
 
-    echo "wait" >> $DATAprdgen/poescript_${fhr}
+#    echo "wait" >> $DATAprdgen/poescript_${fhr}
     chmod 775 $DATAprdgen/poescript_${fhr}
 
     # Execute the script
@@ -309,21 +331,30 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
     count=0
     for domain in ${domains[@]}
     do
-      for task in $(seq ${tasks[count]})
-      do
-        cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2
-      done
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2.idx
+      if [ ${DO_ENSFCST} = "TRUE" ]; then
+        for task in $(seq ${tasks[count]})
+        do
+          cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.m0${ensmem_num}.prslev.f${fhr}.${domain}.grib2
+        done
+        wgrib2 ${COMOUT}/rrfs.t${cyc}z.m0${ensmem_num}.prslev.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.m0${ensmem_num}.prslev.f${fhr}.${domain}.grib2.idx
+      else
+        for task in $(seq ${tasks[count]})
+        do
+          cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2
+        done
+        wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2.idx
+      fi
       count=$count+1
     done
 
-    # Rename conus grib2 files to conus_3km
-    mv ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.conus.grib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.conus_3km.grib2
-    mv ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.conus.grib2.idx ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.conus_3km.grib2.idx
-
     # create testbed files on 3-km CONUS grid
-    prslev_conus=${net4}.t${cyc}z.prslev.f${fhr}.conus_3km.grib2
-    testbed_conus=${net4}.t${cyc}z.testbed.f${fhr}.conus_3km.grib2
+    if [ ${DO_ENSFCST} = "TRUE" ]; then
+      prslev_conus=${net4}.t${cyc}z.m0${ensmem_num}.prslev.f${fhr}.conus.grib2
+      testbed_conus=${net4}.t${cyc}z.m0${ensmem_num}.testbed.f${fhr}.conus.grib2
+    else
+      prslev_conus=${net4}.t${cyc}z.prslev.f${fhr}.conus.grib2
+      testbed_conus=${net4}.t${cyc}z.testbed.f${fhr}.conus.grib2
+    fi
     if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
       if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN} ]]; then
         wgrib2 ${COMOUT}/${prslev_conus} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN} | wgrib2 -i -grib ${COMOUT}/${testbed_conus} ${COMOUT}/${prslev_conus}
@@ -333,16 +364,19 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
     fi
 
     #-- Upscale & subset FAA requested information
+    #-- FAA grib2 output is not generated for ensemble forecasts
     
      # echo "$USHrrfs/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT} &" >> $DATAprdgen/poescript_faa_${fhr}
 
-    ${USHrrfs}/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT}
+    if [ ${DO_ENSFCST} = "FALSE" ]; then
+      ${USHrrfs}/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT} ${USHrrfs}
+    fi
 
   else
     echo "WARNING: this grid is not ready for parallel prdgen: ${PREDEF_GRID_NAME}"
   fi
 
-  rm -fr $DATAprdgen
+#  rm -fr $DATAprdgen
   rm -f $DATA/*.t${cyc}z.*.f${fhr}.*.grib2
 
 elif [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
@@ -369,14 +403,14 @@ EOF
   export err=$?; err_chk
 
   grid_specs_firewx=`head $DATA/copygb_gridnavfw.txt`
-  eval infile=${postprd_dir}/${net4}.t${cyc}z.prslev.f${fhr}.grib2
+  eval infile=${postprd_dir}/${net4}.t${cyc}z.prslev.f${fhr}.firewx.grib2
 
   wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
    -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
    -new_grid_interpolation neighbor \
    -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
-   -new_grid ${grid_specs_firewx} ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.firewx.grib2
-  wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.firewx.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.firewx.grib2.idx
+   -new_grid ${grid_specs_firewx} ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.firewx_lcc.grib2
+  wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.firewx_lcc.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.firewx_lcc.grib2.idx
 
 else
   #
@@ -408,33 +442,34 @@ else
 
         # Interpolate fields to new grid
         eval infile=${COMOUT}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${gridname}grib2
-        if [ "${PREDEF_GRID_NAME}" = "RRFS_NA_13km" ]; then
-          wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
-           -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
-           -new_grid_interpolation bilinear \
-           -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
-           -if ":(NCONCD|NCCICE|SPNCR|CLWMR|CICE|RWMR|SNMR|GRLE|PMTF|PMTC|REFC|CSNOW|CICEP|CFRZR|CRAIN|LAND|ICEC|TMP:surface|VEG|CCOND|SFEXC|MSLMA|PRES:tropopause|LAI|HPBL|HGT:planetary boundary layer):|ICPRB|SIPD|ICESEV" -new_grid_interpolation neighbor -fi \
-           -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2 &
-        else
-          wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
-           -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
-           -new_grid_interpolation neighbor \
-           -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2 &
-        fi
-        wait 
+	if [ -f ${infile} ]; then
+          if [ "${PREDEF_GRID_NAME}" = "RRFS_NA_13km" ]; then
+            wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
+             -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
+             -new_grid_interpolation bilinear \
+             -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
+             -if ":(NCONCD|NCCICE|SPNCR|CLWMR|CICE|RWMR|SNMR|GRLE|PMTF|PMTC|REFC|CSNOW|CICEP|CFRZR|CRAIN|LAND|ICEC|TMP:surface|VEG|CCOND|SFEXC|MSLMA|PRES:tropopause|LAI|HPBL|HGT:planetary boundary layer):|ICPRB|SIPD|ICESEV" -new_grid_interpolation neighbor -fi \
+             -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2 &
+          else
+            wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
+             -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
+             -new_grid_interpolation neighbor \
+             -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2 &
+          fi
+          wait 
 
         # Merge vector field records
-        wgrib2 ${subdir}/${fhr}/tmp_${grid}.grib2 -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" -submsg_uv ${bg_remap} &
-        wait 
+          wgrib2 ${subdir}/${fhr}/tmp_${grid}.grib2 -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" -submsg_uv ${bg_remap} &
+          wait 
 
         # Remove temporary files
-        rm -f ${subdir}/${fhr}/tmp_${grid}.grib2
+          rm -f ${subdir}/${fhr}/tmp_${grid}.grib2
 
         # Save to com directory 
-        mkdir -p ${COMOUT}/${grid}_grid
-        cp ${bg_remap} ${COMOUT}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2
-        wgrib2 ${COMOUT}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2 -s > ${COMOUT}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2.idx
-
+          mkdir -p ${COMOUT}/${grid}_grid
+          cp ${bg_remap} ${COMOUT}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2
+          wgrib2 ${COMOUT}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2 -s > ${COMOUT}/${net4}.t${cyc}z.${leveltype}.f${fhr}.${grid}.grib2.idx
+        fi
       done
     done
   fi
