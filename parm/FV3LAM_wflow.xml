@@ -939,7 +939,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&PREP_CYC_SPINUP_TN;{{ uscore_ensmem_name }}" cycledefs="spinupcyc" maxtries="{{ maxtries_run_prepstart }}">
+  <task name="&PREP_CYC_SPINUP_TN;_ensinit{{ uscore_ensmem_name }}" cycledefs="spinupcyc" maxtries="{{ maxtries_run_prepstart }}">
 
     &RSRV_DEFAULT;
     &WALL_LIMIT_PRE;
@@ -951,8 +951,8 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_PREP_CYC;</walltime>
     &NODESIZE_ALL;
     &MEMO_PREP_CYC;
-    <jobname>&TAG;_&PREP_CYC_SPINUP_TN;{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&PREP_CYC_SPINUP_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&TAG;_&PREP_CYC_SPINUP_TN;_ensinit{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr>&LOGDIR;/&PREP_CYC_SPINUP_TN;_ensinit_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -1062,7 +1062,7 @@ MODULES_RUN_TASK_FP script.
             <streq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></streq>
            {%- endfor %}
           </or>   
-          <taskdep task="&PREP_CYC_SPINUP_TN;{{ uscore_ensmem_name }}"/>
+          <taskdep task="&PREP_CYC_SPINUP_TN;_ensinit{{ uscore_ensmem_name }}"/>
         </and>  
     </dependency>
 
@@ -1111,7 +1111,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&PREP_CYC_SPINUP_TN;_ensinit{{ uscore_ensmem_name }}" cycledefs="spinupcyc" maxtries="{{ maxtries_run_prepstart }}">
+  <task name="&PREP_CYC_SPINUP_TN;{{ uscore_ensmem_name }}" cycledefs="spinupcyc" maxtries="{{ maxtries_run_prepstart }}">
 
     &RSRV_DEFAULT;
     &WALL_LIMIT_PRE;
@@ -1122,8 +1122,8 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_PREP_CYC;</walltime>
     &NODESIZE_ALL;
     &MEMO_PREP_CYC;
-    <jobname>&TAG;_&PREP_CYC_SPINUP_TN;_ensinit{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&PREP_CYC_SPINUP_TN;_ensinit_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&TAG;_&PREP_CYC_SPINUP_TN;{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr>&LOGDIR;/&PREP_CYC_SPINUP_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -1188,7 +1188,7 @@ MODULES_RUN_TASK_FP script.
       <and>
         {%- for m in range(1, num_ens_members+1) %}
         {%- if do_ensinit %}
-          <taskdep task="&PREP_CYC_SPINUP_TN;_ensinit_mem{{ "%04d" % m }}"/>
+          <taskdep task="&PREP_CYC_SPINUP_TN;_mem{{ "%04d" % m }}"/>
         {%- endif %}
         {%- endfor %}
         <datadep age="00:00:00:05"><cyclestr>&ENSCTRL_COMOUT;/@H_spinup/nonvarcldanl_complete.txt</cyclestr></datadep>
@@ -1909,7 +1909,6 @@ MODULES_RUN_TASK_FP script.
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
       <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
-      <envar><name>tmmark</name><value>tm00</value></envar>
       <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
@@ -1947,7 +1946,6 @@ MODULES_RUN_TASK_FP script.
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
       <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
-      <envar><name>tmmark</name><value>tm00</value></envar>
       <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
@@ -3061,7 +3059,6 @@ MODULES_RUN_TASK_FP script.
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
-      <envar><name>tmmark</name><value>tm00</value></envar>
       <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
@@ -3114,7 +3111,6 @@ MODULES_RUN_TASK_FP script.
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
-      <envar><name>tmmark</name><value>tm00</value></envar>
       <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
@@ -3166,7 +3162,6 @@ MODULES_RUN_TASK_FP script.
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
-      <envar><name>tmmark</name><value>tm00</value></envar>
       <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
@@ -3215,7 +3210,6 @@ MODULES_RUN_TASK_FP script.
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
-      <envar><name>tmmark</name><value>tm00</value></envar>
       <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>

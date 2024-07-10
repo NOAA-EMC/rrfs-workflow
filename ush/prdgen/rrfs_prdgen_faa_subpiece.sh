@@ -47,7 +47,7 @@ ifhrmn=${ifhr}${ifmn}
 
 if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
 
-  #-- fcst string in wrgib2 inv file. Set to "" for all ins & ave
+  #-- fcst string in wgrib2 inv file. Set to "" for all ins & ave
   fcstvar1="${ifhr} hour fcst"
 
   #-- hourly average instead of accumulation from "0"
@@ -82,12 +82,12 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
       wgrib2 -i ${COMOUT}/${prslev} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation bilinear \
-         -new_grid ${grid_specs_130} rrfs.t${cyc}z.prslevfaa.f${fhr}.conus13km.grib2
-      mv rrfs.t${cyc}z.prslevfaa.f${fhr}.conus13km.grib2 ${COMOUT}
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.conus13km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.conus13km.grib2.idx
+         -new_grid ${grid_specs_130} rrfs.t${cyc}z.prslevfaa.13km.f${fhr}.conus.grib2
+      mv rrfs.t${cyc}z.prslevfaa.13km.f${fhr}.conus.grib2 ${COMOUT}
+      wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslevfaa.13km.f${fhr}.conus.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslevfaa.13km.f${fhr}.conus.grib2.idx
 
       #-- add wmo header
-      infile=rrfs.t${cyc}z.prslevfaa.f${fhr}.conus13km.grib2
+      infile=rrfs.t${cyc}z.prslevfaa.13km.f${fhr}.conus.grib2
       ${USHrrfs}/rrfs.wmo-header.sh WARP ${fhr} ${cyc} ${infile} 130 ${parmdir} ${COMOUT}
     fi
 
@@ -95,12 +95,12 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
     if [ $ifhr -le 15 ]; then
       wgrib2 ${COMOUT}/${prslev} | grep -F -f rrfs.prslev-rrfs3km.params | \
       wgrib2 -i ${COMOUT}/${prslev} -set_bitmap 1 -set_grib_type c3 \
-         -grib  rrfs.t${cyc}z.prslev.f${fhr}.na3km.grib2
-      mv rrfs.t${cyc}z.prslev.f${fhr}.na3km.grib2 ${COMOUT}
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.na3km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.na3km.grib2.idx
+         -grib  rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2
+      mv rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2 ${COMOUT}
+      wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2.idx
 
       #-- add wmo header
-      infile=rrfs.t${cyc}z.prslev.f${fhr}.na3km.grib2
+      infile=rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2
       ${USHrrfs}/rrfs.wmo-header.sh AWIPS ${fhr} ${cyc} ${infile} na3km ${parmdir} ${COMOUT}
     fi
 
@@ -110,9 +110,9 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
       wgrib2 -i ${COMOUT}/${prslev} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation bilinear \
-         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.prslevfaa.f${fhr}.na13km.grib2
-      mv rrfs.t${cyc}z.prslevfaa.f${fhr}.na13km.grib2 ${COMOUT}
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.na13km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.na13km.grib2.idx
+         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.prslevfaa.13km.f${fhr}.na.grib2
+      mv rrfs.t${cyc}z.prslevfaa.13km.f${fhr}.na.grib2 ${COMOUT}
+      wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslevfaa.13km.f${fhr}.na.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslevfaa.13km.f${fhr}.na.grib2.idx
 
       #-- additional process for adding fields to the sub-hourly
       
@@ -121,8 +121,8 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
       wgrib2 -i ${COMOUT}/${prslev} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation bilinear \
-         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.prslevfaa.subh.f${ifhrmn}00.na13km.grib2
-      mv rrfs.t${cyc}z.prslevfaa.subh.f${ifhrmn}00.na13km.grib2 ${COMOUT}
+         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.prslevfaa.subh.13km.f${ifhrmn}00.na.grib2
+      mv rrfs.t${cyc}z.prslevfaa.subh.13km.f${ifhrmn}00.na.grib2 ${COMOUT}
     fi
 
     #-- GRID 237: PR 32 km
@@ -131,8 +131,8 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
       wgrib2 -i ${COMOUT}/${prslev} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation bilinear \
-         -new_grid ${grid_specs_237} rrfs.t${cyc}z.prslevfaa.f${fhr}.pr32km.grib2
-      mv rrfs.t${cyc}z.prslevfaa.f${fhr}.pr32km.grib2 ${COMOUT}
+         -new_grid ${grid_specs_237} rrfs.t${cyc}z.prslevfaa.32km.f${fhr}.pr.grib2
+      mv rrfs.t${cyc}z.prslevfaa.32km.f${fhr}.pr.grib2 ${COMOUT}
     fi
   fi
 
@@ -143,8 +143,8 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
     #wgrib2 -i ${COMOUT}/${natlev} -set_bitmap 1 -set_grib_type c3 \
     #   -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
     #   -new_grid_interpolation bilinear \
-    #   -new_grid ${grid_specs_130} rrfs.t${cyc}z.natlevfaa.f${fhr}.conus13km.grib2
-    #mv rrfs.t${cyc}z.natlevfaa.f${fhr}.conus13km.grib2 ${COMOUT}
+    #   -new_grid ${grid_specs_130} rrfs.t${cyc}z.natlevfaa.13km.f${fhr}.conus.grib2
+    #mv rrfs.t${cyc}z.natlevfaa.13km.f${fhr}.conus.grib2 ${COMOUT}
 
     #-- 13km Rotated Lat Lon
     if [ $ifhr -le 6 ]; then
@@ -152,17 +152,17 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
       wgrib2 -i ${COMOUT}/${natlev} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation bilinear \
-         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.grib2
+         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.natlevfaa.13km.f${fhr}.na.grib2
 
       wgrib2 ${COMOUT}/${natlev} -s | grep ":LTNG:entire atmosphere:" | \
       wgrib2 -i ${COMOUT}/${natlev} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation bilinear \
-         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.tmp.grib2
-      cat rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.tmp.grib2 >> rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.grib2
-      rm rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.tmp.grib2
-      mv rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.grib2 ${COMOUT}
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.natlevfaa.f${fhr}.na13km.grib2.idx
+         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.natlevfaa.13km.f${fhr}.na.tmp.grib2
+      cat rrfs.t${cyc}z.natlevfaa.13km.f${fhr}.na.tmp.grib2 >> rrfs.t${cyc}z.natlevfaa.13km.f${fhr}.na.grib2
+      rm rrfs.t${cyc}z.natlevfaa.13km.f${fhr}.na.tmp.grib2
+      mv rrfs.t${cyc}z.natlevfaa.13km.f${fhr}.na.grib2 ${COMOUT}
+      wgrib2 ${COMOUT}/rrfs.t${cyc}z.natlevfaa.13km.f${fhr}.na.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.natlevfaa.13km.f${fhr}.na.grib2.idx
     fi
 
     #-- GRID 237
@@ -171,19 +171,19 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
       #wgrib2 -i ${COMOUT}/${natlev} -set_bitmap 1 -set_grib_type c3 \
       #   -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
       #   -new_grid_interpolation bilinear \
-      #   -new_grid ${grid_specs_237} rrfs.t${cyc}z.natlevfaa.f${fhr}.pr32km.grib2
+      #   -new_grid ${grid_specs_237} rrfs.t${cyc}z.natlevfaa.32km.f${fhr}.pr.grib2
 
       wgrib2 ${COMOUT}/${natlev} -s | grep ":LTNG:entire atmosphere:" | \
       wgrib2 -i ${COMOUT}/${natlev} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation bilinear \
-         -new_grid ${grid_specs_237} rrfs.t${cyc}z.natlevfaa.f${fhr}.pr32km.tmp.grib2
-      #cat rrfs.t${cyc}z.natlevfaa.f${fhr}.pr32km.tmp.grib2 >> rrfs.t${cyc}z.natlevfaa.f${fhr}.pr32km.grib2
-      cat rrfs.t${cyc}z.natlevfaa.f${fhr}.pr32km.tmp.grib2 >> ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.pr32km.grib2
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.pr32km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.pr32km.grib2.idx
+         -new_grid ${grid_specs_237} rrfs.t${cyc}z.natlevfaa.32km.f${fhr}.pr.tmp.grib2
+      #cat rrfs.t${cyc}z.natlevfaa.32km.f${fhr}.pr.tmp.grib2 >> rrfs.t${cyc}z.natlevfaa.32km.f${fhr}.pr.grib2
+      cat rrfs.t${cyc}z.natlevfaa.32km.f${fhr}.pr.tmp.grib2 >> ${COMOUT}/rrfs.t${cyc}z.prslevfaa.32km.f${fhr}.pr.grib2
+      wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslevfaa.32km.f${fhr}.pr.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslevfaa.32km.f${fhr}.pr.grib2.idx
 
-      rm rrfs.t${cyc}z.natlevfaa.f${fhr}.pr32km.tmp.grib2
-      #mv rrfs.t${cyc}z.natlevfaa.f${fhr}.pr32km.grib2 ${COMOUT}
+      rm rrfs.t${cyc}z.natlevfaa.32km.f${fhr}.pr.tmp.grib2
+      #mv rrfs.t${cyc}z.natlevfaa.32km.f${fhr}.pr.grib2 ${COMOUT}
       
       #-- add wmo header
       infile=rrfs.t${cyc}z.prslevfaa.f${fhr}.pr32km.grib2
@@ -192,25 +192,25 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
     fi 
   fi
 
-  #if [[ -f ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.conus13km.grib2  || -f ${COMOUT}/rrfs.t${cyc}z.natlevfaa.f${fhr}.conus13km.grib2 ]]; then
-  #  cat ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.conus13km.grib2 ${COMOUT}/rrfs.t${cyc}z.natlevfaa.f${fhr}.conus13km.grib2 \
-  #      > ${COMOUT}/rrfs.t${cyc}z.f${fhr}.conus13km.grib2
-  #  rm ${COMOUT}/rrfs.t${cyc}z.prslevfaa.f${fhr}.conus13km.grib2 ${COMOUT}/rrfs.t${cyc}z.natlevfaa.f${fhr}.conus13km.grib2
-  #  wgrib2 ${COMOUT}/rrfs.t${cyc}z.f${fhr}.conus13km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.f${fhr}.conus13km.grib2.idx
+  #if [[ -f ${COMOUT}/rrfs.t${cyc}z.prslevfaa.13km.f${fhr}.conus.grib2  || -f ${COMOUT}/rrfs.t${cyc}z.natlevfaa.13km.f${fhr}.conus.grib2 ]]; then
+  #  cat ${COMOUT}/rrfs.t${cyc}z.prslevfaa.13km.f${fhr}.conus.grib2 ${COMOUT}/rrfs.t${cyc}z.natlevfaa.13km.f${fhr}.conus.grib2 \
+  #      > ${COMOUT}/rrfs.t${cyc}z.13km.f${fhr}.conus.grib2
+  #  rm ${COMOUT}/rrfs.t${cyc}z.prslevfaa.13km.f${fhr}.conus.grib2 ${COMOUT}/rrfs.t${cyc}z.natlevfaa.13km.f${fhr}.conus.grib2
+  #  wgrib2 ${COMOUT}/rrfs.t${cyc}z.13km.f${fhr}.conus.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.13km.f${fhr}.conus.grib2.idx
   #fi
 
-  #if [[ -f ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.rotate_13km.faa.grib2  || -f ${COMOUT}/rrfs.t${cyc}z.natlev.f${fhr}.rotate_13km.faa.grib2 ]]; then
-  #  cat ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.rotate_13km.faa.grib2 ${COMOUT}/rrfs.t${cyc}z.natlev.f${fhr}.rotate_13km.faa.grib2 \
-  #      > ${COMOUT}/rrfs.t${cyc}z.f${fhr}.rotate_13km.faa.grib2
-  #  rm ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.rotate_13km.faa.grib2 ${COMOUT}/rrfs.t${cyc}z.natlev.f${fhr}.rotate_13km.faa.grib2
-  #  wgrib2 ${COMOUT}/rrfs.t${cyc}z.f${fhr}.rotate_13km.faa.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.f${fhr}.rotate_13km.faa.grib2.idx
+  #if [[ -f ${COMOUT}/rrfs.t${cyc}z.prslev.13km.f${fhr}.rotll.faa.grib2  || -f ${COMOUT}/rrfs.t${cyc}z.natlev.13km.f${fhr}.rotll.faa.grib2 ]]; then
+  #  cat ${COMOUT}/rrfs.t${cyc}z.prslev.13km.f${fhr}.rotll.faa.grib2 ${COMOUT}/rrfs.t${cyc}z.natlev.13km.f${fhr}.rotll.faa.grib2 \
+  #      > ${COMOUT}/rrfs.t${cyc}z.13km.f${fhr}.rotll.faa.grib2
+  #  rm ${COMOUT}/rrfs.t${cyc}z.prslev.13km.f${fhr}.rotll.faa.grib2 ${COMOUT}/rrfs.t${cyc}z.natlev.13km.f${fhr}.rotll.faa.grib2
+  #  wgrib2 ${COMOUT}/rrfs.t${cyc}z.13km.f${fhr}.rotll.faa.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.13km.f${fhr}.rotll.faa.grib2.idx
   #fi
 
-  #if [[ -f ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.pr_32km.faa.grib2  || -f ${COMOUT}/rrfs.t${cyc}z.natlev.f${fhr}.pr_32km.faa.grib2 ]]; then
-  #  cat ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.pr_32km.faa.grib2 ${COMOUT}/rrfs.t${cyc}z.natlev.f${fhr}.pr_32km.faa.grib2 \
-  #      > ${COMOUT}/rrfs.t${cyc}z.f${fhr}.pr_32km.faa.grib2
-  #  rm ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.pr_32km.faa.grib2 ${COMOUT}/rrfs.t${cyc}z.natlev.f${fhr}.pr_32km.faa.grib2
-  #  wgrib2 ${COMOUT}/rrfs.t${cyc}z.f${fhr}.pr_32km.faa.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.f${fhr}.pr_32km.faa.grib2.idx
+  #if [[ -f ${COMOUT}/rrfs.t${cyc}z.prslev.32km.f${fhr}.pr.faa.grib2  || -f ${COMOUT}/rrfs.t${cyc}z.natlev.32km.f${fhr}.pr.faa.grib2 ]]; then
+  #  cat ${COMOUT}/rrfs.t${cyc}z.prslev.32km.f${fhr}.pr.faa.grib2 ${COMOUT}/rrfs.t${cyc}z.natlev.32km.f${fhr}.pr.faa.grib2 \
+  #      > ${COMOUT}/rrfs.t${cyc}z.32km.f${fhr}.pr.faa.grib2
+  #  rm ${COMOUT}/rrfs.t${cyc}z.prslev.32km.f${fhr}.pr.faa.grib2 ${COMOUT}/rrfs.t${cyc}z.natlev.32km.f${fhr}.pr.faa.grib2
+  #  wgrib2 ${COMOUT}/rrfs.t${cyc}z.32km.f${fhr}.pr.faa.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.32km.f${fhr}.pr.faa.grib2.idx
   #fi
 
 # GTG process
@@ -224,8 +224,8 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
   #       -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
   #       -new_grid_interpolation bilinear \
   #       -new_grid ${grid_specs_130} GTG_grid_130.grib2
-  #    mv GTG_grid_130.grib2 ${COMOUT}/rrfs.t${cyc}z.aviati.f${fhr}.conus13km.grib2
-  #    wgrib2 ${COMOUT}/rrfs.t${cyc}z.aviati.f${fhr}.conus13km.grib2  -s > ${COMOUT}/rrfs.t${cyc}z.aviati.f${fhr}.conus13km.grib2.idx
+  #    mv GTG_grid_130.grib2 ${COMOUT}/rrfs.t${cyc}z.aviati.13km.f${fhr}.conus.grib2
+  #    wgrib2 ${COMOUT}/rrfs.t${cyc}z.aviati.13km.f${fhr}.conus.grib2  -s > ${COMOUT}/rrfs.t${cyc}z.aviati.13km.f${fhr}.conus.grib2.idx
   #  fi
   #fi
 
@@ -238,8 +238,8 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation bilinear \
          -new_grid ${grid_specs_rrfs} GTG_grid_conus3km.grib2
-      mv GTG_grid_conus3km.grib2 ${COMOUT}/rrfs.t${cyc}z.aviati.f${fhr}.conus3km.grib2
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.aviati.f${fhr}.conus3km.grib2  -s > ${COMOUT}/rrfs.t${cyc}z.aviati.f${fhr}.conus3km.grib2.idx
+      mv GTG_grid_conus3km.grib2 ${COMOUT}/rrfs.t${cyc}z.aviati.3km.f${fhr}.conus.grib2
+      wgrib2 ${COMOUT}/rrfs.t${cyc}z.aviati.3km.f${fhr}.conus.grib2  -s > ${COMOUT}/rrfs.t${cyc}z.aviati.3km.f${fhr}.conus.grib2.idx
     fi
   fi
 
@@ -255,12 +255,12 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
     #     -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
     #     -new_grid_interpolation neighbor \
     #     -new_grid ${grid_specs_130} IFI_grid_130.grib2
-    #  mv IFI_grid_130.grib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.conus13km.grib2
-    #  wgrib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.conus13km.grib2  -s > ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.conus13km.grib2.idx
+    #  mv IFI_grid_130.grib2 ${COMOUT}/rrfs.t${cyc}z.ififip.13km.f${fhr}.conus.grib2
+    #  wgrib2 ${COMOUT}/rrfs.t${cyc}z.ififip.13km.f${fhr}.conus.grib2  -s > ${COMOUT}/rrfs.t${cyc}z.ififip.13km.f${fhr}.conus.grib2.idx
 
     #  #-- subset IFI data at every 304 m only at certain forcast hour
     #  if [ $ifhr = 1 -o  $ifhr = 2 -o  $ifhr = 3 -o  $ifhr = 6 -o  $ifhr = 9 -o  $ifhr = 12 -o  $ifhr = 15 -o  $ifhr = 18 ]; then
-    #    IFIFILE=rrfs.t${cyc}z.ififip.f${fhr}.conus13km.grib2
+    #    IFIFILE=rrfs.t${cyc}z.ififip.13km.f${fhr}.conus.grib2
     #    IFIDOMAIN=conus13km
     #    ${USHrrfs}/rrfs_subset_ifi_304m.sh $fhr $cyc ${COMOUT} ${IFIFILE} ${IFIDOMAIN} ${fixdir} ${parmdir}
     #  fi
@@ -274,12 +274,12 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation neighbor \
          -new_grid ${grid_specs_rrfs} IFI_grid_conus3km.grib2
-      mv IFI_grid_conus3km.grib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.conus3km.grib2
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.conus3km.grib2  -s > ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.conus3km.grib2.idx
+      mv IFI_grid_conus3km.grib2 ${COMOUT}/rrfs.t${cyc}z.ififip.3km.f${fhr}.conus.grib2
+      wgrib2 ${COMOUT}/rrfs.t${cyc}z.ififip.3km.f${fhr}.conus.grib2  -s > ${COMOUT}/rrfs.t${cyc}z.ififip.3km.f${fhr}.conus.grib2.idx
 
       #-- subset IFI data at every 304 m only at certain forcast hour
       if [ $ifhr = 1 -o  $ifhr = 2 -o  $ifhr = 3 -o  $ifhr = 6 -o  $ifhr = 9 -o  $ifhr = 12 -o  $ifhr = 15 -o  $ifhr = 18 ]; then
-        IFIFILE=rrfs.t${cyc}z.ififip.f${fhr}.conus3km.grib2
+        IFIFILE=rrfs.t${cyc}z.ififip.3km.f${fhr}.conus.grib2
         IFIDOMAIN=conus3km
         ${USHrrfs}/rrfs_subset_ifi_304m.sh $fhr $cyc ${COMOUT} ${IFIFILE} ${IFIDOMAIN} ${fixdir} ${parmdir}
       fi
@@ -291,9 +291,9 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
     #wgrib2 -i ${COMOUT}/${ififip} -set_bitmap 1 -set_grib_type c3 \
     #   -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
     #   -new_grid_interpolation neighbor \
-    #   -new_grid ${grid_specs_rrfs_13km} IFI_rotate_130.grib2
-    #mv IFI_rotate_130.grib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.rotate_13km.grib2
-    #wgrib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.rotate_13km.grib2  -s > ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.rotate_13km.grib2.idx
+    #   -new_grid ${grid_specs_rrfs_13km} IFI_rotll_130.grib2
+    #mv IFI_rotll_130.grib2 ${COMOUT}/rrfs.t${cyc}z.ififip.13km.f${fhr}.rotll.grib2
+    #wgrib2 ${COMOUT}/rrfs.t${cyc}z.ififip.13km.f${fhr}.rotll.grib2  -s > ${COMOUT}/rrfs.t${cyc}z.ififip.13km.f${fhr}.rotll.grib2.idx
 
     #-- GRID 91: AK 3km
     if [ $ifhr -le 18 ]; then
@@ -302,13 +302,13 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
       wgrib2 ${COMOUT}/${ififip} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation neighbor \
-         -new_grid ${grid_specs_91}  rrfs.t${cyc}z.ififip.f${fhr}.ak3km.grib2
-      mv rrfs.t${cyc}z.ififip.f${fhr}.ak3km.grib2 ${COMOUT}
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.ak3km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.ak3km.grib2.idx
+         -new_grid ${grid_specs_91}  rrfs.t${cyc}z.ififip.3km.f${fhr}.ak.grib2
+      mv rrfs.t${cyc}z.ififip.3km.f${fhr}.ak.grib2 ${COMOUT}
+      wgrib2 ${COMOUT}/rrfs.t${cyc}z.ififip.3km.f${fhr}.ak.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.ififip.3km.f${fhr}.ak.grib2.idx
 
       #-- subset IFI data at every 304 m only at certain forcast hour
       if [ $ifhr = 1 -o  $ifhr = 2 -o  $ifhr = 3 -o  $ifhr = 6 -o  $ifhr = 9 -o  $ifhr = 12 -o  $ifhr = 15 -o  $ifhr = 18 ]; then
-        IFIFILE=rrfs.t${cyc}z.ififip.f${fhr}.ak3km.grib2
+        IFIFILE=rrfs.t${cyc}z.ififip.3km.f${fhr}.ak.grib2
         IFIDOMAIN=ak3km
         ${USHrrfs}/rrfs_subset_ifi_304m.sh $fhr $cyc ${COMOUT} ${IFIFILE} ${IFIDOMAIN} ${fixdir} ${parmdir}
       fi
@@ -320,9 +320,9 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
     #wgrib2 ${COMOUT}/${ififip} -set_bitmap 1 -set_grib_type c3 \
     #   -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
     #   -new_grid_interpolation neighbor \
-    #   -new_grid ${grid_specs_237}  rrfs.t${cyc}z.ififip.f${fhr}.pr_32km.grib2
-    #mv rrfs.t${cyc}z.ififip.f${fhr}.pr_32km.grib2 ${COMOUT}
-    #wgrib2 ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.pr_32km.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.ififip.f${fhr}.pr_32km.grib2.idx
+    #   -new_grid ${grid_specs_237}  rrfs.t${cyc}z.ififip.32km.f${fhr}.pr.grib2
+    #mv rrfs.t${cyc}z.ififip.32km.f${fhr}.pr.grib2 ${COMOUT}
+    #wgrib2 ${COMOUT}/rrfs.t${cyc}z.ififip.32km.f${fhr}.pr.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.ififip.32km.f${fhr}.pr.grib2.idx
     
   fi
 
@@ -337,8 +337,8 @@ else     # sub-hourly upp data  (eg. f013-15-00)
       wgrib2 -i ${COMOUT}/${prslev} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation bilinear \
-         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.prslevfaa.subh.f${ifhrmn}.na13km.grib2
-      mv rrfs.t${cyc}z.prslevfaa.subh.f${ifhrmn}.na13km.grib2 ${COMOUT}
+         -new_grid ${grid_specs_rrfs_13km} rrfs.t${cyc}z.prslevfaa.subh.13km.f${ifhrmn}.na.grib2
+      mv rrfs.t${cyc}z.prslevfaa.subh.13km.f${ifhrmn}.na.grib2 ${COMOUT}
     fi
   fi
 fi
