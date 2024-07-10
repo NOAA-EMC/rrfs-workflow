@@ -199,11 +199,11 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
   #  wgrib2 ${COMOUT}/rrfs.t${cyc}z.13km.f${fhr}.conus.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.13km.f${fhr}.conus.grib2.idx
   #fi
 
-  #if [[ -f ${COMOUT}/rrfs.t${cyc}z.prslev.13km.f${fhr}.rotate.faa.grib2  || -f ${COMOUT}/rrfs.t${cyc}z.natlev.13km.f${fhr}.rotate.faa.grib2 ]]; then
-  #  cat ${COMOUT}/rrfs.t${cyc}z.prslev.13km.f${fhr}.rotate.faa.grib2 ${COMOUT}/rrfs.t${cyc}z.natlev.13km.f${fhr}.rotate.faa.grib2 \
-  #      > ${COMOUT}/rrfs.t${cyc}z.13km.f${fhr}.rotate.faa.grib2
-  #  rm ${COMOUT}/rrfs.t${cyc}z.prslev.13km.f${fhr}.rotate.faa.grib2 ${COMOUT}/rrfs.t${cyc}z.natlev.13km.f${fhr}.rotate.faa.grib2
-  #  wgrib2 ${COMOUT}/rrfs.t${cyc}z.13km.f${fhr}.rotate.faa.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.13km.f${fhr}.rotate.faa.grib2.idx
+  #if [[ -f ${COMOUT}/rrfs.t${cyc}z.prslev.13km.f${fhr}.rotll.faa.grib2  || -f ${COMOUT}/rrfs.t${cyc}z.natlev.13km.f${fhr}.rotll.faa.grib2 ]]; then
+  #  cat ${COMOUT}/rrfs.t${cyc}z.prslev.13km.f${fhr}.rotll.faa.grib2 ${COMOUT}/rrfs.t${cyc}z.natlev.13km.f${fhr}.rotll.faa.grib2 \
+  #      > ${COMOUT}/rrfs.t${cyc}z.13km.f${fhr}.rotll.faa.grib2
+  #  rm ${COMOUT}/rrfs.t${cyc}z.prslev.13km.f${fhr}.rotll.faa.grib2 ${COMOUT}/rrfs.t${cyc}z.natlev.13km.f${fhr}.rotll.faa.grib2
+  #  wgrib2 ${COMOUT}/rrfs.t${cyc}z.13km.f${fhr}.rotll.faa.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.13km.f${fhr}.rotll.faa.grib2.idx
   #fi
 
   #if [[ -f ${COMOUT}/rrfs.t${cyc}z.prslev.32km.f${fhr}.pr.faa.grib2  || -f ${COMOUT}/rrfs.t${cyc}z.natlev.32km.f${fhr}.pr.faa.grib2 ]]; then
@@ -291,9 +291,9 @@ if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
     #wgrib2 -i ${COMOUT}/${ififip} -set_bitmap 1 -set_grib_type c3 \
     #   -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
     #   -new_grid_interpolation neighbor \
-    #   -new_grid ${grid_specs_rrfs_13km} IFI_rotate_130.grib2
-    #mv IFI_rotate_130.grib2 ${COMOUT}/rrfs.t${cyc}z.ififip.13km.f${fhr}.rotate.grib2
-    #wgrib2 ${COMOUT}/rrfs.t${cyc}z.ififip.13km.f${fhr}.rotate.grib2  -s > ${COMOUT}/rrfs.t${cyc}z.ififip.13km.f${fhr}.rotate.grib2.idx
+    #   -new_grid ${grid_specs_rrfs_13km} IFI_rotll_130.grib2
+    #mv IFI_rotll_130.grib2 ${COMOUT}/rrfs.t${cyc}z.ififip.13km.f${fhr}.rotll.grib2
+    #wgrib2 ${COMOUT}/rrfs.t${cyc}z.ififip.13km.f${fhr}.rotll.grib2  -s > ${COMOUT}/rrfs.t${cyc}z.ififip.13km.f${fhr}.rotll.grib2.idx
 
     #-- GRID 91: AK 3km
     if [ $ifhr -le 18 ]; then

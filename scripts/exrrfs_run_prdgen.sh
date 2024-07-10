@@ -382,14 +382,14 @@ EOF
   export err=$?; err_chk
 
   grid_specs_firewx=`head $DATA/copygb_gridnavfw.txt`
-  eval infile=${DATA}/${net4}.t${cyc}z.prslev.1p5km.f${fhr}.firewx.grib2
+  eval infile=${DATA}/${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx.grib2
 
   wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
    -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
    -new_grid_interpolation neighbor \
    -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
-   -new_grid ${grid_specs_firewx} ${COMOUT}/rrfs.t${cyc}z.prslev.1p5km.f${fhr}.firewx_lcc.grib2
-  wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.1p5km.f${fhr}.firewx_lcc.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.1p5km.f${fhr}.firewx_lcc.grib2.idx
+   -new_grid ${grid_specs_firewx} ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2
+  wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2.idx
 
 else
   #
