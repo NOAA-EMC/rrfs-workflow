@@ -118,7 +118,7 @@ define resources used for each tasks
 <!ENTITY RESOURCES_PRDGEN "<nodes>{{ nnodes_prdgen }}:ppn={{ ppn_prdgen }}</nodes>">
 <!ENTITY NODESIZE_ALL    "<nodesize>{{ ncores_per_node }}</nodesize>">
 <!ENTITY NATIVE_ALL    "">
-<!ENTITY NATIVE_FORECAST    "<native>{{ native_run_forecast }} &RRFS_RESERVE;</native>">
+<!ENTITY NATIVE_FORECAST    "<native>{{ native_forecast }} &RRFS_RESERVE;</native>">
 {%- elif machine in ["HERA"] %}
 <!ENTITY RESOURCES_MAKE_ICS "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}</nodes>">
 <!ENTITY RESOURCES_MAKE_LBCS "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
