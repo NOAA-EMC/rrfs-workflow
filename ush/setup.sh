@@ -225,23 +225,23 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Make sure that RUN_TASK_RUN_PRDGEN is set to a valid value.
+# Make sure that RUN_TASK_PRDGEN is set to a valid value.
 #
 #-----------------------------------------------------------------------
 #
 check_var_valid_value \
-  "RUN_TASK_RUN_PRDGEN" "valid_vals_RUN_TASK_RUN_PRDGEN"
+  "RUN_TASK_PRDGEN" "valid_vals_RUN_TASK_PRDGEN"
 #
-# Set RUN_TASK_RUN_PRDGEN to either "TRUE" or "FALSE" so we don't
+# Set RUN_TASK_PRDGEN to either "TRUE" or "FALSE" so we don't
 # have to consider other valid values later on.
 #
-RUN_TASK_RUN_PRDGEN=${RUN_TASK_RUN_PRDGEN^^}
-if [ "${RUN_TASK_RUN_PRDGEN}" = "TRUE" ] || \
-   [ "${RUN_TASK_RUN_PRDGEN}" = "YES" ]; then
-  RUN_TASK_RUN_PRDGEN="TRUE"
-elif [ "${RUN_TASK_RUN_PRDGEN}" = "FALSE" ] || \
-     [ "${RUN_TASK_RUN_PRDGEN}" = "NO" ]; then
-  RUN_TASK_RUN_PRDGEN="FALSE"
+RUN_TASK_PRDGEN=${RUN_TASK_PRDGEN^^}
+if [ "${RUN_TASK_PRDGEN}" = "TRUE" ] || \
+   [ "${RUN_TASK_PRDGEN}" = "YES" ]; then
+  RUN_TASK_PRDGEN="TRUE"
+elif [ "${RUN_TASK_PRDGEN}" = "FALSE" ] || \
+     [ "${RUN_TASK_PRDGEN}" = "NO" ]; then
+  RUN_TASK_PRDGEN="FALSE"
 fi
 #
 #-----------------------------------------------------------------------
@@ -553,7 +553,7 @@ case $MACHINE in
     SCHED="pbspro"
     QUEUE_DEFAULT=${QUEUE_DEFAULT:-"dev"}
     QUEUE_HPSS=${QUEUE_HPSS:-"dev_transfer"}
-    QUEUE_FCST=${QUEUE_FCST:-"dev"}
+    QUEUE_FORECAST=${QUEUE_FORECAST:-"dev"}
     QUEUE_ANALYSIS=${QUEUE_ANALYSIS:-"dev"}
     QUEUE_PRDGEN=${QUEUE_PRDGEN:-"dev"}
     QUEUE_POST=${QUEUE_POST:-"dev"}
@@ -566,8 +566,8 @@ case $MACHINE in
     QUEUE_DEFAULT=${QUEUE_DEFAULT:-"batch"}
     PARTITION_HPSS=${PARTITION_HPSS:-"service"}
     QUEUE_HPSS=${QUEUE_HPSS:-"batch"}
-    PARTITION_FCST=${PARTITION_FCST:-"hera"}
-    QUEUE_FCST=${QUEUE_FCST:-"batch"}
+    PARTITION_FORECAST=${PARTITION_FORECAST:-"hera"}
+    QUEUE_FORECAST=${QUEUE_FORECAST:-"batch"}
     QUEUE_PRDGEN=${QUEUE_PRDGEN:-"batch"}
     QUEUE_POST=${QUEUE_POST:-"batch"}
     ;;
@@ -579,8 +579,8 @@ case $MACHINE in
     QUEUE_DEFAULT=${QUEUE_DEFAULT:-"batch"}
     PARTITION_HPSS=${PARTITION_HPSS:-"service"}
     QUEUE_HPSS=${QUEUE_HPSS:-"batch"}
-    PARTITION_FCST=${PARTITION_FCST:-"orion"}
-    QUEUE_FCST=${QUEUE_FCST:-"batch"}
+    PARTITION_FORECAST=${PARTITION_FORECAST:-"orion"}
+    QUEUE_FORECAST=${QUEUE_FORECAST:-"batch"}
     ;;
 
   "HERCULES")
@@ -590,8 +590,8 @@ case $MACHINE in
     QUEUE_DEFAULT=${QUEUE_DEFAULT:-"batch"}
     PARTITION_HPSS=${PARTITION_HPSS:-"service"}
     QUEUE_HPSS=${QUEUE_HPSS:-"batch"}
-    PARTITION_FCST=${PARTITION_FCST:-"hercules"}
-    QUEUE_FCST=${QUEUE_FCST:-"batch"}
+    PARTITION_FORECAST=${PARTITION_FORECAST:-"hercules"}
+    QUEUE_FORECAST=${QUEUE_FORECAST:-"batch"}
     ;;
 
   "JET")
@@ -601,8 +601,8 @@ case $MACHINE in
     QUEUE_DEFAULT=${QUEUE_DEFAULT:-"batch"}
     PARTITION_HPSS=${PARTITION_HPSS:-"service"}
     QUEUE_HPSS=${QUEUE_HPSS:-"batch"}
-    PARTITION_FCST=${PARTITION_FCST:-"sjet,vjet,kjet,xjet"}
-    QUEUE_FCST=${QUEUE_FCST:-"batch"}
+    PARTITION_FORECAST=${PARTITION_FORECAST:-"sjet,vjet,kjet,xjet"}
+    QUEUE_FORECAST=${QUEUE_FORECAST:-"batch"}
     PARTITION_ANALYSIS=${PARTITION_ANALYSIS:-"vjet,kjet,xjet"}
     QUEUE_ANALYSIS=${QUEUE_ANALYSIS:-"batch"}
     PARTITION_PRDGEN=${PARTITION_PRDGEN:-"sjet,vjet,kjet,xjet"}
@@ -1270,7 +1270,7 @@ check_for_preexist_dir_file "$EXPTDIR" "${PREEXISTING_DIR_METHOD}"
 #
 # COMROOT:
 # This is the full path to the "com" directory under which 
-# output from the RUN_POST_TN task will be placed.  Note that this output
+# output from the POST_TN task will be placed.  Note that this output
 # is not placed directly under COMROOT but several directories further
 # down.  More specifically, for a cycle starting at yyyymmddhh, it is at
 #
@@ -2018,25 +2018,25 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Calculate the number of nodes (NNODES_RUN_FCST) to request from the job
-# scheduler for the forecast task (RUN_FCST_TN).  This is just PE_MEMBER01
+# Calculate the number of nodes (NNODES_FORECAST) to request from the job
+# scheduler for the forecast task (FORECAST_TN).  This is just PE_MEMBER01
 # dividied by the number of processes per node we want to request for this
-# task (PPN_RUN_FCST), then rounded up to the nearest integer, i.e.
+# task (PPN_FORECAST), then rounded up to the nearest integer, i.e.
 #
-#   NNODES_RUN_FCST = ceil(PE_MEMBER01/PPN_RUN_FCST)
+#   NNODES_FORECAST = ceil(PE_MEMBER01/PPN_FORECAST)
 #
 # where ceil(...) is the ceiling function, i.e. it rounds its floating
 # point argument up to the next larger integer.  Since in bash, division
 # of two integers returns a truncated integer, and since bash has no
 # built-in ceil(...) function, we perform the rounding-up operation by
 # adding the denominator (of the argument of ceil(...) above) minus 1 to
-# the original numerator, i.e. by redefining NNODES_RUN_FCST to be
+# the original numerator, i.e. by redefining NNODES_FORECAST to be
 #
-#   NNODES_RUN_FCST = (PE_MEMBER01 + PPN_RUN_FCST - 1)/PPN_RUN_FCST
+#   NNODES_FORECAST = (PE_MEMBER01 + PPN_FORECAST - 1)/PPN_FORECAST
 #
 #-----------------------------------------------------------------------
 #
-NNODES_RUN_FCST=$(( (PE_MEMBER01 + PPN_RUN_FCST - 1)/PPN_RUN_FCST ))
+NNODES_FORECAST=$(( (PE_MEMBER01 + PPN_FORECAST - 1)/PPN_FORECAST ))
 
 #
 #-----------------------------------------------------------------------

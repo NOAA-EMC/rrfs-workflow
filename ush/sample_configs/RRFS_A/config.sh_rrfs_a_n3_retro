@@ -99,7 +99,7 @@ binary_diag=.false.
 
 #LAYOUT_X="43"
 #LAYOUT_Y="64"
-#NNODES_RUN_FCST="52"
+#NNODES_FORECAST="52"
 #WRTCMP_write_groups="3"
 #WRTCMP_write_tasks_per_group="192"
 

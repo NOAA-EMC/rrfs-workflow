@@ -58,7 +58,7 @@ version="0.1.0"
 # If using the slurm job scheduler (i.e. if SCHED is set to "slurm"), 
 # the default partition to which to submit workflow tasks.  If a task 
 # does not have a specific variable that specifies the partition to which 
-# it will be submitted (e.g. PARTITION_HPSS, PARTITION_FCST; see below), 
+# it will be submitted (e.g. PARTITION_HPSS, PARTITION_FORECAST; see below), 
 # it will be submitted to the partition specified by this variable.  If 
 # this is not set or is set to an empty string, it will be (re)set to a 
 # machine-dependent value.  This is not used if SCHED is not set to 
@@ -68,7 +68,7 @@ version="0.1.0"
 # The default queue or QOS (if using the slurm job scheduler, where QOS
 # is Quality of Service) to which workflow tasks are submitted.  If a 
 # task does not have a specific variable that specifies the queue to which 
-# it will be submitted (e.g. QUEUE_HPSS, QUEUE_FCST; see below), it will 
+# it will be submitted (e.g. QUEUE_HPSS, QUEUE_FORECAST; see below), it will 
 # be submitted to the queue specified by this variable.  If this is not 
 # set or is set to an empty string, it will be (re)set to a machine-
 # dependent value.
@@ -95,14 +95,14 @@ version="0.1.0"
 # wil be (re)set to a machine-dependent value.  This is not used if SCHED
 # is not set to "slurm."
 #
-# PARTITION_FCST:
+# PARTITION_FORECAST:
 # If using the slurm job scheduler (i.e. if SCHED is set to "slurm"), 
 # the partition to which the task that runs forecasts is submitted.  If 
 # this is not set or set to an empty string, it will be (re)set to a 
 # machine-dependent value.  This is not used if SCHED is not set to 
 # "slurm".
 #
-# QUEUE_FCST:
+# QUEUE_FORECAST:
 # The queue or QOS to which the task that runs a forecast is submitted.  
 # If this is not set or set to an empty string, it will be (re)set to a 
 # machine-dependent value.
@@ -157,8 +157,8 @@ QUEUE_DEFAULT=""
 PARTITION_HPSS=""
 QUEUE_HPSS=""
 PARTITION_SFC_CLIMO=""
-PARTITION_FCST=""
-QUEUE_FCST=""
+PARTITION_FORECAST=""
+QUEUE_FORECAST=""
 PARTITION_ANALYSIS=""
 QUEUE_ANALYSIS=""
 PARTITION_PRDGEN=""
@@ -648,13 +648,13 @@ CYCL_HRS_HYB_FV3LAM_ENS=( "99" )
 #
 # SPINUP_CYCLEDEF:
 # cycle definition for spin-up cycle group
-# This group runs: anal_gsi_input_spinup and data process, run_fcst_spinup, 
-# run_post_spinup
+# This group runs: anal_gsi_input_spinup and data process, forecast_spinup, 
+# post_spinup
 #
 # PROD_CYCLEDEF:
 # cycle definition for product cycle group
-# This group runs: anal_gsi_input and data process, run_fcst, python_skewt, 
-# run_post, run_clean
+# This group runs: anal_gsi_input and data process, forecast, python_skewt, 
+# post, run_clean
 #
 # SAVEDA_CYCLEDEF:
 # cycle definition for saving DA output files
@@ -1312,7 +1312,7 @@ ESGgrid_PAZI=""
 # WRITE_DOPOST:
 # Flag that determines whether or not to use the inline post feature
 # [i.e. calling the Unified Post Processor (UPP) from within the
-# weather model].  If this is set to true, the the run_post task will
+# weather model].  If this is set to true, the the post task will
 # be deactivated.
 #-----------------------------------------------------------------------
 #
@@ -1518,7 +1518,7 @@ SAVE_CYCLE_LOG="TRUE"
 # SFC_CLIMO_DIR:
 # Same as GRID_DIR but for the surface climatology generation task.
 #
-# RUN_TASK_RUN_PRDGEN:
+# RUN_TASK_PRDGEN:
 # Flag that determines whether the product generation task is to run.
 #
 # IS_RTMA:
@@ -1545,7 +1545,7 @@ OROG_DIR=""
 RUN_TASK_MAKE_SFC_CLIMO="FALSE"
 SFC_CLIMO_DIR=""
 
-RUN_TASK_RUN_PRDGEN="TRUE"
+RUN_TASK_PRDGEN="TRUE"
 #
 NCORES_PER_NODE=24 #Jet default value
 IS_RTMA="FALSE"
@@ -1794,9 +1794,9 @@ GET_GEFS_LBCS_TN="get_gefs_lbcs"
 MAKE_ICS_TN="make_ics"
 BLEND_ICS_TN="blend_ics"
 MAKE_LBCS_TN="make_lbcs"
-RUN_FCST_TN="run_fcst"
-RUN_POST_TN="run_post"
-RUN_PRDGEN_TN="run_prdgen"
+FORECAST_TN="forecast"
+POST_TN="post"
+PRDGEN_TN="prdgen"
 RUN_BUFRSND_TN="run_bufrsnd"
 
 ANALYSIS_GSI_TN="analysis_gsi_input"
@@ -1830,9 +1830,9 @@ NNODES_MAKE_ICS="4"
 NNODES_BLEND_ICS="1"
 NNODES_MAKE_LBCS="4"
 NNODES_RUN_PREPSTART="1"
-NNODES_RUN_FCST=""  # This is calculated in the workflow generation scripts, so no need to set here.
-NNODES_RUN_POST="2"
-NNODES_RUN_PRDGEN="1"
+NNODES_FORECAST=""  # This is calculated in the workflow generation scripts, so no need to set here.
+NNODES_POST="2"
+NNODES_PRDGEN="1"
 NNODES_RUN_ANALYSIS="16"
 NNODES_RUN_GSIDIAG="1"
 NNODES_RUN_POSTANAL="1"
@@ -1853,7 +1853,7 @@ NNODES_SAVE_RESTART="1"
 NCORES_RUN_ANALYSIS="4"
 NCORES_RUN_OBSERVER="4"
 NCORES_RUN_ENKF="4"
-NATIVE_RUN_FCST="--cpus-per-task 2 --exclusive"
+NATIVE_FORECAST="--cpus-per-task 2 --exclusive"
 NATIVE_RUN_ANALYSIS="--cpus-per-task 2 --exclusive"
 NATIVE_RUN_ENKF="--cpus-per-task 4 --exclusive"
 #
@@ -1868,9 +1868,9 @@ PPN_MAKE_ICS="12"
 PPN_BLEND_ICS="8"
 PPN_MAKE_LBCS="12"
 PPN_RUN_PREPSTART="1"
-PPN_RUN_FCST="24"  # This may have to be changed depending on the number of threads used.
-PPN_RUN_POST="24"
-PPN_RUN_PRDGEN="1"
+PPN_FORECAST="24"  # This may have to be changed depending on the number of threads used.
+PPN_POST="24"
+PPN_PRDGEN="1"
 PPN_RUN_ANALYSIS="24"
 PPN_RUN_GSIDIAG="24"
 PPN_RUN_POSTANAL="1"
@@ -1892,8 +1892,8 @@ TPP_MAKE_ICS="1"
 TPP_MAKE_LBCS="2"
 TPP_RUN_ANALYSIS="1"
 TPP_RUN_ENKF="1"
-TPP_RUN_FCST="1"
-TPP_RUN_POST="1"
+TPP_FORECAST="1"
+TPP_POST="1"
 TPP_RUN_BUFRSND="1"
 #
 # Walltimes.
@@ -1908,11 +1908,11 @@ WTIME_BLEND_ICS="00:30:00"
 WTIME_MAKE_LBCS="01:30:00"
 WTIME_RUN_PREPSTART="00:10:00"
 WTIME_RUN_PREPSTART_ENSMEAN="00:10:00"
-WTIME_RUN_FCST="00:30:00"
-WTIME_RUN_FCST_LONG="04:30:00"
-WTIME_RUN_FCST_SPINUP="00:30:00"
-WTIME_RUN_POST="00:15:00"
-WTIME_RUN_PRDGEN="00:40:00"
+WTIME_FORECAST="00:30:00"
+WTIME_FORECAST_LONG="04:30:00"
+WTIME_FORECAST_SPINUP="00:30:00"
+WTIME_POST="00:15:00"
+WTIME_PRDGEN="00:40:00"
 WTIME_RUN_ANALYSIS="00:30:00"
 WTIME_RUN_GSIDIAG="00:15:00"
 WTIME_RUN_POSTANAL="00:30:00"
@@ -1946,7 +1946,7 @@ MEMO_RUN_PROCESSBUFR="20G"
 MEMO_RUN_REF2TTEN="20G"
 MEMO_RUN_NONVARCLDANL="20G"
 MEMO_RUN_PREPSTART="24G"
-MEMO_RUN_PRDGEN="24G"
+MEMO_PRDGEN="24G"
 MEMO_PREP_CYC="40G"
 MEMO_SAVE_RESTART="40G"
 MEMO_SAVE_INPUT="40G"
@@ -1965,12 +1965,12 @@ MAXTRIES_MAKE_ICS="2"
 MAXTRIES_BLEND_ICS="2"
 MAXTRIES_MAKE_LBCS="2"
 MAXTRIES_RUN_PREPSTART="1"
-MAXTRIES_RUN_FCST="1"
+MAXTRIES_FORECAST="1"
 MAXTRIES_ANALYSIS_GSI="1"
 MAXTRIES_POSTANAL="1"
 MAXTRIES_ANALYSIS_ENKF="1"
-MAXTRIES_RUN_POST="2"
-MAXTRIES_RUN_PRDGEN="1"
+MAXTRIES_POST="2"
+MAXTRIES_PRDGEN="1"
 MAXTRIES_RUN_ANALYSIS="1"
 MAXTRIES_RUN_POSTANAL="1"
 MAXTRIES_RECENTER="1"

@@ -8,14 +8,14 @@ if [[ -n $RESERVATION ]] ; then
   ACCOUNT=rtrr
   SERVICE_ACCOUNT=nrtrr
   PARTITION_DEFAULT=kjet
-  PARTITION_FCST=kjet
+  PARTITION_FORECAST=kjet
   PARTITION_ANALYSIS=kjet
 fi
 
 if [[ $MACHINE == "hera" ]] ; then
   ACCOUNT="wrfruc"
   PARTITION_DEFAULT=""
-  PARTITION_FCST=""
+  PARTITION_FORECAST=""
   QUEUE_ANALYSIS="batch"
 
 # for using RAP as boundary and initial
@@ -109,11 +109,11 @@ if [[ -n $RESERVATION ]] ; then
   PPN_MAKE_ICS="20"
   NNODES_MAKE_LBCS="3"
   PPN_MAKE_LBCS="20"
-  NNODES_RUN_POST="1"
-  PPN_RUN_POST="40"
+  NNODES_POST="1"
+  PPN_POST="40"
 fi
 
-WTIME_RUN_FCST="03:00:00"
+WTIME_FORECAST="03:00:00"
 DT_ATMOS=40
 
 EXTRN_MDL_NAME_ICS="RAP"

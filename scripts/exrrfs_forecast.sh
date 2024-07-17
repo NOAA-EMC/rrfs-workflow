@@ -71,7 +71,7 @@ ulimit -a
 case $MACHINE in
 
   "WCOSS2")
-    OMP_NUM_THREADS=${TPP_RUN_FCST}
+    OMP_NUM_THREADS=${TPP_FORECAST}
     OMP_STACKSIZE=1G
     export MPICH_ABORT_ON_ERROR=1
     export MALLOC_MMAP_MAX_=0
@@ -83,7 +83,7 @@ case $MACHINE in
     export MPICH_OFI_STARTUP_CONNECT=1
     export MPICH_OFI_VERBOSE=1
     export MPICH_OFI_NIC_VERBOSE=1
-    APRUN="mpiexec -n ${PE_MEMBER01} -ppn ${PPN_RUN_FCST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
+    APRUN="mpiexec -n ${PE_MEMBER01} -ppn ${PPN_FORECAST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
     ;;
 
   "HERA")

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #-----------------------------------------------------------------------
-# RRFS Product Generation
+# RRFS Forecast
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
@@ -40,12 +40,13 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs wgrib2 on the output
-files corresponding to a specified forecast hour.
+This is the J-job script for the task that runs a forecast with FV3 for 
+the specified cycle.
 ========================================================================"
 
 #-----------------------------------------------------------------------
 # Obtain unique process id (pid) and create the run directory (DATA).
+# Create the INPUT and RESTART directories under the run directory.
 #-----------------------------------------------------------------------
 
 export pid=${pid:-$$}
@@ -54,33 +55,36 @@ export RUN=${RUN:-rrfs}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
 
-CYCLE_TYPE=${CYCLE_TYPE:-prod}
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  jobid=${RUN}_post_spinup_${envir}_${cyc}_f${fhr}
+export CYCLE_TYPE=${CYCLE_TYPE:-prod}
+export CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
+
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then	# EnKF has spinup forecasts
+    export jobid=${RUN}_forecast_spinup_${mem_num}_${envir}_${cyc}
+    if  [ ${CYCLE_SUBTYPE} == "ensinit" ]; then
+      export jobid=${RUN}_forecast_ensinit_${mem_num}_${envir}_${cyc}
+    fi
+  else
+    export jobid=${RUN}_forecast_spinup_${envir}_${cyc}
+  fi
 else
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    jobid=${RUN}_post_${mem_num}_${envir}_${cyc}_f${fhr}
+    export jobid=${RUN}_forecast_${mem_num}_${envir}_${cyc}
   else
-    jobid=${RUN}_post_${envir}_${cyc}_f${fhr}
+    export jobid=${RUN}_forecast_${envir}_${cyc}
   fi
 fi
 
 export DATA=${DATAROOT}/${jobid}
 mkdir -p ${DATA}
+
+mkdir -p ${DATA}/INPUT
+mkdir -p ${DATA}/RESTART
+
+export gridspec_dir=${GESROOT}/grid_spec
+mkdir -p ${gridspec_dir}
+
 cd ${DATA}
-
-#-----------------------------------------------------------------------
-# Define COM directories
-#-----------------------------------------------------------------------
-
-export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
-fi
-if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  export COMOUT=${COMOUT}/${mem_num}
-fi
-mkdir -p "${COMOUT}"
 
 #-----------------------------------------------------------------------
 # Execute the script.
@@ -89,7 +93,7 @@ mkdir -p "${COMOUT}"
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_run_prdgen.sh
+$SCRIPTSdir/exrrfs_forecast.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

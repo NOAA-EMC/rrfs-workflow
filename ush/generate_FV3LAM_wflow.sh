@@ -173,8 +173,8 @@ settings="\
   'partition_hpss': ${PARTITION_HPSS}
   'queue_hpss': ${QUEUE_HPSS}
   'partition_sfc_climo': ${PARTITION_SFC_CLIMO}
-  'partition_fcst': ${PARTITION_FCST}
-  'queue_fcst': ${QUEUE_FCST}
+  'partition_forecast': ${PARTITION_FORECAST}
+  'queue_forecast': ${QUEUE_FORECAST}
   'machine': ${MACHINE}
   'partition_analysis': ${PARTITION_ANALYSIS}
   'queue_analysis': ${QUEUE_ANALYSIS}
@@ -195,9 +195,9 @@ settings="\
   'make_ics_tn': ${MAKE_ICS_TN}
   'blend_ics_tn': ${BLEND_ICS_TN}
   'make_lbcs_tn': ${MAKE_LBCS_TN}
-  'run_fcst_tn': ${RUN_FCST_TN}
-  'run_post_tn': ${RUN_POST_TN}
-  'run_prdgen_tn': ${RUN_PRDGEN_TN}
+  'forecast_tn': ${FORECAST_TN}
+  'post_tn': ${POST_TN}
+  'prdgen_tn': ${PRDGEN_TN}
   'analysis_gsi': ${ANALYSIS_GSI_TN}
   'analysis_gsidiag': ${ANALYSIS_GSIDIAG_TN}
   'post_anal': ${POSTANAL_TN}
@@ -233,14 +233,14 @@ settings="\
   'nnodes_blend_ics': ${NNODES_BLEND_ICS}
   'nnodes_make_lbcs': ${NNODES_MAKE_LBCS}
   'nnodes_run_prepstart': ${NNODES_RUN_PREPSTART}
-  'nnodes_run_fcst': ${NNODES_RUN_FCST}
+  'nnodes_forecast': ${NNODES_FORECAST}
   'nnodes_run_analysis': ${NNODES_RUN_ANALYSIS}
   'nnodes_run_gsidiag': ${NNODES_RUN_GSIDIAG}
   'nnodes_run_postanal': ${NNODES_RUN_POSTANAL}
   'nnodes_run_enkf': ${NNODES_RUN_ENKF}
   'nnodes_run_recenter': ${NNODES_RUN_RECENTER}
-  'nnodes_run_post': ${NNODES_RUN_POST}
-  'nnodes_run_prdgen': ${NNODES_RUN_PRDGEN}
+  'nnodes_post': ${NNODES_POST}
+  'nnodes_prdgen': ${NNODES_PRDGEN}
   'nnodes_proc_radar': ${NNODES_PROC_RADAR}
   'nnodes_proc_glmfed': ${NNODES_PROC_GLMFED}
   'nnodes_proc_bufr': ${NNODES_PROC_BUFR}
@@ -253,8 +253,8 @@ settings="\
 #
 # Number of cores used for a task
 #
-  'ncores_run_fcst': ${PE_MEMBER01}
-  'native_run_fcst': ${NATIVE_RUN_FCST}
+  'ncores_forecast': ${PE_MEMBER01}
+  'native_forecast': ${NATIVE_FORECAST}
   'ncores_run_analysis': ${NCORES_RUN_ANALYSIS}
   'ncores_run_observer': ${NCORES_RUN_OBSERVER}
   'native_run_analysis': ${NATIVE_RUN_ANALYSIS}
@@ -273,14 +273,14 @@ settings="\
   'ppn_blend_ics': ${PPN_BLEND_ICS}
   'ppn_make_lbcs': ${PPN_MAKE_LBCS}
   'ppn_run_prepstart': ${PPN_RUN_PREPSTART}
-  'ppn_run_fcst': ${PPN_RUN_FCST}
+  'ppn_forecast': ${PPN_FORECAST}
   'ppn_run_analysis': ${PPN_RUN_ANALYSIS}
   'ppn_run_gsidiag': ${PPN_RUN_GSIDIAG}
   'ppn_run_postanal': ${PPN_RUN_POSTANAL}
   'ppn_run_enkf': ${PPN_RUN_ENKF}
   'ppn_run_recenter': ${PPN_RUN_RECENTER}
-  'ppn_run_post': ${PPN_RUN_POST}
-  'ppn_run_prdgen': ${PPN_RUN_PRDGEN}
+  'ppn_post': ${PPN_POST}
+  'ppn_prdgen': ${PPN_PRDGEN}
   'ppn_proc_radar': ${PPN_PROC_RADAR}
   'ppn_proc_glmfed': ${PPN_PROC_GLMFED}
   'ppn_proc_bufr': ${PPN_PROC_BUFR}
@@ -295,8 +295,8 @@ settings="\
   'tpp_make_lbcs': ${TPP_MAKE_LBCS}
   'tpp_run_analysis': ${TPP_RUN_ANALYSIS}
   'tpp_run_enkf': ${TPP_RUN_ENKF}
-  'tpp_run_fcst': ${TPP_RUN_FCST}
-  'tpp_run_post': ${TPP_RUN_POST}
+  'tpp_forecast': ${TPP_FORECAST}
+  'tpp_post': ${TPP_POST}
   'tpp_run_bufrsnd': ${TPP_RUN_BUFRSND}
 #
 # Maximum wallclock time for each task.
@@ -311,17 +311,17 @@ settings="\
   'wtime_make_lbcs': ${WTIME_MAKE_LBCS}
   'wtime_run_prepstart': ${WTIME_RUN_PREPSTART}
   'wtime_run_prepstart_ensmean': ${WTIME_RUN_PREPSTART_ENSMEAN}
-  'wtime_run_fcst': ${WTIME_RUN_FCST}
-  'wtime_run_fcst_long': ${WTIME_RUN_FCST_LONG}
-  'wtime_run_fcst_spinup': ${WTIME_RUN_FCST_SPINUP}
+  'wtime_forecast': ${WTIME_FORECAST}
+  'wtime_forecast_long': ${WTIME_FORECAST_LONG}
+  'wtime_forecast_spinup': ${WTIME_FORECAST_SPINUP}
   'wtime_run_analysis': ${WTIME_RUN_ANALYSIS}
   'wtime_run_gsidiag': ${WTIME_RUN_GSIDIAG}
   'wtime_run_postanal': ${WTIME_RUN_POSTANAL}
   'wtime_run_enkf': ${WTIME_RUN_ENKF}
   'wtime_run_recenter': ${WTIME_RUN_RECENTER}
-  'wtime_run_post': ${WTIME_RUN_POST}
+  'wtime_post': ${WTIME_POST}
   'wtime_run_enspost': ${WTIME_RUN_ENSPOST}
-  'wtime_run_prdgen': ${WTIME_RUN_PRDGEN}
+  'wtime_prdgen': ${WTIME_PRDGEN}
   'wtime_proc_radar': ${WTIME_PROC_RADAR}
   'wtime_proc_glmfed': ${WTIME_PROC_GLMFED}
   'wtime_proc_bufr': ${WTIME_PROC_BUFR}
@@ -349,7 +349,7 @@ settings="\
   'memo_run_ref2tten': ${MEMO_RUN_REF2TTEN}
   'memo_run_nonvarcldanl': ${MEMO_RUN_NONVARCLDANL}
   'memo_run_prepstart': ${MEMO_RUN_PREPSTART}
-  'memo_run_prdgen': ${MEMO_RUN_PRDGEN}
+  'memo_prdgen': ${MEMO_PRDGEN}
   'memo_prep_cyc': ${MEMO_PREP_CYC}
   'memo_save_restart': ${MEMO_SAVE_RESTART}
   'memo_save_input': ${MEMO_SAVE_INPUT}
@@ -368,13 +368,13 @@ settings="\
   'maxtries_blend_ics': ${MAXTRIES_BLEND_ICS}
   'maxtries_make_lbcs': ${MAXTRIES_MAKE_LBCS}
   'maxtries_run_prepstart': ${MAXTRIES_RUN_PREPSTART}
-  'maxtries_run_fcst': ${MAXTRIES_RUN_FCST}
+  'maxtries_forecast': ${MAXTRIES_FORECAST}
   'maxtries_analysis_gsi': ${MAXTRIES_ANALYSIS_GSI}
   'maxtries_postanal': ${MAXTRIES_POSTANAL}
   'maxtries_analysis_enkf': ${MAXTRIES_ANALYSIS_ENKF}
   'maxtries_recenter': ${MAXTRIES_RECENTER}
-  'maxtries_run_post': ${MAXTRIES_RUN_POST}
-  'maxtries_run_prdgen': ${MAXTRIES_RUN_PRDGEN}
+  'maxtries_post': ${MAXTRIES_POST}
+  'maxtries_prdgen': ${MAXTRIES_PRDGEN}
   'maxtries_process_radarref': ${MAXTRIES_PROCESS_RADARREF}
   'maxtries_proc_glmfed': ${MAXTRIES_PROC_GLMFED}
   'maxtries_process_bufr': ${MAXTRIES_PROCESS_BUFR}
@@ -389,7 +389,7 @@ settings="\
   'run_task_make_grid': ${RUN_TASK_MAKE_GRID}
   'run_task_make_orog': ${RUN_TASK_MAKE_OROG}
   'run_task_make_sfc_climo': ${RUN_TASK_MAKE_SFC_CLIMO}
-  'run_task_run_prdgen': ${RUN_TASK_RUN_PRDGEN}
+  'run_task_prdgen': ${RUN_TASK_PRDGEN}
 #
   'is_rtma':  ${IS_RTMA}
   'fg_rootdir': ${FG_ROOTDIR}
