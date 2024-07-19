@@ -1312,7 +1312,7 @@ ESGgrid_PAZI=""
 # WRITE_DOPOST:
 # Flag that determines whether or not to use the inline post feature
 # [i.e. calling the Unified Post Processor (UPP) from within the
-# weather model].  If this is set to true, the the post task will
+# weather model].  If this is set to true, then the post task will
 # be deactivated.
 #-----------------------------------------------------------------------
 #
