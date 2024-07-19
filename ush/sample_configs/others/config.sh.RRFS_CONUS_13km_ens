@@ -135,7 +135,7 @@ WRTCMP_quantize_nsd="18"
 ## set up post
 OUTPUT_FH="1 -1"
 
-WTIME_RUN_FCST="00:30:00"
+WTIME_FORECAST="00:30:00"
 WTIME_MAKE_LBCS="04:00:00"
 
 envir="para"
@@ -162,7 +162,7 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    NUM_ENS_MEMBERS_FCST=5
    if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
      NUM_ENS_MEMBERS=${NUM_ENS_MEMBERS_FCST}
-     WTIME_RUN_FCST="01:45:00"
+     WTIME_FORECAST="01:45:00"
      WTIME_MAKE_LBCS="01:30:00"
      DO_ENSFCST_MULPHY="TRUE"
      DO_SPP="TRUE"

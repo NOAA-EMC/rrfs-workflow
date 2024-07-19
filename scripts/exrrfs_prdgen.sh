@@ -59,8 +59,8 @@ case $MACHINE in
 
   "WCOSS2")
     export OMP_NUM_THREADS=1
-    ncores=$(( NNODES_RUN_PRDGEN*PPN_RUN_PRDGEN))
-    APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_PRDGEN}"
+    ncores=$(( NNODES_PRDGEN*PPN_PRDGEN))
+    APRUN="mpiexec -n ${ncores} -ppn ${PPN_PRDGEN}"
     ;;
 
   "HERA")

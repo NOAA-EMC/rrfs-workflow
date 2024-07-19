@@ -108,7 +108,7 @@ function link_fix() {
 #
 # Create symlinks in the FIXLAM directory pointing to the grid files.
 # These symlinks are needed by the make_orog, make_sfc_climo, make_ic,
-# make_lbc, and/or run_fcst tasks.
+# make_lbc, and/or forecast tasks.
 #
 # Note that we check that each target file exists before attempting to 
 # create symlinks.  This is because the "ln" command will create sym-

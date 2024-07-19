@@ -132,8 +132,8 @@ WRTCMP_quantize_nsd="18"
 ## set up post
 OUTPUT_FH="1 -1"
 
-WTIME_RUN_FCST="00:30:00"
-WTIME_RUN_FCST_LONG="04:45:00"
+WTIME_FORECAST="00:30:00"
+WTIME_FORECAST_LONG="04:45:00"
 PPN_RUN_ANALYSIS="16"
 NNODES_RUN_ANALYSIS="1"
 TPP_RUN_ANALYSIS="8"
@@ -167,19 +167,19 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    START_TIME_SPINUP="00:30:00"
    LAYOUT_X="15"
    LAYOUT_Y="54"
-   NNODES_RUN_FCST="13"
+   NNODES_FORECAST="13"
    WRTCMP_write_groups="1"
    WRTCMP_write_tasks_per_group="22"
 
    NUM_ENS_MEMBERS_FCST=5
    if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
      NUM_ENS_MEMBERS=${NUM_ENS_MEMBERS_FCST}
-     WTIME_RUN_FCST="04:45:00"
+     WTIME_FORECAST="04:45:00"
      WTIME_MAKE_LBCS="01:30:00"
 
      LAYOUT_X="50"
      LAYOUT_Y="64"
-     NNODES_RUN_FCST="52"
+     NNODES_FORECAST="52"
      WRTCMP_write_groups="1"
      WRTCMP_write_tasks_per_group="128"
 

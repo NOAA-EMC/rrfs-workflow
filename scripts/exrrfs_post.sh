@@ -58,15 +58,15 @@ ulimit -a
 case $MACHINE in
 
   "WCOSS2")
-    export OMP_NUM_THREADS=${TPP_RUN_POST}
+    export OMP_NUM_THREADS=${TPP_POST}
     export MP_IOAGENT_CNT=all
     export MP_IO_BUFFER_SIZE=8M
     export MP_BINDPROC=NO
     export MP_SHARED_MEMORY=yes
     export FI_OFI_RXM_SAR_LIMIT=3145728
     export OMP_STACKSIZE=1G
-    ncores=$(( NNODES_RUN_POST*PPN_RUN_POST))
-    APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_POST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
+    ncores=$(( NNODES_POST*PPN_POST))
+    APRUN="mpiexec -n ${ncores} -ppn ${PPN_POST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
     ;;
 
   "HERA")
