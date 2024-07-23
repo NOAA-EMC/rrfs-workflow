@@ -211,7 +211,7 @@ fi
 #
 print_info_msg "
 ========================================================================
-post analysis completed successfully!!!
+Update LBC soil completed successfully!!!
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"

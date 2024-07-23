@@ -62,8 +62,8 @@ ulimit -a
 case $MACHINE in
 #
 "WCOSS2")
-  ncores=$(( NNODES_PROC_RADAR*PPN_PROC_RADAR))
-  APRUN="mpiexec -n ${ncores} -ppn ${PPN_PROC_RADAR}"
+  ncores=$(( NNODES_PROCESS_RADAR*PPN_PROCESS_RADAR))
+  APRUN="mpiexec -n ${ncores} -ppn ${PPN_PROCESS_RADAR}"
   ;;
 #
 "HERA")

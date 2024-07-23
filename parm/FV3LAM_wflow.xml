@@ -41,7 +41,7 @@ Workflow task names.
 <!ENTITY BUFRSND_TN              "{{ bufrsnd_tn }}">
 <!ENTITY ANALYSIS_GSI_TN         "{{ analysis_gsi }}">
 <!ENTITY ANALYSIS_GSIDIAG_TN     "{{ analysis_gsidiag }}">
-<!ENTITY UPDATE_LBC_SOIL         "{{ update_lbc_soil }}">
+<!ENTITY UPDATE_LBC_SOIL_TN      "{{ update_lbc_soil }}">
 <!ENTITY OBSERVER_GSI_ENSMEAN_TN "{{ observer_gsi_ensmean }}">
 <!ENTITY OBSERVER_GSI_TN         "{{ observer_gsi }}">
 <!ENTITY PREP_CYC_SPINUP_TN      "{{ prep_cyc_spinup }}">
@@ -1656,7 +1656,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>&WALLTIME_ANALYSIS_GSIDIAG;</walltime>
     &NODESIZE_ALL;
     <jobname>&TAG;_&ANALYSIS_GSIDIAG_TN;_spinup</jobname>
-    <join><cyclestr>&LOGDIR;/&ANALYSIS_GSIDIAG_TN;spinup_&TAG;@Y@m@d@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/&ANALYSIS_GSIDIAG_TN;_spinup_&TAG;@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>

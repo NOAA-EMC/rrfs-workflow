@@ -1799,7 +1799,7 @@ POST_TN="post"
 PRDGEN_TN="prdgen"
 BUFRSND_TN="bufrsnd"
 
-ANALYSIS_GSI_TN="analysis_gsi_input"
+ANALYSIS_GSI_TN="analysis_gsi"
 ANALYSIS_GSIDIAG_TN="analysis_gsi_diag"
 UPDATE_LBC_SOIL_TN="update_lbc_soil"
 OBSERVER_GSI_ENSMEAN_TN="observer_gsi_ensmean"
