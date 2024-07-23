@@ -200,7 +200,7 @@ settings="\
   'prdgen_tn': ${PRDGEN_TN}
   'analysis_gsi': ${ANALYSIS_GSI_TN}
   'analysis_gsidiag': ${ANALYSIS_GSIDIAG_TN}
-  'post_anal': ${POSTANAL_TN}
+  'update_lbc_soil': ${UPDATE_LBC_SOIL_TN}
   'observer_gsi_ensmean': ${OBSERVER_GSI_ENSMEAN_TN}
   'observer_gsi': ${OBSERVER_GSI_TN}
   'prep_start': ${PREP_START_TN}
@@ -209,12 +209,12 @@ settings="\
   'prep_cyc_ensmean': ${PREP_CYC_ENSMEAN_TN}
   'prep_cyc': ${PREP_CYC_TN}
   'calc_ensmean': ${CALC_ENSMEAN_TN}
-  'process_radarref': ${PROCESS_RADAR_REF_TN}
-  'process_glmfed': ${PROCESS_GLMFED_TN}
+  'process_radar': ${PROCESS_RADAR_TN}
+  'process_lightning': ${PROCESS_LIGHTNING_TN}
   'process_bufr': ${PROCESS_BUFR_TN}
   'process_smoke': ${PROCESS_SMOKE_TN}
-  'cldanl_nonvar': ${CLDANL_NONVAR_TN}
-  'run_bufrsnd_tn': ${RUN_BUFRSND_TN}
+  'analysis_nonvarcld': ${ANALYSIS_NONVARCLD_TN}
+  'bufrsnd_tn': ${BUFRSND_TN}
   'save_restart': ${SAVE_RESTART_TN}
   'save_da_output': ${SAVE_DA_OUTPUT_TN}
   'tag': ${TAG}
@@ -232,34 +232,32 @@ settings="\
   'nnodes_make_ics': ${NNODES_MAKE_ICS}
   'nnodes_blend_ics': ${NNODES_BLEND_ICS}
   'nnodes_make_lbcs': ${NNODES_MAKE_LBCS}
-  'nnodes_run_prepstart': ${NNODES_RUN_PREPSTART}
+  'nnodes_prep_cyc': ${NNODES_PREP_CYC}
   'nnodes_forecast': ${NNODES_FORECAST}
-  'nnodes_run_analysis': ${NNODES_RUN_ANALYSIS}
-  'nnodes_run_gsidiag': ${NNODES_RUN_GSIDIAG}
-  'nnodes_run_postanal': ${NNODES_RUN_POSTANAL}
-  'nnodes_run_enkf': ${NNODES_RUN_ENKF}
-  'nnodes_run_recenter': ${NNODES_RUN_RECENTER}
+  'nnodes_analysis_gsi': ${NNODES_ANALYSIS_GSI}
+  'nnodes_analysis_gsidiag': ${NNODES_ANALYSIS_GSIDIAG}
+  'nnodes_update_lbc_soil': ${NNODES_UPDATE_LBC_SOIL}
+  'nnodes_analysis_enkf': ${NNODES_ANALYSIS_ENKF}
+  'nnodes_recenter': ${NNODES_RECENTER}
   'nnodes_post': ${NNODES_POST}
   'nnodes_prdgen': ${NNODES_PRDGEN}
-  'nnodes_proc_radar': ${NNODES_PROC_RADAR}
-  'nnodes_proc_glmfed': ${NNODES_PROC_GLMFED}
-  'nnodes_proc_bufr': ${NNODES_PROC_BUFR}
-  'nnodes_proc_smoke': ${NNODES_PROC_SMOKE}
-  'nnodes_run_ref2tten': ${NNODES_RUN_REF2TTEN}
-  'nnodes_run_nonvarcldanl': ${NNODES_RUN_NONVARCLDANL}
-  'nnodes_run_enspost': ${NNODES_RUN_ENSPOST}
-  'nnodes_run_bufrsnd': ${NNODES_RUN_BUFRSND}
+  'nnodes_process_radar': ${NNODES_PROCESS_RADAR}
+  'nnodes_process_lightning': ${NNODES_PROCESS_LIGHTNING}
+  'nnodes_process_bufr': ${NNODES_PROCESS_BUFR}
+  'nnodes_process_smoke': ${NNODES_PROCESS_SMOKE}
+  'nnodes_analysis_nonvarcld': ${NNODES_ANALYSIS_NONVARCLD}
+  'nnodes_bufrsnd': ${NNODES_BUFRSND}
   'nnodes_save_restart': ${NNODES_SAVE_RESTART}
 #
 # Number of cores used for a task
 #
   'ncores_forecast': ${PE_MEMBER01}
   'native_forecast': ${NATIVE_FORECAST}
-  'ncores_run_analysis': ${NCORES_RUN_ANALYSIS}
+  'ncores_analysis_gsi': ${NCORES_ANALYSIS_GSI}
   'ncores_run_observer': ${NCORES_RUN_OBSERVER}
-  'native_run_analysis': ${NATIVE_RUN_ANALYSIS}
-  'ncores_run_enkf': ${NCORES_RUN_ENKF}
-  'native_run_enkf': ${NATIVE_RUN_ENKF}
+  'native_analysis_gsi': ${NATIVE_ANALYSIS_GSI}
+  'ncores_analysis_enkf': ${NCORES_ANALYSIS_ENKF}
+  'native_analysis_enkf': ${NATIVE_ANALYSIS_ENKF}
 #
 # Number of logical processes per node for each task.  If running without
 # threading, this is equal to the number of MPI processes per node.
@@ -272,32 +270,30 @@ settings="\
   'ppn_make_ics': ${PPN_MAKE_ICS}
   'ppn_blend_ics': ${PPN_BLEND_ICS}
   'ppn_make_lbcs': ${PPN_MAKE_LBCS}
-  'ppn_run_prepstart': ${PPN_RUN_PREPSTART}
+  'ppn_prep_cyc': ${PPN_PREP_CYC}
   'ppn_forecast': ${PPN_FORECAST}
-  'ppn_run_analysis': ${PPN_RUN_ANALYSIS}
-  'ppn_run_gsidiag': ${PPN_RUN_GSIDIAG}
-  'ppn_run_postanal': ${PPN_RUN_POSTANAL}
-  'ppn_run_enkf': ${PPN_RUN_ENKF}
-  'ppn_run_recenter': ${PPN_RUN_RECENTER}
+  'ppn_analysis_gsi': ${PPN_ANALYSIS_GSI}
+  'ppn_analysis_gsidiag': ${PPN_ANALYSIS_GSIDIAG}
+  'ppn_update_lbc_soil': ${PPN_UPDATE_LBC_SOIL}
+  'ppn_analysis_enkf': ${PPN_ANALYSIS_ENKF}
+  'ppn_recenter': ${PPN_RECENTER}
   'ppn_post': ${PPN_POST}
   'ppn_prdgen': ${PPN_PRDGEN}
-  'ppn_proc_radar': ${PPN_PROC_RADAR}
-  'ppn_proc_glmfed': ${PPN_PROC_GLMFED}
-  'ppn_proc_bufr': ${PPN_PROC_BUFR}
-  'ppn_proc_smoke': ${PPN_PROC_SMOKE}
-  'ppn_run_ref2tten': ${PPN_RUN_REF2TTEN}
-  'ppn_run_nonvarcldanl': ${PPN_RUN_NONVARCLDANL}
-  'ppn_run_enspost': ${PPN_RUN_ENSPOST}
-  'ppn_run_bufrsnd': ${PPN_RUN_BUFRSND}
+  'ppn_process_radar': ${PPN_PROCESS_RADAR}
+  'ppn_process_lightning': ${PPN_PROCESS_LIGHTNING}
+  'ppn_process_bufr': ${PPN_PROCESS_BUFR}
+  'ppn_process_smoke': ${PPN_PROCESS_SMOKE}
+  'ppn_analysis_nonvarcld': ${PPN_ANALYSIS_NONVARCLD}
+  'ppn_bufrsnd': ${PPN_BUFRSND}
   'ppn_save_restart': ${PPN_SAVE_RESTART}
 #
   'tpp_make_ics': ${TPP_MAKE_ICS}
   'tpp_make_lbcs': ${TPP_MAKE_LBCS}
-  'tpp_run_analysis': ${TPP_RUN_ANALYSIS}
-  'tpp_run_enkf': ${TPP_RUN_ENKF}
+  'tpp_analysis_gsi': ${TPP_ANALYSIS_GSI}
+  'tpp_analysis_enkf': ${TPP_ANALYSIS_ENKF}
   'tpp_forecast': ${TPP_FORECAST}
   'tpp_post': ${TPP_POST}
-  'tpp_run_bufrsnd': ${TPP_RUN_BUFRSND}
+  'tpp_bufrsnd': ${TPP_BUFRSND}
 #
 # Maximum wallclock time for each task.
 #
@@ -309,26 +305,23 @@ settings="\
   'wtime_make_ics': ${WTIME_MAKE_ICS}
   'wtime_blend_ics': ${WTIME_BLEND_ICS}
   'wtime_make_lbcs': ${WTIME_MAKE_LBCS}
-  'wtime_run_prepstart': ${WTIME_RUN_PREPSTART}
-  'wtime_run_prepstart_ensmean': ${WTIME_RUN_PREPSTART_ENSMEAN}
+  'wtime_prep_cyc': ${WTIME_PREP_CYC}
   'wtime_forecast': ${WTIME_FORECAST}
   'wtime_forecast_long': ${WTIME_FORECAST_LONG}
   'wtime_forecast_spinup': ${WTIME_FORECAST_SPINUP}
-  'wtime_run_analysis': ${WTIME_RUN_ANALYSIS}
-  'wtime_run_gsidiag': ${WTIME_RUN_GSIDIAG}
-  'wtime_run_postanal': ${WTIME_RUN_POSTANAL}
-  'wtime_run_enkf': ${WTIME_RUN_ENKF}
-  'wtime_run_recenter': ${WTIME_RUN_RECENTER}
+  'wtime_analysis_gsi': ${WTIME_ANALYSIS_GSI}
+  'wtime_analysis_gsidiag': ${WTIME_ANALYSIS_GSIDIAG}
+  'wtime_update_lbc_soil': ${WTIME_UPDATE_LBC_SOIL}
+  'wtime_analysis_enkf': ${WTIME_ANALYSIS_ENKF}
+  'wtime_recenter': ${WTIME_RECENTER}
   'wtime_post': ${WTIME_POST}
-  'wtime_run_enspost': ${WTIME_RUN_ENSPOST}
   'wtime_prdgen': ${WTIME_PRDGEN}
-  'wtime_proc_radar': ${WTIME_PROC_RADAR}
-  'wtime_proc_glmfed': ${WTIME_PROC_GLMFED}
-  'wtime_proc_bufr': ${WTIME_PROC_BUFR}
-  'wtime_proc_smoke': ${WTIME_PROC_SMOKE}
-  'wtime_run_ref2tten': ${WTIME_RUN_REF2TTEN}
-  'wtime_run_nonvarcldanl': ${WTIME_RUN_NONVARCLDANL}
-  'wtime_run_bufrsnd': ${WTIME_RUN_BUFRSND}
+  'wtime_process_radar': ${WTIME_PROCESS_RADAR}
+  'wtime_process_lightning': ${WTIME_PROCESS_LIGHTNING}
+  'wtime_process_bufr': ${WTIME_PROCESS_BUFR}
+  'wtime_process_smoke': ${WTIME_PROCESS_SMOKE}
+  'wtime_analysis_nonvarcld': ${WTIME_ANALYSIS_NONVARCLD}
+  'wtime_bufrsnd': ${WTIME_BUFRSND}
   'wtime_save_restart': ${WTIME_SAVE_RESTART}
 #
 # start time for each task.
@@ -340,21 +333,19 @@ settings="\
   'start_time_late_analysis': ${START_TIME_LATE_ANALYSIS}
   'start_time_conventional': ${START_TIME_CONVENTIONAL}
   'start_time_nsslmosiac': ${START_TIME_NSSLMOSIAC}
-  'start_time_proc_glmfed': ${START_TIME_GLMFED}
-  'start_time_procsmoke': ${START_TIME_PROCSMOKE}
+  'start_time_process_lightning': ${START_TIME_PROCESS_LIGHTNING}
+  'start_time_process_smoke': ${START_TIME_PROCESS_SMOKE}
 #
 # Maximum memory for each task.
 #
-  'memo_run_processbufr': ${MEMO_RUN_PROCESSBUFR}
-  'memo_run_ref2tten': ${MEMO_RUN_REF2TTEN}
-  'memo_run_nonvarcldanl': ${MEMO_RUN_NONVARCLDANL}
-  'memo_run_prepstart': ${MEMO_RUN_PREPSTART}
+  'memo_process_bufr': ${MEMO_PROCESS_BUFR}
+  'memo_analysis_nonvarcld': ${MEMO_ANALYSIS_NONVARCLD}
   'memo_prdgen': ${MEMO_PRDGEN}
   'memo_prep_cyc': ${MEMO_PREP_CYC}
   'memo_save_restart': ${MEMO_SAVE_RESTART}
   'memo_save_input': ${MEMO_SAVE_INPUT}
-  'memo_proc_smoke': ${MEMO_PROC_SMOKE}
-  'memo_proc_glmfed': ${MEMO_PROC_GLMFED}
+  'memo_process_smoke': ${MEMO_PROCESS_SMOKE}
+  'memo_process_lightning': ${MEMO_PROCESS_LIGHTNING}
   'memo_save_da_output': ${MEMO_SAVE_DA_OUTPUT}
 #
 # Maximum number of tries for each task.
@@ -367,20 +358,19 @@ settings="\
   'maxtries_make_ics': ${MAXTRIES_MAKE_ICS}
   'maxtries_blend_ics': ${MAXTRIES_BLEND_ICS}
   'maxtries_make_lbcs': ${MAXTRIES_MAKE_LBCS}
-  'maxtries_run_prepstart': ${MAXTRIES_RUN_PREPSTART}
+  'maxtries_prep_cyc': ${MAXTRIES_PREP_CYC}
   'maxtries_forecast': ${MAXTRIES_FORECAST}
   'maxtries_analysis_gsi': ${MAXTRIES_ANALYSIS_GSI}
-  'maxtries_postanal': ${MAXTRIES_POSTANAL}
+  'maxtries_update_lbc_soil': ${MAXTRIES_UPDATE_LBC_SOIL}
   'maxtries_analysis_enkf': ${MAXTRIES_ANALYSIS_ENKF}
   'maxtries_recenter': ${MAXTRIES_RECENTER}
   'maxtries_post': ${MAXTRIES_POST}
   'maxtries_prdgen': ${MAXTRIES_PRDGEN}
-  'maxtries_process_radarref': ${MAXTRIES_PROCESS_RADARREF}
-  'maxtries_proc_glmfed': ${MAXTRIES_PROC_GLMFED}
+  'maxtries_process_radar': ${MAXTRIES_PROCESS_RADAR}
+  'maxtries_process_lightning': ${MAXTRIES_PROCESS_LIGHTNING}
   'maxtries_process_bufr': ${MAXTRIES_PROCESS_BUFR}
   'maxtries_process_smoke': ${MAXTRIES_PROCESS_SMOKE}
-  'maxtries_radar_ref2tten': ${MAXTRIES_RADAR_REF2TTEN}
-  'maxtries_cldanl_nonvar': ${MAXTRIES_CLDANL_NONVAR}
+  'maxtries_analysis_nonvarcld': ${MAXTRIES_ANALYSIS_NONVARCLD}
   'maxtries_save_restart': ${MAXTRIES_SAVE_RESTART}
   'maxtries_save_da_output': ${MAXTRIES_SAVE_DA_OUTPUT}
 #
@@ -490,7 +480,6 @@ settings="\
   'do_envar_radar_ref_once': ${DO_ENVAR_RADAR_REF_ONCE}
   'do_recenter': ${DO_RECENTER}
   'do_bufrsnd': ${DO_BUFRSND}
-  'do_enspost': ${DO_ENSPOST}
   'do_ensinit': ${DO_ENSINIT}
   'do_save_da_output': ${DO_SAVE_DA_OUTPUT}
   'do_gsidiag_offline': ${DO_GSIDIAG_OFFLINE}
@@ -501,7 +490,7 @@ settings="\
   'do_dacycle': ${DO_DACYCLE}
   'do_surface_cycle': ${DO_SURFACE_CYCLE}
   'da_cycle_interval_hrs': ${DA_CYCLE_INTERV}
-  'do_nonvar_cldanal': ${DO_NONVAR_CLDANAL}
+  'do_analysis_nonvarcld': ${DO_ANALYSIS_NONVARCLD}
   'do_spinup': ${DO_SPINUP}
   'do_post_spinup': ${DO_POST_SPINUP}
   'do_post_prod': ${DO_POST_PROD}

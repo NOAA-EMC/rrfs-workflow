@@ -42,7 +42,7 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the prepstart tasks for the specified cycle.
+This is the ex-script for the prep_cyc tasks for the specified cycle.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -54,8 +54,8 @@ This is the ex-script for the prepstart tasks for the specified cycle.
 case $MACHINE in
 
   "WCOSS2")
-    ncores=$(( NNODES_RUN_PREPSTART*PPN_RUN_PREPSTART))
-    APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_PREPSTART}"
+    ncores=$(( NNODES_PREP_CYC*PPN_PREP_CYC))
+    APRUN="mpiexec -n ${ncores} -ppn ${PPN_PREP_CYC}"
     ;;
 
   "HERA")

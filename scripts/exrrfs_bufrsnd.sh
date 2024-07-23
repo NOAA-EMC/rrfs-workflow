@@ -57,8 +57,8 @@ ulimit -a
 case $MACHINE in
 
   "WCOSS2")
-    ncores=$(( NNODES_RUN_BUFRSND*PPN_RUN_BUFRSND ))
-    APRUNC="mpiexec -n ${ncores} -ppn ${PPN_RUN_BUFRSND}"
+    ncores=$(( NNODES_BUFRSND*PPN_BUFRSND ))
+    APRUNC="mpiexec -n ${ncores} -ppn ${PPN_BUFRSND}"
     APRUNS="time"
     ;;
 

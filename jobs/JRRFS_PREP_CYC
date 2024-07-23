@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #-----------------------------------------------------------------------
-# RRFS GSIDIAG
+# RRFS Prep Cyc
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
@@ -40,8 +40,7 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs an analysis with RRFS for 
-the specified cycle.
+This is the J-job script for the prep_cyc tasks for the specified cycle.
 ========================================================================"
 
 #-----------------------------------------------------------------------
@@ -52,32 +51,44 @@ export pid=${pid:-$$}
 export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
+export mem_num=m$(echo "${ENSMEM_INDX}")
+
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
-
+export CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
+export ctrlpath=""
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  workname="gsi_spinup"
+  export INPUT_DATA=${DATAROOT}/${RUN}_forecast_spinup_${envir}_${cyc}/INPUT
+  if [ "${DO_ENSINIT}" = "TRUE" ] && [ "${CYCLE_SUBTYPE}" = "ensinit" ]; then
+    export INPUT_DATA=${DATAROOT}/${RUN}_forecast_ensinit_${envir}_${cyc}/INPUT
+  fi
+  if [ "${DO_ENSINIT}" = "TRUE" ] && [ "${CYCLE_SUBTYPE}" = "spinup" ]; then
+    ctrlpath=${ENSCTRL_DATAROOT}
+  fi
 else
-  workname="gsi"
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    export INPUT_DATA=${DATAROOT}/${RUN}_forecast_${mem_num}_${envir}_${cyc}/INPUT
+  else
+    export INPUT_DATA=${DATAROOT}/${RUN}_forecast_${envir}_${cyc}/INPUT
+  fi
 fi
 
-export jobid=${RUN}_analysis_conv_dbz_${workname}_${envir}_${cyc}
-export DATA="${DATAROOT}/${jobid}"
-rm -rf ${DATA}
-mkdir -p ${DATA}
+rm -fr ${INPUT_DATA}
+mkdir -p ${INPUT_DATA}
+cd ${INPUT_DATA}
 
-if [ ! -d "${SATBIAS_DIR}" ]; then
-  echo "making satbias_dir directory for cycling bias correction files" 
-  mkdir -p ${SATBIAS_DIR}
-fi
+export gridspec_dir=${GESROOT}/grid_spec
+export MAILTO="${MAILTO:-}"
 
 #-----------------------------------------------------------------------
 # Define COM directories
 #-----------------------------------------------------------------------
 
+export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
-else
-  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
+fi
+if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  export COMOUT=${COMOUT}/${mem_num}
 fi
 mkdir -p "${COMOUT}"
 
@@ -85,10 +96,10 @@ mkdir -p "${COMOUT}"
 # Execute the script.
 #-----------------------------------------------------------------------
 
-export pgmout="${DATA}/OUTPUT.$$"
+export pgmout="${INPUT_DATA}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_run_gsidiag.sh
+$SCRIPTSdir/exrrfs_prep_cyc.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then
@@ -96,7 +107,7 @@ if [ -e "$pgmout" ]; then
 fi
 
 if [ "${KEEPDATA}" = "NO" ]; then
-  rm -rf ${DATA}
+  rm -rf ${INPUT_DATA}
 fi
 
 #-----------------------------------------------------------------------

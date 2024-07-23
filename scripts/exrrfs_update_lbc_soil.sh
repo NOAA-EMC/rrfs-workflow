@@ -42,8 +42,8 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs a analysis with FV3 for the
-specified cycle.
+This is the ex-script for the task that runs the applications after
+analysis with RRFS for the specified cycle.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -61,8 +61,8 @@ case $MACHINE in
   export FI_OFI_RXM_SAR_LIMIT=3145728
   export OMP_STACKSIZE=500M
   export OMP_NUM_THREADS=1
-  ncores=$(( NNODES_RUN_POSTANAL*PPN_RUN_POSTANAL))
-  APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_POSTANAL} --cpu-bind core --depth ${OMP_NUM_THREADS}"
+  ncores=$(( NNODES_UPDATE_LBC_SOIL*PPN_UPDATE_LBC_SOIL))
+  APRUN="mpiexec -n ${ncores} -ppn ${PPN_UPDATE_LBC_SOIL} --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;
 
 "HERA")
