@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #-----------------------------------------------------------------------
-# RRFS Run Prepstart
+# RRFS Non-Var Cloud Analysis
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
@@ -40,7 +40,8 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the prepstart tasks for the specified cycle.
+This is the J-job script for the task that runs a standalone Non-Var cloud
+analysis with RRFS for the specified cycle.
 ========================================================================"
 
 #-----------------------------------------------------------------------
@@ -53,42 +54,47 @@ export RUN=${RUN:-rrfs}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
 
-export CYCLE_TYPE=${CYCLE_TYPE:-prod}
-export CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
-export ctrlpath=""
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export INPUT_DATA=${DATAROOT}/${RUN}_forecast_spinup_${envir}_${cyc}/INPUT
-  if [ "${DO_ENSINIT}" = "TRUE" ] && [ "${CYCLE_SUBTYPE}" = "ensinit" ]; then
-    export INPUT_DATA=${DATAROOT}/${RUN}_forecast_ensinit_${envir}_${cyc}/INPUT
-  fi
-  if [ "${DO_ENSINIT}" = "TRUE" ] && [ "${CYCLE_SUBTYPE}" = "spinup" ]; then
-    ctrlpath=${ENSCTRL_DATAROOT}
-  fi
+  export workname="nonvar_cldanl_spinup"
+else
+  export workname="nonvar_cldanl"
+fi
+if [ ${MEM_TYPE} = "MEAN" ]; then
+  export jobid=${RUN}_${workname}_ensmean_${envir}_${cyc}
 else
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export INPUT_DATA=${DATAROOT}/${RUN}_forecast_${mem_num}_${envir}_${cyc}/INPUT
+    export jobid=${RUN}_${workname}_${mem_num}_${envir}_${cyc}
   else
-    export INPUT_DATA=${DATAROOT}/${RUN}_forecast_${envir}_${cyc}/INPUT
+    export jobid=${RUN}_${workname}_${envir}_${cyc}
   fi
 fi
 
-rm -fr ${INPUT_DATA}
-mkdir -p ${INPUT_DATA}
-cd ${INPUT_DATA}
+export DATA=${DATAROOT}/${jobid}
+rm -fr ${DATA}
+mkdir -p ${DATA}
+cd ${DATA}
 
+#  directory has grid_spec files for restart subdomains
 export gridspec_dir=${GESROOT}/grid_spec
-export MAILTO="${MAILTO:-}"
 
 #-----------------------------------------------------------------------
 # Define COM directories
 #-----------------------------------------------------------------------
 
-export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
-fi
-if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  export COMOUT=${COMOUT}/${mem_num}
+if [ ${CYCLE_TYPE} = "spinup" ]; then
+  if [ "${MEM_TYPE}" = "MEAN" ]; then
+    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup/ensmean)}
+  else
+    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup/${mem_num})}
+  fi
+  export COMIN=${COMIN:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
+else
+  if [ "${MEM_TYPE}" = "MEAN" ]; then
+    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/ensmean)}
+  else
+    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
+  fi
+  export COMIN=${COMIN:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
 fi
 mkdir -p "${COMOUT}"
 
@@ -96,10 +102,10 @@ mkdir -p "${COMOUT}"
 # Execute the script.
 #-----------------------------------------------------------------------
 
-export pgmout="${INPUT_DATA}/OUTPUT.$$"
+export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_run_prepstart.sh
+$SCRIPTSdir/exrrfs_analysis_nonvarcld.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then
@@ -107,7 +113,7 @@ if [ -e "$pgmout" ]; then
 fi
 
 if [ "${KEEPDATA}" = "NO" ]; then
-  rm -rf ${INPUT_DATA}
+  rm -rf ${DATA}
 fi
 
 #-----------------------------------------------------------------------

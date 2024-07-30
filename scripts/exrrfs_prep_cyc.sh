@@ -42,7 +42,7 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the prepstart tasks for the specified cycle.
+This is the ex-script for the prep_cyc tasks for the specified cycle.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -54,8 +54,8 @@ This is the ex-script for the prepstart tasks for the specified cycle.
 case $MACHINE in
 
   "WCOSS2")
-    ncores=$(( NNODES_RUN_PREPSTART*PPN_RUN_PREPSTART))
-    APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_PREPSTART}"
+    ncores=$(( NNODES_PREP_CYC*PPN_PREP_CYC))
+    APRUN="mpiexec -n ${ncores} -ppn ${PPN_PREP_CYC}"
     ;;
 
   "HERA")
@@ -318,8 +318,8 @@ else
   #
   # First decide the source of the first guess (fg_restart_dirname) depending on CYCLE_TYPE and BKTYPE:
   #  1. If cycle is spinup cycle (CYCLE_TYPE == spinup) or it is the product start cycle (BKTYPE==2),
-  #             looking for the first guess from spinup forecast (fcst_fv3lam_spinup)
-  #  2. Others, looking for the first guess from product forecast (fcst_fv3lam)
+  #             looking for the first guess from spinup forecast (forecast_spinup)
+  #  2. Others, looking for the first guess from product forecast (forecast)
   #
   if [ "${CYCLE_TYPE}" = "spinup" ] || [ ${BKTYPE} -eq 2 ]; then
      fg_restart_dirname=forecast_spinup
@@ -631,7 +631,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
   fi
   if [ "${if_cycle_smoke_dust}" = "TRUE" ] ; then
       # figure out which surface is available
-      surface_file_dir_name=fcst_fv3lam
+      surface_file_dir_name=forecast
       bkpath_find="missing"
       restart_prefix_find="missing"
       restart_prefix=$( date +%Y%m%d.%H0000. -d "${START_DATE}" )

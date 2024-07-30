@@ -58,8 +58,8 @@ ulimit -a
 case $MACHINE in
 #
 "WCOSS2")
-  ncores=$(( NNODES_RUN_NONVARCLDANL*PPN_RUN_NONVARCLDANL ))
-  APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_NONVARCLDANL}"
+  ncores=$(( NNODES_ANALYSIS_NONVARCLD*PPN_ANALYSIS_NONVARCLD ))
+  APRUN="mpiexec -n ${ncores} -ppn ${PPN_ANALYSIS_NONVARCLD}"
   ;;
 #
 "HERA")
@@ -129,7 +129,7 @@ fi
 
 if [ ${l_cld_uncertainty} == ".true." ]; then
   # Copy analysis fields into uncertainties - data will be overwritten
-  echo "exrrfs_nonvarcldanl.sh: copy tracer file into uncertainty file "
+  echo "exrrfs_analysis_nonvarcld.sh: copy tracer file into uncertainty file "
   cp ${bkpath}/fv_tracer.res.tile1.nc  ${bkpath}/fv_tracer.unc.tile1.nc
 fi
 
@@ -202,7 +202,7 @@ do
 done
 
 # radar reflectivity on esg grid over each subdomain.
-process_radarref_path=${DATAROOT}/${RUN}_process_radarref${cycle_tag}_${envir}_${cyc}
+process_radarref_path=${DATAROOT}/${RUN}_process_radar${cycle_tag}_${envir}_${cyc}
 ss=0
 for bigmin in 0; do
   bigmin=$( printf %2.2i $bigmin )
@@ -307,11 +307,11 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# touch nonvarcldanl_complete.txt to indicate competion of this task
+# touch analysis_nonvarcld_complete.txt to indicate competion of this task
 #
 #-----------------------------------------------------------------------
 #
-touch ${COMOUT}/nonvarcldanl_complete.txt
+touch ${COMOUT}/analysis_nonvarcld_complete.txt
 #
 #-----------------------------------------------------------------------
 #

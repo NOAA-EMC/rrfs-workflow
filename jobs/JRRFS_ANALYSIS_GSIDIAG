@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #-----------------------------------------------------------------------
-# RRFS Post Analysis
+# RRFS GSIDIAG
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
@@ -40,8 +40,8 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs the applications after
-analysis with RRFS for the specified cycle.
+This is the J-job script for the task that runs an analysis with RRFS for 
+the specified cycle.
 ========================================================================"
 
 #-----------------------------------------------------------------------
@@ -52,7 +52,6 @@ export pid=${pid:-$$}
 export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
-export mem_num=m$(echo "${ENSMEM_INDX}")
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
@@ -61,53 +60,24 @@ else
   workname="gsi"
 fi
 
-if [[ ! -v OB_TYPE ]]; then
-  OB_TYPE="conv"
+export jobid=${RUN}_analysis_conv_dbz_${workname}_${envir}_${cyc}
+export DATA="${DATAROOT}/${jobid}"
+rm -rf ${DATA}
+mkdir -p ${DATA}
+
+if [ ! -d "${SATBIAS_DIR}" ]; then
+  echo "making satbias_dir directory for cycling bias correction files" 
+  mkdir -p ${SATBIAS_DIR}
 fi
-if [ "${GSI_TYPE}" = "OBSERVER" ]; then
-  if [ "${MEM_TYPE}" = "MEAN" ]; then
-    export jobid=${RUN}_observer_${workname}_ensmean_${envir}_${cyc}
-  else
-    export jobid=${RUN}_observer_${workname}_${mem_num}_${envir}_${cyc}
-  fi
-else
-  export jobid=${RUN}_analysis_${OB_TYPE}_${workname}_${envir}_${cyc}
-fi
-
-export DATA=${DATAROOT}/${jobid}
-
-if [[ ! -d ${DATA} ]]; then
-  echo "cannot find analysis run directory"
-  exit 
-fi
-cd ${DATA}
-
-#  directory has grid_spec files for restart subdomains
-export gridspec_dir=${GESROOT}/grid_spec
-
-export ${OB_TYPE}
 
 #-----------------------------------------------------------------------
 # Define COM directories
 #-----------------------------------------------------------------------
 
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup/${mem_num})}
-  else
-    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
-  fi
+  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
 else
-  if [ "${MEM_TYPE}" = "MEAN" ]; then
-    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/ensmean)}
-  else
-    if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-      export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/${mem_num})}
-    else
-      export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
-      export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-    fi
-  fi
+  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
 fi
 mkdir -p "${COMOUT}"
 
@@ -118,7 +88,7 @@ mkdir -p "${COMOUT}"
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_run_postanal.sh
+$SCRIPTSdir/exrrfs_analysis_gsidiag.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

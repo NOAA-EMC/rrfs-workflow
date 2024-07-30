@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #-----------------------------------------------------------------------
-# RRFS Non-Var Cloud Analysis
+# RRFS Radar Reflectivity Preprocessing
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
@@ -40,8 +40,8 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs a standalone Non-Var cloud
-analysis with RRFS for the specified cycle.
+This is the J-job script for the task that runs the radar reflectivity 
+preprocessing with RRFS for the specified cycle.
 ========================================================================"
 
 #-----------------------------------------------------------------------
@@ -52,49 +52,32 @@ export pid=${pid:-$$}
 export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
-export mem_num=m$(echo "${ENSMEM_INDX}")
-
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export workname="nonvar_cldanl_spinup"
-else
-  export workname="nonvar_cldanl"
-fi
-if [ ${MEM_TYPE} = "MEAN" ]; then
-  export jobid=${RUN}_${workname}_ensmean_${envir}_${cyc}
-else
+  export jobid=${RUN}_process_radar_spinup_${envir}_${cyc}
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export jobid=${RUN}_${workname}_${mem_num}_${envir}_${cyc}
-  else
-    export jobid=${RUN}_${workname}_${envir}_${cyc}
+    export jobid=${RUN}_process_radar_spinup_enkf_${envir}_${cyc}
+  fi
+else
+  export jobid=${RUN}_process_radar_${envir}_${cyc}
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    export jobid=${RUN}_process_radar_enkf_${envir}_${cyc}
   fi
 fi
 
 export DATA=${DATAROOT}/${jobid}
-rm -fr ${DATA}
 mkdir -p ${DATA}
 cd ${DATA}
 
-#  directory has grid_spec files for restart subdomains
 export gridspec_dir=${GESROOT}/grid_spec
 
 #-----------------------------------------------------------------------
 # Define COM directories
 #-----------------------------------------------------------------------
 
-if [ ${CYCLE_TYPE} = "spinup" ]; then
-  if [ "${MEM_TYPE}" = "MEAN" ]; then
-    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup/ensmean)}
-  else
-    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup/${mem_num})}
-  fi
-  export COMIN=${COMIN:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
 else
-  if [ "${MEM_TYPE}" = "MEAN" ]; then
-    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/ensmean)}
-  else
-    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-  fi
-  export COMIN=${COMIN:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
+  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
 fi
 mkdir -p "${COMOUT}"
 
@@ -105,7 +88,7 @@ mkdir -p "${COMOUT}"
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_nonvarcldanl.sh
+$SCRIPTSdir/exrrfs_process_radar.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

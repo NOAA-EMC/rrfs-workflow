@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #-----------------------------------------------------------------------
-# RRFS GLM Gridded Lightning Data Preprocessing
+# RRFS Update LBC & Soil
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
@@ -10,6 +10,9 @@
 
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
+
+date
+export PS4='+ $SECONDS + '
 
 #-----------------------------------------------------------------------
 # Save current shell options (in a global array).  Then set new options
@@ -37,8 +40,8 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs a GLM FED 
-preprocess with RRFS for the specified cycle.
+This is the J-job script for the task that runs the applications after
+analysis with RRFS for the specified cycle.
 ========================================================================"
 
 #-----------------------------------------------------------------------
@@ -49,31 +52,64 @@ export pid=${pid:-$$}
 export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
-if [ ${CYCLE_TYPE} == "spinup" ]; then
-  if [ ${DO_ENSEMBLE} = TRUE ]; then
-    export jobid=${RUN}_process_glmfed_enkf_spinup_${envir}_${cyc}
+export mem_num=m$(echo "${ENSMEM_INDX}")
+export CYCLE_TYPE=${CYCLE_TYPE:-prod}
+
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  workname="gsi_spinup"
+else
+  workname="gsi"
+fi
+
+if [[ ! -v OB_TYPE ]]; then
+  OB_TYPE="conv"
+fi
+if [ "${GSI_TYPE}" = "OBSERVER" ]; then
+  if [ "${MEM_TYPE}" = "MEAN" ]; then
+    export jobid=${RUN}_observer_${workname}_ensmean_${envir}_${cyc}
   else
-    export jobid=${RUN}_process_glmfed_spinup_${envir}_${cyc}
+    export jobid=${RUN}_observer_${workname}_${mem_num}_${envir}_${cyc}
   fi
 else
-  if [ ${DO_ENSEMBLE} = TRUE ]; then
-    export jobid=${RUN}_process_glmfed_enkf_${envir}_${cyc}
-  else
-    export jobid=${RUN}_process_glmfed_${envir}_${cyc}
-  fi
+  export jobid=${RUN}_analysis_${OB_TYPE}_${workname}_${envir}_${cyc}
 fi
 
 export DATA=${DATAROOT}/${jobid}
-mkdir -p ${DATA}
+
+if [[ ! -d ${DATA} ]]; then
+  echo "cannot find analysis run directory"
+  exit 
+fi
 cd ${DATA}
 
-export FIX_GSI=$FIX_GSI
-export OBS_EAST=$GLMFED_EAST_ROOT
-export OBS_WEST=$GLMFED_WEST_ROOT
-export RRFSE_NWGES=$GESROOT
-export NUM_ENS_MEMBERS=$NUM_ENS_MEMBERS
-export DA_CYCLE_INTERV=$DA_CYCLE_INTERV
-export MODE=$GLMFED_DATA_MODE
+#  directory has grid_spec files for restart subdomains
+export gridspec_dir=${GESROOT}/grid_spec
+
+export ${OB_TYPE}
+
+#-----------------------------------------------------------------------
+# Define COM directories
+#-----------------------------------------------------------------------
+
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup/${mem_num})}
+  else
+    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
+  fi
+else
+  if [ "${MEM_TYPE}" = "MEAN" ]; then
+    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/ensmean)}
+  else
+    if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+      export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/${mem_num})}
+    else
+      export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
+      export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
+    fi
+  fi
+fi
+mkdir -p "${COMOUT}"
 
 #-----------------------------------------------------------------------
 # Execute the script.
@@ -82,7 +118,7 @@ export MODE=$GLMFED_DATA_MODE
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-python -u ${SCRIPTSdir}/exrrfs_process_glmfed.py
+$SCRIPTSdir/exrrfs_update_lbc_soil.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then
@@ -104,7 +140,7 @@ In directory:    \"${scrfunc_dir}\"
 ========================================================================"
 
 #-----------------------------------------------------------------------
-# Restore the shell options saved at the beginning of this script/funcion.
+# Restore the shell options saved at the beginning of this script/function.
 #-----------------------------------------------------------------------
 
 { restore_shell_opts; } > /dev/null 2>&1

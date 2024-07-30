@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #-----------------------------------------------------------------------
-# RRFS Radar Reflectivity Preprocessing
+# RRFS GLM Gridded Lightning Data Preprocessing
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
@@ -10,9 +10,6 @@
 
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
-
-date
-export PS4='+ $SECONDS + '
 
 #-----------------------------------------------------------------------
 # Save current shell options (in a global array).  Then set new options
@@ -40,8 +37,8 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs the radar reflectivity 
-preprocessing with RRFS for the specified cycle.
+This is the J-job script for the task that runs a GLM FED lightning
+preprocess with RRFS for the specified cycle.
 ========================================================================"
 
 #-----------------------------------------------------------------------
@@ -52,15 +49,17 @@ export pid=${pid:-$$}
 export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export jobid=${RUN}_process_radarref_spinup_${envir}_${cyc}
-  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export jobid=${RUN}_process_radarref_spinup_enkf_${envir}_${cyc}
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  if [ ${DO_ENSEMBLE} = TRUE ]; then
+    export jobid=${RUN}_process_lightning_enkf_spinup_${envir}_${cyc}
+  else
+    export jobid=${RUN}_process_lightning_spinup_${envir}_${cyc}
   fi
 else
-  export jobid=${RUN}_process_radarref_${envir}_${cyc}
-  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export jobid=${RUN}_process_radarref_enkf_${envir}_${cyc}
+  if [ ${DO_ENSEMBLE} = TRUE ]; then
+    export jobid=${RUN}_process_lightning_enkf_${envir}_${cyc}
+  else
+    export jobid=${RUN}_process_lightning_${envir}_${cyc}
   fi
 fi
 
@@ -68,18 +67,13 @@ export DATA=${DATAROOT}/${jobid}
 mkdir -p ${DATA}
 cd ${DATA}
 
-export gridspec_dir=${GESROOT}/grid_spec
-
-#-----------------------------------------------------------------------
-# Define COM directories
-#-----------------------------------------------------------------------
-
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
-else
-  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-fi
-mkdir -p "${COMOUT}"
+export FIX_GSI=$FIX_GSI
+export OBS_EAST=$GLMFED_EAST_ROOT
+export OBS_WEST=$GLMFED_WEST_ROOT
+export RRFSE_NWGES=$GESROOT
+export NUM_ENS_MEMBERS=$NUM_ENS_MEMBERS
+export DA_CYCLE_INTERV=$DA_CYCLE_INTERV
+export MODE=$GLMFED_DATA_MODE
 
 #-----------------------------------------------------------------------
 # Execute the script.
@@ -88,7 +82,7 @@ mkdir -p "${COMOUT}"
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_process_radarref.sh
+python -u ${SCRIPTSdir}/exrrfs_process_lightning.py
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then
@@ -110,7 +104,7 @@ In directory:    \"${scrfunc_dir}\"
 ========================================================================"
 
 #-----------------------------------------------------------------------
-# Restore the shell options saved at the beginning of this script/function.
+# Restore the shell options saved at the beginning of this script/funcion.
 #-----------------------------------------------------------------------
 
 { restore_shell_opts; } > /dev/null 2>&1

@@ -73,7 +73,7 @@ cd ${DATA}
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_run_enkf.sh
+$SCRIPTSdir/exrrfs_analysis_enkf.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

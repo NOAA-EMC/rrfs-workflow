@@ -62,8 +62,8 @@ case $MACHINE in
   export FI_OFI_RXM_SAR_LIMIT=3145728
   export OMP_STACKSIZE=1G
   export OMP_NUM_THREADS=1
-  ncores=$(( NNODES_RUN_GSIDIAG*PPN_RUN_GSIDIAG ))
-  APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_GSIDIAG} --cpu-bind core --depth ${OMP_NUM_THREADS}"
+  ncores=$(( NNODES_ANALYSIS_GSIDIAG*PPN_ANALYSIS_GSIDIAG ))
+  APRUN="mpiexec -n ${ncores} -ppn ${PPN_ANALYSIS_GSIDIAG} --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;
 #
 "HERA")
