@@ -49,7 +49,6 @@ the specified cycle.
 #-----------------------------------------------------------------------
 
 export pid=${pid:-$$}
-export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
@@ -60,7 +59,7 @@ else
   workname="gsi"
 fi
 
-export jobid=${RUN}_analysis_conv_dbz_${workname}_${envir}_${cyc}
+export jobid=${RUN}_analysis_conv_dbz_${workname}_${cyc}
 export DATA="${DATAROOT}/${jobid}"
 rm -rf ${DATA}
 mkdir -p ${DATA}

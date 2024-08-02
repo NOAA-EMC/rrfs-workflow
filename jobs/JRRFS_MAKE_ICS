@@ -120,15 +120,14 @@ extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
 #-----------------------------------------------------------------------
 
 export pid=${pid:-$$}
-export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  export jobid=${RUN}_make_ics_${mem_num}_${envir}_${cyc}
+  export jobid=${RUN}_make_ics_${mem_num}_${cyc}
   export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/ics"
 else
-  export jobid=${RUN}_make_ics_${envir}_${cyc}
+  export jobid=${RUN}_make_ics_${cyc}
   export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/ics"
 fi
 

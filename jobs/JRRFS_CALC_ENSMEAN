@@ -49,16 +49,15 @@ RRFS for the specified cycle.
 #-----------------------------------------------------------------------
 
 export pid=${pid:-$$}
-export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
 
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export jobid=${RUN}_calc_ensmean_spinup_${envir}_${cyc}
+  export jobid=${RUN}_calc_ensmean_spinup_${cyc}
 else
-  export jobid=${RUN}_calc_ensmean_${envir}_${cyc}
+  export jobid=${RUN}_calc_ensmean_${cyc}
 fi
 
 export DATA=${DATAROOT}/${jobid}

@@ -49,7 +49,6 @@ analysis with RRFS for the specified cycle.
 #-----------------------------------------------------------------------
 
 export pid=${pid:-$$}
-export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
@@ -66,12 +65,12 @@ if [[ ! -v OB_TYPE ]]; then
 fi
 if [ "${GSI_TYPE}" = "OBSERVER" ]; then
   if [ "${MEM_TYPE}" = "MEAN" ]; then
-    export jobid=${RUN}_observer_${workname}_ensmean_${envir}_${cyc}
+    export jobid=${RUN}_observer_${workname}_ensmean_${cyc}
   else
-    export jobid=${RUN}_observer_${workname}_${mem_num}_${envir}_${cyc}
+    export jobid=${RUN}_observer_${workname}_${mem_num}_${cyc}
   fi
 else
-  export jobid=${RUN}_analysis_${OB_TYPE}_${workname}_${envir}_${cyc}
+  export jobid=${RUN}_analysis_${OB_TYPE}_${workname}_${cyc}
 fi
 
 export DATA=${DATAROOT}/${jobid}

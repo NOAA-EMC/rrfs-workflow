@@ -49,13 +49,12 @@ for the specified cycle.
 #-----------------------------------------------------------------------
 
 export pid=${pid:-$$}
-export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export jobid=${RUN}_process_smoke_spinup_${envir}_${cyc}
+  export jobid=${RUN}_process_smoke_spinup_${cyc}
 else
-  export jobid=${RUN}_process_smoke_${envir}_${cyc}
+  export jobid=${RUN}_process_smoke_${cyc}
 fi
 
 export DATA=${DATAROOT}/${jobid}

@@ -48,7 +48,6 @@ This is the J-job script for the task that saves DA analysis files to nwges.
 #-----------------------------------------------------------------------
 
 export pid=${pid:-$$}
-export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
@@ -58,15 +57,15 @@ export mem_num=m$(echo "${ENSMEM_INDX}")
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${CYCLE_TYPE}" = "prod" ]; then
   if [ ${DO_ENSEMBLE} = "TRUE" ]; then
-    export DATA="${DATAROOT}/${RUN}_forecast_${mem_num}_${envir}_${cyc}"
+    export DATA="${DATAROOT}/${RUN}_forecast_${mem_num}_${cyc}"
     export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast"
   else
-    export DATA="${DATAROOT}/${RUN}_forecast_${envir}_${cyc}"
+    export DATA="${DATAROOT}/${RUN}_forecast_${cyc}"
     export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/forecast"
   fi
 fi
 if [ ${CYCLE_TYPE} == "enfcst" ]; then
-  export DATA="${DATAROOT}/${RUN}_forecast_${mem_num}_${envir}_${cyc}"
+  export DATA="${DATAROOT}/${RUN}_forecast_${mem_num}_${cyc}"
   export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast_enfcst"
 fi
 

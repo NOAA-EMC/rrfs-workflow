@@ -49,18 +49,17 @@ preprocessing with RRFS for the specified cycle.
 #-----------------------------------------------------------------------
 
 export pid=${pid:-$$}
-export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export jobid=${RUN}_process_radar_spinup_${envir}_${cyc}
+  export jobid=${RUN}_process_radar_spinup_${cyc}
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export jobid=${RUN}_process_radar_spinup_enkf_${envir}_${cyc}
+    export jobid=${RUN}_process_radar_spinup_enkf_${cyc}
   fi
 else
-  export jobid=${RUN}_process_radar_${envir}_${cyc}
+  export jobid=${RUN}_process_radar_${cyc}
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export jobid=${RUN}_process_radar_enkf_${envir}_${cyc}
+    export jobid=${RUN}_process_radar_enkf_${cyc}
   fi
 fi
 

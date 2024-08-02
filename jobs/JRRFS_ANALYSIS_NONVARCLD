@@ -49,7 +49,6 @@ analysis with RRFS for the specified cycle.
 #-----------------------------------------------------------------------
 
 export pid=${pid:-$$}
-export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
@@ -60,12 +59,12 @@ else
   export workname="nonvar_cldanl"
 fi
 if [ ${MEM_TYPE} = "MEAN" ]; then
-  export jobid=${RUN}_${workname}_ensmean_${envir}_${cyc}
+  export jobid=${RUN}_${workname}_ensmean_${cyc}
 else
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export jobid=${RUN}_${workname}_${mem_num}_${envir}_${cyc}
+    export jobid=${RUN}_${workname}_${mem_num}_${cyc}
   else
-    export jobid=${RUN}_${workname}_${envir}_${cyc}
+    export jobid=${RUN}_${workname}_${cyc}
   fi
 fi
 

@@ -49,7 +49,6 @@ for the specified cycle.
 #-----------------------------------------------------------------------
 
 export pid=${pid:-$$}
-export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
@@ -68,16 +67,16 @@ if [[ ! -v OB_TYPE ]]; then
 fi
 if [ "${GSI_TYPE}" = "OBSERVER" ]; then
   if [ "${MEM_TYPE}" = "MEAN" ]; then
-    export jobid=${RUN}_observer_${workname}_ensmean_${envir}_${cyc}
+    export jobid=${RUN}_observer_${workname}_ensmean_${cyc}
     observer_nwges_dir="${GESROOT}/ensmean/observer_${workname}"
   else
 # GSI_TYPE = OBSERVER is only for EnKF (ensemble forecasts do not have ANALYSIS tasks)
-    export jobid=${RUN}_observer_${workname}_${mem_num}_${envir}_${cyc}
+    export jobid=${RUN}_observer_${workname}_${mem_num}_${cyc}
     observer_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/observer_${workname}"
   fi
   mkdir -p ${observer_nwges_dir}
 else	# For control member, GSI_TYPE is always ANALYSIS
-  export jobid=${RUN}_analysis_${OB_TYPE}_${workname}_${envir}_${cyc}
+  export jobid=${RUN}_analysis_${OB_TYPE}_${workname}_${cyc}
 fi
 
 export DATA=${DATAROOT}/${jobid}

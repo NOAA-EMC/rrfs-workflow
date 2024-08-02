@@ -278,7 +278,7 @@ n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
 if [ "${DO_NON_DA_RUN}" = "TRUE" ]; then
-  target="${DATAROOT}/${RUN}_make_ics_${envir}_${cyc}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc"
+  target="${DATAROOT}/${RUN}_make_ics_${cyc}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc"
 else
   if [ ${BKTYPE} -eq 1 ]; then
     target="gfs_data.tile${TILE_RGNL}.halo${NH0}.nc"
@@ -310,20 +310,20 @@ else
 fi
 
 if [ "${DO_NON_DA_RUN}" = "TRUE" ]; then
-  target="${DATAROOT}/${RUN}_make_ics_${envir}_${cyc}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc"
+  target="${DATAROOT}/${RUN}_make_ics_${cyc}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc"
   symlink="sfc_data.nc"
   ln -sf ${relative_or_null} $target $symlink
 
-  target="${DATAROOT}/${RUN}_make_ics_${envir}_${cyc}/gfs_ctrl.nc"
+  target="${DATAROOT}/${RUN}_make_ics_${cyc}/gfs_ctrl.nc"
   symlink="gfs_ctrl.nc"
   ln -sf ${relative_or_null} $target $symlink
 
-  target="${DATAROOT}/${RUN}_make_ics_${envir}_${cyc}/gfs_bndy.tile${TILE_RGNL}.000.nc"
+  target="${DATAROOT}/${RUN}_make_ics_${cyc}/gfs_bndy.tile${TILE_RGNL}.000.nc"
   symlink="gfs_bndy.tile${TILE_RGNL}.000.nc"
   ln -sf ${relative_or_null} $target $symlink
 
   for fhr in $(seq -f "%03g" ${LBC_SPEC_INTVL_HRS} ${LBC_SPEC_INTVL_HRS} ${FCST_LEN_HRS}); do
-    target="${DATAROOT}/${RUN}_make_lbcs_${envir}_${cyc}/gfs_bndy.tile${TILE_RGNL}.${fhr}.nc"
+    target="${DATAROOT}/${RUN}_make_lbcs_${cyc}/gfs_bndy.tile${TILE_RGNL}.${fhr}.nc"
     symlink="gfs_bndy.tile${TILE_RGNL}.${fhr}.nc"
     ln -sf ${relative_or_null} $target $symlink
   done

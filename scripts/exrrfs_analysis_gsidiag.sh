@@ -294,7 +294,6 @@ if [ "${DO_RADMON}" = "TRUE" ]; then
    else
      echo "Run EMC Radmon package to generate daily monitoring data for satellite"
 
-     envir=${envir:-prod}
      REGIONAL_RR=${REGIONAL_RR:-1}
 
      export TANKverf=${TANKverf:-$GESROOT/radmon}

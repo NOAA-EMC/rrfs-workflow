@@ -48,7 +48,6 @@ This is the J-job script for the prep_cyc tasks for the specified cycle.
 #-----------------------------------------------------------------------
 
 export pid=${pid:-$$}
-export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
@@ -57,18 +56,18 @@ export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
 export ctrlpath=""
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export INPUT_DATA=${DATAROOT}/${RUN}_forecast_spinup_${envir}_${cyc}/INPUT
+  export INPUT_DATA=${DATAROOT}/${RUN}_forecast_spinup_${cyc}/INPUT
   if [ "${DO_ENSINIT}" = "TRUE" ] && [ "${CYCLE_SUBTYPE}" = "ensinit" ]; then
-    export INPUT_DATA=${DATAROOT}/${RUN}_forecast_ensinit_${envir}_${cyc}/INPUT
+    export INPUT_DATA=${DATAROOT}/${RUN}_forecast_ensinit_${cyc}/INPUT
   fi
   if [ "${DO_ENSINIT}" = "TRUE" ] && [ "${CYCLE_SUBTYPE}" = "spinup" ]; then
     ctrlpath=${ENSCTRL_DATAROOT}
   fi
 else
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export INPUT_DATA=${DATAROOT}/${RUN}_forecast_${mem_num}_${envir}_${cyc}/INPUT
+    export INPUT_DATA=${DATAROOT}/${RUN}_forecast_${mem_num}_${cyc}/INPUT
   else
-    export INPUT_DATA=${DATAROOT}/${RUN}_forecast_${envir}_${cyc}/INPUT
+    export INPUT_DATA=${DATAROOT}/${RUN}_forecast_${cyc}/INPUT
   fi
 fi
 

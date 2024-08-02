@@ -46,20 +46,19 @@ preprocess with RRFS for the specified cycle.
 #-----------------------------------------------------------------------
 
 export pid=${pid:-$$}
-export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
 if [ ${CYCLE_TYPE} == "spinup" ]; then
   if [ ${DO_ENSEMBLE} = TRUE ]; then
-    export jobid=${RUN}_process_lightning_enkf_spinup_${envir}_${cyc}
+    export jobid=${RUN}_process_lightning_enkf_spinup_${cyc}
   else
-    export jobid=${RUN}_process_lightning_spinup_${envir}_${cyc}
+    export jobid=${RUN}_process_lightning_spinup_${cyc}
   fi
 else
   if [ ${DO_ENSEMBLE} = TRUE ]; then
-    export jobid=${RUN}_process_lightning_enkf_${envir}_${cyc}
+    export jobid=${RUN}_process_lightning_enkf_${cyc}
   else
-    export jobid=${RUN}_process_lightning_${envir}_${cyc}
+    export jobid=${RUN}_process_lightning_${cyc}
   fi
 fi
 

@@ -125,22 +125,22 @@ AIR_REJECT_FN=$(date +%Y%m%d -d "${START_DATE} -1 day")_rejects.txt
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   if [ "${MEM_TYPE}" = "MEAN" ]; then
-    bkpath=${DATAROOT}/${RUN}_calc_ensmean_spinup_${envir}_${cyc}
+    bkpath=${DATAROOT}/${RUN}_calc_ensmean_spinup_${cyc}
   else
     if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-      bkpath=${DATAROOT}/${RUN}_forecast_spinup_${mem_num}_${envir}_${cyc}/INPUT
+      bkpath=${DATAROOT}/${RUN}_forecast_spinup_${mem_num}_${cyc}/INPUT
     else
-      bkpath=${DATAROOT}/${RUN}_forecast_spinup_${envir}_${cyc}/INPUT
+      bkpath=${DATAROOT}/${RUN}_forecast_spinup_${cyc}/INPUT
     fi
   fi
 else
   if [ "${MEM_TYPE}" = "MEAN" ]; then
-    bkpath=${DATAROOT}/${RUN}_calc_ensmean_${envir}_${cyc}
+    bkpath=${DATAROOT}/${RUN}_calc_ensmean_${cyc}
   else
     if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-      bkpath=${DATAROOT}/${RUN}_forecast_${mem_num}_${envir}_${cyc}/INPUT
+      bkpath=${DATAROOT}/${RUN}_forecast_${mem_num}_${cyc}/INPUT
     else
-      bkpath=${DATAROOT}/${RUN}_forecast_${envir}_${cyc}/INPUT
+      bkpath=${DATAROOT}/${RUN}_forecast_${cyc}/INPUT
     fi
   fi
 fi
@@ -476,17 +476,17 @@ if [[ ${GSI_TYPE} == "OBSERVER" || ${anav_type} == "conv" || ${anav_type} == "co
   if [ "${anav_type}" = "conv_dbz" ]; then
     obs_number=${#obs_files_source[@]}
     if [ "${CYCLE_TYPE}" = "spinup" ]; then
-      obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_radar_spinup_${envir}_${cyc}/Gridded_ref.nc
+      obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_radar_spinup_${cyc}/Gridded_ref.nc
     else
-      obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_radar_${envir}_${cyc}/Gridded_ref.nc
+      obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_radar_${cyc}/Gridded_ref.nc
     fi
     obs_files_target[${obs_number}]=dbzobs.nc
     if [ "${DO_GLM_FED_DA}" = "TRUE" ]; then
       obs_number=${#obs_files_source[@]}
       if [ "${CYCLE_TYPE}" = "spinup" ]; then
-        obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_lightning_spinup_${envir}_${cyc}/fedobs.nc
+        obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_lightning_spinup_${cyc}/fedobs.nc
       else
-        obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_lightning_${envir}_${cyc}/fedobs.nc
+        obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_lightning_${cyc}/fedobs.nc
       fi
       obs_files_target[${obs_number}]=fedobs.nc
     fi
@@ -495,14 +495,14 @@ if [[ ${GSI_TYPE} == "OBSERVER" || ${anav_type} == "conv" || ${anav_type} == "co
   if [ "${DO_ENKF_RADAR_REF}" = "TRUE" ]; then
     obs_number=${#obs_files_source[@]}
     if [ "${CYCLE_TYPE}" = "spinup" ]; then
-      obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_radar_spinup_enkf_${envir}_${cyc}/Gridded_ref.nc
+      obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_radar_spinup_enkf_${cyc}/Gridded_ref.nc
     else
-      obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_radar_enkf_${envir}_${cyc}/Gridded_ref.nc
+      obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_radar_enkf_${cyc}/Gridded_ref.nc
     fi
     obs_files_target[${obs_number}]=dbzobs.nc
     if [ "${DO_GLM_FED_DA}" = "TRUE" ]; then
       obs_number=${#obs_files_source[@]}
-      obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_lightning_enkf_${envir}_${cyc}/fedobs.nc
+      obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_lightning_enkf_${cyc}/fedobs.nc
       obs_files_target[${obs_number}]=fedobs.nc
     fi
   fi
@@ -511,16 +511,16 @@ else
 
   if [ "${anav_type}" = "radardbz" ]; then
     if [ "${CYCLE_TYPE}" = "spinup" ]; then
-      obs_files_source[0]=${DATAROOT}/${RUN}_process_radar_spinup_${envir}_${cyc}/Gridded_ref.nc
+      obs_files_source[0]=${DATAROOT}/${RUN}_process_radar_spinup_${cyc}/Gridded_ref.nc
     else
-      obs_files_source[0]=${DATAROOT}/${RUN}_process_radar_${envir}_${cyc}/Gridded_ref.nc
+      obs_files_source[0]=${DATAROOT}/${RUN}_process_radar_${cyc}/Gridded_ref.nc
     fi
     obs_files_target[0]=dbzobs.nc
     if [ "${DO_GLM_FED_DA}" = "TRUE" ]; then
       if [ "${CYCLE_TYPE}" = "spinup" ]; then
-        obs_files_source[1]=${DATAROOT}/${RUN}_process_lightning_spinup_${envir}_${cyc}/fedobs.nc
+        obs_files_source[1]=${DATAROOT}/${RUN}_process_lightning_spinup_${cyc}/fedobs.nc
       else
-        obs_files_source[1]=${DATAROOT}/${RUN}_process_lightning_${envir}_${cyc}/fedobs.nc
+        obs_files_source[1]=${DATAROOT}/${RUN}_process_lightning_${cyc}/fedobs.nc
       fi
       obs_files_target[1]=fedobs.nc
     fi

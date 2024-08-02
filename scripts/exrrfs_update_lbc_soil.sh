@@ -122,12 +122,12 @@ else
   cycle_tag=""
 fi
 if [ "${MEM_TYPE}" = "MEAN" ]; then
-  bkpath=${DATAROOT}/${RUN}_calc_ensmean${cycle_tag}_${envir}_${cyc}/INPUT
+  bkpath=${DATAROOT}/${RUN}_calc_ensmean${cycle_tag}_${cyc}/INPUT
 else
   if [ ${DO_ENSEMBLE} = "TRUE" ]; then
-    bkpath=${DATAROOT}/${RUN}_forecast${cycle_tag}_${mem_num}_${envir}_${cyc}/INPUT
+    bkpath=${DATAROOT}/${RUN}_forecast${cycle_tag}_${mem_num}_${cyc}/INPUT
   else
-    bkpath=${DATAROOT}/${RUN}_forecast${cycle_tag}_${envir}_${cyc}/INPUT
+    bkpath=${DATAROOT}/${RUN}_forecast${cycle_tag}_${cyc}/INPUT
   fi
 fi
 

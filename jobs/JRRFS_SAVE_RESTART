@@ -48,7 +48,6 @@ This is the J-job script for the task that saves restart files to nwges.
 #-----------------------------------------------------------------------
 
 export pid=${pid:-$$}
-export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
@@ -58,22 +57,22 @@ export CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
 export SURFACE_DIR=${SURFACE_DIR:-empty}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then	# EnKF has spinup forecasts
-    export DATA="${DATAROOT}/${RUN}_forecast_spinup_${mem_num}_${envir}_${cyc}"
+    export DATA="${DATAROOT}/${RUN}_forecast_spinup_${mem_num}_${cyc}"
     export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast_spinup"
     if [ "${CYCLE_SUBTYPE}" = "ensinit" ]; then
-      export DATA="${DATAROOT}/${RUN}_forecast_ensinit_${mem_num}_${envir}_${cyc}"
+      export DATA="${DATAROOT}/${RUN}_forecast_ensinit_${mem_num}_${cyc}"
       export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast_ensinit"
     fi
   else
-    export DATA="${DATAROOT}/${RUN}_forecast_spinup_${envir}_${cyc}"
+    export DATA="${DATAROOT}/${RUN}_forecast_spinup_${cyc}"
     export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/forecast_spinup"
   fi
 else
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export DATA="${DATAROOT}/${RUN}_forecast_${mem_num}_${envir}_${cyc}"
+    export DATA="${DATAROOT}/${RUN}_forecast_${mem_num}_${cyc}"
     export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast"
   else
-    export DATA="${DATAROOT}/${RUN}_forecast_${envir}_${cyc}"
+    export DATA="${DATAROOT}/${RUN}_forecast_${cyc}"
     export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/forecast"
   fi
 fi

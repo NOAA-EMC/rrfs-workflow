@@ -50,7 +50,6 @@ the specified cycle.
 #-----------------------------------------------------------------------
 
 export pid=${pid:-$$}
-export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
@@ -60,18 +59,18 @@ export CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
 
 if [ ${CYCLE_TYPE} == "spinup" ]; then
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then	# EnKF has spinup forecasts
-    export jobid=${RUN}_forecast_spinup_${mem_num}_${envir}_${cyc}
+    export jobid=${RUN}_forecast_spinup_${mem_num}_${cyc}
     if  [ ${CYCLE_SUBTYPE} == "ensinit" ]; then
-      export jobid=${RUN}_forecast_ensinit_${mem_num}_${envir}_${cyc}
+      export jobid=${RUN}_forecast_ensinit_${mem_num}_${cyc}
     fi
   else
-    export jobid=${RUN}_forecast_spinup_${envir}_${cyc}
+    export jobid=${RUN}_forecast_spinup_${cyc}
   fi
 else
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export jobid=${RUN}_forecast_${mem_num}_${envir}_${cyc}
+    export jobid=${RUN}_forecast_${mem_num}_${cyc}
   else
-    export jobid=${RUN}_forecast_${envir}_${cyc}
+    export jobid=${RUN}_forecast_${cyc}
   fi
 fi
 
