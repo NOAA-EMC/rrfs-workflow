@@ -1,0 +1,33 @@
+#PBS -N rrfs_det_bufr_%CYC%
+#PBS -j oe
+#PBS -S /bin/bash
+#PBS -q %QUEUE%
+#PBS -A %PROJ%-%PROJENVIR%
+#PBS -l walltime=00:25:00
+#PBS -l select=1:mpiprocs=1:ncpus=1:mem=20G
+#PBS -l place=excl
+#PBS -l debug=true
+
+model=rrfs
+export cyc="%CYC%"
+%include <head.h>
+%include <envir-p1.h>
+export CDATE="${PDY}${cyc}"
+############################################################
+# Load modules
+############################################################
+
+
+module list
+export WGF="%WGF%"
+export CYCLE_TYPE="%CYCLE_TYPE%"
+%include <det_bufr_dev_wire_%CYC%.h>
+############################################################
+# CALL executable job script here
+############################################################
+/lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/ush/load_modules_run_task.sh run_analysis_gsi /lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/jobs/JRRFS_PROCESS_BUFR
+
+%include <tail.h>
+
+%manual
+%end

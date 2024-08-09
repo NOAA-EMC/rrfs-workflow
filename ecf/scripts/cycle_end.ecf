@@ -1,0 +1,30 @@
+#!/bin/bash -l
+
+model=rrfs
+%include <head.h>
+%include <envir-p1.h>
+module load prod_util
+set -x
+cyc=%CYC%
+export cycle=t${cyc}z
+export CDATE="$PDY$cyc"
+retro=YES
+suite_name=$(ecflow_client --query variable ${ECF_NAME}:SUITE)
+if [ $retro == "YES" ]; then
+  cd /lfs/h3/emc/rrfstemp/ecflow/ptmp/emc.lam/ecflow_rrfs/para/output/prod/today/ecflocal
+  setpdy.sh
+  . ./PDY
+  echo "Current retro PDY is $PDY"
+  echo "Current retro cyc is $cyc"
+  ecflow_client --alter change variable PDY $PDYp1 /${suite_name}/primary/${cyc}
+#  if [ ${cyc} = "00" ]; then
+#    for idx_cyc in $(seq 0 23); do
+#      idx_cyc2d=$( printf "%02d" "${idx_cyc}" )
+#      ecflow_client --alter change variable PDY $PDYp1 /nco_rrfs_dev_${idx_cyc2d}/primary/${idx_cyc2d}
+#    done
+#  fi
+fi
+ecflow_client --requeue=force /${suite_name}/primary/${cyc}/${model}
+
+%include <tail.h>
+exit 0

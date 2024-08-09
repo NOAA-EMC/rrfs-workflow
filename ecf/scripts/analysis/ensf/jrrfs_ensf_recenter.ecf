@@ -1,0 +1,32 @@
+#PBS -N rrfs_ensf_recenter_%CYC%
+#PBS -j oe
+#PBS -S /bin/bash
+#PBS -q %QUEUE%
+#PBS -A %PROJ%-%PROJENVIR%
+#PBS -l walltime=01:00:00
+#PBS -l select=10:mpiprocs=128:ncpus=128
+#PBS -l place=excl
+#PBS -l debug=true
+
+model=rrfs
+export cyc="%CYC%"
+%include <head.h>
+%include <envir-p1.h>
+export CDATE="${PDY}${cyc}"
+############################################################
+# Load modules
+############################################################
+
+
+module list
+export WGF="%WGF%"
+%include <ensf_recenter_dev_wire_%CYC%.h>
+############################################################
+# CALL executable job script here
+############################################################
+/lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/ush/load_modules_run_task.sh run_recenter /lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/jobs/JRRFS_RUN_RECENTER
+
+%include <tail.h>
+
+%manual
+%end
