@@ -1,0 +1,33 @@
+#PBS -N rrfs_ensf_bufrsnd_mem002_%CYC%
+#PBS -j oe
+#PBS -S /bin/bash
+#PBS -q %QUEUE%
+#PBS -A %PROJ%-%PROJENVIR%
+#PBS -l walltime=04:45:00
+#PBS -l select=2:mpiprocs=64:ompthreads=2:ncpus=128
+
+#PBS -l debug=true
+
+model=rrfs
+export cyc="%CYC%"
+%include <head.h>
+%include <envir-p1.h>
+export CDATE="${PDY}${cyc}"
+############################################################
+# Load modules
+############################################################
+
+
+module list
+export WGF="%WGF%"
+export MEMBER_NAME="%MEMBER_NAME%"
+%include <ensf_bufrsnd_mem002_dev_wire_%CYC%.h>
+############################################################
+# CALL executable job script here
+############################################################
+/lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/ush/load_modules_run_task.sh run_bufrsnd /lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/jobs/JRRFS_BUFRSND
+
+%include <tail.h>
+
+%manual
+%end

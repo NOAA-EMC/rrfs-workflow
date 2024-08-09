@@ -1,0 +1,33 @@
+#PBS -N rrfs_firewx_make_grid_%CYC%
+#PBS -j oe
+#PBS -S /bin/bash
+#PBS -q %QUEUE%
+#PBS -A %PROJ%-%PROJENVIR%
+#PBS -l walltime=00:20:00
+#PBS -l select=1:mpiprocs=24:ncpus=24
+
+#PBS -l debug=true
+
+model=rrfs
+export cyc="%CYC%"
+%include <head.h>
+%include <envir-p1.h>
+export CDATE="${PDY}${cyc}"
+############################################################
+# Load modules
+############################################################
+
+
+module list
+export WGF="%WGF%"
+export BCGRPNUM="%BCGRPNUM%"
+%include <firewx_make_grid_dev_wire_%CYC%.h>
+############################################################
+# CALL executable job script here
+############################################################
+/lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/ush/load_modules_run_task.sh make_grid /lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/jobs/JRRFS_MAKE_GRID
+
+%include <tail.h>
+
+%manual
+%end

@@ -1,0 +1,31 @@
+#PBS -N rrfs_enkf_blend_ics_mem015_%CYC%
+#PBS -j oe
+#PBS -S /bin/bash
+#PBS -q %QUEUE%
+#PBS -A %PROJ%-%PROJENVIR%
+#PBS -l walltime=00:30:00
+#PBS -l select=1:mpiprocs=8:ncpus=8
+#PBS -l place=excl
+#PBS -l debug=true
+
+model=rrfs
+export cyc="%CYC%"
+%include <head.h>
+%include <envir-p1.h>
+export CDATE="${PDY}${cyc}"
+############################################################
+# Load modules
+############################################################
+
+
+module list
+%include <enkf_blend_ics_mem015_dev_wire_%CYC%.h>
+############################################################
+# CALL executable job script here
+############################################################
+${HOMErrfs}/ush/load_modules_run_task.sh "blend_ics" "${HOMErrfs}/jobs/JRRFS_BLEND_ICS"
+
+%include <tail.h>
+
+%manual
+%end

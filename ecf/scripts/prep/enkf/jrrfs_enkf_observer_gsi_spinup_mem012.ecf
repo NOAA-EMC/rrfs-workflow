@@ -1,0 +1,34 @@
+#PBS -N rrfs_enkf_observer_gsi_spinup_mem012_%CYC%
+#PBS -j oe
+#PBS -S /bin/bash
+#PBS -q %QUEUE%
+#PBS -A %PROJ%-%PROJENVIR%
+#PBS -l walltime=00:50:00
+#PBS -l select=1:mpiprocs=16:ompthreads=8:ncpus=128
+#PBS -l place=excl
+#PBS -l debug=true
+
+model=rrfs
+export cyc="%CYC%"
+%include <head.h>
+%include <envir-p1.h>
+export CDATE="${PDY}${cyc}"
+############################################################
+# Load modules
+############################################################
+
+
+export WGF="%WGF%"
+export MEMBER_NAME="%MEMBER_NAME%"
+export CYCLE_TYPE="%CYCLE_TYPE%"
+module list
+%include <enkf_observer_gsi_spinup_mem012_dev_wire_%CYC%.h>
+############################################################
+# CALL executable job script here
+############################################################
+${HOMErrfs}/ush/load_modules_run_task.sh "run_analysis_gsi" "${HOMErrfs}/jobs/JRRFS_RUN_ANALYSIS"
+
+%include <tail.h>
+
+%manual
+%end

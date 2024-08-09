@@ -1,0 +1,31 @@
+#PBS -N rrfs_clean_%CYC%
+#PBS -j oe
+#PBS -S /bin/bash
+#PBS -q %QUEUE%
+#PBS -A %PROJ%-%PROJENVIR%
+#PBS -l walltime=00:15:00
+#PBS -l select=1:mpiprocs=1:ncpus=1
+#PBS -l debug=true
+
+model=rrfs
+export cyc="%CYC%"
+%include <head.h>
+%include <envir-p1.h>
+export CDATE="${PDY}${cyc}"
+############################################################
+# Load modules
+############################################################
+
+
+module list
+export WGF="det"
+%include <clean_dev_wire_%CYC%.h>
+############################################################
+# CALL executable job script here
+############################################################
+${HOMErrfs}/scripts/exrrfs_clean.ksh
+
+%include <tail.h>
+
+%manual
+%end

@@ -1,0 +1,35 @@
+#PBS -N rrfs_enkf_make_lbcs_00_mem024_%CYC%
+#PBS -j oe
+#PBS -S /bin/bash
+#PBS -q %QUEUE%
+#PBS -A %PROJ%-%PROJENVIR%
+#PBS -l walltime=02:30:00
+#PBS -l select=1:mpiprocs=64:ompthreads=2:ncpus=128
+#PBS -l place=excl
+#PBS -l debug=true
+
+model=rrfs
+export cyc="%CYC%"
+%include <head.h>
+%include <envir-p1.h>
+export CDATE="${PDY}${cyc}"
+############################################################
+# Load modules
+############################################################
+
+
+module list
+export WGF="%WGF%"
+export BCGRPNUM="%BCGRPNUM%"
+export MEMBER_NAME="%MEMBER_NAME%"
+export BCGRP="%BCGRP%"
+%include <enkf_make_lbcs_00_mem024_dev_wire_%CYC%.h>
+############################################################
+# CALL executable job script here
+############################################################
+/lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/ush/load_modules_run_task.sh make_lbcs /lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/jobs/JRRFS_MAKE_LBCS
+
+%include <tail.h>
+
+%manual
+%end
