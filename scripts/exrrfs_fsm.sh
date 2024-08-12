@@ -259,13 +259,13 @@ while [ $proceed_trigger_scan == "YES" ]; do
     echo "Proceeding with scan_release_det_prep_cyc"
     # fg_restart_dirname=fcst_fv3lam
     # YYYYMMDDHHmInterv=$($NDATE -1 ${PDY}${cyc})
-    YYYYMMDDHHmInterv=${RRFS_previous_PDY}${RRFS_previous_cyc}
-    if [ -d ${NWGES_BASEDIR}/${YYYYMMDDHHmInterv}/fcst_fv3lam ]; then
-      fg_restart_dirname=fcst_fv3lam
+    # YYYYMMDDHHmInterv=${RRFS_previous_PDY}${RRFS_previous_cyc}
+    if [ -d ${GESROOT}/${RUN}.${RRFS_previous_PDY}/${RRFS_previous_cyc}/forecast ]; then
+      fg_restart_dirname=forecast
     else
-      fg_restart_dirname=fcst_fv3lam_spinup
+      fg_restart_dirname=forecast_spinup
     fi
-    target_file_scan=${NWGES_BASEDIR}/${YYYYMMDDHHmInterv}/${fg_restart_dirname}/RESTART/${PDY}.${cyc}0000.coupler.res
+    target_file_scan=${GESROOT}/${RUN}.${RRFS_previous_PDY}/${RRFS_previous_cyc}/${fg_restart_dirname}/RESTART/${PDY}.${cyc}0000.coupler.res
     if [ -s ${target_file_scan} ]; then
       ecflow_client --event release_det_prep_cyc
       scan_release_det_prep_cyc="NO"
@@ -311,11 +311,11 @@ while [ $proceed_trigger_scan == "YES" ]; do
     # /lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/rrfs/v0.9.5/nwges/2024060923/mem0001~0030/fcst_fv3lam/RESTART/20240610.000000.coupler.res
     if [ -s ${obsproc_rap_inp_file} ]; then
       source_file_found="YES"
-      # fg_restart_dirname=fcst_fv3lam
-      if [ -d ${NWGES_BASEDIR}/${RRFS_previous_PDY}${RRFS_previous_cyc}/mem0001/fcst_fv3lam ]; then
-        fg_restart_dirname=fcst_fv3lam
+      # fg_restart_dirname=forecast
+      if [ -d ${GESROOT}/${RUN}.${RRFS_previous_PDY}/${RRFS_previous_cyc}/m001/forecast ]; then
+        fg_restart_dirname=forecast
       else
-        fg_restart_dirname=fcst_fv3lam_spinup
+        fg_restart_dirname=forecast_spinup
       fi
       #YYYYMMDDHHmInterv=$($NDATE -1 ${PDY}${cyc})
       #Interv_PDY=$(echo $YYYYMMDDHHmInterv | cut -c1-8)
@@ -323,7 +323,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
       # NWGES_BASEDIR/${YYYYMMDDHHmInterv}
       for member_num in $(seq 1 30); do
         member_num_2d=$( printf "%02d" ${member_num} )
-        target_file_scan=${NWGES_BASEDIR}/${RRFS_previous_PDY}${RRFS_previous_cyc}/mem00${member_num_2d}/${fg_restart_dirname}/RESTART/${RRFS_Current_PDY}.${RRFS_Current_cyc}0000.coupler.res
+        target_file_scan=${GESROOT}/${RUN}.${RRFS_previous_PDY}/${RRFS_previous_cyc}/m0${member_num_2d}/${fg_restart_dirname}/RESTART/${RRFS_Current_PDY}.${RRFS_Current_cyc}0000.coupler.res
         [[ ! -s ${target_file_scan} ]]&& source_file_found="NO"
       done
     fi
@@ -355,7 +355,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
     # /lfs/h2/emc/stmp/lin.gan/rrfs/ecflow_rrfs/rrfs/v1.0/2024061000/fcst_fv3lam/log.atm.f029*
     # s_v=$(echo $rrfs_ver|cut -c1-4)
     s_v=det
-    fg_restart_dirname=fcst_fv3lam
+    fg_restart_dirname=forecast
     umbrella_forecast_data=${DATAROOT}/${RUN}/${s_v}/${cdate}/${fg_restart_dirname}
     source_file_found="YES"
     if [ $(ls ${umbrella_forecast_data}/log.atm.f001-*|wc -l) -eq 4 ]; then
@@ -401,7 +401,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
     # /lfs/h2/emc/stmp/lin.gan/rrfs/ecflow_rrfs/rrfs/v1.0/2024061000/fcst_fv3lam/log.atm.f029*
     # s_v=$(echo $rrfs_ver|cut -c1-4)
     s_v=det
-    fg_restart_dirname=fcst_fv3lam
+    fg_restart_dirname=forecast
     umbrella_forecast_data=${DATAROOT}/${RUN}/det/${cdate}/${fg_restart_dirname}
     source_file_found="YES"
     # if [ $(ls ${umbrella_forecast_data}/log.atm.f001-*|wc -l) -eq 4 ]; then
@@ -424,7 +424,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
     # /lfs/h2/emc/stmp/lin.gan/rrfs/ecflow_rrfs/rrfs/v1.0/2024061000/fcst_fv3lam/log.atm.f029*
     # s_v=$(echo $rrfs_ver|cut -c1-4)
     s_v=det
-    fg_restart_dirname=fcst_fv3lam
+    fg_restart_dirname=forecast
     umbrella_forecast_data=${DATAROOT}/${RUN}/det/${cdate}/${fg_restart_dirname}
     source_file_found="YES"
     # if [ $(ls ${umbrella_forecast_data}/log.atm.f001-*|wc -l) -eq 4 ]; then
@@ -443,7 +443,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
   #### release_save_restart_spinup_f001
   if [ ${scan_release_save_restart_spinup_f001} == "YES" ]; then
     echo "Proceeding with scan_release_save_restart_spinup_f001"
-    fg_restart_dirname=fcst_fv3lam_spinup
+    fg_restart_dirname=forecast_spinup
     umbrella_forecast_data=${DATAROOT}/${RUN}/det/${cdate}/${fg_restart_dirname}
     source_file_found="YES"
     target_file_scan=${umbrella_forecast_data}/RESTART/${RRFS_next_1_PDY}.${RRFS_next_1_cyc}0000.coupler.res
@@ -467,7 +467,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
     source_file_found="YES"
     # s_v=$(echo $rrfs_ver|cut -c1-4)
     s_v=det
-    fg_restart_dirname=fcst_fv3lam
+    fg_restart_dirname=forecast
     umbrella_forecast_data=${DATAROOT}/${RUN}/${s_v}/${cdate}/${fg_restart_dirname}
     # fhr cover 000~060
     for fhr in $(seq 0 60); do
@@ -509,7 +509,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
     source_file_found="YES"
     # s_v=$(echo $rrfs_ver|cut -c1-4)
     s_v=det
-    fg_restart_dirname=fcst_fv3lam
+    fg_restart_dirname=forecast
     umbrella_forecast_data=${DATAROOT}/${RUN}/det/${cdate}/${fg_restart_dirname}
     # fhr cover 000~018
     for fhr in $(seq 0 18); do
@@ -574,14 +574,14 @@ while [ $proceed_trigger_scan == "YES" ]; do
   if [ ${scan_release_enkf_prep_cyc} == "YES" ]; then
     echo "Proceeding with scan_release_enkf_prep_cyc"
     source_file_found="YES"
-    if [ -d ${NWGES_BASEDIR}/${RRFS_previous_PDY}${RRFS_previous_cyc}/mem0001/fcst_fv3lam ]; then
-      fg_restart_dirname=fcst_fv3lam
+    if [ -d ${GESROOT}/${RUN}.${RRFS_previous_PDY}/${RRFS_previous_cyc}/m001/forecast ]; then
+      fg_restart_dirname=forecast
     else
-      fg_restart_dirname=fcst_fv3lam_spinup
+      fg_restart_dirname=forecast_spinup
     fi
     for mem_num in $(seq 1 30); do
       mem_num_2d=$( printf "%02d" ${mem_num} )
-      target_file_scan=${NWGES_BASEDIR}/${RRFS_previous_PDY}${RRFS_previous_cyc}/mem00${mem_num_2d}/${fg_restart_dirname}/RESTART/${RRFS_Current_PDY}.${RRFS_Current_cyc}0000.coupler.res
+      target_file_scan=${GESROOT}/${RUN}.${RRFS_previous_PDY}/${RRFS_previous_cyc}/m0${mem_num_2d}/${fg_restart_dirname}/RESTART/${RRFS_Current_PDY}.${RRFS_Current_cyc}0000.coupler.res
       if [ -s ${target_file_scan} ]; then
         ecflow_client --event release_enkf_prep_cyc_mem0${mem_num_2d}
       else
@@ -639,10 +639,10 @@ while [ $proceed_trigger_scan == "YES" ]; do
     echo "Proceeding with scan_release_enkf_fcst_spinup"
     source_file_found="YES"
     s_v=det
-    fg_restart_dirname=fcst_fv3lam_spinup
+    fg_restart_dirname=forecast_spinup
     for mem_num in $(seq 1 30); do
       mem_num_3d=$( printf "%03d" ${mem_num} )
-      umbrella_forecast_data=${DATAROOT}/${RUN}/enkf/${cdate}/mem${mem_num_3d}/${fg_restart_dirname}/RESTART/${RRFS_next_1_PDY}.${RRFS_next_1_cyc}0000.coupler.res
+      umbrella_forecast_data=${DATAROOT}/${RUN}/enkf/${cdate}/m${mem_num_3d}/${fg_restart_dirname}/RESTART/${RRFS_next_1_PDY}.${RRFS_next_1_cyc}0000.coupler.res
       if [ $(ls ${umbrella_forecast_data}|wc -l) -eq 1 ]; then
         ecflow_client --event release_enkf_save_restart_spinup_mem${mem_num_3d}_f001
       else
@@ -661,10 +661,10 @@ while [ $proceed_trigger_scan == "YES" ]; do
     echo "Proceeding with scan_release_enkf_save_restart_ensinit"
     source_file_found="YES"
     s_v=det 
-    fg_restart_dirname=fcst_fv3lam_ensinit
+    fg_restart_dirname=forecast_ensinit
     for mem_num in $(seq 1 30); do
       mem_num_3d=$( printf "%03d" ${mem_num} )
-      umbrella_forecast_data=${DATAROOT}/${RUN}/enkf/${cdate}/mem${mem_num_3d}/${fg_restart_dirname}/RESTART/${RRFS_Current_PDY}.${RRFS_Current_cyc}0036.coupler.res
+      umbrella_forecast_data=${DATAROOT}/${RUN}/enkf/${cdate}/m${mem_num_3d}/${fg_restart_dirname}/RESTART/${RRFS_Current_PDY}.${RRFS_Current_cyc}0036.coupler.res
       if [ $(ls ${umbrella_forecast_data}|wc -l) -eq 1 ]; then
         ecflow_client --event release_enkf_save_restart_ensinit_mem${mem_num_3d}
       else
