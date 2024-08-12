@@ -88,14 +88,14 @@ FV3_HRRR:
     dust_opt : 1
     coarsepm_settling : 1
     smoke_conv_wet_coef : [0.5, 0.5, 0.5]
-    smoke_forecast : 1
+    hwp_method : 1
     aero_ind_fdb : false
     aero_dir_fdb : true
     addsmoke_flag : 1
     wetdep_ls_opt : 1
     do_plumerise : true
     do_smoke_transport : true
-    plumerisefire_frq : 60
+    plumerisefire_frq : 30
     plume_wind_eff : 1
     dust_moist_correction : 2.0
     dust_drylimit_factor : 0.5
@@ -107,6 +107,7 @@ FV3_HRRR:
     smoke_conv_wet_coef : [ 0.50, 0.50, 0.50 ]
     do_smoke_transport : true
     ebb_dcycle : 2
+    sc_factor : 1.0
 
   fv_diagnostics_nml:
     do_hailcast: true
@@ -196,14 +197,14 @@ FV3_HRRR_gf:
     dust_opt : 1
     coarsepm_settling : 1
     smoke_conv_wet_coef : [0.5, 0.5, 0.5]
-    smoke_forecast : 1
+    hwp_method : 1
     aero_ind_fdb : false
     aero_dir_fdb : true
     addsmoke_flag : 1
     wetdep_ls_opt : 1
     do_plumerise : true
     do_smoke_transport : true
-    plumerisefire_frq : 60
+    plumerisefire_frq : 30
     plume_wind_eff : 1
     dust_moist_correction : 2.0
     dust_drylimit_factor : 0.5
@@ -215,6 +216,7 @@ FV3_HRRR_gf:
     smoke_conv_wet_coef : [ 0.50, 0.50, 0.50 ]
     do_smoke_transport : true
     ebb_dcycle : 2
+    sc_factor : 1.0
 
   fv_diagnostics_nml:
     do_hailcast: true

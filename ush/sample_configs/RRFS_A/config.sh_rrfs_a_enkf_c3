@@ -134,7 +134,7 @@ ARCHIVEDIR="/NCEPDEV/emc-meso/1year/emc.lam"
 NCL_REGION="conus"
 MODEL="rrfs_b"
 
-SPPINT=72
+SPPINT=36
 LNDPINT=180
 if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    NUM_ENS_MEMBERS=30
