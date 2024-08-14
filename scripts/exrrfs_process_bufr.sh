@@ -114,7 +114,7 @@ print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
 #
 #-----------------------------------------------------------------------
 #
-cp ${fixgriddir}/fv3_grid_spec  fv3sar_grid_spec.nc
+cpreq -p ${fixgriddir}/fv3_grid_spec  fv3sar_grid_spec.nc
 #
 #-----------------------------------------------------------------------
 #
@@ -123,7 +123,7 @@ cp ${fixgriddir}/fv3_grid_spec  fv3sar_grid_spec.nc
 #-----------------------------------------------------------------------
 #
 BUFR_TABLE=${FIX_GSI}/prepobs_prep_RAP.bufrtable
-cp $BUFR_TABLE prepobs_prep.bufrtable
+cpreq -p $BUFR_TABLE prepobs_prep.bufrtable
 #
 #-----------------------------------------------------------------------
 #
@@ -173,7 +173,7 @@ run_lightning=false
 obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.lghtng.tm00.bufr_d
 print_info_msg "$VERBOSE" "obsfile is $obs_file"
 if [ -r "${obs_file}" ]; then
-   cp "${obs_file}" "lghtngbufr"
+   cpreq -p "${obs_file}" "lghtngbufr"
    run_lightning=true
 else
    print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist!"
@@ -219,7 +219,7 @@ if [[ "$run_lightning" == true ]]; then
   export err=$?; err_chk
   mv errfile errfile_lightning
 
-  cp LightningInFV3LAM.dat ${COMOUT}/rrfs.t${HH}z.LightningInFV3LAM.bin
+  cpreq -p LightningInFV3LAM.dat ${COMOUT}/rrfs.t${HH}z.LightningInFV3LAM.bin
 fi
 #
 #-----------------------------------------------------------------------
@@ -232,7 +232,7 @@ obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.lgycld.tm00.bufr_d
 print_info_msg "$VERBOSE" "obsfile is $obs_file"
 run_cloud=false
 if [ -r "${obs_file}" ]; then
-   cp "${obs_file}" "lgycld.bufr_d"
+   cpreq -p "${obs_file}" "lgycld.bufr_d"
    run_cloud=true
 else
    print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist!"
@@ -285,7 +285,7 @@ if [[ "$run_cloud" == true ]]; then
   export err=$?; err_chk
   mv errfile errfile_larccld
 
-  cp NASALaRC_cloud4fv3.bin $COMOUT/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
+  cpreq -p NASALaRC_cloud4fv3.bin $COMOUT/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
 fi
 #
 #-----------------------------------------------------------------------
@@ -298,7 +298,7 @@ obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.prepbufr.tm00
 print_info_msg "$VERBOSE" "obsfile is $obs_file"
 run_metar=false
 if [ -r "${obs_file}" ]; then
-   cp "${obs_file}" "prepbufr"
+   cpreq -p "${obs_file}" "prepbufr"
    run_metar=true
 else
    print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist!"
@@ -339,7 +339,7 @@ if [[ "$run_metar" == true ]]; then
   export err=$?; err_chk
   mv errfile errfile_metarcld
 
-  cp fv3_metarcloud.bin $COMOUT/rrfs.t${HH}z.fv3_metarcloud.bin
+  cpreq -p fv3_metarcloud.bin $COMOUT/rrfs.t${HH}z.fv3_metarcloud.bin
 fi
 #
 #-----------------------------------------------------------------------

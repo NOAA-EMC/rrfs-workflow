@@ -1278,6 +1278,16 @@ check_for_preexist_dir_file "$EXPTDIR" "${PREEXISTING_DIR_METHOD}"
 #
 # Below, we set COMROOT in terms of PTMP as COMROOT="$PTMP/com".
 #
+# GESROOT:
+# The beginning portion of the directory that will contain the output
+# files from the forecast for a given cycle.  For a cycle
+# that starts on the date specified by yyyymmdd and hour specified by hh
+# (where yyyymmdd and hh are as described above), the directory in which
+# the forecast output files will be placed will be:
+#   $GESROOT/$RUN.$yyyymmdd/$hh
+#
+# Below, we set GESROOT in terms of PTMP as GESROOT="$PTMP/nwges".
+#
 #-----------------------------------------------------------------------
 #
 
@@ -1296,6 +1306,7 @@ ENSCTRL_DATAROOT="${ENSCTRL_STMP}"
 COMROOT="${PTMP}/com"
 ENSCTRL_COMROOT="${ENSCTRL_PTMP}/com"
 ENSCTRL_COMOUT="${ENSCTRL_COMROOT}/${NET}/${envir}/${RUN_ensctrl}.@Y@m@d"
+GESROOT="${PTMP}/nwges"
 LOG_BASEDIR="${PTMP}/logs"
 #
 #-----------------------------------------------------------------------

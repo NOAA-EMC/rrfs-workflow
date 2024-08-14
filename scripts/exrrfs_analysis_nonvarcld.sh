@@ -130,14 +130,14 @@ fi
 if [ ${l_cld_uncertainty} == ".true." ]; then
   # Copy analysis fields into uncertainties - data will be overwritten
   echo "exrrfs_analysis_nonvarcld.sh: copy tracer file into uncertainty file "
-  cp ${bkpath}/fv_tracer.res.tile1.nc  ${bkpath}/fv_tracer.unc.tile1.nc
+  cpreq -p ${bkpath}/fv_tracer.res.tile1.nc  ${bkpath}/fv_tracer.unc.tile1.nc
 fi
 
 n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
-cp ${fixgriddir}/fv3_akbk       fv3_akbk
-cp ${fixgriddir}/fv3_grid_spec  fv3_grid_spec
+cpreq -p ${fixgriddir}/fv3_akbk       fv3_akbk
+cpreq -p ${fixgriddir}/fv3_grid_spec  fv3_grid_spec
 
 BKTYPE=0
 if [ -r "${bkpath}/coupler.res" ]; then # Use background from warm restart
@@ -195,7 +195,7 @@ do
   obs_file=${obs_files_source[$i]}
   obs_file_t=${obs_files_target[$i]}
   if [ -r "${obs_file}" ]; then
-    cp "${obs_file}" "${obs_file_t}"
+    cpreq -p "${obs_file}" "${obs_file_t}"
   else
     print_info_msg "$VERBOSE" "Warning: ${obs_file} does not exist!"
   fi
@@ -216,12 +216,12 @@ for bigmin in 0; do
   num=$( printf %2.2i ${ss} )
   if [ -r "${obs_file_check}" ]; then
      if [ "${IO_LAYOUT_Y}" == "1" ]; then
-       cp "${obs_file}" "RefInGSI3D.dat_${num}"
+       cpreq -p "${obs_file}" "RefInGSI3D.dat_${num}"
      else
        for ii in ${list_iolayout}
        do
          iii=$(printf %4.4i $ii)
-         cp "${obs_file}.${iii}" "RefInGSI3D.dat.${iii}_${num}"
+         cpreq -p "${obs_file}.${iii}" "RefInGSI3D.dat.${iii}_${num}"
        done
      fi
   else

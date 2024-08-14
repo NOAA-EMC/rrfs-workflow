@@ -193,7 +193,7 @@ cat << EOF > namelist.updatebc
  /
 EOF
 
-  cp gfs_bndy.tile7.000.nc gfs_bndy.tile7.000.nc_before_update
+  cpreq -p gfs_bndy.tile7.000.nc gfs_bndy.tile7.000.nc_before_update
 
   export pgm="update_bc.exe"
   . prep_step

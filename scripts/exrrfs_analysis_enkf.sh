@@ -120,9 +120,9 @@ else
 fi
 mkdir -p ${enkfanal_nwges_dir}
 
-cp ${fixgriddir}/fv3_coupler.res    coupler.res
-cp ${fixgriddir}/fv3_akbk           fv3sar_tile1_akbk.nc
-cp ${fixgriddir}/fv3_grid_spec      fv3sar_tile1_grid_spec.nc
+cpreq -p ${fixgriddir}/fv3_coupler.res    coupler.res
+cpreq -p ${fixgriddir}/fv3_akbk           fv3sar_tile1_akbk.nc
+cpreq -p ${fixgriddir}/fv3_grid_spec      fv3sar_tile1_grid_spec.nc
 #
 #-----------------------------------------------------------------------
 #
@@ -180,7 +180,7 @@ for imem in  $(seq 1 $nens) ensmean; do
       diagfile0=${observer_nwges_dir}/diag_${sub_ob_type}_ges.${YYYYMMDDHH}.nc4.gz
       if [ -s $diagfile0 ]; then
         diagfile=$(basename  $diagfile0)
-        cp  $diagfile0  $diagfile
+        cpreq -p  $diagfile0  $diagfile
         gzip -d $diagfile && rm -f $diagfile
         ncfile0=$(basename -s .gz $diagfile)
         ncfile=$(basename -s .nc4 $ncfile0)
@@ -191,7 +191,7 @@ for imem in  $(seq 1 $nens) ensmean; do
     for diagfile0 in $(ls  ${observer_nwges_dir}/diag*${OB_TYPE}*ges* ) ; do
       if [ -s $diagfile0 ]; then
          diagfile=$(basename  $diagfile0)
-         cp  $diagfile0   diag_conv_ges.$memcharv0
+         cpreq -p  $diagfile0   diag_conv_ges.$memcharv0
       fi
     done
   fi
@@ -226,10 +226,10 @@ stderr_name=stderr.${OB_TYPE}
 SATINFO=${FIX_GSI}/global_satinfo.txt
 OZINFO=${FIX_GSI}/global_ozinfo.txt
 
-cp ${ANAVINFO} anavinfo
-cp $SATINFO    satinfo
-cp $CONVINFO   convinfo
-cp $OZINFO     ozinfo
+cpreq -p ${ANAVINFO} anavinfo
+cpreq -p $SATINFO    satinfo
+cpreq -p $CONVINFO   convinfo
+cpreq -p $OZINFO     ozinfo
 
 if [ "${DO_ENS_RADDA}" = "TRUE" ]; then
   # This follows the procedure of DO_RADDA=TRUE in exrrfs_analysis_gsi.sh, with differences below
@@ -250,8 +250,8 @@ if [ "${DO_ENS_RADDA}" = "TRUE" ]; then
     if [ -r ${satbias_dir}/rrfs.prod.${SAT_TIME}_satbias ]; then
       echo " using satellite bias files from ${SAT_TIME}"
       
-      cp ${satbias_dir}/rrfs.prod.${SAT_TIME}_satbias ./satbias_in
-      cp ${satbias_dir}/rrfs.prod.${SAT_TIME}_satbias_pc ./satbias_pc
+      cpreq -p ${satbias_dir}/rrfs.prod.${SAT_TIME}_satbias ./satbias_in
+      cpreq -p ${satbias_dir}/rrfs.prod.${SAT_TIME}_satbias_pc ./satbias_pc
     
       break
     fi
@@ -262,11 +262,11 @@ if [ "${DO_ENS_RADDA}" = "TRUE" ]; then
   if [ $satcounter -eq $maxcounter ]; then	
     if [ -r ${FIX_GSI}/rrfs.starting_satbias ]; then
       echo "using satllite satbias_in files from ${FIX_GSI}"     
-      cp ${FIX_GSI}/rrfs.starting_satbias ./satbias_in
+      cpreq -p ${FIX_GSI}/rrfs.starting_satbias ./satbias_in
     fi
     if [ -r ${FIX_GSI}/rrfs.starting_satbias_pc ]; then
       echo "using satllite satbias_pc files from ${FIX_GSI}"     
-      cp ${FIX_GSI}/rrfs.starting_satbias_pc ./satbias_pc
+      cpreq -p ${FIX_GSI}/rrfs.starting_satbias_pc ./satbias_pc
     fi
   fi
 fi	
@@ -440,11 +440,11 @@ if [ $countdiag -gt $nens ]; then
   ${APRUN} ${EXECdir}/$pgm < enkf.nml >>$pgmout 2>errfile
   export err=$?; err_chk
 
-  cp ${pgmout} ${enkfanal_nwges_dir}/.
+  cpreq -p ${pgmout} ${enkfanal_nwges_dir}/.
   if [ ! -d ${GESROOT}/enkf_diag ]; then
     mkdir -p ${GESROOT}/enkf_diag
   fi
-  cp ${pgmout} ${GESROOT}/enkf_diag/${stdout_name}.$vlddate
+  cpreq -p ${pgmout} ${GESROOT}/enkf_diag/${stdout_name}.$vlddate
 else
   echo "WARNING: EnKF not running due to lack of ${OB_TYPE} obs for cycle $vlddate !!!"
 fi

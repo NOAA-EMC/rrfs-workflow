@@ -228,7 +228,7 @@ elif [ ${extrn_mdl_name} = GEFS ] ; then
       # Increment the counter that keeps track of the number of external
       # model files found on disk and print out an informational message.
       #
-      cp ${fps} ${extrn_mdl_staging_dir}/${fps_name}
+      cpreq -p ${fps} ${extrn_mdl_staging_dir}/${fps_name}
       if [ -f "$fps2" ]; then
         more ${fps2} >>  ${extrn_mdl_staging_dir}/${fps_name}
       fi
@@ -646,7 +646,7 @@ $settings"
   fcst_hhh_FV3LAM=`printf %3.3i $fcst_hhh`
   mv gfs.bndy.nc ${DATA}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc
 # copy results to nwges for longer time disk storage.
-  cp ${DATA}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc ${NWGES_DIR}/.
+  cpreq -p ${DATA}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc ${NWGES_DIR}/.
 
   fi
 done

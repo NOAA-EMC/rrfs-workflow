@@ -150,9 +150,9 @@ for imem in  $(seq 1 $nens)
 #
 #-----------------------------------------------------------------------
 #
-cp -f ./fv3sar_tile1_mem001_dynvar fv3sar_tile1_dynvar
-cp -f ./fv3sar_tile1_mem001_tracer fv3sar_tile1_tracer
-cp -f ./fv3sar_tile1_mem001_sfcvar fv3sar_tile1_sfcvar
+cpreq -p -f ./fv3sar_tile1_mem001_dynvar fv3sar_tile1_dynvar
+cpreq -p -f ./fv3sar_tile1_mem001_tracer fv3sar_tile1_tracer
+cpreq -p -f ./fv3sar_tile1_mem001_sfcvar fv3sar_tile1_sfcvar
 #
 #-----------------------------------------------------------------------
 #

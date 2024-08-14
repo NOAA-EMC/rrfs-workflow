@@ -701,9 +701,9 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
   export PYTHONPATH=$PYTHONPATH:$LIB64dir
 
   # Required FIX files
-  cp $FIXLAM/${CRES}_grid.tile7.nc .
-  cp $FIXLAM/${CRES}_oro_data.tile7.halo0.nc .
-  cp $FIX_GSI/$PREDEF_GRID_NAME/fv3_akbk fv_core.res.nc
+  cpreq -p $FIXLAM/${CRES}_grid.tile7.nc .
+  cpreq -p $FIXLAM/${CRES}_oro_data.tile7.halo0.nc .
+  cpreq -p $FIX_GSI/$PREDEF_GRID_NAME/fv3_akbk fv_core.res.nc
 
   # Shortcut the file names
   warm=./fv_core.res.tile1.nc
@@ -746,7 +746,7 @@ fi
 #-----------------------------------------------------------------------
 #
 if [ $DO_ENS_BLENDING = "FALSE" ]; then
-  cp ${DATA}/*.nc ${NWGES_DIR}/.
+  cpreq -p ${DATA}/*.nc ${NWGES_DIR}/.
 fi
 #
 #-----------------------------------------------------------------------

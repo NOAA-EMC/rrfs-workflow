@@ -93,14 +93,6 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-# Remove any files from previous runs.
-#
-#-----------------------------------------------------------------------
-#
-rm -f fort.*
-#
-#-----------------------------------------------------------------------
-#
 # Get the cycle date and hour (in formats of yyyymmdd and hh, respectively)
 # from CDATE.
 #
@@ -117,12 +109,12 @@ cyc=$hh
 #
 #-----------------------------------------------------------------------
 #
-PARMfv3=${FIX_BUFRSND}  #/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/bufrsnd
+PARMrrfs=${FIX_BUFRSND}  #/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/bufrsnd
 
 mkdir -p $DATA/bufrpost
 cd $DATA/bufrpost
 
-cp $PARMfv3/${PREDEF_GRID_NAME}/rrfs_profdat regional_profdat
+cpreq -p $PARMrrfs/${PREDEF_GRID_NAME}/rrfs_profdat regional_profdat
 
 OUTTYP=netcdf
 
@@ -291,8 +283,8 @@ cd $DATA
 
 export pgm=rrfs_sndp
 
-cp $PARMfv3/regional_sndp.parm.mono $DATA/regional_sndp.parm.mono
-cp $PARMfv3/regional_bufr.tbl $DATA/regional_bufr.tbl
+cpreq -p $PARMrrfs/regional_sndp.parm.mono $DATA/regional_sndp.parm.mono
+cpreq -p $PARMrrfs/regional_bufr.tbl $DATA/regional_bufr.tbl
 
 ln -sf $DATA/regional_sndp.parm.mono fort.11
 ln -sf $DATA/regional_bufr.tbl       fort.32
@@ -321,8 +313,8 @@ mv errfile errfile_rrfs_sndp
 SENDCOM=YES
 
 if [ "${SENDCOM}" = "YES" ]; then
-  cp $DATA/class1.bufr $COMOUT/rrfs.t${cyc}z.class1.bufr
-  cp $DATA/profilm.c1.${tmmark} ${COMOUT}/rrfs.t${cyc}z.profilm.c1
+  cpreq -p $DATA/class1.bufr $COMOUT/rrfs.t${cyc}z.class1.bufr
+  cpreq -p $DATA/profilm.c1.${tmmark} ${COMOUT}/rrfs.t${cyc}z.profilm.c1
 fi
 
 # remove bufr file breakout directory in $COMOUT if it exists
@@ -367,11 +359,11 @@ cd ${COMOUT}/bufr.${cyc}
 tar -cf - . | /usr/bin/gzip > ../rrfs.t${cyc}z.bufrsnd.tar.gz
 
 GEMPAKrrfs=/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/gempak
-cp $GEMPAKrrfs/fix/snrrfs.prm snrrfs.prm
+cpreq -p $GEMPAKrrfs/fix/snrrfs.prm snrrfs.prm
 err1=$?
-cp $GEMPAKrrfs/fix/sfrrfs.prm_aux sfrrfs.prm_aux
+cpreq -p $GEMPAKrrfs/fix/sfrrfs.prm_aux sfrrfs.prm_aux
 err2=$?
-cp $GEMPAKrrfs/fix/sfrrfs.prm sfrrfs.prm
+cpreq -p $GEMPAKrrfs/fix/sfrrfs.prm sfrrfs.prm
 err3=$?
 
 mkdir -p $COMOUT/gempak

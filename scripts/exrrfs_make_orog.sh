@@ -86,9 +86,9 @@ APRUN="time"
 # Copy topography and related data files from the system directory (TOPO_DIR)
 # to the temporary directory.
 #
-cp ${TOPO_DIR}/thirty.second.antarctic.new.bin fort.15
-cp ${TOPO_DIR}/landcover30.fixed .
-cp ${TOPO_DIR}/gmted2010.30sec.int fort.235
+cpreq -p ${TOPO_DIR}/thirty.second.antarctic.new.bin fort.15
+cpreq -p ${TOPO_DIR}/landcover30.fixed .
+cpreq -p ${TOPO_DIR}/gmted2010.30sec.int fort.235
 #
 #-----------------------------------------------------------------------
 #
@@ -301,7 +301,7 @@ fn_suffix_without_halo="tile${TILE_RGNL}.nc"
 filtered_orog_fn_prefix="${CRES}${DOT_OR_USCORE}filtered_orog"
 filtered_orog_fp_prefix="${DATA}/filtered_topo/${filtered_orog_fn_prefix}"
 filtered_orog_fp="${filtered_orog_fp_prefix}.${fn_suffix_without_halo}"
-cp "${raw_orog_fp}" "${filtered_orog_fp}"
+cpreq -p "${raw_orog_fp}" "${filtered_orog_fp}"
 #
 #-----------------------------------------------------------------------
 #
@@ -366,7 +366,7 @@ filtered_orog_fn_orig=$( basename "${filtered_orog_fp}" )
 filtered_orog_fn="${filtered_orog_fn_prefix}.${fn_suffix_with_halo}"
 filtered_orog_fp=$( dirname "${filtered_orog_fp}" )"/${filtered_orog_fn}"
 mv "${filtered_orog_fn_orig}" "${filtered_orog_fn}"
-cp "${filtered_orog_fp}" "${OROG_DIR}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NHW}.nc"
+cpreq -p "${filtered_orog_fp}" "${OROG_DIR}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NHW}.nc"
 
 cd ${DATA}
 

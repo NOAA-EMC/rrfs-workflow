@@ -98,7 +98,7 @@ fi
 if_save_input=FALSE
 
 if [ ! -r ${NWGES_DIR}/INPUT/gfs_ctrl.nc ]; then
-  cp $DATA/INPUT/gfs_ctrl.nc ${NWGES_DIR}/INPUT/gfs_ctrl.nc
+  cpreq -p $DATA/INPUT/gfs_ctrl.nc ${NWGES_DIR}/INPUT/gfs_ctrl.nc
   if_save_input=TRUE
 fi
 
@@ -257,12 +257,12 @@ fi
 #
 if [ "${CYCLE_TYPE}" = "prod" ] && [ "${CYCLE_SUBTYPE}" = "control" ]; then
   if [ "${IO_LAYOUT_Y}" = "1" ]; then
-    cp ${NWGES_DIR}/RESTART/${restart_prefix}.sfc_data.nc ${SURFACE_DIR}/${restart_prefix}.sfc_data.nc.${CDATE}
+    cpreq -p ${NWGES_DIR}/RESTART/${restart_prefix}.sfc_data.nc ${SURFACE_DIR}/${restart_prefix}.sfc_data.nc.${CDATE}
   else
     for ii in ${list_iolayout}
     do
       iii=$(printf %4.4i $ii)
-      cp ${NWGES_DIR}/RESTART/${restart_prefix}.sfc_data.nc.${iii} ${SURFACE_DIR}/${restart_prefix}.sfc_data.nc.${CDATE}.${iii}
+      cpreq -p ${NWGES_DIR}/RESTART/${restart_prefix}.sfc_data.nc.${iii} ${SURFACE_DIR}/${restart_prefix}.sfc_data.nc.${CDATE}.${iii}
     done
   fi
 fi
@@ -276,23 +276,23 @@ if [ "${if_save_input}" = TRUE ]; then
     if [ -r ${DATA}/INPUT/coupler.res ]; then  # warm start
       if [ "${IO_LAYOUT_Y}" = "1" ]; then
         for file in ${filelistn}; do
-          cp $DATA/INPUT/${file} ${NWGES_DIR}/INPUT/${file}
+          cpreq -p $DATA/INPUT/${file} ${NWGES_DIR}/INPUT/${file}
         done
       else
         for file in ${filelistn}; do
           for ii in ${list_iolayout}
           do
             iii=$(printf %4.4i $ii)
-           cp $DATA/INPUT/${file}.${iii} ${NWGES_DIR}/INPUT/${file}.${iii}
+           cpreq -p $DATA/INPUT/${file}.${iii} ${NWGES_DIR}/INPUT/${file}.${iii}
           done
         done
       fi
       for file in ${filelist}; do
-        cp $DATA/INPUT/${file} ${NWGES_DIR}/INPUT/${file}
+        cpreq -p $DATA/INPUT/${file} ${NWGES_DIR}/INPUT/${file}
       done
     else  # cold start
       for file in ${filelistcold}; do
-        cp $DATA/INPUT/${file} ${NWGES_DIR}/INPUT/${file}
+        cpreq -p $DATA/INPUT/${file} ${NWGES_DIR}/INPUT/${file}
       done
     fi
   fi
