@@ -12,7 +12,7 @@ MODEL="rrfs"
 RUN="rrfs"
 
 STMP="/lfs/f2/t2o/ptmp/emc/stmp/emc.lam/rrfsfw/${version}"
-PTMP="/lfs/h2/emc/ptmp/emc.lam/rrfsfw/${version}"
+PTMP="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}"
 
 VERBOSE="TRUE"
 PRINT_ESMF="TRUE"
