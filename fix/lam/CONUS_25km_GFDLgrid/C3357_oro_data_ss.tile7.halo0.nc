@@ -1,1 +1,0 @@
-../../.agent/lam/RRFS_CONUS_3km/C3357_oro_data_ss.tile7.halo0.nc

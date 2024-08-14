@@ -1,1 +1,0 @@
-../../.agent/lam/RRFS_NA_3km_C3463_Lake_fracSV/C3463.substrate_temperature.tile7.halo0.nc
