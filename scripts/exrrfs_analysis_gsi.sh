@@ -1058,7 +1058,7 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
       count=$(ls pe*.${type}_${loop} | wc -l)
       if [[ $count -gt 0 ]]; then
          $(cat pe*.${type}_${loop} > diag_${type}_${string}.${YYYYMMDDHH})
-         cpreq -p diag_${type}_${string}.${YYYYMMDDHH} $COMOUT
+         cp diag_${type}_${string}.${YYYYMMDDHH} $COMOUT
          echo "diag_${type}_${string}.${YYYYMMDDHH}" >> listrad_bin
          numfile_rad_bin=`expr ${numfile_rad_bin} + 1`
       fi
@@ -1079,7 +1079,7 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
 	 export err=$?; err_chk
 	 mv errfile errfile_nc_diag_cat_$type
          gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4
-         cpreq -p diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
+         cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
          echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listcnv
          numfile_cnv=`expr ${numfile_cnv} + 1`
       fi
@@ -1093,7 +1093,7 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
 	export err=$?; err_chk
 	mv errfile errfile_nc_diag_cat_$type
         gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4
-        cpreq -p diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
+        cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
         echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listrad
         numfile_rad=`expr ${numfile_rad} + 1`
       else
@@ -1104,13 +1104,13 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
   done
 
   if [ "${GSI_TYPE}" = "OBSERVER" ]; then
-    cpreq -p *diag*ges* ${observer_nwges_dir}/.
+    cp *diag*ges* ${observer_nwges_dir}/.
     if [ "${MEM_TYPE}" = "MEAN" ]; then
       mkdir -p ${observer_nwges_dir}/../../../../observer_diag/${YYYYMMDDHH}/ensmean/observer_gsi
-      cpreq -p *diag*ges* ${observer_nwges_dir}/../../../../observer_diag/${YYYYMMDDHH}/ensmean/observer_gsi/.
+      cp *diag*ges* ${observer_nwges_dir}/../../../../observer_diag/${YYYYMMDDHH}/ensmean/observer_gsi/.
     else
       mkdir -p ${observer_nwges_dir}/../../../../observer_diag/${YYYYMMDDHH}/${mem_num}/observer_gsi
-      cpreq -p *diag*ges* ${observer_nwges_dir}/../../../../observer_diag/${YYYYMMDDHH}/${mem_num}/observer_gsi/.
+      cp *diag*ges* ${observer_nwges_dir}/../../../../observer_diag/${YYYYMMDDHH}/${mem_num}/observer_gsi/.
     fi
   fi
   #
@@ -1128,31 +1128,31 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
     fi
     if [ ${numfile_cnv} -gt 0 ]; then
       tar -cvzf rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat_nc `cat listcnv`
-      cpreq -p ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat_nc  ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat
+      cp ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat_nc  ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat
     fi
     if [ ${numfile_rad} -gt 0 ]; then
       tar -cvzf rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat_nc `cat listrad`
-      cpreq -p ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat_nc  ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
+      cp ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat_nc  ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
     fi
     if [ ${numfile_rad_bin} -gt 0 ]; then
       tar -cvzf rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat `cat listrad_bin`
-      cpreq -p ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat  ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
+      cp ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat  ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
     fi
 
     if [ "${DO_ENS_RADDA}" = "TRUE" ]; then
       # For EnKF: ensmean, copy satbias files; ens. member, do nothing  
       if [ ${MEM_TYPE} == "MEAN" ]; then  
-        cpreq -p ./satbias_out ${SATBIAS_DIR}_ensmean/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
-        cpreq -p ./satbias_pc.out ${SATBIAS_DIR}_ensmean/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
-        cpreq -p ./satbias_out ${COMOUT}_ensmean/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
-        cpreq -p ./satbias_pc.out ${COMOUT}_ensmean/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
+        cp ./satbias_out ${SATBIAS_DIR}_ensmean/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
+        cp ./satbias_pc.out ${SATBIAS_DIR}_ensmean/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
+        cp ./satbias_out ${COMOUT}_ensmean/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
+        cp ./satbias_pc.out ${COMOUT}_ensmean/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
       fi	 
     else
       # For EnVar DA  
-      cpreq -p ./satbias_out ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
-      cpreq -p ./satbias_pc.out ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
-      cpreq -p ./satbias_out ${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
-      cpreq -p ./satbias_pc.out ${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
+      cp ./satbias_out ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
+      cp ./satbias_pc.out ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
+      cp ./satbias_out ${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
+      cp ./satbias_pc.out ${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
     fi
   fi
 fi # run diag inline (with GSI)

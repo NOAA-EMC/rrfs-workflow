@@ -1042,7 +1042,7 @@ fi
 #-----------------------------------------------------------------------
 if [ ${YYYYMMDDHH} -eq 2100010100 ] ; then
   if [ "${CYCLE_TYPE}" = "spinup" ]; then
-    cpreq -p sfc_data.tile7.halo0.nc sfc_data.tile7.halo0.nc_old
+    cp sfc_data.tile7.halo0.nc sfc_data.tile7.halo0.nc_old
     if [ -r ${FIXLAM}/stypdom_double.nc ]; then
       ncks -A -v stype ${FIXLAM}/stypdom_double.nc sfc_data.tile7.halo0.nc
     fi
@@ -1129,7 +1129,7 @@ rrfsfile='sfc_data.nc'
 do_lake_surgery=${do_lake_surgery}
 /
 EOF
-           cpreq -p use_raphrrr_sfc.namelist use_raphrrr_sfc.namelist_rap
+           cp use_raphrrr_sfc.namelist use_raphrrr_sfc.namelist_rap
 
          elif [ "${file}" = "${hrrrfile}" ]; then
 
@@ -1142,7 +1142,7 @@ rrfsfile='sfc_data.nc'
 do_lake_surgery=${do_lake_surgery}
 /
 EOF
-           cpreq -p use_raphrrr_sfc.namelist use_raphrrr_sfc.namelist_hrrr
+           cp use_raphrrr_sfc.namelist use_raphrrr_sfc.namelist_hrrr
 
          elif [ "${file}" = "${hrrr_akfile}" ]; then
 
@@ -1156,11 +1156,11 @@ do_lake_surgery=${do_lake_surgery}
 /
 EOF
 
-           cpreq -p use_raphrrr_sfc.namelist use_raphrrr_sfc.namelist_hrrrak
+           cp use_raphrrr_sfc.namelist use_raphrrr_sfc.namelist_hrrrak
          fi
        fi
        if [ "${IO_LAYOUT_Y}" = "1" ]; then
-         cpreq -p sfc_data.nc sfc_data.nc_read
+         cp sfc_data.nc sfc_data.nc_read
 	 . prep_step
          ${APRUN} ${EXECdir}/$pgm >>$pgmout 2>errfile
          export err=$?; err_chk
@@ -1170,7 +1170,7 @@ EOF
          do
            iii=$(printf %4.4i $ii)
            ln -sf sfc_data.nc.${iii} sfc_data.nc
-           cpreq -p sfc_data.nc sfc_data.nc_read
+           cp sfc_data.nc sfc_data.nc_read
 	   . prep_step
            ${APRUN} ${EXECdir}/$pgm >>$pgmout 2>errfile
            export err=$?; err_chk

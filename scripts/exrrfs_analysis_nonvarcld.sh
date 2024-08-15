@@ -130,7 +130,7 @@ fi
 if [ ${l_cld_uncertainty} == ".true." ]; then
   # Copy analysis fields into uncertainties - data will be overwritten
   echo "exrrfs_analysis_nonvarcld.sh: copy tracer file into uncertainty file "
-  cpreq -p ${bkpath}/fv_tracer.res.tile1.nc  ${bkpath}/fv_tracer.unc.tile1.nc
+  cp ${bkpath}/fv_tracer.res.tile1.nc  ${bkpath}/fv_tracer.unc.tile1.nc
 fi
 
 n_iolayouty=$(($IO_LAYOUT_Y-1))

@@ -197,7 +197,7 @@ for loop in $loops; do
 	    mv errfile errfile_nc_diag_cat_$type
 
             gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4
-            cpreq -p diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
+            cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
             echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listcnv
             numfile_cnv=`expr ${numfile_cnv} + 1`
          fi
@@ -211,7 +211,7 @@ for loop in $loops; do
             mv errfile errfile_nc_diag_cat_$type
 
             gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4
-            cpreq -p diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
+            cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
             echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listrad
             numfile_rad=`expr ${numfile_rad} + 1`
          else
@@ -233,7 +233,7 @@ for loop in $loops; do
 	    mv errfile errfile_nc_diag_cat_$type
 
             gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4 
-            cpreq -p diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
+            cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
             echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listdbz
             numfile_dbz=`expr ${numfile_dbz} + 1`
          fi
@@ -260,25 +260,25 @@ if [ "${DO_RADDA}" = "TRUE" ]; then
 
      if [ ${numfile_cnv} -gt 0 ]; then
         tar -cvzf rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat_nc `cat listcnv`
-        cpreq -p ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat_nc  ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat
+        cp ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat_nc  ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat
      fi
      if [ ${numfile_rad} -gt 0 ]; then
         tar -cvzf rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat_nc `cat listrad`
-        cpreq -p ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat_nc  ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
+        cp ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat_nc  ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
      fi
      if [ ${numfile_rad_bin} -gt 0 ]; then
         tar -cvzf rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat `cat listrad_bin`
-        cpreq -p ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat  ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
+        cp ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat  ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
      fi
 
      # For EnVar DA  
      if [ -r ./satbias_out ]; then
-       cpreq -p ./satbias_out ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
-       cpreq -p ./satbias_out ${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
+       cp ./satbias_out ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
+       cp ./satbias_out ${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
      fi
      if [ -r ./satbias_pc.out ]; then
-       cpreq -p ./satbias_pc.out ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
-       cpreq -p ./satbias_pc.out ${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
+       cp ./satbias_pc.out ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
+       cp ./satbias_pc.out ${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
      fi
   fi
 

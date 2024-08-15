@@ -220,23 +220,23 @@ fi
 
 basetime=$( date +%y%j%H%M -d "${yyyymmdd} ${hh}" )
 if [[ -f ${DATA}/${prslev} ]]; then
-  cpreq -p ${DATA}/${prslev} ${COMOUT}/${prslev}
+  cp ${DATA}/${prslev} ${COMOUT}/${prslev}
 fi
 if [[ -f ${DATA}/${natlev} ]]; then
-  cpreq -p ${DATA}/${natlev} ${COMOUT}/${natlev}
+  cp ${DATA}/${natlev} ${COMOUT}/${natlev}
 fi
 
 if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
   if [ -f  ${DATA}/${ififip} ]; then
-    cpreq -p ${DATA}/${ififip} ${COMOUT}/${ififip}
+    cp ${DATA}/${ififip} ${COMOUT}/${ififip}
   fi
 
   if [ -f  ${DATA}/${aviati} ]; then
-    cpreq -p ${DATA}/${aviati} ${COMOUT}/${aviati}
+    cp ${DATA}/${aviati} ${COMOUT}/${aviati}
   fi
 
   if [ -f  ${DATA}/${testbed} ]; then
-    cpreq -p ${DATA}/${testbed}  ${COMOUT}/${testbed}
+    cp ${DATA}/${testbed}  ${COMOUT}/${testbed}
   fi
 fi
 
@@ -441,7 +441,7 @@ else
 
         # Save to com directory 
           mkdir -p ${COMOUT}/${grid}_grid
-          cpreq -p ${bg_remap} ${COMOUT}/${net4}.t${cyc}z.${leveltype}.${gridspacing}.f${fhr}.${grid}.grib2
+          cp ${bg_remap} ${COMOUT}/${net4}.t${cyc}z.${leveltype}.${gridspacing}.f${fhr}.${grid}.grib2
           wgrib2 ${COMOUT}/${net4}.t${cyc}z.${leveltype}.${gridspacing}.f${fhr}.${grid}.grib2 -s > ${COMOUT}/${net4}.t${cyc}z.${leveltype}.${gridspacing}.f${fhr}.${grid}.grib2.idx
         fi
       done

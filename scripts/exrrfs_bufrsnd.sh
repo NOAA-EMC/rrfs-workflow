@@ -313,8 +313,8 @@ mv errfile errfile_rrfs_sndp
 SENDCOM=YES
 
 if [ "${SENDCOM}" = "YES" ]; then
-  cpreq -p $DATA/class1.bufr $COMOUT/rrfs.t${cyc}z.class1.bufr
-  cpreq -p $DATA/profilm.c1.${tmmark} ${COMOUT}/rrfs.t${cyc}z.profilm.c1
+  cp $DATA/class1.bufr $COMOUT/rrfs.t${cyc}z.class1.bufr
+  cp $DATA/profilm.c1.${tmmark} ${COMOUT}/rrfs.t${cyc}z.profilm.c1
 fi
 
 # remove bufr file breakout directory in $COMOUT if it exists

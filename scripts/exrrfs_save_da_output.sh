@@ -72,24 +72,24 @@ n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
 if [ ! -r ${NWGES_DIR}/DA_OUTPUT/gfs_ctrl.nc ]; then
-  cpreq -p $DATA/INPUT/gfs_ctrl.nc ${NWGES_DIR}/DA_OUTPUT/gfs_ctrl.nc
+  cp $DATA/INPUT/gfs_ctrl.nc ${NWGES_DIR}/DA_OUTPUT/gfs_ctrl.nc
 fi
 if [ -r ${DATA}/INPUT/coupler.res ]; then  # warm start
     if [ "${IO_LAYOUT_Y}" = "1" ]; then
       for file in ${filelistn}; do
-        cpreq -p $DATA/INPUT/${file} ${NWGES_DIR}/DA_OUTPUT/${file}
+        cp $DATA/INPUT/${file} ${NWGES_DIR}/DA_OUTPUT/${file}
       done
     else
       for file in ${filelistn}; do
         for ii in ${list_iolayout}
         do
           iii=$(printf %4.4i $ii)
-         cpreq -p $DATA/INPUT/${file}.${iii} ${NWGES_DIR}/DA_OUTPUT/${file}.${iii}
+         cp $DATA/INPUT/${file}.${iii} ${NWGES_DIR}/DA_OUTPUT/${file}.${iii}
         done
       done
     fi
     for file in ${filelist}; do
-      cpreq -p $DATA/INPUT/${file} ${NWGES_DIR}/DA_OUTPUT/${file}
+      cp $DATA/INPUT/${file} ${NWGES_DIR}/DA_OUTPUT/${file}
     done
 else  # cold start
     print_info_msg "$VERBOSE" "\

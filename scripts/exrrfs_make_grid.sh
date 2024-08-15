@@ -259,7 +259,7 @@ grid_fp_orig="${grid_fp}"
 grid_fn="${CRES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NHW}.nc"
 grid_fp="${GRID_DIR}/${grid_fn}"
 mv "${grid_fp_orig}" "${grid_fn}"
-cpreq -p "${grid_fn}" "${grid_fp}"
+cp "${grid_fn}" "${grid_fp}"
 #
 #-----------------------------------------------------------------------
 #
@@ -313,7 +313,7 @@ for halo_num in "${halo_num_list[@]}"; do
   $APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>${DATA}/errfile
   export err=$?; err_chk
   mv ${DATA}/errfile ${DATA}/errfile_shave_nh${halo_num}
-  cpreq -p ${shaved_fp} ${GRID_DIR}
+  cp ${shaved_fp} ${GRID_DIR}
 done
 #
 #-----------------------------------------------------------------------

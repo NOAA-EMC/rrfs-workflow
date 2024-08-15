@@ -219,7 +219,7 @@ if [[ "$run_lightning" == true ]]; then
   export err=$?; err_chk
   mv errfile errfile_lightning
 
-  cpreq -p LightningInFV3LAM.dat ${COMOUT}/rrfs.t${HH}z.LightningInFV3LAM.bin
+  cp LightningInFV3LAM.dat ${COMOUT}/rrfs.t${HH}z.LightningInFV3LAM.bin
 fi
 #
 #-----------------------------------------------------------------------
@@ -285,7 +285,7 @@ if [[ "$run_cloud" == true ]]; then
   export err=$?; err_chk
   mv errfile errfile_larccld
 
-  cpreq -p NASALaRC_cloud4fv3.bin $COMOUT/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
+  cp NASALaRC_cloud4fv3.bin $COMOUT/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
 fi
 #
 #-----------------------------------------------------------------------
@@ -339,7 +339,7 @@ if [[ "$run_metar" == true ]]; then
   export err=$?; err_chk
   mv errfile errfile_metarcld
 
-  cpreq -p fv3_metarcloud.bin $COMOUT/rrfs.t${HH}z.fv3_metarcloud.bin
+  cp fv3_metarcloud.bin $COMOUT/rrfs.t${HH}z.fv3_metarcloud.bin
 fi
 #
 #-----------------------------------------------------------------------

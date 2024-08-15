@@ -440,11 +440,11 @@ if [ $countdiag -gt $nens ]; then
   ${APRUN} ${EXECdir}/$pgm < enkf.nml >>$pgmout 2>errfile
   export err=$?; err_chk
 
-  cpreq -p ${pgmout} ${enkfanal_nwges_dir}/.
+  cp ${pgmout} ${enkfanal_nwges_dir}/.
   if [ ! -d ${GESROOT}/enkf_diag ]; then
     mkdir -p ${GESROOT}/enkf_diag
   fi
-  cpreq -p ${pgmout} ${GESROOT}/enkf_diag/${stdout_name}.$vlddate
+  cp ${pgmout} ${GESROOT}/enkf_diag/${stdout_name}.$vlddate
 else
   echo "WARNING: EnKF not running due to lack of ${OB_TYPE} obs for cycle $vlddate !!!"
 fi

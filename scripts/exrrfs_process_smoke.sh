@@ -132,7 +132,7 @@ export err=$?; err_chk
 for file in ${DATA}/*; do
    filename=$(basename "$file")
    if [ ! -f ${rave_nwges_dir}/${filename} ]; then
-      cpreq -p ${file} ${rave_nwges_dir}
+      cp ${file} ${rave_nwges_dir}
       echo "Copied missing file: $filename" 
    fi
 done

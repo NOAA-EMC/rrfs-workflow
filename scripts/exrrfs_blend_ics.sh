@@ -194,17 +194,17 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
                                     # TRUE:  Final EnKF will be GDAS (no blending)
                                     # FALSE: Final EnKF will be RRFS (no blending)
      python ${USHdir}/blending_fv3.py $Lx $glb $reg $trcr $blend $use_host_enkf
-     cpreq -p ./fv_core.res.tile1.nc ${DATA}/.
-     cpreq -p ./fv_tracer.res.tile1.nc ${DATA}/.
+     cp ./fv_core.res.tile1.nc ${DATA}/.
+     cp ./fv_tracer.res.tile1.nc ${DATA}/.
 
      # Move the remaining RESTART files to INPUT
-     cpreq -p ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res             ${DATA}/coupler.res
-     cpreq -p ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc          ${DATA}/fv_core.res.nc
-     cpreq -p ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_srf_wnd.res.tile1.nc ${DATA}/fv_srf_wnd.res.tile1.nc
-     cpreq -p ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.phy_data.nc             ${DATA}/phy_data.nc
-     cpreq -p ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.sfc_data.nc             ${DATA}/sfc_data.nc
-     cpreq -p gfs_ctrl.nc ${DATA}
-     cpreq -p gfs.bndy.nc ${DATA}/gfs_bndy.tile${TILE_RGNL}.000.nc
+     cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res             ${DATA}/coupler.res
+     cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc          ${DATA}/fv_core.res.nc
+     cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_srf_wnd.res.tile1.nc ${DATA}/fv_srf_wnd.res.tile1.nc
+     cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.phy_data.nc             ${DATA}/phy_data.nc
+     cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.sfc_data.nc             ${DATA}/sfc_data.nc
+     cp gfs_ctrl.nc ${DATA}
+     cp gfs.bndy.nc ${DATA}/gfs_bndy.tile${TILE_RGNL}.000.nc
   fi
 fi
 #
@@ -234,10 +234,10 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-cpreq -p ${DATA}/*.nc ${NWGES_DIR}/.
+cp ${DATA}/*.nc ${NWGES_DIR}/.
 
 if [ $DO_ENS_BLENDING = "TRUE" ] && [ -f $run_blending ] && [ ! -f $run_ensinit ]; then
-  cpreq -p ${DATA}/coupler.res ${NWGES_DIR}/.
+  cp ${DATA}/coupler.res ${NWGES_DIR}/.
 fi
 #
 #-----------------------------------------------------------------------

@@ -342,7 +342,7 @@ EOF
   $APRUN ${EXECdir}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
 
-  cpreq -p RefInGSI3D.dat  ${COMOUT}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
+  cp RefInGSI3D.dat  ${COMOUT}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
 done # done with the bigmin for-loop
 #
 #-----------------------------------------------------------------------

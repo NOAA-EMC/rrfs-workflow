@@ -572,7 +572,7 @@ if [[ -f phy_data.nc ]] ; then
   echo "convert phy_data.nc from NetCDF4 to NetCDF3"
   cd INPUT
   rm -f phy_data.nc3 phy_data.nc4
-  cpreq -p -fp phy_data.nc phy_data.nc4
+  cp -fp phy_data.nc phy_data.nc4
   if ( ! time ( module purge ; module load intel szip hdf5 netcdf nco ; module list ; set -x ; ncks -3 --64 phy_data.nc4 phy_data.nc3) ) ; then
     mv -f phy_data.nc4 phy_data.nc
     rm -f phy_data.nc3
@@ -625,7 +625,7 @@ if [ ${BKTYPE} -eq 1 ] && [ ${n_iolayouty} -ge 1 ]; then
   do
     iii=$(printf %4.4i $ii)
     if [ -f "grid_spec.nc.${iii}" ]; then
-      cpreq -p grid_spec.nc.${iii} ${gridspec_dir}/${PDY}${cyc}.fv3_grid_spec.${iii}
+      cp grid_spec.nc.${iii} ${gridspec_dir}/${PDY}${cyc}.fv3_grid_spec.${iii}
     else
       err_exit "\
       Cannot create symlink because target does not exist:
