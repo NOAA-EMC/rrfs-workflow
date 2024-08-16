@@ -252,7 +252,7 @@ elif [ ${extrn_mdl_name} = GEFS ] ; then
       #
       cp ${fps} ${extrn_mdl_staging_dir}/${fps_name}
       if [ -f "$fps2" ]; then
-        more ${fps2} >>  ${extrn_mdl_staging_dir}/${fps_name}
+        cat ${fps2} >>  ${extrn_mdl_staging_dir}/${fps_name}
       fi
 
       print_info_msg "

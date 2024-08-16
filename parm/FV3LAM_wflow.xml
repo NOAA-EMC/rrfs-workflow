@@ -1110,7 +1110,11 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
+ {%- if do_ensinit %}
   <task name="&PREP_CYC_SPINUP_TN;_ensinit{{ uscore_ensmem_name }}" cycledefs="spinupcyc" maxtries="{{ maxtries_run_prepstart }}">
+ {% else %}
+  <task name="&PREP_CYC_SPINUP_TN;{{ uscore_ensmem_name }}" cycledefs="spinupcyc" maxtries="{{ maxtries_run_prepstart }}">
+ {%- endif %}
 
     &RSRV_DEFAULT;
     &WALL_LIMIT_PRE;
