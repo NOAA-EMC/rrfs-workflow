@@ -360,17 +360,10 @@ tar -cf - . | /usr/bin/gzip > ../rrfs.t${cyc}z.bufrsnd.tar.gz
 
 GEMPAKrrfs=/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/gempak
 cpreq -p $GEMPAKrrfs/fix/snrrfs.prm snrrfs.prm
-err1=$?
 cpreq -p $GEMPAKrrfs/fix/sfrrfs.prm_aux sfrrfs.prm_aux
-err2=$?
 cpreq -p $GEMPAKrrfs/fix/sfrrfs.prm sfrrfs.prm
-err3=$?
 
 mkdir -p $COMOUT/gempak
-
-if [ $err1 -ne 0 -o $err2 -ne 0 -o $err3 -ne 0 ]; then
-  err_exit "Missing GEMPAK BUFR tables"
-fi
 
 #  Set input file name.
 INFILE=$COMOUT/rrfs.t${cyc}z.class1.bufr
