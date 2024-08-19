@@ -355,9 +355,6 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
     echo "WARNING: this grid is not ready for parallel prdgen: ${PREDEF_GRID_NAME}"
   fi
 
-  rm -fr $DATAprdgen
-  rm -f $DATA/*.t${cyc}z.*.f${fhr}.*.grib2
-
 elif [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
   #
   # Processing for the RRFS fire weather grid
@@ -428,18 +425,16 @@ else
              -new_grid_interpolation bilinear \
              -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
              -if ":(NCONCD|NCCICE|SPNCR|CLWMR|CICE|RWMR|SNMR|GRLE|PMTF|PMTC|REFC|CSNOW|CICEP|CFRZR|CRAIN|LAND|ICEC|TMP:surface|VEG|CCOND|SFEXC|MSLMA|PRES:tropopause|LAI|HPBL|HGT:planetary boundary layer):|ICPRB|SIPD|ICESEV" -new_grid_interpolation neighbor -fi \
-             -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2 &
+             -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2
           else
             wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
              -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
              -new_grid_interpolation neighbor \
-             -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2 &
+             -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2
           fi
-          wait 
 
         # Merge vector field records
-          wgrib2 ${subdir}/${fhr}/tmp_${grid}.grib2 -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" -submsg_uv ${bg_remap} &
-          wait 
+          wgrib2 ${subdir}/${fhr}/tmp_${grid}.grib2 -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" -submsg_uv ${bg_remap}
 
         # Remove temporary files
           rm -f ${subdir}/${fhr}/tmp_${grid}.grib2

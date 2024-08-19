@@ -161,15 +161,15 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   #-----------------------------------------------------------------------
   #
   if [ ${BKTYPE} -eq 1 ]; then
-    cp ${fixgriddir}/fv3_grid_spec  fv3sar_grid_spec.nc
+    cpreq -p ${fixgriddir}/fv3_grid_spec  fv3sar_grid_spec.nc
   else
     if [ "${IO_LAYOUT_Y}" == "1" ]; then
-      cp ${fixgriddir}/fv3_grid_spec  fv3sar_grid_spec.nc
+      cpreq -p ${fixgriddir}/fv3_grid_spec  fv3sar_grid_spec.nc
     else
       for ii in $list_iolayout
       do
         iii=$(printf %4.4i $ii)
-        cp ${gridspec_dir}/fv3_grid_spec.${iii}  fv3sar_grid_spec.nc.${iii}
+        cpreq -p ${gridspec_dir}/fv3_grid_spec.${iii}  fv3sar_grid_spec.nc.${iii}
       done
     fi
   fi
@@ -224,7 +224,7 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
         numgrib2=$(ls ${NSSL}/${nsslfile1} | wc -l)
         echo 'Number of GRIB-2 files: '${numgrib2}
         if [ ${numgrib2} -ge 10 ] && [ ! -e filelist_mrms ]; then
-          cp ${NSSL}/${nsslfile1} . 
+          cpreq -p ${NSSL}/${nsslfile1} . 
           ls ${nsslfile1} > filelist_mrms 
           echo 'Creating links for ${YYYY}${MM}${DD}-${HH}${min}'
         fi
@@ -265,7 +265,7 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   #-----------------------------------------------------------------------
   BUFR_TABLE=${fixdir}/prepobs_prep_RAP.bufrtable
 
-  cp $BUFR_TABLE prepobs_prep.bufrtable
+  cpreq -p $BUFR_TABLE prepobs_prep.bufrtable
   #
   #-----------------------------------------------------------------------
   #

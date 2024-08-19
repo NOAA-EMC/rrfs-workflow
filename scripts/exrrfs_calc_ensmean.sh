@@ -134,11 +134,11 @@ for imem in  $(seq 1 $nens)
     ln -sf ${bkpath}/sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
     if [ $imem -eq 1 ]; then
       # Prepare the data structure for ensemble mean
-      cp -f ${bkpath}/fv_core.res.tile1.nc  fv3sar_tile1_dynvar
-      cp -f ${bkpath}/fv_tracer.res.tile1.nc  fv3sar_tile1_tracer
-      cp -f ${bkpath}/sfc_data.nc  fv3sar_tile1_sfcvar
+      cpreq -p -f ${bkpath}/fv_core.res.tile1.nc  fv3sar_tile1_dynvar
+      cpreq -p -f ${bkpath}/fv_tracer.res.tile1.nc  fv3sar_tile1_tracer
+      cpreq -p -f ${bkpath}/sfc_data.nc  fv3sar_tile1_sfcvar
       # Prepare other needed files for GSI observer run
-      cp -f ${bkpath}/coupler.res coupler.res
+      cpreq -p -f ${bkpath}/coupler.res coupler.res
       ln -snf ${bkpath}/fv_core.res.nc fv_core.res.nc
       ln -snf ${bkpath}/fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
       ln -snf ${bkpath}/phy_data.nc phy_data.nc

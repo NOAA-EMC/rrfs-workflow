@@ -100,14 +100,6 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-# Remove any files from previous runs.
-#
-#-----------------------------------------------------------------------
-#
-rm -f fort.*
-#
-#-----------------------------------------------------------------------
-#
 # Get the cycle date and hour (in formats of yyyymmdd and hh, respectively)
 # from CDATE.
 #
@@ -189,7 +181,7 @@ cp ${UPP_DIR}/sorc/ncep_post.fd/post_gtg.fd/gtg.input.rrfs ./gtg.input.rrfs
 #
 #-----------------------------------------------------------------------
 #
-cp ${UPP_DIR}/parm/nam_micro_lookup.dat ./eta_micro_lookup.dat
+cpreq -p ${UPP_DIR}/parm/nam_micro_lookup.dat ./eta_micro_lookup.dat
 
 ln -snf ${FIX_UPP_CRTM}/*bin ./
 
@@ -243,8 +235,8 @@ forecast hour directory (DATA):
   DATA = \"${DATA}\"
 ===================================================================="
 fi
-cp ${post_config_fp} ./postxconfig-NT.txt
-cp ${post_params_fp} ./params_grib2_tbl_new
+cpreq -p ${post_config_fp} ./postxconfig-NT.txt
+cpreq -p ${post_params_fp} ./params_grib2_tbl_new
 
 if [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km_HRRRIC" ]; then
   grid_specs_rrfs="lambert:-97.5:38.500000 237.826355:1746:3000 21.885885:1014:3000"
@@ -257,7 +249,7 @@ elif [ ${PREDEF_GRID_NAME} = "GSD_RAP13km" ]; then
 fi
 if [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km_HRRRIC" ] || [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km" ] || [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ] || [ ${PREDEF_GRID_NAME} = "GSD_RAP13km" ]; then
   if [ -f ${FFG_DIR}/latest.FFG ]; then
-    cp ${FFG_DIR}/latest.FFG .
+    cpreq -p ${FFG_DIR}/latest.FFG .
     wgrib2 latest.FFG -match "0-12 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_12h.grib2
     wgrib2 latest.FFG -match "0-6 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_06h.grib2
     wgrib2 latest.FFG -match "0-3 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_03h.grib2

@@ -151,19 +151,19 @@ if [ "${DO_ENSFCST}" = "TRUE" ] &&  [ "${DO_ENKFUPDATE}" = "TRUE" ]; then
   n_iolayouty=$(($IO_LAYOUT_Y-1))
   list_iolayout=$(seq 0 $n_iolayouty)
   if [ -r "${checkfile}" ] ; then
-    cp ${bkpath}/coupler.res                coupler.res
-    cp ${bkpath}/gfs_ctrl.nc  gfs_ctrl.nc
-    cp ${bkpath}/fv_core.res.nc             fv_core.res.nc
+    cpreq -p ${bkpath}/coupler.res    coupler.res
+    cpreq -p ${bkpath}/gfs_ctrl.nc    gfs_ctrl.nc
+    cpreq -p ${bkpath}/fv_core.res.nc fv_core.res.nc
     if [ "${IO_LAYOUT_Y}" == "1" ]; then
       for file in ${filelistn}; do
-        cp ${bkpath}/${file}     ${file}
+        cpreq -p ${bkpath}/${file} ${file}
       done
     else
       for file in ${filelistn}; do
          for ii in $list_iolayout
          do
            iii=$(printf %4.4i $ii)
-           cp ${bkpath}/${file}.${iii}     ${file}.${iii}
+           cpreq -p ${bkpath}/${file}.${iii} ${file}.${iii}
          done
       done
     fi
@@ -255,10 +255,10 @@ if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial file
       bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/ics
     fi
     if [ -r "${bkpath}/gfs_data.tile7.halo0.nc" ]; then
-      cp ${bkpath}/gfs_bndy.tile7.000.nc gfs_bndy.tile7.000.nc        
-      cp ${bkpath}/gfs_ctrl.nc gfs_ctrl.nc        
-      cp ${bkpath}/gfs_data.tile7.halo0.nc gfs_data.tile7.halo0.nc        
-      cp ${bkpath}/sfc_data.tile7.halo0.nc sfc_data.tile7.halo0.nc        
+      cpreq -p ${bkpath}/gfs_bndy.tile7.000.nc gfs_bndy.tile7.000.nc        
+      cpreq -p ${bkpath}/gfs_ctrl.nc gfs_ctrl.nc        
+      cpreq -p ${bkpath}/gfs_data.tile7.halo0.nc gfs_data.tile7.halo0.nc        
+      cpreq -p ${bkpath}/sfc_data.tile7.halo0.nc sfc_data.tile7.halo0.nc        
       ln -s ${bkpath}/gfs_bndy.tile7.000.nc bk_gfs_bndy.tile7.000.nc
       ln -s ${bkpath}/gfs_data.tile7.halo0.nc bk_gfs_data.tile7.halo0.nc
       ln -s ${bkpath}/sfc_data.tile7.halo0.nc bk_sfc_data.tile7.halo0.nc
@@ -277,13 +277,13 @@ elif [[ $BKTYPE == 3 ]]; then
       bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/ics
     fi
     if [ -r "${bkpath}/coupler.res" ]; then
-      cp ${bkpath}/fv_core.res.nc fv_core.res.nc
-      cp ${bkpath}/fv_core.res.tile1.nc fv_core.res.tile1.nc
-      cp ${bkpath}/fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
-      cp ${bkpath}/fv_tracer.res.tile1.nc fv_tracer.res.tile1.nc
-      cp ${bkpath}/phy_data.nc phy_data.nc
-      cp ${bkpath}/sfc_data.nc sfc_data.nc
-      cp ${bkpath}/gfs_ctrl.nc gfs_ctrl.nc
+      cpreq -p ${bkpath}/fv_core.res.nc fv_core.res.nc
+      cpreq -p ${bkpath}/fv_core.res.tile1.nc fv_core.res.tile1.nc
+      cpreq -p ${bkpath}/fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
+      cpreq -p ${bkpath}/fv_tracer.res.tile1.nc fv_tracer.res.tile1.nc
+      cpreq -p ${bkpath}/phy_data.nc phy_data.nc
+      cpreq -p ${bkpath}/sfc_data.nc sfc_data.nc
+      cpreq -p ${bkpath}/gfs_ctrl.nc gfs_ctrl.nc
 
       ln -s ${bkpath}/coupler.res bk_coupler.res
       ln -s ${bkpath}/fv_core.res.nc bk_fv_core.res.nc
@@ -416,14 +416,14 @@ else
   n_iolayouty=$(($IO_LAYOUT_Y-1))
   list_iolayout=$(seq 0 $n_iolayouty)
   if [ -r "${checkfile}" ] ; then
-    cp ${bkpath}/${restart_prefix}coupler.res      bk_coupler.res
-    cp ${bkpath}/${restart_prefix}fv_core.res.nc   fv_core.res.nc
+    cpreq -p ${bkpath}/${restart_prefix}coupler.res      bk_coupler.res
+    cpreq -p ${bkpath}/${restart_prefix}fv_core.res.nc   fv_core.res.nc
     if [ "${IO_LAYOUT_Y}" = "1" ]; then
       for file in ${filelistn}; do
         if [ "${CYCLE_SUBTYPE}" = "spinup" ]; then
-          cp ${ctrl_bkpath}/${file}  ${file}
+          cpreq -p ${ctrl_bkpath}/${file}  ${file}
         else
-          cp ${bkpath}/${restart_prefix}${file}  ${file}
+          cpreq -p ${bkpath}/${restart_prefix}${file}  ${file}
         fi
         ln -s ${bkpath}/${restart_prefix}${file}  bk_${file}
       done
@@ -433,21 +433,21 @@ else
         do
           iii=$(printf %4.4i $ii)
           if [ "${CYCLE_SUBTYPE}" = "spinup" ]; then
-            cp ${ctrl_bkpath}/${file}.${iii}  ${file}.${iii}
+            cpreq -p ${ctrl_bkpath}/${file}.${iii}  ${file}.${iii}
           else
-            cp ${bkpath}/${restart_prefix}${file}.${iii}  ${file}.${iii}
+            cpreq -p ${bkpath}/${restart_prefix}${file}.${iii}  ${file}.${iii}
           fi
           ln -s ${bkpath}/${restart_prefix}${file}.${iii}  bk_${file}.${iii}
         done
       done
     fi
     if [ "${CYCLE_SUBTYPE}" = "spinup" ] ; then
-      cp ${FG_ROOT}/${RUN}.${PDY}/${cyc}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
+      cpreq -p ${FG_ROOT}/${RUN}.${PDY}/${cyc}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
     else
       if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-        cp ${FG_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
+        cpreq -p ${FG_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
       else
-        cp ${FG_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
+        cpreq -p ${FG_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
       fi
     fi
     if [ "${SAVE_CYCLE_LOG}" = "TRUE" ] ; then
@@ -501,13 +501,13 @@ fi
 if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
    echo "Update snow cover based on imssnow  at ${SNOWICE_update_hour}z"
    if [ -r "${IMSSNOW_ROOT}/latest.SNOW_IMS" ]; then
-      cp ${IMSSNOW_ROOT}/latest.SNOW_IMS .
+      cpreq -p ${IMSSNOW_ROOT}/latest.SNOW_IMS .
    elif [ -r "${IMSSNOW_ROOT}/${YYJJJ2200000000}" ]; then
-      cp ${IMSSNOW_ROOT}/${YYJJJ2200000000} latest.SNOW_IMS
+      cpreq -p ${IMSSNOW_ROOT}/${YYJJJ2200000000} latest.SNOW_IMS
    elif [ -r "${IMSSNOW_ROOT}/${OBSTYPE_SOURCE}.${YYYYMMDD}/${OBSTYPE_SOURCE}.t${HH}z.imssnow.grib2" ]; then
-      cp ${IMSSNOW_ROOT}/${OBSTYPE_SOURCE}.${YYYYMMDD}/${OBSTYPE_SOURCE}.t${HH}z.imssnow.grib2  latest.SNOW_IMS
+      cpreq -p ${IMSSNOW_ROOT}/${OBSTYPE_SOURCE}.${YYYYMMDD}/${OBSTYPE_SOURCE}.t${HH}z.imssnow.grib2  latest.SNOW_IMS
    elif [ -r "${IMSSNOW_ROOT}/${OBSTYPE_SOURCE}_e.${YYYYMMDD}/rap_e.t${HH}z.imssnow.grib2" ]; then
-      cp ${IMSSNOW_ROOT}/${OBSTYPE_SOURCE}_e.${YYYYMMDD}/${OBSTYPE_SOURCE}_e.t${HH}z.imssnow.grib2  latest.SNOW_IMS
+      cpreq -p ${IMSSNOW_ROOT}/${OBSTYPE_SOURCE}_e.${YYYYMMDD}/${OBSTYPE_SOURCE}_e.t${HH}z.imssnow.grib2  latest.SNOW_IMS
    else
      echo "${IMSSNOW_ROOT} data does not exist!!"
      echo "WARNING: No snow update at ${HH}!!!!"
@@ -552,21 +552,21 @@ fi
 if [ ${HH} -eq ${SST_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
    echo "Update SST at ${SST_update_hour}z"
    if [ -r "${SST_ROOT}/latest.SST" ]; then
-      cp ${SST_ROOT}/latest.SST .
+      cpreq -p ${SST_ROOT}/latest.SST .
    elif [ -r "${SST_ROOT}/${YYJJJ00000000}" ]; then
-      cp ${SST_ROOT}/${YYJJJ00000000} latest.SST
+      cpreq -p ${SST_ROOT}/${YYJJJ00000000} latest.SST
    elif [ -r "${SST_ROOT}/nsst.$YYYYMMDD/rtgssthr_grb_0.083.grib2" ]; then 
-      cp ${SST_ROOT}/nsst.$YYYYMMDD/rtgssthr_grb_0.083.grib2 latest.SST
+      cpreq -p ${SST_ROOT}/nsst.$YYYYMMDD/rtgssthr_grb_0.083.grib2 latest.SST
    elif [ -r "${SST_ROOT}/nsst.$YYYYMMDDm1/rtgssthr_grb_0.083.grib2" ]; then 
-      cp ${SST_ROOT}/nsst.$YYYYMMDDm1/rtgssthr_grb_0.083.grib2 latest.SST
+      cpreq -p ${SST_ROOT}/nsst.$YYYYMMDDm1/rtgssthr_grb_0.083.grib2 latest.SST
    else
      echo "${SST_ROOT} data does not exist!!"
      echo "WARNING: No SST update at ${HH}!!!!"
    fi
    if [ -r "latest.SST" ]; then
-     cp ${FIXgsm}/RTG_SST_landmask.dat                RTG_SST_landmask.dat
+     cpreq -p ${FIXgsm}/RTG_SST_landmask.dat              RTG_SST_landmask.dat
      ln -sf ./latest.SST                                  SSTRTG
-     cp ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_akbk       fv3_akbk
+     cpreq -p ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_akbk     fv3_akbk
 
 cat << EOF > sst.namelist
 &setup
@@ -801,7 +801,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
         if [ -r "${checkfile}" ]; then
           if [ ${SFC_CYC} -eq 1 ]; then   # cycle surface at cold start cycle
             if [ "${IO_LAYOUT_Y}" = "1" ]; then 
-              cp ${checkfile}  ${restart_prefix_find}sfc_data.nc
+              cpreq -p ${checkfile}  ${restart_prefix_find}sfc_data.nc
               mv sfc_data.tile7.halo0.nc cold.sfc_data.tile7.halo0.nc
               ncks -v geolon,geolat cold.sfc_data.tile7.halo0.nc geolonlat.nc
               ln -sf ${restart_prefix_find}sfc_data.nc sfc_data.tile7.halo0.nc
@@ -814,7 +814,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
 	    export pgm="update_ice.exe"
 
             if [ "${IO_LAYOUT_Y}" = "1" ]; then 
-              cp ${checkfile}  ${restart_prefix_find}sfc_data.nc
+              cpreq -p ${checkfile}  ${restart_prefix_find}sfc_data.nc
               mv sfc_data.nc gfsice.sfc_data.nc
               mv ${restart_prefix_find}sfc_data.nc sfc_data.nc
               ncatted -a checksum,,d,, sfc_data.nc
@@ -829,7 +829,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
               for ii in ${list_iolayout}
               do
                 iii=$(printf %4.4i $ii)
-                cp ${checkfile}.${iii}  ${restart_prefix_find}sfc_data.nc.${iii}
+                cpreq -p ${checkfile}.${iii}  ${restart_prefix_find}sfc_data.nc.${iii}
                 mv sfc_data.nc.${iii} gfsice.sfc_data.nc.${iii}
                 mv ${restart_prefix_find}sfc_data.nc.${iii} sfc_data.nc.${iii}
                 ncatted -a checksum,,d,, sfc_data.nc.${iii}
@@ -891,7 +891,7 @@ if [ ${Update_GVF} -ge 1 ]; then
    fi
 
    if [ -r "${latestGVF}" ]; then
-      cp ${latestGVF} ./GVF-WKL-GLB.grib2
+      cpreq -p ${latestGVF} ./GVF-WKL-GLB.grib2
       ln -sf ${FIX_GSI}/gvf_VIIRS_4KM.MAX.1gd4r.new  gvf_VIIRS_4KM.MAX.1gd4r.new
       ln -sf ${FIX_GSI}/gvf_VIIRS_4KM.MIN.1gd4r.new  gvf_VIIRS_4KM.MIN.1gd4r.new
 
@@ -1028,7 +1028,7 @@ else
 # check 0-h boundary condition
     if [ ! -f "${bndy_prefix}.000.nc" ]; then
       this_bdy=$(printf %3.3i ${n})
-      cp ${lbcs_path}/${bndy_prefix}.${this_bdy}.nc ${bndy_prefix}.000.nc 
+      cpreq -p ${lbcs_path}/${bndy_prefix}.${this_bdy}.nc ${bndy_prefix}.000.nc 
     fi
   else
     err_exit "Cannot find boundary file: ${checkfile}"
@@ -1239,7 +1239,7 @@ Please check the following user defined variables:
   FVCOM_FILE= \"${FVCOM_FILE}\" "
 
   else
-    cp ${fvcom_data_fp} fvcom.nc
+    cpreq -p ${fvcom_data_fp} fvcom.nc
 
     #Format for fvcom_time: YYYY-MM-DDTHH:00:00.000000
     fvcom_time="${YYYY}-${MM}-${DD}T${HH}:00:00.000000"

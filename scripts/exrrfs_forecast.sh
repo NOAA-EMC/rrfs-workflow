@@ -458,20 +458,20 @@ fi
 if [ ${BKTYPE} -eq 0 ]; then
   # cycling, using namelist for cycling forecast
   if [ "${STOCH}" = "TRUE" ]; then
-    cp ${FV3_NML_RESTART_STOCH_FP} ${DATA}/${FV3_NML_FN}
+    cpreq -p ${FV3_NML_RESTART_STOCH_FP} ${DATA}/${FV3_NML_FN}
    else
-    cp ${FV3_NML_RESTART_FP} ${DATA}/${FV3_NML_FN}
+    cpreq -p ${FV3_NML_RESTART_FP} ${DATA}/${FV3_NML_FN}
   fi
 else
   if [ -f "INPUT/cycle_surface.done" ]; then
   # namelist for cold start with surface cycle
-    cp ${FV3_NML_CYCSFC_FP} ${DATA}/${FV3_NML_FN}
+    cpreq -p ${FV3_NML_CYCSFC_FP} ${DATA}/${FV3_NML_FN}
   else
   # cold start, using namelist for cold start
     if [ "${STOCH}" = "TRUE" ]; then
-      cp ${FV3_NML_STOCH_FP} ${DATA}/${FV3_NML_FN}
+      cpreq -p ${FV3_NML_STOCH_FP} ${DATA}/${FV3_NML_FN}
      else
-      cp ${FV3_NML_FP} ${DATA}/${FV3_NML_FN}
+      cpreq -p ${FV3_NML_FP} ${DATA}/${FV3_NML_FN}
     fi
   fi
 fi
@@ -479,11 +479,11 @@ fi
 if [ "${STOCH}" = "TRUE" ]; then
   if [ ${BKTYPE} -eq 0 ] && [ ${DO_ENSFCST_MULPHY} = "TRUE" ]; then
     ensmem_num=$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')
-    cp ${FV3_NML_RESTART_STOCH_FP}_ensphy${ensmem_num} ${DATA}/${FV3_NML_FN}_base 
+    cpreq -p ${FV3_NML_RESTART_STOCH_FP}_ensphy${ensmem_num} ${DATA}/${FV3_NML_FN}_base 
     rm -fr ${DATA}/field_table
-    cp ${PARMdir}/field_table.rrfsens_phy${ENSMEM_INDX} ${DATA}/field_table
+    cpreq -p ${PARMdir}/field_table.rrfsens_phy${ENSMEM_INDX} ${DATA}/field_table
   else
-    cp ${DATA}/${FV3_NML_FN} ${DATA}/${FV3_NML_FN}_base
+    cpreq -p ${DATA}/${FV3_NML_FN} ${DATA}/${FV3_NML_FN}_base
   fi
   set_FV3nml_ens_stoch_seeds cdate="$CDATE"
   export err=$?
@@ -540,7 +540,7 @@ fi
 # copy over diag_table for multiphysics ensemble
 if [ "${STOCH}" = "TRUE" ] && [ ${BKTYPE} -eq 0 ] && [ ${DO_ENSFCST_MULPHY} = "TRUE" ]; then
   rm -fr ${DATA}/diag_table
-  cp ${PARMdir}/diag_table.rrfsens_phy${ENSMEM_INDX} ${DATA}/diag_table
+  cpreq -p ${PARMdir}/diag_table.rrfsens_phy${ENSMEM_INDX} ${DATA}/diag_table
 fi
 
 #
@@ -594,7 +594,7 @@ fi
 #-----------------------------------------------------------------------
 #
 export pgm="ufs_model"
-cp ${FV3_EXEC_FP} ${DATA}/$pgm
+cpreq -p ${FV3_EXEC_FP} ${DATA}/$pgm
 . prep_step
 
 $APRUN ${DATA}/$pgm >>$pgmout 2>errfile

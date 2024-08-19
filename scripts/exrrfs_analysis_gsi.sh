@@ -385,7 +385,7 @@ else                          # cycle uses background from restart
   if [ "${IO_LAYOUT_Y}" == "1" ]; then
     ln -snf ${bkpath}/fv_core.res.tile1.nc  fv3_dynvars
     if [ "${anav_type}" = "AERO" ]; then
-      cp ${bkpath}/fv_tracer.res.tile1.nc  fv3_tracer
+      cpreq -p ${bkpath}/fv_tracer.res.tile1.nc  fv3_tracer
     else
       ln -snf ${bkpath}/fv_tracer.res.tile1.nc  fv3_tracer
     fi
@@ -397,7 +397,7 @@ else                          # cycle uses background from restart
       iii=`printf %4.4i $ii`
       ln -snf ${bkpath}/fv_core.res.tile1.nc.${iii}  fv3_dynvars.${iii}
       if [ "${anav_type}" = "AERO" ]; then
-        cp ${bkpath}/fv_tracer.res.tile1.nc.${iii}  fv3_tracer.${iii}
+        cpreq -p ${bkpath}/fv_tracer.res.tile1.nc.${iii}  fv3_tracer.${iii}
       else
         ln -snf ${bkpath}/fv_tracer.res.tile1.nc.${iii}  fv3_tracer.${iii}
       fi
@@ -410,7 +410,7 @@ else                          # cycle uses background from restart
 fi
 
 # update times in coupler.res to current cycle time
-cp ${fixgriddir}/fv3_coupler.res  coupler.res
+cpreq -p ${fixgriddir}/fv3_coupler.res  coupler.res
 sed -i "s/yyyy/${YYYY}/" coupler.res
 sed -i "s/mm/${MM}/"     coupler.res
 sed -i "s/dd/${DD}/"     coupler.res
@@ -728,19 +728,19 @@ PCPINFO=${FIX_GSI}/global_pcpinfo.txt
 ATMS_BEAMWIDTH=${FIX_GSI}/atms_beamwidth.txt
 
 # Fixed fields
-cp ${ANAVINFO} anavinfo
-cp ${BERROR}   berror_stats
-cp $SATINFO    satinfo
-cp $CONVINFO   convinfo
-cp $OZINFO     ozinfo
-cp $PCPINFO    pcpinfo
-cp $OBERROR    errtable
-cp $ATMS_BEAMWIDTH atms_beamwidth.txt
-cp ${HYBENSINFO} hybens_info
+cpreq -p ${ANAVINFO} anavinfo
+cpreq -p ${BERROR}   berror_stats
+cpreq -p $SATINFO    satinfo
+cpreq -p $CONVINFO   convinfo
+cpreq -p $OZINFO     ozinfo
+cpreq -p $PCPINFO    pcpinfo
+cpreq -p $OBERROR    errtable
+cpreq -p $ATMS_BEAMWIDTH atms_beamwidth.txt
+cpreq -p ${HYBENSINFO} hybens_info
 
 # Get surface observation provider list
 if [ -r ${FIX_GSI}/gsd_sfcobs_provider.txt ]; then
-  cp ${FIX_GSI}/gsd_sfcobs_provider.txt gsd_sfcobs_provider.txt
+  cpreq -p ${FIX_GSI}/gsd_sfcobs_provider.txt gsd_sfcobs_provider.txt
 else
   print_info_msg "$VERBOSE" "WARNING: gsd surface observation provider does not exist!" 
 fi
@@ -750,7 +750,7 @@ for reject_list in "${AIRCRAFT_REJECT}/current_bad_aircraft.txt" \
                    "${AIRCRAFT_REJECT}/${AIR_REJECT_FN}"
 do
   if [ -r $reject_list ]; then
-    cp $reject_list current_bad_aircraft
+    cpreq -p $reject_list current_bad_aircraft
     print_info_msg "$VERBOSE" "Use aircraft reject list: $reject_list "
     break
   fi
@@ -766,7 +766,7 @@ for use_list in "${SFCOBS_USELIST}/current_mesonet_uselist.txt" \
                 "${SFCOBS_USELIST}/gsd_sfcobs_uselist.txt"
 do 
   if [ -r $use_list ] ; then
-    cp $use_list  $gsd_sfcobs_uselist
+    cpreq -p $use_list  $gsd_sfcobs_uselist
     print_info_msg "$VERBOSE" "Use surface obs uselist: $use_list "
     break
   fi
@@ -847,8 +847,8 @@ if [ "${DO_RADDA}" = "TRUE" ]; then
       # For EnKF.  Note, EnKF does not need radstat file
       if [ -r ${SATBIAS_DIR}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
         echo " using satellite bias files from ${SAT_TIME}" 
-        cp ${SATBIAS_DIR}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
-        cp ${SATBIAS_DIR}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
+        cpreq -p ${SATBIAS_DIR}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
+        cpreq -p ${SATBIAS_DIR}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
 	    
         break
       fi
@@ -857,10 +857,10 @@ if [ "${DO_RADDA}" = "TRUE" ]; then
       # For EnVar
       if [ -r ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
         echo " using satellite bias files from ${SATBIAS_DIR} ${spinup_or_prod_rrfs}.${SAT_TIME}"
-        cp ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
-        cp ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
+        cpreq -p ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
+        cpreq -p ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
         if [ -r ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ]; then
-           cp ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ./radstat.rrfs
+           cpreq -p ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ./radstat.rrfs
         fi
 
         break
@@ -884,18 +884,18 @@ if [ "${DO_RADDA}" = "TRUE" ]; then
         # For EnKF.  Note, EnKF does not need radstat file
         if [ -r ${SATBIAS_DIR_cont}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
           echo " using satellite bias files from ${SAT_TIME}"
-          cp ${SATBIAS_DIR_cont}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
-          cp ${SATBIAS_DIR_cont}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
+          cpreq -p ${SATBIAS_DIR_cont}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
+          cpreq -p ${SATBIAS_DIR_cont}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
           break
         fi
       else	
         # For EnVar
         if [ -r ${SATBIAS_DIR_cont}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
           echo " using satellite bias files from ${SATBIAS_DIR_cont} ${spinup_or_prod_rrfs}.${SAT_TIME}"
-          cp ${SATBIAS_DIR_cont}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
-          cp ${SATBIAS_DIR_cont}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
+          cpreq -p ${SATBIAS_DIR_cont}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
+          cpreq -p ${SATBIAS_DIR_cont}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
           if [ -r ${SATBIAS_DIR_cont}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ]; then
-             cp ${SATBIAS_DIR_cont}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ./radstat.rrfs
+             cpreq -p ${SATBIAS_DIR_cont}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ./radstat.rrfs
           fi
           break
         fi
@@ -909,13 +909,13 @@ if [ "${DO_RADDA}" = "TRUE" ]; then
     # satbias_in
     if [ -r ${FIX_GSI}/rrfs.starting_satbias ]; then
       echo "using satelite satbias_in files from ${FIX_GSI}"     
-      cp ${FIX_GSI}/rrfs.starting_satbias ./satbias_in
+      cpreq -p ${FIX_GSI}/rrfs.starting_satbias ./satbias_in
     fi
 	  	  
     # satbias_pc
     if [ -r ${FIX_GSI}/rrfs.starting_satbias_pc ]; then
       echo "using satelite satbias_pc files from ${FIX_GSI}"     
-      cp ${FIX_GSI}/rrfs.starting_satbias_pc ./satbias_pc
+      cpreq -p ${FIX_GSI}/rrfs.starting_satbias_pc ./satbias_pc
     fi
   fi
 
@@ -986,7 +986,7 @@ EOF
 #-----------------------------------------------------------------------
 #
 gsi_exec="${EXECdir}/gsi.x"
-cp ${gsi_exec} ${DATA}/gsi.x
+cpreq -p ${gsi_exec} ${DATA}/gsi.x
 
 export pgm="gsi.x"
 . prep_step
