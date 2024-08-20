@@ -1,1 +1,0 @@
-../../.agent/lam/RRFS_SUBCONUS_3km/C3342_mosaic.halo3.nc

@@ -1,1 +1,0 @@
-../../.agent/lam/RRFS_CONUS_13km/C775.substrate_temperature.tile7.halo0.nc
