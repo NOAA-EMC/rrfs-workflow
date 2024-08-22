@@ -1,0 +1,11 @@
+surface_pressure		PSFC
+xland				XLAND
+skintemp			TSK
+snow				SNOW
+snowh				SNOWH
+sst				SST
+hfx				HFX
+lh				LH
+sfc_albedo                      ALBEDO
+hpbl                            PBLH
+ivgtyp                          IVGTYP
