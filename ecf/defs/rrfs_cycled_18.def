@@ -57,7 +57,7 @@ suite nco_rrfs_dev_18
           edit ECF_FILES '%PACKAGEHOME%/ecf/scripts'
           family fsm
             task jrrfs_fsm # file scanning monitor service
-              trigger :TIME >= 1850 and :TIME < 1910
+              trigger :TIME >= 1750 and :TIME < 1910
               event 156 release_det_make_lbcs
               event 1 release_det_analysis_gsi_input
               event 2 release_save_restart_long_1
@@ -408,7 +408,7 @@ suite nco_rrfs_dev_18
             family enkf
               edit WGF 'enkf'
               edit BCGRPNUM '12'
-              trigger ../fsm/jrrfs_fsm:release_enkf_make_lbcs
+              trigger ./det==complete and ../fsm/jrrfs_fsm:release_enkf_make_lbcs
               task jrrfs_enkf_make_lbcs_00_mem001
                 edit BCGRP '00'
                 edit MEMBER_NAME '001'
@@ -1493,7 +1493,7 @@ suite nco_rrfs_dev_18
 
             family ensf
               edit WGF 'ensf'
-              trigger ../fsm/jrrfs_fsm:release_ensf_make_lbcs
+              trigger ./enkf==complete and ../fsm/jrrfs_fsm:release_ensf_make_lbcs
               task jrrfs_ensf_make_lbcs_00_mem001
               task jrrfs_ensf_make_lbcs_01_mem001
               task jrrfs_ensf_make_lbcs_02_mem001
@@ -1678,6 +1678,7 @@ suite nco_rrfs_dev_18
                 trigger /nco_rrfs_dev_17/primary/17/rrfs/v1.0/forecast/det/jrrfs_det_save_restart_spinup_f001==complete
             endfamily   # det
             family enkf
+              trigger ../ics/enkf==complete
               edit WGF 'enkf'
               edit GSI_TYPE 'OBSERVER'
               edit MEM_TYPE 'MEAN'
@@ -2059,31 +2060,31 @@ suite nco_rrfs_dev_18
               edit WGF 'enkf'
               task jrrfs_enkf_fcst_mem001
                 edit MEMBER_NAME '001'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem001==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem001==complete and ../../analysis/enkf/jrrfs_enkf_save_da_output_mem001==complete
               task jrrfs_enkf_save_restart_mem001_f1
                 edit MEMBER_NAME '001'
                 trigger ./jrrfs_enkf_fcst_mem001==complete
               task jrrfs_enkf_fcst_mem002
                 edit MEMBER_NAME '002'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem002==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem002==complete and ../../analysis/enkf/jrrfs_enkf_save_da_output_mem002==complete
               task jrrfs_enkf_save_restart_mem002_f1
                 edit MEMBER_NAME '002'
                 trigger ./jrrfs_enkf_fcst_mem002==complete
               task jrrfs_enkf_fcst_mem003
                 edit MEMBER_NAME '003'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem003==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem003==complete and ../../analysis/enkf/jrrfs_enkf_save_da_output_mem003==complete
               task jrrfs_enkf_save_restart_mem003_f1
                 edit MEMBER_NAME '003'
                 trigger ./jrrfs_enkf_fcst_mem003==complete
               task jrrfs_enkf_fcst_mem004
                 edit MEMBER_NAME '004'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem004==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem004==complete and ../../analysis/enkf/jrrfs_enkf_save_da_output_mem004==complete
               task jrrfs_enkf_save_restart_mem004_f1
                 edit MEMBER_NAME '004'
                 trigger ./jrrfs_enkf_fcst_mem004==complete
               task jrrfs_enkf_fcst_mem005
                 edit MEMBER_NAME '005'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem005==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem005==complete and ../../analysis/enkf/jrrfs_enkf_save_da_output_mem005==complete
               task jrrfs_enkf_save_restart_mem005_f1
                 edit MEMBER_NAME '005'
                 trigger ./jrrfs_enkf_fcst_mem005==complete
@@ -5619,7 +5620,7 @@ suite nco_rrfs_dev_18
           family clean
             task jrrfs_clean
               label storage ""
-              trigger ../product==complete
+              trigger ../forecast==complete
           endfamily     # clean
         endfamily	# v1.0
       endfamily		# rrfs
