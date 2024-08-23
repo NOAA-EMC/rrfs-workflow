@@ -55,7 +55,7 @@ suite nco_rrfs_dev_00
           edit ECF_FILES '%PACKAGEHOME%/ecf/scripts'
           family fsm
             task jrrfs_fsm # file scanning monitor service
-              trigger :TIME >= 0050 and :TIME < 0110
+              trigger :TIME >= 0001 and :TIME < 0110
               event 156 release_det_make_lbcs
               event 1 release_det_prep_cyc
               event 2 release_det_analysis_gsi_input
@@ -397,7 +397,7 @@ suite nco_rrfs_dev_00
             family enkf
               edit WGF 'enkf'
               edit BCGRPNUM '12'
-              trigger ../fsm/jrrfs_fsm:release_enkf_make_lbcs
+              trigger ./det==complete and ../fsm/jrrfs_fsm:release_enkf_make_lbcs
               task jrrfs_enkf_make_lbcs_00_mem001
                 edit BCGRP '00'
                 edit MEMBER_NAME '001'
@@ -1482,7 +1482,7 @@ suite nco_rrfs_dev_00
 
             family ensf
               edit WGF 'ensf'
-              trigger ../fsm/jrrfs_fsm:release_ensf_make_lbcs
+              trigger  ./enkf==complete and ../fsm/jrrfs_fsm:release_ensf_make_lbcs
               task jrrfs_ensf_make_lbcs_00_mem001
               task jrrfs_ensf_make_lbcs_01_mem001
               task jrrfs_ensf_make_lbcs_02_mem001
@@ -1667,6 +1667,7 @@ suite nco_rrfs_dev_00
 
             endfamily   # det
             family enkf
+              trigger ../ics/enkf==complete
               edit WGF 'enkf'
               edit GSI_TYPE 'OBSERVER'
               edit MEM_TYPE 'MEAN'
@@ -5604,7 +5605,7 @@ suite nco_rrfs_dev_00
           family clean
             task jrrfs_clean
               label storage ""
-              trigger ../product==complete
+              trigger ../forecast==complete
           endfamily     # clean
         endfamily	# v1.0
       endfamily		# rrfs
