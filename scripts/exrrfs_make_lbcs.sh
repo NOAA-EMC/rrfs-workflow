@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -592,7 +592,7 @@ list file has not specified for this external LBC model (EXTRN_MDL_NAME_LBCS):
 # Call the python script to create the namelist file.
 #
   nml_fn="fort.41"
-  ${USHdir}/set_namelist.py -q -u "$settings" -o ${nml_fn} || \
+  ${USHrrfs}/set_namelist.py -q -u "$settings" -o ${nml_fn} || \
     err_exit "\
 Call to python script set_namelist.py to set the variables in the namelist
 file read in by the ${exec_fn} executable failed.  Parameters passed to
@@ -633,7 +633,7 @@ $settings"
   export pgm="chgres_cube"
   . prep_step
 
-  ${APRUN} ${EXECdir}/$pgm >>$pgmout 2>errfile
+  ${APRUN} ${EXECrrfs}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
 #
 # Move LBCs file for the current lateral boundary update time to the LBCs

@@ -5,11 +5,21 @@
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
+# Specify Execution Areas
+#-----------------------------------------------------------------------
+
+#export HOMErrfs=${HOMErrfs:-${PACKAGEROOT}/${NET}.${rrfs_ver}}
+export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
+export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
+export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
+export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
+
+#-----------------------------------------------------------------------
 # Source the variable definitions file and the bash utility functions.
 #-----------------------------------------------------------------------
 
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 
 date
 export PS4='+ $SECONDS + '
@@ -109,7 +119,7 @@ fi
 export pgmout="${SURFACE_DIR}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_save_restart.sh
+${HOMErrfs}/scripts/exrrfs_save_restart.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

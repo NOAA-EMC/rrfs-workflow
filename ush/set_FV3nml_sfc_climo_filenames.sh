@@ -193,7 +193,7 @@ $settings"
 fv3_nml_base_fp="${FV3_NML_FP}.base"
 mv "${FV3_NML_FP}" "${fv3_nml_base_fp}"
 
-$USHdir/set_namelist.py -q \
+$USHrrfs/set_namelist.py -q \
                         -n ${fv3_nml_base_fp} \
                         -u "$settings" \
                         -o ${FV3_NML_FP} || \

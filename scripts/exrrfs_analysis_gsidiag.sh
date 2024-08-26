@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -311,7 +311,7 @@ if [ "${DO_RADMON}" = "TRUE" ]; then
      export DATA=${DATA}/radmon
      export TANKverf_radM1=${TANKverf_radM1:-${TANKverf}/radmon.${PDY}}
 
-     export GSI_MON_BIN=$EXECdir
+     export GSI_MON_BIN=$EXECrrfs
      export FIXgdas=$FIX_GSI
 
      export RADMON_SUFFIX=rrfs
@@ -326,7 +326,7 @@ if [ "${DO_RADMON}" = "TRUE" ]; then
 
      CLEAN_TANKVERF=1
 
-     . $USHdir/rrfs_radmon/exrrfs_verfrad.sh ${PDY} ${cyc}
+     . $USHrrfs/rrfs_radmon/exrrfs_verfrad.sh ${PDY} ${cyc}
    fi
 fi
 #

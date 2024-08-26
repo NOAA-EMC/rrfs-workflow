@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -241,7 +241,7 @@ ncatted -O -h -a description,glmask,o,c,'Great Lakes mask (1 if overwater 0 othe
 # run interpolation script
 echo 'now running the Python script for remapping ...'
 echo $siglay0_tmp1 $siglay0_tmp2 $siglay0_tmp3 $siglay0_tmp4
-python ${USHdir}/fvcom_remap.py $siglay0_tmp1 $siglay0_tmp2 $siglay0_tmp3 $siglay0_tmp4 $PREDEF_GRID_NAME > python.log
+python ${USHrrfs}/fvcom_remap.py $siglay0_tmp1 $siglay0_tmp2 $siglay0_tmp3 $siglay0_tmp4 $PREDEF_GRID_NAME > python.log
 cat python.log
 if [ "`tail -1 python.log`" != "fvcom_remap.py completed successfully" ]; then
   err_exit "WARNING: Problem with fvcom_remap.py - ABORT"

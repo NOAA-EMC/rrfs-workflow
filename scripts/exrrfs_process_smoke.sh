@@ -9,7 +9,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -119,7 +119,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-python -u  ${USHdir}/generate_fire_emissions.py \
+python -u  ${USHrrfs}/generate_fire_emissions.py \
   "${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}" \
   "${fire_rave_dir_work}" \
   "${DATA}" \

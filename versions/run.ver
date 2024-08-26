@@ -35,6 +35,7 @@ export wgrib2_ver=2.0.8_wmo
 
 export gefs_ver=v12.3
 export gfs_ver=v16.3
+export nam_ver=v4.2
 export rrfs_ver=v1.0
 export obsproc_ver=v1.2
 

@@ -36,7 +36,7 @@ local func_name="${FUNCNAME[0]}"
 #
 #-----------------------------------------------------------------------
 #
-USHdir="${scrfunc_dir}"
+USHrrfs="${scrfunc_dir}"
 #
 #-----------------------------------------------------------------------
 #
@@ -44,8 +44,8 @@ USHdir="${scrfunc_dir}"
 #
 #-----------------------------------------------------------------------
 #
-. $USHdir/source_util_funcs.sh
-. $USHdir/set_FV3nml_sfc_climo_filenames.sh
+. $USHrrfs/source_util_funcs.sh
+. $USHrrfs/set_FV3nml_sfc_climo_filenames.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -113,9 +113,9 @@ fi
 # if not, run Init.sh (otherwise, the workflow generation will fail)
 #-----------------------------------------------------------------------
 #
-if [[ ! -L ${USHdir}/../fix/.agent || ! -e ${USHdir}/../fix/.agent ]] \
-  && [ -e ${USHdir}/Init.sh ]; then
-    ${USHdir}/Init.sh
+if [[ ! -L ${USHrrfs}/../fix/.agent || ! -e ${USHrrfs}/../fix/.agent ]] \
+  && [ -e ${USHrrfs}/Init.sh ]; then
+    ${USHrrfs}/Init.sh
 fi
 #
 #-----------------------------------------------------------------------
@@ -129,7 +129,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-. $USHdir/setup.sh
+. $USHrrfs/setup.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -376,7 +376,7 @@ settings="\
 #
 # Directories and files.
 #
-  'jobsdir': $JOBSdir
+  'homerrfs': $HOMErrfs
   'log_basedir': ${LOG_BASEDIR:-}
   'dataroot': ${DATAROOT:-}
   'ensctrl_dataroot': ${ENSCTRL_DATAROOT:-}
@@ -524,8 +524,8 @@ $settings"
 # script to generate the experiment's actual XML file from this template
 # file.
 #
-template_xml_fp="${PARMdir}/${WFLOW_XML_TMPL_FN}"
-$USHdir/fill_jinja_template.py -q \
+template_xml_fp="${PARMrrfs}/${WFLOW_XML_TMPL_FN}"
+$USHrrfs/fill_jinja_template.py -q \
                                -u "${settings}" \
                                -t ${template_xml_fp} \
                                -o ${WFLOW_XML_FP} || \
@@ -641,7 +641,7 @@ fi
 #
 if [ "${DO_DACYCLE}" = "TRUE" ]; then
   # Resolve the target directory that the FIXgsi symlink points to
-  ln -fsn "$FIX_GSI" "$FIXgsi"
+  ln -fsn "$FIXrrfs/gsi" "$FIXgsi"
   path_resolved=$( readlink -m "$FIXgsi" )
   if [ ! -d "${path_resolved}" ]; then
     print_err_msg_exit "Missing link to FIXgsi
@@ -653,7 +653,7 @@ if [ "${DO_DACYCLE}" = "TRUE" ]; then
 fi  # check if DA
 
 # Resolve the target directory that the FIXcrtm symlink points to
-ln -fsn "$FIX_CRTM" "$FIXcrtm"
+ln -fsn "$CRTM_FIX" "$FIXcrtm"
 path_resolved=$( readlink -m "$FIXcrtm" )
 if [ ! -d "${path_resolved}" ]; then
   print_err_msg_exit "Missing link to FIXcrtm
@@ -664,7 +664,7 @@ if [ ! -d "${path_resolved}" ]; then
 fi
 
 # Resolve the target directory that the FIXuppcrtm symlink points to
-ln -fsn "$FIX_UPP_CRTM" "$FIXuppcrtm"
+ln -fsn "$CRTM_FIX" "$FIXuppcrtm"
 path_resolved=$( readlink -m "$FIXuppcrtm" )
 if [ ! -d "${path_resolved}" ]; then
   print_err_msg_exit "\
@@ -676,7 +676,7 @@ if [ ! -d "${path_resolved}" ]; then
 fi
 
 # Resolve the target directory that the FIXsmokedust symlink points to
-ln -fsn "$FIX_SMOKE_DUST" "$FIXsmokedust"
+ln -fsn "$FIXrrfs/smoke_dust" "$FIXsmokedust"
 path_resolved=$( readlink -m "$FIXsmokedust" )
 if [ ! -d "${path_resolved}" ]; then
   print_err_msg_exit "Missing link to FIXsmokedust
@@ -688,7 +688,7 @@ fi
 
 if [ "${DO_BUFRSND}" = "TRUE" ]; then
   # Resolve the target directory that the FIXbufrsnd symlink points to
-  ln -fsn "$FIX_BUFRSND" "$FIXbufrsnd"
+  ln -fsn "$FIXrrfs/bufrsnd" "$FIXbufrsnd"
   path_resolved=$( readlink -m "$FIXbufrsnd" )
   if [ ! -d "${path_resolved}" ]; then
     print_err_msg_exit "Missing link to FIXbufrsnd
@@ -941,7 +941,7 @@ settings="$settings
 # For generating the namelist for the fire weather grid, do not use a yaml file.
 #
 if [ "${PREDEF_GRID_NAME}" = "RRFS_FIREWX_1.5km" ]; then
-$USHdir/set_namelist.py -q \
+$USHrrfs/set_namelist.py -q \
                         -n ${FV3_NML_BASE_SUITE_FP} \
                         -u "$settings" \
                         -o ${FV3_NML_FP} || \
@@ -957,7 +957,7 @@ failed.  Parameters passed to this script are:
 $settings"
 
 else
-$USHdir/set_namelist.py -q \
+$USHrrfs/set_namelist.py -q \
                         -n ${FV3_NML_BASE_SUITE_FP} \
                         -c ${FV3_NML_YAML_CONFIG_FP} ${CCPP_PHYS_SUITE} \
                         -u "$settings" \
@@ -1024,7 +1024,7 @@ if [[ "${DO_DACYCLE}" = "TRUE" || "${DO_ENKFUPDATE}" = "TRUE" ]]; then
 #    'fh_dfi_radar': [${FH_DFI_RADAR[@]}],
 #  }"
  
- $USHdir/set_namelist.py -q \
+ $USHrrfs/set_namelist.py -q \
                          -n ${FV3_NML_FP} \
                          -u "$settings" \
                          -o ${FV3_NML_RESTART_FP} || \
@@ -1150,7 +1150,7 @@ $settings"
 if [ "${DO_ENSEMBLE}" = TRUE ] && ([ "${DO_SPP}" = TRUE ] || [ "${DO_SPPT}" = TRUE ] || [ "${DO_SHUM}" = TRUE ] \
   || [ "${DO_SKEB}" = TRUE ] || [ "${DO_LSM_SPP}" =  TRUE ]); then
 
-  $USHdir/set_namelist.py -q \
+  $USHrrfs/set_namelist.py -q \
                           -n  ${FV3_NML_FP}  \
                           -u "$settings" \
                           -o ${FV3_NML_STOCH_FP} || \
@@ -1168,7 +1168,7 @@ if [ "${DO_ENSEMBLE}" = TRUE ] && ([ "${DO_SPP}" = TRUE ] || [ "${DO_SPPT}" = TR
 #-----------------------------------------------------------------------
 #
 if [[ "${DO_DACYCLE}" = "TRUE" || "${DO_ENKFUPDATE}" = "TRUE" ]]; then
-  $USHdir/set_namelist.py -q \
+  $USHrrfs/set_namelist.py -q \
                           -n  ${FV3_NML_RESTART_FP}  \
                           -u "$settings" \
                           -o ${FV3_NML_RESTART_STOCH_FP} || \
@@ -1186,7 +1186,7 @@ if [[ "${DO_DACYCLE}" = "TRUE" || "${DO_ENKFUPDATE}" = "TRUE" ]]; then
  if [ "${DO_ENSFCST_MULPHY}" = "TRUE" ]; then
    for i in {1..5}
    do
-     $USHdir/set_namelist.py -q \
+     $USHrrfs/set_namelist.py -q \
                              -n  ${FV3_NML_RESTART_STOCH_FP}  \
                              -c ${FV3_NML_YAML_CONFIG_FP}_ensphy rrfsens_phy${i}  \
                              -o ${FV3_NML_RESTART_STOCH_FP}_ensphy${i}
@@ -1206,7 +1206,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-cp $USHdir/${EXPT_CONFIG_FN} $EXPTDIR
+cp $USHrrfs/${EXPT_CONFIG_FN} $EXPTDIR
 #
 #-----------------------------------------------------------------------
 #
@@ -1292,7 +1292,7 @@ if [ "${NOMADS}" = "TRUE" ]; then
   echo "Getting NOMADS online data"
   echo "NOMADS_file_type=" $NOMADS_file_type
   cd $EXPTDIR
-  $USHdir/NOMADS_get_extrn_mdl_files.sh $DATE_FIRST_CYCL $CYCL_HRS $NOMADS_file_type $FCST_LEN_HRS $LBC_SPEC_INTVL_HRS
+  $USHrrfs/NOMADS_get_extrn_mdl_files.sh $DATE_FIRST_CYCL $CYCL_HRS $NOMADS_file_type $FCST_LEN_HRS $LBC_SPEC_INTVL_HRS
 fi
 #
 #-----------------------------------------------------------------------
@@ -1335,21 +1335,21 @@ scrfunc_dir=$( dirname "${scrfunc_fp}" )
 #
 #-----------------------------------------------------------------------
 #
-USHdir="${scrfunc_dir}"
+USHrrfs="${scrfunc_dir}"
 #
 # Set the name of and full path to the temporary file in which we will
 # save some experiment/workflow variables.  The need for this temporary
 # file is explained below.
 #
 tmp_fn="tmp"
-tmp_fp="$USHdir/${tmp_fn}"
+tmp_fp="$USHrrfs/${tmp_fn}"
 rm -f "${tmp_fp}"
 #
 # Set the name of and full path to the log file in which the output from
 # the experiment/workflow generation function will be saved.
 #
 log_fn="log.generate_FV3LAM_wflow"
-log_fp="$USHdir/${log_fn}"
+log_fp="$USHrrfs/${log_fn}"
 rm -f "${log_fp}"
 #
 # Call the generate_FV3LAM_wflow function defined above to generate the

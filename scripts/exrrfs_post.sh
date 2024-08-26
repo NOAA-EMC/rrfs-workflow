@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -275,7 +275,7 @@ print_info_msg "$VERBOSE" "Starting post-processing for fhr = $fhr hr..."
 export pgm="upp.x"
 . prep_step
 
-${APRUN} $EXECdir/$pgm < itag >>$pgmout 2>errfile
+${APRUN} $EXECrrfs/$pgm < itag >>$pgmout 2>errfile
 export err=$?; err_chk
 #
 #-----------------------------------------------------------------------

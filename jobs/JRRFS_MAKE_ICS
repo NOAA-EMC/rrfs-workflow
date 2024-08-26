@@ -5,11 +5,24 @@
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
+# Specify Execution Areas
+#-----------------------------------------------------------------------
+
+#export HOMErrfs=${HOMErrfs:-${PACKAGEROOT}/${NET}.${rrfs_ver}}
+export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
+export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
+export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
+export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
+
+export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
+export FIXGSI=${FIXrrfs}/gsi
+
+#-----------------------------------------------------------------------
 # Source the variable definitions file and the bash utility functions.
 #-----------------------------------------------------------------------
 
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 
 date
 export PS4='+ $SECONDS + '
@@ -151,7 +164,7 @@ export extrn_mdl_staging_dir="${DATA}/tmp_ICS"
 export pgmout="${DATA}/tmp_ICS/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_make_ics.sh \
+${HOMErrfs}/scripts/exrrfs_make_ics.sh \
   extrn_mdl_fns_on_disk="${extrn_mdl_fns_on_disk_str}"
 export err=$?; err_chk
 

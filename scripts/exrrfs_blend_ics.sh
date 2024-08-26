@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -193,7 +193,7 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
      use_host_enkf=${USE_HOST_ENKF} # ignored if blend="TRUE".
                                     # TRUE:  Final EnKF will be GDAS (no blending)
                                     # FALSE: Final EnKF will be RRFS (no blending)
-     python ${USHdir}/blending_fv3.py $Lx $glb $reg $trcr $blend $use_host_enkf
+     python ${USHrrfs}/blending_fv3.py $Lx $glb $reg $trcr $blend $use_host_enkf
      cp ./fv_core.res.tile1.nc ${DATA}/.
      cp ./fv_tracer.res.tile1.nc ${DATA}/.
 

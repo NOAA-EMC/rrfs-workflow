@@ -7,7 +7,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 
 function ncvarlst_noaxis_time { ncks --trd -m ${1} | grep -E ': type' | cut -f 1 -d ' ' | sed 's/://' | sort |grep -v -i -E "axis|time" ;  }
 function ncvarlst_noaxis_time_new { ncks -m  ${1} | grep -E 'float' | cut -d "(" -f 1 | cut -c 10- ;  }
@@ -111,7 +111,7 @@ l_fv3reg_filecombined=.false.
 #
 #-----------------------------------------------------------------------
 #
-fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
+fixgriddir=${FIX_GSI}/${PREDEF_GRID_NAME}
 
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
    enkfanal_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}_spinup/anal_enkf_spinup"
@@ -437,7 +437,7 @@ export pgm="enkf.x"
 
 countdiag=$(ls diag*conv* | wc -l)
 if [ $countdiag -gt $nens ]; then
-  ${APRUN} ${EXECdir}/$pgm < enkf.nml >>$pgmout 2>errfile
+  ${APRUN} ${EXECrrfs}/$pgm < enkf.nml >>$pgmout 2>errfile
   export err=$?; err_chk
 
   cp ${pgmout} ${enkfanal_nwges_dir}/.

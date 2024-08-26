@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -268,7 +268,6 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
   if [ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]; then
     DATAprdgen=$DATA/prdgen_${fhr}
     mkdir $DATAprdgen
-    USHrrfs=$USHdir/prdgen
 
     wgrib2 ${COMOUT}/${prslev} >& $DATAprdgen/prslevf${fhr}.txt
 
@@ -292,7 +291,7 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
       for task in $(seq ${tasks[count]})
       do
         mkdir -p $DATAprdgen/prdgen_${domain}_${task}
-        echo "$USHrrfs/rrfs_prdgen_subpiece.sh $fhr $cyc $task $domain $prslev ${DATAprdgen} ${COMOUT}" >> $DATAprdgen/poescript_${fhr}
+        echo "$USHrrfs/prdgen/rrfs_prdgen_subpiece.sh $fhr $cyc $task $domain $prslev ${DATAprdgen} ${COMOUT}" >> $DATAprdgen/poescript_${fhr}
       done
       count=$count+1
     done
@@ -345,10 +344,10 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
     #-- Upscale & subset FAA requested information
     #-- FAA grib2 output is not generated for ensemble forecasts
  
-     # echo "$USHrrfs/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT} &" >> $DATAprdgen/poescript_faa_${fhr}
+     # echo "$USHrrfs/prdgen/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT} &" >> $DATAprdgen/poescript_faa_${fhr}
 
     if [ ${DO_ENSFCST} = "FALSE" ]; then
-      ${USHrrfs}/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT} ${USHrrfs}
+      ${USHrrfs}/prdgen/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT} ${USHrrfs}/prdgen
     fi
 
   else
@@ -375,7 +374,7 @@ EOF
   export FORT45=itagfw
 
   # Calculate the wgrib2 gridspecs for the fire weather grid
-  $APRUN $EXECdir/firewx_gridspecs.exe >> $pgmout 2>errfile
+  $APRUN $EXECrrfs/firewx_gridspecs.exe >> $pgmout 2>errfile
   export err=$?; err_chk
 
   grid_specs_firewx=`head $DATA/copygb_gridnavfw.txt`

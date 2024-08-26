@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -127,7 +127,7 @@ if [[ ${DO_GLM_FED_DA} = TRUE && ${DO_ENSEMBLE} != TRUE ]]; then
   export restart_prefix=${restart_prefix} 
   export PREP_MODEL=2
   ncap2 -O -v -s 'flash_extent_density=ref_f3d' ${NWGES_DIR}/RESTART/${restart_prefix}.phy_data.nc ${NWGES_DIR}/RESTART/${restart_prefix}.tmp.nc
-  python -u ${SCRIPTSdir}/exrrfs_process_lightning.py
+  python -u ${HOMErrfs}/scripts/exrrfs_process_lightning.py
   ncks -A -C -v flash_extent_density ${NWGES_DIR}/RESTART/${restart_prefix}.tmp.nc ${NWGES_DIR}/RESTART/${restart_prefix}.phy_data.nc
   rm ${NWGES_DIR}/RESTART/${restart_prefix}.tmp.nc
 fi
@@ -143,7 +143,7 @@ if [[ ${DO_ENSEMBLE} = TRUE && ${fhr} -eq 1 && ${PREP_MODEL_FOR_FED} = TRUE ]]; 
   export PREP_MODEL=2
 
   ncap2 -O -v -s 'flash_extent_density=ref_f3d' ${NWGES_DIR}/RESTART/${restart_prefix}.phy_data.nc ${NWGES_DIR}/RESTART/${restart_prefix}.tmp.nc
-  python -u ${SCRIPTSdir}/exrrfs_process_lightning.py
+  python -u ${HOMErrfs}/scripts/exrrfs_process_lightning.py
   ncks -A -C -v flash_extent_density ${NWGES_DIR}/RESTART/${restart_prefix}.tmp.nc ${NWGES_DIR}/RESTART/${restart_prefix}.phy_data.nc
   rm ${NWGES_DIR}/RESTART/${restart_prefix}.tmp.nc
 fi
@@ -199,7 +199,7 @@ if [[ ${DO_GLM_FED_DA} = TRUE && ${DO_ENSEMBLE} != TRUE ]]; then
   time_0=`date +%s`
   ncap2 -O -v -s 'flash_extent_density=ref_f3d' ${NWGES_DIR}/RESTART/${restart_prefix}.phy_data.nc ${NWGES_DIR}/RESTART/${restart_prefix}.tmp.nc
   time_1=`date +%s`
-  python -u ${SCRIPTSdir}/exrrfs_process_lightning.py
+  python -u ${HOMErrfs}/scripts/exrrfs_process_lightning.py
   time_2=`date +%s`
   ncks -A -C -v flash_extent_density ${NWGES_DIR}/RESTART/${restart_prefix}.tmp.nc ${NWGES_DIR}/RESTART/${restart_prefix}.phy_data.nc
   time_3=`date +%s`
@@ -224,7 +224,7 @@ if [[ ${DO_ENSEMBLE} = TRUE && ${fhr} -eq 1 && ${PREP_MODEL_FOR_FED} = TRUE ]]; 
   time_0=`date +%s`
   ncap2 -O -v -s 'flash_extent_density=ref_f3d' ${NWGES_DIR}/RESTART/${restart_prefix}.phy_data.nc ${NWGES_DIR}/RESTART/${restart_prefix}.tmp.nc
   time_1=`date +%s`
-  python -u ${SCRIPTSdir}/exrrfs_process_lightning.py
+  python -u ${HOMErrfs}/scripts/exrrfs_process_lightning.py
   time_2=`date +%s`
   ncks -A -C -v flash_extent_density ${NWGES_DIR}/RESTART/${restart_prefix}.tmp.nc ${NWGES_DIR}/RESTART/${restart_prefix}.phy_data.nc
   time_3=`date +%s`

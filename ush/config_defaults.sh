@@ -4,7 +4,7 @@
 # This file sets the experiment's configuration variables (which are
 # global shell variables) to their default values.  For many of these
 # variables, the valid values that they may take on are defined in the
-# file $USHdir/valid_param_vals.sh.
+# file $USHrrfs/valid_param_vals.sh.
 #
 #-----------------------------------------------------------------------
 #
@@ -432,7 +432,7 @@ RELATIVE_LINK_FLAG="--relative"
 # FV3_EXEC_FN:
 # Name to use for the forecast model executable when it is copied from
 # the directory in which it is created in the build step to the executables
-# directory (EXECdir; this is set during experiment generation).
+# directory (EXECrrfs; this is set in the J-jobs).
 #
 # WFLOW_XML_FN:
 # Name of the rocoto workflow XML file that the experiment generation
@@ -688,7 +688,7 @@ SAVEDA_CYCLEDEF="00 01 01 01 2100 *"
 # shell variable and assign value in config.sh and give it a default 
 # value in config_default.sh In realtime testing, don't need to regenerate 
 # the whole workflow, you can tweak $EXPTDIR/var_defns.sh and 
-# $FIX_GSI/gsiparm.anl.sh to make sure the change is expected and then 
+# $FIXrrfs/gsi/gsiparm.anl.sh to make sure the change is expected and then 
 # put it back into config.sh and config_default.sh
 # (need to follow FORTRAN namelist convetion)
 #
@@ -765,7 +765,7 @@ ENKF_ANAVINFO_FN="anavinfo.rrfs"
 ENKF_ANAVINFO_DBZ_FN="anavinfo.enkf.rrfs_dbz"
 CONVINFO_FN="convinfo.rrfs"
 CONVINFO_SD_FN="convinfo.rrfs_sd"
-BERROR_FN="rap_berror_stats_global_RAP_tune" #under $FIX_GSI
+BERROR_FN="rap_berror_stats_global_RAP_tune" #under $FIXrrfs/gsi
 BERROR_SD_FN="berror.rrfs_sd" # for test only
 OBERROR_FN="errtable.rrfs"
 HYBENSINFO_FN="hybens_info.rrfs"
@@ -1590,23 +1590,6 @@ SFC_CLIMO_FIELDS=( \
 # used by sfc_climo_gen. These files are only used if 
 # RUN_TASK_MAKE_SFC_CLIMO=TRUE
 #
-# FIX_GSI:
-# System directory in which the fixed files that are needed to run 
-# the GSI are located
-#
-# FIX_UPP:
-# System directory in which the fixed files that are needed to run 
-# the UPP are located
-#
-# FIX_CRTM:
-# System directory in which the CRTM coefficient files are located 
-#
-# FIX_SMOKE_DUST
-# directory in which the smoke and dust fix files are located
-#
-# FIX_BUFRSND
-# directory in which the bufrsnd fix files are located
-#
 # FNGLAC, ..., FNMSKH:
 # Names of (some of the) global data files that are assumed to exist in 
 # a system directory specified (this directory is machine-dependent; 
@@ -1664,12 +1647,6 @@ FIXgsm=""
 FIXprdgen=""
 TOPO_DIR=""
 SFC_CLIMO_INPUT_DIR=""
-FIX_GSI=""
-FIX_UPP=""
-FIX_CRTM=""
-FIX_UPP_CRTM=""
-FIX_SMOKE_DUST=""
-FIX_BUFRSND=""
 
 FNGLAC="global_glacier.2x2.grb"
 FNMXIC="global_maxice.2x2.grb"

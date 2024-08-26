@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -168,7 +168,7 @@ print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
 print_info_msg "$VERBOSE" "default bkpath is $bkpath"
 print_info_msg "$VERBOSE" "background type is $BKTYPE"
 #
-# Check if we have enough FV3-LAM ensembles when regional_ensemble_option=5
+# Check if we have enough RRFS ensembles when regional_ensemble_option=5
 #
 if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
   ens_nstarthr=$( printf "%02d" ${DA_CYCLE_INTERV} )
@@ -985,7 +985,7 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-gsi_exec="${EXECdir}/gsi.x"
+gsi_exec="${EXECrrfs}/gsi.x"
 cpreq -p ${gsi_exec} ${DATA}/gsi.x
 
 export pgm="gsi.x"
