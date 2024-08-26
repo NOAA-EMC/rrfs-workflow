@@ -172,11 +172,11 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    write_diag_2=.true.
 
    START_TIME_SPINUP="00:30:00"
-   LAYOUT_X="15"
-   LAYOUT_Y="54"
+   LAYOUT_X="16"
+   LAYOUT_Y="48"
    NNODES_RUN_FCST="13"
    WRTCMP_write_groups="1"
-   WRTCMP_write_tasks_per_group="22"
+   WRTCMP_write_tasks_per_group="64"
 
    NUM_ENS_MEMBERS_FCST=5
    if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
