@@ -61,7 +61,6 @@ on the output files corresponding to a specified forecast hour.
 #-----------------------------------------------------------------------
 
 export pid=${pid:-$$}
-export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")

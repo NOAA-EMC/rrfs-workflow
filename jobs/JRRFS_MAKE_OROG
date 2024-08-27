@@ -59,7 +59,6 @@ This is the J-job script for the task that generates orography files.
 #-----------------------------------------------------------------------
 
 export pid=${pid:-$$}
-export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 export jobid=${RUN}_make_orog_${envir}_${cyc}
 

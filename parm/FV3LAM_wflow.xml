@@ -369,6 +369,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
   </task>
@@ -392,6 +393,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -422,6 +424,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -481,6 +484,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -524,6 +528,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
         
     <dependency>
@@ -561,6 +566,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>PREP_MODEL</name><value>0</value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -597,6 +603,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -664,6 +671,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>WRF_MEM_NAME</name><value>#memNameWRF#</value></envar>
     <envar><name>GDASENKF_INPUT_SUBDIR</name><value>#subdirGDAS#</value></envar>
     <envar><name>GDAS_MEM_NAME</name><value>#memNameGDAS#</value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -761,6 +769,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>FG_ROOT</name><value>&FG_ROOT;</value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>{{ ensmem_indx_name }}</cyclestr></value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -844,6 +853,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GDAS_MEM_NAME</name><value>#memNameGDAS#</value></envar>
     <envar><name>bcgrp</name><value>#bcgrp#</value></envar>
     <envar><name>bcgrpnum</name><value>{{ boundary_proc_group_num }}</value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -976,6 +986,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>ENSMEM_INDX</name><value><cyclestr>{{ ensmem_indx_name }}</cyclestr></value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -1067,6 +1078,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>ENSMEM_INDX</name><value><cyclestr>{{ ensmem_indx_name }}</cyclestr></value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -1151,6 +1163,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_SUBTYPE</name><value><cyclestr>ensinit</cyclestr></value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>RESTART_HRS</name><value><cyclestr>0</cyclestr></value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -1193,6 +1206,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>fhr</name><value>0</value></envar>
       <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
       <envar><name>CYCLE_SUBTYPE</name><value><cyclestr>ensinit</cyclestr></value></envar>
+      <envar><name>envir</name><value>&envir;</value></envar>
       <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
@@ -1239,6 +1253,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>ENSCTRL_DATAROOT</name><value>&ENSCTRL_DATAROOT;</value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -1283,6 +1298,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -1323,6 +1339,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -1362,6 +1379,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>MEM_TYPE</name><value><cyclestr>MEAN</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>SATBIAS_DIR</name><value>&GESROOT;/satbias</value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -1414,6 +1432,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>MEM_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>SATBIAS_DIR</name><value>&GESROOT;/satbias</value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -1454,6 +1473,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>OB_TYPE</name><value>conv</value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -1490,6 +1510,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>OB_TYPE</name><value>radardbz</value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -1544,6 +1565,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>MEM_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>{{ ensmem_indx_name }}</cyclestr></value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -1621,6 +1643,7 @@ MODULES_RUN_TASK_FP script.
     {%- if do_envar_radar_ref and do_envar_radar_ref_once %}
     <envar><name>OB_TYPE</name><value>conv_dbz</value></envar>
     {%- endif %}
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -1695,6 +1718,7 @@ MODULES_RUN_TASK_FP script.
     {%- if do_envar_radar_ref and do_envar_radar_ref_once %}
     <envar><name>OB_TYPE</name><value>conv_dbz</value></envar>
     {%- endif %}
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -1737,6 +1761,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>SATBIAS_DIR</name><value><cyclestr>&GESROOT;/satbias</cyclestr></value></envar>
     <envar><name>nens</name><value>30</value></envar>
     <envar><name>OB_TYPE</name><value>radardbz</value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -1784,6 +1809,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GSI_TYPE</name><value><cyclestr>ANALYSIS</cyclestr></value></envar>
     <envar><name>MEM_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
     <envar><name>SATBIAS_DIR</name><value><cyclestr>&GESROOT;/satbias</cyclestr></value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -1832,6 +1858,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>MEM_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>{{ ensmem_indx_name }}</cyclestr></value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -1901,6 +1928,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>RESTART_HRS</name><value><cyclestr>1</cyclestr></value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
   
     <dependency>
@@ -1971,6 +1999,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
       <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
+      <envar><name>envir</name><value>&envir;</value></envar>
       <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
@@ -2024,6 +2053,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
       <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
+      <envar><name>envir</name><value>&envir;</value></envar>
       <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
@@ -2062,6 +2092,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
       <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
+      <envar><name>envir</name><value>&envir;</value></envar>
       <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
@@ -2119,6 +2150,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>ENSMEM_INDX</name><value><cyclestr>{{ ensmem_indx_name }}</cyclestr></value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -2254,6 +2286,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -2294,6 +2327,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>MEM_TYPE</name><value><cyclestr>MEAN</cyclestr></value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>{{ ensmem_indx_name }}</cyclestr></value></envar>
     <envar><name>SATBIAS_DIR</name><value><cyclestr>&GESROOT;/satbias</cyclestr></value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -2348,6 +2382,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>MEM_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>{{ ensmem_indx_name }}</cyclestr></value></envar>
     <envar><name>SATBIAS_DIR</name><value><cyclestr>&GESROOT;/satbias</cyclestr></value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -2389,6 +2424,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>OB_TYPE</name><value>conv</value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -2424,6 +2460,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>OB_TYPE</name><value>radardbz</value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -2485,6 +2522,7 @@ MODULES_RUN_TASK_FP script.
     {%- if do_envar_radar_ref and do_envar_radar_ref_once %}
     <envar><name>OB_TYPE</name><value>conv_dbz</value></envar>
     {%- endif %}
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -2567,6 +2605,7 @@ MODULES_RUN_TASK_FP script.
     {%- if do_envar_radar_ref and do_envar_radar_ref_once %}
     <envar><name>OB_TYPE</name><value>conv_dbz</value></envar>
     {%- endif %}
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -2609,6 +2648,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>SATBIAS_DIR</name><value><cyclestr>&GESROOT;/satbias</cyclestr></value></envar>
     <envar><name>nens</name><value>30</value></envar>
     <envar><name>OB_TYPE</name><value>radardbz</value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -2656,6 +2696,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GSI_TYPE</name><value><cyclestr>ANALYSIS</cyclestr></value></envar>
     <envar><name>MEM_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
     <envar><name>SATBIAS_DIR</name><value><cyclestr>&GESROOT;/satbias</cyclestr></value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -2712,6 +2753,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>MEM_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>{{ ensmem_indx_name }}</cyclestr></value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -2785,6 +2827,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>{{ ensmem_indx_name }}</cyclestr></value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -2853,6 +2896,7 @@ MODULES_RUN_TASK_FP script.
     {%- else %}
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
     {%- endif %}
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -2924,6 +2968,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>RESTART_HRS</name><value><cyclestr>{{ restart_hrs_prod }}</cyclestr></value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
   
     <dependency>
@@ -3002,6 +3047,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>RESTART_HRS</name><value><cyclestr>{{ restart_hrs_prod_long }}</cyclestr></value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
   
     <dependency>
@@ -3078,6 +3124,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
       <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
+      <envar><name>envir</name><value>&envir;</value></envar>
       <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
@@ -3125,6 +3172,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
       <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
+      <envar><name>envir</name><value>&envir;</value></envar>
       <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
@@ -3193,6 +3241,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
+      <envar><name>envir</name><value>&envir;</value></envar>
       <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
@@ -3246,6 +3295,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
+      <envar><name>envir</name><value>&envir;</value></envar>
       <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
@@ -3298,6 +3348,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
+      <envar><name>envir</name><value>&envir;</value></envar>
       <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
@@ -3347,6 +3398,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
+      <envar><name>envir</name><value>&envir;</value></envar>
       <envar><name>KEEPDATA</name><value>YES</value></envar>
 
       <dependency>
@@ -3383,6 +3435,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>tmmark</name><value>tm00</value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -3418,6 +3471,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>tmmark</name><value>tm00</value></envar>
+    <envar><name>envir</name><value>&envir;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>

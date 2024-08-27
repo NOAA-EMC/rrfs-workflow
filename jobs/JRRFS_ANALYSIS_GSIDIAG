@@ -60,7 +60,6 @@ the specified cycle.
 #-----------------------------------------------------------------------
 
 export pid=${pid:-$$}
-export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
