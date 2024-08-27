@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -16,9 +16,9 @@
 #
 #-----------------------------------------------------------------------
 #
-. $USHdir/link_fix.sh
-. $USHdir/set_FV3nml_sfc_climo_filenames.sh
-. $USHdir/set_FV3nml_stoch_params.sh
+. $USHrrfs/link_fix.sh
+. $USHrrfs/set_FV3nml_sfc_climo_filenames.sh
+. $USHrrfs/set_FV3nml_stoch_params.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -89,7 +89,7 @@ APRUN="time"
 #
 if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
   hh="${CDATE:8:2}"
-  firewx_loc="/lfs/h1/ops/prod/com/nam/v4.2/input/nam_firewx_loc"
+  firewx_loc="${COMINnam}/input/nam_firewx_loc"
   center_lat=${LAT_CTR}
   center_lon=${LON_CTR}
   LAT_CTR=`grep ${hh}z $firewx_loc | awk '{print $2}'`
@@ -102,7 +102,7 @@ if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
     sed -i -e "s/${center_lon}/${LON_CTR}/g" ${GLOBAL_VAR_DEFNS_FP}
   fi
 
-  python ${USHdir}/rrfsfw_domain.py ${LAT_CTR} ${LON_CTR}
+  python ${USHrrfs}/rrfsfw_domain.py ${LAT_CTR} ${LON_CTR}
   if [[ $? != 0 ]]; then
     err_exit "WARNING: Problem with the requested fire weather grid - ABORT"
   fi
@@ -125,7 +125,7 @@ if [ "${GRID_GEN_METHOD}" = "GFDLgrid" ]; then
   export pgm="make_hgrid"
   . prep_step
 
-  $APRUN ${EXECdir}/$pgm \
+  $APRUN ${EXECrrfs}/$pgm \
     --grid_type gnomonic_ed \
     --nlon ${nx_t6sg} \
     --grid_name ${grid_name} \
@@ -171,7 +171,7 @@ elif [ "${GRID_GEN_METHOD}" = "ESGgrid" ]; then
 "
 
   # Call the python script to create the namelist file.
-  ${USHdir}/set_namelist.py -q -u "$settings" -o ${rgnl_grid_nml_fp}
+  ${USHrrfs}/set_namelist.py -q -u "$settings" -o ${rgnl_grid_nml_fp}
   export err=$?
   if [ $err -ne 0 ]; then
     err_exit "Call to python script set_namelist.py to set the variables 
@@ -188,7 +188,7 @@ $settings"
   export pgm="regional_esg_grid"
   . prep_step
 
-  $APRUN ${EXECdir}/$pgm ${rgnl_grid_nml_fp} >>$pgmout 2>${DATA}/errfile
+  $APRUN ${EXECrrfs}/$pgm ${rgnl_grid_nml_fp} >>$pgmout 2>${DATA}/errfile
   export err=$?; err_chk
   mv ${DATA}/errfile ${DATA}/errfile_regional_esg_grid
 
@@ -212,7 +212,7 @@ print_info_msg "$VERBOSE" "Grid file generation completed successfully."
 export pgm="global_equiv_resol"
 . prep_step
 
-$APRUN ${EXECdir}/$pgm "${grid_fp}" >>$pgmout 2>${DATA}/errfile
+$APRUN ${EXECrrfs}/$pgm "${grid_fp}" >>$pgmout 2>${DATA}/errfile
 export err=$?; err_chk
 mv ${DATA}/errfile ${DATA}/errfile_global_equiv_resol
 
@@ -310,7 +310,7 @@ for halo_num in "${halo_num_list[@]}"; do
 
   . prep_step
 
-  $APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>${DATA}/errfile
+  $APRUN ${EXECrrfs}/$pgm < ${nml_fn} >>$pgmout 2>${DATA}/errfile
   export err=$?; err_chk
   mv ${DATA}/errfile ${DATA}/errfile_shave_nh${halo_num}
   cp ${shaved_fp} ${GRID_DIR}
@@ -335,7 +335,7 @@ for halo_num in "${halo_num_list[@]}"; do
 
   . prep_step
 
-  $APRUN ${EXECdir}/$pgm \
+  $APRUN ${EXECrrfs}/$pgm \
       --num_tiles 1 \
       --dir "${DATA}" \
       --tile_file "${grid_fn}" \

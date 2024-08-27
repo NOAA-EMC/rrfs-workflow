@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -170,7 +170,7 @@ EOF
   export pgm="adjust_soiltq.exe"
   . prep_step
 
-  $APRUN ${EXECdir}/$pgm >>$pgmout 2>errfile
+  $APRUN ${EXECrrfs}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
   mv errfile errfile_adjust_soiltq
 fi
@@ -198,7 +198,7 @@ EOF
   export pgm="update_bc.exe"
   . prep_step
 
-  $APRUN ${EXECdir}/$pgm >>$pgmout 2>errfile
+  $APRUN ${EXECrrfs}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
   mv errfile errfile_update_bc
 fi

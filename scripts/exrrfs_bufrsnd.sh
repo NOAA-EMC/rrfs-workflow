@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -109,12 +109,10 @@ cyc=$hh
 #
 #-----------------------------------------------------------------------
 #
-PARMrrfs=${FIX_BUFRSND}  #/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/bufrsnd
-
 mkdir -p $DATA/bufrpost
 cd $DATA/bufrpost
 
-cpreq -p $PARMrrfs/${PREDEF_GRID_NAME}/rrfs_profdat regional_profdat
+cpreq -p ${FIX_BUFRSND}/${PREDEF_GRID_NAME}/rrfs_profdat regional_profdat
 
 OUTTYP=netcdf
 
@@ -255,7 +253,7 @@ ln -sf ./itag                              fort.11
   export pgm="rrfs_bufr.exe"
   . prep_step
 
-  ${APRUNC} ${EXECdir}/$pgm >>$pgmout 2>errfile
+  ${APRUNC} ${EXECrrfs}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
   mv errfile errfile_rrfs_bufr
 
@@ -283,8 +281,8 @@ cd $DATA
 
 export pgm=rrfs_sndp
 
-cpreq -p $PARMrrfs/regional_sndp.parm.mono $DATA/regional_sndp.parm.mono
-cpreq -p $PARMrrfs/regional_bufr.tbl $DATA/regional_bufr.tbl
+cpreq -p ${FIX_BUFRSND}/regional_sndp.parm.mono $DATA/regional_sndp.parm.mono
+cpreq -p ${FIX_BUFRSND}/regional_bufr.tbl $DATA/regional_bufr.tbl
 
 ln -sf $DATA/regional_sndp.parm.mono fort.11
 ln -sf $DATA/regional_bufr.tbl       fort.32
@@ -306,7 +304,7 @@ echo "$nlev $NSTAT $FCST_LEN_HRS" > itag
 export pgm="rrfs_sndp.exe"
 . prep_step
 
-${APRUNS} ${EXECdir}/$pgm < itag >>$pgmout 2>errfile
+${APRUNS} ${EXECrrfs}/$pgm < itag >>$pgmout 2>errfile
 export err=$?; err_chk
 mv errfile errfile_rrfs_sndp
 
@@ -345,7 +343,7 @@ echo "before stnmlist.exe"
 export pgm="rrfs_stnmlist.exe"
 . prep_step
 
-${APRUNS} ${EXECdir}/$pgm < stnmlist_input >>$pgmout 2>errfile
+${APRUNS} ${EXECrrfs}/$pgm < stnmlist_input >>$pgmout 2>errfile
 export err=$?; err_chk
 mv errfile errfile_rrfs_stnmlist
 
@@ -358,7 +356,6 @@ cd ${COMOUT}/bufr.${cyc}
 # Tar and gzip the individual bufr files and send them to /com
 tar -cf - . | /usr/bin/gzip > ../rrfs.t${cyc}z.bufrsnd.tar.gz
 
-GEMPAKrrfs=/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/gempak
 cpreq -p $GEMPAKrrfs/fix/snrrfs.prm snrrfs.prm
 cpreq -p $GEMPAKrrfs/fix/sfrrfs.prm_aux sfrrfs.prm_aux
 cpreq -p $GEMPAKrrfs/fix/sfrrfs.prm sfrrfs.prm

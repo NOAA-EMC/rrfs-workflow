@@ -86,7 +86,7 @@ specifies the number of processes per node being used (the PPN_... entities).
 <!--
 Directories and files.
 -->
-<!ENTITY JOBSdir                  "{{ jobsdir }}">
+<!ENTITY HOMErrfs                 "{{ homerrfs }}">
 <!ENTITY LOG_BASEDIR              "{{ log_basedir }}">
 <!ENTITY LOGDIR                   "{{ log_basedir }}/{{ run }}.@Y@m@d/@H">
 <!ENTITY OBSPATH                  "{{ obspath }}">
@@ -339,7 +339,7 @@ we are already sourcing other files in the J-job anyway.
 -->
 <!--
     <command>{ . &LOAD_MODULES_RUN_TASK_FP; "&MAKE_GRID_TN;";
-               &JOBSdir;/JRRFS_MAKE_GRID;
+               &HOMErrfs;/jobs/JRRFS_MAKE_GRID;
              }</command>
 -->
 <!--
@@ -358,7 +358,7 @@ MODULES_RUN_TASK_FP script.
   <task name="&MAKE_GRID_TN;" cycledefs="at_start" maxtries="{{ maxtries_make_grid }}">
 
     &RSRV_DEFAULT;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_GRID_TN;" "&JOBSdir;/JRRFS_MAKE_GRID"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_GRID_TN;" "&HOMErrfs;/jobs/JRRFS_MAKE_GRID"</command>
     <nodes>{{ nnodes_make_grid }}:ppn={{ ppn_make_grid }}</nodes>
     <walltime>{{ wtime_make_grid }}</walltime>
     &NODESIZE_ALL;
@@ -368,6 +368,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
   </task>
@@ -381,7 +382,7 @@ MODULES_RUN_TASK_FP script.
   <task name="&MAKE_OROG_TN;" cycledefs="at_start" maxtries="{{ maxtries_make_orog }}">
 
     &RSRV_DEFAULT;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_OROG_TN;" "&JOBSdir;/JRRFS_MAKE_OROG"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_OROG_TN;" "&HOMErrfs;/jobs/JRRFS_MAKE_OROG"</command>
     <nodes>{{ nnodes_make_orog }}:ppn={{ ppn_make_orog }}</nodes>
     <walltime>{{ wtime_make_orog }}</walltime>
     &NODESIZE_ALL;
@@ -390,6 +391,7 @@ MODULES_RUN_TASK_FP script.
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -410,7 +412,7 @@ MODULES_RUN_TASK_FP script.
   <task name="&MAKE_SFC_CLIMO_TN;" cycledefs="at_start" maxtries="{{ maxtries_make_sfc_climo }}">
 
     &RSRV_DEFAULT;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_SFC_CLIMO_TN;" "&JOBSdir;/JRRFS_MAKE_SFC_CLIMO"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_SFC_CLIMO_TN;" "&HOMErrfs;/jobs/JRRFS_MAKE_SFC_CLIMO"</command>
     <nodes>{{ nnodes_make_sfc_climo }}:ppn={{ ppn_make_sfc_climo }}</nodes>
     <walltime>{{ wtime_make_sfc_climo }}</walltime>
     &NODESIZE_ALL;
@@ -419,6 +421,7 @@ MODULES_RUN_TASK_FP script.
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>KEEPDATA</name><value>YES</value></envar>
 
     <dependency>
@@ -460,7 +463,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&PROCESS_SMOKE_TN;" "&JOBSdir;/JRRFS_PROCESS_SMOKE"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&PROCESS_SMOKE_TN;" "&HOMErrfs;/jobs/JRRFS_PROCESS_SMOKE"</command>
 
     &RESOURCES_PROCESS_SMOKE;
     &NATIVE_ALL;
@@ -473,6 +476,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
@@ -501,7 +505,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&JOBSdir;/JRRFS_PROCESS_RADAR"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&HOMErrfs;/jobs/JRRFS_PROCESS_RADAR"</command>
       
     &RESOURCES_PROCESS_RADAR;
     &NATIVE_ALL;
@@ -513,6 +517,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
     <envar><name>RADAR_REF_THINNING</name><value>{{ radar_ref_thinning }}</value></envar>
@@ -539,7 +544,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&PROCESS_SMOKE_TN;" "&JOBSdir;/JRRFS_PROCESS_LIGHTNING"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&PROCESS_SMOKE_TN;" "&HOMErrfs;/jobs/JRRFS_PROCESS_LIGHTNING"</command>
 
     &RESOURCES_PROCESS_LIGHTNING;
     &NATIVE_ALL;
@@ -551,6 +556,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -573,7 +579,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&JOBSdir;/JRRFS_PROCESS_BUFR"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&HOMErrfs;/jobs/JRRFS_PROCESS_BUFR"</command>
 
     &RESOURCES_PROCESS_BUFR;
     &NATIVE_ALL;
@@ -586,6 +592,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
@@ -635,7 +642,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_PRE;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_ICS_TN;" "&JOBSdir;/JRRFS_MAKE_ICS"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_ICS_TN;" "&HOMErrfs;/jobs/JRRFS_MAKE_ICS"</command>
     &RESOURCES_MAKE_ICS;
     &NATIVE_ALL;
     <walltime>&WALLTIME_MAKE_ICS;</walltime>
@@ -647,6 +654,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>FG_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
@@ -736,7 +744,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_PRE;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&BLEND_ICS_TN;" "&JOBSdir;/JRRFS_BLEND_ICS"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&BLEND_ICS_TN;" "&HOMErrfs;/jobs/JRRFS_BLEND_ICS"</command>
     &RESOURCES_BLEND_ICS;
     &NATIVE_ALL;
     <walltime>&WALLTIME_BLEND_ICS;</walltime>
@@ -748,6 +756,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>FG_ROOT</name><value>&FG_ROOT;</value></envar>
@@ -812,7 +821,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_PRE;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_LBCS_TN;" "&JOBSdir;/JRRFS_MAKE_LBCS"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&MAKE_LBCS_TN;" "&HOMErrfs;/jobs/JRRFS_MAKE_LBCS"</command>
     &RESOURCES_MAKE_LBCS;
     &NATIVE_ALL;
     <walltime>&WALLTIME_MAKE_LBCS;</walltime>
@@ -824,6 +833,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>EXTRN_MDL_NAME</name><value>{{ extrn_mdl_name_lbcs }}</value></envar>
@@ -940,7 +950,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_PRE;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&PREP_CYC_TN;" "&JOBSdir;/JRRFS_PREP_CYC"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&PREP_CYC_TN;" "&HOMErrfs;/jobs/JRRFS_PREP_CYC"</command>
 
     &RESOURCES_PREP_CYC;
     &NATIVE_ALL;
@@ -955,6 +965,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>FG_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
     <envar><name>LBCS_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
@@ -1030,7 +1041,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_PRE;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&PREP_CYC_TN;" "&JOBSdir;/JRRFS_PREP_CYC"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&PREP_CYC_TN;" "&HOMErrfs;/jobs/JRRFS_PREP_CYC"</command>
 
     &RESOURCES_PREP_CYC;
     &NATIVE_ALL;
@@ -1045,6 +1056,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>FG_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
     <envar><name>LBCS_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
@@ -1118,7 +1130,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_FORECAST;
     &WALL_LIMIT_FORECAST;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&FORECAST_TN;" "&JOBSdir;/JRRFS_FORECAST"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&FORECAST_TN;" "&HOMErrfs;/jobs/JRRFS_FORECAST"</command>
     &RESOURCES_FORECAST_SPINUP;
     <walltime>&WALLTIME_FORECAST_SPINUP;</walltime>
     &NATIVE_ALL;
@@ -1132,6 +1144,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
@@ -1160,7 +1173,7 @@ MODULES_RUN_TASK_FP script.
 
       &RSRV_DEFAULT;
       &WALL_LIMIT_SAVE_RESTART;
-      <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSdir;/JRRFS_SAVE_RESTART"</command>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&HOMErrfs;/jobs/JRRFS_SAVE_RESTART"</command>
       &RESOURCES_SAVE_RESTART;
       &NATIVE_ALL;
       <walltime>&WALLTIME_SAVE_RESTART;</walltime>
@@ -1172,6 +1185,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
       <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
       <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
       <envar><name>ENSMEM_INDX</name><value><cyclestr>{{ ensmem_indx_name }}</cyclestr></value></envar>
@@ -1201,7 +1215,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_PRE;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&PREP_CYC_TN;" "&JOBSdir;/JRRFS_PREP_CYC"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&PREP_CYC_TN;" "&HOMErrfs;/jobs/JRRFS_PREP_CYC"</command>
     &RESOURCES_PREP_CYC;
     &NATIVE_ALL;
     <walltime>&WALLTIME_PREP_CYC;</walltime>
@@ -1215,6 +1229,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>FG_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
     <envar><name>LBCS_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
@@ -1248,7 +1263,7 @@ MODULES_RUN_TASK_FP script.
   <task name="&RECENTER_TN;_spinup" cycledefs="spinupcyc" maxtries="{{ maxtries_recenter }}">
     &RSRV_ENKF;
     &WALL_LIMIT_RECENTER;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RECENTER_TN;" &JOBSdir;/JRRFS_RECENTER</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RECENTER_TN;" &HOMErrfs;/jobs/JRRFS_RECENTER</command>
     &RESOURCES_RECENTER;
     &NATIVE_ALL;
     <walltime>&WALLTIME_RECENTER;</walltime>
@@ -1261,6 +1276,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>ENSCTRL_DATAROOT</name><value>&ENSCTRL_DATAROOT;</value></envar>
     <envar><name>ENSCTRL_GESROOT</name><value><cyclestr>&ENSCTRL_GESROOT;</cyclestr></value></envar>
@@ -1289,7 +1305,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_ENKF;
     &WALL_LIMIT_RECENTER;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_RECENTER_TN;" "&JOBSdir;/JRRFS_CALC_ENSMEAN"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_RECENTER_TN;" "&HOMErrfs;/jobs/JRRFS_CALC_ENSMEAN"</command>
     &RESOURCES_RECENTER;
     &NATIVE_ALL;
     <walltime>&WALLTIME_RECENTER;</walltime>
@@ -1301,6 +1317,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
@@ -1325,7 +1342,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_ANALYSIS;
     &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&JOBSdir;/JRRFS_ANALYSIS_GSI"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&HOMErrfs;/jobs/JRRFS_ANALYSIS_GSI"</command>
     &RESOURCES_ANALYSIS_GSI;
     &NATIVE_ANALYSIS_GSI;
     <walltime>&WALLTIME_ANALYSIS_GSI;</walltime>
@@ -1337,6 +1354,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
@@ -1376,7 +1394,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_ANALYSIS;
     &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&JOBSdir;/JRRFS_ANALYSIS_GSI"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&HOMErrfs;/jobs/JRRFS_ANALYSIS_GSI"</command>
     &RESOURCES_ANALYSIS_GSI;
     &NATIVE_ANALYSIS_GSI;
     <walltime>&WALLTIME_ANALYSIS_GSI;</walltime>
@@ -1388,6 +1406,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</cyclestr></value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</cyclestr></value></envar>
@@ -1416,7 +1435,7 @@ MODULES_RUN_TASK_FP script.
   <task name="&ENKFUPDT_TN;_spinup" cycledefs="spinupcyc" maxtries="{{ maxtries_analysis_enkf }}">
     &RSRV_ENKF;
     &WALL_LIMIT_ANALYSIS;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&ENKFUPDT_TN;" &JOBSdir;/JRRFS_ANALYSIS_ENKF</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&ENKFUPDT_TN;" &HOMErrfs;/jobs/JRRFS_ANALYSIS_ENKF</command>
 
     &RESOURCES_ANALYSIS_ENKF;
     <walltime>&WALLTIME_ANALYSIS_ENKF;</walltime>
@@ -1429,6 +1448,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
@@ -1451,7 +1471,7 @@ MODULES_RUN_TASK_FP script.
   <task name="&ENKF_RADAR_REF_TN;_spinup" cycledefs="spinupcyc" maxtries="{{ maxtries_analysis_enkf }}">
     &RSRV_ENKF;
     &WALL_LIMIT_ANALYSIS;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&ENKF_RADAR_REF_TN;" &JOBSdir;/JRRFS_ANALYSIS_ENKF</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&ENKF_RADAR_REF_TN;" &HOMErrfs;/jobs/JRRFS_ANALYSIS_ENKF</command>
 
     &RESOURCES_ANALYSIS_ENKF;
     <walltime>&WALLTIME_ANALYSIS_ENKF;</walltime>
@@ -1464,6 +1484,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
@@ -1502,7 +1523,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&JOBSdir;/JRRFS_ANALYSIS_NONVARCLD"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&HOMErrfs;/jobs/JRRFS_ANALYSIS_NONVARCLD"</command>
 
     &RESOURCES_ANALYSIS_NONVARCLD;
     <walltime>&WALLTIME_ANALYSIS_NONVARCLD;</walltime>
@@ -1515,6 +1536,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
@@ -1573,7 +1595,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_ANALYSIS;
     &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&JOBSdir;/JRRFS_ANALYSIS_GSI"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&HOMErrfs;/jobs/JRRFS_ANALYSIS_GSI"</command>
     &RESOURCES_ANALYSIS_GSI;
     &NATIVE_ANALYSIS_GSI;
     <walltime>&WALLTIME_ANALYSIS_GSI;</walltime>
@@ -1585,6 +1607,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
@@ -1646,7 +1669,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_POST;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&POST_TN;" "&JOBSdir;/JRRFS_UPDATE_LBC_SOIL"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&POST_TN;" "&HOMErrfs;/jobs/JRRFS_UPDATE_LBC_SOIL"</command>
     &RESOURCES_UPDATE_LBC_SOIL;
     &NATIVE_ALL;
     <walltime>&WALLTIME_UPDATE_LBC_SOIL;</walltime>
@@ -1658,6 +1681,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
@@ -1689,7 +1713,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_ANALYSIS;
     &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&HYBRID_RADAR_REF_TN;" "&JOBSdir;/JRRFS_ANALYSIS_GSI"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&HYBRID_RADAR_REF_TN;" "&HOMErrfs;/jobs/JRRFS_ANALYSIS_GSI"</command>
     &RESOURCES_ANALYSIS_GSI;
     &NATIVE_ANALYSIS_GSI;
     <walltime>&WALLTIME_ANALYSIS_GSI;</walltime>
@@ -1701,6 +1725,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
@@ -1740,7 +1765,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&JOBSdir;/JRRFS_ANALYSIS_GSIDIAG"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&HOMErrfs;/jobs/JRRFS_ANALYSIS_GSIDIAG"</command>
     &RESOURCES_ANALYSIS_GSIDIAG;
     &NATIVE_ALL;
     <walltime>&WALLTIME_ANALYSIS_GSIDIAG;</walltime>
@@ -1752,6 +1777,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
@@ -1785,7 +1811,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&JOBSdir;/JRRFS_ANALYSIS_NONVARCLD"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&HOMErrfs;/jobs/JRRFS_ANALYSIS_NONVARCLD"</command>
 
     &RESOURCES_ANALYSIS_NONVARCLD;
     <walltime>&WALLTIME_ANALYSIS_NONVARCLD;</walltime>
@@ -1798,6 +1824,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
@@ -1854,7 +1881,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_FORECAST;
     &WALL_LIMIT_FORECAST;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&FORECAST_TN;" "&JOBSdir;/JRRFS_FORECAST"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&FORECAST_TN;" "&HOMErrfs;/jobs/JRRFS_FORECAST"</command>
     &RESOURCES_FORECAST_SPINUP;
     <walltime>&WALLTIME_FORECAST_SPINUP;</walltime>
     &NATIVE_ALL;
@@ -1868,6 +1895,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
@@ -1924,7 +1952,7 @@ MODULES_RUN_TASK_FP script.
 
       &RSRV_DEFAULT;
       &WALL_LIMIT_SAVE_RESTART;
-      <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSdir;/JRRFS_SAVE_RESTART"</command>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&HOMErrfs;/jobs/JRRFS_SAVE_RESTART"</command>
       &RESOURCES_SAVE_RESTART;
       &NATIVE_ALL;
       <walltime>&WALLTIME_SAVE_RESTART;</walltime>
@@ -1936,6 +1964,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
       <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
       <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
@@ -1976,7 +2005,7 @@ MODULES_RUN_TASK_FP script.
 
       &RSRV_POST;
       &WALL_LIMIT_POST;
-      <command>&LOAD_MODULES_RUN_TASK_FP; "&POST_TN;" "&JOBSdir;/JRRFS_POST"</command>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&POST_TN;" "&HOMErrfs;/jobs/JRRFS_POST"</command>
       &RESOURCES_POST;
       &NATIVE_ALL;
       <walltime>&WALLTIME_POST;</walltime>
@@ -1987,6 +2016,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
       <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
       <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
       <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
@@ -2013,7 +2043,7 @@ MODULES_RUN_TASK_FP script.
 
       &RSRV_PRDGEN;
       &WALL_LIMIT_POST;
-      <command>&LOAD_MODULES_RUN_TASK_FP; "&PRDGEN_TN;" "&JOBSdir;/JRRFS_PRDGEN"</command>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&PRDGEN_TN;" "&HOMErrfs;/jobs/JRRFS_PRDGEN"</command>
       &RESOURCES_PRDGEN;
       &NATIVE_ALL;
       <walltime>&WALLTIME_PRDGEN;</walltime>
@@ -2025,6 +2055,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
       <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
       <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
@@ -2066,7 +2097,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_PRE;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&PREP_CYC_TN;" "&JOBSdir;/JRRFS_PREP_CYC"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&PREP_CYC_TN;" "&HOMErrfs;/jobs/JRRFS_PREP_CYC"</command>
     &RESOURCES_PREP_CYC;
     &NATIVE_ALL;
     <walltime>&WALLTIME_PREP_CYC;</walltime>
@@ -2080,6 +2111,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>FG_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
     <envar><name>LBCS_ROOT</name><value><cyclestr>&FG_ROOT;</cyclestr></value></envar>
@@ -2204,7 +2236,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_ENKF;
     &WALL_LIMIT_RECENTER;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RECENTER_TN;" "&JOBSdir;/JRRFS_CALC_ENSMEAN"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RECENTER_TN;" "&HOMErrfs;/jobs/JRRFS_CALC_ENSMEAN"</command>
     &RESOURCES_RECENTER;
     &NATIVE_ALL;
     <walltime>&WALLTIME_RECENTER;</walltime>
@@ -2216,6 +2248,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
@@ -2241,7 +2274,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_ANALYSIS;
     &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&JOBSdir;/JRRFS_ANALYSIS_GSI"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&HOMErrfs;/jobs/JRRFS_ANALYSIS_GSI"</command>
     &RESOURCES_ANALYSIS_GSI;
     &NATIVE_ANALYSIS_GSI;
     <walltime>&WALLTIME_ANALYSIS_GSI;</walltime>
@@ -2253,6 +2286,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
@@ -2294,7 +2328,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_ANALYSIS;
     &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&JOBSdir;/JRRFS_ANALYSIS_GSI"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&HOMErrfs;/jobs/JRRFS_ANALYSIS_GSI"</command>
     &RESOURCES_ANALYSIS_GSI;
     &NATIVE_ANALYSIS_GSI;
     <walltime>&WALLTIME_ANALYSIS_GSI;</walltime>
@@ -2306,6 +2340,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
@@ -2336,7 +2371,7 @@ MODULES_RUN_TASK_FP script.
   <task name="&ENKFUPDT_TN;" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_analysis_enkf }}">
     &RSRV_ENKF;
     &WALL_LIMIT_ANALYSIS;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&ENKFUPDT_TN;" &JOBSdir;/JRRFS_ANALYSIS_ENKF</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&ENKFUPDT_TN;" &HOMErrfs;/jobs/JRRFS_ANALYSIS_ENKF</command>
 
     &RESOURCES_ANALYSIS_ENKF;
     <walltime>&WALLTIME_ANALYSIS_ENKF;</walltime>
@@ -2349,6 +2384,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
@@ -2370,7 +2406,7 @@ MODULES_RUN_TASK_FP script.
   <task name="&ENKF_RADAR_REF_TN;" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_analysis_enkf }}">
     &RSRV_ENKF;
     &WALL_LIMIT_ANALYSIS;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&ENKF_RADAR_REF_TN;" &JOBSdir;/JRRFS_ANALYSIS_ENKF</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&ENKF_RADAR_REF_TN;" &HOMErrfs;/jobs/JRRFS_ANALYSIS_ENKF</command>
 
     &RESOURCES_ANALYSIS_ENKF;
     <walltime>&WALLTIME_ANALYSIS_ENKF;</walltime>
@@ -2383,6 +2419,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
@@ -2421,7 +2458,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_ANALYSIS;
     &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&JOBSdir;/JRRFS_ANALYSIS_GSI"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&HOMErrfs;/jobs/JRRFS_ANALYSIS_GSI"</command>
 
     &RESOURCES_ANALYSIS_GSI;
     &NATIVE_ANALYSIS_GSI;
@@ -2434,6 +2471,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
@@ -2503,7 +2541,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_POST;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&POST_TN;" "&JOBSdir;/JRRFS_UPDATE_LBC_SOIL"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&POST_TN;" "&HOMErrfs;/jobs/JRRFS_UPDATE_LBC_SOIL"</command>
     &RESOURCES_UPDATE_LBC_SOIL;
     &NATIVE_ALL;
     <walltime>&WALLTIME_UPDATE_LBC_SOIL;</walltime>
@@ -2515,6 +2553,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
@@ -2546,7 +2585,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_ANALYSIS;
     &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&HYBRID_RADAR_REF_TN;" "&JOBSdir;/JRRFS_ANALYSIS_GSI"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&HYBRID_RADAR_REF_TN;" "&HOMErrfs;/jobs/JRRFS_ANALYSIS_GSI"</command>
     &RESOURCES_ANALYSIS_GSI;
     &NATIVE_ANALYSIS_GSI;
     <walltime>&WALLTIME_ANALYSIS_GSI;</walltime>
@@ -2558,6 +2597,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
@@ -2597,7 +2637,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&JOBSdir;/JRRFS_ANALYSIS_GSIDIAG"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&HOMErrfs;/jobs/JRRFS_ANALYSIS_GSIDIAG"</command>
     &RESOURCES_ANALYSIS_GSIDIAG;
     &NATIVE_ALL;
     <walltime>&WALLTIME_ANALYSIS_GSIDIAG;</walltime>
@@ -2609,6 +2649,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
@@ -2642,7 +2683,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_DEFAULT;
     &WALL_LIMIT_ANALYSIS;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&JOBSdir;/JRRFS_ANALYSIS_NONVARCLD"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&ANALYSIS_GSI_TN;" "&HOMErrfs;/jobs/JRRFS_ANALYSIS_NONVARCLD"</command>
 
     &RESOURCES_ANALYSIS_NONVARCLD;
     <walltime>&WALLTIME_ANALYSIS_NONVARCLD;</walltime>
@@ -2663,6 +2704,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
@@ -2723,7 +2765,7 @@ MODULES_RUN_TASK_FP script.
   <task name="&RECENTER_TN;" cycledefs="recentercyc" maxtries="{{ maxtries_recenter }}">
     &RSRV_ENKF;
     &WALL_LIMIT_RECENTER;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RECENTER_TN;" &JOBSdir;/JRRFS_RECENTER</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&RECENTER_TN;" &HOMErrfs;/jobs/JRRFS_RECENTER</command>
     &RESOURCES_RECENTER;
     &NATIVE_ALL;
     <walltime>&WALLTIME_RECENTER;</walltime>
@@ -2735,6 +2777,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>ENSCTRL_DATAROOT</name><value>&ENSCTRL_DATAROOT;</value></envar>
     <envar><name>ENSCTRL_GESROOT</name><value>&ENSCTRL_GESROOT;</value></envar>
@@ -2789,7 +2832,7 @@ MODULES_RUN_TASK_FP script.
 
     &RSRV_DEFAULT;
     &WALL_LIMIT_SAVE_RESTART;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSdir;/JRRFS_SAVE_DA_OUTPUT"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&HOMErrfs;/jobs/JRRFS_SAVE_DA_OUTPUT"</command>
     <nodes>{{ nnodes_save_restart }}:ppn={{ ppn_save_restart }}</nodes>
     <walltime>{{ wtime_save_restart }}</walltime>
     &NODESIZE_ALL;
@@ -2800,6 +2843,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>{{ ensmem_indx_name }}</cyclestr></value></envar>
@@ -2859,7 +2903,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_FORECAST;
     &WALL_LIMIT_FORECAST;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&FORECAST_TN;" "&JOBSdir;/JRRFS_FORECAST"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&FORECAST_TN;" "&HOMErrfs;/jobs/JRRFS_FORECAST"</command>
 
     &RESOURCES_FORECAST_PROD;
     <walltime>&WALLTIME_FORECAST_PROD;</walltime>
@@ -2874,6 +2918,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
@@ -2936,7 +2981,7 @@ MODULES_RUN_TASK_FP script.
     &RSRV_FORECAST;
     &WALL_LIMIT_FORECAST;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&FORECAST_TN;" "&JOBSdir;/JRRFS_FORECAST"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&FORECAST_TN;" "&HOMErrfs;/jobs/JRRFS_FORECAST"</command>
 
     &RESOURCES_FORECAST_PROD;
     <walltime>&WALLTIME_FORECAST_PROD_LONG;</walltime>
@@ -2951,6 +2996,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
@@ -3013,7 +3059,7 @@ MODULES_RUN_TASK_FP script.
 
       &RSRV_DEFAULT;
       &WALL_LIMIT_SAVE_RESTART;
-      <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSdir;/JRRFS_SAVE_RESTART"</command>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&HOMErrfs;/jobs/JRRFS_SAVE_RESTART"</command>
       <nodes>{{ nnodes_save_restart }}:ppn={{ ppn_save_restart }}</nodes>
       <walltime>{{ wtime_save_restart }}</walltime>
       &NODESIZE_ALL;
@@ -3024,6 +3070,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
       <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
       <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
       <envar><name>SURFACE_DIR</name><value>&GESROOT;/surface</value></envar>
@@ -3059,7 +3106,7 @@ MODULES_RUN_TASK_FP script.
 
       &RSRV_DEFAULT;
       &WALL_LIMIT_SAVE_RESTART;
-      <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSdir;/JRRFS_SAVE_RESTART"</command>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&HOMErrfs;/jobs/JRRFS_SAVE_RESTART"</command>
       <nodes>{{ nnodes_save_restart }}:ppn={{ ppn_save_restart }}</nodes>
       <walltime>{{ wtime_save_restart }}</walltime>
       &NODESIZE_ALL;
@@ -3070,6 +3117,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
       <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
       <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
       <envar><name>SURFACE_DIR</name><value><cyclestr>&GESROOT;/surface</cyclestr></value></envar>
@@ -3127,7 +3175,7 @@ MODULES_RUN_TASK_FP script.
 
       &RSRV_POST;
       &WALL_LIMIT_POST;
-      <command>&LOAD_MODULES_RUN_TASK_FP; "&POST_TN;" "&JOBSdir;/JRRFS_POST"</command>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&POST_TN;" "&HOMErrfs;/jobs/JRRFS_POST"</command>
       &RESOURCES_POST;
       &NATIVE_ALL;
       <walltime>&WALLTIME_POST;</walltime>
@@ -3138,6 +3186,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
       <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
       <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
       <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
@@ -3179,7 +3228,7 @@ MODULES_RUN_TASK_FP script.
 
       &RSRV_POST;
       &WALL_LIMIT_POST;
-      <command>&LOAD_MODULES_RUN_TASK_FP; "&POST_TN;" "&JOBSdir;/JRRFS_POST"</command>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&POST_TN;" "&HOMErrfs;/jobs/JRRFS_POST"</command>
       &RESOURCES_POST;
       &NATIVE_ALL;
       <walltime>&WALLTIME_POST;</walltime>
@@ -3190,6 +3239,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
       <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
       <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
       <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
@@ -3230,7 +3280,7 @@ MODULES_RUN_TASK_FP script.
 
       &RSRV_PRDGEN;
       &WALL_LIMIT_POST;
-      <command>&LOAD_MODULES_RUN_TASK_FP; "&PRDGEN_TN;" "&JOBSdir;/JRRFS_PRDGEN"</command>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&PRDGEN_TN;" "&HOMErrfs;/jobs/JRRFS_PRDGEN"</command>
       &RESOURCES_PRDGEN;
       &NATIVE_ALL;
       <walltime>&WALLTIME_PRDGEN;</walltime>
@@ -3242,6 +3292,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
       <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
       <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
@@ -3278,7 +3329,7 @@ MODULES_RUN_TASK_FP script.
 
       &RSRV_PRDGEN;
       &WALL_LIMIT_POST;
-      <command>&LOAD_MODULES_RUN_TASK_FP; "&PRDGEN_TN;" "&JOBSdir;/JRRFS_PRDGEN"</command>
+      <command>&LOAD_MODULES_RUN_TASK_FP; "&PRDGEN_TN;" "&HOMErrfs;/jobs/JRRFS_PRDGEN"</command>
       &RESOURCES_PRDGEN;
       &NATIVE_ALL;
       <walltime>&WALLTIME_PRDGEN;</walltime>
@@ -3290,6 +3341,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
       <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
       <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
@@ -3314,7 +3366,7 @@ MODULES_RUN_TASK_FP script.
 
     &RSRV_POST;
     &WALL_LIMIT_BUFRSND;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&BUFRSND_TN;" "&JOBSdir;/JRRFS_BUFRSND"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&BUFRSND_TN;" "&HOMErrfs;/jobs/JRRFS_BUFRSND"</command>
     &RESOURCES_BUFRSND;
     <walltime>{{ wtime_bufrsnd }}</walltime>
     &NODESIZE_ALL;
@@ -3324,6 +3376,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
@@ -3348,7 +3401,7 @@ MODULES_RUN_TASK_FP script.
 
     &RSRV_POST;
     &WALL_LIMIT_BUFRSND;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&BUFRSND_TN;" "&JOBSdir;/JRRFS_BUFRSND"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&BUFRSND_TN;" "&HOMErrfs;/jobs/JRRFS_BUFRSND"</command>
     &RESOURCES_BUFRSND;
     <walltime>{{ wtime_bufrsnd }}</walltime>
     &NODESIZE_ALL;
@@ -3358,6 +3411,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
@@ -3386,7 +3440,7 @@ MODULES_RUN_TASK_FP script.
 
     &RSRV_POST;
 
-    <command>&JOBSdir;/../scripts/exrrfs_clean.ksh</command>
+    <command>&HOMErrfs;/scripts/exrrfs_clean.ksh</command>
     <nodes> 1:ppn=1</nodes>
     <walltime>00:15:00</walltime>
     <jobname>&TAG;_&CLEAN_TN;</jobname>
@@ -3395,6 +3449,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>LOGDIR</name><value>&LOGDIR;</value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
 {%- if do_ensemble %}
     <envar><name>nens</name><value><cyclestr>{{ num_ens_members }}</cyclestr></value></envar>

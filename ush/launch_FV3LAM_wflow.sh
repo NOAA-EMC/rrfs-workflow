@@ -95,7 +95,7 @@ fi
 #-----------------------------------------------------------------------
 #
 . $exptdir/var_defns.sh
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -115,7 +115,7 @@ expt_name="${EXPT_SUBDIR}"
 #
 machine=$(echo_lowercase $MACHINE)
 
-. ${USHdir}/load_modules_wflow.sh ${machine}
+. ${USHrrfs}/load_modules_wflow.sh ${machine}
 
 #
 #-----------------------------------------------------------------------
@@ -359,7 +359,7 @@ script for this experiment:
 # Remove CRONTAB_LINE from cron table
 #
     MACHINE=$MACHINE CRONTAB_LINE=$CRONTAB_LINE \
-        $USHdir/get_crontab_contents.py --delete
+        $USHrrfs/get_crontab_contents.py --delete
   fi
 #
 # Print the workflow completion message to the launch log file.

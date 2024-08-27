@@ -5,11 +5,23 @@
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
+# Specify Execution Areas
+#-----------------------------------------------------------------------
+
+export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
+export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
+export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
+export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
+
+export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
+export FIX_SMOKE_DUST=${FIXrrfs}/smoke_dust
+
+#-----------------------------------------------------------------------
 # Source the variable definitions file and the bash utility functions.
 #-----------------------------------------------------------------------
 
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 
 date
 export PS4='+ $SECONDS + '
@@ -93,7 +105,7 @@ cd ${DATA}
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_forecast.sh
+$HOMErrfs/scripts/exrrfs_forecast.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

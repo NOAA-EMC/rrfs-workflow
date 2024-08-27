@@ -124,7 +124,7 @@ function set_FV3nml_stoch_params() {
     }"
   fi
 
-  $USHdir/set_namelist.py -q \
+  $USHrrfs/set_namelist.py -q \
                           -n ${fv3_nml_ensmem_fp_base} \
                           -u "$settings" \
                           -o ${fv3_nml_ensmem_fp} || \

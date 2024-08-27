@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -528,7 +528,7 @@ if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
      export pgm="process_imssnow_fv3lam.exe"
      . prep_step
 
-     ${APRUN} ${EXECdir}/$pgm ${IO_LAYOUT_Y} >>$pgmout 2>errfile
+     ${APRUN} ${EXECrrfs}/$pgm ${IO_LAYOUT_Y} >>$pgmout 2>errfile
      export err=$?; err_chk
      mv errfile errfile_imssnow
 
@@ -584,7 +584,7 @@ EOF
        ln -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
 
        . prep_step
-       ${APRUN} ${EXECdir}/$pgm >>$pgmout 2>errfile
+       ${APRUN} ${EXECrrfs}/$pgm >>$pgmout 2>errfile
        export err=$?; err_chk
        mv errfile errfile_updatesst
      else
@@ -595,7 +595,7 @@ EOF
          ln -sf sfc_data.nc.${iii} sfc_data.nc         
 
 	 . prep_step
-         ${APRUN} ${EXECdir}/$pgm >>$pgmout 2>errfile
+         ${APRUN} ${EXECrrfs}/$pgm >>$pgmout 2>errfile
          export err=$?; err_chk
          mv errfile errfile_updatesst_${iii}
 
@@ -820,7 +820,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
               ncatted -a checksum,,d,, sfc_data.nc
               if [ "${if_update_ice}" = "TRUE" ]; then
 		. prep_step
-                ${APRUN} ${EXECdir}/$pgm >>$pgmout 2>errfile
+                ${APRUN} ${EXECrrfs}/$pgm >>$pgmout 2>errfile
                 export err=$?; err_chk
 		mv errfile errfile_cycleICE
               fi
@@ -842,7 +842,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
                 ln -sf gfsice.sfc_data.nc.${iii} gfsice.sfc_data.nc
                 if [ "${if_update_ice}" = "TRUE" ]; then
 		  . prep_step
-                  ${APRUN} ${EXECdir}/$pgm >>$pgmout 2>errfile
+                  ${APRUN} ${EXECrrfs}/$pgm >>$pgmout 2>errfile
                   export err=$?; err_chk
 		  mv errfile errfile_cycleICE.${iii}
                 fi
@@ -903,9 +903,9 @@ if [ ${Update_GVF} -ge 1 ]; then
         ln -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
         . prep_step
         if [ ${Update_GVF} -eq 2 ]; then
-          ${APRUN} ${EXECdir}/$pgm "cold" >>$pgmout 2>errfile
+          ${APRUN} ${EXECrrfs}/$pgm "cold" >>$pgmout 2>errfile
         else
-          ${APRUN} ${EXECdir}/$pgm "warm" >>$pgmout 2>errfile
+          ${APRUN} ${EXECrrfs}/$pgm "warm" >>$pgmout 2>errfile
         fi
         export err=$?; err_chk
 	mv errfile errfile_updateGVF
@@ -920,9 +920,9 @@ if [ ${Update_GVF} -ge 1 ]; then
           ln -sf sfc_data.nc.${iii} sfc_data.nc
 	  . prep_step
           if [ ${Update_GVF} -eq 2 ]; then
-            ${APRUN} ${EXECdir}/$pgm "cold" >>$pgmout 2>errfile
+            ${APRUN} ${EXECrrfs}/$pgm "cold" >>$pgmout 2>errfile
           else
-            ${APRUN} ${EXECdir}/$pgm "warm" >>$pgmout 2>errfile
+            ${APRUN} ${EXECrrfs}/$pgm "warm" >>$pgmout 2>errfile
           fi
           export err=$?; err_chk
 	  mv errfile errfile_updateGVF.${iii}
@@ -1057,9 +1057,9 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# condut surface surgery to transfer RAP/HRRR surface fields into RRFS.
+# conduct surface surgery to transfer RAP/HRRR surface fields into RRFS.
 # 
-# This surgery only needs to be done once to give RRFS a good start of the surfcase.
+# This surgery only needs to be done once to give RRFS a good start of the surface.
 # Please consult Ming or Tanya first before turning on this surgery.
 #
 #-----------------------------------------------------------------------
@@ -1162,7 +1162,7 @@ EOF
        if [ "${IO_LAYOUT_Y}" = "1" ]; then
          cp sfc_data.nc sfc_data.nc_read
 	 . prep_step
-         ${APRUN} ${EXECdir}/$pgm >>$pgmout 2>errfile
+         ${APRUN} ${EXECrrfs}/$pgm >>$pgmout 2>errfile
          export err=$?; err_chk
 	 mv errfile errfile_sfc_surgery.${file}
        else
@@ -1172,7 +1172,7 @@ EOF
            ln -sf sfc_data.nc.${iii} sfc_data.nc
            cp sfc_data.nc sfc_data.nc_read
 	   . prep_step
-           ${APRUN} ${EXECdir}/$pgm >>$pgmout 2>errfile
+           ${APRUN} ${EXECrrfs}/$pgm >>$pgmout 2>errfile
            export err=$?; err_chk
 	   mv errfile errfile_sfc_surgery.${iii}.${file}
            ls -l > list_sfc_sugery.${iii}
@@ -1196,7 +1196,7 @@ if [ "${USE_FVCOM}" = "TRUE" ] && [ ${SFC_CYC} -eq 2 ] ; then
 
   # Remap the FVCOM output from the 5 lakes onto the RRFS grid
   if [ "${PREP_FVCOM}" = "TRUE" ]; then
-    ${USHdir}/fvcom_prep.sh \
+    ${USHrrfs}/fvcom_prep.sh \
                   INPUT_DATA="${INPUT_DATA}" \
                   FIXLAM="${FIXLAM}" \
                   FVCOM_DIR="${FVCOM_DIR}" \
@@ -1255,7 +1255,7 @@ Please check the following user defined variables:
       surface_file='sfc_data.nc'
     fi
     . prep_step
-    ${APRUN} ${EXECdir}/$pgm ${surface_file} fvcom.nc ${FVCOM_WCSTART} ${fvcom_time} ${IO_LAYOUT_Y} >>$pgmout 2>errfile
+    ${APRUN} ${EXECrrfs}/$pgm ${surface_file} fvcom.nc ${FVCOM_WCSTART} ${fvcom_time} ${IO_LAYOUT_Y} >>$pgmout 2>errfile
     export err=$?; err_chk
     mv errfile errfile_fvcom
   fi

@@ -5,11 +5,22 @@
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
+# Specify Execution Areas
+#-----------------------------------------------------------------------
+
+export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
+export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
+export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
+export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
+
+export FIX_GSI=${FIXrrfs}/gsi
+
+#-----------------------------------------------------------------------
 # Source the variable definitions file and the bash utility functions.
 #-----------------------------------------------------------------------
 
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 
 #-----------------------------------------------------------------------
 # Save current shell options (in a global array).  Then set new options
@@ -67,7 +78,6 @@ export DATA=${DATAROOT}/${jobid}
 mkdir -p ${DATA}
 cd ${DATA}
 
-export FIX_GSI=$FIX_GSI
 export OBS_EAST=$GLMFED_EAST_ROOT
 export OBS_WEST=$GLMFED_WEST_ROOT
 export RRFSE_NWGES=$GESROOT
@@ -82,7 +92,7 @@ export MODE=$GLMFED_DATA_MODE
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-python -u ${SCRIPTSdir}/exrrfs_process_lightning.py
+python -u ${HOMErrfs}/scripts/exrrfs_process_lightning.py
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

@@ -84,7 +84,7 @@ function make_grid_mosaic_file() {
 #-----------------------------------------------------------------------
 #
   exec_fn="make_solo_mosaic"
-  exec_fp="$EXECdir/${exec_fn}"
+  exec_fp="$HOMErrfs/exec/${exec_fn}"
   if [ ! -f "${exec_fp}" ]; then
     print_err_msg_exit "\
 The executable (exec_fp) for generating the grid mosaic file does not 

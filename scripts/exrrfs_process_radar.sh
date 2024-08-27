@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -339,7 +339,7 @@ EOF
   #
   #-----------------------------------------------------------------------
   # 
-  $APRUN ${EXECdir}/$pgm >>$pgmout 2>errfile
+  $APRUN ${EXECrrfs}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
 
   cp RefInGSI3D.dat  ${COMOUT}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}

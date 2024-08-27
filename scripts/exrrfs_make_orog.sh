@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -16,7 +16,7 @@
 #
 #-----------------------------------------------------------------------
 #
-. $USHdir/link_fix.sh
+. $USHrrfs/link_fix.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -165,7 +165,7 @@ print_info_msg "Starting orography file generation..."
 export pgm="orog"
 . prep_step
 
-$APRUN ${EXECdir}/$pgm < "${input_redirect_fn}" >>$pgmout 2>${DATA}/raw_topo/tmp/errfile
+$APRUN ${EXECrrfs}/$pgm < "${input_redirect_fn}" >>$pgmout 2>${DATA}/raw_topo/tmp/errfile
 export err=$?; err_chk
 mv ${DATA}/raw_topo/tmp/errfile ${DATA}/raw_topo/tmp/errfile_orog
 
@@ -222,7 +222,7 @@ EOF
   export pgm="orog_gsl"
   . prep_step
 
-  ${APRUN} ${EXECdir}/$pgm < "${input_redirect_fn}" >>$pgmout 2>${DATA}/raw_topo/tmp/errfile
+  ${APRUN} ${EXECrrfs}/$pgm < "${input_redirect_fn}" >>$pgmout 2>${DATA}/raw_topo/tmp/errfile
   export err=$?; err_chk
   mv ${DATA}/raw_topo/tmp/errfile ${DATA}/raw_topo/tmp/errfile_orog_gsl
 
@@ -355,7 +355,7 @@ print_info_msg "Starting filtering of orography..."
 export pgm="filter_topo"
 . prep_step
 
-$APRUN ${EXECdir}/$pgm >>$pgmout 2>${DATA}/raw_topo/tmp/errfile
+$APRUN ${EXECrrfs}/$pgm >>$pgmout 2>${DATA}/raw_topo/tmp/errfile
 export err=$?; err_chk
 mv ${DATA}/raw_topo/tmp/errfile ${DATA}/raw_topo/tmp/errfile_filter_topo
 #
@@ -412,7 +412,7 @@ for halo_num in "${halo_num_list[@]}"; do
 
   . prep_step
 
-  $APRUN ${EXECdir}/$pgm < ${nml_fn} >>$pgmout 2>${DATA}/raw_topo/tmp/errfile
+  $APRUN ${EXECrrfs}/$pgm < ${nml_fn} >>$pgmout 2>${DATA}/raw_topo/tmp/errfile
   export err=$?; err_chk
   mv ${DATA}/raw_topo/tmp/errfile ${DATA}/raw_topo/tmp/errfile_shave_${halo_num}
   mv ${shaved_fp} ${OROG_DIR}

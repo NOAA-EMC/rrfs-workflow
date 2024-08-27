@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -571,7 +571,7 @@ settings="
 # Call the python script to create the namelist file.
 #
 nml_fn="fort.41"
-${USHdir}/set_namelist.py -q -u "$settings" -o ${nml_fn} || \
+${USHrrfs}/set_namelist.py -q -u "$settings" -o ${nml_fn} || \
   err_exit "\
 Call to python script set_namelist.py to set the variables in the namelist
 file read in by the ${exec_fn} executable failed.  Parameters passed to
@@ -609,7 +609,7 @@ fi
 export pgm="chgres_cube"
 . prep_step
 
-${APRUN} ${EXECdir}/$pgm >>$pgmout 2>errfile
+${APRUN} ${EXECrrfs}/$pgm >>$pgmout 2>errfile
 export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
@@ -715,7 +715,7 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
   bndy=./gfs.bndy.nc
 
   # Run convert coldstart files to fv3 restart (rotate winds and remap).
-  python ${USHdir}/chgres_cold2fv3.py $cold $grid $akbk $akbkcold $orog
+  python ${USHrrfs}/chgres_cold2fv3.py $cold $grid $akbk $akbkcold $orog
 
 fi
 #

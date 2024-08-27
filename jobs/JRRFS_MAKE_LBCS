@@ -5,11 +5,22 @@
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
+# Specify Execution Areas
+#-----------------------------------------------------------------------
+
+export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
+export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
+export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
+export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
+
+export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
+
+#-----------------------------------------------------------------------
 # Source the variable definitions file and the bash utility functions.
 #-----------------------------------------------------------------------
 
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 
 date
 export PS4='+ $SECONDS + '
@@ -190,7 +201,7 @@ export extrn_mdl_staging_dir="${DATA}/tmp_LBCS_${bcgrp}"
 export pgmout="${DATA}/tmp_LBCS_${bcgrp}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_make_lbcs.sh \
+${HOMErrfs}/scripts/exrrfs_make_lbcs.sh \
   extrn_mdl_lbc_spec_fhrs="${extrn_mdl_lbc_spec_fhrs_str}" \
   extrn_mdl_fns_on_disk="${extrn_mdl_fns_on_disk_str}" \
   extrn_mdl_fns_on_disk2="${extrn_mdl_fns_on_disk_str2}"

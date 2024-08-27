@@ -5,11 +5,22 @@
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
+# Specify Execution Areas
+#-----------------------------------------------------------------------
+
+export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
+export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
+export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
+export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
+
+export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
+
+#-----------------------------------------------------------------------
 # Source the variable definitions file and the bash utility functions.
 #-----------------------------------------------------------------------
 
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 
 date
 export PS4='+ $SECONDS + '
@@ -67,7 +78,7 @@ mkdir -p "${SFC_CLIMO_DIR}"
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-${SCRIPTSdir}/exrrfs_make_sfc_climo.sh
+${HOMErrfs}/scripts/exrrfs_make_sfc_climo.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -42,8 +42,8 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that recenters ensemble analysis with FV3 for the
-specified cycle.
+This is the ex-script for the task that recenters ensemble analysis with
+RRFS for the specified cycle.
 ========================================================================"
 #
 # Set environment
@@ -210,7 +210,7 @@ EOF
 echo pwd is `pwd`
 export pgm="ens_mean_recenter_P2DIO.exe"
 
-${APRUN} ${EXECdir}/$pgm < namelist.ens >>$pgmout 2>errfile
+${APRUN} ${EXECrrfs}/$pgm < namelist.ens >>$pgmout 2>errfile
 export err=$?; err_chk
 #
 #-----------------------------------------------------------------------

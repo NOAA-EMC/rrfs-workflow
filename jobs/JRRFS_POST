@@ -5,11 +5,23 @@
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
+# Specify Execution Areas
+#-----------------------------------------------------------------------
+
+export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
+export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
+export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
+export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
+
+export FIX_UPP=${FIXrrfs}/upp
+export FIX_UPP_CRTM=${CRTM_FIX}		# CRTM_FIX is from CRTM module
+
+#-----------------------------------------------------------------------
 # Source the variable definitions file and the bash utility functions.
 #-----------------------------------------------------------------------
 
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHdir/source_util_funcs.sh
+. $USHrrfs/source_util_funcs.sh
 
 date
 export PS4='+ $SECONDS + '
@@ -92,7 +104,7 @@ mkdir -p "${COMOUT}"
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_post.sh
+${HOMErrfs}/scripts/exrrfs_post.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then
