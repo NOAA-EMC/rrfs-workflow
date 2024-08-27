@@ -1,4 +1,5 @@
 #!/bin/bash
+set -ex
        
 #     
 #-----------------------------------------------------------------------
@@ -45,7 +46,7 @@ ifhrmn=${ifhr}${ifmn}
 ##########################################################
 ##== Start to generate customerized data ====
 
-if [ ${ifmn} -eq  ""]; then    # exact hour, hourly (eg. f012)
+if [ $((${ifmn#0})) -eq 0 ]; then    # exact hour, hourly (eg. f012)
 
   #-- fcst string in wgrib2 inv file. Set to "" for all ins & ave
   fcstvar1="${ifhr} hour fcst"

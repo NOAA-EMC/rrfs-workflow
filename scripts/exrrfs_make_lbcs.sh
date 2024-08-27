@@ -230,7 +230,7 @@ elif [ ${extrn_mdl_name} = GEFS ] ; then
       #
       cpreq -p ${fps} ${extrn_mdl_staging_dir}/${fps_name}
       if [ -f "$fps2" ]; then
-        more ${fps2} >>  ${extrn_mdl_staging_dir}/${fps_name}
+        cat ${fps2} >>  ${extrn_mdl_staging_dir}/${fps_name}
       fi
 
       print_info_msg "
@@ -644,9 +644,9 @@ $settings"
   lbc_spec_fhrs=( "${EXTRN_MDL_LBC_SPEC_FHRS[$i]}" ) 
   fcst_hhh=$(( ${lbc_spec_fhrs} - ${EXTRN_MDL_LBCS_OFFSET_HRS} ))
   fcst_hhh_FV3LAM=`printf %3.3i $fcst_hhh`
-  mv gfs.bndy.nc ${DATA}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc
 # copy results to nwges for longer time disk storage.
-  cp ${DATA}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc ${NWGES_DIR}/.
+  mv gfs.bndy.nc ${lbcs_nwges_dir}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc
+  ln -s ${lbcs_nwges_dir}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc ${lbcs_dir}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc
 
   fi
 done
