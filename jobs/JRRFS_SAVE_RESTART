@@ -8,7 +8,6 @@
 # Specify Execution Areas
 #-----------------------------------------------------------------------
 
-#export HOMErrfs=${HOMErrfs:-${PACKAGEROOT}/${NET}.${rrfs_ver}}
 export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}

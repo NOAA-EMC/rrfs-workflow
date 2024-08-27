@@ -8,14 +8,13 @@
 # Specify Execution Areas
 #-----------------------------------------------------------------------
 
-#export HOMErrfs=${HOMErrfs:-${PACKAGEROOT}/${NET}.${rrfs_ver}}
 export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 
 # Fire weather nest location from NAM
-export COMnam=${COMnam:-$(compath.py nam/${nam_ver})}
+export COMINnam=${COMINnam:-$(compath.py nam/${nam_ver})}
 
 #-----------------------------------------------------------------------
 # Source the variable definitions file and the bash utility functions.

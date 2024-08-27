@@ -89,7 +89,7 @@ APRUN="time"
 #
 if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
   hh="${CDATE:8:2}"
-  firewx_loc="${COMnam}/input/nam_firewx_loc"
+  firewx_loc="${COMINnam}/input/nam_firewx_loc"
   center_lat=${LAT_CTR}
   center_lon=${LON_CTR}
   LAT_CTR=`grep ${hh}z $firewx_loc | awk '{print $2}'`
