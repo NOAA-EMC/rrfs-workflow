@@ -60,7 +60,6 @@ the specified cycle.
 #-----------------------------------------------------------------------
 
 export pid=${pid:-$$}
-export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
 if [ "${CYCLE_TYPE}" = "spinup" ]; then

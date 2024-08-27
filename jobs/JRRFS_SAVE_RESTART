@@ -57,7 +57,6 @@ This is the J-job script for the task that saves restart files to nwges.
 #-----------------------------------------------------------------------
 
 export pid=${pid:-$$}
-export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")

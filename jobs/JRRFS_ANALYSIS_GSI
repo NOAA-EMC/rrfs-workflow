@@ -61,7 +61,6 @@ for the specified cycle.
 #-----------------------------------------------------------------------
 
 export pid=${pid:-$$}
-export envir=${envir:-prod}
 export RUN=${RUN:-rrfs}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
