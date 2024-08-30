@@ -13,6 +13,7 @@ export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 
+export FIXam=${FIXam:-${FIXrrfs}/am}
 export FIX_GSI=${FIXrrfs}/gsi
 export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
 

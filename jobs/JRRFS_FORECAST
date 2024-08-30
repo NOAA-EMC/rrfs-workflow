@@ -13,6 +13,7 @@ export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 
+export FIXam=${FIXam:-${FIXrrfs}/am}
 export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
 export FIX_SMOKE_DUST=${FIXrrfs}/smoke_dust
 

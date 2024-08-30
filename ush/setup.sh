@@ -812,7 +812,6 @@ LIB64dir="$HOMErrfs/sorc/build/lib64"
 
 FIXgsm=${FIXgsm:-"$HOMErrfs/fix/am"}
 FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"$HOMErrfs/fix/lam"}
-FIXprdgen=${FIXprdgen:-"$HOMErrfs/fix/prdgen"}
 AIRCRAFT_REJECT=${AIRCRAFT_REJECT:-"${FIXrrfs/gsi}"}
 SFCOBS_USELIST=${SFCOBS_USELIST:-"${FIXrrfs/gsi}"}
 
@@ -2392,7 +2391,6 @@ LIB64dir="$LIB64dir"
 FIXam="$FIXam"
 FIXLAM="$FIXLAM"
 FIXgsm="$FIXgsm"
-FIXprdgen="$FIXprdgen"
 COMROOT="$COMROOT"
 GESROOT="${GESROOT}"
 UFS_WTHR_MDL_DIR="${UFS_WTHR_MDL_DIR}"
