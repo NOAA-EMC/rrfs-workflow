@@ -564,7 +564,7 @@ if [ ${HH} -eq ${SST_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
      echo "WARNING: No SST update at ${HH}!!!!"
    fi
    if [ -r "latest.SST" ]; then
-     cpreq -p ${FIXgsm}/RTG_SST_landmask.dat              RTG_SST_landmask.dat
+     cpreq -p ${FIXam}/RTG_SST_landmask.dat               RTG_SST_landmask.dat
      ln -sf ./latest.SST                                  SSTRTG
      cpreq -p ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_akbk     fv3_akbk
 

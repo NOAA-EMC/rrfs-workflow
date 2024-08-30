@@ -14,6 +14,7 @@ export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 
 export FIX_UPP=${FIXrrfs}/upp
+export FIXprdgen=${FIXrrfs}/prdgen
 
 #-----------------------------------------------------------------------
 # Source the variable definitions file and the bash utility functions.
