@@ -5,6 +5,8 @@ agent_dir="${util_dir}/../fix/.agent"
 source ${util_dir}/detect_machine.sh 
 
 case ${MACHINE} in
+  wcoss2)
+    FIX_RRFS_LOCATION=/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS2
   hera)
     FIX_RRFS_LOCATION=/scratch2/BMC/rtrr/FIX_RRFS2
     ;;
