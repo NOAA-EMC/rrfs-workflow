@@ -39,7 +39,7 @@ Users don't set `EXPDIR` directly. `setup_exp.py` will set it automatically foll
 `setup_exp.py` will smartly computes CYCLEDEFS based on the `REALTIME`, `REALTIME_DAYS`, `RETRO_PERIOD` settings.  
 `RETRO_CYCLETHROTTLE` and `RETRO_TASKTHROTTLE` can be modified as needed.
 
-Refer to [this guide](https://github.com/rrfsx/rrfs-workflow/wiki/deploy-a-Jet-realtime-run-in-Jet) for setting up realtime runs. Note: realtime runs under role accounts should be coordinated with the POC of each realtime run.
+Refer to [this guide](https://github.com/NOAA-EMC/rrfs-workflow/wiki/deploy-a-realtime-run-in-Jet) for setting up realtime runs. Note: realtime runs under role accounts should be coordinated with the POC of each realtime run.
 
 ### 2.2 setup_exp.py
 ```
@@ -50,7 +50,7 @@ This Python script creates an experiment directory (i.e. `EXPDIR`), writes out a
        
 Users usually need to set up `ACCOUT`, `QUEUE`, `PARTITION`, or `RESERVATION` by modifying `parm/config/resources/config.${machine}` or you may export those variables in the current environment before running setp_exp.py, or export those variables in `exp.setup`.  
     
-The workflow uses a cascade config structure to separate concerns so that a task/job/application/function_group only defines relevant environmental variables required in runtime. Refer to [this guide](https://github.com/rrfsx/rrfs-workflow/wiki/The-cascade-config-structure) for more information.
+The workflow uses a cascade config structure to separate concerns so that a task/job/application/function_group only defines relevant environmental variables required in runtime. Refer to [this guide](https://github.com/NOAA-EMC/rrfs-workflow/wiki/The-cascade-config-structure) for more information.
 
 ### 2.3 run and monitor experiments using rocoto commands
 
