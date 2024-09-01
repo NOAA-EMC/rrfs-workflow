@@ -52,7 +52,7 @@ if [[ "${MACHINE}" == "UNKNOWN" ]]; then
   elif [[ -d /lfs/h1 && ! -d /lfs/h3 ]]; then
     # We are on NOAA TDS Acorn
     MACHINE=acorn
-  elif [[ -d /mnt/lfs1 ]]; then
+  elif [[ -d /mnt/lfs5 ]]; then
     # We are on NOAA Jet
     MACHINE=jet
   elif [[ -d /scratch1 ]]; then
