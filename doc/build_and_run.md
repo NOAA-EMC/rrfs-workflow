@@ -30,7 +30,7 @@ More RDAS executables can be found at `sorc/RDASApp/build/bin`.
 ```
 cd rocoto
 cp ../parm/config/exp/exp.setup .
-vi exp.setup
+vi exp.setup # modify accordingly, such as OPSROOT
 ```
 In retro runs, for simplicity, `OPSROOT` provides a top directory for `COMROOT`, `DATAROOT` and `EXP_BASEDIR`. But this is NOT a must and you may set them separately without a shared top directory.
     

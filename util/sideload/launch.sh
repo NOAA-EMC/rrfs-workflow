@@ -3,7 +3,9 @@
 # This script will NOT be needed by NCO
 #
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]${id}: '
+set -x
 #
+source ${EXPDIR}/exp.setup
 # tweaks for non-NCO runs
 COMMAND=$1  #get the J-JOB name
 task_id=${COMMAND#*_} # remove the "JRRFS_" part
@@ -26,7 +28,6 @@ export COMINrrfs="${COMROOT}/${NET}/${rrfs_ver}" # we may need to use data from 
 export NTASKS=${SLURM_NTASKS}
 #
 echo "load rrfs-workflow modules by default"
-source ${EXPDIR}/exp.setup
 set +x # supress messy output in the module load process
 source /etc/profile
 module use ${HOMErrfs}/modulefiles
@@ -49,7 +50,7 @@ case ${task_id} in
     ;;
   *)
     module purge
-    module load build/${MACHINE}.intel
+    module load rrfs/${MACHINE}.intel
     module load prod_util/${MACHINE}
     ;;
 esac

@@ -31,12 +31,16 @@ if [[ "${prefix}" == "GFS" ]]; then
   fstr=$(printf %03d ${FHRin})
   filea=${COMINgfs}/gfs.${CDATEin:0:8}/${CDATEin:8:2}/gfs.t${CDATEin:8:2}z.pgrb2.0p25.f${fstr}
   fileb=${COMINgfs}/gfs.${CDATEin:0:8}/${CDATEin:8:2}/gfs.t${CDATEin:8:2}z.pgrb2b.0p25.f${fstr}
+  ls -lth ${filea} ${fileb}
   cat ${filea} ${fileb} > GRIBFILE.AAA
+
 elif [[ "${prefix}" == "GEFS" ]]; then
   fstr=$(printf %03d ${FHRin})
   filea=${COMINgefs}/gefs.${CDATEin:0:8}/${CDATEin:8:2}/pgrb2ap5/gep${ENS_INDEX:1}.t${CDATEin:8:2}z.pgrb2a.0p50.f${fstr}
   fileb=${COMINgefs}/gefs.${CDATEin:0:8}/${CDATEin:8:2}/pgrb2bp5/gep${ENS_INDEX:1}.t${CDATEin:8:2}z.pgrb2b.0p50.f${fstr}
+  ls -lth ${filea} ${fileb}
   cat ${filea} ${fileb} > GRIBFILE.AAA
+
 elif [[ "${prefix}" == "RAP" ]]; then
   fstr=$(printf %02d ${FHRin})
   GRIBFILE=${COMINrap}/rap.${CDATEin:0:8}/rap.t${CDATEin:8:2}z.wrfnatf${fstr}.grib2

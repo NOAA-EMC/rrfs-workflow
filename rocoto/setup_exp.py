@@ -14,7 +14,7 @@ else:
 
 # find the HOMErrfs directory
 HOMErrfs=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-os.system(f'{HOMErrfs}/ush/init.sh')
+os.system(f'{HOMErrfs}/util/init.sh')
 #
 if os.path.exists(EXPin):
   source(EXPin)
@@ -49,7 +49,7 @@ else:
   os.makedirs(expdir)
 
 # copy the config file, excluding the resources subdirectory
-configdir=f'{HOMErrfs}/workflow/config'
+configdir=f'{HOMErrfs}/parm/config'
 exp_configdir=f'{expdir}/config'
 if os.path.exists(exp_configdir):
   if os.path.isfile(exp_configdir):
@@ -61,7 +61,7 @@ for cfile in glob.glob(f'{configdir}/config.*'):
   shutil.copy(cfile,exp_configdir)
 
 # generate exp.setup under $expdir
-source(f'{HOMErrfs}/ush/detect_machine.sh')
+source(f'{HOMErrfs}/util/detect_machine.sh')
 machine=os.getenv('MACHINE')
 if machine=='UNKNOWN':
     print(f'WARNING: machine is UNKNOWN! ')

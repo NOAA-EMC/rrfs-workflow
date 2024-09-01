@@ -189,7 +189,7 @@ def xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv={},dependencies="",metat
   if command_id == "":
     command_id=meta_id
   dcTaskRes={
-    'command': f'{HOMErrfs}/jobs/rocoto/launch.sh JRRFS_'+f'{command_id}'.upper(),
+    'command': f'{HOMErrfs}/util/sideload/launch.sh JRRFS_'+f'{command_id}'.upper(),
     'join': f'{COMROOT}/{NET}/{VERSION}/logs/{RUN}.@Y@m@d/@H/{task_id}_{TAG}_@Y@m@d@H.log',
     'jobname': f'{TAG}_{task_id}_c@H',
     'account': get_cascade_env(f'ACCOUNT_{task_id}'.upper()),

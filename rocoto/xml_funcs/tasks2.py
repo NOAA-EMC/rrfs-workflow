@@ -7,7 +7,7 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={
     'FHR': '000',
-    'TYPE': 'IC'
+    'TYPE': 'ic'
   }
   #
   if not do_ensemble:
@@ -78,7 +78,7 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={
     'FHR': '#fhr#',
-    'TYPE': 'LBC',
+    'TYPE': 'lbc',
   }
   if not do_ensemble:
     meta_id='ungrib_lbc'
