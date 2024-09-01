@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# resource settings: ACCOUNT, QUEUE, PARTITION, RESERVATION, NODES, WALLTIME, NATIVE, MEMORY
+# VAR cascade: if A_B_C_D is NOT defined, check A_B_C, then A_B, repeat until A is defined or empty
+#  (if you don't use a specific task, those variables will not take any impact)
+#
+export NODES=${NODES:-"<nodes>1:ppn=1</nodes>"} #the NODES variable has to include the tag <nodes> or <cores>
+export WALLTIME=${WALLTIME:-"00:30:00"}
+export NATIVE=${NATIVE:-""}
+export MEMORY=${MEMORY:-""}
+export MAXTRIES=${MAXTRIES:-"3"}
+
+# ioda_bufr
+export NODES_IODA_BUFR=${NODES_IODA_BUFR:-"<nodes>1:ppn=1</nodes>"}
+
+# ic
+export NODES_IC=${NODES_IC:-"<nodes>1:ppn=40</nodes>"}
+
+# lbc
+export NODES_LBC=${NODES_LBC:-"<nodes>1:ppn=40</nodes>"}
+
+# da
+export NODES_DA=${NODES_DA:-"<nodes>1:ppn=40</nodes>"}
+
+# fcst
+export NODES_FCST=${NODES_FCST:-"<nodes>3:ppn=40</nodes>"}
+export WALLTIME_FCST=${WALLTIME_FCST:-"00:50:00"}
+
+# mpassit
+export NODES_MPASSIT=${NODES_MPASSIT:-"<nodes>2:ppn=40</nodes>"}
+export WALLTIME_MPASSIT=${WALLTIME_MPASSIT:-"00:50:00"}
+
+# upp
+export NODES_UPP=${NODES_UPP:-"<nodes>2:ppn=40</nodes>"}
+export WALLTIME_UPP=${WALLTIME_UPP:-"00:50:00"}
+export NATIVE_UPP=${NATIVE_UPP:-"--exclusive"}
+
+# graphics
+export NODES_GRAPHICS="<nodes>1:ppn=20</nodes>"
+export WALLTIME_GRAPHICS="04:00:00"
+export NATIVE_GRAPHICS="--exclusive"
+
+# clean
+export ACCOUNT_CLEAN=${ACCOUNT2:-$ACCOUNT}
+export QUEUE_CLEAN=${QUEUE2:-$QUEUE}
+export PARTITION_CLEAN=${PARTITION2:-$PATITION}
+export RESERVATION_CLEAN=""
+export NODES_CLEAN="<cores>1</cores>"
+# dummy
+export NODES_DUMMY="<cores>1</cores>"
