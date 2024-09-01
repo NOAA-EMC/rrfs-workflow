@@ -5,15 +5,15 @@
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]${id}: '
 #
 # tweaks for non-NCO runs
-COMMAND=$1  #get the JJOB name
-task_id=${COMMAND#*_}
+COMMAND=$1  #get the J-JOB name
+task_id=${COMMAND#*_} # remove the "JRRFS_" part
 export task_id=${task_id,,} #to lower case
 export rrfs_ver=${VERSION}
 if [[ -z "${ENS_INDEX}" ]] && [[ ! "${task_id}" == "ens_da"   ]]; then
   export RUN='rrfs'
   export DATA=${DATAROOT}/${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/${task_id}
-else
-  export RUN='ens'
+else # ensrrfs
+  export RUN='ensrrfs'
   if [[ "${task_id}" == "ens_da"  ]]; then
     export DATA=${DATAROOT}/${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/${task_id}
   else
@@ -59,7 +59,7 @@ set -x
 # run J-job or sideload non-NCO tasks
 case ${task_id} in
   clean|graphics|dummy)
-    ${HOMErrfs}/jobs/rocoto/${task_id}.sh
+    ${HOMErrfs}/rocoto/sideload/${task_id}.sh
     ;;
   *)
     ${HOMErrfs}/jobs/${COMMAND}
