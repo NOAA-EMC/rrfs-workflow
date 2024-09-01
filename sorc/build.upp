@@ -4,9 +4,8 @@ date
 rundir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 HOMErrfs="$(dirname "$rundir")"
 
-source ${HOMErrfs}/ush/detect_machine.sh
-source ${HOMErrfs}/ush/fix_rrfs_locations.sh
-source ${HOMErrfs}/ush/init.sh
+source ${HOMErrfs}/util/detect_machine.sh
+source ${HOMErrfs}/util/init.sh
 
 EXEC="${HOMErrfs}/sorc/UPP/exec/upp.x"
 

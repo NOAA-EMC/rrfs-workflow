@@ -4,9 +4,8 @@ date
 rundir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 HOMErrfs="$(dirname "$rundir")"
 
-source ${HOMErrfs}/ush/detect_machine.sh
-source ${HOMErrfs}/ush/fix_rrfs_locations.sh
-source ${HOMErrfs}/ush/init.sh
+source ${HOMErrfs}/util/detect_machine.sh
+source ${HOMErrfs}/util/init.sh
 
 EXEC="${HOMErrfs}/sorc/MPAS-Model/init_atmosphere_model"
 EXEC2="${HOMErrfs}/sorc/MPAS-Model/atmosphere_model"
@@ -21,7 +20,7 @@ fi
 
 module purge                      
 module use ${HOMErrfs}/modulefiles
-module load build/${MACHINE}.intel
+module load rrfs/${MACHINE}.intel
 module list
 
 cd ${HOMErrfs}/sorc/MPAS-Model
