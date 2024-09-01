@@ -59,7 +59,7 @@ set -x
 # run J-job or sideload non-NCO tasks
 case ${task_id} in
   clean|graphics|dummy)
-    ${HOMErrfs}/rocoto/sideload/${task_id}.sh
+    ${HOMErrfs}/util/sideload/${task_id}.sh
     ;;
   *)
     ${HOMErrfs}/jobs/${COMMAND}
