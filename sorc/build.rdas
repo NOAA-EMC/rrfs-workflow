@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -x
+date
+rundir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+HOMErrfs="$(dirname "$rundir")"
+
+source ${HOMErrfs}/ush/detect_machine.sh
+source ${HOMErrfs}/ush/fix_rrfs_locations.sh
+source ${HOMErrfs}/ush/init.sh
+
+EXEC="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_variational.x"
+EXEC2="${HOMErrfs}/sorc/RDASApp/build/bin/bufr2ioda.x"
+cd ${HOMErrfs}/sorc/RDASApp
+rm -rf build/
+./build.sh -m MPAS --notestdata
+
+mkdir -p ${HOMErrfs}/exec
+echo "copy ${EXEC} to ../exec/mpasjedi_variational.x"
+ln -snf ${EXEC} ${HOMErrfs}/exec/mpasjedi_variational.x
+
+echo "copy ${EXEC2} to ../exec/bufr2ioda.x"
+ln -snf ${EXEC2} ${HOMErrfs}/exec/bufr2ioda.x
+exit 0

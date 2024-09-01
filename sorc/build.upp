@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -x
+date
+rundir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+HOMErrfs="$(dirname "$rundir")"
+
+source ${HOMErrfs}/ush/detect_machine.sh
+source ${HOMErrfs}/ush/fix_rrfs_locations.sh
+source ${HOMErrfs}/ush/init.sh
+
+EXEC="${HOMErrfs}/sorc/UPP/exec/upp.x"
+
+rm -rf ${HOMErrfs}/sorc/UPP/tests/build
+rm -rf ${HOMErrfs}/sorc/UPP/tests/install
+rm -rf ${EXEC}
+
+cd ${HOMErrfs}/sorc/UPP/tests
+./compile_upp.sh
+
+mkdir -p ${HOMErrfs}/exec
+echo "copy ${EXEC} to ../exec/upp.x"
+ln -snf ${EXEC} ${HOMErrfs}/exec/upp.x
+
+exit 0
