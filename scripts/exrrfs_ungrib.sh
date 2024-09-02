@@ -105,6 +105,11 @@ outfile="${prefix}:$(date -d "${CDATEout:0:8} ${CDATEout:8:2}" +%Y-%m-%d_%H)"
 if [[ -s ${outfile} ]]; then
   if [[ -z "${ENS_INDEX}" ]]; then
     ${cpreq} ${DATA}/${outfile} ${COMOUT}/${task_id}_${TYPE}/
+    if [[ "${TYPE}" == "lbc" ]] && [[ ! -d ${COMOUT}/${task_id}_ic  ]]; then
+    # lbc tasks need init.nc, don't know why it is so but we have to leave with this for a while
+    # link ungrib_lbc to ungrib_ic so that ic tasks can run and generate init.nc
+      ln -snf ${COMOUT}/${task_id}_lbc ${COMOUT}/${task_id}_ic
+    fi
   else
     ${cpreq} ${DATA}/${outfile} ${COMOUT}/mem${ENS_INDEX}/${task_id}_${TYPE}/
   fi

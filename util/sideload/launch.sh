@@ -14,6 +14,9 @@ export rrfs_ver=${VERSION}
 if [[ -z "${ENS_INDEX}" ]] && [[ ! "${task_id}" == "ens_da"   ]]; then
   export RUN='rrfs'
   export DATA=${DATAROOT}/${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/${task_id}
+  if [[ "${task_id}" == "ungrib"  ]]; then
+    export DATA=${DATAROOT}/${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/${task_id}_${TYPE}
+  fi
 else # ensrrfs
   export RUN='ensrrfs'
   if [[ "${task_id}" == "ens_da"  ]]; then
