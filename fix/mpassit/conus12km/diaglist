@@ -1,0 +1,12 @@
+rainc                    RAINC
+rainnc                   RAINNC
+refl10cm_max             COMPOSITE_REFL_10CM
+refl10cm_1km             REFL_10CM_1KM
+refl10cm_1km_max         REFD_MAX
+u10                      U10
+v10                      V10
+q2                       Q2
+t2m                      T2
+th2m                     TH2
+updraft_helicity_max     UP_HELI_MAX
+w_velocity_max           W_UP_MAX

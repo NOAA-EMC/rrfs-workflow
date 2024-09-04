@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -x
+date
+rundir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+HOMErrfs="$(dirname "$rundir")"
+
+source ${HOMErrfs}/ush/detect_machine.sh
+source ${HOMErrfs}/ush/fix_rrfs_locations.sh
+source ${HOMErrfs}/ush/init.sh
+
+EXEC="${HOMErrfs}/sorc/MPASSIT/bin/mpassit"
+
+rm -rf ${HOMErrfs}/sorc/MPASSIT/build
+rm -rf ${HOMErrfs}/sorc/MPASSIT/bin
+
+cd ${HOMErrfs}/sorc/MPASSIT
+./build.sh
+
+mkdir -p ${HOMErrfs}/exec
+echo "copy ${EXEC} to ../exec/mpassit.x"
+ln -snf ${EXEC} ${HOMErrfs}/exec/mpassit.x
+
+exit 0

@@ -1,0 +1,25 @@
+[submodule "sorc/WPS"]
+	path = sorc/WPS
+	url = https://github.com/wrf-model/WPS
+        branch = master
+        ignore = all
+[submodule "sorc/MPAS-Model"]
+	path = sorc/MPAS-Model
+	url = https://github.com/MPAS-Dev/MPAS-Model
+        branch = master
+        ignore = all
+[submodule "sorc/RDASApp"]
+	path = sorc/RDASApp
+	url = https://github.com/NOAA-EMC/RDASApp
+        branch = develop
+        ignore = all
+[submodule "sorc/UPP"]
+	path = sorc/UPP
+	url = https://github.com/NOAA-EMC/UPP
+        branch = develop
+        ignore = all
+[submodule "sorc/MPASSIT"]
+	path = sorc/MPASSIT
+	url = https://github.com/rrfsx/MPASSIT
+        branch = develop
+        ignore = all

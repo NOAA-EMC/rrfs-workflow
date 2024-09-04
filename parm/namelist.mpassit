@@ -1,0 +1,20 @@
+&config
+    grid_file_input_grid = "mpassit.init.nc"
+    hist_file_input_grid = "history.@timestr@.nc"
+    diag_file_input_grid = "diag.@timestr@.nc"
+    output_file          = "mpassit.@timestr2@.nc"
+    target_grid_type     = 'lambert'
+    interp_diag          = .true.
+    interp_hist          = .true.
+    wrf_mod_vars         = .true.
+    esmf_log             = .false.
+    nx = @nx@
+    ny = @ny@
+    dx = @dx@
+    dy = @dx@
+    ref_lat = @ref_lat@
+    ref_lon = -97.5
+    truelat1 = @ref_lat@
+    truelat2 = @ref_lat@
+    stand_lon = -97.5
+/

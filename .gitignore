@@ -2,13 +2,7 @@ exec/
 fix/.agent
 fix/tmp
 fix/INIT_DONE
-python_graphics/
-sorc/*/
-!sorc/manage_externals/
-ush/config.sh
-ush/*.swp
-ush/__pycache__/
-ush/python_utils/__pycache__/
-
-__pycache__
 *.swp
+__pycache__
+log*
+rocoto/exp*

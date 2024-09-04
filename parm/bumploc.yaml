@@ -1,0 +1,40 @@
+_output config: &outputConfig
+  date: &validDate '2024-05-27T00:00:00Z'
+  stream name: control
+geometry:
+  nml_file: "./namelist.atmosphere"
+  streams_file: "./streams.atmosphere"
+  deallocate non-da fields: true
+  bump vunit: "modellevel" # modellevel, height
+background:
+  state variables: &vars [spechum,surface_pressure,temperature,uReconstructMeridional,uReconstructZonal]
+  filename: "./data/restart.2024-05-27_00.00.00.nc"
+  date: *validDate
+
+background error:
+  covariance model: SABER
+
+  saber central block:
+    saber block name: BUMP_NICAS
+    calibration:
+      io:
+        files prefix: bumploc_401km11levels
+
+      drivers:
+        multivariate strategy: duplicated
+        compute nicas: true
+        write local nicas: true
+        #write nicas grids: true
+        internal dirac test: false 
+      model:
+        level for 2d variables: last
+      nicas:
+        resolution: 8.0
+        explicit length-scales: true
+        horizontal length-scale:
+          - groups: [common]
+            value: 401.0e3
+        vertical length-scale:
+          - groups: [common]
+            value: 11
+
