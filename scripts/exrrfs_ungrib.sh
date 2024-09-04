@@ -66,7 +66,7 @@ else
 fi
 sed -e "s/@start_time@/${start_time}/" -e "s/@end_time@/${end_time}/" \
     -e "s/@interval_seconds@/${interval_seconds}/" -e "s/@prefix@/${prefix}/" \
-    -e "s/@dx@/${dx}/" -e "s/@dy@/${dy}/" ${PARMrrfs}/rrfs/namelist.wps > namelist.wps
+    -e "s/@dx@/${dx}/" -e "s/@dy@/${dy}/" ${PARMrrfs}/namelist.wps > namelist.wps
 
 # run ungrib
 source prep_step
