@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 #
 import os, sys, stat
-from xml_funcs.base import header_begin, header_entities, header_end, source, \
+from rocoto_funcs.base import header_begin, header_entities, header_end, source, \
   wflow_begin, wflow_log, wflow_cycledefs, wflow_end
-from xml_funcs.smart_cycledefs import smart_cycledefs
-from xml_funcs.tasks1 import ic, lbc, da, fcst, ens_da
-from xml_funcs.tasks2 import mpassit, upp, ungrib_lbc, ungrib_ic
-from xml_funcs.tasks3 import ioda_bufr
-from xml_funcs.tasksX import clean, graphics #archive
+from rocoto_funcs.smart_cycledefs import smart_cycledefs
+from rocoto_funcs.tasks1 import ic, lbc, da, fcst, ens_da
+from rocoto_funcs.tasks2 import mpassit, upp, ungrib_lbc, ungrib_ic
+from rocoto_funcs.tasks3 import ioda_bufr
+from rocoto_funcs.tasksX import clean, graphics #archive
 
 ### setup_xml
 def setup_xml(HOMErrfs, expdir):
