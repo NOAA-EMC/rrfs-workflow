@@ -6,10 +6,10 @@ cd ${HOMErrfs}/sorc
 
 echo "building all components, it may take more than one hour..."
 ./build.wps  &> ./log.build.wps  2>&1 &
-#./build.mpas &> ./log.build.mpas 2>&1 &
-#./build.rdas &> ./log.build.rdas 2>&1 &
-#./build.upp  &> ./log.build.upp  2>&1 &
-#./build.mpassit  &> ./log.build.mpassit  2>&1 &
+./build.mpas &> ./log.build.mpas 2>&1 &
+./build.rdas &> ./log.build.rdas 2>&1 &
+./build.upp  &> ./log.build.upp  2>&1 &
+./build.mpassit  &> ./log.build.mpassit  2>&1 &
 wait
 echo "check the exec/ directory ===="
 ls -lrth ../exec
