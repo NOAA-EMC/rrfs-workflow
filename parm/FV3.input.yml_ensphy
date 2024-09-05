@@ -18,6 +18,7 @@ rrfsens_phy1:
     n_var_spp: 4
     satmedmf: true
     shal_cnv: true
+    gf_coldstart: true
     conv_cf_opt: 1
     rrfs_sd :  
     rrfs_smoke_debug : 
@@ -136,6 +137,7 @@ rrfsens_phy4:
     nssl_invertccn: true
     satmedmf: true
     shal_cnv: true
+    gf_coldstart: true
     conv_cf_opt: 1
     rrfs_sd :
     rrfs_smoke_debug :
