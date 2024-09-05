@@ -24,7 +24,7 @@ yaml_list=(
 
 # run bufr2ioda.x
 for yaml in ${yaml_list[@]}; do
- sed -e "s/@referenceTime@/${REFERENCE_TIME}/" ${PARMrrfs}/rrfs/${yaml} > ${yaml}
+ sed -e "s/@referenceTime@/${REFERENCE_TIME}/" ${PARMrrfs}/${yaml} > ${yaml}
  source prep_step
  srun ./bufr2ioda.x ${yaml}
  # some data may not be available at all cycles, so we don't check whether bufr2ioda.x runs successfully

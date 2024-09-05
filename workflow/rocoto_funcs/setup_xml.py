@@ -22,10 +22,10 @@ def setup_xml(HOMErrfs, expdir):
   source(f"{expdir}/config/config.{machine}")
   source(f"{expdir}/config/config.base")
   #
-  source(f"{HOMErrfs}/rocoto/config_resources/config.{machine}")
-  source(f"{HOMErrfs}/rocoto/config_resources/config.base")
+  source(f"{HOMErrfs}/workflow/config_resources/config.{machine}")
+  source(f"{HOMErrfs}/workflow/config_resources/config.base")
   if os.getenv("REALTIME").upper() == "TRUE":
-    source(f"{HOMErrfs}/rocoto/config_resources/config.realtime")
+    source(f"{HOMErrfs}/workflow/config_resources/config.realtime")
   #
   # create cycledefs smartly
   realtime=os.getenv('REALTIME','false')
