@@ -5,4 +5,4 @@ fix/INIT_DONE
 *.swp
 __pycache__
 log*
-rocoto/exp*
+workflow/exp.*
