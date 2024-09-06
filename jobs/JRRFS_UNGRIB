@@ -42,7 +42,7 @@ fi
 # Execute the script.
 #----------------------------------------
 export pgmout="${DATA}/OUTPUT.${task_id}"
-$SCRIPTSrrfs/exrrfs_${task_id}.sh
+${HOMErrfs}/scripts/exrrfs_ungrib.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

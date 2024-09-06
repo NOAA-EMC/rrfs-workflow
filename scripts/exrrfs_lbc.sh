@@ -54,10 +54,13 @@ ${cpreq} ${FIXrrfs}/graphinfo/${NET}.graph.info.part.${NTASKS} .
 # run init_atmosphere_model
 source prep_step
 ${cpreq} ${EXECrrfs}/init_atmosphere_model.x .
-srun ./init_atmosphere_model.x
+${MPI_RUN_CMD} ./init_atmosphere_model.x
+export err=$?; err_chk
 ls ./lbc*.nc
-export err=$?
-err_chk
+if (( $? != 0 )); then
+  echo "FATAL ERROR: failed to generate lbc files"
+  err_exit
+fi
 
 # copy lbc*.nc to COMOUT
 ${cpreq} ${DATA}/lbc*.nc ${COMOUT}${ensindexstr}/${task_id}/

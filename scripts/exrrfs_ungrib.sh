@@ -72,6 +72,7 @@ sed -e "s/@start_time@/${start_time}/" -e "s/@end_time@/${end_time}/" \
 source prep_step
 ${cpreq} ${EXECrrfs}/ungrib.x .
 ./ungrib.x
+export err=$?; err_chk
 # check the status
 outfile="${prefix}:$(date -d "${CDATEout:0:8} ${CDATEout:8:2}" +%Y-%m-%d_%H)"
 if [[ -s ${outfile} ]]; then

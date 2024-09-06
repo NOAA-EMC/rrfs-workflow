@@ -65,7 +65,8 @@ ${cpreq} ${FIXrrfs}/graphinfo/${NET}.graph.info.part.${NTASKS} .
 # run init_atmosphere_model
 source prep_step
 ${cpreq} ${EXECrrfs}/init_atmosphere_model.x .
-srun ./init_atmosphere_model.x
+${MPI_RUN_CMD} ./init_atmosphere_model.x
+export err=$?; err_chk
 if [[ ! -s './init.nc' ]]; then
   echo "FATAL ERROR: failed to generate init.nc"
   err_exit
