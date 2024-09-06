@@ -139,6 +139,76 @@ FV3_HRRR_gf:
     sfclay_compute_flux: true
     thsfc_loc: false 
 
+RRFS_sas:
+  diag_manager_nml:
+    max_output_fields: 450
+  external_ic_nml:
+    levp: 66
+  fms_nml:
+    domains_stack_size: 12000000
+  fv_core_nml:
+    d_con: 0.5
+    d2_bg_k2: 0.04
+    dz_min: 2.0
+    hord_dp: 6
+    hord_mt: 6
+    hord_tm: 6
+    hord_tr: 8
+    hord_vt: 6
+    k_split: 2
+    kord_mt: 9
+    kord_tm: -9
+    kord_tr: 9
+    kord_wz: 9
+    n_split: 5
+    nord_tr: 0
+    npz: 65
+    nrows_blend: 10
+    psm_bc: 1
+    range_warn: False
+    regional_bcs_from_gsi: false
+    rf_cutoff: 2000.0
+    sg_cutoff: !!python/none
+    vtdm4: 0.02
+    write_restart_with_bcs: false
+  gfs_physics_nml: 
+    betadcu: 1.0
+    cdmbgwd: [3.5, 1.0]
+    diag_log: true
+    do_deep: true
+    do_gsl_drag_ls_bl: true
+    do_gsl_drag_ss: true
+    do_gsl_drag_tofd: true
+    do_mynnsfclay: true
+    effr_in: true
+    gwd_opt: 3
+    iaer: 5111
+    ialb: 2 
+    icliq_sw: 2
+    iems: 2 
+    imfdeepcnv: 2
+    imfshalcnv: -1
+    iopt_alb: 2
+    iopt_btr: 1
+    iopt_crs: 1
+    iopt_dveg: 2
+    iopt_frz: 1
+    iopt_inf: 1
+    iopt_rad: 1
+    iopt_run: 1
+    iopt_sfc: 1
+    iopt_snf: 4
+    iopt_stc: 1
+    iopt_tbot: 2
+    iopt_trs: 2
+    iovr: 3
+    lrefres: !!python/none
+    mosaic_lu: 0
+    mosaic_soil: 0
+    progsigma: true
+    sfclay_compute_flux: true
+    thsfc_loc: false
+
 FV3_RAP:
   diag_manager_nml:
     max_output_fields: 450
