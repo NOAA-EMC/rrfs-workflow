@@ -159,7 +159,7 @@ if (BUILD_UFS)
     if(CPL_AQM)
       set(CCPP_SUITES "FV3_GFS_v16")
     else()
-      set(CCPP_SUITES "FV3_HRRR,FV3_HRRR_gf,FV3_HRRR_gf_nogwd,FV3_RAP,FV3_GFS_v15_thompson_mynn_lam3km,FV3_RRFS_v1beta,FV3_GFS_v16,RRFSens_phy1,RRFSens_phy2,RRFSens_phy3,RRFSens_phy4,RRFSens_phy5")
+      set(CCPP_SUITES "FV3_HRRR,FV3_HRRR_gf,FV3_HRRR_gf_nogwd,FV3_RAP,FV3_GFS_v15_thompson_mynn_lam3km,FV3_RRFS_v1beta,FV3_GFS_v16,RRFSens_phy1,RRFSens_phy2,RRFSens_phy3,RRFSens_phy4,RRFSens_phy5,RRFS_sas,RRFS_sas_nogwd")
 
     endif()
   endif()

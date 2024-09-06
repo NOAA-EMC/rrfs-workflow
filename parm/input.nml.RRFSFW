@@ -136,6 +136,7 @@
 /
 
 &gfs_physics_nml
+    betadcu = 1.0
     bl_mynn_edmf = 1
     bl_mynn_edmf_mom = 1
     bl_mynn_tkeadvect = .true.
@@ -177,7 +178,7 @@
     icloud_bl = 1
     ico2 = 2
     iems = 2
-    imfdeepcnv = 3
+    imfdeepcnv = 2
     imfshalcnv = -1
     imp_physics = 8
     iopt_alb = 2
@@ -221,6 +222,7 @@
     pdfcld = .false.
     pre_rad = .false.
     print_diff_pgr = .true.
+    progsigma = .true.
     prslrd0 = 0.0
     random_clds = .false.
     redrag = .true.
