@@ -1,5 +1,5 @@
 
-from ush.python_utils.misc import uppercase, lowercase
+import ush.python_utils.misc
 
 class TestMisc:
 
