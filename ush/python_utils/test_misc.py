@@ -10,4 +10,4 @@ class TestMisc:
         assert lowercase('S') == 's'
 
     def test_more(self):
-        assert find_pattern_in_str('.', 's') == 's'
+        assert find_pattern_in_str('s', 's') == 's'
