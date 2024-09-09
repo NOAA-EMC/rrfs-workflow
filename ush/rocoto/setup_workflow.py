@@ -44,9 +44,9 @@ def main():
     _base = wfu.config_parser([wfu.find_config('config.base', configs)])
 
     if not os.path.samefile(args.expdir, _base['EXPDIR']):
-        print 'MISMATCH in experiment directories!'
-        print 'config.base: EXPDIR = %s' % repr(_base['EXPDIR'])
-        print 'input arg:     --expdir = %s' % repr(args.expdir)
+        print('MISMATCH in experiment directories!')
+        print('config.base: EXPDIR = %s' % repr(_base['EXPDIR']))
+        print('input arg:     --expdir = %s' % repr(args.expdir))
         sys.exit(1)
 
     gfs_steps = ['prep', 'anal', 'fcst', 'postsnd', 'post', 'awips', 'gempak', 'vrfy', 'arch']
@@ -99,10 +99,10 @@ def get_gfs_cyc_dates(base):
     sdate_gfs = sdate + timedelta(hours=hrinc)
     edate_gfs = edate - timedelta(hours=hrdet)
     if sdate_gfs > edate:
-        print 'W A R N I N G!'
-        print 'Starting date for GFS cycles is after Ending date of experiment'
-        print 'SDATE = %s,     EDATE = %s' % (sdate.strftime('%Y%m%d%H'), edate.strftime('%Y%m%d%H'))
-        print 'SDATE_GFS = %s, EDATE_GFS = %s' % (sdate_gfs.strftime('%Y%m%d%H'), edate_gfs.strftime('%Y%m%d%H'))
+        print('W A R N I N G!')
+        print('Starting date for GFS cycles is after Ending date of experiment')
+        print('SDATE = %s,     EDATE = %s' % (sdate.strftime('%Y%m%d%H'), edate.strftime('%Y%m%d%H')))
+        print('SDATE_GFS = %s, EDATE_GFS = %s' % (sdate_gfs.strftime('%Y%m%d%H'), edate_gfs.strftime('%Y%m%d%H')))
         gfs_cyc = 0
 
     base_out['gfs_cyc'] = gfs_cyc
