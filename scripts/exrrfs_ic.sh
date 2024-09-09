@@ -73,4 +73,4 @@ if [[ ! -s './init.nc' ]]; then
 fi
 
 # copy init.nc to COMOUT
-${cpreq} ${DATA}/init.nc ${COMOUT}${ensindexstr}/${task_id}/
+${cpreq} ${DATA}/init.nc ${COMOUT}${ensindexstr}/ic/

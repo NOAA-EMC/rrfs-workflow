@@ -32,7 +32,7 @@ done
 ls ./ioda*nc  
 if (( $? == 0 )); then
   # copy ioda*.nc to COMOUT
-  ${cpreq} ${DATA}/ioda*.nc ${COMOUT}/${task_id}/
+  ${cpreq} ${DATA}/ioda*.nc ${COMOUT}/ioda_bufr/
 else
   echo "WARNING: no ioda files generated."
 fi

@@ -63,4 +63,4 @@ if (( $? != 0 )); then
 fi
 
 # copy lbc*.nc to COMOUT
-${cpreq} ${DATA}/lbc*.nc ${COMOUT}${ensindexstr}/${task_id}/
+${cpreq} ${DATA}/lbc*.nc ${COMOUT}${ensindexstr}/ioda_bufr/
