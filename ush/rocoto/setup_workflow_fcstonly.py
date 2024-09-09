@@ -48,9 +48,9 @@ def main():
     _base = wfu.config_parser([wfu.find_config('config.base', configs)])
 
     if not os.path.samefile(args.expdir,_base['EXPDIR']):
-        print 'MISMATCH in experiment directories!'
-        print 'config.base: EXPDIR = %s' % repr(_base['EXPDIR'])
-        print 'input arg:     --expdir = %s' % repr(args.expdir)
+        print('MISMATCH in experiment directories!')
+        print('config.base: EXPDIR = %s' % repr(_base['EXPDIR']))
+        print('input arg:     --expdir = %s' % repr(args.expdir))
         sys.exit(1)
 
     dict_configs = wfu.source_configs(configs, taskplan)
@@ -108,7 +108,7 @@ def get_definitions(base):
     strings.append('\t<!ENTITY SDATE    "%s">\n' % base['SDATE'].strftime('%Y%m%d%H%M'))
     strings.append('\t<!ENTITY EDATE    "%s">\n' % base['EDATE'].strftime('%Y%m%d%H%M'))
     if base['INTERVAL'] is None:
-        print 'cycle INTERVAL cannot be None'
+        print('cycle INTERVAL cannot be None')
         sys.exit(1)
     strings.append('\t<!ENTITY INTERVAL "%s">\n' % base['INTERVAL'])
     strings.append('\n')
