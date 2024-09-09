@@ -38,5 +38,5 @@ jobs:
     - name: pytest
       run: |
         pwd
-        ls -l
+        ls -l /ush/python_utils
         pytest
