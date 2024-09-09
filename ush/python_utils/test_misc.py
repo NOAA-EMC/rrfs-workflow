@@ -7,4 +7,4 @@ class TestMisc:
         assert uppercase('s') == 'S'
 
     def test_lc(self):
-        assert lowercase('s') == 'S'
+        assert lowercase('S') == 's'
