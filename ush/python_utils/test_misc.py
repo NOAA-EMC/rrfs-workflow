@@ -1,2 +1,5 @@
-def test_uc():
-    assert 1 == 1
+
+class TestMisc:
+
+    def test_uc():
+        assert 1 == 1
