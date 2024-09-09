@@ -3,17 +3,15 @@ declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LI
 set -x
 date
 #
-export task_id=${task_id:-'ioda_bufr'}
-#
 # source the config cascade
 source ${EXPDIR}/exp.setup
 source ${EXPDIR}/config/config.${MACHINE}
 source ${EXPDIR}/config/config.base
-[[ -s ${EXPDIR}/config/config.${task_id} ]] && source ${EXPDIR}/config/config.${task_id}
+[[ -s ${EXPDIR}/config/config.ioda_bufr ]] && source ${EXPDIR}/config/config.ioda_bufr
 #
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
-export jobid=${jobid:-${RUN}_${task_id}_${cyc}}
+export jobid=${jobid:-${RUN}_ioda_bufr_${cyc}}
 
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 if [ -d ${DATA} ]; then #remove the ${DATA} directory before a new run
@@ -22,7 +20,7 @@ fi
 mkdir -p ${DATA}
 #
 export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-mkdir -p ${COMOUT}/${task_id}
+mkdir -p ${COMOUT}/ioda_bufr
 #
 #----------------------------------------
 # Execute the script.

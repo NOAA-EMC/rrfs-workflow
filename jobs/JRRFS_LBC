@@ -3,14 +3,12 @@ declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LI
 set -x
 date
 #
-export task_id=${task_id:-'lbc'}
-#
 # source the config cascade
 source ${EXPDIR}/exp.setup
 [[ ! -z "${ENS_INDEX}" ]] && source ${EXPDIR}/config/config.ens
 source ${EXPDIR}/config/config.${MACHINE}
 source ${EXPDIR}/config/config.base
-[[ -s ${EXPDIR}/config/config.${task_id} ]] && source ${EXPDIR}/config/config.${task_id}
+[[ -s ${EXPDIR}/config/config.lbc ]] && source ${EXPDIR}/config/config.lbc
 #
 export pid=${pid:-$$}
 if [[ -z "${ENS_INDEX}" ]]; then
@@ -18,7 +16,7 @@ if [[ -z "${ENS_INDEX}" ]]; then
 else
   export RUN="ensrrfs"
 fi
-export jobid=${jobid:-${RUN}_${task_id}_${cyc}}
+export jobid=${jobid:-${RUN}_lbc_${cyc}}
 
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 export DATA=${DATA}/${FHR:-"FHR_not_defined"}
@@ -31,9 +29,9 @@ export COMINgfs=${COMINgfs:-$(compath.py $envir/gfs/$gfs_ver)}
 export COMINrrfs=${COMINrrfs:-$(compath.py $envir/rrfs/$rrfs_ver)}
 export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
 if [[ -z "${ENS_INDEX}" ]]; then
-  mkdir -p ${COMOUT}/${task_id}
+  mkdir -p ${COMOUT}/lbc
 else
-  mkdir -p ${COMOUT}/mem${ENS_INDEX}/${task_id}
+  mkdir -p ${COMOUT}/mem${ENS_INDEX}/lbc
 fi
 #
 #----------------------------------------
