@@ -38,7 +38,7 @@ fi
 #----------------------------------------
 # Execute the script.
 #----------------------------------------
-export pgmout="${DATA}/OUTPUT.${task_id}"
+export pgmout="${DATA}/OUTPUT.$$"
 ${HOMErrfs}/scripts/exrrfs_ic.sh
 export err=$?; err_chk
 

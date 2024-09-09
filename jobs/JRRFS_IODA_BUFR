@@ -27,7 +27,7 @@ mkdir -p ${COMOUT}/${task_id}
 #----------------------------------------
 # Execute the script.
 #----------------------------------------
-export pgmout="${DATA}/OUTPUT.${task_id}"
+export pgmout="${DATA}/OUTPUT.$$"
 ${HOMErrfs}/scripts/exrrfs_ioda_bufr.sh
 export err=$?; err_chk
 
