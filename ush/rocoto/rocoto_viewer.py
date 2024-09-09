@@ -118,7 +118,7 @@ def sigwinch_handler(signum, frame):
 
 def usage(message=None):
     curses.endwin()
-    print>>sys.stderr, '''
+    print('''
 Usage: rocoto_status_viewer.py  -w workflow.xml -d database.db [--listtasks]\n                                                               [--html=filename.html]\n                                                               [--perfmetrics={True,False}]
 
 Mandatory arguments:
@@ -128,10 +128,10 @@ Optional arguments:
   --listtasks             --- print out a list of all tasks
   --html=filename.html    --- creates an HTML document of status
   --perfmetrics=True      --- turn on/off extra columns for performance metrics 
-  --help                  --- print this usage message'''
+  --help                  --- print this usage message''', file=sys.stderr)
 
     if message is not None:
-        print>>sys.stderr,'\n'+str(message).rstrip()+'\n'
+        print('\n'+str(message).rstrip()+'\n', file=sys.stderr)
     sys.exit(-1)
 
 def augment_SQLite3(filename):
