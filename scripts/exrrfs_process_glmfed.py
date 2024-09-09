@@ -29,6 +29,8 @@ def addmodelfed(restartpath):
   #                                                                      #
   ########################################################################
 
+  print "even the great Homer nods."
+
   # specify some variables used to convert graupel
   b = 15.75255713 # flashes/minute
   c = .193891366 # e-9 kg^-1
