@@ -1,5 +1,5 @@
 
-import ush.python_utils.misc
+from ush.python_utils.misc import *
 
 class TestMisc:
 
