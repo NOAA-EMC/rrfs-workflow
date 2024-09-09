@@ -5,3 +5,6 @@ class TestMisc:
 
     def test_uc(self):
         assert uppercase('s') == 'S'
+
+    def test_lc(self):
+        assert lowercase('s') == 'S'
