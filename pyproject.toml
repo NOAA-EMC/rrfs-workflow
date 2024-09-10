@@ -1,5 +1,5 @@
 [tool.pytest.ini_options]
 addopts = "-ra --cov"
-testpaths = ['.']
+testpaths = ['tests']
 pythonpath = ['.']
 
