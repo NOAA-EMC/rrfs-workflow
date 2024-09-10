@@ -12,4 +12,4 @@ class TestMisc:
     def test_more(self):
         print("howdy!\n")
         print(find_pattern_in_str('.', 's'))
-        assert !find_pattern_in_str('.', 's')
+        assert not find_pattern_in_str('.', 's')
