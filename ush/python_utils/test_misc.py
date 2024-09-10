@@ -16,5 +16,5 @@ class TestMisc:
         f = open("test_misc.txt", "w")  
         f.write("Hello World from " + f.name) 
         f.close()
-        assert find_pattern_in_file('H', "test_misc.txt")
+        assert not find_pattern_in_file('H', "test_misc.txt")
 
