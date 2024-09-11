@@ -37,8 +37,7 @@ fi
 # Remove the Temporary working directory
 #----------------------------------------
 cd ${DATAROOT}
-KEEPDATA_ioda_bufr=${KEEPDATA_ioda_bufr:-${KEEPDATA}}
-[[ "${KEEPDATA_ioda_bufr}" == "NO" ]] && rm -rf ${DATA}
+[[ "${KEEPDATA}" == "NO" ]] && rm -rf ${DATA}
 #
 date
 echo "JOB ${jobid:-} HAS COMPLETED NORMALLY!"

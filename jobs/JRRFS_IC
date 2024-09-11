@@ -48,8 +48,7 @@ fi
 # Remove the Temporary working directory
 #----------------------------------------
 cd ${DATAROOT}
-KEEPDATA_ic=${KEEPDATA_ic:-${KEEPDATA}}
-[[ "${KEEPDATA_ic}" == "NO" ]] && rm -rf ${DATA}
+[[ "${KEEPDATA}" == "NO" ]] && rm -rf ${DATA}
 #
 date
 echo "JOB ${jobid:-} HAS COMPLETED NORMALLY!"
