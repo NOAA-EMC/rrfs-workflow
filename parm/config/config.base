@@ -3,11 +3,11 @@
 export HOMErrfs=${HOMErrfs} #comes from the workflow at runtime
 export EXECrrfs="${HOMErrfs}/exec"
 export PARMrrfs="${HOMErrfs}/parm"
-export SCRIPTSrrfs="${HOMErrfs}/scripts"
 export USHrrfs="${HOMErrfs}/ush"
 export FIXrrfs="${HOMErrfs}/fix"
 #
 export KEEPDATA=${KEEPDATA:-"YES"}  #YES or NO
+export MPI_RUN_CMD=${MPI_RUN_CMD:-"srun"}
 #
 export PROD_BGN_AT_HRS=${PROD_BGN_AT_HRS:-"03 15"} # HRS to begin a new PROD cycle
 #

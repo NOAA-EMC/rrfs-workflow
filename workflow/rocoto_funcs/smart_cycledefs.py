@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 from datetime import datetime, timedelta
-from xml_funcs.base import source
+from rocoto_funcs.base import source
 0
 def smart_cycledefs(realtime,realtime_days,retro_period):
   if realtime.upper() == "TRUE":

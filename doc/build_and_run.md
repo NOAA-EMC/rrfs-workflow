@@ -29,26 +29,26 @@ More RDAS executables can be found at `sorc/RDASApp/build/bin`.
 ### 2.1. copy and modify exp.setup
 ```
 cd rocoto
-cp ../parm/config/exp/exp.setup .
+cp exp/exp.setup .
 vi exp.setup # modify accordingly, such as OPSROOT
 ```
 In retro runs, for simplicity, `OPSROOT` provides a top directory for `COMROOT`, `DATAROOT` and `EXP_BASEDIR`. But this is NOT a must and you may set them separately without a shared top directory.
     
-Users don't set `EXPDIR` directly. `setup_exp.py` will set it automatically following this rule: `EXP_BASEDIR/VERSION/EXP_NAME`.     
+Users don't set `EXPDIR` directly. `setup_rocoto.py` will set it automatically following this rule: `EXP_BASEDIR/VERSION/EXP_NAME`.     
    
-`setup_exp.py` will smartly computes CYCLEDEFS based on the `REALTIME`, `REALTIME_DAYS`, `RETRO_PERIOD` settings.  
+`setup_rocoto.py` will smartly computes CYCLEDEFS based on the `REALTIME`, `REALTIME_DAYS`, `RETRO_PERIOD` settings.  
 `RETRO_CYCLETHROTTLE` and `RETRO_TASKTHROTTLE` can be modified as needed.
 
 Refer to [this guide](https://github.com/NOAA-EMC/rrfs-workflow/wiki/deploy-a-realtime-run-in-Jet) for setting up realtime runs. Note: realtime runs under role accounts should be coordinated with the POC of each realtime run.
 
-### 2.2 setup_exp.py
+### 2.2 setup_rocoto.py
 ```
-./setup_exp.py
+./setup_rocoto.py
 ```   
     
 This Python script creates an experiment directory (i.e. `EXPDIR`), writes out a runtime version of `exp.setup` under EXPDIR, and  then copies runtime config files from `HOMErrfs` to `EXPDIR`.
        
-Users usually need to set up `ACCOUT`, `QUEUE`, `PARTITION`, or `RESERVATION` by modifying `parm/config/resources/config.${machine}` or you may export those variables in the current environment before running setp_exp.py, or export those variables in `exp.setup`.  
+Users usually need to set up `ACCOUT`, `QUEUE`, `PARTITION`, or `RESERVATION` by modifying `resources/config.${machine}` or you may export those variables in the current environment before running setp_exp.py, or export those variables in `exp.setup`.  
     
 The workflow uses a cascade config structure to separate concerns so that a task/job/application/function_group only defines relevant environmental variables required in runtime. Refer to [this guide](https://github.com/NOAA-EMC/rrfs-workflow/wiki/The-cascade-config-structure) for more information.
 

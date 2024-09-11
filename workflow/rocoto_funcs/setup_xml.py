@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 #
 import os, sys, stat
-from xml_funcs.base import header_begin, header_entities, header_end, source, \
+from rocoto_funcs.base import header_begin, header_entities, header_end, source, \
   wflow_begin, wflow_log, wflow_cycledefs, wflow_end
-from xml_funcs.smart_cycledefs import smart_cycledefs
-from xml_funcs.tasks1 import ic, lbc, da, fcst, ens_da
-from xml_funcs.tasks2 import mpassit, upp, ungrib_lbc, ungrib_ic
-from xml_funcs.tasks3 import ioda_bufr
-from xml_funcs.tasksX import clean, graphics #archive
+from rocoto_funcs.smart_cycledefs import smart_cycledefs
+from rocoto_funcs.tasks1 import ic, lbc, da, fcst, ens_da
+from rocoto_funcs.tasks2 import mpassit, upp, ungrib_lbc, ungrib_ic
+from rocoto_funcs.tasks3 import ioda_bufr
+from rocoto_funcs.tasksX import clean, graphics #archive
 
 ### setup_xml
 def setup_xml(HOMErrfs, expdir):
@@ -22,10 +22,10 @@ def setup_xml(HOMErrfs, expdir):
   source(f"{expdir}/config/config.{machine}")
   source(f"{expdir}/config/config.base")
   #
-  source(f"{HOMErrfs}/parm/config/resources/config.{machine}")
-  source(f"{HOMErrfs}/parm/config/resources/config.base")
+  source(f"{HOMErrfs}/workflow/config_resources/config.{machine}")
+  source(f"{HOMErrfs}/workflow/config_resources/config.base")
   if os.getenv("REALTIME").upper() == "TRUE":
-    source(f"{HOMErrfs}/parm/config/resources/config.realtime")
+    source(f"{HOMErrfs}/workflow/config_resources/config.realtime")
   #
   # create cycledefs smartly
   realtime=os.getenv('REALTIME','false')
@@ -51,18 +51,18 @@ def setup_xml(HOMErrfs, expdir):
 # ---------------------------------------------------------------------------
 # create tasks for a deterministic experiment (i.e. setup/generate an xml file)
     if do_deterministic == "TRUE":
-      #ioda_bufr(xmlFile,expdir)
+      ioda_bufr(xmlFile,expdir)
       ungrib_ic(xmlFile,expdir)
       ungrib_lbc(xmlFile,expdir)
-      #ic(xmlFile,expdir)
-      #lbc(xmlFile,expdir)
+      ic(xmlFile,expdir)
+      lbc(xmlFile,expdir)
       #if os.getenv("FCST_ONLY","FALSE").upper()=="FALSE":
       #  da(xmlFile,expdir)
       #fcst(xmlFile,expdir)
+      #mpassit(xmlFile,expdir)
+      #upp(xmlFile,expdir)
       #
-      #if machine == "jet": #currently only support mpassit on jet using pre-compiled mpassit
-      #  mpassit(xmlFile,expdir)
-      #  upp(xmlFile,expdir)
+      #if machine == "jet": #currently only support graphics on jet
       #  graphics(xmlFile,expdir)
       #
 # ---------------------------------------------------------------------------
@@ -70,14 +70,13 @@ def setup_xml(HOMErrfs, expdir):
     if do_ensemble == "TRUE":
       ungrib_ic(xmlFile,expdir,do_ensemble=True)
       ungrib_lbc(xmlFile,expdir,do_ensemble=True)
-      #ic(xmlFile,expdir,do_ensemble=True)
-      #lbc(xmlFile,expdir,do_ensemble=True)
+      ic(xmlFile,expdir,do_ensemble=True)
+      lbc(xmlFile,expdir,do_ensemble=True)
       #if os.getenv("ENS_FCST_ONLY","FALSE").upper()=="FALSE":
       #  ens_da(xmlFile,expdir)
       #fcst(xmlFile,expdir,do_ensemble=True)
-      #if machine == "jet": #currently only support mpassit on jet using pre-compiled mpassit
-      #  mpassit(xmlFile,expdir,do_ensemble=True)
-      #  upp(xmlFile,expdir,do_ensemble=True)
+      #mpassit(xmlFile,expdir,do_ensemble=True)
+      #upp(xmlFile,expdir,do_ensemble=True)
 
 # ---------------------------------------------------------------------------
     if os.getenv("REALTIME").upper() == "TRUE": # write out the clean task for realtime runs and retros don't need it

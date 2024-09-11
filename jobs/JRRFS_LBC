@@ -8,7 +8,7 @@ source ${EXPDIR}/exp.setup
 [[ ! -z "${ENS_INDEX}" ]] && source ${EXPDIR}/config/config.ens
 source ${EXPDIR}/config/config.${MACHINE}
 source ${EXPDIR}/config/config.base
-[[ -s ${EXPDIR}/config/config.ungrib ]] && source ${EXPDIR}/config/config.ungrib
+[[ -s ${EXPDIR}/config/config.lbc ]] && source ${EXPDIR}/config/config.lbc
 #
 export pid=${pid:-$$}
 if [[ -z "${ENS_INDEX}" ]]; then
@@ -16,31 +16,29 @@ if [[ -z "${ENS_INDEX}" ]]; then
 else
   export RUN="ensrrfs"
 fi
-export jobid=${jobid:-${RUN}_ungrib_${cyc}}
+export jobid=${jobid:-${RUN}_lbc_${cyc}}
+
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 export DATA=${DATA}/${FHR:-"FHR_not_defined"}
-
 if [ -d ${DATA} ]; then # remove the ${DATA} directory if existed
   rm -rf ${DATA}
 fi
 mkdir -p ${DATA}
 #
 export COMINgfs=${COMINgfs:-$(compath.py $envir/gfs/$gfs_ver)}
-export COMINgefs=${COMINgefs:-$(compath.py $envir/gefs/$gefs_ver)}
-export COMINrap=${COMINrap:-$(compath.py $envir/rap/$rap_ver)}
 export COMINrrfs=${COMINrrfs:-$(compath.py $envir/rrfs/$rrfs_ver)}
 export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
 if [[ -z "${ENS_INDEX}" ]]; then
-  mkdir -p ${COMOUT}/ungrib_${TYPE}
+  mkdir -p ${COMOUT}/lbc
 else
-  mkdir -p ${COMOUT}/mem${ENS_INDEX}/ungrib_${TYPE}
+  mkdir -p ${COMOUT}/mem${ENS_INDEX}/lbc
 fi
 #
 #----------------------------------------
 # Execute the script.
 #----------------------------------------
 export pgmout="${DATA}/OUTPUT.$$"
-${HOMErrfs}/scripts/exrrfs_ungrib.sh
+${HOMErrfs}/scripts/exrrfs_lbc.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

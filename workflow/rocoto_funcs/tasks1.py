@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os
-from xml_funcs.base import xml_task, source, get_cascade_env
+from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of ic --------------------------------------------------------
 def ic(xmlFile, expdir, do_ensemble=False):

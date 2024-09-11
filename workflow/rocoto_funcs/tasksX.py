@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # this file hosts all tasks that will not be needed by NCO
 import os
-from xml_funcs.base import xml_task, source, get_cascade_env
+from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of dummy --------------------------------------------------------
 ### this dummy task does nothing, but may be used to reboot a cycle without any adverse effects
