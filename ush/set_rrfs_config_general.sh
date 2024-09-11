@@ -431,7 +431,7 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then
 
 elif [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then 
   DT_ATMOS=36
-  CCPP_PHYS_SUITE="FV3_HRRR_gf"
+  CCPP_PHYS_SUITE="RRFS_sas"
   ADDNL_OUTPUT_GRIDS=( "hrrr" "hrrrak" )
   TILE_LABELS="NA hrrr_regions1 hrrr_regions2 hrrr_tiles1 hrrr_tiles2 hrrr_tiles3 \
     hrrr_tiles4 hrrrak_tiles"
