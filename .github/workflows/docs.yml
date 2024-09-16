@@ -30,5 +30,5 @@ jobs:
         pip install sphinx sphinxcontrib-bibtex sphinx-rtd-theme
     - name: Build docs
       run: |
-        cd rrfs-workflow/doc/UsersGuide
+        cd doc/UsersGuide
         sphinx-build -b html source build
