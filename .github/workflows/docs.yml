@@ -19,7 +19,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - name: checkout
+      uses: actions/checkout@v4
+      with:
+        path: rrfs-workflow
+        submodules: true
+
     - name: Set up Python 3.10
       uses: actions/setup-python@v3
       with:
@@ -30,5 +35,12 @@ jobs:
         pip install sphinx sphinxcontrib-bibtex sphinx-rtd-theme
     - name: Build docs
       run: |
-        cd doc/UsersGuide
+        cd rrfs-workflow/doc/UsersGuide
         sphinx-build -b html source build
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: docs
+        path: |
+          rrfs-workflow/doc/UsersGuide/build
+        
