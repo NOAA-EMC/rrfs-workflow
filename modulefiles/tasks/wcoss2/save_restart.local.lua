@@ -1,8 +1,8 @@
-load("python_srw")
-
 load(pathJoin("PrgEnv-intel", "8.1.0"))
 load(pathJoin("intel", "19.1.3.304"))
 load(pathJoin("craype", "2.7.13"))
+load(pathJoin("python", os.getenv("python_ver")))
+load(pathJoin("prod_util", os.getenv("prod_util_ver")))
 load(pathJoin("cray-mpich", "8.1.7"))
 
 setenv("HPC_OPT", "/apps/ops/para/libs")
