@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #
-util_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-agent_dir="${util_dir}/../fix/.agent"
-source ${util_dir}/detect_machine.sh 
+run_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+agent_dir="${run_dir}/../../fix/.agent"
+source ${run_dir}/detect_machine.sh 
 
 case ${MACHINE} in
   wcoss2)
@@ -22,7 +22,7 @@ case ${MACHINE} in
     echo "platform not supported: ${MACHINE}"
     ;;
 esac
-mkdir -p ${util_dir}/../fix
+mkdir -p ${run_dir}/../../fix
 
 filetype=$(file $agent_dir)
 if [[ ! "$filetype" == *"symbolic link"* ]]; then
@@ -30,4 +30,4 @@ if [[ ! "$filetype" == *"symbolic link"* ]]; then
 fi
 ln -snf ${FIX_RRFS_LOCATION} ${agent_dir}
 
-touch ${util_dir}/../fix/INIT_DONE
+touch ${run_dir}/../../fix/INIT_DONE
