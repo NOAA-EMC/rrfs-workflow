@@ -14,7 +14,7 @@ else:
 
 # find the HOMErrfs directory
 HOMErrfs=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-os.system(f'{HOMErrfs}/util/init.sh')
+os.system(f'{HOMErrfs}/workflow/ush/init.sh')
 #
 if os.path.exists(EXPin):
   source(EXPin)
@@ -61,7 +61,7 @@ for cfile in glob.glob(f'{configdir}/config.*'):
   shutil.copy(cfile,exp_configdir)
 
 # generate exp.setup under $expdir
-source(f'{HOMErrfs}/util/detect_machine.sh')
+source(f'{HOMErrfs}/workflow/ush/detect_machine.sh')
 machine=os.getenv('MACHINE')
 if machine=='UNKNOWN':
     print(f'WARNING: machine is UNKNOWN! ')
