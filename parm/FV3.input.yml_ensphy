@@ -7,15 +7,18 @@ rrfsens_phy1:
   atmos_model_nml:
     ccpp_suite: 'RRFSens_phy1'
   gfs_physics_nml: 
+    betadcu:
     bl_mynn_edmf: 
     bl_mynn_edmf_mom: 
     bl_mynn_tkeadvect: 
     do_mynnedmf: false
     do_mynnsfclay: false
+    imfdeepcnv: 3
     imfshalcnv: 3
     isatmedmf: 1
     lkm: 1
     n_var_spp: 4
+    progsigma:
     satmedmf: true
     shal_cnv: true
     gf_coldstart: true
@@ -79,6 +82,8 @@ rrfsens_phy3:
   fv_core_nml:
     nwat: 7
   gfs_physics_nml:
+    betadcu:
+    imfdeepcnv: 3
     imp_physics: 17
     lkm: 1
     nssl_alphah: 2.32
@@ -89,6 +94,7 @@ rrfsens_phy3:
     nssl_ehw0: 0.79
     nssl_hail_on: true
     nssl_invertccn: true
+    progsigma:
     rrfs_sd :
     rrfs_smoke_debug :
     seas_opt :
@@ -117,11 +123,13 @@ rrfsens_phy4:
   fv_core_nml:
     nwat: 7
   gfs_physics_nml:
+    betadcu:
     bl_mynn_edmf:
     bl_mynn_edmf_mom:
     bl_mynn_tkeadvect:
     do_mynnedmf: false
     do_mynnsfclay: false
+    imfdeepcnv: 3
     imfshalcnv: 3
     imp_physics: 17
     isatmedmf: 1
@@ -135,6 +143,7 @@ rrfsens_phy4:
     nssl_ehw0: 0.62
     nssl_hail_on: true
     nssl_invertccn: true
+    progsigma:
     satmedmf: true
     shal_cnv: true
     gf_coldstart: true
