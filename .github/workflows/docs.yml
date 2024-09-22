@@ -39,7 +39,7 @@ jobs:
         sphinx-build -b html source build
     - uses: actions/upload-artifact@v4
       with:
-        name: docs
+        name: rrfs-workflow docs
         path: |
           rrfs-workflow/doc/UsersGuide/build
         
