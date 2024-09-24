@@ -16,8 +16,6 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('.'))
 
-
-
 # -- Project information -----------------------------------------------------
 
 project = 'RRFS-Workflow Users Guide'
@@ -56,7 +54,7 @@ extensions = [
 ]
 
 bibtex_bibfiles = ['references.bib']
-#bibtex_bibfiles = ['refs.bib']
+# bibtex_bibfiles = ['refs.bib']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -104,9 +102,10 @@ html_theme_options = {"body_max_width": "none"}
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-#html_static_path = []
+# html_static_path = []
 html_static_path = ['_static']
 html_context = {}
+
 
 def setup(app):
     app.add_css_file('custom.css')  # may also be an URL
@@ -134,19 +133,19 @@ htmlhelp_basename = 'rrfs-workflow'
 latex_engine = 'pdflatex'
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
-      'papersize': 'letterpaper',
+    'papersize': 'letterpaper',
 
     # The font size ('10pt', '11pt' or '12pt').
-      'pointsize': '11pt',
+    'pointsize': '11pt',
 
     # Additional stuff for the LaTeX preamble.
-      'preamble': r'''
+    'preamble': r'''
         \usepackage{charter}
         \usepackage[defaultsans]{lato}
         \usepackage{inconsolata}
     ''',
     # Release name prefix
-      'releasename': ' ',
+    'releasename': ' ',
 
     # Latex figure (float) alignment
     #
