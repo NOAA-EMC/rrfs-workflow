@@ -1,14 +1,24 @@
 # rrfs-workflow
 
-Workflow for the Rapid Refresh Forecast System (RRFS)
+This repository contains the workflow code for the [Rapid Refresh
+Forecast System
+(RRFS)](https://gsl.noaa.gov/focus-areas/unified_forecast_system/rrfs).
 
-Team Charter (draft): https://docs.google.com/document/d/1uLbPx-pOWp7eECz_7VHRt_tQyD8PLFdrwo8dr4oMgjo/edit?usp=sharing
+For more information see the [RRFS-Workflow User's
+guide](https://chanhoo-rrfs-workflow.readthedocs.io/en/latest/index.html).
 
-## Build
+## Team
 
-1. Clone the `dev-sci` branch of the authoritative repository:
+Code Manager: Matthew Pyle
+
+For more information see the [Team
+Charter](https://docs.google.com/document/d/1uLbPx-pOWp7eECz_7VHRt_tQyD8PLFdrwo8dr4oMgjo/edit?usp=sharing).
+
+## Build Instructions
+
+1. Clone the `main` branch of the authoritative repository:
 ```
-git clone -b dev-sci https://github.com/NOAA-EMC/rrfs-workflow
+git clone https://github.com/NOAA-EMC/rrfs-workflow
 ```
 
 2. Move to the `sorc` directory:
@@ -31,12 +41,6 @@ where `[machine]` is `wcoss2`, `hera`, `jet`, `orion`, or `hercules`.  The `--no
 ```
 cd ..
 ```
-
-## Engineering Tests
-
-See the RRFS-Workflow User's guide:
-https://chanhoo-rrfs-workflow.readthedocs.io/en/latest/index.html
-
 ## Disclaimer
 
 ```
