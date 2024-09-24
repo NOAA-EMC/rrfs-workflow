@@ -13,3 +13,4 @@ ush/python_utils/__pycache__/
 __pycache__
 *.swp
 .venv
+*~
