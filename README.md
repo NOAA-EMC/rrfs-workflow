@@ -41,6 +41,9 @@ where `[machine]` is `wcoss2`, `hera`, `jet`, `orion`, or `hercules`.  The `--no
 ```
 cd ..
 ```
+
+5. Configure/build the workflow (see description of Engineering Tests in the [RRFS-Workflow User's
+guide](https://chanhoo-rrfs-workflow.readthedocs.io/en/latest/index.html)
 ## Disclaimer
 
 ```
