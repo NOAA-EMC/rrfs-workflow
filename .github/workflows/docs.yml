@@ -6,9 +6,9 @@ name: docs
 
 on:
   push:
-    branches: [ "production/RRFS.v1" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "production/RRFS.v1" ]
+    branches: [ "main" ]
 
 permissions:
   contents: read
