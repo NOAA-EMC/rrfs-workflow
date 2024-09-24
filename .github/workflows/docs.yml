@@ -1,0 +1,45 @@
+# This workflow will build the documentation.
+#
+# Edward Hartnett, 9/16/24
+
+name: docs
+
+on:
+  push:
+    branches: [ "production/RRFS.v1" ]
+  pull_request:
+    branches: [ "production/RRFS.v1" ]
+
+permissions:
+  contents: read
+
+jobs:
+  docs:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4
+      with:
+        path: rrfs-workflow
+        submodules: true
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install sphinx sphinxcontrib-bibtex sphinx-rtd-theme
+    - name: Build docs
+      run: |
+        cd rrfs-workflow/doc/UsersGuide
+        sphinx-build -b html source build
+    - uses: actions/upload-artifact@v4
+      with:
+        name: rrfs-workflow docs
+        path: |
+          rrfs-workflow/doc/UsersGuide/build
+        
