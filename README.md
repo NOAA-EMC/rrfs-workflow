@@ -18,6 +18,7 @@ Charter](https://docs.google.com/document/d/1uLbPx-pOWp7eECz_7VHRt_tQyD8PLFdrwo8
 
 The rrfs-workflow code is organized in the following subdirectories:
 
+* doc - the User Guide documentation.
 * ecf - the ecFlow contents which will drive the RRFS workflow in NWS
   operations.
 * fix - static data.
