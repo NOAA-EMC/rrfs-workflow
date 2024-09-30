@@ -12,11 +12,11 @@ This chapter provides a brief summary of how to build and run the RRFS-Workflow.
 Building RRFS workflow
 ===============================================
 
-   #. Clone the ``dev-sci`` branch of the RRFS-Workflow from GitHub:
+   #. Clone the ``main`` branch of the RRFS-Workflow from GitHub:
 
       .. code-block:: console
 
-         git clone -b dev-sci https://github.com/NOAA-EMC/rrfs-workflow.git
+         git clone https://github.com/NOAA-EMC/rrfs-workflow.git
 
    #. Check out the external components:
 
