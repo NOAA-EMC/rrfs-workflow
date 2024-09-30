@@ -23,14 +23,19 @@ The rrfs-workflow code is organized in the following subdirectories:
 * fix - static data.
 * jobs - the main driver scripts (known as J-jobs) for each task. The
   workflow driver (either ecFlow or rocoto) submits these J-jobs.
+* modulefiles - module files for NOAA HPC systems.
 * parm - parameter files - generally namelists or configure files.
 * scripts - the "ex scripts" - the primary script for a given task,
   and called by the J-job.
 * sorc - all of the source codes that need to be built/compiled for
   use within the package.
+* tests - unit tests for rrfs-workflow code.
 * ush - the utility scripts - scripts typically called by the "ex
   scripts" to handle specific tasks, often repeatedly for different
   times or geographic regions.
+* versions - shell scripts setting environment vars to the required
+  versions of all dependencies, for building and for running
+  rrfs-workflow.
 
 These are in compliance with the [NCO implementation standard]
 (https://www.nco.ncep.noaa.gov/idsb/implementation_standards/ImplementationStandards.v11.0.0.pdf).
