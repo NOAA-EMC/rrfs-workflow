@@ -20,20 +20,14 @@ The rrfs-workflow code is organized in the following subdirectories:
 
 * ecf - the ecFlow contents which will drive the RRFS workflow in NWS
   operations.
-
 * fix - static data.
-
 * jobs - the main driver scripts (known as J-jobs) for each task. The
   workflow driver (either ecFlow or rocoto) submits these J-jobs.
-
 * parm - parameter files - generally namelists or configure files.
-
 * scripts - the "ex scripts" - the primary script for a given task,
   and called by the J-job.
-
 * sorc - all of the source codes that need to be built/compiled for
   use within the package.
-
 * ush - the utility scripts - scripts typically called by the "ex
   scripts" to handle specific tasks, often repeatedly for different
   times or geographic regions.
