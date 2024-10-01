@@ -36,6 +36,7 @@ jobs:
     - name: Build docs
       run: |
         cd rrfs-workflow/doc/UsersGuide
+        sphinx-apidoc -o source/ ../../ush/
         sphinx-build -W --keep-going source build
     - uses: actions/upload-artifact@v4
       with:
