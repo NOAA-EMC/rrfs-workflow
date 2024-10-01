@@ -17,8 +17,17 @@ jobs:
   docs:
 
     runs-on: ubuntu-latest
+    env:
+      FC: mpifort
+      CC: mpicc
+      FCFLAGS: -fallow-argument-mismatch
 
     steps:
+    - name: install-dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install libpng-dev zlib1g-dev libjpeg-dev doxygen libmpich-dev
+        sudo apt-get install libnetcdf-dev libnetcdff-dev netcdf-bin pkg-config        
     - name: checkout
       uses: actions/checkout@v4
       with:
