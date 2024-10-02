@@ -34,33 +34,6 @@ jobs:
         path: rrfs-workflow
         submodules: true
 
-    - name: cache-esmf
-      id: cache-esmf
-      uses: actions/cache@v2
-      with:
-        path: ~/esmf
-        key: developer-esmf-8.2.0-${{ runner.os }}3
-
-    - name: build-esmf
-      if: steps.cache-esmf.outputs.cache-hit != 'true'
-      run: |
-        pushd ~
-        export ESMF_DIR=~/esmf-ESMF_8_2_0
-        wget https://github.com/esmf-org/esmf/archive/ESMF_8_2_0.tar.gz &> /dev/null
-        tar zxf ESMF_8_2_0.tar.gz
-        cd esmf-ESMF_8_2_0
-        export ESMF_COMM=mpich3
-        export ESMF_INSTALL_BINDIR=bin
-        export ESMF_INSTALL_LIBDIR=lib
-        export ESMF_INSTALL_MODDIR=mod
-        export ESMF_COMPILER=gfortran
-        export ESMF_INSTALL_PREFIX=~/esmf
-        export ESMF_NETCDF=split
-        export ESMF_NETCDF_INCLUDE=/usr/include
-        export ESMF_NETCDF_LIBPATH=/usr/x86_64-linux-gnu
-        make -j2
-        make install
-
     - name: Set up Python 3.10
       uses: actions/setup-python@v5
       with:
