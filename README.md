@@ -28,8 +28,8 @@ The rrfs-workflow code is organized in the following subdirectories:
 * parm - parameter files - generally namelists or configure files.
 * scripts - the "ex scripts" - the primary script for a given task,
   and called by the J-job.
-* sorc - all of the source codes that need to be built/compiled for
-  use within the package.
+* sorc - the build script for the RRFS system, as well as the scripts
+  to download and install all dependencies.
 * tests - unit tests for rrfs-workflow code.
 * ush - the utility scripts - scripts typically called by the "ex
   scripts" to handle specific tasks, often repeatedly for different
@@ -38,8 +38,8 @@ The rrfs-workflow code is organized in the following subdirectories:
   versions of all dependencies, for building and for running
   rrfs-workflow.
 
-These are in compliance with the [NCO implementation standard]
-(https://www.nco.ncep.noaa.gov/idsb/implementation_standards/ImplementationStandards.v11.0.0.pdf).
+These are in compliance with the (NCO implementation standard)
+[https://www.nco.ncep.noaa.gov/idsb/implementation_standards/ImplementationStandards.v11.0.0.pdf].
 
 ## Build Instructions
 
