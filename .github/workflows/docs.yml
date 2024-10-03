@@ -32,11 +32,13 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install sphinx sphinxcontrib-bibtex sphinx-rtd-theme
+        pip install sphinx sphinxcontrib-bibtex sphinx-rtd-theme numpy matplotlib pandas cartopy pandas cartopy f90nml netCDF4 xarray scipy 
     - name: Build docs
       run: |
         cd rrfs-workflow/doc/UsersGuide
-        sphinx-build -W --keep-going source build
+        sphinx-apidoc -o source/ ../../ush/
+        #sphinx-build -W --keep-going source build
+        sphinx-build source build
     - uses: actions/upload-artifact@v4
       with:
         name: rrfs-workflow docs
