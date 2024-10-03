@@ -15,3 +15,5 @@ prepend_path("MODULEPATH", os.getenv("modulepath_mpi"))
 load(pathJoin("hdf5", os.getenv("hdf5_ver")))
 load(pathJoin("netcdf", os.getenv("netcdf_ver")))
 load(pathJoin("gempak", os.getenv("gempak_ver")))
+
+load(pathJoin("prod_envir", os.getenv("prod_envir_ver")))

@@ -343,6 +343,7 @@ EOF
   export err=$?; err_chk
 
   cp RefInGSI3D.dat  ${COMOUT}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
+  cp Gridded_ref.nc  ${COMOUT}/rrfs.t${HH}z.Gridded_ref.nc.${bigmin}
 done # done with the bigmin for-loop
 #
 #-----------------------------------------------------------------------

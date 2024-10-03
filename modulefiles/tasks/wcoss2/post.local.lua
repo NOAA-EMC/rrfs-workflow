@@ -17,3 +17,5 @@ load(pathJoin("hdf5", os.getenv("hdf5_ver")))
 load(pathJoin("netcdf", os.getenv("netcdf_ver")))
 load(pathJoin("libjpeg", os.getenv("libjpeg_ver")))
 load(pathJoin("wgrib2", os.getenv("wgrib2_ver")))
+
+load(pathJoin("prod_envir", os.getenv("prod_envir_ver")))
