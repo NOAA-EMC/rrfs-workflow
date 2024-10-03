@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]${id}: '
+set -x
+date
+#
+# source the config cascade
+source ${EXPDIR}/exp.setup
+[[ ! -z "${ENS_INDEX}" ]] && source ${EXPDIR}/config/config.ens
+source ${EXPDIR}/config/config.${MACHINE}
+source ${EXPDIR}/config/config.base
+[[ -s ${EXPDIR}/config/config.fcst ]] && source ${EXPDIR}/config/config.fcst
+#
+export pid=${pid:-$$}
+if [[ -z "${ENS_INDEX}" ]]; then
+  export RUN="rrfs"
+else
+  export RUN="ensrrfs"
+fi
+export jobid=${jobid:-${RUN}_fcst_${cyc}}
+
+export DATA=${DATA:-${DATAROOT}/${jobid}}
+if [ -d ${DATA} ]; then # remove the ${DATA} directory if existed
+  rm -rf ${DATA}
+fi
+mkdir -p ${DATA}
+#
+export COMINgfs=${COMINgfs:-$(compath.py $envir/gfs/$gfs_ver)}
+export COMINrrfs=${COMINrrfs:-$(compath.py $envir/rrfs/$rrfs_ver)}
+export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
+if [[ -z "${ENS_INDEX}" ]]; then
+  mkdir -p ${COMOUT}/fcst
+else
+  mkdir -p ${COMOUT}/mem${ENS_INDEX}/fcst
+fi
+#
+#----------------------------------------
+# Execute the script.
+#----------------------------------------
+export pgmout="${DATA}/OUTPUT.$$"
+${HOMErrfs}/scripts/exrrfs_fcst.sh
+export err=$?; err_chk
+
+if [ -e "$pgmout" ]; then
+  cat $pgmout
+fi
+#
+#----------------------------------------
+# Remove the Temporary working directory
+#----------------------------------------
+cd ${DATAROOT}
+[[ "${KEEPDATA}" == "NO" ]] && rm -rf ${DATA}
+#
+date
+echo "JOB ${jobid:-} HAS COMPLETED NORMALLY!"
+exit 0

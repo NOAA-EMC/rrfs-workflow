@@ -48,7 +48,7 @@ Refer to [this guide](https://github.com/NOAA-EMC/rrfs-workflow/wiki/deploy-a-re
     
 This Python script creates an experiment directory (i.e. `EXPDIR`), writes out a runtime version of `exp.setup` under EXPDIR, and  then copies runtime config files from `HOMErrfs` to `EXPDIR`.
        
-Users usually need to set up `ACCOUT`, `QUEUE`, `PARTITION`, or `RESERVATION` by modifying `resources/config.${machine}` or you may export those variables in the current environment before running setp_exp.py, or export those variables in `exp.setup`.  
+Users usually need to set up `ACCOUT`, `QUEUE`, `PARTITION`, or `RESERVATION` by modifying `config_resources/config.${machine}` or you may export those variables in the current environment before running setp_exp.py, or export those variables in `exp.setup`.  
     
 The workflow uses a cascade config structure to separate concerns so that a task/job/application/function_group only defines relevant environmental variables required in runtime. Refer to [this guide](https://github.com/NOAA-EMC/rrfs-workflow/wiki/The-cascade-config-structure) for more information.
 
