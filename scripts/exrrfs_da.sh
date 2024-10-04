@@ -60,8 +60,6 @@ export err=$?
 err_chk
 
 # copy output to COMOUT
-if [[ "${begin}" == "YES" ]]; then
-  : # do nothing on init.nc for now
-else
+if [[ "${begin}" != "YES" ]]; then
   ${cpreq} ${DATA}/data/restart.${timestr}.nc ${COMOUT}/da/
 fi
