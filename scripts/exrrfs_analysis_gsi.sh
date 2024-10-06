@@ -959,9 +959,9 @@ if [ "${GSI_TYPE}" = "OBSERVER" ]; then
     lread_obs_save=.false.
     lread_obs_skip=.true.
     if [ "${CYCLE_TYPE}" = "spinup" ]; then
-      ln -s ../../ensmean/observer_gsi_spinup/obs_input.* .
+      ln -s ../${RUN}_observer_gsi_spinup_ensmean_${envir}_${cyc}/obs_input.* .
     else
-      ln -s ../../ensmean/observer_gsi/obs_input.* .
+      ln -s ../${RUN}_observer_gsi_ensmean_${envir}_${cyc}/obs_input.* .
     fi
   fi
 fi
@@ -1105,11 +1105,11 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
   if [ "${GSI_TYPE}" = "OBSERVER" ]; then
     cp *diag*ges* ${observer_nwges_dir}/.
     if [ "${MEM_TYPE}" = "MEAN" ]; then
-      mkdir -p ${observer_nwges_dir}/../../../../observer_diag/${YYYYMMDDHH}/ensmean/observer_gsi
-      cp *diag*ges* ${observer_nwges_dir}/../../../../observer_diag/${YYYYMMDDHH}/ensmean/observer_gsi/.
+      mkdir -p ${observer_nwges_dir}
+      cp *diag*ges* ${observer_nwges_dir}/.
     else
-      mkdir -p ${observer_nwges_dir}/../../../../observer_diag/${YYYYMMDDHH}/${mem_num}/observer_gsi
-      cp *diag*ges* ${observer_nwges_dir}/../../../../observer_diag/${YYYYMMDDHH}/${mem_num}/observer_gsi/.
+      mkdir -p ${observer_nwges_dir}
+      cp *diag*ges* ${observer_nwges_dir}/.
     fi
   fi
   #

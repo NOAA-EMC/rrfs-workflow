@@ -135,8 +135,10 @@ for imem in  $(seq 1 $nens) ensmean; do
 
   if [ "${imem}" = "ensmean" ]; then
     memchar="ensmean"
+    memcharv0="ensmean"
   else
     memchar="m"$(printf %03i $imem)
+    memcharv0="mem"$( printf "%03d" $imem )
   fi
   if [ "${CYCLE_TYPE}" = "spinup" ]; then
     bkpath=${DATAROOT}/${RUN}_forecast_spinup_${memchar}_${envir}_${cyc}/INPUT
@@ -145,11 +147,18 @@ for imem in  $(seq 1 $nens) ensmean; do
     bkpath=${DATAROOT}/${RUN}_forecast_${memchar}_${envir}_${cyc}/INPUT
     observer_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}/${memchar}/observer_gsi"
   fi
-
-  ln -snf  ${bkpath}/fv_core.res.tile1.nc      fv3sar_tile1_${memcharv0}_dynvars
-  ln -snf  ${bkpath}/fv_tracer.res.tile1.nc    fv3sar_tile1_${memcharv0}_tracer
-  ln -snf  ${bkpath}/sfc_data.nc               fv3sar_tile1_${memcharv0}_sfcdata
-  ln -snf  ${bkpath}/phy_data.nc               fv3sar_tile1_${memcharv0}_phyvar
+  if [ "${imem}" = "ensmean" ]; then
+    bkpath=${DATAROOT}/${RUN}_calc_ensmean_${envir}_${cyc}
+    ln -snf  ${bkpath}/fv3sar_tile1_dynvar       fv3sar_tile1_${memcharv0}_dynvars
+    ln -snf  ${bkpath}/fv3sar_tile1_tracer       fv3sar_tile1_${memcharv0}_tracer
+    ln -snf  ${bkpath}/fv3sar_tile1_sfcvar       fv3sar_tile1_${memcharv0}_sfcdata
+    ln -snf  ${bkpath}/phy_data.nc               fv3sar_tile1_${memcharv0}_phyvar
+  else
+    ln -snf  ${bkpath}/fv_core.res.tile1.nc      fv3sar_tile1_${memcharv0}_dynvars
+    ln -snf  ${bkpath}/fv_tracer.res.tile1.nc    fv3sar_tile1_${memcharv0}_tracer
+    ln -snf  ${bkpath}/sfc_data.nc               fv3sar_tile1_${memcharv0}_sfcdata
+    ln -snf  ${bkpath}/phy_data.nc               fv3sar_tile1_${memcharv0}_phyvar
+  fi
 #
 #-----------------------------------------------------------------------
 #
@@ -309,7 +318,7 @@ use_gfs_nemsio=.true.,
 #
 	cat > enkf.nml << EOFnml
 	&nam_enkf
-	datestring="$vlddate",datapath="$enkfworkdir/",
+	datestring="$vlddate",datapath="$DATA/",
 	analpertwtnh=1.10,analpertwtsh=1.10,analpertwttr=1.10,
 	covinflatemax=1.e2,covinflatemin=1,pseudo_rh=.true.,iassim_order=0,
         corrlengthnh=$CORRLENGTH,corrlengthsh=$CORRLENGTH,corrlengthtr=$CORRLENGTH,

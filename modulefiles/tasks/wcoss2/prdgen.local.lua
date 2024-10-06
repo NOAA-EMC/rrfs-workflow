@@ -18,3 +18,5 @@ load(pathJoin("wgrib2", os.getenv("wgrib2_ver")))
 load(pathJoin("udunits", os.getenv("udunits_ver")))
 load(pathJoin("gsl", os.getenv("gsl_ver")))
 load(pathJoin("nco", os.getenv("nco_ver")))
+
+load(pathJoin("prod_envir", os.getenv("prod_envir_ver")))
