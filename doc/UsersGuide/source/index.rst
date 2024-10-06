@@ -12,4 +12,3 @@ RRFS-WORKFLOW Users Guide 1
 
    Quickstart
    Q2
-   modules
