@@ -11,5 +11,3 @@ RRFS-WORKFLOW Users Guide
    
 
    modules	      
-   Quickstart
-   modules
