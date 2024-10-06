@@ -2,7 +2,7 @@ ush
 ===
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
 
    HWP_tools
    UFS_plot_domains
