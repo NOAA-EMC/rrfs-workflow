@@ -35,12 +35,12 @@ jobs:
         pip install sphinx sphinxcontrib-bibtex sphinx-rtd-theme
     - name: Build docs
       run: |
-        cd rrfs-workflow/doc
+        cd rrfs-workflow/docs
         #sphinx-build -W --keep-going source build
         sphinx-build source build
     - uses: actions/upload-artifact@v4
       with:
         name: rrfs-workflow docs
         path: |
-          rrfs-workflow/doc/build
+          rrfs-workflow/docs/build
         
