@@ -1,3 +1,8 @@
+"""
+This file provides HWP tools.
+
+"""
+
 import numpy as np
 import os
 import datetime as dt
@@ -7,6 +12,14 @@ import xarray as xr
 import fnmatch
 
 def check_restart_files(hourly_hwpdir, fcst_dates):
+    """Check the restart files.
+
+    Args:
+         hourly_hwpdir: Hourly ??? directory
+         fcst_dates: Forecast dates
+    Returns:
+         list of hwp_avail_hours, hwp_non_avail_hours
+    """
     hwp_avail_hours = []
     hwp_non_avail_hours = []
 
@@ -25,6 +38,15 @@ def check_restart_files(hourly_hwpdir, fcst_dates):
     return(hwp_avail_hours, hwp_non_avail_hours)
 
 def copy_missing_restart(nwges_dir, hwp_non_avail_hours, hourly_hwpdir):
+    """Check the restart files.
+
+    Args:
+         nwges_dir: directory
+         hwp_non_avail_hours: ???
+         hourly_hwpdir: ???
+    Returns:
+         list of (restart_avail_hours, restart_nonavail_hours_test)
+    """
     restart_avail_hours = []
     restart_nonavail_hours_test = []
 
@@ -79,6 +101,18 @@ def copy_missing_restart(nwges_dir, hwp_non_avail_hours, hourly_hwpdir):
     return(restart_avail_hours, restart_nonavail_hours_test)
 
 def process_hwp(fcst_dates, hourly_hwpdir, cols, rows, intp_dir, rave_to_intp):
+    """Check the restart files.
+
+    Args:
+         fcst_dates: Forecast dates
+         hourly_hwpdir: ???
+         cols: number of columns
+         rows: number of rowa
+         intp_dir: directory
+         rave_to_intp: ???
+    Returns:
+         list of (hwp_ave_arr, xarr_hwp, totprcp_ave_arr, xarr_totprcp)
+    """
     hwp_ave = [] 
     totprcp = np.zeros((cols*rows))
     var1, var2 = 'rrfs_hwp_ave', 'totprcp_ave' 
