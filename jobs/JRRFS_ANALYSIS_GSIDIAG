@@ -73,7 +73,7 @@ fi
 export jobid=${RUN}_analysis_conv_dbz_${workname}_${envir}_${cyc}
 export DATA="${DATAROOT}/${jobid}"
 if [ ! -d "${DATA}" ]; then
-  echo "warning: ${DATA} is not existing" 
+  echo "WARNING: ${DATA} does not exist" 
 fi
 
 if [ ! -d "${SATBIAS_DIR}" ]; then
