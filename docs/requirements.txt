@@ -3,3 +3,6 @@ sphinx_rtd_theme
 docutils==0.16
 numpy
 xarray
+matplotlib
+netCDF4
+
