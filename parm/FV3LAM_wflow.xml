@@ -66,6 +66,7 @@ Workflow task names.
 <!ENTITY TAG   "{{ tag }}">
 <!ENTITY NET   "{{ net }}">
 <!ENTITY RUN   "{{ run }}">
+<!ENTITY RUNE  "enk{{ run }}">
 <!ENTITY envir "{{ envir }}">
 
 <!--
@@ -1664,7 +1665,7 @@ MODULES_RUN_TASK_FP script.
              {%- endfor %}
                  </or>
              {% for h in range(1, num_ens_members+1) %}
-             <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&RRFSE_FG_ROOT;/&RUN;.@Y@m@d/@H/m{{ "%03d" % h  }}/forecast_spinup/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+             <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&RRFSE_FG_ROOT;/&RUNE;.@Y@m@d/@H/m{{ "%03d" % h  }}/forecast_spinup/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
              {%- endfor %}
                </and>
                <and> 
@@ -1672,7 +1673,7 @@ MODULES_RUN_TASK_FP script.
                <strneq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></strneq>
              {%- endfor %}
              {% for h in range(1, num_ens_members+1) %}
-             <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&RRFSE_FG_ROOT;/&RUN;.@Y@m@d/@H/m{{ "%03d" % h  }}/forecast/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+             <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&RRFSE_FG_ROOT;/&RUNE;.@Y@m@d/@H/m{{ "%03d" % h  }}/forecast/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
              {%- endfor %}
                </and>
              </or>
@@ -2562,7 +2563,7 @@ MODULES_RUN_TASK_FP script.
              {%- endfor %}
              </or>
              {% for h in range(1, num_ens_members+1) %}
-             <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&RRFSE_FG_ROOT;/&RUN;.@Y@m@d/@H/m{{ "%03d" % h  }}/forecast_spinup/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+             <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&RRFSE_FG_ROOT;/&RUNE;.@Y@m@d/@H/m{{ "%03d" % h  }}/forecast_spinup/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
              {%- endfor %}
             </and>
             <and> 
@@ -2570,13 +2571,13 @@ MODULES_RUN_TASK_FP script.
                <strneq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></strneq>
              {%- endfor %}
              {% for h in range(1, num_ens_members+1) %}
-             <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&RRFSE_FG_ROOT;/&RUN;.@Y@m@d/@H/m{{ "%03d" % h  }}/forecast/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+             <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&RRFSE_FG_ROOT;/&RUNE;.@Y@m@d/@H/m{{ "%03d" % h  }}/forecast/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
              {%- endfor %}
             </and>
            {%- else %} 
             <and>
              {% for h in range(1, num_ens_members+1) %}
-             <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&RRFSE_FG_ROOT;/&RUN;.@Y@m@d/@H/m{{ "%03d" % h  }}/forecast/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+             <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&RRFSE_FG_ROOT;/&RUNE;.@Y@m@d/@H/m{{ "%03d" % h  }}/forecast/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
              {%- endfor %}
             </and>
            {%- endif %} 
