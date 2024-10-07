@@ -30,10 +30,7 @@ mkdir -p data; cd data
 mkdir -p bumploc obs ens
 ${cpreq} ${FIXrrfs}/bumploc/${BUMPLOC} bumploc/
 ${cpreq} ${FIXrrfs}/meshes/${NET}.static.nc static.nc
-if [[ "${begin}" == "YES" ]]; then
-  # mpasjedi cannot run on init.nc due to the miss of pressure values
-  : #do nothing
-else
+if [[ "${begin}" != "YES" ]]; then
   cpfs ${DATAROOT}/${NET}/${rrfs_ver}/${RUN}.${CDATEm1:0:8}/${CDATEm1:8:2}/fcst/restart.${timestr}.nc .
 fi
 #${cpreq} ${COMINioda}/..../obs/* obs/                            
