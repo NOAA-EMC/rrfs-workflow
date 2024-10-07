@@ -29,7 +29,7 @@ valid_vals_CCPP_PHYS_SUITE=( \
 "FV3_RRFS_v1beta" \
 "FV3_HRRR" \
 "FV3_HRRR_gf" \
-"FV3_HRRR_sas" \
+"RRFS_sas" \
 "FV3_HRRR_gf_nogwd" \
 "FV3_RAP" \
 "FV3_GFS_v15_thompson_mynn_lam3km" \
