@@ -1,9 +1,22 @@
+"""
+This file handles blending of FV3 tiles???
+
+"""
 import numpy as np
 from netCDF4 import Dataset
 import raymond
 import sys
 
 def check_file_nans(test_nc, vars_fg, vars_bg, name):
+    """
+    Check file NANS?
+
+    test_nc: Test netCDF file.
+    vars_fg: Vars?
+    vars_bg: Vars?
+    name: Name of file?
+
+    """
     nans = False
     for (var_fg, var_bg) in zip(vars_fg, vars_bg):
         i = vars_fg.index(var_fg)
