@@ -1,3 +1,6 @@
+"""
+???
+"""
 import numpy as np
 from netCDF4 import Dataset
 import remap_dwinds
@@ -6,6 +9,13 @@ import chgres_winds   # might need to rename in the future
 import sys
 
 def nan_check(arr, name, check_id):
+    """
+    NAN check?
+
+    arr: ???
+    name: ???
+    check_id: ???
+    """
     nan_count = 0
     nan_count = np.sum(np.isnan(arr))
     print(f"coldstartwinds({check_id}) nan_count({name}): {nan_count}")
