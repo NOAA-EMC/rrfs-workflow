@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-
+"""
+Plot domains?
+"""
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from matplotlib.path import Path
@@ -108,15 +110,16 @@ ax1.add_patch(patch)
 # Define a function to get the lambert points in the gnomonic space
 
 def get_lambert_points(gnomonic_map, lambert_map,pps):
+    """
+    This function takes the lambert domain we have defined, lambert_map, as well as 
+    pps (the number of points to interpolate and draw for each side of the lambert "rectangle"), 
+    and returns an array of two lists: one a list of tuples of the 4*ppf + 4 vertices mapping the approximate shape 
+    of the lambert domain on the gnomonic map, the other a list of "draw" instructions to be used by
+    the PathPatch function.
+    
+    pps is recommended 10 or less due to time of calculation.
+    """
     print("Hello from a function")
-    
-    # This function takes the lambert domain we have defined, lambert_map, as well as 
-    # pps (the number of points to interpolate and draw for each side of the lambert "rectangle"), 
-    # and returns an array of two lists: one a list of tuples of the 4*ppf + 4 vertices mapping the approximate shape 
-    # of the lambert domain on the gnomonic map, the other a list of "draw" instructions to be used by
-    # the PathPatch function
-    
-    # pps is recommended 10 or less due to time of calculation
     
     # Start array with bottom left point, "MOVETO" instruction
     vertices = [gnomonic_map(*lambert_map(lambert_map.xmin, lambert_map.ymin, inverse= True))]
