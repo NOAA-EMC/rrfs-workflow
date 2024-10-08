@@ -49,7 +49,7 @@ def copy_missing_restart(nwges_dir, hwp_non_avail_hours, hourly_hwpdir):
          DA-relevant files (such as first guess and analysis files)
          outside of the main COM output directory.
          hwp_non_avail_hours: a list of hours without available RESTART files
-         hourly_hwpdir: ???
+         hourly_hwpdir: the directory where the RESTART data is copied (nwges/HOURLY_HWP)
     Returns:
          list of (restart_avail_hours, restart_nonavail_hours_test)
 
@@ -111,12 +111,12 @@ def process_hwp(fcst_dates, hourly_hwpdir, cols, rows, intp_dir, rave_to_intp):
     """Check the restart files.
 
     Args:
-         fcst_dates: Forecast dates
-         hourly_hwpdir: ???
-         cols: number of columns
-         rows: number of rowa
-         intp_dir: directory
-         rave_to_intp: ???
+         fcst_dates: a list of forecasts (for production/ops/ebb=2, it is {current_day - 25 hours: current_day-1hours}, for ebb=1, it is current_day:current_day+24 hours)
+         hourly_hwpdir: the directory where the RESTART data is copied (nwges/HOURLY_HWP)
+         cols: hard coded dimension for the RRFS_NA_3km and RRFS_CONUS_3km domains:: cols = 2700 if predef_grid == 'RRFS_NA_3km' else 1092
+         rows: hard coded dimension for the RRFS_NA_3km and RRFS_CONUS_3km domains:: rows = 3950 if predef_grid == 'RRFS_NA_3km' else 1820
+         intp_dir: the working directory for smoke processing (${CYCLE_DIR}/process_smoke)
+         rave_to_intp: a string based on the grid name:: rave_to_intp = predef_grid+"intp"
     Returns:
          list of (hwp_ave_arr, xarr_hwp, totprcp_ave_arr, xarr_totprcp)
     """
