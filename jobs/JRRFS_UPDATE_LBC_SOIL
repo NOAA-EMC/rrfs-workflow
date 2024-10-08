@@ -114,7 +114,6 @@ else
     if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
       export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/${mem_num})}
     else
-      export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
       export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
     fi
   fi

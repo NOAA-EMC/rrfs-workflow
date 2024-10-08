@@ -80,7 +80,7 @@ fi
 if [ "${GSI_TYPE}" = "OBSERVER" ]; then
   if [ "${MEM_TYPE}" = "MEAN" ]; then
     export jobid=${RUN}_observer_${workname}_ensmean_${envir}_${cyc}
-    observer_nwges_dir="${GESROOT}/ensmean/observer_${workname}"
+    observer_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}/ensmean/observer_${workname}"
   else
 # GSI_TYPE = OBSERVER is only for EnKF (ensemble forecasts do not have ANALYSIS tasks)
     export jobid=${RUN}_observer_${workname}_${mem_num}_${envir}_${cyc}
@@ -113,7 +113,7 @@ fi
 
 export gridspec_dir=${GESROOT}/grid_spec
 
-export ${OB_TYPE}
+export OB_TYPE=${OB_TYPE}
 
 #-----------------------------------------------------------------------
 # Define COM directories

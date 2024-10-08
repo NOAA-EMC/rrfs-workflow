@@ -1110,6 +1110,7 @@ fi
 GWD_HRRRsuite_DIR=""
 if [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR" ] || \
    [ "${CCPP_PHYS_SUITE}" = "FV3_HRRR_gf" ]  || \
+   [ "${CCPP_PHYS_SUITE}" = "RRFS_sas" ]  || \
    [ "${CCPP_PHYS_SUITE}" = "FV3_RAP" ]  || \
    [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_v15_thompson_mynn_lam3km" ]; then
   #
@@ -1287,7 +1288,7 @@ check_for_preexist_dir_file "${DATAROOT}" "${PREEXISTING_DIR_METHOD}"
 ENSCTRL_DATAROOT="${ENSCTRL_STMP}"
 COMROOT="${PTMP}/com"
 ENSCTRL_COMROOT="${ENSCTRL_PTMP}/com"
-ENSCTRL_COMOUT="${ENSCTRL_COMROOT}/${NET}/${envir}/${RUN_ensctrl}.@Y@m@d"
+ENSCTRL_COMOUT="${ENSCTRL_COMROOT}/${NET}/${rrfs_ver}/${RUN_ensctrl}.@Y@m@d"
 GESROOT="${PTMP}/nwges"
 LOG_BASEDIR="${PTMP}/logs"
 #

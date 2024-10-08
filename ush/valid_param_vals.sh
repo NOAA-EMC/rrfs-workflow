@@ -29,10 +29,10 @@ valid_vals_CCPP_PHYS_SUITE=( \
 "FV3_RRFS_v1beta" \
 "FV3_HRRR" \
 "FV3_HRRR_gf" \
+"RRFS_sas" \
 "FV3_HRRR_gf_nogwd" \
 "FV3_RAP" \
 "FV3_GFS_v15_thompson_mynn_lam3km" \
-"RRFS_sas" \
 "RRFS_sas_nogwd" \
 ) 
 valid_vals_GFDLgrid_RES=("48" "96" "192" "384" "768" "1152" "3072")

@@ -72,8 +72,9 @@ fi
 
 export jobid=${RUN}_analysis_conv_dbz_${workname}_${envir}_${cyc}
 export DATA="${DATAROOT}/${jobid}"
-rm -rf ${DATA}
-mkdir -p ${DATA}
+if [ ! -d "${DATA}" ]; then
+  echo "WARNING: ${DATA} does not exist" 
+fi
 
 if [ ! -d "${SATBIAS_DIR}" ]; then
   echo "making satbias_dir directory for cycling bias correction files" 

@@ -179,15 +179,16 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
 
   while [[ $imem -le ${NUM_ENS_MEMBERS} ]];do
     memcharv0=$( printf "%03d" $imem )
-    memchar=mem$( printf "%04d" $imem )
+    memchar=m$( printf "%03d" $imem )
 
-    YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
+    YYYYMMDDInterv=$( date +%Y%m%d -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
+    HHInterv=$( date +%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
     restart_prefix="${YYYYMMDD}.${HH}0000."
-    bkpathmem=${RRFSE_FG_ROOT}/${YYYYMMDDHHmInterv}/${memchar}/forecast/RESTART
+    bkpathmem=${RRFSE_FG_ROOT}/enkfrrfs.${YYYYMMDDInterv}/${HHInterv}/${memchar}/forecast/RESTART
     if [ ${DO_SPINUP} == "TRUE" ]; then
       for cycl_hrs in ${CYCL_HRS_PRODSTART_ENS[@]}; do
        if [ $HH == ${cycl_hrs} ]; then
-         bkpathmem=${RRFSE_FG_ROOT}/${YYYYMMDDHHmInterv}/${memchar}/forecast_spinup/RESTART
+         bkpathmem=${RRFSE_FG_ROOT}/enkfrrfs.${YYYYMMDDInterv}/${HHInterv}/${memchar}/forecast_spinup/RESTART
        fi
       done
     fi
@@ -959,9 +960,9 @@ if [ "${GSI_TYPE}" = "OBSERVER" ]; then
     lread_obs_save=.false.
     lread_obs_skip=.true.
     if [ "${CYCLE_TYPE}" = "spinup" ]; then
-      ln -s ../../ensmean/observer_gsi_spinup/obs_input.* .
+      ln -s ../${RUN}_observer_gsi_spinup_ensmean_${envir}_${cyc}/obs_input.* .
     else
-      ln -s ../../ensmean/observer_gsi/obs_input.* .
+      ln -s ../${RUN}_observer_gsi_ensmean_${envir}_${cyc}/obs_input.* .
     fi
   fi
 fi
@@ -1105,11 +1106,11 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
   if [ "${GSI_TYPE}" = "OBSERVER" ]; then
     cp *diag*ges* ${observer_nwges_dir}/.
     if [ "${MEM_TYPE}" = "MEAN" ]; then
-      mkdir -p ${observer_nwges_dir}/../../../../observer_diag/${YYYYMMDDHH}/ensmean/observer_gsi
-      cp *diag*ges* ${observer_nwges_dir}/../../../../observer_diag/${YYYYMMDDHH}/ensmean/observer_gsi/.
+      mkdir -p ${observer_nwges_dir}
+      cp *diag*ges* ${observer_nwges_dir}/.
     else
-      mkdir -p ${observer_nwges_dir}/../../../../observer_diag/${YYYYMMDDHH}/${mem_num}/observer_gsi
-      cp *diag*ges* ${observer_nwges_dir}/../../../../observer_diag/${YYYYMMDDHH}/${mem_num}/observer_gsi/.
+      mkdir -p ${observer_nwges_dir}
+      cp *diag*ges* ${observer_nwges_dir}/.
     fi
   fi
   #

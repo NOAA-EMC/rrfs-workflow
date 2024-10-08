@@ -67,14 +67,19 @@ export mem_num=m$(echo "${ENSMEM_INDX}")
 
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
-export ctrlpath=""
+#export ctrlpath=""
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export INPUT_DATA=${DATAROOT}/${RUN}_forecast_spinup_${envir}_${cyc}/INPUT
-  if [ "${DO_ENSINIT}" = "TRUE" ] && [ "${CYCLE_SUBTYPE}" = "ensinit" ]; then
-    export INPUT_DATA=${DATAROOT}/${RUN}_forecast_ensinit_${envir}_${cyc}/INPUT
-  fi
-  if [ "${DO_ENSINIT}" = "TRUE" ] && [ "${CYCLE_SUBTYPE}" = "spinup" ]; then
-    ctrlpath=${ENSCTRL_DATAROOT}
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then        # EnKF has spinup forecasts
+    export INPUT_DATA=${DATAROOT}/${RUN}_forecast_spinup_${mem_num}_${envir}_${cyc}/INPUT
+    if [ "${DO_ENSINIT}" = "TRUE" ] && [ "${CYCLE_SUBTYPE}" = "ensinit" ]; then
+      export INPUT_DATA=${DATAROOT}/${RUN}_forecast_ensinit_${mem_num}_${envir}_${cyc}/INPUT
+    fi
+#    if [ "${DO_ENSINIT}" = "TRUE" ] && [ "${CYCLE_SUBTYPE}" = "spinup" ]; then
+#      ctrlpath=${ENSCTRL_DATAROOT}
+#    fi
+  else
+    export INPUT_DATA=${DATAROOT}/${RUN}_forecast_spinup_${envir}_${cyc}/INPUT
+#    ctrlpath=${ENSCTRL_DATAROOT}
   fi
 else
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
@@ -84,7 +89,6 @@ else
   fi
 fi
 
-rm -fr ${INPUT_DATA}
 mkdir -p ${INPUT_DATA}
 cd ${INPUT_DATA}
 
