@@ -60,7 +60,7 @@ RRFS for the specified cycle.
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
 
-export mem_num=m$(echo "${ENSMEM_INDX}")
+#export mem_num=m$(echo "${ENSMEM_INDX}")
 
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
@@ -89,7 +89,7 @@ mkdir -p "${COMOUT}"
 # Execute the script.
 #-----------------------------------------------------------------------
 
-export pgmout="${ensmeandir}/OUTPUT.$$"
+export pgmout="${DATA}/OUTPUT.$$"
 env
 
 $HOMErrfs/scripts/exrrfs_calc_ensmean.sh

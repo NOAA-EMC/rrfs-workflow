@@ -342,8 +342,8 @@ else
   if [ "${CYCLE_SUBTYPE}" = "spinup" ] ; then
     # point to the 0-h cycle for the warm start from the 1 timestep restart files
     fg_restart_dirname=forecast_ensinit
-    bkpath=${FG_ROOT}/${RUN}.${PDY}/${cyc}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
-    ctrl_bkpath=${ctrlpath}/forecast_spinup/INPUT
+    bkpath=${FG_ROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+    ctrl_bkpath=${FG_ROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast_spinup/INPUT
   else
     YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
     YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
@@ -421,7 +421,8 @@ else
     if [ "${IO_LAYOUT_Y}" = "1" ]; then
       for file in ${filelistn}; do
         if [ "${CYCLE_SUBTYPE}" = "spinup" ]; then
-          cpreq -p ${ctrl_bkpath}/${file}  ${file}
+          #cpreq -p ${ctrl_bkpath}/${file}  ${file}
+          cpreq -p ${bkpath}/${restart_prefix}${file}  ${file}
         else
           cpreq -p ${bkpath}/${restart_prefix}${file}  ${file}
         fi
@@ -433,7 +434,8 @@ else
         do
           iii=$(printf %4.4i $ii)
           if [ "${CYCLE_SUBTYPE}" = "spinup" ]; then
-            cpreq -p ${ctrl_bkpath}/${file}.${iii}  ${file}.${iii}
+            #cpreq -p ${ctrl_bkpath}/${file}.${iii}  ${file}.${iii}
+            cpreq -p ${bkpath}/${restart_prefix}${file}.${iii}  ${file}.${iii}
           else
             cpreq -p ${bkpath}/${restart_prefix}${file}.${iii}  ${file}.${iii}
           fi
@@ -442,7 +444,7 @@ else
       done
     fi
     if [ "${CYCLE_SUBTYPE}" = "spinup" ] ; then
-      cpreq -p ${FG_ROOT}/${RUN}.${PDY}/${cyc}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
+      cpreq -p ${FG_ROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
     else
       if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
         cpreq -p ${FG_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc

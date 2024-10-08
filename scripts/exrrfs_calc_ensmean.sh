@@ -61,8 +61,8 @@ case $MACHINE in
   export FI_OFI_RXM_SAR_LIMIT=3145728
   export OMP_STACKSIZE=500M
   export OMP_NUM_THREADS=1
-  ncores=$(( NNODES_RUN_RECENTER*PPN_RUN_RECENTER ))
-  APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_RECENTER} --cpu-bind core --depth ${OMP_NUM_THREADS}"
+  ncores=$(( NNODES_RECENTER*PPN_RECENTER ))
+  APRUN="mpiexec -n ${ncores} -ppn ${PPN_RECENTER} --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;
 #
 "HERA")
@@ -117,13 +117,13 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 imem=1
 for imem in  $(seq 1 $nens)
   do
-  ensmem=$( printf "%04d" $imem ) 
+  ensmem=$( printf "%03d" $imem ) 
   memberstring=$( printf "%03d" $imem )
 
   if [ "${CYCLE_TYPE}" = "spinup" ]; then
-    bkpath=${DATAROOT}/${RUN}_forecast_spinup_${mem_num}_${envir}_${cyc}/INPUT  # cycling, use background from RESTART
+    bkpath=${DATAROOT}/${RUN}_forecast_spinup_m${ensmem}_${envir}_${cyc}/INPUT  # cycling, use background from RESTART
   else
-    bkpath=${DATAROOT}/${RUN}_forecast_${mem_num}_${envir}_${cyc}/INPUT  # cycling, use background from RESTART
+    bkpath=${DATAROOT}/${RUN}_forecast_m${ensmem}_${envir}_${cyc}/INPUT  # cycling, use background from RESTART
   fi
 
   dynvarfile=${bkpath}/fv_core.res.tile1.nc

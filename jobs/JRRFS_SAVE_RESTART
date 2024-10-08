@@ -90,13 +90,14 @@ mkdir -p "${NWGES_DIR}/RESTART"
 mkdir -p "${NWGES_DIR}/INPUT"
 if [ "${SURFACE_DIR}" != "empty" ]; then
   mkdir -p "${SURFACE_DIR}"
+  cd ${SURFACE_DIR}
 fi
 
-len_ensmem=${#ENSMEM_INDX}
-if [ ${len_ensmem} -le 3 ]; then
-  CYCLE_SUBTYPE="control"
-fi
-cd ${SURFACE_DIR}
+# check this, why we need this????
+#len_ensmem=${#ENSMEM_INDX}
+#if [ ${len_ensmem} -le 3 ]; then
+#  CYCLE_SUBTYPE="control"
+#fi
 
 #-----------------------------------------------------------------------
 # Make sure that fhr is a non-empty string consisting of only digits.  
@@ -114,7 +115,7 @@ fi
 # Execute the script.
 #-----------------------------------------------------------------------
 
-export pgmout="${SURFACE_DIR}/OUTPUT.$$"
+export pgmout="${DATA}/OUTPUT.$$"
 env
 
 ${HOMErrfs}/scripts/exrrfs_save_restart.sh
