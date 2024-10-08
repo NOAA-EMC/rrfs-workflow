@@ -33,6 +33,11 @@ def check_file_nans(test_nc, vars_fg, vars_bg, name):
         return nans
 
 def err_check(err):
+    """
+    Check for error.
+
+    err: Error code.
+    """
     if err > 0:
         print(f"An error ocurred in {sys.argv[0]}. Blending failed!!!")
         print(f"err={err}")
