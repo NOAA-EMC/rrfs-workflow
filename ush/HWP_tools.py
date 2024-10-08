@@ -1,5 +1,5 @@
 """
-This file provides HWP tools.
+This file provides Hourly Wildfire Potential (HWP) tools.
 
 """
 
@@ -15,7 +15,7 @@ def check_restart_files(hourly_hwpdir, fcst_dates):
     """Check the restart files.
 
     Args:
-         hourly_hwpdir: Hourly ??? directory
+         hourly_hwpdir: the directory where the RESTART data is copied (nwges/HOURLY_HWP)
          fcst_dates: Forecast dates
     Returns:
          list of hwp_avail_hours, hwp_non_avail_hours
@@ -41,11 +41,18 @@ def copy_missing_restart(nwges_dir, hwp_non_avail_hours, hourly_hwpdir):
     """Check the restart files.
 
     Args:
-         nwges_dir: directory
-         hwp_non_avail_hours: ???
+         nwges_dir: holds the boundary, INPUT, and RESTART files (e.g,
+         described here:
+         [ufs-community/ufs-srweather-app#654](https://github.com/ufs-community/ufs-srweather-app/issues/654))
+         The use of NWGES is a bit of a legacy variable name in
+         production. It is often used to define a directory holding
+         DA-relevant files (such as first guess and analysis files)
+         outside of the main COM output directory.
+         hwp_non_avail_hours: a list of hours without available RESTART files
          hourly_hwpdir: ???
     Returns:
          list of (restart_avail_hours, restart_nonavail_hours_test)
+
     """
     restart_avail_hours = []
     restart_nonavail_hours_test = []
