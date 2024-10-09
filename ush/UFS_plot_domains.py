@@ -118,6 +118,10 @@ def get_lambert_points(gnomonic_map, lambert_map,pps):
     the PathPatch function.
     
     pps is recommended 10 or less due to time of calculation.
+
+    gnomonic_map: ???
+    lambert_map: ???
+    pps: ???
     """
     print("Hello from a function")
     
