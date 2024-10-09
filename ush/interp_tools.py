@@ -1,3 +1,7 @@
+"""
+???
+
+"""
 import datetime as dt
 import pandas as pd
 import os
@@ -7,8 +11,13 @@ import xarray as xr
 import numpy as np
 from netCDF4 import Dataset
 
-#Create date range, this is later used to search for RAVE and HWP from previous 24 hours
 def date_range(current_day):
+    """
+    Create date range, this is later used to search for RAVE and HWP from previous 24 hours.
+
+    current_day: ???
+    
+    """
     print(f'Searching for interpolated RAVE for {current_day}')
     
     fcst_datetime = dt.datetime.strptime(current_day, "%Y%m%d%H")
@@ -19,8 +28,15 @@ def date_range(current_day):
     print(f'Current cycle: {fcst_datetime}')
     return(fcst_dates)
 
-# Check if interoplated RAVE is available for the previous 24 hours
 def check_for_intp_rave(intp_dir, fcst_dates, rave_to_intp):
+    """
+    Check if interoplated RAVE is available for the previous 24 hours.
+
+    intp_dir: ???
+    fcst_dates: ???
+    rave_to_intp: ???
+    
+    """
     intp_avail_hours = []
     intp_non_avail_hours = []
     # There are four situations here.
@@ -48,8 +64,15 @@ def check_for_intp_rave(intp_dir, fcst_dates, rave_to_intp):
 
     return(intp_avail_hours, intp_non_avail_hours, inp_files_2use)
 
-#Check if raw RAVE in intp_non_avail_hours list is available for interpolatation
 def check_for_raw_rave(RAVE, intp_non_avail_hours, intp_avail_hours):
+    """
+    Check if raw RAVE in intp_non_avail_hours list is available for interpolatation.
+
+    RAVE: ???
+    intp_non_avail_hours: ???
+    intp_avail_hours: ???
+
+    """
     rave_avail = []
     rave_avail_hours = []
     rave_nonavail_hours_test = []
@@ -72,9 +95,16 @@ def check_for_raw_rave(RAVE, intp_non_avail_hours, intp_avail_hours):
     print(f'FIRST DAY?: {first_day}')
     return(rave_avail, rave_avail_hours, rave_nonavail_hours_test, first_day)
 
-#Create source and target fields
 def creates_st_fields(grid_in, grid_out, intp_dir, rave_avail_hours):
+    """
+    Create source and target fields.
 
+    grid_in: ???
+    grid_out: ???
+    intp_dir: ???
+    rave_avail_hours: ???
+
+    """
     # Open datasets with context managers
     with xr.open_dataset(grid_in) as ds_in, xr.open_dataset(grid_out) as ds_out:
         tgt_area = ds_out['area']
@@ -93,7 +123,12 @@ def creates_st_fields(grid_in, grid_out, intp_dir, rave_avail_hours):
 
 #Define output and variable meta data
 def create_emiss_file(fout, cols, rows):
-    """Create necessary dimensions for the emission file."""
+    """Create necessary dimensions for the emission file.
+
+    fout: ???
+    cols: ???
+    rows: ???
+    """
     fout.createDimension('t', None)
     fout.createDimension('lat', cols)
     fout.createDimension('lon', rows)
@@ -101,7 +136,17 @@ def create_emiss_file(fout, cols, rows):
     setattr(fout, 'TIME_RANGE', '1 hour')
 
 def Store_latlon_by_Level(fout, varname, var, long_name, units, dim, fval, sfactor):
-    """Store a 2D variable (latitude/longitude) in the file."""
+    """Store a 2D variable (latitude/longitude) in the file.
+
+    fout: ???
+    varname: ???
+    var: ???
+    long_name: ???
+    units: ???
+    dim: ???
+    fval: ???
+    sfactor: ???
+    """
     var_out = fout.createVariable(varname,   'f4', ('lat','lon'))
     var_out.units=units
     var_out.long_name=long_name
@@ -111,7 +156,16 @@ def Store_latlon_by_Level(fout, varname, var, long_name, units, dim, fval, sfact
     var_out.coordinates='geolat geolon'
 
 def Store_by_Level(fout, varname, long_name, units, dim, fval, sfactor):
-    """Store a 3D variable (time, latitude/longitude) in the file."""
+    """Store a 3D variable (time, latitude/longitude) in the file.
+
+    fout: ???
+    varname: ???
+    long_name: ???
+    units: ???
+    dim: ???
+    fval: ???
+    sfactor: ???
+    """
     var_out = fout.createVariable(varname,   'f4', ('t','lat','lon'))
     var_out.units=units
     var_out.long_name = long_name
@@ -119,8 +173,18 @@ def Store_by_Level(fout, varname, long_name, units, dim, fval, sfactor):
     var_out.FillValue=fval
     var_out.coordinates='t geolat geolon'
 
-#create a dummy rave interpolated file if first day or regrider fails
 def create_dummy(intp_dir, current_day, tgt_latt, tgt_lont, cols, rows):
+    """
+    Create a dummy rave interpolated file if first day or regrider fails.
+
+    intp_dir: ???
+    current_day: ???
+    tgt_latt: ???
+    tgt_lont: ???
+    cols: ???
+    rows: ???
+    
+    """
     file_path = os.path.join(intp_dir, f'SMOKE_RRFS_data_{current_day}00.nc')
     dummy_file = np.zeros((cols, rows))  # Changed to 3D to match the '3D' dimensions
     with Dataset(file_path, 'w') as fout:
@@ -143,8 +207,18 @@ def create_dummy(intp_dir, current_day, tgt_latt, tgt_lont, cols, rows):
 
     return "Emissions dummy file created successfully"
 
-#generate regridder
 def generate_regrider(rave_avail_hours, srcfield, tgtfield, weightfile, inp_files_2use, intp_avail_hours):
+    """
+    generate regridder.
+
+    rave_avail_hours: ???
+    srcfield: ???
+    tgtfield: ???
+    weightfile: ???
+    inp_files_2use: ???
+    intp_avail_hours: ???
+
+    """
     print('Checking conditions for generating regridder.')
     use_dummy_emiss = len(rave_avail_hours) == 0 and len(intp_avail_hours) == 0
     regridder = None
@@ -167,9 +241,28 @@ def generate_regrider(rave_avail_hours, srcfield, tgtfield, weightfile, inp_file
 
     return(regridder, use_dummy_emiss)
 
-#process RAVE available for interpolation
 def interpolate_rave(RAVE, rave_avail, rave_avail_hours, use_dummy_emiss, vars_emis, regridder, 
                     srcgrid, tgtgrid, rave_to_intp, intp_dir, src_latt, tgt_latt, tgt_lont, cols, rows):
+    """
+    Process RAVE available for interpolation.
+
+    RAVE: ???
+    rave_avail: ???
+    rave_avail_hours: ???
+    use_dummy_emiss: ???
+    vars_emis: ???
+    regridder: ???
+    srcgrid: ???
+    tgtgrid: ???
+    rave_to_intp: ???
+    intp_dir: ???
+    src_latt: ???
+    tgt_latt: ???
+    tgt_lont: ???
+    cols: ???
+    rows: ???
+
+    """
     for index, current_hour in enumerate(rave_avail_hours):
         file_name = rave_avail[index]
         rave_file_path = os.path.join(RAVE, file_name[0])  
