@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-'''
+"""
 This utility updates a Fortran namelist file using the f90nml package. The
 settings that are modified are supplied via command line YAML-formatted string
 and/or YAML configuration files.
@@ -64,7 +64,7 @@ Expected behavior:
     - Given a user namelist and a base namelist, the script can dump the
       difference in the two to a YAML file that can be included as a section
       in the supported configs.
-'''
+"""
 
 import argparse
 import collections
@@ -75,14 +75,12 @@ import yaml
 
 
 def config_exists(arg):
-
-    '''
+    """
     Checks whether the config file exists and if it contains the input
     section. Returns the arg as provided if checks are passed.
-    '''
 
-    # Agument is expected to be a 2-item list of file name and internal section
-    # name.
+    arg: a 2-item list of file name and internal section name.
+    """
     file_name = arg[0]
     section_name = arg[1]
 
@@ -102,8 +100,10 @@ def config_exists(arg):
     return [cfg, section_name]
 
 def file_exists(arg):
+    """ Check for existence of file
 
-    ''' Check for existence of file '''
+    arg: ???
+    """
 
     if not os.path.exists(arg):
         msg = f'{arg} does not exist!'
@@ -112,20 +112,22 @@ def file_exists(arg):
     return arg
 
 def load_config(arg):
-
-    '''
+    """
     Check to ensure that the provided config file exists. If it does, load it
     with YAML's safe loader and return the resulting dict.
-    '''
+
+    arg: ???
+    """
 
     return yaml.safe_load(arg)
 
 def path_ok(arg):
-
-    '''
+    """
     Check whether the path to the file exists, and is writeable. Return the path
     if it passes all checks, otherwise raise an error.
-    '''
+
+    arg: ???
+    """
 
     # Get the absolute path provided by arg
     dir_name = os.path.abspath(os.path.dirname(arg))
@@ -138,12 +140,11 @@ def path_ok(arg):
     raise argparse.ArgumentTypeError(msg)
 
 def parse_args():
-
-    '''
+    """
     Function maintains the arguments accepted by this script. Please see
     Python's argparse documenation for more information about settings of each
     argument.
-    '''
+    """
 
     parser = argparse.ArgumentParser(
         description='Update a Fortran namelist with user-defined settings.'
@@ -195,11 +196,13 @@ def parse_args():
     return parser.parse_args()
 
 def dict_diff(dict1, dict2):
+    """
+    Produces a dictionary of how dict2 differs from dict1.
 
-    '''
-    Produces a dictionary of how dict2 differs from dict1
-    '''
-
+    dict1: ???
+    dict2: ???
+    
+    """
     diffs = {}
 
     # Loop through dict1 sections and key/value pairs
@@ -228,8 +231,10 @@ def dict_diff(dict1, dict2):
     return diffs
 
 def to_dict(odict):
+    """ Recursively convert OrderedDict to Python dict.
 
-    ''' Recursively convert OrderedDict to Python dict. '''
+    odict: ???
+    """
 
     if not isinstance(odict, collections.OrderedDict):
         return odict
@@ -241,27 +246,15 @@ def to_dict(odict):
     return ret
 
 def update_dict(dest, newdict, quiet=False):
+    """Overwrites all values in dest dictionary with values from newdict. Turn off
+    print statements with queit=True. The dest dict is updated in place.
 
-    '''
-    Overwrites all values in dest dictionary with values from newdict. Turn off
-    print statements with queit=True.
-
-    Input:
-
-        dest      A dict that is to be updated.
-        newdict   A dict containing sections and keys corresponding to
-                  those in dest and potentially additional ones, that will be used to
-                  update the dest dict.
-        quiet     An optional boolean flag to turn off output.
-
-    Output:
-
-        None
-
-    Result:
-
-        The dest dict is updated in place.
-    '''
+    dest: A dict that is to be updated.
+    newdict: A dict containing sections and keys corresponding to
+    those in dest and potentially additional ones, that will be used
+    to update the dest dict.
+    quiet: An optional boolean flag to turn off output.
+    """
 
     for sect, values in newdict:
         # If section is set to None, remove all contents from namelist
@@ -286,7 +279,10 @@ def update_dict(dest, newdict, quiet=False):
 
 def main(cla):
 
-    ''' Using input command line arguments (cla), update a Fortran namelist file. '''
+    """ Using input command line arguments (cla), update a Fortran namelist file.
+
+    cla: command line arguments
+    """
 
     # Load base namelist into dict
     nml = f90nml.Namelist()
