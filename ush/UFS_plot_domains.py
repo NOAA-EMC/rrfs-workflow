@@ -120,8 +120,8 @@ def get_lambert_points(gnomonic_map, lambert_map,pps):
     pps is recommended 10 or less due to time of calculation.
 
     gnomonic_map: ???
-    lambert_map: ???
-    pps: ???
+    lambert_map: the lambert domain we have defined
+    pps: the number of points to interpolate and draw for each side of the lambert "rectangle"
     """
     print("Hello from a function")
     
