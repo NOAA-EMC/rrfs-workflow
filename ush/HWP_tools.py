@@ -1,3 +1,8 @@
+"""
+This file provides Hourly Wildfire Potential (HWP) tools.
+
+"""
+
 import numpy as np
 import os
 import datetime as dt
@@ -7,6 +12,14 @@ import xarray as xr
 import fnmatch
 
 def check_restart_files(hourly_hwpdir, fcst_dates):
+    """Check the restart files.
+
+    Args:
+         hourly_hwpdir: the directory where the RESTART data is copied (nwges/HOURLY_HWP)
+         fcst_dates: Forecast dates
+    Returns:
+         lists of hours with and without available RESTART files
+    """
     hwp_avail_hours = []
     hwp_non_avail_hours = []
 
@@ -25,6 +38,29 @@ def check_restart_files(hourly_hwpdir, fcst_dates):
     return(hwp_avail_hours, hwp_non_avail_hours)
 
 def copy_missing_restart(nwges_dir, hwp_non_avail_hours, hourly_hwpdir):
+    """Check the restart files.
+
+    The script loops through hwp_non_avail_hours (missing files in
+    nwges/HOURLY_HWP) and determines if an alternative RESTART file in
+    nwges/fcst_fv3lam/RESTART is available instead. If so, it is
+    appended to restart_avail_hours.
+
+    Args:
+         nwges_dir: holds the boundary, INPUT, and RESTART files (e.g,
+         described here:
+         [ufs-community/ufs-srweather-app#654](https://github.com/ufs-community/ufs-srweather-app/issues/654))
+         The use of NWGES is a bit of a legacy variable name in
+         production. It is often used to define a directory holding
+         DA-relevant files (such as first guess and analysis files)
+         outside of the main COM output directory.
+         hwp_non_avail_hours: a list of hours without available RESTART files
+         hourly_hwpdir: the directory where the RESTART data is copied (nwges/HOURLY_HWP)
+    Returns:
+         list of::
+         - restart_avail_hours
+         - restart_nonavail_hours_test which is a subset of hwp_non_avail_hours.
+
+    """
     restart_avail_hours = []
     restart_nonavail_hours_test = []
 
@@ -79,6 +115,22 @@ def copy_missing_restart(nwges_dir, hwp_non_avail_hours, hourly_hwpdir):
     return(restart_avail_hours, restart_nonavail_hours_test)
 
 def process_hwp(fcst_dates, hourly_hwpdir, cols, rows, intp_dir, rave_to_intp):
+    """Check the restart files.
+
+    Args:
+         fcst_dates: a list of forecasts (for production/ops/ebb=2, it is {current_day - 25 hours: current_day-1hours}, for ebb=1, it is current_day:current_day+24 hours)
+         hourly_hwpdir: the directory where the RESTART data is copied (nwges/HOURLY_HWP)
+         cols: hard coded dimension for the RRFS_NA_3km and RRFS_CONUS_3km domains:: cols = 2700 if predef_grid == 'RRFS_NA_3km' else 1092
+         rows: hard coded dimension for the RRFS_NA_3km and RRFS_CONUS_3km domains:: rows = 3950 if predef_grid == 'RRFS_NA_3km' else 1820
+         intp_dir: the working directory for smoke processing (${CYCLE_DIR}/process_smoke)
+         rave_to_intp: a string based on the grid name:: rave_to_intp = predef_grid+"intp"
+    Returns:
+         list of::
+         - average (through time) of HWP_AVE in the available RESTART files
+         - hwp_ave_arr converted to an xarray DataArray
+         - the total precipitation vector (totprcp) reshaped to the 2D grid
+         - totprcp_ave_arr converted to an xarray DataArray
+    """
     hwp_ave = [] 
     totprcp = np.zeros((cols*rows))
     var1, var2 = 'rrfs_hwp_ave', 'totprcp_ave' 
