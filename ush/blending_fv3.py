@@ -1,5 +1,7 @@
-"""
-This file handles blending of FV3 tiles???
+"""This script performs blending between regional and global weather
+forecast model restarts using the Fortran module raymond. The Raymond
+filter is a sixth-order tangent low-pass implicit filter and can be
+controlled via the cutoff length scale (Lx).
 
 """
 import numpy as np
@@ -8,13 +10,31 @@ import raymond
 import sys
 
 def check_file_nans(test_nc, vars_fg, vars_bg, name):
-    """
-    Check file NANS?
+    """Check for NaN values in specified variables of a netCDF file.
 
-    test_nc: Test netCDF file.
-    vars_fg: Vars?
-    vars_bg: Vars?
-    name: Name of file?
+    This function iterates over a list of variables and checks for NaN values in the provided
+    netCDF file. It prints the count of NaNs found for each variable and indicates whether
+    any NaNs were detected.
+
+    Again, if there are any NaNs found, I wanted to catch that here
+    instead of later when the model is running. I don't think there is
+    any reason to expect NaNs.
+
+    Parameters:
+    test_nc: Dataset
+    The test netCDF file containing the variables to be checked for NaN values.
+    vars_fg: list of str
+    A list of variable names from the regional model (foreground) to check.
+    vars_bg: list of str
+    A corresponding list of variable names from the global model (background) to check.
+    name: str
+    A string representing the context (e.g., 'glb' for global or 'reg' for regional)
+    to identify the source of the variables being checked.
+
+    Returns:
+    bool
+    Returns True if any NaN values are found in the specified variables;
+    otherwise, returns False.
 
     """
     nans = False
