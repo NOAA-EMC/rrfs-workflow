@@ -5,7 +5,7 @@ Forecast System
 (RRFS)](https://gsl.noaa.gov/focus-areas/unified_forecast_system/rrfs).
 
 For more information see the [RRFS-Workflow User's
-guide](https://chanhoo-rrfs-workflow.readthedocs.io/en/latest/index.html).
+guide](https://rrfs-workflow.readthedocs.io/en/latest/index.html).
 
 ## Team
 
