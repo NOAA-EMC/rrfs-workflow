@@ -3,5 +3,6 @@ sphinx_rtd_theme
 docutils==0.16
 numpy
 netCDF4
+raymond
 xarray
 matplotlib
