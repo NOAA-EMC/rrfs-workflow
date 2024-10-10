@@ -1,6 +1,7 @@
-# HRRR-E PYTHON GRIB GENERATION
-# CONFIGURATION FILE
+"""
+HRRR-E python GRIB generation configuration file
 
+"""
 ## CREATE DICTIONARIES ##
 grib_discipline = {}
 grib_category = {}

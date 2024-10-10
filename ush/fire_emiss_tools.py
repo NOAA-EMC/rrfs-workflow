@@ -1,3 +1,6 @@
+"""
+Fire emisivity tools?
+"""
 import os
 import numpy as np
 import xarray as xr
@@ -5,12 +8,25 @@ from datetime import datetime
 from netCDF4 import Dataset
 import interp_tools as i_tools
 
-#Compute average FRP from raw RAVE for the previous 24 hours 
 def averaging_FRP(fcst_dates, cols, rows, intp_dir, rave_to_intp, veg_map, tgt_area, beta, fg_to_ug):
-    # There are two situations here.
-    #   1) there is only on fire detection whithin 24 hours so FRP is divided by 2 
-    #   2) There are more than one fire detection so the average FRP is stimated
-    # ebb_smoke is always divided by the number of times a fire is detected within 24 hours window
+    """
+    Compute average FRP from raw RAVE for the previous 24 hours.
+    
+    There are two situations here.
+    1) there is only on fire detection whithin 24 hours so FRP is divided by 2 
+    2) There are more than one fire detection so the average FRP is stimated
+    ebb_smoke is always divided by the number of times a fire is detected within 24 hours window
+
+    fcst_dates: ???
+    cols: ???
+    rows: ???
+    intp_dir: ???
+    rave_to_intp: ???
+    veg_map: ???
+    tgt_area: ???
+    beta: ???
+    fg_to_ug: ???
+    """
     base_array = np.zeros((cols*rows))
     frp_daily = base_array
     ebb_smoke_total = []
@@ -67,9 +83,25 @@ def averaging_FRP(fcst_dates, cols, rows, intp_dir, rave_to_intp, veg_map, tgt_a
     return(frp_avg_reshaped, ebb_total_reshaped)
 
 def estimate_fire_duration(intp_avail_hours, intp_dir, fcst_dates, current_day, cols, rows, rave_to_intp):
-    # There are two steps here.
-    #   1) First day simulation no RAVE from previous 24 hours available (fire age is set to zero)
-    #   2) previus files are present (estimate fire age as the difference between the date of the current cycle and the date whe the fire was last observed whiting 24 hours)
+    """
+    There are two steps here.
+    
+    1. First day simulation no RAVE from previous 24 hours available
+    (fire age is set to zero)
+    
+    2. previus files are present (estimate fire age as the difference
+    between the date of the current cycle and the date whe the fire
+    was last observed whiting 24 hours)
+
+    intp_avail_hours: ???
+    intp_dir: ???
+    fcst_dates: ???
+    current_day: ???
+    cols: ???
+    rows: ???
+    rave_to_intp: ???
+
+    """
     t_fire = np.zeros((cols, rows))
 
     for date_str in fcst_dates:
@@ -103,10 +135,34 @@ def estimate_fire_duration(intp_avail_hours, intp_dir, fcst_dates, current_day, 
     return(te)
 
 def save_fire_dur(cols, rows, te):
+    """
+    ???
+
+    cols: ???
+    rows: ???
+    te: ???
+    
+    """
     fire_dur = np.array(te).reshape(cols, rows)
     return(fire_dur)
 
 def produce_emiss_file(xarr_hwp, frp_avg_reshaped, totprcp_ave_arr, xarr_totprcp, intp_dir, current_day, tgt_latt, tgt_lont, ebb_tot_reshaped, fire_age, cols, rows):
+    """
+    ???
+
+    xarr_hwp: ???
+    frp_avg_reshaped: ???
+    totprcp_ave_arr: ???
+    xarr_totprcp: ???
+    intp_dir: ???
+    current_day: ???
+    tgt_latt: ???
+    tgt_lont: ???
+    ebb_tot_reshaped: ???
+    fire_age: ???
+    cols: ???
+    rows: ???
+    """
     # Ensure arrays are not negative or NaN
     frp_avg_reshaped = np.clip(frp_avg_reshaped, 0, None)
     frp_avg_reshaped = np.nan_to_num(frp_avg_reshaped)
