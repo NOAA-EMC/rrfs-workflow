@@ -1,5 +1,12 @@
-"""
-???
+"""The purpose of this code is to convert a cold start file from
+chgres_cube into a FV3 warm start (restart) file, enabling data
+blending operators that require a warm start format. The code performs
+essential transformations, including wind rotation and vertical
+remapping of atmospheric scalars and winds, ensuring the cold start
+data aligns with the FV3 model's restart format. Reason: The global 6
+h background from chgres_cube is a cold start and must be converted to
+a warm start file to be able to blend with the 1 h EnKF restarts.
+
 """
 import numpy as np
 from netCDF4 import Dataset
@@ -9,12 +16,28 @@ import chgres_winds   # might need to rename in the future
 import sys
 
 def nan_check(arr, name, check_id):
-    """
-    NAN check?
+    """NAN check function.
 
-    arr: ???
-    name: ???
-    check_id: ???
+    This function checks a given array for NaN (Not a Number) values,
+    counts the total number of NaNs, and prints their indices if any
+    are found. It helps identify problematic data in the array that
+    may disrupt further processing.
+
+    After all nan_checks are done, if there is at least one nan then
+    the code fails. I put a note right after the vertical remapping of
+    the wind that says "Perform a NaN check - sometimes will get NaNs
+    at this point". I don't think it should fail. I think it was more
+    of an issue in development and I kept the check there just to be
+    safe.
+
+    Parameters:
+    arr: numpy array to be checked for NaN values.
+    name: string used to label the array in the output for identification.
+    check_id: integer or string identifier to differentiate between multiple checks in the output.
+
+    Returns:
+    nan_count: integer representing the total number of NaN values found in the array.
+
     """
     nan_count = 0
     nan_count = np.sum(np.isnan(arr))
