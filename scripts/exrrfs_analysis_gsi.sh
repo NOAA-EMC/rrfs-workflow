@@ -128,7 +128,7 @@ if [ "${CYCLE_TYPE}" = "spinup" ]; then
     bkpath=${DATAROOT}/${RUN}_calc_ensmean_spinup_${envir}_${cyc}
   else
     if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-      bkpath=${DATAROOT}/${RUN}_forecast_spinup_${mem_num}_${envir}_${cyc}/INPUT
+      bkpath=${DATAROOT}/${RUN}_forecast_spinup_${envir}_${mem_num}_${cyc}/INPUT
     else
       bkpath=${DATAROOT}/${RUN}_forecast_spinup_${envir}_${cyc}/INPUT
     fi
@@ -138,9 +138,9 @@ else
     bkpath=${DATAROOT}/${RUN}_calc_ensmean_${envir}_${cyc}
   else
     if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-      bkpath=${DATAROOT}/${RUN}_forecast_${mem_num}_${envir}_${cyc}/INPUT
+      bkpath=${DATAROOT}/${RUN}_forecast_prod_${envir}_${mem_num}_${cyc}/INPUT
     else
-      bkpath=${DATAROOT}/${RUN}_forecast_${envir}_${cyc}/INPUT
+      bkpath=${DATAROOT}/${RUN}_forecast_prod_${envir}_${cyc}/INPUT
     fi
   fi
 fi
