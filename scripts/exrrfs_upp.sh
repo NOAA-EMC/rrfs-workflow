@@ -35,7 +35,7 @@ numx=2
 /
 EOF
 
-# run the MPAS model
+# run the executable
 ulimit -s unlimited
 ulimit -v unlimited
 ulimit -a

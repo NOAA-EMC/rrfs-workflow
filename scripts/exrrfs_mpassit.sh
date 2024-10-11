@@ -13,7 +13,6 @@ if [[ -z "${ENS_INDEX}" ]]; then
 else
   ensindexstr="/mem${ENS_INDEX}"
 fi
-#gge.debug: in operation, does UPP work on COMROOT(wait for the completion of all fcsts?)  or DATAROOT?
 ${cpreq} ${DATAROOT}/${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}${ensindexstr}/fcst/history.${timestr}.nc .
 ${cpreq} ${DATAROOT}/${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}${ensindexstr}/fcst/diag.${timestr}.nc .
 ${cpreq} ${FIXrrfs}/mpassit/${NET}/* .
@@ -32,7 +31,7 @@ fi
 sed -e "s/@timestr@/${timestr}/" -e "s/@nx@/${nx}/" -e "s/@ny@/${ny}/" -e "s/@dx@/${dx}/" \
     -e "s/@ref_lat@/${ref_lat}/" ${PARMrrfs}/namelist.mpassit > namelist.mpassit
 
-# run the MPAS model
+# run the executable
 ulimit -s unlimited
 ulimit -v unlimited
 ulimit -a
