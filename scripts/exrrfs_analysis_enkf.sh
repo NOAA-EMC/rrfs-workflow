@@ -141,10 +141,10 @@ for imem in  $(seq 1 $nens) ensmean; do
     memcharv0="mem"$( printf "%03d" $imem )
   fi
   if [ "${CYCLE_TYPE}" = "spinup" ]; then
-    bkpath=${DATAROOT}/${RUN}_forecast_spinup_${memchar}_${envir}_${cyc}/INPUT
+    bkpath=${DATAROOT}/${RUN}_forecast_spinup_${envir}_${memchar}_${cyc}/INPUT
     observer_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}_spinup/${memchar}/observer_gsi_spinup"
   else
-    bkpath=${DATAROOT}/${RUN}_forecast_${memchar}_${envir}_${cyc}/INPUT
+    bkpath=${DATAROOT}/${RUN}_forecast_prod_${envir}_${memchar}_${cyc}/INPUT
     observer_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}/${memchar}/observer_gsi"
   fi
   if [ "${imem}" = "ensmean" ]; then
