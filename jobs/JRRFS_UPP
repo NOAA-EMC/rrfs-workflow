@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]${id}: '
+set -x
+date
+#
+# source the config cascade
+source ${EXPDIR}/exp.setup
+[[ ! -z "${ENS_INDEX}" ]] && source ${EXPDIR}/config/config.ens
+source ${EXPDIR}/config/config.${MACHINE}
+source ${EXPDIR}/config/config.base
+[[ -s ${EXPDIR}/config/config.upp ]] && source ${EXPDIR}/config/config.upp
+#
+export pid=${pid:-$$}
+if [[ -z "${ENS_INDEX}" ]]; then
+  export RUN="rrfs"
+else
+  export RUN="ensrrfs"
+fi
+export jobid=${jobid:-${RUN}_upp_${cyc}}
+
+export DATA=${DATA:-${DATAROOT}/${jobid}}
+if [ -d ${DATA}/${FHR} ]; then # remove the ${DATA}/${FHR} directory if existed
+  rm -rf ${DATA}/${FHR}
+fi
+mkdir -p ${DATA}
+mkdir -p ${DATA}/${FHR}
+#
+export COMINrrfs=${COMINrrfs:-$(compath.py $envir/rrfs/$rrfs_ver)}
+export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
+if [[ -z "${ENS_INDEX}" ]]; then
+  mkdir -p ${COMOUT}/upp
+else
+  mkdir -p ${COMOUT}/mem${ENS_INDEX}/upp
+fi
+#
+#----------------------------------------
+# Execute the script.
+#----------------------------------------
+export pgmout="${DATA}/OUTPUT.$$"
+${HOMErrfs}/scripts/exrrfs_upp.sh
+export err=$?; err_chk
+
+if [ -e "$pgmout" ]; then
+  cat $pgmout
+fi
+#
+#----------------------------------------
+# Remove the Temporary working directory
+#----------------------------------------
+cd ${DATAROOT}
+[[ "${KEEPDATA}" == "NO" ]] && rm -rf ${DATA}
+#
+date
+echo "JOB ${jobid:-} HAS COMPLETED NORMALLY!"
+exit 0
