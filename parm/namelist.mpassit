@@ -2,7 +2,7 @@
     grid_file_input_grid = "mpassit.init.nc"
     hist_file_input_grid = "history.@timestr@.nc"
     diag_file_input_grid = "diag.@timestr@.nc"
-    output_file          = "mpassit.@timestr2@.nc"
+    output_file          = "mpassit.@timestr@.nc"
     target_grid_type     = 'lambert'
     interp_diag          = .true.
     interp_hist          = .true.

@@ -59,8 +59,8 @@ def setup_xml(HOMErrfs, expdir):
       if os.getenv("FCST_ONLY","FALSE").upper()=="FALSE":
         da(xmlFile,expdir)
       fcst(xmlFile,expdir)
-      #mpassit(xmlFile,expdir)
-      #upp(xmlFile,expdir)
+      mpassit(xmlFile,expdir)
+      upp(xmlFile,expdir)
       #
       #if machine == "jet": #currently only support graphics on jet
       #  graphics(xmlFile,expdir)
@@ -74,9 +74,9 @@ def setup_xml(HOMErrfs, expdir):
       lbc(xmlFile,expdir,do_ensemble=True)
       if os.getenv("ENS_FCST_ONLY","FALSE").upper()=="FALSE":
         ens_da(xmlFile,expdir)
-      #fcst(xmlFile,expdir,do_ensemble=True)
-      #mpassit(xmlFile,expdir,do_ensemble=True)
-      #upp(xmlFile,expdir,do_ensemble=True)
+      fcst(xmlFile,expdir,do_ensemble=True)
+      mpassit(xmlFile,expdir,do_ensemble=True)
+      upp(xmlFile,expdir,do_ensemble=True)
 
 # ---------------------------------------------------------------------------
     if os.getenv("REALTIME").upper() == "TRUE": # write out the clean task for realtime runs and retros don't need it
