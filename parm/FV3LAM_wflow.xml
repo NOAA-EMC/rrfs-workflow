@@ -659,6 +659,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&MAKE_ICS_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&MAKE_ICS_TN;_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -762,6 +763,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&BLEND_ICS_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&MAKE_ICS_TN;_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -840,6 +842,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&MAKE_LBCS_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H_#bcgrp#.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&MAKE_LBCS_TN;_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -972,6 +975,11 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&PREP_CYC_SPINUP_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+ {%- if do_ensinit %}
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_ensinit_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
+ {%- else %}
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_spinup_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
+ {%- endif %}
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -1064,6 +1072,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&PREP_CYC_SPINUP_TN;_ensinit_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_ensinit_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -1153,6 +1162,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&FORECAST_TN;_ensinit_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_ensinit_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -1197,6 +1207,7 @@ MODULES_RUN_TASK_FP script.
       <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;_ensinit_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+      <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_ensinit_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -1214,7 +1225,7 @@ MODULES_RUN_TASK_FP script.
         <and>
           <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
           <or>
-            <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_ensinit_m#mem#_&envir;_@H/RESTART/</cyclestr><cyclestr offset="{{ dt_atmos }}">@Y@m@d.@H@M@S.coupler.res</cyclestr></datadep>
+            <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_ensinit_&envir;_m#mem#_@H/RESTART/</cyclestr><cyclestr offset="{{ dt_atmos }}">@Y@m@d.@H@M@S.coupler.res</cyclestr></datadep>
             <datadep age="00:00:00:05"><cyclestr>&FG_ROOT;/&RUN;.@Y@m@d/@H/m#mem#/run_blending</cyclestr> </datadep>
           </or>
         </and>
@@ -1240,6 +1251,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&PREP_CYC_SPINUP_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_spinup_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -1919,6 +1931,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&FORECAST_TN;_spinup_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_spinup_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -1991,6 +2004,7 @@ MODULES_RUN_TASK_FP script.
       <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;_spinup_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+      <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_spinup_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -2008,8 +2022,8 @@ MODULES_RUN_TASK_FP script.
           <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
           <or>
             {%- if do_ensemble %}
-              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_spinup_m#mem#_&envir;_@H/RESTART/coupler.res</cyclestr></datadep>
-              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_spinup_m#mem#_&envir;_@H/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_spinup_&envir;_m#mem#_@H/RESTART/coupler.res</cyclestr></datadep>
+              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_spinup_&envir;_m#mem#_@H/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
             {%- else %}
               <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_spinup_&envir;_@H/RESTART/coupler.res</cyclestr></datadep>
               <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_spinup_&envir;_@H/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
@@ -2139,6 +2153,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&PREP_CYC_PROD_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_prod_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -2975,6 +2990,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&FORECAST_TN;_prod_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_prod_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -3054,6 +3070,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&FORECAST_TN;_prod_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_prod_long_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -3131,6 +3148,7 @@ MODULES_RUN_TASK_FP script.
       <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+      <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_prod_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -3149,11 +3167,11 @@ MODULES_RUN_TASK_FP script.
           <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
           <or>
             {%- if do_ensemble %}
-              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_m#mem#_&envir;_@H/RESTART/coupler.res</cyclestr></datadep>
-              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_m#mem#_&envir;_@H/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_prod_&envir;_m#mem#_@H/RESTART/coupler.res</cyclestr></datadep>
+              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_prod_&envir;_m#mem#_@H/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
             {%- else %}
-              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_&envir;_@H/RESTART/coupler.res</cyclestr></datadep>
-              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_&envir;_@H/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_prod_&envir;_@H/RESTART/coupler.res</cyclestr></datadep>
+              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_prod_&envir;_@H/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
             {%- endif %}
           </or>
         </and>
@@ -3179,6 +3197,7 @@ MODULES_RUN_TASK_FP script.
       <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+      <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_prod_long_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -3197,11 +3216,11 @@ MODULES_RUN_TASK_FP script.
           <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
           <or>
             {%- if do_ensemble %}
-              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_m#mem#_&envir;_@H/RESTART/coupler.res</cyclestr></datadep>
-              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_m#mem#_&envir;_@H/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_prod_long_&envir;_m#mem#_@H/RESTART/coupler.res</cyclestr></datadep>
+              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_prod_long_&envir;_m#mem#_@H/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
             {%- else %}
-              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_&envir;_@H/RESTART/coupler.res</cyclestr></datadep>
-              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_&envir;_@H/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_prod_long_&envir;_@H/RESTART/coupler.res</cyclestr></datadep>
+              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_prod_long_&envir;_@H/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
             {%- endif %}
           </or>
         </and>
@@ -3249,6 +3268,7 @@ MODULES_RUN_TASK_FP script.
       <join><cyclestr>&LOGDIR;/&POST_TN;_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+      <envar><name>taskid</name><value><cyclestr>&RUN;_&POST_TN;_&envir;_@H_f#fhr#</cyclestr></value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -3303,6 +3323,7 @@ MODULES_RUN_TASK_FP script.
       <join><cyclestr>&LOGDIR;/&POST_TN;_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+      <envar><name>taskid</name><value><cyclestr>&RUN;_&POST_TN;_&envir;_@H_f#fhr#_long</cyclestr></value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -3357,6 +3378,7 @@ MODULES_RUN_TASK_FP script.
       <join><cyclestr>&LOGDIR;/&PRDGEN_TN;_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+      <envar><name>taskid</name><value><cyclestr>&RUN;_&POST_TN;_&envir;_@H_f#fhr#</cyclestr></value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -3407,6 +3429,7 @@ MODULES_RUN_TASK_FP script.
       <join><cyclestr>&LOGDIR;/&PRDGEN_TN;_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+      <envar><name>taskid</name><value><cyclestr>&RUN;_&POST_TN;_&envir;_@H_f#fhr#_long</cyclestr></value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
