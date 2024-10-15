@@ -43,6 +43,8 @@ case ${task_id} in
     ;;
   mpassit)
     module purge
+    module use ${HOMErrfs}/sorc/MPASSIT/modulefiles
+    module load build.${MACHINE}.intel
     module load prod_util/${MACHINE}
     ;;
   upp)
