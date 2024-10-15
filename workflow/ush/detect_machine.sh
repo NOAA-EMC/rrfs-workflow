@@ -10,10 +10,10 @@ case $(hostname -f) in
   dlogin0[1-9].dogwood.wcoss2.ncep.noaa.gov) MACHINE=wcoss2 ;; ### dogwood01-9
   dlogin10.dogwood.wcoss2.ncep.noaa.gov)     MACHINE=wcoss2 ;; ### dogwood10
 
-  gaea9)               MACHINE=gaea ;; ### gaea9
-  gaea1[0-6])          MACHINE=gaea ;; ### gaea10-16
-  gaea9.ncrc.gov)      MACHINE=gaea ;; ### gaea9
-  gaea1[0-6].ncrc.gov) MACHINE=gaea ;; ### gaea10-16
+  gaea|gaea5[1-8])     MACHINE=gaea ;;
+  gaea6[1-8])          MACHINE=gaea ;;
+  gaea.ncrc.gov|gaea5[1-8].ncrc.gov) MACHINE=gaea ;;
+  gaea6[1-8].ncrc.gov)               MACHINE=gaea ;;
 
   hfe0[1-9]) MACHINE=hera ;; ### hera01-09
   hfe1[0-2]) MACHINE=hera ;; ### hera10-12
@@ -66,8 +66,11 @@ if [[ "${MACHINE}" == "UNKNOWN" ]]; then
     else
       MACHINE=orion
     fi
-  elif [[ -d /gpfs && -d /ncrc ]]; then
-    # We are on GAEA.
+  elif [[ -d /gpfs/f5 && -d /ncrc ]]; then
+    # We are on GAEA
+    MACHINE=gaea
+  elif [[ -d /gpfs/f6 && -d /ncrc ]]; then
+    # We are on GAEA
     MACHINE=gaea
   elif [[ -d /data/prod ]]; then
     # We are on SSEC's S4
