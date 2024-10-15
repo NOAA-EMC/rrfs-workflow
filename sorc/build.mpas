@@ -25,9 +25,10 @@ module list
 
 cd ${HOMErrfs}/sorc/MPAS-Model
 make clean CORE=init_atmosphere
-make -j8 intel-mpi CORE=init_atmosphere PRECISION=single
+#make -j8 intel-mpi CORE=atmosphere PRECISION=single # intel-mpi does not work on Gaea
+make -j8 ifort CORE=init_atmosphere PRECISION=single
 make clean CORE=atmosphere
-make -j8 intel-mpi CORE=atmosphere PRECISION=single
+make -j8 ifort CORE=atmosphere PRECISION=single
 
 mkdir -p ${HOMErrfs}/exec
 echo "copy ${EXEC} to ../exec/init_atmosphere_model.x"

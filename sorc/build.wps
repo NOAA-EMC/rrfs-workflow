@@ -29,6 +29,8 @@ cd ${HOMErrfs}/sorc/WPS
 ./clean
 if [ "${MACHINE}" = "wcoss2" ]; then
   cp ../configure.wps_wcoss2 configure.wps
+elif [ "${MACHINE}" = "gaea" ]; then
+  echo "23" | ./configure --nowrf
 else
   echo "19" | ./configure --nowrf
 fi
