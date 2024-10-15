@@ -1,10 +1,8 @@
-#########################################################################
-#                                                                       #
-# Python script for fire emissions preprocessing from RAVE FRP and FRE  #
-# (Li et al.,2022).                                                     #
-# johana.romero-alvarez@noaa.gov                                        #
-#                                                                       #
-#########################################################################
+"""
+Python script for fire emissions preprocessing from RAVE FRP and FRE
+(Li et al.,2022).
+johana.romero-alvarez@noaa.gov
+"""
 import sys
 import os
 import time
@@ -13,14 +11,19 @@ import fire_emiss_tools as femmi_tools
 import HWP_tools
 import interp_tools as i_tools
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Workflow
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 def generate_emiss_workflow(staticdir, ravedir, newges_dir, predef_grid):
+   """
+   Workflow
+
+   staticdir: ???
+   ravedir: ???
+   newges_dir: ???
+   predef_grid: ???
+   """
    
    # ----------------------------------------------------------------------
    # Import envs from workflow and get the predifying grid
-   # Set variable names, constants and unit conversions
+   # Set variable names constants and unit conversions
    # Set predefined grid
    # Set directories 
    # ----------------------------------------------------------------------
