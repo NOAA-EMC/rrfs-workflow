@@ -27,14 +27,29 @@ set -x
 echo "compiling WPS..."
 cd ${HOMErrfs}/sorc/WPS
 ./clean
-if [ "${MACHINE}" = "wcoss2" ]; then
+if [[ "${MACHINE}" == "wcoss2" ]]; then
   cp ../configure.wps_wcoss2 configure.wps
-elif [ "${MACHINE}" = "gaea" ]; then
+elif [[ "${MACHINE}" == "gaea" ]]; then
+  mkdir -p .tmpNETCDFDIR/include
+  mkdir -p .tmpNETCDFDIR/lib
+  ln -snf ${netcdf_c_ROOT}/include/* .tmpNETCDFDIR/include
+  ln -snf ${netcdf_c_ROOT}/lib/* .tmpNETCDFDIR/lib
+  ln -snf ${netcdf_fortran_ROOT}/include/* .tmpNETCDFDIR/include
+  ln -snf ${netcdf_fortran_ROOT}/lib/* .tmpNETCDFDIR/lib
+  export NETCDF=${HOMErrfs}/sorc/WPS/.tmpNETCDFDIR
   echo "23" | ./configure --nowrf
 else
   echo "19" | ./configure --nowrf
 fi
 ./compile ungrib
+
+if [[ "${MACHINE}" = "gaea" ]]; then
+  cd ungrib/src
+  ifort -o ungrib.exe  misc_definitions_module.o debug_cio.o module_debug.o module_stringutil.o \
+    table.o module_datarray.o gridinfo.o new_storage.o filelist.o ungrib.o output.o rrpr.o \
+    rd_grib1.o file_delete.o datint.o rd_grib2.o ./ngl/w3/libw3.a ./ngl/g2/libg2_4.a \
+    -ljasper -L${libpng_ROOT}/lib64 -lpng -lz libpgu.a
+fi
 
 mkdir -p ${HOMErrfs}/exec
 echo "copy ${EXEC} to ../exec/ungrib.x"
