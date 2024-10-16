@@ -10,6 +10,7 @@ load("stack-cray-mpich/8.1.29")
 load("cmake/3.23.1")
 load("parallel-netcdf/1.12.2")
 load("parallelio/2.5.10")
+load("libpng/1.6.37")
 
 setenv("PIO", os.getenv("parallelio_ROOT"))
 
