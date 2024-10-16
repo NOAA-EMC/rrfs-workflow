@@ -97,6 +97,12 @@ with open(EXPin, 'r') as infile, open(EXPout, 'w') as outfile:
           found=True; break
       if not found:
         outfile.write(line)
+  #
+  # preempt the PROD_BGN_AT_HRS array if FCST_ONLY
+  if os.getenv('FCST_ONLY','FALSE').upper() == "TRUE":
+    freq=int(os.getenv('FCST_ONLY_FREQ',6))
+    PROD_BGN_AT_HRS=' '.join([f'{hour:02}' for hour in range(0, 24, freq)])
+    outfile.write(f'PROD_BGN_AT_HRS="{PROD_BGN_AT_HRS}"')
 
 setup_xml(HOMErrfs, expdir) 
 #

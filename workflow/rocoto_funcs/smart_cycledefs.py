@@ -18,22 +18,29 @@ def smart_cycledefs(realtime,realtime_days,retro_period):
     pdy2=retrodates[1][:8]
     hr_end=retrodates[1][8:]
   #
-  if int(hr_bgn) <= 3:
-    ic_bgn='03'
-    lbc_bgn='00'
-  else:
-    ic_bgn='15'
-    lbc_bgn='12'
-
   dcCycledef={}
-  #CYCLEDEF_PROD="00 00-23 26,27 05 2024 *"\n\
-  if os.getenv('DO_DETERMINISTIC','TRUE').upper() == "TRUE":
-    dcCycledef['ic']=f'{pdy}{ic_bgn}00 {pdy2}{hr_end}00 12:00:00'
-    dcCycledef['lbc']=f'{pdy}{lbc_bgn}00 {pdy2}{hr_end}00 06:00:00'
-    dcCycledef['prod']=f'{pdy}{ic_bgn}00 {pdy2}{hr_end}00 01:00:00'
+  if os.getenv('FCST_ONLY','FALSE').upper() == "TRUE":
+    freq=int(os.getenv('FCST_ONLY_FREQ',6))
+    dcCycledef['ic']=f'{pdy}{hr_bgn}00 {pdy2}{hr_end}00 {freq:02d}:00:00'
+    dcCycledef['lbc']=f'{pdy}{hr_bgn}00 {pdy2}{hr_end}00 06:00:00'
+    dcCycledef['prod']=dcCycledef['ic']
+  else:
+    if int(hr_bgn) <= 3:
+      ic_bgn='03'
+      lbc_bgn='00'
+    else:
+      ic_bgn='15'
+      lbc_bgn='12'
+
+    #CYCLEDEF_PROD="00 00-23 26,27 05 2024 *"\n\
+    if os.getenv('DO_DETERMINISTIC','TRUE').upper() == "TRUE":
+      dcCycledef['ic']=f'{pdy}{ic_bgn}00 {pdy2}{hr_end}00 12:00:00'
+      dcCycledef['lbc']=f'{pdy}{lbc_bgn}00 {pdy2}{hr_end}00 06:00:00'
+      dcCycledef['prod']=f'{pdy}{ic_bgn}00 {pdy2}{hr_end}00 01:00:00'
+    #
+    if os.getenv('DO_ENSEMBLE','FALSE').upper() == "TRUE":
+      dcCycledef['ens_ic']=f'{pdy}{ic_bgn}00 {pdy2}{hr_end}00 12:00:00'
+      dcCycledef['ens_lbc']=f'{pdy}{lbc_bgn}00 {pdy2}{hr_end}00 06:00:00'
+      dcCycledef['ens_prod']=f'{pdy}{ic_bgn}00 {pdy2}{hr_end}00 01:00:00'
   #
-  if os.getenv('DO_ENSEMBLE','FALSE').upper() == "TRUE":
-    dcCycledef['ens_ic']=f'{pdy}{ic_bgn}00 {pdy2}{hr_end}00 12:00:00'
-    dcCycledef['ens_lbc']=f'{pdy}{lbc_bgn}00 {pdy2}{hr_end}00 06:00:00'
-    dcCycledef['ens_prod']=f'{pdy}{ic_bgn}00 {pdy2}{hr_end}00 01:00:00'
   return dcCycledef

@@ -251,6 +251,24 @@ def fcst(xmlFile, expdir, do_ensemble=False):
    </or>
   </and>
   </dependency>'''
+  # overwrite dependencies if it is FCST_ONLY
+  if os.getenv('FCST_ONLY','FALSE').upper() == "TRUE":
+    dependencies=f'''
+  <dependency>
+  <and>{timedep}
+   <or>
+    <metataskdep metatask="lbc{ensindexstr}" cycle_offset="0:00:00"/>
+    <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-1:00:00"/>
+    <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-2:00:00"/>
+    <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-3:00:00"/>
+    <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-4:00:00"/>
+    <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-5:00:00"/>
+    <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-6:00:00"/>
+   </or>
+   <taskdep task="ic{ensindexstr}"/>
+  </and>
+  </dependency>'''
+
   #
   xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"FCST",do_ensemble)
 ### end of fcst --------------------------------------------------------
