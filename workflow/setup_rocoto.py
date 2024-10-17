@@ -21,17 +21,17 @@ if os.path.exists(EXPin):
 else:
   print(f'{EXPin}: no such file')
   exit()
-user_id=os.getlogin()
+
 # create comroot (no matter exists or not)
-comroot=os.getenv('COMROOT',f'/tmp/${user_id}/com')
-dataroot=os.getenv('DATAROOT',f'/tmp/${user_id}/stmp')
+comroot=get_required_env('COMROOT')
+dataroot=get_required_env('DATAROOT')
 os.makedirs(comroot,exist_ok=True)
 os.makedirs(dataroot,exist_ok=True)
 
 # set the expdir variable
-basedir=os.getenv('EXP_BASEDIR',f'/tmp/{user_id}')
-version=os.getenv('VERSION','community')
-exp_name=os.getenv('EXP_NAME','')
+basedir=get_required_env('EXP_BASEDIR')
+version=os.getenv('VERSION','0.0.0')
+exp_name=os.getenv('EXP_NAME','exp1')
 expdir=f'{basedir}/{version}'
 if exp_name !="":
   expdir=f'{expdir}/{exp_name}'
