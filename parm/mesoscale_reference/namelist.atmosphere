@@ -26,7 +26,7 @@
     config_pio_stride = ${pio_stride}
 /
 &decomposition
-    config_block_decomp_file_prefix  = 'graphinfo/${NET}.graph.info.part.'
+    config_block_decomp_file_prefix  = 'graphinfo/${MESH_NAME}.graph.info.part.'
 /
 &restart
     config_do_restart = ${do_restart}

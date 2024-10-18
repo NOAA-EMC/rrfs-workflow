@@ -83,7 +83,7 @@ with open(EXPin, 'r') as infile, open(EXPout, 'w') as outfile:
         outfile.write(text)
         outfile.write(line)
     else:
-      rm_list=('EXP_NAME=','REALTIME=','REALTIME_DAYS=','RETRO_PERIOD=','RETRO_CYCLETHROTTLE=',
+      rm_list=('REALTIME=','REALTIME_DAYS=','RETRO_PERIOD=','RETRO_CYCLETHROTTLE=',
         'RETRO_TASKTHROTTLE=','ACCOUNT','QUEUE','PARTITION','RESERVATION','STARTTIME','NODES','WALLTIME',
         'FCST_ONLY=','FCST_ONLY_FREQ','DO_DETERMINISTIC','DO_ENSEMBLE',
           )
