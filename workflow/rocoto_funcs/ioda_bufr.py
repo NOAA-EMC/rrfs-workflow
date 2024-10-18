@@ -28,5 +28,4 @@ def ioda_bufr(xmlFile, expdir):
   </dependency>'''
   #
   xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies)
-  #xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,False,"", "", "","UNGRIB")
 ### end of ioda_bufr --------------------------------------------------------

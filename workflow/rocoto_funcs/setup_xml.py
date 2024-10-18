@@ -4,10 +4,18 @@ import os, sys, stat
 from rocoto_funcs.base import header_begin, header_entities, header_end, source, \
   wflow_begin, wflow_log, wflow_cycledefs, wflow_end
 from rocoto_funcs.smart_cycledefs import smart_cycledefs
-from rocoto_funcs.tasks1 import ic, lbc, da, fcst, ens_da
-from rocoto_funcs.tasks2 import mpassit, upp, ungrib_lbc, ungrib_ic
-from rocoto_funcs.tasks3 import ioda_bufr
-from rocoto_funcs.tasksX import clean, graphics #archive
+from rocoto_funcs.ungrib_ic import ungrib_ic
+from rocoto_funcs.ungrib_lbc import ungrib_lbc
+from rocoto_funcs.ic import ic
+from rocoto_funcs.lbc import lbc
+from rocoto_funcs.da import da
+from rocoto_funcs.fcst import fcst
+from rocoto_funcs.ens_da import ens_da
+from rocoto_funcs.mpassit import mpassit
+from rocoto_funcs.upp import upp
+from rocoto_funcs.ioda_bufr import ioda_bufr
+from rocoto_funcs.clean import clean
+from rocoto_funcs.graphics import graphics
 
 ### setup_xml
 def setup_xml(HOMErrfs, expdir):
