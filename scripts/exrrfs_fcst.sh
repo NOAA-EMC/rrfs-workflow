@@ -44,10 +44,10 @@ run_duration=${FCST_LENGTH:-6}:00:00
 physics_suite=${PHYSICS_SUITE:-'mesoscale_reference'}
 jedi_da="false" #true
 
-if [[ "${NET}" == "conus12km" ]]; then
+if [[ "${MESH_NAME}" == "conus12km" ]]; then
   pio_num_iotasks=6
   pio_stride=20
-elif [[ "${NET}" == "conus3km" ]]; then
+elif [[ "${MESH_NAME}" == "conus3km" ]]; then
   pio_num_iotasks=40
   pio_stride=20
 fi

@@ -17,7 +17,7 @@ cd ${DATA}
 init_case=7
 start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
 end_time=${start_time}
-case ${NET} in
+case ${MESH_NAME} in
   conus12km)
     nvertlevels=55
     nsoillevels=4
@@ -27,7 +27,7 @@ case ${NET} in
     nsoillevels=9
     ;;
   *)
-    echo "unknow NET=${NET}"
+    echo "unknow MESH_NAME=${MESH_NAME}"
     export err=99; err_chk
     ;;
 esac
@@ -47,7 +47,7 @@ elif  [[ "${prefix}" == "GEFS" ]]; then
 fi
 interval_seconds=3600 # just a place holder as we use metatask to run lbc hour by hour
 zeta_levels=${FIXrrfs}/meshes/L60.txt
-decomp_file_prefix="${NET}.graph.info.part."
+decomp_file_prefix="${MESH_NAME}.graph.info.part."
 #
 physics_suite=${PHYSICS_SUITE:-'PHYSICS_SUITE_not_defined'}
 file_content=$(< ${PARMrrfs}/${physics_suite}/namelist.init_atmosphere) # read in all content
@@ -59,8 +59,8 @@ sed -e "s/@input_stream@/static.nc/" -e "s/@output_stream@/init.nc/" \
 
 #prepare for init_atmosphere
 ln -snf ${COMINrrfs}/${RUN}.${PDY}/${cyc}${ensindexstr}/ungrib_ic/${prefix}:${start_time:0:13} .
-${cpreq} ${FIXrrfs}/meshes/${NET}.static.nc static.nc
-${cpreq} ${FIXrrfs}/graphinfo/${NET}.graph.info.part.${NTASKS} .
+${cpreq} ${FIXrrfs}/meshes/${MESH_NAME}.static.nc static.nc
+${cpreq} ${FIXrrfs}/graphinfo/${MESH_NAME}.graph.info.part.${NTASKS} .
 
 # run init_atmosphere_model
 source prep_step
