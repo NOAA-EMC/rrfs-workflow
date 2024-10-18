@@ -61,6 +61,7 @@ climatology.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
+#export jobid=${jobid:-${taskid}}
 export jobid=${taskid}
 
 export DATA=${DATAROOT}/${jobid}
