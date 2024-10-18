@@ -3,7 +3,7 @@
 print('Aloha!')
 #
 import os, sys, shutil, glob
-from rocoto_funcs.base import source, get_yes_or_no
+from rocoto_funcs.base import source, get_yes_or_no, get_required_env
 from rocoto_funcs.smart_cycledefs import smart_cycledefs
 from rocoto_funcs.setup_xml import setup_xml
 
@@ -29,12 +29,9 @@ os.makedirs(comroot,exist_ok=True)
 os.makedirs(dataroot,exist_ok=True)
 
 # set the expdir variable
-basedir=get_required_env('EXP_BASEDIR')
+expdir=get_required_env('EXPDIR')
 version=os.getenv('VERSION','0.0.0')
 exp_name=os.getenv('EXP_NAME','exp1')
-expdir=f'{basedir}/{version}'
-if exp_name !="":
-  expdir=f'{expdir}/{exp_name}'
 
 # if expdir exists, find an available dir name to backup old files first
 # and then upgrade expdir
@@ -65,16 +62,15 @@ source(f'{HOMErrfs}/workflow/ush/detect_machine.sh')
 machine=os.getenv('MACHINE')
 if machine=='UNKNOWN':
     print(f'WARNING: machine is UNKNOWN! ')
-text=f'''#=== Auto-generation of HOMErrfs, MACHINE, EXPDIR
+text=f'''#=== Auto-generation of HOMErrfs, MACHINE
 export HOMErrfs={HOMErrfs}
 export MACHINE={machine}
-export EXPDIR={expdir}
 #===
 '''
 #
 EXPout=f'{expdir}/exp.setup'
 with open(EXPin, 'r') as infile, open(EXPout, 'w') as outfile:
-  # add HOMErrfs, MACHINE, EXPDIR to the beginning of the exp.setup file under expdir/
+  # add HOMErrfs, MACHINE to the beginning of the exp.setup file under expdir/
   header=""
   still_header=True
   for line in infile:
@@ -87,9 +83,9 @@ with open(EXPin, 'r') as infile, open(EXPout, 'w') as outfile:
         outfile.write(text)
         outfile.write(line)
     else:
-      rm_list=('EXP_BASEDIR=','EXP_NAME=','REALTIME=','REALTIME_DAYS=','RETRO_PERIOD=','RETRO_CYCLETHROTTLE=',
+      rm_list=('EXP_NAME=','REALTIME=','REALTIME_DAYS=','RETRO_PERIOD=','RETRO_CYCLETHROTTLE=',
         'RETRO_TASKTHROTTLE=','ACCOUNT','QUEUE','PARTITION','RESERVATION','STARTTIME','NODES','WALLTIME',
-        'FCST_ONLY=','DO_DETERMINISTIC','DO_ENSEMBLE',
+        'FCST_ONLY=','FCST_ONLY_FREQ','DO_DETERMINISTIC','DO_ENSEMBLE',
           )
       found=False
       for rmstr in rm_list:

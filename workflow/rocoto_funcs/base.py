@@ -137,9 +137,9 @@ class objTask:
 def get_required_env(env_name):
   env_value=os.getenv(env_name)
   if env_value == None:
-    print(f'env variable "{env_name}" not set')
+    print(f'env variable "{env_name}" not found')
     exit()
-  else
+  else:
     return env_value
 
 ### get_cascade_env
