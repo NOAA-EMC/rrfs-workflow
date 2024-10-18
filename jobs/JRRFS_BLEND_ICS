@@ -59,6 +59,7 @@ on the RRFS initial conditions.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
+#export jobid=${jobid:-${taskid}}
 export jobid=${taskid}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")

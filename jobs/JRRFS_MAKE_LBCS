@@ -173,6 +173,7 @@ extrn_mdl_fns_on_disk_str2="( "$( printf "\"%s\" " "${fns_on_disk2[@]}" )")"
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
+#export jobid=${jobid:-${taskid}}
 export jobid=${taskid}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")

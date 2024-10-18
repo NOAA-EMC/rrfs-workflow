@@ -64,6 +64,7 @@ the specified cycle.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
+#export jobid=${jobid:-${taskid}}
 export jobid=${taskid}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")

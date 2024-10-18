@@ -61,28 +61,11 @@ analysis with RRFS for the specified cycle.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
+#export jobid=${jobid:-${taskid}}
+export jobid=${taskid}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
-
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  workname="gsi_spinup"
-else
-  workname="gsi"
-fi
-
-if [[ ! -v OB_TYPE ]]; then
-  OB_TYPE="conv"
-fi
-if [ "${GSI_TYPE}" = "OBSERVER" ]; then
-  if [ "${MEM_TYPE}" = "MEAN" ]; then
-    export jobid=${RUN}_observer_${workname}_ensmean_${envir}_${cyc}
-  else
-    export jobid=${RUN}_observer_${workname}_${mem_num}_${envir}_${cyc}
-  fi
-else
-  export jobid=${RUN}_analysis_${OB_TYPE}_${workname}_${envir}_${cyc}
-fi
 
 export DATA=${DATAROOT}/${jobid}
 

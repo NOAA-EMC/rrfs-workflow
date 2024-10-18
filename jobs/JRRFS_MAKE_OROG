@@ -61,6 +61,7 @@ This is the J-job script for the task that generates orography files.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
+#export jobid=${jobid:-${taskid}}
 export jobid=${taskid}
 
 export DATA=${DATAROOT}/${jobid}
