@@ -3,21 +3,6 @@
 import os
 from rocoto_funcs.base import xml_task, source, get_cascade_env
 
-### begin of dummy --------------------------------------------------------
-### this dummy task does nothing, but may be used to reboot a cycle without any adverse effects
-def dummy(xmlFile, expdir):
-  task_id='dummy'
-  cycledefs='prod'
-  xml_task(xmlFile,expdir,task_id,cycledefs)
-### end of dummy --------------------------------------------------------
-
-### begin of clean --------------------------------------------------------
-def clean(xmlFile, expdir):
-  task_id='clean'
-  cycledefs='prod'
-  xml_task(xmlFile,expdir,task_id,cycledefs)
-### end of clean --------------------------------------------------------
-
 ### begin of graphics --------------------------------------------------------
 def graphics(xmlFile, expdir):
   meta_id='graphics'

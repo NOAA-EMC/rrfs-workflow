@@ -15,14 +15,14 @@ else
 fi
 ${cpreq} ${DATAROOT}/${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}${ensindexstr}/fcst/history.${timestr}.nc .
 ${cpreq} ${DATAROOT}/${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}${ensindexstr}/fcst/diag.${timestr}.nc .
-${cpreq} ${FIXrrfs}/mpassit/${NET}/* .
+${cpreq} ${FIXrrfs}/mpassit/${MESH_NAME}/* .
 # generate the namelist on the fly
-if [[ "${NET}" == "conus12km" ]]; then
+if [[ "${MESH_NAME}" == "conus12km" ]]; then
   nx=480
   ny=280
   dx=12000.0
   ref_lat=39.0
-elif [[ "${NET}" == "conus3km" ]]; then
+elif [[ "${MESH_NAME}" == "conus3km" ]]; then
   nx=1601
   ny=961
   dx=3000.0

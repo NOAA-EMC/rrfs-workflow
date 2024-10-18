@@ -133,6 +133,15 @@ class objTask:
     xmlFile.write(f"{self.dependencies}\n")
 ### end of objTask
 
+### get_required_env
+def get_required_env(env_name):
+  env_value=os.getenv(env_name)
+  if env_value == None:
+    print(f'env variable "{env_name}" not found')
+    exit()
+  else:
+    return env_value
+
 ### get_cascade_env
 def get_cascade_env(env_name):
   seperator="_" #underscore

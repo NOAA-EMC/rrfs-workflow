@@ -29,7 +29,7 @@ ${cpreq} ${FIXrrfs}/stream_list/${PHYSICS_SUITE}/* stream_list/
 mkdir -p data; cd data                   
 mkdir -p bumploc obs ens
 ${cpreq} ${FIXrrfs}/bumploc/${BUMPLOC} bumploc/
-${cpreq} ${FIXrrfs}/meshes/${NET}.static.nc static.nc
+${cpreq} ${FIXrrfs}/meshes/${MESH_NAME}.static.nc static.nc
 if [[ "${begin}" != "YES" ]]; then
   cpfs ${DATAROOT}/${NET}/${rrfs_ver}/${RUN}.${CDATEm1:0:8}/${CDATEm1:8:2}/fcst/restart.${timestr}.nc .
 fi
