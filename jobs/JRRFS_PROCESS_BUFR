@@ -61,18 +61,8 @@ the specified cycle.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
-
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export jobid=${RUN}_process_bufr_spinup_${envir}_${cyc}
-  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export jobid=${RUN}_process_bufr_spinup_enkf_${envir}_${cyc}
-  fi
-else
-  export jobid=${RUN}_process_bufr_${envir}_${cyc}
-  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export jobid=${RUN}_process_bufr_enkf_${envir}_${cyc}
-  fi
-fi
+#export jobid=${jobid:-${taskid}}
+export jobid=${taskid}
 
 export DATA=${DATAROOT}/${jobid}
 mkdir -p ${DATA}

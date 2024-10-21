@@ -62,6 +62,7 @@ on the output files corresponding to a specified forecast hour.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
+#export jobid=${jobid:-${taskid}}
 export jobid=${taskid}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")

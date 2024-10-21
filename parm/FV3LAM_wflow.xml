@@ -367,6 +367,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&MAKE_GRID_TN;.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&MAKE_GRID_TN;_&envir;_@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -392,6 +393,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&MAKE_OROG_TN;.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&MAKE_OROG_TN;_&envir;_@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>envir</name><value>&envir;</value></envar>
@@ -423,6 +425,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&MAKE_SFC_CLIMO_TN;.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&MAKE_SFC_CLIMO_TN;_&envir;_@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>envir</name><value>&envir;</value></envar>
@@ -478,6 +481,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&PROCESS_SMOKE_TN;_#type#_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&PROCESS_SMOKE_TN;_#type#_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -520,6 +524,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&PROCESS_RADAR_TN;_#type#_&TAG;_@Y@m@d@H.log</cyclestr></join>
         
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&PROCESS_RADAR_TN;_#type#_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -560,6 +565,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&PROCESS_LIGHTNING_TN;_#type#_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&PROCESS_LIGHTNING_TN;_#type#_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -597,6 +603,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&PROCESS_BUFR_TN;_#type#_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&PROCESS_BUFR_TN;_#type#_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -659,7 +666,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&MAKE_ICS_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>taskid</name><value><cyclestr>&RUN;_&MAKE_ICS_TN;_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&MAKE_ICS_TN;{{ uscore_ensmem_name}}_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -763,7 +770,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&BLEND_ICS_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>taskid</name><value><cyclestr>&RUN;_&MAKE_ICS_TN;_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&MAKE_ICS_TN;{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -842,7 +849,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&MAKE_LBCS_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H_#bcgrp#.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>taskid</name><value><cyclestr>&RUN;_&MAKE_LBCS_TN;_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&MAKE_LBCS_TN;{{ uscore_ensmem_name}}_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -976,9 +983,9 @@ MODULES_RUN_TASK_FP script.
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
  {%- if do_ensinit %}
-    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_ensinit_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_ensinit{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
  {%- else %}
-    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_spinup_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_spinup{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
  {%- endif %}
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -1072,7 +1079,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&PREP_CYC_SPINUP_TN;_ensinit_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_ensinit_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_ensinit{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -1162,7 +1169,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&FORECAST_TN;_ensinit_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_ensinit_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_ensinit{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -1207,7 +1214,7 @@ MODULES_RUN_TASK_FP script.
       <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;_ensinit_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-      <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_ensinit_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
+      <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_ensinit{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -1251,7 +1258,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&PREP_CYC_SPINUP_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_spinup_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_spinup{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -1298,8 +1305,9 @@ MODULES_RUN_TASK_FP script.
     &NODESIZE_ALL;
     <jobname><cyclestr>&TAG;_&RECENTER_TN;_spinup</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/&RECENTER_TN;_spinup_&TAG;@Y@m@d@H.log</cyclestr></join>
-    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
 
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&RECENTER_TN;_spinup_&envir;_@H</cyclestr></value></envar>
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -1343,6 +1351,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&CALC_ENSMEAN_TN;_spinup_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&CALC_ENSMEAN_TN;_spinup_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -1381,6 +1390,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&OBSERVER_GSI_ENSMEAN_TN;_spinup_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&OBSERVER_GSI_ENSMEAN_TN;_spinup_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -1434,6 +1444,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&OBSERVER_GSI_TN;_spinup_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&OBSERVER_GSI_TN;_spinup{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -1474,8 +1485,9 @@ MODULES_RUN_TASK_FP script.
     &NODESIZE_ALL;
     <jobname><cyclestr>&TAG;_&ENKFUPDT_TN;_spinup</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/&ENKFUPDT_TN;_spinup_&TAG;_@Y@m@d@H.log</cyclestr></join>
-    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
 
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&ENKFUPDT_TN;_conv_spinup_&envir;_@H</cyclestr></value></envar>
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -1511,8 +1523,9 @@ MODULES_RUN_TASK_FP script.
     &NODESIZE_ALL;
     <jobname><cyclestr>&TAG;_&ENKF_RADAR_REF_TN;_spinup</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/&ENKF_RADAR_REF_TN;_spinup_&TAG;_@Y@m@d@H.log</cyclestr></join>
-    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
 
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&ENKFUPDT_TN;_radardbz_spinup_&envir;_@H</cyclestr></value></envar>
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -1568,6 +1581,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&ANALYSIS_NONVARCLD_TN;_spinup_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&ANALYSIS_NONVARCLD_TN;_spinup{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -1639,6 +1653,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&ANALYSIS_GSI_TN;{{ uscore_ensmem_name }}_spinup_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&ANALYSIS_GSI_TN;_conv_dbz_spinup{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -1714,6 +1729,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&UPDATE_LBC_SOIL_TN;{{ uscore_ensmem_name }}_spinup_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&ANALYSIS_GSI_TN;_conv_dbz_spinup{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -1759,6 +1775,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&HYBRID_RADAR_REF_TN;spinup_&TAG;@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&ANALYSIS_GSI_TN;_radardbz_spinup{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -1812,6 +1829,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&ANALYSIS_GSIDIAG_TN;_spinup_&TAG;@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&ANALYSIS_GSI_TN;_conv_dbz_spinup_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -1861,6 +1879,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&ANALYSIS_NONVARCLD_TN;_spinup_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&ANALYSIS_NONVARCLD_TN;_spinup{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -1931,7 +1950,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&FORECAST_TN;_spinup_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_spinup_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_spinup{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -2004,7 +2023,7 @@ MODULES_RUN_TASK_FP script.
       <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;_spinup_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-      <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_spinup_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
+      <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_spinup{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -2058,6 +2077,7 @@ MODULES_RUN_TASK_FP script.
       <join><cyclestr>&LOGDIR;/&POST_TN;_spinup_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+      <envar><name>taskid</name><value><cyclestr>&RUN;_&POST_TN;_spinup{{ uscore_ensmem_name }}_&envir;_@H_f#fhr#</cyclestr></value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -2098,6 +2118,7 @@ MODULES_RUN_TASK_FP script.
       <join><cyclestr>&LOGDIR;/&PRDGEN_TN;_spinup_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+      <envar><name>taskid</name><value><cyclestr>&RUN;_&POST_TN;_spinup{{ uscore_ensmem_name }}_&envir;_@H_f#fhr#</cyclestr></value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -2153,7 +2174,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&PREP_CYC_PROD_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_prod_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -2309,6 +2330,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&CALC_ENSMEAN_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&CALC_ENSMEAN_TN;_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -2348,6 +2370,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&OBSERVER_GSI_ENSMEAN_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&OBSERVER_GSI_ENSMEAN_TN;_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -2403,6 +2426,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&OBSERVER_GSI_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&OBSERVER_GSI_TN;{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -2445,8 +2469,9 @@ MODULES_RUN_TASK_FP script.
     &NODESIZE_ALL;
     <jobname><cyclestr>&TAG;_&ENKFUPDT_TN;</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/&ENKFUPDT_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
-    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
 
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&ENKFUPDT_TN;_conv_&envir;_@H</cyclestr></value></envar>
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -2481,8 +2506,9 @@ MODULES_RUN_TASK_FP script.
     &NODESIZE_ALL;
     <jobname><cyclestr>&TAG;_&ENKF_RADAR_REF_TN;</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/&ENKF_RADAR_REF_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
-    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
 
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&ENKFUPDT_TN;_radardbz_&envir;_@H</cyclestr></value></envar>
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -2537,6 +2563,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&ANALYSIS_GSI_TN;_&TAG;{{ uscore_ensmem_name }}_prod_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&ANALYSIS_GSI_TN;_conv_dbz{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -2620,6 +2647,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&UPDATE_LBC_SOIL_TN;{{ uscore_ensmem_name }}_prod_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&ANALYSIS_GSI_TN;_conv_dbz{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -2665,6 +2693,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&HYBRID_RADAR_REF_TN;_prod_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&ANALYSIS_GSI_TN;_radardbz{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -2718,6 +2747,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&ANALYSIS_GSIDIAG_TN;prod_&TAG;@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&ANALYSIS_GSI_TN;_conv_dbz_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -2775,6 +2805,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&ANALYSIS_NONVARCLD_TN;_prod_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&ANALYSIS_NONVARCLD_TN;{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -2846,8 +2877,9 @@ MODULES_RUN_TASK_FP script.
     &NODESIZE_ALL;
     <jobname><cyclestr>&TAG;_&RECENTER_TN;</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/&RECENTER_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
-    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
 
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&RECENTER_TN;_&envir;_@H</cyclestr></value></envar>
     <envar><name>nens</name><value>{{ num_ens_members }}</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -2916,6 +2948,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&SAVE_DA_OUTPUT_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -2990,7 +3023,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&FORECAST_TN;_prod_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_prod_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -3070,7 +3103,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&FORECAST_TN;_prod_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_prod_long_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -3148,7 +3181,7 @@ MODULES_RUN_TASK_FP script.
       <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-      <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_prod_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
+      <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -3197,7 +3230,7 @@ MODULES_RUN_TASK_FP script.
       <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-      <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_prod_long_&envir;{{ uscore_ensmem_name }}_@H</cyclestr></value></envar>
+      <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -3268,7 +3301,7 @@ MODULES_RUN_TASK_FP script.
       <join><cyclestr>&LOGDIR;/&POST_TN;_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-      <envar><name>taskid</name><value><cyclestr>&RUN;_&POST_TN;_&envir;_@H_f#fhr#</cyclestr></value></envar>
+      <envar><name>taskid</name><value><cyclestr>&RUN;_&POST_TN;{{ uscore_ensmem_name }}_&envir;_@H_f#fhr#</cyclestr></value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -3323,7 +3356,7 @@ MODULES_RUN_TASK_FP script.
       <join><cyclestr>&LOGDIR;/&POST_TN;_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-      <envar><name>taskid</name><value><cyclestr>&RUN;_&POST_TN;_&envir;_@H_f#fhr#_long</cyclestr></value></envar>
+      <envar><name>taskid</name><value><cyclestr>&RUN;_&POST_TN;{{ uscore_ensmem_name }}_&envir;_@H_f#fhr#_long</cyclestr></value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -3378,7 +3411,7 @@ MODULES_RUN_TASK_FP script.
       <join><cyclestr>&LOGDIR;/&PRDGEN_TN;_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-      <envar><name>taskid</name><value><cyclestr>&RUN;_&POST_TN;_&envir;_@H_f#fhr#</cyclestr></value></envar>
+      <envar><name>taskid</name><value><cyclestr>&RUN;_&POST_TN;{{ uscore_ensmem_name }}_&envir;_@H_f#fhr#</cyclestr></value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -3429,7 +3462,7 @@ MODULES_RUN_TASK_FP script.
       <join><cyclestr>&LOGDIR;/&PRDGEN_TN;_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-      <envar><name>taskid</name><value><cyclestr>&RUN;_&POST_TN;_&envir;_@H_f#fhr#_long</cyclestr></value></envar>
+      <envar><name>taskid</name><value><cyclestr>&RUN;_&POST_TN;{{ uscore_ensmem_name }}_&envir;_@H_f#fhr#_long</cyclestr></value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -3466,6 +3499,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&BUFRSND_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&BUFRSND_TN;_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -3502,6 +3536,7 @@ MODULES_RUN_TASK_FP script.
     <join><cyclestr>&LOGDIR;/&BUFRSND_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&BUFRSND_TN;{{ uscore_ensmem_name }}_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>

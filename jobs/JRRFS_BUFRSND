@@ -62,6 +62,8 @@ on the output files corresponding to a specified forecast hour.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
+#export jobid=${jobid:-${taskid}}
+export jobid=${taskid}
 
 export fhr=01
 export tmmark=tm00
@@ -72,11 +74,9 @@ CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   export INPUT_DATA="${DATAROOT}/${RUN}_forecast_${mem_num}_${envir}_${cyc}"
   export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast"
-  export jobid=${RUN}_bufrsnd_${mem_num}_${envir}_${cyc}
 else
   export INPUT_DATA="${DATAROOT}/${RUN}_forecast_${envir}_${cyc}"
   export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/forecast"
-  export jobid=${RUN}_bufrsnd_${envir}_${cyc}
 fi
 
 mkdir -p "${NWGES_DIR}/RESTART"
