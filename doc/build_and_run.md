@@ -6,36 +6,36 @@
 build.all
 ```
 
-The above script compiles WPS (namely, ungrib.x), MPAS and RDAS simultaneously. Users can check the compiled executables at `../exec` or check the log files for each component:
+The above script compiles WPS, MPAS, MPASSIT, RDASApp and UPP simultaneously.  
+Build logs for each component can be found under the current directory:
 ```
- log.build.mpas
- log.build.rdas
- log.build.wps
-```
-
-Upon completion of the build, users should see the following executables under `../exec`:
-```
- ungrib.x
- init_atmosphere_model.x
- atmosphere_model.x
- mpasjedi_variational.x
- bufr2ioda.x
+log.build.mpas
+log.build.rdas
+log.build.wps
+log.build.mpassit
+log.build.upp
 ```
 
-More RDAS executables can be found at `sorc/RDASApp/build/bin`.
-
+and executables can be found under `../exec`:
+```
+ungrib.x
+init_atmosphere_model.x
+atmosphere_model.x
+mpasjedi_variational.x
+bufr2ioda.x
+mpassit.x
+upp.x
+```
 
 # 2. Setup and run experiments:
 ### 2.1. copy and modify exp.setup
 ```
-cd rocoto
+cd workflow
 cp exp/exp.setup .
-vi exp.setup # modify accordingly, such as OPSROOT
+vi exp.setup # modify directories, accounts, etc
 ```
-In retro runs, for simplicity, `OPSROOT` provides a top directory for `COMROOT`, `DATAROOT` and `EXP_BASEDIR`. But this is NOT a must and you may set them separately without a shared top directory.
+In retro runs, for simplicity, `OPSROOT` provides a top directory for `COMROOT`, `DATAROOT` and `EXPDIR`. But this is NOT a must and you may set them separately without a shared top directory.
     
-Users don't set `EXPDIR` directly. `setup_rocoto.py` will set it automatically following this rule: `EXP_BASEDIR/VERSION/EXP_NAME`.     
-   
 `setup_rocoto.py` will smartly computes CYCLEDEFS based on the `REALTIME`, `REALTIME_DAYS`, `RETRO_PERIOD` settings.  
 `RETRO_CYCLETHROTTLE` and `RETRO_TASKTHROTTLE` can be modified as needed.
 
@@ -46,7 +46,7 @@ Refer to [this guide](https://github.com/NOAA-EMC/rrfs-workflow/wiki/deploy-a-re
 ./setup_rocoto.py
 ```   
     
-This Python script creates an experiment directory (i.e. `EXPDIR`), writes out a runtime version of `exp.setup` under EXPDIR, and  then copies runtime config files from `HOMErrfs` to `EXPDIR`.
+This Python script creates an experiment directory (i.e. `EXPDIR`), writes out a runtime version of `exp.setup` under EXPDIR, and  then copies runtime config files from `HOMErrfs/parm` to `EXPDIR`.
        
 Users usually need to set up `ACCOUNT`, `QUEUE`, `PARTITION`, or `RESERVATION` by modifying `config_resources/config.${machine}` or you may export those variables in the current environment before running setp_exp.py, or export those variables in `exp.setup`.  
     

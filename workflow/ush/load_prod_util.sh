@@ -12,5 +12,5 @@ source ${wushdir}/detect_machine.sh
 
 module purge
 module use ${wushdir}/../../modulefiles
-module load rrfs/${MACHINE}
+module load prod_util/${MACHINE}
 module list
