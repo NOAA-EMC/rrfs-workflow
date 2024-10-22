@@ -7,7 +7,7 @@ build.all
 ```
 
 The above script compiles WPS, MPAS, MPASSIT, RDASApp and UPP simultaneously.  
-Build logs for each componet can be found under the current directory:
+Build logs for each component can be found under the current directory:
 ```
 log.build.mpas
 log.build.rdas
