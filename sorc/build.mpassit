@@ -17,6 +17,6 @@ cd ${HOMErrfs}/sorc/MPASSIT
 
 mkdir -p ${HOMErrfs}/exec
 echo "copy ${EXEC} to ../exec/mpassit.x"
-ln -snf ${EXEC} ${HOMErrfs}/exec/mpassit.x
+cp ${EXEC} ${HOMErrfs}/exec/mpassit.x
 
 exit 0
