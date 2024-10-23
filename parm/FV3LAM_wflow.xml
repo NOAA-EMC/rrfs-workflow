@@ -1232,7 +1232,7 @@ MODULES_RUN_TASK_FP script.
         <and>
           <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
           <or>
-            <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_ensinit_&envir;_m#mem#_@H/RESTART/</cyclestr><cyclestr offset="{{ dt_atmos }}">@Y@m@d.@H@M@S.coupler.res</cyclestr></datadep>
+            <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_ensinit_m#mem#_&envir;_@H/RESTART/</cyclestr><cyclestr offset="{{ dt_atmos }}">@Y@m@d.@H@M@S.coupler.res</cyclestr></datadep>
             <datadep age="00:00:00:05"><cyclestr>&FG_ROOT;/&RUN;.@Y@m@d/@H/m#mem#/run_blending</cyclestr> </datadep>
           </or>
         </and>
@@ -2041,8 +2041,8 @@ MODULES_RUN_TASK_FP script.
           <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
           <or>
             {%- if do_ensemble %}
-              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_spinup_&envir;_m#mem#_@H/RESTART/coupler.res</cyclestr></datadep>
-              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_spinup_&envir;_m#mem#_@H/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_spinup_m#mem#_&envir;_@H/RESTART/coupler.res</cyclestr></datadep>
+              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_spinup_m#mem#_&envir;_@H/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
             {%- else %}
               <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_spinup_&envir;_@H/RESTART/coupler.res</cyclestr></datadep>
               <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_spinup_&envir;_@H/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
@@ -3200,11 +3200,11 @@ MODULES_RUN_TASK_FP script.
           <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
           <or>
             {%- if do_ensemble %}
-              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_prod_&envir;_m#mem#_@H/RESTART/coupler.res</cyclestr></datadep>
-              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_prod_&envir;_m#mem#_@H/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_m#mem#_&envir;_@H/RESTART/coupler.res</cyclestr></datadep>
+              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_m#mem#_&envir;_@H/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
             {%- else %}
-              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_prod_&envir;_@H/RESTART/coupler.res</cyclestr></datadep>
-              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_prod_&envir;_@H/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_&envir;_@H/RESTART/coupler.res</cyclestr></datadep>
+              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_&envir;_@H/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
             {%- endif %}
           </or>
         </and>
@@ -3249,11 +3249,11 @@ MODULES_RUN_TASK_FP script.
           <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
           <or>
             {%- if do_ensemble %}
-              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_prod_long_&envir;_m#mem#_@H/RESTART/coupler.res</cyclestr></datadep>
-              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_prod_long_&envir;_m#mem#_@H/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_m#mem#_&envir;_@H/RESTART/coupler.res</cyclestr></datadep>
+              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_m#mem#_&envir;_@H/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
             {%- else %}
-              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_prod_long_&envir;_@H/RESTART/coupler.res</cyclestr></datadep>
-              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_prod_long_&envir;_@H/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_&envir;_@H/RESTART/coupler.res</cyclestr></datadep>
+              <datadep age="00:30"><cyclestr>&DATAROOT;/&RUN;_forecast_&envir;_@H/RESTART/</cyclestr><cyclestr offset="#fhr#:00:00">@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
             {%- endif %}
           </or>
         </and>

@@ -121,9 +121,9 @@ for imem in  $(seq 1 $nens)
   memberstring=$( printf "%03d" $imem )
 
   if [ "${CYCLE_TYPE}" = "spinup" ]; then
-    bkpath=${DATAROOT}/${RUN}_forecast_spinup_${envir}_m${ensmem}_${cyc}/INPUT  # cycling, use background from RESTART
+    bkpath=${DATAROOT}/${RUN}_forecast_spinup_m${ensmem}_${envir}_${cyc}/INPUT  # cycling, use background from RESTART
   else
-    bkpath=${DATAROOT}/${RUN}_forecast_prod_${envir}_m${ensmem}_${cyc}/INPUT  # cycling, use background from RESTART
+    bkpath=${DATAROOT}/${RUN}_forecast_m${ensmem}_${envir}_${cyc}/INPUT  # cycling, use background from RESTART
   fi
 
   dynvarfile=${bkpath}/fv_core.res.tile1.nc
