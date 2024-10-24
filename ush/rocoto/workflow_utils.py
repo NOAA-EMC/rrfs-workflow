@@ -121,7 +121,7 @@ def source_configs(configs, tasks):
         else:
             files.append(find_config('config.%s' % task, configs))
 
-        print 'sourcing config.%s' % task
+        print('sourcing config.%s' % task)
         dict_configs[task] = config_parser(files)
 
     return dict_configs
@@ -309,7 +309,7 @@ def create_crontab(base, cronint=5):
     # No point creating a crontab if rocotorun is not available.
     rocotoruncmd = find_executable('rocotorun')
     if rocotoruncmd is None:
-        print 'Failed to find rocotorun, crontab will not be created'
+        print('Failed to find rocotorun, crontab will not be created')
         return
 
     cronintstr = '*/%d * * * *' % cronint

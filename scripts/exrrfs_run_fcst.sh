@@ -256,7 +256,7 @@ fi
 # wave drag parameterization in that suite.  Below, create symlinks to these 
 # files in the run directory.
 #
-suites=( "FV3_RAP" "FV3_HRRR" "FV3_HRRR_gf" "FV3_GFS_v15_thompson_mynn_lam3km" "FV3_GFS_v17_p8" )
+suites=( "RRFS_sas" "FV3_RAP" "FV3_HRRR" "FV3_HRRR_gf" "FV3_GFS_v15_thompson_mynn_lam3km" "FV3_GFS_v17_p8" )
 if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" ]] ; then
   fileids=( "ss" "ls" )
   for fileid in "${fileids[@]}"; do

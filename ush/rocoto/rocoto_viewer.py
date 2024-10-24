@@ -118,7 +118,7 @@ def sigwinch_handler(signum, frame):
 
 def usage(message=None):
     curses.endwin()
-    print>>sys.stderr, '''
+    print('''
 Usage: rocoto_status_viewer.py  -w workflow.xml -d database.db [--listtasks]\n                                                               [--html=filename.html]\n                                                               [--perfmetrics={True,False}]
 
 Mandatory arguments:
@@ -128,10 +128,10 @@ Optional arguments:
   --listtasks             --- print out a list of all tasks
   --html=filename.html    --- creates an HTML document of status
   --perfmetrics=True      --- turn on/off extra columns for performance metrics 
-  --help                  --- print this usage message'''
+  --help                  --- print this usage message''', file=sys.stderr)
 
     if message is not None:
-        print>>sys.stderr,'\n'+str(message).rstrip()+'\n'
+        print('\n'+str(message).rstrip()+'\n', file=sys.stderr)
     sys.exit(-1)
 
 def augment_SQLite3(filename):
@@ -214,8 +214,8 @@ def get_arguments():
     try:
         opts, args = getopt.getopt(sys.argv[1:], short_opts, long_opts)
     except getopt.GetoptError as err:
-        print str(err)
-        print
+        print(str(err))
+        print("\n")
         usage('SCRIPT IS ABORTING DUE TO UNRECOGNIZED ARGUMENT')
 
     global save_checkfile_path
@@ -263,8 +263,8 @@ def get_arguments():
     send_html_to_rzdm = False
     if len(rzdm_path) != 0:
         if ':' not in rzdm_path or '@' not in rzdm_path:
-            print 'No user name or path found for sending html directory to server, no files will be sent to rzdm'
-            print 'Creating html folder in: %s'%rzdm_path
+            print('No user name or path found for sending html directory to server, no files will be sent to rzdm')
+            print('Creating html folder in: %s'%rzdm_path)
         else:
             send_html_to_rzdm = True
 
@@ -321,7 +321,7 @@ def get_aug_perf_values( username ):
     cmd = batchexe('which') ['bjobs']
     try:
         which_bjobs = runstr(cmd).strip()
-    except Exception,e:
+    except Exception(e):
         return None
     bjobs = collections.defaultdict(dict)
     aug_perf = collections.defaultdict(dict)
@@ -664,7 +664,7 @@ def get_rocoto_check(params, queue_check):
     check=runstr(cmd)
     if check is None:
         curses.endwin()
-        print 'rcotocheck falied: %d'%stat
+        print('rcotocheck falied: %d'%stat)
         sys.exit(-1)
     queue_check.put(check)
 
@@ -702,7 +702,7 @@ def rocoto_run(params):
     stat = ''
     if stat is None:
         curses.endwin()
-        print 'rcotorun falied: %d'%stat
+        print('rcotorun falied: %d'%stat)
         sys.exit(-1)
     return stat
 
@@ -715,7 +715,7 @@ def get_tasklist(workflow_file):
     cycledef_group_cycles = collections.defaultdict(list)
     if list_tasks:
         curses.endwin() 
-        print
+        print("\n")
     cycle_noname = 'default_cycle' 
     for child in root:
         if child.tag == 'cycledef':
@@ -750,8 +750,8 @@ def get_tasklist(workflow_file):
                         start_cycle = start_cycle + relativedelta(months=+inc_cycle)
                     except AttributeError:
                         curses.endwin()
-                        print;print
-                        print 'dateutil which uses relativedelta to increment monthly (used by UGCS) is not supported with this version of python.\nUse Anaconda the native version in /user/bin'
+                        print("\n\n")
+                        print('dateutil which uses relativedelta to increment monthly (used by UGCS) is not supported with this version of python.\nUse Anaconda the native version in /user/bin')
                         sys.exit(-1)
                 else:
                     start_cycle = start_cycle + inc_cycle
@@ -770,7 +770,7 @@ def get_tasklist(workflow_file):
             else:
                 task_cycledefs = cycle_noname
             if list_tasks:
-                print task_name,task_cycledefs
+                print(task_name,task_cycledefs)
                 #dependancies = child.getiterator('dependency')
                 #for dependency in dependancies:
                 #   for them in dependency.getchildren():
@@ -786,7 +786,7 @@ def get_tasklist(workflow_file):
                 except:
                     pass
                 if list_tasks:
-                    print ' '*i+'metatask:',metatask_name
+                    print(' '*i+'metatask:',metatask_name)
                 all_vars_list = metatasks.findall('var')
                 all_tasks_list = metatasks.findall('task')
                 for var in all_vars_list:
@@ -837,7 +837,7 @@ def get_tasklist(workflow_file):
                                     else:
                                         metatask_list[first_task_resolved_name].append(task[0])
                                     if list_tasks:
-                                        print ' '+' '*i+task[0],task[1],'LOG:',task[2]
+                                        print(' '+' '*i+task[0],task[1],'LOG:',task[2])
 
     # Default expantion of metatasks True = collapsed
     #for metatask,metatasks in metatask_list.iteritems():
@@ -1102,7 +1102,7 @@ def main(screen):
 
     if not sys.stdin.isatty():
         if screen != 'dummy':
-            print 'There seems to be a problem with the curses init'
+            print('There seems to be a problem with the curses init')
             sys.exit(-1)
         else:
             mlines = 100
@@ -1117,13 +1117,13 @@ def main(screen):
 
     if not load_produtil_pythonpath():
         curses.endwin()
-        print '\n\nCRITICAL ERROR: The produtil package could not be loaded from your system'
+        print('\n\nCRITICAL ERROR: The produtil package could not be loaded from your system')
         sys.exit(-1)
 
     if html_output:
         if sys.stdin.isatty():
             curses.endwin()
-        print '\nPreparing to write out an html folder'
+        print('\nPreparing to write out an html folder')
         use_multiprocessing = False
 
     import produtil.run, produtil.numerics
@@ -1178,14 +1178,14 @@ def main(screen):
             html_output_dir = shbackslash(rzdm_path)
         else:
             html_output_dir = shbackslash('%s/pr%s'%(workflow_name,PSLOT))
-        print 'writing html to directory:',html_output_dir
+        print('writing html to directory:',html_output_dir)
         html_output_file = shbackslash( html_output_dir+'/index.html' )
         html_header_line = '<table>\n<thead><tr><td>CYCLE</td><td>TASK</td><td>JOBID</td><td>STATE</td><td>EXIT</td><td>TRIES</td><td>DURATION</td>'
         if use_performance_metrics:
             html_header_line = html_header_line+'<td>SLOTS</td><td>QTIME</td><td>CPU</td><td>RUN</td>'+'</tr></thead>\n<tbody>'
         else:
             html_header_line = html_header_line+'</tr></thead>\n<tbody>'
-        print 'Generating html folder html: %s ...'%html_output_file
+        print('Generating html folder html: %s ...'%html_output_file)
         cmd = batchexe('rm') ['-Rf', html_output_dir ]
         stat=runstr(cmd)
         makedirs( html_output_dir ) 
@@ -1218,9 +1218,9 @@ def main(screen):
         cmd = batchexe('which') ['rocotorun']
         try:
             which_rocoto = runstr(cmd).strip()
-        except Exception,e:
+        except Exception(e):
             curses.endwin()
-            print '\n\nCRITICAL ERROR: rocotorun is not in your path, user "module load rocoto"'
+            print('\n\nCRITICAL ERROR: rocotorun is not in your path, user "module load rocoto"')
             sys.exit(0)
 
     os.environ['TZ']='UTC'
@@ -1261,7 +1261,7 @@ def main(screen):
     if only_check_point:
         curses.endwin()
         sys.stdout = os.fdopen(0,'w',0)
-        print 'Creating check point file ...'
+        print('Creating check point file ...')
         params = (workflow_file, database_file, tasks_ordered, metatask_list, cycledef_group_cycles )
         get_rocoto_stat( params, queue_stat )
 
@@ -1279,7 +1279,7 @@ def main(screen):
     if not html_output and mcols < default_column_length:
         curses.endwin()
         print
-        print 'Your terminal is only %d characters must be at least %d to display workflow status'%(mcols,default_column_length)
+        print('Your terminal is only %d characters must be at least %d to display workflow status'%(mcols,default_column_length))
         sys.exit(-1)
     if not html_output:
         screen.refresh()
@@ -1346,7 +1346,7 @@ def main(screen):
             if  mcols < default_column_length:
                 curses.endwin()
                 print
-                print 'Your terminal is only %d characters must be at least %d to display workflow status'%(mcols,default_column_length)
+                print('Your terminal is only %d characters must be at least %d to display workflow status'%(mcols,default_column_length))
                 sys.exit(-1)
             step += 0.001
             if step > 100:
@@ -1452,7 +1452,7 @@ def main(screen):
     print
     for each_metatask in meta_tasks[0]:
         if each_metatask[1]:
-            print metatask_name[each_metatask[2][0]]
+            print(metatask_name[each_metatask[2][0]])
             for task in each_metatask[2]:
                 print '',task
     sys.exit(0)
@@ -1675,14 +1675,14 @@ def main(screen):
                     #cycle = html_start_cycle
             if not html_output_firstpass:
                 if send_html_to_rzdm:
-                    print 'sending html files to rzdm using rsync ...'
+                    print('sending html files to rzdm using rsync ...')
                     cmd=batchexe('rsync')['-avzr','--delete', html_output_dir, rzdm_path]
                     stat=runstr(cmd)
                     if stat is None:
-                        print 'warning rsync to %s failed'%html_output_dir
+                        print('warning rsync to %s failed'%html_output_dir)
                         sys.exit(-1)
                     else:
-                        print 'done'
+                        print('done')
                 sys.exit(0)
     else:
 
@@ -1702,7 +1702,7 @@ def main(screen):
             if not check_file(workflow_file) or not check_file(database_file):
                 curses.endwin()
                 print;print
-                print 'rocoto_viwer quit because the Rocoto database or XML file used by this session when missing'
+                print('rocoto_viwer quit because the Rocoto database or XML file used by this session when missing')
                 sys.exit(-1)
             job_id = None
             curses.noecho()
@@ -1885,8 +1885,7 @@ def main(screen):
 
             if num_columns > mcols:
                 curses.endwin()
-                print   
-                print 'Your terminal is only %s characters must be at least %s to display workflow status'%(str(mcols),str(num_columns))
+                print('\nYour terminal is only %s characters must be at least %s to display workflow status'%(str(mcols),str(num_columns)))
                 sys.exit(-1)
 
             if loading_stat:
@@ -2008,8 +2007,7 @@ def main(screen):
                 #debug.write('SCREEN RESIZED %s (%d,%d)\n'%(pad_pos,mlines,mcols))
                 if  mcols < default_column_length:
                     curses.endwin()
-                    print
-                    print 'Your terminal is only %d characters must be at least %d to display workflow status'%(mcols,default_column_length)
+                    print('Your terminal is only %d characters must be at least %d to display workflow status'%(mcols,default_column_length))
                     sys.exit(-1)
             elif event in ( curses.KEY_NPAGE, ord('d') ):
                 highlight_CYCLE = False
@@ -2365,7 +2363,7 @@ def main(screen):
 
 if __name__ == '__main__':
     if not load_produtil_pythonpath():
-        print '\n\nCRITICAL ERROR: The produtil package could not be loaded from your system'
+        print('\n\nCRITICAL ERROR: The produtil package could not be loaded from your system')
         sys.exit(-1)
     from produtil.fileop import remove_file
     try:
@@ -2379,5 +2377,5 @@ if __name__ == '__main__':
             main(screen)
         remove_file(temp_workflow_file)
     except KeyboardInterrupt:
-        print "Got KeyboardInterrupt exception. Exiting..."
+        print("Got KeyboardInterrupt exception. Exiting...")
         sys.exit(-1)
