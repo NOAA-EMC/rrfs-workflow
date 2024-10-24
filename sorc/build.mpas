@@ -32,7 +32,7 @@ make -j8 ifort CORE=atmosphere PRECISION=single
 
 mkdir -p ${HOMErrfs}/exec
 echo "copy ${EXEC} to ../exec/init_atmosphere_model.x"
-ln -snf ${EXEC} ${HOMErrfs}/exec/init_atmosphere_model.x
+cp ${EXEC} ${HOMErrfs}/exec/init_atmosphere_model.x
 echo "copy ${EXEC2} to ../exec/atmosphere_model.x"
-ln -snf ${EXEC2} ${HOMErrfs}/exec/atmosphere_model.x
+cp ${EXEC2} ${HOMErrfs}/exec/atmosphere_model.x
 exit 0
