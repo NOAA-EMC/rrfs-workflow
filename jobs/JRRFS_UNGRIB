@@ -27,8 +27,11 @@ mkdir -p ${DATA}
 #
 export COMINgfs=${COMINgfs:-$(compath.py $envir/gfs/$gfs_ver)}
 export COMINgefs=${COMINgefs:-$(compath.py $envir/gefs/$gefs_ver)}
-export COMINrap=${COMINrap:-$(compath.py $envir/rap/$rap_ver)}
-export COMINrrfs=${COMINrrfs:-$(compath.py $envir/rrfs/$rrfs_ver)}
+#export COMINrap=${COMINrap:-$(compath.py $envir/rap/$rap_ver)}
+#export COMINrrfs=${COMINrrfs:-$(compath.py $envir/rrfs/$rrfs_ver)}
+export COMIN=${SOURCE_BASEDIR:-("")}
+export NAME_PATTERN=${NAME_PATTERN:-("")}
+
 export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
 if [[ -z "${ENS_INDEX}" ]]; then
   mkdir -p ${COMOUT}/ungrib_${TYPE}

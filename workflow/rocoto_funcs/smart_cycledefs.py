@@ -9,7 +9,7 @@ def smart_cycledefs(realtime,realtime_days,retro_period):
     end=now+timedelta(days=int(realtime_days))
     pdy=now.strftime("%Y%m%d")
     pdy2=end.strftime("%Y%m%d")
-    hr_bgn=now.hour
+    hr_bgn="00"
     hr_end='23'
   else:
     retrodates=retro_period.split("-")
@@ -22,7 +22,7 @@ def smart_cycledefs(realtime,realtime_days,retro_period):
   if os.getenv('FCST_ONLY','FALSE').upper() == "TRUE":
     freq=int(os.getenv('FCST_ONLY_FREQ',6))
     dcCycledef['ic']=f'{pdy}{hr_bgn}00 {pdy2}{hr_end}00 {freq:02d}:00:00'
-    dcCycledef['lbc']=f'{pdy}{hr_bgn}00 {pdy2}{hr_end}00 06:00:00'
+    dcCycledef['lbc']=f'{pdy}{hr_bgn}00 {pdy2}{hr_end}00 03:00:00'
     dcCycledef['prod']=dcCycledef['ic']
   else:
     if int(hr_bgn) <= 3:

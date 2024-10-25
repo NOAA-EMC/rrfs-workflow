@@ -41,7 +41,8 @@ elif [[ "${prefix}" == "GEFS" ]]; then
 
 elif [[ "${prefix}" == "RAP" ]]; then
   fstr=$(printf %02d ${FHRin})
-  GRIBFILE=${COMINrap}/rap.${CDATEin:0:8}/rap.t${CDATEin:8:2}z.wrfnatf${fstr}.grib2
+#  GRIBFILE=${COMINrap}/rap.${CDATEin:0:8}/rap.t${CDATEin:8:2}z.wrfnatf${fstr}.grib2
+  GRIBFILE=${COMIN}/${NAME_PATTERN}
   ${cpreq} ${GRIBFILE} GRIBFILE.AAA
 
 elif [[ "${prefix}" == "RRFS" ]]; then

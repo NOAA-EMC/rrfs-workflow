@@ -123,7 +123,7 @@ class objTask:
     #
     text=text+"  &task_common_vars;\n" #add an empty line before the <envar> block for readability
     for key,value in self.dcTaskEnv.items():
-      text=text+f'  <envar><name>{key}</name><value>{value}</value></envar>\n'
+      text=text+f'  <envar><name>{key}</name><value><cyclestr>{value}</cyclestr></value></envar>\n'
     xmlFile.write(text)
 
   def wflow_task_end(self,xmlFile):

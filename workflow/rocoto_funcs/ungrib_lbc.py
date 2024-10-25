@@ -4,11 +4,7 @@ from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of ungrib_lbc --------------------------------------------------------
 def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
-  # Task-specific EnVars beyond the task_common_vars
-  dcTaskEnv={
-    'FHR': '#fhr#',
-    'TYPE': 'lbc',
-  }
+
   if not do_ensemble:
     meta_id='ungrib_lbc'
     cycledefs='lbc'
@@ -26,6 +22,8 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     meta_end=f'</metatask>\n'
     task_id=f'{meta_id}_f#fhr#'
     prefix=os.getenv('LBC_PREFIX','GFS')
+    lbc_source_basedir=os.getenv('LBC_SOURCE_BASEDIR','')
+    lbc_name_pattern=os.getenv('LBC_NAME_PATTERN','')
   #
   else: # ensemble
     meta_id='ungrib_lbc'
@@ -52,6 +50,14 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     dcTaskEnv['ENS_INDEX']="#ens_index#"
     prefix=os.getenv('ENS_LBC_PREFIX','GEFS')
 
+  # Task-specific EnVars beyond the task_common_vars
+  dcTaskEnv={
+    'FHR': '#fhr#',
+    'TYPE': 'lbc',
+    'SOURCE_BASEDIR': f'{lbc_source_basedir}',
+    'NAME_PATTERN': f'{lbc_name_pattern}',
+  }
+
   # dependencies
   COMINgfs=os.getenv("COMINgfs",'COMINgfs_not_defined')
   COMINrrfs=os.getenv("COMINrrfs",'COMINrrfs_not_defined')
@@ -63,7 +69,8 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
   elif prefix == "RRFS":
     fpath=f'{COMINrrfs}/rrfs.@Y@m@d/@H/rrfs.t@Hz.natlve.f#fhr_in#.grib2'
   elif prefix == "RAP":
-    fpath=f'{COMINrap}/rap.@Y@m@d/rap.t@Hz.wrfnatf#fhr_in#.grib2'
+#    fpath=f'{COMINrap}/rap.@Y@m@d/rap.t@Hz.wrfnatf#fhr_in#.grib2'
+    fpath=f'{lbc_source_basedir}/{lbc_name_pattern}'
   elif prefix == "GEFS":
     fpath=f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.f#fhr_in#'
     fpath2=f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.f#fhr_in#'

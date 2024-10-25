@@ -4,11 +4,6 @@ from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of ungrib_ic --------------------------------------------------------
 def ungrib_ic(xmlFile, expdir, do_ensemble=False):
-  # Task-specific EnVars beyond the task_common_vars
-  dcTaskEnv={
-    'FHR': '000',
-    'TYPE': 'ic'
-  }
   #
   if not do_ensemble:
     metatask=False
@@ -19,6 +14,8 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
     offset=os.getenv('IC_OFFSET','3')
     meta_bgn=""
     meta_end=""
+    ic_source_basedir=os.getenv('IC_SOURCE_BASEDIR','')
+    ic_name_pattern=os.getenv('IC_NAME_PATTERN','')
   else:
     metatask=True
     meta_id='ungrib_ic'
@@ -35,6 +32,14 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
 <var name="ens_index">{ens_indices}</var>
 <var name="gmem">{gmems}</var>'''
     meta_end=f'</metatask>\n'
+
+  # Task-specific EnVars beyond the task_common_vars
+  dcTaskEnv={
+    'FHR': '000',
+    'TYPE': 'ic',
+    'SOURCE_BASEDIR': f'{ic_source_basedir}',
+    'NAME_PATTERN': f'{ic_name_pattern}',
+  }
   #
   # dependencies
   COMINgfs=os.getenv("COMINgfs",'COMINgfs_not_defined')
@@ -47,7 +52,8 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
   elif prefix == "RRFS":
     fpath=f'{COMINrrfs}/rrfs.@Y@m@d/@H/rrfs.t@Hz.natlve.f{offset:>02}.grib2'
   elif prefix == "RAP":
-    fpath=f'{COMINrap}/rap.@Y@m@d/rap.t@Hz.wrfnatf{offset:>02}.grib2'
+#    fpath=f'{COMINrap}/rap.@Y@m@d/rap.t@Hz.wrfnatf{offset:>02}.grib2'
+    fpath=f'{ic_source_basedir}/{ic_name_pattern}'
   elif prefix == "GEFS":
     fpath=f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.f{offset:>03}'
     fpath2=f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.f{offset:>03}'
