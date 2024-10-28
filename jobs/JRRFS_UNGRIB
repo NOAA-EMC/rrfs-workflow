@@ -18,7 +18,7 @@ else
 fi
 export jobid=${jobid:-${RUN}_ungrib_${cyc}}
 export DATA=${DATA:-${DATAROOT}/${jobid}}
-export DATA=${DATA}/${FHR:-"FHR_not_defined"}
+#export DATA=${DATA}/${FHR:-"FHR_not_defined"}
 
 if [ -d ${DATA} ]; then # remove the ${DATA} directory if existed
   rm -rf ${DATA}
@@ -31,6 +31,9 @@ export COMINgefs=${COMINgefs:-$(compath.py $envir/gefs/$gefs_ver)}
 #export COMINrrfs=${COMINrrfs:-$(compath.py $envir/rrfs/$rrfs_ver)}
 export COMIN=${SOURCE_BASEDIR:-("")}
 export NAME_PATTERN=${NAME_PATTERN:-("")}
+export OFFSET=${OFFSET:-(0)}
+export LENGTH=${LENGTH:-(12)}
+export INTERVAL=${INTERVAL:-(3)}
 
 export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
 if [[ -z "${ENS_INDEX}" ]]; then

@@ -6,21 +6,19 @@ from rocoto_funcs.base import xml_task, source, get_cascade_env
 def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
 
   if not do_ensemble:
-    meta_id='ungrib_lbc'
+    metatask=False
+    meta_id=''
+    task_id=f'ungrib_lbc'
     cycledefs='lbc'
     # metatask (support nested metatasks)
     fhr=os.getenv('FCST_LENGTH','12')
     offset=int(os.getenv('LBC_OFFSET','6'))
     length=int(os.getenv('LBC_LENGTH','18'))
     interval=int(os.getenv('LBC_INTERVAL','3'))
-    meta_hr= ''.join(f'{i:03d} ' for i in range(0,int(length)+1,int(interval))).strip()
-    comin_hr=''.join(f'{i:03d} ' for i in range(int(offset),int(length)+int(offset)+1,int(interval))).strip()
-    meta_bgn=f'''
-<metatask name="{meta_id}">
-<var name="fhr">{meta_hr}</var>
-<var name="fhr_in">{comin_hr}</var>'''
-    meta_end=f'</metatask>\n'
-    task_id=f'{meta_id}_f#fhr#'
+#    meta_hr= ''.join(f'{i:03d} ' for i in range(0,int(length)+1,int(interval))).strip()
+#    comin_hr=''.join(f'{i:03d} ' for i in range(int(offset),int(length)+int(offset)+1,int(interval))).strip()
+    meta_bgn=""
+    meta_end=""
     prefix=os.getenv('LBC_PREFIX','GFS')
     lbc_source_basedir=os.getenv('LBC_SOURCE_BASEDIR','')
     lbc_name_pattern=os.getenv('LBC_NAME_PATTERN','')
@@ -52,10 +50,12 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
 
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={
-    'FHR': '#fhr#',
     'TYPE': 'lbc',
     'SOURCE_BASEDIR': f'{lbc_source_basedir}',
     'NAME_PATTERN': f'{lbc_name_pattern}',
+    'OFFSET': f'{offset}',
+    'LENGTH': f'{length}',
+    'INTERVAL': f'{interval}',
   }
 
   # dependencies
@@ -79,11 +79,17 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
 
   timedep=""
   realtime=os.getenv("REALTIME","false")
-  starttime=get_cascade_env(f"STARTTIME_{meta_id}".upper())
+  starttime=get_cascade_env(f"STARTTIME_{task_id}".upper())
   if realtime.upper() == "TRUE":
-    timedep=f'\n  <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+    timedep=f'\n     <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
   #
-  datadep=f'<datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath}</cyclestr></datadep>'
+  
+  datadep=f' '
+  for i in range( int(offset), int(length)+int(offset)+1, int(interval) ):
+     comin_hr3=str(i).zfill(3)
+     fpath3=fpath.replace('${HHH}', comin_hr3)
+     datadep=datadep+f'\n     <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath3}</cyclestr></datadep>'
+
   if do_ensemble:
     datadep=datadep+f'\n  <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath2}</cyclestr></datadep>'
   dependencies=f'''
