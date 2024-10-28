@@ -173,32 +173,37 @@ extrn_mdl_fns_on_disk_str2="( "$( printf "\"%s\" " "${fns_on_disk2[@]}" )")"
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
-#export jobid=${jobid:-${taskid}}
-export jobid=${taskid}
+export outid=${outid:-"LL$job"}
+export jobid=${jobid:-taskid}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
-if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/lbcs"
-else
-  export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/lbcs"
-fi
 
 export DATA=${DATAROOT}/${jobid}
 mkdir -p $DATA
-
-mkdir -p ${DATA}/tmp_LBCS_${bcgrp}
-cd ${DATA}/tmp_LBCS_${bcgrp}
-
-mkdir -p "${NWGES_DIR}"
+cd ${DATA}
 
 export use_user_staged_extrn_files="${USE_USER_STAGED_EXTRN_FILES}"
-export extrn_mdl_staging_dir="${DATA}/tmp_LBCS_${bcgrp}"
+export extrn_mdl_staging_dir="${DATA}"
+
+#-----------------------------------------------------------------------
+# Define COM directories
+#-----------------------------------------------------------------------
+# Send data to COMOUT since the LBCs jobs share data with other jobs
+# outside of the current cycle
+
+if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  export COMOUT="${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/${mem_num}/lbcs)}"
+else
+  export COMOUT="${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/lbcs)}"
+fi
+
+mkdir -p "${COMOUT}"
 
 #-----------------------------------------------------------------------
 # Execute the script.
 #-----------------------------------------------------------------------
 
-export pgmout="${DATA}/tmp_LBCS_${bcgrp}/OUTPUT.$$"
+export pgmout="${DATA}/OUTPUT.$$"
 env
 
 ${HOMErrfs}/scripts/exrrfs_make_lbcs.sh \
@@ -212,6 +217,7 @@ if [ -e "$pgmout" ]; then
 fi
 
 if [ "${KEEPDATA}" = "NO" ]; then
+  cd ${DATAROOT}
   rm -rf ${DATA}
 fi
 

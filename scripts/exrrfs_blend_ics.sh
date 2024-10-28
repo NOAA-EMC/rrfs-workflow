@@ -53,7 +53,7 @@ on the RRFS initial conditions.
 #
 #-----------------------------------------------------------------------
 #
-extrn_mdl_staging_dir="${DATA}/tmp_ICS"
+extrn_mdl_staging_dir="${umbrella_data}"
 extrn_mdl_var_defns_fp="${extrn_mdl_staging_dir}/${EXTRN_MDL_ICS_VAR_DEFNS_FN}"
 . ${extrn_mdl_var_defns_fp}
 #
@@ -179,7 +179,6 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
      # Required NETCDF files - RRFS
      cpreq -p ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.tile1.nc ./fv_core.res.tile1.nc
      cpreq -p ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_tracer.res.tile1.nc ./fv_tracer.res.tile1.nc
-     #cpreq -p ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc ./fv_core.res.nc
 
      # Shortcut the file names/arguments.
      Lx=$ENS_BLENDING_LENGTHSCALE
@@ -218,26 +217,18 @@ fi
 #
 if [[ $DO_ENS_BLENDING = "FALSE" || ($DO_ENS_BLENDING = "TRUE" && -f $run_ensinit ) ]]; then
   mv out.atm.tile${TILE_RGNL}.nc \
-        ${DATA}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
+        ${umbrella_data}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
 
   mv out.sfc.tile${TILE_RGNL}.nc \
-        ${DATA}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
+        ${umbrella_data}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
 
-  mv gfs_ctrl.nc ${DATA}
+  mv gfs_ctrl.nc ${umbrella_data}
 
-  mv gfs.bndy.nc ${DATA}/gfs_bndy.tile${TILE_RGNL}.000.nc
+  mv gfs.bndy.nc ${umbrella_data}/gfs_bndy.tile${TILE_RGNL}.000.nc
 fi
-#
-#-----------------------------------------------------------------------
-#
-# copy results to nwges for longer time disk storage.
-#
-#-----------------------------------------------------------------------
-#
-cp ${DATA}/*.nc ${NWGES_DIR}/.
 
 if [ $DO_ENS_BLENDING = "TRUE" ] && [ -f $run_blending ] && [ ! -f $run_ensinit ]; then
-  cp ${DATA}/coupler.res ${NWGES_DIR}/.
+  cp ${DATA}/coupler.res ${umbrella_data}/.
 fi
 #
 #-----------------------------------------------------------------------

@@ -134,33 +134,29 @@ extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
-#export jobid=${jobid:-${taskid}}
-export jobid=${taskid}
+export outid=${outid:-"LL$job"}
+export jobid=${jobid:-taskid}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/ics"
+  export umbrella_data="${DATAROOT}/${RUN}_${PDY}${cyc}/${WGF}/${mem_num}/ics"
 else
-  export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/ics"
+  export umbrella_data="${DATAROOT}/${RUN}_${PDY}${cyc}/${WGF}/ics"
 fi
 
 export DATA=${DATAROOT}/${jobid}
-mkdir -p $DATA
-
-mkdir -p ${DATA}/tmp_ICS
-cd ${DATA}/tmp_ICS
-
-mkdir -p "${NWGES_DIR}"
+mkdir -p $DATA $umbrella_data
+cd ${DATA}
 
 export use_user_staged_extrn_files="${USE_USER_STAGED_EXTRN_FILES}"
 export extrn_mdl_source_dir="${extrn_mdl_sysdir}"
-export extrn_mdl_staging_dir="${DATA}/tmp_ICS"
+export extrn_mdl_staging_dir="${DATA}"
 
 #-----------------------------------------------------------------------
 # Execute the script.
 #-----------------------------------------------------------------------
 
-export pgmout="${DATA}/tmp_ICS/OUTPUT.$$"
+export pgmout="${DATA}/OUTPUT.$$"
 env
 
 ${HOMErrfs}/scripts/exrrfs_make_ics.sh \
@@ -172,6 +168,7 @@ if [ -e "$pgmout" ]; then
 fi
 
 if [ "${KEEPDATA}" = "NO" ]; then
+  cd ${DATAROOT}
   rm -rf ${DATA}
 fi
 

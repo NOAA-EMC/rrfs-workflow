@@ -201,9 +201,11 @@ LNDPINT=180
 RUN_ensctrl="rrfs"
 RUN="enkfrrfs"
 TAG="n3enkf91"
+WGF="enkf"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   RUN="refs"
   TAG="n3enfcst91"
+  WGF="ensf"
 fi
 
 . set_rrfs_config.sh

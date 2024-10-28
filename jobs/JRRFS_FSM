@@ -13,7 +13,8 @@ export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 
 export DATAROOT="${DATAROOT:-${DATAROOT_dfv}}"
-export DATA=${DATA:-${DATAROOT}/${jobid}}
+export umbrella_data=${DATAROOT}/${RUN}_${PDY}${cyc}
+export DATA=${DATA:-${umbrella_data}/${jobid}}
 
 mkdir -p ${DATA}
 cd ${DATA}

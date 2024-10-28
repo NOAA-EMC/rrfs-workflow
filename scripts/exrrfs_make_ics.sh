@@ -213,7 +213,7 @@ extrn_mdl_staging_dir = \"${extrn_mdl_staging_dir}\"
 extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
 extrn_mdl_fns_on_disk = ${extrn_mdl_fns_on_disk_str}"
 
-ln -sf -t ${extrn_mdl_staging_dir} ${extrn_mdl_fps_on_disk[@]}
+cpreq -p ${extrn_mdl_fps_on_disk[@]} ${extrn_mdl_staging_dir}
 #
 #-----------------------------------------------------------------------
 #
@@ -576,7 +576,7 @@ settings="
 # Call the python script to create the namelist file.
 #
 nml_fn="fort.41"
-${USHrrfs}/set_namelist.py -q -u "$settings" -o ${nml_fn} || \
+${USHrrfs}/set_namelist.py -u "$settings" -o ${nml_fn} || \
   err_exit "\
 Call to python script set_namelist.py to set the variables in the namelist
 file read in by the ${exec_fn} executable failed.  Parameters passed to
@@ -602,6 +602,7 @@ if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
 
   wgrib2 ${extrn_mdl_staging_dir}/${fn_grib2} -set_grib_type c3b -new_grid_winds grid \
     -new_grid ${gridspecs} ${extrn_mdl_staging_dir}/${fn_grib2_subset}
+  export err=$?; err_chk
   mv ${extrn_mdl_staging_dir}/${fn_grib2_subset} ${extrn_mdl_staging_dir}/${fn_grib2}
 fi
 #
@@ -727,32 +728,13 @@ fi
 #-----------------------------------------------------------------------
 #
 # Move initial condition, surface, control, and 0-th hour lateral bound-
-# ary files to ICs_BCs directory. Only do this if blending is off or on-
-# ly for the first DA cycle if blending is on inorder to coldstart the
-# system.
+# ary files to umbrella data directory.
 #-----------------------------------------------------------------------
 #
-if [[ $DO_ENS_BLENDING = "FALSE" ]]; then
-  mv out.atm.tile${TILE_RGNL}.nc \
-        ${DATA}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
-
-  mv out.sfc.tile${TILE_RGNL}.nc \
-        ${DATA}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
-
-  mv gfs_ctrl.nc ${DATA}
-
-  mv gfs.bndy.nc ${DATA}/gfs_bndy.tile${TILE_RGNL}.000.nc
-fi
-#
-#-----------------------------------------------------------------------
-#
-# copy results to nwges for longer time disk storage.
-#
-#-----------------------------------------------------------------------
-#
-if [ $DO_ENS_BLENDING = "FALSE" ]; then
-  cp ${DATA}/*.nc ${NWGES_DIR}/.
-fi
+mv out.atm.tile${TILE_RGNL}.nc ${umbrella_data}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
+mv out.sfc.tile${TILE_RGNL}.nc ${umbrella_data}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
+mv gfs_ctrl.nc ${umbrella_data}
+mv gfs.bndy.nc ${umbrella_data}/gfs_bndy.tile${TILE_RGNL}.000.nc
 #
 #-----------------------------------------------------------------------
 #
@@ -795,6 +777,8 @@ with the external model from which to generate ${ics_or_lbcs} returned with a
 nonzero status.  The full path to this variable definitions file is:
   extrn_mdl_var_defns_fp = \"${extrn_mdl_var_defns_fp}\""
 fi
+
+mv ${extrn_mdl_var_defns_fp} ${umbrella_data}
 #
 #-----------------------------------------------------------------------
 #

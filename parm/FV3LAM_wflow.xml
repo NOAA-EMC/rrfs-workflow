@@ -42,7 +42,6 @@ Workflow task names.
 <!ENTITY ANALYSIS_GSI_TN         "{{ analysis_gsi }}">
 <!ENTITY ANALYSIS_GSIDIAG_TN     "{{ analysis_gsidiag }}">
 <!ENTITY UPDATE_LBC_SOIL_TN      "{{ update_lbc_soil }}">
-<!ENTITY OBSERVER_GSI_ENSMEAN_TN "{{ observer_gsi_ensmean }}">
 <!ENTITY OBSERVER_GSI_TN         "{{ observer_gsi }}">
 <!ENTITY PREP_CYC_SPINUP_TN      "{{ prep_cyc_spinup }}">
 <!ENTITY PREP_CYC_PROD_TN        "{{ prep_cyc_prod }}">
@@ -68,6 +67,7 @@ Workflow task names.
 <!ENTITY RUN   "{{ run }}">
 <!ENTITY RUNE  "enk{{ run }}">
 <!ENTITY envir "{{ envir }}">
+<!ENTITY WGF "{{ wgf }}">
 
 <!--
 Flags that determine whether to run the specific tasks.
@@ -855,6 +855,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>EXTRN_MDL_NAME</name><value>{{ extrn_mdl_name_lbcs }}</value></envar>
     <envar><name>BOUNDARY_LEN</name><value>{{ boundary_len_hrs }}</value></envar>
@@ -1176,6 +1177,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>HH</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>CYCLE_SUBTYPE</name><value><cyclestr>ensinit</cyclestr></value></envar>
@@ -1376,7 +1378,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&OBSERVER_GSI_ENSMEAN_TN;_spinup" cycledefs="spinupcyc" maxtries="{{ maxtries_analysis_gsi }}">
+  <task name="&OBSERVER_GSI_TN;_spinup_ensmean" cycledefs="spinupcyc" maxtries="{{ maxtries_analysis_gsi }}">
 
     &RSRV_ANALYSIS;
     &WALL_LIMIT_ANALYSIS;
@@ -1386,11 +1388,11 @@ MODULES_RUN_TASK_FP script.
     &NATIVE_ANALYSIS_GSI;
     <walltime>&WALLTIME_ANALYSIS_GSI;</walltime>
     &NODESIZE_ALL;
-    <jobname>&TAG;_&OBSERVER_GSI_ENSMEAN_TN;_spinup</jobname>
-    <join><cyclestr>&LOGDIR;/&OBSERVER_GSI_ENSMEAN_TN;_spinup_&TAG;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&TAG;_&OBSERVER_GSI_TN;_spinup_ensmean</jobname>
+    <join><cyclestr>&LOGDIR;/&OBSERVER_GSI_TN;_spinup_ensmean_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>taskid</name><value><cyclestr>&RUN;_&OBSERVER_GSI_ENSMEAN_TN;_spinup_&envir;_@H</cyclestr></value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&OBSERVER_GSI_TN;_spinup_ensmean_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -1452,6 +1454,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
+    <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
     <envar><name>GSI_TYPE</name><value><cyclestr>OBSERVER</cyclestr></value></envar>
     <envar><name>MEM_TYPE</name><value><cyclestr>MEMBER</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
@@ -1461,7 +1464,7 @@ MODULES_RUN_TASK_FP script.
 
     <dependency>
        <and>
-         <taskdep task="&OBSERVER_GSI_ENSMEAN_TN;_spinup"/>
+         <taskdep task="&OBSERVER_GSI_TN;_spinup_ensmean"/>
        </and>
     </dependency>
 
@@ -1957,6 +1960,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>spinup</cyclestr></value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
@@ -2356,7 +2360,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&OBSERVER_GSI_ENSMEAN_TN;" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_analysis_gsi }}">
+  <task name="&OBSERVER_GSI_TN;_ensmean" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_analysis_gsi }}">
 
     &RSRV_ANALYSIS;
     &WALL_LIMIT_ANALYSIS;
@@ -2366,11 +2370,11 @@ MODULES_RUN_TASK_FP script.
     &NATIVE_ANALYSIS_GSI;
     <walltime>&WALLTIME_ANALYSIS_GSI;</walltime>
     &NODESIZE_ALL;
-    <jobname>&TAG;_&OBSERVER_GSI_ENSMEAN_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&OBSERVER_GSI_ENSMEAN_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&TAG;_&OBSERVER_GSI_TN;_ensmean</jobname>
+    <join><cyclestr>&LOGDIR;/&OBSERVER_GSI_TN;_ensmean_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>taskid</name><value><cyclestr>&RUN;_&OBSERVER_GSI_ENSMEAN_TN;_&envir;_@H</cyclestr></value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&OBSERVER_GSI_TN;_ensmean_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -2443,7 +2447,7 @@ MODULES_RUN_TASK_FP script.
 
     <dependency>
        <and>
-         <taskdep task="&OBSERVER_GSI_ENSMEAN_TN;"/>
+         <taskdep task="&OBSERVER_GSI_TN;_ensmean"/>
        </and>
     </dependency>
 
@@ -3030,6 +3034,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
@@ -3110,6 +3115,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
     <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>

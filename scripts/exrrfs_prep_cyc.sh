@@ -250,31 +250,32 @@ fi
 
 if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial files from ics
     if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-      bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/ics
+      bkpath=${DATAROOT}/${RUN}_${PDY}${cyc}/${WGF}/${mem_num}/ics
     else
-      bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/ics
+      bkpath=${DATAROOT}/${RUN}_${PDY}${cyc}/${WGF}/ics
     fi
-    if [ -r "${bkpath}/gfs_data.tile7.halo0.nc" ]; then
-      cpreq -p ${bkpath}/gfs_bndy.tile7.000.nc gfs_bndy.tile7.000.nc        
-      cpreq -p ${bkpath}/gfs_ctrl.nc gfs_ctrl.nc        
-      cpreq -p ${bkpath}/gfs_data.tile7.halo0.nc gfs_data.tile7.halo0.nc        
-      cpreq -p ${bkpath}/sfc_data.tile7.halo0.nc sfc_data.tile7.halo0.nc        
-      ln -s ${bkpath}/gfs_bndy.tile7.000.nc bk_gfs_bndy.tile7.000.nc
-      ln -s ${bkpath}/gfs_data.tile7.halo0.nc bk_gfs_data.tile7.halo0.nc
-      ln -s ${bkpath}/sfc_data.tile7.halo0.nc bk_sfc_data.tile7.halo0.nc
-      print_info_msg "$VERBOSE" "cold start from $bkpath"
-      if [ "${SAVE_CYCLE_LOG}" = "TRUE" ] ; then
-        echo "${YYYYMMDDHH}(${CYCLE_TYPE}): cold start at ${current_time} from $bkpath " >> ${EXPTDIR}/log.cycles
-      fi
-    else
-      err_exit "Cannot find cold start initial condition from : ${bkpath}"
+    if [ ! -d ${bkpath} ]; then
+      echo "FATAL ERROR: cold start initial files from ics can not be found"
+      exit 9
+    fi
+    
+    cpreq -p ${bkpath}/gfs_bndy.tile7.000.nc gfs_bndy.tile7.000.nc        
+    cpreq -p ${bkpath}/gfs_ctrl.nc gfs_ctrl.nc        
+    cpreq -p ${bkpath}/gfs_data.tile7.halo0.nc gfs_data.tile7.halo0.nc        
+    cpreq -p ${bkpath}/sfc_data.tile7.halo0.nc sfc_data.tile7.halo0.nc        
+    ln -s ${bkpath}/gfs_bndy.tile7.000.nc bk_gfs_bndy.tile7.000.nc
+    ln -s ${bkpath}/gfs_data.tile7.halo0.nc bk_gfs_data.tile7.halo0.nc
+    ln -s ${bkpath}/sfc_data.tile7.halo0.nc bk_sfc_data.tile7.halo0.nc
+    print_info_msg "$VERBOSE" "cold start from $bkpath"
+    if [ "${SAVE_CYCLE_LOG}" = "TRUE" ] ; then
+      echo "${YYYYMMDDHH}(${CYCLE_TYPE}): cold start at ${current_time} from $bkpath " >> ${EXPTDIR}/log.cycles
     fi
 
 elif [[ $BKTYPE == 3 ]]; then
     if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-      bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/ics
+      bkpath=${DATAROOT}/${RUN}_${PDY}${cyc}/${WGF}/${mem_num}/ics
     else
-      bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/ics
+      bkpath=${DATAROOT}/${RUN}_${PDY}${cyc}/${WGF}/ics
     fi
     if [ -r "${bkpath}/coupler.res" ]; then
       cpreq -p ${bkpath}/fv_core.res.nc fv_core.res.nc
@@ -988,9 +989,9 @@ else
   YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
   HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    lbcs_path=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/lbcs
+    lbcs_path=${COMROOT}/${NET}/${rrfs_ver}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/lbcs
   else
-    lbcs_path=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/lbcs
+    lbcs_path=${COMROOT}/${NET}/${rrfs_ver}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/lbcs
   fi
   while [[ $n -le ${end_search_hr} ]] ; do
     last_bdy_time=$(( n + ${FCST_LEN_HRS_thiscycle} ))
@@ -1005,9 +1006,9 @@ else
       YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
       HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
       if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-        lbcs_path=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/lbcs
+        lbcs_path=${COMROOT}/${NET}/${rrfs_ver}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/lbcs
       else
-        lbcs_path=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/lbcs
+        lbcs_path=${COMROOT}/${NET}/${rrfs_ver}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/lbcs
       fi
     fi
   done

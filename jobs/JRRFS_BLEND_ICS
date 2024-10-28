@@ -59,25 +59,21 @@ on the RRFS initial conditions.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
-#export jobid=${jobid:-${taskid}}
-export jobid=${taskid}
+export outid=${outid:-"LL$job"}
+export jobid=${jobid:-taskid}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
-export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/ics"
+export umbrella_data="${DATAROOT}/${RUN}_${PDY}${cyc}/${WGF}/${mem_num}/ics"
 
 export DATA=${DATAROOT}/${jobid}
-mkdir -p $DATA
-
-mkdir -p ${DATA}/tmp_ICS
-cd ${DATA}/tmp_ICS
-
-mkdir -p "${NWGES_DIR}"
+mkdir -p $DATA $umbrella_data
+cd ${DATA}
 
 #-----------------------------------------------------------------------
 # Execute the script.
 #-----------------------------------------------------------------------
 
-export pgmout="${DATA}/tmp_ICS/OUTPUT.$$"
+export pgmout="${DATA}/OUTPUT.$$"
 env
 
 $HOMErrfs/scripts/exrrfs_blend_ics.sh
@@ -88,6 +84,7 @@ if [ -e "$pgmout" ]; then
 fi
 
 if [ "${KEEPDATA}" = "NO" ]; then
+  cd ${DATAROOT}
   rm -rf ${DATA}
 fi
 

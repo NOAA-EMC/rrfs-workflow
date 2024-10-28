@@ -38,6 +38,7 @@ Workflow task names.
 <!ENTITY NET                  "{{ net }}">
 <!ENTITY RUN                  "{{ run }}">
 <!ENTITY envir                "{{ envir }}">
+<!ENTITY WGF                  "{{ wgf }}">
 
 <!--
 Flags that specify whether to run the preprocessing tasks.
@@ -336,6 +337,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
       <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
       <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
+      <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
       <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
       <envar><name>EXTRN_MDL_NAME</name><value>{{ extrn_mdl_name_lbcs }}</value></envar>
       <envar><name>BOUNDARY_LEN</name><value>{{ boundary_len_hrs }}</value></envar>
@@ -381,6 +383,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
+    <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
     <envar><name>RESTART_HRS</name><value><cyclestr>0</cyclestr></value></envar>
