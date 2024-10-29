@@ -38,14 +38,24 @@ def header_begin(xmlFile):
 ### header_entities_
 def header_entities(xmlFile,expdir):
   HOMErrfs=os.getenv('HOMErrfs','HOMErrfs_not_defined')
+  DATAROOT=os.getenv('DATAROOT','DATAROOT_not_defined')
+  COMROOT=os.getenv('COMROOT','COMROOT_not_defined')
+  net=os.getenv('NET','3')
+  rrfs_ver=os.getenv('VERSION','v2.0.0')
+
   text = f'''
 <!ENTITY task_common_vars\n\
 "\n\
   <envar><name>HOMErrfs</name><value>{HOMErrfs}</value></envar>\n\
   <envar><name>EXPDIR</name><value>{expdir}</value></envar>\n\
+  <envar><name>DATAROOT</name><value>{DATAROOT}</value></envar>\n\
+  <envar><name>COMROOT</name><value>{COMROOT}</value></envar>\n\
   <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>\n\
   <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>\n\
   <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>\n\
+  <envar><name>NET</name><value>{net}</value></envar>\n\
+  <envar><name>rrfs_ver</name><value>{rrfs_ver}</value></envar>\n\
+  <envar><name>KEEPDATA</name><value>yes</value></envar>\n\
 "\n\
 >\n\
 '''
@@ -123,7 +133,7 @@ class objTask:
     #
     text=text+"  &task_common_vars;\n" #add an empty line before the <envar> block for readability
     for key,value in self.dcTaskEnv.items():
-      text=text+f'  <envar><name>{key}</name><value><cyclestr>{value}</cyclestr></value></envar>\n'
+      text=text+f'  <envar><name>{key}</name><value>{value}</value></envar>\n'
     xmlFile.write(text)
 
   def wflow_task_end(self,xmlFile):

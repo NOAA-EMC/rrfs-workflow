@@ -11,12 +11,13 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     task_id=f'ungrib_lbc'
     cycledefs='lbc'
     # metatask (support nested metatasks)
-    fhr=os.getenv('FCST_LENGTH','12')
+#    fhr=os.getenv('FCST_LENGTH','12')
     offset=int(os.getenv('LBC_OFFSET','6'))
-    length=int(os.getenv('LBC_LENGTH','18'))
+    length=int(os.getenv('DET_LBC_LENGTH','12'))
     interval=int(os.getenv('LBC_INTERVAL','3'))
-#    meta_hr= ''.join(f'{i:03d} ' for i in range(0,int(length)+1,int(interval))).strip()
-#    comin_hr=''.join(f'{i:03d} ' for i in range(int(offset),int(length)+int(offset)+1,int(interval))).strip()
+    print(offset)
+    print(length)
+    print(interval)
     meta_bgn=""
     meta_end=""
     prefix=os.getenv('LBC_PREFIX','GFS')
@@ -51,8 +52,8 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={
     'TYPE': 'lbc',
-    'SOURCE_BASEDIR': f'{lbc_source_basedir}',
-    'NAME_PATTERN': f'{lbc_name_pattern}',
+    'SOURCE_BASEDIR': f'<cyclestr offset="-{offset}:00:00">{lbc_source_basedir}</cyclestr>',
+    'NAME_PATTERN': f'<cyclestr offset="-{offset}:00:00">{lbc_name_pattern}</cyclestr>',
     'OFFSET': f'{offset}',
     'LENGTH': f'{length}',
     'INTERVAL': f'{interval}',
@@ -60,22 +61,14 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
 
   # dependencies
   COMINgfs=os.getenv("COMINgfs",'COMINgfs_not_defined')
-  COMINrrfs=os.getenv("COMINrrfs",'COMINrrfs_not_defined')
-  COMINrap=os.getenv("COMINrap",'COMINrap_not_defined')
-  COMINhrrr=os.getenv("COMINhrrr",'COMINhrrr_not_defined')
   COMINgefs=os.getenv("COMINgefs",'COMINgefs_not_defined')
   if prefix == "GFS":
     fpath=f'{COMINgfs}/gfs.@Y@m@d/@H/gfs.t@Hz.pgrb2.0p25.f#fhr_in#'
-  elif prefix == "RRFS":
-    fpath=f'{COMINrrfs}/rrfs.@Y@m@d/@H/rrfs.t@Hz.natlve.f#fhr_in#.grib2'
-  elif prefix == "RAP":
-#    fpath=f'{COMINrap}/rap.@Y@m@d/rap.t@Hz.wrfnatf#fhr_in#.grib2'
-    fpath=f'{lbc_source_basedir}/{lbc_name_pattern}'
   elif prefix == "GEFS":
     fpath=f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.f#fhr_in#'
     fpath2=f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.f#fhr_in#'
   else:
-    fpath=f'/not_supported_LBC_PREFIX={prefix}'
+    fpath=f'{lbc_source_basedir}/{lbc_name_pattern}'
 
   timedep=""
   realtime=os.getenv("REALTIME","false")

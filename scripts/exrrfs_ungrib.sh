@@ -39,20 +39,8 @@ elif [[ "${prefix}" == "GEFS" ]]; then
   ls -lth ${filea} ${fileb}
   cat ${filea} ${fileb} > GRIBFILE.AAA
 
-elif [[ "${prefix}" == "RAP" ]]; then
-  fstr=$(printf %02d ${FHRin})
-#  GRIBFILE=${COMINrap}/rap.${CDATEin:0:8}/rap.t${CDATEin:8:2}z.wrfnatf${fstr}.grib2
-  GRIBFILE=${COMIN}/${NAME_PATTERN}
-  ${cpreq} ${GRIBFILE} GRIBFILE.AAA
-
-elif [[ "${prefix}" == "RRFS" ]]; then
-  fstr=$(printf %02d ${FHRin})
-  GRIBFILE=${COMINrrfs1}/rrfs_a.${CDATEin:0:8}/${CDATEin:8:2}/rrfs.t${CDATEin:8:2}z.natlve.f${fstr}.grib2
-  ${cpreq} ${GRIBFILE} GRIBFILE.AAA
-
 else
-  echo "ungrib PREFIX=${prefix} not supported"
-  err_exit
+  echo "ungrib PREFIX=${prefix} from xml"
 fi
 #
 # generate the namelist on the fly
@@ -74,7 +62,7 @@ for fhr in  ${fhr_all}; do
   GRIBFILE="${COMIN}/${NAME_FILE}"
   ${cpreq} ${GRIBFILE} GRIBFILE.AAA
 
-CDATEout=$($NDATE ${fhr} ${CDATE})
+CDATEout=$($NDATE ${fhr} ${CDATEin})
 start_time=$(date -d "${CDATEout:0:8} ${CDATEout:8:2}" +%Y-%m-%d_%H:%M:%S) 
 end_time=${start_time}
 interval_seconds=$(( ${INTERVAL}*3600 ))

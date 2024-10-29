@@ -4,12 +4,26 @@ set -x
 date
 #
 # source the config cascade
-source ${EXPDIR}/exp.setup
-[[ ! -z "${ENS_INDEX}" ]] && source ${EXPDIR}/config/config.ens
-source ${EXPDIR}/config/config.${MACHINE}
-source ${EXPDIR}/config/config.base
-[[ -s ${EXPDIR}/config/config.ungrib ]] && source ${EXPDIR}/config/config.ungrib
+#source ${EXPDIR}/exp.setup
+#[[ ! -z "${ENS_INDEX}" ]] && source ${EXPDIR}/config/config.ens
+#source ${EXPDIR}/config/config.${MACHINE}
+#source ${EXPDIR}/config/config.base
+#[[ -s ${EXPDIR}/config/config.ungrib ]] && source ${EXPDIR}/config/config.ungrib
 #
+#-----------------------------------------------------------------------
+# Specify Execution Areas
+#-----------------------------------------------------------------------
+#
+export HOMErrfs=${HOMErrfs} #comes from the workflow at runtime
+export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
+export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
+export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
+export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
+
+#-----------------------------------------------------------------------
+# Obtain unique process id (pid) and create the run directory (DATA).
+#-----------------------------------------------------------------------
+
 export pid=${pid:-$$}
 if [[ -z "${ENS_INDEX}" ]]; then
   export RUN="rrfs"
@@ -25,17 +39,28 @@ if [ -d ${DATA} ]; then # remove the ${DATA} directory if existed
 fi
 mkdir -p ${DATA}
 #
-export COMINgfs=${COMINgfs:-$(compath.py $envir/gfs/$gfs_ver)}
-export COMINgefs=${COMINgefs:-$(compath.py $envir/gefs/$gefs_ver)}
-#export COMINrap=${COMINrap:-$(compath.py $envir/rap/$rap_ver)}
-#export COMINrrfs=${COMINrrfs:-$(compath.py $envir/rrfs/$rrfs_ver)}
+#-----------------------------------------------------------------------
+# Set the parameters for the external model files.
+#-----------------------------------------------------------------------
+#
+#export COMINgfs=${COMINgfs:-$(compath.py $envir/gfs/$gfs_ver)}
+#export COMINgefs=${COMINgefs:-$(compath.py $envir/gefs/$gefs_ver)}
 export COMIN=${SOURCE_BASEDIR:-("")}
 export NAME_PATTERN=${NAME_PATTERN:-("")}
-export OFFSET=${OFFSET:-(0)}
-export LENGTH=${LENGTH:-(12)}
-export INTERVAL=${INTERVAL:-(3)}
+export OFFSET=${OFFSET:-0}
+export LENGTH=${LENGTH:-0}
+export INTERVAL=${INTERVAL:-1}
+#
+#-----------------------------------------------------------------------
+# Define COM directories
+#-----------------------------------------------------------------------
+#
+if [[ -d "${COMROOT}" ]];then
+  COMOUT=${COMROOT}/${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}
+else
+  COMOUT=$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})
+fi
 
-export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
 if [[ -z "${ENS_INDEX}" ]]; then
   mkdir -p ${COMOUT}/ungrib_${TYPE}
 else

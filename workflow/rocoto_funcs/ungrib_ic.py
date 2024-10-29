@@ -16,6 +16,9 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
     meta_end=""
     ic_source_basedir=os.getenv('IC_SOURCE_BASEDIR','')
     ic_name_pattern=os.getenv('IC_NAME_PATTERN','')
+    offset=int(os.getenv('IC_OFFSET','6'))
+    net=os.getenv('NET','3')
+    rrfs_ver=os.getenv('VERSION','v2.0.0')
   else:
     metatask=True
     meta_id='ungrib_ic'
@@ -35,38 +38,32 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
 
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={
-    'FHR': '000',
     'TYPE': 'ic',
-    'SOURCE_BASEDIR': f'{ic_source_basedir}',
-    'NAME_PATTERN': f'{ic_name_pattern}',
+    'SOURCE_BASEDIR': f'<cyclestr offset="-{offset}:00:00">{ic_source_basedir}</cyclestr>',
+    'NAME_PATTERN': f'<cyclestr offset="-{offset}:00:00">{ic_name_pattern}</cyclestr>',
+    'OFFSET': f'{offset}',
   }
   #
   # dependencies
   COMINgfs=os.getenv("COMINgfs",'COMINgfs_not_defined')
-  COMINrrfs=os.getenv("COMINrrfs",'COMINrrfs_not_defined')
-  COMINrap=os.getenv("COMINrap",'COMINrap_not_defined')
-  COMINhrrr=os.getenv("COMINhrrr",'COMINhrrr_not_defined')
   COMINgefs=os.getenv("COMINgefs",'COMINgefs_not_defined')
   if prefix == "GFS":
     fpath=f'{COMINgfs}/gfs.@Y@m@d/@H/gfs.t@Hz.pgrb2.0p25.f{offset:>03}'
-  elif prefix == "RRFS":
-    fpath=f'{COMINrrfs}/rrfs.@Y@m@d/@H/rrfs.t@Hz.natlve.f{offset:>02}.grib2'
-  elif prefix == "RAP":
-#    fpath=f'{COMINrap}/rap.@Y@m@d/rap.t@Hz.wrfnatf{offset:>02}.grib2'
-    fpath=f'{ic_source_basedir}/{ic_name_pattern}'
   elif prefix == "GEFS":
     fpath=f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.f{offset:>03}'
     fpath2=f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.f{offset:>03}'
   else:
-    fpath=f'/not_supported_LBC_PREFIX={prefix}'
+    fpath=f'{ic_source_basedir}/{ic_name_pattern}'
 
   timedep=""
   realtime=os.getenv("REALTIME","false")
   starttime=get_cascade_env(f"STARTTIME_{task_id}".upper())
   if realtime.upper() == "TRUE":
-    timedep=f'\n  <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+    timedep=f'\n   <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
   #
-  datadep=f'<datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath}</cyclestr></datadep>'
+  comin_hr=str(int(offset)).zfill(3)
+  fpath3=fpath.replace('${HHH}', comin_hr)
+  datadep=f'   <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath3}</cyclestr></datadep>'
   if do_ensemble:
     datadep=datadep+f'\n  <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath2}</cyclestr></datadep>'
   dependencies=f'''
