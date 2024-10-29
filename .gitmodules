@@ -20,6 +20,6 @@
         ignore = all
 [submodule "sorc/MPASSIT"]
 	path = sorc/MPASSIT
-	url = https://github.com/LarissaReames-NOAA/MPASSIT.git
+	url = https://github.com/NOAA-GSL/MPASSIT.git
         branch = develop
         ignore = all
