@@ -13,8 +13,8 @@ def upp(xmlFile, expdir, do_ensemble=False):
     cycledefs='prod'
     # metatask (nested or not)
     fhr=os.getenv('FCST_LENGTH','9')
-    #meta_hr=''.join(f'{i:03d} ' for i in range(int(fhr)+1)).strip()
-    meta_hr=''.join(f'{i:03d} ' for i in range(int(fhr)+1)).strip()[4:] #remove '000 ' as no f000 diag and history files for restart cycles yet, gge.debug
+    meta_hr=''.join(f'{i:03d} ' for i in range(int(fhr)+1)).strip()
+    #meta_hr=''.join(f'{i:03d} ' for i in range(int(fhr)+1)).strip()[4:] #remove '000 ' as no f000 diag and history files for restart cycles yet, gge.debug
     meta_bgn=f'''
 <metatask name="{meta_id}">
 <var name="fhr">{meta_hr}</var>'''

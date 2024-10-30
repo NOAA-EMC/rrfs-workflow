@@ -9,3 +9,12 @@ lh				LH
 sfc_albedo                      ALBEDO
 hpbl                            PBLH
 ivgtyp                          IVGTYP
+snowfallac                      SNOWFALLAC
+vegfra                          VEGFRA
+shdmin                          SHDMIN
+shdmax                          SHDMAX
+canwat                          CANWAT
+snowc                           SNOWC
+snownc                          SNOWNC
+graupelnc                       GRAUPELNC
+acrunoff                        ACRUNOFF

@@ -7,6 +7,7 @@ cd ${DATA}/${FHR}
 fhr=${FHR:1:2} # remove leading zeros
 CDATEp=$($NDATE ${fhr} ${CDATE} )
 timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
+timestr2=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H:%M:%S)
 
 if [[ -z "${ENS_INDEX}" ]]; then
   ensindexstr=""
@@ -26,8 +27,9 @@ fileName='mpassit.${timestr}.nc'
 fileNameFlux='mpassit.${timestr}.nc'
 IOFORM='netcdfpara'
 grib='grib2'
-DateStr='${timestr}'
+DateStr='${timestr2}'
 MODELNAME='RAPR'
+SUBMODELNAME='MPAS'
 fileNameFlat='postxconfig-NT.txt'
 /
 &nampgb

@@ -11,13 +11,14 @@
     config_nfglevels = ${nfglevels}
     config_nfgsoillevels = ${nfgsoillevels}
     config_nsoilcat      = 16
+    config_nvegopt       = 2
 /
 &data_sources
-    config_geog_data_path = ''
+    config_geog_data_path = '/mnt/lfs5/BMC/wrfruc/HRRRv5/geog/'
     config_met_prefix = '${prefix}'
     config_sfc_prefix = 'SST'
     config_fg_interval = ${interval_seconds}
-    config_landuse_data = 'MODIFIED_IGBP_MODIS_NOAH'
+    config_landuse_data = 'MODIFIED_IGBP_MODIS_NOAH_15s'
     config_topo_data = 'GMTED2010'
     config_vegfrac_data = 'MODIS'
     config_albedo_data = 'MODIS'
@@ -25,6 +26,7 @@
     config_supersample_factor = 3
     config_30s_supersample_factor = 1
     config_use_spechumd = true
+    config_soilcat_data = 'BNU'
 /
 &vertical_grid
     config_ztop = 25878.712

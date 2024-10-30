@@ -23,8 +23,8 @@ if [[ "${MESH_NAME}" == "conus12km" ]]; then
   dx=12000.0
   ref_lat=39.0
 elif [[ "${MESH_NAME}" == "conus3km" ]]; then
-  nx=1601
-  ny=961
+  nx=1800
+  ny=1060
   dx=3000.0
   ref_lat=38.5
 fi

@@ -13,11 +13,8 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     # metatask (support nested metatasks)
 #    fhr=os.getenv('FCST_LENGTH','12')
     offset=int(os.getenv('LBC_OFFSET','6'))
-    length=int(os.getenv('DET_LBC_LENGTH','12'))
+    length=int(os.getenv('LBC_LENGTH','12'))
     interval=int(os.getenv('LBC_INTERVAL','3'))
-    print(offset)
-    print(length)
-    print(interval)
     meta_bgn=""
     meta_end=""
     prefix=os.getenv('LBC_PREFIX','GFS')

@@ -28,9 +28,14 @@ else
   ${cpreq} ${COMINrrfs}/${RUN}.${PDY}/${cyc}${ensindexstr}/da/restart.${timestr}.nc .
   do_restart='true'
 fi
-offset=$((10#${cyc}%6))
-CDATElbc=$($NDATE -${offset} ${CDATE})
+
+
+#offset=$((10#${cyc}%6))
+#CDATElbc=$($NDATE -${offset} ${CDATE})
+CDATElbc=${CDATE}
 ${cpreq} ${COMINrrfs}/${RUN}.${CDATElbc:0:8}/${CDATElbc:8:2}${ensindexstr}/lbc/lbc*.nc .
+
+
 ${cpreq} ${FIXrrfs}/physics/${PHYSICS_SUITE}/* .
 ln -snf VEGPARM.TBL.fcst VEGPARM.TBL #gge.debug temp
 mkdir -p graphinfo stream_list
@@ -56,7 +61,7 @@ eval "echo \"${file_content}\"" > namelist.atmosphere
 
 # generate the streams file on the fly using sed as this file contains "filename_template='lbc.$Y-$M-$D_$h.$m.$s.nc'"
 # lbc_interval is defined in the beginning
-restart_interval=${RESTART_INTERVAL:-1}
+restart_interval=${RESTART_INTERVAL:-61}
 history_interval=${HISTORY_INTERVAL:-1}
 diag_interval=${DIAG_INTERVAL:-1}
 sed -e "s/@restart_interval@/${restart_interval}/" -e "s/@history_interval@/${history_interval}/" \
