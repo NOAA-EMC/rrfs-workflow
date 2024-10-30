@@ -298,7 +298,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
     <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
-    <envar><name>EXTRN_MDL_NAME</name><value>{{ extrn_mdl_name_ics }}</value></envar>
+    <envar><name>EXTRN_MDL_NAME_ICS</name><value>{{ extrn_mdl_name_ics }}</value></envar>
     <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
     <envar><name>GEFS_INPUT_SUBDIR</name><value>#subdirGE#</value></envar>
     <envar><name>envir</name><value>&envir;</value></envar>
@@ -349,7 +349,7 @@ MODULES_RUN_TASK_FP script.
       <envar><name>DATAROOT</name><value>&DATAROOT;</value></envar>
       <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
       <envar><name>GESROOT</name><value>&GESROOT;</value></envar>
-      <envar><name>EXTRN_MDL_NAME</name><value>{{ extrn_mdl_name_lbcs }}</value></envar>
+      <envar><name>EXTRN_MDL_NAME_LBCS</name><value>{{ extrn_mdl_name_lbcs }}</value></envar>
       <envar><name>BOUNDARY_LEN</name><value>{{ boundary_len_hrs }}</value></envar>
       <envar><name>ENSMEM_INDX</name><value><cyclestr>#{{ ensmem_indx_name }}#</cyclestr></value></envar>
       <envar><name>GEFS_INPUT_SUBDIR</name><value>#subdirGE#</value></envar>

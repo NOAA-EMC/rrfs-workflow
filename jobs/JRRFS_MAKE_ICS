@@ -62,7 +62,7 @@ for the RRFS (in NetCDF format).
 # Set the parameters for the external model files.
 #-----------------------------------------------------------------------
 
-extrn_mdl_name="${EXTRN_MDL_NAME}"
+extrn_mdl_name="${EXTRN_MDL_NAME_ICS}"
 sysbasedir="${EXTRN_MDL_SYSBASEDIR_ICS}"
 gfs_file_fmt="${GFS_FILE_FMT_ICS}"
 time_offset_hrs="${EXTRN_MDL_ICS_OFFSET_HRS}"
@@ -137,6 +137,11 @@ export RUN=${RUN:-rrfs}
 export outid=${outid:-"LL$job"}
 export jobid=${jobid:-taskid}
 
+if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
+  export ENSMEM_INDX=`echo ${GDAS_MEM_NAME} | cut -c4-6`
+else
+  export ENSMEM_INDX=""
+fi
 export mem_num=m$(echo "${ENSMEM_INDX}")
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   export umbrella_data="${DATAROOT}/${RUN}_${PDY}${cyc}/${WGF}/${mem_num}/ics"

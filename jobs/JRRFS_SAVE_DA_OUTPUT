@@ -61,6 +61,11 @@ export RUN=${RUN:-rrfs}
 #export jobid=${jobid:-${taskid}}
 export jobid=${taskid}
 
+if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
+  export ENSMEM_INDX=`echo ${GDAS_MEM_NAME} | cut -c4-6`
+else
+  export ENSMEM_INDX=""
+fi
 export mem_num=m$(echo "${ENSMEM_INDX}")
 
 # NWGES_DIR is the directory in which the model IC file (DA analysis) will be saved

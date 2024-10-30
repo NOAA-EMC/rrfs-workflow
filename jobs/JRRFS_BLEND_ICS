@@ -62,6 +62,11 @@ export RUN=${RUN:-rrfs}
 export outid=${outid:-"LL$job"}
 export jobid=${jobid:-taskid}
 
+if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
+  export ENSMEM_INDX=`echo ${GDAS_MEM_NAME} | cut -c4-6`
+else
+  export ENSMEM_INDX=""
+fi
 export mem_num=m$(echo "${ENSMEM_INDX}")
 export umbrella_data="${DATAROOT}/${RUN}_${PDY}${cyc}/${WGF}/${mem_num}/ics"
 

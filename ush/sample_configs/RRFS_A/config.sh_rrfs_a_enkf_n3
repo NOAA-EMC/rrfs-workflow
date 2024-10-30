@@ -144,8 +144,8 @@ GFS_FILE_FMT_ICS="netcdf"
 GFS_FILE_FMT_LBCS="grib2"
 
 envir="para"
-NET="rrfs_a"
-MODEL="RRFS_A"
+NET="rrfs"
+MODEL="RRFS"
 
 if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    NUM_ENS_MEMBERS=30
