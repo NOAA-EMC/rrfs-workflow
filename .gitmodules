@@ -5,8 +5,8 @@
         ignore = all
 [submodule "sorc/MPAS-Model"]
 	path = sorc/MPAS-Model
-	url = https://github.com/MPAS-Dev/MPAS-Model
-        branch = master
+	url = https://github.com/NOAA-GSL/MPAS-Model
+        branch = gsl/develop
         ignore = all
 [submodule "sorc/RDASApp"]
 	path = sorc/RDASApp
@@ -20,6 +20,6 @@
         ignore = all
 [submodule "sorc/MPASSIT"]
 	path = sorc/MPASSIT
-	url = https://github.com/rrfsx/MPASSIT
+	url = https://github.com/NOAA-GSL/MPASSIT.git
         branch = develop
         ignore = all

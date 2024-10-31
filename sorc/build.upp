@@ -18,6 +18,6 @@ cd ${HOMErrfs}/sorc/UPP/tests
 
 mkdir -p ${HOMErrfs}/exec
 echo "copy ${EXEC} to ../exec/upp.x"
-ln -snf ${EXEC} ${HOMErrfs}/exec/upp.x
+cp ${EXEC} ${HOMErrfs}/exec/upp.x
 
 exit 0
