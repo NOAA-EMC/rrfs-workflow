@@ -31,13 +31,13 @@ Building RRFS workflow
             
          ./app_build.sh
 
-      Alternatively, the above command can be followed by the platform (machine) name as follows:
+      Alternatively, the above command can be followed by options to do the checkout_externals step and to avoid compiling certain UPP components that are only available to limited people
 
       .. code-block:: console
-            
-         ./app_build.sh --platform=<machine>
 
-      where ``<machine>`` is ``wcoss2``, ``hera``, ``jet``, ``orion``, or ``hercules``.
+         ./app_build.sh --extrn --noifi --nogtg
+
+      where the ``--extrn`` does the code checkout, and ``--noifi`` avoids building the IFI (icing) library, and ``--nogtg`` avoid building the GTG (turbulence) library.
 
    #. Move to the home directory (rrfs-workflow):
 
