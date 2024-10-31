@@ -46,6 +46,7 @@
 /
 &physics
     config_sst_update = false
+    config_gvf_update = false
     config_sstdiurn_update = false
     config_frac_seaice = true
     config_deepsoiltemp_update = false

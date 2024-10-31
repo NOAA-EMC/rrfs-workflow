@@ -40,7 +40,7 @@ ${cpreq} ${FIXrrfs}/physics/${PHYSICS_SUITE}/* .
 ln -snf VEGPARM.TBL.fcst VEGPARM.TBL #gge.debug temp
 mkdir -p graphinfo stream_list
 ${cpreq} ${FIXrrfs}/graphinfo/* graphinfo/
-cpreq ${FIXrrfs}/stream_list/${PHYSICS_SUITE}/* stream_list/
+${cpreq} ${FIXrrfs}/stream_list/${PHYSICS_SUITE}/* stream_list/
 
 # generate the namelist on the fly
 # do_restart already defined in the above

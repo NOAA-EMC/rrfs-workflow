@@ -92,15 +92,7 @@ def fcst(xmlFile, expdir, do_ensemble=False):
     dependencies=f'''
   <dependency>
   <and>{timedep}
-   <or>
     <metataskdep metatask="lbc{ensindexstr}" cycle_offset="0:00:00"/>
-    <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-1:00:00"/>
-    <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-2:00:00"/>
-    <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-3:00:00"/>
-    <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-4:00:00"/>
-    <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-5:00:00"/>
-    <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-6:00:00"/>
-   </or>
    <taskdep task="ic{ensindexstr}"/>
   </and>
   </dependency>'''
