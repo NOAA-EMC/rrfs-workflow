@@ -18,26 +18,23 @@ Building RRFS workflow
 
          git clone https://github.com/NOAA-EMC/rrfs-workflow.git
 
-   #. Check out the external components:
+   #. Move to the sorc directory, and build the needed executables for the workflow:
 
       .. code-block:: console
 
          cd rrfs-workflow/sorc
-         ./manage_externals/checkout_externals
+         ./app_build.sh --extrn --noifi --nogtg
 
-   #. Set up the build environment and build the executables:
+The above command uses the ``--extrn`` flag to do the code checkout, the ``--noifi`` flag avoids building the IFI (icing) library, and the ``--nogtg`` flag avoids building the GTG (turbulence) library.  Most users do not have access to the IFI and GTG codes.
+
+   #. The above command is equal to:
 
       .. code-block:: console
             
-         ./app_build.sh
+         ./manage_externals/checkout_externals
+         ./app_build.sh -p=[machine] --noifi --nogtg
 
-      Alternatively, the above command can be followed by options to do the checkout_externals step and to avoid compiling certain UPP components that are only available to limited people
-
-      .. code-block:: console
-
-         ./app_build.sh --extrn --noifi --nogtg
-
-      where the ``--extrn`` does the code checkout, and ``--noifi`` avoids building the IFI (icing) library, and ``--nogtg`` avoid building the GTG (turbulence) library.
+    where ``<machine>`` is one of ``wcoss2``, ``hera``, ``jet``, ``orion``, or ``hercules``  
 
    #. Move to the home directory (rrfs-workflow):
 
