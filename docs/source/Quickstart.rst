@@ -16,16 +16,20 @@ Building RRFS workflow
 
       .. code-block:: console
 
-         git clone https://github.com/NOAA-EMC/rrfs-workflow.git
+        git clone https://github.com/NOAA-EMC/rrfs-workflow.git
 
-   #. Move to the sorc directory, and build the needed executables for the workflow:
+   #. Move to the sorc directory:
 
       .. code-block:: console
 
-         cd rrfs-workflow/sorc
-         ./app_build.sh --extrn --noifi --nogtg
+        cd rrfs-workflow/sorc
 
-The above command uses the ``--extrn`` flag to do the code checkout, the ``--noifi`` flag avoids building the IFI (icing) library, and the ``--nogtg`` flag avoids building the GTG (turbulence) library.  Most users do not have access to the IFI and GTG codes.
+   #. Build the needed executables for the workflow: 
+
+      .. code-block:: console
+
+        ./app_build.sh --extrn --noifi --nogtg
+      The above command uses the ``--extrn`` flag to do the code checkout, the ``--noifi`` flag avoids   building the IFI (icing) library, and the ``--nogtg`` flag avoids building the GTG (turbulence) library.  Most users do not have access to the IFI and GTG codes.
 
    #. The above command is equal to:
 
@@ -34,7 +38,7 @@ The above command uses the ``--extrn`` flag to do the code checkout, the ``--noi
          ./manage_externals/checkout_externals
          ./app_build.sh -p=[machine] --noifi --nogtg
 
-    where ``<machine>`` is one of ``wcoss2``, ``hera``, ``jet``, ``orion``, or ``hercules``  
+      where ``<machine>`` is one of ``wcoss2``, ``hera``, ``jet``, ``orion``, or ``hercules``  
 
    #. Move to the home directory (rrfs-workflow):
 
