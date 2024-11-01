@@ -118,6 +118,7 @@ Engineering Test: DA
 
       .. code-block:: console
          
+         source versions/run.ver
          module use modulefiles
          module load wflow_<machine>
          conda activate workflow_tools
