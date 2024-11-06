@@ -35,12 +35,11 @@ fi
 CDATElbc=${CDATE}
 ${cpreq} ${COMINrrfs}/${RUN}.${CDATElbc:0:8}/${CDATElbc:8:2}${ensindexstr}/lbc/lbc*.nc .
 
-
-${cpreq} ${FIXrrfs}/physics/${PHYSICS_SUITE}/* .
-ln -snf VEGPARM.TBL.fcst VEGPARM.TBL #gge.debug temp
+ln -snf ${FIXrrfs}/physics/${PHYSICS_SUITE}/* .
+ln -snf ${FIXrrfs}/meshes/3km_conus.ugwp_oro_data.nc .
 mkdir -p graphinfo stream_list
-${cpreq} ${FIXrrfs}/graphinfo/* graphinfo/
-${cpreq} ${FIXrrfs}/stream_list/${PHYSICS_SUITE}/* stream_list/
+ln -snf ${FIXrrfs}/graphinfo/* graphinfo/
+ln -snf ${FIXrrfs}/stream_list/${PHYSICS_SUITE}/* stream_list/
 
 # generate the namelist on the fly
 # do_restart already defined in the above
@@ -89,6 +88,6 @@ if [[ -z "${ENS_INDEX}" ]]; then
 else
   dstdir="${COMOUT}/mem${ENS_INDEX}/fcst/"
 fi
-${cpreq} ${DATA}/restart.${timestr}.nc ${dstdir}
+#${cpreq} ${DATA}/restart.${timestr}.nc ${dstdir}
 ${cpreq} ${DATA}/diag.*.nc ${dstdir}
 ${cpreq} ${DATA}/history.*.nc ${dstdir}

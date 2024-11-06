@@ -4,21 +4,30 @@ set -x
 cpreq=${cpreq:-cpreq}
 if [[ -z "${ENS_INDEX}" ]]; then
   if [[ "${TYPE}" == "IC" ]] || [[ "${TYPE}" == "ic" ]]; then
-    prefix=${IC_PREFIX:-IC_PREFIX_not_defined}
+    prefixin=${IC_PREFIX:-IC_PREFIX_not_defined}
     offset=${IC_OFFSET:-3}
   else #lbc
-    prefix=${LBC_PREFIX:-LBC_PREFIX_not_defined}
+    prefixin=${LBC_PREFIX:-LBC_PREFIX_not_defined}
     offset=${LBC_OFFSET:-6}
   fi
 else # ensrrfs
   if [[ "${TYPE}" == "IC" ]] || [[ "${TYPE}" == "ic" ]]; then
-    prefix=${ENS_IC_PREFIX:-ENS_IC_PREFIX_not_defined}
+    prefixin=${ENS_IC_PREFIX:-ENS_IC_PREFIX_not_defined}
     offset=${ENS_IC_OFFSET:-39}
   else #lbc
-    prefix=${ENS_LBC_PREFIX:-ENS_LBC_PREFIX_not_defined}
+    prefixin=${ENS_LBC_PREFIX:-ENS_LBC_PREFIX_not_defined}
     offset=${ENS_LBC_OFFSET:-39}
   fi
 fi
+#
+# wildcard match GFS
+#
+if [[ ${prefixin} == *"GFS"* ]]; then
+  prefix="GFS"
+else
+  prefix=${prefixin}
+fi
+
 CDATEin=$($NDATE -${offset} ${CDATE}) #CDATE for input external data
 FHRin=$(( 10#${FHR}+10#${offset} )) #FHR for input external data
 
@@ -54,9 +63,9 @@ fhr_all=$(seq $((10#${OFFSET})) $((10#${INTERVAL})) $(( 10#${OFFSET} + 10#${LENG
 for fhr in  ${fhr_all}; do
 
   HHH=$(printf %03d ${fhr})
-  DATAH=${DATA}/${HHH}
-  mkdir -p ${DATAH}
-  cd ${DATAH}
+  DATA_HR=${DATA}/${HHH}
+  mkdir -p ${DATA_HR}
+  cd ${DATA_HR}
   ${cpreq} ${FIXrrfs}/ungrib/Vtable.${prefix} Vtable
   NAME_FILE=$(echo "${NAME_PATTERN}" | sed "s/\${HHH}/${HHH}/g")
   GRIBFILE="${COMIN}/${NAME_FILE}"
@@ -79,17 +88,17 @@ export err=$?; err_chk
 outfile="${prefix}:$(date -d "${CDATEout:0:8} ${CDATEout:8:2}" +%Y-%m-%d_%H)"
 if [[ -s ${outfile} ]]; then
   if [[ -z "${ENS_INDEX}" ]]; then
-    ${cpreq} ${DATAH}/${outfile} ${COMOUT}/ungrib_${TYPE}/
+    ${cpreq} ${DATA_HR}/${outfile} ${COMOUT}/ungrib_${TYPE}/
     if [[ "${TYPE}" == "lbc" ]] && [[ ! -d ${COMOUT}/ungrib_ic  ]]; then
     # lbc tasks need init.nc, don't know why it is so but we have to leave with this for a while
     # link ungrib_lbc to ungrib_ic so that ic tasks can run and generate init.nc
       ln -snf ${COMOUT}/ungrib_lbc ${COMOUT}/ungrib_ic
     fi
   else
-    ${cpreq} ${DATAH}/${outfile} ${COMOUT}/mem${ENS_INDEX}/ungrib_${TYPE}/
+    ${cpreq} ${DATA_HR}/${outfile} ${COMOUT}/mem${ENS_INDEX}/ungrib_${TYPE}/
   fi
 else
-  echo "FATAR ERROR: ungrib failed"
+  echo "FATAL ERROR: ungrib failed"
   err_exit
 fi
  

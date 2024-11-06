@@ -3,13 +3,6 @@ declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LI
 set -x
 date
 #
-# source the config cascade
-#source ${EXPDIR}/exp.setup
-#[[ ! -z "${ENS_INDEX}" ]] && source ${EXPDIR}/config/config.ens
-#source ${EXPDIR}/config/config.${MACHINE}
-#source ${EXPDIR}/config/config.base
-#[[ -s ${EXPDIR}/config/config.ungrib ]] && source ${EXPDIR}/config/config.ungrib
-#
 #-----------------------------------------------------------------------
 # Specify Execution Areas
 #-----------------------------------------------------------------------

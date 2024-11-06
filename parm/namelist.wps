@@ -24,7 +24,7 @@
   truelat1 = 38.5,
   truelat2 = 38.5,
   stand_lon = -97.5
-  geog_data_path = '/mnt/lfs5/BMC/wrfruc/HRRRv5/geog/',
+  geog_data_path = '',
   opt_geogrid_tbl_path = './',
 /
 
