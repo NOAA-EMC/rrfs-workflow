@@ -1,4 +1,4 @@
-extern /prod_clone/primary/00/gfs/v16.3/gfs/atmos/analysis/jgfs_atmos_analysis:release_fcst
+extern /prod_clone/primary/00/gfs/v16.3/gfs/atmos/analysis/jgfs_atmos_analysis:release_forecast
 extern /prod_clone/primary/00/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post000
 extern /prod_clone/primary/00/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post078
 extern /prod_clone/primary/00/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post120
@@ -7,7 +7,7 @@ extern /prod_clone/primary/00/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager
 extern /prod_clone/primary/00/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post009
 extern /prod_clone/primary/00/rtofs/v2.3/jrtofs_global_analysis
 
-extern /prod_clone/primary/06/gfs/v16.3/gfs/atmos/analysis/jgfs_atmos_analysis:release_fcst
+extern /prod_clone/primary/06/gfs/v16.3/gfs/atmos/analysis/jgfs_atmos_analysis:release_forecast
 extern /prod_clone/primary/06/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post000
 extern /prod_clone/primary/06/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post078
 extern /prod_clone/primary/06/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post120
@@ -15,7 +15,7 @@ extern /prod_clone/primary/06/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager
 extern /prod_clone/primary/06/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post006
 extern /prod_clone/primary/06/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post009
 
-extern /prod_clone/primary/12/gfs/v16.3/gfs/atmos/analysis/jgfs_atmos_analysis:release_fcst
+extern /prod_clone/primary/12/gfs/v16.3/gfs/atmos/analysis/jgfs_atmos_analysis:release_forecast
 extern /prod_clone/primary/12/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post000
 extern /prod_clone/primary/12/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post078
 extern /prod_clone/primary/12/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post120
@@ -23,7 +23,7 @@ extern /prod_clone/primary/12/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager
 extern /prod_clone/primary/12/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post006
 extern /prod_clone/primary/12/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post009
 
-extern /prod_clone/primary/18/gfs/v16.3/gfs/atmos/analysis/jgfs_atmos_analysis:release_fcst
+extern /prod_clone/primary/18/gfs/v16.3/gfs/atmos/analysis/jgfs_atmos_analysis:release_forecast
 extern /prod_clone/primary/18/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post000
 extern /prod_clone/primary/18/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post078
 extern /prod_clone/primary/18/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post120
@@ -59,7 +59,7 @@ suite nco_rrfs_dev_06
             task jrrfs_fsm # file scanning monitor service
               trigger :TIME >= 0550 and :TIME < 0710
               event 156 release_det_make_lbcs 
-              event 1 release_det_analysis_gsi_input
+              event 1 release_det_analysis_gsi
               event 2 release_save_restart_long_1
               event 3 release_save_restart_long_2
               event 4 release_save_restart_long_12
@@ -218,38 +218,38 @@ suite nco_rrfs_dev_06
           family init
             family det
               edit WGF 'det'
-              task jrrfs_det_smoke
+              task jrrfs_det_process_smoke
                 edit CYCLE_TYPE 'prod'
                 trigger :TIME >= 0650 and :TIME < 0710  # 20 mins window 
-              task jrrfs_det_radarref
+              task jrrfs_det_process_radar
                 edit CYCLE_TYPE 'prod'
                 trigger :TIME >= 0645 and :TIME < 0705
-              task jrrfs_det_glmfed
+              task jrrfs_det_process_lightning
                 edit CYCLE_TYPE 'prod'
                 trigger :TIME >= 0645 and :TIME < 0705
-              task jrrfs_det_bufr
+              task jrrfs_det_process_bufr
                 edit CYCLE_TYPE 'prod'
                 trigger :TIME >= 0645 and :TIME < 0705
-              task jrrfs_det_smoke_spinup
+              task jrrfs_det_process_smoke_spinup
                 edit CYCLE_TYPE 'spinup'
-                trigger ./jrrfs_det_smoke==complete
-              task jrrfs_det_radarref_spinup
+                trigger ./jrrfs_det_process_smoke==complete
+              task jrrfs_det_process_radar_spinup
                 edit CYCLE_TYPE 'spinup'
-                trigger ./jrrfs_det_radarref==complete
-              task jrrfs_det_glmfed_spinup
+                trigger ./jrrfs_det_process_radar==complete
+              task jrrfs_det_process_lightning_spinup
                 edit CYCLE_TYPE 'spinup'
-                trigger ./jrrfs_det_glmfed==complete
-              task jrrfs_det_bufr_spinup
+                trigger ./jrrfs_det_process_lightning==complete
+              task jrrfs_det_process_bufr_spinup
                 edit CYCLE_TYPE 'spinup'
-                trigger ./jrrfs_det_bufr==complete
+                trigger ./jrrfs_det_process_bufr==complete
             endfamily   # det
             family enkf
               edit WGF 'enkf'
-              task jrrfs_enkf_process_radarref
+              task jrrfs_enkf_process_radar
                 trigger :TIME >= 0645 and :TIME < 0705
-              task jrrfs_enkf_glmfed
+              task jrrfs_enkf_process_lightning
                 trigger :TIME >= 0645 and :TIME < 0705
-              task jrrfs_enkf_bufr
+              task jrrfs_enkf_process_bufr
                 trigger :TIME >= 0645 and :TIME < 0705
             endfamily   # enkf
           endfamily	# init
@@ -1882,22 +1882,22 @@ suite nco_rrfs_dev_06
               edit WGF 'det'
               edit MEM_TYPE 'MEMBER'
               edit GSI_TYPE 'ANALYSIS'
-              task jrrfs_det_analysis_gsi_input
-                trigger ../../prep/det/jrrfs_det_prep_cyc==complete and ../../fsm/jrrfs_fsm:release_det_analysis_gsi_input
-              task jrrfs_det_postanal_input
-                trigger ./jrrfs_det_analysis_gsi_input==complete
+              task jrrfs_det_analysis_gsi
+                trigger ../../prep/det/jrrfs_det_prep_cyc==complete and ../../fsm/jrrfs_fsm:release_det_analysis_gsi
+              task jrrfs_det_update_lbc_soil
+                trigger ./jrrfs_det_analysis_gsi==complete
               task jrrfs_det_analysis_gsi_diag
-                trigger ./jrrfs_det_analysis_gsi_input==complete
-              task jrrfs_det_cldanl_nonvar
-                trigger ./jrrfs_det_postanal_input==complete and ../../init/det/jrrfs_det_bufr==complete
-              task jrrfs_det_analysis_gsi_input_spinup
+                trigger ./jrrfs_det_analysis_gsi==complete
+              task jrrfs_det_analysis_nonvarcld
+                trigger ./jrrfs_det_update_lbc_soil==complete and ../../init/det/jrrfs_det_process_bufr==complete
+              task jrrfs_det_analysis_gsi_spinup
                 trigger ../../prep/det/jrrfs_det_prep_cyc_spinup==complete
-              task jrrfs_det_postanal_input_spinup
-                trigger ./jrrfs_det_analysis_gsi_input_spinup==complete
+              task jrrfs_det_update_lbc_soil_spinup
+                trigger ./jrrfs_det_analysis_gsi_spinup==complete
               task jrrfs_det_analysis_gsi_diag_spinup
-                trigger ./jrrfs_det_analysis_gsi_input_spinup==complete
-              task jrrfs_det_cldanl_nonvar_spinup
-                trigger ./jrrfs_det_postanal_input_spinup==complete and ../../init/det/jrrfs_det_bufr_spinup==complete
+                trigger ./jrrfs_det_analysis_gsi_spinup==complete
+              task jrrfs_det_analysis_nonvarcld_spinup
+                trigger ./jrrfs_det_update_lbc_soil_spinup==complete and ../../init/det/jrrfs_det_process_bufr_spinup==complete
             endfamily   # det
             family enkf
               edit WGF 'enkf'
@@ -1905,111 +1905,111 @@ suite nco_rrfs_dev_06
                 trigger ../../prep/enkf==complete
               task jrrfs_enkf_radarref
                 trigger ./jrrfs_enkf_updt==complete
-              task jrrfs_enkf_cldanl_nonvar_mem001
+              task jrrfs_enkf_analysis_nonvarcld_mem001
                 edit MEMBER_NAME '001'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem002
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem002
                 edit MEMBER_NAME '002'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem003
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem003
                 edit MEMBER_NAME '003'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem004
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem004
                 edit MEMBER_NAME '004'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem005
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem005
                 edit MEMBER_NAME '005'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem006
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem006
                 edit MEMBER_NAME '006'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem007
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem007
                 edit MEMBER_NAME '007'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem008
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem008
                 edit MEMBER_NAME '008'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem009
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem009
                 edit MEMBER_NAME '009'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem010
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem010
                 edit MEMBER_NAME '010'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem011
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem011
                 edit MEMBER_NAME '011'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem012
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem012
                 edit MEMBER_NAME '012'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem013
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem013
                 edit MEMBER_NAME '013'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem014
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem014
                 edit MEMBER_NAME '014'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem015
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem015
                 edit MEMBER_NAME '015'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem016
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem016
                 edit MEMBER_NAME '016'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem017
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem017
                 edit MEMBER_NAME '017'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem018
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem018
                 edit MEMBER_NAME '018'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem019
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem019
                 edit MEMBER_NAME '019'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem020
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem020
                 edit MEMBER_NAME '020'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem021
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem021
                 edit MEMBER_NAME '021'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem022
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem022
                 edit MEMBER_NAME '022'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem023
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem023
                 edit MEMBER_NAME '023'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem024
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem024
                 edit MEMBER_NAME '024'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem025
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem025
                 edit MEMBER_NAME '025'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem026
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem026
                 edit MEMBER_NAME '026'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem027
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem027
                 edit MEMBER_NAME '027'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem028
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem028
                 edit MEMBER_NAME '028'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem029
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem029
                 edit MEMBER_NAME '029'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
-              task jrrfs_enkf_cldanl_nonvar_mem030
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
+              task jrrfs_enkf_analysis_nonvarcld_mem030
                 edit MEMBER_NAME '030'
-                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_bufr==complete
+                trigger ./jrrfs_enkf_radarref==complete and ../../init/enkf/jrrfs_enkf_process_bufr==complete
               task jrrfs_enkf_save_da_output_mem001
                 edit MEMBER_NAME '001'
-                trigger ./jrrfs_enkf_cldanl_nonvar_mem001==complete
+                trigger ./jrrfs_enkf_analysis_nonvarcld_mem001==complete
               task jrrfs_enkf_save_da_output_mem002
                 edit MEMBER_NAME '002'
-                trigger ./jrrfs_enkf_cldanl_nonvar_mem002==complete
+                trigger ./jrrfs_enkf_analysis_nonvarcld_mem002==complete
               task jrrfs_enkf_save_da_output_mem003
                 edit MEMBER_NAME '003'
-                trigger ./jrrfs_enkf_cldanl_nonvar_mem003==complete
+                trigger ./jrrfs_enkf_analysis_nonvarcld_mem003==complete
               task jrrfs_enkf_save_da_output_mem004
                 edit MEMBER_NAME '004'
-                trigger ./jrrfs_enkf_cldanl_nonvar_mem004==complete
+                trigger ./jrrfs_enkf_analysis_nonvarcld_mem004==complete
               task jrrfs_enkf_save_da_output_mem005
                 edit MEMBER_NAME '005'
-                trigger ./jrrfs_enkf_cldanl_nonvar_mem005==complete
+                trigger ./jrrfs_enkf_analysis_nonvarcld_mem005==complete
             endfamily   # enkf
             family ensf 
               edit WGF 'ensf'
@@ -2030,7 +2030,7 @@ suite nco_rrfs_dev_06
           family forecast
             family det
               edit WGF 'det'
-              task jrrfs_det_fcst_long
+              task jrrfs_det_forecast_long
                 trigger ../../analysis/det==complete
               task jrrfs_det_save_restart_long_1
                 edit FHR '001'
@@ -2050,212 +2050,212 @@ suite nco_rrfs_dev_06
               task jrrfs_det_save_restart_long_48
                 edit FHR '048'
                 trigger ../../fsm/jrrfs_fsm:release_save_restart_long_48
-              task jrrfs_det_fcst_spinup
-                trigger ../../analysis/det/jrrfs_det_cldanl_nonvar_spinup==complete
+              task jrrfs_det_forecast_spinup
+                trigger ../../analysis/det/jrrfs_det_analysis_nonvarcld_spinup==complete
               task jrrfs_det_save_restart_spinup_f001
                 edit FHR '001'
                 trigger ../../fsm/jrrfs_fsm:release_save_restart_spinup_f001
             endfamily   # det
             family enkf
               edit WGF 'enkf'
-              task jrrfs_enkf_fcst_mem001
+              task jrrfs_enkf_forecast_mem001
                 edit MEMBER_NAME '001'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem001==complete and ../../analysis/enkf/jrrfs_enkf_save_da_output_mem001==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem001==complete and ../../analysis/enkf/jrrfs_enkf_save_da_output_mem001==complete
               task jrrfs_enkf_save_restart_mem001_f1
                 edit MEMBER_NAME '001'
-                trigger ./jrrfs_enkf_fcst_mem001==complete
-              task jrrfs_enkf_fcst_mem002
+                trigger ./jrrfs_enkf_forecast_mem001==complete
+              task jrrfs_enkf_forecast_mem002
                 edit MEMBER_NAME '002'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem002==complete and ../../analysis/enkf/jrrfs_enkf_save_da_output_mem002==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem002==complete and ../../analysis/enkf/jrrfs_enkf_save_da_output_mem002==complete
               task jrrfs_enkf_save_restart_mem002_f1
                 edit MEMBER_NAME '002'
-                trigger ./jrrfs_enkf_fcst_mem002==complete
-              task jrrfs_enkf_fcst_mem003
+                trigger ./jrrfs_enkf_forecast_mem002==complete
+              task jrrfs_enkf_forecast_mem003
                 edit MEMBER_NAME '003'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem003==complete and ../../analysis/enkf/jrrfs_enkf_save_da_output_mem003==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem003==complete and ../../analysis/enkf/jrrfs_enkf_save_da_output_mem003==complete
               task jrrfs_enkf_save_restart_mem003_f1
                 edit MEMBER_NAME '003'
-                trigger ./jrrfs_enkf_fcst_mem003==complete
-              task jrrfs_enkf_fcst_mem004
+                trigger ./jrrfs_enkf_forecast_mem003==complete
+              task jrrfs_enkf_forecast_mem004
                 edit MEMBER_NAME '004'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem004==complete and ../../analysis/enkf/jrrfs_enkf_save_da_output_mem004==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem004==complete and ../../analysis/enkf/jrrfs_enkf_save_da_output_mem004==complete
               task jrrfs_enkf_save_restart_mem004_f1
                 edit MEMBER_NAME '004'
-                trigger ./jrrfs_enkf_fcst_mem004==complete
-              task jrrfs_enkf_fcst_mem005
+                trigger ./jrrfs_enkf_forecast_mem004==complete
+              task jrrfs_enkf_forecast_mem005
                 edit MEMBER_NAME '005'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem005==complete and ../../analysis/enkf/jrrfs_enkf_save_da_output_mem005==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem005==complete and ../../analysis/enkf/jrrfs_enkf_save_da_output_mem005==complete
               task jrrfs_enkf_save_restart_mem005_f1
                 edit MEMBER_NAME '005'
-                trigger ./jrrfs_enkf_fcst_mem005==complete
-              task jrrfs_enkf_fcst_mem006
+                trigger ./jrrfs_enkf_forecast_mem005==complete
+              task jrrfs_enkf_forecast_mem006
                 edit MEMBER_NAME '006'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem006==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem006==complete
               task jrrfs_enkf_save_restart_mem006_f1
                 edit MEMBER_NAME '006'
-                trigger ./jrrfs_enkf_fcst_mem006==complete
-              task jrrfs_enkf_fcst_mem007
+                trigger ./jrrfs_enkf_forecast_mem006==complete
+              task jrrfs_enkf_forecast_mem007
                 edit MEMBER_NAME '007'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem007==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem007==complete
               task jrrfs_enkf_save_restart_mem007_f1
                 edit MEMBER_NAME '007'
-                trigger ./jrrfs_enkf_fcst_mem007==complete
-              task jrrfs_enkf_fcst_mem008
+                trigger ./jrrfs_enkf_forecast_mem007==complete
+              task jrrfs_enkf_forecast_mem008
                 edit MEMBER_NAME '008'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem008==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem008==complete
               task jrrfs_enkf_save_restart_mem008_f1
                 edit MEMBER_NAME '008'
-                trigger ./jrrfs_enkf_fcst_mem008==complete
-              task jrrfs_enkf_fcst_mem009
+                trigger ./jrrfs_enkf_forecast_mem008==complete
+              task jrrfs_enkf_forecast_mem009
                 edit MEMBER_NAME '009'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem009==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem009==complete
               task jrrfs_enkf_save_restart_mem009_f1
                 edit MEMBER_NAME '009'
-                trigger ./jrrfs_enkf_fcst_mem009==complete
-              task jrrfs_enkf_fcst_mem010
+                trigger ./jrrfs_enkf_forecast_mem009==complete
+              task jrrfs_enkf_forecast_mem010
                 edit MEMBER_NAME '010'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem010==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem010==complete
               task jrrfs_enkf_save_restart_mem010_f1
                 edit MEMBER_NAME '010'
-                trigger ./jrrfs_enkf_fcst_mem010==complete
-              task jrrfs_enkf_fcst_mem011
+                trigger ./jrrfs_enkf_forecast_mem010==complete
+              task jrrfs_enkf_forecast_mem011
                 edit MEMBER_NAME '011'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem011==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem011==complete
               task jrrfs_enkf_save_restart_mem011_f1
                 edit MEMBER_NAME '011'
-                trigger ./jrrfs_enkf_fcst_mem011==complete
-              task jrrfs_enkf_fcst_mem012
+                trigger ./jrrfs_enkf_forecast_mem011==complete
+              task jrrfs_enkf_forecast_mem012
                 edit MEMBER_NAME '012'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem012==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem012==complete
               task jrrfs_enkf_save_restart_mem012_f1
                 edit MEMBER_NAME '012'
-                trigger ./jrrfs_enkf_fcst_mem012==complete
-              task jrrfs_enkf_fcst_mem013
+                trigger ./jrrfs_enkf_forecast_mem012==complete
+              task jrrfs_enkf_forecast_mem013
                 edit MEMBER_NAME '013'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem013==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem013==complete
               task jrrfs_enkf_save_restart_mem013_f1
                 edit MEMBER_NAME '013'
-                trigger ./jrrfs_enkf_fcst_mem013==complete
-              task jrrfs_enkf_fcst_mem014
+                trigger ./jrrfs_enkf_forecast_mem013==complete
+              task jrrfs_enkf_forecast_mem014
                 edit MEMBER_NAME '014'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem014==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem014==complete
               task jrrfs_enkf_save_restart_mem014_f1
                 edit MEMBER_NAME '014'
-                trigger ./jrrfs_enkf_fcst_mem014==complete
-              task jrrfs_enkf_fcst_mem015
+                trigger ./jrrfs_enkf_forecast_mem014==complete
+              task jrrfs_enkf_forecast_mem015
                 edit MEMBER_NAME '015'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem015==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem015==complete
               task jrrfs_enkf_save_restart_mem015_f1
                 edit MEMBER_NAME '015'
-                trigger ./jrrfs_enkf_fcst_mem015==complete
-              task jrrfs_enkf_fcst_mem016
+                trigger ./jrrfs_enkf_forecast_mem015==complete
+              task jrrfs_enkf_forecast_mem016
                 edit MEMBER_NAME '016'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem016==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem016==complete
               task jrrfs_enkf_save_restart_mem016_f1
                 edit MEMBER_NAME '016'
-                trigger ./jrrfs_enkf_fcst_mem016==complete
-              task jrrfs_enkf_fcst_mem017
+                trigger ./jrrfs_enkf_forecast_mem016==complete
+              task jrrfs_enkf_forecast_mem017
                 edit MEMBER_NAME '017'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem017==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem017==complete
               task jrrfs_enkf_save_restart_mem017_f1
                 edit MEMBER_NAME '017'
-                trigger ./jrrfs_enkf_fcst_mem017==complete
-              task jrrfs_enkf_fcst_mem018
+                trigger ./jrrfs_enkf_forecast_mem017==complete
+              task jrrfs_enkf_forecast_mem018
                 edit MEMBER_NAME '018'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem018==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem018==complete
               task jrrfs_enkf_save_restart_mem018_f1
                 edit MEMBER_NAME '018'
-                trigger ./jrrfs_enkf_fcst_mem018==complete
-              task jrrfs_enkf_fcst_mem019
+                trigger ./jrrfs_enkf_forecast_mem018==complete
+              task jrrfs_enkf_forecast_mem019
                 edit MEMBER_NAME '019'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem019==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem019==complete
               task jrrfs_enkf_save_restart_mem019_f1
                 edit MEMBER_NAME '019'
-                trigger ./jrrfs_enkf_fcst_mem019==complete
-              task jrrfs_enkf_fcst_mem020
+                trigger ./jrrfs_enkf_forecast_mem019==complete
+              task jrrfs_enkf_forecast_mem020
                 edit MEMBER_NAME '020'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem020==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem020==complete
               task jrrfs_enkf_save_restart_mem020_f1
                 edit MEMBER_NAME '020'
-                trigger ./jrrfs_enkf_fcst_mem020==complete
-              task jrrfs_enkf_fcst_mem021
+                trigger ./jrrfs_enkf_forecast_mem020==complete
+              task jrrfs_enkf_forecast_mem021
                 edit MEMBER_NAME '021'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem021==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem021==complete
               task jrrfs_enkf_save_restart_mem021_f1
                 edit MEMBER_NAME '021'
-                trigger ./jrrfs_enkf_fcst_mem021==complete
-              task jrrfs_enkf_fcst_mem022
+                trigger ./jrrfs_enkf_forecast_mem021==complete
+              task jrrfs_enkf_forecast_mem022
                 edit MEMBER_NAME '022'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem022==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem022==complete
               task jrrfs_enkf_save_restart_mem022_f1
                 edit MEMBER_NAME '022'
-                trigger ./jrrfs_enkf_fcst_mem022==complete
-              task jrrfs_enkf_fcst_mem023
+                trigger ./jrrfs_enkf_forecast_mem022==complete
+              task jrrfs_enkf_forecast_mem023
                 edit MEMBER_NAME '023'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem023==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem023==complete
               task jrrfs_enkf_save_restart_mem023_f1
                 edit MEMBER_NAME '023'
-                trigger ./jrrfs_enkf_fcst_mem023==complete
-              task jrrfs_enkf_fcst_mem024
+                trigger ./jrrfs_enkf_forecast_mem023==complete
+              task jrrfs_enkf_forecast_mem024
                 edit MEMBER_NAME '024'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem024==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem024==complete
               task jrrfs_enkf_save_restart_mem024_f1
                 edit MEMBER_NAME '024'
-                trigger ./jrrfs_enkf_fcst_mem024==complete
-              task jrrfs_enkf_fcst_mem025
+                trigger ./jrrfs_enkf_forecast_mem024==complete
+              task jrrfs_enkf_forecast_mem025
                 edit MEMBER_NAME '025'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem025==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem025==complete
               task jrrfs_enkf_save_restart_mem025_f1
                 edit MEMBER_NAME '025'
-                trigger ./jrrfs_enkf_fcst_mem025==complete
-              task jrrfs_enkf_fcst_mem026
+                trigger ./jrrfs_enkf_forecast_mem025==complete
+              task jrrfs_enkf_forecast_mem026
                 edit MEMBER_NAME '026'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem026==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem026==complete
               task jrrfs_enkf_save_restart_mem026_f1
                 edit MEMBER_NAME '026'
-                trigger ./jrrfs_enkf_fcst_mem026==complete
-              task jrrfs_enkf_fcst_mem027
+                trigger ./jrrfs_enkf_forecast_mem026==complete
+              task jrrfs_enkf_forecast_mem027
                 edit MEMBER_NAME '027'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem027==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem027==complete
               task jrrfs_enkf_save_restart_mem027_f1
                 edit MEMBER_NAME '027'
-                trigger ./jrrfs_enkf_fcst_mem027==complete
-              task jrrfs_enkf_fcst_mem028
+                trigger ./jrrfs_enkf_forecast_mem027==complete
+              task jrrfs_enkf_forecast_mem028
                 edit MEMBER_NAME '028'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem028==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem028==complete
               task jrrfs_enkf_save_restart_mem028_f1
                 edit MEMBER_NAME '028'
-                trigger ./jrrfs_enkf_fcst_mem028==complete
-              task jrrfs_enkf_fcst_mem029
+                trigger ./jrrfs_enkf_forecast_mem028==complete
+              task jrrfs_enkf_forecast_mem029
                 edit MEMBER_NAME '029'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem029==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem029==complete
               task jrrfs_enkf_save_restart_mem029_f1
                 edit MEMBER_NAME '029'
-                trigger ./jrrfs_enkf_fcst_mem029==complete
-              task jrrfs_enkf_fcst_mem030
+                trigger ./jrrfs_enkf_forecast_mem029==complete
+              task jrrfs_enkf_forecast_mem030
                 edit MEMBER_NAME '030'
-                trigger ../../analysis/enkf/jrrfs_enkf_cldanl_nonvar_mem030==complete
+                trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem030==complete
               task jrrfs_enkf_save_restart_mem030_f1
                 edit MEMBER_NAME '030'
-                trigger ./jrrfs_enkf_fcst_mem030==complete
+                trigger ./jrrfs_enkf_forecast_mem030==complete
             endfamily   # enkf
             family ensf
               edit WGF 'ensf'
               trigger ../analysis/ensf/jrrfs_ensf_recenter==complete
-              task jrrfs_ensf_fcst_mem001
+              task jrrfs_ensf_forecast_mem001
                 edit MEMBER_NAME '001'
-              task jrrfs_ensf_fcst_mem002
+              task jrrfs_ensf_forecast_mem002
                 edit MEMBER_NAME '002'
-              task jrrfs_ensf_fcst_mem003
+              task jrrfs_ensf_forecast_mem003
                 edit MEMBER_NAME '003'
-              task jrrfs_ensf_fcst_mem004
+              task jrrfs_ensf_forecast_mem004
                 edit MEMBER_NAME '004'
-              task jrrfs_ensf_fcst_mem005
+              task jrrfs_ensf_forecast_mem005
                 edit MEMBER_NAME '005'
             endfamily   # ensf
             family firewx
               edit WGF 'firewx'
-              task jrrfs_firewx_fcst
+              task jrrfs_firewx_forecast
                 trigger ../../ics/firewx==complete
 
             endfamily   # firewx
@@ -2615,1223 +2615,1223 @@ suite nco_rrfs_dev_06
               task jrrfs_ensf_post_mem001_f000
                 edit MEMBER_NAME '001'
                 edit FHR '000'
-                trigger ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f001
                 edit MEMBER_NAME '001'
                 edit FHR '001'
-                trigger ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete 
+                trigger ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete 
               task jrrfs_ensf_post_mem001_f002
                 edit MEMBER_NAME '001'
                 edit FHR '002'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f003
                 edit MEMBER_NAME '001'
                 edit FHR '003'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f004
                 edit MEMBER_NAME '001'
                 edit FHR '004'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f005
                 edit MEMBER_NAME '001'
                 edit FHR '005'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f006
                 edit MEMBER_NAME '001'
                 edit FHR '006'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f007
                 edit MEMBER_NAME '001'
                 edit FHR '007'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f008
                 edit MEMBER_NAME '001'
                 edit FHR '008'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f009
                 edit MEMBER_NAME '001'
                 edit FHR '009'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f010
                 edit MEMBER_NAME '001'
                 edit FHR '010'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f011
                 edit MEMBER_NAME '001'
                 edit FHR '011'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f012
                 edit MEMBER_NAME '001'
                 edit FHR '012'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f013
                 edit MEMBER_NAME '001'
                 edit FHR '013'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f014
                 edit MEMBER_NAME '001'
                 edit FHR '014'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f015
                 edit MEMBER_NAME '001'
                 edit FHR '015'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f016
                 edit MEMBER_NAME '001'
                 edit FHR '016'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f017
                 edit MEMBER_NAME '001'
                 edit FHR '017'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f018
                 edit MEMBER_NAME '001'
                 edit FHR '018'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f019
                 edit MEMBER_NAME '001'
                 edit FHR '019'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f020
                 edit MEMBER_NAME '001'
                 edit FHR '020'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f021
                 edit MEMBER_NAME '001'
                 edit FHR '021'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f022
                 edit MEMBER_NAME '001'
                 edit FHR '022'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f023
                 edit MEMBER_NAME '001'
                 edit FHR '023'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f024
                 edit MEMBER_NAME '001'
                 edit FHR '024'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f025
                 edit MEMBER_NAME '001'
                 edit FHR '025'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f026
                 edit MEMBER_NAME '001'
                 edit FHR '026'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f027
                 edit MEMBER_NAME '001'
                 edit FHR '027'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f028
                 edit MEMBER_NAME '001'
                 edit FHR '028'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f029
                 edit MEMBER_NAME '001'
                 edit FHR '029'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f030
                 edit MEMBER_NAME '001'
                 edit FHR '030'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f031
                 edit MEMBER_NAME '001'
                 edit FHR '031'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f032
                 edit MEMBER_NAME '001'
                 edit FHR '032'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f033
                 edit MEMBER_NAME '001'
                 edit FHR '033'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f034
                 edit MEMBER_NAME '001'
                 edit FHR '034'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f035
                 edit MEMBER_NAME '001'
                 edit FHR '035'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f036
                 edit MEMBER_NAME '001'
                 edit FHR '036'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f037
                 edit MEMBER_NAME '001'
                 edit FHR '037'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f038
                 edit MEMBER_NAME '001'
                 edit FHR '038'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f039
                 edit MEMBER_NAME '001'
                 edit FHR '039'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f040
                 edit MEMBER_NAME '001'
                 edit FHR '040'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f041
                 edit MEMBER_NAME '001'
                 edit FHR '041'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f042
                 edit MEMBER_NAME '001'
                 edit FHR '042'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f043
                 edit MEMBER_NAME '001'
                 edit FHR '043'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f044
                 edit MEMBER_NAME '001'
                 edit FHR '044'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f045
                 edit MEMBER_NAME '001'
                 edit FHR '045'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f046
                 edit MEMBER_NAME '001'
                 edit FHR '046'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f047
                 edit MEMBER_NAME '001'
                 edit FHR '047'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f048
                 edit MEMBER_NAME '001'
                 edit FHR '048'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f049
                 edit MEMBER_NAME '001'
                 edit FHR '049'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f050
                 edit MEMBER_NAME '001'
                 edit FHR '050'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f051
                 edit MEMBER_NAME '001'
                 edit FHR '051'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f052
                 edit MEMBER_NAME '001'
                 edit FHR '052'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f053
                 edit MEMBER_NAME '001'
                 edit FHR '053'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f054
                 edit MEMBER_NAME '001'
                 edit FHR '054'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f055
                 edit MEMBER_NAME '001'
                 edit FHR '055'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f056
                 edit MEMBER_NAME '001'
                 edit FHR '056'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f057
                 edit MEMBER_NAME '001'
                 edit FHR '057'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f058
                 edit MEMBER_NAME '001'
                 edit FHR '058'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f059
                 edit MEMBER_NAME '001'
                 edit FHR '059'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem001_f060
                 edit MEMBER_NAME '001'
                 edit FHR '060'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem001==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem001==complete
               task jrrfs_ensf_post_mem002_f000
                 edit MEMBER_NAME '002'
                 edit FHR '000'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f001
                 edit MEMBER_NAME '002'
                 edit FHR '001'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f002
                 edit MEMBER_NAME '002'
                 edit FHR '002'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f003
                 edit MEMBER_NAME '002'
                 edit FHR '003'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f004
                 edit MEMBER_NAME '002'
                 edit FHR '004'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f005
                 edit MEMBER_NAME '002'
                 edit FHR '005'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f006
                 edit MEMBER_NAME '002'
                 edit FHR '006'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f007
                 edit MEMBER_NAME '002'
                 edit FHR '007'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f008
                 edit MEMBER_NAME '002'
                 edit FHR '008'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f009
                 edit MEMBER_NAME '002'
                 edit FHR '009'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f010
                 edit MEMBER_NAME '002'
                 edit FHR '010'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f011
                 edit MEMBER_NAME '002'
                 edit FHR '011'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f012
                 edit MEMBER_NAME '002'
                 edit FHR '012'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f013
                 edit MEMBER_NAME '002'
                 edit FHR '013'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f014
                 edit MEMBER_NAME '002'
                 edit FHR '014'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f015
                 edit MEMBER_NAME '002'
                 edit FHR '015'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f016
                 edit MEMBER_NAME '002'
                 edit FHR '016'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f017
                 edit MEMBER_NAME '002'
                 edit FHR '017'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f018
                 edit MEMBER_NAME '002'
                 edit FHR '018'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f019
                 edit MEMBER_NAME '002'
                 edit FHR '019'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f020
                 edit MEMBER_NAME '002'
                 edit FHR '020'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f021
                 edit MEMBER_NAME '002'
                 edit FHR '021'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f022
                 edit MEMBER_NAME '002'
                 edit FHR '022'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f023
                 edit MEMBER_NAME '002'
                 edit FHR '023'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f024
                 edit MEMBER_NAME '002'
                 edit FHR '024'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f025
                 edit MEMBER_NAME '002'
                 edit FHR '025'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f026
                 edit MEMBER_NAME '002'
                 edit FHR '026'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f027
                 edit MEMBER_NAME '002'
                 edit FHR '027'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f028
                 edit MEMBER_NAME '002'
                 edit FHR '028'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f029
                 edit MEMBER_NAME '002'
                 edit FHR '029'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f030
                 edit MEMBER_NAME '002'
                 edit FHR '030'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f031
                 edit MEMBER_NAME '002'
                 edit FHR '031'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f032
                 edit MEMBER_NAME '002'
                 edit FHR '032'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f033
                 edit MEMBER_NAME '002'
                 edit FHR '033'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f034
                 edit MEMBER_NAME '002'
                 edit FHR '034'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f035
                 edit MEMBER_NAME '002'
                 edit FHR '035'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f036
                 edit MEMBER_NAME '002'
                 edit FHR '036'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f037
                 edit MEMBER_NAME '002'
                 edit FHR '037'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f038
                 edit MEMBER_NAME '002'
                 edit FHR '038'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f039
                 edit MEMBER_NAME '002'
                 edit FHR '039'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f040
                 edit MEMBER_NAME '002'
                 edit FHR '040'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f041
                 edit MEMBER_NAME '002'
                 edit FHR '041'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f042
                 edit MEMBER_NAME '002'
                 edit FHR '042'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f043
                 edit MEMBER_NAME '002'
                 edit FHR '043'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f044
                 edit MEMBER_NAME '002'
                 edit FHR '044'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f045
                 edit MEMBER_NAME '002'
                 edit FHR '045'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f046
                 edit MEMBER_NAME '002'
                 edit FHR '046'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f047
                 edit MEMBER_NAME '002'
                 edit FHR '047'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f048
                 edit MEMBER_NAME '002'
                 edit FHR '048'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f049
                 edit MEMBER_NAME '002'
                 edit FHR '049'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f050
                 edit MEMBER_NAME '002'
                 edit FHR '050'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f051
                 edit MEMBER_NAME '002'
                 edit FHR '051'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f052
                 edit MEMBER_NAME '002'
                 edit FHR '052'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f053
                 edit MEMBER_NAME '002'
                 edit FHR '053'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f054
                 edit MEMBER_NAME '002'
                 edit FHR '054'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f055
                 edit MEMBER_NAME '002'
                 edit FHR '055'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f056
                 edit MEMBER_NAME '002'
                 edit FHR '056'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f057
                 edit MEMBER_NAME '002'
                 edit FHR '057'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f058
                 edit MEMBER_NAME '002'
                 edit FHR '058'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f059
                 edit MEMBER_NAME '002'
                 edit FHR '059'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem002_f060
                 edit MEMBER_NAME '002'
                 edit FHR '060'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem002==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem002==complete
               task jrrfs_ensf_post_mem003_f000
                 edit MEMBER_NAME '003'
                 edit FHR '000'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f001
                 edit MEMBER_NAME '003'
                 edit FHR '001'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f002
                 edit MEMBER_NAME '003'
                 edit FHR '002'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f003
                 edit MEMBER_NAME '003'
                 edit FHR '003'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f004
                 edit MEMBER_NAME '003'
                 edit FHR '004'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f005
                 edit MEMBER_NAME '003'
                 edit FHR '005'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f006
                 edit MEMBER_NAME '003'
                 edit FHR '006'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f007
                 edit MEMBER_NAME '003'
                 edit FHR '007'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f008
                 edit MEMBER_NAME '003'
                 edit FHR '008'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f009
                 edit MEMBER_NAME '003'
                 edit FHR '009'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f010
                 edit MEMBER_NAME '003'
                 edit FHR '010'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f011
                 edit MEMBER_NAME '003'
                 edit FHR '011'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f012
                 edit MEMBER_NAME '003'
                 edit FHR '012'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f013
                 edit MEMBER_NAME '003'
                 edit FHR '013'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f014
                 edit MEMBER_NAME '003'
                 edit FHR '014'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f015
                 edit MEMBER_NAME '003'
                 edit FHR '015'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f016
                 edit MEMBER_NAME '003'
                 edit FHR '016'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f017
                 edit MEMBER_NAME '003'
                 edit FHR '017'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f018
                 edit MEMBER_NAME '003'
                 edit FHR '018'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f019
                 edit MEMBER_NAME '003'
                 edit FHR '019'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f020
                 edit MEMBER_NAME '003'
                 edit FHR '020'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f021
                 edit MEMBER_NAME '003'
                 edit FHR '021'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f022
                 edit MEMBER_NAME '003'
                 edit FHR '022'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f023
                 edit MEMBER_NAME '003'
                 edit FHR '023'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f024
                 edit MEMBER_NAME '003'
                 edit FHR '024'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f025
                 edit MEMBER_NAME '003'
                 edit FHR '025'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f026
                 edit MEMBER_NAME '003'
                 edit FHR '026'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f027
                 edit MEMBER_NAME '003'
                 edit FHR '027'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f028
                 edit MEMBER_NAME '003'
                 edit FHR '028'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f029
                 edit MEMBER_NAME '003'
                 edit FHR '029'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f030
                 edit MEMBER_NAME '003'
                 edit FHR '030'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f031
                 edit MEMBER_NAME '003'
                 edit FHR '031'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f032
                 edit MEMBER_NAME '003'
                 edit FHR '032'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f033
                 edit MEMBER_NAME '003'
                 edit FHR '033'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f034
                 edit MEMBER_NAME '003'
                 edit FHR '034'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f035
                 edit MEMBER_NAME '003'
                 edit FHR '035'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f036
                 edit MEMBER_NAME '003'
                 edit FHR '036'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f037
                 edit MEMBER_NAME '003'
                 edit FHR '037'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f038
                 edit MEMBER_NAME '003'
                 edit FHR '038'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f039
                 edit MEMBER_NAME '003'
                 edit FHR '039'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f040
                 edit MEMBER_NAME '003'
                 edit FHR '040'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f041
                 edit MEMBER_NAME '003'
                 edit FHR '041'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f042
                 edit MEMBER_NAME '003'
                 edit FHR '042'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f043
                 edit MEMBER_NAME '003'
                 edit FHR '043'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f044
                 edit MEMBER_NAME '003'
                 edit FHR '044'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f045
                 edit MEMBER_NAME '003'
                 edit FHR '045'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f046
                 edit MEMBER_NAME '003'
                 edit FHR '046'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f047
                 edit MEMBER_NAME '003'
                 edit FHR '047'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f048
                 edit MEMBER_NAME '003'
                 edit FHR '048'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f049
                 edit MEMBER_NAME '003'
                 edit FHR '049'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f050
                 edit MEMBER_NAME '003'
                 edit FHR '050'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f051
                 edit MEMBER_NAME '003'
                 edit FHR '051'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f052
                 edit MEMBER_NAME '003'
                 edit FHR '052'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f053
                 edit MEMBER_NAME '003'
                 edit FHR '053'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f054
                 edit MEMBER_NAME '003'
                 edit FHR '054'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f055
                 edit MEMBER_NAME '003'
                 edit FHR '055'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f056
                 edit MEMBER_NAME '003'
                 edit FHR '056'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f057
                 edit MEMBER_NAME '003'
                 edit FHR '057'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f058
                 edit MEMBER_NAME '003'
                 edit FHR '058'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f059
                 edit MEMBER_NAME '003'
                 edit FHR '059'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem003_f060
                 edit MEMBER_NAME '003'
                 edit FHR '060'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem003==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem003==complete
               task jrrfs_ensf_post_mem004_f000
                 edit MEMBER_NAME '004'
                 edit FHR '000'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f001
                 edit MEMBER_NAME '004'
                 edit FHR '001'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f002
                 edit MEMBER_NAME '004'
                 edit FHR '002'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f003
                 edit MEMBER_NAME '004'
                 edit FHR '003'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f004
                 edit MEMBER_NAME '004'
                 edit FHR '004'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f005
                 edit MEMBER_NAME '004'
                 edit FHR '005'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f006
                 edit MEMBER_NAME '004'
                 edit FHR '006'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f007
                 edit MEMBER_NAME '004'
                 edit FHR '007'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f008
                 edit MEMBER_NAME '004'
                 edit FHR '008'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f009
                 edit MEMBER_NAME '004'
                 edit FHR '009'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f010
                 edit MEMBER_NAME '004'
                 edit FHR '010'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f011
                 edit MEMBER_NAME '004'
                 edit FHR '011'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f012
                 edit MEMBER_NAME '004'
                 edit FHR '012'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f013
                 edit MEMBER_NAME '004'
                 edit FHR '013'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f014
                 edit MEMBER_NAME '004'
                 edit FHR '014'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f015
                 edit MEMBER_NAME '004'
                 edit FHR '015'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f016
                 edit MEMBER_NAME '004'
                 edit FHR '016'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f017
                 edit MEMBER_NAME '004'
                 edit FHR '017'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f018
                 edit MEMBER_NAME '004'
                 edit FHR '018'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f019
                 edit MEMBER_NAME '004'
                 edit FHR '019'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f020
                 edit MEMBER_NAME '004'
                 edit FHR '020'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f021
                 edit MEMBER_NAME '004'
                 edit FHR '021'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f022
                 edit MEMBER_NAME '004'
                 edit FHR '022'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f023
                 edit MEMBER_NAME '004'
                 edit FHR '023'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f024
                 edit MEMBER_NAME '004'
                 edit FHR '024'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f025
                 edit MEMBER_NAME '004'
                 edit FHR '025'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f026
                 edit MEMBER_NAME '004'
                 edit FHR '026'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f027
                 edit MEMBER_NAME '004'
                 edit FHR '027'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f028
                 edit MEMBER_NAME '004'
                 edit FHR '028'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f029
                 edit MEMBER_NAME '004'
                 edit FHR '029'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f030
                 edit MEMBER_NAME '004'
                 edit FHR '030'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f031
                 edit MEMBER_NAME '004'
                 edit FHR '031'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f032
                 edit MEMBER_NAME '004'
                 edit FHR '032'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f033
                 edit MEMBER_NAME '004'
                 edit FHR '033'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f034
                 edit MEMBER_NAME '004'
                 edit FHR '034'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f035
                 edit MEMBER_NAME '004'
                 edit FHR '035'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f036
                 edit MEMBER_NAME '004'
                 edit FHR '036'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f037
                 edit MEMBER_NAME '004'
                 edit FHR '037'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f038
                 edit MEMBER_NAME '004'
                 edit FHR '038'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f039
                 edit MEMBER_NAME '004'
                 edit FHR '039'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f040
                 edit MEMBER_NAME '004'
                 edit FHR '040'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f041
                 edit MEMBER_NAME '004'
                 edit FHR '041'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f042
                 edit MEMBER_NAME '004'
                 edit FHR '042'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f043
                 edit MEMBER_NAME '004'
                 edit FHR '043'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f044
                 edit MEMBER_NAME '004'
                 edit FHR '044'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f045
                 edit MEMBER_NAME '004'
                 edit FHR '045'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f046
                 edit MEMBER_NAME '004'
                 edit FHR '046'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f047
                 edit MEMBER_NAME '004'
                 edit FHR '047'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f048
                 edit MEMBER_NAME '004'
                 edit FHR '048'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f049
                 edit MEMBER_NAME '004'
                 edit FHR '049'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f050
                 edit MEMBER_NAME '004'
                 edit FHR '050'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f051
                 edit MEMBER_NAME '004'
                 edit FHR '051'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f052
                 edit MEMBER_NAME '004'
                 edit FHR '052'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f053
                 edit MEMBER_NAME '004'
                 edit FHR '053'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f054
                 edit MEMBER_NAME '004'
                 edit FHR '054'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f055
                 edit MEMBER_NAME '004'
                 edit FHR '055'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f056
                 edit MEMBER_NAME '004'
                 edit FHR '056'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f057
                 edit MEMBER_NAME '004'
                 edit FHR '057'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f058
                 edit MEMBER_NAME '004'
                 edit FHR '058'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f059
                 edit MEMBER_NAME '004'
                 edit FHR '059'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem004_f060
                 edit MEMBER_NAME '004'
                 edit FHR '060'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem004==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem004==complete
               task jrrfs_ensf_post_mem005_f000
                 edit MEMBER_NAME '005'
                 edit FHR '000'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f001
                 edit MEMBER_NAME '005'
                 edit FHR '001'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f002
                 edit MEMBER_NAME '005'
                 edit FHR '002'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f003
                 edit MEMBER_NAME '005'
                 edit FHR '003'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f004
                 edit MEMBER_NAME '005'
                 edit FHR '004'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f005
                 edit MEMBER_NAME '005'
                 edit FHR '005'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f006
                 edit MEMBER_NAME '005'
                 edit FHR '006'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f007
                 edit MEMBER_NAME '005'
                 edit FHR '007'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f008
                 edit MEMBER_NAME '005'
                 edit FHR '008'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f009
                 edit MEMBER_NAME '005'
                 edit FHR '009'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f010
                 edit MEMBER_NAME '005'
                 edit FHR '010'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f011
                 edit MEMBER_NAME '005'
                 edit FHR '011'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f012
                 edit MEMBER_NAME '005'
                 edit FHR '012'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f013
                 edit MEMBER_NAME '005'
                 edit FHR '013'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f014
                 edit MEMBER_NAME '005'
                 edit FHR '014'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f015
                 edit MEMBER_NAME '005'
                 edit FHR '015'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f016
                 edit MEMBER_NAME '005'
                 edit FHR '016'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f017
                 edit MEMBER_NAME '005'
                 edit FHR '017'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f018
                 edit MEMBER_NAME '005'
                 edit FHR '018'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f019
                 edit MEMBER_NAME '005'
                 edit FHR '019'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f020
                 edit MEMBER_NAME '005'
                 edit FHR '020'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f021
                 edit MEMBER_NAME '005'
                 edit FHR '021'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f022
                 edit MEMBER_NAME '005'
                 edit FHR '022'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f023
                 edit MEMBER_NAME '005'
                 edit FHR '023'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f024
                 edit MEMBER_NAME '005'
                 edit FHR '024'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f025
                 edit MEMBER_NAME '005'
                 edit FHR '025'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f026
                 edit MEMBER_NAME '005'
                 edit FHR '026'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f027
                 edit MEMBER_NAME '005'
                 edit FHR '027'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f028
                 edit MEMBER_NAME '005'
                 edit FHR '028'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f029
                 edit MEMBER_NAME '005'
                 edit FHR '029'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f030
                 edit MEMBER_NAME '005'
                 edit FHR '030'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f031
                 edit MEMBER_NAME '005'
                 edit FHR '031'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f032
                 edit MEMBER_NAME '005'
                 edit FHR '032'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f033
                 edit MEMBER_NAME '005'
                 edit FHR '033'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f034
                 edit MEMBER_NAME '005'
                 edit FHR '034'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f035
                 edit MEMBER_NAME '005'
                 edit FHR '035'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f036
                 edit MEMBER_NAME '005'
                 edit FHR '036'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f037
                 edit MEMBER_NAME '005'
                 edit FHR '037'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f038
                 edit MEMBER_NAME '005'
                 edit FHR '038'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f039
                 edit MEMBER_NAME '005'
                 edit FHR '039'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f040
                 edit MEMBER_NAME '005'
                 edit FHR '040'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f041
                 edit MEMBER_NAME '005'
                 edit FHR '041'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f042
                 edit MEMBER_NAME '005'
                 edit FHR '042'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f043
                 edit MEMBER_NAME '005'
                 edit FHR '043'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f044
                 edit MEMBER_NAME '005'
                 edit FHR '044'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f045
                 edit MEMBER_NAME '005'
                 edit FHR '045'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f046
                 edit MEMBER_NAME '005'
                 edit FHR '046'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f047
                 edit MEMBER_NAME '005'
                 edit FHR '047'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f048
                 edit MEMBER_NAME '005'
                 edit FHR '048'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f049
                 edit MEMBER_NAME '005'
                 edit FHR '049'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f050
                 edit MEMBER_NAME '005'
                 edit FHR '050'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f051
                 edit MEMBER_NAME '005'
                 edit FHR '051'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f052
                 edit MEMBER_NAME '005'
                 edit FHR '052'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f053
                 edit MEMBER_NAME '005'
                 edit FHR '053'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f054
                 edit MEMBER_NAME '005'
                 edit FHR '054'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f055
                 edit MEMBER_NAME '005'
                 edit FHR '055'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f056
                 edit MEMBER_NAME '005'
                 edit FHR '056'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f057
                 edit MEMBER_NAME '005'
                 edit FHR '057'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f058
                 edit MEMBER_NAME '005'
                 edit FHR '058'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f059
                 edit MEMBER_NAME '005'
                 edit FHR '059'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
               task jrrfs_ensf_post_mem005_f060
                 edit MEMBER_NAME '005'
                 edit FHR '060'
-                trigger  ../../forecast/ensf/jrrfs_ensf_fcst_mem005==complete
+                trigger  ../../forecast/ensf/jrrfs_ensf_forecast_mem005==complete
             endfamily   # ensf
             family firewx
               edit WGF 'firewx'
