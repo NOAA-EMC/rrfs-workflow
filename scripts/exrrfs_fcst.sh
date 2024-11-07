@@ -88,6 +88,5 @@ if [[ -z "${ENS_INDEX}" ]]; then
 else
   dstdir="${COMOUT}/mem${ENS_INDEX}/fcst/"
 fi
-#${cpreq} ${DATA}/restart.${timestr}.nc ${dstdir}
 ${cpreq} ${DATA}/diag.*.nc ${dstdir}
 ${cpreq} ${DATA}/history.*.nc ${dstdir}
