@@ -38,14 +38,26 @@ def header_begin(xmlFile):
 ### header_entities_
 def header_entities(xmlFile,expdir):
   HOMErrfs=os.getenv('HOMErrfs','HOMErrfs_not_defined')
+  DATAROOT=os.getenv('DATAROOT','DATAROOT_not_defined')
+  COMROOT=os.getenv('COMROOT','COMROOT_not_defined')
+  net=os.getenv('NET','rrfs')
+  run=os.getenv('RUN','rrfs')
+  rrfs_ver=os.getenv('VERSION','v2.0.0')
+
   text = f'''
 <!ENTITY task_common_vars\n\
 "\n\
   <envar><name>HOMErrfs</name><value>{HOMErrfs}</value></envar>\n\
   <envar><name>EXPDIR</name><value>{expdir}</value></envar>\n\
+  <envar><name>DATAROOT</name><value>{DATAROOT}</value></envar>\n\
+  <envar><name>COMROOT</name><value>{COMROOT}</value></envar>\n\
+  <envar><name>COMOUT</name><value>{COMROOT}/{net}/{rrfs_ver}/{run}.@Y@m@d/@H</value></envar>\n\
   <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>\n\
   <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>\n\
   <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>\n\
+  <envar><name>NET</name><value>{net}</value></envar>\n\
+  <envar><name>rrfs_ver</name><value>{rrfs_ver}</value></envar>\n\
+  <envar><name>KEEPDATA</name><value>yes</value></envar>\n\
 "\n\
 >\n\
 '''

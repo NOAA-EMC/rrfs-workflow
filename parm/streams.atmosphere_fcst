@@ -52,4 +52,9 @@
                   io_type="pnetcdf,cdf5"
                   packages="limited_area"
                   input_interval="@lbc_interval@:00:00" />
+
+<immutable_stream name="ugwp_oro_data_in"
+                  type="input"
+                  filename_template="3km_conus.ugwp_oro_data.nc"
+                  input_interval="initial_only" />
 </streams>

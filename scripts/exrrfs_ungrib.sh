@@ -4,21 +4,30 @@ set -x
 cpreq=${cpreq:-cpreq}
 if [[ -z "${ENS_INDEX}" ]]; then
   if [[ "${TYPE}" == "IC" ]] || [[ "${TYPE}" == "ic" ]]; then
-    prefix=${IC_PREFIX:-IC_PREFIX_not_defined}
+    prefixin=${IC_PREFIX:-IC_PREFIX_not_defined}
     offset=${IC_OFFSET:-3}
   else #lbc
-    prefix=${LBC_PREFIX:-LBC_PREFIX_not_defined}
+    prefixin=${LBC_PREFIX:-LBC_PREFIX_not_defined}
     offset=${LBC_OFFSET:-6}
   fi
 else # ensrrfs
   if [[ "${TYPE}" == "IC" ]] || [[ "${TYPE}" == "ic" ]]; then
-    prefix=${ENS_IC_PREFIX:-ENS_IC_PREFIX_not_defined}
+    prefixin=${ENS_IC_PREFIX:-ENS_IC_PREFIX_not_defined}
     offset=${ENS_IC_OFFSET:-39}
   else #lbc
-    prefix=${ENS_LBC_PREFIX:-ENS_LBC_PREFIX_not_defined}
+    prefixin=${ENS_LBC_PREFIX:-ENS_LBC_PREFIX_not_defined}
     offset=${ENS_LBC_OFFSET:-39}
   fi
 fi
+#
+# wildcard match GFS
+#
+if [[ ${prefixin} == *"GFS"* ]]; then
+  prefix="GFS"
+else
+  prefix=${prefixin}
+fi
+
 CDATEin=$($NDATE -${offset} ${CDATE}) #CDATE for input external data
 FHRin=$(( 10#${FHR}+10#${offset} )) #FHR for input external data
 
@@ -39,54 +48,62 @@ elif [[ "${prefix}" == "GEFS" ]]; then
   ls -lth ${filea} ${fileb}
   cat ${filea} ${fileb} > GRIBFILE.AAA
 
-elif [[ "${prefix}" == "RAP" ]]; then
-  fstr=$(printf %02d ${FHRin})
-  GRIBFILE=${COMINrap}/rap.${CDATEin:0:8}/rap.t${CDATEin:8:2}z.wrfnatf${fstr}.grib2
-  ${cpreq} ${GRIBFILE} GRIBFILE.AAA
-
-elif [[ "${prefix}" == "RRFS" ]]; then
-  fstr=$(printf %02d ${FHRin})
-  GRIBFILE=${COMINrrfs1}/rrfs_a.${CDATEin:0:8}/${CDATEin:8:2}/rrfs.t${CDATEin:8:2}z.natlve.f${fstr}.grib2
-  ${cpreq} ${GRIBFILE} GRIBFILE.AAA
-
 else
-  echo "ungrib PREFIX=${prefix} not supported"
-  err_exit
+  echo "ungrib PREFIX=${prefix} from xml"
 fi
 #
+# link all grib2 files with local file name (AAA, AAB, ...)
+#
+fhr_all=$(seq $((10#${OFFSET})) $((10#${INTERVAL})) $(( 10#${OFFSET} + 10#${LENGTH})) )
+knt=0
+for fhr in  ${fhr_all}; do
+
+  knt=$(( 10#${knt} + 1 ))
+  HHH=$(printf %03d ${fhr})
+  NAME_FILE=$(echo "${NAME_PATTERN}" | sed "s/\${HHH}/${HHH}/g")
+  GRIBFILE="${COMIN}/${NAME_FILE}"
+  GRIBFILE_LOCAL=$(${USHrrfs}/num_to_GRIBFILE.XXX.sh ${knt})
+  ${cpreq} ${GRIBFILE} ${GRIBFILE_LOCAL}
+done
+
+#
 # generate the namelist on the fly
-CDATEout=$($NDATE ${FHR} ${CDATE})
-start_time=$(date -d "${CDATEout:0:8} ${CDATEout:8:2}" +%Y-%m-%d_%H:%M:%S) 
-end_time=${start_time}
-interval_seconds=3600
+#
 if [[ "${MESH_NAME}" == "conus3km"   ]]; then
   dx=3; dy=3
 else
   dx=12; dy=12
 fi
+CDATEout=$($NDATE $(( 10#${OFFSET} + 10#${LENGTH})) ${CDATEin})
+start_time=$(date -d "${CDATEin:0:8} ${CDATEin:8:2}" +%Y-%m-%d_%H:%M:%S) 
+end_time=$(date -d "${CDATEout:0:8} ${CDATEout:8:2}" +%Y-%m-%d_%H:%M:%S) 
+interval_seconds=$(( ${INTERVAL}*3600 ))
 sed -e "s/@start_time@/${start_time}/" -e "s/@end_time@/${end_time}/" \
     -e "s/@interval_seconds@/${interval_seconds}/" -e "s/@prefix@/${prefix}/" \
     -e "s/@dx@/${dx}/" -e "s/@dy@/${dy}/" ${PARMrrfs}/namelist.wps > namelist.wps
-
+#
 # run ungrib
+#
 source prep_step
 ${cpreq} ${EXECrrfs}/ungrib.x .
 ./ungrib.x
 export err=$?; err_chk
+#
 # check the status
+#
 outfile="${prefix}:$(date -d "${CDATEout:0:8} ${CDATEout:8:2}" +%Y-%m-%d_%H)"
 if [[ -s ${outfile} ]]; then
   if [[ -z "${ENS_INDEX}" ]]; then
-    ${cpreq} ${DATA}/${outfile} ${COMOUT}/ungrib_${TYPE}/
+    ${cpreq} ${prefix}:* ${COMOUT}/ungrib_${TYPE}/
     if [[ "${TYPE}" == "lbc" ]] && [[ ! -d ${COMOUT}/ungrib_ic  ]]; then
     # lbc tasks need init.nc, don't know why it is so but we have to leave with this for a while
     # link ungrib_lbc to ungrib_ic so that ic tasks can run and generate init.nc
       ln -snf ${COMOUT}/ungrib_lbc ${COMOUT}/ungrib_ic
     fi
   else
-    ${cpreq} ${DATA}/${outfile} ${COMOUT}/mem${ENS_INDEX}/ungrib_${TYPE}/
+    ${cpreq} ${prefix}:* ${COMOUT}/mem${ENS_INDEX}/ungrib_${TYPE}/
   fi
 else
-  echo "FATAR ERROR: ungrib failed"
+  echo "FATAL ERROR: ungrib failed"
   err_exit
 fi

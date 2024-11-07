@@ -31,5 +31,5 @@ export IC_OFFSET=${IC_OFFSET:-"3"}
 export LBC_PREFIX=${LBC_PREFIX:-"GFS"}
 export LBC_OFFSET=${LBC_OFFSET:-"6"}
 export LBC_INTERVAL=${LBC_INTERVAL:-"1"}
-export LBC_LENGTH=$((FCST_LENGTH+6)) # lbc runs every 6 hours # this variable means how many hours going forward from the LBC CDATE
+export LBC_LENGTH=${LBC_LENGTH:-"6"} # lbc runs every 6 hours # this variable means how many hours going forward from the LBC CDATE
 #

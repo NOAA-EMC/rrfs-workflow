@@ -105,6 +105,9 @@ snow
 snowh
 sst
 vegfra
+shdmin
+shdmax
+canwat
 xice
 sh2o
 smois
@@ -119,3 +122,6 @@ isltyp
 lai
 sfc_albedo
 cldfrac_bl
+snowc
+snownc
+graupelnc

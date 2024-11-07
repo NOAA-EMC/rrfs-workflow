@@ -57,7 +57,7 @@ def lbc(xmlFile, expdir, do_ensemble=False):
   dependencies=f'''
   <dependency>
   <and>{timedep}
-  <taskdep task="ungrib_lbc{ensindexstr}_f#fhr#"/>
+  <taskdep task="ungrib_lbc{ensindexstr}"/>
   <taskdep task="ic{ensindexstr}"/>
   </and>
   </dependency>'''

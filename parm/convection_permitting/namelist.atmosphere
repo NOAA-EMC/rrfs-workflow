@@ -37,7 +37,8 @@
 /
 &printout
     config_print_global_minmax_vel = true
-    config_print_detailed_minmax_vel = false
+    config_print_detailed_minmax_vel = true
+    config_print_global_minmax_sca = true
 /
 &IAU
     config_IAU_option = 'off'
@@ -45,6 +46,7 @@
 /
 &physics
     config_sst_update = false
+    config_gvf_update = false
     config_sstdiurn_update = false
     config_frac_seaice = true
     config_deepsoiltemp_update = false
@@ -55,7 +57,7 @@
     config_microp_scheme = 'mp_thompson'
     config_thompson_hail_aware = true
     config_convection_scheme = 'off'
-    config_gwdo_scheme = 'off'
+    config_gwdo_scheme = 'bl_ugwp_gwdo'
     config_lsm_scheme    = 'sf_ruc'
     ! config_sfclayer_scheme   = 'sf_monin_obukhov'
     ! config_pbl_scheme        = 'bl_ysu'

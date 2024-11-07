@@ -40,7 +40,7 @@ def ic(xmlFile, expdir, do_ensemble=False):
   <and>{timedep}
   <or>
     <taskdep task="ungrib_ic{ensindexstr}"/>
-    <taskdep task="ungrib_lbc{ensindexstr}_f000"/>
+    <taskdep task="ungrib_lbc{ensindexstr}"/>
   </or>
   </and>
   </dependency>'''

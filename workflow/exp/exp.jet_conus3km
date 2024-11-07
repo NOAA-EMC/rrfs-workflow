@@ -1,32 +1,40 @@
 #!/user/bin/env bash
 # Aloha! This file is to setup some top level experiment options
 #
-export OPSROOT=/lfs5/BMC/nrtrr/NCO_dirs
 export NET=rrfs                    # rrfs, rtma, 
 export MESH_NAME=conus3km         # conus12km, conus3km, atl3km, etc
-export EXP_NAME=${MESH_NAME}
-export EXPDIR=/home/role.rtrr/RRFS/${VERSION}/${EXP_NAME}
-export COMROOT=${OPSROOT}/${EXP_NAME}/com      # task input and output data as well as logs
-export DATAROOT=${OPSROOT}/${EXP_NAME}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
-export VERSION=1.0.1
-export TAG=c1v01
+export EXP_NAME=rrfsdet
+export VERSION=v2.0.1
+export TAG=c3v201
+export OPSROOT=/lfs5/BMC/nrtrr/NCO_dirs/${VERSION}
+export EXPDIR=${OPSROOT}/${EXP_NAME}
+export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
+export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
 #
 export REALTIME=true      # true, false
-export REALTIME_DAYS=90   # eg. 90 means to do real-time runs for 90 days
+export REALTIME_DAYS=2   # eg. 90 means to do real-time runs for 90 days
 #
 ### preempt some settings for conus3km realtime runs on jet
 export PHYSICS_SUITE="convection_permitting" # mesoscale_reference, convection_permitting
 export COMINgfs='/lfs5/BMC/nrtrr/NCO_data/gfs'
 export COMINrap='/lfs5/BMC/nrtrr/NCO_data/rap'
 #
+export FCST_ONLY="true"
+export FCST_ONLY_FREQ=3
 export PROD_BGN_AT_HRS="00 03 06 09 12 15 18 21"
-export FCST_LENGTH=24
-export FCST_LENGTH_LONG=42
+export FCST_LENGTH=6
+export FCST_LENGTH_LONG=12
 export FCST_LONG_AT_HRS="00 06 12 18"
 export IC_PREFIX='RAP'
-export IC_OFFSET=1
+export IC_OFFSET=0
+export IC_SOURCE_BASEDIR="/public/data/grib/ftp_rap_hyb/7/0/105/0_794802_32769"
+export IC_NAME_PATTERN="@y@j@H000\${HHH}"
 export LBC_PREFIX='RAP'
-export LBC_OFFSET=1
+export LBC_OFFSET=0
+export LBC_LENGTH=12
+export LBC_INTERVAL=3
+export LBC_SOURCE_BASEDIR="/public/data/grib/ftp_rap_hyb/7/0/105/0_794802_32769"
+export LBC_NAME_PATTERN="@y@j@H000\${HHH}"
 
 # preempt some resource settings
 export ACCOUNT="rtwrfruc"

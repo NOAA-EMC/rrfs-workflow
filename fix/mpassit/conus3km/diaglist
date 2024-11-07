@@ -37,3 +37,5 @@ wind_speed_10m_mean            SPDUV10MEAN
 u10m_mean                      U10MEAN
 v10m_mean                      V10MEAN
 swdnb                    SWDOWN
+swupt                    SWUPT
+olrtoa 	      	      	 OLR

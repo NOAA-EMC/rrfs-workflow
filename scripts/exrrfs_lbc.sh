@@ -3,13 +3,23 @@ declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LI
 set -x
 cpreq=${cpreq:-cpreq}
 if [[ -z "${ENS_INDEX}" ]]; then
-  prefix=${LBC_PREFIX:-LBC_PREFIX_not_defined}
+  prefixin=${LBC_PREFIX:-LBC_PREFIX_not_defined}
   ensindexstr=""
 else
-  prefix=${ENS_LBC_PREFIX:-ENS_LBC_PREFIX_not_defined}
+  prefixin=${ENS_LBC_PREFIX:-ENS_LBC_PREFIX_not_defined}
   ensindexstr="/mem${ENS_INDEX}"
 fi
 cd ${DATA}
+
+#
+# wildcard match GFS
+#
+if [[ ${prefixin} == *"GFS"* ]]; then
+  prefix="GFS"
+else
+  prefix=${prefixin}
+fi
+
 
 # generate the namelist on the fly
 # required variables: init_case, start_time, end_time, nvertlevels, nsoillevels, nfglevles, nfgsoillevels,

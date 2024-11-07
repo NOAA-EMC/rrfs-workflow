@@ -4,28 +4,22 @@ from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of ungrib_lbc --------------------------------------------------------
 def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
-  # Task-specific EnVars beyond the task_common_vars
-  dcTaskEnv={
-    'FHR': '#fhr#',
-    'TYPE': 'lbc',
-  }
+
   if not do_ensemble:
-    meta_id='ungrib_lbc'
+    metatask=False
+    meta_id=''
+    task_id=f'ungrib_lbc'
     cycledefs='lbc'
     # metatask (support nested metatasks)
-    fhr=os.getenv('FCST_LENGTH','12')
+#    fhr=os.getenv('FCST_LENGTH','12')
     offset=int(os.getenv('LBC_OFFSET','6'))
-    length=int(os.getenv('LBC_LENGTH','18'))
+    length=int(os.getenv('LBC_LENGTH','12'))
     interval=int(os.getenv('LBC_INTERVAL','3'))
-    meta_hr= ''.join(f'{i:03d} ' for i in range(0,int(length)+1,int(interval))).strip()
-    comin_hr=''.join(f'{i:03d} ' for i in range(int(offset),int(length)+int(offset)+1,int(interval))).strip()
-    meta_bgn=f'''
-<metatask name="{meta_id}">
-<var name="fhr">{meta_hr}</var>
-<var name="fhr_in">{comin_hr}</var>'''
-    meta_end=f'</metatask>\n'
-    task_id=f'{meta_id}_f#fhr#'
+    meta_bgn=""
+    meta_end=""
     prefix=os.getenv('LBC_PREFIX','GFS')
+    lbc_source_basedir=os.getenv('LBC_SOURCE_BASEDIR','')
+    lbc_name_pattern=os.getenv('LBC_NAME_PATTERN','')
   #
   else: # ensemble
     meta_id='ungrib_lbc'
@@ -52,31 +46,40 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     dcTaskEnv['ENS_INDEX']="#ens_index#"
     prefix=os.getenv('ENS_LBC_PREFIX','GEFS')
 
+  # Task-specific EnVars beyond the task_common_vars
+  dcTaskEnv={
+    'TYPE': 'lbc',
+    'SOURCE_BASEDIR': f'<cyclestr offset="-{offset}:00:00">{lbc_source_basedir}</cyclestr>',
+    'NAME_PATTERN': f'<cyclestr offset="-{offset}:00:00">{lbc_name_pattern}</cyclestr>',
+    'OFFSET': f'{offset}',
+    'LENGTH': f'{length}',
+    'INTERVAL': f'{interval}',
+  }
+
   # dependencies
   COMINgfs=os.getenv("COMINgfs",'COMINgfs_not_defined')
-  COMINrrfs=os.getenv("COMINrrfs",'COMINrrfs_not_defined')
-  COMINrap=os.getenv("COMINrap",'COMINrap_not_defined')
-  COMINhrrr=os.getenv("COMINhrrr",'COMINhrrr_not_defined')
   COMINgefs=os.getenv("COMINgefs",'COMINgefs_not_defined')
   if prefix == "GFS":
     fpath=f'{COMINgfs}/gfs.@Y@m@d/@H/gfs.t@Hz.pgrb2.0p25.f#fhr_in#'
-  elif prefix == "RRFS":
-    fpath=f'{COMINrrfs}/rrfs.@Y@m@d/@H/rrfs.t@Hz.natlve.f#fhr_in#.grib2'
-  elif prefix == "RAP":
-    fpath=f'{COMINrap}/rap.@Y@m@d/rap.t@Hz.wrfnatf#fhr_in#.grib2'
   elif prefix == "GEFS":
     fpath=f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.f#fhr_in#'
     fpath2=f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.f#fhr_in#'
   else:
-    fpath=f'/not_supported_LBC_PREFIX={prefix}'
+    fpath=f'{lbc_source_basedir}/{lbc_name_pattern}'
 
   timedep=""
   realtime=os.getenv("REALTIME","false")
-  starttime=get_cascade_env(f"STARTTIME_{meta_id}".upper())
+  starttime=get_cascade_env(f"STARTTIME_{task_id}".upper())
   if realtime.upper() == "TRUE":
-    timedep=f'\n  <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+    timedep=f'\n     <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
   #
-  datadep=f'<datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath}</cyclestr></datadep>'
+  
+  datadep=f' '
+  for i in range( int(offset), int(length)+int(offset)+1, int(interval) ):
+     comin_hr3=str(i).zfill(3)
+     fpath3=fpath.replace('${HHH}', comin_hr3)
+     datadep=datadep+f'\n     <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath3}</cyclestr></datadep>'
+
   if do_ensemble:
     datadep=datadep+f'\n  <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath2}</cyclestr></datadep>'
   dependencies=f'''

@@ -16,9 +16,8 @@ def mpassit(xmlFile, expdir, do_ensemble=False):
     if int(fhr) >=100:
       print(f'FCST_LENGTH>=100 not supported: {fhr}')
       exit()
-    #meta_hr=''.join(f'{i:03d} ' for i in range(int(fhr)+1)).strip()
-    meta_hr=''.join(f'{i:03d} ' for i in range(int(fhr)+1)).strip()[4:] #remove '000 ' as no f000 diag and history files for restart cycles yet, gge.debug
-    fhr2=''.join(f'{i:02d} ' for i in range(int(fhr)+1)).strip()[3:] #remove '00 '
+    meta_hr=''.join(f'{i:03d} ' for i in range(int(fhr)+1)).strip()
+    fhr2=''.join(f'{i:02d} ' for i in range(int(fhr)+1)).strip()
     meta_bgn=f'''
 <metatask name="{meta_id}">
 <var name="fhr">{meta_hr}</var>
@@ -37,9 +36,8 @@ def mpassit(xmlFile, expdir, do_ensemble=False):
       exit()
     ens_size=int(os.getenv('ENS_SIZE','2'))
     ens_indices=''.join(f'{i:03d} ' for i in range(1,int(ens_size)+1)).strip()
-    #meta_hr=''.join(f'{i:03d} ' for i in range(int(fhr)+1)).strip()
-    meta_hr=''.join(f'{i:03d} ' for i in range(int(fhr)+1)).strip()[4:] #remove '000 ' as no f000 diag and history files for restart cycles yet, gge.debug
-    fhr2=''.join(f'{i:02d} ' for i in range(int(fhr)+1)).strip()[3:] #remove '00 '
+    meta_hr=''.join(f'{i:03d} ' for i in range(int(fhr)+1)).strip()
+    fhr2=''.join(f'{i:02d} ' for i in range(int(fhr)+1)).strip()
     meta_bgn=f'''
 <metatask name="ens_{meta_id}">
 <var name="ens_index">{ens_indices}</var>
