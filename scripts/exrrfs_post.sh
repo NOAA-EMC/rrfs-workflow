@@ -136,7 +136,10 @@ if [ ${len_fhr} -eq 9 ]; then
   post_fhr=${fhr:0:3}
   post_min=${fhr:4:2}
   if [ ${post_min} -lt ${nsout_min} ]; then
+	  echo post_min was ${post_min}
+	  echo nsout_min was ${nsout_min}
     post_min=00
+	  echo post_min now ${post_min}
   fi
 else
   post_fhr=${fhr}
