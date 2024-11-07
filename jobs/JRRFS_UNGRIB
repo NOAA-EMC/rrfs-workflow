@@ -48,12 +48,7 @@ export INTERVAL=${INTERVAL:-1}
 # Define COM directories
 #-----------------------------------------------------------------------
 #
-if [[ -d "${COMROOT}" ]];then
-  COMOUT=${COMROOT}/${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}
-else
-  COMOUT=$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})
-fi
-
+COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
 if [[ -z "${ENS_INDEX}" ]]; then
   mkdir -p ${COMOUT}/ungrib_${TYPE}
 else

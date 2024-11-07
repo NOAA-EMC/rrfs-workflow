@@ -40,7 +40,8 @@ def header_entities(xmlFile,expdir):
   HOMErrfs=os.getenv('HOMErrfs','HOMErrfs_not_defined')
   DATAROOT=os.getenv('DATAROOT','DATAROOT_not_defined')
   COMROOT=os.getenv('COMROOT','COMROOT_not_defined')
-  net=os.getenv('NET','3')
+  net=os.getenv('NET','rrfs')
+  run=os.getenv('RUN','rrfs')
   rrfs_ver=os.getenv('VERSION','v2.0.0')
 
   text = f'''
@@ -50,6 +51,7 @@ def header_entities(xmlFile,expdir):
   <envar><name>EXPDIR</name><value>{expdir}</value></envar>\n\
   <envar><name>DATAROOT</name><value>{DATAROOT}</value></envar>\n\
   <envar><name>COMROOT</name><value>{COMROOT}</value></envar>\n\
+  <envar><name>COMOUT</name><value>{COMROOT}/{net}/{rrfs_ver}/{run}.@Y@m@d/@H</value></envar>\n\
   <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>\n\
   <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>\n\
   <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>\n\

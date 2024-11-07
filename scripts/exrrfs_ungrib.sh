@@ -52,54 +52,58 @@ else
   echo "ungrib PREFIX=${prefix} from xml"
 fi
 #
+# link all grib2 files with local file name (AAA, AAB, ...)
+#
+fhr_all=$(seq $((10#${OFFSET})) $((10#${INTERVAL})) $(( 10#${OFFSET} + 10#${LENGTH})) )
+knt=0
+for fhr in  ${fhr_all}; do
+
+  knt=$(( 10#${knt} + 1 ))
+  HHH=$(printf %03d ${fhr})
+  NAME_FILE=$(echo "${NAME_PATTERN}" | sed "s/\${HHH}/${HHH}/g")
+  GRIBFILE="${COMIN}/${NAME_FILE}"
+  GRIBFILE_LOCAL=$(${USHrrfs}/num_to_GRIBFILE.XXX.sh ${knt})
+  ${cpreq} ${GRIBFILE} ${GRIBFILE_LOCAL}
+done
+
+#
 # generate the namelist on the fly
+#
 if [[ "${MESH_NAME}" == "conus3km"   ]]; then
   dx=3; dy=3
 else
   dx=12; dy=12
 fi
-
-fhr_all=$(seq $((10#${OFFSET})) $((10#${INTERVAL})) $(( 10#${OFFSET} + 10#${LENGTH})) )
-for fhr in  ${fhr_all}; do
-
-  HHH=$(printf %03d ${fhr})
-  DATA_HR=${DATA}/${HHH}
-  mkdir -p ${DATA_HR}
-  cd ${DATA_HR}
-  ${cpreq} ${FIXrrfs}/ungrib/Vtable.${prefix} Vtable
-  NAME_FILE=$(echo "${NAME_PATTERN}" | sed "s/\${HHH}/${HHH}/g")
-  GRIBFILE="${COMIN}/${NAME_FILE}"
-  ${cpreq} ${GRIBFILE} GRIBFILE.AAA
-
-CDATEout=$($NDATE ${fhr} ${CDATEin})
-start_time=$(date -d "${CDATEout:0:8} ${CDATEout:8:2}" +%Y-%m-%d_%H:%M:%S) 
-end_time=${start_time}
+CDATEout=$($NDATE $(( 10#${OFFSET} + 10#${LENGTH})) ${CDATEin})
+start_time=$(date -d "${CDATEin:0:8} ${CDATEin:8:2}" +%Y-%m-%d_%H:%M:%S) 
+end_time=$(date -d "${CDATEout:0:8} ${CDATEout:8:2}" +%Y-%m-%d_%H:%M:%S) 
 interval_seconds=$(( ${INTERVAL}*3600 ))
 sed -e "s/@start_time@/${start_time}/" -e "s/@end_time@/${end_time}/" \
     -e "s/@interval_seconds@/${interval_seconds}/" -e "s/@prefix@/${prefix}/" \
     -e "s/@dx@/${dx}/" -e "s/@dy@/${dy}/" ${PARMrrfs}/namelist.wps > namelist.wps
-
+#
 # run ungrib
+#
 source prep_step
 ${cpreq} ${EXECrrfs}/ungrib.x .
 ./ungrib.x
 export err=$?; err_chk
+#
 # check the status
+#
 outfile="${prefix}:$(date -d "${CDATEout:0:8} ${CDATEout:8:2}" +%Y-%m-%d_%H)"
 if [[ -s ${outfile} ]]; then
   if [[ -z "${ENS_INDEX}" ]]; then
-    ${cpreq} ${DATA_HR}/${outfile} ${COMOUT}/ungrib_${TYPE}/
+    ${cpreq} ${prefix}:* ${COMOUT}/ungrib_${TYPE}/
     if [[ "${TYPE}" == "lbc" ]] && [[ ! -d ${COMOUT}/ungrib_ic  ]]; then
     # lbc tasks need init.nc, don't know why it is so but we have to leave with this for a while
     # link ungrib_lbc to ungrib_ic so that ic tasks can run and generate init.nc
       ln -snf ${COMOUT}/ungrib_lbc ${COMOUT}/ungrib_ic
     fi
   else
-    ${cpreq} ${DATA_HR}/${outfile} ${COMOUT}/mem${ENS_INDEX}/ungrib_${TYPE}/
+    ${cpreq} ${prefix}:* ${COMOUT}/mem${ENS_INDEX}/ungrib_${TYPE}/
   fi
 else
   echo "FATAL ERROR: ungrib failed"
   err_exit
 fi
- 
-done
