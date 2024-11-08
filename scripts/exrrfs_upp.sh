@@ -76,7 +76,7 @@ cat ${wrfnat} ${wrftwo} > ${wrfnat}.two
 mv ${wrfnat}.two ${wrfnat}
 
 # copy products to COMOUT
-${cpreq} ${wrfprs} ${COMOUT}${ensindexstr}/${RUN}_prs_${CDATE}_f${fhr}.grib2
-${cpreq} ${wrfnat} ${COMOUT}${ensindexstr}/${RUN}_nat_${CDATE}_f${fhr}.grib2
-${cpreq} ${wrftwo} ${COMOUT}${ensindexstr}/${RUN}_two_${CDATE}_f${fhr}.grib2
-${cpreq} ${wrfprs} ${COMOUT}${ensindexstr}/${YYJJJHH}0000${fhr}
+${cpreq} ${wrfprs} ${COMOUT}${ensindexstr}/upp/${RUN}_prs_${CDATE}_f${fhr}.grib2
+${cpreq} ${wrfnat} ${COMOUT}${ensindexstr}/upp/${RUN}_nat_${CDATE}_f${fhr}.grib2
+${cpreq} ${wrftwo} ${COMOUT}${ensindexstr}/upp/${RUN}_two_${CDATE}_f${fhr}.grib2
+${cpreq} ${wrfprs} ${COMOUT}${ensindexstr}/upp/${YYJJJHH}0000${fhr}

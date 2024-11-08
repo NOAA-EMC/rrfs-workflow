@@ -62,6 +62,11 @@ def header_entities(xmlFile,expdir):
 <!ENTITY DATAROOT        "{DATAROOT}">\n\
 <!ENTITY COMROOT         "{COMROOT}">\n\
 <!ENTITY LOGROOT         "{COMROOT}/{net}/{rrfs_ver}/logs">\n\
+
+<!ENTITY RUN             "rrfs">\n\
+<!ENTITY NET             "{net}">\n\
+<!ENTITY rrfs_ver        "{rrfs_ver}">\n\
+
 '''
   xmlFile.write(text)
 
