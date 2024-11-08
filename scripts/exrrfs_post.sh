@@ -210,6 +210,11 @@ if [ ${USE_CUSTOM_POST_CONFIG_FILE} = "TRUE" ]; then
       CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-rrfs_nosmokedust.txt"
     fi
   fi
+
+
+# need something like this - possible to do in post script?
+#  wgrib2 $file -not_if 'ave fcst' | grep -F -f {FIX_UPP}/subh_fields.txt | wgrib2 -i -grib $file 15min_subset_file
+#
   if [ ${post_min} -ge ${nsout_min} ]; then
      CUSTOM_POST_CONFIG_FP="${FIX_UPP}/postxconfig-NT-rrfs_subh.txt"
   fi
