@@ -37,12 +37,12 @@ mkdir -p ${DATA}
 #
 #export COMINgfs=${COMINgfs:-$(compath.py $envir/gfs/$gfs_ver)}
 #export COMINgefs=${COMINgefs:-$(compath.py $envir/gefs/$gefs_ver)}
-export COMIN=${SOURCE_BASEDIR:-("")}
-export NAME_PATTERN=${NAME_PATTERN:-("")}
+export COMIN=${SOURCE_BASEDIR:-""}
+export NAME_PATTERN=${NAME_PATTERN:-""}
 export OFFSET=${OFFSET:-0}
 export LENGTH=${LENGTH:-0}
 export INTERVAL=${INTERVAL:-1}
-export SOURCE=${SOURCE:-"(GFS)"}
+export EXTRN_MDL_SOURCE=${EXTRN_MDL_SOURCE:-"GFS"}
 #
 #-----------------------------------------------------------------------
 # Define COM directories

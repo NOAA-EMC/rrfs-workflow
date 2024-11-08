@@ -10,7 +10,7 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
     meta_id=''
     task_id='ungrib_ic'
     cycledefs='ic'
-    source=os.getenv('IC_EXTRN_MDL_NAME','IC_PREFIX_not_defined')
+    extrn_mdl_source=os.getenv('IC_EXTRN_MDL_NAME','IC_PREFIX_not_defined')
     offset=os.getenv('IC_OFFSET','3')
     meta_bgn=""
     meta_end=""
@@ -25,7 +25,7 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
     task_id=f'{meta_id}_m#ens_index#'
     cycledefs='ens_ic'
     dcTaskEnv['ENS_INDEX']="#ens_index#"
-    source=os.getenv('ENS_IC_PREFIX','GEFS')
+    extrn_mdl_source=os.getenv('ENS_IC_PREFIX','GEFS')
     offset=os.getenv('ENS_IC_OFFSET','36')
     ens_size=int(os.getenv('ENS_SIZE','2'))
     ens_indices=''.join(f'{i:03d} ' for i in range(1,int(ens_size)+1)).strip()
@@ -41,7 +41,7 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
     'TYPE': 'ic',
     'SOURCE_BASEDIR': f'<cyclestr offset="-{offset}:00:00">{ic_source_basedir}</cyclestr>',
     'NAME_PATTERN': f'<cyclestr offset="-{offset}:00:00">{ic_name_pattern}</cyclestr>',
-    'SOURCE': f'{source}',
+    'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
     'OFFSET': f'{offset}',
   }
   #

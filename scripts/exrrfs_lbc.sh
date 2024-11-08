@@ -3,10 +3,10 @@ declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LI
 set -x
 cpreq=${cpreq:-cpreq}
 if [[ -z "${ENS_INDEX}" ]]; then
-  prefixin=${SOURCE:-LBC_PREFIX_not_defined}
+  prefixin=${EXTRN_MDL_SOURCE:-LBC_EXTRN_MDL_SOURCE_not_defined}
   ensindexstr=""
 else
-  prefixin=${SOURCE:-ENS_LBC_PREFIX_not_defined}
+  prefixin=${EXTRN_MDL_SOURCE:-ENS_LBC_EXTRN_MDL_SOURCE_not_defined}
   ensindexstr="/mem${ENS_INDEX}"
 fi
 cd ${DATA}

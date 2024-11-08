@@ -14,7 +14,7 @@ def ic(xmlFile, expdir, do_ensemble=False):
     meta_bgn=""
     meta_end=""
     ensindexstr=""
-    source=os.getenv('IC_EXTRN_MDL_NAME','IC_PREFIX_not_defined')
+    extrn_mdl_source=os.getenv('IC_EXTRN_MDL_NAME','IC_PREFIX_not_defined')
   else:
     metatask=True
     meta_id='ic'
@@ -33,7 +33,7 @@ def ic(xmlFile, expdir, do_ensemble=False):
   # Task-specific EnVars beyond the task_common_vars
   physics_suite=os.getenv('PHYSICS_SUITE','PHYSICS_SUITE_not_defined')
   dcTaskEnv={
-    'SOURCE': f'{source}',
+    'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
     'PHYSICS_SUITE': f'{physics_suite}',
   }
 

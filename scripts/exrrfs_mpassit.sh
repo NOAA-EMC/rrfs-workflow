@@ -15,8 +15,6 @@ else
 fi
 ${cpreq} ${DATAROOT}${ensindexstr}/${RUN}_fcst_${cyc}/history.${timestr}.nc .
 ${cpreq} ${DATAROOT}${ensindexstr}/${RUN}_fcst_${cyc}/diag.${timestr}.nc .
-#${cpreq} ${DATAROOT}/${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}${ensindexstr}/${RUN}_fcst_${cyc}/history.${timestr}.nc .
-#${cpreq} ${DATAROOT}/${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}${ensindexstr}/${RUN}_fcst_${cyc}/diag.${timestr}.nc .
 ${cpreq} ${FIXrrfs}/mpassit/${MESH_NAME}/* .
 # generate the namelist on the fly
 if [[ "${MESH_NAME}" == "conus12km" ]]; then

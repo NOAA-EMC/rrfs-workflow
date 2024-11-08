@@ -5,7 +5,7 @@ cpreq=${cpreq:-cpreq}
 #
 # find prefix from source
 # 
-prefixin=${SOURCE:-PREFIX_not_defined}
+prefixin=${EXTRN_MDL_SOURCE:-EXTRN_MDL_SOURCE_not_defined}
 offset=${OFFSET:-3}
 #
 # wildcard match GFS

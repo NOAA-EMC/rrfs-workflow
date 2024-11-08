@@ -12,7 +12,7 @@ def lbc(xmlFile, expdir, do_ensemble=False):
     meta_id='lbc'
     cycledefs='lbc'
     # metatask (nested or not)
-    source=os.getenv('LBC_EXTRN_MDL_NAME','GFS')
+    extern_mdl_source=os.getenv('LBC_EXTRN_MDL_NAME','GFS')
     fhr=os.getenv('FCST_LENGTH','12')
     offset=int(os.getenv('LBC_OFFSET','6'))
     length=int(os.getenv('LBC_LENGTH','18'))
@@ -52,7 +52,7 @@ def lbc(xmlFile, expdir, do_ensemble=False):
   # Task-specific EnVars beyond the task_common_vars
   physics_suite=os.getenv('PHYSICS_SUITE','PHYSICS_SUITE_not_defined')
   dcTaskEnv={
-    'SOURCE': f'{source}',
+    'EXTRN_MDL_SOURCE': f'{extern_mdl_source}',
     'PHYSICS_SUITE': f'{physics_suite}',
     'FHR': f'#fhr#',
   }

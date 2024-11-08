@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # First detect w/ hostname
 export MACHINE
-
 case $(hostname -f) in
 
   adecflow0[12].acorn.wcoss2.ncep.noaa.gov)  MACHINE=acorn ;; ### acorn
@@ -80,5 +79,3 @@ if [[ "${MACHINE}" == "UNKNOWN" ]]; then
     echo WARNING: UNKNOWN PLATFORM 1>&2
   fi
 fi
-
-export MACHINE=${MACHINE}
