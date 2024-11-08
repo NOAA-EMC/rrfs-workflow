@@ -10,12 +10,12 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
     meta_id=''
     task_id='ungrib_ic'
     cycledefs='ic'
-    prefix=os.getenv('IC_PREFIX','IC_PREFIX_not_defined')
+    source=os.getenv('IC_EXTRN_MDL_NAME','IC_PREFIX_not_defined')
     offset=os.getenv('IC_OFFSET','3')
     meta_bgn=""
     meta_end=""
-    ic_source_basedir=os.getenv('IC_SOURCE_BASEDIR','')
-    ic_name_pattern=os.getenv('IC_NAME_PATTERN','')
+    ic_source_basedir=os.getenv('IC_EXTRN_MDL_BASEDIR','MDL_BASEDIR_not_defined')
+    ic_name_pattern=os.getenv('IC_EXTRN_MDL_NAME_PATTERN','NAME_PATTERN_not_defined')
     offset=int(os.getenv('IC_OFFSET','6'))
     net=os.getenv('NET','3')
     rrfs_ver=os.getenv('VERSION','v2.0.0')
@@ -25,7 +25,7 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
     task_id=f'{meta_id}_m#ens_index#'
     cycledefs='ens_ic'
     dcTaskEnv['ENS_INDEX']="#ens_index#"
-    prefix=os.getenv('ENS_IC_PREFIX','GEFS')
+    source=os.getenv('ENS_IC_PREFIX','GEFS')
     offset=os.getenv('ENS_IC_OFFSET','36')
     ens_size=int(os.getenv('ENS_SIZE','2'))
     ens_indices=''.join(f'{i:03d} ' for i in range(1,int(ens_size)+1)).strip()
@@ -41,15 +41,16 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
     'TYPE': 'ic',
     'SOURCE_BASEDIR': f'<cyclestr offset="-{offset}:00:00">{ic_source_basedir}</cyclestr>',
     'NAME_PATTERN': f'<cyclestr offset="-{offset}:00:00">{ic_name_pattern}</cyclestr>',
+    'SOURCE': f'{source}',
     'OFFSET': f'{offset}',
   }
   #
   # dependencies
   COMINgfs=os.getenv("COMINgfs",'COMINgfs_not_defined')
   COMINgefs=os.getenv("COMINgefs",'COMINgefs_not_defined')
-  if prefix == "GFS":
+  if source == "GFS":
     fpath=f'{COMINgfs}/gfs.@Y@m@d/@H/gfs.t@Hz.pgrb2.0p25.f{offset:>03}'
-  elif prefix == "GEFS":
+  elif source == "GEFS":
     fpath=f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.f{offset:>03}'
     fpath2=f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.f{offset:>03}'
   else:

@@ -43,21 +43,45 @@ def header_entities(xmlFile,expdir):
   net=os.getenv('NET','rrfs')
   run=os.getenv('RUN','rrfs')
   rrfs_ver=os.getenv('VERSION','v2.0.0')
+  account=os.getenv('ACCOUNT','wrfruc')
+  queue=os.getenv('QUEUE','bacth')
+  partition=os.getenv('PARTITION','hera')
+  reservation=os.getenv('RESERVATION','')
+  mesh_name=os.getenv('MESH_NAME','na3km')
+  keepdata=os.getenv('KEEPDATA','yes')
+  mpi_run_cmd=os.getenv('MPI_RUN_CMD','srun')
+
+  text = f'''
+<!ENTITY ACCOUNT         "{account}">\n\
+<!ENTITY QUEUE_DEFAULT   "{queue}">\n\
+<!ENTITY PARTITION       "{partition}">\n\
+<!ENTITY RESERVATION     "--reservation={reservation}">\n\
+
+<!ENTITY HOMErrfs        "{HOMErrfs}">\n\
+<!ENTITY EXPDIR          "{expdir}">\n\
+<!ENTITY DATAROOT        "{DATAROOT}">\n\
+<!ENTITY COMROOT         "{COMROOT}">\n\
+<!ENTITY LOGROOT         "{COMROOT}/{net}/{rrfs_ver}/logs">\n\
+'''
+  xmlFile.write(text)
 
   text = f'''
 <!ENTITY task_common_vars\n\
 "\n\
-  <envar><name>HOMErrfs</name><value>{HOMErrfs}</value></envar>\n\
-  <envar><name>EXPDIR</name><value>{expdir}</value></envar>\n\
-  <envar><name>DATAROOT</name><value>{DATAROOT}</value></envar>\n\
-  <envar><name>COMROOT</name><value>{COMROOT}</value></envar>\n\
-  <envar><name>COMOUT</name><value>{COMROOT}/{net}/{rrfs_ver}/{run}.@Y@m@d/@H</value></envar>\n\
+  <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>\n\
+  <envar><name>EXPDIR</name><value>&EXPDIR;</value></envar>\n\
+  <envar><name>DATAROOT</name><value><cyclestr>&DATAROOT;/{net}/{rrfs_ver}/{run}.@Y@m@d/@H</cyclestr></value></envar>\n\
+  <envar><name>COMROOT</name><value>&COMROOT;</value></envar>\n\
+  <envar><name>COMINrrfs</name><value>&COMROOT;/{net}/{rrfs_ver}</value></envar>\n\
+  <envar><name>COMOUT</name><value><cyclestr>&COMROOT;/{net}/{rrfs_ver}/{run}.@Y@m@d/@H</cyclestr></value></envar>\n\
   <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>\n\
   <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>\n\
   <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>\n\
   <envar><name>NET</name><value>{net}</value></envar>\n\
   <envar><name>rrfs_ver</name><value>{rrfs_ver}</value></envar>\n\
-  <envar><name>KEEPDATA</name><value>yes</value></envar>\n\
+  <envar><name>KEEPDATA</name><value>{keepdata}</value></envar>\n\
+  <envar><name>MPI_RUN_CMD</name><value>{mpi_run_cmd}</value></envar>\n\
+  <envar><name>MESH_NAME</name><value>{mesh_name}</value></envar>\n\
 "\n\
 >\n\
 '''
@@ -107,27 +131,34 @@ class objTask:
     self.dcTaskEnv=dcTaskEnv
     self.dependencies=dependencies
 
+  def wflow_task_divider(self,xmlFile):
+    text=f'\n<!--\n'
+    text=text+f'************************************************************************************\n'
+    text=text+f'************************************************************************************'
+    text=text+f'\n-->\n'
+    xmlFile.write(text)
+
   def wflow_task_begin(self,xmlFile):
     text=f'\n<task name="{self.task_id}" cycledefs="{self.cycledefs}" maxtries="{self.maxtries}">\n'
     xmlFile.write(text)
 
   def wflow_task_part1(self,xmlFile): #write out part1 which excludes dependencies
-    text=f'  <command>{self.dcTaskRes["command"]}</command>\n'
+    text=f'  <command>{self.dcTaskRes["command"]} &HOMErrfs;</command>\n'
     text=text+f'  <join><cyclestr>{self.dcTaskRes["join"]}</cyclestr></join>\n'
     text=text+f'\n  <jobname><cyclestr>{self.dcTaskRes["jobname"]}</cyclestr></jobname>\n'
-    text=text+f'  <account>{self.dcTaskRes["account"]}</account>\n'
-    text=text+f'  <queue>{self.dcTaskRes["queue"]}</queue>\n'
-    text=text+f'  <partition>{self.dcTaskRes["partition"]}</partition>\n'
+    text=text+f'  <account>&ACCOUNT;</account>\n'
+    text=text+f'  <queue>&QUEUE_DEFAULT;</queue>\n'
+    text=text+f'  <partition>&PARTITION;</partition>\n'
     text=text+f'  <walltime>{self.dcTaskRes["walltime"]}</walltime>\n'
     text=text+f'  {self.dcTaskRes["nodes"]}\n' #note: xml tag self included, no need to add <nodes> </nodes>
     #
     if self.dcTaskRes["native"] == "":
       if self.dcTaskRes["reservation"]!="":
-        text=text+f'  <native>--reservation={self.dcTaskRes["reservation"]}</native>\n'
+        text=text+f'  <native>&RESERVATION;</native>\n'
     else:
       native_text=self.dcTaskRes["native"]
       if self.dcTaskRes["reservation"]!="":
-        native_text=native_text+f' --reservation={self.dcTaskRes["reservation"]}'
+        native_text=native_text+f' &RESERVATION;'
       text=text+f'  <native>{native_text}</native>\n'
     #
     if self.realtime:
@@ -210,8 +241,8 @@ def xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv={},dependencies="",metat
   if command_id == "":
     command_id=meta_id
   dcTaskRes={
-    'command': f'{HOMErrfs}/workflow/sideload/launch.sh JRRFS_'+f'{command_id}'.upper(),
-    'join': f'{COMROOT}/{NET}/{VERSION}/logs/{RUN}.@Y@m@d/@H/{task_id}_{TAG}_@Y@m@d@H.log',
+    'command': f'&HOMErrfs;/workflow/sideload/launch.sh JRRFS_'+f'{command_id}'.upper(),
+    'join': f'&LOGROOT;/{RUN}.@Y@m@d/@H/{task_id}_{TAG}_@Y@m@d@H.log',
     'jobname': f'{TAG}_{task_id}_c@H',
     'account': get_cascade_env(f'ACCOUNT_{task_id}'.upper()),
     'queue': get_cascade_env(f'QUEUE_{task_id}'.upper()),
@@ -231,6 +262,7 @@ def xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv={},dependencies="",metat
           deadline=deadline,
           dcTaskEnv=dcTaskEnv,
           dependencies=dependencies)
+  myObjTask.wflow_task_divider(xmlFile)
   if metatask == True:
     xmlFile.write(meta_bgn)
   myObjTask.wflow_task_begin(xmlFile)

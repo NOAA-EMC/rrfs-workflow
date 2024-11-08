@@ -12,11 +12,11 @@ export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
-
+#
 #-----------------------------------------------------------------------
 # Obtain unique process id (pid) and create the run directory (DATA).
 #-----------------------------------------------------------------------
-
+#
 export pid=${pid:-$$}
 if [[ -z "${ENS_INDEX}" ]]; then
   export RUN="rrfs"
@@ -42,6 +42,7 @@ export NAME_PATTERN=${NAME_PATTERN:-("")}
 export OFFSET=${OFFSET:-0}
 export LENGTH=${LENGTH:-0}
 export INTERVAL=${INTERVAL:-1}
+export SOURCE=${SOURCE:-"(GFS)"}
 #
 #-----------------------------------------------------------------------
 # Define COM directories
@@ -57,6 +58,7 @@ fi
 #----------------------------------------
 # Execute the script.
 #----------------------------------------
+#
 export pgmout="${DATA}/OUTPUT.$$"
 ${HOMErrfs}/scripts/exrrfs_ungrib.sh
 export err=$?; err_chk
@@ -68,6 +70,7 @@ fi
 #----------------------------------------
 # Remove the Temporary working directory
 #----------------------------------------
+#
 cd ${DATAROOT}
 [[ "${KEEPDATA}" == "NO" ]] && rm -rf ${DATA}
 #

@@ -2,23 +2,11 @@
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]${id}: '
 set -x
 cpreq=${cpreq:-cpreq}
-if [[ -z "${ENS_INDEX}" ]]; then
-  if [[ "${TYPE}" == "IC" ]] || [[ "${TYPE}" == "ic" ]]; then
-    prefixin=${IC_PREFIX:-IC_PREFIX_not_defined}
-    offset=${IC_OFFSET:-3}
-  else #lbc
-    prefixin=${LBC_PREFIX:-LBC_PREFIX_not_defined}
-    offset=${LBC_OFFSET:-6}
-  fi
-else # ensrrfs
-  if [[ "${TYPE}" == "IC" ]] || [[ "${TYPE}" == "ic" ]]; then
-    prefixin=${ENS_IC_PREFIX:-ENS_IC_PREFIX_not_defined}
-    offset=${ENS_IC_OFFSET:-39}
-  else #lbc
-    prefixin=${ENS_LBC_PREFIX:-ENS_LBC_PREFIX_not_defined}
-    offset=${ENS_LBC_OFFSET:-39}
-  fi
-fi
+#
+# find prefix from source
+# 
+prefixin=${SOURCE:-PREFIX_not_defined}
+offset=${OFFSET:-3}
 #
 # wildcard match GFS
 #
@@ -34,14 +22,14 @@ FHRin=$(( 10#${FHR}+10#${offset} )) #FHR for input external data
 cd ${DATA}
 ${cpreq} ${FIXrrfs}/ungrib/Vtable.${prefix} Vtable
 #
-if [[ "${prefix}" == "GFS" ]]; then
+if [[ "${prefixin}" == "GFS" ]]; then
   fstr=$(printf %03d ${FHRin})
   filea=${COMINgfs}/gfs.${CDATEin:0:8}/${CDATEin:8:2}/gfs.t${CDATEin:8:2}z.pgrb2.0p25.f${fstr}
   fileb=${COMINgfs}/gfs.${CDATEin:0:8}/${CDATEin:8:2}/gfs.t${CDATEin:8:2}z.pgrb2b.0p25.f${fstr}
   ls -lth ${filea} ${fileb}
   cat ${filea} ${fileb} > GRIBFILE.AAA
 
-elif [[ "${prefix}" == "GEFS" ]]; then
+elif [[ "${prefixin}" == "GEFS" ]]; then
   fstr=$(printf %03d ${FHRin})
   filea=${COMINgefs}/gefs.${CDATEin:0:8}/${CDATEin:8:2}/pgrb2ap5/gep${ENS_INDEX:1}.t${CDATEin:8:2}z.pgrb2a.0p50.f${fstr}
   fileb=${COMINgefs}/gefs.${CDATEin:0:8}/${CDATEin:8:2}/pgrb2bp5/gep${ENS_INDEX:1}.t${CDATEin:8:2}z.pgrb2b.0p50.f${fstr}
@@ -69,7 +57,7 @@ done
 #
 # generate the namelist on the fly
 #
-if [[ "${MESH_NAME}" == "conus3km"   ]]; then
+if [[ "${MESH_NAME}" == *"3km"*   ]]; then
   dx=3; dy=3
 else
   dx=12; dy=12
