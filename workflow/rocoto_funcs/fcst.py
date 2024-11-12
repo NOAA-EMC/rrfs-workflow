@@ -37,6 +37,16 @@ def fcst(xmlFile, expdir, do_ensemble=False):
     ensindexstr="_m#ens_index#"
     ensstr="ens_"
 
+  # Task-specific EnVars beyond the task_common_vars
+  fcst_length=os.getenv('FCST_LENGTH','1')
+  lbc_interval=os.getenv('LBC_INTERVAL','3')
+  physics_suite=os.getenv('PHYSICS_SUITE','PHYSICS_SUITE_not_defined')
+  dcTaskEnv={
+    'FCST_LENGTH': f'{fcst_length}',
+    'LBC_INTERVAL': f'{lbc_interval}',
+    'PHYSICS_SUITE': f'{physics_suite}',
+  }
+
   # dependencies
   hrs=hrs.split(' ')
   streqs=""; strneqs=""; first=True
@@ -62,15 +72,7 @@ def fcst(xmlFile, expdir, do_ensemble=False):
   dependencies=f'''
   <dependency>
   <and>{timedep}
-   <or>
-    <metataskdep metatask="lbc{ensindexstr}" cycle_offset="0:00:00"/>
-    <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-1:00:00"/>
-    <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-2:00:00"/>
-    <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-3:00:00"/>
-    <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-4:00:00"/>
-    <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-5:00:00"/>
-    <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-6:00:00"/>
-   </or>
+   <metataskdep metatask="lbc{ensindexstr}" cycle_offset="0:00:00"/>
    <or>
     <and>
       <or>

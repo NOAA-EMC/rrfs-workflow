@@ -3,10 +3,10 @@ declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LI
 set -x
 cpreq=${cpreq:-cpreq}
 if [[ -z "${ENS_INDEX}" ]]; then
-  prefixin=${LBC_PREFIX:-LBC_PREFIX_not_defined}
+  prefixin=${EXTRN_MDL_SOURCE:-LBC_EXTRN_MDL_SOURCE_not_defined}
   ensindexstr=""
 else
-  prefixin=${ENS_LBC_PREFIX:-ENS_LBC_PREFIX_not_defined}
+  prefixin=${EXTRN_MDL_SOURCE:-ENS_LBC_EXTRN_MDL_SOURCE_not_defined}
   ensindexstr="/mem${ENS_INDEX}"
 fi
 cd ${DATA}
@@ -51,11 +51,16 @@ physics_suite=${PHYSICS_SUITE:-'PHYSICS_SUITE_not_defined'}
 file_content=$(< ${PARMrrfs}/${physics_suite}/namelist.init_atmosphere) # read in all content
 eval "echo \"${file_content}\"" > namelist.init_atmosphere
 
-# generate the streams file on the fly using sed as this file contains "filename_template='lbc.$Y-$M-$D_$h.$m.$s.nc'"
+#
+# generate the streams file on the fly
+# using sed as this file contains "filename_template='lbc.$Y-$M-$D_$h.$m.$s.nc'"
+#
 sed -e "s/@input_stream@/init.nc/" -e "s/@output_stream@/foo.nc/" \
     -e "s/@lbc_interval@/1/" ${PARMrrfs}/streams.init_atmosphere > streams.init_atmosphere
 
-#prepare for init_atmosphere
+#
+#prepare fix files and ungrib files for init_atmosphere
+#
 ln -snf ${COMINrrfs}/${RUN}.${PDY}/${cyc}${ensindexstr}/ungrib_lbc/${prefix}:${start_time:0:13} .
 ln -snf ${COMINrrfs}/${RUN}.${PDY}/${cyc}${ensindexstr}/ic/init.nc .
 ${cpreq} ${FIXrrfs}/meshes/${MESH_NAME}.static.nc static.nc

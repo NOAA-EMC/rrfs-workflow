@@ -5,28 +5,15 @@
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]${id}: '
 set -x
 #
-source ${EXPDIR}/exp.setup
+#source ${EXPDIR}/exp.setup
 # tweaks for non-NCO runs
 COMMAND=$1  #get the J-JOB name
+HOMErrfs=$2  #get the system location
 task_id=${COMMAND#*_} # remove the "JRRFS_" part
 export task_id=${task_id,,} #to lower case
-export rrfs_ver=${VERSION}
-if [[ -z "${ENS_INDEX}" ]] && [[ ! "${task_id}" == "ens_da"   ]]; then
-  export RUN='rrfs'
-  export DATA=${DATAROOT}/${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/${task_id}
-  if [[ "${task_id}" == "ungrib"  ]]; then
-    export DATA=${DATAROOT}/${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/${task_id}_${TYPE}
-  fi
-else # ensrrfs
-  export RUN='ensrrfs'
-  if [[ "${task_id}" == "ens_da"  ]]; then
-    export DATA=${DATAROOT}/${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/${task_id}
-  else
-    export DATA=${DATAROOT}/${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/mem${ENS_INDEX}/${task_id}
-  fi
-fi
-export COMOUT="${COMROOT}/${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}" # task_id not included as compath.py may not be able to find this subdirectory
-export COMINrrfs="${COMROOT}/${NET}/${rrfs_ver}" # we may need to use data from previous cycles
+source ${HOMErrfs}/workflow/ush/detect_machine.sh
+echo "run on ${MACHINE}"
+#
 export NTASKS=${SLURM_NTASKS}
 #
 echo "load rrfs-workflow modules by default"

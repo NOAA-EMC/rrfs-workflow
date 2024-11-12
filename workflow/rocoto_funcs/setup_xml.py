@@ -52,7 +52,7 @@ def setup_xml(HOMErrfs, expdir):
     header_entities(xmlFile,expdir)
     header_end(xmlFile)
     wflow_begin(xmlFile)
-    log_fpath=f'{COMROOT}/{NET}/{VERSION}/logs/rrfs.@Y@m@d/@H/rrfs_{TAG}.log'
+    log_fpath=f'&LOGROOT;/rrfs.@Y@m@d/@H/rrfs_{TAG}.log'
     wflow_log(xmlFile,log_fpath)
     wflow_cycledefs(xmlFile,dcCycledef)
     
@@ -87,8 +87,8 @@ def setup_xml(HOMErrfs, expdir):
       upp(xmlFile,expdir,do_ensemble=True)
 
 # ---------------------------------------------------------------------------
-    if os.getenv("REALTIME").upper() == "TRUE": # write out the clean task for realtime runs and retros don't need it
-      clean(xmlFile,expdir)
+#    if os.getenv("REALTIME").upper() == "TRUE": # write out the clean task for realtime runs and retros don't need it
+#      clean(xmlFile,expdir)
     #
     wflow_end(xmlFile)
 # ---------------------------------------------------------------------------

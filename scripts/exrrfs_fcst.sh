@@ -16,11 +16,12 @@ else
 fi
 # determine whether to begin new cycles
 begin="NO"
-for hr in "${array[@]}"; do
-  if [[ "${cyc}" == "$(printf '%02d' ${hr})" ]]; then
-    begin="YES"; break
-  fi
-done
+begin="YES"
+#for hr in "${array[@]}"; do
+#  if [[ "${cyc}" == "$(printf '%02d' ${hr})" ]]; then
+#    begin="YES"; break
+#  fi
+#done
 if [[ "${begin}" == "YES" ]]; then
   ${cpreq} ${COMINrrfs}/${RUN}.${PDY}/${cyc}${ensindexstr}/ic/init.nc .
   do_restart='false'

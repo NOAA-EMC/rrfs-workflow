@@ -17,9 +17,9 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     interval=int(os.getenv('LBC_INTERVAL','3'))
     meta_bgn=""
     meta_end=""
-    prefix=os.getenv('LBC_PREFIX','GFS')
-    lbc_source_basedir=os.getenv('LBC_SOURCE_BASEDIR','')
-    lbc_name_pattern=os.getenv('LBC_NAME_PATTERN','')
+    extrn_mdl_source=os.getenv('LBC_EXTRN_MDL_NAME','GFS')
+    lbc_source_basedir=os.getenv('LBC_EXTRN_MDL_BASEDIR','')
+    lbc_name_pattern=os.getenv('LBC_EXTRN_MDL_NAME_PATTERN','')
   #
   else: # ensemble
     meta_id='ungrib_lbc'
@@ -44,13 +44,14 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     meta_end=f'</metatask>\n</metatask>\n'
     task_id=f'{meta_id}_m#ens_index#_f#fhr#'
     dcTaskEnv['ENS_INDEX']="#ens_index#"
-    prefix=os.getenv('ENS_LBC_PREFIX','GEFS')
+    extrn_mdl_source=os.getenv('ENS_LBC_PREFIX','GEFS')
 
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={
     'TYPE': 'lbc',
     'SOURCE_BASEDIR': f'<cyclestr offset="-{offset}:00:00">{lbc_source_basedir}</cyclestr>',
     'NAME_PATTERN': f'<cyclestr offset="-{offset}:00:00">{lbc_name_pattern}</cyclestr>',
+    'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
     'OFFSET': f'{offset}',
     'LENGTH': f'{length}',
     'INTERVAL': f'{interval}',
@@ -59,9 +60,9 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
   # dependencies
   COMINgfs=os.getenv("COMINgfs",'COMINgfs_not_defined')
   COMINgefs=os.getenv("COMINgefs",'COMINgefs_not_defined')
-  if prefix == "GFS":
+  if extrn_mdl_source == "GFS":
     fpath=f'{COMINgfs}/gfs.@Y@m@d/@H/gfs.t@Hz.pgrb2.0p25.f#fhr_in#'
-  elif prefix == "GEFS":
+  elif extrn_mdl_source == "GEFS":
     fpath=f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.f#fhr_in#'
     fpath2=f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.f#fhr_in#'
   else:
