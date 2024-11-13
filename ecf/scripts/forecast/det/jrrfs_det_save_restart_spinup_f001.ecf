@@ -25,7 +25,7 @@ export FHR="%FHR%"
 ############################################################
 # CALL executable job script here
 ############################################################
-/lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/ush/load_modules_run_task.sh save_restart /lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/jobs/JRRFS_SAVE_RESTART
+${HOMErrfs}/ush/load_modules_run_task.sh save_restart ${HOMErrfs}/jobs/JRRFS_SAVE_RESTART
 
 %include <tail.h>
 

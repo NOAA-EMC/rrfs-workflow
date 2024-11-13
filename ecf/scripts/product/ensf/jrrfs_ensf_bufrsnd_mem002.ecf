@@ -25,7 +25,7 @@ export MEMBER_NAME="%MEMBER_NAME%"
 ############################################################
 # CALL executable job script here
 ############################################################
-/lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/ush/load_modules_run_task.sh bufrsnd /lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/jobs/JRRFS_BUFRSND
+${HOMErrfs}/ush/load_modules_run_task.sh bufrsnd ${HOMErrfs}/jobs/JRRFS_BUFRSND
 
 %include <tail.h>
 

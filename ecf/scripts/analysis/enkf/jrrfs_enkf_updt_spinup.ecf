@@ -24,7 +24,7 @@ export CYCLE_TYPE="%CYCLE_TYPE%"
 ############################################################
 # CALL executable job script here
 ############################################################
-/lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/ush/load_modules_run_task.sh enkfupdt /lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/jobs/JRRFS_ANALYSIS_ENKF
+${HOMErrfs}/ush/load_modules_run_task.sh enkfupdt ${HOMErrfs}/jobs/JRRFS_ANALYSIS_ENKF
 
 %include <tail.h>
 

@@ -1,36 +1,3 @@
-extern /prod_clone/primary/00/gfs/v16.3/gfs/atmos/analysis/jgfs_atmos_analysis:release_forecast
-extern /prod_clone/primary/00/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post000
-extern /prod_clone/primary/00/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post078
-extern /prod_clone/primary/00/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post120
-extern /prod_clone/primary/00/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post003
-extern /prod_clone/primary/00/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post006
-extern /prod_clone/primary/00/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post009
-extern /prod_clone/primary/00/rtofs/v2.3/jrtofs_global_analysis
-
-extern /prod_clone/primary/06/gfs/v16.3/gfs/atmos/analysis/jgfs_atmos_analysis:release_forecast
-extern /prod_clone/primary/06/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post000
-extern /prod_clone/primary/06/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post078
-extern /prod_clone/primary/06/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post120
-extern /prod_clone/primary/06/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post003
-extern /prod_clone/primary/06/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post006
-extern /prod_clone/primary/06/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post009
-
-extern /prod_clone/primary/12/gfs/v16.3/gfs/atmos/analysis/jgfs_atmos_analysis:release_forecast
-extern /prod_clone/primary/12/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post000
-extern /prod_clone/primary/12/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post078
-extern /prod_clone/primary/12/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post120
-extern /prod_clone/primary/12/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post003
-extern /prod_clone/primary/12/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post006
-extern /prod_clone/primary/12/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post009
-
-extern /prod_clone/primary/18/gfs/v16.3/gfs/atmos/analysis/jgfs_atmos_analysis:release_forecast
-extern /prod_clone/primary/18/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post000
-extern /prod_clone/primary/18/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post078
-extern /prod_clone/primary/18/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post120
-extern /prod_clone/primary/18/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post003
-extern /prod_clone/primary/18/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post006
-extern /prod_clone/primary/18/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post009
-
 extern /nco_rrfs_dev_11/primary/11/rrfs/v1.0/forecast/det/jrrfs_det_save_restart_f1
 extern /nco_rrfs_dev_11/primary/11/rrfs/v1.0/forecast/det/jrrfs_det_save_restart_spinup_f001
 
@@ -213,6 +180,7 @@ suite nco_rrfs_dev_12
               event 161 release_enkf_prep_cyc_mem028
               event 162 release_enkf_prep_cyc_mem029
               event 163 release_enkf_prep_cyc_mem030
+              event 164 release_firewx_make_lbcs
           endfamily   # fsm
           family init
             family det
@@ -1477,62 +1445,160 @@ suite nco_rrfs_dev_12
                 edit BCGRP '11'
                 edit MEMBER_NAME '030'
             endfamily   # enkf
-
             family ensf
               edit WGF 'ensf'
-              trigger ./enkf==complete and ../fsm/jrrfs_fsm:release_ensf_make_lbcs
+              edit BCGRPNUM '10'
+              trigger  ./enkf==complete and ../fsm/jrrfs_fsm:release_ensf_make_lbcs
               task jrrfs_ensf_make_lbcs_00_mem001
+                edit BCGRP '00'
+                edit MEMBER_NAME '001'
               task jrrfs_ensf_make_lbcs_01_mem001
+                edit BCGRP '01'
+                edit MEMBER_NAME '001'
               task jrrfs_ensf_make_lbcs_02_mem001
+                edit BCGRP '02'
+                edit MEMBER_NAME '001'
               task jrrfs_ensf_make_lbcs_03_mem001
+                edit BCGRP '03'
+                edit MEMBER_NAME '001'
               task jrrfs_ensf_make_lbcs_04_mem001
+                edit BCGRP '04'
+                edit MEMBER_NAME '001'
               task jrrfs_ensf_make_lbcs_05_mem001
+                edit BCGRP '05'
+                edit MEMBER_NAME '001'
               task jrrfs_ensf_make_lbcs_06_mem001
+                edit BCGRP '06'
+                edit MEMBER_NAME '001'
               task jrrfs_ensf_make_lbcs_07_mem001
+                edit BCGRP '07'
+                edit MEMBER_NAME '001'
               task jrrfs_ensf_make_lbcs_08_mem001
+                edit BCGRP '08'
+                edit MEMBER_NAME '001'
               task jrrfs_ensf_make_lbcs_09_mem001
+                edit BCGRP '09'
+                edit MEMBER_NAME '002'
               task jrrfs_ensf_make_lbcs_00_mem002
+                edit BCGRP '00'
+                edit MEMBER_NAME '002'
               task jrrfs_ensf_make_lbcs_01_mem002
+                edit BCGRP '01'
+                edit MEMBER_NAME '002'
               task jrrfs_ensf_make_lbcs_02_mem002
+                edit BCGRP '02'
+                edit MEMBER_NAME '002'
               task jrrfs_ensf_make_lbcs_03_mem002
+                edit BCGRP '03'
+                edit MEMBER_NAME '002'
               task jrrfs_ensf_make_lbcs_04_mem002
+                edit BCGRP '04'
+                edit MEMBER_NAME '002'
               task jrrfs_ensf_make_lbcs_05_mem002
+                edit BCGRP '05'
+                edit MEMBER_NAME '002'
               task jrrfs_ensf_make_lbcs_06_mem002
+                edit BCGRP '06'
+                edit MEMBER_NAME '002'
               task jrrfs_ensf_make_lbcs_07_mem002
+                edit BCGRP '07'
+                edit MEMBER_NAME '002'
               task jrrfs_ensf_make_lbcs_08_mem002
+                edit BCGRP '08'
+                edit MEMBER_NAME '002'
               task jrrfs_ensf_make_lbcs_09_mem002
+                edit BCGRP '09'
+                edit MEMBER_NAME '002'
               task jrrfs_ensf_make_lbcs_00_mem003
+                edit BCGRP '00'
+                edit MEMBER_NAME '003'
               task jrrfs_ensf_make_lbcs_01_mem003
+                edit BCGRP '01'
+                edit MEMBER_NAME '003'
               task jrrfs_ensf_make_lbcs_02_mem003
+                edit BCGRP '02'
+                edit MEMBER_NAME '003'
               task jrrfs_ensf_make_lbcs_03_mem003
+                edit BCGRP '03'
+                edit MEMBER_NAME '003'
               task jrrfs_ensf_make_lbcs_04_mem003
+                edit BCGRP '04'
+                edit MEMBER_NAME '003'
               task jrrfs_ensf_make_lbcs_05_mem003
+                edit BCGRP '05'
+                edit MEMBER_NAME '003'
               task jrrfs_ensf_make_lbcs_06_mem003
+                edit BCGRP '06'
+                edit MEMBER_NAME '003'
               task jrrfs_ensf_make_lbcs_07_mem003
+                edit BCGRP '07'
+                edit MEMBER_NAME '003'
               task jrrfs_ensf_make_lbcs_08_mem003
+                edit BCGRP '08'
+                edit MEMBER_NAME '003'
               task jrrfs_ensf_make_lbcs_09_mem003
+                edit BCGRP '09'
+                edit MEMBER_NAME '003'
               task jrrfs_ensf_make_lbcs_00_mem004
+                edit BCGRP '00'
+                edit MEMBER_NAME '004'
               task jrrfs_ensf_make_lbcs_01_mem004
+                edit BCGRP '01'
+                edit MEMBER_NAME '004'
               task jrrfs_ensf_make_lbcs_02_mem004
+                edit BCGRP '02'
+                edit MEMBER_NAME '004'
               task jrrfs_ensf_make_lbcs_03_mem004
+                edit BCGRP '03'
+                edit MEMBER_NAME '004'
               task jrrfs_ensf_make_lbcs_04_mem004
+                edit BCGRP '04'
+                edit MEMBER_NAME '004'
               task jrrfs_ensf_make_lbcs_05_mem004
+                edit BCGRP '05'
+                edit MEMBER_NAME '004'
               task jrrfs_ensf_make_lbcs_06_mem004
+                edit BCGRP '06'
+                edit MEMBER_NAME '004'
               task jrrfs_ensf_make_lbcs_07_mem004
+                edit BCGRP '07'
+                edit MEMBER_NAME '004'
               task jrrfs_ensf_make_lbcs_08_mem004
+                edit BCGRP '08'
+                edit MEMBER_NAME '004'
               task jrrfs_ensf_make_lbcs_09_mem004
+                edit BCGRP '09'
+                edit MEMBER_NAME '004'
               task jrrfs_ensf_make_lbcs_00_mem005
+                edit BCGRP '00'
+                edit MEMBER_NAME '005'
               task jrrfs_ensf_make_lbcs_01_mem005
+                edit BCGRP '01'
+                edit MEMBER_NAME '005'
               task jrrfs_ensf_make_lbcs_02_mem005
+                edit BCGRP '02'
+                edit MEMBER_NAME '005'
               task jrrfs_ensf_make_lbcs_03_mem005
+                edit BCGRP '03'
+                edit MEMBER_NAME '005'
               task jrrfs_ensf_make_lbcs_04_mem005
+                edit BCGRP '04'
+                edit MEMBER_NAME '005'
               task jrrfs_ensf_make_lbcs_05_mem005
+                edit BCGRP '05'
+                edit MEMBER_NAME '005'
               task jrrfs_ensf_make_lbcs_06_mem005
+                edit BCGRP '06'
+                edit MEMBER_NAME '005'
               task jrrfs_ensf_make_lbcs_07_mem005
+                edit BCGRP '07'
+                edit MEMBER_NAME '005'
               task jrrfs_ensf_make_lbcs_08_mem005
+                edit BCGRP '08'
+                edit MEMBER_NAME '005'
               task jrrfs_ensf_make_lbcs_09_mem005
-
-
+                edit BCGRP '09'
+                edit MEMBER_NAME '005'
             endfamily   # ensf
             family firewx
               edit WGF 'firewx'
@@ -1544,115 +1610,115 @@ suite nco_rrfs_dev_12
               task jrrfs_firewx_make_sfc_climo
                 trigger ./jrrfs_firewx_make_orog==complete
               task jrrfs_firewx_make_ics
-                trigger ./jrrfs_firewx_make_sfc_climo==complete and ../../post/det/jrrfs_det_post_f036_00_00_long==complete
+                trigger ./jrrfs_firewx_make_sfc_climo==complete and ../../product/det/jrrfs_det_prdgen_f042_00_00_long==complete
               task jrrfs_firewx_make_lbcs_00
                 edit BCGRP '00'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_01
                 edit BCGRP '01'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_02
                 edit BCGRP '02'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_03
                 edit BCGRP '03'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_04
                 edit BCGRP '04'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_05
                 edit BCGRP '05'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_06
                 edit BCGRP '06'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_07
                 edit BCGRP '07'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_08
                 edit BCGRP '08'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_09
                 edit BCGRP '09'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_10
                 edit BCGRP '10'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_11
                 edit BCGRP '11'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_12
                 edit BCGRP '12'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_13
                 edit BCGRP '13'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_14
                 edit BCGRP '14'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_15
                 edit BCGRP '15'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_16
                 edit BCGRP '16'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_17
                 edit BCGRP '17'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_18
                 edit BCGRP '18'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_19
                 edit BCGRP '19'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_20
                 edit BCGRP '20'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_21
                 edit BCGRP '21'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_22
                 edit BCGRP '22'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_23
                 edit BCGRP '23'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_24
                 edit BCGRP '24'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_25
                 edit BCGRP '25'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_26
                 edit BCGRP '26'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_27
                 edit BCGRP '27'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_28
                 edit BCGRP '28'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_29
                 edit BCGRP '29'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_30
                 edit BCGRP '30'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_31
                 edit BCGRP '31'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_32
                 edit BCGRP '32'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_33
                 edit BCGRP '33'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_34
                 edit BCGRP '34'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
               task jrrfs_firewx_make_lbcs_35
                 edit BCGRP '35'
-                trigger ./jrrfs_firewx_make_ics==complete
+                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
             endfamily   # firewx
           endfamily     # ics
 
@@ -1878,6 +1944,7 @@ suite nco_rrfs_dev_12
             endfamily   # det
             family enkf
               edit WGF 'enkf'
+              trigger ./det/jrrfs_det_analysis_gsi==complete
               task jrrfs_enkf_updt
                 trigger ../../prep/enkf==complete
               task jrrfs_enkf_radarref
@@ -5586,7 +5653,7 @@ suite nco_rrfs_dev_12
                 trigger ../../post/firewx/jrrfs_firewx_post_f035==complete
               task jrrfs_firewx_prdgen_f036
                 edit FHR '036'
-                trigger ../../post/firewx/jrrfs_firewx_post_f035==complete
+                trigger ../../post/firewx/jrrfs_firewx_post_f036==complete
             endfamily   # firewx
           endfamily     # product
           family clean

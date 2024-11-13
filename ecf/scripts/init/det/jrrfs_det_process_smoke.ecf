@@ -25,7 +25,7 @@ export CYCLE_TYPE="%CYCLE_TYPE%"
 ############################################################
 # CALL executable job script here
 ############################################################
-/lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/ush/load_modules_run_task.sh process_smoke /lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/jobs/JRRFS_PROCESS_SMOKE
+${HOMErrfs}/ush/load_modules_run_task.sh process_smoke ${HOMErrfs}/jobs/JRRFS_PROCESS_SMOKE
 
 %include <tail.h>
 

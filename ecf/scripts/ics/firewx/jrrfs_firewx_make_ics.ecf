@@ -25,7 +25,7 @@ export BCGRPNUM="%BCGRPNUM%"
 ############################################################
 # CALL executable job script here
 ############################################################
-/lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/ush/load_modules_run_task.sh make_ics /lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/jobs/JRRFS_MAKE_ICS
+${HOMErrfs}/ush/load_modules_run_task.sh make_ics ${HOMErrfs}/jobs/JRRFS_MAKE_ICS
 
 %include <tail.h>
 

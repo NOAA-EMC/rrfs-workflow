@@ -1,37 +1,3 @@
-extern /prod_clone/primary/00/gfs/v16.3/gfs/atmos/analysis/jgfs_atmos_analysis:release_forecast
-extern /prod_clone/primary/00/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post000
-extern /prod_clone/primary/00/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post078
-extern /prod_clone/primary/00/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post120
-extern /prod_clone/primary/00/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post003
-extern /prod_clone/primary/00/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post006
-extern /prod_clone/primary/00/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post009
-extern /prod_clone/primary/00/rtofs/v2.3/jrtofs_global_analysis
-
-extern /prod_clone/primary/06/gfs/v16.3/gfs/atmos/analysis/jgfs_atmos_analysis:release_forecast
-extern /prod_clone/primary/06/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post000
-extern /prod_clone/primary/06/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post078
-extern /prod_clone/primary/06/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post120
-extern /prod_clone/primary/06/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post003
-extern /prod_clone/primary/06/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post006
-extern /prod_clone/primary/06/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post009
-
-extern /prod_clone/primary/12/gfs/v16.3/gfs/atmos/analysis/jgfs_atmos_analysis:release_forecast
-extern /prod_clone/primary/12/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post000
-extern /prod_clone/primary/12/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post078
-extern /prod_clone/primary/12/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post120
-extern /prod_clone/primary/12/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post003
-extern /prod_clone/primary/12/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post006
-extern /prod_clone/primary/12/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post009
-
-extern /prod_clone/primary/18/gfs/v16.3/gfs/atmos/analysis/jgfs_atmos_analysis:release_forecast
-extern /prod_clone/primary/18/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post000
-extern /prod_clone/primary/18/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post078
-extern /prod_clone/primary/18/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post120
-extern /prod_clone/primary/18/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post003
-extern /prod_clone/primary/18/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post006
-extern /prod_clone/primary/18/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post009
-
-
 suite nco_rrfs_dev_02
   family primary
     edit rrfs_ver 'v1.0.0'
@@ -403,6 +369,7 @@ suite nco_rrfs_dev_02
             endfamily   # det
             family enkf
               edit WGF 'enkf'
+              trigger ./det/jrrfs_det_analysis_gsi==complete
               task jrrfs_enkf_updt
                 trigger ../../prep/enkf==complete
               task jrrfs_enkf_radarref
