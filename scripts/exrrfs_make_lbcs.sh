@@ -436,6 +436,9 @@ tracers="\"\""
 #-----------------------------------------------------------------------
 #
 thomp_mp_climo_file=""
+if [ "${SDF_USES_THOMPSON_MP}" = "TRUE" ]; then
+  thomp_mp_climo_file="${THOMPSON_MP_CLIMO_FP}"
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -648,7 +651,7 @@ $settings"
   fcst_hhh_FV3LAM=`printf %3.3i $fcst_hhh`
 # copy results to nwges for longer time disk storage.
   mv gfs.bndy.nc ${DATA}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc
-  ln -s ${DATA}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc ${NWGES_DIR}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc
+  cpreq ${DATA}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc ${NWGES_DIR}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc
 
   fi
 done

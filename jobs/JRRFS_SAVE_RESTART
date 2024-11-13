@@ -58,6 +58,8 @@ This is the J-job script for the task that saves restart files to nwges.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
+#export jobid=${jobid:-${taskid}}
+export jobid=${taskid}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
 
@@ -66,22 +68,22 @@ export CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
 export SURFACE_DIR=${SURFACE_DIR:-empty}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then	# EnKF has spinup forecasts
-    export DATA="${DATAROOT}/${RUN}_forecast_spinup_${mem_num}_${envir}_${cyc}"
+    export DATA="${DATAROOT}/${jobid}"
     export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast_spinup"
     if [ "${CYCLE_SUBTYPE}" = "ensinit" ]; then
-      export DATA="${DATAROOT}/${RUN}_forecast_ensinit_${mem_num}_${envir}_${cyc}"
+      export DATA="${DATAROOT}/${jobid}"
       export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast_ensinit"
     fi
   else
-    export DATA="${DATAROOT}/${RUN}_forecast_spinup_${envir}_${cyc}"
+    export DATA="${DATAROOT}/${jobid}"
     export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/forecast_spinup"
   fi
 else
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export DATA="${DATAROOT}/${RUN}_forecast_${mem_num}_${envir}_${cyc}"
+    export DATA="${DATAROOT}/${jobid}"
     export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast"
   else
-    export DATA="${DATAROOT}/${RUN}_forecast_${envir}_${cyc}"
+    export DATA="${DATAROOT}/${jobid}"
     export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/forecast"
   fi
 fi
@@ -90,13 +92,14 @@ mkdir -p "${NWGES_DIR}/RESTART"
 mkdir -p "${NWGES_DIR}/INPUT"
 if [ "${SURFACE_DIR}" != "empty" ]; then
   mkdir -p "${SURFACE_DIR}"
+  cd ${SURFACE_DIR}
 fi
 
-len_ensmem=${#ENSMEM_INDX}
-if [ ${len_ensmem} -le 3 ]; then
-  CYCLE_SUBTYPE="control"
-fi
-cd ${SURFACE_DIR}
+# check this, why we need this????
+#len_ensmem=${#ENSMEM_INDX}
+#if [ ${len_ensmem} -le 3 ]; then
+#  CYCLE_SUBTYPE="control"
+#fi
 
 #-----------------------------------------------------------------------
 # Make sure that fhr is a non-empty string consisting of only digits.  
@@ -114,7 +117,7 @@ fi
 # Execute the script.
 #-----------------------------------------------------------------------
 
-export pgmout="${SURFACE_DIR}/OUTPUT.$$"
+export pgmout="${DATA}/OUTPUT.$$"
 env
 
 ${HOMErrfs}/scripts/exrrfs_save_restart.sh

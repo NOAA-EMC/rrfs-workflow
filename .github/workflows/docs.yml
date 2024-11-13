@@ -6,9 +6,9 @@ name: docs
 
 on:
   push:
-    branches: [ "production/RRFS.v1" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "production/RRFS.v1" ]
+    branches: [ "main" ]
 
 permissions:
   contents: read
@@ -35,11 +35,12 @@ jobs:
         pip install sphinx sphinxcontrib-bibtex sphinx-rtd-theme
     - name: Build docs
       run: |
-        cd rrfs-workflow/doc/UsersGuide
-        sphinx-build -b html source build
+        cd rrfs-workflow/docs
+        #sphinx-build -W --keep-going source build
+        sphinx-build source build
     - uses: actions/upload-artifact@v4
       with:
         name: rrfs-workflow docs
         path: |
-          rrfs-workflow/doc/UsersGuide/build
+          rrfs-workflow/docs/build
         

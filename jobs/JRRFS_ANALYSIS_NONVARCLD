@@ -61,23 +61,10 @@ analysis with RRFS for the specified cycle.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
+#export jobid=${jobid:-${taskid}}
+export jobid=${taskid}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
-
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export workname="nonvar_cldanl_spinup"
-else
-  export workname="nonvar_cldanl"
-fi
-if [ ${MEM_TYPE} = "MEAN" ]; then
-  export jobid=${RUN}_${workname}_ensmean_${envir}_${cyc}
-else
-  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export jobid=${RUN}_${workname}_${mem_num}_${envir}_${cyc}
-  else
-    export jobid=${RUN}_${workname}_${envir}_${cyc}
-  fi
-fi
 
 export DATA=${DATAROOT}/${jobid}
 rm -fr ${DATA}
@@ -95,7 +82,7 @@ if [ ${CYCLE_TYPE} = "spinup" ]; then
   if [ "${MEM_TYPE}" = "MEAN" ]; then
     export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup/ensmean)}
   else
-    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup/${mem_num})}
+    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
   fi
   export COMIN=${COMIN:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
 else

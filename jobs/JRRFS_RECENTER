@@ -59,15 +59,11 @@ with RRFS for the specified cycle.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
+#export jobid=${jobid:-${taskid}}
+export jobid=${taskid}
 
-export mem_num=m$(echo "${ENSMEM_INDX}")
-
+#export mem_num=m$(echo "${ENSMEM_INDX}")
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export jobid=${RUN}_recenter_spinup_${mem_num}_${envir}_${cyc}
-else
-  export jobid=${RUN}_recenter_${mem_num}_${envir}_${cyc}
-fi
 
 export DATA=${DATAROOT}/${jobid}
 rm -fr ${DATA}

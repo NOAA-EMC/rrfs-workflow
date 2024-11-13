@@ -197,10 +197,11 @@ MODULES_RUN_TASK_FP script.
     <nodes>{{ nnodes_make_grid }}:ppn={{ ppn_make_grid }}</nodes>
     <walltime>{{ wtime_make_grid }}</walltime>
     &NODESIZE_ALL;
-    <jobname>&MAKE_GRID_TN;</jobname>
+    <jobname><cyclestr>&RUN;_&MAKE_GRID_TN;_&envir;_@H</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/&MAKE_GRID_TN;.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&MAKE_GRID_TN;_&envir;_@H</cyclestr></value></envar>    
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -222,10 +223,11 @@ MODULES_RUN_TASK_FP script.
     <nodes>{{ nnodes_make_orog }}:ppn={{ ppn_make_orog }}</nodes>
     <walltime>{{ wtime_make_orog }}</walltime>
     &NODESIZE_ALL;
-    <jobname>&MAKE_OROG_TN;</jobname>
+    <jobname><cyclestr>&RUN;_&MAKE_OROG_TN;_&envir;_@H</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/&MAKE_OROG_TN;.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&MAKE_OROG_TN;_&envir;_@H</cyclestr></value></envar>    
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>envir</name><value>&envir;</value></envar>
@@ -250,10 +252,11 @@ MODULES_RUN_TASK_FP script.
     <nodes>{{ nnodes_make_sfc_climo }}:ppn={{ ppn_make_sfc_climo }}</nodes>
     <walltime>{{ wtime_make_sfc_climo }}</walltime>
     &NODESIZE_ALL;
-    <jobname>&MAKE_SFC_CLIMO_TN;</jobname>
+    <jobname><cyclestr>&RUN;_&MAKE_SFC_CLIMO_TN;_&envir;_@H</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/&MAKE_SFC_CLIMO_TN;.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&MAKE_SFC_CLIMO_TN;_&envir;_@H</cyclestr></value></envar>    
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
     <envar><name>envir</name><value>&envir;</value></envar>
@@ -281,10 +284,11 @@ MODULES_RUN_TASK_FP script.
     <walltime>{{ wtime_make_ics }}</walltime>
     &NATIVE_ALL;
     &NODESIZE_ALL;
-    <jobname>&MAKE_ICS_TN;{{ uscore_ensmem_name }}</jobname>
+    <jobname><cyclestr>&RUN;_&MAKE_ICS_TN;_&envir;_@H</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/&MAKE_ICS_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&MAKE_ICS_TN;_&envir;_@H</cyclestr></value></envar>    
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -322,10 +326,11 @@ MODULES_RUN_TASK_FP script.
       <walltime>{{ wtime_make_lbcs }}</walltime>
       &NATIVE_ALL;
       &NODESIZE_ALL;
-      <jobname>&MAKE_LBCS_TN;_#bcgrp#</jobname>
+      <jobname><cyclestr>&RUN;_&MAKE_LBCS_TN;_#bcgrp#_&envir;_@H</cyclestr></jobname>
       <join><cyclestr>&LOGDIR;/&MAKE_LBCS_TN;_@Y@m@d@H_#bcgrp#.log</cyclestr></join>
 
       <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+      <envar><name>taskid</name><value><cyclestr>&RUN;_&MAKE_LBCS_TN;_&envir;_@H</cyclestr></value></envar>
       <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
       <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -366,10 +371,11 @@ MODULES_RUN_TASK_FP script.
     &NATIVE_FORECAST;
     &NODESIZE_ALL;
     <walltime>{{ wtime_forecast }}</walltime>
-    <jobname>&FORECAST_TN;</jobname>
+    <jobname><cyclestr>&RUN;_&FORECAST_TN;_&envir;_@H</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/&FORECAST_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>taskid</name><value><cyclestr>&RUN;_&FORECAST_TN;_&envir;_@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -403,10 +409,11 @@ MODULES_RUN_TASK_FP script.
         &NATIVE_ALL;
         <walltime>{{ wtime_post }}</walltime>
         &NODESIZE_ALL;
-        <jobname>&POST_TN;_f#fhr#</jobname>
+        <jobname><cyclestr>&RUN;_&POST_TN;_&envir;_@H_f#fhr#</cyclestr></jobname>
         <join><cyclestr>&LOGDIR;/&POST_TN;_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
         <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+        <envar><name>taskid</name><value><cyclestr>&RUN;_&POST_TN;_&envir;_@H_f#fhr#</cyclestr></value></envar>
         <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
         <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
         <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
@@ -444,10 +451,11 @@ MODULES_RUN_TASK_FP script.
         &NATIVE_ALL;
         <walltime>{{ wtime_prdgen }}</walltime>
         &NODESIZE_ALL;
-        <jobname>&PRDGEN_TN;_f#fhr#</jobname>
+        <jobname><cyclestr>&RUN;_&PRDGEN_TN;_&envir;_@H_f#fhr#</cyclestr></jobname>
         <join><cyclestr>&LOGDIR;/&PRDGEN_TN;_f#fhr#_@Y@m@d@H.log</cyclestr></join>
 
         <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+        <envar><name>taskid</name><value><cyclestr>&RUN;_&POST_TN;_&envir;_@H_f#fhr#</cyclestr></value></envar>
         <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
         <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
         <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>

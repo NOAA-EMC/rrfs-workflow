@@ -15,7 +15,7 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 
 export FIXam=${FIXam:-${FIXrrfs}/am}
 export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
-export FIXGSI=${FIXrrfs}/gsi
+export FIX_GSI=${FIXrrfs}/gsi
 
 #-----------------------------------------------------------------------
 # Source the variable definitions file and the bash utility functions.
@@ -134,13 +134,13 @@ extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
+#export jobid=${jobid:-${taskid}}
+export jobid=${taskid}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  export jobid=${RUN}_make_ics_${mem_num}_${envir}_${cyc}
   export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/ics"
 else
-  export jobid=${RUN}_make_ics_${envir}_${cyc}
   export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/ics"
 fi
 

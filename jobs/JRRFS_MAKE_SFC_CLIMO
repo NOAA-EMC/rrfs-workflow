@@ -61,7 +61,8 @@ climatology.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
-export jobid=${RUN}_make_sfc_climo_${envir}_${cyc}
+#export jobid=${jobid:-${taskid}}
+export jobid=${taskid}
 
 export DATA=${DATAROOT}/${jobid}
 mkdir -p ${DATA}

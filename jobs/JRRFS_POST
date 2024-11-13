@@ -62,20 +62,19 @@ on the output files corresponding to a specified forecast hour.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
+#export jobid=${jobid:-${taskid}}
+export jobid=${taskid}
 
 export mem_num=m$(echo "${ENSMEM_INDX}")
 
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ ${CYCLE_TYPE} == "spinup" ]; then
   export INPUT_DATA="${DATAROOT}/${RUN}_forecast_spinup_${envir}_${cyc}"
-  jobid=${RUN}_post_spinup_${envir}_${cyc}_f${fhr}
 else
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
     export INPUT_DATA="${DATAROOT}/${RUN}_forecast_${mem_num}_${envir}_${cyc}"
-    jobid=${RUN}_post_${mem_num}_${envir}_${cyc}_f${fhr}
   else
     export INPUT_DATA="${DATAROOT}/${RUN}_forecast_${envir}_${cyc}"
-    jobid=${RUN}_post_${envir}_${cyc}_f${fhr}
   fi
 fi
 

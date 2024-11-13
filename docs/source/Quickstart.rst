@@ -12,32 +12,33 @@ This chapter provides a brief summary of how to build and run the RRFS-Workflow.
 Building RRFS workflow
 ===============================================
 
-   #. Clone the ``dev-sci`` branch of the RRFS-Workflow from GitHub:
+   #. Clone the ``main`` branch of the RRFS-Workflow from GitHub:
 
       .. code-block:: console
 
-         git clone -b dev-sci https://github.com/NOAA-EMC/rrfs-workflow.git
+        git clone https://github.com/NOAA-EMC/rrfs-workflow.git
 
-   #. Check out the external components:
+   #. Move to the sorc directory:
 
       .. code-block:: console
 
-         cd rrfs-workflow/sorc
+        cd rrfs-workflow/sorc
+
+   #. Build the needed executables for the workflow: 
+
+      .. code-block:: console
+
+        ./app_build.sh --extrn --noifi --nogtg
+      The above command uses the ``--extrn`` flag to do the code checkout, the ``--noifi`` flag avoids   building the IFI (icing) library, and the ``--nogtg`` flag avoids building the GTG (turbulence) library.  Most users do not have access to the IFI and GTG codes.
+
+   #. The above command is equal to:
+
+      .. code-block:: console
+            
          ./manage_externals/checkout_externals
+         ./app_build.sh -p=[machine] --noifi --nogtg
 
-   #. Set up the build environment and build the executables:
-
-      .. code-block:: console
-            
-         ./app_build.sh
-
-      Alternatively, the above command can be followed by the platform (machine) name as follows:
-
-      .. code-block:: console
-            
-         ./app_build.sh --platform=<machine>
-
-      where ``<machine>`` is ``wcoss2``, ``hera``, ``jet``, ``orion``, or ``hercules``.
+      where ``<machine>`` is one of ``wcoss2``, ``hera``, ``jet``, ``orion``, or ``hercules``  
 
    #. Move to the home directory (rrfs-workflow):
 
@@ -62,6 +63,7 @@ Engineering Test: Non-DA
 
       .. code-block:: console
          
+         source versions/run.ver
          module use modulefiles
          module load wflow_<machine>
          conda activate workflow_tools
@@ -116,6 +118,7 @@ Engineering Test: DA
 
       .. code-block:: console
          
+         source versions/run.ver
          module use modulefiles
          module load wflow_<machine>
          conda activate workflow_tools
