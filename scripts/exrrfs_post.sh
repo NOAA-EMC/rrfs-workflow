@@ -131,15 +131,19 @@ fi
 dyn_file="${INPUT_DATA}/dynf${fhr}.nc"
 phy_file="${INPUT_DATA}/phyf${fhr}.nc"
 
+SUBH_GEN=0
+
 len_fhr=${#fhr}
 if [ ${len_fhr} -eq 9 ]; then
   post_fhr=${fhr:0:3}
   post_min=${fhr:4:2}
   if [ ${post_min} -lt ${nsout_min} ]; then
-	  echo post_min was ${post_min}
-	  echo nsout_min was ${nsout_min}
     post_min=00
-	  echo post_min now ${post_min}
+	  if [ $post_fhr -le 018 ]
+	  then
+          echo setting SUBH_GEN flag to one
+          SUBH_GEN=1
+	  fi
   fi
 else
   post_fhr=${fhr}
@@ -211,9 +215,6 @@ if [ ${USE_CUSTOM_POST_CONFIG_FILE} = "TRUE" ]; then
     fi
   fi
 
-
-# need something like this - possible to do in post script?
-#  wgrib2 $file -not_if 'ave fcst' | grep -F -f {FIX_UPP}/subh_fields.txt | wgrib2 -i -grib $file 15min_subset_file
 #
   if [ ${post_min} -ge ${nsout_min} ]; then
      CUSTOM_POST_CONFIG_FP="${FIX_UPP}/postxconfig-NT-rrfs_subh.txt"
@@ -384,6 +385,12 @@ fi
 
 if [ -f PRSLEV.GrbF${post_fhr} ]; then
   wgrib2 PRSLEV.GrbF${post_fhr} -set center 7 -grib ${bgdawp} >>$pgmout 2>>errfile
+  if [ $SUBH_GEN = 1 ]
+  then
+# do something here
+  bgdawp_subh=${DATA}/${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}-00-00.${gridname}.grib2
+  wgrib2 ${bgdawp} -not_if 'ave fcst' | grep -F -f ${FIX_UPP}/subh_fields.txt | wgrib2 -i -grib ${bgdawp_subh}  ${bgdawp}
+  fi
 fi
 if [ -f NATLEV.GrbF${post_fhr} ]; then
   wgrib2 NATLEV.GrbF${post_fhr} -set center 7 -grib ${bgrd3d} >>$pgmout 2>>errfile
