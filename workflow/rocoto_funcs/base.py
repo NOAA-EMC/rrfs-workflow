@@ -50,6 +50,7 @@ def header_entities(xmlFile,expdir):
   mesh_name=os.getenv('MESH_NAME','na3km')
   keepdata=os.getenv('KEEPDATA','yes')
   mpi_run_cmd=os.getenv('MPI_RUN_CMD','srun')
+  wgf=os.getenv('WGF','det')
 
   text = f'''
 <!ENTITY ACCOUNT         "{account}">\n\
@@ -66,6 +67,7 @@ def header_entities(xmlFile,expdir):
 <!ENTITY RUN             "rrfs">\n\
 <!ENTITY NET             "{net}">\n\
 <!ENTITY rrfs_ver        "{rrfs_ver}">\n\
+<!ENTITY WGF             "{wgf}">\n\
 
 '''
   xmlFile.write(text)
@@ -76,6 +78,7 @@ def header_entities(xmlFile,expdir):
   <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>\n\
   <envar><name>EXPDIR</name><value>&EXPDIR;</value></envar>\n\
   <envar><name>DATAROOT</name><value><cyclestr>&DATAROOT;/{net}/{rrfs_ver}/{run}.@Y@m@d/@H</cyclestr></value></envar>\n\
+  <envar><name>UNBRELLA_DATA</name><value><cyclestr>&DATAROOT;/{net}/{rrfs_ver}/{run}.@Y@m@d/@H/{wgf}</cyclestr></value></envar>\n\
   <envar><name>COMROOT</name><value>&COMROOT;</value></envar>\n\
   <envar><name>COMINrrfs</name><value>&COMROOT;/{net}/{rrfs_ver}</value></envar>\n\
   <envar><name>COMOUT</name><value><cyclestr>&COMROOT;/{net}/{rrfs_ver}/{run}.@Y@m@d/@H</cyclestr></value></envar>\n\
@@ -87,6 +90,7 @@ def header_entities(xmlFile,expdir):
   <envar><name>KEEPDATA</name><value>{keepdata}</value></envar>\n\
   <envar><name>MPI_RUN_CMD</name><value>{mpi_run_cmd}</value></envar>\n\
   <envar><name>MESH_NAME</name><value>{mesh_name}</value></envar>\n\
+  <envar><name>WGF</name><value>{wgf}</value></envar>\n\
 "\n\
 >\n\
 '''

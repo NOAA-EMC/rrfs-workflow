@@ -30,6 +30,10 @@ if [ -d ${DATA}/${FHR} ]; then # remove the ${DATA}/${FHR} directory if existed
   rm -rf ${DATA}/${FHR}
 fi
 mkdir -p ${DATA}/${FHR}
+
+export umbrella_data=${UNBRELLA_DATA:-${DATAROOT}}
+mkdir -p $umbrella_data/mpassit
+
 #
 #-----------------------------------------------------------------------
 # Define COM directories

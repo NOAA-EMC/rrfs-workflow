@@ -40,7 +40,7 @@ ${cpreq} ${EXECrrfs}/mpassit.x .
 ${MPI_RUN_CMD} ./mpassit.x namelist.mpassit
 # check the status, copy output to COMOUT
 if [[ -s "./mpassit.${timestr}.nc" ]]; then
-  ${cpreq} ${DATA}/${FHR}/mpassit.${timestr}.nc ${COMOUT}${ensindexstr}/mpassit/
+  mv ${DATA}/${FHR}/mpassit.${timestr}.nc ${umbrella_data}${ensindexstr}/mpassit/
 else
   echo "FATAL ERROR: failed to genereate mpassit.${timestr}.nc"
   err_exit

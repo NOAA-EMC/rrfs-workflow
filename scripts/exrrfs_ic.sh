@@ -16,6 +16,8 @@ cd ${DATA}
 #
 if [[ ${prefixin} == *"GFS"* ]]; then
   prefix="GFS"
+elif [[ ${prefixin} == *"GEFS"* ]]; then
+  prefix="GEFS"
 else
   prefix=${prefixin}
 fi
@@ -73,7 +75,7 @@ sed -e "s/@input_stream@/static.nc/" -e "s/@output_stream@/init.nc/" \
 #
 #prepare fix files and ungrib files for init_atmosphere
 #
-ln -snf ${COMINrrfs}/${RUN}.${PDY}/${cyc}${ensindexstr}/ungrib_ic/${prefix}:${start_time:0:13} .
+ln -snf ${umbrella_data}${ensindexstr}/ungrib_ic/${prefix}:${start_time:0:13} .
 ${cpreq} ${FIXrrfs}/meshes/${MESH_NAME}.static.nc static.nc
 ${cpreq} ${FIXrrfs}/graphinfo/${MESH_NAME}.graph.info.part.${NTASKS} .
 
