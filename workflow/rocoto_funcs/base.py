@@ -78,7 +78,7 @@ def header_entities(xmlFile,expdir):
   <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>\n\
   <envar><name>EXPDIR</name><value>&EXPDIR;</value></envar>\n\
   <envar><name>DATAROOT</name><value><cyclestr>&DATAROOT;/{net}/{rrfs_ver}/{run}.@Y@m@d/@H</cyclestr></value></envar>\n\
-  <envar><name>UNBRELLA_DATA</name><value><cyclestr>&DATAROOT;/{net}/{rrfs_ver}/{run}.@Y@m@d/@H/{wgf}</cyclestr></value></envar>\n\
+  <envar><name>UMBRELLA_DATA</name><value><cyclestr>&DATAROOT;/{net}/{rrfs_ver}/{run}.@Y@m@d/@H/{wgf}</cyclestr></value></envar>\n\
   <envar><name>COMROOT</name><value>&COMROOT;</value></envar>\n\
   <envar><name>COMINrrfs</name><value>&COMROOT;/{net}/{rrfs_ver}</value></envar>\n\
   <envar><name>COMOUT</name><value><cyclestr>&COMROOT;/{net}/{rrfs_ver}/{run}.@Y@m@d/@H</cyclestr></value></envar>\n\

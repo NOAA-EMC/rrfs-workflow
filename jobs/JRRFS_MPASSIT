@@ -31,8 +31,8 @@ if [ -d ${DATA}/${FHR} ]; then # remove the ${DATA}/${FHR} directory if existed
 fi
 mkdir -p ${DATA}/${FHR}
 
-export umbrella_data=${UNBRELLA_DATA:-${DATAROOT}}
-mkdir -p $umbrella_data/mpassit
+export UMBRELLA_DATA=${UMBRELLA_DATA:-${DATAROOT}/umbrella}
+mkdir -p ${UMBRELLA_DATA}/mpassit
 
 #
 #-----------------------------------------------------------------------

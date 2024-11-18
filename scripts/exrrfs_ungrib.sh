@@ -88,14 +88,14 @@ export err=$?; err_chk
 outfile="${prefix}:$(date -d "${CDATEout:0:8} ${CDATEout:8:2}" +%Y-%m-%d_%H)"
 if [[ -s ${outfile} ]]; then
   if [[ -z "${ENS_INDEX}" ]]; then
-    mv ${prefix}:* ${umbrella_data}/ungrib_${TYPE}/
-    if [[ "${TYPE}" == "lbc" ]] && [[ ! -d ${umbrella_data}/ungrib_ic  ]]; then
+    mv ${prefix}:* ${UMBRELLA_DATA}/ungrib_${TYPE}/
+    if [[ "${TYPE}" == "lbc" ]] && [[ ! -d ${UMBRELLA_DATA}/ungrib_ic  ]]; then
     # lbc tasks need init.nc, don't know why it is so but we have to leave with this for a while
     # link ungrib_lbc to ungrib_ic so that ic tasks can run and generate init.nc
-      ln -snf ${umbrella_data}/ungrib_lbc ${umbrella_data}/ungrib_ic
+      ln -snf ${UMBRELLA_DATA}/ungrib_lbc ${UMBRELLA_DATA}/ungrib_ic
     fi
   else
-    mv ${prefix}:* ${umbrella_data}/mem${ENS_INDEX}/ungrib_${TYPE}/
+    mv ${prefix}:* ${UMBRELLA_DATA}/mem${ENS_INDEX}/ungrib_${TYPE}/
   fi
 else
   echo "FATAL ERROR: ungrib failed"

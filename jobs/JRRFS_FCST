@@ -31,7 +31,7 @@ if [ -d ${DATA} ]; then # remove the ${DATA} directory if existed
 fi
 mkdir -p ${DATA}
 
-export umbrella_data=${UNBRELLA_DATA:-${DATAROOT}}
+export UMBRELLA_DATA=${UMBRELLA_DATA:-${DATAROOT}/umbrella}
 #
 #-----------------------------------------------------------------------
 # Define COM directories

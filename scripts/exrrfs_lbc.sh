@@ -61,7 +61,7 @@ sed -e "s/@input_stream@/init.nc/" -e "s/@output_stream@/foo.nc/" \
 #
 #prepare fix files and ungrib files for init_atmosphere
 #
-ln -snf ${umbrella_data}${ensindexstr}/ungrib_lbc/${prefix}:${start_time:0:13} .
+ln -snf ${UMBRELLA_DATA}${ensindexstr}/ungrib_lbc/${prefix}:${start_time:0:13} .
 ln -snf ${COMINrrfs}/${RUN}.${PDY}/${cyc}${ensindexstr}/ic/init.nc .
 ${cpreq} ${FIXrrfs}/meshes/${MESH_NAME}.static.nc static.nc
 ${cpreq} ${FIXrrfs}/graphinfo/${MESH_NAME}.graph.info.part.${NTASKS} .
