@@ -388,8 +388,24 @@ if [ -f PRSLEV.GrbF${post_fhr} ]; then
   if [ $SUBH_GEN = 1 ]
   then
 # do something here
-  bgdawp_subh=${DATA}/${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}-00-00.${gridname}.grib2
+  bgdawp_subh_combo=${DATA}/${net4}.t${cyc}z.prslev.${gridspacing}.subh.f${fhr}.${gridname}.grib2
+  bgdawp_subh=${DATA}/PRSLEV.GrbF${fhr}.00
   wgrib2 ${bgdawp} -not_if 'ave fcst' | grep -F -f ${FIX_UPP}/subh_fields.txt | wgrib2 -i -grib ${bgdawp_subh}  ${bgdawp}
+
+  fhrm1tmp="$((10#$fhr-1))"
+  fhrm1=`printf "%02d\n" $fhrm1tmp`
+  echo new fhrm1 is $fhrm1
+  tm15=${DATA}/../rrfs_post_${envir}_${cyc}_f0${fhrm1}-45-00/PRSLEV.GrbF${fhrm1}.45
+  tm30=${DATA}/../rrfs_post_${envir}_${cyc}_f0${fhrm1}-30-00/PRSLEV.GrbF${fhrm1}.30
+  tm45=${DATA}/../rrfs_post_${envir}_${cyc}_f0${fhrm1}-15-00/PRSLEV.GrbF${fhrm1}.15
+
+
+  if [ -e $tm15 -a -e $tm30 -a -e $tm45 ]
+  then
+	  cat $tm45 $tm30 $tm15 $bgdawp_subh > PRSLEV.GrbF${fhr}_subh
+	  wgrib2 PRSLEV.GrbF${fhr}_subh -set center 7 -grib $bgdawp_subh_combo >> $pgmout 2>> errfile
+  fi 
+  
   fi
 fi
 if [ -f NATLEV.GrbF${post_fhr} ]; then
