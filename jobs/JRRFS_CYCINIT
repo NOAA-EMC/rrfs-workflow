@@ -23,17 +23,19 @@ if [[ -z "${ENS_INDEX}" ]]; then
 else
   export RUN="ensrrfs"
 fi
-export jobid=${jobid:-${RUN}_mpassit_${cyc}}
-
+export jobid=${jobid:-${RUN}_cycinit_${cyc}}
 export DATA=${DATA:-${DATAROOT}/${jobid}}
-if [ -d ${DATA}/${FHR} ]; then # remove the ${DATA}/${FHR} directory if existed
-  rm -rf ${DATA}/${FHR}
+
+if [ -d ${DATA} ]; then # remove the ${DATA} directory if existed
+  rm -rf ${DATA}
 fi
-mkdir -p ${DATA}/${FHR}
+mkdir -p ${DATA}
 
 export UMBRELLA_DATA=${UMBRELLA_DATA:-${DATAROOT}/umbrella}
-mkdir -p ${UMBRELLA_DATA}/mpassit
-
+if [ -d ${UMBRELLA_DATA}/cycinit ]; then
+  rm -rf ${UMBRELLA_DATA}/cycinit
+fi
+mkdir -p ${UMBRELLA_DATA}/cycinit
 #
 #-----------------------------------------------------------------------
 # Define COM directories
@@ -46,7 +48,7 @@ export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})
 # Execute the script.
 #----------------------------------------
 export pgmout="${DATA}/OUTPUT.$$"
-${HOMErrfs}/scripts/exrrfs_mpassit.sh
+${HOMErrfs}/scripts/exrrfs_cycinit.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

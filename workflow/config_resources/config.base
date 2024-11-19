@@ -7,7 +7,7 @@ export NODES=${NODES:-"<nodes>1:ppn=1</nodes>"} #the NODES variable has to inclu
 export WALLTIME=${WALLTIME:-"00:30:00"}
 export NATIVE=${NATIVE:-""}
 export MEMORY=${MEMORY:-""}
-export MAXTRIES=${MAXTRIES:-"3"}
+export MAXTRIES=${MAXTRIES:-"1"}
 
 # ioda_bufr
 export NODES_IODA_BUFR=${NODES_IODA_BUFR:-"<nodes>1:ppn=1</nodes>"}
@@ -17,6 +17,14 @@ export NODES_IC=${NODES_IC:-"<nodes>1:ppn=40</nodes>"}
 
 # lbc
 export NODES_LBC=${NODES_LBC:-"<nodes>1:ppn=40</nodes>"}
+
+# cycinit
+export NODES_CYCINIT=${NODES_CYCINIT:-"<nodes>1:ppn=1</nodes>"}
+export WALLTIME_CYCINIT=${WALLTIME_CYCINIT:-"00:10:00"}
+
+# cycbdys
+export NODES_CYCBDYS=${NODES_CYCBDYS:-"<nodes>1:ppn=1</nodes>"}
+export WALLTIME_CYCBDYS=${WALLTIME_CYCBDYS:-"00:30:00"}
 
 # da
 export NODES_DA=${NODES_DA:-"<nodes>1:ppn=40</nodes>"}

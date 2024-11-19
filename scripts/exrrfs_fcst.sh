@@ -23,10 +23,10 @@ begin="YES"
 #  fi
 #done
 if [[ "${begin}" == "YES" ]]; then
-  ${cpreq} ${COMINrrfs}/${RUN}.${PDY}/${cyc}${ensindexstr}/ic/init.nc .
+  ln -snf ${UMBRELLA_DATA}/cycinit/init.nc .
   do_restart='false'
 else
-  ${cpreq} ${COMINrrfs}/${RUN}.${PDY}/${cyc}${ensindexstr}/da/restart.${timestr}.nc .
+  ln -snf ${UMBRELLA_DATA}/cycinit/restart.${timestr}.nc .
   do_restart='true'
 fi
 
@@ -34,7 +34,7 @@ fi
 #offset=$((10#${cyc}%6))
 #CDATElbc=$($NDATE -${offset} ${CDATE})
 CDATElbc=${CDATE}
-${cpreq} ${COMINrrfs}/${RUN}.${CDATElbc:0:8}/${CDATElbc:8:2}${ensindexstr}/lbc/lbc*.nc .
+ln -snf ${UMBRELLA_DATA}/cycbdys/lbc*.nc .
 
 ln -snf ${FIXrrfs}/physics/${PHYSICS_SUITE}/* .
 ln -snf ${FIXrrfs}/meshes/3km_conus.ugwp_oro_data.nc .

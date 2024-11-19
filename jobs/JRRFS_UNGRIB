@@ -60,11 +60,6 @@ export INTERVAL=${INTERVAL:-1}
 #-----------------------------------------------------------------------
 #
 COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-if [[ -z "${ENS_INDEX}" ]]; then
-  mkdir -p ${COMOUT}/ungrib_${TYPE}
-else
-  mkdir -p ${COMOUT}/mem${ENS_INDEX}/ungrib_${TYPE}
-fi
 #
 #----------------------------------------
 # Execute the script.

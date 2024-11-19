@@ -45,12 +45,9 @@ def ic(xmlFile, expdir, do_ensemble=False):
     timedep=f'\n  <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
   dependencies=f'''
   <dependency>
-  <and>{timedep}
-  <or>
-    <taskdep task="ungrib_ic{ensindexstr}"/>
-    <taskdep task="ungrib_lbc{ensindexstr}"/>
-  </or>
-  </and>
+    <and>{timedep}
+      <taskdep task="ungrib_ic{ensindexstr}"/>
+    </and>
   </dependency>'''
   #
   xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"IC",do_ensemble)

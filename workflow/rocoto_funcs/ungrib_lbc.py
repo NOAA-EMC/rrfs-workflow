@@ -78,7 +78,7 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
   datadep=f' '
   for i in range( int(offset), int(length)+int(offset)+1, int(interval) ):
      comin_hr3=str(i).zfill(3)
-     fpath3=fpath.replace('${HHH}', comin_hr3)
+     fpath3=fpath.replace('fHHH', comin_hr3)
      datadep=datadep+f'\n     <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath3}</cyclestr></datadep>'
 
   if do_ensemble:
