@@ -30,6 +30,8 @@ if [ -d ${DATA}/${FHR} ]; then # remove the ${DATA}/${FHR} directory if existed
   rm -rf ${DATA}/${FHR}
 fi
 mkdir -p ${DATA}/${FHR}
+
+export UMBRELLA_DATA=${UMBRELLA_DATA:-${DATAROOT}/umbrella}
 #
 #-----------------------------------------------------------------------
 # Define COM directories

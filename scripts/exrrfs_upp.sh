@@ -14,7 +14,7 @@ if [[ -z "${ENS_INDEX}" ]]; then
 else
   ensindexstr="/mem${ENS_INDEX}"
 fi
-${cpreq} ${COMINrrfs}/${RUN}.${PDY}/${cyc}${ensindexstr}/mpassit/mpassit.${timestr}.nc .
+ln -snf ${UMBRELLA_DATA}${ensindexstr}/mpassit/mpassit.${timestr}.nc .
 ${cpreq} ${FIXrrfs}/upp/* .
 FIXcrtm=${FIXrrfs}/crtm/2.4.0
 while read line; do

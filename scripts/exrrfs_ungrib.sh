@@ -5,36 +5,33 @@ cpreq=${cpreq:-cpreq}
 #
 # find prefix from source
 # 
-prefixin=${EXTRN_MDL_SOURCE:-EXTRN_MDL_SOURCE_not_defined}
-offset=${OFFSET:-3}
+prefixin=${EXTRN_MDL_SOURCE}
+offset=${OFFSET}
 #
 # wildcard match GFS
 #
 if [[ ${prefixin} == *"GFS"* ]]; then
   prefix="GFS"
+elif [[ ${prefixin} == *"GEFS"* ]]; then
+  prefix="GEFS"
 else
   prefix=${prefixin}
 fi
 
 CDATEin=$($NDATE -${offset} ${CDATE}) #CDATE for input external data
-FHRin=$(( 10#${FHR}+10#${offset} )) #FHR for input external data
 
 cd ${DATA}
 ${cpreq} ${FIXrrfs}/ungrib/Vtable.${prefix} Vtable
 #
 if [[ "${prefixin}" == "GFS" ]]; then
-  fstr=$(printf %03d ${FHRin})
-  filea=${COMINgfs}/gfs.${CDATEin:0:8}/${CDATEin:8:2}/gfs.t${CDATEin:8:2}z.pgrb2.0p25.f${fstr}
-  fileb=${COMINgfs}/gfs.${CDATEin:0:8}/${CDATEin:8:2}/gfs.t${CDATEin:8:2}z.pgrb2b.0p25.f${fstr}
-  ls -lth ${filea} ${fileb}
-  cat ${filea} ${fileb} > GRIBFILE.AAA
+  COMIN=${COMINgfs}/gfs.${CDATEin:0:8}/${CDATEin:8:2}
+  NAME_PATTERNa=gfs.t${CDATEin:8:2}z.pgrb2.0p25.fHHH
+  NAME_PATTERNb=gfs.t${CDATEin:8:2}z.pgrb2b.0p25.fHHH
 
 elif [[ "${prefixin}" == "GEFS" ]]; then
-  fstr=$(printf %03d ${FHRin})
-  filea=${COMINgefs}/gefs.${CDATEin:0:8}/${CDATEin:8:2}/pgrb2ap5/gep${ENS_INDEX:1}.t${CDATEin:8:2}z.pgrb2a.0p50.f${fstr}
-  fileb=${COMINgefs}/gefs.${CDATEin:0:8}/${CDATEin:8:2}/pgrb2bp5/gep${ENS_INDEX:1}.t${CDATEin:8:2}z.pgrb2b.0p50.f${fstr}
-  ls -lth ${filea} ${fileb}
-  cat ${filea} ${fileb} > GRIBFILE.AAA
+  COMIN=${COMINgefs}/gefs.${CDATEin:0:8}/${CDATEin:8:2}/pgrb2ap5
+  NAME_PATTERNa=gep${ENS_INDEX:1}.t${CDATEin:8:2}z.pgrb2a.0p50.fHHH
+  NAME_PATTERNb=gep${ENS_INDEX:1}.t${CDATEin:8:2}z.pgrb2b.0p50.fHHH
 
 else
   echo "ungrib PREFIX=${prefix} from xml"
@@ -48,10 +45,19 @@ for fhr in  ${fhr_all}; do
 
   knt=$(( 10#${knt} + 1 ))
   HHH=$(printf %03d ${fhr})
-  NAME_FILE=$(echo "${NAME_PATTERN}" | sed "s/\${HHH}/${HHH}/g")
-  GRIBFILE="${COMIN}/${NAME_FILE}"
   GRIBFILE_LOCAL=$(${USHrrfs}/num_to_GRIBFILE.XXX.sh ${knt})
-  ${cpreq} ${GRIBFILE} ${GRIBFILE_LOCAL}
+  if [[ "${prefixin}" == "GFS" ]] || [[ "${prefixin}" == "GEFS" ]]; then
+    NAME_FILE=$(echo "${NAME_PATTERNa}" | sed "s/fHHH/f${HHH}/g")
+    GRIBFILE="${COMIN}/${NAME_FILE}"
+    ${cpreq} ${GRIBFILE} ${GRIBFILE_LOCAL}
+    NAME_FILE=$(echo "${NAME_PATTERNb}" | sed "s/fHHH/f${HHH}/g")
+    GRIBFILE="${COMIN}/${NAME_FILE}"
+    cat ${GRIBFILE} >> ${GRIBFILE_LOCAL}
+  else
+    NAME_FILE=$(echo "${NAME_PATTERN}" | sed "s/\${HHH}/${HHH}/g")
+    GRIBFILE="${COMIN}/${NAME_FILE}"
+    ${cpreq} ${GRIBFILE} ${GRIBFILE_LOCAL}
+  fi
 done
 
 #
@@ -82,14 +88,14 @@ export err=$?; err_chk
 outfile="${prefix}:$(date -d "${CDATEout:0:8} ${CDATEout:8:2}" +%Y-%m-%d_%H)"
 if [[ -s ${outfile} ]]; then
   if [[ -z "${ENS_INDEX}" ]]; then
-    ${cpreq} ${prefix}:* ${COMOUT}/ungrib_${TYPE}/
-    if [[ "${TYPE}" == "lbc" ]] && [[ ! -d ${COMOUT}/ungrib_ic  ]]; then
+    mv ${prefix}:* ${UMBRELLA_DATA}/ungrib_${TYPE}/
+    if [[ "${TYPE}" == "lbc" ]] && [[ ! -d ${UMBRELLA_DATA}/ungrib_ic  ]]; then
     # lbc tasks need init.nc, don't know why it is so but we have to leave with this for a while
     # link ungrib_lbc to ungrib_ic so that ic tasks can run and generate init.nc
-      ln -snf ${COMOUT}/ungrib_lbc ${COMOUT}/ungrib_ic
+      ln -snf ${UMBRELLA_DATA}/ungrib_lbc ${UMBRELLA_DATA}/ungrib_ic
     fi
   else
-    ${cpreq} ${prefix}:* ${COMOUT}/mem${ENS_INDEX}/ungrib_${TYPE}/
+    mv ${prefix}:* ${UMBRELLA_DATA}/mem${ENS_INDEX}/ungrib_${TYPE}/
   fi
 else
   echo "FATAL ERROR: ungrib failed"

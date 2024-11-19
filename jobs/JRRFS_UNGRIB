@@ -30,19 +30,30 @@ if [ -d ${DATA} ]; then # remove the ${DATA} directory if existed
   rm -rf ${DATA}
 fi
 mkdir -p ${DATA}
+
+export UMBRELLA_DATA=${UMBRELLA_DATA:-${DATAROOT}/umbrella}
+if [ -d ${UMBRELLA_DATA}/ungrib_${TYPE} ]; then
+  rm -rf ${UMBRELLA_DATA}/ungrib_${TYPE}
+fi
+mkdir -p ${UMBRELLA_DATA}/ungrib_${TYPE}
+
 #
 #-----------------------------------------------------------------------
 # Set the parameters for the external model files.
 #-----------------------------------------------------------------------
 #
-#export COMINgfs=${COMINgfs:-$(compath.py $envir/gfs/$gfs_ver)}
-#export COMINgefs=${COMINgefs:-$(compath.py $envir/gefs/$gefs_ver)}
-export COMIN=${SOURCE_BASEDIR:-""}
-export NAME_PATTERN=${NAME_PATTERN:-""}
+export EXTRN_MDL_SOURCE=${EXTRN_MDL_SOURCE:-"GFS"}
+if [[ "${EXTRN_MDL_SOURCE}" == "GFS" ]]; then
+  export COMINgfs=${COMINgfs:-$(compath.py $envir/gfs/$gfs_ver)}
+elif [[ "${EXTRN_MDL_SOURCE}" == "GEFS" ]]; then
+  export COMINgefs=${COMINgefs:-$(compath.py $envir/gefs/$gefs_ver)}
+else
+  export COMIN=${SOURCE_BASEDIR:-"SOURCE_BASEDIR_not_defined"}
+  export NAME_PATTERN=${NAME_PATTERN:-"NAME_PATTERN_not_defined"}
+fi
 export OFFSET=${OFFSET:-0}
 export LENGTH=${LENGTH:-0}
 export INTERVAL=${INTERVAL:-1}
-export EXTRN_MDL_SOURCE=${EXTRN_MDL_SOURCE:-"GFS"}
 #
 #-----------------------------------------------------------------------
 # Define COM directories
