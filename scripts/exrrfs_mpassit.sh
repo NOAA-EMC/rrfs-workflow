@@ -38,7 +38,7 @@ ulimit -a
 source prep_step
 ${cpreq} ${EXECrrfs}/mpassit.x .
 ${MPI_RUN_CMD} ./mpassit.x namelist.mpassit
-# check the status, copy output to COMOUT
+# check the status, copy output to UMBRELLA
 if [[ -s "./mpassit.${timestr}.nc" ]]; then
   mv ${DATA}/${FHR}/mpassit.${timestr}.nc ${UMBRELLA_DATA}${ensindexstr}/mpassit/
 else
