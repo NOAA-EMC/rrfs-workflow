@@ -168,9 +168,11 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
   # for winter 2022  
     #RETRODATAPATH="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs_retro_data"
   # for spring 2023  
-    RETRODATAPATH="/lfs/h2/emc/lam/noscrub/donald.e.lippi/rrfs-stagedata"
+ #   RETRODATAPATH="/lfs/h2/emc/lam/noscrub/donald.e.lippi/rrfs-stagedata"
   #for Feb 2022
 #    RETRODATAPATH="/lfs/h2/emc/da/noscrub/donald.e.lippi/rrfs-stagedata"
+  # for Jan 2024
+    RETRODATAPATH="/lfs/h3/emc/rrfstemp/donald.e.lippi/rrfs-stagedata"
     if [[ ${DO_ENSEMBLE} == "TRUE" ]]; then
       if [[ ${EXTRN_MDL_NAME_ICS} == "GEFS" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_ICS="${RETRODATAPATH}/GEFS/dsg"

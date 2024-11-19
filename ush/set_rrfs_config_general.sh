@@ -87,8 +87,8 @@ elif [[ $MACHINE == "wcoss2" ]] ; then
   fi
   if [[ $MACHINETYPE == "backup" ]] ; then
     QUEUE_DEFAULT="devhigh"
-    QUEUE_FCST="devmax"
-    QUEUE_ANALYSIS="devmax"
+    QUEUE_FCST="devhigh"
+    QUEUE_ANALYSIS="devhigh"
     QUEUE_POST="devhigh"
     QUEUE_PRDGEN="devhigh"
     QUEUE_GRAPHICS="devhigh"
