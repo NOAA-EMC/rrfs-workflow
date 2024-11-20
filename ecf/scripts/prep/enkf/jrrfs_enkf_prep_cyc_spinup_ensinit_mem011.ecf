@@ -27,7 +27,7 @@ module list
 ############################################################
 # CALL executable job script here
 ############################################################
-${HOMErrfs}/ush/load_modules_run_task.sh "run_prepstart" "${HOMErrfs}/jobs/JRRFS_RUN_PREPSTART"
+${HOMErrfs}/ush/load_modules_run_task.sh "prep_cyc" "${HOMErrfs}/jobs/JRRFS_PREP_CYC"
 
 %include <tail.h>
 

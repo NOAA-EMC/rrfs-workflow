@@ -51,7 +51,7 @@ fi
 
 # Layout the default switches
 scan_release_det_prep_cyc="YES"
-scan_release_det_analysis_gsi_input="YES"
+scan_release_det_analysis_gsi="YES"
 scan_release_enkf_prep_cyc="YES"
 scan_release_det_make_ics="NO"
 scan_release_det_make_lbcs="NO"
@@ -68,7 +68,7 @@ scan_release_enkf_make_ics="NO"
 #scan_release_ensf_recenter="NO"
 #scan_release_enkf_save_restart_long="NO"
 #scan_release_ensf_bufrsnd="NO"
-scan_release_enkf_observer_gsi_ensmean_spinup="NO"
+scan_release_enkf_observer_gsi_spinup_ensmean="NO"
 scan_release_enkf_save_restart_spinup="NO"
 scan_release_enkf_save_restart_ensinit="NO"
 
@@ -129,7 +129,7 @@ if [ ${cyc} == "07" ]; then
   scan_release_save_restart_f2="YES"
   scan_release_save_restart_spinup_f001="YES"
   scan_release_enkf_make_ics="YES"
-  scan_release_enkf_observer_gsi_ensmean_spinup="YES"
+  scan_release_enkf_observer_gsi_spinup_ensmean="YES"
   scan_release_enkf_save_restart_spinup="YES"
   scan_release_enkf_save_restart_ensinit="yes"
 fi
@@ -217,7 +217,7 @@ if [ ${cyc} == "19" ]; then
   scan_release_save_restart_f2="YES"
   scan_release_save_restart_spinup_f001="YES"
   scan_release_enkf_make_ics="YES"
-  scan_release_enkf_observer_gsi_ensmean_spinup="YES"
+  scan_release_enkf_observer_gsi_spinup_ensmean="YES"
   scan_release_enkf_save_restart_spinup="YES"
   scan_release_enkf_save_restart_ensinit="yes"
 fi
@@ -302,9 +302,9 @@ while [ $proceed_trigger_scan == "YES" ]; do
     fi
   fi
   #### scan_release_det_make_lbcs
-  #### release_det_analysis_gsi_input
-  if [ ${scan_release_det_analysis_gsi_input} == "YES" ]; then
-    echo "Proceeding with scan_release_det_analysis_gsi_input"
+  #### release_det_analysis_gsi
+  if [ ${scan_release_det_analysis_gsi} == "YES" ]; then
+    echo "Proceeding with scan_release_det_analysis_gsi"
     source_file_found="NO"
     # /lfs/h1/ops/prod/com/obsproc/v1.2/rap.20240610/rap.t00z.prepbufr.tm00
     obsproc_rap_inp_file=$(compath.py obsproc/${obsproc_ver})/rap.${current_PDY_6hr_fmt}/rap.t${current_cyc_6hr_fmt}z.prepbufr.tm00
@@ -328,13 +328,13 @@ while [ $proceed_trigger_scan == "YES" ]; do
       done
     fi
     if [ ${source_file_found} == "YES" ]; then
-      ecflow_client --event release_det_analysis_gsi_input
-      scan_release_det_analysis_gsi_input="NO"
+      ecflow_client --event release_det_analysis_gsi
+      scan_release_det_analysis_gsi="NO"
     else
       proceed_trigger_scan="YES"
     fi
   fi
-  #### release_det_analysis_gsi_input
+  #### release_det_analysis_gsi
   #### release_enkf_make_lbcs
   if [ ${scan_release_enkf_make_lbcs} == "YES" ]; then
     echo "Proceeding with scan_release_enkf_make_lbcs"
@@ -344,7 +344,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
       ecflow_client --event release_enkf_make_lbcs
       scan_release_enkf_make_lbcs="NO"
     else
-      echo "Production realtime gefs grib2 data only retain upto 4 days."
+      echo "Production realtime gefs grib2 data only retain up to 4 days."
       proceed_trigger_scan="YES"
     fi
   fi 
@@ -620,23 +620,23 @@ while [ $proceed_trigger_scan == "YES" ]; do
     fi
   fi
   #### release_enkf_make_ics
-  #### release_enkf_observer_gsi_ensmean_spinup
-  if [ ${scan_release_enkf_observer_gsi_ensmean_spinup} == "YES" ]; then
-    echo "Proceeding with scan_release_enkf_observer_gsi_ensmean_spinup"
+  #### release_enkf_observer_gsi_spinup_ensmean
+  if [ ${scan_release_enkf_observer_gsi_spinup_ensmean} == "YES" ]; then
+    echo "Proceeding with scan_release_enkf_observer_gsi_spinup_ensmean"
     source_file_found="YES"
     obsproc_rap_inp_file=$(compath.py obsproc/${obsproc_ver})/rap.${current_PDY_6hr_fmt}/rap.t${current_cyc_6hr_fmt}z.prepbufr.tm00
     [[ ! -s ${obsproc_rap_inp_file} ]]&& source_file_found="NO"
     if [ ${source_file_found} == "YES" ]; then
-      ecflow_client --event release_enkf_observer_gsi_ensmean_spinup
-      scan_release_enkf_observer_gsi_ensmean_spinup="NO"
+      ecflow_client --event release_enkf_observer_gsi_spinup_ensmean
+      scan_release_enkf_observer_gsi_spinup_ensmean="NO"
     else
       proceed_trigger_scan="YES"
     fi
   fi
-  #### release_enkf_observer_gsi_ensmean_spinup
+  #### release_enkf_observer_gsi_spinup_ensmean
   #### release_enkf_save_restart_spinup
   if [ ${scan_release_enkf_save_restart_spinup} == "YES" ]; then
-    echo "Proceeding with scan_release_enkf_fcst_spinup"
+    echo "Proceeding with scan_release_enkf_save_restart_spinup"
     source_file_found="YES"
     s_v=det
     fg_restart_dirname=forecast_spinup

@@ -26,7 +26,7 @@ module list
 ############################################################
 # CALL executable job script here
 ############################################################
-${HOMErrfs}/ush/load_modules_run_task.sh "run_analysis_gsi" "${HOMErrfs}/jobs/JRRFS_RUN_ANALYSIS"
+${HOMErrfs}/ush/load_modules_run_task.sh "analysis_gsi" "${HOMErrfs}/jobs/JRRFS_ANALYSIS_GSI"
 
 %include <tail.h>
 
