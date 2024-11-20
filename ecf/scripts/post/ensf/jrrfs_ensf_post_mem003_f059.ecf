@@ -26,7 +26,7 @@ export FHR="%FHR%"
 ############################################################
 # CALL executable job script here
 ############################################################
-/lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/ush/load_modules_run_task.sh run_post /lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/jobs/JRRFS_RUN_POST
+${HOMErrfs}/ush/load_modules_run_task.sh post ${HOMErrfs}/jobs/JRRFS_POST
 
 %include <tail.h>
 

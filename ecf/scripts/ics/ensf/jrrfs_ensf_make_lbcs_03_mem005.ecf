@@ -20,11 +20,14 @@ export CDATE="${PDY}${cyc}"
 
 module list
 export WGF="%WGF%"
+export BCGRPNUM="%BCGRPNUM%"
+export MEMBER_NAME="%MEMBER_NAME%"
+export BCGRP="%BCGRP%"
 %include <ensf_make_lbcs_03_mem005_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################
-/lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/ush/load_modules_run_task.sh make_lbcs /lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/jobs/JRRFS_MAKE_LBCS
+${HOMErrfs}/ush/load_modules_run_task.sh make_lbcs ${HOMErrfs}/jobs/JRRFS_MAKE_LBCS
 
 %include <tail.h>
 

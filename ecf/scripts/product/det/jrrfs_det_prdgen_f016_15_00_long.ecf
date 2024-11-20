@@ -4,7 +4,7 @@
 #PBS -q %QUEUE%
 #PBS -A %PROJ%-%PROJENVIR%
 #PBS -l walltime=00:40:00
-#PBS -l select=1:mpiprocs=128:ncpus=128:mem=256G
+#PBS -l select=1:mpiprocs=12:ncpus=12:mem=256G
 #PBS -l place=excl
 #PBS -l debug=true
 
@@ -25,7 +25,7 @@ export FHR="%FHR%"
 ############################################################
 # CALL executable job script here
 ############################################################
-/lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/ush/load_modules_run_task.sh run_prdgen /lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/jobs/JRRFS_RUN_PRDGEN
+${HOMErrfs}/ush/load_modules_run_task.sh prdgen ${HOMErrfs}/jobs/JRRFS_PRDGEN
 
 %include <tail.h>
 

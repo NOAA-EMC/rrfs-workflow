@@ -1,0 +1,32 @@
+#PBS -N rrfs_enkf_process_bufr_spinup_%CYC%
+#PBS -j oe
+#PBS -S /bin/bash
+#PBS -q %QUEUE%
+#PBS -A %PROJ%-%PROJENVIR%
+#PBS -l walltime=00:25:00
+#PBS -l select=1:mpiprocs=1:ncpus=1:mem=20G
+#PBS -l place=excl
+#PBS -l debug=true
+
+model=rrfs
+export cyc="%CYC%"
+%include <head.h>
+%include <envir-p1.h>
+export CDATE="${PDY}${cyc}"
+############################################################
+# Load modules
+############################################################
+
+
+module list
+export WGF="%WGF%"
+%include <enkf_process_bufr_spinup_dev_wire_%CYC%.h>
+############################################################
+# CALL executable job script here
+############################################################
+${HOMErrfs}/ush/load_modules_run_task.sh analysis_gsi ${HOMErrfs}/jobs/JRRFS_PROCESS_BUFR
+
+%include <tail.h>
+
+%manual
+%end
