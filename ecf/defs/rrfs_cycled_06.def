@@ -1491,7 +1491,7 @@ suite nco_rrfs_dev_06
                 edit MEMBER_NAME '001'
               task jrrfs_ensf_make_lbcs_09_mem001
                 edit BCGRP '09'
-                edit MEMBER_NAME '002'
+                edit MEMBER_NAME '001'
               task jrrfs_ensf_make_lbcs_00_mem002
                 edit BCGRP '00'
                 edit MEMBER_NAME '002'
@@ -1937,10 +1937,15 @@ suite nco_rrfs_dev_06
               edit WGF 'ensf'
               trigger ../analysis/enkf==complete
               task jrrfs_ensf_prep_cyc_mem001
+                edit BCGRP 'mem001'
               task jrrfs_ensf_prep_cyc_mem002
+                edit BCGRP 'mem002'
               task jrrfs_ensf_prep_cyc_mem003
+                edit BCGRP 'mem003'
               task jrrfs_ensf_prep_cyc_mem004
+                edit BCGRP 'mem004'
               task jrrfs_ensf_prep_cyc_mem005
+                edit BCGRP 'mem005'
             endfamily   # ensf
           endfamily     # prep
           family analysis
@@ -2098,7 +2103,7 @@ suite nco_rrfs_dev_06
             family det
               edit WGF 'det'
               task jrrfs_det_forecast_long
-                trigger ../../analysis/det==complete
+                trigger ../../analysis/det==complete and ../../prep/det==complete
               task jrrfs_det_save_restart_long_1
                 edit FHR '001'
                 trigger ../../fsm/jrrfs_fsm:release_save_restart_long_1
