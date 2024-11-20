@@ -429,6 +429,7 @@ else
             wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
              -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
              -new_grid_interpolation neighbor \
+	     -if ":(AEMFLX):" -new_grid_interpolation bilinear -fi \
              -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2
           fi
 
