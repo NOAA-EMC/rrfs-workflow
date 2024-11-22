@@ -3,13 +3,13 @@ import os
 from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of fcst --------------------------------------------------------
-def fcst(xmlFile, expdir, do_ensemble=False):
+def cycbdys(xmlFile, expdir, do_ensemble=False):
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={}
   if not do_ensemble:
     metatask=False
     meta_id=''
-    task_id='fcst'
+    task_id='cycbdys'
     cycledefs='prod'
     hrs=os.getenv('PROD_BGN_AT_HRS', '3 15')
     meta_bgn=""
@@ -19,7 +19,7 @@ def fcst(xmlFile, expdir, do_ensemble=False):
     ensstr=""
   else:
     metatask=True
-    meta_id='fcst'
+    meta_id='cycbdys'
     task_id=f'{meta_id}_m#ens_index#'
     cycledefs='ens_prod'
     dcTaskEnv['ENS_INDEX']="#ens_index#"
@@ -40,11 +40,9 @@ def fcst(xmlFile, expdir, do_ensemble=False):
   # Task-specific EnVars beyond the task_common_vars
   fcst_length=os.getenv('FCST_LENGTH','1')
   lbc_interval=os.getenv('LBC_INTERVAL','3')
-  physics_suite=os.getenv('PHYSICS_SUITE','PHYSICS_SUITE_not_defined')
   dcTaskEnv={
     'FCST_LENGTH': f'{fcst_length}',
     'LBC_INTERVAL': f'{lbc_interval}',
-    'PHYSICS_SUITE': f'{physics_suite}',
   }
 
   # dependencies
@@ -72,7 +70,7 @@ def fcst(xmlFile, expdir, do_ensemble=False):
   dependencies=f'''
   <dependency>
   <and>{timedep}
-   <metataskdep metatask="cycbdys{ensindexstr}" cycle_offset="0:00:00"/>
+   <metataskdep metatask="lbc{ensindexstr}" cycle_offset="0:00:00"/>
    <or>
     <and>
       <or>
@@ -94,11 +92,11 @@ def fcst(xmlFile, expdir, do_ensemble=False):
     dependencies=f'''
   <dependency>
   <and>{timedep}
-    <taskdep task="cycbdys{ensindexstr}" cycle_offset="0:00:00"/>
+    <metataskdep metatask="lbc{ensindexstr}" cycle_offset="0:00:00"/>
     <taskdep task="cycinit{ensindexstr}"/>
   </and>
   </dependency>'''
 
   #
-  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"FCST",do_ensemble)
+  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"CYCBDYS",do_ensemble)
 ### end of fcst --------------------------------------------------------

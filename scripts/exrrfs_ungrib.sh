@@ -47,14 +47,14 @@ for fhr in  ${fhr_all}; do
   HHH=$(printf %03d ${fhr})
   GRIBFILE_LOCAL=$(${USHrrfs}/num_to_GRIBFILE.XXX.sh ${knt})
   if [[ "${prefixin}" == "GFS" ]] || [[ "${prefixin}" == "GEFS" ]]; then
-    NAME_FILE=$(echo "${NAME_PATTERNa}" | sed "s/fHHH/f${HHH}/g")
+    NAME_FILE=${NAME_PATTERNa/fHHH/f${HHH}}
     GRIBFILE="${COMIN}/${NAME_FILE}"
     ${cpreq} ${GRIBFILE} ${GRIBFILE_LOCAL}
-    NAME_FILE=$(echo "${NAME_PATTERNb}" | sed "s/fHHH/f${HHH}/g")
+    NAME_FILE=${NAME_PATTERNb/fHHH/f${HHH}}
     GRIBFILE="${COMIN}/${NAME_FILE}"
     cat ${GRIBFILE} >> ${GRIBFILE_LOCAL}
   else
-    NAME_FILE=$(echo "${NAME_PATTERN}" | sed "s/\${HHH}/${HHH}/g")
+    NAME_FILE=${NAME_PATTERN/fHHH/${HHH}}
     GRIBFILE="${COMIN}/${NAME_FILE}"
     ${cpreq} ${GRIBFILE} ${GRIBFILE_LOCAL}
   fi

@@ -8,6 +8,8 @@ from rocoto_funcs.ungrib_ic import ungrib_ic
 from rocoto_funcs.ungrib_lbc import ungrib_lbc
 from rocoto_funcs.ic import ic
 from rocoto_funcs.lbc import lbc
+from rocoto_funcs.cycinit import cycinit
+from rocoto_funcs.cycbdys import cycbdys
 from rocoto_funcs.da import da
 from rocoto_funcs.fcst import fcst
 from rocoto_funcs.ens_da import ens_da
@@ -63,6 +65,8 @@ def setup_xml(HOMErrfs, expdir):
       ungrib_lbc(xmlFile,expdir)
       ic(xmlFile,expdir)
       lbc(xmlFile,expdir)
+      cycinit(xmlFile,expdir)
+      cycbdys(xmlFile,expdir)
       if os.getenv("FCST_ONLY","FALSE").upper()=="FALSE":
         ioda_bufr(xmlFile,expdir)
         da(xmlFile,expdir)
@@ -80,6 +84,8 @@ def setup_xml(HOMErrfs, expdir):
       ungrib_lbc(xmlFile,expdir,do_ensemble=True)
       ic(xmlFile,expdir,do_ensemble=True)
       lbc(xmlFile,expdir,do_ensemble=True)
+      cycinit(xmlFile,expdir,do_ensemble=True)
+      cycbdys(xmlFile,expdir,do_ensemble=True)
       if os.getenv("ENS_FCST_ONLY","FALSE").upper()=="FALSE":
         ens_da(xmlFile,expdir)
       fcst(xmlFile,expdir,do_ensemble=True)
