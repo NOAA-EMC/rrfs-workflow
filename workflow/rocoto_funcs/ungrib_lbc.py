@@ -5,21 +5,30 @@ from rocoto_funcs.base import xml_task, source, get_cascade_env
 ### begin of ungrib_lbc --------------------------------------------------------
 def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
 
+  offset=int(os.getenv('LBC_OFFSET','6'))
+  length=int(os.getenv('LBC_LENGTH','12'))
+  interval=int(os.getenv('LBC_INTERVAL','3'))
+  lbc_ungrib_group_num=int(os.getenv('LBC_UNGRIB_GROUP_NUM','1'))
+
+  extrn_mdl_source=os.getenv('LBC_EXTRN_MDL_NAME','GFS')
+  lbc_source_basedir=os.getenv('LBC_EXTRN_MDL_BASEDIR','')
+  lbc_name_pattern=os.getenv('LBC_EXTRN_MDL_NAME_PATTERN','')
+
   if not do_ensemble:
-    metatask=False
-    meta_id=''
     task_id=f'ungrib_lbc'
     cycledefs='lbc'
-    # metatask (support nested metatasks)
-#    fhr=os.getenv('FCST_LENGTH','12')
-    offset=int(os.getenv('LBC_OFFSET','6'))
-    length=int(os.getenv('LBC_LENGTH','12'))
-    interval=int(os.getenv('LBC_INTERVAL','3'))
+    meta_id=''
     meta_bgn=""
     meta_end=""
-    extrn_mdl_source=os.getenv('LBC_EXTRN_MDL_NAME','GFS')
-    lbc_source_basedir=os.getenv('LBC_EXTRN_MDL_BASEDIR','')
-    lbc_name_pattern=os.getenv('LBC_EXTRN_MDL_NAME_PATTERN','')
+    if lbc_ungrib_group_num > 1:
+      meta_id=f'ungrib_lbc_group'
+      group_indices=''.join(f'{i:02d} ' for i in range(1,int(lbc_ungrib_group_num)+1)).strip()
+      meta_bgn=f'''
+<metatask name="{meta_id}">
+<var name="group_index">{group_indices}</var>
+'''
+      meta_end=f'</metatask>\n'
+      task_id=f'ungrib_lbc_g#group_index#'
   #
   else: # ensemble
     meta_id='ungrib_lbc'
@@ -46,7 +55,7 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     dcTaskEnv['ENS_INDEX']="#ens_index#"
     extrn_mdl_source=os.getenv('ENS_LBC_PREFIX','GEFS')
 
-  # Task-specific EnVars beyond the task_common_vars
+# Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={
     'TYPE': 'lbc',
     'SOURCE_BASEDIR': f'<cyclestr offset="-{offset}:00:00">{lbc_source_basedir}</cyclestr>',
@@ -54,10 +63,14 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
     'OFFSET': f'{offset}',
     'LENGTH': f'{length}',
-    'INTERVAL': f'{interval}',
+    'INTERVAL': f'{interval}'
   }
 
-  # dependencies
+  if lbc_ungrib_group_num > 1:
+    dcTaskEnv['GROUP_INDEX'] = f'#group_index#'
+    dcTaskEnv['GROUP_NUM'] = f'{lbc_ungrib_group_num}'
+
+# dependencies
   COMINgfs=os.getenv("COMINgfs",'COMINgfs_not_defined')
   COMINgefs=os.getenv("COMINgefs",'COMINgefs_not_defined')
   if extrn_mdl_source == "GFS":

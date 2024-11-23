@@ -36,6 +36,8 @@ export LBC_LENGTH=12
 export LBC_INTERVAL=3
 export LBC_EXTRN_MDL_BASEDIR="/public/data/grib/ftp_rap_hyb/7/0/105/0_151987_30"
 export LBC_EXTRN_MDL_NAME_PATTERN="@y@j@H000fHHH"
+export LBC_UNGRIB_GROUP_NUM=2
+export LBC_GROUP_NUM=2
 
 # preempt some resource settings
 export ACCOUNT="rtwrfruc"

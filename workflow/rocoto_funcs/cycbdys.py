@@ -92,7 +92,7 @@ def cycbdys(xmlFile, expdir, do_ensemble=False):
     dependencies=f'''
   <dependency>
   <and>{timedep}
-    <metataskdep metatask="lbc{ensindexstr}" cycle_offset="0:00:00"/>
+    <metataskdep metatask="lbc_group{ensindexstr}" cycle_offset="0:00:00"/>
     <taskdep task="cycinit{ensindexstr}"/>
   </and>
   </dependency>'''

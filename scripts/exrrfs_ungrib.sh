@@ -3,10 +3,9 @@ declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LI
 set -x
 cpreq=${cpreq:-cpreq}
 #
-# find prefix from source
+# find variables from env
 # 
 prefixin=${EXTRN_MDL_SOURCE}
-offset=${OFFSET}
 #
 # wildcard match GFS
 #
@@ -18,7 +17,7 @@ else
   prefix=${prefixin}
 fi
 
-CDATEin=$($NDATE -${offset} ${CDATE}) #CDATE for input external data
+CDATEin=$($NDATE -${OFFSET} ${CDATE}) #CDATE for input external data
 
 cd ${DATA}
 ${cpreq} ${FIXrrfs}/ungrib/Vtable.${prefix} Vtable
@@ -37,9 +36,19 @@ else
   echo "ungrib PREFIX=${prefix} from xml"
 fi
 #
+# find start and end time
+#
+fhr_chunk=$(( (10#${LENGTH}/10#${INTERVAL} + 1)/10#${GROUP_NUM}*10#${INTERVAL} ))
+fhr_begin=$((10#${OFFSET} + (10#${GROUP_INDEX} - 1 )*10#${fhr_chunk} ))
+if [[ 10#${GROUP_INDEX} -eq 10#${GROUP_NUM} ]]; then
+  fhr_end=$(( 10#${OFFSET} + 10#${LENGTH}))
+else
+  fhr_end=$((10#${OFFSET} + (10#${GROUP_INDEX})*10#${fhr_chunk} - 10#${INTERVAL} ))
+fi
+#
 # link all grib2 files with local file name (AAA, AAB, ...)
 #
-fhr_all=$(seq $((10#${OFFSET})) $((10#${INTERVAL})) $(( 10#${OFFSET} + 10#${LENGTH})) )
+fhr_all=$(seq $((10#${fhr_begin})) $((10#${INTERVAL})) $((10#${fhr_end} )) )
 knt=0
 for fhr in  ${fhr_all}; do
 
@@ -68,9 +77,10 @@ if [[ "${MESH_NAME}" == *"3km"*   ]]; then
 else
   dx=12; dy=12
 fi
-CDATEout=$($NDATE $(( 10#${OFFSET} + 10#${LENGTH})) ${CDATEin})
-start_time=$(date -d "${CDATEin:0:8} ${CDATEin:8:2}" +%Y-%m-%d_%H:%M:%S) 
-end_time=$(date -d "${CDATEout:0:8} ${CDATEout:8:2}" +%Y-%m-%d_%H:%M:%S) 
+CDATEbegin=$($NDATE $((10#${fhr_begin})) ${CDATEin})
+CDATEend=$($NDATE $((10#${fhr_end})) ${CDATEin})
+start_time=$(date -d "${CDATEbegin:0:8} ${CDATEbegin:8:2}" +%Y-%m-%d_%H:%M:%S) 
+end_time=$(date -d "${CDATEend:0:8} ${CDATEend:8:2}" +%Y-%m-%d_%H:%M:%S) 
 interval_seconds=$(( ${INTERVAL}*3600 ))
 sed -e "s/@start_time@/${start_time}/" -e "s/@end_time@/${end_time}/" \
     -e "s/@interval_seconds@/${interval_seconds}/" -e "s/@prefix@/${prefix}/" \
@@ -85,7 +95,7 @@ export err=$?; err_chk
 #
 # check the status
 #
-outfile="${prefix}:$(date -d "${CDATEout:0:8} ${CDATEout:8:2}" +%Y-%m-%d_%H)"
+outfile="${prefix}:$(date -d "${CDATEend:0:8} ${CDATEend:8:2}" +%Y-%m-%d_%H)"
 if [[ -s ${outfile} ]]; then
   if [[ -z "${ENS_INDEX}" ]]; then
     mv ${prefix}:* ${UMBRELLA_DATA}/ungrib_${TYPE}/
