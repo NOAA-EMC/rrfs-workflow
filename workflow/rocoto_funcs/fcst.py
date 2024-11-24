@@ -12,6 +12,7 @@ def fcst(xmlFile, expdir, do_ensemble=False):
     task_id='fcst'
     cycledefs='prod'
     hrs=os.getenv('PROD_BGN_AT_HRS', '3 15')
+    fcst_len_hrs_cycls=os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
     meta_bgn=""
     meta_end=""
     RUN='rrfs'
@@ -45,6 +46,7 @@ def fcst(xmlFile, expdir, do_ensemble=False):
     'FCST_LENGTH': f'{fcst_length}',
     'LBC_INTERVAL': f'{lbc_interval}',
     'PHYSICS_SUITE': f'{physics_suite}',
+    'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycls}'
   }
 
   # dependencies

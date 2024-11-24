@@ -42,6 +42,7 @@ export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})
 #----------------------------------------
 # Execute the script.
 #----------------------------------------
+#
 export pgmout="${DATA}/OUTPUT.$$"
 ${HOMErrfs}/scripts/exrrfs_cycbdys.sh
 export err=$?; err_chk

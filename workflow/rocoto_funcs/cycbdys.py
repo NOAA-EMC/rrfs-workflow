@@ -12,6 +12,7 @@ def cycbdys(xmlFile, expdir, do_ensemble=False):
     task_id='cycbdys'
     cycledefs='prod'
     hrs=os.getenv('PROD_BGN_AT_HRS', '3 15')
+    fcst_len_hrs_cycls=os.getenv('FCST_LEN_HRS_CYCLES', '3 15')
     meta_bgn=""
     meta_end=""
     RUN='rrfs'
@@ -43,6 +44,7 @@ def cycbdys(xmlFile, expdir, do_ensemble=False):
   dcTaskEnv={
     'FCST_LENGTH': f'{fcst_length}',
     'LBC_INTERVAL': f'{lbc_interval}',
+    'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycls}'
   }
 
   # dependencies
