@@ -21,11 +21,11 @@ export COMINgfs='/lfs5/BMC/nrtrr/NCO_data/gfs'
 export COMINrap='/lfs5/BMC/nrtrr/NCO_data/rap'
 #
 export FCST_ONLY="true"
-export FCST_ONLY_FREQ=3
-export PROD_BGN_AT_HRS="00 03 06 09 12 15 18 21"
-export FCST_LENGTH=6
-export FCST_LENGTH_LONG=12
-export FCST_LONG_AT_HRS="00 06 12 18"
+export CYC_INTERVAL=3
+export FCST_LENGTH=3
+export FCST_LEN_HRS_CYCLES="06 03 03 03 03 03 06 03 03 03 03 03 06 03 03 03 03 03 06 03 03 03 03 03"
+export HISTORY_INTERVAL=1
+export RESTART_INTERVAL=61
 export IC_EXTRN_MDL_NAME='RAP'
 export IC_OFFSET=0
 export IC_EXTRN_MDL_BASEDIR="/public/data/grib/ftp_rap_hyb/7/0/105/0_794802_32769"
@@ -36,8 +36,8 @@ export LBC_LENGTH=12
 export LBC_INTERVAL=3
 export LBC_EXTRN_MDL_BASEDIR="/public/data/grib/ftp_rap_hyb/7/0/105/0_151987_30"
 export LBC_EXTRN_MDL_NAME_PATTERN="@y@j@H000fHHH"
-export LBC_UNGRIB_GROUP_NUM=2
-export LBC_GROUP_NUM=2
+export LBC_UNGRIB_GROUP_TOTAL_NUM=2
+export LBC_GROUP_TOTAL_NUM=2
 
 # preempt some resource settings
 export ACCOUNT="rtwrfruc"
@@ -49,16 +49,16 @@ export PARTITION2=kjet
 export RESERVATION="rrfsens"
 export RESERVATION2=""
 #
-export STARTTIME_IC="00:55:00"
+export STARTTIME_IC="00:30:00"
 export STARTTIME_LBC="00:00:01"
 export STARTTIME_BUFRIODA="00:00:01"
 export STARTTIME_ENSBE="00:00:01"
 export STARTTIME_DA="00:40:01"
-export STARTTIME_FCST="00:00:01"
+export STARTTIME_FCST="00:45:01"
 export STARTTIME_MPASSIT="00:00:01"
 export STARTTIME_UPP="00:00:01"
-export STARTTIME_CYCINIT="00:45:00"
-export STARTTIME_CYCBDYS="00:45:00"
+export STARTTIME_CYCINIT="00:30:00"
+export STARTTIME_CYCBDYS="00:30:00"
 #
 export NODES_FCST="<nodes>40:ppn=20</nodes>"
 export NODES_IC="<nodes>40:ppn=20</nodes>"
@@ -67,6 +67,7 @@ export NODES_MPASSIT="<nodes>4:ppn=20</nodes>"
 export NODES_UPP="<nodes>4:ppn=20</nodes>"
 #
 export WALLTIME_FCST="4:00:00"
+export WALLTIME_FCST_SAVEOUT="4:00:00"
 
 #
 export KEEPDATA=yes

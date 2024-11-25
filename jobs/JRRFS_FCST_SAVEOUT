@@ -48,7 +48,7 @@ fi
 # Execute the script.
 #----------------------------------------
 export pgmout="${UMBRELLA_DATA}/${jobid}/OUTPUT.$$"
-${HOMErrfs}/scripts/exrrfs_fcst_out.sh
+${HOMErrfs}/scripts/exrrfs_fcst_saveout.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

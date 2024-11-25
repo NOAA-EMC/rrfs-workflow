@@ -8,7 +8,7 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
   offset=int(os.getenv('LBC_OFFSET','6'))
   length=int(os.getenv('LBC_LENGTH','12'))
   interval=int(os.getenv('LBC_INTERVAL','3'))
-  lbc_ungrib_group_num=int(os.getenv('LBC_UNGRIB_GROUP_NUM','1'))
+  lbc_ungrib_group_total_num=int(os.getenv('LBC_UNGRIB_GROUP_TOTAL_NUM','1'))
 
   extrn_mdl_source=os.getenv('LBC_EXTRN_MDL_NAME','GFS')
   lbc_source_basedir=os.getenv('LBC_EXTRN_MDL_BASEDIR','')
@@ -20,9 +20,9 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     meta_id=''
     meta_bgn=""
     meta_end=""
-    if lbc_ungrib_group_num > 1:
+    if lbc_ungrib_group_total_num > 1:
       meta_id=f'ungrib_lbc_group'
-      group_indices=''.join(f'{i:02d} ' for i in range(1,int(lbc_ungrib_group_num)+1)).strip()
+      group_indices=''.join(f'{i:02d} ' for i in range(1,int(lbc_ungrib_group_total_num)+1)).strip()
       meta_bgn=f'''
 <metatask name="{meta_id}">
 <var name="group_index">{group_indices}</var>
@@ -66,9 +66,9 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     'INTERVAL': f'{interval}'
   }
 
-  if lbc_ungrib_group_num > 1:
+  if lbc_ungrib_group_total_num > 1:
     dcTaskEnv['GROUP_INDEX'] = f'#group_index#'
-    dcTaskEnv['GROUP_NUM'] = f'{lbc_ungrib_group_num}'
+    dcTaskEnv['GROUP_TOTAL_NUM'] = f'{lbc_ungrib_group_total_num}'
 
 # dependencies
   COMINgfs=os.getenv("COMINgfs",'COMINgfs_not_defined')

@@ -17,8 +17,8 @@ def lbc(xmlFile, expdir, do_ensemble=False):
     offset=int(os.getenv('LBC_OFFSET','6'))
     length=int(os.getenv('LBC_LENGTH','18'))
     interval=int(os.getenv('LBC_INTERVAL','3'))
-    lbc_group_num=int(os.getenv('LBC_GROUP_NUM','1'))
-    group_indices=''.join(f'{i:02d} ' for i in range(1,int(lbc_group_num)+1)).strip()
+    lbc_group_total_num=int(os.getenv('LBC_GROUP_TOTAL_NUM','1'))
+    group_indices=''.join(f'{i:02d} ' for i in range(1,int(lbc_group_total_num)+1)).strip()
     meta_bgn=f'''
 <metatask name="{meta_id}_group">
 <var name="group_index">{group_indices}</var>'''
@@ -59,7 +59,7 @@ def lbc(xmlFile, expdir, do_ensemble=False):
     'LENGTH': f'{length}',
     'INTERVAL': f'{interval}',
     'GROUP_INDEX': f'#group_index#',
-    'GROUP_NUM': f'{lbc_group_num}'
+    'GROUP_TOTAL_NUM': f'{lbc_group_total_num}'
   }
 
   # dependencies
