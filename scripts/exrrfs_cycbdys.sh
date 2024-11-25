@@ -57,7 +57,6 @@ done
 fhr_all=$(seq 0 $((10#${lbc_interval})) $((10#${fcst_len_hrs_thiscyc} )) )
 
 if [ -r "${checkfile}" ]; then
-  knt=0
   for fhr in  ${fhr_all}; do
     CDATElbc=$($NDATE ${fhr} ${CDATE})
     string_time=$(date -d "${CDATElbc:0:8} ${CDATElbc:8:2}" +%Y-%m-%d_%H.%M.%S)

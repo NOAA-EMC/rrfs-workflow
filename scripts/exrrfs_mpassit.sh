@@ -13,8 +13,17 @@ if [[ -z "${ENS_INDEX}" ]]; then
 else
   ensindexstr="/mem${ENS_INDEX}"
 fi
-${cpreq} ${DATAROOT}${ensindexstr}/${RUN}_fcst_${cyc}/history.${timestr}.nc .
-${cpreq} ${DATAROOT}${ensindexstr}/${RUN}_fcst_${cyc}/diag.${timestr}.nc .
+
+file_history=${UMBRELLA_DATA}${ensindexstr}/${RUN}_fcst_${cyc}/history.${timestr}.nc
+file_diag=${UMBRELLA_DATA}${ensindexstr}/${RUN}_fcst_${cyc}/diag.${timestr}.nc
+if [[ -s ${file_history} ]] && [[ -s ${file_diag} ]]; then
+  ln -s ${file_history} .
+  ln -s ${file_diag} .
+else
+  echo "cannot find history file"
+  exit 1
+fi
+
 ${cpreq} ${FIXrrfs}/mpassit/${MESH_NAME}/* .
 # generate the namelist on the fly
 if [[ "${MESH_NAME}" == "conus12km" ]]; then

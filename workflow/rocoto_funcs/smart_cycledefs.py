@@ -20,9 +20,9 @@ def smart_cycledefs(realtime,realtime_days,retro_period):
   #
   dcCycledef={}
   if os.getenv('FCST_ONLY','FALSE').upper() == "TRUE":
-    freq=int(os.getenv('FCST_ONLY_FREQ',6))
+    freq=int(os.getenv('CYC_INTERVAL',6))
     dcCycledef['ic']=f'{pdy}{hr_bgn}00 {pdy2}{hr_end}00 {freq:02d}:00:00'
-    dcCycledef['lbc']=f'{pdy}{hr_bgn}00 {pdy2}{hr_end}00 03:00:00'
+    dcCycledef['lbc']=f'{pdy}{hr_bgn}00 {pdy2}{hr_end}00 06:00:00'
     dcCycledef['prod']=dcCycledef['ic']
   else:
     if int(hr_bgn) <= 3:

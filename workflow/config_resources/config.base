@@ -33,6 +33,10 @@ export NODES_DA=${NODES_DA:-"<nodes>1:ppn=40</nodes>"}
 export NODES_FCST=${NODES_FCST:-"<nodes>3:ppn=40</nodes>"}
 export WALLTIME_FCST=${WALLTIME_FCST:-"00:50:00"}
 
+# fcst
+export NODES_FCST_OUT=${NODES_FCST_OUT:-"<nodes>1:ppn=1</nodes>"}
+export WALLTIME_FCST_OUT=${WALLTIME_FCST_OUT:-"00:50:00"}
+
 # mpassit
 export NODES_MPASSIT=${NODES_MPASSIT:-"<nodes>2:ppn=40</nodes>"}
 export WALLTIME_MPASSIT=${WALLTIME_MPASSIT:-"00:50:00"}

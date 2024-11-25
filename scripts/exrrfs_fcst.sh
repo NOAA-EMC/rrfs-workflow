@@ -64,7 +64,8 @@ eval "echo \"${file_content}\"" > namelist.atmosphere
 # lbc_interval is defined in the beginning
 restart_interval=${RESTART_INTERVAL:-61}
 history_interval=${HISTORY_INTERVAL:-1}
-diag_interval=${DIAG_INTERVAL:-1}
+#diag_interval=${DIAG_INTERVAL:-1}
+diag_interval=${HISTORY_INTERVAL:-1}
 sed -e "s/@restart_interval@/${restart_interval}/" -e "s/@history_interval@/${history_interval}/" \
     -e "s/@diag_interval@/${diag_interval}/" -e "s/@lbc_interval@/${lbc_interval}/" \
     ${PARMrrfs}/streams.atmosphere_fcst > streams.atmosphere
