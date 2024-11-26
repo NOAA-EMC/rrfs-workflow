@@ -12,7 +12,7 @@ from rocoto_funcs.cycinit import cycinit
 from rocoto_funcs.cycbdys import cycbdys
 from rocoto_funcs.da import da
 from rocoto_funcs.fcst import fcst
-from rocoto_funcs.fcst_saveout import fcst_saveout
+from rocoto_funcs.save_fcst import save_fcst
 from rocoto_funcs.ens_da import ens_da
 from rocoto_funcs.mpassit import mpassit
 from rocoto_funcs.upp import upp
@@ -72,7 +72,7 @@ def setup_xml(HOMErrfs, expdir):
         ioda_bufr(xmlFile,expdir)
         da(xmlFile,expdir)
       fcst(xmlFile,expdir)
-      fcst_saveout(xmlFile,expdir)
+      save_fcst(xmlFile,expdir)
       mpassit(xmlFile,expdir)
       upp(xmlFile,expdir)
       #
@@ -91,7 +91,7 @@ def setup_xml(HOMErrfs, expdir):
       if os.getenv("ENS_FCST_ONLY","FALSE").upper()=="FALSE":
         ens_da(xmlFile,expdir)
       fcst(xmlFile,expdir,do_ensemble=True)
-      fcst_saveout(xmlFile,expdir,do_ensemble=True)
+      save_fcst(xmlFile,expdir,do_ensemble=True)
       mpassit(xmlFile,expdir,do_ensemble=True)
       upp(xmlFile,expdir,do_ensemble=True)
 

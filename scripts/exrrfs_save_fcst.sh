@@ -62,7 +62,7 @@ fi
 #
 #  now check each until the last history is moved
 #
-max_wait_time_sec=12000  # wait for 20 minutes
+max_wait_time_sec=1200  # wait for 20 minutes
 while [[ ${min_file_age} -le ${max_wait_time_sec} ]]; do
 
   sleep 60s

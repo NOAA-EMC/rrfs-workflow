@@ -67,7 +67,7 @@ export NODES_MPASSIT="<nodes>4:ppn=20</nodes>"
 export NODES_UPP="<nodes>4:ppn=20</nodes>"
 #
 export WALLTIME_FCST="4:00:00"
-export WALLTIME_FCST_SAVEOUT="4:00:00"
+export WALLTIME_SAVE_FCST="4:00:00"
 
 #
 export KEEPDATA=yes

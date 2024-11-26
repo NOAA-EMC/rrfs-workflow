@@ -3,13 +3,13 @@ import os
 from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of fcst --------------------------------------------------------
-def fcst_saveout(xmlFile, expdir, do_ensemble=False):
+def save_fcst(xmlFile, expdir, do_ensemble=False):
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={}
   if not do_ensemble:
     metatask=False
     meta_id=''
-    task_id='fcst_saveout'
+    task_id='save_fcst'
     cycledefs='prod'
     hrs=os.getenv('PROD_BGN_AT_HRS', '3 15')
     fcst_len_hrs_cycls=os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
@@ -20,7 +20,7 @@ def fcst_saveout(xmlFile, expdir, do_ensemble=False):
     ensstr=""
   else:
     metatask=True
-    meta_id='fcst_saveout'
+    meta_id='save_fcst'
     task_id=f'{meta_id}_m#ens_index#'
     cycledefs='ens_prod'
     dcTaskEnv['ENS_INDEX']="#ens_index#"
@@ -68,5 +68,5 @@ def fcst_saveout(xmlFile, expdir, do_ensemble=False):
 
 
   #
-  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"FCST_SAVEOUT",do_ensemble)
+  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"SAVE_FCST",do_ensemble)
 ### end of fcst --------------------------------------------------------

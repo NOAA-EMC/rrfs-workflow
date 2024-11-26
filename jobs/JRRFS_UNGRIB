@@ -30,7 +30,7 @@ if [[ -z "${ENS_INDEX}" ]]; then
 else
   export RUN="ensrrfs"
 fi
-if [[ ${GROUP_TOTAL_NUM} -gt 1 ]]; then
+if (( ${GROUP_TOTAL_NUM} > 1 )); then
   export jobid=${jobid:-${RUN}_ungrib_${TYPE}_g${GROUP_INDEX}_${cyc}}
 else
   export jobid=${jobid:-${RUN}_ungrib_${TYPE}_${cyc}}
@@ -43,7 +43,7 @@ fi
 mkdir -p ${DATA}
 
 export UMBRELLA_DATA=${UMBRELLA_DATA:-${DATAROOT}/umbrella}
-if [[ -d ${UMBRELLA_DATA}/ungrib_${TYPE} ]] && [[ ${GROUP_TOTAL_NUM} -eq 1 ]]; then
+if [[ -d ${UMBRELLA_DATA}/ungrib_${TYPE} ]] && (( ${GROUP_TOTAL_NUM} == 1 )); then
   rm -rf ${UMBRELLA_DATA}/ungrib_${TYPE}
 fi
 mkdir -p ${UMBRELLA_DATA}/ungrib_${TYPE}

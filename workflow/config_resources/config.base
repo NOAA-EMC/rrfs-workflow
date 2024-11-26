@@ -34,8 +34,8 @@ export NODES_FCST=${NODES_FCST:-"<nodes>3:ppn=40</nodes>"}
 export WALLTIME_FCST=${WALLTIME_FCST:-"00:50:00"}
 
 # fcst
-export NODES_FCST_SAVEOUT=${NODES_FCST_SAVEOUT:-"<nodes>1:ppn=1</nodes>"}
-export WALLTIME_FCST_SAVEOUT=${WALLTIME_FCST_SAVEOUT:-"00:50:00"}
+export NODES_SAVE_FCST=${NODES_SAVE_FCST:-"<nodes>1:ppn=1</nodes>"}
+export WALLTIME_SAVE_FCST=${WALLTIME_SAVE_FCST:-"00:50:00"}
 
 # mpassit
 export NODES_MPASSIT=${NODES_MPASSIT:-"<nodes>2:ppn=40</nodes>"}
