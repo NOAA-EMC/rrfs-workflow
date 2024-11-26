@@ -85,7 +85,7 @@ with open(EXPin, 'r') as infile, open(EXPout, 'w') as outfile:
     else:
       rm_list=('REALTIME=','REALTIME_DAYS=','RETRO_PERIOD=','RETRO_CYCLETHROTTLE=',
         'RETRO_TASKTHROTTLE=','ACCOUNT','QUEUE','PARTITION','RESERVATION','STARTTIME','NODES','WALLTIME',
-        'FCST_ONLY=','FCST_ONLY_FREQ','DO_DETERMINISTIC','DO_ENSEMBLE',
+        'FCST_ONLY=','CYC_INTERVAL','DO_DETERMINISTIC','DO_ENSEMBLE',
           )
       found=False
       for rmstr in rm_list:
@@ -95,10 +95,10 @@ with open(EXPin, 'r') as infile, open(EXPout, 'w') as outfile:
         outfile.write(line)
   #
   # preempt the PROD_BGN_AT_HRS array if FCST_ONLY
-  if os.getenv('FCST_ONLY','FALSE').upper() == "TRUE":
-    freq=int(os.getenv('FCST_ONLY_FREQ',6))
-    PROD_BGN_AT_HRS=' '.join([f'{hour:02}' for hour in range(0, 24, freq)])
-    outfile.write(f'PROD_BGN_AT_HRS="{PROD_BGN_AT_HRS}"')
+#  if os.getenv('FCST_ONLY','FALSE').upper() == "TRUE":
+#    freq=int(os.getenv('FCST_ONLY_FREQ',6))
+#    PROD_BGN_AT_HRS=' '.join([f'{hour:02}' for hour in range(0, 24, freq)])
+#    outfile.write(f'PROD_BGN_AT_HRS="{PROD_BGN_AT_HRS}"')
 
 setup_xml(HOMErrfs, expdir) 
 #

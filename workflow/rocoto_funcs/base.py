@@ -51,6 +51,7 @@ def header_entities(xmlFile,expdir):
   keepdata=os.getenv('KEEPDATA','yes')
   mpi_run_cmd=os.getenv('MPI_RUN_CMD','srun')
   wgf=os.getenv('WGF','det')
+  cyc_interval=os.getenv('CYC_INTERVAL','3')
 
   text = f'''
 <!ENTITY ACCOUNT         "{account}">\n\
@@ -91,6 +92,7 @@ def header_entities(xmlFile,expdir):
   <envar><name>MPI_RUN_CMD</name><value>{mpi_run_cmd}</value></envar>\n\
   <envar><name>MESH_NAME</name><value>{mesh_name}</value></envar>\n\
   <envar><name>WGF</name><value>{wgf}</value></envar>\n\
+  <envar><name>CYC_INTERVAL</name><value>{cyc_interval}</value></envar>\n\
 "\n\
 >\n\
 '''

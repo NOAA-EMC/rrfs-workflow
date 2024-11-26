@@ -12,6 +12,7 @@ def fcst(xmlFile, expdir, do_ensemble=False):
     task_id='fcst'
     cycledefs='prod'
     hrs=os.getenv('PROD_BGN_AT_HRS', '3 15')
+    fcst_len_hrs_cycls=os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
     meta_bgn=""
     meta_end=""
     RUN='rrfs'
@@ -40,11 +41,16 @@ def fcst(xmlFile, expdir, do_ensemble=False):
   # Task-specific EnVars beyond the task_common_vars
   fcst_length=os.getenv('FCST_LENGTH','1')
   lbc_interval=os.getenv('LBC_INTERVAL','3')
+  history_interval=os.getenv('HISTORY_INTERVAL', '1')
+  restart_interval=os.getenv('RESTART_INTERVAL', '61')
   physics_suite=os.getenv('PHYSICS_SUITE','PHYSICS_SUITE_not_defined')
   dcTaskEnv={
     'FCST_LENGTH': f'{fcst_length}',
     'LBC_INTERVAL': f'{lbc_interval}',
+    'HISTORY_INTERVAL': f'{history_interval}',
+    'RESTART_INTERVAL': f'{restart_interval}',
     'PHYSICS_SUITE': f'{physics_suite}',
+    'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycls}'
   }
 
   # dependencies

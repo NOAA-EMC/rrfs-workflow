@@ -3,16 +3,16 @@ import os
 from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of fcst --------------------------------------------------------
-def cycbdys(xmlFile, expdir, do_ensemble=False):
+def save_fcst(xmlFile, expdir, do_ensemble=False):
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={}
   if not do_ensemble:
     metatask=False
     meta_id=''
-    task_id='cycbdys'
+    task_id='save_fcst'
     cycledefs='prod'
     hrs=os.getenv('PROD_BGN_AT_HRS', '3 15')
-    fcst_len_hrs_cycls=os.getenv('FCST_LEN_HRS_CYCLES', '3 15')
+    fcst_len_hrs_cycls=os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
     meta_bgn=""
     meta_end=""
     RUN='rrfs'
@@ -20,7 +20,7 @@ def cycbdys(xmlFile, expdir, do_ensemble=False):
     ensstr=""
   else:
     metatask=True
-    meta_id='cycbdys'
+    meta_id='save_fcst'
     task_id=f'{meta_id}_m#ens_index#'
     cycledefs='ens_prod'
     dcTaskEnv['ENS_INDEX']="#ens_index#"
@@ -40,31 +40,21 @@ def cycbdys(xmlFile, expdir, do_ensemble=False):
 
   # Task-specific EnVars beyond the task_common_vars
   fcst_length=os.getenv('FCST_LENGTH','1')
-  lbc_interval=os.getenv('LBC_INTERVAL','3')
+  history_interval=os.getenv('HISTORY_INTERVAL', '1')
+  restart_interval=os.getenv('RESTART_INTERVAL', '61')
   dcTaskEnv={
     'FCST_LENGTH': f'{fcst_length}',
-    'LBC_INTERVAL': f'{lbc_interval}',
+    'HISTORY_INTERVAL': f'{history_interval}',
+    'RESTART_INTERVAL': f'{restart_interval}',
     'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycls}'
   }
 
   # dependencies
-  hrs=hrs.split(' ')
-  streqs=""; strneqs=""; first=True
-  for hr in hrs:
-    hr=f"{hr:0>2}"
-    if first:
-      first=False
-      streqs=streqs  +f"        <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
-      strneqs=strneqs+f"        <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
-    else:
-      streqs=streqs  +f"\n        <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
-      strneqs=strneqs+f"\n        <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
-
   timedep=""
   realtime=os.getenv("REALTIME","false")
-  starttime=get_cascade_env(f"STARTTIME_{task_id}".upper())
+  starttime=get_cascade_env(f"STARTTIME_FCST".upper())
   if realtime.upper() == "TRUE":
-    timedep=f'\n   <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+    timedep=f'\n  <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
   #
   DATAROOT=os.getenv("DATAROOT","DATAROOT_NOT_DEFINED")
   NET=os.getenv("NET","NET_NOT_DEFINED")
@@ -72,32 +62,11 @@ def cycbdys(xmlFile, expdir, do_ensemble=False):
   dependencies=f'''
   <dependency>
   <and>{timedep}
-   <metataskdep metatask="lbc{ensindexstr}" cycle_offset="0:00:00"/>
-   <or>
-    <and>
-      <or>
-{streqs}
-      </or>
-      <taskdep task="cycinit{ensindexstr}"/>
-    </and>
-    <and>
-      <and>
-{strneqs}
-      </and>
-      <taskdep task="{ensstr}da"/>
-    </and>
-   </or>
-  </and>
-  </dependency>'''
-  # overwrite dependencies if it is FCST_ONLY
-  if os.getenv('FCST_ONLY','FALSE').upper() == "TRUE":
-    dependencies=f'''
-  <dependency>
-  <and>{timedep}
-    <taskdep task="cycinit{ensindexstr}"/>
+  <datadep age="00:01:00"><cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensindexstr}/&RUN;_fcst_@H/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
   </and>
   </dependency>'''
 
+
   #
-  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"CYCBDYS",do_ensemble)
+  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"SAVE_FCST",do_ensemble)
 ### end of fcst --------------------------------------------------------

@@ -17,13 +17,14 @@ def lbc(xmlFile, expdir, do_ensemble=False):
     offset=int(os.getenv('LBC_OFFSET','6'))
     length=int(os.getenv('LBC_LENGTH','18'))
     interval=int(os.getenv('LBC_INTERVAL','3'))
-    meta_hr= ''.join(f'{i:03d} ' for i in range(0,int(length)+1,int(interval))).strip()
+    lbc_group_total_num=int(os.getenv('LBC_GROUP_TOTAL_NUM','1'))
+    group_indices=''.join(f'{i:02d} ' for i in range(1,int(lbc_group_total_num)+1)).strip()
     meta_bgn=f'''
-<metatask name="{meta_id}">
-<var name="fhr">{meta_hr}</var>'''
+<metatask name="{meta_id}_group">
+<var name="group_index">{group_indices}</var>'''
     meta_end=f'\
 </metatask>\n'
-    task_id=f'{meta_id}_f#fhr#'
+    task_id=f'{meta_id}_g#group_index#'
     ensindexstr=""
   #
   else: #ensemble
@@ -54,7 +55,11 @@ def lbc(xmlFile, expdir, do_ensemble=False):
   dcTaskEnv={
     'EXTRN_MDL_SOURCE': f'{extern_mdl_source}',
     'PHYSICS_SUITE': f'{physics_suite}',
-    'FHR': f'#fhr#',
+    'OFFSET': f'{offset}',
+    'LENGTH': f'{length}',
+    'INTERVAL': f'{interval}',
+    'GROUP_INDEX': f'#group_index#',
+    'GROUP_TOTAL_NUM': f'{lbc_group_total_num}'
   }
 
   # dependencies
@@ -66,7 +71,7 @@ def lbc(xmlFile, expdir, do_ensemble=False):
   dependencies=f'''
   <dependency>
   <and>{timedep}
-  <taskdep task="ungrib_lbc{ensindexstr}"/>
+  <metataskdep metatask="ungrib_lbc_group{ensindexstr}"/>
   <taskdep task="ic{ensindexstr}"/>
   </and>
   </dependency>'''

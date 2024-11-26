@@ -14,15 +14,17 @@ else
   ensindexstr="/mem${ENS_INDEX}"
   lbc_interval=${ENS_LBC_INTERVAL:-3}
 fi
+#
+# find forecst length for this cycle
+#
+fcst_length=${FCST_LENGTH:-1}
+fcst_len_hrs_cycles=${FCST_LEN_HRS_CYCLES:-"01 01"}
+fcst_len_hrs_thiscyc=$(${USHrrfs}/find_fcst_length.sh "${fcst_len_hrs_cycles}" "${cyc}" "${fcst_length}")
+echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
+#
 # determine whether to begin new cycles
-begin="NO"
-begin="YES"
-#for hr in "${array[@]}"; do
-#  if [[ "${cyc}" == "$(printf '%02d' ${hr})" ]]; then
-#    begin="YES"; break
-#  fi
-#done
-if [[ "${begin}" == "YES" ]]; then
+#
+if [[ -r "${UMBRELLA_DATA}/cycinit/init.nc" ]]; then
   ln -snf ${UMBRELLA_DATA}/cycinit/init.nc .
   do_restart='false'
 else
@@ -30,10 +32,9 @@ else
   do_restart='true'
 fi
 
-
-#offset=$((10#${cyc}%6))
-#CDATElbc=$($NDATE -${offset} ${CDATE})
-CDATElbc=${CDATE}
+#
+#  link bdy and fix files
+#
 ln -snf ${UMBRELLA_DATA}/cycbdys/lbc*.nc .
 
 ln -snf ${FIXrrfs}/physics/${PHYSICS_SUITE}/* .
@@ -45,7 +46,7 @@ ln -snf ${FIXrrfs}/stream_list/${PHYSICS_SUITE}/* stream_list/
 # generate the namelist on the fly
 # do_restart already defined in the above
 start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S) 
-run_duration=${FCST_LENGTH:-6}:00:00
+run_duration=${fcst_len_hrs_thiscyc:-1}:00:00
 physics_suite=${PHYSICS_SUITE:-'mesoscale_reference'}
 jedi_da="false" #true
 
@@ -63,7 +64,8 @@ eval "echo \"${file_content}\"" > namelist.atmosphere
 # lbc_interval is defined in the beginning
 restart_interval=${RESTART_INTERVAL:-61}
 history_interval=${HISTORY_INTERVAL:-1}
-diag_interval=${DIAG_INTERVAL:-1}
+#diag_interval=${DIAG_INTERVAL:-1}
+diag_interval=${HISTORY_INTERVAL:-1}
 sed -e "s/@restart_interval@/${restart_interval}/" -e "s/@history_interval@/${history_interval}/" \
     -e "s/@diag_interval@/${diag_interval}/" -e "s/@lbc_interval@/${lbc_interval}/" \
     ${PARMrrfs}/streams.atmosphere_fcst > streams.atmosphere

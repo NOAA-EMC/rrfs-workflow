@@ -59,11 +59,11 @@ def mpassit(xmlFile, expdir, do_ensemble=False):
   DATAROOT=os.getenv("DATAROOT","DATAROOT_NOT_DEFINED")
   NET=os.getenv("NET","NET_NOT_DEFINED")
   VERSION=os.getenv("VERSION","VERSION_NOT_DEFINED")
+  wgf=os.getenv("WGF","WGF_NOT_DEFINED")
   dependencies=f'''
   <dependency>
   <and>{timedep}
-  <datadep age="00:05:00"><cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensindexstr}/&RUN;_fcst_@H/</cyclestr><cyclestr offset="#fhr2#:00:00">diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
-  <datadep age="00:05:00"><cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensindexstr}/&RUN;_fcst_@H/</cyclestr><cyclestr offset="#fhr2#:00:00">history.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+  <datadep age="00:05:00"><cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensindexstr}/{wgf}/&RUN;_fcst_@H/</cyclestr><cyclestr offset="#fhr2#:00:00">diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
   </and>
   </dependency>'''
   #
