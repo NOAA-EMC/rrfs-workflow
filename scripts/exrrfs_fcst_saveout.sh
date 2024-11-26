@@ -73,7 +73,7 @@ while [[ ${min_file_age} -le ${max_wait_time_sec} ]]; do
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S) 
     if [[ -s ${umbrelladir}/diag.${timestr}.nc ]]; then
       file_age=$(date -r ${umbrelladir}/diag.${timestr}.nc +%s)
-      if [[ ${last_file_age} -le ${file_age} ]]; then
+      if (( ${last_file_age} <= ${file_age} )); then
         last_file_age=${file_age}
       fi
     fi
@@ -81,7 +81,7 @@ while [[ ${min_file_age} -le ${max_wait_time_sec} ]]; do
       sleep 10s
       mv ${workdir}/history.${timestr}.nc ${umbrelladir}/.
       mv ${workdir}/diag.${timestr}.nc    ${umbrelladir}/.
-      if [[ ${fhr} -eq ${fcst_len_hrs_thiscyc} ]]; then
+      if (( ${fhr} == ${fcst_len_hrs_thiscyc} )); then
 	echo "Moved the last history file diag.${timestr}.nc. ALL DONE"
 	exit 0
       fi

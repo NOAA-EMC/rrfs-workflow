@@ -19,7 +19,7 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 #-----------------------------------------------------------------------
 #
 export GROUP_INDEX=${GROUP_INDEX:-1}
-export GROUP_NUM=${GROUP_NUM:-1}
+export GROUP_TOTAL_NUM=${GROUP_TOTAL_NUM:-1}
 export OFFSET=${OFFSET:-0}
 export LENGTH=${LENGTH:-0}
 export INTERVAL=${INTERVAL:-1}
