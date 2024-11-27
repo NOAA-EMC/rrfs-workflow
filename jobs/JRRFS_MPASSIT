@@ -31,13 +31,13 @@ if [[ -z "${ENS_INDEX}" ]]; then
 else
   export RUN="ensrrfs"
 fi
-export jobid=${jobid:-${RUN}_mpassit_${cyc}}
+export jobid=${jobid:-${RUN}_mpassit_${GROUP_INDEX}_${cyc}}
 
 export DATA=${DATA:-${DATAROOT}/${jobid}}
-if [ -d ${DATA}_g${GROUP_INDEX} ]; then # remove the ${DATA}/${GROUP_INDEX} directory if existed
-  rm -rf ${DATA}_g${GROUP_INDEX}
+if [ -d ${DATA} ]; then # remove the ${DATA}/${GROUP_INDEX} directory if existed
+  rm -rf ${DATA}
 fi
-mkdir -p ${DATA}_g${GROUP_INDEX}
+mkdir -p ${DATA}
 
 export UMBRELLA_DATA=${UMBRELLA_DATA:-${DATAROOT}/umbrella}
 mkdir -p ${UMBRELLA_DATA}/mpassit

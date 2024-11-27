@@ -82,14 +82,3 @@ if [[ -f './log.atmosphere.0000.err' ]]; then # has to use '-f" as the 0000 err 
   echo "FATAL ERROR: MPAS model run failed"
   err_exit
 fi
-
-# copy output to COMOUT
-CDATEp1=$($NDATE 1 ${CDATE})
-timestr=$(date -d "${CDATEp1:0:8} ${CDATEp1:8:2}" +%Y-%m-%d_%H.%M.%S) 
-if [[ -z "${ENS_INDEX}" ]]; then
-  dstdir="${COMOUT}/fcst/"
-else
-  dstdir="${COMOUT}/mem${ENS_INDEX}/fcst/"
-fi
-${cpreq} ${DATA}/diag.*.nc ${dstdir}
-${cpreq} ${DATA}/history.*.nc ${dstdir}

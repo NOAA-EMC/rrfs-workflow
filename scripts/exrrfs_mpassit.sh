@@ -7,7 +7,7 @@ ulimit -v unlimited
 ulimit -a
 
 cpreq=${cpreq:-cpreq}
-cd ${DATA}_g${GROUP_INDEX}
+cd ${DATA}
 #
 #  cpy excutable and fix files; decide mesh
 #
@@ -59,6 +59,9 @@ group_index=$((10#${GROUP_INDEX}))
 
 for (( ii=0; ii<${num_fhrs}; ii=ii+${group_total_num} )); do
     i=$(( ii + ${group_index} - 1 ))
+    if (( $i >= ${num_fhrs} )); then
+      break
+    fi
 # get forecast hour and string
     fhr=${fhr_all[$i]}
     CDATEp=$($NDATE ${fhr} ${CDATE} )
@@ -67,7 +70,6 @@ for (( ii=0; ii<${num_fhrs}; ii=ii+${group_total_num} )); do
     history_file=${history_dir}/history.${timestr}.nc
     diag_file=${history_dir}/diag.${timestr}.nc
 # wait for file available 
-    check_cyc_num=0
     for (( j=0; j < 20; j=j+1)); do
       if [[ -s ${diag_file} ]]; then
 	break
@@ -88,14 +90,14 @@ for (( ii=0; ii<${num_fhrs}; ii=ii+${group_total_num} )); do
       ${MPI_RUN_CMD} ./mpassit.x namelist.mpassit
 # check the status, copy output to UMBRELLA_DATA
       if [[ -s "./mpassit.${timestr}.nc" ]]; then
-        mv ${DATA}/mpassit.${timestr}.nc ${UMBRELLA_DATA}${ensindexstr}/mpassit/
+        mv ./mpassit.${timestr}.nc ${UMBRELLA_DATA}${ensindexstr}/mpassit/.
         mv namelist.mpassit namelist.mpassit_${fhr}
       else
         echo "FATAL ERROR: failed to genereate mpassit.${timestr}.nc"
         err_exit
       fi
     else
-      echo "FATAL ERROR: cannot find hsitory file at ${timestr}"
+      echo "FATAL ERROR: cannot find history file at ${timestr}"
       err_exit
     fi
 done
