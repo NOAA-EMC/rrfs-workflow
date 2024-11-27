@@ -44,23 +44,23 @@ num_fhrs=${#fhr_all[@]}
 
 for (( ii=0; ii<${num_fhrs}; ii=ii+1 )); do
 
-# get forecast hour and string
+    # get forecast hour and string
     fhr=${fhr_all[$ii]}
     CDATEp=$($NDATE ${fhr} ${CDATE} )
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
 
-# decide the history files
+    # decide the history files
     history_file=${workdir}/history.${timestr}.nc
     diag_file=${workdir}/diag.${timestr}.nc
 
-# wait for file available for 20 min
+    # wait for file available for 20 min
     for (( j=0; j < 20; j=j+1)); do
       if [[ -s ${diag_file} ]]; then
         break
       fi
       sleep 60s
     done
-#
+
     if [[ -s ${diag_file} ]] && [[ -s ${history_file} ]]; then
       sleep 10s
       mv ${history_file} ${umbrelladir}/.

@@ -54,12 +54,12 @@ for (( ii=0; ii<${num_fhrs}; ii=ii+${group_total_num} )); do
     if (( $i >= ${num_fhrs} )); then
       break
     fi
-# get forecast hour and string
+    # get forecast hour and string
     fhr=${fhr_all[$i]}
     CDATEp=$($NDATE ${fhr} ${CDATE} )
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
     timestr2=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H:%M:%S)
-# decide the mpassit files
+    # decide the mpassit files
     mpassit_file=${mpassit_dir}/mpassit.${timestr}.nc
 
     # wait for file available
@@ -69,7 +69,7 @@ for (( ii=0; ii<${num_fhrs}; ii=ii+${group_total_num} )); do
       fi
       sleep 60s
     done
-# run mpassit
+    # run mpassit
     if [[ -s ${mpassit_file} ]] ; then
 
       ln -snf ${mpassit_file} .
@@ -90,10 +90,10 @@ numx=2
 /
 EOF
 
-# run the executable
+      # run the executable
       source prep_step
       ${MPI_RUN_CMD} ./upp.x
-# check the status copy output to COMOUT
+      # check the status copy output to COMOUT
       fhr2=$(printf %02d ${fhr})
       wrfprs="WRFPRS.GrbF${fhr2}"
       wrfnat="WRFNAT.GrbF${fhr2}"
@@ -104,13 +104,13 @@ EOF
       fi
 
       mv itag itag_${fhr2}
-# Append the 2D fields onto the 3D files
+      # Append the 2D fields onto the 3D files
       cat ${wrfprs} ${wrftwo} > ${wrfprs}.tmp
       mv ${wrfprs}.tmp ${wrfprs}
       cat ${wrfnat} ${wrftwo} > ${wrfnat}.two
       mv ${wrfnat}.two ${wrfnat}
 
-# copy products to COMOUT
+      # copy products to COMOUT
       ${cpreq} ${wrfprs} ${COMOUT}${ensindexstr}/upp/${RUN}_prs_${CDATE}_f${fhr2}.grib2
       ${cpreq} ${wrfnat} ${COMOUT}${ensindexstr}/upp/${RUN}_nat_${CDATE}_f${fhr2}.grib2
       ${cpreq} ${wrftwo} ${COMOUT}${ensindexstr}/upp/${RUN}_two_${CDATE}_f${fhr2}.grib2

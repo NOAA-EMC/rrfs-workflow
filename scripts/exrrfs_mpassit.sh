@@ -62,33 +62,33 @@ for (( ii=0; ii<${num_fhrs}; ii=ii+${group_total_num} )); do
     if (( $i >= ${num_fhrs} )); then
       break
     fi
-# get forecast hour and string
+    # get forecast hour and string
     fhr=${fhr_all[$i]}
     CDATEp=$($NDATE ${fhr} ${CDATE} )
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S) 
-# decide the history files   
+    # decide the history files   
     history_file=${history_dir}/history.${timestr}.nc
     diag_file=${history_dir}/diag.${timestr}.nc
-# wait for file available 
+    # wait for file available 
     for (( j=0; j < 20; j=j+1)); do
       if [[ -s ${diag_file} ]]; then
 	break
       fi
       sleep 60s
     done
-# run mpassit
+    # run mpassit
     if [[ -s ${history_file} ]] && [[ -s ${diag_file} ]]; then
       ln -sfn ${history_file} .
       ln -sfn ${diag_file} .
 
-# generate the naemlist on fly
+      # generate the naemlist on fly
       sed -e "s/@timestr@/${timestr}/" -e "s/@nx@/${nx}/" -e "s/@ny@/${ny}/" -e "s/@dx@/${dx}/" \
           -e "s/@ref_lat@/${ref_lat}/" ${PARMrrfs}/namelist.mpassit > namelist.mpassit
 
-# run the executable
+      # run the executable
       source prep_step
       ${MPI_RUN_CMD} ./mpassit.x namelist.mpassit
-# check the status, copy output to UMBRELLA_DATA
+      # check the status, copy output to UMBRELLA_DATA
       if [[ -s "./mpassit.${timestr}.nc" ]]; then
         mv ./mpassit.${timestr}.nc ${UMBRELLA_DATA}${ensindexstr}/mpassit/.
         mv namelist.mpassit namelist.mpassit_${fhr}

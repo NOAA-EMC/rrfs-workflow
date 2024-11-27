@@ -12,7 +12,7 @@ fcst_length=$3
 num_fhrs=${#array[@]}
 if (( $num_fhrs == 24 )); then
   icyc=$((10#${cyc}))
-  if (( $icyc < $num_fhrs )); then
+  if (( ${icyc} < ${num_fhrs} )); then
     thiscyc=${array[$icyc]}
     fcst_len_hrs_thiscyc=$((10#${thiscyc}))
   else
