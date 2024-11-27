@@ -57,7 +57,7 @@ if [[ -s "${workdir}/diag.${timestr}.nc" ]] && [[ -s "${workdir}/history.${times
   first_file_age=$(date -r ${umbrelladir}/diag.${timestr}.nc +%s)
 else
   echo "history files do not exist, something is wrong!"
-  exit 1
+  err_exit
 fi
 #
 #  now check each until the last history is moved

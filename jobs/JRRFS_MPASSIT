@@ -14,6 +14,14 @@ export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 #
 #-----------------------------------------------------------------------
+#  find group and model forecast information
+#-----------------------------------------------------------------------
+#
+export GROUP_INDEX=${GROUP_INDEX:-1}
+export GROUP_TOTAL_NUM=${GROUP_TOTAL_NUM:-1}
+export HISTORY_INTERVAL=${HISTORY_INTERVAL:-1}
+#
+#-----------------------------------------------------------------------
 # Obtain unique process id (pid) and create the run directory (DATA).
 #-----------------------------------------------------------------------
 #
@@ -26,10 +34,10 @@ fi
 export jobid=${jobid:-${RUN}_mpassit_${cyc}}
 
 export DATA=${DATA:-${DATAROOT}/${jobid}}
-if [ -d ${DATA}/${FHR} ]; then # remove the ${DATA}/${FHR} directory if existed
-  rm -rf ${DATA}/${FHR}
+if [ -d ${DATA}_g${GROUP_INDEX} ]; then # remove the ${DATA}/${GROUP_INDEX} directory if existed
+  rm -rf ${DATA}_g${GROUP_INDEX}
 fi
-mkdir -p ${DATA}/${FHR}
+mkdir -p ${DATA}_g${GROUP_INDEX}
 
 export UMBRELLA_DATA=${UMBRELLA_DATA:-${DATAROOT}/umbrella}
 mkdir -p ${UMBRELLA_DATA}/mpassit
