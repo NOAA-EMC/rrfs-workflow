@@ -64,6 +64,6 @@ if [ -r "${checkfile}" ]; then
   done
 else
   echo "Cannot find boundary file: ${checkfile}"
-  exit 1
+  err_exit
 fi
 
