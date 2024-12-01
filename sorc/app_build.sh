@@ -29,8 +29,8 @@ OPTIONS
       build without GTG (default is true, this option turns it off)
   --noifi
       build without IFI (default is true, this option turns it off)
-  --paralstart
-      build module with enabled parallel start (default is off)
+  --noparalstart
+      do not build module with enabled parallel start (default is on)
   --extrn
       check out external components
   --continue
@@ -128,7 +128,7 @@ BUILD_JOBS=4
 EXTRN=false
 NOGTG=false
 NOIFI=false
-PARALSTART=false
+PARALSTART=true
 REMOVE=false
 CONTINUE=false
 VERBOSE=false
@@ -175,7 +175,7 @@ while :; do
     --extrn=?*|--extrn=) usage_error "$1 argument ignored." ;;
     --nogtg) NOGTG=true ;;
     --noifi) NOIFI=true ;;
-    --paralstart) PARALSTART=true ;;
+    --noparalstart) PARALSTART=false ;;
     --remove) REMOVE=true ;;
     --remove=?*|--remove=) usage_error "$1 argument ignored." ;;
     --continue) CONTINUE=true ;;
@@ -257,11 +257,11 @@ fi
 if [ "${NOIFI}" = true ]; then
   BUILD_IFI="off"
 fi
-ENABLE_PARALLELRESTART="off"
-ENABLE_RRFS_WAR="on"
-if [ "${PARALSTART}" = true ]; then
-  ENABLE_PARALLELRESTART="on"
-  ENABLE_RRFS_WAR="off"
+ENABLE_PARALLELRESTART="on"
+ENABLE_RRFS_WAR="off"
+if [ "${PARALSTART}" = false ]; then
+  ENABLE_PARALLELRESTART="off"
+  ENABLE_RRFS_WAR="on"
 fi
 
 # check out external components specified in External.cfg
