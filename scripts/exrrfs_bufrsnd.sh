@@ -119,7 +119,7 @@ OUTTYP=netcdf
 model=FV3S
 
 INCR=01
-FHRLIM=60
+FHRLIM=84
 
 let NFILE=1
 
@@ -136,7 +136,7 @@ startd=$YYYY$MM$DD
 startdate=$CYCLE
 
 STARTDATE=${YYYY}-${MM}-${DD}_${cyc}:00:00
-endtime=$(date +%Y%m%d%H -d "${START_DATE} +60 hours")
+endtime=$(date +%Y%m%d%H -d "${START_DATE} +84 hours")
 
 YYYY=`echo $endtime | cut -c1-4`
 MM=`echo $endtime | cut -c5-6`
@@ -374,7 +374,7 @@ SNOUTF   = ${outfilbase}.snd
 SFOUTF   = ${outfilbase}.sfc+
 SNPRMF   = snrrfs.prm
 SFPRMF   = sfrrfs.prm
-TIMSTN   = 61/1600
+TIMSTN   = 85/2000
 r
 
 exit
