@@ -1,9 +1,28 @@
 <streams>
+<immutable_stream name="invariant"
+                  type="input"
+                  precision="single"
+                  filename_template="invariant.nc"
+                  io_type="pnetcdf,cdf5"
+                  input_interval="initial_only" />
+
 <immutable_stream name="input"
                   type="input"
                   filename_template="init.nc"
                   io_type="pnetcdf,cdf5"
                   input_interval="initial_only" />
+
+<immutable_stream name="da_state"
+                  type="output"
+                  precision="single"
+                  clobber_mode="truncate"
+                  filename_template="mpasout.$Y-$M-$D_$h.$m.$s.nc"
+                  packages="jedi_da"
+                  io_type="pnetcdf,cdf5"
+                  output_interval="1:00:00" />
+        <var name="pressure" />
+        <var name="uReconstructZonal" />
+        <var name="uReconstructMeridional" />
 
 <immutable_stream name="restart"
                   type="input;output"
@@ -17,6 +36,7 @@
         type="output"
         filename_template="history.$Y-$M-$D_$h.$m.$s.nc"
         io_type="pnetcdf,cdf5"
+        clobber_mode="replace_files"
         output_interval="@history_interval@:00:00" >
         <file name="stream_list/stream_list.atmosphere.output"/>
 </stream>
@@ -40,7 +60,7 @@
 
 <immutable_stream name="iau"
                   type="input"
-                  filename_template="conus12km.AmB.$Y-$M-$D_$h.$m.$s.nc"
+                  filename_template="AmB.$Y-$M-$D_$h.$m.$s.nc"
                   filename_interval="none"
                   packages="iau"
                   input_interval="initial_only" />
@@ -55,6 +75,6 @@
 
 <immutable_stream name="ugwp_oro_data_in"
                   type="input"
-                  filename_template="3km_conus.ugwp_oro_data.nc"
+                  filename_template="ugwp_oro_data.nc"
                   input_interval="initial_only" />
 </streams>

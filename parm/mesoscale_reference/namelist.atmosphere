@@ -33,7 +33,8 @@
 /
 &printout
     config_print_global_minmax_vel = true
-    config_print_detailed_minmax_vel = false
+    config_print_detailed_minmax_vel = true
+    config_print_global_minmax_sca = true
 /
 &IAU
     config_IAU_option = 'off'

@@ -32,11 +32,9 @@ start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
 end_time=${start_time}
 case ${MESH_NAME} in
   conus12km)
-    nvertlevels=55
     nsoillevels=4
     ;;
   conus3km)
-    nvertlevels=59
     nsoillevels=9
     ;;
   *)
@@ -45,9 +43,12 @@ case ${MESH_NAME} in
     ;;
 esac
 
+zeta_levels=${FIXrrfs}/meshes/L65.txt
+
 if [[ "${prefix}" == "RAP" || "${prefix}" == "HRRR" ]]; then
   nfglevels=51
   nfgsoillevels=9
+  zeta_levels=${FIXrrfs}/meshes/L62.txt
 elif  [[ "${prefix}" == "RRFS" ]]; then
   nfglevels=66
   nfgsoillevels=9
@@ -58,8 +59,12 @@ elif  [[ "${prefix}" == "GEFS" ]]; then
   nfglevels=32
   nfgsoillevels=4
 fi
+
+echo ${zeta_levels}
+ztop=$(tail -1 ${zeta_levels})
+nvertlevels=$(( $(wc -l < ${zeta_levels}) - 1 ))
+
 interval_seconds=3600 # just a place holder as we use metatask to run lbc hour by hour
-zeta_levels=${FIXrrfs}/meshes/L60.txt
 decomp_file_prefix="${MESH_NAME}.graph.info.part."
 #
 physics_suite=${PHYSICS_SUITE:-'PHYSICS_SUITE_not_defined'}

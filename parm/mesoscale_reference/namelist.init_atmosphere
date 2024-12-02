@@ -13,11 +13,11 @@
     config_nfgsoillevels = ${nfgsoillevels}
 /
 &data_sources
-    config_geog_data_path = ''
+    config_geog_data_path = '/mnt/lfs5/BMC/wrfruc/HRRRv5/geog/'
     config_met_prefix = '${prefix}'
     config_sfc_prefix = 'SST'
     config_fg_interval = ${interval_seconds}
-    config_landuse_data = 'MODIFIED_IGBP_MODIS_NOAH'
+    config_landuse_data = 'MODIFIED_IGBP_MODIS_NOAH_15s'
     config_topo_data = 'GMTED2010'
     config_vegfrac_data = 'MODIS'
     config_albedo_data = 'MODIS'
@@ -26,13 +26,14 @@
     config_use_spechumd = false
 /
 &vertical_grid
-    config_ztop = 30000.0
+    config_ztop = ${ztop}
     config_nsmterrain = 1
     config_smooth_surfaces = true
     config_dzmin = 0.3
     config_nsm = 30
     config_tc_vertical_grid = true
     config_blend_bdy_terrain = true
+    config_specified_zeta_levels = '${zeta_levels}'
 /
 &interpolation_control
     config_extrap_airtemp = 'lapse-rate'
@@ -40,6 +41,7 @@
 &preproc_stages
     config_static_interp = false
     config_native_gwd_static = false
+    config_native_gwd_gsl_static = false
     config_vertical_grid = true
     config_met_interp = true
     config_input_sst = false
