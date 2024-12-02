@@ -17,7 +17,7 @@
     config_met_prefix = '${prefix}'
     config_sfc_prefix = 'SST'
     config_fg_interval = ${interval_seconds}
-    config_landuse_data = 'MODIFIED_IGBP_MODIS_NOAH_15s'
+    config_landuse_data = 'MODIFIED_IGBP_MODIS_NOAH'
     config_topo_data = 'GMTED2010'
     config_vegfrac_data = 'MODIS'
     config_albedo_data = 'MODIS'
