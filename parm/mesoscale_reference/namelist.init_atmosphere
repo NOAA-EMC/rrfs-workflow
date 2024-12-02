@@ -13,7 +13,7 @@
     config_nfgsoillevels = ${nfgsoillevels}
 /
 &data_sources
-    config_geog_data_path = '/mnt/lfs5/BMC/wrfruc/HRRRv5/geog/'
+    config_geog_data_path = ''
     config_met_prefix = '${prefix}'
     config_sfc_prefix = 'SST'
     config_fg_interval = ${interval_seconds}
