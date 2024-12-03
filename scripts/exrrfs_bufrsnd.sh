@@ -112,7 +112,9 @@ cyc=$hh
 mkdir -p $DATA/bufrpost
 cd $DATA/bufrpost
 
-cpreq -p ${FIX_BUFRSND}/${PREDEF_GRID_NAME}/rrfs_profdat regional_profdat
+NSTAT=2000
+
+cpreq -p ${FIX_BUFRSND}/${PREDEF_GRID_NAME}/rrfs_profdat.${NSTAT} regional_profdat
 
 OUTTYP=netcdf
 
@@ -224,7 +226,6 @@ do
     err_exit "ABORTING due to bad model selection for this script."
   fi
 
-  NSTAT=2000
   datestr=`date`
   echo top of loop after found needed log file for $fhr at $datestr
 
