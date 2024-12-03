@@ -68,7 +68,7 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
   realtime=os.getenv("REALTIME","false")
   starttime=get_cascade_env(f"STARTTIME_{task_id}".upper())
   if realtime.upper() == "TRUE":
-    timedep=f'\n   <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+    timedep=f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
   #
   comin_hr=str(int(offset)).zfill(3)
   fpath3=fpath.replace('fHHH', comin_hr)
