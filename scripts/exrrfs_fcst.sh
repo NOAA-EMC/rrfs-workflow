@@ -38,7 +38,7 @@ fi
 ln -snf ${UMBRELLA_DATA}/cycbdys/lbc*.nc .
 
 ln -snf ${FIXrrfs}/physics/${PHYSICS_SUITE}/* .
-ln -snf ${FIXrrfs}/meshes/3km_conus.ugwp_oro_data.nc ./ugwp_oro_data.nc
+ln -snf ${FIXrrfs}/meshes/${MESH_NAME}.ugwp_oro_data.nc ./ugwp_oro_data.nc
 ln -snf ${FIXrrfs}/meshes/${MESH_NAME}.invariant.nc_L65 ./invariant.nc
 mkdir -p graphinfo stream_list
 ln -snf ${FIXrrfs}/graphinfo/* graphinfo/
