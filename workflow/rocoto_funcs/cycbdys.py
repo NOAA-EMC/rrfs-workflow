@@ -94,7 +94,7 @@ def cycbdys(xmlFile, expdir, do_ensemble=False):
     dependencies=f'''
   <dependency>
   <and>{timedep}
-    <taskdep task="cycinit{ensindexstr}"/>
+   <taskdep task="cycinit{ensindexstr}"/>
   </and>
   </dependency>'''
 
