@@ -16,6 +16,11 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
     meta_end=""
     ic_source_basedir=os.getenv('IC_EXTRN_MDL_BASEDIR','MDL_BASEDIR_not_defined')
     ic_name_pattern=os.getenv('IC_EXTRN_MDL_NAME_PATTERN','NAME_PATTERN_not_defined')
+    ic_name_pattern_b=os.getenv('IC_EXTRN_MDL_NAME_PATTERN_b','')
+    if ic_name_pattern_b == '':
+      merge=False
+    else:
+      merge=True
     offset=int(os.getenv('IC_OFFSET','6'))
     net=os.getenv('NET','3')
     rrfs_ver=os.getenv('VERSION','v2.0.0')
@@ -41,6 +46,7 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
     'TYPE': 'ic',
     'SOURCE_BASEDIR': f'<cyclestr offset="-{offset}:00:00">{ic_source_basedir}</cyclestr>',
     'NAME_PATTERN': f'<cyclestr offset="-{offset}:00:00">{ic_name_pattern}</cyclestr>',
+    'NAME_PATTERN_b': f'<cyclestr offset="-{offset}:00:00">{ic_name_pattern_b}</cyclestr>',
     'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
     'OFFSET': f'{offset}',
   }
@@ -55,6 +61,8 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
     fpath2=f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.f{offset:>03}'
   else:
     fpath=f'{ic_source_basedir}/{ic_name_pattern}'
+    if merge :
+      fpath2=f'{ic_source_basedir}/{ic_name_pattern_b}'
 
   timedep=""
   realtime=os.getenv("REALTIME","false")
@@ -65,6 +73,9 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
   comin_hr=str(int(offset)).zfill(3)
   fpath3=fpath.replace('fHHH', comin_hr)
   datadep=f'   <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath3}</cyclestr></datadep>'
+  if merge :
+       fpath4=fpath2.replace('fHHH', comin_hr)
+       datadep=datadep+f'\n     <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath4}</cyclestr></datadep>'
   if do_ensemble:
     datadep=datadep+f'\n  <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath2}</cyclestr></datadep>'
   dependencies=f'''

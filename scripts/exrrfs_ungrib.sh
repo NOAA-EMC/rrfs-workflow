@@ -66,6 +66,11 @@ for fhr in  ${fhr_all}; do
     NAME_FILE=${NAME_PATTERN/fHHH/${HHH}}
     GRIBFILE="${COMIN}/${NAME_FILE}"
     ${cpreq} ${GRIBFILE} ${GRIBFILE_LOCAL}
+    if [[ ! -z "${NAME_PATTERN_b}" ]]; then
+      NAME_FILE=${NAME_PATTERN_b/fHHH/${HHH}}
+      GRIBFILE="${COMIN}/${NAME_FILE}"
+      cat ${GRIBFILE} >> ${GRIBFILE_LOCAL}
+    fi
   fi
 done
 

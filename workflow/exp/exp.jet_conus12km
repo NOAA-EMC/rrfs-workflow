@@ -1,18 +1,50 @@
 #!/user/bin/env bash
 # Aloha! This file is to setup some top level experiment options
-#
-export OPSROOT=/lfs5/BMC/nrtrr/NCO_dirs
+
 export NET=rrfs                    # rrfs, rtma, 
 export MESH_NAME=conus12km         # conus12km, conus3km, atl3km, etc
-export EXP_NAME=${MESH_NAME}
-export EXPDIR=/home/role.rtrr/RRFS/${VERSION}/${EXP_NAME}
-export COMROOT=${OPSROOT}/${EXP_NAME}/com      # task input and output data as well as logs
-export DATAROOT=${OPSROOT}/${EXP_NAME}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
-export VERSION=1.0.1
-export TAG=c1v01
+export WGF="det"   # working group function = "det", "enkf", "ensf", "firewx"
+export EXP_NAME=rrfs${WGF}
+export VERSION=v2.0.2
+export TAG=c3v202
+export OPSROOT=/lfs5/BMC/nrtrr/NCO_dirs
+export EXPDIR=${OPSROOT}/${EXP_NAME}
+export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
+export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
 #
-export REALTIME=true      # true, false
-export REALTIME_DAYS=90   # eg. 90 means to do real-time runs for 90 days
+export REALTIME=false     # true, false
+export REALTIME_DAYS=2   # eg. 90 means to do real-time runs for 90 days
+#
+### preempt some settings for conus3km realtime runs on jet
+export PHYSICS_SUITE="mesoscale_reference"   # mesoscale_reference, convection_permitting
+#export COMINgfs='/lfs5/BMC/nrtrr/NCO_data/gfs'
+export COMINgfs='/lfs5/BMC/wrfruc/Chunhua.Zhou/w4/data/GFS/from_aws'
+export COMINrap='/lfs5/BMC/nrtrr/NCO_data/rap'
+export COMINgefs="/lfs5/BMC/wrfruc/Chunhua.Zhou/w4/data/GEFS"
+#
+export FCST_ONLY="true"
+export CYC_INTERVAL=3
+export FCST_LENGTH=3
+export FCST_LEN_HRS_CYCLES="12 03 03 03 03 03 12 03 03 03 03 03 12 03 03 03 03 03 12 03 03 03 03 03"
+export HISTORY_INTERVAL=1
+export RESTART_INTERVAL=61
+export MPASSIT_GROUP_TOTAL_NUM=2
+export UPP_GROUP_TOTAL_NUM=2
+export IC_EXTRN_MDL_NAME='GFSretro'
+export IC_OFFSET=5
+export IC_EXTRN_MDL_BASEDIR="${COMINgfs}/gfs.@Y@m@d/@H"
+export IC_EXTRN_MDL_NAME_PATTERN="gfs.t@Hz.pgrb2.0p25.ffHHH"
+export IC_EXTRN_MDL_NAME_PATTERN_b="gfs.t@Hz.pgrb2b.0p25.ffHHH"
+export LBC_EXTRN_MDL_NAME='GFSretro'
+export LBC_OFFSET=5
+export LBC_LENGTH=6
+export LBC_INTERVAL=3
+export LBC_EXTRN_MDL_BASEDIR="${COMINgfs}/gfs.@Y@m@d/@H"
+export LBC_EXTRN_MDL_NAME_PATTERN="gfs.t@Hz.pgrb2.0p25.ffHHH"
+export LBC_EXTRN_MDL_NAME_PATTERN_b="gfs.t@Hz.pgrb2b.0p25.ffHHH"
+export LBC_UNGRIB_GROUP_TOTAL_NUM=2
+export LBC_GROUP_TOTAL_NUM=2
+export RETRO_PERIOD='2024052623-2024052623'
 #
 export ACCOUNT="rtwrfruc"
 export ACCOUNT2="nrtrr"
