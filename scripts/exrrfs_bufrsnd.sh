@@ -155,7 +155,7 @@ cd $DATA/bufrpost
 
 export tmmark=tm00
 
-NSTAT=2000
+NSTAT=1850
 
 cp $PARMfv3/${PREDEF_GRID_NAME}/rrfs_profdat.${NSTAT} regional_profdat
 
@@ -431,7 +431,7 @@ SNOUTF   = ${outfilbase}.snd
 SFOUTF   = ${outfilbase}.sfc+
 SNPRMF   = snrrfs.prm
 SFPRMF   = sfrrfs.prm
-TIMSTN   = 85/2000
+TIMSTN   = 85/1850
 r
 
 exit
