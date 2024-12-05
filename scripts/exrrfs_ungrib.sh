@@ -5,9 +5,18 @@ cpreq=${cpreq:-cpreq}
 #
 # find variables from env
 # 
-prefix=${EXTRN_MDL_SOURCE}
-
 CDATEin=$($NDATE -${OFFSET} ${CDATE}) #CDATE for input external data
+if [[ "${EXTRN_MDL_SOURCE}" == "GFS_NCO" ]]; then
+  SOURCE_BASEDIR=${COMINgfs}/gfs.${CDATEin:0:8}/${CDATEin:8:2}
+  NAME_PATTERN=gfs.t${CDATEin:8:2}z.pgrb2.0p25.fHHH
+  NAME_PATTERN_B=gfs.t${CDATEin:8:2}z.pgrb2b.0p25.fHHH
+
+elif [[ "${prefixin}" == "GEFS" ]]; then
+  SOURCE_BASEDIR=${COMINgefs}/gefs.${CDATEin:0:8}/${CDATEin:8:2}/pgrb2ap5
+  NAME_PATTERN=gep${ENS_INDEX:1}.t${CDATEin:8:2}z.pgrb2a.0p50.fHHH
+  NAME_PATTERN_B=gep${ENS_INDEX:1}.t${CDATEin:8:2}z.pgrb2b.0p50.fHHH
+fi
+prefix=${EXTRN_MDL_SOURCE%_NCO} # strip out the tailing '_NCO' text if any
 
 cd ${DATA}
 ${cpreq} ${FIXrrfs}/ungrib/Vtable.${prefix} Vtable
@@ -31,13 +40,13 @@ for fhr in  ${fhr_all}; do
   HHH=$(printf %03d ${fhr})
   GRIBFILE_LOCAL=$(${USHrrfs}/num_to_GRIBFILE.XXX.sh ${knt})
   NAME_FILE=${NAME_PATTERN/fHHH/${HHH}}
-  GRIBFILE="${COMIN}/${NAME_FILE}"
+  GRIBFILE="${SOURCE_BASEDIR}/${NAME_FILE}"
   ${cpreq} ${GRIBFILE} ${GRIBFILE_LOCAL}
 
   # if NAME_PATTERN_B is defined and non-empty
   if [ -n "${NAME_PATTERN_B+x}" ] && [ -n "${NAME_PATTERN_B}" ]; then
     NAME_FILE=${NAME_PATTERN_B/fHHH/${HHH}}
-    GRIBFILE="${COMIN}/${NAME_FILE}"
+    GRIBFILE="${SOURCE_BASEDIR}/${NAME_FILE}"
     cat ${GRIBFILE} >> ${GRIBFILE_LOCAL}
   fi
 done

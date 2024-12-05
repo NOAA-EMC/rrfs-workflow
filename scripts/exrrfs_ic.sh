@@ -2,11 +2,10 @@
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]${id}: '
 set -x
 cpreq=${cpreq:-cpreq}
+prefix=${EXTRN_MDL_SOURCE%_NCO} # strip out the tailing '_NCO' text if any
 if [[ -z "${ENS_INDEX}" ]]; then
-  prefix=${EXTRN_MDL_SOURCE:-IC_EXTRN_MDL_SOURCE_not_defined}
   ensindexstr=""
 else
-  prefix=${EXTRN_MDL_SOURCE:-ENS_IC_EXTRN_MDL_SOURCE_not_defined}
   ensindexstr="/mem${ENS_INDEX}"
 fi
 cd ${DATA}

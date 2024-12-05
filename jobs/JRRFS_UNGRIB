@@ -54,13 +54,12 @@ mkdir -p ${UMBRELLA_DATA}/ungrib_${TYPE}
 #-----------------------------------------------------------------------
 #
 export EXTRN_MDL_SOURCE=${EXTRN_MDL_SOURCE:-"GFS"}
-if [[ "${EXTRN_MDL_SOURCE}" == "GFS" ]]; then
+if [[ "${EXTRN_MDL_SOURCE}" == "GFS_NCO" ]]; then
   export COMINgfs=${COMINgfs:-$(compath.py $envir/gfs/$gfs_ver)}
-elif [[ "${EXTRN_MDL_SOURCE}" == "GEFS" ]]; then
+elif [[ "${EXTRN_MDL_SOURCE}" == "GEFS_NCO" ]]; then
   export COMINgefs=${COMINgefs:-$(compath.py $envir/gefs/$gefs_ver)}
 else
-  export COMIN=${SOURCE_BASEDIR:-"SOURCE_BASEDIR_not_defined"}
-  export NAME_PATTERN=${NAME_PATTERN:-"NAME_PATTERN_not_defined"}
+  export SOURCE_BASEDIR=${SOURCE_BASEDIR:-"SOURCE_BASEDIR_not_defined"}
 fi
 export OFFSET=${OFFSET:-0}
 export LENGTH=${LENGTH:-0}

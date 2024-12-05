@@ -5,11 +5,10 @@ cpreq=${cpreq:-cpreq}
 #
 # find variables from env
 #
+prefix=${EXTRN_MDL_SOURCE%_NCO} # strip out the tailing '_NCO' text if any
 if [[ -z "${ENS_INDEX}" ]]; then
-  prefix=${EXTRN_MDL_SOURCE:-LBC_EXTRN_MDL_SOURCE_not_defined}
   ensindexstr=""
 else
-  prefix=${EXTRN_MDL_SOURCE:-ENS_LBC_EXTRN_MDL_SOURCE_not_defined}
   ensindexstr="/mem${ENS_INDEX}"
 fi
 cd ${DATA}
