@@ -26,14 +26,13 @@
     config_use_spechumd = false
 /
 &vertical_grid
-    config_ztop = ${ztop}
+    config_ztop = 30000.0
     config_nsmterrain = 1
     config_smooth_surfaces = true
     config_dzmin = 0.3
     config_nsm = 30
     config_tc_vertical_grid = true
     config_blend_bdy_terrain = true
-    config_specified_zeta_levels = '${zeta_levels}'
 /
 &interpolation_control
     config_extrap_airtemp = 'lapse-rate'
@@ -41,7 +40,6 @@
 &preproc_stages
     config_static_interp = false
     config_native_gwd_static = false
-    config_native_gwd_gsl_static = false
     config_vertical_grid = true
     config_met_interp = true
     config_input_sst = false

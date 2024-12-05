@@ -3,25 +3,13 @@ declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LI
 set -x
 cpreq=${cpreq:-cpreq}
 if [[ -z "${ENS_INDEX}" ]]; then
-  prefixin=${EXTRN_MDL_SOURCE:-IC_EXTRN_MDL_SOURCE_not_defined}
+  prefix=${EXTRN_MDL_SOURCE:-IC_EXTRN_MDL_SOURCE_not_defined}
   ensindexstr=""
 else
-  prefixin=${EXTRN_MDL_SOURCE:-ENS_IC_EXTRN_MDL_SOURCE_not_defined}
+  prefix=${EXTRN_MDL_SOURCE:-ENS_IC_EXTRN_MDL_SOURCE_not_defined}
   ensindexstr="/mem${ENS_INDEX}"
 fi
 cd ${DATA}
-
-#
-# wildcard match GFS
-#
-if [[ ${prefixin} == *"GFS"* ]]; then
-  prefix="GFS"
-elif [[ ${prefixin} == *"GEFS"* ]]; then
-  prefix="GEFS"
-else
-  prefix=${prefixin}
-fi
-
 #
 # genereate the namelist on the fly
 # required variables: init_case, start_time, end_time, nvertlevels, nsoillevels, nfglevles, nfgsoillevels,
@@ -31,6 +19,7 @@ init_case=7
 start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
 end_time=${start_time}
 
+# set default zeta_levels file
 zeta_levels=${FIXrrfs}/meshes/L65.txt
 
 if [[ "${prefix}" == "RAP" || "${prefix}" == "HRRR" ]]; then
@@ -52,7 +41,6 @@ elif  [[ "${prefix}" == "GEFS" ]]; then
   nsoillevels=4
 fi
 
-echo ${zeta_levels}
 ztop=$(tail -1 ${zeta_levels})
 nvertlevels=$(( $(wc -l < ${zeta_levels}) - 1 ))
 
