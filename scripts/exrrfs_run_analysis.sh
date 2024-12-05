@@ -1025,6 +1025,15 @@ cp ${gsi_exec} ${analworkdir}/gsi.x
 export pgm="gsi.x"
 . prep_step
 
+if [ -r ${FIX_GSI}/${PREDEF_GRID_NAME}/xnorm_new.480.1351.1976 ] && [ -r ${FIX_GSI}/${PREDEF_GRID_NAME}/anl_grid.480.3950.2700 ]; then
+  cp ${FIX_GSI}/${PREDEF_GRID_NAME}/xnorm_new.480.1351.1976 .
+  cp ${FIX_GSI}/${PREDEF_GRID_NAME}/anl_grid.480.3950.2700 .
+fi
+if [ -r ${FIX_GSI}/${PREDEF_GRID_NAME}/xnorm_new.240.1351.1976 ] && [ -r ${FIX_GSI}/${PREDEF_GRID_NAME}/anl_grid.240.3950.2700 ]; then
+  cp ${FIX_GSI}/${PREDEF_GRID_NAME}/xnorm_new.240.1351.1976 .
+  cp ${FIX_GSI}/${PREDEF_GRID_NAME}/anl_grid.240.3950.2700 .
+fi
+
 $APRUN ./$pgm < gsiparm.anl >>$pgmout 2>errfile
 export err=$?; err_chk
 mv errfile errfile_gsi
