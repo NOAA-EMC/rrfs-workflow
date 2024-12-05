@@ -11,7 +11,7 @@ if [[ "${EXTRN_MDL_SOURCE}" == "GFS_NCO" ]]; then
   NAME_PATTERN=gfs.t${CDATEin:8:2}z.pgrb2.0p25.fHHH
   NAME_PATTERN_B=gfs.t${CDATEin:8:2}z.pgrb2b.0p25.fHHH
 
-elif [[ "${prefixin}" == "GEFS" ]]; then
+elif [[ "${prefixin}" == "GEFS_NCO" ]]; then
   SOURCE_BASEDIR=${COMINgefs}/gefs.${CDATEin:0:8}/${CDATEin:8:2}/pgrb2ap5
   NAME_PATTERN=gep${ENS_INDEX:1}.t${CDATEin:8:2}z.pgrb2a.0p50.fHHH
   NAME_PATTERN_B=gep${ENS_INDEX:1}.t${CDATEin:8:2}z.pgrb2b.0p50.fHHH
