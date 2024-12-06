@@ -5,7 +5,7 @@ cpreq=${cpreq:-cpreq}
 #
 # find variables from env
 #
-prefix=${EXTRN_MDL_SOURCE%_NCO} # strip out the tailing '_NCO' text if any
+prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
 if [[ -z "${ENS_INDEX}" ]]; then
   ensindexstr=""
 else

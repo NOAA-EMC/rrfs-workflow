@@ -2,7 +2,7 @@
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]${id}: '
 set -x
 cpreq=${cpreq:-cpreq}
-prefix=${EXTRN_MDL_SOURCE%_NCO} # strip out the tailing '_NCO' text if any
+prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
 if [[ -z "${ENS_INDEX}" ]]; then
   ensindexstr=""
 else

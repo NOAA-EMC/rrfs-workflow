@@ -16,7 +16,7 @@ elif [[ "${prefixin}" == "GEFS_NCO" ]]; then
   NAME_PATTERN=gep${ENS_INDEX:1}.t${CDATEin:8:2}z.pgrb2a.0p50.fHHH
   NAME_PATTERN_B=gep${ENS_INDEX:1}.t${CDATEin:8:2}z.pgrb2b.0p50.fHHH
 fi
-prefix=${EXTRN_MDL_SOURCE%_NCO} # strip out the tailing '_NCO' text if any
+prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
 
 cd ${DATA}
 ${cpreq} ${FIXrrfs}/ungrib/Vtable.${prefix} Vtable
