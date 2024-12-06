@@ -53,7 +53,6 @@
     config_radtlw_interval = '00:15:00'
     config_radtsw_interval = '00:15:00'
     config_bucket_update = 'none'
-    ! config_physics_suite = '${physics_suite}'
     config_physics_suite = 'hrrrv5'
     config_tempo_aerosolaware = .true.
     config_tempo_hailaware = .true.

@@ -18,28 +18,22 @@ init_case=7
 start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
 end_time=${start_time}
 
-# set default zeta_levels file
-zeta_levels=${FIXrrfs}/meshes/L65.txt
-
 if [[ "${prefix}" == "RAP" || "${prefix}" == "HRRR" ]]; then
   nfglevels=51
   nfgsoillevels=9
-  nsoillevels=9
-  zeta_levels=${FIXrrfs}/meshes/L62.txt
 elif  [[ "${prefix}" == "RRFS" ]]; then
   nfglevels=66
   nfgsoillevels=9
-  nsoillevels=9
 elif  [[ "${prefix}" == "GFS" ]]; then
   nfglevels=58
   nfgsoillevels=4
-  nsoillevels=4
 elif  [[ "${prefix}" == "GEFS" ]]; then
   nfglevels=32
   nfgsoillevels=4
-  nsoillevels=4
 fi
+nsoillevels=9
 
+zeta_levels=${EXPDIR}/config/ZETA_LEVELS.txt
 ztop=$(tail -1 ${zeta_levels})
 nvertlevels=$(( $(wc -l < ${zeta_levels}) - 1 ))
 
