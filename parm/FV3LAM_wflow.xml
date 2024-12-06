@@ -3749,7 +3749,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&CLEAN_TN;" cycledefs="prodcyc" maxtries="{{ maxtries_run_post }}">
+  <task name="&CLEAN_TN;" cycledefs="archive" maxtries="{{ maxtries_run_post }}">
 
     &RSRV_POST;
 
@@ -3761,7 +3761,7 @@ MODULES_RUN_TASK_FP script.
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>LOGDIR</name><value>&LOGDIR;</value></envar>
-    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr offset="-4:00:00">@Y@m@d@H</cyclestr></value></envar>
     <envar><name>NWGES_BASEDIR</name><value><cyclestr>&NWGES_BASEDIR;</cyclestr></value></envar>
 {%- if do_ensemble %}
     <envar><name>nens</name><value><cyclestr>{{ num_ens_members }}</cyclestr></value></envar>
@@ -3769,6 +3769,28 @@ MODULES_RUN_TASK_FP script.
     <envar><name>nens</name><value><cyclestr>0</cyclestr></value></envar>
 {%- endif %}
 
+    <dependency>
+       <or>
+          <and>
+            <or>
+             <streq><left>00</left><right><cyclestr offset="-6:00:00">@H</cyclestr></right></streq>
+             <streq><left>06</left><right><cyclestr offset="-6:00:00">@H</cyclestr></right></streq>
+             <streq><left>12</left><right><cyclestr offset="-6:00:00">@H</cyclestr></right></streq>
+             <streq><left>18</left><right><cyclestr offset="-6:00:00">@H</cyclestr></right></streq>
+            </or>
+            <taskdep task="&RUN_PRDGEN_TN;_f084" cycle_offset="-6:00:00"/>
+          </and>
+          <and>
+            <or>
+              <streq><left>03</left><right><cyclestr offset="-6:00:00">@H</cyclestr></right></streq>
+              <streq><left>09</left><right><cyclestr offset="-6:00:00">@H</cyclestr></right></streq>
+              <streq><left>15</left><right><cyclestr offset="-6:00:00">@H</cyclestr></right></streq>
+              <streq><left>21</left><right><cyclestr offset="-6:00:00">@H</cyclestr></right></streq>
+            </or>
+            <taskdep task="&RUN_PRDGEN_TN;_f012" cycle_offset="-6:00:00"/>
+          </and>
+       </or>
+    </dependency>
 
   </task>
 
@@ -3848,9 +3870,9 @@ MODULES_RUN_TASK_FP script.
 
     &RSRV_HPSS;
 
-    <command>&JOBSdir;/../scripts/exrrfs_archive_emc.ksh</command>
+    <command>&JOBSdir;/../scripts/exrrfs_archive_retro.ksh</command>
     <nodes>1:ppn=1</nodes>
-    <walltime>08:00:00</walltime>
+    <walltime>05:55:00</walltime>
     <jobname>&TAG;_&ARCHIVE_TN;</jobname>
     <join><cyclestr>&LOGDIR;/&ARCHIVE_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
 
@@ -3862,13 +3884,32 @@ MODULES_RUN_TASK_FP script.
           <and>
             <or>
              <streq><left>00</left><right><cyclestr>@H</cyclestr></right></streq>
+             <streq><left>06</left><right><cyclestr>@H</cyclestr></right></streq>
              <streq><left>12</left><right><cyclestr>@H</cyclestr></right></streq>
+             <streq><left>18</left><right><cyclestr>@H</cyclestr></right></streq>
             </or>
-            <taskdep task="&RUN_PRDGEN_TN;_f060"/>
+            <taskdep task="&RUN_PRDGEN_TN;_f084"/>
           </and>
           <and>
-            <strneq><left>00</left><right><cyclestr>@H</cyclestr></right></strneq>
-            <strneq><left>12</left><right><cyclestr>@H</cyclestr></right></strneq>
+            <or>
+              <streq><left>03</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>09</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>15</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>21</left><right><cyclestr>@H</cyclestr></right></streq>
+            </or>
+            <taskdep task="&RUN_PRDGEN_TN;_f012"/>
+          </and>
+          <and>
+            <or>
+              <streq><left>01</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>02</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>04</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>05</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>07</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>08</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>10</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>11</left><right><cyclestr>@H</cyclestr></right></streq>
+            </or>
             <taskdep task="&RUN_PRDGEN_TN;_f003"/>
           </and>
        </or>
