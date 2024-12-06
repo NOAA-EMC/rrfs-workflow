@@ -17,7 +17,6 @@ export REALTIME_DAYS=2   # eg. 90 means to do real-time runs for 90 days
 #
 ### preempt some settings for conus3km realtime runs on jet
 export PHYSICS_SUITE="mesoscale_reference"   # mesoscale_reference, convection_permitting
-#export COMINgfs='/lfs5/BMC/nrtrr/NCO_data/gfs'
 export COMINgfs='/lfs5/BMC/wrfruc/Chunhua.Zhou/w4/data/GFS/from_aws'
 export COMINrap='/lfs5/BMC/nrtrr/NCO_data/rap'
 export COMINgefs="/lfs5/BMC/wrfruc/Chunhua.Zhou/w4/data/GEFS"
@@ -30,12 +29,12 @@ export HISTORY_INTERVAL=1
 export RESTART_INTERVAL=61
 export MPASSIT_GROUP_TOTAL_NUM=2
 export UPP_GROUP_TOTAL_NUM=2
-export IC_EXTRN_MDL_NAME='GFSretro'
+export IC_EXTRN_MDL_NAME='GFS'
 export IC_OFFSET=5
 export IC_EXTRN_MDL_BASEDIR="${COMINgfs}/gfs.@Y@m@d/@H"
 export IC_EXTRN_MDL_NAME_PATTERN="gfs.t@Hz.pgrb2.0p25.ffHHH"
 export IC_EXTRN_MDL_NAME_PATTERN_b="gfs.t@Hz.pgrb2b.0p25.ffHHH"
-export LBC_EXTRN_MDL_NAME='GFSretro'
+export LBC_EXTRN_MDL_NAME='GFS'
 export LBC_OFFSET=5
 export LBC_LENGTH=6
 export LBC_INTERVAL=3
