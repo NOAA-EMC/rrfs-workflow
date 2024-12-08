@@ -2,26 +2,13 @@
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]${id}: '
 set -x
 cpreq=${cpreq:-cpreq}
+prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
 if [[ -z "${ENS_INDEX}" ]]; then
-  prefixin=${EXTRN_MDL_SOURCE:-IC_EXTRN_MDL_SOURCE_not_defined}
   ensindexstr=""
 else
-  prefixin=${EXTRN_MDL_SOURCE:-ENS_IC_EXTRN_MDL_SOURCE_not_defined}
   ensindexstr="/mem${ENS_INDEX}"
 fi
 cd ${DATA}
-
-#
-# wildcard match GFS
-#
-if [[ ${prefixin} == *"GFS"* ]]; then
-  prefix="GFS"
-elif [[ ${prefixin} == *"GEFS"* ]]; then
-  prefix="GEFS"
-else
-  prefix=${prefixin}
-fi
-
 #
 # genereate the namelist on the fly
 # required variables: init_case, start_time, end_time, nvertlevels, nsoillevels, nfglevles, nfgsoillevels,
@@ -30,20 +17,6 @@ fi
 init_case=7
 start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
 end_time=${start_time}
-case ${MESH_NAME} in
-  conus12km)
-    nvertlevels=55
-    nsoillevels=4
-    ;;
-  conus3km)
-    nvertlevels=59
-    nsoillevels=9
-    ;;
-  *)
-    echo "unknow MESH_NAME=${MESH_NAME}"
-    export err=99; err_chk
-    ;;
-esac
 
 if [[ "${prefix}" == "RAP" || "${prefix}" == "HRRR" ]]; then
   nfglevels=51
@@ -58,8 +31,13 @@ elif  [[ "${prefix}" == "GEFS" ]]; then
   nfglevels=32
   nfgsoillevels=4
 fi
+nsoillevels=9
+
+zeta_levels=${EXPDIR}/config/ZETA_LEVELS.txt
+ztop=$(tail -1 ${zeta_levels})
+nvertlevels=$(( $(wc -l < ${zeta_levels}) - 1 ))
+
 interval_seconds=3600 # just a place holder as we use metatask to run lbc hour by hour
-zeta_levels=${FIXrrfs}/meshes/L60.txt
 decomp_file_prefix="${MESH_NAME}.graph.info.part."
 #
 physics_suite=${PHYSICS_SUITE:-'PHYSICS_SUITE_not_defined'}

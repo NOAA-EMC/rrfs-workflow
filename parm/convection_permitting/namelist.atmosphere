@@ -53,28 +53,13 @@
     config_radtlw_interval = '00:15:00'
     config_radtsw_interval = '00:15:00'
     config_bucket_update = 'none'
-    config_physics_suite = '${physics_suite}'
-    config_microp_scheme = 'mp_thompson'
-    config_thompson_hail_aware = true
-    config_convection_scheme = 'off'
+    config_physics_suite = 'hrrrv5'
+    config_tempo_aerosolaware = .true.
+    config_tempo_hailaware = .true.
     config_gwdo_scheme = 'bl_ugwp_gwdo'
     config_lsm_scheme    = 'sf_ruc'
-    ! config_sfclayer_scheme   = 'sf_monin_obukhov'
-    ! config_pbl_scheme        = 'bl_ysu'
     num_soil_layers      = 9
-    config_mynn_cloudpdf = 2
-    config_mynn_mixlength= 1
-    config_mynn_edmf = 1
-    config_mynn_edmf_mom = 1
-    config_mynn_edmf_tke = 0
-    config_mynn_edmf_output = 0
-    config_mynn_closure = 2.6
-    config_mynn_mixscalars = 1
-    config_mynn_mixclouds = 1
-    config_mynn_mixqt = 0
-    config_mynn_tkeadvect = .false.
-    config_mynn_tkebudget = 0
-    config_radt_cld_scheme='cld_fraction_mynn'
+    config_pbl_scheme = 'bl_mynnedmf'
 /
 &soundings
     config_sounding_interval = 'none'

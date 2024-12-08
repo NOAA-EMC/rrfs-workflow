@@ -13,6 +13,7 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
   extrn_mdl_source=os.getenv('LBC_EXTRN_MDL_NAME','GFS')
   lbc_source_basedir=os.getenv('LBC_EXTRN_MDL_BASEDIR','')
   lbc_name_pattern=os.getenv('LBC_EXTRN_MDL_NAME_PATTERN','')
+  lbc_name_pattern_b=os.getenv('LBC_EXTRN_MDL_NAME_PATTERN_B','')
 
   if not do_ensemble:
     task_id=f'ungrib_lbc'
@@ -71,15 +72,20 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     dcTaskEnv['GROUP_TOTAL_NUM'] = f'{lbc_ungrib_group_total_num}'
 
 # dependencies
-  COMINgfs=os.getenv("COMINgfs",'COMINgfs_not_defined')
-  COMINgefs=os.getenv("COMINgefs",'COMINgefs_not_defined')
-  if extrn_mdl_source == "GFS":
-    fpath=f'{COMINgfs}/gfs.@Y@m@d/@H/gfs.t@Hz.pgrb2.0p25.f#fhr_in#'
-  elif extrn_mdl_source == "GEFS":
-    fpath=f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.f#fhr_in#'
-    fpath2=f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.f#fhr_in#'
+  if extrn_mdl_source == "GFS_NCO":
+    COMINgfs=os.getenv("COMINgfs",'COMINgfs_not_defined')
+    fpath=f'{COMINgfs}/gfs.@Y@m@d/@H/gfs.t@Hz.pgrb2.0p25.f{offset:>03}'
+    fpath2=f'{COMINgfs}/gfs.@Y@m@d/@H/gfs.t@Hz.pgrb2b.0p25.f{offset:>03}'
+  elif extrn_mdl_source == "GEFS_NCO":
+    COMINgefs=os.getenv("COMINgefs",'COMINgefs_not_defined')
+    fpath=f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.f{offset:>03}'
+    fpath2=f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.f{offset:>03}'
   else:
     fpath=f'{lbc_source_basedir}/{lbc_name_pattern}'
+
+  if lbc_name_pattern_b != '':
+    dcTaskEnv['NAME_PATTERN_B'] = f'<cyclestr offset="-{offset}:00:00">{lbc_name_pattern_b}</cyclestr>'
+    fpath2=f'{lbc_source_basedir}/{lbc_name_pattern_b}'
 
   timedep=""
   realtime=os.getenv("REALTIME","false")
@@ -93,6 +99,9 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
      comin_hr3=str(i).zfill(3)
      fpath3=fpath.replace('fHHH', comin_hr3)
      datadep=datadep+f'\n     <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath3}</cyclestr></datadep>'
+     if lbc_name_pattern_b != '':
+       fpath4=fpath2.replace('fHHH', comin_hr3)
+       datadep=datadep+f'\n     <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath4}</cyclestr></datadep>'
 
   if do_ensemble:
     datadep=datadep+f'\n  <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath2}</cyclestr></datadep>'

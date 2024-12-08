@@ -57,6 +57,11 @@ os.makedirs(exp_configdir,exist_ok=True)
 for cfile in glob.glob(f'{configdir}/config.*'):
   shutil.copy(cfile,exp_configdir)
 
+# copy the zeta_levels file if defined
+zeta_levels=os.getenv('ZETA_LEVELS','')
+if zeta_levels != '':
+  shutil.copy(f'{HOMErrfs}/fix/meshes/{zeta_levels}',f'{exp_configdir}/ZETA_LEVELS.txt')
+
 # generate exp.setup under $expdir
 source(f'{HOMErrfs}/workflow/ush/detect_machine.sh')
 machine=os.getenv('MACHINE')

@@ -10,14 +10,15 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
     meta_id=''
     task_id='ungrib_ic'
     cycledefs='ic'
-    extrn_mdl_source=os.getenv('IC_EXTRN_MDL_NAME','IC_PREFIX_not_defined')
-    offset=os.getenv('IC_OFFSET','3')
     meta_bgn=""
     meta_end=""
+    #
+    extrn_mdl_source=os.getenv('IC_EXTRN_MDL_NAME','IC_PREFIX_not_defined')
     ic_source_basedir=os.getenv('IC_EXTRN_MDL_BASEDIR','MDL_BASEDIR_not_defined')
     ic_name_pattern=os.getenv('IC_EXTRN_MDL_NAME_PATTERN','NAME_PATTERN_not_defined')
-    offset=int(os.getenv('IC_OFFSET','6'))
-    net=os.getenv('NET','3')
+    ic_name_pattern_b=os.getenv('IC_EXTRN_MDL_NAME_PATTERN_B','')
+    offset=os.getenv('IC_OFFSET','3')
+    net=os.getenv('NET','rrfs')
     rrfs_ver=os.getenv('VERSION','v2.0.0')
   else:
     metatask=True
@@ -46,15 +47,16 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
   }
   #
   # dependencies
-  COMINgfs=os.getenv("COMINgfs",'COMINgfs_not_defined')
-  COMINgefs=os.getenv("COMINgefs",'COMINgefs_not_defined')
-  if source == "GFS":
+  if extrn_mdl_source == "GFS_NCO":
+    COMINgfs=os.getenv("COMINgfs",'COMINgfs_not_defined')
     fpath=f'{COMINgfs}/gfs.@Y@m@d/@H/gfs.t@Hz.pgrb2.0p25.f{offset:>03}'
-  elif source == "GEFS":
+    fpath2=f'{COMINgfs}/gfs.@Y@m@d/@H/gfs.t@Hz.pgrb2b.0p25.f{offset:>03}'
+  elif extrn_mdl_source == "GEFS_NCO":
+    COMINgefs=os.getenv("COMINgefs",'COMINgefs_not_defined')
     fpath=f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.f{offset:>03}'
     fpath2=f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.f{offset:>03}'
   else:
-    fpath=f'{ic_source_basedir}/{ic_name_pattern}'
+    fpath=f'{ic_source_basedir}/{ic_name_pattern}'.replace('fHHH', offset.zfill(3))
 
   timedep=""
   realtime=os.getenv("REALTIME","false")
@@ -62,9 +64,11 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
   if realtime.upper() == "TRUE":
     timedep=f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
   #
-  comin_hr=str(int(offset)).zfill(3)
-  fpath3=fpath.replace('fHHH', comin_hr)
-  datadep=f'  <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath3}</cyclestr></datadep>'
+  datadep=f'  <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath}</cyclestr></datadep>'
+  if ic_name_pattern_b != '':
+    dcTaskEnv['NAME_PATTERN_B']=f'<cyclestr offset="-{offset}:00:00">{ic_name_pattern_b}</cyclestr>'
+    fpath2=f'{ic_source_basedir}/{ic_name_pattern_b}'.replace('fHHH', offset.zfill(3))
+    datadep=datadep+f'\n     <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath2}</cyclestr></datadep>'
   if do_ensemble:
     datadep=datadep+f'\n  <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath2}</cyclestr></datadep>'
   dependencies=f'''

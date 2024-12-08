@@ -17,6 +17,7 @@ export REALTIME_DAYS=2   # eg. 90 means to do real-time runs for 90 days
 #
 ### preempt some settings for conus3km realtime runs on jet
 export PHYSICS_SUITE="convection_permitting" # mesoscale_reference, convection_permitting
+export ZETA_LEVELS="L62.txt"
 export COMINgfs='/lfs5/BMC/nrtrr/NCO_data/gfs'
 export COMINrap='/lfs5/BMC/nrtrr/NCO_data/rap'
 #

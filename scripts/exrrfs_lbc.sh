@@ -5,24 +5,13 @@ cpreq=${cpreq:-cpreq}
 #
 # find variables from env
 #
+prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
 if [[ -z "${ENS_INDEX}" ]]; then
-  prefixin=${EXTRN_MDL_SOURCE:-LBC_EXTRN_MDL_SOURCE_not_defined}
   ensindexstr=""
 else
-  prefixin=${EXTRN_MDL_SOURCE:-ENS_LBC_EXTRN_MDL_SOURCE_not_defined}
   ensindexstr="/mem${ENS_INDEX}"
 fi
 cd ${DATA}
-
-#
-# wildcard match GFS
-#
-if [[ ${prefixin} == *"GFS"* ]]; then
-  prefix="GFS"
-else
-  prefix=${prefixin}
-fi
-
 #
 # find start and end time
 #
@@ -46,8 +35,7 @@ EDATE=$($NDATE ${fhr_begin} ${CDATEin})
 start_time=$(date -d "${EDATE:0:8} ${EDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
 EDATE=$($NDATE ${fhr_end} ${CDATEin})
 end_time=$(date -d "${EDATE:0:8} ${EDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
-nvertlevels=55
-nsoillevels=4
+
 if [[ "${prefix}" == "RAP" || "${prefix}" == "HRRR" ]]; then
   nfglevels=51
   nfgsoillevels=9
@@ -61,8 +49,13 @@ elif  [[ "${prefix}" == "GEFS" ]]; then
   nfglevels=32
   nfgsoillevels=4
 fi
+nsoillevels=9
+
+zeta_levels=${EXPDIR}/config/ZETA_LEVELS.txt
+ztop=$(tail -1 ${zeta_levels})
+nvertlevels=$(( $(wc -l < ${zeta_levels}) - 1 ))
+
 interval_seconds=$((10#${INTERVAL}*3600)) # just a place holder as we use metatask to run lbc hour by hour
-zeta_levels=${FIXrrfs}/meshes/L60.txt
 decomp_file_prefix="${MESH_NAME}.graph.info.part."
 #
 physics_suite=${PHYSICS_SUITE:-'PHYSICS_SUITE_not_defined'}

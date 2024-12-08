@@ -14,7 +14,7 @@
     config_nvegopt       = 2
 /
 &data_sources
-    config_geog_data_path = '/mnt/lfs5/BMC/wrfruc/HRRRv5/geog/'
+    config_geog_data_path = ''
     config_met_prefix = '${prefix}'
     config_sfc_prefix = 'SST'
     config_fg_interval = ${interval_seconds}
@@ -29,7 +29,7 @@
     config_soilcat_data = 'BNU'
 /
 &vertical_grid
-    config_ztop = 25878.712
+    config_ztop = ${ztop}
     config_nsmterrain = 1
     config_smooth_surfaces = true
     config_dzmin = 0.3
@@ -44,6 +44,7 @@
 &preproc_stages
     config_static_interp = false
     config_native_gwd_static = false
+    config_native_gwd_gsl_static = false
     config_vertical_grid = true
     config_met_interp = true
     config_input_sst = false
