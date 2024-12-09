@@ -54,10 +54,10 @@ export PARTITION2=kjet
 export RESERVATION="rrfsens"
 export RESERVATION2=""
 #
-export NODES_IC=${NODES_IC:-"<nodes>6:ppn=40</nodes>"}
-export NODES_LBC=${NODES_LBC:-"<nodes>6:ppn=40</nodes>"}
-export NODES_FCST=${NODES_FCST:-"<nodes>3:ppn=40</nodes>"}
-export WALLTIME_FCST=${WALLTIME_FCST:-"00:50:00"}
+export NODES_IC="<nodes>6:ppn=40</nodes>"
+export NODES_LBC="<nodes>6:ppn=40</nodes>"
+export NODES_FCST="<nodes>3:ppn=40</nodes>"
+export WALLTIME_FCST="00:50:00"
 #
 export STARTTIME_IC="00:55:00"
 export STARTTIME_LBC="00:00:01"
