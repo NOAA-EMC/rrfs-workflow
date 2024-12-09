@@ -1,13 +1,13 @@
 &nhyd_model
     config_time_integration_order = 2
-    config_dt = 20.0
+    config_dt = ${dt}
     config_start_time = '${start_time}'
     config_run_duration = '${run_duration}'
     config_split_dynamics_transport = true
-    config_number_of_sub_steps = 4
+    config_number_of_sub_steps = ${substeps}
     config_dynamics_split_steps = 3
     config_horiz_mixing = '2d_smagorinsky'
-    config_len_disp     = 3000.0
+    config_len_disp     = ${disp}
     config_visc4_2dsmag = 0.05
     config_scalar_advection = true
     config_monotonic = true
@@ -50,8 +50,8 @@
     config_sstdiurn_update = false
     config_frac_seaice = true
     config_deepsoiltemp_update = false
-    config_radtlw_interval = '00:15:00'
-    config_radtsw_interval = '00:15:00'
+    config_radtlw_interval = '00:${radt}:00'
+    config_radtsw_interval = '00:${radt}:00'
     config_bucket_update = 'none'
     config_physics_suite = 'hrrrv5'
     config_tempo_aerosolaware = .true.
