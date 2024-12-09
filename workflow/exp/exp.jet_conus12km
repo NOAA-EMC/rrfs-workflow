@@ -16,7 +16,8 @@ export REALTIME=false     # true, false
 export REALTIME_DAYS=2   # eg. 90 means to do real-time runs for 90 days
 #
 ### preempt some settings for conus3km realtime runs on jet
-export PHYSICS_SUITE="mesoscale_reference"   # mesoscale_reference, convection_permitting
+export PHYSICS_SUITE="convection_permitting"   # mesoscale_reference, convection_permitting
+export ZETA_LEVELS="L65.txt"
 export COMINgfs='/lfs5/BMC/wrfruc/Chunhua.Zhou/w4/data/GFS/from_aws'
 export COMINrap='/lfs5/BMC/nrtrr/NCO_data/rap'
 export COMINgefs="/lfs5/BMC/wrfruc/Chunhua.Zhou/w4/data/GEFS"
