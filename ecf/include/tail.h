@@ -1,5 +1,5 @@
 echo "----- RRFS IO SPIKE reading at Job Finish -----"
-#SPIKE_Reading_file=$(ls -lart /lfs/h3/emc/rrfstemp/ecflow/ptmp/emc.lam/ecflow_rrfs/root/loads.*|tail -1|awk '{print $9}')
+#SPIKE_Reading_file=$(ls -lart /lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/root/loads.*|tail -1|awk '{print $9}')
 #[[ -s $SPIKE_Reading_file ]]&& cat $SPIKE_Reading_file
 echo "----------------------------------------------"
 
