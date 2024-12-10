@@ -61,7 +61,7 @@ if [ -d /apps/ops/prod ]; then # On WCOSS2
   module list
   set -x
   echo "----- RRFS IO SPIKE reading at Job Start -----"
-#  SPIKE_Reading_file=$(ls -lart /lfs/h3/emc/rrfstemp/ecflow/ptmp/emc.lam/ecflow_rrfs/root/loads.*|tail -1|awk '{print $9}')
+#  SPIKE_Reading_file=$(ls -lart /lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/root/loads.*|tail -1|awk '{print $9}')
 #  [[ -s $SPIKE_Reading_file ]]&& cat $SPIKE_Reading_file
   echo "----------------------------------------------"
 fi
@@ -88,6 +88,7 @@ ERROR() {
   fi
   ecflow_client --abort="$msg"
   echo $msg
+  echo ${ECF_NAME} | mail -s "RRFS job watch" lin.gan@noaa.gov
   if [[ " ops.prod ops.para " =~ " $(whoami) " ]]; then
     echo "# Trap Caught" >>$POST_OUT
   fi
