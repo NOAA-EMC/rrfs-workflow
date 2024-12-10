@@ -299,6 +299,7 @@ RRFS_sas:
     isncovr_opt: 3
     progsigma: true
     sfclay_compute_flux: true
+    sigmab_coldstart : true
     thsfc_loc: false 
     # Smoke/dust options
     rrfs_sd : false
