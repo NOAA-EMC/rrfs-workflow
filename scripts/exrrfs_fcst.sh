@@ -98,8 +98,9 @@ source prep_step
 ${cpreq} ${EXECrrfs}/atmosphere_model.x .
 ${MPI_RUN_CMD} ./atmosphere_model.x 
 # check the status
-errfiles=(./log.atmosphere.*.err)
-if [ -e "${errfiles[0]-}" ]; then
+if ls ./log.atmosphere.*.err 1> /dev/null 2>&1; then
   echo "FATAL ERROR: MPAS model run failed"
   err_exit
+else
+  exit 0
 fi
