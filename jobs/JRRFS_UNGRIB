@@ -27,15 +27,17 @@ export GROUP_TOTAL_NUM=${GROUP_TOTAL_NUM:-1}
 export pid=${pid:-$$}
 if [[ -z "${ENS_INDEX}" ]]; then
   export RUN="rrfs"
+  export SUBDIR=""
 else
   export RUN="ensrrfs"
+  export SUBDIR="/m${ENS_INDEX}"
 fi
 if (( ${GROUP_TOTAL_NUM} > 1 )); then
   export jobid=${jobid:-${RUN}_ungrib_${TYPE}_g${GROUP_INDEX}_${cyc}}
 else
   export jobid=${jobid:-${RUN}_ungrib_${TYPE}_${cyc}}
 fi
-export DATA=${DATA:-${DATAROOT}/${jobid}}
+export DATA=${DATA:-${DATAROOT}${SUBDIR}/${jobid}}
 
 if [ -d ${DATA} ]; then # remove the ${DATA} directory if existed
   rm -rf ${DATA}
@@ -43,10 +45,10 @@ fi
 mkdir -p ${DATA}
 
 export UMBRELLA_DATA=${UMBRELLA_DATA:-${DATAROOT}/umbrella}
-if [[ -d ${UMBRELLA_DATA}/ungrib_${TYPE} ]] && (( ${GROUP_TOTAL_NUM} == 1 )); then
-  rm -rf ${UMBRELLA_DATA}/ungrib_${TYPE}
+if [[ -d ${UMBRELLA_DATA}${SUBDIR}/ungrib_${TYPE} ]] && (( ${GROUP_TOTAL_NUM} == 1 )); then
+  rm -rf ${UMBRELLA_DATA}${SUBDIR}/ungrib_${TYPE}
 fi
-mkdir -p ${UMBRELLA_DATA}/ungrib_${TYPE}
+mkdir -p ${UMBRELLA_DATA}${SUBDIR}/ungrib_${TYPE}
 
 #
 #-----------------------------------------------------------------------

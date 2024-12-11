@@ -86,7 +86,7 @@ if [[ -s ${outfile} ]]; then
       ln -snf ${UMBRELLA_DATA}/ungrib_lbc ${UMBRELLA_DATA}/ungrib_ic
     fi
   else
-    mv ${prefix}:* ${UMBRELLA_DATA}/mem${ENS_INDEX}/ungrib_${TYPE}/
+    mv ${prefix}:* ${UMBRELLA_DATA}/m${ENS_INDEX}/ungrib_${TYPE}/
   fi
 else
   echo "FATAL ERROR: ungrib failed"
