@@ -15,6 +15,23 @@ else
   lbc_interval=${ENS_LBC_INTERVAL:-3}
 fi
 #
+# determine time steps and etc according to the mesh
+#
+if [[ ${MESH_NAME} == "conus12km" ]]; then
+  dt=60
+  substeps=2
+  disp=12000.0
+  radt=30
+elif [[ ${MESH_NAME} == "conus3km" ]]; then
+  dt=20
+  substeps=4
+  disp=3000.0
+  radt=15
+else
+  echo "Unknown MESH_NAME, exit!"
+  err_exit
+fi
+#
 # find forecst length for this cycle
 #
 fcst_length=${FCST_LENGTH:-1}
@@ -81,7 +98,9 @@ source prep_step
 ${cpreq} ${EXECrrfs}/atmosphere_model.x .
 ${MPI_RUN_CMD} ./atmosphere_model.x 
 # check the status
-if [[ -f './log.atmosphere.0000.err' ]]; then # has to use '-f" as the 0000 err file may be size 0
+if ls ./log.atmosphere.*.err 1> /dev/null 2>&1; then
   echo "FATAL ERROR: MPAS model run failed"
   err_exit
+else
+  exit 0
 fi
