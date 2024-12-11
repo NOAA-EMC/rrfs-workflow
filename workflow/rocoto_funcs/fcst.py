@@ -78,13 +78,13 @@ def fcst(xmlFile, expdir, do_ensemble=False):
   dependencies=f'''
   <dependency>
   <and>{timedep}
-   <metataskdep metatask="cycbdys{ensindexstr}" cycle_offset="0:00:00"/>
+   <metataskdep metatask="prep_lbc{ensindexstr}" cycle_offset="0:00:00"/>
    <or>
     <and>
       <or>
 {streqs}
       </or>
-      <taskdep task="cycinit{ensindexstr}"/>
+      <taskdep task="prep_ic{ensindexstr}"/>
     </and>
     <and>
       <and>
@@ -100,8 +100,8 @@ def fcst(xmlFile, expdir, do_ensemble=False):
     dependencies=f'''
   <dependency>
   <and>{timedep}
-    <taskdep task="cycbdys{ensindexstr}" cycle_offset="0:00:00"/>
-    <taskdep task="cycinit{ensindexstr}"/>
+    <taskdep task="prep_lbc{ensindexstr}" cycle_offset="0:00:00"/>
+    <taskdep task="prep_ic{ensindexstr}"/>
   </and>
   </dependency>'''
 

@@ -21,15 +21,14 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     meta_id=''
     meta_bgn=""
     meta_end=""
-    if lbc_ungrib_group_total_num > 1:
-      meta_id=f'ungrib_lbc_group'
-      group_indices=''.join(f'{i:02d} ' for i in range(1,int(lbc_ungrib_group_total_num)+1)).strip()
-      meta_bgn=f'''
+    meta_id=f'ungrib_lbc_group'
+    group_indices=''.join(f'{i:02d} ' for i in range(1,int(lbc_ungrib_group_total_num)+1)).strip()
+    meta_bgn=f'''
 <metatask name="{meta_id}">
 <var name="group_index">{group_indices}</var>
 '''
-      meta_end=f'</metatask>\n'
-      task_id=f'ungrib_lbc_g#group_index#'
+    meta_end=f'</metatask>\n'
+    task_id=f'ungrib_lbc_g#group_index#'
   #
   else: # ensemble
     meta_id='ungrib_lbc'
@@ -67,9 +66,8 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     'INTERVAL': f'{interval}'
   }
 
-  if lbc_ungrib_group_total_num > 1:
-    dcTaskEnv['GROUP_INDEX'] = f'#group_index#'
-    dcTaskEnv['GROUP_TOTAL_NUM'] = f'{lbc_ungrib_group_total_num}'
+  dcTaskEnv['GROUP_INDEX'] = f'#group_index#'
+  dcTaskEnv['GROUP_TOTAL_NUM'] = f'{lbc_ungrib_group_total_num}'
 
 # dependencies
   if extrn_mdl_source == "GFS_NCO":
