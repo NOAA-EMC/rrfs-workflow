@@ -8,7 +8,7 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
   offset=int(os.getenv('LBC_OFFSET','6'))
   length=int(os.getenv('LBC_LENGTH','12'))
   interval=int(os.getenv('LBC_INTERVAL','3'))
-  fhr=os.getenv('FCST_LENGTH','6')
+#  fhr=os.getenv('FCST_LENGTH','6')
   lbc_ungrib_group_total_num=int(os.getenv('LBC_UNGRIB_GROUP_TOTAL_NUM','1'))
 
   extrn_mdl_source=os.getenv('LBC_EXTRN_MDL_NAME','GFS')

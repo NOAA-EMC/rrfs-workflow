@@ -51,9 +51,7 @@ export LBC_EXTRN_MDL_NAME_PATTERN_b="pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.ffHHH"
 export RETRO_PERIOD='2024052623-2024052623'
 #
 export ACCOUNT="rtwrfruc"
-export ACCOUNT2="nrtrr"
 export QUEUE="rth"
-export QUEUE2="batch"
 export PARTITION=kjet
 export PARTITION2=kjet
 export RESERVATION="rrfsens"
