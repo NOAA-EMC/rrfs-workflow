@@ -30,10 +30,10 @@ if [[ -z "${ENS_INDEX}" ]]; then
 else
   export RUN="ensrrfs"
 fi
-if (( ${GROUP_TOTAL_NUM} > 1 )); then
-  export jobid=${jobid:-${RUN}_ungrib_${TYPE}_g${GROUP_INDEX}_${cyc}}
-else
+if [ ${TYPE} == "ic" ]; then
   export jobid=${jobid:-${RUN}_ungrib_${TYPE}_${cyc}}
+else
+  export jobid=${jobid:-${RUN}_ungrib_${TYPE}_g${GROUP_INDEX}_${cyc}}
 fi
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 

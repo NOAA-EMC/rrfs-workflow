@@ -3,13 +3,13 @@ import os
 from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of fcst --------------------------------------------------------
-def cycinit(xmlFile, expdir, do_ensemble=False):
+def prep_ic(xmlFile, expdir, do_ensemble=False):
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={}
   if not do_ensemble:
     metatask=False
     meta_id=''
-    task_id='cycinit'
+    task_id='prep_ic'
     cycledefs='prod'
     hrs=os.getenv('PROD_BGN_AT_HRS', '3 15')
     meta_bgn=""
@@ -19,7 +19,7 @@ def cycinit(xmlFile, expdir, do_ensemble=False):
     ensstr=""
   else:
     metatask=True
-    meta_id='cycinit'
+    meta_id='prep_ic'
     task_id=f'{meta_id}_m#ens_index#'
     cycledefs='ens_prod'
     dcTaskEnv['ENS_INDEX']="#ens_index#"
@@ -92,5 +92,5 @@ def cycinit(xmlFile, expdir, do_ensemble=False):
   </dependency>'''
 
   #
-  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"CYCINIT",do_ensemble)
+  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"PREP_IC",do_ensemble)
 ### end of fcst --------------------------------------------------------

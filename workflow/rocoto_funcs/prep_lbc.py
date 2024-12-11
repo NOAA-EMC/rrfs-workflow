@@ -3,13 +3,13 @@ import os
 from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of fcst --------------------------------------------------------
-def cycbdys(xmlFile, expdir, do_ensemble=False):
+def prep_lbc(xmlFile, expdir, do_ensemble=False):
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={}
   if not do_ensemble:
     metatask=False
     meta_id=''
-    task_id='cycbdys'
+    task_id='prep_lbc'
     cycledefs='prod'
     hrs=os.getenv('PROD_BGN_AT_HRS', '3 15')
     fcst_len_hrs_cycls=os.getenv('FCST_LEN_HRS_CYCLES', '3 15')
@@ -20,7 +20,7 @@ def cycbdys(xmlFile, expdir, do_ensemble=False):
     ensstr=""
   else:
     metatask=True
-    meta_id='cycbdys'
+    meta_id='prep_lbc'
     task_id=f'{meta_id}_m#ens_index#'
     cycledefs='ens_prod'
     dcTaskEnv['ENS_INDEX']="#ens_index#"
@@ -78,7 +78,7 @@ def cycbdys(xmlFile, expdir, do_ensemble=False):
       <or>
 {streqs}
       </or>
-      <taskdep task="cycinit{ensindexstr}"/>
+      <taskdep task="prep_ic{ensindexstr}"/>
     </and>
     <and>
       <and>
@@ -94,10 +94,10 @@ def cycbdys(xmlFile, expdir, do_ensemble=False):
     dependencies=f'''
   <dependency>
   <and>{timedep}
-   <taskdep task="cycinit{ensindexstr}"/>
+   <taskdep task="prep_ic{ensindexstr}"/>
   </and>
   </dependency>'''
 
   #
-  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"CYCBDYS",do_ensemble)
+  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"PREP_LBC",do_ensemble)
 ### end of fcst --------------------------------------------------------
