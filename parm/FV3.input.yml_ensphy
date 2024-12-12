@@ -40,6 +40,7 @@ rrfsens_phy1:
     plumerisefire_frq :  
     dust_alpha :  
     dust_gamma : 
+    sigmab_coldstart :
   nam_sppperts:
     iseed_spp: [4, 5, 6, 7]
     spp_lscale: [150000.0, 150000.0, 150000.0, 150000.0]
@@ -112,6 +113,7 @@ rrfsens_phy3:
     plumerisefire_frq :
     dust_alpha :
     dust_gamma :
+    sigmab_coldstart :
   nam_sppperts:
     spp_prt_list: [0.2, 0.2, 0.2, 0.2, 0.3]
     spp_stddev_cutoff: [1.5, 1.5, 1.5, 1.5, 3.0]
@@ -165,6 +167,7 @@ rrfsens_phy4:
     plumerisefire_frq :
     dust_alpha :
     dust_gamma :
+    sigmab_coldstart :
   nam_sppperts:
     iseed_spp: [4, 5, 6]
     spp_lscale: [150000.0, 150000.0, 150000.0]

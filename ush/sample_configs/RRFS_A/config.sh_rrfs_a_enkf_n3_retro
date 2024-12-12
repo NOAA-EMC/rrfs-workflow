@@ -1,6 +1,6 @@
 MACHINE="wcoss2"
 MACHINETYPE="backup"
-version="v0.9.2"
+version="v1.0.4"
 ACCOUNT="RRFS_DEV"
 #RESERVATION="rrfsdet"
 EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/${version}"
@@ -59,7 +59,7 @@ EXTRN_MDL_ICS_OFFSET_HRS="6"
 LBC_SPEC_INTVL_HRS="1"
 EXTRN_MDL_LBCS_OFFSET_HRS="6"
 BOUNDARY_LEN_HRS="12"
-BOUNDARY_PROC_GROUP_NUM="12"
+BOUNDARY_PROC_GROUP_NUM="4"
 
 # avaialble retro period:
 # 20210511-20210531; 20210718-20210801
@@ -200,10 +200,10 @@ LNDPINT=180
 
 RUN_ensctrl="rrfs"
 RUN="enkfrrfs"
-TAG="n3enkf92"
+TAG="n3enkf104"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   RUN="refs"
-  TAG="n3enfcst92"
+  TAG="n3enfcst104"
 fi
 
 . set_rrfs_config.sh
