@@ -10,7 +10,6 @@ if [[ "${EXTRN_MDL_SOURCE}" == "GFS_NCO" ]]; then
   SOURCE_BASEDIR=${COMINgfs}/gfs.${CDATEin:0:8}/${CDATEin:8:2}
   NAME_PATTERN=gfs.t${CDATEin:8:2}z.pgrb2.0p25.fHHH
   NAME_PATTERN_B=gfs.t${CDATEin:8:2}z.pgrb2b.0p25.fHHH
-
 elif [[ "${prefixin}" == "GEFS_NCO" ]]; then
   SOURCE_BASEDIR=${COMINgefs}/gefs.${CDATEin:0:8}/${CDATEin:8:2}/pgrb2ap5
   NAME_PATTERN=gep${ENS_INDEX:1}.t${CDATEin:8:2}z.pgrb2a.0p50.fHHH
@@ -78,16 +77,7 @@ export err=$?; err_chk
 #
 outfile="${prefix}:$(date -d "${CDATEend:0:8} ${CDATEend:8:2}" +%Y-%m-%d_%H)"
 if [[ -s ${outfile} ]]; then
-  if [[ -z "${ENS_INDEX}" ]]; then
-    mv ${prefix}:* ${UMBRELLA_DATA}/ungrib_${TYPE}/
-    if [[ "${TYPE}" == "lbc" ]] && [[ ! -d ${UMBRELLA_DATA}/ungrib_ic  ]]; then
-    # lbc tasks need init.nc, don't know why it is so but we have to leave with this for a while
-    # link ungrib_lbc to ungrib_ic so that ic tasks can run and generate init.nc
-      ln -snf ${UMBRELLA_DATA}/ungrib_lbc ${UMBRELLA_DATA}/ungrib_ic
-    fi
-  else
-    mv ${prefix}:* ${UMBRELLA_DATA}/mem${ENS_INDEX}/ungrib_${TYPE}/
-  fi
+  mv ${prefix}:* ${UMBRELLA_DATA}/ungrib_${TYPE}${MEMID}/
 else
   echo "FATAL ERROR: ungrib failed"
   err_exit

@@ -1,26 +1,62 @@
 #!/user/bin/env bash
 # Aloha! This file is to setup some top level experiment options
-#
-export OPSROOT=/lfs5/BMC/wrfruc/gge/nco
-export EXP_NAME=test1
+
 export NET=rrfs                    # rrfs, rtma, 
 export MESH_NAME=conus12km         # conus12km, conus3km, atl3km, etc
-export VERSION=1.0.1
-export TAG=c1v01
-#
-export EXPDIR=${OPSROOT}/exp/${VERSION}/${EXP_NAME}
-export COMROOT=${OPSROOT}/${EXP_NAME}/com      # task input and output data as well as logs
-export DATAROOT=${OPSROOT}/${EXP_NAME}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
+export WGF="enkf"   # working group function = "det", "enkf", "ensf", "firewx"
+export EXP_NAME=rrfs${WGF}
+export VERSION=v2.0.2
+export TAG=c3v202
+export OPSROOT=/lfs5/BMC/nrtrr/NCO_dirs
+export OPSROOT=/lfs5/BMC/wrfruc/Chunhua.Zhou/NCO_dirs/conus12km.gefs.L60/${VERSION}
+export EXPDIR=${OPSROOT}/${EXP_NAME}
+export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
+export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
 #
 export REALTIME=false     # true, false
-export RETRO_PERIOD=2024052700-2024052800
-export RETRO_CYCLETHROTTLE=2
-export RETRO_TASKTHROTTLE=50
+export REALTIME_DAYS=2   # eg. 90 means to do real-time runs for 90 days
 #
-export FCST_ONLY=${FCST_ONLY:-false}
-export DO_DETERMINISTIC=false
 export DO_ENSEMBLE=true
-# preempt some settings
-#export ACCOUNT="TBD"
-#export QUEUE="TBD"
-#export PARTITION="TBD"
+export DO_DETERMINISTIC=false
+export ENS_SIZE=30
+#
+### preempt some settings for conus3km realtime runs on jet
+export PHYSICS_SUITE="convection_permitting"   # mesoscale_reference, convection_permitting
+export ZETA_LEVELS="L60.txt"
+export COMINgfs='/lfs5/BMC/wrfruc/Chunhua.Zhou/w4/data/GFS/from_aws'
+export COMINrap='/lfs5/BMC/nrtrr/NCO_data/rap'
+export COMINgefs="/lfs5/BMC/wrfruc/Chunhua.Zhou/w4/data/GEFS"
+#
+export FCST_ONLY="true"
+export CYC_INTERVAL=3
+export FCST_LENGTH=3
+export FCST_LEN_HRS_CYCLES="12 03 03 03 03 03 12 03 03 03 03 03 12 03 03 03 03 03 12 03 03 03 03 03"
+export HISTORY_INTERVAL=1
+export RESTART_INTERVAL=61
+#
+export IC_EXTRN_MDL_NAME='GEFS'
+export IC_OFFSET=35
+export IC_EXTRN_MDL_BASEDIR="${COMINgefs}/gefs.@Y@m@d/@H"
+export IC_EXTRN_MDL_NAME_PATTERN="pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.ffHHH"
+export IC_EXTRN_MDL_NAME_PATTERN_b="pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.ffHHH"
+#
+export LBC_EXTRN_MDL_NAME='GEFS'
+export LBC_OFFSET=5
+export LBC_LENGTH=3
+export LBC_INTERVAL=3
+export LBC_EXTRN_MDL_BASEDIR="${COMINgefs}/gefs.@Y@m@d/@H"
+export LBC_EXTRN_MDL_NAME_PATTERN="pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.ffHHH"
+export LBC_EXTRN_MDL_NAME_PATTERN_b="pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.ffHHH"
+#
+export RETRO_PERIOD='2024052623-2024052623'
+#
+export ACCOUNT="rtwrfruc"
+export QUEUE="rth"
+export PARTITION=kjet
+export RESERVATION="rrfsens"
+#
+export NODES_IC="<nodes>6:ppn=40</nodes>"
+export NODES_LBC="<nodes>6:ppn=40</nodes>"
+export NODES_FCST="<nodes>3:ppn=40</nodes>"
+export WALLTIME_FCST="00:50:00"
+#
