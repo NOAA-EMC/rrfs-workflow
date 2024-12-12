@@ -8,13 +8,13 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
   offset=int(os.getenv('LBC_OFFSET','6'))
   length=int(os.getenv('LBC_LENGTH','12'))
   interval=int(os.getenv('LBC_INTERVAL','3'))
-  lbc_ungrib_group_total_num=int(os.getenv('LBC_UNGRIB_GROUP_TOTAL_NUM','1'))
-
   extrn_mdl_source=os.getenv('LBC_EXTRN_MDL_NAME','GFS')
   lbc_source_basedir=os.getenv('LBC_EXTRN_MDL_BASEDIR','')
   lbc_name_pattern=os.getenv('LBC_EXTRN_MDL_NAME_PATTERN','')
   lbc_name_pattern_b=os.getenv('LBC_EXTRN_MDL_NAME_PATTERN_B','')
   cycledefs='lbc'
+  lbc_ungrib_group_total_num=int(os.getenv('LBC_UNGRIB_GROUP_TOTAL_NUM','1'))
+  group_indices=''.join(f'{i:02d} ' for i in range(1,int(lbc_ungrib_group_total_num)+1)).strip()
 
 # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={
@@ -32,19 +32,13 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     meta_id=''
     meta_bgn=""
     meta_end=""
-    if lbc_ungrib_group_total_num > 1:
-      meta_id=f'ungrib_lbc_group'
-      group_indices=''.join(f'{i:02d} ' for i in range(1,int(lbc_ungrib_group_total_num)+1)).strip()
-      meta_bgn=f'''
+    meta_id=f'ungrib_lbc_group'
+    meta_bgn=f'''
 <metatask name="{meta_id}">
 <var name="group_index">{group_indices}</var>
 '''
-      meta_end=f'</metatask>\n'
-      task_id=f'ungrib_lbc_g#group_index#'
-
-    if lbc_ungrib_group_total_num > 1:
-      dcTaskEnv['GROUP_INDEX'] = f'#group_index#'
-      dcTaskEnv['GROUP_TOTAL_NUM'] = f'{lbc_ungrib_group_total_num}'
+    meta_end=f'</metatask>\n'
+    task_id=f'ungrib_lbc_g#group_index#'
 
   #
   else: # ensemble
@@ -53,17 +47,19 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     ens_size=int(os.getenv('ENS_SIZE','2'))
     ens_indices=''.join(f'{i:03d} ' for i in range(1,int(ens_size)+1)).strip()
     gmems=''.join(f'{i:02d} ' for i in range(1,int(ens_size)+1)).strip()
-    meta_hr= ''.join(f'{i:03d} ' for i in range(0,int(length)+1,int(interval))).strip()
-    comin_hr=''.join(f'{i:03d} ' for i in range(int(offset),int(length)+int(offset)+1,int(interval))).strip()
     meta_bgn=f'''
 <metatask name="ens_{meta_id}">
 <var name="ens_index">{ens_indices}</var>
 <var name="gmem">{gmems}</var>
+<metatask name="{meta_id}_m#ens_index#">
+<var name="group_index">{group_indices}</var> 
 '''
-    meta_end=f'</metatask>\n'
-    task_id=f'{meta_id}_m#ens_index#'
-
+    meta_end=f'</metatask>\n</metatask>\n'
+    task_id=f'{meta_id}_g#group_index#_m#ens_index#'
     dcTaskEnv['ENS_INDEX']="#ens_index#"
+
+  dcTaskEnv['GROUP_INDEX'] = f'#group_index#'
+  dcTaskEnv['GROUP_TOTAL_NUM'] = f'{lbc_ungrib_group_total_num}'
 
 # dependencies
   if extrn_mdl_source == "GFS_NCO":

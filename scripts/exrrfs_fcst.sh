@@ -41,18 +41,18 @@ echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
 #
 # determine whether to begin new cycles
 #
-if [[ -r "${UMBRELLA_DATA}/cycinit/init.nc" ]]; then
-  ln -snf ${UMBRELLA_DATA}/cycinit/init.nc .
+if [[ -r "${UMBRELLA_DATA}/prep_ic/init.nc" ]]; then
+  ln -snf ${UMBRELLA_DATA}/prep_ic/init.nc .
   do_restart='false'
 else
-  ln -snf ${UMBRELLA_DATA}/cycinit/restart.${timestr}.nc .
+  ln -snf ${UMBRELLA_DATA}/prep_ic/restart.${timestr}.nc .
   do_restart='true'
 fi
 
 #
 #  link bdy and fix files
 #
-ln -snf ${UMBRELLA_DATA}/cycbdys/lbc*.nc .
+ln -snf ${UMBRELLA_DATA}/prep_lbc/lbc*.nc .
 
 ln -snf ${FIXrrfs}/physics/${PHYSICS_SUITE}/* .
 ln -snf ${FIXrrfs}/meshes/${MESH_NAME}.ugwp_oro_data.nc ./ugwp_oro_data.nc
@@ -97,8 +97,11 @@ ulimit -a
 source prep_step
 ${cpreq} ${EXECrrfs}/atmosphere_model.x .
 ${MPI_RUN_CMD} ./atmosphere_model.x 
+#
 # check the status
-if ls ./log.atmosphere.*.err 1> /dev/null 2>&1; then
+#
+num_err_log=$(ls ./log.atmosphere*.err 2>/dev/null | wc -l)
+if (( ${num_err_log} > 0 )) ; then
   echo "FATAL ERROR: MPAS model run failed"
   err_exit
 else

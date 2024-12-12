@@ -23,14 +23,19 @@ if [[ -z "${ENS_INDEX}" ]]; then
 else
   export RUN="ensrrfs"
 fi
-export jobid=${jobid:-${RUN}_cycbdys_${cyc}}
+export jobid=${jobid:-${RUN}_prep_ic_${cyc}}
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 
-export UMBRELLA_DATA=${UMBRELLA_DATA:-${DATAROOT}/umbrella}
-if [ -d ${UMBRELLA_DATA}/cycbdys ]; then
-  rm -rf ${UMBRELLA_DATA}/cycbdys
+if [ -d ${DATA} ]; then # remove the ${DATA} directory if existed
+  rm -rf ${DATA}
 fi
-mkdir -p ${UMBRELLA_DATA}/cycbdys
+mkdir -p ${DATA}
+
+export UMBRELLA_DATA=${UMBRELLA_DATA:-${DATAROOT}/umbrella}
+if [ -d ${UMBRELLA_DATA}/prep_ic ]; then
+  rm -rf ${UMBRELLA_DATA}/prep_ic
+fi
+mkdir -p ${UMBRELLA_DATA}/prep_ic
 #
 #-----------------------------------------------------------------------
 # Define COM directories
@@ -42,9 +47,8 @@ export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})
 #----------------------------------------
 # Execute the script.
 #----------------------------------------
-#
 export pgmout="${DATA}/OUTPUT.$$"
-${HOMErrfs}/scripts/exrrfs_cycbdys.sh
+${HOMErrfs}/scripts/exrrfs_prep_ic.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then
