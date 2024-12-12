@@ -215,6 +215,7 @@ settings="\
   'net': ${NET}
   'run': ${RUN}
   'envir': ${envir}
+  'wgf': ${WGF}
 #
 # Number of nodes to use for each task.
 #

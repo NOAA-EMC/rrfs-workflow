@@ -61,12 +61,20 @@ the specified cycle.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
-#export jobid=${jobid:-${taskid}}
-export jobid=${taskid}
 
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 
-export DATA="${DATAROOT}/${jobid}"
+if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
+  export jobid=${taskid}
+else
+  if [ "${CYCLE_TYPE}" = "spinup" ]; then
+    export jobid=${RUN}_analysis_conv_dbz_gsi_spinup_${envir}_${cyc}
+  else
+    export jobid=${RUN}_analysis_conv_dbz_gsi_${envir}_${cyc}
+  fi
+fi
+
+export DATA=${DATA:-${DATAROOT}/${jobid}}
 if [ ! -d "${DATA}" ]; then
   echo "WARNING: ${DATA} does not exist" 
 fi

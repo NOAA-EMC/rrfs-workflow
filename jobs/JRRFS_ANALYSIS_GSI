@@ -62,10 +62,11 @@ for the specified cycle.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
-#export jobid=${jobid:-${taskid}}
-export jobid=${taskid}
 
-export mem_num=m$(echo "${ENSMEM_INDX}")
+if [ ! "${MEM_TYPE}" = "MEAN" ] && [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  export ENSMEM_INDX=${ENSMEM_INDX:-${MEMBER_NAME}}
+  export mem_num=m$(echo "${ENSMEM_INDX}")
+fi
 
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export observer_nwges_dir=""
@@ -80,15 +81,31 @@ if [[ ! -v OB_TYPE ]]; then
   OB_TYPE="conv"
 fi
 
-if [ "${MEM_TYPE}" = "MEAN" ]; then
-  observer_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}/ensmean/observer_${workname}"
+if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
+  export jobid=${taskid}
 else
-# GSI_TYPE = OBSERVER is only for EnKF (ensemble forecasts do not have ANALYSIS tasks)
-  observer_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/observer_${workname}"
+  if [ "${GSI_TYPE}" = "OBSERVER" ]; then
+    if [ "${MEM_TYPE}" = "MEAN" ]; then
+      export jobid=${RUN}_observer_${workname}_ensmean_${envir}_${cyc}
+    else
+      export jobid=${RUN}_observer_${workname}_${mem_num}_${envir}_${cyc}
+    fi
+  else	# For control member, GSI_TYPE is always ANALYSIS
+    export jobid=${RUN}_analysis_${OB_TYPE}_${workname}_${envir}_${cyc}
+  fi
 fi
-mkdir -p ${observer_nwges_dir}
 
-export DATA=${DATAROOT}/${jobid}
+if [ "${GSI_TYPE}" = "OBSERVER" ]; then
+  if [ "${MEM_TYPE}" = "MEAN" ]; then
+    observer_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}/ensmean/observer_${workname}"
+  else
+  # GSI_TYPE = OBSERVER is only for EnKF (ensemble forecasts do not have ANALYSIS tasks)
+    observer_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/observer_${workname}"
+  fi
+  mkdir -p ${observer_nwges_dir}
+fi
+
+export DATA=${DATA:-${DATAROOT}/${jobid}}
 rm -fr ${DATA}
 mkdir -p ${DATA}
 cd ${DATA}
@@ -117,7 +134,7 @@ export OB_TYPE=${OB_TYPE}
 #-----------------------------------------------------------------------
 
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  if [ "${DO_ENSEMBLE}" = "TRUE" ] && [ ! "${MEM_TYPE}" = "MEAN" ]; then
     export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup/${mem_num})}
   else
     export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}

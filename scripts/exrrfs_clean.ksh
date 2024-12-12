@@ -153,4 +153,8 @@ for onetime in ${XX[*]};do
 done
 
 #-----------------------------------------------------------------------
+
+storage=$(du -sh /lfs/h3/emc/lam/noscrub/ecflow)
+[[ -z $ECF_PORT ]]&& ecflow_client --label=storage "${storage}"
+
 exit 0

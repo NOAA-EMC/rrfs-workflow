@@ -123,14 +123,21 @@ YYJJJ00000000=`date +"%y%j00000000" -d "${START_DATE} 1 day ago"`
 YYJJJ1200=`date +"%y%j1200" -d "${START_DATE} 1 day ago"`
 YYJJJ2200000000=`date +"%y%j2200000000" -d "${START_DATE} 1 day ago"`
 #
+
+if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  r_path=${RUN}.${PDY}/${cyc}/${mem_num}
+else
+  r_path=${RUN}.${PDY}/${cyc}
+fi
+
 #-----------------------------------------------------------------------
 #
 # Determine early exit for running blending vs 1 time step ensinit.
 #
 #-----------------------------------------------------------------------
 #
-run_blending=${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/run_blending
-run_ensinit=${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/run_ensinit
+run_blending=${GESROOT}/${r_path}/run_blending
+run_ensinit=${GESROOT}/${r_path}/run_ensinit
 if [[ $CYCLE_SUBTYPE == "ensinit" && -e $run_blending && ! -e $run_ensinit ]]; then
    echo "clean exit ensinit, blending used instead of ensinit."
    exit 0
@@ -145,7 +152,8 @@ fi
 #
 if [ "${DO_ENSFCST}" = "TRUE" ] &&  [ "${DO_ENKFUPDATE}" = "TRUE" ]; then
   cd ${INPUT_DATA}
-  bkpath=${FG_ROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast/DA_OUTPUT  # use DA analysis from DA_OUTPUT
+  bkpath=${FG_ROOT}/enkfrrfs.${PDY}/${cyc}/${mem_num}/forecast/DA_OUTPUT  # use DA analysis from DA_OUTPUT
+
   filelistn="fv_core.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_tracer.res.tile1.nc phy_data.nc sfc_data.nc"
   checkfile=${bkpath}/coupler.res
   n_iolayouty=$(($IO_LAYOUT_Y-1))
@@ -342,8 +350,8 @@ else
   if [ "${CYCLE_SUBTYPE}" = "spinup" ] ; then
     # point to the 0-h cycle for the warm start from the 1 timestep restart files
     fg_restart_dirname=forecast_ensinit
-    bkpath=${FG_ROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
-    ctrl_bkpath=${FG_ROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast_spinup/INPUT
+    bkpath=${FG_ROOT}/${r_path}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+    ctrl_bkpath=${FG_ROOT}/${r_path}/forecast_spinup/INPUT
   else
     YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
     YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
@@ -444,7 +452,7 @@ else
       done
     fi
     if [ "${CYCLE_SUBTYPE}" = "spinup" ] ; then
-      cpreq -p ${FG_ROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
+      cpreq -p ${FG_ROOT}/${r_path}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
     else
       if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
         cpreq -p ${FG_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
@@ -568,7 +576,7 @@ if [ ${HH} -eq ${SST_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
    if [ -r "latest.SST" ]; then
      cpreq -p ${FIXam}/RTG_SST_landmask.dat               RTG_SST_landmask.dat
      ln -sf ./latest.SST                                  SSTRTG
-     cpreq -p ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_akbk     fv3_akbk
+     cpreq ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_akbk        fv3_akbk
 
 cat << EOF > sst.namelist
 &setup

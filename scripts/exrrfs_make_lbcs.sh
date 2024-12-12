@@ -597,7 +597,7 @@ list file has not specified for this external LBC model (EXTRN_MDL_NAME_LBCS):
 # Call the python script to create the namelist file.
 #
   nml_fn="fort.41"
-  ${USHrrfs}/set_namelist.py -q -u "$settings" -o ${nml_fn} || \
+  ${USHrrfs}/set_namelist.py -u "$settings" -o ${nml_fn} || \
     err_exit "\
 Call to python script set_namelist.py to set the variables in the namelist
 file read in by the ${exec_fn} executable failed.  Parameters passed to
@@ -622,10 +622,14 @@ $settings"
     lbc_spec_fhrs=( "${EXTRN_MDL_LBC_SPEC_FHRS[$i]}" ) 
     fcst_hhh=$(( ${lbc_spec_fhrs} - ${EXTRN_MDL_LBCS_OFFSET_HRS} ))
     fcst_hhh_FV3LAM=`printf %3.3i $fcst_hhh`
-    fn_grib2_subset=rrfs.t${hh}z.natlev.f${fcst_hhh_FV3LAM}.subset.grib2
+    fn_grib2_subset=rrfs.t${hh}z.natlev.3km.f${fcst_hhh_FV3LAM}.na.subset.grib2
 
+    if [ ! -s ${extrn_mdl_staging_dir}/${fn_grib2} ]; then
+      echo "FATAL ERROR: FIREWX LBCS file not found ${extrn_mdl_staging_dir}/${fn_grib2}"
+    fi
     wgrib2 ${extrn_mdl_staging_dir}/${fn_grib2} -set_grib_type c3b \
       -new_grid_winds grid -new_grid ${gridspecs} ${extrn_mdl_staging_dir}/${fn_grib2_subset}
+    export err=$?; err_chk
     mv ${extrn_mdl_staging_dir}/${fn_grib2_subset} ${extrn_mdl_staging_dir}/${fn_grib2}
   fi
 #

@@ -118,11 +118,12 @@ EXTRN_MDL_NAME_LBCS="GFS"
 
 envir="para"
 
-NET="rrfs_a"
+NET="rrfs"
 TAG="n3v91"
 
-MODEL="rrfs_a"
+MODEL="rrfs"
 RUN="rrfs"
+WGF="det"
 
 . set_rrfs_config.sh
 

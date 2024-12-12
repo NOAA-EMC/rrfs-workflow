@@ -62,13 +62,14 @@ on the output files corresponding to a specified forecast hour.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
-#export jobid=${jobid:-${taskid}}
-export jobid=${taskid}
 
 export fhr=01
 export tmmark=tm00
 
-export mem_num=m$(echo "${ENSMEM_INDX}")
+if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  export ENSMEM_INDX=${ENSMEM_INDX:-${MEMBER_NAME}}
+  export mem_num=m$(printf "%03d" "$((10#${ENSMEM_INDX}))")
+fi
 
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
@@ -82,7 +83,17 @@ fi
 mkdir -p "${NWGES_DIR}/RESTART"
 mkdir -p "${NWGES_DIR}/INPUT"
 
-export DATA=${DATAROOT}/${jobid}
+if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
+  export jobid=${taskid}
+else
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    export jobid=${RUN}_bufrsnd_${mem_num}_${envir}_${cyc}
+  else
+    export jobid=${RUN}_bufrsnd_${envir}_${cyc}
+  fi
+fi
+
+export DATA=${DATA:-${DATAROOT}/${jobid}}
 rm -rf ${DATA}
 mkdir -p ${DATA}
 cd ${DATA}

@@ -59,13 +59,18 @@ on the RRFS initial conditions.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
-#export jobid=${jobid:-${taskid}}
-export jobid=${taskid}
 
+export ENSMEM_INDX=${ENSMEM_INDX:-${MEMBER_NAME}}
 export mem_num=m$(echo "${ENSMEM_INDX}")
 export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/ics"
 
-export DATA=${DATAROOT}/${jobid}
+if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
+  export jobid=${taskid}
+else
+  export jobid=${RUN}_make_ics_${mem_num}_${envir}_${cyc}
+fi
+
+export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p $DATA
 
 mkdir -p ${DATA}/tmp_ICS

@@ -190,8 +190,10 @@
     fhswr = 900.0
     fhzero = 1.0
     frac_ice = .true.
+    gf_coldstart = .true.
     gwd_opt = 3
     h2o_phys = .true.
+    hwp_method = 1
     hybedmf = .false.
     iaer = 1011
     ialb = 2
@@ -261,6 +263,7 @@
     random_clds = .false.
     redrag = .true.
     satmedmf = .true.
+    sc_factor = 1.0
     sfclay_compute_flux = .true.
     shal_cnv = .true.
     smoke_conv_wet_coef = 0.5, 0.5, 0.5
@@ -284,7 +287,7 @@
     lndp_tau = 21600, 21600, 21600, 21600, 21600
     lndp_type = 2
     lndp_var_list = 'smc', 'vgf', 'alb', 'sal', 'emi', 'zol', 'stc'
-    lndpint = 360
+    lndpint = 180
 /
 
 &nam_sppperts
@@ -296,7 +299,7 @@
     spp_stddev_cutoff = 2.5, 1.5, 1.5, 3.0
     spp_tau = 21600.0, 21600.0, 21600.0, 21600.0
     spp_var_list = 'mp', 'rad', 'gwd', 'cu_deep'
-    sppint = 360
+    sppint = 36
 /
 
 &nam_stochy

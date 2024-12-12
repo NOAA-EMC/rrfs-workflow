@@ -61,10 +61,15 @@ climatology.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
-#export jobid=${jobid:-${taskid}}
-export jobid=${taskid}
 
-export DATA=${DATAROOT}/${jobid}
+if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
+  export jobid=${taskid}
+else
+  export jobid=${RUN}_make_sfc_climo_${envir}_${cyc}
+fi
+
+export DATA=${DATA:-${DATAROOT}/${jobid}}
+[[ -d ${DATA} ]]&& mv ${DATA} ${DATA}_old_$$
 mkdir -p ${DATA}
 cd ${DATA}
 
