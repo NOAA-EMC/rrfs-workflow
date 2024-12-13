@@ -31,7 +31,7 @@ if [[ -z "${ENS_INDEX}" ]]; then
 else
   export RUN="ensrrfs"
 fi
-export jobid=${jobid:-${RUN}_mpassit_${GROUP_INDEX}_${cyc}}
+export jobid=${jobid:-${RUN}_mpassit_g${GROUP_INDEX}_${cyc}}
 
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 if [ -d ${DATA} ]; then # remove the ${DATA}/${GROUP_INDEX} directory if existed

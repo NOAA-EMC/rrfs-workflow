@@ -52,6 +52,7 @@ for (( ii=0; ii<${num_fhrs}; ii=ii+1 )); do
     # decide the history files
     history_file=${workdir}/history.${timestr}.nc
     diag_file=${workdir}/diag.${timestr}.nc
+    mpasout_file=${workdir}/mpasout.${timestr}.nc
 
     # wait for file available for 20 min
     for (( j=0; j < 20; j=j+1)); do
@@ -67,8 +68,7 @@ for (( ii=0; ii<${num_fhrs}; ii=ii+1 )); do
       mv ${diag_file}    ${umbrelladir}/.
       # save to com
       if (( ${ii} == 1 )); then
-        ${cpreq} ${umbrelladir}/history.${timestr}.nc ${comoutdir}/.
-        ${cpreq} ${umbrelladir}/diag.${timestr}.nc ${comoutdir}/.
+        ${cpreq} ${mpasout_file} ${comoutdir}/.
       fi
     else
       echo "ERROR, cannot find diag.${timestr}.nc"
