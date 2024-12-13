@@ -2,45 +2,15 @@
 import os
 from datetime import datetime, timedelta
 from rocoto_funcs.base import source
-0
-def smart_cycledefs(realtime,realtime_days,retro_period):
-  if realtime.upper() == "TRUE":
-    now=datetime.now()+timedelta(days=-1) #go back one day for possible remedy runs
-    end=now+timedelta(days=int(realtime_days))
-    pdy=now.strftime("%Y%m%d")
-    pdy2=end.strftime("%Y%m%d")
-    hr_bgn="00"
-    hr_end='23'
-  else:
-    retrodates=retro_period.split("-")
-    pdy=retrodates[0][:8]
-    hr_bgn=retrodates[0][8:]
-    pdy2=retrodates[1][:8]
-    hr_end=retrodates[1][8:]
-  #
-  dcCycledef={}
-  if os.getenv('FCST_ONLY','FALSE').upper() == "TRUE":
-    freq=int(os.getenv('CYC_INTERVAL',6))
-    dcCycledef['ic']=f'{pdy}{hr_bgn}00 {pdy2}{hr_end}00 {freq:02d}:00:00'
-    dcCycledef['lbc']=f'{pdy}{hr_bgn}00 {pdy2}{hr_end}00 06:00:00'
-    dcCycledef['prod']=dcCycledef['ic']
-  else:
-    if int(hr_bgn) <= 3:
-      ic_bgn='03'
-      lbc_bgn='00'
-    else:
-      ic_bgn='15'
-      lbc_bgn='12'
 
-    #CYCLEDEF_PROD="00 00-23 26,27 05 2024 *"\n\
-    if os.getenv('DO_DETERMINISTIC','TRUE').upper() == "TRUE":
-      dcCycledef['ic']=f'{pdy}{ic_bgn}00 {pdy2}{hr_end}00 12:00:00'
-      dcCycledef['lbc']=f'{pdy}{lbc_bgn}00 {pdy2}{hr_end}00 06:00:00'
-      dcCycledef['prod']=f'{pdy}{ic_bgn}00 {pdy2}{hr_end}00 01:00:00'
-    #
-    if os.getenv('DO_ENSEMBLE','FALSE').upper() == "TRUE":
-      dcCycledef['ens_ic']=f'{pdy}{ic_bgn}00 {pdy2}{hr_end}00 12:00:00'
-      dcCycledef['ens_lbc']=f'{pdy}{lbc_bgn}00 {pdy2}{hr_end}00 06:00:00'
-      dcCycledef['ens_prod']=f'{pdy}{ic_bgn}00 {pdy2}{hr_end}00 01:00:00'
-  #
+def smart_cycledefs(realtime):
+
+  dcCycledef={}
+  cycledef_ic=os.getenv('CYCLEDEF_IC','299901012100 299901012300 12:00:00')
+  cycledef_lbc=os.getenv('CYCLEDEF_LBC','299901012100 299901012300 12:00:00')
+  cycledef_prod=os.getenv('CYCLEDEF_PROD','299901012100 299901012300 12:00:00')
+  dcCycledef['ic']=f'{cycledef_ic}'
+  dcCycledef['lbc']=f'{cycledef_lbc}'
+  dcCycledef['prod']=f'{cycledef_prod}'
+
   return dcCycledef

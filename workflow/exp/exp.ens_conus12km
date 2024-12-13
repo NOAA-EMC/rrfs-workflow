@@ -14,7 +14,6 @@ export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
 #
 export REALTIME=false     # true, false
-export REALTIME_DAYS=2   # eg. 90 means to do real-time runs for 90 days
 #
 export DO_ENSEMBLE=true
 export DO_DETERMINISTIC=false
@@ -48,7 +47,10 @@ export LBC_EXTRN_MDL_BASEDIR="${COMINgefs}/gefs.@Y@m@d/@H"
 export LBC_EXTRN_MDL_NAME_PATTERN="pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.ffHHH"
 export LBC_EXTRN_MDL_NAME_PATTERN_b="pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.ffHHH"
 #
-export RETRO_PERIOD='2024052623-2024052623'
+export RUN_PERIOD="2024052623-2024052623"
+export CYCLEDEF_IC="   &STARTYEAR;&STARTMONTH;&STARTDAY;2300 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 06:00:00 "
+export CYCLEDEF_LBC="  &STARTYEAR;&STARTMONTH;&STARTDAY;2300 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 06:00:00 "
+export CYCLEDEF_PROD=" &STARTYEAR;&STARTMONTH;&STARTDAY;2300 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 06:00:00 "
 #
 export ACCOUNT="rtwrfruc"
 export QUEUE="rth"

@@ -88,7 +88,7 @@ with open(EXPin, 'r') as infile, open(EXPout, 'w') as outfile:
         outfile.write(text)
         outfile.write(line)
     else:
-      rm_list=('REALTIME=','REALTIME_DAYS=','RETRO_PERIOD=','RETRO_CYCLETHROTTLE=',
+      rm_list=('REALTIME=','RETRO_CYCLETHROTTLE=',
         'RETRO_TASKTHROTTLE=','ACCOUNT','QUEUE','PARTITION','RESERVATION','STARTTIME','NODES','WALLTIME',
         'FCST_ONLY=','CYC_INTERVAL','DO_DETERMINISTIC','DO_ENSEMBLE',
           )
