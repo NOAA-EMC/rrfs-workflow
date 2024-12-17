@@ -37,7 +37,7 @@ export IC_EXTRN_MDL_NAME='GEFS'
 export IC_OFFSET=35
 export IC_EXTRN_MDL_BASEDIR="${COMINgefs}/gefs.@Y@m@d/@H"
 export IC_EXTRN_MDL_NAME_PATTERN="pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.ffHHH"
-export IC_EXTRN_MDL_NAME_PATTERN_b="pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.ffHHH"
+export IC_EXTRN_MDL_NAME_PATTERN_B="pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.ffHHH"
 #
 export LBC_EXTRN_MDL_NAME='GEFS'
 export LBC_OFFSET=5
@@ -45,7 +45,7 @@ export LBC_LENGTH=3
 export LBC_INTERVAL=3
 export LBC_EXTRN_MDL_BASEDIR="${COMINgefs}/gefs.@Y@m@d/@H"
 export LBC_EXTRN_MDL_NAME_PATTERN="pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.ffHHH"
-export LBC_EXTRN_MDL_NAME_PATTERN_b="pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.ffHHH"
+export LBC_EXTRN_MDL_NAME_PATTERN_B="pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.ffHHH"
 #
 export RUN_PERIOD="2024052623-2024052623"
 export CYCLEDEF_IC="   &STARTYEAR;&STARTMONTH;&STARTDAY;2300 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 06:00:00 "
@@ -54,7 +54,7 @@ export CYCLEDEF_PROD=" &STARTYEAR;&STARTMONTH;&STARTDAY;2300 &ENDYEAR;&ENDMONTH;
 #
 export ACCOUNT="rtwrfruc"
 export QUEUE="rth"
-export PARTITION=kjet
+export PARTITION="kjet"
 export RESERVATION="rrfsens"
 #
 export NODES_IC="<nodes>6:ppn=40</nodes>"
