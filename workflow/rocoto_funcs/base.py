@@ -52,6 +52,15 @@ def header_entities(xmlFile,expdir):
   mpi_run_cmd=os.getenv('MPI_RUN_CMD','srun')
   wgf=os.getenv('WGF','det')
   cyc_interval=os.getenv('CYC_INTERVAL','3')
+# figure out run period
+  run_period=os.getenv('RUN_PERIOD','2224070200-2224070201')
+  rundates=run_period.split("-")
+  startyear=rundates[0][0:4]
+  startmonth=rundates[0][4:6]
+  startday=rundates[0][6:8]
+  endyear=rundates[1][0:4]
+  endmonth=rundates[1][4:6]
+  endday=rundates[1][6:8]
 
   text = f'''
 <!ENTITY ACCOUNT         "{account}">\n\
@@ -69,7 +78,6 @@ def header_entities(xmlFile,expdir):
 <!ENTITY NET             "{net}">\n\
 <!ENTITY rrfs_ver        "{rrfs_ver}">\n\
 <!ENTITY WGF             "{wgf}">\n\
-
 '''
   xmlFile.write(text)
 
@@ -94,6 +102,14 @@ def header_entities(xmlFile,expdir):
   <envar><name>CYC_INTERVAL</name><value>{cyc_interval}</value></envar>\n\
 "\n\
 >\n\
+
+<!ENTITY STARTYEAR  "{startyear}">
+<!ENTITY STARTMONTH "{startmonth}">
+<!ENTITY STARTDAY   "{startday}">
+<!ENTITY ENDYEAR    "{endyear}">
+<!ENTITY ENDMONTH   "{endmonth}">
+<!ENTITY ENDDAY     "{endday}">
+
 '''
   xmlFile.write(text)
 
@@ -233,10 +249,7 @@ def xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv={},dependencies="",metat
   # It is recommended to use separate tasks (i.e. non-metatask) for spinup and prod cycles for simplicity
   COMROOT=os.getenv('COMROOT','/COMROOT_NOT_DEFINED')
   HOMErrfs=os.getenv('HOMErrfs','HOMErrfs_not_defined')
-  if do_ensemble:
-    RUN='ens'
-  else:
-    RUN='rrfs'
+  WGF=os.getenv('WGF','WGF_NOT_DEFINED')
   TAG=os.getenv('TAG','TAG_NOT_DEFINED')
   NET=os.getenv('NET','NET_NOT_DEFINED')
   VERSION=os.getenv('VERSION','VERSION_NOT_DEFINED')
@@ -252,7 +265,7 @@ def xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv={},dependencies="",metat
     command_id=meta_id
   dcTaskRes={
     'command': f'&HOMErrfs;/workflow/sideload/launch.sh JRRFS_'+f'{command_id}'.upper(),
-    'join': f'&LOGROOT;/{RUN}.@Y@m@d/@H/{task_id}_{TAG}_@Y@m@d@H.log',
+    'join': f'&LOGROOT;/rrfs{WGF}.@Y@m@d/@H/{task_id}_{TAG}_@Y@m@d@H.log',
     'jobname': f'{TAG}_{task_id}_c@H',
     'account': get_cascade_env(f'ACCOUNT_{meta_id}'.upper()),
     'queue': get_cascade_env(f'QUEUE_{meta_id}'.upper()),
