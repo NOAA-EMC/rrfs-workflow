@@ -125,9 +125,9 @@ YYJJJ2200000000=`date +"%y%j2200000000" -d "${START_DATE} 1 day ago"`
 #
 
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  r_path=${RUN}.${PDY}/${cyc}/${mem_num}
+  runcyc_path=${RUN}.${PDY}/${cyc}/${mem_num}
 else
-  r_path=${RUN}.${PDY}/${cyc}
+  runcyc_path=${RUN}.${PDY}/${cyc}
 fi
 
 #-----------------------------------------------------------------------
@@ -136,8 +136,8 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-run_blending=${GESROOT}/${r_path}/run_blending
-run_ensinit=${GESROOT}/${r_path}/run_ensinit
+run_blending=${GESROOT}/${runcyc_path}/run_blending
+run_ensinit=${GESROOT}/${runcyc_path}/run_ensinit
 if [[ $CYCLE_SUBTYPE == "ensinit" && -e $run_blending && ! -e $run_ensinit ]]; then
    echo "clean exit ensinit, blending used instead of ensinit."
    exit 0
@@ -350,8 +350,8 @@ else
   if [ "${CYCLE_SUBTYPE}" = "spinup" ] ; then
     # point to the 0-h cycle for the warm start from the 1 timestep restart files
     fg_restart_dirname=forecast_ensinit
-    bkpath=${FG_ROOT}/${r_path}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
-    ctrl_bkpath=${FG_ROOT}/${r_path}/forecast_spinup/INPUT
+    bkpath=${FG_ROOT}/${runcyc_path}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+    ctrl_bkpath=${FG_ROOT}/${runcyc_path}/forecast_spinup/INPUT
   else
     YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
     YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
@@ -452,7 +452,7 @@ else
       done
     fi
     if [ "${CYCLE_SUBTYPE}" = "spinup" ] ; then
-      cpreq -p ${FG_ROOT}/${r_path}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
+      cpreq -p ${FG_ROOT}/${runcyc_path}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
     else
       if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
         cpreq -p ${FG_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
