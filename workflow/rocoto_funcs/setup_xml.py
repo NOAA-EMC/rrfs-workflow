@@ -40,9 +40,7 @@ def setup_xml(HOMErrfs, expdir):
   #
   # create cycledefs smartly
   realtime=os.getenv('REALTIME','false')
-  realtime_days=os.getenv('REALTIME_DAYS','60')
-  retro_period=os.getenv('RETRO_PERIOD','2024070200-2024071200')
-  dcCycledef=smart_cycledefs(realtime,realtime_days,retro_period)
+  dcCycledef=smart_cycledefs(realtime)
   
   COMROOT=os.getenv('COMROOT','COMROOT_not_defined')
   TAG=os.getenv('TAG','TAG_not_defined')
