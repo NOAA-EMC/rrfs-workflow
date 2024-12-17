@@ -29,12 +29,13 @@ export INTERVAL=${INTERVAL:-1}
 #-----------------------------------------------------------------------
 #
 export pid=${pid:-$$}
+export RUN="rrfs"${WGF}
 if [[ -z "${ENS_INDEX}" ]]; then
-  export RUN="rrfs"
+  export MEMID=""
 else
-  export RUN="ensrrfs"
+  export MEMID="_m${ENS_INDEX}"
 fi
-export jobid=${jobid:-${RUN}_lbc_g${GROUP_INDEX}_${cyc}}
+export jobid=${jobid:-${RUN}_lbc${MEMID}_g${GROUP_INDEX}_${cyc}}
 
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 if [ -d ${DATA} ]; then # remove the ${DATA} directory if existed
@@ -51,11 +52,7 @@ export UMBRELLA_DATA=${UMBRELLA_DATA:-${DATAROOT}/umbrella}
 #
 export COMINrrfs=${COMINrrfs:-$(compath.py $envir/rrfs/$rrfs_ver)}
 export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-if [[ -z "${ENS_INDEX}" ]]; then
-  mkdir -p ${COMOUT}/lbc
-else
-  mkdir -p ${COMOUT}/mem${ENS_INDEX}/lbc
-fi
+mkdir -p ${COMOUT}${MEMDIR}/lbc
 #
 #----------------------------------------
 # Execute the script.

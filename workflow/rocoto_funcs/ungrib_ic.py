@@ -11,6 +11,7 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
   ic_name_pattern_b=os.getenv('IC_EXTRN_MDL_NAME_PATTERN_B','')
   offset=os.getenv('IC_OFFSET','3')
   cycledefs='ic'
+  meta_id='ungrib_ic'
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={
     'TYPE': 'ic',
@@ -22,21 +23,23 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
   #
   if not do_ensemble:
     metatask=False
-    meta_id=''
-    task_id='ungrib_ic'
+    task_id=f'{meta_id}'
     meta_bgn=""
     meta_end=""
     #
     net=os.getenv('NET','rrfs')
     rrfs_ver=os.getenv('VERSION','v2.0.0')
+    ensindexstr=''
+    ensdirstr=''
   else:
     metatask=True
-    meta_id='ungrib_ic'
     task_id=f'{meta_id}_m#ens_index#'
     dcTaskEnv['ENS_INDEX']="#ens_index#"
     ens_size=int(os.getenv('ENS_SIZE','2'))
     ens_indices=''.join(f'{i:03d} ' for i in range(1,int(ens_size)+1)).strip()
     gmems=''.join(f'{i:02d} ' for i in range(1,int(ens_size)+1)).strip()
+    ensindexstr=f'_m#ens_index#'
+    ensdirstr=f'/m#ens_index#'
     meta_bgn=f'''
 <metatask name="ens_{meta_id}">
 <var name="ens_index">{ens_indices}</var>
@@ -44,6 +47,9 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
     meta_end=f'</metatask>\n'
 
   #
+  dcTaskEnv['DATAROOT']=f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensdirstr}</cyclestr>'
+  dcTaskEnv['MEMDIR']=f'{ensdirstr}'
+
   # dependencies
   if extrn_mdl_source == "GFS_NCO":
     COMINgfs=os.getenv("COMINgfs",'COMINgfs_not_defined')

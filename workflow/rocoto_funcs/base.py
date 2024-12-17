@@ -78,7 +78,6 @@ def header_entities(xmlFile,expdir):
 "\n\
   <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>\n\
   <envar><name>EXPDIR</name><value>&EXPDIR;</value></envar>\n\
-  <envar><name>DATAROOT</name><value><cyclestr>&DATAROOT;/{net}/{rrfs_ver}/{run}.@Y@m@d/@H</cyclestr></value></envar>\n\
   <envar><name>UMBRELLA_DATA</name><value><cyclestr>&DATAROOT;/{net}/{rrfs_ver}/{run}.@Y@m@d/@H/{wgf}</cyclestr></value></envar>\n\
   <envar><name>COMROOT</name><value>&COMROOT;</value></envar>\n\
   <envar><name>COMINrrfs</name><value>&COMROOT;/{net}/{rrfs_ver}</value></envar>\n\
@@ -255,13 +254,13 @@ def xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv={},dependencies="",metat
     'command': f'&HOMErrfs;/workflow/sideload/launch.sh JRRFS_'+f'{command_id}'.upper(),
     'join': f'&LOGROOT;/{RUN}.@Y@m@d/@H/{task_id}_{TAG}_@Y@m@d@H.log',
     'jobname': f'{TAG}_{task_id}_c@H',
-    'account': get_cascade_env(f'ACCOUNT_{task_id}'.upper()),
-    'queue': get_cascade_env(f'QUEUE_{task_id}'.upper()),
-    'partition': get_cascade_env(f"PARTITION_{task_id}".upper()),
-    'walltime': get_cascade_env(f"WALLTIME_{task_id}".upper()),
-    'nodes': get_cascade_env(f"NODES_{task_id}".upper()),
-    'reservation': get_cascade_env(f"RESERVATION_{task_id}".upper()),
-    'native': get_cascade_env(f"NATIVE_{task_id}".upper())
+    'account': get_cascade_env(f'ACCOUNT_{meta_id}'.upper()),
+    'queue': get_cascade_env(f'QUEUE_{meta_id}'.upper()),
+    'partition': get_cascade_env(f"PARTITION_{meta_id}".upper()),
+    'walltime': get_cascade_env(f"WALLTIME_{meta_id}".upper()),
+    'nodes': get_cascade_env(f"NODES_{meta_id}".upper()),
+    'reservation': get_cascade_env(f"RESERVATION_{meta_id}".upper()),
+    'native': get_cascade_env(f"NATIVE_{meta_id}".upper())
   }
 
   myObjTask=objTask(
