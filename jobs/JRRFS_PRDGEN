@@ -62,13 +62,33 @@ files corresponding to a specified forecast hour.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
-#export jobid=${jobid:-${taskid}}
-export jobid=${taskid}
 
-export mem_num=m$(echo "${ENSMEM_INDX}")
+if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  export ENSMEM_INDX=${ENSMEM_INDX:-${MEMBER_NAME}}
+  export mem_num=m$(echo "${ENSMEM_INDX}")
+fi
+
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 
-export DATA=${DATAROOT}/${jobid}
+if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
+  export jobid=${taskid}
+else
+  if [ "${CYCLE_TYPE}" = "spinup" ]; then
+    jobid=${RUN}_post_spinup_${envir}_${cyc}_f${fhr}
+  else
+    if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+      jobid=${RUN}_post_${mem_num}_${envir}_${cyc}_f${fhr}
+    else
+      if [ ${WGF} == "firewx" ]; then
+        jobid=${WGF}_post_${envir}_${cyc}_f${fhr}
+      else
+        jobid=${RUN}_post_${envir}_${cyc}_f${fhr}
+      fi
+    fi
+  fi
+fi
+
+export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p ${DATA}
 cd ${DATA}
 

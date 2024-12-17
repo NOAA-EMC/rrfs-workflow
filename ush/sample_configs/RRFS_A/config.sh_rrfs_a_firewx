@@ -10,6 +10,7 @@ NET="rrfs"
 TAG="n3v91"
 MODEL="rrfs"
 RUN="rrfs"
+WGF="firewx"
 
 STMP="/lfs/f2/t2o/ptmp/emc/stmp/emc.lam/rrfsfw/${version}"
 PTMP="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}"

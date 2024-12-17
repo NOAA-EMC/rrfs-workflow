@@ -576,7 +576,7 @@ settings="
 # Call the python script to create the namelist file.
 #
 nml_fn="fort.41"
-${USHrrfs}/set_namelist.py -q -u "$settings" -o ${nml_fn} || \
+${USHrrfs}/set_namelist.py -u "$settings" -o ${nml_fn} || \
   err_exit "\
 Call to python script set_namelist.py to set the variables in the namelist
 file read in by the ${exec_fn} executable failed.  Parameters passed to
@@ -598,10 +598,11 @@ if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
   sp_lon=$(echo "$LON_CTR + 360" | bc -l)
   sp_lat=$(echo "(90 - $LAT_CTR) * -1" | bc -l)
   gridspecs="rot-ll:${sp_lon}:${sp_lat}:0 -10:801:0.025 -10:801:0.025"
-  fn_grib2_subset=rrfs.t${hh}z.natlev.f000.subset.grib2
+  fn_grib2_subset=rrfs.t${hh}z.natlev.3km.f000.na.subset.grib2
 
   wgrib2 ${extrn_mdl_staging_dir}/${fn_grib2} -set_grib_type c3b -new_grid_winds grid \
     -new_grid ${gridspecs} ${extrn_mdl_staging_dir}/${fn_grib2_subset}
+  export err=$?; err_chk
   mv ${extrn_mdl_staging_dir}/${fn_grib2_subset} ${extrn_mdl_staging_dir}/${fn_grib2}
 fi
 #
@@ -708,7 +709,7 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
   # Required FIX files
   cpreq -p $FIXLAM/${CRES}_grid.tile7.nc .
   cpreq -p $FIXLAM/${CRES}_oro_data.tile7.halo0.nc .
-  cpreq -p $FIX_GSI/$PREDEF_GRID_NAME/fv3_akbk fv_core.res.nc
+  cpreq $FIX_GSI/$PREDEF_GRID_NAME/fv3_akbk fv_core.res.nc
 
   # Shortcut the file names
   warm=./fv_core.res.tile1.nc

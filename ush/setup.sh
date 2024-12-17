@@ -1289,7 +1289,7 @@ ENSCTRL_DATAROOT="${ENSCTRL_STMP}"
 COMROOT="${PTMP}/com"
 ENSCTRL_COMROOT="${ENSCTRL_PTMP}/com"
 ENSCTRL_COMOUT="${ENSCTRL_COMROOT}/${NET}/${rrfs_ver}/${RUN_ensctrl}.@Y@m@d"
-GESROOT="${PTMP}/nwges"
+GESROOT="${GESROOT:-${PTMP}/nwges}"
 LOG_BASEDIR="${PTMP}/logs"
 #
 #-----------------------------------------------------------------------

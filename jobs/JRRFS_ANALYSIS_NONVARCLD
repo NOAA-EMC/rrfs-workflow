@@ -61,12 +61,30 @@ analysis with RRFS for the specified cycle.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
-#export jobid=${jobid:-${taskid}}
-export jobid=${taskid}
 
-export mem_num=m$(echo "${ENSMEM_INDX}")
+if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
+  export jobid=${taskid}
+else
+  if [ "${CYCLE_TYPE}" = "spinup" ]; then
+    export workname="nonvar_cldanl_spinup"
+  else
+    export workname="nonvar_cldanl"
+  fi
+  if [ ${MEM_TYPE} = "MEAN" ]; then
+    export jobid=${RUN}_${workname}_ensmean_${envir}_${cyc}
+  else
+    if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+      export ENSMEM_INDX=${ENSMEM_INDX:-${MEMBER_NAME}}
+      export mem_num=m$(echo "${ENSMEM_INDX}")
+      export jobid=${RUN}_${workname}_${mem_num}_${envir}_${cyc}
+    else
+      export jobid=${RUN}_${workname}_${envir}_${cyc}
+    fi
+  fi
+fi
+export mem_num=${mem_num:-}
 
-export DATA=${DATAROOT}/${jobid}
+export DATA=${DATA:-${DATAROOT}/${jobid}}
 rm -fr ${DATA}
 mkdir -p ${DATA}
 cd ${DATA}

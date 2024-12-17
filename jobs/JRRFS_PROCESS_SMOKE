@@ -61,10 +61,18 @@ for the specified cycle.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
-#export jobid=${jobid:-${taskid}}
-export jobid=${taskid}
 
-export DATA=${DATAROOT}/${jobid}
+if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
+  export jobid=${taskid}
+else
+  if [ "${CYCLE_TYPE}" = "spinup" ]; then
+    export jobid=${RUN}_process_smoke_spinup_${envir}_${cyc}
+  else
+    export jobid=${RUN}_process_smoke_prod_${envir}_${cyc}
+  fi
+fi
+
+export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p ${DATA}
 cd ${DATA}
 

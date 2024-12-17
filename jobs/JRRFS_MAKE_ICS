@@ -62,7 +62,7 @@ for the RRFS (in NetCDF format).
 # Set the parameters for the external model files.
 #-----------------------------------------------------------------------
 
-extrn_mdl_name="${EXTRN_MDL_NAME}"
+extrn_mdl_name="${EXTRN_MDL_NAME_ICS}"
 sysbasedir="${EXTRN_MDL_SYSBASEDIR_ICS}"
 gfs_file_fmt="${GFS_FILE_FMT_ICS}"
 time_offset_hrs="${EXTRN_MDL_ICS_OFFSET_HRS}"
@@ -118,7 +118,7 @@ case "${extrn_mdl_name}" in
     else
       sysdir="$sysbasedir/rrfs.${yyyymmdd}/${hh}"
     fi
-    fns_on_disk=( "rrfs.t${hh}z.natlev.f0${fcst_hh}.grib2" )
+    fns_on_disk=( "rrfs.t${hh}z.natlev.3km.f0${fcst_hh}.na.grib2" )
     ;;
 
   *)
@@ -134,17 +134,29 @@ extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
-#export jobid=${jobid:-${taskid}}
-export jobid=${taskid}
 
-export mem_num=m$(echo "${ENSMEM_INDX}")
+if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  export ENSMEM_INDX=${ENSMEM_INDX:-${MEMBER_NAME}}
+  export mem_num=m$(echo "${ENSMEM_INDX}")
+fi
+
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/ics"
 else
   export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/ics"
 fi
 
-export DATA=${DATAROOT}/${jobid}
+if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
+  export jobid=${taskid}
+else
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    export jobid=${RUN}_make_ics_${mem_num}_${envir}_${cyc}
+  else
+    export jobid=${RUN}_make_ics_${envir}_${cyc}
+  fi
+fi
+
+export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p $DATA
 
 mkdir -p ${DATA}/tmp_ICS

@@ -195,6 +195,7 @@
     frac_ice = .true.
     gwd_opt = 3
     h2o_phys = .true.
+    hwp_method = 1
     hybedmf = .false.
     iaer = 1011
     ialb = 2
@@ -253,12 +254,12 @@
     n_var_lndp = 7
     n_var_spp = 4
     nsfullradar_diag = 3600
-    nssl_alphah = 1.35
-    nssl_alphar = 2.4
-    nssl_cccn = 1110000000.0
+    nssl_alphah = 1.39
+    nssl_alphar = 2.03
+    nssl_cccn = 990000000.0
     nssl_ccn_on = .true.
-    nssl_ehlw0 = 0.85
-    nssl_ehw0 = 0.67
+    nssl_ehlw0 = 0.8
+    nssl_ehw0 = 0.68
     nssl_hail_on = .true.
     nssl_invertccn = .true.
     oz_phys = .false.
@@ -272,6 +273,7 @@
     random_clds = .false.
     redrag = .true.
     satmedmf = .false.
+    sc_factor = 1.0
     sfclay_compute_flux = .true.
     shal_cnv = .false.
     smoke_conv_wet_coef = 0.5, 0.5, 0.5
@@ -295,7 +297,7 @@
     lndp_tau = 21600, 21600, 21600, 21600, 21600
     lndp_type = 2
     lndp_var_list = 'smc', 'vgf', 'alb', 'sal', 'emi', 'zol', 'stc'
-    lndpint = 360
+    lndpint = 180
 /
 
 &nam_sppperts
@@ -307,7 +309,7 @@
     spp_stddev_cutoff = 1.5, 1.5, 1.5, 1.5
     spp_tau = 21600.0, 21600.0, 21600.0, 21600.0
     spp_var_list = 'pbl', 'sfc', 'rad', 'gwd'
-    sppint = 360
+    sppint = 36
 /
 
 &nam_stochy

@@ -251,7 +251,7 @@ EXPT_SUBDIR=""
 #
 #   $STMP/tmpnwprd/$RUN/$cdate
 #
-# NET, envir, RUN:
+# NET, envir, RUN, WGF:
 # Variables used in forming the path to the directory that will contain
 # the output files from the post-processor (UPP) for a given cycle (see
 # definition of PTMP below).  These are defined in the WCOSS Implementation
@@ -266,6 +266,9 @@ EXPT_SUBDIR=""
 #
 #   RUN:
 #   Name of model run (third level of com directory structure).
+#
+#   WGF:
+#   Working group function ("det", "enkf", "ensf", "firewx")
 #
 # PTMP:
 # The beginning portion of the directory that will contain the output 
@@ -330,6 +333,7 @@ envir="para"
 RUN="experiment_name"
 RUN_ensctrl="experiment_name"
 TAG="dev_grid"
+WGF="det"
 PTMP="/base/path/of/directory/containing/postprocessed/output/files"
 ENSCTRL_PTMP="/base/path/of/directory/containing/postprocessed/output/files"
 GESROOT="/base/path/of/directory/containing/model/output/files"

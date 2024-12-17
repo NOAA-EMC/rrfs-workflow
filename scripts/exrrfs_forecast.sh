@@ -52,8 +52,14 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-run_blending=${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/run_blending
-run_ensinit=${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/run_ensinit
+if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  runcyc_path=${RUN}.${PDY}/${cyc}/${mem_num}
+else
+  runcyc_path=${RUN}.${PDY}/${cyc}
+fi
+
+run_blending=${GESROOT}/${runcyc_path}/run_blending
+run_ensinit=${GESROOT}/${runcyc_path}/run_ensinit
 if [[ ${CYCLE_SUBTYPE} == "ensinit" && -e $run_blending && ! -e $run_ensinit ]]; then
    echo "clean exit ensinit, blending used instead of ensinit."
    exit 0
