@@ -5,15 +5,8 @@ cpreq=${cpreq:-cpreq}
 
 cd ${DATA}
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 
-if [[ -z "${ENS_INDEX}" ]]; then
-  IFS=' ' read -r -a array <<< "${PROD_BGN_AT_HRS}"
-  ensindexstr=""
-  lbc_interval=${LBC_INTERVAL:-3}
-else
-  IFS=' ' read -r -a array <<< "${ENS_PROD_BGN_AT_HRS}"
-  ensindexstr="/mem${ENS_INDEX}"
-  lbc_interval=${ENS_LBC_INTERVAL:-3}
-fi
+IFS=' ' read -r -a array <<< "${PROD_BGN_AT_HRS}"
+lbc_interval=${LBC_INTERVAL:-3}
 # determine whether to begin new cycles
 begin="NO"
 begin="YES"
@@ -23,9 +16,9 @@ begin="YES"
 #  fi
 #done
 if [[ "${begin}" == "YES" ]]; then
-  ${cpreq} ${COMINrrfs}/${RUN}.${PDY}/${cyc}${ensindexstr}/ic/init.nc ${UMBRELLA_DATA}/prep_ic/.
+  ${cpreq} ${COMINrrfs}/rrfs.${PDY}/${cyc}${MEMDIR}/ic/init.nc ${UMBRELLA_DATA}${MEMDIR}/prep_ic/.
   do_restart='false'
 else
-  ${cpreq} ${COMINrrfs}/${RUN}.${PDY}/${cyc}${ensindexstr}/da/restart.${timestr}.nc ${UMBRELLA_DATA}/prep_ic/.
+  ${cpreq} ${COMINrrfs}/rrfs.${PDY}/${cyc}${MEMDIR}/da/restart.${timestr}.nc ${UMBRELLA_DATA}${MEMDIR}/prep_ic/.
   do_restart='true'
 fi
