@@ -5,24 +5,33 @@ from rocoto_funcs.base import xml_task, source, get_cascade_env
 ### begin of fcst --------------------------------------------------------
 def save_fcst(xmlFile, expdir, do_ensemble=False):
   # Task-specific EnVars beyond the task_common_vars
-  dcTaskEnv={}
+
+  fcst_length=os.getenv('FCST_LENGTH','1')
+  history_interval=os.getenv('HISTORY_INTERVAL', '1')
+  restart_interval=os.getenv('RESTART_INTERVAL', '61')
+  meta_id='save_fcst'
+  cycledefs='prod'
+  hrs=os.getenv('PROD_BGN_AT_HRS', '3 15')
+  fcst_len_hrs_cycls=os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
+  WGF=os.getenv('WGF','WGF not defined')
+  dcTaskEnv={
+    'FCST_LENGTH': f'{fcst_length}',
+    'HISTORY_INTERVAL': f'{history_interval}',
+    'RESTART_INTERVAL': f'{restart_interval}',
+    'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycls}'
+  }
+
   if not do_ensemble:
     metatask=False
-    meta_id=''
-    task_id='save_fcst'
-    cycledefs='prod'
-    hrs=os.getenv('PROD_BGN_AT_HRS', '3 15')
-    fcst_len_hrs_cycls=os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
+    task_id=f'meta_id'
     meta_bgn=""
     meta_end=""
-    RUN='rrfs'
     ensindexstr=""
+    ensdirstr=""
     ensstr=""
   else:
     metatask=True
-    meta_id='save_fcst'
     task_id=f'{meta_id}_m#ens_index#'
-    cycledefs='ens_prod'
     dcTaskEnv['ENS_INDEX']="#ens_index#"
     hrs=os.getenv('ENS_PROD_BGN_AT_HRS', '3 15')
     meta_bgn=""
@@ -34,20 +43,12 @@ def save_fcst(xmlFile, expdir, do_ensemble=False):
 <var name="ens_index">{ens_indices}</var>'''
     meta_end=f'\
 </metatask>\n'
-    RUN='ens'
     ensindexstr="_m#ens_index#"
+    ensdirstr="/m#ens_index#"
     ensstr="ens_"
 
-  # Task-specific EnVars beyond the task_common_vars
-  fcst_length=os.getenv('FCST_LENGTH','1')
-  history_interval=os.getenv('HISTORY_INTERVAL', '1')
-  restart_interval=os.getenv('RESTART_INTERVAL', '61')
-  dcTaskEnv={
-    'FCST_LENGTH': f'{fcst_length}',
-    'HISTORY_INTERVAL': f'{history_interval}',
-    'RESTART_INTERVAL': f'{restart_interval}',
-    'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycls}'
-  }
+  RUN=f'rrfs{WGF}'
+  dcTaskEnv['DATAROOT']=f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensdirstr}</cyclestr>'
 
   # dependencies
   timedep=""
@@ -62,7 +63,7 @@ def save_fcst(xmlFile, expdir, do_ensemble=False):
   dependencies=f'''
   <dependency>
   <and>{timedep}
-  <datadep age="00:01:00"><cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensindexstr}/&RUN;_fcst_@H/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+  <datadep age="00:01:00"><cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensdirstr}/{RUN}_fcst{ensindexstr}_@H/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
   </and>
   </dependency>'''
 

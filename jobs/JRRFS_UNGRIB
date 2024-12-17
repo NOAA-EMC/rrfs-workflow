@@ -28,8 +28,10 @@ export pid=${pid:-$$}
 export RUN="rrfs"${WGF}
 if [[ -z "${ENS_INDEX}" ]]; then
   export MEMID=""
+  export MEMDIR=""
 else
   export MEMID="_m${ENS_INDEX}"
+  export MEMDIR="/m${ENS_INDEX}"
 fi
 if [ ${TYPE} == "ic" ]; then
   export jobid=${jobid:-${RUN}_ungrib_${TYPE}${MEMID}_${cyc}}

@@ -21,8 +21,10 @@ export pid=${pid:-$$}
 export RUN="rrfs"${WGF}
 if [[ -z "${ENS_INDEX}" ]]; then
   export MEMID=""
+  export MEMDIR=""
 else
   export MEMID="_m${ENS_INDEX}"
+  export MEMDIR="/m${ENS_INDEX}"
 fi
 export jobid=${jobid:-${RUN}_fcst${MEMID}_${cyc}}
 export DATA=${DATA:-${DATAROOT}/${jobid}}

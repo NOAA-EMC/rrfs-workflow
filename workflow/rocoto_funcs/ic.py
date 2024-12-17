@@ -35,7 +35,6 @@ def ic(xmlFile, expdir, do_ensemble=False):
     ensdirstr="/m#ens_index#"
 
   dcTaskEnv['DATAROOT']=f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensdirstr}</cyclestr>'
-  dcTaskEnv['MEMDIR']=f'{ensdirstr}'
 
   # dependencies
   timedep=""
