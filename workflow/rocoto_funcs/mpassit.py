@@ -26,6 +26,7 @@ def mpassit(xmlFile, expdir, do_ensemble=False):
     task_id=f'{meta_id}_g#group_index#'
 
     ensindexstr=""
+    ensdirstr=""
     RUN='rrfs'
   else:
     meta_id='mpassit'
@@ -49,6 +50,7 @@ def mpassit(xmlFile, expdir, do_ensemble=False):
     task_id=f'{meta_id}_m#ens_index#_g#group_index#'
     dcTaskEnv['ENS_INDEX']="#ens_index#"
     ensindexstr="_m#ens_index#"
+    ensdirstr="/m#ens_index#"
     RUN='ens'
 
   # Task-specific EnVars beyond the task_common_vars
@@ -59,6 +61,8 @@ def mpassit(xmlFile, expdir, do_ensemble=False):
     'GROUP_TOTAL_NUM': f'{mpassit_group_total_num}',
     'GROUP_INDEX': f'#group_index#'
   }
+
+  dcTaskEnv['DATAROOT']=f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensdirstr}</cyclestr>'
 
   timedep=""
   realtime=os.getenv("REALTIME","false")
@@ -73,7 +77,7 @@ def mpassit(xmlFile, expdir, do_ensemble=False):
   dependencies=f'''
   <dependency>
   <and>{timedep}
-  <datadep age="00:05:00"><cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensindexstr}/{wgf}/&RUN;_fcst_@H/</cyclestr><cyclestr offset="#fhr2#:00:00">diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+  <datadep age="00:05:00"><cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensdirstr}/{wgf}/&RUN;{wgf}_fcst_@H/</cyclestr><cyclestr offset="#fhr2#:00:00">diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
   </and>
   </dependency>'''
   #

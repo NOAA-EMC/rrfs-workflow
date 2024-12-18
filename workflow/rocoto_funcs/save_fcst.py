@@ -23,7 +23,7 @@ def save_fcst(xmlFile, expdir, do_ensemble=False):
 
   if not do_ensemble:
     metatask=False
-    task_id=f'meta_id'
+    task_id=f'{meta_id}'
     meta_bgn=""
     meta_end=""
     ensindexstr=""

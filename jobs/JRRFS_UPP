@@ -26,12 +26,16 @@ export HISTORY_INTERVAL=${HISTORY_INTERVAL:-1}
 #-----------------------------------------------------------------------
 #
 export pid=${pid:-$$}
+export RUN="rrfs"${WGF}
 if [[ -z "${ENS_INDEX}" ]]; then
-  export RUN="rrfs"
+  export MEMID=""
+  export MEMDIR=""
 else
-  export RUN="ensrrfs"
+  export MEMID="_m${ENS_INDEX}"
+  export MEMDIR="/m${ENS_INDEX}"
 fi
-export jobid=${jobid:-${RUN}_upp_g${GROUP_INDEX}_${cyc}}
+
+export jobid=${jobid:-${RUN}_upp${MEMID}_g${GROUP_INDEX}_${cyc}}
 
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 if [ -d ${DATA} ]; then # remove the ${DATA}/${FHR} directory if existed
