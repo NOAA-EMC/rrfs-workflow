@@ -11,11 +11,11 @@ def prep_lbc(xmlFile, expdir, do_ensemble=False):
   hrs=os.getenv('PROD_BGN_AT_HRS', '3 15')
   fcst_length=os.getenv('FCST_LENGTH','1')
   lbc_interval=os.getenv('LBC_INTERVAL','3')
-  fcst_len_hrs_cycls=os.getenv('FCST_LEN_HRS_CYCLES', '3 15')
+  fcst_len_hrs_cycles=os.getenv('FCST_LEN_HRS_CYCLES', '3 15')
   dcTaskEnv={
     'FCST_LENGTH': f'{fcst_length}',
     'LBC_INTERVAL': f'{lbc_interval}',
-    'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycls}'
+    'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycles}'
   }
 
   if not do_ensemble:
@@ -23,7 +23,6 @@ def prep_lbc(xmlFile, expdir, do_ensemble=False):
     task_id=f'{meta_id}'
     meta_bgn=""
     meta_end=""
-    RUN='rrfs'
     ensindexstr=""
     ensdirstr=""
     ensstr=""
@@ -40,7 +39,6 @@ def prep_lbc(xmlFile, expdir, do_ensemble=False):
 <var name="ens_index">{ens_indices}</var>'''
     meta_end=f'\
 </metatask>\n'
-    RUN='ens'
     ensindexstr="_m#ens_index#"
     ensdirstr="/m#ens_index#"
     ensstr="ens_"

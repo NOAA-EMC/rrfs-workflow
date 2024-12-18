@@ -16,7 +16,6 @@ def prep_ic(xmlFile, expdir, do_ensemble=False):
     task_id=f'{meta_id}'
     meta_bgn=""
     meta_end=""
-    RUN='rrfs'
     ensindexstr=""
     ensdirstr=""
     ensstr=""
@@ -33,7 +32,6 @@ def prep_ic(xmlFile, expdir, do_ensemble=False):
 <var name="ens_index">{ens_indices}</var>'''
     meta_end=f'\
 </metatask>\n'
-    RUN='ens'
     ensindexstr="_m#ens_index#"
     ensdirstr="/m#ens_index#"
     ensstr="ens_"

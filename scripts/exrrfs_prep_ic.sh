@@ -16,9 +16,9 @@ begin="YES"
 #  fi
 #done
 if [[ "${begin}" == "YES" ]]; then
-  ${cpreq} ${COMINrrfs}/rrfs.${PDY}/${cyc}${MEMDIR}/ic/init.nc ${UMBRELLA_DATA}${MEMDIR}/prep_ic/.
+  ${cpreq} ${COMINrrfs}/${RUN}.${PDY}/${cyc}${MEMDIR}/ic/init.nc ${UMBRELLA_DATA}${MEMDIR}/prep_ic/.
   do_restart='false'
 else
-  ${cpreq} ${COMINrrfs}/rrfs.${PDY}/${cyc}${MEMDIR}/da/restart.${timestr}.nc ${UMBRELLA_DATA}${MEMDIR}/prep_ic/.
+  ${cpreq} ${COMINrrfs}/${RUN}.${PDY}/${cyc}${MEMDIR}/da/restart.${timestr}.nc ${UMBRELLA_DATA}${MEMDIR}/prep_ic/.
   do_restart='true'
 fi

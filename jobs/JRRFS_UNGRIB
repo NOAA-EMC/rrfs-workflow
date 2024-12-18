@@ -25,7 +25,6 @@ export GROUP_TOTAL_NUM=${GROUP_TOTAL_NUM:-1}
 #-----------------------------------------------------------------------
 #
 export pid=${pid:-$$}
-export RUN="rrfs"${WGF}
 if [[ -z "${ENS_INDEX}" ]]; then
   export MEMID=""
   export MEMDIR=""

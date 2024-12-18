@@ -40,7 +40,9 @@ def setup_xml(HOMErrfs, expdir):
   #
   # create cycledefs smartly
   realtime=os.getenv('REALTIME','false')
-  dcCycledef=smart_cycledefs(realtime)
+  realtime_days=os.getenv('REALTIME_DAYS','60')
+  retro_period=os.getenv('RETRO_PERIOD','2024070200-2024071200')
+  dcCycledef=smart_cycledefs(realtime,realtime_days,retro_period)
   
   COMROOT=os.getenv('COMROOT','COMROOT_not_defined')
   TAG=os.getenv('TAG','TAG_not_defined')
@@ -84,14 +86,14 @@ def setup_xml(HOMErrfs, expdir):
       ungrib_lbc(xmlFile,expdir,do_ensemble=True)
       ic(xmlFile,expdir,do_ensemble=True)
       lbc(xmlFile,expdir,do_ensemble=True)
-      prep_ic(xmlFile,expdir,do_ensemble=True)
-      prep_lbc(xmlFile,expdir,do_ensemble=True)
-      if os.getenv("FCST_ONLY","FALSE").upper()=="FALSE":
-        ens_da(xmlFile,expdir)
-      fcst(xmlFile,expdir,do_ensemble=True)
-      save_fcst(xmlFile,expdir,do_ensemble=True)
-      mpassit(xmlFile,expdir,do_ensemble=True)
-      upp(xmlFile,expdir,do_ensemble=True)
+   #   prep_ic(xmlFile,expdir,do_ensemble=True)
+   #   prep_lbc(xmlFile,expdir,do_ensemble=True)
+   #   if os.getenv("ENS_FCST_ONLY","FALSE").upper()=="FALSE":
+   #     ens_da(xmlFile,expdir)
+   #   fcst(xmlFile,expdir,do_ensemble=True)
+   #   save_fcst(xmlFile,expdir,do_ensemble=True)
+   #   mpassit(xmlFile,expdir,do_ensemble=True)
+   #   upp(xmlFile,expdir,do_ensemble=True)
 
 # ---------------------------------------------------------------------------
 #    if os.getenv("REALTIME").upper() == "TRUE": # write out the clean task for realtime runs and retros don't need it

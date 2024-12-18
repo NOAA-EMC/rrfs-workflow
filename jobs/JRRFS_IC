@@ -18,7 +18,6 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 #-----------------------------------------------------------------------
 #
 export pid=${pid:-$$}
-export RUN="rrfs"${WGF}
 if [[ -z "${ENS_INDEX}" ]]; then
   export MEMID=""
   export MEMDIR=""

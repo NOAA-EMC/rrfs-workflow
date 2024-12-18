@@ -73,7 +73,7 @@ for fhr in  ${fhr_all}; do
   timestring=$(date -d "${EDATE:0:8} ${EDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
   ln -snf ${UMBRELLA_DATA}${MEMDIR}/ungrib_lbc${MEMID}/${prefix}:${timestring:0:13} .
 done
-ln -snf ${COMINrrfs}/rrfs.${PDY}/${cyc}${MEMDIR}/ic/init.nc .
+ln -snf ${COMINrrfs}/${RUN}.${PDY}/${cyc}${MEMDIR}/ic/init.nc .
 ${cpreq} ${FIXrrfs}/meshes/${MESH_NAME}.static.nc static.nc
 ${cpreq} ${FIXrrfs}/graphinfo/${MESH_NAME}.graph.info.part.${NTASKS} .
 

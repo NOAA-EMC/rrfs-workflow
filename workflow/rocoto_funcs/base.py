@@ -62,6 +62,8 @@ def header_entities(xmlFile,expdir):
   endmonth=rundates[1][4:6]
   endday=rundates[1][6:8]
 
+  run=f'{run}{wgf}'
+
   text = f'''
 <!ENTITY ACCOUNT         "{account}">\n\
 <!ENTITY QUEUE_DEFAULT   "{queue}">\n\
@@ -94,6 +96,7 @@ def header_entities(xmlFile,expdir):
   <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>\n\
   <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>\n\
   <envar><name>NET</name><value>{net}</value></envar>\n\
+  <envar><name>RUN</name><value>{run}</value></envar>\n\
   <envar><name>rrfs_ver</name><value>{rrfs_ver}</value></envar>\n\
   <envar><name>KEEPDATA</name><value>{keepdata}</value></envar>\n\
   <envar><name>MPI_RUN_CMD</name><value>{mpi_run_cmd}</value></envar>\n\
@@ -267,13 +270,13 @@ def xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv={},dependencies="",metat
     'command': f'&HOMErrfs;/workflow/sideload/launch.sh JRRFS_'+f'{command_id}'.upper(),
     'join': f'&LOGROOT;/rrfs{WGF}.@Y@m@d/@H/{task_id}_{TAG}_@Y@m@d@H.log',
     'jobname': f'{TAG}_{task_id}_c@H',
-    'account': get_cascade_env(f'ACCOUNT_{meta_id}'.upper()),
-    'queue': get_cascade_env(f'QUEUE_{meta_id}'.upper()),
-    'partition': get_cascade_env(f"PARTITION_{meta_id}".upper()),
-    'walltime': get_cascade_env(f"WALLTIME_{meta_id}".upper()),
-    'nodes': get_cascade_env(f"NODES_{meta_id}".upper()),
-    'reservation': get_cascade_env(f"RESERVATION_{meta_id}".upper()),
-    'native': get_cascade_env(f"NATIVE_{meta_id}".upper())
+    'account': get_cascade_env(f'ACCOUNT_{task_id}'.upper()),
+    'queue': get_cascade_env(f'QUEUE_{task_id}'.upper()),
+    'partition': get_cascade_env(f"PARTITION_{task_id}".upper()),
+    'walltime': get_cascade_env(f"WALLTIME_{task_id}".upper()),
+    'nodes': get_cascade_env(f"NODES_{task_id}".upper()),
+    'reservation': get_cascade_env(f"RESERVATION_{task_id}".upper()),
+    'native': get_cascade_env(f"NATIVE_{task_id}".upper())
   }
 
   myObjTask=objTask(

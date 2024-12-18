@@ -12,13 +12,13 @@ def save_fcst(xmlFile, expdir, do_ensemble=False):
   meta_id='save_fcst'
   cycledefs='prod'
   hrs=os.getenv('PROD_BGN_AT_HRS', '3 15')
-  fcst_len_hrs_cycls=os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
+  fcst_len_hrs_cycles=os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
   WGF=os.getenv('WGF','WGF not defined')
   dcTaskEnv={
     'FCST_LENGTH': f'{fcst_length}',
     'HISTORY_INTERVAL': f'{history_interval}',
     'RESTART_INTERVAL': f'{restart_interval}',
-    'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycls}'
+    'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycles}'
   }
 
   if not do_ensemble:
