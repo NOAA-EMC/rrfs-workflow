@@ -27,12 +27,7 @@ YYJJJHH=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%y%j%H)
 #
 #  find the localtion of the history files
 #
-if [[ -z "${ENS_INDEX}" ]]; then
-  ensindexstr=""
-else
-  ensindexstr="/mem${ENS_INDEX}"
-fi
-mpassit_dir=${UMBRELLA_DATA}${ensindexstr}/mpassit
+mpassit_dir=${UMBRELLA_DATA}${MEMDIR}/mpassit
 #
 # find forecst length for this cycle
 #
@@ -111,10 +106,10 @@ EOF
       mv ${wrfnat}.two ${wrfnat}
 
       # copy products to COMOUT
-      ${cpreq} ${wrfprs} ${COMOUT}${ensindexstr}/upp/${RUN}_prs_${CDATE}_f${fhr2}.grib2
-      ${cpreq} ${wrfnat} ${COMOUT}${ensindexstr}/upp/${RUN}_nat_${CDATE}_f${fhr2}.grib2
-      ${cpreq} ${wrftwo} ${COMOUT}${ensindexstr}/upp/${RUN}_two_${CDATE}_f${fhr2}.grib2
-      ln -snf  ${COMOUT}${ensindexstr}/upp/${RUN}_prs_${CDATE}_f${fhr2}.grib2 ${COMOUT}${ensindexstr}/upp/${YYJJJHH}0000${fhr2}
+      ${cpreq} ${wrfprs} ${COMOUT}${MEMDIR}/upp/${RUN}_prs_${CDATE}_f${fhr2}.grib2
+      ${cpreq} ${wrfnat} ${COMOUT}${MEMDIR}/upp/${RUN}_nat_${CDATE}_f${fhr2}.grib2
+      ${cpreq} ${wrftwo} ${COMOUT}${MEMDIR}/upp/${RUN}_two_${CDATE}_f${fhr2}.grib2
+      ln -snf  ${COMOUT}${MEMDIR}/upp/${RUN}_prs_${CDATE}_f${fhr2}.grib2 ${COMOUT}${MEMDIR}/upp/${YYJJJHH}0000${fhr2}
 
     else
       echo "FATAL ERROR: cannot find mpass file at ${timestr}"

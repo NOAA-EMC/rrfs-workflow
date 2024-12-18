@@ -42,7 +42,7 @@ fi
 mkdir -p ${DATA}
 
 export UMBRELLA_DATA=${UMBRELLA_DATA:-${DATAROOT}/umbrella}
-mkdir -p ${UMBRELLA_DATA}/mpassit
+mkdir -p ${UMBRELLA_DATA}${MEMDIR}/mpassit
 
 #
 #-----------------------------------------------------------------------

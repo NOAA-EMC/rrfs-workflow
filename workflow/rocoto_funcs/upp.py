@@ -65,7 +65,7 @@ def upp(xmlFile, expdir, do_ensemble=False):
   dependencies=f'''
   <dependency>
   <and>{timedep}
-  <datadep age="00:05:00"><cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensdirstr}/{wgf}/mpassit/</cyclestr><cyclestr offset="#fhr2#:00:00">mpassit.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+  <metataskdep metatask="mpassit{ensindexstr}"/>
   </and>
   </dependency>'''
   #

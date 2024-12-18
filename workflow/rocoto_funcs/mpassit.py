@@ -70,7 +70,7 @@ def mpassit(xmlFile, expdir, do_ensemble=False):
   dependencies=f'''
   <dependency>
   <and>{timedep}
-  <datadep age="00:05:00"><cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensdirstr}/{wgf}/&RUN;{wgf}_fcst_@H/</cyclestr><cyclestr offset="#fhr2#:00:00">diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+  <taskdep task="save_fcst{ensindexstr}"/>
   </and>
   </dependency>'''
   #
