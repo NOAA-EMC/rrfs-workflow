@@ -26,6 +26,7 @@ def upp(xmlFile, expdir, do_ensemble=False):
     task_id=f'{meta_id}_g#group_index#'
 
     ensindexstr=""
+    ensdirstr=""
     RUN='rrfs'
   else:
     meta_id='upp'
@@ -46,6 +47,7 @@ def upp(xmlFile, expdir, do_ensemble=False):
     task_id=f'{meta_id}_m#ens_index#_g#group_index#'
     dcTaskEnv['ENS_INDEX']="#ens_index#"
     ensindexstr="_m#ens_index#"
+    ensdirstr="/m#ens_index#"
 
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={
@@ -56,6 +58,7 @@ def upp(xmlFile, expdir, do_ensemble=False):
     'GROUP_INDEX': f'#group_index#'
   }
 
+  dcTaskEnv['DATAROOT']=f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensdirstr}</cyclestr>'
   timedep=""
   realtime=os.getenv("REALTIME","false")
   starttime=get_cascade_env(f"STARTTIME_{meta_id}".upper())
