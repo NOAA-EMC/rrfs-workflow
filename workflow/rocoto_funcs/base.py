@@ -62,6 +62,8 @@ def header_entities(xmlFile,expdir):
   endmonth=rundates[1][4:6]
   endday=rundates[1][6:8]
 
+  run=f'{run}{wgf}'
+
   text = f'''
 <!ENTITY ACCOUNT         "{account}">\n\
 <!ENTITY QUEUE_DEFAULT   "{queue}">\n\
@@ -86,7 +88,6 @@ def header_entities(xmlFile,expdir):
 "\n\
   <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>\n\
   <envar><name>EXPDIR</name><value>&EXPDIR;</value></envar>\n\
-  <envar><name>DATAROOT</name><value><cyclestr>&DATAROOT;/{net}/{rrfs_ver}/{run}.@Y@m@d/@H</cyclestr></value></envar>\n\
   <envar><name>UMBRELLA_DATA</name><value><cyclestr>&DATAROOT;/{net}/{rrfs_ver}/{run}.@Y@m@d/@H/{wgf}</cyclestr></value></envar>\n\
   <envar><name>COMROOT</name><value>&COMROOT;</value></envar>\n\
   <envar><name>COMINrrfs</name><value>&COMROOT;/{net}/{rrfs_ver}</value></envar>\n\
@@ -95,6 +96,7 @@ def header_entities(xmlFile,expdir):
   <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>\n\
   <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>\n\
   <envar><name>NET</name><value>{net}</value></envar>\n\
+  <envar><name>RUN</name><value>{run}</value></envar>\n\
   <envar><name>rrfs_ver</name><value>{rrfs_ver}</value></envar>\n\
   <envar><name>KEEPDATA</name><value>{keepdata}</value></envar>\n\
   <envar><name>MPI_RUN_CMD</name><value>{mpi_run_cmd}</value></envar>\n\

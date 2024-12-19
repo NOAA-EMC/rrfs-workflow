@@ -15,6 +15,7 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
   cycledefs='lbc'
   lbc_ungrib_group_total_num=int(os.getenv('LBC_UNGRIB_GROUP_TOTAL_NUM','1'))
   group_indices=''.join(f'{i:02d} ' for i in range(1,int(lbc_ungrib_group_total_num)+1)).strip()
+  meta_id='ungrib_lbc'
 
 # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={
@@ -28,25 +29,24 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
   }
 
   if not do_ensemble:
-    task_id=f'ungrib_lbc'
-    meta_id=''
     meta_bgn=""
     meta_end=""
-    meta_id=f'ungrib_lbc_group'
     meta_bgn=f'''
 <metatask name="{meta_id}">
 <var name="group_index">{group_indices}</var>
 '''
     meta_end=f'</metatask>\n'
     task_id=f'ungrib_lbc_g#group_index#'
-
+    ensindexstr=''
+    ensdirstr=''
   #
   else: # ensemble
-    meta_id='ungrib_lbc'
     # metatask (support nested metatasks)
     ens_size=int(os.getenv('ENS_SIZE','2'))
     ens_indices=''.join(f'{i:03d} ' for i in range(1,int(ens_size)+1)).strip()
     gmems=''.join(f'{i:02d} ' for i in range(1,int(ens_size)+1)).strip()
+    ensindexstr=f'_m#ens_index#'
+    ensdirstr=f'/m#ens_index#'
     meta_bgn=f'''
 <metatask name="ens_{meta_id}">
 <var name="ens_index">{ens_indices}</var>
@@ -60,6 +60,7 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
 
   dcTaskEnv['GROUP_INDEX'] = f'#group_index#'
   dcTaskEnv['GROUP_TOTAL_NUM'] = f'{lbc_ungrib_group_total_num}'
+  dcTaskEnv['DATAROOT']=f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensdirstr}</cyclestr>'
 
 # dependencies
   if extrn_mdl_source == "GFS_NCO":

@@ -4,27 +4,32 @@ from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of fcst --------------------------------------------------------
 def prep_lbc(xmlFile, expdir, do_ensemble=False):
+
   # Task-specific EnVars beyond the task_common_vars
-  dcTaskEnv={}
+  meta_id='prep_lbc'
+  cycledefs='prod'
+  hrs=os.getenv('PROD_BGN_AT_HRS', '3 15')
+  fcst_length=os.getenv('FCST_LENGTH','1')
+  lbc_interval=os.getenv('LBC_INTERVAL','3')
+  fcst_len_hrs_cycles=os.getenv('FCST_LEN_HRS_CYCLES', '3 15')
+  dcTaskEnv={
+    'FCST_LENGTH': f'{fcst_length}',
+    'LBC_INTERVAL': f'{lbc_interval}',
+    'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycles}'
+  }
+
   if not do_ensemble:
     metatask=False
-    meta_id=''
-    task_id='prep_lbc'
-    cycledefs='prod'
-    hrs=os.getenv('PROD_BGN_AT_HRS', '3 15')
-    fcst_len_hrs_cycls=os.getenv('FCST_LEN_HRS_CYCLES', '3 15')
+    task_id=f'{meta_id}'
     meta_bgn=""
     meta_end=""
-    RUN='rrfs'
     ensindexstr=""
+    ensdirstr=""
     ensstr=""
   else:
     metatask=True
-    meta_id='prep_lbc'
     task_id=f'{meta_id}_m#ens_index#'
-    cycledefs='ens_prod'
     dcTaskEnv['ENS_INDEX']="#ens_index#"
-    hrs=os.getenv('ENS_PROD_BGN_AT_HRS', '3 15')
     meta_bgn=""
     meta_end=""
     ens_size=int(os.getenv('ENS_SIZE','2'))
@@ -34,18 +39,11 @@ def prep_lbc(xmlFile, expdir, do_ensemble=False):
 <var name="ens_index">{ens_indices}</var>'''
     meta_end=f'\
 </metatask>\n'
-    RUN='ens'
     ensindexstr="_m#ens_index#"
+    ensdirstr="/m#ens_index#"
     ensstr="ens_"
 
-  # Task-specific EnVars beyond the task_common_vars
-  fcst_length=os.getenv('FCST_LENGTH','1')
-  lbc_interval=os.getenv('LBC_INTERVAL','3')
-  dcTaskEnv={
-    'FCST_LENGTH': f'{fcst_length}',
-    'LBC_INTERVAL': f'{lbc_interval}',
-    'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycls}'
-  }
+  dcTaskEnv['DATAROOT']=f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensdirstr}</cyclestr>'
 
   # dependencies
   hrs=hrs.split(' ')

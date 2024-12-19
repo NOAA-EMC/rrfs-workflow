@@ -19,11 +19,13 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 #
 export pid=${pid:-$$}
 if [[ -z "${ENS_INDEX}" ]]; then
-  export RUN="rrfs"
+  export MEMID=""
+  export MEMDIR=""
 else
-  export RUN="ensrrfs"
+  export MEMID="_m${ENS_INDEX}"
+  export MEMDIR="/m${ENS_INDEX}"
 fi
-export jobid=${jobid:-${RUN}_prep_ic_${cyc}}
+export jobid=${jobid:-${RUN}_prep_ic${MEMID}_${cyc}}
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 
 if [ -d ${DATA} ]; then # remove the ${DATA} directory if existed
@@ -32,10 +34,10 @@ fi
 mkdir -p ${DATA}
 
 export UMBRELLA_DATA=${UMBRELLA_DATA:-${DATAROOT}/umbrella}
-if [ -d ${UMBRELLA_DATA}/prep_ic ]; then
-  rm -rf ${UMBRELLA_DATA}/prep_ic
+if [ -d ${UMBRELLA_DATA}${MEMDIR}/prep_ic ]; then
+  rm -rf ${UMBRELLA_DATA}${MEMDIR}/prep_ic
 fi
-mkdir -p ${UMBRELLA_DATA}/prep_ic
+mkdir -p ${UMBRELLA_DATA}${MEMDIR}/prep_ic
 #
 #-----------------------------------------------------------------------
 # Define COM directories

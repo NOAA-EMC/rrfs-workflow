@@ -86,7 +86,7 @@ def setup_xml(HOMErrfs, expdir):
       lbc(xmlFile,expdir,do_ensemble=True)
       prep_ic(xmlFile,expdir,do_ensemble=True)
       prep_lbc(xmlFile,expdir,do_ensemble=True)
-      if os.getenv("ENS_FCST_ONLY","FALSE").upper()=="FALSE":
+      if os.getenv("FCST_ONLY","FALSE").upper()=="FALSE":
         ens_da(xmlFile,expdir)
       fcst(xmlFile,expdir,do_ensemble=True)
       save_fcst(xmlFile,expdir,do_ensemble=True)

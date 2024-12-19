@@ -12,15 +12,8 @@ HH=${CDATE:8:2}
 # 
 #
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 
-if [[ -z "${ENS_INDEX}" ]]; then
-  IFS=' ' read -r -a array <<< "${PROD_BGN_AT_HRS}"
-  ensindexstr=""
-  lbc_interval=${LBC_INTERVAL:-3}
-else
-  IFS=' ' read -r -a array <<< "${ENS_PROD_BGN_AT_HRS}"
-  ensindexstr="/mem${ENS_INDEX}"
-  lbc_interval=${ENS_LBC_INTERVAL:-3}
-fi
+IFS=' ' read -r -a array <<< "${PROD_BGN_AT_HRS}"
+lbc_interval=${LBC_INTERVAL:-3}
 #
 # find forecst length for this cycle
 #
@@ -41,7 +34,7 @@ while [[ $n -le 12 ]]; do
   CDATElbc=$($NDATE -$((10#${n})) ${CDATE})
   YYYYMMDDlbc=${CDATElbc:0:8}
   HHlbc=${CDATElbc:8:2}
-  checkfile=${COMINrrfs}/${RUN}.${YYYYMMDDlbc}/${HHlbc}${ensindexstr}/lbc/${last_bdyfile}
+  checkfile=${COMINrrfs}/${RUN}.${YYYYMMDDlbc}/${HHlbc}${MEMDIR}/lbc/${last_bdyfile}
   if [ -r "${checkfile}" ];then
      echo "Found ${checkfile}; Use it as boundary for forecast "
      break
@@ -60,7 +53,7 @@ if [ -r "${checkfile}" ]; then
   for fhr in  ${fhr_all}; do
     CDATElbc=$($NDATE ${fhr} ${CDATE})
     string_time=$(date -d "${CDATElbc:0:8} ${CDATElbc:8:2}" +%Y-%m-%d_%H.%M.%S)
-    ${cpreq} ${COMINrrfs}/${RUN}.${YYYYMMDDlbc}/${HHlbc}${ensindexstr}/lbc/lbc.${string_time}.nc ${UMBRELLA_DATA}/prep_lbc/.
+    ${cpreq} ${COMINrrfs}/${RUN}.${YYYYMMDDlbc}/${HHlbc}${MEMDIR}/lbc/lbc.${string_time}.nc ${UMBRELLA_DATA}${MEMDIR}/prep_lbc/.
   done
 else
   echo "Cannot find boundary file: ${checkfile}"

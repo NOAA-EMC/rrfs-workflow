@@ -5,15 +5,8 @@ cpreq=${cpreq:-cpreq}
 
 cd ${DATA}
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 
-if [[ -z "${ENS_INDEX}" ]]; then
-  IFS=' ' read -r -a array <<< "${PROD_BGN_AT_HRS}"
-  ensindexstr=""
-  lbc_interval=${LBC_INTERVAL:-3}
-else
-  IFS=' ' read -r -a array <<< "${ENS_PROD_BGN_AT_HRS}"
-  ensindexstr="/mem${ENS_INDEX}"
-  lbc_interval=${ENS_LBC_INTERVAL:-3}
-fi
+IFS=' ' read -r -a array <<< "${PROD_BGN_AT_HRS}"
+lbc_interval=${LBC_INTERVAL:-3}
 #
 # determine time steps and etc according to the mesh
 #
@@ -41,18 +34,18 @@ echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
 #
 # determine whether to begin new cycles
 #
-if [[ -r "${UMBRELLA_DATA}/prep_ic/init.nc" ]]; then
-  ln -snf ${UMBRELLA_DATA}/prep_ic/init.nc .
+if [[ -r "${UMBRELLA_DATA}${MEMDIR}/prep_ic/init.nc" ]]; then
+  ln -snf ${UMBRELLA_DATA}${MEMDIR}/prep_ic/init.nc .
   do_restart='false'
 else
-  ln -snf ${UMBRELLA_DATA}/prep_ic/restart.${timestr}.nc .
+  ln -snf ${UMBRELLA_DATA}${MEMDIR}/prep_ic/restart.${timestr}.nc .
   do_restart='true'
 fi
 
 #
 #  link bdy and fix files
 #
-ln -snf ${UMBRELLA_DATA}/prep_lbc/lbc*.nc .
+ln -snf ${UMBRELLA_DATA}${MEMDIR}/prep_lbc/lbc*.nc .
 
 ln -snf ${FIXrrfs}/physics/${PHYSICS_SUITE}/* .
 ln -snf ${FIXrrfs}/meshes/${MESH_NAME}.ugwp_oro_data.nc ./ugwp_oro_data.nc

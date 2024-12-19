@@ -19,11 +19,13 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 #
 export pid=${pid:-$$}
 if [[ -z "${ENS_INDEX}" ]]; then
-  export RUN="rrfs"
+  export MEMID=""
+  export MEMDIR=""
 else
-  export RUN="ensrrfs"
+  export MEMID="_m${ENS_INDEX}"
+  export MEMDIR="/m${ENS_INDEX}"
 fi
-export jobid=${jobid:-${RUN}_fcst_${cyc}}
+export jobid=${jobid:-${RUN}_fcst${MEMID}_${cyc}}
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 
 if [ -d ${DATA} ]; then # remove the ${DATA} directory if existed
@@ -39,11 +41,7 @@ export UMBRELLA_DATA=${UMBRELLA_DATA:-${DATAROOT}/umbrella}
 #
 export COMINrrfs=${COMINrrfs:-$(compath.py $envir/rrfs/$rrfs_ver)}
 export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-if [[ -z "${ENS_INDEX}" ]]; then
-  mkdir -p ${COMOUT}/fcst
-else
-  mkdir -p ${COMOUT}/mem${ENS_INDEX}/fcst
-fi
+mkdir -p ${COMOUT}${MEMDIR}/fcst
 #
 #----------------------------------------
 # Execute the script.

@@ -3,11 +3,6 @@ declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LI
 set -x
 cpreq=${cpreq:-cpreq}
 prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
-if [[ -z "${ENS_INDEX}" ]]; then
-  ensindexstr=""
-else
-  ensindexstr="/mem${ENS_INDEX}"
-fi
 cd ${DATA}
 #
 # genereate the namelist on the fly
@@ -53,7 +48,7 @@ sed -e "s/@input_stream@/static.nc/" -e "s/@output_stream@/init.nc/" \
 #
 #prepare fix files and ungrib files for init_atmosphere
 #
-ln -snf ${UMBRELLA_DATA}${ensindexstr}/ungrib_ic/${prefix}:${start_time:0:13} .
+ln -snf ${UMBRELLA_DATA}${MEMDIR}/ungrib_ic${MEMID}/${prefix}:${start_time:0:13} .
 ${cpreq} ${FIXrrfs}/meshes/${MESH_NAME}.static.nc static.nc
 ${cpreq} ${FIXrrfs}/graphinfo/${MESH_NAME}.graph.info.part.${NTASKS} .
 
@@ -68,4 +63,4 @@ if [[ ! -s './init.nc' ]]; then
 fi
 
 # copy init.nc to COMOUT
-${cpreq} ${DATA}/init.nc ${COMOUT}${ensindexstr}/ic/
+${cpreq} ${DATA}/init.nc ${COMOUT}${MEMDIR}/ic/

@@ -25,11 +25,12 @@ export GROUP_TOTAL_NUM=${GROUP_TOTAL_NUM:-1}
 #-----------------------------------------------------------------------
 #
 export pid=${pid:-$$}
-export RUN="rrfs"${WGF}
 if [[ -z "${ENS_INDEX}" ]]; then
   export MEMID=""
+  export MEMDIR=""
 else
   export MEMID="_m${ENS_INDEX}"
+  export MEMDIR="/m${ENS_INDEX}"
 fi
 if [ ${TYPE} == "ic" ]; then
   export jobid=${jobid:-${RUN}_ungrib_${TYPE}${MEMID}_${cyc}}
@@ -44,10 +45,10 @@ fi
 mkdir -p ${DATA}
 
 export UMBRELLA_DATA=${UMBRELLA_DATA:-${DATAROOT}/umbrella}
-if [[ -d ${UMBRELLA_DATA}/ungrib_${TYPE}${MEMID} ]] && (( ${GROUP_TOTAL_NUM} == 1 )); then
-  rm -rf ${UMBRELLA_DATA}/ungrib_${TYPE}${MEMID}
+if [[ -d ${UMBRELLA_DATA}${MEMDIR}/ungrib_${TYPE}${MEMID} ]] && (( ${GROUP_TOTAL_NUM} == 1 )); then
+  rm -rf ${UMBRELLA_DATA}${MEMDIR}/ungrib_${TYPE}${MEMID}
 fi
-mkdir -p ${UMBRELLA_DATA}/ungrib_${TYPE}${MEMID}
+mkdir -p ${UMBRELLA_DATA}${MEMDIR}/ungrib_${TYPE}${MEMID}
 
 #
 #-----------------------------------------------------------------------

@@ -5,17 +5,9 @@ cpreq=${cpreq:-cpreq}
 
 cd ${DATA}
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
-if [[ -z "${ENS_INDEX}" ]]; then
-  ensindexstr=""
-  restart_interval=${RESTART_INTERVAL:-61}
-  history_interval=${HISTORY_INTERVAL:-1}
-  comoutdir=${COMOUT}/fcst
-else
-  ensindexstr="/mem${ENS_INDEX}"
-  restart_interval=${ENS_RESTART_INTERVAL:-61}
-  history_interval=${ENS_HISTORY_INTERVAL:-1}
-  comoutdir=${COMOUT}/mem${ENS_INDEX}/fcst
-fi
+restart_interval=${RESTART_INTERVAL:-61}
+history_interval=${HISTORY_INTERVAL:-1}
+comoutdir=${COMOUT}${MEMDIR}/fcst
 #
 # find forecst length for this cycle
 #
@@ -26,13 +18,8 @@ echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
 #
 # decide the location of run and umbrella
 #
-if [[ -z "${ENS_INDEX}" ]]; then
-  ensindexstr=""
-else
-  ensindexstr="/mem${ENS_INDEX}"
-fi
-workdir="${DATAROOT}${ensindexstr}/${RUN}_fcst_${cyc}"
-umbrelladir="${UMBRELLA_DATA}/${jobid}"
+workdir="${DATAROOT}/${RUN}_fcst${MEMID}_${cyc}"
+umbrelladir="${UMBRELLA_DATA}${MEMDIR}/${jobid}"
 #
 #  move history files when it is done to umbrella
 #  now check each until the last history is moved

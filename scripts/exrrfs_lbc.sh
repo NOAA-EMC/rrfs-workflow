@@ -6,11 +6,6 @@ cpreq=${cpreq:-cpreq}
 # find variables from env
 #
 prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
-if [[ -z "${ENS_INDEX}" ]]; then
-  ensindexstr=""
-else
-  ensindexstr="/mem${ENS_INDEX}"
-fi
 cd ${DATA}
 #
 # find start and end time
@@ -76,9 +71,9 @@ knt=0
 for fhr in  ${fhr_all}; do
   EDATE=$($NDATE ${fhr} ${CDATEin})
   timestring=$(date -d "${EDATE:0:8} ${EDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
-  ln -snf ${UMBRELLA_DATA}${ensindexstr}/ungrib_lbc/${prefix}:${timestring:0:13} .
+  ln -snf ${UMBRELLA_DATA}${MEMDIR}/ungrib_lbc${MEMID}/${prefix}:${timestring:0:13} .
 done
-ln -snf ${COMINrrfs}/${RUN}.${PDY}/${cyc}${ensindexstr}/ic/init.nc .
+ln -snf ${COMINrrfs}/${RUN}.${PDY}/${cyc}${MEMDIR}/ic/init.nc .
 ${cpreq} ${FIXrrfs}/meshes/${MESH_NAME}.static.nc static.nc
 ${cpreq} ${FIXrrfs}/graphinfo/${MESH_NAME}.graph.info.part.${NTASKS} .
 
@@ -94,4 +89,4 @@ if (( $? != 0 )); then
 fi
 
 # copy lbc*.nc to COMOUT
-${cpreq} ${DATA}/lbc*.nc ${COMOUT}${ensindexstr}/lbc/
+${cpreq} ${DATA}/lbc*.nc ${COMOUT}${MEMDIR}/lbc/

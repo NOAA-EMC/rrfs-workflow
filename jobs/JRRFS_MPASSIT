@@ -27,11 +27,13 @@ export HISTORY_INTERVAL=${HISTORY_INTERVAL:-1}
 #
 export pid=${pid:-$$}
 if [[ -z "${ENS_INDEX}" ]]; then
-  export RUN="rrfs"
+  export MEMID=""
+  export MEMDIR=""
 else
-  export RUN="ensrrfs"
+  export MEMID="_m${ENS_INDEX}"
+  export MEMDIR="/m${ENS_INDEX}"
 fi
-export jobid=${jobid:-${RUN}_mpassit_g${GROUP_INDEX}_${cyc}}
+export jobid=${jobid:-${RUN}_mpassit${MEMID}_g${GROUP_INDEX}_${cyc}}
 
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 if [ -d ${DATA} ]; then # remove the ${DATA}/${GROUP_INDEX} directory if existed
@@ -40,7 +42,7 @@ fi
 mkdir -p ${DATA}
 
 export UMBRELLA_DATA=${UMBRELLA_DATA:-${DATAROOT}/umbrella}
-mkdir -p ${UMBRELLA_DATA}/mpassit
+mkdir -p ${UMBRELLA_DATA}${MEMDIR}/mpassit
 
 #
 #-----------------------------------------------------------------------
