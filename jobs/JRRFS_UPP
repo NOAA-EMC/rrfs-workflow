@@ -43,7 +43,7 @@ fi
 mkdir -p ${DATA}
 
 export UMBRELLA_DATA=${UMBRELLA_DATA:-${DATAROOT}/umbrella}
-mkdir -p ${UMBRELLA_DATA}/upp
+mkdir -p ${UMBRELLA_DATA}${MEMDIR}/upp
 #
 #-----------------------------------------------------------------------
 # Define COM directories
@@ -51,11 +51,7 @@ mkdir -p ${UMBRELLA_DATA}/upp
 #
 export COMINrrfs=${COMINrrfs:-$(compath.py $envir/rrfs/$rrfs_ver)}
 export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-if [[ -z "${ENS_INDEX}" ]]; then
-  mkdir -p ${COMOUT}/upp
-else
-  mkdir -p ${COMOUT}/mem${ENS_INDEX}/upp
-fi
+mkdir -p ${COMOUT}${MEMDIR}/upp
 #
 #----------------------------------------
 # Execute the script.
