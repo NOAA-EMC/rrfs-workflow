@@ -46,56 +46,18 @@ def prep_lbc(xmlFile, expdir, do_ensemble=False):
   dcTaskEnv['DATAROOT']=f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensdirstr}</cyclestr>'
 
   # dependencies
-  hrs=hrs.split(' ')
-  streqs=""; strneqs=""; first=True
-  for hr in hrs:
-    hr=f"{hr:0>2}"
-    if first:
-      first=False
-      streqs=streqs  +f"        <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
-      strneqs=strneqs+f"        <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
-    else:
-      streqs=streqs  +f"\n        <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
-      strneqs=strneqs+f"\n        <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
-
   timedep=""
   realtime=os.getenv("REALTIME","false")
   starttime=get_cascade_env(f"STARTTIME_{task_id}".upper())
   if realtime.upper() == "TRUE":
     timedep=f'\n   <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
-  #
-  DATAROOT=os.getenv("DATAROOT","DATAROOT_NOT_DEFINED")
-  NET=os.getenv("NET","NET_NOT_DEFINED")
-  VERSION=os.getenv("VERSION","VERSION_NOT_DEFINED")
+  
   dependencies=f'''
-  <dependency>
-  <and>{timedep}
-   <metataskdep metatask="lbc{ensindexstr}" cycle_offset="0:00:00"/>
-   <or>
-    <and>
-      <or>
-{streqs}
-      </or>
-      <taskdep task="prep_ic{ensindexstr}"/>
-    </and>
-    <and>
-      <and>
-{strneqs}
-      </and>
-      <taskdep task="{ensstr}da"/>
-    </and>
-   </or>
-  </and>
-  </dependency>'''
-  # overwrite dependencies if it is FCST_ONLY
-  if os.getenv('FCST_ONLY','FALSE').upper() == "TRUE":
-    dependencies=f'''
   <dependency>
   <and>{timedep}
    <taskdep task="prep_ic{ensindexstr}"/>
   </and>
   </dependency>'''
-
   #
   xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"PREP_LBC",do_ensemble)
 ### end of fcst --------------------------------------------------------

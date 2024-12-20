@@ -4,21 +4,48 @@ set -x
 cpreq=${cpreq:-cpreq}
 
 cd ${DATA}
+cyc_interval=${CYC_INTERVAL:-1}
+#
+# decide if this cycle is cold start
+#
+start_type="warm"
+cyc_hrs_coldstart=${CYCL_HRS_COLDSTART:-"99"}
+array=(${cyc_hrs_coldstart})
+for hr in "${array[@]}"; do
+  chr=$(printf '%02d' ${hr})
+  if [ "${cyc}" == "${chr}" ]; then
+    start_type="cold"
+  fi
+done
+echo "this cycle is ${start_type} start"
+#
+#  find the right background file
+#
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 
-IFS=' ' read -r -a array <<< "${PROD_BGN_AT_HRS}"
-lbc_interval=${LBC_INTERVAL:-3}
-# determine whether to begin new cycles
-begin="NO"
-begin="YES"
-#for hr in "${array[@]}"; do
-#  if [[ "${cyc}" == "$(printf '%02d' ${hr})" ]]; then
-#    begin="YES"; break
-#  fi
-#done
-if [[ "${begin}" == "YES" ]]; then
+
+if [[ "${start_type}" == "cold" ]]; then
   ${cpreq} ${COMINrrfs}/${RUN}.${PDY}/${cyc}${MEMDIR}/ic/init.nc ${UMBRELLA_DATA}${MEMDIR}/prep_ic/.
-  do_restart='false'
+  echo "cold start from ${COMINrrfs}/${RUN}.${PDY}/${cyc}${MEMDIR}/ic/init.nc"
+elif [[ "${start_type}" == "warm" ]]; then
+  thisfile="undefined"
+  for (( ii=${cyc_interval}; ii<=$(( 3*${cyc_interval} )); ii=ii+${cyc_interval} )); do
+    CDATEp=$($NDATE -${ii} ${CDATE} )
+    PDYii=${CDATEp:0:8}
+    cycii=${CDATEp:8:2}
+    thisfile=${COMINrrfs}/${RUN}.${PDYii}/${cycii}${MEMDIR}/fcst/mpasout.${timestr}.nc
+    if [[ -r ${thisfile} ]]; then
+      break
+    fi
+  done
+  if [[ -r ${thisfile} ]]; then
+    ${cpreq} ${thisfile} ${UMBRELLA_DATA}${MEMDIR}/prep_ic/mpasin.nc
+    echo "warm start from ${thisfile}"
+  else
+    echo "FATAL ERROR: PREP_IC failed, cannot find warm start file"
+    err_exit
+  fi
 else
-  ${cpreq} ${COMINrrfs}/${RUN}.${PDY}/${cyc}${MEMDIR}/da/restart.${timestr}.nc ${UMBRELLA_DATA}${MEMDIR}/prep_ic/.
-  do_restart='true'
+  echo "FATAL ERROR: PREP_IC failed, start type is not defined"
+  err_exit
 fi
+exit 0
