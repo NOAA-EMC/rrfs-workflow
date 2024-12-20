@@ -6,10 +6,11 @@ from rocoto_funcs.base import xml_task, source, get_cascade_env
 def prep_ic(xmlFile, expdir, do_ensemble=False):
   meta_id='prep_ic'
   cycledefs='prod'
-  hrs=os.getenv('PROD_BGN_AT_HRS', '3 15')
+  coldhrs=os.getenv('CYCL_HRS_COLDSTART', '03 15')
 
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={
+    'CYCL_HRS_COLDSTART': f'{coldhrs}',
   }
   if not do_ensemble:
     metatask=False
@@ -39,9 +40,9 @@ def prep_ic(xmlFile, expdir, do_ensemble=False):
   dcTaskEnv['DATAROOT']=f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensdirstr}</cyclestr>'
 
   # dependencies
-  hrs=hrs.split(' ')
+  coldhrs=coldhrs.split(' ')
   streqs=""; strneqs=""; first=True
-  for hr in hrs:
+  for hr in coldhrs:
     hr=f"{hr:0>2}"
     if first:
       first=False
@@ -57,9 +58,6 @@ def prep_ic(xmlFile, expdir, do_ensemble=False):
   if realtime.upper() == "TRUE":
     timedep=f'\n   <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
   #
-  DATAROOT=os.getenv("DATAROOT","DATAROOT_NOT_DEFINED")
-  NET=os.getenv("NET","NET_NOT_DEFINED")
-  VERSION=os.getenv("VERSION","VERSION_NOT_DEFINED")
   dependencies=f'''
   <dependency>
   <and>{timedep}
@@ -74,7 +72,6 @@ def prep_ic(xmlFile, expdir, do_ensemble=False):
       <and>
 {strneqs}
       </and>
-      <taskdep task="{ensstr}da"/>
     </and>
    </or>
   </and>

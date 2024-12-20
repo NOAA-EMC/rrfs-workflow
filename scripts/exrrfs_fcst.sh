@@ -5,7 +5,6 @@ cpreq=${cpreq:-cpreq}
 
 cd ${DATA}
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 
-IFS=' ' read -r -a array <<< "${PROD_BGN_AT_HRS}"
 lbc_interval=${LBC_INTERVAL:-3}
 #
 # determine time steps and etc according to the mesh
@@ -36,10 +35,10 @@ echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
 #
 if [[ -r "${UMBRELLA_DATA}${MEMDIR}/prep_ic/init.nc" ]]; then
   ln -snf ${UMBRELLA_DATA}${MEMDIR}/prep_ic/init.nc .
-  do_restart='false'
+  start_type='cold'
 else
-  ln -snf ${UMBRELLA_DATA}${MEMDIR}/prep_ic/restart.${timestr}.nc .
-  do_restart='true'
+  ln -snf ${UMBRELLA_DATA}${MEMDIR}/prep_ic/mpasin.nc .
+  start_type='warm'
 fi
 
 #

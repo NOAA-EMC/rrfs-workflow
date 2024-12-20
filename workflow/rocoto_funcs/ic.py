@@ -44,7 +44,7 @@ def ic(xmlFile, expdir, do_ensemble=False):
     timedep=f'\n      <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
   dependencies=f'''
   <dependency>
-    <and>{timedep}
+    <and>
       <taskdep task="ungrib_ic{ensindexstr}"/>
     </and>
   </dependency>'''

@@ -66,9 +66,9 @@ def setup_xml(HOMErrfs, expdir):
       lbc(xmlFile,expdir)
       prep_ic(xmlFile,expdir)
       prep_lbc(xmlFile,expdir)
-      if os.getenv("FCST_ONLY","FALSE").upper()=="FALSE":
-        ioda_bufr(xmlFile,expdir)
-        da(xmlFile,expdir)
+#      if os.getenv("FCST_ONLY","FALSE").upper()=="FALSE":
+#        ioda_bufr(xmlFile,expdir)
+#        da(xmlFile,expdir)
       fcst(xmlFile,expdir)
       save_fcst(xmlFile,expdir)
       mpassit(xmlFile,expdir)
@@ -86,8 +86,8 @@ def setup_xml(HOMErrfs, expdir):
       lbc(xmlFile,expdir,do_ensemble=True)
       prep_ic(xmlFile,expdir,do_ensemble=True)
       prep_lbc(xmlFile,expdir,do_ensemble=True)
-      if os.getenv("FCST_ONLY","FALSE").upper()=="FALSE":
-        ens_da(xmlFile,expdir)
+ #     if os.getenv("FCST_ONLY","FALSE").upper()=="FALSE":
+ #       ens_da(xmlFile,expdir)
       fcst(xmlFile,expdir,do_ensemble=True)
       save_fcst(xmlFile,expdir,do_ensemble=True)
       mpassit(xmlFile,expdir,do_ensemble=True)
