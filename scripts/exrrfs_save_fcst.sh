@@ -7,6 +7,7 @@ cd ${DATA}
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
 restart_interval=${RESTART_INTERVAL:-61}
 history_interval=${HISTORY_INTERVAL:-1}
+cyc_interval=${CYC_INTERVAL:-1}
 comoutdir=${COMOUT}${MEMDIR}/fcst
 #
 # find forecst length for this cycle
@@ -54,7 +55,7 @@ for (( ii=0; ii<${num_fhrs}; ii=ii+1 )); do
       mv ${history_file} ${umbrelladir}/.
       mv ${diag_file}    ${umbrelladir}/.
       # save to com
-      if (( ${ii} == 1 )); then
+      if (( ${ii} == ${cyc_interval} )); then
         ${cpreq} ${mpasout_file} ${comoutdir}/.
       fi
     else

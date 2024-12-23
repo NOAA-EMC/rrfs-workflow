@@ -7,13 +7,12 @@ export WGF="enkf"   # working group function = "det", "enkf", "ensf", "firewx"
 export EXP_NAME=rrfs${WGF}
 export VERSION=v2.0.2
 export TAG=c3v202
-export OPSROOT=/lfs5/BMC/nrtrr/NCO_dirs
-export OPSROOT=/lfs5/BMC/wrfruc/Chunhua.Zhou/NCO_dirs/conus12km.gefs.L60/${VERSION}
+export OPSROOT=/lfs5/BMC/nrtrr/NCO_dirs/${VERSION}
 export EXPDIR=${OPSROOT}/${EXP_NAME}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
 #
-export REALTIME=false     # true, false
+export REALTIME=true     # true, false
 #
 export DO_ENSEMBLE=true
 export DO_DETERMINISTIC=false
@@ -26,7 +25,7 @@ export COMINgfs='/lfs5/BMC/wrfruc/Chunhua.Zhou/w4/data/GFS/from_aws'
 export COMINrap='/lfs5/BMC/nrtrr/NCO_data/rap'
 export COMINgefs="/lfs5/BMC/wrfruc/Chunhua.Zhou/w4/data/GEFS"
 #
-export FCST_ONLY="true"
+export FCST_ONLY="false"
 export CYC_INTERVAL=3
 export FCST_LENGTH=3
 export FCST_LEN_HRS_CYCLES="12 03 03 03 03 03 12 03 03 03 03 03 12 03 03 03 03 03 12 03 03 03 03 03"
@@ -34,31 +33,51 @@ export HISTORY_INTERVAL=1
 export RESTART_INTERVAL=61
 #
 export IC_EXTRN_MDL_NAME='GEFS'
-export IC_OFFSET=35
-export IC_EXTRN_MDL_BASEDIR="${COMINgefs}/gefs.@Y@m@d/@H"
-export IC_EXTRN_MDL_NAME_PATTERN="pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.ffHHH"
-export IC_EXTRN_MDL_NAME_PATTERN_B="pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.ffHHH"
+export IC_OFFSET=36
+export IC_EXTRN_MDL_BASEDIR="/mnt/lfs5/BMC/public/data/grids/gens"
+export IC_EXTRN_MDL_NAME_PATTERN="gep#gmem#/@y@j@H000fHHH"
+export IC_EXTRN_MDL_NAME_PATTERN_B="pgrb2b/gep#gmem#/@y@j@H000fHHH"
 #
 export LBC_EXTRN_MDL_NAME='GEFS'
-export LBC_OFFSET=5
-export LBC_LENGTH=3
+export LBC_OFFSET=6
+export LBC_LENGTH=12
 export LBC_INTERVAL=3
-export LBC_EXTRN_MDL_BASEDIR="${COMINgefs}/gefs.@Y@m@d/@H"
-export LBC_EXTRN_MDL_NAME_PATTERN="pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.ffHHH"
-export LBC_EXTRN_MDL_NAME_PATTERN_B="pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.ffHHH"
+export LBC_EXTRN_MDL_BASEDIR="/mnt/lfs5/BMC/public/data/grids/gens"
+export LBC_EXTRN_MDL_NAME_PATTERN="gep#gmem#/@y@j@H000fHHH"
+export LBC_EXTRN_MDL_NAME_PATTERN_B="/pgrb2b/gep#gmem#/@y@j@H000fHHH"
 #
-export RUN_PERIOD="2024052623-2024052623"
-export CYCLEDEF_IC="   &STARTYEAR;&STARTMONTH;&STARTDAY;2300 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 06:00:00 "
-export CYCLEDEF_LBC="  &STARTYEAR;&STARTMONTH;&STARTDAY;2300 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 06:00:00 "
-export CYCLEDEF_PROD=" &STARTYEAR;&STARTMONTH;&STARTDAY;2300 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 06:00:00 "
+export RUN_PERIOD="2024122100-2024122100"
+export CYCLEDEF_IC="   &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 06:00:00 "
+export CYCLEDEF_LBC="  &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 06:00:00 "
+export CYCLEDEF_PROD=" &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 03:00:00 "
+export CYCL_HRS_COLDSTART="00 06 12 18"
 #
 export ACCOUNT="rtwrfruc"
 export QUEUE="rth"
 export PARTITION="kjet"
 export RESERVATION="rrfsens"
 #
+export STARTTIME_IC="00:30:00"
+export STARTTIME_LBC="00:00:01"
+export STARTTIME_BUFRIODA="00:00:01"
+export STARTTIME_ENSBE="00:00:01"
+export STARTTIME_DA="00:30:01"
+export STARTTIME_FCST="00:35:01"
+export STARTTIME_MPASSIT="00:35:01"
+export STARTTIME_UPP="00:35:01"
+export STARTTIME_PREP_IC="00:30:00"
+export STARTTIME_PREP_LBC="00:30:00"
+#
 export NODES_IC="<nodes>6:ppn=40</nodes>"
 export NODES_LBC="<nodes>6:ppn=40</nodes>"
 export NODES_FCST="<nodes>3:ppn=40</nodes>"
-export WALLTIME_FCST="00:50:00"
+export NODES_MPASSIT="<nodes>1:ppn=40</nodes>"
+export NODES_UPP="<nodes>1:ppn=40</nodes>"
 #
+export WALLTIME_FCST="01:00:00"
+export WALLTIME_SAVE_FCST="1:00:00"
+export WALLTIME_MPASSIT="1:00:00"
+export WALLTIME_UPP="1:00:00"
+#
+export KEEPDATA=yes
+export MPI_RUN_CMD=srun
