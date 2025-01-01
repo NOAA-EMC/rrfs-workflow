@@ -40,7 +40,7 @@ HH=${CDATE:8:2}
 #
 #  find the localtion of the history files
 #
-history_dir=${UMBRELLA_DATA}${MEMDIR}/${RUN}_fcst${MEMID}_${cyc}
+history_dir=${UMBRELLA_ROOT}/fcst
 #
 # find forecst length for this cycle
 #
@@ -90,7 +90,7 @@ for (( ii=0; ii<${num_fhrs}; ii=ii+${group_total_num} )); do
       ${MPI_RUN_CMD} ./mpassit.x namelist.mpassit
       # check the status, copy output to UMBRELLA_DATA
       if [[ -s "./mpassit.${timestr}.nc" ]]; then
-        mv ./mpassit.${timestr}.nc ${UMBRELLA_DATA}${MEMDIR}/mpassit/.
+        mv ./mpassit.${timestr}.nc ${UMBRELLA_DATA}/.
         mv namelist.mpassit namelist.mpassit_${fhr}
       else
         echo "FATAL ERROR: failed to genereate mpassit.${timestr}.nc"

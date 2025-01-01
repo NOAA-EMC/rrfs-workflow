@@ -24,8 +24,14 @@ echo "this cycle is ${start_type} start"
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 
 
 if [[ "${start_type}" == "cold" ]]; then
-  ${cpreq} ${COMINrrfs}/${RUN}.${PDY}/${cyc}${MEMDIR}/ic/init.nc ${UMBRELLA_DATA}${MEMDIR}/prep_ic/.
-  echo "cold start from ${COMINrrfs}/${RUN}.${PDY}/${cyc}${MEMDIR}/ic/init.nc"
+  thisfile=${COMINrrfs}/${RUN}.${PDY}/${cyc}${MEMDIR}/ic/init.nc
+  if [[ -r ${thisfile} ]]; then
+    ${cpreq} ${thisfile} ${UMBRELLA_DATA}/.
+    echo "cold start from ${thisfile}"
+  else
+    echo "FATAL ERROR: PREP_IC failed, cannot find cold start file: ${thisfile}"
+    err_exit
+  fi
 elif [[ "${start_type}" == "warm" ]]; then
   thisfile="undefined"
   for (( ii=${cyc_interval}; ii<=$(( 3*${cyc_interval} )); ii=ii+${cyc_interval} )); do
@@ -38,10 +44,10 @@ elif [[ "${start_type}" == "warm" ]]; then
     fi
   done
   if [[ -r ${thisfile} ]]; then
-    ${cpreq} ${thisfile} ${UMBRELLA_DATA}${MEMDIR}/prep_ic/mpasin.nc
+    ${cpreq} ${thisfile} ${UMBRELLA_DATA}/mpasin.nc
     echo "warm start from ${thisfile}"
   else
-    echo "FATAL ERROR: PREP_IC failed, cannot find warm start file"
+    echo "FATAL ERROR: PREP_IC failed, cannot find warm start file: ${thisfile}"
     err_exit
   fi
 else

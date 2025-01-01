@@ -77,7 +77,7 @@ export err=$?; err_chk
 #
 outfile="${prefix}:$(date -d "${CDATEend:0:8} ${CDATEend:8:2}" +%Y-%m-%d_%H)"
 if [[ -s ${outfile} ]]; then
-  mv ${prefix}:* ${UMBRELLA_DATA}${MEMDIR}/ungrib_${TYPE}${MEMID}/
+  mv ${prefix}:* ${UMBRELLA_DATA}/
 else
   echo "FATAL ERROR: ungrib failed"
   err_exit
