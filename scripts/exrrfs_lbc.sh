@@ -71,7 +71,7 @@ knt=0
 for fhr in  ${fhr_all}; do
   EDATE=$($NDATE ${fhr} ${CDATEin})
   timestring=$(date -d "${EDATE:0:8} ${EDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
-  ln -snf ${UMBRELLA_DATA}${MEMDIR}/ungrib_lbc${MEMID}/${prefix}:${timestring:0:13} .
+  ln -snf ${UMBRELLA_ROOT}/ungrib_lbc/${prefix}:${timestring:0:13} .
 done
 ln -snf ${COMINrrfs}/${RUN}.${PDY}/${cyc}${MEMDIR}/ic/init.nc .
 ${cpreq} ${FIXrrfs}/meshes/${MESH_NAME}.static.nc static.nc

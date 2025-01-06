@@ -53,7 +53,7 @@ if [ -r "${checkfile}" ]; then
   for fhr in  ${fhr_all}; do
     CDATElbc=$($NDATE ${fhr} ${CDATE})
     string_time=$(date -d "${CDATElbc:0:8} ${CDATElbc:8:2}" +%Y-%m-%d_%H.%M.%S)
-    ${cpreq} ${COMINrrfs}/${RUN}.${YYYYMMDDlbc}/${HHlbc}${MEMDIR}/lbc/lbc.${string_time}.nc ${UMBRELLA_DATA}${MEMDIR}/prep_lbc/.
+    ${cpreq} ${COMINrrfs}/${RUN}.${YYYYMMDDlbc}/${HHlbc}${MEMDIR}/lbc/lbc.${string_time}.nc ${UMBRELLA_DATA}/.
   done
 else
   echo "Cannot find boundary file: ${checkfile}"

@@ -27,7 +27,7 @@ YYJJJHH=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%y%j%H)
 #
 #  find the localtion of the history files
 #
-mpassit_dir=${UMBRELLA_DATA}${MEMDIR}/mpassit
+mpassit_dir=${UMBRELLA_ROOT}/mpassit
 #
 # find forecst length for this cycle
 #

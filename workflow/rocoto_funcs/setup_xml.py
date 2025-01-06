@@ -53,7 +53,7 @@ def setup_xml(HOMErrfs, expdir):
     header_entities(xmlFile,expdir)
     header_end(xmlFile)
     wflow_begin(xmlFile)
-    log_fpath=f'&LOGROOT;/rrfs.@Y@m@d/@H/rrfs_{TAG}.log'
+    log_fpath=f'&LOGROOT;/rrfs&WGF;.@Y@m@d/@H/rrfs&WGF;_{TAG}.log'
     wflow_log(xmlFile,log_fpath)
     wflow_cycledefs(xmlFile,dcCycledef)
     

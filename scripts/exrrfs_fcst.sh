@@ -33,18 +33,22 @@ echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
 #
 # determine whether to begin new cycles
 #
-if [[ -r "${UMBRELLA_DATA}${MEMDIR}/prep_ic/init.nc" ]]; then
-  ln -snf ${UMBRELLA_DATA}${MEMDIR}/prep_ic/init.nc .
+if [[ -r "${UMBRELLA_ROOT}/prep_ic/init.nc" ]]; then
+  ln -snf ${UMBRELLA_ROOT}/prep_ic/init.nc .
   start_type='cold'
+  do_DAcycling='false'
+  initial_filename='init.nc'
 else
-  ln -snf ${UMBRELLA_DATA}${MEMDIR}/prep_ic/mpasin.nc .
+  ln -snf ${UMBRELLA_ROOT}/prep_ic/mpasin.nc .
   start_type='warm'
+  do_DAcycling='true'
+  initial_filename='mpasin.nc'
 fi
 
 #
 #  link bdy and fix files
 #
-ln -snf ${UMBRELLA_DATA}${MEMDIR}/prep_lbc/lbc*.nc .
+ln -snf ${UMBRELLA_ROOT}/prep_lbc/lbc*.nc .
 
 ln -snf ${FIXrrfs}/physics/${PHYSICS_SUITE}/* .
 ln -snf ${FIXrrfs}/meshes/${MESH_NAME}.ugwp_oro_data.nc ./ugwp_oro_data.nc
@@ -80,7 +84,8 @@ history_interval=${HISTORY_INTERVAL:-1}
 diag_interval=${HISTORY_INTERVAL:-1}
 sed -e "s/@restart_interval@/${restart_interval}/" -e "s/@history_interval@/${history_interval}/" \
     -e "s/@diag_interval@/${diag_interval}/" -e "s/@lbc_interval@/${lbc_interval}/" \
-    ${PARMrrfs}/streams.atmosphere_fcst > streams.atmosphere
+    -e "s/@initial_filename@/${initial_filename}/" \
+    ${PARMrrfs}/streams.atmosphere  > streams.atmosphere
 
 # run the MPAS model
 ulimit -s unlimited

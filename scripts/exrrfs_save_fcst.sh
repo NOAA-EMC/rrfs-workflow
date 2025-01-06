@@ -20,7 +20,7 @@ echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
 # decide the location of run and umbrella
 #
 workdir="${DATAROOT}/${RUN}_fcst${MEMID}_${cyc}"
-umbrelladir="${UMBRELLA_DATA}${MEMDIR}/${jobid}"
+umbrelladir="${UMBRELLA_ROOT}/fcst"
 #
 #  move history files when it is done to umbrella
 #  now check each until the last history is moved

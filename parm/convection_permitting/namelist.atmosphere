@@ -33,7 +33,8 @@
     config_block_decomp_file_prefix  = 'graphinfo/${MESH_NAME}.graph.info.part.'
 /
 &restart
-    config_do_restart = ${do_restart}
+    config_do_restart = false
+    config_do_DAcycling = ${do_DAcycling}
 /
 &printout
     config_print_global_minmax_vel = true
