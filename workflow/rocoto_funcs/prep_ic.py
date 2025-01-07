@@ -7,6 +7,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False):
   meta_id='prep_ic'
   cycledefs='prod'
   coldhrs=os.getenv('CYCL_HRS_COLDSTART', '03 15')
+  cyc_interval=os.getenv('CYC_INTERVAL')
 
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={
@@ -71,6 +72,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False):
     <and>
       <and>
 {strneqs}
+<datadep age="00:03:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/rrfs/v2.0.2/rrfsdet.@Y@m@d/@H/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>
       </and>
     </and>
    </or>
