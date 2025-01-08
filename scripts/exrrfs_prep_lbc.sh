@@ -35,7 +35,7 @@ while [[ $n -le 12 ]]; do
   YYYYMMDDlbc=${CDATElbc:0:8}
   HHlbc=${CDATElbc:8:2}
   checkfile=${COMINrrfs}/${RUN}.${YYYYMMDDlbc}/${HHlbc}${MEMDIR}/lbc/${last_bdyfile}
-  if [[ -r "${checkfile}" ]];then
+  if [[ -r "${checkfile}" ]]; then
      echo "Found ${checkfile}; Use it as boundary for forecast "
      break
   else
