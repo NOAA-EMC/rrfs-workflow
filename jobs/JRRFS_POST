@@ -62,23 +62,36 @@ on the output files corresponding to a specified forecast hour.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
-#export jobid=${jobid:-${taskid}}
-export jobid=${taskid}
 
-export mem_num=m$(echo "${ENSMEM_INDX}")
+if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  export ENSMEM_INDX=${ENSMEM_INDX:-${MEMBER_NAME}}
+  export mem_num=m$(echo "${ENSMEM_INDX}")
+fi
 
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ ${CYCLE_TYPE} == "spinup" ]; then
   export INPUT_DATA="${DATAROOT}/${RUN}_forecast_spinup_${envir}_${cyc}"
+  export jobid=${RUN}_post_spinup_${envir}_${cyc}_f${fhr}
 else
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
     export INPUT_DATA="${DATAROOT}/${RUN}_forecast_${mem_num}_${envir}_${cyc}"
+    export jobid=${RUN}_post_${mem_num}_${envir}_${cyc}_f${fhr}
   else
-    export INPUT_DATA="${DATAROOT}/${RUN}_forecast_${envir}_${cyc}"
+    if [ ${WGF} == "firewx" ]; then
+      export INPUT_DATA="${DATAROOT}/firewx_forecast_${envir}_${cyc}"
+      export jobid=${WGF}_post_${envir}_${cyc}_f${fhr}
+    else
+      export INPUT_DATA="${DATAROOT}/${RUN}_forecast_${envir}_${cyc}"
+      export jobid=${RUN}_post_${envir}_${cyc}_f${fhr}
+    fi
   fi
 fi
 
-export DATA=${DATAROOT}/${jobid}
+if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
+  export jobid=${taskid}
+fi
+
+export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p ${DATA}
 cd ${DATA}
 

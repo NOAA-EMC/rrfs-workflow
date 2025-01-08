@@ -10,7 +10,7 @@
 &atmos_model_nml
     avg_max_length = 3600.0
     blocksize = 28
-    ccpp_suite = 'FV3_HRRR_gf'
+    ccpp_suite = 'RRFS_sas'
     chksum_debug = .false.
     dycore_only = .false.
     ignore_rst_cksum = .true.
@@ -102,7 +102,7 @@
     kord_tm = -9
     kord_tr = 9
     kord_wz = 9
-    layout = 15, 54
+    layout = 16, 48
     make_nh = .false.
     mountain = .true.
     n_split = 5
@@ -156,6 +156,7 @@
     addsmoke_flag = 1
     aero_dir_fdb = .true.
     aero_ind_fdb = .false.
+    betadcu = 1.0
     bl_mynn_edmf = 1
     bl_mynn_edmf_mom = 1
     bl_mynn_tkeadvect = .true.
@@ -200,6 +201,7 @@
     frac_ice = .true.
     gwd_opt = 3
     h2o_phys = .true.
+    hwp_method = 1
     hybedmf = .false.
     iaer = 1011
     ialb = 2
@@ -211,7 +213,7 @@
     icloud_bl = 1
     ico2 = 2
     iems = 2
-    imfdeepcnv = 3
+    imfdeepcnv = 2
     imfshalcnv = -1
     imp_physics = 8
     iopt_alb = 2
@@ -259,20 +261,21 @@
     oz_phys_2015 = .true.
     pdfcld = .false.
     plume_wind_eff = 1
-    plumerisefire_frq = 60
+    plumerisefire_frq = 30
     pre_rad = .false.
     print_diff_pgr = .true.
+    progsigma = .true.
     prslrd0 = 0.0
     random_clds = .false.
     redrag = .true.
     rrfs_sd = .false.
     rrfs_smoke_debug = .false.
     satmedmf = .false.
+    sc_factor = 1.0
     seas_opt = 0
     sfclay_compute_flux = .true.
     shal_cnv = .false.
     smoke_conv_wet_coef = 0.5, 0.5, 0.5
-    smoke_forecast = 1
     swhtr = .true.
     thsfc_loc = .false.
     trans_trac = .true.

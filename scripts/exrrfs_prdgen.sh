@@ -310,17 +310,19 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
     for domain in ${domains[@]}
     do
       if [ ${DO_ENSFCST} = "TRUE" ]; then
+        [[ -f ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${domain}.grib2 ]]&& rm -f ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${domain}.grib2
         for task in $(seq ${tasks[count]})
         do
           cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${domain}.grib2
         done
-        wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${domain}.grib2.idx
+        wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${domain}.grib2.idx
       else
+        [[ -f ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.${domain}.grib2 ]]&& rm -f ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.${domain}.grib2
         for task in $(seq ${tasks[count]})
         do
           cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.${domain}.grib2
         done
-        wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.${domain}.grib2.idx
+        wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.${domain}.grib2.idx
       fi
       count=$count+1
     done
@@ -429,7 +431,7 @@ else
             wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
              -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
              -new_grid_interpolation neighbor \
-	     -if ":(AEMFLX):" -new_grid_interpolation bilinear -fi \
+             -if ":(AEMFLX):" -new_grid_interpolation bilinear -fi \
              -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2
           fi
 

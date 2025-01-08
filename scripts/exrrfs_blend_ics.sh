@@ -137,8 +137,8 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
 
   # Loop through each ensemble member and check if the 1h RRFS EnKF files exist
   for imem in $(seq 1 ${NUM_ENS_MEMBERS}); do
-      ensmem=$( printf "%04d" $imem )
-      checkfile="${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
+      ensmem=$( printf "%03d" $imem )
+      checkfile="${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/m${ensmem}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
       if [[ -f $checkfile ]]; then
           ((existing_files++))
           echo "checkfile count: $existing_files"

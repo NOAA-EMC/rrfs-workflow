@@ -94,8 +94,8 @@ function set_FV3nml_ens_stoch_seeds() {
 #
   ensmem_name="mem${ENSMEM_INDX}"
 
-  fv3_nml_ensmem_fp_base="${run_dir}/input.nml_base"
-  fv3_nml_ensmem_fp="${run_dir}/input.nml"
+  fv3_nml_ensmem_fp_base="${DATA}/input.nml_base"
+  fv3_nml_ensmem_fp="${DATA}/input.nml"
 
   ensmem_num=$((10#${ENSMEM_INDX}))
 

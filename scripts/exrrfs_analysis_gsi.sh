@@ -411,7 +411,7 @@ else                          # cycle uses background from restart
 fi
 
 # update times in coupler.res to current cycle time
-cpreq -p ${fixgriddir}/fv3_coupler.res  coupler.res
+cpreq ${fixgriddir}/fv3_coupler.res  coupler.res
 sed -i "s/yyyy/${YYYY}/" coupler.res
 sed -i "s/mm/${MM}/"     coupler.res
 sed -i "s/dd/${DD}/"     coupler.res
@@ -477,9 +477,9 @@ if [[ ${GSI_TYPE} == "OBSERVER" || ${anav_type} == "conv" || ${anav_type} == "co
   if [ "${anav_type}" = "conv_dbz" ]; then
     obs_number=${#obs_files_source[@]}
     if [ "${CYCLE_TYPE}" = "spinup" ]; then
-      obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_radar_spinup_${envir}_${cyc}/Gridded_ref.nc
+      obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_radar_spinup_${envir}_${cyc}/00/Gridded_ref.nc
     else
-      obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_radar_${envir}_${cyc}/Gridded_ref.nc
+      obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_radar_prod_${envir}_${cyc}/00/Gridded_ref.nc
     fi
     obs_files_target[${obs_number}]=dbzobs.nc
     if [ "${DO_GLM_FED_DA}" = "TRUE" ]; then
@@ -487,7 +487,7 @@ if [[ ${GSI_TYPE} == "OBSERVER" || ${anav_type} == "conv" || ${anav_type} == "co
       if [ "${CYCLE_TYPE}" = "spinup" ]; then
         obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_lightning_spinup_${envir}_${cyc}/fedobs.nc
       else
-        obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_lightning_${envir}_${cyc}/fedobs.nc
+        obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_lightning_prod_${envir}_${cyc}/fedobs.nc
       fi
       obs_files_target[${obs_number}]=fedobs.nc
     fi
@@ -496,14 +496,18 @@ if [[ ${GSI_TYPE} == "OBSERVER" || ${anav_type} == "conv" || ${anav_type} == "co
   if [ "${DO_ENKF_RADAR_REF}" = "TRUE" ]; then
     obs_number=${#obs_files_source[@]}
     if [ "${CYCLE_TYPE}" = "spinup" ]; then
-      obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_radar_spinup_enkf_${envir}_${cyc}/Gridded_ref.nc
+      obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_radar_spinup_${envir}_${cyc}/00/Gridded_ref.nc
     else
-      obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_radar_enkf_${envir}_${cyc}/Gridded_ref.nc
+      obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_radar_prod_${envir}_${cyc}/00/Gridded_ref.nc
     fi
     obs_files_target[${obs_number}]=dbzobs.nc
     if [ "${DO_GLM_FED_DA}" = "TRUE" ]; then
       obs_number=${#obs_files_source[@]}
-      obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_lightning_enkf_${envir}_${cyc}/fedobs.nc
+      if [ "${CYCLE_TYPE}" = "spinup" ]; then
+        obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_lightning_spinup_${envir}_${cyc}/fedobs.nc
+      else
+        obs_files_source[${obs_number}]=${DATAROOT}/${RUN}_process_lightning_prod_${envir}_${cyc}/fedobs.nc
+      fi
       obs_files_target[${obs_number}]=fedobs.nc
     fi
   fi
@@ -512,16 +516,16 @@ else
 
   if [ "${anav_type}" = "radardbz" ]; then
     if [ "${CYCLE_TYPE}" = "spinup" ]; then
-      obs_files_source[0]=${DATAROOT}/${RUN}_process_radar_spinup_${envir}_${cyc}/Gridded_ref.nc
+      obs_files_source[0]=${DATAROOT}/${RUN}_process_radar_spinup_${envir}_${cyc}/00/Gridded_ref.nc
     else
-      obs_files_source[0]=${DATAROOT}/${RUN}_process_radar_${envir}_${cyc}/Gridded_ref.nc
+      obs_files_source[0]=${DATAROOT}/${RUN}_process_radar_prod_${envir}_${cyc}/00/Gridded_ref.nc
     fi
     obs_files_target[0]=dbzobs.nc
     if [ "${DO_GLM_FED_DA}" = "TRUE" ]; then
       if [ "${CYCLE_TYPE}" = "spinup" ]; then
         obs_files_source[1]=${DATAROOT}/${RUN}_process_lightning_spinup_${envir}_${cyc}/fedobs.nc
       else
-        obs_files_source[1]=${DATAROOT}/${RUN}_process_lightning_${envir}_${cyc}/fedobs.nc
+        obs_files_source[1]=${DATAROOT}/${RUN}_process_lightning_prod_${envir}_${cyc}/fedobs.nc
       fi
       obs_files_target[1]=fedobs.nc
     fi
@@ -748,7 +752,8 @@ fi
 
 # Get aircraft reject list
 for reject_list in "${AIRCRAFT_REJECT}/current_bad_aircraft.txt" \
-                   "${AIRCRAFT_REJECT}/${AIR_REJECT_FN}"
+                   "${AIRCRAFT_REJECT}/${AIR_REJECT_FN}" \
+		   "${FIX_GSI}/current_bad_aircraft.txt"
 do
   if [ -r $reject_list ]; then
     cpreq -p $reject_list current_bad_aircraft
@@ -764,7 +769,8 @@ fi
 gsd_sfcobs_uselist="gsd_sfcobs_uselist.txt"
 for use_list in "${SFCOBS_USELIST}/current_mesonet_uselist.txt" \
                 "${SFCOBS_USELIST}/${MESO_USELIST_FN}"      \
-                "${SFCOBS_USELIST}/gsd_sfcobs_uselist.txt"
+                "${SFCOBS_USELIST}/gsd_sfcobs_uselist.txt" \
+		"${FIX_GSI}/gsd_sfcobs_uselist.txt"
 do 
   if [ -r $use_list ] ; then
     cpreq -p $use_list  $gsd_sfcobs_uselist
@@ -1009,6 +1015,7 @@ else
   cat fit_p1 fit_w1 fit_t1 fit_q1 fit_pw1 fit_rad1 fit_rw1 > $COMOUT/rrfs.t${HH}z.fits.tm00
   cat fort.208 fort.210 fort.211 fort.212 fort.213 fort.220 > $COMOUT/rrfs.t${HH}z.fits2.tm00
   cat fort.238 > $COMOUT/rrfs.t${HH}z.fits3.tm00
+  cp -L dbzobs.nc $COMOUT/rrfs.mrms.${YYYYMMDDHH}.nc
 fi
 #
 #-----------------------------------------------------------------------
@@ -1153,6 +1160,7 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
       cp ./satbias_pc.out ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
       cp ./satbias_out ${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
       cp ./satbias_pc.out ${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
+      cp -L dbzobs.nc $COMOUT/rrfs.mrms.${YYYYMMDDHH}.nc
     fi
   fi
 fi # run diag inline (with GSI)

@@ -120,9 +120,9 @@ else
 fi
 mkdir -p ${enkfanal_nwges_dir}
 
-cpreq -p ${fixgriddir}/fv3_coupler.res    coupler.res
-cpreq -p ${fixgriddir}/fv3_akbk           fv3sar_tile1_akbk.nc
-cpreq -p ${fixgriddir}/fv3_grid_spec      fv3sar_tile1_grid_spec.nc
+cpreq ${fixgriddir}/fv3_coupler.res    coupler.res
+cpreq ${fixgriddir}/fv3_akbk           fv3sar_tile1_akbk.nc
+cpreq ${fixgriddir}/fv3_grid_spec      fv3sar_tile1_grid_spec.nc
 #
 #-----------------------------------------------------------------------
 #

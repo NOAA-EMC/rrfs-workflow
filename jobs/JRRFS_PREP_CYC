@@ -62,15 +62,39 @@ This is the J-job script for the prep_cyc tasks for the specified cycle.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
-#export jobid=${jobid:-${taskid}}
-export jobid=${taskid}
 
-export mem_num=m$(echo "${ENSMEM_INDX}")
+if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  number_tmp_BCGRP=$(echo $BCGRP | cut -c4-6)
+  MEMBER_NAME=${MEMBER_NAME:-$number_tmp_BCGRP}
+  export ENSMEM_INDX=${ENSMEM_INDX:-${MEMBER_NAME}}
+  export mem_num=m$(echo "${ENSMEM_INDX}")
+fi
 
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
-export INPUT_DATA=${DATAROOT}/${taskid}/INPUT
 
+if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
+  export jobid=${taskid}
+else
+  if [ ${CYCLE_TYPE} == "spinup" ]; then
+    if [ "${DO_ENSEMBLE}" = "TRUE" ]; then      # EnKF has spinup forecasts
+      export jobid=${RUN}_forecast_spinup_${mem_num}_${envir}_${cyc}
+      if  [ ${CYCLE_SUBTYPE} == "ensinit" ]; then
+        export jobid=${RUN}_forecast_ensinit_${mem_num}_${envir}_${cyc}
+      fi
+    else
+      export jobid=${RUN}_forecast_spinup_${envir}_${cyc}
+    fi
+  else
+    if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+      export jobid=${RUN}_forecast_${mem_num}_${envir}_${cyc}
+    else
+      export jobid=${RUN}_forecast_${envir}_${cyc}
+    fi
+  fi
+fi
+
+export INPUT_DATA=${DATAROOT}/${jobid}/INPUT
 mkdir -p ${INPUT_DATA}
 cd ${INPUT_DATA}
 

@@ -136,8 +136,8 @@ fi
 n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
-cpreq -p ${fixgriddir}/fv3_akbk       fv3_akbk
-cpreq -p ${fixgriddir}/fv3_grid_spec  fv3_grid_spec
+cpreq ${fixgriddir}/fv3_akbk       fv3_akbk
+cpreq ${fixgriddir}/fv3_grid_spec  fv3_grid_spec
 
 BKTYPE=0
 if [ -r "${bkpath}/coupler.res" ]; then # Use background from warm restart

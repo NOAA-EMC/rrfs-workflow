@@ -26,7 +26,7 @@ if [[ ! " prod para test " =~ " ${envir} " && " ops.prod ops.para " =~ " $(whoam
 
 # Developer configuration
 # PTMP=/lfs/h2/emc/ptmp
-PTMP=/lfs/h3/emc/rrfstemp/ecflow/ptmp
+PTMP=/lfs/h3/emc/lam/noscrub/ecflow/ptmp
 model=rrfs
 PSLOT=ecflow_rrfs
 export COMROOT=${PTMP}/${USER}/${PSLOT}/para/com
@@ -41,7 +41,7 @@ export COMrrfs=$(compath.py rrfs/${rrfs_ver})
 export COMOUT_PREP="$(compath.py obsproc/v1.2)"
 
 #export DATAROOT=/lfs/h2/emc/stmp/${USER}/${model}/${PSLOT}
-export DATAROOT=/lfs/h3/emc/rrfstemp/ecflow/stmp/${USER}/${model}/${PSLOT}
-
+export DATAROOT=/lfs/h3/emc/lam/noscrub/ecflow/stmp/${USER}/${model}/${PSLOT}
+export GESROOT=/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/nwges/enkfrrfsam/ecflow_rrfs/para/nwges
 mkdir -p ${DATAROOT} # ${COMrrfs}
 

@@ -51,7 +51,7 @@ fi
 
 # Layout the default switches
 scan_release_det_prep_cyc="YES"
-scan_release_det_analysis_gsi_input="YES"
+scan_release_det_analysis_gsi="YES"
 scan_release_enkf_prep_cyc="YES"
 scan_release_det_make_ics="NO"
 scan_release_det_make_lbcs="NO"
@@ -68,14 +68,16 @@ scan_release_enkf_make_ics="NO"
 #scan_release_ensf_recenter="NO"
 #scan_release_enkf_save_restart_long="NO"
 #scan_release_ensf_bufrsnd="NO"
-scan_release_enkf_observer_gsi_ensmean_spinup="NO"
+scan_release_enkf_observer_gsi_spinup_ensmean="NO"
 scan_release_enkf_save_restart_spinup="NO"
 scan_release_enkf_save_restart_ensinit="NO"
+scan_release_firewx_make_lbcs="NO"
 
 if [ ${cyc} == "00" ]; then
   scan_release_det_make_lbcs="YES"
   scan_release_enkf_make_lbcs="YES"
   scan_release_ensf_make_lbcs="YES"
+  scan_release_firewx_make_lbcs="YES"
   scan_release_det_post_long="YES"
   scan_release_save_restart_long="YES"
 fi
@@ -118,6 +120,7 @@ if [ ${cyc} == "06" ]; then
   scan_release_det_make_lbcs="YES"
   scan_release_enkf_make_lbcs="YES"
   scan_release_ensf_make_lbcs="YES"
+  scan_release_firewx_make_lbcs="YES"
   scan_release_det_post_long="YES"
   scan_release_save_restart_long="YES"
   scan_release_save_restart_spinup_f001="YES"
@@ -129,7 +132,7 @@ if [ ${cyc} == "07" ]; then
   scan_release_save_restart_f2="YES"
   scan_release_save_restart_spinup_f001="YES"
   scan_release_enkf_make_ics="YES"
-  scan_release_enkf_observer_gsi_ensmean_spinup="YES"
+  scan_release_enkf_observer_gsi_spinup_ensmean="YES"
   scan_release_enkf_save_restart_spinup="YES"
   scan_release_enkf_save_restart_ensinit="yes"
 fi
@@ -163,6 +166,7 @@ if [ ${cyc} == "12" ]; then
   scan_release_det_make_lbcs="YES"
   scan_release_enkf_make_lbcs="YES"
   scan_release_ensf_make_lbcs="YES"
+  scan_release_firewx_make_lbcs="YES"
   scan_release_det_post_long="YES"
   scan_release_save_restart_long="YES"
   #scan_release_save_restart_spinup_f001="YES"
@@ -206,6 +210,7 @@ if [ ${cyc} == "18" ]; then
   scan_release_det_make_lbcs="YES"
   scan_release_enkf_make_lbcs="YES"
   scan_release_ensf_make_lbcs="YES"
+  scan_release_firewx_make_lbcs="YES"
   scan_release_det_post_long="YES"
   scan_release_save_restart_long="YES"
   scan_release_save_restart_spinup_f001="YES"
@@ -217,7 +222,7 @@ if [ ${cyc} == "19" ]; then
   scan_release_save_restart_f2="YES"
   scan_release_save_restart_spinup_f001="YES"
   scan_release_enkf_make_ics="YES"
-  scan_release_enkf_observer_gsi_ensmean_spinup="YES"
+  scan_release_enkf_observer_gsi_spinup_ensmean="YES"
   scan_release_enkf_save_restart_spinup="YES"
   scan_release_enkf_save_restart_ensinit="yes"
 fi
@@ -302,9 +307,33 @@ while [ $proceed_trigger_scan == "YES" ]; do
     fi
   fi
   #### scan_release_det_make_lbcs
-  #### release_det_analysis_gsi_input
-  if [ ${scan_release_det_analysis_gsi_input} == "YES" ]; then
-    echo "Proceeding with scan_release_det_analysis_gsi_input"
+  #### scan_release_firewx_make_lbcs
+  if [ ${scan_release_firewx_make_lbcs} == "YES" ]; then
+    echo "Proceeding with scan_release_firewx_make_lbcs"
+    source_file_found="NO"
+    # rrfs_natlev_staging_shared=${umbrella_fsm_data}/firewx_make_lbcs
+    # mkdir -p ${rrfs_natlev_staging_shared}
+    # natlev_shared_directory=$(compath.py -o rrfs/${rrfs_ver})/rrfs.${RRFS_Current_PDY}/${RRFS_Current_cyc}
+    # natlev_shared_directory=${COMrrfs}/prod/rrfs.${RRFS_Current_PDY}/${RRFS_Current_cyc}
+    natlev_shared_directory=${DATAROOT}/rrfs_make_ics_prod_${RRFS_Current_cyc}/tmp_ICS
+    # inp_file_to_check=${natlev_shared_directory}/rrfs.t${RRFS_Current_cyc}z.natlev.f036.grib2
+    inp_file_to_check=${natlev_shared_directory}/rrfs.t${RRFS_Current_cyc}z.natlev.3km.f000.na.grib2
+    if [ -s ${inp_file_to_check} ]; then
+      for idx_fhr in $(seq 1 36); do
+        idx_fhr3d=$( printf "%03d" "${idx_fhr}" )
+        #### cpreq -p ${natlev_shared_directory}/rrfs.t${RRFS_Current_cyc}z.natlev.f${idx_fhr3d}.grib2 ${rrfs_natlev_staging_shared}
+      done
+      source_file_found="YES"
+      scan_release_firewx_make_lbcs="NO"
+      ecflow_client --event release_firewx_make_lbcs
+    else
+      proceed_trigger_scan="YES"
+    fi
+  fi
+  #### scan_release_firewx_make_lbcs
+  #### release_det_analysis_gsi
+  if [ ${scan_release_det_analysis_gsi} == "YES" ]; then
+    echo "Proceeding with scan_release_det_analysis_gsi"
     source_file_found="NO"
     # /lfs/h1/ops/prod/com/obsproc/v1.2/rap.20240610/rap.t00z.prepbufr.tm00
     obsproc_rap_inp_file=$(compath.py obsproc/${obsproc_ver})/rap.${current_PDY_6hr_fmt}/rap.t${current_cyc_6hr_fmt}z.prepbufr.tm00
@@ -312,7 +341,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
     if [ -s ${obsproc_rap_inp_file} ]; then
       source_file_found="YES"
       # fg_restart_dirname=forecast
-      if [ -d ${GESROOT}/${RUN}.${RRFS_previous_PDY}/${RRFS_previous_cyc}/m001/forecast ]; then
+      if [ -d ${GESROOT}/enkfrrfs.${RRFS_previous_PDY}/${RRFS_previous_cyc}/m001/forecast ]; then
         fg_restart_dirname=forecast
       else
         fg_restart_dirname=forecast_spinup
@@ -323,18 +352,18 @@ while [ $proceed_trigger_scan == "YES" ]; do
       # NWGES_BASEDIR/${YYYYMMDDHHmInterv}
       for member_num in $(seq 1 30); do
         member_num_2d=$( printf "%02d" ${member_num} )
-        target_file_scan=${GESROOT}/${RUN}.${RRFS_previous_PDY}/${RRFS_previous_cyc}/m0${member_num_2d}/${fg_restart_dirname}/RESTART/${RRFS_Current_PDY}.${RRFS_Current_cyc}0000.coupler.res
+        target_file_scan=${GESROOT}/enkfrrfs.${RRFS_previous_PDY}/${RRFS_previous_cyc}/m0${member_num_2d}/${fg_restart_dirname}/RESTART/${RRFS_Current_PDY}.${RRFS_Current_cyc}0000.coupler.res
         [[ ! -s ${target_file_scan} ]]&& source_file_found="NO"
       done
     fi
     if [ ${source_file_found} == "YES" ]; then
-      ecflow_client --event release_det_analysis_gsi_input
-      scan_release_det_analysis_gsi_input="NO"
+      ecflow_client --event release_det_analysis_gsi
+      scan_release_det_analysis_gsi="NO"
     else
       proceed_trigger_scan="YES"
     fi
   fi
-  #### release_det_analysis_gsi_input
+  #### release_det_analysis_gsi
   #### release_enkf_make_lbcs
   if [ ${scan_release_enkf_make_lbcs} == "YES" ]; then
     echo "Proceeding with scan_release_enkf_make_lbcs"
@@ -344,7 +373,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
       ecflow_client --event release_enkf_make_lbcs
       scan_release_enkf_make_lbcs="NO"
     else
-      echo "Production realtime gefs grib2 data only retain upto 4 days."
+      echo "Production realtime gefs grib2 data only retain up to 4 days."
       proceed_trigger_scan="YES"
     fi
   fi 
@@ -356,7 +385,8 @@ while [ $proceed_trigger_scan == "YES" ]; do
     # s_v=$(echo $rrfs_ver|cut -c1-4)
     s_v=det
     fg_restart_dirname=forecast
-    umbrella_forecast_data=${DATAROOT}/${RUN}/${s_v}/${cdate}/${fg_restart_dirname}
+    #### umbrella_forecast_data=${DATAROOT}/${RUN}/${s_v}/${cdate}/${fg_restart_dirname}
+    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_prod_${RRFS_Current_cyc}
     source_file_found="YES"
     if [ $(ls ${umbrella_forecast_data}/log.atm.f001-*|wc -l) -eq 4 ]; then
       ecflow_client --event release_save_restart_long_1
@@ -402,7 +432,8 @@ while [ $proceed_trigger_scan == "YES" ]; do
     # s_v=$(echo $rrfs_ver|cut -c1-4)
     s_v=det
     fg_restart_dirname=forecast
-    umbrella_forecast_data=${DATAROOT}/${RUN}/det/${cdate}/${fg_restart_dirname}
+    #### umbrella_forecast_data=${DATAROOT}/${RUN}/det/${cdate}/${fg_restart_dirname}
+    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_prod_${RRFS_Current_cyc}
     source_file_found="YES"
     # if [ $(ls ${umbrella_forecast_data}/log.atm.f001-*|wc -l) -eq 4 ]; then
     # RRFS_next_PDY
@@ -425,7 +456,8 @@ while [ $proceed_trigger_scan == "YES" ]; do
     # s_v=$(echo $rrfs_ver|cut -c1-4)
     s_v=det
     fg_restart_dirname=forecast
-    umbrella_forecast_data=${DATAROOT}/${RUN}/det/${cdate}/${fg_restart_dirname}
+    #### umbrella_forecast_data=${DATAROOT}/${RUN}/det/${cdate}/${fg_restart_dirname}
+    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_prod_${RRFS_Current_cyc}
     source_file_found="YES"
     # if [ $(ls ${umbrella_forecast_data}/log.atm.f001-*|wc -l) -eq 4 ]; then
     if [ $(ls ${umbrella_forecast_data}/RESTART/${RRFS_next_2_PDY}.${RRFS_next_2_cyc}0000.coupler.res|wc -l) -eq 1 ]; then
@@ -443,8 +475,10 @@ while [ $proceed_trigger_scan == "YES" ]; do
   #### release_save_restart_spinup_f001
   if [ ${scan_release_save_restart_spinup_f001} == "YES" ]; then
     echo "Proceeding with scan_release_save_restart_spinup_f001"
-    fg_restart_dirname=forecast_spinup
-    umbrella_forecast_data=${DATAROOT}/${RUN}/det/${cdate}/${fg_restart_dirname}
+    #### fg_restart_dirname=forecast_spinup
+    #### umbrella_forecast_data=${DATAROOT}/${RUN}/det/${cdate}/${fg_restart_dirname}
+    fg_restart_dirname=${RUN}_forecast_spinup_prod_${RRFS_Current_cyc}
+    umbrella_forecast_data=${DATAROOT}/${fg_restart_dirname}
     source_file_found="YES"
     target_file_scan=${umbrella_forecast_data}/RESTART/${RRFS_next_1_PDY}.${RRFS_next_1_cyc}0000.coupler.res
     if [ $(ls ${target_file_scan}|wc -l) -eq 1 ]; then
@@ -468,7 +502,8 @@ while [ $proceed_trigger_scan == "YES" ]; do
     # s_v=$(echo $rrfs_ver|cut -c1-4)
     s_v=det
     fg_restart_dirname=forecast
-    umbrella_forecast_data=${DATAROOT}/${RUN}/${s_v}/${cdate}/${fg_restart_dirname}
+    #### umbrella_forecast_data=${DATAROOT}/${RUN}/${s_v}/${cdate}/${fg_restart_dirname}
+    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_prod_${RRFS_Current_cyc}
     # fhr cover 000~060
     for fhr in $(seq 0 60); do
       fhr_2d=$( printf "%02d" ${fhr} )
@@ -510,7 +545,8 @@ while [ $proceed_trigger_scan == "YES" ]; do
     # s_v=$(echo $rrfs_ver|cut -c1-4)
     s_v=det
     fg_restart_dirname=forecast
-    umbrella_forecast_data=${DATAROOT}/${RUN}/det/${cdate}/${fg_restart_dirname}
+    #### umbrella_forecast_data=${DATAROOT}/${RUN}/det/${cdate}/${fg_restart_dirname}
+    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_prod_${RRFS_Current_cyc}
     # fhr cover 000~018
     for fhr in $(seq 0 18); do
       fhr_2d=$( printf "%02d" ${fhr} )
@@ -574,14 +610,14 @@ while [ $proceed_trigger_scan == "YES" ]; do
   if [ ${scan_release_enkf_prep_cyc} == "YES" ]; then
     echo "Proceeding with scan_release_enkf_prep_cyc"
     source_file_found="YES"
-    if [ -d ${GESROOT}/${RUN}.${RRFS_previous_PDY}/${RRFS_previous_cyc}/m001/forecast ]; then
+    if [ -d ${GESROOT}/enkfrrfs.${RRFS_previous_PDY}/${RRFS_previous_cyc}/m001/forecast ]; then
       fg_restart_dirname=forecast
     else
       fg_restart_dirname=forecast_spinup
     fi
     for mem_num in $(seq 1 30); do
       mem_num_2d=$( printf "%02d" ${mem_num} )
-      target_file_scan=${GESROOT}/${RUN}.${RRFS_previous_PDY}/${RRFS_previous_cyc}/m0${mem_num_2d}/${fg_restart_dirname}/RESTART/${RRFS_Current_PDY}.${RRFS_Current_cyc}0000.coupler.res
+      target_file_scan=${GESROOT}/enkfrrfs.${RRFS_previous_PDY}/${RRFS_previous_cyc}/m0${mem_num_2d}/${fg_restart_dirname}/RESTART/${RRFS_Current_PDY}.${RRFS_Current_cyc}0000.coupler.res
       if [ -s ${target_file_scan} ]; then
         ecflow_client --event release_enkf_prep_cyc_mem0${mem_num_2d}
       else
@@ -620,23 +656,23 @@ while [ $proceed_trigger_scan == "YES" ]; do
     fi
   fi
   #### release_enkf_make_ics
-  #### release_enkf_observer_gsi_ensmean_spinup
-  if [ ${scan_release_enkf_observer_gsi_ensmean_spinup} == "YES" ]; then
-    echo "Proceeding with scan_release_enkf_observer_gsi_ensmean_spinup"
+  #### release_enkf_observer_gsi_spinup_ensmean
+  if [ ${scan_release_enkf_observer_gsi_spinup_ensmean} == "YES" ]; then
+    echo "Proceeding with scan_release_enkf_observer_gsi_spinup_ensmean"
     source_file_found="YES"
     obsproc_rap_inp_file=$(compath.py obsproc/${obsproc_ver})/rap.${current_PDY_6hr_fmt}/rap.t${current_cyc_6hr_fmt}z.prepbufr.tm00
     [[ ! -s ${obsproc_rap_inp_file} ]]&& source_file_found="NO"
     if [ ${source_file_found} == "YES" ]; then
-      ecflow_client --event release_enkf_observer_gsi_ensmean_spinup
-      scan_release_enkf_observer_gsi_ensmean_spinup="NO"
+      ecflow_client --event release_enkf_observer_gsi_spinup_ensmean
+      scan_release_enkf_observer_gsi_spinup_ensmean="NO"
     else
       proceed_trigger_scan="YES"
     fi
   fi
-  #### release_enkf_observer_gsi_ensmean_spinup
+  #### release_enkf_observer_gsi_spinup_ensmean
   #### release_enkf_save_restart_spinup
   if [ ${scan_release_enkf_save_restart_spinup} == "YES" ]; then
-    echo "Proceeding with scan_release_enkf_fcst_spinup"
+    echo "Proceeding with scan_release_enkf_save_restart_spinup"
     source_file_found="YES"
     s_v=det
     fg_restart_dirname=forecast_spinup

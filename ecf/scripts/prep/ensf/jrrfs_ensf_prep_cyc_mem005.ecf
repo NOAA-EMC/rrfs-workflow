@@ -20,11 +20,12 @@ export CDATE="${PDY}${cyc}"
 
 module list
 export WGF="%WGF%"
+export BCGRP="%BCGRP%"
 %include <ensf_prep_cyc_mem005_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################
-/lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/ush/load_modules_run_task.sh run_prepstart /lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/jobs/JRRFS_RUN_PREPSTART
+${HOMErrfs}/ush/load_modules_run_task.sh prep_cyc ${HOMErrfs}/jobs/JRRFS_PREP_CYC
 
 %include <tail.h>
 

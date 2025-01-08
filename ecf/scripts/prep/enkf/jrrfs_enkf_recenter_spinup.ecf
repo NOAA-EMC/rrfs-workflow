@@ -25,7 +25,7 @@ export CYCLE_TYPE="%CYCLE_TYPE%"
 ############################################################
 # CALL executable job script here
 ############################################################
-${HOMErrfs}/ush/load_modules_run_task.sh "run_recenter" "${HOMErrfs}/jobs/JRRFS_RUN_RECENTER"
+${HOMErrfs}/ush/load_modules_run_task.sh "recenter" "${HOMErrfs}/jobs/JRRFS_RECENTER"
 
 %include <tail.h>
 

@@ -58,28 +58,34 @@ This is the J-job script for the task that saves DA analysis files to nwges.
 
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
-#export jobid=${jobid:-${taskid}}
-export jobid=${taskid}
 
-export mem_num=m$(echo "${ENSMEM_INDX}")
+if [ ${DO_ENSEMBLE} = "TRUE" ] || [ ${CYCLE_TYPE} == "enfcst" ]; then
+  export ENSMEM_INDX=${ENSMEM_INDX:-${MEMBER_NAME}}
+  export mem_num=m$(echo "${ENSMEM_INDX}")
+fi
 
 # NWGES_DIR is the directory in which the model IC file (DA analysis) will be saved
 
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${CYCLE_TYPE}" = "prod" ]; then
   if [ ${DO_ENSEMBLE} = "TRUE" ]; then
-    export DATA="${DATAROOT}/${jobid}"
+    export jobid=${RUN}_forecast_${mem_num}_${envir}_${cyc}
     export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast"
   else
-    export DATA="${DATAROOT}/${jobid}"
+    export jobid=${RUN}_forecast_${envir}_${cyc}
     export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/forecast"
   fi
 fi
 if [ ${CYCLE_TYPE} == "enfcst" ]; then
-  export DATA="${DATAROOT}/${jobid}"
+  export jobid=${RUN}_forecast_${mem_num}_${envir}_${cyc}
   export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast_enfcst"
 fi
 
+if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
+  export jobid=${taskid}
+fi
+
+export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p "${NWGES_DIR}/DA_OUTPUT"
 cd "${NWGES_DIR}/DA_OUTPUT"
 

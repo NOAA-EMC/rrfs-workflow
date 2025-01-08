@@ -130,15 +130,15 @@ fi
 
 # Find the most recent FVCOM files
 if [ "$MACHINE" = "WCOSS2" ]; then
-  erie="${FVCOM_DIR}/leofs.${PDYf}/nos.leofs.fields.f${fhr}.${PDYf}.t${cycf}z.nc"
-  mh="${FVCOM_DIR}/lmhofs.${PDYf}/nos.lmhofs.fields.f${fhr}.${PDYf}.t${cycf}z.nc"
-  sup="${FVCOM_DIR}/lsofs.${PDYf}/nos.lsofs.fields.f${fhr}.${PDYf}.t${cycf}z.nc"
-  ont="${FVCOM_DIR}/loofs.${PDYf}/nos.loofs.fields.f${fhr}.${PDYf}.t${cycf}z.nc"
+  erie="${FVCOM_DIR}/leofs.${PDYf}/leofs.t${cycf}z.${PDYf}.fields.f${fhr}.nc"
+  mh="${FVCOM_DIR}/lmhofs.${PDYf}/lmhofs.t${cycf}z.${PDYf}.fields.f${fhr}.nc"
+  sup="${FVCOM_DIR}/lsofs.${PDYf}/lsofs.t${cycf}z.${PDYf}.fields.f${fhr}.nc"
+  ont="${FVCOM_DIR}/loofs.${PDYf}/loofs.t${cycf}z.${PDYf}.fields.f${fhr}.nc"
 
-  erie2="${FVCOM_DIR}/leofs.${PDYfm1}/nos.leofs.fields.f${fhrm1}.${PDYfm1}.t${cycfm1}z.nc"
-  mh2="${FVCOM_DIR}/lmhofs.${PDYfm1}/nos.lmhofs.fields.f${fhrm1}.${PDYfm1}.t${cycfm1}z.nc"
-  sup2="${FVCOM_DIR}/lsofs.${PDYfm1}/nos.lsofs.fields.f${fhrm1}.${PDYfm1}.t${cycfm1}z.nc"
-  ont2="${FVCOM_DIR}/loofs.${PDYfm1}/nos.loofs.fields.f${fhrm1}.${PDYfm1}.t${cycfm1}z.nc"
+  erie2="${FVCOM_DIR}/leofs.${PDYfm1}/leofs.t${cycfm1}z.${PDYfm1}.fields.f${fhrm1}.nc"
+  mh2="${FVCOM_DIR}/lmhofs.${PDYfm1}/lmhofs.t${cycfm1}z.${PDYfm1}.fields.f${fhrm1}.nc"
+  sup2="${FVCOM_DIR}/lsofs.${PDYfm1}/lsofs.t${cycfm1}z.${PDYfm1}.fields.f${fhrm1}.nc"
+  ont2="${FVCOM_DIR}/loofs.${PDYfm1}/loofs.t${cycfm1}z.${PDYfm1}.fields.f${fhrm1}.nc"
 
 else
 

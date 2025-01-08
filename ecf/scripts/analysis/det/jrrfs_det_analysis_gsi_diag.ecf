@@ -3,7 +3,7 @@
 #PBS -S /bin/bash
 #PBS -q %QUEUE%
 #PBS -A %PROJ%-%PROJENVIR%
-#PBS -l walltime=00:15:00
+#PBS -l walltime=01:15:00
 #PBS -l select=1:mpiprocs=128:ncpus=128
 #PBS -l place=excl
 #PBS -l debug=true
@@ -26,7 +26,7 @@ export MEM_TYPE="%MEM_TYPE%"
 ############################################################
 # CALL executable job script here
 ############################################################
-/lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/ush/load_modules_run_task.sh run_analysis_gsi /lfs/h2/emc/global/noscrub/lin.gan/git/rrfs.v1.0.0/jobs/JRRFS_RUN_GSIDIAG
+${HOMErrfs}/ush/load_modules_run_task.sh analysis_gsi ${HOMErrfs}/jobs/JRRFS_ANALYSIS_GSIDIAG
 
 %include <tail.h>
 

@@ -40,7 +40,7 @@ if [ -n "%PARATEST:%" ]; then export PARATEST=${PARATEST:-%PARATEST:%}; fi
 if [ -n "%COMPATH:%" ]; then export COMPATH=${COMPATH:-%COMPATH:%}; fi
 if [ -n "%MAILTO:%" ]; then export MAILTO=${MAILTO:-%MAILTO:%}; fi
 if [ -n "%DBNLOG:%" ]; then export DBNLOG=${DBNLOG:-%DBNLOG:%}; fi
-export KEEPDATA=NO
+export KEEPDATA=YES
 export SENDDBN=${SENDDBN:-%SENDDBN:YES%}
 export SENDDBN_NTC=${SENDDBN_NTC:-%SENDDBN_NTC:YES%}
 
@@ -61,8 +61,8 @@ if [ -d /apps/ops/prod ]; then # On WCOSS2
   module list
   set -x
   echo "----- RRFS IO SPIKE reading at Job Start -----"
-  SPIKE_Reading_file=$(ls -lart /lfs/h3/emc/rrfstemp/ecflow/ptmp/emc.lam/ecflow_rrfs/root/loads.*|tail -1|awk '{print $9}')
-  [[ -s $SPIKE_Reading_file ]]&& cat $SPIKE_Reading_file
+#  SPIKE_Reading_file=$(ls -lart /lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/root/loads.*|tail -1|awk '{print $9}')
+#  [[ -s $SPIKE_Reading_file ]]&& cat $SPIKE_Reading_file
   echo "----------------------------------------------"
 fi
 
@@ -88,6 +88,7 @@ ERROR() {
   fi
   ecflow_client --abort="$msg"
   echo $msg
+  echo ${ECF_NAME} | mail -s "RRFS job watch" lin.gan@noaa.gov
   if [[ " ops.prod ops.para " =~ " $(whoami) " ]]; then
     echo "# Trap Caught" >>$POST_OUT
   fi
