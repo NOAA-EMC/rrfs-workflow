@@ -775,7 +775,8 @@ fi
 
 # Get aircraft reject list
 for reject_list in "${AIRCRAFT_REJECT}/current_bad_aircraft.txt" \
-                   "${AIRCRAFT_REJECT}/${AIR_REJECT_FN}"
+                   "${AIRCRAFT_REJECT}/${AIR_REJECT_FN}" \
+                   "${FIX_GSI}/current_bad_aircraft.txt"
 do
   if [ -r $reject_list ]; then
     cp $reject_list current_bad_aircraft
@@ -791,7 +792,8 @@ fi
 gsd_sfcobs_uselist="gsd_sfcobs_uselist.txt"
 for use_list in "${SFCOBS_USELIST}/current_mesonet_uselist.txt" \
                 "${SFCOBS_USELIST}/${MESO_USELIST_FN}"      \
-                "${SFCOBS_USELIST}/gsd_sfcobs_uselist.txt"
+                "${SFCOBS_USELIST}/gsd_sfcobs_uselist.txt"  \
+                "${FIX_GSI}/gsd_sfcobs_uselist.txt"
 do 
   if [ -r $use_list ] ; then
     cp $use_list  $gsd_sfcobs_uselist
@@ -1023,6 +1025,15 @@ cp ${gsi_exec} ${analworkdir}/gsi.x
 export pgm="gsi.x"
 . prep_step
 
+if [ -r ${FIX_GSI}/${PREDEF_GRID_NAME}/xnorm_new.480.1351.1976 ] && [ -r ${FIX_GSI}/${PREDEF_GRID_NAME}/anl_grid.480.3950.2700 ]; then
+  cp ${FIX_GSI}/${PREDEF_GRID_NAME}/xnorm_new.480.1351.1976 .
+  cp ${FIX_GSI}/${PREDEF_GRID_NAME}/anl_grid.480.3950.2700 .
+fi
+if [ -r ${FIX_GSI}/${PREDEF_GRID_NAME}/xnorm_new.240.1351.1976 ] && [ -r ${FIX_GSI}/${PREDEF_GRID_NAME}/anl_grid.240.3950.2700 ]; then
+  cp ${FIX_GSI}/${PREDEF_GRID_NAME}/xnorm_new.240.1351.1976 .
+  cp ${FIX_GSI}/${PREDEF_GRID_NAME}/anl_grid.240.3950.2700 .
+fi
+
 $APRUN ./$pgm < gsiparm.anl >>$pgmout 2>errfile
 export err=$?; err_chk
 mv errfile errfile_gsi
@@ -1041,6 +1052,7 @@ else
   cat fit_p1 fit_w1 fit_t1 fit_q1 fit_pw1 fit_rad1 fit_rw1 > $COMOUT/rrfs.t${HH}z.fits.tm00
   cat fort.208 fort.210 fort.211 fort.212 fort.213 fort.220 > $COMOUT/rrfs.t${HH}z.fits2.tm00
   cat fort.238 > $COMOUT/rrfs.t${HH}z.fits3.tm00
+  cp -L dbzobs.nc  $COMOUT/rrfs.mrms.${YYYYMMDDHH}.nc
 fi
 #
 #-----------------------------------------------------------------------
@@ -1185,6 +1197,8 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
       cp ./satbias_pc.out ${satbias_dir}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
       cp ./satbias_out ${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
       cp ./satbias_pc.out ${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
+      cp -L dbzobs.nc  $COMOUT/rrfs.mrms.${YYYYMMDDHH}.nc
+
     fi
   fi
 fi # run diag inline (with GSI)
