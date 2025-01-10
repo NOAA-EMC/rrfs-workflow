@@ -193,7 +193,6 @@ else
   ififip=${net4}.t${cyc}z.ififip.${gridspacing}.f${fhr}.${gridname}.grib2
   aviati=${net4}.t${cyc}z.aviati.${gridspacing}.f${fhr}.${gridname}.grib2
   testbed=${net4}.t${cyc}z.testbed.${gridspacing}.f${fhr}.${gridname}.grib2
-  fi
 fi
 
 # extract the output fields for the testbed
