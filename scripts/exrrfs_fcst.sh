@@ -67,8 +67,8 @@ physics_suite=${PHYSICS_SUITE:-'mesoscale_reference'}
 jedi_da="true" #true
 
 if [[ "${MESH_NAME}" == "conus12km" ]]; then
-  pio_num_iotasks=6
-  pio_stride=20
+  pio_num_iotasks=1
+  pio_stride=40
 elif [[ "${MESH_NAME}" == "conus3km" ]]; then
   pio_num_iotasks=40
   pio_stride=20
