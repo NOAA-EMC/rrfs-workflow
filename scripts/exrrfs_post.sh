@@ -141,7 +141,6 @@ if [ ${len_fhr} -eq 9 ]; then
     post_min=00
 	  if [ $post_fhr -le 018 ]
 	  then
-          echo setting SUBH_GEN flag to one
           SUBH_GEN=1
 	  fi
   fi
@@ -214,8 +213,6 @@ if [ ${USE_CUSTOM_POST_CONFIG_FILE} = "TRUE" ]; then
       CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-rrfs_nosmokedust.txt"
     fi
   fi
-
-#
   if [ ${post_min} -ge ${nsout_min} ]; then
      CUSTOM_POST_CONFIG_FP="${FIX_UPP}/postxconfig-NT-rrfs_subh.txt"
   fi
@@ -387,7 +384,6 @@ if [ -f PRSLEV.GrbF${post_fhr} ]; then
   wgrib2 PRSLEV.GrbF${post_fhr} -set center 7 -grib ${bgdawp} >>$pgmout 2>>errfile
   if [ $SUBH_GEN = 1 ]
   then
-# do something here
   bgdawp_subh_combo=${DATA}/${net4}.t${cyc}z.prslev.${gridspacing}.subh.f${fhr}.${gridname}.grib2
   bgdawp_subh=${DATA}/PRSLEV.GrbF${fhr}.00
   wgrib2 ${bgdawp} -not_if 'ave fcst' | grep -F -f ${FIX_UPP}/subh_fields.txt | wgrib2 -i -grib ${bgdawp_subh}  ${bgdawp}
@@ -395,6 +391,7 @@ if [ -f PRSLEV.GrbF${post_fhr} ]; then
   fhrm1tmp="$((10#$fhr-1))"
   fhrm1=`printf "%02d\n" $fhrm1tmp`
   echo new fhrm1 is $fhrm1
+# expect this will need to be changed due to future umbrella directory changes
   tm15=${DATA}/../rrfs_post_${envir}_${cyc}_f0${fhrm1}-45-00/PRSLEV.GrbF${fhrm1}.45
   tm30=${DATA}/../rrfs_post_${envir}_${cyc}_f0${fhrm1}-30-00/PRSLEV.GrbF${fhrm1}.30
   tm45=${DATA}/../rrfs_post_${envir}_${cyc}_f0${fhrm1}-15-00/PRSLEV.GrbF${fhrm1}.15
