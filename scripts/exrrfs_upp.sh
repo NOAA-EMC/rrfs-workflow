@@ -8,6 +8,19 @@ ulimit -a
 
 cpreq=${cpreq:-cpreq}
 cd ${DATA}
+
+#
+# determine domain name
+#
+
+if [[ ${MESH_NAME} == "conus12km" ]]; then
+  domain="conus."
+elif [[ ${MESH_NAME} == "conus3km" ]]; then
+  domain="conus."
+else
+  domain=""
+fi
+
 #
 #  cpy excutable and fix files; decide mesh
 #
@@ -106,10 +119,11 @@ EOF
       mv ${wrfnat}.two ${wrfnat}
 
       # copy products to COMOUT
-      ${cpreq} ${wrfprs} ${COMOUT}${MEMDIR}/upp/${RUN}_prs_${CDATE}_f${fhr2}.grib2
-      ${cpreq} ${wrfnat} ${COMOUT}${MEMDIR}/upp/${RUN}_nat_${CDATE}_f${fhr2}.grib2
-      ${cpreq} ${wrftwo} ${COMOUT}${MEMDIR}/upp/${RUN}_two_${CDATE}_f${fhr2}.grib2
-      ln -snf  ${COMOUT}${MEMDIR}/upp/${RUN}_prs_${CDATE}_f${fhr2}.grib2 ${COMOUT}${MEMDIR}/upp/${YYJJJHH}0000${fhr2}
+      fhr3=$(printf %03d ${fhr})
+      ${cpreq} ${wrfprs} ${COMOUT}${MEMDIR}/upp/${NET}.t${cyc}z.prslev.f${fhr3}.${domain}grib2
+      ${cpreq} ${wrfnat} ${COMOUT}${MEMDIR}/upp/${NET}.t${cyc}z.natlev.f${fhr3}.${domain}grib2
+      ${cpreq} ${wrftwo} ${COMOUT}${MEMDIR}/upp/${NET}.t${cyc}z.testbed.f${fhr3}.${domain}grib2
+      ln -snf  ${COMOUT}${MEMDIR}/upp/${NET}.t${cyc}z.prslev.f${fhr3}.${domain}grib2 ${COMOUT}${MEMDIR}/upp/${YYJJJHH}0000${fhr2}
 
     else
       echo "FATAL ERROR: cannot find mpass file at ${timestr}"
