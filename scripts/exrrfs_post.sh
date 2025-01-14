@@ -139,7 +139,7 @@ if [ ${len_fhr} -eq 9 ]; then
   post_min=${fhr:4:2}
   if [ ${post_min} -lt ${nsout_min} ]; then
     post_min=00
-	  if [ $post_fhr -le 018 ]
+	  if [ $post_fhr -gt 1 -a $post_fhr -le 018 ]
 	  then
           SUBH_GEN=1
 	  fi
@@ -384,27 +384,46 @@ if [ -f PRSLEV.GrbF${post_fhr} ]; then
   wgrib2 PRSLEV.GrbF${post_fhr} -set center 7 -grib ${bgdawp} >>$pgmout 2>>errfile
   if [ $SUBH_GEN = 1 ]
   then
-  bgdawp_subh_combo=${DATA}/${net4}.t${cyc}z.prslev.${gridspacing}.subh.f${fhr}.${gridname}.grib2
-  bgdawp_subh=${DATA}/PRSLEV.GrbF${fhr}.00
-  wgrib2 ${bgdawp} -not_if 'ave fcst' | grep -F -f ${FIX_UPP}/subh_fields.txt | wgrib2 -i -grib ${bgdawp_subh}  ${bgdawp}
+    bgdawp_subh_combo=${DATA}/${net4}.t${cyc}z.prslev.${gridspacing}.subh.f${fhr}.${gridname}.grib2
+    bgdawp_subh=${DATA}/PRSLEV.GrbF${fhr}.00
+    wgrib2 ${bgdawp} -not_if 'ave fcst' | grep -F -f ${FIX_UPP}/subh_fields.txt | wgrib2 -i -grib ${bgdawp_subh}  ${bgdawp}
 
-  fhrm1tmp="$((10#$fhr-1))"
-  fhrm1=`printf "%02d\n" $fhrm1tmp`
-  echo new fhrm1 is $fhrm1
+    fhrm1tmp="$((10#$fhr-1))"
+    fhrm1=`printf "%02d\n" $fhrm1tmp`
 # expect this will need to be changed due to future umbrella directory changes
-  tm15=${DATA}/../rrfs_post_${envir}_${cyc}_f0${fhrm1}-45-00/PRSLEV.GrbF${fhrm1}.45
-  tm30=${DATA}/../rrfs_post_${envir}_${cyc}_f0${fhrm1}-30-00/PRSLEV.GrbF${fhrm1}.30
-  tm45=${DATA}/../rrfs_post_${envir}_${cyc}_f0${fhrm1}-15-00/PRSLEV.GrbF${fhrm1}.15
+    tm15=${DATA}/../rrfs_post_${envir}_${cyc}_f0${fhrm1}-45-00/PRSLEV.GrbF${fhrm1}.45
+    tm30=${DATA}/../rrfs_post_${envir}_${cyc}_f0${fhrm1}-30-00/PRSLEV.GrbF${fhrm1}.30
+    tm45=${DATA}/../rrfs_post_${envir}_${cyc}_f0${fhrm1}-15-00/PRSLEV.GrbF${fhrm1}.15
 
+    looplim=30
+    loop=1
+    while [ $loop -le $looplim ]
+    do
+      if [ -e $tm15 -a -e $tm30 -a -e $tm45 ]
+      then
+        break
+      else 
+        loop=$((loop+1))
+        sleep 20
+      fi
+      if [ $loop -ge $looplim ]
+      then
+        msg="FATAL ERROR: ABORTING after 10 minutes of waiting for old 15 minute UPP output $tm15 $tm30 $tm45"
+        err_exit $msg
+      fi
+    done
 
-  if [ -e $tm15 -a -e $tm30 -a -e $tm45 ]
-  then
-	  cat $tm45 $tm30 $tm15 $bgdawp_subh > PRSLEV.GrbF${fhr}_subh
-	  wgrib2 PRSLEV.GrbF${fhr}_subh -set center 7 -grib $bgdawp_subh_combo >> $pgmout 2>> errfile
-  fi 
-  
-  fi
-fi
+    if [ -e $bgdawp_subh -a -e $tm15 -a -e $tm30 -a -e $tm45 ]
+    then
+      cat $tm45 $tm30 $tm15 $bgdawp_subh > PRSLEV.GrbF${fhr}_subh
+      wgrib2 PRSLEV.GrbF${fhr}_subh -set center 7 -grib $bgdawp_subh_combo >> $pgmout 2>> errfile
+    else
+      msg="FATAL ERROR: ABORTING due to missing 15 minute UPP output $bgdawp_subh $tm15 $tm30 $tm45"
+      err_exit $msg
+    fi 
+  fi # SUB_GEN=1 test
+fi # PRSLEV test
+
 if [ -f NATLEV.GrbF${post_fhr} ]; then
   wgrib2 NATLEV.GrbF${post_fhr} -set center 7 -grib ${bgrd3d} >>$pgmout 2>>errfile
 fi
