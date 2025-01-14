@@ -585,6 +585,9 @@ WFLOW_LAUNCH_LOG_FN="log.launch_FV3LAM_wflow"
 # POSTPROC_LONG_LEN_HRS:
 # The length of long post process, in integer hours.
 #
+# POSTPROC_SUBH_LEN_HRS:
+# The length of subhourly product generation, in integer hours.
+#
 # CYCL_HRS_HYB_FV3LAM_ENS:
 # An array containing the hours of the day at which the GSI hybrid using
 # FV3LAM ensemeble.
@@ -630,6 +633,7 @@ BOUNDARY_LONG_LEN_HRS="0"
 BOUNDARY_PROC_GROUP_NUM="72"
 POSTPROC_LEN_HRS="18"
 POSTPROC_LONG_LEN_HRS="60"
+POSTPROC_SUBH_LEN_HRS="18"
 FCST_LEN_HRS="18"
 FCST_LEN_HRS_SPINUP="1"
 FCST_LEN_HRS_CYCLES=( \

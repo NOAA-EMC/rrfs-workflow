@@ -139,7 +139,7 @@ if [ ${len_fhr} -eq 9 ]; then
   post_min=${fhr:4:2}
   if [ ${post_min} -lt ${nsout_min} ]; then
     post_min=00
-	  if [ $post_fhr -gt 1 -a $post_fhr -le 018 ]
+	  if [ $post_fhr -ge 1 -a $post_fhr -le $POSTPROC_SUBH_LEN_HRS ]
 	  then
           SUBH_GEN=1
 	  fi

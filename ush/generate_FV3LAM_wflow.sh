@@ -443,6 +443,7 @@ settings="\
   'boundary_long_len_hrs': ${BOUNDARY_LONG_LEN_HRS}
   'postproc_len_hrs': ${POSTPROC_LEN_HRS}
   'postproc_long_len_hrs': ${POSTPROC_LONG_LEN_HRS}
+  'postproc_subh_len_hrs': ${POSTPROC_SUBH_LEN_HRS}
   'postproc_nsout_min': ${NSOUT_MIN}
   'postproc_nfhmax_hrs': ${NFHMAX_HF}
   'postproc_nfhout_hrs': ${NFHOUT}
