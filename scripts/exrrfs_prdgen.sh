@@ -186,6 +186,7 @@ if [ ${DO_ENSFCST} = "TRUE" ]; then
   testbed=${net4}.t${cyc}z.${mem_num}.testbed.${gridspacing}.f${fhr}.${gridname}.grib2
 else
   prslev=${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
+  prslevsubh=${net4}.t${cyc}z.prslev.${gridspacing}.subh.f${fhr}.${gridname}.grib2
   natlev=${net4}.t${cyc}z.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
   ififip=${net4}.t${cyc}z.ififip.${gridspacing}.f${fhr}.${gridname}.grib2
   aviati=${net4}.t${cyc}z.aviati.${gridspacing}.f${fhr}.${gridname}.grib2
@@ -221,6 +222,9 @@ fi
 basetime=$( date +%y%j%H%M -d "${yyyymmdd} ${hh}" )
 if [[ -f ${DATA}/${prslev} ]]; then
   cp ${DATA}/${prslev} ${COMOUT}/${prslev}
+fi
+if [[ -f ${DATA}/${prslevsubh} ]]; then
+  cp ${DATA}/${prslevsubh} ${COMOUT}/${prslevsubh}
 fi
 if [[ -f ${DATA}/${natlev} ]]; then
   cp ${DATA}/${natlev} ${COMOUT}/${natlev}
