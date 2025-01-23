@@ -11,7 +11,7 @@ EXEC="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_variational.x"
 EXEC2="${HOMErrfs}/sorc/RDASApp/build/bin/bufr2ioda.x"
 cd ${HOMErrfs}/sorc/RDASApp
 rm -rf build/
-./build.sh -m MPAS --notestdata
+./build.sh -m MPAS
 
 mkdir -p ${HOMErrfs}/exec
 echo "copy ${EXEC} to ../exec/mpasjedi_variational.x"

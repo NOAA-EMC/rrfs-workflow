@@ -5,9 +5,9 @@ export NET=rrfs                    # rrfs, rtma,
 export MESH_NAME=conus12km         # conus12km, conus3km, atl3km, etc
 export WGF="det"   # working group function = "det", "enkf", "ensf", "firewx"
 export EXP_NAME=rrfs${WGF}
-export VERSION=v2.0.3
-export TAG=c3v203
-export OPSROOT=/lfs5/BMC/nrtrr/NCO_dirs/${VERSION}
+export VERSION=v2.0.8
+export TAG=c3v208
+export OPSROOT=/scratch1/BMC/wrfruc/mhu/rrfs2/${VERSION}
 export EXPDIR=${OPSROOT}/${EXP_NAME}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
@@ -18,11 +18,8 @@ export REALTIME=true     # true, false
 export PHYSICS_SUITE="convection_permitting"   # mesoscale_reference, convection_permitting
 export ZETA_LEVELS="L60.txt"
 #
-export DA_IODA="true"
-export OBSPATH="/public/data/grids/rap/obs"
-
-export DO_CYC="true"
-export CYC_INTERVAL=1
+export FCST_ONLY="false"
+export CYC_INTERVAL=3
 export FCST_LENGTH=3
 export FCST_LEN_HRS_CYCLES="12 03 03 03 03 03 12 03 03 03 03 03 12 03 03 03 03 03 12 03 03 03 03 03"
 export HISTORY_INTERVAL=1
@@ -31,11 +28,11 @@ export MPASSIT_GROUP_TOTAL_NUM=1
 export UPP_GROUP_TOTAL_NUM=1
 
 export IC_EXTRN_MDL_NAME='GFS'
-export IC_OFFSET=6
+export IC_OFFSET=24
 export IC_EXTRN_MDL_BASEDIR="/public/data/grids/gfs/0p25deg/grib2"
 export IC_EXTRN_MDL_NAME_PATTERN="@y@j@H000fHHH"
 export LBC_EXTRN_MDL_NAME='GFS'
-export LBC_OFFSET=6
+export LBC_OFFSET=24
 export LBC_LENGTH=18
 export LBC_INTERVAL=1
 export LBC_EXTRN_MDL_BASEDIR="/public/data/grids/gfs/0p25deg/grib2"
@@ -43,16 +40,16 @@ export LBC_EXTRN_MDL_NAME_PATTERN="@y@j@H000fHHH"
 export LBC_UNGRIB_GROUP_TOTAL_NUM=1
 export LBC_GROUP_TOTAL_NUM=1
 
-export RUN_PERIOD="2025012300-2025012300"
+export RUN_PERIOD="2025012200-2025012300"
 export CYCLEDEF_IC="   &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 06:00:00 "
 export CYCLEDEF_LBC="  &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 06:00:00 "
-export CYCLEDEF_PROD=" &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 01:00:00 "
+export CYCLEDEF_PROD=" &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 03:00:00 "
 export CYCL_HRS_COLDSTART="00 12"
 #
-export ACCOUNT="rtwrfruc"
-export QUEUE="rth"
-export PARTITION="kjet"
-export RESERVATION="rrfsens"
+export ACCOUNT="wrfruc"
+export QUEUE="batch"
+export PARTITION="hera"
+export RESERVATION=""
 #
 export STARTTIME_IC="00:30:00"
 export STARTTIME_LBC="00:00:01"
@@ -64,7 +61,6 @@ export STARTTIME_MPASSIT="00:35:01"
 export STARTTIME_UPP="00:35:01"
 export STARTTIME_PREP_IC="00:30:00"
 export STARTTIME_PREP_LBC="00:30:00"
-export STARTTIME_IODA_BUFR="00:30:00"
 
 export NODES_IC="<nodes>1:ppn=40</nodes>"
 export NODES_LBC="<nodes>1:ppn=40</nodes>"
