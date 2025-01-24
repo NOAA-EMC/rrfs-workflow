@@ -55,7 +55,7 @@ for (( ii=0; ii<${num_fhrs}; ii=ii+1 )); do
       mv ${history_file} ${umbrelladir}/.
       mv ${diag_file}    ${umbrelladir}/.
       # save to com
-      if (( ${ii} == ${cyc_interval} )); then
+      if (( ${ii} <= ${cyc_interval} )) && (( ${ii} > 0 )); then
         ${cpreq} ${mpasout_file} ${comoutdir}/.
       fi
     else

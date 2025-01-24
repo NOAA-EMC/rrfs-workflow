@@ -18,8 +18,12 @@ export REALTIME=true     # true, false
 export PHYSICS_SUITE="convection_permitting"   # mesoscale_reference, convection_permitting
 export ZETA_LEVELS="L60.txt"
 #
-export FCST_ONLY="false"
-export CYC_INTERVAL=3
+export DA_IODA="true"
+export DA_JEDI="true"
+export OBSPATH="/public/data/grids/rap/obs"
+
+export DO_CYC="true"
+export CYC_INTERVAL=1
 export FCST_LENGTH=3
 export FCST_LEN_HRS_CYCLES="12 03 03 03 03 03 12 03 03 03 03 03 12 03 03 03 03 03 12 03 03 03 03 03"
 export HISTORY_INTERVAL=1
@@ -55,23 +59,26 @@ export STARTTIME_IC="00:30:00"
 export STARTTIME_LBC="00:00:01"
 export STARTTIME_BUFRIODA="00:00:01"
 export STARTTIME_ENSBE="00:00:01"
-export STARTTIME_DA="00:30:01"
+export STARTTIME_JEDIVAR="00:30:01"
 export STARTTIME_FCST="00:35:01"
 export STARTTIME_MPASSIT="00:35:01"
 export STARTTIME_UPP="00:35:01"
 export STARTTIME_PREP_IC="00:30:00"
 export STARTTIME_PREP_LBC="00:30:00"
+export STARTTIME_IODA_BUFR="00:30:00"
 
 export NODES_IC="<nodes>1:ppn=40</nodes>"
 export NODES_LBC="<nodes>1:ppn=40</nodes>"
 export NODES_FCST="<nodes>2:ppn=40</nodes>"
 export NODES_MPASSIT="<nodes>1:ppn=40</nodes>"
 export NODES_UPP="<nodes>1:ppn=40</nodes>"
+export NODES_JEDIVAR="<nodes>2:ppn=20</nodes>"
 #
 export WALLTIME_FCST="1:30:00"
 export WALLTIME_SAVE_FCST="1:30:00"
 export WALLTIME_MPASSIT="1:00:00"
 export WALLTIME_UPP="1:00:00"
+export WALLTIME_JEDIVAR="00:30:00"
 #
 export KEEPDATA=yes
 export MPI_RUN_CMD=srun
