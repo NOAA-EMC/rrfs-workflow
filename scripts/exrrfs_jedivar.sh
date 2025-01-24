@@ -26,7 +26,6 @@ fi
 #
 #
 ${cpreq} ${FIXrrfs}/physics/${PHYSICS_SUITE}/* .
-#ln -snf VEGPARM.TBL.da VEGPARM.TBL #gge.debug temp
 mkdir -p graphinfo stream_list
 ${cpreq} ${FIXrrfs}/graphinfo/* graphinfo/
 ${cpreq} ${FIXrrfs}/jedi/obsop_name_map.yaml .                  
