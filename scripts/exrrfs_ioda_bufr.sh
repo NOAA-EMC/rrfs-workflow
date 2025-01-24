@@ -36,7 +36,7 @@ done
 ${cpreq} ${HOMErrfs}/sorc/RDASApp/rrfs-test/IODA/offline_add_var_to_ioda.py .
 ioda_files=$(ls ioda*nc)
 for ioda_file in ${ioda_files[@]}; do
-  python offline_add_var_to_ioda.py -o ${ioda_file}
+  offline_add_var_to_ioda.py -o ${ioda_file}
   base_name=$(basename "$ioda_file" .nc)
   mv  ${base_name}_llp.nc ${base_name}.nc
 done
