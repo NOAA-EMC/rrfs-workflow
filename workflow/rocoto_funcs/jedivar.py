@@ -2,13 +2,16 @@
 import os
 from rocoto_funcs.base import xml_task, source, get_cascade_env
 
-### begin of da --------------------------------------------------------
-def da(xmlFile, expdir):
-  task_id='da'
+### begin of jedivar --------------------------------------------------------
+def jedivar(xmlFile, expdir):
+  task_id='jedivar'
   cycledefs='prod'
+  physics_suite=os.getenv('PHYSICS_SUITE','PHYSICS_SUITE_not_defined')
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={
-    '_PLACEHOLDER_': 'just a place holder',
+    'PHYSICS_SUITE': f'{physics_suite}',
+    'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
+    'DATAROOT': f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H</cyclestr>'
   }
   # dependencies
   hrs=os.getenv('PROD_BGN_AT_HRS', '3 15')
@@ -30,29 +33,22 @@ def da(xmlFile, expdir):
   if realtime.upper() == "TRUE":
     timedep=f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
   #
-  DATAROOT=os.getenv("DATAROOT","DATAROOT_NOT_DEFINED")
+  COMROOT=os.getenv("COMROOT","COMROOT_NOT_DEFINED")
   RUN='rrfs'
   NET=os.getenv("NET","NET_NOT_DEFINED")
   VERSION=os.getenv("VERSION","VERSION_NOT_DEFINED")
   dependencies=f'''
   <dependency>
   <and>{timedep}
+    <taskdep task="prep_ic"/>
+    <taskdep task="ioda_bufr"/>
     <or>
-      <and>
-        <or>
-{streqs}
-        </or>
-        <taskdep task="ic"/>
-      </and>
-      <and>
-        <or>
-{strneqs}
-        </or>
-        <datadep age="00:05:00"><cyclestr offset="-1:00:00">{DATAROOT}/{NET}/{VERSION}/{RUN}.@Y@m@d/@H/fcst/</cyclestr><cyclestr>restart.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
-      </and>
+      <datadep age="00:05:00"><cyclestr offset="-1:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}enkf.@Y@m@d/@H/m001/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+      <datadep age="00:05:00"><cyclestr offset="-2:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}enkf.@Y@m@d/@H/m001/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+      <datadep age="00:05:00"><cyclestr offset="-3:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}enkf.@Y@m@d/@H/m001/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
     </or>
   </and>
   </dependency>'''
   #
   xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies)
-### end of da --------------------------------------------------------
+### end of jedivar --------------------------------------------------------

@@ -10,7 +10,7 @@ from rocoto_funcs.ic import ic
 from rocoto_funcs.lbc import lbc
 from rocoto_funcs.prep_ic import prep_ic
 from rocoto_funcs.prep_lbc import prep_lbc
-from rocoto_funcs.da import da
+from rocoto_funcs.jedivar import jedivar
 from rocoto_funcs.fcst import fcst
 from rocoto_funcs.save_fcst import save_fcst
 from rocoto_funcs.ens_da import ens_da
@@ -69,7 +69,7 @@ def setup_xml(HOMErrfs, expdir):
       if os.getenv("DA_IODA","FALSE").upper()=="TRUE":
         ioda_bufr(xmlFile,expdir)
       if os.getenv("DA_JEDI","FALSE").upper()=="TRUE":
-        da(xmlFile,expdir)
+        jedivar(xmlFile,expdir)
       fcst(xmlFile,expdir)
       save_fcst(xmlFile,expdir)
       mpassit(xmlFile,expdir)
