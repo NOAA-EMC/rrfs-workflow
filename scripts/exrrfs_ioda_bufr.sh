@@ -14,10 +14,6 @@ execfile=${HOMErrfs}/sorc/RDASApp/build/bin/bufr2ioda.x
 REFERENCE_TIME="${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z"
 yaml_list=(
 "prepbufr_aircraft.yaml" 
-"prepbufr_adpupa.yaml"
-)
-#yaml_list=(
-#"prepbufr_aircraft.yaml" 
 #"prepbufr_ascatw.yaml" 
 #"prepbufr_gpsipw.yaml" 
 #"prepbufr_mesonet.yaml" 
@@ -25,8 +21,8 @@ yaml_list=(
 #"prepbufr_rassda.yaml" 
 #"prepbufr_satwnd.yaml" 
 #"prepbufr_adpsfc.yaml" 
-#"prepbufr_adpupa.yaml"
-#)
+"prepbufr_adpupa.yaml"
+)
 
 # run bufr2ioda.x
 for yaml in ${yaml_list[@]}; do
