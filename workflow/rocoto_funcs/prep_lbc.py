@@ -51,11 +51,18 @@ def prep_lbc(xmlFile, expdir, do_ensemble=False):
   starttime=get_cascade_env(f"STARTTIME_{task_id}".upper())
   if realtime.upper() == "TRUE":
     timedep=f'\n   <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+
+  taskdep=""
+  for hr in range(0,12):
+    taskdep=taskdep + f'\n <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-{hr}:00:00" />'
   
   dependencies=f'''
   <dependency>
   <and>{timedep}
    <taskdep task="prep_ic{ensindexstr}"/>
+   <or>
+   {taskdep}
+   </or>
   </and>
   </dependency>'''
   #
