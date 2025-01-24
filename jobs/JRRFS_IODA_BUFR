@@ -3,22 +3,35 @@ declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LI
 set -x
 date
 #
-# source the config cascade
-source ${EXPDIR}/exp.setup
-source ${EXPDIR}/config/config.${MACHINE}
-source ${EXPDIR}/config/config.base
-[[ -s ${EXPDIR}/config/config.ioda_bufr ]] && source ${EXPDIR}/config/config.ioda_bufr
+#
+#-----------------------------------------------------------------------
+# Specify Execution Areas
+#-----------------------------------------------------------------------
+#
+export HOMErrfs=${HOMErrfs} #comes from the workflow at runtime
+export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
+export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
+export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
+export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
+#
+#-----------------------------------------------------------------------
+# Obtain unique process id (pid) and create the run directory (DATA).
+#-----------------------------------------------------------------------
 #
 export pid=${pid:-$$}
-export RUN=${RUN:-rrfs}
 export jobid=${jobid:-${RUN}_ioda_bufr_${cyc}}
-
 export DATA=${DATA:-${DATAROOT}/${jobid}}
+
 if [ -d ${DATA} ]; then #remove the ${DATA} directory before a new run
   rm -rf ${DATA}
 fi
 mkdir -p ${DATA}
 #
+#-----------------------------------------------------------------------
+# Define COM directories
+#-----------------------------------------------------------------------
+#
+export COMINrrfs=${COMINrrfs:-$(compath.py $envir/rrfs/$rrfs_ver)}
 export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
 mkdir -p ${COMOUT}/ioda_bufr
 #

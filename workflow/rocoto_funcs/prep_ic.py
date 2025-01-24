@@ -78,8 +78,8 @@ def prep_ic(xmlFile, expdir, do_ensemble=False):
    </or>
   </and>
   </dependency>'''
-  # overwrite dependencies if it is FCST_ONLY
-  if os.getenv('FCST_ONLY','FALSE').upper() == "TRUE":
+  # overwrite dependencies if it is not DO_CYC
+  if os.getenv('DO_CYC','FALSE').upper() == "FALSE":
     dependencies=f'''
   <dependency>
   <and>{timedep}

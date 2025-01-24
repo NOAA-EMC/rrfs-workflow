@@ -6,13 +6,15 @@ from rocoto_funcs.base import xml_task, source, get_cascade_env
 def ioda_bufr(xmlFile, expdir):
   task_id='ioda_bufr'
   cycledefs='prod'
+  OBSPATH=os.getenv("OBSPATH",'OBSPATH_not_defined')
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={
-    'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z'
+    'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
+    'DATAROOT': f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H</cyclestr>',
+    'OBSPATH': f'{OBSPATH}'
   }
   # dependencies
-  OBSINprepbufr=os.getenv("OBSINprepbufr",'OBSINprepbufr_not_defined')
-  fpath=f'{OBSINprepbufr}/@Y@m@d@H.rap.t@Hz.prepbufr.tm00'
+  fpath=f'{OBSPATH}/@Y@m@d@H.rap.t@Hz.prepbufr.tm00'
 
   timedep=""
   realtime=os.getenv("REALTIME","false")
