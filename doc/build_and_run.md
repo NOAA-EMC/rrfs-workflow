@@ -28,11 +28,11 @@ upp.x
 ```
 
 # 2. Setup and run experiments:
-### 2.1. copy and modify exp.setup
+### 2.1. cat/copy and modify exp.setup
 ```
 cd workflow
 cat exp/exp.conus12km exp/local.conus12km > exp.setup
-  (or you can copy exp/exp.conus12km as exp.setup and then modify relevant parameters accordingly)
+  (or you can 'cp exp/exp.conus12km exp.setup' and then modify relevant options)
 vi exp.setup # modify directories, accounts, etc
 ```
 In retro runs, for simplicity, `OPSROOT` provides a top directory for `COMROOT`, `DATAROOT` and `EXPDIR`. But this is NOT a must and you may set them separately without a shared top directory.
