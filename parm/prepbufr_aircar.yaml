@@ -9,44 +9,26 @@ observations:
       obsdatain: "./prepbufr"
 
       exports:
-        group_by_variable: prepbufrDataLvlCat
+        #group_by: prepbufrDataLvlCat
         subsets:
-          - ADPUPA    # UPPER-AIR (RAOB, PIBAL, RECCO, DROPS) REPORTS
-          #- AIRCAR    # MDCRS ACARS AIRCRAFT REPORTS (ACID)
+          - AIRCAR    # MDCRS ACARS AIRCRAFT REPORTS (ACID)
           #- AIRCFT    # AIREP, PIREP, AMDAR, TAMDAR AIRCRAFT REPORTS (ACID)
-          #- SATWND    # SATELLITE-DERIVED WIND REPORTS (SAID)
-          #- PROFLR    # WIND PROFILER AND ACOUSTIC SOUNDER (SODAR) REPORTS
-          #- VADWND    # VAD (NEXRAD) WIND REPORTS
-          #- SATEMP    # POES SOUNDING, RETRIEVAL, RADIANCE DATA (TOVS, SAID)
-          #- ADPSFC    # SURFACE LAND (SYNOPTIC, METAR) REPORTS
-          #- SFCSHP    # SURFACE MARINE (SHIP, BUOY, C-MAN/TIGE GAUGE PLATFORM) REPORTS
-          #- SFCBOG    # MEAN SEA-LEVEL PRESSURE BOGUS REPORTS
-          #- SPSSMI    # DMSP SSM/I RETRIEVAL PRODUCTS (REPROCESSED WIND SPEED, TPW, SAID)
-          #- SYNDAT    # SYNTHETIC TROPICAL CYCLONE BOGUS REPORTS
-          #- ERS1DA    # ERS SCATTEROMETER WIND DATA (REPROCESSED WIND SPEED, SAID)
-          #- GOESND    # GOES SOUNDING, RETRIEVAL, RADIANCE DATA (SAID)
-          #- QKSWND    # QUIKSCAT SCATTEROMETER WIND DATA (REPROCESSED, SAID)
-          #- MSONET    # MESONET SURFACE REPORTS
-          #- GPSIPW    # GPS - INTEGRATED PRECIPITABLE WATER AND TOTAL ZENITH DELAY REPORTS
-          #- RASSDA    # RADIO ACOUSTIC SOUNDING SYSTEM (RASS) VIRTUAL TEMPERATURE PROFILE REPORTS
-          #- WDSATR    # WINDSAT SCATTEROMETER WIND DATA (REPROCESSED, SAID)
-          #- ASCATW    # ASCAT SCATTEROMETER DATA (REPROCESSED, SAID)
         variables:
           # MetaData
           timestamp:
             timeoffset:
-              timeOffset: "*/PRSLEVEL/DRFTINFO/HRDR"
+              timeOffset: "*/DHR"
               transforms:
                 - scale: 3600
               referenceTime: "@referenceTime@"
           timeOffset:
-            query: "*/PRSLEVEL/DRFTINFO/HRDR"
+            query: "*/DHR"
             transforms:
               - scale: 3600
           longitude:
-            query: "*/PRSLEVEL/DRFTINFO/XDR"
+            query: "*/XOB"
           latitude:
-            query: "*/PRSLEVEL/DRFTINFO/YDR"
+            query: "*/YOB"
           stationIdentification:
             query: "*/SID"
           stationElevation:
@@ -57,93 +39,97 @@ observations:
           dumpReportType:
             query: "*/T29"
           prepbufrDataLvlCat:
-            query: "*/PRSLEVEL/CAT"
+            query: "*/PRSLEVLA{1}/CAT"
+          aircraftPhase:
+            query: "*/PRSLEVLA{1}/ACFT_SEQ/POAF"
+          aircraftFlightNumber:
+            query: "[*/ACID, */ACID_SEQ/ACID]"
 
           pressure:
-            query: "*/PRSLEVEL/P___INFO/P__EVENT{1}/POB"
+            query: "*/PRSLEVLA{1}/P___INFO/P__EVENT{1}/POB"
             transforms:
               - scale: 100
           pressureQualityMarker:
-            query: "*/PRSLEVEL/P___INFO/P__EVENT{1}/PQM"
+            query: "*/PRSLEVLA{1}/P___INFO/P__EVENT{1}/PQM"
           pressureError:
-            query: "*/PRSLEVEL/P___INFO/P__BACKG/POE"
+            query: "*/PRSLEVLA{1}/P___INFO/P__BACKG/POE"
             transforms:
               - scale: 100
           pressureTunedError:
-            query: "*/PRSLEVEL/P___INFO/P__POSTP/POETU"
+            query: "*/PRSLEVLA{1}/P___INFO/P__POSTP/POETU"
             transforms:
               - scale: 100
 
           heightOfObservation:
-            query: "*/PRSLEVEL/Z___INFO/Z__EVENT{1}/ZOB"
+            query: "*/PRSLEVLA{1}/Z___INFO/Z__EVENT{1}/ZOB"
             #type: float
           heightOfObservationQualityMark:
-            query: "*/PRSLEVEL/Z___INFO/Z__EVENT{1}/ZQM"
+            query: "*/PRSLEVLA{1}/Z___INFO/Z__EVENT{1}/ZQM"
 
           specificHumidity:
-            query: "*/PRSLEVEL/Q___INFO/Q__EVENT{1}/QOB"
+            query: "*/PRSLEVLA{1}/Q___INFO/Q__EVENT{1}/QOB"
             type: float
             transforms:
               - scale: 0.000001
           specificHumidityQualityMarker:
-            query: "*/PRSLEVEL/Q___INFO/Q__EVENT{1}/QQM"
+            query: "*/PRSLEVLA{1}/Q___INFO/Q__EVENT{1}/QQM"
           relativeHumidityError:
-            query: "*/PRSLEVEL/Q___INFO/Q__BACKG/QOE"
+            query: "*/PRSLEVLA{1}/Q___INFO/Q__BACKG/QOE"
             transforms:
               - scale: 0.1
           relativeHumidityTunedError:
-            query: "*/PRSLEVEL/Q___INFO/Q__POSTP/QOETU"
+            query: "*/PRSLEVLA{1}/Q___INFO/Q__POSTP/QOETU"
             transforms:
               - scale: 0.1
 
           dewpointTemperature:
-            query: "*/PRSLEVEL/Q___INFO/TDO"
+            query: "*/PRSLEVLA{1}/Q___INFO/TDO"
             transforms:
               - offset: 273.15
 
           airTemperature:
-            query: "*/PRSLEVEL/T___INFO/T__EVENT{1}/TOB"
+            query: "*/PRSLEVLA{1}/T___INFO/T__EVENT{1}/TOB"
             transforms:
               - offset: 273.15
           airTemperatureQualityMarker:
-            query: "*/PRSLEVEL/T___INFO/T__EVENT{1}/TQM"
+            query: "*/PRSLEVLA{1}/T___INFO/T__EVENT{1}/TQM"
           airTemperatureError:
-            query: "*/PRSLEVEL/T___INFO/T__BACKG/TOE"
+            query: "*/PRSLEVLA{1}/T___INFO/T__BACKG/TOE"
           airTemperatureTunedError:
-            query: "*/PRSLEVEL/T___INFO/T__POSTP/TOETU"
+            query: "*/PRSLEVLA{1}/T___INFO/T__POSTP/TOETU"
 
           windEastward:
-            query: "*/PRSLEVEL/W___INFO/W__EVENT{1}/UOB"
+            query: "*/PRSLEVLA{1}/W___INFO/W__EVENT{1}/UOB"
           windNorthward:
-            query: "*/PRSLEVEL/W___INFO/W__EVENT{1}/VOB"
+            query: "*/PRSLEVLA{1}/W___INFO/W__EVENT{1}/VOB"
           windQualityMarker:
-            query: "*/PRSLEVEL/W___INFO/W__EVENT{1}/WQM"
+            query: "*/PRSLEVLA{1}/W___INFO/W__EVENT{1}/WQM"
           windError:
-            query: "*/PRSLEVEL/W___INFO/W__BACKG/WOE"
+            query: "*/PRSLEVLA{1}/W___INFO/W__BACKG/WOE"
           windTunedError:
-            query: "*/PRSLEVEL/W___INFO/W__POSTP/WOETU"
+            query: "*/PRSLEVLA{1}/W___INFO/W__POSTP/WOETU"
             transform:
               - scale: 0.514444
 
     ioda:
       backend: netcdf
-      obsdataout: "./ioda_adpupa.nc"
+      obsdataout: "./ioda_aircar.nc"
 
       dimensions:
         - name: Level
-          path: "*/PRSLEVEL"
+          path: "*/PRSLEVLA"
         - name: pevent_Dim
-          path: "*/PRSLEVEL/P___INFO/P__EVENT"
+          path: "*/PRSLEVLA{1}/P___INFO/P__EVENT"
         - name: qevent_Dim
-          path: "*/PRSLEVEL/Q___INFO/Q__EVENT"
+          path: "*/PRSLEVLA{1}/Q___INFO/Q__EVENT"
         - name: tevent_Dim
-          path: "*/PRSLEVEL/T___INFO/T__EVENT"
+          path: "*/PRSLEVLA{1}/T___INFO/T__EVENT"
         - name: wevent_Dim
-          path: "*/PRSLEVEL/W___INFO/W__EVENT"
+          path: "*/PRSLEVLA{1}/W___INFO/W__EVENT"
         - name: zevent_Dim
-          path: "*/PRSLEVEL/Z___INFO/Z__EVENT"
+          path: "*/PRSLEVLA{1}/Z___INFO/Z__EVENT"
         - name: drft_Dim
-          path: "*/PRSLEVEL/DRFTINFO"
+          path: "*/PRSLEVLA{1}/DRFTINFO"
 
 
       variables:
@@ -164,7 +150,7 @@ observations:
         - name: "MetaData/stationIdentification"
           coordinates: "longitude latitude"
           source: variables/stationIdentification
-          longName: "Station ID"
+          longName: "Station/Aircraft ID"
           units: ""
 
         - name: "MetaData/longitude"
@@ -205,6 +191,17 @@ observations:
           longName: "Prepbufr Data Level Category"
           units: ""
 
+        - name: "MetaData/aircraftFlightPhase"
+          coordinates: "longitude latitude"
+          source: variables/aircraftPhase
+          longName: "Aircraft Flight Phase"
+          units: ""
+
+        - name: "MetaData/aircraftFlightNumber"
+          coordinates: "longitude latitude"
+          source: variables/aircraftFlightNumber
+          longName: "Aircraft Flight Number"
+          units: ""
 
         - name: "MetaData/height"
           coordinates: "longitude latitude"
