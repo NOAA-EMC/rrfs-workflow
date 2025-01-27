@@ -395,10 +395,30 @@ if [ -f PRSLEV.GrbF${post_fhr} ]; then
     tm30=${DATA}/../rrfs_post_${envir}_${cyc}_f0${fhrm1}-30-00/PRSLEV.GrbF${fhrm1}.30
     tm45=${DATA}/../rrfs_post_${envir}_${cyc}_f0${fhrm1}-15-00/PRSLEV.GrbF${fhrm1}.15
 
+    tm15b=${DATA}/../rrfs_post_${envir}_${cyc}_f0${fhrm1}-45-00_long/PRSLEV.GrbF${fhrm1}.45
+    tm30b=${DATA}/../rrfs_post_${envir}_${cyc}_f0${fhrm1}-30-00_long/PRSLEV.GrbF${fhrm1}.30
+    tm45b=${DATA}/../rrfs_post_${envir}_${cyc}_f0${fhrm1}-15-00_long/PRSLEV.GrbF${fhrm1}.15
+
     looplim=30
     loop=1
     while [ $loop -le $looplim ]
     do
+
+    if [ ! -e $tm15 -a -e $tm15b ]
+    then
+      tm15=$tm15b
+    fi
+
+    if [ ! -e $tm30 -a -e $tm30b ]
+    then
+      tm30=$tm30b
+    fi
+
+    if [ ! -e $tm45 -a -e $tm45b ]
+    then
+      tm45=$tm45b
+    fi
+
       if [ -e $tm15 -a -e $tm30 -a -e $tm45 ]
       then
         break
