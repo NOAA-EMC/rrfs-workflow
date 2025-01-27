@@ -13,15 +13,18 @@ execfile=${HOMErrfs}/sorc/RDASApp/build/bin/bufr2ioda.x
 # generate the namelist on the fly
 REFERENCE_TIME="${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z"
 yaml_list=(
-"prepbufr_aircraft.yaml"
-#"prepbufr_ascatw.yaml"
-#"prepbufr_gpsipw.yaml"
-#"prepbufr_mesonet.yaml"
-#"prepbufr_profiler.yaml"
-#"prepbufr_rassda.yaml"
-#"prepbufr_satwnd.yaml"
 #"prepbufr_adpsfc.yaml"
 "prepbufr_adpupa.yaml"
+"prepbufr_aircar.yaml"
+#"prepbufr_aircft.yaml"
+#"prepbufr_ascatw.yaml"
+#"prepbufr_gpsipw.yaml"
+#"prepbufr_msonet.yaml"
+#"prepbufr_proflr.yaml"
+#"prepbufr_rassda.yaml"
+#"prepbufr_satwnd.yaml"
+#"prepbufr_sfcshp.yaml"
+#"prepbufr_vadwnd.yaml"
 )
 
 # run bufr2ioda.x

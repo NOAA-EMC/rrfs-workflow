@@ -11,42 +11,23 @@ observations:
       exports:
         group_by_variable: prepbufrDataLvlCat
         subsets:
-          - ADPUPA    # UPPER-AIR (RAOB, PIBAL, RECCO, DROPS) REPORTS
-          #- AIRCAR    # MDCRS ACARS AIRCRAFT REPORTS (ACID)
-          #- AIRCFT    # AIREP, PIREP, AMDAR, TAMDAR AIRCRAFT REPORTS (ACID)
-          #- SATWND    # SATELLITE-DERIVED WIND REPORTS (SAID)
-          #- PROFLR    # WIND PROFILER AND ACOUSTIC SOUNDER (SODAR) REPORTS
-          #- VADWND    # VAD (NEXRAD) WIND REPORTS
-          #- SATEMP    # POES SOUNDING, RETRIEVAL, RADIANCE DATA (TOVS, SAID)
-          #- ADPSFC    # SURFACE LAND (SYNOPTIC, METAR) REPORTS
-          #- SFCSHP    # SURFACE MARINE (SHIP, BUOY, C-MAN/TIGE GAUGE PLATFORM) REPORTS
-          #- SFCBOG    # MEAN SEA-LEVEL PRESSURE BOGUS REPORTS
-          #- SPSSMI    # DMSP SSM/I RETRIEVAL PRODUCTS (REPROCESSED WIND SPEED, TPW, SAID)
-          #- SYNDAT    # SYNTHETIC TROPICAL CYCLONE BOGUS REPORTS
-          #- ERS1DA    # ERS SCATTEROMETER WIND DATA (REPROCESSED WIND SPEED, SAID)
-          #- GOESND    # GOES SOUNDING, RETRIEVAL, RADIANCE DATA (SAID)
-          #- QKSWND    # QUIKSCAT SCATTEROMETER WIND DATA (REPROCESSED, SAID)
-          #- MSONET    # MESONET SURFACE REPORTS
-          #- GPSIPW    # GPS - INTEGRATED PRECIPITABLE WATER AND TOTAL ZENITH DELAY REPORTS
-          #- RASSDA    # RADIO ACOUSTIC SOUNDING SYSTEM (RASS) VIRTUAL TEMPERATURE PROFILE REPORTS
-          #- WDSATR    # WINDSAT SCATTEROMETER WIND DATA (REPROCESSED, SAID)
-          #- ASCATW    # ASCAT SCATTEROMETER DATA (REPROCESSED, SAID)
+          - PROFLR    # WIND PROFILER AND ACOUSTIC SOUNDER (SODAR) REPORTS
         variables:
           # MetaData
           timestamp:
             timeoffset:
-              timeOffset: "*/PRSLEVEL/DRFTINFO/HRDR"
+              timeOffset: "*/DHR"
               transforms:
                 - scale: 3600
               referenceTime: "@referenceTime@"
           timeOffset:
-            query: "*/PRSLEVEL/DRFTINFO/HRDR"
+            query: "*/DHR"
             transforms:
               - scale: 3600
           longitude:
-            query: "*/PRSLEVEL/DRFTINFO/XDR"
+            query: "*/XOB"
           latitude:
-            query: "*/PRSLEVEL/DRFTINFO/YDR"
+            query: "*/YOB"
           stationIdentification:
             query: "*/SID"
           stationElevation:
@@ -125,9 +106,10 @@ observations:
             transform:
               - scale: 0.514444
 
+
     ioda:
       backend: netcdf
-      obsdataout: "./ioda_adpupa.nc"
+      obsdataout: "./ioda_proflr.nc"
 
       dimensions:
         - name: Level
