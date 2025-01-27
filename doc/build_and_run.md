@@ -1,13 +1,13 @@
 # 1. Build
 `git clone -b rrfs-mpas-jedi --recursive git@github.com:NOAA-EMC/rrfs-workflow.git`
 
-`cd sorc` and run the following command to build the system:
+`cd rrfs-workflow/sorc` and run the following command to build the system:
 ```
 build.all
 ```
 
 The above script compiles WPS, MPAS, MPASSIT, RDASApp and UPP simultaneously.  
-Build logs for each component can be found under the current directory:
+Build logs for each component can be found under sorc/:
 ```
 log.build.mpas
 log.build.rdas
@@ -16,7 +16,7 @@ log.build.mpassit
 log.build.upp
 ```
 
-and executables can be found under `../exec`:
+Executables can be found under `exec/`:
 ```
 ungrib.x
 init_atmosphere_model.x
@@ -31,14 +31,12 @@ upp.x
 ### 2.1. copy and modify exp.setup
 ```
 cd workflow
-cp exp/exp.setup .
+cat exp/exp.conus12km exp/local.conus12km > exp.setup
+  (or you can copy exp/exp.conus12km as exp.setup and then modify relevant parameters accordingly)
 vi exp.setup # modify directories, accounts, etc
 ```
 In retro runs, for simplicity, `OPSROOT` provides a top directory for `COMROOT`, `DATAROOT` and `EXPDIR`. But this is NOT a must and you may set them separately without a shared top directory.
     
-`setup_rocoto.py` will smartly computes CYCLEDEFS based on the `REALTIME`, `REALTIME_DAYS`, `RETRO_PERIOD` settings.  
-`RETRO_CYCLETHROTTLE` and `RETRO_TASKTHROTTLE` can be modified as needed.
-
 Refer to [this guide](https://github.com/NOAA-EMC/rrfs-workflow/wiki/deploy-a-realtime-run-in-Jet) for setting up realtime runs. Note: realtime runs under role accounts should be coordinated with the POC of each realtime run.
 
 ### 2.2 setup_rocoto.py
@@ -48,10 +46,6 @@ Refer to [this guide](https://github.com/NOAA-EMC/rrfs-workflow/wiki/deploy-a-re
     
 This Python script creates an experiment directory (i.e. `EXPDIR`), writes out a runtime version of `exp.setup` under EXPDIR, and  then copies runtime config files from `HOMErrfs/parm` to `EXPDIR`.
        
-Users usually need to set up `ACCOUNT`, `QUEUE`, `PARTITION`, or `RESERVATION` by modifying `config_resources/config.${machine}` or you may export those variables in the current environment before running setp_exp.py, or export those variables in `exp.setup`.  
-    
-The workflow uses a cascade config structure to separate concerns so that a task/job/application/function_group only defines relevant environmental variables required in runtime. Refer to [this guide](https://github.com/NOAA-EMC/rrfs-workflow/wiki/The-cascade-config-structure) for more information.
-
 ### 2.3 run and monitor experiments using rocoto commands
 
 Go to `EXPDIR`, open `rrfs.xml`, and make sure it has all the required tasks and settings.

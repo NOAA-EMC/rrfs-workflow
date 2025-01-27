@@ -12,9 +12,13 @@ if len(sys.argv) == 2:
 else:
   EXPin = "exp.setup"
 
-# find the HOMErrfs directory
+# find the HOMErrfs directory and the MACHINE; run init.sh
 HOMErrfs=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.system(f'{HOMErrfs}/workflow/ush/init.sh')
+source(f'{HOMErrfs}/workflow/ush/detect_machine.sh')
+machine=os.getenv('MACHINE')
+if machine=='UNKNOWN':
+    print(f'WARNING: machine is UNKNOWN! ')
 #
 if os.path.exists(EXPin):
   source(EXPin)
@@ -63,10 +67,6 @@ if zeta_levels != '':
   shutil.copy(f'{HOMErrfs}/fix/meshes/{zeta_levels}',f'{exp_configdir}/ZETA_LEVELS.txt')
 
 # generate exp.setup under $expdir
-source(f'{HOMErrfs}/workflow/ush/detect_machine.sh')
-machine=os.getenv('MACHINE')
-if machine=='UNKNOWN':
-    print(f'WARNING: machine is UNKNOWN! ')
 text=f'''#=== Auto-generation of HOMErrfs, MACHINE
 export HOMErrfs={HOMErrfs}
 export MACHINE={machine}
