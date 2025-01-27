@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# local.setup: setup some local options specific to a platform or an experiment
+#
+# set up IC, LBC sources and A/Q/P/R information
+export IC_EXTRN_MDL_NAME='GFS'
+export IC_EXTRN_MDL_NAME_PATTERN="gfs.@Y@m@d/@H/gfs.t@Hz.pgrb2.0p25.ffHHH"
+export IC_EXTRN_MDL_NAME_PATTERN_B="gfs.@Y@m@d/@H/gfs.t@Hz.pgrb2b.0p25.ffHHH"
+export LBC_EXTRN_MDL_NAME='GFS'
+export LBC_EXTRN_MDL_NAME_PATTERN="gfs.@Y@m@d/@H/gfs.t@Hz.pgrb2.0p25.ffHHH"
+export LBC_EXTRN_MDL_NAME_PATTERN_B="gfs.@Y@m@d/@H/gfs.t@Hz.pgrb2b.0p25.ffHHH"
+case ${MACHINE} in
+  "hera")
+    export IC_EXTRN_MDL_BASEDIR="/scratch2/BMC/rtrr/RRFS2_RETRO_DATA/sandbox/GFS"
+    export LBC_EXTRN_MDL_BASEDIR="/scratch2/BMC/rtrr/RRFS2_RETRO_DATA/sandbox/GFS"
+    export ACCOUNT="wrfruc"
+    export QUEUE="batch"
+    export PARTITION="hera"
+    ;;
+  "jet")
+    export IC_EXTRN_MDL_BASEDIR="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/sandbox/GFS"
+    export LBC_EXTRN_MDL_BASEDIR="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/sandbox/GFS"
+    export ACCOUNT="nrtrr"
+    export QUEUE="batch"
+    export PARTITION="kjet"
+    ;;
+  "gaeac6")
+    export IC_EXTRN_MDL_BASEDIR="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/sandbox/GFS"
+    export LBC_EXTRN_MDL_BASEDIR="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/sandbox/GFS"
+    export ACCOUNT="bil-fire10-oar"
+    export QUEUE="batch"
+    export PARTITION="batch"
+    export CLUSTER="c6"
+    ;;
+  *)
+    echo "!!! unsupported platform:'${MACHINE}'!!!"
+    ;;
+esac

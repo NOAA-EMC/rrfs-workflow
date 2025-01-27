@@ -1,4 +1,4 @@
-# (C) Copyright 2020 NOAA/NWS/NCEP/EMC
+# (C) Copyright 2024 NOAA/NWS/NCEP/EMC
 #
 # This software is licensed under the terms of the Apache Licence Version 2.0
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -6,7 +6,6 @@
 observations:
   - obs space:
       name: bufr
-
       obsdatain: "./prepbufr"
 
       exports:
@@ -14,14 +13,17 @@ observations:
         subsets:
           - GPSIPW    # GPS - INTEGRATED PRECIPITABLE WATER AND TOTAL ZENITH DELAY REPORTS
         variables:
+          # MetaData
           timestamp:
             timeoffset:
               timeOffset: "*/DHR"
               transforms:
                 - scale: 3600
-              referenceTime: @referenceTime@
+              referenceTime: "@referenceTime@"
           timeOffset:
             query: "*/DHR"
+            transforms:
+              - scale: 3600
           longitude:
             query: "*/XOB"
           latitude:
@@ -30,11 +32,11 @@ observations:
             query: "*/SID"
           stationElevation:
             query: "*/ELV"
+            #type: float
           prepbufrReportType:
             query: "*/TYP"
           dumpReportType:
             query: "*/T29"
-
           prepbufrDataLvlCat:
             query: "*/CAT"
 
@@ -72,8 +74,8 @@ observations:
         - name: "MetaData/timeOffset"
           coordinates: "longitude latitude"
           source: variables/timeOffset
-          longName: "Observation Time Offset from Reference Time"
-          units: "Seconds"
+          longName: "Observation Time Minus Reference Time"
+          units: "s"
 
         - name: "MetaData/stationIdentification"
           coordinates: "longitude latitude"
@@ -85,21 +87,21 @@ observations:
           coordinates: "longitude latitude"
           source: variables/longitude
           longName: "Longitude"
-          units: "degrees_east"
+          units: "degree_east"
           range: [0, 360]
 
         - name: "MetaData/latitude"
           coordinates: "longitude latitude"
           source: variables/latitude
           longName: "Latitude"
-          units: "degrees_north"
+          units: "degree_north"
           range: [-90, 90]
 
         - name: "MetaData/stationElevation"
           coordinates: "longitude latitude"
           source: variables/stationElevation
-          longName: "Height of Station"
-          units: "Meter"
+          longName: "Elevation of Station"
+          units: "m"
 
         - name: "MetaData/prepbufrReportType"
           coordinates: "longitude latitude"
@@ -137,24 +139,24 @@ observations:
           coordinates: "longitude latitude"
           source: variables/totalPrecipitableWater
           longName: "Total Precipitable Water"
-          units: "Millimeter"
+          units: "mm"
 
         # Quality Marker
         - name: "QualityMarker/totalPrecipitableWater"
           coordinates: "longitude latitude"
           source: variables/pwQualityMarker
           longName: "Total Precipitable Water Quality Marker"
-          
+
         # ObsError
         - name: "ObsError/totalPrecipitableWater"
           coordinates: "longitude latitude"
           source: variables/pwError
           longName: "Total Precipitable Water Observation Error"
-          units: "Millimeter"
-          
-        # Tuned ObsError
-        - name: "TunedObsError/totalPrecipitableWater"
-          coordinates: "longitude latitude"
-          source: variables/pwTunedError
-          longName: "Analysis-Tuned Total Precipitable Water Observation Error"
-          units: "Millimeter"
+          units: "mm"
+
+#        # Tuned ObsError
+#        - name: "TunedObsError/totalPrecipitableWater"
+#          coordinates: "longitude latitude"
+#          source: variables/pwTunedError
+#          longName: "Analysis-Tuned Total Precipitable Water Observation Error"
+#          units: "mm"
