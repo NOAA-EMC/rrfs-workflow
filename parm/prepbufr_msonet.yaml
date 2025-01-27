@@ -1,4 +1,4 @@
-# (C) Copyright 2020 NOAA/NWS/NCEP/EMC
+# (C) Copyright 2024 NOAA/NWS/NCEP/EMC
 #
 # This software is licensed under the terms of the Apache Licence Version 2.0
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -6,22 +6,24 @@
 observations:
   - obs space:
       name: bufr
-
-      obsdatain: "prepbufr"
+      obsdatain: "./bufr/prepbufr"
 
       exports:
         #group_by_variable: prepbufrDataLvlCat
         subsets:
           - MSONET    # MESONET SURFACE REPORTS
         variables:
+          # MetaData
           timestamp:
             timeoffset:
               timeOffset: "*/DHR"
               transforms:
                 - scale: 3600
-              referenceTime: @referenceTime@
+              referenceTime: "@REFERENCETIME@"
           timeOffset:
             query: "*/DHR"
+            transforms:
+              - scale: 3600
           longitude:
             query: "*/XOB"
           latitude:
@@ -30,33 +32,40 @@ observations:
             query: "*/SID"
           stationElevation:
             query: "*/ELV"
+            #type: float
           prepbufrReportType:
             query: "*/TYP"
           dumpReportType:
             query: "*/T29"
-
-          mesonetProvider:
-            query: "*/PRVSTG"
           prepbufrDataLvlCat:
             query: "*/CAT"
+          dataProviderOrigin:
+            query: "*/PRVSTG"
+          dataProviderSubOrigin:
+            query: "*/SPRVSTG"
 
           pressure:
             query: "*/P___INFO/P__EVENT{1}/POB"
             transforms:
               - scale: 100
-          pressureQualityMarker:
+          stationPressure:
+            query: "*/P___INFO/P__EVENT{1}/POB"
+            transforms:
+              - scale: 100
+          stationPressureQualityMarker:
             query: "*/P___INFO/P__EVENT{1}/PQM"
-          pressureError:
+          stationPressureError:
             query: "*/P___INFO/P__BACKG/POE"
             transforms:
               - scale: 100
-          pressureTunedError:
+          stationPressureTunedError:
             query: "*/P___INFO/P__POSTP/POETU"
             transforms:
               - scale: 100
 
           heightOfObservation:
             query: "*/Z___INFO/Z__EVENT{1}/ZOB"
+            #type: float
           heightOfObservationQualityMark:
             query: "*/Z___INFO/Z__EVENT{1}/ZQM"
 
@@ -117,11 +126,10 @@ observations:
             type: float
           maximumWindGustSpeed:
             query: "*/GUST2SEQ/MXGS"
-          
+
     ioda:
       backend: netcdf
-      obsdataout: "./ioda_mesonet.nc"
-
+      obsdataout: "./ioda_msonet.nc"
 
       dimensions:
         - name: pevent_Dim
@@ -148,8 +156,8 @@ observations:
         - name: "MetaData/timeOffset"
           coordinates: "longitude latitude"
           source: variables/timeOffset
-          longName: "Observation Time Offset from Reference Time"
-          units: "Seconds"
+          longName: "Observation Time Minus Reference Time"
+          units: "s"
 
         - name: "MetaData/stationIdentification"
           coordinates: "longitude latitude"
@@ -161,21 +169,21 @@ observations:
           coordinates: "longitude latitude"
           source: variables/longitude
           longName: "Longitude"
-          units: "degrees_east"
+          units: "degree_east"
           range: [0, 360]
 
         - name: "MetaData/latitude"
           coordinates: "longitude latitude"
           source: variables/latitude
           longName: "Latitude"
-          units: "degrees_north"
+          units: "degree_north"
           range: [-90, 90]
 
         - name: "MetaData/stationElevation"
           coordinates: "longitude latitude"
           source: variables/stationElevation
-          longName: "Height of Station"
-          units: "Meter"
+          longName: "Elevation of Station"
+          units: "m"
 
         - name: "MetaData/prepbufrReportType"
           coordinates: "longitude latitude"
@@ -189,29 +197,35 @@ observations:
           longName: "Data Dump Report Type"
           units: ""
 
-        - name: "MetaData/mesonetProvider"
-          coordinates: "longitude latitude"
-          source: variables/mesonetProvider
-          longName: "Mesonet Provider ID String"
-          units: ""
-
         - name: "MetaData/prepbufrDataLvlCat"
           coordinates: "longitude latitude"
           source: variables/prepbufrDataLvlCat
           longName: "Prepbufr Data Level Category"
           units: ""
 
-        - name: "MetaData/pressure"
+        - name: "MetaData/dataProviderOrigin"
           coordinates: "longitude latitude"
-          source: variables/pressure
-          longName: "Pressure"
-          units: "Pa"
+          source: variables/dataProviderOrigin
+          longName: "Mesonet Provider ID String"
+          units: ""
+
+        - name: "MetaData/dataProviderSubOrigin"
+          coordinates: "longitude latitude"
+          source: variables/dataProviderSubOrigin
+          longName: "Mesonet SubProvider ID String"
+          units: ""
 
         - name: "MetaData/height"
           coordinates: "longitude latitude"
           source: variables/heightOfObservation
           longName: "Height"
-          units: "Meter"
+          units: "m"
+
+        - name: "MetaData/pressure"
+          coordinates: "longitude latitude"
+          source: variables/pressure
+          longName: "Pressure"
+          units: "Pa"
 
         # ObsType
         - name: "ObsType/specificHumidity"
@@ -238,6 +252,12 @@ observations:
           longName: "windNorthward Report Type"
           units: ""
 
+        - name: "ObsType/stationPressure"
+          coordinates: "longitude latitude"
+          source: variables/prepbufrReportType
+          longName: "Pressure"
+          units: ""
+
         # ObsValue
         - name: "ObsValue/specificHumidity"
           coordinates: "longitude latitude"
@@ -249,25 +269,31 @@ observations:
           coordinates: "longitude latitude"
           source: variables/airTemperature
           longName: "Temperature"
-          units: "Kelvin"
+          units: "K"
 
         - name: "ObsValue/dewpointTemperature"
           coordinates: "longitude latitude"
           source: variables/dewpointTemperature
           longName: "Dewpoint Temperature"
-          units: "Kelvin"
+          units: "K"
 
         - name: "ObsValue/windEastward"
           coordinates: "longitude latitude"
           source: variables/windEastward
           longName: "Eastward Wind"
-          units: "Meter Second-1"
+          units: "m s-1"
 
         - name: "ObsValue/windNorthward"
           coordinates: "longitude latitude"
           source: variables/windNorthward
           longName: "Northward Wind"
-          units: "Meter Second-1"
+          units: "m s-1"
+
+        - name: "ObsValue/stationPressure"
+          coordinates: "longitude latitude"
+          source: variables/stationPressure
+          longName: "Station Pressure"
+          units: "Pa"
 
         - name: "ObsValue/pressureReducedToMeanSeaLevel"
           coordinates: "longitude latitude"
@@ -279,91 +305,108 @@ observations:
           coordinates: "longitude latitude"
           source: variables/horizontalVisibility
           longName: "Horizontal Visibility"
-          units: "Meter"
+          units: "m"
 
         - name: "ObsValue/maximumWindGustSpeed"
           coordinates: "longitude latitude"
           source: variables/maximumWindGustSpeed
           longName: "Maximum Wind Gust Speed"
-          units: "Meter Second-1"
-        
+          units: "m s-1"
+
         # Quality Marker
-        - name: "QualityMarker/pressure"
+        - name: "QualityMarker/stationPressure"
           coordinates: "longitude latitude"
-          source: variables/pressureQualityMarker
+          source: variables/stationPressureQualityMarker
           longName: "Pressure Quality Marker"
-          
+
         - name: "QualityMarker/height"
           coordinates: "longitude latitude"
           source: variables/heightOfObservationQualityMark
           longName: "Height Quality Marker"
-          
+
         - name: "QualityMarker/specificHumidity"
           coordinates: "longitude latitude"
           source: variables/specificHumidityQualityMarker
           longName: "Specific Humidity Quality Marker"
-          
+
         - name: "QualityMarker/airTemperature"
           coordinates: "longitude latitude"
           source: variables/airTemperatureQualityMarker
           longName: "Temperature Quality Marker"
-          
-        - name: "QualityMarker/wind"
+
+        - name: "QualityMarker/windEastward"
           coordinates: "longitude latitude"
           source: variables/windQualityMarker
-          longName: "U, V-Component of Wind Quality Marker"
+          longName: "windEastward Quality Marker"
+
+        - name: "QualityMarker/windNorthward"
+          coordinates: "longitude latitude"
+          source: variables/windQualityMarker
+          longName: "windNorthward Quality Marker"
 
         - name: "QualityMarker/pressureReducedToMeanSeaLevel"
           coordinates: "longitude latitude"
           source: variables/pressureReducedToMeanSeaLevelQualityMarker
           longName: "Mean Sea Level Pressure Quality Marker"
-          
+
         # ObsError
-        - name: "ObsError/pressure"
+        - name: "ObsError/stationPressure"
           coordinates: "longitude latitude"
-          source: variables/pressureError
+          source: variables/stationPressureError
           longName: "Pressure Observation Error"
           units: "Pa"
-          
+
         - name: "ObsError/relativeHumidity"
           coordinates: "longitude latitude"
           source: variables/relativeHumidityError
           longName: "Relative Humidity Error"
           units: "1"
-          
+
         - name: "ObsError/airTemperature"
           coordinates: "longitude latitude"
           source: variables/airTemperatureError
           longName: "Temperature Error"
-          units: "Kelvin"
-          
-        - name: "ObsError/wind"
+          units: "K"
+
+        - name: "ObsError/windEastward"
           coordinates: "longitude latitude"
           source: variables/windError
-          longName: "East and Northward wind error"
-          units: "Meter Second-1"        
-          
-        # Tuned ObsError
-        - name: "TunedObsError/pressure"
+          longName: "Eastward wind error"
+          units: "m s-1"
+
+        - name: "ObsError/windNorthward"
           coordinates: "longitude latitude"
-          source: variables/pressureTunedError
-          longName: "Analysis-Tuned Pressure Observation Error"
-          units: "Pa"
-          
-        - name: "TunedObsError/relativeHumidity"
-          coordinates: "longitude latitude"
-          source: variables/relativeHumidityTunedError
-          longName: "Analysis-Tuned Relative Humidity Error"
-          units: "1"
-          
-        - name: "TunedObsError/airTemperature"
-          coordinates: "longitude latitude"
-          source: variables/airTemperatureTunedError
-          longName: "Analysis-Tuned Temperature Error"
-          units: "Kelvin"
-          
-        - name: "TunedObsError/wind"
-          coordinates: "longitude latitude"
-          source: variables/windTunedError
-          longName: "Analysis-Tuned East and Northward wind error"
-          units: "Meter Second-1"
+          source: variables/windError
+          longName: "Northward wind error"
+          units: "m s-1"
+
+#        # Tuned ObsError
+#        - name: "TunedObsError/stationPressure"
+#          coordinates: "longitude latitude"
+#          source: variables/stationPressureTunedError
+#          longName: "Analysis-Tuned Pressure Observation Error"
+#          units: "Pa"
+#
+#        - name: "TunedObsError/relativeHumidity"
+#          coordinates: "longitude latitude"
+#          source: variables/relativeHumidityTunedError
+#          longName: "Analysis-Tuned Relative Humidity Error"
+#          units: "1"
+#
+#        - name: "TunedObsError/airTemperature"
+#          coordinates: "longitude latitude"
+#          source: variables/airTemperatureTunedError
+#          longName: "Analysis-Tuned Temperature Error"
+#          units: "K"
+#
+#        - name: "TunedObsError/windEastward"
+#          coordinates: "longitude latitude"
+#          source: variables/windTunedError
+#          longName: "Analysis-Tuned Eastward wind error"
+#          units: "m s-1"
+#
+#        - name: "TunedObsError/windNorthward"
+#          coordinates: "longitude latitude"
+#          source: variables/windTunedError
+#          longName: "Analysis-Tuned Northward wind error"
+#          units: "m s-1"
