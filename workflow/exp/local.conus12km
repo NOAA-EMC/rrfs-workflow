@@ -32,6 +32,6 @@ case ${MACHINE} in
     export CLUSTER="c6"
     ;;
   *)
-    echo "!!! Unknown platform:${MACHINE} !!!"
+    echo "!!! unsupported platform:'${MACHINE}'!!!"
     ;;
 esac
