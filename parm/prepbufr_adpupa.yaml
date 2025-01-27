@@ -6,7 +6,7 @@
 observations:
   - obs space:
       name: bufr
-      obsdatain: "./bufr/prepbufr"
+      obsdatain: "./prepbufr"
 
       exports:
         group_by_variable: prepbufrDataLvlCat
@@ -38,7 +38,7 @@ observations:
               timeOffset: "*/PRSLEVEL/DRFTINFO/HRDR"
               transforms:
                 - scale: 3600
-              referenceTime: "@REFERENCETIME@"
+              referenceTime: "@referenceTime@"
           timeOffset:
             query: "*/PRSLEVEL/DRFTINFO/HRDR"
             transforms:
