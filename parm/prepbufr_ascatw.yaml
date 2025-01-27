@@ -1,4 +1,4 @@
-# (C) Copyright 2020 NOAA/NWS/NCEP/EMC
+# (C) Copyright 2024 NOAA/NWS/NCEP/EMC
 #
 # This software is licensed under the terms of the Apache Licence Version 2.0
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -6,7 +6,6 @@
 observations:
   - obs space:
       name: bufr
-
       obsdatain: "./prepbufr"
 
       exports:
@@ -14,14 +13,17 @@ observations:
         subsets:
           - ASCATW    # ASCAT SCATTEROMETER DATA (REPROCESSED, SAID)
         variables:
+          # MetaData
           timestamp:
             timeoffset:
               timeOffset: "*/DHR"
               transforms:
                 - scale: 3600
-              referenceTime: @referenceTime@
+              referenceTime: "@referenceTime@"
           timeOffset:
             query: "*/DHR"
+            transforms:
+              - scale: 3600
           longitude:
             query: "*/XOB"
           latitude:
@@ -30,15 +32,15 @@ observations:
             query: "*/SID"
           stationElevation:
             query: "*/ELV"
+            #type: float
           prepbufrReportType:
             query: "*/TYP"
           dumpReportType:
             query: "*/T29"
-          satelliteID:
-            query: "*/SAID"
-
           prepbufrDataLvlCat:
             query: "*/CAT"
+          satelliteID:
+            query: "*/SAID"
 
           pressure:
             query: "*/P___INFO/P__EVENT{1}/POB"
@@ -72,7 +74,6 @@ observations:
       backend: netcdf
       obsdataout: "./ioda_ascatw.nc"
 
-
       dimensions:
         - name: pevent_Dim
           path: "*/P___INFO/P__EVENT"
@@ -92,8 +93,8 @@ observations:
         - name: "MetaData/timeOffset"
           coordinates: "longitude latitude"
           source: variables/timeOffset
-          longName: "Observation Time Offset from Reference Time"
-          units: "Seconds"
+          longName: "Observation Time Minus Reference Time"
+          units: "s"
 
         - name: "MetaData/stationIdentification"
           coordinates: "longitude latitude"
@@ -101,7 +102,7 @@ observations:
           longName: "Station ID"
           units: ""
 
-        - name: "MetaData/SatelliteIdentification"
+        - name: "MetaData/satelliteIdentification"
           coordinates: "longitude latitude"
           source: variables/satelliteID
           longName: "Satellite Identification"
@@ -111,21 +112,21 @@ observations:
           coordinates: "longitude latitude"
           source: variables/longitude
           longName: "Longitude"
-          units: "degrees_east"
+          units: "degree_east"
           range: [0, 360]
 
         - name: "MetaData/latitude"
           coordinates: "longitude latitude"
           source: variables/latitude
           longName: "Latitude"
-          units: "degrees_north"
+          units: "degree_north"
           range: [-90, 90]
 
         - name: "MetaData/stationElevation"
           coordinates: "longitude latitude"
           source: variables/stationElevation
-          longName: "Height of Station"
-          units: "Meter"
+          longName: "Elevation of Station"
+          units: "m"
 
         - name: "MetaData/prepbufrReportType"
           coordinates: "longitude latitude"
@@ -169,24 +170,29 @@ observations:
           coordinates: "longitude latitude"
           source: variables/windEastward
           longName: "Eastward Wind"
-          units: "Meter Second-1"
+          units: "m s-1"
 
         - name: "ObsValue/windNorthward"
           coordinates: "longitude latitude"
           source: variables/windNorthward
           longName: "Northward Wind"
-          units: "Meter Second-1"
+          units: "m s-1"
 
         # Quality Marker
         - name: "QualityMarker/pressure"
           coordinates: "longitude latitude"
           source: variables/pressureQualityMarker
           longName: "Pressure Quality Marker"
-          
-        - name: "QualityMarker/wind"
+
+        - name: "QualityMarker/windEastward"
           coordinates: "longitude latitude"
           source: variables/windQualityMarker
-          longName: "U, V-Component of Wind Quality Marker"
+          longName: "windEastward Quality Marker"
+
+        - name: "QualityMarker/windNorthward"
+          coordinates: "longitude latitude"
+          source: variables/windQualityMarker
+          longName: "windNorthward Quality Marker"
 
         # ObsError
         - name: "ObsError/pressure"
@@ -194,22 +200,34 @@ observations:
           source: variables/pressureError
           longName: "Pressure Observation Error"
           units: "Pa"
-          
-        - name: "ObsError/wind"
+
+        - name: "ObsError/windEastward"
           coordinates: "longitude latitude"
           source: variables/windError
-          longName: "East and Northward wind error"
-          units: "Meter Second-1"        
-          
-        # Tuned ObsError
-        - name: "TunedObsError/pressure"
+          longName: "Eastward wind error"
+          units: "m s-1"
+
+        - name: "ObsError/windNorthward"
           coordinates: "longitude latitude"
-          source: variables/pressureTunedError
-          longName: "Analysis-Tuned Pressure Observation Error"
-          units: "Pa"
-          
-        - name: "TunedObsError/wind"
-          coordinates: "longitude latitude"
-          source: variables/windTunedError
-          longName: "Analysis-Tuned East and Northward wind error"
-          units: "Meter Second-1"
+          source: variables/windError
+          longName: "Northward wind error"
+          units: "m s-1"
+
+#        # Tuned ObsError
+#        - name: "TunedObsError/pressure"
+#          coordinates: "longitude latitude"
+#          source: variables/pressureTunedError
+#          longName: "Analysis-Tuned Pressure Observation Error"
+#          units: "Pa"
+#
+#        - name: "TunedObsError/windEastward"
+#          coordinates: "longitude latitude"
+#          source: variables/windTunedError
+#          longName: "Analysis-Tuned Eastward wind error"
+#          units: "m s-1"
+#
+#        - name: "TunedObsError/windNorthward"
+#          coordinates: "longitude latitude"
+#          source: variables/windTunedError
+#          longName: "Analysis-Tuned Northward wind error"
+#          units: "m s-1"
