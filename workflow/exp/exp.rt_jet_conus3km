@@ -17,8 +17,8 @@ export REALTIME=true      # true, false
 ### preempt some settings for conus3km realtime runs on jet
 export PHYSICS_SUITE="convection_permitting" # mesoscale_reference, convection_permitting
 export ZETA_LEVELS="L62.txt"
-export COMINgfs='/lfs5/BMC/nrtrr/NCO_data/gfs'
-export COMINrap='/lfs5/BMC/nrtrr/NCO_data/rap'
+export COMINgfs="/lfs5/BMC/nrtrr/NCO_data/gfs"
+export COMINrap="/lfs5/BMC/nrtrr/NCO_data/rap"
 #
 export FCST_ONLY="true"
 export CYC_INTERVAL=3
@@ -29,11 +29,11 @@ export RESTART_INTERVAL=61
 export MPASSIT_GROUP_TOTAL_NUM=2
 export UPP_GROUP_TOTAL_NUM=2
 
-export IC_EXTRN_MDL_NAME='RAP'
+export IC_EXTRN_MDL_NAME="RAP"
 export IC_OFFSET=3
 export IC_EXTRN_MDL_BASEDIR="/public/data/grib/ftp_rap_hyb/7/0/105/0_794802_32769"
 export IC_EXTRN_MDL_NAME_PATTERN="@y@j@H000fHHH"
-export LBC_EXTRN_MDL_NAME='RAP'
+export LBC_EXTRN_MDL_NAME="RAP"
 export LBC_OFFSET=3
 export LBC_LENGTH=15
 export LBC_INTERVAL=3
