@@ -24,6 +24,7 @@ module load rrfs/${MACHINE}.intel
 module list
 
 cd ${HOMErrfs}/sorc/MPAS-Model
+cp ../Registry.xml src/core_atmosphere
 make clean CORE=init_atmosphere
 #make -j8 intel-mpi CORE=atmosphere PRECISION=single # intel-mpi does not work on Gaea
 make -j8 ifort CORE=init_atmosphere PRECISION=single
