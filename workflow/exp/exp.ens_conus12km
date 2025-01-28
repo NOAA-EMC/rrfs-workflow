@@ -21,8 +21,8 @@ export ENS_SIZE=30
 ### preempt some settings for conus3km realtime runs on jet
 export PHYSICS_SUITE="convection_permitting"   # mesoscale_reference, convection_permitting
 export ZETA_LEVELS="L60.txt"
-export COMINgfs='/lfs5/BMC/wrfruc/Chunhua.Zhou/w4/data/GFS/from_aws'
-export COMINrap='/lfs5/BMC/nrtrr/NCO_data/rap'
+export COMINgfs="/lfs5/BMC/wrfruc/Chunhua.Zhou/w4/data/GFS/from_aws"
+export COMINrap="/lfs5/BMC/nrtrr/NCO_data/rap"
 export COMINgefs="/lfs5/BMC/wrfruc/Chunhua.Zhou/w4/data/GEFS"
 #
 export FCST_ONLY="false"
@@ -34,13 +34,13 @@ export RESTART_INTERVAL=61
 export MPASSIT_GROUP_TOTAL_NUM=1
 export UPP_GROUP_TOTAL_NUM=1
 #
-export IC_EXTRN_MDL_NAME='GEFS'
+export IC_EXTRN_MDL_NAME="GEFS"
 export IC_OFFSET=36
 export IC_EXTRN_MDL_BASEDIR="/mnt/lfs5/BMC/public/data/grids/gens"
 export IC_EXTRN_MDL_NAME_PATTERN="gep#gmem#/@y@j@H000fHHH"
 export IC_EXTRN_MDL_NAME_PATTERN_B="pgrb2b/gep#gmem#/@y@j@H000fHHH"
 #
-export LBC_EXTRN_MDL_NAME='GEFS'
+export LBC_EXTRN_MDL_NAME="GEFS"
 export LBC_OFFSET=6
 export LBC_LENGTH=12
 export LBC_INTERVAL=3
