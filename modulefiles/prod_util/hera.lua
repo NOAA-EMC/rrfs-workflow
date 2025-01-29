@@ -1,5 +1,5 @@
 -- -*- lua -*-
--- Module file created by spack (https://github.com/spack/spack) on 2024-06-17 21:21:08.535589
+-- Module file created by spack (https://github.com/spack/spack) on 2025-01-27 23:01:25.166951
 --
 -- prod-util@2.1.1%intel@2021.5.0~ipo build_system=cmake build_type=Release generator=make arch=linux-rocky8-haswell/4vpcrpl
 --
@@ -16,13 +16,13 @@ help()
 help([[ Product utilities for the NCEP models. This is part of NOAA's NCEPLIBS
 project.]])
 
-prepend_path("PATH", "/scratch1/NCEPDEV/nems/role.epic/spack-stack/spack-stack-1.6.0/envs/unified-env-rocky8/install/intel/2021.5.0/prod-util-2.1.1-4vpcrpl/bin", ":")
-prepend_path("CMAKE_PREFIX_PATH", "/scratch1/NCEPDEV/nems/role.epic/spack-stack/spack-stack-1.6.0/envs/unified-env-rocky8/install/intel/2021.5.0/prod-util-2.1.1-4vpcrpl/.", ":")
-prepend_path("PATH", "/scratch1/NCEPDEV/nems/role.epic/spack-stack/spack-stack-1.6.0/envs/unified-env-rocky8/install/intel/2021.5.0/prod-util-2.1.1-4vpcrpl/bin", ":")
-prepend_path("CMAKE_PREFIX_PATH", "/scratch1/NCEPDEV/nems/role.epic/spack-stack/spack-stack-1.6.0/envs/unified-env-rocky8/install/intel/2021.5.0/prod-util-2.1.1-4vpcrpl/.", ":")
-setenv("prod_util_ROOT", "/scratch1/NCEPDEV/nems/role.epic/spack-stack/spack-stack-1.6.0/envs/unified-env-rocky8/install/intel/2021.5.0/prod-util-2.1.1-4vpcrpl")
-setenv("MDATE", "/scratch1/NCEPDEV/nems/role.epic/spack-stack/spack-stack-1.6.0/envs/unified-env-rocky8/install/intel/2021.5.0/prod-util-2.1.1-4vpcrpl/bin/mdate")
-setenv("NDATE", "/scratch1/NCEPDEV/nems/role.epic/spack-stack/spack-stack-1.6.0/envs/unified-env-rocky8/install/intel/2021.5.0/prod-util-2.1.1-4vpcrpl/bin/ndate")
-setenv("NHOUR", "/scratch1/NCEPDEV/nems/role.epic/spack-stack/spack-stack-1.6.0/envs/unified-env-rocky8/install/intel/2021.5.0/prod-util-2.1.1-4vpcrpl/bin/nhour")
-setenv("FSYNC", "/scratch1/NCEPDEV/nems/role.epic/spack-stack/spack-stack-1.6.0/envs/unified-env-rocky8/install/intel/2021.5.0/prod-util-2.1.1-4vpcrpl/bin/fsync_file")
+prepend_path("PATH", "/contrib/spack-stack/spack-stack-1.6.0/envs/unified-env-rocky8/install/intel/2021.5.0/prod-util-2.1.1-4vpcrpl/bin", ":")
+prepend_path("CMAKE_PREFIX_PATH", "/contrib/spack-stack/spack-stack-1.6.0/envs/unified-env-rocky8/install/intel/2021.5.0/prod-util-2.1.1-4vpcrpl/.", ":")
+prepend_path("PATH", "/contrib/spack-stack/spack-stack-1.6.0/envs/unified-env-rocky8/install/intel/2021.5.0/prod-util-2.1.1-4vpcrpl/bin", ":")
+prepend_path("CMAKE_PREFIX_PATH", "/contrib/spack-stack/spack-stack-1.6.0/envs/unified-env-rocky8/install/intel/2021.5.0/prod-util-2.1.1-4vpcrpl/.", ":")
+setenv("prod_util_ROOT", "/contrib/spack-stack/spack-stack-1.6.0/envs/unified-env-rocky8/install/intel/2021.5.0/prod-util-2.1.1-4vpcrpl")
+setenv("MDATE", "/contrib/spack-stack/spack-stack-1.6.0/envs/unified-env-rocky8/install/intel/2021.5.0/prod-util-2.1.1-4vpcrpl/bin/mdate")
+setenv("NDATE", "/contrib/spack-stack/spack-stack-1.6.0/envs/unified-env-rocky8/install/intel/2021.5.0/prod-util-2.1.1-4vpcrpl/bin/ndate")
+setenv("NHOUR", "/contrib/spack-stack/spack-stack-1.6.0/envs/unified-env-rocky8/install/intel/2021.5.0/prod-util-2.1.1-4vpcrpl/bin/nhour")
+setenv("FSYNC", "/contrib/spack-stack/spack-stack-1.6.0/envs/unified-env-rocky8/install/intel/2021.5.0/prod-util-2.1.1-4vpcrpl/bin/fsync_file")
 
