@@ -4,7 +4,7 @@
 # set up IC, LBC sources and A/Q/P/R information
 export IC_EXTRN_MDL_NAME="GEFS"
 export IC_EXTRN_MDL_NAME_PATTERN="gefs.@Y@m@d/@H/pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.ffHHH"
-export IC_EXTRN_MDL_NAME_PATTERN_B="gefs.@Y@m@d/@H/pgrb2ap5/gep#gmem#.t@Hz.pgrb2b.0p50.ffHHH"
+export IC_EXTRN_MDL_NAME_PATTERN_B="gefs.@Y@m@d/@H/pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.ffHHH"
 export LBC_EXTRN_MDL_NAME=${IC_EXTRN_MDL_NAME}
 export LBC_EXTRN_MDL_NAME_PATTERN=${IC_EXTRN_MDL_NAME_PATTERN}
 export LBC_EXTRN_MDL_NAME_PATTERN_B=${IC_EXTRN_MDL_NAME_PATTERN_B}
