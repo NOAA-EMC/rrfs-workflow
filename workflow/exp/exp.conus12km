@@ -31,7 +31,7 @@ export RESTART_INTERVAL=61
 export MPASSIT_GROUP_TOTAL_NUM=1
 export UPP_GROUP_TOTAL_NUM=1
 
-export IC_EXTRN_MDL_NAME='local.setup'
+export IC_EXTRN_MDL_NAME="local.setup"
 export IC_OFFSET=6
 export IC_EXTRN_MDL_BASEDIR="local.setup"
 export IC_EXTRN_MDL_NAME_PATTERN="local.setup"
