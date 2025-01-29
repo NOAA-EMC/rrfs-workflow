@@ -14,8 +14,7 @@ export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed i
 #
 export REALTIME=true     # true, false
 #
-### preempt some settings for conus3km realtime runs on jet
-export PHYSICS_SUITE="convection_permitting"   # mesoscale_reference, convection_permitting
+export PHYSICS_SUITE="convection_permitting" # mesoscale_reference, convection_permitting
 export ZETA_LEVELS="L60.txt"
 #
 export DA_IODA="true"
@@ -25,7 +24,9 @@ export OBSPATH="/public/data/grids/rap/obs"
 export DO_CYC="true"
 export CYC_INTERVAL=1
 export FCST_LENGTH=3
-export FCST_LEN_HRS_CYCLES="12 03 03 03 03 03 12 03 03 03 03 03 12 03 03 03 03 03 12 03 03 03 03 03"
+for i in {0..23};    do arr[$i]="03"; done # 3hr fcst
+for i in {0..23..6}; do arr[$i]="12"; done # 12hr fcst every 6hrs                                                                                                                 
+export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
 export RESTART_INTERVAL=61
 export MPASSIT_GROUP_TOTAL_NUM=1
