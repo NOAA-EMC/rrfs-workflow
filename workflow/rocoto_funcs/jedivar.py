@@ -11,7 +11,11 @@ def jedivar(xmlFile, expdir):
   dcTaskEnv={
     'PHYSICS_SUITE': f'{physics_suite}',
     'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
-    'DATAROOT': f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H</cyclestr>'
+    'DATAROOT': f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H</cyclestr>',
+    'HYB_OPT': os.getenv('HYB_OPT','0'),
+    'HYB_WGT_ENS': os.getenv('HYB_WGT_ENS','0.85'),
+    'HYB_WGT_STATIC': os.getenv('HYB_WGT_STATIC','0.15'),
+    'HYB_ENS_PATH': os.getenv('HYB_ENS_STATIC','')
   }
   # dependencies
   hrs=os.getenv('PROD_BGN_AT_HRS', '3 15')
@@ -34,7 +38,6 @@ def jedivar(xmlFile, expdir):
     timedep=f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
   #
   COMROOT=os.getenv("COMROOT","COMROOT_NOT_DEFINED")
-  RUN='rrfs'
   NET=os.getenv("NET","NET_NOT_DEFINED")
   VERSION=os.getenv("VERSION","VERSION_NOT_DEFINED")
   dependencies=f'''
@@ -42,11 +45,6 @@ def jedivar(xmlFile, expdir):
   <and>{timedep}
     <taskdep task="prep_ic"/>
     <taskdep task="ioda_bufr"/>
-    <or>
-      <datadep age="00:05:00"><cyclestr offset="-1:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}enkf.@Y@m@d/@H/m001/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
-      <datadep age="00:05:00"><cyclestr offset="-2:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}enkf.@Y@m@d/@H/m001/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
-      <datadep age="00:05:00"><cyclestr offset="-3:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}enkf.@Y@m@d/@H/m001/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
-    </or>
   </and>
   </dependency>'''
   #

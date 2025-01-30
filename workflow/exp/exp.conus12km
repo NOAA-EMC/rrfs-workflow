@@ -19,6 +19,10 @@ export ZETA_LEVELS="L60.txt"
 export DA_IODA="true"
 export DA_JEDI="true"
 export OBSPATH="local.setup"
+export HYB_OPT=0  # 0: no_ensemble BEC; 1. online rrfs ensembles; 2. offline rrfs ensembles; 3. online GDAS ensembles
+export HYB_WGT_ENS=0.85
+export HYB_WGT_STATIC=0.15
+export HYB_ENS_PATH=""  # no impact for option 3 (online rrfs ensemle) where the workflow will automatically find online ensembles
 
 export DO_CYC="true"
 export CYC_INTERVAL=1
