@@ -10,7 +10,7 @@
 # https://noaa-gefs-pds.s3.amazonaws.com/gefs.20220429/00/atmos/pgrb2ap5/gep01.t00z.pgrb2a.0p50.f114
 # https://noaa-gefs-pds.s3.amazonaws.com/gefs.20220429/00/atmos/pgrb2bp5/gep01.t00z.pgrb2b.0p50.f114
 
-datadir=/lfs5/BMC/nrtrr/FIX_RRFS2/staged_data/ops/GEFS  #set you own datadir
+datadir=/scratch2/BMC/rtrr/RRFS2_RETRO_DATA/sandbox/GEFS  #set you own datadir (absolute path)
 
 set -x
 waittime=30

@@ -63,8 +63,8 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
 
   timedep=""
   realtime=os.getenv("REALTIME","false")
-  starttime=get_cascade_env(f"STARTTIME_{task_id}".upper())
   if realtime.upper() == "TRUE":
+    starttime=get_cascade_env(f"STARTTIME_{task_id}".upper())
     timedep=f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
   #
   datadep=f'  <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath}</cyclestr></datadep>'

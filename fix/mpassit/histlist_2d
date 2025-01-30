@@ -15,6 +15,6 @@ shdmin                          SHDMIN
 shdmax                          SHDMAX
 canwat                          CANWAT
 snowc                           SNOWC
-snownc                          SNOWNC
-graupelnc                       GRAUPELNC
+snownc                          ACSNOW
+graupelnc                       ACGRAUP
 acrunoff                        ACRUNOFF

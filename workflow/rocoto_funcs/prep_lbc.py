@@ -48,8 +48,8 @@ def prep_lbc(xmlFile, expdir, do_ensemble=False):
   # dependencies
   timedep=""
   realtime=os.getenv("REALTIME","false")
-  starttime=get_cascade_env(f"STARTTIME_{task_id}".upper())
   if realtime.upper() == "TRUE":
+    starttime=get_cascade_env(f"STARTTIME_{task_id}".upper())
     timedep=f'\n   <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
 
   taskdep=""

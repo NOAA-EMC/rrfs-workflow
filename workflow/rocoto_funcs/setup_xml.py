@@ -35,11 +35,11 @@ def setup_xml(HOMErrfs, expdir):
   #
   source(f"{HOMErrfs}/workflow/config_resources/config.{machine}")
   source(f"{HOMErrfs}/workflow/config_resources/config.base")
-  if os.getenv("REALTIME").upper() == "TRUE":
+  realtime=os.getenv('REALTIME','false')
+  if realtime.upper() == "TRUE":
     source(f"{HOMErrfs}/workflow/config_resources/config.realtime")
   #
   # create cycledefs smartly
-  realtime=os.getenv('REALTIME','false')
   dcCycledef=smart_cycledefs(realtime)
   
   COMROOT=os.getenv('COMROOT','COMROOT_not_defined')
@@ -95,7 +95,7 @@ def setup_xml(HOMErrfs, expdir):
       upp(xmlFile,expdir,do_ensemble=True)
 
 # ---------------------------------------------------------------------------
-#    if os.getenv("REALTIME").upper() == "TRUE": # write out the clean task for realtime runs and retros don't need it
+#    if realtime.upper() == "TRUE": # write out the clean task for realtime runs and retros don't need it
 #      clean(xmlFile,expdir)
     #
     wflow_end(xmlFile)
