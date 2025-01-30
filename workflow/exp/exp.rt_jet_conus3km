@@ -1,6 +1,6 @@
 #!/user/bin/env bash
 # Aloha! This file is to setup some top level experiment options
-#
+
 export NET=rrfs                    # rrfs, rtma, 
 export MESH_NAME=conus3km         # conus12km, conus3km, atl3km, etc
 export WGF="det"   # working group function = "det", "enkf", "ensf", "firewx"
@@ -12,18 +12,21 @@ export EXPDIR=${OPSROOT}/${EXP_NAME}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
 #
-export REALTIME=true      # true, false
+export REALTIME=true     # true, false
 #
-### preempt some settings for conus3km realtime runs on jet
 export PHYSICS_SUITE="convection_permitting" # mesoscale_reference, convection_permitting
-export ZETA_LEVELS="L62.txt"
-export COMINgfs="/lfs5/BMC/nrtrr/NCO_data/gfs"
-export COMINrap="/lfs5/BMC/nrtrr/NCO_data/rap"
+export ZETA_LEVELS="L60.txt"
 #
-export FCST_ONLY="true"
+export DA_IODA="true"
+export DA_JEDI="true"
+export OBSPATH="/public/data/grids/rap/obs"
+
+export DO_CYC="true"
 export CYC_INTERVAL=3
 export FCST_LENGTH=3
-export FCST_LEN_HRS_CYCLES="12 03 03 03 03 03 12 03 03 03 03 03 12 03 03 03 03 03 12 03 03 03 03 03"
+for i in {0..23};    do arr[$i]="03"; done # 3hr fcst
+for i in {0..23..6}; do arr[$i]="12"; done # 12hr fcst every 6hrs
+export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
 export RESTART_INTERVAL=61
 export MPASSIT_GROUP_TOTAL_NUM=2
@@ -47,8 +50,7 @@ export CYCLEDEF_IC="   &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;
 export CYCLEDEF_LBC="  &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 06:00:00 "
 export CYCLEDEF_PROD=" &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 03:00:00 "
 export CYCL_HRS_COLDSTART="00 06 12 18"
-
-# preempt some resource settings
+#
 export ACCOUNT="rtwrfruc"
 export QUEUE="rth"
 export PARTITION="kjet"
@@ -58,23 +60,26 @@ export STARTTIME_IC="00:30:00"
 export STARTTIME_LBC="00:00:01"
 export STARTTIME_BUFRIODA="00:00:01"
 export STARTTIME_ENSBE="00:00:01"
-export STARTTIME_DA="00:30:01"
+export STARTTIME_JEDIVAR="00:30:01"
 export STARTTIME_FCST="00:35:01"
 export STARTTIME_MPASSIT="00:35:01"
 export STARTTIME_UPP="00:35:01"
 export STARTTIME_PREP_IC="00:30:00"
 export STARTTIME_PREP_LBC="00:30:00"
+export STARTTIME_IODA_BUFR="00:30:00"
 #
 export NODES_IC="<nodes>40:ppn=20</nodes>"
 export NODES_LBC="<nodes>40:ppn=20</nodes>"
 export NODES_FCST="<nodes>40:ppn=20</nodes>"
 export NODES_MPASSIT="<nodes>4:ppn=20</nodes>"
 export NODES_UPP="<nodes>4:ppn=20</nodes>"
+export NODES_JEDIVAR="<nodes>2:ppn=20</nodes>"
 #
 export WALLTIME_FCST="2:00:00"
 export WALLTIME_SAVE_FCST="2:00:00"
 export WALLTIME_MPASSIT="2:00:00"
 export WALLTIME_UPP="2:00:00"
+export WALLTIME_JEDIVAR="00:30:00"
 
 #
 export KEEPDATA=yes

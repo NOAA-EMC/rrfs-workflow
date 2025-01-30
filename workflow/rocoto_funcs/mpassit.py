@@ -59,8 +59,8 @@ def mpassit(xmlFile, expdir, do_ensemble=False):
 
   timedep=""
   realtime=os.getenv("REALTIME","false")
-  starttime=get_cascade_env(f"STARTTIME_{meta_id}".upper())
   if realtime.upper() == "TRUE":
+    starttime=get_cascade_env(f"STARTTIME_{meta_id}".upper())
     timedep=f'\n  <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
   #
   DATAROOT=os.getenv("DATAROOT","DATAROOT_NOT_DEFINED")

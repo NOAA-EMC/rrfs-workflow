@@ -65,45 +65,47 @@ def header_entities(xmlFile,expdir):
   run=f'{run}{wgf}'
 
   text = f'''
-<!ENTITY ACCOUNT         "{account}">\n\
-<!ENTITY QUEUE_DEFAULT   "{queue}">\n\
-<!ENTITY PARTITION       "{partition}">\n\
-<!ENTITY RESERVATION     "--reservation={reservation}">\n\
+<!ENTITY ACCOUNT         "{account}">
+<!ENTITY QUEUE_DEFAULT   "{queue}">
+<!ENTITY PARTITION       "{partition}">'''
 
-<!ENTITY HOMErrfs        "{HOMErrfs}">\n\
-<!ENTITY EXPDIR          "{expdir}">\n\
-<!ENTITY DATAROOT        "{DATAROOT}">\n\
-<!ENTITY COMROOT         "{COMROOT}">\n\
-<!ENTITY LOGROOT         "{COMROOT}/{net}/{rrfs_ver}/logs">\n\
+  if reservation != '':
+    text = text + f'''
+<!ENTITY RESERVATION     "--reservation={reservation}">'''
 
-<!ENTITY RUN             "rrfs">\n\
-<!ENTITY NET             "{net}">\n\
-<!ENTITY rrfs_ver        "{rrfs_ver}">\n\
-<!ENTITY WGF             "{wgf}">\n\
-'''
-  xmlFile.write(text)
+  text = text + f'''
 
-  text = f'''
-<!ENTITY task_common_vars\n\
-"\n\
-  <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>\n\
-  <envar><name>EXPDIR</name><value>&EXPDIR;</value></envar>\n\
-  <envar><name>COMROOT</name><value>&COMROOT;</value></envar>\n\
-  <envar><name>COMINrrfs</name><value>&COMROOT;/{net}/{rrfs_ver}</value></envar>\n\
-  <envar><name>COMOUT</name><value><cyclestr>&COMROOT;/{net}/{rrfs_ver}/{run}.@Y@m@d/@H</cyclestr></value></envar>\n\
-  <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>\n\
-  <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>\n\
-  <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>\n\
-  <envar><name>NET</name><value>{net}</value></envar>\n\
-  <envar><name>RUN</name><value>{run}</value></envar>\n\
-  <envar><name>rrfs_ver</name><value>{rrfs_ver}</value></envar>\n\
-  <envar><name>KEEPDATA</name><value>{keepdata}</value></envar>\n\
-  <envar><name>MPI_RUN_CMD</name><value>{mpi_run_cmd}</value></envar>\n\
-  <envar><name>MESH_NAME</name><value>{mesh_name}</value></envar>\n\
-  <envar><name>WGF</name><value>{wgf}</value></envar>\n\
-  <envar><name>CYC_INTERVAL</name><value>{cyc_interval}</value></envar>\n\
-"\n\
->\n\
+<!ENTITY HOMErrfs        "{HOMErrfs}">
+<!ENTITY EXPDIR          "{expdir}">
+<!ENTITY DATAROOT        "{DATAROOT}">
+<!ENTITY COMROOT         "{COMROOT}">
+<!ENTITY LOGROOT         "{COMROOT}/{net}/{rrfs_ver}/logs">
+
+<!ENTITY RUN             "rrfs">
+<!ENTITY NET             "{net}">
+<!ENTITY rrfs_ver        "{rrfs_ver}">
+<!ENTITY WGF             "{wgf}">
+
+<!ENTITY task_common_vars
+"
+  <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
+  <envar><name>EXPDIR</name><value>&EXPDIR;</value></envar>
+  <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
+  <envar><name>COMINrrfs</name><value>&COMROOT;/{net}/{rrfs_ver}</value></envar>
+  <envar><name>COMOUT</name><value><cyclestr>&COMROOT;/{net}/{rrfs_ver}/{run}.@Y@m@d/@H</cyclestr></value></envar>
+  <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+  <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+  <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+  <envar><name>NET</name><value>{net}</value></envar>
+  <envar><name>RUN</name><value>{run}</value></envar>
+  <envar><name>rrfs_ver</name><value>{rrfs_ver}</value></envar>
+  <envar><name>KEEPDATA</name><value>{keepdata}</value></envar>
+  <envar><name>MPI_RUN_CMD</name><value>{mpi_run_cmd}</value></envar>
+  <envar><name>MESH_NAME</name><value>{mesh_name}</value></envar>
+  <envar><name>WGF</name><value>{wgf}</value></envar>
+  <envar><name>CYC_INTERVAL</name><value>{cyc_interval}</value></envar>
+"
+>
 
 <!ENTITY STARTYEAR  "{startyear}">
 <!ENTITY STARTMONTH "{startmonth}">

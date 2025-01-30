@@ -4,84 +4,73 @@
 export NET=rrfs                    # rrfs, rtma, 
 export MESH_NAME=conus12km         # conus12km, conus3km, atl3km, etc
 export WGF="enkf"   # working group function = "det", "enkf", "ensf", "firewx"
-export EXP_NAME=rrfs${WGF}
-export VERSION=v2.0.3
-export TAG=c3v203
-export OPSROOT=/lfs5/BMC/nrtrr/NCO_dirs/${VERSION}
-export EXPDIR=${OPSROOT}/${EXP_NAME}
+export EXP_NAME=hrly_12km
+export VERSION=v2.0.8
+export TAG=c3v208
+export OPSROOT=/scratch1/BMC/wrfruc/gge/OPSROOT
+export EXPDIR=${OPSROOT}/exp/${EXP_NAME}/rrfs${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
-#
-export REALTIME=true     # true, false
 #
 export DO_ENSEMBLE=true
 export DO_DETERMINISTIC=false
 export ENS_SIZE=30
 #
-### preempt some settings for conus3km realtime runs on jet
 export PHYSICS_SUITE="convection_permitting"   # mesoscale_reference, convection_permitting
 export ZETA_LEVELS="L60.txt"
-export COMINgfs="/lfs5/BMC/wrfruc/Chunhua.Zhou/w4/data/GFS/from_aws"
-export COMINrap="/lfs5/BMC/nrtrr/NCO_data/rap"
-export COMINgefs="/lfs5/BMC/wrfruc/Chunhua.Zhou/w4/data/GEFS"
 #
-export FCST_ONLY="false"
+export DA_IODA="true"
+export DA_JEDI="true"
+export OBSPATH="local.setup"
+
+export DO_CYC="true"
 export CYC_INTERVAL=3
 export FCST_LENGTH=3
-export FCST_LEN_HRS_CYCLES="06 03 03 03 03 03 06 03 03 03 03 03 06 03 03 03 03 03 06 03 03 03 03 03"
+for i in {0..23};    do arr[$i]="03"; done # 3hr fcst
+for i in {0..23..6}; do arr[$i]="03"; done # 3hr fcst every 6hrs
+export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
 export RESTART_INTERVAL=61
 export MPASSIT_GROUP_TOTAL_NUM=1
 export UPP_GROUP_TOTAL_NUM=1
-#
-export IC_EXTRN_MDL_NAME="GEFS"
+
+export IC_EXTRN_MDL_NAME="local.setup"
 export IC_OFFSET=36
-export IC_EXTRN_MDL_BASEDIR="/mnt/lfs5/BMC/public/data/grids/gens"
-export IC_EXTRN_MDL_NAME_PATTERN="gep#gmem#/@y@j@H000fHHH"
-export IC_EXTRN_MDL_NAME_PATTERN_B="pgrb2b/gep#gmem#/@y@j@H000fHHH"
-#
-export LBC_EXTRN_MDL_NAME="GEFS"
+export IC_EXTRN_MDL_BASEDIR="local.setup"
+export IC_EXTRN_MDL_NAME_PATTERN="local.setup"
+export IC_EXTRN_MDL_NAME_PATTERN_B="local.setup"
+export LBC_EXTRN_MDL_NAME="local.setup"
 export LBC_OFFSET=6
 export LBC_LENGTH=12
 export LBC_INTERVAL=3
-export LBC_EXTRN_MDL_BASEDIR="/mnt/lfs5/BMC/public/data/grids/gens"
-export LBC_EXTRN_MDL_NAME_PATTERN="gep#gmem#/@y@j@H000fHHH"
-export LBC_EXTRN_MDL_NAME_PATTERN_B="/pgrb2b/gep#gmem#/@y@j@H000fHHH"
+export LBC_EXTRN_MDL_BASEDIR="local.setup"
+export LBC_EXTRN_MDL_NAME_PATTERN="local.setup"
+export LBC_EXTRN_MDL_NAME_PATTERN_B="local.setup"
 export LBC_UNGRIB_GROUP_TOTAL_NUM=1
 export LBC_GROUP_TOTAL_NUM=1
-#
-export RUN_PERIOD="2025011000-2025011000"
+
+export RUN_PERIOD="2024052700-2024052800"
 export CYCLEDEF_IC="   &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 06:00:00 "
 export CYCLEDEF_LBC="  &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 06:00:00 "
 export CYCLEDEF_PROD=" &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 03:00:00 "
 export CYCL_HRS_COLDSTART="00 12"
 #
-export ACCOUNT="rtwrfruc"
-export QUEUE="rth"
-export PARTITION="kjet"
-export RESERVATION="rrfsens"
-#
-export STARTTIME_IC="00:30:00"
-export STARTTIME_LBC="00:00:01"
-export STARTTIME_BUFRIODA="00:00:01"
-export STARTTIME_ENSBE="00:00:01"
-export STARTTIME_DA="00:30:01"
-export STARTTIME_FCST="00:35:01"
-export STARTTIME_MPASSIT="00:35:01"
-export STARTTIME_UPP="00:35:01"
-export STARTTIME_PREP_IC="00:30:00"
-export STARTTIME_PREP_LBC="00:30:00"
+export ACCOUNT="local.setup"
+export QUEUE="local.setup"
+export PARTITION="local.setup"
 #
 export NODES_IC="<nodes>1:ppn=40</nodes>"
 export NODES_LBC="<nodes>1:ppn=40</nodes>"
 export NODES_FCST="<nodes>1:ppn=40</nodes>"
 export NODES_MPASSIT="<nodes>1:ppn=40</nodes>"
 export NODES_UPP="<nodes>1:ppn=40</nodes>"
+export NODES_JEDIVAR="<nodes>2:ppn=20</nodes>"
 #
-export WALLTIME_FCST="01:30:00"
+export WALLTIME_FCST="1:30:00"
 export WALLTIME_SAVE_FCST="1:30:00"
 export WALLTIME_MPASSIT="1:00:00"
 export WALLTIME_UPP="1:00:00"
+export WALLTIME_JEDIVAR="00:30:00"
 #
 export KEEPDATA=yes
 export MPI_RUN_CMD=srun

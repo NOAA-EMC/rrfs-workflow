@@ -53,8 +53,8 @@ def save_fcst(xmlFile, expdir, do_ensemble=False):
   # dependencies
   timedep=""
   realtime=os.getenv("REALTIME","false")
-  starttime=get_cascade_env(f"STARTTIME_FCST".upper())
   if realtime.upper() == "TRUE":
+    starttime=get_cascade_env(f"STARTTIME_FCST".upper())
     timedep=f'\n  <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
   #
   DATAROOT=os.getenv("DATAROOT","DATAROOT_NOT_DEFINED")
