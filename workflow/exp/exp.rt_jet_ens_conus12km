@@ -38,16 +38,14 @@ export UPP_GROUP_TOTAL_NUM=1
 
 export IC_EXTRN_MDL_NAME="GEFS"
 export IC_OFFSET=36
-export IC_EXTRN_MDL_BASEDIR="/mnt/lfs5/BMC/public/data/grids/gens"
+export IC_EXTRN_MDL_BASEDIR="/mnt/lfs5/BMC/public/data/grids/gens/pgrb2b"
 export IC_EXTRN_MDL_NAME_PATTERN="gep#gmem#/@y@j@H000fHHH"
-export IC_EXTRN_MDL_NAME_PATTERN_B="pgrb2b/gep#gmem#/@y@j@H000fHHH"
 export LBC_EXTRN_MDL_NAME="GEFS"
 export LBC_OFFSET=6
 export LBC_LENGTH=12
 export LBC_INTERVAL=3
-export LBC_EXTRN_MDL_BASEDIR="/mnt/lfs5/BMC/public/data/grids/gens"
+export LBC_EXTRN_MDL_BASEDIR="/mnt/lfs5/BMC/public/data/grids/gens/pgrb2b"
 export LBC_EXTRN_MDL_NAME_PATTERN="gep#gmem#/@y@j@H000fHHH"
-export LBC_EXTRN_MDL_NAME_PATTERN_B="/pgrb2b/gep#gmem#/@y@j@H000fHHH"
 export LBC_UNGRIB_GROUP_TOTAL_NUM=1
 export LBC_GROUP_TOTAL_NUM=1
 
