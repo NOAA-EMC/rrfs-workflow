@@ -15,66 +15,97 @@ timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
 #
 if [[ -r "${UMBRELLA_ROOT}/prep_ic/init.nc" ]]; then
   start_type='cold'
+  do_DAcycling='false'
   initial_filename='init.nc'
   initial_file=${UMBRELLA_ROOT}/prep_ic/init.nc
 else
   start_type='warm'
+  do_DAcycling='true'
   initial_filename='mpasin.nc'
   initial_file=${UMBRELLA_ROOT}/prep_ic/mpasin.nc
 fi
 #
-#
-#
-${cpreq} ${FIXrrfs}/physics/${PHYSICS_SUITE}/* .
+ln -snf ${FIXrrfs}/physics/${PHYSICS_SUITE}/* .
+ln -snf ${FIXrrfs}/meshes/${MESH_NAME}.ugwp_oro_data.nc ./ugwp_oro_data.nc
+zeta_levels=${EXPDIR}/config/ZETA_LEVELS.txt
+nlevel=$(wc -l < ${zeta_levels})
+ln -snf ${FIXrrfs}/meshes/${MESH_NAME}.invariant.nc_L${nlevel} ./invariant.nc
 mkdir -p graphinfo stream_list
-${cpreq} ${FIXrrfs}/graphinfo/* graphinfo/
+ln -snf ${FIXrrfs}/graphinfo/* graphinfo/
+ln -snf ${FIXrrfs}/stream_list/${PHYSICS_SUITE}/* stream_list/
 ${cpreq} ${FIXrrfs}/jedi/obsop_name_map.yaml .                  
 ${cpreq} ${FIXrrfs}/jedi/keptvars.yaml .              
 ${cpreq} ${FIXrrfs}/jedi/geovars.yaml . 
-${cpreq} ${FIXrrfs}/stream_list/${PHYSICS_SUITE}/* stream_list/
 #
 # create data directory 
 #
 mkdir -p data; cd data                   
-mkdir -p bumploc obs ens
-
+mkdir -p bumploc obs ens static_bec
 #
-#  bump files
+#  bump files and static BEC files
 #
-${cpreq} ${FIXrrfs}/bumploc/${BUMPLOC}/* bumploc/
-${cpreq} ${FIXrrfs}/meshes/${MESH_NAME}.static.nc static.nc
-
-#
-#  link background
-#
-
-ln -snf ${initial_file} .
-
+ln -snf ${FIXrrfs}/bumploc/${BUMPLOC}/* bumploc/ #gge.tmp: I think fix files can be linked
+ln -snf ${FIXrrfs}/static_bec/${MESH_NAME}_L60/stddev.nc static_bec/stddev.nc
+ln -snf ${FIXrrfs}/static_bec/${MESH_NAME}_L60/nicas_120 static_bec/nicas
+ln -snf ${FIXrrfs}/static_bec/${MESH_NAME}_L60/vbal_120 static_bec/vbal
 #
 # copy observations files
 #
-cp ${COMOUT}/ioda_bufr/* obs/.                           
+cp ${COMOUT}/ioda_bufr/* obs/.
 #
-#  find ensemble forecast
+#  find ensemble forecasts based on HYB_OPT
+#    0: no_ensemble BEC; 1. online rrfs ensembles; 2. offline rrfs ensembles; 3. online GDAS ensembles
 #
-mpasout_file=mpasout.${timestr}.nc
-for (( ii=0; ii<4; ii=ii+1 )); do
-   CDATEp=$($NDATE -${ii} ${CDATE} )
-   ensdir=${COMINrrfs}/rrfsenkf.${CDATEp:0:8}/${CDATEp:8:2}
-   ensdir_m001=${ensdir}/m001/fcst
-   if [[ -s ${ensdir_m001}/${mpasout_file} ]]; then
-     for (( iii=1; iii<31; iii=iii+1 )); do
-        memid=$(printf %03d ${iii})
-        ln -s ${ensdir}/m${memid}/fcst/${mpasout_file} ens/m${memid}.${mpasout_file}
-     done
-   fi
-done
+if [[ "HYB_OPT" == 1  ]]; then
+  mpasout_file=mpasout.${timestr}.nc
+  for (( ii=0; ii<4; ii=ii+1 )); do
+     CDATEp=$($NDATE -${ii} ${CDATE} )
+     ensdir=${COMINrrfs}/rrfsenkf.${CDATEp:0:8}/${CDATEp:8:2}
+     ensdir_m001=${ensdir}/m001/fcst
+     if [[ -s ${ensdir_m001}/${mpasout_file} ]]; then
+       for (( iii=1; iii<31; iii=iii+1 )); do
+          memid=$(printf %03d ${iii})
+          ln -s ${ensdir}/m${memid}/fcst/${mpasout_file} ens/m${memid}.${mpasout_file}
+       done
+     fi
+  done
+fi
 #
-# generate the namelist on the fly
-# namelist.atmosphere and streams.atmosphere
-#sed -e "s/@restart_interval@/${restart_interval}/" -e "s/@history_interval@/${history_interval}/" \
-#    -e "s/@diag_interval@/${diag_interval}/" -e "s/@lbc_interval@/${lbc_interval}/" \
-#    ${PARMrrfs}/streams.atmosphere_fcst > streams.atmosphere
+#  link background
+#
+cd ${DATA}
+ln -snf ${initial_file} .
+#
+# generate namelist, streams, and jedivar.yaml on the fly
+run_duration=1:00:00
+physics_suite=${PHYSICS_SUITE:-'mesoscale_reference'}
+jedi_da="true" #true
+if [[ "${MESH_NAME}" == "conus12km" ]]; then
+  dt=60
+  substeps=2
+  disp=12000.0
+  radt=30
+  pio_num_iotasks=1
+  pio_stride=40
+elif [[ "${MESH_NAME}" == "conus3km" ]]; then
+  dt=20
+  substeps=4
+  disp=3000.0
+  radt=15
+  pio_num_iotasks=40
+  pio_stride=20
+else
+  echo "Unknown MESH_NAME, exit!"
+  err_exit
+fi
+file_content=$(< ${PARMrrfs}/${physics_suite}/namelist.atmosphere) # read in all content
+eval "echo \"${file_content}\"" > namelist.atmosphere
+sed -e "s/@initial_filename@/${initial_filename}/" \
+    ${PARMrrfs}/streams.atmosphere.da  > streams.atmosphere
+analysisDate=""${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z""
+beginDate=""${CDATEm1:0:4}-${CDATEm1:4:2}-${CDATEm1:6:2}T${CDATEm1:8:2}:00:00Z""
+sed -e "s/@analysisDate@/${analysisDate}/" -e "s/@beginDate@/${beginDate}/" \
+    ${PARMrrfs}/jedivar.yaml > jedivar.yaml
 
 # run mpasjedi_variational.x
 export OOPS_TRACE=1
@@ -85,12 +116,10 @@ ulimit -a
 
 source prep_step
 ${cpreq} ${EXECrrfs}/mpasjedi_variational.x .
-#${MPI_RUN_CMD} ./mpasjedi_variational.x  ./$inputfile    log.out
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOMErrfs}/sorc/RDASApp/build/lib64
+${MPI_RUN_CMD} ./mpasjedi_variational.x jedivar.yaml log.out
 # check the status
 export err=$?
 err_chk
-
-# copy output to COMOUT
-if [[ "${begin}" != "YES" ]]; then
-  ${cpreq} ${DATA}/data/${initial_filename} ${COMOUT}/da_jedivar/.
-fi
+#
+# the input/output file are linked from the umbrella directory, so no need to copy
