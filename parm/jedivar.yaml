@@ -4,7 +4,7 @@ _member: &memberConfig
   stream name: ensemble
 
 output:
-  filename: mpasinout.nc
+  filename: mpasin.nc
   stream name: analysis
 variational:
   minimizer:
@@ -28,7 +28,7 @@ cost function:
   cost type: 3D-Var
   time window:
      begin: '@beginDate@'
-     length: PT1H
+     length: PT2H
   jb evaluation: false
   geometry:
     nml_file: ./namelist.atmosphere
