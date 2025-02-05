@@ -16,7 +16,7 @@
         type="input;output"
         precision="single"
         io_type="pnetcdf,cdf5"
-        filename_template="background.nc"
+        filename_template="foo.nc"
         input_interval="none"
         output_interval="none"
         clobber_mode="overwrite">
@@ -27,7 +27,7 @@
         type="output"
         precision="single"
         io_type="pnetcdf,cdf5"
-        filename_template="analysis.nc"
+        filename_template="foo2.nc"
         output_interval="none"
         clobber_mode="overwrite">
         <file name="stream_list/stream_list.atmosphere.analysis"/>
@@ -37,7 +37,7 @@
         type="input;output"
         precision="single"
         io_type="pnetcdf,cdf5"
-        filename_template="ensemble.nc"
+        filename_template="foo3.nc"
         input_interval="none"
         output_interval="none"
         clobber_mode="overwrite">
@@ -48,7 +48,7 @@
         type="input;output"
         precision="single"
         io_type="pnetcdf,cdf5"
-        filename_template="control.nc"
+        filename_template="foo4.nc"
         input_interval="none"
         output_interval="none"
         clobber_mode="overwrite">
@@ -57,12 +57,12 @@
 
 <stream name="output"
         type="none"
-        filename_template="output.nc"
+        filename_template="foo5.nc"
         output_interval="0_01:00:00" >
 </stream>
 <stream name="diagnostics"
         type="none"
-        filename_template="diagnostics.nc"
+        filename_template="foo6.nc"
         output_interval="0_01:00:00" >
 </stream>
 <immutable_stream name="lbc_in"
