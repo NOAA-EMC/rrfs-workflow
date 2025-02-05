@@ -44,10 +44,10 @@ mkdir -p bumploc obs ens static_bec
 #
 #  bump files and static BEC files
 #
-ln -snf ${FIXrrfs}/bumploc/${BUMPLOC}/* bumploc/ #gge.tmp: I think fix files can be linked
-ln -snf ${FIXrrfs}/static_bec/${MESH_NAME}_L60/stddev.nc static_bec/stddev.nc
-ln -snf ${FIXrrfs}/static_bec/${MESH_NAME}_L60/nicas_120 static_bec/nicas
-ln -snf ${FIXrrfs}/static_bec/${MESH_NAME}_L60/vbal_120 static_bec/vbal
+ln -snf ${FIXrrfs}/bumploc/${BUMPLOC}/* bumploc/
+ln -snf ${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/stddev.nc static_bec/stddev.nc
+ln -snf ${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/nicas_${NTASKS} static_bec/nicas
+ln -snf ${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/vbal_${NTASKS} static_bec/vbal
 #
 # copy observations files
 #
