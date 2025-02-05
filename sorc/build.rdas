@@ -10,6 +10,8 @@ source ${HOMErrfs}/workflow/ush/init.sh
 EXEC="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_variational.x"
 EXEC2="${HOMErrfs}/sorc/RDASApp/build/bin/bufr2ioda.x"
 cd ${HOMErrfs}/sorc/RDASApp
+rm -rf sorc/mpas
+git clone -b tag_cmake --recursive https://github.com/guoqing-noaa/MPAS-Model sorc/mpas
 rm -rf build/
 ./build.sh -m MPAS
 
