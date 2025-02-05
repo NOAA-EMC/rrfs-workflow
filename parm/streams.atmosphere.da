@@ -12,14 +12,6 @@
                   io_type="pnetcdf,cdf5"
                   input_interval="initial_only" />
 
-<immutable_stream name="da_state"
-                  type="output"
-                  precision="single"
-                  io_type="pnetcdf,cdf5"
-                  filename_template="foo.nc"
-                  output_interval="none"
-                  clobber_mode="overwrite" />
-
 <stream name="background"
         type="input;output"
         precision="single"
@@ -68,7 +60,6 @@
         filename_template="output.nc"
         output_interval="0_01:00:00" >
 </stream>
-
 <stream name="diagnostics"
         type="none"
         filename_template="diagnostics.nc"
