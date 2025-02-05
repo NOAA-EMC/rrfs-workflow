@@ -1,0 +1,86 @@
+<streams>
+<immutable_stream name="invariant"
+                  type="input"
+                  precision="single"
+                  filename_template="invariant.nc"
+                  io_type="pnetcdf,cdf5"
+                  input_interval="initial_only" />
+
+<immutable_stream name="input"
+                  type="input"
+                  filename_template="@initial_filename@"
+                  io_type="pnetcdf,cdf5"
+                  input_interval="initial_only" />
+
+<immutable_stream name="da_state"
+                  type="output"
+                  precision="single"
+                  io_type="pnetcdf,cdf5"
+                  filename_template="foo.nc"
+                  output_interval="none"
+                  clobber_mode="overwrite" />
+
+<stream name="background"
+        type="input;output"
+        precision="single"
+        io_type="pnetcdf,cdf5"
+        filename_template="background.nc"
+        input_interval="none"
+        output_interval="none"
+        clobber_mode="overwrite">
+        <file name="stream_list/stream_list.atmosphere.background"/>
+</stream>
+
+<stream name="analysis"
+        type="output"
+        precision="single"
+        io_type="pnetcdf,cdf5"
+        filename_template="analysis.nc"
+        output_interval="none"
+        clobber_mode="overwrite">
+        <file name="stream_list/stream_list.atmosphere.analysis"/>
+</stream>
+
+<stream name="ensemble"
+        type="input;output"
+        precision="single"
+        io_type="pnetcdf,cdf5"
+        filename_template="ensemble.nc"
+        input_interval="none"
+        output_interval="none"
+        clobber_mode="overwrite">
+        <file name="stream_list/stream_list.atmosphere.ensemble"/>
+</stream>
+
+<stream name="control"
+        type="input;output"
+        precision="single"
+        io_type="pnetcdf,cdf5"
+        filename_template="control.nc"
+        input_interval="none"
+        output_interval="none"
+        clobber_mode="overwrite">
+        <file name="stream_list/stream_list.atmosphere.control"/>
+</stream>
+
+<stream name="output"
+        type="none"
+        filename_template="output.nc"
+        output_interval="0_01:00:00" >
+</stream>
+
+<stream name="diagnostics"
+        type="none"
+        filename_template="diagnostics.nc"
+        output_interval="0_01:00:00" >
+</stream>
+<immutable_stream name="lbc_in"
+                  type="input"
+                  filename_template="lbc.$Y-$M-$D_$h.$m.$s.nc"
+                  filename_interval="input_interval"
+                  io_type="pnetcdf,cdf5"
+                  packages="limited_area"
+                  input_interval="1:00:00" />
+
+
+</streams>
