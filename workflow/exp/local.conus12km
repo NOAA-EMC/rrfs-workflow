@@ -30,7 +30,7 @@ case ${MACHINE} in
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
     export OBSPATH="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/sandbox/obs_rap"
     export ACCOUNT="bil-fire10-oar"
-    export QUEUE="batch"
+    export QUEUE="normal"
     export PARTITION="batch"
     export CLUSTER="c6"
     ;;
