@@ -16,12 +16,10 @@ timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
 if [[ -r "${UMBRELLA_ROOT}/prep_ic/init.nc" ]]; then
   start_type='cold'
   do_DAcycling='false'
-  initial_filename='init.nc'
   initial_file=${UMBRELLA_ROOT}/prep_ic/init.nc
 else
   start_type='warm'
   do_DAcycling='true'
-  initial_filename='mpasin.nc'
   initial_file=${UMBRELLA_ROOT}/prep_ic/mpasin.nc
 fi
 #
@@ -74,7 +72,7 @@ fi
 #  link background
 #
 cd ${DATA}
-ln -snf ${initial_file} .
+ln -snf ${initial_file} mpasin.nc
 #
 # generate namelist, streams, and jedivar.yaml on the fly
 run_duration=1:00:00
@@ -100,13 +98,15 @@ else
 fi
 file_content=$(< ${PARMrrfs}/${physics_suite}/namelist.atmosphere) # read in all content
 eval "echo \"${file_content}\"" > namelist.atmosphere
-sed -e "s/@initial_filename@/${initial_filename}/" \
-    ${PARMrrfs}/streams.atmosphere.da  > streams.atmosphere
+${cpreq} ${PARMrrfs}/streams.atmosphere.da streams.atmosphere
 analysisDate=""${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z""
 beginDate=""${CDATEm1:0:4}-${CDATEm1:4:2}-${CDATEm1:6:2}T${CDATEm1:8:2}:00:00Z""
 sed -e "s/@analysisDate@/${analysisDate}/" -e "s/@beginDate@/${beginDate}/" \
     ${PARMrrfs}/jedivar.yaml > jedivar.yaml
 
+if [[ ${start_type} == "cold" ]]; then
+  exit 0 #gge.tmp.debug need more time to figure out cold start DA
+fi
 # run mpasjedi_variational.x
 export OOPS_TRACE=1
 export OMP_NUM_THREADS=1
