@@ -33,9 +33,19 @@ for yaml in ${yaml_list[@]}; do
  ./bufr2ioda.x ${yaml}
  # some data may not be available at all cycles, so we don't check whether bufr2ioda.x runs successfully
 done
-ls ./ioda*nc  
+
+# run offline IODA tools
+${cpreq} ${HOMErrfs}/sorc/RDASApp/rrfs-test/IODA/offline_add_var_to_ioda.py .
+ioda_files=$(ls ioda*nc)
+for ioda_file in ${ioda_files[@]}; do
+  ./offline_add_var_to_ioda.py -o ${ioda_file}
+  base_name=$(basename "$ioda_file" .nc)
+  mv  ${base_name}_llp.nc ${base_name}.nc
+done
+
+# file count sanity check and copy to COMOUT
+ls ./ioda*nc
 if (( $? == 0 )); then
-  # copy ioda*.nc to COMOUT
   ${cpreq} ${DATA}/ioda*.nc ${COMOUT}/ioda_bufr/
 else
   echo "WARNING: no ioda files generated."
