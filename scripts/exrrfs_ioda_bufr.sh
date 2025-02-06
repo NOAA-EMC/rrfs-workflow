@@ -27,7 +27,6 @@ yaml_list=(
 )
 
 # run bufr2ioda.x
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOMErrfs}/sorc/RDASApp/build/lib64
 for yaml in ${yaml_list[@]}; do
  sed -e "s/@referenceTime@/${REFERENCE_TIME}/" ${PARMrrfs}/${yaml} > ${yaml}
  source prep_step
