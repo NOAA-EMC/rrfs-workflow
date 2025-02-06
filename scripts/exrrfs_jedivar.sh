@@ -116,7 +116,6 @@ ulimit -a
 
 source prep_step
 ${cpreq} ${EXECrrfs}/mpasjedi_variational.x .
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOMErrfs}/sorc/RDASApp/build/lib64
 ${MPI_RUN_CMD} ./mpasjedi_variational.x jedivar.yaml log.out
 # check the status
 export err=$?
