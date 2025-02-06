@@ -68,7 +68,7 @@ def header_entities(xmlFile,expdir):
   text = f'''
 <!ENTITY ACCOUNT         "{account}">
 <!ENTITY QUEUE_DEFAULT   "{queue}">
-<!ENTITY PARTITION       "{partition}">
+<!ENTITY PARTITION       "{partition}">'''
 
   if reservation != '':
     text = text + f'''
