@@ -8,7 +8,6 @@ cd ${DATA}
 # link the prepbufr file
 ${cpreq} ${OBSPATH}/${CDATE}.rap.t${cyc}z.prepbufr.tm00 prepbufr
 ${cpreq} ${EXECrrfs}/bufr2ioda.x .
-execfile=${HOMErrfs}/sorc/RDASApp/build/bin/bufr2ioda.x
 
 # generate the namelist on the fly
 REFERENCE_TIME="${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z"
@@ -31,7 +30,7 @@ yaml_list=(
 for yaml in ${yaml_list[@]}; do
  sed -e "s/@referenceTime@/${REFERENCE_TIME}/" ${PARMrrfs}/${yaml} > ${yaml}
  source prep_step
- ${MPI_RUN_CMD} ${execfile} ${yaml}
+ ./bufr2ioda.x ${yaml}
  # some data may not be available at all cycles, so we don't check whether bufr2ioda.x runs successfully
 done
 
