@@ -1,12 +1,12 @@
-#!/user/bin/env bash
+#!/usr/bin/env bash
 # Aloha! This file is to setup some top level experiment options
 
 export NET=rrfs                    # rrfs, rtma, 
 export MESH_NAME=conus12km         # conus12km, conus3km, atl3km, etc
-export WGF="det"   # working group function = "det", "enkf", "ensf", "firewx"
+export WGF="det"   # working group function = "det", "enkf", "ens", "firewx"
 export EXP_NAME=hrly_12km
-export VERSION=v2.0.8
-export TAG=c3v208
+export VERSION=v2.0.9
+export TAG=c3v209
 export OPSROOT=/scratch1/BMC/wrfruc/gge/OPSROOT
 export EXPDIR=${OPSROOT}/exp/${EXP_NAME}/rrfs${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
@@ -19,6 +19,10 @@ export ZETA_LEVELS="L60.txt"
 export DA_IODA="true"
 export DA_JEDI="true"
 export OBSPATH="local.setup"
+export HYB_OPT=0  # 0: no_ensemble BEC; 1. GDAS ensembles; 2. rrfs ensembles
+export HYB_WGT_ENS=0.85
+export HYB_WGT_STATIC=0.15
+export HYB_ENS_PATH=""  # if empty, the workflow will try to find ensembles automatically
 
 export DO_CYC="true"
 export CYC_INTERVAL=1
@@ -62,7 +66,7 @@ export NODES_LBC="<nodes>1:ppn=40</nodes>"
 export NODES_FCST="<nodes>2:ppn=40</nodes>"
 export NODES_MPASSIT="<nodes>1:ppn=40</nodes>"
 export NODES_UPP="<nodes>1:ppn=40</nodes>"
-export NODES_JEDIVAR="<nodes>2:ppn=20</nodes>"
+export NODES_JEDIVAR="<nodes>6:ppn=20</nodes>"
 #
 export WALLTIME_FCST="1:30:00"
 export WALLTIME_SAVE_FCST="1:30:00"
@@ -72,3 +76,43 @@ export WALLTIME_JEDIVAR="00:30:00"
 #
 export KEEPDATA=yes
 export MPI_RUN_CMD=srun
+#
+# local.setup: setup some local options specific to a platform or an experiment
+#
+# set up IC, LBC sources and A/Q/P/R information
+export IC_EXTRN_MDL_NAME="GFS"
+export IC_EXTRN_MDL_NAME_PATTERN="gfs.@Y@m@d/@H/gfs.t@Hz.pgrb2.0p25.ffHHH"
+export IC_EXTRN_MDL_NAME_PATTERN_B="gfs.@Y@m@d/@H/gfs.t@Hz.pgrb2b.0p25.ffHHH"
+export LBC_EXTRN_MDL_NAME=${IC_EXTRN_MDL_NAME}
+export LBC_EXTRN_MDL_NAME_PATTERN=${IC_EXTRN_MDL_NAME_PATTERN}
+export LBC_EXTRN_MDL_NAME_PATTERN_B=${IC_EXTRN_MDL_NAME_PATTERN_B}
+case ${MACHINE} in
+  "hera")
+    export IC_EXTRN_MDL_BASEDIR="/scratch2/BMC/rtrr/RRFS2_RETRO_DATA/sandbox/GFS"
+    export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
+    export OBSPATH="/scratch2/BMC/rtrr/RRFS2_RETRO_DATA/sandbox/obs_rap"
+    export ACCOUNT="wrfruc"
+    export QUEUE="batch"
+    export PARTITION="hera"
+    ;;
+  "jet")
+    export IC_EXTRN_MDL_BASEDIR="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/sandbox/GFS"
+    export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
+    export OBSPATH="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/sandbox/obs_rap"
+    export ACCOUNT="nrtrr"
+    export QUEUE="batch"
+    export PARTITION="kjet"
+    ;;
+  "gaeac6")
+    export IC_EXTRN_MDL_BASEDIR="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/sandbox/GFS"
+    export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
+    export OBSPATH="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/sandbox/obs_rap"
+    export ACCOUNT="bil-fire10-oar"
+    export QUEUE="batch"
+    export PARTITION="batch"
+    export CLUSTER="c6"
+    ;;
+  *)
+    echo "!!! unsupported platform:'${MACHINE}'!!!"
+    ;;
+esac
