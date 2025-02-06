@@ -40,11 +40,22 @@ def jedivar(xmlFile, expdir):
   COMROOT=os.getenv("COMROOT","COMROOT_NOT_DEFINED")
   NET=os.getenv("NET","NET_NOT_DEFINED")
   VERSION=os.getenv("VERSION","VERSION_NOT_DEFINED")
+  HYB_OPT=os.getenv("HYB_OPT","0")
+  HYB_ENS_DEP=os.getenv("HYB_ENS_DEP","false")
+  ens_dep=""
+  if HYB_OPT == "2" and HYB_ENS_DEP.upper() == "TRUE": # online rrfs ensembles 
+    RUN='rrfs'
+    ens_dep='''
+    <or>
+      <datadep age="00:05:00"><cyclestr offset="-1:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}enkf.@Y@m@d/@H/m030/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+      <datadep age="00:05:00"><cyclestr offset="-2:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}enkf.@Y@m@d/@H/m030/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+      <datadep age="00:05:00"><cyclestr offset="-3:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}enkf.@Y@m@d/@H/m030/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+    </or>'''
   dependencies=f'''
   <dependency>
   <and>{timedep}
     <taskdep task="prep_ic"/>
-    <taskdep task="ioda_bufr"/>
+    <taskdep task="ioda_bufr"/>{ens_dep}
   </and>
   </dependency>'''
   #
