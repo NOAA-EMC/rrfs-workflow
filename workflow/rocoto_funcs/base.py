@@ -69,7 +69,6 @@ def header_entities(xmlFile,expdir):
 <!ENTITY ACCOUNT         "{account}">
 <!ENTITY QUEUE_DEFAULT   "{queue}">
 <!ENTITY PARTITION       "{partition}">
-<!ENTITY CLUSTER         "{cluster}">'''
 
   if reservation != '':
     text = text + f'''
@@ -181,7 +180,7 @@ class objTask:
     text=text+f'  <account>&ACCOUNT;</account>\n'
     text=text+f'  <queue>&QUEUE_DEFAULT;</queue>\n'
     text=text+f'  <partition>&PARTITION;</partition>\n'
-    text=text+f'  <native>-M &CLUSTER;</native>\n'
+    text=text+f'  <native>-M {cluster}</native>\n'
     text=text+f'  <walltime>{self.dcTaskRes["walltime"]}</walltime>\n'
     text=text+f'  {self.dcTaskRes["nodes"]}\n' #note: xml tag self included, no need to add <nodes> </nodes>
     #

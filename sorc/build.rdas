@@ -10,13 +10,15 @@ source ${HOMErrfs}/workflow/ush/init.sh
 EXEC="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_variational.x"
 EXEC2="${HOMErrfs}/sorc/RDASApp/build/bin/bufr2ioda.x"
 cd ${HOMErrfs}/sorc/RDASApp
+rm -rf sorc/mpas
+git clone -b tag_cmake --recursive https://github.com/guoqing-noaa/MPAS-Model sorc/mpas
 rm -rf build/
 ./build.sh -m MPAS
 
 mkdir -p ${HOMErrfs}/exec
 echo "copy ${EXEC} to ../exec/mpasjedi_variational.x"
-ln -snf ${EXEC} ${HOMErrfs}/exec/mpasjedi_variational.x
+cp ${EXEC} ${HOMErrfs}/exec/mpasjedi_variational.x
 
 echo "copy ${EXEC2} to ../exec/bufr2ioda.x"
-ln -snf ${EXEC2} ${HOMErrfs}/exec/bufr2ioda.x
+cp ${EXEC2} ${HOMErrfs}/exec/bufr2ioda.x
 exit 0

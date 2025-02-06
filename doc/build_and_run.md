@@ -31,9 +31,8 @@ upp.x
 ### 2.1. cat/copy and modify exp.setup
 ```
 cd workflow
-cat exp/exp.conus12km exp/local.conus12km > exp.setup
-  (or you can 'cp exp/exp.conus12km exp.setup' and then modify relevant options)
-vi exp.setup # modify directories, accounts, etc
+cat exp/exp.conus12km exp.setup
+vi exp.setup # set up options as needed. Note: modify local.setup options near the end of the file
 ```
 In retro runs, for simplicity, `OPSROOT` provides a top directory for `COMROOT`, `DATAROOT` and `EXPDIR`. But this is NOT a must and you may set them separately without a shared top directory.
     
