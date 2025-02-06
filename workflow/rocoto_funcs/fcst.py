@@ -56,12 +56,17 @@ def fcst(xmlFile, expdir, do_ensemble=False):
   if realtime.upper() == "TRUE":
     starttime=get_cascade_env(f"STARTTIME_{task_id}".upper())
     timedep=f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+
+  jedidep=""
+  if os.getenv("DA_JEDI","FALSE").upper()=="TRUE":
+    jedidep=f'<taskdep task="jedivar"/>'
   
   dependencies=f'''
   <dependency>
   <and>{timedep}
     <taskdep task="prep_lbc{ensindexstr}" cycle_offset="0:00:00"/>
     <taskdep task="prep_ic{ensindexstr}"/>
+    {jedidep}
   </and>
   </dependency>'''
   

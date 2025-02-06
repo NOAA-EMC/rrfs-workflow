@@ -1,14 +1,14 @@
-#!/user/bin/env bash
+#!/usr/bin/env bash
 # Aloha! This file is to setup some top level experiment options
 
 export NET=rrfs                    # rrfs, rtma, 
 export MESH_NAME=conus12km         # conus12km, conus3km, atl3km, etc
-export WGF="enkf"   # working group function = "det", "enkf", "ensf", "firewx"
-export EXP_NAME=rrfs${WGF}
-export VERSION=v2.0.3
-export TAG=c3v203
-export OPSROOT=/lfs5/BMC/nrtrr/NCO_dirs/${VERSION}
-export EXPDIR=${OPSROOT}/${EXP_NAME}
+export WGF="enkf"   # working group function = "det", "enkf", "ens", "firewx"
+export EXP_NAME=dev12km
+export VERSION=v2.0.9
+export TAG=c3v209
+export OPSROOT=/lfs5/BMC/nrtrr/NCO_dirs
+export EXPDIR=${OPSROOT}/exp/${EXP_NAME}/rrfs${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
 #
@@ -38,16 +38,14 @@ export UPP_GROUP_TOTAL_NUM=1
 
 export IC_EXTRN_MDL_NAME="GEFS"
 export IC_OFFSET=36
-export IC_EXTRN_MDL_BASEDIR="/mnt/lfs5/BMC/public/data/grids/gens"
+export IC_EXTRN_MDL_BASEDIR="/mnt/lfs5/BMC/public/data/grids/gens/pgrb2b"
 export IC_EXTRN_MDL_NAME_PATTERN="gep#gmem#/@y@j@H000fHHH"
-export IC_EXTRN_MDL_NAME_PATTERN_B="pgrb2b/gep#gmem#/@y@j@H000fHHH"
 export LBC_EXTRN_MDL_NAME="GEFS"
 export LBC_OFFSET=6
 export LBC_LENGTH=12
 export LBC_INTERVAL=3
-export LBC_EXTRN_MDL_BASEDIR="/mnt/lfs5/BMC/public/data/grids/gens"
+export LBC_EXTRN_MDL_BASEDIR="/mnt/lfs5/BMC/public/data/grids/gens/pgrb2b"
 export LBC_EXTRN_MDL_NAME_PATTERN="gep#gmem#/@y@j@H000fHHH"
-export LBC_EXTRN_MDL_NAME_PATTERN_B="/pgrb2b/gep#gmem#/@y@j@H000fHHH"
 export LBC_UNGRIB_GROUP_TOTAL_NUM=1
 export LBC_GROUP_TOTAL_NUM=1
 

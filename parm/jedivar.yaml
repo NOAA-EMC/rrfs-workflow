@@ -1,0 +1,122 @@
+_member: &memberConfig
+  date: &analysisDate '@analysisDate@'
+  state variables: &incvars [spechum,surface_pressure,temperature,uReconstructMeridional,uReconstructZonal]
+  stream name: ensemble
+
+output:
+  filename: mpasin.nc
+  stream name: analysis
+variational:
+  minimizer:
+    algorithm: DRPCG
+  iterations:
+  - geometry:
+      nml_file: ./namelist.atmosphere
+      streams_file: ./streams.atmosphere
+      deallocate non-da fields: true
+      interpolation type: unstructured
+    gradient norm reduction: 1e-3
+    ninner: 50
+  - geometry:
+      nml_file: ./namelist.atmosphere
+      streams_file: ./streams.atmosphere
+      deallocate non-da fields: true
+      interpolation type: unstructured
+    gradient norm reduction: 1e-3
+    ninner: 50
+cost function:
+  cost type: 3D-Var
+  time window:
+     begin: '@beginDate@'
+     length: PT2H
+  jb evaluation: false
+  geometry:
+    nml_file: ./namelist.atmosphere
+    streams_file: ./streams.atmosphere
+    deallocate non-da fields: true
+    interpolation type: unstructured
+  analysis variables: *incvars
+  background:
+    state variables: [spechum,surface_pressure,temperature,uReconstructMeridional,uReconstructZonal,theta,rho,u,qv,pressure,landmask,xice,snowc,skintemp,ivgtyp,isltyp,snowh,vegfra,u10,v10,lai,smois,tslb,pressure_p,qc,qi,qg,qr,qs,cldfrac]
+    filename: mpasin.nc
+    date: *analysisDate
+  background error:
+    covariance model: SABER
+    saber central block:
+      saber block name: BUMP_NICAS
+      active variables: &ctlvars [stream_function,velocity_potential,temperature,spechum,surface_pressure]
+      read:
+        io:
+          data directory: data/static_bec/nicas
+          files prefix: mpas
+        drivers:
+          multivariate strategy: univariate
+          read local nicas: true
+    saber outer blocks:
+    - saber block name: StdDev
+      read:
+        model file:
+          filename: data/static_bec/stddev.nc 
+          date: *analysisDate
+          stream name: control
+    - saber block name: BUMP_VerticalBalance
+      read:
+        io:
+          data directory: data/static_bec/vbal 
+          files prefix: mpas_vbal
+        drivers:
+          read local sampling: true
+          read vertical balance: true
+        vertical balance:
+          vbal:
+          - balanced variable: velocity_potential
+            unbalanced variable: stream_function
+            diagonal regression: true
+          - balanced variable: temperature
+            unbalanced variable: stream_function
+          - balanced variable: surface_pressure
+            unbalanced variable: stream_function
+    linear variable change:
+      linear variable change name: Control2Analysis
+      input variables: *ctlvars
+      output variables: *incvars
+
+  observations:
+     observers:
+     - obs space:
+         name: t133=aircar_airTemperature_133
+         distribution:
+           name: "RoundRobin"
+           halo size: 100e3
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: "data/obs/ioda_aircar.nc"
+         obsdataout:
+           engine:
+             type: H5File
+             obsfile: jdiag_t133.nc4
+             allow overwrite: true
+         io pool:
+           max pool size: 1
+         observed variables: [airTemperature]
+         simulated variables: [airTemperature]
+
+       obs operator:
+         name: Composite
+         components:
+         - name: VertInterp
+           vertical coordinate: air_pressure
+           observation vertical coordinate: pressure
+           observation vertical coordinate group: MetaData
+           interpolation method: log-linear
+           variables:
+           - name: airTemperature
+
+       obs error:
+         covariance model: diagonal
+
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 300e3 # orig
+
