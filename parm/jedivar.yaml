@@ -41,46 +41,76 @@ cost function:
     filename: mpasin.nc
     date: *analysisDate
   background error:
-    covariance model: SABER
-    saber central block:
-      saber block name: BUMP_NICAS
-      active variables: &ctlvars [stream_function,velocity_potential,temperature,spechum,surface_pressure]
-      read:
-        io:
-          data directory: data/static_bec/nicas
-          files prefix: mpas
-        drivers:
-          multivariate strategy: univariate
-          read local nicas: true
-    saber outer blocks:
-    - saber block name: StdDev
-      read:
-        model file:
-          filename: data/static_bec/stddev.nc 
-          date: *analysisDate
-          stream name: control
-    - saber block name: BUMP_VerticalBalance
-      read:
-        io:
-          data directory: data/static_bec/vbal 
-          files prefix: mpas_vbal
-        drivers:
-          read local sampling: true
-          read vertical balance: true
-        vertical balance:
-          vbal:
-          - balanced variable: velocity_potential
-            unbalanced variable: stream_function
-            diagonal regression: true
-          - balanced variable: temperature
-            unbalanced variable: stream_function
-          - balanced variable: surface_pressure
-            unbalanced variable: stream_function
-    linear variable change:
-      linear variable change name: Control2Analysis
-      input variables: *ctlvars
-      output variables: *incvars
-
+    covariance model: hybrid
+    components:
+    - covariance:
+        covariance model: SABER
+        saber central block:
+          saber block name: BUMP_NICAS
+          active variables: &ctlvars [stream_function,velocity_potential,temperature,spechum,surface_pressure]
+          read:
+            io:
+              data directory: data/static_bec/nicas
+              files prefix: mpas
+            drivers:
+              multivariate strategy: univariate
+              read local nicas: true
+        saber outer blocks:
+        - saber block name: StdDev
+          read:
+            model file:
+              filename: data/static_bec/stddev.nc
+              date: *analysisDate
+              stream name: control
+        - saber block name: BUMP_VerticalBalance
+          read:
+            io:
+              data directory: data/static_bec/vbal
+              files prefix: mpas_vbal
+            drivers:
+              read local sampling: true
+              read vertical balance: true
+            vertical balance:
+              vbal:
+              - balanced variable: velocity_potential
+                unbalanced variable: stream_function
+                diagonal regression: true
+              - balanced variable: temperature
+                unbalanced variable: stream_function
+              - balanced variable: surface_pressure
+                unbalanced variable: stream_function
+        linear variable change:
+          linear variable change name: Control2Analysis
+          input variables: *ctlvars
+          output variables: *incvars
+      weight:
+        value: "@HYB_WGT_STATIC@"
+    - covariance:
+        covariance model: ensemble
+        localization:
+          localization method: SABER
+          saber central block:
+            saber block name: BUMP_NICAS
+            active variables: *incvars
+            read:
+              io:
+                data directory: data/bumploc
+                files prefix: bumploc
+              drivers:
+                multivariate strategy: duplicated
+                read local nicas: true
+              model:
+                level for 2d variables: last
+        members from template:
+          template:
+            <<: *memberConfig
+            filename: ./data/ens/m%iMember%.nc
+          pattern: "%iMember%"
+          start: 1
+          zero padding: 3
+          nmembers: 30
+      weight:
+        value: "@HYB_WGT_ENS@"
   observations:
      observers:
      - obs space:
