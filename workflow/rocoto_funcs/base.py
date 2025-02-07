@@ -46,7 +46,6 @@ def header_entities(xmlFile,expdir):
   account=os.getenv('ACCOUNT','wrfruc')
   queue=os.getenv('QUEUE','batch')
   partition=os.getenv('PARTITION','hera')
-  cluster=os.getenv('CLUSTER','c6')
   reservation=os.getenv('RESERVATION','')
   mesh_name=os.getenv('MESH_NAME','na3km')
   keepdata=os.getenv('KEEPDATA','yes')
@@ -174,13 +173,15 @@ class objTask:
     xmlFile.write(text)
 
   def wflow_task_part1(self,xmlFile): #write out part1 which excludes dependencies
+    machine=os.getenv('MACHINE').lower()
     text=f'  <command>{self.dcTaskRes["command"]} &HOMErrfs;</command>\n'
     text=text+f'  <join><cyclestr>{self.dcTaskRes["join"]}</cyclestr></join>\n'
     text=text+f'\n  <jobname><cyclestr>{self.dcTaskRes["jobname"]}</cyclestr></jobname>\n'
     text=text+f'  <account>&ACCOUNT;</account>\n'
     text=text+f'  <queue>&QUEUE_DEFAULT;</queue>\n'
     text=text+f'  <partition>&PARTITION;</partition>\n'
-    text=text+f'  <native>-M "cluster"</native>\n'
+    if machine == "gaea": #cluster only needs to be set on Gaea
+      text=text+f'  <native>-M c6</native>\n'
     text=text+f'  <walltime>{self.dcTaskRes["walltime"]}</walltime>\n'
     text=text+f'  {self.dcTaskRes["nodes"]}\n' #note: xml tag self included, no need to add <nodes> </nodes>
     #
