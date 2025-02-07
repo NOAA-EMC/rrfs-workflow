@@ -3,8 +3,6 @@ declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LI
 set -x
 
 cpreq=${cpreq:-cpreq}
-BUMPLOC=${BUMPLOC:-"conus12km-401km11levels"}
-
 cd ${DATA}
 
 CDATEm1=$($NDATE -1 ${CDATE})
@@ -38,11 +36,11 @@ ${cpreq} ${FIXrrfs}/jedi/geovars.yaml .
 # create data directory 
 #
 mkdir -p data; cd data                   
-mkdir -p bumploc obs ens static_bec
+mkdir -p obs ens static_bec
 #
 #  bump files and static BEC files
 #
-ln -snf ${FIXrrfs}/bumploc/${BUMPLOC}/* bumploc/
+ln -snf ${FIXrrfs}/bumploc/${MESH_NAME}_L${nlevel}_${NTASKS}_401km11levels bumploc
 ln -snf ${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/stddev.nc static_bec/stddev.nc
 ln -snf ${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/nicas_${NTASKS} static_bec/nicas
 ln -snf ${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/vbal_${NTASKS} static_bec/vbal
@@ -51,10 +49,10 @@ ln -snf ${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/vbal_${NTASKS} static_bec/
 #
 cp ${COMOUT}/ioda_bufr/* obs/.
 #
-#  find ensemble forecasts based on HYB_OPT
-#    0: no_ensemble BEC; 1. online rrfs ensembles; 2. offline rrfs ensembles; 3. online GDAS ensembles
+#  find ensemble forecasts based on user settings
 #
-if [[ "HYB_OPT" == 1  ]]; then
+if [[ "${HYB_WGT_ENS}" != "0" ]] && [[ "${HYB_ENS_TYPE}" == "1"  ]]; then # rrfsens
+  echo "use rrfs ensembles"
   mpasout_file=mpasout.${timestr}.nc
   for (( ii=0; ii<4; ii=ii+1 )); do
      CDATEp=$($NDATE -${ii} ${CDATE} )
@@ -63,10 +61,16 @@ if [[ "HYB_OPT" == 1  ]]; then
      if [[ -s ${ensdir_m001}/${mpasout_file} ]]; then
        for (( iii=1; iii<31; iii=iii+1 )); do
           memid=$(printf %03d ${iii})
-          ln -s ${ensdir}/m${memid}/fcst/${mpasout_file} ens/m${memid}.${mpasout_file}
+          ln -s ${ensdir}/m${memid}/fcst/${mpasout_file} ens/m${memid}.nc
        done
      fi
   done
+elif [[ "${HYB_WGT_ENS}" != "0" ]] && [[ "${HYB_ENS_TYPE}" == "2"  ]]; then # GDAS
+  echo "use GDAS ensembles"
+  echo "==== to be implemented ===="
+elif [[ "${HYB_WGT_ENS}" != "0" ]] && [[ "${HYB_ENS_TYPE}" == "0"  ]]; then # rrfsens->GDAS->3DVAR
+  echo "determine the ensemble type on the fly"
+  echo "==== to be implemented ===="
 fi
 #
 #  link background
@@ -102,7 +106,13 @@ ${cpreq} ${PARMrrfs}/streams.atmosphere.da streams.atmosphere
 analysisDate=""${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z""
 beginDate=""${CDATEm1:0:4}-${CDATEm1:4:2}-${CDATEm1:6:2}T${CDATEm1:8:2}:00:00Z""
 sed -e "s/@analysisDate@/${analysisDate}/" -e "s/@beginDate@/${beginDate}/" \
+    -e "s/@HYB_WGT_STATIC@/${HYB_WGT_STATIC}/" -e "s/@HYB_WGT_ENS@/${HYB_WGT_ENS}/" \
     ${PARMrrfs}/jedivar.yaml > jedivar.yaml
+if [[ "${HYB_WGT_ENS}" == "0" ]]; then # pure 3DVAR
+  sed -i '88,113d' ./jedivar.yaml
+elif [[ "${HYB_WGT_STATIC}" == "0" ]]; then # pure 3DEnVar
+  sed -i '46,87d' ./jedivar.yaml
+fi
 
 if [[ ${start_type} == "cold" ]]; then
   exit 0 #gge.tmp.debug need more time to figure out cold start DA
