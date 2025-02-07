@@ -41,8 +41,9 @@ def jedivar(xmlFile, expdir):
   NET=os.getenv("NET","NET_NOT_DEFINED")
   VERSION=os.getenv("VERSION","VERSION_NOT_DEFINED")
   HYB_ENS_TYPE=os.getenv("HYB_ENS_TYPE","0")
+  HYB_WGT_ENS=os.getenv("HYB_WGT_ENS","0")
   ens_dep=""
-  if HYB_ENS_TYPE == "1": # rrfsens
+  if HYB_WGT_ENS != "0" and HYB_ENS_TYPE == "1": # rrfsens
     RUN='rrfs'
     ens_dep=f'''
     <or>
