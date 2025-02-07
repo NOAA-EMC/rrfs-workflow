@@ -69,7 +69,7 @@ elif [[ "${HYB_WGT_ENS}" != "0" ]] && [[ "${HYB_ENS_TYPE}" == "2"  ]]; then # GD
   echo "use GDAS ensembles"
   echo "==== to be implemented ===="
 elif [[ "${HYB_WGT_ENS}" != "0" ]] && [[ "${HYB_ENS_TYPE}" == "0"  ]]; then # rrfsens->GDAS->3DVAR
-  echo "determine the ensemle type on the fly"
+  echo "determine the ensemble type on the fly"
   echo "==== to be implemented ===="
 fi
 #
