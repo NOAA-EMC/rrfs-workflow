@@ -41,46 +41,76 @@ cost function:
     filename: mpasin.nc
     date: *analysisDate
   background error:
-    covariance model: SABER
-    saber central block:
-      saber block name: BUMP_NICAS
-      active variables: &ctlvars [stream_function,velocity_potential,temperature,spechum,surface_pressure]
-      read:
-        io:
-          data directory: data/static_bec/nicas
-          files prefix: mpas
-        drivers:
-          multivariate strategy: univariate
-          read local nicas: true
-    saber outer blocks:
-    - saber block name: StdDev
-      read:
-        model file:
-          filename: data/static_bec/stddev.nc 
-          date: *analysisDate
-          stream name: control
-    - saber block name: BUMP_VerticalBalance
-      read:
-        io:
-          data directory: data/static_bec/vbal 
-          files prefix: mpas_vbal
-        drivers:
-          read local sampling: true
-          read vertical balance: true
-        vertical balance:
-          vbal:
-          - balanced variable: velocity_potential
-            unbalanced variable: stream_function
-            diagonal regression: true
-          - balanced variable: temperature
-            unbalanced variable: stream_function
-          - balanced variable: surface_pressure
-            unbalanced variable: stream_function
-    linear variable change:
-      linear variable change name: Control2Analysis
-      input variables: *ctlvars
-      output variables: *incvars
-
+    covariance model: hybrid
+    components:
+    - covariance:
+        covariance model: SABER
+        saber central block:
+          saber block name: BUMP_NICAS
+          active variables: &ctlvars [stream_function,velocity_potential,temperature,spechum,surface_pressure]
+          read:
+            io:
+              data directory: data/static_bec/nicas
+              files prefix: mpas
+            drivers:
+              multivariate strategy: univariate
+              read local nicas: true
+        saber outer blocks:
+        - saber block name: StdDev
+          read:
+            model file:
+              filename: data/static_bec/stddev.nc
+              date: *analysisDate
+              stream name: control
+        - saber block name: BUMP_VerticalBalance
+          read:
+            io:
+              data directory: data/static_bec/vbal
+              files prefix: mpas_vbal
+            drivers:
+              read local sampling: true
+              read vertical balance: true
+            vertical balance:
+              vbal:
+              - balanced variable: velocity_potential
+                unbalanced variable: stream_function
+                diagonal regression: true
+              - balanced variable: temperature
+                unbalanced variable: stream_function
+              - balanced variable: surface_pressure
+                unbalanced variable: stream_function
+        linear variable change:
+          linear variable change name: Control2Analysis
+          input variables: *ctlvars
+          output variables: *incvars
+      weight:
+        value: "@HYB_WGT_STATIC@"
+    - covariance:
+        covariance model: ensemble
+        localization:
+          localization method: SABER
+          saber central block:
+            saber block name: BUMP_NICAS
+            active variables: *incvars
+            read:
+              io:
+                data directory: data/bumploc
+                files prefix: bumploc
+              drivers:
+                multivariate strategy: duplicated
+                read local nicas: true
+              model:
+                level for 2d variables: last
+        members from template:
+          template:
+            <<: *memberConfig
+            filename: ./data/ens/m%iMember%.nc
+          pattern: "%iMember%"
+          start: 1
+          zero padding: 3
+          nmembers: 30
+      weight:
+        value: "@HYB_WGT_ENS@"
   observations:
      observers:
      - obs space:
@@ -120,3 +150,165 @@ cost function:
          - localization method: Horizontal Gaspari-Cohn
            lengthscale: 300e3 # orig
 
+       obs filters:
+         # ------------------
+         # airTemperature (133)
+         # ------------------
+         # Reject all obs with QualityMarker > 3
+         - filter: RejectList
+           apply at iterations: 0,1
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 133
+           - variable: QualityMarker/airTemperature
+             is_in: 4-15
+
+         # Time window filter
+         - filter: Domain Check
+           apply at iterations: 0,1
+           where:
+             - variable:
+                 name: MetaData/timeOffset # units: s
+               minvalue: -5400
+               maxvalue:  5400
+
+         # Online domain check
+         #- filter: Bounds Check
+         # filter variables:
+         # - name: airTemperature
+         # test variables:
+         # - name:  GeoVaLs/observable_domain_mask
+         # minvalue: 0.0
+         # maxvalue: 0.5
+
+         # Initial error assignment
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 133
+           action:
+             name: assign error
+             error function:
+               name: ObsFunction/ObsErrorModelStepwiseLinear
+               options:
+                 xvar:
+                   name: MetaData/pressure
+                 xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
+                 errors: [1.4088, 1.3361, 1.2395, 1.1379, 1.0505, 0.98154, 0.92451, 0.87349, 0.82829, 0.79582, 0.77562, 0.75911, 0.7408, 0.72571, 0.72719, 0.75204, 0.80129, 0.8696, 0.93292, 0.9672, 0.9831, 0.99132, 0.99603, 0.99854, 0.99963, 0.99997, 1.0, 0.99999, 0.99995, 0.99985, 0.99958, 0.99914, 0.99869]
+
+         # Error inflation based on pressure check (setupt.f90)
+         #- filter: Perform Action
+         #  filter variables:
+         #  - name: airTemperature
+         #  where:
+         #  - variable: ObsType/airTemperature
+         #    is_in: 133
+         #  action:
+         #    name: inflate error
+         #    inflation variable:
+         #      name: ObsFunction/ObsErrorFactorPressureCheck
+         #      options:
+         #        variable: airTemperature
+         #        inflation factor: 8.0
+
+         # Bounds Check
+         - filter: Bounds Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperature
+           minvalue: 100
+           maxvalue: 400
+
+         # Create temporary ObsErrorData
+         #- filter: Variable Assignment
+         #  apply at iterations: 0,1
+         #  assignments:
+         #  - name: TempObsErrorData/airTemperature
+         #    type: float
+         #    function:
+         #      name: ObsFunction/Arithmetic
+         #      options:
+         #        variables:
+         #        - name: ObsErrorData/airTemperature
+         #  defer to post: true
+
+         # Set ObsError set "error parameter" if < "max value"
+         #- filter: Perform Action
+         #  apply at iterations: 0,1
+         #  filter variables:
+         #  - name: airTemperature
+         #  action:
+         #    name: assign error
+         #    error parameter: 1.3
+         #  where:
+         #  - variable:
+         #      name: ObsErrorData/airTemperature
+         #    maxvalue: 1.3
+         #  - variable:
+         #      name: ObsErrorData/airTemperature
+         #    value: is_valid
+         #  defer to post: true
+
+         # Set ObsError set "error parameter" if > "min value"
+         #- filter: Perform Action
+         #  apply at iterations: 0,1
+         #  filter variables:
+         #  - name: airTemperature
+         #  action:
+         #    name: assign error
+         #    error parameter: 5.6
+         #  where:
+         #  - variable:
+         #      name: ObsErrorData/airTemperature
+         #    minvalue: 5.6
+         #  - variable:
+         #      name: ObsErrorData/airTemperature
+         #    value: is_valid
+         #  defer to post: true
+
+         # Gross Error Check
+         #- filter: Background Check
+         #  apply at iterations: 0,1
+         #  filter variables:
+         #  - name: airTemperature
+         #  threshold: 7.0
+         #  action:
+         #    name: reject
+         #  where:
+         #  - variable: ObsType/airTemperature
+         #  - variable: QualityMarker/airTemperature
+         #    is_not_in: 3
+         #  defer to post: true
+
+         # Gross Error Check: cgross*0.7 if QualityMarker=3
+         #- filter: Background Check
+         #  apply at iterations: 0,1
+         #  filter variables:
+         #  - name: airTemperature
+         #  threshold: 4.9
+         #  action:
+         #    name: reject
+         #  where:
+         #  - variable: ObsType/airTemperature
+         #  - variable: QualityMarker/airTemperature
+         #    is_in: 3
+         #  defer to post: true
+
+         # Re-assign err ObsErrorData <--- TempObsErrorData after gross error check.
+         #- filter: Perform Action
+         #  apply at iterations: 0,1
+         #  filter variables:
+         #  - name: airTemperature
+         #  action:
+         #    name: assign error
+         #    error function: TempObsErrorData/airTemperature
+         #  where:
+         #  - variable:
+         #      name: TempObsErrorData/airTemperature
+         #    value: is_valid
+         #  defer to post: true
+
+         #- filter: GOMsaver
+         #  filename: ./data/geovals/aircar_geovals_rrfs.nc4

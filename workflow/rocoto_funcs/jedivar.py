@@ -12,9 +12,9 @@ def jedivar(xmlFile, expdir):
     'PHYSICS_SUITE': f'{physics_suite}',
     'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
     'DATAROOT': f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H</cyclestr>',
-    'HYB_OPT': os.getenv('HYB_OPT','0'),
     'HYB_WGT_ENS': os.getenv('HYB_WGT_ENS','0.85'),
     'HYB_WGT_STATIC': os.getenv('HYB_WGT_STATIC','0.15'),
+    'HYB_ENS_TYPE': os.getenv('HYB_ENS_TYPE','0'),
     'HYB_ENS_PATH': os.getenv('HYB_ENS_STATIC','')
   }
   # dependencies
@@ -40,17 +40,18 @@ def jedivar(xmlFile, expdir):
   COMROOT=os.getenv("COMROOT","COMROOT_NOT_DEFINED")
   NET=os.getenv("NET","NET_NOT_DEFINED")
   VERSION=os.getenv("VERSION","VERSION_NOT_DEFINED")
-  HYB_OPT=os.getenv("HYB_OPT","0")
-  HYB_ENS_DEP=os.getenv("HYB_ENS_DEP","false")
+  HYB_ENS_TYPE=os.getenv("HYB_ENS_TYPE","0")
+  HYB_WGT_ENS=os.getenv("HYB_WGT_ENS","0")
   ens_dep=""
-  if HYB_OPT == "2" and HYB_ENS_DEP.upper() == "TRUE": # online rrfs ensembles 
+  if HYB_WGT_ENS != "0" and HYB_ENS_TYPE == "1": # rrfsens
     RUN='rrfs'
-    ens_dep='''
+    ens_dep=f'''
     <or>
       <datadep age="00:05:00"><cyclestr offset="-1:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}enkf.@Y@m@d/@H/m030/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
       <datadep age="00:05:00"><cyclestr offset="-2:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}enkf.@Y@m@d/@H/m030/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
       <datadep age="00:05:00"><cyclestr offset="-3:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}enkf.@Y@m@d/@H/m030/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
     </or>'''
+  #
   dependencies=f'''
   <dependency>
   <and>{timedep}
