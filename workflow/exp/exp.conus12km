@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Aloha! This file is to setup some top level experiment options
-
+#
 export NET=rrfs                    # rrfs, rtma, 
 export MESH_NAME=conus12km         # conus12km, conus3km, atl3km, etc
 export WGF="det"   # working group function = "det", "enkf", "ens", "firewx"
@@ -18,11 +18,10 @@ export ZETA_LEVELS="L60.txt"
 #
 export DA_IODA="true"
 export DA_JEDI="true"
-export OBSPATH="local.setup"
-export HYB_OPT=0  # 0: no_ensemble BEC; 1. GDAS ensembles; 2. rrfs ensembles
-export HYB_WGT_ENS=0.85
-export HYB_WGT_STATIC=0.15
-export HYB_ENS_PATH=""  # if empty, the workflow will try to find ensembles automatically
+export HYB_WGT_ENS=0       # use "0" for zero weight, don't use "0.0"
+export HYB_WGT_STATIC=1.0  # use "0" for zero weight, don't use "0.0"
+export HYB_ENS_TYPE=1      # 1.rrfs; 2.GDAS; 0.TBD on the fly (rrfs->GDAS->3DVAR)
+export HYB_ENS_PATH=""     # if empty, the workflow will try to find ensembles automatically
 
 export DO_CYC="true"
 export CYC_INTERVAL=1
@@ -35,18 +34,10 @@ export RESTART_INTERVAL=61
 export MPASSIT_GROUP_TOTAL_NUM=1
 export UPP_GROUP_TOTAL_NUM=1
 
-export IC_EXTRN_MDL_NAME="local.setup"
 export IC_OFFSET=6
-export IC_EXTRN_MDL_BASEDIR="local.setup"
-export IC_EXTRN_MDL_NAME_PATTERN="local.setup"
-export IC_EXTRN_MDL_NAME_PATTERN_B="local.setup"
-export LBC_EXTRN_MDL_NAME="local.setup"
 export LBC_OFFSET=6
 export LBC_LENGTH=18
 export LBC_INTERVAL=1
-export LBC_EXTRN_MDL_BASEDIR="local.setup"
-export LBC_EXTRN_MDL_NAME_PATTERN="local.setup"
-export LBC_EXTRN_MDL_NAME_PATTERN_B="local.setup"
 export LBC_UNGRIB_GROUP_TOTAL_NUM=1
 export LBC_GROUP_TOTAL_NUM=1
 
@@ -56,11 +47,6 @@ export CYCLEDEF_LBC="  &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;
 export CYCLEDEF_PROD=" &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 01:00:00 "
 export CYCL_HRS_COLDSTART="00 12"
 #
-export ACCOUNT="local.setup"
-export QUEUE="local.setup"
-export PARTITION="local.setup"
-#
-
 export NODES_IC="<nodes>1:ppn=40</nodes>"
 export NODES_LBC="<nodes>1:ppn=40</nodes>"
 export NODES_FCST="<nodes>2:ppn=40</nodes>"
