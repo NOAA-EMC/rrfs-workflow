@@ -15,9 +15,11 @@ source ${HOMErrfs}/workflow/ush/detect_machine.sh
 echo "run on ${MACHINE}"
 #
 export NTASKS=${SLURM_NTASKS}
+export NODES=${SLURM_JOB_NUM_NODES}
+export PPN=${SLURM_TASKS_PER_NODE%%(*} # remove the (x6) part of 20(x6)
 #
 echo "load rrfs-workflow modules by default"
-set +x # supress messy output in the module load process
+set +x # suppress messy output in the module load process
 source /etc/profile
 module use ${HOMErrfs}/modulefiles
 # load corresponding modules for different tasks
