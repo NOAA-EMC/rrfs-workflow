@@ -82,20 +82,18 @@ ln -snf ${initial_file} mpasin.nc
 run_duration=1:00:00
 physics_suite=${PHYSICS_SUITE:-'mesoscale_reference'}
 jedi_da="true" #true
+pio_num_iotasks=${NODES}
+pio_stride=${PPN}
 if [[ "${MESH_NAME}" == "conus12km" ]]; then
   dt=60
   substeps=2
   disp=12000.0
   radt=30
-  pio_num_iotasks=1
-  pio_stride=40
 elif [[ "${MESH_NAME}" == "conus3km" ]]; then
   dt=20
   substeps=4
   disp=3000.0
   radt=15
-  pio_num_iotasks=40
-  pio_stride=20
 else
   echo "Unknown MESH_NAME, exit!"
   err_exit

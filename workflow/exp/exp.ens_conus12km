@@ -19,8 +19,7 @@ export ENS_SIZE=30
 export PHYSICS_SUITE="convection_permitting"   # mesoscale_reference, convection_permitting
 export ZETA_LEVELS="L60.txt"
 #
-export DA_IODA="true"
-export DA_JEDI="true"
+export DA_IODA="false"
 
 export DO_CYC="true"
 export CYC_INTERVAL=3
