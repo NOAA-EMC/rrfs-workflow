@@ -7,8 +7,8 @@ export WGF="det"   # working group function = "det", "enkf", "ens", "firewx"
 export EXP_NAME=hrly_12km
 export VERSION=v2.0.9
 export TAG=c3v209
-export OPSROOT=/scratch1/BMC/wrfruc/gge/OPSROOT
-export EXPDIR=${OPSROOT}/exp/${EXP_NAME}/rrfs${WGF}
+export OPSROOT=/scratch1/BMC/wrfruc/gge/OPSROOT/${EXP_NAME}
+export EXPDIR=${OPSROOT}/exp/rrfs${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
 #

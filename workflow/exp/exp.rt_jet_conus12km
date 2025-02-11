@@ -4,11 +4,11 @@
 export NET=rrfs                    # rrfs, rtma, 
 export MESH_NAME=conus12km         # conus12km, conus3km, atl3km, etc
 export WGF="det"   # working group function = "det", "enkf", "ens", "firewx"
-export EXP_NAME=dev12km
+export EXP_NAME=dev4_12km
 export VERSION=v2.0.9
 export TAG=c3v209
-export OPSROOT=/lfs5/BMC/nrtrr/NCO_dirs
-export EXPDIR=${OPSROOT}/exp/${EXP_NAME}/rrfs${WGF}
+export OPSROOT=/lfs5/BMC/nrtrr/NCO_dirs/${EXP_NAME}/${VERSION}
+export EXPDIR=${OPSROOT}/exp/rrfs${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
 #
@@ -42,7 +42,7 @@ export LBC_INTERVAL=1
 export LBC_UNGRIB_GROUP_TOTAL_NUM=1
 export LBC_GROUP_TOTAL_NUM=1
 
-export RUN_PERIOD="2025012300-2025012300"
+export RUN_PERIOD="2025021000-2025022800"
 export CYCLEDEF_IC="   &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 06:00:00 "
 export CYCLEDEF_LBC="  &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 06:00:00 "
 export CYCLEDEF_PROD=" &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 01:00:00 "
@@ -68,10 +68,11 @@ export MPI_RUN_CMD=srun
 #
 # set up IC, LBC sources and A/Q/P/R information
 export IC_EXTRN_MDL_NAME="GFS"
-export IC_EXTRN_MDL_NAME_PATTERN="@y@j@H000fHHH"
+export IC_EXTRN_MDL_NAME_PATTERN="gfs.@Y@m@d/@H/gfs.@Hz.pgrb2.0p25.ffHHH"
+export IC_EXTRN_MDL_NAME_PATTERN_B="gfs.@Y@m@d/@H/gfs.@Hz.pgrb2b.0p25.ffHHH"
 export LBC_EXTRN_MDL_NAME=${IC_EXTRN_MDL_NAME}
 export LBC_EXTRN_MDL_NAME_PATTERN=${IC_EXTRN_MDL_NAME_PATTERN}
-export IC_EXTRN_MDL_BASEDIR="/public/data/grids/gfs/0p25deg/grib2"
+export IC_EXTRN_MDL_BASEDIR="/public/data/ops/NOAA/NODD"
 export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
 export OBSPATH="/public/data/grids/rap/obs"
 #
