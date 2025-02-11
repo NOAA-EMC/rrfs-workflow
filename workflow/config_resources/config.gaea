@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Gaea -specific settings
+export ACCOUNT=${ACCOUNT:-rtrr}
+export ACCOUNT2=${ACCOUNT2:-${ACCOUNT}}
+export QUEUE=${QUEUE:-batch}
+export QUEUE2=${QUEUE2:-${QUEUE}}
+export PARTITION=${PARTITION:-hera}
+export PARTITION2=${PARTITION2:-${PARTITION}}
+export RESERVATION=${RESERVATION:-""}
+export RESERVATION2=${RESERVATION2:-${RESERVATION}}
+export CLUSTER=${CLUSTER:-c6}
+export CLUSTER2=${CLUSTER2:-${CLUSTER}}

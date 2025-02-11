@@ -44,7 +44,7 @@ def header_entities(xmlFile,expdir):
   run=os.getenv('RUN','rrfs')
   rrfs_ver=os.getenv('VERSION','v2.0.0')
   account=os.getenv('ACCOUNT','wrfruc')
-  queue=os.getenv('QUEUE','bacth')
+  queue=os.getenv('QUEUE','batch')
   partition=os.getenv('PARTITION','hera')
   reservation=os.getenv('RESERVATION','')
   mesh_name=os.getenv('MESH_NAME','na3km')
@@ -182,14 +182,15 @@ class objTask:
     text=text+f'  <walltime>{self.dcTaskRes["walltime"]}</walltime>\n'
     text=text+f'  {self.dcTaskRes["nodes"]}\n' #note: xml tag self included, no need to add <nodes> </nodes>
     #
-    if self.dcTaskRes["native"] == "":
-      if self.dcTaskRes["reservation"]!="":
-        text=text+f'  <native>&RESERVATION;</native>\n'
-    else:
-      native_text=self.dcTaskRes["native"]
-      if self.dcTaskRes["reservation"]!="":
-        native_text=native_text+f' &RESERVATION;'
-      text=text+f'  <native>{native_text}</native>\n'
+    native_text=''
+    if self.dcTaskRes["reservation"] != "":
+      native_text = native_text + f'&RESERVATION; '
+    if self.dcTaskRes["cluster"] != "":
+      native_text = native_text  + f'--cluster={self.dcTaskRes["cluster"]} '
+    if self.dcTaskRes["native"] != "":
+      native_text = native_text + self.dcTaskRes["native"]
+    if native_text != "":
+      text=text+f'  <native>{native_text.strip()}</native>\n'
     #
     if self.realtime:
       text=text+f'  <deadline><cyclestr offset="{self.deadline}">@Y@m@d@H@M</cyclestr></deadline>\n'
@@ -277,6 +278,7 @@ def xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv={},dependencies="",metat
     'walltime': get_cascade_env(f"WALLTIME_{task_id}".upper()),
     'nodes': get_cascade_env(f"NODES_{task_id}".upper()),
     'reservation': get_cascade_env(f"RESERVATION_{task_id}".upper()),
+    'cluster': get_cascade_env(f"CLUSTER_{task_id}".upper()),
     'native': get_cascade_env(f"NATIVE_{task_id}".upper())
   }
 
