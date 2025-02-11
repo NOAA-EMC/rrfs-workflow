@@ -43,8 +43,6 @@ def prep_lbc(xmlFile, expdir, do_ensemble=False):
     ensdirstr="/m#ens_index#"
     ensstr="ens_"
 
-  dcTaskEnv['DATAROOT']=f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensdirstr}</cyclestr>'
-
   # dependencies
   timedep=""
   realtime=os.getenv("REALTIME","false")

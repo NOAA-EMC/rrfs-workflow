@@ -62,7 +62,7 @@ def header_entities(xmlFile,expdir):
   endmonth=rundates[1][4:6]
   endday=rundates[1][6:8]
 
-  run=f'{run}{wgf}'
+  run=f'{run}'
 
   text = f'''
 <!ENTITY ACCOUNT         "{account}">
@@ -81,7 +81,7 @@ def header_entities(xmlFile,expdir):
 <!ENTITY COMROOT         "{COMROOT}">
 <!ENTITY LOGROOT         "{COMROOT}/{net}/{rrfs_ver}/logs">
 
-<!ENTITY RUN             "rrfs">
+<!ENTITY RUN             "{run}">
 <!ENTITY NET             "{net}">
 <!ENTITY rrfs_ver        "{rrfs_ver}">
 <!ENTITY WGF             "{wgf}">
@@ -91,8 +91,9 @@ def header_entities(xmlFile,expdir):
   <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
   <envar><name>EXPDIR</name><value>&EXPDIR;</value></envar>
   <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
+  <envar><name>DATAROOT</name><value><cyclestr>&DATAROOT;/@Y@m@d</cyclestr></value></envar>
   <envar><name>COMINrrfs</name><value>&COMROOT;/{net}/{rrfs_ver}</value></envar>
-  <envar><name>COMOUT</name><value><cyclestr>&COMROOT;/{net}/{rrfs_ver}/{run}.@Y@m@d/@H</cyclestr></value></envar>
+  <envar><name>COMOUT</name><value><cyclestr>&COMROOT;/{net}/{rrfs_ver}/{run}{wgf}.@Y@m@d/@H</cyclestr></value></envar>
   <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
   <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
   <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>

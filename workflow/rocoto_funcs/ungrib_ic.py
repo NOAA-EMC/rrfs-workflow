@@ -46,9 +46,6 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
 <var name="gmem">{gmems}</var>'''
     meta_end=f'</metatask>\n'
 
-  #
-  dcTaskEnv['DATAROOT']=f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensdirstr}</cyclestr>'
-
   # dependencies
   if extrn_mdl_source == "GFS_NCO":
     COMINgfs=os.getenv("COMINgfs",'COMINgfs_not_defined')

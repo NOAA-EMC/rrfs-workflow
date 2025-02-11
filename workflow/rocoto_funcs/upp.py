@@ -51,14 +51,13 @@ def upp(xmlFile, expdir, do_ensemble=False):
     ensindexstr="_m#ens_index#"
     ensdirstr="/m#ens_index#"
 
-  dcTaskEnv['DATAROOT']=f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensdirstr}</cyclestr>'
+  # dependencies
   timedep=""
   realtime=os.getenv("REALTIME","false")
   if realtime.upper() == "TRUE":
     starttime=get_cascade_env(f"STARTTIME_{meta_id}".upper())
     timedep=f'\n  <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
   #
-    DATAROOT=os.getenv("DATAROOT","DATAROOT_NOT_DEFINED")
   NET=os.getenv("NET","NET_NOT_DEFINED")
   VERSION=os.getenv("VERSION","VERSION_NOT_DEFINED")
   wgf=os.getenv("WGF","WGF_NOT_DEFINED")

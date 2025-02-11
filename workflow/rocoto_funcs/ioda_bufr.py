@@ -10,7 +10,6 @@ def ioda_bufr(xmlFile, expdir):
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={
     'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
-    'DATAROOT': f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H</cyclestr>',
     'OBSPATH': f'{OBSPATH}'
   }
   # dependencies
