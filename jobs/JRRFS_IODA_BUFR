@@ -18,8 +18,9 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 #-----------------------------------------------------------------------
 #
 export pid=${pid:-$$}
-export jobid=${jobid:-${RUN}_ioda_bufr_${cyc}}
-export DATA=${DATA:-${DATAROOT}/${jobid}}
+export jobid=${jobid:-ioda_bufr_${cyc}}
+export UMBRELLA_IODA_BUFR_DATA=${UMBRELLA_IODA_BUFR_DATA:-${DATAROOT}/${RUN}_ioda_bufr_${cyc}_${rrfs_ver}/${WGF}}
+export DATA=${DATA:-${UMBRELLA_IODA_BUFR_DATA}/${jobid}}
 
 if [ -d ${DATA} ]; then #remove the ${DATA} directory before a new run
   rm -rf ${DATA}
