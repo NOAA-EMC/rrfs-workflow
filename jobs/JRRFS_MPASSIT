@@ -33,7 +33,7 @@ else
   export MEMID="_m${ENS_INDEX}"
   export MEMDIR="/m${ENS_INDEX}"
 fi
-export UMBRELLA_SAVE_FCST_DATA=${UMBRELLA_SAVE_FCST_DATA:-${DATAROOT}/${RUN}_fcst_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
+export UMBRELLA_SAVE_FCST_DATA=${UMBRELLA_SAVE_FCST_DATA:-${DATAROOT}/${RUN}_save_fcst_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
 export jobid=${jobid:-mpassit_g${GROUP_INDEX}_${cyc}}
 export UMBRELLA_MPASSIT_DATA=${UMBRELLA_MPASSIT_DATA:-${DATAROOT}/${RUN}_mpassit_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
 export DATA=${DATA:-${UMBRELLA_MPASSIT_DATA}/${jobid}}
