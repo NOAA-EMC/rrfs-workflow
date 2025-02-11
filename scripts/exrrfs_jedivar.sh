@@ -11,14 +11,14 @@ timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
 #
 # determine whether to begin new cycles
 #
-if [[ -r "${UMBRELLA_ROOT}/prep_ic/init.nc" ]]; then
+if [[ -r "${UMBRELLA_PREP_IC_DATA}/init.nc" ]]; then
   start_type='cold'
   do_DAcycling='false'
-  initial_file=${UMBRELLA_ROOT}/prep_ic/init.nc
+  initial_file=${UMBRELLA_PREP_IC_DATA}/init.nc
 else
   start_type='warm'
   do_DAcycling='true'
-  initial_file=${UMBRELLA_ROOT}/prep_ic/mpasin.nc
+  initial_file=${UMBRELLA_PREP_IC_DATA}/mpasin.nc
 fi
 #
 ln -snf ${FIXrrfs}/physics/${PHYSICS_SUITE}/* .

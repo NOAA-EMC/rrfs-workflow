@@ -38,10 +38,6 @@ YYYYMMDD=${CDATE:0:8}
 HH=${CDATE:8:2}
 YYJJJHH=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%y%j%H)
 #
-#  find the localtion of the history files
-#
-mpassit_dir=${UMBRELLA_ROOT}/mpassit
-#
 # find forecst length for this cycle
 #
 fcst_length=${FCST_LENGTH:-1}
@@ -68,7 +64,7 @@ for (( ii=0; ii<${num_fhrs}; ii=ii+${group_total_num} )); do
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
     timestr2=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H:%M:%S)
     # decide the mpassit files
-    mpassit_file=${mpassit_dir}/mpassit.${timestr}.nc
+    mpassit_file=${UMBRELLA_MPASSIT_DATA}/mpassit.${timestr}.nc
 
     # wait for file available
     for (( j=0; j < 20; j=j+1)); do

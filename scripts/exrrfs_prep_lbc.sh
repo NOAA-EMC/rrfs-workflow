@@ -44,7 +44,7 @@ while [[ $n -le 12 ]]; do
 done
 
 #
-# find bdy sequence and copy them to umbrella space
+# find bdry sequence and copy them to umbrella space
 #
 
 fhr_all=$(seq 0 $((10#${lbc_interval})) $((10#${fcst_len_hrs_thiscyc} )) )
@@ -53,7 +53,7 @@ if [ -r "${checkfile}" ]; then
   for fhr in  ${fhr_all}; do
     CDATElbc=$($NDATE ${fhr} ${CDATE})
     string_time=$(date -d "${CDATElbc:0:8} ${CDATElbc:8:2}" +%Y-%m-%d_%H.%M.%S)
-    ${cpreq} ${COMINrrfs}/${RUN}.${YYYYMMDDlbc}/${HHlbc}${MEMDIR}/lbc/lbc.${string_time}.nc ${UMBRELLA_DATA}/.
+    ${cpreq} ${COMINrrfs}/${RUN}.${YYYYMMDDlbc}/${HHlbc}${MEMDIR}/lbc/lbc.${string_time}.nc ${UMBRELLA_PREP_LBC_DATA}/.
   done
 else
   echo "Cannot find boundary file: ${checkfile}"

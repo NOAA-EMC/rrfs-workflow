@@ -4,8 +4,6 @@ set -x
 cpreq=${cpreq:-cpreq}
 
 cd ${DATA}
-timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 
-lbc_interval=${LBC_INTERVAL:-3}
 #
 # determine time steps and etc according to the mesh
 #
@@ -33,22 +31,20 @@ echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
 #
 # determine whether to begin new cycles
 #
-if [[ -r "${UMBRELLA_ROOT}/prep_ic/init.nc" ]]; then
-  ln -snf ${UMBRELLA_ROOT}/prep_ic/init.nc .
+if [[ -r "${UMBRELLA_PREP_IC_DATA}/init.nc" ]]; then
+  ln -snf ${UMBRELLA_PREP_IC_DATA}/init.nc mpasin.nc
   start_type='cold'
   do_DAcycling='false'
-  initial_filename='init.nc'
 else
-  ln -snf ${UMBRELLA_ROOT}/prep_ic/mpasin.nc .
+  ln -snf ${UMBRELLA_PREP_IC_DATA}/mpasin.nc mpasin.nc
   start_type='warm'
   do_DAcycling='true'
-  initial_filename='mpasin.nc'
 fi
 
 #
 #  link bdy and fix files
 #
-ln -snf ${UMBRELLA_ROOT}/prep_lbc/lbc*.nc .
+ln -snf ${UMBRELLA_PREP_LBC_DATA}/lbc*.nc .
 
 ln -snf ${FIXrrfs}/physics/${PHYSICS_SUITE}/* .
 ln -snf ${FIXrrfs}/meshes/${MESH_NAME}.ugwp_oro_data.nc ./ugwp_oro_data.nc
@@ -77,15 +73,23 @@ file_content=$(< ${PARMrrfs}/${physics_suite}/namelist.atmosphere) # read in all
 eval "echo \"${file_content}\"" > namelist.atmosphere
 
 # generate the streams file on the fly using sed as this file contains "filename_template='lbc.$Y-$M-$D_$h.$m.$s.nc'"
-# lbc_interval is defined in the beginning
+lbc_interval=${LBC_INTERVAL:-3}
 restart_interval=${RESTART_INTERVAL:-61}
 history_interval=${HISTORY_INTERVAL:-1}
-#diag_interval=${DIAG_INTERVAL:-1}
 diag_interval=${HISTORY_INTERVAL:-1}
 sed -e "s/@restart_interval@/${restart_interval}/" -e "s/@history_interval@/${history_interval}/" \
     -e "s/@diag_interval@/${diag_interval}/" -e "s/@lbc_interval@/${lbc_interval}/" \
-    -e "s/@initial_filename@/${initial_filename}/" \
     ${PARMrrfs}/streams.atmosphere  > streams.atmosphere
+#
+# prelink the forecast output files to umbrella
+history_all=$(seq 0 $((10#${history_interval})) $((10#${fcst_len_hrs_thiscyc} )) )
+for fhr in ${history_all}; do
+  CDATEp=$( $NDATE ${fhr} ${CDATE} )
+  timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
+  ln -snf ${DATA}/history.${timestr}.nc ${UMBRELLA_FCST_DATA}
+  ln -snf ${DATA}/diag.${timestr}.nc ${UMBRELLA_FCST_DATA}
+  ln -snf ${DATA}/mpasout.${timestr}.nc ${UMBRELLA_FCST_DATA}
+done
 
 # run the MPAS model
 ulimit -s unlimited

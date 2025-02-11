@@ -26,7 +26,7 @@ timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
 if [[ "${start_type}" == "cold" ]]; then
   thisfile=${COMINrrfs}/${RUN}.${PDY}/${cyc}${MEMDIR}/ic/init.nc
   if [[ -r ${thisfile} ]]; then
-    ${cpreq} ${thisfile} ${UMBRELLA_DATA}/.
+    ${cpreq} ${thisfile} ${UMBRELLA_PREP_IC_DATA}/init.nc
     echo "cold start from ${thisfile}"
   else
     echo "FATAL ERROR: PREP_IC failed, cannot find cold start file: ${thisfile}"
@@ -44,7 +44,7 @@ elif [[ "${start_type}" == "warm" ]]; then
     fi
   done
   if [[ -r ${thisfile} ]]; then
-    ${cpreq} ${thisfile} ${UMBRELLA_DATA}/mpasin.nc
+    ${cpreq} ${thisfile} ${UMBRELLA_PREP_IC_DATA}/mpasin.nc
     echo "warm start from ${thisfile}"
   else
     echo "FATAL ERROR: PREP_IC failed, cannot find warm start file: ${thisfile}"
