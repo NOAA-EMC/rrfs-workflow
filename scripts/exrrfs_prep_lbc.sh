@@ -34,7 +34,7 @@ while [[ $n -le 12 ]]; do
   CDATElbc=$($NDATE -$((10#${n})) ${CDATE})
   YYYYMMDDlbc=${CDATElbc:0:8}
   HHlbc=${CDATElbc:8:2}
-  checkfile=${COMINrrfs}/${RUN}.${YYYYMMDDlbc}/${HHlbc}${MEMDIR}/lbc/${last_bdyfile}
+  checkfile=${COMINrrfs}/${RUN}${WGF}.${YYYYMMDDlbc}/${HHlbc}${MEMDIR}/lbc/${last_bdyfile}
   if [[ -s ${checkfile} ]]; then
      echo "Found ${checkfile}; Use it as boundary for forecast "
      break
@@ -53,7 +53,7 @@ if [ -r "${checkfile}" ]; then
   for fhr in  ${fhr_all}; do
     CDATElbc=$($NDATE ${fhr} ${CDATE})
     string_time=$(date -d "${CDATElbc:0:8} ${CDATElbc:8:2}" +%Y-%m-%d_%H.%M.%S)
-    ${cpreq} ${COMINrrfs}/${RUN}.${YYYYMMDDlbc}/${HHlbc}${MEMDIR}/lbc/lbc.${string_time}.nc ${UMBRELLA_PREP_LBC_DATA}/.
+    ${cpreq} ${COMINrrfs}/${RUN}${WGF}.${YYYYMMDDlbc}/${HHlbc}${MEMDIR}/lbc/lbc.${string_time}.nc ${UMBRELLA_PREP_LBC_DATA}/.
   done
 else
   echo "Cannot find boundary file: ${checkfile}"

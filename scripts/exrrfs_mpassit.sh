@@ -38,10 +38,6 @@ YYYYMMDDHH=${CDATE}
 YYYYMMDD=${CDATE:0:8}
 HH=${CDATE:8:2}
 #
-#  find the localtion of the history files
-#
-history_dir=${UMBRELLA_FCST_DATA}
-#
 # find forecst length for this cycle
 #
 fcst_length=${FCST_LENGTH:-1}
@@ -67,8 +63,8 @@ for (( ii=0; ii<${num_fhrs}; ii=ii+${group_total_num} )); do
     CDATEp=$($NDATE ${fhr} ${CDATE} )
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S) 
     # decide the history files   
-    history_file=${history_dir}/history.${timestr}.nc
-    diag_file=${history_dir}/diag.${timestr}.nc
+    history_file=${UMBRELLA_SAVE_FCST_DATA}/history.${timestr}.nc
+    diag_file=${UMBRELLA_SAVE_FCST_DATA}/diag.${timestr}.nc
     # wait for file available 
     for (( j=0; j < 20; j=j+1)); do
       if [[ -s ${diag_file} ]]; then

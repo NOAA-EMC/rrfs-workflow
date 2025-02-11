@@ -24,7 +24,7 @@ echo "this cycle is ${start_type} start"
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 
 
 if [[ "${start_type}" == "cold" ]]; then
-  thisfile=${COMINrrfs}/${RUN}.${PDY}/${cyc}${MEMDIR}/ic/init.nc
+  thisfile=${COMINrrfs}/${RUN}${WGF}.${PDY}/${cyc}${MEMDIR}/ic/init.nc
   if [[ -r ${thisfile} ]]; then
     ${cpreq} ${thisfile} ${UMBRELLA_PREP_IC_DATA}/init.nc
     echo "cold start from ${thisfile}"
@@ -38,7 +38,7 @@ elif [[ "${start_type}" == "warm" ]]; then
     CDATEp=$($NDATE -${ii} ${CDATE} )
     PDYii=${CDATEp:0:8}
     cycii=${CDATEp:8:2}
-    thisfile=${COMINrrfs}/${RUN}.${PDYii}/${cycii}${MEMDIR}/fcst/mpasout.${timestr}.nc
+    thisfile=${COMINrrfs}/${RUN}${WGF}.${PDYii}/${cycii}${MEMDIR}/fcst/mpasout.${timestr}.nc
     if [[ -r ${thisfile} ]]; then
       break
     fi
