@@ -36,6 +36,7 @@ else
   export MEMID="_m${ENS_INDEX}"
   export MEMDIR="/m${ENS_INDEX}"
 fi
+export UMBRELLA_UNGRIB_DATA=${UMBRELLA_UNGRIB_DATA:-${DATAROOT}/${RUN}_ungrib_lbc_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
 export jobid=${jobid:-lbc_g${GROUP_INDEX}_${cyc}}
 export UMBRELLA_LBC_DATA=${UMBRELLA_LBC_DATA:-${DATAROOT}/${RUN}_lbc_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
 export DATA=${DATA:-${UMBRELLA_LBC_DATA}/${jobid}}

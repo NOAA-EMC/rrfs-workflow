@@ -23,6 +23,7 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 #source ${EXPDIR}/config/config.base
 #[[ -s ${EXPDIR}/config/config.da ]] && source ${EXPDIR}/config/config.da
 #
+export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_prep_ic_${cyc}_${rrfs_ver}/${WGF}}
 export pid=${pid:-$$}
 export jobid=${jobid:-jedivar_${cyc}}
 export UMBRELLA_JEDIVAR_DATA=${UMBRELLA_JEDIVAR_DATA:-${DATAROOT}/${RUN}_jedivar_${cyc}_${rrfs_ver}/${WGF}}

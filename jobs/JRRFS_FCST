@@ -25,6 +25,8 @@ else
   export MEMID="_m${ENS_INDEX}"
   export MEMDIR="/m${ENS_INDEX}"
 fi
+export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_prep_ic_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
+export UMBRELLA_PREP_LBC_DATA=${UMBRELLA_PREP_LBC_DATA:-${DATAROOT}/${RUN}_prep_lbc_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
 export jobid=${jobid:-fcst_${cyc}}
 export UMBRELLA_FCST_DATA=${UMBRELLA_FCST_DATA:-${DATAROOT}/${RUN}_fcst_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
 export DATA=${DATA:-${UMBRELLA_FCST_DATA}/${jobid}}
