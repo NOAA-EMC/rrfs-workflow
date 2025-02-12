@@ -47,9 +47,6 @@ def save_fcst(xmlFile, expdir, do_ensemble=False):
     ensdirstr="/m#ens_index#"
     ensstr="ens_"
 
-  RUN=f'rrfs{WGF}'
-  dcTaskEnv['DATAROOT']=f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensdirstr}</cyclestr>'
-
   # dependencies
   timedep=""
   realtime=os.getenv("REALTIME","false")
@@ -57,13 +54,12 @@ def save_fcst(xmlFile, expdir, do_ensemble=False):
     starttime=get_cascade_env(f"STARTTIME_FCST".upper())
     timedep=f'\n  <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
   #
-  DATAROOT=os.getenv("DATAROOT","DATAROOT_NOT_DEFINED")
   NET=os.getenv("NET","NET_NOT_DEFINED")
   VERSION=os.getenv("VERSION","VERSION_NOT_DEFINED")
   dependencies=f'''
   <dependency>
   <and>{timedep}
-  <datadep age="00:01:00"><cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensdirstr}/{RUN}_fcst{ensindexstr}_@H/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+  <datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{ensindexstr}/fcst_@H/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
   </and>
   </dependency>'''
 

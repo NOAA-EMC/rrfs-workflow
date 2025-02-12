@@ -43,8 +43,6 @@ def prep_lbc(xmlFile, expdir, do_ensemble=False):
     ensdirstr="/m#ens_index#"
     ensstr="ens_"
 
-  dcTaskEnv['DATAROOT']=f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensdirstr}</cyclestr>'
-
   # dependencies
   timedep=""
   realtime=os.getenv("REALTIME","false")
@@ -54,14 +52,13 @@ def prep_lbc(xmlFile, expdir, do_ensemble=False):
 
   taskdep=""
   for hr in range(0,12):
-    taskdep=taskdep + f'\n <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-{hr}:00:00" />'
+    taskdep=taskdep + f'\n     <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-{hr}:00:00" />'
   
   dependencies=f'''
   <dependency>
   <and>{timedep}
    <taskdep task="prep_ic{ensindexstr}"/>
-   <or>
-   {taskdep}
+   <or>{taskdep}
    </or>
   </and>
   </dependency>'''

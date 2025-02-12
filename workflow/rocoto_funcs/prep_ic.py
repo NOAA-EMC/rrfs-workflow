@@ -38,8 +38,6 @@ def prep_ic(xmlFile, expdir, do_ensemble=False):
     ensdirstr="/m#ens_index#"
     ensstr="ens_"
 
-  dcTaskEnv['DATAROOT']=f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensdirstr}</cyclestr>'
-
   # dependencies
   coldhrs=coldhrs.split(' ')
   streqs=""; strneqs=""; first=True
@@ -72,7 +70,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False):
     <and>
       <and>
 {strneqs}
-      <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;&WGF;.@Y@m@d/@H/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>
+        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;&WGF;.@Y@m@d/@H/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>
       </and>
     </and>
    </or>

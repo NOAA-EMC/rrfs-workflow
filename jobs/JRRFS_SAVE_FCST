@@ -25,15 +25,15 @@ else
   export MEMID="_m${ENS_INDEX}"
   export MEMDIR="/m${ENS_INDEX}"
 fi
-export jobid=${jobid:-${RUN}_fcst${MEMID}_${cyc}}
-export DATA=${DATA:-${DATAROOT}/${jobid}}
+export UMBRELLA_FCST_DATA=${UMBRELLA_FCST_DATA:-${DATAROOT}/${RUN}_fcst_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
+export jobid=${jobid:-save_fcst_${cyc}}
+export UMBRELLA_SAVE_FCST_DATA=${UMBRELLA_SAVE_FCST_DATA:-${DATAROOT}/${RUN}_save_fcst_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
+export DATA=${DATA:-${UMBRELLA_SAVE_FCST_DATA}/${jobid}}
 
-export UMBRELLA_ROOT=${UMBRELLA_ROOT:-${DATAROOT}/${RUN}_umbrella${MEMID}_${cyc}}
-export UMBRELLA_DATA=${UMBRELLA_DATA:-${UMBRELLA_ROOT}/fcst}
-if [ -d ${UMBRELLA_DATA} ]; then
-  rm -rf ${UMBRELLA_DATA}
+if [ -d ${DATA} ]; then # remove the ${DATA} directory if existed
+  rm -rf ${DATA}
 fi
-mkdir -p ${UMBRELLA_DATA}
+mkdir -p ${DATA}
 #
 #-----------------------------------------------------------------------
 # Define COM directories
@@ -46,7 +46,7 @@ mkdir -p ${COMOUT}${MEMDIR}/fcst
 #----------------------------------------
 # Execute the script.
 #----------------------------------------
-export pgmout="${UMBRELLA_DATA}/${jobid}/OUTPUT.$$"
+export pgmout="${DATA}/OUTPUT.$$"
 ${HOMErrfs}/scripts/exrrfs_save_fcst.sh
 export err=$?; err_chk
 

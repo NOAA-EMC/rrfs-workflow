@@ -52,7 +52,7 @@ export NODES_LBC="<nodes>1:ppn=40</nodes>"
 export NODES_FCST="<nodes>2:ppn=40</nodes>"
 export NODES_MPASSIT="<nodes>1:ppn=40</nodes>"
 export NODES_UPP="<nodes>1:ppn=40</nodes>"
-export NODES_JEDIVAR="<nodes>4:ppn=20</nodes>"
+export NODES_JEDIVAR="<nodes>2:ppn=20</nodes>"
 #
 export WALLTIME_FCST="1:30:00"
 export WALLTIME_SAVE_FCST="1:30:00"

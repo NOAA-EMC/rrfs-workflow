@@ -31,8 +31,9 @@ upp.x
 ### 2.1. cat/copy and modify exp.setup
 ```
 cd workflow
-cat exp/exp.conus12km exp.setup
-vi exp.setup # set up options as needed. Note: modify local.setup options near the end of the file
+# find the target exp setup template file, copy it. Here we use exp.conus12km as an example:
+cp exp/exp.conus12km exp.conus12km
+vi exp.conus12km # modify as needed; usually need to change OPSROOT, ACCOUNT, QUEUE, PARTITION
 ```
 In retro runs, for simplicity, `OPSROOT` provides a top directory for `COMROOT`, `DATAROOT` and `EXPDIR`. But this is NOT a must and you may set them separately without a shared top directory.
     
@@ -40,7 +41,8 @@ Refer to [this guide](https://github.com/NOAA-EMC/rrfs-workflow/wiki/deploy-a-re
 
 ### 2.2 setup_rocoto.py
 ```
-./setup_rocoto.py
+# Here we use exp.conus12km as an example:
+./setup_rocoto.py exp.conus12km
 ```   
     
 This Python script creates an experiment directory (i.e. `EXPDIR`), writes out a runtime version of `exp.setup` under EXPDIR, and  then copies runtime config files from `HOMErrfs/parm` to `EXPDIR`.

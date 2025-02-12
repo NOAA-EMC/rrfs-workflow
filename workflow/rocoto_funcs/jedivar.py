@@ -11,7 +11,6 @@ def jedivar(xmlFile, expdir):
   dcTaskEnv={
     'PHYSICS_SUITE': f'{physics_suite}',
     'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
-    'DATAROOT': f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H</cyclestr>',
     'HYB_WGT_ENS': os.getenv('HYB_WGT_ENS','0.85'),
     'HYB_WGT_STATIC': os.getenv('HYB_WGT_STATIC','0.15'),
     'HYB_ENS_TYPE': os.getenv('HYB_ENS_TYPE','0'),

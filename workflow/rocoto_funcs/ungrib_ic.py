@@ -46,9 +46,6 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
 <var name="gmem">{gmems}</var>'''
     meta_end=f'</metatask>\n'
 
-  #
-  dcTaskEnv['DATAROOT']=f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensdirstr}</cyclestr>'
-
   # dependencies
   if extrn_mdl_source == "GFS_NCO":
     COMINgfs=os.getenv("COMINgfs",'COMINgfs_not_defined')
@@ -71,7 +68,7 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
   if ic_name_pattern_b != '':
     dcTaskEnv['NAME_PATTERN_B']=f'<cyclestr offset="-{offset}:00:00">{ic_name_pattern_b}</cyclestr>'
     fpath2=f'{ic_source_basedir}/{ic_name_pattern_b}'.replace('fHHH', offset.zfill(3))
-    datadep=datadep+f'\n     <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath2}</cyclestr></datadep>'
+    datadep=datadep+f'\n    <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath2}</cyclestr></datadep>'
   dependencies=f'''
   <dependency>
   <and>{timedep}

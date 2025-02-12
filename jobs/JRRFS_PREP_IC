@@ -25,20 +25,14 @@ else
   export MEMID="_m${ENS_INDEX}"
   export MEMDIR="/m${ENS_INDEX}"
 fi
-export jobid=${jobid:-${RUN}_prep_ic${MEMID}_${cyc}}
-export DATA=${DATA:-${DATAROOT}/${jobid}}
+export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_prep_ic_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
+export jobid=${jobid:-prep_ic_${cyc}}
+export DATA=${DATA:-${UMBRELLA_PREP_IC_DATA}/${jobid}}
 
 if [ -d ${DATA} ]; then # remove the ${DATA} directory if existed
   rm -rf ${DATA}
 fi
 mkdir -p ${DATA}
-
-export UMBRELLA_ROOT=${UMBRELLA_ROOT:-${DATAROOT}/${RUN}_umbrella${MEMID}_${cyc}}
-export UMBRELLA_DATA=${UMBRELLA_DATA:-${UMBRELLA_ROOT}/prep_ic}
-if [ -d ${UMBRELLA_DATA} ]; then
-  rm -rf ${UMBRELLA_DATA}
-fi
-mkdir -p ${UMBRELLA_DATA}
 #
 #-----------------------------------------------------------------------
 # Define COM directories

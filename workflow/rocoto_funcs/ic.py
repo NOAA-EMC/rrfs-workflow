@@ -34,8 +34,6 @@ def ic(xmlFile, expdir, do_ensemble=False):
     ensindexstr="_m#ens_index#"
     ensdirstr="/m#ens_index#"
 
-  dcTaskEnv['DATAROOT']=f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensdirstr}</cyclestr>'
-
   # dependencies
   timedep=""
   realtime=os.getenv("REALTIME","false")

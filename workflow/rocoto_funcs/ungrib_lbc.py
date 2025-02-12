@@ -60,7 +60,6 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
 
   dcTaskEnv['GROUP_INDEX'] = f'#group_index#'
   dcTaskEnv['GROUP_TOTAL_NUM'] = f'{lbc_ungrib_group_total_num}'
-  dcTaskEnv['DATAROOT']=f'<cyclestr>&DATAROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H{ensdirstr}</cyclestr>'
 
 # dependencies
   if extrn_mdl_source == "GFS_NCO":
