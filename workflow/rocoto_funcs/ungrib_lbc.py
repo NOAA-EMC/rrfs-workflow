@@ -95,8 +95,7 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
 
   dependencies=f'''
   <dependency>
-  <and>{timedep}
-  {datadep}
+  <and>{timedep}{datadep}
   </and>
   </dependency>'''
   #
