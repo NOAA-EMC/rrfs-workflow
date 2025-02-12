@@ -418,6 +418,12 @@
        </param>
 
        <param>
+       <shortname>SNOWC_ON_SURFACE</shortname>
+       <pname>SNOWC</pname>
+       <scale>3.0</scale>
+       </param>
+
+       <param>
        <shortname>SFEXC_ON_SURFACE</shortname>
        <pname>SFEXC</pname>
        <scale>3.0</scale>
@@ -2235,6 +2241,12 @@
        <shortname>WEASD_ON_SURFACE</shortname>
        <pname>WEASD</pname>
        <scale>4.0</scale>
+       </param>
+
+       <param>
+       <shortname>SNOWC_ON_SURFACE</shortname>
+       <pname>SNOWC</pname>
+       <scale>3.0</scale>
        </param>
 
        <param>
