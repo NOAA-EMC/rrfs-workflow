@@ -8,6 +8,9 @@ export WALLTIME=${WALLTIME:-"00:30:00"}
 export NATIVE=${NATIVE:-""}
 export MEMORY=${MEMORY:-""}
 export MAXTRIES=${MAXTRIES:-"1"}
+export RESERVATION=${RESERVATION:-""}
+export CLUSTER=${CLUSTER:-""}
+export NATIVE=${NATIVE:-""}
 
 # ioda_bufr
 export NODES_IODA_BUFR=${NODES_IODA_BUFR:-"<nodes>1:ppn=1</nodes>"}
