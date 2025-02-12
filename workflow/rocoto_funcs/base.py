@@ -62,8 +62,6 @@ def header_entities(xmlFile,expdir):
   endmonth=rundates[1][4:6]
   endday=rundates[1][6:8]
 
-  run=f'{run}'
-
   text = f'''
 <!ENTITY ACCOUNT         "{account}">
 <!ENTITY QUEUE_DEFAULT   "{queue}">
