@@ -12,6 +12,8 @@ EXEC2="${HOMErrfs}/sorc/RDASApp/build/bin/bufr2ioda.x"
 cd ${HOMErrfs}/sorc/RDASApp
 rm -rf sorc/mpas
 git clone -b tag_cmake --recursive https://github.com/guoqing-noaa/MPAS-Model sorc/mpas
+cp ../Registry.xml sorc/mpas/src/core_atmosphere
+cp ../hera.gnu.lua modulefiles/RDAS/hera.intel.lua #gge.tmp.debug: use GNU for jedivar on Hera
 rm -rf build/
 ./build.sh -m MPAS
 
