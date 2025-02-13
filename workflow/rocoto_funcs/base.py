@@ -62,17 +62,18 @@ def header_entities(xmlFile,expdir):
   endmonth=rundates[1][4:6]
   endday=rundates[1][6:8]
 
-  text = f'''
+  if os.getenv('LESS_XML_ENTITIES','false').upper() == 'TRUE':
+    text=''
+  else:
+    text = f'''
 <!ENTITY ACCOUNT         "{account}">
 <!ENTITY QUEUE_DEFAULT   "{queue}">
-<!ENTITY PARTITION       "{partition}">'''
-
-  if reservation != '':
-    text = text + f'''
-<!ENTITY RESERVATION     "--reservation={reservation}">'''
+<!ENTITY PARTITION       "{partition}">
+'''
+    if reservation != '':
+      text = text + f'<!ENTITY RESERVATION     "--reservation={reservation}">\n'
 
   text = text + f'''
-
 <!ENTITY HOMErrfs        "{HOMErrfs}">
 <!ENTITY EXPDIR          "{expdir}">
 <!ENTITY DATAROOT        "{DATAROOT}">
@@ -175,15 +176,23 @@ class objTask:
     text=f'  <command>{self.dcTaskRes["command"]} &HOMErrfs;</command>\n'
     text=text+f'  <join><cyclestr>{self.dcTaskRes["join"]}</cyclestr></join>\n'
     text=text+f'\n  <jobname><cyclestr>{self.dcTaskRes["jobname"]}</cyclestr></jobname>\n'
-    text=text+f'  <account>&ACCOUNT;</account>\n'
-    text=text+f'  <queue>&QUEUE_DEFAULT;</queue>\n'
-    text=text+f'  <partition>&PARTITION;</partition>\n'
+    if os.getenv('LESS_XML_ENTITIES','false').upper() == 'TRUE':
+      text=text+f'  <account>{self.dcTaskRes["account"]}</account>\n'
+      text=text+f'  <queue>{self.dcTaskRes["queue"]}</queue>\n'
+      text=text+f'  <partition>{self.dcTaskRes["partition"]}</partition>\n'
+    else:
+      text=text+f'  <account>&ACCOUNT;</account>\n'
+      text=text+f'  <queue>&QUEUE_DEFAULT;</queue>\n'
+      text=text+f'  <partition>&PARTITION;</partition>\n'
     text=text+f'  <walltime>{self.dcTaskRes["walltime"]}</walltime>\n'
     text=text+f'  {self.dcTaskRes["nodes"]}\n' #note: xml tag self included, no need to add <nodes> </nodes>
     #
     native_text=''
     if self.dcTaskRes["reservation"] != "":
-      native_text = native_text + f'&RESERVATION; '
+      if os.getenv('LESS_XML_ENTITIES','false').upper() == 'TRUE':
+        native_text = native_text + f'--reservation={self.dcTaskRes["reservation"]} '
+      else:
+        native_text = native_text + f'&RESERVATION; '
     if self.dcTaskRes["cluster"] != "":
       native_text = native_text  + f'--cluster={self.dcTaskRes["cluster"]} '
     if self.dcTaskRes["native"] != "":
