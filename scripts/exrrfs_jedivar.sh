@@ -101,16 +101,29 @@ fi
 file_content=$(< ${PARMrrfs}/${physics_suite}/namelist.atmosphere) # read in all content
 eval "echo \"${file_content}\"" > namelist.atmosphere
 ${cpreq} ${PARMrrfs}/streams.atmosphere.da streams.atmosphere
+
+# Generage the jedivar configuration yaml on the fly
+${cpreq} ${PARMrrfs}/jedivar.yaml .
+
 analysisDate=""${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z""
 beginDate=""${CDATEm1:0:4}-${CDATEm1:4:2}-${CDATEm1:6:2}T${CDATEm1:8:2}:00:00Z""
-sed -e "s/@analysisDate@/${analysisDate}/" -e "s/@beginDate@/${beginDate}/" \
-    -e "s/@HYB_WGT_STATIC@/${HYB_WGT_STATIC}/" -e "s/@HYB_WGT_ENS@/${HYB_WGT_ENS}/" \
-    ${PARMrrfs}/jedivar.yaml > jedivar.yaml
-if [[ "${HYB_WGT_ENS}" == "0" ]]; then # pure 3DVAR
-  sed -i '88,113d' ./jedivar.yaml
-elif [[ "${HYB_WGT_STATIC}" == "0" ]]; then # pure 3DEnVar
-  sed -i '46,87d' ./jedivar.yaml
-fi
+
+# Convert CDATE and CDATEm1 to Unix timestamps
+analysis_epoch=$(date -d "${CDATE:0:8} ${CDATE:8:2}:00:00" +%s)
+begin_epoch=$(date -d "${CDATEm1:0:8} ${CDATEm1:8:2}:00:00" +%s)
+
+# Compute the difference in hours
+length=$(( (analysis_epoch - begin_epoch) / 3600 + 1 ))
+
+# Fill in global placeholders
+sed -i \
+    -e "s/@analysisDate@/${analysisDate}/" \
+    -e "s/@beginDate@/${beginDate}/" \
+    -e "s/@HYB_WGT_STATIC@/${HYB_WGT_STATIC}/" \
+    -e "s/@HYB_WGT_ENS@/${HYB_WGT_ENS}/" \
+    -e "s/@length@/${length}/" \
+    -e "s/@DISTRIBUTION@/$distribution/" \
+    ./jedivar.yaml
 
 if [[ ${start_type} == "cold" ]]; then
   exit 0 #gge.tmp.debug need more time to figure out cold start DA
