@@ -62,6 +62,7 @@ export WALLTIME_JEDIVAR="00:30:00"
 #
 export KEEPDATA=yes
 export MPI_RUN_CMD=srun
+export RETRO_TASKTHROTTLE=60
 #
 # local.setup: setup some local options specific to a platform or an experiment
 #

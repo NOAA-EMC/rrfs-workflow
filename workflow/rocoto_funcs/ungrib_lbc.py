@@ -84,7 +84,7 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     timedep=f'\n     <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
   #
   
-  datadep=f' '
+  datadep=''
   for i in range( int(offset), int(length)+int(offset)+1, int(interval) ):
      comin_hr3=str(i).zfill(3)
      fpath3=fpath.replace('fHHH', comin_hr3)
@@ -95,8 +95,7 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
 
   dependencies=f'''
   <dependency>
-  <and>{timedep}
-  {datadep}
+  <and>{timedep}{datadep}
   </and>
   </dependency>'''
   #
