@@ -6,12 +6,12 @@ from rocoto_funcs.base import xml_task, source, get_cascade_env
 def prep_ic(xmlFile, expdir, do_ensemble=False):
   meta_id='prep_ic'
   cycledefs='prod'
-  coldhrs=os.getenv('CYCL_HRS_COLDSTART', '03 15')
+  coldhrs=os.getenv('COLDSTART_AT_HRS', '03 15')
   cyc_interval=os.getenv('CYC_INTERVAL')
 
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={
-    'CYCL_HRS_COLDSTART': f'{coldhrs}',
+    'COLDSTART_AT_HRS': f'{coldhrs}',
   }
   if not do_ensemble:
     metatask=False
