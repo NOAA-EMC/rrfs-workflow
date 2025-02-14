@@ -12,6 +12,7 @@ export RESERVATION=${RESERVATION:-""}
 export CLUSTER=${CLUSTER:-""}
 export NATIVE=${NATIVE:-""}
 export LESS_XML_ENTITIES=${LESS_XML_ENTITIES:-false}
+export REALTIME_MONTHS=${REALTIME_MONTHS:-2}
 
 # ioda_bufr
 export NODES_IODA_BUFR=${NODES_IODA_BUFR:-"<nodes>1:ppn=1</nodes>"}

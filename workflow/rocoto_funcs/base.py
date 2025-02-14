@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-import subprocess
-import os
+import subprocess, os, calendar
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 def source(bash_file,optional=False):
   """
@@ -52,15 +53,30 @@ def header_entities(xmlFile,expdir):
   mpi_run_cmd=os.getenv('MPI_RUN_CMD','srun')
   wgf=os.getenv('WGF','det')
   cyc_interval=os.getenv('CYC_INTERVAL','3')
+  realtime=os.getenv("REALTIME","false").upper()
 # figure out run period
-  run_period=os.getenv('RUN_PERIOD','2224070200-2224070201')
-  rundates=run_period.split("-")
-  startyear=rundates[0][0:4]
-  startmonth=rundates[0][4:6]
-  startday=rundates[0][6:8]
-  endyear=rundates[1][0:4]
-  endmonth=rundates[1][4:6]
-  endday=rundates[1][6:8]
+  if realtime=='TRUE':
+    now=datetime.now()
+    end=now+relativedelta(months=1) # each realtime deployment, set current month and next month
+    startyear=f'''{now.year:04}'''
+    startmonth=f'''{now.month:02}'''
+    startday=f'''{now.day:02}'''
+    starthour='00'
+
+    endyear=f'''{end.year:04}'''
+    endmonth=f'''{end.month:02}'''
+    endday=f'''{calendar.monthrange(end.year,end.month)[1]:02}''' # find the last day of a calendar month
+    endhour='23'
+  else:
+    rundates=os.getenv('RETRO_PERIOD','2224070200-2224080223').split("-")
+    startyear=rundates[0][0:4]
+    startmonth=rundates[0][4:6]
+    startday=rundates[0][6:8]
+    starthour=rundates[0][8:10]
+    endyear=rundates[1][0:4]
+    endmonth=rundates[1][4:6]
+    endday=rundates[1][6:8]
+    endhour=rundates[1][8:10]
 
   if os.getenv('LESS_XML_ENTITIES','false').upper() == 'TRUE':
     text=''
@@ -107,13 +123,15 @@ def header_entities(xmlFile,expdir):
 "
 >
 
-<!ENTITY STARTYEAR  "{startyear}">
-<!ENTITY STARTMONTH "{startmonth}">
-<!ENTITY STARTDAY   "{startday}">
-<!ENTITY ENDYEAR    "{endyear}">
-<!ENTITY ENDMONTH   "{endmonth}">
-<!ENTITY ENDDAY     "{endday}">
+<!ENTITY Y1 "{startyear}">
+<!ENTITY M1 "{startmonth}">
+<!ENTITY D1 "{startday}">
+<!ENTITY H1 "{starthour}">
 
+<!ENTITY Y2 "{endyear}">
+<!ENTITY M2 "{endmonth}">
+<!ENTITY D2 "{endday}">
+<!ENTITY H2 "{endhour}">
 '''
   xmlFile.write(text)
 

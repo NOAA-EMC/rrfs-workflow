@@ -3,10 +3,13 @@ import os
 from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of fcst --------------------------------------------------------
-def fcst(xmlFile, expdir, do_ensemble=False):
+def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
   # Task-specific EnVars beyond the task_common_vars
   meta_id='fcst'
-  cycledefs='prod'
+  if do_spinup:
+    cycledefs='spinup'
+  else:
+    cycledefs='prod'
   hrs=os.getenv('PROD_BGN_AT_HRS', '3 15')
   fcst_len_hrs_cycles=os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
   fcst_length=os.getenv('FCST_LENGTH','1')
