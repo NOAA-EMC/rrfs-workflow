@@ -16,15 +16,11 @@ def smart_cycledefs(realtime):
     ic_step=os.getenv('CYCLEDEF_IC_STEP_HRS','6')
     lbc_step=os.getenv('CYCLEDEF_LBC_STEP_HRS','6')
     cyc_interval=os.getenv('CYC_INTERVAL','3')
-    spinup_length=os.getenv('SPINUP_LENGTH','6')
-    cold_hrs=os.getenv('COLDSTART_AT_HRS','00 12').strip().split(' ')
-    # compute spinup_hrs (usually coldstart at 03/15)
-    # works for coldstart between 0~5 or 12~17 and SPINUP_LENGTH <=6
-    spinup_hrs=''
-    for hour in cold_hrs:
-      endhour=int(hour)+int(spinup_length)-1
-      spinup_hrs=spinup_hrs+hour.zfill(2)+"-"+f'{endhour:02},'
-    spinup_hrs=spinup_hrs.rstrip(',')
+    cold_cycs=os.getenv('COLDSTART_CYCS','03 15').strip().split(' ')
+    prodswitch_cycs=os.getenv('PRODSWITCH_CYCS', '09 21').strip().split(' ')
+    # compute spinup_hrs (usually coldstart at 03 or 15)
+    spinup_hrs=cold_cycs[0]+"-"+f'{int(prodswitch_cycs[0])-1:02},'
+    spinup_hrs=spinup_hrs+cold_cycs[1]+"-"+f'{int(prodswitch_cycs[1])-1:02}'
 
     cycledef_ic=f'''  &Y1;&M1;&D1;&H1;00 &Y2;&M2;&D2;&H2;00 {ic_step.zfill(2)}:00:00'''
     cycledef_lbc=f''' &Y1;&M1;&D1;&H1;00 &Y2;&M2;&D2;&H2;00 {lbc_step.zfill(2)}:00:00'''

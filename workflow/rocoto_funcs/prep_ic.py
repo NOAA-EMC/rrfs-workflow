@@ -3,22 +3,26 @@ import os
 from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of fcst --------------------------------------------------------
-def prep_ic(xmlFile, expdir, do_ensemble=False, do_spinup=False):
+def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
+  # spinup_modes:
+  #  0=no spinup cycles in the experiment
+  #  1=spinup cycles is turned on, and this is a spinup cycle
+  # -1=spinup cycles is turned on, and this is a prod cycle
   meta_id='prep_ic'
-  if do_spinup:
+  if spinup_mode==1:
     cycledefs='spinup'
   else:
     cycledefs='prod'
-  coldhrs=os.getenv('COLDSTART_AT_HRS', '03 15')
+  coldhrs=os.getenv('COLDSTART_CYCS', '03 15')
   cyc_interval=os.getenv('CYC_INTERVAL')
 
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={
-    'COLDSTART_AT_HRS': f'{coldhrs}',
+    'COLDSTART_CYCS': f'{coldhrs}',
   }
   if not do_ensemble:
     metatask=False
-    if do_spinup:
+    if spinup_mode==1:
       task_id=f'{meta_id}_spinup'
     else:
       task_id=f'{meta_id}'
@@ -53,7 +57,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     strneqs=strneqs+f"\n        <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
   streqs=streqs.lstrip('\n')
   strneqs=strneqs.lstrip('\n')
-  if do_spinup:
+  if spinup_mode==1 or (spinup_mode==-1 and prod_new_cycle):
     datadep=f'''\n        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;&WGF;.@Y@m@d/@H{ensdirstr}/fcst_spinup/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
   else:
     datadep=f'''\n        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;&WGF;.@Y@m@d/@H{ensdirstr}/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''

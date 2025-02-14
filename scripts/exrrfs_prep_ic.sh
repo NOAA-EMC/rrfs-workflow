@@ -9,8 +9,8 @@ cyc_interval=${CYC_INTERVAL:-1}
 # decide if this cycle is cold start
 #
 start_type="warm"
-coldstart_at_hrs=${COLDSTART_AT_HRS:-"99"}
-array=(${coldstart_at_hrs})
+coldstart_cycs=${COLDSTART_CYCS:-"99"}
+array=(${coldstart_cycs})
 for hr in "${array[@]}"; do
   chr=$(printf '%02d' ${hr})
   if [ "${cyc}" == "${chr}" ]; then

@@ -24,6 +24,7 @@ export HYB_ENS_TYPE=1      # 1.rrfs; 2.GDAS; 0.TBD on the fly (rrfs->GDAS->3DVAR
 export HYB_ENS_PATH=""     # if empty, the workflow will try to find ensembles automatically
 
 export DO_CYC="true"
+export DO_SPINUP=false
 export CYC_INTERVAL=1
 export FCST_LENGTH=3
 for i in {0..23};    do arr[$i]="03"; done # 3hr fcst
@@ -44,9 +45,8 @@ export LBC_GROUP_TOTAL_NUM=1
 export RETRO_PERIOD="2024052700-2024052800"
 export CYCLEDEF_IC_STEP_HRS=6
 export CYCLEDEF_LBC_STEP_HRS=6
-export COLDSTART_AT_HRS="00 12"
-export DO_SPINUP="false"
-export SPINUP_LENGTH=6
+export COLDSTART_CYCS="00 12"   # cycles to cold start from external models
+export PRODSWITCH_CYCS="06 18"  # cycles to PROD switch to the spun-up ICs
 #
 export NODES_IC="<nodes>1:ppn=40</nodes>"
 export NODES_LBC="<nodes>1:ppn=40</nodes>"

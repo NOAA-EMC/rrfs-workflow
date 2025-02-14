@@ -43,7 +43,7 @@ export LBC_UNGRIB_GROUP_TOTAL_NUM=1
 export LBC_GROUP_TOTAL_NUM=1
 
 export RETRO_PERIOD="2025021000-2025022800"
-export COLDSTART_AT_HRS="00 12"
+export COLDSTART_CYCS="00 12"
 #
 export NODES_IC="<nodes>1:ppn=40</nodes>"
 export NODES_LBC="<nodes>1:ppn=40</nodes>"

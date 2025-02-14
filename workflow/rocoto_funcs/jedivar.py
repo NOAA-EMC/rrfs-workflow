@@ -21,7 +21,7 @@ def jedivar(xmlFile, expdir,do_spinup=False):
     'HYB_ENS_PATH': os.getenv('HYB_ENS_STATIC','')
   }
   # dependencies
-  hrs=os.getenv('COLDSTART_AT_HRS', '3 15')
+  hrs=os.getenv('COLDSTART_CYCS', '3 15')
   hrs=hrs.split(' ')
   streqs=""; strneqs=""
   for hr in hrs:
