@@ -60,7 +60,7 @@ def setup_xml(HOMErrfs, expdir):
 # ---------------------------------------------------------------------------
 # create tasks for a deterministic experiment (i.e. setup/generate an xml file)
     if do_deterministic == "TRUE":
-      if os.getenv("DA_IODA","FALSE").upper()=="TRUE":
+      if os.getenv("DO_IODA","FALSE").upper()=="TRUE":
         ioda_bufr(xmlFile,expdir)
       ungrib_ic(xmlFile,expdir)
       ungrib_lbc(xmlFile,expdir)
@@ -68,7 +68,7 @@ def setup_xml(HOMErrfs, expdir):
       lbc(xmlFile,expdir)
       prep_ic(xmlFile,expdir)
       prep_lbc(xmlFile,expdir)
-      if os.getenv("DA_JEDI","FALSE").upper()=="TRUE":
+      if os.getenv("DO_JEDI","FALSE").upper()=="TRUE":
         jedivar(xmlFile,expdir)
       fcst(xmlFile,expdir)
       save_fcst(xmlFile,expdir)

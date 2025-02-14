@@ -56,7 +56,7 @@ def fcst(xmlFile, expdir, do_ensemble=False):
     timedep=f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
 
   jedidep=""
-  if os.getenv("DA_JEDI","FALSE").upper()=="TRUE":
+  if os.getenv("DO_JEDI","FALSE").upper()=="TRUE":
     jedidep=f'<taskdep task="jedivar"/>'
   
   dependencies=f'''
