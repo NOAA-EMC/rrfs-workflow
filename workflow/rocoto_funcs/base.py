@@ -87,23 +87,23 @@ def header_entities(xmlFile,expdir):
 
 <!ENTITY task_common_vars
 "
-  <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
-  <envar><name>EXPDIR</name><value>&EXPDIR;</value></envar>
-  <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
-  <envar><name>DATAROOT</name><value><cyclestr>&DATAROOT;/@Y@m@d</cyclestr></value></envar>
-  <envar><name>COMINrrfs</name><value>&COMROOT;/{net}/{rrfs_ver}</value></envar>
-  <envar><name>COMOUT</name><value><cyclestr>&COMROOT;/{net}/{rrfs_ver}/{run}{wgf}.@Y@m@d/@H</cyclestr></value></envar>
-  <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-  <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-  <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-  <envar><name>NET</name><value>{net}</value></envar>
-  <envar><name>RUN</name><value>{run}</value></envar>
-  <envar><name>rrfs_ver</name><value>{rrfs_ver}</value></envar>
-  <envar><name>KEEPDATA</name><value>{keepdata}</value></envar>
-  <envar><name>MPI_RUN_CMD</name><value>{mpi_run_cmd}</value></envar>
-  <envar><name>MESH_NAME</name><value>{mesh_name}</value></envar>
-  <envar><name>WGF</name><value>{wgf}</value></envar>
-  <envar><name>CYC_INTERVAL</name><value>{cyc_interval}</value></envar>
+<envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
+<envar><name>EXPDIR</name><value>&EXPDIR;</value></envar>
+<envar><name>COMROOT</name><value>&COMROOT;</value></envar>
+<envar><name>DATAROOT</name><value><cyclestr>&DATAROOT;/@Y@m@d</cyclestr></value></envar>
+<envar><name>COMINrrfs</name><value>&COMROOT;/{net}/{rrfs_ver}</value></envar>
+<envar><name>COMOUT</name><value><cyclestr>&COMROOT;/{net}/{rrfs_ver}/{run}{wgf}.@Y@m@d/@H</cyclestr></value></envar>
+<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+<envar><name>NET</name><value>{net}</value></envar>
+<envar><name>RUN</name><value>{run}</value></envar>
+<envar><name>rrfs_ver</name><value>{rrfs_ver}</value></envar>
+<envar><name>KEEPDATA</name><value>{keepdata}</value></envar>
+<envar><name>MPI_RUN_CMD</name><value>{mpi_run_cmd}</value></envar>
+<envar><name>MESH_NAME</name><value>{mesh_name}</value></envar>
+<envar><name>WGF</name><value>{wgf}</value></envar>
+<envar><name>CYC_INTERVAL</name><value>{cyc_interval}</value></envar>
 "
 >
 
