@@ -2,7 +2,7 @@
 # realtime-specific settings
 #
 export DEADLINE=${DEADLINE_IC:-"24:00:00"}
-export STARTTIME${STARTTIME:-"00:00:01"}
+export STARTTIME=${STARTTIME:-"00:00:01"}
 #
 export DEADLINE_IC=${DEADLINE_IC:-"24:00:00"}
 export STARTTIME_IC=${STARTTIME_IC:-"01:00:00"}
