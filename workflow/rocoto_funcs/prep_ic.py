@@ -54,9 +54,9 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, do_spinup=False):
   streqs=streqs.lstrip('\n')
   strneqs=strneqs.lstrip('\n')
   if do_spinup:
-    datedep=f'''\n        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;&WGF;.@Y@m@d/@H{ensdirstr}/fcst_spinup/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
+    datadep=f'''\n        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;&WGF;.@Y@m@d/@H{ensdirstr}/fcst_spinup/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
   else:
-    datedep=f'''\n        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;&WGF;.@Y@m@d/@H{ensdirstr}/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
+    datadep=f'''\n        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;&WGF;.@Y@m@d/@H{ensdirstr}/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
 
   timedep=""
   realtime=os.getenv("REALTIME","false")
@@ -76,7 +76,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     </and>
     <and>
       <and>
-{strneqs}${datadep}
+{strneqs}{datadep}
       </and>
     </and>
    </or>
