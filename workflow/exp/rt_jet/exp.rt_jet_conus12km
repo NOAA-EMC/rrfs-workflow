@@ -17,14 +17,14 @@ export REALTIME=true     # true, false
 export PHYSICS_SUITE="convection_permitting"   # mesoscale_reference, convection_permitting
 export ZETA_LEVELS="L60.txt"
 #
-export DO_IODA="true"
-export DO_JEDI="true"
+export DO_IODA=true
+export DO_JEDI=true
 export HYB_WGT_ENS=0       # use "0" for zero weight, don't use "0.0"
 export HYB_WGT_STATIC=1.0  # use "0" for zero weight, don't use "0.0"
 export HYB_ENS_TYPE=1      # 1.rrfs; 2.GDAS; 0.TBD on the fly (rrfs->GDAS->3DVAR)
 export HYB_ENS_PATH=""     # if empty, the workflow will try to find ensembles automatically
 
-export DO_CYC="true"
+export DO_CYC=true
 export CYC_INTERVAL=1
 export FCST_LENGTH=3
 for i in {0..23};    do arr[$i]="03"; done # 3hr fcst
@@ -42,8 +42,10 @@ export LBC_INTERVAL=1
 export LBC_UNGRIB_GROUP_TOTAL_NUM=1
 export LBC_GROUP_TOTAL_NUM=1
 
-export RETRO_PERIOD="2025021000-2025022800"
-export COLDSTART_CYCS="00 12"
+export RETRO_PERIOD="2024052700-2024052800"
+export CYCLEDEF_IC_STEP_HRS=6
+export CYCLEDEF_LBC_STEP_HRS=6
+export COLDSTART_CYCS="00 12"   # cycles to cold start from external models
 #
 export NODES_IC="<nodes>1:ppn=40</nodes>"
 export NODES_LBC="<nodes>1:ppn=40</nodes>"
