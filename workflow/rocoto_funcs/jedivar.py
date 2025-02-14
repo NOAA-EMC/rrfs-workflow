@@ -3,9 +3,12 @@ import os
 from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of jedivar --------------------------------------------------------
-def jedivar(xmlFile, expdir):
+def jedivar(xmlFile, expdir,do_spinup=False):
   task_id='jedivar'
-  cycledefs='prod'
+  if do_spinup:
+    cycledefs='spinup'
+  else:
+    cycledefs='prod'
   physics_suite=os.getenv('PHYSICS_SUITE','PHYSICS_SUITE_not_defined')
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={
