@@ -3,9 +3,12 @@ import os
 from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of fcst --------------------------------------------------------
-def prep_ic(xmlFile, expdir, do_ensemble=False):
+def prep_ic(xmlFile, expdir, do_ensemble=False, do_spinup=False):
   meta_id='prep_ic'
-  cycledefs='prod'
+  if do_spinup:
+    cycledefs='spinup'
+  else:
+    cycledefs='prod'
   coldhrs=os.getenv('COLDSTART_AT_HRS', '03 15')
   cyc_interval=os.getenv('CYC_INTERVAL')
 
@@ -15,7 +18,10 @@ def prep_ic(xmlFile, expdir, do_ensemble=False):
   }
   if not do_ensemble:
     metatask=False
-    task_id=f'{meta_id}'
+    if do_spinup:
+      task_id=f'{meta_id}_spinup'
+    else:
+      task_id=f'{meta_id}'
     meta_bgn=""
     meta_end=""
     ensindexstr=""
@@ -40,16 +46,17 @@ def prep_ic(xmlFile, expdir, do_ensemble=False):
 
   # dependencies
   coldhrs=coldhrs.split(' ')
-  streqs=""; strneqs=""; first=True
+  streqs=""; strneqs=""
   for hr in coldhrs:
     hr=f"{hr:0>2}"
-    if first:
-      first=False
-      streqs=streqs  +f"        <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
-      strneqs=strneqs+f"        <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
-    else:
-      streqs=streqs  +f"\n        <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
-      strneqs=strneqs+f"\n        <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
+    streqs=streqs  +f"\n        <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
+    strneqs=strneqs+f"\n        <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
+  streqs=streqs.lstrip('\n')
+  strneqs=strneqs.lstrip('\n')
+  if do_spinup:
+    datedep=f'''\n        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;&WGF;.@Y@m@d/@H{ensdirstr}/fcst_spinup/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
+  else:
+    datedep=f'''\n        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;&WGF;.@Y@m@d/@H{ensdirstr}/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
 
   timedep=""
   realtime=os.getenv("REALTIME","false")
@@ -69,14 +76,14 @@ def prep_ic(xmlFile, expdir, do_ensemble=False):
     </and>
     <and>
       <and>
-{strneqs}
-        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;&WGF;.@Y@m@d/@H{ensdirstr}/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>
+{strneqs}${datadep}
       </and>
     </and>
    </or>
   </and>
   </dependency>'''
-  # overwrite dependencies if it is not DO_CYC
+
+# overwrite dependencies if it is not DO_CYC
   if os.getenv('DO_CYC','FALSE').upper() == "FALSE":
     dependencies=f'''
   <dependency>

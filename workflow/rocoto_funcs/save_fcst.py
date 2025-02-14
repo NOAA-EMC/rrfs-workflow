@@ -3,9 +3,12 @@ import os
 from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of fcst --------------------------------------------------------
-def save_fcst(xmlFile, expdir, do_ensemble=False):
+def save_fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
   meta_id='save_fcst'
-  cycledefs='prod'
+  if do_spinup:
+    cycledefs='spinup'
+  else:
+    cycledefs='prod'
   WGF=os.getenv('WGF','WGF not defined')
   # Task-specific EnVars beyond the task_common_vars
   fcst_length=os.getenv('FCST_LENGTH','1')
@@ -21,7 +24,10 @@ def save_fcst(xmlFile, expdir, do_ensemble=False):
 
   if not do_ensemble:
     metatask=False
-    task_id=f'{meta_id}'
+    if do_spinup:
+      task_id=f'{meta_id}_spinup'
+    else:
+      task_id=f'{meta_id}'
     meta_bgn=""
     meta_end=""
     ensindexstr=""
@@ -45,6 +51,10 @@ def save_fcst(xmlFile, expdir, do_ensemble=False):
     ensstr="ens_"
 
   # dependencies
+  if do_spinup:
+    datadep=f'''<datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_spinup_@H_&rrfs_ver;/&WGF;{ensindexstr}/fcst_spinup_@H/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
+  else:
+    datadep=f'''<datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{ensindexstr}/fcst_@H/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
   timedep=""
   realtime=os.getenv("REALTIME","false")
   if realtime.upper() == "TRUE":
@@ -56,7 +66,7 @@ def save_fcst(xmlFile, expdir, do_ensemble=False):
   dependencies=f'''
   <dependency>
   <and>{timedep}
-  <datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{ensindexstr}/fcst_@H/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+  {datadep}
   </and>
   </dependency>'''
 
