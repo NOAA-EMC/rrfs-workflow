@@ -4,13 +4,14 @@ from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of jedivar --------------------------------------------------------
 def jedivar(xmlFile, expdir,do_spinup=False):
-  task_id='jedivar'
   if do_spinup:
     cycledefs='spinup'
+    task_id='jedivar_spinup'
   else:
     cycledefs='prod'
-  physics_suite=os.getenv('PHYSICS_SUITE','PHYSICS_SUITE_not_defined')
+    task_id='jedivar'
   # Task-specific EnVars beyond the task_common_vars
+  physics_suite=os.getenv('PHYSICS_SUITE','PHYSICS_SUITE_not_defined')
   dcTaskEnv={
     'PHYSICS_SUITE': f'{physics_suite}',
     'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
@@ -20,18 +21,13 @@ def jedivar(xmlFile, expdir,do_spinup=False):
     'HYB_ENS_PATH': os.getenv('HYB_ENS_STATIC','')
   }
   # dependencies
-  hrs=os.getenv('PROD_BGN_AT_HRS', '3 15')
+  hrs=os.getenv('COLDSTART_AT_HRS', '3 15')
   hrs=hrs.split(' ')
-  streqs=""; strneqs=""; first=True
+  streqs=""; strneqs=""
   for hr in hrs:
     hr=f"{hr:0>2}"
-    if first:
-      first=False
-      streqs=streqs  +f"          <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
-      strneqs=strneqs+f"          <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
-    else:
-      streqs=streqs  +f"\n          <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
-      strneqs=strneqs+f"\n          <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
+    streqs=streqs  +f"\n          <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
+    strneqs=strneqs+f"\n          <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
 
   timedep=""
   realtime=os.getenv("REALTIME","false")

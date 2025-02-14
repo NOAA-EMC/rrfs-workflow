@@ -4,16 +4,14 @@ from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of fcst --------------------------------------------------------
 def save_fcst(xmlFile, expdir, do_ensemble=False):
+  meta_id='save_fcst'
+  cycledefs='prod'
+  WGF=os.getenv('WGF','WGF not defined')
   # Task-specific EnVars beyond the task_common_vars
-
   fcst_length=os.getenv('FCST_LENGTH','1')
   history_interval=os.getenv('HISTORY_INTERVAL', '1')
   restart_interval=os.getenv('RESTART_INTERVAL', '61')
-  meta_id='save_fcst'
-  cycledefs='prod'
-  hrs=os.getenv('PROD_BGN_AT_HRS', '3 15')
   fcst_len_hrs_cycles=os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
-  WGF=os.getenv('WGF','WGF not defined')
   dcTaskEnv={
     'FCST_LENGTH': f'{fcst_length}',
     'HISTORY_INTERVAL': f'{history_interval}',
@@ -33,7 +31,6 @@ def save_fcst(xmlFile, expdir, do_ensemble=False):
     metatask=True
     task_id=f'{meta_id}_m#ens_index#'
     dcTaskEnv['ENS_INDEX']="#ens_index#"
-    hrs=os.getenv('ENS_PROD_BGN_AT_HRS', '3 15')
     meta_bgn=""
     meta_end=""
     ens_size=int(os.getenv('ENS_SIZE','2'))
