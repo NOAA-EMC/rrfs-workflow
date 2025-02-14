@@ -16,10 +16,10 @@ def smart_cycledefs(realtime):
     ic_step=os.getenv('CYCLEDEF_IC_STEP_HRS','6')
     lbc_step=os.getenv('CYCLEDEF_LBC_STEP_HRS','6')
     cyc_interval=os.getenv('CYC_INTERVAL','3')
-    spinup_length=os.getenv('SPINUP_LENGTH_HRS','6')
+    spinup_length=os.getenv('SPINUP_LENGTH','6')
     cold_hrs=os.getenv('COLDSTART_AT_HRS','00 12').strip().split(' ')
     # compute spinup_hrs (usually coldstart at 03/15)
-    # works for coldstart between 0~5 or 12~17 and SPINUP_LENGTH_HRS <=6
+    # works for coldstart between 0~5 or 12~17 and SPINUP_LENGTH <=6
     spinup_hrs=''
     for hour in cold_hrs:
       endhour=int(hour)+int(spinup_length)-1
