@@ -18,8 +18,10 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
 
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={
-    'COLDSTART_CYCS': f'{coldhrs}',
+    'COLDSTART_CYCS': f'{coldhrs}'
   }
+  if spinup_mode != 0:
+    dcTaskEnv['SPINUP_MODE']=f'{spinup_mode}'
   if not do_ensemble:
     metatask=False
     if spinup_mode==1:

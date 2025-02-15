@@ -47,7 +47,11 @@ mkdir -p ${DATA}
 #
 export COMINrrfs=${COMINrrfs:-$(compath.py $envir/rrfs/$rrfs_ver)}
 export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-mkdir -p ${COMOUT}${MEMDIR}/fcst
+if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
+  mkdir -p ${COMOUT}${MEMDIR}/fcst_spinup
+else
+  mkdir -p ${COMOUT}${MEMDIR}/fcst
+fi
 #
 #----------------------------------------
 # Execute the script.

@@ -25,7 +25,12 @@ else
   export MEMID="_m${ENS_INDEX}"
   export MEMDIR="/m${ENS_INDEX}"
 fi
-export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_prep_ic_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
+if [[ "${SPINUP_MODE:-0}" == "1" ]];  then
+  prep_ic_str="prep_ic_spinup"
+else
+  prep_ic_str="prep_ic"
+fi
+export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_${prep_ic_str}_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
 export jobid=${jobid:-prep_ic_${cyc}}
 export DATA=${DATA:-${UMBRELLA_PREP_IC_DATA}/${jobid}}
 

@@ -20,6 +20,8 @@ def jedivar(xmlFile, expdir,do_spinup=False):
     'HYB_ENS_TYPE': os.getenv('HYB_ENS_TYPE','0'),
     'HYB_ENS_PATH': os.getenv('HYB_ENS_STATIC','')
   }
+  if do_spinup:
+    dcTaskEnv['DO_SPINUP']='TRUE'
   # dependencies
   hrs=os.getenv('COLDSTART_CYCS', '3 15')
   hrs=hrs.split(' ')

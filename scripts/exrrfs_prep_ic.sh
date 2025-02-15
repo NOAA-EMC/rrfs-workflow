@@ -5,6 +5,7 @@ cpreq=${cpreq:-cpreq}
 
 cd ${DATA}
 cyc_interval=${CYC_INTERVAL:-1}
+spinup_mode=${SPINUP_MODE:-0}
 #
 # decide if this cycle is cold start
 #
@@ -17,6 +18,10 @@ for hr in "${array[@]}"; do
     start_type="cold"
   fi
 done
+if (( SPINUP_MODE == -1 )); then
+# always warm start for prod cycles parallel to spinup cycles
+  start_type="warm"
+fi
 echo "this cycle is ${start_type} start"
 #
 #  find the right background file
@@ -34,11 +39,18 @@ if [[ "${start_type}" == "cold" ]]; then
   fi
 elif [[ "${start_type}" == "warm" ]]; then
   thisfile="undefined"
-  for (( ii=${cyc_interval}; ii<=$(( 3*${cyc_interval} )); ii=ii+${cyc_interval} )); do
+  if (( spinup_mode == 1 ));  then
+    NUM=1 # only use the previous cycle mpasout.nc
+    fcststr="fcst_spinup"
+  else
+    NUM=3
+    fcststr="fcst"
+  fi
+  for (( ii=cyc_interval; ii<=$(( NUM*cyc_interval )); ii=ii+cyc_interval )); do
     CDATEp=$($NDATE -${ii} ${CDATE} )
     PDYii=${CDATEp:0:8}
     cycii=${CDATEp:8:2}
-    thisfile=${COMINrrfs}/${RUN}${WGF}.${PDYii}/${cycii}${MEMDIR}/fcst/mpasout.${timestr}.nc
+    thisfile=${COMINrrfs}/${RUN}${WGF}.${PDYii}/${cycii}${MEMDIR}/${fcststr}/mpasout.${timestr}.nc
     if [[ -r ${thisfile} ]]; then
       break
     fi
