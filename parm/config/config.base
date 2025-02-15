@@ -22,6 +22,7 @@ export FCST_LENGTH=${FCST_LENGTH:-6}
 export FCST_LENGTH_LONG=${FCST_LENGTH_LONG:-12}
 export FCST_LONG_AT_HRS=${FCST_LONG_AT_HRS:-"00 06 12 18"}
 export PHYSICS_SUITE=${PHYSICS_SUITE:-"convection_permitting"} # mesoscale_reference, convection_permitting
+export RESTART_INTERVAL=${RESTART_INTERVAL:-99}
 
 # ic settings:
 export IC_PREFIX=${IC_PREFIX:-"GFS"}
