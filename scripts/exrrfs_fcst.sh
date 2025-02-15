@@ -86,9 +86,11 @@ history_all=$(seq 0 $((10#${history_interval})) $((10#${fcst_len_hrs_thiscyc} ))
 for fhr in ${history_all}; do
   CDATEp=$( $NDATE ${fhr} ${CDATE} )
   timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
-  ln -snf ${DATA}/history.${timestr}.nc ${UMBRELLA_FCST_DATA}
-  ln -snf ${DATA}/diag.${timestr}.nc ${UMBRELLA_FCST_DATA}
-  ln -snf ${DATA}/mpasout.${timestr}.nc ${UMBRELLA_FCST_DATA}
+  if [[ "${DO_SPINUP:-FALSE}" != "TRUE" ]];  then
+    ln -snf ${DATA}/history.${timestr}.nc ${UMBRELLA_FCST_DATA}
+    ln -snf ${DATA}/diag.${timestr}.nc ${UMBRELLA_FCST_DATA}
+    ln -snf ${DATA}/mpasout.${timestr}.nc ${UMBRELLA_FCST_DATA}
+  fi
 done
 
 # run the MPAS model
@@ -106,5 +108,10 @@ if (( ${num_err_log} > 0 )) ; then
   echo "FATAL ERROR: MPAS model run failed"
   err_exit
 else
+  if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
+    CDATEp=$( $NDATE 1 ${CDATE} )
+    timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
+    mv ${DATA}/mpasout.${timestr}.nc ${UMBRELLA_FCST_DATA}
+  fi
   exit 0
 fi

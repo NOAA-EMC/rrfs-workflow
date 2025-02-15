@@ -24,6 +24,8 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     'PHYSICS_SUITE': f'{physics_suite}',
     'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycles}'
   }
+  if do_spinup:
+    dcTaskEnv['DO_SPINUP']="TRUE"
 
   if not do_ensemble:
     metatask=False
