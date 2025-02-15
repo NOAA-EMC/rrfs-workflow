@@ -51,26 +51,28 @@ cp ${COMOUT}/ioda_bufr/* obs/.
 #
 #  find ensemble forecasts based on user settings
 #
-if [[ "${HYB_WGT_ENS}" != "0" ]] && [[ "${HYB_ENS_TYPE}" == "1"  ]]; then # rrfsens
-  echo "use rrfs ensembles"
-  mpasout_file=mpasout.${timestr}.nc
-  for (( ii=0; ii<4; ii=ii+1 )); do
-     CDATEp=$($NDATE -${ii} ${CDATE} )
-     ensdir=${COMINrrfs}/rrfsenkf.${CDATEp:0:8}/${CDATEp:8:2}
-     ensdir_m001=${ensdir}/m001/fcst
-     if [[ -s ${ensdir_m001}/${mpasout_file} ]]; then
-       for (( iii=1; iii<31; iii=iii+1 )); do
-          memid=$(printf %03d ${iii})
-          ln -s ${ensdir}/m${memid}/fcst/${mpasout_file} ens/m${memid}.nc
-       done
-     fi
-  done
-elif [[ "${HYB_WGT_ENS}" != "0" ]] && [[ "${HYB_ENS_TYPE}" == "2"  ]]; then # GDAS
-  echo "use GDAS ensembles"
-  echo "==== to be implemented ===="
-elif [[ "${HYB_WGT_ENS}" != "0" ]] && [[ "${HYB_ENS_TYPE}" == "0"  ]]; then # rrfsens->GDAS->3DVAR
-  echo "determine the ensemble type on the fly"
-  echo "==== to be implemented ===="
+if [[ "${HYB_WGT_ENS}" != "0" ]] && [[ "${HYB_WGT_ENS}" != "0.0" ]]; then # using ensembles
+  if [[ "${HYB_ENS_TYPE}" == "1"  ]]; then # rrfsens
+    echo "use rrfs ensembles"
+    mpasout_file=mpasout.${timestr}.nc
+    for (( ii=0; ii<4; ii=ii+1 )); do
+       CDATEp=$($NDATE -${ii} ${CDATE} )
+       ensdir=${COMINrrfs}/rrfsenkf.${CDATEp:0:8}/${CDATEp:8:2}
+       ensdir_m001=${ensdir}/m001/fcst
+       if [[ -s ${ensdir_m001}/${mpasout_file} ]]; then
+         for (( iii=1; iii<31; iii=iii+1 )); do
+            memid=$(printf %03d ${iii})
+            ln -s ${ensdir}/m${memid}/fcst/${mpasout_file} ens/m${memid}.nc
+         done
+       fi
+    done
+  elif [[ "${HYB_ENS_TYPE}" == "2"  ]]; then # GDAS
+    echo "use GDAS ensembles"
+    echo "==== to be implemented ===="
+  elif [[ "${HYB_ENS_TYPE}" == "0"  ]]; then # rrfsens->GDAS->3DVAR
+    echo "determine the ensemble type on the fly"
+    echo "==== to be implemented ===="
+  fi
 fi
 #
 #  link background
@@ -106,9 +108,9 @@ beginDate=""${CDATEm1:0:4}-${CDATEm1:4:2}-${CDATEm1:6:2}T${CDATEm1:8:2}:00:00Z""
 sed -e "s/@analysisDate@/${analysisDate}/" -e "s/@beginDate@/${beginDate}/" \
     -e "s/@HYB_WGT_STATIC@/${HYB_WGT_STATIC}/" -e "s/@HYB_WGT_ENS@/${HYB_WGT_ENS}/" \
     ${PARMrrfs}/jedivar.yaml > jedivar.yaml
-if [[ "${HYB_WGT_ENS}" == "0" ]]; then # pure 3DVAR
+if [[ "${HYB_WGT_ENS}" == "0" ]] || [[ "${HYB_WGT_ENS}" == "0.0" ]]; then # pure 3DVAR
   sed -i '88,113d' ./jedivar.yaml
-elif [[ "${HYB_WGT_STATIC}" == "0" ]]; then # pure 3DEnVar
+elif [[ "${HYB_WGT_STATIC}" == "0" ]] || [[ "${HYB_WGT_STATIC}" == "0.0" ]] ; then # pure 3DEnVar
   sed -i '46,87d' ./jedivar.yaml
 fi
 
