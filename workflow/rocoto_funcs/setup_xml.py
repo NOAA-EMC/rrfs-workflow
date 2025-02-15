@@ -68,17 +68,14 @@ def setup_xml(HOMErrfs, expdir):
       lbc(xmlFile,expdir)
       #
       if os.getenv("DO_SPINUP","FALSE").upper() == "TRUE":
-        # spin up line
         prep_lbc(xmlFile,expdir)
+        # spin up line
         prep_ic(xmlFile,expdir,spinup_mode=1)
-        if os.getenv("DO_JEDI","FALSE").upper()=="TRUE":
-          jedivar(xmlFile,expdir,do_spinup=True)
+        jedivar(xmlFile,expdir,do_spinup=True)
         fcst(xmlFile,expdir,do_spinup=True)
-        save_fcst(xmlFile,expdir,do_spinup=True)
         # prod line
         prep_ic(xmlFile,expdir,spinup_mode = -1)
-        if os.getenv("DO_JEDI","FALSE").upper()=="TRUE":
-          jedivar(xmlFile,expdir)
+        jedivar(xmlFile,expdir)
         fcst(xmlFile,expdir)
         save_fcst(xmlFile,expdir)
       else:
