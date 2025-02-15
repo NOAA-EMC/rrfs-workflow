@@ -19,12 +19,12 @@ def ioda_bufr(xmlFile, expdir):
   realtime=os.getenv("REALTIME","false")
   if realtime.upper() == "TRUE":
     starttime=get_cascade_env(f"STARTTIME_{task_id}".upper())
-    timedep=f'\n  <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+    timedep=f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
   #
   dependencies=f'''
   <dependency>
   <and>{timedep}
-  <datadep age="00:05:00"><cyclestr>{fpath}</cyclestr></datadep>
+    <datadep age="00:05:00"><cyclestr>{fpath}</cyclestr></datadep>
   </and>
   </dependency>'''
   #

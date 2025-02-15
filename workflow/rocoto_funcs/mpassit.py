@@ -60,7 +60,7 @@ def mpassit(xmlFile, expdir, do_ensemble=False):
   realtime=os.getenv("REALTIME","false")
   if realtime.upper() == "TRUE":
     starttime=get_cascade_env(f"STARTTIME_{meta_id}".upper())
-    timedep=f'\n  <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+    timedep=f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
   #
   NET=os.getenv("NET","NET_NOT_DEFINED")
   VERSION=os.getenv("VERSION","VERSION_NOT_DEFINED")
@@ -68,7 +68,7 @@ def mpassit(xmlFile, expdir, do_ensemble=False):
   dependencies=f'''
   <dependency>
   <and>{timedep}
-  <taskdep task="save_fcst{ensindexstr}"/>
+    <taskdep task="save_fcst{ensindexstr}"/>
   </and>
   </dependency>'''
   #

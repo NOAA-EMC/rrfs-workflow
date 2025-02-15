@@ -103,12 +103,14 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
 # overwrite dependencies if spinup_mode= -1
   if spinup_mode == -1: # overwrite streqs and strneqs for a prod task when spinup is turned on
     prodswitch_hrs=os.getenv('PRODSWITCH_CYCS','09 21').strip().split(' ')
+    streqs=""; strneqs=""
     for hr in prodswitch_hrs:
       hr=f"{hr:0>2}"
       streqs=streqs  +f"\n        <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
       strneqs=strneqs+f"\n        <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
     streqs=streqs.lstrip('\n')
     strneqs=strneqs.lstrip('\n')
+    datadep_spinup=datadep_spinup.lstrip('\n')[2:]
     dependencies=f'''
   <dependency>
   <and>{timedep}
@@ -117,7 +119,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
       <or>
 {streqs}
       </or>
-      {datadep_spinup}
+{datadep_spinup}
     </and>
     <and>
       <and>
