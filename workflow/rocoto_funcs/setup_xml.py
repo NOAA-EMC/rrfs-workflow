@@ -58,7 +58,7 @@ def setup_xml(HOMErrfs, expdir):
     wflow_cycledefs(xmlFile,dcCycledef)
     
 # ---------------------------------------------------------------------------
-# create tasks for a deterministic experiment (i.e. setup/generate an xml file)
+# create tasks for a deterministic experiment
     if do_deterministic == "TRUE":
       if os.getenv("DO_IODA","FALSE").upper()=="TRUE":
         ioda_bufr(xmlFile,expdir)
@@ -66,15 +66,29 @@ def setup_xml(HOMErrfs, expdir):
       ungrib_lbc(xmlFile,expdir)
       ic(xmlFile,expdir)
       lbc(xmlFile,expdir)
-      prep_ic(xmlFile,expdir)
-      prep_lbc(xmlFile,expdir)
-      if os.getenv("DO_JEDI","FALSE").upper()=="TRUE":
-        if os.getenv("DO_SPINUP","FALSE").upper() == "TRUE":
+      #
+      if os.getenv("DO_SPINUP","FALSE").upper() == "TRUE":
+        # spin up line
+        prep_lbc(xmlFile,expdir)
+        prep_ic(xmlFile,expdir,spinup_mode=1)
+        if os.getenv("DO_JEDI","FALSE").upper()=="TRUE":
           jedivar(xmlFile,expdir,do_spinup=True)
-          fcst(xmlFile,expdir,do_spinup=True)
-        jedivar(xmlFile,expdir)
-      fcst(xmlFile,expdir)
-      save_fcst(xmlFile,expdir)
+        fcst(xmlFile,expdir,do_spinup=True)
+        save_fcst(xmlFile,expdir,do_spinup=True)
+        # prod line
+        prep_ic(xmlFile,expdir,spinup_mode = -1)
+        if os.getenv("DO_JEDI","FALSE").upper()=="TRUE":
+          jedivar(xmlFile,expdir)
+        fcst(xmlFile,expdir)
+        save_fcst(xmlFile,expdir)
+      else:
+        prep_ic(xmlFile,expdir)
+        prep_lbc(xmlFile,expdir)
+        if os.getenv("DO_JEDI","FALSE").upper()=="TRUE":
+          jedivar(xmlFile,expdir)
+        fcst(xmlFile,expdir)
+        save_fcst(xmlFile,expdir)
+      #
       mpassit(xmlFile,expdir)
       upp(xmlFile,expdir)
       #

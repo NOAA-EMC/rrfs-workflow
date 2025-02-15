@@ -4,10 +4,10 @@ from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of fcst --------------------------------------------------------
 def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
-  # spinup_modes:
-  #  0=no spinup cycles in the experiment
-  #  1=spinup cycles is turned on, and this is a spinup cycle
-  # -1=spinup cycles is turned on, and this is a prod cycle
+  # spinup_mode:
+  #  0=no spinup in the experiment
+  #  1=spinup is turned on, and this is a spinup cycle
+  # -1=spinup is turned on, and this is a prod cycle
   meta_id='prep_ic'
   if spinup_mode==1:
     cycledefs='spinup'
@@ -57,10 +57,14 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     strneqs=strneqs+f"\n        <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
   streqs=streqs.lstrip('\n')
   strneqs=strneqs.lstrip('\n')
-  if spinup_mode==1 or (spinup_mode==-1 and prod_new_cycle):
-    datadep=f'''\n        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;&WGF;.@Y@m@d/@H{ensdirstr}/fcst_spinup/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
+  datadep_prod=f'''\n        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;&WGF;.@Y@m@d/@H{ensdirstr}/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
+  datadep_spinup=f'''\n        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;&WGF;.@Y@m@d/@H{ensdirstr}/fcst_spinup/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
+  if spinup_mode==0:
+    datadep=datadep_prod
+  elif spinup_mode==1:
+    datadep=datadep_spinup
   else:
-    datadep=f'''\n        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;&WGF;.@Y@m@d/@H{ensdirstr}/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
+    datadep="whatever" # dependencies will be rewritten at the end of this file
 
   timedep=""
   realtime=os.getenv("REALTIME","false")
@@ -87,7 +91,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
   </and>
   </dependency>'''
 
-# overwrite dependencies if it is not DO_CYC
+# overwrite dependencies if no cycling (forecst-only)
   if os.getenv('DO_CYC','FALSE').upper() == "FALSE":
     dependencies=f'''
   <dependency>
@@ -96,6 +100,33 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
   </and>
   </dependency>'''
 
+# overwrite dependencies if spinup_mode= -1
+  if spinup_mode == -1: # overwrite streqs and strneqs for a prod task when spinup is turned on
+    prodswitch_hrs=os.getenv('PRODSWITCH_CYCS','09 21').strip().split(' ')
+    for hr in prodswitch_hrs:
+      hr=f"{hr:0>2}"
+      streqs=streqs  +f"\n        <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
+      strneqs=strneqs+f"\n        <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
+    streqs=streqs.lstrip('\n')
+    strneqs=strneqs.lstrip('\n')
+    dependencies=f'''
+  <dependency>
+  <and>{timedep}
+   <or>
+    <and>
+      <or>
+{streqs}
+      </or>
+      {datadep_spinup}
+    </and>
+    <and>
+      <and>
+{strneqs}{datadep_prod}
+      </and>
+    </and>
+   </or>
+  </and>
+  </dependency>'''
   #
   xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"PREP_IC",do_ensemble)
 ### end of fcst --------------------------------------------------------
