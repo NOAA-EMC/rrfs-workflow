@@ -108,10 +108,11 @@ if (( ${num_err_log} > 0 )) ; then
   echo "FATAL ERROR: MPAS model run failed"
   err_exit
 else
+  # spinup cycles copy mpasout to com/ directly, don't need the save_fcst task
   if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
     CDATEp=$( $NDATE 1 ${CDATE} )
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
-    mv ${DATA}/mpasout.${timestr}.nc ${UMBRELLA_FCST_DATA}
+    ${cpreq} ${DATA}/mpasout.${timestr}.nc ${COMOUT}/fcst_spinup/.
   fi
   exit 0
 fi
