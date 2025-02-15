@@ -13,8 +13,6 @@ export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
 #
 export REALTIME=true     # true, false
-#
-export PHYSICS_SUITE="convection_permitting"   # mesoscale_reference, convection_permitting
 export ZETA_LEVELS="L60.txt"
 #
 export DO_IODA=true
