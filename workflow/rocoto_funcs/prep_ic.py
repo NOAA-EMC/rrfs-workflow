@@ -5,9 +5,9 @@ from rocoto_funcs.base import xml_task, source, get_cascade_env
 ### begin of fcst --------------------------------------------------------
 def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
   # spinup_mode:
-  #  0=no spinup in the experiment
-  #  1=spinup is turned on, and this is a spinup cycle
-  # -1=spinup is turned on, and this is a prod cycle
+  #  0 = no parallel spinup cycles in the experiment
+  #  1 = a spinup cycle
+  # -1 = a prod cycle parallel to spinup cycles
   meta_id='prep_ic'
   if spinup_mode==1:
     cycledefs='spinup'
@@ -58,13 +58,13 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
   streqs=streqs.lstrip('\n')
   strneqs=strneqs.lstrip('\n')
   datadep_prod=f'''\n        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;&WGF;.@Y@m@d/@H{ensdirstr}/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
-  datadep_spinup=f'''\n        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;&WGF;.@Y@m@d/@H{ensdirstr}/fcst_spinup/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
-  if spinup_mode==0:
+  datadep_spinup=f'''\n        <taskdep task="fcst_spinup" cycle_offset="-1:00:00"/>'''
+  if spinup_mode==0: # no parallel spinup cycles
     datadep=datadep_prod
-  elif spinup_mode==1:
+  elif spinup_mode==1: # a spinup cycle
     datadep=datadep_spinup
-  else:
-    datadep="whatever" # dependencies will be rewritten at the end of this file
+  else: # a prod cycle paralle to spinup cycles
+    datadep="whatever" # dependencies will be rewritten near the end of this file
 
   timedep=""
   realtime=os.getenv("REALTIME","false")
@@ -101,7 +101,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
   </dependency>'''
 
 # overwrite dependencies if spinup_mode= -1
-  if spinup_mode == -1: # overwrite streqs and strneqs for a prod task when spinup is turned on
+  if spinup_mode == -1: # overwrite streqs and strneqs for prod tasks parallel to spinup cycles
     prodswitch_hrs=os.getenv('PRODSWITCH_CYCS','09 21').strip().split(' ')
     streqs=""; strneqs=""
     for hr in prodswitch_hrs:
