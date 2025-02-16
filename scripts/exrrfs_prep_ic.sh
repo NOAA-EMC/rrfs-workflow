@@ -21,6 +21,13 @@ done
 if (( SPINUP_MODE == -1 )); then
 # always warm start for prod cycles parallel to spinup cycles
   start_type="warm"
+  for hr in ${PRODSWITCH_CYCS:-"99"}; do
+    chr=$(printf '%02d' ${hr})
+    if [ "${cyc}" == "${chr}" ]; then
+      prod_switch=true
+      break
+    fi
+  done
 fi
 echo "this cycle is ${start_type} start"
 #
@@ -45,6 +52,8 @@ elif [[ "${start_type}" == "warm" ]]; then
   else
     NUM=3
     fcststr="fcst"
+    if prod_switch:
+      fcststr="fcst_spinup"
   fi
   for (( ii=cyc_interval; ii<=$(( NUM*cyc_interval )); ii=ii+cyc_interval )); do
     CDATEp=$($NDATE -${ii} ${CDATE} )

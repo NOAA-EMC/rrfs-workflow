@@ -109,9 +109,11 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
 
 # overwrite dependencies if spinup_mode= -1
   if spinup_mode == -1: # overwrite streqs and strneqs for prod tasks parallel to spinup cycles
-    prodswitch_hrs=os.getenv('PRODSWITCH_CYCS','09 21').strip().split(' ')
+    prodswitch_hrs=os.getenv('PRODSWITCH_CYCS','09 21')
+    # add the envar 'PRODSWITCH_CYCS'
+    dcTaskEnv['PRODSWITCH_CYCS']=f'{prodswitch_hrs}'
     streqs=""; strneqs=""
-    for hr in prodswitch_hrs:
+    for hr in prodswitch_hrs.split(' '):
       hr=f"{hr:0>2}"
       streqs=streqs  +f"\n        <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
       strneqs=strneqs+f"\n        <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
