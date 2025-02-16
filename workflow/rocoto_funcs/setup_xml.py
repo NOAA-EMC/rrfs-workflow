@@ -58,7 +58,7 @@ def setup_xml(HOMErrfs, expdir):
     wflow_cycledefs(xmlFile,dcCycledef)
     
 # ---------------------------------------------------------------------------
-# create tasks for a deterministic experiment
+# assemble tasks for a deterministic experiment
     if do_deterministic == "TRUE":
       if os.getenv("DO_IODA","FALSE").upper()=="TRUE":
         ioda_bufr(xmlFile,expdir)
@@ -93,7 +93,7 @@ def setup_xml(HOMErrfs, expdir):
       #  graphics(xmlFile,expdir)
       #
 # ---------------------------------------------------------------------------
-# create tasks for an ensemble experiment
+# assemble tasks for an ensemble experiment
     if do_ensemble == "TRUE":
       ungrib_ic(xmlFile,expdir,do_ensemble=True)
       ungrib_lbc(xmlFile,expdir,do_ensemble=True)
