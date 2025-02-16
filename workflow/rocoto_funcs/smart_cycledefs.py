@@ -83,7 +83,7 @@ def smart_cycledefs():
   dcCycledef['ic']=f'{cycledef_ic}'
   dcCycledef['lbc']=f'{cycledef_lbc}'
   dcCycledef['prod']=f'{cycledef_prod}'
-  if os.getenv('DO_SPINUP').upper()=='TRUE':
+  if os.getenv('DO_SPINUP','false').upper()=='TRUE':
     dcCycledef['spinup']=f'{cycledef_spinup}'
     if num_spinup_cycledef==2:
       dcCycledef['spinup2']=f'{cycledef_spinup2}'
