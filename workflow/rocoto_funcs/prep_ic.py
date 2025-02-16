@@ -11,6 +11,11 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
   meta_id='prep_ic'
   if spinup_mode==1:
     cycledefs='spinup'
+    num_spinup_cycledef=os.getenv('NUM_SPINUP_CYCLEDEF','1')
+    if num_spinup_cycledef=='2':
+      cycledefs='spinup,spinup2'
+    elif num_spinup_cycledef=='3':
+      cycledefs='spinup,spinup2,spinup3'
   else:
     cycledefs='prod'
   coldhrs=os.getenv('COLDSTART_CYCS', '03 15')

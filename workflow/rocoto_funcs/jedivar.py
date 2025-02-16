@@ -6,6 +6,11 @@ from rocoto_funcs.base import xml_task, source, get_cascade_env
 def jedivar(xmlFile, expdir,do_spinup=False):
   if do_spinup:
     cycledefs='spinup'
+    num_spinup_cycledef=os.getenv('NUM_SPINUP_CYCLEDEF','1')
+    if num_spinup_cycledef=='2':
+      cycledefs='spinup,spinup2'
+    elif num_spinup_cycledef=='3':
+      cycledefs='spinup,spinup2,spinup3'
     task_id='jedivar_spinup'
   else:
     cycledefs='prod'
