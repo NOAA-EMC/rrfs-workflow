@@ -54,7 +54,7 @@ def header_entities(xmlFile,expdir):
   wgf=os.getenv('WGF','det')
   cyc_interval=os.getenv('CYC_INTERVAL','3')
   realtime=os.getenv("REALTIME","false").upper()
-# figure out run period
+# figure out run period for realtime experiments
   if realtime=='TRUE':
     now=datetime.now()
     end=now+relativedelta(months=1) # each realtime deployment, set current month and next month
@@ -67,17 +67,19 @@ def header_entities(xmlFile,expdir):
     endmonth=f'''{end.month:02}'''
     endday=f'''{calendar.monthrange(end.year,end.month)[1]:02}''' # find the last day of a calendar month
     endhour='23'
-  else:
-    rundates=os.getenv('RETRO_PERIOD','2224070200-2224080223').split("-")
-    startyear=rundates[0][0:4]
-    startmonth=rundates[0][4:6]
-    startday=rundates[0][6:8]
-    starthour=rundates[0][8:10]
-    endyear=rundates[1][0:4]
-    endmonth=rundates[1][4:6]
-    endday=rundates[1][6:8]
-    endhour=rundates[1][8:10]
+    entities_for_cycledef=f'''\n
+<!ENTITY Y1 "{startyear}">
+<!ENTITY M1 "{startmonth}">
+<!ENTITY D1 "{startday}">
+<!ENTITY H1 "{starthour}">
 
+<!ENTITY Y2 "{endyear}">
+<!ENTITY M2 "{endmonth}">
+<!ENTITY D2 "{endday}">
+<!ENTITY H2 "{endhour}">'''
+  else: # retros
+    entities_for_cycledef=''
+  #
   if os.getenv('LESS_XML_ENTITIES','false').upper() == 'TRUE':
     text=''
   else:
@@ -85,10 +87,10 @@ def header_entities(xmlFile,expdir):
 <!ENTITY ACCOUNT         "{account}">
 <!ENTITY QUEUE_DEFAULT   "{queue}">
 <!ENTITY PARTITION       "{partition}">
-'''
+''' #
     if reservation != '':
       text = text + f'<!ENTITY RESERVATION     "--reservation={reservation}">\n'
-
+  #
   text = text + f'''
 <!ENTITY HOMErrfs        "{HOMErrfs}">
 <!ENTITY EXPDIR          "{expdir}">
@@ -121,17 +123,7 @@ def header_entities(xmlFile,expdir):
 <envar><name>WGF</name><value>{wgf}</value></envar>
 <envar><name>CYC_INTERVAL</name><value>{cyc_interval}</value></envar>
 "
->
-
-<!ENTITY Y1 "{startyear}">
-<!ENTITY M1 "{startmonth}">
-<!ENTITY D1 "{startday}">
-<!ENTITY H1 "{starthour}">
-
-<!ENTITY Y2 "{endyear}">
-<!ENTITY M2 "{endmonth}">
-<!ENTITY D2 "{endday}">
-<!ENTITY H2 "{endhour}">
+>{entities_for_cycledef}
 '''
   xmlFile.write(text)
 

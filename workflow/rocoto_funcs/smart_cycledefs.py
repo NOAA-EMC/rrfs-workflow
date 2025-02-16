@@ -3,7 +3,7 @@ import os
 from datetime import datetime, timedelta
 from rocoto_funcs.base import source
 
-def smart_cycledefs(realtime):
+def smart_cycledefs():
   # If users set CYCLEDEF_* variables explicitly in exp.setup, then just use it
   # otherwise calculate cycledef smartly
 
@@ -24,10 +24,17 @@ def smart_cycledefs(realtime):
 
     cycledef_ic=f'''  &Y1;&M1;&D1;&H1;00 &Y2;&M2;&D2;&H2;00 {ic_step.zfill(2)}:00:00'''
     cycledef_lbc=f''' &Y1;&M1;&D1;&H1;00 &Y2;&M2;&D2;&H2;00 {lbc_step.zfill(2)}:00:00'''
-    cycledef_prod=f'''&Y1;&M1;&D1;&H1;00 &Y2;&M2;&D2;&H2;00 {cyc_interval.zfill(2)}:00:00'''
-    if os.getenv('DO_SPINUP').upper()=='TRUE':
-      # spin up cycles only work for hourly cycling at the moment
-      cycledef_spinup=f''' 00 {spinup_hrs} * &M1;-&M2; &Y1;-&Y2; *'''
+    #
+    realtime=os.getenv('REALTIME','false')
+    spinup=os.getenv('DO_SPINUP','false')
+    if realtime.upper() == "TRUE":
+      cycledef_prod=f'''&Y1;&M1;&D1;&H1;00 &Y2;&M2;&D2;&H2;00 {cyc_interval.zfill(2)}:00:00'''
+      if spinup.upper()=='TRUE':
+          cycledef_spinup=f'''00 {spinup_hrs} * &M1;-&M2; &Y1;-&Y2; *'''
+    else:
+      cycledef_prod=f'''&Y1;&M1;&D1;&HP;00 &Y2;&M2;&D2;&H2;00 {cyc_interval.zfill(2)}:00:00'''
+      cycledef_spinup=f''' 00 {spinup_hrs} &D1;-&D2; &M1;-&M2; &Y1;-&Y2; *'''
+      cycledef_spinup2=f''' 00 {spinup_hrs} &D1;-&D2; &M1;-&M2; &Y1;-&Y2; *'''
 
   # fill in the Cycledef dictionary
   dcCycledef={}

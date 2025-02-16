@@ -40,7 +40,7 @@ def setup_xml(HOMErrfs, expdir):
     source(f"{HOMErrfs}/workflow/config_resources/config.realtime")
   #
   # create cycledefs smartly
-  dcCycledef=smart_cycledefs(realtime)
+  dcCycledef=smart_cycledefs()
   
   COMROOT=os.getenv('COMROOT','COMROOT_not_defined')
   TAG=os.getenv('TAG','TAG_not_defined')
