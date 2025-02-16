@@ -80,9 +80,7 @@ def header_entities(xmlFile,expdir):
   else: # retros
     entities_for_cycledef=''
   #
-  if os.getenv('LESS_XML_ENTITIES','false').upper() == 'TRUE':
-    text=''
-  else:
+  if os.getenv('MORE_XML_ENTITIES','false').upper() == 'TRUE':
     text = f'''
 <!ENTITY ACCOUNT         "{account}">
 <!ENTITY QUEUE_DEFAULT   "{queue}">
@@ -90,6 +88,8 @@ def header_entities(xmlFile,expdir):
 ''' #
     if reservation != '':
       text = text + f'<!ENTITY RESERVATION     "--reservation={reservation}">\n'
+  else:
+    text=''
   #
   text = text + f'''
 <!ENTITY HOMErrfs        "{HOMErrfs}">
@@ -186,23 +186,23 @@ class objTask:
     text=f'  <command>{self.dcTaskRes["command"]} &HOMErrfs;</command>\n'
     text=text+f'  <join><cyclestr>{self.dcTaskRes["join"]}</cyclestr></join>\n'
     text=text+f'\n  <jobname><cyclestr>{self.dcTaskRes["jobname"]}</cyclestr></jobname>\n'
-    if os.getenv('LESS_XML_ENTITIES','false').upper() == 'TRUE':
-      text=text+f'  <account>{self.dcTaskRes["account"]}</account>\n'
-      text=text+f'  <queue>{self.dcTaskRes["queue"]}</queue>\n'
-      text=text+f'  <partition>{self.dcTaskRes["partition"]}</partition>\n'
-    else:
+    if os.getenv('MORE_XML_ENTITIES','false').upper() == 'TRUE':
       text=text+f'  <account>&ACCOUNT;</account>\n'
       text=text+f'  <queue>&QUEUE_DEFAULT;</queue>\n'
       text=text+f'  <partition>&PARTITION;</partition>\n'
+    else:
+      text=text+f'  <account>{self.dcTaskRes["account"]}</account>\n'
+      text=text+f'  <queue>{self.dcTaskRes["queue"]}</queue>\n'
+      text=text+f'  <partition>{self.dcTaskRes["partition"]}</partition>\n'
     text=text+f'  <walltime>{self.dcTaskRes["walltime"]}</walltime>\n'
     text=text+f'  {self.dcTaskRes["nodes"]}\n' #note: xml tag self included, no need to add <nodes> </nodes>
     #
     native_text=''
     if self.dcTaskRes["reservation"] != "":
-      if os.getenv('LESS_XML_ENTITIES','false').upper() == 'TRUE':
-        native_text = native_text + f'--reservation={self.dcTaskRes["reservation"]} '
-      else:
+      if os.getenv('MORE_XML_ENTITIES','false').upper() == 'TRUE':
         native_text = native_text + f'&RESERVATION; '
+      else:
+        native_text = native_text + f'--reservation={self.dcTaskRes["reservation"]} '
     if self.dcTaskRes["cluster"] != "":
       native_text = native_text  + f'--cluster={self.dcTaskRes["cluster"]} '
     if self.dcTaskRes["native"] != "":
