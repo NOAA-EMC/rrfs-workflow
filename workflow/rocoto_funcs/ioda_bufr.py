@@ -6,6 +6,13 @@ from rocoto_funcs.base import xml_task, source, get_cascade_env
 def ioda_bufr(xmlFile, expdir):
   task_id='ioda_bufr'
   cycledefs='prod'
+  num_spinup_cycledef=int(os.getenv('NUM_SPINUP_CYCLEDEF','0'))
+  if num_spinup_cycledef==1:
+    cycledefs='prod,spinup'
+  elif num_spinup_cycledef==2:
+    cycledefs='prod,spinup,spinup2'
+  elif num_spinup_cycledef==3:
+    cycledefs='prod,spinup,spinup2,spinup3'
   OBSPATH=os.getenv("OBSPATH",'OBSPATH_not_defined')
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={
