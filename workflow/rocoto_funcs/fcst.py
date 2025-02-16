@@ -73,12 +73,16 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
       jedidep=f'<taskdep task="jedivar_spinup"/>'
     else:
       jedidep=f'<taskdep task="jedivar"/>'
+
+  prep_ic_dep=f'<taskdep task="prep_ic{ensindexstr}"/>'
+  if do_spinup:
+    prep_ic_dep=f'<taskdep task="prep_ic_spinup"/>'
   
   dependencies=f'''
   <dependency>
   <and>{timedep}
     <taskdep task="prep_lbc{ensindexstr}" cycle_offset="0:00:00"/>
-    <taskdep task="prep_ic{ensindexstr}"/>
+    {prep_ic_dep}
     {jedidep}
   </and>
   </dependency>'''
