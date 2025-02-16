@@ -71,5 +71,5 @@ def jedivar(xmlFile, expdir,do_spinup=False):
   </and>
   </dependency>'''
   #
-  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies)
+  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,command_id="JEDIVAR")
 ### end of jedivar --------------------------------------------------------
