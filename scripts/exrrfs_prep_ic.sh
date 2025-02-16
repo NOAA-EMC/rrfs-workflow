@@ -10,12 +10,11 @@ spinup_mode=${SPINUP_MODE:-0}
 # decide if this cycle is cold start
 #
 start_type="warm"
-coldstart_cycs=${COLDSTART_CYCS:-"99"}
-array=(${coldstart_cycs})
-for hr in "${array[@]}"; do
+for hr in ${COLDSTART_CYCS:-"99"}; do
   chr=$(printf '%02d' ${hr})
   if [ "${cyc}" == "${chr}" ]; then
     start_type="cold"
+    break
   fi
 done
 if (( SPINUP_MODE == -1 )); then
@@ -24,7 +23,7 @@ if (( SPINUP_MODE == -1 )); then
   for hr in ${PRODSWITCH_CYCS:-"99"}; do
     chr=$(printf '%02d' ${hr})
     if [ "${cyc}" == "${chr}" ]; then
-      prod_switch=true
+      prod_switch=yes
       break
     fi
   done
@@ -51,9 +50,11 @@ elif [[ "${start_type}" == "warm" ]]; then
     fcststr="fcst_spinup"
   else
     NUM=3
-    fcststr="fcst"
-    if prod_switch:
+    if [[ "${prod_switch:-"no"}" == "yes" ]]; then
       fcststr="fcst_spinup"
+    else
+      fcststr="fcst"
+    fi
   fi
   for (( ii=cyc_interval; ii<=$(( NUM*cyc_interval )); ii=ii+cyc_interval )); do
     CDATEp=$($NDATE -${ii} ${CDATE} )
