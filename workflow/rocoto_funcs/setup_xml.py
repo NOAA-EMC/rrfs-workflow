@@ -8,6 +8,8 @@ from rocoto_funcs.ungrib_ic import ungrib_ic
 from rocoto_funcs.ungrib_lbc import ungrib_lbc
 from rocoto_funcs.ic import ic
 from rocoto_funcs.lbc import lbc
+from rocoto_funcs.ungrib_ic4lbc import ungrib_ic4lbc
+from rocoto_funcs.ic4lbc import ic4lbc
 from rocoto_funcs.prep_ic import prep_ic
 from rocoto_funcs.prep_lbc import prep_lbc
 from rocoto_funcs.jedivar import jedivar
@@ -62,10 +64,14 @@ def setup_xml(HOMErrfs, expdir):
     if do_deterministic == "TRUE":
       if os.getenv("DO_IODA","FALSE").upper()=="TRUE":
         ioda_bufr(xmlFile,expdir)
+      #
       ungrib_ic(xmlFile,expdir)
       ungrib_lbc(xmlFile,expdir)
       ic(xmlFile,expdir)
       lbc(xmlFile,expdir)
+      if os.getenv("SEPARATE_IC_FOR_LBC","FASLE").upper()=="TRUE":
+        ungrib_ic4lbc(xmlFile,expdir)
+        ic4lbc(xmlFile,expdir)
       #
       if os.getenv("DO_SPINUP","FALSE").upper() == "TRUE":
         prep_lbc(xmlFile,expdir)
