@@ -11,7 +11,7 @@ spinup_mode=${SPINUP_MODE:-0}
 #
 start_type="warm"
 for hr in ${COLDSTART_CYCS:-"99"}; do
-  chr=$(printf '%02d' ${hr})
+  chr=$(printf '%02d' $((10#$hr)) )
   if [ "${cyc}" == "${chr}" ]; then
     start_type="cold"
     break
@@ -21,7 +21,7 @@ if (( SPINUP_MODE == -1 )); then
 # always warm start for prod cycles parallel to spinup cycles
   start_type="warm"
   for hr in ${PRODSWITCH_CYCS:-"99"}; do
-    chr=$(printf '%02d' ${hr})
+    chr=$(printf '%02d' $((10#$hr)) )
     if [ "${cyc}" == "${chr}" ]; then
       prod_switch=yes
       break
