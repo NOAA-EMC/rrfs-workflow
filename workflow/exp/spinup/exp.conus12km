@@ -40,7 +40,7 @@ export LBC_GROUP_TOTAL_NUM=1
 
 export RETRO_PERIOD="2024052700-2024052800"
 #export RETRO_PERIOD="2024122712-2025012700"
-export CYCLEDEF_IC_STEP_HRS=6   # do ic jobs every step hours 
+export CYCLEDEF_IC_STEP_HRS=6   # do ic jobs every step hours
 export CYCLEDEF_LBC_STEP_HRS=6  # do lbc jobs every step hours
 export COLDSTART_CYCS="03 15"   # cycles to cold start from external models
 export DO_SPINUP=true
