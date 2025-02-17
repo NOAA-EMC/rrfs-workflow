@@ -5,7 +5,7 @@ cpreq=${cpreq:-cpreq}
 prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
 cd ${DATA}
 #
-# genereate the namelist on the fly
+# generate the namelist on the fly
 # required variables: init_case, start_time, end_time, nvertlevels, nsoillevels, nfglevles, nfgsoillevels,
 # prefix, inerval_seconds, zeta_levels, decomp_file_prefix
 #
@@ -32,7 +32,7 @@ zeta_levels=${EXPDIR}/config/ZETA_LEVELS.txt
 ztop=$(tail -1 ${zeta_levels})
 nvertlevels=$(( $(wc -l < ${zeta_levels}) - 1 ))
 
-interval_seconds=3600 # just a place holder as we use metatask to run lbc hour by hour
+interval_seconds=3600 # just a place holder
 decomp_file_prefix="${MESH_NAME}.graph.info.part."
 #
 physics_suite=${PHYSICS_SUITE:-'PHYSICS_SUITE_not_defined'}
