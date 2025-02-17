@@ -46,6 +46,7 @@ export COLDSTART_CYCS="00 12"   # cycles to cold start from external models
 #export PRODSWITCH_CYCS="06 18"  # cycles to PROD switch to the spun-up ICs
 #
 # set as follows to start spinup at 03/15z
+#export DO_SPINUP=true
 #export IC_OFFSET=3
 #export CYCLEDEF_IC_STEP_HRS=12
 #export COLDSTART_CYCS="03 15"
