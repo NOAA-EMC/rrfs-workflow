@@ -8,8 +8,8 @@ from rocoto_funcs.ungrib_ic import ungrib_ic
 from rocoto_funcs.ungrib_lbc import ungrib_lbc
 from rocoto_funcs.ic import ic
 from rocoto_funcs.lbc import lbc
-from rocoto_funcs.ungrib_ic4lbc import ungrib_ic4lbc
-from rocoto_funcs.ic4lbc import ic4lbc
+from rocoto_funcs.ungrib_ic_4lbc import ungrib_ic_4lbc
+from rocoto_funcs.ic_4lbc import ic_4lbc
 from rocoto_funcs.prep_ic import prep_ic
 from rocoto_funcs.prep_lbc import prep_lbc
 from rocoto_funcs.jedivar import jedivar
@@ -70,8 +70,8 @@ def setup_xml(HOMErrfs, expdir):
       ic(xmlFile,expdir)
       lbc(xmlFile,expdir)
       if os.getenv("SEPARATE_IC_FOR_LBC","FASLE").upper()=="TRUE":
-        ungrib_ic4lbc(xmlFile,expdir)
-        ic4lbc(xmlFile,expdir)
+        ungrib_ic_4lbc(xmlFile,expdir)
+        ic_4lbc(xmlFile,expdir)
       #
       if os.getenv("DO_SPINUP","FALSE").upper() == "TRUE":
         prep_lbc(xmlFile,expdir)

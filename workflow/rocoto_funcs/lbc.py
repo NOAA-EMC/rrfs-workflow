@@ -58,7 +58,7 @@ def lbc(xmlFile, expdir, do_ensemble=False):
 
   # dependencies
   if os.getenv("SEPARATE_IC_FOR_LBC","FASLE").upper()=="TRUE":
-    ic_dep=f'<taskdep task="ic4lbc{ensindexstr}"/>'
+    ic_dep=f'<taskdep task="ic_4lbc{ensindexstr}"/>'
   else:
     ic_dep=f'<taskdep task="ic{ensindexstr}"/>'
   #

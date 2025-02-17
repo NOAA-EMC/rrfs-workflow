@@ -2,9 +2,9 @@
 import os
 from rocoto_funcs.base import xml_task, source, get_cascade_env
 
-### begin of ungrib_ic4lbc --------------------------------------------------------
-def ungrib_ic4lbc(xmlFile, expdir, do_ensemble=False):
-  meta_id='ungrib_ic4lbc'
+### begin of ungrib_ic_4lbc --------------------------------------------------------
+def ungrib_ic_4lbc(xmlFile, expdir, do_ensemble=False):
+  meta_id='ungrib_ic_4lbc'
   cycledefs='lbc' # this task is serve the LBC task
   #
   extrn_mdl_source=os.getenv('IC_EXTRN_MDL_NAME','IC_PREFIX_not_defined')
@@ -77,4 +77,4 @@ def ungrib_ic4lbc(xmlFile, expdir, do_ensemble=False):
   </dependency>'''
   #
   xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"UNGRIB",do_ensemble)
-### end of ungrib_ic4lbc --------------------------------------------------------
+### end of ungrib_ic_4lbc --------------------------------------------------------
