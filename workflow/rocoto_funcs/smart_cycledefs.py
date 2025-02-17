@@ -81,7 +81,7 @@ def smart_cycledefs():
       if os.getenv("SEPARATE_IC_FOR_LBC","FASLE").upper()=="TRUE":
         icH1=f'{cold_cycs[0]}'
       else:
-        icH1=f'{date.hour:02}'
+        icH1=f'{date1.hour:02}'
       cycledef_ic=f'''  {date1.strftime("%Y%m%d")}{icH1}00 {retrodates[1]}00 {ic_step.zfill(2)}:00:00'''
       cycledef_lbc=f''' {date1.strftime("%Y%m%d%H")}00 {retrodates[1]}00 {lbc_step.zfill(2)}:00:00'''
       cycledef_prod=f'''{date1.strftime("%Y%m%d")}{prod_cyc1}00 {retrodates[1]}00 {cyc_interval.zfill(2)}:00:00'''
