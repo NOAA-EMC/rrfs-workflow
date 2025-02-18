@@ -5,18 +5,29 @@ cpreq=${cpreq:-cpreq}
 
 cd ${DATA}
 cyc_interval=${CYC_INTERVAL:-1}
+spinup_mode=${SPINUP_MODE:-0}
 #
 # decide if this cycle is cold start
 #
 start_type="warm"
-cyc_hrs_coldstart=${CYCL_HRS_COLDSTART:-"99"}
-array=(${cyc_hrs_coldstart})
-for hr in "${array[@]}"; do
+for hr in ${COLDSTART_CYCS:-"99"}; do
   chr=$(printf '%02d' ${hr})
   if [ "${cyc}" == "${chr}" ]; then
     start_type="cold"
+    break
   fi
 done
+if (( SPINUP_MODE == -1 )); then
+# always warm start for prod cycles parallel to spinup cycles
+  start_type="warm"
+  for hr in ${PRODSWITCH_CYCS:-"99"}; do
+    chr=$(printf '%02d' ${hr})
+    if [ "${cyc}" == "${chr}" ]; then
+      prod_switch=yes
+      break
+    fi
+  done
+fi
 echo "this cycle is ${start_type} start"
 #
 #  find the right background file
@@ -34,11 +45,22 @@ if [[ "${start_type}" == "cold" ]]; then
   fi
 elif [[ "${start_type}" == "warm" ]]; then
   thisfile="undefined"
-  for (( ii=${cyc_interval}; ii<=$(( 3*${cyc_interval} )); ii=ii+${cyc_interval} )); do
+  if (( spinup_mode == 1 ));  then
+    NUM=1 # only use the previous cycle mpasout.nc
+    fcststr="fcst_spinup"
+  else
+    NUM=3
+    if [[ "${prod_switch:-"no"}" == "yes" ]]; then
+      fcststr="fcst_spinup"
+    else
+      fcststr="fcst"
+    fi
+  fi
+  for (( ii=cyc_interval; ii<=$(( NUM*cyc_interval )); ii=ii+cyc_interval )); do
     CDATEp=$($NDATE -${ii} ${CDATE} )
     PDYii=${CDATEp:0:8}
     cycii=${CDATEp:8:2}
-    thisfile=${COMINrrfs}/${RUN}${WGF}.${PDYii}/${cycii}${MEMDIR}/fcst/mpasout.${timestr}.nc
+    thisfile=${COMINrrfs}/${RUN}${WGF}.${PDYii}/${cycii}${MEMDIR}/${fcststr}/mpasout.${timestr}.nc
     if [[ -r ${thisfile} ]]; then
       break
     fi

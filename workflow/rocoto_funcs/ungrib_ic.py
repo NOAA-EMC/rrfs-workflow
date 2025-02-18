@@ -4,14 +4,14 @@ from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of ungrib_ic --------------------------------------------------------
 def ungrib_ic(xmlFile, expdir, do_ensemble=False):
+  meta_id='ungrib_ic'
+  cycledefs='ic'
   #
   extrn_mdl_source=os.getenv('IC_EXTRN_MDL_NAME','IC_PREFIX_not_defined')
   ic_source_basedir=os.getenv('IC_EXTRN_MDL_BASEDIR','MDL_BASEDIR_not_defined')
   ic_name_pattern=os.getenv('IC_EXTRN_MDL_NAME_PATTERN','NAME_PATTERN_not_defined')
   ic_name_pattern_b=os.getenv('IC_EXTRN_MDL_NAME_PATTERN_B','')
   offset=os.getenv('IC_OFFSET','3')
-  cycledefs='ic'
-  meta_id='ungrib_ic'
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={
     'TYPE': 'ic',

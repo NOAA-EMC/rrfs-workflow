@@ -3,16 +3,23 @@ import os
 from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of fcst --------------------------------------------------------
-def fcst(xmlFile, expdir, do_ensemble=False):
-  # Task-specific EnVars beyond the task_common_vars
+def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
   meta_id='fcst'
-  cycledefs='prod'
-  hrs=os.getenv('PROD_BGN_AT_HRS', '3 15')
+  if do_spinup:
+    cycledefs='spinup'
+    num_spinup_cycledef=os.getenv('NUM_SPINUP_CYCLEDEF','1')
+    if num_spinup_cycledef=='2':
+      cycledefs='spinup,spinup2'
+    elif num_spinup_cycledef=='3':
+      cycledefs='spinup,spinup2,spinup3'
+  else:
+    cycledefs='prod'
+  # Task-specific EnVars beyond the task_common_vars
   fcst_len_hrs_cycles=os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
   fcst_length=os.getenv('FCST_LENGTH','1')
   lbc_interval=os.getenv('LBC_INTERVAL','3')
   history_interval=os.getenv('HISTORY_INTERVAL', '1')
-  restart_interval=os.getenv('RESTART_INTERVAL', '61')
+  restart_interval=os.getenv('RESTART_INTERVAL', '99')
   physics_suite=os.getenv('PHYSICS_SUITE','PHYSICS_SUITE_not_defined')
   dcTaskEnv={
     'FCST_LENGTH': f'{fcst_length}',
@@ -22,10 +29,15 @@ def fcst(xmlFile, expdir, do_ensemble=False):
     'PHYSICS_SUITE': f'{physics_suite}',
     'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycles}'
   }
+  if do_spinup:
+    dcTaskEnv['DO_SPINUP']="TRUE"
 
   if not do_ensemble:
     metatask=False
-    task_id=f'{meta_id}'
+    if do_spinup:
+      task_id=f'{meta_id}_spinup'
+    else:
+      task_id=f'{meta_id}'
     meta_bgn=""
     meta_end=""
     ensindexstr=""
@@ -56,14 +68,21 @@ def fcst(xmlFile, expdir, do_ensemble=False):
     timedep=f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
 
   jedidep=""
-  if os.getenv("DA_JEDI","FALSE").upper()=="TRUE":
-    jedidep=f'<taskdep task="jedivar"/>'
+  if os.getenv("DO_JEDI","FALSE").upper()=="TRUE":
+    if do_spinup:
+      jedidep=f'<taskdep task="jedivar_spinup"/>'
+    else:
+      jedidep=f'<taskdep task="jedivar"/>'
+
+  prep_ic_dep=f'<taskdep task="prep_ic{ensindexstr}"/>'
+  if do_spinup:
+    prep_ic_dep=f'<taskdep task="prep_ic_spinup"/>'
   
   dependencies=f'''
   <dependency>
   <and>{timedep}
     <taskdep task="prep_lbc{ensindexstr}" cycle_offset="0:00:00"/>
-    <taskdep task="prep_ic{ensindexstr}"/>
+    {prep_ic_dep}
     {jedidep}
   </and>
   </dependency>'''

@@ -4,11 +4,17 @@ from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of fcst --------------------------------------------------------
 def prep_lbc(xmlFile, expdir, do_ensemble=False):
-
-  # Task-specific EnVars beyond the task_common_vars
   meta_id='prep_lbc'
   cycledefs='prod'
-  hrs=os.getenv('PROD_BGN_AT_HRS', '3 15')
+  num_spinup_cycledef=int(os.getenv('NUM_SPINUP_CYCLEDEF','0'))
+  if num_spinup_cycledef==1:
+    cycledefs='prod,spinup'
+  elif num_spinup_cycledef==2:
+    cycledefs='prod,spinup,spinup2'
+  elif num_spinup_cycledef==3:
+    cycledefs='prod,spinup,spinup2,spinup3'
+
+  # Task-specific EnVars beyond the task_common_vars
   fcst_length=os.getenv('FCST_LENGTH','1')
   lbc_interval=os.getenv('LBC_INTERVAL','3')
   fcst_len_hrs_cycles=os.getenv('FCST_LEN_HRS_CYCLES', '3 15')
@@ -57,7 +63,6 @@ def prep_lbc(xmlFile, expdir, do_ensemble=False):
   dependencies=f'''
   <dependency>
   <and>{timedep}
-   <taskdep task="prep_ic{ensindexstr}"/>
    <or>{taskdep}
    </or>
   </and>

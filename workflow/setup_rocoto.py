@@ -3,8 +3,7 @@
 print('Aloha!')
 #
 import os, sys, shutil, glob
-from rocoto_funcs.base import source, get_yes_or_no, get_required_env
-from rocoto_funcs.smart_cycledefs import smart_cycledefs
+from rocoto_funcs.base import source, get_required_env
 from rocoto_funcs.setup_xml import setup_xml
 
 if len(sys.argv) == 2:

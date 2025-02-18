@@ -74,7 +74,7 @@ eval "echo \"${file_content}\"" > namelist.atmosphere
 
 # generate the streams file on the fly using sed as this file contains "filename_template='lbc.$Y-$M-$D_$h.$m.$s.nc'"
 lbc_interval=${LBC_INTERVAL:-3}
-restart_interval=${RESTART_INTERVAL:-61}
+restart_interval=${RESTART_INTERVAL:-99}
 history_interval=${HISTORY_INTERVAL:-1}
 diag_interval=${HISTORY_INTERVAL:-1}
 sed -e "s/@restart_interval@/${restart_interval}/" -e "s/@history_interval@/${history_interval}/" \
@@ -86,9 +86,11 @@ history_all=$(seq 0 $((10#${history_interval})) $((10#${fcst_len_hrs_thiscyc} ))
 for fhr in ${history_all}; do
   CDATEp=$( $NDATE ${fhr} ${CDATE} )
   timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
-  ln -snf ${DATA}/history.${timestr}.nc ${UMBRELLA_FCST_DATA}
-  ln -snf ${DATA}/diag.${timestr}.nc ${UMBRELLA_FCST_DATA}
-  ln -snf ${DATA}/mpasout.${timestr}.nc ${UMBRELLA_FCST_DATA}
+  if [[ "${DO_SPINUP:-FALSE}" != "TRUE" ]];  then
+    ln -snf ${DATA}/history.${timestr}.nc ${UMBRELLA_FCST_DATA}
+    ln -snf ${DATA}/diag.${timestr}.nc ${UMBRELLA_FCST_DATA}
+    ln -snf ${DATA}/mpasout.${timestr}.nc ${UMBRELLA_FCST_DATA}
+  fi
 done
 
 # run the MPAS model
@@ -106,5 +108,11 @@ if (( ${num_err_log} > 0 )) ; then
   echo "FATAL ERROR: MPAS model run failed"
   err_exit
 else
+  # spinup cycles copy mpasout to com/ directly, don't need the save_fcst task
+  if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
+    CDATEp=$( $NDATE 1 ${CDATE} )
+    timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
+    ${cpreq} ${DATA}/mpasout.${timestr}.nc ${COMOUT}/fcst_spinup/.
+  fi
   exit 0
 fi

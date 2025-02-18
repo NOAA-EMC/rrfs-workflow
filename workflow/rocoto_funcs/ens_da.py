@@ -9,7 +9,7 @@ def ens_da(xmlFile, expdir):
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={}
   # dependencies
-  hrs=os.getenv('ENS_PROD_BGN_AT_HRS', '3 15')
+  hrs=os.getenv('COLDSTART_CYCS', '3 15')
   hrs=hrs.split(' ')
   streqs=""; strneqs=""; first=True
   for hr in hrs:

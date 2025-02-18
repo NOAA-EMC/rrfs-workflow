@@ -2,9 +2,6 @@
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]${id}: '
 set -x
 cpreq=${cpreq:-cpreq}
-#
-# find variables from env
-#
 prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
 cd ${DATA}
 #

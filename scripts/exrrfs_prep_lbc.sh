@@ -3,16 +3,7 @@ declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LI
 set -x
 cpreq=${cpreq:-cpreq}
 #
-#  find cycle time
-#
-YYYYMMDDHH=${CDATE}
-YYYYMMDD=${CDATE:0:8}
-HH=${CDATE:8:2}
-#
-# 
-#
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 
-IFS=' ' read -r -a array <<< "${PROD_BGN_AT_HRS}"
 lbc_interval=${LBC_INTERVAL:-3}
 #
 # find forecst length for this cycle
@@ -21,11 +12,9 @@ fcst_length=${FCST_LENGTH:-1}
 fcst_len_hrs_cycles=${FCST_LEN_HRS_CYCLES:-"01 01"}
 fcst_len_hrs_thiscyc=$(${USHrrfs}/find_fcst_length.sh "${fcst_len_hrs_cycles}" "${cyc}" "${fcst_length}")
 echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
-
 #
 # find cycle that has boundary files 
 #
-
 CDATElbcend=$($NDATE $((10#${fcst_len_hrs_thiscyc})) ${CDATE})
 string_time=$(date -d "${CDATElbcend:0:8} ${CDATElbcend:8:2}" +%Y-%m-%d_%H.%M.%S)
 last_bdyfile="lbc.${string_time}.nc"

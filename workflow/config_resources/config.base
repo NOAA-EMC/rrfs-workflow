@@ -11,6 +11,8 @@ export MAXTRIES=${MAXTRIES:-"1"}
 export RESERVATION=${RESERVATION:-""}
 export CLUSTER=${CLUSTER:-""}
 export NATIVE=${NATIVE:-""}
+export MORE_XML_ENTITIES=${MORE_XML_ENTITIES:-false}
+export REALTIME_MONTHS=${REALTIME_MONTHS:-2}
 
 # ioda_bufr
 export NODES_IODA_BUFR=${NODES_IODA_BUFR:-"<nodes>1:ppn=1</nodes>"}

@@ -40,7 +40,7 @@ def setup_xml(HOMErrfs, expdir):
     source(f"{HOMErrfs}/workflow/config_resources/config.realtime")
   #
   # create cycledefs smartly
-  dcCycledef=smart_cycledefs(realtime)
+  dcCycledef=smart_cycledefs()
   
   COMROOT=os.getenv('COMROOT','COMROOT_not_defined')
   TAG=os.getenv('TAG','TAG_not_defined')
@@ -58,20 +58,34 @@ def setup_xml(HOMErrfs, expdir):
     wflow_cycledefs(xmlFile,dcCycledef)
     
 # ---------------------------------------------------------------------------
-# create tasks for a deterministic experiment (i.e. setup/generate an xml file)
+# assemble tasks for a deterministic experiment
     if do_deterministic == "TRUE":
-      if os.getenv("DA_IODA","FALSE").upper()=="TRUE":
+      if os.getenv("DO_IODA","FALSE").upper()=="TRUE":
         ioda_bufr(xmlFile,expdir)
       ungrib_ic(xmlFile,expdir)
       ungrib_lbc(xmlFile,expdir)
       ic(xmlFile,expdir)
       lbc(xmlFile,expdir)
-      prep_ic(xmlFile,expdir)
-      prep_lbc(xmlFile,expdir)
-      if os.getenv("DA_JEDI","FALSE").upper()=="TRUE":
+      #
+      if os.getenv("DO_SPINUP","FALSE").upper() == "TRUE":
+        prep_lbc(xmlFile,expdir)
+        # spin up line
+        prep_ic(xmlFile,expdir,spinup_mode=1)
+        jedivar(xmlFile,expdir,do_spinup=True)
+        fcst(xmlFile,expdir,do_spinup=True)
+        # prod line
+        prep_ic(xmlFile,expdir,spinup_mode = -1)
         jedivar(xmlFile,expdir)
-      fcst(xmlFile,expdir)
-      save_fcst(xmlFile,expdir)
+        fcst(xmlFile,expdir)
+        save_fcst(xmlFile,expdir)
+      else:
+        prep_ic(xmlFile,expdir)
+        prep_lbc(xmlFile,expdir)
+        if os.getenv("DO_JEDI","FALSE").upper()=="TRUE":
+          jedivar(xmlFile,expdir)
+        fcst(xmlFile,expdir)
+        save_fcst(xmlFile,expdir)
+      #
       mpassit(xmlFile,expdir)
       upp(xmlFile,expdir)
       #
@@ -79,7 +93,7 @@ def setup_xml(HOMErrfs, expdir):
       #  graphics(xmlFile,expdir)
       #
 # ---------------------------------------------------------------------------
-# create tasks for an ensemble experiment
+# assemble tasks for an ensemble experiment
     if do_ensemble == "TRUE":
       ungrib_ic(xmlFile,expdir,do_ensemble=True)
       ungrib_lbc(xmlFile,expdir,do_ensemble=True)

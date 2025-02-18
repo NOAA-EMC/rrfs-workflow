@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-import subprocess
-import os
+import subprocess, os, calendar
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 def source(bash_file,optional=False):
   """
@@ -52,27 +53,45 @@ def header_entities(xmlFile,expdir):
   mpi_run_cmd=os.getenv('MPI_RUN_CMD','srun')
   wgf=os.getenv('WGF','det')
   cyc_interval=os.getenv('CYC_INTERVAL','3')
-# figure out run period
-  run_period=os.getenv('RUN_PERIOD','2224070200-2224070201')
-  rundates=run_period.split("-")
-  startyear=rundates[0][0:4]
-  startmonth=rundates[0][4:6]
-  startday=rundates[0][6:8]
-  endyear=rundates[1][0:4]
-  endmonth=rundates[1][4:6]
-  endday=rundates[1][6:8]
+  realtime=os.getenv("REALTIME","false").upper()
+# figure out run period for realtime experiments
+  if realtime=='TRUE':
+    now=datetime.now()
+    end=now+relativedelta(months=1) # each realtime deployment, set current month and next month
+    startyear=f'''{now.year:04}'''
+    startmonth=f'''{now.month:02}'''
+    startday=f'''{now.day:02}'''
+    starthour='00'
 
-  text = f'''
+    endyear=f'''{end.year:04}'''
+    endmonth=f'''{end.month:02}'''
+    endday=f'''{calendar.monthrange(end.year,end.month)[1]:02}''' # find the last day of a calendar month
+    endhour='23'
+    entities_for_cycledef=f'''\n
+<!ENTITY Y1 "{startyear}">
+<!ENTITY M1 "{startmonth}">
+<!ENTITY D1 "{startday}">
+<!ENTITY H1 "{starthour}">
+
+<!ENTITY Y2 "{endyear}">
+<!ENTITY M2 "{endmonth}">
+<!ENTITY D2 "{endday}">
+<!ENTITY H2 "{endhour}">'''
+  else: # retros
+    entities_for_cycledef=''
+  #
+  if os.getenv('MORE_XML_ENTITIES','false').upper() == 'TRUE':
+    text = f'''
 <!ENTITY ACCOUNT         "{account}">
 <!ENTITY QUEUE_DEFAULT   "{queue}">
-<!ENTITY PARTITION       "{partition}">'''
-
-  if reservation != '':
-    text = text + f'''
-<!ENTITY RESERVATION     "--reservation={reservation}">'''
-
+<!ENTITY PARTITION       "{partition}">
+''' #
+    if reservation != '':
+      text = text + f'<!ENTITY RESERVATION     "--reservation={reservation}">\n'
+  else:
+    text=''
+  #
   text = text + f'''
-
 <!ENTITY HOMErrfs        "{HOMErrfs}">
 <!ENTITY EXPDIR          "{expdir}">
 <!ENTITY DATAROOT        "{DATAROOT}">
@@ -86,33 +105,25 @@ def header_entities(xmlFile,expdir):
 
 <!ENTITY task_common_vars
 "
-  <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
-  <envar><name>EXPDIR</name><value>&EXPDIR;</value></envar>
-  <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
-  <envar><name>DATAROOT</name><value><cyclestr>&DATAROOT;/@Y@m@d</cyclestr></value></envar>
-  <envar><name>COMINrrfs</name><value>&COMROOT;/{net}/{rrfs_ver}</value></envar>
-  <envar><name>COMOUT</name><value><cyclestr>&COMROOT;/{net}/{rrfs_ver}/{run}{wgf}.@Y@m@d/@H</cyclestr></value></envar>
-  <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-  <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-  <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-  <envar><name>NET</name><value>{net}</value></envar>
-  <envar><name>RUN</name><value>{run}</value></envar>
-  <envar><name>rrfs_ver</name><value>{rrfs_ver}</value></envar>
-  <envar><name>KEEPDATA</name><value>{keepdata}</value></envar>
-  <envar><name>MPI_RUN_CMD</name><value>{mpi_run_cmd}</value></envar>
-  <envar><name>MESH_NAME</name><value>{mesh_name}</value></envar>
-  <envar><name>WGF</name><value>{wgf}</value></envar>
-  <envar><name>CYC_INTERVAL</name><value>{cyc_interval}</value></envar>
+<envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
+<envar><name>EXPDIR</name><value>&EXPDIR;</value></envar>
+<envar><name>COMROOT</name><value>&COMROOT;</value></envar>
+<envar><name>DATAROOT</name><value><cyclestr>&DATAROOT;/@Y@m@d</cyclestr></value></envar>
+<envar><name>COMINrrfs</name><value>&COMROOT;/{net}/{rrfs_ver}</value></envar>
+<envar><name>COMOUT</name><value><cyclestr>&COMROOT;/{net}/{rrfs_ver}/{run}{wgf}.@Y@m@d/@H</cyclestr></value></envar>
+<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+<envar><name>NET</name><value>{net}</value></envar>
+<envar><name>RUN</name><value>{run}</value></envar>
+<envar><name>rrfs_ver</name><value>{rrfs_ver}</value></envar>
+<envar><name>KEEPDATA</name><value>{keepdata}</value></envar>
+<envar><name>MPI_RUN_CMD</name><value>{mpi_run_cmd}</value></envar>
+<envar><name>MESH_NAME</name><value>{mesh_name}</value></envar>
+<envar><name>WGF</name><value>{wgf}</value></envar>
+<envar><name>CYC_INTERVAL</name><value>{cyc_interval}</value></envar>
 "
->
-
-<!ENTITY STARTYEAR  "{startyear}">
-<!ENTITY STARTMONTH "{startmonth}">
-<!ENTITY STARTDAY   "{startday}">
-<!ENTITY ENDYEAR    "{endyear}">
-<!ENTITY ENDMONTH   "{endmonth}">
-<!ENTITY ENDDAY     "{endday}">
-
+>{entities_for_cycledef}
 '''
   xmlFile.write(text)
 
@@ -175,15 +186,23 @@ class objTask:
     text=f'  <command>{self.dcTaskRes["command"]} &HOMErrfs;</command>\n'
     text=text+f'  <join><cyclestr>{self.dcTaskRes["join"]}</cyclestr></join>\n'
     text=text+f'\n  <jobname><cyclestr>{self.dcTaskRes["jobname"]}</cyclestr></jobname>\n'
-    text=text+f'  <account>&ACCOUNT;</account>\n'
-    text=text+f'  <queue>&QUEUE_DEFAULT;</queue>\n'
-    text=text+f'  <partition>&PARTITION;</partition>\n'
+    if os.getenv('MORE_XML_ENTITIES','false').upper() == 'TRUE':
+      text=text+f'  <account>&ACCOUNT;</account>\n'
+      text=text+f'  <queue>&QUEUE_DEFAULT;</queue>\n'
+      text=text+f'  <partition>&PARTITION;</partition>\n'
+    else:
+      text=text+f'  <account>{self.dcTaskRes["account"]}</account>\n'
+      text=text+f'  <queue>{self.dcTaskRes["queue"]}</queue>\n'
+      text=text+f'  <partition>{self.dcTaskRes["partition"]}</partition>\n'
     text=text+f'  <walltime>{self.dcTaskRes["walltime"]}</walltime>\n'
     text=text+f'  {self.dcTaskRes["nodes"]}\n' #note: xml tag self included, no need to add <nodes> </nodes>
     #
     native_text=''
     if self.dcTaskRes["reservation"] != "":
-      native_text = native_text + f'&RESERVATION; '
+      if os.getenv('MORE_XML_ENTITIES','false').upper() == 'TRUE':
+        native_text = native_text + f'&RESERVATION; '
+      else:
+        native_text = native_text + f'--reservation={self.dcTaskRes["reservation"]} '
     if self.dcTaskRes["cluster"] != "":
       native_text = native_text  + f'--cluster={self.dcTaskRes["cluster"]} '
     if self.dcTaskRes["native"] != "":

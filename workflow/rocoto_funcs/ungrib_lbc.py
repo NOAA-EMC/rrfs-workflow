@@ -4,7 +4,9 @@ from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of ungrib_lbc --------------------------------------------------------
 def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
-
+  meta_id='ungrib_lbc'
+  cycledefs='lbc'
+  #
   offset=int(os.getenv('LBC_OFFSET','6'))
   length=int(os.getenv('LBC_LENGTH','12'))
   interval=int(os.getenv('LBC_INTERVAL','3'))
@@ -12,10 +14,8 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
   lbc_source_basedir=os.getenv('LBC_EXTRN_MDL_BASEDIR','')
   lbc_name_pattern=os.getenv('LBC_EXTRN_MDL_NAME_PATTERN','')
   lbc_name_pattern_b=os.getenv('LBC_EXTRN_MDL_NAME_PATTERN_B','')
-  cycledefs='lbc'
   lbc_ungrib_group_total_num=int(os.getenv('LBC_UNGRIB_GROUP_TOTAL_NUM','1'))
   group_indices=''.join(f'{i:02d} ' for i in range(1,int(lbc_ungrib_group_total_num)+1)).strip()
-  meta_id='ungrib_lbc'
 
 # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={

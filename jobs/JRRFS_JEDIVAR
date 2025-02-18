@@ -23,10 +23,15 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 #source ${EXPDIR}/config/config.base
 #[[ -s ${EXPDIR}/config/config.da ]] && source ${EXPDIR}/config/config.da
 #
-export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_prep_ic_${cyc}_${rrfs_ver}/${WGF}}
+if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
+  export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_prep_ic_spinup_${cyc}_${rrfs_ver}/${WGF}}
+  export UMBRELLA_JEDIVAR_DATA=${UMBRELLA_JEDIVAR_DATA:-${DATAROOT}/${RUN}_jedivar_spinup_${cyc}_${rrfs_ver}/${WGF}}
+else
+  export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_prep_ic_${cyc}_${rrfs_ver}/${WGF}}
+  export UMBRELLA_JEDIVAR_DATA=${UMBRELLA_JEDIVAR_DATA:-${DATAROOT}/${RUN}_jedivar_${cyc}_${rrfs_ver}/${WGF}}
+fi
 export pid=${pid:-$$}
 export jobid=${jobid:-jedivar_${cyc}}
-export UMBRELLA_JEDIVAR_DATA=${UMBRELLA_JEDIVAR_DATA:-${DATAROOT}/${RUN}_jedivar_${cyc}_${rrfs_ver}/${WGF}}
 export DATA=${DATA:-${UMBRELLA_JEDIVAR_DATA}/${jobid}}
 
 if [ -d ${DATA} ]; then # remove the ${DATA} directory if existed

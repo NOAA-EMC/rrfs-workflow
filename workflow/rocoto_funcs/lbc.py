@@ -61,12 +61,12 @@ def lbc(xmlFile, expdir, do_ensemble=False):
   realtime=os.getenv("REALTIME","false")
   if realtime.upper() == "TRUE":
     starttime=get_cascade_env(f"STARTTIME_{task_id}".upper())
-    timedep=f'\n  <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+    timedep=f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
   dependencies=f'''
   <dependency>
-  <and>
-  <metataskdep metatask="ungrib_lbc{ensindexstr}"/>
-  <taskdep task="ic{ensindexstr}"/>
+  <and>{timedep}
+    <metataskdep metatask="ungrib_lbc{ensindexstr}"/>
+    <taskdep task="ic{ensindexstr}"/>
   </and>
   </dependency>'''
   #

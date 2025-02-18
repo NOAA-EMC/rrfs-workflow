@@ -12,25 +12,22 @@ export EXPDIR=${OPSROOT}/exp/rrfs${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
 #
-#
-export PHYSICS_SUITE="convection_permitting"   # mesoscale_reference, convection_permitting
 export ZETA_LEVELS="L60.txt"
 #
-export DA_IODA="true"
-export DA_JEDI="true"
-export HYB_WGT_ENS=0       # use "0" for zero weight, don't use "0.0"
-export HYB_WGT_STATIC=1.0  # use "0" for zero weight, don't use "0.0"
+export DO_IODA=true
+export DO_JEDI=true
+export HYB_WGT_ENS=0.0
+export HYB_WGT_STATIC=1.0
 export HYB_ENS_TYPE=1      # 1.rrfs; 2.GDAS; 0.TBD on the fly (rrfs->GDAS->3DVAR)
 export HYB_ENS_PATH=""     # if empty, the workflow will try to find ensembles automatically
 
-export DO_CYC="true"
+export DO_CYC=true
 export CYC_INTERVAL=1
 export FCST_LENGTH=3
 for i in {0..23};    do arr[$i]="03"; done # 3hr fcst
 for i in {0..23..6}; do arr[$i]="12"; done # 12hr fcst every 6hrs
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
-export RESTART_INTERVAL=61
 export MPASSIT_GROUP_TOTAL_NUM=1
 export UPP_GROUP_TOTAL_NUM=1
 
@@ -41,11 +38,12 @@ export LBC_INTERVAL=1
 export LBC_UNGRIB_GROUP_TOTAL_NUM=1
 export LBC_GROUP_TOTAL_NUM=1
 
-export RUN_PERIOD="2024052700-2024052800"
-export CYCLEDEF_IC="   &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 06:00:00 "
-export CYCLEDEF_LBC="  &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 06:00:00 "
-export CYCLEDEF_PROD=" &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 01:00:00 "
-export CYCL_HRS_COLDSTART="00 12"
+export RETRO_PERIOD="2024052700-2024052800"
+export CYCLEDEF_IC_STEP_HRS=6   # do ic jobs every step hours
+export CYCLEDEF_LBC_STEP_HRS=6  # do lbc jobs every step hours
+export COLDSTART_CYCS="00 12"   # cycles to cold start from external models
+#export DO_SPINUP=true
+#export PRODSWITCH_CYCS="06 18"  # cycles to PROD switch to the spun-up ICs
 #
 export NODES_IC="<nodes>1:ppn=40</nodes>"
 export NODES_LBC="<nodes>1:ppn=40</nodes>"

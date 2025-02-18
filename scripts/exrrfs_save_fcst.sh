@@ -5,7 +5,7 @@ cpreq=${cpreq:-cpreq}
 
 cd ${DATA}
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
-restart_interval=${RESTART_INTERVAL:-61}
+restart_interval=${RESTART_INTERVAL:-99}
 history_interval=${HISTORY_INTERVAL:-1}
 cyc_interval=${CYC_INTERVAL:-1}
 comoutdir=${COMOUT}${MEMDIR}/fcst

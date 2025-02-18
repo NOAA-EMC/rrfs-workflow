@@ -3,56 +3,56 @@
 #
 export NET=rrfs                    # rrfs, rtma, 
 export MESH_NAME=conus12km         # conus12km, conus3km, atl3km, etc
-export WGF="enkf"   # working group function = "det", "enkf", "ens", "firewx"
+export WGF="det"   # working group function = "det", "enkf", "ens", "firewx"
 export EXP_NAME=dev4_12km
 export VERSION=v2.0.9
 export TAG=c3v209
-export OPSROOT=/lfs5/BMC/nrtrr/NCO_dirs/${EXP_NAME}/${VERSION}
-export EXPDIR=${OPSROOT}/exp/rrfs${WGF}
+export OPSROOT=/lfs5/BMC/nrtrr/NCO_dirs/${EXP_NAME}
+#export OPSROOT=/lfs6/BMC/wrfruc/gge/OPSROOT/${EXP_NAME}
+export EXPDIR=${OPSROOT}/exp/${VERSION}/rrfs${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
 #
 export REALTIME=true     # true, false
-#
-export DO_ENSEMBLE=true
-export DO_DETERMINISTIC=false
-export ENS_SIZE=30
-#
-export PHYSICS_SUITE="convection_permitting"   # mesoscale_reference, convection_permitting
 export ZETA_LEVELS="L60.txt"
 #
-export DA_IODA="false"
+export DO_IODA=true
+export DO_JEDI=true
+export HYB_WGT_ENS=0.0
+export HYB_WGT_STATIC=1.0
+export HYB_ENS_TYPE=1      # 1.rrfs; 2.GDAS; 0.TBD on the fly (rrfs->GDAS->3DVAR)
+export HYB_ENS_PATH=""     # if empty, the workflow will try to find ensembles automatically
 
-export DO_CYC="true"
-export CYC_INTERVAL=3
+export DO_CYC=true
+export CYC_INTERVAL=1
 export FCST_LENGTH=3
 for i in {0..23};    do arr[$i]="03"; done # 3hr fcst
-for i in {0..23..6}; do arr[$i]="06"; done # 3hr fcst every 6hrs
+for i in {0..23..6}; do arr[$i]="12"; done # 12hr fcst every 6hrs
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
-export RESTART_INTERVAL=61
 export MPASSIT_GROUP_TOTAL_NUM=1
 export UPP_GROUP_TOTAL_NUM=1
 
-export IC_OFFSET=36
+export IC_OFFSET=6
 export LBC_OFFSET=6
-export LBC_LENGTH=12
-export LBC_INTERVAL=3
+export LBC_LENGTH=18
+export LBC_INTERVAL=1
 export LBC_UNGRIB_GROUP_TOTAL_NUM=1
 export LBC_GROUP_TOTAL_NUM=1
 
-export RUN_PERIOD="2025021000-2025022800"
-export CYCLEDEF_IC="   &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 06:00:00 "
-export CYCLEDEF_LBC="  &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 06:00:00 "
-export CYCLEDEF_PROD=" &STARTYEAR;&STARTMONTH;&STARTDAY;0000 &ENDYEAR;&ENDMONTH;&ENDDAY;2300 03:00:00 "
-export CYCL_HRS_COLDSTART="00 12"
+export RETRO_PERIOD="2024052700-2024052800"
+export CYCLEDEF_IC_STEP_HRS=6   # do ic jobs every step hours
+export CYCLEDEF_LBC_STEP_HRS=6  # do lbc jobs every step hours
+export COLDSTART_CYCS="00 12"   # cycles to cold start from external models
+#export DO_SPINUP=true
+#export PRODSWITCH_CYCS="06 18"  # cycles to PROD switch to the spun-up ICs
 #
 export NODES_IC="<nodes>1:ppn=40</nodes>"
 export NODES_LBC="<nodes>1:ppn=40</nodes>"
-export NODES_FCST="<nodes>1:ppn=40</nodes>"
+export NODES_FCST="<nodes>2:ppn=40</nodes>"
 export NODES_MPASSIT="<nodes>1:ppn=40</nodes>"
 export NODES_UPP="<nodes>1:ppn=40</nodes>"
-export NODES_JEDIVAR="<nodes>2:ppn=20</nodes>"
+export NODES_JEDIVAR="<nodes>4:ppn=20</nodes>"
 #
 export WALLTIME_FCST="1:30:00"
 export WALLTIME_SAVE_FCST="1:30:00"
@@ -62,16 +62,16 @@ export WALLTIME_JEDIVAR="00:30:00"
 #
 export KEEPDATA=yes
 export MPI_RUN_CMD=srun
-export RETRO_TASKTHROTTLE=60
 #
 # local.setup: setup some local options specific to a platform or an experiment
 #
 # set up IC, LBC sources and A/Q/P/R information
-export IC_EXTRN_MDL_NAME="GEFS"
-export IC_EXTRN_MDL_NAME_PATTERN="gep#gmem#/@y@j@H000fHHH"
+export IC_EXTRN_MDL_NAME="GFS"
+export IC_EXTRN_MDL_NAME_PATTERN="gfs.@Y@m@d/@H/atmos/gfs.@Hz.pgrb2.0p25.ffHHH"
+export IC_EXTRN_MDL_NAME_PATTERN_B="gfs.@Y@m@d/@H/atmos/gfs.@Hz.pgrb2b.0p25.ffHHH"
 export LBC_EXTRN_MDL_NAME=${IC_EXTRN_MDL_NAME}
 export LBC_EXTRN_MDL_NAME_PATTERN=${IC_EXTRN_MDL_NAME_PATTERN}
-export IC_EXTRN_MDL_BASEDIR="/mnt/lfs5/BMC/public/data/grids/gens/pgrb2b"
+export IC_EXTRN_MDL_BASEDIR="/public/data/ops/NOAA/NODD"
 export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
 export OBSPATH="/public/data/grids/rap/obs"
 #
@@ -91,3 +91,4 @@ export STARTTIME_UPP="00:35:01"
 export STARTTIME_PREP_IC="00:30:00"
 export STARTTIME_PREP_LBC="00:30:00"
 export STARTTIME_IODA_BUFR="00:30:00"
+export MORE_XML_ENTITIES=true

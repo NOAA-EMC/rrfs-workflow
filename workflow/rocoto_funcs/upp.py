@@ -4,9 +4,9 @@ from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of upp --------------------------------------------------------
 def upp(xmlFile, expdir, do_ensemble=False):
-  # Task-specific EnVars beyond the task_common_vars
   meta_id='upp'
   cycledefs='prod'
+  #
   fcst_len_hrs_cycles=os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
   upp_group_total_num=int(os.getenv('UPP_GROUP_TOTAL_NUM','1'))
   fcst_length=os.getenv('FCST_LENGTH','1')
@@ -56,7 +56,7 @@ def upp(xmlFile, expdir, do_ensemble=False):
   realtime=os.getenv("REALTIME","false")
   if realtime.upper() == "TRUE":
     starttime=get_cascade_env(f"STARTTIME_{meta_id}".upper())
-    timedep=f'\n  <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+    timedep=f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
   #
   NET=os.getenv("NET","NET_NOT_DEFINED")
   VERSION=os.getenv("VERSION","VERSION_NOT_DEFINED")
@@ -64,7 +64,7 @@ def upp(xmlFile, expdir, do_ensemble=False):
   dependencies=f'''
   <dependency>
   <and>{timedep}
-  <metataskdep metatask="mpassit{ensindexstr}"/>
+    <metataskdep metatask="mpassit{ensindexstr}"/>
   </and>
   </dependency>'''
   #

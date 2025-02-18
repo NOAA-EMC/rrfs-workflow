@@ -3,17 +3,18 @@ import os
 from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of fcst --------------------------------------------------------
-def save_fcst(xmlFile, expdir, do_ensemble=False):
+def save_fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
+  meta_id='save_fcst'
+  if do_spinup:
+    cycledefs='spinup'
+  else:
+    cycledefs='prod'
+  WGF=os.getenv('WGF','WGF not defined')
   # Task-specific EnVars beyond the task_common_vars
-
   fcst_length=os.getenv('FCST_LENGTH','1')
   history_interval=os.getenv('HISTORY_INTERVAL', '1')
-  restart_interval=os.getenv('RESTART_INTERVAL', '61')
-  meta_id='save_fcst'
-  cycledefs='prod'
-  hrs=os.getenv('PROD_BGN_AT_HRS', '3 15')
+  restart_interval=os.getenv('RESTART_INTERVAL', '99')
   fcst_len_hrs_cycles=os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
-  WGF=os.getenv('WGF','WGF not defined')
   dcTaskEnv={
     'FCST_LENGTH': f'{fcst_length}',
     'HISTORY_INTERVAL': f'{history_interval}',
@@ -23,7 +24,10 @@ def save_fcst(xmlFile, expdir, do_ensemble=False):
 
   if not do_ensemble:
     metatask=False
-    task_id=f'{meta_id}'
+    if do_spinup:
+      task_id=f'{meta_id}_spinup'
+    else:
+      task_id=f'{meta_id}'
     meta_bgn=""
     meta_end=""
     ensindexstr=""
@@ -33,7 +37,6 @@ def save_fcst(xmlFile, expdir, do_ensemble=False):
     metatask=True
     task_id=f'{meta_id}_m#ens_index#'
     dcTaskEnv['ENS_INDEX']="#ens_index#"
-    hrs=os.getenv('ENS_PROD_BGN_AT_HRS', '3 15')
     meta_bgn=""
     meta_end=""
     ens_size=int(os.getenv('ENS_SIZE','2'))
@@ -48,18 +51,22 @@ def save_fcst(xmlFile, expdir, do_ensemble=False):
     ensstr="ens_"
 
   # dependencies
+  if do_spinup:
+    datadep=f'''<datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_spinup_@H_&rrfs_ver;/&WGF;{ensindexstr}/fcst_spinup_@H/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
+  else:
+    datadep=f'''<datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{ensindexstr}/fcst_@H/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
   timedep=""
   realtime=os.getenv("REALTIME","false")
   if realtime.upper() == "TRUE":
     starttime=get_cascade_env(f"STARTTIME_FCST".upper())
-    timedep=f'\n  <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+    timedep=f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
   #
   NET=os.getenv("NET","NET_NOT_DEFINED")
   VERSION=os.getenv("VERSION","VERSION_NOT_DEFINED")
   dependencies=f'''
   <dependency>
   <and>{timedep}
-  <datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{ensindexstr}/fcst_@H/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+    {datadep}
   </and>
   </dependency>'''
 
