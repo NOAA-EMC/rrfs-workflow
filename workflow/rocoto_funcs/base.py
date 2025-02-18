@@ -61,22 +61,18 @@ def header_entities(xmlFile,expdir):
     startyear=f'''{now.year:04}'''
     startmonth=f'''{now.month:02}'''
     startday=f'''{now.day:02}'''
-    starthour='00'
 
     endyear=f'''{end.year:04}'''
     endmonth=f'''{end.month:02}'''
     endday=f'''{calendar.monthrange(end.year,end.month)[1]:02}''' # find the last day of a calendar month
-    endhour='23'
     entities_for_cycledef=f'''\n
 <!ENTITY Y1 "{startyear}">
 <!ENTITY M1 "{startmonth}">
 <!ENTITY D1 "{startday}">
-<!ENTITY H1 "{starthour}">
 
 <!ENTITY Y2 "{endyear}">
 <!ENTITY M2 "{endmonth}">
-<!ENTITY D2 "{endday}">
-<!ENTITY H2 "{endhour}">'''
+<!ENTITY D2 "{endday}">'''
   else: # retros
     entities_for_cycledef=''
   #

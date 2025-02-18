@@ -2,10 +2,10 @@
 import os
 from rocoto_funcs.base import xml_task, source, get_cascade_env
 
-### begin of ic --------------------------------------------------------
-def ic(xmlFile, expdir, do_ensemble=False):
-  meta_id='ic'
-  cycledefs='ic'
+### begin of ic_4lbc --------------------------------------------------------
+def ic_4lbc(xmlFile, expdir, do_ensemble=False):
+  meta_id='ic_4lbc'
+  cycledefs='lbc' # this task serves the lbc task
   extrn_mdl_source=os.getenv('IC_EXTRN_MDL_NAME','IC_PREFIX_not_defined')
   # Task-specific EnVars beyond the task_common_vars
   physics_suite=os.getenv('PHYSICS_SUITE','PHYSICS_SUITE_not_defined')
@@ -43,9 +43,9 @@ def ic(xmlFile, expdir, do_ensemble=False):
   dependencies=f'''
   <dependency>
     <and>{timedep}
-      <taskdep task="ungrib_ic{ensindexstr}"/>
+      <taskdep task="ungrib_ic_4lbc{ensindexstr}"/>
     </and>
   </dependency>'''
   #
   xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"IC",do_ensemble)
-### end of ic --------------------------------------------------------
+### end of ic_4lbc --------------------------------------------------------

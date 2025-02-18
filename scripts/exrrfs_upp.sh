@@ -98,7 +98,7 @@ EOF
       source prep_step
       ${MPI_RUN_CMD} ./upp.x
       # check the status copy output to COMOUT
-      fhr2=$(printf %02d ${fhr})
+      fhr2=$(printf %02d $((10#$fhr)) )
       wrfprs="WRFPRS.GrbF${fhr2}"
       wrfnat="WRFNAT.GrbF${fhr2}"
       wrftwo="WRFTWO.GrbF${fhr2}"
@@ -115,7 +115,7 @@ EOF
       mv ${wrfnat}.two ${wrfnat}
 
       # copy products to COMOUT
-      fhr3=$(printf %03d ${fhr})
+      fhr3=$(printf %03d $((10#$fhr)) )
       ${cpreq} ${wrfprs} ${COMOUT}${MEMDIR}/upp/${NET}.t${cyc}z.prslev.f${fhr3}.${domain}grib2
       ${cpreq} ${wrfnat} ${COMOUT}${MEMDIR}/upp/${NET}.t${cyc}z.natlev.f${fhr3}.${domain}grib2
       ${cpreq} ${wrftwo} ${COMOUT}${MEMDIR}/upp/${NET}.t${cyc}z.testbed.f${fhr3}.${domain}grib2

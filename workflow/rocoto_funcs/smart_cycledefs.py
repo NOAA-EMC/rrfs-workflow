@@ -26,9 +26,13 @@ def smart_cycledefs():
     realtime=os.getenv('REALTIME','false')
     spinup=os.getenv('DO_SPINUP','false')
     if realtime.upper()=="TRUE":
-      cycledef_ic=f'''  &Y1;&M1;&D1;&H1;00 &Y2;&M2;&D2;&H2;00 {ic_step.zfill(2)}:00:00'''
-      cycledef_lbc=f''' &Y1;&M1;&D1;&H1;00 &Y2;&M2;&D2;&H2;00 {lbc_step.zfill(2)}:00:00'''
-      cycledef_prod=f'''&Y1;&M1;&D1;&H1;00 &Y2;&M2;&D2;&H2;00 {cyc_interval.zfill(2)}:00:00'''
+      if os.getenv("SEPARATE_IC_FOR_LBC","FASLE").upper()=="TRUE":
+        icH1=f'{cold_cycs[0]}'
+      else:
+        icH1='00'
+      cycledef_ic=f'''  &Y1;&M1;&D1;{icH1}00 &Y2;&M2;&D2;2300 {ic_step.zfill(2)}:00:00'''
+      cycledef_lbc=f''' &Y1;&M1;&D1;0000 &Y2;&M2;&D2;2300 {lbc_step.zfill(2)}:00:00'''
+      cycledef_prod=f'''&Y1;&M1;&D1;0000 &Y2;&M2;&D2;2300 {cyc_interval.zfill(2)}:00:00'''
       if spinup.upper()=='TRUE':
         cycledef_spinup=f'''00 {spinup_hrs} * &M1;,&M2; &Y1;,&Y2; *'''
         num_spinup_cycledef=1
@@ -74,7 +78,11 @@ def smart_cycledefs():
           cycledef_spinup3=f'''00 {spinup_hrs} 01-{date2.day:02} {date2.month:02} {date2.year:04} *'''
           num_spinup_cycledef=3
       #
-      cycledef_ic=f'''  {date1.strftime("%Y%m%d%H")}00 {retrodates[1]}00 {ic_step.zfill(2)}:00:00'''
+      if os.getenv("SEPARATE_IC_FOR_LBC","FASLE").upper()=="TRUE":
+        icH1=f'{cold_cycs[0]}'
+      else:
+        icH1=f'{date1.hour:02}'
+      cycledef_ic=f'''  {date1.strftime("%Y%m%d")}{icH1}00 {retrodates[1]}00 {ic_step.zfill(2)}:00:00'''
       cycledef_lbc=f''' {date1.strftime("%Y%m%d%H")}00 {retrodates[1]}00 {lbc_step.zfill(2)}:00:00'''
       cycledef_prod=f'''{date1.strftime("%Y%m%d")}{prod_cyc1}00 {retrodates[1]}00 {cyc_interval.zfill(2)}:00:00'''
   #
