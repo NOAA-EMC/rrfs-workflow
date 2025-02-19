@@ -11,7 +11,8 @@ echo "building all components, it may take more than one hour..."
 ./build.upp  &> ./log.build.upp  2>&1 &
 ./build.mpassit  &> ./log.build.mpassit  2>&1 &
 wait
-echo "check the exec/ directory ===="
+nEXEC=$(ls -1 ../exec | wc -l)
+echo "check the exec/ directory ==== a total of ${nEXEC} executables"
 ls -lrth ../exec
 echo "check the build logs ===="
 ls -lrth log.build.*
