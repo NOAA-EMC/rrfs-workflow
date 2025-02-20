@@ -57,11 +57,6 @@ def lbc(xmlFile, expdir, do_ensemble=False):
     ensdirstr="/m#ens_index#"
 
   # dependencies
-  if os.getenv("SEPARATE_IC_FOR_LBC","FASLE").upper()=="TRUE":
-    ic_dep=f'<taskdep task="ic_4lbc{ensindexstr}"/>'
-  else:
-    ic_dep=f'<taskdep task="ic{ensindexstr}"/>'
-  #
   timedep=""
   realtime=os.getenv("REALTIME","false")
   if realtime.upper() == "TRUE":
@@ -71,7 +66,6 @@ def lbc(xmlFile, expdir, do_ensemble=False):
   <dependency>
   <and>{timedep}
     <metataskdep metatask="ungrib_lbc{ensindexstr}"/>
-    {ic_dep}
   </and>
   </dependency>'''
   #
