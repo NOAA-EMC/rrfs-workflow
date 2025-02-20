@@ -40,9 +40,19 @@ export LBC_UNGRIB_GROUP_TOTAL_NUM=2
 export LBC_GROUP_TOTAL_NUM=2
 
 export RETRO_PERIOD="2024052700-2024052800"
-export CYCLEDEF_IC_STEP_HRS=6
-export CYCLEDEF_LBC_STEP_HRS=6
+export CYCLEDEF_IC_STEP_HRS=6   # do ic jobs every step hours
+export CYCLEDEF_LBC_STEP_HRS=6  # do lbc jobs every step hours
 export COLDSTART_CYCS="00 12"   # cycles to cold start from external models
+#export DO_SPINUP=true
+#export PRODSWITCH_CYCS="06 18"  # cycles to PROD switch to the spun-up ICs
+#
+# set as follows to start spinup at 03/15z
+#export DO_SPINUP=true
+#export IC_OFFSET=3
+#export CYCLEDEF_IC_STEP_HRS=12
+#export COLDSTART_CYCS="03 15"
+#export PRODSWITCH_CYCS="09 21"
+#export SEPARATE_IC_FOR_LBC=true
 #
 export NODES_IC="<nodes>40:ppn=20</nodes>"
 export NODES_LBC="<nodes>40:ppn=20</nodes>"
