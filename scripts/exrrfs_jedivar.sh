@@ -105,14 +105,23 @@ eval "echo \"${file_content}\"" > namelist.atmosphere
 ${cpreq} ${PARMrrfs}/streams.atmosphere.da streams.atmosphere
 analysisDate=""${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z""
 beginDate=""${CDATEm1:0:4}-${CDATEm1:4:2}-${CDATEm1:6:2}T${CDATEm1:8:2}:00:00Z""
-sed -e "s/@analysisDate@/${analysisDate}/" -e "s/@beginDate@/${beginDate}/" \
-    -e "s/@HYB_WGT_STATIC@/${HYB_WGT_STATIC}/" -e "s/@HYB_WGT_ENS@/${HYB_WGT_ENS}/" \
-    ${PARMrrfs}/jedivar.yaml > jedivar.yaml
-if [[ "${HYB_WGT_ENS}" == "0" ]] || [[ "${HYB_WGT_ENS}" == "0.0" ]]; then # pure 3DVAR
-  sed -i '88,113d' ./jedivar.yaml
-elif [[ "${HYB_WGT_STATIC}" == "0" ]] || [[ "${HYB_WGT_STATIC}" == "0.0" ]] ; then # pure 3DEnVar
-  sed -i '46,87d' ./jedivar.yaml
-fi
+#
+# generate jedivar.yaml based on how YAML_GEN_METHOD is set
+case ${YAML_GEN_METHOD:-1} in
+  1) # from ${PARMrrfs}
+    source ${USHrrfs}/yaml_from_parm.sh
+    ;;
+  2) # cat together from inside sorc/RDASApp
+    source ${USHrrfs}/yaml_cat_together.sh
+    ;;
+  3) # JCB
+    source ${USHrrfs}/yaml_jcb.sh
+    ;;
+  *)
+    echo "unknown YAML_GEN_METHOD:${YAML_GEN_METHOD}"
+    err_exit
+    ;;
+esac
 
 if [[ ${start_type} == "cold" ]]; then
   exit 0 #gge.tmp.debug need more time to figure out cold start DA
