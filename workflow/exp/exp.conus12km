@@ -95,6 +95,15 @@ case ${MACHINE} in
     export QUEUE="batch"
     export PARTITION="kjet"
     ;;
+  "orion"|"hercules")
+    export IC_EXTRN_MDL_BASEDIR="/work2/noaa/wrfruc/RRFS2_RETRO_DATA/sandbox/GFS"
+    export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
+    export OBSPATH="/work2/noaa/wrfruc/RRFS2_RETRO_DATA/sandbox/obs_rap"
+    export ACCOUNT="wrfruc"
+    export QUEUE="batch"
+    export PARTITION=${MACHINE}
+    export CLUSTER=""
+    ;;
   "gaea")
     export IC_EXTRN_MDL_BASEDIR="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/sandbox/GFS"
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
