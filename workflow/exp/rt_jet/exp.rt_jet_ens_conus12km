@@ -5,7 +5,7 @@ export NET=rrfs                    # rrfs, rtma,
 export MESH_NAME=conus12km         # conus12km, conus3km, atl3km, etc
 export WGF="enkf"   # working group function = "det", "enkf", "ens", "firewx"
 export EXP_NAME=dev4_12km
-export VERSION=v2.0.9
+export VERSION=$(cat ./VERSION)
 export TAG=c3v209
 export OPSROOT=/lfs5/BMC/nrtrr/NCO_dirs/${EXP_NAME}
 export EXPDIR=${OPSROOT}/exp/${VERSION}/rrfs${WGF}
