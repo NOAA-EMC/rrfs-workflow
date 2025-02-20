@@ -9,7 +9,7 @@ source ${HOMErrfs}/workflow/ush/init.sh
 
 EXEC="${HOMErrfs}/sorc/WPS/ungrib/src/ungrib.exe"
 
-if [ "${MACHINE}" = "wcoss2" ]; then
+if [[ "${MACHINE}" == "wcoss2" ]]; then
   BUILD_VERSION_FILE="${HOMErrfs}/versions/build.ver"
   if [ -f ${BUILD_VERSION_FILE} ]; then
     source ${BUILD_VERSION_FILE}
