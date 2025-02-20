@@ -10,12 +10,14 @@ source ${HOMErrfs}/workflow/ush/init.sh
 EXEC="${HOMErrfs}/sorc/MPAS-Model/init_atmosphere_model"
 EXEC2="${HOMErrfs}/sorc/MPAS-Model/atmosphere_model"
 
-
-if [ "${MACHINE}" = "wcoss2" ]; then
+compiler_str="intel-mpi"
+if [[ "${MACHINE}" == "wcoss2" ]]; then
   BUILD_VERSION_FILE="${HOMErrfs}/versions/build.ver"
   if [ -f ${BUILD_VERSION_FILE} ]; then
     source ${BUILD_VERSION_FILE}
   fi
+elif [[ "${MACHINE}" == "gaea" ]]; then
+  compiler_str="ifort"
 fi
 
 module purge                      
@@ -26,10 +28,9 @@ module list
 cd ${HOMErrfs}/sorc/MPAS-Model
 cp ../Registry.xml src/core_atmosphere
 make clean CORE=init_atmosphere
-#make -j8 intel-mpi CORE=atmosphere PRECISION=single # intel-mpi does not work on Gaea
-make -j8 ifort CORE=init_atmosphere PRECISION=single
+make -j8 ${compiler_str} CORE=init_atmosphere PRECISION=single
 make clean CORE=atmosphere
-make -j8 ifort CORE=atmosphere PRECISION=single
+make -j8 ${compiler_str} CORE=atmosphere PRECISION=single
 
 mkdir -p ${HOMErrfs}/exec
 echo "copy ${EXEC} to ../exec/init_atmosphere_model.x"
