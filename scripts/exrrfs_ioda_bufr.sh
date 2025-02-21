@@ -48,7 +48,7 @@ ls ./ioda*nc
 if (( $? == 0 )); then
   ${cpreq} ${DATA}/ioda*.nc ${COMOUT}/ioda_bufr/
 else
-  echo "WARNING: no ioda files generated."
+  echo "FATAL ERROR: no ioda files generated."
   err_exit # err_exit if no ioda files generated at the development stage
 fi
 
