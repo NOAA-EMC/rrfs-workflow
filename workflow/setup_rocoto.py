@@ -65,6 +65,9 @@ zeta_levels=os.getenv('ZETA_LEVELS','')
 if zeta_levels != '':
   shutil.copy(f'{HOMErrfs}/fix/meshes/{zeta_levels}',f'{exp_configdir}/ZETA_LEVELS.txt')
 
+# copyover the VERSION file
+shutil.copy(f'{HOMErrfs}/workflow/VERSION',f'{expdir}/VERSION')
+
 # generate exp.setup under $expdir
 text=f'''#=== Auto-generation of HOMErrfs, MACHINE
 export HOMErrfs={HOMErrfs}

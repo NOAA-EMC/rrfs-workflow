@@ -51,7 +51,6 @@ export COLDSTART_CYCS="00 12"   # cycles to cold start from external models
 #export CYCLEDEF_IC_STEP_HRS=12
 #export COLDSTART_CYCS="03 15"
 #export PRODSWITCH_CYCS="09 21"
-#export SEPARATE_IC_FOR_LBC=true
 #
 export NODES_IC="<nodes>40:ppn=20</nodes>"
 export NODES_LBC="<nodes>40:ppn=20</nodes>"
