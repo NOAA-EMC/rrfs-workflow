@@ -47,7 +47,7 @@ ln -snf ${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/vbal_${NTASKS} static_bec/
 #
 # copy observations files
 #
-cp ${COMOUT}/ioda_bufr/* obs/.
+cp ${COMOUT}/ioda_bufr/det/* obs/.
 #
 #  find ensemble forecasts based on user settings
 #
