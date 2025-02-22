@@ -27,15 +27,13 @@ export HISTORY_INTERVAL=${HISTORY_INTERVAL:-1}
 #
 export pid=${pid:-$$}
 if [[ -z "${ENS_INDEX}" ]]; then
-  export MEMID=""
   export MEMDIR=""
 else
-  export MEMID="_m${ENS_INDEX}"
-  export MEMDIR="/m${ENS_INDEX}"
+  export MEMDIR="/mem${ENS_INDEX}"
 fi
-export UMBRELLA_SAVE_FCST_DATA=${UMBRELLA_SAVE_FCST_DATA:-${DATAROOT}/${RUN}_save_fcst_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
+export UMBRELLA_SAVE_FCST_DATA=${UMBRELLA_SAVE_FCST_DATA:-${DATAROOT}/${RUN}_save_fcst_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
 export jobid=${jobid:-mpassit_g${GROUP_INDEX}_${cyc}}
-export UMBRELLA_MPASSIT_DATA=${UMBRELLA_MPASSIT_DATA:-${DATAROOT}/${RUN}_mpassit_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
+export UMBRELLA_MPASSIT_DATA=${UMBRELLA_MPASSIT_DATA:-${DATAROOT}/${RUN}_mpassit_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
 export DATA=${DATA:-${UMBRELLA_MPASSIT_DATA}/${jobid}}
 
 if [ -d ${DATA} ]; then # remove the ${DATA}/${GROUP_INDEX} directory if existed
@@ -49,6 +47,7 @@ mkdir -p ${DATA}
 #
 export COMINrrfs=${COMINrrfs:-$(compath.py $envir/rrfs/$rrfs_ver)}
 export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
+mkdir -p ${COMOUT}/mpassit/${WGF}${MEMDIR}
 #
 #----------------------------------------
 # Execute the script.

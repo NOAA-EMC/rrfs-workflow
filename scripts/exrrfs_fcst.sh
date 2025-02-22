@@ -112,7 +112,7 @@ else
   if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
     CDATEp=$( $NDATE 1 ${CDATE} )
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
-    ${cpreq} ${DATA}/mpasout.${timestr}.nc ${COMOUT}/fcst_spinup/.
+    ${cpreq} ${DATA}/mpasout.${timestr}.nc ${COMOUT}/fcst_spinup/${WGF}${MEMDIR}
   fi
   exit 0
 fi

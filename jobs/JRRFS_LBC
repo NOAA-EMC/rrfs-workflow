@@ -30,15 +30,13 @@ export INTERVAL=${INTERVAL:-1}
 #
 export pid=${pid:-$$}
 if [[ -z "${ENS_INDEX}" ]]; then
-  export MEMID=""
   export MEMDIR=""
 else
-  export MEMID="_m${ENS_INDEX}"
-  export MEMDIR="/m${ENS_INDEX}"
+  export MEMDIR="/mem${ENS_INDEX}"
 fi
-export UMBRELLA_UNGRIB_DATA=${UMBRELLA_UNGRIB_DATA:-${DATAROOT}/${RUN}_ungrib_lbc_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
+export UMBRELLA_UNGRIB_DATA=${UMBRELLA_UNGRIB_DATA:-${DATAROOT}/${RUN}_ungrib_lbc_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
 export jobid=${jobid:-lbc_g${GROUP_INDEX}_${cyc}}
-export UMBRELLA_LBC_DATA=${UMBRELLA_LBC_DATA:-${DATAROOT}/${RUN}_lbc_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
+export UMBRELLA_LBC_DATA=${UMBRELLA_LBC_DATA:-${DATAROOT}/${RUN}_lbc_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
 export DATA=${DATA:-${UMBRELLA_LBC_DATA}/${jobid}}
 
 if [ -d ${DATA} ]; then # remove the ${DATA} directory if existed
@@ -52,7 +50,7 @@ mkdir -p ${DATA}
 #
 export COMINrrfs=${COMINrrfs:-$(compath.py $envir/rrfs/$rrfs_ver)}
 export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-mkdir -p ${COMOUT}${MEMDIR}/lbc
+mkdir -p ${COMOUT}/lbc/${WGF}${MEMDIR}
 #
 #----------------------------------------
 # Execute the script.

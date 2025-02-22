@@ -19,18 +19,16 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 #
 export pid=${pid:-$$}
 if [[ -z "${ENS_INDEX}" ]]; then
-  export MEMID=""
   export MEMDIR=""
 else
-  export MEMID="_m${ENS_INDEX}"
-  export MEMDIR="/m${ENS_INDEX}"
+  export MEMDIR="/mem${ENS_INDEX}"
 fi
 if [[ "${SPINUP_MODE:-0}" == "1" ]];  then
   prep_ic_str="prep_ic_spinup"
 else
   prep_ic_str="prep_ic"
 fi
-export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_${prep_ic_str}_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
+export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_${prep_ic_str}_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
 export jobid=${jobid:-prep_ic_${cyc}}
 export DATA=${DATA:-${UMBRELLA_PREP_IC_DATA}/${jobid}}
 
@@ -45,6 +43,7 @@ mkdir -p ${DATA}
 #
 export COMINrrfs=${COMINrrfs:-$(compath.py $envir/rrfs/$rrfs_ver)}
 export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
+mkdir -p ${COMOUT}/prep_ic/${WGF}${MEMDIR}
 #
 #----------------------------------------
 # Execute the script.

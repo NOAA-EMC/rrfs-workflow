@@ -8,7 +8,6 @@ timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
 restart_interval=${RESTART_INTERVAL:-99}
 history_interval=${HISTORY_INTERVAL:-1}
 cyc_interval=${CYC_INTERVAL:-1}
-comoutdir=${COMOUT}${MEMDIR}/fcst
 #
 # find forecst length for this cycle
 #
@@ -51,7 +50,7 @@ for (( ii=0; ii<${num_fhrs}; ii=ii+1 )); do
       mv "$(realpath ${diag_file})"    ${UMBRELLA_SAVE_FCST_DATA}/.
       # save to com
       if (( ${ii} <= ${cyc_interval} )) && (( ${ii} > 0 )); then
-        ${cpreq} "$(realpath ${mpasout_file})" ${comoutdir}/.
+        ${cpreq} "$(realpath ${mpasout_file})" ${COMOUT}/fcst/${WGF}${MEMDIR}/.
       fi
     else
       echo "ERROR, diag.${timestr}.nc or history.${timestr}.nc missing"

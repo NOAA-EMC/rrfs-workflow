@@ -46,7 +46,7 @@ done
 # file count sanity check and copy to COMOUT
 ls ./ioda*nc
 if (( $? == 0 )); then
-  ${cpreq} ${DATA}/ioda*.nc ${COMOUT}/ioda_bufr/
+  ${cpreq} ${DATA}/ioda*.nc ${COMOUT}/ioda_bufr/${WGF}
 else
   echo "FATAL ERROR: no ioda files generated."
   err_exit # err_exit if no ioda files generated at the development stage
