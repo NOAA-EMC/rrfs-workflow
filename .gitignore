@@ -6,3 +6,4 @@ fix/INIT_DONE
 __pycache__
 log*
 workflow/exp.*
+workflow/myrrfsexps
