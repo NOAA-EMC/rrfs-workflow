@@ -32,7 +32,7 @@ def ic(xmlFile, expdir, do_ensemble=False):
     meta_end=f'\
 </metatask>\n'
     ensindexstr="_m#ens_index#"
-    ensdirstr="/m#ens_index#"
+    ensdirstr="/mem#ens_index#"
 
   # dependencies
   timedep=""

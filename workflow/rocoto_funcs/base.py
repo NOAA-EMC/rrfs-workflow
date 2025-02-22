@@ -106,7 +106,7 @@ def header_entities(xmlFile,expdir):
 <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
 <envar><name>DATAROOT</name><value><cyclestr>&DATAROOT;/@Y@m@d</cyclestr></value></envar>
 <envar><name>COMINrrfs</name><value>&COMROOT;/{net}/{rrfs_ver}</value></envar>
-<envar><name>COMOUT</name><value><cyclestr>&COMROOT;/{net}/{rrfs_ver}/{run}{wgf}.@Y@m@d/@H</cyclestr></value></envar>
+<envar><name>COMOUT</name><value><cyclestr>&COMROOT;/{net}/{rrfs_ver}/{run}.@Y@m@d/@H</cyclestr></value></envar>
 <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -284,7 +284,7 @@ def xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv={},dependencies="",metat
     command_id=meta_id
   dcTaskRes={
     'command': f'&HOMErrfs;/workflow/sideload/launch.sh JRRFS_'+f'{command_id}'.upper(),
-    'join': f'&LOGROOT;/rrfs{WGF}.@Y@m@d/@H/rrfs{WGF}_{task_id}_{TAG}_@Y@m@d@H.log',
+    'join': f'&LOGROOT;/rrfs.@Y@m@d/@H/${WGF}/rrfs_{task_id}_{TAG}_@Y@m@d@H.log',
     'jobname': f'{TAG}_{task_id}_c@H',
     'account': get_cascade_env(f'ACCOUNT_{task_id}'.upper()),
     'queue': get_cascade_env(f'QUEUE_{task_id}'.upper()),

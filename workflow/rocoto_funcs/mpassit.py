@@ -53,7 +53,7 @@ def mpassit(xmlFile, expdir, do_ensemble=False):
     task_id=f'{meta_id}_m#ens_index#_g#group_index#'
     dcTaskEnv['ENS_INDEX']="#ens_index#"
     ensindexstr="_m#ens_index#"
-    ensdirstr="/m#ens_index#"
+    ensdirstr="/mem#ens_index#"
 
   # dependencies
   timedep=""

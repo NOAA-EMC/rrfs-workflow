@@ -42,7 +42,6 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     meta_end=""
     ensindexstr=""
     ensdirstr=""
-    ensstr=""
   else:
     metatask=True
     task_id=f'{meta_id}_m#ens_index#'
@@ -57,8 +56,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     meta_end=f'\
 </metatask>\n'
     ensindexstr="_m#ens_index#"
-    ensdirstr="/m#ens_index#"
-    ensstr="ens_"
+    ensdirstr="/mem#ens_index#"
 
   # dependencies
   timedep=""

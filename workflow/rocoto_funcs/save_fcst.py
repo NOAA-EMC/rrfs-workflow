@@ -32,7 +32,6 @@ def save_fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     meta_end=""
     ensindexstr=""
     ensdirstr=""
-    ensstr=""
   else:
     metatask=True
     task_id=f'{meta_id}_m#ens_index#'
@@ -47,14 +46,13 @@ def save_fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     meta_end=f'\
 </metatask>\n'
     ensindexstr="_m#ens_index#"
-    ensdirstr="/m#ens_index#"
-    ensstr="ens_"
+    ensdirstr="/mem#ens_index#"
 
   # dependencies
   if do_spinup:
-    datadep=f'''<datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_spinup_@H_&rrfs_ver;/&WGF;{ensindexstr}/fcst_spinup_@H/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
+    datadep=f'''<datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_spinup_@H_&rrfs_ver;/&WGF;{ensdirstr}/fcst_spinup_@H/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
   else:
-    datadep=f'''<datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{ensindexstr}/fcst_@H/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
+    datadep=f'''<datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{ensdirstr}/fcst_@H/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
   timedep=""
   realtime=os.getenv("REALTIME","false")
   if realtime.upper() == "TRUE":

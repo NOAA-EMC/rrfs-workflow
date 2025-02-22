@@ -54,7 +54,7 @@ def lbc(xmlFile, expdir, do_ensemble=False):
     task_id=f'{meta_id}_g#group_index#_m#ens_index#'
     dcTaskEnv['ENS_INDEX']="#ens_index#"
     ensindexstr="_m#ens_index#"
-    ensdirstr="/m#ens_index#"
+    ensdirstr="/mem#ens_index#"
 
   # dependencies
   timedep=""
