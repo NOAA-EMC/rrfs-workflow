@@ -100,8 +100,10 @@ ulimit -a
 source prep_step
 ${cpreq} ${EXECrrfs}/atmosphere_model.x .
 ${MPI_RUN_CMD} ./atmosphere_model.x 
+export err=$?
+err_chk
 #
-# check the status
+# double check status as sometimes atmosphere_model.x exit with 0 but there are still errors (log.atmosphere*err)
 #
 num_err_log=$(ls ./log.atmosphere*.err 2>/dev/null | wc -l)
 if (( ${num_err_log} > 0 )) ; then
