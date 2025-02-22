@@ -284,7 +284,7 @@ def xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv={},dependencies="",metat
     command_id=meta_id
   dcTaskRes={
     'command': f'&HOMErrfs;/workflow/sideload/launch.sh JRRFS_'+f'{command_id}'.upper(),
-    'join': f'&LOGROOT;/rrfs.@Y@m@d/@H/${WGF}/rrfs_{task_id}_{TAG}_@Y@m@d@H.log',
+    'join': f'&LOGROOT;/rrfs.@Y@m@d/@H/{WGF}/rrfs_{task_id}_{TAG}_@Y@m@d@H.log',
     'jobname': f'{TAG}_{task_id}_c@H',
     'account': get_cascade_env(f'ACCOUNT_{task_id}'.upper()),
     'queue': get_cascade_env(f'QUEUE_{task_id}'.upper()),
