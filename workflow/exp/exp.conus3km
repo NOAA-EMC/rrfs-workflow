@@ -79,34 +79,34 @@ export LBC_EXTRN_MDL_NAME_PATTERN=${IC_EXTRN_MDL_NAME_PATTERN}
 export LBC_EXTRN_MDL_NAME_PATTERN_B=${IC_EXTRN_MDL_NAME_PATTERN_B}
 case ${MACHINE} in
   "hera")
-    export IC_EXTRN_MDL_BASEDIR="/scratch2/BMC/rtrr/RRFS2_RETRO_DATA/sandbox/GFS"
+    export IC_EXTRN_MDL_BASEDIR="/scratch2/BMC/rtrr/RRFS2_RETRO_DATA/May2024/GFS"
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
-    export OBSPATH="/scratch2/BMC/rtrr/RRFS2_RETRO_DATA/sandbox/obs_rap"
+    export OBSPATH="/scratch2/BMC/rtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
     export ACCOUNT="wrfruc"
     export QUEUE="batch"
     export PARTITION="hera"
     ;;
   "jet")
-    export IC_EXTRN_MDL_BASEDIR="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/sandbox/GFS"
+    export IC_EXTRN_MDL_BASEDIR="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/GFS"
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
-    export OBSPATH="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/sandbox/obs_rap"
+    export OBSPATH="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
     export ACCOUNT="nrtrr"
     export QUEUE="batch"
     export PARTITION="kjet"
     ;;
   "orion"|"hercules")
-    export IC_EXTRN_MDL_BASEDIR="/work2/noaa/wrfruc/RRFS2_RETRO_DATA/sandbox/GFS"
+    export IC_EXTRN_MDL_BASEDIR="/work2/noaa/wrfruc/RRFS2_RETRO_DATA/May2024/GFS"
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
-    export OBSPATH="/work2/noaa/wrfruc/RRFS2_RETRO_DATA/sandbox/obs_rap"
+    export OBSPATH="/work2/noaa/wrfruc/RRFS2_RETRO_DATA/May2024/obs_rap"
     export ACCOUNT="wrfruc"
     export QUEUE="batch"
     export PARTITION=${MACHINE}
     export CLUSTER=""
     ;;
   "gaea")
-    export IC_EXTRN_MDL_BASEDIR="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/sandbox/GFS"
+    export IC_EXTRN_MDL_BASEDIR="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/GFS"
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
-    export OBSPATH="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/sandbox/obs_rap"
+    export OBSPATH="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/obs_rap"
     export ACCOUNT="bil-fire10-oar"
     export QUEUE="normal"
     export PARTITION="batch"
