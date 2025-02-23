@@ -6,7 +6,7 @@ export MESH_NAME=conus3km         # conus12km, conus3km, atl3km, etc
 export WGF="det"   # working group function = "det", "enkf", "ens", "firewx"
 export EXP_NAME=hrly_3km
 export VERSION=$(cat ./VERSION)
-export TAG=c3v209
+export TAG=d3km
 export OPSROOT=/scratch1/BMC/wrfruc/gge/OPSROOT/${EXP_NAME}
 export EXPDIR=${OPSROOT}/exp/rrfs${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
