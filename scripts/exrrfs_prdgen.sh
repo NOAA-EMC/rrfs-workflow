@@ -353,7 +353,10 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
      # echo "$USHrrfs/prdgen/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT} &" >> $DATAprdgen/poescript_faa_${fhr}
 
     if [ ${DO_ENSFCST} = "FALSE" ]; then
-      ${USHrrfs}/prdgen/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT} ${USHrrfs}/prdgen
+	    if [ -f ${COMOUT}/${aviati} ]; then
+      ${USHrrfs}/prdgen/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev \
+	      $ififip $aviati ${COMOUT} ${USHrrfs} ${FIXprdgen} ${PARMdir}
+            fi
     fi
 
   else
