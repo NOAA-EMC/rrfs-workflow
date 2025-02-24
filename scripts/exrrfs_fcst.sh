@@ -100,8 +100,10 @@ ulimit -a
 source prep_step
 ${cpreq} ${EXECrrfs}/atmosphere_model.x .
 ${MPI_RUN_CMD} ./atmosphere_model.x 
+export err=$?
+err_chk
 #
-# check the status
+# double check status as sometimes atmosphere_model.x exit with 0 but there are still errors (log.atmosphere*err)
 #
 num_err_log=$(ls ./log.atmosphere*.err 2>/dev/null | wc -l)
 if (( ${num_err_log} > 0 )) ; then
@@ -112,7 +114,7 @@ else
   if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
     CDATEp=$( $NDATE 1 ${CDATE} )
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
-    ${cpreq} ${DATA}/mpasout.${timestr}.nc ${COMOUT}/fcst_spinup/.
+    ${cpreq} ${DATA}/mpasout.${timestr}.nc ${COMOUT}/fcst_spinup/${WGF}${MEMDIR}
   fi
   exit 0
 fi
