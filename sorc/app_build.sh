@@ -25,10 +25,10 @@ OPTIONS
   --disable-options="OPTION1,OPTION2,..."
       disable ufs-weather-model options; delimited with ','
       (e.g. 32BIT | INLINE_POST | UFS_GOCART | MOM6 | CICE6 | WW3 | CMEPS)
-  --nogtg
-      build without GTG (default is true, this option turns it off)
-  --noifi
-      build without IFI (default is true, this option turns it off)
+  --gtg
+      build with GTG (default is false, this option turns it on)
+  --ifi
+      build with IFI (default is false, this option turns it on)
   --noparalstart
       do not build module with enabled parallel start (default is on)
   --extrn
@@ -85,8 +85,8 @@ Settings:
   ENABLE_OPTIONS=${ENABLE_OPTIONS}
   DISABLE_OPTIONS=${DISABLE_OPTIONS}
   EXTRN=${EXTRN}
-  NOGTG=${NOGTG}
-  NOIFI=${NOIFI}
+  GTG=${GTG}
+  IFI=${IFI}
   PARALSTART=${PARALSTART}
   REMOVE=${REMOVE}
   CONTINUE=${CONTINUE}
@@ -126,8 +126,8 @@ DISABLE_OPTIONS=""
 BUILD_TYPE="Release"
 BUILD_JOBS=4
 EXTRN=false
-NOGTG=false
-NOIFI=false
+GTG=false
+IFI=false
 PARALSTART=true
 REMOVE=false
 CONTINUE=false
@@ -173,8 +173,8 @@ while :; do
     --disable-options|--disable-options=) usage_error "$1 requires argument." ;;
     --extrn) EXTRN=true ;;
     --extrn=?*|--extrn=) usage_error "$1 argument ignored." ;;
-    --nogtg) NOGTG=true ;;
-    --noifi) NOIFI=true ;;
+    --gtg) GTG=true ;;
+    --ifi) IFI=true ;;
     --noparalstart) PARALSTART=false ;;
     --remove) REMOVE=true ;;
     --remove=?*|--remove=) usage_error "$1 argument ignored." ;;
@@ -249,13 +249,13 @@ MACHINE="${PLATFORM}"
 printf "PLATFORM(MACHINE)=${PLATFORM}\n" >&2
 
 # Determine whether to build GTG and IFI with UPP
-BUILD_GTG="on"
-BUILD_IFI="on"
-if [ "${NOGTG}" = true ]; then
-  BUILD_GTG="off"
+BUILD_GTG="off"
+BUILD_IFI="off"
+if [ "${GTG}" = true ]; then
+  BUILD_GTG="on"
 fi
-if [ "${NOIFI}" = true ]; then
-  BUILD_IFI="off"
+if [ "${IFI}" = true ]; then
+  BUILD_IFI="on"
 fi
 ENABLE_PARALLELRESTART="on"
 ENABLE_RRFS_WAR="off"
