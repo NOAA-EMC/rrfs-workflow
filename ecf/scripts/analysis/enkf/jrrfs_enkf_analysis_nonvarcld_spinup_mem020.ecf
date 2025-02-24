@@ -22,7 +22,6 @@ export WGF="%WGF%"
 export MEMBER_NAME="%MEMBER_NAME%"
 export CYCLE_TYPE="%CYCLE_TYPE%"
 module list
-%include <enkf_analysis_nonvarcld_spinup_mem020_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################

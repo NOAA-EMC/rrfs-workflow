@@ -26,7 +26,8 @@ if [[ ! " prod para test " =~ " ${envir} " && " ops.prod ops.para " =~ " $(whoam
 
 # Developer configuration
 # PTMP=/lfs/h2/emc/ptmp
-PTMP=/lfs/h3/emc/lam/noscrub/ecflow/ptmp
+# PTMP=/lfs/h3/emc/rrfstemp/ecflow/ptmp
+PTMP=/lfs/h3/emc/eib/noscrub/ptmp
 model=rrfs
 PSLOT=ecflow_rrfs
 export COMROOT=${PTMP}/${USER}/${PSLOT}/para/com
@@ -40,8 +41,14 @@ export CDATE=${PDY}%CYC:%
 export COMrrfs=$(compath.py rrfs/${rrfs_ver})
 export COMOUT_PREP="$(compath.py obsproc/v1.2)"
 
-#export DATAROOT=/lfs/h2/emc/stmp/${USER}/${model}/${PSLOT}
-export DATAROOT=/lfs/h3/emc/lam/noscrub/ecflow/stmp/${USER}/${model}/${PSLOT}
-export GESROOT=/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/nwges/enkfrrfsam/ecflow_rrfs/para/nwges
+# export DATAROOT=/lfs/h2/emc/stmp/${USER}/${model}/${PSLOT}
+# export DATAROOT=/lfs/h3/emc/rrfstemp/ecflow/stmp/${USER}/${model}/${PSLOT}
+export DATAROOT=/lfs/h3/emc/eib/noscrub/stmp/${USER}/${model}/${PSLOT}
+#### export umbrella_fsm_data=${DATAROOT}/rrfs_fsm_${PDY}${cyc}_${rrfs_ver}/${WGF}
+#if [ "${CYCLE_TYPE}" = "spinup" ]; then
+#  export umbrella_init_data="${DATAROOT}/${PDY}/${RUN}_init_spinup_${cyc}_${rrfs_ver}/${WGF}"
+#else
+#  export umbrella_init_data="${DATAROOT}/${PDY}/${RUN}_init_${cyc}_${rrfs_ver}/${WGF}"
+#fi
 mkdir -p ${DATAROOT} # ${COMrrfs}
 

@@ -20,7 +20,7 @@ export CDATE="${PDY}${cyc}"
 
 module list
 export WGF="%WGF%"
-%include <ensf_save_da_output_mem005_dev_wire_%CYC%.h>
+export CYCLE_TYPE="%CYCLE_TYPE%"
 ############################################################
 # CALL executable job script here
 ############################################################

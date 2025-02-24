@@ -51,7 +51,6 @@ This is the ex-script for the task that runs the bufr-sounding
 #
 #-----------------------------------------------------------------------
 #
-ulimit -s unlimited
 ulimit -a
 
 case $MACHINE in
@@ -112,16 +111,14 @@ cyc=$hh
 mkdir -p $DATA/bufrpost
 cd $DATA/bufrpost
 
-NSTAT=2000
-
-cpreq -p ${FIX_BUFRSND}/${PREDEF_GRID_NAME}/rrfs_profdat.${NSTAT} regional_profdat
+cpreq -p ${FIX_BUFRSND}/${PREDEF_GRID_NAME}/rrfs_profdat regional_profdat
 
 OUTTYP=netcdf
 
 model=FV3S
 
 INCR=01
-FHRLIM=84
+FHRLIM=60
 
 let NFILE=1
 
@@ -138,7 +135,7 @@ startd=$YYYY$MM$DD
 startdate=$CYCLE
 
 STARTDATE=${YYYY}-${MM}-${DD}_${cyc}:00:00
-endtime=$(date +%Y%m%d%H -d "${START_DATE} +84 hours")
+endtime=$(date +%Y%m%d%H -d "${START_DATE} +60 hours")
 
 YYYY=`echo $endtime | cut -c1-4`
 MM=`echo $endtime | cut -c5-6`
@@ -226,6 +223,7 @@ do
     err_exit "ABORTING due to bad model selection for this script."
   fi
 
+  NSTAT=1850
   datestr=`date`
   echo top of loop after found needed log file for $fhr at $datestr
 
@@ -242,6 +240,10 @@ $NSTAT
 $OUTFILDYN
 $OUTFILPHYS
 EOF
+
+#  export FORT19="$DATA/bufrpost/regional_profdat"
+#  export FORT79="$DATA/bufrpost/profilm.c1.${tmmark}"
+#  export FORT11="./itag"
 
 ln -sf $DATA/bufrpost/regional_profdat     fort.19
 ln -sf $DATA/bufrpost/profilm.c1.${tmmark} fort.79
@@ -371,7 +373,7 @@ SNOUTF   = ${outfilbase}.snd
 SFOUTF   = ${outfilbase}.sfc+
 SNPRMF   = snrrfs.prm
 SFPRMF   = sfrrfs.prm
-TIMSTN   = 85/2000
+TIMSTN   = 61/1600
 r
 
 exit

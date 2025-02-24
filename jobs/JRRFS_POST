@@ -1,8 +1,23 @@
 #!/bin/bash
 
+date
+export PS4='+ $SECONDS + ' 
+set -xue
+
 #-----------------------------------------------------------------------
 # RRFS Post-Processing
 #-----------------------------------------------------------------------
+export pid=${pid:-$$}
+export outid=${outid:-"LL$job"}
+export DATA=${DATA:-${DATAROOT}/${jobid}}
+mkdir -p ${DATA}
+cd ${DATA}
+
+#-----------------------------------------------------------------------
+# Source the variable definitions file
+#-----------------------------------------------------------------------
+
+. ${HOMErrfs}/ush/rrfs_nco_config.sh
 
 #-----------------------------------------------------------------------
 # Specify Execution Areas
@@ -12,19 +27,14 @@ export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
-
 export FIX_UPP=${FIXrrfs}/upp
 export FIX_UPP_CRTM=${CRTM_FIX}		# CRTM_FIX is from CRTM module
 
 #-----------------------------------------------------------------------
-# Source the variable definitions file and the bash utility functions.
+# Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-
-date
-export PS4='+ $SECONDS + '
 
 #-----------------------------------------------------------------------
 # Save current shell options (in a global array).  Then set new options
@@ -63,10 +73,12 @@ on the output files corresponding to a specified forecast hour.
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
 
-if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  export ENSMEM_INDX=${ENSMEM_INDX:-${MEMBER_NAME}}
-  export mem_num=m$(echo "${ENSMEM_INDX}")
+if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
+  export ENSMEM_INDX=${MEMBER_NAME}
+else
+  export ENSMEM_INDX=""
 fi
+export mem_num=m$(echo "${ENSMEM_INDX}")
 
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ ${CYCLE_TYPE} == "spinup" ]; then
@@ -77,19 +89,14 @@ else
     export INPUT_DATA="${DATAROOT}/${RUN}_forecast_${mem_num}_${envir}_${cyc}"
     export jobid=${RUN}_post_${mem_num}_${envir}_${cyc}_f${fhr}
   else
-    if [ ${WGF} == "firewx" ]; then
-      export INPUT_DATA="${DATAROOT}/firewx_forecast_${envir}_${cyc}"
-      export jobid=${WGF}_post_${envir}_${cyc}_f${fhr}
-    else
-      export INPUT_DATA="${DATAROOT}/${RUN}_forecast_${envir}_${cyc}"
-      export jobid=${RUN}_post_${envir}_${cyc}_f${fhr}
-    fi
+    export INPUT_DATA="${DATAROOT}/${RUN}_forecast_${envir}_${cyc}"
+    export jobid=${RUN}_post_${envir}_${cyc}_f${fhr}
   fi
 fi
 
-if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
-  export jobid=${taskid}
-fi
+#if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
+#  export jobid=${taskid}
+#fi
 
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p ${DATA}

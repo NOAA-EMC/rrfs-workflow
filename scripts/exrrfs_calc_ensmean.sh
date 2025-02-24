@@ -51,7 +51,6 @@ RRFS for the specified cycle.
 # Set environment
 #
 
-ulimit -s unlimited
 ulimit -a
 
 case $MACHINE in
@@ -89,6 +88,7 @@ case $MACHINE in
   ;;
 #
 esac
+nens=${NUM_ENS_MEMBERS:-"30"}
 #
 #-----------------------------------------------------------------------
 #
@@ -120,12 +120,7 @@ for imem in  $(seq 1 $nens)
   ensmem=$( printf "%03d" $imem ) 
   memberstring=$( printf "%03d" $imem )
 
-  if [ "${CYCLE_TYPE}" = "spinup" ]; then
-    bkpath=${DATAROOT}/${RUN}_forecast_spinup_m${ensmem}_${envir}_${cyc}/INPUT  # cycling, use background from RESTART
-  else
-    bkpath=${DATAROOT}/${RUN}_forecast_m${ensmem}_${envir}_${cyc}/INPUT  # cycling, use background from RESTART
-  fi
-
+  bkpath=${COMOUT}/m${ensmem}/forecast/INPUT
   dynvarfile=${bkpath}/fv_core.res.tile1.nc
   tracerfile=${bkpath}/fv_tracer.res.tile1.nc
   if [ -r "${dynvarfile}" ] && [ -r "${tracerfile}" ] ; then
@@ -203,6 +198,16 @@ ln -s fv3sar_tile1_sfcvar sfc_data.nc
 for files in fv3sar_tile1_dynvar  fv3sar_tile1_sfcvar  fv3sar_tile1_tracer  ; do
   ncatted -a checksum,,d,,  $files
 done
+#
+#-----------------------------------------------------------------------
+#
+# Copy output from the ensemble mean task into umbrella data directory.
+#
+#-----------------------------------------------------------------------
+#
+cpreq fv3sar_tile1_dynvar ${umbrella_calc_ensmean_data}
+cpreq fv3sar_tile1_sfcvar ${umbrella_calc_ensmean_data}
+cpreq fv3sar_tile1_tracer ${umbrella_calc_ensmean_data}
 #
 #-----------------------------------------------------------------------
 #

@@ -1,8 +1,23 @@
 #!/bin/bash
 
+date
+export PS4='+ $SECONDS + ' 
+set -xue
+
 #-----------------------------------------------------------------------
 # RRFS Save DA Output
 #-----------------------------------------------------------------------
+export pid=${pid:-$$}
+export outid=${outid:-"LL$job"}
+export DATA=${DATA:-${DATAROOT}/${jobid}}
+mkdir -p ${DATA}
+cd ${DATA}
+
+#-----------------------------------------------------------------------
+# Source the variable definitions file
+#-----------------------------------------------------------------------
+
+. ${HOMErrfs}/ush/rrfs_nco_config.sh
 
 #-----------------------------------------------------------------------
 # Specify Execution Areas
@@ -14,14 +29,10 @@ export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 
 #-----------------------------------------------------------------------
-# Source the variable definitions file and the bash utility functions.
+# Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-
-date
-export PS4='+ $SECONDS + '
 
 #-----------------------------------------------------------------------
 # Save current shell options (in a global array).  Then set new options
@@ -59,10 +70,12 @@ This is the J-job script for the task that saves DA analysis files to nwges.
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
 
-if [ ${DO_ENSEMBLE} = "TRUE" ] || [ ${CYCLE_TYPE} == "enfcst" ]; then
-  export ENSMEM_INDX=${ENSMEM_INDX:-${MEMBER_NAME}}
-  export mem_num=m$(echo "${ENSMEM_INDX}")
+if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
+  export ENSMEM_INDX=${MEMBER_NAME}
+else
+  export ENSMEM_INDX=""
 fi
+export mem_num=m$(echo "${ENSMEM_INDX}")
 
 # NWGES_DIR is the directory in which the model IC file (DA analysis) will be saved
 
@@ -81,9 +94,9 @@ if [ ${CYCLE_TYPE} == "enfcst" ]; then
   export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast_enfcst"
 fi
 
-if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
-  export jobid=${taskid}
-fi
+#if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
+#  export jobid=${taskid}
+#fi
 
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p "${NWGES_DIR}/DA_OUTPUT"

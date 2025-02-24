@@ -20,7 +20,7 @@ export CDATE="${PDY}${cyc}"
 
 module list
 export WGF="%WGF%"
-%include <enkf_enkfupdt_dev_wire_%CYC%.h>
+export OB_TYPE="conv"
 ############################################################
 # CALL executable job script here
 ############################################################

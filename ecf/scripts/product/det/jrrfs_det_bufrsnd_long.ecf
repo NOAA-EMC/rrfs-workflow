@@ -20,7 +20,6 @@ export CDATE="${PDY}${cyc}"
 
 module list
 export WGF="%WGF%"
-%include <det_bufrsnd_long_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################

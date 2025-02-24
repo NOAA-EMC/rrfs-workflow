@@ -22,7 +22,6 @@ module list
 export WGF="%WGF%"
 export CYCLE_TYPE="%CYCLE_TYPE%"
 export CYCLE_SUBTYPE="%CYCLE_SUBTYPE%"
-%include <enkf_observer_gsi_spinup_ensmean_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################

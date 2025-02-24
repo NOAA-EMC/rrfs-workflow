@@ -1,8 +1,39 @@
 #!/bin/bash
 
+date
+export PS4='+ $SECONDS + ' 
+set -xue
+
 #-----------------------------------------------------------------------
 # RRFS GLM Gridded Lightning Data Preprocessing
 #-----------------------------------------------------------------------
+export pid=${pid:-$$}
+export outid=${outid:-"LL$job"}
+export RUN=${RUN:-rrfs}
+
+#-----------------------------------------------------------------------
+# Define umbrella data directories
+#-----------------------------------------------------------------------
+export CYCLE_TYPE=${CYCLE_TYPE:-prod}
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/${RUN}_init_spinup_${cyc}_${rrfs_ver}/${WGF}}
+else
+  export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/${RUN}_init_${cyc}_${rrfs_ver}/${WGF}}
+fi
+export shared_output_data=${umbrella_init_data}/output
+
+#-----------------------------------------------------------------------
+# Define data directories
+#-----------------------------------------------------------------------
+export DATA=${DATA:-${umbrella_init_data}/${jobid}}
+mkdir -p ${DATA} ${shared_output_data}
+cd ${DATA}
+
+#-----------------------------------------------------------------------
+# Source the variable definitions file
+#-----------------------------------------------------------------------
+
+. ${HOMErrfs}/ush/rrfs_nco_config.sh
 
 #-----------------------------------------------------------------------
 # Specify Execution Areas
@@ -12,14 +43,12 @@ export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
-
 export FIX_GSI=${FIXrrfs}/gsi
 
 #-----------------------------------------------------------------------
-# Source the variable definitions file and the bash utility functions.
+# Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
 
 #-----------------------------------------------------------------------
@@ -53,41 +82,13 @@ preprocess with RRFS for the specified cycle.
 ========================================================================"
 
 #-----------------------------------------------------------------------
-# Obtain unique process id (pid) and create the run directory (DATA).
-#-----------------------------------------------------------------------
-
-export pid=${pid:-$$}
-export RUN=${RUN:-rrfs}
-
-if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
-  export jobid=${taskid}
-else
-  if [ "${CYCLE_TYPE}" = "spinup" ]; then
-    export jobid=${RUN}_process_lightning_spinup_${envir}_${cyc}
-  else
-    export jobid=${RUN}_process_lightning_prod_${envir}_${cyc}
-  fi
-fi
-
-export DATA=${DATA:-${DATAROOT}/${jobid}}
-mkdir -p ${DATA}
-cd ${DATA}
-
-export OBS_EAST=$GLMFED_EAST_ROOT
-export OBS_WEST=$GLMFED_WEST_ROOT
-export RRFSE_NWGES=$GESROOT
-export NUM_ENS_MEMBERS=$NUM_ENS_MEMBERS
-export DA_CYCLE_INTERV=$DA_CYCLE_INTERV
-export MODE=$GLMFED_DATA_MODE
-
-#-----------------------------------------------------------------------
 # Execute the script.
 #-----------------------------------------------------------------------
 
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-python -u ${HOMErrfs}/scripts/exrrfs_process_lightning.py
+${HOMErrfs}/scripts/exrrfs_process_lightning.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

@@ -21,7 +21,6 @@ export CDATE="${PDY}${cyc}"
 module list
 export WGF="%WGF%"
 export FHR="%FHR%"
-%include <det_post_f014_45_00_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################

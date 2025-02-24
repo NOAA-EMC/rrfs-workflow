@@ -20,9 +20,9 @@ export CDATE="${PDY}${cyc}"
 
 module list
 export WGF="%WGF%"
+export CYCLE_TYPE="%CYCLE_TYPE%"
 export GSI_TYPE="%GSI_TYPE%"
 export MEM_TYPE="%MEM_TYPE%"
-%include <det_analysis_gsi_diag_spinup_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################

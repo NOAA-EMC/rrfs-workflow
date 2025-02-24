@@ -21,7 +21,7 @@ export CDATE="${PDY}${cyc}"
 module list
 export WGF="%WGF%"
 export CYCLE_TYPE="%CYCLE_TYPE%"
-%include <enkf_radarref_spinup_dev_wire_%CYC%.h>
+export OB_TYPE="radardbz"
 ############################################################
 # CALL executable job script here
 ############################################################

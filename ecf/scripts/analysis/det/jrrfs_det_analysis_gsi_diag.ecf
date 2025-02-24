@@ -3,7 +3,7 @@
 #PBS -S /bin/bash
 #PBS -q %QUEUE%
 #PBS -A %PROJ%-%PROJENVIR%
-#PBS -l walltime=01:15:00
+#PBS -l walltime=00:15:00
 #PBS -l select=1:mpiprocs=128:ncpus=128
 #PBS -l place=excl
 #PBS -l debug=true
@@ -22,7 +22,6 @@ module list
 export WGF="%WGF%"
 export GSI_TYPE="%GSI_TYPE%"
 export MEM_TYPE="%MEM_TYPE%"
-%include <det_analysis_gsi_diag_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################

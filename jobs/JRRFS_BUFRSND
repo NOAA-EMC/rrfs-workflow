@@ -1,8 +1,23 @@
 #!/bin/bash
 
+date
+export PS4='+ $SECONDS + ' 
+set -xue
+
 #-----------------------------------------------------------------------
 # RRFS Bufr Sounding
 #-----------------------------------------------------------------------
+export pid=${pid:-$$}
+export outid=${outid:-"LL$job"}
+export DATA=${DATA:-${DATAROOT}/${jobid}}
+mkdir -p ${DATA}
+cd ${DATA}
+
+#-----------------------------------------------------------------------
+# Source the variable definitions file
+#-----------------------------------------------------------------------
+
+. ${HOMErrfs}/ush/rrfs_nco_config.sh
 
 #-----------------------------------------------------------------------
 # Specify Execution Areas
@@ -12,19 +27,14 @@ export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
-
 export FIX_BUFRSND=${FIXrrfs}/bufrsnd
 export GEMPAKrrfs=/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/gempak
 
 #-----------------------------------------------------------------------
-# Source the variable definitions file and the bash utility functions.
+# Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-
-date
-export PS4='+ $SECONDS + '
 
 #-----------------------------------------------------------------------
 # Save current shell options (in a global array).  Then set new options
@@ -66,10 +76,12 @@ export RUN=${RUN:-rrfs}
 export fhr=01
 export tmmark=tm00
 
-if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  export ENSMEM_INDX=${ENSMEM_INDX:-${MEMBER_NAME}}
-  export mem_num=m$(printf "%03d" "$((10#${ENSMEM_INDX}))")
+if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
+  export ENSMEM_INDX=${MEMBER_NAME}
+else
+  export ENSMEM_INDX=""
 fi
+export mem_num=m$(echo "${ENSMEM_INDX}")
 
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
@@ -83,15 +95,15 @@ fi
 mkdir -p "${NWGES_DIR}/RESTART"
 mkdir -p "${NWGES_DIR}/INPUT"
 
-if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
-  export jobid=${taskid}
-else
-  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export jobid=${RUN}_bufrsnd_${mem_num}_${envir}_${cyc}
-  else
-    export jobid=${RUN}_bufrsnd_${envir}_${cyc}
-  fi
-fi
+#if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
+#  export jobid=${taskid}
+#else
+#  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+#    export jobid=${RUN}_bufrsnd_${mem_num}_${envir}_${cyc}
+#  else
+#    export jobid=${RUN}_bufrsnd_${envir}_${cyc}
+#  fi
+#fi
 
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 rm -rf ${DATA}

@@ -1,1 +1,0 @@
-export GLOBAL_VAR_DEFNS_FP="${HOMErrfs}/parm/config/det/var_defns.sh" export LOGDIR="/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.9.1/logs/rrfs.@Y@m@d/@H" export NWGES_BASEDIR="/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/nwges" export nens="0"

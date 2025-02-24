@@ -13,7 +13,7 @@ suite nco_rrfs_dev_08
     edit ENVIR 'prod'
     edit QUEUE 'devhigh'
     edit QUEUE_ARCH 'dev_transfer'
-    edit OUTPUTDIR '/lfs/h3/emc/rrfstemp/ecflow/ptmp/%EMC_USER%/ecflow_rrfs/para/output/prod/today'
+    edit OUTPUTDIR '/lfs/h3/emc/eib/noscrub/ptmp/%EMC_USER%/ecflow_rrfs/para/output/prod/today'
     family 08
       edit CYC '08'
       task cycle_end
@@ -163,6 +163,7 @@ suite nco_rrfs_dev_08
             endfamily   # det
             family enkf
               edit WGF 'enkf'
+              edit CYCLE_TYPE 'prod'
               task jrrfs_enkf_process_radar
                 trigger :TIME >= 0845 and :TIME < 0905
               task jrrfs_enkf_process_lightning
@@ -175,197 +176,200 @@ suite nco_rrfs_dev_08
             family det
               edit WGF 'det'
               task jrrfs_det_prep_cyc
+                edit CYCLE_TYPE 'prod'
                 trigger /nco_rrfs_dev_07/primary/07/rrfs/v1.0/forecast/det/jrrfs_det_save_restart_f1==complete
               task jrrfs_det_prep_cyc_spinup
+                edit CYCLE_TYPE 'spinup'
                 trigger /nco_rrfs_dev_07/primary/07/rrfs/v1.0/forecast/det/jrrfs_det_save_restart_spinup_f001==complete
             endfamily   # det
             family enkf
               edit WGF 'enkf'
               edit GSI_TYPE 'OBSERVER'
               edit MEM_TYPE 'MEAN'
+              edit CYCLE_TYPE 'prod'
               task jrrfs_enkf_prep_cyc_mem001
-                edit BCGRP 'mem001'
+                edit MEMBER_NAME '001'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem001
               task jrrfs_enkf_prep_cyc_mem002
-                edit BCGRP 'mem002'
+                edit MEMBER_NAME '002'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem002
               task jrrfs_enkf_prep_cyc_mem003
-                edit BCGRP 'mem003'
+                edit MEMBER_NAME '003'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem003
               task jrrfs_enkf_prep_cyc_mem004
-                edit BCGRP 'mem004'
+                edit MEMBER_NAME '004'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem004
               task jrrfs_enkf_prep_cyc_mem005
-                edit BCGRP 'mem005'
+                edit MEMBER_NAME '005'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem005
               task jrrfs_enkf_prep_cyc_mem006
-                edit BCGRP 'mem006'
+                edit MEMBER_NAME '006'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem006
               task jrrfs_enkf_prep_cyc_mem007
-                edit BCGRP 'mem007'
+                edit MEMBER_NAME '007'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem007
               task jrrfs_enkf_prep_cyc_mem008
-                edit BCGRP 'mem008'
+                edit MEMBER_NAME '008'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem008
               task jrrfs_enkf_prep_cyc_mem009
-                edit BCGRP 'mem009'
+                edit MEMBER_NAME '009'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem009
               task jrrfs_enkf_prep_cyc_mem010
-                edit BCGRP 'mem010'
+                edit MEMBER_NAME '010'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem010
               task jrrfs_enkf_prep_cyc_mem011
-                edit BCGRP 'mem011'
+                edit MEMBER_NAME '011'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem011
               task jrrfs_enkf_prep_cyc_mem012
-                edit BCGRP 'mem012'
+                edit MEMBER_NAME '012'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem012
               task jrrfs_enkf_prep_cyc_mem013
-                edit BCGRP 'mem013'
+                edit MEMBER_NAME '013'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem013
               task jrrfs_enkf_prep_cyc_mem014
-                edit BCGRP 'mem014'
+                edit MEMBER_NAME '014'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem014
               task jrrfs_enkf_prep_cyc_mem015
-                edit BCGRP 'mem015'
+                edit MEMBER_NAME '015'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem015
               task jrrfs_enkf_prep_cyc_mem016
-                edit BCGRP 'mem016'
+                edit MEMBER_NAME '016'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem016
               task jrrfs_enkf_prep_cyc_mem017
-                edit BCGRP 'mem017'
+                edit MEMBER_NAME '017'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem017
               task jrrfs_enkf_prep_cyc_mem018
-                edit BCGRP 'mem018'
+                edit MEMBER_NAME '018'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem018
               task jrrfs_enkf_prep_cyc_mem019
-                edit BCGRP 'mem019'
+                edit MEMBER_NAME '019'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem019
               task jrrfs_enkf_prep_cyc_mem020
-                edit BCGRP 'mem020'
+                edit MEMBER_NAME '020'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem020
               task jrrfs_enkf_prep_cyc_mem021
-                edit BCGRP 'mem021'
+                edit MEMBER_NAME '021'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem021
               task jrrfs_enkf_prep_cyc_mem022
-                edit BCGRP 'mem022'
+                edit MEMBER_NAME '022'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem022
               task jrrfs_enkf_prep_cyc_mem023
-                edit BCGRP 'mem023'
+                edit MEMBER_NAME '023'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem023
               task jrrfs_enkf_prep_cyc_mem024
-                edit BCGRP 'mem024'
+                edit MEMBER_NAME '024'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem024
               task jrrfs_enkf_prep_cyc_mem025
-                edit BCGRP 'mem025'
+                edit MEMBER_NAME '025'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem025
               task jrrfs_enkf_prep_cyc_mem026
-                edit BCGRP 'mem026'
+                edit MEMBER_NAME '026'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem026
               task jrrfs_enkf_prep_cyc_mem027
-                edit BCGRP 'mem027'
+                edit MEMBER_NAME '027'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem027
               task jrrfs_enkf_prep_cyc_mem028
-                edit BCGRP 'mem028'
+                edit MEMBER_NAME '028'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem028
               task jrrfs_enkf_prep_cyc_mem029
-                edit BCGRP 'mem029'
+                edit MEMBER_NAME '029'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem029
               task jrrfs_enkf_prep_cyc_mem030
-                edit BCGRP 'mem030'
+                edit MEMBER_NAME '030'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem030
               task jrrfs_enkf_calc_ensmean
                 trigger ./jrrfs_enkf_prep_cyc_mem001==complete and ./jrrfs_enkf_prep_cyc_mem002==complete and ./jrrfs_enkf_prep_cyc_mem003==complete and ./jrrfs_enkf_prep_cyc_mem004==complete and ./jrrfs_enkf_prep_cyc_mem005==complete and ./jrrfs_enkf_prep_cyc_mem006==complete and ./jrrfs_enkf_prep_cyc_mem007==complete and ./jrrfs_enkf_prep_cyc_mem008==complete and ./jrrfs_enkf_prep_cyc_mem009==complete and ./jrrfs_enkf_prep_cyc_mem010==complete and ./jrrfs_enkf_prep_cyc_mem011==complete and ./jrrfs_enkf_prep_cyc_mem012==complete and ./jrrfs_enkf_prep_cyc_mem013==complete and ./jrrfs_enkf_prep_cyc_mem014==complete and ./jrrfs_enkf_prep_cyc_mem015==complete and ./jrrfs_enkf_prep_cyc_mem016==complete and ./jrrfs_enkf_prep_cyc_mem017==complete and ./jrrfs_enkf_prep_cyc_mem018==complete and ./jrrfs_enkf_prep_cyc_mem019==complete and ./jrrfs_enkf_prep_cyc_mem020==complete and ./jrrfs_enkf_prep_cyc_mem021==complete and ./jrrfs_enkf_prep_cyc_mem022==complete and ./jrrfs_enkf_prep_cyc_mem023==complete and ./jrrfs_enkf_prep_cyc_mem024==complete and ./jrrfs_enkf_prep_cyc_mem025==complete and ./jrrfs_enkf_prep_cyc_mem026==complete and ./jrrfs_enkf_prep_cyc_mem027==complete and ./jrrfs_enkf_prep_cyc_mem028==complete and ./jrrfs_enkf_prep_cyc_mem029==complete and ./jrrfs_enkf_prep_cyc_mem030==complete
               task jrrfs_enkf_observer_gsi_ensmean
                 trigger ./jrrfs_enkf_calc_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem001
-                edit BCGRP 'mem001'
+                edit MEMBER_NAME '001'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem002
-                edit BCGRP 'mem002'
+                edit MEMBER_NAME '002'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem003
-                edit BCGRP 'mem003'
+                edit MEMBER_NAME '003'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem004
-                edit BCGRP 'mem004'
+                edit MEMBER_NAME '004'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem005
-                edit BCGRP 'mem005'
+                edit MEMBER_NAME '005'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem006
-                edit BCGRP 'mem006'
+                edit MEMBER_NAME '006'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem007
-                edit BCGRP 'mem007'
+                edit MEMBER_NAME '007'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem008
-                edit BCGRP 'mem008'
+                edit MEMBER_NAME '008'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem009
-                edit BCGRP 'mem009'
+                edit MEMBER_NAME '009'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem010
-                edit BCGRP 'mem010'
+                edit MEMBER_NAME '010'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem011
-                edit BCGRP 'mem011'
+                edit MEMBER_NAME '011'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem012
-                edit BCGRP 'mem012'
+                edit MEMBER_NAME '012'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem013
-                edit BCGRP 'mem013'
+                edit MEMBER_NAME '013'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem014
-                edit BCGRP 'mem014'
+                edit MEMBER_NAME '014'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem015
-                edit BCGRP 'mem015'
+                edit MEMBER_NAME '015'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem016
-                edit BCGRP 'mem016'
+                edit MEMBER_NAME '016'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem017
-                edit BCGRP 'mem017'
+                edit MEMBER_NAME '017'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem018
-                edit BCGRP 'mem018'
+                edit MEMBER_NAME '018'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem019
-                edit BCGRP 'mem019'
+                edit MEMBER_NAME '019'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem020
-                edit BCGRP 'mem020'
+                edit MEMBER_NAME '020'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem021
-                edit BCGRP 'mem021'
+                edit MEMBER_NAME '021'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem022
-                edit BCGRP 'mem022'
+                edit MEMBER_NAME '022'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem023
-                edit BCGRP 'mem023'
+                edit MEMBER_NAME '023'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem024
-                edit BCGRP 'mem024'
+                edit MEMBER_NAME '024'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem025
-                edit BCGRP 'mem025'
+                edit MEMBER_NAME '025'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem026
-                edit BCGRP 'mem026'
+                edit MEMBER_NAME '026'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem027
-                edit BCGRP 'mem027'
+                edit MEMBER_NAME '027'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem028
-                edit BCGRP 'mem028'
+                edit MEMBER_NAME '028'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem029
-                edit BCGRP 'mem029'
+                edit MEMBER_NAME '029'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem030
-                edit BCGRP 'mem030'
+                edit MEMBER_NAME '030'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
             endfamily   # enkf
 
@@ -376,24 +380,33 @@ suite nco_rrfs_dev_08
               edit MEM_TYPE 'MEMBER'
               edit GSI_TYPE 'ANALYSIS'
               task jrrfs_det_analysis_gsi
+                edit CYCLE_TYPE 'prod'
                 trigger ../../prep/det/jrrfs_det_prep_cyc==complete and ../../fsm/jrrfs_fsm:release_det_analysis_gsi
               task jrrfs_det_update_lbc_soil
+                edit CYCLE_TYPE 'prod'
                 trigger ./jrrfs_det_analysis_gsi==complete
               task jrrfs_det_analysis_gsi_diag
+                edit CYCLE_TYPE 'prod'
                 trigger ./jrrfs_det_analysis_gsi==complete
               task jrrfs_det_analysis_nonvarcld
+                edit CYCLE_TYPE 'prod'
                 trigger ./jrrfs_det_update_lbc_soil==complete and ../../init/det/jrrfs_det_process_bufr==complete
               task jrrfs_det_analysis_gsi_spinup
+                edit CYCLE_TYPE 'spinup'
                 trigger ../../prep/det/jrrfs_det_prep_cyc_spinup==complete
               task jrrfs_det_update_lbc_soil_spinup
+                edit CYCLE_TYPE 'spinup'
                 trigger ./jrrfs_det_analysis_gsi_spinup==complete
               task jrrfs_det_analysis_gsi_diag_spinup
+                edit CYCLE_TYPE 'spinup'
                 trigger ./jrrfs_det_analysis_gsi_spinup==complete
               task jrrfs_det_analysis_nonvarcld_spinup
+                edit CYCLE_TYPE 'spinup'
                 trigger ./jrrfs_det_update_lbc_soil_spinup==complete and ../../init/det/jrrfs_det_process_bufr_spinup==complete
             endfamily   # det
             family enkf
               edit WGF 'enkf'
+              edit CYCLE_TYPE 'prod'
               trigger ./det/jrrfs_det_analysis_gsi_spinup==complete
               task jrrfs_enkf_updt
                 trigger ../../prep/enkf==complete
@@ -495,21 +508,27 @@ suite nco_rrfs_dev_08
             family det
               edit WGF 'det'
               task jrrfs_det_forecast
+                edit CYCLE_TYPE 'prod'
                 trigger ../../analysis/det/jrrfs_det_analysis_nonvarcld==complete
               task jrrfs_det_save_restart_f1
+                edit CYCLE_TYPE 'prod'
                 edit FHR '001'
                 trigger ../../fsm/jrrfs_fsm:release_save_restart_f1
               task jrrfs_det_save_restart_f2
+                edit CYCLE_TYPE 'prod'
                 edit FHR '002'
                 trigger ../../fsm/jrrfs_fsm:release_save_restart_f2
               task jrrfs_det_forecast_spinup
+                edit CYCLE_TYPE 'spinup'
                 trigger ../../analysis/det/jrrfs_det_analysis_nonvarcld_spinup==complete
               task jrrfs_det_save_restart_spinup_f001
+                edit CYCLE_TYPE 'spinup'
                 edit FHR '001'
                 trigger ../../fsm/jrrfs_fsm:release_save_restart_spinup_f001
             endfamily   # det
             family enkf
               edit WGF 'enkf'
+              edit CYCLE_TYPE 'prod'
               task jrrfs_enkf_forecast_mem001
                 edit MEMBER_NAME '001'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem001==complete

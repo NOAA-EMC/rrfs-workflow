@@ -20,7 +20,6 @@ export CDATE="${PDY}${cyc}"
 
 module list
 export WGF="%WGF%"
-%include <enkf_process_bufr_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################

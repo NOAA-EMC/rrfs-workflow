@@ -52,17 +52,11 @@ specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  runcyc_path=${RUN}.${PDY}/${cyc}/${mem_num}
-else
-  runcyc_path=${RUN}.${PDY}/${cyc}
-fi
-
-run_blending=${GESROOT}/${runcyc_path}/run_blending
-run_ensinit=${GESROOT}/${runcyc_path}/run_ensinit
+run_blending=${COMOUT}/run_blending
+run_ensinit=${COMOUT}/run_ensinit
 if [[ ${CYCLE_SUBTYPE} == "ensinit" && -e $run_blending && ! -e $run_ensinit ]]; then
-   echo "clean exit ensinit, blending used instead of ensinit."
-   exit 0
+   echo "FATAL: Design issue found in forecast. clean exit ensinit, blending used instead of ensinit."
+   exit 7
 fi
 #
 #-----------------------------------------------------------------------
@@ -71,7 +65,6 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-ulimit -s unlimited
 ulimit -a
 
 case $MACHINE in
@@ -121,6 +114,7 @@ Run command has not been specified for this machine:
     ;;
 
 esac
+export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
 #
 #-----------------------------------------------------------------------
 #
@@ -277,6 +271,8 @@ print_info_msg "$VERBOSE" "
 The forecast has BKTYPE $BKTYPE (1:cold start ; 0 cycling)"
 
 cd ${DATA}/INPUT
+# Link to all files in FORECAST_INPUT_PRODUCT directory inside COMOUT
+ln -sf ${FORECAST_INPUT_PRODUCT}/* .
 
 relative_or_null=""
 
@@ -284,7 +280,7 @@ n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
 if [ "${DO_NON_DA_RUN}" = "TRUE" ]; then
-  target="${DATAROOT}/${RUN}_make_ics_${envir}_${cyc}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc"
+  target="${umbrella_ics_data}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc"
 else
   if [ ${BKTYPE} -eq 1 ]; then
     target="gfs_data.tile${TILE_RGNL}.halo${NH0}.nc"
@@ -316,20 +312,20 @@ else
 fi
 
 if [ "${DO_NON_DA_RUN}" = "TRUE" ]; then
-  target="${DATAROOT}/${RUN}_make_ics_${envir}_${cyc}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc"
+  target="${umbrella_ics_data}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc"
   symlink="sfc_data.nc"
   ln -sf ${relative_or_null} $target $symlink
 
-  target="${DATAROOT}/${RUN}_make_ics_${envir}_${cyc}/gfs_ctrl.nc"
+  target="${umbrella_ics_data}/gfs_ctrl.nc"
   symlink="gfs_ctrl.nc"
   ln -sf ${relative_or_null} $target $symlink
 
-  target="${DATAROOT}/${RUN}_make_ics_${envir}_${cyc}/gfs_bndy.tile${TILE_RGNL}.000.nc"
+  target="${umbrella_ics_data}/gfs_bndy.tile${TILE_RGNL}.000.nc"
   symlink="gfs_bndy.tile${TILE_RGNL}.000.nc"
   ln -sf ${relative_or_null} $target $symlink
 
   for fhr in $(seq -f "%03g" ${LBC_SPEC_INTVL_HRS} ${LBC_SPEC_INTVL_HRS} ${FCST_LEN_HRS}); do
-    target="${DATAROOT}/${RUN}_make_lbcs_${envir}_${cyc}/gfs_bndy.tile${TILE_RGNL}.${fhr}.nc"
+    target="${COMOUT}/lbcs/gfs_bndy.tile${TILE_RGNL}.${fhr}.nc"
     symlink="gfs_bndy.tile${TILE_RGNL}.${fhr}.nc"
     ln -sf ${relative_or_null} $target $symlink
   done
@@ -361,9 +357,9 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then
   yyyymmddhh=${CDATE:0:10}
   echo ${yyyymmddhh}
   if [ ${CYCLE_TYPE} = "spinup" ]; then
-    smokefile=${GESROOT}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00_spinup.nc
+    smokefile=${COMrrfs}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00_spinup.nc
   else
-    smokefile=${GESROOT}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc
+    smokefile=${COMrrfs}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc
   fi
   echo "try to use smoke file=",${smokefile}
   if [ -f ${smokefile} ]; then
@@ -501,6 +497,150 @@ if [ "${STOCH}" = "TRUE" ]; then
    DATA = \"${DATA}\""
   fi
 fi
+#-----------------------------------------------------------------------
+#   
+# Forecast hours for current run
+#
+#-----------------------------------------------------------------------
+#
+if [ ${CYCLE_TYPE} = "spinup" ]; then
+  FCST_LEN_HRS=${FCST_LEN_HRS_SPINUP}
+else
+  FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$cyc]}
+fi
+
+#### dev overwrite
+#### FCST_LEN_HRS=60
+#### export FCST_LEN_HRS_SPINUP=60
+#
+#-----------------------------------------------------------------------
+#
+# make symbolic links to write forecast files directly in shared forecast output location
+#   ${shared_forecast_output_data}
+#-----------------------------------------------------------------------
+#
+shared_output_data=${shared_forecast_output_data}
+mkdir -p ${shared_output_data}
+fhr_ct=0
+fhr=0
+NLN=${NLN:-"/bin/ln -sf"}
+while [ $fhr -le ${FCST_LEN_HRS} ]; do
+  fhr_ct=$(printf "%03d" $fhr)
+  source_dyn="dynf${fhr_ct}.nc"
+  source_phy="phyf${fhr_ct}.nc"
+  source_log="log.atm.f${fhr_ct}"
+  target_dyn="${shared_output_data}/dynf${fhr_ct}.nc"
+  target_phy="${shared_output_data}/phyf${fhr_ct}.nc"
+  target_log="${shared_output_data}/log.atm.f${fhr_ct}"
+  eval $NLN ${target_dyn} ${source_dyn}
+  eval $NLN ${target_phy} ${source_phy}
+  eval $NLN ${target_log} ${source_log}
+  (( fhr=fhr+1 ))
+done
+eval $NLN ${shared_output_data}/grid_spec.nc grid_spec.nc
+eval $NLN ${shared_output_data}/atmos_static.nc atmos_static.nc
+
+#-----------------------------------------------------------------------
+#
+# Add RESTART capability
+#
+#-----------------------------------------------------------------------
+#
+flag_fcst_restart="FALSE"
+coupler_res_ct=0
+DO_FCST_RESTART=${DO_FCST_RESTART:-"TRUE"}
+
+#if [ ${CYCLE_TYPE} = "spinup" ]; then
+#  FCST_LEN_HRS=${FCST_LEN_HRS_SPINUP}
+#else
+#  FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$cyc]}
+#fi
+
+##### dev overwrite
+#FCST_LEN_HRS=60
+#export FCST_LEN_HRS_SPINUP=60
+
+
+# Get the current restart set count from shared restart location in the Umbrella Data
+if [ -d ${shared_forecast_restart_data} ]; then
+  set +eu
+  coupler_res_ct=$(eval ls -A ${shared_forecast_restart_data}/*.coupler.res|wc -l)
+fi
+
+# make symbolic links to write forecast RESTART files directly to shared forecast RESTART location
+if [ ${CYCLE_TYPE} = "spinup" ]; then
+  RESTART_HRS='1'
+fi
+if [ $FCST_LEN_HRS -gt 0 ]; then
+  cd ${DATA}/RESTART
+  
+  [[ -e ${umbrella_forecast_data}/clean.flag ]] && rm -f ${umbrella_forecast_data}/clean.flag
+  file_ids=( "coupler.res" "fv_core.res.nc" "fv_core.res.tile1.nc" "fv_srf_wnd.res.tile1.nc" "fv_tracer.res.tile1.nc" "phy_data.nc" "sfc_data.nc" )
+  num_file_ids=${#file_ids[*]}
+  read -a restart_hrs <<< "${RESTART_HRS}"
+  num_restart_hrs=${#restart_hrs[*]}
+  for (( ih_rst=${num_restart_hrs}-1; ih_rst>=0; ih_rst-- )); do
+    cdate_restart_hr=`$NDATE +${restart_hrs[ih_rst]} ${PDY}${cyc}`
+    rst_yyyymmdd="${cdate_restart_hr:0:8}"
+    rst_hh="${cdate_restart_hr:8:2}"
+    for file_id in "${file_ids[@]}"; do
+      eval $NLN ${shared_forecast_restart_data}/${rst_yyyymmdd}.${rst_hh}0000.${file_id} ${rst_yyyymmdd}.${rst_hh}0000.${file_id}
+    done
+  done
+
+  cd ${DATA}
+fi
+
+if [ "${DO_FCST_RESTART}" = "TRUE" ] && [ $coupler_res_ct -gt 0 ] && [ $FCST_LEN_HRS -gt 6 ]; then
+  flag_fcst_restart="TRUE"
+  # Update FV3 input.nml for restart
+   $USHrrfs/update_input_nml.py \
+    --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
+    --run_dir "${DATA}" \
+    --restart
+  export err=$?
+  if [ $err -ne 0 ]; then
+    err_exit "FATAL ERROR: function to update the FV3 input.nml file for RESTART capability"
+  fi
+  # Check that restart files exist at restart_interval
+  file_ids=( "coupler.res" "fv_core.res.nc" "fv_core.res.tile1.nc" "fv_srf_wnd.res.tile1.nc" "fv_tracer.res.tile1.nc" "phy_data.nc" "sfc_data.nc" )
+  num_file_ids=${#file_ids[*]}
+  IFS=' '
+  read -a restart_hrs <<< "${RESTART_HRS}"
+  num_restart_hrs=${#restart_hrs[*]}
+  for (( ih_rst=${num_restart_hrs}-1; ih_rst>=0; ih_rst-- )); do
+    cdate_restart_hr=`$NDATE +${restart_hrs[ih_rst]} ${PDY}${cyc}`
+    rst_yyyymmdd="${cdate_restart_hr:0:8}"
+    rst_hh="${cdate_restart_hr:8:2}"
+    num_rst_files=0
+    for file_id in "${file_ids[@]}"; do
+      if [ -e "${umbrella_forecast_data}/RESTART/${rst_yyyymmdd}.${rst_hh}0000.${file_id}" ]; then
+        (( num_rst_files=num_rst_files+1 ))
+      fi
+    done
+    if [ "${num_rst_files}" = "${num_file_ids}" ]; then
+      FHROT="${restart_hrs[ih_rst]}"
+      restart_set_found="YES"
+      break
+    fi
+  done
+  # Create soft-link of restart files from the shared restart location in Umbrella DATA to INPUT directory
+  if [ ${restart_set_found} == "YES" ]; then
+    cd ${DATA}/INPUT
+    for file_id in "${file_ids[@]}"; do
+      if [ -e "${file_id}" ]; then
+        rm -f "${file_id}"
+      fi
+      target="${umbrella_forecast_data}/RESTART/${rst_yyyymmdd}.${rst_hh}0000.${file_id}"
+      symlink="${file_id}"
+      create_symlink_to_file target="$target" symlink="$symlink" relative="${relative_link_flag}"
+    done
+    cd ${DATA}
+  fi
+fi
+
+
+
 #
 #-----------------------------------------------------------------------
 #
@@ -601,6 +741,10 @@ fi
 #
 export pgm="ufs_model"
 cpreq -p ${FV3_EXEC_FP} ${DATA}/$pgm
+
+####
+exit 0
+
 . prep_step
 
 $APRUN ${DATA}/$pgm >>$pgmout 2>errfile
@@ -619,26 +763,6 @@ RRFS forecast completed successfully!!!
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-#
-#-----------------------------------------------------------------------
-#
-# Save grid_spec files for restart subdomain.
-#
-#-----------------------------------------------------------------------
-#
-if [ ${BKTYPE} -eq 1 ] && [ ${n_iolayouty} -ge 1 ]; then
-  for ii in ${list_iolayout}
-  do
-    iii=$(printf %4.4i $ii)
-    if [ -f "grid_spec.nc.${iii}" ]; then
-      cp grid_spec.nc.${iii} ${gridspec_dir}/${PDY}${cyc}.fv3_grid_spec.${iii}
-    else
-      err_exit "\
-      Cannot create symlink because target does not exist:
-      target = \"grid_spec.nc.$iii\""
-    fi
-  done
-fi
 #
 #-----------------------------------------------------------------------
 #
