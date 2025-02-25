@@ -1308,8 +1308,6 @@
                         <var name="ivgtyp"/>
                         <var name="landusef"/>
                         <var name="mminlu"/>
-                        <var name="isice_lu"/>
-                        <var name="iswater_lu"/>
                         <var name="landmask"/>
                         <var name="shdmin"/>
                         <var name="shdmax"/>
