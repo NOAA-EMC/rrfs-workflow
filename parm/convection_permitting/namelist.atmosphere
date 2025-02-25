@@ -60,6 +60,9 @@
     config_lsm_scheme    = 'sf_ruc'
     num_soil_layers      = 9
     config_pbl_scheme = 'bl_mynnedmf'
+    config_mynn_mixscalars = 0
+    config_mynn_mixaerosols = 1
+    config_mynn_mixnumcon = 0
 /
 &soundings
     config_sounding_interval = 'none'
