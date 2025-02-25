@@ -89,12 +89,10 @@ pio_stride=${PPN}
 if [[ "${MESH_NAME}" == "conus12km" ]]; then
   dt=60
   substeps=2
-  disp=12000.0
   radt=30
 elif [[ "${MESH_NAME}" == "conus3km" ]]; then
   dt=20
   substeps=4
-  disp=3000.0
   radt=15
 else
   echo "Unknown MESH_NAME, exit!"

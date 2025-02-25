@@ -7,7 +7,6 @@
     config_number_of_sub_steps = ${substeps}
     config_dynamics_split_steps = 3
     config_horiz_mixing = '2d_smagorinsky'
-    config_len_disp     = ${disp}
     config_visc4_2dsmag = 0.05
     config_scalar_advection = true
     config_monotonic = true
