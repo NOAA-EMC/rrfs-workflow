@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<registry model="mpas" core="atmosphere" core_abbrev="atm" version="8.2.2-2.0">
+
+<registry model="mpas" core="atmosphere" core_abbrev="atm" version="8.2.2-2.6">
 
 <!-- **************************************************************************************** -->
 <!-- ************************************** Dimensions ************************************** -->
@@ -524,6 +525,9 @@
 			<var name="snoalb"/>
 			<var name="albedo12m"/>
 			<var name="greenfrac"/>
+			<var name="landusef"/>
+			<var name="soilf"/>
+			<var name="lai12m"/>
 			<var name="var2d"/>
 			<var name="con"/>
 			<var name="oa1"/>
@@ -567,20 +571,6 @@
 			<var name="surface_pressure"/>
 
 #ifdef DO_PHYSICS
-			<var name="isltyp"/>
-			<var name="soilf"/>
-			<var name="ivgtyp"/>
-			<var name="landusef"/>
-			<var name="mminlu"/>
-			<var name="isice_lu"/>
-			<var name="iswater_lu"/>
-			<var name="landmask"/>
-			<var name="shdmin"/>
-			<var name="shdmax"/>
-			<var name="snoalb"/>
-			<var name="albedo12m"/>
-			<var name="greenfrac"/>
-			<var name="lai12m"/>
 			<var name="sfc_albbck"/>
 			<var name="skintemp"/>
 			<var name="snow"/>
@@ -879,20 +869,6 @@
                         <var name="sub3d_rucuten" packages="cu_grell_freitas_in"/>
                         <var name="sub3d_rvcuten" packages="cu_grell_freitas_in"/>
                         <var name="sigma_deep" packages="cu_grell_freitas_in"/>
-			<var name="isltyp"/>
-			<var name="soilf"/>
-			<var name="ivgtyp"/>
-			<var name="landusef"/>
-			<var name="mminlu"/>
-			<var name="isice_lu"/>
-			<var name="iswater_lu"/>
-			<var name="landmask"/>
-			<var name="shdmin"/>
-			<var name="shdmax"/>
-			<var name="snoalb"/>
-			<var name="albedo12m"/>
-			<var name="greenfrac"/>
-			<var name="lai12m"/>
 			<var name="sfc_albbck"/>
 			<var name="skintemp"/>
 			<var name="snow"/>
@@ -905,7 +881,6 @@
 			<var name="xice"/>
 			<var name="xland"/>
 			<var name="dzs"/>
-			<var name="zs"/>
 			<var name="smcrel"/>
 			<var name="sh2o"/>
 			<var name="smois"/>
@@ -1328,24 +1303,24 @@
 			<var name="uReconstructMeridional"/>
 			<var name="surface_pressure"/>
 #ifdef DO_PHYSICS
-			<var name="isltyp"/>
-			<var name="soilf"/>
-			<var name="ivgtyp"/>
-			<var name="landusef"/>
-			<var name="mminlu"/>
-			<var name="isice_lu"/>
-			<var name="iswater_lu"/>
-			<var name="landmask"/>
-			<var name="shdmin"/>
-			<var name="shdmax"/>
-			<var name="snoalb"/>
-			<var name="albedo12m"/>
-			<var name="greenfrac"/>
-			<var name="lai12m"/>
+                        <var name="isltyp"/>
+                        <var name="soilf"/>
+                        <var name="ivgtyp"/>
+                        <var name="landusef"/>
+                        <var name="mminlu"/>
+                        <var name="isice_lu"/>
+                        <var name="iswater_lu"/>
+                        <var name="landmask"/>
+                        <var name="shdmin"/>
+                        <var name="shdmax"/>
+                        <var name="snoalb"/>
+                        <var name="albedo12m"/>
+                        <var name="greenfrac"/>
+                        <var name="lai12m"/>
 			<var name="cldfrac"/>
-			<var name="re_cloud" packages="mp_thompson_in;mp_wsm6_in"/>
-			<var name="re_ice" packages="mp_thompson_in;mp_wsm6_in"/>
-			<var name="re_snow" packages="mp_thompson_in;mp_wsm6_in"/>
+			<var name="re_cloud" packages="mp_thompson_in;mp_wsm6_in;mp_tempo_in"/>
+			<var name="re_ice" packages="mp_thompson_in;mp_wsm6_in;mp_tempo_in"/>
+			<var name="re_snow" packages="mp_thompson_in;mp_wsm6_in;mp_tempo_in"/>
 			<var name="refl10cm_max"/>
 			<var name="rainc"/>
 			<var name="rainnc"/>
@@ -2642,11 +2617,21 @@
                      description="=0:suppress the allocation of variables needed in the EDMF option of the MYNN PBL scheme"
                      possible_values="0,1:updrafts,2:downdrafts"/>
 
-                <nml_option name="config_mynn_mixscalars" type="integer" default_value="1" in_defaults="false"
+                <nml_option name="config_mynn_mixscalars" type="integer" default_value="0" in_defaults="false"
                      units="-"
                      description="=1:activate mixing of scalars in the MYNN PBL scheme (=0 otherwise)"
                      possible_values="0,1"/>
 
+		<nml_option name="config_mynn_mixaerosols" type="integer" default_value="1" in_defaults="false"
+                     units="-"
+                     description="=1:activate mixing of aerosols in the MYNN PBL scheme (=0 otherwise)"
+                     possible_values="0,1"/>
+
+		<nml_option name="config_mynn_mixnumcon" type="integer" default_value="1" in_defaults="false"
+                     units="-"
+                     description="=1:activate mixing of number concentrations in the MYNN PBL scheme (=0 otherwise)"
+                     possible_values="0,1"/>
+		
                 <nml_option name="config_mynn_mixclouds" type="integer" default_value="1" in_defaults="false"
                      units="-"
                      description="1:activate mixing of cloud condensates in the MYNN PBL scheme"
@@ -3142,7 +3127,7 @@
 
 	        <var name="cqs" type="real" dimensions="nCells Time" units="m s^{-1}"
                      description="surface exchange coefficient for moisture at 2-meter"
-                     packages="bl_mynn_in;bl_mynnedmf_in;bl_ysu_in;bl_myj_in"/>
+                     packages="bl_mynnedmf_in;lsm_ruc_in"/>
 
                 <var name="ck" type="real" dimensions="nCells Time" units="unitless"
                      description="enthalpy exchange coeff at 10-meter"
