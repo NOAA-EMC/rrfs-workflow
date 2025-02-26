@@ -230,6 +230,9 @@ fields:
   - field name: surface_wind_speed
     mpas template field: u10
 
+  - field name: observable_domain_mask
+    mpas template field: u10
+
   - field name: land_type_index_USGS
     mpas template field: ivgtyp
 
