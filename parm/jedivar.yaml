@@ -28,7 +28,7 @@ cost function:
   cost type: 3D-Var
   time window:
      begin: '@beginDate@'
-     length: PT2H
+     length: PT4H
   jb evaluation: false
   geometry:
     nml_file: ./namelist.atmosphere
