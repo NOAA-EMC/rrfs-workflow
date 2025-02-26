@@ -6,7 +6,7 @@ export MESH_NAME=conus3km         # conus12km, conus3km, atl3km, etc
 export WGF="det"   # working group function = "det", "enkf", "ens", "firewx"
 export EXP_NAME=dev4
 export VERSION=$(cat ./VERSION)
-export TAG=c3v209
+export TAG=dev4
 export OPSROOT=/lfs5/BMC/nrtrr/NCO_dirs/${EXP_NAME}
 export EXPDIR=${OPSROOT}/exp/${VERSION}/rrfs${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
