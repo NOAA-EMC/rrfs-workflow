@@ -6,7 +6,6 @@ cpreq=${cpreq:-cpreq}
 prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
 cd ${DATA}
 
-CDATEm1=$($NDATE -1 ${CDATE})
 start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S) 
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 
 #
@@ -103,7 +102,8 @@ file_content=$(< ${PARMrrfs}/${physics_suite}/namelist.atmosphere) # read in all
 eval "echo \"${file_content}\"" > namelist.atmosphere
 ${cpreq} ${PARMrrfs}/streams.atmosphere.da streams.atmosphere
 analysisDate=""${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z""
-beginDate=""${CDATEm1:0:4}-${CDATEm1:4:2}-${CDATEm1:6:2}T${CDATEm1:8:2}:00:00Z""
+CDATEm2=$($NDATE -2 ${CDATE})
+beginDate=""${CDATEm2:0:4}-${CDATEm2:4:2}-${CDATEm2:6:2}T${CDATEm2:8:2}:00:00Z""
 #
 # generate jedivar.yaml based on how YAML_GEN_METHOD is set
 case ${YAML_GEN_METHOD:-1} in
