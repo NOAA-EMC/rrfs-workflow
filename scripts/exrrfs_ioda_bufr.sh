@@ -6,6 +6,8 @@ cpreq=${cpreq:-cpreq}
 cd ${DATA}
 
 # link the prepbufr file
+#hliu------------------------------------------------------------------
+${cpreq} ${OBSPATH}/${CDATE}.rap.t${cyc}z.gpsipw.tm00.bufr_d  ztdbufr
 ${cpreq} ${OBSPATH}/${CDATE}.rap.t${cyc}z.prepbufr.tm00 prepbufr
 ${cpreq} ${EXECrrfs}/bufr2ioda.x .
 
@@ -33,6 +35,26 @@ for yaml in ${yaml_list[@]}; do
  ./bufr2ioda.x ${yaml}
  # some data may not be available at all cycles, so we don't check whether bufr2ioda.x runs successfully
 done
+
+#---------------------------------------
+# run python bufr2ioda tool for ZTD obs
+#---------------------------------------
+DIR_ROOT=${HOMErrfs}/sorc/RDASApp/
+${cpreq} ${DIR_ROOT}/rrfs-test/IODA/newbufr2ioda_ztd.py .
+${cpreq} ${DIR_ROOT}/rrfs-test/IODA/newbufr2ioda_ztd.json .
+
+USH_IODA=$DIR_ROOT/rrfs-test/IODA/python/
+BUFRJSONGEN=$USH_IODA/gen_bufr2ioda_json.py
+
+# pyioda libraries
+PYIODALIB=`echo $DIR_ROOT/build/lib/python3.*`
+export PYTHONPATH=${PYIODALIB}:${PYTHONPATH}
+
+# generate a JSON w CDATE from the template
+${BUFRJSONGEN} -t newbufr2ioda_ztd.json -o newbufr2ioda_ztd0.json
+
+ python newbufr2ioda_ztd.py -c newbufr2ioda_ztd0.json
+
 
 # run offline IODA tools
 ${cpreq} ${HOMErrfs}/sorc/RDASApp/rrfs-test/IODA/offline_add_var_to_ioda.py .
