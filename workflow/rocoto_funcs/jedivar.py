@@ -16,8 +16,10 @@ def jedivar(xmlFile, expdir,do_spinup=False):
     cycledefs='prod'
     task_id='jedivar'
   # Task-specific EnVars beyond the task_common_vars
+  extrn_mdl_source=os.getenv('IC_EXTRN_MDL_NAME','IC_PREFIX_not_defined')
   physics_suite=os.getenv('PHYSICS_SUITE','PHYSICS_SUITE_not_defined')
   dcTaskEnv={
+    'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
     'PHYSICS_SUITE': f'{physics_suite}',
     'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
     'HYB_WGT_ENS': os.getenv('HYB_WGT_ENS','0.85'),

@@ -6,8 +6,8 @@ from rocoto_funcs.base import xml_task, source, get_cascade_env
 def ic(xmlFile, expdir, do_ensemble=False):
   meta_id='ic'
   cycledefs='ic'
-  extrn_mdl_source=os.getenv('IC_EXTRN_MDL_NAME','IC_PREFIX_not_defined')
   # Task-specific EnVars beyond the task_common_vars
+  extrn_mdl_source=os.getenv('IC_EXTRN_MDL_NAME','IC_PREFIX_not_defined')
   physics_suite=os.getenv('PHYSICS_SUITE','PHYSICS_SUITE_not_defined')
   dcTaskEnv={
     'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
