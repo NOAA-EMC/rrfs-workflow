@@ -35,7 +35,7 @@ for yaml in ${yaml_list[@]}; do
  # some data may not be available at all cycles, so we don't check whether bufr2ioda.x runs successfully
 done
 
-# run python bufr2ioda tool for ZTD and AMV obs
+# run python bufr2ioda tool for ZTD and AMV bufr obs
 # ---------------------------------------------
 DIR_ROOT=${HOMErrfs}/sorc/RDASApp/
 ${cpreq} ${DIR_ROOT}/rrfs-test/IODA/python/bufr2ioda_ztd.py .
