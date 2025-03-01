@@ -23,8 +23,11 @@ background:
       nmembers: 30
 
 driver:
-  run as observer only: true
-  update obs config with geometry info: false
+  read HX from disk: true
+  save posterior ensemble: true
+  save prior mean: true
+  save posterior mean: true
+  do posterior observer: false
 
 time window:
   begin: '@beginDate@'
