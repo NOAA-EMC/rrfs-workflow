@@ -112,5 +112,5 @@ err_chk
 #
 # move jdiag* files to the umbrella directory if observer
 if [[ "${TYPE}" == "observer" ]]; then
-  mv jdiag.* ${UMBRELLA_GETKF_DATA}/.
+  mv jdiag* ${UMBRELLA_GETKF_DATA}/.
 fi
