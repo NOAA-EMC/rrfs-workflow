@@ -72,5 +72,5 @@ def mpassit(xmlFile, expdir, do_ensemble=False):
   </and>
   </dependency>'''
   #
-  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,True,meta_id,meta_bgn,meta_end,"MPASSIT",do_ensemble)
+  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,True,meta_id,meta_bgn,meta_end,"MPASSIT")
 ### end of mpassit --------------------------------------------------------

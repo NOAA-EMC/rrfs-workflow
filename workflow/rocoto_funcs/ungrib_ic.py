@@ -76,5 +76,5 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
   </and>
   </dependency>'''
   #
-  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"UNGRIB",do_ensemble)
+  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"UNGRIB")
 ### end of ungrib_ic --------------------------------------------------------

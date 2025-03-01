@@ -99,5 +99,5 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
   </and>
   </dependency>'''
   #
-  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,True,meta_id,meta_bgn,meta_end,"UNGRIB",do_ensemble)
+  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,True,meta_id,meta_bgn,meta_end,"UNGRIB")
 ### end of ungrib_lbc --------------------------------------------------------

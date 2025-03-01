@@ -137,5 +137,5 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
   </and>
   </dependency>'''
   #
-  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"PREP_IC",do_ensemble)
+  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"PREP_IC")
 ### end of fcst --------------------------------------------------------
