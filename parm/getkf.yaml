@@ -48,11 +48,11 @@ local ensemble DA:
     mult: 1.1
 
 output mean prior:
-  filename: ./mean_prior.nc
+  filename: ./prior_mean.nc
   stream name: background
 
 output: # for outputting mean posterior
-  filename: ./mean_posterior.nc
+  filename: ./post_mean.nc
   stream name: analysis 
 
 observations:
