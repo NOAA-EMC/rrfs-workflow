@@ -21,15 +21,20 @@ def getkf_observer(xmlFile, expdir):
   if realtime.upper() == "TRUE":
     starttime=get_cascade_env(f"STARTTIME_{task_id}".upper())
     timedep=f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
-  #
+  # ~~
   COMROOT=os.getenv("COMROOT","COMROOT_NOT_DEFINED")
   NET=os.getenv("NET","NET_NOT_DEFINED")
   VERSION=os.getenv("VERSION","VERSION_NOT_DEFINED")
+  if os.getenv("DO_IODA","FALSE").upper() == "TRUE":
+    iodadep='<taskdep task="ioda_bufr"/>'
+  else:
+    iodadep=f'<datadep age="00:01:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/ioda_bufr/det/ioda_aircar.nc</cyclestr></datadep>'
+  #
   dependencies=f'''
   <dependency>
   <and>{timedep}
-    <taskdep task="prep_ic"/>
-    <taskdep task="ioda_bufr"/>
+    <metataskdep metatask="prep_ic"/>
+    {iodadep}
   </and>
   </dependency>'''
   #
