@@ -9,18 +9,6 @@ cd ${DATA}
 start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S) 
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 
 #
-# determine whether to begin new cycles
-#
-if [[ -r "${UMBRELLA_PREP_IC_DATA}/mem001/init.nc" ]]; then
-  start_type='cold'
-  do_DAcycling='false'
-  initial_file=${UMBRELLA_PREP_IC_DATA}/init.nc
-else
-  start_type='warm'
-  do_DAcycling='true'
-  initial_file=${UMBRELLA_PREP_IC_DATA}/mpasin.nc
-fi
-#
 ln -snf ${FIXrrfs}/physics/${PHYSICS_SUITE}/* .
 ln -snf ${FIXrrfs}/meshes/${MESH_NAME}.ugwp_oro_data.nc ./ugwp_oro_data.nc
 zeta_levels=${EXPDIR}/config/ZETA_LEVELS.txt
@@ -42,10 +30,25 @@ mkdir -p obs ens
 #
 cp ${COMOUT}/ioda_bufr/det/* obs/.
 #
-#  link background
+# determine whether to begin new cycles and link correct ensembles
+#
+if [[ -r "${UMBRELLA_PREP_IC_DATA}/mem001/init.nc" ]]; then
+  start_type='cold'
+  do_DAcycling='false'
+  initial_file='init.nc'
+else
+  start_type='warm'
+  do_DAcycling='true'
+  initial_file='mpasin.nc'
+fi
+# link ensembles to data/ens/
+for i in $(seq -w 001 ${ENS_SIZE}); do
+  ln -snf ${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file} ens/.
+done
+#
+# enter the run directory
 #
 cd ${DATA}
-ln -snf ${initial_file} mpasin.nc
 #
 # generate namelist, streams, and getkf.yaml on the fly
 run_duration=1:00:00
@@ -76,8 +79,7 @@ beginDate=""${CDATEm2:0:4}-${CDATEm2:4:2}-${CDATEm2:6:2}T${CDATEm2:8:2}:00:00Z""
 case ${YAML_GEN_METHOD:-1} in
   1) # from ${PARMrrfs}
     sed -e "s/@analysisDate@/${analysisDate}/" -e "s/@beginDate@/${beginDate}/" \
-    -e "s/@HYB_WGT_STATIC@/${HYB_WGT_STATIC}/" -e "s/@HYB_WGT_ENS@/${HYB_WGT_ENS}/" \
-    ${PARMrrfs}/getkf.yaml > getkf.yaml
+    ${PARMrrfs}/getkf_${TYPE}.yaml > getkf.yaml
     ;;
   2) # cat together from inside sorc/RDASApp
     source ${USHrrfs}/yaml_cat_together.sh
