@@ -28,7 +28,7 @@ mkdir -p obs ens
 #
 # copy observations files
 #
-cp ${COMOUT}/ioda_bufr/det/* obs/.
+cp ${COMOUT}/ioda_bufr/${IODA_BUFR_WGF}/* obs/.
 #
 # determine whether to begin new cycles and link correct ensembles
 #

@@ -28,8 +28,10 @@ def getkf_observer(xmlFile, expdir):
   VERSION=os.getenv("VERSION","VERSION_NOT_DEFINED")
   if os.getenv("DO_IODA","FALSE").upper() == "TRUE":
     iodadep='<taskdep task="ioda_bufr"/>'
+    dcTaskEnv['IODA_BUFR_WGF']='enkf'
   else:
     iodadep=f'<datadep age="00:01:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/ioda_bufr/det/ioda_aircar.nc</cyclestr></datadep>'
+    dcTaskEnv['IODA_BUFR_WGF']='det'
   #
   dependencies=f'''
   <dependency>
