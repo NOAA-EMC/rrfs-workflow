@@ -30,14 +30,6 @@ def jedivar(xmlFile, expdir,do_spinup=False):
   if do_spinup:
     dcTaskEnv['DO_SPINUP']='TRUE'
   # dependencies
-  hrs=os.getenv('COLDSTART_CYCS', '3 15')
-  hrs=hrs.split(' ')
-  streqs=""; strneqs=""
-  for hr in hrs:
-    hr=f"{hr:0>2}"
-    streqs=streqs  +f"\n          <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
-    strneqs=strneqs+f"\n          <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
-
   timedep=""
   realtime=os.getenv("REALTIME","false")
   if realtime.upper() == "TRUE":
