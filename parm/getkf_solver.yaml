@@ -58,7 +58,7 @@ observations:
      - obs space:
          name: t133=aircar_airTemperature_133
          distribution:
-           name: "@distribution@"
+           name: "Halo"
            halo size: 300e3
          obsdatain:
            engine:
