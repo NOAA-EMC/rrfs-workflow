@@ -1,5 +1,5 @@
 _member: &memberConfig
-  date: &analysisDate '2024-05-27T00:00:00Z'
+  date: &analysisDate '@analysisDate@'
   state variables: [spechum,surface_pressure,temperature,uReconstructMeridional,uReconstructZonal,theta,rho,u,qv,pressure,landmask,xice,snowc,skintemp,ivgtyp,isltyp,snowh,vegfra,u10,v10,lai,smois,tslb,pressure_p,qc,qi,qg,qr,qs,cldfrac]
   stream name: ensemble
 
@@ -16,7 +16,7 @@ background:
     members from template:
       template:
         <<: *memberConfig
-        filename: ./data/ens/mem%iMember%/mpasout.2024-05-27_00.00.00.nc
+        filename: ./data/ens/mem%iMember%.nc
       pattern: "%iMember%"
       start: 1
       zero padding: 3
@@ -32,8 +32,8 @@ driver:
   do posterior observer: false
 
 time window:
-       begin: 2024-05-26T21:00:00Z
-       length: PT6H
+  begin: '@beginDate@'
+  length: PT4H
 
 local ensemble DA:
   solver: GETKF
@@ -48,19 +48,19 @@ local ensemble DA:
     mult: 1.1
 
 output mean prior:
-  filename: ./bkg.$Y-$M-$D_$h.$m.$s.nc
+  filename: ./mean_prior.nc
   stream name: background
 
 output: # for outputting mean posterior
-  filename: ./ana.$Y-$M-$D_$h.$m.$s.nc
+  filename: ./mean_posterior.nc
   stream name: analysis 
 
 observations:
      observers:
      - obs space:
-         name: aircar_airTemperature_133
+         name: t133=aircar_airTemperature_133
          distribution:
-           name: "RoundRobin"
+           name: "@distribution@"
            halo size: 300e3
          obsdatain:
            engine:
@@ -73,7 +73,7 @@ observations:
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_aircar_airTemperature_133.nc4
+             obsfile: jdiag_t133.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
