@@ -104,8 +104,8 @@ ulimit -v unlimited
 ulimit -a
 
 source prep_step
-${cpreq} ${EXECrrfs}/mpasjedi_variational.x .
-${MPI_RUN_CMD} ./mpasjedi_variational.x getkf.yaml log.out
+${cpreq} ${EXECrrfs}/mpasjedi_enkf.x .
+${MPI_RUN_CMD} ./mpasjedi_enkf.x getkf.yaml log.out
 # check the status
 export err=$?
 err_chk
