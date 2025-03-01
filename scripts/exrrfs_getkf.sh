@@ -110,4 +110,7 @@ ${MPI_RUN_CMD} ./mpasjedi_enkf.x getkf.yaml log.out
 export err=$?
 err_chk
 #
-# the input/output file are linked from the umbrella directory, so no need to copy
+# move jdiag* files to the umbrella directory if observer
+if [[ "${TYPE}" == "observer" ]]; then
+  mv jdiag.* ${UMBRELLA_GETKF_DATA}/.
+fi
