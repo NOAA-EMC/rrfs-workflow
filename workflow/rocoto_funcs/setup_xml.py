@@ -95,6 +95,8 @@ def setup_xml(HOMErrfs, expdir):
 # ---------------------------------------------------------------------------
 # assemble tasks for an ensemble experiment
     if do_ensemble == "TRUE":
+      if os.getenv("DO_IODA","FALSE").upper()=="TRUE":
+        ioda_bufr(xmlFile,expdir)
       ungrib_ic(xmlFile,expdir,do_ensemble=True)
       ungrib_lbc(xmlFile,expdir,do_ensemble=True)
       ic(xmlFile,expdir,do_ensemble=True)
