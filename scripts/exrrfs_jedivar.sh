@@ -100,7 +100,7 @@ else
 fi
 file_content=$(< ${PARMrrfs}/${physics_suite}/namelist.atmosphere) # read in all content
 eval "echo \"${file_content}\"" > namelist.atmosphere
-${cpreq} ${PARMrrfs}/streams.atmosphere.da streams.atmosphere
+${cpreq} ${PARMrrfs}/streams.atmosphere.jedivar streams.atmosphere
 analysisDate=""${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z""
 CDATEm2=$($NDATE -2 ${CDATE})
 beginDate=""${CDATEm2:0:4}-${CDATEm2:4:2}-${CDATEm2:6:2}T${CDATEm2:8:2}:00:00Z""
