@@ -18,6 +18,7 @@ export ENS_SIZE=30
 export ZETA_LEVELS="L60.txt"
 #
 export DO_IODA="false"
+#export DO_JEDI=true
 
 export DO_CYC=true
 export CYC_INTERVAL=3
@@ -47,12 +48,14 @@ export NODES_FCST="<nodes>1:ppn=40</nodes>"
 export NODES_MPASSIT="<nodes>1:ppn=40</nodes>"
 export NODES_UPP="<nodes>1:ppn=40</nodes>"
 export NODES_JEDIVAR="<nodes>2:ppn=20</nodes>"
+export NODES_GETKF="<nodes>2:ppn=20</nodes>"
 #
 export WALLTIME_FCST="1:30:00"
 export WALLTIME_SAVE_FCST="1:30:00"
 export WALLTIME_MPASSIT="1:00:00"
 export WALLTIME_UPP="1:00:00"
 export WALLTIME_JEDIVAR="00:30:00"
+export WALLTIME_GETKF="00:30:00"
 #
 export KEEPDATA=yes
 export MPI_RUN_CMD=srun
