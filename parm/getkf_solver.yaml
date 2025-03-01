@@ -63,7 +63,7 @@ observations:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_aircar.nc
+             obsfile: data/jdiag/jdiag_t133.nc4
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
