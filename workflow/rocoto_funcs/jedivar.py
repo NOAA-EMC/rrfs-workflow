@@ -50,18 +50,23 @@ def jedivar(xmlFile, expdir,do_spinup=False):
       <datadep age="00:05:00"><cyclestr offset="-2:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}enkf.@Y@m@d/@H/m030/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
       <datadep age="00:05:00"><cyclestr offset="-3:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}enkf.@Y@m@d/@H/m030/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
     </or>'''
-  #
+  # ~~~~
   if do_spinup:
     prep_ic_dep='<taskdep task="prep_ic_spinup"/>'
   else:
     prep_ic_dep='<taskdep task="prep_ic"/>'
+  # ~~~~
+  if os.getenv("DO_IODA","FALSE").upper() == "TRUE":
+    iodadep='<taskdep task="ioda_bufr"/>'
+  else:
+    iodadep=f'<datadep age="00:01:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/ioda_bufr/det/ioda_aircar.nc</cyclestr></datadep>'
 
   #
   dependencies=f'''
   <dependency>
   <and>{timedep}
     {prep_ic_dep}
-    <taskdep task="ioda_bufr"/>{ens_dep}
+    {iodadep}{ens_dep}
   </and>
   </dependency>'''
   #
