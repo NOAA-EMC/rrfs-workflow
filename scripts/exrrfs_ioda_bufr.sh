@@ -7,8 +7,8 @@ cd ${DATA}
 
 # link the prepbufr file
 ${cpreq} ${OBSPATH}/${CDATE}.rap.t${cyc}z.prepbufr.tm00 prepbufr
-${cpreq} ${OBSPATH}/${CDATE}.rap.t${cyc}z.gpsipw.tm00.bufr_d ztdbufr
-${cpreq} ${OBSPATH}/${CDATE}.rap.t${cyc}z.satwnd.tm00.bufr_d satwndbufr
+cp ${OBSPATH}/${CDATE}.rap.t${cyc}z.gpsipw.tm00.bufr_d ztdbufr
+cp ${OBSPATH}/${CDATE}.rap.t${cyc}z.satwnd.tm00.bufr_d satwndbufr
 ${cpreq} ${EXECrrfs}/bufr2ioda.x .
 
 # generate the namelist on the fly
@@ -26,6 +26,7 @@ yaml_list=(
 #"prepbufr_vadwnd.yaml"
 )
 
+# ---------------------------------
 # run bufr2ioda.x for prepbufr data
 # ---------------------------------
 for yaml in ${yaml_list[@]}; do
@@ -35,27 +36,32 @@ for yaml in ${yaml_list[@]}; do
  # some data may not be available at all cycles, so we don't check whether bufr2ioda.x runs successfully
 done
 
+# --------------------------------------------------
 # run python bufr2ioda tool for ZTD and AMV bufr obs
-# ---------------------------------------------
-DIR_ROOT=${HOMErrfs}/sorc/RDASApp/
-${cpreq} ${DIR_ROOT}/rrfs-test/IODA/python/bufr2ioda_ztd.py .
-#${cpreq} ${DIR_ROOT}/rrfs-test/IODA/python/bufr2ioda_satwnd.py .
-${cpreq} ${DIR_ROOT}/rrfs-test/IODA/python/bufr2ioda.json .
+# --------------------------------------------------
+if (( 1 == 2 )); then
+HOMErdasapp=${HOMErrfs}/sorc/RDASApp/
+${cpreq} ${HOMErdasapp}/rrfs-test/IODA/python/bufr2ioda_ztd.py .
+#${cpreq} ${HOMErdasapp}/rrfs-test/IODA/python/bufr2ioda_satwnd.py .
+${cpreq} ${HOMErdasapp}/rrfs-test/IODA/python/bufr2ioda.json .
 
-USH_IODA=$DIR_ROOT/rrfs-test/IODA/python/
-BUFRJSONGEN=$USH_IODA/gen_bufr2ioda_json.py
+USHioda=$HOMErdasapp/rrfs-test/IODA/python/
+py_bufr_json_gen=${USHioda}/gen_bufr2ioda_json.py
 
 # pyioda libraries
-PYIODALIB=`echo $DIR_ROOT/build/lib/python3.*`
+PYIODALIB=$(echo $HOMErdasapp/build/lib/python3.*)
 export PYTHONPATH=${PYIODALIB}:${PYTHONPATH}
 
 # generate a JSON w CDATE from the template
-${BUFRJSONGEN} -t bufr2ioda.json -o bufr2ioda_0.json
+${cpreq} ${py_bufr_json_gen} .
+./gen_bufr2ioda_json.py  -t bufr2ioda.json -o bufr2ioda_0.json
 
- python bufr2ioda_ztd.py -c bufr2ioda_0.json
-#python bufr2ioda_satwnd.py -c bufr2ioda_0.json
+./bufr2ioda_ztd.py -c bufr2ioda_0.json
+#./bufr2ioda_satwnd.py -c bufr2ioda_0.json
+fi
 
 # run offline IODA tools
+#-----------------------
 ${cpreq} ${HOMErrfs}/sorc/RDASApp/rrfs-test/IODA/offline_add_var_to_ioda.py .
 ioda_files=$(ls ioda*nc)
 for ioda_file in ${ioda_files[@]}; do
