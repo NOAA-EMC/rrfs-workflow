@@ -69,7 +69,9 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
 
   jedidep=""
   if os.getenv("DO_JEDI","FALSE").upper()=="TRUE":
-    if do_spinup:
+    if os.getenv("DO_ENSEMBLE","FALSE").upper()=="TRUE":
+      jedidep=f'<taskdep task="getkf_solver"/>'
+    elif do_spinup:
       jedidep=f'<taskdep task="jedivar_spinup"/>'
     else:
       jedidep=f'<taskdep task="jedivar"/>'
