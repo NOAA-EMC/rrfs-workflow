@@ -25,6 +25,7 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 #
 export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_prep_ic_${cyc}_${rrfs_ver}/${WGF}}
 export UMBRELLA_GETKF_DATA=${UMBRELLA_GETKF_DATA:-${DATAROOT}/${RUN}_getkf_${TYPE}_${cyc}_${rrfs_ver}/${WGF}}
+export UMBRELLA_GETKF_OBSERVER_DATA=${UMBRELLA_GETKF_OBSERVER_DATA:-${DATAROOT}/${RUN}_getkf_observer_${cyc}_${rrfs_ver}/${WGF}}
 export pid=${pid:-$$}
 export jobid=${jobid:-getkf_${TYPE}_${cyc}}
 export DATA=${DATA:-${UMBRELLA_GETKF_DATA}/${jobid}}

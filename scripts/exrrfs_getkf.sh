@@ -24,11 +24,15 @@ ${cpreq} ${FIXrrfs}/jedi/geovars.yaml .
 # create data directory 
 #
 mkdir -p data; cd data
-mkdir -p obs ens
+mkdir -p obs ens jdiag
 #
 # copy observations files
 #
-cp ${COMOUT}/ioda_bufr/${IODA_BUFR_WGF}/* obs/.
+if [[ "${TYPE}" == "observer" ]]; then
+  cp ${COMOUT}/ioda_bufr/${IODA_BUFR_WGF}/* obs/.
+else
+  ln -snf ${UMBRELLA_GETKF_OBSERVER_DATA}/jdiag* jdiag/
+fi
 #
 # determine whether to begin new cycles and link correct ensembles
 #
