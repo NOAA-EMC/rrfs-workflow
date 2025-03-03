@@ -55,14 +55,14 @@ cd rrfs-workflow/sorc
 
 3. Build the RRFS workflow:
 ```
-./app_build.sh --extrn --nogtg --noifi
+./app_build.sh --extrn  
 ```
 The above command is equal to:
 ```
 ./manage_externals/checkout_externals
 ./app_build.sh -p=[machine]
 ```
-where `[machine]` is `wcoss2`, `hera`, `jet`, `orion`, or `hercules`.  The `--nogtg` and `--noifi` flags avoid compilation of GTG and IFI components respectively, which only select users can compile.
+where `[machine]` is `wcoss2`, `hera`, `jet`, `orion`, or `hercules`.  Add `--gtg` to compile the GTG, and `--ifi` to compile the IFI components respectively, which only select users have ability to compile.
 
 4. Move to the home directory (rrfs-workflow):
 ```
