@@ -35,10 +35,10 @@ for yaml in ${yaml_list[@]}; do
 done
 
 # run offline IODA tools
-${cpreq} ${HOMErrfs}/sorc/RDASApp/rrfs-test/IODA/offline_add_var_to_ioda.py .
+${cpreq} ${USHrrfs}/offline_ioda_tweak.py .
 ioda_files=$(ls ioda*nc)
 for ioda_file in ${ioda_files[@]}; do
-  ./offline_add_var_to_ioda.py -o ${ioda_file}
+  ./offline_ioda_tweak.py -o ${ioda_file}
   base_name=$(basename "$ioda_file" .nc)
   mv  ${base_name}_llp.nc ${base_name}.nc
 done
