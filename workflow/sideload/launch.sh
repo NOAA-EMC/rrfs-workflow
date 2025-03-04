@@ -24,7 +24,7 @@ source /etc/profile
 module use ${HOMErrfs}/modulefiles
 # load corresponding modules for different tasks
 case ${task_id} in
-  jedivar|ens_da|ioda_bufr)
+  jedivar|getkf*|ioda_bufr)
     module purge
     module use ${HOMErrfs}/sorc/RDASApp/modulefiles
     module load RDAS/${MACHINE}.intel

@@ -9,18 +9,6 @@ cd ${DATA}
 start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S) 
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 
 #
-# determine whether to begin new cycles
-#
-if [[ -r "${UMBRELLA_PREP_IC_DATA}/init.nc" ]]; then
-  start_type='cold'
-  do_DAcycling='false'
-  initial_file=${UMBRELLA_PREP_IC_DATA}/init.nc
-else
-  start_type='warm'
-  do_DAcycling='true'
-  initial_file=${UMBRELLA_PREP_IC_DATA}/mpasin.nc
-fi
-#
 ln -snf ${FIXrrfs}/physics/${PHYSICS_SUITE}/* .
 ln -snf ${FIXrrfs}/meshes/${MESH_NAME}.ugwp_oro_data.nc ./ugwp_oro_data.nc
 zeta_levels=${EXPDIR}/config/ZETA_LEVELS.txt
@@ -35,52 +23,38 @@ ${cpreq} ${FIXrrfs}/jedi/geovars.yaml .
 #
 # create data directory 
 #
-mkdir -p data; cd data                   
-mkdir -p obs ens static_bec
-#
-#  bump files and static BEC files
-#
-ln -snf ${FIXrrfs}/bumploc/${MESH_NAME}_L${nlevel}_${NTASKS}_401km11levels bumploc
-ln -snf ${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/stddev.nc static_bec/stddev.nc
-ln -snf ${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/nicas_${NTASKS} static_bec/nicas
-ln -snf ${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/vbal_${NTASKS} static_bec/vbal
+mkdir -p data; cd data
+mkdir -p obs ens jdiag
 #
 # copy observations files
 #
-cp ${COMOUT}/ioda_bufr/det/* obs/.
-#
-#  find ensemble forecasts based on user settings
-#
-if [[ "${HYB_WGT_ENS}" != "0" ]] && [[ "${HYB_WGT_ENS}" != "0.0" ]]; then # using ensembles
-  if [[ "${HYB_ENS_TYPE}" == "1"  ]]; then # rrfsens
-    echo "use rrfs ensembles"
-    mpasout_file=mpasout.${timestr}.nc
-    for (( ii=0; ii<4; ii=ii+1 )); do
-       CDATEp=$($NDATE -${ii} ${CDATE} )
-       ensdir=${COMINrrfs}/rrfs.${CDATEp:0:8}/${CDATEp:8:2}
-       ensdir_m001=${ensdir}/fcst/enkf/mem001
-       if [[ -s ${ensdir_m001}/${mpasout_file} ]]; then
-         for (( iii=1; iii<31; iii=iii+1 )); do
-            memid=$(printf %03d ${iii})
-            ln -s ${ensdir}/fcst/enkf/mem${memid}/${mpasout_file} ens/mem${memid}.nc
-         done
-       fi
-    done
-  elif [[ "${HYB_ENS_TYPE}" == "2"  ]]; then # GDAS
-    echo "use GDAS ensembles"
-    echo "==== to be implemented ===="
-  elif [[ "${HYB_ENS_TYPE}" == "0"  ]]; then # rrfsens->GDAS->3DVAR
-    echo "determine the ensemble type on the fly"
-    echo "==== to be implemented ===="
-  fi
+if [[ "${TYPE}" == "observer" ]]; then
+  cp ${COMOUT}/ioda_bufr/${IODA_BUFR_WGF}/* obs/.
+else
+  ln -snf ${UMBRELLA_GETKF_OBSERVER_DATA}/jdiag* jdiag/
 fi
 #
-#  link background
+# determine whether to begin new cycles and link correct ensembles
+#
+if [[ -r "${UMBRELLA_PREP_IC_DATA}/mem001/init.nc" ]]; then
+  start_type='cold'
+  do_DAcycling='false'
+  initial_file='init.nc'
+else
+  start_type='warm'
+  do_DAcycling='true'
+  initial_file='mpasin.nc'
+fi
+# link ensembles to data/ens/
+for i in $(seq -w 001 ${ENS_SIZE}); do
+  ln -snf ${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file} ens/mem${i}.nc
+done
+#
+# enter the run directory
 #
 cd ${DATA}
-ln -snf ${initial_file} mpasin.nc
 #
-# generate namelist, streams, and jedivar.yaml on the fly
+# generate namelist, streams, and getkf.yaml on the fly
 run_duration=1:00:00
 physics_suite=${PHYSICS_SUITE:-'mesoscale_reference'}
 jedi_da="true" #true
@@ -100,15 +74,16 @@ else
 fi
 file_content=$(< ${PARMrrfs}/${physics_suite}/namelist.atmosphere) # read in all content
 eval "echo \"${file_content}\"" > namelist.atmosphere
-${cpreq} ${PARMrrfs}/streams.atmosphere.jedivar streams.atmosphere
+${cpreq} ${PARMrrfs}/streams.atmosphere.getkf streams.atmosphere
 analysisDate=""${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z""
 CDATEm2=$($NDATE -2 ${CDATE})
 beginDate=""${CDATEm2:0:4}-${CDATEm2:4:2}-${CDATEm2:6:2}T${CDATEm2:8:2}:00:00Z""
 #
-# generate jedivar.yaml based on how YAML_GEN_METHOD is set
+# generate getkf.yaml based on how YAML_GEN_METHOD is set
 case ${YAML_GEN_METHOD:-1} in
   1) # from ${PARMrrfs}
-    source ${USHrrfs}/yaml_from_parm.sh
+    sed -e "s/@analysisDate@/${analysisDate}/" -e "s/@beginDate@/${beginDate}/" \
+    ${PARMrrfs}/getkf_${TYPE}.yaml > getkf.yaml
     ;;
   2) # cat together from inside sorc/RDASApp
     source ${USHrrfs}/yaml_cat_together.sh
@@ -125,7 +100,7 @@ esac
 if [[ ${start_type} == "cold" ]]; then
   exit 0 #gge.tmp.debug need more time to figure out cold start DA
 fi
-# run mpasjedi_variational.x
+# run mpasjedi_enkf.x
 export OOPS_TRACE=1
 export OMP_NUM_THREADS=1
 ulimit -s unlimited
@@ -133,10 +108,13 @@ ulimit -v unlimited
 ulimit -a
 
 source prep_step
-${cpreq} ${EXECrrfs}/mpasjedi_variational.x .
-${MPI_RUN_CMD} ./mpasjedi_variational.x jedivar.yaml log.out
+${cpreq} ${EXECrrfs}/mpasjedi_enkf.x .
+${MPI_RUN_CMD} ./mpasjedi_enkf.x getkf.yaml log.out
 # check the status
 export err=$?
 err_chk
 #
-# the input/output file are linked from the umbrella directory, so no need to copy
+# move jdiag* files to the umbrella directory if observer
+if [[ "${TYPE}" == "observer" ]]; then
+  mv jdiag* ${UMBRELLA_GETKF_DATA}/.
+fi

@@ -30,14 +30,6 @@ def jedivar(xmlFile, expdir,do_spinup=False):
   if do_spinup:
     dcTaskEnv['DO_SPINUP']='TRUE'
   # dependencies
-  hrs=os.getenv('COLDSTART_CYCS', '3 15')
-  hrs=hrs.split(' ')
-  streqs=""; strneqs=""
-  for hr in hrs:
-    hr=f"{hr:0>2}"
-    streqs=streqs  +f"\n          <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
-    strneqs=strneqs+f"\n          <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
-
   timedep=""
   realtime=os.getenv("REALTIME","false")
   if realtime.upper() == "TRUE":
@@ -58,18 +50,23 @@ def jedivar(xmlFile, expdir,do_spinup=False):
       <datadep age="00:05:00"><cyclestr offset="-2:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}enkf.@Y@m@d/@H/m030/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
       <datadep age="00:05:00"><cyclestr offset="-3:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}enkf.@Y@m@d/@H/m030/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
     </or>'''
-  #
+  # ~~~~
   if do_spinup:
     prep_ic_dep='<taskdep task="prep_ic_spinup"/>'
   else:
     prep_ic_dep='<taskdep task="prep_ic"/>'
+  # ~~~~
+  if os.getenv("DO_IODA","FALSE").upper() == "TRUE":
+    iodadep='<taskdep task="ioda_bufr"/>'
+  else:
+    iodadep=f'<datadep age="00:01:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/ioda_bufr/det/ioda_aircar.nc</cyclestr></datadep>'
 
   #
   dependencies=f'''
   <dependency>
   <and>{timedep}
     {prep_ic_dep}
-    <taskdep task="ioda_bufr"/>{ens_dep}
+    {iodadep}{ens_dep}
   </and>
   </dependency>'''
   #

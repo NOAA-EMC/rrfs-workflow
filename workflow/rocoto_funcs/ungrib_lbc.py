@@ -48,7 +48,7 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     ensindexstr=f'_m#ens_index#'
     ensdirstr=f'/mem#ens_index#'
     meta_bgn=f'''
-<metatask name="ens_{meta_id}">
+<metatask name="{meta_id}">
 <var name="ens_index">{ens_indices}</var>
 <var name="gmem">{gmems}</var>
 <metatask name="{meta_id}_m#ens_index#">
@@ -99,5 +99,5 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
   </and>
   </dependency>'''
   #
-  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,True,meta_id,meta_bgn,meta_end,"UNGRIB",do_ensemble)
+  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,True,meta_id,meta_bgn,meta_end,"UNGRIB")
 ### end of ungrib_lbc --------------------------------------------------------
