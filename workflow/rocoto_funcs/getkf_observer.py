@@ -13,6 +13,7 @@ def getkf_observer(xmlFile, expdir):
     'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
     'PHYSICS_SUITE': f'{physics_suite}',
     'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
+    'YAML_GEN_METHOD': os.getenv('YAML_GEN_METHOD','1'),
     'ENS_SIZE': os.getenv("ENS_SIZE",'5'),
     'TYPE': 'observer'
   }
