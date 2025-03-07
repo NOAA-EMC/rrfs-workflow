@@ -84,6 +84,11 @@ case ${YAML_GEN_METHOD:-1} in
   1) # from ${PARMrrfs}
     sed -e "s/@analysisDate@/${analysisDate}/" -e "s/@beginDate@/${beginDate}/" \
     ${PARMrrfs}/getkf_${TYPE}.yaml > getkf.yaml
+    ${USHrrfs}/yaml_remove_obs getkf.yaml "q133,uv233,t120,q120,ps120,uv220"
+    # comment out the above line and uncomment the follow 3 lines to assimilate radiosonde observations
+    #if [[ ! -s "ioda_adpupa.nc" ]]; then
+    #  ${USHrrfs}/yaml_remove_obs getkf.yaml "t120,q120,ps120,uv220"
+    #fi
     ;;
   2) # cat together from inside sorc/RDASApp
     source ${USHrrfs}/yaml_cat_together.sh

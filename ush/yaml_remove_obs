@@ -56,6 +56,7 @@ with open(yfile2, 'r') as infile, open(yfile, 'w') as outfile:
             outfile.write(line)
     #~~~~
     if buffer_zone:
-        for buf_line in buffer_zone:
-            outfile.write(buf_line)
+        if not remove_obs:
+            for buf_line in buffer_zone:
+                outfile.write(buf_line)
 # ~~~~~~~~
