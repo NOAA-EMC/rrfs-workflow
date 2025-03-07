@@ -15,8 +15,8 @@ def getkf_solver(xmlFile, expdir):
     'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
     'ENS_SIZE': os.getenv("ENS_SIZE",'5'),
     'TYPE': 'solver',
-    'OBSERVER_USE': os.getenv('OBSERVER_USE','t133'),
-    'OBSERVER_REMOVE': os.getenv('OBSERVER_REMOVE',''),
+    'OBS_TYPE_USE': os.getenv('OBS_TYPE_USE','t133'),
+    'OBS_TYPE_REMOVE': os.getenv('OBS_TYPE_REMOVE',''),
   }
   # dependencies
   timedep=""

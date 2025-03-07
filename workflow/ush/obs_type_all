@@ -38,5 +38,5 @@ amsua_n19=satellite_amsua_n19
 amsua_n20=satellite_atms_n20
 atmos_npp=satellite_atms_npp
 
-#export OBSERVER_USE="t133,q133,uv233,t130,t131,t134,t135,q134,uv230,uv231,uv234,uv235,t120,q120,ps120,uv220,t181,t187,q181,q187,\
+#export OBS_TYPE_USE="t133,q133,uv233,t130,t131,t134,t135,q134,uv230,uv231,uv234,uv235,t120,q120,ps120,uv220,t181,t187,q181,q187,\
 #ps181,ps187,uv281,uv287,t188,q188,ps188,uv288,uv227,t126,t180,q180,ps180,uv280,uv224,amsua_n19,amsua_n20,atmos_npp"

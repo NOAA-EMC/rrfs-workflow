@@ -21,19 +21,19 @@ fi
 # figure out the final observers
 #
 if [[ ! -s "ioda_adpupa.nc" ]]; then
-  OBSERVER_REMOVE="${OBSERVER_REMOVE},t120,q120,ps120,uv220"
-  OBSERVER_REMOVE=${OBSERVER_REMOVE#,}  # remove the leading ,
+  OBS_TYPE_REMOVE="${OBS_TYPE_REMOVE},t120,q120,ps120,uv220"
+  OBS_TYPE_REMOVE=${OBS_TYPE_REMOVE#,}  # remove the leading ,
 fi
 #
-if [[ -z "${OBSERVER_USE}" ]]; then
-  if [[ ! -z "${OBSERVER_REMOVE}" ]]; then
-    ${USHrrfs}/yaml_remove_obs ${template} ${OBSERVER_REMOVE}
+if [[ -z "${OBS_TYPE_USE}" ]]; then
+  if [[ ! -z "${OBS_TYPE_REMOVE}" ]]; then
+    ${USHrrfs}/yaml_remove_obs ${template} ${OBS_TYPE_REMOVE}
   fi
 else
-  # remove OBSERVER_REMOVE from OBSERVER_USE
-  OBSERVER_USE=$(echo "${OBSERVER_USE}" | tr ',' '\n' | grep -vFxf <(echo "${OBSERVER_REMOVE}" | tr ',' '\n') | tr '\n' ',')
-  OBSERVER_USE=${OBSERVER_USE#,}  # remove the leading ,
-  OBSERVER_USE=${OBSERVER_USE%,}  # remove trailing ,
+  # remove OBS_TYPE_REMOVE from OBS_TYPE_USE
+  OBS_TYPE_USE=$(echo "${OBS_TYPE_USE}" | tr ',' '\n' | grep -vFxf <(echo "${OBS_TYPE_REMOVE}" | tr ',' '\n') | tr '\n' ',')
+  OBS_TYPE_USE=${OBS_TYPE_USE#,}  # remove the leading ,
+  OBS_TYPE_USE=${OBS_TYPE_USE%,}  # remove trailing ,
   #
-  ${USHrrfs}/yaml_use_obs ${template} ${OBSERVER_USE}
+  ${USHrrfs}/yaml_use_obs ${template} ${OBS_TYPE_USE}
 fi
