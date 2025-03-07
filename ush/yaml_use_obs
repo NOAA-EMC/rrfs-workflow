@@ -1,0 +1,71 @@
+#!/usr/bin/env python
+#
+import os
+import sys
+#
+# get command line inputs
+#
+args = sys.argv
+nargs = len(args)-1
+if nargs < 1:
+    print(f"{args[0]} <yaml_file> <obs_str>\n")
+    print(f'  eg: yaml_use_obs jedivar.yaml "t120,q120,ps120,uv220"')
+    exit()
+yfile = args[1]
+basename = yfile.rstrip(".yaml")
+yfile2 = basename + "_old001.yaml"
+obs_list = args[2].strip().split(',')
+#
+# find an available file name to backup the old yaml file
+if os.path.exists(yfile2):
+    knt=1
+    yfile2 = f'{basename}_old{knt:03}.yaml'
+    while os.path.exists(yfile2):
+        knt += 1
+        yfile2 = f'{basename}_old{knt:03}.yaml'
+#
+os.replace(yfile, yfile2)
+with open(yfile2, 'r') as infile, open(yfile, 'w') as outfile:
+    buffer_zone = []
+    in_buffer_zone = False
+    just_read_new_obs_space = False
+    use_obs = False
+    #
+    for line in infile:
+        if "obs space:" in line:
+            # just read a new obs space, need to process buffer_zone
+            if in_buffer_zone:
+                # Write out the buffer zone if not moreve_obs
+                if use_obs:
+                    for buf_line in buffer_zone:
+                        outfile.write(buf_line)
+                # Reset buffer and state tracking
+                buffer_zone = []
+                in_buffer_zone = False
+                use_obs = False
+            #~~~~~
+            just_read_new_obs_space = True
+            in_buffer_zone = True
+            buffer_zone.append(line)
+        elif just_read_new_obs_space and "name" in line:
+            just_read_new_obs_space = False
+            buffer_zone.append(line)
+            found = False
+            for obs in obs_list:
+                if obs in line:
+                  found = True
+                  break
+            # ~~~~~~
+            if found:
+               use_obs = True
+        elif in_buffer_zone:
+            buffer_zone.append(line)
+
+        if not in_buffer_zone: 
+            outfile.write(line)
+    #~~~~
+    if buffer_zone:
+        if use_obs:
+            for buf_line in buffer_zone:
+                outfile.write(buf_line)
+# ~~~~~~~~

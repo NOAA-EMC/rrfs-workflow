@@ -26,7 +26,9 @@ def jedivar(xmlFile, expdir,do_spinup=False):
     'HYB_WGT_ENS': os.getenv('HYB_WGT_ENS','0.85'),
     'HYB_WGT_STATIC': os.getenv('HYB_WGT_STATIC','0.15'),
     'HYB_ENS_TYPE': os.getenv('HYB_ENS_TYPE','0'),
-    'HYB_ENS_PATH': os.getenv('HYB_ENS_STATIC','')
+    'HYB_ENS_PATH': os.getenv('HYB_ENS_PATH',''),
+    'OBS_TYPE_USE': os.getenv('OBS_TYPE_USE','t133'),
+    'OBS_TYPE_REMOVE': os.getenv('OBS_TYPE_REMOVE',''),
   }
   if do_spinup:
     dcTaskEnv['DO_SPINUP']='TRUE'

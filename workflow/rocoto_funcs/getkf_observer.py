@@ -15,7 +15,9 @@ def getkf_observer(xmlFile, expdir):
     'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
     'YAML_GEN_METHOD': os.getenv('YAML_GEN_METHOD','1'),
     'ENS_SIZE': os.getenv("ENS_SIZE",'5'),
-    'TYPE': 'observer'
+    'TYPE': 'observer',
+    'OBS_TYPE_USE': os.getenv('OBS_TYPE_USE','t133'),
+    'OBS_TYPE_REMOVE': os.getenv('OBS_TYPE_REMOVE',''),
   }
   # dependencies
   timedep=""

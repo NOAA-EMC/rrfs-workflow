@@ -21,6 +21,8 @@ export ZETA_LEVELS="L60.txt"
 #
 export DO_IODA="false"
 #export DO_JEDI=true
+export OBS_TYPE_USE="t133"   # The workflow will check 'OBS_TYPE_USE' first and then apply 'OBS_TYPE_REMOVE'
+export OBS_TYPE_REMOVE=""    # empty means "not applicable". check ush/obs_type_all for all available obs_types
 
 export DO_CYC=true
 export CYC_INTERVAL=3
