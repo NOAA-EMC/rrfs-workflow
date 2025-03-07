@@ -9,8 +9,18 @@ if [[ "${HYB_WGT_ENS}" == "0" ]] || [[ "${HYB_WGT_ENS}" == "0.0" ]]; then # pure
 elif [[ "${HYB_WGT_STATIC}" == "0" ]] || [[ "${HYB_WGT_STATIC}" == "0.0" ]] ; then # pure 3DEnVar
   sed -i '46,87d' ./jedivar.yaml
 fi
-${USHrrfs}/yaml_remove_obs jedivar.yaml "q133,uv233,t120,q120,ps120,uv220"
-# comment out the above line and uncomment the follow 3 lines to assimilate radiosonde observations
-#if [[ ! -s "ioda_adpupa.nc" ]]; then
-#  ${USHrrfs}/yaml_remove_obs jedivar.yaml "t120,q120,ps120,uv220"
-#fi
+# figure out the final observers
+if [[ ! -s "ioda_adpupa.nc" ]]; then
+  OBSERVER_REMOVE="${OBSERVER_REMOVE},t120,q120,ps120,uv220"
+  OBSERVER_REMOVE=${OBSERVER_REMOVE#,}
+fi
+if [[ -z "${OBSERVER_USE}" ]]; then
+  if [[ ! -z "${OBSERVER_REMOVE}" ]]; then
+    ${USHrrfs}/yaml_remove_obs jedivar.yaml ${OBSERVER_REMOVE}
+  fi
+else
+  # remove OBSERVER_REMOVE from OBSERVER_USE
+  OBSERVER_USE=$(echo "${OBSERVER_USE}" | tr ',' '\n' | grep -vFxf <(echo "${OBSERVER_REMOVE}" | tr ',' '\n') | tr '\n' ',')
+  OBSERVER_USE=${OBSERVER_USE%,}
+  ${USHrrfs}/yaml_use_obs jedivar.yaml ${OBSERVER_USE}
+fi
