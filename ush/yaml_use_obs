@@ -9,7 +9,7 @@ args = sys.argv
 nargs = len(args)-1
 if nargs < 1:
     print(f"{args[0]} <yaml_file> <obs_str>\n")
-    print(f'  eg: yaml_remove_obs jedivar.yaml "t120,q120,ps120,uv220"')
+    print(f'  eg: yaml_use_obs jedivar.yaml "t120,q120,ps120,uv220"')
     exit()
 yfile = args[1]
 basename = yfile.rstrip(".yaml")
@@ -29,20 +29,20 @@ with open(yfile2, 'r') as infile, open(yfile, 'w') as outfile:
     buffer_zone = []
     in_buffer_zone = False
     just_read_new_obs_space = False
-    remove_obs = False
+    use_obs = False
     #
     for line in infile:
         if "obs space:" in line:
             # just read a new obs space, need to process buffer_zone
             if in_buffer_zone:
                 # Write out the buffer zone if not moreve_obs
-                if not remove_obs:
+                if use_obs:
                     for buf_line in buffer_zone:
                         outfile.write(buf_line)
                 # Reset buffer and state tracking
                 buffer_zone = []
                 in_buffer_zone = False
-                remove_obs = False
+                use_obs = False
             #~~~~~
             just_read_new_obs_space = True
             in_buffer_zone = True
@@ -57,7 +57,7 @@ with open(yfile2, 'r') as infile, open(yfile, 'w') as outfile:
                   break
             # ~~~~~~
             if found:
-               remove_obs = True
+               use_obs = True
         elif in_buffer_zone:
             buffer_zone.append(line)
 
@@ -65,7 +65,7 @@ with open(yfile2, 'r') as infile, open(yfile, 'w') as outfile:
             outfile.write(line)
     #~~~~
     if buffer_zone:
-        if not remove_obs:
+        if use_obs:
             for buf_line in buffer_zone:
                 outfile.write(buf_line)
 # ~~~~~~~~
