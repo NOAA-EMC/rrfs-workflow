@@ -2,6 +2,11 @@
 
 source init.sh
 
+DEFAULT_FILE="../exp.setup"
+INPUT_FILE="${1:-$DEFAULT_FILE}"
+
+source $INPUT_FILE
+
 validated_yamls="${run_dir}/../../sorc/RDASApp/rrfs-test/validated_yamls"
 cd $validated_yamls
 
@@ -11,10 +16,13 @@ basic_config="mpasjedi_hyb3denvar.yaml"
 # Which observation distribution to use? Halo or RoundRobin
 distribution="RoundRobin"
 
+# Analysis window length
+length=4
+
 # Define all observation type configurations
 obtype_configs=(
     # Phase 3 - ready (just don't use specificHumidity yet!)
-    #"adpupa_airTemperature_120.yaml"
+    "adpupa_airTemperature_120.yaml"
     #"adpupa_specificHumidity_120.yaml"
     #"adpupa_winds_220.yaml"
     "aircar_airTemperature_133.yaml"
@@ -93,7 +101,25 @@ sed -i -E \
     -e "s/date: &analysisDate '$date_pattern'/date: &analysisDate '@analysisDate@'/" \
     -e "s/begin: '$date_pattern'/begin: '@beginDate@'/" \
     -e "s/seed_time: \"$date_pattern\"/seed_time: '@analysisDate@'/" \
-    -e "s/length: PT[0-9]H/length: 'PT@length@H'/" \
+    -e "s/length: PT[0-9]H/length: 'PT${length}H'/" \
+    -e "s/@DISTRIBUTION@/$distribution/" \
+    ./jedivar.yaml
+
+if [[ "${HYB_WGT_ENS}" == "0" ]] || [[ "${HYB_WGT_ENS}" == "0.0" ]]; then
+    # deletes all lines from "covariance model: ensemble" to "weight:".
+    sed -i '/covariance model: ensemble/,/weight:/d' jedivar.yaml
+    # deletes the lines "- covariance:" is directly followed by "value: "@HYB_WGT_ENS@""
+    sed -i '/- covariance:/ {N; /value: "@HYB_WGT_ENS@"/{d;}}' jedivar.yaml
+elif [[ "${HYB_WGT_STATIC}" == "0" ]] || [[ "${HYB_WGT_STATIC}" == "0.0" ]]; then
+    # deletes all lines from "covariance model: SABER" to "weight:".
+    sed -i '/covariance model: SABER/,/weight:/d' jedivar.yaml
+    # deletes the lines "- covariance:" is directly followed by "value: "@HYB_WGT_STATIC@""
+    sed -i '/- covariance:/ {N; /value: "@HYB_WGT_STATIC@"/{d;}}' jedivar.yaml
+fi
+
+sed -i \
+    -e "s/@HYB_WGT_STATIC@/${HYB_WGT_STATIC}/" \
+    -e "s/@HYB_WGT_ENS@/${HYB_WGT_ENS}/" \
     ./jedivar.yaml
 
 echo "Super YAML created in jedivar.yaml"

@@ -104,16 +104,14 @@ ${cpreq} ${PARMrrfs}/streams.atmosphere.jedivar streams.atmosphere
 analysisDate=""${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z""
 CDATEm2=$($NDATE -2 ${CDATE})
 beginDate=""${CDATEm2:0:4}-${CDATEm2:4:2}-${CDATEm2:6:2}T${CDATEm2:8:2}:00:00Z""
-length=4 # needs to be an option in exp.setup?
-distribution="RoundRobin" # needs to be an option in exp.setup?
 #
 # generate jedivar.yaml based on how YAML_GEN_METHOD is set
 case ${YAML_GEN_METHOD:-1} in
   1) # from ${PARMrrfs}
     source ${USHrrfs}/yaml_from_parm.sh
     ;;
-  2) # cat together from inside sorc/RDASApp
-    source ${USHrrfs}/yaml_cat_together.sh
+  2) # update placeholders in static yaml from gen_jedivar_yaml_nonjcb.sh
+    source ${USHrrfs}/yaml_replace_placeholders.sh
     ;;
   3) # JCB
     source ${USHrrfs}/yaml_jcb.sh
