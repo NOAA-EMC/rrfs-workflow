@@ -13,16 +13,16 @@ if nargs < 1:
     exit()
 yfile = args[1]
 basename = yfile.rstrip(".yaml")
-yfile2 = basename + "_org001.yaml"
+yfile2 = basename + "_old001.yaml"
 obs_list = args[2].strip().split(',')
 #
-# find an available file name to backup the orginal yaml file
+# find an available file name to backup the old yaml file
 if os.path.exists(yfile2):
     knt=1
-    yfile2 = f'{basename}_org{knt:03}.yaml'
+    yfile2 = f'{basename}_old{knt:03}.yaml'
     while os.path.exists(yfile2):
         knt += 1
-        yfile2 = f'{basename}_org{knt:03}.yaml'
+        yfile2 = f'{basename}_old{knt:03}.yaml'
 #
 os.replace(yfile, yfile2)
 with open(yfile2, 'r') as infile, open(yfile, 'w') as outfile:

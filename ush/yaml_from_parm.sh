@@ -12,10 +12,10 @@ if [[ "$1" == "jedivar" ]]; then
   fi
   template="jedivar.yaml"
 
-elif
+else
   sed -e "s/@analysisDate@/${analysisDate}/" -e "s/@beginDate@/${beginDate}/" \
     ${PARMrrfs}/getkf_${TYPE}.yaml > getkf.yaml
-  template="getkf_${TYPE}.yaml"
+  template="getkf.yaml"
 fi
 #
 # figure out the final observers
