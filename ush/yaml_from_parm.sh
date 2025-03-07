@@ -20,7 +20,7 @@ fi
 #
 # figure out the final observers
 #
-if [[ ! -s "ioda_adpupa.nc" ]]; then
+if [[ ! -s "data/obs/ioda_adpupa.nc" ]]; then
   OBS_TYPE_REMOVE="${OBS_TYPE_REMOVE},t120,q120,ps120,uv220"
   OBS_TYPE_REMOVE=${OBS_TYPE_REMOVE#,}  # remove the leading ,
 fi
