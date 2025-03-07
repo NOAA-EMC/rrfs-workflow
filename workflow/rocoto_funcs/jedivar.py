@@ -22,6 +22,7 @@ def jedivar(xmlFile, expdir,do_spinup=False):
     'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
     'PHYSICS_SUITE': f'{physics_suite}',
     'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
+    'YAML_GEN_METHOD': os.getenv('YAML_GEN_METHOD','1'),
     'HYB_WGT_ENS': os.getenv('HYB_WGT_ENS','0.85'),
     'HYB_WGT_STATIC': os.getenv('HYB_WGT_STATIC','0.15'),
     'HYB_ENS_TYPE': os.getenv('HYB_ENS_TYPE','0'),
@@ -46,9 +47,9 @@ def jedivar(xmlFile, expdir,do_spinup=False):
     RUN='rrfs'
     ens_dep=f'''
     <or>
-      <datadep age="00:05:00"><cyclestr offset="-1:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}enkf.@Y@m@d/@H/m030/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
-      <datadep age="00:05:00"><cyclestr offset="-2:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}enkf.@Y@m@d/@H/m030/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
-      <datadep age="00:05:00"><cyclestr offset="-3:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}enkf.@Y@m@d/@H/m030/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+      <datadep age="00:05:00"><cyclestr offset="-1:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}.@Y@m@d/@H/fcst/enkf/mem030/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+      <datadep age="00:05:00"><cyclestr offset="-2:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}.@Y@m@d/@H/fcst/enkf/mem030/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+      <datadep age="00:05:00"><cyclestr offset="-3:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}.@Y@m@d/@H/fcst/enkf/mem030/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
     </or>'''
   # ~~~~
   if do_spinup:

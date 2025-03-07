@@ -17,6 +17,7 @@ def ioda_bufr(xmlFile, expdir):
   # Task-specific EnVars beyond the task_common_vars
   dcTaskEnv={
     'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
+    'YAML_GEN_METHOD': os.getenv('YAML_GEN_METHOD','1'),
     'OBSPATH': f'{OBSPATH}'
   }
   # dependencies
