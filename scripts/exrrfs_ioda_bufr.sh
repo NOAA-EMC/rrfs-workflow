@@ -30,18 +30,18 @@ if (( ${YAML_GEN_METHOD:-1} == 2 )); then
   # Copy empty ioda file to data/obs.
   # Use these as the default when bufr2ioda doesn't create a ioda.
   # Otherwise JEDI will crash due to missing ioda file
-  ${cpreq} ${FIXrrfs}/ioda_empty.nc ioda_adpsfc.nc
-  ${cpreq} ${FIXrrfs}/ioda_empty.nc ioda_adpupa.nc
-  ${cpreq} ${FIXrrfs}/ioda_empty.nc ioda_aircar.nc
-  ${cpreq} ${FIXrrfs}/ioda_empty.nc ioda_aircft.nc
-  ${cpreq} ${FIXrrfs}/ioda_empty.nc ioda_ascatw.nc
-  ${cpreq} ${FIXrrfs}/ioda_empty.nc ioda_gpsipw.nc
-  ${cpreq} ${FIXrrfs}/ioda_empty.nc ioda_msonet.nc
-  ${cpreq} ${FIXrrfs}/ioda_empty.nc ioda_proflr.nc
-  ${cpreq} ${FIXrrfs}/ioda_empty.nc ioda_rassda.nc
-  ${cpreq} ${FIXrrfs}/ioda_empty.nc ioda_satwnd.nc
-  ${cpreq} ${FIXrrfs}/ioda_empty.nc ioda_sfcshp.nc
-  ${cpreq} ${FIXrrfs}/ioda_empty.nc ioda_vadwnd.nc
+  ${cpreq} ${FIXrrfs}/jedi/ioda_empty.nc ioda_adpsfc.nc
+  ${cpreq} ${FIXrrfs}/jedi/ioda_empty.nc ioda_adpupa.nc
+  ${cpreq} ${FIXrrfs}/jedi/ioda_empty.nc ioda_aircar.nc
+  ${cpreq} ${FIXrrfs}/jedi/ioda_empty.nc ioda_aircft.nc
+  ${cpreq} ${FIXrrfs}/jedi/ioda_empty.nc ioda_ascatw.nc
+  ${cpreq} ${FIXrrfs}/jedi/ioda_empty.nc ioda_gpsipw.nc
+  ${cpreq} ${FIXrrfs}/jedi/ioda_empty.nc ioda_msonet.nc
+  ${cpreq} ${FIXrrfs}/jedi/ioda_empty.nc ioda_proflr.nc
+  ${cpreq} ${FIXrrfs}/jedi/ioda_empty.nc ioda_rassda.nc
+  ${cpreq} ${FIXrrfs}/jedi/ioda_empty.nc ioda_satwnd.nc
+  ${cpreq} ${FIXrrfs}/jedi/ioda_empty.nc ioda_sfcshp.nc
+  ${cpreq} ${FIXrrfs}/jedi/ioda_empty.nc ioda_vadwnd.nc
 fi
 
 # run bufr2ioda.x
