@@ -14,7 +14,9 @@ def getkf_observer(xmlFile, expdir):
     'PHYSICS_SUITE': f'{physics_suite}',
     'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
     'ENS_SIZE': os.getenv("ENS_SIZE",'5'),
-    'TYPE': 'observer'
+    'TYPE': 'observer',
+    'OBSERVER_USE': os.getenv('OBSERVER_USE','t133'),
+    'OBSERVER_REMOVE': os.getenv('OBSERVER_REMOVE',''),
   }
   # dependencies
   timedep=""
