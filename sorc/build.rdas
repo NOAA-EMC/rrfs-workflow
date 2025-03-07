@@ -12,6 +12,7 @@ EXEC2="${HOMErrfs}/sorc/RDASApp/build/bin/bufr2ioda.x"
 EXEC3="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_enkf.x"
 cd ${HOMErrfs}/sorc/RDASApp
 cp ../Registry.xml sorc/mpas/src/core_atmosphere
+cp ../_workaround_/TimeoffsetVariable.cpp sorc/iodaconv/src/bufr/BufrParser/Exports/Variables
 #cp ../hera.gnu.lua modulefiles/RDAS/hera.intel.lua #gge.tmp.debug: use GNU for jedivar on Hera
 rm -rf build/
 ./build.sh -m MPAS
