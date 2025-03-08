@@ -17,23 +17,9 @@ else
     ${PARMrrfs}/getkf_${TYPE}.yaml > getkf.yaml
   template="getkf.yaml"
 fi
+
 #
-# figure out the final observers
+#  Generate the final YAML configuration file based on convinfo and available ioda files
 #
-if [[ ! -s "data/obs/ioda_adpupa.nc" ]]; then
-  OBS_TYPE_REMOVE="${OBS_TYPE_REMOVE},t120,q120,ps120,uv220"
-  OBS_TYPE_REMOVE=${OBS_TYPE_REMOVE#,}  # remove the leading ,
-fi
-#
-if [[ -z "${OBS_TYPE_USE}" ]]; then
-  if [[ ! -z "${OBS_TYPE_REMOVE}" ]]; then
-    ${USHrrfs}/yaml_remove_obs ${template} ${OBS_TYPE_REMOVE}
-  fi
-else
-  # remove OBS_TYPE_REMOVE from OBS_TYPE_USE
-  OBS_TYPE_USE=$(echo "${OBS_TYPE_USE}" | tr ',' '\n' | grep -vFxf <(echo "${OBS_TYPE_REMOVE}" | tr ',' '\n') | tr '\n' ',')
-  OBS_TYPE_USE=${OBS_TYPE_USE#,}  # remove the leading ,
-  OBS_TYPE_USE=${OBS_TYPE_USE%,}  # remove trailing ,
-  #
-  ${USHrrfs}/yaml_use_obs ${template} ${OBS_TYPE_USE}
-fi
+${cpreq} ${EXPDIR}/config/convinfo.${NET} .
+${USHrrfs}/yaml_generator ${template}

@@ -1,0 +1,119 @@
+#!/usr/bin/env python
+#
+import os
+import sys
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# get command line inputs
+#
+args = sys.argv
+nargs = len(args)-1
+if nargs < 1:
+    print(f"{args[0]} [yaml_file]\n")
+    exit()
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# read the iuse information from convinfo for conventional observations
+#
+dcInfo  = {}
+if os.path.exists('convinfo'):
+  with open('convinfo','r') as sfile:
+      for line in sfile:
+          if not line.strip().startswith("!"):
+              fields=line.split()
+              if len(fields) == 9:
+                  atype = fields[0] + fields[1]
+                  if fields[2] != '0':
+                      atype += "_" + fields[2].zfill(3)
+                  #
+                  dcTMP = {
+                      'iuse': fields[3],
+                      'twindow': fields[4],
+                      'gross': fields[5],
+                      'ermax': fields[6],
+                      'ermin': fields[7],
+                      'msgtype': fields[8],
+                      }
+                  dcInfo[atype] = dcTMP
+              else:
+                  print(f"read_convinfo Warning: expected 9 fields\n{line}")
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# generate the final use_obs list
+#
+
+# ~~~~~~~~~~~~~
+# remove some atypes if obs files not available
+if not os.path.exists('data/obs/ioda_adpupa.nc'):
+  keys_to_remove = ['t120','q120','ps120','uv220']
+  for key in keys_to_remove:
+    dcInfo.pop(key,None) # `None` prevents KeyError if key doesn't exist
+# add more here if needed
+
+# ~~~~~~~~~~~~~
+# assemble a final obs use list
+obs_list = []
+for key,value in dcInfo.items():
+  if value['iuse'] == "1":
+    obs_list.append(key)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# generate the yaml file on the fly
+#
+yfile = args[1]
+basename = yfile.rstrip(".yaml")
+yfile2 = basename + "_old001.yaml"
+#
+# find an available file name and backup the old yaml file
+if os.path.exists(yfile2):
+    knt=1
+    yfile2 = f'{basename}_old{knt:03}.yaml'
+    while os.path.exists(yfile2):
+        knt += 1
+        yfile2 = f'{basename}_old{knt:03}.yaml'
+os.replace(yfile, yfile2)
+#
+with open(yfile2, 'r') as infile, open(yfile, 'w') as outfile:
+    buffer_zone = []
+    in_buffer_zone = False
+    just_read_new_obs_space = False
+    use_obs = False
+    #
+    for line in infile:
+        if "obs space:" in line:
+            # just read a new obs space, need to process buffer_zone
+            if in_buffer_zone:
+                # Write out the buffer zone if not moreve_obs
+                if use_obs:
+                    for buf_line in buffer_zone:
+                        outfile.write(buf_line)
+                # Reset buffer and state tracking
+                buffer_zone = []
+                in_buffer_zone = False
+                use_obs = False
+            #~~~~~
+            just_read_new_obs_space = True
+            in_buffer_zone = True
+            buffer_zone.append(line)
+        elif just_read_new_obs_space and "name" in line:
+            just_read_new_obs_space = False
+            buffer_zone.append(line)
+            found = False
+            for obs in obs_list:
+                if obs in line:
+                  found = True
+                  break
+            # ~~~~~~
+            if found:
+               use_obs = True
+        elif in_buffer_zone:
+            buffer_zone.append(line)
+
+        if not in_buffer_zone:
+            outfile.write(line)
+    #~~~~
+    if buffer_zone:
+        if use_obs:
+            for buf_line in buffer_zone:
+                outfile.write(buf_line)
+# ~~~~~~~~
