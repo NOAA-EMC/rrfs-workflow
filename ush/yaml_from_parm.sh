@@ -21,5 +21,5 @@ fi
 #
 #  Generate the final YAML configuration file based on convinfo and available ioda files
 #
-${cpreq} ${EXPDIR}/config/convinfo.${NET} .
-${USHrrfs}/yaml_generator ${template}
+${cpreq} ${EXPDIR}/config/convinfo .
+${USHrrfs}/yaml_finalize ${template}
