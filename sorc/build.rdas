@@ -6,6 +6,7 @@ HOMErrfs="$(dirname "$rundir")"
 
 source ${HOMErrfs}/workflow/ush/detect_machine.sh
 source ${HOMErrfs}/workflow/ush/init.sh
+cp ${HOMErrfs}/fix/jedi/convinfo.rrfs ${HOMErrfs}/workflow/convinfo
 
 EXEC="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_variational.x"
 EXEC2="${HOMErrfs}/sorc/RDASApp/build/bin/bufr2ioda.x"
