@@ -14,5 +14,5 @@ def clean(xmlFile, expdir):
     'CLEAN_BACK_DAYS': os.getenv("CLEAN_BACK_DAYS",'5'),
   }
   #
-  xml_task(xmlFile,expdir,task_id,cycledefs)
+  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv)
 ### end of clean --------------------------------------------------------
