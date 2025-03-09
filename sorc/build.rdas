@@ -11,11 +11,14 @@ EXEC="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_variational.x"
 EXEC2="${HOMErrfs}/sorc/RDASApp/build/bin/bufr2ioda.x"
 EXEC3="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_enkf.x"
 cd ${HOMErrfs}/sorc/RDASApp
-cp ../_workaround_/Registry.xml sorc/mpas/src/core_atmosphere
+cp ../_workaround_/MPAS-Model/Registry.xml sorc/mpas/src/core_atmosphere
 if [[ "${MACHINE}" == "gaea" ]]; then
-  cp ../_workaround_/TimeoffsetVariable.cpp sorc/iodaconv/src/bufr/BufrParser/Exports/Variables
+  cp ../_workaround_/RDASApp/TimeoffsetVariable.cpp sorc/iodaconv/src/bufr/BufrParser/Exports/Variables
+elif [[ "${MACHINE}" == "orion" ]]; then
+  cp ../_workaround_/RDASApp/orion.intel.lua  modulefiles/RDAS
+elif [[ "${MACHINE}" == "hercules" ]]; then
+  cp ../_workaround_/RDASApp/hercules.intel.lua  modulefiles/RDAS
 fi
-#cp ../_workaround_/hera.gnu.lua modulefiles/RDAS/hera.intel.lua #gge.tmp.debug: use GNU for jedivar on Hera
 rm -rf build/
 ./build.sh -m MPAS
 
