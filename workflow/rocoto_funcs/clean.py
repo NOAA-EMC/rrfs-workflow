@@ -9,9 +9,10 @@ def clean(xmlFile, expdir):
   cycledefs='prod'
   #
   dcTaskEnv={
-    'STMP_RETENTION_HRS': os.getenv("STMP_RETENTION_HRS",'24'),
-    'COM_RETENTION_HRS': os.getenv("COM_RETENTION_HRS",'120'),
-    'CLEAN_BACK_DAYS': os.getenv("CLEAN_BACK_DAYS",'5'),
+    'STMP_CLEAN_HRS': os.getenv("STMP_CLEAN_HRS",'24'),
+    'COM_CLEAN_HRS': os.getenv("COM_CLEAN_HRS",'120'), # 120 hrs = 5 days
+    'LOG_CLEAN_HRS': os.getenv("LOG_CLEAN_HRS",'840'), # 840 hrs = 35 days
+    'CLEAN_BACK_DAYS': os.getenv("CLEAN_BACK_DAYS",'5'), # go back 'CLEAN_BACK_DAYS' from the first valid clean hour
   }
   #
   xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv)
