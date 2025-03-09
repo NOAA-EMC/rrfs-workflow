@@ -53,7 +53,10 @@ set -x
 
 # run J-job or sideload non-NCO tasks
 case ${task_id} in
-  clean|graphics|dummy)
+  clean)
+    ${HOMErrfs}/workflow/sideload/clean.py
+    ;;
+  graphics|dummy)
     ${HOMErrfs}/workflow/sideload/${task_id}.sh
     ;;
   *)
