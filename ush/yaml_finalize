@@ -20,9 +20,11 @@ if os.path.exists('convinfo'):
   with open('convinfo','r') as sfile:
       for line in sfile:
           if not line.strip().startswith("!"):
-              fields=line.split()
+              fields = line.split()
               if len(fields) == 9:
-                  atype = fields[0] + fields[1]
+                  atype = fields[0]
+                  if fields[1] != '0':
+                      atype += fields[1].zfill(3)
                   if fields[2] != '0':
                       atype += "_" + fields[2].zfill(3)
                   #
