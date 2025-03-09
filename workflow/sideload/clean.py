@@ -140,3 +140,5 @@ group_clean(cdate, com_clean_hrs, COMROOT, 'com', NET, RUN, WGF, rrfs_ver)
 print('\nclean log: ' + COMROOT.rstrip('/') + f'{NET}/{rrfs_ver}/logs')
 group_clean(cdate, log_clean_hrs, COMROOT, 'log', NET, RUN, WGF, rrfs_ver)
 
+print('\nDone!')
+
