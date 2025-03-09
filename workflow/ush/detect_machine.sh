@@ -24,9 +24,9 @@ case $(hostname -f) in
   fe[1-8]) MACHINE=jet ;; ### jet01-8
   tfe[12]) MACHINE=jet ;; ### tjet1-2
 
-  Orion-login-[1-4].HPC.MsState.Edu) MACHINE=orion ;; ### orion1-4
+  orion*|Orion*) MACHINE=orion ;;
 
-  [Hh]ercules-login-[1-4].[Hh][Pp][Cc].[Mm]s[Ss]tate.[Ee]du) MACHINE=hercules ;; ### hercules1-4
+  hercules*|Hercules*) MACHINE=hercules ;;
 
   login[1-4].stampede2.tacc.utexas.edu) MACHINE=stampede ;; ### stampede1-4
 
@@ -62,6 +62,7 @@ if [[ "${MACHINE}" == "UNKNOWN" ]]; then
     # We are on MSU Orion or Hercules
     if [[ -d /apps/other ]]; then
       # We are on Hercules
+      # this non longer work, orion can access /apps/other as well
       MACHINE=hercules
     else
       MACHINE=orion
