@@ -62,7 +62,6 @@ if [[ "${MACHINE}" == "UNKNOWN" ]]; then
     # We are on MSU Orion or Hercules
     if [[ -d /apps/other ]]; then
       # We are on Hercules
-      # this non longer work, orion can access /apps/other as well
       MACHINE=hercules
     else
       MACHINE=orion
