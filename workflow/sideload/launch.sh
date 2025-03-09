@@ -22,7 +22,6 @@ echo "load rrfs-workflow modules by default"
 set +x # suppress messy output in the module load process
 source /etc/profile
 module use ${HOMErrfs}/modulefiles
-module load prod_util/${MACHINE}
 # load corresponding modules for different tasks
 case ${task_id} in
   jedivar|getkf*|ioda_bufr)
@@ -46,6 +45,7 @@ case ${task_id} in
     module load rrfs/${MACHINE}.intel
     ;;
 esac
+module load prod_util/${MACHINE}
 module list
 set -x
 
