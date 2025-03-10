@@ -113,8 +113,8 @@ def setup_xml(HOMErrfs, expdir):
       upp(xmlFile,expdir,do_ensemble=True)
 
 # ---------------------------------------------------------------------------
-#    if realtime.upper() == "TRUE": # write out the clean task for realtime runs and retros don't need it
-#      clean(xmlFile,expdir)
+    if os.getenv("DO_CLEAN",'FALSE').upper() == "TRUE": # write out the clean task if needed, usually for realtime runs
+      clean(xmlFile,expdir)
     #
     wflow_end(xmlFile)
 # ---------------------------------------------------------------------------
