@@ -13,9 +13,6 @@ rm -rf ${HOMErrfs}/sorc/MPASSIT/build
 rm -rf ${HOMErrfs}/sorc/MPASSIT/bin
 
 cd ${HOMErrfs}/sorc/MPASSIT
-if [[ "${MACHINE}" == "hercules" ]]; then
-  cp ../_workaround_/MPASSIT/build.hercules.intel.lua modulefiles
-fi
 ./build.sh
 mkdir -p ${HOMErrfs}/exec
 echo "copy ${EXEC} to ../exec/mpassit.x"
