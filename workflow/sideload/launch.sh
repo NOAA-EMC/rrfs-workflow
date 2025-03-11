@@ -53,7 +53,17 @@ set -x
 
 # run J-job or sideload non-NCO tasks
 case ${task_id} in
-  clean|graphics|dummy)
+  clean)
+    case ${MACHINE} in
+      gaea|orion|hercules)
+        set +x
+        module load python
+        set -x
+        ;;
+    esac
+    ${HOMErrfs}/workflow/sideload/clean.py
+    ;;
+  graphics|dummy)
     ${HOMErrfs}/workflow/sideload/${task_id}.sh
     ;;
   *)
