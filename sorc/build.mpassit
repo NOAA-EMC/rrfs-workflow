@@ -14,6 +14,7 @@ rm -rf ${HOMErrfs}/sorc/MPASSIT/bin
 
 cd ${HOMErrfs}/sorc/MPASSIT
 ./build.sh
+
 mkdir -p ${HOMErrfs}/exec
 echo "copy ${EXEC} to ../exec/mpassit.x"
 cp ${EXEC} ${HOMErrfs}/exec/mpassit.x
