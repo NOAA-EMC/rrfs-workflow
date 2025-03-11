@@ -20,8 +20,6 @@ export HYB_WGT_ENS=0.0
 export HYB_WGT_STATIC=1.0
 export HYB_ENS_TYPE=1      # 1.rrfs; 2.GDAS; 0.TBD on the fly (rrfs->GDAS->3DVAR)
 export HYB_ENS_PATH=""     # if empty, the workflow will try to find ensembles automatically
-export OBS_TYPE_USE="t133"   # The workflow will check 'OBS_TYPE_USE' first and then apply 'OBS_TYPE_REMOVE'
-export OBS_TYPE_REMOVE=""    # empty means "not applicable". check ush/obs_type_all for all available obs_types
 
 export DO_CYC=true
 export CYC_INTERVAL=1
