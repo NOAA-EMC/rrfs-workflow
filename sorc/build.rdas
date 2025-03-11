@@ -16,10 +16,6 @@ cp ../_workaround_/CMakeLists.txt sorc/ufo/src/ufo
 cp -r ../_workaround_/sfccorrected sorc/ufo/src/ufo/operators
 if [[ "${MACHINE}" == "gaea" ]]; then
   cp ../_workaround_/RDASApp/TimeoffsetVariable.cpp sorc/iodaconv/src/bufr/BufrParser/Exports/Variables
-elif [[ "${MACHINE}" == "orion" ]]; then
-  cp ../_workaround_/RDASApp/orion.intel.lua  modulefiles/RDAS
-elif [[ "${MACHINE}" == "hercules" ]]; then
-  cp ../_workaround_/RDASApp/hercules.intel.lua  modulefiles/RDAS
 fi
 rm -rf build/
 ./build.sh -m MPAS
