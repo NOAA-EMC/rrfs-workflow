@@ -39,9 +39,9 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
     ens_indices=''.join(f'{i:03d} ' for i in range(1,int(ens_size)+1)).strip()
     gmems=''.join(f'{i:02d} ' for i in range(1,int(ens_size)+1)).strip()
     ensindexstr=f'_m#ens_index#'
-    ensdirstr=f'/m#ens_index#'
+    ensdirstr=f'/mem#ens_index#'
     meta_bgn=f'''
-<metatask name="ens_{meta_id}">
+<metatask name="{meta_id}">
 <var name="ens_index">{ens_indices}</var>
 <var name="gmem">{gmems}</var>'''
     meta_end=f'</metatask>\n'
@@ -76,5 +76,5 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
   </and>
   </dependency>'''
   #
-  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"UNGRIB",do_ensemble)
+  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"UNGRIB")
 ### end of ungrib_ic --------------------------------------------------------

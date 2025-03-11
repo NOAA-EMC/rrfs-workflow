@@ -44,7 +44,7 @@ def mpassit(xmlFile, expdir, do_ensemble=False):
     ens_size=int(os.getenv('ENS_SIZE','2'))
     ens_indices=''.join(f'{i:03d} ' for i in range(1,int(ens_size)+1)).strip()
     meta_bgn=f'''
-<metatask name="ens_{meta_id}">
+<metatask name="{meta_id}">
 <var name="ens_index">{ens_indices}</var>
 <metatask name="{meta_id}_m#ens_index#">
 <var name="group_index">{group_indices}</var>
@@ -53,7 +53,7 @@ def mpassit(xmlFile, expdir, do_ensemble=False):
     task_id=f'{meta_id}_m#ens_index#_g#group_index#'
     dcTaskEnv['ENS_INDEX']="#ens_index#"
     ensindexstr="_m#ens_index#"
-    ensdirstr="/m#ens_index#"
+    ensdirstr="/mem#ens_index#"
 
   # dependencies
   timedep=""
@@ -72,5 +72,5 @@ def mpassit(xmlFile, expdir, do_ensemble=False):
   </and>
   </dependency>'''
   #
-  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,True,meta_id,meta_bgn,meta_end,"MPASSIT",do_ensemble)
+  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,True,meta_id,meta_bgn,meta_end,"MPASSIT")
 ### end of mpassit --------------------------------------------------------

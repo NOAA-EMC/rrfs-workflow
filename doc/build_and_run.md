@@ -1,5 +1,6 @@
 # 1. Build
-`git clone -b rrfs-mpas-jedi --recursive git@github.com:NOAA-EMC/rrfs-workflow.git`
+If running on Orion/Hercules/Gaea, you will need to run `module load git-lfs` before cloning.    
+`git clone -b rrfs-mpas-jedi --recursive https://github.com/NOAA-EMC/rrfs-workflow.git`
 
 `cd rrfs-workflow/sorc` and run the following command to build the system:
 ```
@@ -22,6 +23,7 @@ ungrib.x
 init_atmosphere_model.x
 atmosphere_model.x
 mpasjedi_variational.x
+mpasjedi_enkf.x
 bufr2ioda.x
 mpassit.x
 upp.x

@@ -37,7 +37,6 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     meta_end=""
     ensindexstr=""
     ensdirstr=""
-    ensstr=""
   else:
     metatask=True
     task_id=f'{meta_id}_m#ens_index#'
@@ -47,13 +46,12 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     ens_size=int(os.getenv('ENS_SIZE','2'))
     ens_indices=''.join(f'{i:03d} ' for i in range(1,int(ens_size)+1)).strip()
     meta_bgn=f'''
-<metatask name="ens_{meta_id}">
+<metatask name="{meta_id}">
 <var name="ens_index">{ens_indices}</var>'''
     meta_end=f'\
 </metatask>\n'
     ensindexstr="_m#ens_index#"
-    ensdirstr="/m#ens_index#"
-    ensstr="ens_"
+    ensdirstr="/mem#ens_index#"
 
   # dependencies
   coldhrs=coldhrs.split(' ')
@@ -64,7 +62,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     strneqs=strneqs+f"\n        <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
   streqs=streqs.lstrip('\n')
   strneqs=strneqs.lstrip('\n')
-  datadep_prod=f'''\n        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;&WGF;.@Y@m@d/@H{ensdirstr}/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
+  datadep_prod=f'''\n        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;{ensdirstr}/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
   datadep_spinup=f'''\n        <taskdep task="fcst_spinup" cycle_offset="-1:00:00"/>'''
   if spinup_mode==0: # no parallel spinup cycles
     datadep=datadep_prod
@@ -139,5 +137,5 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
   </and>
   </dependency>'''
   #
-  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"PREP_IC",do_ensemble)
+  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"PREP_IC")
 ### end of fcst --------------------------------------------------------

@@ -20,15 +20,17 @@ def smart_cycledefs():
     cold_cycs=os.getenv('COLDSTART_CYCS','03 15').strip().split(' ')
     prodswitch_cycs=os.getenv('PRODSWITCH_CYCS', '09 21').strip().split(' ')
     # compute spinup_hrs (usually coldstart at 03 or 15)
-    spinup_hrs=cold_cycs[0]+"-"+f'{int(prodswitch_cycs[0])-1:02},'+cold_cycs[1]+"-"+f'{int(prodswitch_cycs[1])-1:02}'
-    half_spinup=cold_cycs[1]+"-"+f'{int(prodswitch_cycs[1])-1:02}'
+    spinup_hrs=cold_cycs[0]+"-"+f'{int(prodswitch_cycs[0])-1:02},'
+    if len(cold_cycs)>1:
+      half_spinup=cold_cycs[1]+"-"+f'{int(prodswitch_cycs[1])-1:02}'
+      spinup_hrs+=half_spinup
     #
     realtime=os.getenv('REALTIME','false')
     spinup=os.getenv('DO_SPINUP','false')
     if realtime.upper()=="TRUE":
-      cycledef_ic=f'''  &Y1;&M1;&D1;&H1;00 &Y2;&M2;&D2;&H2;00 {ic_step.zfill(2)}:00:00'''
-      cycledef_lbc=f''' &Y1;&M1;&D1;&H1;00 &Y2;&M2;&D2;&H2;00 {lbc_step.zfill(2)}:00:00'''
-      cycledef_prod=f'''&Y1;&M1;&D1;&H1;00 &Y2;&M2;&D2;&H2;00 {cyc_interval.zfill(2)}:00:00'''
+      cycledef_ic=f'''  &Y1;&M1;&D1;{cold_cycs[0]}00 &Y2;&M2;&D2;2300 {ic_step.zfill(2)}:00:00'''
+      cycledef_lbc=f''' &Y1;&M1;&D1;0000 &Y2;&M2;&D2;2300 {lbc_step.zfill(2)}:00:00'''
+      cycledef_prod=f'''&Y1;&M1;&D1;0000 &Y2;&M2;&D2;2300 {cyc_interval.zfill(2)}:00:00'''
       if spinup.upper()=='TRUE':
         cycledef_spinup=f'''00 {spinup_hrs} * &M1;,&M2; &Y1;,&Y2; *'''
         num_spinup_cycledef=1
@@ -74,7 +76,7 @@ def smart_cycledefs():
           cycledef_spinup3=f'''00 {spinup_hrs} 01-{date2.day:02} {date2.month:02} {date2.year:04} *'''
           num_spinup_cycledef=3
       #
-      cycledef_ic=f'''  {date1.strftime("%Y%m%d%H")}00 {retrodates[1]}00 {ic_step.zfill(2)}:00:00'''
+      cycledef_ic=f'''  {date1.strftime("%Y%m%d")}{cold_cycs[0]}00 {retrodates[1]}00 {ic_step.zfill(2)}:00:00'''
       cycledef_lbc=f''' {date1.strftime("%Y%m%d%H")}00 {retrodates[1]}00 {lbc_step.zfill(2)}:00:00'''
       cycledef_prod=f'''{date1.strftime("%Y%m%d")}{prod_cyc1}00 {retrodates[1]}00 {cyc_interval.zfill(2)}:00:00'''
   #

@@ -5,8 +5,8 @@ export NET=rrfs                    # rrfs, rtma,
 export MESH_NAME=conus12km         # conus12km, conus3km, atl3km, etc
 export WGF="enkf"   # working group function = "det", "enkf", "ens", "firewx"
 export EXP_NAME=hrly_12km
-export VERSION=v2.0.9
-export TAG=c3v209
+export VERSION=$(cat ./VERSION)
+export TAG=e12km
 export OPSROOT=/scratch1/BMC/wrfruc/gge/OPSROOT/${EXP_NAME}
 export EXPDIR=${OPSROOT}/exp/rrfs${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
@@ -17,7 +17,10 @@ export DO_DETERMINISTIC=false
 export ENS_SIZE=30
 export ZETA_LEVELS="L60.txt"
 #
-export DA_IODA="false"
+export DO_IODA="false"
+#export DO_JEDI=true
+export OBS_TYPE_USE="t133"   # The workflow will check 'OBS_TYPE_USE' first and then apply 'OBS_TYPE_REMOVE'
+export OBS_TYPE_REMOVE=""    # empty means "not applicable". check ush/obs_type_all for all available obs_types
 
 export DO_CYC=true
 export CYC_INTERVAL=3
@@ -46,13 +49,13 @@ export NODES_LBC="<nodes>1:ppn=40</nodes>"
 export NODES_FCST="<nodes>1:ppn=40</nodes>"
 export NODES_MPASSIT="<nodes>1:ppn=40</nodes>"
 export NODES_UPP="<nodes>1:ppn=40</nodes>"
-export NODES_JEDIVAR="<nodes>2:ppn=20</nodes>"
+export NODES_GETKF="<nodes>4:ppn=20</nodes>"
 #
 export WALLTIME_FCST="1:30:00"
 export WALLTIME_SAVE_FCST="1:30:00"
 export WALLTIME_MPASSIT="1:00:00"
 export WALLTIME_UPP="1:00:00"
-export WALLTIME_JEDIVAR="00:30:00"
+export WALLTIME_GETKF="00:30:00"
 #
 export KEEPDATA=yes
 export MPI_RUN_CMD=srun
@@ -69,27 +72,36 @@ export LBC_EXTRN_MDL_NAME_PATTERN=${IC_EXTRN_MDL_NAME_PATTERN}
 export LBC_EXTRN_MDL_NAME_PATTERN_B=${IC_EXTRN_MDL_NAME_PATTERN_B}
 case ${MACHINE} in
   "hera")
-    export IC_EXTRN_MDL_BASEDIR="/scratch2/BMC/rtrr/RRFS2_RETRO_DATA/sandbox/GEFS"
+    export IC_EXTRN_MDL_BASEDIR="/scratch2/BMC/rtrr/RRFS2_RETRO_DATA/May2024/GEFS"
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
-    export OBSPATH="/scratch2/BMC/rtrr/RRFS2_RETRO_DATA/sandbox/obs_rap"
+    export OBSPATH="/scratch2/BMC/rtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
     export ACCOUNT="wrfruc"
     export QUEUE="batch"
     export PARTITION="hera"
     ;;
   "jet")
-    export IC_EXTRN_MDL_BASEDIR="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/sandbox/GEFS"
+    export IC_EXTRN_MDL_BASEDIR="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/GEFS"
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
-    export OBSPATH="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/sandbox/obs_rap"
+    export OBSPATH="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
     export ACCOUNT="nrtrr"
     export QUEUE="batch"
     export PARTITION="kjet"
     ;;
-  "gaeac6")
-    export IC_EXTRN_MDL_BASEDIR="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/sandbox/GEFS"
+  "orion"|"hercules")
+    export IC_EXTRN_MDL_BASEDIR="/work2/noaa/wrfruc/RRFS2_RETRO_DATA/May2024/GEFS"
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
-    export OBSPATH="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/sandbox/obs_rap"
-    export ACCOUNT="bil-fire10-oar"
+    export OBSPATH="/work2/noaa/wrfruc/RRFS2_RETRO_DATA/May2024/obs_rap"
+    export ACCOUNT="wrfruc"
     export QUEUE="batch"
+    export PARTITION=${MACHINE}
+    export CLUSTER=""
+    ;;
+  "gaea")
+    export IC_EXTRN_MDL_BASEDIR="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/GEFS"
+    export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
+    export OBSPATH="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/obs_rap"
+    export ACCOUNT="bil-fire10-oar"
+    export QUEUE="normal"
     export PARTITION="batch"
     export CLUSTER="c6"
     ;;

@@ -2,7 +2,7 @@
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]${id}: '
 set -x
 cpreq=${cpreq:-cpreq}
-
+prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
 cd ${DATA}
 #
 # determine time steps and etc according to the mesh
@@ -10,12 +10,10 @@ cd ${DATA}
 if [[ ${MESH_NAME} == "conus12km" ]]; then
   dt=60
   substeps=2
-  disp=12000.0
   radt=30
 elif [[ ${MESH_NAME} == "conus3km" ]]; then
   dt=20
   substeps=4
-  disp=3000.0
   radt=15
 else
   echo "Unknown MESH_NAME, exit!"
@@ -50,7 +48,7 @@ ln -snf ${FIXrrfs}/physics/${PHYSICS_SUITE}/* .
 ln -snf ${FIXrrfs}/meshes/${MESH_NAME}.ugwp_oro_data.nc ./ugwp_oro_data.nc
 zeta_levels=${EXPDIR}/config/ZETA_LEVELS.txt
 nlevel=$(wc -l < ${zeta_levels})
-ln -snf ${FIXrrfs}/meshes/${MESH_NAME}.invariant.nc_L${nlevel} ./invariant.nc
+ln -snf ${FIXrrfs}/meshes/${MESH_NAME}.invariant.nc_L${nlevel}_${prefix} ./invariant.nc
 mkdir -p graphinfo stream_list
 ln -snf ${FIXrrfs}/graphinfo/* graphinfo/
 ln -snf ${FIXrrfs}/stream_list/${PHYSICS_SUITE}/* stream_list/
@@ -100,8 +98,10 @@ ulimit -a
 source prep_step
 ${cpreq} ${EXECrrfs}/atmosphere_model.x .
 ${MPI_RUN_CMD} ./atmosphere_model.x 
+export err=$?
+err_chk
 #
-# check the status
+# double check status as sometimes atmosphere_model.x exit with 0 but there are still errors (log.atmosphere*err)
 #
 num_err_log=$(ls ./log.atmosphere*.err 2>/dev/null | wc -l)
 if (( ${num_err_log} > 0 )) ; then
@@ -112,7 +112,7 @@ else
   if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
     CDATEp=$( $NDATE 1 ${CDATE} )
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
-    ${cpreq} ${DATA}/mpasout.${timestr}.nc ${COMOUT}/fcst_spinup/.
+    ${cpreq} ${DATA}/mpasout.${timestr}.nc ${COMOUT}/fcst_spinup/${WGF}${MEMDIR}
   fi
   exit 0
 fi

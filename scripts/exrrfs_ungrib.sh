@@ -36,7 +36,7 @@ fhr_all=$(seq $((10#${fhr_begin})) $((10#${INTERVAL})) $((10#${fhr_end} )) )
 knt=0
 for fhr in  ${fhr_all}; do
   knt=$(( 10#${knt} + 1 ))
-  HHH=$(printf %03d ${fhr})
+  HHH=$(printf %03d $((10#$fhr)) )
   GRIBFILE_LOCAL=$(${USHrrfs}/num_to_GRIBFILE.XXX.sh ${knt})
   NAME_FILE=${NAME_PATTERN/fHHH/${HHH}}
   GRIBFILE="${SOURCE_BASEDIR}/${NAME_FILE}"

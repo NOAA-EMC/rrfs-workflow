@@ -58,7 +58,7 @@ eval "echo \"${file_content}\"" > namelist.init_atmosphere
 # generate the streams file on the fly
 # using sed as this file contains "filename_template='lbc.$Y-$M-$D_$h.$m.$s.nc'"
 #
-sed -e "s/@input_stream@/init.nc/" -e "s/@output_stream@/foo.nc/" \
+sed -e "s/@input_stream@/invariant.nc/" -e "s/@output_stream@/foo.nc/" \
     -e "s/@lbc_interval@/${INTERVAL}/" ${PARMrrfs}/streams.init_atmosphere > streams.init_atmosphere
 
 #
@@ -70,7 +70,9 @@ for fhr in  ${fhr_all}; do
   timestring=$(date -d "${EDATE:0:8} ${EDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
   ln -snf ${UMBRELLA_UNGRIB_DATA}/${prefix}:${timestring:0:13} .
 done
-ln -snf ${COMINrrfs}/${RUN}${WGF}.${PDY}/${cyc}${MEMDIR}/ic/init.nc .
+zeta_levels=${EXPDIR}/config/ZETA_LEVELS.txt
+nlevel=$(wc -l < ${zeta_levels})
+ln -snf ${FIXrrfs}/meshes/${MESH_NAME}.invariant.nc_L${nlevel}_${prefix} ./invariant.nc
 ${cpreq} ${FIXrrfs}/meshes/${MESH_NAME}.static.nc static.nc
 ${cpreq} ${FIXrrfs}/graphinfo/${MESH_NAME}.graph.info.part.${NTASKS} .
 
@@ -86,4 +88,4 @@ if (( $? != 0 )); then
 fi
 
 # copy lbc*.nc to COMOUT
-${cpreq} ${DATA}/lbc*.nc ${COMOUT}${MEMDIR}/lbc/
+${cpreq} ${DATA}/lbc*.nc ${COMOUT}/lbc/${WGF}${MEMDIR}

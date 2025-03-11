@@ -15,6 +15,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
   else:
     cycledefs='prod'
   # Task-specific EnVars beyond the task_common_vars
+  extrn_mdl_source=os.getenv('IC_EXTRN_MDL_NAME','IC_PREFIX_not_defined')
   fcst_len_hrs_cycles=os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
   fcst_length=os.getenv('FCST_LENGTH','1')
   lbc_interval=os.getenv('LBC_INTERVAL','3')
@@ -22,6 +23,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
   restart_interval=os.getenv('RESTART_INTERVAL', '99')
   physics_suite=os.getenv('PHYSICS_SUITE','PHYSICS_SUITE_not_defined')
   dcTaskEnv={
+    'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
     'FCST_LENGTH': f'{fcst_length}',
     'LBC_INTERVAL': f'{lbc_interval}',
     'HISTORY_INTERVAL': f'{history_interval}',
@@ -42,7 +44,6 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     meta_end=""
     ensindexstr=""
     ensdirstr=""
-    ensstr=""
   else:
     metatask=True
     task_id=f'{meta_id}_m#ens_index#'
@@ -52,13 +53,12 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     ens_size=int(os.getenv('ENS_SIZE','2'))
     ens_indices=''.join(f'{i:03d} ' for i in range(1,int(ens_size)+1)).strip()
     meta_bgn=f'''
-<metatask name="ens_{meta_id}">
+<metatask name="{meta_id}">
 <var name="ens_index">{ens_indices}</var>'''
     meta_end=f'\
 </metatask>\n'
     ensindexstr="_m#ens_index#"
-    ensdirstr="/m#ens_index#"
-    ensstr="ens_"
+    ensdirstr="/mem#ens_index#"
 
   # dependencies
   timedep=""
@@ -69,7 +69,9 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
 
   jedidep=""
   if os.getenv("DO_JEDI","FALSE").upper()=="TRUE":
-    if do_spinup:
+    if os.getenv("DO_ENSEMBLE","FALSE").upper()=="TRUE":
+      jedidep=f'<taskdep task="getkf_solver"/>'
+    elif do_spinup:
       jedidep=f'<taskdep task="jedivar_spinup"/>'
     else:
       jedidep=f'<taskdep task="jedivar"/>'
@@ -87,5 +89,5 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
   </and>
   </dependency>'''
   
-  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"FCST",do_ensemble)
+  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"FCST")
 ### end of fcst --------------------------------------------------------

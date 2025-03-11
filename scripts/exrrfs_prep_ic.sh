@@ -11,7 +11,7 @@ spinup_mode=${SPINUP_MODE:-0}
 #
 start_type="warm"
 for hr in ${COLDSTART_CYCS:-"99"}; do
-  chr=$(printf '%02d' ${hr})
+  chr=$(printf '%02d' $((10#$hr)) )
   if [ "${cyc}" == "${chr}" ]; then
     start_type="cold"
     break
@@ -21,7 +21,7 @@ if (( SPINUP_MODE == -1 )); then
 # always warm start for prod cycles parallel to spinup cycles
   start_type="warm"
   for hr in ${PRODSWITCH_CYCS:-"99"}; do
-    chr=$(printf '%02d' ${hr})
+    chr=$(printf '%02d' $((10#$hr)) )
     if [ "${cyc}" == "${chr}" ]; then
       prod_switch=yes
       break
@@ -35,7 +35,7 @@ echo "this cycle is ${start_type} start"
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 
 
 if [[ "${start_type}" == "cold" ]]; then
-  thisfile=${COMINrrfs}/${RUN}${WGF}.${PDY}/${cyc}${MEMDIR}/ic/init.nc
+  thisfile=${COMINrrfs}/${RUN}.${PDY}/${cyc}/ic/${WGF}${MEMDIR}/init.nc
   if [[ -r ${thisfile} ]]; then
     ${cpreq} ${thisfile} ${UMBRELLA_PREP_IC_DATA}/init.nc
     echo "cold start from ${thisfile}"
@@ -60,7 +60,7 @@ elif [[ "${start_type}" == "warm" ]]; then
     CDATEp=$($NDATE -${ii} ${CDATE} )
     PDYii=${CDATEp:0:8}
     cycii=${CDATEp:8:2}
-    thisfile=${COMINrrfs}/${RUN}${WGF}.${PDYii}/${cycii}${MEMDIR}/${fcststr}/mpasout.${timestr}.nc
+    thisfile=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/${fcststr}/${WGF}${MEMDIR}/mpasout.${timestr}.nc
     if [[ -r ${thisfile} ]]; then
       break
     fi

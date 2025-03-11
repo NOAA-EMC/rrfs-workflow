@@ -98,7 +98,7 @@ EOF
       source prep_step
       ${MPI_RUN_CMD} ./upp.x
       # check the status copy output to COMOUT
-      fhr2=$(printf %02d ${fhr})
+      fhr2=$(printf %02d $((10#$fhr)) )
       wrfprs="WRFPRS.GrbF${fhr2}"
       wrfnat="WRFNAT.GrbF${fhr2}"
       wrftwo="WRFTWO.GrbF${fhr2}"
@@ -115,11 +115,11 @@ EOF
       mv ${wrfnat}.two ${wrfnat}
 
       # copy products to COMOUT
-      fhr3=$(printf %03d ${fhr})
-      ${cpreq} ${wrfprs} ${COMOUT}${MEMDIR}/upp/${NET}.t${cyc}z.prslev.f${fhr3}.${domain}grib2
-      ${cpreq} ${wrfnat} ${COMOUT}${MEMDIR}/upp/${NET}.t${cyc}z.natlev.f${fhr3}.${domain}grib2
-      ${cpreq} ${wrftwo} ${COMOUT}${MEMDIR}/upp/${NET}.t${cyc}z.testbed.f${fhr3}.${domain}grib2
-      ln -snf  ${COMOUT}${MEMDIR}/upp/${NET}.t${cyc}z.prslev.f${fhr3}.${domain}grib2 ${COMOUT}${MEMDIR}/upp/${YYJJJHH}0000${fhr2}
+      fhr3=$(printf %03d $((10#$fhr)) )
+      ${cpreq} ${wrfprs} ${COMOUT}/upp/${WGF}${MEMDIR}/${RUN}.t${cyc}z.prslev.f${fhr3}.${domain}grib2
+      ${cpreq} ${wrfnat} ${COMOUT}/upp/${WGF}${MEMDIR}/${RUN}.t${cyc}z.natlev.f${fhr3}.${domain}grib2
+      ${cpreq} ${wrftwo} ${COMOUT}/upp/${WGF}${MEMDIR}/${RUN}.t${cyc}z.testbed.f${fhr3}.${domain}grib2
+      ln -snf  ${COMOUT}/upp/${WGF}${MEMDIR}/${RUN}.t${cyc}z.prslev.f${fhr3}.${domain}grib2 ${COMOUT}/upp/${WGF}${MEMDIR}/${YYJJJHH}0000${fhr2}
 
     else
       echo "FATAL ERROR: cannot find mpass file at ${timestr}"

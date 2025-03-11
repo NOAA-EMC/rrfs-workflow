@@ -16,26 +16,23 @@ def jedivar(xmlFile, expdir,do_spinup=False):
     cycledefs='prod'
     task_id='jedivar'
   # Task-specific EnVars beyond the task_common_vars
+  extrn_mdl_source=os.getenv('IC_EXTRN_MDL_NAME','IC_PREFIX_not_defined')
   physics_suite=os.getenv('PHYSICS_SUITE','PHYSICS_SUITE_not_defined')
   dcTaskEnv={
+    'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
     'PHYSICS_SUITE': f'{physics_suite}',
     'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
+    'YAML_GEN_METHOD': os.getenv('YAML_GEN_METHOD','1'),
     'HYB_WGT_ENS': os.getenv('HYB_WGT_ENS','0.85'),
     'HYB_WGT_STATIC': os.getenv('HYB_WGT_STATIC','0.15'),
     'HYB_ENS_TYPE': os.getenv('HYB_ENS_TYPE','0'),
-    'HYB_ENS_PATH': os.getenv('HYB_ENS_STATIC','')
+    'HYB_ENS_PATH': os.getenv('HYB_ENS_PATH',''),
+    'OBS_TYPE_USE': os.getenv('OBS_TYPE_USE','t133'),
+    'OBS_TYPE_REMOVE': os.getenv('OBS_TYPE_REMOVE',''),
   }
   if do_spinup:
     dcTaskEnv['DO_SPINUP']='TRUE'
   # dependencies
-  hrs=os.getenv('COLDSTART_CYCS', '3 15')
-  hrs=hrs.split(' ')
-  streqs=""; strneqs=""
-  for hr in hrs:
-    hr=f"{hr:0>2}"
-    streqs=streqs  +f"\n          <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
-    strneqs=strneqs+f"\n          <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
-
   timedep=""
   realtime=os.getenv("REALTIME","false")
   if realtime.upper() == "TRUE":
@@ -52,22 +49,27 @@ def jedivar(xmlFile, expdir,do_spinup=False):
     RUN='rrfs'
     ens_dep=f'''
     <or>
-      <datadep age="00:05:00"><cyclestr offset="-1:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}enkf.@Y@m@d/@H/m030/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
-      <datadep age="00:05:00"><cyclestr offset="-2:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}enkf.@Y@m@d/@H/m030/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
-      <datadep age="00:05:00"><cyclestr offset="-3:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}enkf.@Y@m@d/@H/m030/fcst/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+      <datadep age="00:05:00"><cyclestr offset="-1:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}.@Y@m@d/@H/fcst/enkf/mem030/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+      <datadep age="00:05:00"><cyclestr offset="-2:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}.@Y@m@d/@H/fcst/enkf/mem030/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+      <datadep age="00:05:00"><cyclestr offset="-3:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}.@Y@m@d/@H/fcst/enkf/mem030/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
     </or>'''
-  #
+  # ~~~~
   if do_spinup:
     prep_ic_dep='<taskdep task="prep_ic_spinup"/>'
   else:
     prep_ic_dep='<taskdep task="prep_ic"/>'
+  # ~~~~
+  if os.getenv("DO_IODA","FALSE").upper() == "TRUE":
+    iodadep='<taskdep task="ioda_bufr"/>'
+  else:
+    iodadep=f'<datadep age="00:01:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/ioda_bufr/det/ioda_aircar.nc</cyclestr></datadep>'
 
   #
   dependencies=f'''
   <dependency>
   <and>{timedep}
     {prep_ic_dep}
-    <taskdep task="ioda_bufr"/>{ens_dep}
+    {iodadep}{ens_dep}
   </and>
   </dependency>'''
   #

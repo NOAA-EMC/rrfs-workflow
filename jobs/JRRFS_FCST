@@ -19,20 +19,18 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 #
 export pid=${pid:-$$}
 if [[ -z "${ENS_INDEX}" ]]; then
-  export MEMID=""
   export MEMDIR=""
 else
-  export MEMID="_m${ENS_INDEX}"
-  export MEMDIR="/m${ENS_INDEX}"
+  export MEMDIR="/mem${ENS_INDEX}"
 fi
-export UMBRELLA_PREP_LBC_DATA=${UMBRELLA_PREP_LBC_DATA:-${DATAROOT}/${RUN}_prep_lbc_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
+export UMBRELLA_PREP_LBC_DATA=${UMBRELLA_PREP_LBC_DATA:-${DATAROOT}/${RUN}_prep_lbc_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
 export jobid=${jobid:-fcst_${cyc}}
 if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
-  export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_prep_ic_spinup_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
-  export UMBRELLA_FCST_DATA=${UMBRELLA_FCST_DATA:-${DATAROOT}/${RUN}_fcst_spinup_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
+  export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_prep_ic_spinup_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
+  export UMBRELLA_FCST_DATA=${UMBRELLA_FCST_DATA:-${DATAROOT}/${RUN}_fcst_spinup_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
 else
-  export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_prep_ic_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
-  export UMBRELLA_FCST_DATA=${UMBRELLA_FCST_DATA:-${DATAROOT}/${RUN}_fcst_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
+  export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_prep_ic_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
+  export UMBRELLA_FCST_DATA=${UMBRELLA_FCST_DATA:-${DATAROOT}/${RUN}_fcst_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
 fi
 export DATA=${DATA:-${UMBRELLA_FCST_DATA}/${jobid}}
 
@@ -48,9 +46,9 @@ mkdir -p ${DATA}
 export COMINrrfs=${COMINrrfs:-$(compath.py $envir/rrfs/$rrfs_ver)}
 export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
 if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
-  mkdir -p ${COMOUT}${MEMDIR}/fcst_spinup
+  mkdir -p ${COMOUT}/fcst_spinup/${WGF}${MEMDIR}
 else
-  mkdir -p ${COMOUT}${MEMDIR}/fcst
+  mkdir -p ${COMOUT}/fcst/${WGF}${MEMDIR}
 fi
 #
 #----------------------------------------

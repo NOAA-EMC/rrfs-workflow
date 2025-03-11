@@ -3,9 +3,9 @@ declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LI
 set -x
 
 cpreq=${cpreq:-cpreq}
+prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
 cd ${DATA}
 
-CDATEm1=$($NDATE -1 ${CDATE})
 start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S) 
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 
 #
@@ -25,7 +25,7 @@ ln -snf ${FIXrrfs}/physics/${PHYSICS_SUITE}/* .
 ln -snf ${FIXrrfs}/meshes/${MESH_NAME}.ugwp_oro_data.nc ./ugwp_oro_data.nc
 zeta_levels=${EXPDIR}/config/ZETA_LEVELS.txt
 nlevel=$(wc -l < ${zeta_levels})
-ln -snf ${FIXrrfs}/meshes/${MESH_NAME}.invariant.nc_L${nlevel} ./invariant.nc
+ln -snf ${FIXrrfs}/meshes/${MESH_NAME}.invariant.nc_L${nlevel}_${prefix} ./invariant.nc
 mkdir -p graphinfo stream_list
 ln -snf ${FIXrrfs}/graphinfo/* graphinfo/
 ln -snf ${FIXrrfs}/stream_list/${PHYSICS_SUITE}/* stream_list/
@@ -47,7 +47,7 @@ ln -snf ${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/vbal_${NTASKS} static_bec/
 #
 # copy observations files
 #
-cp ${COMOUT}/ioda_bufr/* obs/.
+cp ${COMOUT}/ioda_bufr/det/* obs/.
 #
 #  find ensemble forecasts based on user settings
 #
@@ -57,12 +57,12 @@ if [[ "${HYB_WGT_ENS}" != "0" ]] && [[ "${HYB_WGT_ENS}" != "0.0" ]]; then # usin
     mpasout_file=mpasout.${timestr}.nc
     for (( ii=0; ii<4; ii=ii+1 )); do
        CDATEp=$($NDATE -${ii} ${CDATE} )
-       ensdir=${COMINrrfs}/rrfsenkf.${CDATEp:0:8}/${CDATEp:8:2}
-       ensdir_m001=${ensdir}/m001/fcst
+       ensdir=${COMINrrfs}/rrfs.${CDATEp:0:8}/${CDATEp:8:2}
+       ensdir_m001=${ensdir}/fcst/enkf/mem001
        if [[ -s ${ensdir_m001}/${mpasout_file} ]]; then
          for (( iii=1; iii<31; iii=iii+1 )); do
             memid=$(printf %03d ${iii})
-            ln -s ${ensdir}/m${memid}/fcst/${mpasout_file} ens/m${memid}.nc
+            ln -s ${ensdir}/fcst/enkf/mem${memid}/${mpasout_file} ens/mem${memid}.nc
          done
        fi
     done
@@ -89,12 +89,10 @@ pio_stride=${PPN}
 if [[ "${MESH_NAME}" == "conus12km" ]]; then
   dt=60
   substeps=2
-  disp=12000.0
   radt=30
 elif [[ "${MESH_NAME}" == "conus3km" ]]; then
   dt=20
   substeps=4
-  disp=3000.0
   radt=15
 else
   echo "Unknown MESH_NAME, exit!"
@@ -102,17 +100,27 @@ else
 fi
 file_content=$(< ${PARMrrfs}/${physics_suite}/namelist.atmosphere) # read in all content
 eval "echo \"${file_content}\"" > namelist.atmosphere
-${cpreq} ${PARMrrfs}/streams.atmosphere.da streams.atmosphere
+${cpreq} ${PARMrrfs}/streams.atmosphere.jedivar streams.atmosphere
 analysisDate=""${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z""
-beginDate=""${CDATEm1:0:4}-${CDATEm1:4:2}-${CDATEm1:6:2}T${CDATEm1:8:2}:00:00Z""
-sed -e "s/@analysisDate@/${analysisDate}/" -e "s/@beginDate@/${beginDate}/" \
-    -e "s/@HYB_WGT_STATIC@/${HYB_WGT_STATIC}/" -e "s/@HYB_WGT_ENS@/${HYB_WGT_ENS}/" \
-    ${PARMrrfs}/jedivar.yaml > jedivar.yaml
-if [[ "${HYB_WGT_ENS}" == "0" ]] || [[ "${HYB_WGT_ENS}" == "0.0" ]]; then # pure 3DVAR
-  sed -i '88,113d' ./jedivar.yaml
-elif [[ "${HYB_WGT_STATIC}" == "0" ]] || [[ "${HYB_WGT_STATIC}" == "0.0" ]] ; then # pure 3DEnVar
-  sed -i '46,87d' ./jedivar.yaml
-fi
+CDATEm2=$($NDATE -2 ${CDATE})
+beginDate=""${CDATEm2:0:4}-${CDATEm2:4:2}-${CDATEm2:6:2}T${CDATEm2:8:2}:00:00Z""
+#
+# generate jedivar.yaml based on how YAML_GEN_METHOD is set
+case ${YAML_GEN_METHOD:-1} in
+  1) # from ${PARMrrfs}
+    source ${USHrrfs}/yaml_from_parm.sh "jedivar"
+    ;;
+  2) # update placeholders in static yaml from gen_jedivar_yaml_nonjcb.sh
+    source ${USHrrfs}/yaml_replace_placeholders.sh
+    ;;
+  3) # JCB
+    source ${USHrrfs}/yaml_jcb.sh
+    ;;
+  *)
+    echo "unknown YAML_GEN_METHOD:${YAML_GEN_METHOD}"
+    err_exit
+    ;;
+esac
 
 if [[ ${start_type} == "cold" ]]; then
   exit 0 #gge.tmp.debug need more time to figure out cold start DA

@@ -28,7 +28,7 @@ cost function:
   cost type: 3D-Var
   time window:
      begin: '@beginDate@'
-     length: PT2H
+     length: PT4H
   jb evaluation: false
   geometry:
     nml_file: ./namelist.atmosphere
@@ -104,7 +104,7 @@ cost function:
         members from template:
           template:
             <<: *memberConfig
-            filename: ./data/ens/m%iMember%.nc
+            filename: ./data/ens/mem%iMember%.nc
           pattern: "%iMember%"
           start: 1
           zero padding: 3
@@ -114,18 +114,22 @@ cost function:
   observations:
      observers:
      - obs space:
-         name: t133=aircar_airTemperature_133
+         name: aircar_t133
          distribution:
            name: "RoundRobin"
-           halo size: 100e3
+           halo size: 300e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs/ioda_aircar.nc"
+             obsfile: data/obs/ioda_aircar.nc
+           obsgrouping:
+             group variables: ["stationIdentification"]
+             sort variable: "pressure"
+             sort order: "descending"
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_t133.nc4
+             obsfile: jdiag_aircar_t133.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -133,15 +137,19 @@ cost function:
          simulated variables: [airTemperature]
 
        obs operator:
-         name: Composite
-         components:
-         - name: VertInterp
+           name: VertInterp
            vertical coordinate: air_pressure
            observation vertical coordinate: pressure
            observation vertical coordinate group: MetaData
            interpolation method: log-linear
+           #gsi geovals:
+           #  filename: "obsout/aircraft_tsen_geoval_2022052619.nc4"
+           #  levels_are_top_down: False
            variables:
            - name: airTemperature
+
+       linear obs operator:
+         name: VertInterp
 
        obs error:
          covariance model: diagonal
@@ -155,13 +163,17 @@ cost function:
          # airTemperature (133)
          # ------------------
          # Reject all obs with QualityMarker > 3
-         - filter: RejectList
+         - filter: Perform Action
            apply at iterations: 0,1
+           filter variables:
+           - name: airTemperature
            where:
-           - variable: ObsType/airTemperature
-             is_in: 133
            - variable: QualityMarker/airTemperature
              is_in: 4-15
+           action:
+             name: reject
+           action:
+             name: reduce obs space
 
          # Time window filter
          - filter: Domain Check
@@ -171,15 +183,30 @@ cost function:
                  name: MetaData/timeOffset # units: s
                minvalue: -5400
                maxvalue:  5400
+           action:
+             name: reduce obs space
 
-         # Online domain check
-         #- filter: Bounds Check
-         # filter variables:
-         # - name: airTemperature
-         # test variables:
-         # - name:  GeoVaLs/observable_domain_mask
-         # minvalue: 0.0
-         # maxvalue: 0.5
+         # Duplicate Check
+         - filter: Temporal Thinning
+           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperature
+           min_spacing: PT90M
+           tolerance: PT0H
+           seed_time: "@analysisDate@"
+           category_variable:
+             name: MetaData/longitude_latitude_pressure
+           action:
+             name: reduce obs space
+
+         # Online regional domain check
+         - filter: Bounds Check
+           filter variables:
+           - name: airTemperature
+           test variables:
+           - name:  GeoVaLs/observable_domain_mask
+           minvalue: 0.0
+           maxvalue: 0.5
 
          # Initial error assignment
          - filter: Perform Action
@@ -199,116 +226,1879 @@ cost function:
                  errors: [1.4088, 1.3361, 1.2395, 1.1379, 1.0505, 0.98154, 0.92451, 0.87349, 0.82829, 0.79582, 0.77562, 0.75911, 0.7408, 0.72571, 0.72719, 0.75204, 0.80129, 0.8696, 0.93292, 0.9672, 0.9831, 0.99132, 0.99603, 0.99854, 0.99963, 0.99997, 1.0, 0.99999, 0.99995, 0.99985, 0.99958, 0.99914, 0.99869]
 
          # Error inflation based on pressure check (setupt.f90)
-         #- filter: Perform Action
-         #  filter variables:
-         #  - name: airTemperature
-         #  where:
-         #  - variable: ObsType/airTemperature
-         #    is_in: 133
-         #  action:
-         #    name: inflate error
-         #    inflation variable:
-         #      name: ObsFunction/ObsErrorFactorPressureCheck
-         #      options:
-         #        variable: airTemperature
-         #        inflation factor: 8.0
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 133
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorPressureCheck
+               options:
+                 variable: airTemperature
+                 inflation factor: 8.0
 
-         # Bounds Check
+#         # Error inflation based on errormod (qcmod.f90)
+#         - filter: Perform Action
+#           filter variables:
+#           - name: airTemperature
+#           where:
+#           - variable: ObsType/airTemperature
+#             is_in: 133
+#           action:
+#             name: inflate error
+#             inflation variable:
+#               name: ObsFunction/ObsErrorFactorConventional
+#               options:
+#                 inflate variables: [airTemperature]
+#                 pressure: MetaData/pressure
+
+         # Error inflation when QualityMarker == 3 (read_prepbufr.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           action:
+             name: inflate error
+             inflation factor: 1.2
+           where:
+           - variable: QualityMarker/airTemperature
+             is_in: 3
+
+         # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           action:
+             name: inflate error
+             inflation factor: 1.2
+           where:
+           - variable: MetaData/pressure
+             maxvalue: 10000.0
+
+         # Bounds Check (ObsError)
          - filter: Bounds Check
-           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperature
+           test variables:
+           - name:  ObsErrorData/airTemperature
+           minvalue: 0.0
+           action:
+             name: reduce obs space
+
+         # Bounds Check (ObsValue)
+         - filter: Bounds Check
            filter variables:
            - name: airTemperature
            minvalue: 100
            maxvalue: 400
+           action:
+             name: reduce obs space
 
          # Create temporary ObsErrorData
-         #- filter: Variable Assignment
-         #  apply at iterations: 0,1
-         #  assignments:
-         #  - name: TempObsErrorData/airTemperature
-         #    type: float
-         #    function:
-         #      name: ObsFunction/Arithmetic
-         #      options:
-         #        variables:
-         #        - name: ObsErrorData/airTemperature
-         #  defer to post: true
+         - filter: Variable Assignment
+           apply at iterations: 0,1
+           assignments:
+           - name: TempObsErrorData/airTemperature
+             type: float
+             function:
+               name: ObsFunction/Arithmetic
+               options:
+                 variables:
+                 - name: ObsErrorData/airTemperature
+           defer to post: true
 
          # Set ObsError set "error parameter" if < "max value"
-         #- filter: Perform Action
-         #  apply at iterations: 0,1
-         #  filter variables:
-         #  - name: airTemperature
-         #  action:
-         #    name: assign error
-         #    error parameter: 1.3
-         #  where:
-         #  - variable:
-         #      name: ObsErrorData/airTemperature
-         #    maxvalue: 1.3
-         #  - variable:
-         #      name: ObsErrorData/airTemperature
-         #    value: is_valid
-         #  defer to post: true
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperature
+           action:
+             name: assign error
+             error parameter: 1.3
+           where:
+           - variable:
+               name: ObsErrorData/airTemperature
+             maxvalue: 1.3
+           - variable:
+               name: ObsErrorData/airTemperature
+             value: is_valid
+           defer to post: true
 
          # Set ObsError set "error parameter" if > "min value"
-         #- filter: Perform Action
-         #  apply at iterations: 0,1
-         #  filter variables:
-         #  - name: airTemperature
-         #  action:
-         #    name: assign error
-         #    error parameter: 5.6
-         #  where:
-         #  - variable:
-         #      name: ObsErrorData/airTemperature
-         #    minvalue: 5.6
-         #  - variable:
-         #      name: ObsErrorData/airTemperature
-         #    value: is_valid
-         #  defer to post: true
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperature
+           action:
+             name: assign error
+             error parameter: 5.6
+           where:
+           - variable:
+               name: ObsErrorData/airTemperature
+             minvalue: 5.6
+           - variable:
+               name: ObsErrorData/airTemperature
+             value: is_valid
+           defer to post: true
 
          # Gross Error Check
-         #- filter: Background Check
-         #  apply at iterations: 0,1
-         #  filter variables:
-         #  - name: airTemperature
-         #  threshold: 7.0
-         #  action:
-         #    name: reject
-         #  where:
-         #  - variable: ObsType/airTemperature
-         #  - variable: QualityMarker/airTemperature
-         #    is_not_in: 3
-         #  defer to post: true
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperature
+           threshold: 7.0
+           action:
+             name: reject
+           where:
+           - variable: ObsType/airTemperature
+           - variable: QualityMarker/airTemperature
+             is_not_in: 3
+           defer to post: true
 
          # Gross Error Check: cgross*0.7 if QualityMarker=3
-         #- filter: Background Check
-         #  apply at iterations: 0,1
-         #  filter variables:
-         #  - name: airTemperature
-         #  threshold: 4.9
-         #  action:
-         #    name: reject
-         #  where:
-         #  - variable: ObsType/airTemperature
-         #  - variable: QualityMarker/airTemperature
-         #    is_in: 3
-         #  defer to post: true
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperature
+           threshold: 4.9
+           action:
+             name: reject
+           where:
+           - variable: ObsType/airTemperature
+           - variable: QualityMarker/airTemperature
+             is_in: 3
+           defer to post: true
 
          # Re-assign err ObsErrorData <--- TempObsErrorData after gross error check.
-         #- filter: Perform Action
-         #  apply at iterations: 0,1
-         #  filter variables:
-         #  - name: airTemperature
-         #  action:
-         #    name: assign error
-         #    error function: TempObsErrorData/airTemperature
-         #  where:
-         #  - variable:
-         #      name: TempObsErrorData/airTemperature
-         #    value: is_valid
-         #  defer to post: true
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperature
+           action:
+             name: assign error
+             error function: TempObsErrorData/airTemperature
+           where:
+           - variable:
+               name: TempObsErrorData/airTemperature
+             value: is_valid
+           defer to post: true
 
          #- filter: GOMsaver
          #  filename: ./data/geovals/aircar_geovals_rrfs.nc4
+     - obs space:
+         name: aircar_q133
+         distribution:
+           name: "RoundRobin"
+           halo size: 300e3
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: data/obs/ioda_aircar.nc
+           obsgrouping:
+             group variables: ["stationIdentification"]
+             sort variable: "pressure"
+             sort order: "descending"
+         obsdataout:
+           engine:
+             type: H5File
+             obsfile: jdiag_aircar_q133.nc4
+             allow overwrite: true
+         io pool:
+           max pool size: 1
+         observed variables: [specificHumidity]
+         simulated variables: [specificHumidity]
+
+       obs operator:
+           name: VertInterp
+           vertical coordinate: air_pressure
+           observation vertical coordinate: pressure
+           observation vertical coordinate group: MetaData
+           interpolation method: log-linear
+           #gsi geovals:
+           #  filename: "obsout/aircraft_q_geoval_2022052619.nc4"
+           #  levels_are_top_down: False
+           variables:
+           - name: specificHumidity
+
+       linear obs operator:
+         name: VertInterp
+
+       obs error:
+         covariance model: diagonal
+
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 300e3 # orig
+
+       obs filters:
+         # ------------------
+         # specificHumidity (133)
+         # ------------------
+         # Reject all obs with QualityMarker > 3
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: specificHumidity
+           where:
+           - variable: QualityMarker/specificHumidity
+             is_in: 4-15
+           action:
+             name: reject
+           action:
+             name: reduce obs space
+
+         # Time window filter
+         - filter: Domain Check
+           apply at iterations: 0,1
+           where:
+             - variable:
+                 name: MetaData/timeOffset # units: s
+               minvalue: -5400
+               maxvalue:  5400
+           action:
+             name: reduce obs space
+
+         # Duplicate Check
+         - filter: Temporal Thinning
+           apply at iterations: 0,1
+           filter variables:
+           - name: specificHumidity
+           min_spacing: PT90M
+           tolerance: PT0H
+           seed_time: "@analysisDate@"
+           category_variable:
+             name: MetaData/longitude_latitude_pressure
+           action:
+             name: reduce obs space
+
+         # Online regional domain check
+         - filter: Bounds Check
+           filter variables:
+           - name: specificHumidity
+           test variables:
+           - name:  GeoVaLs/observable_domain_mask
+           minvalue: 0.0
+           maxvalue: 0.5
+
+         # Initial error assignment
+         - filter: Perform Action
+           filter variables:
+           - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_in: 133
+           action:
+             name: assign error
+             error function:
+               name: ObsFunction/ObsErrorModelStepwiseLinear
+               options:
+                 xvar:
+                   name: MetaData/pressure
+                 xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
+                 errors: [0.19455, 0.19064, 0.18488, 0.17877, 0.17342, 0.16976, 0.16777, 0.16696, 0.16605, 0.16522, 0.16637, 0.17086, 0.17791, 0.18492, 0.18996, 0.19294, 0.19447, 0.19597, 0.19748, 0.19866, 0.19941, 0.19979, 0.19994, 0.19999, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2]
+
+#        # Error inflation based on pressure check (setupq.f90)
+#        - filter: Perform Action
+#          filter variables:
+#          - name: specificHumidity
+#          where:
+#          - variable: ObsType/specificHumidity
+#            is_in: 133
+#          action:
+#            name: inflate error
+#            inflation variable:
+#              name: ObsFunction/ObsErrorFactorPressureCheck
+#              options:
+#                variable: specificHumidity
+#                inflation factor: 8.0
+#                request_saturation_specific_humidity_geovals: true
+
+#         # Error inflation based on errormod (qcmod.f90)
+#         - filter: Perform Action
+#           filter variables:
+#           - name: specificHumidity
+#           where:
+#           - variable: ObsType/specificHumidity
+#             is_in: 133
+#           action:
+#             name: inflate error
+#             inflation variable:
+#               name: ObsFunction/ObsErrorFactorConventional
+#               options:
+#                 inflate variables: [specificHumidity]
+#                 pressure: MetaData/pressure
+
+         # Error inflation when QualityMarker == 3 (read_prepbufr.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: specificHumidity
+           action:
+             name: inflate error
+             inflation factor: 1.2
+           where:
+           - variable: QualityMarker/specificHumidity
+             is_in: 3
+
+         # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: specificHumidity
+           action:
+             name: inflate error
+             inflation factor: 1.2
+           where:
+           - variable: MetaData/pressure
+             maxvalue: 10000.0
+
+         # Bounds Check (ObsError)
+         - filter: Bounds Check
+           filter variables:
+           - name: specificHumidity
+           test variables:
+           - name:  ObsErrorData/specificHumidity
+           minvalue: 0.0
+           action:
+             name: reduce obs space
+
+         # Bounds Check (ObsValue)
+         - filter: Bounds Check
+           filter variables:
+           - name: specificHumidity
+           minvalue: 0.0
+           maxvalue: 1.0
+           action:
+             name: reduce obs space
+
+         # Create temporary ObsErrorData
+         - filter: Variable Assignment
+           apply at iterations: 0,1
+           assignments:
+           - name: TempObsErrorData/specificHumidity
+             type: float
+             function:
+               name: ObsFunction/Arithmetic
+               options:
+                 variables:
+                 - name: ObsErrorData/specificHumidity
+           defer to post: true
+
+         # Set ObsError set "error parameter" if < "max value"
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: specificHumidity
+           action:
+             name: assign error
+             error parameter: 5.0
+           where:
+           - variable:
+               name: ObsErrorData/specificHumidity
+             maxvalue: 5.0
+           - variable:
+               name: ObsErrorData/specificHumidity
+             value: is_valid
+           defer to post: true
+
+         # Set ObsError set "error parameter" if > "min value"
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: specificHumidity
+           action:
+             name: assign error
+             error parameter: 50.0
+           where:
+           - variable:
+               name: ObsErrorData/specificHumidity
+             minvalue: 50.0
+           - variable:
+               name: ObsErrorData/specificHumidity
+             value: is_valid
+           defer to post: true
+
+         # Gross Error Check
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: specificHumidity
+           threshold: 7.0
+           action:
+             name: reject
+           where:
+           - variable: ObsType/specificHumidity
+           - variable: QualityMarker/specificHumidity
+             is_not_in: 3
+           defer to post: true
+
+         # Gross Error Check: cgross*0.7 if QualityMarker=3
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: specificHumidity
+           threshold: 4.9
+           action:
+             name: reject
+           where:
+           - variable: ObsType/specificHumidity
+           - variable: QualityMarker/specificHumidity
+             is_in: 3
+           defer to post: true
+
+         # Re-assign err ObsErrorData <--- TempObsErrorData after gross error check.
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: specificHumidity
+           action:
+             name: assign error
+             error function: TempObsErrorData/specificHumidity
+           where:
+           - variable:
+               name: TempObsErrorData/specificHumidity
+             value: is_valid
+           defer to post: true
+
+         #- filter: GOMsaver
+         #  filename: ./data/geovals/aircar_geovals_rrfs.nc4
+     - obs space:
+         name: aircar_uv233
+         distribution:
+           name: "RoundRobin"
+           halo size: 300e3
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: data/obs/ioda_aircar.nc
+           obsgrouping:
+             group variables: ["stationIdentification"]
+             sort variable: "pressure"
+             sort order: "descending"
+         obsdataout:
+           engine:
+             type: H5File
+             obsfile: jdiag_aircar_uv233.nc4
+             allow overwrite: true
+         io pool:
+           max pool size: 1
+         observed variables: [windEastward, windNorthward]
+         simulated variables: [windEastward, windNorthward]
+
+       obs operator:
+           name: VertInterp
+           vertical coordinate: air_pressure
+           observation vertical coordinate: pressure
+           observation vertical coordinate group: MetaData
+           interpolation method: log-linear
+           #gsi geovals:
+           #  filename: "obsout/aircraft_uv_geoval_2022052619.nc4"
+           #  levels_are_top_down: False
+           variables:
+           - name: windEastward
+           - name: windNorthward
+
+       linear obs operator:
+         name: VertInterp
+
+       obs error:
+         covariance model: diagonal
+
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 300e3 # orig
+
+       obs filters:
+         # ------------------
+         # wind (233)
+         # ------------------
+         # Reject all obs with QualityMarker > 3
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: QualityMarker/windEastward
+             is_in: 4-15
+           action:
+             name: reject
+           action:
+             name: reduce obs space
+
+         # Time window filter
+         - filter: Domain Check
+           apply at iterations: 0,1
+           where:
+             - variable:
+                 name: MetaData/timeOffset # units: s
+               minvalue: -5400
+               maxvalue:  5400
+           action:
+             name: reduce obs space
+
+         # Duplicate Check
+         - filter: Temporal Thinning
+           apply at iterations: 0,1
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           min_spacing: PT90M
+           tolerance: PT0H
+           seed_time: "@analysisDate@"
+           category_variable:
+             name: MetaData/longitude_latitude_pressure
+           action:
+             name: reduce obs space
+
+         # Online domain check
+         - filter: Bounds Check
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           test variables:
+           - name:  GeoVaLs/observable_domain_mask
+           minvalue: 0.0
+           maxvalue: 0.5
+
+         # Initial error assignment
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 233
+           action:
+             name: assign error
+             error function:
+               name: ObsFunction/ObsErrorModelStepwiseLinear
+               options:
+                 xvar:
+                   name: MetaData/pressure
+                 xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
+                 errors: [2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214, 2.3214]
+
+         # Error inflation (windEastward) based on pressure check (setupw.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 233
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorPressureCheck
+               options:
+                 variable: windEastward
+                 inflation factor: 4.0
+
+         # Error inflation (windNorthward) based on pressure check (setupw.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: windNorthward
+           where:
+           - variable: ObsType/windNorthward
+             is_in: 233
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorPressureCheck
+               options:
+                 variable: windNorthward
+                 inflation factor: 4.0
+
+#         # Error inflation (windEastward) based on errormod (qcmod.f90)
+#         - filter: Perform Action
+#           filter variables:
+#           - name: windEastward
+#           where:
+#           - variable: ObsType/windEastward
+#             is_in: 233
+#           action:
+#             name: inflate error
+#             inflation variable:
+#               name: ObsFunction/ObsErrorFactorConventional
+#               options:
+#                 inflate variables: [windEastward]
+#                 test QCflag: QualityMarker
+#                 test QCthreshold: 3
+#                 distance threshold: 0
+#                 pressure: MetaData/pressure
+
+#         # Error inflation (windNorthward) based on errormod (qcmod.f90)
+#         - filter: Perform Action
+#           filter variables:
+#           - name: windNorthward
+#           where:
+#           - variable: ObsType/windNorthward
+#             is_in: 233
+#           action:
+#             name: inflate error
+#             inflation variable:
+#               name: ObsFunction/ObsErrorFactorConventional
+#               options:
+#                 inflate variables: [windNorthward]
+#                 test QCflag: QualityMarker
+#                 test QCthreshold: 3
+#                 distance threshold: 0
+#                 pressure: MetaData/pressure
+
+         # Error inflation when QualityMarker == 3 (read_prepbufr.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           action:
+             name: inflate error
+             inflation factor: 1.2
+           where:
+           - variable: QualityMarker/windEastward
+             is_in: 3
+
+         # Error inflation when observation pressure < 50 hPa (read_prepbufr.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           action:
+             name: inflate error
+             inflation factor: 1.2
+           where:
+           - variable: MetaData/pressure
+             maxvalue: 5000.0
+
+         # Bounds Check (ObsError)
+         - filter: Bounds Check
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           test variables:
+           - name:  ObsErrorData/windEastward
+           minvalue: 0.0
+           action:
+             name: reduce obs space
+
+         # Bounds Check (ObsValue)
+         - filter: Bounds Check
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           minvalue: -200
+           maxvalue: 200
+           action:
+             name: reject
+           action:
+             name: reduce obs space
+
+         # Gross Error Check (windEastward)
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: windEastward
+           function absolute threshold:
+           - name: ObsFunction/WindsSPDBCheck
+             options:
+               wndtype:    [ 233 ]
+               cgross:     [ 7.5 ]
+               error_min:  [ 1.4 ]
+               error_max:  [ 6.1 ]
+               variable: windEastward
+           where:
+           - variable: QualityMarker/windEastward
+             is_not_in: 3
+           action:
+             name: reject
+           defer to post: true
+
+         # Gross Error Check (windNorthward)
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: windNorthward
+           function absolute threshold:
+           - name: ObsFunction/WindsSPDBCheck
+             options:
+               wndtype:    [ 233 ]
+               cgross:     [ 7.5 ]
+               error_min:  [ 1.4 ]
+               error_max:  [ 6.1 ]
+               variable: windNorthward
+           where:
+           - variable: QualityMarker/windNorthward
+             is_not_in: 3
+           action:
+             name: reject
+           defer to post: true
+
+         # Gross Error Check (windEastward): cgross*0.7 if QualityMarker=3
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: windEastward
+           function absolute threshold:
+           - name: ObsFunction/WindsSPDBCheck
+             options:
+               wndtype:    [ 233 ]
+               cgross:     [ 5.25 ]
+               error_min:  [ 1.4 ]
+               error_max:  [ 6.1 ]
+               variable: windEastward
+           where:
+           - variable: QualityMarker/windEastward
+             is_in: 3
+           action:
+             name: reject
+           defer to post: true
+
+         # Gross Error Check (windNorthward): cgross*0.7 if QualityMarker=3
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: windNorthward
+           function absolute threshold:
+           - name: ObsFunction/WindsSPDBCheck
+             options:
+               wndtype:    [ 233 ]
+               cgross:     [ 5.25 ]
+               error_min:  [ 1.4 ]
+               error_max:  [ 6.1 ]
+               variable: windNorthward
+           where:
+           - variable: QualityMarker/windNorthward
+             is_in: 3
+           action:
+             name: reject
+           defer to post: true
+
+         #- filter: GOMsaver
+         #  filename: ./data/geovals/aircar_geovals_rrfs.nc4
+     - obs space:
+         name: adpupa_t120
+         distribution:
+           name: "RoundRobin"
+           halo size: 300e3
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: data/obs/ioda_adpupa.nc
+           obsgrouping:
+             group variables: ["stationIdentification"]
+             sort variable: "pressure"
+             sort order: "descending"
+         obsdataout:
+           engine:
+             type: H5File
+             obsfile: jdiag_adpupa_t120.nc4
+             allow overwrite: true
+         io pool:
+           max pool size: 1
+         observed variables: [airTemperature]
+         simulated variables: [airTemperature]
+
+       obs operator:
+           name: VertInterp
+           vertical coordinate: air_pressure
+           observation vertical coordinate: pressure
+           observation vertical coordinate group: MetaData
+           interpolation method: log-linear
+           #gsi geovals:
+           #  filename: "obsout/sondes_tsen_geoval_2022052619.nc4"
+           #  levels_are_top_down: False
+           variables:
+           - name: airTemperature
+
+       linear obs operator:
+         name: VertInterp
+
+       obs error:
+         covariance model: diagonal
+
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 300e3 # orig
+
+       obs filters:
+         # ------------------
+         # airTemperature (120)
+         # ------------------
+         # Reject all obs with QualityMarker > 3
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: QualityMarker/airTemperature
+             is_in: 4-15
+           action:
+             name: reject
+           action:
+             name: reduce obs space
+
+         # Time window filter
+         - filter: Domain Check
+           apply at iterations: 0,1
+           where:
+             - variable:
+                 name: MetaData/timeOffset # units: s
+               minvalue: -5400
+               maxvalue:  5400
+           action:
+             name: reduce obs space
+
+         # Duplicate Check
+         - filter: Temporal Thinning
+           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperature
+           min_spacing: PT90M
+           tolerance: PT0H
+           seed_time: "@analysisDate@"
+           category_variable:
+             name: MetaData/longitude_latitude_pressure
+           action:
+             name: reduce obs space
+
+         # Online regional domain check
+         - filter: Bounds Check
+           filter variables:
+           - name: airTemperature
+           test variables:
+           - name:  GeoVaLs/observable_domain_mask
+           minvalue: 0.0
+           maxvalue: 0.5
+
+         # Initial error assignment
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 120
+           action:
+             name: assign error
+             error function:
+               name: ObsFunction/ObsErrorModelStepwiseLinear
+               options:
+                 xvar:
+                   name: MetaData/pressure
+                 xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
+                 errors: [1.2671, 1.3302, 1.4017, 1.4543, 1.4553, 1.3865, 1.2696, 1.1458, 1.0461, 0.98493, 0.95259, 0.9353, 0.92541, 0.92565, 0.94536, 0.99513, 1.0799, 1.1885, 1.2894, 1.3559, 1.3854, 1.3857, 1.3525, 1.3019, 1.2818, 1.3112, 1.3698, 1.4263, 1.4654, 1.4868, 1.4964, 1.4992, 1.4962]
+
+         # Error inflation based on pressure check (setupt.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 120
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorPressureCheck
+               options:
+                 variable: airTemperature
+                 inflation factor: 8.0
+
+         # Error inflation based on errormod (qcmod.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 120
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorConventional
+               options:
+                 inflate variables: [airTemperature]
+                 pressure: MetaData/pressure
+
+         # Error inflation when QualityMarker == 3 (read_prepbufr.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           action:
+             name: inflate error
+             inflation factor: 1.2
+           where:
+           - variable: QualityMarker/airTemperature
+             is_in: 3
+
+         # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           action:
+             name: inflate error
+             inflation factor: 1.2
+           where:
+           - variable: MetaData/pressure
+             maxvalue: 10000.0
+
+         # Bounds Check (ObsError)
+         - filter: Bounds Check
+           filter variables:
+           - name: airTemperature
+           test variables:
+           - name:  ObsErrorData/airTemperature
+           minvalue: 0.0
+           action:
+             name: reduce obs space
+
+         # Bounds Check (ObsValue)
+         - filter: Bounds Check
+           filter variables:
+           - name: airTemperature
+           minvalue: 100
+           maxvalue: 400
+           action:
+             name: reduce obs space
+
+         # Create temporary ObsErrorData
+         - filter: Variable Assignment
+           apply at iterations: 0,1
+           assignments:
+           - name: TempObsErrorData/airTemperature
+             type: float
+             function:
+               name: ObsFunction/Arithmetic
+               options:
+                 variables:
+                 - name: ObsErrorData/airTemperature
+           defer to post: true
+
+         # Set ObsError set "error parameter" if < "max value"
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperature
+           action:
+             name: assign error
+             error parameter: 1.3
+           where:
+           - variable:
+               name: ObsErrorData/airTemperature
+             maxvalue: 1.3
+           - variable:
+               name: ObsErrorData/airTemperature
+             value: is_valid
+           defer to post: true
+
+         # Set ObsError set "error parameter" if > "min value"
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperature
+           action:
+             name: assign error
+             error parameter: 5.6
+           where:
+           - variable:
+               name: ObsErrorData/airTemperature
+             minvalue: 5.6
+           - variable:
+               name: ObsErrorData/airTemperature
+             value: is_valid
+           defer to post: true
+
+         # Gross Error Check
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperature
+           threshold: 7.0
+           action:
+             name: reject
+           where:
+           - variable: ObsType/airTemperature
+           - variable: QualityMarker/airTemperature
+             is_not_in: 3
+           defer to post: true
+
+         # Gross Error Check: cgross*0.7 if QualityMarker=3
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperature
+           threshold: 4.9
+           action:
+             name: reject
+           where:
+           - variable: ObsType/airTemperature
+           - variable: QualityMarker/airTemperature
+             is_in: 3
+           defer to post: true
+
+         # Re-assign err ObsErrorData <--- TempObsErrorData after gross error check.
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperature
+           action:
+             name: assign error
+             error function: TempObsErrorData/airTemperature
+           where:
+           - variable:
+               name: TempObsErrorData/airTemperature
+             value: is_valid
+           defer to post: true
+
+         #- filter: GOMsaver
+         #  filename: ./data/geovals/adpupa_geovals_rrfs.nc4
+     - obs space:
+         name: adpupa_q120
+         distribution:
+           name: "RoundRobin"
+           halo size: 300e3
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: data/obs/ioda_adpupa.nc
+           obsgrouping:
+             group variables: ["stationIdentification"]
+             sort variable: "pressure"
+             sort order: "descending"
+         obsdataout:
+           engine:
+             type: H5File
+             obsfile: jdiag_adpupa_q120.nc4
+             allow overwrite: true
+         io pool:
+           max pool size: 1
+         observed variables: [specificHumidity]
+         simulated variables: [specificHumidity]
+
+       obs operator:
+           name: VertInterp
+           vertical coordinate: air_pressure
+           observation vertical coordinate: pressure
+           observation vertical coordinate group: MetaData
+           interpolation method: log-linear
+           #gsi geovals:
+           #  filename: "obsout/sondes_q_geoval_2022052619.nc4"
+           #  levels_are_top_down: False
+           variables:
+           - name: specificHumidity
+
+       linear obs operator:
+         name: VertInterp
+
+       obs error:
+         covariance model: diagonal
+
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 300e3 # orig
+
+       obs filters:
+         # ------------------
+         # specificHumidity (120)
+         # ------------------
+         # Reject all obs with QualityMarker > 3
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: specificHumidity
+           where:
+           - variable: QualityMarker/specificHumidity
+             is_in: 4-15
+           action:
+             name: reject
+           action:
+             name: reduce obs space
+
+         # Time window filter
+         - filter: Domain Check
+           apply at iterations: 0,1
+           where:
+             - variable:
+                 name: MetaData/timeOffset # units: s
+               minvalue: -5400
+               maxvalue:  5400
+           action:
+             name: reduce obs space
+
+         # Duplicate Check
+         - filter: Temporal Thinning
+           apply at iterations: 0,1
+           filter variables:
+           - name: specificHumidity
+           min_spacing: PT90M
+           tolerance: PT0H
+           seed_time: "@analysisDate@"
+           category_variable:
+             name: MetaData/longitude_latitude_pressure
+           action:
+             name: reduce obs space
+
+         # Online regional domain check
+         - filter: Bounds Check
+           filter variables:
+           - name: specificHumidity
+           test variables:
+           - name:  GeoVaLs/observable_domain_mask
+           minvalue: 0.0
+           maxvalue: 0.5
+
+         # Initial error assignment
+         - filter: Perform Action
+           filter variables:
+           - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_in: 120
+           action:
+             name: assign error
+             error function:
+               name: ObsFunction/ObsErrorModelStepwiseLinear
+               options:
+                 xvar:
+                   name: MetaData/pressure
+                 xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
+                 errors: [0.056103, 0.063026, 0.073388, 0.086305, 0.099672, 0.1121, 0.12347, 0.13337, 0.14214, 0.15031, 0.15641, 0.1594, 0.15962, 0.16026, 0.16419, 0.17154, 0.1798, 0.18754, 0.19339, 0.19701, 0.19887, 0.19966, 0.19993, 0.2, 0.2, 0.2, 0.19999, 0.19999, 0.19999, 0.20001, 0.20004, 0.19999, 0.19949]
+
+#        # Error inflation based on pressure check (setupq.f90)
+#        - filter: Perform Action
+#          filter variables:
+#          - name: specificHumidity
+#          where:
+#          - variable: ObsType/specificHumidity
+#            is_in: 120
+#          action:
+#            name: inflate error
+#            inflation variable:
+#              name: ObsFunction/ObsErrorFactorPressureCheck
+#              options:
+#                variable: specificHumidity
+#                inflation factor: 8.0
+#                request_saturation_specific_humidity_geovals: true
+
+         # Error inflation based on errormod (qcmod.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_in: 120
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorConventional
+               options:
+                 inflate variables: [specificHumidity]
+                 pressure: MetaData/pressure
+
+         # Error inflation when QualityMarker == 3 (read_prepbufr.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: specificHumidity
+           action:
+             name: inflate error
+             inflation factor: 1.2
+           where:
+           - variable: QualityMarker/specificHumidity
+             is_in: 3
+
+         # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: specificHumidity
+           action:
+             name: inflate error
+             inflation factor: 1.2
+           where:
+           - variable: MetaData/pressure
+             maxvalue: 10000.0
+
+         # Bounds Check (ObsError)
+         - filter: Bounds Check
+           filter variables:
+           - name: specificHumidity
+           test variables:
+           - name:  ObsErrorData/specificHumidity
+           minvalue: 0.0
+           action:
+             name: reduce obs space
+
+         # Bounds Check (ObsValue)
+         - filter: Bounds Check
+           filter variables:
+           - name: specificHumidity
+           minvalue: 0.0
+           maxvalue: 1.0
+           action:
+             name: reduce obs space
+
+         # Create temporary ObsErrorData
+         - filter: Variable Assignment
+           apply at iterations: 0,1
+           assignments:
+           - name: TempObsErrorData/specificHumidity
+             type: float
+             function:
+               name: ObsFunction/Arithmetic
+               options:
+                 variables:
+                 - name: ObsErrorData/specificHumidity
+           defer to post: true
+
+         # Set ObsError set "error parameter" if < "max value"
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: specificHumidity
+           action:
+             name: assign error
+             error parameter: 5.0
+           where:
+           - variable:
+               name: ObsErrorData/specificHumidity
+             maxvalue: 5.0
+           - variable:
+               name: ObsErrorData/specificHumidity
+             value: is_valid
+           defer to post: true
+
+         # Set ObsError set "error parameter" if > "min value"
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: specificHumidity
+           action:
+             name: assign error
+             error parameter: 50.0
+           where:
+           - variable:
+               name: ObsErrorData/specificHumidity
+             minvalue: 50.0
+           - variable:
+               name: ObsErrorData/specificHumidity
+             value: is_valid
+           defer to post: true
+
+         # Gross Error Check
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: specificHumidity
+           threshold: 7.0
+           action:
+             name: reject
+           where:
+           - variable: ObsType/specificHumidity
+           - variable: QualityMarker/specificHumidity
+             is_not_in: 3
+           defer to post: true
+
+         # Gross Error Check: cgross*0.7 if QualityMarker=3
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: specificHumidity
+           threshold: 4.9
+           action:
+             name: reject
+           where:
+           - variable: ObsType/specificHumidity
+           - variable: QualityMarker/specificHumidity
+             is_in: 3
+           defer to post: true
+
+         # Re-assign err ObsErrorData <--- TempObsErrorData after gross error check.
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: specificHumidity
+           action:
+             name: assign error
+             error function: TempObsErrorData/specificHumidity
+           where:
+           - variable:
+               name: TempObsErrorData/specificHumidity
+             value: is_valid
+           defer to post: true
+
+         #- filter: GOMsaver
+         #  filename: ./data/geovals/adpupa_geovals_rrfs.nc4
+     - obs space:
+         name: adpupa_ps120
+         distribution:
+           name: "RoundRobin"
+           halo size: 300e3
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: data/obs/ioda_adpupa.nc
+           obsgrouping:
+             group variables: ["stationIdentification"]
+             sort variable: "pressure"
+             sort order: "descending"
+         obsdataout:
+           engine:
+             type: H5File
+             obsfile: jdiag_adpupa_ps120.nc4
+             allow overwrite: true
+         io pool:
+           max pool size: 1
+         observed variables: [stationPressure]
+         simulated variables: [stationPressure]
+
+       obs operator:
+         name: SfcPCorrected
+         da_psfc_scheme: GSI
+         geovar_sfc_geomz: geopotential_height_at_surface
+         geovar_geomz: geopotential_height
+       linear obs operator:
+         name: Identity
+
+       obs error:
+         covariance model: diagonal
+
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 300e3 # orig
+
+       obs filters:
+         # ------------------
+         # stationPressure (120)
+         # ------------------
+         # Reject all obs with QualityMarker > 3
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: stationPressure
+           where:
+           - variable: QualityMarker/stationPressure
+             is_in: 4-15
+           action:
+             name: reject
+           action:
+             name: reduce obs space
+
+         # Time window filter
+         - filter: Domain Check
+           apply at iterations: 0,1
+           where:
+             - variable:
+                 name: MetaData/timeOffset # units: s
+               minvalue: -5400
+               maxvalue:  5400
+           action:
+             name: reduce obs space
+
+         # Duplicate Check
+         - filter: Temporal Thinning
+           apply at iterations: 0,1
+           filter variables:
+           - name: stationPressure
+           min_spacing: PT90M
+           tolerance: PT0H
+           seed_time: "@analysisDate@"
+           category_variable:
+             name: MetaData/longitude_latitude_pressure
+           action:
+             name: reduce obs space
+
+         # Online regional domain check
+         - filter: Bounds Check
+           filter variables:
+           - name: stationPressure
+           test variables:
+           - name:  GeoVaLs/observable_domain_mask
+           minvalue: 0.0
+           maxvalue: 0.5
+
+         # Initial error assignment
+         - filter: Perform Action
+           filter variables:
+           - name: stationPressure
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 120
+           action:
+             name: assign error
+             error function:
+               name: ObsFunction/ObsErrorModelStepwiseLinear
+               options:
+                 xvar:
+                   name: MetaData/pressure
+                 xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
+                 errors: [68.115, 68.115, 68.115, 71.307, 74.576, 77.845, 79.791, 81.737, 83.684, 92.441, 101.2, 108.99, 117.75, 128.44, 144.99, 158.58, 182.93, 247.16, 269.54, 315.28, 383.38, 489.46, 577.03, 577.03, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11]
+
+         # Error inflation based on pressure check (setupps.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: stationPressure
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 120
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorSfcPressure
+               options:
+                 geovar_geomz: geopotential_height
+                 geovar_sfc_geomz: geopotential_height_at_surface
+
+#         # Error inflation based on errormod (qcmod.f90)
+#         - filter: Perform Action
+#           filter variables:
+#           - name: stationPressure
+#           where:
+#           - variable: ObsType/stationPressure
+#             is_in: 120
+#           action:
+#             name: inflate error
+#             inflation variable:
+#               name: ObsFunction/ObsErrorFactorConventional
+#               options:
+#                 inflate variables: [stationPressure]
+#                 pressure: MetaData/pressure
+
+         # Error inflation when QualityMarker == 3 (read_prepbufr.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: stationPressure
+           action:
+             name: inflate error
+             inflation factor: 1.2
+           where:
+           - variable: QualityMarker/stationPressure
+             is_in: 3
+
+         # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: stationPressure
+           action:
+             name: inflate error
+             inflation factor: 1.2
+           where:
+           - variable: MetaData/pressure
+             maxvalue: 10000.0
+
+         # Bounds Check (ObsError)
+         - filter: Bounds Check
+           filter variables:
+           - name: stationPressure
+           test variables:
+           - name:  ObsErrorData/stationPressure
+           minvalue: 0.0
+           action:
+             name: reduce obs space
+
+         # Bounds Check (ObsValue)
+         - filter: Bounds Check
+           filter variables:
+           - name: stationPressure
+           minvalue: 20000.0
+           maxvalue: 120000.0
+           action:
+             name: reduce obs space
+
+         # Create temporary ObsErrorData
+         - filter: Variable Assignment
+           apply at iterations: 0,1
+           assignments:
+           - name: TempObsErrorData/stationPressure
+             type: float
+             function:
+               name: ObsFunction/Arithmetic
+               options:
+                 variables:
+                 - name: ObsErrorData/stationPressure
+           defer to post: true
+
+         # Set ObsError set "error parameter" if < "max value"
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: stationPressure
+           action:
+             name: assign error
+             error parameter: 100.0
+           where:
+           - variable:
+               name: ObsErrorData/stationPressure
+             maxvalue: 100.0
+           - variable:
+               name: ObsErrorData/stationPressure
+             value: is_valid
+           defer to post: true
+
+         # Set ObsError set "error parameter" if > "min value"
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: stationPressure
+           action:
+             name: assign error
+             error parameter: 300.0
+           where:
+           - variable:
+               name: ObsErrorData/stationPressure
+             minvalue: 300.0
+           - variable:
+               name: ObsErrorData/stationPressure
+             value: is_valid
+           defer to post: true
+
+         # Gross Error Check
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: stationPressure
+           threshold: 4.0
+           action:
+             name: reject
+           where:
+           - variable: ObsType/stationPressure
+           - variable: QualityMarker/stationPressure
+             is_not_in: 3
+           defer to post: true
+
+         # Gross Error Check: cgross*0.7 if QualityMarker=3
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: stationPressure
+           threshold: 2.8
+           action:
+             name: reject
+           where:
+           - variable: ObsType/stationPressure
+           - variable: QualityMarker/stationPressure
+             is_in: 3
+           defer to post: true
+
+         # Re-assign err ObsErrorData <--- TempObsErrorData after gross error check.
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: stationPressure
+           action:
+             name: assign error
+             error function: TempObsErrorData/stationPressure
+           where:
+           - variable:
+               name: TempObsErrorData/stationPressure
+             value: is_valid
+           defer to post: true
+
+         #- filter: GOMsaver
+         #  filename: ./data/geovals/adpupa_geovals_rrfs.nc4
+     - obs space:
+         name: adpupa_uv220
+         distribution:
+           name: "RoundRobin"
+           halo size: 300e3
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: data/obs/ioda_adpupa.nc
+           obsgrouping:
+             group variables: ["stationIdentification"]
+             sort variable: "pressure"
+             sort order: "descending"
+         obsdataout:
+           engine:
+             type: H5File
+             obsfile: jdiag_adpupa_uv220.nc4
+             allow overwrite: true
+         io pool:
+           max pool size: 1
+         observed variables: [windEastward, windNorthward]
+         simulated variables: [windEastward, windNorthward]
+
+       obs operator:
+           name: VertInterp
+           vertical coordinate: air_pressure
+           observation vertical coordinate: pressure
+           observation vertical coordinate group: MetaData
+           interpolation method: log-linear
+           #gsi geovals:
+           #  filename: "obsout/sondes_uv_geoval_2022052619.nc4"
+           #  levels_are_top_down: False
+           variables:
+           - name: windEastward
+           - name: windNorthward
+
+       linear obs operator:
+         name: VertInterp
+
+       obs error:
+         covariance model: diagonal
+
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 300e3 # orig
+
+       obs filters:
+         # ------------------
+         # wind (220)
+         # ------------------
+         # Reject all obs with QualityMarker > 3
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: QualityMarker/windEastward
+             is_in: 4-15
+           action:
+             name: reject
+           action:
+             name: reduce obs space
+
+         # Time window filter
+         - filter: Domain Check
+           apply at iterations: 0,1
+           where:
+             - variable:
+                 name: MetaData/timeOffset # units: s
+               minvalue: -5400
+               maxvalue:  5400
+           action:
+             name: reduce obs space
+
+         # Duplicate Check
+         - filter: Temporal Thinning
+           apply at iterations: 0,1
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           min_spacing: PT90M
+           tolerance: PT0H
+           seed_time: "@analysisDate@"
+           category_variable:
+             name: MetaData/longitude_latitude_pressure
+           action:
+             name: reduce obs space
+
+         # Online domain check
+         - filter: Bounds Check
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           test variables:
+           - name:  GeoVaLs/observable_domain_mask
+           minvalue: 0.0
+           maxvalue: 0.5
+
+         # Initial error assignment
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 220
+           action:
+             name: assign error
+             error function:
+               name: ObsFunction/ObsErrorModelStepwiseLinear
+               options:
+                 xvar:
+                   name: MetaData/pressure
+                 xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
+                 errors: [1.7721, 2.0338, 2.2927, 2.4559, 2.5377, 2.5705, 2.5557, 2.5239, 2.4846, 2.4369, 2.4098, 2.433, 2.5005, 2.5682, 2.595, 2.602, 2.6262, 2.6879, 2.7566, 2.7674, 2.7115, 2.6363, 2.5409, 2.4103, 2.2838, 2.1916, 2.1381, 2.1126, 2.1029, 2.1003, 2.1002, 2.0998, 2.0946]
+
+         # Error inflation (windEastward) based on pressure check (setupw.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 220
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorPressureCheck
+               options:
+                 variable: windEastward
+                 inflation factor: 4.0
+
+         # Error inflation (windNorthward) based on pressure check (setupw.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: windNorthward
+           where:
+           - variable: ObsType/windNorthward
+             is_in: 220
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorPressureCheck
+               options:
+                 variable: windNorthward
+                 inflation factor: 4.0
+
+         # Error inflation (windEastward) based on errormod (qcmod.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 220
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorConventional
+               options:
+                 inflate variables: [windEastward]
+                 test QCflag: QualityMarker
+                 test QCthreshold: 3
+                 distance threshold: 0
+                 pressure: MetaData/pressure
+
+         # Error inflation (windNorthward) based on errormod (qcmod.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: windNorthward
+           where:
+           - variable: ObsType/windNorthward
+             is_in: 220
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorConventional
+               options:
+                 inflate variables: [windNorthward]
+                 test QCflag: QualityMarker
+                 test QCthreshold: 3
+                 distance threshold: 0
+                 pressure: MetaData/pressure
+
+         # Error inflation when QualityMarker == 3 (read_prepbufr.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           action:
+             name: inflate error
+             inflation factor: 1.2
+           where:
+           - variable: QualityMarker/windEastward
+             is_in: 3
+
+         # Error inflation when observation pressure < 50 hPa (read_prepbufr.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           action:
+             name: inflate error
+             inflation factor: 1.2
+           where:
+           - variable: MetaData/pressure
+             maxvalue: 5000.0
+
+         # Bounds Check (ObsError)
+         - filter: Bounds Check
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           test variables:
+           - name:  ObsErrorData/windEastward
+           minvalue: 0.0
+           action:
+             name: reduce obs space
+
+         # Bounds Check (ObsValue)
+         - filter: Bounds Check
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           minvalue: -200
+           maxvalue: 200
+           action:
+             name: reject
+           action:
+             name: reduce obs space
+
+         # Gross Error Check (windEastward)
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: windEastward
+           function absolute threshold:
+           - name: ObsFunction/WindsSPDBCheck
+             options:
+               wndtype:    [ 220 ]
+               cgross:     [ 8.0 ]
+               error_min:  [ 1.4 ]
+               error_max:  [ 6.1 ]
+               variable: windEastward
+           where:
+           - variable: QualityMarker/windEastward
+             is_not_in: 3
+           action:
+             name: reject
+           defer to post: true
+
+         # Gross Error Check (windNorthward)
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: windNorthward
+           function absolute threshold:
+           - name: ObsFunction/WindsSPDBCheck
+             options:
+               wndtype:    [ 220 ]
+               cgross:     [ 8.0 ]
+               error_min:  [ 1.4 ]
+               error_max:  [ 6.1 ]
+               variable: windNorthward
+           where:
+           - variable: QualityMarker/windNorthward
+             is_not_in: 3
+           action:
+             name: reject
+           defer to post: true
+
+         # Gross Error Check (windEastward): cgross*0.7 if QualityMarker=3
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: windEastward
+           function absolute threshold:
+           - name: ObsFunction/WindsSPDBCheck
+             options:
+               wndtype:    [ 220 ]
+               cgross:     [ 5.6 ]
+               error_min:  [ 1.4 ]
+               error_max:  [ 6.1 ]
+               variable: windEastward
+           where:
+           - variable: QualityMarker/windEastward
+             is_in: 3
+           action:
+             name: reject
+           defer to post: true
+
+         # Gross Error Check (windNorthward): cgross*0.7 if QualityMarker=3
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: windNorthward
+           function absolute threshold:
+           - name: ObsFunction/WindsSPDBCheck
+             options:
+               wndtype:    [ 220 ]
+               cgross:     [ 5.6 ]
+               error_min:  [ 1.4 ]
+               error_max:  [ 6.1 ]
+               variable: windNorthward
+           where:
+           - variable: QualityMarker/windNorthward
+             is_in: 3
+           action:
+             name: reject
+           defer to post: true
+
+         #- filter: GOMsaver
+         #  filename: ./data/geovals/adpupa_geovals_rrfs.nc4

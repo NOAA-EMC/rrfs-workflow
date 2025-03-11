@@ -63,4 +63,4 @@ if [[ ! -s './init.nc' ]]; then
 fi
 
 # copy init.nc to COMOUT
-${cpreq} ${DATA}/init.nc ${COMOUT}${MEMDIR}/ic/
+${cpreq} ${DATA}/init.nc ${COMOUT}/ic/${WGF}${MEMDIR}

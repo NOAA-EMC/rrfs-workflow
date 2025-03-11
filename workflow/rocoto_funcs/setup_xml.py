@@ -13,7 +13,8 @@ from rocoto_funcs.prep_lbc import prep_lbc
 from rocoto_funcs.jedivar import jedivar
 from rocoto_funcs.fcst import fcst
 from rocoto_funcs.save_fcst import save_fcst
-from rocoto_funcs.ens_da import ens_da
+from rocoto_funcs.getkf_observer import getkf_observer
+from rocoto_funcs.getkf_solver import getkf_solver
 from rocoto_funcs.mpassit import mpassit
 from rocoto_funcs.upp import upp
 from rocoto_funcs.ioda_bufr import ioda_bufr
@@ -62,11 +63,11 @@ def setup_xml(HOMErrfs, expdir):
     if do_deterministic == "TRUE":
       if os.getenv("DO_IODA","FALSE").upper()=="TRUE":
         ioda_bufr(xmlFile,expdir)
+      #
       ungrib_ic(xmlFile,expdir)
       ungrib_lbc(xmlFile,expdir)
       ic(xmlFile,expdir)
       lbc(xmlFile,expdir)
-      #
       if os.getenv("DO_SPINUP","FALSE").upper() == "TRUE":
         prep_lbc(xmlFile,expdir)
         # spin up line
@@ -95,22 +96,25 @@ def setup_xml(HOMErrfs, expdir):
 # ---------------------------------------------------------------------------
 # assemble tasks for an ensemble experiment
     if do_ensemble == "TRUE":
+      if os.getenv("DO_IODA","FALSE").upper()=="TRUE":
+        ioda_bufr(xmlFile,expdir)
       ungrib_ic(xmlFile,expdir,do_ensemble=True)
       ungrib_lbc(xmlFile,expdir,do_ensemble=True)
       ic(xmlFile,expdir,do_ensemble=True)
       lbc(xmlFile,expdir,do_ensemble=True)
       prep_ic(xmlFile,expdir,do_ensemble=True)
       prep_lbc(xmlFile,expdir,do_ensemble=True)
-      if os.getenv("DO_ENSDA","FALSE").upper()=="TRUE":
-        ens_da(xmlFile,expdir)
+      if os.getenv("DO_JEDI","FALSE").upper()=="TRUE":
+        getkf_observer(xmlFile,expdir)
+        getkf_solver(xmlFile,expdir)
       fcst(xmlFile,expdir,do_ensemble=True)
       save_fcst(xmlFile,expdir,do_ensemble=True)
       mpassit(xmlFile,expdir,do_ensemble=True)
       upp(xmlFile,expdir,do_ensemble=True)
 
 # ---------------------------------------------------------------------------
-#    if realtime.upper() == "TRUE": # write out the clean task for realtime runs and retros don't need it
-#      clean(xmlFile,expdir)
+    if os.getenv("DO_CLEAN",'FALSE').upper() == "TRUE": # write out the clean task if needed, usually for realtime runs
+      clean(xmlFile,expdir)
     #
     wflow_end(xmlFile)
 # ---------------------------------------------------------------------------

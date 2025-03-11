@@ -24,7 +24,7 @@ source /etc/profile
 module use ${HOMErrfs}/modulefiles
 # load corresponding modules for different tasks
 case ${task_id} in
-  jedivar|ens_da|ioda_bufr)
+  jedivar|getkf*|ioda_bufr)
     module purge
     module use ${HOMErrfs}/sorc/RDASApp/modulefiles
     module load RDAS/${MACHINE}.intel
@@ -53,7 +53,17 @@ set -x
 
 # run J-job or sideload non-NCO tasks
 case ${task_id} in
-  clean|graphics|dummy)
+  clean)
+    case ${MACHINE} in
+      gaea|orion|hercules)
+        set +x
+        module load python
+        set -x
+        ;;
+    esac
+    ${HOMErrfs}/workflow/sideload/clean.py
+    ;;
+  graphics|dummy)
     ${HOMErrfs}/workflow/sideload/${task_id}.sh
     ;;
   *)

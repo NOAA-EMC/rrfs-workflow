@@ -46,7 +46,7 @@ mkdir -p ${DATA}
 #export COMINgfs=${COMINgfs:-$(compath.py $envir/gfs/$gfs_ver)}
 export COMINrrfs=${COMINrrfs:-$(compath.py $envir/rrfs/$rrfs_ver)}
 export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-mkdir -p ${COMOUT}/jedivar
+mkdir -p ${COMOUT}/jedivar/${WGF}
 #
 #----------------------------------------
 # Execute the script.

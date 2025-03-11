@@ -7,7 +7,6 @@
     config_number_of_sub_steps = ${substeps}
     config_dynamics_split_steps = 3
     config_horiz_mixing = '2d_smagorinsky'
-    config_len_disp     = ${disp}
     config_visc4_2dsmag = 0.05
     config_scalar_advection = true
     config_monotonic = true
@@ -61,6 +60,9 @@
     config_lsm_scheme    = 'sf_ruc'
     num_soil_layers      = 9
     config_pbl_scheme = 'bl_mynnedmf'
+    config_mynn_mixscalars = 0
+    config_mynn_mixaerosols = 1
+    config_mynn_mixnumcon = 0
 /
 &soundings
     config_sounding_interval = 'none'
