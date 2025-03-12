@@ -1,8 +1,31 @@
 #!/bin/bash
 
+date
+export PS4='+ $SECONDS + '
+set -xue
+
 #-----------------------------------------------------------------------
 # RRFS GSIDIAG
 #-----------------------------------------------------------------------
+export pid=${pid:-$$}
+export outid=${outid:-"LL$job"}
+export RUN=${RUN:-rrfs}
+export CYCLE_TYPE=${CYCLE_TYPE:-prod}
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export umbrella_analysis_data=${umbrella_analysis_data:-${DATAROOT}/${RUN}_analysis_gsi_spinup_${cyc}_${rrfs_ver}/${WGF}}
+else
+  export umbrella_analysis_data=${umbrella_analysis_data:-${DATAROOT}/${RUN}_analysis_gsi_${cyc}_${rrfs_ver}/${WGF}}
+fi
+
+export DATA=${DATA:-${umbrella_analysis_data}/${jobid}}
+mkdir -p ${DATA}
+cd ${DATA}
+
+#-----------------------------------------------------------------------
+# Source the variable definitions file
+#-----------------------------------------------------------------------
+
+. ${HOMErrfs}/ush/rrfs_nco_config.sh
 
 #-----------------------------------------------------------------------
 # Specify Execution Areas
@@ -12,18 +35,13 @@ export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
-
 export FIX_GSI=${FIXrrfs}/gsi
 
 #-----------------------------------------------------------------------
-# Source the variable definitions file and the bash utility functions.
+# Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-
-date
-export PS4='+ $SECONDS + '
 
 #-----------------------------------------------------------------------
 # Save current shell options (in a global array).  Then set new options
@@ -56,44 +74,19 @@ the specified cycle.
 ========================================================================"
 
 #-----------------------------------------------------------------------
-# Obtain unique process id (pid) and create the run directory (DATA).
-#-----------------------------------------------------------------------
-
-export pid=${pid:-$$}
-export RUN=${RUN:-rrfs}
-
-export CYCLE_TYPE=${CYCLE_TYPE:-prod}
-
-if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
-  export jobid=${taskid}
-else
-  if [ "${CYCLE_TYPE}" = "spinup" ]; then
-    export jobid=${RUN}_analysis_conv_dbz_gsi_spinup_${envir}_${cyc}
-  else
-    export jobid=${RUN}_analysis_conv_dbz_gsi_${envir}_${cyc}
-  fi
-fi
-
-export DATA=${DATA:-${DATAROOT}/${jobid}}
-if [ ! -d "${DATA}" ]; then
-  echo "WARNING: ${DATA} does not exist" 
-fi
-
-if [ ! -d "${SATBIAS_DIR}" ]; then
-  echo "making satbias_dir directory for cycling bias correction files" 
-  mkdir -p ${SATBIAS_DIR}
-fi
-
-#-----------------------------------------------------------------------
 # Define COM directories
 #-----------------------------------------------------------------------
 
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
+  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup/analysis)}
 else
-  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
+  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/analysis)}
 fi
 mkdir -p "${COMOUT}"
+
+# SATBIAS_DIR directory for cycling bias correction files
+SATBIAS_DIR=$(compath.py -o ${NET}/${rrfs_ver}/satbias)
+mkdir -p ${SATBIAS_DIR}
 
 #-----------------------------------------------------------------------
 # Execute the script.

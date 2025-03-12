@@ -1,8 +1,23 @@
 #!/bin/bash
 
+date
+export PS4='+ $SECONDS + ' 
+set -xue
+
 #-----------------------------------------------------------------------
 # RRFS Save DA Output
 #-----------------------------------------------------------------------
+export pid=${pid:-$$}
+export outid=${outid:-"LL$job"}
+export DATA=${DATA:-${DATAROOT}/${jobid}}
+mkdir -p ${DATA}
+cd ${DATA}
+
+#-----------------------------------------------------------------------
+# Source the variable definitions file
+#-----------------------------------------------------------------------
+
+. ${HOMErrfs}/ush/rrfs_nco_config.sh
 
 #-----------------------------------------------------------------------
 # Specify Execution Areas
@@ -14,14 +29,10 @@ export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 
 #-----------------------------------------------------------------------
-# Source the variable definitions file and the bash utility functions.
+# Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-
-date
-export PS4='+ $SECONDS + '
 
 #-----------------------------------------------------------------------
 # Save current shell options (in a global array).  Then set new options
@@ -59,41 +70,31 @@ This is the J-job script for the task that saves DA analysis files to nwges.
 export pid=${pid:-$$}
 export RUN=${RUN:-rrfs}
 
-if [ ${DO_ENSEMBLE} = "TRUE" ] || [ ${CYCLE_TYPE} == "enfcst" ]; then
-  export ENSMEM_INDX=${ENSMEM_INDX:-${MEMBER_NAME}}
-  export mem_num=m$(echo "${ENSMEM_INDX}")
+if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
+  export ENSMEM_INDX=${MEMBER_NAME}
+else
+  export ENSMEM_INDX=""
 fi
+export mem_num=m$(echo "${ENSMEM_INDX}")
 
-# NWGES_DIR is the directory in which the model IC file (DA analysis) will be saved
-
-export CYCLE_TYPE=${CYCLE_TYPE:-prod}
-if [ "${CYCLE_TYPE}" = "prod" ]; then
-  if [ ${DO_ENSEMBLE} = "TRUE" ]; then
-    export jobid=${RUN}_forecast_${mem_num}_${envir}_${cyc}
-    export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast"
-  else
-    export jobid=${RUN}_forecast_${envir}_${cyc}
-    export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/forecast"
-  fi
-fi
-if [ ${CYCLE_TYPE} == "enfcst" ]; then
+export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
+export COMOUT=${COMOUT:-${COMrrfs}/${RUN}.${PDY}/${cyc}}
+  
+if [ ${WGF} == "ensf" ]; then
   export jobid=${RUN}_forecast_${mem_num}_${envir}_${cyc}
-  export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast_enfcst"
+  export COMOUT="${COMrrfs}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast_enfcst"
+else
+  export COMOUT="${COMrrfs}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast"
 fi
-
-if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
-  export jobid=${taskid}
-fi
-
+export umbrella_forecast_data="${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}/INPUT"
 export DATA=${DATA:-${DATAROOT}/${jobid}}
-mkdir -p "${NWGES_DIR}/DA_OUTPUT"
-cd "${NWGES_DIR}/DA_OUTPUT"
+mkdir -p ${COMOUT}/DA_OUTPUT
 
 #-----------------------------------------------------------------------
 # Execute the script.
 #-----------------------------------------------------------------------
 
-export pgmout="${NWGES_DIR}/DA_OUTPUT/OUTPUT.$$"
+export pgmout="OUTPUT.$$"
 env
 
 ${HOMErrfs}/scripts/exrrfs_save_da_output.sh

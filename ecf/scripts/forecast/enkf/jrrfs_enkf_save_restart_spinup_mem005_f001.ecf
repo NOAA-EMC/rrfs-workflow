@@ -21,8 +21,8 @@ export CDATE="${PDY}${cyc}"
 export WGF="%WGF%"
 export MEMBER_NAME="%MEMBER_NAME%"
 export CYCLE_TYPE="%CYCLE_TYPE%"
+export FHR="%FHR%"
 module list
-%include <enkf_save_restart_spinup_mem005_f001_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################
@@ -30,5 +30,6 @@ ${HOMErrfs}/ush/load_modules_run_task.sh "save_restart" "${HOMErrfs}/jobs/JRRFS_
 
 %include <tail.h>
 
+export FHR="%FHR%"
 %manual
 %end

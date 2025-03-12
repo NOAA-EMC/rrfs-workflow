@@ -1,8 +1,41 @@
 #!/bin/bash
 
+date
+export PS4='+ $SECONDS + ' 
+set -xue
+
 #-----------------------------------------------------------------------
 # RRFS Blend ICs
 #-----------------------------------------------------------------------
+export pid=${pid:-$$}
+export outid=${outid:-"LL$job"}
+if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
+  export ENSMEM_INDX=${MEMBER_NAME}
+  DO_ENSEMBLE="TRUE"
+else
+  export ENSMEM_INDX=""
+fi
+export mem_num=m$(echo "${ENSMEM_INDX}")
+
+if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}}
+else
+  export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}}
+fi
+export shared_output_data=${umbrella_ics_data}/ics
+
+#-----------------------------------------------------------------------
+# Define data directories
+#-----------------------------------------------------------------------
+export DATA=${DATA:-${umbrella_ics_data}/${jobid}}
+mkdir -p ${DATA}
+cd ${DATA}
+
+#-----------------------------------------------------------------------
+# Source the variable definitions file
+#-----------------------------------------------------------------------
+
+. ${HOMErrfs}/ush/rrfs_nco_config.sh
 
 #-----------------------------------------------------------------------
 # Specify Execution Areas
@@ -14,14 +47,10 @@ export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 
 #-----------------------------------------------------------------------
-# Source the variable definitions file and the bash utility functions.
+# Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-
-date
-export PS4='+ $SECONDS + '
 
 #-----------------------------------------------------------------------
 # Save current shell options (in a global array).  Then set new options
@@ -53,36 +82,23 @@ This is the J-job script for the task that runs the large-scale blending
 on the RRFS initial conditions.
 ========================================================================"
 
+#### export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/ics"
+
+#### mkdir -p ${DATA}/tmp_ICS
+#### cd ${DATA}/tmp_ICS
+
+#### mkdir -p "${NWGES_DIR}"
+
 #-----------------------------------------------------------------------
-# Obtain unique process id (pid) and create the run directory (DATA).
+# Define COM directories
 #-----------------------------------------------------------------------
-
-export pid=${pid:-$$}
-export RUN=${RUN:-rrfs}
-
-export ENSMEM_INDX=${ENSMEM_INDX:-${MEMBER_NAME}}
-export mem_num=m$(echo "${ENSMEM_INDX}")
-export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/ics"
-
-if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
-  export jobid=${taskid}
-else
-  export jobid=${RUN}_make_ics_${mem_num}_${envir}_${cyc}
-fi
-
-export DATA=${DATA:-${DATAROOT}/${jobid}}
-mkdir -p $DATA
-
-mkdir -p ${DATA}/tmp_ICS
-cd ${DATA}/tmp_ICS
-
-mkdir -p "${NWGES_DIR}"
+export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
 
 #-----------------------------------------------------------------------
 # Execute the script.
 #-----------------------------------------------------------------------
-
-export pgmout="${DATA}/tmp_ICS/OUTPUT.$$"
+#### export pgmout="${DATA}/tmp_ICS/OUTPUT.$$"
+export pgmout="${DATA}/OUTPUT.$$"
 env
 
 $HOMErrfs/scripts/exrrfs_blend_ics.sh

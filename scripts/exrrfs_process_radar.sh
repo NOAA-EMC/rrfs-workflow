@@ -48,6 +48,18 @@ preprocessing with RRFS for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
+# Configuration Parameters
+#
+#-----------------------------------------------------------------------
+#
+if [ ${RUN} == "enkf" ]; then
+  export RADAR_REF_THINNING="2"
+else
+  export RADAR_REF_THINNING="1"
+fi
+#
+#-----------------------------------------------------------------------
+#
 print_input_args valid_args
 #
 #-----------------------------------------------------------------------
@@ -56,7 +68,6 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-ulimit -s unlimited
 ulimit -a
 
 case $MACHINE in
@@ -160,19 +171,7 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   #
   #-----------------------------------------------------------------------
   #
-  if [ ${BKTYPE} -eq 1 ]; then
-    cpreq -p ${fixgriddir}/fv3_grid_spec  fv3sar_grid_spec.nc
-  else
-    if [ "${IO_LAYOUT_Y}" == "1" ]; then
-      cpreq -p ${fixgriddir}/fv3_grid_spec  fv3sar_grid_spec.nc
-    else
-      for ii in $list_iolayout
-      do
-        iii=$(printf %4.4i $ii)
-        cpreq -p ${gridspec_dir}/fv3_grid_spec.${iii}  fv3sar_grid_spec.nc.${iii}
-      done
-    fi
-  fi
+  cpreq -p ${fixgriddir}/fv3_grid_spec  fv3sar_grid_spec.nc
   #
   #-----------------------------------------------------------------------
   #
@@ -183,9 +182,6 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   case $MACHINE in
   "WCOSS2")
     obs_appendix=grib2.gz
-    if [ "${DO_RETRO}" = "TRUE" ]; then
-      obs_appendix=grib2
-    fi
     ;;
   "JET" | "HERA" | "ORION" | "HERCULES")
     obs_appendix=grib2
@@ -342,8 +338,10 @@ EOF
   $APRUN ${EXECrrfs}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
 
-  cp RefInGSI3D.dat  ${COMOUT}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
-  cp Gridded_ref.nc  ${COMOUT}/rrfs.t${HH}z.Gridded_ref.nc.${bigmin}
+  cpreq -p RefInGSI3D.dat  ${shared_output_data}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
+  #### cpreq -p Gridded_ref.nc  ${shared_output_data}/rrfs.t${HH}z.Gridded_ref.nc.${bigmin}
+  cpreq -p Gridded_ref.nc ${shared_output_data}
+  ln -s ${shared_output_data}/Gridded_ref.nc ${shared_output_data}/rrfs.t${HH}z.Gridded_ref.nc.${bigmin}
 done # done with the bigmin for-loop
 #
 #-----------------------------------------------------------------------

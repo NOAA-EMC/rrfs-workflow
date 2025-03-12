@@ -11,7 +11,7 @@ export CDATE="$PDY$cyc"
 retro=YES
 suite_name=$(ecflow_client --query variable ${ECF_NAME}:SUITE)
 if [ $retro == "YES" ]; then
-  cd /lfs/h3/emc/rrfstemp/ecflow/ptmp/emc.lam/ecflow_rrfs/para/output/prod/today/ecflocal
+  cd /lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/output/prod/today/ecflocal
   setpdy.sh
   . ./PDY
   echo "Current retro PDY is $PDY"

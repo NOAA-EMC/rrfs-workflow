@@ -1,8 +1,44 @@
 #!/bin/bash
 
+date
+export PS4='+ $SECONDS + ' 
+set -xue
+
 #-----------------------------------------------------------------------
 # RRFS Prep Cyc
 #-----------------------------------------------------------------------
+export pid=${pid:-$$}
+export outid=${outid:-"LL$job"}
+export RUN=${RUN:-rrfs}
+
+if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
+  export ENSMEM_INDX=${MEMBER_NAME}
+  export mem_num=m$(echo "${ENSMEM_INDX}")
+  export DO_ENSEMBLE="TRUE"
+else
+  export ENSMEM_INDX=""
+  export mem_num=""
+  export DO_ENSEMBLE="FALSE"
+fi
+if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}}
+else
+  export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}}
+fi
+export shared_output_data_ics=${umbrella_ics_data}/ics
+
+#-----------------------------------------------------------------------
+# Define data directories
+#-----------------------------------------------------------------------
+export DATA=${DATA:-${DATAROOT}/${jobid}}
+mkdir -p ${DATA}
+cd ${DATA}
+
+#-----------------------------------------------------------------------
+# Source the variable definitions file
+#-----------------------------------------------------------------------
+
+. ${HOMErrfs}/ush/rrfs_nco_config.sh
 
 #-----------------------------------------------------------------------
 # Specify Execution Areas
@@ -12,20 +48,14 @@ export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
-
 export FIXam=${FIXam:-${FIXrrfs}/am}
 export FIX_GSI=${FIXrrfs}/gsi
-export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
 
 #-----------------------------------------------------------------------
-# Source the variable definitions file and the bash utility functions.
+# Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-
-date
-export PS4='+ $SECONDS + '
 
 #-----------------------------------------------------------------------
 # Save current shell options (in a global array).  Then set new options
@@ -55,70 +85,40 @@ In directory:     \"${scrfunc_dir}\"
 
 This is the J-job script for the prep_cyc tasks for the specified cycle.
 ========================================================================"
-
-#-----------------------------------------------------------------------
-# Obtain unique process id (pid) and create the run directory (DATA).
-#-----------------------------------------------------------------------
-
-export pid=${pid:-$$}
-export RUN=${RUN:-rrfs}
-
-if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  number_tmp_BCGRP=$(echo $BCGRP | cut -c4-6)
-  MEMBER_NAME=${MEMBER_NAME:-$number_tmp_BCGRP}
-  export ENSMEM_INDX=${ENSMEM_INDX:-${MEMBER_NAME}}
-  export mem_num=m$(echo "${ENSMEM_INDX}")
-fi
-
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
 
-if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
-  export jobid=${taskid}
-else
-  if [ ${CYCLE_TYPE} == "spinup" ]; then
-    if [ "${DO_ENSEMBLE}" = "TRUE" ]; then      # EnKF has spinup forecasts
-      export jobid=${RUN}_forecast_spinup_${mem_num}_${envir}_${cyc}
-      if  [ ${CYCLE_SUBTYPE} == "ensinit" ]; then
-        export jobid=${RUN}_forecast_ensinit_${mem_num}_${envir}_${cyc}
-      fi
-    else
-      export jobid=${RUN}_forecast_spinup_${envir}_${cyc}
-    fi
-  else
-    if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-      export jobid=${RUN}_forecast_${mem_num}_${envir}_${cyc}
-    else
-      export jobid=${RUN}_forecast_${envir}_${cyc}
-    fi
-  fi
-fi
-
-export INPUT_DATA=${DATAROOT}/${jobid}/INPUT
-mkdir -p ${INPUT_DATA}
-cd ${INPUT_DATA}
-
-export gridspec_dir=${GESROOT}/grid_spec
-export MAILTO="${MAILTO:-}"
+####export gridspec_dir=${GESROOT}/grid_spec
+####export MAILTO="${MAILTO:-}"
 
 #-----------------------------------------------------------------------
 # Define COM directories
 #-----------------------------------------------------------------------
-
-export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
+export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
+export COMOUT=${COMOUT:-${COMrrfs}/${RUN}.${PDY}/${cyc}}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
+  export COMOUT=${COMOUT}_spinup
+  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
+else
+  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}
 fi
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   export COMOUT=${COMOUT}/${mem_num}
+  if [ "${CYCLE_TYPE}" = "spinup" ]; then
+    export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
+  else
+    export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
+  fi
 fi
-mkdir -p "${COMOUT}"
+export FORECAST_INPUT_PRODUCT=${umbrella_forecast_data}/INPUT
+[[ -d ${FORECAST_INPUT_PRODUCT} ]]&& rm -rf ${FORECAST_INPUT_PRODUCT}
+mkdir -p ${COMOUT} ${FORECAST_INPUT_PRODUCT}
 
 #-----------------------------------------------------------------------
 # Execute the script.
 #-----------------------------------------------------------------------
 
-export pgmout="${INPUT_DATA}/OUTPUT.$$"
+export pgmout="${DATA}/OUTPUT.$$"
 env
 
 ${HOMErrfs}/scripts/exrrfs_prep_cyc.sh
@@ -129,7 +129,7 @@ if [ -e "$pgmout" ]; then
 fi
 
 if [ "${KEEPDATA}" = "NO" ]; then
-  rm -rf ${INPUT_DATA}
+  rm -rf ${DATA}
 fi
 
 #-----------------------------------------------------------------------

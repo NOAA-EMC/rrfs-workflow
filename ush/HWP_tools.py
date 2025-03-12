@@ -15,7 +15,7 @@ def check_restart_files(hourly_hwpdir, fcst_dates):
     """Check the restart files.
 
     Args:
-         hourly_hwpdir: the directory where the RESTART data is copied (nwges/HOURLY_HWP)
+         hourly_hwpdir: the directory where the RESTART data is copied (comrrfs/HOURLY_HWP)
          fcst_dates: Forecast dates
     Returns:
          lists of hours with and without available RESTART files
@@ -37,24 +37,20 @@ def check_restart_files(hourly_hwpdir, fcst_dates):
     print(f'Available restart at: {hwp_avail_hours}, Non-available restart files at: {hwp_non_avail_hours}')
     return(hwp_avail_hours, hwp_non_avail_hours)
 
-def copy_missing_restart(nwges_dir, hwp_non_avail_hours, hourly_hwpdir):
+def copy_missing_restart(comrrfs, hwp_non_avail_hours, hourly_hwpdir):
     """Check the restart files.
 
     The script loops through hwp_non_avail_hours (missing files in
-    nwges/HOURLY_HWP) and determines if an alternative RESTART file in
-    nwges/fcst_fv3lam/RESTART is available instead. If so, it is
-    appended to restart_avail_hours.
+    comrrfs/HOURLY_HWP) and determines if an alternative RESTART file in
+    comrrfs/rrfs.YYYYMMDD/HH/forecast/RESTART is available instead.
+    If so, it is appended to restart_avail_hours.
 
     Args:
-         nwges_dir: holds the boundary, INPUT, and RESTART files (e.g,
+         comrrfs: holds the boundary, INPUT, and RESTART files (e.g,
          described here:
          [ufs-community/ufs-srweather-app#654](https://github.com/ufs-community/ufs-srweather-app/issues/654))
-         The use of NWGES is a bit of a legacy variable name in
-         production. It is often used to define a directory holding
-         DA-relevant files (such as first guess and analysis files)
-         outside of the main COM output directory.
          hwp_non_avail_hours: a list of hours without available RESTART files
-         hourly_hwpdir: the directory where the RESTART data is copied (nwges/HOURLY_HWP)
+         hourly_hwpdir: the directory where the RESTART data is copied (comrrfs/HOURLY_HWP)
     Returns:
          list of::
          - restart_avail_hours
@@ -71,7 +67,7 @@ def copy_missing_restart(nwges_dir, hwp_non_avail_hours, hourly_hwpdir):
             prev_hr = YYYYMMDDHH - timedelta(hours=1)
             prev_hr_str = prev_hr.strftime("%Y%m%d%H")
 
-            source_restart_dir = os.path.join(nwges_dir, prev_hr_str, 'fcst_fv3lam', 'RESTART')
+            source_restart_dir = os.path.join(comrrfs, 'rrfs.'+prev_hr_str[0:8], HH, 'forecast', 'RESTART')
             wildcard_name = f'*{HH}0000.phy_data.nc'
 
             try:
@@ -119,7 +115,7 @@ def process_hwp(fcst_dates, hourly_hwpdir, cols, rows, intp_dir, rave_to_intp):
 
     Args:
          fcst_dates: a list of forecasts (for production/ops/ebb=2, it is {current_day - 25 hours: current_day-1hours}, for ebb=1, it is current_day:current_day+24 hours)
-         hourly_hwpdir: the directory where the RESTART data is copied (nwges/HOURLY_HWP)
+         hourly_hwpdir: the directory where the RESTART data is copied (comrrfs/HOURLY_HWP)
          cols: hard coded dimension for the RRFS_NA_3km and RRFS_CONUS_3km domains:: cols = 2700 if predef_grid == 'RRFS_NA_3km' else 1092
          rows: hard coded dimension for the RRFS_NA_3km and RRFS_CONUS_3km domains:: rows = 3950 if predef_grid == 'RRFS_NA_3km' else 1820
          intp_dir: the working directory for smoke processing (${CYCLE_DIR}/process_smoke)

@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #
 #-----------------------------------------------------------------------
 #
@@ -45,17 +44,10 @@ In directory:     \"${scrfunc_dir}\"
 This is the ex-script for the task that runs the large-scale blending
 on the RRFS initial conditions.
 ========================================================================"
-#
-#-----------------------------------------------------------------------
-#
-# Source the file containing definitions of variables associated with the
-# external model for ICs.
-#
-#-----------------------------------------------------------------------
-#
-extrn_mdl_staging_dir="${DATA}/tmp_ICS"
-extrn_mdl_var_defns_fp="${extrn_mdl_staging_dir}/${EXTRN_MDL_ICS_VAR_DEFNS_FN}"
-. ${extrn_mdl_var_defns_fp}
+#### extrn_mdl_staging_dir="${DATA}/tmp_ICS"
+#### extrn_mdl_var_defns_fp="${extrn_mdl_staging_dir}/${EXTRN_MDL_ICS_VAR_DEFNS_FN}"
+#### . ${extrn_mdl_var_defns_fp}
+NUM_ENS_MEMBERS=${NUM_ENS_MEMBERS:-0}
 #
 #-----------------------------------------------------------------------
 #
@@ -63,6 +55,8 @@ extrn_mdl_var_defns_fp="${extrn_mdl_staging_dir}/${EXTRN_MDL_ICS_VAR_DEFNS_FN}"
 #
 #-----------------------------------------------------------------------
 #
+# Get the EXTRN_MDL_CDATE from make_ics job in shared dir
+. ${shared_output_data}/extrn_mdl_ics_var_defns.sh
 yyyymmdd="${EXTRN_MDL_CDATE:0:8}"
 mm="${EXTRN_MDL_CDATE:4:2}"
 dd="${EXTRN_MDL_CDATE:6:2}"
@@ -125,20 +119,26 @@ cdate_crnt_fhr_m1=$( date --utc --date "${yyyymmdd} ${hh} UTC - 1 hours" "+%Y%m%
 yyyymmdd_m1="${cdate_crnt_fhr_m1:0:8}"
 hh_m1="${cdate_crnt_fhr_m1:8:2}"
 
+DO_ENS_BLENDING=${DO_ENS_BLENDING:-"TRUE"}
 # Check for 1h RRFS EnKF files, if at least one missing then use 1tstep initialization
 if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
 
   # Files to denote whether running blending or ensinit
-  run_blending=${GESROOT}/${RUN}.${yyyymmdd}/${hh}/${mem_num}/run_blending
-  run_ensinit=${GESROOT}/${RUN}.${yyyymmdd}/${hh}/${mem_num}/run_ensinit
+  #### run_blending=${GESROOT}/${RUN}.${yyyymmdd}/${hh}/${mem_num}/run_blending
+  run_blending=${COMrrfs}/${RUN}.${yyyymmdd}/${hh}/${mem_num}/run_blending
+  #### run_ensinit=${GESROOT}/${RUN}.${yyyymmdd}/${hh}/${mem_num}/run_ensinit
+  run_ensinit=${COMrrfs}/${RUN}.${yyyymmdd}/${hh}/${mem_num}/run_ensinit
+  mkdir -p ${COMrrfs}/${RUN}.${yyyymmdd}/${hh}/${mem_num}
 
   # Initialize a counter for the number of existing files
   existing_files=0
 
   # Loop through each ensemble member and check if the 1h RRFS EnKF files exist
+  #### Check NUM_ENS_MEMBERS for all WGF case to remove thie for loop dead code
   for imem in $(seq 1 ${NUM_ENS_MEMBERS}); do
-      ensmem=$( printf "%03d" $imem )
-      checkfile="${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/m${ensmem}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
+      #### ensmem=$( printf "%04d" $imem )
+      #### checkfile="${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
+      checkfile="${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
       if [[ -f $checkfile ]]; then
           ((existing_files++))
           echo "checkfile count: $existing_files"
@@ -174,12 +174,13 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
      echo "Blending Starting."
 
      # F2Py shared object files to PYTHONPATH
-     export PYTHONPATH=$PYTHONPATH:$LIB64dir
+     export PYTHONPATH=$PYTHONPATH:$HOMErrfs/sorc/build/lib64
 
      # Required NETCDF files - RRFS
-     cpreq -p ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.tile1.nc ./fv_core.res.tile1.nc
-     cpreq -p ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_tracer.res.tile1.nc ./fv_tracer.res.tile1.nc
-     #cpreq -p ${NWGES_BASEDIR}/${cdate_crnt_fhr_m1}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc ./fv_core.res.nc
+     #### cpreq -p ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.tile1.nc ./fv_core.res.tile1.nc
+     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.tile1.nc ./fv_core.res.tile1.nc
+     #### cpreq -p ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_tracer.res.tile1.nc ./fv_tracer.res.tile1.nc
+     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_tracer.res.tile1.nc ./fv_tracer.res.tile1.nc
 
      # Shortcut the file names/arguments.
      Lx=$ENS_BLENDING_LENGTHSCALE
@@ -194,17 +195,28 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
                                     # TRUE:  Final EnKF will be GDAS (no blending)
                                     # FALSE: Final EnKF will be RRFS (no blending)
      python ${USHrrfs}/blending_fv3.py $Lx $glb $reg $trcr $blend $use_host_enkf
-     cp ./fv_core.res.tile1.nc ${DATA}/.
-     cp ./fv_tracer.res.tile1.nc ${DATA}/.
+     #### cp ./fv_core.res.tile1.nc ${DATA}/.
+     #### cp ./fv_tracer.res.tile1.nc ${DATA}/.
+     #### Current in ${DATA} checking file
+     [[ ! -s fv_core.res.tile1.nc ]]&& err_exit "FATAL: fv_core.res.tile1.nc not found in ${DATA}"
+     [[ ! -s fv_tracer.res.tile1.nc ]]&& err_exit "FATAL: fv_tracer.res.tile1.nc not found in ${DATA}" 
 
      # Move the remaining RESTART files to INPUT
-     cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res             ${DATA}/coupler.res
-     cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc          ${DATA}/fv_core.res.nc
-     cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_srf_wnd.res.tile1.nc ${DATA}/fv_srf_wnd.res.tile1.nc
-     cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.phy_data.nc             ${DATA}/phy_data.nc
-     cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.sfc_data.nc             ${DATA}/sfc_data.nc
-     cp gfs_ctrl.nc ${DATA}
-     cp gfs.bndy.nc ${DATA}/gfs_bndy.tile${TILE_RGNL}.000.nc
+     #### cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res             ${DATA}/coupler.res
+     #### cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc          ${DATA}/fv_core.res.nc
+     #### cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_srf_wnd.res.tile1.nc ${DATA}/fv_srf_wnd.res.tile1.nc
+     #### cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.phy_data.nc             ${DATA}/phy_data.nc
+     #### cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.sfc_data.nc             ${DATA}/sfc_data.nc
+     cp ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res             ${DATA}/coupler.res
+     cp ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc          ${DATA}/fv_core.res.nc
+     cp ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_srf_wnd.res.tile1.nc ${DATA}/fv_srf_wnd.res.tile1.nc
+     cp ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.phy_data.nc             ${DATA}/phy_data.nc
+     cp ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.sfc_data.nc             ${DATA}/sfc_data.nc
+     #### cp gfs_ctrl.nc ${DATA}
+     #### cp gfs.bndy.nc ${DATA}/gfs_bndy.tile${TILE_RGNL}.000.nc
+     #### Current in ${DATA} checking file
+     #### [[ ! -s gfs_ctrl.nc ]]&& err_exit "FATAL: gfs_ctrl.nc not found in ${DATA}"
+     #### [[ ! -s gfs.bndy.nc ]]&& err_exit "FATAL: gfs.bndy.nc not found in ${DATA}"
   fi
 fi
 #
@@ -217,27 +229,34 @@ fi
 #-----------------------------------------------------------------------
 #
 if [[ $DO_ENS_BLENDING = "FALSE" || ($DO_ENS_BLENDING = "TRUE" && -f $run_ensinit ) ]]; then
-  mv out.atm.tile${TILE_RGNL}.nc \
-        ${DATA}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
+  #### mv out.atm.tile${TILE_RGNL}.nc \
+  ####      ${DATA}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
+  #### mv out.sfc.tile${TILE_RGNL}.nc \
+  ####      ${DATA}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
 
-  mv out.sfc.tile${TILE_RGNL}.nc \
-        ${DATA}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
+  #### mv gfs_ctrl.nc ${DATA}
+  #### Current in ${DATA} checking file
+  #### mv ${shared_output_data}/gfs_bndy.tile${TILE_RGNL}.000.nc ${shared_output_data}/gfs.bndy.nc
+  [[ ! -s ${shared_output_data}/gfs_ctrl.nc ]]&& err_exit "FATAL ERROR: gfs_ctrl.nc not found in ${shared_output_data}"
+  [[ ! -s ${shared_output_data}/gfs_bndy.tile${TILE_RGNL}.000.nc ]]&& err_exit "FATAL ERROR: gfs_bndy.tile${TILE_RGNL}.000.nc not found in ${shared_output_data}"
+  [[ ! -s ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc ]]&& err_exit "FATAL ERROR: gfs_data.tile${TILE_RGNL}.halo${NH0}.nc not found in ${shared_output_data}"
+  [[ ! -s ${shared_output_data}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc ]]&& err_exit "FATAL ERROR: sfc_data.tile${TILE_RGNL}.halo${NH0}.nc not found in ${shared_output_data}"
 
-  mv gfs_ctrl.nc ${DATA}
-
-  mv gfs.bndy.nc ${DATA}/gfs_bndy.tile${TILE_RGNL}.000.nc
+  #### mv gfs.bndy.nc ${DATA}/gfs_bndy.tile${TILE_RGNL}.000.nc
 fi
 #
 #-----------------------------------------------------------------------
 #
-# copy results to nwges for longer time disk storage.
+# copy results to Umbrella DATA
 #
 #-----------------------------------------------------------------------
 #
-cp ${DATA}/*.nc ${NWGES_DIR}/.
+#### cp ${DATA}/*.nc ${NWGES_DIR}/.
+#### cp ${DATA}/*.nc ${shared_output_data}
 
 if [ $DO_ENS_BLENDING = "TRUE" ] && [ -f $run_blending ] && [ ! -f $run_ensinit ]; then
-  cp ${DATA}/coupler.res ${NWGES_DIR}/.
+####  cp ${DATA}/coupler.res ${NWGES_DIR}/.
+  cp ${DATA}/coupler.res ${shared_output_data}
 fi
 #
 #-----------------------------------------------------------------------

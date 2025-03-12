@@ -1,8 +1,87 @@
 #!/bin/bash
 
+date
+export PS4='+ $SECONDS + ' 
+set -xue
+
 #-----------------------------------------------------------------------
 # RRFS Analysis
 #-----------------------------------------------------------------------
+export pid=${pid:-$$}
+export outid=${outid:-"LL$job"}
+export RUN=${RUN:-rrfs}
+export MEM_TYPE=${MEM_TYPE:-"MEAN"}
+
+if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
+  export GSI_TYPE=${GSI_TYPE:-"OBSERVER"}
+  if [ "${MEM_TYPE}" = "MEAN" ]; then
+    export ENSMEM_INDX=""
+    export mem_num=""
+  else
+    export ENSMEM_INDX=${MEMBER_NAME}
+    export mem_num=m$(echo "${ENSMEM_INDX}")
+  fi
+  export DO_ENSEMBLE="TRUE"
+else
+  export ENSMEM_INDX=""
+  export mem_num=""
+  export DO_ENSEMBLE="FALSE"
+fi
+
+export CYCLE_TYPE=${CYCLE_TYPE:-prod}
+export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export umbrella_analysis_data=${umbrella_analysis_data:-${DATAROOT}/rrfs_analysis_gsi_spinup_${cyc}_${rrfs_ver}/${WGF}}
+  export umbrella_calc_ensmean_data=${umbrella_calc_ensmean_data:-${DATAROOT}/rrfs_calc_ensmean_spinup_${cyc}_${rrfs_ver}/${WGF}}
+  export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/${RUN}_init_spinup_${cyc}_${rrfs_ver}/${WGF}}
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    if [ "${MEM_TYPE}" = "MEAN" ]; then
+      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}/ensmean
+      export COMOUT=${COMrrfs}/enkfrrfs.${PDY}/${cyc}_spinup/ensmean/analysis
+    else
+      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
+      export COMOUT=${COMrrfs}/enkfrrfs.${PDY}/${cyc}_spinup/${mem_num}/analysis
+    fi
+  else
+    export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
+    export COMOUT=${COMrrfs}/${RUN}.${PDY}/${cyc}_spinup/analysis
+  fi
+else
+  export umbrella_analysis_data=${umbrella_analysis_data:-${DATAROOT}/rrfs_analysis_gsi_${cyc}_${rrfs_ver}/${WGF}}
+  export umbrella_calc_ensmean_data=${umbrella_calc_ensmean_data:-${DATAROOT}/rrfs_calc_ensmean_${cyc}_${rrfs_ver}/${WGF}}
+  export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/${RUN}_init_${cyc}_${rrfs_ver}/${WGF}}
+  if [ "${MEM_TYPE}" = "MEAN" ]; then
+    export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/ensmean
+    export COMOUT=${COMrrfs}/enkfrrfs.${PDY}/${cyc}/ensmean/analysis
+  else
+    if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
+      export COMOUT=${COMrrfs}/enkfrrfs.${PDY}/${cyc}/${mem_num}/analysis
+    else
+      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}
+      export COMOUT=${COMrrfs}/${RUN}.${PDY}/${cyc}/analysis
+    fi
+  fi
+fi 
+
+#-----------------------------------------------------------------------
+# Define data directories
+#-----------------------------------------------------------------------
+export shared_output_data=${umbrella_analysis_data}/output
+export DATA=${DATA:-${umbrella_analysis_data}/${jobid}}
+mkdir -p ${DATA} ${shared_output_data} ${COMOUT}
+cd ${DATA}
+
+#-----------------------------------------------------------------------
+# Define forecast INPUT directories
+#-----------------------------------------------------------------------
+export FORECAST_INPUT_PRODUCT=${umbrella_forecast_data}/INPUT
+mkdir -p ${FORECAST_INPUT_PRODUCT}
+#-----------------------------------------------------------------------
+# Source the variable definitions file
+#-----------------------------------------------------------------------
+
+. ${HOMErrfs}/ush/rrfs_nco_config.sh
 
 #-----------------------------------------------------------------------
 # Specify Execution Areas
@@ -12,19 +91,13 @@ export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
-
 export FIX_GSI=${FIXrrfs}/gsi
-export FIX_CRTM=${CRTM_FIX}	# CRTM_FIX is from CRTM module
 
 #-----------------------------------------------------------------------
-# Source the variable definitions file and the bash utility functions.
+# Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-
-date
-export PS4='+ $SECONDS + '
 
 #-----------------------------------------------------------------------
 # Save current shell options (in a global array).  Then set new options
@@ -55,102 +128,6 @@ In directory:     \"${scrfunc_dir}\"
 This is the J-job script for the task that runs an analysis with RRFS
 for the specified cycle.
 ========================================================================"
-
-#-----------------------------------------------------------------------
-# Obtain unique process id (pid) and create the run directory (DATA).
-#-----------------------------------------------------------------------
-
-export pid=${pid:-$$}
-export RUN=${RUN:-rrfs}
-
-if [ ! "${MEM_TYPE}" = "MEAN" ] && [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  export ENSMEM_INDX=${ENSMEM_INDX:-${MEMBER_NAME}}
-  export mem_num=m$(echo "${ENSMEM_INDX}")
-fi
-
-export CYCLE_TYPE=${CYCLE_TYPE:-prod}
-export observer_nwges_dir=""
-
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  workname="gsi_spinup"
-else
-  workname="gsi"
-fi
-
-if [[ ! -v OB_TYPE ]]; then
-  OB_TYPE="conv"
-fi
-
-if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
-  export jobid=${taskid}
-else
-  if [ "${GSI_TYPE}" = "OBSERVER" ]; then
-    if [ "${MEM_TYPE}" = "MEAN" ]; then
-      export jobid=${RUN}_observer_${workname}_ensmean_${envir}_${cyc}
-    else
-      export jobid=${RUN}_observer_${workname}_${mem_num}_${envir}_${cyc}
-    fi
-  else	# For control member, GSI_TYPE is always ANALYSIS
-    export jobid=${RUN}_analysis_${OB_TYPE}_${workname}_${envir}_${cyc}
-  fi
-fi
-
-if [ "${GSI_TYPE}" = "OBSERVER" ]; then
-  if [ "${MEM_TYPE}" = "MEAN" ]; then
-    observer_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}/ensmean/observer_${workname}"
-  else
-  # GSI_TYPE = OBSERVER is only for EnKF (ensemble forecasts do not have ANALYSIS tasks)
-    observer_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/observer_${workname}"
-  fi
-  mkdir -p ${observer_nwges_dir}
-fi
-
-export DATA=${DATA:-${DATAROOT}/${jobid}}
-rm -fr ${DATA}
-mkdir -p ${DATA}
-cd ${DATA}
-
-if [ ! -d "${SATBIAS_DIR}" ]; then
-  echo "making satbias_dir directory for cycling bias correction files" 
-  mkdir -p ${SATBIAS_DIR}
-fi
-
-# Folder for storing EnKF related satbias files
-if [ "${GSI_TYPE}" = "OBSERVER" ]; then
-  if [ "${MEM_TYPE}" = "MEAN" ]; then
-    if [ ! -d "${SATBIAS_DIR}_ensmean" ]; then
-      echo "making satbias_dir ensmean directory for cycling bias correction files" 
-      mkdir -p ${SATBIAS_DIR}_ensmean
-    fi    	  
-  fi
-fi
-
-export gridspec_dir=${GESROOT}/grid_spec
-
-export OB_TYPE=${OB_TYPE}
-
-#-----------------------------------------------------------------------
-# Define COM directories
-#-----------------------------------------------------------------------
-
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  if [ "${DO_ENSEMBLE}" = "TRUE" ] && [ ! "${MEM_TYPE}" = "MEAN" ]; then
-    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup/${mem_num})}
-  else
-    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
-  fi
-else
-  if [ "${MEM_TYPE}" = "MEAN" ]; then
-    export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/ensmean)}
-  else
-    if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-      export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/${mem_num})}
-    else
-      export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-    fi
-  fi
-fi
-mkdir -p "${COMOUT}"
 
 #-----------------------------------------------------------------------
 # Execute the script.

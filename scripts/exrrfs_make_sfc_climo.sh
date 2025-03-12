@@ -109,7 +109,6 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-ulimit -s unlimited
 ulimit -a
 
 case $MACHINE in
@@ -168,13 +167,13 @@ case "$GTYPE" in
 #
 "global" | "stretch" | "nested")
 #
-# Move all files ending with ".nc" to the SFC_CLIMO_DIR directory.
+# Move all files ending with ".nc" to the umbrella_ics_data directory.
 # In the process, rename them so that the file names start with the C-
 # resolution (followed by an underscore).
 #
   for fn in *.nc; do
     if [[ -f $fn ]]; then
-      mv $fn ${SFC_CLIMO_DIR}/${CRES}_${fn}
+      mv $fn ${umbrella_ics_data}/${CRES}_${fn}
     fi
   done
   ;;
@@ -193,12 +192,12 @@ case "$GTYPE" in
   for fn in *.halo.nc; do
     if [ -f $fn ]; then
       bn="${fn%.halo.nc}"
-      mv $fn ${SFC_CLIMO_DIR}/${CRES}.${bn}.halo${NH4}.nc
+      mv $fn ${umbrella_ics_data}/${CRES}.${bn}.halo${NH4}.nc
     fi
   done
 #
 # Move all remaining files ending with ".nc" (which are the files for a
-# grid that doesn't include a halo) to the SFC_CLIMO_DIR directory.
+# grid that doesn't include a halo) to the umbrella_ics_data directory.
 # In the process, rename them so that the file names start with the C-
 # resolution (followed by a dot) and contain the string "halo0" to indi-
 # cate that the grids in these files do not contain a halo.
@@ -206,7 +205,7 @@ case "$GTYPE" in
   for fn in *.nc; do
     if [ -f $fn ]; then
       bn="${fn%.nc}"
-      mv $fn ${SFC_CLIMO_DIR}/${CRES}.${bn}.halo${NH0}.nc
+      mv $fn ${umbrella_ics_data}/${CRES}.${bn}.halo${NH0}.nc
     fi
   done
   ;;
@@ -238,18 +237,18 @@ fi
 #-----------------------------------------------------------------------
 #
 if [ $vegsoilt_frac = .true. ]; then
-  ncrename -d nx,lon -d ny,lat ${SFC_CLIMO_DIR}/${CRES}.soil_type.tile7.halo0.nc
-  ncrename -d nx,lon -d ny,lat ${SFC_CLIMO_DIR}/${CRES}.soil_type.tile7.halo4.nc
-  ncrename -d nx,lon -d ny,lat ${SFC_CLIMO_DIR}/${CRES}.vegetation_type.tile7.halo0.nc
-  ncrename -d nx,lon -d ny,lat ${SFC_CLIMO_DIR}/${CRES}.vegetation_type.tile7.halo4.nc
-  ncrename -d num_categories,num_veg_cat ${SFC_CLIMO_DIR}/${CRES}.vegetation_type.tile7.halo0.nc
-  ncrename -d num_categories,num_veg_cat ${SFC_CLIMO_DIR}/${CRES}.vegetation_type.tile7.halo4.nc
-  ncrename -d num_categories,num_soil_cat ${SFC_CLIMO_DIR}/${CRES}.soil_type.tile7.halo0.nc
-  ncrename -d num_categories,num_soil_cat ${SFC_CLIMO_DIR}/${CRES}.soil_type.tile7.halo4.nc
-  ncks -v vegetation_type_pct ${SFC_CLIMO_DIR}/${CRES}.vegetation_type.tile7.halo0.nc -A ${OROG_DIR}/${CRES}_oro_data.tile7.halo0.nc
-  ncks -v vegetation_type_pct ${SFC_CLIMO_DIR}/${CRES}.vegetation_type.tile7.halo4.nc -A ${OROG_DIR}/${CRES}_oro_data.tile7.halo4.nc
-  ncks -v soil_type_pct ${SFC_CLIMO_DIR}/${CRES}.soil_type.tile7.halo0.nc -A ${OROG_DIR}/${CRES}_oro_data.tile7.halo0.nc
-  ncks -v soil_type_pct ${SFC_CLIMO_DIR}/${CRES}.soil_type.tile7.halo4.nc -A ${OROG_DIR}/${CRES}_oro_data.tile7.halo4.nc
+  ncrename -d nx,lon -d ny,lat ${umbrella_ics_data}/${CRES}.soil_type.tile7.halo0.nc
+  ncrename -d nx,lon -d ny,lat ${umbrella_ics_data}/${CRES}.soil_type.tile7.halo4.nc
+  ncrename -d nx,lon -d ny,lat ${umbrella_ics_data}/${CRES}.vegetation_type.tile7.halo0.nc
+  ncrename -d nx,lon -d ny,lat ${umbrella_ics_data}/${CRES}.vegetation_type.tile7.halo4.nc
+  ncrename -d num_categories,num_veg_cat ${umbrella_ics_data}/${CRES}.vegetation_type.tile7.halo0.nc
+  ncrename -d num_categories,num_veg_cat ${umbrella_ics_data}/${CRES}.vegetation_type.tile7.halo4.nc
+  ncrename -d num_categories,num_soil_cat ${umbrella_ics_data}/${CRES}.soil_type.tile7.halo0.nc
+  ncrename -d num_categories,num_soil_cat ${umbrella_ics_data}/${CRES}.soil_type.tile7.halo4.nc
+  ncks -v vegetation_type_pct ${umbrella_ics_data}/${CRES}.vegetation_type.tile7.halo0.nc -A ${OROG_DIR}/${CRES}_oro_data.tile7.halo0.nc
+  ncks -v vegetation_type_pct ${umbrella_ics_data}/${CRES}.vegetation_type.tile7.halo4.nc -A ${OROG_DIR}/${CRES}_oro_data.tile7.halo4.nc
+  ncks -v soil_type_pct ${umbrella_ics_data}/${CRES}.soil_type.tile7.halo0.nc -A ${OROG_DIR}/${CRES}_oro_data.tile7.halo0.nc
+  ncks -v soil_type_pct ${umbrella_ics_data}/${CRES}.soil_type.tile7.halo4.nc -A ${OROG_DIR}/${CRES}_oro_data.tile7.halo4.nc
 fi
 #
 #-----------------------------------------------------------------------

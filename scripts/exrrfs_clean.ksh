@@ -1,5 +1,5 @@
 #!/bin/ksh --login
-
+exit 0
 #
 #-----------------------------------------------------------------------
 # Source the variable definitions file.
@@ -20,7 +20,7 @@
 #-----------------------------------------------------------------------
 #
 currentime=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
-
+nens=${NUM_ENS_MEMBERS:-"0"}
 listens=$(seq 1 $nens)
 
 #-----------------------------------------------------------------------
@@ -153,8 +153,4 @@ for onetime in ${XX[*]};do
 done
 
 #-----------------------------------------------------------------------
-
-storage=$(du -sh /lfs/h3/emc/lam/noscrub/ecflow)
-[[ -z $ECF_PORT ]]&& ecflow_client --label=storage "${storage}"
-
 exit 0

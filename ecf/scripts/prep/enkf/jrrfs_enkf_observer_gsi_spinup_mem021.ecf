@@ -21,8 +21,8 @@ export CDATE="${PDY}${cyc}"
 export WGF="%WGF%"
 export MEMBER_NAME="%MEMBER_NAME%"
 export CYCLE_TYPE="%CYCLE_TYPE%"
+export MEM_TYPE="%MEM_TYPE%"
 module list
-%include <enkf_observer_gsi_spinup_mem021_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################

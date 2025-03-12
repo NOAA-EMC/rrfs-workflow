@@ -52,7 +52,6 @@ the output files corresponding to a specified forecast hour.
 #
 #-----------------------------------------------------------------------
 #
-ulimit -s unlimited
 ulimit -a
 
 case $MACHINE in
@@ -97,6 +96,7 @@ Run command has not been specified for this machine:
     ;;
 
 esac
+UPP_DIR=${UPP_DIR:-$HOMErrfs/sorc/UPP}
 #
 #-----------------------------------------------------------------------
 #
@@ -128,8 +128,8 @@ else
   fi
 fi
 #
-dyn_file="${INPUT_DATA}/dynf${fhr}.nc"
-phy_file="${INPUT_DATA}/phyf${fhr}.nc"
+dyn_file="${shared_forecast_output_data}/dynf${fhr}.nc"
+phy_file="${shared_forecast_output_data}/phyf${fhr}.nc"
 
 SUBH_GEN=0
 
@@ -139,7 +139,8 @@ if [ ${len_fhr} -eq 9 ]; then
   post_min=${fhr:4:2}
   if [ ${post_min} -lt ${nsout_min} ]; then
     post_min=00
-	  if [ $post_fhr -ge 1 -a $post_fhr -le $POSTPROC_SUBH_LEN_HRS ]
+#	  if [ $post_fhr -ge 1 -a $post_fhr -le $POSTPROC_SUBH_LEN_HRS ]
+	  if [ $post_fhr -ge 1 -a $post_fhr -le 18 ]
 	  then
           SUBH_GEN=1
 	  fi
@@ -161,8 +162,8 @@ cat > itag <<EOF
  IOFORM='netcdf'
  grib='grib2'
  DateStr='${post_yyyy}-${post_mm}-${post_dd}_${post_hh}:${post_min}:00'
- MODELNAME='${POST_FULL_MODEL_NAME}'
- SUBMODELNAME='${POST_SUB_MODEL_NAME}'
+ MODELNAME='FV3R'
+ SUBMODELNAME='FV3R'
  fileNameFlux='${phy_file}'
  fileNameFlat='postxconfig-NT.txt'
 /
@@ -254,13 +255,14 @@ elif [ ${PREDEF_GRID_NAME} = "GSD_RAP13km" ]; then
   grid_specs_rrfs="rot-ll:254.000000:-36.000000:0.000000 304.174600:956:0.1169118 -48.5768500:831:0.1170527"
 fi
 if [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km_HRRRIC" ] || [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km" ] || [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ] || [ ${PREDEF_GRID_NAME} = "GSD_RAP13km" ]; then
-  if [ -f ${FFG_DIR}/latest.FFG ]; then
-    cpreq -p ${FFG_DIR}/latest.FFG .
-    wgrib2 latest.FFG -match "0-12 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_12h.grib2
-    wgrib2 latest.FFG -match "0-6 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_06h.grib2
-    wgrib2 latest.FFG -match "0-3 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_03h.grib2
-    wgrib2 latest.FFG -match "0-1 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_01h.grib2
-  fi
+#### The following code is to be removed because FFG_DIR is not an assigned variable for implementation
+####  if [ -f ${FFG_DIR}/latest.FFG ]; then
+####    cpreq -p ${FFG_DIR}/latest.FFG .
+####    wgrib2 latest.FFG -match "0-12 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_12h.grib2
+####    wgrib2 latest.FFG -match "0-6 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_06h.grib2
+####    wgrib2 latest.FFG -match "0-3 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_03h.grib2
+####    wgrib2 latest.FFG -match "0-1 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_01h.grib2
+####  fi
   for ayear in 100y 10y 5y 2y ; do
     for ahour in 01h 03h 06h 12h 24h; do
       if [ -f ${FIX_UPP}/${PREDEF_GRID_NAME}/ari${ayear}_${ahour}.grib2 ]; then
@@ -301,7 +303,7 @@ export err=$?; err_chk
 #-----------------------------------------------------------------------
 #
 # get the length of the fhr string to decide format of forecast time stamp.
-# 9 is sub-houry forecast and 3 is full hour forecast only.
+# 9 is sub-hourly forecast and 3 is full hour forecast only.
 len_fhr=${#fhr}
 if [ ${len_fhr} -eq 9 ]; then
   post_min=${fhr:4:2}
@@ -369,93 +371,79 @@ net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
 
 # Include member number with ensemble forecast output
 if [ ${DO_ENSFCST} = "TRUE" ]; then
-  bgdawp=${DATA}/${net4}.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
-  bgrd3d=${DATA}/${net4}.t${cyc}z.${mem_num}.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
-  bgifi=${DATA}/${net4}.t${cyc}z.${mem_num}.ififip.${gridspacing}.f${fhr}.${gridname}.grib2
-  bgavi=${DATA}/${net4}.t${cyc}z.${mem_num}.aviati.${gridspacing}.f${fhr}.${gridname}.grib2
+  prslev=${DATA}/${net4}.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
+  natlev=${DATA}/${net4}.t${cyc}z.${mem_num}.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
 else
-  bgdawp=${DATA}/${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
-  bgrd3d=${DATA}/${net4}.t${cyc}z.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
-  bgifi=${DATA}/${net4}.t${cyc}z.ififip.${gridspacing}.f${fhr}.${gridname}.grib2
-  bgavi=${DATA}/${net4}.t${cyc}z.aviati.${gridspacing}.f${fhr}.${gridname}.grib2
+  prslev=${DATA}/${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
+  natlev=${DATA}/${net4}.t${cyc}z.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
 fi
 
 if [ -f PRSLEV.GrbF${post_fhr} ]; then
-  wgrib2 PRSLEV.GrbF${post_fhr} -set center 7 -grib ${bgdawp} >>$pgmout 2>>errfile
+# If post_min is 15, 30, or 45, then copy the grib2 file to umbrella_post_data
+  if [ $post_min = 15 -o $post_min = 30 -o $post_min = 45 ]; then
+    cpreq -p PRSLEV.GrbF${post_fhr} ${umbrella_post_data}
+    echo "Subhourly file copied to umbrella data directory, exit post task"
+    exit
+  fi
+
+  wgrib2 PRSLEV.GrbF${post_fhr} -set center 7 -grib ${prslev} >>$pgmout 2>>errfile
+
   if [ $SUBH_GEN = 1 ]
   then
-    bgdawp_subh_combo=${DATA}/${net4}.t${cyc}z.prslev.${gridspacing}.subh.f${fhr}.${gridname}.grib2
-    bgdawp_subh=${DATA}/PRSLEV.GrbF${fhr}.00
-    wgrib2 ${bgdawp} -not_if 'ave fcst' | grep -F -f ${FIX_UPP}/subh_fields.txt | wgrib2 -i -grib ${bgdawp_subh}  ${bgdawp}
+    prslev_subh_combo=${DATA}/${net4}.t${cyc}z.prslev.${gridspacing}.subh.f${fhr}.${gridname}.grib2
+    prslev_subh=${DATA}/PRSLEV.GrbF${fhr}.00
+    wgrib2 ${prslev} -not_if 'ave fcst' | grep -F -f ${FIX_UPP}/subh_fields.txt | wgrib2 -i -grib ${prslev_subh}  ${prslev}
 
     fhrm1tmp="$((10#$fhr-1))"
     fhrm1=`printf "%02d\n" $fhrm1tmp`
-# expect this will need to be changed due to future umbrella directory changes
-    tm15=${DATA}/../rrfs_post_${envir}_${cyc}_f0${fhrm1}-45-00/PRSLEV.GrbF${fhrm1}.45
-    tm30=${DATA}/../rrfs_post_${envir}_${cyc}_f0${fhrm1}-30-00/PRSLEV.GrbF${fhrm1}.30
-    tm45=${DATA}/../rrfs_post_${envir}_${cyc}_f0${fhrm1}-15-00/PRSLEV.GrbF${fhrm1}.15
 
-    tm15b=${DATA}/../rrfs_post_${envir}_${cyc}_f0${fhrm1}-45-00_long/PRSLEV.GrbF${fhrm1}.45
-    tm30b=${DATA}/../rrfs_post_${envir}_${cyc}_f0${fhrm1}-30-00_long/PRSLEV.GrbF${fhrm1}.30
-    tm45b=${DATA}/../rrfs_post_${envir}_${cyc}_f0${fhrm1}-15-00_long/PRSLEV.GrbF${fhrm1}.15
+    tm15=${umbrella_post_data}/PRSLEV.GrbF${fhrm1}.45
+    tm30=${umbrella_post_data}/PRSLEV.GrbF${fhrm1}.30
+    tm45=${umbrella_post_data}/PRSLEV.GrbF${fhrm1}.15
 
-    looplim=30
-    loop=1
-    while [ $loop -le $looplim ]
-    do
+# Time trigger not needed with ecflow
+#    looplim=30
+#    loop=1
+#    while [ $loop -le $looplim ]
+#    do
+#      if [ -e $tm15 -a -e $tm30 -a -e $tm45 ]
+#      then
+#        break
+#      else 
+#        loop=$((loop+1))
+#        sleep 20
+#      fi
+#      if [ $loop -ge $looplim ]
+#      then
+#        msg="FATAL ERROR: ABORTING after 10 minutes of waiting for old 15 minute UPP output $tm15 $tm30 $tm45"
+#        err_exit $msg
+#      fi
+#    done
 
-    if [ ! -e $tm15 -a -e $tm15b ]
+    if [ -e $prslev_subh -a -e $tm15 -a -e $tm30 -a -e $tm45 ]
     then
-      tm15=$tm15b
-    fi
-
-    if [ ! -e $tm30 -a -e $tm30b ]
-    then
-      tm30=$tm30b
-    fi
-
-    if [ ! -e $tm45 -a -e $tm45b ]
-    then
-      tm45=$tm45b
-    fi
-
-      if [ -e $tm15 -a -e $tm30 -a -e $tm45 ]
-      then
-        break
-      else 
-        loop=$((loop+1))
-        sleep 20
-      fi
-      if [ $loop -ge $looplim ]
-      then
-        msg="FATAL ERROR: ABORTING after 10 minutes of waiting for old 15 minute UPP output $tm15 $tm30 $tm45"
-        err_exit $msg
-      fi
-    done
-
-    if [ -e $bgdawp_subh -a -e $tm15 -a -e $tm30 -a -e $tm45 ]
-    then
-      cat $tm45 $tm30 $tm15 $bgdawp_subh > PRSLEV.GrbF${fhr}_subh
-      wgrib2 PRSLEV.GrbF${fhr}_subh -set center 7 -grib $bgdawp_subh_combo >> $pgmout 2>> errfile
+      cat $tm45 $tm30 $tm15 $prslev_subh > PRSLEV.GrbF${fhr}_subh
+      wgrib2 PRSLEV.GrbF${fhr}_subh -set center 7 -grib $prslev_subh_combo >> $pgmout 2>> errfile
     else
-      msg="FATAL ERROR: ABORTING due to missing 15 minute UPP output $bgdawp_subh $tm15 $tm30 $tm45"
+      msg="FATAL ERROR: ABORTING due to missing 15 minute UPP output $prslev_subh $tm15 $tm30 $tm45"
       err_exit $msg
     fi 
   fi # SUB_GEN=1 test
 fi # PRSLEV test
 
 if [ -f NATLEV.GrbF${post_fhr} ]; then
-  wgrib2 NATLEV.GrbF${post_fhr} -set center 7 -grib ${bgrd3d} >>$pgmout 2>>errfile
+  wgrib2 NATLEV.GrbF${post_fhr} -set center 7 -grib ${natlev} >>$pgmout 2>>errfile
 fi
-
-if [ -f IFIFIP.GrbF${post_fhr} ]; then
-  wgrib2 IFIFIP.GrbF${post_fhr} -set center 7 -grib ${bgifi} >>$pgmout 2>>errfile
+#
+#-----------------------------------------------------------------------
+#   copy post-processed grib2 files to COMOUT
+#-----------------------------------------------------------------------
+#
+cpreq -p ${prslev} ${COMOUT}
+cpreq -p ${natlev} ${COMOUT}
+if [ ${SUBH_GEN} = 1 ]; then
+  cpreq -p ${prslev_subh_combo} ${COMOUT}
 fi
-
-if [ -f AVIATI.GrbF${post_fhr} ]; then
-  wgrib2 AVIATI.GrbF${post_fhr} -set center 7 -grib ${bgavi} >>$pgmout 2>>errfile
-fi
-
 #
 #-----------------------------------------------------------------------
 #   clean forecast netcdf files for saving space

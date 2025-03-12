@@ -10,7 +10,7 @@ suite nco_rrfs_dev_14
     edit ENVIR 'prod'
     edit QUEUE 'devhigh'
     edit QUEUE_ARCH 'dev_transfer'
-    edit OUTPUTDIR '/lfs/h3/emc/rrfstemp/ecflow/ptmp/%EMC_USER%/ecflow_rrfs/para/output/prod/today'
+    edit OUTPUTDIR '/lfs/h3/emc/eib/noscrub/ptmp/%EMC_USER%/ecflow_rrfs/para/output/prod/today'
     family 14
       edit CYC '14'
       task cycle_end
@@ -21,7 +21,7 @@ suite nco_rrfs_dev_14
           edit ECF_FILES '%PACKAGEHOME%/ecf/scripts'
           family fsm
             task jrrfs_fsm # file scanning monitor service
-              trigger :TIME >= 1450 and :TIME < 1510
+              trigger :TIME >= 1435 and :TIME < 1510
               event 1 release_det_prep_cyc
               event 2 release_det_analysis_gsi
               event 3 release_det_post_f000_00_36
@@ -133,32 +133,31 @@ suite nco_rrfs_dev_14
           family init
             family det
               edit WGF 'det'
+              edit CYCLE_TYPE 'prod'
               task jrrfs_det_process_smoke
-                edit CYCLE_TYPE 'prod'
                 trigger :TIME >= 1450 and :TIME < 1510  # 20 mins window 
               task jrrfs_det_process_radar
-                edit CYCLE_TYPE 'prod'
-                trigger :TIME >= 1445 and :TIME < 1505
+                trigger :TIME >= 1435 and :TIME < 1505
               task jrrfs_det_process_lightning
-                edit CYCLE_TYPE 'prod'
-                trigger :TIME >= 1445 and :TIME < 1505
+                trigger :TIME >= 1435 and :TIME < 1505
               task jrrfs_det_process_bufr
-                edit CYCLE_TYPE 'prod'
-                trigger :TIME >= 1445 and :TIME < 1505
+                trigger :TIME >= 1435 and :TIME < 1505
             endfamily   # det
             family enkf
               edit WGF 'enkf'
+              edit CYCLE_TYPE 'prod'
               task jrrfs_enkf_process_radar
-                trigger :TIME >= 1445 and :TIME < 1505
+                trigger :TIME >= 1435 and :TIME < 1505
               task jrrfs_enkf_process_lightning
-                trigger :TIME >= 1445 and :TIME < 1505
+                trigger :TIME >= 1435 and :TIME < 1505
               task jrrfs_enkf_process_bufr
-                trigger :TIME >= 1445 and :TIME < 1505
+                trigger :TIME >= 1435 and :TIME < 1505
             endfamily   # enkf
           endfamily	# init
           family prep
             family det
               edit WGF 'det'
+              edit CYCLE_TYPE 'prod'
               task jrrfs_det_prep_cyc
                 trigger ../../fsm/jrrfs_fsm:release_det_prep_cyc
             endfamily   # det
@@ -166,189 +165,220 @@ suite nco_rrfs_dev_14
               edit WGF 'enkf'
               edit GSI_TYPE 'OBSERVER'
               edit MEM_TYPE 'MEAN'
+              edit CYCLE_TYPE 'prod'
               task jrrfs_enkf_prep_cyc_mem001
-                edit BCGRP 'mem001'
+                edit MEMBER_NAME '001'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem001
               task jrrfs_enkf_prep_cyc_mem002
-                edit BCGRP 'mem002'
+                edit MEMBER_NAME '002'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem002
               task jrrfs_enkf_prep_cyc_mem003
-                edit BCGRP 'mem003'
+                edit MEMBER_NAME '003'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem003
               task jrrfs_enkf_prep_cyc_mem004
-                edit BCGRP 'mem004'
+                edit MEMBER_NAME '004'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem004
               task jrrfs_enkf_prep_cyc_mem005
-                edit BCGRP 'mem005'
+                edit MEMBER_NAME '005'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem005
               task jrrfs_enkf_prep_cyc_mem006
-                edit BCGRP 'mem006'
+                edit MEMBER_NAME '006'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem006
               task jrrfs_enkf_prep_cyc_mem007
-                edit BCGRP 'mem007'
+                edit MEMBER_NAME '007'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem007
               task jrrfs_enkf_prep_cyc_mem008
-                edit BCGRP 'mem008'
+                edit MEMBER_NAME '008'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem008
               task jrrfs_enkf_prep_cyc_mem009
-                edit BCGRP 'mem009'
+                edit MEMBER_NAME '009'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem009
               task jrrfs_enkf_prep_cyc_mem010
-                edit BCGRP 'mem010'
+                edit MEMBER_NAME '010'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem010
               task jrrfs_enkf_prep_cyc_mem011
-                edit BCGRP 'mem011'
+                edit MEMBER_NAME '011'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem011
               task jrrfs_enkf_prep_cyc_mem012
-                edit BCGRP 'mem012'
+                edit MEMBER_NAME '012'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem012
               task jrrfs_enkf_prep_cyc_mem013
-                edit BCGRP 'mem013'
+                edit MEMBER_NAME '013'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem013
               task jrrfs_enkf_prep_cyc_mem014
-                edit BCGRP 'mem014'
+                edit MEMBER_NAME '014'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem014
               task jrrfs_enkf_prep_cyc_mem015
-                edit BCGRP 'mem015'
+                edit MEMBER_NAME '015'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem015
               task jrrfs_enkf_prep_cyc_mem016
-                edit BCGRP 'mem016'
+                edit MEMBER_NAME '016'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem016
               task jrrfs_enkf_prep_cyc_mem017
-                edit BCGRP 'mem017'
+                edit MEMBER_NAME '017'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem017
               task jrrfs_enkf_prep_cyc_mem018
-                edit BCGRP 'mem018'
+                edit MEMBER_NAME '018'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem018
               task jrrfs_enkf_prep_cyc_mem019
-                edit BCGRP 'mem019'
+                edit MEMBER_NAME '019'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem019
               task jrrfs_enkf_prep_cyc_mem020
-                edit BCGRP 'mem020'
+                edit MEMBER_NAME '020'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem020
               task jrrfs_enkf_prep_cyc_mem021
-                edit BCGRP 'mem021'
+                edit MEMBER_NAME '021'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem021
               task jrrfs_enkf_prep_cyc_mem022
-                edit BCGRP 'mem022'
+                edit MEMBER_NAME '022'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem022
               task jrrfs_enkf_prep_cyc_mem023
-                edit BCGRP 'mem023'
+                edit MEMBER_NAME '023'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem023
               task jrrfs_enkf_prep_cyc_mem024
-                edit BCGRP 'mem024'
+                edit MEMBER_NAME '024'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem024
               task jrrfs_enkf_prep_cyc_mem025
-                edit BCGRP 'mem025'
+                edit MEMBER_NAME '025'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem025
               task jrrfs_enkf_prep_cyc_mem026
-                edit BCGRP 'mem026'
+                edit MEMBER_NAME '026'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem026
               task jrrfs_enkf_prep_cyc_mem027
-                edit BCGRP 'mem027'
+                edit MEMBER_NAME '027'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem027
               task jrrfs_enkf_prep_cyc_mem028
-                edit BCGRP 'mem028'
+                edit MEMBER_NAME '028'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem028
               task jrrfs_enkf_prep_cyc_mem029
-                edit BCGRP 'mem029'
+                edit MEMBER_NAME '029'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem029
               task jrrfs_enkf_prep_cyc_mem030
-                edit BCGRP 'mem030'
+                edit MEMBER_NAME '030'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem030
               task jrrfs_enkf_calc_ensmean
                 trigger ../det==complete and ./jrrfs_enkf_prep_cyc_mem001==complete and ./jrrfs_enkf_prep_cyc_mem002==complete and ./jrrfs_enkf_prep_cyc_mem003==complete and ./jrrfs_enkf_prep_cyc_mem004==complete and ./jrrfs_enkf_prep_cyc_mem005==complete and ./jrrfs_enkf_prep_cyc_mem006==complete and ./jrrfs_enkf_prep_cyc_mem007==complete and ./jrrfs_enkf_prep_cyc_mem008==complete and ./jrrfs_enkf_prep_cyc_mem009==complete and ./jrrfs_enkf_prep_cyc_mem010==complete and ./jrrfs_enkf_prep_cyc_mem011==complete and ./jrrfs_enkf_prep_cyc_mem012==complete and ./jrrfs_enkf_prep_cyc_mem013==complete and ./jrrfs_enkf_prep_cyc_mem014==complete and ./jrrfs_enkf_prep_cyc_mem015==complete and ./jrrfs_enkf_prep_cyc_mem016==complete and ./jrrfs_enkf_prep_cyc_mem017==complete and ./jrrfs_enkf_prep_cyc_mem018==complete and ./jrrfs_enkf_prep_cyc_mem019==complete and ./jrrfs_enkf_prep_cyc_mem020==complete and ./jrrfs_enkf_prep_cyc_mem021==complete and ./jrrfs_enkf_prep_cyc_mem022==complete and ./jrrfs_enkf_prep_cyc_mem023==complete and ./jrrfs_enkf_prep_cyc_mem024==complete and ./jrrfs_enkf_prep_cyc_mem025==complete and ./jrrfs_enkf_prep_cyc_mem026==complete and ./jrrfs_enkf_prep_cyc_mem027==complete and ./jrrfs_enkf_prep_cyc_mem028==complete and ./jrrfs_enkf_prep_cyc_mem029==complete and ./jrrfs_enkf_prep_cyc_mem030==complete
               task jrrfs_enkf_observer_gsi_ensmean
                 trigger ./jrrfs_enkf_calc_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem001
-                edit BCGRP 'mem001'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '001'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem002
-                edit BCGRP 'mem002'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '002'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem003
-                edit BCGRP 'mem003'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '003'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem004
-                edit BCGRP 'mem004'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '004'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem005
-                edit BCGRP 'mem005'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '005'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem006
-                edit BCGRP 'mem006'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '006'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem007
-                edit BCGRP 'mem007'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '007'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem008
-                edit BCGRP 'mem008'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '008'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem009
-                edit BCGRP 'mem009'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '009'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem010
-                edit BCGRP 'mem010'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '010'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem011
-                edit BCGRP 'mem011'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '011'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem012
-                edit BCGRP 'mem012'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '012'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem013
-                edit BCGRP 'mem013'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '013'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem014
-                edit BCGRP 'mem014'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '014'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem015
-                edit BCGRP 'mem015'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '015'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem016
-                edit BCGRP 'mem016'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '016'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem017
-                edit BCGRP 'mem017'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '017'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem018
-                edit BCGRP 'mem018'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '018'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem019
-                edit BCGRP 'mem019'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '019'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem020
-                edit BCGRP 'mem020'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '020'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem021
-                edit BCGRP 'mem021'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '021'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem022
-                edit BCGRP 'mem022'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '022'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem023
-                edit BCGRP 'mem023'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '023'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem024
-                edit BCGRP 'mem024'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '024'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem025
-                edit BCGRP 'mem025'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '025'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem026
-                edit BCGRP 'mem026'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '026'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem027
-                edit BCGRP 'mem027'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '027'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem028
-                edit BCGRP 'mem028'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '028'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem029
-                edit BCGRP 'mem029'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '029'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem030
-                edit BCGRP 'mem030'
+                edit MEM_TYPE 'MEMBER'
+                edit MEMBER_NAME '030'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
             endfamily   # enkf
 
@@ -358,6 +388,7 @@ suite nco_rrfs_dev_14
               edit WGF 'det'
               edit MEM_TYPE 'MEMBER'
               edit GSI_TYPE 'ANALYSIS'
+              edit CYCLE_TYPE 'prod'
               task jrrfs_det_analysis_gsi
                 trigger ../../prep/det/jrrfs_det_prep_cyc==complete and ../../fsm/jrrfs_fsm:release_det_analysis_gsi
               task jrrfs_det_update_lbc_soil
@@ -369,7 +400,7 @@ suite nco_rrfs_dev_14
             endfamily   # det
             family enkf
               edit WGF 'enkf'
-              trigger ./det/jrrfs_det_analysis_gsi==complete
+              edit CYCLE_TYPE 'prod'
               task jrrfs_enkf_updt
                 trigger ../../prep/enkf==complete
               task jrrfs_enkf_radarref
@@ -469,6 +500,7 @@ suite nco_rrfs_dev_14
           family forecast
             family det
               edit WGF 'det'
+              edit CYCLE_TYPE 'prod'
               task jrrfs_det_forecast
                 trigger ../../analysis/det/jrrfs_det_analysis_nonvarcld==complete
               task jrrfs_det_save_restart_f1
@@ -480,185 +512,216 @@ suite nco_rrfs_dev_14
             endfamily   # det
             family enkf
               edit WGF 'enkf'
+              edit CYCLE_TYPE 'prod'
               task jrrfs_enkf_forecast_mem001
                 edit MEMBER_NAME '001'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem001==complete
               task jrrfs_enkf_save_restart_mem001_f1
                 edit MEMBER_NAME '001'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem001==complete
               task jrrfs_enkf_forecast_mem002
                 edit MEMBER_NAME '002'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem002==complete
               task jrrfs_enkf_save_restart_mem002_f1
                 edit MEMBER_NAME '002'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem002==complete
               task jrrfs_enkf_forecast_mem003
                 edit MEMBER_NAME '003'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem003==complete
               task jrrfs_enkf_save_restart_mem003_f1
                 edit MEMBER_NAME '003'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem003==complete
               task jrrfs_enkf_forecast_mem004
                 edit MEMBER_NAME '004'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem004==complete
               task jrrfs_enkf_save_restart_mem004_f1
                 edit MEMBER_NAME '004'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem004==complete
               task jrrfs_enkf_forecast_mem005
                 edit MEMBER_NAME '005'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem005==complete
               task jrrfs_enkf_save_restart_mem005_f1
                 edit MEMBER_NAME '005'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem005==complete
               task jrrfs_enkf_forecast_mem006
                 edit MEMBER_NAME '006'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem006==complete
               task jrrfs_enkf_save_restart_mem006_f1
                 edit MEMBER_NAME '006'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem006==complete
               task jrrfs_enkf_forecast_mem007
                 edit MEMBER_NAME '007'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem007==complete
               task jrrfs_enkf_save_restart_mem007_f1
                 edit MEMBER_NAME '007'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem007==complete
               task jrrfs_enkf_forecast_mem008
                 edit MEMBER_NAME '008'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem008==complete
               task jrrfs_enkf_save_restart_mem008_f1
                 edit MEMBER_NAME '008'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem008==complete
               task jrrfs_enkf_forecast_mem009
                 edit MEMBER_NAME '009'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem009==complete
               task jrrfs_enkf_save_restart_mem009_f1
                 edit MEMBER_NAME '009'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem009==complete
               task jrrfs_enkf_forecast_mem010
                 edit MEMBER_NAME '010'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem010==complete
               task jrrfs_enkf_save_restart_mem010_f1
                 edit MEMBER_NAME '010'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem010==complete
               task jrrfs_enkf_forecast_mem011
                 edit MEMBER_NAME '011'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem011==complete
               task jrrfs_enkf_save_restart_mem011_f1
                 edit MEMBER_NAME '011'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem011==complete
               task jrrfs_enkf_forecast_mem012
                 edit MEMBER_NAME '012'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem012==complete
               task jrrfs_enkf_save_restart_mem012_f1
                 edit MEMBER_NAME '012'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem012==complete
               task jrrfs_enkf_forecast_mem013
                 edit MEMBER_NAME '013'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem013==complete
               task jrrfs_enkf_save_restart_mem013_f1
                 edit MEMBER_NAME '013'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem013==complete
               task jrrfs_enkf_forecast_mem014
                 edit MEMBER_NAME '014'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem014==complete
               task jrrfs_enkf_save_restart_mem014_f1
                 edit MEMBER_NAME '014'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem014==complete
               task jrrfs_enkf_forecast_mem015
                 edit MEMBER_NAME '015'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem015==complete
               task jrrfs_enkf_save_restart_mem015_f1
                 edit MEMBER_NAME '015'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem015==complete
               task jrrfs_enkf_forecast_mem016
                 edit MEMBER_NAME '016'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem016==complete
               task jrrfs_enkf_save_restart_mem016_f1
                 edit MEMBER_NAME '016'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem016==complete
               task jrrfs_enkf_forecast_mem017
                 edit MEMBER_NAME '017'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem017==complete
               task jrrfs_enkf_save_restart_mem017_f1
                 edit MEMBER_NAME '017'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem017==complete
               task jrrfs_enkf_forecast_mem018
                 edit MEMBER_NAME '018'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem018==complete
               task jrrfs_enkf_save_restart_mem018_f1
                 edit MEMBER_NAME '018'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem018==complete
               task jrrfs_enkf_forecast_mem019
                 edit MEMBER_NAME '019'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem019==complete
               task jrrfs_enkf_save_restart_mem019_f1
                 edit MEMBER_NAME '019'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem019==complete
               task jrrfs_enkf_forecast_mem020
                 edit MEMBER_NAME '020'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem020==complete
               task jrrfs_enkf_save_restart_mem020_f1
                 edit MEMBER_NAME '020'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem020==complete
               task jrrfs_enkf_forecast_mem021
                 edit MEMBER_NAME '021'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem021==complete
               task jrrfs_enkf_save_restart_mem021_f1
                 edit MEMBER_NAME '021'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem021==complete
               task jrrfs_enkf_forecast_mem022
                 edit MEMBER_NAME '022'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem022==complete
               task jrrfs_enkf_save_restart_mem022_f1
                 edit MEMBER_NAME '022'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem022==complete
               task jrrfs_enkf_forecast_mem023
                 edit MEMBER_NAME '023'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem023==complete
               task jrrfs_enkf_save_restart_mem023_f1
                 edit MEMBER_NAME '023'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem023==complete
               task jrrfs_enkf_forecast_mem024
                 edit MEMBER_NAME '024'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem024==complete
               task jrrfs_enkf_save_restart_mem024_f1
                 edit MEMBER_NAME '024'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem024==complete
               task jrrfs_enkf_forecast_mem025
                 edit MEMBER_NAME '025'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem025==complete
               task jrrfs_enkf_save_restart_mem025_f1
                 edit MEMBER_NAME '025'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem025==complete
               task jrrfs_enkf_forecast_mem026
                 edit MEMBER_NAME '026'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem026==complete
               task jrrfs_enkf_save_restart_mem026_f1
                 edit MEMBER_NAME '026'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem026==complete
               task jrrfs_enkf_forecast_mem027
                 edit MEMBER_NAME '027'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem027==complete
               task jrrfs_enkf_save_restart_mem027_f1
                 edit MEMBER_NAME '027'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem027==complete
               task jrrfs_enkf_forecast_mem028
                 edit MEMBER_NAME '028'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem028==complete
               task jrrfs_enkf_save_restart_mem028_f1
                 edit MEMBER_NAME '028'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem028==complete
               task jrrfs_enkf_forecast_mem029
                 edit MEMBER_NAME '029'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem029==complete
               task jrrfs_enkf_save_restart_mem029_f1
                 edit MEMBER_NAME '029'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem029==complete
               task jrrfs_enkf_forecast_mem030
                 edit MEMBER_NAME '030'
                 trigger ../../analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem030==complete
               task jrrfs_enkf_save_restart_mem030_f1
                 edit MEMBER_NAME '030'
+                edit FHR '001'
                 trigger ./jrrfs_enkf_forecast_mem030==complete
 
 
@@ -682,7 +745,7 @@ suite nco_rrfs_dev_14
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f000_45_00
               task jrrfs_det_post_f001_00_00
                 edit FHR '001'
-                trigger ../../fsm/jrrfs_fsm:release_det_post_f001_00_00
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f001_00_00 and ./jrrfs_det_post_f000_15_00==complete and ./jrrfs_det_post_f000_30_00==complete and ./jrrfs_det_post_f000_45_00==complete
               task jrrfs_det_post_f001_15_00
                 edit FHR '001'
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f001_15_00
@@ -694,7 +757,7 @@ suite nco_rrfs_dev_14
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f001_45_00
               task jrrfs_det_post_f002_00_00
                 edit FHR '002'
-                trigger ../../fsm/jrrfs_fsm:release_det_post_f002_00_00
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f002_00_00 and ./jrrfs_det_post_f001_15_00==complete and ./jrrfs_det_post_f001_30_00==complete and ./jrrfs_det_post_f001_45_00==complete
               task jrrfs_det_post_f002_15_00
                 edit FHR '002'
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f002_15_00
@@ -706,7 +769,7 @@ suite nco_rrfs_dev_14
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f002_45_00
               task jrrfs_det_post_f003_00_00
                 edit FHR '003'
-                trigger ../../fsm/jrrfs_fsm:release_det_post_f003_00_00
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f003_00_00 and ./jrrfs_det_post_f002_15_00==complete and ./jrrfs_det_post_f002_30_00==complete and ./jrrfs_det_post_f002_45_00==complete
               task jrrfs_det_post_f003_15_00
                 edit FHR '003'
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f003_15_00
@@ -718,7 +781,7 @@ suite nco_rrfs_dev_14
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f003_45_00
               task jrrfs_det_post_f004_00_00
                 edit FHR '004'
-                trigger ../../fsm/jrrfs_fsm:release_det_post_f004_00_00
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f004_00_00 and ./jrrfs_det_post_f003_15_00==complete and ./jrrfs_det_post_f003_30_00==complete and ./jrrfs_det_post_f003_45_00==complete
               task jrrfs_det_post_f004_15_00
                 edit FHR '004'
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f004_15_00
@@ -730,7 +793,7 @@ suite nco_rrfs_dev_14
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f004_45_00
               task jrrfs_det_post_f005_00_00
                 edit FHR '005'
-                trigger ../../fsm/jrrfs_fsm:release_det_post_f005_00_00
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f005_00_00 and ./jrrfs_det_post_f004_15_00==complete and ./jrrfs_det_post_f004_30_00==complete and ./jrrfs_det_post_f004_45_00==complete
               task jrrfs_det_post_f005_15_00
                 edit FHR '005'
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f005_15_00
@@ -742,7 +805,7 @@ suite nco_rrfs_dev_14
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f005_45_00
               task jrrfs_det_post_f006_00_00
                 edit FHR '006'
-                trigger ../../fsm/jrrfs_fsm:release_det_post_f006_00_00
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f006_00_00 and ./jrrfs_det_post_f005_15_00==complete and ./jrrfs_det_post_f005_30_00==complete and ./jrrfs_det_post_f005_45_00==complete
               task jrrfs_det_post_f006_15_00
                 edit FHR '006'
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f006_15_00
@@ -754,7 +817,7 @@ suite nco_rrfs_dev_14
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f006_45_00
               task jrrfs_det_post_f007_00_00
                 edit FHR '007'
-                trigger ../../fsm/jrrfs_fsm:release_det_post_f007_00_00
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f007_00_00 and ./jrrfs_det_post_f006_15_00==complete and ./jrrfs_det_post_f006_30_00==complete and ./jrrfs_det_post_f006_45_00==complete
               task jrrfs_det_post_f007_15_00
                 edit FHR '007'
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f007_15_00
@@ -766,7 +829,7 @@ suite nco_rrfs_dev_14
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f007_45_00
               task jrrfs_det_post_f008_00_00
                 edit FHR '008'
-                trigger ../../fsm/jrrfs_fsm:release_det_post_f008_00_00
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f008_00_00 and ./jrrfs_det_post_f007_15_00==complete and ./jrrfs_det_post_f007_30_00==complete and ./jrrfs_det_post_f007_45_00==complete
               task jrrfs_det_post_f008_15_00
                 edit FHR '008'
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f008_15_00
@@ -778,7 +841,7 @@ suite nco_rrfs_dev_14
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f008_45_00
               task jrrfs_det_post_f009_00_00
                 edit FHR '009'
-                trigger ../../fsm/jrrfs_fsm:release_det_post_f009_00_00
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f009_00_00 and ./jrrfs_det_post_f008_15_00==complete and ./jrrfs_det_post_f008_30_00==complete and ./jrrfs_det_post_f008_45_00==complete
               task jrrfs_det_post_f009_15_00
                 edit FHR '009'
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f009_15_00
@@ -790,7 +853,7 @@ suite nco_rrfs_dev_14
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f009_45_00
               task jrrfs_det_post_f010_00_00
                 edit FHR '010'
-                trigger ../../fsm/jrrfs_fsm:release_det_post_f010_00_00
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f010_00_00 and ./jrrfs_det_post_f009_15_00==complete and ./jrrfs_det_post_f009_30_00==complete and ./jrrfs_det_post_f009_45_00==complete
               task jrrfs_det_post_f010_15_00
                 edit FHR '010'
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f010_15_00
@@ -802,7 +865,7 @@ suite nco_rrfs_dev_14
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f010_45_00
               task jrrfs_det_post_f011_00_00
                 edit FHR '011'
-                trigger ../../fsm/jrrfs_fsm:release_det_post_f011_00_00
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f011_00_00 and ./jrrfs_det_post_f010_15_00==complete and ./jrrfs_det_post_f010_30_00==complete and ./jrrfs_det_post_f010_45_00==complete
               task jrrfs_det_post_f011_15_00
                 edit FHR '011'
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f011_15_00
@@ -814,7 +877,7 @@ suite nco_rrfs_dev_14
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f011_45_00
               task jrrfs_det_post_f012_00_00
                 edit FHR '012'
-                trigger ../../fsm/jrrfs_fsm:release_det_post_f012_00_00
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f012_00_00 and ./jrrfs_det_post_f011_15_00==complete and ./jrrfs_det_post_f011_30_00==complete and ./jrrfs_det_post_f011_45_00==complete
               task jrrfs_det_post_f012_15_00
                 edit FHR '012'
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f012_15_00
@@ -826,7 +889,7 @@ suite nco_rrfs_dev_14
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f012_45_00
               task jrrfs_det_post_f013_00_00
                 edit FHR '013'
-                trigger ../../fsm/jrrfs_fsm:release_det_post_f013_00_00
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f013_00_00 and ./jrrfs_det_post_f012_15_00==complete and ./jrrfs_det_post_f012_30_00==complete and ./jrrfs_det_post_f012_45_00==complete
               task jrrfs_det_post_f013_15_00
                 edit FHR '013'
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f013_15_00
@@ -838,7 +901,7 @@ suite nco_rrfs_dev_14
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f013_45_00
               task jrrfs_det_post_f014_00_00
                 edit FHR '014'
-                trigger ../../fsm/jrrfs_fsm:release_det_post_f014_00_00
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f014_00_00 and ./jrrfs_det_post_f013_15_00==complete and ./jrrfs_det_post_f013_30_00==complete and ./jrrfs_det_post_f013_45_00==complete
               task jrrfs_det_post_f014_15_00
                 edit FHR '014'
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f014_15_00
@@ -850,7 +913,7 @@ suite nco_rrfs_dev_14
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f014_45_00
               task jrrfs_det_post_f015_00_00
                 edit FHR '015'
-                trigger ../../fsm/jrrfs_fsm:release_det_post_f015_00_00
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f015_00_00 and ./jrrfs_det_post_f014_15_00==complete and ./jrrfs_det_post_f014_30_00==complete and ./jrrfs_det_post_f014_45_00==complete
               task jrrfs_det_post_f015_15_00
                 edit FHR '015'
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f015_15_00
@@ -862,7 +925,7 @@ suite nco_rrfs_dev_14
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f015_45_00
               task jrrfs_det_post_f016_00_00
                 edit FHR '016'
-                trigger ../../fsm/jrrfs_fsm:release_det_post_f016_00_00
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f016_00_00 and ./jrrfs_det_post_f015_15_00==complete and ./jrrfs_det_post_f015_30_00==complete and ./jrrfs_det_post_f015_45_00==complete
               task jrrfs_det_post_f016_15_00
                 edit FHR '016'
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f016_15_00
@@ -874,7 +937,7 @@ suite nco_rrfs_dev_14
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f016_45_00
               task jrrfs_det_post_f017_00_00
                 edit FHR '017'
-                trigger ../../fsm/jrrfs_fsm:release_det_post_f017_00_00
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f017_00_00 and ./jrrfs_det_post_f016_15_00==complete and ./jrrfs_det_post_f016_30_00==complete and ./jrrfs_det_post_f016_45_00==complete
               task jrrfs_det_post_f017_15_00
                 edit FHR '017'
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f017_15_00
@@ -886,7 +949,7 @@ suite nco_rrfs_dev_14
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f017_45_00
               task jrrfs_det_post_f018_00_00
                 edit FHR '018'
-                trigger ../../fsm/jrrfs_fsm:release_det_post_f018_00_00
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f018_00_00 and ./jrrfs_det_post_f017_15_00==complete and ./jrrfs_det_post_f017_30_00==complete and ./jrrfs_det_post_f017_45_00==complete
 
             endfamily   # det
 
@@ -897,219 +960,57 @@ suite nco_rrfs_dev_14
               task jrrfs_det_prdgen_f000_00_36
                 edit FHR '000'
                 trigger ../../post/det/jrrfs_det_post_f000_00_36==complete
-              task jrrfs_det_prdgen_f000_15_00
-                edit FHR '000'
-                trigger ../../post/det/jrrfs_det_post_f000_15_00==complete
-              task jrrfs_det_prdgen_f000_30_00
-                edit FHR '000'
-                trigger ../../post/det/jrrfs_det_post_f000_30_00==complete
-              task jrrfs_det_prdgen_f000_45_00
-                edit FHR '000'
-                trigger ../../post/det/jrrfs_det_post_f000_45_00==complete
               task jrrfs_det_prdgen_f001_00_00
                 edit FHR '001'
                 trigger ../../post/det/jrrfs_det_post_f001_00_00==complete
-              task jrrfs_det_prdgen_f001_15_00
-                edit FHR '001'
-                trigger ../../post/det/jrrfs_det_post_f001_15_00==complete
-              task jrrfs_det_prdgen_f001_30_00
-                edit FHR '001'
-                trigger ../../post/det/jrrfs_det_post_f001_30_00==complete
-              task jrrfs_det_prdgen_f001_45_00
-                edit FHR '001'
-                trigger ../../post/det/jrrfs_det_post_f001_45_00==complete
               task jrrfs_det_prdgen_f002_00_00
                 edit FHR '002'
                 trigger ../../post/det/jrrfs_det_post_f002_00_00==complete
-              task jrrfs_det_prdgen_f002_15_00
-                edit FHR '002'
-                trigger ../../post/det/jrrfs_det_post_f002_15_00==complete
-              task jrrfs_det_prdgen_f002_30_00
-                edit FHR '002'
-                trigger ../../post/det/jrrfs_det_post_f002_30_00==complete
-              task jrrfs_det_prdgen_f002_45_00
-                edit FHR '002'
-                trigger ../../post/det/jrrfs_det_post_f002_45_00==complete
               task jrrfs_det_prdgen_f003_00_00
                 edit FHR '003'
                 trigger ../../post/det/jrrfs_det_post_f003_00_00==complete
-              task jrrfs_det_prdgen_f003_15_00
-                edit FHR '003'
-                trigger ../../post/det/jrrfs_det_post_f003_15_00==complete
-              task jrrfs_det_prdgen_f003_30_00
-                edit FHR '003'
-                trigger ../../post/det/jrrfs_det_post_f003_30_00==complete
-              task jrrfs_det_prdgen_f003_45_00
-                edit FHR '003'
-                trigger ../../post/det/jrrfs_det_post_f003_45_00==complete
               task jrrfs_det_prdgen_f004_00_00
                 edit FHR '004'
                 trigger ../../post/det/jrrfs_det_post_f004_00_00==complete
-              task jrrfs_det_prdgen_f004_15_00
-                edit FHR '004'
-                trigger ../../post/det/jrrfs_det_post_f004_15_00==complete
-              task jrrfs_det_prdgen_f004_30_00
-                edit FHR '004'
-                trigger ../../post/det/jrrfs_det_post_f004_30_00==complete
-              task jrrfs_det_prdgen_f004_45_00
-                edit FHR '004'
-                trigger ../../post/det/jrrfs_det_post_f004_45_00==complete
               task jrrfs_det_prdgen_f005_00_00
                 edit FHR '005'
                 trigger ../../post/det/jrrfs_det_post_f005_00_00==complete
-              task jrrfs_det_prdgen_f005_15_00
-                edit FHR '005'
-                trigger ../../post/det/jrrfs_det_post_f005_15_00==complete
-              task jrrfs_det_prdgen_f005_30_00
-                edit FHR '005'
-                trigger ../../post/det/jrrfs_det_post_f005_30_00==complete
-              task jrrfs_det_prdgen_f005_45_00
-                edit FHR '005'
-                trigger ../../post/det/jrrfs_det_post_f005_45_00==complete
               task jrrfs_det_prdgen_f006_00_00
                 edit FHR '006'
                 trigger ../../post/det/jrrfs_det_post_f006_00_00==complete
-              task jrrfs_det_prdgen_f006_15_00
-                edit FHR '006'
-                trigger ../../post/det/jrrfs_det_post_f006_15_00==complete
-              task jrrfs_det_prdgen_f006_30_00
-                edit FHR '006'
-                trigger ../../post/det/jrrfs_det_post_f006_30_00==complete
-              task jrrfs_det_prdgen_f006_45_00
-                edit FHR '006'
-                trigger ../../post/det/jrrfs_det_post_f006_45_00==complete
               task jrrfs_det_prdgen_f007_00_00
                 edit FHR '007'
                 trigger ../../post/det/jrrfs_det_post_f007_00_00==complete
-              task jrrfs_det_prdgen_f007_15_00
-                edit FHR '007'
-                trigger ../../post/det/jrrfs_det_post_f007_15_00==complete
-              task jrrfs_det_prdgen_f007_30_00
-                edit FHR '007'
-                trigger ../../post/det/jrrfs_det_post_f007_30_00==complete
-              task jrrfs_det_prdgen_f007_45_00
-                edit FHR '007'
-                trigger ../../post/det/jrrfs_det_post_f007_45_00==complete
               task jrrfs_det_prdgen_f008_00_00
                 edit FHR '008'
                 trigger ../../post/det/jrrfs_det_post_f008_00_00==complete
-              task jrrfs_det_prdgen_f008_15_00
-                edit FHR '008'
-                trigger ../../post/det/jrrfs_det_post_f008_15_00==complete
-              task jrrfs_det_prdgen_f008_30_00
-                edit FHR '008'
-                trigger ../../post/det/jrrfs_det_post_f008_30_00==complete
-              task jrrfs_det_prdgen_f008_45_00
-                edit FHR '008'
-                trigger ../../post/det/jrrfs_det_post_f008_45_00==complete
               task jrrfs_det_prdgen_f009_00_00
                 edit FHR '009'
                 trigger ../../post/det/jrrfs_det_post_f009_00_00==complete
-              task jrrfs_det_prdgen_f009_15_00
-                edit FHR '009'
-                trigger ../../post/det/jrrfs_det_post_f009_15_00==complete
-              task jrrfs_det_prdgen_f009_30_00
-                edit FHR '009'
-                trigger ../../post/det/jrrfs_det_post_f009_30_00==complete
-              task jrrfs_det_prdgen_f009_45_00
-                edit FHR '009'
-                trigger ../../post/det/jrrfs_det_post_f009_45_00==complete
               task jrrfs_det_prdgen_f010_00_00
                 edit FHR '010'
                 trigger ../../post/det/jrrfs_det_post_f010_00_00==complete
-              task jrrfs_det_prdgen_f010_15_00
-                edit FHR '010'
-                trigger ../../post/det/jrrfs_det_post_f010_15_00==complete
-              task jrrfs_det_prdgen_f010_30_00
-                edit FHR '010'
-                trigger ../../post/det/jrrfs_det_post_f010_30_00==complete
-              task jrrfs_det_prdgen_f010_45_00
-                edit FHR '010'
-                trigger ../../post/det/jrrfs_det_post_f010_45_00==complete
               task jrrfs_det_prdgen_f011_00_00
                 edit FHR '011'
                 trigger ../../post/det/jrrfs_det_post_f011_00_00==complete
-              task jrrfs_det_prdgen_f011_15_00
-                edit FHR '011'
-                trigger ../../post/det/jrrfs_det_post_f011_15_00==complete
-              task jrrfs_det_prdgen_f011_30_00
-                edit FHR '011'
-                trigger ../../post/det/jrrfs_det_post_f011_30_00==complete
-              task jrrfs_det_prdgen_f011_45_00
-                edit FHR '011'
-                trigger ../../post/det/jrrfs_det_post_f011_45_00==complete
               task jrrfs_det_prdgen_f012_00_00
                 edit FHR '012'
                 trigger ../../post/det/jrrfs_det_post_f012_00_00==complete
-              task jrrfs_det_prdgen_f012_15_00
-                edit FHR '012'
-                trigger ../../post/det/jrrfs_det_post_f012_15_00==complete
-              task jrrfs_det_prdgen_f012_30_00
-                edit FHR '012'
-                trigger ../../post/det/jrrfs_det_post_f012_30_00==complete
-              task jrrfs_det_prdgen_f012_45_00
-                edit FHR '012'
-                trigger ../../post/det/jrrfs_det_post_f012_45_00==complete
               task jrrfs_det_prdgen_f013_00_00
                 edit FHR '013'
                 trigger ../../post/det/jrrfs_det_post_f013_00_00==complete
-              task jrrfs_det_prdgen_f013_15_00
-                edit FHR '013'
-                trigger ../../post/det/jrrfs_det_post_f013_15_00==complete
-              task jrrfs_det_prdgen_f013_30_00
-                edit FHR '013'
-                trigger ../../post/det/jrrfs_det_post_f013_30_00==complete
-              task jrrfs_det_prdgen_f013_45_00
-                edit FHR '013'
-                trigger ../../post/det/jrrfs_det_post_f013_45_00==complete
               task jrrfs_det_prdgen_f014_00_00
                 edit FHR '014'
                 trigger ../../post/det/jrrfs_det_post_f014_00_00==complete
-              task jrrfs_det_prdgen_f014_15_00
-                edit FHR '014'
-                trigger ../../post/det/jrrfs_det_post_f014_15_00==complete
-              task jrrfs_det_prdgen_f014_30_00
-                edit FHR '014'
-                trigger ../../post/det/jrrfs_det_post_f014_30_00==complete
-              task jrrfs_det_prdgen_f014_45_00
-                edit FHR '014'
-                trigger ../../post/det/jrrfs_det_post_f014_45_00==complete
               task jrrfs_det_prdgen_f015_00_00
                 edit FHR '015'
                 trigger ../../post/det/jrrfs_det_post_f015_00_00==complete
-              task jrrfs_det_prdgen_f015_15_00
-                edit FHR '015'
-                trigger ../../post/det/jrrfs_det_post_f015_15_00==complete
-              task jrrfs_det_prdgen_f015_30_00
-                edit FHR '015'
-                trigger ../../post/det/jrrfs_det_post_f015_30_00==complete
-              task jrrfs_det_prdgen_f015_45_00
-                edit FHR '015'
-                trigger ../../post/det/jrrfs_det_post_f015_45_00==complete
               task jrrfs_det_prdgen_f016_00_00
                 edit FHR '016'
                 trigger ../../post/det/jrrfs_det_post_f016_00_00==complete
-              task jrrfs_det_prdgen_f016_15_00
-                edit FHR '016'
-                trigger ../../post/det/jrrfs_det_post_f016_15_00==complete
-              task jrrfs_det_prdgen_f016_30_00
-                edit FHR '016'
-                trigger ../../post/det/jrrfs_det_post_f016_30_00==complete
-              task jrrfs_det_prdgen_f016_45_00
-                edit FHR '016'
-                trigger ../../post/det/jrrfs_det_post_f016_45_00==complete
               task jrrfs_det_prdgen_f017_00_00
                 edit FHR '017'
                 trigger ../../post/det/jrrfs_det_post_f017_00_00==complete
-              task jrrfs_det_prdgen_f017_15_00
-                edit FHR '017'
-                trigger ../../post/det/jrrfs_det_post_f017_15_00==complete
-              task jrrfs_det_prdgen_f017_30_00
-                edit FHR '017'
-                trigger ../../post/det/jrrfs_det_post_f017_30_00==complete
-              task jrrfs_det_prdgen_f017_45_00
-                edit FHR '017'
-                trigger ../../post/det/jrrfs_det_post_f017_45_00==complete
               task jrrfs_det_prdgen_f018_00_00
                 edit FHR '018'
                 trigger ../../post/det/jrrfs_det_post_f018_00_00==complete

@@ -73,7 +73,6 @@ export OMP_STACKSIZE=2048m
 #
 #-----------------------------------------------------------------------
 #
-ulimit -s unlimited
 ulimit -a
 APRUN="time"
 #
@@ -104,9 +103,9 @@ cpreq -p ${TOPO_DIR}/gmted2010.30sec.int fort.235
 #
 #-----------------------------------------------------------------------
 #
-# Set the maximum value of halos in GRID_DIR
+# Set the maximum value of halos in umbrella_ics_dir
 mosaic_fn="${CRES}${DOT_OR_USCORE}mosaic.halo${NHW}.nc"
-mosaic_fp="$FIXLAM/${mosaic_fn}"
+mosaic_fp="${FIXLAM}/${mosaic_fn}"
 
 grid_fn=$( get_charvar_from_netcdf "${mosaic_fp}" "gridfiles" )
 grid_fp="${FIXLAM}/${grid_fn}"
@@ -155,7 +154,7 @@ cat "${input_redirect_fn}"
 #
 #   oro.${CRES}.tile7.nc
 #
-# and will place it in OROG_DIR.  Note that this file will include
+# and will place it in umbrella_ics_data.  Note that this file will include
 # orography for a wide NHW cells around tile 7 (regional domain).
 #
 #-----------------------------------------------------------------------
@@ -228,7 +227,7 @@ EOF
 
   mv "${CRES}${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc" \
      "${CRES}${DOT_OR_USCORE}oro_data_ls.tile${TILE_RGNL}.halo${NH0}.nc" \
-     "${OROG_DIR}"
+     "${umbrella_ics_data}"
 fi
 #
 #-----------------------------------------------------------------------
@@ -366,7 +365,7 @@ filtered_orog_fn_orig=$( basename "${filtered_orog_fp}" )
 filtered_orog_fn="${filtered_orog_fn_prefix}.${fn_suffix_with_halo}"
 filtered_orog_fp=$( dirname "${filtered_orog_fp}" )"/${filtered_orog_fn}"
 mv "${filtered_orog_fn_orig}" "${filtered_orog_fn}"
-cp "${filtered_orog_fp}" "${OROG_DIR}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NHW}.nc"
+cp "${filtered_orog_fp}" "${umbrella_ics_data}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NHW}.nc"
 
 cd ${DATA}
 
@@ -390,7 +389,7 @@ print_info_msg "Filtering of orography complete."
 unshaved_fp="${filtered_orog_fp}"
 #
 # We perform the work in shave_dir, so change location to that directory.
-# Once it is complete, we move the resultant file from shave_dir to OROG_DIR.
+# Once it is complete, we move the resultant file from shave_dir to umbrella_ics_data.
 #
 cd "${DATA}/shave_tmp"
 #
@@ -415,7 +414,7 @@ for halo_num in "${halo_num_list[@]}"; do
   $APRUN ${EXECrrfs}/$pgm < ${nml_fn} >>$pgmout 2>${DATA}/raw_topo/tmp/errfile
   export err=$?; err_chk
   mv ${DATA}/raw_topo/tmp/errfile ${DATA}/raw_topo/tmp/errfile_shave_${halo_num}
-  mv ${shaved_fp} ${OROG_DIR}
+  mv ${shaved_fp} ${umbrella_ics_data}
 done
 
 cd ${DATA}

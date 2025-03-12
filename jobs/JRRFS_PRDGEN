@@ -1,8 +1,26 @@
 #!/bin/bash
 
+date
+export PS4='+ $SECONDS + ' 
+set -xue
+
 #-----------------------------------------------------------------------
 # RRFS Product Generation
 #-----------------------------------------------------------------------
+export pid=${pid:-$$}
+export outid=${outid:-"LL$job"}
+export RUN=${RUN:-rrfs}
+export fhr=${FHR:-}
+
+export DATA=${DATA:-${DATAROOT}/${jobid}}
+mkdir -p ${DATA}
+cd ${DATA}
+
+#-----------------------------------------------------------------------
+# Source the variable definitions file
+#-----------------------------------------------------------------------
+
+. ${HOMErrfs}/ush/rrfs_nco_config.sh
 
 #-----------------------------------------------------------------------
 # Specify Execution Areas
@@ -12,19 +30,14 @@ export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
-
 export FIX_UPP=${FIXrrfs}/upp
 export FIXprdgen=${FIXrrfs}/prdgen
 
 #-----------------------------------------------------------------------
-# Source the variable definitions file and the bash utility functions.
+# Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-
-date
-export PS4='+ $SECONDS + '
 
 #-----------------------------------------------------------------------
 # Save current shell options (in a global array).  Then set new options
@@ -57,50 +70,21 @@ files corresponding to a specified forecast hour.
 ========================================================================"
 
 #-----------------------------------------------------------------------
-# Obtain unique process id (pid) and create the run directory (DATA).
+# Define COM directories.
 #-----------------------------------------------------------------------
 
-export pid=${pid:-$$}
-export RUN=${RUN:-rrfs}
-
-if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  export ENSMEM_INDX=${ENSMEM_INDX:-${MEMBER_NAME}}
-  export mem_num=m$(echo "${ENSMEM_INDX}")
-fi
-
-export CYCLE_TYPE=${CYCLE_TYPE:-prod}
-
-if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
-  export jobid=${taskid}
+if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
+  export ENSMEM_INDX=${MEMBER_NAME}
 else
-  if [ "${CYCLE_TYPE}" = "spinup" ]; then
-    jobid=${RUN}_post_spinup_${envir}_${cyc}_f${fhr}
-  else
-    if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-      jobid=${RUN}_post_${mem_num}_${envir}_${cyc}_f${fhr}
-    else
-      if [ ${WGF} == "firewx" ]; then
-        jobid=${WGF}_post_${envir}_${cyc}_f${fhr}
-      else
-        jobid=${RUN}_post_${envir}_${cyc}_f${fhr}
-      fi
-    fi
-  fi
+  export ENSMEM_INDX=""
 fi
-
-export DATA=${DATA:-${DATAROOT}/${jobid}}
-mkdir -p ${DATA}
-cd ${DATA}
-
-#-----------------------------------------------------------------------
-# Define COM directories
-#-----------------------------------------------------------------------
+export mem_num=m$(echo "${ENSMEM_INDX}")
+export CYCLE_TYPE=${CYCLE_TYPE:-prod}
+export DO_ENSFCST=${DO_ENSFCST:-}
 
 export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
-fi
-if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+# Prdgen jobs do not run for spinup cycles
+if [ "${DO_ENSFCST}" = "TRUE" ]; then
   export COMOUT=${COMOUT}/${mem_num}
 fi
 mkdir -p "${COMOUT}"

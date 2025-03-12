@@ -49,14 +49,135 @@ hour zero).
 #
 #-----------------------------------------------------------------------
 #
+# Analyze configuration parameters.
+#
+#-----------------------------------------------------------------------
+#
+export extrn_mdl_name="${EXTRN_MDL_NAME_LBCS}"
+gfs_file_fmt="${GFS_FILE_FMT_LBCS}"
+if [ ${extrn_mdl_name} == GEFS ]; then
+  idx_member_name_2d=$( printf "%02d" "$((10#$MEMBER_NAME))" )
+  extrn_mdl_memhead=/gep${idx_member_name_2d}
+else
+  extrn_mdl_memhead=""
+fi
+time_offset_hrs="${EXTRN_MDL_LBCS_OFFSET_HRS}"
+lbs_spec_intvl_hrs="${LBC_SPEC_INTVL_HRS}"
+lbc_spec_fhrs=( "" )
+boundary_len_hrs="${BOUNDARY_LEN}"
+
+hh=${CDATE:8:2}
+yyyymmdd=${CDATE:0:8}
+cdate=$( date --utc --date "${yyyymmdd} ${hh} UTC - ${time_offset_hrs} hours" "+%Y%m%d%H" )
+export extrn_mdl_cdate="$cdate"
+
+# Starting year, month, day, and hour of the external model forecast.
+yyyy=${cdate:0:4}
+mm=${cdate:4:2}
+dd=${cdate:6:2}
+hh=${cdate:8:2}
+mn="00"
+yyyymmdd=${cdate:0:8}
+
+# offset is to go back to a previous cycle (for example 3-h) and
+# use the forecast (3-h) from that cycle valid at this cycle.
+# Here calculates the forecast and it is adding.
+if [ "${boundary_len_hrs}" = "0" ]; then
+  boundary_len_hrs=${FCST_LEN_HRS}
+fi
+if [ "${DO_NON_DA_RUN}" = "TRUE" ]; then
+  lbc_spec_fcst_hrs=($( seq ${lbs_spec_intvl_hrs} ${lbs_spec_intvl_hrs} ${boundary_len_hrs} ))
+else
+  lbc_spec_fcst_hrs=($( seq 0 ${lbs_spec_intvl_hrs} ${boundary_len_hrs} ))
+fi
+lbc_spec_fhrs=( "${lbc_spec_fcst_hrs[@]}" )
+
+#
+# Add the temporal offset specified in time_offset_hrs (assumed to be in
+# units of hours) to the the array of LBC update forecast hours to make
+# up for shifting the starting hour back in time.  After this addition,
+# lbc_spec_fhrs will contain the LBC update forecast hours relative to
+# the start time of the external model run.
+#
+num_fhrs=${#lbc_spec_fhrs[@]}
+for (( i=0; i<=$((num_fhrs-1)); i++ )); do
+  lbc_spec_fhrs[$i]=$(( ${lbc_spec_fhrs[$i]} + time_offset_hrs ))
+done
+fcst_mn="00"
+
+case "${extrn_mdl_name}" in
+
+  "GFS")
+    COMINgfs="${COMINgfs:-$(compath.py gfs/${gfs_ver})}"
+    sysdir="${COMINgfs}/gfs.${yyyymmdd}/${hh}/atmos"
+    sysdir2=""
+    fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
+
+    if [ "${gfs_file_fmt}" = "grib2" ]; then
+      prefix="gfs.t${hh}z.pgrb2.0p25.f"
+      fns_on_disk=( "${fcst_hhh[@]/#/$prefix}" )
+    elif [ "${gfs_file_fmt}" = "netcdf" ]; then
+      prefix="gfs.t${hh}z.atmf"
+      suffix=".nc"
+      fns_on_disk_tmp=( "${fcst_hhh[@]/#/${prefix}}" )
+      fns_on_disk=( "${fns_on_disk_tmp[@]/%/${suffix}}" )
+    fi
+    ;;
+
+  "GEFS")
+    COMINgefs="${COMINgefs:-$(compath.py gefs/${gefs_ver})}"
+    sysdir="${COMINgefs}/gefs.${yyyymmdd}/${hh}/atmos/pgrb2bp5"
+    sysdir2="${COMINgefs}/gefs.${yyyymmdd}/${hh}/atmos/pgrb2ap5"
+    fcst_hh=( $( printf "%02d " "${lbc_spec_fhrs[@]}" ) )
+    prefix="${extrn_mdl_memhead}"".t${hh}z.pgrb2b.0p50.f0"
+    prefix2="${extrn_mdl_memhead}"".t${hh}z.pgrb2a.0p50.f0"
+    fns_on_disk=( "${fcst_hh[@]/#/$prefix}" )
+    fns_on_disk2=( "${fcst_hh[@]/#/$prefix2}" )
+    ;;
+
+  "RRFS")
+    COMINrrfs="${COMINrrfs:-$(compath.py rrfs/${rrfs_ver})}"
+    sysdir="${COMINrrfs}/rrfs.${yyyymmdd}/${hh}"
+    sysdir2=""
+    fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
+    prefix="rrfs.t${hh}z.natlev.f"
+    fns=( "${fcst_hhh[@]/#/$prefix}" )
+    suffix=".grib2"
+    fns_on_disk=( "${fns[@]/%/$suffix}" )
+    ;;
+
+  *)
+
+esac
+
+extrn_mdl_sysdir="${sysdir}"
+extrn_mdl_sysdir2="${sysdir2}"
+export extrn_mdl_source_dir="${extrn_mdl_sysdir}"
+export extrn_mdl_source_dir2="${extrn_mdl_sysdir2}"
+
+#### extrn_mdl_lbc_spec_fhrs_str="( "$( printf "\"%s\" " "${lbc_spec_fhrs[@]}" )")"
+extrn_mdl_lbc_spec_fhrs="( "$( printf "\"%s\" " "${lbc_spec_fhrs[@]}" )")"
+
+#### extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
+extrn_mdl_fns_on_disk="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
+
+#### extrn_mdl_fns_on_disk_str2="( "$( printf "\"%s\" " "${fns_on_disk2[@]}" )")"
+extrn_mdl_fns_on_disk2="( "$( printf "\"%s\" " "${fns_on_disk2[@]}" )")"
+
+export use_user_staged_extrn_files="FALSE"
+export extrn_mdl_staging_dir="${DATA}"
+
+#
+#-----------------------------------------------------------------------
+#
 # Specify the set of valid argument names for this script/function.  Then
 # process the arguments provided to this script/function (which should
 # consist of a set of name-value pairs of the form arg1="value1", etc).
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "extrn_mdl_lbc_spec_fhrs" "extrn_mdl_fns_on_disk" "extrn_mdl_fns_on_disk2" )
-process_args valid_args "$@"
+#### valid_args=( "extrn_mdl_lbc_spec_fhrs" "extrn_mdl_fns_on_disk" "extrn_mdl_fns_on_disk2" )
+#### process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
 #
@@ -64,7 +185,6 @@ process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
 #
-ulimit -s unlimited
 ulimit -a
 
 case "$MACHINE" in
@@ -93,6 +213,8 @@ case "$MACHINE" in
     ;;
 
 esac
+export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
+
 #
 #-----------------------------------------------------------------------
 #
@@ -103,11 +225,16 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-num_files_to_copy="${#extrn_mdl_fns_on_disk[@]}"
+#### num_files_to_copy="${#extrn_mdl_fns_on_disk[@]}"
+num_files_to_copy="${#fns_on_disk[@]}"
+
 prefix="${extrn_mdl_source_dir}/"
-extrn_mdl_fps_on_disk=( "${extrn_mdl_fns_on_disk[@]/#/$prefix}" )
+#### extrn_mdl_fps_on_disk=( "${extrn_mdl_fns_on_disk[@]/#/$prefix}" )
+extrn_mdl_fps_on_disk=( "${fns_on_disk[@]/#/$prefix}" )
+
 prefix2="${extrn_mdl_source_dir2}"
-extrn_mdl_fps_on_disk2=( "${extrn_mdl_fns_on_disk2[@]/#/$prefix2}" )
+#### extrn_mdl_fps_on_disk2=( "${extrn_mdl_fns_on_disk2[@]/#/$prefix2}" )
+extrn_mdl_fps_on_disk2=( "${fns_on_disk2[@]/#/$prefix2}" )
 #
 #-----------------------------------------------------------------------
 #
@@ -180,7 +307,7 @@ Please ensure that the directory specified by extrn_mdl_source_dir exists
 and that all the files specified in the array extrn_mdl_fns_on_disk exist
 within it:
   extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
-  extrn_mdl_fns_on_disk = ( $( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" ))"
+  extrn_mdl_fns_on_disk = ( $( printf "\"%s\" " "${fns_on_disk[@]}" ))"
     #
     # If an external model file is not found and we are searching for it
     # in a system directory, give up on the system directory.
@@ -202,7 +329,8 @@ done
 #
 #-----------------------------------------------------------------------
 #
-extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" )")"
+#### extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" )")"
+extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
 
 print_info_msg "
 Creating links in staging directory (extrn_mdl_staging_dir) to external
@@ -222,7 +350,8 @@ elif [ ${extrn_mdl_name} = GEFS ] ; then
   do
     fps=${extrn_mdl_fps_on_disk[$j]}
     fps2=${extrn_mdl_fps_on_disk2[$j]}
-    fps_name=${extrn_mdl_fns_on_disk[$j]}
+    #### fps_name=${extrn_mdl_fns_on_disk[$j]}
+    fps_name=${fns_on_disk[$j]}
     if [ -f "$fps" ]; then
       #
       # Increment the counter that keeps track of the number of external
@@ -326,9 +455,13 @@ generating lateral boundary conditions for the RRFS forecast!!!
 #-----------------------------------------------------------------------
 #
 eval EXTRN_MDL_CDATE=${extrn_mdl_cdate}
-extrn_mdl_fns_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" )")"
+
+#### extrn_mdl_fns_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" )")"
+extrn_mdl_fns_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
 eval EXTRN_MDL_FNS=${extrn_mdl_fns_str}
-extrn_mdl_lbc_spec_fhrs_str="( "$( printf "\"%s\" " "${extrn_mdl_lbc_spec_fhrs[@]}" )")"
+
+#### extrn_mdl_lbc_spec_fhrs_str="( "$( printf "\"%s\" " "${extrn_mdl_lbc_spec_fhrs[@]}" )")"
+extrn_mdl_lbc_spec_fhrs_str="( "$( printf "\"%s\" " "${lbc_spec_fhrs[@]}" )")"
 eval EXTRN_MDL_LBC_SPEC_FHRS=${extrn_mdl_lbc_spec_fhrs_str}
 #
 #-----------------------------------------------------------------------
@@ -489,6 +622,8 @@ esac
 #
 #-----------------------------------------------------------------------
 #
+export bcgrp=${bcgrp:-$BCGRP}
+export bcgrpnum=${bcgrpnum:-$BCGRPNUM}
 num_fhrs="${#EXTRN_MDL_LBC_SPEC_FHRS[@]}"
 bcgrp10=${bcgrp#0}
 bcgrpnum10=${bcgrpnum#0}
@@ -622,7 +757,7 @@ $settings"
     lbc_spec_fhrs=( "${EXTRN_MDL_LBC_SPEC_FHRS[$i]}" ) 
     fcst_hhh=$(( ${lbc_spec_fhrs} - ${EXTRN_MDL_LBCS_OFFSET_HRS} ))
     fcst_hhh_FV3LAM=`printf %3.3i $fcst_hhh`
-    fn_grib2_subset=rrfs.t${hh}z.natlev.3km.f${fcst_hhh_FV3LAM}.na.subset.grib2
+    fn_grib2_subset=rrfs.t${hh}z.natlev.f${fcst_hhh_FV3LAM}.subset.grib2
 
     if [ ! -s ${extrn_mdl_staging_dir}/${fn_grib2} ]; then
       echo "FATAL ERROR: FIREWX LBCS file not found ${extrn_mdl_staging_dir}/${fn_grib2}"
@@ -653,9 +788,9 @@ $settings"
   lbc_spec_fhrs=( "${EXTRN_MDL_LBC_SPEC_FHRS[$i]}" ) 
   fcst_hhh=$(( ${lbc_spec_fhrs} - ${EXTRN_MDL_LBCS_OFFSET_HRS} ))
   fcst_hhh_FV3LAM=`printf %3.3i $fcst_hhh`
-# copy results to nwges for longer time disk storage.
-  mv gfs.bndy.nc ${DATA}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc
-  cpreq ${DATA}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc ${NWGES_DIR}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc
+
+# copy results to COMOUT for longer time disk storage.
+  cpreq -p gfs.bndy.nc ${COMOUT}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc
 
   fi
 done

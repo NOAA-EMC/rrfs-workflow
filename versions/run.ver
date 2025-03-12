@@ -39,8 +39,40 @@ export gfs_ver=v16.3
 export nam_ver=v4.2
 export rrfs_ver=v1.0
 export obsproc_ver=v1.2
+export nsst_ver=v1.2
+
+#### NOT COMPLY WITH IMPLEMENTATION STANDARD - NEED TO BE REMOVED BEFORE CODE DELIVERY
+export EMC_DEV="YES"
+export EMC_LOG_OUTPUT="/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/output/prod/today"
+export envir="prod"
+export GESROOT="/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/nwges"
+export NWGES_BASEDIR="/lfs/h3/emc/rrfstemp/ecflow/ptmp/emc.lam/ecflow_rrfs/para/nwges"
+export FG_ROOT="/lfs/h3/emc/rrfstemp/ecflow/ptmp/emc.lam/ecflow_rrfs/para/nwges"
+export LBCS_ROOT="/lfs/h3/emc/rrfstemp/ecflow/ptmp/emc.lam/ecflow_rrfs/para/nwges"
+#export NWGES_DIR=${GESROOT}/$PDY$cyc
+#export SURFACE_DIR="/lfs/h3/emc/rrfstemp/ecflow/ptmp/emc.lam/ecflow_rrfs/para/nwges/surface"
+export OBSPATH_NSSLMOSIAC="/lfs/h1/ops/prod/dcom/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC"
+export GLMFED_EAST_ROOT="/lfs/h1/ops/prod/dcom/ldmdata/obs/GOES-16/GLM/tiles"
+export GLMFED_WEST_ROOT="/lfs/h1/ops/prod/dcom/ldmdata/obs/GOES-17/GLM/tiles"
+export GVF_ROOT="/lfs/h1/ops/prod/dcom/viirs"
+export FIRE_RAVE_DIR="/lfs/h1/ops/prod/dcom"
+export CONT_CYCLE_DATA_ROOT="/lfs/h2/emc/lam/noscrub/emc.lam/nwges"
+export AIRCRAFT_REJECT="/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/gsi"
+export SFCOBS_USELIST="/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/gsi"
+export TOPO_DIR="/lfs/h2/emc/lam/noscrub/RRFS_input/fix/fix_orog"
+export SFC_CLIMO_INPUT_DIR="/lfs/h2/emc/lam/noscrub/RRFS_input/fix/fix_sfc_climo"
+export FVCOM_DIR="/lfs/h2/emc/lam/noscrub/emc.lam/OWAQ_fv3"
+export FVCOM_FILE="tsfc_fv3grid"
+export SATBIAS_DIR="/lfs/h3/emc/rrfstemp/ecflow/ptmp/emc.lam/ecflow_rrfs/para/nwges/satbias"
 
 export modulepath_compiler="/apps/test/hpc-stack/i-19.1.3.304__m-8.1.12__h-1.14.0__n-4.9.2__p-2.5.10__e-8.4.2/modulefiles/compiler/intel/19.1.3.304"
 export modulepath_mpi="/apps/test/hpc-stack/i-19.1.3.304__m-8.1.12__h-1.14.0__n-4.9.2__p-2.5.10__e-8.4.2/modulefiles/mpi/intel/19.1.3.304/cray-mpich/8.1.12"
 export modulepath_scotch="/apps/prod/lmodules/INTEL_cray_mpich/19.1.3.304/cray-mpich/8.1.9"
+export FIX_CRTM="/apps/test/hpc-stack/i-19.1.3.304__m-8.1.12__h-1.14.0__n-4.9.2__p-2.5.10__e-8.4.2/intel-19.1.3.304/cray-mpich-8.1.12/crtm/2.4.0/fix"
 
+export CLEAN_OLDPROD_HRS="72"
+export CLEAN_OLDLOG_HRS="0"
+export CLEAN_OLDRUN_HRS="72"
+export CLEAN_OLDFCST_HRS="72"
+export CLEAN_OLDSTMPPOST_HRS="0"
+export CLEAN_NWGES_HRS="72"

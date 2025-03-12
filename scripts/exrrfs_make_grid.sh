@@ -71,7 +71,6 @@ export OMP_STACKSIZE=1024m
 #
 #-----------------------------------------------------------------------
 #
-ulimit -s unlimited
 ulimit -a
 APRUN="time"
 #
@@ -250,14 +249,15 @@ set_file_param "${GLOBAL_VAR_DEFNS_FP}" "CRES" "\"$CRES\""
 #
 #-----------------------------------------------------------------------
 #
-# Copy the grid file from the run directory (DATA) to GRID_DIR. In the
-# process, rename it such that its name includes CRES and the halo width.
+# Copy the grid file from the run directory (DATA) to umbrella data 
+# directory. In the process, rename it such that its name includes CRES
+# and the halo width.
 #
 #-----------------------------------------------------------------------
 #
 grid_fp_orig="${grid_fp}"
 grid_fn="${CRES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NHW}.nc"
-grid_fp="${GRID_DIR}/${grid_fn}"
+grid_fp="${umbrella_ics_data}/${grid_fn}"
 mv "${grid_fp_orig}" "${grid_fn}"
 cp "${grid_fn}" "${grid_fp}"
 #
@@ -313,7 +313,7 @@ for halo_num in "${halo_num_list[@]}"; do
   $APRUN ${EXECrrfs}/$pgm < ${nml_fn} >>$pgmout 2>${DATA}/errfile
   export err=$?; err_chk
   mv ${DATA}/errfile ${DATA}/errfile_shave_nh${halo_num}
-  cp ${shaved_fp} ${GRID_DIR}
+  cp ${shaved_fp} ${umbrella_ics_data}
 done
 #
 #-----------------------------------------------------------------------
@@ -328,9 +328,9 @@ halo_num_list[${#halo_num_list[@]}]="${NHW}"
 for halo_num in "${halo_num_list[@]}"; do
   print_info_msg "Creating grid mosaic file with ${halo_num}-cell-wide halo..."  
   grid_fn="${CRES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${halo_num}.nc"
-  grid_fp="${GRID_DIR}/${grid_fn}"
+  grid_fp="${umbrella_ics_data}/${grid_fn}"
   mosaic_fn="${CRES}${DOT_OR_USCORE}mosaic.halo${halo_num}.nc"
-  mosaic_fp="${GRID_DIR}/${mosaic_fn}"
+  mosaic_fp="${umbrella_ics_data}/${mosaic_fn}"
   mosaic_fp_prefix="${mosaic_fp%.*}"
 
   . prep_step

@@ -22,7 +22,6 @@ module list
 export WGF="%WGF%"
 export MEMBER_NAME="%MEMBER_NAME%"
 export FHR="%FHR%"
-%include <ensf_prdgen_mem005_f023_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################

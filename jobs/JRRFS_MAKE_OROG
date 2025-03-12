@@ -1,8 +1,25 @@
 #!/bin/bash
 
+date
+export PS4='+ $SECONDS + ' 
+set -xue
+
 #-----------------------------------------------------------------------
 # RRFS Make Orography
 #-----------------------------------------------------------------------
+export pid=${pid:-$$}
+export outid=${outid:-"LL$job"}
+export RUN=${RUN:-rrfs}
+
+export DATA=${DATA:-${DATAROOT}/${jobid}}
+mkdir -p ${DATA}
+cd ${DATA}
+
+#-----------------------------------------------------------------------
+# Source the variable definitions file
+#-----------------------------------------------------------------------
+
+. ${HOMErrfs}/ush/rrfs_nco_config.sh
 
 #-----------------------------------------------------------------------
 # Specify Execution Areas
@@ -12,19 +29,14 @@ export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
-
 export FIXam=${FIXam:-${FIXrrfs}/am}
 export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
 
 #-----------------------------------------------------------------------
-# Source the variable definitions file and the bash utility functions.
+# Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-
-date
-export PS4='+ $SECONDS + '
 
 #-----------------------------------------------------------------------
 # Save current shell options (in a global array).  Then set new options
@@ -56,20 +68,11 @@ This is the J-job script for the task that generates orography files.
 ========================================================================"
 
 #-----------------------------------------------------------------------
-# Obtain unique process id (pid) and create the run directory (DATA).
+# Define umbrella data directories
 #-----------------------------------------------------------------------
 
-export pid=${pid:-$$}
-export RUN=${RUN:-rrfs}
-
-if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
-  export jobid=${taskid}
-else
-  export jobid=${RUN}_make_orog_${envir}_${cyc}
-fi
-
-export DATA=${DATA:-${DATAROOT}/${jobid}}
-mkdir -p ${DATA}
+#### export umbrella_ics_data="${DATAROOT}/${RUN}_${PDY}${cyc}/${WGF}/ics"
+export umbrella_ics_data=${umbrella_ics_data:-${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}}
 
 mkdir -p "${DATA}/raw_topo"
 mkdir -p "${DATA}/raw_topo/tmp"
@@ -78,9 +81,6 @@ cd ${DATA}/raw_topo/tmp
 mkdir -p "${DATA}/filtered_topo"
 mkdir -p "${DATA}/shave_tmp"
 mkdir -p "${DATA}/temp_orog_data"
-
-check_for_preexist_dir_file "${OROG_DIR}" "${PREEXISTING_DIR_METHOD}"
-mkdir -p "${OROG_DIR}"
 
 #-----------------------------------------------------------------------
 # Execute the script.
