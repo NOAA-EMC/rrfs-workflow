@@ -49,6 +49,10 @@
     config_met_interp = true
     config_input_sst = false
     config_frac_seaice = true
+    config_tempo_rap = false
+/
+&physics
+    config_tsk_seaice_threshold = 271.4
 /
 &io
     config_pio_num_iotasks = 0
