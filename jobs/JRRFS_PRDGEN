@@ -103,6 +103,9 @@ if [ -e "$pgmout" ]; then
   cat $pgmout
 fi
 
+#### Developer overwrite
+KEEPDATA=NO
+
 if [ "${KEEPDATA}" = "NO" ]; then
   rm -rf ${DATA}
 fi

@@ -1,10 +1,11 @@
-#PBS -N rrfs_clean_%CYC%
+#PBS -N rrfs_enkf_prep_cyc_ensmean_%CYC%
 #PBS -j oe
 #PBS -S /bin/bash
 #PBS -q %QUEUE%
 #PBS -A %PROJ%-%PROJENVIR%
-#PBS -l walltime=00:15:00
-#PBS -l select=1:mpiprocs=1:ncpus=1
+#PBS -l walltime=00:20:00
+#PBS -l select=1:mpiprocs=1:ncpus=1:mem=40G
+#PBS -l place=excl
 #PBS -l debug=true
 
 model=rrfs
@@ -18,11 +19,15 @@ export CDATE="${PDY}${cyc}"
 
 
 module list
-export WGF="det"
+export WGF="%WGF%"
+export GSI_TYPE="%GSI_TYPE%"
+export MEM_TYPE="%MEM_TYPE%"
+export CYCLE_TYPE="%CYCLE_TYPE%"
+export MEMBER_NAME="%MEMBER_NAME%"
 ############################################################
 # CALL executable job script here
 ############################################################
-${HOMErrfs}/scripts/exrrfs_clean.sh
+${HOMErrfs}/ush/load_modules_run_task.sh prep_cyc ${HOMErrfs}/jobs/JRRFS_PREP_CYC
 
 %include <tail.h>
 

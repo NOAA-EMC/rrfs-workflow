@@ -12,7 +12,11 @@ export outid=${outid:-"LL$job"}
 export RUN=${RUN:-rrfs}
 
 if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
-  export ENSMEM_INDX=${MEMBER_NAME}
+  if [ ${MEMBER_NAME} = "ensmean" ] ; then
+    export ENSMEM_INDX='001'
+  else
+    export ENSMEM_INDX=${MEMBER_NAME}
+  fi
   export mem_num=m$(echo "${ENSMEM_INDX}")
   export DO_ENSEMBLE="TRUE"
 else
@@ -103,11 +107,23 @@ else
   export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}
 fi
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  export COMOUT=${COMOUT}/${mem_num}
-  if [ "${CYCLE_TYPE}" = "spinup" ]; then
-    export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
+  if [ ${MEMBER_NAME} = "ensmean" ] ; then
+    export COMOUT=${COMOUT}/${MEMBER_NAME}
   else
-    export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
+    export COMOUT=${COMOUT}/${mem_num}
+  fi
+  if [ "${CYCLE_TYPE}" = "spinup" ]; then
+    if [ ${MEMBER_NAME} = "ensmean" ] ; then
+      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}/${MEMBER_NAME}
+    else
+      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
+    fi
+  else
+    if [ ${MEMBER_NAME} = "ensmean" ] ; then
+      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/${MEMBER_NAME}
+    else
+      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
+    fi
   fi
 fi
 export FORECAST_INPUT_PRODUCT=${umbrella_forecast_data}/INPUT

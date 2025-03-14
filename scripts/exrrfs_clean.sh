@@ -1,28 +1,45 @@
-#!/bin/ksh --login
-exit 0
-#
+#!/bin/bash
+set -eux
+
 #-----------------------------------------------------------------------
 # Source the variable definitions file.
 #-----------------------------------------------------------------------
-#
-. ${GLOBAL_VAR_DEFNS_FP}
-#
-#-----------------------------------------------------------------------
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#-----------------------------------------------------------------------
-#
-{ save_shell_opts; set -u -x; } > /dev/null 2>&1
-#
-#
+
+#### . ${GLOBAL_VAR_DEFNS_FP}
+module load prod_util
+
 #-----------------------------------------------------------------------
 # set up currentime from CDATE 
 #-----------------------------------------------------------------------
-#
-currentime=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
-nens=${NUM_ENS_MEMBERS:-"0"}
-listens=$(seq 1 $nens)
 
+CDATE=${CDATE:-${PDY}${cyc}}
+
+#-----------------------------------------------------------------------
+# Delete development data directories
+# Remove this session after turn on the KEEPDATA function
+#-----------------------------------------------------------------------
+
+cd /lfs/h3/emc/lam/noscrub/ecflow/stmp/emc.lam/rrfs/ecflow_rrfs
+rm -f data_clean1.sh
+echo "set -x" >> data_clean1.sh
+search_cyc_12=$($NDATE -12 ${CDATE} | cut -c9-10)
+search_cyc_11=$($NDATE -11 ${CDATE} | cut -c9-10)
+search_cyc_10=$($NDATE -10 ${CDATE} | cut -c9-10)
+search_cyc_9=$($NDATE -9 ${CDATE} | cut -c9-10)
+search_cyc_8=$($NDATE -8 ${CDATE} | cut -c9-10)
+search_cyc_7=$($NDATE -7 ${CDATE} | cut -c9-10)
+for idx_cyc in ${search_cyc_12#0} ${search_cyc_11#0} ${search_cyc_10#0} ${search_cyc_9#0} ${search_cyc_8#0} ${search_cyc_7#0}; do
+  idx_cyc2d=$( printf "%02d" "${idx_cyc#0}" )
+  fcst_state=$(ecflow_client --query state /nco_rrfs_dev_${idx_cyc2d}/primary/${idx_cyc2d}/rrfs/v1.0/forecast)
+  if [ ${fcst_state} == "complete" ]; then
+    echo "Cycle ${idx_cyc2d} is completed - proceed with cleanup"
+    ls|grep "_${idx_cyc2d}\."|awk '{print "rm -rf",$1}' >> data_clean1.sh
+    ls -d */ |grep "_${idx_cyc2d}_v1.0" |awk '{print "rm -rf",$1}' >> data_clean1.sh
+  fi
+done
+[[ $(cat data_clean1.sh|wc -l) -gt 1 ]]&& sh ./data_clean1.sh
+
+exit 0
 #-----------------------------------------------------------------------
 # Delete ptmp directories
 #-----------------------------------------------------------------------

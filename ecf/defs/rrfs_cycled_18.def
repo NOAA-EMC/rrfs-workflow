@@ -188,7 +188,7 @@ suite nco_rrfs_dev_18
               edit WGF 'det'
               task jrrfs_det_process_smoke
                 edit CYCLE_TYPE 'prod'
-                trigger :TIME >= 1850 and :TIME < 1910  # 20 mins window 
+                trigger :TIME >= 1835 and :TIME < 1910  # 20 mins window 
               task jrrfs_det_process_radar
                 edit CYCLE_TYPE 'prod'
                 trigger :TIME >= 1835 and :TIME < 1905
@@ -1752,6 +1752,9 @@ suite nco_rrfs_dev_18
               edit GSI_TYPE 'OBSERVER'
               edit MEM_TYPE 'MEAN'
               edit CYCLE_TYPE 'prod'
+              task jrrfs_enkf_prep_cyc_ensmean
+                edit MEMBER_NAME 'ensmean'
+                trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem001
               task jrrfs_enkf_prep_cyc_mem001
                 edit MEMBER_NAME '001'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem001
@@ -1843,7 +1846,7 @@ suite nco_rrfs_dev_18
                 edit MEMBER_NAME '030'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem030
               task jrrfs_enkf_calc_ensmean
-                trigger ../det==complete and ./jrrfs_enkf_prep_cyc_mem001==complete and ./jrrfs_enkf_prep_cyc_mem002==complete and ./jrrfs_enkf_prep_cyc_mem003==complete and ./jrrfs_enkf_prep_cyc_mem004==complete and ./jrrfs_enkf_prep_cyc_mem005==complete and ./jrrfs_enkf_prep_cyc_mem006==complete and ./jrrfs_enkf_prep_cyc_mem007==complete and ./jrrfs_enkf_prep_cyc_mem008==complete and ./jrrfs_enkf_prep_cyc_mem009==complete and ./jrrfs_enkf_prep_cyc_mem010==complete and ./jrrfs_enkf_prep_cyc_mem011==complete and ./jrrfs_enkf_prep_cyc_mem012==complete and ./jrrfs_enkf_prep_cyc_mem013==complete and ./jrrfs_enkf_prep_cyc_mem014==complete and ./jrrfs_enkf_prep_cyc_mem015==complete and ./jrrfs_enkf_prep_cyc_mem016==complete and ./jrrfs_enkf_prep_cyc_mem017==complete and ./jrrfs_enkf_prep_cyc_mem018==complete and ./jrrfs_enkf_prep_cyc_mem019==complete and ./jrrfs_enkf_prep_cyc_mem020==complete and ./jrrfs_enkf_prep_cyc_mem021==complete and ./jrrfs_enkf_prep_cyc_mem022==complete and ./jrrfs_enkf_prep_cyc_mem023==complete and ./jrrfs_enkf_prep_cyc_mem024==complete and ./jrrfs_enkf_prep_cyc_mem025==complete and ./jrrfs_enkf_prep_cyc_mem026==complete and ./jrrfs_enkf_prep_cyc_mem027==complete and ./jrrfs_enkf_prep_cyc_mem028==complete and ./jrrfs_enkf_prep_cyc_mem029==complete and ./jrrfs_enkf_prep_cyc_mem030==complete
+                trigger ../det==complete and ./jrrfs_enkf_prep_cyc_mem001==complete and ./jrrfs_enkf_prep_cyc_mem002==complete and ./jrrfs_enkf_prep_cyc_mem003==complete and ./jrrfs_enkf_prep_cyc_mem004==complete and ./jrrfs_enkf_prep_cyc_mem005==complete and ./jrrfs_enkf_prep_cyc_mem006==complete and ./jrrfs_enkf_prep_cyc_mem007==complete and ./jrrfs_enkf_prep_cyc_mem008==complete and ./jrrfs_enkf_prep_cyc_mem009==complete and ./jrrfs_enkf_prep_cyc_mem010==complete and ./jrrfs_enkf_prep_cyc_mem011==complete and ./jrrfs_enkf_prep_cyc_mem012==complete and ./jrrfs_enkf_prep_cyc_mem013==complete and ./jrrfs_enkf_prep_cyc_mem014==complete and ./jrrfs_enkf_prep_cyc_mem015==complete and ./jrrfs_enkf_prep_cyc_mem016==complete and ./jrrfs_enkf_prep_cyc_mem017==complete and ./jrrfs_enkf_prep_cyc_mem018==complete and ./jrrfs_enkf_prep_cyc_mem019==complete and ./jrrfs_enkf_prep_cyc_mem020==complete and ./jrrfs_enkf_prep_cyc_mem021==complete and ./jrrfs_enkf_prep_cyc_mem022==complete and ./jrrfs_enkf_prep_cyc_mem023==complete and ./jrrfs_enkf_prep_cyc_mem024==complete and ./jrrfs_enkf_prep_cyc_mem025==complete and ./jrrfs_enkf_prep_cyc_mem026==complete and ./jrrfs_enkf_prep_cyc_mem027==complete and ./jrrfs_enkf_prep_cyc_mem028==complete and ./jrrfs_enkf_prep_cyc_mem029==complete and ./jrrfs_enkf_prep_cyc_mem030==complete and ./jrrfs_enkf_prep_cyc_ensmean==complete
               task jrrfs_enkf_observer_gsi_ensmean
                 trigger ./jrrfs_enkf_calc_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem001
@@ -2002,7 +2005,7 @@ suite nco_rrfs_dev_18
                 trigger ./jrrfs_det_update_lbc_soil==complete and ../../init/det/jrrfs_det_process_bufr==complete
               task jrrfs_det_analysis_gsi_spinup
                 edit CYCLE_TYPE 'spinup'
-                trigger ../../prep/det/jrrfs_det_prep_cyc_spinup==complete
+                trigger :TIME >= 1835 and :TIME < 1910 and ../../prep/det/jrrfs_det_prep_cyc_spinup==complete
               task jrrfs_det_update_lbc_soil_spinup
                 edit CYCLE_TYPE 'spinup'
                 trigger ./jrrfs_det_analysis_gsi_spinup==complete
@@ -2157,7 +2160,7 @@ suite nco_rrfs_dev_18
               edit WGF 'det'
               task jrrfs_det_forecast_long
                 edit CYCLE_TYPE 'prod'
-                trigger ../../analysis/det==complete
+                trigger ../../analysis/det/jrrfs_det_analysis_nonvarcld==complete
               task jrrfs_det_save_restart_long_1
                 edit CYCLE_TYPE 'prod'
                 edit FHR '001'
