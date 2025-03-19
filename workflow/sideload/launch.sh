@@ -34,22 +34,25 @@ case ${task_id} in
     module purge
     module use ${HOMErrfs}/sorc/MPASSIT/modulefiles
     module load build.${MACHINE}.intel
-    module load prod_util/${MACHINE}
     ;;
   upp)
     module purge
-    module load prod_util/${MACHINE}
     module use ${HOMErrfs}/sorc/UPP/modulefiles
     module load ${MACHINE}
     ;;
   *)
     module purge
     module load rrfs/${MACHINE}.intel
-    module load prod_util/${MACHINE}
     ;;
 esac
+module load prod_util/${MACHINE}
 module list
 set -x
+# check whether prod_util is correctly loaded
+if [[ "${NDATE}" == "" ]]; then
+  echo 'FATAL ERROR: ${NDATE} is not defined; prod_util is not loaded!'
+  exit 1
+fi
 
 # run J-job or sideload non-NCO tasks
 case ${task_id} in
