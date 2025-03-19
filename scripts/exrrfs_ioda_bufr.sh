@@ -59,7 +59,6 @@ ${cpreq} ${py_bufr_json_gen} .
 fi
 
 # run offline IODA tools
-#-----------------------
 ${cpreq} ${USHrrfs}/offline_ioda_tweak.py .
 ioda_files=$(ls ioda*nc)
 for ioda_file in ${ioda_files[@]}; do
