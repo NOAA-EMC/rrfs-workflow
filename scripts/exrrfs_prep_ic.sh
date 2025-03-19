@@ -38,7 +38,6 @@ if [[ "${start_type}" == "cold" ]]; then
   thisfile=${COMINrrfs}/${RUN}.${PDY}/${cyc}/ic/${WGF}${MEMDIR}/init.nc
   if [[ -r ${thisfile} ]]; then
     ${cpreq} ${thisfile} ${UMBRELLA_PREP_IC_DATA}/init.nc
-    ln -snf ${thisfile} ${COMOUT}/prep_ic/${WGF}${MEMDIR}/bkg_init.nc
     echo "cold start from ${thisfile}"
   else
     echo "FATAL ERROR: PREP_IC failed, cannot find cold start file: ${thisfile}"
@@ -68,7 +67,6 @@ elif [[ "${start_type}" == "warm" ]]; then
   done
   if [[ -r ${thisfile} ]]; then
     ${cpreq} ${thisfile} ${UMBRELLA_PREP_IC_DATA}/mpasin.nc
-    ln -snf ${thisfile} ${COMOUT}/prep_ic/${WGF}${MEMDIR}/bkg_mpasin.nc
     echo "warm start from ${thisfile}"
   else
     echo "FATAL ERROR: PREP_IC failed, cannot find warm start file: ${thisfile}"
