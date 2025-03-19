@@ -28,7 +28,7 @@ echo "compiling WPS..."
 cd ${HOMErrfs}/sorc/WPS
 ./clean
 if [[ "${MACHINE}" == "wcoss2" ]]; then
-  cp ../configure.wps_wcoss2 configure.wps
+  cp ../_workaround_/WPS/configure.wps_wcoss2 configure.wps
 elif [[ "${MACHINE}" == "gaea" ]]; then
   mkdir -p .tmpNETCDFDIR/include
   mkdir -p .tmpNETCDFDIR/lib

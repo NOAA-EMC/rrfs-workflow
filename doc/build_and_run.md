@@ -23,6 +23,7 @@ ungrib.x
 init_atmosphere_model.x
 atmosphere_model.x
 mpasjedi_variational.x
+mpasjedi_enkf.x
 bufr2ioda.x
 mpassit.x
 upp.x

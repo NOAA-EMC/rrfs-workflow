@@ -24,7 +24,7 @@ source /etc/profile
 module use ${HOMErrfs}/modulefiles
 # load corresponding modules for different tasks
 case ${task_id} in
-  jedivar|ens_da|ioda_bufr)
+  jedivar|getkf*|ioda_bufr)
     module purge
     module use ${HOMErrfs}/sorc/RDASApp/modulefiles
     module load RDAS/${MACHINE}.intel
@@ -34,26 +34,39 @@ case ${task_id} in
     module purge
     module use ${HOMErrfs}/sorc/MPASSIT/modulefiles
     module load build.${MACHINE}.intel
-    module load prod_util/${MACHINE}
     ;;
   upp)
     module purge
-    module load prod_util/${MACHINE}
     module use ${HOMErrfs}/sorc/UPP/modulefiles
     module load ${MACHINE}
     ;;
   *)
     module purge
     module load rrfs/${MACHINE}.intel
-    module load prod_util/${MACHINE}
     ;;
 esac
+module load prod_util/${MACHINE}
 module list
 set -x
+# check whether prod_util is correctly loaded
+if [[ "${NDATE}" == "" ]]; then
+  echo 'FATAL ERROR: ${NDATE} is not defined; prod_util is not loaded!'
+  exit 1
+fi
 
 # run J-job or sideload non-NCO tasks
 case ${task_id} in
-  clean|graphics|dummy)
+  clean)
+    case ${MACHINE} in
+      gaea|orion|hercules)
+        set +x
+        module load python
+        set -x
+        ;;
+    esac
+    ${HOMErrfs}/workflow/sideload/clean.py
+    ;;
+  graphics|dummy)
     ${HOMErrfs}/workflow/sideload/${task_id}.sh
     ;;
   *)

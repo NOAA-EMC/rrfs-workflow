@@ -17,7 +17,10 @@ export DO_DETERMINISTIC=false
 export ENS_SIZE=30
 export ZETA_LEVELS="L60.txt"
 #
-export DA_IODA="false"
+export DO_IODA="false"
+#export DO_JEDI=true
+export OBS_TYPE_USE="t133"   # The workflow will check 'OBS_TYPE_USE' first and then apply 'OBS_TYPE_REMOVE'
+export OBS_TYPE_REMOVE=""    # empty means "not applicable". check ush/obs_type_all for all available obs_types
 
 export DO_CYC=true
 export CYC_INTERVAL=3
@@ -46,13 +49,13 @@ export NODES_LBC="<nodes>1:ppn=40</nodes>"
 export NODES_FCST="<nodes>1:ppn=40</nodes>"
 export NODES_MPASSIT="<nodes>1:ppn=40</nodes>"
 export NODES_UPP="<nodes>1:ppn=40</nodes>"
-export NODES_JEDIVAR="<nodes>2:ppn=20</nodes>"
+export NODES_GETKF="<nodes>4:ppn=20</nodes>"
 #
 export WALLTIME_FCST="1:30:00"
 export WALLTIME_SAVE_FCST="1:30:00"
 export WALLTIME_MPASSIT="1:00:00"
 export WALLTIME_UPP="1:00:00"
-export WALLTIME_JEDIVAR="00:30:00"
+export WALLTIME_GETKF="00:30:00"
 #
 export KEEPDATA=yes
 export MPI_RUN_CMD=srun

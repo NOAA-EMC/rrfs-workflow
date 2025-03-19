@@ -53,7 +53,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     ens_size=int(os.getenv('ENS_SIZE','2'))
     ens_indices=''.join(f'{i:03d} ' for i in range(1,int(ens_size)+1)).strip()
     meta_bgn=f'''
-<metatask name="ens_{meta_id}">
+<metatask name="{meta_id}">
 <var name="ens_index">{ens_indices}</var>'''
     meta_end=f'\
 </metatask>\n'
@@ -69,7 +69,9 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
 
   jedidep=""
   if os.getenv("DO_JEDI","FALSE").upper()=="TRUE":
-    if do_spinup:
+    if os.getenv("DO_ENSEMBLE","FALSE").upper()=="TRUE":
+      jedidep=f'<taskdep task="getkf_solver"/>'
+    elif do_spinup:
       jedidep=f'<taskdep task="jedivar_spinup"/>'
     else:
       jedidep=f'<taskdep task="jedivar"/>'
@@ -87,5 +89,5 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
   </and>
   </dependency>'''
   
-  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"FCST",do_ensemble)
+  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"FCST")
 ### end of fcst --------------------------------------------------------
