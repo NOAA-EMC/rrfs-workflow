@@ -26,22 +26,22 @@ export DO_CYC=true
 export CYC_INTERVAL=1
 export FCST_LENGTH=3
 for i in {0..23};    do arr[$i]="03"; done # 3hr fcst
-for i in {0..23..6}; do arr[$i]="12"; done # 12hr fcst every 6hrs
+for i in {0..23..12}; do arr[$i]="12"; done # 12hr fcst every 12hrs
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
 export MPASSIT_GROUP_TOTAL_NUM=2
 export UPP_GROUP_TOTAL_NUM=2
 
-export IC_OFFSET=3
+export IC_OFFSET=0
 export LBC_OFFSET=3
 export LBC_LENGTH=15
-export LBC_INTERVAL=3
+export LBC_INTERVAL=1
 export LBC_UNGRIB_GROUP_TOTAL_NUM=2
 export LBC_GROUP_TOTAL_NUM=2
 
 export RETRO_PERIOD="2024052700-2024052800"
-export CYCLEDEF_IC_STEP_HRS=6   # do ic jobs every step hours
-export CYCLEDEF_LBC_STEP_HRS=6  # do lbc jobs every step hours
+export CYCLEDEF_IC_STEP_HRS=12  # do ic jobs every step hours
+export CYCLEDEF_LBC_STEP_HRS=12 # do lbc jobs every step hours
 export COLDSTART_CYCS="00 12"   # cycles to cold start from external models
 #export DO_SPINUP=true
 #export PRODSWITCH_CYCS="06 18"  # cycles to PROD switch to the spun-up ICs
@@ -66,7 +66,7 @@ export WALLTIME_MPASSIT="2:00:00"
 export WALLTIME_UPP="2:00:00"
 export WALLTIME_JEDIVAR="00:30:00"
 #
-export KEEPDATA=yes
+export KEEPDATA=no
 export MPI_RUN_CMD=srun
 #
 # local.setup: setup some local options specific to a platform or an experiment
@@ -77,7 +77,7 @@ export IC_EXTRN_MDL_NAME_PATTERN="@y@j@H000fHHH"
 export LBC_EXTRN_MDL_NAME=${IC_EXTRN_MDL_NAME}
 export LBC_EXTRN_MDL_NAME_PATTERN=${IC_EXTRN_MDL_NAME_PATTERN}
 export IC_EXTRN_MDL_BASEDIR="/public/data/grib/ftp_rap_hyb/7/0/105/0_794802_32769"
-export LBC_EXTRN_MDL_BASEDIR="/public/data/grib/ftp_rap_hyb/7/0/105/0_151987_30"
+export LBC_EXTRN_MDL_BASEDIR="/public/data/grib/ftp_rap_hyb/7/0/105/0_794802_32769"
 export OBSPATH="/public/data/grids/rap/obs"
 #
 export ACCOUNT="rtwrfruc"

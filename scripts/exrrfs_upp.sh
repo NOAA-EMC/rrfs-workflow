@@ -120,6 +120,9 @@ EOF
       ${cpreq} ${wrfnat} ${COMOUT}/upp/${WGF}${MEMDIR}/${RUN}.t${cyc}z.natlev.f${fhr3}.${domain}grib2
       ${cpreq} ${wrftwo} ${COMOUT}/upp/${WGF}${MEMDIR}/${RUN}.t${cyc}z.testbed.f${fhr3}.${domain}grib2
       ln -snf  ${COMOUT}/upp/${WGF}${MEMDIR}/${RUN}.t${cyc}z.prslev.f${fhr3}.${domain}grib2 ${COMOUT}/upp/${WGF}${MEMDIR}/${YYJJJHH}0000${fhr2}
+      ln -snf  ${COMOUT}/upp/${WGF}${MEMDIR}/${RUN}.t${cyc}z.prslev.f${fhr3}.${domain}grib2 ${COMOUT}/upp/${WGF}${MEMDIR}/${YYYYMMDD}.${RUN}.t${cyc}z.prslev.f${fhr3}.${domain}grib2
+      ln -snf  ${COMOUT}/upp/${WGF}${MEMDIR}/${RUN}.t${cyc}z.natlev.f${fhr3}.${domain}grib2 ${COMOUT}/upp/${WGF}${MEMDIR}/${YYYYMMDD}.${RUN}.t${cyc}z.natlev.f${fhr3}.${domain}grib2
+      ln -snf  ${COMOUT}/upp/${WGF}${MEMDIR}/${RUN}.t${cyc}z.testbed.f${fhr3}.${domain}grib2 ${COMOUT}/upp/${WGF}${MEMDIR}/${YYYYMMDD}.${RUN}.t${cyc}z.testbed.f${fhr3}.${domain}grib2
 
     else
       echo "FATAL ERROR: cannot find mpass file at ${timestr}"
