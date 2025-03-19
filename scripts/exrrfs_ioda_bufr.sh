@@ -26,9 +26,7 @@ yaml_list=(
 #"prepbufr_vadwnd.yaml"
 )
 
-# ---------------------------------
-# run bufr2ioda.x for prepbufr data
-# ---------------------------------
+# run bufr2ioda.x
 for yaml in ${yaml_list[@]}; do
  sed -e "s/@referenceTime@/${REFERENCE_TIME}/" ${PARMrrfs}/${yaml} > ${yaml}
  source prep_step
@@ -62,7 +60,7 @@ fi
 
 # run offline IODA tools
 #-----------------------
-${cpreq} ${HOMErrfs}/sorc/RDASApp/rrfs-test/IODA/offline_add_var_to_ioda.py .
+${cpreq} ${USHrrfs}/offline_ioda_tweak.py .
 ioda_files=$(ls ioda*nc)
 for ioda_file in ${ioda_files[@]}; do
   ./offline_add_var_to_ioda.py -o ${ioda_file}
