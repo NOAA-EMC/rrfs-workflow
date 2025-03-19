@@ -65,3 +65,4 @@ fi
 
 # copy init.nc to COMOUT
 ${cpreq} ${DATA}/init.nc ${COMOUT}/ic/${WGF}${MEMDIR}
+cp ${DATA}/log.*.out ${COMOUT}/ic/${WGF}${MEMDIR}
