@@ -89,3 +89,4 @@ fi
 
 # copy lbc*.nc to COMOUT
 ${cpreq} ${DATA}/lbc*.nc ${COMOUT}/lbc/${WGF}${MEMDIR}
+cp ${DATA}/log.*.out ${COMOUT}/lbc/${WGF}${MEMDIR}

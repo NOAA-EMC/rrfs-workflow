@@ -113,7 +113,12 @@ ${MPI_RUN_CMD} ./mpasjedi_enkf.x getkf.yaml log.out
 export err=$?
 err_chk
 #
+cp ${DATA}/getkf*.yaml ${COMOUT}/getkf_${TYPE}/${WGF}
+cp ${DATA}/log.* ${COMOUT}/getkf_${TYPE}/${WGF}
 # move jdiag* files to the umbrella directory if observer
 if [[ "${TYPE}" == "observer" ]]; then
+  cp ${DATA}/jdiag* ${COMOUT}/getkf_${TYPE}/${WGF}
   mv jdiag* ${UMBRELLA_GETKF_DATA}/.
+else # move post mean to umbrella if solver
+  mv ${DATA}/data/ens/mem000.nc ${UMBRELLA_GETKF_DATA}/post_mean.nc
 fi
