@@ -1,7 +1,7 @@
 _member: &memberConfig
   date: &analysisDate '@analysisDate@'
   state variables: [spechum,surface_pressure,temperature,uReconstructMeridional,uReconstructZonal,theta,rho,u,qv,pressure,landmask,xice,snowc,skintemp,ivgtyp,isltyp,snowh,vegfra,u10,v10,lai,smois,tslb,pressure_p,qc,qi,qg,qr,qs,cldfrac]
-  stream name: ensemble
+  stream name: background
 
 increment variables: [temperature, spechum, uReconstructZonal, uReconstructMeridional, surface_pressure]
 
