@@ -61,16 +61,13 @@ ${cpreq} ${HOMErdasapp}/rrfs-test/IODA/python/bufr2ioda_ztd.py .
 #${cpreq} ${HOMErdasapp}/rrfs-test/IODA/python/bufr2ioda_satwnd.py .
 ${cpreq} ${HOMErdasapp}/rrfs-test/IODA/python/bufr2ioda.json .
 
-USHioda=$HOMErdasapp/rrfs-test/IODA/python/
-py_bufr_json_gen=${USHioda}/gen_bufr2ioda_json.py
-
 # pyioda libraries
 PYIODALIB=$(echo $HOMErdasapp/build/lib/python3.*)
 export PYTHONPATH=${PYIODALIB}:${PYTHONPATH}
 
 # generate a JSON w CDATE from the template
 ${cpreq} ${py_bufr_json_gen} .
-./gen_bufr2ioda_json.py  -t bufr2ioda.json -o bufr2ioda_0.json
+$HOMErdasapp/rrfs-test/IODA/python/gen_bufr2ioda_json.py -t bufr2ioda.json -o bufr2ioda_0.json
 
 ./bufr2ioda_ztd.py -c bufr2ioda_0.json
 #./bufr2ioda_satwnd.py -c bufr2ioda_0.json
