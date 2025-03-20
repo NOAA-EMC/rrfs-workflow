@@ -66,8 +66,8 @@ PYIODALIB=$(echo $HOMErdasapp/build/lib/python3.*)
 export PYTHONPATH=${PYIODALIB}:${PYTHONPATH}
 
 # generate a JSON w CDATE from the template
-${cpreq} ${py_bufr_json_gen} .
-$HOMErdasapp/rrfs-test/IODA/python/gen_bufr2ioda_json.py -t bufr2ioda.json -o bufr2ioda_0.json
+${cpreq} ${HOMErdasapp}/rrfs-test/IODA/python/gen_bufr2ioda_json.py .
+./gen_bufr2ioda_json.py -t bufr2ioda.json -o bufr2ioda_0.json
 
 ./bufr2ioda_ztd.py -c bufr2ioda_0.json
 #./bufr2ioda_satwnd.py -c bufr2ioda_0.json
