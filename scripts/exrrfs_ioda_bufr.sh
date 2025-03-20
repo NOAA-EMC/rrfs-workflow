@@ -7,6 +7,8 @@ cd ${DATA}
 
 # link the prepbufr file
 ${cpreq} ${OBSPATH}/${CDATE}.rap.t${cyc}z.prepbufr.tm00 prepbufr
+cp ${OBSPATH}/${CDATE}.rap.t${cyc}z.gpsipw.tm00.bufr_d ztdbufr
+cp ${OBSPATH}/${CDATE}.rap.t${cyc}z.satwnd.tm00.bufr_d satwndbufr
 ${cpreq} ${EXECrrfs}/bufr2ioda.x .
 
 # generate the namelist on the fly
@@ -17,11 +19,9 @@ yaml_list=(
 "prepbufr_aircar.yaml"
 #"prepbufr_aircft.yaml"
 #"prepbufr_ascatw.yaml"
-#"prepbufr_gpsipw.yaml"
 #"prepbufr_msonet.yaml"
 #"prepbufr_proflr.yaml"
 #"prepbufr_rassda.yaml"
-#"prepbufr_satwnd.yaml"
 #"prepbufr_sfcshp.yaml"
 #"prepbufr_vadwnd.yaml"
 )
@@ -51,6 +51,27 @@ for yaml in ${yaml_list[@]}; do
  ./bufr2ioda.x ${yaml}
  # some data may not be available at all cycles, so we don't check whether bufr2ioda.x runs successfully
 done
+
+# --------------------------------------------------
+# run python bufr2ioda tool for ZTD and AMV bufr obs
+# --------------------------------------------------
+if (( 1 == 2 )); then
+HOMErdasapp=${HOMErrfs}/sorc/RDASApp/
+${cpreq} ${HOMErdasapp}/rrfs-test/IODA/python/bufr2ioda_ztd.py .
+#${cpreq} ${HOMErdasapp}/rrfs-test/IODA/python/bufr2ioda_satwnd.py .
+${cpreq} ${HOMErdasapp}/rrfs-test/IODA/python/bufr2ioda.json .
+
+# pyioda libraries
+PYIODALIB=$(echo $HOMErdasapp/build/lib/python3.*)
+export PYTHONPATH=${PYIODALIB}:${PYTHONPATH}
+
+# generate a JSON w CDATE from the template
+${cpreq} ${HOMErdasapp}/rrfs-test/IODA/python/gen_bufr2ioda_json.py .
+./gen_bufr2ioda_json.py -t bufr2ioda.json -o bufr2ioda_0.json
+
+./bufr2ioda_ztd.py -c bufr2ioda_0.json
+#./bufr2ioda_satwnd.py -c bufr2ioda_0.json
+fi
 
 # run offline IODA tools
 ${cpreq} ${USHrrfs}/offline_ioda_tweak.py .
