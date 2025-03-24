@@ -16,13 +16,9 @@ if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
 fi
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${CYCLE_TYPE}" == "spinup" ]; then
-  #### export umbrella_calc_ensmean_data="${DATAROOT}/${RUN}_${PDY}${cyc}/${WGF}/calc_ensmean_spinup"
-  export umbrella_calc_ensmean_data=${umbrella_calc_ensmean_data:-${DATAROOT}/rrfs_calc_ensmean_spinup_${cyc}_${rrfs_ver}/${WGF}}
   export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
   export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
 else
-  #### export umbrella_calc_ensmean_data="${DATAROOT}/${RUN}_${PDY}${cyc}/${WGF}/calc_ensmean"
-  export umbrella_calc_ensmean_data=${umbrella_calc_ensmean_data:-${DATAROOT}/rrfs_calc_ensmean_${cyc}_${rrfs_ver}/${WGF}}
   export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
   export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}
 fi

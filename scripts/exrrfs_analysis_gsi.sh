@@ -415,6 +415,17 @@ sed -i "s/yyyy/${YYYY}/" coupler.res
 sed -i "s/mm/${MM}/"     coupler.res
 sed -i "s/dd/${DD}/"     coupler.res
 sed -i "s/hh/${HH}/"     coupler.res
+
+# copy xnorm and anl_grid for gsi performance 
+if [ -r ${fixgriddir}/xnorm_new.480.1351.1976 ] && [ -r ${fixgriddir}/anl_grid.480.3950.2700 ]; then
+  cpreq -p ${fixgriddir}/xnorm_new.480.1351.1976 .
+  cpreq -p ${fixgriddir}/anl_grid.480.3950.2700 .
+fi
+if [ -r ${fixgriddir}/xnorm_new.240.1351.1976 ] && [ -r ${fixgriddir}/anl_grid.240.3950.2700 ]; then
+  cpreq -p ${fixgriddir}/xnorm_new.240.1351.1976 .
+  cpreq -p ${fixgriddir}/anl_grid.240.3950.2700 .
+fi
+
 #
 #-----------------------------------------------------------------------
 #
@@ -432,7 +443,11 @@ else
   SUBH=""
   obs_source=${OBSTYPE_SOURCE}
   if [ ${HH} -eq '00' ] || [ ${HH} -eq '12' ]; then
-    obs_source=${OBSTYPE_SOURCE}
+    if [ ${GSI_TYPE} == "OBSERVER" ]; then
+      obs_source=${OBSTYPE_SOURCE}_e
+    else
+      obs_source=${OBSTYPE_SOURCE}
+    fi
   fi
 
   case $MACHINE in
@@ -973,6 +988,8 @@ export pgm="gsi.x"
 
 $APRUN ./$pgm < gsiparm.anl >>$pgmout 2>errfile
 export err=$?; err_chk
+cpreq -p $pgmout $COMOUT/rrfs.t${HH}z.gsiout.tm00
+cpreq -p $pgmout rrfs.t${HH}z.gsiout.tm00
 
 mv errfile errfile_gsi
 
@@ -1066,10 +1083,12 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
          ${APRUN} $pgm -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4 >>$pgmout 2>errfile
 	 export err=$?; err_chk
 	 mv errfile errfile_nc_diag_cat_$type
-         gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4
-         cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
-         echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listcnv
+         if [[ -s diag_${type}_${string}.${YYYYMMDDHH}.nc4 ]]; then
+           gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4
+           cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
+           echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listcnv
          numfile_cnv=`expr ${numfile_cnv} + 1`
+         fi
       fi
     done
 
@@ -1163,7 +1182,7 @@ fi # run diag inline (with GSI)
 filelist="pe*.nc4 rrfs.*.${YYYYMMDDHH}_cnvstat_nc rrfs.*.${YYYYMMDDHH}_radstat_nc satbias_out satbias_pc.out"
 for file in $filelist; do
   if [ -s $file ]; then
-    echo "cpreq ${DATA}/${file} ." >> ${shared_output_data}/link_shared_file.sh
+    echo "ln -s ${DATA}/${file} ." >> ${shared_output_data}/link_shared_file.sh
   else
     echo "WARNING $file is not available"
   fi

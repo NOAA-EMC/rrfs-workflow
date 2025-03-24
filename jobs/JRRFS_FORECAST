@@ -21,6 +21,21 @@ else
   export DO_ENSEMBLE="FALSE"
 fi
 
+case $WGF in
+  det)
+    COM_WGF="rrfs"
+    ;;
+  enkf)
+    COM_WGF="enkfrrfs"
+    ;;
+  ensf)
+    COM_WGF="refs"
+    ;;
+  firewx)
+    COM_WGF="firewx"
+    ;;
+esac
+
 #-----------------------------------------------------------------------
 # Define the umbrella data and COM directories.
 # Create the INPUT and RESTART directories under the run directory.
@@ -28,13 +43,13 @@ fi
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
 export COMrrfs=${COMrrfs:-$(compath.py -o rrfs/${rrfs_ver})}
-export COMOUT=${COMOUT:-$(compath.py -o rrfs/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
+export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}
 export umbrella_forecast_data=${DATAROOT}/${RUN}_forecast_${cyc}_${rrfs_ver}/${WGF}
 if [ ${CYCLE_TYPE} = "spinup" ]; then
-  export COMOUT=${COMOUT}_spinup
+  export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}_spinup
   export umbrella_forecast_data=${DATAROOT}/${RUN}_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export COMOUT=${COMOUT}/${mem_num}
+    export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}_spinup/${mem_num}
     export umbrella_ics_data="${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}/ics"
     export umbrella_forecast_data=${DATAROOT}/${RUN}_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
   else
@@ -42,7 +57,7 @@ if [ ${CYCLE_TYPE} = "spinup" ]; then
   fi
 else
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export COMOUT=${COMOUT}/${mem_num}
+    export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}/${mem_num}
     export umbrella_ics_data="${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}/ics"
     export umbrella_forecast_data=${DATAROOT}/${RUN}_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
   else
@@ -55,7 +70,8 @@ export shared_forecast_restart_data=${umbrella_forecast_data}/RESTART
 export DATA=${DATA:-${umbrella_forecast_data}/${jobid}}
 mkdir -p ${COMOUT}/forecast/RESTART ${DATA}/INPUT ${DATA}/RESTART ${shared_forecast_output_data} ${shared_forecast_restart_data}
 cd ${DATA}
-
+export umbrella_post_data=${DATAROOT}/${RUN}_post_${cyc}_${rrfs_ver}/${WGF}
+[[ -d ${umbrella_post_data} ]]&& rm -rf ${umbrella_post_data}
 #-----------------------------------------------------------------------
 # Source the variable definitions file
 #-----------------------------------------------------------------------
@@ -122,11 +138,6 @@ export err=$?; err_chk
 if [ -e "$pgmout" ]; then
   cat $pgmout
 fi
-
-# This removal is done as part of the FSM job
-#if [ "${KEEPDATA}" = "NO" ]; then
-#  rm -rf ${DATA}
-#fi
 
 #-----------------------------------------------------------------------
 # Print exit message.

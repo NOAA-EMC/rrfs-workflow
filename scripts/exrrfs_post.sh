@@ -401,24 +401,24 @@ if [ -f PRSLEV.GrbF${post_fhr} ]; then
     tm30=${umbrella_post_data}/PRSLEV.GrbF${fhrm1}.30
     tm45=${umbrella_post_data}/PRSLEV.GrbF${fhrm1}.15
 
-# Time trigger not needed with ecflow
-#    looplim=30
-#    loop=1
-#    while [ $loop -le $looplim ]
-#    do
-#      if [ -e $tm15 -a -e $tm30 -a -e $tm45 ]
-#      then
-#        break
-#      else 
-#        loop=$((loop+1))
-#        sleep 20
-#      fi
-#      if [ $loop -ge $looplim ]
-#      then
-#        msg="FATAL ERROR: ABORTING after 10 minutes of waiting for old 15 minute UPP output $tm15 $tm30 $tm45"
-#        err_exit $msg
-#      fi
-#    done
+# Safety check to ensure all 15 min output files are available
+    looplim=30
+    loop=1
+    while [ $loop -le $looplim ]
+    do
+      if [ -e $tm15 -a -e $tm30 -a -e $tm45 ]
+      then
+        break
+      else 
+        loop=$((loop+1))
+        sleep 20
+      fi
+      if [ $loop -ge $looplim ]
+      then
+        msg="FATAL ERROR: ABORTING after 10 minutes of waiting for 15 minute UPP output $tm15 $tm30 $tm45"
+        err_exit $msg
+      fi
+    done
 
     if [ -e $prslev_subh -a -e $tm15 -a -e $tm30 -a -e $tm45 ]
     then
@@ -444,6 +444,23 @@ cpreq -p ${natlev} ${COMOUT}
 if [ ${SUBH_GEN} = 1 ]; then
   cpreq -p ${prslev_subh_combo} ${COMOUT}
 fi
+
+#-----------------------------------------------------------------------
+#   clean forecast umbrella data directory
+#-----------------------------------------------------------------------
+#if [ ${fhr#0} -eq ${FCST_LEN_HRS_CYCLES[$cyc]#0} ]; then
+#  if [ -f ${umbrella_forecast_data}/forecast_${CYCLE_TYPE}_clean.flag ]; then
+#    if [ ${KEEPDATA} == "YES" ]; then
+#      cd ${umbrella_forecast_data}
+#      backup_directory=BACKUP_$$
+#      mkdir ${backup_directory}
+#      mv output RESTART ./${backup_directory}
+#    else
+#      rm -rf ${umbrella_forecast_data}
+#    fi
+#    cd $DATA
+#  fi
+#fi
 #
 #-----------------------------------------------------------------------
 #   clean forecast netcdf files for saving space

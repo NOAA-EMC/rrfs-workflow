@@ -56,7 +56,7 @@ run_blending=${COMOUT}/run_blending
 run_ensinit=${COMOUT}/run_ensinit
 if [[ ${CYCLE_SUBTYPE} == "ensinit" && -e $run_blending && ! -e $run_ensinit ]]; then
    echo "FATAL: Design issue found in forecast. clean exit ensinit, blending used instead of ensinit."
-   exit 7
+   exit 0
 fi
 #
 #-----------------------------------------------------------------------
@@ -114,6 +114,7 @@ Run command has not been specified for this machine:
     ;;
 
 esac
+[[ -e ${umbrella_forecast_data}/forecast_clean.flag ]] && rm -f ${umbrella_forecast_data}/forecast_clean.flag
 export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
 #
 #-----------------------------------------------------------------------
@@ -610,7 +611,7 @@ fi
 if [ $FCST_LEN_HRS -gt 0 ]; then
   cd ${DATA}/RESTART
   
-  [[ -e ${umbrella_forecast_data}/clean.flag ]] && rm -f ${umbrella_forecast_data}/clean.flag
+  #### [[ -e ${umbrella_forecast_data}/forecast_clean.flag ]] && rm -f ${umbrella_forecast_data}/forecast_clean.flag
   file_ids=( "coupler.res" "fv_core.res.nc" "fv_core.res.tile1.nc" "fv_srf_wnd.res.tile1.nc" "fv_tracer.res.tile1.nc" "phy_data.nc" "sfc_data.nc" )
   num_file_ids=${#file_ids[*]}
   read -a restart_hrs <<< "${RESTART_HRS}"
@@ -788,6 +789,8 @@ cpreq -p ${FV3_EXEC_FP} ${DATA}/$pgm
 
 $APRUN ${DATA}/$pgm >>$pgmout 2>errfile
 export err=$?; err_chk
+
+echo "Forecast job is completed" &> ${umbrella_forecast_data}/forecast_${CYCLE_TYPE}_clean.flag
 #
 #-----------------------------------------------------------------------
 #

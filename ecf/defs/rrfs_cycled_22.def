@@ -21,114 +21,115 @@ suite nco_rrfs_dev_22
           edit ECF_FILES '%PACKAGEHOME%/ecf/scripts'
           family fsm
             task jrrfs_fsm # file scanning monitor service
-              trigger :TIME >= 2235 and :TIME < 2310
+              trigger :TIME >= 2220 and :TIME < 2310
               event 1 release_det_prep_cyc
-              event 2 release_det_analysis_gsi
-              event 3 release_det_post_f000_00_36
-              event 4 release_det_post_f000_15_00
-              event 5 release_det_post_f000_30_00
-              event 6 release_det_post_f000_45_00
-              event 7 release_det_post_f001_00_00
-              event 8 release_det_post_f001_15_00
-              event 9 release_det_post_f001_30_00
-              event 10 release_det_post_f001_45_00
-              event 11 release_det_post_f002_00_00
-              event 12 release_det_post_f002_15_00
-              event 13 release_det_post_f002_30_00
-              event 14 release_det_post_f002_45_00
-              event 15 release_det_post_f003_00_00
-              event 16 release_det_post_f003_15_00
-              event 17 release_det_post_f003_30_00
-              event 18 release_det_post_f003_45_00
-              event 19 release_det_post_f004_00_00
-              event 20 release_det_post_f004_15_00
-              event 21 release_det_post_f004_30_00
-              event 22 release_det_post_f004_45_00
-              event 23 release_det_post_f005_00_00
-              event 24 release_det_post_f005_15_00
-              event 25 release_det_post_f005_30_00
-              event 26 release_det_post_f005_45_00
-              event 27 release_det_post_f006_00_00
-              event 28 release_det_post_f006_15_00
-              event 29 release_det_post_f006_30_00
-              event 30 release_det_post_f006_45_00
-              event 31 release_det_post_f007_00_00
-              event 32 release_det_post_f007_15_00
-              event 33 release_det_post_f007_30_00
-              event 34 release_det_post_f007_45_00
-              event 35 release_det_post_f008_00_00
-              event 36 release_det_post_f008_15_00
-              event 37 release_det_post_f008_30_00
-              event 38 release_det_post_f008_45_00
-              event 39 release_det_post_f009_00_00
-              event 40 release_det_post_f009_15_00
-              event 41 release_det_post_f009_30_00
-              event 42 release_det_post_f009_45_00
-              event 43 release_det_post_f010_00_00
-              event 44 release_det_post_f010_15_00
-              event 45 release_det_post_f010_30_00
-              event 46 release_det_post_f010_45_00
-              event 47 release_det_post_f011_00_00
-              event 48 release_det_post_f011_15_00
-              event 49 release_det_post_f011_30_00
-              event 50 release_det_post_f011_45_00
-              event 51 release_det_post_f012_00_00
-              event 52 release_det_post_f012_15_00
-              event 53 release_det_post_f012_30_00
-              event 54 release_det_post_f012_45_00
-              event 55 release_det_post_f013_00_00
-              event 56 release_det_post_f013_15_00
-              event 57 release_det_post_f013_30_00
-              event 58 release_det_post_f013_45_00
-              event 59 release_det_post_f014_00_00
-              event 60 release_det_post_f014_15_00
-              event 61 release_det_post_f014_30_00
-              event 62 release_det_post_f014_45_00
-              event 63 release_det_post_f015_00_00
-              event 64 release_det_post_f015_15_00
-              event 65 release_det_post_f015_30_00
-              event 66 release_det_post_f015_45_00
-              event 67 release_det_post_f016_00_00
-              event 68 release_det_post_f016_15_00
-              event 69 release_det_post_f016_30_00
-              event 70 release_det_post_f016_45_00
-              event 71 release_det_post_f017_00_00
-              event 72 release_det_post_f017_15_00
-              event 73 release_det_post_f017_30_00
-              event 74 release_det_post_f017_45_00
-              event 75 release_det_post_f018_00_00
-              event 76 release_save_restart_f1
-              event 77 release_save_restart_f2
-              event 79 release_enkf_prep_cyc_mem001
-              event 80 release_enkf_prep_cyc_mem002
-              event 81 release_enkf_prep_cyc_mem003
-              event 82 release_enkf_prep_cyc_mem004
-              event 83 release_enkf_prep_cyc_mem005
-              event 84 release_enkf_prep_cyc_mem006
-              event 85 release_enkf_prep_cyc_mem007
-              event 86 release_enkf_prep_cyc_mem008
-              event 87 release_enkf_prep_cyc_mem009
-              event 88 release_enkf_prep_cyc_mem010
-              event 89 release_enkf_prep_cyc_mem011
-              event 90 release_enkf_prep_cyc_mem012
-              event 91 release_enkf_prep_cyc_mem013
-              event 92 release_enkf_prep_cyc_mem014
-              event 93 release_enkf_prep_cyc_mem015
-              event 94 release_enkf_prep_cyc_mem016
-              event 95 release_enkf_prep_cyc_mem017
-              event 96 release_enkf_prep_cyc_mem018
-              event 97 release_enkf_prep_cyc_mem019
-              event 98 release_enkf_prep_cyc_mem020
-              event 99 release_enkf_prep_cyc_mem021
-              event 100 release_enkf_prep_cyc_mem022
-              event 101 release_enkf_prep_cyc_mem023
-              event 102 release_enkf_prep_cyc_mem024
-              event 103 release_enkf_prep_cyc_mem025
-              event 104 release_enkf_prep_cyc_mem026
-              event 105 release_enkf_prep_cyc_mem027
-              event 106 release_enkf_prep_cyc_mem028
-              event 107 release_enkf_prep_cyc_mem029
-              event 108 release_enkf_prep_cyc_mem030
+              event 2 release_enkf_prep_cyc_mem001
+              event 3 release_enkf_prep_cyc_mem002
+              event 4 release_enkf_prep_cyc_mem003
+              event 5 release_enkf_prep_cyc_mem004
+              event 6 release_enkf_prep_cyc_mem005
+              event 7 release_enkf_prep_cyc_mem006
+              event 8 release_enkf_prep_cyc_mem007
+              event 9 release_enkf_prep_cyc_mem008
+              event 10 release_enkf_prep_cyc_mem009
+              event 11 release_enkf_prep_cyc_mem010
+              event 12 release_enkf_prep_cyc_mem011
+              event 13 release_enkf_prep_cyc_mem012
+              event 14 release_enkf_prep_cyc_mem013
+              event 15 release_enkf_prep_cyc_mem014
+              event 16 release_enkf_prep_cyc_mem015
+              event 17 release_enkf_prep_cyc_mem016
+              event 18 release_enkf_prep_cyc_mem017
+              event 19 release_enkf_prep_cyc_mem018
+              event 20 release_enkf_prep_cyc_mem019
+              event 21 release_enkf_prep_cyc_mem020
+              event 22 release_enkf_prep_cyc_mem021
+              event 23 release_enkf_prep_cyc_mem022
+              event 24 release_enkf_prep_cyc_mem023
+              event 25 release_enkf_prep_cyc_mem024
+              event 26 release_enkf_prep_cyc_mem025
+              event 27 release_enkf_prep_cyc_mem026
+              event 28 release_enkf_prep_cyc_mem027
+              event 29 release_enkf_prep_cyc_mem028
+              event 30 release_enkf_prep_cyc_mem029
+              event 31 release_enkf_prep_cyc_mem030
+              event 32 release_det_analysis_gsi
+              event 33 release_save_restart_f1
+              event 34 release_save_restart_f2
+              event 35 release_det_post_f000_00_36
+              event 36 release_det_post_f000_15_00
+              event 37 release_det_post_f000_30_00
+              event 38 release_det_post_f000_45_00
+              event 39 release_det_post_f001_00_00
+              event 40 release_det_post_f001_15_00
+              event 41 release_det_post_f001_30_00
+              event 42 release_det_post_f001_45_00
+              event 43 release_det_post_f002_00_00
+              event 44 release_det_post_f002_15_00
+              event 45 release_det_post_f002_30_00
+              event 46 release_det_post_f002_45_00
+              event 47 release_det_post_f003_00_00
+              event 48 release_det_post_f003_15_00
+              event 49 release_det_post_f003_30_00
+              event 50 release_det_post_f003_45_00
+              event 51 release_det_post_f004_00_00
+              event 52 release_det_post_f004_15_00
+              event 53 release_det_post_f004_30_00
+              event 54 release_det_post_f004_45_00
+              event 55 release_det_post_f005_00_00
+              event 56 release_det_post_f005_15_00
+              event 57 release_det_post_f005_30_00
+              event 58 release_det_post_f005_45_00
+              event 59 release_det_post_f006_00_00
+              event 60 release_det_post_f006_15_00
+              event 61 release_det_post_f006_30_00
+              event 62 release_det_post_f006_45_00
+              event 63 release_det_post_f007_00_00
+              event 64 release_det_post_f007_15_00
+              event 65 release_det_post_f007_30_00
+              event 66 release_det_post_f007_45_00
+              event 67 release_det_post_f008_00_00
+              event 68 release_det_post_f008_15_00
+              event 69 release_det_post_f008_30_00
+              event 70 release_det_post_f008_45_00
+              event 71 release_det_post_f009_00_00
+              event 72 release_det_post_f009_15_00
+              event 73 release_det_post_f009_30_00
+              event 74 release_det_post_f009_45_00
+              event 75 release_det_post_f010_00_00
+              event 76 release_det_post_f010_15_00
+              event 77 release_det_post_f010_30_00
+              event 78 release_det_post_f010_45_00
+              event 79 release_det_post_f011_00_00
+              event 80 release_det_post_f011_15_00
+              event 81 release_det_post_f011_30_00
+              event 82 release_det_post_f011_45_00
+              event 83 release_det_post_f012_00_00
+              event 84 release_det_post_f012_15_00
+              event 85 release_det_post_f012_30_00
+              event 86 release_det_post_f012_45_00
+              event 87 release_det_post_f013_00_00
+              event 88 release_det_post_f013_15_00
+              event 89 release_det_post_f013_30_00
+              event 90 release_det_post_f013_45_00
+              event 91 release_det_post_f014_00_00
+              event 92 release_det_post_f014_15_00
+              event 93 release_det_post_f014_30_00
+              event 94 release_det_post_f014_45_00
+              event 95 release_det_post_f015_00_00
+              event 96 release_det_post_f015_15_00
+              event 97 release_det_post_f015_30_00
+              event 98 release_det_post_f015_45_00
+              event 99 release_det_post_f016_00_00
+              event 100 release_det_post_f016_15_00
+              event 101 release_det_post_f016_30_00
+              event 102 release_det_post_f016_45_00
+              event 103 release_det_post_f017_00_00
+              event 104 release_det_post_f017_15_00
+              event 105 release_det_post_f017_30_00
+              event 106 release_det_post_f017_45_00
+              event 107 release_det_post_f018_00_00
+              event 108 release_enkf_observer_gsi_ensmean
           endfamily   # fsm
           family init
             family det
@@ -137,9 +138,9 @@ suite nco_rrfs_dev_22
               task jrrfs_det_process_smoke
                 trigger :TIME >= 2235 and :TIME < 2310  # 20 mins window 
               task jrrfs_det_process_radar
-                trigger :TIME >= 2235 and :TIME < 2305
+                trigger :TIME >= 2215 and :TIME < 2305
               task jrrfs_det_process_lightning
-                trigger :TIME >= 2235 and :TIME < 2305
+                trigger :TIME >= 2215 and :TIME < 2305
               task jrrfs_det_process_bufr
                 trigger :TIME >= 2235 and :TIME < 2305
             endfamily   # det
@@ -147,9 +148,9 @@ suite nco_rrfs_dev_22
               edit WGF 'enkf'
               edit CYCLE_TYPE 'prod'
               task jrrfs_enkf_process_radar
-                trigger :TIME >= 2235 and :TIME < 2305
+                trigger :TIME >= 2215 and :TIME < 2305
               task jrrfs_enkf_process_lightning
-                trigger :TIME >= 2235 and :TIME < 2305
+                trigger :TIME >= 2215 and :TIME < 2305
               task jrrfs_enkf_process_bufr
                 trigger :TIME >= 2235 and :TIME < 2305
             endfamily   # enkf
@@ -159,7 +160,7 @@ suite nco_rrfs_dev_22
               edit WGF 'det'
               edit CYCLE_TYPE 'prod'
               task jrrfs_det_prep_cyc
-                trigger ../../fsm/jrrfs_fsm:release_det_prep_cyc
+                trigger :TIME >= 2220 and :TIME < 2305 and ../../fsm/jrrfs_fsm:release_det_prep_cyc
             endfamily   # det
             family enkf
               edit WGF 'enkf'
@@ -260,9 +261,9 @@ suite nco_rrfs_dev_22
                 edit MEMBER_NAME '030'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem030
               task jrrfs_enkf_calc_ensmean
-                trigger ../det==complete and ./jrrfs_enkf_prep_cyc_mem001==complete and ./jrrfs_enkf_prep_cyc_mem002==complete and ./jrrfs_enkf_prep_cyc_mem003==complete and ./jrrfs_enkf_prep_cyc_mem004==complete and ./jrrfs_enkf_prep_cyc_mem005==complete and ./jrrfs_enkf_prep_cyc_mem006==complete and ./jrrfs_enkf_prep_cyc_mem007==complete and ./jrrfs_enkf_prep_cyc_mem008==complete and ./jrrfs_enkf_prep_cyc_mem009==complete and ./jrrfs_enkf_prep_cyc_mem010==complete and ./jrrfs_enkf_prep_cyc_mem011==complete and ./jrrfs_enkf_prep_cyc_mem012==complete and ./jrrfs_enkf_prep_cyc_mem013==complete and ./jrrfs_enkf_prep_cyc_mem014==complete and ./jrrfs_enkf_prep_cyc_mem015==complete and ./jrrfs_enkf_prep_cyc_mem016==complete and ./jrrfs_enkf_prep_cyc_mem017==complete and ./jrrfs_enkf_prep_cyc_mem018==complete and ./jrrfs_enkf_prep_cyc_mem019==complete and ./jrrfs_enkf_prep_cyc_mem020==complete and ./jrrfs_enkf_prep_cyc_mem021==complete and ./jrrfs_enkf_prep_cyc_mem022==complete and ./jrrfs_enkf_prep_cyc_mem023==complete and ./jrrfs_enkf_prep_cyc_mem024==complete and ./jrrfs_enkf_prep_cyc_mem025==complete and ./jrrfs_enkf_prep_cyc_mem026==complete and ./jrrfs_enkf_prep_cyc_mem027==complete and ./jrrfs_enkf_prep_cyc_mem028==complete and ./jrrfs_enkf_prep_cyc_mem029==complete and ./jrrfs_enkf_prep_cyc_mem030==complete and ./jrrfs_enkf_prep_cyc_ensmean==complete
+                trigger ./jrrfs_enkf_prep_cyc_mem001==complete and ./jrrfs_enkf_prep_cyc_mem002==complete and ./jrrfs_enkf_prep_cyc_mem003==complete and ./jrrfs_enkf_prep_cyc_mem004==complete and ./jrrfs_enkf_prep_cyc_mem005==complete and ./jrrfs_enkf_prep_cyc_mem006==complete and ./jrrfs_enkf_prep_cyc_mem007==complete and ./jrrfs_enkf_prep_cyc_mem008==complete and ./jrrfs_enkf_prep_cyc_mem009==complete and ./jrrfs_enkf_prep_cyc_mem010==complete and ./jrrfs_enkf_prep_cyc_mem011==complete and ./jrrfs_enkf_prep_cyc_mem012==complete and ./jrrfs_enkf_prep_cyc_mem013==complete and ./jrrfs_enkf_prep_cyc_mem014==complete and ./jrrfs_enkf_prep_cyc_mem015==complete and ./jrrfs_enkf_prep_cyc_mem016==complete and ./jrrfs_enkf_prep_cyc_mem017==complete and ./jrrfs_enkf_prep_cyc_mem018==complete and ./jrrfs_enkf_prep_cyc_mem019==complete and ./jrrfs_enkf_prep_cyc_mem020==complete and ./jrrfs_enkf_prep_cyc_mem021==complete and ./jrrfs_enkf_prep_cyc_mem022==complete and ./jrrfs_enkf_prep_cyc_mem023==complete and ./jrrfs_enkf_prep_cyc_mem024==complete and ./jrrfs_enkf_prep_cyc_mem025==complete and ./jrrfs_enkf_prep_cyc_mem026==complete and ./jrrfs_enkf_prep_cyc_mem027==complete and ./jrrfs_enkf_prep_cyc_mem028==complete and ./jrrfs_enkf_prep_cyc_mem029==complete and ./jrrfs_enkf_prep_cyc_mem030==complete and ./jrrfs_enkf_prep_cyc_ensmean==complete
               task jrrfs_enkf_observer_gsi_ensmean
-                trigger ./jrrfs_enkf_calc_ensmean==complete
+                trigger ./jrrfs_enkf_calc_ensmean==complete and ../../fsm/jrrfs_fsm:release_enkf_observer_gsi_ensmean
               task jrrfs_enkf_observer_gsi_mem001
                 edit MEM_TYPE 'MEMBER'
                 edit MEMBER_NAME '001'

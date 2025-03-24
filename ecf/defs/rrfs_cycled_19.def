@@ -24,87 +24,86 @@ suite nco_rrfs_dev_19
           edit ECF_FILES '%PACKAGEHOME%/ecf/scripts'
           family fsm
             task jrrfs_fsm # file scanning monitor service
-              trigger :TIME >= 1935 and :TIME < 2010
-              event 1 release_det_analysis_gsi
-              event 2 release_det_post_f000_00_36
-              event 3 release_det_post_f000_15_00
-              event 4 release_det_post_f000_30_00
-              event 5 release_det_post_f000_45_00
-              event 6 release_det_post_f001_00_00
-              event 7 release_det_post_f001_15_00
-              event 8 release_det_post_f001_30_00
-              event 9 release_det_post_f001_45_00
-              event 10 release_det_post_f002_00_00
-              event 11 release_det_post_f002_15_00
-              event 12 release_det_post_f002_30_00
-              event 13 release_det_post_f002_45_00
-              event 14 release_det_post_f003_00_00
-              event 15 release_det_post_f003_15_00
-              event 16 release_det_post_f003_30_00
-              event 17 release_det_post_f003_45_00
-              event 18 release_det_post_f004_00_00
-              event 19 release_det_post_f004_15_00
-              event 20 release_det_post_f004_30_00
-              event 21 release_det_post_f004_45_00
-              event 22 release_det_post_f005_00_00
-              event 23 release_det_post_f005_15_00
-              event 24 release_det_post_f005_30_00
-              event 25 release_det_post_f005_45_00
-              event 26 release_det_post_f006_00_00
-              event 27 release_det_post_f006_15_00
-              event 28 release_det_post_f006_30_00
-              event 29 release_det_post_f006_45_00
-              event 30 release_det_post_f007_00_00
-              event 31 release_det_post_f007_15_00
-              event 32 release_det_post_f007_30_00
-              event 33 release_det_post_f007_45_00
-              event 34 release_det_post_f008_00_00
-              event 35 release_det_post_f008_15_00
-              event 36 release_det_post_f008_30_00
-              event 37 release_det_post_f008_45_00
-              event 38 release_det_post_f009_00_00
-              event 39 release_det_post_f009_15_00
-              event 40 release_det_post_f009_30_00
-              event 41 release_det_post_f009_45_00
-              event 42 release_det_post_f010_00_00
-              event 43 release_det_post_f010_15_00
-              event 44 release_det_post_f010_30_00
-              event 45 release_det_post_f010_45_00
-              event 46 release_det_post_f011_00_00
-              event 47 release_det_post_f011_15_00
-              event 48 release_det_post_f011_30_00
-              event 49 release_det_post_f011_45_00
-              event 50 release_det_post_f012_00_00
-              event 51 release_det_post_f012_15_00
-              event 52 release_det_post_f012_30_00
-              event 53 release_det_post_f012_45_00
-              event 54 release_det_post_f013_00_00
-              event 55 release_det_post_f013_15_00
-              event 56 release_det_post_f013_30_00
-              event 57 release_det_post_f013_45_00
-              event 58 release_det_post_f014_00_00
-              event 59 release_det_post_f014_15_00
-              event 60 release_det_post_f014_30_00
-              event 61 release_det_post_f014_45_00
-              event 62 release_det_post_f015_00_00
-              event 63 release_det_post_f015_15_00
-              event 64 release_det_post_f015_30_00
-              event 65 release_det_post_f015_45_00
-              event 66 release_det_post_f016_00_00
-              event 67 release_det_post_f016_15_00
-              event 68 release_det_post_f016_30_00
-              event 69 release_det_post_f016_45_00
-              event 70 release_det_post_f017_00_00
-              event 71 release_det_post_f017_15_00
-              event 72 release_det_post_f017_30_00
-              event 73 release_det_post_f017_45_00
-              event 74 release_det_post_f018_00_00
-              event 75 release_save_restart_f1
-              event 76 release_save_restart_f2
-              event 77 release_save_restart_spinup_f001
-              event 78 release_enkf_make_ics
-              event 79 release_enkf_observer_gsi_ensmean_spinup
-              
+              trigger :TIME >= 1920 and :TIME < 2010
+              event 1 release_enkf_make_ics
+              event 2 release_enkf_observer_gsi_ensmean
+              event 3 release_det_analysis_gsi
+              event 4 release_save_restart_f1
+              event 5 release_save_restart_f2
+              event 6 release_save_restart_spinup_f001
+              event 7 release_det_post_f000_00_36
+              event 8 release_det_post_f000_15_00
+              event 9 release_det_post_f000_30_00
+              event 10 release_det_post_f000_45_00
+              event 11 release_det_post_f001_00_00
+              event 12 release_det_post_f001_15_00
+              event 13 release_det_post_f001_30_00
+              event 14 release_det_post_f001_45_00
+              event 15 release_det_post_f002_00_00
+              event 16 release_det_post_f002_15_00
+              event 17 release_det_post_f002_30_00
+              event 18 release_det_post_f002_45_00
+              event 19 release_det_post_f003_00_00
+              event 20 release_det_post_f003_15_00
+              event 21 release_det_post_f003_30_00
+              event 22 release_det_post_f003_45_00
+              event 23 release_det_post_f004_00_00
+              event 24 release_det_post_f004_15_00
+              event 25 release_det_post_f004_30_00
+              event 26 release_det_post_f004_45_00
+              event 27 release_det_post_f005_00_00
+              event 28 release_det_post_f005_15_00
+              event 29 release_det_post_f005_30_00
+              event 30 release_det_post_f005_45_00
+              event 31 release_det_post_f006_00_00
+              event 32 release_det_post_f006_15_00
+              event 33 release_det_post_f006_30_00
+              event 34 release_det_post_f006_45_00
+              event 35 release_det_post_f007_00_00
+              event 36 release_det_post_f007_15_00
+              event 37 release_det_post_f007_30_00
+              event 38 release_det_post_f007_45_00
+              event 39 release_det_post_f008_00_00
+              event 40 release_det_post_f008_15_00
+              event 41 release_det_post_f008_30_00
+              event 42 release_det_post_f008_45_00
+              event 43 release_det_post_f009_00_00
+              event 44 release_det_post_f009_15_00
+              event 45 release_det_post_f009_30_00
+              event 46 release_det_post_f009_45_00
+              event 47 release_det_post_f010_00_00
+              event 48 release_det_post_f010_15_00
+              event 49 release_det_post_f010_30_00
+              event 50 release_det_post_f010_45_00
+              event 51 release_det_post_f011_00_00
+              event 52 release_det_post_f011_15_00
+              event 53 release_det_post_f011_30_00
+              event 54 release_det_post_f011_45_00
+              event 55 release_det_post_f012_00_00
+              event 56 release_det_post_f012_15_00
+              event 57 release_det_post_f012_30_00
+              event 58 release_det_post_f012_45_00
+              event 59 release_det_post_f013_00_00
+              event 60 release_det_post_f013_15_00
+              event 61 release_det_post_f013_30_00
+              event 62 release_det_post_f013_45_00
+              event 63 release_det_post_f014_00_00
+              event 64 release_det_post_f014_15_00
+              event 65 release_det_post_f014_30_00
+              event 66 release_det_post_f014_45_00
+              event 67 release_det_post_f015_00_00
+              event 68 release_det_post_f015_15_00
+              event 69 release_det_post_f015_30_00
+              event 70 release_det_post_f015_45_00
+              event 71 release_det_post_f016_00_00
+              event 72 release_det_post_f016_15_00
+              event 73 release_det_post_f016_30_00
+              event 74 release_det_post_f016_45_00
+              event 75 release_det_post_f017_00_00
+              event 76 release_det_post_f017_15_00
+              event 77 release_det_post_f017_30_00
+              event 78 release_det_post_f017_45_00
+              event 79 release_det_post_f018_00_00
           endfamily   # fsm
           family init
             family det
@@ -114,10 +113,10 @@ suite nco_rrfs_dev_19
                 trigger :TIME >= 1935 and :TIME < 2010  # 20 mins window 
               task jrrfs_det_process_radar
                 edit CYCLE_TYPE 'prod'
-                trigger :TIME >= 1935 and :TIME < 2005
+                trigger :TIME >= 1915 and :TIME < 2005
               task jrrfs_det_process_lightning
                 edit CYCLE_TYPE 'prod'
-                trigger :TIME >= 1935 and :TIME < 2005
+                trigger :TIME >= 1915 and :TIME < 2005
               task jrrfs_det_process_bufr
                 edit CYCLE_TYPE 'prod'
                 trigger :TIME >= 1935 and :TIME < 2005
@@ -138,9 +137,9 @@ suite nco_rrfs_dev_19
               edit WGF 'enkf'
               edit CYCLE_TYPE 'spinup'
               task jrrfs_enkf_process_radar_spinup
-                trigger :TIME >= 1935 and :TIME < 2005
+                trigger :TIME >= 1915 and :TIME < 2005
               task jrrfs_enkf_process_lightning_spinup
-                trigger :TIME >= 1935 and :TIME < 2005
+                trigger :TIME >= 1915 and :TIME < 2005
               task jrrfs_enkf_process_bufr_spinup
                 trigger :TIME >= 1935 and :TIME < 2005
             endfamily   # enkf
@@ -306,7 +305,7 @@ suite nco_rrfs_dev_19
               edit WGF 'det'
               task jrrfs_det_prep_cyc
                 edit CYCLE_TYPE 'prod'
-                trigger /nco_rrfs_dev_18/primary/18/rrfs/v1.0/forecast/det/jrrfs_det_save_restart_long_1==complete
+                trigger :TIME >= 1920 and :TIME < 2010 and /nco_rrfs_dev_18/primary/18/rrfs/v1.0/forecast/det/jrrfs_det_save_restart_long_1==complete
               task jrrfs_det_prep_cyc_spinup
                 edit CYCLE_TYPE 'spinup'
                 trigger /nco_rrfs_dev_18/primary/18/rrfs/v1.0/forecast/det/jrrfs_det_save_restart_spinup_f001==complete
@@ -534,7 +533,7 @@ suite nco_rrfs_dev_19
               task jrrfs_enkf_calc_ensmean_spinup
                 trigger ./jrrfs_enkf_recenter_spinup==complete
               task jrrfs_enkf_observer_gsi_ensmean_spinup
-                trigger ./jrrfs_enkf_calc_ensmean_spinup==complete and ../../fsm/jrrfs_fsm:release_enkf_observer_gsi_ensmean_spinup
+                trigger ./jrrfs_enkf_calc_ensmean_spinup==complete and ../../fsm/jrrfs_fsm:release_enkf_observer_gsi_ensmean
               task jrrfs_enkf_observer_gsi_spinup_mem001
                 edit MEMBER_NAME '001'
                 edit MEM_TYPE 'MEMBER'
@@ -676,7 +675,7 @@ suite nco_rrfs_dev_19
                 trigger ./jrrfs_det_update_lbc_soil==complete and ../../init/det/jrrfs_det_process_bufr==complete
               task jrrfs_det_analysis_gsi_spinup
                 edit CYCLE_TYPE 'spinup'
-                trigger :TIME >= 1935 and :TIME < 2010 and ../../prep/det/jrrfs_det_prep_cyc_spinup==complete
+                trigger :TIME >= 1935 and ../../prep/det/jrrfs_det_prep_cyc_spinup==complete
               task jrrfs_det_update_lbc_soil_spinup
                 edit CYCLE_TYPE 'spinup'
                 trigger ./jrrfs_det_analysis_gsi_spinup==complete

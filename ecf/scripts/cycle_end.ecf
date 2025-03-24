@@ -10,20 +10,37 @@ export cycle=t${cyc}z
 export CDATE="$PDY$cyc"
 retro=YES
 suite_name=$(ecflow_client --query variable ${ECF_NAME}:SUITE)
+
+#### developer only area remove it before NCO code deliver
+# Set PDY for this cycle
+# Set job log directory for developer
 if [ $retro == "YES" ]; then
-  cd /lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/output/prod/today/ecflocal
+  outputdir_ecf=/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/output/prod/today
+  cd ${outputdir_ecf}/ecflocal
   setpdy.sh
   . ./PDY
   echo "Current retro PDY is $PDY"
   echo "Current retro cyc is $cyc"
+  outputdir_ecf_today=${outputdir_ecf}/${PDYp1}${cyc}
+  mkdir -p ${outputdir_ecf_today}
   ecflow_client --alter change variable PDY $PDYp1 /${suite_name}/primary/${cyc}
-#  if [ ${cyc} = "00" ]; then
-#    for idx_cyc in $(seq 0 23); do
-#      idx_cyc2d=$( printf "%02d" "${idx_cyc}" )
-#      ecflow_client --alter change variable PDY $PDYp1 /nco_rrfs_dev_${idx_cyc2d}/primary/${idx_cyc2d}
-#    done
-#  fi
+  ecflow_client --alter add variable OUTPUTDIR $outputdir_ecf_today /${suite_name}/primary/${cyc}/rrfs
 fi
+
+# Clean the umbrella data from previous run if exist
+cd $DATAROOT
+if [ ${KEEPDATA} == "YES" ]; then
+  for dir_remove in rrfs_analysis_gsi rrfs_analysis_gsi_spinup rrfs_calc_ensmean rrfs_forecast rrfs_forecast_spinup rrfs_init rrfs_init_spinup; do
+    [[ -d ${dir_remove}_${cyc}_v1.0 ]]&& mv ${dir_remove}_${cyc}_v1.0 ${dir_remove}_$$_${cyc}_v1.0
+  done
+else
+  for dir_remove in rrfs_analysis_gsi rrfs_analysis_gsi_spinup rrfs_calc_ensmean rrfs_forecast rrfs_forecast_spinup rrfs_init rrfs_init_spinup; do
+    [[ -d ${dir_remove}_${cyc}_v1.0 ]]&& rm -rf ${dir_remove}_${cyc}_v1.0
+  done
+fi
+cd $DATA
+####
+
 ecflow_client --requeue=force /${suite_name}/primary/${cyc}/${model}
 
 %include <tail.h>

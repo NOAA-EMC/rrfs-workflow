@@ -22,163 +22,188 @@ suite nco_rrfs_dev_00
           family fsm
             task jrrfs_fsm # file scanning monitor service
               trigger :TIME >= 0001 and :TIME < 0110
-              event 156 release_det_make_lbcs
-              event 1 release_det_prep_cyc
-              event 2 release_det_analysis_gsi
-              event 3 release_save_restart_long_1
-              event 4 release_save_restart_long_2
-              event 5 release_save_restart_long_12
-              event 6 release_save_restart_long_24
-              event 7 release_save_restart_long_36
-              event 8 release_save_restart_long_48
-              event 9 release_det_post_f000_00_36_long
-              event 10 release_det_post_f000_15_00_long
-              event 11 release_det_post_f000_30_00_long
-              event 12 release_det_post_f000_45_00_long
-              event 13 release_det_post_f001_00_00_long
-              event 14 release_det_post_f001_15_00_long
-              event 15 release_det_post_f001_30_00_long
-              event 16 release_det_post_f001_45_00_long
-              event 17 release_det_post_f002_00_00_long
-              event 18 release_det_post_f002_15_00_long
-              event 19 release_det_post_f002_30_00_long
-              event 20 release_det_post_f002_45_00_long
-              event 21 release_det_post_f003_00_00_long
-              event 22 release_det_post_f003_15_00_long
-              event 23 release_det_post_f003_30_00_long
-              event 24 release_det_post_f003_45_00_long
-              event 25 release_det_post_f004_00_00_long
-              event 26 release_det_post_f004_15_00_long
-              event 27 release_det_post_f004_30_00_long
-              event 28 release_det_post_f004_45_00_long
-              event 29 release_det_post_f005_00_00_long
-              event 30 release_det_post_f005_15_00_long
-              event 31 release_det_post_f005_30_00_long
-              event 32 release_det_post_f005_45_00_long
-              event 33 release_det_post_f006_00_00_long
-              event 34 release_det_post_f006_15_00_long
-              event 35 release_det_post_f006_30_00_long
-              event 36 release_det_post_f006_45_00_long
-              event 37 release_det_post_f007_00_00_long
-              event 38 release_det_post_f007_15_00_long
-              event 39 release_det_post_f007_30_00_long
-              event 40 release_det_post_f007_45_00_long
-              event 41 release_det_post_f008_00_00_long
-              event 42 release_det_post_f008_15_00_long
-              event 43 release_det_post_f008_30_00_long
-              event 44 release_det_post_f008_45_00_long
-              event 45 release_det_post_f009_00_00_long
-              event 46 release_det_post_f009_15_00_long
-              event 47 release_det_post_f009_30_00_long
-              event 48 release_det_post_f009_45_00_long
-              event 49 release_det_post_f010_00_00_long
-              event 50 release_det_post_f010_15_00_long
-              event 51 release_det_post_f010_30_00_long
-              event 52 release_det_post_f010_45_00_long
-              event 53 release_det_post_f011_00_00_long
-              event 54 release_det_post_f011_15_00_long
-              event 55 release_det_post_f011_30_00_long
-              event 56 release_det_post_f011_45_00_long
-              event 57 release_det_post_f012_00_00_long
-              event 58 release_det_post_f012_15_00_long
-              event 59 release_det_post_f012_30_00_long
-              event 60 release_det_post_f012_45_00_long
-              event 61 release_det_post_f013_00_00_long
-              event 62 release_det_post_f013_15_00_long
-              event 63 release_det_post_f013_30_00_long
-              event 64 release_det_post_f013_45_00_long
-              event 65 release_det_post_f014_00_00_long
-              event 66 release_det_post_f014_15_00_long
-              event 67 release_det_post_f014_30_00_long
-              event 68 release_det_post_f014_45_00_long
-              event 69 release_det_post_f015_00_00_long
-              event 70 release_det_post_f015_15_00_long
-              event 71 release_det_post_f015_30_00_long
-              event 72 release_det_post_f015_45_00_long
-              event 73 release_det_post_f016_00_00_long
-              event 74 release_det_post_f016_15_00_long
-              event 75 release_det_post_f016_30_00_long
-              event 76 release_det_post_f016_45_00_long
-              event 77 release_det_post_f017_00_00_long
-              event 78 release_det_post_f017_15_00_long
-              event 79 release_det_post_f017_30_00_long
-              event 80 release_det_post_f017_45_00_long
-              event 81 release_det_post_f018_00_00_long
-              event 82 release_det_post_f019_00_00_long
-              event 83 release_det_post_f020_00_00_long
-              event 84 release_det_post_f021_00_00_long
-              event 85 release_det_post_f022_00_00_long
-              event 86 release_det_post_f023_00_00_long
-              event 87 release_det_post_f024_00_00_long
-              event 88 release_det_post_f025_00_00_long
-              event 89 release_det_post_f026_00_00_long
-              event 90 release_det_post_f027_00_00_long
-              event 91 release_det_post_f028_00_00_long
-              event 92 release_det_post_f029_00_00_long
-              event 93 release_det_post_f030_00_00_long
-              event 94 release_det_post_f031_00_00_long
-              event 95 release_det_post_f032_00_00_long
-              event 96 release_det_post_f033_00_00_long
-              event 97 release_det_post_f034_00_00_long
-              event 98 release_det_post_f035_00_00_long
-              event 99 release_det_post_f036_00_00_long
-              event 100 release_det_post_f037_00_00_long
-              event 101 release_det_post_f038_00_00_long
-              event 102 release_det_post_f039_00_00_long
-              event 103 release_det_post_f040_00_00_long
-              event 104 release_det_post_f041_00_00_long
-              event 105 release_det_post_f042_00_00_long
-              event 106 release_det_post_f043_00_00_long
-              event 107 release_det_post_f044_00_00_long
-              event 108 release_det_post_f045_00_00_long
-              event 109 release_det_post_f046_00_00_long
-              event 110 release_det_post_f047_00_00_long
-              event 111 release_det_post_f048_00_00_long
-              event 112 release_det_post_f049_00_00_long
-              event 113 release_det_post_f050_00_00_long
-              event 114 release_det_post_f051_00_00_long
-              event 115 release_det_post_f052_00_00_long
-              event 116 release_det_post_f053_00_00_long
-              event 117 release_det_post_f054_00_00_long
-              event 118 release_det_post_f055_00_00_long
-              event 119 release_det_post_f056_00_00_long
-              event 120 release_det_post_f057_00_00_long
-              event 121 release_det_post_f058_00_00_long
-              event 122 release_det_post_f059_00_00_long
-              event 123 release_det_post_f060_00_00_long
-              event 124 release_enkf_make_lbcs
-              event 125 release_ensf_make_lbcs
-              event 126 release_enkf_prep_cyc_mem001
-              event 127 release_enkf_prep_cyc_mem002
-              event 128 release_enkf_prep_cyc_mem003
-              event 129 release_enkf_prep_cyc_mem004
-              event 130 release_enkf_prep_cyc_mem005
-              event 131 release_enkf_prep_cyc_mem006
-              event 132 release_enkf_prep_cyc_mem007
-              event 133 release_enkf_prep_cyc_mem008
-              event 134 release_enkf_prep_cyc_mem009
-              event 135 release_enkf_prep_cyc_mem010
-              event 136 release_enkf_prep_cyc_mem011
-              event 137 release_enkf_prep_cyc_mem012
-              event 138 release_enkf_prep_cyc_mem013
-              event 139 release_enkf_prep_cyc_mem014
-              event 140 release_enkf_prep_cyc_mem015
-              event 141 release_enkf_prep_cyc_mem016
-              event 142 release_enkf_prep_cyc_mem017
-              event 143 release_enkf_prep_cyc_mem018
-              event 144 release_enkf_prep_cyc_mem019
-              event 145 release_enkf_prep_cyc_mem020
-              event 146 release_enkf_prep_cyc_mem021
-              event 147 release_enkf_prep_cyc_mem022
-              event 148 release_enkf_prep_cyc_mem023
-              event 149 release_enkf_prep_cyc_mem024
-              event 150 release_enkf_prep_cyc_mem025
-              event 151 release_enkf_prep_cyc_mem026
-              event 152 release_enkf_prep_cyc_mem027
-              event 153 release_enkf_prep_cyc_mem028
-              event 154 release_enkf_prep_cyc_mem029
-              event 155 release_enkf_prep_cyc_mem030
-              event 156 release_firewx_make_lbcs
+              event 1 release_det_make_lbcs
+              event 2 release_enkf_make_lbcs
+              event 3 release_ensf_make_lbcs
+              event 4 release_firewx_make_lbcs
+              event 5 release_det_prep_cyc
+              event 6 release_enkf_prep_cyc_mem001
+              event 7 release_enkf_prep_cyc_mem002
+              event 8 release_enkf_prep_cyc_mem003
+              event 9 release_enkf_prep_cyc_mem004
+              event 10 release_enkf_prep_cyc_mem005
+              event 11 release_enkf_prep_cyc_mem006
+              event 12 release_enkf_prep_cyc_mem007
+              event 13 release_enkf_prep_cyc_mem008
+              event 14 release_enkf_prep_cyc_mem009
+              event 15 release_enkf_prep_cyc_mem010
+              event 16 release_enkf_prep_cyc_mem011
+              event 17 release_enkf_prep_cyc_mem012
+              event 18 release_enkf_prep_cyc_mem013
+              event 19 release_enkf_prep_cyc_mem014
+              event 20 release_enkf_prep_cyc_mem015
+              event 21 release_enkf_prep_cyc_mem016
+              event 22 release_enkf_prep_cyc_mem017
+              event 23 release_enkf_prep_cyc_mem018
+              event 24 release_enkf_prep_cyc_mem019
+              event 25 release_enkf_prep_cyc_mem020
+              event 26 release_enkf_prep_cyc_mem021
+              event 27 release_enkf_prep_cyc_mem022
+              event 28 release_enkf_prep_cyc_mem023
+              event 29 release_enkf_prep_cyc_mem024
+              event 30 release_enkf_prep_cyc_mem025
+              event 31 release_enkf_prep_cyc_mem026
+              event 32 release_enkf_prep_cyc_mem027
+              event 33 release_enkf_prep_cyc_mem028
+              event 34 release_enkf_prep_cyc_mem029
+              event 35 release_enkf_prep_cyc_mem030
+              event 36 release_det_analysis_gsi
+              event 37 release_save_restart_long_1
+              event 38 release_save_restart_long_2
+              event 39 release_save_restart_long_12
+              event 40 release_save_restart_long_24
+              event 41 release_save_restart_long_36
+              event 42 release_save_restart_long_48
+              event 43 release_det_post_f000_00_36_long
+              event 44 release_det_post_f000_15_00_long
+              event 45 release_det_post_f000_30_00_long
+              event 46 release_det_post_f000_45_00_long
+              event 47 release_det_post_f001_00_00_long
+              event 48 release_det_post_f001_15_00_long
+              event 49 release_det_post_f001_30_00_long
+              event 50 release_det_post_f001_45_00_long
+              event 51 release_det_post_f002_00_00_long
+              event 52 release_det_post_f002_15_00_long
+              event 53 release_det_post_f002_30_00_long
+              event 54 release_det_post_f002_45_00_long
+              event 55 release_det_post_f003_00_00_long
+              event 56 release_det_post_f003_15_00_long
+              event 57 release_det_post_f003_30_00_long
+              event 58 release_det_post_f003_45_00_long
+              event 59 release_det_post_f004_00_00_long
+              event 60 release_det_post_f004_15_00_long
+              event 61 release_det_post_f004_30_00_long
+              event 62 release_det_post_f004_45_00_long
+              event 63 release_det_post_f005_00_00_long
+              event 64 release_det_post_f005_15_00_long
+              event 65 release_det_post_f005_30_00_long
+              event 66 release_det_post_f005_45_00_long
+              event 67 release_det_post_f006_00_00_long
+              event 68 release_det_post_f006_15_00_long
+              event 69 release_det_post_f006_30_00_long
+              event 70 release_det_post_f006_45_00_long
+              event 71 release_det_post_f007_00_00_long
+              event 72 release_det_post_f007_15_00_long
+              event 73 release_det_post_f007_30_00_long
+              event 74 release_det_post_f007_45_00_long
+              event 75 release_det_post_f008_00_00_long
+              event 76 release_det_post_f008_15_00_long
+              event 77 release_det_post_f008_30_00_long
+              event 78 release_det_post_f008_45_00_long
+              event 79 release_det_post_f009_00_00_long
+              event 80 release_det_post_f009_15_00_long
+              event 81 release_det_post_f009_30_00_long
+              event 82 release_det_post_f009_45_00_long
+              event 83 release_det_post_f010_00_00_long
+              event 84 release_det_post_f010_15_00_long
+              event 85 release_det_post_f010_30_00_long
+              event 86 release_det_post_f010_45_00_long
+              event 87 release_det_post_f011_00_00_long
+              event 88 release_det_post_f011_15_00_long
+              event 89 release_det_post_f011_30_00_long
+              event 90 release_det_post_f011_45_00_long
+              event 91 release_det_post_f012_00_00_long
+              event 92 release_det_post_f012_15_00_long
+              event 93 release_det_post_f012_30_00_long
+              event 94 release_det_post_f012_45_00_long
+              event 95 release_det_post_f013_00_00_long
+              event 96 release_det_post_f013_15_00_long
+              event 97 release_det_post_f013_30_00_long
+              event 98 release_det_post_f013_45_00_long
+              event 99 release_det_post_f014_00_00_long
+              event 100 release_det_post_f014_15_00_long
+              event 101 release_det_post_f014_30_00_long
+              event 102 release_det_post_f014_45_00_long
+              event 103 release_det_post_f015_00_00_long
+              event 104 release_det_post_f015_15_00_long
+              event 105 release_det_post_f015_30_00_long
+              event 106 release_det_post_f015_45_00_long
+              event 107 release_det_post_f016_00_00_long
+              event 108 release_det_post_f016_15_00_long
+              event 109 release_det_post_f016_30_00_long
+              event 110 release_det_post_f016_45_00_long
+              event 111 release_det_post_f017_00_00_long
+              event 112 release_det_post_f017_15_00_long
+              event 113 release_det_post_f017_30_00_long
+              event 114 release_det_post_f017_45_00_long
+              event 115 release_det_post_f018_00_00_long
+              event 116 release_det_post_f019_00_00_long
+              event 117 release_det_post_f020_00_00_long
+              event 118 release_det_post_f021_00_00_long
+              event 119 release_det_post_f022_00_00_long
+              event 120 release_det_post_f023_00_00_long
+              event 121 release_det_post_f024_00_00_long
+              event 122 release_det_post_f025_00_00_long
+              event 123 release_det_post_f026_00_00_long
+              event 124 release_det_post_f027_00_00_long
+              event 125 release_det_post_f028_00_00_long
+              event 126 release_det_post_f029_00_00_long
+              event 127 release_det_post_f030_00_00_long
+              event 128 release_det_post_f031_00_00_long
+              event 129 release_det_post_f032_00_00_long
+              event 130 release_det_post_f033_00_00_long
+              event 131 release_det_post_f034_00_00_long
+              event 132 release_det_post_f035_00_00_long
+              event 133 release_det_post_f036_00_00_long
+              event 134 release_det_post_f037_00_00_long
+              event 135 release_det_post_f038_00_00_long
+              event 136 release_det_post_f039_00_00_long
+              event 137 release_det_post_f040_00_00_long
+              event 138 release_det_post_f041_00_00_long
+              event 139 release_det_post_f042_00_00_long
+              event 140 release_det_post_f043_00_00_long
+              event 141 release_det_post_f044_00_00_long
+              event 142 release_det_post_f045_00_00_long
+              event 143 release_det_post_f046_00_00_long
+              event 144 release_det_post_f047_00_00_long
+              event 145 release_det_post_f048_00_00_long
+              event 146 release_det_post_f049_00_00_long
+              event 147 release_det_post_f050_00_00_long
+              event 148 release_det_post_f051_00_00_long
+              event 149 release_det_post_f052_00_00_long
+              event 150 release_det_post_f053_00_00_long
+              event 151 release_det_post_f054_00_00_long
+              event 152 release_det_post_f055_00_00_long
+              event 153 release_det_post_f056_00_00_long
+              event 154 release_det_post_f057_00_00_long
+              event 155 release_det_post_f058_00_00_long
+              event 156 release_det_post_f059_00_00_long
+              event 157 release_det_post_f060_00_00_long
+              event 158 release_det_post_f061_00_00_long
+              event 159 release_det_post_f062_00_00_long
+              event 160 release_det_post_f063_00_00_long
+              event 161 release_det_post_f064_00_00_long
+              event 162 release_det_post_f065_00_00_long
+              event 163 release_det_post_f066_00_00_long
+              event 164 release_det_post_f067_00_00_long
+              event 165 release_det_post_f068_00_00_long
+              event 166 release_det_post_f069_00_00_long
+              event 167 release_det_post_f070_00_00_long
+              event 168 release_det_post_f071_00_00_long
+              event 169 release_det_post_f072_00_00_long
+              event 170 release_det_post_f073_00_00_long
+              event 171 release_det_post_f074_00_00_long
+              event 172 release_det_post_f075_00_00_long
+              event 173 release_det_post_f076_00_00_long
+              event 174 release_det_post_f077_00_00_long
+              event 175 release_det_post_f078_00_00_long
+              event 176 release_det_post_f079_00_00_long
+              event 177 release_det_post_f080_00_00_long
+              event 178 release_det_post_f081_00_00_long
+              event 179 release_det_post_f082_00_00_long
+              event 180 release_det_post_f083_00_00_long
+              event 181 release_det_post_f084_00_00_long
+              event 182 release_enkf_observer_gsi_ensmean
           endfamily     # fsm
 
           family init
@@ -188,9 +213,9 @@ suite nco_rrfs_dev_00
               task jrrfs_det_process_smoke
                 trigger :TIME >= 0035 and :TIME < 0110  # 20 mins window 
               task jrrfs_det_process_radar
-                trigger :TIME >= 0035 and :TIME < 0105
+                trigger :TIME >= 0015 and :TIME < 0105
               task jrrfs_det_process_lightning
-                trigger :TIME >= 0035 and :TIME < 0105
+                trigger :TIME >= 0015 and :TIME < 0105
               task jrrfs_det_process_bufr
                 trigger :TIME >= 0035 and :TIME < 0105
             endfamily   # det
@@ -199,9 +224,9 @@ suite nco_rrfs_dev_00
               edit WGF 'enkf'
               edit CYCLE_TYPE 'prod'
               task jrrfs_enkf_process_radar
-                trigger :TIME >= 0035 and :TIME < 0105
+                trigger :TIME >= 0015 and :TIME < 0105
               task jrrfs_enkf_process_lightning
-                trigger :TIME >= 0035 and :TIME < 0105
+                trigger :TIME >= 0015 and :TIME < 0105
               task jrrfs_enkf_process_bufr
                 trigger :TIME >= 0035 and :TIME < 0105
             endfamily   # enkf
@@ -357,6 +382,32 @@ suite nco_rrfs_dev_00
                 edit BCGRP '70'
               task jrrfs_det_make_lbcs_71
                 edit BCGRP '71'
+              task jrrfs_det_make_lbcs_72
+                edit BCGRP '72'
+              task jrrfs_det_make_lbcs_73
+                edit BCGRP '73'
+              task jrrfs_det_make_lbcs_74
+                edit BCGRP '74'
+              task jrrfs_det_make_lbcs_75
+                edit BCGRP '75'
+              task jrrfs_det_make_lbcs_76
+                edit BCGRP '76'
+              task jrrfs_det_make_lbcs_77
+                edit BCGRP '77'
+              task jrrfs_det_make_lbcs_78
+                edit BCGRP '78'
+              task jrrfs_det_make_lbcs_79
+                edit BCGRP '79'
+              task jrrfs_det_make_lbcs_80
+                edit BCGRP '80'
+              task jrrfs_det_make_lbcs_81
+                edit BCGRP '81'
+              task jrrfs_det_make_lbcs_82
+                edit BCGRP '82'
+              task jrrfs_det_make_lbcs_83
+                edit BCGRP '83'
+              task jrrfs_det_make_lbcs_84
+                edit BCGRP '84'
             endfamily   # det
 
             family enkf
@@ -1726,7 +1777,7 @@ suite nco_rrfs_dev_00
             family det
               edit WGF 'det'
               task jrrfs_det_prep_cyc
-                trigger ../../fsm/jrrfs_fsm:release_det_prep_cyc
+                trigger :TIME >= 0020 and :TIME < 0110 and ../../fsm/jrrfs_fsm:release_det_prep_cyc
 
             endfamily   # det
             family enkf
@@ -1829,9 +1880,9 @@ suite nco_rrfs_dev_00
                 edit MEMBER_NAME '030'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem030
               task jrrfs_enkf_calc_ensmean
-                trigger ../det==complete and ./jrrfs_enkf_prep_cyc_mem001==complete and ./jrrfs_enkf_prep_cyc_mem002==complete and ./jrrfs_enkf_prep_cyc_mem003==complete and ./jrrfs_enkf_prep_cyc_mem004==complete and ./jrrfs_enkf_prep_cyc_mem005==complete and ./jrrfs_enkf_prep_cyc_mem006==complete and ./jrrfs_enkf_prep_cyc_mem007==complete and ./jrrfs_enkf_prep_cyc_mem008==complete and ./jrrfs_enkf_prep_cyc_mem009==complete and ./jrrfs_enkf_prep_cyc_mem010==complete and ./jrrfs_enkf_prep_cyc_mem011==complete and ./jrrfs_enkf_prep_cyc_mem012==complete and ./jrrfs_enkf_prep_cyc_mem013==complete and ./jrrfs_enkf_prep_cyc_mem014==complete and ./jrrfs_enkf_prep_cyc_mem015==complete and ./jrrfs_enkf_prep_cyc_mem016==complete and ./jrrfs_enkf_prep_cyc_mem017==complete and ./jrrfs_enkf_prep_cyc_mem018==complete and ./jrrfs_enkf_prep_cyc_mem019==complete and ./jrrfs_enkf_prep_cyc_mem020==complete and ./jrrfs_enkf_prep_cyc_mem021==complete and ./jrrfs_enkf_prep_cyc_mem022==complete and ./jrrfs_enkf_prep_cyc_mem023==complete and ./jrrfs_enkf_prep_cyc_mem024==complete and ./jrrfs_enkf_prep_cyc_mem025==complete and ./jrrfs_enkf_prep_cyc_mem026==complete and ./jrrfs_enkf_prep_cyc_mem027==complete and ./jrrfs_enkf_prep_cyc_mem028==complete and ./jrrfs_enkf_prep_cyc_mem029==complete and ./jrrfs_enkf_prep_cyc_mem030==complete and ./jrrfs_enkf_prep_cyc_ensmean==complete
+                trigger ./jrrfs_enkf_prep_cyc_mem001==complete and ./jrrfs_enkf_prep_cyc_mem002==complete and ./jrrfs_enkf_prep_cyc_mem003==complete and ./jrrfs_enkf_prep_cyc_mem004==complete and ./jrrfs_enkf_prep_cyc_mem005==complete and ./jrrfs_enkf_prep_cyc_mem006==complete and ./jrrfs_enkf_prep_cyc_mem007==complete and ./jrrfs_enkf_prep_cyc_mem008==complete and ./jrrfs_enkf_prep_cyc_mem009==complete and ./jrrfs_enkf_prep_cyc_mem010==complete and ./jrrfs_enkf_prep_cyc_mem011==complete and ./jrrfs_enkf_prep_cyc_mem012==complete and ./jrrfs_enkf_prep_cyc_mem013==complete and ./jrrfs_enkf_prep_cyc_mem014==complete and ./jrrfs_enkf_prep_cyc_mem015==complete and ./jrrfs_enkf_prep_cyc_mem016==complete and ./jrrfs_enkf_prep_cyc_mem017==complete and ./jrrfs_enkf_prep_cyc_mem018==complete and ./jrrfs_enkf_prep_cyc_mem019==complete and ./jrrfs_enkf_prep_cyc_mem020==complete and ./jrrfs_enkf_prep_cyc_mem021==complete and ./jrrfs_enkf_prep_cyc_mem022==complete and ./jrrfs_enkf_prep_cyc_mem023==complete and ./jrrfs_enkf_prep_cyc_mem024==complete and ./jrrfs_enkf_prep_cyc_mem025==complete and ./jrrfs_enkf_prep_cyc_mem026==complete and ./jrrfs_enkf_prep_cyc_mem027==complete and ./jrrfs_enkf_prep_cyc_mem028==complete and ./jrrfs_enkf_prep_cyc_mem029==complete and ./jrrfs_enkf_prep_cyc_mem030==complete and ./jrrfs_enkf_prep_cyc_ensmean==complete
               task jrrfs_enkf_observer_gsi_ensmean
-                trigger ./jrrfs_enkf_calc_ensmean==complete
+                trigger ./jrrfs_enkf_calc_ensmean==complete and ../../fsm/jrrfs_fsm:release_enkf_observer_gsi_ensmean
               task jrrfs_enkf_observer_gsi_mem001
                 edit MEM_TYPE 'MEMBER'
                 edit MEMBER_NAME '001'
@@ -2741,6 +2792,78 @@ suite nco_rrfs_dev_00
               task jrrfs_det_post_f060_00_00_long
                 edit FHR '060-00-00'
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f060_00_00_long
+              task jrrfs_det_post_f061_00_00_long
+                edit FHR '061-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f061_00_00_long
+              task jrrfs_det_post_f062_00_00_long
+                edit FHR '062-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f062_00_00_long
+              task jrrfs_det_post_f063_00_00_long
+                edit FHR '063-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f063_00_00_long
+              task jrrfs_det_post_f064_00_00_long
+                edit FHR '064-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f064_00_00_long
+              task jrrfs_det_post_f065_00_00_long
+                edit FHR '065-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f065_00_00_long
+              task jrrfs_det_post_f066_00_00_long
+                edit FHR '066-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f066_00_00_long
+              task jrrfs_det_post_f067_00_00_long
+                edit FHR '067-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f067_00_00_long
+              task jrrfs_det_post_f068_00_00_long
+                edit FHR '068-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f068_00_00_long
+              task jrrfs_det_post_f069_00_00_long
+                edit FHR '069-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f069_00_00_long
+              task jrrfs_det_post_f070_00_00_long
+                edit FHR '070-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f070_00_00_long
+              task jrrfs_det_post_f071_00_00_long
+                edit FHR '071-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f071_00_00_long
+              task jrrfs_det_post_f072_00_00_long
+                edit FHR '072-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f072_00_00_long
+              task jrrfs_det_post_f073_00_00_long
+                edit FHR '073-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f073_00_00_long
+              task jrrfs_det_post_f074_00_00_long
+                edit FHR '074-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f074_00_00_long
+              task jrrfs_det_post_f075_00_00_long
+                edit FHR '075-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f075_00_00_long
+              task jrrfs_det_post_f076_00_00_long
+                edit FHR '076-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f076_00_00_long
+              task jrrfs_det_post_f077_00_00_long
+                edit FHR '077-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f077_00_00_long
+              task jrrfs_det_post_f078_00_00_long
+                edit FHR '078-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f078_00_00_long
+              task jrrfs_det_post_f079_00_00_long
+                edit FHR '079-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f079_00_00_long
+              task jrrfs_det_post_f080_00_00_long
+                edit FHR '080-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f080_00_00_long
+              task jrrfs_det_post_f081_00_00_long
+                edit FHR '081-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f081_00_00_long
+              task jrrfs_det_post_f082_00_00_long
+                edit FHR '082-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f082_00_00_long
+              task jrrfs_det_post_f083_00_00_long
+                edit FHR '083-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f083_00_00_long
+              task jrrfs_det_post_f084_00_00_long
+                edit FHR '084-00-00'
+                trigger ../../fsm/jrrfs_fsm:release_det_post_f084_00_00_long
             endfamily   # det
             family ensf
               edit WGF 'ensf'
@@ -4231,6 +4354,78 @@ suite nco_rrfs_dev_00
               task jrrfs_det_prdgen_f060_00_00_long
                 edit FHR '060_00_00'
                 trigger ../../post/det/jrrfs_det_post_f060_00_00_long==complete
+              task jrrfs_det_prdgen_f061_00_00_long
+                edit FHR '061_00_00'
+                trigger ../../post/det/jrrfs_det_post_f061_00_00_long==complete
+              task jrrfs_det_prdgen_f062_00_00_long
+                edit FHR '062_00_00'
+                trigger ../../post/det/jrrfs_det_post_f062_00_00_long==complete
+              task jrrfs_det_prdgen_f063_00_00_long
+                edit FHR '063_00_00'
+                trigger ../../post/det/jrrfs_det_post_f063_00_00_long==complete
+              task jrrfs_det_prdgen_f064_00_00_long
+                edit FHR '064_00_00'
+                trigger ../../post/det/jrrfs_det_post_f064_00_00_long==complete
+              task jrrfs_det_prdgen_f065_00_00_long
+                edit FHR '065_00_00'
+                trigger ../../post/det/jrrfs_det_post_f065_00_00_long==complete
+              task jrrfs_det_prdgen_f066_00_00_long
+                edit FHR '066_00_00'
+                trigger ../../post/det/jrrfs_det_post_f066_00_00_long==complete
+              task jrrfs_det_prdgen_f067_00_00_long
+                edit FHR '067_00_00'
+                trigger ../../post/det/jrrfs_det_post_f067_00_00_long==complete
+              task jrrfs_det_prdgen_f068_00_00_long
+                edit FHR '068_00_00'
+                trigger ../../post/det/jrrfs_det_post_f068_00_00_long==complete
+              task jrrfs_det_prdgen_f069_00_00_long
+                edit FHR '069_00_00'
+                trigger ../../post/det/jrrfs_det_post_f069_00_00_long==complete
+              task jrrfs_det_prdgen_f070_00_00_long
+                edit FHR '070_00_00'
+                trigger ../../post/det/jrrfs_det_post_f070_00_00_long==complete
+              task jrrfs_det_prdgen_f071_00_00_long
+                edit FHR '071_00_00'
+                trigger ../../post/det/jrrfs_det_post_f071_00_00_long==complete
+              task jrrfs_det_prdgen_f072_00_00_long
+                edit FHR '072_00_00'
+                trigger ../../post/det/jrrfs_det_post_f072_00_00_long==complete
+              task jrrfs_det_prdgen_f073_00_00_long
+                edit FHR '073_00_00'
+                trigger ../../post/det/jrrfs_det_post_f073_00_00_long==complete
+              task jrrfs_det_prdgen_f074_00_00_long
+                edit FHR '074_00_00'
+                trigger ../../post/det/jrrfs_det_post_f074_00_00_long==complete
+              task jrrfs_det_prdgen_f075_00_00_long
+                edit FHR '075_00_00'
+                trigger ../../post/det/jrrfs_det_post_f075_00_00_long==complete
+              task jrrfs_det_prdgen_f076_00_00_long
+                edit FHR '076_00_00'
+                trigger ../../post/det/jrrfs_det_post_f076_00_00_long==complete
+              task jrrfs_det_prdgen_f077_00_00_long
+                edit FHR '077_00_00'
+                trigger ../../post/det/jrrfs_det_post_f077_00_00_long==complete
+              task jrrfs_det_prdgen_f078_00_00_long
+                edit FHR '078_00_00'
+                trigger ../../post/det/jrrfs_det_post_f078_00_00_long==complete
+              task jrrfs_det_prdgen_f079_00_00_long
+                edit FHR '079_00_00'
+                trigger ../../post/det/jrrfs_det_post_f079_00_00_long==complete
+              task jrrfs_det_prdgen_f080_00_00_long
+                edit FHR '080_00_00'
+                trigger ../../post/det/jrrfs_det_post_f080_00_00_long==complete
+              task jrrfs_det_prdgen_f081_00_00_long
+                edit FHR '081_00_00'
+                trigger ../../post/det/jrrfs_det_post_f081_00_00_long==complete
+              task jrrfs_det_prdgen_f082_00_00_long
+                edit FHR '082_00_00'
+                trigger ../../post/det/jrrfs_det_post_f082_00_00_long==complete
+              task jrrfs_det_prdgen_f083_00_00_long
+                edit FHR '083_00_00'
+                trigger ../../post/det/jrrfs_det_post_f083_00_00_long==complete
+              task jrrfs_det_prdgen_f084_00_00_long
+                edit FHR '084_00_00'
+                trigger ../../post/det/jrrfs_det_post_f084_00_00_long==complete
               task jrrfs_det_bufrsnd_long
                 trigger ../../fsm/jrrfs_fsm:release_det_post_f000_00_36_long
             endfamily   # det

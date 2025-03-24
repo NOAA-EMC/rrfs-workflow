@@ -63,8 +63,8 @@ export PREP_MODEL=${PREP_MODEL:-0}
 #-----------------------------------------------------------------------
 # 
 python -u ${HOMErrfs}/ush/process_lightning.py
-
-cpreq -p fedobs.nc ${shared_output_data}
+ln -s ${DATA}/fedobs.nc ${shared_output_data}/fedobs.nc
+cpreq -p fedobs.nc ${COMOUT_ANALYSIS}/fedobs.nc
 
 #
 #-----------------------------------------------------------------------

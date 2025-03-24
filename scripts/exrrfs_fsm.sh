@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+set -eux
 #-----------------------------------------------------------------------
 # This is RRFS file server management job for ecflow workflow
 # Scan and set ecflow trigger event for file level dependency
@@ -72,6 +72,9 @@ if [ $((10#$RRFS_previous_cyc)) -ge 18 ] && [ $((10#$RRFS_previous_cyc)) -le 23 
   previous_cyc_6hr_fmt="18"
 fi
 
+# Time in second mark for scan_release_det_analysis_gsi
+start_time_det_analysis_gsi=$(date +%s)
+
 # Layout the default switches
 scan_release_det_prep_cyc="YES"
 scan_release_det_analysis_gsi="YES"
@@ -91,7 +94,7 @@ scan_release_enkf_make_ics="NO"
 #scan_release_ensf_recenter="NO"
 #scan_release_enkf_save_restart_long="NO"
 #scan_release_ensf_bufrsnd="NO"
-scan_release_enkf_observer_gsi_spinup_ensmean="NO"
+scan_release_enkf_observer_gsi_ensmean="YES"
 #scan_release_enkf_save_restart_spinup="NO"
 scan_release_enkf_save_restart_ensinit="NO"
 
@@ -152,7 +155,7 @@ if [ ${cyc} == "07" ]; then
   scan_release_save_restart_f2="YES"
   scan_release_save_restart_spinup_f001="YES"
   scan_release_enkf_make_ics="YES"
-  scan_release_enkf_observer_gsi_spinup_ensmean="YES"
+  #scan_release_enkf_observer_gsi_spinup_ensmean="YES"
   #scan_release_enkf_save_restart_spinup="YES"
   #scan_release_enkf_save_restart_ensinit="yes"
 fi
@@ -240,7 +243,7 @@ if [ ${cyc} == "19" ]; then
   scan_release_save_restart_f2="YES"
   scan_release_save_restart_spinup_f001="YES"
   scan_release_enkf_make_ics="YES"
-  scan_release_enkf_observer_gsi_spinup_ensmean="YES"
+  #scan_release_enkf_observer_gsi_spinup_ensmean="YES"
   #scan_release_enkf_save_restart_spinup="YES"
   #scan_release_enkf_save_restart_ensinit="yes"
 fi
@@ -270,31 +273,66 @@ if [ ${cyc} == "23" ]; then
   scan_release_save_restart_f2="YES"
 fi
 
+# Initialize search array
+#### declare -a array_element_scan_release_enkf_prep_cyc=( $(for i in {1..30}; do echo "NO"; done) )
+for fhr in $(seq 1 30); do
+  array_element_scan_release_enkf_prep_cyc[${fhr}]="NO"
+done
+for fhr in $(seq 0 84); do
+  fhr_2d=$( printf "%02d" ${fhr} )
+  fhr_3d=$( printf "%03d" ${fhr} )
+  if [ $(($fhr)) -le 17 ]; then
+    for sub_fhr in 00 15 30 45; do
+      if [ ${fhr_2d} == "00" ] && [ ${sub_fhr} == "00" ]; then
+        array_element_scan_release_det_post_long[${fhr}0036]="NO"
+      else
+        array_element_scan_release_det_post_long[${fhr}${sub_fhr}00]="NO"
+      fi
+    done
+  else
+      array_element_scan_release_det_post_long[${fhr}0000]="NO"
+  fi
+done
+for fhr in $(seq 0 18); do
+  fhr_2d=$( printf "%02d" ${fhr} )
+  fhr_3d=$( printf "%03d" ${fhr} )
+  if [ $(($fhr)) -le 17 ]; then
+    for sub_fhr in 00 15 30 45; do
+      if [ ${fhr_2d} == "00" ] && [ ${sub_fhr} == "00" ]; then
+        array_element_scan_release_det_post[${fhr}0036]="NO"
+      else
+        array_element_scan_release_det_post[${fhr}${sub_fhr}00]="NO"
+      fi
+    done
+  else
+      array_element_scan_release_det_post[${fhr}0000]="NO"
+  fi
+done
 #-----------------------------------------------------------------------
-# Process DATA cleanup if it is run by developer
+# Save job running log files if it is run by developer
 #-----------------------------------------------------------------------
 
-EMC_DEV=${EMC_DEV:-"NO"}
-if [ ${EMC_DEV} == "YES" ]; then
-  # Make a backup of the DATA for the next cycle of the previous day
-# ONLY enable this option when there is no job running in current PDY ${RRFS_next_1_cyc}
-#  cd ${DATAROOT}
-#  backup_data=${PDYm1}${RRFS_next_1_cyc}_backup
-#  mkdir ${backup_data}
-#  mv rrfs_*_${RRFS_next_1_cyc}.????????.dbqs01 ./${backup_data}
-#  mv rrfs_*_${RRFS_next_1_cyc}_${rrfs_ver} ./${backup_data}
-  # Make a backup for job log files
-  cd ${EMC_LOG_OUTPUT}  
-  backup_log=${PDYm1}${RRFS_next_1_cyc}
-  mkdir -p ${backup_log}
-  for file in rrfs_*_${RRFS_next_1_cyc}.o*; do
-    ct_ev=$(grep "PDY=${PDYm1}" ${file}| wc -l)
-    if [ ${ct_ev} -gt 0 ]; then
-      mv ${file} ${backup_log}
-    fi
-  done
-  cd $DATA
-fi
+#EMC_DEV=${EMC_DEV:-"NO"}
+#if [ ${EMC_DEV} == "YES" ]; then
+#  # Make a backup of the DATA for the next cycle of the previous day
+## ONLY enable this option when there is no job running in current PDY ${RRFS_next_1_cyc}
+##  cd ${DATAROOT}
+##  backup_data=${PDYm1}${RRFS_next_1_cyc}_backup
+##  mkdir ${backup_data}
+##  mv rrfs_*_${RRFS_next_1_cyc}.????????.dbqs01 ./${backup_data}
+##  mv rrfs_*_${RRFS_next_1_cyc}_${rrfs_ver} ./${backup_data}
+#  # Make a backup for job log files
+#  cd ${EMC_LOG_OUTPUT}  
+#  backup_log=${PDYm1}${RRFS_next_1_cyc}
+#  mkdir -p ${backup_log}
+#  for file in rrfs_*_${RRFS_next_1_cyc}.o*; do
+#    ct_ev=$(grep "PDY=${PDYm1}" ${file}| wc -l)
+#    if [ ${ct_ev} -gt 0 ]; then
+#      mv ${file} ${backup_log}
+#    fi
+#  done
+#  cd $DATA
+#fi
 
 #-----------------------------------------------------------------------
 # Process files and directories level dependency scan
@@ -358,26 +396,31 @@ while [ $proceed_trigger_scan == "YES" ]; do
     source_file_found="NO"
     skip_this_scan="NO"
     # Example of target file: /lfs/h1/ops/prod/com/obsproc/v1.2/rap.20240610/rap.t00z.prepbufr.tm00
-    obsproc_rap_inp_file=$(compath.py obsproc/${obsproc_ver})/rap.${current_PDY_6hr_fmt}/rap.t${current_cyc_6hr_fmt}z.prepbufr.tm00
+    obsproc_rap_inp_file=$(compath.py obsproc/${obsproc_ver})/rap.${RRFS_Current_PDY}/rap.t${RRFS_Current_cyc}z.prepbufr.tm00
     # /lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/rrfs/v0.9.5/nwges/2024060923/mem0001~0030/fcst_fv3lam/RESTART/20240610.000000.coupler.res
     if [ -s ${obsproc_rap_inp_file} ]; then
       source_file_found="YES"
       echo "Proceeding with scan_release_det_analysis_gsi"      
-      if [ -d ${COMrrfs}/enkfrrfs.${RRFS_previous_PDY}/${RRFS_previous_cyc}/forecast/RESTART ]; then
+      if [ -d ${COMrrfs}/enkfrrfs.${RRFS_previous_PDY}/${RRFS_previous_cyc}/m001/forecast/RESTART ]; then
         echo "Forecast RESTART directory found in regular cycle - looking for file"
         target_directory_scan=${COMrrfs}/enkfrrfs.${RRFS_previous_PDY}/${RRFS_previous_cyc}
-      elif [ -d ${COMrrfs}/enkfrrfs.${RRFS_previous_PDY}/${RRFS_previous_cyc}_spinup/forecast/RESTART ]; then
+      elif [ -d ${COMrrfs}/enkfrrfs.${RRFS_previous_PDY}/${RRFS_previous_cyc}_spinup/m001/forecast/RESTART ]; then
         echo "Forecast RESTART directory found in spinup cycle - looking for file"
         target_directory_scan=${COMrrfs}/enkfrrfs.${RRFS_previous_PDY}/${RRFS_previous_cyc}_spinup
       else
         skip_this_scan="YES"
       fi
       if [ ${skip_this_scan} == "NO" ]; then
-        for member_num in $(seq 1 30); do
-          member_num_2d=$( printf "%02d" ${member_num} )
-          target_file_scan=${target_directory_scan}/m0${member_num_2d}/forecast/RESTART/${RRFS_Current_PDY}.${RRFS_Current_cyc}0000.coupler.res
-          [[ ! -s ${target_file_scan} ]]&& source_file_found="NO"
-        done
+        #### Add time condition for check only 20 minutes - set to found if exist 20 minutes to use GFS enkf fcst data
+        current_time_det_analysis_gsi=$(date +%s)
+        elapsed_time=$((current_time_det_analysis_gsi - start_time_det_analysis_gsi))
+        if ((elapsed_time <= 1200)); then
+          for member_num in $(seq 1 30); do
+            member_num_2d=$( printf "%02d" ${member_num} )
+            target_file_scan=${target_directory_scan}/m0${member_num_2d}/forecast/RESTART/${RRFS_Current_PDY}.${RRFS_Current_cyc}0000.coupler.res
+            [[ ! -s ${target_file_scan} ]]&& source_file_found="NO"
+          done
+        fi
       fi
     fi
     if [ ${source_file_found} == "YES" ]; then
@@ -484,8 +527,8 @@ while [ $proceed_trigger_scan == "YES" ]; do
     echo "Proceeding with scan_release_det_post_long"
     source_file_found="YES"
     umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/det/output
-    # fhr cover 000~060
-    for fhr in $(seq 0 60); do
+    # fhr cover 000~084
+    for fhr in $(seq 0 84); do
       fhr_2d=$( printf "%02d" ${fhr} )
       fhr_3d=$( printf "%03d" ${fhr} )
       # 000~017 have every 15 minutes
@@ -493,10 +536,16 @@ while [ $proceed_trigger_scan == "YES" ]; do
         for sub_fhr in 00 15 30 45; do
           fc=$(ls ${umbrella_forecast_data}/log.atm.f${fhr_3d}-${sub_fhr}-*| wc -l)
           if [ ${fc} -gt 0 ]; then
-            if [ $fhr -eq 0 ] && [ $sub_fhr -eq 0 ]; then
-              ecflow_client --event release_det_post_f000_00_36_long
+            if [ $fhr -eq 0 ] && [ $sub_fhr == "00" ]; then
+              if [ ${array_element_scan_release_det_post_long[${fhr}0036]} == "NO" ]; then
+                array_element_scan_release_det_post_long[${fhr}0036]="found"
+                ecflow_client --event release_det_post_f000_00_36_long
+              fi
             else
-              ecflow_client --event release_det_post_f${fhr_3d}_${sub_fhr}_00_long
+              if [ ${array_element_scan_release_det_post_long[${fhr}${sub_fhr}00]} == "NO" ]; then
+                array_element_scan_release_det_post_long[${fhr}${sub_fhr}00]="found"
+                ecflow_client --event release_det_post_f${fhr_3d}_${sub_fhr}_00_long
+              fi
             fi
           else
             source_file_found="NO"
@@ -505,7 +554,10 @@ while [ $proceed_trigger_scan == "YES" ]; do
       else
         fc=$(ls ${umbrella_forecast_data}/log.atm.f${fhr_3d}-*| wc -l)
         if [ ${fc} -gt 0 ]; then
-          ecflow_client --event release_det_post_f${fhr_3d}_00_00_long
+          if [ ${array_element_scan_release_det_post_long[${fhr}0000]} == "NO" ]; then
+            array_element_scan_release_det_post_long[${fhr}0000]="found"
+            ecflow_client --event release_det_post_f${fhr_3d}_00_00_long
+          fi
         else
           source_file_found="NO"
         fi
@@ -533,10 +585,16 @@ while [ $proceed_trigger_scan == "YES" ]; do
         for sub_fhr in 00 15 30 45; do
           fc=$(ls ${umbrella_forecast_data}/log.atm.f${fhr_3d}-${sub_fhr}-*| wc -l)
           if [ ${fc} -gt 0 ]; then
-            if [ $fhr -eq 0 ] && [ $sub_fhr -eq 0 ]; then
-              ecflow_client --event release_det_post_f000_00_36
+            if [ $fhr -eq 0 ] && [ $sub_fhr == "00" ]; then
+              if [ ${array_element_scan_release_det_post[${fhr}0036]} == "NO" ]; then
+                array_element_scan_release_det_post[${fhr}0036]="found"
+                ecflow_client --event release_det_post_f000_00_36
+              fi
             else
-              ecflow_client --event release_det_post_f${fhr_3d}_${sub_fhr}_00
+              if [ ${array_element_scan_release_det_post[${fhr}${sub_fhr}00]} == "NO" ]; then
+                array_element_scan_release_det_post[${fhr}${sub_fhr}00]="found"
+                ecflow_client --event release_det_post_f${fhr_3d}_${sub_fhr}_00
+              fi
             fi
           else
             source_file_found="NO"
@@ -545,7 +603,10 @@ while [ $proceed_trigger_scan == "YES" ]; do
       else
         fc=$(ls ${umbrella_forecast_data}/log.atm.f${fhr_3d}-*| wc -l)
         if [ ${fc} -gt 0 ]; then
-          ecflow_client --event release_det_post_f${fhr_3d}_00_00
+          if [ ${array_element_scan_release_det_post[${fhr}0000]} == "NO" ]; then
+            array_element_scan_release_det_post[${fhr}0000]="found"
+            ecflow_client --event release_det_post_f${fhr_3d}_00_00
+          fi
         else
           source_file_found="NO"
         fi
@@ -597,7 +658,10 @@ while [ $proceed_trigger_scan == "YES" ]; do
         target_file_scan=${COMrrfs}/enkfrrfs.${RRFS_previous_PDY}/${RRFS_previous_cyc}/m0${mem_num_2d}/forecast/RESTART/${RRFS_Current_PDY}.${RRFS_Current_cyc}0000.coupler.res
       fi
       if [ -s ${target_file_scan} ]; then
-        ecflow_client --event release_enkf_prep_cyc_mem0${mem_num_2d}
+        if [ ! ${array_element_scan_release_enkf_prep_cyc[$mem_num]} == "found" ]; then
+          array_element_scan_release_enkf_prep_cyc[$mem_num]="found"
+          ecflow_client --event release_enkf_prep_cyc_mem0${mem_num_2d}
+        fi
       else
         source_file_found="NO"
       fi
@@ -636,20 +700,24 @@ while [ $proceed_trigger_scan == "YES" ]; do
   fi
   #### release_enkf_make_ics
 
-  #### release_enkf_observer_gsi_spinup_ensmean
-  if [ ${scan_release_enkf_observer_gsi_spinup_ensmean} == "YES" ]; then
-    echo "Proceeding with scan_release_enkf_observer_gsi_spinup_ensmean"
+  #### release_enkf_observer_gsi_ensmean
+  if [ ${scan_release_enkf_observer_gsi_ensmean} == "YES" ]; then
+    echo "Proceeding with scan_release_enkf_observer_gsi_ensmean"
     source_file_found="YES"
-    obsproc_rap_inp_file=$(compath.py obsproc/${obsproc_ver})/rap.${current_PDY_6hr_fmt}/rap.t${current_cyc_6hr_fmt}z.prepbufr.tm00
+    if [ ${RRFS_Current_cyc} == 00 ] || [ ${RRFS_Current_cyc} == 12 ];then
+      obsproc_rap_inp_file=$(compath.py obsproc/${obsproc_ver})/rap_e.${RRFS_Current_PDY}/rap_e.t${RRFS_Current_cyc}z.prepbufr.tm00
+    else
+      obsproc_rap_inp_file=$(compath.py obsproc/${obsproc_ver})/rap.${RRFS_Current_PDY}/rap.t${RRFS_Current_cyc}z.prepbufr.tm00
+    fi
     [[ ! -s ${obsproc_rap_inp_file} ]]&& source_file_found="NO"
     if [ ${source_file_found} == "YES" ]; then
-      ecflow_client --event release_enkf_observer_gsi_ensmean_spinup
-      scan_release_enkf_observer_gsi_spinup_ensmean="NO"
+      ecflow_client --event release_enkf_observer_gsi_ensmean
+      scan_release_enkf_observer_gsi_ensmean="NO"
     else
       proceed_trigger_scan="YES"
     fi
   fi
-  #### release_enkf_observer_gsi_spinup_ensmean
+  #### release_enkf_observer_gsi_ensmean
 
   #### release_enkf_save_restart_spinup
 #  if [ ${scan_release_enkf_save_restart_spinup} == "YES" ]; then

@@ -185,6 +185,7 @@ else
   prslev=${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
   natlev=${net4}.t${cyc}z.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
   testbed=${net4}.t${cyc}z.testbed.${gridspacing}.f${fhr}.${gridname}.grib2
+  prslev_subh=${net4}.t${cyc}z.prslev.${gridspacing}.subh.f${fhr}.${gridname}.grib2
 fi
 
 # extract the output fields for the testbed
@@ -232,6 +233,10 @@ if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
   if [ -f ${COMOUT}/${testbed} ]; then
     wgrib2 ${COMOUT}/${testbed} -s > ${COMOUT}/${testbed}.idx
   fi
+fi
+
+if [ "${DO_ENSFCST}" != "TRUE" ] && [ ${fhr} != '000' ]; then
+  wgrib2 ${COMOUT}/${prslev_subh} -s > ${COMOUT}/${prslev_subh}.idx
 fi
 
 # Remap to additional output grids if requested
@@ -297,6 +302,36 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
       fi
       count=$count+1
     done
+
+    # create subhourly files for CONUS, Alaska, Hawaii, Puerto Rico grids
+    if [ "${DO_ENSFCST}" != "TRUE" ] && [ ${fhr} != '000' ]; then
+      for domain in ${domains[@]}
+      do
+        prslev_subh_dom=${net4}.t${cyc}z.prslev.${gridspacing}.subh.f${fhr}.${domain}.grib2
+        if [ $domain == "conus" ]; then
+          # 3-km Lambert Conformal CONUS domain
+          gridspecs="lambert:262.5:38.5:38.5 237.280472:1799:3000 21.138123:1059:3000"
+        elif [ $domain == "ak" ]; then
+          # 3-km NPS Alaska domain
+          gridspecs="nps:210.0:60.0 181.429:1649:2976.0 40.530:1105:2976.0"
+        elif [ $domain == "hi" ]; then
+          # 2.5 km Mercator Hawaii domain
+          gridspecs="mercator:20.00 198.474999:321:2500.0:206.13099 18.072699:225:2500.0:23.087799"
+        elif [ $domain == "pr" ]; then
+          # 2.5 km Mercator Puerto Rico domain
+          gridspecs="mercator:20 284.5:544:2500:297.491 15.0:310:2500:22.005"
+        fi
+        
+        wgrib2 ${COMOUT}/${prslev_subh} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib${domain}.uv
+        wgrib2 inputs.grib${domain}.uv -set_bitmap 1 -set_grib_type c3 \
+          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
+          -new_grid_interpolation neighbor \
+          -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
+          -new_grid ${gridspecs} ${COMOUT}/${prslev_subh_dom}
+
+        wgrib2 ${COMOUT}/${prslev_subh_dom} -s > ${COMOUT}/${prslev_subh_dom}.idx
+      done
+    fi
 
     # create testbed files on 3-km CONUS grid
     if [ ${DO_ENSFCST} = "TRUE" ]; then

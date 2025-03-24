@@ -277,7 +277,7 @@ if [ "${DO_RADDA}" = "TRUE" ]; then
   else
     spinup_or_prod_rrfs=prod
   fi
-
+  SATBIAS_DIR=${SATBIAS_DIR:-$COMrrfs/satbias}
   if [ -r ${DATA} ]; then
      cd ${DATA}
 

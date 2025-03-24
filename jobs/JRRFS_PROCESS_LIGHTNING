@@ -14,11 +14,14 @@ export RUN=${RUN:-rrfs}
 #-----------------------------------------------------------------------
 # Define umbrella data directories
 #-----------------------------------------------------------------------
+export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/${RUN}_init_spinup_${cyc}_${rrfs_ver}/${WGF}}
+  export COMOUT_ANALYSIS=${COMrrfs}/${RUN}.${PDY}/${cyc}_spinup/analysis
 else
   export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/${RUN}_init_${cyc}_${rrfs_ver}/${WGF}}
+  export COMOUT_ANALYSIS=${COMrrfs}/${RUN}.${PDY}/${cyc}/analysis
 fi
 export shared_output_data=${umbrella_init_data}/output
 
@@ -26,7 +29,7 @@ export shared_output_data=${umbrella_init_data}/output
 # Define data directories
 #-----------------------------------------------------------------------
 export DATA=${DATA:-${umbrella_init_data}/${jobid}}
-mkdir -p ${DATA} ${shared_output_data}
+mkdir -p ${DATA} ${shared_output_data} ${COMOUT_ANALYSIS}
 cd ${DATA}
 
 #-----------------------------------------------------------------------

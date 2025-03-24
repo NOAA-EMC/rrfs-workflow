@@ -82,12 +82,24 @@ This is the J-job script for the task that runs the large-scale blending
 on the RRFS initial conditions.
 ========================================================================"
 
-#### export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/ics"
+#-----------------------------------------------------------------------
+# RRFS Blending
+#-----------------------------------------------------------------------
+export pid=${pid:-$$}
+export outid=${outid:-"LL$job"}
+export RUN=${RUN:-rrfs}
 
-#### mkdir -p ${DATA}/tmp_ICS
-#### cd ${DATA}/tmp_ICS
+if [ $WGF = "enkf" ] && [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  export ENSMEM_INDX=${MEMBER_NAME}
+  export mem_num=m$(echo "${ENSMEM_INDX}")
+  export DO_ENSEMBLE="TRUE"
+else
+  echo "Blending can only run with enkf"
+  exit 1
+fi
 
-#### mkdir -p "${NWGES_DIR}"
+export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}}
+export shared_output_data=${umbrella_ics_data}/ics
 
 #-----------------------------------------------------------------------
 # Define COM directories

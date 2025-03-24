@@ -32,34 +32,38 @@ export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   export umbrella_analysis_data=${umbrella_analysis_data:-${DATAROOT}/rrfs_analysis_gsi_spinup_${cyc}_${rrfs_ver}/${WGF}}
-  export umbrella_calc_ensmean_data=${umbrella_calc_ensmean_data:-${DATAROOT}/rrfs_calc_ensmean_spinup_${cyc}_${rrfs_ver}/${WGF}}
   export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/${RUN}_init_spinup_${cyc}_${rrfs_ver}/${WGF}}
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
     if [ "${MEM_TYPE}" = "MEAN" ]; then
       export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}/ensmean
       export COMOUT=${COMrrfs}/enkfrrfs.${PDY}/${cyc}_spinup/ensmean/analysis
+      export shared_output_data=${umbrella_analysis_data}/output/ensmean
     else
       export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
       export COMOUT=${COMrrfs}/enkfrrfs.${PDY}/${cyc}_spinup/${mem_num}/analysis
+      export shared_output_data=${umbrella_analysis_data}/output/${mem_num}
     fi
   else
     export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
     export COMOUT=${COMrrfs}/${RUN}.${PDY}/${cyc}_spinup/analysis
+    export shared_output_data=${umbrella_analysis_data}/output
   fi
 else
   export umbrella_analysis_data=${umbrella_analysis_data:-${DATAROOT}/rrfs_analysis_gsi_${cyc}_${rrfs_ver}/${WGF}}
-  export umbrella_calc_ensmean_data=${umbrella_calc_ensmean_data:-${DATAROOT}/rrfs_calc_ensmean_${cyc}_${rrfs_ver}/${WGF}}
   export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/${RUN}_init_${cyc}_${rrfs_ver}/${WGF}}
   if [ "${MEM_TYPE}" = "MEAN" ]; then
     export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/ensmean
     export COMOUT=${COMrrfs}/enkfrrfs.${PDY}/${cyc}/ensmean/analysis
+    export shared_output_data=${umbrella_analysis_data}/output/ensmean
   else
     if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
       export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
       export COMOUT=${COMrrfs}/enkfrrfs.${PDY}/${cyc}/${mem_num}/analysis
+      export shared_output_data=${umbrella_analysis_data}/output/${mem_num}
     else
       export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}
       export COMOUT=${COMrrfs}/${RUN}.${PDY}/${cyc}/analysis
+      export shared_output_data=${umbrella_analysis_data}/output
     fi
   fi
 fi 
@@ -67,7 +71,7 @@ fi
 #-----------------------------------------------------------------------
 # Define data directories
 #-----------------------------------------------------------------------
-export shared_output_data=${umbrella_analysis_data}/output
+#### export shared_output_data=${umbrella_analysis_data}/output
 export DATA=${DATA:-${umbrella_analysis_data}/${jobid}}
 mkdir -p ${DATA} ${shared_output_data} ${COMOUT}
 cd ${DATA}
@@ -143,8 +147,10 @@ if [ -e "$pgmout" ]; then
   cat $pgmout
 fi
 
+echo "Analysis GSI job is completed" &> ${umbrella_analysis_data}/analysis_gsi_${CYCLE_TYPE}_clean.flag
+
 if [ "${KEEPDATA}" = "NO" ]; then
-  rm -rf ${DATA} 
+  rm -rf ${DATA}
 fi
 
 #-----------------------------------------------------------------------

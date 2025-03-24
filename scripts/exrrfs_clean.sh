@@ -5,169 +5,91 @@ set -eux
 # Source the variable definitions file.
 #-----------------------------------------------------------------------
 
-#### . ${GLOBAL_VAR_DEFNS_FP}
 module load prod_util
 
 #-----------------------------------------------------------------------
 # set up currentime from CDATE 
 #-----------------------------------------------------------------------
-
+export DATA=${DATA:-${DATAROOT}/${jobid}}
+mkdir -p ${DATA}
+cd ${DATA}
 CDATE=${CDATE:-${PDY}${cyc}}
 
 #-----------------------------------------------------------------------
-# Delete development data directories
+# Clean up the COM
+# Keep all COM for the past 12 hours then clean up all files on the 13th cycle
+#   with exception of analysis and grib2 files
+#-----------------------------------------------------------------------
+rm -f ${DATA}/data_clean_com.sh
+echo "set -x" &> ${DATA}/data_clean_com.sh
+target_cleanup_pdy=$($NDATE -13 ${CDATE} | cut -c1-8)
+target_cleanup_cyc=$($NDATE -13 ${CDATE} | cut -c9-10)
+[[ -z ${COMrrfs} ]]&& exit 0
+cd ${COMrrfs}
+for wgf_run in rrfs enkfrrfs; do
+  cd ${COMrrfs}/${wgf_run}.${target_cleanup_pdy}
+  for directory2clean in $(ls |grep "${target_cleanup_cyc}"); do
+    dir_remove=${COMrrfs}/${wgf_run}.${target_cleanup_pdy}/${directory2clean}
+    echo "Check ${dir_remove} for cleanup"
+    [[ ! -d ${dir_remove} ]]&& exit 0
+    cd ${dir_remove}
+    find . -type f|grep -v "analysis"|grep -v "grib2"|awk -v dir_remove="$dir_remove" '{print "rm -f",dir_remove"/"$1}' >> ${DATA}/data_clean_com.sh
+  done
+done
+cd $DATA
+[[ $(cat ${DATA}/data_clean_com.sh|wc -l) -gt 1 ]]&& sh ${DATA}/data_clean_com.sh
+
+#-----------------------------------------------------------------------
+# Remove the Umbrella Data for the current cycle up to the forecast step
+#-----------------------------------------------------------------------
+
+#### Temporary keep all 12Z for debug
+#if [ ! ${cyc} == 19 ]; then
+cd $DATAROOT
+if [ ${KEEPDATA} == "YES" ]; then
+  for dir_remove in rrfs_analysis_gsi rrfs_analysis_gsi_spinup rrfs_calc_ensmean rrfs_forecast_spinup rrfs_init rrfs_init_spinup; do
+    [[ -d ${dir_remove}_${cyc}_v1.0 ]]&& mv ${dir_remove}_${cyc}_v1.0 ${dir_remove}_$$_${cyc}_v1.0
+  done
+else
+  for dir_remove in rrfs_analysis_gsi rrfs_analysis_gsi_spinup rrfs_calc_ensmean rrfs_forecast_spinup rrfs_init rrfs_init_spinup; do
+    [[ -d ${dir_remove}_${cyc}_v1.0 ]]&& rm -rf ${dir_remove}_${cyc}_v1.0
+  done
+fi
+cd $DATA
+#fi
+#-----------------------------------------------------------------------
+# Delete development data directories if KEEPDATA set to YES
+# Keep DATA for development for the last 12 hours
 # Remove this session after turn on the KEEPDATA function
 #-----------------------------------------------------------------------
 
-cd /lfs/h3/emc/lam/noscrub/ecflow/stmp/emc.lam/rrfs/ecflow_rrfs
-rm -f data_clean1.sh
-echo "set -x" >> data_clean1.sh
-search_cyc_12=$($NDATE -12 ${CDATE} | cut -c9-10)
-search_cyc_11=$($NDATE -11 ${CDATE} | cut -c9-10)
-search_cyc_10=$($NDATE -10 ${CDATE} | cut -c9-10)
-search_cyc_9=$($NDATE -9 ${CDATE} | cut -c9-10)
-search_cyc_8=$($NDATE -8 ${CDATE} | cut -c9-10)
-search_cyc_7=$($NDATE -7 ${CDATE} | cut -c9-10)
-for idx_cyc in ${search_cyc_12#0} ${search_cyc_11#0} ${search_cyc_10#0} ${search_cyc_9#0} ${search_cyc_8#0} ${search_cyc_7#0}; do
+[[ ${KEEPDATA} == "NO" ]]&& exit 0
+[[ -f ${DATA}/data_clean1.sh ]]&& rm -f ${DATA}/data_clean1.sh
+cd $DATAROOT
+echo "set -x" >> ${DATA}/data_clean1.sh
+search_cyc_18=$($NDATE -18 ${CDATE} | cut -c9-10)
+search_cyc_17=$($NDATE -17 ${CDATE} | cut -c9-10)
+search_cyc_16=$($NDATE -16 ${CDATE} | cut -c9-10)
+search_cyc_15=$($NDATE -15 ${CDATE} | cut -c9-10)
+search_cyc_14=$($NDATE -14 ${CDATE} | cut -c9-10)
+search_cyc_13=$($NDATE -13 ${CDATE} | cut -c9-10)
+for idx_cyc in ${search_cyc_18#0} ${search_cyc_17#0} ${search_cyc_16#0} ${search_cyc_15#0} ${search_cyc_14#0} ${search_cyc_13#0}; do
   idx_cyc2d=$( printf "%02d" "${idx_cyc#0}" )
   fcst_state=$(ecflow_client --query state /nco_rrfs_dev_${idx_cyc2d}/primary/${idx_cyc2d}/rrfs/v1.0/forecast)
+
+  #### Temporary keep all 13Z for debug
+  # if [ ${idx_cyc2d} == 19 ] || [ ${idx_cyc2d} == 12 ]; then
+  #   fcst_state="reserved"
+  # fi
+
   if [ ${fcst_state} == "complete" ]; then
     echo "Cycle ${idx_cyc2d} is completed - proceed with cleanup"
-    ls|grep "_${idx_cyc2d}\."|awk '{print "rm -rf",$1}' >> data_clean1.sh
-    ls -d */ |grep "_${idx_cyc2d}_v1.0" |awk '{print "rm -rf",$1}' >> data_clean1.sh
+    ls|grep "_${idx_cyc2d}\."|awk -v DATAROOT="$DATAROOT" '{print "rm -rf",DATAROOT"/"$1}' >> ${DATA}/data_clean1.sh
+    # Include the backup umbrella data directories
+    ls -d */ |grep "_${idx_cyc2d}_v1.0" |awk -v DATAROOT="$DATAROOT" '{print "rm -rf",DATAROOT"/"$1}' >> ${DATA}/data_clean1.sh
   fi
 done
-[[ $(cat data_clean1.sh|wc -l) -gt 1 ]]&& sh ./data_clean1.sh
+[[ $(cat ${DATA}/data_clean1.sh|wc -l) -gt 1 ]]&& sh ${DATA}//data_clean1.sh
+cd $DATA
 
-exit 0
-#-----------------------------------------------------------------------
-# Delete ptmp directories
-#-----------------------------------------------------------------------
-deletetime=$(date +%Y%m%d -d "${currentime} ${CLEAN_OLDPROD_HRS} hours ago")
-echo "Deleting ptmp directories before ${deletetime}..."
-cd ${COMOUT_BASEDIR}
-set -A XX $(ls -d ${RUN}.20* | sort -r)
-for dir in ${XX[*]};do
-  onetime=$(echo $dir | cut -d'.' -f2)
-  if [[ ${onetime} =~ ^[0-9]+$ ]] && [[ ${onetime} -le ${deletetime} ]]; then
-    rm -rf ${COMOUT_BASEDIR}/${RUN}.${onetime}
-    echo "Deleted ${COMOUT_BASEDIR}/${RUN}.${onetime}"
-  fi
-done
-
-#-----------------------------------------------------------------------
-# Delete stmp directories
-#-----------------------------------------------------------------------
-deletetime=$(date +%Y%m%d%H -d "${currentime} ${CLEAN_OLDRUN_HRS} hours ago")
-echo "Deleting stmp directories before ${deletetime}..."
-cd ${CYCLE_BASEDIR}
-set -A XX $(ls -d 20* | sort -r)
-for onetime in ${XX[*]};do
-  if [[ ${onetime} =~ ^[0-9]+$ ]] && [[ ${onetime} -le ${deletetime} ]]; then
-    rm -rf ${CYCLE_BASEDIR}/${onetime}
-    echo "Deleted ${CYCLE_BASEDIR}/${onetime}"
-  fi
-done
-
-#-----------------------------------------------------------------------
-# Delete netCDF files
-#-----------------------------------------------------------------------
-deletetime=$(date +%Y%m%d%H -d "${currentime} ${CLEAN_OLDFCST_HRS} hours ago")
-echo "Deleting netCDF files before ${deletetime}..."
-cd ${CYCLE_BASEDIR}
-set -A XX $(ls -d 20* | sort -r)
-for onetime in ${XX[*]};do
-  if [[ ${onetime} =~ ^[0-9]+$ ]] && [[ ${onetime} -le ${deletetime} ]]; then
-    if [ ${nens} -gt 1 ]; then
-      for ii in ${listens}
-      do
-        iii=`printf %4.4i $ii`
-        SLASH_ENSMEM_SUBDIR=/mem${iii}
-        rm -f ${CYCLE_BASEDIR}/${onetime}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/phy*nc
-        rm -f ${CYCLE_BASEDIR}/${onetime}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/dyn*nc
-        rm -rf ${CYCLE_BASEDIR}/${onetime}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam/RESTART
-        echo "Deleted netCDF files in ${CYCLE_BASEDIR}/${onetime}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
-      done
-    else
-        rm -f ${CYCLE_BASEDIR}/${onetime}/fcst_fv3lam/phy*nc
-        rm -f ${CYCLE_BASEDIR}/${onetime}/fcst_fv3lam/dyn*nc
-        rm -f ${CYCLE_BASEDIR}/${onetime}/anal_conv_gsi/pe0*.nc4
-        rm -f ${CYCLE_BASEDIR}/${onetime}/anal_conv_gsi/pe0*_setup
-        rm -f ${CYCLE_BASEDIR}/${onetime}/anal_conv_gsi/obs_input.*
-        rm -f ${CYCLE_BASEDIR}/${onetime}/anal_conv_gsi/diag*
-        rm -f ${CYCLE_BASEDIR}/${onetime}/anal_conv_gsi_spinup/pe0*.nc4
-        rm -f ${CYCLE_BASEDIR}/${onetime}/anal_conv_gsi_spinup/pe0*_setup
-        rm -f ${CYCLE_BASEDIR}/${onetime}/anal_conv_gsi_spinup/obs_input.*
-        rm -f ${CYCLE_BASEDIR}/${onetime}/anal_conv_gsi_spinup/diag*
-
-        rm -rf ${CYCLE_BASEDIR}/${onetime}/fcst_fv3lam/RESTART
-        echo "Deleted netCDF files in ${CYCLE_BASEDIR}/${onetime}/fcst_fv3lam"
-    fi
-  fi
-done
-
-#-----------------------------------------------------------------------
-# Delete duplicate postprod files in stmp
-#-----------------------------------------------------------------------
-deletetime=$(date +%Y%m%d%H -d "${currentime} ${CLEAN_OLDSTMPPOST_HRS} hours ago")
-echo "Deleting stmp postprd files before ${deletetime}..."
-cd ${CYCLE_BASEDIR}
-set -A XX $(ls -d 20* | sort -r)
-for onetime in ${XX[*]};do
-  if [[ ${onetime} =~ ^[0-9]+$ ]] && [[ ${onetime} -le ${deletetime} ]]; then
-    if [ ${nens} -gt 1 ]; then
-      for ii in ${listens}
-      do
-        iii=`printf %4.4i $ii`
-        SLASH_ENSMEM_SUBDIR=/mem${iii}
-        rm -rf ${CYCLE_BASEDIR}/${onetime}${SLASH_ENSMEM_SUBDIR}/postprd
-        echo "Deleted postprd files in ${CYCLE_BASEDIR}/${onetime}${SLASH_ENSMEM_SUBDIR}/postprd"
-      done
-    else
-        rm -rf ${CYCLE_BASEDIR}/${onetime}/postprd
-        echo "Deleted postprd files in ${CYCLE_BASEDIR}/${onetime}/postprd"
-    fi
-  fi
-done
-
-#-----------------------------------------------------------------------
-# Delete old log files
-#-----------------------------------------------------------------------
-deletetime=$(date +%Y%m%d%H -d "${currentime} ${CLEAN_OLDLOG_HRS} hours ago")
-echo "Deleting log files before ${deletetime}..."
-
-# Remove template date from last two levels
-logs=$(echo ${LOGDIR} | rev | cut -f 3- -d / | rev)
-cd ${logs}
-pwd
-set -A XX $(ls -d ${RUN}.20*/* | sort -r)
-for onetime in ${XX[*]}; do
-  # Remove slash and RUN from directory to get time
-  filetime=${onetime/\//}
-  filetime=${filetime##*.}
-  # Remove cycle subdir from path
-  logsdate=${onetime%%/*}
-  if [[ ${filetime} =~ ^[0-9]+$ ]] && [[ ${filetime} -le ${deletetime} ]]; then
-    echo "Deleting files from ${logs}/${onetime}"
-    rm -rf ${onetime}
-    # Remove an empty date directory
-    [ "$(ls -A $logsdate)" ] || rmdir $logsdate
-  fi
-done
-
-#-----------------------------------------------------------------------
-# Delete nwges directories
-#-----------------------------------------------------------------------
-deletetime=$(date +%Y%m%d%H -d "${currentime} ${CLEAN_NWGES_HRS} hours ago")
-echo "Deleting nwges directories before ${deletetime}..."
-cd ${NWGES_BASEDIR}
-set -A XX $(ls -d 20* | sort -r)
-for onetime in ${XX[*]};do
-  if [[ ${onetime} =~ ^[0-9]+$ ]] && [[ ${onetime} -le ${deletetime} ]]; then
-    rm -rf ${NWGES_BASEDIR}/${onetime}
-    echo "Deleted ${NWGES_BASEDIR}/${onetime}"
-  fi
-done
-
-#-----------------------------------------------------------------------
 exit 0

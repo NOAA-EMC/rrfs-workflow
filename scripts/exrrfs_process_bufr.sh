@@ -213,8 +213,8 @@ if [[ "$run_lightning" == true ]]; then
   $APRUN ${EXECrrfs}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
   mv errfile errfile_lightning
-
-  cpreq -p LightningInFV3LAM.dat ${shared_output_data}/rrfs.t${HH}z.LightningInFV3LAM.bin
+  ln -s ${DATA}/LightningInFV3LAM.dat ${shared_output_data}/rrfs.t${HH}z.LightningInFV3LAM.bin
+  cpreq -p LightningInFV3LAM.dat ${COMOUT_ANALYSIS}/rrfs.t${HH}z.LightningInFV3LAM.bin
 fi
 #
 #-----------------------------------------------------------------------
@@ -280,7 +280,10 @@ if [[ "$run_cloud" == true ]]; then
   export err=$?; err_chk
   mv errfile errfile_larccld
 
-  [ -s NASALaRC_cloud4fv3.bin ]&& cpreq -p NASALaRC_cloud4fv3.bin ${shared_output_data}/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
+  if [ -s NASALaRC_cloud4fv3.bin ]; then
+    ln -s ${DATA}/NASALaRC_cloud4fv3.bin ${shared_output_data}/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
+    cpreq -p NASALaRC_cloud4fv3.bin ${COMOUT_ANALYSIS}/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
+  fi
 fi
 #
 #-----------------------------------------------------------------------
@@ -333,8 +336,8 @@ if [[ "$run_metar" == true ]]; then
   $APRUN ${EXECrrfs}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
   mv errfile errfile_metarcld
-
-  cpreq -p fv3_metarcloud.bin ${shared_output_data}/rrfs.t${HH}z.fv3_metarcloud.bin
+  ln -s ${DATA}/fv3_metarcloud.bin ${shared_output_data}/rrfs.t${HH}z.fv3_metarcloud.bin 
+  cpreq -p fv3_metarcloud.bin ${COMOUT_ANALYSIS}/rrfs.t${HH}z.fv3_metarcloud.bin
 fi
 #
 #-----------------------------------------------------------------------

@@ -21,14 +21,11 @@ else
   export DO_ENSEMBLE="FALSE"
 fi
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  #### export umbrella_ics_data="${DATAROOT}/rrfs_ics_${PDY}${cyc}_${rrfs_ver}/${WGF}/${mem_num}/ics"
   export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}}
 else
-  #### export umbrella_ics_data="${DATAROOT}/rrfs_ics_${PDY}${cyc}_${rrfs_ver}/${WGF}/ics"
   export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}}
 fi
 export shared_output_data=${umbrella_ics_data}/ics
-
 #-----------------------------------------------------------------------
 # Define data directories
 #-----------------------------------------------------------------------
@@ -102,9 +99,6 @@ for the RRFS (in NetCDF format).
 
 export pgmout="${DATA}/OUTPUT.$$"
 env
-
-#### ${HOMErrfs}/scripts/exrrfs_make_ics.sh \
-####  extrn_mdl_fns_on_disk="${extrn_mdl_fns_on_disk_str}"
 
 ${HOMErrfs}/scripts/exrrfs_make_ics.sh
 export err=$?; err_chk

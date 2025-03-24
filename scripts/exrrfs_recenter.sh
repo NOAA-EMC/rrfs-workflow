@@ -172,13 +172,13 @@ tracerfile_control=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/det/INPUT/fv_tra
 dynvarfile_control_spinup=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/det/INPUT/fv_core.res.tile1.nc
 tracerfile_control_spinup=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/det/INPUT/fv_tracer.res.tile1.nc
 if [ -r "${dynvarfile_control_spinup}" ] && [ -r "${tracerfile_control_spinup}" ] && [[ ${DO_ENSFCST} != "TRUE" ]] ; then
-  ln -sf ${ctrlpath}/${cyc}_spinup/forecast/INPUT/fv_core.res.tile1.nc  ./control_dynvar
-  ln -sf ${ctrlpath}/${cyc}_spinup/forecast/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
-  ln -sf ${ctrlpath}/${cyc}_spinup/forecast/INPUT/sfc_data.nc  ./control_sfcvar
+  ln -sf ${ctrlpath}/INPUT/fv_core.res.tile1.nc  ./control_dynvar
+  ln -sf ${ctrlpath}/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
+  ln -sf ${ctrlpath}/INPUT/sfc_data.nc  ./control_sfcvar
 elif [ -r "${dynvarfile_control}" ] && [ -r "${tracerfile_control}" ] ; then
-  ln -sf ${ctrlpath}/${cyc}/forecast/INPUT/fv_core.res.tile1.nc  ./control_dynvar
-  ln -sf ${ctrlpath}/${cyc}/forecast/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
-  ln -sf ${ctrlpath}/${cyc}/forecast/INPUT/sfc_data.nc  ./control_sfcvar
+  ln -sf ${ctrlpath}/INPUT/fv_core.res.tile1.nc  ./control_dynvar
+  ln -sf ${ctrlpath}/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
+  ln -sf ${ctrlpath}/INPUT/sfc_data.nc  ./control_sfcvar
 else
   err_exit "Cannot find background: ${dynvarfile_control} or ${dynvarfile_control_spinup}"
 fi

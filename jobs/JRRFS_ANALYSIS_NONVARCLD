@@ -20,17 +20,33 @@ else
   export mem_num=""
   export DO_ENSEMBLE="FALSE"
 fi
+
+case $WGF in
+  det)
+    COM_WGF="rrfs"
+    ;;
+  enkf)
+    COM_WGF="enkfrrfs"
+    ;;
+  ensf)
+    COM_WGF="refs"
+    ;;
+  firewx)
+    COM_WGF="firewx"
+    ;;
+esac
+
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
 if [ ${CYCLE_TYPE} = "spinup" ]; then
   export umbrella_analysis_data=${umbrella_analysis_data:-${DATAROOT}/${RUN}_analysis_gsi_spinup_${cyc}_${rrfs_ver}/${WGF}}
   export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/${RUN}_init_spinup_${cyc}_${rrfs_ver}/${WGF}}
-  export COMOUT=${COMrrfs}/${RUN}.${PDY}/${cyc}_spinup
+  export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}_spinup
   export umbrella_forecast_data=${DATAROOT}/${RUN}_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
 else
   export umbrella_analysis_data=${umbrella_analysis_data:-${DATAROOT}/${RUN}_analysis_gsi_${cyc}_${rrfs_ver}/${WGF}}
   export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/${RUN}_init_${cyc}_${rrfs_ver}/${WGF}}
-  export COMOUT=${COMrrfs}/${RUN}.${PDY}/${cyc}
+  export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}
   export umbrella_forecast_data=${DATAROOT}/${RUN}_forecast_${cyc}_${rrfs_ver}/${WGF}
 fi
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
@@ -118,6 +134,8 @@ export err=$?; err_chk
 if [ -e "$pgmout" ]; then
   cat $pgmout
 fi
+
+echo "ANALYSIS NONVARCLD job is completed" &> ${umbrella_init_data}/analysis_nonvarcld_${CYCLE_TYPE}_clean.flag
 
 if [ "${KEEPDATA}" = "NO" ]; then
   rm -rf ${DATA}

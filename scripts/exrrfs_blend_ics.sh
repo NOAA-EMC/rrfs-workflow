@@ -125,10 +125,15 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
 
   # Files to denote whether running blending or ensinit
   #### run_blending=${GESROOT}/${RUN}.${yyyymmdd}/${hh}/${mem_num}/run_blending
-  run_blending=${COMrrfs}/${RUN}.${yyyymmdd}/${hh}/${mem_num}/run_blending
+  run_blending=${COMrrfs}/${RUN}.${yyyymmdd}/${hh}_spinup/${mem_num}/run_blending
   #### run_ensinit=${GESROOT}/${RUN}.${yyyymmdd}/${hh}/${mem_num}/run_ensinit
-  run_ensinit=${COMrrfs}/${RUN}.${yyyymmdd}/${hh}/${mem_num}/run_ensinit
-  mkdir -p ${COMrrfs}/${RUN}.${yyyymmdd}/${hh}/${mem_num}
+  run_ensinit=${COMrrfs}/${RUN}.${yyyymmdd}/${hh}_spinup/${mem_num}/run_ensinit
+  mkdir -p ${COMrrfs}/${RUN}.${yyyymmdd}/${hh}_spinup/${mem_num}
+  if [ ${mem_num} == "m001" ]; then
+    run_blending_mean=${COMrrfs}/${RUN}.${yyyymmdd}/${hh}_spinup/ensmean/run_blending
+    run_ensinit_mean=${COMrrfs}/${RUN}.${yyyymmdd}/${hh}_spinup/ensmean/run_ensinit
+    mkdir -p ${COMrrfs}/${RUN}.${yyyymmdd}/${hh}_spinup/ensmean
+  fi
 
   # Initialize a counter for the number of existing files
   existing_files=0
@@ -153,14 +158,23 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
       if [[ ! -f $run_blending ]]; then
           touch $run_blending
       fi
+      if [[ ${mem_num} == "m001" ]] && [[ ! -f $run_blending_mean ]]; then
+          touch $run_blending_mean
+      fi
       blendmsg="Do blending!"
       if [[ -f $run_ensinit ]]; then
          rm -f $run_ensinit
+      fi
+      if [[ ${mem_num} == "m001" ]] && [[ -f $run_ensinit_mean ]]; then
+         rm -f $run_ensinit_mean
       fi
   else
       # Check if run_ensinit file exists, and if not, touch it
       if [[ ! -f $run_ensinit ]]; then
           touch $run_ensinit
+      fi
+      if [[ ${mem_num} == "m001" ]] && [[ ! -f $run_ensinit_mean ]]; then
+          touch $run_ensinit_mean
       fi
       blendmsg="Do ensinit!"
   fi
@@ -201,17 +215,20 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
      [[ ! -s fv_core.res.tile1.nc ]]&& err_exit "FATAL: fv_core.res.tile1.nc not found in ${DATA}"
      [[ ! -s fv_tracer.res.tile1.nc ]]&& err_exit "FATAL: fv_tracer.res.tile1.nc not found in ${DATA}" 
 
+     cp ./fv_core.res.tile1.nc ${shared_output_data}/.
+     cp ./fv_tracer.res.tile1.nc ${shared_output_data}/.
+
      # Move the remaining RESTART files to INPUT
      #### cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res             ${DATA}/coupler.res
      #### cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc          ${DATA}/fv_core.res.nc
      #### cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_srf_wnd.res.tile1.nc ${DATA}/fv_srf_wnd.res.tile1.nc
      #### cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.phy_data.nc             ${DATA}/phy_data.nc
      #### cp ${GESROOT}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.sfc_data.nc             ${DATA}/sfc_data.nc
-     cp ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res             ${DATA}/coupler.res
-     cp ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc          ${DATA}/fv_core.res.nc
-     cp ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_srf_wnd.res.tile1.nc ${DATA}/fv_srf_wnd.res.tile1.nc
-     cp ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.phy_data.nc             ${DATA}/phy_data.nc
-     cp ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.sfc_data.nc             ${DATA}/sfc_data.nc
+     cp ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc          ${shared_output_data}/fv_core.res.nc
+     cp ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_srf_wnd.res.tile1.nc ${shared_output_data}/fv_srf_wnd.res.tile1.nc
+     cp ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.phy_data.nc             ${shared_output_data}/phy_data.nc
+     cp ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.sfc_data.nc             ${shared_output_data}/sfc_data.nc
+     cp ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res             ${shared_output_data}/coupler.res
      #### cp gfs_ctrl.nc ${DATA}
      #### cp gfs.bndy.nc ${DATA}/gfs_bndy.tile${TILE_RGNL}.000.nc
      #### Current in ${DATA} checking file

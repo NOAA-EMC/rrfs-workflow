@@ -76,11 +76,12 @@ export COMrrfs=$(compath.py -o ${NET}/${rrfs_ver})
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   export COMOUT="${COMrrfs}/enkfrrfs.${PDY}/${cyc}_spinup"
   export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
+  export CRTL_CENTER=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/det
 else
   export COMOUT="${COMrrfs}/enkfrrfs.${PDY}/${cyc}"
   export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}
+  export CRTL_CENTER=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/det
 fi
-export CRTL_CENTER="${umbrella_forecast_data}"
 mkdir -p "${COMOUT}"
 
 #-----------------------------------------------------------------------
