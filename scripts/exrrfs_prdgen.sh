@@ -313,20 +313,27 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
     count=0
     for domain in ${domains[@]}
     do
+
+      outspacing=${gridspacing}
+      if [ $domain = "hi" | $domain = "pr" ]
+       then
+        outspacing="2p5km"
+      fi
+
       if [ ${DO_ENSFCST} = "TRUE" ]; then
-        [[ -f ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${domain}.grib2 ]]&& rm -f ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${domain}.grib2
+        [[ -f ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 ]]&& rm -f ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2
         for task in $(seq ${tasks[count]})
         do
-          cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${domain}.grib2
+          cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2
         done
-        wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${domain}.grib2.idx
+        wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
       else
-        [[ -f ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.${domain}.grib2 ]]&& rm -f ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.${domain}.grib2
+        [[ -f ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2 ]]&& rm -f ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
         for task in $(seq ${tasks[count]})
         do
-          cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.${domain}.grib2
+          cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
         done
-        wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.${domain}.grib2.idx
+        wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi
       count=$count+1
     done
