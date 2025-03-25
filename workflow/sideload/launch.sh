@@ -17,6 +17,7 @@ echo "run on ${MACHINE}"
 export NTASKS=${SLURM_NTASKS}
 export NODES=${SLURM_JOB_NUM_NODES}
 export PPN=${SLURM_TASKS_PER_NODE%%(*} # remove the (x6) part of 20(x6)
+ulimit -s unlimited
 #
 echo "load rrfs-workflow modules by default"
 set +x # suppress messy output in the module load process
