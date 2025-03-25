@@ -128,9 +128,6 @@ fi
 # run mpasjedi_variational.x
 export OOPS_TRACE=1
 export OMP_NUM_THREADS=1
-ulimit -s unlimited
-ulimit -v unlimited
-ulimit -a
 
 source prep_step
 ${cpreq} ${EXECrrfs}/mpasjedi_variational.x .
