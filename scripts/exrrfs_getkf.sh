@@ -40,6 +40,7 @@ if [[ -r "${UMBRELLA_PREP_IC_DATA}/mem001/init.nc" ]]; then
   start_type='cold'
   do_DAcycling='false'
   initial_file='init.nc'
+  mkdir -p ana
 else
   start_type='warm'
   do_DAcycling='true'
@@ -96,9 +97,6 @@ case ${YAML_GEN_METHOD:-1} in
     ;;
 esac
 
-if [[ ${start_type} == "cold" ]]; then
-  exit 0 #gge.tmp.debug need more time to figure out cold start DA
-fi
 # run mpasjedi_enkf.x
 export OOPS_TRACE=1
 export OMP_NUM_THREADS=1
@@ -109,6 +107,15 @@ ${MPI_RUN_CMD} ./mpasjedi_enkf.x getkf.yaml log.out
 # check the status
 export err=$?
 err_chk
+# ncks increments to cold_start IC
+if [[ ${start_type} == "cold" ]]; then
+  var_list=$(paste -sd "," stream_list/stream_list.atmosphere.analysis)
+  for mem in $(seq -w 1 030); do
+    ncks -A -H -v ${var_list} data/ana/men${mem}.nc data/ens/men${mem}.nc
+    export err=$?
+    err_chk
+  done
+fi
 #
 cp ${DATA}/getkf*.yaml ${COMOUT}/getkf_${TYPE}/${WGF}
 cp ${DATA}/log.* ${COMOUT}/getkf_${TYPE}/${WGF}
