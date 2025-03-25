@@ -59,7 +59,7 @@ export WALLTIME_MPASSIT="1:00:00"
 export WALLTIME_UPP="1:00:00"
 export WALLTIME_GETKF="00:30:00"
 #
-export KEEPDATA=yes
+export KEEPDATA=no
 export MPI_RUN_CMD=srun
 export RETRO_TASKTHROTTLE=60
 #
