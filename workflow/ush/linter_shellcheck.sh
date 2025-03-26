@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 run_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 cd "${run_dir}" || exit
+# shellcheck disable=SC1091
 source detect_machine.sh 
 
 case ${MACHINE} in
@@ -37,4 +38,4 @@ case ${MACHINE} in
 esac
 
 # ${EXEC_DIR}/shellcheck --color=always $1
-${EXEC_DIR}/shellcheck $*
+${EXEC_DIR}/shellcheck "$@"
