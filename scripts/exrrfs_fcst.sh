@@ -92,9 +92,6 @@ for fhr in ${history_all}; do
 done
 
 # run the MPAS model
-ulimit -s unlimited
-ulimit -v unlimited
-ulimit -a
 source prep_step
 ${cpreq} ${EXECrrfs}/atmosphere_model.x .
 ${MPI_RUN_CMD} ./atmosphere_model.x 
