@@ -107,15 +107,6 @@ ${MPI_RUN_CMD} ./mpasjedi_enkf.x getkf.yaml log.out
 # check the status
 export err=$?
 err_chk
-# ncks increments to cold_start IC
-if [[ ${start_type} == "cold" ]]; then
-  var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional"
-  for mem in $(seq -w 1 030); do
-    ncks -A -H -v ${var_list} data/ana/men${mem}.nc data/ens/men${mem}.nc
-    export err=$?
-    err_chk
-  done
-fi
 #
 cp ${DATA}/getkf*.yaml ${COMOUT}/getkf_${TYPE}/${WGF}
 cp ${DATA}/log.* ${COMOUT}/getkf_${TYPE}/${WGF}
@@ -124,6 +115,16 @@ if [[ "${TYPE}" == "observer" ]]; then
   cp ${DATA}/jdiag* ${COMOUT}/getkf_${TYPE}/${WGF}
   mv jdiag* ${UMBRELLA_GETKF_DATA}/.
 else # move post mean to umbrella if solver
-  mv ${DATA}/data/ens/mem000.nc ${UMBRELLA_GETKF_DATA}/post_mean.nc
-  mv data/ana ../
+  # ncks increments to cold_start IC
+  if [[ ${start_type} == "cold" ]]; then
+    var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional"
+    for mem in $(seq -w 1 030); do
+      ncks -A -H -v ${var_list} data/ana/men${mem}.nc data/ens/men${mem}.nc
+      export err=$?
+      err_chk
+    done
+    mv data/ana ../
+  else
+    mv ${DATA}/data/ens/mem000.nc ${UMBRELLA_GETKF_DATA}/post_mean.nc
+  fi
 fi

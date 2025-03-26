@@ -139,10 +139,10 @@ if [[ ${start_type} == "cold" ]]; then
   ncks -A -H -v ${var_list} ana.nc mpasin.nc
   export err=$?
   err_chk
+  mv ana.nc ..
 fi
 #
 # the input/output file are linked from the umbrella directory, so no need to copy
 cp ${DATA}/jdiag* ${COMOUT}/jedivar/${WGF}
 cp ${DATA}/jedivar*.yaml ${COMOUT}/jedivar/${WGF}
 cp ${DATA}/log.* ${COMOUT}/jedivar/${WGF}
-mv ana.nc ..
