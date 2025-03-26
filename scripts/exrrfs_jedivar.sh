@@ -135,7 +135,7 @@ err_chk
 #
 # ncks increments to cold_start IC
 if [[ ${start_type} == "cold" ]]; then
-  var_list=$(paste -sd "," stream_list/stream_list.atmosphere.analysis)
+  var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional"
   ncks -A -H -v ${var_list} ana.nc mpasin.nc
   export err=$?
   err_chk
@@ -145,3 +145,4 @@ fi
 cp ${DATA}/jdiag* ${COMOUT}/jedivar/${WGF}
 cp ${DATA}/jedivar*.yaml ${COMOUT}/jedivar/${WGF}
 cp ${DATA}/log.* ${COMOUT}/jedivar/${WGF}
+mv ana.nc ..

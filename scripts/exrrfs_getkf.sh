@@ -109,7 +109,7 @@ export err=$?
 err_chk
 # ncks increments to cold_start IC
 if [[ ${start_type} == "cold" ]]; then
-  var_list=$(paste -sd "," stream_list/stream_list.atmosphere.analysis)
+  var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional"
   for mem in $(seq -w 1 030); do
     ncks -A -H -v ${var_list} data/ana/men${mem}.nc data/ens/men${mem}.nc
     export err=$?
@@ -125,4 +125,5 @@ if [[ "${TYPE}" == "observer" ]]; then
   mv jdiag* ${UMBRELLA_GETKF_DATA}/.
 else # move post mean to umbrella if solver
   mv ${DATA}/data/ens/mem000.nc ${UMBRELLA_GETKF_DATA}/post_mean.nc
+  mv data/ana ../
 fi
