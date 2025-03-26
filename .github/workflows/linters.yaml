@@ -1,0 +1,55 @@
+name: Multi-Language Linters
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  lint-shell:
+    runs-on: ubuntu-22.04
+
+    permissions:
+      security-events: write  # Allows reporting of issues in security logs
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Ensures full commit history for diff comparison
+
+      - name: Run ShellCheck on modified shell scripts
+        uses: redhat-plumbers-in-action/differential-shellcheck@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+# python-lint:
+#   name: Python Linting
+#   runs-on: ubuntu-latest
+#   steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v4
+
+#     - name: Set up Python
+#       uses: actions/setup-python@v4
+#       with:
+#         python-version: '3.10'
+
+#     - name: Install Flake8
+#       run: pip install flake8
+
+#     - name: Run Flake8 on all Python files
+#       run: flake8 .
+
+# yaml-lint:
+#   name: YAML Linting
+#   runs-on: ubuntu-latest
+#   steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v4
+
+#     - name: Install Yamllint
+#       run: pip install yamllint
+
+#     - name: Run Yamllint on all YAML files
+#       run: yamllint .
