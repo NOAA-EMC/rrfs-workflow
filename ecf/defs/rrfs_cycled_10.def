@@ -148,11 +148,11 @@ suite nco_rrfs_dev_10
               edit WGF 'enkf'
               edit CYCLE_TYPE 'prod'
               task jrrfs_enkf_process_radar
-                trigger :TIME >= 1015 and :TIME < 1105
+                trigger :TIME >= 1015 and :TIME < 1105 and ../det/jrrfs_det_process_radar==complete
               task jrrfs_enkf_process_lightning
-                trigger :TIME >= 1015 and :TIME < 1105
+                trigger :TIME >= 1015 and :TIME < 1105 and ../det/jrrfs_det_process_lightning==complete
               task jrrfs_enkf_process_bufr
-                trigger :TIME >= 1035 and :TIME < 1105
+                trigger :TIME >= 1035 and :TIME < 1105 and ../det/jrrfs_det_process_bufr==complete
             endfamily   # enkf
           endfamily	# init
           family prep

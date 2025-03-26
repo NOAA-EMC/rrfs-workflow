@@ -224,19 +224,19 @@ suite nco_rrfs_dev_12
               edit WGF 'enkf'
               edit CYCLE_TYPE 'prod'
               task jrrfs_enkf_process_radar
-                trigger :TIME >= 1215 and :TIME < 1305
+                trigger :TIME >= 1215 and :TIME < 1305 and ../det/jrrfs_det_process_radar==complete
               task jrrfs_enkf_process_lightning
-                trigger :TIME >= 1215 and :TIME < 1305
+                trigger :TIME >= 1215 and :TIME < 1305 and ../det/jrrfs_det_process_lightning==complete
               task jrrfs_enkf_process_bufr
-                trigger :TIME >= 1235 and :TIME < 1305
+                trigger :TIME >= 1235 and :TIME < 1305 and ../det/jrrfs_det_process_bufr==complete
             endfamily   # enkf
           endfamily	# init
           family ics
             family det
               edit WGF 'det'
               edit BCGRPNUM '72'
-              # trigger ../init/det==complete and /prod_clone/primary/12/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_manager:release_post078
-              trigger ../fsm/jrrfs_fsm:release_det_make_lbcs
+              # trigger ../fsm/jrrfs_fsm:release_det_make_lbcs
+              trigger :TIME >= 1210 and :TIME < 1305
               task jrrfs_det_make_lbcs_00
                 edit BCGRP '00'
               task jrrfs_det_make_lbcs_01
@@ -1779,7 +1779,6 @@ suite nco_rrfs_dev_12
                 trigger :TIME >= 1220 and :TIME < 1305 and /nco_rrfs_dev_11/primary/11/rrfs/v1.0/forecast/det/jrrfs_det_save_restart_f1==complete
             endfamily   # det
             family enkf
-              trigger ../ics/enkf==complete
               edit WGF 'enkf'
               edit GSI_TYPE 'OBSERVER'
               edit MEM_TYPE 'MEAN'

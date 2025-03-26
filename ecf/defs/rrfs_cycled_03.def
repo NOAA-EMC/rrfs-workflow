@@ -165,11 +165,11 @@ suite nco_rrfs_dev_03
               edit WGF 'enkf'
               edit CYCLE_TYPE 'prod'
               task jrrfs_enkf_process_radar
-                trigger :TIME >= 0315 and :TIME < 0405
+                trigger :TIME >= 0315 and :TIME < 0405 and ../det/jrrfs_det_process_radar==complete
               task jrrfs_enkf_process_lightning
-                trigger :TIME >= 0315 and :TIME < 0405
+                trigger :TIME >= 0315 and :TIME < 0405 and ../det/jrrfs_det_process_lightning==complete
               task jrrfs_enkf_process_bufr
-                trigger :TIME >= 0335 and :TIME < 0405
+                trigger :TIME >= 0335 and :TIME < 0405 and ../det/jrrfs_det_process_bufr==complete
             endfamily   # enkf
           endfamily	# init
           family ics
@@ -179,7 +179,6 @@ suite nco_rrfs_dev_03
                 # trigger ../../init/det==complete and /prod_clone/primary/12/gfs/v16.3/gdas/atmos/post/jgdas_atmos_post_manager:release_post003
                 trigger ../../fsm/jrrfs_fsm:release_det_make_ics
             endfamily   # det
-
           endfamily     # ics
           family prep
             family det

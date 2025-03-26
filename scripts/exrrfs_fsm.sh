@@ -424,6 +424,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
       fi
     fi
     if [ ${source_file_found} == "YES" ]; then
+      sleep 60
       ecflow_client --event release_det_analysis_gsi
       scan_release_det_analysis_gsi="NO"
     else
