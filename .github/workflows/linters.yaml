@@ -1,7 +1,6 @@
 name: Multi-Language Linters
 
 on:
-  push:
   pull_request:
   workflow_dispatch:  # Allows manual triggering
 
