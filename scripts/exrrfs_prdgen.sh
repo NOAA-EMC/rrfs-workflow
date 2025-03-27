@@ -315,7 +315,7 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
     do
 
       outspacing=${gridspacing}
-      if [ $domain = "hi" | $domain = "pr" ]
+      if [[ $domain = "hi" || $domain = "pr" ]]
        then
         outspacing="2p5km"
       fi
