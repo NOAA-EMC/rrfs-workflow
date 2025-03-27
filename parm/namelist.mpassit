@@ -1,5 +1,5 @@
 &config
-    grid_file_input_grid = "history.@timestr@.nc"
+    grid_file_input_grid = "init.nc"
     hist_file_input_grid = "history.@timestr@.nc"
     diag_file_input_grid = "diag.@timestr@.nc"
     output_file          = "mpassit.@timestr@.nc"

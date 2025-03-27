@@ -11,7 +11,7 @@ EXEC="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_variational.x"
 EXEC2="${HOMErrfs}/sorc/RDASApp/build/bin/bufr2ioda.x"
 EXEC3="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_enkf.x"
 cd ${HOMErrfs}/sorc/RDASApp
-cp ../_workaround_/MPAS-Model/Registry.xml sorc/mpas/src/core_atmosphere
+#cp ../_workaround_/MPAS-Model/Registry.xml sorc/mpas/src/core_atmosphere
 cp ../_workaround_/CMakeLists.txt sorc/ufo/src/ufo
 cp -r ../_workaround_/sfccorrected sorc/ufo/src/ufo/operators
 if [[ "${MACHINE}" == "gaea" ]]; then

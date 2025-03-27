@@ -34,6 +34,22 @@ YYYYMMDDHH=${CDATE}
 YYYYMMDD=${CDATE:0:8}
 HH=${CDATE:8:2}
 #
+# find init.nc
+#
+n=0
+while [[ $n -le 12 ]]; do
+  CDATEic=$($NDATE -$((10#${n})) ${CDATE})
+  YYYYMMDDic=${CDATEic:0:8}
+  HHic=${CDATEic:8:2}
+  checkfile=${COMINrrfs}/${RUN}.${YYYYMMDDic}/${HHic}/ic/${WGF}${MEMDIR}/init.nc
+  if [[ -s ${checkfile} ]]; then
+     ln -sf ${checkfile} .
+     break
+  else
+     n=$((n + 1))
+  fi
+done
+#
 # find forecst length for this cycle
 #
 fcst_length=${FCST_LENGTH:-1}
