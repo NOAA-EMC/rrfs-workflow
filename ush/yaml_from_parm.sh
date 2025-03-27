@@ -10,11 +10,17 @@ if [[ "$1" == "jedivar" ]]; then
   elif [[ "${HYB_WGT_STATIC}" == "0" ]] || [[ "${HYB_WGT_STATIC}" == "0.0" ]] ; then # pure 3DEnVar
     sed -i '46,87d' ./jedivar.yaml
   fi
+  if [[ ${start_type} == "cold" ]]; then
+      sed -i '7s/mpasin/ana/' jedivar.yaml
+  fi
   template="jedivar.yaml"
 
 else
   sed -e "s/@analysisDate@/${analysisDate}/" -e "s/@beginDate@/${beginDate}/" \
     ${PARMrrfs}/getkf_${TYPE}.yaml > getkf.yaml
+  if [[ ${start_type} == "cold" ]]; then
+      sed -i '13s/ens/ana/' getkf.yaml
+  fi
   template="getkf.yaml"
 fi
 #
