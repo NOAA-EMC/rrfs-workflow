@@ -86,7 +86,10 @@ for group in groups:
           np_invar[(np_invar < 0) | (np_invar > 15)] = 15
           g.variables[var][:] = np_invar.astype(invar.dtype)
         else:
-          g.variables[var][:] = invar[:][:]
+          if var in ['latitude', 'longitude']:
+            g.variables[var][:] = invar[:][:].data
+          else:
+            g.variables[var][:] = invar[:][:]
         # Copy attributes for this variable
         for attr in invar.ncattrs():
             if '_FillValue' in attr: continue

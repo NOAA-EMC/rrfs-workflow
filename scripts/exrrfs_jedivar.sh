@@ -122,15 +122,9 @@ case ${YAML_GEN_METHOD:-1} in
     ;;
 esac
 
-if [[ ${start_type} == "cold" ]]; then
-  exit 0 #gge.tmp.debug need more time to figure out cold start DA
-fi
 # run mpasjedi_variational.x
 export OOPS_TRACE=1
 export OMP_NUM_THREADS=1
-ulimit -s unlimited
-ulimit -v unlimited
-ulimit -a
 
 source prep_step
 ${cpreq} ${EXECrrfs}/mpasjedi_variational.x .
@@ -138,6 +132,15 @@ ${MPI_RUN_CMD} ./mpasjedi_variational.x jedivar.yaml log.out
 # check the status
 export err=$?
 err_chk
+#
+# ncks increments to cold_start IC
+if [[ ${start_type} == "cold" ]]; then
+  var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional"
+  ncks -A -H -v ${var_list} ana.nc mpasin.nc
+  export err=$?
+  err_chk
+  mv ana.nc ..
+fi
 #
 # the input/output file are linked from the umbrella directory, so no need to copy
 cp ${DATA}/jdiag* ${COMOUT}/jedivar/${WGF}
