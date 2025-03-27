@@ -3,7 +3,7 @@
 #PBS -S /bin/bash
 #PBS -q %QUEUE%
 #PBS -A %PROJ%-%PROJENVIR%
-#PBS -l walltime=00:30:00
+#PBS -l walltime=00:15:00
 #PBS -l select=1:mpiprocs=1:ncpus=1
 #PBS -l debug=true
 
@@ -19,13 +19,10 @@ export CDATE="${PDY}${cyc}"
 
 module list
 export WGF="det"
-%include <clean_dev_wire_%CYC%.h>
-export COMOUT_BASEDIR=${COMrrfs}
-export CYCLE_BASEDIR=${DATAROOT}
 ############################################################
 # CALL executable job script here
 ############################################################
-${HOMErrfs}/scripts/exrrfs_clean.ksh
+${HOMErrfs}/scripts/exrrfs_clean.sh
 
 %include <tail.h>
 

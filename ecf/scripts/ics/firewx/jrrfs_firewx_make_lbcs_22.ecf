@@ -22,7 +22,6 @@ module list
 export WGF="%WGF%"
 export BCGRPNUM="%BCGRPNUM%"
 export BCGRP="%BCGRP%"
-%include <firewx_make_lbcs_22_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################

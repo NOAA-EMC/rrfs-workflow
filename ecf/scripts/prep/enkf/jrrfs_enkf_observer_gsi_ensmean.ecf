@@ -22,7 +22,6 @@ module list
 export WGF="%WGF%"
 export GSI_TYPE="%GSI_TYPE%"
 export MEM_TYPE="%MEM_TYPE%"
-%include <enkf_observer_gsi_ensmean_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################

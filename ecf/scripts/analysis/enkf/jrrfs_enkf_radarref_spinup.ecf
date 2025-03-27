@@ -4,7 +4,7 @@
 #PBS -q %QUEUE%
 #PBS -A %PROJ%-%PROJENVIR%
 #PBS -l walltime=01:00:00
-#PBS -l select=10:mpiprocs=8:ompthreads=16:ncpus=128
+#PBS -l select=20:mpiprocs=8:ompthreads=16:ncpus=128
 
 #PBS -l debug=true
 
@@ -21,7 +21,7 @@ export CDATE="${PDY}${cyc}"
 module list
 export WGF="%WGF%"
 export CYCLE_TYPE="%CYCLE_TYPE%"
-%include <enkf_radarref_spinup_dev_wire_%CYC%.h>
+export OB_TYPE="radardbz"
 ############################################################
 # CALL executable job script here
 ############################################################

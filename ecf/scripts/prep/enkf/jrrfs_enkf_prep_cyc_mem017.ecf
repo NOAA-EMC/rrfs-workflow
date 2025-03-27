@@ -22,8 +22,8 @@ module list
 export WGF="%WGF%"
 export GSI_TYPE="%GSI_TYPE%"
 export MEM_TYPE="%MEM_TYPE%"
-export BCGRP="%BCGRP%"
-%include <enkf_prep_cyc_mem017_dev_wire_%CYC%.h>
+export CYCLE_TYPE="%CYCLE_TYPE%"
+export MEMBER_NAME="%MEMBER_NAME%"
 ############################################################
 # CALL executable job script here
 ############################################################
