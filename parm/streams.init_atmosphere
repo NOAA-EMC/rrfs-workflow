@@ -6,9 +6,24 @@
 
 <immutable_stream name="output"
                   type="output"
-                  filename_template="@output_stream@"
+                  filename_template="none.nc"
                   packages="initial_conds"
-                  output_interval="initial_only" />
+                  output_interval="none" />
+
+<stream name="jedi_ics"
+                  type="output"
+                  clobber_mode="truncate"
+                  filename_template="@output_stream@"
+                  io_type="pnetcdf,cdf5"
+                  output_interval="initial_only" >
+
+        <stream name="output" />
+        <var name="pressure" />
+        <var name="pressure_p" />
+        <var name="pressure_base" />
+        <var name="uReconstructZonal" />
+        <var name="uReconstructMeridional" />
+</stream>
 
 <immutable_stream name="surface"
                   type="output"
