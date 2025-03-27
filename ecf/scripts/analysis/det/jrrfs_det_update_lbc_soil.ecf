@@ -22,7 +22,7 @@ module list
 export WGF="%WGF%"
 export GSI_TYPE="%GSI_TYPE%"
 export MEM_TYPE="%MEM_TYPE%"
-%include <det_update_lbc_soil_dev_wire_%CYC%.h>
+export OB_TYPE="conv_dbz"
 ############################################################
 # CALL executable job script here
 ############################################################

@@ -21,8 +21,8 @@ export CDATE="${PDY}${cyc}"
 export WGF="%WGF%"
 export MEMBER_NAME="%MEMBER_NAME%"
 export CYCLE_TYPE="%CYCLE_TYPE%"
+export FHR="%FHR%"
 module list
-%include <enkf_save_restart_spinup_mem006_f001_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################

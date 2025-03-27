@@ -20,7 +20,6 @@ module load intel/${intel_ver}
 module load craype/${craype_ver}
 
 module list
-%include <fsm_wire.h>
 ############################################################
 # CALL executable job script here
 ############################################################

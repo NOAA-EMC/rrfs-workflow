@@ -20,7 +20,6 @@ export CDATE="${PDY}${cyc}"
 
 module list
 export WGF="%WGF%"
-%include <ensf_recenter_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################
