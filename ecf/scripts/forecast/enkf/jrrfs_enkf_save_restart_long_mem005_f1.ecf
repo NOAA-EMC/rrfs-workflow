@@ -20,8 +20,8 @@ export CDATE="${PDY}${cyc}"
 
 module list
 export WGF="%WGF%"
+export FHR="%FHR%"
 export MEMBER_NAME="%MEMBER_NAME%"
-%include <enkf_save_restart_long_mem005_f1_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################

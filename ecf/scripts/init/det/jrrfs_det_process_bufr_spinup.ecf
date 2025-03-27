@@ -21,7 +21,6 @@ export CDATE="${PDY}${cyc}"
 module list
 export WGF="%WGF%"
 export CYCLE_TYPE="%CYCLE_TYPE%"
-%include <det_process_bufr_spinup_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################

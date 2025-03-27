@@ -22,7 +22,6 @@ module list
 export WGF="%WGF%"
 export BCGRPNUM="%BCGRPNUM%"
 export BCGRP="%BCGRP%"
-%include <det_make_lbcs_51_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################

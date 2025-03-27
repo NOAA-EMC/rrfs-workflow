@@ -22,7 +22,6 @@ export WGF="%WGF%"
 export MEMBER_NAME="%MEMBER_NAME%"
 export CYCLE_TYPE="%CYCLE_TYPE%"
 module list
-%include <enkf_forecast_spinup_mem012_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################

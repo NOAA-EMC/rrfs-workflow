@@ -60,10 +60,11 @@ if [ -d /apps/ops/prod ]; then # On WCOSS2
   echo "Listing modules from head.h:"
   module list
   set -x
-  echo "----- RRFS IO SPIKE reading at Job Start -----"
-#  SPIKE_Reading_file=$(ls -lart /lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/root/loads.*|tail -1|awk '{print $9}')
-#  [[ -s $SPIKE_Reading_file ]]&& cat $SPIKE_Reading_file
-  echo "----------------------------------------------"
+#### GDIT I/O diag ONLY
+####   echo "----- RRFS IO SPIKE reading at Job Start -----"
+####   SPIKE_Reading_file=$(ls -lart /lfs/h3/emc/rrfstemp/ecflow/ptmp/emc.lam/ecflow_rrfs/root/loads.*|tail -1|awk '{print $9}')
+####   [[ -s $SPIKE_Reading_file ]]&& cat $SPIKE_Reading_file
+####   echo "----------------------------------------------"
 fi
 
 timeout 300 ecflow_client --init=${ECF_RID}

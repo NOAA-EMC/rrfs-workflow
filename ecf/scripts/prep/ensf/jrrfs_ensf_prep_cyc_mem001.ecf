@@ -20,8 +20,6 @@ export CDATE="${PDY}${cyc}"
 
 module list
 export WGF="%WGF%"
-export BCGRP="%BCGRP%"
-%include <ensf_prep_cyc_mem001_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################

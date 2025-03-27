@@ -23,7 +23,6 @@ export WGF="%WGF%"
 export BCGRPNUM="%BCGRPNUM%"
 export MEMBER_NAME="%MEMBER_NAME%"
 export BCGRP="%BCGRP%"
-%include <enkf_make_lbcs_08_mem026_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################

@@ -4,14 +4,8 @@
 #PBS -q %QUEUE%
 #PBS -A %PROJ%-%PROJENVIR%
 #PBS -l walltime=00:20:00
-#PBS -l select=6:mpiprocs=12:ncpus=12:mem=340GB
-#     (Failed) place=excl,select=6:mpiprocs=12:ncpus=12
-####  (Wroked) select=6:mpiprocs=12:ncpus=12:mem=340GB
-####  (Wroked) select=6:mpiprocs=12:ncpus=12:mem=680GB:prepost=true
-####  place=excl,select=6:mpiprocs=12:ncpus=12:prepost=true
-####  select=6:mpiprocs=12:ncpus=12
-####  select=9:mpiprocs=8:ncpus=8
-####  place=excl
+#### PBS -l select=6:mpiprocs=12:ncpus=12
+#PBS -l select=9:mpiprocs=8:ncpus=8
 #PBS -l debug=true
 
 model=rrfs
@@ -27,7 +21,6 @@ export CDATE="${PDY}${cyc}"
 module list
 export WGF="%WGF%"
 export BCGRPNUM="%BCGRPNUM%"
-%include <firewx_make_sfc_climo_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################

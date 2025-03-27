@@ -19,7 +19,7 @@ export CDATE="${PDY}${cyc}"
 
 
 module list
-%include <enkf_make_ics_mem023_dev_wire_%CYC%.h>
+export WGF="%WGF%"
 export MEMBER_NAME="%MEMBER_NAME%"
 ############################################################
 # CALL executable job script here

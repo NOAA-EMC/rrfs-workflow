@@ -10,6 +10,8 @@
 
 model=rrfs
 export cyc="%CYC%"
+export WGF="%WGF%"
+export CYCLE_TYPE="%CYCLE_TYPE%"
 %include <head.h>
 %include <envir-p1.h>
 export CDATE="${PDY}${cyc}"
@@ -19,9 +21,6 @@ export CDATE="${PDY}${cyc}"
 
 
 module list
-export WGF="%WGF%"
-export CYCLE_TYPE="%CYCLE_TYPE%"
-%include <det_process_radar_dev_wire_%CYC%.h>
 ############################################################
 # CALL executable job script here
 ############################################################
