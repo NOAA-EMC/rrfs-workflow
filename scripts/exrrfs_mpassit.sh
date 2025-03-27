@@ -39,10 +39,10 @@ HH=${CDATE:8:2}
 n=0
 while [[ $n -le 12 ]]; do
   CDATEic=$($NDATE -$((10#${n})) ${CDATE})
-  YYYYMMDDic=${CDATEic:0:8}
+  PDYic=${CDATEic:0:8}
   HHic=${CDATEic:8:2}
-  checkfile=${COMINrrfs}/${RUN}.${YYYYMMDDic}/${HHic}/ic/${WGF}${MEMDIR}/init.nc
-  if [[ -s ${checkfile} ]]; then
+  checkfile=${COMINrrfs}/${RUN}.${PDYic}/${HHic}/ic/${WGF}${MEMDIR}/init.nc
+  if [[ -s "${checkfile}" ]]; then
      ln -sf ${checkfile} .
      break
   else

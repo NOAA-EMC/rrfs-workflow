@@ -26,7 +26,6 @@ module load rrfs/${MACHINE}.intel
 module list
 
 cd ${HOMErrfs}/sorc/MPAS-Model
-#cp ../_workaround_/MPAS-Model/Registry.xml src/core_atmosphere
 make clean CORE=init_atmosphere
 make -j8 ${compiler_str} CORE=init_atmosphere PRECISION=single
 make clean CORE=atmosphere
