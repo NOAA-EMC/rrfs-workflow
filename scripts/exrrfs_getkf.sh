@@ -119,7 +119,7 @@ else # move post mean to umbrella if solver
   if [[ ${start_type} == "cold" ]]; then
     var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional"
     for mem in $(seq -w 1 030); do
-      ncks -A -H -v ${var_list} data/ana/men${mem}.nc data/ens/men${mem}.nc
+      ncks -A -H -v ${var_list} data/ana/mem${mem}.nc data/ens/mem${mem}.nc
       export err=$?
       err_chk
     done
