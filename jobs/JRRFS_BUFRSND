@@ -1,8 +1,27 @@
 #!/bin/bash
 
+date
+export PS4='+ $SECONDS + ' 
+set -xue
+
 #-----------------------------------------------------------------------
 # RRFS Bufr Sounding
 #-----------------------------------------------------------------------
+export pid=${pid:-$$}
+export outid=${outid:-"LL$job"}
+export RUN=${RUN:-rrfs}
+export fhr=01
+export tmmark=tm00
+
+export DATA=${DATA:-${DATAROOT}/${jobid}}
+mkdir -p ${DATA}
+cd ${DATA}
+
+#-----------------------------------------------------------------------
+# Source the variable definitions file
+#-----------------------------------------------------------------------
+
+. ${HOMErrfs}/ush/rrfs_nco_config.sh
 
 #-----------------------------------------------------------------------
 # Specify Execution Areas
@@ -12,19 +31,16 @@ export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
-
 export FIX_BUFRSND=${FIXrrfs}/bufrsnd
+
+# This path will need to be updated prior to implementation
 export GEMPAKrrfs=/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/gempak
 
 #-----------------------------------------------------------------------
-# Source the variable definitions file and the bash utility functions.
+# Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-
-date
-export PS4='+ $SECONDS + '
 
 #-----------------------------------------------------------------------
 # Save current shell options (in a global array).  Then set new options
@@ -57,56 +73,31 @@ on the output files corresponding to a specified forecast hour.
 ========================================================================"
 
 #-----------------------------------------------------------------------
-# Obtain unique process id (pid) and create the run directory (DATA).
+# Define the umbrella data and COM directories
 #-----------------------------------------------------------------------
 
-export pid=${pid:-$$}
-export RUN=${RUN:-rrfs}
-
-export fhr=01
-export tmmark=tm00
-
-if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  export ENSMEM_INDX=${ENSMEM_INDX:-${MEMBER_NAME}}
-  export mem_num=m$(printf "%03d" "$((10#${ENSMEM_INDX}))")
+if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
+  export ENSMEM_INDX=${MEMBER_NAME}
+  export FHRLIM=60
+else
+  export ENSMEM_INDX=""
+  export FHRLIM=84
 fi
+export mem_num=m$(echo "${ENSMEM_INDX}")
 
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
-if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  export INPUT_DATA="${DATAROOT}/${RUN}_forecast_${mem_num}_${envir}_${cyc}"
-  export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast"
-else
-  export INPUT_DATA="${DATAROOT}/${RUN}_forecast_${envir}_${cyc}"
-  export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/forecast"
+export DO_ENSFCST=${DO_ENSFCST:-}
+export COMOUT=${COMOUT:-$(compath.py -o rrfs/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
+export umbrella_forecast_data="${DATAROOT}/${RUN}_forecast_${cyc}_${rrfs_ver}/${WGF}"
+
+if [ "${DO_ENSFCST}" = "TRUE" ]; then
+  export COMOUT=${COMOUT}/${mem_num}
+  export umbrella_forecast_data="${DATAROOT}/${RUN}_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}"
 fi
 
-mkdir -p "${NWGES_DIR}/RESTART"
-mkdir -p "${NWGES_DIR}/INPUT"
+# Location of dyn/phy files from forecast task
+export shared_forecast_output_data=${umbrella_forecast_data}/output
 
-if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
-  export jobid=${taskid}
-else
-  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export jobid=${RUN}_bufrsnd_${mem_num}_${envir}_${cyc}
-  else
-    export jobid=${RUN}_bufrsnd_${envir}_${cyc}
-  fi
-fi
-
-export DATA=${DATA:-${DATAROOT}/${jobid}}
-rm -rf ${DATA}
-mkdir -p ${DATA}
-cd ${DATA}
-
-#-----------------------------------------------------------------------
-# Define COM directories
-#-----------------------------------------------------------------------
-
-if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/${mem_num})}
-else
-  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-fi
 mkdir -p "${COMOUT}"
 
 #-----------------------------------------------------------------------

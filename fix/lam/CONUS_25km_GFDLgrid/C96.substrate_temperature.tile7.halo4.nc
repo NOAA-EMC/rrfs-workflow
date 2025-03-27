@@ -1,1 +1,0 @@
-../../.agent/lam/CONUS_25km_GFDLgrid/C96.substrate_temperature.tile7.halo4.nc

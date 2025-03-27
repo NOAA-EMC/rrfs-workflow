@@ -1,1 +1,0 @@
-../../.agent/lam/RRFS_AK_3km/C3352_oro_data_ls.tile7.halo0.nc

@@ -48,11 +48,22 @@ analysis with RRFS for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
+# Configuration Parameters
+#
+#-----------------------------------------------------------------------
+#
+if [[ ! -v OB_TYPE ]]; then
+  OB_TYPE="conv"
+fi
+export OB_TYPE=${OB_TYPE}
+
+#
+#-----------------------------------------------------------------------
+#
 # Set environment
 #
 #-----------------------------------------------------------------------
 #
-ulimit -s unlimited
 ulimit -a
 
 case $MACHINE in
@@ -116,20 +127,8 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 #-----------------------------------------------------------------------
 #
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  cycle_tag="_spinup"
-else
-  cycle_tag=""
-fi
-if [ "${MEM_TYPE}" = "MEAN" ]; then
-  bkpath=${DATAROOT}/${RUN}_calc_ensmean${cycle_tag}_${envir}_${cyc}/INPUT
-else
-  if [ ${DO_ENSEMBLE} = "TRUE" ]; then
-    bkpath=${DATAROOT}/${RUN}_forecast${cycle_tag}_${mem_num}_${envir}_${cyc}/INPUT
-  else
-    bkpath=${DATAROOT}/${RUN}_forecast${cycle_tag}_${envir}_${cyc}/INPUT
-  fi
-fi
+
+bkpath=${FORECAST_INPUT_PRODUCT}
 
 # decide background type
 if [ -r "${bkpath}/coupler.res" ]; then
@@ -144,17 +143,10 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+
 if [[ ${BKTYPE} -eq 0 ]] && [[ ${OB_TYPE} =~ "conv" ]] && [[ "${DO_SOIL_ADJUST}" = "TRUE" ]]; then  # warm start
-  cd ${bkpath}
-  if [ "${IO_LAYOUT_Y}" = "1" ]; then
-    ln -snf ${fixgriddir}/fv3_grid_spec                fv3_grid_spec
-  else
-    for ii in ${list_iolayout}
-    do
-      iii=`printf %4.4i $ii`
-      ln  -snf ${gridspec_dir}/fv3_grid_spec.${iii}    fv3_grid_spec.${iii}
-    done
-  fi
+  ln -s ${bkpath}/*.nc .
+  ln -snf ${fixgriddir}/fv3_grid_spec                fv3_grid_spec
 
 cat << EOF > namelist.soiltq
  &setup
@@ -173,6 +165,7 @@ EOF
   $APRUN ${EXECrrfs}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
   mv errfile errfile_adjust_soiltq
+
 fi
 #
 #-----------------------------------------------------------------------
@@ -183,7 +176,8 @@ fi
 #-----------------------------------------------------------------------
 #
 if [ ${BKTYPE} -eq 0 ] && [ "${DO_UPDATE_BC}" = "TRUE" ]; then  # warm start
-  cd ${bkpath}
+  cpreq ${bkpath}/gfs_bndy.tile7.000.nc ${bkpath}/gfs_bndy.tile7.000.nc_before_update
+  ln -s ${bkpath}/gfs_bndy.tile7.000.nc .
 
 cat << EOF > namelist.updatebc
  &setup
@@ -193,14 +187,13 @@ cat << EOF > namelist.updatebc
  /
 EOF
 
-  cp gfs_bndy.tile7.000.nc gfs_bndy.tile7.000.nc_before_update
-
   export pgm="update_bc.exe"
   . prep_step
 
   $APRUN ${EXECrrfs}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
   mv errfile errfile_update_bc
+
 fi
 #
 #-----------------------------------------------------------------------

@@ -52,7 +52,6 @@ the output files corresponding to a specified forecast hour.
 #
 #-----------------------------------------------------------------------
 #
-ulimit -s unlimited
 ulimit -a
 
 case $MACHINE in
@@ -181,30 +180,26 @@ net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
 if [ ${DO_ENSFCST} = "TRUE" ]; then
   prslev=${net4}.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
   natlev=${net4}.t${cyc}z.${mem_num}.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
-  ififip=${net4}.t${cyc}z.${mem_num}.ififip.${gridspacing}.f${fhr}.${gridname}.grib2
-  aviati=${net4}.t${cyc}z.${mem_num}.aviati.${gridspacing}.f${fhr}.${gridname}.grib2
   testbed=${net4}.t${cyc}z.${mem_num}.testbed.${gridspacing}.f${fhr}.${gridname}.grib2
 else
   prslev=${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
-  prslevsubh=${net4}.t${cyc}z.prslev.${gridspacing}.subh.f${fhr}.${gridname}.grib2
   natlev=${net4}.t${cyc}z.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
-  ififip=${net4}.t${cyc}z.ififip.${gridspacing}.f${fhr}.${gridname}.grib2
-  aviati=${net4}.t${cyc}z.aviati.${gridspacing}.f${fhr}.${gridname}.grib2
   testbed=${net4}.t${cyc}z.testbed.${gridspacing}.f${fhr}.${gridname}.grib2
+  prslev_subh=${net4}.t${cyc}z.prslev.${gridspacing}.subh.f${fhr}.${gridname}.grib2
 fi
 
 # extract the output fields for the testbed
 if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
   if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN} ]]; then
-    wgrib2 ${DATA}/${prslev} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN} | wgrib2 -i -grib ${DATA}/${testbed} ${DATA}/${prslev}
+    wgrib2 ${COMOUT}/${prslev} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN} | wgrib2 -i -grib ${DATA}/${testbed} ${COMOUT}/${prslev}
   else
     echo "${FIX_UPP}/${TESTBED_FIELDS_FN} not found"
   fi
 fi
 if [[ ! -z ${TESTBED_FIELDS_FN2} ]]; then
   if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN2} ]]; then
-    if [[ -f ${DATA}/${natlev} ]]; then
-      wgrib2 ${DATA}/${natlev} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN2} | wgrib2 -i -append -grib ${DATA}/${testbed} ${DATA}/${natlev}
+    if [[ -f ${COMOUT}/${natlev} ]]; then
+      wgrib2 ${COMOUT}/${natlev} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN2} | wgrib2 -i -append -grib ${DATA}/${testbed} ${COMOUT}/${natlev}
     fi
   else
     echo "${FIX_UPP}/${TESTBED_FIELDS_FN2} not found"
@@ -220,25 +215,8 @@ fi
 # instead of calling sed.
 
 basetime=$( date +%y%j%H%M -d "${yyyymmdd} ${hh}" )
-if [[ -f ${DATA}/${prslev} ]]; then
-  cp ${DATA}/${prslev} ${COMOUT}/${prslev}
-fi
-if [[ -f ${DATA}/${prslevsubh} ]]; then
-  cp ${DATA}/${prslevsubh} ${COMOUT}/${prslevsubh}
-fi
-if [[ -f ${DATA}/${natlev} ]]; then
-  cp ${DATA}/${natlev} ${COMOUT}/${natlev}
-fi
 
 if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
-  if [ -f  ${DATA}/${ififip} ]; then
-    cp ${DATA}/${ififip} ${COMOUT}/${ififip}
-  fi
-
-  if [ -f  ${DATA}/${aviati} ]; then
-    cp ${DATA}/${aviati} ${COMOUT}/${aviati}
-  fi
-
   if [ -f  ${DATA}/${testbed} ]; then
     cp ${DATA}/${testbed}  ${COMOUT}/${testbed}
   fi
@@ -252,17 +230,13 @@ if [ -f ${COMOUT}/${natlev} ]; then
 fi
 
 if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
-  if [ -f ${COMOUT}/${ififip} ]; then
-    wgrib2 ${COMOUT}/${ififip} -s > ${COMOUT}/${ififip}.idx
-  fi
-
-  if [ -f ${COMOUT}/${aviati} ]; then
-    wgrib2 ${COMOUT}/${aviati} -s > ${COMOUT}/${aviati}.idx
-  fi
-
   if [ -f ${COMOUT}/${testbed} ]; then
     wgrib2 ${COMOUT}/${testbed} -s > ${COMOUT}/${testbed}.idx
   fi
+fi
+
+if [ "${DO_ENSFCST}" != "TRUE" ] && [ ${fhr} != '000' ]; then
+  wgrib2 ${COMOUT}/${prslev_subh} -s > ${COMOUT}/${prslev_subh}.idx
 fi
 
 # Remap to additional output grids if requested
@@ -314,14 +288,12 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
     for domain in ${domains[@]}
     do
       if [ ${DO_ENSFCST} = "TRUE" ]; then
-        [[ -f ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${domain}.grib2 ]]&& rm -f ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${domain}.grib2
         for task in $(seq ${tasks[count]})
         do
           cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${domain}.grib2
         done
         wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${domain}.grib2.idx
       else
-        [[ -f ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.${domain}.grib2 ]]&& rm -f ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.${domain}.grib2
         for task in $(seq ${tasks[count]})
         do
           cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.${domain}.grib2
@@ -330,6 +302,36 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
       fi
       count=$count+1
     done
+
+    # create subhourly files for CONUS, Alaska, Hawaii, Puerto Rico grids
+    if [ "${DO_ENSFCST}" != "TRUE" ] && [ ${fhr} != '000' ]; then
+      for domain in ${domains[@]}
+      do
+        prslev_subh_dom=${net4}.t${cyc}z.prslev.${gridspacing}.subh.f${fhr}.${domain}.grib2
+        if [ $domain == "conus" ]; then
+          # 3-km Lambert Conformal CONUS domain
+          gridspecs="lambert:262.5:38.5:38.5 237.280472:1799:3000 21.138123:1059:3000"
+        elif [ $domain == "ak" ]; then
+          # 3-km NPS Alaska domain
+          gridspecs="nps:210.0:60.0 181.429:1649:2976.0 40.530:1105:2976.0"
+        elif [ $domain == "hi" ]; then
+          # 2.5 km Mercator Hawaii domain
+          gridspecs="mercator:20.00 198.474999:321:2500.0:206.13099 18.072699:225:2500.0:23.087799"
+        elif [ $domain == "pr" ]; then
+          # 2.5 km Mercator Puerto Rico domain
+          gridspecs="mercator:20 284.5:544:2500:297.491 15.0:310:2500:22.005"
+        fi
+        
+        wgrib2 ${COMOUT}/${prslev_subh} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib${domain}.uv
+        wgrib2 inputs.grib${domain}.uv -set_bitmap 1 -set_grib_type c3 \
+          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
+          -new_grid_interpolation neighbor \
+          -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
+          -new_grid ${gridspecs} ${COMOUT}/${prslev_subh_dom}
+
+        wgrib2 ${COMOUT}/${prslev_subh_dom} -s > ${COMOUT}/${prslev_subh_dom}.idx
+      done
+    fi
 
     # create testbed files on 3-km CONUS grid
     if [ ${DO_ENSFCST} = "TRUE" ]; then
@@ -352,12 +354,9 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
  
      # echo "$USHrrfs/prdgen/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT} &" >> $DATAprdgen/poescript_faa_${fhr}
 
-    if [ ${DO_ENSFCST} = "FALSE" ]; then
-	    if [ -f ${COMOUT}/${aviati} ]; then
-      ${USHrrfs}/prdgen/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev \
-	      $ififip $aviati ${COMOUT} ${USHrrfs} ${FIXprdgen} ${PARMdir}
-            fi
-    fi
+#    if [ ${DO_ENSFCST} = "FALSE" ]; then
+#      ${USHrrfs}/prdgen/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT} ${USHrrfs}/prdgen
+#    fi
 
   else
     echo "WARNING: this grid is not ready for parallel prdgen: ${PREDEF_GRID_NAME}"
@@ -387,7 +386,7 @@ EOF
   export err=$?; err_chk
 
   grid_specs_firewx=`head $DATA/copygb_gridnavfw.txt`
-  eval infile=${DATA}/${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx.grib2
+  eval infile=${COMOUT}/${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx.grib2
 
   wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
    -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
@@ -438,7 +437,6 @@ else
             wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
              -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
              -new_grid_interpolation neighbor \
-             -if ":(AEMFLX):" -new_grid_interpolation bilinear -fi \
              -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2
           fi
 

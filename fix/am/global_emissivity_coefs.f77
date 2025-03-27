@@ -1,1 +1,0 @@
-../.agent/am/global_emissivity_coefs.f77

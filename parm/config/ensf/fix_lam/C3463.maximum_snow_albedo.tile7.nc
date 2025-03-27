@@ -1,1 +1,0 @@
-C3463.maximum_snow_albedo.tile7.halo4.nc

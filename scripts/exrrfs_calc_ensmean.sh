@@ -51,7 +51,6 @@ RRFS for the specified cycle.
 # Set environment
 #
 
-ulimit -s unlimited
 ulimit -a
 
 case $MACHINE in
@@ -89,6 +88,7 @@ case $MACHINE in
   ;;
 #
 esac
+nens=${NUM_ENS_MEMBERS:-"30"}
 #
 #-----------------------------------------------------------------------
 #
@@ -120,12 +120,7 @@ for imem in  $(seq 1 $nens)
   ensmem=$( printf "%03d" $imem ) 
   memberstring=$( printf "%03d" $imem )
 
-  if [ "${CYCLE_TYPE}" = "spinup" ]; then
-    bkpath=${DATAROOT}/${RUN}_forecast_spinup_m${ensmem}_${envir}_${cyc}/INPUT  # cycling, use background from RESTART
-  else
-    bkpath=${DATAROOT}/${RUN}_forecast_m${ensmem}_${envir}_${cyc}/INPUT  # cycling, use background from RESTART
-  fi
-
+  bkpath=${umbrella_forecast_data}/m${ensmem}/INPUT
   dynvarfile=${bkpath}/fv_core.res.tile1.nc
   tracerfile=${bkpath}/fv_tracer.res.tile1.nc
   if [ -r "${dynvarfile}" ] && [ -r "${tracerfile}" ] ; then
@@ -134,14 +129,16 @@ for imem in  $(seq 1 $nens)
     ln -sf ${bkpath}/sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
     if [ $imem -eq 1 ]; then
       # Prepare the data structure for ensemble mean
-      cpreq -p -f ${bkpath}/fv_core.res.tile1.nc  fv3sar_tile1_dynvar
-      cpreq -p -f ${bkpath}/fv_tracer.res.tile1.nc  fv3sar_tile1_tracer
-      cpreq -p -f ${bkpath}/sfc_data.nc  fv3sar_tile1_sfcvar
+      ln -s ${umbrella_forecast_data}/ensmean/INPUT/fv_core.res.tile1.nc fv3sar_tile1_dynvar
+      ln -s ${umbrella_forecast_data}/ensmean/INPUT/fv_tracer.res.tile1.nc fv3sar_tile1_tracer
+      ln -s ${umbrella_forecast_data}/ensmean/INPUT/sfc_data.nc fv3sar_tile1_sfcvar
+
       # Prepare other needed files for GSI observer run
-      cpreq -p -f ${bkpath}/coupler.res coupler.res
-      ln -snf ${bkpath}/fv_core.res.nc fv_core.res.nc
-      ln -snf ${bkpath}/fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
-      ln -snf ${bkpath}/phy_data.nc phy_data.nc
+      ln -s ${umbrella_forecast_data}/ensmean/INPUT/coupler.res coupler.res
+      ln -s ${umbrella_forecast_data}/ensmean/INPUT/fv_core.res.nc fv_core.res.nc
+      ln -s ${umbrella_forecast_data}/ensmean/INPUT/fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
+      ln -s ${umbrella_forecast_data}/ensmean/INPUT/phy_data.nc phy_data.nc
+
     fi
   else
     err_exit "Cannot find background: ${dynvarfile} ${tracerfile}"
@@ -200,9 +197,19 @@ ln -s fv3sar_tile1_sfcvar sfc_data.nc
 #
 #-----------------------------------------------------------------------
 #
-for files in fv3sar_tile1_dynvar  fv3sar_tile1_sfcvar  fv3sar_tile1_tracer  ; do
-  ncatted -a checksum,,d,,  $files
-done
+#for files in fv3sar_tile1_dynvar  fv3sar_tile1_sfcvar  fv3sar_tile1_tracer  ; do
+#  ncatted -a checksum,,d,,  $files
+#done
+#
+#-----------------------------------------------------------------------
+#
+# Copy output from the ensemble mean task into umbrella data directory.
+#
+#-----------------------------------------------------------------------
+#
+#cpreq fv3sar_tile1_dynvar ${umbrella_calc_ensmean_data}
+#cpreq fv3sar_tile1_sfcvar ${umbrella_calc_ensmean_data}
+#cpreq fv3sar_tile1_tracer ${umbrella_calc_ensmean_data}
 #
 #-----------------------------------------------------------------------
 #

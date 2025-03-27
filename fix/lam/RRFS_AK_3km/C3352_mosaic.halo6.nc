@@ -1,1 +1,0 @@
-../../.agent/lam/RRFS_AK_3km/C3352_mosaic.halo6.nc

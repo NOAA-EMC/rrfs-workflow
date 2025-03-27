@@ -1,1 +1,0 @@
-../../.agent/smoke_dust/RRFS_CONUS_3km/ds_out_base.nc

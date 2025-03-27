@@ -1,1 +1,0 @@
-../../.agent/lam/RRFS_NA_3km/C3445.slope_type.tile7.nc

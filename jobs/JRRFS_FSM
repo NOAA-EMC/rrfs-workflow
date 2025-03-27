@@ -5,20 +5,34 @@ export PS4=' $SECONDS + '
 set -xue
 
 #-----------------------------------------------------------------------
-# Source the variable definitions file and the bash utility functions.
+# RRFS File Service Manager
+#-----------------------------------------------------------------------
+export pid=${pid:-$$}
+export outid=${outid:-"LL$job"}
+export DATA=${DATA:-${DATAROOT}/${jobid}}
+mkdir -p ${DATA}
+cd ${DATA}
+
+#-----------------------------------------------------------------------
+# Source the variable definitions file
+#-----------------------------------------------------------------------
+export WGF=${WGF:-"det"}
+. ${HOMErrfs}/ush/rrfs_nco_config.sh
+
+#-----------------------------------------------------------------------
+# Source the variable definitions file
 #-----------------------------------------------------------------------
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 
-export DATAROOT="${DATAROOT:-${DATAROOT_dfv}}"
-export DATA=${DATA:-${DATAROOT}/${jobid}}
+#-----------------------------------------------------------------------
+# Source the bash utility functions.
+#-----------------------------------------------------------------------
 
-mkdir -p ${DATA}
-cd ${DATA}
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
+
 export cycle="t${cyc}z"
 setpdy.sh
 . ./PDY

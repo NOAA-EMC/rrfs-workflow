@@ -50,7 +50,6 @@ This is the ex-script for the task that runs EnKF analysis with RRFS for the
 specified cycle.
 ========================================================================"
 
-ulimit -s unlimited
 ulimit -a
 
 case $MACHINE in
@@ -63,7 +62,10 @@ case $MACHINE in
   export OMP_PROC_BIND=close
   export OMP_PLACES=threads
   export MPICH_RANK_REORDER_METHOD=0
+  export NNODES_ANALYSIS_ENKF=20
+  export PPN_ANALYSIS_ENKF=8
   ncores=$(( NNODES_ANALYSIS_ENKF*PPN_ANALYSIS_ENKF ))
+
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_ANALYSIS_ENKF} --label --line-buffer --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;
 #
@@ -90,6 +92,7 @@ case $MACHINE in
   ;;
 #
 esac
+nens=${NUM_ENS_MEMBERS:-"30"}
 #
 #-----------------------------------------------------------------------
 #
@@ -101,7 +104,7 @@ esac
 START_DATE=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
 
 YYYYMMDDHH=$(date +%Y%m%d%H -d "${START_DATE}")
-
+netcdf_diag=${netcdf_diag:-".true."}
 vlddate=$CDATE
 l_fv3reg_filecombined=.false.
 #
@@ -112,17 +115,9 @@ l_fv3reg_filecombined=.false.
 #-----------------------------------------------------------------------
 #
 fixgriddir=${FIX_GSI}/${PREDEF_GRID_NAME}
-
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-   enkfanal_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}_spinup/anal_enkf_spinup"
-else
-   enkfanal_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}/anal_enkf"
-fi
-mkdir -p ${enkfanal_nwges_dir}
-
-cpreq ${fixgriddir}/fv3_coupler.res    coupler.res
-cpreq ${fixgriddir}/fv3_akbk           fv3sar_tile1_akbk.nc
-cpreq ${fixgriddir}/fv3_grid_spec      fv3sar_tile1_grid_spec.nc
+cpreq -p ${fixgriddir}/fv3_coupler.res    coupler.res
+cpreq -p ${fixgriddir}/fv3_akbk           fv3sar_tile1_akbk.nc
+cpreq -p ${fixgriddir}/fv3_grid_spec      fv3sar_tile1_grid_spec.nc
 #
 #-----------------------------------------------------------------------
 #
@@ -140,18 +135,12 @@ for imem in  $(seq 1 $nens) ensmean; do
     memchar="m"$(printf %03i $imem)
     memcharv0="mem"$( printf "%03d" $imem )
   fi
-  if [ "${CYCLE_TYPE}" = "spinup" ]; then
-    bkpath=${DATAROOT}/${RUN}_forecast_spinup_${memchar}_${envir}_${cyc}/INPUT
-    observer_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}_spinup/${memchar}/observer_gsi_spinup"
-  else
-    bkpath=${DATAROOT}/${RUN}_forecast_${memchar}_${envir}_${cyc}/INPUT
-    observer_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}/${memchar}/observer_gsi"
-  fi
+  bkpath=${FORECAST_INPUT_PRODUCT}/${memchar}/INPUT
+  mkdir -p ${bkpath}
   if [ "${imem}" = "ensmean" ]; then
-    bkpath=${DATAROOT}/${RUN}_calc_ensmean_${envir}_${cyc}
-    ln -snf  ${bkpath}/fv3sar_tile1_dynvar       fv3sar_tile1_${memcharv0}_dynvars
-    ln -snf  ${bkpath}/fv3sar_tile1_tracer       fv3sar_tile1_${memcharv0}_tracer
-    ln -snf  ${bkpath}/fv3sar_tile1_sfcvar       fv3sar_tile1_${memcharv0}_sfcdata
+    ln -snf  ${bkpath}/fv_core.res.tile1.nc      fv3sar_tile1_${memcharv0}_dynvars
+    ln -snf  ${bkpath}/fv_tracer.res.tile1.nc    fv3sar_tile1_${memcharv0}_tracer
+    ln -snf  ${bkpath}/sfc_data.nc               fv3sar_tile1_${memcharv0}_sfcdata
     ln -snf  ${bkpath}/phy_data.nc               fv3sar_tile1_${memcharv0}_phyvar
   else
     ln -snf  ${bkpath}/fv_core.res.tile1.nc      fv3sar_tile1_${memcharv0}_dynvars
@@ -186,7 +175,7 @@ for imem in  $(seq 1 $nens) ensmean; do
       fi
     fi
     for sub_ob_type in ${list_ob_type} ; do
-      diagfile0=${observer_nwges_dir}/diag_${sub_ob_type}_ges.${YYYYMMDDHH}.nc4.gz
+      diagfile0=${COMOUT}/${memchar}/analysis/diag_${sub_ob_type}_ges.${YYYYMMDDHH}.nc4.gz
       if [ -s $diagfile0 ]; then
         diagfile=$(basename  $diagfile0)
         cpreq -p  $diagfile0  $diagfile
@@ -197,7 +186,7 @@ for imem in  $(seq 1 $nens) ensmean; do
       fi
     done
   else
-    for diagfile0 in $(ls  ${observer_nwges_dir}/diag*${OB_TYPE}*ges* ) ; do
+    for diagfile0 in $(ls  ${COMOUT}/${memchar}/analysis/diag*${OB_TYPE}*ges* ) ; do
       if [ -s $diagfile0 ]; then
          diagfile=$(basename  $diagfile0)
          cpreq -p  $diagfile0   diag_conv_ges.$memcharv0
@@ -215,7 +204,12 @@ done
 found_ob_type=0
 
 CONVINFO=${FIX_GSI}/convinfo.rrfs
-
+CORRLENGTH=${CORRLENGTH:-"300"}
+LNSIGCUTOFF=${LNSIGCUTOFF:-"0.5"}
+CORRLENGTH_radardbz=${CORRLENGTH_radardbz:-"18"}
+LNSIGCUTOFF_radardbz=${LNSIGCUTOFF_radardbz:-"0.5"}
+ENKF_ANAVINFO_FN=${ENKF_ANAVINFO_FN:-"anavinfo.rrfs"}
+ENKF_ANAVINFO_DBZ_FN=${ENKF_ANAVINFO_DBZ_FN:-"anavinfo.enkf.rrfs_dbz"}
 if [ "${OB_TYPE}" = "conv" ]; then
   ANAVINFO=${FIX_GSI}/${ENKF_ANAVINFO_FN}
   found_ob_type=1
@@ -239,46 +233,6 @@ cpreq -p ${ANAVINFO} anavinfo
 cpreq -p $SATINFO    satinfo
 cpreq -p $CONVINFO   convinfo
 cpreq -p $OZINFO     ozinfo
-
-if [ "${DO_ENS_RADDA}" = "TRUE" ]; then
-  # This follows the procedure of DO_RADDA=TRUE in exrrfs_analysis_gsi.sh, with differences below
-  #   - The check for "spinup" or "prod" is not performed, as there is only one spinup cycle.
-  #   - The file check is back in time for up to 72 hours only.  EnVar checks up to 240 hours back.
-  #   - No $satbias_dir is defined in EnKF.  Thus, it is defined as below.
-  #   - No use of radstat file in EnKF
-
-  satbias_dir=${GESROOT}/satbias_ensmean
-  
-  # Searching the satbias files from ${satbias_dir}
-  satcounter=1
-  maxcounter=72
-  while [ $satcounter -lt $maxcounter ]; do
-    SAT_TIME=`date +"%Y%m%d%H" -d "${START_DATE}  ${satcounter} hours ago"`
-    echo $SAT_TIME
-  
-    if [ -r ${satbias_dir}/rrfs.prod.${SAT_TIME}_satbias ]; then
-      echo " using satellite bias files from ${SAT_TIME}"
-      
-      cpreq -p ${satbias_dir}/rrfs.prod.${SAT_TIME}_satbias ./satbias_in
-      cpreq -p ${satbias_dir}/rrfs.prod.${SAT_TIME}_satbias_pc ./satbias_pc
-    
-      break
-    fi
-    satcounter=` expr $satcounter + 1 `
-  done
-
-  # if satbias files are not available from ${satbias_dir}, use satbias files from the ${FIX_GSI} 
-  if [ $satcounter -eq $maxcounter ]; then	
-    if [ -r ${FIX_GSI}/rrfs.starting_satbias ]; then
-      echo "using satllite satbias_in files from ${FIX_GSI}"     
-      cpreq -p ${FIX_GSI}/rrfs.starting_satbias ./satbias_in
-    fi
-    if [ -r ${FIX_GSI}/rrfs.starting_satbias_pc ]; then
-      echo "using satllite satbias_pc files from ${FIX_GSI}"     
-      cpreq -p ${FIX_GSI}/rrfs.starting_satbias_pc ./satbias_pc
-    fi
-  fi
-fi	
 
 #
 #-----------------------------------------------------------------------
@@ -448,12 +402,6 @@ countdiag=$(ls diag*conv* | wc -l)
 if [ $countdiag -gt $nens ]; then
   ${APRUN} ${EXECrrfs}/$pgm < enkf.nml >>$pgmout 2>errfile
   export err=$?; err_chk
-
-  cp ${pgmout} ${enkfanal_nwges_dir}/.
-  if [ ! -d ${GESROOT}/enkf_diag ]; then
-    mkdir -p ${GESROOT}/enkf_diag
-  fi
-  cp ${pgmout} ${GESROOT}/enkf_diag/${stdout_name}.$vlddate
 else
   echo "WARNING: EnKF not running due to lack of ${OB_TYPE} obs for cycle $vlddate !!!"
 fi

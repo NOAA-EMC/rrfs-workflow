@@ -1,1 +1,0 @@
-../../.agent/gsi/RRFS_AK_3km/geo_em.d01.nc

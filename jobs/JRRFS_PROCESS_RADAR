@@ -1,8 +1,42 @@
 #!/bin/bash
 
+date
+export PS4='+ $SECONDS + ' 
+set -xue
+
 #-----------------------------------------------------------------------
 # RRFS Radar Reflectivity Preprocessing
 #-----------------------------------------------------------------------
+export pid=${pid:-$$}
+export outid=${outid:-"LL$job"}
+export RUN=${RUN:-rrfs}
+
+#-----------------------------------------------------------------------
+# Define umbrella data directories
+#-----------------------------------------------------------------------
+export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
+export CYCLE_TYPE=${CYCLE_TYPE:-prod}
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/${RUN}_init_spinup_${cyc}_${rrfs_ver}/${WGF}}
+  export COMOUT_ANALYSIS=${COMrrfs}/${RUN}.${PDY}/${cyc}_spinup/analysis
+else
+  export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/${RUN}_init_${cyc}_${rrfs_ver}/${WGF}}
+  export COMOUT_ANALYSIS=${COMrrfs}/${RUN}.${PDY}/${cyc}/analysis
+fi
+export shared_output_data=${umbrella_init_data}/output
+
+#-----------------------------------------------------------------------
+# Define data directories
+#-----------------------------------------------------------------------
+export DATA=${DATA:-${umbrella_init_data}/${jobid}}
+mkdir -p ${DATA} ${shared_output_data} ${COMOUT_ANALYSIS}
+cd ${DATA}
+
+#-----------------------------------------------------------------------
+# Source the variable definitions file
+#-----------------------------------------------------------------------
+
+. ${HOMErrfs}/ush/rrfs_nco_config.sh
 
 #-----------------------------------------------------------------------
 # Specify Execution Areas
@@ -12,18 +46,13 @@ export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
-
 export FIX_GSI=${FIXrrfs}/gsi
 
 #-----------------------------------------------------------------------
-# Source the variable definitions file and the bash utility functions.
+# Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-
-date
-export PS4='+ $SECONDS + '
 
 #-----------------------------------------------------------------------
 # Save current shell options (in a global array).  Then set new options
@@ -54,40 +83,6 @@ In directory:     \"${scrfunc_dir}\"
 This is the J-job script for the task that runs the radar reflectivity 
 preprocessing with RRFS for the specified cycle.
 ========================================================================"
-
-#-----------------------------------------------------------------------
-# Obtain unique process id (pid) and create the run directory (DATA).
-#-----------------------------------------------------------------------
-
-export pid=${pid:-$$}
-export RUN=${RUN:-rrfs}
-
-if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
-  export jobid=${taskid}
-else
-  if [ "${CYCLE_TYPE}" = "spinup" ]; then
-    export jobid=${RUN}_process_radar_spinup_${envir}_${cyc}
-  else
-    export jobid=${RUN}_process_radar_prod_${envir}_${cyc}
-  fi
-fi
-
-export DATA=${DATA:-${DATAROOT}/${jobid}}
-mkdir -p ${DATA}
-cd ${DATA}
-
-export gridspec_dir=${GESROOT}/grid_spec
-
-#-----------------------------------------------------------------------
-# Define COM directories
-#-----------------------------------------------------------------------
-
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
-else
-  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-fi
-mkdir -p "${COMOUT}"
 
 #-----------------------------------------------------------------------
 # Execute the script.

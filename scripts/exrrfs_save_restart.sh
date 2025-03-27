@@ -62,6 +62,7 @@ save_mm=${save_time:4:2}
 save_dd=${save_time:6:2}
 save_hh=${save_time:8:2}
 #cdate_crnt_fhr=$( date --utc --date "${yyyymmdd} ${hh} UTC" "+%Y%m%d%H" )
+export CYCLE_DIR="${DATAROOT}/${RUN}/${WGF}/${PDY}${cyc}"
 #
 #-----------------------------------------------------------------------
 #
@@ -69,15 +70,8 @@ save_hh=${save_time:8:2}
 #
 #-----------------------------------------------------------------------
 #
-
-if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  runcyc_path=${RUN}.${PDY}/${cyc}/${mem_num}
-else
-  runcyc_path=${RUN}.${PDY}/${cyc}
-fi
-
-run_blending=${GESROOT}/${runcyc_path}/run_blending
-run_ensinit=${GESROOT}/${runcyc_path}/run_ensinit
+run_blending=${COMOUT}/run_blending
+run_ensinit=${COMOUT}/run_ensinit
 if [[ ${CYCLE_SUBTYPE} == "ensinit" && -e $run_blending ]]; then
    echo "clean exit ensinit, blending used instead of ensinit."
    exit 0
@@ -104,158 +98,64 @@ fi
 
 if_save_input=FALSE
 
-if [ ! -r ${NWGES_DIR}/INPUT/gfs_ctrl.nc ]; then
-  cp $DATA/INPUT/gfs_ctrl.nc ${NWGES_DIR}/INPUT/gfs_ctrl.nc
+if [ -s ${umbrella_forecast_data}/INPUT/gfs_ctrl.nc ]; then
+  cpreq -p ${umbrella_forecast_data}/INPUT/gfs_ctrl.nc ${COMOUT}/INPUT
   if_save_input=TRUE
 fi
 
-if [ -r "$DATA/RESTART/${restart_prefix}.coupler.res" ]; then
+if [ -r "${shared_forecast_restart_data}/${restart_prefix}.coupler.res" ]; then
+  #
+  #-----------------------------------------------------------------------
+  #
+  # If EnVar needs flash extent density field in control member, add it 
+  #
+  #-----------------------------------------------------------------------
+  #
+  if [[ ${DO_GLM_FED_DA} = TRUE && ${DO_ENSEMBLE} != TRUE ]]; then
+    export restart_prefix=${restart_prefix} 
+    export PREP_MODEL=2
+    ncap2 -O -v -s 'flash_extent_density=ref_f3d' ${shared_forecast_restart_data}/${restart_prefix}.phy_data.nc ${shared_forecast_restart_data}/${restart_prefix}.tmp.nc
+    python -u ${HOMErrfs}/ush/process_lightning.py
+    ncks -A -C -v flash_extent_density ${shared_forecast_restart_data}/${restart_prefix}.tmp.nc ${shared_forecast_restart_data}/${restart_prefix}.phy_data.nc
+    rm -f ${shared_forecast_restart_data}/${restart_prefix}.tmp.nc
+  fi
+  #
+  #-----------------------------------------------------------------------
+  #
+  # If EnVar will need flash extent density field in ensembles, add it 
+  #
+  #-----------------------------------------------------------------------
+  #
+  if [[ ${DO_ENSEMBLE} = TRUE && ${fhr} -eq 1 && ${PREP_MODEL_FOR_FED} = TRUE ]]; then
+    export restart_prefix=${restart_prefix}  
+    export PREP_MODEL=2
+  
+    ncap2 -O -v -s 'flash_extent_density=ref_f3d' ${shared_forecast_restart_data}/${restart_prefix}.phy_data.nc ${shared_forecast_restart_data}/${restart_prefix}.tmp.nc
+    python -u ${HOMErrfs}/ush/process_lightning.py
+    ncks -A -C -v flash_extent_density ${shared_forecast_restart_data}/${restart_prefix}.tmp.nc ${shared_forecast_restart_data}/${restart_prefix}.phy_data.nc
+    rm ${shared_forecast_restart_data}/${restart_prefix}.tmp.nc
+  fi
+  #
+  #-----------------------------------------------------------------------
+  #
+  # Back to our regularly scheduled programming 
+  #
+  #-----------------------------------------------------------------------
+  #
   if [ "${IO_LAYOUT_Y}" = "1" ]; then
-    for file in ${filelistn}; do
-      mv $DATA/RESTART/${restart_prefix}.${file} ${NWGES_DIR}/RESTART/${restart_prefix}.${file}
-    done
+    cpreq -p ${shared_forecast_restart_data}/* ${COMOUT}/RESTART
   else
     for file in ${filelistn}; do
       for ii in ${list_iolayout}
       do
         iii=$(printf %4.4i $ii)
-        mv $DATA/RESTART/${restart_prefix}.${file}.${iii} ${NWGES_DIR}/RESTART/${restart_prefix}.${file}.${iii}
+        cpreq -p ${shared_forecast_restart_data}/${restart_prefix}.${file}.${iii} ${COMOUT}/RESTART/${restart_prefix}.${file}.${iii}
       done
     done
   fi
-#
-#-----------------------------------------------------------------------
-#
-# If EnVar needs flash extent density field in control member, add it 
-#
-#-----------------------------------------------------------------------
-#
-if [[ ${DO_GLM_FED_DA} = TRUE && ${DO_ENSEMBLE} != TRUE ]]; then
-  export restart_prefix=${restart_prefix} 
-  export PREP_MODEL=2
-  ncap2 -O -v -s 'flash_extent_density=ref_f3d' ${NWGES_DIR}/RESTART/${restart_prefix}.phy_data.nc ${NWGES_DIR}/RESTART/${restart_prefix}.tmp.nc
-  python -u ${HOMErrfs}/scripts/exrrfs_process_lightning.py
-  ncks -A -C -v flash_extent_density ${NWGES_DIR}/RESTART/${restart_prefix}.tmp.nc ${NWGES_DIR}/RESTART/${restart_prefix}.phy_data.nc
-  rm ${NWGES_DIR}/RESTART/${restart_prefix}.tmp.nc
-fi
-#
-#-----------------------------------------------------------------------
-#
-# If EnVar will need flash extent density field in ensembles, add it 
-#
-#-----------------------------------------------------------------------
-#
-if [[ ${DO_ENSEMBLE} = TRUE && ${fhr} -eq 1 && ${PREP_MODEL_FOR_FED} = TRUE ]]; then
-  export restart_prefix=${restart_prefix}  
-  export PREP_MODEL=2
-
-  ncap2 -O -v -s 'flash_extent_density=ref_f3d' ${NWGES_DIR}/RESTART/${restart_prefix}.phy_data.nc ${NWGES_DIR}/RESTART/${restart_prefix}.tmp.nc
-  python -u ${HOMErrfs}/scripts/exrrfs_process_lightning.py
-  ncks -A -C -v flash_extent_density ${NWGES_DIR}/RESTART/${restart_prefix}.tmp.nc ${NWGES_DIR}/RESTART/${restart_prefix}.phy_data.nc
-  rm ${NWGES_DIR}/RESTART/${restart_prefix}.tmp.nc
-fi
-#
-#-----------------------------------------------------------------------
-#
-# Back to our regularly scheduled programming 
-#
-#-----------------------------------------------------------------------
-#
-  for file in ${filelist}; do
-    mv $DATA/RESTART/${restart_prefix}.${file} ${NWGES_DIR}/RESTART/${restart_prefix}.${file}
-  done
-  echo " ${fhr} forecast from ${yyyymmdd}${hh} is ready " #> ${NWGES_DIR}/RESTART/restart_done_f${fhr}
+  echo " ${fhr} forecast from ${yyyymmdd}${hh} is ready " #> ${COMOUT}/RESTART/restart_done_f${fhr}
 else
-
-  FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS}
-  if [ "${CYCLE_TYPE}" = "spinup" ]; then
-    FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS_SPINUP}
-  else
-    num_fhrs=( "${#FCST_LEN_HRS_CYCLES[@]}" )
-    ihh=`expr ${hh} + 0`
-    if [ ${num_fhrs} -gt ${ihh} ]; then
-       FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS_CYCLES[${ihh}]}
-    fi
-  fi
-  print_info_msg "The forecast length for cycle (\"${hh}\") is (\"${FCST_LEN_HRS_thiscycle}\")."
-
-  if [ -r "$DATA/RESTART/${restart_prefix}.coupler.res" ] && ([ ${fhr} -eq ${FCST_LEN_HRS_thiscycle} ] || [ "${CYCLE_SUBTYPE}" = "ensinit" ]); then
-    if [ "${IO_LAYOUT_Y}" = "1" ]; then
-      for file in ${filelistn}; do
-        mv $DATA/RESTART/${file} ${NWGES_DIR}/RESTART/${restart_prefix}.${file}
-      done
-    else
-      for file in ${filelistn}; do
-        for ii in ${list_iolayout}
-        do
-          iii=$(printf %4.4i $ii)
-          mv $DATA/RESTART/${file}.${iii} ${NWGES_DIR}/RESTART/${restart_prefix}.${file}.${iii}
-        done
-      done
-    fi
-#
-#-----------------------------------------------------------------------
-#
-# If EnVar needs flash extent density field in control member, add it 
-#
-#-----------------------------------------------------------------------
-#
-if [[ ${DO_GLM_FED_DA} = TRUE && ${DO_ENSEMBLE} != TRUE ]]; then
-  export restart_prefix=${restart_prefix} 
-  export PREP_MODEL=2
-  time_0=`date +%s`
-  ncap2 -O -v -s 'flash_extent_density=ref_f3d' ${NWGES_DIR}/RESTART/${restart_prefix}.phy_data.nc ${NWGES_DIR}/RESTART/${restart_prefix}.tmp.nc
-  time_1=`date +%s`
-  python -u ${HOMErrfs}/scripts/exrrfs_process_lightning.py
-  time_2=`date +%s`
-  ncks -A -C -v flash_extent_density ${NWGES_DIR}/RESTART/${restart_prefix}.tmp.nc ${NWGES_DIR}/RESTART/${restart_prefix}.phy_data.nc
-  time_3=`date +%s`
-  rm ${NWGES_DIR}/RESTART/${restart_prefix}.tmp.nc
-  time_4=`date +%s`
-  echo ncaps2 execution time was `expr $time_1 - $time_0` s.
-  echo python execution time was `expr $time_2 - $time_1` s.
-  echo ncks execution time was `expr $time_3 - $time_2` s.
-  echo rm execution time was `expr $time_4 - $time_3` s.
-fi
-#
-#-----------------------------------------------------------------------
-#
-# If EnVar will need flash extent density field in ensembles, add it 
-#
-#-----------------------------------------------------------------------
-#
-if [[ ${DO_ENSEMBLE} = TRUE && ${fhr} -eq 1 && ${PREP_MODEL_FOR_FED} = TRUE ]]; then
-  export restart_prefix=${restart_prefix}  
-  export PREP_MODEL=2
-
-  time_0=`date +%s`
-  ncap2 -O -v -s 'flash_extent_density=ref_f3d' ${NWGES_DIR}/RESTART/${restart_prefix}.phy_data.nc ${NWGES_DIR}/RESTART/${restart_prefix}.tmp.nc
-  time_1=`date +%s`
-  python -u ${HOMErrfs}/scripts/exrrfs_process_lightning.py
-  time_2=`date +%s`
-  ncks -A -C -v flash_extent_density ${NWGES_DIR}/RESTART/${restart_prefix}.tmp.nc ${NWGES_DIR}/RESTART/${restart_prefix}.phy_data.nc
-  time_3=`date +%s`
-  rm ${NWGES_DIR}/RESTART/${restart_prefix}.tmp.nc
-  time_4=`date +%s`
-  echo ncaps2 execution time was `expr $time_1 - $time_0` s.
-  echo python execution time was `expr $time_2 - $time_1` s.
-  echo ncks execution time was `expr $time_3 - $time_2` s.
-  echo rm execution time was `expr $time_4 - $time_3` s.
-fi
-#
-#-----------------------------------------------------------------------
-#
-# Back to our regularly scheduled programming 
-#
-#-----------------------------------------------------------------------
-#
-    for file in ${filelist}; do
-       mv $DATA/RESTART/${file} ${NWGES_DIR}/RESTART/${restart_prefix}.${file}
-    done
-    echo " ${fhr} forecast from ${yyyymmdd}${hh} is ready " #> ${NWGES_DIR}/RESTART/restart_done_f${fhr}
-  else
-    echo "This forecast hour does not need to save restart: ${yyyymmdd}${hh}f${fhr}"
-  fi
+  echo "This forecast hour does not need to save restart: ${yyyymmdd}${hh}f${fhr}"
 fi
 #
 #-----------------------------------------------------------------------
@@ -264,12 +164,12 @@ fi
 #
 if [ "${CYCLE_TYPE}" = "prod" ] && [ "${CYCLE_SUBTYPE}" = "control" ]; then
   if [ "${IO_LAYOUT_Y}" = "1" ]; then
-    cp ${NWGES_DIR}/RESTART/${restart_prefix}.sfc_data.nc ${SURFACE_DIR}/${restart_prefix}.sfc_data.nc.${CDATE}
+    cp ${COMOUT}/RESTART/${restart_prefix}.sfc_data.nc ${SURFACE_DIR}/${restart_prefix}.sfc_data.nc.${CDATE}
   else
     for ii in ${list_iolayout}
     do
       iii=$(printf %4.4i $ii)
-      cp ${NWGES_DIR}/RESTART/${restart_prefix}.sfc_data.nc.${iii} ${SURFACE_DIR}/${restart_prefix}.sfc_data.nc.${CDATE}.${iii}
+      cp ${COMOUT}/RESTART/${restart_prefix}.sfc_data.nc.${iii} ${SURFACE_DIR}/${restart_prefix}.sfc_data.nc.${CDATE}.${iii}
     done
   fi
 fi
@@ -280,26 +180,26 @@ fi
 #
 if [ "${if_save_input}" = TRUE ]; then
   if [ "${DO_SAVE_INPUT}" = TRUE ]; then
-    if [ -r ${DATA}/INPUT/coupler.res ]; then  # warm start
+    if [ -r ${umbrella_forecast_data}/INPUT/coupler.res ]; then  # warm start
       if [ "${IO_LAYOUT_Y}" = "1" ]; then
         for file in ${filelistn}; do
-          cp $DATA/INPUT/${file} ${NWGES_DIR}/INPUT/${file}
+          cp ${umbrella_forecast_data}/INPUT/${file} ${COMOUT}/INPUT/${file}
         done
       else
         for file in ${filelistn}; do
           for ii in ${list_iolayout}
           do
             iii=$(printf %4.4i $ii)
-           cp $DATA/INPUT/${file}.${iii} ${NWGES_DIR}/INPUT/${file}.${iii}
+           cp ${umbrella_forecast_data}/INPUT/${file}.${iii} ${COMOUT}/INPUT/${file}.${iii}
           done
         done
       fi
       for file in ${filelist}; do
-        cp $DATA/INPUT/${file} ${NWGES_DIR}/INPUT/${file}
+        cp ${umbrella_forecast_data}/INPUT/${file} ${COMOUT}/INPUT/${file}
       done
     else  # cold start
       for file in ${filelistcold}; do
-        cp $DATA/INPUT/${file} ${NWGES_DIR}/INPUT/${file}
+        cp ${umbrella_forecast_data}/INPUT/${file} ${COMOUT}/INPUT/${file}
       done
     fi
   fi

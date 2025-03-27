@@ -7,7 +7,13 @@
 #
 #-----------------------------------------------------------------------
 #
-. ${GLOBAL_VAR_DEFNS_FP}
+HOMErrfs=${HOMErrfs:-/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/para/packages/rrfs.v1.0.0}
+USHrrfs=${HOMErrfs}/ush
+WORKFLOW_MANAGER="ecflow"
+MACHINE="WCOSS2"
+VERBOSE='TRUE'
+
+#### . ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
@@ -17,7 +23,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -209,6 +215,8 @@ Launching J-job (jjob_fp) for task \"${task_name}\" ...
 
 if [ "${WORKFLOW_MANAGER}" = "ecflow" ]; then
   /bin/bash "${jjob_fp}"
+  export err=$?
+  [ $err -ne 0 ]&& exit $err
 else
   exec "${jjob_fp}"
 fi

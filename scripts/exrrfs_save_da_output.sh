@@ -71,25 +71,25 @@ filelistcold="gfs_data.tile7.halo0.nc sfc_data.tile7.halo0.nc"
 n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
-if [ ! -r ${NWGES_DIR}/DA_OUTPUT/gfs_ctrl.nc ]; then
-  cp $DATA/INPUT/gfs_ctrl.nc ${NWGES_DIR}/DA_OUTPUT/gfs_ctrl.nc
+if [ ! -r ${COMOUT}/DA_OUTPUT/gfs_ctrl.nc ]; then
+  cpreq -p ${umbrella_forecast_data}/gfs_ctrl.nc ${COMOUT}/DA_OUTPUT/gfs_ctrl.nc
 fi
-if [ -r ${DATA}/INPUT/coupler.res ]; then  # warm start
+if [ -r ${umbrella_forecast_data}/coupler.res ]; then  # warm start
     if [ "${IO_LAYOUT_Y}" = "1" ]; then
       for file in ${filelistn}; do
-        cp $DATA/INPUT/${file} ${NWGES_DIR}/DA_OUTPUT/${file}
+        cpreq -p ${umbrella_forecast_data}/${file} ${COMOUT}/DA_OUTPUT/${file}
       done
     else
       for file in ${filelistn}; do
         for ii in ${list_iolayout}
         do
           iii=$(printf %4.4i $ii)
-         cp $DATA/INPUT/${file}.${iii} ${NWGES_DIR}/DA_OUTPUT/${file}.${iii}
+         cp ${umbrella_forecast_data}/${file}.${iii} ${COMOUT}/DA_OUTPUT/${file}.${iii}
         done
       done
     fi
     for file in ${filelist}; do
-      cp $DATA/INPUT/${file} ${NWGES_DIR}/DA_OUTPUT/${file}
+      cp ${umbrella_forecast_data}/${file} ${COMOUT}/DA_OUTPUT/${file}
     done
 else  # cold start
     print_info_msg "$VERBOSE" "\

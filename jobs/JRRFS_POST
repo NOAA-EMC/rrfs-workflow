@@ -1,8 +1,26 @@
 #!/bin/bash
 
+date
+export PS4='+ $SECONDS + ' 
+set -xue
+
 #-----------------------------------------------------------------------
 # RRFS Post-Processing
 #-----------------------------------------------------------------------
+export pid=${pid:-$$}
+export outid=${outid:-"LL$job"}
+export RUN=${RUN:-rrfs}
+export fhr=${FHR:-}
+
+export DATA=${DATA:-${DATAROOT}/${jobid}}
+mkdir -p ${DATA}
+cd ${DATA}
+
+#-----------------------------------------------------------------------
+# Source the variable definitions file
+#-----------------------------------------------------------------------
+
+. ${HOMErrfs}/ush/rrfs_nco_config.sh
 
 #-----------------------------------------------------------------------
 # Specify Execution Areas
@@ -12,19 +30,14 @@ export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
-
 export FIX_UPP=${FIXrrfs}/upp
 export FIX_UPP_CRTM=${CRTM_FIX}		# CRTM_FIX is from CRTM module
 
 #-----------------------------------------------------------------------
-# Source the variable definitions file and the bash utility functions.
+# Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-
-date
-export PS4='+ $SECONDS + '
 
 #-----------------------------------------------------------------------
 # Save current shell options (in a global array).  Then set new options
@@ -57,56 +70,35 @@ on the output files corresponding to a specified forecast hour.
 ========================================================================"
 
 #-----------------------------------------------------------------------
-# Obtain unique process id (pid) and create the run directory (DATA).
+# Define the umbrella data and COM directories.
 #-----------------------------------------------------------------------
 
-export pid=${pid:-$$}
-export RUN=${RUN:-rrfs}
-
-if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  export ENSMEM_INDX=${ENSMEM_INDX:-${MEMBER_NAME}}
-  export mem_num=m$(echo "${ENSMEM_INDX}")
+if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
+  export ENSMEM_INDX=${MEMBER_NAME}
+else
+  export ENSMEM_INDX=""
 fi
+export mem_num=m$(echo "${ENSMEM_INDX}")
 
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
-if [ ${CYCLE_TYPE} == "spinup" ]; then
-  export INPUT_DATA="${DATAROOT}/${RUN}_forecast_spinup_${envir}_${cyc}"
-  export jobid=${RUN}_post_spinup_${envir}_${cyc}_f${fhr}
-else
-  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export INPUT_DATA="${DATAROOT}/${RUN}_forecast_${mem_num}_${envir}_${cyc}"
-    export jobid=${RUN}_post_${mem_num}_${envir}_${cyc}_f${fhr}
-  else
-    if [ ${WGF} == "firewx" ]; then
-      export INPUT_DATA="${DATAROOT}/firewx_forecast_${envir}_${cyc}"
-      export jobid=${WGF}_post_${envir}_${cyc}_f${fhr}
-    else
-      export INPUT_DATA="${DATAROOT}/${RUN}_forecast_${envir}_${cyc}"
-      export jobid=${RUN}_post_${envir}_${cyc}_f${fhr}
-    fi
-  fi
-fi
+export DO_ENSFCST=${DO_ENSFCST:-}
+export COMrrfs=${COMrrfs:-$(compath.py -o rrfs/${rrfs_ver})}
+export COMOUT=${COMOUT:-$(compath.py -o rrfs/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
+export umbrella_forecast_data=${DATAROOT}/${RUN}_forecast_${cyc}_${rrfs_ver}/${WGF}
 
-if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
-  export jobid=${taskid}
-fi
+# Output from 15-min, 30-min, 45-min subhourly post jobs goes to umbrella data
+export umbrella_post_data=${DATAROOT}/${RUN}_post_${cyc}_${rrfs_ver}/${WGF}
 
-export DATA=${DATA:-${DATAROOT}/${jobid}}
-mkdir -p ${DATA}
-cd ${DATA}
-
-#-----------------------------------------------------------------------
-# Define COM directories
-#-----------------------------------------------------------------------
-
-export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-if [ ${CYCLE_TYPE} = "spinup" ]; then
-  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
-fi
-if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+# Post jobs do not run for spinup cycles, subhourly post jobs are only for deterministic runs
+if [ "${DO_ENSFCST}" = "TRUE" ]; then
   export COMOUT=${COMOUT}/${mem_num}
+  export umbrella_forecast_data=${DATAROOT}/${RUN}_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
 fi
-mkdir -p "${COMOUT}"
+
+# FSM job copies dyn/phy netcdf output and log files into shared_forecast_output_data directory
+export shared_forecast_output_data=${umbrella_forecast_data}/output
+
+mkdir -p ${COMOUT} ${shared_forecast_output_data} ${umbrella_post_data}
 
 #-----------------------------------------------------------------------
 # Execute the script.
@@ -121,6 +113,9 @@ export err=$?; err_chk
 if [ -e "$pgmout" ]; then
   cat $pgmout
 fi
+
+#### Developer overwrite
+KEEPDATA=NO
 
 if [ "${KEEPDATA}" = "NO" ]; then
   rm -rf ${DATA}

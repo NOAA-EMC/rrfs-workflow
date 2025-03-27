@@ -1,1 +1,0 @@
-../../.agent/lam/RRFS_CONUS_13km/C775_grid.tile7.halo3.nc

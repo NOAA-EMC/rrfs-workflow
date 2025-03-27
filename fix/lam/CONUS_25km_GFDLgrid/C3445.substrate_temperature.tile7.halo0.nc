@@ -1,1 +1,0 @@
-../../.agent/lam/RRFS_NA_3km/C3445.substrate_temperature.tile7.halo0.nc

@@ -2,6 +2,7 @@ exec/
 fix/.agent
 fix/tmp
 fix/INIT_DONE
+fix/gsi
 python_graphics/
 sorc/*/
 !sorc/manage_externals/
@@ -9,7 +10,11 @@ ush/config.sh
 ush/*.swp
 ush/__pycache__/
 ush/python_utils/__pycache__/
-
+parm/config/det/fix*
+parm/config/enkf/fix*
+parm/config/ensf/fix*
+parm/config/ensf/fix_lam
+parm/config/firewx/fix*
 __pycache__
 *.swp
 .venv

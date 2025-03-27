@@ -52,7 +52,6 @@ with RRFS for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-ulimit -s unlimited
 ulimit -a
 
 case $MACHINE in
@@ -112,63 +111,35 @@ print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
 #
 #-----------------------------------------------------------------------
 #
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  cycle_tag="_spinup"
-else
-  cycle_tag=""
-fi
-if [ "${MEM_TYPE}" = "MEAN" ]; then
-  bkpath=${DATAROOT}/${RUN}_calc_ensmean${cycle_tag}_${envir}_${cyc}/INPUT
-else
-  if [ ${DO_ENSEMBLE} = "TRUE" ]; then
-    bkpath=${DATAROOT}/${RUN}_forecast${cycle_tag}_${mem_num}_${envir}_${cyc}/INPUT
-  else
-    bkpath=${DATAROOT}/${RUN}_forecast${cycle_tag}_${envir}_${cyc}/INPUT
-  fi
-fi
+bkpath=${FORECAST_INPUT_PRODUCT}
 
 if [ ${l_cld_uncertainty} == ".true." ]; then
   # Copy analysis fields into uncertainties - data will be overwritten
   echo "exrrfs_analysis_nonvarcld.sh: copy tracer file into uncertainty file "
-  cp ${bkpath}/fv_tracer.res.tile1.nc  ${bkpath}/fv_tracer.unc.tile1.nc
+  cpreq -p ${bkpath}/fv_tracer.res.tile1.nc  ${bkpath}/fv_tracer.unc.tile1.nc
 fi
 
 n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
-cpreq ${fixgriddir}/fv3_akbk       fv3_akbk
-cpreq ${fixgriddir}/fv3_grid_spec  fv3_grid_spec
+cpreq -p ${fixgriddir}/fv3_akbk       fv3_akbk
+cpreq -p ${fixgriddir}/fv3_grid_spec  fv3_grid_spec
 
 BKTYPE=0
 if [ -r "${bkpath}/coupler.res" ]; then # Use background from warm restart
-  if [ "${IO_LAYOUT_Y}" == "1" ]; then
-    ln -s ${bkpath}/fv_core.res.tile1.nc         fv3_dynvars
-    ln -s ${bkpath}/fv_tracer.res.tile1.nc       fv3_tracer
-    if [ ${l_cld_uncertainty} == ".true." ]; then
-      ln -s ${bkpath}/fv_tracer.unc.tile1.nc       fv3_tracer_unc
-    fi
-    ln -s ${bkpath}/sfc_data.nc                  fv3_sfcdata
-    ln -s ${bkpath}/phy_data.nc                  fv3_phydata
-  else
-    for ii in ${list_iolayout}
-    do
-      iii=$(printf %4.4i $ii)
-      ln -s ${bkpath}/fv_core.res.tile1.nc.${iii}         fv3_dynvars.${iii}
-      ln -s ${bkpath}/fv_tracer.res.tile1.nc.${iii}       fv3_tracer.${iii}
-      if [ ${l_cld_uncertainty} == ".true." ]; then
-        ln -s ${bkpath}/fv_tracer.unc.tile1.nc.${iii}       fv3_tracer_unc.${iii}
-      fi
-      ln -s ${bkpath}/sfc_data.nc.${iii}                  fv3_sfcdata.${iii}
-      ln -s ${bkpath}/phy_data.nc.${iii}                  fv3_phydata.${iii}
-      ln -s ${gridspec_dir}/fv3_grid_spec.${iii}          fv3_grid_spec.${iii}
-    done
+#  if [ "${IO_LAYOUT_Y}" == "1" ]; then
+  ln -s ${bkpath}/fv_core.res.tile1.nc         fv3_dynvars
+  ln -s ${bkpath}/fv_tracer.res.tile1.nc       fv3_tracer
+  if [ ${l_cld_uncertainty} == ".true." ]; then
+    ln -s ${bkpath}/fv_tracer.unc.tile1.nc     fv3_tracer_unc
   fi
+  ln -s ${bkpath}/sfc_data.nc                  fv3_sfcdata
+  ln -s ${bkpath}/phy_data.nc                  fv3_phydata
   BKTYPE=0
 else                                   # Use background from input (cold start)
   ln -s ${bkpath}/sfc_data.tile7.halo0.nc      fv3_sfcdata
-  ln -s ${bkpath}/phy_data.tile7.halo0.nc      fv3_phydata
-  ln -s ${bkpath}/gfs_data.tile7.halo0.nc         fv3_dynvars
-  ln -s ${bkpath}/gfs_data.tile7.halo0.nc         fv3_tracer
+  ln -s ${bkpath}/gfs_data.tile7.halo0.nc      fv3_dynvars
+  ln -s ${bkpath}/gfs_data.tile7.halo0.nc      fv3_tracer
   BKTYPE=1
 fi
 #
@@ -178,15 +149,13 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-process_bufr_path=${COMIN}
-
-obs_files_source[0]=${COMIN}/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
+obs_files_source[0]=${shared_output_data_init}/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
 obs_files_target[0]=NASALaRC_cloud4fv3.bin
 
-obs_files_source[1]=${COMIN}/rrfs.t${HH}z.fv3_metarcloud.bin
+obs_files_source[1]=${shared_output_data_init}/rrfs.t${HH}z.fv3_metarcloud.bin
 obs_files_target[1]=fv3_metarcloud.bin
 
-obs_files_source[2]=${COMIN}/rrfs.t${HH}z.LightningInFV3LAM.bin
+obs_files_source[2]=${shared_output_data_init}/rrfs.t${HH}z.LightningInFV3LAM.bin
 obs_files_target[2]=LightningInFV3LAM.dat
 
 obs_number=${#obs_files_source[@]}
@@ -202,11 +171,10 @@ do
 done
 
 # radar reflectivity on esg grid over each subdomain.
-process_radarref_path=${DATAROOT}/${RUN}_process_radar${cycle_tag}_${envir}_${cyc}
 ss=0
 for bigmin in 0; do
   bigmin=$( printf %2.2i $bigmin )
-  obs_file=${COMIN}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
+  obs_file=${shared_output_data_init}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
   if [ "${IO_LAYOUT_Y}" == "1" ]; then
     obs_file_check=${obs_file}
   else
@@ -235,6 +203,13 @@ done
 #
 #-----------------------------------------------------------------------
 #
+i_T_Q_adjust=${i_T_Q_adjust:-"1"}
+l_rtma3d=${l_rtma3d:-".false."}
+i_precip_vertical_check=${i_precip_vertical_check:-"0"}
+l_cld_uncertainty=${l_cld_uncertainty:-".false."}
+cld_bld_hgt=${cld_bld_hgt:-"1200.0"}
+l_precip_clear_only=${l_precip_clear_only:-".false."}
+l_qnr_from_qr=${l_qnr_from_qr:-".false."}
 if [ ${BKTYPE} -eq 1 ]; then
   n_iolayouty=1
 else
@@ -297,6 +272,9 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
+####
+#exit 0
+
 export pgm="fv3lam_nonvarcldana.exe"
 . prep_step
 

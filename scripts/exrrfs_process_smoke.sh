@@ -48,20 +48,18 @@ This is the script for the task that runs smoke emissions preprocessing.
 #
 #-----------------------------------------------------------------------
 #
-# Set the name of and create the directory in which the output from this
-# script will be saved for long time (if that directory doesn't already exist).
+# Configuration Parameters
 #
 #-----------------------------------------------------------------------
 #
-export GESROOT=${GESROOT}
-export rave_nwges_dir=${GESROOT}/RAVE_INTP
-mkdir -p "${rave_nwges_dir}"
-export hourly_hwpdir=${GESROOT}/HOURLY_HWP
+export rave_dir=${COMrrfs}/RAVE_INTP
+export hourly_hwpdir=${COMrrfs}/HOURLY_HWP
+mkdir -p "${rave_dir}"
 mkdir -p "${hourly_hwpdir}"
 #
 #-----------------------------------------------------------------------
 #
-# Link the the hourly, interpolated RAVE data from $rave_nwges_dir so it
+# Link the the hourly, interpolated RAVE data from $rave_dir so it
 # is reused
 #
 #-----------------------------------------------------------------------
@@ -87,11 +85,11 @@ for i in $(seq 0 $(($nfiles - 1)) )
 do
    timestr=`date +%Y%m%d%H -d "$previous_day + $i hours"`
    intp_fname=${PREDEF_GRID_NAME}_intp_${timestr}00_${timestr}59.nc
-   if  [ -f ${rave_nwges_dir}/${intp_fname} ]; then
-      ${LN} -sf ${rave_nwges_dir}/${intp_fname} ${DATA}/${intp_fname}
-      echo "${rave_nwges_dir}/${intp_fname} interpolated file available to reuse"
+   if  [ -f ${rave_dir}/${intp_fname} ]; then
+      ${LN} -sf ${rave_dir}/${intp_fname} ${DATA}/${intp_fname}
+      echo "${rave_dir}/${intp_fname} interpolated file available to reuse"
    else
-      echo "${rave_nwges_dir}/${intp_fname} interpolated file not available to reuse"  
+      echo "${rave_dir}/${intp_fname} interpolated file not available to reuse"  
    fi
 done
 
@@ -120,6 +118,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+
 python -u  ${USHrrfs}/generate_fire_emissions.py \
   "${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}" \
   "${fire_rave_dir_work}" \
@@ -128,13 +127,13 @@ python -u  ${USHrrfs}/generate_fire_emissions.py \
   "${EBB_DCYCLE}" 
 export err=$?; err_chk
 
-#Copy the the hourly, interpolated RAVE data to $rave_nwges_dir so it
+#Copy the the hourly, interpolated RAVE data to $rave_dir so it
 # is maintained there for future cycles.
 for file in ${DATA}/*; do
    filename=$(basename "$file")
-   if [ ! -f ${rave_nwges_dir}/${filename} ]; then
-      cp ${file} ${rave_nwges_dir}
-      echo "Copied missing file: $filename" 
+   if [ ! -f ${rave_dir}/${filename} ]; then
+      cpreq -p ${file} ${rave_dir}
+      echo "Copied file: $filename" 
    fi
 done
 

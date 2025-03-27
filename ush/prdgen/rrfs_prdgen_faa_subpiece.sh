@@ -13,10 +13,12 @@ ififip=$5
 aviati=$6
 COMOUT=$7
 USHrrfs=$8
-fixdir=$9
-parmdir=${10}
 
 # FAA request variable to be extracted from UPP output
+
+# fixdir=${FIXprdgen}
+fixdir=${USHrrfs}/../../fix/prdgen
+parmdir=${USHrrfs}/../../parm
 
 #-- remove the leading 0"
 ifhr=$(expr ${fhr:0:3} + 0)    ## (eg. f013-15-00)
@@ -231,8 +233,8 @@ if [ $((${ifmn#0})) -eq 0 ]; then    # exact hour, hourly (eg. f012)
   #-- CONUS_3km Lambert Conformal
   if [[ -f ${COMOUT}/${aviati} ]]; then
     if [ $ifhr -le 21 ]; then
-      # wgrib2 ${COMOUT}/${aviati} -s | egrep '(:MXEDPRM:|:EDPARM:|:CATEDR:|:MWTURB:|:CITEDR:)' | \
-      wgrib2 ${COMOUT}/${aviati} -s | egrep '(:MXEDPRM:|:EDPARM:|:CATEDR:|:MWTURB:|:var discipline=0 master_table=2 parmcat=19 parm=50:)' | \
+      # wgrib2 ${COMOUT}/${aviati} -s | egrep '(:EDPARM:|:CATEDR:|:MWTURB:|:CITEDR:)' | \
+      wgrib2 ${COMOUT}/${aviati} -s | egrep '(:EDPARM:|:CATEDR:|:MWTURB:|:var discipline=0 master_table=2 parmcat=19 parm=50:)' | \
       wgrib2 -i ${COMOUT}/${aviati} -set_bitmap 1 -set_grib_type c3 \
          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
          -new_grid_interpolation bilinear \
