@@ -9,3 +9,4 @@ workflow/exp.*
 workflow/myrrfsexps
 workflow/convinfo*
 workflow/satinfo*
+workflow/ush/output.linter_shellcheck

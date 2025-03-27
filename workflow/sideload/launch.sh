@@ -57,6 +57,7 @@ if [[ "${NDATE}" == "" ]]; then
   exit 1
 fi
 
+umask 022
 # run J-job or sideload non-NCO tasks
 case ${task_id} in
   clean)
