@@ -72,6 +72,9 @@ if os.getenv("DO_JEDI",'false').upper() == "TRUE":
     shutil.copy(f'{HOMErrfs}/fix/jedi/convinfo.rrfs','convinfo')
   # copy convinfo to exp_configdir
   shutil.copy('convinfo',f'{exp_configdir}/convinfo')
+  # if satinfo is available, copy it to exp_configdir
+  if os.path.exists('satinfo'):
+    shutil.copy('satinfo',f'{exp_configdir}/satinfo')
 
 # copyover the VERSION file
 shutil.copy(f'{HOMErrfs}/workflow/VERSION',f'{expdir}/VERSION')
