@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 set -eux
+#####################################################################################
 #
 # This utility is to replace configuration template with production settings before running ecflow workflow
 # Requirement:
@@ -10,9 +11,11 @@ set -eux
 #       sh ${HOMErrfs}/ush/rrfs_nco_config.sh
 #
 #####################################################################################
+
+#####################################################################################
 # No need to modify any line below
 #####################################################################################
-#
+
 # Target files to modify
 export NET="${NET:-rrfs}"
 File_to_modify_source="var_defns.sh"
@@ -31,16 +34,16 @@ case "${WGF}" in
     export RUN="firewx"
     ;;
 esac
-#
+
 # Source run.ver
 source "$HOMErrfs/versions/run.ver" || { echo "Failed to source run.ver"; exit 1; }
-#
+
 # Replace special characters
 HOMErrfs=$(printf '%q' "$HOMErrfs")
-#
+
 # Dynamically generate target files
 cd "$DATA" || { echo "Failed to change directory to $DATA"; exit 1; }
-#
+
 for file_in in ${File_to_modify_source}; do
   cpreq "$HOMErrfs/parm/config/${WGF}/${file_in}.template" .
   file_src="${file_in}.template"

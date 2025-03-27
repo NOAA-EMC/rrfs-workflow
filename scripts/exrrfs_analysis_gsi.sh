@@ -399,11 +399,6 @@ if [ ${BKTYPE} -eq 1 ]; then  # cold start uses background from INPUT
 else                          # cycle uses background from restart
   ln -snf ${bkpath}/fv_core.res.tile1.nc  fv3_dynvars
   ln -snf ${bkpath}/fv_tracer.res.tile1.nc  fv3_tracer
-  #### if [ "${anav_type}" = "AERO" ]; then
-  ####   cpreq -p ${bkpath}/fv_tracer.res.tile1.nc  fv3_tracer
-  #### else
-  ####   ln -snf ${bkpath}/fv_tracer.res.tile1.nc  fv3_tracer
-  #### fi
   ln -snf ${bkpath}/sfc_data.nc  fv3_sfcdata
   ln -snf ${bkpath}/phy_data.nc  fv3_phyvars
   fv3lam_bg_type=0
@@ -1004,15 +999,12 @@ else
   [[ -s fort.205 ]]&& sed -e 's/   asm all     /pw asm 900 0000/; s/   rej all     /pw rej 900 0000/; s/   mon all     /pw mon 900 0000/' fort.205 > fit_pw1
   [[ -s fort.209 ]]&& sed -e 's/   asm all     /rw asm 900 0000/; s/   rej all     /rw rej 900 0000/; s/   mon all     /rw mon 900 0000/' fort.209 > fit_rw1
 
-  #### cat fit_p1 fit_w1 fit_t1 fit_q1 fit_pw1 fit_rad1 fit_rw1 > $COMOUT/rrfs.t${HH}z.fits.tm00
   for file_to_cat in fit_p1 fit_w1 fit_t1 fit_q1 fit_pw1 fit_rad1 fit_rw1; do
     [[ -s ${file_to_cat} ]]&& cat ${file_to_cat} >> $COMOUT/rrfs.t${HH}z.fits.tm00
   done
-  #### cat fort.208 fort.210 fort.211 fort.212 fort.213 fort.220 > $COMOUT/rrfs.t${HH}z.fits2.tm00
   for file_to_cat in fort.208 fort.210 fort.211 fort.212 fort.213 fort.220; do
     [[ -s ${file_to_cat} ]]&& cat ${file_to_cat} >> $COMOUT/rrfs.t${HH}z.fits2.tm00
   done
-  #### cat fort.238 > $COMOUT/rrfs.t${HH}z.fits3.tm00
   [[ -s fort.238 ]]&& cat fort.238 > $COMOUT/rrfs.t${HH}z.fits3.tm00
 fi
 #
@@ -1111,10 +1103,7 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
   done
 
   if [ "${GSI_TYPE}" = "OBSERVER" ]; then
-#    cp *diag*ges* ${observer_gsi_dir}/.
     if [ "${MEM_TYPE}" = "MEAN" ]; then
-#      mkdir -p ${observer_gsi_dir}
-#      cp *diag*ges* ${observer_gsi_dir}/.
       if [ "${CYCLE_TYPE}" = "spinup" ]; then
         mkdir -p ${umbrella_analysis_data}/${RUN}_observer_gsi_spinup_ensmean_${envir}_${cyc}
         cp obs_input.* ${umbrella_analysis_data}/${RUN}_observer_gsi_spinup_ensmean_${envir}_${cyc}/.
@@ -1122,9 +1111,6 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
         mkdir -p ${umbrella_analysis_data}/${RUN}_observer_gsi_ensmean_${envir}_${cyc}
         cp obs_input.* ${umbrella_analysis_data}/${RUN}_observer_gsi_ensmean_${envir}_${cyc}/.
       fi
-#    else
-#      mkdir -p ${observer_gsi_dir}
-#      cp *diag*ges* ${observer_gsi_dir}/.
     fi
   fi
   #
@@ -1152,17 +1138,6 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
       tar -cvzf rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat `cat listrad_bin`
       cp ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat  ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
     fi
-
-# DO_ENS_RADDA IS NEVER TRUE - REMOVE THIS SECTION?
-#    if [ "${DO_ENS_RADDA}" = "TRUE" ]; then
-#      # For EnKF: ensmean, copy satbias files; ens. member, do nothing  
-#      if [ ${MEM_TYPE} == "MEAN" ]; then  
-#        cp ./satbias_out ${SATBIAS_DIR}_ensmean/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
-#        cp ./satbias_pc.out ${SATBIAS_DIR}_ensmean/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
-#        cp ./satbias_out ${COMOUT}_ensmean/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
-#        cp ./satbias_pc.out ${COMOUT}_ensmean/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
-#      fi	 
-#    else
 
     # For EnVar DA  
     cp ./satbias_out ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias

@@ -67,119 +67,6 @@ hour zero).
 ========================================================================"
 
 #-----------------------------------------------------------------------
-# Set the parameters for the external model files.
-#-----------------------------------------------------------------------
-#### idx_member_name_2d=$( printf "%02d" "${MEMBER_NAME}" )
-#### export extrn_mdl_name="${EXTRN_MDL_NAME_LBCS}"
-#### gfs_file_fmt="${GFS_FILE_FMT_LBCS}"
-#### if [ ${extrn_mdl_name} == GEFS ]; then
-####   idx_member_name_2d=$( printf "%02d" "${MEMBER_NAME}" )
-####   extrn_mdl_memhead=/gep${idx_member_name_2d}
-#### else
-####   extrn_mdl_memhead=""
-#### fi
-#### extrn_mdl_memhead=/gep${idx_member_name_2d}
-#### time_offset_hrs="${EXTRN_MDL_LBCS_OFFSET_HRS}"
-#### lbs_spec_intvl_hrs="${LBC_SPEC_INTVL_HRS}"
-#### lbc_spec_fhrs=( "" )
-#### boundary_len_hrs="${BOUNDARY_LEN}"
-
-#### hh=${CDATE:8:2}
-#### yyyymmdd=${CDATE:0:8}
-#### cdate=$( date --utc --date "${yyyymmdd} ${hh} UTC - ${time_offset_hrs} hours" "+%Y%m%d%H" )
-#### export extrn_mdl_cdate="$cdate"
-
-# Starting year, month, day, and hour of the external model forecast.
-#### yyyy=${cdate:0:4}
-#### mm=${cdate:4:2}
-#### dd=${cdate:6:2}
-#### hh=${cdate:8:2}
-#### mn="00"
-#### yyyymmdd=${cdate:0:8}
-
-# offset is to go back to a previous cycle (for example 3-h) and
-# use the forecast (3-h) from that cycle valid at this cycle.
-# Here calculates the forecast and it is adding.
-#### if [ "${boundary_len_hrs}" = "0" ]; then
-####   boundary_len_hrs=${FCST_LEN_HRS}
-#### fi
-#### if [ "${DO_NON_DA_RUN}" = "TRUE" ]; then
-####   lbc_spec_fcst_hrs=($( seq ${lbs_spec_intvl_hrs} ${lbs_spec_intvl_hrs} ${boundary_len_hrs} ))
-#### else
-####   lbc_spec_fcst_hrs=($( seq 0 ${lbs_spec_intvl_hrs} ${boundary_len_hrs} ))
-#### fi
-#### lbc_spec_fhrs=( "${lbc_spec_fcst_hrs[@]}" )
-#
-# Add the temporal offset specified in time_offset_hrs (assumed to be in
-# units of hours) to the the array of LBC update forecast hours to make
-# up for shifting the starting hour back in time.  After this addition,
-# lbc_spec_fhrs will contain the LBC update forecast hours relative to
-# the start time of the external model run.
-#
-#### num_fhrs=${#lbc_spec_fhrs[@]}
-#### for (( i=0; i<=$((num_fhrs-1)); i++ )); do
-####   lbc_spec_fhrs[$i]=$(( ${lbc_spec_fhrs[$i]} + time_offset_hrs ))
-#### done
-
-#### fcst_mn="00"
-
-#### case "${extrn_mdl_name}" in
-
-####   "GFS")
-####     COMINgfs="${COMINgfs:-$(compath.py gfs/${gfs_ver})}"
-####     sysdir="${COMINgfs}/gfs.${yyyymmdd}/${hh}/atmos"
-####     sysdir2=""
-####     fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
-
-####     if [ "${gfs_file_fmt}" = "grib2" ]; then
-####       prefix="gfs.t${hh}z.pgrb2.0p25.f"  
-####       fns_on_disk=( "${fcst_hhh[@]/#/$prefix}" )
-####     elif [ "${gfs_file_fmt}" = "netcdf" ]; then
-####       prefix="gfs.t${hh}z.atmf"
-####       suffix=".nc"
-####       fns_on_disk_tmp=( "${fcst_hhh[@]/#/${prefix}}" )
-####       fns_on_disk=( "${fns_on_disk_tmp[@]/%/${suffix}}" )
-####     fi
-####     ;;
-
-####   "GEFS")
-####     COMINgefs="${COMINgefs:-$(compath.py gefs/${gefs_ver})}"
-####     sysdir="${COMINgefs}/gefs.${yyyymmdd}/${hh}/atmos/pgrb2bp5"
-####     sysdir2="${COMINgefs}/gefs.${yyyymmdd}/${hh}/atmos/pgrb2ap5"
-####     fcst_hh=( $( printf "%02d " "${lbc_spec_fhrs[@]}" ) )
-####     prefix="${extrn_mdl_memhead}"".t${hh}z.pgrb2b.0p50.f0"
-####     prefix2="${extrn_mdl_memhead}"".t${hh}z.pgrb2a.0p50.f0"  
-####     fns_on_disk=( "${fcst_hh[@]/#/$prefix}" )
-####     fns_on_disk2=( "${fcst_hh[@]/#/$prefix2}" )
-####     ;;
-
-####   "RRFS")
-####     COMINrrfs="${COMINrrfs:-$(compath.py rrfs/${rrfs_ver})}"
-####     sysdir="${COMINrrfs}/rrfs.${yyyymmdd}/${hh}"
-####     sysdir2=""
-####     fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
-####     prefix="rrfs.t${hh}z.natlev.f"
-####     fns=( "${fcst_hhh[@]/#/$prefix}" )
-####     suffix=".grib2"
-####     fns_on_disk=( "${fns[@]/%/$suffix}" )
-####     ;;
-
-####   *)
-
-#### esac
-
-#### extrn_mdl_sysdir="${sysdir}"
-#### extrn_mdl_sysdir2="${sysdir2}"
-#### export extrn_mdl_source_dir="${extrn_mdl_sysdir}"
-#### export extrn_mdl_source_dir2="${extrn_mdl_sysdir2}"
-#### extrn_mdl_lbc_spec_fhrs_str="( "$( printf "\"%s\" " "${lbc_spec_fhrs[@]}" )")"
-#### extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
-#### extrn_mdl_fns_on_disk_str2="( "$( printf "\"%s\" " "${fns_on_disk2[@]}" )")"
-
-#### export use_user_staged_extrn_files="FALSE"
-#### export extrn_mdl_staging_dir="${DATA}"
-
-#-----------------------------------------------------------------------
 # Define COM directories
 #-----------------------------------------------------------------------
 # Send data to COMOUT since the LBCs jobs share data with other jobs
@@ -195,27 +82,12 @@ else
 fi
 mkdir -p "${COMOUT}"
 
-#### export mem_num=m$(echo "${ENSMEM_INDX}")
-
-#### if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-####   export COMOUT="${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/${mem_num}/lbcs)}"
-#### else
-####   export COMOUT="${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/lbcs)}"
-#### fi
-
-#### mkdir -p "${COMOUT}"
-
 #-----------------------------------------------------------------------
 # Execute the script.
 #-----------------------------------------------------------------------
 
 export pgmout="${DATA}/OUTPUT.$$"
 env
-
-#### ${HOMErrfs}/scripts/exrrfs_make_lbcs.sh \
-####   extrn_mdl_lbc_spec_fhrs="${extrn_mdl_lbc_spec_fhrs_str}" \
-####   extrn_mdl_fns_on_disk="${extrn_mdl_fns_on_disk_str}" \
-####   extrn_mdl_fns_on_disk2="${extrn_mdl_fns_on_disk_str2}"
 
 ${HOMErrfs}/scripts/exrrfs_make_lbcs.sh
 export err=$?; err_chk

@@ -109,7 +109,6 @@ export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
 #-----------------------------------------------------------------------
 # Execute the script.
 #-----------------------------------------------------------------------
-#### export pgmout="${DATA}/tmp_ICS/OUTPUT.$$"
 export pgmout="${DATA}/OUTPUT.$$"
 env
 

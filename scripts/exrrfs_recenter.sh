@@ -126,7 +126,6 @@ for imem in  $(seq 1 $nens)
   ensmem=$( printf "%03d" $imem ) 
   memberstring=$( printf "%03d" $imem )
 
-  #### bkpath=${COMOUT}/m${ensmem}/forecast/INPUT  # cycling, use background from RESTART
   bkpath=${umbrella_forecast_data}/m${ensmem}/INPUT  # cycling, use background from RESTART
 
   dynvarfile=${bkpath}/fv_core.res.tile1.nc

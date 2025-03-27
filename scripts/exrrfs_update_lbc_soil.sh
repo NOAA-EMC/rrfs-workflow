@@ -145,7 +145,6 @@ fi
 #
 
 if [[ ${BKTYPE} -eq 0 ]] && [[ ${OB_TYPE} =~ "conv" ]] && [[ "${DO_SOIL_ADJUST}" = "TRUE" ]]; then  # warm start
-#### I do not know which netcdf files specifically are modified by adjust_soiltq, so let's copy all of them into the working directory for now
   ln -s ${bkpath}/*.nc .
   ln -snf ${fixgriddir}/fv3_grid_spec                fv3_grid_spec
 
@@ -166,9 +165,6 @@ EOF
   $APRUN ${EXECrrfs}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
   mv errfile errfile_adjust_soiltq
-
-##### Copy modified netcdf files back to COMOUT for future jobs
-####  cpreq *.nc ${bkpath}
 
 fi
 #
@@ -197,9 +193,6 @@ EOF
   $APRUN ${EXECrrfs}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
   mv errfile errfile_update_bc
-
-##### Copy modified boundary condition file back to COMOUT for future jobs
-####  cpreq gfs_bndy.tile7.000.nc ${bkpath}
 
 fi
 #

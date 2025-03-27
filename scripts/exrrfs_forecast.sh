@@ -341,7 +341,7 @@ else
   if [ ${BKTYPE} -eq 1 ]; then
     target="sfc_data.tile${TILE_RGNL}.halo${NH0}.nc"
     symlink="sfc_data.nc"
-    #### Additional logic to exam if sfc_data.nc already exist
+    # Additional logic to exam if sfc_data.nc already exist
     if [ ! -s sfc_data.nc ]; then
       if [ -f "${target}" ]; then
         ln -sf ${relative_or_null} $target $symlink
@@ -520,9 +520,6 @@ else
   FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$cyc]}
 fi
 
-#### dev overwrite
-#### FCST_LEN_HRS=60
-#### export FCST_LEN_HRS_SPINUP=60
 #
 #-----------------------------------------------------------------------
 #
@@ -584,17 +581,6 @@ flag_fcst_restart="FALSE"
 coupler_res_ct=0
 DO_FCST_RESTART=${DO_FCST_RESTART:-"TRUE"}
 
-#if [ ${CYCLE_TYPE} = "spinup" ]; then
-#  FCST_LEN_HRS=${FCST_LEN_HRS_SPINUP}
-#else
-#  FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$cyc]}
-#fi
-
-##### dev overwrite
-#FCST_LEN_HRS=60
-#export FCST_LEN_HRS_SPINUP=60
-
-
 # Get the current restart set count from shared restart location in the Umbrella Data
 if [ -d ${shared_forecast_restart_data} ]; then
   set +eu
@@ -611,7 +597,6 @@ fi
 if [ $FCST_LEN_HRS -gt 0 ]; then
   cd ${DATA}/RESTART
   
-  #### [[ -e ${umbrella_forecast_data}/forecast_clean.flag ]] && rm -f ${umbrella_forecast_data}/forecast_clean.flag
   file_ids=( "coupler.res" "fv_core.res.nc" "fv_core.res.tile1.nc" "fv_srf_wnd.res.tile1.nc" "fv_tracer.res.tile1.nc" "phy_data.nc" "sfc_data.nc" )
   num_file_ids=${#file_ids[*]}
   read -a restart_hrs <<< "${RESTART_HRS}"

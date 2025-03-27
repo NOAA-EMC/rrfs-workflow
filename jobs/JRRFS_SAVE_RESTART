@@ -33,7 +33,6 @@ export SURFACE_DIR=${SURFACE_DIR:-${COMrrfs}/surface}
 export umbrella_forecast_data=${DATAROOT}/${RUN}_forecast_${cyc}_${rrfs_ver}/${WGF}
 
 if [ ${CYCLE_TYPE} = "spinup" ]; then
-  #### export COMOUT=${COMOUT}_spinup
   export COMOUT=${COMrrfs}/rrfs.${PDY}/${cyc}_spinup
   export umbrella_forecast_data=${DATAROOT}/${RUN}_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then

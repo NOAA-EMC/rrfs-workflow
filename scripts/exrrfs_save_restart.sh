@@ -144,9 +144,6 @@ if [ -r "${shared_forecast_restart_data}/${restart_prefix}.coupler.res" ]; then
   #
   if [ "${IO_LAYOUT_Y}" = "1" ]; then
     cpreq -p ${shared_forecast_restart_data}/* ${COMOUT}/RESTART
-####    for file in ${filelistn}; do
-####      cpreq -p ${shared_forecast_restart_data}/${restart_prefix}.${file} ${COMOUT}/RESTART/${restart_prefix}.${file}
-####    done
   else
     for file in ${filelistn}; do
       for ii in ${list_iolayout}

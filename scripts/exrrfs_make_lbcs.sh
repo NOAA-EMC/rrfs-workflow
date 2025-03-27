@@ -154,30 +154,12 @@ extrn_mdl_sysdir="${sysdir}"
 extrn_mdl_sysdir2="${sysdir2}"
 export extrn_mdl_source_dir="${extrn_mdl_sysdir}"
 export extrn_mdl_source_dir2="${extrn_mdl_sysdir2}"
-
-#### extrn_mdl_lbc_spec_fhrs_str="( "$( printf "\"%s\" " "${lbc_spec_fhrs[@]}" )")"
 extrn_mdl_lbc_spec_fhrs="( "$( printf "\"%s\" " "${lbc_spec_fhrs[@]}" )")"
-
-#### extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
 extrn_mdl_fns_on_disk="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
-
-#### extrn_mdl_fns_on_disk_str2="( "$( printf "\"%s\" " "${fns_on_disk2[@]}" )")"
 extrn_mdl_fns_on_disk2="( "$( printf "\"%s\" " "${fns_on_disk2[@]}" )")"
-
 export use_user_staged_extrn_files="FALSE"
 export extrn_mdl_staging_dir="${DATA}"
 
-#
-#-----------------------------------------------------------------------
-#
-# Specify the set of valid argument names for this script/function.  Then
-# process the arguments provided to this script/function (which should
-# consist of a set of name-value pairs of the form arg1="value1", etc).
-#
-#-----------------------------------------------------------------------
-#
-#### valid_args=( "extrn_mdl_lbc_spec_fhrs" "extrn_mdl_fns_on_disk" "extrn_mdl_fns_on_disk2" )
-#### process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
 #
@@ -225,15 +207,10 @@ export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
 #
 #-----------------------------------------------------------------------
 #
-#### num_files_to_copy="${#extrn_mdl_fns_on_disk[@]}"
 num_files_to_copy="${#fns_on_disk[@]}"
-
 prefix="${extrn_mdl_source_dir}/"
-#### extrn_mdl_fps_on_disk=( "${extrn_mdl_fns_on_disk[@]/#/$prefix}" )
 extrn_mdl_fps_on_disk=( "${fns_on_disk[@]/#/$prefix}" )
-
 prefix2="${extrn_mdl_source_dir2}"
-#### extrn_mdl_fps_on_disk2=( "${extrn_mdl_fns_on_disk2[@]/#/$prefix2}" )
 extrn_mdl_fps_on_disk2=( "${fns_on_disk2[@]/#/$prefix2}" )
 #
 #-----------------------------------------------------------------------
@@ -329,7 +306,6 @@ done
 #
 #-----------------------------------------------------------------------
 #
-#### extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" )")"
 extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
 
 print_info_msg "
@@ -350,7 +326,6 @@ elif [ ${extrn_mdl_name} = GEFS ] ; then
   do
     fps=${extrn_mdl_fps_on_disk[$j]}
     fps2=${extrn_mdl_fps_on_disk2[$j]}
-    #### fps_name=${extrn_mdl_fns_on_disk[$j]}
     fps_name=${fns_on_disk[$j]}
     if [ -f "$fps" ]; then
       #
@@ -455,12 +430,8 @@ generating lateral boundary conditions for the RRFS forecast!!!
 #-----------------------------------------------------------------------
 #
 eval EXTRN_MDL_CDATE=${extrn_mdl_cdate}
-
-#### extrn_mdl_fns_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" )")"
 extrn_mdl_fns_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
 eval EXTRN_MDL_FNS=${extrn_mdl_fns_str}
-
-#### extrn_mdl_lbc_spec_fhrs_str="( "$( printf "\"%s\" " "${extrn_mdl_lbc_spec_fhrs[@]}" )")"
 extrn_mdl_lbc_spec_fhrs_str="( "$( printf "\"%s\" " "${lbc_spec_fhrs[@]}" )")"
 eval EXTRN_MDL_LBC_SPEC_FHRS=${extrn_mdl_lbc_spec_fhrs_str}
 #

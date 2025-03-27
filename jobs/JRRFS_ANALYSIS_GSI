@@ -71,7 +71,6 @@ fi
 #-----------------------------------------------------------------------
 # Define data directories
 #-----------------------------------------------------------------------
-#### export shared_output_data=${umbrella_analysis_data}/output
 export DATA=${DATA:-${umbrella_analysis_data}/${jobid}}
 mkdir -p ${DATA} ${shared_output_data} ${COMOUT}
 cd ${DATA}

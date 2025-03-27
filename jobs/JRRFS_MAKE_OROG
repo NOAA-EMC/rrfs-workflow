@@ -71,7 +71,6 @@ This is the J-job script for the task that generates orography files.
 # Define umbrella data directories
 #-----------------------------------------------------------------------
 
-#### export umbrella_ics_data="${DATAROOT}/${RUN}_${PDY}${cyc}/${WGF}/ics"
 export umbrella_ics_data=${umbrella_ics_data:-${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}}
 
 mkdir -p "${DATA}/raw_topo"

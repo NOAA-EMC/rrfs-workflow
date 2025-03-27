@@ -52,9 +52,7 @@ This is the script for the task that runs smoke emissions preprocessing.
 #
 #-----------------------------------------------------------------------
 #
-#### export rave_dir=${COMrrfs}/${RUN}.${PDY}/RAVE_INTP
 export rave_dir=${COMrrfs}/RAVE_INTP
-#### export hourly_hwpdir=${COMrrfs}/${RUN}.${PDY}/HOURLY_HWP
 export hourly_hwpdir=${COMrrfs}/HOURLY_HWP
 mkdir -p "${rave_dir}"
 mkdir -p "${hourly_hwpdir}"

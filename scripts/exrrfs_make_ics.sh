@@ -121,17 +121,6 @@ export extrn_mdl_staging_dir="${shared_output_data}"
 #
 #-----------------------------------------------------------------------
 #
-# Specify the set of valid argument names for this script/function.  Then
-# process the arguments provided to this script/function (which should
-# consist of a set of name-value pairs of the form arg1="value1", etc).
-#
-#-----------------------------------------------------------------------
-#
-#### valid_args=( "extrn_mdl_fns_on_disk" )
-#### process_args valid_args "$@"
-#
-#-----------------------------------------------------------------------
-#
 # Set machine-dependent parameters.
 #
 #-----------------------------------------------------------------------
@@ -287,7 +276,6 @@ extrn_mdl_staging_dir = \"${extrn_mdl_staging_dir}\"
 extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
 extrn_mdl_fns_on_disk = ${extrn_mdl_fns_on_disk_str}"
 
-#### ln -sf -t ${extrn_mdl_staging_dir} ${extrn_mdl_fps_on_disk[@]}
 cpreq -p ${extrn_mdl_fps_on_disk[@]} ${extrn_mdl_staging_dir}
 #
 #-----------------------------------------------------------------------
@@ -801,32 +789,11 @@ fi
 # ary files to umbrella data.
 #-----------------------------------------------------------------------
 #
-#### if [[ $DO_ENS_BLENDING = "TRUE" ]]; then
-  #### mv out.atm.tile${TILE_RGNL}.nc \
-  ####       ${DATA}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
 cpreq -p ${DATA}/out.atm.tile${TILE_RGNL}.nc ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
-
-  #### mv out.sfc.tile${TILE_RGNL}.nc \
-  ####       ${DATA}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
 cpreq -p ${DATA}/out.sfc.tile${TILE_RGNL}.nc ${shared_output_data}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
-
-  #### mv gfs_ctrl.nc ${DATA}
 cpreq -p ${DATA}/gfs_ctrl.nc ${shared_output_data}
-
-  #### mv gfs.bndy.nc ${DATA}/gfs_bndy.tile${TILE_RGNL}.000.nc
 cpreq -p ${DATA}/gfs.bndy.nc ${shared_output_data}/gfs_bndy.tile${TILE_RGNL}.000.nc
 
-#### fi
-#
-#-----------------------------------------------------------------------
-#
-# copy results to nwges for longer time disk storage.
-#
-#-----------------------------------------------------------------------
-#
-#### if [ $DO_ENS_BLENDING = "FALSE" ]; then
-####   cp ${DATA}/*.nc ${NWGES_DIR}/.
-#### fi
 #
 #-----------------------------------------------------------------------
 #

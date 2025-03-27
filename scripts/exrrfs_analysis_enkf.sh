@@ -62,11 +62,9 @@ case $MACHINE in
   export OMP_PROC_BIND=close
   export OMP_PLACES=threads
   export MPICH_RANK_REORDER_METHOD=0
-
-  #### Test Only
-  #### ncores=$(( NNODES_ANALYSIS_ENKF*PPN_ANALYSIS_ENKF ))
-  ncores=160
-  PPN_ANALYSIS_ENKF=8
+  export NNODES_ANALYSIS_ENKF=20
+  export PPN_ANALYSIS_ENKF=8
+  ncores=$(( NNODES_ANALYSIS_ENKF*PPN_ANALYSIS_ENKF ))
 
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_ANALYSIS_ENKF} --label --line-buffer --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;
@@ -117,15 +115,6 @@ l_fv3reg_filecombined=.false.
 #-----------------------------------------------------------------------
 #
 fixgriddir=${FIX_GSI}/${PREDEF_GRID_NAME}
-
-# DELETE THESE LINES
-#if [ "${CYCLE_TYPE}" = "spinup" ]; then
-#   enkfanal_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}_spinup/anal_enkf_spinup"
-#else
-#   enkfanal_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}/anal_enkf"
-#fi
-#mkdir -p ${enkfanal_nwges_dir}
-
 cpreq -p ${fixgriddir}/fv3_coupler.res    coupler.res
 cpreq -p ${fixgriddir}/fv3_akbk           fv3sar_tile1_akbk.nc
 cpreq -p ${fixgriddir}/fv3_grid_spec      fv3sar_tile1_grid_spec.nc
@@ -149,16 +138,9 @@ for imem in  $(seq 1 $nens) ensmean; do
   bkpath=${FORECAST_INPUT_PRODUCT}/${memchar}/INPUT
   mkdir -p ${bkpath}
   if [ "${imem}" = "ensmean" ]; then
-    #### bkpath=${umbrella_calc_ensmean_data}
-    #### ln -snf  ${bkpath}/fv3sar_tile1_dynvar       fv3sar_tile1_${memcharv0}_dynvars
     ln -snf  ${bkpath}/fv_core.res.tile1.nc      fv3sar_tile1_${memcharv0}_dynvars
-
-    #### ln -snf  ${bkpath}/fv3sar_tile1_tracer       fv3sar_tile1_${memcharv0}_tracer
     ln -snf  ${bkpath}/fv_tracer.res.tile1.nc    fv3sar_tile1_${memcharv0}_tracer
-
-    ### ln -snf  ${bkpath}/fv3sar_tile1_sfcvar       fv3sar_tile1_${memcharv0}_sfcdata
     ln -snf  ${bkpath}/sfc_data.nc               fv3sar_tile1_${memcharv0}_sfcdata
-
     ln -snf  ${bkpath}/phy_data.nc               fv3sar_tile1_${memcharv0}_phyvar
   else
     ln -snf  ${bkpath}/fv_core.res.tile1.nc      fv3sar_tile1_${memcharv0}_dynvars
@@ -251,47 +233,6 @@ cpreq -p ${ANAVINFO} anavinfo
 cpreq -p $SATINFO    satinfo
 cpreq -p $CONVINFO   convinfo
 cpreq -p $OZINFO     ozinfo
-
-# THIS SECTION IS NOT USED BY RRFS - REMOVE IT?
-#if [ "${DO_ENS_RADDA}" = "TRUE" ]; then
-#  # This follows the procedure of DO_RADDA=TRUE in exrrfs_analysis_gsi.sh, with differences below
-#  #   - The check for "spinup" or "prod" is not performed, as there is only one spinup cycle.
-#  #   - The file check is back in time for up to 72 hours only.  EnVar checks up to 240 hours back.
-#  #   - No $satbias_dir is defined in EnKF.  Thus, it is defined as below.
-#  #   - No use of radstat file in EnKF
-#
-#  satbias_dir=${GESROOT}/satbias_ensmean
-#  
-#  # Searching the satbias files from ${satbias_dir}
-#  satcounter=1
-#  maxcounter=72
-#  while [ $satcounter -lt $maxcounter ]; do
-#    SAT_TIME=`date +"%Y%m%d%H" -d "${START_DATE}  ${satcounter} hours ago"`
-#    echo $SAT_TIME
-#  
-#    if [ -r ${satbias_dir}/rrfs.prod.${SAT_TIME}_satbias ]; then
-#      echo " using satellite bias files from ${SAT_TIME}"
-#      
-#      cpreq -p ${satbias_dir}/rrfs.prod.${SAT_TIME}_satbias ./satbias_in
-#      cpreq -p ${satbias_dir}/rrfs.prod.${SAT_TIME}_satbias_pc ./satbias_pc
-#    
-#      break
-#    fi
-#    satcounter=` expr $satcounter + 1 `
-#  done
-#
-#  # if satbias files are not available from ${satbias_dir}, use satbias files from the ${FIX_GSI} 
-#  if [ $satcounter -eq $maxcounter ]; then	
-#    if [ -r ${FIX_GSI}/rrfs.starting_satbias ]; then
-#      echo "using satllite satbias_in files from ${FIX_GSI}"     
-#      cpreq -p ${FIX_GSI}/rrfs.starting_satbias ./satbias_in
-#    fi
-#    if [ -r ${FIX_GSI}/rrfs.starting_satbias_pc ]; then
-#      echo "using satllite satbias_pc files from ${FIX_GSI}"     
-#      cpreq -p ${FIX_GSI}/rrfs.starting_satbias_pc ./satbias_pc
-#    fi
-#  fi
-#fi	
 
 #
 #-----------------------------------------------------------------------
@@ -461,13 +402,6 @@ countdiag=$(ls diag*conv* | wc -l)
 if [ $countdiag -gt $nens ]; then
   ${APRUN} ${EXECrrfs}/$pgm < enkf.nml >>$pgmout 2>errfile
   export err=$?; err_chk
-
-# DELETING ${enkfanal_nwges_dir} - should ${pgmout} be saved elsewhere?
-#  cp ${pgmout} ${enkfanal_nwges_dir}/.
-#  if [ ! -d ${GESROOT}/enkf_diag ]; then
-#    mkdir -p ${GESROOT}/enkf_diag
-#  fi
-#  cp ${pgmout} ${GESROOT}/enkf_diag/${stdout_name}.$vlddate
 else
   echo "WARNING: EnKF not running due to lack of ${OB_TYPE} obs for cycle $vlddate !!!"
 fi

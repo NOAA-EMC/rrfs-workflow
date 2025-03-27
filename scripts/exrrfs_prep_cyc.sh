@@ -148,9 +148,7 @@ YYJJJ2200000000=`date +"%y%j2200000000" -d "${START_DATE} 1 day ago"`
 #
 #-----------------------------------------------------------------------
 #
-#### run_blending=${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/run_blending
 run_blending=${COMOUT}/run_blending
-#### run_ensinit=${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/run_ensinit
 run_ensinit=${COMOUT}/run_ensinit
 if [[ $CYCLE_SUBTYPE == "ensinit" && -e $run_blending && ! -e $run_ensinit ]]; then
    echo "clean exit ensinit, blending used instead of ensinit."
@@ -159,15 +157,11 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# #### go to INPUT directory.
 # prepare initial conditions for ensemble free forecast after ensemble DA
 #
 #-----------------------------------------------------------------------
 #
 if [ "${DO_ENSFCST}" = "TRUE" ] &&  [ "${DO_ENKFUPDATE}" = "TRUE" ]; then
-  #### cd ${INPUT_DATA}
-  #### bkpath=${FG_ROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast/DA_OUTPUT  # use DA analysis from DA_OUTPUT
-  #### Review it
   bkpath=${COMOUT}/forecast/DA_OUTPUT
   filelistn="fv_core.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_tracer.res.tile1.nc phy_data.nc sfc_data.nc"
   checkfile=${bkpath}/coupler.res
@@ -273,13 +267,6 @@ else
 
   if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial files from ics
     bkpath=${ICS_ROOT}
-      #### if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-        #### #### bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/ics
-        #### bkpath=${ICS_ROOT}/${mem_num}
-      #### else
-      #### #### bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/ics
-      #### bkpath=${ICS_ROOT}
-      #### fi
     if [ -r "${bkpath}/gfs_data.tile7.halo0.nc" ]; then
       ln -s ${bkpath}/gfs_bndy.tile7.000.nc gfs_bndy.tile7.000.nc        
       ln -s ${bkpath}/gfs_ctrl.nc gfs_ctrl.nc        
@@ -296,10 +283,8 @@ else
 
   elif [[ $BKTYPE == 3 ]]; then
     if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-      #### bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/ics
       bkpath=${ICS_ROOT}
     else
-      #### bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/ics
       bkpath=${ICS_ROOT}
     fi
     if [ -r "${bkpath}/coupler.res" ]; then
@@ -336,18 +321,6 @@ else
     ncatted -O -a source,global,c,c,'FV3GFS GAUSSIAN NETCDF FILE' fv_core.res.tile1.nc
   else
 
-  # Setup the INPUT directory for warm start cycles, which can be spin-up cycle or product cycle.
-  #
-  # First decide the source of the first guess (fg_restart_dirname) depending on CYCLE_TYPE and BKTYPE:
-  #  1. If cycle is spinup cycle (CYCLE_TYPE == spinup) or it is the product start cycle (BKTYPE==2),
-  #             looking for the first guess from spinup forecast (forecast_spinup)
-  #  2. Others, looking for the first guess from product forecast (forecast)
-  #
-  #### if [ "${CYCLE_TYPE}" = "spinup" ] || [ ${BKTYPE} -eq 2 ]; then
-  ####    fg_restart_dirname=forecast_spinup
-  #### else
-  ####    fg_restart_dirname=forecast
-  #### fi
   fg_restart_dirname=forecast
   #
   #   let us figure out which background is available
@@ -364,7 +337,6 @@ else
 
   if [ "${CYCLE_SUBTYPE}" = "spinup" ] ; then
     # point to the 0-h cycle for the warm start from the 1 timestep restart files
-    #fg_restart_dirname=forecast_ensinit
     fg_restart_dirname=forecast
     bkpath=${FG_ROOT}/${RUN}.${PDY}/${cyc}_spinup/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
     ctrl_bkpath=${FG_ROOT}/${RUN}.${PDY}/${cyc}_spinup/${mem_num}/forecast/INPUT
@@ -701,7 +673,6 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
           YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
           YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
           HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
-          #### bkpath=${FG_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${surface_file_dir_name}/RESTART
           bkpath=${COMrrfs}/${RUN}.${YYYYMMDDInterv}/${HHInterv}_spinup/forecast/RESTART
           n=${DA_CYCLE_INTERV}
           while [[ $n -le 25 ]] ; do
@@ -729,14 +700,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
 
       # check if there are tracer file in continue cycle data space:
       if [ "${bkpath_find}" = "missing" ]; then
-        #### All required file should exist; there is no need for continue cycle data space
         err_exit "FATAL: missing fv_tracer.res.tile1.nc"
-         #### checkfile=${CONT_CYCLE_DATA_ROOT}/tracer/${restart_prefix}fv_tracer.res.tile1.nc
-         #### if [ -r "${checkfile}" ]; then
-            #### bkpath_find=${CONT_CYCLE_DATA_ROOT}/tracer
-            #### restart_prefix_find=${restart_prefix}
-            #### print_info_msg "$VERBOSE" "Found ${checkfile}; Use it for smoke/dust cycle "
-         #### fi
       fi
 
       # cycle smoke/dust
@@ -771,7 +735,6 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-#SFC_CYC=2
 if_update_ice="TRUE"
 if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
 
@@ -1091,34 +1054,6 @@ else
     err_exit "Cannot find boundary file: ${checkfile}"
   fi
 fi 
-#
-#-----------------------------------------------------------------------
-#
-# conduct surface surgery to get new vtype and stype
-# 
-#-----------------------------------------------------------------------
-#if [ ${YYYYMMDDHH} -eq 2100010100 ] ; then
-#  if [ "${CYCLE_TYPE}" = "spinup" ]; then
-#    cp sfc_data.tile7.halo0.nc sfc_data.tile7.halo0.nc_old
-#    if [ -r ${FIXLAM}/stypdom_double.nc ]; then
-#      ncks -A -v stype ${FIXLAM}/stypdom_double.nc sfc_data.tile7.halo0.nc
-#    fi
-#    if [ -r ${FIXLAM}/vtypdom_double.nc ]; then
-#      ncks -A -v vtype ${FIXLAM}/vtypdom_double.nc sfc_data.tile7.halo0.nc
-#    fi
-#    echo "${YYYYMMDDHH}(${CYCLE_TYPE}): replace stype and vtype "
-#  fi
-#fi
-#
-#-----------------------------------------------------------------------
-#
-# conduct surface surgery to transfer RAP/HRRR surface fields into RRFS.
-# 
-# This surgery only needs to be done once to give RRFS a good start of the surface.
-# Please consult Ming or Tanya first before turning on this surgery.
-#
-#-----------------------------------------------------------------------
-# 
 if [ ${SFC_CYC} -eq 3 ] ; then
 
    do_lake_surgery=".false."
@@ -1336,10 +1271,6 @@ fi
 if [ $(eval ls ${DATA}/*.grib2|wc -l) -gt 0 ]; then
   ln -s ${DATA}/*.grib2 ${FORECAST_INPUT_PRODUCT}
 fi
-
-#### cpreq -p *.nc fv3_grid_spec gvf* *.grib2 ${FORECAST_INPUT_PRODUCT}
-#### cpreq -p bk_coupler.res ${FORECAST_INPUT_PRODUCT}
-#### cpreq -p *.nc ${FORECAST_INPUT_PRODUCT}
 
 #
 #-----------------------------------------------------------------------

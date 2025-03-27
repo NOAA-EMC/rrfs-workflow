@@ -71,7 +71,6 @@ climatology.
 # Define umbrella data directories
 #-----------------------------------------------------------------------
 
-#### export umbrella_ics_data="${DATAROOT}/${RUN}_${PDY}${cyc}/${WGF}/ics"
 export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}}
 
 #-----------------------------------------------------------------------
