@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2154,SC1091,SC2153,SC2017#SC2034
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]${id}: '
 set -x
 cpreq=${cpreq:-cpreq}
 prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
-cd ${DATA}
+cd "${DATA}" || exit 1
 #
 # find start and end time
 #
-fhr_chunk=$(( (10#${LENGTH}/10#${INTERVAL} + 1)/10#${GROUP_TOTAL_NUM}*10#${INTERVAL} ))
+fhr_chunk=$(( (10#${LENGTH}/10#${INTERVAL} + 1) / 10#${GROUP_TOTAL_NUM}*10#${INTERVAL} ))
 fhr_begin=$((10#${OFFSET} + (10#${GROUP_INDEX} - 1 )*10#${fhr_chunk} ))
-if (( ${GROUP_INDEX} == ${GROUP_TOTAL_NUM} )); then
+if (( GROUP_INDEX == GROUP_TOTAL_NUM )); then
   fhr_end=$(( 10#${OFFSET} + 10#${LENGTH}))
 else
   fhr_end=$((10#${OFFSET} + (10#${GROUP_INDEX})*10#${fhr_chunk} - 10#${INTERVAL} ))
@@ -22,10 +23,10 @@ fhr_all=$(seq $((10#${fhr_begin})) $((10#${INTERVAL})) $((10#${fhr_end} )) )
 # prefix, inerval_seconds, zeta_levels, decomp_file_prefix
 #
 init_case=9
-CDATEin=$($NDATE -${OFFSET} ${CDATE})
-EDATE=$($NDATE ${fhr_begin} ${CDATEin})
+CDATEin=$($NDATE "-${OFFSET}" "${CDATE}")
+EDATE=$($NDATE "${fhr_begin}" "${CDATEin}")
 start_time=$(date -d "${EDATE:0:8} ${EDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
-EDATE=$($NDATE ${fhr_end} ${CDATEin})
+EDATE=$($NDATE "${fhr_end}" "${CDATEin}")
 end_time=$(date -d "${EDATE:0:8} ${EDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
 
 if [[ "${prefix}" == "RAP" || "${prefix}" == "HRRR" ]]; then
@@ -44,14 +45,14 @@ fi
 nsoillevels=9
 
 zeta_levels=${EXPDIR}/config/ZETA_LEVELS.txt
-ztop=$(tail -1 ${zeta_levels})
-nvertlevels=$(( $(wc -l < ${zeta_levels}) - 1 ))
+ztop=$(tail -1 "${zeta_levels}")
+nvertlevels=$(( $(wc -l < "${zeta_levels}") - 1 ))
 
 interval_seconds=$((10#${INTERVAL}*3600)) # just a place holder as we use metatask to run lbc hour by hour
 decomp_file_prefix="${MESH_NAME}.graph.info.part."
 #
 physics_suite=${PHYSICS_SUITE:-'PHYSICS_SUITE_not_defined'}
-file_content=$(< ${PARMrrfs}/${physics_suite}/namelist.init_atmosphere) # read in all content
+file_content=$(< "${PARMrrfs}/${physics_suite}/namelist.init_atmosphere") # read in all content
 eval "echo \"${file_content}\"" > namelist.init_atmosphere
 
 #
@@ -59,34 +60,33 @@ eval "echo \"${file_content}\"" > namelist.init_atmosphere
 # using sed as this file contains "filename_template='lbc.$Y-$M-$D_$h.$m.$s.nc'"
 #
 sed -e "s/@input_stream@/invariant.nc/" -e "s/@output_stream@/foo.nc/" \
-    -e "s/@lbc_interval@/${INTERVAL}/" ${PARMrrfs}/streams.init_atmosphere > streams.init_atmosphere
+    -e "s/@lbc_interval@/${INTERVAL}/" "${PARMrrfs}"/streams.init_atmosphere > streams.init_atmosphere
 
 #
 #prepare fix files and ungrib files for init_atmosphere
 #
 knt=0
 for fhr in  ${fhr_all}; do
-  EDATE=$($NDATE ${fhr} ${CDATEin})
+  EDATE=$($NDATE "${fhr}" "${CDATEin}")
   timestring=$(date -d "${EDATE:0:8} ${EDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
-  ln -snf ${UMBRELLA_UNGRIB_DATA}/${prefix}:${timestring:0:13} .
+  ln -snf "${UMBRELLA_UNGRIB_DATA}/${prefix}:${timestring:0:13}" .
 done
 zeta_levels=${EXPDIR}/config/ZETA_LEVELS.txt
-nlevel=$(wc -l < ${zeta_levels})
-ln -snf ${FIXrrfs}/meshes/${MESH_NAME}.invariant.nc_L${nlevel}_${prefix} ./invariant.nc
-${cpreq} ${FIXrrfs}/meshes/${MESH_NAME}.static.nc static.nc
-${cpreq} ${FIXrrfs}/graphinfo/${MESH_NAME}.graph.info.part.${NTASKS} .
+nlevel=$(wc -l < "${zeta_levels}")
+ln -snf "${FIXrrfs}/meshes/${MESH_NAME}.invariant.nc_L${nlevel}_${prefix}" ./invariant.nc
+${cpreq} "${FIXrrfs}/meshes/${MESH_NAME}.static.nc" static.nc
+${cpreq} "${FIXrrfs}/graphinfo/${MESH_NAME}.graph.info.part.${NTASKS}" .
 
 # run init_atmosphere_model
 source prep_step
-${cpreq} ${EXECrrfs}/init_atmosphere_model.x .
+${cpreq} "${EXECrrfs}"/init_atmosphere_model.x .
 ${MPI_RUN_CMD} ./init_atmosphere_model.x
 export err=$?; err_chk
-ls ./lbc*.nc
-if (( $? != 0 )); then
+if ! ls ./lbc*.nc; then
   echo "FATAL ERROR: failed to generate lbc files"
   err_exit
 fi
 
 # copy lbc*.nc to COMOUT
-${cpreq} ${DATA}/lbc*.nc ${COMOUT}/lbc/${WGF}${MEMDIR}
-cp ${DATA}/log.*.out ${COMOUT}/lbc/${WGF}${MEMDIR}
+${cpreq} "${DATA}"/lbc*.nc "${COMOUT}/lbc/${WGF}${MEMDIR}"
+cp "${DATA}"/log.*.out "${COMOUT}/lbc/${WGF}${MEMDIR}"
