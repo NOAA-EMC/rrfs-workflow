@@ -76,8 +76,7 @@ fi
 
 # run offline IODA tools
 ${cpreq} "${USHrrfs}"/offline_ioda_tweak.py .
-ioda_files=$(ls ioda*nc)
-for ioda_file in "${ioda_files[@]}"; do
+for ioda_file in ioda*nc; do
   ./offline_ioda_tweak.py -o "${ioda_file}"
   base_name=$(basename "$ioda_file" .nc)
   mv  "${base_name}_llp.nc" "${base_name}.nc"
