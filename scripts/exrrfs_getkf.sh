@@ -41,6 +41,7 @@ if [[ -r "${UMBRELLA_PREP_IC_DATA}/mem001/init.nc" ]]; then
   start_type='cold'
   do_DAcycling='false'
   initial_file='init.nc'
+  mkdir -p ana
 else
   start_type='warm'
   do_DAcycling='true'
@@ -97,9 +98,6 @@ case ${YAML_GEN_METHOD:-1} in
     ;;
 esac
 
-if [[ ${start_type} == "cold" ]]; then
-  exit 0 #gge.tmp.debug need more time to figure out cold start DA
-fi
 # run mpasjedi_enkf.x
 export OOPS_TRACE=1
 export OMP_NUM_THREADS=1
@@ -118,5 +116,17 @@ if [[ "${TYPE}" == "observer" ]]; then
   cp "${DATA}"/jdiag* "${COMOUT}/getkf_${TYPE}/${WGF}"
   mv jdiag* "${UMBRELLA_GETKF_DATA}"/.
 else # move post mean to umbrella if solver
-  mv "${DATA}"/data/ens/mem000.nc "${UMBRELLA_GETKF_DATA}"/post_mean.nc
+  # ncks increments to cold_start IC
+  if [[ "${start_type}" == "cold" ]]; then
+    var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional"
+    for mem in $(seq -w 1 030); do
+      ncks -A -H -v "${var_list}" "data/ana/mem${mem}.nc" "data/ens/mem${mem}.nc"
+      export err=$?
+      err_chk
+    done
+    rm -rf ../ana
+    mv data/ana ../
+  else
+    mv "${DATA}"/data/ens/mem000.nc "${UMBRELLA_GETKF_DATA}"/post_mean.nc
+  fi
 fi
