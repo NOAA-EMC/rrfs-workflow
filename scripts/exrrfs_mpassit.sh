@@ -40,7 +40,7 @@ echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
 # loop through forecast history files for this group
 #
 fhr_string=$( seq 0 $((10#${HISTORY_INTERVAL})) $((10#${fcst_len_hrs_thiscyc} )) )
-fhr_all=("${fhr_string}")
+read -ra fhr_all <<< "${fhr_string}"  # convert fhr_string to an array
 num_fhrs=${#fhr_all[@]}
 group_total_num=$((10#${GROUP_TOTAL_NUM}))
 group_index=$((10#${GROUP_INDEX}))

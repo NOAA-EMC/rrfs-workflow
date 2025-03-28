@@ -6,7 +6,6 @@ cpreq=${cpreq:-cpreq}
 
 cd "${DATA}" || exit 1
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
-# restart_interval=${RESTART_INTERVAL:-99}
 history_interval=${HISTORY_INTERVAL:-1}
 cyc_interval=${CYC_INTERVAL:-1}
 #
@@ -21,14 +20,10 @@ echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
 #  now check each until the last history is moved
 #
 history_all=$(seq 0 $((10#${history_interval})) $((10#${fcst_len_hrs_thiscyc} )) )
-# restart_all=$(seq 0 $((10#${restart_interval})) $((10#${fcst_len_hrs_thiscyc} )) )
-fhr_all=("${history_all}")
-num_fhrs=${#fhr_all[@]}
-
-for (( ii=0; ii<num_fhrs; ii=ii+1 )); do
+ii=0
+for fhr in ${history_all}; do
 
     # get forecast hour and string
-    fhr=${fhr_all[$ii]}
     CDATEp=$( ${NDATE}  "${fhr}"  "${CDATE}" )
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
 
@@ -60,6 +55,8 @@ for (( ii=0; ii<num_fhrs; ii=ii+1 )); do
       echo "ERROR, diag.${timestr}.nc or history.${timestr}.nc missing"
       err_exit
     fi
+
+    ((ii+=1)) # increment ii by 1
 done
 
 exit 0
