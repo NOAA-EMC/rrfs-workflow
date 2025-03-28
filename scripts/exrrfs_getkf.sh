@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2154,SC2034,SC1091,SC2153
+# shellcheck disable=SC2154,SC1091,SC2153,SC2034
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
 
@@ -12,15 +12,15 @@ timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
 #
 ln -snf "${FIXrrfs}/physics/${PHYSICS_SUITE}"/* .
 ln -snf "${FIXrrfs}/meshes/${MESH_NAME}.ugwp_oro_data.nc" ./ugwp_oro_data.nc
-zeta_levels="${EXPDIR}"/config/ZETA_LEVELS.txt
+zeta_levels=${EXPDIR}/config/ZETA_LEVELS.txt
 nlevel=$(wc -l < "${zeta_levels}")
 ln -snf "${FIXrrfs}/meshes/${MESH_NAME}.invariant.nc_L${nlevel}_${prefix}" ./invariant.nc
 mkdir -p graphinfo stream_list
 ln -snf "${FIXrrfs}"/graphinfo/* graphinfo/
-ln -snf "${FIXrrfs}"/stream_list/"${PHYSICS_SUITE}"/* stream_list/
-"${cpreq}" "${FIXrrfs}"/jedi/obsop_name_map.yaml .
-"${cpreq}" "${FIXrrfs}"/jedi/keptvars.yaml .
-"${cpreq}" "${FIXrrfs}"/jedi/geovars.yaml .
+ln -snf "${FIXrrfs}/stream_list/${PHYSICS_SUITE}"/* stream_list/
+${cpreq} "${FIXrrfs}"/jedi/obsop_name_map.yaml .
+${cpreq} "${FIXrrfs}"/jedi/keptvars.yaml .
+${cpreq} "${FIXrrfs}"/jedi/geovars.yaml .
 #
 # create data directory 
 #
@@ -30,7 +30,7 @@ mkdir -p obs ens jdiag
 # copy observations files
 #
 if [[ "${TYPE}" == "observer" ]]; then
-  cp "${COMOUT}"/ioda_bufr/"${IODA_BUFR_WGF}"/* obs/.
+  cp "${COMOUT}/ioda_bufr/${IODA_BUFR_WGF}"/* obs/.
 else
   ln -snf "${UMBRELLA_GETKF_OBSERVER_DATA}"/jdiag* jdiag/
 fi
@@ -60,8 +60,8 @@ cd "${DATA}" || exit 1
 run_duration=1:00:00
 physics_suite=${PHYSICS_SUITE:-'mesoscale_reference'}
 jedi_da="true" #true
-pio_num_iotasks="${NODES}"
-pio_stride="${PPN}"
+pio_num_iotasks=${NODES}
+pio_stride=${PPN}
 if [[ "${MESH_NAME}" == "conus12km" ]]; then
   dt=60
   substeps=2
@@ -76,9 +76,9 @@ else
 fi
 file_content=$(< "${PARMrrfs}/${physics_suite}/namelist.atmosphere") # read in all content
 eval "echo \"${file_content}\"" > namelist.atmosphere
-"${cpreq}" "${PARMrrfs}/streams.atmosphere.getkf streams.atmosphere"
+${cpreq} "${PARMrrfs}"/streams.atmosphere.getkf streams.atmosphere
 analysisDate="${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z"
-CDATEm2=$("$NDATE" -2 "${CDATE}")
+CDATEm2=$(${NDATE} -2 "${CDATE}")
 beginDate="${CDATEm2:0:4}-${CDATEm2:4:2}-${CDATEm2:6:2}T${CDATEm2:8:2}:00:00Z"
 #
 # generate getkf.yaml based on how YAML_GEN_METHOD is set
@@ -103,8 +103,8 @@ export OOPS_TRACE=1
 export OMP_NUM_THREADS=1
 
 source prep_step
-"${cpreq}" "${EXECrrfs}"/mpasjedi_enkf.x .
-"${MPI_RUN_CMD}" ./mpasjedi_enkf.x getkf.yaml log.out
+${cpreq} "${EXECrrfs}"/mpasjedi_enkf.x .
+${MPI_RUN_CMD} ./mpasjedi_enkf.x getkf.yaml log.out
 # check the status
 export err=$?
 err_chk
