@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2154,SC2153,SC1091
+# shellcheck disable=SC2153,SC1091,SC2154
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
 

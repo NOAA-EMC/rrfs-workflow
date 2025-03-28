@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2154,SC1091,SC2153,SC2017,SC2034
-declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]${id}: '
+# shellcheck disable=SC1091,SC2153,SC2017,SC2154,SC2034
+declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
 cpreq=${cpreq:-cpreq}
 prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
@@ -65,7 +65,6 @@ sed -e "s/@input_stream@/invariant.nc/" -e "s/@output_stream@/foo.nc/" \
 #
 #prepare fix files and ungrib files for init_atmosphere
 #
-knt=0
 for fhr in  ${fhr_all}; do
   EDATE=$(${NDATE} "${fhr}" "${CDATEin}")
   timestring=$(date -d "${EDATE:0:8} ${EDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
