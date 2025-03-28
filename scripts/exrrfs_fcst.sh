@@ -108,7 +108,7 @@ if (( "${num_err_log}" > 0 )) ; then
 else
   # spinup cycles copy mpasout to com/ directly, don't need the save_fcst task
   if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
-    CDATEp=$( $NDATE 1 "${CDATE}" )
+    CDATEp=$( ${NDATE} 1 "${CDATE}" )
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
     ${cpreq} "${DATA}/mpasout.${timestr}.nc" "${COMOUT}/fcst_spinup/${WGF}${MEMDIR}"
   fi

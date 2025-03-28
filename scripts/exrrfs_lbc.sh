@@ -23,10 +23,10 @@ fhr_all=$(seq $((10#${fhr_begin})) $((10#${INTERVAL})) $((10#${fhr_end} )) )
 # prefix, inerval_seconds, zeta_levels, decomp_file_prefix
 #
 init_case=9
-CDATEin=$($NDATE "-${OFFSET}" "${CDATE}")
-EDATE=$($NDATE "${fhr_begin}" "${CDATEin}")
+CDATEin=$(${NDATE} "-${OFFSET}" "${CDATE}")
+EDATE=$(${NDATE} "${fhr_begin}" "${CDATEin}")
 start_time=$(date -d "${EDATE:0:8} ${EDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
-EDATE=$($NDATE "${fhr_end}" "${CDATEin}")
+EDATE=$(${NDATE} "${fhr_end}" "${CDATEin}")
 end_time=$(date -d "${EDATE:0:8} ${EDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
 
 if [[ "${prefix}" == "RAP" || "${prefix}" == "HRRR" ]]; then
@@ -67,7 +67,7 @@ sed -e "s/@input_stream@/invariant.nc/" -e "s/@output_stream@/foo.nc/" \
 #
 knt=0
 for fhr in  ${fhr_all}; do
-  EDATE=$($NDATE "${fhr}" "${CDATEin}")
+  EDATE=$(${NDATE} "${fhr}" "${CDATEin}")
   timestring=$(date -d "${EDATE:0:8} ${EDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
   ln -snf "${UMBRELLA_UNGRIB_DATA}/${prefix}:${timestring:0:13}" .
 done
