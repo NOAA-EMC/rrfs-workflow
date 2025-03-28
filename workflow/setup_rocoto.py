@@ -65,6 +65,17 @@ zeta_levels=os.getenv('ZETA_LEVELS','')
 if zeta_levels != '':
   shutil.copy(f'{HOMErrfs}/fix/meshes/{zeta_levels}',f'{exp_configdir}/ZETA_LEVELS.txt')
 
+# if DO_JEDI, copy the convinfo file if not existed
+if os.getenv("DO_JEDI",'false').upper() == "TRUE":
+  if not os.path.exists('convinfo'):
+    print('convinfo not found under current directoy, copy from ${FIXrrfs}/jedi\n')
+    shutil.copy(f'{HOMErrfs}/fix/jedi/convinfo.rrfs','convinfo')
+  # copy convinfo to exp_configdir
+  shutil.copy('convinfo',f'{exp_configdir}/convinfo')
+  # if satinfo is available, copy it to exp_configdir
+  if os.path.exists('satinfo'):
+    shutil.copy('satinfo',f'{exp_configdir}/satinfo')
+
 # copyover the VERSION file
 shutil.copy(f'{HOMErrfs}/workflow/VERSION',f'{expdir}/VERSION')
 
