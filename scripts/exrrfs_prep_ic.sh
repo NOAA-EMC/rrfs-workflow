@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]${id}: '
+# shellcheck disable=SC2154,SC1091,SC2153
+declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
 cpreq=${cpreq:-cpreq}
 
-cd ${DATA}
+cd "${DATA}" || exit 1
 cyc_interval=${CYC_INTERVAL:-1}
 spinup_mode=${SPINUP_MODE:-0}
 #
@@ -37,7 +38,7 @@ timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
 if [[ "${start_type}" == "cold" ]]; then
   thisfile=${COMINrrfs}/${RUN}.${PDY}/${cyc}/ic/${WGF}${MEMDIR}/init.nc
   if [[ -r ${thisfile} ]]; then
-    ${cpreq} ${thisfile} ${UMBRELLA_PREP_IC_DATA}/init.nc
+    ${cpreq} "${thisfile}" "${UMBRELLA_PREP_IC_DATA}/init.nc"
     echo "cold start from ${thisfile}"
   else
     echo "FATAL ERROR: PREP_IC failed, cannot find cold start file: ${thisfile}"
@@ -57,7 +58,7 @@ elif [[ "${start_type}" == "warm" ]]; then
     fi
   fi
   for (( ii=cyc_interval; ii<=$(( NUM*cyc_interval )); ii=ii+cyc_interval )); do
-    CDATEp=$($NDATE -${ii} ${CDATE} )
+    CDATEp=$(${NDATE} -${ii} "${CDATE}" )
     PDYii=${CDATEp:0:8}
     cycii=${CDATEp:8:2}
     thisfile=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/${fcststr}/${WGF}${MEMDIR}/mpasout.${timestr}.nc
@@ -66,7 +67,7 @@ elif [[ "${start_type}" == "warm" ]]; then
     fi
   done
   if [[ -r ${thisfile} ]]; then
-    ${cpreq} ${thisfile} ${UMBRELLA_PREP_IC_DATA}/mpasin.nc
+    ${cpreq} "${thisfile}" "${UMBRELLA_PREP_IC_DATA}/mpasin.nc"
     echo "warm start from ${thisfile}"
   else
     echo "FATAL ERROR: PREP_IC failed, cannot find warm start file: ${thisfile}"
