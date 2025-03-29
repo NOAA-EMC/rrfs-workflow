@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # this file hosts all tasks that will not be needed by NCO
 import os
-from rocoto_funcs.base import xml_task, source, get_cascade_env
+from rocoto_funcs.base import xml_task, get_cascade_env
 
 # begin of graphics --------------------------------------------------------
 
@@ -30,10 +30,6 @@ def graphics(xmlFile, expdir):
         starttime = get_cascade_env(f"STARTTIME_{meta_id}".upper())
         timedep = f'\n  <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
     #
-    COMROOT = os.getenv("COMROOT", "COMROOT_NOT_DEFINED")
-    RUN = 'rrfs'
-    NET = os.getenv("NET", "NET_NOT_DEFINED")
-    VERSION = os.getenv("VERSION", "VERSION_NOT_DEFINED")
     dependencies = f'''
   <dependency>
   <and>{timedep}

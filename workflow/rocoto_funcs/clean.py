@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # this file hosts all tasks that will not be needed by NCO
 import os
-from rocoto_funcs.base import xml_task, get_cascade_env
+from rocoto_funcs.base import xml_task
 
 # begin of clean --------------------------------------------------------
 

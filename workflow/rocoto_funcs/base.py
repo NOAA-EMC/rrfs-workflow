@@ -64,7 +64,7 @@ def header_entities(xmlFile, expdir):
 # figure out run period for realtime experiments
     if realtime == 'TRUE':
         now = datetime.now()
-        end = now+relativedelta(months=1)  # each realtime deployment, set current month and next month
+        end = now + relativedelta(months=1)  # each realtime deployment, set current month and next month
         startyear = f'''{now.year:04}'''
         startmonth = f'''{now.month:02}'''
         startday = f'''{now.day:02}'''
@@ -169,7 +169,7 @@ def wflow_log(xmlFile, log_fpath):
 def wflow_cycledefs(xmlFile, dcCycledef):
     text = ""
     for key, value in dcCycledef.items():
-        text = text+f'\n  <cycledef group="{key}">{value}</cycledef>'
+        text = text + f'\n  <cycledef group="{key}">{value}</cycledef>'
     xmlFile.write(f'{text}\n')
 
 # objTask
@@ -188,9 +188,9 @@ class objTask:
 
     def wflow_task_divider(self, xmlFile):
         text = f'\n<!--\n'
-        text = text+f'************************************************************************************\n'
-        text = text+f'************************************************************************************'
-        text = text+f'\n-->\n'
+        text = text + f'************************************************************************************\n'
+        text = text + f'************************************************************************************'
+        text = text + f'\n-->\n'
         xmlFile.write(text)
 
     def wflow_task_begin(self, xmlFile):
@@ -199,18 +199,18 @@ class objTask:
 
     def wflow_task_part1(self, xmlFile):  # write out part1 which excludes dependencies
         text = f'  <command>{self.dcTaskRes["command"]} &HOMErrfs;</command>\n'
-        text = text+f'  <join><cyclestr>{self.dcTaskRes["join"]}</cyclestr></join>\n'
-        text = text+f'\n  <jobname><cyclestr>{self.dcTaskRes["jobname"]}</cyclestr></jobname>\n'
+        text = text + f'  <join><cyclestr>{self.dcTaskRes["join"]}</cyclestr></join>\n'
+        text = text + f'\n  <jobname><cyclestr>{self.dcTaskRes["jobname"]}</cyclestr></jobname>\n'
         if os.getenv('MORE_XML_ENTITIES', 'false').upper() == 'TRUE':
-            text = text+f'  <account>&ACCOUNT;</account>\n'
-            text = text+f'  <queue>&QUEUE_DEFAULT;</queue>\n'
-            text = text+f'  <partition>&PARTITION;</partition>\n'
+            text = text + f'  <account>&ACCOUNT;</account>\n'
+            text = text + f'  <queue>&QUEUE_DEFAULT;</queue>\n'
+            text = text + f'  <partition>&PARTITION;</partition>\n'
         else:
-            text = text+f'  <account>{self.dcTaskRes["account"]}</account>\n'
-            text = text+f'  <queue>{self.dcTaskRes["queue"]}</queue>\n'
-            text = text+f'  <partition>{self.dcTaskRes["partition"]}</partition>\n'
-        text = text+f'  <walltime>{self.dcTaskRes["walltime"]}</walltime>\n'
-        text = text+f'  {self.dcTaskRes["nodes"]}\n'  # note: xml tag self included, no need to add <nodes> </nodes>
+            text = text + f'  <account>{self.dcTaskRes["account"]}</account>\n'
+            text = text + f'  <queue>{self.dcTaskRes["queue"]}</queue>\n'
+            text = text + f'  <partition>{self.dcTaskRes["partition"]}</partition>\n'
+        text = text + f'  <walltime>{self.dcTaskRes["walltime"]}</walltime>\n'
+        text = text + f'  {self.dcTaskRes["nodes"]}\n'  # note: xml tag self included, no need to add <nodes> </nodes>
         #
         native_text = ''
         if self.dcTaskRes["reservation"] != "":
@@ -223,14 +223,14 @@ class objTask:
         if self.dcTaskRes["native"] != "":
             native_text = native_text + self.dcTaskRes["native"]
         if native_text != "":
-            text = text+f'  <native>{native_text.strip()}</native>\n'
+            text = text + f'  <native>{native_text.strip()}</native>\n'
         #
         if self.realtime:
-            text = text+f'  <deadline><cyclestr offset="{self.deadline}">@Y@m@d@H@M</cyclestr></deadline>\n'
+            text = text + f'  <deadline><cyclestr offset="{self.deadline}">@Y@m@d@H@M</cyclestr></deadline>\n'
         #
-        text = text+"  &task_common_vars;\n"  # add an empty line before the <envar> block for readability
+        text = text + "  &task_common_vars;\n"  # add an empty line before the <envar> block for readability
         for key, value in self.dcTaskEnv.items():
-            text = text+f'  <envar><name>{key}</name><value>{value}</value></envar>\n'
+            text = text + f'  <envar><name>{key}</name><value>{value}</value></envar>\n'
         xmlFile.write(text)
 
     def wflow_task_end(self, xmlFile):
@@ -245,7 +245,7 @@ class objTask:
 
 def get_required_env(env_name):
     env_value = os.getenv(env_name)
-    if env_value == None:
+    if env_value is None:
         print(f'env variable "{env_name}" not found')
         exit()
     else:
@@ -258,14 +258,14 @@ def get_cascade_env(env_name):
     seperator = "_"  # underscore
     revStr = env_name[::-1]  # reverse the string
     env_value = os.getenv(env_name)
-    if env_value != None:
+    if env_value is not None:
         return env_value
 
     while seperator in revStr:
         ra, rb = revStr.split(seperator, 1)  # only split once
         new_name = rb[::-1]
         env_value = os.getenv(new_name)
-        if env_value != None:
+        if env_value is not None:
             return env_value
         else:
             revStr = rb
@@ -289,19 +289,17 @@ def get_yes_or_no(prompt):
 # xml_task
 
 
-def xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv={}, dependencies="", metatask=False, meta_id='', meta_bgn="", meta_end="", command_id=""):
+def xml_task(
+        xmlFile, expdir, task_id, cycledefs, dcTaskEnv={}, dependencies="",
+        metatask=False, meta_id='', meta_bgn="", meta_end="", command_id=""):
     # for non-meta tasks, task_id=meta_id; for meta tasks, task_id=${meta_id}_xxx
-    # metatask is a group of tasks who share a very similar functionality at the same cycle, for example, post_f01, post_f02, ensembles, etc
-    # It is recommended to use separate tasks (i.e. non-metatask) for spinup and prod cycles for simplicity
-    COMROOT = os.getenv('COMROOT', '/COMROOT_NOT_DEFINED')
-    HOMErrfs = os.getenv('HOMErrfs', 'HOMErrfs_not_defined')
+    # metatask is a group of tasks who share a very similar functionality
+    #     at the same cycle, for example, post_f01, post_f02, ensembles, etc
     WGF = os.getenv('WGF', 'WGF_NOT_DEFINED')
     TAG = os.getenv('TAG', 'TAG_NOT_DEFINED')
-    NET = os.getenv('NET', 'NET_NOT_DEFINED')
-    VERSION = os.getenv('VERSION', 'VERSION_NOT_DEFINED')
     realtime = os.getenv('REALTIME', 'false')
     deadline = get_cascade_env(f'DEADLINE_{task_id}'.upper())
-    if metatask == False:
+    if metatask is False:
         meta_id = task_id
         source(f"{expdir}/config/config.{meta_id}", optional=True)
     else:  # True
@@ -310,7 +308,7 @@ def xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv={}, dependencies="",
     if command_id == "":
         command_id = meta_id
     dcTaskRes = {
-        'command': f'&HOMErrfs;/workflow/sideload/launch.sh JRRFS_'+f'{command_id}'.upper(),
+        'command': f'&HOMErrfs;/workflow/sideload/launch.sh JRRFS_' + f'{command_id}'.upper(),
         'join': f'&LOGROOT;/rrfs.@Y@m@d/@H/{WGF}/rrfs_{task_id}_{TAG}_@Y@m@d@H.log',
         'jobname': f'{TAG}_{task_id}_c@H',
         'account': get_cascade_env(f'ACCOUNT_{task_id}'.upper()),
@@ -333,12 +331,12 @@ def xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv={}, dependencies="",
         dcTaskEnv=dcTaskEnv,
         dependencies=dependencies)
     myObjTask.wflow_task_divider(xmlFile)
-    if metatask == True:
+    if metatask is True:
         xmlFile.write(meta_bgn)
     myObjTask.wflow_task_begin(xmlFile)
     myObjTask.wflow_task_part1(xmlFile)
     myObjTask.wflow_task_dependencies(xmlFile)
     myObjTask.wflow_task_end(xmlFile)
-    if metatask == True:
+    if metatask is True:
         xmlFile.write(meta_end)
 # end of xml_task

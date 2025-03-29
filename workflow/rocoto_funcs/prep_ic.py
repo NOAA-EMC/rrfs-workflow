@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os
-from rocoto_funcs.base import xml_task, source, get_cascade_env
+from rocoto_funcs.base import xml_task, get_cascade_env
 
 # begin of fcst --------------------------------------------------------
 
@@ -46,7 +46,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         meta_bgn = ""
         meta_end = ""
         ens_size = int(os.getenv('ENS_SIZE', '2'))
-        ens_indices = ''.join(f'{i:03d} ' for i in range(1, int(ens_size)+1)).strip()
+        ens_indices = ''.join(f'{i:03d} ' for i in range(1, int(ens_size) + 1)).strip()
         meta_bgn = f'''
 <metatask name="{meta_id}">
 <var name="ens_index">{ens_indices}</var>'''
@@ -62,7 +62,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     for hr in coldhrs:
         hr = f"{hr:0>2}"
         streqs = streqs + f"\n        <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
-        strneqs = strneqs+f"\n        <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
+        strneqs = strneqs + f"\n        <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
     streqs = streqs.lstrip('\n')
     strneqs = strneqs.lstrip('\n')
     datadep_prod = f'''\n        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;{ensdirstr}/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
@@ -118,7 +118,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         for hr in prodswitch_hrs.split(' '):
             hr = f"{hr:0>2}"
             streqs = streqs + f"\n        <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
-            strneqs = strneqs+f"\n        <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
+            strneqs = strneqs + f"\n        <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
         streqs = streqs.lstrip('\n')
         strneqs = strneqs.lstrip('\n')
         datadep_spinup = datadep_spinup.lstrip('\n')[2:]

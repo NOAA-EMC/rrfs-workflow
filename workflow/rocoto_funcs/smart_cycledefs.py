@@ -2,7 +2,6 @@
 import os
 import calendar
 from datetime import datetime, timedelta
-from rocoto_funcs.base import source
 
 
 def smart_cycledefs():
@@ -22,9 +21,9 @@ def smart_cycledefs():
         cold_cycs = os.getenv('COLDSTART_CYCS', '03 15').strip().split(' ')
         prodswitch_cycs = os.getenv('PRODSWITCH_CYCS', '09 21').strip().split(' ')
         # compute spinup_hrs (usually coldstart at 03 or 15)
-        spinup_hrs = cold_cycs[0]+"-"+f'{int(prodswitch_cycs[0])-1:02},'
+        spinup_hrs = cold_cycs[0] + "-" + f'{int(prodswitch_cycs[0])-1:02},'
         if len(cold_cycs) > 1:
-            half_spinup = cold_cycs[1]+"-"+f'{int(prodswitch_cycs[1])-1:02}'
+            half_spinup = cold_cycs[1] + "-" + f'{int(prodswitch_cycs[1])-1:02}'
             spinup_hrs += half_spinup
         #
         realtime = os.getenv('REALTIME', 'false')
@@ -59,7 +58,7 @@ def smart_cycledefs():
                     num_spinup_cycledef = 1
                 else:  # 12z
                     prod_cyc1 = f'{int(prodswitch_cycs[1]):02}'
-                    date1b = date1+timedelta(hours=12)
+                    date1b = date1 + timedelta(hours=12)
                     cycledef_spinup = f'''00 {half_spinup} {date1.day:02} {date1.month:02} {date1.year:04} *'''
                     cycledef_spinup2 = f'''00 {spinup_hrs} {date1b.day:02}-{date2.day:02} {date1.month:02} {date1.year:04} *'''
                     num_spinup_cycledef = 2
@@ -72,7 +71,7 @@ def smart_cycledefs():
                     num_spinup_cycledef = 2
                 else:  # 12z
                     prod_cyc1 = f'{int(prodswitch_cycs[1]):02}'
-                    date1b = date1+timedelta(hours=12)
+                    date1b = date1 + timedelta(hours=12)
                     cycledef_spinup = f'''00 {half_spinup} {date1.day:02} {date1.month:02} {date1.year:04} *'''
                     cycledef_spinup2 = f'''00 {spinup_hrs} {date1b.day:02}-{lastday:02} {date1.month:02} {date1.year:04} *'''
                     cycledef_spinup3 = f'''00 {spinup_hrs} 01-{date2.day:02} {date2.month:02} {date2.year:04} *'''

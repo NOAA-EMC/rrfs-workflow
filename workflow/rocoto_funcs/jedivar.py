@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os
-from rocoto_funcs.base import xml_task, source, get_cascade_env
+from rocoto_funcs.base import xml_task, get_cascade_env
 
 # begin of jedivar --------------------------------------------------------
 
@@ -39,7 +39,6 @@ def jedivar(xmlFile, expdir, do_spinup=False):
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
     #
-    COMROOT = os.getenv("COMROOT", "COMROOT_NOT_DEFINED")
     NET = os.getenv("NET", "NET_NOT_DEFINED")
     VERSION = os.getenv("VERSION", "VERSION_NOT_DEFINED")
     HYB_ENS_TYPE = os.getenv("HYB_ENS_TYPE", "0")

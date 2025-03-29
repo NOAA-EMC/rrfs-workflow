@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os
-from rocoto_funcs.base import xml_task, source, get_cascade_env
+from rocoto_funcs.base import xml_task, get_cascade_env
 
 # begin of ungrib_lbc --------------------------------------------------------
 
@@ -17,7 +17,7 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     lbc_name_pattern = os.getenv('LBC_EXTRN_MDL_NAME_PATTERN', '')
     lbc_name_pattern_b = os.getenv('LBC_EXTRN_MDL_NAME_PATTERN_B', '')
     lbc_ungrib_group_total_num = int(os.getenv('LBC_UNGRIB_GROUP_TOTAL_NUM', '1'))
-    group_indices = ''.join(f'{i:02d} ' for i in range(1, int(lbc_ungrib_group_total_num)+1)).strip()
+    group_indices = ''.join(f'{i:02d} ' for i in range(1, int(lbc_ungrib_group_total_num) + 1)).strip()
 
 # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
@@ -39,22 +39,18 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
 '''
         meta_end = f'</metatask>\n'
         task_id = f'ungrib_lbc_g#group_index#'
-        ensindexstr = ''
-        ensdirstr = ''
     #
     else:  # ensemble
         # metatask (support nested metatasks)
         ens_size = int(os.getenv('ENS_SIZE', '2'))
-        ens_indices = ''.join(f'{i:03d} ' for i in range(1, int(ens_size)+1)).strip()
-        gmems = ''.join(f'{i:02d} ' for i in range(1, int(ens_size)+1)).strip()
-        ensindexstr = f'_m#ens_index#'
-        ensdirstr = f'/mem#ens_index#'
+        ens_indices = ''.join(f'{i:03d} ' for i in range(1, int(ens_size) + 1)).strip()
+        gmems = ''.join(f'{i:02d} ' for i in range(1, int(ens_size) + 1)).strip()
         meta_bgn = f'''
 <metatask name="{meta_id}">
 <var name="ens_index">{ens_indices}</var>
 <var name="gmem">{gmems}</var>
 <metatask name="{meta_id}_m#ens_index#">
-<var name="group_index">{group_indices}</var> 
+<var name="group_index">{group_indices}</var>
 '''
         meta_end = f'</metatask>\n</metatask>\n'
         task_id = f'{meta_id}_g#group_index#_m#ens_index#'
@@ -87,7 +83,7 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     #
 
     datadep = ''
-    for i in range(int(offset), int(length)+int(offset)+1, int(interval)):
+    for i in range(int(offset), int(length) + int(offset) + 1, int(interval)):
         comin_hr3 = str(i).zfill(3)
         fpath3 = fpath.replace('fHHH', comin_hr3)
         datadep = datadep + \

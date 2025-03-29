@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os
-from rocoto_funcs.base import xml_task, source, get_cascade_env
+from rocoto_funcs.base import xml_task, get_cascade_env
 
 # begin of ic --------------------------------------------------------
 
@@ -21,20 +21,18 @@ def ic(xmlFile, expdir, do_ensemble=False):
         meta_bgn = ""
         meta_end = ""
         ensindexstr = ""
-        ensdirstr = ""
     else:
         metatask = True
         task_id = f'{meta_id}_m#ens_index#'
         dcTaskEnv['ENS_INDEX'] = "#ens_index#"
         ens_size = int(os.getenv('ENS_SIZE', '2'))
-        ens_indices = ''.join(f'{i:03d} ' for i in range(1, int(ens_size)+1)).strip()
+        ens_indices = ''.join(f'{i:03d} ' for i in range(1, int(ens_size) + 1)).strip()
         meta_bgn = f'''
 <metatask name="{meta_id}">
 <var name="ens_index">{ens_indices}</var>'''
         meta_end = f'\
 </metatask>\n'
         ensindexstr = "_m#ens_index#"
-        ensdirstr = "/mem#ens_index#"
 
     # dependencies
     timedep = ""

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os
-from rocoto_funcs.base import xml_task, source, get_cascade_env
+from rocoto_funcs.base import xml_task, get_cascade_env
 
 # begin of getkf_solver --------------------------------------------------------
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 #
 import os
-import sys
 import stat
 from rocoto_funcs.base import header_begin, header_entities, header_end, source, \
     wflow_begin, wflow_log, wflow_cycledefs, wflow_end
@@ -22,6 +21,7 @@ from rocoto_funcs.upp import upp
 from rocoto_funcs.ioda_bufr import ioda_bufr
 from rocoto_funcs.clean import clean
 from rocoto_funcs.graphics import graphics
+from rocoto_funcs.misc import misc
 
 # setup_xml
 
@@ -46,11 +46,6 @@ def setup_xml(HOMErrfs, expdir):
     #
     # create cycledefs smartly
     dcCycledef = smart_cycledefs()
-
-    COMROOT = os.getenv('COMROOT', 'COMROOT_not_defined')
-    TAG = os.getenv('TAG', 'TAG_not_defined')
-    NET = os.getenv('NET', 'NET_not_defined')
-    VERSION = os.getenv('VERSION', 'VERSION_not_defined')
 
     fPath = f"{expdir}/rrfs.xml"
     with open(fPath, 'w') as xmlFile:
@@ -93,10 +88,7 @@ def setup_xml(HOMErrfs, expdir):
             #
             mpassit(xmlFile, expdir)
             upp(xmlFile, expdir)
-            #
-            # if machine == "jet": #currently only support graphics on jet
-            #  graphics(xmlFile,expdir)
-            #
+
 # ---------------------------------------------------------------------------
 # assemble tasks for an ensemble experiment
         if do_ensemble == "TRUE":
@@ -119,6 +111,10 @@ def setup_xml(HOMErrfs, expdir):
 # ---------------------------------------------------------------------------
         if os.getenv("DO_CLEAN", 'FALSE').upper() == "TRUE":  # write out the clean task if needed, usually for realtime runs
             clean(xmlFile, expdir)
+        if os.getenv("DO_MISC", 'FALSE').upper() == "TRUE":
+            misc(xmlFile, expdir)
+        if os.getenv("DO_GRAPHICS", 'FALSE').upper() == "TRUE":
+            graphics(xmlFile, expdir)
         #
         wflow_end(xmlFile)
 # ---------------------------------------------------------------------------

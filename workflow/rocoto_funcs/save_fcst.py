@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os
-from rocoto_funcs.base import xml_task, source, get_cascade_env
+from rocoto_funcs.base import xml_task, get_cascade_env
 
 # begin of fcst --------------------------------------------------------
 
@@ -11,7 +11,6 @@ def save_fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         cycledefs = 'spinup'
     else:
         cycledefs = 'prod'
-    WGF = os.getenv('WGF', 'WGF not defined')
     # Task-specific EnVars beyond the task_common_vars
     fcst_length = os.getenv('FCST_LENGTH', '1')
     history_interval = os.getenv('HISTORY_INTERVAL', '1')
@@ -32,7 +31,6 @@ def save_fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
             task_id = f'{meta_id}'
         meta_bgn = ""
         meta_end = ""
-        ensindexstr = ""
         ensdirstr = ""
     else:
         metatask = True
@@ -41,13 +39,12 @@ def save_fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         meta_bgn = ""
         meta_end = ""
         ens_size = int(os.getenv('ENS_SIZE', '2'))
-        ens_indices = ''.join(f'{i:03d} ' for i in range(1, int(ens_size)+1)).strip()
+        ens_indices = ''.join(f'{i:03d} ' for i in range(1, int(ens_size) + 1)).strip()
         meta_bgn = f'''
 <metatask name="{meta_id}">
 <var name="ens_index">{ens_indices}</var>'''
         meta_end = f'\
 </metatask>\n'
-        ensindexstr = "_m#ens_index#"
         ensdirstr = "/mem#ens_index#"
 
     # dependencies
@@ -61,8 +58,6 @@ def save_fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         starttime = get_cascade_env(f"STARTTIME_FCST".upper())
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
     #
-    NET = os.getenv("NET", "NET_NOT_DEFINED")
-    VERSION = os.getenv("VERSION", "VERSION_NOT_DEFINED")
     dependencies = f'''
   <dependency>
   <and>{timedep}

@@ -70,7 +70,7 @@ case ${task_id} in
     esac
     ${HOMErrfs}/workflow/sideload/clean.py
     ;;
-  graphics|dummy)
+  graphics|misc)
     ${HOMErrfs}/workflow/sideload/${task_id}.sh
     ;;
   *)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os
-from rocoto_funcs.base import xml_task, source, get_cascade_env
+from rocoto_funcs.base import xml_task, get_cascade_env
 
 # begin of ungrib_ic --------------------------------------------------------
 
@@ -28,20 +28,13 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
         task_id = f'{meta_id}'
         meta_bgn = ""
         meta_end = ""
-        #
-        net = os.getenv('NET', 'rrfs')
-        rrfs_ver = os.getenv('VERSION', 'v2.0.0')
-        ensindexstr = ''
-        ensdirstr = ''
     else:
         metatask = True
         task_id = f'{meta_id}_m#ens_index#'
         dcTaskEnv['ENS_INDEX'] = "#ens_index#"
         ens_size = int(os.getenv('ENS_SIZE', '2'))
-        ens_indices = ''.join(f'{i:03d} ' for i in range(1, int(ens_size)+1)).strip()
-        gmems = ''.join(f'{i:02d} ' for i in range(1, int(ens_size)+1)).strip()
-        ensindexstr = f'_m#ens_index#'
-        ensdirstr = f'/mem#ens_index#'
+        ens_indices = ''.join(f'{i:03d} ' for i in range(1, int(ens_size) + 1)).strip()
+        gmems = ''.join(f'{i:02d} ' for i in range(1, int(ens_size) + 1)).strip()
         meta_bgn = f'''
 <metatask name="{meta_id}">
 <var name="ens_index">{ens_indices}</var>

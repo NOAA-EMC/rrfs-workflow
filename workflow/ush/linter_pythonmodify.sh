@@ -35,4 +35,4 @@ case ${MACHINE} in
     exit 1
     ;;
 esac
-"${EXEC_DIR}/autopep8" --max-line-length 120 --in-place --recursive "$@"
+"${EXEC_DIR}/autopep8" --max-line-length 0 --in-place --recursive "$@"
