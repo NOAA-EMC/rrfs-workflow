@@ -35,7 +35,7 @@ export UMBRELLA_MPASSIT_DATA=${UMBRELLA_MPASSIT_DATA:-${DATAROOT}/${RUN}_mpassit
 export jobid=${jobid:-upp_g${GROUP_INDEX}_${cyc}}
 export UMBRELLA_UPP_DATA=${UMBRELLA_UPP_DATA:-${DATAROOT}/${RUN}_upp_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
 export DATA=${DATA:-${UMBRELLA_UPP_DATA}/${jobid}}
-if [ -d "${DATA}" ]; then # remove the ${DATA}/${FHR} directory if existed
+if [[ -d "${DATA}" ]]; then # remove the ${DATA}/${FHR} directory if existed
   rm -rf "${DATA}"
 fi
 mkdir -p "${DATA}"
@@ -55,7 +55,7 @@ export pgmout="${DATA}/OUTPUT.$$"
 "${HOMErrfs}"/scripts/exrrfs_upp.sh
 export err=$?; err_chk
 
-if [ -e "${pgmout}" ]; then
+if [[ -e "${pgmout}" ]]; then
   cat "${pgmout}"
 fi
 #

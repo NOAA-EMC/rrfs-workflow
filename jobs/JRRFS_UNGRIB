@@ -38,7 +38,7 @@ fi
 export UMBRELLA_UNGRIB_DATA=${UMBRELLA_UNGRIB_DATA:-${DATAROOT}/${RUN}_ungrib_${TYPE}_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
 export DATA=${DATA:-${UMBRELLA_UNGRIB_DATA}/${jobid}}
 
-if [[ -d "${DATA}" ]]; then # remove the ${DATA} directory if existed
+if [[[ -d "${DATA}" ]]]; then # remove the ${DATA} directory if existed
   rm -rf "${DATA}"
 fi
 mkdir -p "${DATA}"
@@ -74,7 +74,7 @@ export pgmout="${DATA}/OUTPUT.$$"
 "${HOMErrfs}"/scripts/exrrfs_ungrib.sh
 export err=$?; err_chk
 
-if [ -e "${pgmout}" ]; then
+if [[ -e "${pgmout}" ]]; then
   cat "${pgmout}"
 fi
 #

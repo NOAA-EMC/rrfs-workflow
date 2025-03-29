@@ -22,7 +22,7 @@ export jobid=${jobid:-ioda_bufr_${cyc}}
 export UMBRELLA_IODA_BUFR_DATA=${UMBRELLA_IODA_BUFR_DATA:-${DATAROOT}/${RUN}_ioda_bufr_${cyc}_${rrfs_ver}/${WGF}}
 export DATA=${DATA:-${UMBRELLA_IODA_BUFR_DATA}/${jobid}}
 
-if [ -d "${DATA}" ]; then #remove the ${DATA} directory before a new run
+if [[ -d "${DATA}" ]]; then #remove the ${DATA} directory before a new run
   rm -rf "${DATA}"
 fi
 mkdir -p "${DATA}"
@@ -42,7 +42,7 @@ export pgmout="${DATA}/OUTPUT.$$"
 "${HOMErrfs}"/scripts/exrrfs_ioda_bufr.sh
 export err=$?; err_chk
 
-if [ -e "${pgmout}" ]; then
+if [[ -e "${pgmout}" ]]; then
   cat "${pgmout}"
 fi
 #

@@ -34,7 +34,7 @@ export pid=${pid:-$$}
 export jobid=${jobid:-jedivar_${cyc}}
 export DATA=${DATA:-${UMBRELLA_JEDIVAR_DATA}/${jobid}}
 
-if [ -d "${DATA}" ]; then # remove the ${DATA} directory if existed
+if [[ -d "${DATA}" ]]; then # remove the ${DATA} directory if existed
   rm -rf "${DATA}"
 fi
 mkdir -p "${DATA}"
@@ -55,7 +55,7 @@ export pgmout="${DATA}/OUTPUT.$$"
 "${HOMErrfs}"/scripts/exrrfs_jedivar.sh
 export err=$?; err_chk
 
-if [ -e "${pgmout}" ]; then
+if [[ -e "${pgmout}" ]]; then
   cat "${pgmout}"
 fi
 #

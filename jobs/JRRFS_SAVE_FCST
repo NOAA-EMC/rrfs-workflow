@@ -28,7 +28,7 @@ export jobid=${jobid:-save_fcst_${cyc}}
 export UMBRELLA_SAVE_FCST_DATA=${UMBRELLA_SAVE_FCST_DATA:-${DATAROOT}/${RUN}_save_fcst_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
 export DATA=${DATA:-${UMBRELLA_SAVE_FCST_DATA}/${jobid}}
 
-if [ -d "${DATA}" ]; then # remove the ${DATA} directory if existed
+if [[ -d "${DATA}" ]]; then # remove the ${DATA} directory if existed
   rm -rf "${DATA}"
 fi
 mkdir -p "${DATA}"
@@ -52,7 +52,7 @@ export pgmout="${DATA}/OUTPUT.$$"
 "${HOMErrfs}"/scripts/exrrfs_save_fcst.sh
 export err=$?; err_chk
 
-if [ -e "${pgmout}" ]; then
+if [[ -e "${pgmout}" ]]; then
   cat "${pgmout}"
 fi
 #

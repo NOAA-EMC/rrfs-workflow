@@ -28,7 +28,7 @@ export jobid=${jobid:-ic_${cyc}}
 export UMBRELLA_IC_DATA=${UMBRELLA_IC_DATA:-${DATAROOT}/${RUN}_ic_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
 export DATA=${DATA:-${UMBRELLA_IC_DATA}/${jobid}}
 
-if [ -d "${DATA}" ]; then # remove the ${DATA} directory if existed
+if [[ -d "${DATA}" ]]; then # remove the ${DATA} directory if existed
   rm -rf "${DATA}"
 fi
 mkdir -p "${DATA}"
@@ -49,7 +49,7 @@ export pgmout="${DATA}/OUTPUT.$$"
 "${HOMErrfs}"/scripts/exrrfs_ic.sh
 export err=$?; err_chk
 
-if [ -e "${pgmout}" ]; then
+if [[ -e "${pgmout}" ]]; then
   cat "${pgmout}"
 fi
 #
