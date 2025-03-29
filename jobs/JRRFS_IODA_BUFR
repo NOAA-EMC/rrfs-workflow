@@ -33,7 +33,7 @@ mkdir -p "${DATA}"
 #
 export COMINrrfs=${COMINrrfs:-$(compath.py "${envir}/rrfs/${rrfs_ver}")}
 export COMOUT=${COMOUT:-$(compath.py -o "${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}")}
-mkdir -p ${COMOUT}/ioda_bufr/${WGF}
+mkdir -p "${COMOUT}/ioda_bufr/${WGF}"
 #
 #----------------------------------------
 # Execute the script.
