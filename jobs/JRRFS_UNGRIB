@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]${id}: '
+declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
 date
 #
@@ -30,7 +30,7 @@ if [[ -z "${ENS_INDEX}" ]]; then
 else
   export MEMDIR="/mem${ENS_INDEX}"
 fi
-if [ ${TYPE} == "ic" ]; then
+if [[ "${TYPE}" == "ic" ]]; then
   export jobid=${jobid:-ungrib_${cyc}}
 else
   export jobid=${jobid:-ungrib_g${GROUP_INDEX}_${cyc}}
@@ -38,10 +38,10 @@ fi
 export UMBRELLA_UNGRIB_DATA=${UMBRELLA_UNGRIB_DATA:-${DATAROOT}/${RUN}_ungrib_${TYPE}_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
 export DATA=${DATA:-${UMBRELLA_UNGRIB_DATA}/${jobid}}
 
-if [ -d ${DATA} ]; then # remove the ${DATA} directory if existed
-  rm -rf ${DATA}
+if [[ -d "${DATA}" ]]; then # remove the ${DATA} directory if existed
+  rm -rf "${DATA}"
 fi
-mkdir -p ${DATA}
+mkdir -p "${DATA}"
 #
 #-----------------------------------------------------------------------
 # Set the parameters for the external model files.
@@ -49,9 +49,9 @@ mkdir -p ${DATA}
 #
 export EXTRN_MDL_SOURCE=${EXTRN_MDL_SOURCE:-"GFS"}
 if [[ "${EXTRN_MDL_SOURCE}" == "GFS_NCO" ]]; then
-  export COMINgfs=${COMINgfs:-$(compath.py $envir/gfs/$gfs_ver)}
+  export COMINgfs=${COMINgfs:-$(compath.py "$envir/gfs/$gfs_ver")}
 elif [[ "${EXTRN_MDL_SOURCE}" == "GEFS_NCO" ]]; then
-  export COMINgefs=${COMINgefs:-$(compath.py $envir/gefs/$gefs_ver)}
+  export COMINgefs=${COMINgefs:-$(compath.py "$envir/gefs/$gefs_ver")}
 else
   export SOURCE_BASEDIR=${SOURCE_BASEDIR:-"SOURCE_BASEDIR_not_defined"}
 fi
@@ -63,27 +63,26 @@ export INTERVAL=${INTERVAL:-1}
 # Define COM directories
 #-----------------------------------------------------------------------
 #
-COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-mkdir -p ${COMOUT}/ungrib_${TYPE}/${WGF}${MEMDIR}
+COMOUT=${COMOUT:-$(compath.py -o "${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}")}
+mkdir -p "${COMOUT}/ungrib_${TYPE}/${WGF}${MEMDIR}"
 #
 #----------------------------------------
 # Execute the script.
 #----------------------------------------
 #
 export pgmout="${DATA}/OUTPUT.$$"
-${HOMErrfs}/scripts/exrrfs_ungrib.sh
+"${HOMErrfs}"/scripts/exrrfs_ungrib.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then
-  cat $pgmout
+  cat "$pgmout"
 fi
 #
 #----------------------------------------
 # Remove the Temporary working directory
 #----------------------------------------
 #
-cd ${DATAROOT}
-[[ "${KEEPDATA}" == "NO" ]] && rm -rf ${DATA}
+[[ "${KEEPDATA}" == "NO" ]] && rm -rf "${DATA}"
 #
 date
 echo "JOB ${jobid:-} HAS COMPLETED NORMALLY!"
