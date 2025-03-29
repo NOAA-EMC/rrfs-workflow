@@ -49,9 +49,9 @@ mkdir -p "${DATA}"
 #
 export EXTRN_MDL_SOURCE=${EXTRN_MDL_SOURCE:-"GFS"}
 if [[ "${EXTRN_MDL_SOURCE}" == "GFS_NCO" ]]; then
-  export COMINgfs=${COMINgfs:-$(compath.py "$envir/gfs/$gfs_ver")}
+  export COMINgfs=${COMINgfs:-$(compath.py "${envir}/gfs/${gfs_ver}")}
 elif [[ "${EXTRN_MDL_SOURCE}" == "GEFS_NCO" ]]; then
-  export COMINgefs=${COMINgefs:-$(compath.py "$envir/gefs/$gefs_ver")}
+  export COMINgefs=${COMINgefs:-$(compath.py "${envir}/gefs/${gefs_ver}")}
 else
   export SOURCE_BASEDIR=${SOURCE_BASEDIR:-"SOURCE_BASEDIR_not_defined"}
 fi
@@ -74,8 +74,8 @@ export pgmout="${DATA}/OUTPUT.$$"
 "${HOMErrfs}"/scripts/exrrfs_ungrib.sh
 export err=$?; err_chk
 
-if [ -e "$pgmout" ]; then
-  cat "$pgmout"
+if [ -e "${pgmout}" ]; then
+  cat "${pgmout}"
 fi
 #
 #----------------------------------------

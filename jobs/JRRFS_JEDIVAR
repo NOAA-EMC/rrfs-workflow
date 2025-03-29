@@ -43,8 +43,8 @@ mkdir -p "${DATA}"
 # Define COM directories
 #-----------------------------------------------------------------------
 #
-#export COMINgfs=${COMINgfs:-$(compath.py $envir/gfs/$gfs_ver)}
-export COMINrrfs=${COMINrrfs:-$(compath.py "$envir/rrfs/$rrfs_ver")}
+#export COMINgfs=${COMINgfs:-$(compath.py ${envir}/gfs/${gfs_ver})}
+export COMINrrfs=${COMINrrfs:-$(compath.py "${envir}/rrfs/${rrfs_ver}")}
 export COMOUT=${COMOUT:-$(compath.py -o "${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}")}
 mkdir -p "${COMOUT}/jedivar/${WGF}"
 #
@@ -55,8 +55,8 @@ export pgmout="${DATA}/OUTPUT.$$"
 "${HOMErrfs}"/scripts/exrrfs_jedivar.sh
 export err=$?; err_chk
 
-if [ -e "$pgmout" ]; then
-  cat "$pgmout"
+if [ -e "${pgmout}" ]; then
+  cat "${pgmout}"
 fi
 #
 #----------------------------------------

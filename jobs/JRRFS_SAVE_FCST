@@ -37,7 +37,7 @@ mkdir -p "${DATA}"
 # Define COM directories
 #-----------------------------------------------------------------------
 #
-export COMINrrfs=${COMINrrfs:-$(compath.py "$envir/rrfs/$rrfs_ver")}
+export COMINrrfs=${COMINrrfs:-$(compath.py "${envir}/rrfs/${rrfs_ver}")}
 export COMOUT=${COMOUT:-$(compath.py -o "${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}")}
 if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
   mkdir -p "${COMOUT}/fcst_spinup/${WGF}${MEMDIR}"
@@ -52,8 +52,8 @@ export pgmout="${DATA}/OUTPUT.$$"
 "${HOMErrfs}"/scripts/exrrfs_save_fcst.sh
 export err=$?; err_chk
 
-if [ -e "$pgmout" ]; then
-  cat "$pgmout"
+if [ -e "${pgmout}" ]; then
+  cat "${pgmout}"
 fi
 #
 date
