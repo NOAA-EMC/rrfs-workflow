@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 #
+# shellcheck disable=SC1091
 run_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 agent_dir="${run_dir}/../../fix/.agent"
-source ${run_dir}/detect_machine.sh 
+source "${run_dir}/detect_machine.sh"
 
 case ${MACHINE} in
   wcoss2)
@@ -31,12 +32,12 @@ case ${MACHINE} in
     echo "platform not supported: ${MACHINE}"
     ;;
 esac
-mkdir -p ${run_dir}/../../fix
+mkdir -p "${run_dir}/../../fix"
 
-filetype=$(file $agent_dir)
-if [[ ! "$filetype" == *"symbolic link"* ]]; then
-  rm -rf ${agent_dir}
+filetype=$(file "${agent_dir}")
+if [[ ! "${filetype}" == *"symbolic link"* ]]; then
+  rm -rf "${agent_dir}"
 fi
-ln -snf ${FIX_RRFS_LOCATION} ${agent_dir}
+ln -snf "${FIX_RRFS_LOCATION}"  "${agent_dir}"
 
-touch ${run_dir}/../../fix/INIT_DONE
+touch "${run_dir}/../../fix/INIT_DONE"
