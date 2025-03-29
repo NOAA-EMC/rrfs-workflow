@@ -4,7 +4,6 @@ import numpy as np
 from timeit import default_timer as timer
 import argparse
 import warnings
-import os
 
 """
 This program makes a copy of an original IODA file and can add/modify additional
@@ -51,9 +50,9 @@ obs_lon = np.where(obs_lon < 0, obs_lon + 360, obs_lon)
 obs_prs = obs_ds.groups['MetaData'].variables['pressure'][:]
 
 # Create a new NetCDF file to store the selected data using the more efficient method
-try:
+if '.nc' in obs_filename:
     outfile = obs_filename.replace('.nc', '_llp.nc')
-except:
+else:
     outfile = obs_filename.replace('.nc4', '_llp.nc4')
 fout = nc.Dataset(outfile, 'w')
 
@@ -82,7 +81,7 @@ for group in groups:
             vartype = invar.dtype
             fill = invar.getncattr('_FillValue')
             g.createVariable(var, vartype, 'Location', fill_value=fill)
-        except:  # String variables
+        except (AttributeError, KeyError):  # String variables
             g.createVariable(var, 'str', 'Location')
         #
         if qc_group and vartype == "int32":
