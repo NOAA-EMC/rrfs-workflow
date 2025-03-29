@@ -35,4 +35,4 @@ case ${MACHINE} in
     exit 1
     ;;
 esac
-"${EXEC_DIR}/autopen8" "$@"
+"${EXEC_DIR}/autopep8" "$@"
