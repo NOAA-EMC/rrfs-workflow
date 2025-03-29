@@ -46,7 +46,7 @@ def process_file(input_file, output_file):
 
 # main -----------------------------------------------
 args = sys.argv
-nargs = len(args)-1
+nargs = len(args) - 1
 if nargs < 2:
     print(f"{args[0]} <file1> <file2>")
     exit()

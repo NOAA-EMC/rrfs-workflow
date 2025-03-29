@@ -32,5 +32,5 @@ for filename in files:
         shutil.copy(filename, f'{filename}_WHITESPACE')
         with open(f'{filename}_WHITESPACE', 'r', encoding='utf-8') as infile, open(filename, 'w', encoding='utf-8') as outfile:
             for line in infile:
-                outfile.write(line.rstrip()+'\n')
+                outfile.write(line.rstrip() + '\n')
         print(f'done, original files saved as {filename}_WHITESPACE')

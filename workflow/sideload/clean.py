@@ -72,7 +72,7 @@ def group_clean(cdate, clean_hrs, srcBase, srcType, NET, RUN, WGF, rrfs_ver):
         srcBase = os.path.dirname(srcBase)
     #
     for i in reversed(range(clean_back_days)):
-        bdate = pdate - timedelta(days=i+1)  # go back to bdate
+        bdate = pdate - timedelta(days=i + 1)  # go back to bdate
         bPDY = bdate.strftime("%Y%m%d")
         if srcType == "stmp":
             srcPath = f"{srcBase}/{bPDY}"

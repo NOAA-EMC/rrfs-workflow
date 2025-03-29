@@ -97,7 +97,7 @@ with open(EXPin, 'r') as infile, open(EXPout, 'w') as outfile:
     for line in infile:
         if still_header:
             if line.strip().startswith('#'):
-                header = header+line
+                header = header + line
             else:
                 still_header = False
                 outfile.write(header)
