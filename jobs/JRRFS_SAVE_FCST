@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]${id}: '
+declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
 date
 #
@@ -28,32 +28,32 @@ export jobid=${jobid:-save_fcst_${cyc}}
 export UMBRELLA_SAVE_FCST_DATA=${UMBRELLA_SAVE_FCST_DATA:-${DATAROOT}/${RUN}_save_fcst_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
 export DATA=${DATA:-${UMBRELLA_SAVE_FCST_DATA}/${jobid}}
 
-if [ -d ${DATA} ]; then # remove the ${DATA} directory if existed
-  rm -rf ${DATA}
+if [[ -d "${DATA}" ]]; then # remove the ${DATA} directory if existed
+  rm -rf "${DATA}"
 fi
-mkdir -p ${DATA}
+mkdir -p "${DATA}"
 #
 #-----------------------------------------------------------------------
 # Define COM directories
 #-----------------------------------------------------------------------
 #
-export COMINrrfs=${COMINrrfs:-$(compath.py $envir/rrfs/$rrfs_ver)}
-export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
+export COMINrrfs=${COMINrrfs:-$(compath.py "${envir}/rrfs/${rrfs_ver}")}
+export COMOUT=${COMOUT:-$(compath.py -o "${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}")}
 if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
-  mkdir -p ${COMOUT}/fcst_spinup/${WGF}${MEMDIR}
+  mkdir -p "${COMOUT}/fcst_spinup/${WGF}${MEMDIR}"
 else
-  mkdir -p ${COMOUT}/fcst/${WGF}${MEMDIR}
+  mkdir -p "${COMOUT}/fcst/${WGF}${MEMDIR}"
 fi
 #
 #----------------------------------------
 # Execute the script.
 #----------------------------------------
 export pgmout="${DATA}/OUTPUT.$$"
-${HOMErrfs}/scripts/exrrfs_save_fcst.sh
+"${HOMErrfs}"/scripts/exrrfs_save_fcst.sh
 export err=$?; err_chk
 
-if [ -e "$pgmout" ]; then
-  cat $pgmout
+if [[ -e "${pgmout}" ]]; then
+  cat "${pgmout}"
 fi
 #
 date
