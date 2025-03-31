@@ -15,6 +15,7 @@ cd "${HOMErrfs}/sorc/RDASApp" || exit 1
 cp ../_workaround_/MPAS-Model/Registry.xml sorc/mpas/src/core_atmosphere
 cp ../_workaround_/CMakeLists.txt sorc/ufo/src/ufo
 cp -r ../_workaround_/sfccorrected sorc/ufo/src/ufo/operators
+cp ../_workaround/RDASApp/ObsErrorFactorPressureCheck.cc sorc/ufo/src/ufo/filters/obsfunctions/ObsErrorFactorPressureCheck.cc
 if [[ "${MACHINE}" == "gaea" ]]; then
   cp ../_workaround_/RDASApp/TimeoffsetVariable.cpp sorc/iodaconv/src/bufr/BufrParser/Exports/Variables
 fi
