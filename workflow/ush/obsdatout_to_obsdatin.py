@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys
 
+
 def process_file(input_file, output_file):
     buffer_zone = []
     in_buffer_zone = False
@@ -17,11 +18,11 @@ def process_file(input_file, output_file):
             elif in_buffer_zone:
                 buffer_zone.append(line)
                 if "obsdataout" in line:
-                    obsdatout=True
+                    obsdatout = True
                 elif "obsfile" in line:
-                  if obsdatout:
-                    line = line.replace("jdiag", "data/jdiag/jdiag")
-                    obsfile_line = line  # Store the obsdatout "obsfile" line
+                    if obsdatout:
+                        line = line.replace("jdiag", "data/jdiag/jdiag")
+                        obsfile_line = line  # Store the obsdatout "obsfile" line
 
             if obsfile_line and in_buffer_zone:
                 # Replace the previous obsfile line with the new one
@@ -38,15 +39,16 @@ def process_file(input_file, output_file):
                 obsfile_line = None
                 obsdatout = False
                 continue
-            
+
             if not in_buffer_zone:
                 outfile.write(line)
 
+
 # main -----------------------------------------------
-args=sys.argv
-nargs=len(args)-1
-if nargs <2:
-  print(f"{args[0]} <file1> <file2>")
-  exit()
+args = sys.argv
+nargs = len(args) - 1
+if nargs < 2:
+    print(f"{args[0]} <file1> <file2>")
+    exit()
 #
 process_file(args[1], args[2])

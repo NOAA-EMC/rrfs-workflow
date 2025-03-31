@@ -1,31 +1,47 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC1091
 set -x
 date
 rundir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 HOMErrfs="$(dirname "$rundir")"
 
-source ${HOMErrfs}/workflow/ush/detect_machine.sh
-source ${HOMErrfs}/workflow/ush/init.sh
+source "${HOMErrfs}/workflow/ush/detect_machine.sh"
+source "${HOMErrfs}/workflow/ush/init.sh"
 
 EXEC="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_variational.x"
 EXEC2="${HOMErrfs}/sorc/RDASApp/build/bin/bufr2ioda.x"
 EXEC3="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_enkf.x"
-cd ${HOMErrfs}/sorc/RDASApp
-cp ../_workaround_/CMakeLists.txt sorc/ufo/src/ufo
-cp -r ../_workaround_/sfccorrected sorc/ufo/src/ufo/operators
+cd "${HOMErrfs}/sorc/RDASApp" || exit 1
+
+# workaround for using a new Registry.xml
+# https://github.com/NOAA-GSL/MPAS-Model/pull/115 by Guoqing
+cp ../_workaround_/MPAS-Model/Registry.xml sorc/mpas/src/core_atmosphere
+
+# workaround for using the GSL surface operator
+# https://github.com/JCSDA-internal/ufo/pull/3622 by Sijie
+cp ../_workaround_/RDASApp/CMakeLists.txt sorc/ufo/src/ufo
+cp -r ../_workaround_/RDASApp/sfccorrected sorc/ufo/src/ufo/operators
+
+# workaround for using ObsErrorFactorPressureCheck for MPASJEDI, which neeeds qsat
+# https://github.com/JCSDA-internal/ufo/pull/3645 by Hui Liu
+cp ../_workaround_/RDASApp/ObsErrorFactorPressureCheck.cc sorc/ufo/src/ufo/filters/obsfunctions/ObsErrorFactorPressureCheck.cc
+
+# workaround for compiling iodaconverter on Gaea
+# Junjun is working on a PR
 if [[ "${MACHINE}" == "gaea" ]]; then
   cp ../_workaround_/RDASApp/TimeoffsetVariable.cpp sorc/iodaconv/src/bufr/BufrParser/Exports/Variables
 fi
+
 rm -rf build/
 ./build.sh -m MPAS
 
-mkdir -p ${HOMErrfs}/exec
+mkdir -p "${HOMErrfs}/exec"
 echo "copy ${EXEC} to ../exec/mpasjedi_variational.x"
-cp ${EXEC} ${HOMErrfs}/exec/mpasjedi_variational.x
+cp "${EXEC}" "${HOMErrfs}/exec/mpasjedi_variational.x"
 
 echo "copy ${EXEC2} to ../exec/bufr2ioda.x"
-cp ${EXEC2} ${HOMErrfs}/exec/bufr2ioda.x
+cp "${EXEC2}" "${HOMErrfs}/exec/bufr2ioda.x"
 
 echo "copy ${EXEC3} to ../exec/mpasjedi_enkf.x"
-cp ${EXEC3} ${HOMErrfs}/exec/mpasjedi_enkf.x
+cp "${EXEC3}" "${HOMErrfs}/exec/mpasjedi_enkf.x"
 exit 0

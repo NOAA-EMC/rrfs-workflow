@@ -2,7 +2,7 @@
 rundir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 HOMErrfs="$(dirname "$rundir")"
 
-cd ${HOMErrfs}/sorc
+cd "${HOMErrfs}/sorc" || exit 1
 
 echo "building all components, it may take more than one hour..."
 ./build.wps  &> ./log.build.wps  2>&1 &
@@ -11,7 +11,7 @@ echo "building all components, it may take more than one hour..."
 ./build.upp  &> ./log.build.upp  2>&1 &
 ./build.mpassit  &> ./log.build.mpassit  2>&1 &
 wait
-nEXEC=$(ls -1 ../exec | wc -l)
+nEXEC=$(find ../exec/* | wc -l)
 echo "check the exec/ directory ==== a total of ${nEXEC} executables"
 ls -lrth ../exec
 echo "check the build logs ===="

@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 run_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-cd "${run_dir}" || exit
 # shellcheck disable=SC1091
-source detect_machine.sh
+source "${run_dir}/detect_machine.sh"
 
 case ${MACHINE} in
   wcoss2)
@@ -36,13 +35,4 @@ case ${MACHINE} in
     exit 1
     ;;
 esac
-
-rm -rf "${run_dir}/output.linter_shellcheck"
-#shellcheck disable=SC2046
-find $(paste -s -d ' ' shellcheck_include_dirs.txt) -maxdepth 1 -type f \
-  -not -name "shellcheck_include_dirs.txt" -not -name "obs_type_all" \
-  -not -name "output.linter_shellcheck" -not -name "obsdatout_to_obsdatin.py" \
-  -print0 | xargs -0 ${EXEC_DIR}/shellcheck --color=always >> output.linter_shellcheck
-
-echo -e "Use the following command to check the colorful shellcheck results:\n"
-echo "less -R ${run_dir}/output.linter_shellcheck"
+"${EXEC_DIR}/autopep8" --max-line-length 300 --in-place --recursive "$@"

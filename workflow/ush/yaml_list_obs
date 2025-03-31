@@ -1,0 +1,66 @@
+#!/usr/bin/env python
+#
+import yaml
+import sys
+
+args = sys.argv
+nargs = len(args) - 1
+if nargs < 1:
+    print(f"jquery <yamlfile_name>")
+    exit()
+
+yfile = open(args[1], 'r')
+data = yaml.safe_load(yfile)
+
+# summarize the assimilated observation types
+if "cost function" in data:
+    obslist = data['cost function']['observations']['observers']
+else:
+    obslist = data['observations']['observers']
+nobs = len(obslist)
+obs_text = ''
+filter_text = ''
+for i in range(nobs):
+    lname = obslist[i]['obs space']['name']
+    sname = lname.split('=')[0]
+    obs_text = obs_text + sname + ','
+    #
+    # get the observations headers (excluding the filters) and dump
+    observer = {
+        'obs space': obslist[i]['obs space'],
+        'obs operator': obslist[i]['obs operator'],
+    }
+    if 'obs localizations' in obslist[i]:
+        observer['obs localizations'] = obslist[i]['obs localizations']
+    if 'obs error' in obslist[i]:  # radiance data does not have the 'obs error' section
+        observer['obs error'] = obslist[i]['obs error']
+    # dealing with filters
+    filter_knt = 0
+    if 'obs pre filters' in obslist[i]:
+        for j, value in enumerate(obslist[i]['obs pre filters']):
+            myfilter = value['filter']
+            if myfilter == 'Perform Action':
+                myfilter = value['action']['name']
+            filter_knt += 1
+            myfilter = myfilter.replace(' ', '_')
+    #
+    if 'obs filters' in obslist[i]:
+        for j, value in enumerate(obslist[i]['obs filters']):
+            myfilter = value['filter']
+            if myfilter == 'Perform Action':
+                myfilter = value['action']['name']
+            filter_knt += 1
+            myfilter = myfilter.replace(' ', '_')
+    #
+    if 'obs post filters' in obslist[i]:
+        for j, value in enumerate(obslist[i]['obs post filters']):
+            myfilter = value['filter']
+            if myfilter == 'Perform Action':
+                myfilter = value['action']['name']
+            filter_knt += 1
+            myfilter = myfilter.replace(' ', '_')
+    #
+    filter_text += f'{lname.ljust(35)}: {filter_knt} filters\n'
+#
+obs_text = f'{nobs} observers:\n{obs_text.rstrip(",")}'
+print(f'{obs_text}\n\n{filter_text}\n')

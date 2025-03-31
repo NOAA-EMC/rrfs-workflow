@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC1090,1091
 set -x
 date
 rundir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 HOMErrfs="$(dirname "$rundir")"
 
-source ${HOMErrfs}/workflow/ush/detect_machine.sh
-source ${HOMErrfs}/workflow/ush/init.sh
+source "${HOMErrfs}/workflow/ush/detect_machine.sh"
+source "${HOMErrfs}/workflow/ush/init.sh"
 
 EXEC="${HOMErrfs}/sorc/MPAS-Model/init_atmosphere_model"
 EXEC2="${HOMErrfs}/sorc/MPAS-Model/atmosphere_model"
@@ -13,28 +14,28 @@ EXEC2="${HOMErrfs}/sorc/MPAS-Model/atmosphere_model"
 compiler_str="intel-mpi"
 if [[ "${MACHINE}" == "wcoss2" ]]; then
   BUILD_VERSION_FILE="${HOMErrfs}/versions/build.ver"
-  if [ -f ${BUILD_VERSION_FILE} ]; then
-    source ${BUILD_VERSION_FILE}
+  if [[ -f "${BUILD_VERSION_FILE}" ]]; then
+    source "${BUILD_VERSION_FILE}"
   fi
 elif [[ "${MACHINE}" == "gaea" ]]; then
   compiler_str="ifort"
 fi
 
 module purge                      
-module use ${HOMErrfs}/modulefiles
-module load rrfs/${MACHINE}.intel
+module use "${HOMErrfs}/modulefiles"
+module load "rrfs/${MACHINE}.intel"
 module list
 
-cd ${HOMErrfs}/sorc/MPAS-Model
-cp ../_workaround_/Registry.xml src/core_atmosphere/Registry.xml
+cd "${HOMErrfs}/sorc/MPAS-Model" || exit 1
+cp ../_workaround_/MPAS-Model/Registry.xml src/core_atmosphere
 make clean CORE=init_atmosphere
-make -j8 ${compiler_str} CORE=init_atmosphere PRECISION=single
+make -j8 "${compiler_str}" CORE=init_atmosphere PRECISION=single
 make clean CORE=atmosphere
-make -j8 ${compiler_str} CORE=atmosphere PRECISION=single
+make -j8 "${compiler_str}" CORE=atmosphere PRECISION=single
 
-mkdir -p ${HOMErrfs}/exec
+mkdir -p "${HOMErrfs}/exec"
 echo "copy ${EXEC} to ../exec/init_atmosphere_model.x"
-cp ${EXEC} ${HOMErrfs}/exec/init_atmosphere_model.x
+cp "${EXEC}"  "${HOMErrfs}/exec/init_atmosphere_model.x"
 echo "copy ${EXEC2} to ../exec/atmosphere_model.x"
-cp ${EXEC2} ${HOMErrfs}/exec/atmosphere_model.x
+cp "${EXEC2}"  "${HOMErrfs}/exec/atmosphere_model.x"
 exit 0
