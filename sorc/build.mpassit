@@ -4,6 +4,7 @@ date
 rundir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 HOMErrfs="$(dirname "$rundir")"
 
+module purge
 source ${HOMErrfs}/workflow/ush/detect_machine.sh
 source ${HOMErrfs}/workflow/ush/init.sh
 
