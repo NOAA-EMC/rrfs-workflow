@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]${id}: '
+declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
 date
 #
@@ -28,37 +28,36 @@ export jobid=${jobid:-ic_${cyc}}
 export UMBRELLA_IC_DATA=${UMBRELLA_IC_DATA:-${DATAROOT}/${RUN}_ic_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
 export DATA=${DATA:-${UMBRELLA_IC_DATA}/${jobid}}
 
-if [ -d ${DATA} ]; then # remove the ${DATA} directory if existed
-  rm -rf ${DATA}
+if [[ -d "${DATA}" ]]; then # remove the ${DATA} directory if existed
+  rm -rf "${DATA}"
 fi
-mkdir -p ${DATA}
+mkdir -p "${DATA}"
 #
 #-----------------------------------------------------------------------
 # Define COM directories
 #-----------------------------------------------------------------------
 #
-export COMINrrfs=${COMINrrfs:-$(compath.py $envir/rrfs/$rrfs_ver)}
-export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-mkdir -p ${COMOUT}/ic/${WGF}${MEMDIR}
+export COMINrrfs=${COMINrrfs:-$(compath.py "${envir}/rrfs/${rrfs_ver}")}
+export COMOUT=${COMOUT:-$(compath.py -o "${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}")}
+mkdir -p "${COMOUT}/ic/${WGF}${MEMDIR}"
 #
 #----------------------------------------
 # Execute the script.
 #----------------------------------------
 #
 export pgmout="${DATA}/OUTPUT.$$"
-${HOMErrfs}/scripts/exrrfs_ic.sh
+"${HOMErrfs}"/scripts/exrrfs_ic.sh
 export err=$?; err_chk
 
-if [ -e "$pgmout" ]; then
-  cat $pgmout
+if [[ -e "${pgmout}" ]]; then
+  cat "${pgmout}"
 fi
 #
 #----------------------------------------
 # Remove the Temporary working directory
 #----------------------------------------
 #
-cd ${DATAROOT}
-[[ "${KEEPDATA}" == "NO" ]] && rm -rf ${DATA}
+[[ "${KEEPDATA}" == "NO" ]] && rm -rf "${DATA}"
 #
 date
 echo "JOB ${jobid:-} HAS COMPLETED NORMALLY!"
