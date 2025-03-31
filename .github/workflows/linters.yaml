@@ -41,15 +41,15 @@ jobs:
       - name: Run Flake8 on all Python files
         run: flake8 ush workflow
 
-# yaml-lint:
-#   name: YAML Linting
-#   runs-on: ubuntu-latest
-#   steps:
-#     - name: Checkout code
-#       uses: actions/checkout@v4
+  yaml-lint:
+    name: YAML Linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-#     - name: Install Yamllint
-#       run: pip install yamllint
+      - name: Install Yamllint
+        run: pip install yamllint
 
-#     - name: Run Yamllint on all YAML files
-#       run: yamllint .
+      - name: Run Yamllint on all YAML files
+        run: yamllint parm/*.yaml

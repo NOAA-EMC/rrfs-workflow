@@ -117,8 +117,8 @@ if dcSatInfo:  # if non empty
 # ~~~~~~~~~~~~~
 # assemble a final conventional obs use list
 conv_list = []
-for key, value in dcConvInfo.items():
-    if value['iuse'] != "0":
+for key,value in dcConvInfo.items():
+    if value['iuse'] == "1":
         conv_list.append(key)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
