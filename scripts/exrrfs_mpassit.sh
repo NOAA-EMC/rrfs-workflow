@@ -29,22 +29,6 @@ elif [[ "${MESH_NAME}" == "conus3km" ]]; then
   ref_lat=38.5
 fi
 #
-# find init.nc
-#
-n=0
-while [[ $n -le 12 ]]; do
-  CDATEic=$($NDATE -$((10#${n})) "${CDATE}")
-  PDYic=${CDATEic:0:8}
-  HHic=${CDATEic:8:2}
-  checkfile=${COMINrrfs}/${RUN}.${PDYic}/${HHic}/ic/${WGF}${MEMDIR}/init.nc
-  if [[ -s "${checkfile}" ]]; then
-     ln -sf "${checkfile}" .
-     break
-  else
-     n=$((n + 1))
-  fi
-done
-#
 # find forecst length for this cycle
 #
 fcst_length=${FCST_LENGTH:-1}
