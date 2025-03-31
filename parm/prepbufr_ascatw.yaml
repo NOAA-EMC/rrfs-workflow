@@ -2,14 +2,16 @@
 #
 # This software is licensed under the terms of the Apache Licence Version 2.0
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+
 observations:
   - obs space:
       name: bufr
       obsdatain: "./prepbufr"
+
       exports:
         #group_by_variable: prepbufrDataLvlCat
         subsets:
-          - ASCATW # ASCAT SCATTEROMETER DATA (REPROCESSED, SAID)
+          - ASCATW    # ASCAT SCATTEROMETER DATA (REPROCESSED, SAID)
         variables:
           # MetaData
           timestamp:
@@ -39,6 +41,7 @@ observations:
             query: "*/CAT"
           satelliteID:
             query: "*/SAID"
+
           pressure:
             query: "*/P___INFO/P__EVENT{1}/POB"
             transforms:
@@ -53,6 +56,7 @@ observations:
             query: "*/P___INFO/P__POSTP/POETU"
             transforms:
               - scale: 100
+
           windEastward:
             query: "*/W___INFO/W__EVENT{1}/UOB"
           windNorthward:
@@ -65,119 +69,144 @@ observations:
             query: "*/W___INFO/W__POSTP/WOETU"
             transform:
               - scale: 0.514444
+
     ioda:
       backend: netcdf
       obsdataout: "./ioda_ascatw.nc"
+
       dimensions:
         - name: pevent_Dim
           path: "*/P___INFO/P__EVENT"
         - name: wevent_Dim
           path: "*/W___INFO/W__EVENT"
+
+
       variables:
+
         # MetaData
         - name: "MetaData/dateTime"
           coordinates: "longitude latitude"
           source: variables/timestamp
           longName: "Observation Time"
           units: "seconds since 1970-01-01T00:00:00Z"
+
         - name: "MetaData/timeOffset"
           coordinates: "longitude latitude"
           source: variables/timeOffset
           longName: "Observation Time Minus Reference Time"
           units: "s"
+
         - name: "MetaData/stationIdentification"
           coordinates: "longitude latitude"
           source: variables/stationIdentification
           longName: "Station ID"
           units: ""
+
         - name: "MetaData/satelliteIdentification"
           coordinates: "longitude latitude"
           source: variables/satelliteID
           longName: "Satellite Identification"
           units: ""
+
         - name: "MetaData/longitude"
           coordinates: "longitude latitude"
           source: variables/longitude
           longName: "Longitude"
           units: "degree_east"
           range: [0, 360]
+
         - name: "MetaData/latitude"
           coordinates: "longitude latitude"
           source: variables/latitude
           longName: "Latitude"
           units: "degree_north"
           range: [-90, 90]
+
         - name: "MetaData/stationElevation"
           coordinates: "longitude latitude"
           source: variables/stationElevation
           longName: "Elevation of Station"
           units: "m"
+
         - name: "MetaData/prepbufrReportType"
           coordinates: "longitude latitude"
           source: variables/prepbufrReportType
           longName: "Prepbufr Report Type"
           units: ""
+
         - name: "MetaData/dumpReportType"
           coordinates: "longitude latitude"
           source: variables/dumpReportType
           longName: "Data Dump Report Type"
           units: ""
+
         - name: "MetaData/prepbufrDataLvlCat"
           coordinates: "longitude latitude"
           source: variables/prepbufrDataLvlCat
           longName: "Prepbufr Data Level Category"
           units: ""
+
         - name: "MetaData/pressure"
           coordinates: "longitude latitude"
           source: variables/pressure
           longName: "Pressure"
           units: "Pa"
+
         # ObsType
         - name: "ObsType/windEastward"
           coordinates: "longitude latitude"
           source: variables/prepbufrReportType
           longName: "windEastward Report Type"
           units: ""
+
         - name: "ObsType/windNorthward"
           coordinates: "longitude latitude"
           source: variables/prepbufrReportType
           longName: "windNorthward Report Type"
           units: ""
+
         # ObsValue
         - name: "ObsValue/windEastward"
           coordinates: "longitude latitude"
           source: variables/windEastward
           longName: "Eastward Wind"
           units: "m s-1"
+
         - name: "ObsValue/windNorthward"
           coordinates: "longitude latitude"
           source: variables/windNorthward
           longName: "Northward Wind"
           units: "m s-1"
+
         # Quality Marker
         - name: "QualityMarker/pressure"
           coordinates: "longitude latitude"
           source: variables/pressureQualityMarker
           longName: "Pressure Quality Marker"
+
         - name: "QualityMarker/windEastward"
           coordinates: "longitude latitude"
           source: variables/windQualityMarker
           longName: "windEastward Quality Marker"
+
         - name: "QualityMarker/windNorthward"
           coordinates: "longitude latitude"
           source: variables/windQualityMarker
           longName: "windNorthward Quality Marker"
+
         # ObsError
         - name: "ObsError/pressure"
           coordinates: "longitude latitude"
           source: variables/pressureError
           longName: "Pressure Observation Error"
           units: "Pa"
+
         - name: "ObsError/windEastward"
           coordinates: "longitude latitude"
           source: variables/windError
           longName: "Eastward wind error"
           units: "m s-1"
+
         - name: "ObsError/windNorthward"
           coordinates: "longitude latitude"
           source: variables/windError

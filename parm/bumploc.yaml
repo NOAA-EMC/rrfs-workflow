@@ -7,16 +7,19 @@ geometry:
   deallocate non-da fields: true
   bump vunit: "modellevel" # modellevel, height
 background:
-  state variables: &vars [spechum, surface_pressure, temperature, uReconstructMeridional, uReconstructZonal]
+  state variables: &vars [spechum,surface_pressure,temperature,uReconstructMeridional,uReconstructZonal]
   filename: "./data/restart.2024-05-27_00.00.00.nc"
   date: *validDate
+
 background error:
   covariance model: SABER
+
   saber central block:
     saber block name: BUMP_NICAS
     calibration:
       io:
         files prefix: bumploc_401km11levels
+
       drivers:
         multivariate strategy: duplicated
         compute nicas: true
@@ -34,3 +37,4 @@ background error:
         vertical length-scale:
           - groups: [common]
             value: 11
+
