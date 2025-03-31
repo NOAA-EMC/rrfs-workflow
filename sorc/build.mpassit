@@ -1,23 +1,24 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC1091
 set -x
 date
 rundir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 HOMErrfs="$(dirname "$rundir")"
 
 module purge
-source ${HOMErrfs}/workflow/ush/detect_machine.sh
-source ${HOMErrfs}/workflow/ush/init.sh
+source "${HOMErrfs}/workflow/ush/detect_machine.sh"
+source "${HOMErrfs}/workflow/ush/init.sh"
 
 EXEC="${HOMErrfs}/sorc/MPASSIT/bin/mpassit"
 
-rm -rf ${HOMErrfs}/sorc/MPASSIT/build
-rm -rf ${HOMErrfs}/sorc/MPASSIT/bin
+rm -rf "${HOMErrfs}/sorc/MPASSIT/build"
+rm -rf "${HOMErrfs}/sorc/MPASSIT/bin"
 
-cd ${HOMErrfs}/sorc/MPASSIT
+cd "${HOMErrfs}/sorc/MPASSIT" || exit 1
 ./build.sh
 
-mkdir -p ${HOMErrfs}/exec
+mkdir -p "${HOMErrfs}/exec"
 echo "copy ${EXEC} to ../exec/mpassit.x"
-cp ${EXEC} ${HOMErrfs}/exec/mpassit.x
+cp "${EXEC}" "${HOMErrfs}/exec/mpassit.x"
 
 exit 0
