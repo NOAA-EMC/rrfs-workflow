@@ -62,5 +62,5 @@ export QUEUE_CLEAN=${QUEUE2:-$QUEUE}
 export PARTITION_CLEAN=${PARTITION2:-$PATITION}
 export RESERVATION_CLEAN=""
 export NODES_CLEAN="<cores>1</cores>"
-# dummy
-export NODES_DUMMY="<cores>1</cores>"
+# misc
+export NODES_MISC="<cores>1</cores>"

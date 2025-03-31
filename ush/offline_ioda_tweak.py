@@ -4,7 +4,6 @@ import numpy as np
 from timeit import default_timer as timer
 import argparse
 import warnings
-import os
 
 """
 This program makes a copy of an original IODA file and can add/modify additional
@@ -18,16 +17,20 @@ but others can be added as necessary.
 warnings.filterwarnings('ignore')
 
 # Functions for calculating run times.
+
+
 def tic():
     return timer()
 
+
 def toc(tic=tic, label=""):
     toc = timer()
-    elapsed = toc-tic
+    elapsed = toc - tic
     hrs = int(elapsed // 3600)
     mins = int((elapsed % 3600) // 60)
     secs = int(elapsed % 3600 % 60)
     print(f"{label}({elapsed:.2f}s), {hrs:02}:{mins:02}:{secs:02}")
+
 
 tic1 = tic()
 
@@ -47,9 +50,9 @@ obs_lon = np.where(obs_lon < 0, obs_lon + 360, obs_lon)
 obs_prs = obs_ds.groups['MetaData'].variables['pressure'][:]
 
 # Create a new NetCDF file to store the selected data using the more efficient method
-try:
+if '.nc' in obs_filename:
     outfile = obs_filename.replace('.nc', '_llp.nc')
-except:
+else:
     outfile = obs_filename.replace('.nc4', '_llp.nc4')
 fout = nc.Dataset(outfile, 'w')
 
@@ -68,9 +71,9 @@ for attr in obs_ds.ncattrs():  # Attributes for the main file
 groups = obs_ds.groups
 for group in groups:
     if group == "QualityMarker":
-      qc_group = True
+        qc_group = True
     else:
-      qc_group = False
+        qc_group = False
     g = fout.createGroup(group)
     for var in obs_ds.groups[group].variables:
         invar = obs_ds.groups[group].variables[var]
@@ -78,21 +81,22 @@ for group in groups:
             vartype = invar.dtype
             fill = invar.getncattr('_FillValue')
             g.createVariable(var, vartype, 'Location', fill_value=fill)
-        except:  # String variables
+        except (AttributeError, KeyError):  # String variables
             g.createVariable(var, 'str', 'Location')
         #
-        if qc_group and vartype == "int32" :
-          np_invar = np.array(invar)
-          np_invar[(np_invar < 0) | (np_invar > 15)] = 15
-          g.variables[var][:] = np_invar.astype(invar.dtype)
+        if qc_group and vartype == "int32":
+            np_invar = np.array(invar)
+            np_invar[(np_invar < 0) | (np_invar > 15)] = 15
+            g.variables[var][:] = np_invar.astype(invar.dtype)
         else:
-          if var in ['latitude', 'longitude']:
-            g.variables[var][:] = invar[:][:].data
-          else:
-            g.variables[var][:] = invar[:][:]
+            if var in ['latitude', 'longitude']:
+                g.variables[var][:] = invar[:][:].data
+            else:
+                g.variables[var][:] = invar[:][:]
         # Copy attributes for this variable
         for attr in invar.ncattrs():
-            if '_FillValue' in attr: continue
+            if '_FillValue' in attr:
+                continue
             g.variables[var].setncattr(attr, invar.getncattr(attr))
 
 # Generate longitude_latitude_pressure location strings (for dup checking)
@@ -109,4 +113,4 @@ metadata_group.variables[f"{var}"][:] = data
 # Close the datasets
 obs_ds.close()
 fout.close()
-toc(tic1,label="Time to create new obs file: ")
+toc(tic1, label="Time to create new obs file: ")

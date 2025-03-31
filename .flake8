@@ -1,0 +1,16 @@
+[flake8]
+ignore = F541, E501
+exclude =
+    .ipynb_checkpoints,
+    .git,
+    .vscode,
+    .env,
+    venv,
+    __pycache__,
+    *.pyc,
+    build,
+    dist,
+    *.egg-info,
+    **/tests/*,  # Exclude all `tests` directories at any depth
+    *.pyo,  # Python optimized files
+    docs/*  # Exclude any docs folder
