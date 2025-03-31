@@ -2,3 +2,6 @@ extends: default
 
 rules:
   document-start: disable
+  comments: disable
+  line-length:
+    max: 50000
