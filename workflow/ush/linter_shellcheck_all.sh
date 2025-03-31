@@ -37,6 +37,7 @@ case ${MACHINE} in
     ;;
 esac
 
+rm -rf "${run_dir}/output.linter_shellcheck"
 #shellcheck disable=SC2046
 find $(paste -s -d ' ' shellcheck_include_dirs.txt) -maxdepth 1 -type f \
   -not -name "shellcheck_include_dirs.txt" -not -name "obs_type_all" \
