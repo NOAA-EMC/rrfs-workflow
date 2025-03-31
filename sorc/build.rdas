@@ -24,7 +24,7 @@ cp -r ../_workaround_/RDASApp/sfccorrected sorc/ufo/src/ufo/operators
 
 # workaround for using ObsErrorFactorPressureCheck for MPASJEDI, which neeeds qsat
 # https://github.com/JCSDA-internal/ufo/pull/3645 by Hui Liu
-cp ../_workaround/RDASApp/ObsErrorFactorPressureCheck.cc sorc/ufo/src/ufo/filters/obsfunctions/ObsErrorFactorPressureCheck.cc
+cp ../_workaround_/RDASApp/ObsErrorFactorPressureCheck.cc sorc/ufo/src/ufo/filters/obsfunctions/ObsErrorFactorPressureCheck.cc
 
 # workaround for compiling iodaconverter on Gaea
 # Junjun is working on a PR
