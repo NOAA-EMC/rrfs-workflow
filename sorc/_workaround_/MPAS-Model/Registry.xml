@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
+<registry model="mpas" core="atmosphere" core_abbrev="atm" version="8.2.2-2.11">
 
-<registry model="mpas" core="atmosphere" core_abbrev="atm" version="8.2.2-2.6">
 
 <!-- **************************************************************************************** -->
 <!-- ************************************** Dimensions ************************************** -->
@@ -1027,6 +1027,7 @@
 			<var name="isltyp"/>
 			<var name="lai"/>
 			<var name="sfc_albedo"/>
+			<var name="dzs"/>
 
 #endif
 		</stream>
@@ -1137,6 +1138,8 @@
                         <var name="maxmf"/>
                         <var name="maxwidth"/>
                         <var name="ztop_plume"/>
+			<var name="excess_h"/>
+			<var name="excess_q"/>
                         <var name="hpbl"/>
                         <var name="cldfrac_cu"/>
                         <var name="refl10cm_cu"/>
@@ -1303,18 +1306,6 @@
 			<var name="uReconstructMeridional"/>
 			<var name="surface_pressure"/>
 #ifdef DO_PHYSICS
-                        <var name="isltyp"/>
-                        <var name="soilf"/>
-                        <var name="ivgtyp"/>
-                        <var name="landusef"/>
-                        <var name="mminlu"/>
-                        <var name="landmask"/>
-                        <var name="shdmin"/>
-                        <var name="shdmax"/>
-                        <var name="snoalb"/>
-                        <var name="albedo12m"/>
-                        <var name="greenfrac"/>
-                        <var name="lai12m"/>
 			<var name="cldfrac"/>
 			<var name="re_cloud" packages="mp_thompson_in;mp_wsm6_in;mp_tempo_in"/>
 			<var name="re_ice" packages="mp_thompson_in;mp_wsm6_in;mp_tempo_in"/>
@@ -2760,6 +2751,10 @@
                      description="accumulated total grid-scale precipitation"
                      packages="mp_kessler_in;mp_thompson_in;mp_thompson_aers_in;mp_wsm6_in;mp_nssl2m_in;mp_tempo_in"/>
 
+                <var name="frainnc" type="real" dimensions="nCells Time" units="mm"
+                     description="accumulated total grid-scale freezing rain"
+                     packages="mp_tempo_in"/>
+
                 <var name="snownc" type="real" dimensions="nCells Time" units="mm"
                      description="accumulated grid-scale precipitation of snow"
                      packages="mp_thompson_in;mp_thompson_aers_in;mp_wsm6_in;mp_nssl2m_in;mp_tempo_in"/>
@@ -3052,6 +3047,14 @@
 
                 <var name="ztop_plume" type="real" dimensions="nCells Time" units="m"
                      description="Height of highest penetrating plume"
+                     packages="bl_mynnedmf_in"/>
+
+		<var name="excess_h" type="real" dimensions="nCells Time" units="K"
+                     description="Maximum excess heat added to plumes"
+                     packages="bl_mynnedmf_in"/>
+
+		<var name="excess_q" type="real" dimensions="nCells Time" units="kg kg^{-1}"
+                     description="Maximum excess moisture added to plumes"
                      packages="bl_mynnedmf_in"/>
 
 		<!-- MYJ PBL SCHEME: -->
