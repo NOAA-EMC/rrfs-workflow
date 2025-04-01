@@ -1027,7 +1027,7 @@
 			<var name="isltyp"/>
 			<var name="lai"/>
 			<var name="sfc_albedo"/>
-                        <var name="dzs"/>
+			<var name="dzs"/>
 
 #endif
 		</stream>
