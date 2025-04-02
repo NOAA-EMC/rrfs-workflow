@@ -87,6 +87,8 @@ rrfsens_phy3:
     imfdeepcnv: 3
     imp_physics: 17
     lkm: 1
+    n_var_spp: 4
+    n_var_lndp: 6
     nssl_alphah: 2.32
     nssl_alphar: 0.83
     nssl_cccn: 550000000.0
@@ -96,6 +98,7 @@ rrfsens_phy3:
     nssl_hail_on: true
     nssl_invertccn: true
     progsigma:
+    gf_coldstart: true
     rrfs_sd :
     rrfs_smoke_debug :
     seas_opt :
@@ -114,10 +117,18 @@ rrfsens_phy3:
     dust_alpha :
     dust_gamma :
     sigmab_coldstart :
+  nam_sfcperts:
+    lndp_prt_list: [0.2, 0.001, 0.001, 0.001, 0.001, 0.2]
+    lndp_var_list: ['smc', 'vgf', 'alb', 'sal', 'emi', 'stc']
   nam_sppperts:
-    spp_prt_list: [0.2, 0.2, 0.2, 0.2, 0.3]
-    spp_stddev_cutoff: [1.5, 1.5, 1.5, 1.5, 3.0]
-    spp_var_list: ['pbl', 'sfc', 'rad', 'gwd', 'cu_deep']
+    iseed_spp: [4, 5, 6, 7]
+    spp_lscale: [150000.0, 150000.0, 150000.0, 150000.0]
+    spp_prt_list: [0.2, 0.2, 0.2, 0.2]
+    spp_sigtop1: [0.1, 0.1, 0.1, 0.1]
+    spp_sigtop2: [0.025, 0.025, 0.025, 0.025]
+    spp_stddev_cutoff: [1.5, 1.5, 1.5, 1.5]
+    spp_tau: [21600.0, 21600.0, 21600.0, 21600.0]
+    spp_var_list: ['pbl', 'sfc', 'rad', 'gwd']
 
 rrfsens_phy4:
   atmos_model_nml:
