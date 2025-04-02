@@ -7,7 +7,7 @@ cpreq=${cpreq:-cpreq}
 #
 # enter the run directory
 #
-cd "${DATA}"
+cd "${DATA}" || exit
 
 #start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S) 
 #timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 
