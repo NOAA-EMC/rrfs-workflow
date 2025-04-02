@@ -3,30 +3,28 @@ declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LI
 set -x
 
 cpreq=${cpreq:-cpreq}
-prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
+#prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
 #
 # enter the run directory
 #
-cd ${DATA}
+cd "${DATA}"
 
-start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S) 
-timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 
+#start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S) 
+#timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 
 #
 # determine whether to begin new cycles and link correct ensembles
 #
 if [[ -r "${UMBRELLA_PREP_IC_DATA}/mem001/init.nc" ]]; then
-  start_type='cold'
   echo "recentering does not work for cold start!"
   exit 0
 else
-  start_type='warm'
   initial_file='mpasin.nc'
 fi
 #
 # link ensemble members
 #
-for i in $(seq -w 001 ${ENS_SIZE}); do
-  ln -snf ${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file} mpasin_mem${i}.nc
+for i in $(seq -w 001 "${ENS_SIZE}"); do
+  ln -snf "${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file}" mpasin_mem"${i}".nc
 done
 
 #-----------------------------------------------------------------------
@@ -35,10 +33,10 @@ done
 #
 #-----------------------------------------------------------------------
 #
-mpassinfile=${UMBRELLA_PREP_CONTROL_IC_DATA}/mpasin.nc
+mpassinfile="${UMBRELLA_PREP_CONTROL_IC_DATA}/mpasin.nc"
 if [ -r "${mpassinfile}" ] ; then
-  ln -sf ${mpassinfile}  ./mpasin_control.nc
-  ${cpreq} ${mpassinfile}  ./mpasin_mean.nc
+  ln -sf "${mpassinfile}"  ./mpasin_control.nc
+  ${cpreq} "${mpassinfile}"  ./mpasin_mean.nc
 else
   err_exit "Cannot find control background: ${mpassinfile}"
 fi
@@ -66,7 +64,7 @@ ulimit -a
 
 #source prep_step
 export pgm="gen_ensmean_recenter.exe"
-${cpreq} ${EXECrrfs}/${pgm} .
+${cpreq} "${EXECrrfs}"/${pgm} .
 ${MPI_RUN_CMD} ./${pgm} log.out
 # check the status
 export err=$?
