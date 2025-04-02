@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]${id}: '
+declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
 
 cpreq=${cpreq:-cpreq}
@@ -59,6 +59,7 @@ EOF
 # run mpasjedi_enkf.x
 export pgm="gen_ensmean_recenter.exe"
 ${cpreq} "${EXECrrfs}"/${pgm} .
+source prep_step
 ${MPI_RUN_CMD} ./${pgm} log.out
 # check the status
 export err=$?

@@ -102,7 +102,7 @@ def setup_xml(HOMErrfs, expdir):
             prep_ic(xmlFile, expdir, do_ensemble=True)
             prep_lbc(xmlFile, expdir, do_ensemble=True)
             if os.getenv("DO_RECENTER", "FALSE").upper() == "TRUE":
-                recenter(xmlFile,expdir)
+                recenter(xmlFile, expdir)
             if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
                 getkf_observer(xmlFile, expdir)
                 getkf_solver(xmlFile, expdir)
