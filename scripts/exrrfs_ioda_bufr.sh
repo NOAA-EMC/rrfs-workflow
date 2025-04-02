@@ -75,8 +75,16 @@ ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/gen_bufr2ioda_json.py .
 fi
 
 # run offline IODA tools
+${cpreq} "${USHrrfs}"/offline_domain_check.py .
 ${cpreq} "${USHrrfs}"/offline_ioda_tweak.py .
 for ioda_file in ioda*nc; do
+  grid_file=/work/noaa/wrfruc/sdegelia/rrfs-workflow_postobserver/rrfs-workflow/fix/meshes/conus12km.grid.nc
+  module use /work2/noaa/da/python/opt/modulefiles/stack
+  module load hpc/1.2.0 miniconda3/4.6.14
+  module load eva/1.0.0
+  ./offline_domain_check.py -o "${ioda_file}" -g "${grid_file}" -s 0.005
+  base_name=$(basename "$ioda_file" .nc)
+  mv  "${base_name}_dc.nc" "${base_name}.nc"
   ./offline_ioda_tweak.py -o "${ioda_file}"
   base_name=$(basename "$ioda_file" .nc)
   mv  "${base_name}_llp.nc" "${base_name}.nc"

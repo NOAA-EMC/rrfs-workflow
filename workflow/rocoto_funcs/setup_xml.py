@@ -124,7 +124,7 @@ def setup_xml(HOMErrfs, expdir):
         text = \
             f'''#!/usr/bin/env bash
 source /etc/profile
-module load rocoto
+module load contrib rocoto
 cd {expdir}
 rocotorun -w rrfs.xml -d rrfs.db
 '''
