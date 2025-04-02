@@ -14,7 +14,7 @@ cd "${DATA}" || exit
 #
 # determine whether to begin new cycles and link correct ensembles
 #
-if [[ -r "${UMBRELLA_PREP_IC_DATA}/mem001/init.nc" ]]; then
+if [[ -s "${UMBRELLA_PREP_IC_DATA}/mem001/init.nc" ]]; then
   echo "recentering does not work for cold start!"
   exit 0
 else
@@ -34,7 +34,7 @@ done
 #-----------------------------------------------------------------------
 #
 mpassinfile="${UMBRELLA_PREP_CONTROL_IC_DATA}/mpasin.nc"
-if [ -r "${mpassinfile}" ] ; then
+if [ -s "${mpassinfile}" ] ; then
   ln -sf "${mpassinfile}"  ./mpasin_control.nc
   ${cpreq} "${mpassinfile}"  ./mpasin_mean.nc
 else
@@ -57,12 +57,6 @@ cat << EOF > namelist.ens
 EOF
 
 # run mpasjedi_enkf.x
-export OMP_NUM_THREADS=1
-ulimit -s unlimited
-ulimit -v unlimited
-ulimit -a
-
-#source prep_step
 export pgm="gen_ensmean_recenter.exe"
 ${cpreq} "${EXECrrfs}"/${pgm} .
 ${MPI_RUN_CMD} ./${pgm} log.out
