@@ -5670,7 +5670,7 @@ cost function:
                  variable: specificHumidity
                  inflation factor: 8.0
                  request_saturation_specific_humidity_geovals: false
-            defer to post: true
+           defer to post: true
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
