@@ -11,7 +11,6 @@ RUN="rrfs"
 
 STMP="/lfs/h2/emc/stmp/${USER}/test_nonDA_grib2"
 PTMP="/lfs/h2/emc/ptmp/${USER}/test_nonDA_grib2"
-GESROOT="/lfs/h2/emc/ptmp/${USER}/test_nonDA_grib2"
 
 VERBOSE="TRUE"
 PRINT_ESMF="TRUE"

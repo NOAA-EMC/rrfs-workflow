@@ -46,9 +46,18 @@ This is the ex-script for the task that recenters ensemble analysis with
 RRFS for the specified cycle.
 ========================================================================"
 #
+#-----------------------------------------------------------------------
+#
+# Configuration Parameters
+#
+#-----------------------------------------------------------------------
+#
+
+export ctrlpath=${CRTL_CENTER}
+
+#
 # Set environment
 #
-ulimit -s unlimited
 ulimit -a
 
 case $MACHINE in
@@ -85,6 +94,7 @@ case $MACHINE in
   ;;
 #
 esac
+nens=${NUM_ENS_MEMBERS:-"30"}
 #
 #-----------------------------------------------------------------------
 #
@@ -116,15 +126,7 @@ for imem in  $(seq 1 $nens)
   ensmem=$( printf "%03d" $imem ) 
   memberstring=$( printf "%03d" $imem )
 
-  if [ "${CYCLE_TYPE}" = "spinup" ]; then
-    bkpath=${DATAROOT}/${RUN}_forecast_spinup_m${ensmem}_${envir}_${cyc}/INPUT  # cycling, use background from RESTART
-  else
-    if [ ${DO_ENSFCST} = "TRUE" ] ; then
-      bkpath=${DATAROOT}/enkfrrfs_forecast_m${ensmem}_${envir}_${cyc}/INPUT
-    else
-      bkpath=${DATAROOT}/${RUN}_forecast_m${ensmem}_${envir}_${cyc}/INPUT  # cycling, use background from RESTART
-    fi
-  fi
+  bkpath=${umbrella_forecast_data}/m${ensmem}/INPUT  # cycling, use background from RESTART
 
   dynvarfile=${bkpath}/fv_core.res.tile1.nc
   tracerfile=${bkpath}/fv_tracer.res.tile1.nc
@@ -154,9 +156,9 @@ for imem in  $(seq 1 $nens)
 #
 #-----------------------------------------------------------------------
 #
-cp -f ./fv3sar_tile1_mem001_dynvar fv3sar_tile1_dynvar
-cp -f ./fv3sar_tile1_mem001_tracer fv3sar_tile1_tracer
-cp -f ./fv3sar_tile1_mem001_sfcvar fv3sar_tile1_sfcvar
+#cp -f ./fv3sar_tile1_mem001_dynvar fv3sar_tile1_dynvar
+#cp -f ./fv3sar_tile1_mem001_tracer fv3sar_tile1_tracer
+#cp -f ./fv3sar_tile1_mem001_sfcvar fv3sar_tile1_sfcvar
 #
 #-----------------------------------------------------------------------
 #
@@ -164,18 +166,18 @@ cp -f ./fv3sar_tile1_mem001_sfcvar fv3sar_tile1_sfcvar
 #
 #-----------------------------------------------------------------------
 #
-dynvarfile_control=${ctrlpath}/rrfs.${PDY}/${cyc}/forecast/INPUT/fv_core.res.tile1.nc
-tracerfile_control=${ctrlpath}/rrfs.${PDY}/${cyc}/forecast/INPUT/fv_tracer.res.tile1.nc
-dynvarfile_control_spinup=${ctrlpath}/rrfs.${PDY}/${cyc}/forecast_spinup/INPUT/fv_core.res.tile1.nc
-tracerfile_control_spinup=${ctrlpath}/rrfs.${PDY}/${cyc}/forecast_spinup/INPUT/fv_tracer.res.tile1.nc
+dynvarfile_control=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/det/INPUT/fv_core.res.tile1.nc
+tracerfile_control=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/det/INPUT/fv_tracer.res.tile1.nc
+dynvarfile_control_spinup=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/det/INPUT/fv_core.res.tile1.nc
+tracerfile_control_spinup=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/det/INPUT/fv_tracer.res.tile1.nc
 if [ -r "${dynvarfile_control_spinup}" ] && [ -r "${tracerfile_control_spinup}" ] && [[ ${DO_ENSFCST} != "TRUE" ]] ; then
-  ln -sf ${ctrlpath}/rrfs.${PDY}/${cyc}/forecast_spinup/INPUT/fv_core.res.tile1.nc  ./control_dynvar
-  ln -sf ${ctrlpath}/rrfs.${PDY}/${cyc}/forecast_spinup/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
-  ln -sf ${ctrlpath}/rrfs.${PDY}/${cyc}/forecast_spinup/INPUT/sfc_data.nc  ./control_sfcvar
+  ln -sf ${ctrlpath}/INPUT/fv_core.res.tile1.nc  ./control_dynvar
+  ln -sf ${ctrlpath}/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
+  ln -sf ${ctrlpath}/INPUT/sfc_data.nc  ./control_sfcvar
 elif [ -r "${dynvarfile_control}" ] && [ -r "${tracerfile_control}" ] ; then
-  ln -sf ${ctrlpath}/rrfs.${PDY}/${cyc}/forecast/INPUT/fv_core.res.tile1.nc  ./control_dynvar
-  ln -sf ${ctrlpath}/rrfs.${PDY}/${cyc}/forecast/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
-  ln -sf ${ctrlpath}/rrfs.${PDY}/${cyc}/forecast/INPUT/sfc_data.nc  ./control_sfcvar
+  ln -sf ${ctrlpath}/INPUT/fv_core.res.tile1.nc  ./control_dynvar
+  ln -sf ${ctrlpath}/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
+  ln -sf ${ctrlpath}/INPUT/sfc_data.nc  ./control_sfcvar
 else
   err_exit "Cannot find background: ${dynvarfile_control} or ${dynvarfile_control_spinup}"
 fi

@@ -1,1 +1,0 @@
-../../.agent/lam/CONUS_25km_GFDLgrid/C96_oro_data.tile7.halo0.nc

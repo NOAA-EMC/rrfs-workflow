@@ -1,8 +1,43 @@
 #!/bin/bash
 
+date
+export PS4='+ $SECONDS + ' 
+set -xue
+
 #-----------------------------------------------------------------------
 # RRFS Make ICs
 #-----------------------------------------------------------------------
+export pid=${pid:-$$}
+export outid=${outid:-"LL$job"}
+export RUN=${RUN:-rrfs}
+
+if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
+  export ENSMEM_INDX=${MEMBER_NAME}
+  export mem_num=m$(echo "${ENSMEM_INDX}")
+  export DO_ENSEMBLE="TRUE"
+else
+  export ENSMEM_INDX=""
+  export mem_num=""
+  export DO_ENSEMBLE="FALSE"
+fi
+if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}}
+else
+  export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}}
+fi
+export shared_output_data=${umbrella_ics_data}/ics
+#-----------------------------------------------------------------------
+# Define data directories
+#-----------------------------------------------------------------------
+export DATA=${DATA:-${umbrella_ics_data}/${jobid}}
+mkdir -p ${DATA} ${shared_output_data}
+cd ${DATA}
+
+#-----------------------------------------------------------------------
+# Source the variable definitions file
+#-----------------------------------------------------------------------
+
+. ${HOMErrfs}/ush/rrfs_nco_config.sh
 
 #-----------------------------------------------------------------------
 # Specify Execution Areas
@@ -12,20 +47,14 @@ export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
-
 export FIXam=${FIXam:-${FIXrrfs}/am}
-export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
 export FIX_GSI=${FIXrrfs}/gsi
 
 #-----------------------------------------------------------------------
-# Source the variable definitions file and the bash utility functions.
+# Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-
-date
-export PS4='+ $SECONDS + '
 
 #-----------------------------------------------------------------------
 # Save current shell options (in a global array).  Then set new options
@@ -59,124 +88,13 @@ for the RRFS (in NetCDF format).
 ========================================================================"
 
 #-----------------------------------------------------------------------
-# Set the parameters for the external model files.
-#-----------------------------------------------------------------------
-
-extrn_mdl_name="${EXTRN_MDL_NAME_ICS}"
-sysbasedir="${EXTRN_MDL_SYSBASEDIR_ICS}"
-gfs_file_fmt="${GFS_FILE_FMT_ICS}"
-time_offset_hrs="${EXTRN_MDL_ICS_OFFSET_HRS}"
-ic_spec_fhrs=$(( 0 + time_offset_hrs ))
-
-hh=${CDATE:8:2}
-yyyymmdd=${CDATE:0:8}
-cdate=$( date --utc --date "${yyyymmdd} ${hh} UTC - ${time_offset_hrs} hours" "+%Y%m%d%H" )
-export extrn_mdl_cdate="$cdate"
-
-# Starting year, month, day, and hour of the external model forecast.
-yyyy=${cdate:0:4}
-mm=${cdate:4:2}
-dd=${cdate:6:2}
-hh=${cdate:8:2}
-mn="00"
-yyyymmdd=${cdate:0:8}
-
-fcst_hh=$( printf "%02d" "${ic_spec_fhrs}" )
-fcst_mn="00"
-
-case "${extrn_mdl_name}" in
-
-  "GFS")
-    if [ "${DO_RETRO}" = "TRUE" ]; then
-      sysdir="$sysbasedir"
-    else
-      sysdir="$sysbasedir/gfs.${yyyymmdd}/${hh}/atmos"
-    fi
-    if [ "${gfs_file_fmt}" = "grib2" ]; then
-      fns_on_disk=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )
-    elif [ "${gfs_file_fmt}" = "netcdf" ]; then
-      fns=( "atm" "sfc" )
-      if [ "${fcst_hh}" = "00" ]; then
-        suffix="anl.nc"
-      else
-        suffix="f0${fcst_hh}.nc"
-      fi
-      fns=( "${fns[@]/%/$suffix}" )
-      prefix="gfs.t${hh}z."
-      fns_on_disk=( "${fns[@]/#/$prefix}" )
-    fi
-    ;;
-
-  "GDASENKF")
-    sysdir="$sysbasedir/enkfgdas.${yyyymmdd}/${hh}/atmos/${GDASENKF_INPUT_SUBDIR}"
-    fns_on_disk=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")
-    ;;
-
-  "RRFS")
-    if [ "${DO_RETRO}" = "TRUE" ]; then
-      sysdir="$sysbasedir"
-    else
-      sysdir="$sysbasedir/rrfs.${yyyymmdd}/${hh}"
-    fi
-    fns_on_disk=( "rrfs.t${hh}z.natlev.3km.f0${fcst_hh}.na.grib2" )
-    ;;
-
-  *)
-
-esac
-
-extrn_mdl_sysdir="${sysdir}"
-extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
-
-#-----------------------------------------------------------------------
-# Obtain unique process id (pid) and create the run directory (DATA).
-#-----------------------------------------------------------------------
-
-export pid=${pid:-$$}
-export RUN=${RUN:-rrfs}
-
-if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  export ENSMEM_INDX=${ENSMEM_INDX:-${MEMBER_NAME}}
-  export mem_num=m$(echo "${ENSMEM_INDX}")
-fi
-
-if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/ics"
-else
-  export NWGES_DIR="${GESROOT}/${RUN}.${PDY}/${cyc}/ics"
-fi
-
-if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
-  export jobid=${taskid}
-else
-  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export jobid=${RUN}_make_ics_${mem_num}_${envir}_${cyc}
-  else
-    export jobid=${RUN}_make_ics_${envir}_${cyc}
-  fi
-fi
-
-export DATA=${DATA:-${DATAROOT}/${jobid}}
-mkdir -p $DATA
-
-mkdir -p ${DATA}/tmp_ICS
-cd ${DATA}/tmp_ICS
-
-mkdir -p "${NWGES_DIR}"
-
-export use_user_staged_extrn_files="${USE_USER_STAGED_EXTRN_FILES}"
-export extrn_mdl_source_dir="${extrn_mdl_sysdir}"
-export extrn_mdl_staging_dir="${DATA}/tmp_ICS"
-
-#-----------------------------------------------------------------------
 # Execute the script.
 #-----------------------------------------------------------------------
 
-export pgmout="${DATA}/tmp_ICS/OUTPUT.$$"
+export pgmout="${DATA}/OUTPUT.$$"
 env
 
-${HOMErrfs}/scripts/exrrfs_make_ics.sh \
-  extrn_mdl_fns_on_disk="${extrn_mdl_fns_on_disk_str}"
+${HOMErrfs}/scripts/exrrfs_make_ics.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

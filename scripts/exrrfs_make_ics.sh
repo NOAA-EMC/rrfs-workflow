@@ -49,14 +49,75 @@ This is the ex-script for the task that generates initial condition
 #
 #-----------------------------------------------------------------------
 #
-# Specify the set of valid argument names for this script/function.  Then
-# process the arguments provided to this script/function (which should
-# consist of a set of name-value pairs of the form arg1="value1", etc).
+# Analyze configuration parameters.
 #
 #-----------------------------------------------------------------------
 #
-valid_args=( "extrn_mdl_fns_on_disk" )
-process_args valid_args "$@"
+COMINgfs=${COMINgfs:-$(compath.py gfs/${gfs_ver})}
+extrn_mdl_name="${EXTRN_MDL_NAME_ICS}"
+sysbasedir=${COMINgfs}
+gfs_file_fmt="${GFS_FILE_FMT_ICS}"
+time_offset_hrs="${EXTRN_MDL_ICS_OFFSET_HRS}"
+ic_spec_fhrs=$(( 0 + time_offset_hrs ))
+
+hh=${CDATE:8:2}
+yyyymmdd=${CDATE:0:8}
+cdate=$( date --utc --date "${yyyymmdd} ${hh} UTC - ${time_offset_hrs} hours" "+%Y%m%d%H" )
+export extrn_mdl_cdate="$cdate"
+
+# Starting year, month, day, and hour of the external model forecast.
+yyyy=${cdate:0:4}
+mm=${cdate:4:2}
+dd=${cdate:6:2}
+hh=${cdate:8:2}
+mn="00"
+yyymmdd=${cdate:0:8}
+
+fcst_hh=$( printf "%02d" "${ic_spec_fhrs}" )
+fcst_mn="00"
+    
+case "${extrn_mdl_name}" in
+
+  "GFS")
+    COMINgfs="${COMINgfs:-$(compath.py gfs/${gfs_ver})}"
+    sysdir="${COMINgfs}/gfs.${yyyymmdd}/${hh}/atmos"
+    if [ "${gfs_file_fmt}" = "grib2" ]; then
+      fns_on_disk=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )
+    elif [ "${gfs_file_fmt}" = "netcdf" ]; then
+      fns=( "atm" "sfc" )
+      if [ "${fcst_hh}" = "00" ]; then
+        suffix="anl.nc"
+      else
+        suffix="f0${fcst_hh}.nc"
+      fi
+      fns=( "${fns[@]/%/$suffix}" )
+      prefix="gfs.t${hh}z."
+      fns_on_disk=( "${fns[@]/#/$prefix}" )
+    fi
+    ;;
+
+  "GDASENKF")
+    COMINgfs="${COMINgfs:-$(compath.py gfs/${gfs_ver})}"
+    sysdir="${COMINgfs}/enkfgdas.${yyyymmdd}/${hh}/atmos/mem${MEMBER_NAME}"
+    fns_on_disk=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")
+    ;;
+
+  "RRFS")
+    COMINrrfs="${COMINrrfs:-$(compath.py rrfs/${rrfs_ver})}"
+    sysdir="${COMINrrfs}/rrfs.${yyyymmdd}/${hh}"
+    fns_on_disk=( "rrfs.t${hh}z.natlev.f0${fcst_hh}.grib2" )
+    ;;
+
+  *)
+
+esac
+
+extrn_mdl_sysdir="${sysdir}"
+extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
+export use_user_staged_extrn_files="FALSE"
+export extrn_mdl_source_dir="${extrn_mdl_sysdir}"
+export extrn_mdl_staging_dir="${shared_output_data}"
+
 #
 #-----------------------------------------------------------------------
 #
@@ -64,7 +125,6 @@ process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
 #
-ulimit -s unlimited
 ulimit -a
 
 case "$MACHINE" in
@@ -96,6 +156,8 @@ case "$MACHINE" in
     ;;
 
 esac
+export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
+UFS_UTILS_DIR=${UFS_UTILS_DIR:-$HOMErrfs/sorc/UFS_UTILS}
 #
 #-----------------------------------------------------------------------
 #
@@ -106,9 +168,9 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-num_files_to_copy="${#extrn_mdl_fns_on_disk[@]}"
+num_files_to_copy="${#fns_on_disk[@]}"
 prefix="${extrn_mdl_source_dir}/"
-extrn_mdl_fps_on_disk=( "${extrn_mdl_fns_on_disk[@]/#/$prefix}" )
+extrn_mdl_fps_on_disk=( "${fns_on_disk[@]/#/$prefix}" )
 #
 #-----------------------------------------------------------------------
 #
@@ -203,8 +265,9 @@ done
 #
 #-----------------------------------------------------------------------
 #
-extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" )")"
+extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
 
+#### Need to change later
 print_info_msg "
 Creating links in staging directory (extrn_mdl_staging_dir) to external
 model files on disk (extrn_mdl_fns_on_disk) in the source directory
@@ -213,7 +276,7 @@ extrn_mdl_staging_dir = \"${extrn_mdl_staging_dir}\"
 extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
 extrn_mdl_fns_on_disk = ${extrn_mdl_fns_on_disk_str}"
 
-ln -sf -t ${extrn_mdl_staging_dir} ${extrn_mdl_fps_on_disk[@]}
+cpreq -p ${extrn_mdl_fps_on_disk[@]} ${extrn_mdl_staging_dir}
 #
 #-----------------------------------------------------------------------
 #
@@ -234,7 +297,7 @@ generating initial conditions and surface fields for the RRFS forecast!!!
 #-----------------------------------------------------------------------
 #
 eval EXTRN_MDL_CDATE=${extrn_mdl_cdate}
-extrn_mdl_fns_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" )")"
+extrn_mdl_fns_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
 eval EXTRN_MDL_FNS=${extrn_mdl_fns_str}
 #
 #-----------------------------------------------------------------------
@@ -431,12 +494,8 @@ case "${EXTRN_MDL_NAME_ICS}" in
     fn_grib2="${EXTRN_MDL_FNS[0]}"
     input_type="grib2"
     convert_nst=False
-    if [ "${DO_RETRO}" = "TRUE" ]; then
-      fn_atm="${EXTRN_MDL_FNS[0]}"
-    else
-      fn_atm="${EXTRN_MDL_FNS[0]}"
-      fn_sfc="${EXTRN_MDL_FNS[1]}"
-    fi
+    fn_atm="${EXTRN_MDL_FNS[0]}"
+    fn_sfc="${EXTRN_MDL_FNS[1]}"
   elif [ "${GFS_FILE_FMT_ICS}" = "netcdf" ]; then
     tracers_input="[\"spfh\",\"clwmr\",\"o3mr\",\"icmr\",\"rwmr\",\"snmr\",\"grle\"]"
     tracers="[\"sphum\",\"liq_wat\",\"o3mr\",\"ice_wat\",\"rainwat\",\"snowwat\",\"graupel\"]"
@@ -598,7 +657,7 @@ if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
   sp_lon=$(echo "$LON_CTR + 360" | bc -l)
   sp_lat=$(echo "(90 - $LAT_CTR) * -1" | bc -l)
   gridspecs="rot-ll:${sp_lon}:${sp_lat}:0 -10:801:0.025 -10:801:0.025"
-  fn_grib2_subset=rrfs.t${hh}z.natlev.3km.f000.na.subset.grib2
+  fn_grib2_subset=rrfs.t${hh}z.natlev.f000.subset.grib2
 
   wgrib2 ${extrn_mdl_staging_dir}/${fn_grib2} -set_grib_type c3b -new_grid_winds grid \
     -new_grid ${gridspecs} ${extrn_mdl_staging_dir}/${fn_grib2_subset}
@@ -664,7 +723,6 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
   ulimit -s unlimited
   #Add the size of the variables declared as private and multiply by the OMP_NUMTHREADS
   export OMP_STACKSIZE=600M #8*[3951*{65+67+66}]*96/1048576 = 600804864/1048576 = 573 MB
-  export OMP_NUM_THREADS=$NCORES_PER_NODE
   export FI_OFI_RXM_SAR_LIMIT=3145728
   export FI_MR_CACHE_MAX_COUNT=0
   export MPICH_OFI_STARTUP_CONNECT=1
@@ -704,12 +762,12 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
   esac
 
   # F2Py shared object files to PYTHONPATH
-  export PYTHONPATH=$PYTHONPATH:$LIB64dir
+  export PYTHONPATH=$PYTHONPATH:$HOMErrfs/sorc/build/lib64
 
   # Required FIX files
   cpreq -p $FIXLAM/${CRES}_grid.tile7.nc .
   cpreq -p $FIXLAM/${CRES}_oro_data.tile7.halo0.nc .
-  cpreq $FIX_GSI/$PREDEF_GRID_NAME/fv3_akbk fv_core.res.nc
+  cpreq -p $FIX_GSI/$PREDEF_GRID_NAME/fv3_akbk fv_core.res.nc
 
   # Shortcut the file names
   warm=./fv_core.res.tile1.nc
@@ -728,32 +786,14 @@ fi
 #-----------------------------------------------------------------------
 #
 # Move initial condition, surface, control, and 0-th hour lateral bound-
-# ary files to ICs_BCs directory. Only do this if blending is off or on-
-# ly for the first DA cycle if blending is on inorder to coldstart the
-# system.
+# ary files to umbrella data.
 #-----------------------------------------------------------------------
 #
-if [[ $DO_ENS_BLENDING = "FALSE" ]]; then
-  mv out.atm.tile${TILE_RGNL}.nc \
-        ${DATA}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
+cpreq -p ${DATA}/out.atm.tile${TILE_RGNL}.nc ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
+cpreq -p ${DATA}/out.sfc.tile${TILE_RGNL}.nc ${shared_output_data}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
+cpreq -p ${DATA}/gfs_ctrl.nc ${shared_output_data}
+cpreq -p ${DATA}/gfs.bndy.nc ${shared_output_data}/gfs_bndy.tile${TILE_RGNL}.000.nc
 
-  mv out.sfc.tile${TILE_RGNL}.nc \
-        ${DATA}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
-
-  mv gfs_ctrl.nc ${DATA}
-
-  mv gfs.bndy.nc ${DATA}/gfs_bndy.tile${TILE_RGNL}.000.nc
-fi
-#
-#-----------------------------------------------------------------------
-#
-# copy results to nwges for longer time disk storage.
-#
-#-----------------------------------------------------------------------
-#
-if [ $DO_ENS_BLENDING = "FALSE" ]; then
-  cp ${DATA}/*.nc ${NWGES_DIR}/.
-fi
 #
 #-----------------------------------------------------------------------
 #
@@ -778,7 +818,7 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-extrn_mdl_var_defns_fn="${EXTRN_MDL_ICS_VAR_DEFNS_FN}"
+extrn_mdl_var_defns_fn="extrn_mdl_ics_var_defns.sh"
 extrn_mdl_var_defns_fp="${extrn_mdl_staging_dir}/${extrn_mdl_var_defns_fn}"
 check_for_preexist_dir_file "${extrn_mdl_var_defns_fp}" "delete"
 
