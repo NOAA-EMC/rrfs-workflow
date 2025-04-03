@@ -74,8 +74,6 @@ case ${MACHINE} in
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
     export OBSPATH="/scratch2/BMC/rtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
     export ACCOUNT="fv3-cam"
-    #export ACCOUNT="fv3-cpu"
-    #export ACCOUNT="rtrr"
     export QUEUE="batch"
     export PARTITION="hera"
     ;;
