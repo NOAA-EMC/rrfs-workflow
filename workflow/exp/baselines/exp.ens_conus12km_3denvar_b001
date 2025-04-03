@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+# Aloha! This file is to setup some top level experiment options
+#
+export NET=rrfs                    # rrfs, rtma, 
+export MESH_NAME=conus12km         # conus12km, conus3km, atl3km, etc
+export WGF="enkf"   # working group function = "det", "enkf", "ens", "firewx"
+export VERSION=v2.0.9
+export TAG=e12km209
+export EXP_NAME=baseline001_3denvar12km209
+export OPSROOT=/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/workflow/${VERSION}
+export EXPDIR=${OPSROOT}/exp/${EXP_NAME}/rrfs${WGF}
+export COMROOT=${OPSROOT}/exp/${EXP_NAME}/com      # task input and output data as well as logs
+export DATAROOT=${OPSROOT}/exp/${EXP_NAME}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
+#
+export DO_ENSEMBLE=true
+export DO_DETERMINISTIC=false
+export ENS_SIZE=30
+export ZETA_LEVELS="L60.txt"
+#
+export DO_IODA="false"
+#export DO_JEDI=true
+
+export DO_CYC=true
+export CYC_INTERVAL=3
+export FCST_LENGTH=3
+for i in {0..23};    do arr[i]="03"; done # 3hr fcst
+for i in {0..23..6}; do arr[i]="03"; done # 3hr fcst every 6hrs
+export FCST_LEN_HRS_CYCLES="${arr[*]}"
+export HISTORY_INTERVAL=1
+export MPASSIT_GROUP_TOTAL_NUM=1
+export UPP_GROUP_TOTAL_NUM=1
+
+export IC_OFFSET=36
+export LBC_OFFSET=6
+export LBC_LENGTH=12
+export LBC_INTERVAL=3
+export LBC_UNGRIB_GROUP_TOTAL_NUM=1
+export LBC_GROUP_TOTAL_NUM=1
+
+export RETRO_PERIOD="2024050518-2024050800"
+export CYCLEDEF_IC_STEP_HRS=6
+export CYCLEDEF_LBC_STEP_HRS=6
+export COLDSTART_CYCS="00 06 12 18"   # cycles to cold start from external models
+#
+export NODES_IC="<nodes>1:ppn=40</nodes>"
+export NODES_LBC="<nodes>1:ppn=40</nodes>"
+export NODES_FCST="<nodes>1:ppn=40</nodes>"
+export NODES_MPASSIT="<nodes>1:ppn=40</nodes>"
+export NODES_UPP="<nodes>1:ppn=40</nodes>"
+export NODES_GETKF="<nodes>4:ppn=20</nodes>"
+#
+export WALLTIME_FCST="1:30:00"
+export WALLTIME_SAVE_FCST="1:30:00"
+export WALLTIME_MPASSIT="1:00:00"
+export WALLTIME_UPP="1:00:00"
+export WALLTIME_GETKF="00:30:00"
+#
+export KEEPDATA=no
+export MPI_RUN_CMD=srun
+export RETRO_TASKTHROTTLE=60
+#
+# local.setup: setup some local options specific to a platform or an experiment
+#
+# set up IC, LBC sources and A/Q/P/R information
+export IC_EXTRN_MDL_NAME="GEFS"
+export IC_EXTRN_MDL_NAME_PATTERN="gefs.@Y@m@d/@H/pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.ffHHH"
+export IC_EXTRN_MDL_NAME_PATTERN_B="gefs.@Y@m@d/@H/pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.ffHHH"
+export LBC_EXTRN_MDL_NAME=${IC_EXTRN_MDL_NAME}
+export LBC_EXTRN_MDL_NAME_PATTERN=${IC_EXTRN_MDL_NAME_PATTERN}
+export LBC_EXTRN_MDL_NAME_PATTERN_B=${IC_EXTRN_MDL_NAME_PATTERN_B}
+case ${MACHINE} in
+  "hera")
+    export IC_EXTRN_MDL_BASEDIR="/scratch2/BMC/rtrr/RRFS2_RETRO_DATA/May2024/GEFS"
+    export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
+    export OBSPATH="/scratch2/BMC/rtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
+    export ACCOUNT="fv3-cam"
+    #export ACCOUNT="fv3-cpu"
+    #export ACCOUNT="rtrr"
+    export QUEUE="batch"
+    export PARTITION="hera"
+    ;;
+  "jet")
+    export IC_EXTRN_MDL_BASEDIR="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/GEFS"
+    export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
+    export OBSPATH="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
+    export ACCOUNT="nrtrr"
+    export QUEUE="batch"
+    export PARTITION="kjet"
+    ;;
+  "orion"|"hercules")
+    export IC_EXTRN_MDL_BASEDIR="/work2/noaa/wrfruc/RRFS2_RETRO_DATA/May2024/GEFS"
+    export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
+    export OBSPATH="/work2/noaa/wrfruc/RRFS2_RETRO_DATA/May2024/obs_rap"
+    export ACCOUNT="wrfruc"
+    export QUEUE="batch"
+    export PARTITION=${MACHINE}
+    export CLUSTER=""
+    ;;
+  "gaea")
+    export IC_EXTRN_MDL_BASEDIR="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/GEFS"
+    export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
+    export OBSPATH="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/obs_rap"
+    export ACCOUNT="bil-fire10-oar"
+    export QUEUE="normal"
+    export PARTITION="batch"
+    export CLUSTER="c6"
+    ;;
+  *)
+    echo "!!! unsupported platform:'${MACHINE}'!!!"
+    ;;
+esac
