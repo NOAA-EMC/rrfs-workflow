@@ -139,3 +139,104 @@ rocotorun -w rrfs.xml -d rrfs.db
 
     print(f'rrfs.xml and run_rocoto.sh created at:\n  {expdir}')
 # end of setup_xml
+
+    fPath = f"{expdir}/rs"
+    with open(fPath, 'w') as rocotoFile:
+        text = \
+            f'''#!/usr/bin/env bash
+source /etc/profile
+module load rocoto
+cd {expdir}
+rocotostat -w rrfs.xml -d rrfs.db -c all > stat
+echo "----------" > ./DEAD
+grep DEAD stat >> ./DEAD
+grep LOST stat >> ./DEAD
+grep UNKN stat >> ./DEAD
+echo "#Dead: `grep DEAD stat | wc | tr -s " " | cut -f 2 -d " "`" >> ./DEAD
+echo "#Lost: `grep LOST stat | wc | tr -s " " | cut -f 2 -d " "`" >> ./DEAD
+
+echo "----------" > ./RUN
+echo "`grep RUN stat | tr -s " " | cut -f 1,2,4 -d " "`" >> ./RUN
+echo "`grep QUE stat | tr -s " " | cut -f 1,2,4 -d " "`" >> ./RUN
+echo "#Succeeded: `grep SUC stat | wc | tr -s " " | cut -f 2 -d " "`" >> ./RUN
+echo "#Running:   `grep RUN stat | wc | tr -s " " | cut -f 2 -d " "`" >> ./RUN
+echo "#Queued:    `grep QUE stat | wc | tr -s " " | cut -f 2 -d " "`" >> ./RUN
+echo "#Dead:      `grep DEA stat | wc | tr -s " " | cut -f 2 -d " "`" >> ./RUN
+echo "#Lost:      `grep LOS stat | wc | tr -s " " | cut -f 2 -d " "`" >> ./RUN
+echo "#Unknwn:    `grep UNK stat | wc | tr -s " " | cut -f 2 -d " "`" >> ./RUN
+echo "`date`" >> ./RUN
+'''
+        rocotoFile.write(text)
+
+    # set run_rocoto.sh to be executable
+    st = os.stat(fPath)
+    os.chmod(fPath, st.st_mode | stat.S_IEXEC)
+
+    fPath = f"{expdir}/rb"
+    with open(fPath, 'w') as rocotoFile:
+        text = \
+            f'''#!/usr/bin/env bash
+source /etc/profile
+module load rocoto
+cd {expdir}
+
+cyctime=$1
+taskname=$2
+
+echo $cyctime
+echo $taskname
+
+rocotoboot -w rrfs.xml -d rrfs.db -c $cyctime -t $taskname
+'''
+        rocotoFile.write(text)
+
+    # set run_rocoto.sh to be executable
+    st = os.stat(fPath)
+    os.chmod(fPath, st.st_mode | stat.S_IEXEC)
+
+    fPath = f"{expdir}/rc"
+    with open(fPath, 'w') as rocotoFile:
+        text = \
+            f'''#!/usr/bin/env bash
+source /etc/profile
+module load rocoto
+cd {expdir}
+
+cyctime=$1
+taskname=$2
+
+echo $cyctime
+echo $taskname
+
+rocotocheck -w rrfs.xml -d rrfs.db -c $cyctime -t $taskname
+'''
+        rocotoFile.write(text)
+
+    # set run_rocoto.sh to be executable
+    st = os.stat(fPath)
+    os.chmod(fPath, st.st_mode | stat.S_IEXEC)
+
+    fPath = f"{expdir}/rr"
+    with open(fPath, 'w') as rocotoFile:
+        text = \
+            f'''#!/usr/bin/env bash
+source /etc/profile
+module load rocoto
+cd {expdir}
+
+cyctime=$1
+taskname=$2
+
+echo $cyctime
+echo $taskname
+
+rocotorewind -w rrfs.xml -d rrfs.db -c $cyctime -t $taskname
+'''
+        rocotoFile.write(text)
+
+    # set run_rocoto.sh to be executable
+    st = os.stat(fPath)
+    os.chmod(fPath, st.st_mode | stat.S_IEXEC)
+
+    print(f'You can add to crontab:\n*/1 * * * * cd {expdir} && ./run_rocoto.sh && ./rs')
+# end of setup_xml
