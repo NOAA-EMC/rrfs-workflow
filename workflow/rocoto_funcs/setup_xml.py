@@ -120,13 +120,11 @@ def setup_xml(HOMErrfs, expdir):
 # ---------------------------------------------------------------------------
 
     fPath = f"{expdir}/run_rocoto.sh"
-    extra_modules = ""
-    if machine in ['orion', 'hercules']: extra_modules = "contrib"
     with open(fPath, 'w') as rocotoFile:
         text = \
             f'''#!/usr/bin/env bash
 source /etc/profile
-module load {extra_modules} rocoto
+module load rocoto
 cd {expdir}
 rocotorun -w rrfs.xml -d rrfs.db
 '''
