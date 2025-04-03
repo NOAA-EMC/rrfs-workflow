@@ -121,7 +121,8 @@ def setup_xml(HOMErrfs, expdir):
 
     fPath = f"{expdir}/run_rocoto.sh"
     extra_modules = ""
-    if machine in ['orion', 'hercules']: extra_modules = "contrib"
+    if machine in ['orion', 'hercules']: 
+        extra_modules = "contrib"
     with open(fPath, 'w') as rocotoFile:
         text = \
             f'''#!/usr/bin/env bash
