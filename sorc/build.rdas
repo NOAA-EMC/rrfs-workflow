@@ -8,6 +8,27 @@ HOMErrfs="$(dirname "$rundir")"
 source "${HOMErrfs}/workflow/ush/detect_machine.sh"
 source "${HOMErrfs}/workflow/ush/init.sh"
 
+# get a clean copy of the same MPAS-Model as in the workflow
+# if RDASApp has a different version from the workflow
+# and users don't specify 'different_mpas' at the command line
+if [[ "$1" == "different_mpas" ]]; then
+  use_same_mpas=no
+else
+  use_same_mpas=yes
+fi
+cd "${HOMErrfs}/sorc/MPAS-Model" || exit 1
+hash_workflow=$(git rev-parse HEAD)
+cd "${HOMErrfs}/sorc/RDASApp/sorc/mpas" || exit 1
+hash_rdasapp=$(git rev-parse HEAD)
+if [[ "${hash_workflow}" != "${hash_rdasapp}" ]] && [[ "${use_same_mpas}" == "yes" ]]; then
+  cd "${HOMErrfs}/sorc/RDASApp/sorc" || exit 1
+  mv mpas "mpas.$(date +%s)" # save a copy of current RDASApp mpas
+  git clone https://github.com/NOAA-GSL/MPAS-Model.git mpas
+  cd "${HOMErrfs}/sorc/RDASApp/sorc/mpas" || exit 1
+  git checkout "${hash_workflow}"
+  git submodule update --init --recursive
+fi
+
 EXEC="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_variational.x"
 EXEC2="${HOMErrfs}/sorc/RDASApp/build/bin/bufr2ioda.x"
 EXEC3="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_enkf.x"
