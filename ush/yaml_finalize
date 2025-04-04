@@ -99,8 +99,8 @@ if dcConvInfo:  # if non empty
         'ioda_aircar.nc': ['t133', 'q133', 'uv233'],
     }
     for iodafile, keys_to_remove in dcOBS.items():
-        if not os.path.exists(f"data/obs/{iodafile}"):
-            for key in keys_to_remove:
+        for key in keys_to_remove:
+            if not os.path.exists(f"data/obs/{iodafile}") and not os.path.exists(f"data/jdiag/jdiag_{iodafile[5:-3]}_{key}.nc"):
                 dcConvInfo.pop(key, None)  # `None` prevents KeyError if key doesn't exist
 # ~~~~~~~~~~~~~
 # remove some SIS if satellite obs files not available
