@@ -16,6 +16,7 @@ from rocoto_funcs.fcst import fcst
 from rocoto_funcs.save_fcst import save_fcst
 from rocoto_funcs.getkf_observer import getkf_observer
 from rocoto_funcs.getkf_solver import getkf_solver
+from rocoto_funcs.recenter import recenter
 from rocoto_funcs.mpassit import mpassit
 from rocoto_funcs.upp import upp
 from rocoto_funcs.ioda_bufr import ioda_bufr
@@ -100,6 +101,8 @@ def setup_xml(HOMErrfs, expdir):
             lbc(xmlFile, expdir, do_ensemble=True)
             prep_ic(xmlFile, expdir, do_ensemble=True)
             prep_lbc(xmlFile, expdir, do_ensemble=True)
+            if os.getenv("DO_RECENTER", "FALSE").upper() == "TRUE":
+                recenter(xmlFile, expdir)
             if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
                 getkf_observer(xmlFile, expdir)
                 getkf_solver(xmlFile, expdir)
