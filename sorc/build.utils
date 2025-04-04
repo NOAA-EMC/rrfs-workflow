@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -x
+date
+rundir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+HOMErrfs="$(dirname "$rundir")"
+
+source "${HOMErrfs}"/workflow/ush/detect_machine.sh
+source "${HOMErrfs}"/workflow/ush/init.sh
+
+EXEC="${HOMErrfs}/sorc/RRFS_UTILS/build/bin/gen_ensmean_recenter.exe"
+cd "${HOMErrfs}/sorc/RRFS_UTILS" || exit
+rm -rf build/
+./build.sh
+
+mkdir -p "${HOMErrfs}/exec"
+echo "copy ${EXEC} to ${HOMErrfs}/exec"
+cp "${EXEC}" "${HOMErrfs}/exec/gen_ensmean_recenter.exe"
+
+exit 0

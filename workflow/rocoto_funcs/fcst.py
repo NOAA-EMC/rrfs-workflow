@@ -67,6 +67,9 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
 
+    recenterdep = ""
+    if os.getenv("DO_RECENTER", "FALSE").upper() == "TRUE":
+        recenterdep = f'<taskdep task="recenter"/>'
     jedidep = ""
     if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
         if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
@@ -85,6 +88,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
   <and>{timedep}
     <taskdep task="prep_lbc{ensindexstr}" cycle_offset="0:00:00"/>
     {prep_ic_dep}
+    {recenterdep}
     {jedidep}
   </and>
   </dependency>'''
