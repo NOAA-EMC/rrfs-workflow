@@ -192,6 +192,7 @@ fi
 if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
   if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN} ]]; then
     wgrib2 ${COMOUT}/${prslev} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN} | wgrib2 -i -grib ${DATA}/${testbed} ${COMOUT}/${prslev}
+    export err=$?; err_chk
   else
     echo "${FIX_UPP}/${TESTBED_FIELDS_FN} not found"
   fi
@@ -200,6 +201,7 @@ if [[ ! -z ${TESTBED_FIELDS_FN2} ]]; then
   if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN2} ]]; then
     if [[ -f ${COMOUT}/${natlev} ]]; then
       wgrib2 ${COMOUT}/${natlev} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN2} | wgrib2 -i -append -grib ${DATA}/${testbed} ${COMOUT}/${natlev}
+      export err=$?; err_chk
     fi
   else
     echo "${FIX_UPP}/${TESTBED_FIELDS_FN2} not found"
@@ -222,20 +224,20 @@ if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
   fi
 fi
 
-if [ -f ${COMOUT}/${prslev} ]; then
+if [ -s ${COMOUT}/${prslev} ]; then
   wgrib2 ${COMOUT}/${prslev} -s > ${COMOUT}/${prslev}.idx
 fi
-if [ -f ${COMOUT}/${natlev} ]; then
+if [ -s ${COMOUT}/${natlev} ]; then
   wgrib2 ${COMOUT}/${natlev} -s > ${COMOUT}/${natlev}.idx
 fi
 
 if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
-  if [ -f ${COMOUT}/${testbed} ]; then
+  if [ -s ${COMOUT}/${testbed} ]; then
     wgrib2 ${COMOUT}/${testbed} -s > ${COMOUT}/${testbed}.idx
   fi
 fi
 
-if [ "${DO_ENSFCST}" != "TRUE" ] && [ ${fhr} != '000' ]; then
+if [ "${DO_ENSFCST}" != "TRUE" ] && [ ${fhr} != '000' ] && [ -e $COMOUT/${prslev_subh} ]; then
   wgrib2 ${COMOUT}/${prslev_subh} -s > ${COMOUT}/${prslev_subh}.idx
 fi
 
@@ -287,27 +289,40 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
     count=0
     for domain in ${domains[@]}
     do
+
+      outspacing=${gridspacing}
+      if [[ $domain = "hi" || $domain = "pr" ]]
+       then
+        outspacing="2p5km"
+      fi
+
       if [ ${DO_ENSFCST} = "TRUE" ]; then
         for task in $(seq ${tasks[count]})
         do
-          cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${domain}.grib2
+          cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2
         done
-        wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${domain}.grib2.idx
+        wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
       else
         for task in $(seq ${tasks[count]})
         do
-          cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.${domain}.grib2
+          cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
         done
-        wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.${domain}.grib2.idx
+        wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi
       count=$count+1
     done
 
     # create subhourly files for CONUS, Alaska, Hawaii, Puerto Rico grids
-    if [ "${DO_ENSFCST}" != "TRUE" ] && [ ${fhr} != '000' ]; then
+    if [ "${DO_ENSFCST}" != "TRUE" ] && [ ${fhr} != '000' ] && [ -e $COMOUT/${prslev_subh} ]; then
       for domain in ${domains[@]}
       do
-        prslev_subh_dom=${net4}.t${cyc}z.prslev.${gridspacing}.subh.f${fhr}.${domain}.grib2
+
+      outspacing=${gridspacing}
+      if [[ $domain = "hi" || $domain = "pr" ]]
+       then
+        outspacing="2p5km"
+      fi
+        prslev_subh_dom=${net4}.t${cyc}z.prslev.${outspacing}.subh.f${fhr}.${domain}.grib2
         if [ $domain == "conus" ]; then
           # 3-km Lambert Conformal CONUS domain
           gridspecs="lambert:262.5:38.5:38.5 237.280472:1799:3000 21.138123:1059:3000"
@@ -323,12 +338,13 @@ if [ "${DO_PARALLEL_PRDGEN}" = "TRUE" ]; then
         fi
         
         wgrib2 ${COMOUT}/${prslev_subh} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib${domain}.uv
+        #### export err=$?; err_chk #### need to test
         wgrib2 inputs.grib${domain}.uv -set_bitmap 1 -set_grib_type c3 \
           -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
           -new_grid_interpolation neighbor \
           -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
           -new_grid ${gridspecs} ${COMOUT}/${prslev_subh_dom}
-
+        #### export err=$?; err_chk
         wgrib2 ${COMOUT}/${prslev_subh_dom} -s > ${COMOUT}/${prslev_subh_dom}.idx
       done
     fi
@@ -393,6 +409,7 @@ EOF
    -new_grid_interpolation neighbor \
    -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
    -new_grid ${grid_specs_firewx} ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2
+  #### export err=$?; err_chk
   wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2.idx
 
 else
@@ -433,16 +450,18 @@ else
              -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
              -if ":(NCONCD|NCCICE|SPNCR|CLWMR|CICE|RWMR|SNMR|GRLE|PMTF|PMTC|REFC|CSNOW|CICEP|CFRZR|CRAIN|LAND|ICEC|TMP:surface|VEG|CCOND|SFEXC|MSLMA|PRES:tropopause|LAI|HPBL|HGT:planetary boundary layer):|ICPRB|SIPD|ICESEV" -new_grid_interpolation neighbor -fi \
              -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2
+            #### export err=$?; err_chk
           else
             wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
              -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
              -new_grid_interpolation neighbor \
              -new_grid ${grid_specs} ${subdir}/${fhr}/tmp_${grid}.grib2
+            #### export err=$?; err_chk
           fi
 
         # Merge vector field records
           wgrib2 ${subdir}/${fhr}/tmp_${grid}.grib2 -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" -submsg_uv ${bg_remap}
-
+          export err=$?; err_chk
         # Remove temporary files
           rm -f ${subdir}/${fhr}/tmp_${grid}.grib2
 
