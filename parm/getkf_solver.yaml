@@ -966,6 +966,15 @@ observations:
            action:
              name: reduce obs space
 
+         # Bounds Check (ObsValue)
+         - filter: Bounds Check
+           filter variables:
+           - name: specificHumidity
+           minvalue: 0.0
+           maxvalue: 1.0
+           action:
+             name: reduce obs space
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -985,7 +994,7 @@ observations:
            action:
              name: assign error
              error function:
-               name: ObsFunction/ObsErrorModelStepwiseLinear
+               name: ObsFunction/ObsErrorModelHumidity
                options:
                  xvar:
                    name: MetaData/pressure
@@ -1007,6 +1016,7 @@ observations:
                  variable: specificHumidity
                  inflation factor: 8.0
                  request_saturation_specific_humidity_geovals: false
+           defer to post: true
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
@@ -1033,6 +1043,7 @@ observations:
            where:
            - variable: QualityMarker/specificHumidity
              is_in: 3
+           defer to post: true
 
          # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
          - filter: Perform Action
@@ -1044,6 +1055,7 @@ observations:
            where:
            - variable: MetaData/pressure
              maxvalue: 10000.0
+           defer to post: true
 
          # Bounds Check (ObsError)
          - filter: Bounds Check
@@ -1053,16 +1065,8 @@ observations:
            - name:  ObsErrorData/specificHumidity
            minvalue: 0.0
            action:
-             name: reduce obs space
-
-         # Bounds Check (ObsValue)
-         - filter: Bounds Check
-           filter variables:
-           - name: specificHumidity
-           minvalue: 0.0
-           maxvalue: 1.0
-           action:
-             name: reduce obs space
+             name: reject
+           defer to post: true
 
          # Create temporary ObsErrorData
          - filter: Variable Assignment
@@ -1242,6 +1246,15 @@ observations:
            action:
              name: reduce obs space
 
+         # Bounds Check (ObsValue)
+         - filter: Bounds Check
+           filter variables:
+           - name: specificHumidity
+           minvalue: 0.0
+           maxvalue: 1.0
+           action:
+             name: reduce obs space
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -1261,7 +1274,7 @@ observations:
            action:
              name: assign error
              error function:
-               name: ObsFunction/ObsErrorModelStepwiseLinear
+               name: ObsFunction/ObsErrorModelHumidity
                options:
                  xvar:
                    name: MetaData/pressure
@@ -1283,6 +1296,7 @@ observations:
                  variable: specificHumidity
                  inflation factor: 8.0
                  request_saturation_specific_humidity_geovals: false
+           defer to post: true
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
@@ -1309,6 +1323,7 @@ observations:
            where:
            - variable: QualityMarker/specificHumidity
              is_in: 3
+           defer to post: true
 
          # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
          - filter: Perform Action
@@ -1320,6 +1335,7 @@ observations:
            where:
            - variable: MetaData/pressure
              maxvalue: 10000.0
+           defer to post: true
 
          # Bounds Check (ObsError)
          - filter: Bounds Check
@@ -1329,16 +1345,8 @@ observations:
            - name:  ObsErrorData/specificHumidity
            minvalue: 0.0
            action:
-             name: reduce obs space
-
-         # Bounds Check (ObsValue)
-         - filter: Bounds Check
-           filter variables:
-           - name: specificHumidity
-           minvalue: 0.0
-           maxvalue: 1.0
-           action:
-             name: reduce obs space
+             name: reject
+           defer to post: true
 
          # Create temporary ObsErrorData
          - filter: Variable Assignment
@@ -1514,6 +1522,15 @@ observations:
            action:
              name: reduce obs space
 
+         # Bounds Check (ObsValue)
+         - filter: Bounds Check
+           filter variables:
+           - name: specificHumidity
+           minvalue: 0.0
+           maxvalue: 1.0
+           action:
+             name: reduce obs space
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -1533,7 +1550,7 @@ observations:
            action:
              name: assign error
              error function:
-               name: ObsFunction/ObsErrorModelStepwiseLinear
+               name: ObsFunction/ObsErrorModelHumidity
                options:
                  xvar:
                    name: MetaData/pressure
@@ -1559,6 +1576,7 @@ observations:
                  # needs to be added to UFO to align with the ramp
                  # options for temperature and humidity in GSI.
                  #surface observation error ramp: true
+           defer to post: true
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
@@ -1585,6 +1603,7 @@ observations:
            where:
            - variable: QualityMarker/specificHumidity
              is_in: 3
+           defer to post: true
 
          # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
          - filter: Perform Action
@@ -1596,6 +1615,7 @@ observations:
            where:
            - variable: MetaData/pressure
              maxvalue: 10000.0
+           defer to post: true
 
          # Bounds Check (ObsError)
          - filter: Bounds Check
@@ -1605,16 +1625,8 @@ observations:
            - name:  ObsErrorData/specificHumidity
            minvalue: 0.0
            action:
-             name: reduce obs space
-
-         # Bounds Check (ObsValue)
-         - filter: Bounds Check
-           filter variables:
-           - name: specificHumidity
-           minvalue: 0.0
-           maxvalue: 1.0
-           action:
-             name: reduce obs space
+             name: reject
+           defer to post: true
 
          # Create temporary ObsErrorData
          - filter: Variable Assignment
@@ -3829,6 +3841,15 @@ observations:
            action:
              name: reduce obs space
 
+         # Bounds Check (ObsValue)
+         - filter: Bounds Check
+           filter variables:
+           - name: specificHumidity
+           minvalue: 0.0
+           maxvalue: 1.0
+           action:
+             name: reduce obs space
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -3848,7 +3869,7 @@ observations:
            action:
              name: assign error
              error function:
-               name: ObsFunction/ObsErrorModelStepwiseLinear
+               name: ObsFunction/ObsErrorModelHumidity
                options:
                  xvar:
                    name: MetaData/pressure
@@ -3870,6 +3891,7 @@ observations:
                  variable: specificHumidity
                  inflation factor: 8.0
                  request_saturation_specific_humidity_geovals: false
+           defer to post: true
 
          # Error inflation based on errormod (qcmod.f90)
          - filter: Perform Action
@@ -3885,6 +3907,7 @@ observations:
                options:
                  inflate variables: [specificHumidity]
                  pressure: MetaData/pressure
+           defer to post: true
 
          # Error inflation when QualityMarker == 3 (read_prepbufr.f90)
          - filter: Perform Action
@@ -3896,6 +3919,7 @@ observations:
            where:
            - variable: QualityMarker/specificHumidity
              is_in: 3
+           defer to post: true
 
          # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
          - filter: Perform Action
@@ -3907,6 +3931,7 @@ observations:
            where:
            - variable: MetaData/pressure
              maxvalue: 10000.0
+           defer to post: true
 
          # Bounds Check (ObsError)
          - filter: Bounds Check
@@ -3916,16 +3941,8 @@ observations:
            - name:  ObsErrorData/specificHumidity
            minvalue: 0.0
            action:
-             name: reduce obs space
-
-         # Bounds Check (ObsValue)
-         - filter: Bounds Check
-           filter variables:
-           - name: specificHumidity
-           minvalue: 0.0
-           maxvalue: 1.0
-           action:
-             name: reduce obs space
+             name: reject
+           defer to post: true
 
          # Create temporary ObsErrorData
          - filter: Variable Assignment
@@ -4104,6 +4121,15 @@ observations:
            action:
              name: reduce obs space
 
+         # Bounds Check (ObsValue)
+         - filter: Bounds Check
+           filter variables:
+           - name: specificHumidity
+           minvalue: 0.0
+           maxvalue: 1.0
+           action:
+             name: reduce obs space
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -4123,7 +4149,7 @@ observations:
            action:
              name: assign error
              error function:
-               name: ObsFunction/ObsErrorModelStepwiseLinear
+               name: ObsFunction/ObsErrorModelHumidity
                options:
                  xvar:
                    name: MetaData/pressure
@@ -4145,6 +4171,7 @@ observations:
                  variable: specificHumidity
                  inflation factor: 8.0
                  request_saturation_specific_humidity_geovals: false
+           defer to post: true
 
          # Error inflation based on errormod (qcmod.f90)
          - filter: Perform Action
@@ -4160,6 +4187,7 @@ observations:
                options:
                  inflate variables: [specificHumidity]
                  pressure: MetaData/pressure
+           defer to post: true
 
          # Error inflation when QualityMarker == 3 (read_prepbufr.f90)
          - filter: Perform Action
@@ -4171,6 +4199,7 @@ observations:
            where:
            - variable: QualityMarker/specificHumidity
              is_in: 3
+           defer to post: true
 
          # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
          - filter: Perform Action
@@ -4182,6 +4211,7 @@ observations:
            where:
            - variable: MetaData/pressure
              maxvalue: 10000.0
+           defer to post: true
 
          # Bounds Check (ObsError)
          - filter: Bounds Check
@@ -4191,16 +4221,8 @@ observations:
            - name:  ObsErrorData/specificHumidity
            minvalue: 0.0
            action:
-             name: reduce obs space
-
-         # Bounds Check (ObsValue)
-         - filter: Bounds Check
-           filter variables:
-           - name: specificHumidity
-           minvalue: 0.0
-           maxvalue: 1.0
-           action:
-             name: reduce obs space
+             name: reject
+           defer to post: true
 
          # Create temporary ObsErrorData
          - filter: Variable Assignment
@@ -5540,6 +5562,15 @@ observations:
            action:
              name: reduce obs space
 
+         # Bounds Check (ObsValue)
+         - filter: Bounds Check
+           filter variables:
+           - name: specificHumidity
+           minvalue: 0.0
+           maxvalue: 1.0
+           action:
+             name: reduce obs space
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -5559,7 +5590,7 @@ observations:
            action:
              name: assign error
              error function:
-               name: ObsFunction/ObsErrorModelStepwiseLinear
+               name: ObsFunction/ObsErrorModelHumidity
                options:
                  xvar:
                    name: MetaData/pressure
@@ -5581,6 +5612,7 @@ observations:
                  variable: specificHumidity
                  inflation factor: 8.0
                  request_saturation_specific_humidity_geovals: false
+           defer to post: true
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
@@ -5607,6 +5639,7 @@ observations:
            where:
            - variable: QualityMarker/specificHumidity
              is_in: 3
+           defer to post: true
 
          # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
          - filter: Perform Action
@@ -5618,6 +5651,7 @@ observations:
            where:
            - variable: MetaData/pressure
              maxvalue: 10000.0
+           defer to post: true
 
          # Bounds Check (ObsError)
          - filter: Bounds Check
@@ -5627,16 +5661,8 @@ observations:
            - name:  ObsErrorData/specificHumidity
            minvalue: 0.0
            action:
-             name: reduce obs space
-
-         # Bounds Check (ObsValue)
-         - filter: Bounds Check
-           filter variables:
-           - name: specificHumidity
-           minvalue: 0.0
-           maxvalue: 1.0
-           action:
-             name: reduce obs space
+             name: reject
+           defer to post: true
 
          # Create temporary ObsErrorData
          - filter: Variable Assignment
@@ -7221,6 +7247,15 @@ observations:
            action:
              name: reduce obs space
 
+         # Bounds Check (ObsValue)
+         - filter: Bounds Check
+           filter variables:
+           - name: specificHumidity
+           minvalue: 0.0
+           maxvalue: 1.0
+           action:
+             name: reduce obs space
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -7240,7 +7275,7 @@ observations:
            action:
              name: assign error
              error function:
-               name: ObsFunction/ObsErrorModelStepwiseLinear
+               name: ObsFunction/ObsErrorModelHumidity
                options:
                  xvar:
                    name: MetaData/pressure
@@ -7262,6 +7297,7 @@ observations:
                  variable: specificHumidity
                  inflation factor: 8.0
                  request_saturation_specific_humidity_geovals: false
+           defer to post: true
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
@@ -7288,6 +7324,7 @@ observations:
            where:
            - variable: QualityMarker/specificHumidity
              is_in: 3
+           defer to post: true
 
          # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
          - filter: Perform Action
@@ -7299,6 +7336,7 @@ observations:
            where:
            - variable: MetaData/pressure
              maxvalue: 10000.0
+           defer to post: true
 
          # Bounds Check (ObsError)
          - filter: Bounds Check
@@ -7308,16 +7346,8 @@ observations:
            - name:  ObsErrorData/specificHumidity
            minvalue: 0.0
            action:
-             name: reduce obs space
-
-         # Bounds Check (ObsValue)
-         - filter: Bounds Check
-           filter variables:
-           - name: specificHumidity
-           minvalue: 0.0
-           maxvalue: 1.0
-           action:
-             name: reduce obs space
+             name: reject
+           defer to post: true
 
          # Create temporary ObsErrorData
          - filter: Variable Assignment
@@ -9112,6 +9142,15 @@ observations:
            action:
              name: reduce obs space
 
+         # Bounds Check (ObsValue)
+         - filter: Bounds Check
+           filter variables:
+           - name: specificHumidity
+           minvalue: 0.0
+           maxvalue: 1.0
+           action:
+             name: reduce obs space
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -9131,7 +9170,7 @@ observations:
            action:
              name: assign error
              error function:
-               name: ObsFunction/ObsErrorModelStepwiseLinear
+               name: ObsFunction/ObsErrorModelHumidity
                options:
                  xvar:
                    name: MetaData/pressure
@@ -9153,6 +9192,7 @@ observations:
                  variable: specificHumidity
                  inflation factor: 8.0
                  request_saturation_specific_humidity_geovals: false
+           defer to post: true
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
@@ -9179,6 +9219,7 @@ observations:
            where:
            - variable: QualityMarker/specificHumidity
              is_in: 3
+           defer to post: true
 
          # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
          - filter: Perform Action
@@ -9190,6 +9231,7 @@ observations:
            where:
            - variable: MetaData/pressure
              maxvalue: 10000.0
+           defer to post: true
 
          # Bounds Check (ObsError)
          - filter: Bounds Check
@@ -9199,16 +9241,8 @@ observations:
            - name:  ObsErrorData/specificHumidity
            minvalue: 0.0
            action:
-             name: reduce obs space
-
-         # Bounds Check (ObsValue)
-         - filter: Bounds Check
-           filter variables:
-           - name: specificHumidity
-           minvalue: 0.0
-           maxvalue: 1.0
-           action:
-             name: reduce obs space
+             name: reject
+           defer to post: true
 
          # Create temporary ObsErrorData
          - filter: Variable Assignment
@@ -11729,6 +11763,15 @@ observations:
            action:
              name: reduce obs space
 
+         # Bounds Check (ObsValue)
+         - filter: Bounds Check
+           filter variables:
+           - name: specificHumidity
+           minvalue: 0.0
+           maxvalue: 1.0
+           action:
+             name: reduce obs space
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -11748,7 +11791,7 @@ observations:
            action:
              name: assign error
              error function:
-               name: ObsFunction/ObsErrorModelStepwiseLinear
+               name: ObsFunction/ObsErrorModelHumidity
                options:
                  xvar:
                    name: MetaData/pressure
@@ -11770,6 +11813,7 @@ observations:
                  variable: specificHumidity
                  inflation factor: 8.0
                  request_saturation_specific_humidity_geovals: false
+           defer to post: true
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
@@ -11796,6 +11840,7 @@ observations:
            where:
            - variable: QualityMarker/specificHumidity
              is_in: 3
+           defer to post: true
 
          # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
          - filter: Perform Action
@@ -11807,6 +11852,7 @@ observations:
            where:
            - variable: MetaData/pressure
              maxvalue: 10000.0
+           defer to post: true
 
          # Bounds Check (ObsError)
          - filter: Bounds Check
@@ -11816,16 +11862,8 @@ observations:
            - name:  ObsErrorData/specificHumidity
            minvalue: 0.0
            action:
-             name: reduce obs space
-
-         # Bounds Check (ObsValue)
-         - filter: Bounds Check
-           filter variables:
-           - name: specificHumidity
-           minvalue: 0.0
-           maxvalue: 1.0
-           action:
-             name: reduce obs space
+             name: reject
+           defer to post: true
 
          # Create temporary ObsErrorData
          - filter: Variable Assignment
@@ -12004,6 +12042,15 @@ observations:
            action:
              name: reduce obs space
 
+         # Bounds Check (ObsValue)
+         - filter: Bounds Check
+           filter variables:
+           - name: specificHumidity
+           minvalue: 0.0
+           maxvalue: 1.0
+           action:
+             name: reduce obs space
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -12023,7 +12070,7 @@ observations:
            action:
              name: assign error
              error function:
-               name: ObsFunction/ObsErrorModelStepwiseLinear
+               name: ObsFunction/ObsErrorModelHumidity
                options:
                  xvar:
                    name: MetaData/pressure
@@ -12045,6 +12092,7 @@ observations:
                  variable: specificHumidity
                  inflation factor: 8.0
                  request_saturation_specific_humidity_geovals: false
+           defer to post: true
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
@@ -12071,6 +12119,7 @@ observations:
            where:
            - variable: QualityMarker/specificHumidity
              is_in: 3
+           defer to post: true
 
          # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
          - filter: Perform Action
@@ -12082,6 +12131,7 @@ observations:
            where:
            - variable: MetaData/pressure
              maxvalue: 10000.0
+           defer to post: true
 
          # Bounds Check (ObsError)
          - filter: Bounds Check
@@ -12091,16 +12141,8 @@ observations:
            - name:  ObsErrorData/specificHumidity
            minvalue: 0.0
            action:
-             name: reduce obs space
-
-         # Bounds Check (ObsValue)
-         - filter: Bounds Check
-           filter variables:
-           - name: specificHumidity
-           minvalue: 0.0
-           maxvalue: 1.0
-           action:
-             name: reduce obs space
+             name: reject
+           defer to post: true
 
          # Create temporary ObsErrorData
          - filter: Variable Assignment
@@ -12280,6 +12322,15 @@ observations:
            action:
              name: reduce obs space
 
+         # Bounds Check (ObsValue)
+         - filter: Bounds Check
+           filter variables:
+           - name: specificHumidity
+           minvalue: 0.0
+           maxvalue: 1.0
+           action:
+             name: reduce obs space
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -12299,7 +12350,7 @@ observations:
            action:
              name: assign error
              error function:
-               name: ObsFunction/ObsErrorModelStepwiseLinear
+               name: ObsFunction/ObsErrorModelHumidity
                options:
                  xvar:
                    name: MetaData/pressure
@@ -12321,6 +12372,7 @@ observations:
                  variable: specificHumidity
                  inflation factor: 8.0
                  request_saturation_specific_humidity_geovals: false
+           defer to post: true
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
@@ -12347,6 +12399,7 @@ observations:
            where:
            - variable: QualityMarker/specificHumidity
              is_in: 3
+           defer to post: true
 
          # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
          - filter: Perform Action
@@ -12358,6 +12411,7 @@ observations:
            where:
            - variable: MetaData/pressure
              maxvalue: 10000.0
+           defer to post: true
 
          # Bounds Check (ObsError)
          - filter: Bounds Check
@@ -12367,16 +12421,8 @@ observations:
            - name:  ObsErrorData/specificHumidity
            minvalue: 0.0
            action:
-             name: reduce obs space
-
-         # Bounds Check (ObsValue)
-         - filter: Bounds Check
-           filter variables:
-           - name: specificHumidity
-           minvalue: 0.0
-           maxvalue: 1.0
-           action:
-             name: reduce obs space
+             name: reject
+           defer to post: true
 
          # Create temporary ObsErrorData
          - filter: Variable Assignment
