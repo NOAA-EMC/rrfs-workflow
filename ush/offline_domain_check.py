@@ -5,10 +5,6 @@ from matplotlib.path import Path
 from scipy.spatial import Delaunay
 import argparse
 import warnings
-import os
-#import shapely.speedups
-
-#shapely.speedups.enable()
 
 """
 This program determines if observations are in/outside of a convex hull
@@ -25,6 +21,7 @@ in tern means that it is going to be not an exact match of the domain grid
 
 # Disable warnings
 warnings.filterwarnings('ignore')
+
 
 def alpha_shape(points, alpha, only_outer=True):
     """
@@ -76,10 +73,12 @@ def alpha_shape(points, alpha, only_outer=True):
             add_edge(edges, ic, ia)
     return edges
 
+
 def find_edges_with(i, edge_set):
-    i_first = [j for (x,j) in edge_set if x==i]
-    i_second = [j for (j,x) in edge_set if x==i]
+    i_first = [j for (x, j) in edge_set if x == i]
+    i_second = [j for (j, x) in edge_set if x == i]
     return i_first, i_second
+
 
 def stitch_boundaries(edges):
     """
@@ -93,7 +92,7 @@ def stitch_boundaries(edges):
         boundary.append(edge0)
         last_edge = edge0
         while len(edge_set) > 0:
-            i,j = last_edge
+            i, j = last_edge
             j_first, j_second = find_edges_with(j, edge_set)
             if j_first:
                 edge_set.remove((j, j_first[0]))
@@ -112,6 +111,7 @@ def stitch_boundaries(edges):
         boundary_lst.append(boundary)
     return boundary_lst
 
+
 def shrink_boundary(points, centroid, factor=0.01):
     new_points = []
     for point in points:
@@ -122,6 +122,7 @@ def shrink_boundary(points, centroid, factor=0.01):
         new_points.append(new_point)
     return np.array(new_points)
 
+
 # Parse command-line arguments
 # Note:
 #    The grid file is what contains variables grid_lat/grid_lon
@@ -129,6 +130,7 @@ def shrink_boundary(points, centroid, factor=0.01):
 #    Examples can be found in the following rrfs-test cases:
 #      - rrfs-data_fv3jedi_2022052619/Data/bkg/fv3_grid_spec.nc
 #      - mpas_2024052700/data/restart.2024-05-27_00.00.00.nc
+
 parser = argparse.ArgumentParser()
 parser.add_argument('-g', '--grid', type=str, help='grid file', required=True)
 parser.add_argument('-o', '--obs', type=str, help='ioda observation file', required=True)
@@ -155,13 +157,14 @@ print(f"Max/Min Lon: {np.max(grid_lon)-360}, {np.min(grid_lon)-360}\n")
 
 # Get the points along the edge of the domain and sort
 points = np.vstack([grid_lon, grid_lat]).T
-edges = alpha_shape(points, alpha=0.25, only_outer = True)
+edges = alpha_shape(points, alpha=0.25, only_outer=True)
 edges_sorted = stitch_boundaries(edges)
 
 # Now grab the lat/lon points of the boundary (could be improved)
 edge_points = []
 for idx in edges_sorted[0]:
-    ipt = idx[0]; jpt = idx[1]
+    ipt = idx[0]
+    jpt = idx[1]
     point_1 = points[ipt]
     point_2 = points[jpt]
     edge_points.append(point_1)
@@ -190,10 +193,10 @@ inside_domain = domain_path.contains_points(obs_coords)
 inside_indices = np.where(inside_domain)[0]
 
 # Create a new NetCDF file to store the selected data using the more efficient method
-try:
-    outfile = obs_filename.replace('.nc', '_dc.nc')
-except:
+if '.nc4' in obs_filename: 
     outfile = obs_filename.replace('.nc4', '_dc.nc4')
+else:
+    outfile = obs_filename.replace('.nc', '_dc.nc')
 fout = nc.Dataset(outfile, 'w')
 
 # Create dimensions and variables in the new file
@@ -213,26 +216,23 @@ for group in groups:
     g = fout.createGroup(group)
     for var in obs_ds.groups[group].variables:
         invar = obs_ds.groups[group].variables[var]
-        try:  # Non-string variables
-            vartype = invar.dtype
+        vartype = invar.dtype
+        if vartype == 'str':
+            g.createVariable(var, 'str', 'Location')
+        else:
             fill = invar.getncattr('_FillValue')
             g.createVariable(var, vartype, 'Location', fill_value=fill)
-        except:  # String variables
-            g.createVariable(var, 'str', 'Location')
-        # Make sure lat/lon are not masked
-        if var in ['latitude', 'longitude']: 
-            g.variables[var][:] = invar[:][inside_indices].data
-        else:
-            g.variables[var][:] = invar[:][inside_indices]
+        g.variables[var][:] = invar[:][inside_indices]
         # Copy attributes for this variable
         for attr in invar.ncattrs():
-            if '_FillValue' in attr: continue
+            if '_FillValue' in attr: 
+                continue
             g.variables[var].setncattr(attr, invar.getncattr(attr))
 
 # Finally add global attribute with the settings used to run this domain check
 fout.setncattr('Orig_obs_file', obs_filename)
 fout.setncattr('Grid_file', grid_filename)
-fout.setncattr('Shrink_factor',hull_shrink_factor)
+fout.setncattr('Shrink_factor', hull_shrink_factor)
 
 # Close the datasets
 obs_ds.close()
