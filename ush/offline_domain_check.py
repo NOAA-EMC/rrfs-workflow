@@ -193,7 +193,7 @@ inside_domain = domain_path.contains_points(obs_coords)
 inside_indices = np.where(inside_domain)[0]
 
 # Create a new NetCDF file to store the selected data using the more efficient method
-if '.nc4' in obs_filename: 
+if '.nc4' in obs_filename:
     outfile = obs_filename.replace('.nc4', '_dc.nc4')
 else:
     outfile = obs_filename.replace('.nc', '_dc.nc')
@@ -225,7 +225,7 @@ for group in groups:
         g.variables[var][:] = invar[:][inside_indices]
         # Copy attributes for this variable
         for attr in invar.ncattrs():
-            if '_FillValue' in attr: 
+            if '_FillValue' in attr:
                 continue
             g.variables[var].setncattr(attr, invar.getncattr(attr))
 
