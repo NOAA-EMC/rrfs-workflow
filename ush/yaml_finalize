@@ -178,7 +178,11 @@ with open(yfile2, 'r') as infile, open(yfile, 'w') as outfile:
             nSpaces = len(line) - len(line.lstrip())
             spaces = " "*nSpaces
             pre_spaces = spaces + "    " #  add extra 4 spaces for anchor values
-            tmp_str = list_to_delimited_string(dcSatInfo[mysis][anchor_name], pre_spaces)
+            if len(dcSatInfo[mysis][anchor_name]) < 100:
+                elements_per_line = 10
+            else:
+                elements_per_line = 20
+            tmp_str = list_to_delimited_string(dcSatInfo[mysis][anchor_name], pre_spaces, elements_per_line=elements_per_line)
             new_str = '\n'.join(map(str, tmp_str))
             if anchor_name == "channels":
                 values = f"\n{new_str}"
