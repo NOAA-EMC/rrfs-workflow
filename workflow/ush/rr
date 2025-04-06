@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
+
 source /etc/profile
+
 module load rocoto
 
 cyctime=$1
 taskname=$2
 
-echo $cyctime
-echo $taskname
+echo "$cyctime"
+echo "$taskname"
 
-rocotorewind -w rrfs.xml -d rrfs.db -c $cyctime -t $taskname
+rocotorewind -w rrfs.xml -d rrfs.db -c "$cyctime" -t "$taskname"
