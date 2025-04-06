@@ -69,18 +69,18 @@ if os.path.exists('satinfo'):
                     if sis in dcSatInfo:
                         dcSIS = dcSatInfo[sis]
                     else:
-                        dcSIS = {'channel': [], 'iuse': [], 'error': [], 'error_cld': [], 'ermax': [],
-                                 'var_b': [], 'var_pg': [], 'icld_det': [], 'icloud': [], 'iaerosol': [],
+                        dcSIS = {'channels': [], 'use_flag': [], 'error': [], 'error_cld': [], 'obserr_bound_max': [],
+                                 'var_b': [], 'var_pg': [], 'use_flag_clddet': [], 'icloud': [], 'iaerosol': [],
                                  }
                     #
-                    dcSIS['channel'].append(fields[1])
-                    dcSIS['iuse'].append(fields[2])
+                    dcSIS['channels'].append(fields[1])
+                    dcSIS['use_flag'].append(fields[2])
                     dcSIS['error'].append(fields[3])
                     dcSIS['error_cld'].append(fields[4])
-                    dcSIS['ermax'].append(fields[5])
+                    dcSIS['obserr_bound_max'].append(fields[5])
                     dcSIS['var_b'].append(fields[6])
                     dcSIS['var_pg'].append(fields[7])
-                    dcSIS['icld_det'].append(fields[8])
+                    dcSIS['use_flag_clddet'].append(fields[8])
                     dcSIS['icloud'].append(fields[9])
                     dcSIS['iaerosol'].append(fields[10])
                     dcSatInfo[sis] = dcSIS
@@ -89,31 +89,6 @@ if os.path.exists('satinfo'):
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # generate the final use_obs list
-#
-
-# ~~~~~~~~~~~~~
-# remove some atypes if conventional obs files not available
-if dcConvInfo:  # if non empty
-    dcOBS = {
-        'ioda_adpupa.nc': ['t120', 'q120', 'ps120', 'uv220'],
-        'ioda_aircar.nc': ['t133', 'q133', 'uv233'],
-    }
-    for iodafile, keys_to_remove in dcOBS.items():
-        if not os.path.exists(f"data/obs/{iodafile}"):
-            for key in keys_to_remove:
-                dcConvInfo.pop(key, None)  # `None` prevents KeyError if key doesn't exist
-# ~~~~~~~~~~~~~
-# remove some SIS if satellite obs files not available
-if dcSatInfo:  # if non empty
-    dcOBS = {
-        'ioda_atms_npp.nc': ['atms_npp'],
-        'ioda_cris-fsr_n20.nc': ['cris-fsr_n20'],
-    }
-    for iodafile, keys_to_remove in dcOBS.items():
-        if not os.path.exists(f"data/obs/{iodafile}"):
-            for key in keys_to_remove:
-                dcSatInfo.pop(key, None)  # `None` prevents KeyError if key doesn't exist
-
 # ~~~~~~~~~~~~~
 # assemble a final conventional obs use list
 conv_list = []
@@ -125,11 +100,11 @@ for key,value in dcConvInfo.items():
 # if both conv_list and dcSatInfo are empty, print a warning message
 #
 if not conv_list and not dcSatInfo:
-    print("WARNING: no convinfo/satinfo, empty/corrupt convinfo/satinfo or ioda files not available")
+    print("WARNING: no convinfo/satinfo, or empty/corrupt convinfo/satinfo")
 elif not conv_list:
-    print("INFO: no convinfo, empty/corrupt convinfo, or conventional ioda files not available")
+    print("INFO: no convinfo, or empty/corrupt convinfo")
 elif not dcSatInfo:
-    print("INFO: no satinfo or empty/corrupt satinfo, or satellite ioda files not available")
+    print("INFO: no satinfo, or empty/corrupt satinfo")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # generate the yaml file on the fly
@@ -175,7 +150,7 @@ with open(yfile2, 'r') as infile, open(yfile, 'w') as outfile:
             just_read_new_obs_space = False
             buffer_zone.append(line)
             for obs in conv_list:
-                if obs in line:
+                if obs in line and obs not in ["dw", "srw", "rw"]:
                     use_obs = True
                     break
             # ~~~~~~
@@ -186,29 +161,31 @@ with open(yfile2, 'r') as infile, open(yfile, 'w') as outfile:
                         break
 
         elif "_anchor_" in line:
-            if not use_obs:
+            if not use_obs:  # use_obs is determined after the above `if` and `elif`
                 # print("found a sat anchor, but the SIS is not in 'satinfo' or empty/corrupt 'satinfo'")
                 continue
-            if "_anchor_channel:" in line:
-                anchor_name = "channel"
-            elif "_anchor_iuse:" in line:
-                anchor_name = "iuse"
+            if "_anchor_channels:" in line:
+                anchor_name = "channels"
+            elif "_anchor_use_flag_clddet:" in line:  # process _anchor_use_flag_clddet before _anchor_use_flag
+                anchor_name = "use_flag_clddet"
+            elif "_anchor_use_flag:" in line:
+                anchor_name = "use_flag"
             elif "_anchor_error:" in line:
                 anchor_name = "error"
-            elif "_anchor_ermax:" in line:
-                anchor_name = "ermax"
-            elif "_anchor_icld_det:" in line:
-                anchor_name = "icld_det"
-            mysis = line.split('&')[1].strip().split('[')[0].strip()[:-len(f'{anchor_name}_')]  # get the SIS id
-            knt = line.find('&') + 1
-            pre_spaces = ' ' * knt
+            elif "_anchor_obserr_bound_max:" in line:
+                anchor_name = "obserr_bound_max"
+            mysis = line.split('&')[1].strip().split(' ', 1)[0].strip()[:-len(f'{anchor_name}_')]  # get the SIS id
+            nSpaces = len(line) - len(line.lstrip())
+            spaces = " "*nSpaces
+            pre_spaces = spaces + "    " #  add extra 4 spaces for anchor values
             tmp_str = list_to_delimited_string(dcSatInfo[mysis][anchor_name], pre_spaces)
             new_str = '\n'.join(map(str, tmp_str))
-            if f'&{mysis}_{anchor_name} [1]' in line:  # simple template [1]
-                line = line.replace(f'&{mysis}_{anchor_name} [1]', f'&{mysis}_{anchor_name} [\n{new_str}]').rstrip(' ')
+            if anchor_name == "channels":
+                values = f"\n{new_str}"
             else:
-                line = line.replace(f'&{mysis}_{anchor_name} [', f'&{mysis}_{anchor_name} [\n{new_str}]').rstrip(' ')
-                anchor_skip_old_values = True
+                values = f" [\n{new_str}]"
+            line = f"{spaces}_anchor_{anchor_name}: &{mysis}_{anchor_name}{values}\n"
+            anchor_skip_old_values = True
             buffer_zone.append(line)
         elif anchor_skip_old_values:
             if "distribution:" in line:
