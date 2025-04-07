@@ -7,14 +7,14 @@ import sys
 #
 args = sys.argv
 nargs = len(args) - 1
-if nargs < 1:
+if nargs < 2:
     print(f"{args[0]} <yaml_file> <obs_str>\n")
-    print(f'  eg: yaml_use_obs jedivar.yaml "t120,q120,ps120,uv220"')
+    print(f'  eg: {args[0]} jedivar.yaml "t120,q120,ps120,uv220"')
     exit()
 yfile = args[1]
 basename = yfile.rstrip(".yaml")
 yfile2 = basename + "_old001.yaml"
-obs_list = args[2].strip().split(',')
+obs_list = [myobs.strip() for myobs in args[2].strip().split(',')]
 #
 # find an available file name to backup the old yaml file
 if os.path.exists(yfile2):
@@ -52,7 +52,7 @@ with open(yfile2, 'r') as infile, open(yfile, 'w') as outfile:
             buffer_zone.append(line)
             found = False
             for obs in obs_list:
-                if obs in line:
+                if obs and (obs in line) and (obs not in ["dw", "srw", "rw"]):
                     found = True
                     break
             # ~~~~~~
