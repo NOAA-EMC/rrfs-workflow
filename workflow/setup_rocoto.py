@@ -119,7 +119,7 @@ with open(EXPin, 'r') as infile, open(EXPout, 'w') as outfile:
 
 setup_xml(HOMErrfs, expdir)
 
-if os.getenv('QROCOTO_OPTION', '1') == '2':
+if os.getenv('YAML_GEN_METHOD', '1') == '2':
     # Copy files from HOMErrfs/workflow/ush to expdir
     source_dir = os.path.join(HOMErrfs, 'workflow', 'ush')
     target_files = ['rr', 'rc', 'rb', 'rs']
