@@ -1,14 +1,16 @@
 #!/bin/bash
 
+# shellcheck source=./init.sh
 source init.sh
 
 DEFAULT_FILE="../exp.setup"
 INPUT_FILE="${1:-$DEFAULT_FILE}"
 
-source $INPUT_FILE
+# shellcheck disable=SC1090
+source "$INPUT_FILE"
 
 validated_yamls="${run_dir}/../../sorc/RDASApp/rrfs-test/validated_yamls"
-cd $validated_yamls
+cd "$validated_yamls" || exit
 
 # Define the basic configuration YAML
 basic_config="mpasjedi_hyb3denvar.yaml"
@@ -74,8 +76,6 @@ rm -f jedivar.yaml  # Remove any existing file
 rm -f temp.yaml  # Remove any existing file
 
 # Process each YAML file
-declare -A processed_groups
-
 for config in "${obtype_configs[@]}"; do
     echo "Appending YAMLs for $config"
     # Append YAML content
@@ -124,11 +124,11 @@ sed -i \
 echo "Super YAML created in jedivar.yaml"
 
 # Save to where gen yamls was run
-cp -p jedivar.yaml ${run_dir}/.
+cp -p jedivar.yaml "${run_dir}"/.
 
 # Save to parm directory
-mkdir -p ${run_dir}/../../parm/baseline_jedi_yamls
-cp -p jedivar.yaml ${run_dir}/../../parm/baseline_jedi_yamls/.
+mkdir -p "${run_dir}"/../../parm/baseline_jedi_yamls
+cp -p jedivar.yaml "${run_dir}"/../../parm/baseline_jedi_yamls/.
 
 echo "Generated jedivar.yaml to:"
 echo "   ${run_dir}/../../parm/baseline_jedi_yamls/jedivar.yaml"
