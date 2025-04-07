@@ -36,19 +36,19 @@ def getkf(xmlFile, expdir, taskType):
             iodadep = f'<datadep age="00:01:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/ioda_bufr/det/ioda_aircar.nc</cyclestr></datadep>'
             dcTaskEnv['IODA_BUFR_WGF'] = 'det'
         dependencies = f'''
-      <dependency>
-      <and>{timedep}
-        <metataskdep metatask="prep_ic"/>
-        {iodadep}
-      </and>
-      </dependency>'''
+  <dependency>
+  <and>{timedep}
+    <metataskdep metatask="prep_ic"/>
+    {iodadep}
+  </and>
+  </dependency>'''
     elif taskType.upper() == "SOLVER":
         dependencies = f'''
-      <dependency>
-      <and>{timedep}
-        <taskdep task="getkf_observer"/>
-      </and>
-      </dependency>'''
+  <dependency>
+  <and>{timedep}
+    <taskdep task="getkf_observer"/>
+  </and>
+  </dependency>'''
     #
     xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv=dcTaskEnv, dependencies=dependencies, command_id="GETKF")
 # end of getkf -----------------------------------------------------------------
