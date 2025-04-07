@@ -15,7 +15,6 @@ export DATAROOT=${OPSROOT}/exp/${EXP_NAME}/stmp    # task workdirs ($DATA) which
 export ZETA_LEVELS="L60.txt"
 #
 export YAML_GEN_METHOD=2
-export QROCOTO_OPTION=2
 export DO_IODA=true
 export DO_JEDI=true
 export HYB_WGT_ENS=1.0
