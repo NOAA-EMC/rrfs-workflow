@@ -99,9 +99,8 @@ case ${YAML_GEN_METHOD:-1} in
 esac
 
 # If running posterior observer during the solver, edit the yaml
-if [[ "${TYPE}" == "solver" ]] && [[ "${GETKF_POST_OBSERVER}" == "TRUE" ]]; then
-  ${cpreq} "${USHrrfs}"/yaml_getkf_postobserver .
-  ./yaml_getkf_postobserver getkf.yaml
+if [[ "${TYPE}" == "solver" ]] && [[ "${GETKF_POST_OBSERVER:-FALSE}" == "TRUE" ]]; then
+  "${USHrrfs}"/yaml_getkf_postobserver getkf.yaml
 fi
 
 # run mpasjedi_enkf.x
