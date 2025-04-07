@@ -61,6 +61,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_adpsfc.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -126,17 +127,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: airTemperature
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: airTemperature
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -336,6 +337,7 @@ observations:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_adpsfc.nc"
+             missing file action: "warn"
              #obsfile: "obsout/sfcship_tsen_obs_2024052700_dc.nc4"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -402,17 +404,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: airTemperature
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: airTemperature
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -611,6 +613,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_adpsfc.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -673,17 +676,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: airTemperature
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: airTemperature
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -886,6 +889,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_adpsfc.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -951,17 +955,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: specificHumidity
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: specificHumidity
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -1161,6 +1165,7 @@ observations:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_adpsfc.nc"
+             missing file action: "warn"
              #obsfile: "obsout/sfcship_q_obs_2024052700_dc.nc4"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -1227,17 +1232,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: specificHumidity
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: specificHumidity
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -1437,6 +1442,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_adpsfc.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -1499,17 +1505,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: specificHumidity
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: specificHumidity
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -1713,6 +1719,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_adpsfc.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -1771,17 +1778,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: stationPressure
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: stationPressure
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -1981,6 +1988,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_adpsfc.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -2039,17 +2047,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: stationPressure
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: stationPressure
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -2249,6 +2257,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_adpsfc.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -2319,18 +2328,18 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: windEastward
+#           - name: windNorthward
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online domain check
          - filter: Bounds Check
@@ -2568,6 +2577,7 @@ observations:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_adpsfc.nc"
+             missing file action: "warn"
              #obsfile: "obsout/sfcship_uv_obs_2024052700_dc.nc4"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -2636,18 +2646,18 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           min_spacing: PT60M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: windEastward
+#           - name: windNorthward
+#           min_spacing: PT60M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online domain check
          - filter: Bounds Check
@@ -2885,6 +2895,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_adpsfc.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -2952,18 +2963,18 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: windEastward
+#           - name: windNorthward
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online domain check
          - filter: Bounds Check
@@ -3201,6 +3212,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_adpupa.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -3266,17 +3278,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: airTemperature
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: airTemperature
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -3475,6 +3487,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_adpupa.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -3540,17 +3553,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: airTemperature
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: airTemperature
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -3749,6 +3762,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_adpupa.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -3814,17 +3828,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: specificHumidity
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: specificHumidity
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -4024,6 +4038,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_adpupa.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -4089,17 +4104,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: specificHumidity
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: specificHumidity
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -4299,6 +4314,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_adpupa.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -4357,17 +4373,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: stationPressure
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: stationPressure
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -4566,6 +4582,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_adpupa.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -4633,18 +4650,18 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: windEastward
+#           - name: windNorthward
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online domain check
          - filter: Bounds Check
@@ -4876,6 +4893,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_adpupa.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -4943,18 +4961,18 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: windEastward
+#           - name: windNorthward
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online domain check
          - filter: Bounds Check
@@ -5186,6 +5204,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_aircar.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -5251,17 +5270,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: airTemperature
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: airTemperature
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -5460,6 +5479,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_aircar.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -5525,17 +5545,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: specificHumidity
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: specificHumidity
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -5735,6 +5755,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_aircar.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -5802,18 +5823,18 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: windEastward
+#           - name: windNorthward
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online domain check
          - filter: Bounds Check
@@ -6045,6 +6066,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_aircft.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -6110,17 +6132,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: airTemperature
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: airTemperature
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -6319,6 +6341,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_aircft.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -6384,17 +6407,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: airTemperature
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: airTemperature
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -6593,6 +6616,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_aircft.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -6658,17 +6682,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: airTemperature
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: airTemperature
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -6867,6 +6891,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_aircft.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -6932,17 +6957,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: airTemperature
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: airTemperature
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -7141,6 +7166,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_aircft.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -7206,17 +7232,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: specificHumidity
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: specificHumidity
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -7416,6 +7442,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_aircft.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -7483,18 +7510,18 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: windEastward
+#           - name: windNorthward
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online domain check
          - filter: Bounds Check
@@ -7726,6 +7753,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_aircft.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -7793,18 +7821,18 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: windEastward
+#           - name: windNorthward
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online domain check
          - filter: Bounds Check
@@ -8036,6 +8064,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_aircft.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -8103,18 +8132,18 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: windEastward
+#           - name: windNorthward
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online domain check
          - filter: Bounds Check
@@ -8346,6 +8375,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_aircft.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -8413,18 +8443,18 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: windEastward
+#           - name: windNorthward
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online domain check
          - filter: Bounds Check
@@ -8658,6 +8688,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_gnss_ztd.nc
+             missing file action: "warn"
 
          obsgrouping:
            group variables: ["stationIdentification"]
@@ -8758,6 +8789,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_msonet.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -8823,17 +8855,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: airTemperature
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: airTemperature
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -9032,6 +9064,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_msonet.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -9097,17 +9130,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: specificHumidity
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: specificHumidity
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -9307,6 +9340,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_msonet.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -9365,17 +9399,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: stationPressure
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: stationPressure
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -9574,6 +9608,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_msonet.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -9950,18 +9985,18 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: windEastward
+#           - name: windNorthward
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online domain check
          - filter: Bounds Check
@@ -10199,6 +10234,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_proflr.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -10266,18 +10302,18 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: windEastward
+#           - name: windNorthward
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -10554,6 +10590,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_rassda.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -10619,17 +10656,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: airTemperature
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: airTemperature
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -10826,6 +10863,7 @@ observations:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_sfcshp.nc"
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -10891,17 +10929,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: airTemperature
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: airTemperature
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -11100,6 +11138,7 @@ observations:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_sfcshp.nc"
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -11165,17 +11204,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: airTemperature
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: airTemperature
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -11374,6 +11413,7 @@ observations:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_sfcshp.nc"
+             missing file action: "warn"
              #obsfile: "obsout/sfcship_tsen_obs_2024052700_dc.nc4"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -11440,17 +11480,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: airTemperature
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: airTemperature
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -11649,6 +11689,7 @@ observations:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_sfcshp.nc"
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -11714,17 +11755,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: specificHumidity
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: specificHumidity
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -11924,6 +11965,7 @@ observations:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_sfcshp.nc"
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -11989,17 +12031,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: specificHumidity
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: specificHumidity
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -12199,6 +12241,7 @@ observations:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_sfcshp.nc"
+             missing file action: "warn"
              #obsfile: "obsout/sfcship_q_obs_2024052700_dc.nc4"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -12265,17 +12308,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: specificHumidity
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: specificHumidity
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -12475,6 +12518,7 @@ observations:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_sfcshp.nc"
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -12533,17 +12577,17 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: stationPressure
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: stationPressure
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -12751,6 +12795,7 @@ observations:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_sfcshp.nc"
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -12821,18 +12866,18 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           min_spacing: PT60M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: windEastward
+#           - name: windNorthward
+#           min_spacing: PT60M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online domain check
          - filter: Bounds Check
@@ -13114,6 +13159,7 @@ observations:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_sfcshp.nc"
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -13184,18 +13230,18 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           min_spacing: PT60M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: windEastward
+#           - name: windNorthward
+#           min_spacing: PT60M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online domain check
          - filter: Bounds Check
@@ -13433,6 +13479,7 @@ observations:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_sfcshp.nc"
+             missing file action: "warn"
              #obsfile: "obsout/sfcship_uv_obs_2024052700_dc.nc4"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -13501,18 +13548,18 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           min_spacing: PT60M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: windEastward
+#           - name: windNorthward
+#           min_spacing: PT60M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online domain check
          - filter: Bounds Check
@@ -13750,6 +13797,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_vadwnd.nc
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -13817,18 +13865,18 @@ observations:
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@analysisDate@"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
+#         - filter: Temporal Thinning
+#           apply at iterations: 0,1
+#           filter variables:
+#           - name: windEastward
+#           - name: windNorthward
+#           min_spacing: PT90M
+#           tolerance: PT0H
+#           seed_time: "@analysisDate@"
+#           category_variable:
+#             name: MetaData/longitude_latitude_pressure
+#           action:
+#             name: reduce obs space
 
          # Online domain check
          - filter: Bounds Check
@@ -14112,6 +14160,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_amsua_n19.nc
+             missing file action: "warn"
          obsdataout:
            engine:
              type: H5File
@@ -14488,6 +14537,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_amsua_n20.nc
+             missing file action: "warn"
          obsdataout:
            engine:
              type: H5File
@@ -15071,6 +15121,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_atms_npp.nc
+             missing file action: "warn"
          obsdataout:
            engine:
              type: H5File
@@ -15657,6 +15708,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_abi_g16.nc
+             missing file action: "warn"
          obsdataout:
            engine:
              type: H5File
@@ -16147,6 +16199,7 @@ observations:
            engine:
              type: H5File
              obsfile: data/obs/ioda_abi_g18.nc
+             missing file action: "warn"
          obsdataout:
            engine:
              type: H5File
