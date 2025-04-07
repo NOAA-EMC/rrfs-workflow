@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2154
+# Expects 'PARMrrfs', 'start_type', 'analysisFile', 'analysisDate', and
+# 'beginDate' to be set by the caller. The previous line disables SC2154
+# for the entire script.
+#
 # generate the JEDI yaml file using the jedivar.yaml from the parm/ directory
 #
-cp -p ${PARMrrfs}/jedivar.yaml .
+cp -p "${PARMrrfs}"/jedivar.yaml .
 
 # Use ana.nc for cold start.
 if [[ "${start_type}" == "cold" ]]; then
