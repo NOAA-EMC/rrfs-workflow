@@ -19,6 +19,7 @@ export ZETA_LEVELS="L60.txt"
 #
 export DO_IODA="false"
 #export DO_JEDI=true
+export DO_RECENTER="false"
 
 export DO_CYC=true
 export CYC_INTERVAL=3
