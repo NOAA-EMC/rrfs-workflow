@@ -138,5 +138,4 @@ rocotorun -w rrfs.xml -d rrfs.db
     os.chmod(fPath, st.st_mode | stat.S_IEXEC)
 
     print(f'rrfs.xml and run_rocoto.sh created at:\n  {expdir}')
-
 # end of setup_xml
