@@ -111,7 +111,9 @@ cyc=$hh
 mkdir -p $DATA/bufrpost
 cd $DATA/bufrpost
 
-cpreq -p ${FIX_BUFRSND}/${PREDEF_GRID_NAME}/rrfs_profdat regional_profdat
+NSTAT=1950
+
+cpreq -p ${FIX_BUFRSND}/${PREDEF_GRID_NAME}/rrfs_profdat.${NSTAT} regional_profdat
 
 OUTTYP=netcdf
 
@@ -223,7 +225,6 @@ do
     err_exit "ABORTING due to bad model selection for this script."
   fi
 
-  NSTAT=1850
   datestr=`date`
   echo top of loop after found needed log file for $fhr at $datestr
 
@@ -240,10 +241,6 @@ $NSTAT
 $OUTFILDYN
 $OUTFILPHYS
 EOF
-
-#  export FORT19="$DATA/bufrpost/regional_profdat"
-#  export FORT79="$DATA/bufrpost/profilm.c1.${tmmark}"
-#  export FORT11="./itag"
 
 ln -sf $DATA/bufrpost/regional_profdat     fort.19
 ln -sf $DATA/bufrpost/profilm.c1.${tmmark} fort.79
@@ -287,11 +284,6 @@ ln -sf $DATA/regional_sndp.parm.mono fort.11
 ln -sf $DATA/regional_bufr.tbl       fort.32
 ln -sf $DATA/profilm.c1.${tmmark}    fort.66
 ln -sf $DATA/class1.bufr             fort.78
-
-# export FORT11="$DATA/regional_sndp.parm.mono"
-# export FORT32="$DATA/regional_bufr.tbl"
-# export FORT66="$DATA/profilm.c1.${tmmark}"
-# export FORT78="$DATA/class1.bufr"
 
 echo here model $model
 
@@ -373,7 +365,7 @@ SNOUTF   = ${outfilbase}.snd
 SFOUTF   = ${outfilbase}.sfc+
 SNPRMF   = snrrfs.prm
 SFPRMF   = sfrrfs.prm
-TIMSTN   = 85/1850
+TIMSTN   = 85/$NSTAT
 r
 
 exit
