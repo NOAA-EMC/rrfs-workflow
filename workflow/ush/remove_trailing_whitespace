@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 import shutil
 
-if len(sys.argv) != 2:
+if len(sys.argv) < 2:
     print(f"Usage: {sys.argv[0]} <filename/directory>")
     exit()
 # ~~
@@ -16,7 +16,9 @@ if os.path.isdir(tmp):  # or tmp=="." or tmp=="..":
         if file.is_file():
             files.append(file)
 else:
-    files.append(tmp)
+    for arg in sys.argv[1:]:
+        if Path(arg).exists:
+            files.append(arg)
 
 for filename in files:
     # found whether any lines contain trailing whitespaces
