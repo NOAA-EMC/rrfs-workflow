@@ -75,6 +75,7 @@ nlevel=$(wc -l < "${zeta_levels}")
 ln -snf "${FIXrrfs}/meshes/${MESH_NAME}.invariant.nc_L${nlevel}_${prefix}" ./invariant.nc
 ${cpreq} "${FIXrrfs}/meshes/${MESH_NAME}.static.nc" static.nc
 ${cpreq} "${FIXrrfs}/graphinfo/${MESH_NAME}.graph.info.part.${NTASKS}" .
+ln -snf ${FIXrrfs}/physics/${PHYSICS_SUITE}/QNWFA_QNIFA_SIGMA_MONTHLY.dat .
 
 # run init_atmosphere_model
 source prep_step
