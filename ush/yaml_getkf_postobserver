@@ -1,0 +1,73 @@
+#!/usr/bin/env python
+#
+import os
+import sys
+#
+# get command line inputs
+#
+args = sys.argv
+nargs = len(args) - 1
+if nargs < 1:
+    print(f"{args[0]} <yaml_file>\n")
+    print(f'  eg: yaml_getkf_postobserver getkf_solver.yaml')
+    exit()
+yfile = args[1]
+basename = yfile.rstrip(".yaml")
+yfile2 = basename + "_old001.yaml"
+#
+# find an available file name to backup the old yaml file
+if os.path.exists(yfile2):
+    knt = 1
+    yfile2 = f'{basename}_old{knt:03}.yaml'
+    while os.path.exists(yfile2):
+        knt += 1
+        yfile2 = f'{basename}_old{knt:03}.yaml'
+#
+os.replace(yfile, yfile2)
+with open(yfile2, 'r') as infile: 
+    yaml_data = infile.readlines()
+    nlines = len(yaml_data)
+
+    # Replace do posterior observer
+    for i, line in enumerate(yaml_data):
+        if 'do posterior observer: false' in line:
+            yaml_data[i] = line.replace('false', 'true')
+            break
+
+    # Comment out reduce obs space filter actions
+    start_commenting = False
+    for i, line in enumerate(yaml_data):
+        if 'action:' in line and 'reduce obs space' in yaml_data[i+1]:
+            start_commenting = True
+        if start_commenting:
+            if line.strip():
+                yaml_data[i] = '#' + line
+            if 'reduce obs space' in line:
+                start_commenting = False
+
+    # Comment out reduce obs space filter actions (if reject is also an action)
+    # NOTE: This will be removed once we fix the duplicate keys 
+    #   See https://github.com/NOAA-EMC/RDASApp/issues/348
+    start_commenting = False
+    for i, line in enumerate(yaml_data):
+        if i < nlines-2 and 'action:' in line and 'reject' in yaml_data[i+1] and 'reduce obs space' in yaml_data[i+2]:
+            start_commenting = True
+        if start_commenting:
+            if 'reduce obs space' in line:
+                yaml_data[i] = '#' + line
+                start_commenting = False
+
+    # Comment out Temporal Thinning block (jdiag files output from observer are not strings)
+    start_commenting = False
+    for i, line in enumerate(yaml_data):
+        if "# Duplicate Check" in line:
+            start_commenting = True
+        if start_commenting:
+            if line.strip():  # Avoid empty lines
+                yaml_data[i] = "#" + line
+            if "reduce obs space" in line:
+                start_commenting = False
+
+# Save the updated file
+with open(yfile, "w") as outfile:
+    outfile.writelines(yaml_data)
