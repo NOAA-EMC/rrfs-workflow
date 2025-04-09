@@ -6,10 +6,6 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 
 
 def getkf(xmlFile, expdir, taskType):
-    if taskType.upper() == "OBSERVER":
-        task_id = "getkf_observer"
-    elif taskType.upper() == "SOLVER":
-        task_id = "getkf_solver"
     cycledefs = 'prod'
     # Task-specific EnVars beyond the task_common_vars
     extrn_mdl_source = os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined')
@@ -19,10 +15,14 @@ def getkf(xmlFile, expdir, taskType):
         'PHYSICS_SUITE': f'{physics_suite}',
         'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
         'YAML_GEN_METHOD': os.getenv('YAML_GEN_METHOD', '1'),
-        'GETKF_POST_OBSERVER': os.getenv('GETKF_POST_OBSERVER', 'FALSE').upper(),
         'ENS_SIZE': os.getenv("ENS_SIZE", '5'),
         'TYPE': taskType.lower(),
     }
+    if taskType.upper() == "OBSERVER":
+        task_id = "getkf_observer"
+    elif taskType.upper() == "SOLVER":
+        task_id = "getkf_solver"
+        dcTaskEnv['GETKF_POST_OBSERVER'] = os.getenv('GETKF_POST_OBSERVER', 'FALSE').upper()
     # dependencies
     timedep = ""
     realtime = os.getenv("REALTIME", "false")
