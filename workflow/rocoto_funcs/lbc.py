@@ -25,6 +25,7 @@ def lbc(xmlFile, expdir, do_ensemble=False):
         'INTERVAL': f'{interval}',
         'GROUP_INDEX': f'#group_index#',
         'GROUP_TOTAL_NUM': f'{lbc_group_total_num}'
+        'NSOIL_LEVELS': os.getenv('NSOIL_LEVELS', '9'),
     }
 
     if not do_ensemble:
