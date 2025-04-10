@@ -146,4 +146,4 @@ fi
 # the input/output file are linked from the umbrella directory, so no need to copy
 cp "${DATA}"/jdiag* "${COMOUT}/jedivar/${WGF}"
 cp "${DATA}"/jedivar*.yaml "${COMOUT}/jedivar/${WGF}"
-cp "${DATA}"/log.* "${COMOUT}/jedivar/${WGF}"
+cp "${DATA}"/log.out "${COMOUT}/jedivar/${WGF}"

@@ -6,7 +6,7 @@ import sys
 args = sys.argv
 nargs = len(args) - 1
 if nargs < 1:
-    print(f"jquery <yamlfile_name>")
+    print(f"{sys.argv[0]} <yamlfile_name>")
     exit()
 
 yfile = open(args[1], 'r')
@@ -23,7 +23,9 @@ filter_text = ''
 for i in range(nobs):
     lname = obslist[i]['obs space']['name']
     sname = lname.split('=')[0]
-    obs_text = obs_text + sname + ','
+    if obslist[i]['obs operator']['name'].upper() != "CRTM":
+        sname = sname.rsplit('_', 1)[-1]
+    obs_text = obs_text + sname + ', '
     #
     # get the observations headers (excluding the filters) and dump
     observer = {
@@ -62,5 +64,5 @@ for i in range(nobs):
     #
     filter_text += f'{lname.ljust(35)}: {filter_knt} filters\n'
 #
-obs_text = f'{nobs} observers:\n{obs_text.rstrip(",")}'
-print(f'{obs_text}\n\n{filter_text}\n')
+obs_text = f'{nobs} observers:\n{obs_text.rstrip(", ")}'
+print(f'{filter_text}\n\n{obs_text}\n')

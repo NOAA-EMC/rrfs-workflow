@@ -75,8 +75,13 @@ ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/gen_bufr2ioda_json.py .
 fi
 
 # run offline IODA tools
+${cpreq} "${USHrrfs}"/offline_domain_check.py .
 ${cpreq} "${USHrrfs}"/offline_ioda_tweak.py .
 for ioda_file in ioda*nc; do
+  grid_file="${FIXrrfs}/meshes/${MESH_NAME}.static.nc"
+  ./offline_domain_check.py -o "${ioda_file}" -g "${grid_file}" -s 0.005
+  base_name=$(basename "$ioda_file" .nc)
+  mv  "${base_name}_dc.nc" "${base_name}.nc"
   ./offline_ioda_tweak.py -o "${ioda_file}"
   base_name=$(basename "$ioda_file" .nc)
   mv  "${base_name}_llp.nc" "${base_name}.nc"

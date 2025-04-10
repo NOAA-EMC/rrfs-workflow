@@ -17,9 +17,10 @@ export DO_DETERMINISTIC=false
 export ENS_SIZE=30
 export ZETA_LEVELS="L60.txt"
 #
-export DO_IODA="false"
+export DO_IODA=false
 #export DO_JEDI=true
-export DO_RECENTER="false"
+export GETKF_POST_OBSERVER=false
+export DO_RECENTER=false
 
 export DO_CYC=true
 export CYC_INTERVAL=3
