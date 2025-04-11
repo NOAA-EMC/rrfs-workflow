@@ -14,6 +14,7 @@ def ic(xmlFile, expdir, do_ensemble=False):
     dcTaskEnv = {
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
         'PHYSICS_SUITE': f'{physics_suite}',
+        'NSOIL_LEVELS': os.getenv('NSOIL_LEVELS', '9'),
     }
     if not do_ensemble:
         metatask = False
