@@ -27,7 +27,7 @@ elif  [[ "${prefix}" == "GEFS" ]]; then
   nfglevels=32
   nfgsoillevels=4
 fi
-nsoillevels=9
+nsoillevels=${NSOIL_LEVELS}
 
 zeta_levels=${EXPDIR}/config/ZETA_LEVELS.txt
 ztop=$(tail -1 "${zeta_levels}")
