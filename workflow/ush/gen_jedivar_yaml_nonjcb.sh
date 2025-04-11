@@ -102,6 +102,7 @@ sed -i -E \
     -e "s/begin: '$date_pattern'/begin: '@beginDate@'/" \
     -e "s/seed_time: \"$date_pattern\"/seed_time: '@analysisDate@'/" \
     -e "s/length: PT[0-9]H/length: 'PT${length}H'/" \
+    -e "0,/filename: mpasin.nc/s/filename: mpasin.nc/filename: '@analysisFile@'/" \
     -e "s/@DISTRIBUTION@/$distribution/" \
     ./jedivar.yaml
 
