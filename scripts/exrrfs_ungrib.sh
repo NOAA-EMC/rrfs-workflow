@@ -42,13 +42,62 @@ for fhr in  ${fhr_all}; do
   GRIBFILE_LOCAL=$( "${USHrrfs}/num_to_GRIBFILE.XXX.sh"  "${knt}" )
   NAME_FILE=${NAME_PATTERN/fHHH/${HHH}}
   GRIBFILE="${SOURCE_BASEDIR}/${NAME_FILE}"
-  ${cpreq} "${GRIBFILE}"  "${GRIBFILE_LOCAL}"
-
-  # if NAME_PATTERN_B is defined and non-empty
-  if [ -n "${NAME_PATTERN_B+x}" ] && [ -n "${NAME_PATTERN_B}" ]; then
-    NAME_FILE=${NAME_PATTERN_B/fHHH/${HHH}}
-    GRIBFILE="${SOURCE_BASEDIR}/${NAME_FILE}"
-    cat "${GRIBFILE}" >> "${GRIBFILE_LOCAL}"
+  if [[ -s "${GRIBFILE}" ]]; then 
+    ${cpreq} "${GRIBFILE}"  "${GRIBFILE_LOCAL}"
+    # if NAME_PATTERN_B is defined and non-empty
+    if [ -n "${NAME_PATTERN_B+x}" ] && [ -n "${NAME_PATTERN_B}" ]; then
+      NAME_FILE=${NAME_PATTERN_B/fHHH/${HHH}}
+      GRIBFILE="${SOURCE_BASEDIR}/${NAME_FILE}"
+      cat "${GRIBFILE}" >> "${GRIBFILE_LOCAL}"
+    fi
+  else
+    # If GRIBFILE does not exist, might need to do time interpolation
+    if [[ ${INTERVAL} -eq 1 ]] && [[ "${EXTRN_MDL_SOURCE}" == "GEFS" ]]; then
+      if (( ${fhr} % 3 != 0 )); then
+        fhr_0=$(( fhr % 3 ))
+        fhr_m=$(( fhr - fhr_0 ))
+        fhr_p=$(( fhr - fhr_0 + 3 ))
+        HHH_M=$(printf %03d $((10#$fhr_m)) )
+        HHH_P=$(printf %03d $((10#$fhr_p)) )
+        NAME_FILE_M=${NAME_PATTERN/fHHH/${HHH_M}}
+        NAME_FILE_P=${NAME_PATTERN/fHHH/${HHH_P}}
+        GRIBFILE_M="${SOURCE_BASEDIR}/${NAME_FILE_M}"
+        GRIBFILE_P="${SOURCE_BASEDIR}/${NAME_FILE_P}"
+        echo "Deriving ${GRIBFILE} based on ${GRIBFILE_M} and ${GRIBFILE_P}"
+        # Get interpolation weights
+        vtime=$(date +%Y%m%d%H -d "${CDATEin:0:8} ${CDATEin:8:2} +${fhr_m} hours" )
+        echo vtime = $vtime
+        a="vt=${vtime}"
+        d1="${fhr} hour forecast"
+        echo $d1
+        fhr_0=$(( fhr % 3 ))
+        c=$( expr ${fhr_0}/3 | bc -l )
+        c1=$( printf "%.5f\n" $c)
+        b1=$( expr 1-$c1 | bc -l )
+        echo " b1,c1= $b1 $c1 "
+        # Now use wgrib2 to interpolate
+        wgrib2 ${GRIBFILE_M} -rpn sto_1 -import_grib ${GRIBFILE_P} -rpn sto_2 -set_grib_type same \
+          -if ":$a:" \
+            -rpn "rcl_1:$b1:*:rcl_2:$c1:*:+" -set_ftime "$d1" -set_scaling same same -grib_out ${GRIBFILE_LOCAL}
+        if [ -n "${NAME_PATTERN_B+x}" ] && [ -n "${NAME_PATTERN_B}" ]; then
+           NAME_FILE_M=${NAME_PATTERN_B/fHHH/${HHH_M}}
+           NAME_FILE_P=${NAME_PATTERN_B/fHHH/${HHH_P}}
+           GRIBFILE_M="${SOURCE_BASEDIR}/${NAME_FILE_M}"
+           GRIBFILE_P="${SOURCE_BASEDIR}/${NAME_FILE_P}"
+           wgrib2 ${GRIBFILE_M} -rpn sto_1 -import_grib ${GRIBFILE_P} -rpn sto_2 -set_grib_type same \
+             -if ":$a:" \
+             -rpn "rcl_1:$b1:*:rcl_2:$c1:*:+" -set_ftime "$d1" -set_scaling same same -grib_out ${GRIBFILE_LOCAL}_b
+           cat "${GRIBFILE_LOCAL}_b" >> "${GRIBFILE_LOCAL}"
+           rm ${GRIBFILE_LOCAL}_b
+        fi
+      else
+        echo "FATAL ERROR: time interpolation requested but fhr not divisible by three"
+        err_exit
+      fi
+    else
+      echo "FATAL ERROR: ${GRIBFILE} missing but not eligible for time interpolation"
+      err_exit
+    fi
   fi
 done
 #
