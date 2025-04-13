@@ -168,11 +168,11 @@ with open(yfile2, 'r') as infile, open(yfile, 'w') as outfile:
         elif "obs filters:" in line:
             buffer_zone.append(line)
             if passivate:
-                nSpaces = len(line) - len(line.lstrip()) + 2
+                nSpaces = len(line) - len(line.lstrip())
                 spaces = " "*nSpaces 
                 buffer_zone.append(spaces + "- filter: Perform Action\n")
                 buffer_zone.append(spaces + "  action:\n")
-                buffer_zone.append(spaces + "    name: passivate\n")
+                buffer_zone.append(spaces + "    name: passivate\n\n")
             
         elif "_anchor_" in line:
             if not use_obs:  # use_obs is determined after the above `if` and `elif`
