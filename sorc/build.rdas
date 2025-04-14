@@ -40,8 +40,8 @@ cp ../_workaround_/MPAS-Model/Registry.xml sorc/mpas/src/core_atmosphere
 
 # workaround for using the GSL surface operator
 # https://github.com/JCSDA-internal/ufo/pull/3622 by Sijie
-cp ../_workaround_/RDASApp/CMakeLists.txt sorc/ufo/src/ufo
-cp -r ../_workaround_/RDASApp/sfccorrected sorc/ufo/src/ufo/operators
+#cp ../_workaround_/RDASApp/CMakeLists.txt sorc/ufo/src/ufo
+#cp -r ../_workaround_/RDASApp/sfccorrected sorc/ufo/src/ufo/operators
 
 # workaround for compiling iodaconverter on Gaea
 # Junjun is working on a PR
