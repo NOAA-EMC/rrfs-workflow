@@ -23,7 +23,7 @@ fi
 #
 ${cpreq} "${EXECrrfs}/upp.x" .
 ${cpreq} "${FIXrrfs}"/upp/* .
-FIXcrtm=${FIXrrfs}/crtm/2.4.0
+FIXcrtm=${FIXrrfs}/crtm/2.4.0_upp
 while read -r line; do
   ln -snf "${FIXcrtm}/${line}" .
 done < crtmfiles.upp
