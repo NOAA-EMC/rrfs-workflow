@@ -8719,67 +8719,67 @@ observations:
            lengthscale: 300e3
 
        obs filters:
-       # Pre-online regional domain check (latitude/longitude)
-       - filter: Domain Check
-         where:
-           - variable:
-               name: MetaData/latitude
-             minvalue:  19.0
-             maxvalue:  62.0
-           - variable:
-               name: MetaData/longitude
-             minvalue: 213.0
-             maxvalue: 312.0
-         action:
-            name: reduce obs space
+         # Pre-online regional domain check (latitude/longitude)
+         - filter: Domain Check
+           where:
+             - variable:
+                 name: MetaData/latitude
+               minvalue:  19.0
+               maxvalue:  62.0
+             - variable:
+                 name: MetaData/longitude
+               minvalue: 213.0
+               maxvalue: 312.0
+           action:
+              name: reduce obs space
 
-       # Online regional domain check (domain mask)
-       - filter: Domain Check
-         where:
-           - variable:
-               name: GeoVaLs/observable_domain_mask
-             minvalue: 0.0
-             maxvalue: 0.5  # 0=interior, 1=outside of domain
+         # Online regional domain check (domain mask)
+         - filter: Domain Check
+           where:
+             - variable:
+                 name: GeoVaLs/observable_domain_mask
+               minvalue: 0.0
+               maxvalue: 0.5  # 0=interior, 1=outside of domain
 
-       # Reject all obs with QualityMarker > 10
-       - filter: Bounds Check
-         filter variables:
-         - name: zenithTotalDelay
-         test variables:
-         - name: QualityMarker/zenithTotalDelay
-         maxvalue: 10
+         # Reject all obs with QualityMarker > 10
+         - filter: Bounds Check
+           filter variables:
+           - name: zenithTotalDelay
+           test variables:
+           - name: QualityMarker/zenithTotalDelay
+           maxvalue: 10
 
-       # Initial error assignment
-       - filter: Perform Action
-         filter variables:
-         - name: zenithTotalDelay
-         action:
-           name: assign error
-           error parameter: 0.01
+         # Initial error assignment
+         - filter: Perform Action
+           filter variables:
+           - name: zenithTotalDelay
+           action:
+             name: assign error
+             error parameter: 0.01
 
-       # Monitoring mode (no assimilation, set QCflag=1)
-#      - filter: Perform Action
-#        filter variables:
-#        - name: zenithTotalDelay
-#        action:
-#          name: passivate
+         # Monitoring mode (no assimilation, set QCflag=1)
+  #      - filter: Perform Action
+  #        filter variables:
+  #        - name: zenithTotalDelay
+  #        action:
+  #          name: passivate
 
-       # Terrain Height Discrepancy Check
-       - filter: Difference Check
-         reference: MetaData/stationElevation
-         value: GeoVaLs/height_above_mean_sea_level_at_surface
-         threshold: 300    # (m)
+         # Terrain Height Discrepancy Check
+         - filter: Difference Check
+           reference: MetaData/stationElevation
+           value: GeoVaLs/height_above_mean_sea_level_at_surface
+           threshold: 300    # (m)
 
-       # Gross Error Check
-       - filter: Background Check
-         threshold: 6
+         # Gross Error Check
+         - filter: Background Check
+           threshold: 6
 
-#      - filter: RejectList
-#        where:
-#        - variable: MetaData/productName
-#          is_in: ["ROBG"]
-#          is_in: ["LPT_"]
-#          is_in: ["ROBG","LPT_"]
+  #      - filter: RejectList
+  #        where:
+  #        - variable: MetaData/productName
+  #          is_in: ["ROBG"]
+  #          is_in: ["LPT_"]
+  #          is_in: ["ROBG","LPT_"]
      - obs space:
          name: msonet_t188
          distribution:
