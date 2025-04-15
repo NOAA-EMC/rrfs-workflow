@@ -1,9 +1,39 @@
 _member: &memberConfig
   date: &analysisDate '@analysisDate@'
-  state variables: [spechum,surface_pressure,temperature,uReconstructMeridional,uReconstructZonal,theta,rho,u,qv,pressure,landmask,xice,snowc,skintemp,ivgtyp,isltyp,snowh,vegfra,u10,v10,lai,smois,tslb,pressure_p,qc,qi,qg,qr,qs,cldfrac]
+  state variables:
+  - water_vapor_mixing_ratio_wrt_moist_air
+  - air_pressure_at_surface
+  - air_temperature
+  - northward_wind
+  - eastward_wind
+  - air_potential_temperature
+  - dry_air_density
+  - u
+  - water_vapor_mixing_ratio_wrt_dry_air
+  - air_pressure
+  - landmask
+  - seaice_fraction
+  - snowc
+  - skin_temperature_at_surface
+  - ivgtyp
+  - isltyp
+  - snowh
+  - vegetation_area_fraction
+  - eastward_wind_at_10m
+  - northward_wind_at_10m
+  - lai
+  - smois
+  - tslb
+  - pressure_p
+  - cloud_liquid_water
+  - cloud_liquid_ice
+  - graupel
+  - rain_water
+  - snow_water
+  - cldfrac
   stream name: background
 
-increment variables: [temperature, spechum, uReconstructZonal, uReconstructMeridional, surface_pressure]
+increment variables: [air_temperature, water_vapor_mixing_ratio_wrt_moist_air, eastward_wind, northward_wind, air_pressure_at_surface]
 
 output mean prior:
   filename: ./prior_mean.nc
