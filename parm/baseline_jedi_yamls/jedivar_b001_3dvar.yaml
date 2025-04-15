@@ -130,7 +130,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_adpupa.nc
+             obsfile: "data/obs/ioda_adpupa.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -410,7 +410,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_adpupa.nc
+             obsfile: "data/obs/ioda_adpupa.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -533,7 +533,6 @@ cost function:
                options:
                  variable: specificHumidity
                  inflation factor: 8.0
-                 request_saturation_specific_humidity_geovals: false
 
          # Error inflation based on errormod (qcmod.f90)
          - filter: Perform Action
@@ -691,7 +690,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_adpupa.nc
+             obsfile: "data/obs/ioda_adpupa.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -1009,7 +1008,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_aircar.nc
+             obsfile: "data/obs/ioda_aircar.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -1289,7 +1288,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_aircar.nc
+             obsfile: "data/obs/ioda_aircar.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -1412,7 +1411,6 @@ cost function:
                options:
                  variable: specificHumidity
                  inflation factor: 8.0
-                 request_saturation_specific_humidity_geovals: false
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
@@ -1570,7 +1568,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_aircar.nc
+             obsfile: "data/obs/ioda_aircar.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -1888,7 +1886,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_aircft.nc
+             obsfile: "data/obs/ioda_aircft.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -2168,7 +2166,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_aircft.nc
+             obsfile: "data/obs/ioda_aircft.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -2448,7 +2446,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_aircft.nc
+             obsfile: "data/obs/ioda_aircft.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -2728,7 +2726,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_aircft.nc
+             obsfile: "data/obs/ioda_aircft.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -3008,7 +3006,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_aircft.nc
+             obsfile: "data/obs/ioda_aircft.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -3131,7 +3129,6 @@ cost function:
                options:
                  variable: specificHumidity
                  inflation factor: 8.0
-                 request_saturation_specific_humidity_geovals: false
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
@@ -3289,7 +3286,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_aircft.nc
+             obsfile: "data/obs/ioda_aircft.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -3607,7 +3604,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_aircft.nc
+             obsfile: "data/obs/ioda_aircft.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -3925,7 +3922,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_aircft.nc
+             obsfile: "data/obs/ioda_aircft.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -4243,7 +4240,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_aircft.nc
+             obsfile: "data/obs/ioda_aircft.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -4561,7 +4558,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_msonet.nc
+             obsfile: "data/obs/ioda_msonet.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -4841,7 +4838,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_msonet.nc
+             obsfile: "data/obs/ioda_msonet.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -4964,7 +4961,6 @@ cost function:
                options:
                  variable: specificHumidity
                  inflation factor: 8.0
-                 request_saturation_specific_humidity_geovals: false
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
@@ -5122,7 +5118,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_msonet.nc
+             obsfile: "data/obs/ioda_msonet.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -5395,7 +5391,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_adpsfc.nc
+             obsfile: "data/obs/ioda_adpsfc.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -5971,7 +5967,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_adpsfc.nc
+             obsfile: "data/obs/ioda_adpsfc.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -6260,7 +6256,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_adpsfc.nc
+             obsfile: "data/obs/ioda_adpsfc.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -6383,7 +6379,6 @@ cost function:
                options:
                  variable: specificHumidity
                  inflation factor: 8.0
-                 request_saturation_specific_humidity_geovals: false
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
@@ -6664,7 +6659,6 @@ cost function:
                options:
                  variable: specificHumidity
                  inflation factor: 8.0
-                 request_saturation_specific_humidity_geovals: false
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
@@ -6822,7 +6816,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_adpsfc.nc
+             obsfile: "data/obs/ioda_adpsfc.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -6942,7 +6936,6 @@ cost function:
                options:
                  variable: specificHumidity
                  inflation factor: 8.0
-                 request_saturation_specific_humidity_geovals: false
                  # The new feature "surface observation error ramp"
                  # needs to be added to UFO to align with the ramp
                  # options for temperature and humidity in GSI.
@@ -7104,7 +7097,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_adpsfc.nc
+             obsfile: "data/obs/ioda_adpsfc.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -7377,7 +7370,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_adpsfc.nc
+             obsfile: "data/obs/ioda_adpsfc.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -7650,7 +7643,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_adpsfc.nc
+             obsfile: "data/obs/ioda_adpsfc.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -8301,7 +8294,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_adpsfc.nc
+             obsfile: "data/obs/ioda_adpsfc.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -8625,7 +8618,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_adpupa.nc
+             obsfile: "data/obs/ioda_adpupa.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -8905,7 +8898,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_adpupa.nc
+             obsfile: "data/obs/ioda_adpupa.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -9028,7 +9021,6 @@ cost function:
                options:
                  variable: specificHumidity
                  inflation factor: 8.0
-                 request_saturation_specific_humidity_geovals: false
 
          # Error inflation based on errormod (qcmod.f90)
          - filter: Perform Action
@@ -9186,7 +9178,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_msonet.nc
+             obsfile: "data/obs/ioda_msonet.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -9778,7 +9770,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_proflr.nc
+             obsfile: "data/obs/ioda_proflr.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -10139,7 +10131,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_rassda.nc
+             obsfile: "data/obs/ioda_rassda.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -11382,7 +11374,6 @@ cost function:
                options:
                  variable: specificHumidity
                  inflation factor: 8.0
-                 request_saturation_specific_humidity_geovals: false
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
@@ -11663,7 +11654,6 @@ cost function:
                options:
                  variable: specificHumidity
                  inflation factor: 8.0
-                 request_saturation_specific_humidity_geovals: false
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
@@ -11944,7 +11934,6 @@ cost function:
                options:
                  variable: specificHumidity
                  inflation factor: 8.0
-                 request_saturation_specific_humidity_geovals: false
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
