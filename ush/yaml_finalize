@@ -90,11 +90,11 @@ if os.path.exists('satinfo'):
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # generate the final use_obs list
 # ~~~~~~~~~~~~~
-# assemble a final conventional obs use list
-conv_list = []
+# assemble a final conventional obs use/monitor list
+conv_list = {}
 for key,value in dcConvInfo.items():
-    if value['iuse'] == "1":
-        conv_list.append(key)
+    if value['iuse'] != "0":
+        conv_list[key] = value['iuse']
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # if both conv_list and dcSatInfo are empty, print a warning message
@@ -127,6 +127,7 @@ with open(yfile2, 'r') as infile, open(yfile, 'w') as outfile:
     in_buffer_zone = False
     just_read_new_obs_space = False
     use_obs = False
+    passivate = False
     anchor_skip_old_values = False
     #
     for line in infile:
@@ -141,6 +142,7 @@ with open(yfile2, 'r') as infile, open(yfile, 'w') as outfile:
                 buffer_zone = []
                 in_buffer_zone = False
                 use_obs = False
+                passivate = False
                 anchor_skip_old_values = False
             # ~~~~~
             just_read_new_obs_space = True
@@ -149,17 +151,29 @@ with open(yfile2, 'r') as infile, open(yfile, 'w') as outfile:
         elif just_read_new_obs_space and "name" in line:
             just_read_new_obs_space = False
             buffer_zone.append(line)
-            for obs in conv_list:
+            for obs, mode in conv_list.items():
                 if obs in line and obs not in ["dw", "srw", "rw"]:
                     use_obs = True
+                    if mode == "-1":
+                        passivate = True
                     break
             # ~~~~~~
             if not use_obs:  # check whether it is a satellite observation
                 for obs in dcSatInfo:
                     if obs in line:
                         use_obs = True
+                        passivate = False # satellite monitoring needs further work
                         break
 
+        elif "obs filters:" in line:
+            buffer_zone.append(line)
+            if passivate:
+                nSpaces = len(line) - len(line.lstrip()) + 2
+                spaces = " "*nSpaces 
+                buffer_zone.append(spaces + "- filter: Perform Action\n")
+                buffer_zone.append(spaces + "  action:\n")
+                buffer_zone.append(spaces + "    name: passivate\n\n")
+            
         elif "_anchor_" in line:
             if not use_obs:  # use_obs is determined after the above `if` and `elif`
                 # print("found a sat anchor, but the SIS is not in 'satinfo' or empty/corrupt 'satinfo'")
