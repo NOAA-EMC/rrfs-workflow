@@ -52,6 +52,20 @@ def jedivar(xmlFile, expdir, do_spinup=False):
       <datadep age="00:05:00"><cyclestr offset="-2:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}.@Y@m@d/@H/fcst/enkf/mem030/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
       <datadep age="00:05:00"><cyclestr offset="-3:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}.@Y@m@d/@H/fcst/enkf/mem030/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
     </or>'''
+
+    elif HYB_WGT_ENS != "0" and HYB_WGT_ENS != "0.0" and HYB_ENS_TYPE == "2":  # interpolated GDAS/GEFS
+        RUN = 'rrfs'
+        end_dep = f'''
+    <or>
+      <datadep age="00:05:00"><cyclestr  offset="0:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}.@Y@m@d/@H/ic/enkf/mem030/init.nc</datadep>
+      <datadep age="00:05:00"><cyclestr offset="-1:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}.@Y@m@d/@H/ic/enkf/mem030/init.nc</datadep>
+      <datadep age="00:05:00"><cyclestr offset="-2:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}.@Y@m@d/@H/ic/enkf/mem030/init.nc</datadep>
+      <datadep age="00:05:00"><cyclestr offset="-3:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}.@Y@m@d/@H/ic/enkf/mem030/init.nc</datadep>
+      <datadep age="00:05:00"><cyclestr offset="-4:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}.@Y@m@d/@H/ic/enkf/mem030/init.nc</datadep>
+      <datadep age="00:05:00"><cyclestr offset="-5:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}.@Y@m@d/@H/ic/enkf/mem030/init.nc</datadep>
+      <datadep age="00:05:00"><cyclestr offset="-6:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}.@Y@m@d/@H/ic/enkf/mem030/init.nc</datadep>
+    </or>'''
+
     # ~~~~
     if do_spinup:
         prep_ic_dep = '<taskdep task="prep_ic_spinup"/>'
