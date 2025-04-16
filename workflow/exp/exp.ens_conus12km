@@ -24,9 +24,9 @@ export DO_RECENTER=false
 
 export DO_CYC=true
 export CYC_INTERVAL=1
-export FCST_LENGTH=3
-for i in {0..23};    do arr[$i]="03"; done # 3hr fcst
-for i in {0..23..6}; do arr[$i]="03"; done # 3hr fcst every 6hrs
+export FCST_LENGTH=1
+for i in {0..23};    do arr[$i]="01"; done # 3hr fcst
+for i in {0..23..6}; do arr[$i]="01"; done # 3hr fcst every 6hrs
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
 export MPASSIT_GROUP_TOTAL_NUM=1
@@ -36,6 +36,7 @@ export IC_OFFSET=36
 export LBC_OFFSET=6
 export LBC_LENGTH=12
 export LBC_INTERVAL=1
+export LBC_FILE_INTERVAL=3 # if > LBC_INTERVAL, do time interpolation
 export LBC_UNGRIB_GROUP_TOTAL_NUM=1
 export LBC_GROUP_TOTAL_NUM=1
 
