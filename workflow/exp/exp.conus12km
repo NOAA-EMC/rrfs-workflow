@@ -18,7 +18,7 @@ export DO_IODA=true
 export DO_JEDI=true
 export HYB_WGT_ENS=0.0
 export HYB_WGT_STATIC=1.0
-export HYB_ENS_TYPE=1      # 1.rrfs; 2.GDAS; 0.TBD on the fly (rrfs->GDAS->3DVAR)
+export HYB_ENS_TYPE=1      # 1.rrfs; 2.interpolated GEFS/GDAS; 0.TBD on the fly (rrfs->GDAS->3DVAR)
 export HYB_ENS_PATH=""     # if empty, the workflow will try to find ensembles automatically
 
 export DO_CYC=true

@@ -15,6 +15,7 @@ export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed i
 export REALTIME=true     # true, false
 #
 export DO_ENSEMBLE=true
+export IC_ONLY=false  # interpolate GEFS/GDAS to the target mesh to provide ensemble BEC
 export DO_DETERMINISTIC=false
 export ENS_SIZE=30
 export ZETA_LEVELS="L60.txt"
@@ -22,6 +23,7 @@ export ZETA_LEVELS="L60.txt"
 export DO_IODA=false
 export DO_JEDI=true
 export GETKF_POST_OBSERVER=false
+export DO_RECENTER=false
 
 export DO_CYC=true
 export CYC_INTERVAL=3
