@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Aloha! This file is to setup some top level experiment options
 #
+# shellcheck disable=all
 export NET=rrfs                    # rrfs, rtma, 
 export MESH_NAME=conus3km         # conus12km, conus3km, atl3km, etc
 export WGF="enkf"   # working group function = "det", "enkf", "ens", "firewx"
