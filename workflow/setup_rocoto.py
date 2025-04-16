@@ -118,5 +118,10 @@ with open(EXPin, 'r') as infile, open(EXPout, 'w') as outfile:
     #
 
 setup_xml(HOMErrfs, expdir)
+
+if os.getenv('YAML_GEN_METHOD', '1') == '1':
+    srcdir = f'{HOMErrfs}/workflow/ush/qrocoto'
+    dstdir = f'{expdir}/qrocoto'
+    shutil.copytree(srcdir, dstdir, copy_function=shutil.copy2)
 #
 # end of setup_exp.py
