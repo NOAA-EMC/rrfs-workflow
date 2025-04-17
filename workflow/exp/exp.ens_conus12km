@@ -36,7 +36,7 @@ export IC_OFFSET=36
 export LBC_OFFSET=6
 export LBC_LENGTH=12
 export LBC_INTERVAL=1
-export LBC_FILE_INTERVAL=3 # if > LBC_INTERVAL, do time interpolation
+export LBC_FILE_INTERVAL=3            # grib file interval, if > LBC_INTERVAL then do time interpolation
 export LBC_UNGRIB_GROUP_TOTAL_NUM=1
 export LBC_GROUP_TOTAL_NUM=1
 
