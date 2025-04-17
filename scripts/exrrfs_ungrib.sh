@@ -53,40 +53,7 @@ for fhr in  ${fhr_all}; do
   else
     # If GRIBFILE does not exist, might need to do time interpolation
     if [[ ${INTERVAL} -eq 1 ]] && (( fhr % 3 != 0 )); then
-      fhr_0=$(( fhr % 3 ))
-      fhr_m=$(( fhr - fhr_0 ))
-      fhr_p=$(( fhr - fhr_0 + 3 ))
-      HHH_M=$(printf %03d $((10#$fhr_m)) )
-      HHH_P=$(printf %03d $((10#$fhr_p)) )
-      NAME_FILE_M=${NAME_PATTERN/fHHH/${HHH_M}}
-      NAME_FILE_P=${NAME_PATTERN/fHHH/${HHH_P}}
-      GRIBFILE_M="${SOURCE_BASEDIR}/${NAME_FILE_M}"
-      GRIBFILE_P="${SOURCE_BASEDIR}/${NAME_FILE_P}"
-      echo "Deriving ${GRIBFILE} based on ${GRIBFILE_M} and ${GRIBFILE_P}"
-      # Get interpolation weights
-      vtime=$(date +%Y%m%d%H -d "${CDATEin:0:8} ${CDATEin:8:2} +${fhr_m} hours" )
-      fhr_0=$(( fhr % 3 ))
-      c=$( echo "${fhr_0}/3" | bc -l )
-      c1=$( printf "%.5f\n" "$c" )
-      b1=$( echo "1-${c1}" | bc -l )
-      # Get time settings for interpolation
-      a="vt=${vtime}"
-      d1="${fhr} hour forecast"
-      # Now use wgrib2 to interpolate
-      wgrib2 "${GRIBFILE_M}" -rpn sto_1 -import_grib "${GRIBFILE_P}" -rpn sto_2 -set_grib_type same \
-        -if ":$a:" \
-          -rpn "rcl_1:$b1:*:rcl_2:$c1:*:+" -set_ftime "$d1" -set_scaling same same -grib_out "${GRIBFILE_LOCAL}"
-      if [ -n "${NAME_PATTERN_B+x}" ] && [ -n "${NAME_PATTERN_B}" ]; then
-         NAME_FILE_M=${NAME_PATTERN_B/fHHH/${HHH_M}}
-         NAME_FILE_P=${NAME_PATTERN_B/fHHH/${HHH_P}}
-         GRIBFILE_M="${SOURCE_BASEDIR}/${NAME_FILE_M}"
-         GRIBFILE_P="${SOURCE_BASEDIR}/${NAME_FILE_P}"
-         wgrib2 "${GRIBFILE_M}" -rpn sto_1 -import_grib "${GRIBFILE_P}" -rpn sto_2 -set_grib_type same \
-           -if ":$a:" \
-           -rpn "rcl_1:$b1:*:rcl_2:$c1:*:+" -set_ftime "$d1" -set_scaling same same -grib_out "${GRIBFILE_LOCAL}_b"
-         cat "${GRIBFILE_LOCAL}_b" >> "${GRIBFILE_LOCAL}"
-         rm "${GRIBFILE_LOCAL}_b"
-      fi
+      source "${USHrrfs}"/gefs_interpolation.sh
     else
       echo "FATAL ERROR: ${GRIBFILE} missing but not eligible for time interpolation"
       err_exit
