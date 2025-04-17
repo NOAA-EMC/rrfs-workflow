@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2154
+# shellcheck disable=SC2154,SC2153
 fhr_0=$(( fhr % 3 ))
 fhr_m=$(( fhr - fhr_0 ))
 fhr_p=$(( fhr - fhr_0 + 3 ))
