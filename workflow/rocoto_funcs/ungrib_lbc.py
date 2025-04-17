@@ -12,7 +12,6 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     offset = int(os.getenv('LBC_OFFSET', '6'))
     length = int(os.getenv('LBC_LENGTH', '12'))
     interval = int(os.getenv('LBC_INTERVAL', '3'))
-    interval_file = int(os.getenv('LBC_FILE_INTERVAL', interval))
     extrn_mdl_source = os.getenv('LBC_EXTRN_MDL_NAME', 'GFS')
     lbc_source_basedir = os.getenv('LBC_EXTRN_MDL_BASEDIR', '')
     lbc_name_pattern = os.getenv('LBC_EXTRN_MDL_NAME_PATTERN', '')
@@ -84,7 +83,9 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     #
 
     datadep = ''
-    for i in range(int(offset), int(length) + int(offset) + 1, int(interval_file)):
+    if interval == 1 and extrn_mdl_source == "GEFS":
+        interval = 3
+    for i in range(int(offset), int(length) + int(offset) + 1, int(interval)):
         comin_hr3 = str(i).zfill(3)
         fpath3 = fpath.replace('fHHH', comin_hr3)
         datadep = datadep + \
