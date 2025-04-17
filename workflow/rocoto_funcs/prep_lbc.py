@@ -2,7 +2,7 @@
 import os
 from rocoto_funcs.base import xml_task, get_cascade_env
 
-# begin of fcst --------------------------------------------------------
+# begin of prep_lbc --------------------------------------------------------
 
 
 def prep_lbc(xmlFile, expdir, do_ensemble=False):
@@ -58,7 +58,9 @@ def prep_lbc(xmlFile, expdir, do_ensemble=False):
     for hr in range(0, 12):
         taskdep = taskdep + f'\n     <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-{hr}:00:00" />'
 
-    dependencies = f'''
+    dependencies = ""
+    if os.getenv('DO_IC_LBC', 'TRUE').upper() == "TRUE":
+        dependencies = f'''
   <dependency>
   <and>{timedep}
    <or>{taskdep}
@@ -68,4 +70,4 @@ def prep_lbc(xmlFile, expdir, do_ensemble=False):
     #
     xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies,
              metatask, meta_id, meta_bgn, meta_end, "PREP_LBC")
-# end of fcst --------------------------------------------------------
+# end of prep_lbc  --------------------------------------------------------
