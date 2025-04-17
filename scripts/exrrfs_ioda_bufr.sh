@@ -28,6 +28,19 @@ yaml_list=(
 )
 
 if (( ${YAML_GEN_METHOD:-1} == 2 )); then
+  # For YAML_GEN_METHOD=2 we can use all obs. vadwnd not yet ready.
+  yaml_list=(
+  "prepbufr_adpsfc.yaml"
+  "prepbufr_adpupa.yaml"
+  "prepbufr_aircar.yaml"
+  "prepbufr_aircft.yaml"
+  "prepbufr_ascatw.yaml"
+  "prepbufr_msonet.yaml"
+  "prepbufr_proflr.yaml"
+  "prepbufr_rassda.yaml"
+  "prepbufr_sfcshp.yaml"
+  #"prepbufr_vadwnd.yaml"
+  )
   # Copy empty ioda file to data/obs.
   # Use these as the default when bufr2ioda doesn't create a ioda.
   # Otherwise JEDI will crash due to missing ioda file

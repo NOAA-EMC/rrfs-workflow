@@ -1,0 +1,11 @@
+#!/bin/bash
+# shellcheck disable=all
+
+echo -e "======= metatasks ======"
+grep "<metatask name=" rrfs.xml
+
+echo -e "\n======= tasks ======"
+grep "<task name=" rrfs.xml
+
+echo -e "\n======= cycledefs ======"
+grep "<cycledef group=" rrfs.xml

@@ -1,0 +1,47 @@
+#!/bin/bash
+# shellcheck disable=all
+# a wrapper to rocotostat to get a general info about a rocoto workflow
+# by Guoqing Ge, 2019/04
+#
+fulltasks="yes"
+module load rocoto
+#known major xml files for different systems
+xmlarray=("RTMA_3D.xml" "HRRR_primary.xml" "RAP_primary.xml" "FV3LAM_wflow.xml" "rrfs.xml")
+
+CDATE=$(date -u +%Y%m%d%H00)
+
+# if xmlfile is not specified
+if [[ -z ${xmlfile} ]]; then
+# find if there exists major xml files under current directory
+  for s in ${xmlarray[@]}; do
+    if [ -f $s ]; then
+      xmlfile=${s%.*};found=true;break
+    fi
+  done
+  if [ ! $found ]; then # check other xml files under current directory
+    arr=(*.xml)
+    len=${#arr[@]}
+    if [ "${arr[0]}" == "*.xml" ]; then
+      echo "No xml file under current directory"; exit
+    elif [ $len -eq 1 ]; then
+      xmlfile=${arr[0]}; xmlfile=${xmlfile%.*}
+    else
+      echo "specify which xml file to use"; ls -1 *.xml; exit
+    fi
+  fi
+elif [[ ! -e "${xmlfile}.xml" ]]; then
+  echo "${xmlfile}.xml: no such file"
+  exit
+fi
+echo "ok, work on ${xmlfile}.xml..."
+
+### to check whether this is a retro (non-realtime) workflow
+retro=$(grep 'workflow.*realtime="T"' ${xmlfile}.xml)
+if [ -z "$retro" ] ; then
+  rocotostat -w ${xmlfile}.xml -d ${xmlfile}.db -s
+else
+  echo "This is realtime workflow, current cyle= ${CDATE}"
+fi
+
+echo -e "\nYou are using the handy rotocot tool (qrocoto).
+availabel commands: rinfo, rrun, rstat, rcheck, rboot, rtasks, rwind, rcomplete"
