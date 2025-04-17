@@ -79,7 +79,7 @@ if os.getenv("DO_JEDI", 'false').upper() == "TRUE":
     if os.path.exists('satinfo'):
         shutil.copy('satinfo', f'{exp_configdir}/satinfo')
     # copy jedivar.yaml or getkf yamls to exp_configdir
-    if os.getenv('DO_ENSEMBLE','FALSE').upper() == True:
+    if os.getenv('DO_ENSEMBLE','FALSE').upper() == "TRUE":
         shutil.copy(f'{HOMErrfs}/parm/getkf_observer.yaml', f'{exp_configdir}/getkf_observer.yaml')
         shutil.copy(f'{HOMErrfs}/parm/getkf_solver.yaml', f'{exp_configdir}/getkf_observer.yaml')
     else:
