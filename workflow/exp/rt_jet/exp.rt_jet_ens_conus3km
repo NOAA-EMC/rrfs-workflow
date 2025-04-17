@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 # Aloha! This file is to setup some top level experiment options
 #
+# shellcheck disable=all
 export NET=rrfs                    # rrfs, rtma, 
-export MESH_NAME=conus12km         # conus12km, conus3km, atl3km, etc
+export MESH_NAME=conus3km         # conus12km, conus3km, atl3km, etc
 export WGF="enkf"   # working group function = "det", "enkf", "ens", "firewx"
-export EXP_NAME=dev4_12km
+export EXP_NAME=dev4
 export VERSION=$(cat ./VERSION)
-export TAG=e12km
+export TAG=edev4
 export OPSROOT=/lfs5/BMC/nrtrr/NCO_dirs/${EXP_NAME}
 export EXPDIR=${OPSROOT}/exp/${VERSION}/rrfs${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
@@ -15,49 +16,49 @@ export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed i
 export REALTIME=true     # true, false
 #
 export DO_ENSEMBLE=true
-export IC_ONLY=false  # interpolate GEFS/GDAS to the target mesh to provide ensemble BEC
+export IC_ONLY=true  # interpolate GEFS/GDAS to the target mesh to provide ensemble BEC
 export DO_DETERMINISTIC=false
 export ENS_SIZE=30
 export ZETA_LEVELS="L60.txt"
 #
 export DO_IODA=false
-export DO_JEDI=true
+export DO_JEDI=false
 export GETKF_POST_OBSERVER=false
 export DO_RECENTER=false
 
 export DO_CYC=true
-export CYC_INTERVAL=3
+export CYC_INTERVAL=6
 export FCST_LENGTH=3
 for i in {0..23};    do arr[$i]="03"; done # 3hr fcst
-for i in {0..23..6}; do arr[$i]="06"; done # 3hr fcst every 6hrs
+for i in {0..23..6}; do arr[$i]="03"; done # 3hr fcst every 6hrs
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
-export MPASSIT_GROUP_TOTAL_NUM=1
-export UPP_GROUP_TOTAL_NUM=1
+export MPASSIT_GROUP_TOTAL_NUM=2
+export UPP_GROUP_TOTAL_NUM=2
 
 export IC_OFFSET=30
 export LBC_OFFSET=6
-export LBC_LENGTH=12
+export LBC_LENGTH=15
 export LBC_INTERVAL=3
-export LBC_UNGRIB_GROUP_TOTAL_NUM=1
-export LBC_GROUP_TOTAL_NUM=1
+export LBC_UNGRIB_GROUP_TOTAL_NUM=2
+export LBC_GROUP_TOTAL_NUM=2
 
-export RETRO_PERIOD="2024052700-2024052800"
+export RETRO_PERIOD="2024052700-2024052712"
 export CYCLEDEF_IC_STEP_HRS=6
 export CYCLEDEF_LBC_STEP_HRS=6
-export COLDSTART_CYCS="00 12"   # cycles to cold start from external models
+export COLDSTART_CYCS="00 06 12 18"   # cycles to cold start from external models
 #
-export NODES_IC="<nodes>1:ppn=40</nodes>"
-export NODES_LBC="<nodes>1:ppn=40</nodes>"
-export NODES_FCST="<nodes>1:ppn=40</nodes>"
-export NODES_MPASSIT="<nodes>1:ppn=40</nodes>"
-export NODES_UPP="<nodes>1:ppn=40</nodes>"
-export NODES_GETKF="<nodes>4:ppn=20</nodes>"
+export NODES_IC="<nodes>40:ppn=20</nodes>"
+export NODES_LBC="<nodes>40:ppn=20</nodes>"
+export NODES_FCST="<nodes>40:ppn=20</nodes>"
+export NODES_MPASSIT="<nodes>4:ppn=20</nodes>"
+export NODES_UPP="<nodes>4:ppn=20</nodes>"
+export NODES_GETKF="<nodes>80:ppn=10</nodes>"
 #
-export WALLTIME_FCST="1:30:00"
-export WALLTIME_SAVE_FCST="1:30:00"
-export WALLTIME_MPASSIT="1:00:00"
-export WALLTIME_UPP="1:00:00"
+export WALLTIME_FCST="2:00:00"
+export WALLTIME_SAVE_FCST="2:00:00"
+export WALLTIME_MPASSIT="2:00:00"
+export WALLTIME_UPP="2:00:00"
 export WALLTIME_GETKF="00:30:00"
 #
 export KEEPDATA=no

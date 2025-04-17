@@ -67,9 +67,21 @@ if [[ "${HYB_WGT_ENS}" != "0" ]] && [[ "${HYB_WGT_ENS}" != "0.0" ]]; then # usin
          done
        fi
     done
-  elif [[ "${HYB_ENS_TYPE}" == "2"  ]]; then # GDAS
-    echo "use GDAS ensembles"
-    echo "==== to be implemented ===="
+  elif [[ "${HYB_ENS_TYPE}" == "2"  ]]; then # interpolated GDAS/GEFFS
+    echo "use interpolated GDAS/GEFS ensembles"
+    init_file=init.nc
+    for (( ii=0; ii<7; ii=ii+1 )); do
+       CDATEp=$(${NDATE} "-${ii}" "${CDATE}" )
+       ensdir=${COMINrrfs}/rrfs.${CDATEp:0:8}/${CDATEp:8:2}
+       ensdir_m001=${ensdir}/ic/enkf/mem001
+       if [[ -s "${ensdir_m001}/${init_file}" ]]; then
+         for (( iii=1; iii<31; iii=iii+1 )); do
+            memid=$(printf %03d "${iii}")
+            ln -s "${ensdir}/ic/enkf/mem${memid}/${init_file}" "ens/mem${memid}.nc"
+         done
+       fi
+    done
+
   elif [[ "${HYB_ENS_TYPE}" == "0"  ]]; then # rrfsens->GDAS->3DVAR
     echo "determine the ensemble type on the fly"
     echo "==== to be implemented ===="
@@ -124,7 +136,7 @@ case ${YAML_GEN_METHOD:-1} in
 esac
 
 # run mpasjedi_variational.x
-export OOPS_TRACE=1
+#export OOPS_TRACE=1
 export OMP_NUM_THREADS=1
 
 source prep_step
