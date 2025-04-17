@@ -37,7 +37,7 @@ case ${task_id} in
   ungrib)
     module purge
     module load "rrfs/${MACHINE}.intel"
-    module load wgrib2
+    module load wgrib2/2.0.8
     ;;
   jedivar|getkf*)
     module purge
