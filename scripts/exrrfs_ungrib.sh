@@ -55,7 +55,7 @@ for fhr in  ${fhr_all}; do
     if [[ ${INTERVAL} -eq 1 ]] && (( fhr % 3 != 0 )); then
       source "${USHrrfs}"/gefs_interpolation.sh
     else
-      echo "FATAL ERROR: ${GRIBFILE} missing but not eligible for time interpolation"
+      echo "FATAL ERROR: ${GRIBFILE} missing and not eligible for time interpolation"
       err_exit
     fi
   fi
