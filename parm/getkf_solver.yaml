@@ -1,9 +1,39 @@
 _member: &memberConfig
   date: &analysisDate '@analysisDate@'
-  state variables: [spechum,surface_pressure,temperature,uReconstructMeridional,uReconstructZonal,theta,rho,u,qv,pressure,landmask,xice,snowc,skintemp,ivgtyp,isltyp,snowh,vegfra,u10,v10,lai,smois,tslb,pressure_p,qc,qi,qg,qr,qs,cldfrac]
+  state variables:
+  - water_vapor_mixing_ratio_wrt_moist_air
+  - air_pressure_at_surface
+  - air_temperature
+  - northward_wind
+  - eastward_wind
+  - air_potential_temperature
+  - dry_air_density
+  - u
+  - water_vapor_mixing_ratio_wrt_dry_air
+  - air_pressure
+  - landmask
+  - seaice_fraction
+  - snowc
+  - skin_temperature_at_surface
+  - ivgtyp
+  - isltyp
+  - snowh
+  - vegetation_area_fraction
+  - eastward_wind_at_10m
+  - northward_wind_at_10m
+  - lai
+  - smois
+  - tslb
+  - pressure_p
+  - cloud_liquid_water
+  - cloud_liquid_ice
+  - graupel
+  - rain_water
+  - snow_water
+  - cldfrac
   stream name: background
 
-increment variables: [temperature, spechum, uReconstructZonal, uReconstructMeridional, surface_pressure]
+increment variables: [air_temperature, water_vapor_mixing_ratio_wrt_moist_air, eastward_wind, northward_wind, air_pressure_at_surface]
 
 output mean prior:
   filename: ./prior_mean.nc
@@ -8722,67 +8752,67 @@ observations:
            lengthscale: 300e3
 
        obs filters:
-       # Pre-online regional domain check (latitude/longitude)
-       - filter: Domain Check
-         where:
-           - variable:
-               name: MetaData/latitude
-             minvalue:  19.0
-             maxvalue:  62.0
-           - variable:
-               name: MetaData/longitude
-             minvalue: 213.0
-             maxvalue: 312.0
-         action:
-            name: reduce obs space
+         # Pre-online regional domain check (latitude/longitude)
+         - filter: Domain Check
+           where:
+             - variable:
+                 name: MetaData/latitude
+               minvalue:  19.0
+               maxvalue:  62.0
+             - variable:
+                 name: MetaData/longitude
+               minvalue: 213.0
+               maxvalue: 312.0
+           action:
+              name: reduce obs space
 
-       # Online regional domain check (domain mask)
-       - filter: Domain Check
-         where:
-           - variable:
-               name: GeoVaLs/observable_domain_mask
-             minvalue: 0.0
-             maxvalue: 0.5  # 0=interior, 1=outside of domain
+         # Online regional domain check (domain mask)
+         - filter: Domain Check
+           where:
+             - variable:
+                 name: GeoVaLs/observable_domain_mask
+               minvalue: 0.0
+               maxvalue: 0.5  # 0=interior, 1=outside of domain
 
-       # Reject all obs with QualityMarker > 10
-       - filter: Bounds Check
-         filter variables:
-         - name: zenithTotalDelay
-         test variables:
-         - name: QualityMarker/zenithTotalDelay
-         maxvalue: 10
+         # Reject all obs with QualityMarker > 10
+         - filter: Bounds Check
+           filter variables:
+           - name: zenithTotalDelay
+           test variables:
+           - name: QualityMarker/zenithTotalDelay
+           maxvalue: 10
 
-       # Initial error assignment
-       - filter: Perform Action
-         filter variables:
-         - name: zenithTotalDelay
-         action:
-           name: assign error
-           error parameter: 0.01
+         # Initial error assignment
+         - filter: Perform Action
+           filter variables:
+           - name: zenithTotalDelay
+           action:
+             name: assign error
+             error parameter: 0.01
 
-       # Monitoring mode (no assimilation, set QCflag=1)
-#      - filter: Perform Action
-#        filter variables:
-#        - name: zenithTotalDelay
-#        action:
-#          name: passivate
+         # Monitoring mode (no assimilation, set QCflag=1)
+  #      - filter: Perform Action
+  #        filter variables:
+  #        - name: zenithTotalDelay
+  #        action:
+  #          name: passivate
 
-       # Terrain Height Discrepancy Check
-       - filter: Difference Check
-         reference: MetaData/stationElevation
-         value: GeoVaLs/height_above_mean_sea_level_at_surface
-         threshold: 300    # (m)
+         # Terrain Height Discrepancy Check
+         - filter: Difference Check
+           reference: MetaData/stationElevation
+           value: GeoVaLs/height_above_mean_sea_level_at_surface
+           threshold: 300    # (m)
 
-       # Gross Error Check
-       - filter: Background Check
-         threshold: 6
+         # Gross Error Check
+         - filter: Background Check
+           threshold: 6
 
-#      - filter: RejectList
-#        where:
-#        - variable: MetaData/productName
-#          is_in: ["ROBG"]
-#          is_in: ["LPT_"]
-#          is_in: ["ROBG","LPT_"]
+  #      - filter: RejectList
+  #        where:
+  #        - variable: MetaData/productName
+  #          is_in: ["ROBG"]
+  #          is_in: ["LPT_"]
+  #          is_in: ["ROBG","LPT_"]
      - obs space:
          name: msonet_t188
          distribution:
