@@ -25,6 +25,7 @@ def jedivar(xmlFile, expdir, do_spinup=False):
         'PHYSICS_SUITE': f'{physics_suite}',
         'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
         'YAML_GEN_METHOD': os.getenv('YAML_GEN_METHOD', '1'),
+        'COLDSTART_CYCS_DO_DA': os.getenv('COLDSTART_CYCS_DO_DA', 'true'),
         'HYB_WGT_ENS': os.getenv('HYB_WGT_ENS', '0.85'),
         'HYB_WGT_STATIC': os.getenv('HYB_WGT_STATIC', '0.15'),
         'HYB_ENS_TYPE': os.getenv('HYB_ENS_TYPE', '0'),

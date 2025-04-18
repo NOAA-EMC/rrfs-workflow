@@ -147,7 +147,7 @@ export err=$?
 err_chk
 #
 # ncks increments to cold_start IC
-if [[ ${start_type} == "cold" ]]; then
+if [[ ${start_type} == "cold" && ${COLDSTART_CYCS_DO_DA} == "true" ]]; then
   var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional"
   ncks -A -H -v "${var_list}" ana.nc mpasin.nc
   export err=$?
