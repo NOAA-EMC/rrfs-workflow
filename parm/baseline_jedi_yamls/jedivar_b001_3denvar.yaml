@@ -1314,7 +1314,7 @@ cost function:
            filter variables:
            - name: specificHumidity
            action:
-             name: passivate # accept, reject, passivate
+             name: accept # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -1596,7 +1596,7 @@ cost function:
            - name: windEastward
            - name: windNorthward
            action:
-             name: passivate # accept, reject, passivate
+             name: accept # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
