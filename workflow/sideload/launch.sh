@@ -31,7 +31,7 @@ case ${task_id} in
     module purge
     module use "${HOMErrfs}/sorc/RDASApp/modulefiles"
     module load "RDAS/${MACHINE}.intel"
-    module load "EVA/${MACHINE}"
+    module load py-matplotlib py-cartopy py-netcdf4
     export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOMErrfs}/sorc/RDASApp/build/lib64
     ;;
   ungrib)
