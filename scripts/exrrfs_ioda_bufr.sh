@@ -92,10 +92,10 @@ ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/gen_bufr2ioda_json.py .
 ./bufr2ioda_ztd.py -c bufr2ioda_0.json
 #./bufr2ioda_satwnd.py -c bufr2ioda_0.json
 #convert abi gsrcsr bufr to ioda
-ln -sf abibufr rap.t${cyc}z.gsrcsr.tm00.bufr_d
+ln -sf abibufr "rap.t${cyc}z.gsrcsr.tm00.bufr_d"
 ./run_bufr2ioda.sh "${CDATE}" rap "${DATA}" "${DATA}" "${DATA}" "${HOMErdasapp}"
-ln -sf rap.t${cyc}z.abi_g16.tm00.nc ioda_abi_g16.nc
-ln -sf rap.t${cyc}z.abi_g18.tm00.nc ioda_abi_g18.nc
+ln -sf "rap.t${cyc}z.abi_g16.tm00.nc" "ioda_abi_g16.nc"
+ln -sf "rap.t${cyc}z.abi_g18.tm00.nc" "ioda_abi_g18.nc"
 fi
 
 # run offline IODA tools
