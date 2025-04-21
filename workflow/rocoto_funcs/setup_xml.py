@@ -63,10 +63,12 @@ def setup_xml(HOMErrfs, expdir):
             if os.getenv("DO_IODA", "FALSE").upper() == "TRUE":
                 ioda_bufr(xmlFile, expdir)
             #
-            ungrib_ic(xmlFile, expdir)
-            ungrib_lbc(xmlFile, expdir)
-            ic(xmlFile, expdir)
-            lbc(xmlFile, expdir)
+            if os.getenv("DO_IC_LBC", "TRUE").upper() == "TRUE":
+                ungrib_ic(xmlFile, expdir)
+                ungrib_lbc(xmlFile, expdir)
+                ic(xmlFile, expdir)
+                lbc(xmlFile, expdir)
+            #
             if os.getenv("DO_SPINUP", "FALSE").upper() == "TRUE":
                 prep_lbc(xmlFile, expdir)
                 # spin up line
@@ -78,7 +80,7 @@ def setup_xml(HOMErrfs, expdir):
                 jedivar(xmlFile, expdir)
                 fcst(xmlFile, expdir)
                 save_fcst(xmlFile, expdir)
-            else:
+            elif os.getenv("DO_FCST", "TRUE").upper() == "TRUE":
                 prep_ic(xmlFile, expdir)
                 prep_lbc(xmlFile, expdir)
                 if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
@@ -86,8 +88,9 @@ def setup_xml(HOMErrfs, expdir):
                 fcst(xmlFile, expdir)
                 save_fcst(xmlFile, expdir)
             #
-            mpassit(xmlFile, expdir)
-            upp(xmlFile, expdir)
+            if os.getenv("DO_POST", "TRUE").upper() == "TRUE":
+                mpassit(xmlFile, expdir)
+                upp(xmlFile, expdir)
 
 # ---------------------------------------------------------------------------
 # assemble tasks for an ensemble experiment
