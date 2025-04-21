@@ -34,6 +34,11 @@ case ${task_id} in
     module load "EVA/${MACHINE}"
     export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOMErrfs}/sorc/RDASApp/build/lib64
     ;;
+  ungrib)
+    module purge
+    module load "rrfs/${MACHINE}.intel"
+    module load wgrib2/2.0.8
+    ;;
   jedivar|getkf*)
     module purge
     module use "${HOMErrfs}/sorc/RDASApp/modulefiles"
