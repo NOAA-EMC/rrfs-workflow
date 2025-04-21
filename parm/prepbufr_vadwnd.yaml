@@ -66,6 +66,13 @@ observations:
             type: float
             transforms:
               - scale: 0.000001
+          # Assign fake Q errors
+          specificHumidityError:
+            query: "*/PRSLEVEL/Q___INFO/Q__EVENT{1}/QOB"
+            type: float
+            transforms:
+              - scale: 0.0
+              - offset: 999
           specificHumidityQualityMarker:
             query: "*/PRSLEVEL/Q___INFO/Q__EVENT{1}/QQM"
           relativeHumidityError:
@@ -293,6 +300,12 @@ observations:
           source: variables/pressureError
           longName: "Pressure Observation Error"
           units: "Pa"
+
+        - name: "ObsError/specificHumidity"
+          coordinates: "longitude latitude"
+          source: variables/specificHumidityError
+          longName: "Specific Humidity Error"
+          units: "kg kg-1"
 
         - name: "ObsError/relativeHumidity"
           coordinates: "longitude latitude"
