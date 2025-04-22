@@ -283,10 +283,8 @@ else
 
   elif [[ $BKTYPE == 3 ]]; then
     if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-      #### bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/ics
       bkpath=${ICS_ROOT}
     else
-      #### bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/ics
       bkpath=${ICS_ROOT}
     fi
     if [ -r "${bkpath}/coupler.res" ]; then
@@ -346,7 +344,6 @@ else
 
   if [ "${CYCLE_SUBTYPE}" = "spinup" ] ; then
     # point to the 0-h cycle for the warm start from the 1 timestep restart files
-    #fg_restart_dirname=forecast_ensinit
     fg_restart_dirname=forecast
     bkpath=${FG_ROOT}/${RUN}.${PDY}/${cyc}_spinup/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
     ctrl_bkpath=${FG_ROOT}/${RUN}.${PDY}/${cyc}_spinup/${mem_num}/forecast/INPUT
@@ -1018,7 +1015,6 @@ else
   HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
     lbcs_path=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/lbcs
-    #### lbcs_path=${COMrrfs}/refs.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/lbcs
   else
     lbcs_path=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/lbcs
   fi
