@@ -135,10 +135,10 @@ suffix="tileX.nc"
 settings="\
 'namsfc': {"
 
-dummy_run_dir="$EXPTDIR/any_cyc"
-if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  dummy_run_dir="${dummy_run_dir}/any_ensmem"
-fi
+#dummy_run_dir="$EXPTDIR/any_cyc"
+#if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+#  dummy_run_dir="${dummy_run_dir}/any_ensmem"
+#fi
 
 num_nml_vars=${#FV3_NML_VARNAME_TO_SFC_CLIMO_FIELD_MAPPING[@]}
 for (( i=0; i<${num_nml_vars}; i++ )); do

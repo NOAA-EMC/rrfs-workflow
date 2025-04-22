@@ -67,7 +67,8 @@ def copy_missing_restart(comrrfs, hwp_non_avail_hours, hourly_hwpdir):
             prev_hr = YYYYMMDDHH - timedelta(hours=1)
             prev_hr_str = prev_hr.strftime("%Y%m%d%H")
 
-            source_restart_dir = os.path.join(comrrfs, 'rrfs.'+prev_hr_str[0:8], HH, 'forecast', 'RESTART')
+            #source_restart_dir = os.path.join(comrrfs, 'rrfs.'+prev_hr_str[0:8], HH, 'forecast', 'RESTART')
+            source_restart_dir = os.path.join(comrrfs, 'rrfs.'+prev_hr_str[0:8], prev_hr_str[8:10], 'forecast', 'RESTART')
             wildcard_name = f'*{HH}0000.phy_data.nc'
 
             try:
@@ -82,8 +83,8 @@ def copy_missing_restart(comrrfs, hwp_non_avail_hours, hourly_hwpdir):
                     target_file_path = os.path.join(hourly_hwpdir, matching_file)
                     var1, var2 = 'rrfs_hwp_ave', 'totprcp_ave'
 
-                    if os.path.exists(source_file_path):
-                        try:
+                    #if os.path.exists(source_file_path):
+                    try:
                             with xr.open_dataset(source_file_path) as ds:
                                 if var1 in ds.variables and var2 in ds.variables:
                                     ds = ds[[var1, var2]]
@@ -92,12 +93,12 @@ def copy_missing_restart(comrrfs, hwp_non_avail_hours, hourly_hwpdir):
                                     print(f'Restart file copied: {matching_file}')
                                 else:
                                     print(f'Missing variables {var1} or {var2} in {matching_file}. Skipping file.')
-                        except (FileNotFoundError, IOError, OSError, RuntimeError, ValueError, TypeError, KeyError, IndexError, MemoryError) as e:
+                    except (FileNotFoundError, IOError, OSError, RuntimeError, ValueError, TypeError, KeyError, IndexError, MemoryError) as e:
                             print(f"Error processing NetCDF file {source_file_path}: {e}")
                             restart_nonavail_hours_test.append(cycle)
-                    else:
-                        print(f"Source file not found: {source_file_path}")
-                        restart_nonavail_hours_test.append(cycle)
+                    #else:
+                    #    print(f"Source file not found: {source_file_path}")
+                    #    restart_nonavail_hours_test.append(cycle)
 
             except (FileNotFoundError, IOError, OSError, RuntimeError) as e:
                 print(f"Error accessing directory {source_restart_dir}: {e}")
