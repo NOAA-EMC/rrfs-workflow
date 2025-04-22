@@ -73,15 +73,16 @@ files corresponding to a specified forecast hour.
 # Define COM directories.
 #-----------------------------------------------------------------------
 
-if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
+if [ $WGF = "ensf" ]; then
   export ENSMEM_INDX=${MEMBER_NAME}
-else
+  DO_ENSFCST="TRUE"
+elif [ $WGF = "det" ]; then
   export ENSMEM_INDX=""
 fi
 export mem_num=m$(echo "${ENSMEM_INDX}")
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
-export DO_ENSFCST=${DO_ENSFCST:-}
-
+export DO_ENSFCST=${DO_ENSFCST:-"FALSE"}
+export COMrrfs=${COMrrfs:-$(compath.py -o rrfs/${rrfs_ver})}
 export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
 # Prdgen jobs do not run for spinup cycles
 if [ "${DO_ENSFCST}" = "TRUE" ]; then

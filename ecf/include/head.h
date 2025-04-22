@@ -89,7 +89,7 @@ ERROR() {
   fi
   ecflow_client --abort="$msg"
   echo $msg
-  echo ${ECF_NAME} | mail -s "RRFS job watch" lin.gan@noaa.gov
+  echo ${ECF_NAME} | mail -s "RRFS job watch" lin.gan@noaa.gov benjamin.blake@noaa.gov
   if [[ " ops.prod ops.para " =~ " $(whoami) " ]]; then
     echo "# Trap Caught" >>$POST_OUT
   fi

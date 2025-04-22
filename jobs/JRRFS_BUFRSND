@@ -76,23 +76,24 @@ on the output files corresponding to a specified forecast hour.
 # Define the umbrella data and COM directories
 #-----------------------------------------------------------------------
 
-if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
+if [ $WGF = "ensf" ]; then
   export ENSMEM_INDX=${MEMBER_NAME}
   export FHRLIM=60
-else
+  DO_ENSFCST="TRUE"
+elif [ $WGF = "det" ]; then
   export ENSMEM_INDX=""
   export FHRLIM=84
 fi
 export mem_num=m$(echo "${ENSMEM_INDX}")
 
 CYCLE_TYPE=${CYCLE_TYPE:-prod}
-export DO_ENSFCST=${DO_ENSFCST:-}
+export DO_ENSFCST=${DO_ENSFCST:-"FALSE"}
 export COMOUT=${COMOUT:-$(compath.py -o rrfs/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
 export umbrella_forecast_data="${DATAROOT}/${RUN}_forecast_${cyc}_${rrfs_ver}/${WGF}"
 
 if [ "${DO_ENSFCST}" = "TRUE" ]; then
   export COMOUT=${COMOUT}/${mem_num}
-  export umbrella_forecast_data="${DATAROOT}/${RUN}_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}"
+  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
 fi
 
 # Location of dyn/phy files from forecast task
