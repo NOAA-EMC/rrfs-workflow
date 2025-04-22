@@ -186,7 +186,7 @@ suite nco_rrfs_dev_15
               edit WGF 'det'
               task jrrfs_det_prep_cyc
                 edit CYCLE_TYPE 'prod'
-                trigger :TIME >= 1520 and :TIME < 1605 and ../../fsm/jrrfs_fsm:release_det_prep_cyc
+                trigger :TIME >= 1520 and ../../fsm/jrrfs_fsm:release_det_prep_cyc
               task jrrfs_det_prep_cyc_spinup
                 edit CYCLE_TYPE 'spinup'
                 trigger ../../ics/det==complete

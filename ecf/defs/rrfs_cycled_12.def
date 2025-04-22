@@ -1527,7 +1527,7 @@ suite nco_rrfs_dev_12
                 edit MEMBER_NAME '001'
               task jrrfs_ensf_make_lbcs_09_mem001
                 edit BCGRP '09'
-                edit MEMBER_NAME '002'
+                edit MEMBER_NAME '001'
               task jrrfs_ensf_make_lbcs_00_mem002
                 edit BCGRP '00'
                 edit MEMBER_NAME '002'
@@ -1776,7 +1776,7 @@ suite nco_rrfs_dev_12
               edit WGF 'det'
               edit CYCLE_TYPE 'prod'
               task jrrfs_det_prep_cyc
-                trigger :TIME >= 1220 and :TIME < 1305 and /nco_rrfs_dev_11/primary/11/rrfs/v1.0/forecast/det/jrrfs_det_save_restart_f1==complete
+                trigger :TIME >= 1220 and /nco_rrfs_dev_11/primary/11/rrfs/v1.0/forecast/det/jrrfs_det_save_restart_f1==complete
             endfamily   # det
             family enkf
               edit WGF 'enkf'

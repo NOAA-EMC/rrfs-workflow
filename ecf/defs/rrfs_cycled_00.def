@@ -1526,7 +1526,7 @@ suite nco_rrfs_dev_00
                 edit MEMBER_NAME '001'
               task jrrfs_ensf_make_lbcs_09_mem001
                 edit BCGRP '09'
-                edit MEMBER_NAME '002'
+                edit MEMBER_NAME '001'
               task jrrfs_ensf_make_lbcs_00_mem002
                 edit BCGRP '00'
                 edit MEMBER_NAME '002'
@@ -1775,7 +1775,7 @@ suite nco_rrfs_dev_00
             family det
               edit WGF 'det'
               task jrrfs_det_prep_cyc
-                trigger :TIME >= 0020 and :TIME < 0110 and ../../fsm/jrrfs_fsm:release_det_prep_cyc
+                trigger :TIME >= 0020 and ../../fsm/jrrfs_fsm:release_det_prep_cyc
 
             endfamily   # det
             family enkf
