@@ -162,7 +162,7 @@ fi
 #-----------------------------------------------------------------------
 #
 if [ "${DO_ENSFCST}" = "TRUE" ] &&  [ "${DO_ENKFUPDATE}" = "TRUE" ]; then
-  bkpath=${COMOUT}/forecast/DA_OUTPUT
+  bkpath=${COMrrfs}/enkfrrfs.${PDY}/${cyc}/${mem_num}/forecast/DA_OUTPUT
   filelistn="fv_core.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_tracer.res.tile1.nc phy_data.nc sfc_data.nc"
   checkfile=${bkpath}/coupler.res
   n_iolayouty=$(($IO_LAYOUT_Y-1))
@@ -283,8 +283,10 @@ else
 
   elif [[ $BKTYPE == 3 ]]; then
     if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+      #### bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/ics
       bkpath=${ICS_ROOT}
     else
+      #### bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/ics
       bkpath=${ICS_ROOT}
     fi
     if [ -r "${bkpath}/coupler.res" ]; then
@@ -321,6 +323,13 @@ else
     ncatted -O -a source,global,c,c,'FV3GFS GAUSSIAN NETCDF FILE' fv_core.res.tile1.nc
   else
 
+  # Setup the INPUT directory for warm start cycles, which can be spin-up cycle or product cycle.
+  #
+  # First decide the source of the first guess (fg_restart_dirname) depending on CYCLE_TYPE and BKTYPE:
+  #  1. If cycle is spinup cycle (CYCLE_TYPE == spinup) or it is the product start cycle (BKTYPE==2),
+  #             looking for the first guess from spinup forecast (forecast_spinup)
+  #  2. Others, looking for the first guess from product forecast (forecast)
+  #
   fg_restart_dirname=forecast
   #
   #   let us figure out which background is available
@@ -337,6 +346,7 @@ else
 
   if [ "${CYCLE_SUBTYPE}" = "spinup" ] ; then
     # point to the 0-h cycle for the warm start from the 1 timestep restart files
+    #fg_restart_dirname=forecast_ensinit
     fg_restart_dirname=forecast
     bkpath=${FG_ROOT}/${RUN}.${PDY}/${cyc}_spinup/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
     ctrl_bkpath=${FG_ROOT}/${RUN}.${PDY}/${cyc}_spinup/${mem_num}/forecast/INPUT
@@ -673,7 +683,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
           YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
           YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
           HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
-          bkpath=${COMrrfs}/${RUN}.${YYYYMMDDInterv}/${HHInterv}_spinup/forecast/RESTART
+          bkpath=${COMrrfs}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/forecast/RESTART
           n=${DA_CYCLE_INTERV}
           while [[ $n -le 25 ]] ; do
              if [ "${IO_LAYOUT_Y}" = "1" ]; then
@@ -700,7 +710,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
 
       # check if there are tracer file in continue cycle data space:
       if [ "${bkpath_find}" = "missing" ]; then
-        err_exit "FATAL: missing fv_tracer.res.tile1.nc"
+        echo "WARNING: can not find fv_tracer for smoke/dust cycling at ${HH}"
       fi
 
       # cycle smoke/dust
@@ -735,6 +745,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+#SFC_CYC=2
 if_update_ice="TRUE"
 if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
 
@@ -758,7 +769,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
           YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
 
           n=${DA_CYCLE_INTERV}
-          while [[ $n -le 6 ]] ; do
+          while [[ $n -le 13 ]] ; do
              if [ "${IO_LAYOUT_Y}" = "1" ]; then
                checkfile=${bkpath}/${restart_prefix}sfc_data.nc.${YYYYMMDDHHmInterv}
              else
@@ -1007,6 +1018,7 @@ else
   HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
     lbcs_path=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/lbcs
+    #### lbcs_path=${COMrrfs}/refs.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/lbcs
   else
     lbcs_path=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/lbcs
   fi
@@ -1054,44 +1066,72 @@ else
     err_exit "Cannot find boundary file: ${checkfile}"
   fi
 fi 
+#
+#-----------------------------------------------------------------------
+#
+# conduct surface surgery to get new vtype and stype
+# 
+#-----------------------------------------------------------------------
+#if [ ${YYYYMMDDHH} -eq 2100010100 ] ; then
+#  if [ "${CYCLE_TYPE}" = "spinup" ]; then
+#    cp sfc_data.tile7.halo0.nc sfc_data.tile7.halo0.nc_old
+#    if [ -r ${FIXLAM}/stypdom_double.nc ]; then
+#      ncks -A -v stype ${FIXLAM}/stypdom_double.nc sfc_data.tile7.halo0.nc
+#    fi
+#    if [ -r ${FIXLAM}/vtypdom_double.nc ]; then
+#      ncks -A -v vtype ${FIXLAM}/vtypdom_double.nc sfc_data.tile7.halo0.nc
+#    fi
+#    echo "${YYYYMMDDHH}(${CYCLE_TYPE}): replace stype and vtype "
+#  fi
+#fi
+#
+#-----------------------------------------------------------------------
+#
+# conduct surface surgery to transfer RAP/HRRR surface fields into RRFS.
+# 
+# This surgery only needs to be done once to give RRFS a good start of the surface.
+# Please consult Ming or Tanya first before turning on this surgery.
+#
+#-----------------------------------------------------------------------
+# 
 if [ ${SFC_CYC} -eq 3 ] ; then
 
    do_lake_surgery=".false."
    if [ "${USE_CLM}" = "TRUE" ]; then
      do_lake_surgery=".true."
    fi
-   raphrrr_com=${RAPHRRR_SOIL_ROOT}
+   #### raphrrr_com=${RAPHRRR_SOIL_ROOT}
+   raphrrr_com=${COMROOT}
+   COMIN_RAP=$(compath.py rap/${rap_ver})
+   COMIN_HRRR=$(compath.py hrrr/${hrrr_ver})
    rapfile='missing'
    hrrrfile='missing'
    hrrr_akfile='missing'
-   if [ -r ${raphrrr_com}/${YYYYMMDD}/rap.t${HH}z.wrf_inout_smoke ]; then
-     ln -s ${raphrrr_com}/${YYYYMMDD}/rap.t${HH}z.wrf_inout_smoke    sfc_rap
-     rapfile='sfc_rap'
-   elif [ -r ${raphrrr_com}/rap/prod/rap.${YYYYMMDD}/rap.t${HH}z.wrf_inout_smoke ]; then
-     ln -s ${raphrrr_com}/rap/prod/rap.${YYYYMMDD}/rap.t${HH}z.wrf_inout_smoke  sfc_rap
-     rapfile='sfc_rap'
-   elif [ -r ${raphrrr_com}/rap/v5.1/rap.${YYYYMMDD}/rap.t${HH}z.wrf_inout_smoke ]; then
-     ln -s ${raphrrr_com}/rap/v5.1/rap.${YYYYMMDD}/rap.t${HH}z.wrf_inout_smoke  sfc_rap
+   current_cdate=${YYYYMMDD}${HH}
+   new_cdate=$($NDATE -1 ${current_cdate})
+   new_pdy=$(echo ${new_cdate}| cut -c1-8)
+   new_cyc=$(echo ${new_cdate}| cut -c9-10)
+   if [ -r ${COMIN_RAP}/nwges/rapges/rap_${new_cdate}f001 ]; then
+     ln -s ${COMIN_RAP}/nwges/rapges/rap_${new_cdate}f001 sfc_rap
      rapfile='sfc_rap'
    fi
-   if [ -r ${raphrrr_com}/${YYYYMMDD}/hrrr.t${HH}z.wrf_inout ]; then
-     ln -s ${raphrrr_com}/${YYYYMMDD}/hrrr.t${HH}z.wrf_inout sfc_hrrr
-     hrrrfile='sfc_hrrr'
-   elif [ -r ${raphrrr_com}/hrrr/prod/hrrr.${YYYYMMDD}/conus/hrrr.t${HH}z.wrf_inout ]; then
-     ln -s ${raphrrr_com}/hrrr/prod/hrrr.${YYYYMMDD}/conus/hrrr.t${HH}z.wrf_inout sfc_hrrr
-     hrrrfile='sfc_hrrr'
-   elif [ -r ${raphrrr_com}/hrrr/v4.1/hrrr.${YYYYMMDD}/conus/hrrr.t${HH}z.wrfhistory00 ]; then
-     ln -s ${raphrrr_com}/hrrr/v4.1/hrrr.${YYYYMMDD}/conus/hrrr.t${HH}z.wrfhistory00 sfc_hrrr
+   if [ -r ${COMIN_HRRR}/nwges/hrrrges_sfc/conus/hrrr_${new_cdate}f001 ]; then
+     ln -s ${COMIN_HRRR}/nwges/hrrrges_sfc/conus/hrrr_${new_cdate}f001 sfc_hrrr
      hrrrfile='sfc_hrrr'
    fi
-   if [ -r ${raphrrr_com}/${YYYYMMDD}/hrrrak.t${HH}z.wrf_inout ]; then
-     ln -s ${raphrrr_com}/${YYYYMMDD}/hrrr.t${HH}z.wrf_inout sfc_hrrrak
-     hrrr_akfile='sfc_hrrrak'
-   elif [ -r ${raphrrr_com}/hrrr/prod/hrrr.${YYYYMMDD}/alaska/hrrrak.t${HH}z.wrf_inout ]; then
-     ln -s ${raphrrr_com}/hrrr/prod/hrrr.${YYYYMMDD}/alaska/hrrrak.t${HH}z.wrf_inout sfc_hrrrak
-     hrrr_akfile='sfc_hrrrak'
-   fi
- 
+#   if [ -r ${COMIN_RAP}/rap.${YYYYMMDD}/rap.t${HH}z.wrf_inout_smoke ]; then
+#     ln -s ${COMIN_RAP}/rap.${YYYYMMDD}/rap.t${HH}z.wrf_inout_smoke sfc_rap
+#     rapfile='sfc_rap'
+#   fi
+#   if [ -r ${COMIN_HRRR}/hrrr.${YYYYMMDD}/conus/hrrr.t${HH}z.wrfhistory00 ]; then
+#     ln -s ${COMIN_HRRR}/hrrr.${YYYYMMDD}/conus/hrrr.t${HH}z.wrfhistory00 sfc_hrrr
+#     hrrrfile='sfc_hrrr'
+#   fi
+#   if [ -r ${COMIN_HRRR}/hrrr.${YYYYMMDD}/alaska/hrrrak.t${HH}z.wrf_inout ]; then
+#     ln -s ${COMIN_HRRR}/hrrr.${YYYYMMDD}/alaska/hrrrak.t${HH}z.wrf_inout sfc_hrrrak
+#     hrrr_akfile='sfc_hrrrak'
+#   fi
+
    export pgm="use_raphrrr_sfc.exe"
    if [ "${IO_LAYOUT_Y}" = "1" ]; then
      ln -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
@@ -1180,19 +1220,20 @@ fi
 #-----------------------------------------------------------------------
 #
 if [ "${USE_FVCOM}" = "TRUE" ] && [ ${SFC_CYC} -eq 2 ] ; then
-
+  FVCOM_DIR=$(compath.py nosofs/${nosofs_ver})
   # Remap the FVCOM output from the 5 lakes onto the RRFS grid
   if [ "${PREP_FVCOM}" = "TRUE" ]; then
     ${USHrrfs}/fvcom_prep.sh \
-                  INPUT_DATA="${INPUT_DATA}" \
+                  INPUT_DATA="${DATA}" \
                   FIXLAM="${FIXLAM}" \
                   FVCOM_DIR="${FVCOM_DIR}" \
 	          YYYYJJJHH="${YYYYJJJHH}" \
                   YYYYMMDD="${YYYYMMDD}" \
                   YYYYMMDDm1="${YYYYMMDDm1}" \
                   HH="${HH}"
-    export err=$?; err_chk
-
+    export err=$?
+    [[ ${err} -gt 0 ]]&& echo "WARNING FVCOM data process failed"
+    INPUT_DATA=${DATA}
     cd ${INPUT_DATA}
     # FVCOM_DIR needs to be redefined here to find 
     FVCOM_DIR=${INPUT_DATA}/fvcom_remap

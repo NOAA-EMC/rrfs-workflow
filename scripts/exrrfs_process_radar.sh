@@ -52,7 +52,7 @@ preprocessing with RRFS for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-if [ ${RUN} == "enkf" ]; then
+if [ ${RUN} == "enkfrrfs" ]; then
   export RADAR_REF_THINNING="2"
 else
   export RADAR_REF_THINNING="1"

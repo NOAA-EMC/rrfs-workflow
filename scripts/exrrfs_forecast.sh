@@ -367,11 +367,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then
   ln -snf  ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/emi_data.nc      ${DATA}/INPUT/emi_data.nc
   yyyymmddhh=${CDATE:0:10}
   echo ${yyyymmddhh}
-  if [ ${CYCLE_TYPE} = "spinup" ]; then
-    smokefile=${COMrrfs}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00_spinup.nc
-  else
-    smokefile=${COMrrfs}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc
-  fi
+  smokefile=${COMrrfs}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc
   echo "try to use smoke file=",${smokefile}
   if [ -f ${smokefile} ]; then
     ln -snf ${smokefile} ${DATA}/INPUT/SMOKE_RRFS_data.nc
@@ -461,6 +457,7 @@ ln -sf ${relative_or_null} ${UFS_YAML_FP} ${DATA}
 STOCH="FALSE"
 if [ "${DO_ENSEMBLE}" = TRUE ] && ([ "${DO_SPP}" = TRUE ] || [ "${DO_SPPT}" = TRUE ] || [ "${DO_SHUM}" = TRUE ] \
   || [ "${DO_SKEB}" = TRUE ] || [ "${DO_LSM_SPP}" =  TRUE ]); then
+   HH=${HH:-${cyc}}
    for cyc_start in "${CYCL_HRS_STOCH[@]}"; do
      if [ ${HH} -eq ${cyc_start} ]; then 
        STOCH="TRUE"
@@ -494,7 +491,7 @@ if [ "${STOCH}" = "TRUE" ]; then
     ensmem_num=$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')
     cpreq -p ${FV3_NML_RESTART_STOCH_FP}_ensphy${ensmem_num} ${DATA}/${FV3_NML_FN}_base 
     rm -fr ${DATA}/field_table
-    cpreq -p ${PARMrrfs}/field_table.rrfsens_phy${ENSMEM_INDX} ${DATA}/field_table
+    cpreq -p ${PARMrrfs}/field_table.rrfsens_phy0${ENSMEM_INDX} ${DATA}/field_table
   else
     cpreq -p ${DATA}/${FV3_NML_FN} ${DATA}/${FV3_NML_FN}_base
   fi
@@ -532,45 +529,63 @@ mkdir -p ${shared_output_data}
 fhr_ct=0
 fhr=0
 NLN=${NLN:-"/bin/ln -sf"}
-if [ $FCST_LEN_HRS -gt 6 ]; then
-  for fhr in $(seq 0 $FCST_LEN_HRS); do
-    fhr_2d=$( printf "%02d" ${fhr} )
-    fhr_3d=$( printf "%03d" ${fhr} )
-    # 000~$FCST_LEN_HRS-1 have every 15 minutes
-    if [ $(($fhr)) -le 17 ]; then
-      for sub_fhr in 00 15 30 45; do
-        if [ ${fhr} -eq 0 ] && [ ${sub_fhr} == "00" ]; then
-          source_dyn="dynf000-00-36.nc"
-          source_phy="phyf000-00-36.nc"
-          source_log="log.atm.f000-00-36"
-        else
-          source_dyn="dynf${fhr_3d}-${sub_fhr}-00.nc"
-          source_phy="phyf${fhr_3d}-${sub_fhr}-00.nc"
-          source_log="log.atm.f${fhr_3d}-${sub_fhr}-00"
-        fi
+
+if [ ${DO_ENSFCST} == "FALSE" ]; then
+  if [ $FCST_LEN_HRS -gt 6 ]; then
+    for fhr in $(seq 0 $FCST_LEN_HRS); do
+      fhr_2d=$( printf "%02d" ${fhr} )
+      fhr_3d=$( printf "%03d" ${fhr} )
+      # 000~$FCST_LEN_HRS-1 have every 15 minutes
+      if [ $(($fhr)) -le 17 ]; then
+        for sub_fhr in 00 15 30 45; do
+          if [ ${fhr} -eq 0 ] && [ ${sub_fhr} == "00" ]; then
+            source_dyn="dynf000-00-36.nc"
+            source_phy="phyf000-00-36.nc"
+            source_log="log.atm.f000-00-36"
+          else
+            source_dyn="dynf${fhr_3d}-${sub_fhr}-00.nc"
+            source_phy="phyf${fhr_3d}-${sub_fhr}-00.nc"
+            source_log="log.atm.f${fhr_3d}-${sub_fhr}-00"
+          fi
+          target_dyn="${shared_output_data}/${source_dyn}"
+          target_phy="${shared_output_data}/${source_phy}"
+          target_log="${shared_output_data}/${source_log}"
+          eval $NLN ${target_dyn} ${DATA}/${source_dyn}
+          eval $NLN ${target_phy} ${DATA}/${source_phy}
+          eval $NLN ${target_log} ${DATA}/${source_log}
+        done
+      else
+        source_dyn="dynf${fhr_3d}-00-00.nc"
+        source_phy="phyf${fhr_3d}-00-00.nc"
+        source_log="log.atm.f${fhr_3d}-00-00"
         target_dyn="${shared_output_data}/${source_dyn}"
         target_phy="${shared_output_data}/${source_phy}"
         target_log="${shared_output_data}/${source_log}"
         eval $NLN ${target_dyn} ${DATA}/${source_dyn}
         eval $NLN ${target_phy} ${DATA}/${source_phy}
         eval $NLN ${target_log} ${DATA}/${source_log}
-      done
-    else
-      source_dyn="dynf${fhr_3d}-00-00.nc"
-      source_phy="phyf${fhr_3d}-00-00.nc"
-      source_log="log.atm.f${fhr_3d}-00-00"
-      target_dyn="${shared_output_data}/${source_dyn}"
-      target_phy="${shared_output_data}/${source_phy}"
-      target_log="${shared_output_data}/${source_log}"
-      eval $NLN ${target_dyn} ${DATA}/${source_dyn}
-      eval $NLN ${target_phy} ${DATA}/${source_phy}
-      eval $NLN ${target_log} ${DATA}/${source_log}
-    fi
+      fi
+    done
+    eval $NLN ${shared_output_data}/grid_spec.nc ${DATA}/grid_spec.nc
+    eval $NLN ${shared_output_data}/atmos_static.nc ${DATA}/atmos_static.nc
+  fi
+else
+  # ensemble forecast 60 hourly
+  for fhr in $(seq 0 $FCST_LEN_HRS); do
+    fhr_3d=$( printf "%03d" ${fhr} )
+    source_dyn="dynf${fhr_3d}.nc"
+    source_phy="phyf${fhr_3d}.nc"
+    source_log="log.atm.f${fhr_3d}"
+    target_dyn="${shared_output_data}/${source_dyn}"
+    target_phy="${shared_output_data}/${source_phy}"
+    target_log="${shared_output_data}/${source_log}"
+    eval $NLN ${target_dyn} ${DATA}/${source_dyn}
+    eval $NLN ${target_phy} ${DATA}/${source_phy}
+    eval $NLN ${target_log} ${DATA}/${source_log}
   done
   eval $NLN ${shared_output_data}/grid_spec.nc ${DATA}/grid_spec.nc
   eval $NLN ${shared_output_data}/atmos_static.nc ${DATA}/atmos_static.nc
 fi
-
 #-----------------------------------------------------------------------
 #
 # Add RESTART capability
@@ -580,7 +595,6 @@ fi
 flag_fcst_restart="FALSE"
 coupler_res_ct=0
 DO_FCST_RESTART=${DO_FCST_RESTART:-"TRUE"}
-
 # Get the current restart set count from shared restart location in the Umbrella Data
 if [ -d ${shared_forecast_restart_data} ]; then
   set +eu
@@ -596,7 +610,6 @@ if [ ${CYCLE_TYPE} = "spinup" ]; then
 fi
 if [ $FCST_LEN_HRS -gt 0 ]; then
   cd ${DATA}/RESTART
-  
   file_ids=( "coupler.res" "fv_core.res.nc" "fv_core.res.tile1.nc" "fv_srf_wnd.res.tile1.nc" "fv_tracer.res.tile1.nc" "phy_data.nc" "sfc_data.nc" )
   num_file_ids=${#file_ids[*]}
   read -a restart_hrs <<< "${RESTART_HRS}"
@@ -613,9 +626,11 @@ if [ $FCST_LEN_HRS -gt 0 ]; then
       for file_id in "${file_ids[@]}"; do
         eval $NLN ${shared_forecast_restart_data}/${rst_yyyymmdd}.${rst_hh}0000.${file_id} ${rst_yyyymmdd}.${rst_hh}0000.${file_id}
       done
+      if [ ${DO_ENSFCST} == "TRUE" ]; then
+        eval $NLN ${shared_forecast_restart_data}/${rst_yyyymmdd}.${rst_hh}0000.atm_stoch.res.nc ${rst_yyyymmdd}.${rst_hh}0000.atm_stoch.res.nc
+      fi
     fi
   done
-
   cd ${DATA}
 fi
 
@@ -714,7 +729,8 @@ fi
 # copy over diag_table for multiphysics ensemble
 if [ "${STOCH}" = "TRUE" ] && [ ${BKTYPE} -eq 0 ] && [ ${DO_ENSFCST_MULPHY} = "TRUE" ]; then
   rm -fr ${DATA}/diag_table
-  cpreq -p ${PARMrrfs}/diag_table.rrfsens_phy${ENSMEM_INDX} ${DATA}/diag_table
+  #### cpreq -p ${PARMrrfs}/diag_table.rrfsens_phy${ENSMEM_INDX} ${DATA}/diag_table
+  cpreq -p ${PARMrrfs}/diag_table.rrfsens_phy0${ENSMEM_INDX} ${DATA}/diag_table
 fi
 
 #
@@ -767,6 +783,8 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+module list
+
 export pgm="ufs_model"
 cpreq -p ${FV3_EXEC_FP} ${DATA}/$pgm
 

@@ -215,12 +215,17 @@ if [ ${BKTYPE} -eq 1 ]; then
 else
   n_iolayouty=$(($IO_LAYOUT_Y))
 fi
-if [ "${DO_ENKF_RADAR_REF}" = "TRUE" ]; then
-  l_qnr_from_qr=".true."
-fi
-if [ -r "${COMOUT}/gsi_complete_radar.txt" ] ; then
-  l_precip_clear_only=".true."
-  l_qnr_from_qr=".true."
+if [ ${RUN} == "enkfrrfs" ]; then
+   cld_bld_hgt=0.0
+   l_precip_clear_only=.true.
+   if [ "${DO_ENKF_RADAR_REF}" = "TRUE" ]; then
+     l_qnr_from_qr=".true."
+   fi
+else
+  if [ -r "${COMOUT}/gsi_complete_radar.txt" ] ; then
+    l_precip_clear_only=".true."
+    l_qnr_from_qr=".true."
+  fi
 fi
 
 cat << EOF > gsiparm.anl

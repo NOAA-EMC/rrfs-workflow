@@ -73,6 +73,11 @@ search_cyc_16=$($NDATE -16 ${CDATE} | cut -c9-10)
 search_cyc_15=$($NDATE -15 ${CDATE} | cut -c9-10)
 search_cyc_14=$($NDATE -14 ${CDATE} | cut -c9-10)
 search_cyc_13=$($NDATE -13 ${CDATE} | cut -c9-10)
+search_cyc_12=$($NDATE -12 ${CDATE} | cut -c9-10)
+search_cyc_11=$($NDATE -11 ${CDATE} | cut -c9-10)
+search_cyc_10=$($NDATE -10 ${CDATE} | cut -c9-10)
+search_cyc_09=$($NDATE -9 ${CDATE} | cut -c9-10)
+#### for idx_cyc in ${search_cyc_18#0} ${search_cyc_17#0} ${search_cyc_16#0} ${search_cyc_15#0} ${search_cyc_14#0} ${search_cyc_13#0} ${search_cyc_12#0} ${search_cyc_11#0} ${search_cyc_10#0} ${search_cyc_09#0}; do
 for idx_cyc in ${search_cyc_18#0} ${search_cyc_17#0} ${search_cyc_16#0} ${search_cyc_15#0} ${search_cyc_14#0} ${search_cyc_13#0}; do
   idx_cyc2d=$( printf "%02d" "${idx_cyc#0}" )
   fcst_state=$(ecflow_client --query state /nco_rrfs_dev_${idx_cyc2d}/primary/${idx_cyc2d}/rrfs/v1.0/forecast)
