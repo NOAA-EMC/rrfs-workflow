@@ -729,7 +729,6 @@ fi
 # copy over diag_table for multiphysics ensemble
 if [ "${STOCH}" = "TRUE" ] && [ ${BKTYPE} -eq 0 ] && [ ${DO_ENSFCST_MULPHY} = "TRUE" ]; then
   rm -fr ${DATA}/diag_table
-  #### cpreq -p ${PARMrrfs}/diag_table.rrfsens_phy${ENSMEM_INDX} ${DATA}/diag_table
   cpreq -p ${PARMrrfs}/diag_table.rrfsens_phy0${ENSMEM_INDX} ${DATA}/diag_table
 fi
 

@@ -115,14 +115,6 @@ l_fv3reg_filecombined=.false.
 #
 fixgriddir=${FIX_GSI}/${PREDEF_GRID_NAME}
 
-# DELETE THESE LINES
-#if [ "${CYCLE_TYPE}" = "spinup" ]; then
-#   enkfanal_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}_spinup/anal_enkf_spinup"
-#else
-#   enkfanal_nwges_dir="${GESROOT}/${RUN}.${PDY}/${cyc}/anal_enkf"
-#fi
-#mkdir -p ${enkfanal_nwges_dir}
-
 cpreq -p ${fixgriddir}/fv3_coupler.res    coupler.res
 cpreq -p ${fixgriddir}/fv3_akbk           fv3sar_tile1_akbk.nc
 cpreq -p ${fixgriddir}/fv3_grid_spec      fv3sar_tile1_grid_spec.nc
@@ -410,13 +402,6 @@ countdiag=$(ls diag*conv* | wc -l)
 if [ $countdiag -gt $nens ]; then
   ${APRUN} ${EXECrrfs}/$pgm < enkf.nml >>$pgmout 2>errfile
   export err=$?; err_chk
-
-# DELETING ${enkfanal_nwges_dir} - should ${pgmout} be saved elsewhere?
-#  cp ${pgmout} ${enkfanal_nwges_dir}/.
-#  if [ ! -d ${GESROOT}/enkf_diag ]; then
-#    mkdir -p ${GESROOT}/enkf_diag
-#  fi
-#  cp ${pgmout} ${GESROOT}/enkf_diag/${stdout_name}.$vlddate
 else
   echo "WARNING: EnKF not running due to lack of ${OB_TYPE} obs for cycle $vlddate !!!"
 fi
