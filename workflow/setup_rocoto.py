@@ -128,7 +128,9 @@ setup_xml(HOMErrfs, expdir)
 if os.getenv('YAML_GEN_METHOD', '1') == '1':
     srcdir = f'{HOMErrfs}/workflow/ush/qrocoto'
     dstdir = f'{expdir}/qrocoto'
-    shutil.copytree(srcdir, dstdir, dirs_exist_ok=True)
+    if os.path.exists(dstdir):
+        shutil.rmtree(dstdir)
+    shutil.copytree(srcdir, dstdir)
 
 elif os.getenv('YAML_GEN_METHOD', '1') == '2':
     # Copy files from HOMErrfs/workflow/ush to expdir
