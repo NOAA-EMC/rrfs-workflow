@@ -47,7 +47,7 @@ ln -snf "${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/nicas_${NTASKS}"  static_
 ln -snf "${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/vbal_${NTASKS}"  static_bec/vbal
 
 #for satllite radiance
-if [ ${DO_RADDA} == "TRUE" ]; then
+if [ "${DO_RADDA}" == "TRUE" ]; then
   ln -snf /scratch2/BMC/rtrr/RDAS_DATA/crtm/2.4.0 crtm
   cp "${FIXrrfs}"/satbias_init/abi_g16.tlapse.txt obs/.
   cp "${FIXrrfs}"/satbias_init/abi_g18.tlapse.txt obs/.
