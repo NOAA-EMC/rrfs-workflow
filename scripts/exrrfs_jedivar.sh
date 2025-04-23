@@ -45,6 +45,26 @@ ln -snf "${FIXrrfs}/bumploc/${MESH_NAME}_L${nlevel}_${NTASKS}_401km11levels"  bu
 ln -snf "${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/stddev.nc"  static_bec/stddev.nc
 ln -snf "${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/nicas_${NTASKS}"  static_bec/nicas
 ln -snf "${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/vbal_${NTASKS}"  static_bec/vbal
+
+#for satllite radiance
+ln -snf /scratch2/BMC/rtrr/RDAS_DATA/crtm/2.4.0 crtm
+cp ${FIXrrfs}/satbias_init/abi_g16.tlapse.txt obs/.
+cp ${FIXrrfs}/satbias_init/abi_g18.tlapse.txt obs/.
+
+# copy satbias file from previous cycle
+CDATEm1=$($NDATE -1 ${CDATE})
+CDATEm1_date=${CDATEm1:0:8}
+CDATEm1_hour=${CDATEm1:8:2}
+PRE_COMOUT=${COMOUT}/../../rrfs.${CDATEm1_date}/${CDATEm1_hour}/jedivar/${WGF}
+if ! compgen -G "$PRE_COMOUT/*satbias.nc4" > /dev/null &&\
+   ! compgen -G "$PRE_COMOUT/*satbias_cov.nc4" > /dev/null; then
+    echo "No satbias.nc4 or satbias_cov.nc4 files found in " $PRE_COMOUT
+    echo "using satellite satbias_in files from ${FIXrrfs}/satbias_init"
+    cp ${FIXrrfs}/satbias_init/*satbias* obs/.
+else
+    echo "using satellite satbias_in files from ${PRE_COMOUT}"
+    cp ${PRE_COMOUT}/*satbias* obs/.
+fi
 #
 # copy observations files
 #
