@@ -13,9 +13,19 @@ export CLUSTER=${CLUSTER:-""}
 export NATIVE=${NATIVE:-""}
 export MORE_XML_ENTITIES=${MORE_XML_ENTITIES:-false}
 export REALTIME_MONTHS=${REALTIME_MONTHS:-2}
+export FCST_LENGTH=1
 export DO_FCST=${DO_FCST:-true}
 export DO_POST=${DO_POST:-true}
 export DO_IC_LBC=${DO_IC_LBC:-true}
+
+#
+if ${DO_CLEAN:-false} && ! ${REALTIME:-false}; then
+  # when DO_CLEAN is set to true in retros, if STMP_CLEAN_HRS, COM_CLEAN_HRS and LOG_CLEAN_HRS
+  # are not specified, use the following values
+  export STMP_CLEAN_HRS=${STMP_CLEAN_HRS:-24}
+  export COM_CLEAN_HRS=${COM_CLEAN_HRS:-2400}  # 100 days
+  export LOG_CLEAN_HRS=${LOG_CLEAN_HRS:-2400}
+fi
 
 # ioda_bufr
 export NODES_IODA_BUFR=${NODES_IODA_BUFR:-"<nodes>1:ppn=1</nodes>"}
