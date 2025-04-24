@@ -26,7 +26,6 @@ export DO_RECENTER=false
 
 export DO_CYC=true
 export CYC_INTERVAL=6
-export FCST_LENGTH=3
 for i in {0..23};    do arr[$i]="03"; done # 3hr fcst
 for i in {0..23..6}; do arr[$i]="03"; done # 3hr fcst every 6hrs
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
