@@ -18,12 +18,12 @@ export ENS_SIZE=30
 export ZETA_LEVELS="L60.txt"
 #
 export YAML_GEN_METHOD=2
+export DO_CLEAN=true
 export DO_IODA=false
 export DO_JEDI=false
 
 export DO_CYC=true
 export CYC_INTERVAL=3
-export FCST_LENGTH=3
 for i in {0..23};    do arr[i]="03"; done # 3hr fcst
 for i in {0..23..6}; do arr[i]="03"; done # 3hr fcst every 6hrs
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
