@@ -42,11 +42,8 @@ case ${task_id} in
     ;;
   radar_refl)
     module purge
-    #module use "${HOMErrfs}/sorc/RRFS_UTILS/modulefiles"
-    #module load "build_${MACHINE}_intel"
     module use "${HOMErrfs}/sorc/RDASApp/modulefiles"
     module load "RDAS/${MACHINE}.intel"
-    module load "EVA/${MACHINE}"
     export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOMErrfs}/sorc/RDASApp/build/lib64
     ;;
   mpassit)

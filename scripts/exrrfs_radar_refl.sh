@@ -13,9 +13,6 @@ cd "${DATA}" || exit 1
 #
 #-----------------------------------------------------------------------
 #
-ulimit -s unlimited
-ulimit -a
-
 #
 #-----------------------------------------------------------------------
 #
@@ -24,12 +21,11 @@ ulimit -a
 #
 #-----------------------------------------------------------------------
 #
-YYYYMMDDHH=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y%m%d%H)
-YYYY=${YYYYMMDDHH:0:4}
-MM=${YYYYMMDDHH:4:2}
-DD=${YYYYMMDDHH:6:2}
-HH=${YYYYMMDDHH:8:2}
-YYYYMMDD=${YYYYMMDDHH:0:8}
+YYYY=${CDATE:0:4}
+MM=${CDATE:4:2}
+DD=${CDATE:6:2}
+HH=${CDATE:8:2}
+YYYYMMDD=${CDATE:0:8}
 #
 #-----------------------------------------------------------------------
 #
@@ -43,7 +39,7 @@ echo "Getting into working directory for radar reflectivity process ..."
 for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   bigmin=$( printf %2.2i ${bigmin} )
   mkdir "${DATA}/${bigmin}"
-  cd "${DATA}/${bigmin}"
+  cd "${DATA}/${bigmin}" || exit
 
   #
   #-----------------------------------------------------------------------
@@ -91,7 +87,7 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
     while [[ $s -le 59 ]]; do
       ss=$(printf %2.2i ${s})
       nsslfile="${NSSL}"/*"${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.${obs_appendix}"
-      if [ -s $nsslfile ]; then
+      if [ -s ${nsslfile} ]; then
         echo "Found ${nsslfile}"
         nsslfile1="*${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.${obs_appendix}"
         numgrib2=$(ls ${NSSL}/${nsslfile1} | wc -l)
@@ -118,14 +114,14 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   fi
 
     if [ -s filelist_mrms ]; then
-     if [ ${obs_appendix} == "grib2.gz" ]; then
-        gzip -d *.gz
+     if [ "${obs_appendix}" == "grib2.gz" ]; then
+        gzip -d ./*.gz
         mv filelist_mrms filelist_mrms_org
         ls "MergedReflectivityQC_*_${YYYY}${MM}${DD}-${HH}????.grib2" > filelist_mrms
      fi
 
      numgrib2=$(more filelist_mrms | wc -l)
-     echo "Using radar data from: `head -1 filelist_mrms | cut -c10-15`"
+     echo "Using radar data from: $(head -1 filelist_mrms | cut -c10-15)"
      echo "NSSL grib2 file levels = $numgrib2"
   else
      echo "WARNING: Not enough radar reflectivity files available for loop ${bigmin}."
@@ -172,7 +168,7 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
 
 cat << EOF > namelist.mosaic
    &setup
-    analysis_time = ${YYYYMMDDHH},
+    analysis_time = ${CDATE},
     dataPath = './',
    /
    &setup_netcdf
