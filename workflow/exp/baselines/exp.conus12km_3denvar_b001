@@ -15,6 +15,8 @@ export DATAROOT=${OPSROOT}/exp/${EXP_NAME}/stmp    # task workdirs ($DATA) which
 export ZETA_LEVELS="L60.txt"
 #
 export YAML_GEN_METHOD=2
+export COLDSTART_CYCS_DO_DA=false
+export DO_CLEAN=true
 export DO_IODA=true
 export DO_JEDI=true
 export HYB_WGT_ENS=1.0
@@ -24,7 +26,6 @@ export HYB_ENS_PATH=""     # if empty, the workflow will try to find ensembles a
 
 export DO_CYC=true
 export CYC_INTERVAL=1
-export FCST_LENGTH=3
 for i in {0..23};    do arr[i]="03"; done # 3hr fcst
 for i in {0..23..6}; do arr[i]="12"; done # 12hr fcst every 6hrs
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
@@ -66,7 +67,7 @@ export WALLTIME_MPASSIT="1:00:00"
 export WALLTIME_UPP="1:00:00"
 export WALLTIME_JEDIVAR="00:30:00"
 #
-export KEEPDATA=yes
+export KEEPDATA=no
 export MPI_RUN_CMD=srun
 #
 # local.setup: setup some local options specific to a platform or an experiment
