@@ -5,20 +5,19 @@
  Authors: Yongming Wang & Xuguang Wang @ OUMAP/CADRE, poc: yongming.wang@ou.edu, xuguang.wang@ou.edu
 '''
 
-import sys
+import pyiodaconv.ioda_conv_engines as iconv
+from collections import defaultdict, OrderedDict
+from pyiodaconv.orddicts import DefaultOrderedDict
+import netCDF4 as nc
+import numpy as np
+from datetime import datetime
 import os
-from datetime import datetime, timedelta
 import logging
 import warnings
 warnings.simplefilter("ignore")
 
-import numpy as np
-import netCDF4 as nc
 
 # These modules need the path to lib-python modules
-from collections import defaultdict, OrderedDict
-from pyiodaconv.orddicts import DefaultOrderedDict
-import pyiodaconv.ioda_conv_engines as iconv
 
 os.environ["TZ"] = "UTC"
 
@@ -159,66 +158,65 @@ def read_netcdf(input_file, obsvars):
     logging.debug(f"Reading file: {input_file}")
 
     mrms_data = {}
-    
+
     # Open and read Gridded_ref.nc
     file_mrms = input_file
     nc_file = nc.Dataset(file_mrms, 'r')
-    
+
     # Access dimensions, variables, and attributes
-    nlat_mrms=len(nc_file.dimensions['latitude'])
-    nlon_mrms=len(nc_file.dimensions['longitude'])
-    nlev_mrms=len(nc_file.dimensions['height'])
+    nlat_mrms = len(nc_file.dimensions['latitude'])
+    nlon_mrms = len(nc_file.dimensions['longitude'])
+    nlev_mrms = len(nc_file.dimensions['height'])
     print(f"\nDimensions of mrms reflectivity in {file_mrms}:")
     for dim in nc_file.dimensions:
         print(f" - {dim}: {len(nc_file.dimensions[dim])}")
-    
-    lat_mrms=nc_file.variables["latitude"][:]
-    lon_mrms=nc_file.variables["longitude"][:]
-    hgt_mrms=nc_file.variables['height'][:]
-    lon_mrms=np.where(lon_mrms > 180.0, lon_mrms-360.0, lon_mrms)
+
+    lat_mrms = nc_file.variables["latitude"][:]
+    lon_mrms = nc_file.variables["longitude"][:]
+    hgt_mrms = nc_file.variables['height'][:]
+    lon_mrms = np.where(lon_mrms > 180.0, lon_mrms - 360.0, lon_mrms)
     print(f"\nlat_mrms range: {np.amin(lat_mrms)}  {np.amax(lat_mrms)}")
     print(f"lon_mrms range: {np.amin(lon_mrms)}  {np.amax(lon_mrms)}")
     print(f"hgt_mrms range: {np.amin(hgt_mrms)}  {np.amax(hgt_mrms)}")
-    
+
     mrms_refl3d = nc_file.variables['reflectivity'][:]
     print(f"mrms_refl3d range: {np.amin(mrms_refl3d)}  {np.amax(mrms_refl3d)}")
     nc_file.close()
-    
-    mrms_refl3d = mrms_refl3d.reshape(nlat_mrms*nlon_mrms*nlev_mrms).astype('float')
+
+    mrms_refl3d = mrms_refl3d.reshape(nlat_mrms * nlon_mrms * nlev_mrms).astype('float')
     mrms_refl3d = np.where(np.logical_and(mrms_refl3d > -100.0, mrms_refl3d < 0), 0.0, mrms_refl3d)
-    
-    mask = np.logical_and( mrms_refl3d > -1.0, mrms_refl3d <= 80.0 )
+
+    mask = np.logical_and(mrms_refl3d > -1.0, mrms_refl3d <= 80.0)
     if mask is not None:
-       mrms_data = mrms_refl3d[mask]
-    
+        mrms_data = mrms_refl3d[mask]
+
     mrms_data = mrms_data.tolist()
     print(f"mrms_data range: {np.amin(mrms_data)}  {np.amax(mrms_data)}")
-    
-    heights   = np.empty([nlev_mrms, nlat_mrms, nlon_mrms], dtype='float')
-    lons      = np.empty([nlev_mrms, nlat_mrms, nlon_mrms], dtype='float')
-    lats      = np.empty([nlev_mrms, nlat_mrms, nlon_mrms], dtype='float')
-    
+
+    heights = np.empty([nlev_mrms, nlat_mrms, nlon_mrms], dtype='float')
+    lons = np.empty([nlev_mrms, nlat_mrms, nlon_mrms], dtype='float')
+    lats = np.empty([nlev_mrms, nlat_mrms, nlon_mrms], dtype='float')
+
     for ihgt in range(nlev_mrms):
-        heights[ihgt,:,:] = hgt_mrms[ihgt]
-    
+        heights[ihgt, :, :] = hgt_mrms[ihgt]
+
     for ilon in range(nlon_mrms):
-        lons[:,:,ilon] = lon_mrms[ilon]
-    
+        lons[:, :, ilon] = lon_mrms[ilon]
+
     for ilat in range(nlat_mrms):
-        lats[:,ilat,:] = lat_mrms[ilat]
-    
-    
-    heights = heights.reshape(nlat_mrms*nlon_mrms*nlev_mrms).astype('float')
-    lons    = lons.reshape(nlat_mrms*nlon_mrms*nlev_mrms).astype('float')
-    lats    = lats.reshape(nlat_mrms*nlon_mrms*nlev_mrms).astype('float')
+        lats[:, ilat, :] = lat_mrms[ilat]
+
+    heights = heights.reshape(nlat_mrms * nlon_mrms * nlev_mrms).astype('float')
+    lons = lons.reshape(nlat_mrms * nlon_mrms * nlev_mrms).astype('float')
+    lats = lats.reshape(nlat_mrms * nlon_mrms * nlev_mrms).astype('float')
     if mask is not None:
-       heights = heights[mask]
-       lons    = lons[mask]
-       lats    = lats[mask]
-    
+        heights = heights[mask]
+        lons = lons[mask]
+        lats = lats[mask]
+
     heights = heights.tolist()
-    lons    = lons.tolist()
-    lats    = lats.tolist()
+    lons = lons.tolist()
+    lats = lats.tolist()
 
     return heights, lats, lons, mrms_data
 

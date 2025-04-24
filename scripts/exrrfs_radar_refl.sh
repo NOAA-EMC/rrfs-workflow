@@ -41,9 +41,9 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 echo "Getting into working directory for radar reflectivity process ..."
 
 for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
-  bigmin=$( printf %2.2i $bigmin )
-  mkdir ${DATA}/${bigmin}
-  cd ${DATA}/${bigmin}
+  bigmin=$( printf %2.2i ${bigmin} )
+  mkdir "${DATA}/${bigmin}"
+  cd "${DATA}/${bigmin}"
 
   #
   #-----------------------------------------------------------------------
@@ -52,9 +52,9 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   #
   #-----------------------------------------------------------------------
   #
-  meshgriddir=${FIXrrfs}/meshes
+  meshgriddir="${FIXrrfs}"/meshes
   echo "meshgriddir is $meshgriddir"
-  cp ${meshgriddir}/${MESH_NAME}.grid.nc grid.nc
+  cp "${meshgriddir}"/"${MESH_NAME}".grid.nc grid.nc
 
   #
   #-----------------------------------------------------------------------
@@ -83,23 +83,23 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   echo "bigmin = ${bigmin}"
   for (( j=0; j < 4; $((j=j+1)) )); do
     min=$( printf %2.2i $((bigmin+j)) )
-    echo "Looking for data valid:"${YYYY}"-"${MM}"-"${DD}" "${HH}":"${min}
+    echo "Looking for data valid:${YYYY}-${MM}-${DD} ${HH}:${min}"
     if [[ -e filelist_mrms ]]; then
       break
     fi
     s=0
     while [[ $s -le 59 ]]; do
       ss=$(printf %2.2i ${s})
-      nsslfile=${NSSL}/*${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.${obs_appendix}
+      nsslfile="${NSSL}"/*"${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.${obs_appendix}"
       if [ -s $nsslfile ]; then
-        echo 'Found '${nsslfile}
-        nsslfile1=*${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.${obs_appendix}
+        echo "Found ${nsslfile}"
+        nsslfile1="*${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.${obs_appendix}"
         numgrib2=$(ls ${NSSL}/${nsslfile1} | wc -l)
-        echo 'Number of GRIB-2 files: '${numgrib2}
-        if [ ${numgrib2} -ge 10 ] && [ ! -e filelist_mrms ]; then
+        echo "Number of GRIB-2 files: ${numgrib2}"
+        if [ "${numgrib2}" -ge 10 ] && [ ! -e filelist_mrms ]; then
           cp ${NSSL}/${nsslfile1} .
           ls ${nsslfile1} > filelist_mrms
-          echo 'Creating links for ${YYYY}${MM}${DD}-${HH}${min}'
+          echo "Creating links for ${YYYY}${MM}${DD}-${HH}${min}"
 	  break
         fi
       fi
@@ -121,7 +121,7 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
      if [ ${obs_appendix} == "grib2.gz" ]; then
         gzip -d *.gz
         mv filelist_mrms filelist_mrms_org
-        ls MergedReflectivityQC_*_${YYYY}${MM}${DD}-${HH}????.grib2 > filelist_mrms
+        ls "MergedReflectivityQC_*_${YYYY}${MM}${DD}-${HH}????.grib2" > filelist_mrms
      fi
 
      numgrib2=$(more filelist_mrms | wc -l)
@@ -198,22 +198,22 @@ EOF
 
   module list
   export pgm="process_NSSL_mosaic.exe"
-  ${cpreq} "${EXECrrfs}"/${pgm} .
+  ${cpreq} "${EXECrrfs}/${pgm}" .
   source prep_step
   ${MPI_RUN_CMD} ./${pgm}
 # check the status
   export err=$?
   err_chk
 
-  cp RefInGSI3D.dat  ${COMOUT}/radar_refl/${WGF}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
+  cp RefInGSI3D.dat  "${COMOUT}/radar_refl/${WGF}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}"
 
   # pyioda libraries
   PYIODALIB=$(echo "${HOMErrfs}"/sorc/RDASApp/build/lib/python3.*)
   export PYTHONPATH=${PYIODALIB}:${PYTHONPATH}
-  ${HOMErrfs}/ush/MRMS2ioda.py -i ./Gridded_ref.nc -c ${YYYY}-${MM}-${DD}T${HH}:${bigmin}:00 -o ioda_mrms_${YYYY}${MM}${DD}${HH}_${bigmin}.nc4
+  "${HOMErrfs}"/ush/MRMS2ioda.py -i ./Gridded_ref.nc -c "${YYYY}-${MM}-${DD}T${HH}:${bigmin}:00" -o "ioda_mrms_${YYYYMMDD}${HH}_${bigmin}.nc4"
 # file count sanity check and copy to COMOUT
-  if [[ -s "ioda_mrms_${YYYY}${MM}${DD}${HH}_${bigmin}.nc4" ]]; then
-    ${cpreq} "ioda_mrms_${YYYY}${MM}${DD}${HH}_${bigmin}.nc4" "${COMOUT}/radar_refl/${WGF}"
+  if [[ -s "ioda_mrms_${YYYYMMDD}${HH}_${bigmin}.nc4" ]]; then
+    ${cpreq} "ioda_mrms_${YYYYMMDD}${HH}_${bigmin}.nc4" "${COMOUT}/radar_refl/${WGF}"
   else
     echo "FATAL ERROR: no ioda MRMS file generated."
     err_exit # err_exit if no ioda files generated at the development stage
