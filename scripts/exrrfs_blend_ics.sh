@@ -189,6 +189,12 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
 
      # Shortcut the file names/arguments.
      Lx=$ENS_BLENDING_LENGTHSCALE
+     # Using gfs_data.tile7.halo0.nc from umberlla ics directory as out.atm.tile${TILE_RGNL}.nc
+     if [ -s ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo0.nc ]; then
+       ln -s ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo0.nc out.atm.tile${TILE_RGNL}.nc
+     else
+       err_exit "FATAL: gfs_data.tile${TILE_RGNL}.halo0.nc not found in ${shared_output_data} - check make ics step"
+     fi
      glb=./out.atm.tile${TILE_RGNL}.nc
      reg=./fv_core.res.tile1.nc
      trcr=./fv_tracer.res.tile1.nc
@@ -202,16 +208,14 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
      python ${USHrrfs}/blending_fv3.py $Lx $glb $reg $trcr $blend $use_host_enkf
      [[ ! -s fv_core.res.tile1.nc ]]&& err_exit "FATAL: fv_core.res.tile1.nc not found in ${DATA}"
      [[ ! -s fv_tracer.res.tile1.nc ]]&& err_exit "FATAL: fv_tracer.res.tile1.nc not found in ${DATA}" 
-
-     cp ./fv_core.res.tile1.nc ${shared_output_data}/.
-     cp ./fv_tracer.res.tile1.nc ${shared_output_data}/.
-
+     ln -s ${DATA}/fv_core.res.tile1.nc ${shared_output_data}/fv_core.res.tile1.nc
+     ln -s ${DATA}/fv_tracer.res.tile1.nc ${shared_output_data}/fv_tracer.res.tile1.nc
      # Move the remaining RESTART files to INPUT
-     cp ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc          ${shared_output_data}/fv_core.res.nc
-     cp ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_srf_wnd.res.tile1.nc ${shared_output_data}/fv_srf_wnd.res.tile1.nc
-     cp ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.phy_data.nc             ${shared_output_data}/phy_data.nc
-     cp ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.sfc_data.nc             ${shared_output_data}/sfc_data.nc
-     cp ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res             ${shared_output_data}/coupler.res
+     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc          ${shared_output_data}/fv_core.res.nc
+     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_srf_wnd.res.tile1.nc ${shared_output_data}/fv_srf_wnd.res.tile1.nc
+     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.phy_data.nc             ${shared_output_data}/phy_data.nc
+     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.sfc_data.nc             ${shared_output_data}/sfc_data.nc
+     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res             ${shared_output_data}/coupler.res
   fi
 fi
 #
@@ -228,16 +232,6 @@ if [[ $DO_ENS_BLENDING = "FALSE" || ($DO_ENS_BLENDING = "TRUE" && -f $run_ensini
   [[ ! -s ${shared_output_data}/gfs_bndy.tile${TILE_RGNL}.000.nc ]]&& err_exit "FATAL ERROR: gfs_bndy.tile${TILE_RGNL}.000.nc not found in ${shared_output_data}"
   [[ ! -s ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc ]]&& err_exit "FATAL ERROR: gfs_data.tile${TILE_RGNL}.halo${NH0}.nc not found in ${shared_output_data}"
   [[ ! -s ${shared_output_data}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc ]]&& err_exit "FATAL ERROR: sfc_data.tile${TILE_RGNL}.halo${NH0}.nc not found in ${shared_output_data}"
-fi
-#
-#-----------------------------------------------------------------------
-#
-# copy results to Umbrella DATA
-#
-#-----------------------------------------------------------------------
-#
-if [ $DO_ENS_BLENDING = "TRUE" ] && [ -f $run_blending ] && [ ! -f $run_ensinit ]; then
-  cp ${DATA}/coupler.res ${shared_output_data}
 fi
 #
 #-----------------------------------------------------------------------
