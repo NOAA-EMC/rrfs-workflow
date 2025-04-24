@@ -5,8 +5,8 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 # begin of ioda_bufr --------------------------------------------------------
 
 
-def radar_refl(xmlFile, expdir):
-    task_id = 'radar_refl'
+def ioda_mrms_refl(xmlFile, expdir):
+    task_id = 'ioda_mrms_refl'
     cycledefs = 'prod'
     num_spinup_cycledef = int(os.getenv('NUM_SPINUP_CYCLEDEF', '0'))
     if num_spinup_cycledef == 1:

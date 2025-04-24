@@ -18,8 +18,8 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 #-----------------------------------------------------------------------
 #
 export pid=${pid:-$$}
-export jobid=${jobid:-radar_refl_${cyc}}
-export UMBRELLA_IODA_MRMS_DATA=${UMBRELLA_IODA_MRMS_DATA:-${DATAROOT}/${RUN}_radar_refl_${cyc}_${rrfs_ver}/${WGF}}
+export jobid=${jobid:-ioda_mrmr_refl_${cyc}}
+export UMBRELLA_IODA_MRMS_DATA=${UMBRELLA_IODA_MRMS_DATA:-${DATAROOT}/${RUN}_ioda_mrms_refl_${cyc}_${rrfs_ver}/${WGF}}
 export DATA=${DATA:-${UMBRELLA_IODA_MRMS_DATA}/${jobid}}
 
 if [[ -d "${DATA}" ]]; then #remove the ${DATA} directory before a new run
@@ -33,13 +33,13 @@ mkdir -p "${DATA}"
 #
 export COMINrrfs=${COMINrrfs:-$(compath.py "${envir}/rrfs/${rrfs_ver}")}
 export COMOUT=${COMOUT:-$(compath.py -o "${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}")}
-mkdir -p "${COMOUT}/radar_refl/${WGF}"
+mkdir -p "${COMOUT}/ioda_mrms_refl/${WGF}"
 #
 #----------------------------------------
 # Execute the script.
 #----------------------------------------
 export pgmout="${DATA}/OUTPUT.$$"
-"${HOMErrfs}"/scripts/exrrfs_radar_refl.sh
+"${HOMErrfs}"/scripts/exrrfs_ioda_mrms_refl.sh
 export err=$?; err_chk
 
 if [[ -e "${pgmout}" ]]; then

@@ -6,7 +6,7 @@
 '''
 
 import pyiodaconv.ioda_conv_engines as iconv
-from collections import defaultdict, OrderedDict
+from collections import defaultdict
 from pyiodaconv.orddicts import DefaultOrderedDict
 import netCDF4 as nc
 import numpy as np

@@ -40,7 +40,7 @@ case ${task_id} in
     module load "RDAS/${MACHINE}.intel"
     export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOMErrfs}/sorc/RDASApp/build/lib64
     ;;
-  radar_refl)
+  ioda_mrms_refl)
     module purge
     module use "${HOMErrfs}/sorc/RDASApp/modulefiles"
     module load "RDAS/${MACHINE}.intel"

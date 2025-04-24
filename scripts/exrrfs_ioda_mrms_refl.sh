@@ -36,8 +36,8 @@ YYYYMMDD=${CDATE:0:8}
 #
 echo "Getting into working directory for radar reflectivity process ..."
 
-for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
-  bigmin=$( printf %2.2i ${bigmin} )
+for bigmin_this in ${RADARREFL_TIMELEVEL[@]}; do
+  bigmin=$( printf %2.2i ${bigmin_this} )
   mkdir "${DATA}/${bigmin}"
   cd "${DATA}/${bigmin}" || exit
 
@@ -78,7 +78,7 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   fi
   echo "bigmin = ${bigmin}"
   for (( j=0; j < 4; $((j=j+1)) )); do
-    min=$( printf %2.2i $((bigmin+j)) )
+    min=$( printf %2.2i $((bigmin_this+j)) )
     echo "Looking for data valid:${YYYY}-${MM}-${DD} ${HH}:${min}"
     if [[ -e filelist_mrms ]]; then
       break
@@ -86,7 +86,7 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
     s=0
     while [[ $s -le 59 ]]; do
       ss=$(printf %2.2i ${s})
-      nsslfile="${NSSL}"/*"${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.${obs_appendix}"
+      nsslfile="${NSSL}/*${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.${obs_appendix}"
       if [ -s ${nsslfile} ]; then
         echo "Found ${nsslfile}"
         nsslfile1="*${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.${obs_appendix}"
@@ -201,7 +201,7 @@ EOF
   export err=$?
   err_chk
 
-  cp RefInGSI3D.dat  "${COMOUT}/radar_refl/${WGF}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}"
+  cp RefInGSI3D.dat  "${COMOUT}/ioda_mrms_refl/${WGF}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}"
 
   # pyioda libraries
   PYIODALIB=$(echo "${HOMErrfs}"/sorc/RDASApp/build/lib/python3.*)
@@ -209,7 +209,7 @@ EOF
   "${HOMErrfs}"/ush/MRMS2ioda.py -i ./Gridded_ref.nc -c "${YYYY}-${MM}-${DD}T${HH}:${bigmin}:00" -o "ioda_mrms_${YYYYMMDD}${HH}_${bigmin}.nc4"
 # file count sanity check and copy to COMOUT
   if [[ -s "ioda_mrms_${YYYYMMDD}${HH}_${bigmin}.nc4" ]]; then
-    ${cpreq} "ioda_mrms_${YYYYMMDD}${HH}_${bigmin}.nc4" "${COMOUT}/radar_refl/${WGF}"
+    ${cpreq} "ioda_mrms_${YYYYMMDD}${HH}_${bigmin}.nc4" "${COMOUT}/ioda_mrms_refl/${WGF}"
   else
     echo "FATAL ERROR: no ioda MRMS file generated."
     err_exit # err_exit if no ioda files generated at the development stage
