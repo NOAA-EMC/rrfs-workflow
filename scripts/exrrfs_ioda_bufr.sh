@@ -79,7 +79,7 @@ ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda_ztd.py .
 ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda.json .
 ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda_gsrcsr.json .
 ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda_gsrcsr.py .
-${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/run_bufr2ioda.sh .
+${cpreq} "${USHrrfs}"/run_bufr2ioda_gsrcsr.sh .
 
 # pyioda libraries
 PYIODALIB=$(echo "$HOMErdasapp"/build/lib/python3.*)
@@ -93,22 +93,30 @@ ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/gen_bufr2ioda_json.py .
 #./bufr2ioda_satwnd.py -c bufr2ioda_0.json
 #convert abi gsrcsr bufr to ioda
 ln -sf abibufr "rap.t${cyc}z.gsrcsr.tm00.bufr_d"
-./run_bufr2ioda.sh "${CDATE}" rap "${DATA}" "${DATA}" "${DATA}" "${HOMErdasapp}"
-ln -sf "rap.t${cyc}z.abi_g16.tm00.nc" "ioda_abi_g16.nc"
-ln -sf "rap.t${cyc}z.abi_g18.tm00.nc" "ioda_abi_g18.nc"
+./run_bufr2ioda_gsrcsr.sh "${CDATE}" rap "${DATA}" "${DATA}" "${DATA}" "${HOMErdasapp}"
+cp "rap.t${cyc}z.abi_g16.tm00.nc" "ioda_abi_g16.nc"
+cp "rap.t${cyc}z.abi_g18.tm00.nc" "ioda_abi_g18.nc"
 fi
 
 # run offline IODA tools
 ${cpreq} "${USHrrfs}"/offline_domain_check.py .
+${cpreq} "${USHrrfs}"/offline_domain_check_satrad.py .
 ${cpreq} "${USHrrfs}"/offline_ioda_tweak.py .
 for ioda_file in ioda*nc; do
   grid_file="${FIXrrfs}/meshes/${MESH_NAME}.static.nc"
-  ./offline_domain_check.py -o "${ioda_file}" -g "${grid_file}" -s 0.005
-  base_name=$(basename "$ioda_file" .nc)
-  mv  "${base_name}_dc.nc" "${base_name}.nc"
-  ./offline_ioda_tweak.py -o "${ioda_file}"
-  base_name=$(basename "$ioda_file" .nc)
-  mv  "${base_name}_llp.nc" "${base_name}.nc"
+  if [[ "${ioda_file}" == *abi* ]]; then
+    echo "ABI ioda file detected: running offline_domain_check_satrad.py"
+    ./offline_domain_check_satrad.py -o "${ioda_file}" -g "${grid_file}" -s 0.005
+    base_name=$(basename "$ioda_file" .nc)
+    mv  "${base_name}_dc.nc" "${base_name}.nc"
+  else
+    ./offline_domain_check.py -o "${ioda_file}" -g "${grid_file}" -s 0.005
+    base_name=$(basename "$ioda_file" .nc)
+    mv  "${base_name}_dc.nc" "${base_name}.nc"
+    ./offline_ioda_tweak.py -o "${ioda_file}"
+    base_name=$(basename "$ioda_file" .nc)
+    mv  "${base_name}_llp.nc" "${base_name}.nc"
+  fi
 done
 
 # file count sanity check and copy to COMOUT
