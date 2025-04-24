@@ -19,7 +19,7 @@ def recenter(xmlFile, expdir):
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
     # ~~
-    if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
+    if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
         dependencies = f'''
   <dependency>
   <and>{timedep}
