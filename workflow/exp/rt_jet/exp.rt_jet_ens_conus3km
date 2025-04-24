@@ -53,6 +53,7 @@ export NODES_FCST="<nodes>40:ppn=20</nodes>"
 export NODES_MPASSIT="<nodes>4:ppn=20</nodes>"
 export NODES_UPP="<nodes>4:ppn=20</nodes>"
 export NODES_GETKF="<nodes>80:ppn=10</nodes>"
+export NODES_RECENTER="<nodes>2:ppn=16</nodes>"
 #
 export WALLTIME_FCST="2:00:00"
 export WALLTIME_SAVE_FCST="2:00:00"
