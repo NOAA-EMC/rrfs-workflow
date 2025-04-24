@@ -77,4 +77,23 @@ else
   echo "FATAL ERROR: PREP_IC failed, start type is not defined"
   err_exit
 fi
+#
+#  find the right satbias file
+#
+
+if [[ "${start_type}" == "cold" || "${start_type}" == "warm" ]]; then
+   
+   satbias_in=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/jedivar/${WGF}${MEMDIR}/abi_g16.satbias.nc 
+   satbias_pc=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/jedivar/${WGF}${MEMDIR}/abi_g16.satbias_cov.nc
+
+   if [[ -r ${satbias_in} || -r ${satbias_pc}  ]]; then
+      ${cpreq} "${satbias_in}" "${UMBRELLA_PREP_IC_DATA}/"abi_g16.satbias.nc
+      ${cpreq} "${satbias_pc}" "${UMBRELLA_PREP_IC_DATA}/"abi_g16.satbias_cov.nc
+   else
+      echo "cannot find satbias file: ${satbias_in} or ${satbias_pc}"
+      echo "using satellite satbias_in files from ${FIXrrfs}/satbias_init"
+      cp ${FIXrrfs}/satbias_init/abi_g16.satbias.nc "${UMBRELLA_PREP_IC_DATA}/"abi_g16.satbias.nc"
+      cp ${FIXrrfs}/satbias_init/abi_g16.satbias_cov.nc "${UMBRELLA_PREP_IC_DATA}/"abi_g16.satbias_cov.nc"
+   fi
+fi
 exit 0
