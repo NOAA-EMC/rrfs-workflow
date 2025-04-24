@@ -21,10 +21,11 @@ def recenter(xmlFile, expdir):
     # ~~
     dependencies = f'''
   <dependency>
-    <and>{timedep}
-      <metataskdep metatask="prep_ic"/>
-    </and>
-    </dependency>'''
+  <and>{timedep}
+    <datadep age="00:05:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/jedivar/det/mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+    <metataskdep metatask="prep_ic"/>
+  </and>
+  </dependency>'''
     #
     xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv=dcTaskEnv, dependencies=dependencies, command_id="RECENTER")
 # end of recenter --------------------------------------------------------

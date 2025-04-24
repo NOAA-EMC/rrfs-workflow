@@ -257,21 +257,22 @@ def get_required_env(env_name):
 def get_cascade_env(env_name):
     seperator = "_"  # underscore
     revStr = env_name[::-1]  # reverse the string
-    env_value = os.getenv(env_name)
+    env_value = os.getenv(env_name) or None
     if env_value is not None:
         return env_value
 
     while seperator in revStr:
         ra, rb = revStr.split(seperator, 1)  # only split once
         new_name = rb[::-1]
-        env_value = os.getenv(new_name)
+        env_value = os.getenv(new_name) or None
         if env_value is not None:
             return env_value
         else:
             revStr = rb
 
     # if no env variable is defined in the cascasde
-    return f'the cascade env {env_name} not defined'
+    print(f'the cascade env {env_name} not defined')
+    return ''
 # end of get_cascade_env(env_name)
 
 # get_yes_or_no
