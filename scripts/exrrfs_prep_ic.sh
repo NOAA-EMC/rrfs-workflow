@@ -92,8 +92,8 @@ if [[ "${start_type}" == "cold" || "${start_type}" == "warm" ]]; then
    else
       echo "cannot find satbias file: ${satbias_in} or ${satbias_pc}"
       echo "using satellite satbias_in files from ${FIXrrfs}/satbias_init"
-      cp ${FIXrrfs}/satbias_init/abi_g16.satbias.nc "${UMBRELLA_PREP_IC_DATA}/"abi_g16.satbias.nc"
-      cp ${FIXrrfs}/satbias_init/abi_g16.satbias_cov.nc "${UMBRELLA_PREP_IC_DATA}/"abi_g16.satbias_cov.nc"
+      cp "${FIXrrfs}/satbias_init/abi_g16.satbias.nc" "${UMBRELLA_PREP_IC_DATA}/abi_g16.satbias.nc"
+      cp "${FIXrrfs}/satbias_init/abi_g16.satbias_cov.nc" "${UMBRELLA_PREP_IC_DATA}/abi_g16.satbias_cov.nc"
    fi
 fi
 exit 0
