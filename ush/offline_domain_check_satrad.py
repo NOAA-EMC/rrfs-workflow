@@ -1,8 +1,9 @@
 #!/usr/bin/env python
+import matplotlib.pyplot as plt
 import netCDF4 as nc
 import numpy as np
 from matplotlib.path import Path
-from scipy.spatial import ConvexHull, Delaunay
+from scipy.spatial import Delaunay
 from timeit import default_timer as timer
 import argparse
 import warnings
@@ -36,19 +37,22 @@ warnings.filterwarnings('ignore')
 
 # Set matplotlib backend
 matplotlib.use('agg')
-import matplotlib.pyplot as plt
 
 # Functions for calculating run times.
+
+
 def tic():
     return timer()
 
+
 def toc(tic=tic, label=""):
     toc = timer()
-    elapsed = toc-tic
+    elapsed = toc - tic
     hrs = int(elapsed // 3600)
     mins = int((elapsed % 3600) // 60)
     secs = int(elapsed % 3600 % 60)
     print(f"{label}({elapsed:.2f}s), {hrs:02}:{mins:02}:{secs:02}")
+
 
 def alpha_shape(points, alpha, only_outer=True):
     """
@@ -82,7 +86,7 @@ def alpha_shape(points, alpha, only_outer=True):
     edges = set()
     # Loop over triangles:
     # ia, ib, ic = indices of corner points of the triangle
-    #for ia, ib, ic in tri.vertices: #only work with python version from RDASApp/module/EVA
+    # for ia, ib, ic in tri.vertices: #only work with python version from RDASApp/module/EVA
     for ia, ib, ic in tri.simplices:
         pa = points[ia]
         pb = points[ib]
@@ -101,14 +105,16 @@ def alpha_shape(points, alpha, only_outer=True):
             add_edge(edges, ic, ia)
     return edges
 
+
 def find_edges_with(i, edge_set):
-    i_first = [j for (x,j) in edge_set if x==i]
-    i_second = [j for (j,x) in edge_set if x==i]
+    i_first = [j for (x, j) in edge_set if x == i]
+    i_second = [j for (j, x) in edge_set if x == i]
     return i_first, i_second
+
 
 def stitch_boundaries(edges):
     """
-    Sort the edges computed by alpha_shape 
+    Sort the edges computed by alpha_shape
     """
     edge_set = edges.copy()
     boundary_lst = []
@@ -118,7 +124,7 @@ def stitch_boundaries(edges):
         boundary.append(edge0)
         last_edge = edge0
         while len(edge_set) > 0:
-            i,j = last_edge
+            i, j = last_edge
             j_first, j_second = find_edges_with(j, edge_set)
             if j_first:
                 edge_set.remove((j, j_first[0]))
@@ -137,6 +143,7 @@ def stitch_boundaries(edges):
         boundary_lst.append(boundary)
     return boundary_lst
 
+
 def shrink_boundary(points, centroid, factor=0.01):
     new_points = []
     for point in points:
@@ -146,6 +153,7 @@ def shrink_boundary(points, centroid, factor=0.01):
         new_point = point - factor * direction_normalized * distance_to_centroid
         new_points.append(new_point)
     return np.array(new_points)
+
 
 tic1 = tic()
 
@@ -175,11 +183,11 @@ print(f"Figure flag: {args.fig}")
 print(f"Hull shrink factor: {hull_shrink_factor}")
 
 # Plotting options
-plot_box_width = 100. # define size of plot domain (units: lat/lon degrees)
+plot_box_width = 100.  # define size of plot domain (units: lat/lon degrees)
 plot_box_height = 50
 cen_lat = 34.5
 cen_lon = -97.5
-#hull_shrink_factor = 0.10  #10% was found to work fairly well.
+# hull_shrink_factor = 0.10  #10% was found to work fairly well.
 
 grid_ds = nc.Dataset(grid_filename, 'r')
 obs_ds = nc.Dataset(obs_filename, 'r')
@@ -203,13 +211,14 @@ print(f"Max/Min grid Lon: {np.max(grid_lon)-360}, {np.min(grid_lon)-360}\n")
 
 # Get the points along the edge of the domain and sort
 points = np.vstack([grid_lon, grid_lat]).T
-edges = alpha_shape(points, alpha=0.25, only_outer = True)
+edges = alpha_shape(points, alpha=0.25, only_outer=True)
 edges_sorted = stitch_boundaries(edges)
 
 # Now grab the lat/lon points of the boundary (could be improved)
 edge_points = []
 for idx in edges_sorted[0]:
-    ipt = idx[0]; jpt = idx[1]
+    ipt = idx[0]
+    jpt = idx[1]
     point_1 = points[ipt]
     point_2 = points[jpt]
     edge_points.append(point_1)
@@ -228,8 +237,8 @@ obs_lat = obs_ds.groups['MetaData'].variables['latitude'][:]
 obs_lon = obs_ds.groups['MetaData'].variables['longitude'][:]
 obs_lon = np.where(obs_lon < 0, obs_lon + 360, obs_lon)
 
-#print(f"Max/Min obs Lat: {np.max(obs_lat)}, {np.min(obs_lat)}")
-#print(f"Max/Min obs Lon: {np.max(obs_lon)}, {np.min(obs_lon)}\n")
+# print(f"Max/Min obs Lat: {np.max(obs_lat)}, {np.min(obs_lat)}")
+# print(f"Max/Min obs Lon: {np.max(obs_lon)}, {np.min(obs_lon)}\n")
 
 # Pair the observation lat/lon as coordinates
 obs_coords = np.vstack((obs_lon, obs_lat)).T
@@ -239,14 +248,14 @@ inside_domain = domain_path.contains_points(obs_coords)
 
 # Get indices of observations within the domain
 inside_indices = np.where(inside_domain)[0]
-toc(tic1,label="Time to find obs within domain: ")
+toc(tic1, label="Time to find obs within domain: ")
 
 tic2 = tic()
 # Create a new NetCDF file to store the selected data using the more efficient method
-try:
-    outfile = obs_filename.replace('.nc', '_dc.nc')
-except:
+if '.nc4' in obs_filename:
     outfile = obs_filename.replace('.nc4', '_dc.nc4')
+else:
+    outfile = obs_filename.replace('.nc', '_dc.nc')
 fout = nc.Dataset(outfile, 'w')
 
 # Create dimensions and variables in the new file
@@ -264,7 +273,7 @@ if 'Channel' not in fout.dimensions and channel_size > 0:
     fout.variables['Channel'][:] = obs_ds.variables['Channel'][:]
     for attr in obs_ds.variables['Channel'].ncattrs():  # Attributes for Location variable
         if attr != '_FillValue':
-           fout.variables['Channel'].setncattr(attr, obs_ds.variables['Channel'].getncattr(attr))
+            fout.variables['Channel'].setncattr(attr, obs_ds.variables['Channel'].getncattr(attr))
 
 # Location variable
 if '_FillValue' in obs_ds.variables['Channel'].ncattrs():
@@ -277,7 +286,7 @@ if 'Location' not in fout.dimensions:
     fout.variables['Location'][:] = 0
     for attr in obs_ds.variables['Location'].ncattrs():  # Attributes for Location variable
         if attr != '_FillValue':
-           fout.variables['Location'].setncattr(attr, obs_ds.variables['Location'].getncattr(attr))
+            fout.variables['Location'].setncattr(attr, obs_ds.variables['Location'].getncattr(attr))
 
 # Copy all non-grouped attributes into the new file
 for attr in obs_ds.ncattrs():  # Attributes for the main file
@@ -295,31 +304,33 @@ for group in groups:
 
         # Create a new variable with the correct dimensions
         if len(dimensions) == 1:  # One-dimensional variable
-            try:
-                g.createVariable(var, vartype, dimensions, fill_value=fill)
-            except:
+            if vartype == 'str':
                 g.createVariable(var, 'str', dimensions, fill_value=fill)
-            # If variable has only dimensions of channel then we do not need to process it 
-            if g.variables[var].dimensions[0] == 'Channel': 
+            else:
+                g.createVariable(var, vartype, dimensions, fill_value=fill)
+            # If variable has only dimensions of channel then we do not need to process it
+            if g.variables[var].dimensions[0] == 'Channel':
                 g.variables[var][:] = invar[:][:]
-            else: 
+            else:
                 g.variables[var][:] = invar[:][inside_indices]
             # Copy attributes for this variable
             for attr in invar.ncattrs():
-                if '_FillValue' in attr: continue
+                if '_FillValue' in attr:
+                    continue
                 g.variables[var].setncattr(attr, invar.getncattr(attr))
 
         elif len(dimensions) == 2:  # Two-dimensional variable
-            try:
-                g.createVariable(var, vartype, dimensions, fill_value=fill)
-            except:
+            if vartype == 'str':
                 g.createVariable(var, 'str', dimensions, fill_value=fill)
-            for idy in range(0, len(invar[0,:])): # new method for slicing very large 2d arrays
-                g.variables[var][:,idy] = itemgetter(*inside_indices)(invar[:,idy])
+            else:
+                g.createVariable(var, vartype, dimensions, fill_value=fill)
+            for idy in range(0, len(invar[0, :])):  # new method for slicing very large 2d arrays
+                g.variables[var][:, idy] = itemgetter(*inside_indices)(invar[:, idy])
 
             # Copy attributes for this variable
             for attr in invar.ncattrs():
-                if '_FillValue' in attr: continue
+                if '_FillValue' in attr:
+                    continue
                 g.variables[var].setncattr(attr, invar.getncattr(attr))
 
         else:
@@ -332,18 +343,18 @@ dimensions = obsval.dimensions
 fill = obsval.getncattr('_FillValue')
 g = fout.createGroup('ObsError')
 g.createVariable('brightnessTemperature', vartype, dimensions, fill_value=fill)
-g.variables['brightnessTemperature'][:,:] = 999
+g.variables['brightnessTemperature'][:, :] = 999
 
 # Finally add global attribute with the settings used to run this domain check
 fout.setncattr('Orig_obs_file', obs_filename)
 fout.setncattr('Grid_file', grid_filename)
-fout.setncattr('Shrink_factor',hull_shrink_factor)
+fout.setncattr('Shrink_factor', hull_shrink_factor)
 
 # Close the datasets
 obs_ds.close()
 fout.close()
 grid_ds.close()
-toc(tic2,label="Time to create new obs file: ")
+toc(tic2, label="Time to create new obs file: ")
 
 tic3 = tic()
 
@@ -356,13 +367,13 @@ print("Generating figure...")
 # Set cartopy shapefile path
 platform = os.getenv('HOSTNAME').upper()
 if 'ORION' in platform:
-        cartopy.config['data_dir']='/work/noaa/fv3-cam/sdegelia/cartopy'
-elif 'H' in platform: # Will need to improve this once Hercules is supported
-        cartopy.config['data_dir']='/home/Donald.E.Lippi/cartopy'
+    cartopy.config['data_dir'] = '/work/noaa/fv3-cam/sdegelia/cartopy'
+elif 'H' in platform:  # Will need to improve this once Hercules is supported
+    cartopy.config['data_dir'] = '/home/Donald.E.Lippi/cartopy'
 
-fig = plt.figure(figsize=(7,4))
+fig = plt.figure(figsize=(7, 4))
 m1 = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree(central_longitude=0))
-#m1 = fig.add_subplot(1, 1, 1, projection=ccrs.LambertConformal())
+# m1 = fig.add_subplot(1, 1, 1, projection=ccrs.LambertConformal())
 adjusted_lon = np.where(grid_lon > 180, grid_lon - 360, grid_lon)
 
 # Determine extent for plot domain
@@ -382,7 +393,7 @@ m1.add_feature(cfeature.BORDERS)
 m1.add_feature(cfeature.STATES)
 
 # Gridlines for the subplots
-gl1 = m1.gridlines(crs = ccrs.PlateCarree(), draw_labels = True, linewidth = 0.5, color = 'k', alpha = 0.25, linestyle = '-')
+gl1 = m1.gridlines(crs=ccrs.PlateCarree(), draw_labels=True, linewidth=0.5, color='k', alpha=0.25, linestyle='-')
 gl1.xlocator = mticker.FixedLocator([])
 gl1.xlocator = mticker.FixedLocator(np.arange(-180., 181., 10.))
 gl1.ylocator = mticker.FixedLocator(np.arange(-80., 91., 10.))
@@ -392,7 +403,7 @@ gl1.xlabel_style = {'size': 5, 'color': 'gray'}
 gl1.ylabel_style = {'size': 5, 'color': 'gray'}
 
 # Plot the domain and the observations
-#m1.fill(adjusted_lon.flatten(), grid_lat.flatten(), color='b', label='Domain Boundary', zorder=1, transform=ccrs.PlateCarree())
+# m1.fill(adjusted_lon.flatten(), grid_lat.flatten(), color='b', label='Domain Boundary', zorder=1, transform=ccrs.PlateCarree())
 m1.scatter(adjusted_lon.flatten(), grid_lat.flatten(), c='b', s=1, label='Domain Boundary', zorder=2)
 m1.plot(edge_points[:, 0], edge_points[:, 1], 'tab:purple', label='Concave Hull', zorder=10, transform=ccrs.PlateCarree())
 
@@ -423,5 +434,5 @@ plt.title(f'{dycore} Domain and Observations ({hull_shrink_factor*100}%)')
 plt.tight_layout()
 plt.savefig(f'./domain_check_{dycore}.png')
 
-toc(tic3,label="Time to create figure: ")
-toc(tic1,label="Total elapsed time: ")
+toc(tic3, label="Time to create figure: ")
+toc(tic1, label="Total elapsed time: ")
