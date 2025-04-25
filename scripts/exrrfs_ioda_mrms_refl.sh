@@ -90,7 +90,7 @@ for bigmin_this in ${RADARREFL_TIMELEVEL[@]}; do
       if [ -s ${nsslfile} ]; then
         echo "Found ${nsslfile}"
         nsslfile1="*${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.${obs_appendix}"
-        numgrib2=$(ls ${NSSL}/${nsslfile1} | wc -l)
+	numgrib2=$(find ${NSSL}/${nsslfile1} -maxdepth 1 -type f | wc -l)
         echo "Number of GRIB-2 files: ${numgrib2}"
         if [ "${numgrib2}" -ge 10 ] && [ ! -e filelist_mrms ]; then
           cp ${NSSL}/${nsslfile1} .
@@ -129,21 +129,6 @@ for bigmin_this in ${RADARREFL_TIMELEVEL[@]}; do
   fi
 
   #
-  #-----------------------------------------------------------------------
-  #
-  # Build namelist and run executable
-  #
-  #   tversion      : data source version
-  #                   = 1 NSSL 1 tile grib2 for single level
-  #                   = 4 NSSL 4 tiles binary
-  #                   = 8 NSSL 8 tiles netcdf
-  #   fv3_io_layout_y : subdomain of restart files
-  #   analysis_time : process obs used for this analysis date (YYYYMMDDHH)
-  #   dataPath      : path of the radar reflectivity mosaic files.
-  #
-  #-----------------------------------------------------------------------
-  #
-
 #  if [ ${RADAR_REF_THINNING} -eq 2 ]; then
 #    # heavy data thinning, typically used for EnKF
 #    precipdbzhorizskip=1
@@ -216,13 +201,6 @@ EOF
   fi
 
 done # done with the bigmin for-loop
-#
-#-----------------------------------------------------------------------
-#
-# Print message indicating successful completion of script.
-#
-#-----------------------------------------------------------------------
-#
 echo "
 ========================================================================
 RADAR REFL PROCESS completed successfully!!!
