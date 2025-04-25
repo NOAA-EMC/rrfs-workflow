@@ -166,6 +166,6 @@ fi
 cp "${DATA}"/jdiag* "${COMOUT}/jedivar/${WGF}"
 cp "${DATA}"/jedivar*.yaml "${COMOUT}/jedivar/${WGF}"
 cp "${DATA}"/log.out "${COMOUT}/jedivar/${WGF}"
+cp "${DATA}"/mpasin.nc "${COMOUT}/jedivar/${WGF}/mpasout.${timestr}.nc"
 cp "${DATA}"/out_abi_g16.satbias.nc "${COMOUT}/jedivar/${WGF}/abi_g16.satbias.nc"
 cp "${DATA}"/out_abi_g16.satbias_cov.nc "${COMOUT}/jedivar/${WGF}/abi_g16.satbias_cov.nc"
-
