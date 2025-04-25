@@ -159,3 +159,4 @@ fi
 cp "${DATA}"/jdiag* "${COMOUT}/jedivar/${WGF}"
 cp "${DATA}"/jedivar*.yaml "${COMOUT}/jedivar/${WGF}"
 cp "${DATA}"/log.out "${COMOUT}/jedivar/${WGF}"
+cp "${DATA}"/mpasin.nc "${COMOUT}/jedivar/${WGF}/mpasout.${timestr}.nc"

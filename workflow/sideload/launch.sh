@@ -55,6 +55,11 @@ case ${task_id} in
     module use "${HOMErrfs}/sorc/UPP/modulefiles"
     module load "${MACHINE}"
     ;;
+  recenter)
+    module purge
+    module use "${HOMErrfs}/sorc/RRFS_UTILS/modulefiles"
+    module load "build_${MACHINE}_intel"
+    ;;
   *)
     module purge
     module load "rrfs/${MACHINE}.intel"
