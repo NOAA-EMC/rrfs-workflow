@@ -13637,14 +13637,14 @@ cost function:
   # Observation Bias Correction (VarBC)
   # -----------------------------------
        obs bias:
-         input file: data/obs/abi_g16.satbias.nc
-         output file: out_abi_g16.satbias.nc
+         input file: data/satbias_in/abi_g16.satbias.nc
+         output file: data/satbias_out/abi_g16.satbias.nc
          variational bc:
            predictors:
            - name: constant
            - name: lapseRate
              order: 2
-             tlapse: &abi_g16_tlapse data/obs/abi_g16.tlapse.txt
+             tlapse: &abi_g16_tlapse data/satbias_in/abi_g16.tlapse.txt
            - name: lapseRate
              tlapse: *abi_g16_tlapse
            - name: emissivityJacobian

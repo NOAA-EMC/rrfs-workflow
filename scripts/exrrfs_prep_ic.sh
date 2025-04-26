@@ -18,7 +18,7 @@ for hr in ${COLDSTART_CYCS:-"99"}; do
     break
   fi
 done
-if (( SPINUP_MODE == -1 )); then
+if (( spinup_mode == -1 )); then
 # always warm start for prod cycles parallel to spinup cycles
   start_type="warm"
   for hr in ${PRODSWITCH_CYCS:-"99"}; do
@@ -80,20 +80,10 @@ fi
 #
 #  find the right satbias file
 #
-
-if [[ "${start_type}" == "cold" || "${start_type}" == "warm" ]]; then
-   
-   satbias_in=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/jedivar/${WGF}${MEMDIR}/abi_g16.satbias.nc 
-   satbias_pc=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/jedivar/${WGF}${MEMDIR}/abi_g16.satbias_cov.nc
-
-   if [[ -r ${satbias_in} || -r ${satbias_pc}  ]]; then
-      ${cpreq} "${satbias_in}" "${UMBRELLA_PREP_IC_DATA}/"abi_g16.satbias.nc
-      ${cpreq} "${satbias_pc}" "${UMBRELLA_PREP_IC_DATA}/"abi_g16.satbias_cov.nc
-   else
-      echo "cannot find satbias file: ${satbias_in} or ${satbias_pc}"
-      echo "using satellite satbias_in files from ${FIXrrfs}/satbias_init"
-      cp "${FIXrrfs}/satbias_init/abi_g16.satbias.nc" "${UMBRELLA_PREP_IC_DATA}/abi_g16.satbias.nc"
-      cp "${FIXrrfs}/satbias_init/abi_g16.satbias_cov.nc" "${UMBRELLA_PREP_IC_DATA}/abi_g16.satbias_cov.nc"
-   fi
+PREP_IC_TYPE=${PREP_IC_TYPE:-"no_da"}
+if [[ "${PREP_IC_TYPE}" == "jedivar" ]] || [[ "${PREP_IC_TYPE}" == "getkf"  ]]; then
+  satbias_path=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/${PREP_IC_TYPE}/${WGF}${MEMDIR}
+  cp "${satbias_path}"/*satbias*.nc  "${UMBRELLA_PREP_IC_DATA}"
 fi
+
 exit 0

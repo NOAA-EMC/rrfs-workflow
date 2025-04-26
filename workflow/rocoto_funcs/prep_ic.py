@@ -54,6 +54,15 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
 </metatask>\n'
         ensindexstr = "_m#ens_index#"
         ensdirstr = "/mem#ens_index#"
+    # determine prep_ic type so that we know where to find correct satbias files
+    do_jedi = os.gentenv("DO_JEDI", "FALSE").upper()
+    if do_ensemble and do_jedi == "TRUE":
+        PREP_IC_TYPE = "getkf"
+    elif do_jedi == "TRUE":
+        PREP_IC_TYPE = "jedivar"
+    else:
+        PREP_IC_TYPE = "no_da"
+    dcTaskEnv['PREP_IC_TYPE'] = PREP_IC_TYPE
 
     # dependencies
     coldhrs = coldhrs.split(' ')
