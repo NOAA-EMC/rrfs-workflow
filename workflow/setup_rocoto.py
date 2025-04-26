@@ -154,14 +154,14 @@ with open(EXPin, 'r') as infile, open(EXPout, 'w') as outfile:
 
 setup_xml(HOMErrfs, expdir)
 
-if os.getenv('YAML_GEN_METHOD', '1') == '1':
-    srcdir = f'{HOMErrfs}/workflow/ush/qrocoto'
-    dstdir = f'{expdir}/qrocoto'
-    if os.path.exists(dstdir):
-        shutil.rmtree(dstdir)
-    shutil.copytree(srcdir, dstdir)
+# copy utilities under qrototo
+srcdir = f'{HOMErrfs}/workflow/ush/qrocoto'
+dstdir = f'{expdir}/qrocoto'
+if os.path.exists(dstdir):
+    shutil.rmtree(dstdir)
+shutil.copytree(srcdir, dstdir)
 
-elif os.getenv('YAML_GEN_METHOD', '1') == '2':
+if os.getenv('YAML_GEN_METHOD', '1') == '2':
     # Copy files from HOMErrfs/workflow/ush to expdir
     source_dir = os.path.join(HOMErrfs, 'workflow', 'ush')
     target_files = ['rr', 'rc', 'rb', 'rs']
