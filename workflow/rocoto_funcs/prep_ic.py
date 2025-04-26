@@ -55,7 +55,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         ensindexstr = "_m#ens_index#"
         ensdirstr = "/mem#ens_index#"
     # determine prep_ic type so that we know where to find correct satbias files
-    do_jedi = os.gentenv("DO_JEDI", "FALSE").upper()
+    do_jedi = os.getenv("DO_JEDI", "FALSE").upper()
     if do_ensemble and do_jedi == "TRUE":
         PREP_IC_TYPE = "getkf"
     elif do_jedi == "TRUE":
@@ -63,6 +63,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     else:
         PREP_IC_TYPE = "no_da"
     dcTaskEnv['PREP_IC_TYPE'] = PREP_IC_TYPE
+    dcTaskEnv['USE_THE_LATEST_SATBIAS'] = os.getenv("USE_THE_LATEST_SATBIAS", "FALSE").upper()
 
     # dependencies
     coldhrs = coldhrs.split(' ')

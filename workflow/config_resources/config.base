@@ -17,7 +17,7 @@ export FCST_LENGTH=1
 export DO_FCST=${DO_FCST:-true}
 export DO_POST=${DO_POST:-true}
 export DO_IC_LBC=${DO_IC_LBC:-true}
-export DA_WAIT_FOR_SATBIAS=${DA_WAIT_FOR_SATBIAS:-false} # whether DA tasks wait for the new satbias from the previous cycle
+export USE_THE_LATEST_SATBIAS=${USE_THE_LATEST_SATBIAS:-true} # whether DA tasks use the latest satbias from the previous cycle
 
 #
 if ${DO_CLEAN:-false} && ! ${REALTIME:-false}; then

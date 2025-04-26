@@ -77,13 +77,37 @@ else
   echo "FATAL ERROR: PREP_IC failed, start type is not defined"
   err_exit
 fi
+
 #
 #  find the right satbias file
 #
 PREP_IC_TYPE=${PREP_IC_TYPE:-"no_da"}
 if [[ "${PREP_IC_TYPE}" == "jedivar" ]] || [[ "${PREP_IC_TYPE}" == "getkf"  ]]; then
-  satbias_path=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/${PREP_IC_TYPE}/${WGF}${MEMDIR}
-  cp "${satbias_path}"/*satbias*.nc  "${UMBRELLA_PREP_IC_DATA}"
+  if ( (( spinup_mode == 1 )) && [[ "${start_type}" == "warm" ]] ) || \
+     ( (( spinup_mode == -1 )) && [[ "${prod_switch:-"no"}" == "yes" ]] ); then
+    # warm start in the spinup session or prod_switch in the prod session
+      spinup_str="_spinup"
+  else
+      spinup_str=""
+  fi
+
+  NUM=3 # look back ${NUM} cycles to find satbias files
+  if [[ "${USE_THE_LATEST_SATBIAS}" == "TRUE" ]]; then # only use the latest satbias from the previous cycle
+    NUM=1
+  fi
+
+  for (( ii=cyc_interval; ii<=$(( NUM*cyc_interval )); ii=ii+cyc_interval )); do
+    CDATEp=$(${NDATE} -${ii} "${CDATE}" )
+    PDYii=${CDATEp:0:8}
+    cycii=${CDATEp:8:2}
+    satbias_path=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/${PREP_IC_TYPE}${spinup_str}/${WGF}
+    nSatbias=$(find "${satbias_path}"/*satbias*.nc | wc -l)
+    if (( nSatbias > 0 )); then
+      cp "${satbias_path}"/*satbias*.nc  "${UMBRELLA_PREP_IC_DATA}"
+      echo "found satbias from ${satbias_path}"
+      break
+    fi
+  done
 fi
 
 exit 0
