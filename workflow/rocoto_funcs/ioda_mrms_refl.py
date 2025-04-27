@@ -32,7 +32,7 @@ def ioda_mrms_refl(xmlFile, expdir):
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
         dependencies = f'''
   <dependency>
-      {timedep}
+    {timedep}
   </dependency>'''
     else:
         dependencies = f' '
