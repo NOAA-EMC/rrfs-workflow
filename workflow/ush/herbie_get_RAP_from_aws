@@ -27,11 +27,11 @@ cyc_interval = 1
 two_dates = date_range.split("-")
 date1 = datetime.strptime(two_dates[0], "%Y%m%d")
 date2 = datetime.strptime(two_dates[1], "%Y%m%d")
-date2 += timedelta(hours=3) # 23 gge.debug
+date2 += timedelta(hours=23)
 cur_date = date1
 fhrs = fhr_range.split("-")
 fhr_at_cyc = {}
-for i in range(0,24):
+for i in range(0, 24):
     fhr_at_cyc[i] = min(int(fhrs[1]), 21)  # 21 hours for standard cycles
 for i in [3, 9, 15, 21]:
     fhr_at_cyc[i] = min(int(fhrs[1]), 51)  # 51 hours at 03, 09, 15, 21 cycles
