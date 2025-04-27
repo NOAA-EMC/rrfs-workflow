@@ -1,0 +1,73 @@
+#!/usr/bin/env python
+#  User the Python package Herbie to download gfs/rap/gefs data from AWS, which is more reliable
+#
+from herbie import Herbie
+from datetime import datetime, timedelta
+import os
+import shutil
+import sys
+import time
+
+args = sys.argv
+nargs = len(args) - 1
+if nargs < 2:
+    print(f"{args[0]} YYYYMMDD-YYYYMMDD [0-70]\n")
+    print(f'  the first parameter specifies the date range to download')
+    print(f'  the second parameter specifies the fhr range to download, default to 0-70')
+    exit()
+
+date_range = args[1]
+fhr_range = args[2]
+
+model = "rap"  # gfs, rap
+dest_path = "./downloads"
+fhr_interval = 1
+cyc_interval = 1
+
+two_dates = date_range.split("-")
+date1 = datetime.strptime(two_dates[0], "%Y%m%d")
+date2 = datetime.strptime(two_dates[1], "%Y%m%d")
+date2 += timedelta(hours=3) # 23 gge.debug
+cur_date = date1
+fhrs = fhr_range.split("-")
+fhr_at_cyc = {}
+for i in range(0,24):
+    fhr_at_cyc[i] = min(int(fhrs[1]), 21)  # 21 hours for standard cycles
+for i in [3, 9, 15, 21]:
+    fhr_at_cyc[i] = min(int(fhrs[1]), 51)  # 51 hours at 03, 09, 15, 21 cycles
+
+while cur_date <= date2:
+    sdate0 = datetime.strftime(cur_date, "%Y%m%d%H")
+    final_dest = f'{dest_path}/{model.upper()}/{model}.{sdate0[:8]}'
+    tmp_dir = f'./tmp/{model}/{sdate0[:8]}'
+    if os.path.exists(tmp_dir):
+        shutil.rmtree(tmp_dir)  # remove temporary directory to avoid contamination
+    for product in ["wrfnat"]:
+        cur_fhr = fhr_at_cyc[int(sdate0[-2:])]
+        for fhr in range(int(fhrs[0]), cur_fhr + 1, fhr_interval):
+            sdate = datetime.strftime(cur_date, "%Y-%m-%d %H:%M")
+            HB = Herbie(
+                sdate,
+                model=model,
+                product=product,
+                fxx=fhr,
+                save_dir="./tmp",
+                overwrite=True,
+                verbose=False,
+            )
+            for attempt in range(5):
+                try:
+                    HB.download()
+                    time.sleep(3)  # avoid AWS throttling (too many downloads too fast)
+                    break  # success, exit the loop
+                except Exception as e:
+                    print(f"attempt {attempt+1}/5: could not download {model},'{sdate}','{product}','f{fhr:03d}' : {e}")
+                    time.sleep(3)
+    # ~~~~~~~~~~~
+    os.makedirs(final_dest, exist_ok=True)
+    for file in os.listdir(tmp_dir):
+        if os.path.exists(f'{final_dest}/{file}'):
+            os.remove(f'{final_dest}/{file}')
+        shutil.move(f'{tmp_dir}/{file}', f'{final_dest}')
+    # ~~~~~~~~~~
+    cur_date += timedelta(hours=cyc_interval)
