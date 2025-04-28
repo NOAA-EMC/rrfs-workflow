@@ -37,7 +37,7 @@ ${cpreq} "${FIXrrfs}"/jedi/geovars.yaml .
 # create data directory
 #
 mkdir -p data; cd data || exit 1
-mkdir -p obs ens static_bec
+mkdir -p obs ens static_bec satbias_in satbias_out
 #
 #  bump files and static BEC files
 #
@@ -48,9 +48,8 @@ ln -snf "${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/vbal_${NTASKS}"  static_b
 
 #for satllite radiance
 ln -snf "${FIXrrfs}"/crtm/2.4.0_jedi crtm
-cp "${FIXrrfs}"/satbias_init/abi_g16.tlapse.txt obs/.
-cp "${FIXrrfs}"/satbias_init/abi_g18.tlapse.txt obs/.
-cp ${UMBRELLA_PREP_IC_DATA}/*satbias* obs/.
+cp "${FIXrrfs}"/satbias_init/*.tlapse.txt satbias_in/.
+cp "${UMBRELLA_PREP_IC_DATA}"/*satbias* satbias_in/.
 
 #
 # copy observations files
@@ -166,6 +165,8 @@ fi
 cp "${DATA}"/jdiag* "${COMOUT}/jedivar/${WGF}"
 cp "${DATA}"/jedivar*.yaml "${COMOUT}/jedivar/${WGF}"
 cp "${DATA}"/log.out "${COMOUT}/jedivar/${WGF}"
-cp "${DATA}"/out_abi_g16.satbias.nc "${COMOUT}/jedivar/${WGF}/abi_g16.satbias.nc"
-cp "${DATA}"/out_abi_g16.satbias_cov.nc "${COMOUT}/jedivar/${WGF}/abi_g16.satbias_cov.nc"
-
+cp "${DATA}"/mpasin.nc "${COMOUT}/jedivar/${WGF}/mpasout.${timestr}.nc"
+if ls ./satbias_out/*satbias*.nc >/dev/null 2>&1; then
+  cp "${DATA}"/satbias_out/*satbias*.nc "${COMOUT}/jedivar/${WGF}"
+fi
+exit 0

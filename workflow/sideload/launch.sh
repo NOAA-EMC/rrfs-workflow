@@ -45,6 +45,12 @@ case ${task_id} in
     module load "RDAS/${MACHINE}.intel"
     export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOMErrfs}/sorc/RDASApp/build/lib64
     ;;
+  ioda_mrms_refl)
+    module purge
+    module use "${HOMErrfs}/sorc/RDASApp/modulefiles"
+    module load "RDAS/${MACHINE}.intel"
+    export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOMErrfs}/sorc/RDASApp/build/lib64
+    ;;
   mpassit)
     module purge
     module use "${HOMErrfs}/sorc/MPASSIT/modulefiles"
@@ -54,6 +60,11 @@ case ${task_id} in
     module purge
     module use "${HOMErrfs}/sorc/UPP/modulefiles"
     module load "${MACHINE}"
+    ;;
+  recenter)
+    module purge
+    module use "${HOMErrfs}/sorc/RRFS_UTILS/modulefiles"
+    module load "build_${MACHINE}_intel"
     ;;
   *)
     module purge
