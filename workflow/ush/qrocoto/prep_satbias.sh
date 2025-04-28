@@ -8,7 +8,7 @@ RUN="rrfs"
 if (( $# < 1 )); then
   echo "Usage: $0 YYYYMMDDHH [satbias_path]"
   echo "satbias_path is optional"
-  echo "If satbias_path is missing, \$FIXrrfs/fix/satbias/_init will be used"
+  echo "If satbias_path is missing, \$FIXrrfs/fix/satbias_init will be used"
   exit
 fi
 
@@ -29,5 +29,5 @@ fi
 
 echo "copy satbias files from ${HOMErrfs}/fix/satbias_init"
 cp "${satbias_path}"/*satbias*.nc  "${dest_path}"
-touch "${dest_path}/satbias_init"  # this file will jump start the very first cycle of a retro
+touch "${dest_path}/satbias_jumpstart"  # this file will jump start the very first cycle of a retro
 echo "to ${dest_path}"
