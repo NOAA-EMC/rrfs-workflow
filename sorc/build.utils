@@ -7,13 +7,14 @@ HOMErrfs="$(dirname "$rundir")"
 source "${HOMErrfs}"/workflow/ush/detect_machine.sh
 source "${HOMErrfs}"/workflow/ush/init.sh
 
-EXEC="${HOMErrfs}/sorc/RRFS_UTILS/build/bin/gen_ensmean_recenter.exe"
 cd "${HOMErrfs}/sorc/RRFS_UTILS" || exit
 rm -rf build/
 ./build.sh
 
 mkdir -p "${HOMErrfs}/exec"
-echo "copy ${EXEC} to ${HOMErrfs}/exec"
+EXEC="${HOMErrfs}/sorc/RRFS_UTILS/build/bin/gen_ensmean_recenter.exe"
 cp "${EXEC}" "${HOMErrfs}/exec/gen_ensmean_recenter.exe"
+EXEC="${HOMErrfs}/sorc/RRFS_UTILS/build/bin/process_NSSL_mosaic.exe"
+cp "${EXEC}" "${HOMErrfs}/exec/process_NSSL_mosaic.exe"
 
 exit 0
