@@ -85,34 +85,6 @@ if os.getenv("DO_JEDI", 'false').upper() == "TRUE":
         shutil.copy(f'{HOMErrfs}/parm/getkf_solver.yaml', f'{exp_configdir}/getkf_solver.yaml')
     else:
         shutil.copy(f'{HOMErrfs}/parm/jedivar.yaml', f'{exp_configdir}/jedivar.yaml')
-    #
-    # prepare the initial satbias for retros
-    #   user copy appropriate satbias into ${HOMErrfs}/workflow/satbias_init/
-    #   setup_rocoto.py will copy them to COMROOT/NET/VERSION/RUN.PDY/cyc/{jedivar,getkf_solver}/WGF
-    #   which is the cycle immediately before the first cycle
-    #   If satbias_init/ does not exisit, ${FIXrrfs}/satbias_init/ will be used
-    #
-    if os.getenv('REALTIME', 'FALSE').upper() == "FALSE":
-        satbias_path = f'${HOMErrfs}/workflow/satbias_init'
-        if not os.path.exist(satbias_path):
-            satbias_path = f'${HOMErrfs}/fix/satbias_init'
-            print('Retro run, satbias_init/ not found, use ${FIXrrfs}/fix/satbias_init/')
-        # ~~~~~~~~~
-        NET = os.getenv('NET', 'rrfs')
-        WGF = get_required_env('WGF')
-        RUN = 'rrfs'
-        retrodates = get_required_env('RETRO_PERIOD').split('-')
-        date1 = datetime.strptime(retrodates[0], "%Y%m%d%H")
-        date1m1 = date1 + timedelta(hours=-1)
-        PDY = date1m1.strftime("%Y%m%d")
-        cyc = date1m1.strftime("%H")
-        if os.getenv('DO_ENSMBELE', 'FALSE').upper() == 'TRUE':
-            dest_path = f'{comroot}/{NET}/{version}/{RUN}.{PDY}/${cyc}/getkf_solver/{WGF}'
-        else:
-            dest_path = f'{comroot}/{NET}/{version}/{RUN}.{PDY}/${cyc}/jedivar/{WGF}'
-        os.makedirs(dest_path, exist_ok=True)
-        for file in glob.glob(os.path.join(satbias_path, '*satbias*.nc')):
-            shutil.copy(file, dest_path)
 
 # copyover the VERSION file
 shutil.copy(f'{HOMErrfs}/workflow/VERSION', f'{expdir}/VERSION')
