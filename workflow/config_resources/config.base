@@ -19,7 +19,14 @@ export DO_POST=${DO_POST:-true}
 export DO_IC_LBC=${DO_IC_LBC:-true}
 export USE_THE_LATEST_SATBIAS=${USE_THE_LATEST_SATBIAS:-true} # whether DA tasks use the latest satbias from the previous cycle
 
-#
+# PREP_LBC_LOOK_BACK_HRS
+if ${REALTIME:-false}; then
+  PREP_LBC_LOOK_BACK_HRS=${PREP_LBC_LOOK_BACK_HRS:-13} # Python range(0,13) will make it 0-12
+else
+  PREP_LBC_LOOK_BACK_HRS=${PREP_LBC_LOOK_BACK_HRS:-${CYCLEDEF_LBC_STEP_HRS}}
+fi
+
+# DO_CLEAN
 if ${DO_CLEAN:-false} && ! ${REALTIME:-false}; then
   # when DO_CLEAN is set to true in retros, if STMP_CLEAN_HRS, COM_CLEAN_HRS and LOG_CLEAN_HRS
   # are not specified, use the following values
@@ -30,6 +37,9 @@ fi
 
 # ioda_bufr
 export NODES_IODA_BUFR=${NODES_IODA_BUFR:-"<nodes>1:ppn=1</nodes>"}
+
+# ioda_mrms_refl
+export NODES_IODA_MRMS_REFL=${NODES_IODA_MRMS_REFL:-"<nodes>1:ppn=20</nodes>"}
 
 # ic
 export NODES_IC=${NODES_IC:-"<nodes>1:ppn=40</nodes>"}
