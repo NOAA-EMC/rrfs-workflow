@@ -5,14 +5,6 @@ set -x
 cpreq=${cpreq:-cpreq}
 
 cd "${DATA}" || exit 1
-
-#
-#-----------------------------------------------------------------------
-#
-# Set environment
-#
-#-----------------------------------------------------------------------
-#
 #
 #-----------------------------------------------------------------------
 #
@@ -188,11 +180,18 @@ EOF
 
   cp RefInGSI3D.dat  "${COMOUT}/ioda_mrms_refl/${WGF}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}"
 
+  #
+  #-----------------------------------------------------------------------
+  #
+  # Run ioda converter to generate radar reflectivity ioda file
+  #
+  #-----------------------------------------------------------------------
   # pyioda libraries
   PYIODALIB=$(echo "${HOMErrfs}"/sorc/RDASApp/build/lib/python3.*)
   export PYTHONPATH=${PYIODALIB}:${PYTHONPATH}
   "${HOMErrfs}"/ush/MRMS2ioda.py -i ./Gridded_ref.nc -c "${YYYY}-${MM}-${DD}T${HH}:${bigmin}:00" -o "ioda_mrms_${YYYYMMDD}${HH}_${bigmin}.nc4"
-# file count sanity check and copy to COMOUT
+
+  # file count sanity check and copy to COMOUT
   if [[ -s "ioda_mrms_${YYYYMMDD}${HH}_${bigmin}.nc4" ]]; then
     ${cpreq} "ioda_mrms_${YYYYMMDD}${HH}_${bigmin}.nc4" "${COMOUT}/ioda_mrms_refl/${WGF}"
   else
