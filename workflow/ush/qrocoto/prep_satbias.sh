@@ -29,4 +29,5 @@ fi
 
 echo "copy satbias files from ${HOMErrfs}/fix/satbias_init"
 cp "${satbias_path}"/*satbias*.nc  "${dest_path}"
+touch "${dest_path}/satbias_init"  # this file will jump start the very first cycle of a retro
 echo "to ${dest_path}"
