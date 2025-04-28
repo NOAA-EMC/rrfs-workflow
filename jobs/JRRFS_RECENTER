@@ -18,7 +18,7 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 #-----------------------------------------------------------------------
 #
 export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_prep_ic_${cyc}_${rrfs_ver}/${WGF}}
-export UMBRELLA_RECENTER_DATA=${UMBRELLA_RECENTER_DATA:-${DATAROOT}/${RUN}_recenter_${TYPE}_${cyc}_${rrfs_ver}/${WGF}}
+export UMBRELLA_RECENTER_DATA=${UMBRELLA_RECENTER_DATA:-${DATAROOT}/${RUN}_recenter_${cyc}_${rrfs_ver}/${WGF}}
 export UMBRELLA_PREP_CONTROL_IC_DATA=${UMBRELLA_PREP_CONTROL_IC_DATA:-${DATAROOT}/${RUN}_prep_ic_${cyc}_${rrfs_ver}/det}
 export pid=${pid:-$$}
 export jobid=${jobid:-recenter_${cyc}}

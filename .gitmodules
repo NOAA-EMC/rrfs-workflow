@@ -26,3 +26,4 @@
 [submodule "sorc/RRFS_UTILS"]
 	path = sorc/RRFS_UTILS
 	url = https://github.com/hu5970/RRFS_UTILS.git
+        ignore = all

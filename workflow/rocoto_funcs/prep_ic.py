@@ -101,7 +101,9 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
 
 # overwrite dependencies if no cycling (forecst-only)
     if os.getenv('DO_CYC', 'FALSE').upper() == "FALSE":
-        dependencies = f'''
+        dependencies = ""
+        if os.getenv('DO_IC_LBC', 'TRUE').upper() == "TRUE":
+            dependencies = f'''
   <dependency>
   <and>{timedep}
    <taskdep task="ic{ensindexstr}"/>

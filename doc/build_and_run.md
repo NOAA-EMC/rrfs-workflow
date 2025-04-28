@@ -57,8 +57,16 @@ Use `./run_rocoto.sh` to run the experiment. Add an entry to your crontab simila
 ```
 */5 * * * * /home/role.rtrr/RRFS/1.0.1/conus3km/run_rocoto.sh
 ```
-Check the first few tasks/cycles to make sure everything works well. You may use [this handy rocoto tool](https://github.com/rrfsx/qrocoto/wiki/qrocoto) to check the workflow running status.
+Check the first few tasks/cycles to make sure everything works well. 
 
+The handy rocoto tool `qrocoto` is available under EXPDIR, run  
+```
+source qrocoto/load_qrocoto.sh
+```
+to load qrocoto to the current environment.  
+Now you can use all handy rocoto commands to run/check the workflow, such as `rstat`, `rrun`, etc  
+Check [README.md](../workflow/ush/qrocoto/README.md) or [detailed instructions](https://github.com/rrfsx/qrocoto/wiki/qrocoto) for more details.
+  
 ### note
 The workflow depends on the environmental variables. If your environment defines and exports rrfs-workflow-specific environmental variables in an unexpected way or your environment is corrupt, the setup step may fail or generate unexpected results. Check the `rrfs.xml` file before `run_rocoto.sh`. Starting from a fresh terminal or `module purge` usually solves the above problem.
 

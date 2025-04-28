@@ -68,7 +68,7 @@ zeta_levels = os.getenv('ZETA_LEVELS', '')
 if zeta_levels != '':
     shutil.copy(f'{HOMErrfs}/fix/meshes/{zeta_levels}', f'{exp_configdir}/ZETA_LEVELS.txt')
 
-# if DO_JEDI, copy the convinfo file if not existed
+# if DO_JEDI, copy the super YAML, convinfo, [satinfo] files to EXPDIR
 if os.getenv("DO_JEDI", 'false').upper() == "TRUE":
     if not os.path.exists('convinfo'):
         print('convinfo not found under current directoy, copy from ${FIXrrfs}/jedi\n')
@@ -78,6 +78,12 @@ if os.getenv("DO_JEDI", 'false').upper() == "TRUE":
     # if satinfo is available, copy it to exp_configdir
     if os.path.exists('satinfo'):
         shutil.copy('satinfo', f'{exp_configdir}/satinfo')
+    # copy jedivar.yaml or getkf yamls to exp_configdir
+    if os.getenv('DO_ENSEMBLE', 'FALSE').upper() == "TRUE":
+        shutil.copy(f'{HOMErrfs}/parm/getkf_observer.yaml', f'{exp_configdir}/getkf_observer.yaml')
+        shutil.copy(f'{HOMErrfs}/parm/getkf_solver.yaml', f'{exp_configdir}/getkf_solver.yaml')
+    else:
+        shutil.copy(f'{HOMErrfs}/parm/jedivar.yaml', f'{exp_configdir}/jedivar.yaml')
 
 # copyover the VERSION file
 shutil.copy(f'{HOMErrfs}/workflow/VERSION', f'{expdir}/VERSION')
@@ -118,5 +124,24 @@ with open(EXPin, 'r') as infile, open(EXPout, 'w') as outfile:
     #
 
 setup_xml(HOMErrfs, expdir)
+
+if os.getenv('YAML_GEN_METHOD', '1') == '1':
+    srcdir = f'{HOMErrfs}/workflow/ush/qrocoto'
+    dstdir = f'{expdir}/qrocoto'
+    if os.path.exists(dstdir):
+        shutil.rmtree(dstdir)
+    shutil.copytree(srcdir, dstdir)
+
+elif os.getenv('YAML_GEN_METHOD', '1') == '2':
+    # Copy files from HOMErrfs/workflow/ush to expdir
+    source_dir = os.path.join(HOMErrfs, 'workflow', 'ush')
+    target_files = ['rr', 'rc', 'rb', 'rs']
+    if os.path.isdir(source_dir):
+        for file_name in target_files:
+            s = os.path.join(source_dir, file_name)
+            if os.path.isfile(s):
+                shutil.copy2(s, expdir)
+
+    print(f'You can add to crontab:\n*/1 * * * * cd {expdir} && ./run_rocoto.sh && ./rs')
 #
 # end of setup_exp.py

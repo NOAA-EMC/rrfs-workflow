@@ -42,13 +42,22 @@ for fhr in  ${fhr_all}; do
   GRIBFILE_LOCAL=$( "${USHrrfs}/num_to_GRIBFILE.XXX.sh"  "${knt}" )
   NAME_FILE=${NAME_PATTERN/fHHH/${HHH}}
   GRIBFILE="${SOURCE_BASEDIR}/${NAME_FILE}"
-  ${cpreq} "${GRIBFILE}"  "${GRIBFILE_LOCAL}"
-
-  # if NAME_PATTERN_B is defined and non-empty
-  if [ -n "${NAME_PATTERN_B+x}" ] && [ -n "${NAME_PATTERN_B}" ]; then
-    NAME_FILE=${NAME_PATTERN_B/fHHH/${HHH}}
-    GRIBFILE="${SOURCE_BASEDIR}/${NAME_FILE}"
-    cat "${GRIBFILE}" >> "${GRIBFILE_LOCAL}"
+  if [[ -s "${GRIBFILE}" ]]; then 
+    ${cpreq} "${GRIBFILE}"  "${GRIBFILE_LOCAL}"
+    # if NAME_PATTERN_B is defined and non-empty
+    if [ -n "${NAME_PATTERN_B+x}" ] && [ -n "${NAME_PATTERN_B}" ]; then
+      NAME_FILE=${NAME_PATTERN_B/fHHH/${HHH}}
+      GRIBFILE="${SOURCE_BASEDIR}/${NAME_FILE}"
+      cat "${GRIBFILE}" >> "${GRIBFILE_LOCAL}"
+    fi
+  else
+    # If GRIBFILE does not exist, might need to do time interpolation
+    if [[ ${INTERVAL} -eq 1 ]] && (( fhr % 3 != 0 )); then
+      source "${USHrrfs}"/gefs_interpolation.sh
+    else
+      echo "FATAL ERROR: ${GRIBFILE} missing and not eligible for time interpolation"
+      err_exit
+    fi
   fi
 done
 #

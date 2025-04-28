@@ -5,7 +5,7 @@
 if [[ "$1" == "jedivar" ]]; then
   sed -e "s/@analysisDate@/${analysisDate}/" -e "s/@beginDate@/${beginDate}/" \
       -e "s/@HYB_WGT_STATIC@/${HYB_WGT_STATIC}/" -e "s/@HYB_WGT_ENS@/${HYB_WGT_ENS}/" \
-      "${PARMrrfs}/jedivar.yaml" > jedivar.yaml
+      "${EXPDIR}/config/jedivar.yaml" > jedivar.yaml
   if [[ "${HYB_WGT_ENS}" == "0" ]] || [[ "${HYB_WGT_ENS}" == "0.0" ]]; then # pure 3DVAR
     sed -i '123,148d' ./jedivar.yaml
   elif [[ "${HYB_WGT_STATIC}" == "0" ]] || [[ "${HYB_WGT_STATIC}" == "0.0" ]] ; then # pure 3DEnVar
@@ -18,7 +18,7 @@ if [[ "$1" == "jedivar" ]]; then
 
 else
   sed -e "s/@analysisDate@/${analysisDate}/" -e "s/@beginDate@/${beginDate}/" \
-    "${PARMrrfs}/getkf_${TYPE}.yaml" > getkf.yaml
+    "${EXPDIR}/config/getkf_${TYPE}.yaml" > getkf.yaml
   if [[ ${start_type} == "cold" ]]; then
       sed -i '43s/ens/ana/' getkf.yaml
   fi

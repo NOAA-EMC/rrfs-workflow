@@ -10,6 +10,7 @@ cd "${DATA}" || exit 1
 ${cpreq} "${OBSPATH}/${CDATE}.rap.t${cyc}z.prepbufr.tm00" prepbufr
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.gpsipw.tm00.bufr_d" ztdbufr
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.satwnd.tm00.bufr_d" satwndbufr
+cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.gsrcsr.tm00.bufr_d" abibufr
 ${cpreq} "${EXECrrfs}"/bufr2ioda.x .
 
 # generate the namelist on the fly
@@ -28,6 +29,19 @@ yaml_list=(
 )
 
 if (( ${YAML_GEN_METHOD:-1} == 2 )); then
+  # For YAML_GEN_METHOD=2 we can use all obs. vadwnd not yet ready.
+  yaml_list=(
+  "prepbufr_adpsfc.yaml"
+  "prepbufr_adpupa.yaml"
+  "prepbufr_aircar.yaml"
+  "prepbufr_aircft.yaml"
+  "prepbufr_ascatw.yaml"
+  "prepbufr_msonet.yaml"
+  "prepbufr_proflr.yaml"
+  "prepbufr_rassda.yaml"
+  "prepbufr_sfcshp.yaml"
+  #"prepbufr_vadwnd.yaml"
+  )
   # Copy empty ioda file to data/obs.
   # Use these as the default when bufr2ioda doesn't create a ioda.
   # Otherwise JEDI will crash due to missing ioda file
@@ -43,6 +57,8 @@ if (( ${YAML_GEN_METHOD:-1} == 2 )); then
   ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_satwnd.nc
   ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_sfcshp.nc
   ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_vadwnd.nc
+  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_abi_g16.nc
+  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_abi_g18.nc
 fi
 
 # run bufr2ioda.x
@@ -61,6 +77,9 @@ HOMErdasapp=${HOMErrfs}/sorc/RDASApp/
 ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda_ztd.py .
 #${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda_satwnd.py .
 ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda.json .
+${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda_gsrcsr.json .
+${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda_gsrcsr.py .
+${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/run_bufr2ioda.sh .
 
 # pyioda libraries
 PYIODALIB=$(echo "$HOMErdasapp"/build/lib/python3.*)
@@ -72,6 +91,11 @@ ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/gen_bufr2ioda_json.py .
 
 ./bufr2ioda_ztd.py -c bufr2ioda_0.json
 #./bufr2ioda_satwnd.py -c bufr2ioda_0.json
+#convert abi gsrcsr bufr to ioda
+ln -sf abibufr "rap.t${cyc}z.gsrcsr.tm00.bufr_d"
+./run_bufr2ioda.sh "${CDATE}" rap "${DATA}" "${DATA}" "${DATA}" "${HOMErdasapp}"
+ln -sf "rap.t${cyc}z.abi_g16.tm00.nc" "ioda_abi_g16.nc"
+ln -sf "rap.t${cyc}z.abi_g18.tm00.nc" "ioda_abi_g18.nc"
 fi
 
 # run offline IODA tools

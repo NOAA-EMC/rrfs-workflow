@@ -31,8 +31,13 @@ case ${task_id} in
     module purge
     module use "${HOMErrfs}/sorc/RDASApp/modulefiles"
     module load "RDAS/${MACHINE}.intel"
-    module load "EVA/${MACHINE}"
+    module load py-matplotlib py-cartopy py-netcdf4
     export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOMErrfs}/sorc/RDASApp/build/lib64
+    ;;
+  ungrib)
+    module purge
+    module load "rrfs/${MACHINE}.intel"
+    module load wgrib2/2.0.8
     ;;
   jedivar|getkf*)
     module purge
@@ -55,6 +60,11 @@ case ${task_id} in
     module purge
     module use "${HOMErrfs}/sorc/UPP/modulefiles"
     module load "${MACHINE}"
+    ;;
+  recenter)
+    module purge
+    module use "${HOMErrfs}/sorc/RRFS_UTILS/modulefiles"
+    module load "build_${MACHINE}_intel"
     ;;
   *)
     module purge
