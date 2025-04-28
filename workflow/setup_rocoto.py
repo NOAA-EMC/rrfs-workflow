@@ -4,7 +4,6 @@ import glob
 import shutil
 import sys
 import os
-from datetime import datetime, timedelta
 from rocoto_funcs.setup_xml import setup_xml
 from rocoto_funcs.base import source, get_required_env
 print('Aloha!')
@@ -126,7 +125,7 @@ with open(EXPin, 'r') as infile, open(EXPout, 'w') as outfile:
 
 setup_xml(HOMErrfs, expdir)
 
-# copy utilities under qrototo
+# copy qrocoto utilities to expdir/qrocoto
 srcdir = f'{HOMErrfs}/workflow/ush/qrocoto'
 dstdir = f'{expdir}/qrocoto'
 if os.path.exists(dstdir):
