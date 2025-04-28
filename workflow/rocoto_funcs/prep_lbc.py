@@ -55,7 +55,8 @@ def prep_lbc(xmlFile, expdir, do_ensemble=False):
         timedep = f'\n   <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
 
     taskdep = ""
-    for hr in range(0, 12):
+    PREP_LBC_LOOK_BACK_HRS = int(os.getenv("PREP_LBC_LOOK_BACK_HRS", "6"))
+    for hr in range(0, PREP_LBC_LOOK_BACK_HRS):
         taskdep = taskdep + f'\n     <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-{hr}:00:00" />'
 
     dependencies = ""
