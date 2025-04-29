@@ -16,16 +16,16 @@ ${cpreq} "${EXECrrfs}"/bufr2ioda.x .
 # generate the namelist on the fly
 REFERENCE_TIME="${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z"
 yaml_list=(
-#"prepbufr_adpsfc.yaml"
+"prepbufr_adpsfc.yaml"
 "prepbufr_adpupa.yaml"
 "prepbufr_aircar.yaml"
-#"prepbufr_aircft.yaml"
-#"prepbufr_ascatw.yaml"
-#"prepbufr_msonet.yaml"
-#"prepbufr_proflr.yaml"
-#"prepbufr_rassda.yaml"
-#"prepbufr_sfcshp.yaml"
-#"prepbufr_vadwnd.yaml"
+"prepbufr_aircft.yaml"
+"prepbufr_ascatw.yaml"
+"prepbufr_msonet.yaml"
+"prepbufr_proflr.yaml"
+"prepbufr_rassda.yaml"
+"prepbufr_sfcshp.yaml"
+"prepbufr_vadwnd.yaml"
 )
 
 if (( ${YAML_GEN_METHOD:-1} == 2 )); then
@@ -72,7 +72,6 @@ done
 # --------------------------------------------------
 # run python bufr2ioda tool for ZTD and AMV bufr obs
 # --------------------------------------------------
-if (( 1 == 2 )); then
 HOMErdasapp=${HOMErrfs}/sorc/RDASApp/
 ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda_ztd.py .
 #${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda_satwnd.py .
@@ -96,7 +95,6 @@ ln -sf abibufr "rap.t${cyc}z.gsrcsr.tm00.bufr_d"
 ./run_bufr2ioda_gsrcsr.sh "${CDATE}" rap "${DATA}" "${DATA}" "${DATA}" "${HOMErdasapp}"
 cp "rap.t${cyc}z.abi_g16.tm00.nc" "ioda_abi_g16.nc"
 cp "rap.t${cyc}z.abi_g18.tm00.nc" "ioda_abi_g18.nc"
-fi
 
 # run offline IODA tools
 ${cpreq} "${USHrrfs}"/offline_domain_check.py .
