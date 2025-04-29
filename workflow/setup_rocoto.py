@@ -132,6 +132,12 @@ if os.path.exists(dstdir):
     shutil.rmtree(dstdir)
 shutil.copytree(srcdir, dstdir)
 
+if os.getenv("DO_JEDI", 'false').upper() == "TRUE":
+    print('\nIf doing satellite radiance data assimilation, run the following commands to prepare the initial satbias files:')
+    print(f'    cd  {expdir}')
+    print(f'    source qrocoto/load_qrocoto.sh')
+    print(f'    prep_satbias.sh <cycle> [satbias_path]')
+
 if os.getenv('YAML_GEN_METHOD', '1') == '2':
     # Copy files from HOMErrfs/workflow/ush to expdir
     source_dir = os.path.join(HOMErrfs, 'workflow', 'ush')
