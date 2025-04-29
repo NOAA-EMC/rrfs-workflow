@@ -166,7 +166,27 @@ cp "${DATA}"/jdiag* "${COMOUT}/jedivar/${WGF}"
 cp "${DATA}"/jedivar*.yaml "${COMOUT}/jedivar/${WGF}"
 cp "${DATA}"/log.out "${COMOUT}/jedivar/${WGF}"
 cp "${DATA}"/mpasin.nc "${COMOUT}/jedivar/${WGF}/mpasout.${timestr}.nc"
-if ls ./satbias_out/*satbias*.nc >/dev/null 2>&1; then
-  cp "${DATA}"/satbias_out/*satbias*.nc "${COMOUT}/jedivar/${WGF}"
+
+# copy satbias files who are not updated in the current cycle to satbias_out/
+# this happens when some satellite data is missing at this cycle. But they may be i
+# available in the next cycle and we need to roll them over for future cycles
+#
+nullglob_save=$(shopt -p nullglob) # Save current nullglob state
+shopt -s nullglob # Enable nullglob
+for path in data/satbias_in/*satbias*.nc; do
+  file=${path##*/}
+  if [[ ! -s "data/satbias_out/${file}" ]]; then
+    echo "${file}" >> data/satbias_out/satbias.roll_over_list
+    cp "${path}" data/satbias_out
+  fi
+done
+#
+# copy satabias_out to com/
+satbias_list=(data/satbias_out/*satbias*.nc)
+if (( ${#satbias_list[@]} > 0 )); then
+#if ls ./data/satbias_out/*satbias*.nc >/dev/null 2>&1; then
+  cp "${DATA}"/data/satbias_out/*satbias*.nc "${COMOUT}/jedivar/${WGF}"
 fi
+eval "${nullglob_save}" # Restore previous nullglob state
+
 exit 0
