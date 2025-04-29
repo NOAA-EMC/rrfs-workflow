@@ -14305,11 +14305,11 @@ cost function:
            step size: 1.0e-4
            largest analysis variance: 10000.0
            prior:
-             input file: data/obs/amsua_n19.satbias_cov.nc
+             input file: data/satbias_in/amsua_n19.satbias_cov.nc
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
-           output file: out_amsua_n19.satbias_cov.nc
+           output file: data/satbias_out/amsua_n19.satbias_cov.nc
        obs filters:
        - filter: BlackList
          filter variables:
@@ -14683,11 +14683,11 @@ cost function:
            step size: 1.0e-4
            largest analysis variance: 10000.0
            prior:
-             input file: data/obs/amsua_n20.satbias_cov.nc
+             input file: data/satbias_in/amsua_n20.satbias_cov.nc
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
-           output file: out_amsua_n20.satbias_cov.nc
+           output file: data/satbias_out/amsua_n20.satbias_cov.nc
 
        obs pre filters:
        # Step 0-A: Create Diagnostic Flags
@@ -15268,11 +15268,11 @@ cost function:
            step size: 1.0e-4
            largest analysis variance: 10000.0
            prior:
-             input file: data/obs/atms_npp.satbias_cov.nc
+             input file: data/satbias_in/atms_npp.satbias_cov.nc
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
-           output file: out_atms_npp.satbias_cov.nc
+           output file: data/satbias_out/atms_npp.satbias_cov.nc
 
        obs pre filters:
        # Step 0-A: Create Diagnostic Flags
@@ -15864,11 +15864,11 @@ cost function:
            step size: 1.0e-4
            largest analysis variance: 10000.0
            prior:
-             input file: data/obs/abi_g16.satbias_cov.nc
+             input file: data/satbias_in/abi_g16.satbias_cov.nc
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
-           output file: out_abi_g16.satbias_cov.nc
+           output file: data/satbias_out/abi_g16.satbias_cov.nc
 
   # Observation Filters (QC)
   # ------------------------
@@ -16356,11 +16356,11 @@ cost function:
            step size: 1.0e-4
            largest analysis variance: 10000.0
            prior:
-             input file: data/obs/abi_g18.satbias_cov.nc
+             input file: data/satbias_in/abi_g18.satbias_cov.nc
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
-           output file: out_abi_g18.satbias_cov.nc
+           output file: data/satbias_out/abi_g18.satbias_cov.nc
 
   # Observation Filters (QC)
   # ------------------------

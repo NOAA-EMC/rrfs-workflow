@@ -13665,11 +13665,11 @@ cost function:
            step size: 1.0e-4
            largest analysis variance: 10000.0
            prior:
-             input file: data/obs/abi_g16.satbias_cov.nc
+             input file: data/satbias_in/abi_g16.satbias_cov.nc
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
-           output file: out_abi_g16.satbias_cov.nc
+           output file: data/satbias_out/abi_g16.satbias_cov.nc
 
   # Observation Filters (QC)
   # ------------------------
