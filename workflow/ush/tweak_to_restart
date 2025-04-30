@@ -1,0 +1,73 @@
+#!/usr/bin/env python
+import os
+import shutil
+
+
+def modify(file, changesets):
+    shutil.copy(file, ".tmpfile")  # this can preserve the file permission
+    with open(file, 'r') as infile, open(".tmpfile", 'w') as outfile: 
+        for line in infile:
+            stripped_line = line.rstrip('\n')
+            if stripped_line in changesets:
+                line = changesets[stripped_line] + '\n'
+            outfile.write(line)
+    os.replace(".tmpfile", file)
+
+# set the current directory to HOMErrfs
+mypath = os.path.dirname(os.path.abspath(__file__))
+os.chdir(os.path.join(mypath, "../.."))
+
+# tweak 1 ----------------------------------------------------------
+myfile="parm/convection_permitting/namelist.atmosphere"
+changesets={
+    "    config_do_restart = false": "    config_do_restart = ${do_restart}",
+    }
+modify(myfile, changesets)
+
+# tweak 2 ----------------------------------------------------------
+myfile="scripts/exrrfs_fcst.sh"
+changesets={
+    '  ln -snf "${UMBRELLA_PREP_IC_DATA}/mpasin.nc" mpasin.nc':
+    '  timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)\n  ln -snf "${UMBRELLA_PREP_IC_DATA}/restart.nc" restart.${timestr}.nc',
+    "#  link bdy and fix files": "do_DAcycling='false'\ndo_restart='true'",
+#    'jedi_da="true" #true': 'jedi_da="false" #true',
+    }
+modify(myfile, changesets)
+
+# tweak 3 and 4 ----------------------------------------------------------
+myfile="scripts/exrrfs_mpassit.sh"
+changesets={
+    "fhr_string=$( seq 0 $((10#${HISTORY_INTERVAL})) $((10#${fcst_len_hrs_thiscyc} )) | paste -sd ' ' )":
+    "fhr_string=$( seq 1 $((10#${HISTORY_INTERVAL})) $((10#${fcst_len_hrs_thiscyc} )) | paste -sd ' ' )",
+    }
+modify(myfile, changesets)
+myfile="scripts/exrrfs_upp.sh"
+modify(myfile, changesets)
+
+# tweak 5 ----------------------------------------------------------
+myfile="scripts/exrrfs_save_fcst.sh"
+changesets={
+    "history_all=$(seq 0 $((10#${history_interval})) $((10#${fcst_len_hrs_thiscyc} )) )":
+    "history_all=$(seq 1 $((10#${history_interval})) $((10#${fcst_len_hrs_thiscyc} )) )",
+    "      if (( ii <= cyc_interval )) && (( ii > 0 )); then":
+    "      if (( ii <= cyc_interval )) && (( ii >= 0 )); then",
+    }
+modify(myfile, changesets)
+
+# tweak 6 ----------------------------------------------------------
+myfile="workflow/rocoto_funcs/prep_ic.py"
+changesets={
+    "    datadep_prod = f'''\n        <datadep age=\"00:05:00\"><cyclestr offset=\"-{{cyc_interval}}:00:00\">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;{{ensdirstr}}/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''":
+    "    datadep_prod = f'''\n        <datadep age=\"00:05:00\"><cyclestr offset=\"-{{cyc_interval}}:00:00\">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;{{ensdirstr}}/</cyclestr><cyclestr>restart.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''",
+    }
+modify(myfile, changesets)
+
+# tweak 7 ----------------------------------------------------------
+myfile="workflow/rocoto_funcs/save_fcst.py"
+changesets={
+    "        datadep = f'''<datadep age=\"00:01:00\"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{{ensdirstr}}/fcst_@H/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''":
+    "        datadep = f'''<datadep age=\"00:01:00\"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{{ensdirstr}}/fcst_@H/</cyclestr><cyclestr offset=\"1:00:00\">diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''",
+    }
+modify(myfile, changesets)
+
+print("Done\nNow your rrfs-workflow uses restart.nc instead of mpasout.nc")
