@@ -103,4 +103,13 @@ changesets={
     }
 modify(myfile, changesets)
 
+# tweak 11, 12 ----------------------------------------------------------
+myfile="workflow/rocoto_funcs/recenter.py"
+changesets={
+    'mpasout.@Y-@m-@d_@H.@M.@S.nc': 'restart.@Y-@m-@d_@H.@M.@S.nc',
+    }
+modify(myfile, changesets)
+myfile="workflow/rocoto_funcs/jedivar.py"
+modify(myfile, changesets)
+
 print("Done\nNow your rrfs-workflow uses restart.nc instead of mpasout.nc")
