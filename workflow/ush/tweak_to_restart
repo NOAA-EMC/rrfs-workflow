@@ -7,9 +7,9 @@ def modify(file, changesets):
     shutil.copy(file, ".tmpfile")  # this can preserve the file permission
     with open(file, 'r') as infile, open(".tmpfile", 'w') as outfile: 
         for line in infile:
-            stripped_line = line.rstrip('\n')
-            if stripped_line in changesets:
-                line = changesets[stripped_line] + '\n'
+            for key,value in changesets.items():
+                if key in line:
+                    line = line.replace(key, value)
             outfile.write(line)
     os.replace(".tmpfile", file)
 
@@ -57,16 +57,15 @@ modify(myfile, changesets)
 # tweak 6 ----------------------------------------------------------
 myfile="workflow/rocoto_funcs/prep_ic.py"
 changesets={
-    "    datadep_prod = f'''\n        <datadep age=\"00:05:00\"><cyclestr offset=\"-{{cyc_interval}}:00:00\">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;{{ensdirstr}}/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''":
-    "    datadep_prod = f'''\n        <datadep age=\"00:05:00\"><cyclestr offset=\"-{{cyc_interval}}:00:00\">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;{{ensdirstr}}/</cyclestr><cyclestr>restart.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''",
+    "mpasout.@Y-@m-@d_@H.00.00.nc": "restart.@Y-@m-@d_@H.00.00.nc",
     }
 modify(myfile, changesets)
 
 # tweak 7 ----------------------------------------------------------
 myfile="workflow/rocoto_funcs/save_fcst.py"
 changesets={
-    "        datadep = f'''<datadep age=\"00:01:00\"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{{ensdirstr}}/fcst_@H/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''":
-    "        datadep = f'''<datadep age=\"00:01:00\"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{{ensdirstr}}/fcst_@H/</cyclestr><cyclestr offset=\"1:00:00\">diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''",
+    'diag.@Y-@m-@d_@H.@M.@S.nc':
+    '</cyclestr><cyclestr offset="1:00:00">diag.@Y-@m-@d_@H.@M.@S.nc',
     }
 modify(myfile, changesets)
 
