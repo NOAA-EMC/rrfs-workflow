@@ -18,6 +18,21 @@ def modify(file, changesets):
 mypath = os.path.dirname(os.path.abspath(__file__))
 os.chdir(os.path.join(mypath, "../.."))
 
+# check whether a given modification has been made to avoid a second run of this script
+already_modified = False
+with open("parm/convection_permitting/namelist.atmosphere", 'r') as infile:
+    for line in infile:
+        if "config_do_restart = ${do_restart}" in line:
+            already_modified = True
+            break
+if already_modified:
+    print("It is expected to run 'mpasout_to_restart' in a clean git status")
+    print("It looks like target files have been modified")
+    print("Run 'git status` to check what files have been modified")
+    print("Run 'git checkout <file>' to undo changes")
+    exit()
+
+
 # copy some files ---------------------------------------------------
 shutil.copy("sorc/_workaround_/streams.atmosphere", "parm/streams.atmosphere")
 
