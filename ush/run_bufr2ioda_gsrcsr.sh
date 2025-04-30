@@ -24,25 +24,22 @@ export COM_OBS=${COM_OBS:-$5}
 export DIR_ROOT=${DIR_ROOT:-$6}
 
 # derived parameters
-export PDY=$(echo $CDATE | cut -c1-8)
-export cyc=$(echo $CDATE | cut -c9-10)
+export PDY=${CDATE:0:8}
+export cyc=${CDATE:8:2}
 
 # get gdasapp root directory
 #readonly DIR_ROOT=$(cd "$(dirname "$(readlink -f -n "${BASH_SOURCE[0]}" )" )/../../.." && pwd -P)
-BUFR2IODA=$DIR_ROOT/build/bin/bufr2ioda.x
-USH_IODA=$DIR_ROOT/rrfs-test/IODA/python
-BUFRYAMLGEN=$USH_IODA/gen_bufr2ioda_yaml.py
-BUFRJSONGEN=$USH_IODA/gen_bufr2ioda_json.py
+USH_IODA=${DIR_ROOT}/rrfs-test/IODA/python
+BUFRJSONGEN=${USH_IODA}/gen_bufr2ioda_json.py
 
 # create output directory if it doesn't exist
-mkdir -p $COM_OBS
-if [ $? -ne 0 ]; then
-    echo "cannot make $COM_OBS"
+if ! mkdir -p "${COM_OBS}"; then
+    echo "cannot make ${COM_OBS}"
     exit 1
 fi
 
 # add to pythonpath the necessary libraries
-PYIODALIB=`echo $DIR_ROOT/build/lib/python3.*`
+PYIODALIB=$(echo "${DIR_ROOT}"/build/lib/python3.*)
 export PYTHONPATH=${PYIODALIB}:${PYTHONPATH}
 
 #----- python and json -----
@@ -50,26 +47,23 @@ export PYTHONPATH=${PYIODALIB}:${PYTHONPATH}
 #BUFR_py="msonet_prepbufr"
 BUFR_py="gsrcsr"
 
-for obtype in $BUFR_py; do
+for obtype in ${BUFR_py}; do
   # this loop assumes that there is a python script and template with the same name
   echo "Processing ${obtype}..."
 
   # first generate a JSON from the template
-  ${BUFRJSONGEN} -t ${config_template_dir}/bufr2ioda_${obtype}.json -o ${COM_OBS}/${obtype}_${PDY}${cyc}.json
+  ${BUFRJSONGEN} -t "${config_template_dir}/bufr2ioda_${obtype}.json" -o "${COM_OBS}/${obtype}_${PDY}${cyc}.json"
 
   # now use the converter script for the ob type
-  python $USH_IODA/bufr2ioda_${obtype}.py -c ${COM_OBS}/${obtype}_${PDY}${cyc}.json
+  python "${USH_IODA}/bufr2ioda_${obtype}.py"  -c "${COM_OBS}/${obtype}_${PDY}${cyc}.json"
 
   # check if converter was successful
+  # shellcheck disable=SC2181
   if [ $? == 0 ]; then
     # remove JSON file
-    rm -rf ${COM_OBS}/${obtype}_${PDY}${cyc}.json
+    rm -rf "${COM_OBS}/${obtype}_${PDY}${cyc}.json"
   else
     # warn and keep the JSON file
     echo "Problem running converter script for ${obtype}"
   fi
 done
-
-#----------------------------
-#---- bufr2ioda and yaml ----
-BUFR_yaml=""

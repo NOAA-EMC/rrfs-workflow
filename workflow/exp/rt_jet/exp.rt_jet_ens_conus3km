@@ -23,6 +23,7 @@ export ZETA_LEVELS="L60.txt"
 #
 export DO_IODA=false
 export DO_JEDI=false
+export COLDSTART_CYCS_DO_DA=false
 export GETKF_POST_OBSERVER=false
 export DO_RECENTER=false
 
@@ -93,3 +94,4 @@ export STARTTIME_PREP_LBC="00:30:00"
 export MORE_XML_ENTITIES=true
 export DO_CLEAN=true
 export RESERVATION_CLEAN=${RESERVATION}
+export USE_THE_LATEST_SATBIAS=false

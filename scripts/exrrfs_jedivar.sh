@@ -141,32 +141,58 @@ case ${YAML_GEN_METHOD:-1} in
     ;;
 esac
 
-# run mpasjedi_variational.x
-#export OOPS_TRACE=1
-export OMP_NUM_THREADS=1
+if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CYCS_DO_DA} == "true" ]]; then
+  # run mpasjedi_variational.x
+  #export OOPS_TRACE=1
+  export OMP_NUM_THREADS=1
 
-source prep_step
-${cpreq} "${EXECrrfs}"/mpasjedi_variational.x .
-${MPI_RUN_CMD} ./mpasjedi_variational.x jedivar.yaml log.out
-# check the status
-export err=$?
-err_chk
-#
-# ncks increments to cold_start IC
-if [[ ${start_type} == "cold" && ${COLDSTART_CYCS_DO_DA} == "true" ]]; then
-  var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional"
-  ncks -A -H -v "${var_list}" ana.nc mpasin.nc
+  source prep_step
+  ${cpreq} "${EXECrrfs}"/mpasjedi_variational.x .
+  ${MPI_RUN_CMD} ./mpasjedi_variational.x jedivar.yaml log.out
+  # check the status
   export err=$?
   err_chk
-  mv ana.nc ..
+  #
+  # ncks increments to cold_start IC
+  if [[ ${start_type} == "cold" ]]; then
+    var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional"
+    ncks -A -H -v "${var_list}" ana.nc mpasin.nc
+    export err=$?
+    err_chk
+    mv ana.nc ..
+  fi
+  #
+  # the input/output file are linked from the umbrella directory, so no need to copy
+  cp "${DATA}"/jdiag* "${COMOUT}/jedivar/${WGF}"
+  cp "${DATA}"/jedivar*.yaml "${COMOUT}/jedivar/${WGF}"
+  cp "${DATA}"/log.out "${COMOUT}/jedivar/${WGF}"
+  cp "${DATA}"/mpasin.nc "${COMOUT}/jedivar/${WGF}/mpasout.${timestr}.nc"
+
+else
+  echo "INFO: No DA at the cold start cycle"
 fi
+
+# copy satbias files which are not updated in the current cycle to satbias_out/
+# this happens when some satellite data is missing or no DA at this cycle. 
+# We need to roll them over for future cycles
 #
-# the input/output file are linked from the umbrella directory, so no need to copy
-cp "${DATA}"/jdiag* "${COMOUT}/jedivar/${WGF}"
-cp "${DATA}"/jedivar*.yaml "${COMOUT}/jedivar/${WGF}"
-cp "${DATA}"/log.out "${COMOUT}/jedivar/${WGF}"
-cp "${DATA}"/mpasin.nc "${COMOUT}/jedivar/${WGF}/mpasout.${timestr}.nc"
-if ls ./satbias_out/*satbias*.nc >/dev/null 2>&1; then
-  cp "${DATA}"/satbias_out/*satbias*.nc "${COMOUT}/jedivar/${WGF}"
+nullglob_save=$(shopt -p nullglob) # Save current nullglob state
+shopt -s nullglob # Enable nullglob
+for path in data/satbias_in/*satbias*.nc; do
+  file=${path##*/}
+  if [[ ! -s "data/satbias_out/${file}" ]]; then
+    echo "${file}" >> data/satbias_out/satbias.roll_over_list
+    cp "${path}" data/satbias_out
+  fi
+done
+#
+# copy satabias_out to com/
+satbias_list=(data/satbias_out/*satbias*.nc)
+if (( ${#satbias_list[@]} > 0 )); then
+#if ls ./data/satbias_out/*satbias*.nc >/dev/null 2>&1; then
+  cp "${DATA}"/data/satbias_out/*satbias*.nc "${COMOUT}/jedivar/${WGF}"
 fi
+eval "${nullglob_save}" # Restore previous nullglob state
+
+
 exit 0

@@ -63,7 +63,8 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     else:
         PREP_IC_TYPE = "no_da"
     dcTaskEnv['PREP_IC_TYPE'] = PREP_IC_TYPE
-    dcTaskEnv['USE_THE_LATEST_SATBIAS'] = os.getenv("USE_THE_LATEST_SATBIAS", "FALSE").upper()
+    if PREP_IC_TYPE == "jedivar" or PREP_IC_TYPE == "getkf":
+        dcTaskEnv['USE_THE_LATEST_SATBIAS'] = os.getenv("USE_THE_LATEST_SATBIAS", "FALSE").upper()
 
     # dependencies
     coldhrs = coldhrs.split(' ')
@@ -90,9 +91,9 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         # cold start cycles wait for the latest satbias updated from the -1h cycles
         spaces = " " * 6
         satbias_dep = '\n' + spaces + '<or>'
-        satbias_dep = '\n' + spaces + f' <taskdep task="jedivar" cycle_offset="-{cyc_interval}:00:00">'
-        satbias_dep = '\n' + spaces + f' <datadep><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/jedivar/&WGF;/satbias_jumpstart</datadep>'
-        satbias_dep = '\n' + spaces + '</or>'
+        satbias_dep += '\n' + spaces + f' <taskdep task="jedivar" cycle_offset="-{cyc_interval}:00:00"/>'
+        satbias_dep += '\n' + spaces + f' <datadep><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/jedivar/&WGF;/satbias_jumpstart</cyclestr></datadep>'
+        satbias_dep += '\n' + spaces + '</or>'
     #
     timedep = ""
     realtime = os.getenv("REALTIME", "false")

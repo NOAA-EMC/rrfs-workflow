@@ -92,7 +92,7 @@ if [[ "${PREP_IC_TYPE}" == "jedivar" ]] || [[ "${PREP_IC_TYPE}" == "getkf"  ]]; 
   fi
 
   NUM=5 # look back ${NUM} cycles to find satbias files
-  if [[ "${USE_THE_LATEST_SATBIAS}" == "TRUE" ]]; then # only use the latest satbias from the previous cycle
+  if [[ "${USE_THE_LATEST_SATBIAS:-"FALSE"}" == "TRUE" ]]; then # only use the latest satbias from the previous cycle
     NUM=1
   fi
 
