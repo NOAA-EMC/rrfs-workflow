@@ -142,7 +142,7 @@ if os.getenv('YAML_GEN_METHOD', '1') == '1':
 
 elif os.getenv('YAML_GEN_METHOD', '1') == '2':
     # Copy files from HOMErrfs/workflow/ush to expdir
-    shutil.copy2("{HOMErrfs}/workflow/ush/qrocoto/prep_satbias.sh", expdir)
+    shutil.copy2(f'{HOMErrfs}/workflow/ush/qrocoto/prep_satbias.sh', expdir)
     source_dir = os.path.join(HOMErrfs, 'workflow', 'ush')
     target_files = ['rr', 'rc', 'rb', 'rs']
     if os.path.isdir(source_dir):
