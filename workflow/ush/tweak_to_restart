@@ -31,8 +31,9 @@ modify(myfile, changesets)
 myfile="scripts/exrrfs_fcst.sh"
 changesets={
     'ln -snf "${UMBRELLA_PREP_IC_DATA}/mpasin.nc" mpasin.nc':
-    'timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)\n  ln -snf "${UMBRELLA_PREP_IC_DATA}/restart.nc" restart.${timestr}.nc',
-    "#  link bdy and fix files": "do_DAcycling='false'\ndo_restart='true'",
+    'timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)\n  ln -snf "${UMBRELLA_PREP_IC_DATA}/mpasin.nc" restart.${timestr}.nc',
+    "start_type='cold'": "start_type='cold'\n  do_restart='false'",
+    "do_DAcycling='true'": "do_DAcycling='false'\n  do_restart='true'",
     'ln -snf "${DATA}/mpasout.${timestr}.nc"': 'ln -snf "${DATA}/restart.${timestr}.nc"',
     '${cpreq} "${DATA}/mpasout.${timestr}.nc"': '${cpreq} "${DATA}/restart.${timestr}.nc"',
 #    'jedi_da="true" #true': 'jedi_da="false" #true',
@@ -81,7 +82,24 @@ myfile="scripts/exrrfs_prep_ic.sh"
 changesets={
     'thisfile=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/${fcststr}/${WGF}${MEMDIR}/mpasout.${timestr}.nc':
     'thisfile=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/${fcststr}/${WGF}${MEMDIR}/restart.${timestr}.nc',
-    '${cpreq} "${thisfile}" "${UMBRELLA_PREP_IC_DATA}/mpasin.nc"': '${cpreq} "${thisfile}" "${UMBRELLA_PREP_IC_DATA}/restart.nc"',
+    }
+modify(myfile, changesets)
+
+# tweak 9 ----------------------------------------------------------
+myfile="scripts/exrrfs_jedivar.sh"
+changesets={
+    "start_type='cold'": "start_type='cold'\n  do_restart='false'",
+    "do_DAcycling='true'": "do_DAcycling='false'\n  do_restart='true'",
+    'mpasout_file=mpasout.${timestr}.nc': 'mpasout_file=restart.${timestr}.nc',
+    'cp "${DATA}"/mpasin.nc "${COMOUT}/jedivar/${WGF}/mpasout.${timestr}.nc"': 'cp "${DATA}"/mpasin.nc "${COMOUT}/jedivar/${WGF}/restart.${timestr}.nc"',
+    }
+modify(myfile, changesets)
+
+# tweak 10 ----------------------------------------------------------
+myfile="scripts/exrrfs_getkf.sh"
+changesets={
+    "start_type='cold'": "start_type='cold'\n  do_restart='false'",
+    "do_DAcycling='true'": "do_DAcycling='false'\n  do_restart='true'",
     }
 modify(myfile, changesets)
 
