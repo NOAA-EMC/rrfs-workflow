@@ -17,19 +17,24 @@ def modify(file, changesets):
 mypath = os.path.dirname(os.path.abspath(__file__))
 os.chdir(os.path.join(mypath, "../.."))
 
+# copy some files ---------------------------------------------------
+shutil.copy("sorc/_workaround_/streams.atmosphere", "parm/streams.atmosphere")
+
 # tweak 1 ----------------------------------------------------------
 myfile="parm/convection_permitting/namelist.atmosphere"
 changesets={
-    "    config_do_restart = false": "    config_do_restart = ${do_restart}",
+    "config_do_restart = false": "config_do_restart = ${do_restart}",
     }
 modify(myfile, changesets)
 
 # tweak 2 ----------------------------------------------------------
 myfile="scripts/exrrfs_fcst.sh"
 changesets={
-    '  ln -snf "${UMBRELLA_PREP_IC_DATA}/mpasin.nc" mpasin.nc':
-    '  timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)\n  ln -snf "${UMBRELLA_PREP_IC_DATA}/restart.nc" restart.${timestr}.nc',
+    'ln -snf "${UMBRELLA_PREP_IC_DATA}/mpasin.nc" mpasin.nc':
+    'timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)\n  ln -snf "${UMBRELLA_PREP_IC_DATA}/restart.nc" restart.${timestr}.nc',
     "#  link bdy and fix files": "do_DAcycling='false'\ndo_restart='true'",
+    'ln -snf "${DATA}/mpasout.${timestr}.nc"': 'ln -snf "${DATA}/restart.${timestr}.nc"',
+    '${cpreq} "${DATA}/mpasout.${timestr}.nc"': '${cpreq} "${DATA}/restart.${timestr}.nc"',
 #    'jedi_da="true" #true': 'jedi_da="false" #true',
     }
 modify(myfile, changesets)
@@ -49,8 +54,10 @@ myfile="scripts/exrrfs_save_fcst.sh"
 changesets={
     "history_all=$(seq 0 $((10#${history_interval})) $((10#${fcst_len_hrs_thiscyc} )) )":
     "history_all=$(seq 1 $((10#${history_interval})) $((10#${fcst_len_hrs_thiscyc} )) )",
-    "      if (( ii <= cyc_interval )) && (( ii > 0 )); then":
-    "      if (( ii <= cyc_interval )) && (( ii >= 0 )); then",
+    "mpasout_file=${UMBRELLA_FCST_DATA}/mpasout.${timestr}.nc": "restart_file=${UMBRELLA_FCST_DATA}/restart.${timestr}.nc",
+    "if (( ii <= cyc_interval )) && (( ii > 0 )); then":  "if (( ii <= cyc_interval )) && (( ii >= 0 )); then",
+    'mpasout_path=$(realpath "${mpasout_file}")': 'restart_path=$(realpath "${restart_file}")',
+    '${cpreq} "${mpasout_path}" "${COMOUT}/fcst/${WGF}${MEMDIR}/."': '${cpreq} "${restart_path}" "${COMOUT}/fcst/${WGF}${MEMDIR}/."',
     }
 modify(myfile, changesets)
 
@@ -66,6 +73,15 @@ myfile="workflow/rocoto_funcs/save_fcst.py"
 changesets={
     'diag.@Y-@m-@d_@H.@M.@S.nc':
     '</cyclestr><cyclestr offset="1:00:00">diag.@Y-@m-@d_@H.@M.@S.nc',
+    }
+modify(myfile, changesets)
+
+# tweak 8 ----------------------------------------------------------
+myfile="scripts/exrrfs_prep_ic.sh"
+changesets={
+    'thisfile=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/${fcststr}/${WGF}${MEMDIR}/mpasout.${timestr}.nc':
+    'thisfile=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/${fcststr}/${WGF}${MEMDIR}/restart.${timestr}.nc',
+    '${cpreq} "${thisfile}" "${UMBRELLA_PREP_IC_DATA}/mpasin.nc"': '${cpreq} "${thisfile}" "${UMBRELLA_PREP_IC_DATA}/restart.nc"',
     }
 modify(myfile, changesets)
 
