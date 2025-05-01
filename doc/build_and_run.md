@@ -1,33 +1,15 @@
 # 1. Build
-If running on Orion/Hercules/Gaea, you will need to run `module load git-lfs` before cloning.    
-`git clone -b rrfs-mpas-jedi --recursive https://github.com/NOAA-EMC/rrfs-workflow.git`
-
-`cd rrfs-workflow/sorc` and run the following command to build the system:
 ```
-build.all
+which git-lfs 2>/dev/null ||  module load git-lfs
+GIT_LFS_SKIP_SMUDGE=1 git clone -b rrfs-mpas-jedi --recursive https://github.com/NOAA-EMC/rrfs-workflow
+cd rrfs-workflow/sorc
+./build.all
 ```
-
-The above script compiles WPS, MPAS, MPASSIT, RDASApp and UPP simultaneously.  
-Build logs for each component can be found under sorc/:
-```
-log.build.mpas
-log.build.rdas
-log.build.wps
-log.build.mpassit
-log.build.upp
-```
-
-Executables can be found under `exec/`:
-```
-ungrib.x
-init_atmosphere_model.x
-atmosphere_model.x
-mpasjedi_variational.x
-mpasjedi_enkf.x
-bufr2ioda.x
-mpassit.x
-upp.x
-```
+Note: 
+1. The first command is to make sure `git-lfs` is loaded as it is required for cloning RDASApp
+2. `GIT_LFS_SKIP_SMUDGE=1` is to skip downloading git-lfs binary data used by JEDI ctests, which is NOT needed by rrfs-workflow.  
+   This will avoid intermittent RDASApp checkout failures when JCSDA repositories exceed their LFS budget.
+3. If you run cold start forecasts only and don't need data assimilation, you can `vi build.all` and comment out this line `./build.rdas &> ./log.build.rdas 2>&1 &` before running `./build.all`
 
 # 2. Setup and run experiments:
 ### 2.1. cat/copy and modify exp.setup
@@ -47,7 +29,9 @@ Refer to [this guide](https://github.com/NOAA-EMC/rrfs-workflow/wiki/deploy-a-re
 ./setup_rocoto.py exp.conus12km
 ```   
     
-This Python script creates an experiment directory (i.e. `EXPDIR`), writes out a runtime version of `exp.setup` under EXPDIR, and  then copies runtime config files from `HOMErrfs/parm` to `EXPDIR`.
+This Python script creates an experiment directory (i.e. `EXPDIR`), writes out a runtime version of `exp.setup` under EXPDIR, and  then copies runtime config files to `EXPDIR`.  
+If you get errors when running `setup_rocoto.py`, it is usually due to a low Python version.  
+You may run `source ../workflow/ush/load_bokeh.sh` to load a working Python environment and then run the command again.
        
 ### 2.3 run and monitor experiments using rocoto commands
 
