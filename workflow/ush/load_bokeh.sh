@@ -11,7 +11,6 @@ ushdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 # shellcheck disable=SC1091
 source "${ushdir}/detect_machine.sh"
 
-module purge
 module use "${ushdir}/../../modulefiles"
 if [[ "${MACHINE}" == "gaea" ]]; then
   if [[ -d /gpfs/f5 ]]; then
