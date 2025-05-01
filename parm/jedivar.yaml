@@ -14281,14 +14281,14 @@ cost function:
          - localization method: Horizontal Gaspari-Cohn
            lengthscale: 300e3 # orig
        obs bias:
-         input file: data/obs/amsua_n19.satbias.nc
-         output file: out_amsua_n19.satbias.nc
+         input file: data/satbias_in/amsua_n19.satbias.nc
+         output file: data/satbias_out/amsua_n19.satbias.nc
          variational bc:
            predictors:
            - name: constant
            - name: lapseRate
              order: 2
-             tlapse: &amsua_n19_tlapse data/obs/amsua_n19.tlapse.txt
+             tlapse: &amsua_n19_tlapse data/satbias_in/amsua_n19.tlapse.txt
            - name: lapseRate
              tlapse: *amsua_n19_tlapse
            - name: emissivityJacobian
@@ -14305,11 +14305,11 @@ cost function:
            step size: 1.0e-4
            largest analysis variance: 10000.0
            prior:
-             input file: data/obs/amsua_n19.satbias_cov.nc
+             input file: data/satbias_in/amsua_n19.satbias_cov.nc
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
-           output file: out_amsua_n19.satbias_cov.nc
+           output file: data/satbias_out/amsua_n19.satbias_cov.nc
        obs filters:
        - filter: BlackList
          filter variables:
@@ -14659,14 +14659,14 @@ cost function:
          - localization method: Horizontal Gaspari-Cohn
            lengthscale: 300e3 # orig
        obs bias:
-         input file:  data/obs/amsua_n20.satbias.nc
-         output file: out_amsua_n20.satbias.nc
+         input file:  data/satbias_in/amsua_n20.satbias.nc
+         output file: data/satbias_out/amsua_n20.satbias.nc
          variational bc:
            predictors:
            - name: constant
            - name: lapseRate
              order: 2
-             tlapse: &amsua_n20_tlapse  data/obs/amsua_n20.tlapse.txt
+             tlapse: &amsua_n20_tlapse  data/satbias_in/amsua_n20.tlapse.txt
            - name: lapseRate
              tlapse: *amsua_n20_tlapse
            - name: emissivityJacobian
@@ -14683,11 +14683,11 @@ cost function:
            step size: 1.0e-4
            largest analysis variance: 10000.0
            prior:
-             input file: data/obs/amsua_n20.satbias_cov.nc
+             input file: data/satbias_in/amsua_n20.satbias_cov.nc
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
-           output file: out_amsua_n20.satbias_cov.nc
+           output file: data/satbias_out/amsua_n20.satbias_cov.nc
 
        obs pre filters:
        # Step 0-A: Create Diagnostic Flags
@@ -15244,14 +15244,14 @@ cost function:
            lengthscale: 300e3 # orig
 
        obs bias:
-         input file:  data/obs/atms_npp.satbias.nc
-         output file: out_atms_npp.satbias.nc
+         input file:  data/satbias_in/atms_npp.satbias.nc
+         output file: data/satbias_out/atms_npp.satbias.nc
          variational bc:
            predictors:
            - name: constant
            - name: lapseRate
              order: 2
-             tlapse: &atms_npp_tlapse  data/obs/atms_npp.tlapse.txt
+             tlapse: &atms_npp_tlapse  data/satbias_in/atms_npp.tlapse.txt
            - name: lapseRate
              tlapse: *atms_npp_tlapse
            - name: emissivityJacobian
@@ -15268,11 +15268,11 @@ cost function:
            step size: 1.0e-4
            largest analysis variance: 10000.0
            prior:
-             input file: data/obs/atms_npp.satbias_cov.nc
+             input file: data/satbias_in/atms_npp.satbias_cov.nc
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
-           output file: out_atms_npp.satbias_cov.nc
+           output file: data/satbias_out/atms_npp.satbias_cov.nc
 
        obs pre filters:
        # Step 0-A: Create Diagnostic Flags
@@ -15836,14 +15836,14 @@ cost function:
   # Observation Bias Correction (VarBC)
   # -----------------------------------
        obs bias:
-         input file: data/obs/abi_g16.satbias.nc
-         output file: out_abi_g16.satbias.nc
+         input file: data/satbias_in/abi_g16.satbias.nc
+         output file: data/satbias_out/abi_g16.satbias.nc
          variational bc:
            predictors:
            - name: constant
            - name: lapseRate
              order: 2
-             tlapse: &abi_g16_tlapse data/obs/abi_g16.tlapse.txt
+             tlapse: &abi_g16_tlapse data/satbias_in/abi_g16.tlapse.txt
            - name: lapseRate
              tlapse: *abi_g16_tlapse
            - name: emissivityJacobian
@@ -15864,11 +15864,11 @@ cost function:
            step size: 1.0e-4
            largest analysis variance: 10000.0
            prior:
-             input file: data/obs/abi_g16.satbias_cov.nc
+             input file: data/satbias_in/abi_g16.satbias_cov.nc
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
-           output file: out_abi_g16.satbias_cov.nc
+           output file: data/satbias_out/abi_g16.satbias_cov.nc
 
   # Observation Filters (QC)
   # ------------------------
@@ -16328,14 +16328,14 @@ cost function:
   # Observation Bias Correction (VarBC)
   # -----------------------------------
        obs bias:
-         input file: data/obs/abi_g18.satbias.nc
-         output file: out_abi_g18.satbias.nc
+         input file: data/satbias_in/abi_g18.satbias.nc
+         output file: data/satbias_out/abi_g18.satbias.nc
          variational bc:
            predictors:
            - name: constant
            - name: lapseRate
              order: 2
-             tlapse: &abi_g18_tlapse data/obs/abi_g18.tlapse.txt
+             tlapse: &abi_g18_tlapse data/satbias_in/abi_g18.tlapse.txt
            - name: lapseRate
              tlapse: *abi_g18_tlapse
            - name: emissivityJacobian
@@ -16356,11 +16356,11 @@ cost function:
            step size: 1.0e-4
            largest analysis variance: 10000.0
            prior:
-             input file: data/obs/abi_g18.satbias_cov.nc
+             input file: data/satbias_in/abi_g18.satbias_cov.nc
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
-           output file: out_abi_g18.satbias_cov.nc
+           output file: data/satbias_out/abi_g18.satbias_cov.nc
 
   # Observation Filters (QC)
   # ------------------------

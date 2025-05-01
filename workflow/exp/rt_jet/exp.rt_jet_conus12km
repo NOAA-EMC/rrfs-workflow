@@ -18,6 +18,7 @@ export ZETA_LEVELS="L60.txt"
 #
 export DO_IODA=true
 export DO_JEDI=true
+export COLDSTART_CYCS_DO_DA=false
 export HYB_WGT_ENS=0.0
 export HYB_WGT_STATIC=1.0
 export HYB_ENS_TYPE=1      # 1.rrfs; 2.interpolated GEFS/GDAS; 0.TBD on the fly (rrfs->GDAS->3DVAR)
@@ -98,3 +99,4 @@ export STARTTIME_PREP_LBC="00:30:00"
 export MORE_XML_ENTITIES=true
 export DO_CLEAN=true
 export RESERVATION_CLEAN=${RESERVATION}
+export USE_THE_LATEST_SATBIAS=false

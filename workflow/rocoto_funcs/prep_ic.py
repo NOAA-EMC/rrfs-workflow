@@ -54,6 +54,17 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
 </metatask>\n'
         ensindexstr = "_m#ens_index#"
         ensdirstr = "/mem#ens_index#"
+    # determine prep_ic type so that we know where to find correct satbias files
+    do_jedi = os.getenv("DO_JEDI", "FALSE").upper()
+    if do_ensemble and do_jedi == "TRUE":
+        PREP_IC_TYPE = "getkf"
+    elif do_jedi == "TRUE":
+        PREP_IC_TYPE = "jedivar"
+    else:
+        PREP_IC_TYPE = "no_da"
+    dcTaskEnv['PREP_IC_TYPE'] = PREP_IC_TYPE
+    if PREP_IC_TYPE == "jedivar" or PREP_IC_TYPE == "getkf":
+        dcTaskEnv['USE_THE_LATEST_SATBIAS'] = os.getenv("USE_THE_LATEST_SATBIAS", "FALSE").upper()
 
     # dependencies
     coldhrs = coldhrs.split(' ')
@@ -74,6 +85,16 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     else:  # a prod cycle paralle to spinup cycles
         datadep = "whatever"  # dependencies will be rewritten near the end of this file
 
+    #
+    satbias_dep = ""
+    if os.getenv("USE_THE_LATEST_SATBIAS", "FALSE").upper() == "TRUE":
+        # cold start cycles wait for the latest satbias updated from the -1h cycles
+        spaces = " " * 6
+        satbias_dep = '\n' + spaces + '<or>'
+        satbias_dep += '\n' + spaces + f' <taskdep task="jedivar" cycle_offset="-{cyc_interval}:00:00"/>'
+        satbias_dep += '\n' + spaces + f' <datadep><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/jedivar/&WGF;/satbias_jumpstart</cyclestr></datadep>'
+        satbias_dep += '\n' + spaces + '</or>'
+    #
     timedep = ""
     realtime = os.getenv("REALTIME", "false")
     if realtime.upper() == "TRUE":
@@ -88,7 +109,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
       <or>
 {streqs}
       </or>
-      <taskdep task="ic{ensindexstr}"/>
+      <taskdep task="ic{ensindexstr}"/>{satbias_dep}
     </and>
     <and>
       <and>
