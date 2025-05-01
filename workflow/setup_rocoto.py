@@ -125,13 +125,6 @@ with open(EXPin, 'r') as infile, open(EXPout, 'w') as outfile:
 
 setup_xml(HOMErrfs, expdir)
 
-# copy qrocoto utilities to expdir/qrocoto
-srcdir = f'{HOMErrfs}/workflow/ush/qrocoto'
-dstdir = f'{expdir}/qrocoto'
-if os.path.exists(dstdir):
-    shutil.rmtree(dstdir)
-shutil.copytree(srcdir, dstdir)
-
 if os.getenv("DO_JEDI", 'false').upper() == "TRUE":
     print('\nIf doing satellite radiance data assimilation, run the following commands to prepare the initial satbias files:')
     print(f'    cd  {expdir}')
@@ -139,8 +132,17 @@ if os.getenv("DO_JEDI", 'false').upper() == "TRUE":
     print(f'    prep_satbias.sh YYYYMMDDHH [satbias_path]')
     print(f'check https://github.com/NOAA-EMC/rrfs-workflow/wiki for more details')
 
-if os.getenv('YAML_GEN_METHOD', '1') == '2':
+if os.getenv('YAML_GEN_METHOD', '1') == '1':
+    # copy qrocoto utilities to expdir/qrocoto
+    srcdir = f'{HOMErrfs}/workflow/ush/qrocoto'
+    dstdir = f'{expdir}/qrocoto'
+    if os.path.exists(dstdir):
+        shutil.rmtree(dstdir)
+    shutil.copytree(srcdir, dstdir)
+
+elif os.getenv('YAML_GEN_METHOD', '1') == '2':
     # Copy files from HOMErrfs/workflow/ush to expdir
+    shutil.copy2(f'{HOMErrfs}/workflow/ush/qrocoto/prep_satbias.sh', expdir)
     source_dir = os.path.join(HOMErrfs, 'workflow', 'ush')
     target_files = ['rr', 'rc', 'rb', 'rs']
     if os.path.isdir(source_dir):
