@@ -9,6 +9,7 @@ cd "${DATA}" || exit 1
 
 start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S) 
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 
+time_min=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%M)
 #
 # determine whether to begin new cycles
 #
@@ -21,6 +22,8 @@ else
   do_DAcycling='true'
   initial_file=${UMBRELLA_PREP_IC_DATA}/mpasin.nc
 fi
+#
+# link fix files from physics, meshes, graphinfo, stream list, and jedi
 #
 ln -snf "${FIXrrfs}/physics/${PHYSICS_SUITE}"/*  .
 ln -snf "${FIXrrfs}/meshes/${MESH_NAME}.ugwp_oro_data.nc"  ./ugwp_oro_data.nc
@@ -54,7 +57,32 @@ cp "${UMBRELLA_PREP_IC_DATA}"/*satbias* satbias_in/.
 #
 # copy observations files
 #
-cp "${COMOUT}"/ioda_bufr/det/* obs/.
+obspath_bufr="${COMOUT}/ioda_bufr/${WGF}"
+obs_files_source[0]="${obspath_bufr}"/ioda_adpupa.nc
+obs_files_target[0]=ioda_adpupa.nc
+
+obs_number=${#obs_files_source[@]}
+obs_files_source[obs_number]="${obspath_bufr}"/ioda_aircar.nc
+obs_files_target[obs_number]=ioda_aircar.nc
+
+if [ "${DO_ENVAR_RADAR_REF}" == "true" ];then
+  obspath_refl="${COMOUT}/ioda_mrms_refl/${WGF}"
+  obs_number=${#obs_files_source[@]}
+  obs_files_source[obs_number]="${obspath_refl}/ioda_mrms_${CDATE}_${time_min}".nc4
+  obs_files_target[obs_number]=ioda_mrms.nc
+fi
+
+obs_number=${#obs_files_source[@]}
+for (( i=0; i<obs_number; i++ ));
+do
+  obs_file=${obs_files_source[$i]}
+  obs_file_t=${obs_files_target[$i]}
+  if [ -r "${obs_file}" ]; then
+    cp "${obs_file}" obs/"${obs_file_t}"
+  else
+    echo "WARNING: ${obs_file} does not exist!"
+  fi
+done
 #
 #  find ensemble forecasts based on user settings
 #
@@ -148,6 +176,7 @@ esac
 if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CYCS_DO_DA} == "true" ]]; then
   # run mpasjedi_variational.x
   #export OOPS_TRACE=1
+  #export OOPS_DEBUG=1
   export OMP_NUM_THREADS=1
 
   source prep_step
