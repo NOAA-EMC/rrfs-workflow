@@ -30,6 +30,9 @@ from rocoto_funcs.misc import misc
 def setup_xml(HOMErrfs, expdir):
     # source the config cascade
     source(f'{expdir}/exp.setup')
+    if os.path.exists(f"{expdir}/config/satinfo") and os.getenv("USE_THE_LATEST_SATBIAS") is None:
+        env_vars = {'USE_THE_LATEST_SATBIAS': 'true'}
+        os.environ.update(env_vars)
     machine = os.getenv('MACHINE').lower()
     do_deterministic = os.getenv('DO_DETERMINISTIC', 'true').upper()
     do_ensemble = os.getenv('DO_ENSEMBLE', 'false').upper()
