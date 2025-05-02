@@ -5,7 +5,7 @@ import shutil
 import sys
 import os
 from rocoto_funcs.setup_xml import setup_xml
-from rocoto_funcs.base import source, get_required_env
+from rocoto_funcs.base import source, get_required_env, run_git_command
 print('Aloha!')
 #
 
@@ -88,8 +88,18 @@ if os.getenv("DO_JEDI", 'false').upper() == "TRUE":
 # copyover the VERSION file
 shutil.copy(f'{HOMErrfs}/workflow/VERSION', f'{expdir}/VERSION')
 
-# generate exp.setup under $expdir
-text = f'''#=== Auto-generation of HOMErrfs, MACHINE
+# generate exp.setup, snapshot_git_diff.txt under $expdir
+latest_log = run_git_command(['git', 'log', '--oneline', '--no-decorate', '-1'])
+branch = run_git_command(['git', 'rev-parse', '--abbrev-ref', 'HEAD'])
+remote = run_git_command(['git', 'config', f'branch.{branch}.remote'])
+remote_url = run_git_command(['git', 'remote', 'get-url', remote])
+diff_results = run_git_command(['git', 'diff'])
+diff_results += run_git_command(['git', 'diff', '--cached'])
+with open(f'{expdir}/config/snapshot_git_diff.txt', 'w') as outfile:
+    outfile.write(diff_results)
+text = f'''#=== Auto-generation of HOMErrfs, MACHINE, etc
+# current branch: {branch};  remote: {remote_url};  the latest log:
+#  {latest_log}
 export HOMErrfs={HOMErrfs}
 export MACHINE={machine}
 #===
