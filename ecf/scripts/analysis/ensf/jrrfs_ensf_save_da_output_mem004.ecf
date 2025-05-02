@@ -20,7 +20,6 @@ export CDATE="${PDY}${cyc}"
 
 module list
 export WGF="%WGF%"
-export MEMBER_NAME="%MEMBER_NAME%"
 export CYCLE_TYPE="%CYCLE_TYPE%"
 ############################################################
 # CALL executable job script here

@@ -62,8 +62,9 @@ case $MACHINE in
   export OMP_PROC_BIND=close
   export OMP_PLACES=threads
   export MPICH_RANK_REORDER_METHOD=0
-  ncores=160
-  PPN_ANALYSIS_ENKF=8
+  export NNODES_ANALYSIS_ENKF=20
+  export PPN_ANALYSIS_ENKF=8
+  ncores=$(( NNODES_ANALYSIS_ENKF*PPN_ANALYSIS_ENKF ))
 
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_ANALYSIS_ENKF} --label --line-buffer --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;
@@ -114,7 +115,6 @@ l_fv3reg_filecombined=.false.
 #-----------------------------------------------------------------------
 #
 fixgriddir=${FIX_GSI}/${PREDEF_GRID_NAME}
-
 cpreq -p ${fixgriddir}/fv3_coupler.res    coupler.res
 cpreq -p ${fixgriddir}/fv3_akbk           fv3sar_tile1_akbk.nc
 cpreq -p ${fixgriddir}/fv3_grid_spec      fv3sar_tile1_grid_spec.nc
