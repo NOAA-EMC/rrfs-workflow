@@ -98,7 +98,7 @@ diff_results += run_git_command(['git', 'diff', '--cached'])
 with open(f'{expdir}/config/snapshot_git_diff.txt', 'w') as outfile:
     outfile.write(diff_results)
 text = f'''#=== Auto-generation of HOMErrfs, MACHINE, etc
-# current branch: {branch};  remote: {remote_url};  the latest log:
+# {remote_url} -b {branch};  the latest log:
 #  {latest_log}
 export HOMErrfs={HOMErrfs}
 export MACHINE={machine}
