@@ -110,17 +110,7 @@ with open(EXPin, 'r') as infile, open(EXPout, 'w') as outfile:
                 outfile.write(text)
                 outfile.write(line)
         else:
-            rm_list = ('REALTIME=', 'RETRO_CYCLETHROTTLE=',
-                       'RETRO_TASKTHROTTLE=', 'ACCOUNT', 'QUEUE', 'PARTITION', 'RESERVATION', 'STARTTIME', 'NODES', 'WALLTIME',
-                       'CYC_INTERVAL', 'DO_DETERMINISTIC', 'DO_ENSEMBLE',
-                       )
-            found = False
-            for rmstr in rm_list:
-                if rmstr in line:
-                    found = True
-                    break
-            if not found:
-                outfile.write(line)
+            outfile.write(line)
     # ~~~~~~~~~~~~
 
 setup_xml(HOMErrfs, expdir)
