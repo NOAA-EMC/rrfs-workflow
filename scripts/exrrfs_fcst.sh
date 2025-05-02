@@ -89,6 +89,7 @@ for fhr in ${history_all}; do
     ln -snf "${DATA}/history.${timestr}.nc" "${UMBRELLA_FCST_DATA}"
     ln -snf "${DATA}/diag.${timestr}.nc" "${UMBRELLA_FCST_DATA}"
     ln -snf "${DATA}/mpasout.${timestr}.nc" "${UMBRELLA_FCST_DATA}"
+    ln -snf "${DATA}/log.atmosphere.0000.out" "${UMBRELLA_FCST_DATA}"
   fi
 done
 
@@ -106,11 +107,12 @@ if (( "${num_err_log}" > 0 )) ; then
   echo "FATAL ERROR: MPAS model run failed"
   err_exit
 else
-  # spinup cycles copy mpasout to com/ directly, don't need the save_fcst task
+  # spinup cycles copy mpasout and log file to com/ directly, don't need the save_fcst task
   if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
     CDATEp=$( ${NDATE} 1 "${CDATE}" )
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
     ${cpreq} "${DATA}/mpasout.${timestr}.nc" "${COMOUT}/fcst_spinup/${WGF}${MEMDIR}"
+    ${cpreq} "${DATA}/log.atmosphere.0000.out" "${COMOUT}/fcst_spinup/${WGF}${MEMDIR}"
   fi
   exit 0
 fi
