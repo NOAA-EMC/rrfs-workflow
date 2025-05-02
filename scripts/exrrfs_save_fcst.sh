@@ -31,6 +31,7 @@ for fhr in ${history_all}; do
     history_file=${UMBRELLA_FCST_DATA}/history.${timestr}.nc
     diag_file=${UMBRELLA_FCST_DATA}/diag.${timestr}.nc
     mpasout_file=${UMBRELLA_FCST_DATA}/mpasout.${timestr}.nc
+    log_file=${UMBRELLA_FCST_DATA}/log.atmosphere.0000.out
 
     # wait for file available for 20 min
     for (( j=0; j < 20; j=j+1)); do
@@ -49,7 +50,9 @@ for fhr in ${history_all}; do
       # save to com
       if (( ii <= cyc_interval )) && (( ii > 0 )); then
         mpasout_path=$(realpath "${mpasout_file}")
+        log_path=$(realpath "${log_file}")
         ${cpreq} "${mpasout_path}" "${COMOUT}/fcst/${WGF}${MEMDIR}/."
+        ${cpreq} "${log_path}" "${COMOUT}/fcst/${WGF}${MEMDIR}/."
       fi
     else
       echo "ERROR, diag.${timestr}.nc or history.${timestr}.nc missing"
