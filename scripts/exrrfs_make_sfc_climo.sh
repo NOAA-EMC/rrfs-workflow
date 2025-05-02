@@ -12,14 +12,6 @@
 #
 #-----------------------------------------------------------------------
 #
-# Source other necessary files.
-#
-#-----------------------------------------------------------------------
-#
-. $USHrrfs/link_fix.sh
-#
-#-----------------------------------------------------------------------
-#
 # Save current shell options (in a global array).  Then set new options
 # for this script/function.
 #
@@ -66,6 +58,30 @@ nprocs=$(( NNODES_MAKE_SFC_CLIMO * PPN_MAKE_SFC_CLIMO ))
 #
 #-----------------------------------------------------------------------
 #
+# For the fire weather grid, read in the center lat/lon from the
+# operational NAM fire weather nest.  The center lat/lon is set by the
+# SDM.  When RRFS is implemented, a similar file will be needed.
+# Rewrite the default center lat/lon values in var_defns.sh, if needed.
+#
+#-----------------------------------------------------------------------
+#
+if [ ${WGF} = "firewx" ]; then
+  hh="${CDATE:8:2}"
+  firewx_loc="${COMINnam}/input/nam_firewx_loc"
+  center_lat=${LAT_CTR}
+  center_lon=${LON_CTR}
+  LAT_CTR=`grep ${hh}z $firewx_loc | awk '{print $2}'`
+  LON_CTR=`grep ${hh}z $firewx_loc | awk '{print $3}'`
+
+  if [ ${center_lat} != ${LAT_CTR} ] || [ ${center_lon} != ${LON_CTR} ]; then
+    sed -i -e "s/${center_lat}/${LAT_CTR}/g" ${GLOBAL_VAR_DEFNS_FP}
+    sed -i -e "s/${center_lon}/${LON_CTR}/g" ${GLOBAL_VAR_DEFNS_FP}
+    . ${GLOBAL_VAR_DEFNS_FP}
+  fi
+fi
+#
+#-----------------------------------------------------------------------
+#
 # Create the namelist that the sfc_climo_gen code will read in.
 #
 #-----------------------------------------------------------------------
@@ -92,8 +108,8 @@ input_slope_type_file="${SFC_CLIMO_INPUT_DIR}/slope_type.1.0.nc"
 input_soil_type_file="${input_soil_type_file}"
 input_vegetation_type_file="${input_vegetation_type_file}"
 input_vegetation_greenness_file="${SFC_CLIMO_INPUT_DIR}/vegetation_greenness.0.144.nc"
-mosaic_file_mdl="${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc"
-orog_dir_mdl="${FIXLAM}"
+mosaic_file_mdl="${COMOUT}/fix/${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc"
+orog_dir_mdl="${COMOUT}/fix"
 orog_files_mdl="${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH4}.nc"
 halo=${NH4}
 maximum_snow_albedo_method="bilinear"
@@ -109,7 +125,6 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-ulimit -s unlimited
 ulimit -a
 
 case $MACHINE in
@@ -168,13 +183,13 @@ case "$GTYPE" in
 #
 "global" | "stretch" | "nested")
 #
-# Move all files ending with ".nc" to the SFC_CLIMO_DIR directory.
+# Move all files ending with ".nc" to the COMOUT directory.
 # In the process, rename them so that the file names start with the C-
 # resolution (followed by an underscore).
 #
   for fn in *.nc; do
     if [[ -f $fn ]]; then
-      mv $fn ${SFC_CLIMO_DIR}/${CRES}_${fn}
+      cpreq -p $fn ${COMOUT}/fix/${CRES}_${fn}
     fi
   done
   ;;
@@ -193,12 +208,12 @@ case "$GTYPE" in
   for fn in *.halo.nc; do
     if [ -f $fn ]; then
       bn="${fn%.halo.nc}"
-      mv $fn ${SFC_CLIMO_DIR}/${CRES}.${bn}.halo${NH4}.nc
+      cpreq -p $fn ${COMOUT}/fix/${CRES}.${bn}.halo${NH4}.nc
     fi
   done
 #
 # Move all remaining files ending with ".nc" (which are the files for a
-# grid that doesn't include a halo) to the SFC_CLIMO_DIR directory.
+# grid that doesn't include a halo) to the COMOUT directory.
 # In the process, rename them so that the file names start with the C-
 # resolution (followed by a dot) and contain the string "halo0" to indi-
 # cate that the grids in these files do not contain a halo.
@@ -206,29 +221,12 @@ case "$GTYPE" in
   for fn in *.nc; do
     if [ -f $fn ]; then
       bn="${fn%.nc}"
-      mv $fn ${SFC_CLIMO_DIR}/${CRES}.${bn}.halo${NH0}.nc
+      cpreq -p $fn ${COMOUT}/fix/${CRES}.${bn}.halo${NH0}.nc
     fi
   done
   ;;
 
 esac
-#
-#-----------------------------------------------------------------------
-#
-# Can these be moved to stage_static if this script is called before
-# stage_static.sh????
-# These have been moved.  Can delete the following after testing.
-#
-#-----------------------------------------------------------------------
-#
-link_fix \
-  verbose="$VERBOSE" \
-  file_group="sfc_climo"
-export err=$?
-if [ $err -ne 0 ]; then
-  err_exit "\
-Call to function to create links to surface climatology files failed."
-fi
 #
 #-----------------------------------------------------------------------
 #
@@ -238,19 +236,36 @@ fi
 #-----------------------------------------------------------------------
 #
 if [ $vegsoilt_frac = .true. ]; then
-  ncrename -d nx,lon -d ny,lat ${SFC_CLIMO_DIR}/${CRES}.soil_type.tile7.halo0.nc
-  ncrename -d nx,lon -d ny,lat ${SFC_CLIMO_DIR}/${CRES}.soil_type.tile7.halo4.nc
-  ncrename -d nx,lon -d ny,lat ${SFC_CLIMO_DIR}/${CRES}.vegetation_type.tile7.halo0.nc
-  ncrename -d nx,lon -d ny,lat ${SFC_CLIMO_DIR}/${CRES}.vegetation_type.tile7.halo4.nc
-  ncrename -d num_categories,num_veg_cat ${SFC_CLIMO_DIR}/${CRES}.vegetation_type.tile7.halo0.nc
-  ncrename -d num_categories,num_veg_cat ${SFC_CLIMO_DIR}/${CRES}.vegetation_type.tile7.halo4.nc
-  ncrename -d num_categories,num_soil_cat ${SFC_CLIMO_DIR}/${CRES}.soil_type.tile7.halo0.nc
-  ncrename -d num_categories,num_soil_cat ${SFC_CLIMO_DIR}/${CRES}.soil_type.tile7.halo4.nc
-  ncks -v vegetation_type_pct ${SFC_CLIMO_DIR}/${CRES}.vegetation_type.tile7.halo0.nc -A ${OROG_DIR}/${CRES}_oro_data.tile7.halo0.nc
-  ncks -v vegetation_type_pct ${SFC_CLIMO_DIR}/${CRES}.vegetation_type.tile7.halo4.nc -A ${OROG_DIR}/${CRES}_oro_data.tile7.halo4.nc
-  ncks -v soil_type_pct ${SFC_CLIMO_DIR}/${CRES}.soil_type.tile7.halo0.nc -A ${OROG_DIR}/${CRES}_oro_data.tile7.halo0.nc
-  ncks -v soil_type_pct ${SFC_CLIMO_DIR}/${CRES}.soil_type.tile7.halo4.nc -A ${OROG_DIR}/${CRES}_oro_data.tile7.halo4.nc
+  ncrename -d nx,lon -d ny,lat ${COMOUT}/fix/${CRES}.soil_type.tile7.halo0.nc
+  ncrename -d nx,lon -d ny,lat ${COMOUT}/fix/${CRES}.soil_type.tile7.halo4.nc
+  ncrename -d nx,lon -d ny,lat ${COMOUT}/fix/${CRES}.vegetation_type.tile7.halo0.nc
+  ncrename -d nx,lon -d ny,lat ${COMOUT}/fix/${CRES}.vegetation_type.tile7.halo4.nc
+  ncrename -d num_categories,num_veg_cat ${COMOUT}/fix/${CRES}.vegetation_type.tile7.halo0.nc
+  ncrename -d num_categories,num_veg_cat ${COMOUT}/fix/${CRES}.vegetation_type.tile7.halo4.nc
+  ncrename -d num_categories,num_soil_cat ${COMOUT}/fix/${CRES}.soil_type.tile7.halo0.nc
+  ncrename -d num_categories,num_soil_cat ${COMOUT}/fix/${CRES}.soil_type.tile7.halo4.nc
+  ncks -v vegetation_type_pct ${COMOUT}/fix/${CRES}.vegetation_type.tile7.halo0.nc -A ${COMOUT}/fix/${CRES}_oro_data.tile7.halo0.nc
+  ncks -v vegetation_type_pct ${COMOUT}/fix/${CRES}.vegetation_type.tile7.halo4.nc -A ${COMOUT}/fix/${CRES}_oro_data.tile7.halo4.nc
+  ncks -v soil_type_pct ${COMOUT}/fix/${CRES}.soil_type.tile7.halo0.nc -A ${COMOUT}/fix/${CRES}_oro_data.tile7.halo0.nc
+  ncks -v soil_type_pct ${COMOUT}/fix/${CRES}.soil_type.tile7.halo4.nc -A ${COMOUT}/fix/${CRES}_oro_data.tile7.halo4.nc
 fi
+#
+#-----------------------------------------------------------------------
+#
+# Copy tile7.halo4.nc versions of sfc climo fix files to tile7.nc
+# Where was this done previously - in link_fix.sh?
+#
+#-----------------------------------------------------------------------
+#
+cpreq -p ${COMOUT}/fix/${CRES}.facsf.tile7.halo4.nc ${COMOUT}/fix/${CRES}.facsf.tile7.nc
+cpreq -p ${COMOUT}/fix/${CRES}.maximum_snow_albedo.tile7.halo4.nc ${COMOUT}/fix/${CRES}.maximum_snow_albedo.tile7.nc
+cpreq -p ${COMOUT}/fix/${CRES}.slope_type.tile7.halo4.nc ${COMOUT}/fix/${CRES}.slope_type.tile7.nc
+cpreq -p ${COMOUT}/fix/${CRES}.snowfree_albedo.tile7.halo4.nc ${COMOUT}/fix/${CRES}.snowfree_albedo.tile7.nc
+cpreq -p ${COMOUT}/fix/${CRES}.soil_type.tile7.halo4.nc ${COMOUT}/fix/${CRES}.soil_type.tile7.nc
+cpreq -p ${COMOUT}/fix/${CRES}.substrate_temperature.tile7.halo4.nc ${COMOUT}/fix/${CRES}.substrate_temperature.tile7.nc
+cpreq -p ${COMOUT}/fix/${CRES}.vegetation_greenness.tile7.halo4.nc ${COMOUT}/fix/${CRES}.vegetation_greenness.tile7.nc
+cpreq -p ${COMOUT}/fix/${CRES}.vegetation_type.tile7.halo4.nc ${COMOUT}/fix/${CRES}.vegetation_type.tile7.nc
+
 #
 #-----------------------------------------------------------------------
 #

@@ -213,6 +213,10 @@ rm time.nc
 
 # add a variable container for tsfc
 echo 'adding variables (blank for now) to output file ...'
+
+module reset
+module use ${HOMErrfs}/modulefiles/tasks/wcoss2
+module load save_restart.local
 ncap2 -O -h -s 'twsfc[$Time,$lat,$lon]=glmask' tmp.nc out_fv3grid.nc
 ncatted -O -h -a long_name,twsfc,o,c,water_surface_temperature out_fv3grid.nc
 ncatted -O -h -a units,twsfc,o,c,degC out_fv3grid.nc
@@ -260,4 +264,7 @@ echo "compressing (${ncksopts})..."
 ncks $ncksopts tsfc_fv3grid_${YYYYJJJHH}.nc tsfc_fv3grid_${YYYYJJJHH}2.nc
 mv tsfc_fv3grid_${YYYYJJJHH}2.nc ${FVCOM_FILE}_${YYYYJJJHH}.nc
 
+module reset
+module use ${HOMErrfs}/modulefiles/tasks/wcoss2
+module load prep_cyc.local
 exit

@@ -27,7 +27,7 @@ def generate_emiss_workflow(staticdir, ravedir, newges_dir, predef_grid):
    beta = 0.3
    fg_to_ug = 1e6
    current_day = os.environ.get("CDATE")
-   nwges_dir = os.environ.get("GESROOT")    
+   comrrfs = os.environ.get("COMrrfs")    
    vars_emis = ["FRP_MEAN","FRE"]
    cols, rows = (2700, 3950) if predef_grid == 'RRFS_NA_3km' else (1092, 1820) 
    print('PREDEF GRID',predef_grid,'cols,rows',cols,rows)
@@ -39,7 +39,7 @@ def generate_emiss_workflow(staticdir, ravedir, newges_dir, predef_grid):
    grid_in = staticdir+'/grid_in.nc'
    weightfile = staticdir+'/weight_file.nc'
    grid_out = staticdir+'/ds_out_base.nc'
-   hourly_hwpdir = os.path.join(nwges_dir,'HOURLY_HWP')
+   hourly_hwpdir = os.path.join(comrrfs,'HOURLY_HWP')
 
    # ----------------------------------------------------------------------
    # Workflow
@@ -64,7 +64,7 @@ def generate_emiss_workflow(staticdir, ravedir, newges_dir, predef_grid):
                                     intp_dir, src_latt, tgt_latt, tgt_lont, cols, rows)
            print('Restart dates to process',fcst_dates)
            hwp_avail_hours, hwp_non_avail_hours = HWP_tools.check_restart_files(hourly_hwpdir, fcst_dates)
-           restart_avail, restart_nonavail_hours_test = HWP_tools.copy_missing_restart(nwges_dir, hwp_non_avail_hours, hourly_hwpdir)
+           restart_avail, restart_nonavail_hours_test = HWP_tools.copy_missing_restart(comrrfs, hwp_non_avail_hours, hourly_hwpdir)
            start = time.time()
            hwp_ave_arr, xarr_hwp, totprcp_ave_arr, xarr_totprcp = HWP_tools.process_hwp(fcst_dates, hourly_hwpdir, cols, rows, intp_dir, rave_to_intp)
            frp_avg_reshaped, ebb_tot_reshaped = femmi_tools.averaging_FRP(fcst_dates, cols, rows, intp_dir, rave_to_intp, veg_map, tgt_area, beta, fg_to_ug)

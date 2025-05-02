@@ -18,9 +18,7 @@ load(pathJoin("sigio", os.getenv("sigio_ver")))
 load(pathJoin("sfcio", os.getenv("sfcio_ver")))
 load(pathJoin("nemsio", os.getenv("nemsio_ver")))
 load(pathJoin("libjpeg", os.getenv("libjpeg_ver")))
-
+load(pathJoin("wgrib2", os.getenv("wgrib2_ver")))
 load(pathJoin("udunits", os.getenv("udunits_ver")))
 load(pathJoin("gsl", os.getenv("gsl_ver")))
 load(pathJoin("nco", os.getenv("nco_ver")))
-
-load(pathJoin("prod_envir", os.getenv("prod_envir_ver")))

@@ -160,7 +160,7 @@ suite nco_rrfs_dev_13
               edit WGF 'det'
               edit CYCLE_TYPE 'prod'
               task jrrfs_det_prep_cyc
-                trigger :TIME >= 1320 and :TIME < 1405 and ../../fsm/jrrfs_fsm:release_det_prep_cyc
+                trigger :TIME >= 1320 and ../../fsm/jrrfs_fsm:release_det_prep_cyc
             endfamily   # det
             family enkf
               edit WGF 'enkf'

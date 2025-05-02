@@ -133,8 +133,8 @@
     rf_cutoff = 2000.0
     sg_cutoff = -1
     stretch_fac = 0.999
-    target_lat = 49.3
-    target_lon = -123.0
+    target_lat = 42.0
+    target_lon = -122.5
     tau = 5.0
     use_hydro_pressure = .false.
     vtdm4 = 0.02

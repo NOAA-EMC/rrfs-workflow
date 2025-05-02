@@ -1,8 +1,25 @@
 #!/bin/bash
 
+date
+export PS4='+ $SECONDS + '
+set -xue
+
 #-----------------------------------------------------------------------
 # RRFS Calculate Ensemble Mean
 #-----------------------------------------------------------------------
+export pid=${pid:-$$}
+export outid=${outid:-"LL$job"}
+export RUN=${RUN:-rrfs}
+
+export DATA=${DATA:-${DATAROOT}/${jobid}}
+mkdir -p ${DATA}
+cd ${DATA}
+
+#-----------------------------------------------------------------------
+# Source the variable definitions file
+#-----------------------------------------------------------------------
+
+. ${HOMErrfs}/ush/rrfs_nco_config.sh
 
 #-----------------------------------------------------------------------
 # Specify Execution Areas
@@ -14,14 +31,10 @@ export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 
 #-----------------------------------------------------------------------
-# Source the variable definitions file and the bash utility functions.
+# Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-
-date
-export PS4='+ $SECONDS + '
 
 #-----------------------------------------------------------------------
 # Save current shell options (in a global array).  Then set new options
@@ -54,39 +67,21 @@ RRFS for the specified cycle.
 ========================================================================"
 
 #-----------------------------------------------------------------------
-# Obain unique process id (pid) and create the run directory (DATA).
+# Define umbrella data and COM directories
 #-----------------------------------------------------------------------
-
-export pid=${pid:-$$}
-export RUN=${RUN:-rrfs}
 
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 
-if [ ${WORKFLOW_MANAGER} == "rocoto" ] && [[ ! -z ${taskid} ]]; then
-  export jobid=${taskid}
-else
-  if [ "${CYCLE_TYPE}" = "spinup" ]; then
-    export jobid=${RUN}_calc_ensmean_spinup_${envir}_${cyc}
-  else
-    export jobid=${RUN}_calc_ensmean_${envir}_${cyc}
-  fi
-fi
-
-export DATA=${DATA:-${DATAROOT}/${jobid}}
-rm -fr ${DATA}
-mkdir -p ${DATA}
-cd ${DATA}
-
-#-----------------------------------------------------------------------
-# Define COM directories
-#-----------------------------------------------------------------------
-
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export umbrella_calc_ensmean_data=${umbrella_calc_ensmean_data:-${DATAROOT}/rrfs_calc_ensmean_spinup_${cyc}_${rrfs_ver}/${WGF}}
   export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
+  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
 else
+  export umbrella_calc_ensmean_data=${umbrella_calc_ensmean_data:-${DATAROOT}/rrfs_calc_ensmean_${cyc}_${rrfs_ver}/${WGF}}
   export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
+  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}
 fi
-mkdir -p "${COMOUT}"
+mkdir -p ${COMOUT} ${umbrella_calc_ensmean_data}
 
 #-----------------------------------------------------------------------
 # Execute the script.
