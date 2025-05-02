@@ -17,12 +17,6 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 # Obtain unique process id (pid) and create the run directory (DATA).
 #-----------------------------------------------------------------------
 #
-# source the config cascade
-#source ${EXPDIR}/exp.setup
-#source ${EXPDIR}/config/config.${MACHINE}
-#source ${EXPDIR}/config/config.base
-#[[ -s ${EXPDIR}/config/config.da ]] && source ${EXPDIR}/config/config.da
-#
 export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_prep_ic_${cyc}_${rrfs_ver}/${WGF}}
 export UMBRELLA_GETKF_DATA=${UMBRELLA_GETKF_DATA:-${DATAROOT}/${RUN}_getkf_${TYPE}_${cyc}_${rrfs_ver}/${WGF}}
 export UMBRELLA_GETKF_OBSERVER_DATA=${UMBRELLA_GETKF_OBSERVER_DATA:-${DATAROOT}/${RUN}_getkf_observer_${cyc}_${rrfs_ver}/${WGF}}
