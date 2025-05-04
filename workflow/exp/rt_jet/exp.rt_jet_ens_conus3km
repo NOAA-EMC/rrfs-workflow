@@ -50,7 +50,7 @@ export COLDSTART_CYCS="00 06 12 18"   # cycles to cold start from external model
 #
 export NODES_IC="<nodes>40:ppn=20</nodes>"
 export NODES_LBC="<nodes>40:ppn=20</nodes>"
-export NODES_FCST="<nodes>40:ppn=20</nodes>"
+export NODES_FCST="<nodes>40:ppn=40</nodes>"
 export NODES_MPASSIT="<nodes>4:ppn=20</nodes>"
 export NODES_UPP="<nodes>4:ppn=20</nodes>"
 export NODES_GETKF="<nodes>80:ppn=10</nodes>"
