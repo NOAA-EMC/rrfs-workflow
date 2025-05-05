@@ -44,20 +44,20 @@ def jedivar(xmlFile, expdir, do_spinup=False):
     VERSION = os.getenv("VERSION", "VERSION_NOT_DEFINED")
     HYB_ENS_TYPE = os.getenv("HYB_ENS_TYPE", "0")
     HYB_WGT_ENS = os.getenv("HYB_WGT_ENS", "0.85")
+    HYB_ENS_PATH = os.getenv("HYB_ENS_PATH", "")
+    if HYB_ENS_PATH == "":
+        HYB_ENS_PATH = f'&COMROOT;/{NET}/{VERSION}'
     ens_dep = ""
     if HYB_WGT_ENS != "0" and HYB_WGT_ENS != "0.0" and HYB_ENS_TYPE == "1":  # rrfsens
         RUN = 'rrfs'
         ens_dep = f'''
     <or>
-      <datadep age="00:05:00"><cyclestr offset="-1:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}.@Y@m@d/@H/fcst/enkf/mem030/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
-      <datadep age="00:05:00"><cyclestr offset="-2:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}.@Y@m@d/@H/fcst/enkf/mem030/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
-      <datadep age="00:05:00"><cyclestr offset="-3:00:00">&COMROOT;/{NET}/{VERSION}/{RUN}.@Y@m@d/@H/fcst/enkf/mem030/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+      <datadep age="00:05:00"><cyclestr offset="-1:00:00">{HYB_ENS_PATH}/{RUN}.@Y@m@d/@H/fcst/enkf/mem030/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+      <datadep age="00:05:00"><cyclestr offset="-2:00:00">{HYB_ENS_PATH}/{RUN}.@Y@m@d/@H/fcst/enkf/mem030/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+      <datadep age="00:05:00"><cyclestr offset="-3:00:00">{HYB_ENS_PATH}/{RUN}.@Y@m@d/@H/fcst/enkf/mem030/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
     </or>'''
 
     elif HYB_WGT_ENS != "0" and HYB_WGT_ENS != "0.0" and HYB_ENS_TYPE == "2":  # interpolated GDAS/GEFS
-        HYB_ENS_PATH = os.getenv("HYB_ENS_PATH", "")
-        if HYB_ENS_PATH == "":
-            HYB_ENS_PATH = f'&COMROOT;/{NET}/{VERSION}'
         RUN = 'rrfs'
         ens_dep = f'''
     <or>
