@@ -59,14 +59,11 @@ def jedivar(xmlFile, expdir, do_spinup=False):
 
         ens_dep = f'''
     <or>
-     <and>
-     {ens_depm1}
+     <and>{ens_depm1}
      </and>
-     <and>
-     {ens_depm2}
+     <and>{ens_depm2}
      </and>
-     <and>
-     {ens_depm3}
+     <and>{ens_depm3}
      </and>
     </or>'''
 
