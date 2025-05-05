@@ -271,13 +271,6 @@ else
 
   if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial files from ics
     bkpath=${ICS_ROOT}
-      #### if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-        #### #### bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/ics
-        #### bkpath=${ICS_ROOT}/${mem_num}
-      #### else
-      #### #### bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/ics
-      #### bkpath=${ICS_ROOT}
-      #### fi
     if [ -r "${bkpath}/gfs_data.tile7.halo0.nc" ]; then
       ln -s ${bkpath}/gfs_bndy.tile7.000.nc gfs_bndy.tile7.000.nc        
       ln -s ${bkpath}/gfs_ctrl.nc gfs_ctrl.nc        
@@ -294,10 +287,8 @@ else
 
   elif [[ $BKTYPE == 3 ]]; then
     if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-      #### bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/ics
       bkpath=${ICS_ROOT}
     else
-      #### bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/ics
       bkpath=${ICS_ROOT}
     fi
     if [ -r "${bkpath}/coupler.res" ]; then
@@ -693,9 +684,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
           YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
           YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
           HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
-          #### bkpath=${FG_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${surface_file_dir_name}/RESTART
           bkpath=${COMrrfs}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/forecast/RESTART
-          ###bkpath=${COMrrfs}/${RUN}.${YYYYMMDDInterv}/${HHInterv}_spinup/forecast/RESTART
           n=${DA_CYCLE_INTERV}
           while [[ $n -le 25 ]] ; do
              if [ "${IO_LAYOUT_Y}" = "1" ]; then
@@ -725,12 +714,6 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
         #### All required file should exist; there is no need for continue cycle data space
         # err_exit "FATAL: missing fv_tracer.res.tile1.nc"
         echo "WARNING: can not find fv_tracer for smoke/dust cycling at ${HH}"
-         #### checkfile=${CONT_CYCLE_DATA_ROOT}/tracer/${restart_prefix}fv_tracer.res.tile1.nc
-         #### if [ -r "${checkfile}" ]; then
-            #### bkpath_find=${CONT_CYCLE_DATA_ROOT}/tracer
-            #### restart_prefix_find=${restart_prefix}
-            #### print_info_msg "$VERBOSE" "Found ${checkfile}; Use it for smoke/dust cycle "
-         #### fi
       fi
 
       # cycle smoke/dust
@@ -1038,7 +1021,6 @@ else
   HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
     lbcs_path=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/lbcs
-    #### lbcs_path=${COMrrfs}/refs.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/lbcs
   else
     lbcs_path=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/lbcs
   fi
@@ -1102,7 +1084,6 @@ if [ ${SFC_CYC} -eq 3 ] ; then
    if [ "${USE_CLM}" = "TRUE" ]; then
      do_lake_surgery=".true."
    fi
-   #### raphrrr_com=${RAPHRRR_SOIL_ROOT}
    raphrrr_com=${COMROOT}
    COMIN_RAP=$(compath.py rap/${rap_ver})
    COMIN_HRRR=$(compath.py hrrr/${hrrr_ver})
