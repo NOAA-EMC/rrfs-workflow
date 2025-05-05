@@ -305,10 +305,10 @@ suite nco_rrfs_dev_07
               edit WGF 'det'
               task jrrfs_det_prep_cyc
                 edit CYCLE_TYPE 'prod'
-                trigger :TIME >= 0720 and :TIME < 0805 and /nco_rrfs_dev_06/primary/06/rrfs/v1.0/forecast/det/jrrfs_det_save_restart_long_1==complete
+                trigger :TIME >= 0720 and /nco_rrfs_dev_06/primary/06/rrfs/v1.0/forecast/det/jrrfs_det_save_restart_long_1==complete
               task jrrfs_det_prep_cyc_spinup
                 edit CYCLE_TYPE 'spinup'
-                trigger /nco_rrfs_dev_06/primary/06/rrfs/v1.0/forecast/det/jrrfs_det_save_restart_spinup_f001==complete
+                trigger :TIME >= 0720 and /nco_rrfs_dev_06/primary/06/rrfs/v1.0/forecast/det/jrrfs_det_save_restart_spinup_f001==complete
             endfamily   # det
             family enkf
               edit WGF 'enkf'
@@ -675,7 +675,7 @@ suite nco_rrfs_dev_07
                 trigger ./jrrfs_det_update_lbc_soil==complete and ../../init/det/jrrfs_det_process_bufr==complete
               task jrrfs_det_analysis_gsi_spinup
                 edit CYCLE_TYPE 'spinup'
-                trigger :TIME >= 0735 and ../../prep/det/jrrfs_det_prep_cyc_spinup==complete
+                trigger ../../prep/det/jrrfs_det_prep_cyc_spinup==complete and ../../fsm/jrrfs_fsm:release_det_analysis_gsi
               task jrrfs_det_update_lbc_soil_spinup
                 edit CYCLE_TYPE 'spinup'
                 trigger ./jrrfs_det_analysis_gsi_spinup==complete

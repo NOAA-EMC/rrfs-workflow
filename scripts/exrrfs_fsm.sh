@@ -87,16 +87,25 @@ scan_release_save_restart_f2="NO"
 scan_release_save_restart_spinup_f001="NO"
 scan_release_det_post_long="NO"
 scan_release_det_post="NO"
+scan_release_ensf_post="NO"
+#scan_release_det_bufrsnd_long="NO"
 scan_release_enkf_make_lbcs="NO"
 scan_release_ensf_make_lbcs="NO"
 scan_release_enkf_make_ics="NO"
+#scan_release_ensf_recenter="NO"
+#scan_release_enkf_save_restart_long="NO"
+#scan_release_ensf_bufrsnd="NO"
 scan_release_enkf_observer_gsi_ensmean="YES"
+#scan_release_enkf_save_restart_spinup="NO"
 scan_release_enkf_save_restart_ensinit="NO"
 
 if [ ${cyc} == "00" ]; then
   scan_release_det_make_lbcs="YES"
   scan_release_enkf_make_lbcs="YES"
+  #### Remove when ensf is ready #### scan_release_ensf_make_lbcs="YES"
+  scan_release_ensf_make_lbcs="YES"
   scan_release_det_post_long="YES"
+  scan_release_ensf_post="YES"
   scan_release_save_restart_long="YES"
 fi
 
@@ -121,6 +130,7 @@ if [ ${cyc} == "03" ]; then
 fi
 
 if [ ${cyc} == "04" ]; then
+  scan_release_det_prep_cyc="NO"
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
   scan_release_save_restart_f2="YES"
@@ -128,6 +138,7 @@ if [ ${cyc} == "04" ]; then
 fi
 
 if [ ${cyc} == "05" ]; then
+  scan_release_det_prep_cyc="NO"
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
   scan_release_save_restart_f2="YES"
@@ -135,15 +146,20 @@ if [ ${cyc} == "05" ]; then
 fi
 
 if [ ${cyc} == "06" ]; then
+  scan_release_det_prep_cyc="NO"
   scan_release_det_make_lbcs="YES"
   scan_release_enkf_make_lbcs="YES"
   #### Remove when ensf is ready #### scan_release_ensf_make_lbcs="YES"
+  scan_release_ensf_make_lbcs="YES"
   scan_release_det_post_long="YES"
+  scan_release_ensf_post="YES"
   scan_release_save_restart_long="YES"
   scan_release_save_restart_spinup_f001="YES"
 fi
 
 if [ ${cyc} == "07" ]; then
+  scan_release_det_prep_cyc="NO"
+  scan_release_enkf_prep_cyc="NO"
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
   scan_release_save_restart_f2="YES"
@@ -155,6 +171,7 @@ if [ ${cyc} == "07" ]; then
 fi
 
 if [ ${cyc} == "08" ]; then
+  scan_release_det_prep_cyc="NO"
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
   scan_release_save_restart_f2="YES"
@@ -180,10 +197,13 @@ if [ ${cyc} == "11" ]; then
 fi
 
 if [ ${cyc} == "12" ]; then
+  scan_release_det_prep_cyc="NO"
   scan_release_det_make_lbcs="YES"
   scan_release_enkf_make_lbcs="YES"
   #### Remove when ensf is ready #### scan_release_ensf_make_lbcs="YES"
+  scan_release_ensf_make_lbcs="YES"
   scan_release_det_post_long="YES"
+  scan_release_ensf_post="YES"
   scan_release_save_restart_long="YES"
   #scan_release_save_restart_spinup_f001="YES"
 fi
@@ -223,15 +243,20 @@ if [ ${cyc} == "17" ]; then
 fi
 
 if [ ${cyc} == "18" ]; then
+  scan_release_det_prep_cyc="NO"
   scan_release_det_make_lbcs="YES"
   scan_release_enkf_make_lbcs="YES"
   #### Remove when ensf is ready #### scan_release_ensf_make_lbcs="YES"
+  scan_release_ensf_make_lbcs="YES"
   scan_release_det_post_long="YES"
+  scan_release_ensf_post="YES"
   scan_release_save_restart_long="YES"
   scan_release_save_restart_spinup_f001="YES"
 fi
 
 if [ ${cyc} == "19" ]; then
+  scan_release_det_prep_cyc="NO"
+  scan_release_enkf_prep_cyc="NO"
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
   scan_release_save_restart_f2="YES"
@@ -268,6 +293,7 @@ if [ ${cyc} == "23" ]; then
 fi
 
 # Initialize search array
+#### declare -a array_element_scan_release_enkf_prep_cyc=( $(for i in {1..30}; do echo "NO"; done) )
 for fhr in $(seq 1 30); do
   array_element_scan_release_enkf_prep_cyc[${fhr}]="NO"
 done
@@ -301,6 +327,42 @@ for fhr in $(seq 0 18); do
       array_element_scan_release_det_post[${fhr}0000]="NO"
   fi
 done
+
+for mem in $(seq 1 5); do
+for fhr in $(seq 0 60); do
+  fhr_3d=$( printf "%03d" ${fhr} )
+  memuse=$( printf "%03d" ${mem} )
+  search_str=${memuse}${fhr_3d}00
+#      array_element_scan_release_ensf_post[${memuse}${fhr_3d}00]="NO"
+      array_element_scan_release_ensf_post[$((10#$search_str))]="NO"
+done
+done
+
+#-----------------------------------------------------------------------
+# Save job running log files if it is run by developer
+#-----------------------------------------------------------------------
+
+#EMC_DEV=${EMC_DEV:-"NO"}
+#if [ ${EMC_DEV} == "YES" ]; then
+#  # Make a backup of the DATA for the next cycle of the previous day
+## ONLY enable this option when there is no job running in current PDY ${RRFS_next_1_cyc}
+##  cd ${DATAROOT}
+##  backup_data=${PDYm1}${RRFS_next_1_cyc}_backup
+##  mkdir ${backup_data}
+##  mv rrfs_*_${RRFS_next_1_cyc}.????????.dbqs01 ./${backup_data}
+##  mv rrfs_*_${RRFS_next_1_cyc}_${rrfs_ver} ./${backup_data}
+#  # Make a backup for job log files
+#  cd ${EMC_LOG_OUTPUT}  
+#  backup_log=${PDYm1}${RRFS_next_1_cyc}
+#  mkdir -p ${backup_log}
+#  for file in rrfs_*_${RRFS_next_1_cyc}.o*; do
+#    ct_ev=$(grep "PDY=${PDYm1}" ${file}| wc -l)
+#    if [ ${ct_ev} -gt 0 ]; then
+#      mv ${file} ${backup_log}
+#    fi
+#  done
+#  cd $DATA
+#fi
 
 #-----------------------------------------------------------------------
 # Process files and directories level dependency scan
@@ -540,6 +602,38 @@ while [ $proceed_trigger_scan == "YES" ]; do
   fi
   #### release_det_post_long
 
+  #### release_ensf_post
+  if [ ${scan_release_ensf_post} == "YES" ]; then
+    echo "Proceeding with scan_release_ensf_post"
+    source_file_found="YES"
+    umbrella_forecast_data_base=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/ensf/
+    # mems 1-5
+    for mem in $(seq 1 5); do
+      memuse=$( printf "%03d" ${mem} )
+      umbrella_forecast_data=${umbrella_forecast_data_base}/m${memuse}/output/
+    # fhr cover 000~060
+      for fhr in $(seq 0 60); do
+        fhr_3d=$( printf "%03d" ${fhr} )
+        fc=$(ls ${umbrella_forecast_data}/log.atm.f${fhr_3d}*| wc -l)
+        if [ ${fc} -gt 0 ]; then
+          search_str=${memuse}${fhr_3d}00
+          if [ ${array_element_scan_release_ensf_post[$((10#$search_str))]} == "NO" ]; then
+            array_element_scan_release_ensf_post[$((10#$search_str))]="found"
+            ecflow_client --event release_ensf_post_mem${memuse}_f${fhr_3d}
+          fi
+        else
+          source_file_found="NO"
+        fi
+      done
+    done
+    if [ ${source_file_found} == "YES" ]; then
+      scan_release_ensf_post="NO"
+    else
+      proceed_trigger_scan="YES"
+    fi
+  fi
+  #### release_ensf_post
+
   #### release_det_post
   if [ ${scan_release_det_post} == "YES" ]; then
     echo "Proceeding with scan_release_det_post"
@@ -687,6 +781,53 @@ while [ $proceed_trigger_scan == "YES" ]; do
     fi
   fi
   #### release_enkf_observer_gsi_ensmean
+
+  #### release_enkf_save_restart_spinup
+#  if [ ${scan_release_enkf_save_restart_spinup} == "YES" ]; then
+#    echo "Proceeding with scan_release_enkf_save_restart_spinup"
+#    source_file_found="YES"
+#    s_v=det
+#    fg_restart_dirname=forecast_spinup
+#    for mem_num in $(seq 1 30); do
+#      mem_num_3d=$( printf "%03d" ${mem_num} )
+#      umbrella_forecast_data=${DATAROOT}/${RUN}/enkf/${cdate}/m${mem_num_3d}/${fg_restart_dirname}/RESTART/${RRFS_next_1_PDY}.${RRFS_next_1_cyc}0000.coupler.res
+#      if [ $(ls ${umbrella_forecast_data}|wc -l) -eq 1 ]; then
+#        ecflow_client --event release_enkf_save_restart_spinup_mem${mem_num_3d}_f001
+#      else
+#        source_file_found="NO"
+#      fi
+#    done
+#    if [ ${source_file_found} == "YES" ]; then
+#      scan_release_enkf_save_restart_spinup="NO"
+#    else
+#      proceed_trigger_scan="YES"
+#    fi
+#  fi
+  #### release_enkf_save_restart_spinup
+
+  #### release_enkf_save_restart_ensinit
+#  if [ ${scan_release_enkf_save_restart_ensinit} == "YES" ]; then
+#    echo "Proceeding with scan_release_enkf_save_restart_ensinit"
+#    source_file_found="YES"
+#    s_v=det 
+#    fg_restart_dirname=forecast_ensinit
+#    for mem_num in $(seq 1 30); do
+#      mem_num_3d=$( printf "%03d" ${mem_num} )
+#      umbrella_forecast_data=${DATAROOT}/${RUN}/enkf/${cdate}/m${mem_num_3d}/${fg_restart_dirname}/RESTART/${RRFS_Current_PDY}.${RRFS_Current_cyc}0036.coupler.res
+#      if [ $(ls ${umbrella_forecast_data}|wc -l) -eq 1 ]; then
+#        ecflow_client --event release_enkf_save_restart_ensinit_mem${mem_num_3d}
+#      else
+#        source_file_found="NO"
+#      fi
+#    done
+#    if [ ${source_file_found} == "YES" ]; then
+#      scan_release_enkf_save_restart_ensinit="NO"
+#    else
+#      proceed_trigger_scan="YES"
+#    fi
+#  fi
+#  #### release_enkf_save_restart_ensinit
+
 
   if [ $proceed_trigger_scan == "YES" ]; then
     sleep 15

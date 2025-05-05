@@ -49,6 +49,30 @@ This is the ex-script for the task that generates initial condition
 #
 #-----------------------------------------------------------------------
 #
+# For the fire weather grid, read in the center lat/lon from the
+# operational NAM fire weather nest.  The center lat/lon is set by the
+# SDM.  When RRFS is implemented, a similar file will be needed.
+# Rewrite the default center lat/lon values in var_defns.sh, if needed.
+#
+#-----------------------------------------------------------------------
+#
+if [ ${WGF} = "firewx" ]; then
+  hh="${CDATE:8:2}"
+  firewx_loc="${COMINnam}/input/nam_firewx_loc"
+  center_lat=${LAT_CTR}
+  center_lon=${LON_CTR}
+  LAT_CTR=`grep ${hh}z $firewx_loc | awk '{print $2}'`
+  LON_CTR=`grep ${hh}z $firewx_loc | awk '{print $3}'`
+
+  if [ ${center_lat} != ${LAT_CTR} ] || [ ${center_lon} != ${LON_CTR} ]; then
+    sed -i -e "s/${center_lat}/${LAT_CTR}/g" ${GLOBAL_VAR_DEFNS_FP}
+    sed -i -e "s/${center_lon}/${LON_CTR}/g" ${GLOBAL_VAR_DEFNS_FP}
+    . ${GLOBAL_VAR_DEFNS_FP}
+  fi
+fi
+#
+#-----------------------------------------------------------------------
+#
 # Analyze configuration parameters.
 #
 #-----------------------------------------------------------------------
@@ -105,7 +129,7 @@ case "${extrn_mdl_name}" in
   "RRFS")
     COMINrrfs="${COMINrrfs:-$(compath.py rrfs/${rrfs_ver})}"
     sysdir="${COMINrrfs}/rrfs.${yyyymmdd}/${hh}"
-    fns_on_disk=( "rrfs.t${hh}z.natlev.f0${fcst_hh}.grib2" )
+    fns_on_disk=( "rrfs.t${hh}z.natlev.3km.f0${fcst_hh}.na.grib2" )
     ;;
 
   *)
@@ -118,6 +142,17 @@ export use_user_staged_extrn_files="FALSE"
 export extrn_mdl_source_dir="${extrn_mdl_sysdir}"
 export extrn_mdl_staging_dir="${shared_output_data}"
 
+#
+#-----------------------------------------------------------------------
+#
+# Specify the set of valid argument names for this script/function.  Then
+# process the arguments provided to this script/function (which should
+# consist of a set of name-value pairs of the form arg1="value1", etc).
+#
+#-----------------------------------------------------------------------
+#
+#### valid_args=( "extrn_mdl_fns_on_disk" )
+#### process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
 #
@@ -156,7 +191,12 @@ case "$MACHINE" in
     ;;
 
 esac
-export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
+
+if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
+  export FIXLAM=${COMOUT}/fix
+else
+  export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
+fi
 UFS_UTILS_DIR=${UFS_UTILS_DIR:-$HOMErrfs/sorc/UFS_UTILS}
 #
 #-----------------------------------------------------------------------
@@ -276,6 +316,7 @@ extrn_mdl_staging_dir = \"${extrn_mdl_staging_dir}\"
 extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
 extrn_mdl_fns_on_disk = ${extrn_mdl_fns_on_disk_str}"
 
+#### ln -sf -t ${extrn_mdl_staging_dir} ${extrn_mdl_fps_on_disk[@]}
 cpreq -p ${extrn_mdl_fps_on_disk[@]} ${extrn_mdl_staging_dir}
 #
 #-----------------------------------------------------------------------
@@ -719,7 +760,7 @@ export err=$?; err_chk
 # Check for 1h RRFS EnKF files, if at least one missing then use 1tstep initialization
 if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
 
-  echo "Pre-Blending Starting."
+  echo "Pre-Blending Starting. `date`"
   ulimit -s unlimited
   #Add the size of the variables declared as private and multiply by the OMP_NUMTHREADS
   export OMP_STACKSIZE=600M #8*[3951*{65+67+66}]*96/1048576 = 600804864/1048576 = 573 MB
@@ -781,6 +822,8 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
   # Run convert coldstart files to fv3 restart (rotate winds and remap).
   python ${USHrrfs}/chgres_cold2fv3.py $cold $grid $akbk $akbkcold $orog
 
+  echo "Pre-Blending end `date`"
+
 fi
 #
 #-----------------------------------------------------------------------
@@ -789,11 +832,32 @@ fi
 # ary files to umbrella data.
 #-----------------------------------------------------------------------
 #
+#### if [[ $DO_ENS_BLENDING = "TRUE" ]]; then
+  #### mv out.atm.tile${TILE_RGNL}.nc \
+  ####       ${DATA}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
 cpreq -p ${DATA}/out.atm.tile${TILE_RGNL}.nc ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
+
+  #### mv out.sfc.tile${TILE_RGNL}.nc \
+  ####       ${DATA}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
 cpreq -p ${DATA}/out.sfc.tile${TILE_RGNL}.nc ${shared_output_data}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
+
+  #### mv gfs_ctrl.nc ${DATA}
 cpreq -p ${DATA}/gfs_ctrl.nc ${shared_output_data}
+
+  #### mv gfs.bndy.nc ${DATA}/gfs_bndy.tile${TILE_RGNL}.000.nc
 cpreq -p ${DATA}/gfs.bndy.nc ${shared_output_data}/gfs_bndy.tile${TILE_RGNL}.000.nc
 
+#### fi
+#
+#-----------------------------------------------------------------------
+#
+# copy results to nwges for longer time disk storage.
+#
+#-----------------------------------------------------------------------
+#
+#### if [ $DO_ENS_BLENDING = "FALSE" ]; then
+####   cp ${DATA}/*.nc ${NWGES_DIR}/.
+#### fi
 #
 #-----------------------------------------------------------------------
 #
