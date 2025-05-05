@@ -1,0 +1,65 @@
+#!/bin/bash
+# shellcheck disable=all
+# a wrapper to rocotostat
+# by Guoqing Ge, 2019/04
+#
+fulltasks="yes"
+module load rocoto
+#known major xml files for different systems
+xmlarray=("RTMA_3D.xml" "HRRR_primary.xml" "RAP_primary.xml" "FV3LAM_wflow.xml" "rrfs.xml")
+# rstat [xmlfile] [offset] [cycles] [tasks] [-m=metatasks]
+get_parm_type(){
+  local str=$1
+  if [[ "${str##*.}" == "xml" ]]; then
+    xmlfile=${str%.*}
+  elif [[ "${str}" == "-m="*  ]]; then
+    metatasks=${str:3}
+  elif [[ "${str}" == "-v10"  ]]; then
+    verbose="-v 10"
+  elif [[ "${str:0:1}" == "-" ]] || [[ "${str:0:1}" == "+" ]]; then
+    offset="${str}"
+  elif [[ "${str}" =~ ^[0-9]+$ ]] ; then # all digits
+    if (( 10#${str} < 9999 )); then
+      offset="${str}"
+    else
+      cycles="${str}"
+    fi
+  elif [[ "${str:0:12}" =~ ^[0-9]+$ ]] && [[ "${str:13:12}" =~ ^[0-9]+$ ]]; then
+    cycles="${str}"
+  elif [[ ! -z ${str} ]]; then
+    tasks="${str}"
+  #else # if $1 is empty, do nothing
+  fi
+}
+
+get_parm_type "$1"
+get_parm_type "$2"
+get_parm_type "$3"
+get_parm_type "$4"
+
+# if xmlfile is not specified
+if [[ -z ${xmlfile} ]]; then
+# find if there exists major xml files under current directory
+  for s in ${xmlarray[@]}; do
+    if [ -f $s ]; then
+      xmlfile=${s%.*};found=true;break
+    fi
+  done
+  if [ ! $found ]; then # check other xml files under current directory
+    arr=(*.xml)
+    len=${#arr[@]}
+    if [ "${arr[0]}" == "*.xml" ]; then
+      echo "No xml file under current directory"; exit
+    elif [ $len -eq 1 ]; then
+      xmlfile=${arr[0]}; xmlfile=${xmlfile%.*}
+    else
+      echo "specify which xml file to use"; ls -1 *.xml; exit
+    fi
+  fi
+elif [[ ! -e "${xmlfile}.xml" ]]; then
+  echo "${xmlfile}.xml: no such file"
+  exit
+fi
+echo "ok, work on ${xmlfile}.xml..."
+
+rocotostat ${verbose} -w ${xmlfile}.xml -d ${xmlfile}.db
