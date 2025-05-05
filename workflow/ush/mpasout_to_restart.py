@@ -49,7 +49,7 @@ changesets = {
     'ln -snf "${UMBRELLA_PREP_IC_DATA}/mpasin.nc" mpasin.nc':
     'timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)\n  ln -snf "${UMBRELLA_PREP_IC_DATA}/mpasin.nc" restart.${timestr}.nc',
     "start_type='cold'": "start_type='cold'\n  do_restart='false'",
-    "do_DAcycling='true'": "do_DAcycling='false'\n  do_restart='true'",
+    "do_DAcycling='true'": "do_DAcycling='true'\n  do_restart='true'",
     'ln -snf "${DATA}/mpasout.${timestr}.nc"': 'ln -snf "${DATA}/restart.${timestr}.nc"',
     '${cpreq} "${DATA}/mpasout.${timestr}.nc"': '${cpreq} "${DATA}/restart.${timestr}.nc"',
     #    'jedi_da="true" #true': 'jedi_da="false" #true',
@@ -105,7 +105,7 @@ modify(myfile, changesets)
 myfile = "scripts/exrrfs_jedivar.sh"
 changesets = {
     "start_type='cold'": "start_type='cold'\n  do_restart='false'",
-    "do_DAcycling='true'": "do_DAcycling='false'\n  do_restart='true'",
+    "do_DAcycling='true'": "do_DAcycling='true'\n  do_restart='true'",
     'mpasout_file=mpasout.${timestr}.nc': 'mpasout_file=restart.${timestr}.nc',
     'cp "${DATA}"/mpasin.nc "${COMOUT}/jedivar/${WGF}/mpasout.${timestr}.nc"': 'cp "${DATA}"/mpasin.nc "${COMOUT}/jedivar/${WGF}/restart.${timestr}.nc"',
 }
@@ -115,7 +115,7 @@ modify(myfile, changesets)
 myfile = "scripts/exrrfs_getkf.sh"
 changesets = {
     "start_type='cold'": "start_type='cold'\n  do_restart='false'",
-    "do_DAcycling='true'": "do_DAcycling='false'\n  do_restart='true'",
+    "do_DAcycling='true'": "do_DAcycling='true'\n  do_restart='true'",
 }
 modify(myfile, changesets)
 
