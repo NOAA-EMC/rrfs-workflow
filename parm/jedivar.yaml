@@ -150,18 +150,16 @@ cost function:
   observations:
      observers:
      - obs space:
-         name: reflectivity
+         name: refl10cm
          obsdatain:
            engine:
              type: H5File
-             obsfile:
-               data/obs/ioda_mrms.nc
+             obsfile: data/obs/ioda_mrms_refl.nc
          obsdataout:
            engine:
              type: H5File
              allow overwrite: true
-             obsfile:
-               jdiag_mrms.nc
+             obsfile: jdiag_mrms_refl.nc
          io pool:
            write multiple files: false
          _source: mrms
@@ -180,7 +178,7 @@ cost function:
          threshold: 12.0
          action:
            name: reject
-       _obsname: reflectivity
+       _obsname: refl10cm
      - obs space:
          name: adpsfc_t181
          distribution:

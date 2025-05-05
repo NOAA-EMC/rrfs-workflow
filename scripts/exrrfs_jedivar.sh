@@ -9,7 +9,7 @@ cd "${DATA}" || exit 1
 
 start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S) 
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 
-time_min=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%M)
+time_min="${subcyc:-00}"
 #
 # determine whether to begin new cycles
 #
@@ -61,6 +61,7 @@ obspath_bufr="${COMOUT}/ioda_bufr/${WGF}"
 obs_files_source[0]="${obspath_bufr}"/ioda_adpupa.nc
 obs_files_target[0]=ioda_adpupa.nc
 
+# this increment obs_number by 1
 obs_number=${#obs_files_source[@]}
 obs_files_source[obs_number]="${obspath_bufr}"/ioda_aircar.nc
 obs_files_target[obs_number]=ioda_aircar.nc
@@ -69,7 +70,7 @@ if [ "${DO_ENVAR_RADAR_REF}" == "true" ];then
   obspath_refl="${COMOUT}/ioda_mrms_refl/${WGF}"
   obs_number=${#obs_files_source[@]}
   obs_files_source[obs_number]="${obspath_refl}/ioda_mrms_${CDATE}_${time_min}".nc4
-  obs_files_target[obs_number]=ioda_mrms.nc
+  obs_files_target[obs_number]=ioda_mrms_refl.nc
 fi
 
 obs_number=${#obs_files_source[@]}
