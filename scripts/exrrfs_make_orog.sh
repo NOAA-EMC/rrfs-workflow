@@ -12,14 +12,6 @@
 #
 #-----------------------------------------------------------------------
 #
-# Source other necessary files.
-#
-#-----------------------------------------------------------------------
-#
-. $USHrrfs/link_fix.sh
-#
-#-----------------------------------------------------------------------
-#
 # Save current shell options (in a global array).  Then set new options
 # for this script/function.
 #
@@ -82,9 +74,39 @@ APRUN="time"
 #
 #-----------------------------------------------------------------------
 #
+#-----------------------------------------------------------------------
+#
+# For the fire weather grid, read in the center lat/lon from the
+# operational NAM fire weather nest.  The center lat/lon is set by the
+# SDM.  When RRFS is implemented, a similar file will be needed.
+# Rewrite the default center lat/lon values in var_defns.sh, if needed.
+#
+#-----------------------------------------------------------------------
+#
+if [ ${WGF} = "firewx" ]; then
+  hh="${CDATE:8:2}"
+  firewx_loc="${COMINnam}/input/nam_firewx_loc"
+  center_lat=${LAT_CTR}
+  center_lon=${LON_CTR}
+  LAT_CTR=`grep ${hh}z $firewx_loc | awk '{print $2}'`
+  LON_CTR=`grep ${hh}z $firewx_loc | awk '{print $3}'`
+
+  if [ ${center_lat} != ${LAT_CTR} ] || [ ${center_lon} != ${LON_CTR} ]; then
+    sed -i -e "s/${center_lat}/${LAT_CTR}/g" ${GLOBAL_VAR_DEFNS_FP}
+    sed -i -e "s/${center_lon}/${LON_CTR}/g" ${GLOBAL_VAR_DEFNS_FP}
+    . ${GLOBAL_VAR_DEFNS_FP}
+  fi
+fi
+#
+#-----------------------------------------------------------------------
+#
 # Copy topography and related data files from the system directory (TOPO_DIR)
 # to the temporary directory.
 #
+#-----------------------------------------------------------------------
+#
+cd ${DATA}/raw_topo/tmp
+
 cpreq -p ${TOPO_DIR}/thirty.second.antarctic.new.bin fort.15
 cpreq -p ${TOPO_DIR}/landcover30.fixed .
 cpreq -p ${TOPO_DIR}/gmted2010.30sec.int fort.235
@@ -103,12 +125,12 @@ cpreq -p ${TOPO_DIR}/gmted2010.30sec.int fort.235
 #
 #-----------------------------------------------------------------------
 #
-# Set the maximum value of halos in umbrella_ics_dir
+# Set the maximum value of halos in COMOUT
 mosaic_fn="${CRES}${DOT_OR_USCORE}mosaic.halo${NHW}.nc"
-mosaic_fp="${FIXLAM}/${mosaic_fn}"
+mosaic_fp="${COMOUT}/fix/${mosaic_fn}"
 
 grid_fn=$( get_charvar_from_netcdf "${mosaic_fp}" "gridfiles" )
-grid_fp="${FIXLAM}/${grid_fn}"
+grid_fp="${COMOUT}/fix/${grid_fn}"
 #
 #-----------------------------------------------------------------------
 #
@@ -154,7 +176,7 @@ cat "${input_redirect_fn}"
 #
 #   oro.${CRES}.tile7.nc
 #
-# and will place it in umbrella_ics_data.  Note that this file will include
+# and will place it in COMOUT.  Note that this file will include
 # orography for a wide NHW cells around tile 7 (regional domain).
 #
 #-----------------------------------------------------------------------
@@ -196,13 +218,13 @@ suites=( "FV3_RAP" "FV3_HRRR" "FV3_HRRR_gf" "FV3_GFS_v15_thompson_mynn_lam3km" "
 if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" ]] ; then
   cd ${DATA}/temp_orog_data
   mosaic_fn_gwd="${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc"
-  mosaic_fp_gwd="${FIXLAM}/${mosaic_fn_gwd}"
+  mosaic_fp_gwd="${COMOUT}/fix/${mosaic_fn_gwd}"
   grid_fn_gwd=$( get_charvar_from_netcdf "${mosaic_fp_gwd}" "gridfiles" )
   export err=$?
   if [ $err -ne 0 ]; then
     err_exit "get_charvar_from_netcdf function failed."
   fi
-  grid_fp_gwd="${FIXLAM}/${grid_fn_gwd}"
+  grid_fp_gwd="${COMOUT}/fix/${grid_fn_gwd}"
   ls_fn="geo_em.d01.lat-lon.2.5m.HGT_M.nc"
   ss_fn="HGT.Beljaars_filtered.lat-lon.30s_res.nc"
   create_symlink_to_file target="${grid_fp_gwd}" symlink="${DATA}/temp_orog_data/${grid_fn_gwd}" relative="FALSE"
@@ -225,9 +247,9 @@ EOF
   export err=$?; err_chk
   mv ${DATA}/raw_topo/tmp/errfile ${DATA}/raw_topo/tmp/errfile_orog_gsl
 
-  mv "${CRES}${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc" \
-     "${CRES}${DOT_OR_USCORE}oro_data_ls.tile${TILE_RGNL}.halo${NH0}.nc" \
-     "${umbrella_ics_data}"
+  cpreq -p "${CRES}${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc" \
+           "${CRES}${DOT_OR_USCORE}oro_data_ls.tile${TILE_RGNL}.halo${NH0}.nc" \
+           "${COMOUT}/fix"
 fi
 #
 #-----------------------------------------------------------------------
@@ -365,7 +387,7 @@ filtered_orog_fn_orig=$( basename "${filtered_orog_fp}" )
 filtered_orog_fn="${filtered_orog_fn_prefix}.${fn_suffix_with_halo}"
 filtered_orog_fp=$( dirname "${filtered_orog_fp}" )"/${filtered_orog_fn}"
 mv "${filtered_orog_fn_orig}" "${filtered_orog_fn}"
-cp "${filtered_orog_fp}" "${umbrella_ics_data}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NHW}.nc"
+cpreq -p "${filtered_orog_fp}" "${COMOUT}/fix/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NHW}.nc"
 
 cd ${DATA}
 
@@ -389,7 +411,7 @@ print_info_msg "Filtering of orography complete."
 unshaved_fp="${filtered_orog_fp}"
 #
 # We perform the work in shave_dir, so change location to that directory.
-# Once it is complete, we move the resultant file from shave_dir to umbrella_ics_data.
+# Once it is complete, we move the resultant file from shave_dir to COMOUT.
 #
 cd "${DATA}/shave_tmp"
 #
@@ -414,29 +436,10 @@ for halo_num in "${halo_num_list[@]}"; do
   $APRUN ${EXECrrfs}/$pgm < ${nml_fn} >>$pgmout 2>${DATA}/raw_topo/tmp/errfile
   export err=$?; err_chk
   mv ${DATA}/raw_topo/tmp/errfile ${DATA}/raw_topo/tmp/errfile_shave_${halo_num}
-  mv ${shaved_fp} ${umbrella_ics_data}
+  cpreq -p ${shaved_fp} ${COMOUT}/fix
 done
 
 cd ${DATA}
-#
-#-----------------------------------------------------------------------
-#
-# Add link in ORIG_DIR directory to the orography file with a 4-cell-wide
-# halo such that the link name do not contain the halo width.  These links
-# are needed by the make_sfc_climo task.
-#
-# NOTE: It would be nice to modify the sfc_climo_gen_code to read in
-# files that have the halo size in their names.
-#
-#-----------------------------------------------------------------------
-#
-link_fix \
-  verbose="$VERBOSE" \
-  file_group="orog"
-export err=$?
-if [ $err -ne 0 ]; then
-  err_exit "Call to function to create links to orography files failed."
-fi
 #
 #-----------------------------------------------------------------------
 #

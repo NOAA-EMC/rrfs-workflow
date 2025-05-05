@@ -190,26 +190,26 @@ $settings"
 #
 #-----------------------------------------------------------------------
 #
-fv3_nml_base_fp="${FV3_NML_FP}.base"
-mv "${FV3_NML_FP}" "${fv3_nml_base_fp}"
+fv3_nml_base_fp="${FV3_NML_FN}.base"
+mv "${DATA}/${FV3_NML_FN}" "${DATA}/${fv3_nml_base_fp}"
 
 $USHrrfs/set_namelist.py -q \
-                        -n ${fv3_nml_base_fp} \
+                        -n ${DATA}/${fv3_nml_base_fp} \
                         -u "$settings" \
-                        -o ${FV3_NML_FP} || \
+                        -o ${DATA}/${FV3_NML_FN} || \
   print_err_msg_exit "\
 Call to python script set_namelist.py to set the variables in the FV3
 namelist file that specify the paths to the surface climatology files
 failed.  Parameters passed to this script are:
   Full path to base namelist file:
-    fv3_nml_base_fp = \"${fv3_nml_base_fp}\"
+    fv3_nml_base_fp = \"${DATA}/${fv3_nml_base_fp}\"
   Full path to output namelist file:
-    FV3_NML_FP = \"${FV3_NML_FP}\"
+    FV3_NML_FP = \"${DATA}/${FV3_NML_FN}\"
   Namelist settings specified on command line (these have highest precedence):
     settings =
 $settings"
 
-rm "${fv3_nml_base_fp}"
+rm "${DATA}/${fv3_nml_base_fp}"
 #
 #-----------------------------------------------------------------------
 #

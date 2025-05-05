@@ -373,6 +373,9 @@ fi
 if [ -f PRSLEV.GrbF${post_fhr} ]; then
 # If post_min is 15, 30, or 45, then copy the grib2 file to umbrella_post_data
   if [ $post_min = 15 -o $post_min = 30 -o $post_min = 45 ]; then
+    if [ ! -d ${umbrella_post_data} ]; then
+      mkdir -p ${umbrella_post_data}
+    fi
     cpreq -p PRSLEV.GrbF${post_fhr} ${umbrella_post_data}
     echo "Subhourly file copied to umbrella data directory, exit post task"
     exit
@@ -433,6 +436,10 @@ fi
 #
 cpreq -p ${prslev} ${COMOUT}
 cpreq -p ${natlev} ${COMOUT}
+# Only one latlons_corners file per cycle is needed in COMOUT - make this change later
+if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
+  cpreq -p latlons_corners.txt.f${fhr} ${COMOUT}
+fi
 if [ ${SUBH_GEN} = 1 ]; then
   cpreq -p ${prslev_subh_combo} ${COMOUT}
 fi

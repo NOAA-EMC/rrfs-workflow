@@ -1957,121 +1957,121 @@ suite nco_rrfs_dev_00
               edit WGF 'firewx'
               edit BCGRPNUM '36'
               task jrrfs_firewx_make_grid
-                trigger ../det==complete
+                trigger :TIME >= 0015 and :TIME < 0105
               task jrrfs_firewx_make_orog
                 trigger ./jrrfs_firewx_make_grid==complete
               task jrrfs_firewx_make_sfc_climo
                 trigger ./jrrfs_firewx_make_orog==complete
               task jrrfs_firewx_make_ics
-                trigger ./jrrfs_firewx_make_sfc_climo==complete and ../../product/det/jrrfs_det_prdgen_f042_00_00_long==complete
+                trigger ./jrrfs_firewx_make_sfc_climo==complete and ../../post/det/jrrfs_det_post_f000_00_36_long==complete
               task jrrfs_firewx_make_lbcs_00
                 edit BCGRP '00'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f001_00_00_long==complete
               task jrrfs_firewx_make_lbcs_01
                 edit BCGRP '01'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f002_00_00_long==complete
               task jrrfs_firewx_make_lbcs_02
                 edit BCGRP '02'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f003_00_00_long==complete
               task jrrfs_firewx_make_lbcs_03
                 edit BCGRP '03'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f004_00_00_long==complete
               task jrrfs_firewx_make_lbcs_04
                 edit BCGRP '04'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f005_00_00_long==complete
               task jrrfs_firewx_make_lbcs_05
                 edit BCGRP '05'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f006_00_00_long==complete
               task jrrfs_firewx_make_lbcs_06
                 edit BCGRP '06'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f007_00_00_long==complete
               task jrrfs_firewx_make_lbcs_07
                 edit BCGRP '07'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f008_00_00_long==complete
               task jrrfs_firewx_make_lbcs_08
                 edit BCGRP '08'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f009_00_00_long==complete
               task jrrfs_firewx_make_lbcs_09
                 edit BCGRP '09'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f010_00_00_long==complete
               task jrrfs_firewx_make_lbcs_10
                 edit BCGRP '10'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f011_00_00_long==complete
               task jrrfs_firewx_make_lbcs_11
                 edit BCGRP '11'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f012_00_00_long==complete
               task jrrfs_firewx_make_lbcs_12
                 edit BCGRP '12'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f013_00_00_long==complete
               task jrrfs_firewx_make_lbcs_13
                 edit BCGRP '13'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f014_00_00_long==complete
               task jrrfs_firewx_make_lbcs_14
                 edit BCGRP '14'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f015_00_00_long==complete
               task jrrfs_firewx_make_lbcs_15
                 edit BCGRP '15'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f016_00_00_long==complete
               task jrrfs_firewx_make_lbcs_16
                 edit BCGRP '16'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f017_00_00_long==complete
               task jrrfs_firewx_make_lbcs_17
                 edit BCGRP '17'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f018_00_00_long==complete
               task jrrfs_firewx_make_lbcs_18
                 edit BCGRP '18'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f019_00_00_long==complete
               task jrrfs_firewx_make_lbcs_19
                 edit BCGRP '19'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f020_00_00_long==complete
               task jrrfs_firewx_make_lbcs_20
                 edit BCGRP '20'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f021_00_00_long==complete
               task jrrfs_firewx_make_lbcs_21
                 edit BCGRP '21'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f022_00_00_long==complete
               task jrrfs_firewx_make_lbcs_22
                 edit BCGRP '22'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f023_00_00_long==complete
               task jrrfs_firewx_make_lbcs_23
                 edit BCGRP '23'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f024_00_00_long==complete
               task jrrfs_firewx_make_lbcs_24
                 edit BCGRP '24'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f025_00_00_long==complete
               task jrrfs_firewx_make_lbcs_25
                 edit BCGRP '25'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f026_00_00_long==complete
               task jrrfs_firewx_make_lbcs_26
                 edit BCGRP '26'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f027_00_00_long==complete
               task jrrfs_firewx_make_lbcs_27
                 edit BCGRP '27'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f028_00_00_long==complete
               task jrrfs_firewx_make_lbcs_28
                 edit BCGRP '28'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f029_00_00_long==complete
               task jrrfs_firewx_make_lbcs_29
                 edit BCGRP '29'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f030_00_00_long==complete
               task jrrfs_firewx_make_lbcs_30
                 edit BCGRP '30'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f031_00_00_long==complete
               task jrrfs_firewx_make_lbcs_31
                 edit BCGRP '31'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f032_00_00_long==complete
               task jrrfs_firewx_make_lbcs_32
                 edit BCGRP '32'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f033_00_00_long==complete
               task jrrfs_firewx_make_lbcs_33
                 edit BCGRP '33'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f034_00_00_long==complete
               task jrrfs_firewx_make_lbcs_34
                 edit BCGRP '34'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f035_00_00_long==complete
               task jrrfs_firewx_make_lbcs_35
                 edit BCGRP '35'
-                trigger ./jrrfs_firewx_make_ics==complete and ../../fsm/jrrfs_fsm:release_firewx_make_lbcs
+                trigger ./jrrfs_firewx_make_ics==complete and ../../post/det/jrrfs_det_post_f036_00_00_long==complete
 
             endfamily   # firewx
 

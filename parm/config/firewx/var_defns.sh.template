@@ -9,16 +9,17 @@ export HOMErrfs='@HOMErrfs@'
 export USHrrfs='@HOMErrfs@/ush'
 export SORCrrfs='@HOMErrfs@/sorc'
 export PARMrrfs='@HOMErrfs@/parm'
-export FIXam='@HOMErrfs@/parm/config/det/fix_am'
-export FIXLAM='@HOMErrfs@/parm/config/det/fix_lam'
+export FIXam='@HOMErrfs@/parm/config/firewx/fix_am'
+export FIXLAM='@HOMErrfs@/parm/config/firewx/fix_lam'
 export FIXgsm='@HOMErrfs@/fix/am'
 export DIAG_TABLE_TMPL_FP='@HOMErrfs@/parm/diag_table.RRFS_sas_nogwd'
 export MODEL_CONFIG_TMPL_FP='@HOMErrfs@/parm/model_configure'
 export UFS_CONFIG_TMPL_FP='@HOMErrfs@/parm/ufs.configure'
 export CCPP_PHYS_SUITE_FP='@HOMErrfs@/parm/config/firewx/suite_RRFS_sas_nogwd.xml'
+export CCPP_PHYS_SUITE='RRFS_sas_nogwd'
 export DATA_TABLE_FP='@HOMErrfs@/parm/config/firewx/data_table'
 export FIELD_TABLE_FP='@HOMErrfs@/parm/config/firewx/field_table'
-FV3_NML_FN='input.nml'   # This may not be necessary...
+FV3_NML_FN='input.nml'
 FV3_NML_FP='@HOMErrfs@/parm/config/firewx/input.nml'
 FV3_NML_CYCSFC_FP='@HOMErrfs@/parm/config/firewx/input.nml_cycsfc'
 FV3_NML_RESTART_FP='@HOMErrfs@/parm/config/firewx/input.nml_restart'
@@ -125,8 +126,33 @@ CYCL_HRS_STOCH=( \
 )
 FCST_LEN_HRS='36'
 FCST_LEN_HRS_SPINUP='1'
-FCST_LEN_HRS_CYCLES=''
-RESTART_HRS='0'
+FCST_LEN_HRS_CYCLES=( \
+'36' \
+'1' \
+'1' \
+'1' \
+'1' \
+'1' \
+'36' \
+'1' \
+'1' \
+'1' \
+'1' \
+'1' \
+'36' \
+'1' \
+'1' \
+'1' \
+'1' \
+'1' \
+'36' \
+'1' \
+'1' \
+'1' \
+'1' \
+'1' \
+)
+RESTART_HRS='1 6 12 18 24 30'
 OUTPUT_FH_15min='0 0.25 0.5 0.75 1 1.25 1.5 1.75 2 2.25 2.5 2.75 3 3.25 3.5 3.75 4 4.25 4.5 4.75 5 5.25 5.5 5.75 6 6.25 6.5 6.75 7 7.25 7.5 7.75 8 8.25 8.5 8.75 9 9.25 9.5 9.75 10 10.25 10.5 10.75 11 11.25 11.5 11.75 12 12.25 12.5 12.75 13 13.25 13.5 13.75 14 14.25 14.5 14.75 15 15.25 15.5 15.75 16 16.25 16.5 16.75 17 17.25 17.5 17.75 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60'
 DA_CYCLE_INTERV='1'
 CYCL_HRS_HYB_FV3LAM_ENS='99'

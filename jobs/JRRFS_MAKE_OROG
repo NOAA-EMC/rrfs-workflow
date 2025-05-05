@@ -29,8 +29,6 @@ export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
-export FIXam=${FIXam:-${FIXrrfs}/am}
-export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
 
 #-----------------------------------------------------------------------
 # Source the bash utility functions.
@@ -68,14 +66,18 @@ This is the J-job script for the task that generates orography files.
 ========================================================================"
 
 #-----------------------------------------------------------------------
-# Define umbrella data directories
+# Define COM directories
 #-----------------------------------------------------------------------
+# Send fix files to COMOUT
+export COMOUT="${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}"
+mkdir -p "${COMOUT}" "${COMOUT}/fix"
 
-export umbrella_ics_data=${umbrella_ics_data:-${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}}
+# Fire weather nest location from NAM
+export COMINnam=${COMINnam:-$(compath.py nam/${nam_ver})}
 
 mkdir -p "${DATA}/raw_topo"
 mkdir -p "${DATA}/raw_topo/tmp"
-cd ${DATA}/raw_topo/tmp
+#cd ${DATA}/raw_topo/tmp
 
 mkdir -p "${DATA}/filtered_topo"
 mkdir -p "${DATA}/shave_tmp"

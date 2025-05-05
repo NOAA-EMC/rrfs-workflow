@@ -9,6 +9,7 @@
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
 . $USHrrfs/set_FV3nml_ens_stoch_seeds.sh
+. $USHrrfs/set_FV3nml_sfc_climo_filenames.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -45,6 +46,30 @@ In directory:     \"${scrfunc_dir}\"
 This is the ex-script for the task that runs a forecast with RRFS for the
 specified cycle.
 ========================================================================"
+#
+#-----------------------------------------------------------------------
+#
+# For the fire weather grid, read in the center lat/lon from the
+# operational NAM fire weather nest.  The center lat/lon is set by the
+# SDM.  When RRFS is implemented, a similar file will be needed.
+# Rewrite the default center lat/lon values in var_defns.sh, if needed.
+#
+#-----------------------------------------------------------------------
+#
+if [ ${WGF} = "firewx" ]; then
+  hh="${CDATE:8:2}"
+  firewx_loc="${COMINnam}/input/nam_firewx_loc"
+  center_lat=${LAT_CTR}
+  center_lon=${LON_CTR}
+  LAT_CTR=`grep ${hh}z $firewx_loc | awk '{print $2}'`
+  LON_CTR=`grep ${hh}z $firewx_loc | awk '{print $3}'`
+
+  if [ ${center_lat} != ${LAT_CTR} ] || [ ${center_lon} != ${LON_CTR} ]; then
+    sed -i -e "s/${center_lat}/${LAT_CTR}/g" ${GLOBAL_VAR_DEFNS_FP}
+    sed -i -e "s/${center_lon}/${LON_CTR}/g" ${GLOBAL_VAR_DEFNS_FP}
+    . ${GLOBAL_VAR_DEFNS_FP}
+  fi
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -115,7 +140,12 @@ Run command has not been specified for this machine:
 
 esac
 [[ -e ${umbrella_forecast_data}/forecast_clean.flag ]] && rm -f ${umbrella_forecast_data}/forecast_clean.flag
-export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
+
+if [ ${WGF} = "firewx" ]; then
+  export FIXLAM=${COMOUT}/fix
+else
+  export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -273,7 +303,10 @@ of the current run directory (DATA), where
 
 cd ${DATA}/INPUT
 # Link to all files in FORECAST_INPUT_PRODUCT directory inside COMOUT
-ln -sf ${FORECAST_INPUT_PRODUCT}/* .
+# Do not need to do this for firewx, which is a cold start
+if [ ${WGF} != "firewx" ]; then
+  ln -sf ${FORECAST_INPUT_PRODUCT}/* .
+fi
 
 BKTYPE=1    # cold start using INPUT
 if [ -r ${DATA}/INPUT/coupler.res ] ; then
@@ -341,7 +374,7 @@ else
   if [ ${BKTYPE} -eq 1 ]; then
     target="sfc_data.tile${TILE_RGNL}.halo${NH0}.nc"
     symlink="sfc_data.nc"
-    # Additional logic to exam if sfc_data.nc already exist
+    #### Additional logic to exam if sfc_data.nc already exist
     if [ ! -s sfc_data.nc ]; then
       if [ -f "${target}" ]; then
         ln -sf ${relative_or_null} $target $symlink
@@ -367,6 +400,11 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then
   ln -snf  ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/emi_data.nc      ${DATA}/INPUT/emi_data.nc
   yyyymmddhh=${CDATE:0:10}
   echo ${yyyymmddhh}
+  #### if [ ${CYCLE_TYPE} = "spinup" ]; then
+  ####   smokefile=${COMrrfs}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00_spinup.nc
+  #### else
+  ####   smokefile=${COMrrfs}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc
+  #### fi
   smokefile=${COMrrfs}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc
   echo "try to use smoke file=",${smokefile}
   if [ -f ${smokefile} ]; then
@@ -491,6 +529,7 @@ if [ "${STOCH}" = "TRUE" ]; then
     ensmem_num=$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')
     cpreq -p ${FV3_NML_RESTART_STOCH_FP}_ensphy${ensmem_num} ${DATA}/${FV3_NML_FN}_base 
     rm -fr ${DATA}/field_table
+    #### cpreq -p ${PARMrrfs}/field_table.rrfsens_phy${ENSMEM_INDX} ${DATA}/field_table
     cpreq -p ${PARMrrfs}/field_table.rrfsens_phy0${ENSMEM_INDX} ${DATA}/field_table
   else
     cpreq -p ${DATA}/${FV3_NML_FN} ${DATA}/${FV3_NML_FN}_base
@@ -505,6 +544,24 @@ if [ "${STOCH}" = "TRUE" ]; then
    DATA = \"${DATA}\""
   fi
 fi
+
+# Set paths to surface climatology fix files in namelist for firewx configuration
+# Rewrite the default center lat/lon values in the namelist, if needed.
+if [ ${WGF} = "firewx" ]; then
+  set_FV3nml_sfc_climo_filenames
+  export err=$?
+  if [ $err -ne 0 ]; then
+    err_exit "\
+  Call to function to set surface climatology file names in the FV3 namelist
+  file failed."
+  fi
+
+  if [ ${center_lat} != ${LAT_CTR} ] || [ ${center_lon} != ${LON_CTR} ]; then
+    sed -i -e "s/${center_lat}/${LAT_CTR}/g" ${DATA}/${FV3_NML_FN}
+    sed -i -e "s/${center_lon}/${LON_CTR}/g" ${DATA}/${FV3_NML_FN}
+  fi
+fi
+
 #-----------------------------------------------------------------------
 #   
 # Forecast hours for current run
@@ -517,6 +574,9 @@ else
   FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$cyc]}
 fi
 
+#### dev overwrite
+#### FCST_LEN_HRS=60
+#### export FCST_LEN_HRS_SPINUP=60
 #
 #-----------------------------------------------------------------------
 #
@@ -530,7 +590,8 @@ fhr_ct=0
 fhr=0
 NLN=${NLN:-"/bin/ln -sf"}
 
-if [ ${DO_ENSFCST} == "FALSE" ]; then
+#if [ ${DO_ENSFCST} == "FALSE" ]; then
+if [ ${DO_ENSFCST} == "FALSE" ] && [ ${WGF} != "firewx" ]; then
   if [ $FCST_LEN_HRS -gt 6 ]; then
     for fhr in $(seq 0 $FCST_LEN_HRS); do
       fhr_2d=$( printf "%02d" ${fhr} )
@@ -570,7 +631,7 @@ if [ ${DO_ENSFCST} == "FALSE" ]; then
     eval $NLN ${shared_output_data}/atmos_static.nc ${DATA}/atmos_static.nc
   fi
 else
-  # ensemble forecast 60 hourly
+  # ensemble forecast 60 hourly, fire weather forecast 36 hourly
   for fhr in $(seq 0 $FCST_LEN_HRS); do
     fhr_3d=$( printf "%03d" ${fhr} )
     source_dyn="dynf${fhr_3d}.nc"
@@ -595,6 +656,18 @@ fi
 flag_fcst_restart="FALSE"
 coupler_res_ct=0
 DO_FCST_RESTART=${DO_FCST_RESTART:-"TRUE"}
+
+#if [ ${CYCLE_TYPE} = "spinup" ]; then
+#  FCST_LEN_HRS=${FCST_LEN_HRS_SPINUP}
+#else
+#  FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$cyc]}
+#fi
+
+##### dev overwrite
+#FCST_LEN_HRS=60
+#export FCST_LEN_HRS_SPINUP=60
+
+
 # Get the current restart set count from shared restart location in the Umbrella Data
 if [ -d ${shared_forecast_restart_data} ]; then
   set +eu
@@ -610,6 +683,7 @@ if [ ${CYCLE_TYPE} = "spinup" ]; then
 fi
 if [ $FCST_LEN_HRS -gt 0 ]; then
   cd ${DATA}/RESTART
+  #### [[ -e ${umbrella_forecast_data}/forecast_clean.flag ]] && rm -f ${umbrella_forecast_data}/forecast_clean.flag
   file_ids=( "coupler.res" "fv_core.res.nc" "fv_core.res.tile1.nc" "fv_srf_wnd.res.tile1.nc" "fv_tracer.res.tile1.nc" "phy_data.nc" "sfc_data.nc" )
   num_file_ids=${#file_ids[*]}
   read -a restart_hrs <<< "${RESTART_HRS}"
@@ -729,6 +803,7 @@ fi
 # copy over diag_table for multiphysics ensemble
 if [ "${STOCH}" = "TRUE" ] && [ ${BKTYPE} -eq 0 ] && [ ${DO_ENSFCST_MULPHY} = "TRUE" ]; then
   rm -fr ${DATA}/diag_table
+  #### cpreq -p ${PARMrrfs}/diag_table.rrfsens_phy${ENSMEM_INDX} ${DATA}/diag_table
   cpreq -p ${PARMrrfs}/diag_table.rrfsens_phy0${ENSMEM_INDX} ${DATA}/diag_table
 fi
 
