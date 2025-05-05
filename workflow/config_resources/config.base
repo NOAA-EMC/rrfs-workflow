@@ -17,13 +17,13 @@ export FCST_LENGTH=1
 export DO_FCST=${DO_FCST:-true}
 export DO_POST=${DO_POST:-true}
 export DO_IC_LBC=${DO_IC_LBC:-true}
-export USE_THE_LATEST_SATBIAS=${USE_THE_LATEST_SATBIAS:-true} # whether DA tasks use the latest satbias from the previous cycle
+export USE_THE_LATEST_SATBIAS=${USE_THE_LATEST_SATBIAS:-false} # whether DA tasks use the latest satbias from the previous cycle
 
 # PREP_LBC_LOOK_BACK_HRS
 if ${REALTIME:-false}; then
-  PREP_LBC_LOOK_BACK_HRS=${PREP_LBC_LOOK_BACK_HRS:-13} # Python range(0,13) will make it 0-12
+  export PREP_LBC_LOOK_BACK_HRS=${PREP_LBC_LOOK_BACK_HRS:-13} # Python range(0,13) will make it 0-12
 else
-  PREP_LBC_LOOK_BACK_HRS=${PREP_LBC_LOOK_BACK_HRS:-${CYCLEDEF_LBC_STEP_HRS}}
+  export PREP_LBC_LOOK_BACK_HRS=${PREP_LBC_LOOK_BACK_HRS:-${CYCLEDEF_LBC_STEP_HRS}}
 fi
 
 # DO_CLEAN
