@@ -32,6 +32,16 @@ def source(bash_file, optional=False):
     os.environ.update(env_vars)
 # end of source(bash_file)
 
+# run_git_command
+
+
+def run_git_command(cmd):
+    result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    if result.returncode == 0:
+        return result.stdout.strip()
+    else:
+        raise RuntimeError(f"Git command failed: {' '.join(cmd)}\n{result.stderr.strip()}")
+
 # head_begin
 
 
