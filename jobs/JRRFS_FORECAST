@@ -60,6 +60,11 @@ else
     export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}/${mem_num}
     export umbrella_ics_data="${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}/ics"
     export umbrella_forecast_data=${DATAROOT}/${RUN}_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
+  elif [ "${WGF}" = "firewx" ]; then
+    export umbrella_ics_data="${DATAROOT}/firewx_ics_${cyc}_${rrfs_ver}/${WGF}/ics"
+
+  # Fire weather nest location from NAM
+    export COMINnam=${COMINnam:-$(compath.py nam/${nam_ver})}
   else
     export umbrella_ics_data="${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}/ics"
   fi

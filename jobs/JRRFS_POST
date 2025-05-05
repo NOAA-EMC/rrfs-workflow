@@ -93,6 +93,8 @@ export umbrella_post_data=${DATAROOT}/${RUN}_post_${cyc}_${rrfs_ver}/${WGF}
 if [ ${DO_ENSFCST} = "TRUE" ]; then
   export COMOUT=${COMOUT}/${mem_num}
   export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
+elif [ ${WGF} = "firewx" ]; then
+  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}
 fi
 
 # FSM job copies dyn/phy netcdf output and log files into shared_forecast_output_data directory

@@ -394,7 +394,7 @@ $GTYPE
 EOF
 
   # Read in corner lat lons from UPP text file
-  export FORT11=${DATA}/latlons_corners.txt.f${fhr}
+  export FORT11=${COMOUT}/latlons_corners.txt.f${fhr}
   export FORT45=itagfw
 
   # Calculate the wgrib2 gridspecs for the fire weather grid

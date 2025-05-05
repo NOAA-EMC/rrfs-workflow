@@ -255,6 +255,14 @@ elif [ ${PREDEF_GRID_NAME} = "GSD_RAP13km" ]; then
   grid_specs_rrfs="rot-ll:254.000000:-36.000000:0.000000 304.174600:956:0.1169118 -48.5768500:831:0.1170527"
 fi
 if [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km_HRRRIC" ] || [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km" ] || [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ] || [ ${PREDEF_GRID_NAME} = "GSD_RAP13km" ]; then
+#### The following code is to be removed because FFG_DIR is not an assigned variable for implementation
+####  if [ -f ${FFG_DIR}/latest.FFG ]; then
+####    cpreq -p ${FFG_DIR}/latest.FFG .
+####    wgrib2 latest.FFG -match "0-12 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_12h.grib2
+####    wgrib2 latest.FFG -match "0-6 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_06h.grib2
+####    wgrib2 latest.FFG -match "0-3 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_03h.grib2
+####    wgrib2 latest.FFG -match "0-1 hour" -end -new_grid_interpolation bilinear -new_grid_winds grid -new_grid ${grid_specs_rrfs} ffg_01h.grib2
+####  fi
   for ayear in 100y 10y 5y 2y ; do
     for ahour in 01h 03h 06h 12h 24h; do
       if [ -f ${FIX_UPP}/${PREDEF_GRID_NAME}/ari${ayear}_${ahour}.grib2 ]; then
@@ -373,6 +381,9 @@ fi
 if [ -f PRSLEV.GrbF${post_fhr} ]; then
 # If post_min is 15, 30, or 45, then copy the grib2 file to umbrella_post_data
   if [ $post_min = 15 -o $post_min = 30 -o $post_min = 45 ]; then
+    if [ ! -d ${umbrella_post_data} ]; then
+      mkdir -p ${umbrella_post_data}
+    fi
     cpreq -p PRSLEV.GrbF${post_fhr} ${umbrella_post_data}
     echo "Subhourly file copied to umbrella data directory, exit post task"
     exit
@@ -433,6 +444,10 @@ fi
 #
 cpreq -p ${prslev} ${COMOUT}
 cpreq -p ${natlev} ${COMOUT}
+# Only one latlons_corners file per cycle is needed in COMOUT - make this change later
+if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
+  cpreq -p latlons_corners.txt.f${fhr} ${COMOUT}
+fi
 if [ ${SUBH_GEN} = 1 ]; then
   cpreq -p ${prslev_subh_combo} ${COMOUT}
 fi

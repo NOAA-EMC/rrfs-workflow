@@ -157,12 +157,16 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+# #### go to INPUT directory.
 # prepare initial conditions for ensemble free forecast after ensemble DA
 #
 #-----------------------------------------------------------------------
 #
 if [ "${DO_ENSFCST}" = "TRUE" ] &&  [ "${DO_ENKFUPDATE}" = "TRUE" ]; then
   bkpath=${COMrrfs}/enkfrrfs.${PDY}/${cyc}/${mem_num}/forecast/DA_OUTPUT
+  #if [ ${WGF} == "enkf" ] || [ ${WGF} == "ensf" ]; then
+  #  bkpath=${COMrrfs}/enkfrrfs.${PDY}/${cyc}/forecast/DA_OUTPUT
+  #fi
   filelistn="fv_core.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_tracer.res.tile1.nc phy_data.nc sfc_data.nc"
   checkfile=${bkpath}/coupler.res
   n_iolayouty=$(($IO_LAYOUT_Y-1))
@@ -267,6 +271,13 @@ else
 
   if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial files from ics
     bkpath=${ICS_ROOT}
+      #### if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+        #### #### bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/ics
+        #### bkpath=${ICS_ROOT}/${mem_num}
+      #### else
+      #### #### bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/ics
+      #### bkpath=${ICS_ROOT}
+      #### fi
     if [ -r "${bkpath}/gfs_data.tile7.halo0.nc" ]; then
       ln -s ${bkpath}/gfs_bndy.tile7.000.nc gfs_bndy.tile7.000.nc        
       ln -s ${bkpath}/gfs_ctrl.nc gfs_ctrl.nc        
@@ -283,8 +294,10 @@ else
 
   elif [[ $BKTYPE == 3 ]]; then
     if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+      #### bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/${mem_num}/ics
       bkpath=${ICS_ROOT}
     else
+      #### bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}/ics
       bkpath=${ICS_ROOT}
     fi
     if [ -r "${bkpath}/coupler.res" ]; then
@@ -680,7 +693,9 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
           YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
           YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
           HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
+          #### bkpath=${FG_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${surface_file_dir_name}/RESTART
           bkpath=${COMrrfs}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/forecast/RESTART
+          ###bkpath=${COMrrfs}/${RUN}.${YYYYMMDDInterv}/${HHInterv}_spinup/forecast/RESTART
           n=${DA_CYCLE_INTERV}
           while [[ $n -le 25 ]] ; do
              if [ "${IO_LAYOUT_Y}" = "1" ]; then
@@ -707,7 +722,15 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
 
       # check if there are tracer file in continue cycle data space:
       if [ "${bkpath_find}" = "missing" ]; then
+        #### All required file should exist; there is no need for continue cycle data space
+        # err_exit "FATAL: missing fv_tracer.res.tile1.nc"
         echo "WARNING: can not find fv_tracer for smoke/dust cycling at ${HH}"
+         #### checkfile=${CONT_CYCLE_DATA_ROOT}/tracer/${restart_prefix}fv_tracer.res.tile1.nc
+         #### if [ -r "${checkfile}" ]; then
+            #### bkpath_find=${CONT_CYCLE_DATA_ROOT}/tracer
+            #### restart_prefix_find=${restart_prefix}
+            #### print_info_msg "$VERBOSE" "Found ${checkfile}; Use it for smoke/dust cycle "
+         #### fi
       fi
 
       # cycle smoke/dust
@@ -1015,6 +1038,7 @@ else
   HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
     lbcs_path=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/lbcs
+    #### lbcs_path=${COMrrfs}/refs.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/lbcs
   else
     lbcs_path=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/lbcs
   fi
@@ -1065,24 +1089,6 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# conduct surface surgery to get new vtype and stype
-# 
-#-----------------------------------------------------------------------
-#if [ ${YYYYMMDDHH} -eq 2100010100 ] ; then
-#  if [ "${CYCLE_TYPE}" = "spinup" ]; then
-#    cp sfc_data.tile7.halo0.nc sfc_data.tile7.halo0.nc_old
-#    if [ -r ${FIXLAM}/stypdom_double.nc ]; then
-#      ncks -A -v stype ${FIXLAM}/stypdom_double.nc sfc_data.tile7.halo0.nc
-#    fi
-#    if [ -r ${FIXLAM}/vtypdom_double.nc ]; then
-#      ncks -A -v vtype ${FIXLAM}/vtypdom_double.nc sfc_data.tile7.halo0.nc
-#    fi
-#    echo "${YYYYMMDDHH}(${CYCLE_TYPE}): replace stype and vtype "
-#  fi
-#fi
-#
-#-----------------------------------------------------------------------
-#
 # conduct surface surgery to transfer RAP/HRRR surface fields into RRFS.
 # 
 # This surgery only needs to be done once to give RRFS a good start of the surface.
@@ -1115,19 +1121,7 @@ if [ ${SFC_CYC} -eq 3 ] ; then
      ln -s ${COMIN_HRRR}/nwges/hrrrges_sfc/conus/hrrr_${new_cdate}f001 sfc_hrrr
      hrrrfile='sfc_hrrr'
    fi
-#   if [ -r ${COMIN_RAP}/rap.${YYYYMMDD}/rap.t${HH}z.wrf_inout_smoke ]; then
-#     ln -s ${COMIN_RAP}/rap.${YYYYMMDD}/rap.t${HH}z.wrf_inout_smoke sfc_rap
-#     rapfile='sfc_rap'
-#   fi
-#   if [ -r ${COMIN_HRRR}/hrrr.${YYYYMMDD}/conus/hrrr.t${HH}z.wrfhistory00 ]; then
-#     ln -s ${COMIN_HRRR}/hrrr.${YYYYMMDD}/conus/hrrr.t${HH}z.wrfhistory00 sfc_hrrr
-#     hrrrfile='sfc_hrrr'
-#   fi
-#   if [ -r ${COMIN_HRRR}/hrrr.${YYYYMMDD}/alaska/hrrrak.t${HH}z.wrf_inout ]; then
-#     ln -s ${COMIN_HRRR}/hrrr.${YYYYMMDD}/alaska/hrrrak.t${HH}z.wrf_inout sfc_hrrrak
-#     hrrr_akfile='sfc_hrrrak'
-#   fi
-
+ 
    export pgm="use_raphrrr_sfc.exe"
    if [ "${IO_LAYOUT_Y}" = "1" ]; then
      ln -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
@@ -1153,6 +1147,7 @@ hrrrfile='missing'
 hrrr_akfile='missing'
 rrfsfile='sfc_data.nc'
 do_lake_surgery=${do_lake_surgery}
+update_snow=true
 /
 EOF
            cp use_raphrrr_sfc.namelist use_raphrrr_sfc.namelist_rap
@@ -1166,6 +1161,7 @@ hrrrfile=${hrrrfile}
 hrrr_akfile='missing'
 rrfsfile='sfc_data.nc'
 do_lake_surgery=${do_lake_surgery}
+update_snow=false
 /
 EOF
            cp use_raphrrr_sfc.namelist use_raphrrr_sfc.namelist_hrrr
@@ -1179,6 +1175,7 @@ hrrrfile='missing'
 hrrr_akfile=${hrrr_akfile}
 rrfsfile='sfc_data.nc'
 do_lake_surgery=${do_lake_surgery}
+update_snow=false
 /
 EOF
 
@@ -1208,6 +1205,8 @@ EOF
      done
      echo "${YYYYMMDDHH}(${CYCLE_TYPE}): run surface surgery"
 fi
+# snow surgery
+# ncks -A -v weasdl,weasdi,sheleg,snodl,snodi,snwdph,sncovr,sncovr_ice sfc_data.nc_RAP_SNOW_HRRR sfc_data.nc
 #
 #-----------------------------------------------------------------------
 #

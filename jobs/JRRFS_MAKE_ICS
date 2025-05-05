@@ -22,6 +22,8 @@ else
 fi
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}}
+elif [ $WGF = "firewx" ]; then
+  export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/firewx_ics_${cyc}_${rrfs_ver}/${WGF}}
 else
   export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}}
 fi
@@ -86,6 +88,21 @@ This is the J-job script for the task that generates initial condition
 (IC), surface, and zeroth-hour lateral boundary condition (LBC0) files 
 for the RRFS (in NetCDF format).
 ========================================================================"
+
+#-----------------------------------------------------------------------
+# Define COM directories
+#-----------------------------------------------------------------------
+#### export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
+#### export COMINgfs=${COMINgfs:-$(compath.py gfs/${gfs_ver})}
+
+if [ ${WGF} = "firewx" ]; then
+# Path to fix files in COMOUT
+  export COMOUT="${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}"
+  mkdir -p "${COMOUT}" "${COMOUT}/fix"
+
+# Fire weather nest location from NAM
+  export COMINnam=${COMINnam:-$(compath.py nam/${nam_ver})}
+fi
 
 #-----------------------------------------------------------------------
 # Execute the script.

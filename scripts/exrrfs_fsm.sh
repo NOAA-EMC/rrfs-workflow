@@ -130,6 +130,7 @@ if [ ${cyc} == "03" ]; then
 fi
 
 if [ ${cyc} == "04" ]; then
+  scan_release_det_prep_cyc="NO"
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
   scan_release_save_restart_f2="YES"
@@ -137,6 +138,7 @@ if [ ${cyc} == "04" ]; then
 fi
 
 if [ ${cyc} == "05" ]; then
+  scan_release_det_prep_cyc="NO"
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
   scan_release_save_restart_f2="YES"
@@ -144,6 +146,7 @@ if [ ${cyc} == "05" ]; then
 fi
 
 if [ ${cyc} == "06" ]; then
+  scan_release_det_prep_cyc="NO"
   scan_release_det_make_lbcs="YES"
   scan_release_enkf_make_lbcs="YES"
   #### Remove when ensf is ready #### scan_release_ensf_make_lbcs="YES"
@@ -155,6 +158,8 @@ if [ ${cyc} == "06" ]; then
 fi
 
 if [ ${cyc} == "07" ]; then
+  scan_release_det_prep_cyc="NO"
+  scan_release_enkf_prep_cyc="NO"
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
   scan_release_save_restart_f2="YES"
@@ -166,6 +171,7 @@ if [ ${cyc} == "07" ]; then
 fi
 
 if [ ${cyc} == "08" ]; then
+  scan_release_det_prep_cyc="NO"
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
   scan_release_save_restart_f2="YES"
@@ -191,6 +197,7 @@ if [ ${cyc} == "11" ]; then
 fi
 
 if [ ${cyc} == "12" ]; then
+  scan_release_det_prep_cyc="NO"
   scan_release_det_make_lbcs="YES"
   scan_release_enkf_make_lbcs="YES"
   #### Remove when ensf is ready #### scan_release_ensf_make_lbcs="YES"
@@ -236,6 +243,7 @@ if [ ${cyc} == "17" ]; then
 fi
 
 if [ ${cyc} == "18" ]; then
+  scan_release_det_prep_cyc="NO"
   scan_release_det_make_lbcs="YES"
   scan_release_enkf_make_lbcs="YES"
   #### Remove when ensf is ready #### scan_release_ensf_make_lbcs="YES"
@@ -247,6 +255,8 @@ if [ ${cyc} == "18" ]; then
 fi
 
 if [ ${cyc} == "19" ]; then
+  scan_release_det_prep_cyc="NO"
+  scan_release_enkf_prep_cyc="NO"
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
   scan_release_save_restart_f2="YES"
