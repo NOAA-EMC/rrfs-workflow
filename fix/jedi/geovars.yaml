@@ -186,11 +186,16 @@ fields:
     mpas template field: theta
     mpas identity field: graupel
     mpas io name: qg
-  
+
   - field name: hail
     mpas template field: theta
     mpas identity field: hail
     mpas io name: qh
+
+  - field name: equivalent_reflectivity_factor
+    mpas template field: theta
+    mpas identity field: equivalent_reflectivity_factor
+    mpas io name: refl10cm
 
   - field name: cloud_droplet_number_concentration
     mpas template field: theta
@@ -344,7 +349,7 @@ fields:
 
   - field name: wind_reduction_factor_at_10m
     mpas template field: u10
-    
+
   - field name: land_type_index_USGS
     mpas template field: ivgtyp
 
