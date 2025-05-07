@@ -93,7 +93,11 @@ if [[ "${HYB_WGT_ENS}" != "0" ]] && [[ "${HYB_WGT_ENS}" != "0.0" ]]; then # usin
     mpasout_file=mpasout.${timestr}.nc
     for (( ii=0; ii<4; ii=ii+1 )); do
        CDATEp=$(${NDATE} "-${ii}" "${CDATE}" )
-       ensdir=${COMINrrfs}/rrfs.${CDATEp:0:8}/${CDATEp:8:2}
+       if [[ "${HYB_ENS_PATH}" == "" ]]; then
+         ensdir=${COMINrrfs}/rrfs.${CDATEp:0:8}/${CDATEp:8:2}
+       else
+         ensdir=${HYB_ENS_PATH}/rrfs.${CDATEp:0:8}/${CDATEp:8:2}
+       fi
        ensdir_m001=${ensdir}/fcst/enkf/mem001
        if [[ -s "${ensdir_m001}/${mpasout_file}" ]]; then
          for (( iii=1; iii<31; iii=iii+1 )); do

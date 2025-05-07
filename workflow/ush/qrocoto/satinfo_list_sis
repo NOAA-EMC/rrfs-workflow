@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+#
+import yaml
+import sys
+
+args = sys.argv
+nargs = len(args) - 1
+if nargs < 1:
+    print(f"{sys.argv[0]} <satinfo_filename>")
+    exit()
+
+dcSatInfo = {}
+with open(args[1], 'r') as sfile:
+    for line in sfile:
+        if not line.strip().startswith("!"):
+            fields = line.split()
+            if len(fields) == 11:
+                sis = fields[0]  # sensor/instr/sat
+                if sis in dcSatInfo:
+                    dcSIS = dcSatInfo[sis]
+                else:
+                    dcSIS = {'channels': [], 'use_flag': [], 'error': [], 'error_cld': [], 'obserr_bound_max': [],
+                             'var_b': [], 'var_pg': [], 'use_flag_clddet': [], 'icloud': [], 'iaerosol': [],
+                             }
+                #
+                dcSIS['channels'].append(fields[1])
+                dcSIS['use_flag'].append(fields[2])
+                dcSIS['error'].append(fields[3])
+                dcSIS['error_cld'].append(fields[4])
+                dcSIS['obserr_bound_max'].append(fields[5])
+                dcSIS['var_b'].append(fields[6])
+                dcSIS['var_pg'].append(fields[7])
+                dcSIS['use_flag_clddet'].append(fields[8])
+                dcSIS['icloud'].append(fields[9])
+                dcSIS['iaerosol'].append(fields[10])
+                dcSatInfo[sis] = dcSIS
+            else:
+                print(f"read_satinfo warning: expected 11 fields\n{line}")
+
+print(f'Total number of SIS: {len(dcSatInfo)}')
+print(', '.join(dcSatInfo.keys()))

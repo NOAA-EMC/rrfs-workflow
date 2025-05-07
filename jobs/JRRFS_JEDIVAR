@@ -17,12 +17,6 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 # Obtain unique process id (pid) and create the run directory (DATA).
 #-----------------------------------------------------------------------
 #
-# source the config cascade
-#source ${EXPDIR}/exp.setup
-#source ${EXPDIR}/config/config.${MACHINE}
-#source ${EXPDIR}/config/config.base
-#[[ -s ${EXPDIR}/config/config.da ]] && source ${EXPDIR}/config/config.da
-#
 if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
   export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_prep_ic_spinup_${cyc}_${rrfs_ver}/${WGF}}
   export UMBRELLA_JEDIVAR_DATA=${UMBRELLA_JEDIVAR_DATA:-${DATAROOT}/${RUN}_jedivar_spinup_${cyc}_${rrfs_ver}/${WGF}}
