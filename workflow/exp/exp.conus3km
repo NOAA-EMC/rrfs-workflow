@@ -23,6 +23,7 @@ export HYB_ENS_TYPE=1      # 1.rrfs; 2.interpolated GEFS/GDAS; 0.TBD on the fly 
 export HYB_ENS_PATH=""     # if empty, the workflow will try to find ensembles automatically
 export DO_ENVAR_RADAR_REF=true
 export RADARREFL_TIMELEVEL="00"  # 00 15 30 45 min
+export ENS_SIZE=30
 
 export DO_CYC=true
 export CYC_INTERVAL=1
@@ -54,8 +55,8 @@ export COLDSTART_CYCS="00 12"   # cycles to cold start from external models
 #export COLDSTART_CYCS="03 15"
 #export PRODSWITCH_CYCS="09 21"
 #
-export NODES_IC="<nodes>40:ppn=20</nodes>"
-export NODES_LBC="<nodes>40:ppn=20</nodes>"
+export NODES_IC="<nodes>40:ppn=40</nodes>"
+export NODES_LBC="<nodes>40:ppn=40</nodes>"
 export NODES_FCST="<nodes>40:ppn=40</nodes>"
 export NODES_MPASSIT="<nodes>4:ppn=20</nodes>"
 export NODES_UPP="<nodes>4:ppn=20</nodes>"
