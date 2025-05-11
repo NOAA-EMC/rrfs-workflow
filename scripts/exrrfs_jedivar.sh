@@ -57,7 +57,7 @@ cp "${UMBRELLA_PREP_IC_DATA}"/*satbias* satbias_in/.
 #
 # copy observations files
 #
-source "${USHrrfs}/copy_obs.sh"
+source "${USHrrfs}/copy_obs.sh" "jedivar"
 #
 #  find ensemble forecasts based on user settings
 #
