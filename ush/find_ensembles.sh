@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# copy ioda observation files from com/ to the run directory
+# find ensemble forecasts based on user settings
 #
 # shellcheck disable=SC2154,SC2153
 if [[ "${HYB_WGT_ENS}" != "0" ]] && [[ "${HYB_WGT_ENS}" != "0.0" ]]; then # using ensembles
