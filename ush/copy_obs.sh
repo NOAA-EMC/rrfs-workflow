@@ -25,6 +25,10 @@ mappings["ioda_proflr.nc"]="${obspath}/ioda_proflr.nc"
 mappings["ioda_rassda.nc"]="${obspath}/ioda_rassda.nc"
 mappings["ioda_sfcshp.nc"]="${obspath}/ioda_sfcshp.nc"
 mappings["ioda_vadwnd.nc"]="${obspath}/ioda_vadwnd.nc"
+mappings["ioda_gnss_ztd.nc"]="${obspath}/ioda_gnss_ztd.nc"
+# satellite observations
+mappings["ioda_abi_g16.nc"]="${obspath}/ioda_abi_g16.nc"
+mappings["ioda_abi_g18.nc"]="${obspath}/ioda_abi_g18.nc"
 
 if [[ "${DO_ENVAR_RADAR_REF}" == "true" ]] && ${jedivar}; then
   obspath="${COMOUT}/ioda_mrms_refl/${WGF}"

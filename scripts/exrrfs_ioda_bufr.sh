@@ -82,7 +82,8 @@ ${cpreq} "${USHrrfs}"/run_bufr2ioda_gsrcsr.sh .
 
 # pyioda libraries
 PYIODALIB=$(echo "$HOMErdasapp"/build/lib/python3.*)
-export PYTHONPATH=${PYIODALIB}:${PYTHONPATH}
+WXFLOWLIB=${USHrrfs}/wxflow/src
+export PYTHONPATH="${WXFLOWLIB}:${PYIODALIB}:${PYTHONPATH}"
 
 # generate a JSON w CDATE from the template
 ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/gen_bufr2ioda_json.py .
