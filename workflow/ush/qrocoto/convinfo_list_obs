@@ -1,0 +1,52 @@
+#!/usr/bin/env python
+#
+import yaml
+import sys
+
+args = sys.argv
+nargs = len(args) - 1
+if nargs < 1:
+    print(f"{sys.argv[0]} <convinfo_filename>")
+    exit()
+
+dcConvInfo = {}
+with open(args[1], 'r') as sfile:
+    for line in sfile:
+        if not line.strip().startswith("!"):
+            fields = line.split()
+            if len(fields) == 9:
+                atype = fields[0]
+                if fields[1] != '0':
+                    atype += fields[1].zfill(3)
+                if fields[2] != '0':
+                    atype += "_" + fields[2].zfill(3)
+                #
+                dcTMP = {
+                    'iuse': fields[3],
+                    'twindow': fields[4],
+                    'gross': fields[5],
+                    'ermax': fields[6],
+                    'ermin': fields[7],
+                    'msgtype': fields[8],
+                }
+                dcConvInfo[atype] = dcTMP
+            else:
+                print(f"read_convinfo Warning: expected 9 fields\n{line}")
+
+listUse = []
+listUnuse = []
+listMonitor = []
+for key, value in dcConvInfo.items():
+    if value['iuse'] == "1":
+        listUse.append(key)
+    elif value['iuse'] == "-1":
+        listMonitor.append(key)
+    else:
+        listUnuse.append(key)
+
+print('*** used obs (iuse=1):')
+print(', '.join(listUse))
+print('\n*** monitored obs (iuse=-1):')
+print(', '.join(listMonitor))
+print('\n*** unused obs (iuse=0):')
+print(', '.join(listUnuse))
