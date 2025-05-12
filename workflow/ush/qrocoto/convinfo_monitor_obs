@@ -1,0 +1,59 @@
+#!/usr/bin/env python
+#
+import sys
+import os
+import re
+
+args = sys.argv
+nargs = len(args) - 1
+if nargs < 2:
+    print(f"{sys.argv[0]} <convinfo_filename> <obs_str>")
+    print(f'  eg: {args[0]} convinfo "t133,q133"')
+    exit()
+
+yfile = args[1]
+yfile2 = yfile + "_old001"
+obs_list = [myobs.strip() for myobs in re.split(r'[,\s]', args[2])]
+#
+# find an available file name to backup the old yaml file
+if os.path.exists(yfile2):
+    knt = 1
+    yfile2 = f'{yfile}_old{knt:03}'
+    while os.path.exists(yfile2):
+        knt += 1
+        yfile2 = f'{yfile}_old{knt:03}'
+#
+os.replace(yfile, yfile2)
+with open(yfile2, 'r') as infile, open(yfile, 'w') as outfile:
+    for line in infile:
+        if line.strip().startswith("!"):
+            outfile.write(line)
+        else:
+            fields = line.split()
+            atype = ""
+            if len(fields) == 9:
+                atype = fields[0]
+                if fields[1] != '0':
+                    atype += fields[1].zfill(3)
+                if fields[2] != '0':
+                    atype += "_" + fields[2].zfill(3)
+                iuse = fields[3],
+            else:
+                print(f"read_convinfo Warning: expected 9 fields\n{line}")
+            found = False
+            for obs in obs_list:
+                if obs == atype:
+                    found = True
+                    break
+
+            if found:
+                start_postion = 19
+                index = line.find('  0  ', start_postion)
+                if index != -1:
+                    line = line.replace('  0  ', ' -1  ')
+                else:
+                    index = line.find('  1  ', start_postion)
+                    if index != -1:
+                        line = line.replace('  1  ', ' -1  ')
+
+            outfile.write(line)

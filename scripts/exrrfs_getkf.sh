@@ -30,7 +30,7 @@ mkdir -p obs ens jdiag
 # copy observations files
 #
 if [[ "${TYPE}" == "observer" ]]; then
-  cp "${COMOUT}/ioda_bufr/${IODA_BUFR_WGF}"/* obs/.
+  source "${USHrrfs}/copy_obs.sh" "getkf"
 else
   ln -snf "${UMBRELLA_GETKF_OBSERVER_DATA}"/jdiag* jdiag/
 fi
