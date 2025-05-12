@@ -12,7 +12,7 @@ Note:
 3. If you run cold start forecasts only and don't need data assimilation, you can `vi build.all` and comment out this line `./build.rdas &> ./log.build.rdas 2>&1 &` before running `./build.all`
 
 # 2. Setup and run experiments:
-### 2.1. cat/copy and modify exp.setup
+### 2.1. copy and modify exp.setup
 ```
 cd workflow
 # find the target exp setup template file, copy it. Here we use exp.conus12km as an example:
@@ -31,13 +31,14 @@ Refer to [this guide](https://github.com/NOAA-EMC/rrfs-workflow/wiki/deploy-a-re
     
 This Python script creates an experiment directory (i.e. `EXPDIR`), writes out a runtime version of `exp.setup` under EXPDIR, and  then copies runtime config files to `EXPDIR`.  
 
-If you get errors when running `setup_rocoto.py`, it is mostly because currently loaded Python is lower than expected.  
-You may run 
+If you get errors when running `setup_rocoto.py`, it is mostly because the currently loaded Python version is lower than expected.  
+`setup_rocoto.py` requires **Python 3.8** or higher. The Default `/usr/bin/python` on Hera and Jet is version 3.6.8, which is too old.  
+You may load Python 3.11.11 included in rrfs-workflow by running
 ```
 source ../workflow/ush/load_bokeh.sh
 ```
-and then run setup_rocoto.py again.  
-If the above source command fails to load a working Python environment, it usally means there is a module conflict. You may do `module purge` and/or start over from a clean terminal window.
+and then run `setup_rocoto.py` again.  
+If the above source command fails to load a working Python environment, it usually means there is a module conflict. You may do `module purge` and/or start over from a clean terminal window.
        
 ### 2.3 run and monitor experiments using rocoto commands
 

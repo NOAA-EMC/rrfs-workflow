@@ -1,0 +1,264 @@
+#!/usr/bin/env python
+#
+import os
+import sys
+import re
+
+
+def get_value(line):
+    return re.search(r'<value>(.*?)</value>', line).group(1)
+
+rundir = os.path.dirname(os.path.abspath(__file__))
+expdir = os.path.dirname(rundir)
+
+# check exp.setup
+getkf = False
+with open(f'{expdir}/rrfs.xml') as infile:
+    for line in infile:
+        if "COLDSTART_CYCS_DO_DA" in line:
+            COLDSTART_CYCS_DO_DA = get_value(line)
+        elif "HYB_WGT_ENS" in line:
+            HYB_WGT_ENS = get_value(line)
+        elif "HYB_WGT_STATIC" in line:
+            HYB_WGT_STATIC = get_value(line)
+        elif "HYB_ENS_TYPE" in line:
+            HYB_ENS_TYPE = get_value(line)
+        elif "HYB_ENS_PATH" in line:
+            HYB_ENS_PATH = get_value(line)
+        elif "CYC_INTERVAL" in line:
+            CYC_INTERVAL = get_value(line)
+        elif "FCST_LEN_HRS_CYCLES" in line:
+            FCST_LEN_HRS_CYCLES = get_value(line)
+        elif "getkf_observer" in line:
+            getkf = True
+
+# prepare a summary
+if float(HYB_WGT_ENS) == 0.0 and float(HYB_WGT_STATIC) == 1.0:
+    summary = "Pure 3DVAR"
+else:
+    if float(HYB_WGT_ENS) == 1.0 and float(HYB_WGT_STATIC) == 0.0:
+        summary = "Pure 3DEnVAR"
+    else:
+        summary = "Hybrid 3DEnVAR"
+    #
+    if int(HYB_ENS_TYPE) == 1:
+        summary += ", using RRFS ensembles"
+    elif int(HYB_ENS_TYPE) == 2:
+        summary += ", using GEFS/GDAS ensembles"
+    else:
+        summary += ", ensemble type is determined at runtime"
+
+    if (int(HYB_ENS_TYPE) == 1 or int(HYB_ENS_TYPE) == 2) and (HYB_ENS_PATH != ""):
+        summary += f"\nEnsembles come from: {HYB_ENS_PATH}"
+# ~~~~~~~~
+if COLDSTART_CYCS_DO_DA.upper() == "FALSE":
+    summary += "\nNO data assimiation at the cold start cycles"
+elif COLDSTART_CYCS_DO_DA.upper() == "FALSE":
+    summary += "\nDO data assimilation at the cold start cycles"
+summary += f"\nCycling every {int(CYC_INTERVAL)} hour(s)"
+summary += f"\nFCST_LEN_HRS_CYCLES={FCST_LEN_HRS_CYCLES}"
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# read the iuse information from convinfo for conventional observations
+#
+dcConvInfo = {}
+with open(f'{expdir}/config/convinfo', 'r') as sfile:
+    for line in sfile:
+        if not line.strip().startswith("!"):
+            fields = line.split()
+            if len(fields) == 9:
+                atype = fields[0]
+                if fields[1] != '0':
+                    atype += fields[1].zfill(3)
+                if fields[2] != '0':
+                    atype += "_" + fields[2].zfill(3)
+                #
+                dcTMP = {
+                    'iuse': fields[3],
+                    'twindow': fields[4],
+                    'gross': fields[5],
+                    'ermax': fields[6],
+                    'ermin': fields[7],
+                    'msgtype': fields[8],
+                }
+                dcConvInfo[atype] = dcTMP
+            else:
+                print(f"read_convinfo Warning: expected 9 fields\n{line}")
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# read satinfo
+#
+dcSatInfo = {}
+satinfo_file = f'{expdir}/config/satinfo'
+if os.path.exists('satinfo'):
+    with open('satinfo', 'r') as sfile:
+        for line in sfile:
+            if not line.strip().startswith("!"):
+                fields = line.split()
+                if len(fields) == 11:
+                    sis = fields[0]  # sensor/instr/sat
+                    if sis in dcSatInfo:
+                        dcSIS = dcSatInfo[sis]
+                    else:
+                        dcSIS = {'channels': [], 'use_flag': [], 'error': [], 'error_cld': [], 'obserr_bound_max': [],
+                                 'var_b': [], 'var_pg': [], 'use_flag_clddet': [], 'icloud': [], 'iaerosol': [],
+                                 }
+                    #
+                    dcSIS['channels'].append(fields[1])
+                    dcSIS['use_flag'].append(fields[2])
+                    dcSIS['error'].append(fields[3])
+                    dcSIS['error_cld'].append(fields[4])
+                    dcSIS['obserr_bound_max'].append(fields[5])
+                    dcSIS['var_b'].append(fields[6])
+                    dcSIS['var_pg'].append(fields[7])
+                    dcSIS['use_flag_clddet'].append(fields[8])
+                    dcSIS['icloud'].append(fields[9])
+                    dcSIS['iaerosol'].append(fields[10])
+                    dcSatInfo[sis] = dcSIS
+                else:
+                    print(f"read_satinfo warning: expected 11 fields\n{line}")
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# generate the final use_obs list
+# ~~~~~~~~~~~~~
+# assemble a final conventional obs use/monitor list
+conv_list = {}
+for key,value in dcConvInfo.items():
+    if value['iuse'] != "0":
+        conv_list[key] = value['iuse']
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# if both conv_list and dcSatInfo are empty, print a warning message
+#
+if not conv_list and not dcSatInfo:
+    summary += "\nFATAR ERROR: no convinfo/satinfo, or empty/corrupt convinfo/satinfo under config/\nNo observations will be assimilated"
+elif not conv_list:
+    summary += "\nNo conventional observations will be assimilated, as no convinfo, or empty/corrupt convinfo under config/"
+elif not dcSatInfo:
+    summary += "\nNo satellite radiance observations will be assimilated, as no satinfo, or empty/corrupt satinfo under config/"
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# generate the yaml file on the fly
+#
+if getkf:
+    yfile = f"{expdir}/config/getkf_observer.yaml"
+else:
+    yfile = f"{expdir}/config/jedivar.yaml"
+yfile2 = f"{expdir}/config/.tmp.yaml"
+#
+with open(yfile, 'r') as infile, open(yfile2, 'w') as outfile:
+    summary_obs_use = ""
+    summary_obs_monitor = ""
+    buffer_zone = []
+    in_buffer_zone = False
+    just_read_new_obs_space = False
+    use_obs = False
+    passivate = False
+    anchor_skip_old_values = False
+    #
+    for line in infile:
+        if "obs space:" in line:
+            # just read a new obs space, need to process buffer_zone
+            if in_buffer_zone:
+                # Write out the buffer zone if not moreve_obs
+                if use_obs:
+                    for buf_line in buffer_zone:
+                        outfile.write(buf_line)
+                # Reset buffer and state tracking
+                buffer_zone = []
+                in_buffer_zone = False
+                use_obs = False
+                passivate = False
+                anchor_skip_old_values = False
+            # ~~~~~
+            just_read_new_obs_space = True
+            in_buffer_zone = True
+            buffer_zone.append(line)
+        elif just_read_new_obs_space and "name" in line:
+            just_read_new_obs_space = False
+            buffer_zone.append(line)
+            for obs, mode in conv_list.items():
+                if obs in line and obs not in ["dw", "srw", "rw"]:
+                    use_obs = True
+                    if mode == "-1":
+                        passivate = True
+                        summary_obs_monitor += f"{obs},"
+                    else:
+                        summary_obs_use += f"{obs},"
+                    break
+            # ~~~~~~
+            if not use_obs:  # check whether it is a satellite observation
+                for obs in dcSatInfo:
+                    if obs in line:
+                        summary_obs_use += f"{obs},"
+                        use_obs = True
+                        passivate = False # satellite monitoring needs further work
+                        break
+
+        elif "obs filters:" in line:
+            buffer_zone.append(line)
+            if passivate:
+                nSpaces = len(line) - len(line.lstrip()) + 2
+                spaces = " "*nSpaces 
+                buffer_zone.append(spaces + "- filter: Perform Action\n")
+                buffer_zone.append(spaces + "  action:\n")
+                buffer_zone.append(spaces + "    name: passivate\n\n")
+            
+        elif "_anchor_" in line:
+            if not use_obs:  # use_obs is determined after the above `if` and `elif`
+                # print("found a sat anchor, but the SIS is not in 'satinfo' or empty/corrupt 'satinfo'")
+                continue
+            if "_anchor_channels:" in line:
+                anchor_name = "channels"
+            elif "_anchor_use_flag_clddet:" in line:  # process _anchor_use_flag_clddet before _anchor_use_flag
+                anchor_name = "use_flag_clddet"
+            elif "_anchor_use_flag:" in line:
+                anchor_name = "use_flag"
+            elif "_anchor_error:" in line:
+                anchor_name = "error"
+            elif "_anchor_obserr_bound_max:" in line:
+                anchor_name = "obserr_bound_max"
+            mysis = line.split('&')[1].strip().split(' ', 1)[0].strip()[:-len(f'{anchor_name}_')]  # get the SIS id
+            nSpaces = len(line) - len(line.lstrip())
+            spaces = " "*nSpaces
+            pre_spaces = spaces + "    " #  add extra 4 spaces for anchor values
+            if len(dcSatInfo[mysis][anchor_name]) < 100:
+                elements_per_line = 10
+            else:
+                elements_per_line = 20
+            tmp_str = list_to_delimited_string(dcSatInfo[mysis][anchor_name], pre_spaces, elements_per_line=elements_per_line)
+            new_str = '\n'.join(map(str, tmp_str))
+            if anchor_name == "channels":
+                values = f"\n{new_str}"
+            else:
+                values = f" [\n{new_str}]"
+            line = f"{spaces}_anchor_{anchor_name}: &{mysis}_{anchor_name}{values}\n"
+            anchor_skip_old_values = True
+            buffer_zone.append(line)
+        elif anchor_skip_old_values:
+            if "distribution:" in line:
+                anchor_skip_old_values = False
+                buffer_zone.append(line)
+        elif in_buffer_zone:
+            buffer_zone.append(line)
+
+        if not in_buffer_zone:
+            outfile.write(line)
+    # ~~~~
+    if buffer_zone:
+        if use_obs:
+            for buf_line in buffer_zone:
+                outfile.write(buf_line)
+# ~~~~~~~~
+print(summary)
+summary_obs_use = summary_obs_use.rstrip(",")
+summary_obs_monitor = summary_obs_monitor.rstrip(",")
+print(f"Assimilated observations:\n  {summary_obs_use}")
+if summary_obs_monitor != "":
+    print(f"Monitored observations:\n  {summary_obs_monitor}")
+print('\nUse "yaml_list_obs config/jedivar.yaml" to check available observers')
+print('Use "convinfo_list_obs config/convinfo" to get a summary of convinfo')
+print('Use "satinfo_list_sis config/satinfo" to get a summary of satinfo')
+print('The following utilities are available to faciliate modifying the super YAML file, convinfo/satinfo files:')
+print('  yaml_keep_obs, yaml_remove_obs,  satinfo_keep_sis, satinfo_remove_sis')
+print('  convinfo_keep_obs, convinfo_remove_obs, convinfo_use_obs, convinfo_monitor_obs, convinfo_unuse_obs')

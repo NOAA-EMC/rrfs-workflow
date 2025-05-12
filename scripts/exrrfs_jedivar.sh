@@ -9,6 +9,7 @@ cd "${DATA}" || exit 1
 
 start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S) 
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 
+time_min="${subcyc:-00}"
 #
 # determine whether to begin new cycles
 #
@@ -21,6 +22,8 @@ else
   do_DAcycling='true'
   initial_file=${UMBRELLA_PREP_IC_DATA}/mpasin.nc
 fi
+#
+# link fix files from physics, meshes, graphinfo, stream list, and jedi
 #
 ln -snf "${FIXrrfs}/physics/${PHYSICS_SUITE}"/*  .
 ln -snf "${FIXrrfs}/meshes/${MESH_NAME}.ugwp_oro_data.nc"  ./ugwp_oro_data.nc
@@ -54,53 +57,11 @@ cp "${UMBRELLA_PREP_IC_DATA}"/*satbias* satbias_in/.
 #
 # copy observations files
 #
-cp "${COMOUT}"/ioda_bufr/det/* obs/.
+source "${USHrrfs}/copy_obs.sh" "jedivar"
 #
 #  find ensemble forecasts based on user settings
 #
-if [[ "${HYB_WGT_ENS}" != "0" ]] && [[ "${HYB_WGT_ENS}" != "0.0" ]]; then # using ensembles
-  if [[ "${HYB_ENS_TYPE}" == "1"  ]]; then # rrfsens
-    echo "use rrfs ensembles"
-    mpasout_file=mpasout.${timestr}.nc
-    for (( ii=0; ii<4; ii=ii+1 )); do
-       CDATEp=$(${NDATE} "-${ii}" "${CDATE}" )
-       if [[ "${HYB_ENS_PATH}" == "" ]]; then
-         ensdir=${COMINrrfs}/rrfs.${CDATEp:0:8}/${CDATEp:8:2}
-       else
-         ensdir=${HYB_ENS_PATH}/rrfs.${CDATEp:0:8}/${CDATEp:8:2}
-       fi
-       ensdir_m001=${ensdir}/fcst/enkf/mem001
-       if [[ -s "${ensdir_m001}/${mpasout_file}" ]]; then
-         for (( iii=1; iii<31; iii=iii+1 )); do
-            memid=$(printf %03d "${iii}")
-            ln -s "${ensdir}/fcst/enkf/mem${memid}/${mpasout_file}" "ens/mem${memid}.nc"
-         done
-       fi
-    done
-  elif [[ "${HYB_ENS_TYPE}" == "2"  ]]; then # interpolated GDAS/GEFFS
-    echo "use interpolated GDAS/GEFS ensembles"
-    init_file=init.nc
-    for (( ii=0; ii<7; ii=ii+1 )); do
-       CDATEp=$(${NDATE} "-${ii}" "${CDATE}" )
-       if [[ "${HYB_ENS_PATH}" == "" ]]; then
-         ensdir=${COMINrrfs}/rrfs.${CDATEp:0:8}/${CDATEp:8:2}
-       else
-         ensdir=${HYB_ENS_PATH}/rrfs.${CDATEp:0:8}/${CDATEp:8:2}
-       fi
-       ensdir_m001=${ensdir}/ic/enkf/mem001
-       if [[ -s "${ensdir_m001}/${init_file}" ]]; then
-         for (( iii=1; iii<31; iii=iii+1 )); do
-            memid=$(printf %03d "${iii}")
-            ln -s "${ensdir}/ic/enkf/mem${memid}/${init_file}" "ens/mem${memid}.nc"
-         done
-       fi
-    done
-
-  elif [[ "${HYB_ENS_TYPE}" == "0"  ]]; then # rrfsens->GDAS->3DVAR
-    echo "determine the ensemble type on the fly"
-    echo "==== to be implemented ===="
-  fi
-fi
+source "${USHrrfs}/find_ensembles.sh"
 #
 #  link background
 #
@@ -152,6 +113,7 @@ esac
 if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CYCS_DO_DA} == "true" ]]; then
   # run mpasjedi_variational.x
   #export OOPS_TRACE=1
+  #export OOPS_DEBUG=1
   export OMP_NUM_THREADS=1
 
   source prep_step
