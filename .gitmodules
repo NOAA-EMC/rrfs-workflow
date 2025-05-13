@@ -27,3 +27,7 @@
 	path = sorc/RRFS_UTILS
 	url = https://github.com/hu5970/RRFS_UTILS.git
         ignore = all
+[submodule "ush/wxflow"]
+	path = ush/wxflow
+	url = https://github.com/NOAA-EMC/wxflow.git
+        ignore = all
