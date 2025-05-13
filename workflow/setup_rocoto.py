@@ -91,8 +91,11 @@ shutil.copy(f'{HOMErrfs}/workflow/VERSION', f'{expdir}/VERSION')
 # generate exp.setup, snapshot_git_diff.txt under $expdir
 latest_log = run_git_command(['git', 'log', '--oneline', '--no-decorate', '-1'])
 branch = run_git_command(['git', 'rev-parse', '--abbrev-ref', 'HEAD'])
-remote = run_git_command(['git', 'config', f'branch.{branch}.remote'])
-remote_url = run_git_command(['git', 'remote', 'get-url', remote])
+try:
+    remote = run_git_command(['git', 'config', f'branch.{branch}.remote'])
+    remote_url = run_git_command(['git', 'remote', 'get-url', remote])
+except Exception:
+    remote_url = "this_is_local_branch"
 diff_results = run_git_command(['git', 'diff'])
 diff_results += run_git_command(['git', 'diff', '--cached'])
 with open(f'{expdir}/config/snapshot_git_diff.txt', 'w') as outfile:
