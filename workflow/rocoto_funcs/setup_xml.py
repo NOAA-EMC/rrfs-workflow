@@ -136,14 +136,16 @@ def setup_xml(HOMErrfs, expdir):
 # ---------------------------------------------------------------------------
 
     fPath = f"{expdir}/run_rocoto.sh"
-    extra_modules = ""
+    extra = ""
     if machine in ['orion', 'hercules']:
-        extra_modules = "contrib"
+        extra = "\nmodule load contrib"
+    elif machine in ['gaea']:
+        extra = "\nmodule use /ncrc/proj/epic/rocoto/modulefiles"
     with open(fPath, 'w') as rocotoFile:
         text = \
             f'''#!/usr/bin/env bash
-source /etc/profile
-module load {extra_modules} rocoto
+source /etc/profile{extra}
+module load rocoto
 cd {expdir}
 rocotorun -w rrfs.xml -d rrfs.db
 '''
