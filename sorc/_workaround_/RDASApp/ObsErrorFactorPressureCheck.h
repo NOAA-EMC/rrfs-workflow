@@ -50,7 +50,7 @@ class ObsErrorFactorPressureCheckParameters : public oops::Parameters {
   ///          request_saturation_specific_humidity_geovals: true
   oops::Parameter<bool> requestQSat{"request_saturation_specific_humidity_geovals", false, this};
 
-  oops::Parameter<bool> obsErrorRamp{"surface observation error ramp", true, this};
+  oops::Parameter<bool> obsErrorRamp{"surface observation error ramp", false, this};
 
   /// Surface wind obs are not reported with observation height (ZOB) in bufr/ioda,
   /// but there is MetaData/stationElevation. The SetSfcWndObsHeight parameter
