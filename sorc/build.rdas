@@ -38,6 +38,10 @@ cd "${HOMErrfs}/sorc/RDASApp" || exit 1
 # https://github.com/NOAA-GSL/MPAS-Model/pull/115 by Guoqing
 cp ../_workaround_/MPAS-Model/Registry.xml sorc/mpas/src/core_atmosphere
 
+# workaround for ramp option in ObsErrorFactorPressureCheck
+cp ../_workaround_/RDASApp/ObsErrorFactorPressureCheck.cc sorc/ufo/src/ufo/filters/obsfunctions/ObsErrorFactorPressureCheck.cc
+cp ../_workaround_/RDASApp/ObsErrorFactorPressureCheck.h sorc/ufo/src/ufo/filters/obsfunctions/ObsErrorFactorPressureCheck.h
+
 # workaround for using the GSL surface operator
 # https://github.com/JCSDA-internal/ufo/pull/3622 by Sijie
 #cp ../_workaround_/RDASApp/CMakeLists.txt sorc/ufo/src/ufo
