@@ -9,8 +9,8 @@ import re
 args = sys.argv
 nargs = len(args) - 1
 if nargs < 2:
-    print(f"{args[0]} <yaml_file> <obs_str>\n")
-    print(f'  eg: {args[0]} jedivar.yaml "t120,q120,ps120,uv220"')
+    print(f"{os.path.basename(sys.argv[0])} <yaml_file> <obs_str>\n")
+    print(f'  eg: {os.path.basename(sys.argv[0])} jedivar.yaml "t120,q120,ps120,uv220"')
     exit()
 yfile = args[1]
 basename = yfile.rstrip(".yaml")
