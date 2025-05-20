@@ -2331,7 +2331,7 @@ suite nco_rrfs_dev_00
               edit GSI_TYPE 'ANALYSIS'
               edit CYCLE_TYPE 'prod'
               task jrrfs_det_analysis_gsi
-                trigger ../../fsm/jrrfs_fsm:release_det_analysis_gsi
+                trigger ../../fsm/jrrfs_fsm:release_det_analysis_gsi and ../../prep/det/jrrfs_det_prep_cyc==complete
               task jrrfs_det_update_lbc_soil
                 trigger ./jrrfs_det_analysis_gsi==complete
               task jrrfs_det_analysis_gsi_diag

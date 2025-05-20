@@ -962,7 +962,7 @@ else
   n_iolayouty=$(($IO_LAYOUT_Y))
 fi
 
-. ${FIX_GSI}/gsiparm.anl.sh
+. ${USHrrfs}/gsiparm.anl.sh
 cat << EOF > gsiparm.anl
 $gsi_namelist
 EOF

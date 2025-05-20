@@ -9,8 +9,8 @@ export HOMErrfs='@HOMErrfs@'
 export USHrrfs='@HOMErrfs@/ush'
 export SORCrrfs='@HOMErrfs@/sorc'
 export PARMrrfs='@HOMErrfs@/parm'
-export FIXam='@HOMErrfs@/parm/config/det/fix_am'
-export FIXLAM='@HOMErrfs@/parm/config/det/fix_lam'
+export FIXam='@HOMErrfs@/fix/am'
+export FIXLAM='@HOMErrfs@/fix/lam/RRFS_NA_3km'
 export FIXgsm='@HOMErrfs@/fix/am'
 export DIAG_TABLE_TMPL_FP='@HOMErrfs@/parm/diag_table.RRFS_sas_clm'
 export MODEL_CONFIG_TMPL_FP='@HOMErrfs@/parm/model_configure'
@@ -26,7 +26,7 @@ FV3_NML_STOCH_FP='@HOMErrfs@/parm/config/ensf/input.nml_stoch'
 FV3_NML_RESTART_STOCH_FP='@HOMErrfs@/parm/config/ensf/input.nml_restart_stoch'
 UFS_YAML_FP='@HOMErrfs@/parm/config/ensf/fd_ufs.yaml'
 FV3_EXEC_FP='@HOMErrfs@/exec/ufs_model'
-THOMPSON_MP_CLIMO_FP='@HOMErrfs@/parm/config/ensf/fix_am/Thompson_MP_MONTHLY_CLIMO.nc'
+THOMPSON_MP_CLIMO_FP='@HOMErrfs@/fix/am/Thompson_MP_MONTHLY_CLIMO.nc'
 
 
 
@@ -260,7 +260,7 @@ SDF_USES_THOMPSON_MP='TRUE'
 
 # [post step]
 USE_CUSTOM_POST_CONFIG_FILE='TRUE'
-CUSTOM_POST_CONFIG_FP='@HOMErrfs@/fix/upp/postxconfig-NT-rrfs.txt'
+CUSTOM_POST_CONFIG_FP='@HOMErrfs@/fix/upp/postxconfig-NT-refs.txt'
 CUSTOM_POST_PARAMS_FP='@HOMErrfs@/fix/upp/params_grib2_tbl_new'
 
 
