@@ -13,10 +13,17 @@ task_id=${COMMAND#*_} # remove the "JRRFS_" part
 export task_id=${task_id,,} #to lower case
 source "${HOMErrfs}/workflow/ush/detect_machine.sh"
 echo "run on ${MACHINE}"
+if [[ ${MACHINE} == "wcoss2" ]]; then
+  source "${HOMErrfs}/versions/run.ver"
+  export NTASKS=$(wc -l < "$PBS_NODEFILE")
+  export NODES=$(sort -u "$PBS_NODEFILE" | wc -l )
+  export PPN=$(sort "$PBS_NODEFILE" | uniq -c | awk '{print $1}' | paste -sd "," -)
+else
+  export NTASKS=${SLURM_NTASKS}
+  export NODES=${SLURM_JOB_NUM_NODES}
+  export PPN=${SLURM_TASKS_PER_NODE%%(*} # remove the (x6) part of 20(x6)
+fi
 #
-export NTASKS=${SLURM_NTASKS}
-export NODES=${SLURM_JOB_NUM_NODES}
-export PPN=${SLURM_TASKS_PER_NODE%%(*} # remove the (x6) part of 20(x6)
 ulimit -s unlimited
 ulimit -v unlimited
 ulimit -a

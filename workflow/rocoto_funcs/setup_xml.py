@@ -141,6 +141,8 @@ def setup_xml(HOMErrfs, expdir):
         extra = "\nmodule load contrib"
     elif machine in ['gaea']:
         extra = "\nmodule use /ncrc/proj/epic/rocoto/modulefiles"
+    elif machine in ['wcoss2']:
+        extra = "\nmodule use /apps/ops/test/nco/modulefiles/core"
     with open(fPath, 'w') as rocotoFile:
         text = \
             f'''#!/usr/bin/env bash
