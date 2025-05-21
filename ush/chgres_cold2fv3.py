@@ -93,8 +93,8 @@ if ColdStartWinds:
     v_w = np.asfortranarray(v_w.transpose())
 
     # Initialize some computed fields to zero
-    ud = np.float64(0.0*u_s)  # (3950, 2701, 66)
-    vd = np.float64(0.0*u_w)  # (3951, 2700, 66)
+    ud = np.zeros_like(u_s, dtype=np.float64)  # (3950, 2701, 66)
+    vd = np.zeros_like(u_w, dtype=np.float64)  # (3951, 2700, 66)
 
     # rotate winds to model d-grid
     chgres_winds.main(gridx, gridy, u_s, v_s, u_w, v_w, ud, vd)
@@ -120,15 +120,8 @@ if VertRemapScalar:
     ak0[0] = 1.000000000000000E-009
     bk0[0] = 1.000000000000000E-009
 
-    sphum = np.float64(coldnc["sphum"][:, :, :])     # (66, 2700, 3950)
-    liq_wat = np.float64(coldnc["liq_wat"][:, :, :])
-    o3mr = np.float64(coldnc["o3mr"][:, :, :])
-    ice_wat = np.float64(coldnc["ice_wat"][:, :, :])
-    rainwat = np.float64(coldnc["rainwat"][:, :, :])
-    snowwat = np.float64(coldnc["snowwat"][:, :, :])
-    graupel = np.float64(coldnc["graupel"][:, :, :])
-    ntracers = 7
-    qa = np.array([sphum, liq_wat, o3mr, ice_wat, rainwat, snowwat, graupel])
+    sphum_cold = np.float64(coldnc["sphum"][:, :, :])     # (66, 2700, 3950)
+    ntracers = 1
 
     # Fortran wants everything transposed and in fortran array type
     ak = np.asfortranarray(ak)   # Don't transpose 1D array
@@ -139,7 +132,7 @@ if VertRemapScalar:
     ps = np.asfortranarray(ps.transpose())
     zh = np.asfortranarray(zh.transpose())
     omga = np.asfortranarray(omga.transpose())
-    qa = np.asfortranarray(qa.transpose())
+    sphum_cold = np.asfortranarray(sphum_cold.transpose())
     delp_cold = np.asfortranarray(delp_cold.transpose())
     t_cold = np.asfortranarray(t_cold.transpose())
 
@@ -151,13 +144,13 @@ if VertRemapScalar:
     levp = npz + 1  # (km)
 
     # Initialize some computed fields
-    Atm_delp = 1.0*delp_cold[:, :, 1:]  # delp for sfcp
-    Atm_q = 1.0*qa[:, :, 1:, :]         # tracers... sphum=1
-    Atm_pt = 1.0*t_cold[:, :, 1:]       # temperature
-    Atm_ps = 1.0*ps[:, :]               # need for remap_dwinds
+    Atm_delp = np.zeros_like(delp_cold[:, :, 1:], order="F")  # delp for sfcp
+    Atm_q =    np.zeros_like(sphum_cold[:, :, 1:], order="F") # tracers... sphum=1
+    Atm_pt =   np.zeros_like(t_cold[:, :, 1:], order="F")     # temperature
+    Atm_ps =   np.zeros_like(ps, order="F")
 
     # Run the scalar remapping Fortran code
-    remap_scalar.main(levp, npz, ntracers, ak0, bk0, ak, bk, ps, qa, zh, omga, t_cold,
+    remap_scalar.main(levp, npz, ntracers, ak0, bk0, ak, bk, ps, sphum_cold, zh, omga, t_cold,
                       isrt, iend, jsrt, jend, Atm_pt, Atm_q, Atm_delp, Atm_phis, Atm_ps)
 
     print("Starting VertRemapScalar... Done.")
@@ -168,8 +161,8 @@ if VertRemapWinds:
     print("Starting VertRemapWinds....")
 
     # ud and vd have an extra level compared to Atm_u/v
-    Atm_u = 1.0*ud[:, :, 1:]  # (3950, 2701, 65)
-    Atm_v = 1.0*vd[:, :, 1:]  # (3951, 2700, 65)
+    Atm_u = np.zeros_like(ud[:, :, 1:], order="F")  # (3950, 2701, 65)
+    Atm_v = np.zeros_like(vd[:, :, 1:], order="F")  # (3951, 2700, 65)
 
     # vertically remap the dwinds with Fortran code
     remap_dwinds.main(levp, npz, ak0, bk0, ak, bk, ps, ud, vd,
@@ -229,7 +222,7 @@ if WriteData:
 
         # For sphum
         new_var = "sphum_cold2fv3"
-        sphum = Atm_q[:, :, :, 0].T # (66, 2700, 3950)
+        sphum = np.transpose(Atm_q) # (66, 2700, 3950)
         var_to_duplicate = coldnc.variables["sphum"]
         coldnc.createVariable(new_var, var_to_duplicate.datatype, ('nlev', 'lat', 'lon'))
         coldnc.variables[new_var][:, :, :] = sphum
