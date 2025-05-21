@@ -15,9 +15,9 @@ source "${HOMErrfs}/workflow/ush/detect_machine.sh"
 echo "run on ${MACHINE}"
 if [[ ${MACHINE} == "wcoss2" ]]; then
   source "${HOMErrfs}/versions/run.ver"
-  export NTASKS=$(wc -l < "$PBS_NODEFILE")
-  export NODES=$(sort -u "$PBS_NODEFILE" | wc -l )
-  export PPN=$(sort "$PBS_NODEFILE" | uniq -c | awk '{print $1}' | paste -sd "," -)
+  export NTASKS=$( wc -l $PBS_NODEFILE | awk '{print $1}' )
+  export PPN=$( grep -c $(head -1 $PBS_NODEFILE) $PBS_NODEFILE )
+  export NODES=$(( $NTASKS / $PPN ))
 else
   export NTASKS=${SLURM_NTASKS}
   export NODES=${SLURM_JOB_NUM_NODES}
