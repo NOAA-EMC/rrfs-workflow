@@ -195,23 +195,32 @@ ln -snf ${FIX_UPP_CRTM}/*bin ./
 if [ ${USE_CUSTOM_POST_CONFIG_FILE} = "TRUE" ]; then
 # For RRFS: use special postcntrl for fhr=0,1 to eliminate duplicate 
 # max/min hourly (f000 only) and accumulation fields (f000 and f001);
-# use special postcntrl for ensemble and firewx forecasts to eliminate
-# smoke/dust fields
+# use special postcntrl for ensemble and firewx forecasts
   if [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ] || [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
     if [ ${post_fhr} -eq 000 ]; then
-      if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then
-        CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-rrfs_f00.txt"
-      else
-        CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-rrfs_nosmokedust_f00.txt"
+      if [ ${WGF} = "det" ]; then
+        CUSTOM_POST_CONFIG_FP="${HOMErrfs}/fix/upp/postxconfig-NT-rrfs_f00.txt"
+      elif [ ${WGF} = "ensf" ]; then
+        CUSTOM_POST_CONFIG_FP="${HOMErrfs}/fix/upp/postxconfig-NT-refs_f00.txt"
+      elif [ ${WGF} = "firewx" ]; then
+        CUSTOM_POST_CONFIG_FP="${HOMErrfs}/fix/upp/postxconfig-NT-rrfs_firewx_f00.txt"
       fi
     elif [ ${post_fhr} -eq 001 ]; then
-      if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then
-        CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-rrfs_f01.txt"
-      else
-        CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-rrfs_nosmokedust_f01.txt"
+      if [ ${WGF} = "det" ]; then
+        CUSTOM_POST_CONFIG_FP="${HOMErrfs}/fix/upp/postxconfig-NT-rrfs_f01.txt"
+      elif [ ${WGF} = "ensf" ]; then
+        CUSTOM_POST_CONFIG_FP="${HOMErrfs}/fix/upp/postxconfig-NT-refs_f01.txt"
+      elif [ ${WGF} = "firewx" ]; then
+        CUSTOM_POST_CONFIG_FP="${HOMErrfs}/fix/upp/postxconfig-NT-rrfs_firewx_f01.txt"
       fi
-    elif [ "${DO_SMOKE_DUST}" = "FALSE" ]; then
-      CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-rrfs_nosmokedust.txt"
+    else
+      if [ ${WGF} = "det" ]; then
+        CUSTOM_POST_CONFIG_FP="${HOMErrfs}/fix/upp/postxconfig-NT-rrfs.txt"
+      elif [ ${WGF} = "ensf" ]; then
+        CUSTOM_POST_CONFIG_FP="${HOMErrfs}/fix/upp/postxconfig-NT-refs.txt"
+      elif [ ${WGF} = "firewx" ]; then
+        CUSTOM_POST_CONFIG_FP="${HOMErrfs}/fix/upp/postxconfig-NT-rrfs_firewx.txt"
+      fi
     fi
   fi
   if [ ${post_min} -ge ${nsout_min} ]; then
@@ -262,6 +271,24 @@ if [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km_HRRRIC" ] || [ ${PREDEF_GRID_NAME} = 
       fi
     done
   done
+fi
+#
+#-----------------------------------------------------------------------
+#
+# For ensemble forecasts, set the e1, e2, and e3 environment variables
+# that are needed by the UPP code.
+#
+# e1 - type of ensemble forecast (3 for REFS - positively perturbed forecast -
+# refer to Grib2 Code Table 4.6)
+# e2 - 2-digit member number (e.g. 01, 02, 03, 04, 05)
+# e3 - total number of ensemble members (5 for REFS)
+#
+#-----------------------------------------------------------------------
+#
+if [ ${WGF} = "ensf" ]; then
+  export e1=3
+  export e2=`echo ${MEMBER_NAME} | cut -c2-3`
+  export e3=5
 fi
 #
 #-----------------------------------------------------------------------

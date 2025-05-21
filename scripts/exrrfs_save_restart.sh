@@ -142,17 +142,9 @@ if [ -r "${shared_forecast_restart_data}/${restart_prefix}.coupler.res" ]; then
   #
   #-----------------------------------------------------------------------
   #
-  if [ "${IO_LAYOUT_Y}" = "1" ]; then
-    cpreq -p ${shared_forecast_restart_data}/* ${COMOUT}/RESTART
-  else
-    for file in ${filelistn}; do
-      for ii in ${list_iolayout}
-      do
-        iii=$(printf %4.4i $ii)
-        cpreq -p ${shared_forecast_restart_data}/${restart_prefix}.${file}.${iii} ${COMOUT}/RESTART/${restart_prefix}.${file}.${iii}
-      done
-    done
-  fi
+  for restart_source_file in phy_data.nc fv_tracer.res.tile1.nc fv_core.res.tile1.nc sfc_data.nc fv_srf_wnd.res.tile1.nc fv_core.res.nc coupler.res; do
+    cpreq ${shared_forecast_restart_data}/${restart_prefix}.${restart_source_file} ${COMOUT}/RESTART
+  done
   echo " ${fhr} forecast from ${yyyymmdd}${hh} is ready " #> ${COMOUT}/RESTART/restart_done_f${fhr}
 else
   echo "This forecast hour does not need to save restart: ${yyyymmdd}${hh}f${fhr}"

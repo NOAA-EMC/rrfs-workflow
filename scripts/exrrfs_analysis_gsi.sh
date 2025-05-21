@@ -214,6 +214,8 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
       (( ifound += 1 ))
     else
       print_info_msg "WARNING: Cannot find ensemble files: ${dynvarfile} ${tracerfile} ${phyvarfile} "
+      date
+      ls -alrt ${bkpathmem}
     fi
     (( imem += 1 ))
   done
@@ -962,7 +964,7 @@ else
   n_iolayouty=$(($IO_LAYOUT_Y))
 fi
 
-. ${FIX_GSI}/gsiparm.anl.sh
+. ${USHrrfs}/gsiparm.anl.sh
 cat << EOF > gsiparm.anl
 $gsi_namelist
 EOF
