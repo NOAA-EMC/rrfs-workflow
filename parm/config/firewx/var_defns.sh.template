@@ -9,8 +9,8 @@ export HOMErrfs='@HOMErrfs@'
 export USHrrfs='@HOMErrfs@/ush'
 export SORCrrfs='@HOMErrfs@/sorc'
 export PARMrrfs='@HOMErrfs@/parm'
-export FIXam='@HOMErrfs@/parm/config/firewx/fix_am'
-export FIXLAM='@HOMErrfs@/parm/config/firewx/fix_lam'
+export FIXam='@HOMErrfs@/fix/am'
+export FIXLAM='@HOMErrfs@/fix/lam/RRFS_NA_3km'
 export FIXgsm='@HOMErrfs@/fix/am'
 export DIAG_TABLE_TMPL_FP='@HOMErrfs@/parm/diag_table.RRFS_sas_nogwd'
 export MODEL_CONFIG_TMPL_FP='@HOMErrfs@/parm/model_configure'
@@ -27,7 +27,7 @@ FV3_NML_STOCH_FP='@HOMErrfs@/parm/config/firewx/input.nml_stoch'
 FV3_NML_RESTART_STOCH_FP='@HOMErrfs@/parm/config/firewx/input.nml_restart_stoch'
 UFS_YAML_FP='@HOMErrfs@/parm/config/firewx/fd_ufs.yaml'
 FV3_EXEC_FP='@HOMErrfs@/exec/ufs_model'
-THOMPSON_MP_CLIMO_FP='@HOMErrfs@/parm/config/firewx/fix_am/Thompson_MP_MONTHLY_CLIMO.nc'
+THOMPSON_MP_CLIMO_FP='@HOMErrfs@/fix/am/Thompson_MP_MONTHLY_CLIMO.nc'
 
 # [platform]
 WORKFLOW_MANAGER='ecflow'
@@ -35,11 +35,11 @@ WORKFLOW_MANAGER='ecflow'
 # [init step]
 GRID_GEN_METHOD='ESGgrid'
 RUN_TASK_MAKE_GRID='TRUE'
-GRID_DIR='@HOMErrfs@/parm/config/firewx/grid'
+GRID_DIR='@HOMErrfs@/fix/lam/RRFS_NA_3km'
 RUN_TASK_MAKE_OROG='TRUE'
-OROG_DIR='@HOMErrfs@/parm/config/firewx/orog'
+OROG_DIR='@HOMErrfs@/fix/lam/RRFS_NA_3km'
 RUN_TASK_MAKE_SFC_CLIMO='TRUE'
-SFC_CLIMO_DIR='@HOMErrfs@/parm/config/firewx/sfc_climo'
+SFC_CLIMO_DIR='@HOMErrfs@/fix/lam/RRFS_NA_3km'
 SFC_CLIMO_FIELDS=( \
 'facsf' \
 'maximum_snow_albedo' \
@@ -252,7 +252,7 @@ SDF_USES_THOMPSON_MP='TRUE'
 
 # [post step]
 USE_CUSTOM_POST_CONFIG_FILE='TRUE'
-CUSTOM_POST_CONFIG_FP='@HOMErrfs@/fix/upp/postxconfig-NT-rrfs.txt'
+CUSTOM_POST_CONFIG_FP='@HOMErrfs@/fix/upp/postxconfig-NT-rrfs_firewx.txt'
 CUSTOM_POST_PARAMS_FP='@HOMErrfs@/fix/upp/params_grib2_tbl_new'
 
 # [product step]
