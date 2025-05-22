@@ -6,7 +6,7 @@ unset cmake_ver
 unset cray_mpich_ver
 unset cray_pals_ver
 unset craype_ver
-#unset crtm_ver
+unset crtm_ver
 unset envvar_ver
 unset esmf_ver
 unset fms_ver
@@ -23,8 +23,8 @@ unset landsfcutil
 unset libjpeg_ver
 unset libpng_ver
 unset mapl_ver
-#unset module_ver
-#unset ncdiag_ver
+unset module_ver
+unset ncdiag_ver
 unset ncio_ver
 unset nemsio_ver
 unset netcdf_ver
