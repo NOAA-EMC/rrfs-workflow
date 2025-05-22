@@ -66,6 +66,7 @@ case ${task_id} in
     module load "build.${MACHINE}.intel"
     ;;
   upp)
+    source "${HOMErrfs}/versions/unset.ver"
     module purge
     module use "${HOMErrfs}/sorc/UPP/modulefiles"
     module load "${MACHINE}"
