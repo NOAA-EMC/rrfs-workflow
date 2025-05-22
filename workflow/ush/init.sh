@@ -12,6 +12,9 @@ case ${MACHINE} in
   hera)
     FIX_RRFS_LOCATION=/scratch2/BMC/rtrr/FIX_RRFS2
     ;;
+  ursa)
+    FIX_RRFS_LOCATION=/scratch4/BMC/rtrr/FIX_RRFS2
+    ;;
   jet)
     FIX_RRFS_LOCATION=/lfs5/BMC/nrtrr/FIX_RRFS2
     ;;

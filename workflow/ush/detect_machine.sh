@@ -19,6 +19,10 @@ case $(hostname -f) in
   hfe1[0-2]) MACHINE=hera ;; ### hera10-12
   hecflow01) MACHINE=hera ;; ### heraecflow01
 
+  ufe*) MACHINE=ursa ;;
+  u01*) MACHINE=ursa ;;
+  uecflow01) MACHINE=ursa ;;
+
   s4-submit.ssec.wisc.edu) MACHINE=s4 ;; ### s4
 
   fe[1-8]) MACHINE=jet ;; ### jet01-8
@@ -58,6 +62,9 @@ if [[ "${MACHINE}" == "UNKNOWN" ]]; then
   elif [[ -d /scratch1 ]]; then
     # We are on NOAA Hera
     MACHINE=hera
+  elif [[ -d /scratch3 ]]; then
+    # We are on NOAA Ursa
+    MACHINE=ursa
   elif [[ -d /work ]]; then
     # We are on MSU Orion or Hercules
     if [[ -d /apps/other ]]; then
