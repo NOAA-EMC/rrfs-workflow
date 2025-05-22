@@ -80,6 +80,9 @@ case ${task_id} in
     module load "rrfs/${MACHINE}.intel"
     ;;
 esac
+if [[ ${MACHINE} == "wcoss2" ]]; then
+  module load cray-pals/1.3.2 # for mpiexec command
+fi
 module load "prod_util/${MACHINE}"
 module list
 set -x
