@@ -224,7 +224,7 @@ class objTask:
         else:
             text = text + f'  <account>{self.dcTaskRes["account"]}</account>\n'
             text = text + f'  <queue>{self.dcTaskRes["queue"]}</queue>\n'
-            if self.dcTaskRes["partition"]!= "":
+            if self.dcTaskRes["partition"] != "":
                 text = text + f'  <partition>{self.dcTaskRes["partition"]}</partition>\n'
         text = text + f'  <walltime>{self.dcTaskRes["walltime"]}</walltime>\n'
         text = text + f'  {self.dcTaskRes["nodes"]}\n'  # note: xml tag self included, no need to add <nodes> </nodes>
