@@ -56,7 +56,7 @@ def jedivar(xmlFile, expdir, do_spinup=False):
         RUN = 'rrfs'
         ens_dep0 = ""
         for enshrs in range(1, int(ens_bec_look_back_hrs) + 1):
-            ens_depm =""
+            ens_depm = ""
             for i in range(1, int(ens_size) + 1):
                 ensindexstr = f'mem{i:03d}'
                 ens_depm = ens_depm + f'\n       <datadep age="00:05:00"><cyclestr offset="-{enshrs}:00:00">{HYB_ENS_PATH}/{RUN}.@Y@m@d/@H/fcst/enkf/</cyclestr>{ensindexstr}/<cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'
