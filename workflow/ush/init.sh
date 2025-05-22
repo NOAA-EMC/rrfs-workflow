@@ -7,7 +7,6 @@ source "${run_dir}/detect_machine.sh"
 
 case ${MACHINE} in
   wcoss2)
-    #FIX_RRFS_LOCATION=/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS2
     FIX_RRFS_LOCATION=/lfs/h2/emc/da/noscrub/samuel.degelia/FIX_RRFS2
     ;;
   hera)
