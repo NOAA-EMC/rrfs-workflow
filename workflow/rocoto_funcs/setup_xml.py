@@ -42,8 +42,9 @@ def setup_xml(HOMErrfs, expdir):
     source(f"{expdir}/config/config.{machine}")
     source(f"{expdir}/config/config.base")
     #
-    source(f"{HOMErrfs}/workflow/config_resources/config.{machine}")
+    #source(f"{HOMErrfs}/workflow/config_resources/config.{machine}")
     source(f"{HOMErrfs}/workflow/config_resources/config.base")
+    source(f"{HOMErrfs}/workflow/config_resources/config.{machine}")
     realtime = os.getenv('REALTIME', 'false')
     if realtime.upper() == "TRUE":
         source(f"{HOMErrfs}/workflow/config_resources/config.realtime")
