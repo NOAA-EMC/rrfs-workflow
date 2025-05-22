@@ -40,7 +40,14 @@ case ${task_id} in
     module purge
     module use "${HOMErrfs}/sorc/RDASApp/modulefiles"
     module load "RDAS/${MACHINE}.intel"
-    module load py-matplotlib py-cartopy py-netcdf4
+    if [[ ${MACHINE} == "wcoss2" ]]; then
+      # spack-stack does not include these python modules on wcoss2
+      # so we use a workaround of loading an existing python virtual environment
+      module unload python cray-python
+      source /apps/dev/ve/intel/19.1.3.304/python/3.10.4/rrfs/1.0/bin/activate
+    else
+      module load py-matplotlib py-cartopy py-netcdf4
+    fi
     export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOMErrfs}/sorc/RDASApp/build/lib64
     ;;
   ungrib)
