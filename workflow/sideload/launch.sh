@@ -18,6 +18,8 @@ if [[ ${MACHINE} == "wcoss2" ]]; then
   export NTASKS=$( wc -l $PBS_NODEFILE | awk '{print $1}' )
   export PPN=$( grep -c $(head -1 $PBS_NODEFILE) $PBS_NODEFILE )
   export NODES=$(( $NTASKS / $PPN ))
+  export STRIDE=$((128 / $PPN))
+  export MPI_RUN_CMD="mpiexec -n $NTASKS -ppn $PPN --cpu-bind core --depth $STRIDE --label --line-buffer"
 else
   export NTASKS=${SLURM_NTASKS}
   export NODES=${SLURM_JOB_NUM_NODES}

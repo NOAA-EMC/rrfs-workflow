@@ -96,10 +96,6 @@ done
 # run the MPAS model
 source prep_step
 ${cpreq} "${EXECrrfs}"/atmosphere_model.x .
-if [[ "${MACHINE}" == "wcoss2" ]]; then
-  STRIDE=$(( 128 / $PPN ))
-  MPI_RUN_CMD="mpiexec -n $NTASKS -ppn $PPN --cpu-bind core --depth $STRIDE --label --line-buffer"
-fi
 ${MPI_RUN_CMD} ./atmosphere_model.x
 export err=$?
 err_chk
