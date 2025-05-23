@@ -16,7 +16,7 @@ echo "run on ${MACHINE}"
 if [[ ${MACHINE} == "wcoss2" ]]; then
   source "${HOMErrfs}/versions/run.ver"
   NTASKS=$( wc -l "$PBS_NODEFILE" | awk '{print $1}' )
-  PPN=$( grep -c $(head -1 "$PBS_NODEFILE") "$PBS_NODEFILE" )
+  PPN=$( grep -c "$(head -1 "$PBS_NODEFILE")" "$PBS_NODEFILE" )
   export NTASKS
   export PPN
   export NODES=$(( NTASKS / PPN ))
