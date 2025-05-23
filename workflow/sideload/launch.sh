@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # tweaks for non-NCO experiments
 # This script will NOT be needed by NCO
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090,SC1091
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
 #
@@ -15,10 +15,12 @@ source "${HOMErrfs}/workflow/ush/detect_machine.sh"
 echo "run on ${MACHINE}"
 if [[ ${MACHINE} == "wcoss2" ]]; then
   source "${HOMErrfs}/versions/run.ver"
-  export NTASKS=$( wc -l $PBS_NODEFILE | awk '{print $1}' )
-  export PPN=$( grep -c $(head -1 $PBS_NODEFILE) $PBS_NODEFILE )
-  export NODES=$(( $NTASKS / $PPN ))
-  export STRIDE=$((128 / $PPN))
+  NTASKS=$( wc -l "$PBS_NODEFILE" | awk '{print $1}' )
+  PPN=$( grep -c $(head -1 "$PBS_NODEFILE") "$PBS_NODEFILE" )
+  export NTASKS
+  export PPN
+  export NODES=$(( NTASKS / PPN ))
+  export STRIDE=$((128 / PPN))
   export MPI_RUN_CMD="mpiexec -n $NTASKS -ppn $PPN --cpu-bind core --depth $STRIDE --label --line-buffer"
 else
   export NTASKS=${SLURM_NTASKS}
