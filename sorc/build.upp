@@ -15,7 +15,6 @@ rm -rf "${HOMErrfs}/sorc/UPP/tests/install"
 rm -rf "${EXEC}"
 
 cp "${HOMErrfs}/sorc/_workaround_/UPP/INITPOST_MPAS.F"  "${HOMErrfs}/sorc/UPP/sorc/ncep_post.fd/INITPOST_MPAS.F"
-cp "${HOMErrfs}/sorc/_workaround_/UPP/wcoss2.lua"  "${HOMErrfs}/sorc/UPP/modulefiles/wcoss2.lua"
 
 cd "${HOMErrfs}/sorc/UPP/tests" || exit 1
 ./compile_upp.sh

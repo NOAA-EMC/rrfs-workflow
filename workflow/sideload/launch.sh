@@ -44,7 +44,7 @@ case ${task_id} in
       # spack-stack does not include these python modules on wcoss2
       # so we use a workaround of loading an existing python virtual environment
       module unload python cray-python
-      source /apps/dev/ve/intel/19.1.3.304/python/3.10.4/rrfs/1.0/bin/activate
+      source ${py_virtualenv}
     else
       module load py-matplotlib py-cartopy py-netcdf4
     fi
@@ -77,6 +77,11 @@ case ${task_id} in
     module purge
     module use "${HOMErrfs}/sorc/UPP/modulefiles"
     module load "${MACHINE}"
+    if [[ ${MACHINE} == "wcoss2" ]]; then
+      # need extra modules here
+      module load libjpeg/9c
+      module load libfabric/1.20.1
+    fi
     ;;
   recenter)
     module purge

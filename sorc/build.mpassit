@@ -15,7 +15,6 @@ rm -rf "${HOMErrfs}/sorc/MPASSIT/build"
 rm -rf "${HOMErrfs}/sorc/MPASSIT/bin"
 
 cd "${HOMErrfs}/sorc/MPASSIT" || exit 1
-cp ../_workaround_/MPASSIT/build.sh ./build.sh
 ./build.sh
 
 mkdir -p "${HOMErrfs}/exec"
