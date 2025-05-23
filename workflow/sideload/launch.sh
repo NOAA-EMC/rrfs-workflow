@@ -44,7 +44,7 @@ case ${task_id} in
       # spack-stack does not include these python modules on wcoss2
       # so we use a workaround of loading an existing python virtual environment
       module unload python cray-python
-      source ${py_virtualenv}
+      source "${py_virtualenv}"
     else
       module load py-matplotlib py-cartopy py-netcdf4
     fi
