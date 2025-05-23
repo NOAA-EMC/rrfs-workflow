@@ -18,6 +18,7 @@ if [[ "${MACHINE}" == "wcoss2" ]]; then
     source "${BUILD_VERSION_FILE}"
   fi
   compiler_str="ftn"
+  cp "${HOMErrfs}/sorc/_workaround_/MPAS-Model/Makefile" "${HOMErrfs}/sorc/MPAS-Model/Makefile"
 elif [[ "${MACHINE}" == "gaea" ]]; then
   compiler_str="ifort"
 fi
@@ -29,7 +30,6 @@ module list
 
 cd "${HOMErrfs}/sorc/MPAS-Model" || exit 1
 cp ../_workaround_/MPAS-Model/Registry.xml src/core_atmosphere
-cp ../_workaround_/MPAS-Model/Makefile ./Makefile
 make clean CORE=init_atmosphere
 make -j8 "${compiler_str}" CORE=init_atmosphere PRECISION=single
 make clean CORE=atmosphere
