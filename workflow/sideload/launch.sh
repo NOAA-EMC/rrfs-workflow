@@ -75,14 +75,16 @@ case ${task_id} in
     module load "build.${MACHINE}.intel"
     ;;
   upp)
-    source "${HOMErrfs}/versions/unset.ver"
     module purge
     module use "${HOMErrfs}/sorc/UPP/modulefiles"
-    module load "${MACHINE}"
     if [[ ${MACHINE} == "wcoss2" ]]; then
-      # need extra modules here
+      # need to unset module versions sourced earlier and load a couple more
+      source "${HOMErrfs}/versions/unset.ver"
+      module load "${MACHINE}"
       module load libjpeg/9c
       module load libfabric/1.20.1
+    else
+      module load "${MACHINE}"
     fi
     ;;
   recenter)
