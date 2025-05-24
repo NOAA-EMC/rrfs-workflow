@@ -3,10 +3,9 @@ This module loads libraries for rrfs-workflow
 ]])
 
 --whatis([===[Loads libraries for rrfs-workflow ]===])
---prepend_path("MODULEPATH", "/contrib/spack-stack/spack-stack-1.9.1/envs/ue-oneapi-2024.2.1/install/modulefiles/Core")
+prepend_path("MODULEPATH", "/contrib/spack-stack/spack-stack-1.9.1/envs/ue-oneapi-2024.2.1/install/modulefiles/Core")
 
 load("stack-oneapi/2024.2.1")
-load("stack-python/3.11.7")
 load("stack-intel-oneapi-mpi/2021.13")
 
 load("cmake/3.27.9")
