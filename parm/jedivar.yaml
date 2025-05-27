@@ -858,7 +858,7 @@ cost function:
                  # The new feature "surface observation error ramp"
                  # needs to be added to UFO to align with the ramp
                  # options for temperature and humidity in GSI.
-                 #surface observation error ramp: true
+                 surface observation error ramp: true
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
