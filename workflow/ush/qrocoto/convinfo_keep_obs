@@ -7,8 +7,8 @@ import re
 args = sys.argv
 nargs = len(args) - 1
 if nargs < 2:
-    print(f"{sys.argv[0]} <convinfo_filename> <obs_str>")
-    print(f'  eg: {args[0]} convinfo "t133,q133"')
+    print(f"{os.path.basename(sys.argv[0])} <convinfo_filename> <obs_str>")
+    print(f'  eg: {os.path.basename(sys.argv[0])} convinfo "t133,q133"')
     exit()
 
 yfile = args[1]
