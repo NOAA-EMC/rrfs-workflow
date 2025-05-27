@@ -1,0 +1,42 @@
+#!/bin/bash
+
+unset bacio_ver
+unset bufr_ver
+unset cmake_ver
+unset cray_mpich_ver
+unset cray_pals_ver
+unset craype_ver
+unset crtm_ver
+unset envvar_ver
+unset esmf_ver
+unset fms_ver
+unset g2_ver
+unset g2tmpl_ver
+unset gfsio_ver
+unset gftl_shared_ver
+unset gsl_ver
+unset hdf5_ver
+unset intel_ver
+unset ip_ver
+unset jasper_ver
+unset landsfcutil
+unset libjpeg_ver
+unset libpng_ver
+unset mapl_ver
+unset module_ver
+unset ncdiag_ver
+unset ncio_ver
+unset nemsio_ver
+unset netcdf_ver
+unset pnetcdf_ver
+unset pio_ver
+unset PrgEnv_intel_ver
+unset scotch_ver
+unset sigio_ver
+unset sfcio_ver
+unset sp_ver
+unset udunits_ver
+unset w3emc_ver
+unset wrf_io_ver
+unset zlib_ver
+
