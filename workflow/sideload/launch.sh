@@ -48,7 +48,7 @@ case ${task_id} in
       module unload python cray-python
       source "${py_virtualenv}"
     else
-      module load py-matplotlib py-cartopy py-netcdf4
+      module load py-jinja2 py-matplotlib py-cartopy py-netcdf4
     fi
     export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOMErrfs}/sorc/RDASApp/build/lib64
     ;;
