@@ -154,10 +154,15 @@ def wflow_begin(xmlFile):
     realtime = os.getenv("REALTIME", "false").upper()
     cyclethrottle = os.getenv("RETRO_CYCLETHROTTLE", "3")
     taskthrottle = os.getenv("RETRO_TASKTHROTTLE", "30")
-    if realtime == "TRUE":
-        text = '<workflow realtime="T" scheduler="slurm" cyclethrottle="26" cyclelifespan="01:00:00:00">'
+    machine = os.getenv('MACHINE').lower()
+    if machine in ['wcoss2']:
+        scheduler = 'pbspro'
     else:
-        text = f'<workflow realtime="F" scheduler="slurm" cyclethrottle="{cyclethrottle}" taskthrottle="{taskthrottle}">'
+        scheduler = 'slurm'
+    if realtime == "TRUE":
+        text = '<workflow realtime="T" scheduler="{scheduler}" cyclethrottle="26" cyclelifespan="01:00:00:00">'
+    else:
+        text = f'<workflow realtime="F" scheduler="{scheduler}" cyclethrottle="{cyclethrottle}" taskthrottle="{taskthrottle}">'
     xmlFile.write(f'\n{text}\n')
 
 # wflow_end
@@ -214,11 +219,13 @@ class objTask:
         if os.getenv('MORE_XML_ENTITIES', 'false').upper() == 'TRUE':
             text = text + f'  <account>&ACCOUNT;</account>\n'
             text = text + f'  <queue>&QUEUE_DEFAULT;</queue>\n'
-            text = text + f'  <partition>&PARTITION;</partition>\n'
+            if self.dcTaskRes["partition"] != "":
+                text = text + f'  <partition>&PARTITION;</partition>\n'
         else:
             text = text + f'  <account>{self.dcTaskRes["account"]}</account>\n'
             text = text + f'  <queue>{self.dcTaskRes["queue"]}</queue>\n'
-            text = text + f'  <partition>{self.dcTaskRes["partition"]}</partition>\n'
+            if self.dcTaskRes["partition"] != "":
+                text = text + f'  <partition>{self.dcTaskRes["partition"]}</partition>\n'
         text = text + f'  <walltime>{self.dcTaskRes["walltime"]}</walltime>\n'
         text = text + f'  {self.dcTaskRes["nodes"]}\n'  # note: xml tag self included, no need to add <nodes> </nodes>
         #
