@@ -98,7 +98,7 @@ case ${YAML_GEN_METHOD:-1} in
     ;;
 esac
 
-# For POST, remove "reduce obs space" to keep same nobs from prior observer jdiags
+# For post task, use solver yaml with a few changes
 if [[ "${TYPE}" == "post" ]]; then
   "${USHrrfs}"/yaml_getkf_post getkf.yaml
 fi
