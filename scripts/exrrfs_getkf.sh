@@ -130,7 +130,6 @@ else # move post mean to umbrella if solver
       export err=$?
       err_chk
       mv "data/ens/tmp${mem}.nc" "$(readlink -f data/ens/mem${mem}.nc)"
-      mv tmp.nc "$(readlink -f mpasin.nc)"
     done
     rm -rf ../ana
     mv data/ana ../
