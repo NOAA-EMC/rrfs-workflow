@@ -53,7 +53,7 @@ with open(yfile2, 'r') as infile:
                 start_commenting = False
 
     # Comment out reduce obs space filter actions (if reject is also an action)
-    # NOTE: This will be removed once we fix the duplicate keys
+    # NOTE: This will be removed once we fix the duplicate keys 
     #   See https://github.com/NOAA-EMC/RDASApp/issues/348
     start_commenting = False
     for i, line in enumerate(yaml_data):

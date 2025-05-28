@@ -51,7 +51,6 @@ fi
 for i in $(seq -w 001 "${ENS_SIZE}"); do
   ln -snf "${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file}" "ens/mem${i}.nc"
 done
-
 #
 # enter the run directory again
 #
