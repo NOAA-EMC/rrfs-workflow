@@ -18,6 +18,7 @@ if [[ "$1" == "jedivar" ]]; then
 
 else
   TYPE_SED=${TYPE}
+  # Use solver yaml for posterior observer (with a few changes)
   if [[ ${TYPE} == "post" ]]; then
       TYPE_SED="solver"
   fi

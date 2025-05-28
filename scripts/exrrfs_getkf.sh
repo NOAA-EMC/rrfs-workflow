@@ -98,7 +98,7 @@ case ${YAML_GEN_METHOD:-1} in
     ;;
 esac
 
-# For post task, use solver yaml with a few changes
+# For post task, change a few yaml settings and remove "reduce obs space"
 if [[ "${TYPE}" == "post" ]]; then
   "${USHrrfs}"/yaml_getkf_post getkf.yaml
 fi
