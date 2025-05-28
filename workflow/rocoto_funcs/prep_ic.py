@@ -100,6 +100,10 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     if realtime.upper() == "TRUE":
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
         timedep = f'\n   <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+    if os.getenv('DO_IC_LBC', 'TRUE').upper() == "TRUE":
+        icdep = f'\n      <taskdep task="ic{ensindexstr}"/>'
+    else:
+        icdep = ""
     #
     dependencies = f'''
   <dependency>
@@ -108,8 +112,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     <and>
       <or>
 {streqs}
-      </or>
-      <taskdep task="ic{ensindexstr}"/>{satbias_dep}
+      </or>{icdep}{satbias_dep}
     </and>
     <and>
       <and>

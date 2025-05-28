@@ -6,7 +6,8 @@ if [[ "${HYB_WGT_ENS}" != "0" ]] && [[ "${HYB_WGT_ENS}" != "0.0" ]]; then # usin
   if [[ "${HYB_ENS_TYPE}" == "1"  ]]; then # rrfsens
     echo "use rrfs ensembles"
     mpasout_file=mpasout.${timestr}.nc
-    for (( ii=0; ii<4; ii=ii+1 )); do
+    enshrs=$(( ENS_BEC_LOOK_BACK_HRS + 1 ))
+    for (( ii=0; ii<enshrs; ii=ii+1 )); do
        CDATEp=$(${NDATE} "-${ii}" "${CDATE}" )
        if [[ "${HYB_ENS_PATH}" == "" ]]; then
          ensdir=${COMINrrfs}/rrfs.${CDATEp:0:8}/${CDATEp:8:2}

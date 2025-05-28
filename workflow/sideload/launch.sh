@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # tweaks for non-NCO experiments
 # This script will NOT be needed by NCO
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090,SC1091
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
 #
@@ -13,10 +13,21 @@ task_id=${COMMAND#*_} # remove the "JRRFS_" part
 export task_id=${task_id,,} #to lower case
 source "${HOMErrfs}/workflow/ush/detect_machine.sh"
 echo "run on ${MACHINE}"
+if [[ ${MACHINE} == "wcoss2" ]]; then
+  source "${HOMErrfs}/versions/run.ver"
+  NTASKS=$( wc -l "$PBS_NODEFILE" | awk '{print $1}' )
+  PPN=$( grep -c "$(head -1 "$PBS_NODEFILE")" "$PBS_NODEFILE" )
+  export NTASKS
+  export PPN
+  export NODES=$(( NTASKS / PPN ))
+  export STRIDE=$((128 / PPN))
+  export MPI_RUN_CMD="mpiexec -n $NTASKS -ppn $PPN --cpu-bind core --depth $STRIDE --label --line-buffer"
+else
+  export NTASKS=${SLURM_NTASKS}
+  export NODES=${SLURM_JOB_NUM_NODES}
+  export PPN=${SLURM_TASKS_PER_NODE%%(*} # remove the (x6) part of 20(x6)
+fi
 #
-export NTASKS=${SLURM_NTASKS}
-export NODES=${SLURM_JOB_NUM_NODES}
-export PPN=${SLURM_TASKS_PER_NODE%%(*} # remove the (x6) part of 20(x6)
 ulimit -s unlimited
 ulimit -v unlimited
 ulimit -a
@@ -31,7 +42,14 @@ case ${task_id} in
     module purge
     module use "${HOMErrfs}/sorc/RDASApp/modulefiles"
     module load "RDAS/${MACHINE}.intel"
-    module load py-matplotlib py-cartopy py-netcdf4
+    if [[ ${MACHINE} == "wcoss2" ]]; then
+      # spack-stack does not include these python modules on wcoss2
+      # so we use a workaround of loading an existing python virtual environment
+      module unload python cray-python
+      source "${py_virtualenv}"
+    else
+      module load py-jinja2 py-matplotlib py-cartopy py-netcdf4
+    fi
     export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOMErrfs}/sorc/RDASApp/build/lib64
     ;;
   ungrib)
@@ -59,7 +77,15 @@ case ${task_id} in
   upp)
     module purge
     module use "${HOMErrfs}/sorc/UPP/modulefiles"
-    module load "${MACHINE}"
+    if [[ ${MACHINE} == "wcoss2" ]]; then
+      # need to unset module versions sourced earlier and load a couple more
+      source "${HOMErrfs}/versions/unset.ver"
+      module load "${MACHINE}"
+      module load libjpeg/9c
+      module load libfabric/1.20.1
+    else
+      module load "${MACHINE}"
+    fi
     ;;
   recenter)
     module purge
@@ -71,6 +97,9 @@ case ${task_id} in
     module load "rrfs/${MACHINE}.intel"
     ;;
 esac
+if [[ ${MACHINE} == "wcoss2" ]]; then
+  module load cray-pals/1.3.2 # for mpiexec command
+fi
 module load "prod_util/${MACHINE}"
 module list
 set -x

@@ -12,7 +12,12 @@ load("parallel-netcdf/1.12.2")
 load("parallelio/2.5.10")
 load("libpng/1.6.37")
 
-setenv("PIO", os.getenv("parallelio_ROOT"))
+if mode() == "load" then
+  setenv("PIO", os.getenv("parallelio_ROOT"))
+end
+if mode() == "unload" then
+  unsetenv("PIO")
+end
 
 setenv("CMAKE_C_COMPILER", "cc")
 setenv("CMAKE_CXX_COMPILER", "CC")
