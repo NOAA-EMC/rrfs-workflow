@@ -24,15 +24,22 @@ if os.path.exists(yfile2):
         yfile2 = f'{basename}_old{knt:03}.yaml'
 #
 os.replace(yfile, yfile2)
-with open(yfile2, 'r') as infile: 
+with open(yfile2, 'r') as infile:
     yaml_data = infile.readlines()
     nlines = len(yaml_data)
 
-    # Replace do posterior observer
+    # Change Halo to RoundRobin
     for i, line in enumerate(yaml_data):
-        if 'do posterior observer: false' in line:
-            yaml_data[i] = line.replace('false', 'true')
-            break
+        if 'Halo' in line:
+            yaml_data[i] = line.replace('Halo', 'RoundRobin')
+        if 'read HX from disk' in line:
+            yaml_data[i] = line.replace('read HX from disk', 'run as observer only')
+        if 'save posterior ensemble' in line:
+            yaml_data[i] = line.replace('true', 'false')
+        if 'save prior mean' in line:
+            yaml_data[i] = line.replace('true', 'false')
+        if 'save posterior mean' in line:
+            yaml_data[i] = line.replace('true', 'false')
 
     # Comment out reduce obs space filter actions
     start_commenting = False
@@ -46,7 +53,7 @@ with open(yfile2, 'r') as infile:
                 start_commenting = False
 
     # Comment out reduce obs space filter actions (if reject is also an action)
-    # NOTE: This will be removed once we fix the duplicate keys 
+    # NOTE: This will be removed once we fix the duplicate keys
     #   See https://github.com/NOAA-EMC/RDASApp/issues/348
     start_commenting = False
     for i, line in enumerate(yaml_data):

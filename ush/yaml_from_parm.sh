@@ -17,8 +17,12 @@ if [[ "$1" == "jedivar" ]]; then
   template="jedivar.yaml"
 
 else
+  TYPE_SED=${TYPE}
+  if [[ ${TYPE} == "post" ]]; then
+      TYPE_SED="solver"
+  fi
   sed -e "s/@analysisDate@/${analysisDate}/" -e "s/@beginDate@/${beginDate}/" \
-    "${EXPDIR}/config/getkf_${TYPE}.yaml" > getkf.yaml
+    "${EXPDIR}/config/getkf_${TYPE_SED}.yaml" > getkf.yaml
   if [[ ${start_type} == "cold" ]]; then
       sed -i '43s/ens/ana/' getkf.yaml
   fi

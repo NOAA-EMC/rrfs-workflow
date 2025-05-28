@@ -51,6 +51,7 @@ fi
 for i in $(seq -w 001 "${ENS_SIZE}"); do
   ln -snf "${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file}" "ens/mem${i}.nc"
 done
+
 #
 # enter the run directory again
 #
@@ -98,9 +99,9 @@ case ${YAML_GEN_METHOD:-1} in
     ;;
 esac
 
-# If running posterior observer during the solver, edit the yaml
-if [[ "${TYPE}" == "solver" ]] && [[ "${GETKF_POST_OBSERVER:-FALSE}" == "TRUE" ]]; then
-  "${USHrrfs}"/yaml_getkf_postobserver getkf.yaml
+# For POST, remove "reduce obs space" to keep same nobs from prior observer jdiags
+if [[ "${TYPE}" == "post" ]]; then
+  "${USHrrfs}"/yaml_getkf_post getkf.yaml
 fi
 
 # run mpasjedi_enkf.x
@@ -116,8 +117,19 @@ err_chk
 #
 cp "${DATA}"/getkf*.yaml "${COMOUT}/getkf_${TYPE}/${WGF}"
 cp "${DATA}"/log.* "${COMOUT}/getkf_${TYPE}/${WGF}"
+
+# rename ombg to oman for posterior observer jdiag files
+if [[ "${TYPE}" == "post" ]]; then
+  for jdiag in "${DATA}"/jdiag*; do
+    jdiag_an="${jdiag%.nc}_ana.nc"
+    nccopy -k 3 "${jdiag}" "${jdiag_an}"
+    ncrename -g ombg,oman "${jdiag_an}"
+    rm "${jdiag}"
+  done
+fi
+
 # move jdiag* files to the umbrella directory if observer
-if [[ "${TYPE}" == "observer" ]]; then
+if [[ "${TYPE}" == "observer" || "${TYPE}" == "post" ]]; then
   cp "${DATA}"/jdiag* "${COMOUT}/getkf_${TYPE}/${WGF}"
   mv jdiag* "${UMBRELLA_GETKF_DATA}"/.
 else # move post mean to umbrella if solver
@@ -125,7 +137,7 @@ else # move post mean to umbrella if solver
   if [[ "${start_type}" == "cold" ]]; then
     var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional"
     for mem in $(seq -w 1 030); do
-      ncks -A -H -v "${var_list}" "data/ana/mem${mem}.nc" "data/ens/mem${mem}.nc"
+      ncks -A -H -v "${var_list}" "data/ana/mem${mem}.nc" "$(readlink data/ens/mem${mem}.nc)"
       export err=$?
       err_chk
     done
