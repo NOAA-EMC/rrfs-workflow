@@ -17,6 +17,9 @@ if [[ "${MACHINE}" == "wcoss2" ]]; then
   if [[ -f "${BUILD_VERSION_FILE}" ]]; then
     source "${BUILD_VERSION_FILE}"
   fi
+  compiler_str="ftn"
+  # WCOSS2: ftn needs a different set of compiling flags from the ufs-community version
+  cp "${HOMErrfs}/sorc/_workaround_/MPAS-Model/Makefile" "${HOMErrfs}/sorc/MPAS-Model/Makefile"
 elif [[ "${MACHINE}" == "gaea" ]]; then
   compiler_str="ifort"
 fi
