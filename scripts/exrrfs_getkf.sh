@@ -129,7 +129,7 @@ else # move post mean to umbrella if solver
       ncks -A -v ${var_list} "data/ana/mem${mem}.nc" "data/ens/tmp${mem}.nc"
       export err=$?
       err_chk
-      mv "data/ens/tmp${mem}.nc" "$(readlink -f data/ens/mem${mem}.nc)"
+      mv "data/ens/tmp${mem}.nc" "$(readlink -f "data/ens/mem${mem}.nc")"
     done
     rm -rf ../ana
     mv data/ana ../
