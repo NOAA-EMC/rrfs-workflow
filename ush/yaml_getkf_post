@@ -28,7 +28,7 @@ with open(yfile2, 'r') as infile:
     yaml_data = infile.readlines()
     nlines = len(yaml_data)
 
-    # Change Halo to RoundRobin
+    # Change Halo to RoundRobin and set to only run observer
     for i, line in enumerate(yaml_data):
         if 'Halo' in line:
             yaml_data[i] = line.replace('Halo', 'RoundRobin')
