@@ -444,12 +444,20 @@ while [ $proceed_trigger_scan == "YES" ]; do
         #### Add time condition for check only 20 minutes - set to found if exist 20 minutes to use GFS enkf fcst data
         current_time_det_analysis_gsi=$(date +%s)
         elapsed_time=$((current_time_det_analysis_gsi - start_time_det_analysis_gsi))
-        if ((elapsed_time <= 1200)); then
+        if ((elapsed_time <= 1800)); then
           for member_num in $(seq 1 30); do
             member_num_2d=$( printf "%02d" ${member_num} )
             target_file_scan=${target_directory_scan}/m0${member_num_2d}/forecast/RESTART/${RRFS_Current_PDY}.${RRFS_Current_cyc}0000.coupler.res
-            [[ ! -s ${target_file_scan} ]]&& source_file_found="NO"
+            if [ ! -s ${target_file_scan} ]; then
+              source_file_found="NO"
+              date
+              echo "INFO the release_det_analysis_gsi does not find ${target_file_scan}"
+              ls -lart ${target_directory_scan}/m0${member_num_2d}/forecast/RESTART
+            fi
           done
+        else
+          date
+          echo "WARNING: Degraded GSI - the release_det_analysis_gsi does not find the input file and waiting time is over 30 minutes"
         fi
       fi
     fi

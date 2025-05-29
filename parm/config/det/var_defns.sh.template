@@ -9,8 +9,8 @@ export HOMErrfs='@HOMErrfs@'
 export USHrrfs='@HOMErrfs@/ush'
 export SORCrrfs='@HOMErrfs@/sorc'
 export PARMrrfs='@HOMErrfs@/parm'
-export FIXam='@HOMErrfs@/parm/config/det/fix_am'
-export FIXLAM='@HOMErrfs@/parm/config/det/fix_lam'
+export FIXam='@HOMErrfs@/fix/am'
+export FIXLAM='@HOMErrfs@/fix/lam/RRFS_NA_3km'
 export FIXgsm='@HOMErrfs@/fix/am'
 export GRID_DIR='@HOMErrfs@/fix/lam/RRFS_NA_3km'
 export OROG_DIR='@HOMErrfs@/fix/lam/RRFS_NA_3km'
@@ -29,7 +29,7 @@ FV3_NML_STOCH_FP='@HOMErrfs@/parm/config/det/input.nml_stoch'
 FV3_NML_RESTART_STOCH_FP='@HOMErrfs@/parm/config/det/input.nml_restart_stoch'
 UFS_YAML_FP='@HOMErrfs@/parm/config/det/fd_ufs.yaml'
 FV3_EXEC_FP='@HOMErrfs@/exec/ufs_model'
-THOMPSON_MP_CLIMO_FP='@HOMErrfs@/parm/config/det/fix_am/Thompson_MP_MONTHLY_CLIMO.nc'
+THOMPSON_MP_CLIMO_FP='@HOMErrfs@/fix/am/Thompson_MP_MONTHLY_CLIMO.nc'
 
 # [platform]
 export WORKFLOW_MANAGER='ecflow'
@@ -182,8 +182,8 @@ BERROR_FN="rrfs_glb_berror.l127y770.f77" #under $FIXrrfs/gsi
 BERROR_SD_FN="berror.rrfs_sd" # for test only
 OBERROR_FN="errtable.rrfs"
 HYBENSINFO_FN="hybens_info.rrfs"
-AIRCRAFT_REJECT="/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/gsi"
-SFCOBS_USELIST="/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/gsi"
+AIRCRAFT_REJECT='@HOMErrfs@/fix/gsi'
+SFCOBS_USELIST='@HOMErrfs@/fix/gsi'
 #
 #-----------------------------------------------------------------------
 #
