@@ -120,10 +120,10 @@ cp "${DATA}"/log.* "${COMOUT}/getkf_${TYPE}/${WGF}"
 # rename ombg to oman for posterior observer jdiag files
 if [[ "${TYPE}" == "post" ]]; then
   for jdiag in "${DATA}"/jdiag*; do
-    jdiag_an="${jdiag%.nc}_ana.nc"
-    nccopy -k 3 "${jdiag}" "${jdiag_an}"
-    ncrename -g ombg,oman "${jdiag_an}"
-    rm "${jdiag}"
+    jdiag_tmp="${jdiag%.nc}_tmp.nc"
+    nccopy -k 3 "${jdiag}" "${jdiag_tmp}"
+    ncrename -g ombg,oman "${jdiag_tmp}"
+    mv "${jdiag_tmp}" "${jdiag}"
   done
 fi
 
