@@ -119,6 +119,7 @@ def setup_xml(HOMErrfs, expdir):
             if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
                 getkf(xmlFile, expdir, 'OBSERVER')
                 getkf(xmlFile, expdir, 'SOLVER')
+                getkf(xmlFile, expdir, 'POST')
             fcst(xmlFile, expdir, do_ensemble=True)
             save_fcst(xmlFile, expdir, do_ensemble=True)
             mpassit(xmlFile, expdir, do_ensemble=True)
