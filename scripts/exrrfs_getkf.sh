@@ -103,35 +103,43 @@ if [[ "${TYPE}" == "solver" ]] && [[ "${GETKF_POST_OBSERVER:-FALSE}" == "TRUE" ]
   "${USHrrfs}"/yaml_getkf_postobserver getkf.yaml
 fi
 
-# run mpasjedi_enkf.x
-export OOPS_TRACE=1
-export OMP_NUM_THREADS=1
+if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CYCS_DO_DA} == "true" ]]; then
+  # run mpasjedi_enkf.x
+  export OOPS_TRACE=1
+  export OMP_NUM_THREADS=1
 
-source prep_step
-${cpreq} "${EXECrrfs}"/mpasjedi_enkf.x .
-${MPI_RUN_CMD} ./mpasjedi_enkf.x getkf.yaml log.out
-# check the status
-export err=$?
-err_chk
-#
-cp "${DATA}"/getkf*.yaml "${COMOUT}/getkf_${TYPE}/${WGF}"
-cp "${DATA}"/log.* "${COMOUT}/getkf_${TYPE}/${WGF}"
-# move jdiag* files to the umbrella directory if observer
-if [[ "${TYPE}" == "observer" ]]; then
-  cp "${DATA}"/jdiag* "${COMOUT}/getkf_${TYPE}/${WGF}"
-  mv jdiag* "${UMBRELLA_GETKF_DATA}"/.
-else # move post mean to umbrella if solver
-  # ncks increments to cold_start IC
-  if [[ "${start_type}" == "cold" ]]; then
-    var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional"
-    for mem in $(seq -w 1 030); do
-      ncks -A -H -v "${var_list}" "data/ana/mem${mem}.nc" "data/ens/mem${mem}.nc"
-      export err=$?
-      err_chk
-    done
-    rm -rf ../ana
-    mv data/ana ../
-  else
-    mv "${DATA}"/data/ens/mem000.nc "${UMBRELLA_GETKF_DATA}"/post_mean.nc
+  source prep_step
+  ${cpreq} "${EXECrrfs}"/mpasjedi_enkf.x .
+  ${MPI_RUN_CMD} ./mpasjedi_enkf.x getkf.yaml log.out
+  # check the status
+  export err=$?
+  err_chk
+  #
+  cp "${DATA}"/getkf*.yaml "${COMOUT}/getkf_${TYPE}/${WGF}"
+  cp "${DATA}"/log.* "${COMOUT}/getkf_${TYPE}/${WGF}"
+  # move jdiag* files to the umbrella directory if observer
+  if [[ "${TYPE}" == "observer" ]]; then
+    cp "${DATA}"/jdiag* "${COMOUT}/getkf_${TYPE}/${WGF}"
+    mv jdiag* "${UMBRELLA_GETKF_DATA}"/.
+  else # move post mean to umbrella if solver
+    # ncks increments to cold_start IC
+    if [[ "${start_type}" == "cold" ]]; then
+      var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional"
+      for mem in $(seq -w 1 030); do
+        ncks -O -C -x -v ${var_list} "data/ens/mem${mem}.nc" "data/ens/tmp${mem}.nc"
+        ncks -A -v ${var_list} "data/ana/mem${mem}.nc" "data/ens/tmp${mem}.nc"
+        export err=$?
+        err_chk
+        dest=$(readlink -f "data/ens/mem${mem}.nc")
+        mv "data/ens/tmp${mem}.nc" "${dest}"
+      done
+      rm -rf ../ana
+      mv data/ana ../
+    else
+      mv "${DATA}"/data/ens/mem000.nc "${UMBRELLA_GETKF_DATA}"/post_mean.nc
+    fi
   fi
+
+else
+  echo "INFO: No DA at the cold start cycle"
 fi
