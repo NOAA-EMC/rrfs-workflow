@@ -8,7 +8,7 @@
 
 <immutable_stream name="input"
                   type="input"
-                  filename_template="mpasin.nc"
+                  filename_template="init.nc"
                   io_type="pnetcdf,cdf5"
                   input_interval="initial_only" />
 
