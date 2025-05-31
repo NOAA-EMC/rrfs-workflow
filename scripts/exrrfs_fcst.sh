@@ -31,11 +31,12 @@ echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
 # determine whether to begin new cycles
 #
 if [[ -r "${UMBRELLA_PREP_IC_DATA}/init.nc" ]]; then
-  ln -snf "${UMBRELLA_PREP_IC_DATA}/init.nc" mpasin.nc
+  ln -snf "${UMBRELLA_PREP_IC_DATA}/init.nc" init.nc
   start_type='cold'
   do_DAcycling='false'
 else
-  ln -snf "${UMBRELLA_PREP_IC_DATA}/mpasin.nc" mpasin.nc
+  timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
+  ${cpreq} "${UMBRELLA_PREP_IC_DATA}/mpasin.nc" "mpasout.${timestr}.nc"
   start_type='warm'
   do_DAcycling='true'
 fi

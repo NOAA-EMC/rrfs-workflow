@@ -66,7 +66,7 @@ source "${USHrrfs}/find_ensembles.sh"
 #  link background
 #
 cd "${DATA}" || exit 1
-ln -snf "${initial_file}"  mpasin.nc
+ln -snf "${initial_file}" .
 #
 # generate namelist, streams, and jedivar.yaml on the fly
 run_duration=1:00:00
@@ -126,17 +126,18 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
   # ncks increments to cold_start IC
   if [[ ${start_type} == "cold" ]]; then
     var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional"
-    ncks -A -H -v "${var_list}" ana.nc mpasin.nc
+    ncks -A -H -v "${var_list}" ana.nc init.nc
     export err=$?
     err_chk
     mv ana.nc ..
+  else
+    cp "${DATA}"/mpasin.nc "${COMOUT}/jedivar/${WGF}/mpasout.${timestr}.nc"
   fi
   #
   # the input/output file are linked from the umbrella directory, so no need to copy
   cp "${DATA}"/jdiag* "${COMOUT}/jedivar/${WGF}"
   cp "${DATA}"/jedivar*.yaml "${COMOUT}/jedivar/${WGF}"
   cp "${DATA}"/log.out "${COMOUT}/jedivar/${WGF}"
-  cp "${DATA}"/mpasin.nc "${COMOUT}/jedivar/${WGF}/mpasout.${timestr}.nc"
 
 else
   echo "INFO: No DA at the cold start cycle"
