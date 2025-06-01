@@ -36,7 +36,7 @@ if [[ -r "${UMBRELLA_PREP_IC_DATA}/init.nc" ]]; then
   do_DAcycling='false'
 else
   timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
-  ${cpreq} "${UMBRELLA_PREP_IC_DATA}/mpasin.nc" "mpasout.${timestr}.nc"
+  ln -snf "${UMBRELLA_PREP_IC_DATA}/mpasin.nc" "mpasout.${timestr}.nc"
   start_type='warm'
   do_DAcycling='true'
 fi
