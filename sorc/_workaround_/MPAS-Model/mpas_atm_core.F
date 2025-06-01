@@ -59,7 +59,7 @@ module atm_core
       type (block_type), pointer :: block
 
       logical, pointer :: config_do_restart
-
+      logical, pointer :: config_do_DAcycling
       type (mpas_pool_type), pointer :: state
       type (mpas_pool_type), pointer :: mesh
       type (mpas_pool_type), pointer :: diag
@@ -116,6 +116,7 @@ module atm_core
       end if
 
       call mpas_pool_get_config(domain % blocklist % configs, 'config_do_restart', config_do_restart)
+      call mpas_pool_get_config(domain % blocklist % configs, 'config_do_DAcycling', config_do_DAcycling)
       call mpas_pool_get_config(domain % blocklist % configs, 'config_dt', dt)
 
       !
@@ -137,6 +138,8 @@ module atm_core
       call mpas_timer_start('read_ICs')
       if (config_do_restart) then
          init_stream_name = 'restart'
+      elseif (config_do_DAcycling) then
+         init_stream_name = 'da_state'
       else
          init_stream_name = 'input'
       end if
@@ -158,6 +161,7 @@ module atm_core
 
       call MPAS_stream_mgr_reset_alarms(domain % streamManager, streamID='input', direction=MPAS_STREAM_INPUT, ierr=ierr)
       call MPAS_stream_mgr_reset_alarms(domain % streamManager, streamID='restart', direction=MPAS_STREAM_INPUT, ierr=ierr)
+      call MPAS_stream_mgr_reset_alarms(domain % streamManager, streamID='da_state', direction=MPAS_STREAM_INPUT, ierr=ierr)
       call mpas_log_write(' ----- done reading initial state -----')
 
 
@@ -640,6 +644,8 @@ module atm_core
 
       ! Avoid writing a restart file at the initial time
       call MPAS_stream_mgr_reset_alarms(domain % streamManager, streamID='restart', direction=MPAS_STREAM_OUTPUT, ierr=ierr)
+      ! Avoid writing a mpasout file at the initial time
+      call MPAS_stream_mgr_reset_alarms(domain % streamManager, streamID='da_state', direction=MPAS_STREAM_OUTPUT, ierr=ierr)
 
       ! Also, for restart runs, avoid writing the initial history or diagnostics fields to avoid overwriting those from the preceding run
       if (config_do_restart) then
