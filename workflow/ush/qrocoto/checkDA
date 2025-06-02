@@ -8,8 +8,12 @@ import re
 def get_value(line):
     return re.search(r'<value>(.*?)</value>', line).group(1)
 
-rundir = os.path.dirname(os.path.abspath(__file__))
-expdir = os.path.dirname(rundir)
+args = sys.argv
+nargs = len(args) - 1
+if nargs < 1:
+    print(f"{os.path.basename(sys.argv[0])} <.|dir_name>")
+    exit()
+expdir = args[1]
 
 # check exp.setup
 getkf = False
