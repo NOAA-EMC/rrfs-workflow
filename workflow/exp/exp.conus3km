@@ -24,6 +24,7 @@ export HYB_ENS_PATH=""     # if empty, the workflow will try to find ensembles a
 export DO_ENVAR_RADAR_REF=false
 export RADARREFL_TIMELEVEL="00"  # 00 15 30 45 min
 export ENS_SIZE=30
+export ENS_BEC_LOOK_BACK_HRS=1  # define the hours going back for ensemble forecast files for the ensemble BEC
 
 export DO_CYC=true
 export CYC_INTERVAL=1
@@ -90,6 +91,15 @@ case ${MACHINE} in
     export QUEUE="batch"
     export PARTITION="hera"
     ;;
+  "ursa")
+    export IC_EXTRN_MDL_BASEDIR="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/GFS"
+    export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
+    export OBSPATH="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
+    export OBSPATH_NSSLMOSIAC="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/reflectivity"
+    export ACCOUNT="wrfruc"
+    export QUEUE="batch"
+    export PARTITION="u1-compute"
+    ;;
   "jet")
     export IC_EXTRN_MDL_BASEDIR="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/GFS"
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
@@ -118,6 +128,16 @@ case ${MACHINE} in
     export QUEUE="normal"
     export PARTITION="batch"
     export CLUSTER="c6"
+    ;;
+  "wcoss2")
+    export IC_EXTRN_MDL_BASEDIR="/lfs/h2/emc/da/noscrub/samuel.degelia/RRFS2_RETRO_DATA/May2024/GFS"
+    export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
+    export OBSPATH="/lfs/h2/emc/da/noscrub/samuel.degelia/RRFS2_RETRO_DATA/May2024/obs_rap"
+    export OBSPATH_NSSLMOSAIC="/lfs/h2/emc/da/noscrub/samuel.degelia/RRFS2_RETRO_DATA/May2024/reflectivity"
+    export ACCOUNT="RRFS-DEV"
+    export QUEUE="dev"
+    export PARTITION=""
+    export CLUSTER=""
     ;;
   *)
     echo "!!! unsupported platform:'${MACHINE}'!!!"
