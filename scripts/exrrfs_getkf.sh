@@ -98,9 +98,9 @@ case ${YAML_GEN_METHOD:-1} in
     ;;
 esac
 
-# If running posterior observer during the solver, edit the yaml
-if [[ "${TYPE}" == "solver" ]] && [[ "${GETKF_POST_OBSERVER:-FALSE}" == "TRUE" ]]; then
-  "${USHrrfs}"/yaml_getkf_postobserver getkf.yaml
+# For post task, change a few yaml settings and remove "reduce obs space"
+if [[ "${TYPE}" == "post" ]]; then
+  "${USHrrfs}"/yaml_getkf_post getkf.yaml
 fi
 
 if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CYCS_DO_DA} == "true" ]]; then
@@ -117,8 +117,19 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
   #
   cp "${DATA}"/getkf*.yaml "${COMOUT}/getkf_${TYPE}/${WGF}"
   cp "${DATA}"/log.* "${COMOUT}/getkf_${TYPE}/${WGF}"
+
+  # rename ombg to oman for posterior observer jdiag files
+  if [[ "${TYPE}" == "post" ]]; then
+    for jdiag in "${DATA}"/jdiag*; do
+      jdiag_tmp="${jdiag%.nc}_tmp.nc"
+      nccopy -k 3 "${jdiag}" "${jdiag_tmp}"
+      ncrename -g ombg,oman "${jdiag_tmp}"
+      mv "${jdiag_tmp}" "${jdiag}"
+    done
+  fi
+
   # move jdiag* files to the umbrella directory if observer
-  if [[ "${TYPE}" == "observer" ]]; then
+  if [[ "${TYPE}" == "observer" || "${TYPE}" == "post" ]]; then
     cp "${DATA}"/jdiag* "${COMOUT}/getkf_${TYPE}/${WGF}"
     mv jdiag* "${UMBRELLA_GETKF_DATA}"/.
   else # move post mean to umbrella if solver

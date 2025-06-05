@@ -23,7 +23,8 @@ def getkf(xmlFile, expdir, taskType):
         task_id = "getkf_observer"
     elif taskType.upper() == "SOLVER":
         task_id = "getkf_solver"
-        dcTaskEnv['GETKF_POST_OBSERVER'] = os.getenv('GETKF_POST_OBSERVER', 'FALSE').upper()
+    elif taskType.upper() == "POST":
+        task_id = "getkf_post"
     # dependencies
     timedep = ""
     realtime = os.getenv("REALTIME", "false")
@@ -49,6 +50,14 @@ def getkf(xmlFile, expdir, taskType):
   <dependency>
   <and>{timedep}
     <taskdep task="getkf_observer"/>
+  </and>
+  </dependency>'''
+    #
+    elif taskType.upper() == "POST":
+        dependencies = f'''
+  <dependency>
+  <and>{timedep}
+    <taskdep task="getkf_solver"/>
   </and>
   </dependency>'''
     #
