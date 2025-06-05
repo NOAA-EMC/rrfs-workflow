@@ -126,9 +126,11 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
   # ncks increments to cold_start IC
   if [[ ${start_type} == "cold" ]]; then
     var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional"
-    ncks -A -H -v "${var_list}" ana.nc init.nc
+    ncks -O -C -x -v ${var_list} init.nc tmp.nc
+    ncks -A -v ${var_list} ana.nc tmp.nc
     export err=$?
     err_chk
+    mv tmp.nc "$(readlink -f init.nc)"
     mv ana.nc ..
   else
     cp "${DATA}"/mpasin.nc "${COMOUT}/jedivar/${WGF}/mpasout.${timestr}.nc"
