@@ -31,6 +31,7 @@ module list
 
 cd "${HOMErrfs}/sorc/MPAS-Model" || exit 1
 cp ../_workaround_/MPAS-Model/Registry.xml src/core_atmosphere
+cp ../_workaround_/MPAS-Model/mpas_atm_core.F src/core_atmosphere
 make clean CORE=init_atmosphere
 make -j8 "${compiler_str}" CORE=init_atmosphere PRECISION=single
 make clean CORE=atmosphere
