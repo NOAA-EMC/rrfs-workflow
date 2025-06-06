@@ -29,19 +29,6 @@ yaml_list=(
 )
 
 if (( ${YAML_GEN_METHOD:-1} == 2 )); then
-  # For YAML_GEN_METHOD=2 we can use all obs. vadwnd not yet ready.
-  yaml_list=(
-  "prepbufr_adpsfc.yaml"
-  "prepbufr_adpupa.yaml"
-  "prepbufr_aircar.yaml"
-  "prepbufr_aircft.yaml"
-  "prepbufr_ascatw.yaml"
-  "prepbufr_msonet.yaml"
-  "prepbufr_proflr.yaml"
-  "prepbufr_rassda.yaml"
-  "prepbufr_sfcshp.yaml"
-  #"prepbufr_vadwnd.yaml"
-  )
   # Copy empty ioda file to data/obs.
   # Use these as the default when bufr2ioda doesn't create a ioda.
   # Otherwise JEDI will crash due to missing ioda file
@@ -101,6 +88,8 @@ cp "rap.t${cyc}z.abi_g18.tm00.nc" "ioda_abi_g18.nc"
 ${cpreq} "${USHrrfs}"/offline_domain_check.py .
 ${cpreq} "${USHrrfs}"/offline_domain_check_satrad.py .
 ${cpreq} "${USHrrfs}"/offline_ioda_tweak.py .
+${cpreq} "${USHrrfs}"/offline_vad_thinning.py .
+
 for ioda_file in ioda*nc; do
   grid_file="${FIXrrfs}/meshes/${MESH_NAME}.static.nc"
   if [[ "${ioda_file}" == *abi* ]]; then
@@ -117,6 +106,10 @@ for ioda_file in ioda*nc; do
     mv  "${base_name}_llp.nc" "${base_name}.nc"
   fi
 done
+
+# Run vadwnd superobbing and thinning offline tool.
+./offline_vad_thinning.py -i ioda_vadwnd.nc -o ioda_vadwnd_thinned.nc
+mv ioda_vadwnd_thinned.nc ioda_vadwnd.nc
 
 # file count sanity check and copy to COMOUT
 if ls ./ioda*nc; then
