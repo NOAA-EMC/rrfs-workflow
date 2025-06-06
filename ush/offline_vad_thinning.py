@@ -109,7 +109,7 @@ def thin_vad_obs(ds, station_filter=None, vad_near_analtime=False):
         if station_filter and sid != station_filter:
             continue
 
-        #GSI new-VAD time-level thinning; t is timeOffset in seconds; GSI expects hours:
+        # GSI new-VAD time-level thinning; t is timeOffset in seconds; GSI expects hours:
         t_hr = abs(toff) / 3600.0
 
         if vad_near_analtime:
@@ -154,7 +154,7 @@ def thin_vad_obs(ds, station_filter=None, vad_near_analtime=False):
         # Skip the lowest 5 observations to mimic GSI's vertical thinning, which starts processing at k=6 (mod(k,6)==0)
         heights = all_vars[('MetaData', 'height')]
         stationElevations = all_vars[('MetaData', 'stationElevation')]
-        sorted_idxs = [i for i in sorted_idxs if stationElevations[i]+BOX_SIZE <= heights[i]]
+        sorted_idxs = [i for i in sorted_idxs if stationElevations[i] + BOX_SIZE <= heights[i]]
 
         # Skip this station-time group if no valid height observations remain after filtering
         if not sorted_idxs:
@@ -178,8 +178,8 @@ def thin_vad_obs(ds, station_filter=None, vad_near_analtime=False):
                 continue
 
             # Useful debug prints
-            #print(f"\nHeights used for superob from {sid} at time {reable_time(t)}:")
-            #for i in block_idxs:
+            print(f"\nHeights used for superob from {sid} at time {reable_time(t)}:")
+            #for i in block_idxs:  # noqa: E265
             #    print(f"  {all_vars[('MetaData', 'height')][i]:.2f} m"\
             #          f"  {all_vars[('ObsValue', 'windEastward')][i]:.2f} m/s"\
             #          f"  {all_vars[('ObsValue', 'windNorthward')][i]:.2f} m/s"\
@@ -189,33 +189,33 @@ def thin_vad_obs(ds, station_filter=None, vad_near_analtime=False):
             # Apply vertical height-gating to mimic GSI's 301m threshold.
             # GSI uses 301m (~6 levels at 50m spacing), but 251m would likely suffice since
             # the actual spacing from k=6 to k=11 is closer to 250m, not 300m.
-            base_h = heights[ block_idxs[0] ]
+            base_h = heights[block_idxs[0]]
             gated_idxs = [i for i in block_idxs if (heights[i] - base_h) < 301.0]
             block_idxs = gated_idxs
 
             # If any level in block is more than 5 m/s away from the block-mean, drop the whole block:
-            u_mean = np.mean([all_vars[('ObsValue','windEastward')][i] for i in block_idxs])
-            v_mean = np.mean([all_vars[('ObsValue','windNorthward')][i] for i in block_idxs])
-            raw_us = all_vars[('ObsValue','windEastward')]
-            raw_vs = all_vars[('ObsValue','windNorthward')]
+            u_mean = np.mean([all_vars[('ObsValue', 'windEastward')][i] for i in block_idxs])
+            v_mean = np.mean([all_vars[('ObsValue', 'windNorthward')][i] for i in block_idxs])
+            raw_us = all_vars[('ObsValue', 'windEastward')]
+            raw_vs = all_vars[('ObsValue', 'windNorthward')]
             if any(abs(raw_us[i] - u_mean) > 5.0 + TOL or abs(raw_vs[i] - v_mean) > 5.0 + TOL for i in block_idxs):
                 continue
 
             # === BEGIN GSI-exact deviation logic (check only the first level of block) ===
-            k0  = block_idxs[0]   # the bottom level index in this 6-point block
-            uu   = all_vars[('ObsValue', 'windEastward')][k0]
-            vv   = all_vars[('ObsValue', 'windNorthward')][k0]
-            bgU  = all_vars[('ObsValue', 'bestwindEastward')][k0]
-            bgV  = all_vars[('ObsValue', 'bestwindNorthward')][k0]
-            h_k0 = all_vars[('MetaData',    'height')][k0]
+            k0 = block_idxs[0]  # the bottom level index in this 6-point block
+            uu = all_vars[('ObsValue', 'windEastward')][k0]
+            vv = all_vars[('ObsValue', 'windNorthward')][k0]
+            bgU = all_vars[('ObsValue', 'bestwindEastward')][k0]
+            bgV = all_vars[('ObsValue', 'bestwindNorthward')][k0]
+            h_k0 = all_vars[('MetaData', 'height')][k0]
 
             # If any of (uu, vv, bgU, bgV) is NaN, treat dev as 0
             if np.isnan(uu) or np.isnan(vv) or np.isnan(bgU) or np.isnan(bgV):
                 dev_uv_k0 = 0.0
-                dev_v_k0  = 0.0
+                dev_v_k0 = 0.0
             else:
                 dev_uv_k0 = np.hypot(uu - bgU, vv - bgV)
-                dev_v_k0  = abs(vv - bgV)
+                dev_v_k0 = abs(vv - bgV)
 
             # GSI's first test at level k0: if dev_uv_k0 > 10.0 ? drop entire 6-level block
             if dev_uv_k0 > 10.0 + TOL:
@@ -237,9 +237,9 @@ def thin_vad_obs(ds, station_filter=None, vad_near_analtime=False):
             # If we reach here, none of the four tests triggered ? we build a super-obs
             superob = {}
             for (grp_name, var_name), var in all_vars.items():
-                data  = var[block_idxs]
+                data = var[block_idxs]
                 vtype = var_types[(grp_name, var_name)]
-                fill  = fill_values[(grp_name, var_name)]
+                fill = fill_values[(grp_name, var_name)]
 
                 if vtype in ('float', 'int'):
                     if hasattr(data, 'mask'):
@@ -254,8 +254,6 @@ def thin_vad_obs(ds, station_filter=None, vad_near_analtime=False):
                     else:  # vtype == 'int'
                         if grp_name == 'QualityMarker':  # GSI takes the QM from the lowest level in the block
                             superob[(grp_name, var_name)] = int(valid_data[0][0])  # GSI method
-                            #superob[(grp_name, var_name)] = int(np.round(np.mean(valid_data)))
-                            #superob[(grp_name, var_name)] = int(np.max(valid_data))
                         elif grp_name == 'MetaData' and var_name == 'height':  # Sometimes height superob will be float
                             superob[(grp_name, var_name)] = np.mean(valid_data)
                         else:
@@ -268,22 +266,17 @@ def thin_vad_obs(ds, station_filter=None, vad_near_analtime=False):
                     superob[(grp_name, var_name)] = data[0] if len(data) > 0 else fill
 
             # Finally check wind-speed sanity (v(uob**2+vob**2) > 60.0)
-            uob = superob.get(('ObsValue', 'windEastward'),   np.nan)
-            vob = superob.get(('ObsValue', 'windNorthward'),  np.nan)
+            uob = superob.get(('ObsValue', 'windEastward'), np.nan)
+            vob = superob.get(('ObsValue', 'windNorthward'), np.nan)
             if not np.isnan(uob) and not np.isnan(vob):
                 if np.hypot(uob, vob) > 60.0 + TOL:
                     continue
-
-            # GSI handles this by using the height of the lowest level in the block against MAX_HEIGHT.
-            ## Finally, enforce averaged height < MAX_HEIGHT as before:
-            #avg_height = superob.get(('MetaData', 'height'), np.nan)
-            #if not np.isnan(avg_height) and avg_height < MAX_HEIGHT + TOL:
-            #    superobs_data.append(superob)
 
             # Finally, append superob
             superobs_data.append(superob)
 
     return superobs_data
+
 
 def write_ioda(outfile, superobs_data, template):
     """Write thinned superobservations to a new IODA file, preserving all groups and variables."""
@@ -346,6 +339,7 @@ def write_ioda(outfile, superobs_data, template):
         f_out.setncattr('processing_history',
                         f'VAD thinning: averaging every {AVG_GROUP_SIZE} observations vertically, hmax={MAX_HEIGHT}m')
 
+
 def main():
     args = parse_args()
     with Dataset(args.input, 'r') as ds:
@@ -353,6 +347,7 @@ def main():
                                      vad_near_analtime=args.vad_near_analtime)
         write_ioda(args.output, superobs_data, ds)
     print(f"Wrote thinned VAD winds to {args.output}, {len(superobs_data)} superobservations created.")
+
 
 if __name__ == '__main__':
     main()
