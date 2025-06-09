@@ -37,6 +37,7 @@ cd "${HOMErrfs}/sorc/RDASApp" || exit 1
 # workaround for using a new Registry.xml
 # https://github.com/NOAA-GSL/MPAS-Model/pull/115 by Guoqing
 cp ../_workaround_/MPAS-Model/Registry.xml sorc/mpas/src/core_atmosphere
+cp ../_workaround_/MPAS-Model/mpas_atm_core.F sorc/mpas/src/core_atmosphere
 
 # workaround for ramp option in ObsErrorFactorPressureCheck
 # https://github.com/JCSDA-internal/ufo/pull/3705 by Sijie
