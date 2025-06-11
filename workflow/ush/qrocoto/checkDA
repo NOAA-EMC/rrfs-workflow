@@ -3,10 +3,22 @@
 import os
 import sys
 import re
-
+import uuid
 
 def get_value(line):
     return re.search(r'<value>(.*?)</value>', line).group(1)
+
+def list_to_delimited_string(lst, spaces='  ', delimiter=', ', elements_per_line=20):
+    # Convert the list to a comma-separated string with the specified delimiter
+    joined_string = delimiter.join(map(str, lst))
+    # Split the joined string into chunks of elements_per_line
+    elements = joined_string.split(delimiter)
+    # Create lines of up to elements_per_line elements
+    lines = [delimiter.join(elements[i:i + elements_per_line]) for i in range(0, len(elements), elements_per_line)]
+    # Add a comma at the end of each line except the last line
+    formatted_lines = [spaces + line + delimiter.rstrip(' ') if i < len(lines) - 1 else spaces + line for i, line in enumerate(lines)]
+    # formatted_lines[0] = formatted_lines[0].lstrip(' ')
+    return formatted_lines
 
 args = sys.argv
 nargs = len(args) - 1
@@ -94,8 +106,8 @@ with open(f'{expdir}/config/convinfo', 'r') as sfile:
 #
 dcSatInfo = {}
 satinfo_file = f'{expdir}/config/satinfo'
-if os.path.exists('satinfo'):
-    with open('satinfo', 'r') as sfile:
+if os.path.exists(satinfo_file):
+    with open(satinfo_file, 'r') as sfile:
         for line in sfile:
             if not line.strip().startswith("!"):
                 fields = line.split()
@@ -148,7 +160,13 @@ if getkf:
     yfile = f"{expdir}/config/getkf_observer.yaml"
 else:
     yfile = f"{expdir}/config/jedivar.yaml"
+# determine the output file
 yfile2 = f"{expdir}/config/.tmp.yaml"
+try:
+    with open(yfile2, 'w') as outfile:
+        pass
+except (OSError, PermissionError) as e:
+    yfile2 = f"/tmp/.tmp.yaml_{uuid.uuid4().int}"
 #
 with open(yfile, 'r') as infile, open(yfile2, 'w') as outfile:
     summary_obs_use = ""
@@ -203,11 +221,11 @@ with open(yfile, 'r') as infile, open(yfile2, 'w') as outfile:
             buffer_zone.append(line)
             if passivate:
                 nSpaces = len(line) - len(line.lstrip()) + 2
-                spaces = " "*nSpaces 
+                spaces = " "*nSpaces
                 buffer_zone.append(spaces + "- filter: Perform Action\n")
                 buffer_zone.append(spaces + "  action:\n")
                 buffer_zone.append(spaces + "    name: passivate\n\n")
-            
+
         elif "_anchor_" in line:
             if not use_obs:  # use_obs is determined after the above `if` and `elif`
                 # print("found a sat anchor, but the SIS is not in 'satinfo' or empty/corrupt 'satinfo'")
