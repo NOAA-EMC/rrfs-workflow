@@ -34,11 +34,6 @@ EXEC2="${HOMErrfs}/sorc/RDASApp/build/bin/bufr2ioda.x"
 EXEC3="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_enkf.x"
 cd "${HOMErrfs}/sorc/RDASApp" || exit 1
 
-# workaround for using a new Registry.xml
-# https://github.com/NOAA-GSL/MPAS-Model/pull/115 by Guoqing
-cp ../_workaround_/MPAS-Model/Registry.xml sorc/mpas/src/core_atmosphere
-cp ../_workaround_/MPAS-Model/mpas_atm_core.F sorc/mpas/src/core_atmosphere
-
 # workaround for ramp option in ObsErrorFactorPressureCheck
 # https://github.com/JCSDA-internal/ufo/pull/3705 by Sijie
 cp ../_workaround_/RDASApp/ObsErrorFactorPressureCheck.cc sorc/ufo/src/ufo/filters/obsfunctions/ObsErrorFactorPressureCheck.cc
