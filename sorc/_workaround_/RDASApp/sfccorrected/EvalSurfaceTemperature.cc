@@ -238,13 +238,115 @@ airTemperature_GSL::airTemperature_GSL(const std::string & name,
                                                const Parameters_ & params)
   : SurfaceOperatorBase(name, params)
 {
-  throw eckit::Exception("airTemperature_GSL not yet implemented");
+  oops::Variables vars;
+  vars.push_back(oops::Variable(params_.geovarGeomZ.value()));
+  vars.push_back(oops::Variable(params_.geovarSfcGeomZ.value()));
+  vars.push_back(oops::Variable("air_temperature"));
+  vars.push_back(oops::Variable("air_temperature_at_2m"));
+  requiredVars_ += vars;
 }
 
 void airTemperature_GSL::simobs(const ufo::GeoVaLs & gv,
                                     const ioda::ObsSpace & obsdb,
                                     std::vector<float> & hofx) const {
-  throw eckit::Exception("airTemperature_GSL::simobs not yet implemented");
+  oops::Log::trace() << "airTemperature_GSL::simobs starting" << std::endl;
+
+  // Setup parameters used throughout
+  const size_t nobs = obsdb.nlocs();
+  const float missing = util::missingValue<float>();
+
+  // Create arrays needed
+  std::vector<float> lapse_rate(nobs), obs_height(nobs),
+                     model_height_surface(nobs), model_T_surface(nobs);
+
+  // Check if GSL parameters exist
+  if (!params_.gslParams.value()) {
+    throw eckit::UserError("GSL correction requires gsl_parameters to be provided", Here());
+  }
+
+  const auto& gsl_params = params_.gslParams.value().get();
+
+  switch (gsl_params.temperatureLapseRateOption.value()) {
+    case GslLapseRateOption::Constant: {
+      const float lapse_rate_value = gsl_params.temperatureLapseRateValue.value() / 1000.0f;  // Convert K/km to K/m
+      lapse_rate = std::vector<float>(nobs, lapse_rate_value);
+      break;
+    }
+    case GslLapseRateOption::Local: {
+      // Create arrays need
+      std::vector<float> model_height_level1(nobs),  model_height_toplayer(nobs),
+                         model_T_level1(nobs), model_T_toplayer(nobs);
+
+      // Get level 1 height.  If geopotential then convert to geometric height.
+      const oops::Variable geomz_var = oops::Variable(params_.geovarGeomZ.value());
+      const int surface_level_index = gv.nlevs(geomz_var) - 1;
+      gv.getAtLevel(model_height_level1, geomz_var, surface_level_index);
+      if (params_.geovarGeomZ.value().find("geopotential") != std::string::npos) {
+          oops::Log::trace()  << "ObsSfcCorrected::simulateObs do geopotential conversion profile" << std::endl;
+      }
+
+      // Get top layer height.  If geopotential then convert to geometric height.
+      int toplayer_level_index;
+      const int local_highest_level = gsl_params.temperatureLocalLapseRateLevel.value();
+      if (surface_level_index == 0) {
+          toplayer_level_index = local_highest_level - 1;
+      } else {
+          toplayer_level_index = surface_level_index - local_highest_level + 1;
+      }
+      gv.getAtLevel(model_height_toplayer, geomz_var, toplayer_level_index);
+      if (params_.geovarSfcGeomZ.value().find("geopotential") != std::string::npos) {
+          oops::Log::trace()  << "ObsSfcCorrected::simulateObs do geopotential conversion surface" << std::endl;
+      }
+
+      // Read other data in
+      oops::Variable model_T_var = oops::Variable("air_temperature");
+      gv.getAtLevel(model_T_level1, model_T_var, surface_level_index);
+      gv.getAtLevel(model_T_toplayer, model_T_var, toplayer_level_index);
+
+      // Calculate lapse rate
+      for (int iobs = 0; iobs < nobs; ++iobs) {
+          if (model_height_toplayer[iobs] != missing && model_height_level1[iobs] != missing) {
+              lapse_rate[iobs] = (model_T_level1[iobs] - model_T_toplayer[iobs]) /
+                                 (model_height_toplayer[iobs] - model_height_level1[iobs]);
+          } else {
+               lapse_rate[iobs] = missing;
+          }
+          if (gsl_params.temperatureLapseRateThreshold.value() && lapse_rate[iobs] != missing) {
+             const float minthresh = gsl_params.minThreshold.value()/1000.;
+             const float maxthresh = gsl_params.maxThreshold.value()/1000.;
+             lapse_rate[iobs] = std::clamp(lapse_rate[iobs], minthresh, maxthresh);
+          }
+      }
+      break;
+    }
+    case GslLapseRateOption::NoAdjustment: {
+      lapse_rate = std::vector<float>(nobs, 0.0f);
+      break;
+    }
+  }
+
+  // Get surface height.  If geopotential then convert to geometric height.
+  gv.get(model_height_surface, oops::Variable(params_.geovarSfcGeomZ.value()));
+  if (params_.geovarSfcGeomZ.value().find("geopotential") != std::string::npos) {
+      oops::Log::trace()  << "ObsSfcCorrected::simulateObs do geopotential conversion surface" << std::endl;
+  }
+
+  // Read other data in
+  gv.get(model_T_surface, oops::Variable("air_temperature_at_2m"));
+  obsdb.get_db("MetaData", params_.obsHeightName.value(), obs_height);
+
+  // Loop to calculate hofx
+  for (size_t iloc = 0; iloc < nobs; ++iloc) {
+    hofx[iloc] = missing;
+    if (obs_height[iloc] != missing && model_height_surface[iloc] != missing &&
+        lapse_rate[iloc] != missing && model_T_surface[iloc] != missing) {
+      // Correct to observation height
+      hofx[iloc] = model_T_surface[iloc] +
+                   lapse_rate[iloc] * (model_height_surface[iloc] - obs_height[iloc]);
+    }
+  }
+
+  oops::Log::trace() << "airTemperature_GSL::simobs complete" << std::endl;
 }
 
 void airTemperature_GSL::settraj() const {
