@@ -44,8 +44,8 @@ cp ../_workaround_/RDASApp/ObsErrorFactorPressureCheck.h sorc/ufo/src/ufo/filter
 
 # workaround for using the GSL surface operator
 # https://github.com/JCSDA-internal/ufo/pull/3622 by Sijie
-#cp ../_workaround_/RDASApp/CMakeLists.txt sorc/ufo/src/ufo
-#cp -r ../_workaround_/RDASApp/sfccorrected sorc/ufo/src/ufo/operators
+cp ../_workaround_/RDASApp/sfccorrected/EvalSurfaceTemperature.cc sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceTemperature.cc
+cp ../_workaround_/RDASApp/sfccorrected/EvalSurfaceTemperature.h sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceTemperature.h
 
 # workaround for compiling iodaconverter on Gaea
 # Junjun is working on a PR
