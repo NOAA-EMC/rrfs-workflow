@@ -10,6 +10,7 @@ cd "${DATA}" || exit 1
 #
 if [[ ${MESH_NAME} == "conus12km" ]]; then
   dt=60
+  #dt=30
   substeps=2
   radt=30
 elif [[ ${MESH_NAME} == "conus3km" ]]; then

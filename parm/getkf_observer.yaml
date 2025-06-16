@@ -77,8 +77,6 @@ local ensemble DA:
     lengthscale units: logp
   inflation:
     rtps: 0.95
-    rtpp: 0.6
-    mult: 1.1
 
 observations:
      observers:
@@ -86,7 +84,7 @@ observations:
          name: adpsfc_t181
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -362,7 +360,7 @@ observations:
          name: adpsfc_t183
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -638,7 +636,7 @@ observations:
          name: adpsfc_t187
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -914,7 +912,7 @@ observations:
          name: adpsfc_q181
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -1190,7 +1188,7 @@ observations:
          name: adpsfc_q183
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -1467,7 +1465,7 @@ observations:
          name: adpsfc_q187
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -1744,7 +1742,7 @@ observations:
          name: adpsfc_ps181
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -2013,7 +2011,7 @@ observations:
          name: adpsfc_ps187
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -2282,7 +2280,7 @@ observations:
          name: adpsfc_uv281
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -2602,7 +2600,7 @@ observations:
          name: adpsfc_uv284
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -2920,7 +2918,7 @@ observations:
          name: adpsfc_uv287
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -3237,7 +3235,7 @@ observations:
          name: adpupa_t120
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -3512,7 +3510,7 @@ observations:
          name: adpupa_t132
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -3787,7 +3785,7 @@ observations:
          name: adpupa_q120
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -4063,7 +4061,7 @@ observations:
          name: adpupa_q132
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -4339,7 +4337,7 @@ observations:
          name: adpupa_ps120
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -4607,7 +4605,7 @@ observations:
          name: adpupa_uv220
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -4918,7 +4916,7 @@ observations:
          name: adpupa_uv232
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -5229,7 +5227,7 @@ observations:
          name: aircar_t133
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -5504,7 +5502,7 @@ observations:
          name: aircar_q133
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -5780,7 +5778,7 @@ observations:
          name: aircar_uv233
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -6091,7 +6089,7 @@ observations:
          name: aircft_t130
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -6366,7 +6364,7 @@ observations:
          name: aircft_t131
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -6641,7 +6639,7 @@ observations:
          name: aircft_t134
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -6916,7 +6914,7 @@ observations:
          name: aircft_t135
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -7191,7 +7189,7 @@ observations:
          name: aircft_q134
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -7467,7 +7465,7 @@ observations:
          name: aircft_uv230
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -7778,7 +7776,7 @@ observations:
          name: aircft_uv231
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -8089,7 +8087,7 @@ observations:
          name: aircft_uv234
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -8400,7 +8398,7 @@ observations:
          name: aircft_uv235
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -8712,7 +8710,7 @@ observations:
 
          distribution:   # for LETKF
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
 
          obsdatain:
            engine:
@@ -8814,7 +8812,7 @@ observations:
          name: msonet_t188
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -9089,7 +9087,7 @@ observations:
          name: msonet_q188
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -9365,7 +9363,7 @@ observations:
          name: msonet_ps188
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -9633,7 +9631,7 @@ observations:
          name: msonet_uv288
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -10615,7 +10613,7 @@ observations:
          name: rassda_t126
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -10888,7 +10886,7 @@ observations:
          name: sfcshp_t180
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -11163,7 +11161,7 @@ observations:
          name: sfcshp_t182
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -11438,7 +11436,7 @@ observations:
          name: sfcshp_t183
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -11714,7 +11712,7 @@ observations:
          name: sfcshp_q180
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -11990,7 +11988,7 @@ observations:
          name: sfcshp_q182
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -12266,7 +12264,7 @@ observations:
          name: sfcshp_q183
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -12543,7 +12541,7 @@ observations:
          name: sfcshp_ps180
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -12820,7 +12818,7 @@ observations:
          name: sfcshp_uv280
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -13184,7 +13182,7 @@ observations:
          name: sfcshp_uv282
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -13504,7 +13502,7 @@ observations:
          name: sfcshp_uv284
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -13822,7 +13820,7 @@ observations:
          name: vadwnd_uv224
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -14185,7 +14183,7 @@ observations:
          name: amsua_n19
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -14562,7 +14560,7 @@ observations:
          name: amsua_n20
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -15146,7 +15144,7 @@ observations:
          name: atms_npp
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -15733,7 +15731,7 @@ observations:
          name: abi_g16
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
@@ -16224,7 +16222,7 @@ observations:
          name: abi_g18
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 600e3
          obsdatain:
            engine:
              type: H5File
