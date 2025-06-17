@@ -122,6 +122,7 @@ if os.path.exists(yfile2):
         yfile2 = f'{basename}_old{knt:03}.yaml'
 os.replace(yfile, yfile2)
 #
+do_envar_radar_ref = ( os.getenv("DO_ENVAR_RADAR_REF", "FASLE").upper() == "TRUE" )
 with open(yfile2, 'r') as infile, open(yfile, 'w') as outfile:
     buffer_zone = []
     in_buffer_zone = False
@@ -213,6 +214,10 @@ with open(yfile2, 'r') as infile, open(yfile, 'w') as outfile:
             buffer_zone.append(line)
 
         if not in_buffer_zone:
+            if not do_envar_radar_ref and ", cloud_liquid_water, cloud_liquid_ice, rain_water, snow_water, graupel, equivalent_reflectivity_factor" in line:
+                line = line.replace(", cloud_liquid_water, cloud_liquid_ice, rain_water, snow_water, graupel, equivalent_reflectivity_factor", "")
+            elif not do_envar_radar_ref and "    - equivalent_reflectivity_factor" in line:
+                line = line.replace("    - equivalent_reflectivity_factor\n", "")
             outfile.write(line)
     # ~~~~
     if buffer_zone:
