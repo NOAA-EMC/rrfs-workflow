@@ -17,9 +17,7 @@ else
   use_same_mpas=yes
 fi
 cd "${HOMErrfs}/sorc/MPAS-Model" || exit 1
-branch=$(git rev-parse --abbrev-ref HEAD)
-remote=$(git config "branch.${branch}.remote")
-remote_url=$(git remote get-url "${remote}")
+remote_url=$(git remote get-url origin)
 hash_workflow=$(git rev-parse HEAD)
 cd "${HOMErrfs}/sorc/RDASApp/sorc/mpas" || exit 1
 hash_rdasapp=$(git rev-parse HEAD)
