@@ -13814,6 +13814,21 @@ cost function:
            minvalue: 0.0
            maxvalue: 0.5
 
+       #Toss data if the hofx is missing or outside of range
+       - filter: Domain Check
+         filter variables:
+         - name: brightnessTemperature
+           channels: *abi_g16_channels
+         where:
+         - variable:
+             name: HofX/brightnessTemperature
+             channels: *abi_g16_channels
+           value: is_valid
+           minvalue: 50.00001
+           maxvalue: 449.99999
+         action:
+           name: reject
+
        # Surface type check
        # Toss channels 7, 11-16 over land
        - filter: RejectList
@@ -14298,6 +14313,21 @@ cost function:
            minvalue: 0.0
            maxvalue: 0.5
 
+       # Toss data if the hofx is missing or outside of range
+       - filter: Domain Check
+         filter variables:
+         - name: brightnessTemperature
+           channels: *abi_g18_channels
+         where:
+         - variable:
+             name: brightnessTemperature@HofX
+             channels: *abi_g18_channels
+           value: is_valid
+           minvalue: 50.00001
+           maxvalue: 449.99999
+         action:
+           name: reject
+
        # Surface type check
        # Toss channels 7, 11-16 over land
        - filter: RejectList
@@ -14563,6 +14593,7 @@ cost function:
              error parameter vector: [ 2.2, 1.756, 1.587, 1.185, 2.2, 2.2, 2.2, 2.2, 2.2, 2.2 ]
          action:
            name: reject
+
      - obs space:
          name: atms_npp
          _anchor_channels: &atms_npp_channels 1-22
@@ -14814,13 +14845,18 @@ cost function:
                  channels: *atms_npp_channels
                coefs: [1, -1]
 
-       - filter: Bounds Check
+       # Toss the data if the hofx is missing or outside of range
+       - filter: Domain Check
          filter variables:
-         #- name: brightnessTemperature
-         - name: HofX/brightnessTemperature
+         - name: brightnessTemperature
            channels: *atms_npp_channels
-         minvalue: 50.00001
-         maxvalue: 449.99999
+         where:
+         - variable:
+             name: HofX/brightnessTemperature
+             channels: *atms_npp_channels
+           value: is_valid
+           minvalue: 50.00001
+           maxvalue: 449.99999
          action:
            name: reject
 
@@ -15398,13 +15434,18 @@ cost function:
                  channels: *atms_n20_channels
                coefs: [1, -1]
 
-       - filter: Bounds Check
+       # Toss the data if the hofx is missing or outside of range
+       - filter: Domain Check
          filter variables:
-         #- name: brightnessTemperature
-         - name: HofX/brightnessTemperature
+         - name: brightnessTemperature
            channels: *atms_n20_channels
-         minvalue: 50.00001
-         maxvalue: 449.99999
+         where:
+         - variable:
+             name: HofX/brightnessTemperature
+             channels: *atms_n20_channels
+           value: is_valid
+           minvalue: 50.00001
+           maxvalue: 449.99999
          action:
            name: reject
 
@@ -15989,13 +16030,18 @@ cost function:
                  channels: *atms_n21_channels
                coefs: [1, -1]
 
-       - filter: Bounds Check
+       # Toss the data if the hofx is missing or outside of range
+       - filter: Domain Check
          filter variables:
-         #- name: brightnessTemperature
-         - name: HofX/brightnessTemperature
+         - name: brightnessTemperature
            channels: *atms_n21_channels
-         minvalue: 50.00001
-         maxvalue: 449.99999
+         where:
+         - variable:
+             name: HofX/brightnessTemperature
+             channels: *atms_n21_channels
+           value: is_valid
+           minvalue: 50.00001
+           maxvalue: 449.99999
          action:
            name: reject
 

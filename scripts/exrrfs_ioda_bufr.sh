@@ -77,15 +77,25 @@ done
 # --------------------------------------------------
 # run  bufr2ioda tool for atms bufr obs
 # --------------------------------------------------
-${cpreq} "${PARMrrfs}//atms_beamwidth.txt" .
-${cpreq} "${PARMrrfs}//bufr_atms_mapping.yaml" .
+${cpreq} "${PARMrrfs}/atms_beamwidth.txt" .
+${cpreq} "${PARMrrfs}/bufr_atms_mapping.yaml" .
 input_file="atmsbufr"
 output_file="rap.t${cyc}z.atms_{splits/satId}.tm00.nc"
 yaml="bufr_atms_mapping.yaml"
-./bufr2netcdf.x  ${input_file} $yaml ${output_file}
-cp "rap.t${cyc}z.atms_npp.tm00.nc" "ioda_atms_npp.nc"
-cp "rap.t${cyc}z.atms_n20.tm00.nc" "ioda_atms_n20.nc"
-cp "rap.t${cyc}z.atms_n21.tm00.nc" "ioda_atms_n21.nc"
+if [[ -f "$input_file" ]]; then
+  ./bufr2netcdf.x "$input_file" "$yaml" "$output_file"
+  if [[ -f "rap.t${cyc}z.atms_npp.tm00.nc" ]]; then
+     ${cpreq} "rap.t${cyc}z.atms_npp.tm00.nc" "ioda_atms_npp.nc"
+  fi
+  if [[ -f "rap.t${cyc}z.atms_n20.tm00.nc" ]]; then
+     ${cpreq} "rap.t${cyc}z.atms_n20.tm00.nc" "ioda_atms_n20.nc"
+  fi
+  if [[ -f "rap.t${cyc}z.atms_n21.tm00.nc" ]]; then
+     ${cpreq} "rap.t${cyc}z.atms_n21.tm00.nc" "ioda_atms_n21.nc"
+  fi
+else
+  echo "Input file $input_file does not exist."
+fi
 # run python bufr2ioda tool for ZTD and AMV bufr obs
 # --------------------------------------------------
 HOMErdasapp=${HOMErrfs}/sorc/RDASApp/
