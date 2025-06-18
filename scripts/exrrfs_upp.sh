@@ -93,11 +93,11 @@ EOF
       ${MPI_RUN_CMD} ./upp.x
       # check the status copy output to COMOUT
       fhr2=$(printf %02d $((10#$fhr)) )
-      wrfprs="WRFPRS.GrbF${fhr2}"
-      wrfnat="WRFNAT.GrbF${fhr2}"
-      wrftwo="WRFTWO.GrbF${fhr2}"
+      wrfprs="POSTPRS.GrbF${fhr2}"
+      wrfnat="POSTNAT.GrbF${fhr2}"
+      wrftwo="POSTTWO.GrbF${fhr2}"
       if [[ ! -s "./${wrfprs}" ]]; then
-        echo "FATAL ERROR: failed to genereate WRF grib2 files"
+        echo "FATAL ERROR: failed to genereate POST grib2 files"
         err_exit
       fi
 

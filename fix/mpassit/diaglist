@@ -1,4 +1,5 @@
 rainnc                   RAINNC
+frainnc                  ACFRAIN
 snowncv                  SNOWNCV
 rainncv                  RAINNCV
 graupelncv               GRAUPELNCV
@@ -42,3 +43,5 @@ swddni                   SWDDNI
 swddif                   SWDDIF
 swupt                    SWUPT
 olrtoa 	      	      	 OLR
+max_hail_diameter_sfc_acc      HAIL_MAXK1
+max_hail_diameter_column_acc   HAIL_MAX2D
