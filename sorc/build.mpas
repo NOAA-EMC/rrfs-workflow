@@ -12,20 +12,22 @@ EXEC="${HOMErrfs}/sorc/MPAS-Model/init_atmosphere_model"
 EXEC2="${HOMErrfs}/sorc/MPAS-Model/atmosphere_model"
 
 compiler_str="intel-mpi"
-extra_make_opts=""
 if [[ "${MACHINE}" == "wcoss2" ]]; then
   BUILD_VERSION_FILE="${HOMErrfs}/versions/build.ver"
   if [[ -f "${BUILD_VERSION_FILE}" ]]; then
     source "${BUILD_VERSION_FILE}"
   fi
   compiler_str="ftn"
-  extra_make_opts="FFLAGS_PROMOTION='-real-size 64' \
-    FFLAGS_OPT='-O3 -convert big_endian -free -align array64byte' \
-    CFLAGS_OPT='-O3' CXXFLAGS_OPT='-O3' LDFLAGS_OPT='-O3'"
+  export FFLAGS_PROMOTION="-real-size 64"
+  export FFLAGS_OPT="-O3 -convert big_endian -free -align array64byte"
+  export CFLAGS_OPT="-O3"
+  export CXXFLAGS_OPT="-O3"
+  export LDFLAGS_OPT="-O3"
 elif [[ "${MACHINE}" == "gaea" ]]; then
   compiler_str="ifort"
 elif [[ "${MACHINE}" == "ursa" ]]; then
-  extra_make_opts="CC_SERIAL=icx CXX_SERIAL=icpx"
+  export CC_SERIAL=icx
+  export CXX_SERIAL=icpx
 fi
 
 module purge                      
@@ -35,9 +37,9 @@ module list
 
 cd "${HOMErrfs}/sorc/MPAS-Model" || exit 1
 make clean CORE=init_atmosphere
-make -j8 "${compiler_str}" CORE=init_atmosphere PRECISION=single ${extra_make_opts}
+make -j8 "${compiler_str}" CORE=init_atmosphere PRECISION=single
 make clean CORE=atmosphere
-make -j8 "${compiler_str}" CORE=atmosphere PRECISION=single ${extra_make_opts}
+make -j8 "${compiler_str}" CORE=atmosphere PRECISION=single
 
 mkdir -p "${HOMErrfs}/exec"
 echo "copy ${EXEC} to ../exec/init_atmosphere_model.x"
