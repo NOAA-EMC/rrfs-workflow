@@ -33,7 +33,7 @@ echo "this cycle is ${start_type} start"
 #
 #  find the right background file
 #
-timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 
+timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
 
 if [[ "${start_type}" == "cold" ]]; then
   thisfile=${COMINrrfs}/${RUN}.${PDY}/${cyc}/ic/${WGF}${MEMDIR}/init.nc
@@ -98,14 +98,14 @@ for hr in ${SFC_CYCLING_HRS:-"99"}; do
     if [[ -r ${thisfile} ]]; then
       ${cpreq} "${thisfile}" "${UMBRELLA_PREP_IC_DATA}/mpas_sfc.nc"
       if [[ -r "${UMBRELLA_PREP_IC_DATA}/init.nc" ]]; then
-        to_file=${UMBRELLA_PREP_IC_DATA}/init.nc
+        to_file="${UMBRELLA_PREP_IC_DATA}/init.nc"
       elif [[ -r "${UMBRELLA_PREP_IC_DATA}/mpasin.nc" ]]; then
-        to_file=${UMBRELLA_PREP_IC_DATA}/mpasin.nc
+        to_file="${UMBRELLA_PREP_IC_DATA}/mpasin.nc"
       fi
       echo "surface cycling from ${thisfile} to ${to_file}"
-      ncks -O -C -x -v ${var_list} ${to_file}  tmp.nc
-      ncks -A -v ${var_list} ${UMBRELLA_PREP_IC_DATA}/mpas_sfc.nc tmp.nc
-      mv tmp.nc ${to_file}
+      ncks -O -C -x -v ${var_list} "${to_file}"  tmp.nc
+      ncks -A -v ${var_list} "${UMBRELLA_PREP_IC_DATA}/mpas_sfc.nc tmp.nc"
+      mv tmp.nc "${to_file}"
     else
       echo "SFC_CYCLING failed, cannot find warm start file: ${thisfile}"
     fi
