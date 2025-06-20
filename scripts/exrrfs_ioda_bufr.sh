@@ -17,7 +17,7 @@ ${cpreq} "${EXECrrfs}"/bufr2ioda.x .
 REFERENCE_TIME="${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z"
 yaml_list=(
 "prepbufr_adpsfc.yaml"
-"prepbufr_adpupa.yaml"
+#"prepbufr_adpupa.yaml"
 "prepbufr_aircar.yaml"
 "prepbufr_aircft.yaml"
 "prepbufr_ascatw.yaml"
@@ -32,7 +32,7 @@ if (( ${YAML_GEN_METHOD:-1} == 2 )); then
   # For YAML_GEN_METHOD=2 we can use all obs. vadwnd not yet ready.
   yaml_list=(
   "prepbufr_adpsfc.yaml"
-  "prepbufr_adpupa.yaml"
+  #"prepbufr_adpupa.yaml"
   "prepbufr_aircar.yaml"
   "prepbufr_aircft.yaml"
   "prepbufr_ascatw.yaml"
@@ -73,6 +73,8 @@ done
 # run python bufr2ioda tool for ZTD and AMV bufr obs
 # --------------------------------------------------
 HOMErdasapp=${HOMErrfs}/sorc/RDASApp/
+${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda_adpupa_prepbufr.json .
+${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda_adpupa_prepbufr.py .
 ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda_ztd.py .
 #${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda_satwnd.py .
 ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda.json .
@@ -85,13 +87,20 @@ PYIODALIB=$(echo "$HOMErdasapp"/build/lib/python3.*)
 WXFLOWLIB=${USHrrfs}/wxflow/src
 export PYTHONPATH="${WXFLOWLIB}:${PYIODALIB}:${PYTHONPATH}"
 
-# generate a JSON w CDATE from the template
+# generate a JSON w CDATE from the template and convert to IODA
 ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/gen_bufr2ioda_json.py .
-./gen_bufr2ioda_json.py -t bufr2ioda.json -o bufr2ioda_0.json
+# ADPUPA
+./gen_bufr2ioda_json.py -t bufr2ioda_adpupa_prepbufr.json -o bufr2ioda_adpupa_prepbufr_0.json
+./bufr2ioda_adpupa_prepbufr.py -c bufr2ioda_adpupa_prepbufr_0.json
 
+# ZTD
+./gen_bufr2ioda_json.py -t bufr2ioda.json -o bufr2ioda_0.json
 ./bufr2ioda_ztd.py -c bufr2ioda_0.json
+
+# SATWND
 #./bufr2ioda_satwnd.py -c bufr2ioda_0.json
-#convert abi gsrcsr bufr to ioda
+
+# GSRCSR
 ln -sf abibufr "rap.t${cyc}z.gsrcsr.tm00.bufr_d"
 ./run_bufr2ioda_gsrcsr.sh "${CDATE}" rap "${DATA}" "${DATA}" "${DATA}" "${HOMErdasapp}"
 cp "rap.t${cyc}z.abi_g16.tm00.nc" "ioda_abi_g16.nc"
