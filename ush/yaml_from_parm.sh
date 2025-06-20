@@ -7,9 +7,9 @@ if [[ "$1" == "jedivar" ]]; then
       -e "s/@HYB_WGT_STATIC@/${HYB_WGT_STATIC}/" -e "s/@HYB_WGT_ENS@/${HYB_WGT_ENS}/" \
       "${EXPDIR}/config/jedivar.yaml" > jedivar.yaml
   if [[ "${HYB_WGT_ENS}" == "0" ]] || [[ "${HYB_WGT_ENS}" == "0.0" ]]; then # pure 3DVAR
-    sed -i '124,149d' ./jedivar.yaml
+    sed -i '125,150d' ./jedivar.yaml
   elif [[ "${HYB_WGT_STATIC}" == "0" ]] || [[ "${HYB_WGT_STATIC}" == "0.0" ]] ; then # pure 3DEnVar
-    sed -i '77,123d' ./jedivar.yaml
+    sed -i '78,124d' ./jedivar.yaml
   fi
   if [[ "${start_type}" == "cold" ]]; then
       sed -i '7s/mpasin/ana/' jedivar.yaml
