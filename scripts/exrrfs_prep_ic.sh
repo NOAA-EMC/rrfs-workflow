@@ -79,6 +79,40 @@ else
 fi
 
 #
+# do sfc cycling
+#
+for hr in ${SFC_CYCLING_HRS:-"99"}; do
+  shr=$(printf '%02d' $((10#$hr)) )
+  var_list="smois,snow,snowh,snowc,sst,canwat,tslb,skintemp"
+  if [ "${cyc}" == "${shr}" ]; then
+    NUM=3 # look back ${NUM} cycles to find mpasout files for surface cycling
+    for (( ii=cyc_interval; ii<=$(( NUM*cyc_interval )); ii=ii+cyc_interval )); do
+      CDATEp=$(${NDATE} -${ii} "${CDATE}" )
+      PDYii=${CDATEp:0:8}
+      cycii=${CDATEp:8:2}
+      thisfile=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/${fcststr}/${WGF}${MEMDIR}/mpasout.${timestr}.nc
+      if [[ -r ${thisfile} ]]; then
+        break
+      fi
+    done
+    if [[ -r ${thisfile} ]]; then
+      ${cpreq} "${thisfile}" "${UMBRELLA_PREP_IC_DATA}/mpas_sfc.nc"
+      if [[ -r "${UMBRELLA_PREP_IC_DATA}/init.nc" ]]; then
+        to_file=${UMBRELLA_PREP_IC_DATA}/init.nc
+      elif [[ -r "${UMBRELLA_PREP_IC_DATA}/mpasin.nc" ]]; then
+        to_file=${UMBRELLA_PREP_IC_DATA}/mpasin.nc
+      fi
+      echo "surface cycling from ${thisfile} to ${to_file}"
+      ncks -O -C -x -v ${var_list} ${to_file}  tmp.nc
+      ncks -A -v ${var_list} ${UMBRELLA_PREP_IC_DATA}/mpas_sfc.nc tmp.nc
+      mv tmp.nc ${to_file}
+    else
+      echo "SFC_CYCLING failed, cannot find warm start file: ${thisfile}"
+    fi
+  fi
+done
+
+#
 #  find the right satbias file
 #
 PREP_IC_TYPE=${PREP_IC_TYPE:-"no_da"}
