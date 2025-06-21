@@ -81,7 +81,7 @@ fi
 #
 # do sfc cycling
 #
-for hr in ${SFC_CYCLING_HRS:-"99"}; do
+for hr in ${SFC_UPDATE_CYCS:-"99"}; do
   shr=$(printf '%02d' $((10#$hr)) )
   var_list="smois,snow,snowh,snowc,sst,canwat,tslb,skintemp,landmask,isltyp,ivgtyp,soilt1"
   if [ "${cyc}" == "${shr}" ]; then
@@ -102,12 +102,12 @@ for hr in ${SFC_CYCLING_HRS:-"99"}; do
       elif [[ -r "${UMBRELLA_PREP_IC_DATA}/mpasin.nc" ]]; then
         to_file="${UMBRELLA_PREP_IC_DATA}/mpasin.nc"
       fi
-      echo "surface cycling from ${thisfile} to ${to_file}"
+      echo "surface update from ${thisfile} to ${to_file}"
       ncks -O -C -x -v ${var_list} "${to_file}"  tmp.nc
       ncks -A -v ${var_list} "${UMBRELLA_PREP_IC_DATA}/mpas_sfc.nc" tmp.nc
       mv tmp.nc "${to_file}"
     else
-      echo "SFC_CYCLING failed, cannot find warm start file: ${thisfile}"
+      echo "SFC_UPDATE failed, cannot find warm start file: ${thisfile}"
     fi
   fi
 done
