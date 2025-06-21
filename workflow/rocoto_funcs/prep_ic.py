@@ -22,10 +22,12 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         cycledefs = 'prod'
     coldhrs = os.getenv('COLDSTART_CYCS', '03 15')
     cyc_interval = os.getenv('CYC_INTERVAL')
+    sfc_update_cycs = os.getenv('SFC_UPDATE_CYCS', '99')
 
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
-        'COLDSTART_CYCS': f'{coldhrs}'
+        'COLDSTART_CYCS': f'{coldhrs}',
+        'SFC_UPDATE_CYCS': f'{sfc_update_cycs}',
     }
     if spinup_mode != 0:
         dcTaskEnv['SPINUP_MODE'] = f'{spinup_mode}'
