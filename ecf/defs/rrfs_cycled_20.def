@@ -295,7 +295,7 @@ suite nco_rrfs_dev_20
                 edit MEMBER_NAME '002'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem003
-                edit MEM_TYPE 'Lin Gan'
+                edit MEM_TYPE 'MEMBER'
                 edit MEMBER_NAME '003'
                 trigger ./jrrfs_enkf_observer_gsi_ensmean==complete
               task jrrfs_enkf_observer_gsi_mem004
