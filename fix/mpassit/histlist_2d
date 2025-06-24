@@ -10,7 +10,6 @@ sfc_albedo                      ALBEDO
 hpbl                            PBLH
 ivgtyp                          IVGTYP
 isltyp                          ISLTYP
-snowfallac                      SNOWFALLAC
 vegfra                          VEGFRA
 shdmin                          SHDMIN
 shdmax                          SHDMAX
@@ -18,4 +17,4 @@ canwat                          CANWAT
 snowc                           SNOWC
 snownc                          ACSNOW
 graupelnc                       ACGRAUP
-acrunoff                        ACRUNOFF
+sfcrunoff                       SFROFF

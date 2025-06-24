@@ -14,8 +14,6 @@ rm -rf "${HOMErrfs}/sorc/UPP/tests/build"
 rm -rf "${HOMErrfs}/sorc/UPP/tests/install"
 rm -rf "${EXEC}"
 
-cp "${HOMErrfs}/sorc/_workaround_/UPP/INITPOST_MPAS.F"  "${HOMErrfs}/sorc/UPP/sorc/ncep_post.fd/INITPOST_MPAS.F"
-
 cd "${HOMErrfs}/sorc/UPP/tests" || exit 1
 ./compile_upp.sh
 
