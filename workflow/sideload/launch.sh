@@ -84,7 +84,7 @@ case ${task_id} in
       module load libjpeg/9c
       module load libfabric/1.20.1
     else
-      module load "${MACHINE}"
+      module load "${MACHINE}_intel"
     fi
     ;;
   recenter)
