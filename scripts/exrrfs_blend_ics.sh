@@ -208,7 +208,13 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
      python ${USHrrfs}/blending_fv3.py $Lx $glb $reg $trcr $blend $use_host_enkf
      [[ ! -s fv_core.res.tile1.nc ]]&& err_exit "FATAL: fv_core.res.tile1.nc not found in ${DATA}"
      [[ ! -s fv_tracer.res.tile1.nc ]]&& err_exit "FATAL: fv_tracer.res.tile1.nc not found in ${DATA}" 
+     if [ -f ${shared_output_data}/fv_core.res.tile1.nc ]; then
+       rm -f ${shared_output_data}/fv_core.res.tile1.nc
+     fi
      ln -s ${DATA}/fv_core.res.tile1.nc ${shared_output_data}/fv_core.res.tile1.nc
+     if [ -f ${shared_output_data}/fv_tracer.res.tile1.nc ]; then
+       rm -f ${shared_output_data}/fv_tracer.res.tile1.nc
+     fi
      ln -s ${DATA}/fv_tracer.res.tile1.nc ${shared_output_data}/fv_tracer.res.tile1.nc
      # Move the remaining RESTART files to INPUT
      cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc          ${shared_output_data}/fv_core.res.nc

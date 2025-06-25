@@ -137,10 +137,6 @@ fi
 
 echo "ANALYSIS NONVARCLD job is completed" &> ${umbrella_init_data}/analysis_nonvarcld_${CYCLE_TYPE}_clean.flag
 
-if [ "${KEEPDATA}" = "NO" ]; then
-  rm -rf ${DATA}
-fi
-
 #-----------------------------------------------------------------------
 # Print exit message.
 #-----------------------------------------------------------------------

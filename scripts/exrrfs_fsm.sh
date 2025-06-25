@@ -437,14 +437,24 @@ while [ $proceed_trigger_scan == "YES" ]; do
       elif [ -d ${COMrrfs}/enkfrrfs.${RRFS_previous_PDY}/${RRFS_previous_cyc}_spinup/m001/forecast/RESTART ]; then
         echo "Forecast RESTART directory found in spinup cycle - looking for file"
         target_directory_scan=${COMrrfs}/enkfrrfs.${RRFS_previous_PDY}/${RRFS_previous_cyc}_spinup
+      elif [ ! -d ${COMrrfs}/rrfs.${RRFS_previous_PDY}/${RRFS_previous_cyc}/forecast ]; then
+        echo "Found the previous cycle running in spinup only mode - checking for spinup RESTART file"
+        skip_this_scan="YES"
+        source_file_found="YES"
       else
         skip_this_scan="YES"
+        source_file_found="NO"
+      fi
+      #### Add time condition for check only 20 minutes - set to found if exist 20 minutes to use GFS enkf fcst data
+      current_time_det_analysis_gsi=$(date +%s)
+      elapsed_time=$((current_time_det_analysis_gsi - start_time_det_analysis_gsi))
+      if ((elapsed_time > 1800)); then
+        skip_this_scan="YES"
+        source_file_found="YES"
+        date
+        echo "WARNING: GSI will be running in Degraded mode due to the enkf RESTART in previous cycle not found"
       fi
       if [ ${skip_this_scan} == "NO" ]; then
-        #### Add time condition for check only 20 minutes - set to found if exist 20 minutes to use GFS enkf fcst data
-        current_time_det_analysis_gsi=$(date +%s)
-        elapsed_time=$((current_time_det_analysis_gsi - start_time_det_analysis_gsi))
-        if ((elapsed_time <= 1800)); then
           for member_num in $(seq 1 30); do
             member_num_2d=$( printf "%02d" ${member_num} )
             target_file_scan=${target_directory_scan}/m0${member_num_2d}/forecast/RESTART/${RRFS_Current_PDY}.${RRFS_Current_cyc}0000.coupler.res
@@ -455,14 +465,9 @@ while [ $proceed_trigger_scan == "YES" ]; do
               ls -lart ${target_directory_scan}/m0${member_num_2d}/forecast/RESTART
             fi
           done
-        else
-          date
-          echo "WARNING: Degraded GSI - the release_det_analysis_gsi does not find the input file and waiting time is over 30 minutes"
-        fi
       fi
     fi
     if [ ${source_file_found} == "YES" ]; then
-      sleep 60
       ecflow_client --event release_det_analysis_gsi
       scan_release_det_analysis_gsi="NO"
     else

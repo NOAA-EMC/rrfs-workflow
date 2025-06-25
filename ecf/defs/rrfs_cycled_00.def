@@ -2079,6 +2079,7 @@ suite nco_rrfs_dev_00
           family prep
             family det
               edit WGF 'det'
+              trigger ../ics/det==complete
               task jrrfs_det_prep_cyc
                 trigger :TIME >= 0020 and ../../fsm/jrrfs_fsm:release_det_prep_cyc
 
@@ -2088,6 +2089,7 @@ suite nco_rrfs_dev_00
               edit GSI_TYPE 'OBSERVER'
               edit MEM_TYPE 'MEAN'
               edit CYCLE_TYPE 'prod'
+              trigger ../ics/enkf==complete
               task jrrfs_enkf_prep_cyc_ensmean
                 edit MEMBER_NAME 'ensmean'
                 trigger ../../fsm/jrrfs_fsm:release_enkf_prep_cyc_mem001
@@ -2309,7 +2311,7 @@ suite nco_rrfs_dev_00
             family ensf
               edit WGF 'ensf'
               edit CYCLE_TYPE 'prod'
-              trigger ../analysis/enkf==complete
+              trigger ../ics/ensf==complete and ../analysis/enkf==complete
               task jrrfs_ensf_prep_cyc_mem001
                 edit MEMBER_NAME '001'
               task jrrfs_ensf_prep_cyc_mem002
@@ -6088,7 +6090,7 @@ suite nco_rrfs_dev_00
           family clean
             task jrrfs_clean
               label storage ""
-              trigger ../forecast==complete
+              trigger ../fsm==complete and ../forecast==complete and ../post==complete and ../product==complete
           endfamily     # clean
         endfamily	# v1.0
       endfamily		# rrfs

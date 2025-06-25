@@ -41,6 +41,4 @@ export CDATE=${PDY}${cyc}
 ${HOMErrfs}/scripts/exrrfs_fsm.sh
 export err=$?; err_chk
 
-if [ "${KEEPDATA}" != "YES" ]; then
-  rm -rf ${DATA}
-fi
+exit 0

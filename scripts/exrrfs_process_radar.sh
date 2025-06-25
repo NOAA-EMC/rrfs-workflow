@@ -337,11 +337,19 @@ EOF
   # 
   $APRUN ${EXECrrfs}/$pgm >>$pgmout 2>errfile
   export err=$?; err_chk
+  if [ -f ${shared_output_data}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin} ] && [ -s ${DATA}/${bigmin}/RefInGSI3D.dat ]; then 
+    rm -f ${shared_output_data}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
+  fi
   ln -s ${DATA}/${bigmin}/RefInGSI3D.dat ${shared_output_data}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin} 
   cpreq -p RefInGSI3D.dat  ${COMOUT_ANALYSIS}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
-  #### cpreq -p Gridded_ref.nc  ${shared_output_data}/rrfs.t${HH}z.Gridded_ref.nc.${bigmin}
+  if [ -f ${shared_output_data}/Gridded_ref.nc ] && [ -s ${DATA}/${bigmin}/Gridded_ref.nc ]; then
+    rm -f ${shared_output_data}/Gridded_ref.nc
+  fi
   ln -s ${DATA}/${bigmin}/Gridded_ref.nc ${shared_output_data}/Gridded_ref.nc
   cpreq -p Gridded_ref.nc ${COMOUT_ANALYSIS}/Gridded_ref.nc
+  if [ -f ${shared_output_data}/rrfs.t${HH}z.Gridded_ref.nc.${bigmin} ] && [ -s ${DATA}/${bigmin}/Gridded_ref.nc ]; then
+    rm -f ${shared_output_data}/rrfs.t${HH}z.Gridded_ref.nc.${bigmin}
+  fi
   ln -s ${DATA}/${bigmin}/Gridded_ref.nc ${shared_output_data}/rrfs.t${HH}z.Gridded_ref.nc.${bigmin}
   cpreq -p Gridded_ref.nc ${COMOUT_ANALYSIS}/rrfs.t${HH}z.Gridded_ref.nc.${bigmin}
 done # done with the bigmin for-loop
