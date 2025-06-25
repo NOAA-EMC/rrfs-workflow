@@ -16,25 +16,30 @@ cd ${DATA}
 CDATE=${CDATE:-${PDY}${cyc}}
 
 #-----------------------------------------------------------------------
+# Remove this session before NCO code delivery
 # Clean up the COM
 # Keep all COM for the past 12 hours then clean up all files on the 13th cycle
 #   with exception of analysis and grib2 files
 #-----------------------------------------------------------------------
-rm -f ${DATA}/data_clean_com.sh
+[[ -f ${DATA}/data_clean_com.sh ]]&& rm -f ${DATA}/data_clean_com.sh
 echo "set -x" &> ${DATA}/data_clean_com.sh
 target_cleanup_pdy=$($NDATE -13 ${CDATE} | cut -c1-8)
 target_cleanup_cyc=$($NDATE -13 ${CDATE} | cut -c9-10)
 [[ -z ${COMrrfs} ]]&& exit 0
 cd ${COMrrfs}
 for wgf_run in rrfs enkfrrfs; do
-  cd ${COMrrfs}/${wgf_run}.${target_cleanup_pdy}
-  for directory2clean in $(ls |grep "${target_cleanup_cyc}"); do
-    dir_remove=${COMrrfs}/${wgf_run}.${target_cleanup_pdy}/${directory2clean}
-    echo "Check ${dir_remove} for cleanup"
-    [[ ! -d ${dir_remove} ]]&& exit 0
-    cd ${dir_remove}
-    find . -type f|grep -v "analysis"|grep -v "grib2"|awk -v dir_remove="$dir_remove" '{print "rm -f",dir_remove"/"$1}' >> ${DATA}/data_clean_com.sh
-  done
+  if [ -d ${COMrrfs}/${wgf_run}.${target_cleanup_pdy} ]; then
+    cd ${COMrrfs}/${wgf_run}.${target_cleanup_pdy}
+    for directory2clean in $(ls |grep "${target_cleanup_cyc}"); do
+      dir_remove=${COMrrfs}/${wgf_run}.${target_cleanup_pdy}/${directory2clean}
+      echo "Check ${dir_remove} for cleanup"
+      [[ ! -d ${dir_remove} ]]&& exit 0
+      cd ${dir_remove}
+      find . -type f|grep -v "analysis"|grep -v "grib2"|awk -v dir_remove="$dir_remove" '{print "rm -f",dir_remove"/"$1}' >> ${DATA}/data_clean_com.sh
+    done
+  else
+    break
+  fi
 done
 cd $DATA
 [[ $(cat ${DATA}/data_clean_com.sh|wc -l) -gt 1 ]]&& sh ${DATA}/data_clean_com.sh
@@ -43,21 +48,28 @@ cd $DATA
 # Remove the Umbrella Data for the current cycle up to the forecast step
 #-----------------------------------------------------------------------
 
-#### Temporary keep all 12Z for debug
-#if [ ! ${cyc} == 19 ]; then
 cd $DATAROOT
 if [ ${KEEPDATA} == "YES" ]; then
+  # Keep all unique id DATA and rename the Umbrella Data directory to ensure new job will not run on the same directory
   for dir_remove in rrfs_analysis_gsi rrfs_analysis_gsi_spinup rrfs_calc_ensmean rrfs_forecast_spinup rrfs_init rrfs_init_spinup; do
     [[ -d ${dir_remove}_${cyc}_v1.0 ]]&& mv ${dir_remove}_${cyc}_v1.0 ${dir_remove}_$$_${cyc}_v1.0
   done
 else
+  # Delete all unique id DATA for this cycle
+  [[ -f ${DATA}/cleanup_run.sh ]]&& rm -f ${DATA}/cleanup_run.sh
+  echo "set -x" &> ${DATA}/cleanup_run.sh
+  idx_cyc2d=${cyc}
+  ls -lart|grep -v "\_${idx_cyc2d}\_"|grep "_${idx_cyc2d}\."|grep -v "rrfs_clean_${idx_cyc2d}"|awk '{print "rm -rf",$9}' >> ${DATA}/cleanup_run.sh
+  ls -lart|grep "\_${idx_cyc2d}\_v1\.0"|awk '{print "rm -rf",$9}' >> ${DATA}/cleanup_run.sh
+  cat ${DATA}/cleanup_run.sh
+  [[ $(cat ${DATA}/cleanup_run.sh|wc -l) -gt 1 ]]&& sh ${DATA}/cleanup_run.sh &> ${DATA}/cleanup_run_$$.log
+  # Double check and delete all Umbrella Data for this cycle
   for dir_remove in rrfs_analysis_gsi rrfs_analysis_gsi_spinup rrfs_calc_ensmean rrfs_forecast_spinup rrfs_init rrfs_init_spinup; do
     [[ -d ${dir_remove}_${cyc}_v1.0 ]]&& rm -rf ${dir_remove}_${cyc}_v1.0
   done
 fi
-cd $DATA
-#fi
 #-----------------------------------------------------------------------
+# Remove this session before NCO code delivery
 # Delete development data directories if KEEPDATA set to YES
 # Keep DATA for development for the last 12 hours
 # Remove this session after turn on the KEEPDATA function

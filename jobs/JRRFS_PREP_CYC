@@ -127,6 +127,7 @@ if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   fi
 fi
 export FORECAST_INPUT_PRODUCT=${umbrella_forecast_data}/INPUT
+[[ -d ${FORECAST_INPUT_PRODUCT} ]]&& rm -rf ${FORECAST_INPUT_PRODUCT}
 mkdir -p ${COMOUT} ${FORECAST_INPUT_PRODUCT}
 
 #-----------------------------------------------------------------------
@@ -141,10 +142,6 @@ export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then
   cat $pgmout
-fi
-
-if [ "${KEEPDATA}" = "NO" ]; then
-  rm -rf ${DATA}
 fi
 
 #-----------------------------------------------------------------------

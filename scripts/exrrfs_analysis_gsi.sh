@@ -215,7 +215,7 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
     else
       print_info_msg "WARNING: Cannot find ensemble files: ${dynvarfile} ${tracerfile} ${phyvarfile} "
       date
-      ls -alrt ${bkpathmem}
+      [[ -d ${bkpathmem} ]]&& ls -alrt ${bkpathmem}
     fi
     (( imem += 1 ))
   done
@@ -1159,6 +1159,7 @@ fi # run diag inline (with GSI)
 filelist="pe*.nc4 rrfs.*.${YYYYMMDDHH}_cnvstat_nc rrfs.*.${YYYYMMDDHH}_radstat_nc satbias_out satbias_pc.out"
 for file in $filelist; do
   if [ -s $file ]; then
+    [[ -f ${shared_output_data}/${file} ]]&& rm -f ${shared_output_data}/${file}
     echo "ln -s ${DATA}/${file} ." >> ${shared_output_data}/link_shared_file.sh
   else
     echo "WARNING $file is not available"
