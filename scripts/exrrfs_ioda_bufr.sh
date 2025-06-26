@@ -11,7 +11,9 @@ ${cpreq} "${OBSPATH}/${CDATE}.rap.t${cyc}z.prepbufr.tm00" prepbufr
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.gpsipw.tm00.bufr_d" ztdbufr
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.satwnd.tm00.bufr_d" satwndbufr
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.gsrcsr.tm00.bufr_d" abibufr
+cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.atms.tm00.bufr_d" atmsbufr
 ${cpreq} "${EXECrrfs}"/bufr2ioda.x .
+${cpreq} "${EXECrrfs}"/bufr2netcdf.x .
 
 # generate the namelist on the fly
 REFERENCE_TIME="${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z"
@@ -57,8 +59,11 @@ if (( ${YAML_GEN_METHOD:-1} == 2 )); then
   ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_satwnd.nc
   ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_sfcshp.nc
   ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_vadwnd.nc
-  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_abi_g16.nc
-  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_abi_g18.nc
+#  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_abi_g16.nc
+#  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_abi_g18.nc
+#  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_atms_npp.nc
+#  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_atms_n20.nc
+#  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_atms_n21.nc
 fi
 
 # run bufr2ioda.x
@@ -70,6 +75,18 @@ for yaml in "${yaml_list[@]}"; do
 done
 
 # --------------------------------------------------
+# run  bufr2ioda tool for atms bufr obs
+# --------------------------------------------------
+${cpreq} "${FIXrrfs}/atms_beamwidth.txt" .
+${cpreq} "${PARMrrfs}/bufr_atms_mapping.yaml" .
+input_file="atmsbufr"
+output_file="ioda.atms_{splits/satId}.nc"
+yaml="bufr_atms_mapping.yaml"
+if [[ -f "$input_file" ]]; then
+  ./bufr2netcdf.x "$input_file" "$yaml" "$output_file"
+else
+  echo "Input file $input_file does not exist."
+fi
 # run python bufr2ioda tool for ZTD and AMV bufr obs
 # --------------------------------------------------
 HOMErdasapp=${HOMErrfs}/sorc/RDASApp/
@@ -112,11 +129,14 @@ ${cpreq} "${USHrrfs}"/offline_domain_check_satrad.py .
 ${cpreq} "${USHrrfs}"/offline_ioda_tweak.py .
 for ioda_file in ioda*nc; do
   grid_file="${FIXrrfs}/meshes/${MESH_NAME}.static.nc"
+  #if [[ "${ioda_file}" == *abi* || "${ioda_file}" == *atms* ]]; then
   if [[ "${ioda_file}" == *abi* ]]; then
-    echo "ABI ioda file detected: running offline_domain_check_satrad.py"
-    ./offline_domain_check_satrad.py -o "${ioda_file}" -g "${grid_file}" -s 0.005
+    echo " ${ioda_file} ioda file detected: running offline_domain_check_satrad.py"
+    ./offline_domain_check_satrad.py -o "${ioda_file}" -g "${grid_file}" -f -s 0.005
     base_name=$(basename "$ioda_file" .nc)
     mv  "${base_name}_dc.nc" "${base_name}.nc"
+  elif [[ "${ioda_file}" == *atms* ]]; then
+    echo " ${ioda_file} ioda file detected: temporarily skipping offline domain check"
   else
     ./offline_domain_check.py -o "${ioda_file}" -g "${grid_file}" -s 0.005
     base_name=$(basename "$ioda_file" .nc)
