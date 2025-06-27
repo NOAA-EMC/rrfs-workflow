@@ -1024,7 +1024,7 @@ suite nco_rrfs_dev_10
           family clean
             task jrrfs_clean
               label storage ""
-              trigger ../forecast==complete
+              trigger ../fsm==complete and ../forecast==complete and ../post==complete and ../product==complete
           endfamily     # clean
         endfamily	# v1.0
       endfamily		# rrfs

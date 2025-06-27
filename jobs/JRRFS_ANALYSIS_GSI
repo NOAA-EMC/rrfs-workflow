@@ -148,10 +148,6 @@ fi
 
 echo "Analysis GSI job is completed" &> ${umbrella_analysis_data}/analysis_gsi_${CYCLE_TYPE}_clean.flag
 
-if [ "${KEEPDATA}" = "NO" ]; then
-  rm -rf ${DATA}
-fi
-
 #-----------------------------------------------------------------------
 # Print exit message.
 #-----------------------------------------------------------------------
