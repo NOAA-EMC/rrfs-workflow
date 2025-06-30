@@ -93,26 +93,26 @@ EOF
       ${MPI_RUN_CMD} ./upp.x
       # check the status copy output to COMOUT
       fhr2=$(printf %02d $((10#$fhr)) )
-      wrfprs="WRFPRS.GrbF${fhr2}"
-      wrfnat="WRFNAT.GrbF${fhr2}"
-      wrftwo="WRFTWO.GrbF${fhr2}"
-      if [[ ! -s "./${wrfprs}" ]]; then
-        echo "FATAL ERROR: failed to genereate WRF grib2 files"
+      postprs="POSTPRS.GrbF${fhr2}"
+      postnat="POSTNAT.GrbF${fhr2}"
+      posttwo="POSTTWO.GrbF${fhr2}"
+      if [[ ! -s "./${postprs}" ]]; then
+        echo "FATAL ERROR: failed to genereate POST grib2 files"
         err_exit
       fi
 
       mv itag "itag_${fhr2}"
       # Append the 2D fields onto the 3D files
-      cat "${wrfprs}" "${wrftwo}" > "${wrfprs}.tmp"
-      mv "${wrfprs}.tmp"  "${wrfprs}"
-      cat "${wrfnat}" "${wrftwo}" > "${wrfnat}.two"
-      mv "${wrfnat}.two" "${wrfnat}"
+      cat "${postprs}" "${posttwo}" > "${postprs}.tmp"
+      mv "${postprs}.tmp"  "${postprs}"
+      cat "${postnat}" "${posttwo}" > "${postnat}.two"
+      mv "${postnat}.two" "${postnat}"
 
       # copy products to COMOUT
       fhr3=$(printf %03d $((10#$fhr)) )
-      ${cpreq} "${wrfprs}"  "${COMOUT}/upp/${WGF}${MEMDIR}/${RUN}.t${cyc}z.prslev.f${fhr3}.${domain}grib2"
-      ${cpreq} "${wrfnat}"  "${COMOUT}/upp/${WGF}${MEMDIR}/${RUN}.t${cyc}z.natlev.f${fhr3}.${domain}grib2"
-      ${cpreq} "${wrftwo}"  "${COMOUT}/upp/${WGF}${MEMDIR}/${RUN}.t${cyc}z.testbed.f${fhr3}.${domain}grib2"
+      ${cpreq} "${postprs}"  "${COMOUT}/upp/${WGF}${MEMDIR}/${RUN}.t${cyc}z.prslev.f${fhr3}.${domain}grib2"
+      ${cpreq} "${postnat}"  "${COMOUT}/upp/${WGF}${MEMDIR}/${RUN}.t${cyc}z.natlev.f${fhr3}.${domain}grib2"
+      ${cpreq} "${posttwo}"  "${COMOUT}/upp/${WGF}${MEMDIR}/${RUN}.t${cyc}z.testbed.f${fhr3}.${domain}grib2"
       ln -snf  "${COMOUT}/upp/${WGF}${MEMDIR}/${RUN}.t${cyc}z.prslev.f${fhr3}.${domain}grib2"  "${COMOUT}/upp/${WGF}${MEMDIR}/${YYJJJHH}0000${fhr2}"
       ln -snf  "${COMOUT}/upp/${WGF}${MEMDIR}/${RUN}.t${cyc}z.prslev.f${fhr3}.${domain}grib2"  "${COMOUT}/upp/${WGF}${MEMDIR}/${PDY}.${RUN}.t${cyc}z.prslev.f${fhr3}.${domain}grib2"
       ln -snf  "${COMOUT}/upp/${WGF}${MEMDIR}/${RUN}.t${cyc}z.natlev.f${fhr3}.${domain}grib2"  "${COMOUT}/upp/${WGF}${MEMDIR}/${PDY}.${RUN}.t${cyc}z.natlev.f${fhr3}.${domain}grib2"
