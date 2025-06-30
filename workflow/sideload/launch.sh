@@ -80,11 +80,11 @@ case ${task_id} in
     if [[ ${MACHINE} == "wcoss2" ]]; then
       # need to unset module versions sourced earlier and load a couple more
       source "${HOMErrfs}/versions/unset.ver"
-      module load "${MACHINE}"
+      module load "${MACHINE}_intel"
       module load libjpeg/9c
       module load libfabric/1.20.1
     else
-      module load "${MACHINE}"
+      module load "${MACHINE}_intel"
     fi
     ;;
   recenter)
