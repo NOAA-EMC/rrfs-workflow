@@ -33,6 +33,7 @@ fi
 EXEC="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_variational.x"
 EXEC2="${HOMErrfs}/sorc/RDASApp/build/bin/bufr2ioda.x"
 EXEC3="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_enkf.x"
+EXEC4="${HOMErrfs}/sorc/RDASApp/build/bin/bufr2netcdf.x"
 cd "${HOMErrfs}/sorc/RDASApp" || exit 1
 
 # workaround for ramp option in ObsErrorFactorPressureCheck
@@ -42,8 +43,9 @@ cp ../_workaround_/RDASApp/ObsErrorFactorPressureCheck.h sorc/ufo/src/ufo/filter
 
 # workaround for using the GSL surface operator
 # https://github.com/JCSDA-internal/ufo/pull/3622 by Sijie
-#cp ../_workaround_/RDASApp/CMakeLists.txt sorc/ufo/src/ufo
-#cp -r ../_workaround_/RDASApp/sfccorrected sorc/ufo/src/ufo/operators
+cp ../_workaround_/RDASApp/sfccorrected/EvalSurfaceTemperature.cc sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceTemperature.cc
+cp ../_workaround_/RDASApp/sfccorrected/EvalSurfaceTemperature.h sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceTemperature.h
+cp ../_workaround_/RDASApp/sfccorrected/ObsSfcCorrectedParameters.h sorc/ufo/src/ufo/operators/sfccorrected/ObsSfcCorrectedParameters.h
 
 # workaround for compiling iodaconverter on Gaea
 # Junjun is working on a PR
@@ -63,4 +65,7 @@ cp "${EXEC2}" "${HOMErrfs}/exec/bufr2ioda.x"
 
 echo "copy ${EXEC3} to ../exec/mpasjedi_enkf.x"
 cp "${EXEC3}" "${HOMErrfs}/exec/mpasjedi_enkf.x"
+
+echo "copy ${EXEC4} to ../exec/bufr2netcdf.x"
+cp "${EXEC4}" "${HOMErrfs}/exec/bufr2netcdf.x"
 exit 0
