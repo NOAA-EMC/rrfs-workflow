@@ -18,10 +18,16 @@ if [[ "${MACHINE}" == "wcoss2" ]]; then
     source "${BUILD_VERSION_FILE}"
   fi
   compiler_str="ftn"
-  # WCOSS2: ftn needs a different set of compiling flags from the ufs-community version
-  cp "${HOMErrfs}/sorc/_workaround_/MPAS-Model/Makefile" "${HOMErrfs}/sorc/MPAS-Model/Makefile"
+  export FFLAGS_PROMOTION="-real-size 64"
+  export FFLAGS_OPT="-O3 -convert big_endian -free -align array64byte"
+  export CFLAGS_OPT="-O3"
+  export CXXFLAGS_OPT="-O3"
+  export LDFLAGS_OPT="-O3"
 elif [[ "${MACHINE}" == "gaea" ]]; then
   compiler_str="ifort"
+elif [[ "${MACHINE}" == "ursa" ]]; then
+  export CC_SERIAL=icx
+  export CXX_SERIAL=icpx
 fi
 
 module purge                      
@@ -30,8 +36,6 @@ module load "rrfs/${MACHINE}.intel"
 module list
 
 cd "${HOMErrfs}/sorc/MPAS-Model" || exit 1
-cp ../_workaround_/MPAS-Model/Registry.xml src/core_atmosphere
-cp ../_workaround_/MPAS-Model/mpas_atm_core.F src/core_atmosphere
 make clean CORE=init_atmosphere
 make -j8 "${compiler_str}" CORE=init_atmosphere PRECISION=single
 make clean CORE=atmosphere

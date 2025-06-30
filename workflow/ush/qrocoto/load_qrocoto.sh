@@ -1,4 +1,4 @@
-#!/bin/bash                                                                                                                                                            
+#!/bin/bash
 # shellcheck disable=all
 
 # Check if the script is sourced
