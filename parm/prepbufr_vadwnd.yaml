@@ -37,6 +37,8 @@ observations:
             query: "*/TYP"
           dumpReportType:
             query: "*/T29"
+          dumpReportSubType:
+            query: "*/TSB"
           prepbufrDataLvlCat:
             query: "*/PRSLEVEL/CAT"
 
@@ -104,6 +106,12 @@ observations:
             query: "*/PRSLEVEL/W___INFO/W__EVENT{1}/UOB"
           windNorthward:
             query: "*/PRSLEVEL/W___INFO/W__EVENT{1}/VOB"
+          bestwindEastward:
+            type: float
+            query: "*/PRSLEVEL/W___INFO/W__BACKG{1}/UFC"
+          bestwindNorthward:
+            type: float
+            query: "*/PRSLEVEL/W___INFO/W__BACKG{1}/VFC"
           windQualityMarker:
             query: "*/PRSLEVEL/W___INFO/W__EVENT{1}/WQM"
           windError:
@@ -188,6 +196,12 @@ observations:
           longName: "Data Dump Report Type"
           units: ""
 
+        - name: "MetaData/dumpReportSubType"
+          coordinates: "longitude latitude"
+          source: variables/dumpReportSubType
+          longName: "Data Dump Report Sub Type"
+          units: ""
+
         - name: "MetaData/prepbufrDataLvlCat"
           coordinates: "longitude latitude"
           source: variables/prepbufrDataLvlCat
@@ -260,6 +274,18 @@ observations:
         - name: "ObsValue/windNorthward"
           coordinates: "longitude latitude"
           source: variables/windNorthward
+          longName: "Northward Wind"
+          units: "m s-1"
+
+        - name: "ObsValue/bestwindEastward"
+          coordinates: "longitude latitude"
+          source: variables/bestwindEastward
+          longName: "Eastward Wind"
+          units: "m s-1"
+
+        - name: "ObsValue/bestwindNorthward"
+          coordinates: "longitude latitude"
+          source: variables/bestwindNorthward
           longName: "Northward Wind"
           units: "m s-1"
 
