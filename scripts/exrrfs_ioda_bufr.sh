@@ -64,7 +64,7 @@ done
 # --------------------------------------------------
 # run  bufr2ioda tool for atms bufr obs
 # --------------------------------------------------
-${cpreq} "${FIXrrfs}/atms_beamwidth.txt" .
+${cpreq} "${FIXrrfs}/jedi/atms_beamwidth.txt" .
 ${cpreq} "${PARMrrfs}/bufr_atms_mapping.yaml" .
 input_file="atmsbufr"
 output_file="ioda.atms_{splits/satId}.nc"
