@@ -48,13 +48,6 @@ if (( ${YAML_GEN_METHOD:-1} == 2 )); then
   ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_satwnd.nc
   ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_sfcshp.nc
   ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_vadwnd.nc
-#  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_abi_g16.nc
-#  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_abi_g18.nc
-#  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_atms_npp.nc
-#  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_atms_n20.nc
-#  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_atms_n21.nc
-#  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_crisf4_n20.nc
-#  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_crisf4_n21.nc
 fi
 
 # run bufr2ioda.x

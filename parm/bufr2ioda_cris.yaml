@@ -1,7 +1,6 @@
 observations:
   - obs space:
       name: bufr
-      #obsdatain: "{{ DMPDIR }}/{{ RUN }}.{{ PDY }}/{{ cyc }}/atmos/{{ RUN }}.t{{ cyc }}z.mtiasi.tm00.bufr_d"
       obsdatain: "./crisfsbufr"
 
       exports:
@@ -62,8 +61,6 @@ observations:
           heightOfTopOfCloud:
             query: "*/HOCT"
 
-          # fractionOfClearPixelsInFOV:
-          #  query: "*/CRISCS/FCPH"
 
           sensorChannelNumber:
             query: "*/CRCHNM/CHNM"
@@ -121,8 +118,7 @@ observations:
           value: "BUFR"
 
       variables:
-
-##      MetaData
+        # MetaData
         - name: "MetaData/dateTime"
           source: variables/timestamp
           longName: "Datetime"
@@ -157,7 +153,6 @@ observations:
           longName: "Field of View Number"
 
         - name: "MetaData/sensorScanPosition"
-          #source: variables/sensorScanPosition
           source: variables/fieldOfRegardNumber
           longName: "Sensor Scan Position"
 
@@ -165,7 +160,6 @@ observations:
           source: variables/fieldOfRegardNumber
           longName: "Field of Regard number"
 
-          #
         - name: "MetaData/solarZenithAngle"
           source: variables/solarZenithAngle
           longName: "Solar Zenith Angle"
@@ -211,7 +205,7 @@ observations:
           longName: "Sensor Channel Number"
 
 
-##       The unit from BUFR is W m-2 sr-1 m -- this is radiance per wavenumber
+        ## The unit from BUFR is W m-2 sr-1 cm -- this is radiance per wavenumber
         - name: "ObsValue/radiance"
           source: variables/spectralRadiance
           #source: variables/radiance
