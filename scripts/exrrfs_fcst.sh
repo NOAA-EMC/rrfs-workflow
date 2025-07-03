@@ -9,7 +9,6 @@ cd "${DATA}" || exit 1
 # determine time steps and etc according to the mesh
 #
 if [[ ${MESH_NAME} == "conus12km" ]]; then
-  #dt=60
   dt=30
   substeps=2
   radt=30
