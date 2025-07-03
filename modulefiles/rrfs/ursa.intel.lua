@@ -23,9 +23,6 @@ setenv("CMAKE_Fortran_COMPILER", "mpiifort")
 --setenv("CMAKE_CXX_COMPILER", "mpiicpx")
 --setenv("CMAKE_Fortran_COMPILER", "mpiifx")
 
-set_alias("icc","icx")
-set_alias("icpc","icpx")
-
 if mode() == "load" then
   --setenv("PNETCDF", os.getenv("PARALLEL_NETCDF_ROOT"))
   setenv("PNETCDF", os.getenv("parallel_netcdf_ROOT"))
