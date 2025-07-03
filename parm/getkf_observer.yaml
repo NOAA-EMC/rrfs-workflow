@@ -84,7 +84,7 @@ observations:
          name: adpsfc_t181
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -124,7 +124,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -360,7 +360,7 @@ observations:
          name: adpsfc_t183
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -401,7 +401,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -636,7 +636,7 @@ observations:
          name: adpsfc_t187
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -673,7 +673,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -912,7 +912,7 @@ observations:
          name: adpsfc_q181
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -952,7 +952,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -1188,7 +1188,7 @@ observations:
          name: adpsfc_q183
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -1229,7 +1229,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -1465,7 +1465,7 @@ observations:
          name: adpsfc_q187
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -1502,7 +1502,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -1742,7 +1742,7 @@ observations:
          name: adpsfc_ps181
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -1775,7 +1775,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -2011,7 +2011,7 @@ observations:
          name: adpsfc_ps187
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -2044,7 +2044,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -2280,7 +2280,7 @@ observations:
          name: adpsfc_uv281
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -2324,7 +2324,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -2600,7 +2600,7 @@ observations:
          name: adpsfc_uv284
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -2642,7 +2642,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -2918,7 +2918,7 @@ observations:
          name: adpsfc_uv287
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -2959,7 +2959,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -3235,7 +3235,7 @@ observations:
          name: adpupa_t120
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -3275,7 +3275,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -3510,7 +3510,7 @@ observations:
          name: adpupa_t132
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -3550,7 +3550,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -3785,7 +3785,7 @@ observations:
          name: adpupa_q120
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -3825,7 +3825,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -4061,7 +4061,7 @@ observations:
          name: adpupa_q132
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -4101,7 +4101,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -4337,7 +4337,7 @@ observations:
          name: adpupa_ps120
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -4370,7 +4370,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -4605,7 +4605,7 @@ observations:
          name: adpupa_uv220
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -4646,7 +4646,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -4916,7 +4916,7 @@ observations:
          name: adpupa_uv232
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -4957,7 +4957,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -5227,7 +5227,7 @@ observations:
          name: aircar_t133
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -5267,7 +5267,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -5502,7 +5502,7 @@ observations:
          name: aircar_q133
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -5542,7 +5542,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -5778,7 +5778,7 @@ observations:
          name: aircar_uv233
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -5819,7 +5819,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -6089,7 +6089,7 @@ observations:
          name: aircft_t130
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -6129,7 +6129,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -6364,7 +6364,7 @@ observations:
          name: aircft_t131
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -6404,7 +6404,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -6639,7 +6639,7 @@ observations:
          name: aircft_t134
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -6679,7 +6679,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -6914,7 +6914,7 @@ observations:
          name: aircft_t135
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -6954,7 +6954,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -7189,7 +7189,7 @@ observations:
          name: aircft_q134
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -7229,7 +7229,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -7465,7 +7465,7 @@ observations:
          name: aircft_uv230
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -7506,7 +7506,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -7776,7 +7776,7 @@ observations:
          name: aircft_uv231
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -7817,7 +7817,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -8087,7 +8087,7 @@ observations:
          name: aircft_uv234
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -8128,7 +8128,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -8398,7 +8398,7 @@ observations:
          name: aircft_uv235
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -8439,7 +8439,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -8710,7 +8710,7 @@ observations:
 
          distribution:   # for LETKF
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
 
          obsdatain:
            engine:
@@ -8744,7 +8744,7 @@ observations:
 
        obs localizations:   # for LETKF
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3
+           lengthscale: 200e3
 
        obs filters:
          # Pre-online regional domain check (latitude/longitude)
@@ -8812,7 +8812,7 @@ observations:
          name: msonet_t188
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -8852,7 +8852,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -9087,7 +9087,7 @@ observations:
          name: msonet_q188
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -9127,7 +9127,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -9363,7 +9363,7 @@ observations:
          name: msonet_ps188
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -9396,7 +9396,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -9631,7 +9631,7 @@ observations:
          name: msonet_uv288
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -9675,7 +9675,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -10298,7 +10298,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -10613,7 +10613,7 @@ observations:
          name: rassda_t126
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -10653,7 +10653,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -10886,7 +10886,7 @@ observations:
          name: sfcshp_t180
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -10926,7 +10926,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -11161,7 +11161,7 @@ observations:
          name: sfcshp_t182
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -11201,7 +11201,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -11436,7 +11436,7 @@ observations:
          name: sfcshp_t183
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -11477,7 +11477,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -11712,7 +11712,7 @@ observations:
          name: sfcshp_q180
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -11752,7 +11752,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -11988,7 +11988,7 @@ observations:
          name: sfcshp_q182
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -12028,7 +12028,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -12264,7 +12264,7 @@ observations:
          name: sfcshp_q183
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -12305,7 +12305,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -12541,7 +12541,7 @@ observations:
          name: sfcshp_ps180
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -12574,7 +12574,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -12818,7 +12818,7 @@ observations:
          name: sfcshp_uv280
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -12862,7 +12862,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -13182,7 +13182,7 @@ observations:
          name: sfcshp_uv282
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -13226,7 +13226,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -13502,7 +13502,7 @@ observations:
          name: sfcshp_uv284
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -13544,7 +13544,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -13820,7 +13820,7 @@ observations:
          name: vadwnd_uv224
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -13861,7 +13861,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -14183,7 +14183,7 @@ observations:
          name: amsua_n19
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -14211,7 +14211,7 @@ observations:
            Absorbers: [H2O, O3]
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
        obs bias:
          input file: data/obs/amsua_n19.satbias.nc
          output file: out_amsua_n19.satbias.nc
@@ -14560,7 +14560,7 @@ observations:
          name: amsua_n20
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -14589,7 +14589,7 @@ observations:
              Absorbers: [H2O, O3]
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
        obs bias:
          input file:  data/obs/amsua_n20.satbias.nc
          output file: out_amsua_n20.satbias.nc
@@ -15144,7 +15144,7 @@ observations:
          name: atms_npp
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -15173,7 +15173,7 @@ observations:
              Absorbers: [H2O, O3]
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs bias:
          input file:  data/obs/atms_npp.satbias.nc
@@ -15731,7 +15731,7 @@ observations:
          name: abi_g16
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -15764,7 +15764,7 @@ observations:
            Absorbers: [H2O, O3]
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
   # Observation Bias Correction (VarBC)
   # -----------------------------------
        obs bias:
@@ -16222,7 +16222,7 @@ observations:
          name: abi_g18
          distribution:
            name: "RoundRobin"
-           halo size: 600e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -16255,7 +16255,7 @@ observations:
            Absorbers: [H2O, O3]
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
   # Observation Bias Correction (VarBC)
   # -----------------------------------
