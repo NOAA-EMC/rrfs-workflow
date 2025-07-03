@@ -160,7 +160,7 @@ def wflow_begin(xmlFile):
     else:
         scheduler = 'slurm'
     if realtime == "TRUE":
-        text = '<workflow realtime="T" scheduler="{scheduler}" cyclethrottle="26" cyclelifespan="01:00:00:00">'
+        text = f'<workflow realtime="T" scheduler="{scheduler}" cyclethrottle="26" cyclelifespan="01:00:00:00">'
     else:
         text = f'<workflow realtime="F" scheduler="{scheduler}" cyclethrottle="{cyclethrottle}" taskthrottle="{taskthrottle}">'
     xmlFile.write(f'\n{text}\n')
