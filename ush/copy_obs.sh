@@ -32,6 +32,8 @@ mappings["ioda_abi_g18.nc"]="${obspath}/ioda_abi_g18.nc"
 mappings["ioda_atms_npp.nc"]="${obspath}/ioda_atms_npp.nc"
 mappings["ioda_atms_n20.nc"]="${obspath}/ioda_atms_n20.nc"
 mappings["ioda_atms_n21.nc"]="${obspath}/ioda_atms_n21.nc"
+mappings["ioda_crisf4_n20.nc"]="${obspath}/ioda_crisf4_n20.nc"
+mappings["ioda_crisf4_n21.nc"]="${obspath}/ioda_crisf4_n21.nc"
 
 if [[ "${DO_ENVAR_RADAR_REF}" == "true" ]] && ${jedivar}; then
   obspath="${COMOUT}/ioda_mrms_refl/${WGF}"
