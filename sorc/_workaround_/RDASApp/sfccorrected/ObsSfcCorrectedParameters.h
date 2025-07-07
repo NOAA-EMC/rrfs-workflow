@@ -1,5 +1,6 @@
 /*
- * (C) Copyright 2021- UCAR
+ * (C) Crown Copyright 2024, Met Office
+ * (C) Copyright 2024 UCAR
  * 
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
@@ -22,7 +23,9 @@ namespace ufo {
 
 /// enum type for surface correction type, and ParameterTraitsHelper for it
 enum class SfcCorrectionType {
-  UKMO, WRFDA, GSL
+  UKMO,   /// WRFDA method uses model surface and level 1 data.
+  WRFDA,  /// UKMO method uses model surface and 2000m data.
+  GSL     /// GSL method uses model surface and level 1 data.
 };
 struct SfcCorrectionTypeParameterTraitsHelper {
   typedef SfcCorrectionType EnumType;
@@ -31,6 +34,23 @@ struct SfcCorrectionTypeParameterTraitsHelper {
     { SfcCorrectionType::UKMO, "UKMO" },
     { SfcCorrectionType::WRFDA, "WRFDA" },
     { SfcCorrectionType::GSL, "GSL" }
+  };
+};
+
+
+/// Enum type for GSL lapse rate options, only used when SfcCorrectionType is set to GSL
+enum class GslLapseRateOption {
+  Constant,       /// Use a constant lapse rate value
+  Local,          /// Calculate lapse rate locally from model levels
+  NoAdjustment    /// No temperature adjustment
+};
+struct GslLapseRateOptionParameterTraitsHelper {
+  typedef GslLapseRateOption EnumType;
+  static constexpr char enumTypeName[] = "GslLapseRateOption";
+  static constexpr util::NamedEnumerator<GslLapseRateOption> namedValues[] = {
+    { GslLapseRateOption::Constant, "Constant" },
+    { GslLapseRateOption::Local, "Local" },
+    { GslLapseRateOption::NoAdjustment, "NoAdjustment" }
   };
 };
 
@@ -44,89 +64,130 @@ struct ParameterTraits<ufo::SfcCorrectionType> :
     public EnumParameterTraits<ufo::SfcCorrectionTypeParameterTraitsHelper>
 {};
 
+/// Extraction of GslLapseRateOption parameters from config
+template <>
+struct ParameterTraits<ufo::GslLapseRateOption> :
+    public EnumParameterTraits<ufo::GslLapseRateOptionParameterTraitsHelper>
+{};
+
 }  // namespace oops
 
 namespace ufo {
+
+/**
+ * GSL-specific correction parameters
+ * Only used when SfcCorrectionType is set to GSL
+ */
+class GslCorrectionParameters : public oops::Parameters {
+  OOPS_CONCRETE_PARAMETERS(GslCorrectionParameters, Parameters)
+
+ public:
+  /// Lapse rate calculation method
+  oops::Parameter<GslLapseRateOption> temperatureLapseRateOption{
+    "temperature lapse rate option",
+    "Method to determine lapse rate for surface temperature correction ('Constant' or 'Local' or 'NoAdjustment')",
+    GslLapseRateOption::Local,
+    this};
+
+  /// Constant lapse rate value (K/km)
+  /// Only used when lapseRateOption = Constant
+  oops::Parameter<float> temperatureLapseRateValue{
+    "temperature lapse rate",
+    "Fixed lapse rate (K/km) used to adjust observed surface temperature\n"
+    "to model surface level. Only used when temperature lapse rate option = Constant.\n"
+    "Default: 9.8 K/km (standard adiabatic lapse rate)",
+    9.8,
+    this
+  };
+
+  /// Local lapse rate calculation parameters
+  /// Only used when lapseRateOption = Local
+  oops::Parameter<int> temperatureLocalLapseRateLevel{
+    "temperature local lapse rate level",
+    "Highest model level used to calculate local lapse rate\n"
+    "Only used when temperature lapse rate option = Local",
+    5,
+    this
+  };
+
+  /// Apply thresholds to local lapse rate
+  /// Only used when lapseRateOption = Local
+  oops::Parameter<bool> temperatureLapseRateThreshold{
+    "temperature lapse rate threshold",
+    "Apply min/max thresholds to calculated local lapse rate.\n"
+    "Only used when temperature lapse rate option = Local",
+    true,
+    this
+  };
+
+  /// Minimum threshold for local lapse rate (K/km)
+  /// Only used when lapseRateOption = Local and applyThreshold = true
+  oops::Parameter<float> minThreshold{
+    "min threshold",
+    "Minimum lapse rate (K/km) allowed when calculated locally.\n"
+    "Only used when temperature lapse rate option = Local and "
+    "temperature lapse rate threshold = true",
+    0.5,
+    this
+  };
+
+  /// Maximum threshold for local lapse rate (K/km)
+  /// Only used when lapseRateOption = Local and applyThreshold = true
+  oops::Parameter<float> maxThreshold{
+    "max threshold",
+    "Maximum lapse rate (K/km) allowed when calculated locally.\n"
+    "Only used when temperature lapse rate option = Local and "
+    "temperature lapse rate threshold = true",
+    10.0,
+    this
+  };
+};
 
 /// Configuration options recognized by the SfcCorrected operator.
 class ObsSfcCorrectedParameters : public ObsOperatorParametersBase {
   OOPS_CONCRETE_PARAMETERS(ObsSfcCorrectedParameters, ObsOperatorParametersBase)
 
  public:
-  /// An optional `variables` parameter, which controls which ObsSpace
-  /// variables will be simulated. This option should only be set if this operator is used as a
-  /// component of the Composite operator. If `variables` is not set, the operator will simulate
-  /// all ObsSpace variables. Please see the documentation of the Composite operator for further
-  /// details.
   oops::OptionalParameter<std::vector<ufo::Variable>> variables{
-     "variables",
-     "List of variables to be simulated",
-     this};
+      "variables",
+      "List of variables to be simulated which must be a subset of the simulated variables "
+      "in the ObsSace",
+      this};
 
-  oops::Parameter<SfcCorrectionType> correctionType{"da_sfc_scheme",
-     "Scheme used for surface temperature correction (UKMO, WRFDA or GSL)",
-     SfcCorrectionType::UKMO, this};
+  oops::Parameter<std::string> geovarGeomZ{
+      "geovar_geomz",
+      "Model variable for height of vertical levels, geopotential heights will be converted",
+      "height_above_mean_sea_level",
+      this};
 
-  /// Note: "height" default value has to be consistent with var_geomz defined
-  /// in ufo_variables_mod.F90
-  oops::Parameter<std::string> geovarGeomZ{"geovar_geomz",
-     "Model variable for height of vertical levels",
-     "height_above_mean_sea_level", this};
+  oops::Parameter<std::string> geovarSfcGeomZ{
+      "geovar_sfc_geomz",
+      "Model variable for surface height, geopotential heights will be converted",
+      "height_above_mean_sea_level_at_surface",
+      this};
 
-  /// Note: "surface_altitude" default value has to be consistent with var_sfc_geomz
-  /// in ufo_variables_mod.F90
-  oops::Parameter<std::string> geovarSfcGeomZ{"geovar_sfc_geomz",
-     "Model variable for surface height",
-     "height_above_mean_sea_level_at_surface", this};
+  oops::Parameter<std::string> obsHeightName{
+      "station_altitude",
+      "stationElevation",
+      this};
 
-  /// Note: "station_altitude" default value is "stationElevation"
-  oops::Parameter<std::string> ObsHeightName{"station_altitude", "stationElevation", this};
-  
-  /// Note: Only relevant if \c SfcCorrectionType is set to GSL, "lapse_rate_option" default value is "Local"
-  oops::Parameter<std::string> LapseRateOption{"lapse_rate_option", "Lapse rate option for surface temperature correction (Constant, Local or NoAdjustment)", "Local", this};
+  oops::Parameter<SfcCorrectionType> correctionType{
+      "correction scheme to use",
+      "Scheme used for correction ('WRFDA' or 'UKMO' or 'GSL')",
+      SfcCorrectionType::WRFDA,
+      this};
 
-  /// Note: Only relevant if \c SfcCorrectionType is set to GSL and \c LapseRateOption is set to "Constant", "lapse_rate" default value is adiabatic lapse rate 9.8 K/km
-  oops::Parameter<float> LapseRateValue
-    {"lapse_rate", 
-     "The lapse rate (K/km) used to adjust the observed surface temperature to "
-     "the model's surface level. Used if lapse rate option is set to constant, "
-     "otherwise ignored.",
-     9.8, 
-     this};
-
-  /// Note: Only relevant if \c SfcCorrectionType is set to GSL and \c LapseRateOption is set to "Local"
-  oops::Parameter<int> LocalLapseRateLevel
-    {"local_lapse_rate_level",
-     "The highest model level used to calculate the local lapse rate, "
-     "which adjusts the observed surface temperature to the model's surface level. "
-     "Used if lapse rate option is set to local, otherwise ignored.",
-     5,
-     this};
-
-  /// Should the local lapse rate be restricted to a specific range
-  /// Note: Only relevant if \c SfcCorrectionType is set to GSL and \c LapseRateOption is set to "Local"
-  oops::Parameter<bool> Threshold{"threshold", true, this};
-
-  /// Note: Only relevant if \c SfcCorrectionType is set to GSL, \c LapseRateOption is set to "Local", and \c Threshold is set to true
-  oops::Parameter<float> MinThreshold
-    {"min_threshold",
-     "The minimum lapse rate (K/km) can be applied to adjust the "
-     "observed surface temperature to the model's surface level. "
-     "Used if lapse rate option is set to local, otherwise ignored.",
-     0.5,
-     this};
-
-  /// Note: Only relevant if \c SfcCorrectionType is set to GSL, \c LapseRateOption is set to "Local", and \c Threshold is set to true
-  oops::Parameter<float> MaxThreshold
-    {"max_threshold",
-     "The maximum lapse rate (K/km) can be applied to adjust the "
-     "observed surface temperature to the model's surface level. "
-     "Used if lapse rate option is set to local, otherwise ignored.",
-     10.0,
-     this};
+  /// GSL-specific configuration parameters
+  /// Only used when correctionType = GSL
+  oops::OptionalParameter<GslCorrectionParameters> gslParams{
+    "gsl parameters",
+    "GSL-specific surface correction parameters.\n"
+    "Only used when correction_scheme = GSL",
+    this};
 };
 
 // -----------------------------------------------------------------------------
 
 }  // namespace ufo
+
 #endif  // UFO_OPERATORS_SFCCORRECTED_OBSSFCCORRECTEDPARAMETERS_H_
