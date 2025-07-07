@@ -10,9 +10,11 @@
 cp -p "${EXPDIR}"/config/jedivar.yaml .
 
 # Use ana.nc for cold start and determine whether to do DA or not.
+backgroundFile="mpasin.nc"
 analysisFile="mpasin.nc"
 analysisUse="accept"
 if [[ "${start_type}" == "cold" ]]; then
+  backgroundFile="init.nc"
   analysisFile="ana.nc"
   # if flag is explicityly "false", switch to passivate
   if [[ "${COLDSTART_CYCS_DO_DA}" == "false" ]]; then
@@ -21,6 +23,7 @@ if [[ "${start_type}" == "cold" ]]; then
 fi
 
 sed -i \
+    -e "s/@backgroundFile@/${backgroundFile}/" \
     -e "s/@analysisFile@/${analysisFile}/" \
     -e "s/@analysisDate@/${analysisDate}/" \
     -e "s/@beginDate@/${beginDate}/" \
