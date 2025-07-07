@@ -15,7 +15,7 @@ suite nco_rrfs_dev_03
       edit CYC '03'
       task cycle_end
         edit ECF_FILES '%PACKAGEHOME%/ecf/scripts'
-        time 02:00
+        cron 02:00
       family rrfs
         family v1.0
           edit ECF_FILES '%PACKAGEHOME%/ecf/scripts'
