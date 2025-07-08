@@ -17,17 +17,11 @@ if [[ "${MACHINE}" == "wcoss2" ]]; then
   if [[ -f "${BUILD_VERSION_FILE}" ]]; then
     source "${BUILD_VERSION_FILE}"
   fi
-  compiler_str="ftn"
-  export FFLAGS_PROMOTION="-real-size 64"
-  export FFLAGS_OPT="-O3 -convert big_endian -free -align array64byte"
-  export CFLAGS_OPT="-O3"
-  export CXXFLAGS_OPT="-O3"
-  export LDFLAGS_OPT="-O3"
+  compiler_str="ftn-wcoss2"
 elif [[ "${MACHINE}" == "gaea" ]]; then
   compiler_str="ifort"
 elif [[ "${MACHINE}" == "ursa" ]]; then
-  export CC_SERIAL=icx
-  export CXX_SERIAL=icpx
+  compiler_str="intel-mpi-ursa"
 fi
 
 module purge                      
