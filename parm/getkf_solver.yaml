@@ -31,9 +31,12 @@ _member: &memberConfig
   - rain_water
   - snow_water
   - cldfrac
+  - equivalent_reflectivity_factor
+  - w
+  - upward_air_velocity
   stream name: background
 
-increment variables: [air_temperature, water_vapor_mixing_ratio_wrt_moist_air, eastward_wind, northward_wind, air_pressure_at_surface]
+increment variables: [air_temperature, water_vapor_mixing_ratio_wrt_moist_air, eastward_wind, northward_wind, air_pressure_at_surface, cloud_liquid_water, cloud_liquid_ice, rain_water, snow_water, graupel, equivalent_reflectivity_factor, upward_air_velocity]
 
 output mean prior:
   filename: ./prior_mean.nc
@@ -79,17 +82,51 @@ local ensemble DA:
     lengthscale: 0.50
     lengthscale units: logp
   inflation:
-    rtps: 0.95
-    rtpp: 0.6
     mult: 1.1
 
 observations:
      observers:
      - obs space:
+         name: refl10cm
+         distribution:
+           name: "Halo"
+           halo size: 500e3
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: data/jdiag/jdiag_mrms_refl.nc
+         obsdataout:
+           engine:
+             type: H5File
+             allow overwrite: true
+             obsfile: jdiag_mrms_refl.nc
+         io pool:
+           write multiple files: false
+         _source: mrms
+         simulated variables:
+         - equivalentReflectivityFactor
+       obs operator:
+         name: VertInterp
+         vertical coordinate: height_above_mean_sea_level
+         observation vertical coordinate: height
+         interpolation method: linear
+         observation alias file: obsop_name_map.yaml
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 200e3 # orig
+       obs filters:
+       - filter: Background Check
+         filter variables:
+         - name: equivalentReflectivityFactor
+         threshold: 12.0
+         action:
+           name: reject
+       _obsname: refl10cm
+     - obs space:
          name: adpsfc_t181
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -129,7 +166,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -365,7 +402,7 @@ observations:
          name: adpsfc_t183
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -406,7 +443,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -641,7 +678,7 @@ observations:
          name: adpsfc_t187
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -678,7 +715,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -917,7 +954,7 @@ observations:
          name: adpsfc_q181
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -957,7 +994,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -1193,7 +1230,7 @@ observations:
          name: adpsfc_q183
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -1234,7 +1271,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -1470,7 +1507,7 @@ observations:
          name: adpsfc_q187
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -1507,7 +1544,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -1747,7 +1784,7 @@ observations:
          name: adpsfc_ps181
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -1780,7 +1817,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -2016,7 +2053,7 @@ observations:
          name: adpsfc_ps187
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -2049,7 +2086,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -2285,7 +2322,7 @@ observations:
          name: adpsfc_uv281
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -2329,7 +2366,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -2605,7 +2642,7 @@ observations:
          name: adpsfc_uv284
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -2647,7 +2684,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -2923,7 +2960,7 @@ observations:
          name: adpsfc_uv287
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -2964,7 +3001,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -3240,7 +3277,7 @@ observations:
          name: adpupa_t120
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -3280,7 +3317,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -3515,7 +3552,7 @@ observations:
          name: adpupa_t132
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -3555,7 +3592,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -3790,7 +3827,7 @@ observations:
          name: adpupa_q120
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -3830,7 +3867,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -4066,7 +4103,7 @@ observations:
          name: adpupa_q132
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -4106,7 +4143,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -4342,7 +4379,7 @@ observations:
          name: adpupa_ps120
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -4375,7 +4412,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -4610,7 +4647,7 @@ observations:
          name: adpupa_uv220
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -4651,7 +4688,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -4921,7 +4958,7 @@ observations:
          name: adpupa_uv232
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -4962,7 +4999,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -5232,7 +5269,7 @@ observations:
          name: aircar_t133
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -5272,7 +5309,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -5507,7 +5544,7 @@ observations:
          name: aircar_q133
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -5547,7 +5584,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -5783,7 +5820,7 @@ observations:
          name: aircar_uv233
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -5824,7 +5861,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -6094,7 +6131,7 @@ observations:
          name: aircft_t130
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -6134,7 +6171,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -6369,7 +6406,7 @@ observations:
          name: aircft_t131
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -6409,7 +6446,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -6644,7 +6681,7 @@ observations:
          name: aircft_t134
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -6684,7 +6721,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -6919,7 +6956,7 @@ observations:
          name: aircft_t135
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -6959,7 +6996,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -7194,7 +7231,7 @@ observations:
          name: aircft_q134
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -7234,7 +7271,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -7470,7 +7507,7 @@ observations:
          name: aircft_uv230
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -7511,7 +7548,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -7781,7 +7818,7 @@ observations:
          name: aircft_uv231
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -7822,7 +7859,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -8092,7 +8129,7 @@ observations:
          name: aircft_uv234
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -8133,7 +8170,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -8403,7 +8440,7 @@ observations:
          name: aircft_uv235
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -8444,7 +8481,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -8715,7 +8752,7 @@ observations:
 
          distribution:   # for LETKF
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
 
          obsdatain:
            engine:
@@ -8749,7 +8786,7 @@ observations:
 
        obs localizations:   # for LETKF
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3
+           lengthscale: 200e3
 
        obs filters:
          # Pre-online regional domain check (latitude/longitude)
@@ -8817,7 +8854,7 @@ observations:
          name: msonet_t188
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -8857,7 +8894,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -9092,7 +9129,7 @@ observations:
          name: msonet_q188
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -9132,7 +9169,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -9368,7 +9405,7 @@ observations:
          name: msonet_ps188
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -9401,7 +9438,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -9636,7 +9673,7 @@ observations:
          name: msonet_uv288
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -9680,7 +9717,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -10303,7 +10340,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -10618,7 +10655,7 @@ observations:
          name: rassda_t126
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -10658,7 +10695,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -10891,7 +10928,7 @@ observations:
          name: sfcshp_t180
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -10931,7 +10968,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -11166,7 +11203,7 @@ observations:
          name: sfcshp_t182
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -11206,7 +11243,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -11441,7 +11478,7 @@ observations:
          name: sfcshp_t183
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -11482,7 +11519,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -11717,7 +11754,7 @@ observations:
          name: sfcshp_q180
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -11757,7 +11794,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -11993,7 +12030,7 @@ observations:
          name: sfcshp_q182
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -12033,7 +12070,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -12269,7 +12306,7 @@ observations:
          name: sfcshp_q183
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -12310,7 +12347,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -12546,7 +12583,7 @@ observations:
          name: sfcshp_ps180
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -12579,7 +12616,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -12823,7 +12860,7 @@ observations:
          name: sfcshp_uv280
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -12867,7 +12904,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -13187,7 +13224,7 @@ observations:
          name: sfcshp_uv282
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -13231,7 +13268,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -13507,7 +13544,7 @@ observations:
          name: sfcshp_uv284
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -13549,7 +13586,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -13825,7 +13862,7 @@ observations:
          name: vadwnd_uv224
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -13866,7 +13903,7 @@ observations:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -14188,7 +14225,7 @@ observations:
          name: amsua_n19
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -14216,7 +14253,7 @@ observations:
            Absorbers: [H2O, O3]
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
        obs bias:
          input file: data/obs/amsua_n19.satbias.nc
          output file: out_amsua_n19.satbias.nc
@@ -14565,7 +14602,7 @@ observations:
          name: amsua_n20
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -14594,7 +14631,7 @@ observations:
              Absorbers: [H2O, O3]
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
        obs bias:
          input file:  data/obs/amsua_n20.satbias.nc
          output file: out_amsua_n20.satbias.nc
@@ -15149,7 +15186,7 @@ observations:
          name: atms_npp
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -15178,7 +15215,7 @@ observations:
              Absorbers: [H2O, O3]
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs bias:
          input file:  data/obs/atms_npp.satbias.nc
@@ -15736,7 +15773,7 @@ observations:
          name: abi_g16
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -15769,7 +15806,7 @@ observations:
            Absorbers: [H2O, O3]
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
   # Observation Bias Correction (VarBC)
   # -----------------------------------
        obs bias:
@@ -16227,7 +16264,7 @@ observations:
          name: abi_g18
          distribution:
            name: "Halo"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -16260,7 +16297,7 @@ observations:
            Absorbers: [H2O, O3]
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
   # Observation Bias Correction (VarBC)
   # -----------------------------------

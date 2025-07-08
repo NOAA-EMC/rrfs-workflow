@@ -22,7 +22,7 @@ export DO_IODA=false
 export DO_JEDI=false
 export COLDSTART_CYCS_DO_DA=false
 export DO_RECENTER=false
-export DO_ENVAR_RADAR_REF=false
+export DO_RADAR_REF=false
 export RADARREFL_TIMELEVEL="00"  # 00 15 30 45 min
 
 export DO_CYC=true
@@ -53,6 +53,7 @@ export NODES_MPASSIT="<nodes>1:ppn=40</nodes>"
 export NODES_UPP="<nodes>1:ppn=40</nodes>"
 export NODES_GETKF="<nodes>4:ppn=20</nodes>"
 export NODES_RECENTER="<nodes>2:ppn=16</nodes>"
+export NODES_IODA_MRMS_REFL="<nodes>1:ppn=40</nodes>"
 #
 export WALLTIME_FCST="1:30:00"
 export WALLTIME_SAVE_FCST="1:30:00"
