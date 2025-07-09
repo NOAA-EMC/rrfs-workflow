@@ -37,14 +37,13 @@ fi
 #
 # determine whether to begin new cycles and link correct ensembles
 #
+do_DAcycling='false'
 if [[ -r "${UMBRELLA_PREP_IC_DATA}/mem001/init.nc" ]]; then
   start_type='cold'
-  do_DAcycling='false'
   initial_file='init.nc'
   mkdir -p ana
 else
   start_type='warm'
-  do_DAcycling='true'
   initial_file='mpasin.nc'
 fi
 # link ensembles to data/ens/
