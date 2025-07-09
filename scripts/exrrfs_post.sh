@@ -462,7 +462,10 @@ fi
 #-----------------------------------------------------------------------
 #
 cpreq -p ${prslev} ${COMOUT}
-cpreq -p ${natlev} ${COMOUT}
+# Native level output has been turned off for ensemble forecasts
+if [ ${WGF} != "ensf" ]; then
+  cpreq -p ${natlev} ${COMOUT}
+fi
 # Only one latlons_corners file per cycle is needed in COMOUT - make this change later
 if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
   cpreq -p latlons_corners.txt.f${fhr} ${COMOUT}
