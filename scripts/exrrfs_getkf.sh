@@ -149,11 +149,13 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
     else
       mv "${DATA}"/data/ens/mem000.nc "${UMBRELLA_GETKF_DATA}"/post_mean.nc
     fi
-    if [[ "${SAVE_GETKF_ANL}" == "true" ]]; then
-        for mem in $(seq -w 1 030); do
-          cp -rL "${DATA}"/data/ens/mem${mem}.nc "${COMOUT}/getkf_${TYPE}/${WGF}/mem${mem}.nc"
-        done
-    fi
+  fi
+
+  # Save analysis files if requested
+  if [[ "${TYPE}" == "post" && "${SAVE_GETKF_ANL}" == "true" ]]; then
+    for mem in $(seq -w 1 030); do
+      cp -rL "${DATA}"/data/ens/mem${mem}.nc "${COMOUT}/getkf_${TYPE}/${WGF}/mem${mem}.nc"
+    done
   fi
 
 else
