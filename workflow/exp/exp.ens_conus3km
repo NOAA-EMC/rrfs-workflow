@@ -24,6 +24,7 @@ export DO_JEDI=false
 export COLDSTART_CYCS_DO_DA=false
 export DO_RECENTER=false
 export DO_RADAR_REF=false
+export SAVE_GETKF_ANL=false
 export RADARREFL_TIMELEVEL="00"  # 00 15 30 45 min
 
 export DO_CYC=true

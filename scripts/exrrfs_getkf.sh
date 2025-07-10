@@ -38,14 +38,13 @@ fi
 #
 # determine whether to begin new cycles and link correct ensembles
 #
+do_DAcycling='false'
 if [[ -r "${UMBRELLA_PREP_IC_DATA}/mem001/init.nc" ]]; then
   start_type='cold'
-  do_DAcycling='false'
   initial_file='init.nc'
   mkdir -p ana
 else
   start_type='warm'
-  do_DAcycling='true'
   initial_file='mpasin.nc'
 fi
 # link ensembles to data/ens/
@@ -106,7 +105,7 @@ fi
 
 if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CYCS_DO_DA} == "true" ]]; then
   # run mpasjedi_enkf.x
-  export OOPS_TRACE=1
+  #export OOPS_TRACE=1
   export OMP_NUM_THREADS=1
 
   source prep_step
@@ -149,6 +148,11 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
       mv data/ana ../
     else
       mv "${DATA}"/data/ens/mem000.nc "${UMBRELLA_GETKF_DATA}"/post_mean.nc
+    fi
+    if [[ "${SAVE_GETKF_ANL}" == "true" ]]; then
+        for mem in $(seq -w 1 030); do
+          cp -rL "${DATA}"/data/ens/mem${mem}.nc "${COMOUT}/getkf_${TYPE}/${WGF}/mem${mem}.nc"
+        done
     fi
   fi
 
