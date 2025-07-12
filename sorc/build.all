@@ -5,6 +5,7 @@ HOMErrfs="$(dirname "$rundir")"
 cd "${HOMErrfs}/sorc" || exit 1
 
 # kill the whole build process if Ctrl+C is entered
+# shellcheck disable=SC2317
 cleanup() {
   echo "Caught Ctrl+C. Killing all background processes..."
   pkill -P $$  # Kills all child processes of this script
