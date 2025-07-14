@@ -47,12 +47,6 @@ cp ../_workaround_/RDASApp/sfccorrected/EvalSurfaceTemperature.cc sorc/ufo/src/u
 cp ../_workaround_/RDASApp/sfccorrected/EvalSurfaceTemperature.h sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceTemperature.h
 cp ../_workaround_/RDASApp/sfccorrected/ObsSfcCorrectedParameters.h sorc/ufo/src/ufo/operators/sfccorrected/ObsSfcCorrectedParameters.h
 
-# workaround for compiling iodaconverter on Gaea
-# Junjun is working on a PR
-if [[ "${MACHINE}" == "gaea" ]]; then
-  cp ../_workaround_/RDASApp/TimeoffsetVariable.cpp sorc/iodaconv/src/bufr/BufrParser/Exports/Variables
-fi
-
 rm -rf build/
 ./build.sh -m MPAS -t NO
 
