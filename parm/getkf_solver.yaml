@@ -82,7 +82,7 @@ local ensemble DA:
     lengthscale: 0.50
     lengthscale units: logp
   inflation:
-    mult: 1.1
+    rtps: 0.95
 
 observations:
      observers:
