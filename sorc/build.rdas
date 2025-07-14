@@ -47,6 +47,7 @@ cp ../_workaround_/RDASApp/sfccorrected/EvalSurfaceTemperature.cc sorc/ufo/src/u
 cp ../_workaround_/RDASApp/sfccorrected/EvalSurfaceTemperature.h sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceTemperature.h
 cp ../_workaround_/RDASApp/sfccorrected/ObsSfcCorrectedParameters.h sorc/ufo/src/ufo/operators/sfccorrected/ObsSfcCorrectedParameters.h
 
+rm -rf build/
 ./build.sh -m MPAS -t NO
 
 mkdir -p "${HOMErrfs}/exec"
