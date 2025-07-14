@@ -98,6 +98,14 @@ SOIL_SURGERY_time='2025040418'
 USE_FVCOM='TRUE'
 PREP_FVCOM='TRUE'
 #### FVCOM_DIR='/lfs/h1/ops/prod/com/nosofs/v3.6'
+OBSPATH_NSSLMOSIAC="${DCOMROOT}/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC"
+GLMFED_EAST_ROOT="${DCOMROOT}/ldmdata/obs/GOES-16/GLM/tiles"
+GLMFED_WEST_ROOT="${DCOMROOT}/ldmdata/obs/GOES-17/GLM/tiles"
+GVF_ROOT="${DCOMROOT}/viirs"
+FIRE_RAVE_DIR="${DCOMROOT}"
+TOPO_DIR='@HOMErrfs@/fix/fix_orog'
+SFC_CLIMO_INPUT_DIR='@HOMErrfs@/fix/fix_sfc_climo'
+FVCOM_FILE="tsfc_fv3grid"
 
 
 # [analysis step]

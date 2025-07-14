@@ -92,6 +92,14 @@ SNOWICE_update_hour='99'
 SOIL_SURGERY_time='9999999999'
 USE_FVCOM='FALSE'
 PREP_FVCOM='FALSE'
+OBSPATH_NSSLMOSIAC="${DCOMROOT}/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC"
+GLMFED_EAST_ROOT="${DCOMROOT}/ldmdata/obs/GOES-16/GLM/tiles"
+GLMFED_WEST_ROOT="${DCOMROOT}/ldmdata/obs/GOES-17/GLM/tiles"
+GVF_ROOT="${DCOMROOT}/viirs"
+FIRE_RAVE_DIR="${DCOMROOT}"
+TOPO_DIR='@HOMErrfs@/fix/fix_orog'
+SFC_CLIMO_INPUT_DIR='@HOMErrfs@/fix/fix_sfc_climo'
+FVCOM_FILE="tsfc_fv3grid"
 niter1="50"
 niter2="50"
 l_obsprvdiag=".false."           
@@ -148,6 +156,8 @@ DO_SMOKE_DUST='FALSE'
 EBB_DCYCLE='2'
 
 
+AIRCRAFT_REJECT='@HOMErrfs@/fix/gsi'
+SFCOBS_USELIST='@HOMErrfs@/fix/gsi'
 
 # [forecast step]
 CCPP_PHYS_SUITE='RRFS_sas'
