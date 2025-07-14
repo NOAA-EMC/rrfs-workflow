@@ -462,8 +462,8 @@ fi
 #-----------------------------------------------------------------------
 #
 cpreq -p ${prslev} ${COMOUT}
-# Native level output has been turned off for ensemble forecasts
-if [ ${WGF} != "ensf" ]; then
+# Native level output is disabled for ensemble forecasts after f00
+if [[ -f ${natlev} ]]; then
   cpreq -p ${natlev} ${COMOUT}
 fi
 # Only one latlons_corners file per cycle is needed in COMOUT - make this change later
