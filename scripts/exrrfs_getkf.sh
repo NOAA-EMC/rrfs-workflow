@@ -154,7 +154,7 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
   # Save analysis files if requested
   if [[ "${TYPE}" == "post" && "${SAVE_GETKF_ANL}" == "true" ]]; then
     for mem in $(seq -w 1 030); do
-      cp -rL "${DATA}"/data/ens/mem${mem}.nc "${COMOUT}/getkf_${TYPE}/${WGF}/mem${mem}.nc"
+      cp -rL "${DATA}"/data/ens/mem"${mem}".nc "${COMOUT}"/getkf_"${TYPE}"/"${WGF}"/mem"${mem}".nc
     done
   fi
 
