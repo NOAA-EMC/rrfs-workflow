@@ -4,6 +4,15 @@ HOMErrfs="$(dirname "$rundir")"
 
 cd "${HOMErrfs}/sorc" || exit 1
 
+# kill the whole build process if Ctrl+C is entered
+# shellcheck disable=SC2317
+cleanup() {
+  echo "Caught Ctrl+C. Killing all background processes..."
+  pkill -P $$  # Kills all child processes of this script
+  exit 1
+}
+trap cleanup SIGINT SIGTERM
+
 echo "building all components, it may take more than one hour..."
 ./build.wps  &> ./log.build.wps  2>&1 &
 ./build.mpas &> ./log.build.mpas 2>&1 &

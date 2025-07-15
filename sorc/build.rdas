@@ -53,12 +53,6 @@ cp ../_workaround_/RDASApp/direct_refl/mpas_fields_mod.F90 sorc/mpas-jedi/src/mp
 cp ../_workaround_/RDASApp/direct_refl/mpas_state_mod.F90 sorc/mpas-jedi/src/mpasjedi/State/mpas_state_mod.F90
 cp ../_workaround_/RDASApp/direct_refl/mpas2ufo_vars_mod.F90 sorc/mpas-jedi/src/mpasjedi/Utilities/mpas2ufo_vars_mod.F90
 
-# workaround for compiling iodaconverter on Gaea
-# Junjun is working on a PR
-if [[ "${MACHINE}" == "gaea" ]]; then
-  cp ../_workaround_/RDASApp/TimeoffsetVariable.cpp sorc/iodaconv/src/bufr/BufrParser/Exports/Variables
-fi
-
 rm -rf build/
 ./build.sh -m MPAS -t NO
 
