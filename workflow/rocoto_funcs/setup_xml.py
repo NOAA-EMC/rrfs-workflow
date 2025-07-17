@@ -66,7 +66,7 @@ def setup_xml(HOMErrfs, expdir):
         if do_deterministic == "TRUE":
             if os.getenv("DO_IODA", "FALSE").upper() == "TRUE":
                 ioda_bufr(xmlFile, expdir)
-            if os.getenv("DO_ENVAR_RADAR_REF", "FALSE").upper() == "TRUE":
+            if os.getenv("DO_RADAR_REF", "FALSE").upper() == "TRUE":
                 ioda_mrms_refl(xmlFile, expdir)
             #
             if os.getenv("DO_IC_LBC", "TRUE").upper() == "TRUE":
@@ -106,7 +106,7 @@ def setup_xml(HOMErrfs, expdir):
         elif do_ensemble == "TRUE":
             if os.getenv("DO_IODA", "FALSE").upper() == "TRUE":
                 ioda_bufr(xmlFile, expdir)
-            if os.getenv("DO_ENVAR_RADAR_REF", "FALSE").upper() == "TRUE":
+            if os.getenv("DO_RADAR_REF", "FALSE").upper() == "TRUE":
                 ioda_mrms_refl(xmlFile, expdir)
             ungrib_ic(xmlFile, expdir, do_ensemble=True)
             ungrib_lbc(xmlFile, expdir, do_ensemble=True)

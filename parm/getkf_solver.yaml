@@ -31,9 +31,12 @@ _member: &memberConfig
   - rain_water
   - snow_water
   - cldfrac
+  - equivalent_reflectivity_factor
+  - w
+  - upward_air_velocity
   stream name: background
 
-increment variables: [air_temperature, water_vapor_mixing_ratio_wrt_moist_air, eastward_wind, northward_wind, air_pressure_at_surface]
+increment variables: [air_temperature, water_vapor_mixing_ratio_wrt_moist_air, eastward_wind, northward_wind, air_pressure_at_surface, cloud_liquid_water, cloud_liquid_ice, rain_water, snow_water, graupel, equivalent_reflectivity_factor, upward_air_velocity]
 
 output mean prior:
   filename: ./prior_mean.nc
@@ -83,6 +86,42 @@ local ensemble DA:
 
 observations:
      observers:
+     - obs space:
+         name: refl10cm
+         distribution:
+           name: "Halo"
+           halo size: 500e3
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: data/jdiag/jdiag_mrms_refl.nc
+         obsdataout:
+           engine:
+             type: H5File
+             allow overwrite: true
+             obsfile: jdiag_mrms_refl.nc
+         io pool:
+           write multiple files: false
+         _source: mrms
+         simulated variables:
+         - equivalentReflectivityFactor
+       obs operator:
+         name: VertInterp
+         vertical coordinate: height_above_mean_sea_level
+         observation vertical coordinate: height
+         interpolation method: linear
+         observation alias file: obsop_name_map.yaml
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 200e3 # orig
+       obs filters:
+       - filter: Background Check
+         filter variables:
+         - name: equivalentReflectivityFactor
+         threshold: 12.0
+         action:
+           name: reject
+       _obsname: refl10cm
      - obs space:
          name: adpsfc_t181
          distribution:
