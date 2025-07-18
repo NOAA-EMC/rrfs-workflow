@@ -318,10 +318,6 @@ def xml_task(
     deadline = get_cascade_env(f'DEADLINE_{task_id}'.upper())
     if metatask is False:
         meta_id = task_id
-        source(f"{expdir}/config/config.{meta_id}", optional=True)
-    else:  # True
-        source(f"{expdir}/config/config.{meta_id}", optional=True)
-        source(f"{expdir}/config/config.{task_id}", optional=True)
     if command_id == "":
         command_id = meta_id
     dcTaskRes = {
