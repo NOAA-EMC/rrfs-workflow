@@ -10,7 +10,7 @@ case ${MACHINE} in
     FIX_RRFS_LOCATION=/lfs/h2/emc/da/noscrub/samuel.degelia/FIX_RRFS2
     ;;
   hera)
-    FIX_RRFS_LOCATION=/scratch2/BMC/rtrr/FIX_RRFS2
+    FIX_RRFS_LOCATION=/scratch4/BMC/rtrr/FIX_RRFS2
     ;;
   ursa)
     FIX_RRFS_LOCATION=/scratch4/BMC/rtrr/FIX_RRFS2
