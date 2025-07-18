@@ -69,32 +69,32 @@ while [ $fhcnt -le $fend ] ; do
   GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3}
 
   case $RUNTYPE in
-   rrfs_alaska) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.${res}.f${fhr3}.ak.grib2
+   rrfs_alaska) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.ak.grib2
                 GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
-   rrfs_conus) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.${res}.${fhr3}.conus.grib2
+   rrfs_conus) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.3km.${fhr3}.conus.grib2
                 GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
-   rrfs_conus_mag) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.${res}.${fhr3}.conus.grib2
+   rrfs_conus_mag) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.3km.${fhr3}.conus.grib2
                 GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
-   rrfs_conus_cam) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.${res}.${fhr3}.conus.grib2
+   rrfs_conus_cam) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.3km.${fhr3}.conus.grib2
                 GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
-   rrfs_hawaii) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.${res}.${fhr3}.hi.grib2
+   rrfs_hawaii) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.2p5km.${fhr3}.hi.grib2
                 GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
-   rrfs_prico) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.${res}.${fhr3}.pr.grib2
+   rrfs_prico) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.2p5km.${fhr3}.pr.grib2
                 GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
   esac
 
   if [ $RUNTYPE = "rrfs_alaska" ] ; then
-    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.${res}.f${fhr}.alaska.grib2.idx
+    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr}.alaska.grib2.idx
   elif [ $RUNTYPE = "rrfs_conus" ] ; then
-    GRIBIN_chk=$COMIN/${model}.${cycle}.conusnest.${GRIB}${fhr}${EXT}.grib2.idx
+    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr}.conus.grib2.idx
   elif [ $RUNTYPE = "rrfs_conus_mag" ] ; then
-    GRIBIN_chk=$COMIN/${model}.${cycle}.conusnest.${GRIB}${fhr}${EXT}.grib2.idx
+    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr}.conus.grib2.idx
   elif [ $RUNTYPE = "rrfs_conus_cam" ] ; then
-    GRIBIN_chk=$COMIN/${model}.${cycle}.conusnest.${GRIB}${fhr}${EXT}.grib2.idx
+    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr}.conus.grib2.idx
   elif [ $RUNTYPE = "rrfs_hawaii" ] ; then
-    GRIBIN_chk=$COMIN/${model}.${cycle}.hawaiinest.${GRIB}${fhr}${EXT}.grib2.idx
+    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.2p5km.f${fhr}.hi.grib2.idx
   elif [ $RUNTYPE = "nam_priconest" ] ; then
-    GRIBIN_chk=$COMIN/${model}.${cycle}.priconest.${GRIB}${fhr}${EXT}.grib2.idx
+    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.2p5km.f${fhr}.pr.grib2.idx
   else
     GRIBIN_chk=$GRIBIN
   fi
@@ -231,41 +231,6 @@ EOF
     gpend
   fi
 
-  #
-  # Create ZAGL level products for the 40 km NAM grid and the ruc
-  #
-  if [ "$RUNTYPE" = "nam40" ] ; then
-    gdvint << EOF
-     GDFILE   = $GEMGRD
-     GDOUTF   = $GEMGRD
-     GDATTIM  = f${fhr}
-     GVCORD   = pres/zagl
-     GLEVEL   = 500-9000-500
-     MAXGRD   = 5000
-     GAREA    = $garea
-     VCOORD   = mslv;esfc
-     l
-     r
-EOF
-  fi
-
-  #
-  # Create theta level products for the 90 and 40 km NAM grids
-  #
-  if [ "$RUNTYPE" = "nam40" -o "$RUNTYPE" = "nam" ] ; then
-    gdvint << EOF
-     GDFILE   = $GEMGRD
-     GDOUTF   = $GEMGRD
-     GDATTIM  = f${fhr}
-     GVCORD   = pres/thta
-     GLEVEL   = 270-330-3
-     MAXGRD   = 5000
-     GAREA    = $garea
-     VCOORD   = /l
-     l
-     r
-EOF
-  fi
 
   if [ $SENDCOM = "YES" ] ; then
      cpfs $GEMGRD $COMAWP/$GEMGRD
