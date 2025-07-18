@@ -63,7 +63,8 @@ cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 cd $DATA
 export GRIB=prslev
 export type=rrfs_conus
-echo "$HOMErrfs/scripts/exrrfs_nawips.sh $type $GRIB $finc $fend" >> $DATA/poescript
+export res=3km
+echo "$HOMErrfs/scripts/exrrfs_nawips.sh $type $GRIB $res $finc $fend" >> $DATA/poescript
 #################################################################
 
 #################################################################
@@ -83,7 +84,8 @@ cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 cd $DATA
 export GRIB=prslev
 export type=rrfs_conus_mag
-echo "$HOMErrfs/scripts/exrrfs_nawips.sh $type $GRIB $finc $fend" >> $DATA/poescript
+export res=3km
+echo "$HOMErrfs/scripts/exrrfs_nawips.sh $type $GRIB $res $finc $fend" >> $DATA/poescript
 #################################################################
 
 #################################################################
@@ -101,7 +103,8 @@ cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 cd $DATA
 export GRIB=testbed
 export type=rrfs_conus_cam
-echo "$HOMErrfs/scripts/exrrfs_nawips.sh $type $GRIB $finc $fend" >> $DATA/poescript
+export res=3km
+echo "$HOMErrfs/scripts/exrrfs_nawips.sh $type $GRIB $res $finc $fend" >> $DATA/poescript
 #################################################################
 
 #################################################################
@@ -119,7 +122,8 @@ cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 cd $DATA
 export GRIB=prslev
 export type=rrfs_alaska
-echo "$HOMErrfs/scripts/exrrfs_nawips.sh $type $GRIB $finc $fend" >> $DATA/poescript
+export res=3km
+echo "$HOMErrfs/scripts/exrrfs_nawips.sh $type $GRIB $res $finc $fend" >> $DATA/poescript
 #################################################################
 # Execute the script to make Puerto Rico GEMPAK grids
 mkdir -p $DATA/rrfs_prico
@@ -135,7 +139,8 @@ cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 cd $DATA
 export GRIB=prslev
 export type=rrfs_prico
-echo "$HOMErrfs/scripts/exrrfs_nawips.sh $type $GRIB $finc $fend" >> $DATA/poescript
+export res=2p5km
+echo "$HOMErrfs/scripts/exrrfs_nawips.sh $type $GRIB $res $finc $fend" >> $DATA/poescript
 #################################################################
 # Execute the script to make Hawaii GEMPAK grids
 mkdir -p $DATA/rrfs_hawaii
@@ -151,7 +156,8 @@ cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 cd $DATA
 export GRIB=prslev
 export type=rrfs_hawaii
-echo "$HOMErrfs/scripts/exrrfs_nawips.sh $type $GRIB $finc $fend" >> $DATA/poescript
+export res=2p5km
+echo "$HOMErrfs/scripts/exrrfs_nawips.sh $type $GRIB $res $finc $fend" >> $DATA/poescript
 #################################################################
 cat poescript
 
@@ -173,4 +179,4 @@ postmsg "$msg"
 cd $DATAROOT
 if [ ${KEEPDATA:-YES} = NO ] ; then rm -rf $DATA ; fi
 
-exit $jerr
+exit $err

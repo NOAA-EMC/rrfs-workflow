@@ -1,12 +1,8 @@
 #!/bin/ksh
 ###################################################################
-echo "----------------------------------------------------"
-echo "exnawips - convert NCEP GRIB files into GEMPAK Grids"
-echo "----------------------------------------------------"
-echo "History: Mar 2000 - First implementation of this new script."
-echo "S Lilly: May 2008 - add logic to make sure that all of the "
-echo "                    data produced from the restricted ECMWF"
-echo "                    data on the CCS is properly protected."
+echo "--------------------------------------------------------------"
+echo "exrrfs_nawips - convert RRFS NCEP GRIB files into GEMPAK Grids"
+echo "--------------------------------------------------------------"
 #####################################################################
 
 set -xa
@@ -73,34 +69,29 @@ while [ $fhcnt -le $fend ] ; do
   GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3}
 
   case $RUNTYPE in
-   nam12) GRIBIN1=$COMIN/${model}.${cycle}.${GRIB1}${fhr}${EXT}.grib2 ;;
-   nam12carib) GRIBIN1=$COMIN/${model}.${cycle}.${GRIB1}${fhr}${EXT}.grib2 ;;
-   nam_alaskanest) GRIBIN=$COMIN/${model}.${cycle}.alaskanest.${GRIB}${fhr}${EXT}.grib2
+   rrfs_alaska) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.${res}.f${fhr3}.ak.grib2
                 GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
-   nam_conusnest) GRIBIN=$COMIN/${model}.${cycle}.conusnest.${GRIB}${fhr}${EXT}.grib2
+   rrfs_conus) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.${res}.${fhr3}.conus.grib2
                 GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
-   nam_conusnest_mag) GRIBIN=$COMIN/${model}.${cycle}.conusnest.${GRIB}${fhr}${EXT}.grib2
+   rrfs_conus_mag) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.${res}.${fhr3}.conus.grib2
                 GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
-   nam_conusnest_cam) GRIBIN=$COMIN/${model}.${cycle}.conusnest.${GRIB}${fhr}${EXT}.grib2
+   rrfs_conus_cam) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.${res}.${fhr3}.conus.grib2
                 GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
-   nam_hawaiinest) GRIBIN=$COMIN/${model}.${cycle}.hawaiinest.${GRIB}${fhr}${EXT}.grib2
+   rrfs_hawaii) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.${res}.${fhr3}.hi.grib2
                 GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
-   nam_priconest) GRIBIN=$COMIN/${model}.${cycle}.priconest.${GRIB}${fhr}${EXT}.grib2
+   rrfs_prico) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.${res}.${fhr3}.pr.grib2
                 GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
   esac
 
-  if [ $RUNTYPE = "nam12" ] ; then
-    GRIBIN_chk=$GRIBIN
-    GRIBIN_chk1=$GRIBIN1
-  elif [ $RUNTYPE = "nam_alaskanest" ] ; then
-    GRIBIN_chk=$COMIN/${model}.${cycle}.alaskanest.${GRIB}${fhr}${EXT}.grib2.idx
-  elif [ $RUNTYPE = "nam_conusnest" ] ; then
+  if [ $RUNTYPE = "rrfs_alaska" ] ; then
+    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.${res}.f${fhr}.alaska.grib2.idx
+  elif [ $RUNTYPE = "rrfs_conus" ] ; then
     GRIBIN_chk=$COMIN/${model}.${cycle}.conusnest.${GRIB}${fhr}${EXT}.grib2.idx
-  elif [ $RUNTYPE = "nam_conusnest_mag" ] ; then
+  elif [ $RUNTYPE = "rrfs_conus_mag" ] ; then
     GRIBIN_chk=$COMIN/${model}.${cycle}.conusnest.${GRIB}${fhr}${EXT}.grib2.idx
-  elif [ $RUNTYPE = "nam_conusnest_cam" ] ; then
+  elif [ $RUNTYPE = "rrfs_conus_cam" ] ; then
     GRIBIN_chk=$COMIN/${model}.${cycle}.conusnest.${GRIB}${fhr}${EXT}.grib2.idx
-  elif [ $RUNTYPE = "nam_hawaiinest" ] ; then
+  elif [ $RUNTYPE = "rrfs_hawaii" ] ; then
     GRIBIN_chk=$COMIN/${model}.${cycle}.hawaiinest.${GRIB}${fhr}${EXT}.grib2.idx
   elif [ $RUNTYPE = "nam_priconest" ] ; then
     GRIBIN_chk=$COMIN/${model}.${cycle}.priconest.${GRIB}${fhr}${EXT}.grib2.idx
@@ -150,27 +141,27 @@ while [ $fhcnt -le $fend ] ; do
   fi
 
   case $RUNTYPE in
-   nam_alaskanest)
-         $WGRIB2 -s $GRIBIN | grep -f $utilfix_nam/nam_alaskanest.parmlist|$WGRIB2 -i -grib temp $GRIBIN
+   rrfs_alaska)
+         $WGRIB2 -s $GRIBIN | grep -f $utilfix_nam/rrfs_alaska.parmlist|$WGRIB2 -i -grib temp $GRIBIN
          mv temp grib$fhr
      ;;
-   nam_conusnest)
+   rrfs_conus)
          $WGRIB2 $GRIBIN | grep "REFD:263 K" | grep max | $WGRIB2 -i -grib tempref263k $GRIBIN
          $WGRIB2 tempref263k -set_byte 4 11 198 -grib tempmaxref263k
-         $WGRIB2 -s $GRIBIN | grep -f $utilfix_nam/nam_conusnest.parmlist|$WGRIB2 -i -grib temp $GRIBIN
+         $WGRIB2 -s $GRIBIN | grep -f $utilfix_nam/rrfs_conus.parmlist|$WGRIB2 -i -grib temp $GRIBIN
          cat temp tempmaxref263k > grib$fhr
      ;;
-   nam_conusnest_mag)
-         $WGRIB2 -s $GRIBIN | grep -f $utilfix_nam/nam_conusnest.parmlist_mag|$WGRIB2 -i -grib temp $GRIBIN
+   rrfs_conus_mag)
+         $WGRIB2 -s $GRIBIN | grep -f $utilfix_nam/rrfs_conus.parmlist_mag|$WGRIB2 -i -grib temp $GRIBIN
          mv temp grib$fhr
      ;;
-   nam_conusnest_cam)
+   rrfs_conus_cam)
          $WGRIB2 $GRIBIN | grep "REFD:263 K" | grep max | $WGRIB2 -i -grib tempref263k $GRIBIN
          $WGRIB2 tempref263k -set_byte 4 11 198 -grib tempmaxref263k
          cat $GRIBIN tempmaxref263k > grib$fhr
      ;;
-   nam_hawaiinest)
-         $WGRIB2 -s $GRIBIN | grep -f $utilfix_nam/nam_hawaiinest.parmlist|$WGRIB2 -i -grib temp $GRIBIN
+   rrfs_hawaii)
+         $WGRIB2 -s $GRIBIN | grep -f $utilfix_nam/rrfs_hawaii.parmlist|$WGRIB2 -i -grib temp $GRIBIN
          mv temp grib$fhr
      ;;
    nam_priconest)
@@ -295,23 +286,15 @@ EOF
 
 
 
-   if [ $RUNTYPE = "nam" -a $fhcnt -lt ${PRDGENSWITCH_HOUR_PARENT} ] ; then
+   if [ $RUNTYPE = "rrfs_alaska" -a $fhcnt -lt ${PRDGENSWITCH_HOUR_NEST} ] ; then
      let fhcnt=fhcnt+1
-   elif [ $RUNTYPE = "nam12" -a $fhcnt -lt ${PRDGENSWITCH_HOUR_PARENT} ] ; then
+   elif [ $RUNTYPE = "rrfs_conus" -a $fhcnt -lt ${PRDGENSWITCH_HOUR_NEST} ] ; then
      let fhcnt=fhcnt+1
-   elif [ $RUNTYPE = "nam32" -a $fhcnt -lt ${PRDGENSWITCH_HOUR_PARENT} ] ; then
+   elif [ $RUNTYPE = "rrfs_conus_mag" -a $fhcnt -lt ${PRDGENSWITCH_HOUR_NEST} ] ; then
      let fhcnt=fhcnt+1
-   elif [ $RUNTYPE = "nam40" -a $fhcnt -lt ${PRDGENSWITCH_HOUR_PARENT} ]; then
+   elif [ $RUNTYPE = "rrfs_conus_cam" -a $fhcnt -lt ${PRDGENSWITCH_HOUR_NEST} ] ; then
      let fhcnt=fhcnt+1
-   elif [ $RUNTYPE = "nam_alaskanest" -a $fhcnt -lt ${PRDGENSWITCH_HOUR_NEST} ] ; then
-     let fhcnt=fhcnt+1
-   elif [ $RUNTYPE = "nam_conusnest" -a $fhcnt -lt ${PRDGENSWITCH_HOUR_NEST} ] ; then
-     let fhcnt=fhcnt+1
-   elif [ $RUNTYPE = "nam_conusnest_mag" -a $fhcnt -lt ${PRDGENSWITCH_HOUR_NEST} ] ; then
-     let fhcnt=fhcnt+1
-   elif [ $RUNTYPE = "nam_conusnest_cam" -a $fhcnt -lt ${PRDGENSWITCH_HOUR_NEST} ] ; then
-     let fhcnt=fhcnt+1
-   elif [ $RUNTYPE = "nam_hawaiinest" -a $fhcnt -lt 36 ] ; then
+   elif [ $RUNTYPE = "rrfs_hawaii" -a $fhcnt -lt 36 ] ; then
      let fhcnt=fhcnt+1
    elif [ $RUNTYPE = "nam_priconest" -a $fhcnt -lt 36 ] ; then
      let fhcnt=fhcnt+1
@@ -323,9 +306,9 @@ done
 #####################################################################
 # GOOD RUN
 set +x
-echo "**************JOB $RUNTYPE NAWIPS COMPLETED NORMALLY ON THE IBM"
-echo "**************JOB $RUNTYPE NAWIPS COMPLETED NORMALLY ON THE IBM"
-echo "**************JOB $RUNTYPE NAWIPS COMPLETED NORMALLY ON THE IBM"
+echo "**************JOB $RUNTYPE NAWIPS COMPLETED NORMALLY"
+echo "**************JOB $RUNTYPE NAWIPS COMPLETED NORMALLY"
+echo "**************JOB $RUNTYPE NAWIPS COMPLETED NORMALLY"
 set -x
 #####################################################################
 
