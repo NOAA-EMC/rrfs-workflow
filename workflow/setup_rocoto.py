@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # Aloha!
-import glob
 import shutil
 import sys
 import os
