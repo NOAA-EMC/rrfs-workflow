@@ -142,7 +142,7 @@ if [ -r "${shared_forecast_restart_data}/${restart_prefix}.coupler.res" ]; then
   #
   #-----------------------------------------------------------------------
   #
-  for restart_source_file in phy_data.nc fv_tracer.res.tile1.nc fv_core.res.tile1.nc sfc_data.nc fv_srf_wnd.res.tile1.nc fv_core.res.nc coupler.res; do
+  for restart_source_file in phy_data.nc fv_tracer.res.tile1.nc fv_core.res.tile1.nc fv_diag.res.tile1.nc sfc_data.nc fv_srf_wnd.res.tile1.nc fv_core.res.nc coupler.res; do
     cpreq ${shared_forecast_restart_data}/${restart_prefix}.${restart_source_file} ${COMOUT}/RESTART
   done
   echo " ${fhr} forecast from ${yyyymmdd}${hh} is ready " #> ${COMOUT}/RESTART/restart_done_f${fhr}
@@ -174,6 +174,7 @@ if [ "${if_save_input}" = TRUE ]; then
   if [ "${DO_SAVE_INPUT}" = TRUE ]; then
     if [ -r ${umbrella_forecast_data}/INPUT/coupler.res ]; then  # warm start
       if [ "${IO_LAYOUT_Y}" = "1" ]; then
+        [[ -f ${umbrella_forecast_data}/INPUT/fv_diag.res.tile1.nc ]]&& cp ${umbrella_forecast_data}/INPUT/fv_diag.res.tile1.nc ${COMOUT}/INPUT
         for file in ${filelistn}; do
           cp ${umbrella_forecast_data}/INPUT/${file} ${COMOUT}/INPUT/${file}
         done
