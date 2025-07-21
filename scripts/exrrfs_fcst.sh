@@ -16,6 +16,10 @@ elif [[ ${MESH_NAME} == "conus3km" ]]; then
   dt=20
   substeps=4
   radt=15
+elif [[ ${MESH_NAME} == "south3.5km" ]]; then
+  dt=25
+  substeps=4
+  radt=15
 else
   echo "Unknown MESH_NAME, exit!"
   err_exit
@@ -68,6 +72,9 @@ if [[ "${MESH_NAME}" == "conus12km" ]]; then
 elif [[ "${MESH_NAME}" == "conus3km" ]]; then
   pio_num_iotasks=40
   pio_stride=20
+elif [[ "${MESH_NAME}" == "south3.5km" ]]; then
+  pio_num_iotasks=10
+  pio_stride=24
 fi
 file_content=$(< "${PARMrrfs}/${physics_suite}/namelist.atmosphere") # read in all content
 eval "echo \"${file_content}\"" > namelist.atmosphere
