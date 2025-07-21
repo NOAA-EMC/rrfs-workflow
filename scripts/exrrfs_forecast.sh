@@ -374,7 +374,7 @@ else
   if [ ${BKTYPE} -eq 1 ]; then
     target="sfc_data.tile${TILE_RGNL}.halo${NH0}.nc"
     symlink="sfc_data.nc"
-    # Additional logic to exam if sfc_data.nc already exist
+    # Additional logic to examine if sfc_data.nc already exist
     if [ ! -s sfc_data.nc ]; then
       if [ -f "${target}" ]; then
         ln -sf ${relative_or_null} $target $symlink
