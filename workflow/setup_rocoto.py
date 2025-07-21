@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # Aloha!
-import glob
 import shutil
 import sys
 import os
@@ -16,6 +15,7 @@ else:
 
 # find the HOMErrfs directory and the MACHINE; run init.sh
 HOMErrfs = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+os.environ["HOMErrfs"] = HOMErrfs
 os.system(f'{HOMErrfs}/workflow/ush/init.sh')
 source(f'{HOMErrfs}/workflow/ush/detect_machine.sh')
 machine = os.getenv('MACHINE')
@@ -52,16 +52,8 @@ else:
     os.makedirs(expdir)
 
 # copy the config file, excluding the resources subdirectory
-configdir = f'{HOMErrfs}/parm/config'
 exp_configdir = f'{expdir}/config'
-if os.path.exists(exp_configdir):
-    if os.path.isfile(exp_configdir):
-        os.remove(exp_configdir)
-    else:
-        shutil.rmtree(exp_configdir)
 os.makedirs(exp_configdir, exist_ok=True)
-for cfile in glob.glob(f'{configdir}/config.*'):
-    shutil.copy(cfile, exp_configdir)
 
 # copy the zeta_levels file if defined
 zeta_levels = os.getenv('ZETA_LEVELS', '')
