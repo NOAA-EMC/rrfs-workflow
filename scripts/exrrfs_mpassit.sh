@@ -14,7 +14,6 @@ ${cpreq} "${FIXrrfs}"/mpassit/diaglist                    diaglist
 ${cpreq} "${FIXrrfs}"/mpassit/histlist_2d                 histlist_2d
 ${cpreq} "${FIXrrfs}"/mpassit/histlist_3d                 histlist_3d
 ${cpreq} "${FIXrrfs}"/mpassit/histlist_soil               histlist_soil
-${cpreq} "${FIXrrfs}/mpassit/geo_em.d01.nc_${MESH_NAME}"  geo_em.d01.nc
 
 #  decide mesh dimensions
 if [[ "${MESH_NAME}" == "conus12km" ]]; then
