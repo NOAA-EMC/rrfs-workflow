@@ -70,6 +70,10 @@ elif [[ "${MESH_NAME}" == "conus3km" ]]; then
   dt=20
   substeps=4
   radt=15
+elif [[ "${MESH_NAME}" == "south3.5km" ]]; then
+  dt=25
+  substeps=4
+  radt=15
 else
   echo "Unknown MESH_NAME, exit!"
   err_exit
