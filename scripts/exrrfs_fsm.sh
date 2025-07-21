@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eux
+set -x
 #-----------------------------------------------------------------------
 # This is RRFS file server management job for ecflow workflow
 # Scan and set ecflow trigger event for file level dependency

@@ -67,6 +67,10 @@ def update_input_nml(run_dir):
             "warm_start": True,
         }
 
+        settings["gfs_physics_nml"] = {
+           "sigmab_coldstart": False,
+        }
+
         # settings["gfs_physics_nml"] = {
         #    "nstf_name": [2, 0, 0, 0, 0],
         #}
