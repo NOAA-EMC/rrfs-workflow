@@ -57,6 +57,11 @@ case ${task_id} in
     module load "rrfs/${MACHINE}.intel"
     module load wgrib2/2.0.8
     ;;
+  prep_ic)
+    module purge
+    module load "rrfs/${MACHINE}.intel"
+    module load nco
+    ;;
   jedivar|getkf*)
     module purge
     module use "${HOMErrfs}/sorc/RDASApp/modulefiles"
