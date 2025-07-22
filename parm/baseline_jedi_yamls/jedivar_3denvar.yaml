@@ -156,7 +156,7 @@ cost function:
            filter variables:
            - name: airTemperature
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -436,7 +436,7 @@ cost function:
            filter variables:
            - name: specificHumidity
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -709,7 +709,7 @@ cost function:
            filter variables:
            - name: stationPressure
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -991,7 +991,7 @@ cost function:
            - name: windEastward
            - name: windNorthward
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -1306,7 +1306,7 @@ cost function:
            filter variables:
            - name: airTemperature
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -1586,7 +1586,7 @@ cost function:
            filter variables:
            - name: specificHumidity
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -1868,7 +1868,7 @@ cost function:
            - name: windEastward
            - name: windNorthward
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -2183,7 +2183,7 @@ cost function:
            filter variables:
            - name: airTemperature
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -2463,7 +2463,7 @@ cost function:
            filter variables:
            - name: airTemperature
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -2743,7 +2743,7 @@ cost function:
            filter variables:
            - name: airTemperature
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -3023,7 +3023,7 @@ cost function:
            filter variables:
            - name: airTemperature
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -3303,7 +3303,7 @@ cost function:
            filter variables:
            - name: specificHumidity
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -3585,7 +3585,7 @@ cost function:
            - name: windEastward
            - name: windNorthward
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -3902,7 +3902,7 @@ cost function:
            - name: windEastward
            - name: windNorthward
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -4219,7 +4219,7 @@ cost function:
            - name: windEastward
            - name: windNorthward
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -4536,7 +4536,7 @@ cost function:
            - name: windEastward
            - name: windNorthward
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -4851,7 +4851,7 @@ cost function:
            filter variables:
            - name: airTemperature
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -5131,7 +5131,7 @@ cost function:
            filter variables:
            - name: specificHumidity
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -5404,7 +5404,7 @@ cost function:
            filter variables:
            - name: stationPressure
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -5684,7 +5684,7 @@ cost function:
            filter variables:
            - name: airTemperature
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -5972,7 +5972,7 @@ cost function:
            filter variables:
            - name: airTemperature
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -6257,7 +6257,7 @@ cost function:
            filter variables:
            - name: airTemperature
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -6549,7 +6549,7 @@ cost function:
            filter variables:
            - name: specificHumidity
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -6829,7 +6829,7 @@ cost function:
            filter variables:
            - name: specificHumidity
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -7106,7 +7106,7 @@ cost function:
            filter variables:
            - name: specificHumidity
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -7383,7 +7383,7 @@ cost function:
            filter variables:
            - name: stationPressure
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -7656,7 +7656,7 @@ cost function:
            filter variables:
            - name: stationPressure
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -7941,7 +7941,7 @@ cost function:
            - name: windEastward
            - name: windNorthward
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -8264,7 +8264,7 @@ cost function:
            - name: windEastward
            - name: windNorthward
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -8587,7 +8587,7 @@ cost function:
            - name: windEastward
            - name: windNorthward
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -8908,7 +8908,7 @@ cost function:
            filter variables:
            - name: airTemperature
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -9188,7 +9188,7 @@ cost function:
            filter variables:
            - name: specificHumidity
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -9738,7 +9738,7 @@ cost function:
            - variable: QCflagsData/windEastward
              is_in: 0
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -10061,7 +10061,7 @@ cost function:
            - name: windEastward
            - name: windNorthward
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -10420,7 +10420,7 @@ cost function:
            filter variables:
            - name: airTemperature
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -10700,7 +10700,7 @@ cost function:
            filter variables:
            - name: airTemperature
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -10980,7 +10980,7 @@ cost function:
            filter variables:
            - name: airTemperature
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -11260,7 +11260,7 @@ cost function:
            filter variables:
            - name: airTemperature
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -11540,7 +11540,7 @@ cost function:
            filter variables:
            - name: specificHumidity
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -11820,7 +11820,7 @@ cost function:
            filter variables:
            - name: specificHumidity
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -12100,7 +12100,7 @@ cost function:
            filter variables:
            - name: specificHumidity
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -12373,7 +12373,7 @@ cost function:
            filter variables:
            - name: stationPressure
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -12655,7 +12655,7 @@ cost function:
            filter variables:
            - name: stationPressure
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -12941,7 +12941,7 @@ cost function:
            - name: windEastward
            - name: windNorthward
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -13267,7 +13267,7 @@ cost function:
            - name: windEastward
            - name: windNorthward
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -13590,7 +13590,7 @@ cost function:
            - name: windEastward
            - name: windNorthward
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -13913,7 +13913,7 @@ cost function:
            - name: windEastward
            - name: windNorthward
            action:
-             name: @analysisUse@ # accept, reject, passivate
+             name: passivate # accept, reject, passivate
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
