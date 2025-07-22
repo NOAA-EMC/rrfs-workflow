@@ -15,7 +15,7 @@ export DATAROOT=${OPSROOT}/exp/${EXP_NAME}/stmp    # task workdirs ($DATA) which
 export ZETA_LEVELS="L60.txt"
 #
 export YAML_GEN_METHOD=2
-export COLDSTART_CYCS_DO_DA=true
+export COLDSTART_CYCS_DO_DA=false
 export DO_CLEAN=true
 export DO_IODA=true
 export DO_JEDI=true
@@ -40,7 +40,7 @@ export LBC_INTERVAL=1
 export LBC_UNGRIB_GROUP_TOTAL_NUM=1
 export LBC_GROUP_TOTAL_NUM=1
 
-export RETRO_PERIOD="2024050600-2024051300"
+export RETRO_PERIOD="2024050600-2024050900"
 export CYCLEDEF_IC_STEP_HRS=12  # do ic jobs every step hours
 export CYCLEDEF_LBC_STEP_HRS=12  # do lbc jobs every step hours
 export COLDSTART_CYCS="00 12"   # cycles to cold start from external models
