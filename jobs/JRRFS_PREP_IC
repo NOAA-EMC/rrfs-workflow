@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
-module load nco
 set -x
 date
 #
