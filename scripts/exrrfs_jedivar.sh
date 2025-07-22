@@ -82,6 +82,10 @@ elif [[ "${MESH_NAME}" == "conus3km" ]]; then
   dt=20
   substeps=4
   radt=15
+elif [[ "${MESH_NAME}" == "south3.5km" ]]; then
+  dt=25
+  substeps=4
+  radt=15
 else
   echo "Unknown MESH_NAME, exit!"
   err_exit
@@ -125,7 +129,7 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
   #
   # ncks increments to cold_start IC
   if [[ ${start_type} == "cold" ]]; then
-    var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional"
+    var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional,refl10cm,w"
     ncks -O -C -x -v ${var_list} init.nc tmp.nc
     ncks -A -v ${var_list} ana.nc tmp.nc
     export err=$?

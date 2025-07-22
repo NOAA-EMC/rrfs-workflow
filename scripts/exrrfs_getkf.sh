@@ -9,6 +9,7 @@ cd "${DATA}" || exit 1
 
 start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
+time_min="${subcyc:-00}"
 #
 ln -snf "${FIXrrfs}/physics/${PHYSICS_SUITE}"/* .
 ln -snf "${FIXrrfs}/meshes/${MESH_NAME}.ugwp_oro_data.nc" ./ugwp_oro_data.nc
@@ -37,14 +38,13 @@ fi
 #
 # determine whether to begin new cycles and link correct ensembles
 #
+do_DAcycling='false'
 if [[ -r "${UMBRELLA_PREP_IC_DATA}/mem001/init.nc" ]]; then
   start_type='cold'
-  do_DAcycling='false'
   initial_file='init.nc'
   mkdir -p ana
 else
   start_type='warm'
-  do_DAcycling='true'
   initial_file='mpasin.nc'
 fi
 # link ensembles to data/ens/
@@ -68,6 +68,10 @@ if [[ "${MESH_NAME}" == "conus12km" ]]; then
   radt=30
 elif [[ "${MESH_NAME}" == "conus3km" ]]; then
   dt=20
+  substeps=4
+  radt=15
+elif [[ "${MESH_NAME}" == "south3.5km" ]]; then
+  dt=25
   substeps=4
   radt=15
 else
@@ -105,7 +109,7 @@ fi
 
 if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CYCS_DO_DA} == "true" ]]; then
   # run mpasjedi_enkf.x
-  export OOPS_TRACE=1
+  #export OOPS_TRACE=1
   export OMP_NUM_THREADS=1
 
   source prep_step
@@ -135,7 +139,7 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
   else # move post mean to umbrella if solver
     # ncks increments to cold_start IC
     if [[ "${start_type}" == "cold" ]]; then
-      var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional"
+      var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional,refl10cm,w"
       for mem in $(seq -w 1 030); do
         ncks -O -C -x -v ${var_list} "data/ens/mem${mem}.nc" "data/ens/tmp${mem}.nc"
         ncks -A -v ${var_list} "data/ana/mem${mem}.nc" "data/ens/tmp${mem}.nc"
@@ -149,6 +153,13 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
     else
       mv "${DATA}"/data/ens/mem000.nc "${UMBRELLA_GETKF_DATA}"/post_mean.nc
     fi
+  fi
+
+  # Save analysis files if requested
+  if [[ "${TYPE}" == "post" && "${SAVE_GETKF_ANL}" == "true" ]]; then
+    for mem in $(seq -w 1 030); do
+      cp -rL "${DATA}"/data/ens/mem"${mem}".nc "${COMOUT}"/getkf_"${TYPE}"/"${WGF}"/mem"${mem}".nc
+    done
   fi
 
 else

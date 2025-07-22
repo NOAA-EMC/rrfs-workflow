@@ -7,7 +7,7 @@ export WGF="enkf"   # working group function = "det", "enkf", "ens", "firewx"
 export EXP_NAME=hrly_12km
 export VERSION=$(cat ./VERSION)
 export TAG=e12km
-export OPSROOT=/scratch1/BMC/wrfruc/gge/OPSROOT/${EXP_NAME}
+export OPSROOT=/scratch3/BMC/wrfruc/gge/OPSROOT/${EXP_NAME}
 export EXPDIR=${OPSROOT}/exp/rrfs${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
@@ -22,7 +22,8 @@ export DO_IODA=false
 export DO_JEDI=false
 export COLDSTART_CYCS_DO_DA=false
 export DO_RECENTER=false
-export DO_ENVAR_RADAR_REF=false
+export DO_RADAR_REF=false
+export SAVE_GETKF_ANL=false
 export RADARREFL_TIMELEVEL="00"  # 00 15 30 45 min
 
 export DO_CYC=true
@@ -53,6 +54,7 @@ export NODES_MPASSIT="<nodes>1:ppn=40</nodes>"
 export NODES_UPP="<nodes>1:ppn=40</nodes>"
 export NODES_GETKF="<nodes>4:ppn=20</nodes>"
 export NODES_RECENTER="<nodes>2:ppn=16</nodes>"
+export NODES_IODA_MRMS_REFL="<nodes>1:ppn=40</nodes>"
 #
 export WALLTIME_FCST="1:30:00"
 export WALLTIME_SAVE_FCST="1:30:00"
@@ -75,10 +77,10 @@ export LBC_EXTRN_MDL_NAME_PATTERN=${IC_EXTRN_MDL_NAME_PATTERN}
 export LBC_EXTRN_MDL_NAME_PATTERN_B=${IC_EXTRN_MDL_NAME_PATTERN_B}
 case ${MACHINE} in
   "hera")
-    export IC_EXTRN_MDL_BASEDIR="/scratch2/BMC/rtrr/RRFS2_RETRO_DATA/May2024/GEFS"
+    export IC_EXTRN_MDL_BASEDIR="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/GEFS"
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
-    export OBSPATH="/scratch2/BMC/rtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
-    export OBSPATH_NSSLMOSIAC="/scratch2/BMC/rtrr/RRFS2_RETRO_DATA/May2024/reflectivity"
+    export OBSPATH="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
+    export OBSPATH_NSSLMOSIAC="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/reflectivity"
     export ACCOUNT="wrfruc"
     export QUEUE="batch"
     export PARTITION="hera"

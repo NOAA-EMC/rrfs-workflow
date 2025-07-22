@@ -10,7 +10,7 @@
         type="input;output"
         precision="single"
         io_type="pnetcdf,cdf5"
-        filename_template="foo.nc"
+        filename_template="foo1.nc"
         input_interval="none"
         output_interval="none"
         clobber_mode="overwrite">

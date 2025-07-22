@@ -29,18 +29,12 @@ from rocoto_funcs.misc import misc
 
 def setup_xml(HOMErrfs, expdir):
     # source the config cascade
-    source(f'{expdir}/exp.setup')
     if os.path.exists(f"{expdir}/config/satinfo") and os.getenv("USE_THE_LATEST_SATBIAS") is None:
         env_vars = {'USE_THE_LATEST_SATBIAS': 'true'}
         os.environ.update(env_vars)
     machine = os.getenv('MACHINE').lower()
     do_deterministic = os.getenv('DO_DETERMINISTIC', 'true').upper()
     do_ensemble = os.getenv('DO_ENSEMBLE', 'false').upper()
-    if do_ensemble == "TRUE":
-        source(f"{expdir}/config/config.ens")
-    #
-    source(f"{expdir}/config/config.{machine}")
-    source(f"{expdir}/config/config.base")
     #
     source(f"{HOMErrfs}/workflow/config_resources/config.{machine}")
     source(f"{HOMErrfs}/workflow/config_resources/config.base")
@@ -66,7 +60,7 @@ def setup_xml(HOMErrfs, expdir):
         if do_deterministic == "TRUE":
             if os.getenv("DO_IODA", "FALSE").upper() == "TRUE":
                 ioda_bufr(xmlFile, expdir)
-            if os.getenv("DO_ENVAR_RADAR_REF", "FALSE").upper() == "TRUE":
+            if os.getenv("DO_RADAR_REF", "FALSE").upper() == "TRUE":
                 ioda_mrms_refl(xmlFile, expdir)
             #
             if os.getenv("DO_IC_LBC", "TRUE").upper() == "TRUE":
@@ -106,7 +100,7 @@ def setup_xml(HOMErrfs, expdir):
         elif do_ensemble == "TRUE":
             if os.getenv("DO_IODA", "FALSE").upper() == "TRUE":
                 ioda_bufr(xmlFile, expdir)
-            if os.getenv("DO_ENVAR_RADAR_REF", "FALSE").upper() == "TRUE":
+            if os.getenv("DO_RADAR_REF", "FALSE").upper() == "TRUE":
                 ioda_mrms_refl(xmlFile, expdir)
             ungrib_ic(xmlFile, expdir, do_ensemble=True)
             ungrib_lbc(xmlFile, expdir, do_ensemble=True)

@@ -5,7 +5,6 @@
 #
 export NODES=${NODES:-"<nodes>1:ppn=1</nodes>"} #the NODES variable has to include the tag <nodes> or <cores>
 export WALLTIME=${WALLTIME:-"00:50:00"}
-export NATIVE=${NATIVE:-""}
 export MEMORY=${MEMORY:-""}
 export MAXTRIES=${MAXTRIES:-"1"}
 export RESERVATION=${RESERVATION:-""}
@@ -18,6 +17,9 @@ export DO_FCST=${DO_FCST:-true}
 export DO_POST=${DO_POST:-true}
 export DO_IC_LBC=${DO_IC_LBC:-true}
 export USE_THE_LATEST_SATBIAS=${USE_THE_LATEST_SATBIAS:-false} # whether DA tasks use the latest satbias from the previous cycle
+export PHYSICS_SUITE=${PHYSICS_SUITE:-"convection_permitting"} # mesoscale_reference, convection_permitting
+export KEEPDATA=${KEEPDATA:-"NO"}
+export MPI_RUN_CMD=${MPI_RUN_CMD:-"srun"}
 
 # PREP_LBC_LOOK_BACK_HRS
 if ${REALTIME:-false}; then

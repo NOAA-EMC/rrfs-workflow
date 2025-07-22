@@ -14,7 +14,6 @@ ${cpreq} "${FIXrrfs}"/mpassit/diaglist                    diaglist
 ${cpreq} "${FIXrrfs}"/mpassit/histlist_2d                 histlist_2d
 ${cpreq} "${FIXrrfs}"/mpassit/histlist_3d                 histlist_3d
 ${cpreq} "${FIXrrfs}"/mpassit/histlist_soil               histlist_soil
-${cpreq} "${FIXrrfs}/mpassit/geo_em.d01.nc_${MESH_NAME}"  geo_em.d01.nc
 
 #  decide mesh dimensions
 if [[ "${MESH_NAME}" == "conus12km" ]]; then
@@ -22,11 +21,19 @@ if [[ "${MESH_NAME}" == "conus12km" ]]; then
   ny=280
   dx=12000.0
   ref_lat=39.0
+  ref_lon=-97.5
 elif [[ "${MESH_NAME}" == "conus3km" ]]; then
   nx=1800
   ny=1060
   dx=3000.0
   ref_lat=38.5
+  ref_lon=-97.5
+elif [[ "${MESH_NAME}" == "south3.5km" ]]; then
+  nx=660
+  ny=440
+  dx=3500.0
+  ref_lat=34.0
+  ref_lon=-91.5
 fi
 #
 #
@@ -71,7 +78,7 @@ for (( ii=0; ii<"${num_fhrs}"; ii=ii+"${group_total_num}" )); do
 
       # generate the naemlist on fly
       sed -e "s/@timestr@/${timestr}/" -e "s/@nx@/${nx}/" -e "s/@ny@/${ny}/" -e "s/@dx@/${dx}/" \
-          -e "s/@ref_lat@/${ref_lat}/" "${PARMrrfs}/namelist.mpassit" > namelist.mpassit
+          -e "s/@ref_lat@/${ref_lat}/" -e "s/@ref_lon@/${ref_lon}/" "${PARMrrfs}/namelist.mpassit" > namelist.mpassit
 
       # run the executable
       source prep_step

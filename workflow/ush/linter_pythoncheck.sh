@@ -8,7 +8,7 @@ case ${MACHINE} in
     EXEC_DIR=/to/be/added
     ;;
   hera)
-    EXEC_DIR=/scratch1/BMC/wrfruc/gge/Miniforge3/envs/bokeh/bin
+    EXEC_DIR=/scratch3/BMC/wrfruc/hera/Miniforge3/envs/bokeh/bin
     ;;
   ursa)
     EXEC_DIR=/scratch3/BMC/wrfruc/gge/Miniforge3/envs/bokeh/bin

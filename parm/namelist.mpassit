@@ -13,8 +13,8 @@
     dx = @dx@
     dy = @dx@
     ref_lat = @ref_lat@
-    ref_lon = -97.5
+    ref_lon = @ref_lon@
     truelat1 = @ref_lat@
     truelat2 = @ref_lat@
-    stand_lon = -97.5
+    stand_lon = @ref_lon@
 /

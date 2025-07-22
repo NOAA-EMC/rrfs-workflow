@@ -14,6 +14,8 @@ if [[ ${MESH_NAME} == "conus12km" ]]; then
   domain="conus."
 elif [[ ${MESH_NAME} == "conus3km" ]]; then
   domain="conus."
+elif [[ ${MESH_NAME} == "south3.5km" ]]; then
+  domain="subconus."
 else
   domain=""
 fi
