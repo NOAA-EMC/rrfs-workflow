@@ -374,7 +374,7 @@ else
   if [ ${BKTYPE} -eq 1 ]; then
     target="sfc_data.tile${TILE_RGNL}.halo${NH0}.nc"
     symlink="sfc_data.nc"
-    #### Additional logic to exam if sfc_data.nc already exist
+    # Additional logic to examine if sfc_data.nc already exist
     if [ ! -s sfc_data.nc ]; then
       if [ -f "${target}" ]; then
         ln -sf ${relative_or_null} $target $symlink
@@ -400,11 +400,6 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then
   ln -snf  ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/emi_data.nc      ${DATA}/INPUT/emi_data.nc
   yyyymmddhh=${CDATE:0:10}
   echo ${yyyymmddhh}
-  #### if [ ${CYCLE_TYPE} = "spinup" ]; then
-  ####   smokefile=${COMrrfs}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00_spinup.nc
-  #### else
-  ####   smokefile=${COMrrfs}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc
-  #### fi
   smokefile=${COMrrfs}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc
   echo "try to use smoke file=",${smokefile}
   if [ -f ${smokefile} ]; then
@@ -462,17 +457,6 @@ ln -sf ${relative_or_null} ${FIXam}/aeroclim.m??.nc ${DATA}
 #
 #-----------------------------------------------------------------------
 #
-# If running this cycle/ensemble member combination more than once (e.g.
-# using rocotoboot), remove any time stamp file that may exist from the
-# previous attempt.
-#
-#-----------------------------------------------------------------------
-#
-cd ${DATA}
-rm -f time_stamp.out
-#
-#-----------------------------------------------------------------------
-#
 # Create links in the current run directory to cycle-independent (and
 # ensemble-member-independent) model input files in the main experiment
 # directory.
@@ -507,7 +491,7 @@ if [ ${BKTYPE} -eq 0 ]; then
   # cycling, using namelist for cycling forecast
   if [ "${STOCH}" = "TRUE" ]; then
     cpreq -p ${FV3_NML_RESTART_STOCH_FP} ${DATA}/${FV3_NML_FN}
-   else
+  else
     cpreq -p ${FV3_NML_RESTART_FP} ${DATA}/${FV3_NML_FN}
   fi
 else
@@ -529,7 +513,6 @@ if [ "${STOCH}" = "TRUE" ]; then
     ensmem_num=$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')
     cpreq -p ${FV3_NML_RESTART_STOCH_FP}_ensphy${ensmem_num} ${DATA}/${FV3_NML_FN}_base 
     rm -fr ${DATA}/field_table
-    #### cpreq -p ${PARMrrfs}/field_table.rrfsens_phy${ENSMEM_INDX} ${DATA}/field_table
     cpreq -p ${PARMrrfs}/field_table.rrfsens_phy0${ENSMEM_INDX} ${DATA}/field_table
   else
     cpreq -p ${DATA}/${FV3_NML_FN} ${DATA}/${FV3_NML_FN}_base
@@ -574,9 +557,6 @@ else
   FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$cyc]}
 fi
 
-#### dev overwrite
-#### FCST_LEN_HRS=60
-#### export FCST_LEN_HRS_SPINUP=60
 #
 #-----------------------------------------------------------------------
 #
@@ -657,21 +637,9 @@ flag_fcst_restart="FALSE"
 coupler_res_ct=0
 DO_FCST_RESTART=${DO_FCST_RESTART:-"TRUE"}
 
-#if [ ${CYCLE_TYPE} = "spinup" ]; then
-#  FCST_LEN_HRS=${FCST_LEN_HRS_SPINUP}
-#else
-#  FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$cyc]}
-#fi
-
-##### dev overwrite
-#FCST_LEN_HRS=60
-#export FCST_LEN_HRS_SPINUP=60
-
-
 # Get the current restart set count from shared restart location in the Umbrella Data
 if [ -d ${shared_forecast_restart_data} ]; then
-  set +eu
-  coupler_res_ct=$(eval ls -A ${shared_forecast_restart_data}/*.coupler.res|wc -l)
+  coupler_res_ct=$(find ${shared_forecast_restart_data} -type f -name "*.coupler.res"|wc -l)
 fi
 
 # make symbolic links to write forecast RESTART files directly to shared forecast RESTART location
@@ -683,8 +651,10 @@ if [ ${CYCLE_TYPE} = "spinup" ]; then
 fi
 if [ $FCST_LEN_HRS -gt 0 ]; then
   cd ${DATA}/RESTART
-  #### [[ -e ${umbrella_forecast_data}/forecast_clean.flag ]] && rm -f ${umbrella_forecast_data}/forecast_clean.flag
-  file_ids=( "coupler.res" "fv_core.res.nc" "fv_core.res.tile1.nc" "fv_srf_wnd.res.tile1.nc" "fv_tracer.res.tile1.nc" "phy_data.nc" "sfc_data.nc" )
+  file_ids=( "coupler.res" "fv_core.res.nc" "fv_core.res.tile1.nc" "fv_srf_wnd.res.tile1.nc" "fv_tracer.res.tile1.nc" "fv_diag.res.tile1.nc" "phy_data.nc" "sfc_data.nc" )
+  if [ ${WGF} = "firewx" ]; then
+    file_ids=( "coupler.res" "fv_core.res.nc" "fv_core.res.tile1.nc" "fv_srf_wnd.res.tile1.nc" "fv_tracer.res.tile1.nc" "phy_data.nc" "sfc_data.nc" )
+  fi
   num_file_ids=${#file_ids[*]}
   read -a restart_hrs <<< "${RESTART_HRS}"
   num_restart_hrs=${#restart_hrs[*]}
@@ -720,7 +690,10 @@ if [ "${DO_FCST_RESTART}" = "TRUE" ] && [ $coupler_res_ct -gt 0 ] && [ $FCST_LEN
     err_exit "FATAL ERROR: function to update the FV3 input.nml file for RESTART capability"
   fi
   # Check that restart files exist at restart_interval
-  file_ids=( "coupler.res" "fv_core.res.nc" "fv_core.res.tile1.nc" "fv_srf_wnd.res.tile1.nc" "fv_tracer.res.tile1.nc" "phy_data.nc" "sfc_data.nc" )
+  file_ids=( "coupler.res" "fv_core.res.nc" "fv_core.res.tile1.nc" "fv_srf_wnd.res.tile1.nc" "fv_tracer.res.tile1.nc" "fv_diag.res.tile1.nc" "phy_data.nc" "sfc_data.nc" )
+  if [ ${WGF} = "firewx" ]; then
+    file_ids=( "coupler.res" "fv_core.res.nc" "fv_core.res.tile1.nc" "fv_srf_wnd.res.tile1.nc" "fv_tracer.res.tile1.nc" "phy_data.nc" "sfc_data.nc" )
+  fi
   num_file_ids=${#file_ids[*]}
   IFS=' '
   read -a restart_hrs <<< "${RESTART_HRS}"
@@ -737,6 +710,8 @@ if [ "${DO_FCST_RESTART}" = "TRUE" ] && [ $coupler_res_ct -gt 0 ] && [ $FCST_LEN
     done
     if [ "${num_rst_files}" = "${num_file_ids}" ]; then
       FHROT="${restart_hrs[ih_rst]}"
+      urange_ih_rst=$((ih_rst+1))
+      FHROT_UPPER_RANGE="${restart_hrs[urange_ih_rst]}"
       restart_set_found="YES"
       break
     fi
@@ -750,14 +725,36 @@ if [ "${DO_FCST_RESTART}" = "TRUE" ] && [ $coupler_res_ct -gt 0 ] && [ $FCST_LEN
       fi
       target="${umbrella_forecast_data}/RESTART/${rst_yyyymmdd}.${rst_hh}0000.${file_id}"
       symlink="${file_id}"
-      create_symlink_to_file target="$target" symlink="$symlink" relative="${relative_link_flag}"
+      create_symlink_to_file target="$target" symlink="$symlink" relative="FALSE"
     done
     cd ${DATA}
   fi
+  # Clean up old forecast output file in shared output location in Umbrella DATA
+  if [ ${restart_set_found} == "YES" ]; then
+    cd $shared_forecast_output_data
+    [[ -f output_file_backup.sh ]]&& rm -f output_file_backup.sh
+    [[ ! -d OLD ]]&& mkdir OLD
+    for (( fhr_to_remove=${FHROT_UPPER_RANGE}; fhr_to_remove>=${FHROT}; fhr_to_remove-- )); do
+      fhr_to_remove3d=$( printf "%03d" "${fhr_to_remove}" )
+      if [ $fhr_to_remove -eq $FHROT ]; then
+        $(find -type f -name "log.atm.f*${fhr_to_remove3d}*" | grep -v "00-00" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
+        $(find -type f -name "dynf*${fhr_to_remove3d}*" | grep -v "00-00" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
+        $(find -type f -name "phyf*${fhr_to_remove3d}*" | grep -v "00-00" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
+        sed -i "/log\.atm\.f${fhr_to_remove3d}/d" output_file_backup.sh
+        sed -i "/dynf${fhr_to_remove3d}\.nc/d" output_file_backup.sh
+        sed -i "/phyf${fhr_to_remove3d}\.nc/d" output_file_backup.sh
+      else
+        $(find -type f -name "log.atm.f*${fhr_to_remove3d}*" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
+        $(find -type f -name "dynf*${fhr_to_remove3d}*" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
+        $(find -type f -name "phyf*${fhr_to_remove3d}*" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
+        $(find -name "phyf*${fhr_to_remove3d}.nc" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
+        $(find -name "dynf*${fhr_to_remove3d}.nc" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
+      fi
+    done
+    [[ -s output_file_backup.sh ]]&& sh output_file_backup.sh
+    cd ${DATA}
+  fi
 fi
-
-
-
 #
 #-----------------------------------------------------------------------
 #
@@ -803,7 +800,6 @@ fi
 # copy over diag_table for multiphysics ensemble
 if [ "${STOCH}" = "TRUE" ] && [ ${BKTYPE} -eq 0 ] && [ ${DO_ENSFCST_MULPHY} = "TRUE" ]; then
   rm -fr ${DATA}/diag_table
-  #### cpreq -p ${PARMrrfs}/diag_table.rrfsens_phy${ENSMEM_INDX} ${DATA}/diag_table
   cpreq -p ${PARMrrfs}/diag_table.rrfsens_phy0${ENSMEM_INDX} ${DATA}/diag_table
 fi
 
@@ -858,6 +854,18 @@ fi
 #-----------------------------------------------------------------------
 #
 module list
+
+# Ensure acsnow is in sfc_data.nc
+cd INPUT
+[[ ! -f sfc_data.nc ]]&& exit 4
+acsnow_ct=$(ncdump -h sfc_data.nc|grep acsnow|wc -l)
+if [ $acsnow_ct -eq 0 ] && [ ! ${WGF} = "firewx" ]; then
+  echo "Run DATA sfc_data.nc surge for acsnow"
+  ncks -A ${FIXrrfs}/acsnow/acsnow.nc sfc_data.nc
+  export err=$?; err_chk
+fi
+cd ..
+#
 
 export pgm="ufs_model"
 cpreq -p ${FV3_EXEC_FP} ${DATA}/$pgm
