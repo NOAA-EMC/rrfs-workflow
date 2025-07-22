@@ -16,7 +16,7 @@ class TestMisc:
         """Test the find_pattern_in_str() function."""        
         assert not find_pattern_in_str('.', 's')
 
-    def test_find_pattern_in_fike(self):
+    def test_find_pattern_in_file(self):
         """Test the find_pattern_in_file() function."""        
         f = open("test_misc.txt", "w")  
         f.write("Hello World from " + f.name) 
