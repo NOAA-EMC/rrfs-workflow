@@ -72,7 +72,7 @@ driver:
   update obs config with geometry info: false
 
 local ensemble DA:
-  solver: GETKF
+  solver: Deterministic GETKF
   use linear observer: true
   vertical localization: # current settings use 12 modulated members
     fraction of retained variance: 0.850
