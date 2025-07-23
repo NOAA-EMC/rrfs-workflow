@@ -73,7 +73,7 @@ while [ $fhcnt -le $fend ] ; do
   esac
 
   if [ $RUNTYPE = "rrfs_alaska" ] ; then
-    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.alaska.grib2.idx
+    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.ak.grib2.idx
   elif [ $RUNTYPE = "rrfs_conus" ] ; then
     GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.conus.grib2.idx
   elif [ $RUNTYPE = "rrfs_conus_mag" ] ; then
