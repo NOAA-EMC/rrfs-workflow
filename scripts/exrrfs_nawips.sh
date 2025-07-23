@@ -9,9 +9,8 @@ set -xa
 
 RUNTYPE=$1
 GRIB=$2
-GRIB1=$3
-finc=$4
-fend=$5
+finc=$3
+fend=$4
 
 cd $DATA/$RUNTYPE
 
@@ -23,7 +22,7 @@ postmsg "$msg"
 
 export PS4='GEMPAK_T$SECONDS + '
 
-utilfix_rrfs=${HOMErrfs}/util/fix_grib2
+# RRFSFIXgem=${HOMErrfs}/util/fix_grib2
 NAGRIB=nagrib2
 
 cp $RRFSFIXgem/rrfs_g2varsncep1.tbl g2varsncep1.tbl
@@ -61,30 +60,30 @@ while [ $fhcnt -le $fend ] ; do
   case $RUNTYPE in
    rrfs_alaska) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.ak.grib2
                 GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
-   rrfs_conus) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.3km.${fhr3}.conus.grib2
+   rrfs_conus) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.conus.grib2
                 GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
-   rrfs_conus_mag) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.3km.${fhr3}.conus.grib2
+   rrfs_conus_mag) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.conus.grib2
                 GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
-   rrfs_conus_cam) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.3km.${fhr3}.conus.grib2
+   rrfs_conus_cam) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.conus.grib2
                 GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
-   rrfs_hawaii) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.2p5km.${fhr3}.hi.grib2
+   rrfs_hawaii) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.2p5km.f${fhr3}.hi.grib2
                 GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
-   rrfs_prico) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.2p5km.${fhr3}.pr.grib2
+   rrfs_prico) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.2p5km.f${fhr3}.pr.grib2
                 GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
   esac
 
   if [ $RUNTYPE = "rrfs_alaska" ] ; then
-    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr}.alaska.grib2.idx
+    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.alaska.grib2.idx
   elif [ $RUNTYPE = "rrfs_conus" ] ; then
-    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr}.conus.grib2.idx
+    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.conus.grib2.idx
   elif [ $RUNTYPE = "rrfs_conus_mag" ] ; then
-    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr}.conus.grib2.idx
+    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.conus.grib2.idx
   elif [ $RUNTYPE = "rrfs_conus_cam" ] ; then
-    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr}.conus.grib2.idx
+    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.conus.grib2.idx
   elif [ $RUNTYPE = "rrfs_hawaii" ] ; then
-    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.2p5km.f${fhr}.hi.grib2.idx
+    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.2p5km.f${fhr3}.hi.grib2.idx
   elif [ $RUNTYPE = "rrfs_prico" ] ; then
-    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.2p5km.f${fhr}.pr.grib2.idx
+    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.2p5km.f${fhr3}.pr.grib2.idx
   else
     GRIBIN_chk=$GRIBIN
   fi
@@ -110,17 +109,17 @@ while [ $fhcnt -le $fend ] ; do
 
   case $RUNTYPE in
    rrfs_alaska)
-         $WGRIB2 -s $GRIBIN | grep -f $utilfix_rrfs/rrfs_alaska.parmlist|$WGRIB2 -i -grib temp $GRIBIN
+         $WGRIB2 -s $GRIBIN | grep -f $RRFSFIXgem/rrfs.parmlist|$WGRIB2 -i -grib temp $GRIBIN
          mv temp grib$fhr
      ;;
    rrfs_conus)
          $WGRIB2 $GRIBIN | grep "REFD:263 K" | grep max | $WGRIB2 -i -grib tempref263k $GRIBIN
          $WGRIB2 tempref263k -set_byte 4 11 198 -grib tempmaxref263k
-         $WGRIB2 -s $GRIBIN | grep -f $utilfix_rrfs/rrfs_conus.parmlist|$WGRIB2 -i -grib temp $GRIBIN
+         $WGRIB2 -s $GRIBIN | grep -f $RRFSFIXgem/rrfs.parmlist|$WGRIB2 -i -grib temp $GRIBIN
          cat temp tempmaxref263k > grib$fhr
      ;;
    rrfs_conus_mag)
-         $WGRIB2 -s $GRIBIN | grep -f $utilfix_rrfs/rrfs_conus.parmlist_mag|$WGRIB2 -i -grib temp $GRIBIN
+         $WGRIB2 -s $GRIBIN | grep -f $RRFSFIXgem/rrfs.parmlist_mag|$WGRIB2 -i -grib temp $GRIBIN
          mv temp grib$fhr
      ;;
    rrfs_conus_cam)
@@ -129,11 +128,11 @@ while [ $fhcnt -le $fend ] ; do
          cat $GRIBIN tempmaxref263k > grib$fhr
      ;;
    rrfs_hawaii)
-         $WGRIB2 -s $GRIBIN | grep -f $utilfix_rrfs/rrfs_hawaii.parmlist|$WGRIB2 -i -grib temp $GRIBIN
+         $WGRIB2 -s $GRIBIN | grep -f $RRFSFIXgem/rrfs.parmlist|$WGRIB2 -i -grib temp $GRIBIN
          mv temp grib$fhr
      ;;
    rrfs_prico)
-         $WGRIB2 -s $GRIBIN | grep -f $utilfix_rrfs/rrfs_prico.parmlist|$WGRIB2 -i -grib temp $GRIBIN
+         $WGRIB2 -s $GRIBIN | grep -f $RRFSFIXgem/rrfs.parmlist|$WGRIB2 -i -grib temp $GRIBIN
          mv temp grib$fhr
      ;;
    *)
