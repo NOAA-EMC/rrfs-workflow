@@ -77,7 +77,11 @@ case ${task_id} in
   mpassit)
     module purge
     module use "${HOMErrfs}/sorc/MPASSIT/modulefiles"
-    module load "build.${MACHINE}.intel"
+    if [[ ${MACHINE} == "ursa" ]]; then
+      module load "build.${MACHINE}.intel-llvm"
+    else
+      module load "build.${MACHINE}.intel"
+    fi
     ;;
   upp)
     module purge
