@@ -74,6 +74,25 @@ fi
 # Keep DATA for development for the last 12 hours
 # Remove this session after turn on the KEEPDATA function
 #-----------------------------------------------------------------------
+cd $DATAROOT
+if [ ${KEEPDATA} == "YES" ]; then
+  [[ -f ${DATA}/post_prdgen_data_clean1.sh ]]&& rm -f ${DATA}/post_prdgen_data_clean1.sh
+  echo "set -x" &> ${DATA}/post_prdgen_data_clean1.sh
+  idx_cyc2d=${cyc}
+  ls -lart|grep "\_post_${idx_cyc2d}\_v1\.0"|awk '{print "rm -rf",$9}' >> ${DATA}/post_prdgen_data_clean1.sh
+  # Remove post
+  ls -lart|grep -v "\_${idx_cyc2d}\_"|grep "_${idx_cyc2d}\."|grep "_post_"|grep -v "rrfs_clean_${idx_cyc2d}"|awk '{print "rm -rf",$9}' >> ${DATA}/post_prdgen_data_clean1.sh
+  # Remove prdgen
+  ls -lart|grep -v "\_${idx_cyc2d}\_"|grep "_${idx_cyc2d}\."|grep "_prdgen_"|grep -v "rrfs_clean_${idx_cyc2d}"|awk '{print "rm -rf",$9}' >> ${DATA}/post_prdgen_data_clean1.sh
+#  if [ ${idx_cyc2d} == 00 ] || [ ${idx_cyc2d} == 06 ] || [ ${idx_cyc2d} == 12 ] || [ ${idx_cyc2d} == 18 ]; then
+#    # Remove ensf
+#    ls -lart|grep -v "\_${idx_cyc2d}\_"|grep "_${idx_cyc2d}\."|grep "_ensf_"|grep -v "rrfs_clean_${idx_cyc2d}"|awk '{print "rm -rf",$9}' >> ${DATA}/post_prdgen_data_clean1.sh
+#    # Remove firewx
+#    ls -lart|grep -v "\_${idx_cyc2d}\_"|grep "_${idx_cyc2d}\."|grep "_firewx_"|grep -v "rrfs_clean_${idx_cyc2d}"|awk '{print "rm -rf",$9}' >> ${DATA}/post_prdgen_data_clean1.sh
+#  fi
+  cat ${DATA}/post_prdgen_data_clean1.sh
+  [[ $(cat ${DATA}/post_prdgen_data_clean1.sh|wc -l) -gt 1 ]]&& sh ${DATA}/post_prdgen_data_clean1.sh &> ${DATA}/post_prdgen_data_clean1_run_$$.log
+fi
 
 [[ ${KEEPDATA} == "NO" ]]&& exit 0
 [[ -f ${DATA}/data_clean1.sh ]]&& rm -f ${DATA}/data_clean1.sh
@@ -85,7 +104,11 @@ search_cyc_16=$($NDATE -16 ${CDATE} | cut -c9-10)
 search_cyc_15=$($NDATE -15 ${CDATE} | cut -c9-10)
 search_cyc_14=$($NDATE -14 ${CDATE} | cut -c9-10)
 search_cyc_13=$($NDATE -13 ${CDATE} | cut -c9-10)
-for idx_cyc in ${search_cyc_18#0} ${search_cyc_17#0} ${search_cyc_16#0} ${search_cyc_15#0} ${search_cyc_14#0} ${search_cyc_13#0}; do
+search_cyc_12=$($NDATE -12 ${CDATE} | cut -c9-10)
+search_cyc_11=$($NDATE -11 ${CDATE} | cut -c9-10)
+search_cyc_10=$($NDATE -10 ${CDATE} | cut -c9-10)
+search_cyc_09=$($NDATE -9 ${CDATE} | cut -c9-10)
+for idx_cyc in ${search_cyc_18#0} ${search_cyc_17#0} ${search_cyc_16#0} ${search_cyc_15#0} ${search_cyc_14#0} ${search_cyc_13#0} ${search_cyc_12#0} ${search_cyc_11#0} ${search_cyc_10#0} ${search_cyc_09#0}; do
   idx_cyc2d=$( printf "%02d" "${idx_cyc#0}" )
   fcst_state=$(ecflow_client --query state /nco_rrfs_dev_${idx_cyc2d}/primary/${idx_cyc2d}/rrfs/v1.0/forecast)
 
@@ -98,7 +121,7 @@ for idx_cyc in ${search_cyc_18#0} ${search_cyc_17#0} ${search_cyc_16#0} ${search
     echo "Cycle ${idx_cyc2d} is completed - proceed with cleanup"
     ls|grep "_${idx_cyc2d}\."|awk -v DATAROOT="$DATAROOT" '{print "rm -rf",DATAROOT"/"$1}' >> ${DATA}/data_clean1.sh
     # Include the backup umbrella data directories
-    ls -d */ |grep "_${idx_cyc2d}_v1.0" |awk -v DATAROOT="$DATAROOT" '{print "rm -rf",DATAROOT"/"$1}' >> ${DATA}/data_clean1.sh
+    ls -d */ |grep "_${idx_cyc2d}_v1\.0" |awk -v DATAROOT="$DATAROOT" '{print "rm -rf",DATAROOT"/"$1}' >> ${DATA}/data_clean1.sh
   fi
 done
 [[ $(cat ${DATA}/data_clean1.sh|wc -l) -gt 1 ]]&& sh ${DATA}//data_clean1.sh
