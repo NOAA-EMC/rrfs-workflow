@@ -48,6 +48,7 @@ changesets = {
     'mkdir -p "${DATA}"':
     'mkdir -p "${UMBRELLA_JEDIVAR_DATA}"\nrm -rf "${HOME}/rrfs_data"\nmkdir -p "${HOME}/rrfs_data"\nln -snf "${HOME}/rrfs_data"  "${DATA}"',
 }
+modify(myfile, changesets)
 
 # tweak 3 ----------------------------------------------------------
 myfile = "scripts/exrrfs_jedivar.sh"
@@ -72,5 +73,21 @@ changesets = {
 modify(myfile, changesets)
 
 # remove 11 lines from scripts/exrrfs_jedivar.sh
+file = "scripts/exrrfs_jedivar.sh"
+shutil.copy(file, ".tmpfile")  # this can preserve the file permission
+with open(file, 'r') as infile, open(".tmpfile", 'w') as outfile:
+    skip = False
+    knt = 0
+    for line in infile:
+        if 'if [[ ${start_type} == "cold" ]]; then' in line:
+            skip = True
+            knt +=1
+        elif skip and knt == 11:
+            skip = False
+        elif skip:
+            knt += 1
+        if not skip:
+            outfile.write(line)
+os.replace(".tmpfile", file)
 
-print("Done\nNow your rrfs-workflow can run highres (such as conus3km) JEDIVAR  on Gaea")
+print("Done\nNow your rrfs-workflow can run highres (such as conus3km) JEDIVAR on Gaea")
