@@ -5,11 +5,14 @@ import shutil
 
 def modify(file, changesets):
     shutil.copy(file, ".tmpfile")  # this can preserve the file permission
+    replaced = False
     with open(file, 'r') as infile, open(".tmpfile", 'w') as outfile:
         for line in infile:
-            for key, value in changesets.items():
-                if key in line:
-                    line = line.replace(key, value)
+            if not replaced:
+                for key, value in changesets.items():
+                    if key in line:
+                        line = line.replace(key, value)
+                        replaced = True
             outfile.write(line)
     os.replace(".tmpfile", file)
 
@@ -64,11 +67,10 @@ changesets = {
   err_chk
   mv tmp.nc "${initial_file}"
   mv ana.nc ..
-  cp "${initial_file}"  "${COMOUT}/jedivar/${WGF}/mpasout.${timestr}.nc"
-    '''
+  cp "${initial_file}"  "${COMOUT}/jedivar/${WGF}/mpasout.${timestr}.nc"'''
 }
 modify(myfile, changesets)
 
 # remove 11 lines from scripts/exrrfs_jedivar.sh
 
-print("Done\nNow your rrfs-workflow can run highres JEDI, such as conus3km, on Gaea")
+print("Done\nNow your rrfs-workflow can run highres (such as conus3km) JEDIVAR  on Gaea")
