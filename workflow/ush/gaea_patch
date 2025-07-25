@@ -1,0 +1,74 @@
+#!/usr/bin/env python
+import os
+import shutil
+
+
+def modify(file, changesets):
+    shutil.copy(file, ".tmpfile")  # this can preserve the file permission
+    with open(file, 'r') as infile, open(".tmpfile", 'w') as outfile:
+        for line in infile:
+            for key, value in changesets.items():
+                if key in line:
+                    line = line.replace(key, value)
+            outfile.write(line)
+    os.replace(".tmpfile", file)
+
+
+# set the current directory to HOMErrfs
+mypath = os.path.dirname(os.path.abspath(__file__))
+os.chdir(os.path.join(mypath, "../.."))
+
+# check whether a given modification has been made to avoid a second run of this script
+already_modified = False
+with open("parm/jedivar.yaml", 'r') as infile:
+    for line in infile:
+        if "config_do_restart = ${do_restart}" in line:
+            already_modified = True
+            break
+if already_modified:
+    print("It is expected to run 'gaea_patch' in a clean git status")
+    print("It looks like target files have been modified")
+    print("Run 'git status` to check what files have been modified")
+    print("Run 'git checkout <file>' to undo changes")
+    exit()
+
+# tweak 1 ----------------------------------------------------------
+myfile = "parm/jedivar.yaml"
+changesets = {
+        "filename: mpasin.nc": "filename: ana.nc",
+}
+modify(myfile, changesets)
+
+# tweak 2 ----------------------------------------------------------
+myfile = "jobs/JRRFS_JEDIVAR"
+changesets = {
+    'mkdir -p "${DATA}"':
+    'mkdir -p "${UMBRELLA_JEDIVAR_DATA}"\nrm -rf "${HOME}/rrfs_data"\nmkdir -p "${HOME}/rrfs_data"\nln -snf "${HOME}/rrfs_data"  "${DATA}"',
+}
+
+# tweak 3 ----------------------------------------------------------
+myfile = "scripts/exrrfs_jedivar.sh"
+changesets = {
+    '# ncks increments to cold_start IC':
+    '''# ncks increments to cold_start IC
+  # move ${DATA} from ${HOME} to ${UMBRELLA_JEDIVAR_DATA}
+  cd "${UMBRELLA_JEDIVAR_DATA}"
+  rm -rf "${DATA}"
+  mv "${HOME}/rrfs_data" "${DATA}"
+  cd "${DATA}" || exit 1
+
+  var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional,refl10cm,w"
+  ncks -O -C -x -v ${var_list} ${initial_file} tmp.nc
+  ncks -A -v ${var_list} ana.nc tmp.nc
+  export err=$?
+  err_chk
+  mv tmp.nc "${initial_file}"
+  mv ana.nc ..
+  cp "${initial_file}"  "${COMOUT}/jedivar/${WGF}/mpasout.${timestr}.nc"
+    '''
+}
+modify(myfile, changesets)
+
+# remove 11 lines from scripts/exrrfs_jedivar.sh
+
+print("Done\nNow your rrfs-workflow can run highres JEDI, such as conus3km, on Gaea")
