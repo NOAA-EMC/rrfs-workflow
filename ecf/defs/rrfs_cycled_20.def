@@ -143,7 +143,7 @@ suite nco_rrfs_dev_20
                 trigger :TIME >= 2035 and :TIME < 2110  # 20 mins window 
               task jrrfs_det_process_radar
                 edit CYCLE_TYPE 'prod'
-                trigger :TIME >= 2015 and :TIME < 2105
+                trigger :TIME >= 2025 and :TIME < 2105
               task jrrfs_det_process_lightning
                 edit CYCLE_TYPE 'prod'
                 trigger :TIME >= 2015 and :TIME < 2105
@@ -167,7 +167,7 @@ suite nco_rrfs_dev_20
               edit WGF 'enkf'
               edit CYCLE_TYPE 'prod'
               task jrrfs_enkf_process_radar
-                trigger :TIME >= 2015 and :TIME < 2105 and ../det/jrrfs_det_process_radar==complete
+                trigger :TIME >= 2025 and :TIME < 2105 and ../det/jrrfs_det_process_radar==complete
               task jrrfs_enkf_process_lightning
                 trigger :TIME >= 2015 and :TIME < 2105 and ../det/jrrfs_det_process_lightning==complete
               task jrrfs_enkf_process_bufr
