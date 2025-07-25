@@ -23,9 +23,9 @@ os.chdir(os.path.join(mypath, "../.."))
 
 # check whether a given modification has been made to avoid a second run of this script
 already_modified = False
-with open("parm/jedivar.yaml", 'r') as infile:
+with open("jobs/JRRFS_JEDIVAR", 'r') as infile:
     for line in infile:
-        if "config_do_restart = ${do_restart}" in line:
+        if 'mkdir -p "${HOME}/rrfs_data"' in line:
             already_modified = True
             break
 if already_modified:
