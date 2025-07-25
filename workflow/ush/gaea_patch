@@ -25,7 +25,7 @@ os.chdir(os.path.join(mypath, "../.."))
 already_modified = False
 with open("jobs/JRRFS_JEDIVAR", 'r') as infile:
     for line in infile:
-        if 'mkdir -p "${HOME}/rrfs_data"' in line:
+        if 'mkdir -p "${HOME}/rrfstmp_${cyc}"' in line:
             already_modified = True
             break
 if already_modified:
@@ -46,7 +46,7 @@ modify(myfile, changesets)
 myfile = "jobs/JRRFS_JEDIVAR"
 changesets = {
     'mkdir -p "${DATA}"':
-    'mkdir -p "${UMBRELLA_JEDIVAR_DATA}"\nrm -rf "${HOME}/rrfs_data"\nmkdir -p "${HOME}/rrfs_data"\nln -snf "${HOME}/rrfs_data"  "${DATA}"',
+    'mkdir -p "${UMBRELLA_JEDIVAR_DATA}"\nrm -rf "${HOME}/rrfstmp_${cyc}"\nmkdir -p "${HOME}/rrfstmp_${cyc}"\nln -snf "${HOME}/rrfstmp_${cyc}"  "${DATA}"',
 }
 modify(myfile, changesets)
 
@@ -58,7 +58,7 @@ changesets = {
   # move ${DATA} from ${HOME} to ${UMBRELLA_JEDIVAR_DATA}
   cd "${UMBRELLA_JEDIVAR_DATA}"
   rm -rf "${DATA}"
-  mv "${HOME}/rrfs_data" "${DATA}"
+  mv "${HOME}/rrfstmp_${cyc}" "${DATA}"
   cd "${DATA}" || exit 1
 
   var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional,refl10cm,w"
