@@ -48,6 +48,10 @@ fi
 #----------------------------------------
 # Execute the script.
 #----------------------------------------
+if [[ "${KEEPDATA}" == "NO" ]]; then
+  rm -rf "${DATA}"
+  rm -rf "${UMBRELLA_FCST_DATA}"
+fi
 export pgmout="${DATA}/OUTPUT.$$"
 "${HOMErrfs}"/scripts/exrrfs_save_fcst.sh
 export err=$?; err_chk
