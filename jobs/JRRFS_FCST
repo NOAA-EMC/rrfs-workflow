@@ -65,7 +65,7 @@ fi
 #----------------------------------------
 # Remove the Temporary working directory
 #----------------------------------------
-if [[ "${KEEPDATA}" == "NO" ]];
+if [[ "${KEEPDATA}" == "NO" ]]; then
   # rm -rf "${DATA}"
   rm -rf "${UMBRELLA_PREP_LBC_DATA}"
   rm -rf "${UMBRELLA_PREP_IC_DATA}"
