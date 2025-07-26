@@ -31,7 +31,7 @@ if [[ ! -d "${comout}" ]]; then
   echo " !!! the above directory either NOT created, or has been purged !!!"
 fi
 
-echo -e "\n---stmp otuput:"
+echo -e "\n---stmp output:"
 stmpout="${DATAROOT}/${PDY}/${RUN}_${task}_${cyc}_${VERSION}/${WGF}"
 echo "${stmpout}"
 if [[ ! -d "${stmpout}" ]]; then
