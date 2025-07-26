@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import sys
 import shutil
 
 
@@ -31,9 +32,9 @@ with open("jobs/JRRFS_JEDIVAR", 'r') as infile:
 if already_modified:
     print("It is expected to run 'gaea_patch' in a clean git status")
     print("It looks like target files have been modified")
-    print("Run 'git status` to check what files have been modified")
+    print("Run 'git status' to check what files have been modified")
     print("Run 'git checkout <file>' to undo changes")
-    exit()
+    sys.exit()
 
 # tweak 1 ----------------------------------------------------------
 myfile = "parm/jedivar.yaml"
