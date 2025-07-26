@@ -48,16 +48,20 @@ fi
 #----------------------------------------
 # Execute the script.
 #----------------------------------------
-if [[ "${KEEPDATA}" == "NO" ]]; then
-  rm -rf "${DATA}"
-  rm -rf "${UMBRELLA_FCST_DATA}"
-fi
 export pgmout="${DATA}/OUTPUT.$$"
 "${HOMErrfs}"/scripts/exrrfs_save_fcst.sh
 export err=$?; err_chk
 
 if [[ -e "${pgmout}" ]]; then
   cat "${pgmout}"
+fi
+#
+#----------------------------------------
+# Remove the Temporary working directory
+#----------------------------------------
+if [[ "${KEEPDATA}" == "NO" ]]; then
+  rm -rf "${DATA}"
+  rm -rf "${UMBRELLA_FCST_DATA}"
 fi
 #
 date
