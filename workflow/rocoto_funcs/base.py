@@ -66,7 +66,7 @@ def header_entities(xmlFile, expdir):
     partition = os.getenv('PARTITION', 'hera')
     reservation = os.getenv('RESERVATION', '')
     mesh_name = os.getenv('MESH_NAME', 'na3km')
-    keepdata = os.getenv('KEEPDATA', 'YES').upper()
+    keepdata = os.getenv('KEEPDATA', 'YES').strip().upper()
     mpi_run_cmd = os.getenv('MPI_RUN_CMD', 'srun')
     wgf = os.getenv('WGF', 'det')
     cyc_interval = os.getenv('CYC_INTERVAL', '3')
