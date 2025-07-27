@@ -21,6 +21,8 @@ case ${MACHINE} in
   orion|hercules)
     FIX_RRFS_LOCATION=/work/noaa/zrtrr/FIX_RRFS2
     ;;
+  derecho)
+    FIX_RRFS_LOCATION=/glade/work/geguo/FIX_RRFS2
   gaea)
     if [[ -d /gpfs/f5 ]]; then
       FIX_RRFS_LOCATION=/gpfs/f5/gsl-glo/world-shared/role.rrfsfix/FIX_RRFS2
