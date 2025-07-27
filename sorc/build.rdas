@@ -8,6 +8,10 @@ HOMErrfs="$(dirname "$rundir")"
 source "${HOMErrfs}/workflow/ush/detect_machine.sh"
 source "${HOMErrfs}/workflow/ush/init.sh"
 
+if [[ "${MACHINE}" == "derecho" ]]; then
+  export COMPILER=gnu
+fi
+
 # get a clean copy of the same MPAS-Model as in the workflow
 # if RDASApp has a different version from the workflow
 # and users don't specify 'different_mpas' at the command line

@@ -23,6 +23,7 @@ case ${MACHINE} in
     ;;
   derecho)
     FIX_RRFS_LOCATION=/glade/work/geguo/FIX_RRFS2
+    ;;
   gaea)
     if [[ -d /gpfs/f5 ]]; then
       FIX_RRFS_LOCATION=/gpfs/f5/gsl-glo/world-shared/role.rrfsfix/FIX_RRFS2
