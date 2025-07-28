@@ -73,6 +73,19 @@ changesets = {
 }
 modify(myfile, changesets)
 
+# tweak 4 ----------------------------------------------------------
+myfile = "scripts/exrrfs_jedivar.sh"
+changesets = {
+    'echo "INFO: No DA at the cold start cycle"':
+    '''echo "INFO: No DA at the cold start cycle"
+  # move ${DATA} from ${HOME} to ${UMBRELLA_JEDIVAR_DATA}
+  cd "${UMBRELLA_JEDIVAR_DATA}"
+  rm -rf "${DATA}"
+  mv "${HOME}/rrfstmp_${PDY}${cyc}" "${DATA}"
+  cd "${DATA}" || exit 1'''
+}
+modify(myfile, changesets)
+
 # remove 11 lines from scripts/exrrfs_jedivar.sh
 file = "scripts/exrrfs_jedivar.sh"
 shutil.copy(file, ".tmpfile")  # this can preserve the file permission
