@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-run_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 # shellcheck disable=SC1091
+run_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 source "${run_dir}/detect_machine.sh"
 source "${run_dir}/linter_get_EXEC_DIR.sh"
 
