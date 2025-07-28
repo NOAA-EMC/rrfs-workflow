@@ -56,6 +56,14 @@ if [[ -e "${pgmout}" ]]; then
   cat "${pgmout}"
 fi
 #
+#----------------------------------------
+# Remove the Temporary working directory and UMBRELLA_FCST_DATA
+#----------------------------------------
+if [[ "${KEEPDATA}" == "NO" ]]; then
+  rm -rf "${DATA}"
+  rm -rf "${UMBRELLA_FCST_DATA}"
+fi
+#
 date
 echo "JOB ${jobid:-} HAS COMPLETED NORMALLY!"
 exit 0
