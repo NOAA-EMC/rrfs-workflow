@@ -139,7 +139,7 @@ def setup_xml(HOMErrfs, expdir):
     elif machine in ['wcoss2']:
         extra = "\nmodule use /apps/ops/test/nco/modulefiles/core"
     elif machine in ['derecho']:
-        extra = "source /etc/profile.d/z00_modules.sh\nmodule use /glade/work/epicufsrt/contrib/derecho/modulefiles"
+        extra = "\nsource /etc/profile.d/z00_modules.sh\nmodule use /glade/work/epicufsrt/contrib/derecho/modulefiles"
     with open(fPath, 'w') as rocotoFile:
         text = \
             f'''#!/usr/bin/env bash
