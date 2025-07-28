@@ -61,7 +61,6 @@ export WALLTIME_UPP="1:00:00"
 export WALLTIME_GETKF="00:30:00"
 #
 export KEEPDATA=no
-export MPI_RUN_CMD=srun
 export RETRO_TASKTHROTTLE=60
 #
 # local.setup: setup some local options specific to a platform or an experiment

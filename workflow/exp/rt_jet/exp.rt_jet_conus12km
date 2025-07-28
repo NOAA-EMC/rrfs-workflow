@@ -70,7 +70,6 @@ export WALLTIME_UPP="1:00:00"
 export WALLTIME_JEDIVAR="00:30:00"
 #
 export KEEPDATA=no
-export MPI_RUN_CMD=srun
 #
 # local.setup: setup some local options specific to a platform or an experiment
 #
