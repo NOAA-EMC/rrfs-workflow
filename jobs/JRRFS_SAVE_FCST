@@ -57,7 +57,7 @@ if [[ -e "${pgmout}" ]]; then
 fi
 #
 #----------------------------------------
-# Remove the Temporary working directory
+# Remove the Temporary working directory and UMBRELLA_FCST_DATA
 #----------------------------------------
 if [[ "${KEEPDATA}" == "NO" ]]; then
   rm -rf "${DATA}"

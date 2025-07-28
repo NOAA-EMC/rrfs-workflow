@@ -1,0 +1,36 @@
+#!/bin/bash
+# shellcheck disable=all
+# clean the experiment com outputs except UPP
+# by Guoqing Ge, 2025/07
+#
+declare -A cleans  # Declare an associative array
+
+cleans["ungrib_ic"]=true
+cleans["ungrib_lbc"]=true
+cleans["ic"]=true
+cleans["lbc"]=true
+cleans["ioda_bufr"]=true
+
+cleans["prep_ic"]=true
+cleans["prep_lbc"]=true
+cleans["fcst"]=true
+cleans["jedivar"]=true
+cleans["mpassit"]=true
+
+if [[ ! -s exp.setup ]]; then
+  echo "Run this command under the expdir where exp.setup is located"
+  exit
+fi
+source exp.setup
+
+RUN=rrfs
+
+for task in "${!cleans[@]}"; do
+  do_clean=${cleans[${task}]}
+  if ${do_clean}; then
+    echo -e "\n======  clean ${task} ======"
+    ### read YESNO
+    echo "rm -rf ${COMROOT}/${NET}/${VERSION}/${RUN}.*/*/${task}/${WGF}"
+    rm -rf ${COMROOT}/${NET}/${VERSION}/${RUN}.*/*/${task}/${WGF}
+  fi
+done
