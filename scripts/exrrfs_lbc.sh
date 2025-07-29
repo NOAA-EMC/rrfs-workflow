@@ -68,7 +68,7 @@ sed -e "s/@input_stream@/invariant.nc/" -e "s/@output_stream@/foo.nc/" \
 for fhr in  ${fhr_all}; do
   EDATE=$(${NDATE} "${fhr}" "${CDATEin}")
   timestring=$(date -d "${EDATE:0:8} ${EDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
-  ln -snf "${UMBRELLA_UNGRIB_DATA}/${prefix}:${timestring:0:13}" .
+  ln -snf "${UMBRELLA_UNGRIB_LBC_DATA}/${prefix}:${timestring:0:13}" .
 done
 zeta_levels=${EXPDIR}/config/ZETA_LEVELS.txt
 nlevel=$(wc -l < "${zeta_levels}")
