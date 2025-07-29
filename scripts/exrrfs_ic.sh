@@ -49,7 +49,7 @@ sed -e "s/@input_stream@/static.nc/" -e "s/@output_stream@/init.nc/" \
 #
 #prepare fix files and ungrib files for init_atmosphere
 #
-ln -snf "${UMBRELLA_UNGRIB_DATA}/${prefix}:${start_time:0:13}" .
+ln -snf "${UMBRELLA_UNGRIB_IC_DATA}/${prefix}:${start_time:0:13}" .
 ${cpreq} "${FIXrrfs}/meshes/${MESH_NAME}.static.nc" static.nc
 ${cpreq} "${FIXrrfs}/graphinfo/${MESH_NAME}.graph.info.part.${NTASKS}" .
 ln -snf "${FIXrrfs}/physics/${PHYSICS_SUITE}/QNWFA_QNIFA_SIGMA_MONTHLY.dat" .

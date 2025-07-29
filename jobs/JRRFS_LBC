@@ -34,7 +34,7 @@ if [[ -z "${ENS_INDEX}" ]]; then
 else
   export MEMDIR="/mem${ENS_INDEX}"
 fi
-export UMBRELLA_UNGRIB_DATA=${UMBRELLA_UNGRIB_DATA:-${DATAROOT}/${RUN}_ungrib_lbc_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
+export UMBRELLA_UNGRIB_LBC_DATA=${UMBRELLA_UNGRIB_LBC_DATA:-${DATAROOT}/${RUN}_ungrib_lbc_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
 export jobid=${jobid:-lbc_g${GROUP_INDEX}_${cyc}}
 export UMBRELLA_LBC_DATA=${UMBRELLA_LBC_DATA:-${DATAROOT}/${RUN}_lbc_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
 export DATA=${DATA:-${UMBRELLA_LBC_DATA}/${jobid}}
@@ -66,7 +66,10 @@ fi
 #----------------------------------------
 # Remove the Temporary working directory
 #----------------------------------------
-[[ "${KEEPDATA}" == "NO" ]] && rm -rf "${DATA}"
+if [[ "${KEEPDATA}" == "NO" ]]; then
+  rm -rf "${DATA}"
+  rm -rf "${UMBRELLA_UNGRIB_LBC_DATA}"
+fi
 #
 date
 echo "JOB ${jobid:-} HAS COMPLETED NORMALLY!"
