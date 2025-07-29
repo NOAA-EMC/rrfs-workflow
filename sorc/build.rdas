@@ -9,8 +9,8 @@ source "${HOMErrfs}/workflow/ush/detect_machine.sh"
 source "${HOMErrfs}/workflow/ush/init.sh"
 
 if [[ "${MACHINE}" == "derecho" ]]; then
-  export GFORTRAN_CONVERT_UNIT='big_endian:101-200'
-  export LMOD_TMOD_FIND_FIRST=yes
+  #export GFORTRAN_CONVERT_UNIT='big_endian:101-200'
+  #export LMOD_TMOD_FIND_FIRST=yes
   export COMPILER=gnu
 fi
 
