@@ -6,9 +6,11 @@ Team Charter (draft): https://docs.google.com/document/d/1uLbPx-pOWp7eECz_7VHRt_
 
 ### Currently supported platforms
 -   NOAA RDHPCS Hera
+-   NOAA RDHPCS Ursa
 -   NOAA RDHPCS Jet
 -   NOAA RDHPCS Gaea C6
 -   MSU-HPC systems (Hercules/Orion)
+-   NCAR supercomputer Derecho
 -   WCOSS2 
 
 ## [How to build and run rrfs experiments?](doc/build_and_run.md)

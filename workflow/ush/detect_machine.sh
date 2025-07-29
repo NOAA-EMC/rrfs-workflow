@@ -23,6 +23,8 @@ case $(hostname -f) in
   u01*) MACHINE=ursa ;;
   uecflow01) MACHINE=ursa ;;
 
+  derecho*) MACHINE=derecho ;;
+
   s4-submit.ssec.wisc.edu) MACHINE=s4 ;; ### s4
 
   fe[1-8]) MACHINE=jet ;; ### jet01-8
@@ -65,6 +67,9 @@ if [[ "${MACHINE}" == "UNKNOWN" ]]; then
   elif [[ -d /scratch3 ]]; then
     # We are on NOAA Ursa
     MACHINE=ursa
+  elif [[ -d /glade/derecho ]]; then
+    # We are on Derecho
+    MACHINE=derecho
   elif [[ -d /work ]]; then
     # We are on MSU Orion or Hercules
     if [[ -d /apps/other ]]; then

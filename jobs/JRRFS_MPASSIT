@@ -63,7 +63,10 @@ fi
 #----------------------------------------
 # Remove the Temporary working directory
 #----------------------------------------
-[[ "${KEEPDATA}" == "NO" ]] && rm -rf "${DATA}"
+if [[ "${KEEPDATA}" == "NO" ]]; then
+  rm -rf "${DATA}"
+  rm -rf "${UMBRELLA_SAVE_FCST_DATA}"
+fi
 #
 date
 echo "JOB ${jobid:-} HAS COMPLETED NORMALLY!"

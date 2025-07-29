@@ -65,7 +65,13 @@ fi
 #----------------------------------------
 # Remove the Temporary working directory
 #----------------------------------------
-[[ "${KEEPDATA}" == "NO" ]] && rm -rf "${DATA}"
+if [[ "${KEEPDATA}" == "NO" ]]; then
+  # rm -rf "${DATA}"
+# we cannot remove fcst DATA here since save_fcst lags behind and
+# still needs to access them. Instead, let save_fcst remove fcst DATA
+  rm -rf "${UMBRELLA_PREP_LBC_DATA}"
+  rm -rf "${UMBRELLA_PREP_IC_DATA}"
+fi
 #
 date
 echo "JOB ${jobid:-} HAS COMPLETED NORMALLY!"
