@@ -113,7 +113,7 @@ suite nco_rrfs_dev_07
                 trigger :TIME >= 0735 and :TIME < 0810  # 20 mins window 
               task jrrfs_det_process_radar
                 edit CYCLE_TYPE 'prod'
-                trigger :TIME >= 0715 and :TIME < 0805
+                trigger :TIME >= 0725 and :TIME < 0805
               task jrrfs_det_process_lightning
                 edit CYCLE_TYPE 'prod'
                 trigger :TIME >= 0715 and :TIME < 0805
@@ -137,7 +137,7 @@ suite nco_rrfs_dev_07
               edit WGF 'enkf'
               edit CYCLE_TYPE 'spinup'
               task jrrfs_enkf_process_radar_spinup
-                trigger :TIME >= 0715 and :TIME < 0805 and ../det/jrrfs_det_process_radar==complete
+                trigger :TIME >= 0725 and :TIME < 0805 and ../det/jrrfs_det_process_radar==complete
               task jrrfs_enkf_process_lightning_spinup
                 trigger :TIME >= 0715 and :TIME < 0805 and ../det/jrrfs_det_process_lightning==complete
               task jrrfs_enkf_process_bufr_spinup
