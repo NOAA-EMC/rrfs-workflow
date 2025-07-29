@@ -54,7 +54,7 @@ while [ $fhcnt -le $fend ] ; do
 
   fhr3=$fhcnt
   typeset -Z3 fhr3
-  GRIBIN=$COMIN/${model}.${cycle}.${GRIB}${fhr}${EXT}.grib2
+#  GRIBIN=$COMIN/${model}.${cycle}.${GRIB}${fhr}${EXT}.grib2
   GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3}
 
   case $RUNTYPE in
@@ -123,6 +123,7 @@ while [ $fhcnt -le $fend ] ; do
          mv temp grib$fhr
      ;;
    rrfs_conus_cam)
+         $WGRIB2 -s $GRIBIN | grep -f $RRFSFIXgem/rrfs.parmlist_mag|$WGRIB2 -i -grib temp $GRIBIN
          $WGRIB2 $GRIBIN | grep "REFD:263 K" | grep max | $WGRIB2 -i -grib tempref263k $GRIBIN
          $WGRIB2 tempref263k -set_byte 4 11 198 -grib tempmaxref263k
          cat $GRIBIN tempmaxref263k > grib$fhr

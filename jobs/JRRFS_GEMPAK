@@ -20,9 +20,6 @@ export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 export FIXam=${FIXam:-${FIXrrfs}/am}
-export FIX_SMOKE_DUST=${FIXrrfs}/smoke_dust
-
-
 
 
 #-----------------------------------------------------------------------
@@ -31,10 +28,8 @@ export FIX_SMOKE_DUST=${FIXrrfs}/smoke_dust
 
 . $USHrrfs/source_util_funcs.sh
 
-
 export COMrrfs=${COMrrfs:-$(compath.py -o rrfs/${rrfs_ver})}
 export COMOUT=${COMOUT:-$(compath.py -o rrfs/${rrfs_ver}/${RUN}.${PDY}/${cyc}/gempak)}
-
 
 #################################################
 # Set up model and cycle specific variables
@@ -69,7 +64,7 @@ cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 cd $DATA
 export GRIB=prslev
 export type=rrfs_conus
-echo "$HOMErrfs/scripts/exrrfs_nawips.sh $type $GRIB  $finc $fend" >> $DATA/poescript
+echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB  $finc $fend" >> $DATA/poescript
 #################################################################
 
 #################################################################
@@ -89,7 +84,7 @@ cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 cd $DATA
 export GRIB=prslev
 export type=rrfs_conus_mag
-echo "$HOMErrfs/scripts/exrrfs_nawips.sh $type $GRIB  $finc $fend" >> $DATA/poescript
+echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB  $finc $fend" >> $DATA/poescript
 #################################################################
 
 #################################################################
@@ -107,7 +102,7 @@ cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 cd $DATA
 export GRIB=testbed
 export type=rrfs_conus_cam
-echo "$HOMErrfs/scripts/exrrfs_nawips.sh $type $GRIB $finc $fend" >> $DATA/poescript
+echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB $finc $fend" >> $DATA/poescript
 #################################################################
 
 #################################################################
@@ -125,7 +120,7 @@ cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 cd $DATA
 export GRIB=prslev
 export type=rrfs_alaska
-echo "$HOMErrfs/scripts/exrrfs_nawips.sh $type $GRIB $finc $fend" >> $DATA/poescript
+echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB $finc $fend" >> $DATA/poescript
 #################################################################
 # Execute the script to make Puerto Rico GEMPAK grids
 mkdir -p $DATA/rrfs_prico
@@ -141,7 +136,7 @@ cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 cd $DATA
 export GRIB=prslev
 export type=rrfs_prico
-echo "$HOMErrfs/scripts/exrrfs_nawips.sh $type $GRIB  $finc $fend" >> $DATA/poescript
+echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB  $finc $fend" >> $DATA/poescript
 #################################################################
 # Execute the script to make Hawaii GEMPAK grids
 mkdir -p $DATA/rrfs_hawaii
@@ -157,7 +152,7 @@ cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 cd $DATA
 export GRIB=prslev
 export type=rrfs_hawaii
-echo "$HOMErrfs/scripts/exrrfs_nawips.sh $type $GRIB $finc $fend" >> $DATA/poescript
+echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB $finc $fend" >> $DATA/poescript
 #################################################################
 cat poescript
 
