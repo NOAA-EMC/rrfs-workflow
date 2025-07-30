@@ -5,7 +5,7 @@ the NOAA RDHPC machine Hera using Intel-2022.1.2
 
 whatis([===[Loads libraries needed for building the RRFS workflow on Hera ]===])
 
-prepend_path("MODULEPATH", "/scratch1/NCEPDEV/nems/role.epic/spack-stack/spack-stack-1.5.1/envs/gsi-addon-env-rocky8/install/modulefiles/Core")
+prepend_path("MODULEPATH", "/contrib/spack-stack/spack-stack-1.6.0/envs/gsi-addon-dev-rocky8/install/modulefiles/Core")
 load(pathJoin("stack-intel", os.getenv("stack_intel_ver") or "2021.5.0"))
 load(pathJoin("stack-intel-oneapi-mpi", os.getenv("stack_impi_ver") or "2021.5.1"))
 load(pathJoin("cmake", os.getenv("cmake_ver") or "3.23.1"))
@@ -18,8 +18,8 @@ load("prod_util/2.0.15")
 
 unload("fms/2023.02.01")
 unload("g2tmpl/1.10.2")
-setenv("g2tmpl_ROOT","/scratch1/BMC/wrfruc/mhu/rrfs/lib/g2tmpl/install")
-setenv("FMS_ROOT","/scratch1/BMC/wrfruc/mhu/rrfs/lib/fms.2024.01/build")
+setenv("g2tmpl_ROOT","/scratch4/BMC/wrfruc/mhu/rrfs/lib/g2tmpl/install")
+setenv("FMS_ROOT","/scratch4/BMC/wrfruc/mhu/rrfs/lib/fms.2024.01/build")
 
 setenv("CMAKE_C_COMPILER","mpiicc")
 setenv("CMAKE_CXX_COMPILER","mpiicpc")
