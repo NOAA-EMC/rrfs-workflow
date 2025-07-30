@@ -820,7 +820,14 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
   bndy=./gfs.bndy.nc
 
   # Run convert coldstart files to fv3 restart (rotate winds and remap).
-  python ${USHrrfs}/chgres_cold2fv3.py $cold $grid $akbk $akbkcold $orog
+  cp /lfs/h2/emc/da/noscrub/donald.e.lippi/preblend/data/cold2warm_all.nc .
+  cp /lfs/h2/emc/da/noscrub/donald.e.lippi/blend_data/preblend_fortran_test/fv3lam_pre_blending.exe .
+  ${APRUN} ./fv3lam_pre_blending.exe >>$pgmout 2>errfil
+  export err=$?; err_chk
+
+  #mpiexec -n 64 -ppn 32 --cpu-bind core --depth 4 ./fv3lam_pre_blending.exe  >>$pgmout 2>errfile
+  #exprot pgm=fv3lam_pre_blending.exe
+  #${APRUN} ${EXECrrfs}/$pgm >>$pgmout 2>errfil
 
   echo "Pre-Blending end `date`"
 
@@ -835,7 +842,8 @@ fi
 #### if [[ $DO_ENS_BLENDING = "TRUE" ]]; then
   #### mv out.atm.tile${TILE_RGNL}.nc \
   ####       ${DATA}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
-cpreq -p ${DATA}/out.atm.tile${TILE_RGNL}.nc ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
+#cpreq -p ${DATA}/out.atm.tile${TILE_RGNL}.nc ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
+cpreq -p ${DATA}/cold2warm_all.nc ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
 
   #### mv out.sfc.tile${TILE_RGNL}.nc \
   ####       ${DATA}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc

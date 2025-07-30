@@ -191,11 +191,11 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
      Lx=$ENS_BLENDING_LENGTHSCALE
      # Using gfs_data.tile7.halo0.nc from umberlla ics directory as out.atm.tile${TILE_RGNL}.nc
      if [ -s ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo0.nc ]; then
-       ln -s ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo0.nc out.atm.tile${TILE_RGNL}.nc
+       ln -s ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo0.nc cold2warm_all.nc
      else
        err_exit "FATAL: gfs_data.tile${TILE_RGNL}.halo0.nc not found in ${shared_output_data} - check make ics step"
      fi
-     glb=./out.atm.tile${TILE_RGNL}.nc
+     glb=./cold2warm_all.nc
      reg=./fv_core.res.tile1.nc
      trcr=./fv_tracer.res.tile1.nc
 
@@ -205,7 +205,8 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
      use_host_enkf=${USE_HOST_ENKF} # ignored if blend="TRUE".
                                     # TRUE:  Final EnKF will be GDAS (no blending)
                                     # FALSE: Final EnKF will be RRFS (no blending)
-     python ${USHrrfs}/blending_fv3.py $Lx $glb $reg $trcr $blend $use_host_enkf
+     #python ${USHrrfs}/blending_fv3.py $Lx $glb $reg $trcr $blend $use_host_enkf
+     python ${USHrrfs}/blending_fv3_new.py $Lx $glb $reg $trcr $blend $use_host_enkf
      [[ ! -s fv_core.res.tile1.nc ]]&& err_exit "FATAL: fv_core.res.tile1.nc not found in ${DATA}"
      [[ ! -s fv_tracer.res.tile1.nc ]]&& err_exit "FATAL: fv_tracer.res.tile1.nc not found in ${DATA}" 
      if [ -f ${shared_output_data}/fv_core.res.tile1.nc ]; then
