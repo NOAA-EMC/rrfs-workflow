@@ -155,7 +155,7 @@ def wflow_begin(xmlFile):
     cyclethrottle = os.getenv("RETRO_CYCLETHROTTLE", "3")
     taskthrottle = os.getenv("RETRO_TASKTHROTTLE", "30")
     machine = os.getenv('MACHINE').lower()
-    if machine in ['wcoss2']:
+    if machine in ['wcoss2', 'derecho']:
         scheduler = 'pbspro'
     else:
         scheduler = 'slurm'
