@@ -124,6 +124,10 @@ case $MACHINE in
     APRUN="srun --export=ALL"
     ;;
 
+  "GAEA")
+    APRUN="srun --export=ALL"
+    ;;
+
   "ORION")
     APRUN="srun --export=ALL"
     ;;

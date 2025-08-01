@@ -30,6 +30,19 @@ if [[ $MACHINE == "jet" ]] ; then
     PPN_RUN_POST="40"
   fi
 
+elif [[ $MACHINE == "gaea" ]] ; then
+  ACCOUNT="bil-fire10-oar"
+  PARTITION_DEFAULT="batch"
+  PARTITION_FCST="batch"
+  PARTITION_HPSS="batch"
+  QUEUE_DEFAULT="normal"
+  QUEUE_FCST="normal"
+  QUEUE_ANALYSIS="normal"
+  QUEUE_PRDGEN="normal"
+  QUEUE_GRAPHICS="normal"
+  QUEUE_HPSS="normal"
+  CLUSTER="c6"
+
 elif [[ $MACHINE == "hera" ]] ; then
   ACCOUNT="zrtrr"
   PARTITION_DEFAULT=""
@@ -397,6 +410,37 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then
     PPN_RUN_FCST="40"
     WTIME_RUN_PRDGEN="00:20:00"
  
+  elif [[ $MACHINE == "gaea" ]] ; then
+    NNODES_MAKE_ICS="1"
+    NNODES_BLEND_ICS="1"
+    NNODES_MAKE_LBCS="1"
+    NNODES_RUN_POST="1"
+    NCORES_RUN_ANALYSIS=120
+    NATIVE_RUN_ANALYSIS="--cpus-per-task 8 --exclusive"
+
+    LAYOUT_X=8
+    LAYOUT_Y=10
+
+    PPN_MAKE_ICS="20"
+    PPN_BLEND_ICS="8"
+    PPN_MAKE_LBCS="20"
+    NNODES_MAKE_ICS="1"
+    NNODES_BLEND_ICS="1"
+    NNODES_MAKE_LBCS="1"
+    PPN_RUN_ANALYSIS="20"
+    NNODES_RUN_ANALYSIS="3"
+    PPN_RUN_FCST="20"
+    NNODES_RUN_FCST="5"
+    TPP_RUN_FCST="2"
+    PPN_RUN_POST="20"
+    NNODES_RUN_POST="1"
+    PPN_PROC_RADAR="40"
+    NNODES_PROC_RADAR="1"
+    NCORES_RUN_OBSERVER="40"
+    PPN_RUN_NONVARCLDANL="20"
+    NNODES_RUN_NONVARCLDANL="5"
+    PPN_RUN_GSIDIAG=40
+
   elif [[ $MACHINE == "hera" ]] ; then
     NNODES_MAKE_ICS="1"
     NNODES_BLEND_ICS="1"

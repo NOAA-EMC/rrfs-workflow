@@ -84,6 +84,10 @@ case $MACHINE in
     APRUN="srun"
     ;;
 
+  "GAEA")
+    APRUN="srun"
+    ;;
+
   "ORION")
     APRUN="srun"
     ;;

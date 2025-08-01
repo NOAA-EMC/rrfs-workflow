@@ -102,6 +102,10 @@ case "$MACHINE" in
     APRUN="srun --export=ALL"
     ;;
 
+  "GAEA")
+    APRUN="srun --export=ALL"
+    ;;
+
   "ORION")
     APRUN="srun --export=ALL"
     ;;
@@ -723,6 +727,7 @@ list file has not specified for this external LBC model (EXTRN_MDL_NAME_LBCS):
 #
 # Call the python script to create the namelist file.
 #
+  conda list
   nml_fn="fort.41"
   ${USHdir}/set_namelist.py -q -u "$settings" -o ${nml_fn} || \
     err_exit "\

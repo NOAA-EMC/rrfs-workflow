@@ -102,6 +102,10 @@ case "$MACHINE" in
     APRUN="srun --export=ALL"
     ;;
 
+  "GAEA")
+    APRUN="srun --export=ALL"
+    ;;
+
   "ORION")
     APRUN="srun --export=ALL"
     ;;
@@ -864,6 +868,12 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
       ;;
 
     "HERA")
+       if [[ $NCORES_PER_NODE -gt 80 ]]; then
+          export OMP_NUM_THREADS="80"
+       fi
+      ;;
+
+    "GAEA")
        if [[ $NCORES_PER_NODE -gt 80 ]]; then
           export OMP_NUM_THREADS="80"
        fi
