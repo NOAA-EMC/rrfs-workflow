@@ -110,20 +110,19 @@ modify(myfile, changesets)
 # tweak 9 ----------------------------------------------------------
 myfile = "scripts/exrrfs_getkf.sh"
 changesets = {
+    "mpasout": "restart",
     "start_type='cold'": "start_type='cold'\n  do_restart='false'",
     "do_DAcycling='true'": "do_DAcycling='true'\n  do_restart='true'",
 }
 modify(myfile, changesets)
 
-# tweak 10, 11, 12, 13, 14, 15, 16 ---------------------------------
+# tweak 10, 11, 12, 13, 14, 15 -------------------------------------
 myfile = "scripts/exrrfs_prep_ic.sh"
 changesets = {
     "mpasout": "restart",
 }
 modify(myfile, changesets)
 myfile = "parm/jedivar.yaml"
-modify(myfile, changesets)
-myfile = "scripts/exrrfs_getkf.sh"
 modify(myfile, changesets)
 myfile = "scripts/exrrfs_recenter.sh"
 modify(myfile, changesets)
