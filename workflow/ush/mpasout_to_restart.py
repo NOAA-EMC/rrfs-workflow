@@ -58,13 +58,9 @@ modify(myfile, changesets)
 # tweak 2 ----------------------------------------------------------
 myfile = "scripts/exrrfs_fcst.sh"
 changesets = {
-    'ln -snf "${UMBRELLA_PREP_IC_DATA}/mpasout.nc" "mpasout.${timestr}.nc"':
-    'ln -snf "${UMBRELLA_PREP_IC_DATA}/mpasout.nc" "restart.${timestr}.nc"',
-
+    'mpasout': 'restart',
     "start_type='cold'": "start_type='cold'\n  do_restart='false'",
     "do_DAcycling='true'": "do_DAcycling='true'\n  do_restart='true'",
-    'ln -snf "${DATA}/mpasout.${timestr}.nc"': 'ln -snf "${DATA}/restart.${timestr}.nc"',
-    '${cpreq} "${DATA}/mpasout.${timestr}.nc"': '${cpreq} "${DATA}/restart.${timestr}.nc"',
     #    'jedi_da="true" #true': 'jedi_da="false" #true',
 }
 modify(myfile, changesets)
@@ -82,12 +78,11 @@ modify(myfile, changesets)
 # tweak 5 ----------------------------------------------------------
 myfile = "scripts/exrrfs_save_fcst.sh"
 changesets = {
+    "mpasout": "restart",
     "history_all=$(seq 0 $((10#${history_interval})) $((10#${fcst_len_hrs_thiscyc} )) )":
     "history_all=$(seq 1 $((10#${history_interval})) $((10#${fcst_len_hrs_thiscyc} )) )",
-    "mpasout_file=${UMBRELLA_FCST_DATA}/mpasout.${timestr}.nc": "restart_file=${UMBRELLA_FCST_DATA}/restart.${timestr}.nc",
+
     "if (( ii <= cyc_interval )) && (( ii > 0 )); then": "if (( ii <= cyc_interval )) && (( ii >= 0 )); then",
-    'mpasout_path=$(realpath "${mpasout_file}")': 'restart_path=$(realpath "${restart_file}")',
-    '${cpreq} "${mpasout_path}" "${COMOUT}/fcst/${WGF}${MEMDIR}/."': '${cpreq} "${restart_path}" "${COMOUT}/fcst/${WGF}${MEMDIR}/."',
 }
 modify(myfile, changesets)
 
@@ -106,21 +101,25 @@ changesets = {
 }
 modify(myfile, changesets)
 
-# tweak 8 ----------------------------------------------------------
+# tweak 8.1, 8.2, 8.3, 8.4 ------------------------------------------
 myfile = "scripts/exrrfs_prep_ic.sh"
 changesets = {
-    'thisfile=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/${fcststr}/${WGF}${MEMDIR}/mpasout.${timestr}.nc':
-    'thisfile=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/${fcststr}/${WGF}${MEMDIR}/restart.${timestr}.nc',
+    "mpasout": "restart",
 }
+modify(myfile, changesets)
+myfile = "parm/jedivar.yaml"
+modify(myfile, changesets)
+myfile = "scripts/exrrfs_getkf.sh"
+modify(myfile, changesets)
+myfile = "scripts/exrrfs_recenter.sh"
 modify(myfile, changesets)
 
 # tweak 9 ----------------------------------------------------------
 myfile = "scripts/exrrfs_jedivar.sh"
 changesets = {
+    "mpasout": "restart",
     "start_type='cold'": "start_type='cold'\n  do_restart='false'",
     "do_DAcycling='true'": "do_DAcycling='true'\n  do_restart='true'",
-    'mpasout_file=mpasout.${timestr}.nc': 'mpasout_file=restart.${timestr}.nc',
-    'cp "${DATA}"/mpasout.nc "${COMOUT}/jedivar/${WGF}/mpasout.${timestr}.nc"': 'cp "${DATA}"/mpasout.nc "${COMOUT}/jedivar/${WGF}/restart.${timestr}.nc"',
 }
 modify(myfile, changesets)
 
@@ -142,3 +141,4 @@ myfile = "workflow/rocoto_funcs/jedivar.py"
 modify(myfile, changesets)
 
 print("Done\nNow your rrfs-workflow uses restart.nc instead of mpasout.nc")
+print("Add `export RESTART_INTERVAL=1` into the exp file before setting up an experiment")
