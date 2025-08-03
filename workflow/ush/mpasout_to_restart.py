@@ -33,8 +33,20 @@ if already_modified:
     exit()
 
 
-# copy some files ---------------------------------------------------
-shutil.copy("sorc/_workaround_/streams.atmosphere", "parm/streams.atmosphere")
+# modify streams.atmosphere  ---------------------------------------------------
+with open("parm/streams.atmosphere") as infile, open(".tmpfile", 'w') as outfile:
+    skip = False
+    for line in infile:
+        if '<immutable_stream name="invariant"' in line:
+            skip = True
+        elif '<stream name="da_state"' in line:
+            skip = True
+        elif '<stream' in line or '<immutable_stream' in line:  # a new stream starts
+            skip = False
+        if not skip:
+            outfile.write(line)
+os.replace(".tmpfile", "parm/streams.atmosphere")
+
 
 # tweak 1 ----------------------------------------------------------
 myfile = "parm/convection_permitting/namelist.atmosphere"
@@ -46,8 +58,9 @@ modify(myfile, changesets)
 # tweak 2 ----------------------------------------------------------
 myfile = "scripts/exrrfs_fcst.sh"
 changesets = {
-    'ln -snf "${UMBRELLA_PREP_IC_DATA}/mpasin.nc" mpasin.nc':
-    'timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)\n  ln -snf "${UMBRELLA_PREP_IC_DATA}/mpasin.nc" restart.${timestr}.nc',
+    'ln -snf "${UMBRELLA_PREP_IC_DATA}/mpasout.nc" "mpasout.${timestr}.nc"':
+    'ln -snf "${UMBRELLA_PREP_IC_DATA}/mpasout.nc" "restart.${timestr}.nc"',
+
     "start_type='cold'": "start_type='cold'\n  do_restart='false'",
     "do_DAcycling='true'": "do_DAcycling='true'\n  do_restart='true'",
     'ln -snf "${DATA}/mpasout.${timestr}.nc"': 'ln -snf "${DATA}/restart.${timestr}.nc"',
@@ -107,7 +120,7 @@ changesets = {
     "start_type='cold'": "start_type='cold'\n  do_restart='false'",
     "do_DAcycling='true'": "do_DAcycling='true'\n  do_restart='true'",
     'mpasout_file=mpasout.${timestr}.nc': 'mpasout_file=restart.${timestr}.nc',
-    'cp "${DATA}"/mpasin.nc "${COMOUT}/jedivar/${WGF}/mpasout.${timestr}.nc"': 'cp "${DATA}"/mpasin.nc "${COMOUT}/jedivar/${WGF}/restart.${timestr}.nc"',
+    'cp "${DATA}"/mpasout.nc "${COMOUT}/jedivar/${WGF}/mpasout.${timestr}.nc"': 'cp "${DATA}"/mpasout.nc "${COMOUT}/jedivar/${WGF}/restart.${timestr}.nc"',
 }
 modify(myfile, changesets)
 
