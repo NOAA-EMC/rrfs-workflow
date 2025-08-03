@@ -33,7 +33,7 @@ if already_modified:
     exit()
 
 
-# modify streams.atmosphere  ---------------------------------------------------
+# tweak 1  ----------------------------------------------------------
 with open("parm/streams.atmosphere") as infile, open(".tmpfile", 'w') as outfile:
     skip = False
     for line in infile:
@@ -48,14 +48,15 @@ with open("parm/streams.atmosphere") as infile, open(".tmpfile", 'w') as outfile
 os.replace(".tmpfile", "parm/streams.atmosphere")
 
 
-# tweak 1 ----------------------------------------------------------
+# tweak 2 ----------------------------------------------------------
 myfile = "parm/convection_permitting/namelist.atmosphere"
 changesets = {
     "config_do_restart = false": "config_do_restart = ${do_restart}",
 }
 modify(myfile, changesets)
 
-# tweak 2 ----------------------------------------------------------
+
+# tweak 3 ----------------------------------------------------------
 myfile = "scripts/exrrfs_fcst.sh"
 changesets = {
     'mpasout': 'restart',
@@ -65,7 +66,8 @@ changesets = {
 }
 modify(myfile, changesets)
 
-# tweak 3 and 4 ----------------------------------------------------------
+
+# tweak 4 and 5 ----------------------------------------------------------
 myfile = "scripts/exrrfs_mpassit.sh"
 changesets = {
     "fhr_string=$( seq 0 $((10#${HISTORY_INTERVAL})) $((10#${fcst_len_hrs_thiscyc} )) | paste -sd ' ' )":
@@ -75,7 +77,8 @@ modify(myfile, changesets)
 myfile = "scripts/exrrfs_upp.sh"
 modify(myfile, changesets)
 
-# tweak 5 ----------------------------------------------------------
+
+# tweak 6 ----------------------------------------------------------
 myfile = "scripts/exrrfs_save_fcst.sh"
 changesets = {
     "mpasout": "restart",
@@ -86,12 +89,6 @@ changesets = {
 }
 modify(myfile, changesets)
 
-# tweak 6 ----------------------------------------------------------
-myfile = "workflow/rocoto_funcs/prep_ic.py"
-changesets = {
-    "mpasout.@Y-@m-@d_@H.00.00.nc": "restart.@Y-@m-@d_@H.00.00.nc",
-}
-modify(myfile, changesets)
 
 # tweak 7 ----------------------------------------------------------
 myfile = "workflow/rocoto_funcs/save_fcst.py"
@@ -101,7 +98,24 @@ changesets = {
 }
 modify(myfile, changesets)
 
-# tweak 8.1, 8.2, 8.3, 8.4 ------------------------------------------
+# tweak 8 ----------------------------------------------------------
+myfile = "scripts/exrrfs_jedivar.sh"
+changesets = {
+    "mpasout": "restart",
+    "start_type='cold'": "start_type='cold'\n  do_restart='false'",
+    "do_DAcycling='true'": "do_DAcycling='true'\n  do_restart='true'",
+}
+modify(myfile, changesets)
+
+# tweak 9 ----------------------------------------------------------
+myfile = "scripts/exrrfs_getkf.sh"
+changesets = {
+    "start_type='cold'": "start_type='cold'\n  do_restart='false'",
+    "do_DAcycling='true'": "do_DAcycling='true'\n  do_restart='true'",
+}
+modify(myfile, changesets)
+
+# tweak 10, 11, 12, 13, 14, 15, 16 ---------------------------------
 myfile = "scripts/exrrfs_prep_ic.sh"
 changesets = {
     "mpasout": "restart",
@@ -113,29 +127,9 @@ myfile = "scripts/exrrfs_getkf.sh"
 modify(myfile, changesets)
 myfile = "scripts/exrrfs_recenter.sh"
 modify(myfile, changesets)
-
-# tweak 9 ----------------------------------------------------------
-myfile = "scripts/exrrfs_jedivar.sh"
-changesets = {
-    "mpasout": "restart",
-    "start_type='cold'": "start_type='cold'\n  do_restart='false'",
-    "do_DAcycling='true'": "do_DAcycling='true'\n  do_restart='true'",
-}
-modify(myfile, changesets)
-
-# tweak 10 ----------------------------------------------------------
-myfile = "scripts/exrrfs_getkf.sh"
-changesets = {
-    "start_type='cold'": "start_type='cold'\n  do_restart='false'",
-    "do_DAcycling='true'": "do_DAcycling='true'\n  do_restart='true'",
-}
-modify(myfile, changesets)
-
-# tweak 11, 12 ----------------------------------------------------------
 myfile = "workflow/rocoto_funcs/recenter.py"
-changesets = {
-    'mpasout.@Y-@m-@d_@H.@M.@S.nc': 'restart.@Y-@m-@d_@H.@M.@S.nc',
-}
+modify(myfile, changesets)
+myfile = "workflow/rocoto_funcs/prep_ic.py"
 modify(myfile, changesets)
 myfile = "workflow/rocoto_funcs/jedivar.py"
 modify(myfile, changesets)
