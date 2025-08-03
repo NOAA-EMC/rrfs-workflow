@@ -67,7 +67,7 @@ elif [[ "${start_type}" == "warm" ]]; then
     fi
   done
   if [[ -r ${thisfile} ]]; then
-    ${cpreq} "${thisfile}" "${UMBRELLA_PREP_IC_DATA}/mpasin.nc"
+    ${cpreq} "${thisfile}" "${UMBRELLA_PREP_IC_DATA}/mpasout.nc"
     echo "warm start from ${thisfile}"
   else
     echo "FATAL ERROR: PREP_IC failed, cannot find warm start file: ${thisfile}"
@@ -99,8 +99,8 @@ for hr in ${SFC_UPDATE_CYCS:-"99"}; do
       ${cpreq} "${thisfile}" "${UMBRELLA_PREP_IC_DATA}/mpas_sfc.nc"
       if [[ -r "${UMBRELLA_PREP_IC_DATA}/init.nc" ]]; then
         to_file="${UMBRELLA_PREP_IC_DATA}/init.nc"
-      elif [[ -r "${UMBRELLA_PREP_IC_DATA}/mpasin.nc" ]]; then
-        to_file="${UMBRELLA_PREP_IC_DATA}/mpasin.nc"
+      elif [[ -r "${UMBRELLA_PREP_IC_DATA}/mpasout.nc" ]]; then
+        to_file="${UMBRELLA_PREP_IC_DATA}/mpasout.nc"
       fi
       echo "surface update from ${thisfile} to ${to_file}"
       ncks -O -C -x -v ${var_list} "${to_file}"  tmp.nc

@@ -68,7 +68,7 @@ cost function:
     - rain_water
     - snow_water
     - cldfrac
-    filename: mpasin.nc
+    filename: mpasout.nc
     date: *analysisDate
   background error:
     covariance model: hybrid

@@ -20,7 +20,7 @@ if [[ -r "${UMBRELLA_PREP_IC_DATA}/init.nc" ]]; then
 else
   start_type='warm'
   do_DAcycling='true'
-  initial_file=${UMBRELLA_PREP_IC_DATA}/mpasin.nc
+  initial_file=${UMBRELLA_PREP_IC_DATA}/mpasout.nc
 fi
 #
 # link fix files from physics, meshes, graphinfo, stream list, and jedi
@@ -137,7 +137,7 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
     mv tmp.nc "$(readlink -f init.nc)"
     mv ana.nc ..
   else
-    cp "${DATA}"/mpasin.nc "${COMOUT}/jedivar/${WGF}/mpasout.${timestr}.nc"
+    cp "${DATA}"/mpasout.nc "${COMOUT}/jedivar/${WGF}/mpasout.${timestr}.nc"
   fi
   #
   # the input/output file are linked from the umbrella directory, so no need to copy

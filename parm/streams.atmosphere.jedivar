@@ -16,7 +16,7 @@
         type="input;output"
         precision="single"
         clobber_mode="truncate"
-        filename_template="mpasin.nc"
+        filename_template="mpasout.nc"
         packages="jedi_da"
         io_type="pnetcdf,cdf5"
         input_interval="initial_only"

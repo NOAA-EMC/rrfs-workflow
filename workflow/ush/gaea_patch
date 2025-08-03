@@ -39,7 +39,7 @@ if already_modified:
 # tweak 1 ----------------------------------------------------------
 myfile = "parm/jedivar.yaml"
 changesets = {
-        "filename: mpasin.nc": "filename: ana.nc",
+        "filename: mpasout.nc": "filename: ana.nc",
 }
 modify(myfile, changesets)
 

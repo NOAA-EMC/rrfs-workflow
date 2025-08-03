@@ -45,7 +45,7 @@ if [[ -r "${UMBRELLA_PREP_IC_DATA}/mem001/init.nc" ]]; then
   mkdir -p ana
 else
   start_type='warm'
-  initial_file='mpasin.nc'
+  initial_file='mpasout.nc'
 fi
 # link ensembles to data/ens/
 for i in $(seq -w 001 "${ENS_SIZE}"); do
