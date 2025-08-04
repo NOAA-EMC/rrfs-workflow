@@ -4,7 +4,7 @@ _member: &memberConfig
   stream name: ensemble
 
 output:
-  filename: mpasin.nc
+  filename: mpasout.nc
   stream name: analysis
 variational:
   minimizer:
@@ -72,7 +72,7 @@ cost function:
     - equivalent_reflectivity_factor
     - w
     - upward_air_velocity
-    filename: mpasin.nc
+    filename: mpasout.nc
     date: *analysisDate
   background error:
     covariance model: hybrid

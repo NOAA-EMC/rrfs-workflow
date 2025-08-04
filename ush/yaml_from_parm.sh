@@ -12,7 +12,7 @@ if [[ "$1" == "jedivar" ]]; then
     sed -i '80,126d' ./jedivar.yaml
   fi
   if [[ "${start_type}" == "cold" ]]; then
-      sed -i '7s/mpasin/ana/' jedivar.yaml
+      sed -i '7s/mpasout/ana/' jedivar.yaml
   fi
   template="jedivar.yaml"
 

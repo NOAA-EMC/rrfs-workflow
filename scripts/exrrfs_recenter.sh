@@ -19,13 +19,13 @@ if [[ -s "${UMBRELLA_PREP_IC_DATA}/mem001/init.nc" ]]; then
   echo "recentering does not work for cold start!"
   exit 0
 else
-  initial_file='mpasin.nc'
+  initial_file='mpasout.nc'
 fi
 #
 # link ensemble members
 #
 for i in $(seq -w 001 "${ENS_SIZE}"); do
-  ln -snf "${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file}" mpasin_mem"${i}".nc
+  ln -snf "${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file}" mpasout_mem"${i}".nc
 done
 
 #-----------------------------------------------------------------------
@@ -34,12 +34,12 @@ done
 #
 #-----------------------------------------------------------------------
 #
-mpassinfile="${UMBRELLA_PREP_CONTROL_IC_DATA}/mpasin.nc"
-if [ -s "${mpassinfile}" ] ; then
-  ln -sf "${mpassinfile}"  ./mpasin_control.nc
-  ${cpreq} "${mpassinfile}"  ./mpasin_mean.nc
+mpasoutfile="${UMBRELLA_PREP_CONTROL_IC_DATA}/mpasout.nc"
+if [ -s "${mpasoutfile}" ] ; then
+  ln -sf "${mpasoutfile}"  ./mpasout_control.nc
+  ${cpreq} "${mpasoutfile}"  ./mpasout_mean.nc
 else
-  err_exit "Cannot find control background: ${mpassinfile}"
+  err_exit "Cannot find control background: ${mpasoutfile}"
 fi
 
 #
@@ -48,7 +48,7 @@ fi
 cat << EOF > namelist.ens
 &setup
   ens_size=${ENS_SIZE},
-  filebase='mpasin'
+  filebase='mpasout'
   filetail(1)='.nc'
   numvar(1)=6
   varlist(1)="qv u w theta tslb q2"

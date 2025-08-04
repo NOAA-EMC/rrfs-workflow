@@ -22,7 +22,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     fcst_length = os.getenv('FCST_LENGTH', '1')
     lbc_interval = os.getenv('LBC_INTERVAL', '3')
     history_interval = os.getenv('HISTORY_INTERVAL', '1')
-    restart_interval = os.getenv('RESTART_INTERVAL', '99')
+    restart_interval = os.getenv('RESTART_INTERVAL', '9999')
     physics_suite = os.getenv('PHYSICS_SUITE', 'PHYSICS_SUITE_not_defined')
     dcTaskEnv = {
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',

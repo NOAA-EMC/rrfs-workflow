@@ -14,7 +14,7 @@ def save_fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     # Task-specific EnVars beyond the task_common_vars
     fcst_length = os.getenv('FCST_LENGTH', '1')
     history_interval = os.getenv('HISTORY_INTERVAL', '1')
-    restart_interval = os.getenv('RESTART_INTERVAL', '99')
+    restart_interval = os.getenv('RESTART_INTERVAL', '9999')
     fcst_len_hrs_cycles = os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
     dcTaskEnv = {
         'FCST_LENGTH': f'{fcst_length}',
