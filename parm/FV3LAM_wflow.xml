@@ -1519,6 +1519,7 @@ MODULES_RUN_TASK_FP script.
 
     &RESOURCES_RUN_ENKF;
     <walltime>&WALLTIME_RUN_ENKF;</walltime>
+    &NATIVE_ALL;
     &NODESIZE_ALL;
     <jobname><cyclestr>&TAG;_&RUN_ENKFUPDT_TN;_spinup</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/&RUN_ENKFUPDT_TN;_spinup_&TAG;_@Y@m@d@H.log</cyclestr></join>
@@ -1553,6 +1554,7 @@ MODULES_RUN_TASK_FP script.
 
     &RESOURCES_RUN_ENKF;
     <walltime>&WALLTIME_RUN_ENKF;</walltime>
+    &NATIVE_ALL;
     &NODESIZE_ALL;
     <jobname><cyclestr>&TAG;_&ENKF_RADAR_REF_TN;_spinup</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/&ENKF_RADAR_REF_TN;_spinup_&TAG;_@Y@m@d@H.log</cyclestr></join>
@@ -2547,6 +2549,7 @@ MODULES_RUN_TASK_FP script.
 
     &RESOURCES_RUN_ENKF;
     <walltime>&WALLTIME_RUN_ENKF;</walltime>
+    &NATIVE_ALL;
     &NODESIZE_ALL;
     <jobname><cyclestr>&TAG;_&RUN_ENKFUPDT_TN;</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/&RUN_ENKFUPDT_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
@@ -2580,6 +2583,7 @@ MODULES_RUN_TASK_FP script.
 
     &RESOURCES_RUN_ENKF;
     <walltime>&WALLTIME_RUN_ENKF;</walltime>
+    &NATIVE_ALL;
     &NODESIZE_ALL;
     <jobname><cyclestr>&TAG;_&ENKF_RADAR_REF_TN;</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/&ENKF_RADAR_REF_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
@@ -3111,6 +3115,7 @@ MODULES_RUN_TASK_FP script.
     <nodes>{{ nnodes_save_restart }}:ppn={{ ppn_save_restart }}</nodes>
     <walltime>{{ wtime_save_restart }}</walltime>
     &NODESIZE_ALL;
+    &NATIVE_ALL;
     <memory>{{ memo_save_da_output }}</memory>
     <jobname>&TAG;_&SAVE_DA_OUTPUT_TN;{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&SAVE_DA_OUTPUT_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
@@ -3345,6 +3350,7 @@ MODULES_RUN_TASK_FP script.
       <command>&LOAD_MODULES_RUN_TASK_FP; "&SAVE_RESTART_TN;" "&JOBSdir;/JRRFS_SAVE_RESTART"</command>
       <nodes>{{ nnodes_save_restart }}:ppn={{ ppn_save_restart }}</nodes>
       <walltime>{{ wtime_save_restart }}</walltime>
+      &NATIVE_ALL;
       &NODESIZE_ALL;
       &MEMO_PREP_CYC;
       <jobname>&TAG;_&SAVE_RESTART_TN;{{ uscore_ensmem_name }}_f#fhr#</jobname>
@@ -3386,6 +3392,7 @@ MODULES_RUN_TASK_FP script.
       <nodes>{{ nnodes_save_restart }}:ppn={{ ppn_save_restart }}</nodes>
       <walltime>{{ wtime_save_restart }}</walltime>
       &NODESIZE_ALL;
+      &NATIVE_ALL;
       &MEMO_PREP_CYC;
       <jobname>&TAG;_&SAVE_RESTART_TN;{{ uscore_ensmem_name }}_f#fhr#</jobname>
       <join><cyclestr>&LOGDIR;/&SAVE_RESTART_TN;_&TAG;{{ uscore_ensmem_name }}_f#fhr#_@Y@m@d@H.log</cyclestr></join>
