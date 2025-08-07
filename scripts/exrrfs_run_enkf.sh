@@ -85,6 +85,11 @@ case $MACHINE in
   APRUN="srun"
   ;;
 #
+"GAEA")
+  export OMP_NUM_THREADS=${TPP_RUN_ENKF}
+  APRUN="srun"
+  ;;
+#
 "ORION")
   export OMP_NUM_THREADS=${TPP_RUN_ENKF}
   export OMP_STACKSIZE=1024M

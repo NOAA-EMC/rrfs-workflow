@@ -118,6 +118,10 @@ case $MACHINE in
     APRUN="srun --export=ALL --mem=0"
     ;;
 
+  "GAEA")
+    APRUN="srun --export=ALL --mem=0"
+    ;;
+
   "ORION")
     APRUN="srun --export=ALL --mem=0"
     ;;

@@ -94,6 +94,10 @@ case $MACHINE in
     APRUN="srun --export=ALL"
     ;;
 
+  "GAEA")
+    APRUN="srun --export=ALL"
+    ;;
+
   "ORION")
     export OMP_NUM_THREADS=1
     export OMP_STACKSIZE=1024M

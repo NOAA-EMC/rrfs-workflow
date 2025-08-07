@@ -375,6 +375,8 @@ case "${anl_or_fcst}" in
         fns_on_disk=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
       elif [ "${MACHINE}" = "HERA" ] ; then
         fns_on_disk=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
+      elif [ "${MACHINE}" = "GAEA" ] ; then
+        fns_on_disk=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
       elif [ "${MACHINE}" = "JET" ] ; then
         fns_on_disk=( "${yy}${ddd}${hh}${mn}.gdas.t${hh}z.atmf0${fcst_hh}.${GDAS_MEM_NAME}.nc" "${yy}${ddd}${hh}${mn}.gdas.t${hh}z.sfcf0${fcst_hh}.${GDAS_MEM_NAME}.nc")  # use netcdf
       elif [[ "${MACHINE}" = "ORION" ]] || [[ "${MACHINE}" = "HERCULES" ]]; then
@@ -491,6 +493,8 @@ and analysis or forecast (anl_or_fcst):
       fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
       if  [ "${MACHINE}" = "HERA" ]; then
         fns_on_disk=( "gdas.t${hh}z.atmf${fcst_hhh[@]}.nc" "gdas.t${hh}z.sfcf${fcst_hhh[@]}.nc")  # use netcdf
+      elif  [ "${MACHINE}" = "GAEA" ]; then
+        fns_on_disk=( "gdas.t${hh}z.atmf${fcst_hhh[@]}.nc" "gdas.t${hh}z.sfcf${fcst_hhh[@]}.nc")  # use netcdf
       elif  [ "${MACHINE}" = "JET" ]; then
         fns_on_disk=( "${yy}${ddd}${hh}${mn}.gdas.t${hh}z.atmf0${fcst_hh}.${GDAS_MEM_NAME}.nc" "${yy}${ddd}${hh}${mn}.gdas.t${hh}z.sfcf0${fcst_hh}.${GDAS_MEM_NAME}.nc")  # use netcdf
       elif [[ "${MACHINE}" = "ORION" ]] || [[ "${MACHINE}" = "HERCULES" ]]; then
@@ -594,6 +598,9 @@ bination of external model (extrn_mdl_name) and analysis or forecast
     "HERA")
       sysdir=""
       ;;
+    "GAEA")
+      sysdir=""
+      ;;
     "ORION"|"HERCULES")
       sysdir="$sysbasedir"
       ;;
@@ -624,6 +631,10 @@ has not been specified for this external model and machine combination:
       sysdir="$sysbasedir"
       #sysdir="$sysbasedir/gfs.${yyyymmdd}/${hh}/atmos"
       ;;
+    "GAEA")
+      sysdir="$sysbasedir"
+      #sysdir="$sysbasedir/gfs.${yyyymmdd}/${hh}/atmos"
+      ;;
     "ORION"|"HERCULES")
       sysdir="$sysbasedir"
       #sysdir="$sysbasedir/gdas.${yyyymmdd}/${hh}/atmos"
@@ -649,6 +660,9 @@ has not been specified for this external model and machine combination:
     "HERA")
        sysdir="$sysbasedir/enkfgdas.${yyyymmdd}/${hh}/atmos/${GDASENKF_INPUT_SUBDIR}"
        ;;
+    "GAEA")
+       sysdir="$sysbasedir/enkfgdas.${yyyymmdd}/${hh}/atmos/${GDASENKF_INPUT_SUBDIR}"
+       ;;
     "JET")
        sysdir="$sysbasedir"
        ;;
@@ -668,6 +682,9 @@ has not been specified for this external model and machine combination:
   "GEFS")
     case "$MACHINE" in
     "HERA")
+       sysdir="$sysbasedir/${GEFS_INPUT_SUBDIR}"
+       ;;
+    "GAEA")
        sysdir="$sysbasedir/${GEFS_INPUT_SUBDIR}"
        ;;
      "JET")
@@ -696,6 +713,9 @@ has not been specified for this external model and machine combination:
     "HERA")
        sysdir="$sysbasedir"
        ;;
+    "GAEA")
+       sysdir="$sysbasedir"
+       ;;
      "JET")
        sysdir="$sysbasedir/${yyyymmdd}${hh}/postprd${WRF_MEM_NAME}"
        ;;
@@ -715,6 +735,9 @@ has not been specified for this external model and machine combination:
       sysdir="$sysbasedir"
       ;;
     "HERA")
+      sysdir="$sysbasedir"
+      ;;
+    "GAEA")
       sysdir="$sysbasedir"
       ;;
     "ORION"|"HERCULES")
@@ -742,6 +765,9 @@ has not been specified for this external model and machine combination:
     "HERA")
       sysdir="$sysbasedir"
       ;;
+    "GAEA")
+      sysdir="$sysbasedir"
+      ;;
     "ORION"|"HERCULES")
       sysdir="$sysbasedir"
       ;;
@@ -766,6 +792,9 @@ has not been specified for this external model and machine combination:
     "HERA")
       sysdir="$sysbasedir"
       ;;
+    "GAEA")
+      sysdir="$sysbasedir"
+      ;;
     "ORION"|"HERCULES")
       sysdir="$sysbasedir"
       ;;
@@ -788,6 +817,9 @@ has not been specified for this external model and machine combination:
       sysdir="$sysbasedir/rrfs.${yyyymmdd}/${hh}"
       ;;
     "HERA")
+      sysdir="$sysbasedir"
+      ;;
+    "GAEA")
       sysdir="$sysbasedir"
       ;;
     "ORION"|"HERCULES")

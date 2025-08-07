@@ -30,6 +30,20 @@ if [[ $MACHINE == "jet" ]] ; then
     PPN_RUN_POST="40"
   fi
 
+elif [[ $MACHINE == "gaea" ]] ; then
+  ACCOUNT="bil-fire10-oar"
+  PARTITION_DEFAULT="batch"
+  PARTITION_FCST="batch"
+  PARTITION_HPSS="batch"
+  QUEUE_DEFAULT="normal"
+  QUEUE_FCST="normal"
+  QUEUE_POST="normal"
+  QUEUE_ANALYSIS="normal"
+  QUEUE_PRDGEN="normal"
+  QUEUE_GRAPHICS="normal"
+  QUEUE_HPSS="normal"
+  CLUSTER="c6"
+
 elif [[ $MACHINE == "hera" ]] ; then
   ACCOUNT="zrtrr"
   PARTITION_DEFAULT=""
@@ -227,6 +241,36 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
     START_TIME_PROD="02:10:00"
     START_TIME_LATE_ANALYSIS="01:40:00"
 
+  elif [[ $MACHINE == "gaea" ]] ; then
+
+    LAYOUT_X=15
+    LAYOUT_Y=20
+
+    PPN_MAKE_ICS="96"
+    PPN_BLEND_ICS="96"
+    PPN_MAKE_LBCS="96"
+    NNODES_MAKE_ICS="2"
+    NNODES_BLEND_ICS="1"
+    NNODES_MAKE_LBCS="2"
+    PPN_RUN_ANALYSIS="96"
+    NNODES_RUN_ANALYSIS="1"
+    PPN_RUN_FCST="160"
+    NNODES_RUN_FCST="2"
+    TPP_RUN_FCST="1"
+    PPN_RUN_POST="92"
+    NNODES_RUN_POST="1"
+    PPN_PROC_RADAR="40"
+    NNODES_PROC_RADAR="1"
+    NCORES_RUN_OBSERVER="96"
+    PPN_RUN_NONVARCLDANL="192"
+    NNODES_RUN_NONVARCLDANL="1"
+    PPN_RUN_GSIDIAG=48
+
+    PPN_RUN_ENKF="48"
+    NNODES_RUN_ENKF="1"
+    NNODES_RUN_RECENTER="1"
+    PPN_RUN_RECENTER="192"
+
   elif [[ $MACHINE == "wcoss2" ]] ; then
     LAYOUT_X="31"
     LAYOUT_Y="32"
@@ -397,6 +441,40 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then
     PPN_RUN_FCST="40"
     WTIME_RUN_PRDGEN="00:20:00"
  
+  elif [[ $MACHINE == "gaea" ]] ; then
+    NNODES_MAKE_ICS="1"
+    NNODES_BLEND_ICS="1"
+    NNODES_MAKE_LBCS="1"
+    NNODES_RUN_POST="1"
+
+    LAYOUT_X=8
+    LAYOUT_Y=10
+
+    PPN_MAKE_ICS="48"
+    PPN_BLEND_ICS="8"
+    PPN_MAKE_LBCS="48"
+    NNODES_MAKE_ICS="1"
+    NNODES_BLEND_ICS="1"
+    NNODES_MAKE_LBCS="1"
+    PPN_RUN_ANALYSIS="96"
+    NNODES_RUN_ANALYSIS="1"
+    PPN_RUN_FCST="100"
+    NNODES_RUN_FCST="1"
+    TPP_RUN_FCST="1"
+    PPN_RUN_POST="48"
+    NNODES_RUN_POST="1"
+    PPN_PROC_RADAR="40"
+    NNODES_PROC_RADAR="1"
+    NCORES_RUN_OBSERVER="40"
+    PPN_RUN_NONVARCLDANL="192"
+    NNODES_RUN_NONVARCLDANL="1"
+    PPN_RUN_GSIDIAG=48
+
+    PPN_RUN_ENKF="48"
+    NNODES_RUN_ENKF="1"
+    NNODES_RUN_RECENTER="1"
+    PPN_RUN_RECENTER="192"
+
   elif [[ $MACHINE == "hera" ]] ; then
     NNODES_MAKE_ICS="1"
     NNODES_BLEND_ICS="1"

@@ -563,6 +563,19 @@ case $MACHINE in
     QUEUE_POST=${QUEUE_POST:-"dev"}
     ;;
 
+  "GAEA")
+    NCORES_PER_NODE=40
+    SCHED="${SCHED:-slurm}"
+    PARTITION_DEFAULT=${PARTITION_DEFAULT:-"batch"}
+    QUEUE_DEFAULT=${QUEUE_DEFAULT:-"batch"}
+    PARTITION_HPSS=${PARTITION_HPSS:-"service"}
+    QUEUE_HPSS=${QUEUE_HPSS:-"batch"}
+    PARTITION_FCST=${PARTITION_FCST:-"batch"}
+    QUEUE_FCST=${QUEUE_FCST:-"batch"}
+    QUEUE_PRDGEN=${QUEUE_PRDGEN:-"batch"}
+    QUEUE_POST=${QUEUE_POST:-"batch"}
+
+    ;;
   "HERA")
     NCORES_PER_NODE=40
     SCHED="${SCHED:-slurm}"
@@ -847,6 +860,13 @@ case $MACHINE in
     TOPO_DIR=${TOPO_DIR:-"/lfs/h2/emc/lam/noscrub/RRFS_input/fix/fix_orog"}
     SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/lfs/h2/emc/lam/noscrub/RRFS_input/fix/fix_sfc_climo"}
     FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/lfs/h2/emc/lam/noscrub/RRFS_input/FV3LAM_pregen"}
+    ;;
+
+  "GAEA")
+    FIXgsm=${FIXgsm:-"/gpfs/f6/bil-fire10-oar/world-shared/role.rrfsfix/FIX_RRFS/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/gpfs/f6/bil-fire10-oar/world-shared/role.rrfsfix/FIX_RRFS/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/gpfs/f6/bil-fire10-oar/world-shared/role.rrfsfix/FIX_RRFS/fix_sfc_climo"}
+    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/gpfs/f6/bil-fire10-oar/world-shared/role.rrfsfix/FIX_RRFS/LAM_pregen"}
     ;;
 
   "HERA")

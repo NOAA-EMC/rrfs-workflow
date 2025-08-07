@@ -99,6 +99,10 @@ case $MACHINE in
   APRUN="srun --export=ALL"
   ;;
 #
+"GAEA")
+  APRUN="srun --export=ALL"
+  ;;
+#
 esac
 #
 #-----------------------------------------------------------------------
@@ -177,7 +181,7 @@ else
     fi
 
     ;;
-  "JET" | "HERA" | "ORION" | "HERCULES")
+  "JET" | "HERA" | "ORION" | "HERCULES" | "GAEA" )
 
     obsfileprefix=${YYYYMMDDHH}.${obs_source}
     obspath_tmp=${OBSPATH}

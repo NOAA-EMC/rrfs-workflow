@@ -86,6 +86,10 @@ case $MACHINE in
 "HERA")
   APRUN="srun"
   ;;
+  #
+"GAEA")
+  APRUN="srun"
+  ;;
 #
 "JET")
   APRUN="srun"

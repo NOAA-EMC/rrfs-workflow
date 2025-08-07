@@ -96,6 +96,12 @@ case $MACHINE in
   APRUN="srun"
   ;;
 #
+"GAEA")
+  export OMP_NUM_THREADS=${TPP_RUN_ANALYSIS}
+  export OMP_STACKSIZE=300M
+  APRUN="srun"
+  ;;
+#
 "ORION")
   export OMP_NUM_THREADS=${TPP_RUN_ANALYSIS}
   export OMP_STACKSIZE=1024M
@@ -279,7 +285,7 @@ if  [[ ${regional_ensemble_option:-1} -eq 1 || ${l_both_fv3sar_gfs_ens} = ".true
     fi
 
     ;;
-  "JET" | "HERA" | "ORION" | "HERCULES" )
+  "JET" | "HERA" | "ORION" | "HERCULES" | "GAEA" )
 
     for loop in $loops; do
       for timelist in $(ls ${ENKF_FCST}/*.gdas.t*z.atmf${loop}.mem080.${ftype}); do
@@ -461,7 +467,7 @@ else
        obspath_tmp=${OBSPATH}
      fi
     ;;
-  "JET" | "HERA")
+  "JET" | "HERA" | "GAEA")
      obsfileprefix=${YYYYMMDDHH}.${obs_source}
      obspath_tmp=${OBSPATH}
     ;;
