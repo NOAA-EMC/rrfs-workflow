@@ -22,16 +22,16 @@ fi
 if [[ $MACHINE == "hera" ]] ; then
 
 # for using RAP as boundary and initial
-#  EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/public/data/grids/rap/full/wrfnat/grib2
-#  EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/public/data/grids/rap/full/wrfnat/grib2
+#  EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch4/BMC/public/data/grids/rap/full/wrfnat/grib2
+#  EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch4/BMC/public/data/grids/rap/full/wrfnat/grib2
 # for using GFS as boundary and initial
-  EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch2/BMC/public/data/grids/gfs/0p25deg/grib2
-  EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch2/BMC/public/data/grids/gfs/0p25deg/grib2
+  EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch4/BMC/public/data/grids/gfs/0p25deg/grib2
+  EXTRN_MDL_SOURCE_BASEDIR_LBCS=/scratch4/BMC/public/data/grids/gfs/0p25deg/grib2
 # observations
-  OBSPATH=/scratch2/BMC/public/data/grids/rap/obs
-  OBSPATH_NSSLMOSIAC=/scratch2/BMC/public/data/radar/nssl/mrms/conus
-  OBSPATH_PM=/scratch2/BMC/public/data/airnow/hourly_aqobs
-  LIGHTNING_ROOT=/scratch2/BMC/public/data/lightning
+  OBSPATH=/scratch4/BMC/public/data/grids/rap/obs
+  OBSPATH_NSSLMOSIAC=/scratch4/BMC/public/data/radar/nssl/mrms/conus
+  OBSPATH_PM=/scratch4/BMC/public/data/airnow/hourly_aqobs
+  LIGHTNING_ROOT=/scratch4/BMC/public/data/lightning
   ENKF_FCST=/scratch1/NCEPDEV/rstprod/com/gfs/prod
 fi
 
@@ -140,7 +140,7 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     FIRE_RAVE_DIR=${RETRODATAPATH}/RAVE_RAW
   fi
   if [[ $MACHINE == "hera" ]] ; then
-    RETRODATAPATH="/scratch2/BMC/zrtrr/RRFS_RETRO_DATA"
+    RETRODATAPATH="/scratch4/BMC/zrtrr/Ruifang.Li/RRFS_RETRO_DATA"
     if [[ ${DO_ENSEMBLE} == "TRUE" ]]; then
       if [[ ${EXTRN_MDL_NAME_ICS} == "GEFS" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_ICS="${RETRODATAPATH}/GEFS"

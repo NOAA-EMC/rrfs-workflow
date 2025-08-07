@@ -2,6 +2,21 @@
 #
 # FIX_RRFS locaitons at different HPC platforms
 #
+
+set -x
+hostnamestr=$(hostname -f)
+
+MACHINE_ID=unknown
+if [[ "${hostnamestr}" == *"hfe"* ]]; then
+   MACHINE_ID=hera
+fi
+if [[ "${hostnamestr}" == *"gaea"* ]]; then
+   MACHINE_ID=gaea
+fi
+if [[ "${hostnamestr}" == *"ufe"* ]]; then
+   MACHINE_ID=gaea
+fi
+
 if [[ -d /lfs/h2 ]] ; then
     PLATFORM=wcoss2
     FIX_RRFS_LOCATION="/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS"
@@ -19,7 +34,7 @@ elif [[ -d /gpfs/f6 && -d /ncrc ]]; then
     FIX_RRFS_LOCATION=/gpfs/f6/bil-fire10-oar/world-shared/role.rrfsfix/FIX_RRFS
 elif [[ -d /scratch4 ]] ; then
     PLATFORM=hera
-    FIX_RRFS_LOCATION="/scratch2/BMC/rtrr/FIX_RRFS"
+    FIX_RRFS_LOCATION="/scratch4/BMC/rtrr/FIX_RRFS"
 elif [[ -d /jetmon ]] ; then
     PLATFORM=jet
     FIX_RRFS_LOCATION="/lfs4/BMC/nrtrr/FIX_RRFS"

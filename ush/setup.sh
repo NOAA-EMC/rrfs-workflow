@@ -870,10 +870,10 @@ case $MACHINE in
     ;;
 
   "HERA")
-    FIXgsm=${FIXgsm:-"/scratch1/NCEPDEV/nems/role.epic/UFS_SRW_data/develop/fix/fix_am"}
-    TOPO_DIR=${TOPO_DIR:-"/scratch1/NCEPDEV/nems/role.epic/UFS_SRW_data/develop/fix/fix_orog"}
-    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/scratch1/NCEPDEV/nems/role.epic/UFS_SRW_data/develop/fix/fix_sfc_climo"}
-    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/scratch1/NCEPDEV/nems/role.epic/UFS_SRW_data/develop/FV3LAM_pregen"}
+    FIXgsm=${FIXgsm:-"/scratch3/NCEPDEV/nems/role.epic/hera/UFS_SRW_data/develop/fix/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/scratch3/NCEPDEV/nems/role.epic/hera/UFS_SRW_data/develop/fix/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/scratch3/NCEPDEV/nems/role.epic/hera/UFS_SRW_data/develop/fix/fix_sfc_climo"}
+    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/scratch3/NCEPDEV/nems/role.epic/hera/UFS_SRW_data/develop/FV3LAM_pregen"}
     ;;
 
   "ORION"|"HERCULES")
