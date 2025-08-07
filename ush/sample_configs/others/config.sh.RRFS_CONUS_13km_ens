@@ -30,12 +30,13 @@ DO_PM_DA="FALSE"
 #DO_BUFRSND="TRUE"
 #USE_FVCOM="TRUE"
 #PREP_FVCOM="TRUE"
-DO_GLM_FED_DA="TRUE"
-GLMFED_DATA_MODE="FULL"  # retros 20220608-now use FULL; retros 20230714-now and real-time on Jet use FULL or TILES
-PREP_MODEL_FOR_FED="TRUE" # adds field to ens restart files to be used by control member EnVar
 USE_CLM="TRUE"
 DO_PARALLEL_PRDGEN="FALSE"
 DO_GSIDIAG_OFFLINE="FALSE"
+DO_UPDATE_BC="FALSE"
+DO_GLM_FED_DA="TRUE"
+GLMFED_DATA_MODE="FULL"  # retros 20220608-now use FULL; retros 20230714-now and real-time on Jet use FULL or TILES
+PREP_MODEL_FOR_FED="TRUE" # adds field to ens restart files to be used by control member EnVar
 
 DO_ENS_BLENDING="FALSE"
 if [[ ${DO_ENS_BLENDING} == "TRUE" ]] ; then
@@ -60,8 +61,8 @@ EXTRN_MDL_LBCS_OFFSET_HRS="6"
 BOUNDARY_LEN_HRS="12"
 BOUNDARY_PROC_GROUP_NUM="4"
 
-EXTRN_MDL_NAME_ICS="GDASENKF"
-FV3GFS_FILE_FMT_ICS="netcdf"
+EXTRN_MDL_NAME_ICS="GEFS"
+FV3GFS_FILE_FMT_ICS="grib2"
 EXTRN_MDL_NAME_LBCS="GEFS"
 
 # avaialble retro period:

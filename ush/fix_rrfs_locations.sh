@@ -11,11 +11,11 @@ elif [[ -d /scratch3 ]]; then
     FIX_RRFS_LOCATION=/gpfs/f5/gsl-glo/world-shared/role.rrfsfix/FIX_RRFS
 elif [[ -d /gpfs/f5 && -d /ncrc ]]; then
     # We are on GAEA
-    PLATFORM=gaeac5
+    PLATFORM=gaea
     FIX_RRFS_LOCATION=/gpfs/f5/gsl-glo/world-shared/role.rrfsfix/FIX_RRFS
 elif [[ -d /gpfs/f6 && -d /ncrc ]]; then
     # We are on GAEA
-    PLATFORM=gaeac6
+    PLATFORM=gaea
     FIX_RRFS_LOCATION=/gpfs/f6/bil-fire10-oar/world-shared/role.rrfsfix/FIX_RRFS
 elif [[ -d /scratch4 ]] ; then
     PLATFORM=hera

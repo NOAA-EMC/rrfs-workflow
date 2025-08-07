@@ -12,6 +12,6 @@ load(pathJoin("crtm", os.getenv("crtm_ver") or "2.4.0"))
 
 if mode() == "load" then
    LmodMsgRaw([===[Please do the following to activate conda:
-       > source /ncrc/home2/Ming.Hu/miniconda/envs/interpol_esmpy/bin/activate
+       > source /gpfs/f6/bil-fire10-oar/world-shared/mhu/miniconda/bin/activate
 ]===])
 end
