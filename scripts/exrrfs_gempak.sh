@@ -15,7 +15,7 @@ fend=$4
 cd $DATA/$RUNTYPE
 
 # Hourly GEMPAK files created until this hour, then 3 hourly
-HOURLY_LIMIT=48
+HOURLY_LIMIT=60
 
 msg="Begin job for $job"
 postmsg "$msg"
@@ -178,14 +178,14 @@ EOF
 
 
   if [ $SENDCOM = "YES" ] ; then
-     cpfs $GEMGRD $COMAWP/$GEMGRD
+     cpfs $GEMGRD $COMOUT/$GEMGRD
      if [ $SENDDBN = "YES" ] ; then
        if [ $RUNTYPE = "rrfs" -a $fhcnt3 -ne 0 ] ; then
          $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_2} $job \
-            $COMAWP/$GEMGRD
+            $COMOUT/$GEMGRD
        else
          $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE} $job \
-           $COMAWP/$GEMGRD
+           $COMOUT/$GEMGRD
        fi
      else
        echo "##### DBN_ALERT_TYPE is: ${DBN_ALERT_TYPE} #####"

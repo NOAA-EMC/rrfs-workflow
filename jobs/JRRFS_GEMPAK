@@ -31,6 +31,10 @@ export FIXam=${FIXam:-${FIXrrfs}/am}
 export COMrrfs=${COMrrfs:-$(compath.py -o rrfs/${rrfs_ver})}
 export COMOUT=${COMOUT:-$(compath.py -o rrfs/${rrfs_ver}/${RUN}.${PDY}/${cyc}/gempak)}
 
+if [ ! -f ${COMOUT} ] ; then
+	mkdir -p -m 775 ${COMOUT}
+fi
+
 #################################################
 # Set up model and cycle specific variables
 #################################################
@@ -89,20 +93,24 @@ echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB  $finc $fend" >> $DATA/poes
 
 #################################################################
 # Execute the script to make conus GEMPAK grids (Common convection-allowing model fields)
-mkdir -p $DATA/rrfs_conus_cam
-cd $DATA/rrfs_conus_cam
+#
+# won't work currently as CONUS testbed files lack .idx files
+#
+#
+# mkdir -p $DATA/rrfs_conus_cam
+# cd $DATA/rrfs_conus_cam
 
 # Copy model specific GEMPAK tables into working directory
 #
-cp ${RRFSFIXgem}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
-cp ${RRFSFIXgem}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
-cp ${RRFSFIXgem}/rrfs_wmogrib2.tbl wmogrib2.tbl
-cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
+# cp ${RRFSFIXgem}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
+# cp ${RRFSFIXgem}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
+# cp ${RRFSFIXgem}/rrfs_wmogrib2.tbl wmogrib2.tbl
+# cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 
-cd $DATA
-export GRIB=testbed
-export type=rrfs_conus_cam
-echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB $finc $fend" >> $DATA/poescript
+# cd $DATA
+# export GRIB=testbed
+# export type=rrfs_conus_cam
+# echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB $finc $fend" >> $DATA/poescript
 #################################################################
 
 #################################################################
