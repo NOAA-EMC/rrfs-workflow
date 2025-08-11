@@ -64,7 +64,6 @@ fi
 #----------------------------------------
 if [[ "${KEEPDATA}" == "NO" ]]; then
   rm -rf "${DATA}"
-  rm -rf "${UMBRELLA_MPASSIT_DATA}"
 fi
 #
 date

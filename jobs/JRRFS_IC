@@ -59,7 +59,6 @@ fi
 #
 if [[ "${KEEPDATA}" == "NO" ]]; then
   rm -rf "${DATA}"
-  rm -rf "${UMBRELLA_UNGRIB_IC_DATA}"
 fi
 #
 date
