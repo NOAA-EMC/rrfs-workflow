@@ -100,6 +100,45 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     FIRE_RAVE_DIR=${RETRODATAPATH}/RAVE_RAW
   fi
 
+  if [[ $MACHINE == "gaea" ]] ; then
+
+#    RETRODATAPATH="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA"
+    RETRODATAPATH="/gpfs/f6/drsa-precip4/world-shared/Ruifang.Li/RRFS_RETRO_DATA"
+    if [[ ${DO_ENSEMBLE} == "TRUE" ]]; then
+      if [[ ${EXTRN_MDL_NAME_ICS} == "GEFS" ]]; then
+        EXTRN_MDL_SOURCE_BASEDIR_ICS="${RETRODATAPATH}/GEFS"
+      elif [[ ${EXTRN_MDL_NAME_ICS} == "HRRRDAS" ]]; then
+        EXTRN_MDL_SOURCE_BASEDIR_ICS="${RETRODATAPATH}/HRRRDAS"
+      elif [[ ${EXTRN_MDL_NAME_ICS} == "GDASENKF" ]]; then
+        EXTRN_MDL_SOURCE_BASEDIR_ICS="${RETRODATAPATH}/enkf/atm"
+      fi
+      if [[ ${EXTRN_MDL_NAME_LBCS} == "GEFS" ]]; then
+        EXTRN_MDL_SOURCE_BASEDIR_LBCS="${RETRODATAPATH}/GEFS"
+      elif [[ ${EXTRN_MDL_NAME_LBCS} == "GDASENKF" ]]; then
+        EXTRN_MDL_SOURCE_BASEDIR_LBCS="${RETRODATAPATH}/GDASENKF"
+      elif [[ ${EXTRN_MDL_NAME_LBCS} == "FV3GFS" ]]; then
+        EXTRN_MDL_SOURCE_BASEDIR_LBCS="${RETRODATAPATH}/FV3GFS"
+      fi
+    else
+      EXTRN_MDL_SOURCE_BASEDIR_ICS=${RETRODATAPATH}/gfs/0p25deg/grib2
+      EXTRN_MDL_SOURCE_BASEDIR_LBCS=${RETRODATAPATH}/gfs/0p25deg/grib2
+    fi
+
+    OBSPATH=${RETRODATAPATH}/obs_rap
+    OBSPATH_NSSLMOSIAC=${RETRODATAPATH}/reflectivity
+    OBSPATH_PM=${RETRODATAPATH}/pm
+    LIGHTNING_ROOT=${RETRODATAPATH}/lightning
+    GLMFED_EAST_ROOT=${RETRODATAPATH}/sat/nesdis/goes-east/glm/full-disk
+    GLMFED_WEST_ROOT=${RETRODATAPATH}/sat/nesdis/goes-east/glm/full-disk
+    ENKF_FCST=${RETRODATAPATH}/enkf/atm
+    AIRCRAFT_REJECT=${RETRODATAPATH}/amdar_reject_lists
+    SFCOBS_USELIST=${RETRODATAPATH}/mesonet_uselists
+    SST_ROOT=${RETRODATAPATH}/highres_sst
+    GVF_ROOT=${RETRODATAPATH}/gvf/grib2
+    IMSSNOW_ROOT=${RETRODATAPATH}/snow/ims96/grib2
+    RAPHRRR_SOIL_ROOT=${RETRODATAPATH}/rap_hrrr_soil
+    FIRE_RAVE_DIR=${RETRODATAPATH}/RAVE_RAW
+  fi
   if [[ $MACHINE == "hera" ]] ; then
     RETRODATAPATH="/scratch4/BMC/zrtrr/Ruifang.Li/RRFS_RETRO_DATA"
     if [[ ${DO_ENSEMBLE} == "TRUE" ]]; then

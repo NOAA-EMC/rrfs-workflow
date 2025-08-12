@@ -96,6 +96,11 @@ case $MACHINE in
     APRUNS="time"
     ;;
 
+  "GAEA")
+    APRUNC="srun --export=ALL"
+    APRUNS="time"
+    ;;
+
   "ORION")
     APRUNC="srun --export=ALL"
     APRUNS="time"

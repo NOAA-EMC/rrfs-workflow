@@ -87,6 +87,10 @@ case $MACHINE in
   APRUN="srun --export=ALL"
   ;;
 #
+"GAEA")
+  APRUN="srun --export=ALL"
+  ;;
+#
 "JET")
   APRUN="srun --export=ALL"
   ;;

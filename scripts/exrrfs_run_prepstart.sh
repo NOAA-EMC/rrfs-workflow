@@ -85,6 +85,10 @@ case $MACHINE in
     APRUN="srun --export=ALL --mem=0"
     ;;
 
+  "GAEA")
+    APRUN="srun --export=ALL --mem=0"
+    ;;
+
   "ORION")
     ulimit -s unlimited
     ulimit -a

@@ -94,6 +94,12 @@ case $MACHINE in
   APRUN="srun"
   ;;
 #
+"GAEA")
+  ulimit -s unlimited
+  ulimit -a
+  APRUN="srun"
+  ;;
+#
 "JET")
   ulimit -s unlimited
   ulimit -a
