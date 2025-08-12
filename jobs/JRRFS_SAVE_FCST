@@ -61,7 +61,6 @@ fi
 #----------------------------------------
 if [[ "${KEEPDATA}" == "NO" ]]; then
   rm -rf "${DATA}"
-  rm -rf "${UMBRELLA_FCST_DATA}"
 fi
 #
 date
