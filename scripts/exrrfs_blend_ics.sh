@@ -205,8 +205,7 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
      use_host_enkf=${USE_HOST_ENKF} # ignored if blend="TRUE".
                                     # TRUE:  Final EnKF will be GDAS (no blending)
                                     # FALSE: Final EnKF will be RRFS (no blending)
-     #python ${USHrrfs}/blending_fv3.py $Lx $glb $reg $trcr $blend $use_host_enkf
-     python ${USHrrfs}/blending_fv3_new.py $Lx $glb $reg $trcr $blend $use_host_enkf
+     python ${USHrrfs}/blending_fv3.py $Lx $glb $reg $trcr $blend $use_host_enkf
      [[ ! -s fv_core.res.tile1.nc ]]&& err_exit "FATAL: fv_core.res.tile1.nc not found in ${DATA}"
      [[ ! -s fv_tracer.res.tile1.nc ]]&& err_exit "FATAL: fv_tracer.res.tile1.nc not found in ${DATA}" 
      if [ -f ${shared_output_data}/fv_core.res.tile1.nc ]; then
