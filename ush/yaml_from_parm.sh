@@ -7,12 +7,12 @@ if [[ "$1" == "jedivar" ]]; then
       -e "s/@HYB_WGT_STATIC@/${HYB_WGT_STATIC}/" -e "s/@HYB_WGT_ENS@/${HYB_WGT_ENS}/" \
       "${EXPDIR}/config/jedivar.yaml" > jedivar.yaml
   if [[ "${HYB_WGT_ENS}" == "0" ]] || [[ "${HYB_WGT_ENS}" == "0.0" ]]; then # pure 3DVAR
-    sed -i '127,152d' ./jedivar.yaml
+    sed -i '/- covariance:/,/HYB_WGT_ENS/d' ./jedivar.yaml
   elif [[ "${HYB_WGT_STATIC}" == "0" ]] || [[ "${HYB_WGT_STATIC}" == "0.0" ]] ; then # pure 3DEnVar
-    sed -i '80,126d' ./jedivar.yaml
+    sed -i '/- covariance:/,/HYB_WGT_STATIC/d' ./jedivar.yaml
   fi
   if [[ "${start_type}" == "cold" ]]; then
-      sed -i '7s/mpasout/ana/' jedivar.yaml
+      sed -i '/output:/,/stream name:/{s/mpasout/ana/}' jedivar.yaml
   fi
   template="jedivar.yaml"
 
@@ -25,7 +25,7 @@ else
   sed -e "s/@analysisDate@/${analysisDate}/" -e "s/@beginDate@/${beginDate}/" \
     "${EXPDIR}/config/getkf_${TYPE_SED}.yaml" > getkf.yaml
   if [[ ${start_type} == "cold" ]]; then
-      sed -i '43s/ens/ana/' getkf.yaml
+     sed -i '/output:/,/stream name:/{s/ens/ana/}' getkf.yaml
   fi
   template="getkf.yaml"
 fi
