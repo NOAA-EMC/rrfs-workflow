@@ -3,7 +3,7 @@
 #   These variables will be converted to env vars in xml files or job cards during the exp setup process
 #   (Add leading task names to avoid any potential conflicts in variable names from different tasks)
 #
-# UNGRIB: dx  # dx=dy 
+# UNGRIB: dx  # dx=dy
 # FCST: dt, substeps, and radt
 # MPASSIT: nx, ny, dx, ref_lat, ref_lon
 if [[ ${MESH_NAME} == "conus12km" ]]; then

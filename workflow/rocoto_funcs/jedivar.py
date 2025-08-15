@@ -44,8 +44,8 @@ def jedivar(xmlFile, expdir, do_spinup=False):
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
     #
-    NET = os.getenv("NET", "NET_NOT_DEFINED")
-    VERSION = os.getenv("VERSION", "VERSION_NOT_DEFINED")
+    NET = os.getenv("NET", "NET_not_defined")
+    VERSION = os.getenv("VERSION", "VERSION_not_defined")
     HYB_ENS_TYPE = os.getenv("HYB_ENS_TYPE", "0")
     HYB_WGT_ENS = os.getenv("HYB_WGT_ENS", "0.85")
     HYB_ENS_PATH = os.getenv("HYB_ENS_PATH", "")
