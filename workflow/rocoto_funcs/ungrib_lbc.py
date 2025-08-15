@@ -28,7 +28,6 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
         'OFFSET': f'{offset}',
         'LENGTH': f'{length}',
         'INTERVAL': f'{interval}',
-        'UNGRIB_DX': os.getenv('UNGRIB_DX', 'UNGRIB_DX_not_defined'),
     }
 
     if not do_ensemble:

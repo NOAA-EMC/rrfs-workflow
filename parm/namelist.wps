@@ -8,31 +8,7 @@
   opt_output_from_geogrid_path = './',
 /
 
-&geogrid
-  parent_id = 1,
-  parent_grid_ratio = 1,
-  i_parent_start = 1,
-  j_parent_start = 1,
-  e_we = 1601,
-  e_sn = 961,
-  geog_data_res = '30s',
-  dx = @dx@,
-  dy = @dy@,
-  map_proj = 'lambert',
-  ref_lat = 38.5,
-  ref_lon = -97.5,
-  truelat1 = 38.5,
-  truelat2 = 38.5,
-  stand_lon = -97.5
-  geog_data_path = '',
-  opt_geogrid_tbl_path = './',
-/
-
 &ungrib
   out_format = 'WPS',
   prefix = '@prefix@',
 /
-
-&metgrid
-/
-

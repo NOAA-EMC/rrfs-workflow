@@ -21,7 +21,6 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
         'NAME_PATTERN': f'<cyclestr offset="-{offset}:00:00">{ic_name_pattern}</cyclestr>',
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
         'OFFSET': f'{offset}',
-        'UNGRIB_DX': os.getenv('UNGRIB_DX', 'UNGRIB_DX_not_defined'),
     }
     #
     if not do_ensemble:
