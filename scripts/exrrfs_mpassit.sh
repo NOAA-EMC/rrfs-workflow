@@ -14,13 +14,12 @@ ${cpreq} "${FIXrrfs}"/mpassit/diaglist                    diaglist
 ${cpreq} "${FIXrrfs}"/mpassit/histlist_2d                 histlist_2d
 ${cpreq} "${FIXrrfs}"/mpassit/histlist_3d                 histlist_3d
 ${cpreq} "${FIXrrfs}"/mpassit/histlist_soil               histlist_soil
-
 #
 nx=${MPASSIT_NX:-480}
 ny=${MPASSIT_NY:-280}
 dx=${MPASSIT_DX:-12000.0}
-ref_lat=${MPASSIT_REF_LAT:-12000.0}
-ref_lon=${MPASSIT_REF_LON:-12000.0}
+ref_lat=${MPASSIT_REF_LAT:-"39.0"}
+ref_lon=${MPASSIT_REF_LON:-"-97.5"}
 #
 #
 # find forecst length for this cycle

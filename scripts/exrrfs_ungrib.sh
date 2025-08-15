@@ -63,7 +63,7 @@ done
 #
 # generate the namelist on the fly
 #
-dx=${UNGRIB_DX:-12}
+dx=${UNGRIB_DX:-12000.0}
 dy=${dx}
 CDATEbegin=$(${NDATE} $((10#${fhr_begin})) "${CDATEin}")
 CDATEend=$(${NDATE} $((10#${fhr_end})) "${CDATEin}")
