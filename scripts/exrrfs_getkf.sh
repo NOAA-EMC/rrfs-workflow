@@ -62,22 +62,13 @@ physics_suite=${PHYSICS_SUITE:-'mesoscale_reference'}
 jedi_da="true" #true
 pio_num_iotasks=${NODES}
 pio_stride=${PPN}
-if [[ "${MESH_NAME}" == "conus12km" ]]; then
-  dt=60
-  substeps=2
-  radt=30
-elif [[ "${MESH_NAME}" == "conus3km" ]]; then
-  dt=20
-  substeps=4
-  radt=15
-elif [[ "${MESH_NAME}" == "south3.5km" ]]; then
-  dt=25
-  substeps=4
-  radt=15
-else
-  echo "Unknown MESH_NAME, exit!"
-  err_exit
-fi
+
+# We set dt, substeps, radt values to avoid errors in reading namelist.atmosphere
+# but they will NOT be used since no model integration in DA steps
+dt=60
+substeps=2
+radt=30
+
 file_content=$(< "${PARMrrfs}/${physics_suite}/namelist.atmosphere") # read in all content
 eval "echo \"${file_content}\"" > namelist.atmosphere
 ${cpreq} "${PARMrrfs}"/streams.atmosphere.getkf streams.atmosphere

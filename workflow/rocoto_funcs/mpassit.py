@@ -23,7 +23,12 @@ def mpassit(xmlFile, expdir, do_ensemble=False):
         'HISTORY_INTERVAL': f'{history_interval}',
         'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycles}',
         'GROUP_TOTAL_NUM': f'{mpassit_group_total_num}',
-        'GROUP_INDEX': f'#group_index#'
+        'GROUP_INDEX': f'#group_index#',
+        'MPASSIT_NX': os.getenv('MPASSIT_NX', 'MPASSIT_NX_not_defind'),
+        'MPASSIT_NY': os.getenv('MPASSIT_NY', 'MPASSIT_NY_not_defind'),
+        'MPASSIT_DX': os.getenv('MPASSIT_DX', 'MPASSIT_DX_not_defind'),
+        'MPASSIT_REF_LAT': os.getenv('MPASSIT_REF_LAT', 'MPASSIT_REF_LAT_not_defind'),
+        'MPASSIT_REF_LON': os.getenv('MPASSIT_REF_LON', 'MPASSIT_REF_LON_not_defind'),
     }
 
     if not do_ensemble:

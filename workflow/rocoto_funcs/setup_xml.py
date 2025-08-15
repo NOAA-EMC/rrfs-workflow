@@ -37,6 +37,7 @@ def setup_xml(HOMErrfs, expdir):
     do_ensemble = os.getenv('DO_ENSEMBLE', 'false').upper()
     #
     source(f"{HOMErrfs}/workflow/config_resources/config.{machine}")
+    source(f"{HOMErrfs}/workflow/config_resources/config.meshdep")
     source(f"{HOMErrfs}/workflow/config_resources/config.base")
     realtime = os.getenv('REALTIME', 'false')
     if realtime.upper() == "TRUE":

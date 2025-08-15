@@ -63,11 +63,8 @@ done
 #
 # generate the namelist on the fly
 #
-if [[ "${MESH_NAME}" == *"3km"*   ]]; then
-  dx=3; dy=3
-else
-  dx=12; dy=12
-fi
+dx=${UNGRIB_DX:-12}
+dy=${dx}
 CDATEbegin=$(${NDATE} $((10#${fhr_begin})) "${CDATEin}")
 CDATEend=$(${NDATE} $((10#${fhr_end})) "${CDATEin}")
 start_time=$(date -d "${CDATEbegin:0:8} ${CDATEbegin:8:2}" +%Y-%m-%d_%H:%M:%S) 

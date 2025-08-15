@@ -15,26 +15,12 @@ ${cpreq} "${FIXrrfs}"/mpassit/histlist_2d                 histlist_2d
 ${cpreq} "${FIXrrfs}"/mpassit/histlist_3d                 histlist_3d
 ${cpreq} "${FIXrrfs}"/mpassit/histlist_soil               histlist_soil
 
-#  decide mesh dimensions
-if [[ "${MESH_NAME}" == "conus12km" ]]; then
-  nx=480
-  ny=280
-  dx=12000.0
-  ref_lat=39.0
-  ref_lon=-97.5
-elif [[ "${MESH_NAME}" == "conus3km" ]]; then
-  nx=1800
-  ny=1060
-  dx=3000.0
-  ref_lat=38.5
-  ref_lon=-97.5
-elif [[ "${MESH_NAME}" == "south3.5km" ]]; then
-  nx=660
-  ny=440
-  dx=3500.0
-  ref_lat=34.0
-  ref_lon=-91.5
-fi
+#
+nx=${MPASSIT_NX:-480}
+ny=${MPASSIT_NY:-280}
+dx=${MPASSIT_DX:-12000.0}
+ref_lat=${MPASSIT_REF_LAT:-12000.0}
+ref_lon=${MPASSIT_REF_LON:-12000.0}
 #
 #
 # find forecst length for this cycle

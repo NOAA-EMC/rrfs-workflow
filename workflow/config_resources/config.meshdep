@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# Set mesh-dependent variables
+#   These variables will be converted to env vars in xml files or job cards during the exp setup process
+#   (Add leading task names to avoid any potential conflicts in variable names from different tasks)
+#
+# UNGRIB: dx  # dx=dy 
+# FCST: dt, substeps, and radt
+# MPASSIT: nx, ny, dx, ref_lat, ref_lon
+if [[ ${MESH_NAME} == "conus12km" ]]; then
+  export UNGRIB_DX=12000.0
+
+  export FCST_DT=60
+  export FCST_SUBSTEPS=2
+  export FCST_RADT=30
+
+  export MPASSIT_NX=480
+  export MPASSIT_NY=280
+  export MPASSIT_DX=12000.0
+  export MPASSIT_REF_LAT=39.0
+  export MPASSIT_REF_LON=-97.5
+
+elif [[ ${MESH_NAME} == "conus3km" ]]; then
+  export UNGRIB_DX=3000.0
+
+  export FCST_DT=20
+  export FCST_SUBSTEPS=4
+  export FCST_RADT=15
+
+  export MPASSIT_NX=1800
+  export MPASSIT_NY=1060
+  export MPASSIT_DX=3000.0
+  export MPASSIT_REF_LAT=38.5
+  export MPASSIT_REF_LON=-97.5
+
+elif [[ ${MESH_NAME} == "south3.5km" ]]; then
+  export UNGRIB_DX=3500.0
+
+  export FCST_DT=25
+  export FCST_SUBSTEPS=4
+  export FCST_RADT=15
+
+  export MPASSIT_NX=660
+  export MPASSIT_NY=440
+  export MPASSIT_DX=3500.0
+  export MPASSIT_REF_LAT=34.0
+  export MPASSIT_REF_LON=-91.5
+fi
