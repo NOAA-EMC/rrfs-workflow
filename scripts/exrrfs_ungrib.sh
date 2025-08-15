@@ -63,11 +63,6 @@ done
 #
 # generate the namelist on the fly
 #
-if [[ "${MESH_NAME}" == *"3km"*   ]]; then
-  dx=3; dy=3
-else
-  dx=12; dy=12
-fi
 CDATEbegin=$(${NDATE} $((10#${fhr_begin})) "${CDATEin}")
 CDATEend=$(${NDATE} $((10#${fhr_end})) "${CDATEin}")
 start_time=$(date -d "${CDATEbegin:0:8} ${CDATEbegin:8:2}" +%Y-%m-%d_%H:%M:%S) 
@@ -75,7 +70,7 @@ end_time=$(date -d "${CDATEend:0:8} ${CDATEend:8:2}" +%Y-%m-%d_%H:%M:%S)
 interval_seconds=$(( INTERVAL*3600 ))
 sed -e "s/@start_time@/${start_time}/" -e "s/@end_time@/${end_time}/" \
     -e "s/@interval_seconds@/${interval_seconds}/" -e "s/@prefix@/${prefix}/" \
-    -e "s/@dx@/${dx}/" -e "s/@dy@/${dy}/" "${PARMrrfs}/namelist.wps" > namelist.wps
+    "${PARMrrfs}/namelist.wps" > namelist.wps
 #
 # run ungrib
 #

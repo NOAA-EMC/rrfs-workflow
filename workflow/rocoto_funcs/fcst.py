@@ -31,7 +31,10 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         'HISTORY_INTERVAL': f'{history_interval}',
         'RESTART_INTERVAL': f'{restart_interval}',
         'PHYSICS_SUITE': f'{physics_suite}',
-        'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycles}'
+        'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycles}',
+        'FCST_DT': os.getenv('FCST_DT', 'FCST_DT_not_defined'),
+        'FCST_SUBSteps': os.getenv('FCST_SUBSTEPS', 'FCST_SUBSTEPS_not_defined'),
+        'FCST_RADT': os.getenv('FCST_RADT', 'FCST_RADT_not_defined'),
     }
     if do_spinup:
         dcTaskEnv['DO_SPINUP'] = "TRUE"

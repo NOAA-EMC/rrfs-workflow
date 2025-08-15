@@ -27,7 +27,7 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
         'OFFSET': f'{offset}',
         'LENGTH': f'{length}',
-        'INTERVAL': f'{interval}'
+        'INTERVAL': f'{interval}',
     }
 
     if not do_ensemble:

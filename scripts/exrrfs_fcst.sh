@@ -6,24 +6,9 @@ cpreq=${cpreq:-cpreq}
 prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
 cd "${DATA}" || exit 1
 #
-# determine time steps and etc according to the mesh
-#
-if [[ ${MESH_NAME} == "conus12km" ]]; then
-  dt=60
-  substeps=2
-  radt=30
-elif [[ ${MESH_NAME} == "conus3km" ]]; then
-  dt=20
-  substeps=4
-  radt=15
-elif [[ ${MESH_NAME} == "south3.5km" ]]; then
-  dt=25
-  substeps=4
-  radt=15
-else
-  echo "Unknown MESH_NAME, exit!"
-  err_exit
-fi
+dt=${FCST_DT:-60}
+substeps=${FCST_SUBSTEPS:-2}
+radt=${FCST_RADT:-30}
 #
 # find forecst length for this cycle
 #

@@ -312,8 +312,8 @@ def xml_task(
     # for non-meta tasks, task_id=meta_id; for meta tasks, task_id=${meta_id}_xxx
     # metatask is a group of tasks who share a very similar functionality
     #     at the same cycle, for example, post_f01, post_f02, ensembles, etc
-    WGF = os.getenv('WGF', 'WGF_NOT_DEFINED')
-    TAG = os.getenv('TAG', 'TAG_NOT_DEFINED')
+    WGF = os.getenv('WGF', 'WGF_not_defined')
+    TAG = os.getenv('TAG', 'TAG_not_defined')
     realtime = os.getenv('REALTIME', 'false')
     deadline = get_cascade_env(f'DEADLINE_{task_id}'.upper())
     if metatask is False:

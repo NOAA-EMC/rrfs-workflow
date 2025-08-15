@@ -4,13 +4,13 @@
 # shellcheck disable=SC2154
 if [[ "$1" == "jedivar" ]]; then
   sed -e "s/@analysisDate@/${analysisDate}/" -e "s/@beginDate@/${beginDate}/" \
-      -e "s/@HYB_WGT_STATIC@/${HYB_WGT_STATIC}/" -e "s/@HYB_WGT_ENS@/${HYB_WGT_ENS}/" \
       "${EXPDIR}/config/jedivar.yaml" > jedivar.yaml
   if [[ "${HYB_WGT_ENS}" == "0" ]] || [[ "${HYB_WGT_ENS}" == "0.0" ]]; then # pure 3DVAR
     sed -i '/- covariance:/{N;/covariance model: ensemble/{:a;N;/HYB_WGT_ENS/!ba;d}}' jedivar.yaml
   elif [[ "${HYB_WGT_STATIC}" == "0" ]] || [[ "${HYB_WGT_STATIC}" == "0.0" ]] ; then # pure 3DEnVar
     sed -i '/- covariance:/{N;/covariance model: SABER/{:a;N;/HYB_WGT_STATIC/!ba;d}}' jedivar.yaml
   fi
+  sed -i -e "s/@HYB_WGT_STATIC@/${HYB_WGT_STATIC}/" -e "s/@HYB_WGT_ENS@/${HYB_WGT_ENS}/" jedivar.yaml
   if [[ "${start_type}" == "cold" ]]; then
       sed -i '/output:/,/stream name:/{s/mpasout/ana/}' jedivar.yaml
   fi
