@@ -15,3 +15,6 @@ grep "<task name=" ${xmlfile}
 
 echo -e "\n======= cycledefs ======"
 grep "<cycledef group=" ${xmlfile}
+
+echo -e "\n======= any undefined variable? ======"
+grep "_not_defined" ${xmlfile}
