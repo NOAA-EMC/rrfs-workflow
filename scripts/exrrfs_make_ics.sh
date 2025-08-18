@@ -828,6 +828,7 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
   export pgm1=fv3lam_pre_blending.exe
   ${APRUN_PRE_BLENDING} ${EXECrrfs}/$pgm1 >>$pgmout 2>errfile
   export err=$?; err_chk
+  mv cold2warm_all.nc out.atm.tile${TILE_RGNL}.nc 
 
   echo "Pre-Blending end `date`"
 
@@ -842,8 +843,8 @@ fi
 #### if [[ $DO_ENS_BLENDING = "TRUE" ]]; then
   #### mv out.atm.tile${TILE_RGNL}.nc \
   ####       ${DATA}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
-#cpreq -p ${DATA}/out.atm.tile${TILE_RGNL}.nc ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
-cpreq -p ${DATA}/cold2warm_all.nc ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
+cpreq -p ${DATA}/out.atm.tile${TILE_RGNL}.nc ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
+#cpreq -p ${DATA}/cold2warm_all.nc ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
 
   #### mv out.sfc.tile${TILE_RGNL}.nc \
   ####       ${DATA}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
