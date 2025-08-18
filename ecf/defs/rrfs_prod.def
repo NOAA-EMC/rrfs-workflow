@@ -4782,6 +4782,14 @@ suite rrfs_dev
                   trigger ../../post/det/jrrfs_det_post_f084_00_00_long==complete
                 task jrrfs_det_bufrsnd_long
                   trigger ../../fsm/jrrfs_fsm:release_det_post_f000_00_36_long
+                task jrrfs_gempak_f000
+                  trigger ../../product/det/jrrfs_det_prdgen_f000_00_36_long==complete
+                task jrrfs_gempak_f001
+                  trigger ../../product/det/jrrfs_det_prdgen_f001_00_00_long==complete
+                task jrrfs_gempak_f002
+                  trigger ../../product/det/jrrfs_det_prdgen_f002_00_00_long==complete
+                task jrrfs_gempak_f003
+                  trigger ../../product/det/jrrfs_det_prdgen_f003_00_00_long==complete
               endfamily   # det
               family ensf
                 edit WGF 'ensf'
@@ -16122,6 +16130,14 @@ suite rrfs_dev
                   trigger ../../post/det/jrrfs_det_post_f084_00_00_long==complete
                 task jrrfs_det_bufrsnd_long
                   trigger ../../fsm/jrrfs_fsm:release_det_post_f000_00_36_long
+                task jrrfs_gempak_f000
+                  trigger ../../product/det/jrrfs_det_prdgen_f000_00_36_long==complete
+                task jrrfs_gempak_f001
+                  trigger ../../product/det/jrrfs_det_prdgen_f001_00_00_long==complete
+                task jrrfs_gempak_f002
+                  trigger ../../product/det/jrrfs_det_prdgen_f002_00_00_long==complete
+                task jrrfs_gempak_f003
+                  trigger ../../product/det/jrrfs_det_prdgen_f003_00_00_long==complete
               endfamily   # det
               family ensf
                 edit WGF 'ensf'
@@ -27798,6 +27814,14 @@ suite rrfs_dev
                   trigger ../../post/det/jrrfs_det_post_f084_00_00_long==complete
                 task jrrfs_det_bufrsnd_long
                   trigger ../../fsm/jrrfs_fsm:release_det_post_f000_00_36_long
+                task jrrfs_gempak_f000
+                  trigger ../../product/det/jrrfs_det_prdgen_f000_00_36_long==complete
+                task jrrfs_gempak_f001
+                  trigger ../../product/det/jrrfs_det_prdgen_f001_00_00_long==complete
+                task jrrfs_gempak_f002
+                  trigger ../../product/det/jrrfs_det_prdgen_f002_00_00_long==complete
+                task jrrfs_gempak_f003
+                  trigger ../../product/det/jrrfs_det_prdgen_f003_00_00_long==complete
               endfamily   # det
               family ensf
                 edit WGF 'ensf'
@@ -39141,6 +39165,14 @@ suite rrfs_dev
                   trigger ../../post/det/jrrfs_det_post_f084_00_00_long==complete
                 task jrrfs_det_bufrsnd_long
                   trigger ../../fsm/jrrfs_fsm:release_det_post_f000_00_36_long
+                task jrrfs_gempak_f000
+                  trigger ../../product/det/jrrfs_det_prdgen_f000_00_36_long==complete
+                task jrrfs_gempak_f001
+                  trigger ../../product/det/jrrfs_det_prdgen_f001_00_00_long==complete
+                task jrrfs_gempak_f002
+                  trigger ../../product/det/jrrfs_det_prdgen_f002_00_00_long==complete
+                task jrrfs_gempak_f003
+                  trigger ../../product/det/jrrfs_det_prdgen_f003_00_00_long==complete
               endfamily   # det
               family ensf
                 edit WGF 'ensf'

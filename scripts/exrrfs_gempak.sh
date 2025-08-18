@@ -43,7 +43,7 @@ pdsext=no
 
 maxtries=720
 fhcnt=$fstart
-while [ $fhcnt -le $fend ] ; do
+# while [ $fhcnt -le $fend ] ; do
   if [ $fhcnt -ge 100 ] ; then
     typeset -Z3 fhr
   else
@@ -192,26 +192,22 @@ EOF
      fi
   fi
 
-
-
-
-
-   if [ $RUNTYPE = "rrfs_alaska" -a $fhcnt -lt ${HOURLY_LIMIT} ] ; then
-     let fhcnt=fhcnt+1
-   elif [ $RUNTYPE = "rrfs_conus" -a $fhcnt -lt ${HOURLY_LIMIT} ] ; then
-     let fhcnt=fhcnt+1
-   elif [ $RUNTYPE = "rrfs_conus_mag" -a $fhcnt -lt ${HOURLY_LIMIT} ] ; then
-     let fhcnt=fhcnt+1
-   elif [ $RUNTYPE = "rrfs_conus_cam" -a $fhcnt -lt ${HOURLY_LIMIT} ] ; then
-     let fhcnt=fhcnt+1
-   elif [ $RUNTYPE = "rrfs_hawaii" -a $fhcnt -lt ${HOURLY_LIMIT} ] ; then
-     let fhcnt=fhcnt+1
-   elif [ $RUNTYPE = "rrfs_prico" -a $fhcnt -lt ${HOURLY_LIMIT} ] ; then
-     let fhcnt=fhcnt+1
-   else
-    let fhcnt=fhcnt+finc
-   fi
-done
+#   if [ $RUNTYPE = "rrfs_alaska" -a $fhcnt -lt ${HOURLY_LIMIT} ] ; then
+#     let fhcnt=fhcnt+1
+#   elif [ $RUNTYPE = "rrfs_conus" -a $fhcnt -lt ${HOURLY_LIMIT} ] ; then
+#     let fhcnt=fhcnt+1
+#   elif [ $RUNTYPE = "rrfs_conus_mag" -a $fhcnt -lt ${HOURLY_LIMIT} ] ; then
+#     let fhcnt=fhcnt+1
+#   elif [ $RUNTYPE = "rrfs_conus_cam" -a $fhcnt -lt ${HOURLY_LIMIT} ] ; then
+#     let fhcnt=fhcnt+1
+#   elif [ $RUNTYPE = "rrfs_hawaii" -a $fhcnt -lt ${HOURLY_LIMIT} ] ; then
+#     let fhcnt=fhcnt+1
+#   elif [ $RUNTYPE = "rrfs_prico" -a $fhcnt -lt ${HOURLY_LIMIT} ] ; then
+#     let fhcnt=fhcnt+1
+#   else
+#    let fhcnt=fhcnt+finc
+#   fi
+# done
 
 #####################################################################
 # GOOD RUN

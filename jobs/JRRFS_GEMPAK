@@ -39,9 +39,9 @@ fi
 # Set up model and cycle specific variables
 #################################################
 
-export fstart=${fstart:-00}
+export fstart=${FHR}
 export finc=${finc:-3}
-export fend=${fend:-84}
+export fend=${FHR}
 
 export model=`echo $RUN | awk '{print tolower($0)}'`
 export GRIB=prslev
