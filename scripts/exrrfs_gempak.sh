@@ -9,8 +9,7 @@ set -xa
 
 RUNTYPE=$1
 GRIB=$2
-finc=$3
-fend=$4
+fhr=$3
 
 cd $DATA/$RUNTYPE
 
@@ -42,19 +41,15 @@ output=T
 pdsext=no
 
 maxtries=720
-fhcnt=$fstart
-# while [ $fhcnt -le $fend ] ; do
-  if [ $fhcnt -ge 100 ] ; then
+  if [ $fhr -ge 100 ] ; then
     typeset -Z3 fhr
   else
     typeset -Z2 fhr
   fi
-  fhr=$fhcnt
   fhcnt3=`expr $fhr % 3`
 
-  fhr3=$fhcnt
+  fhr3=$fhr
   typeset -Z3 fhr3
-#  GRIBIN=$COMIN/${model}.${cycle}.${GRIB}${fhr}${EXT}.grib2
   GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3}
 
   case $RUNTYPE in
@@ -191,23 +186,6 @@ EOF
        echo "##### DBN_ALERT_TYPE is: ${DBN_ALERT_TYPE} #####"
      fi
   fi
-
-#   if [ $RUNTYPE = "rrfs_alaska" -a $fhcnt -lt ${HOURLY_LIMIT} ] ; then
-#     let fhcnt=fhcnt+1
-#   elif [ $RUNTYPE = "rrfs_conus" -a $fhcnt -lt ${HOURLY_LIMIT} ] ; then
-#     let fhcnt=fhcnt+1
-#   elif [ $RUNTYPE = "rrfs_conus_mag" -a $fhcnt -lt ${HOURLY_LIMIT} ] ; then
-#     let fhcnt=fhcnt+1
-#   elif [ $RUNTYPE = "rrfs_conus_cam" -a $fhcnt -lt ${HOURLY_LIMIT} ] ; then
-#     let fhcnt=fhcnt+1
-#   elif [ $RUNTYPE = "rrfs_hawaii" -a $fhcnt -lt ${HOURLY_LIMIT} ] ; then
-#     let fhcnt=fhcnt+1
-#   elif [ $RUNTYPE = "rrfs_prico" -a $fhcnt -lt ${HOURLY_LIMIT} ] ; then
-#     let fhcnt=fhcnt+1
-#   else
-#    let fhcnt=fhcnt+finc
-#   fi
-# done
 
 #####################################################################
 # GOOD RUN

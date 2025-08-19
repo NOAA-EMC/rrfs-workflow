@@ -39,10 +39,6 @@ fi
 # Set up model and cycle specific variables
 #################################################
 
-export fstart=${FHR}
-export finc=${finc:-3}
-export fend=${FHR}
-
 export model=`echo $RUN | awk '{print tolower($0)}'`
 export GRIB=prslev
 export DBN_ALERT_TYPE=RRFS_GEMPAK
@@ -68,7 +64,7 @@ cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 cd $DATA
 export GRIB=prslev
 export type=rrfs_conus
-echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB  $finc $fend" >> $DATA/poescript
+echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
 #################################################################
 
 #################################################################
@@ -88,7 +84,7 @@ cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 cd $DATA
 export GRIB=prslev
 export type=rrfs_conus_mag
-echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB  $finc $fend" >> $DATA/poescript
+echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
 #################################################################
 
 #################################################################
@@ -110,7 +106,7 @@ echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB  $finc $fend" >> $DATA/poes
 # cd $DATA
 # export GRIB=testbed
 # export type=rrfs_conus_cam
-# echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB $finc $fend" >> $DATA/poescript
+# echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
 #################################################################
 
 #################################################################
@@ -128,7 +124,7 @@ cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 cd $DATA
 export GRIB=prslev
 export type=rrfs_alaska
-echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB $finc $fend" >> $DATA/poescript
+echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
 #################################################################
 # Execute the script to make Puerto Rico GEMPAK grids
 mkdir -p $DATA/rrfs_prico
@@ -144,7 +140,7 @@ cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 cd $DATA
 export GRIB=prslev
 export type=rrfs_prico
-echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB  $finc $fend" >> $DATA/poescript
+echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
 #################################################################
 # Execute the script to make Hawaii GEMPAK grids
 mkdir -p $DATA/rrfs_hawaii
@@ -160,7 +156,7 @@ cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 cd $DATA
 export GRIB=prslev
 export type=rrfs_hawaii
-echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB $finc $fend" >> $DATA/poescript
+echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
 #################################################################
 cat poescript
 
