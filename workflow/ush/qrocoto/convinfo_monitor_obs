@@ -47,13 +47,13 @@ with open(yfile2, 'r') as infile, open(yfile, 'w') as outfile:
                     break
 
             if found:
-                start_postion = 19
-                index = line.find('  0  ', start_postion)
+                start_position = 19
+                index = line.find('  0  ', start_position)
                 if index != -1:
-                    line = line.replace('  0  ', ' -1  ')
+                    line = line[:start_position] + line[start_position:].replace('  0  ', ' -1  ')
                 else:
-                    index = line.find('  1  ', start_postion)
+                    index = line.find('  1  ', start_position)
                     if index != -1:
-                        line = line.replace('  1  ', ' -1  ')
+                        line = line[:start_position] + line[start_position:].replace('  1  ', ' -1  ')
 
             outfile.write(line)
