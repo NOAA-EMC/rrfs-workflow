@@ -12,6 +12,7 @@ INPUT_FILE="${1:-$DEFAULT_FILE}"
 # shellcheck disable=SC1090
 source "$INPUT_FILE"
 
+# shellcheck disable=SC2154
 validated_yamls="${run_dir}/../../sorc/RDASApp/rrfs-test/validated_yamls"
 cd "$validated_yamls" || exit 1
 
