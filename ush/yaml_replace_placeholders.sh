@@ -10,8 +10,8 @@
 cp -p "${EXPDIR}"/config/jedivar.yaml .
 
 # Use ana.nc for cold start and determine whether to do DA or not.
-backgroundFile="mpasin.nc"
-analysisFile="mpasin.nc"
+backgroundFile="mpasout.nc"
+analysisFile="mpasout.nc"
 analysisUse="accept"
 if [[ "${start_type}" == "cold" ]]; then
   backgroundFile="init.nc"
