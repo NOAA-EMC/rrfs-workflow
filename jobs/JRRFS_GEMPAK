@@ -68,11 +68,12 @@ echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
 #################################################################
 
 #################################################################
-# why are there multiple CONUS nest GEMPAK files in the NAM?
 #
-# Execute the script to make conus GEMPAK grids (for Model Analysis and Guidance page graphics)
-mkdir -p $DATA/rrfs_conus_mag
-cd $DATA/rrfs_conus_mag
+
+if [ $FHR -ge 01 -a $FHR -le 18 ]
+then
+mkdir -p $DATA/rrfs_conus_subh
+cd $DATA/rrfs_conus_subh
 
 # Copy model specific GEMPAK tables into working directory
 #
@@ -83,8 +84,9 @@ cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 
 cd $DATA
 export GRIB=prslev
-export type=rrfs_conus_mag
+export type=rrfs_conus_subh
 echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
+fi
 #################################################################
 
 #################################################################

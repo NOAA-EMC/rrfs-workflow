@@ -50,6 +50,8 @@ maxtries=720
 
   fhr3=$fhr
   typeset -Z3 fhr3
+  let "fhr3m1=fhr3-1"
+  typeset -Z3 fhr3m1
   GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3}
 
   case $RUNTYPE in
@@ -57,8 +59,15 @@ maxtries=720
                 GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
    rrfs_conus) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.conus.grib2
                 GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
-   rrfs_conus_mag) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.conus.grib2
-                GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
+   rrfs_conus_subh) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.3km.subh.f${fhr3}.conus.grib2
+                GEMGRDa=${RUNTYPE}_${PDY}${cyc}f${fhr3m1}15 
+		let "timea=fhr3m1*60+15" 
+                GEMGRDb=${RUNTYPE}_${PDY}${cyc}f${fhr3m1}30
+		let "timeb=fhr3m1*60+30" 
+                GEMGRDc=${RUNTYPE}_${PDY}${cyc}f${fhr3m1}45
+		let "timec=fhr3m1*60+45" 
+                GEMGRDd=${RUNTYPE}_${PDY}${cyc}f${fhr3}00 
+		let "timed=fhr" ;;
    rrfs_conus_cam) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.conus.grib2
                 GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
    rrfs_hawaii) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.2p5km.f${fhr3}.hi.grib2
@@ -71,8 +80,8 @@ maxtries=720
     GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.ak.grib2.idx
   elif [ $RUNTYPE = "rrfs_conus" ] ; then
     GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.conus.grib2.idx
-  elif [ $RUNTYPE = "rrfs_conus_mag" ] ; then
-    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.conus.grib2.idx
+  elif [ $RUNTYPE = "rrfs_conus_subh" ] ; then
+    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.subh.f${fhr3}.conus.grib2.idx
   elif [ $RUNTYPE = "rrfs_conus_cam" ] ; then
     GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.conus.grib2.idx
   elif [ $RUNTYPE = "rrfs_hawaii" ] ; then
@@ -113,9 +122,14 @@ maxtries=720
          $WGRIB2 -s $GRIBIN | grep -f $RRFSFIXgem/rrfs.parmlist|$WGRIB2 -i -grib temp $GRIBIN
          cat temp tempmaxref263k > grib$fhr
      ;;
-   rrfs_conus_mag)
-         $WGRIB2 -s $GRIBIN | grep -f $RRFSFIXgem/rrfs.parmlist_mag|$WGRIB2 -i -grib temp $GRIBIN
-         mv temp grib$fhr
+   rrfs_conus_subh)
+#         $WGRIB2 -s $GRIBIN | grep -f $RRFSFIXgem/rrfs.parmlist_mag|$WGRIB2 -i -grib temp $GRIBIN
+#         mv temp grib$fhr
+         cp $GRIBIN grib$fhr
+	 wgrib2 ${GRIBIN} -match "$timea min" -grib  grib${fhr}_${timea}
+	 wgrib2 ${GRIBIN} -match "$timeb min" -grib  grib${fhr}_${timeb}
+	 wgrib2 ${GRIBIN} -match "$timec min" -grib  grib${fhr}_${timec}
+	 wgrib2 ${GRIBIN} -match "$timed h" -grib  grib${fhr}_${timed}
      ;;
    rrfs_conus_cam)
          $WGRIB2 -s $GRIBIN | grep -f $RRFSFIXgem/rrfs.parmlist_mag|$WGRIB2 -i -grib temp $GRIBIN
@@ -134,6 +148,58 @@ maxtries=720
    *)
      cp $GRIBIN grib$fhr
   esac
+
+
+
+  if [ $RUNTYPE = "rrfs_conus_subh" ] ; then
+  
+
+  export pgm="nagrib2 F$fhr"
+  startmsg
+
+
+  $NAGRIB << EOF
+   GBFILE   = grib${fhr}_${timea}
+   INDXFL   = 
+   GDOUTF   = $GEMGRDa
+   PROJ     = $proj
+   GRDAREA  = $grdarea
+   KXKY     = $kxky
+   MAXGRD   = $maxgrd
+   CPYFIL   = $cpyfil
+   GAREA    = $garea
+   OUTPUT   = $output
+   GBTBLS   = $gbtbls
+   GBDIAG   = 
+   PDSEXT   = $pdsext
+  l
+  r
+EOF
+
+  $NAGRIB << EOF
+   GBFILE   = grib${fhr}_${timeb}
+   INDXFL   = 
+   GDOUTF   = $GEMGRDb
+  r
+EOF
+
+  $NAGRIB << EOF
+   GBFILE   = grib${fhr}_${timec}
+   INDXFL   = 
+   GDOUTF   = $GEMGRDc
+  r
+EOF
+
+  $NAGRIB << EOF
+   GBFILE   = grib${fhr}_${timed}
+   INDXFL   = 
+   GDOUTF   = $GEMGRDd
+  r
+EOF
+
+  export err=$?;err_chk
+
+  else
 
   export pgm="nagrib2 F$fhr"
   startmsg
@@ -157,13 +223,18 @@ maxtries=720
 EOF
   export err=$?;err_chk
 
+  fi
+
   #####################################################
   # GEMPAK DOES NOT ALWAYS HAVE A NON ZERO RETURN CODE
   # WHEN IT CAN NOT PRODUCE THE DESIRED GRID.  CHECK
   # FOR THIS CASE HERE.
   #####################################################
-  if [ $model != "ukmet_early" ] ; then
+  if [ $RUNTYPE != "rrfs_conus_subh" ] ; then
     ls -l $GEMGRD
+    export err=$?;export pgm="GEMPAK CHECK FILE";err_chk
+  else
+    ls -l $GEMGRDa $GEMGRDb $GEMGRDc $GEMGRDd
     export err=$?;export pgm="GEMPAK CHECK FILE";err_chk
   fi
 
@@ -173,7 +244,14 @@ EOF
 
 
   if [ $SENDCOM = "YES" ] ; then
+    if [ $RUNTYPE != "rrfs_conus_subh" ] ; then
      cpfs $GEMGRD $COMOUT/$GEMGRD
+    else
+     cpfs $GEMGRDa $COMOUT/$GEMGRDa
+     cpfs $GEMGRDb $COMOUT/$GEMGRDb
+     cpfs $GEMGRDc $COMOUT/$GEMGRDc
+     cpfs $GEMGRDd $COMOUT/$GEMGRDd
+    fi
      if [ $SENDDBN = "YES" ] ; then
        if [ $RUNTYPE = "rrfs" -a $fhcnt3 -ne 0 ] ; then
          $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_2} $job \
