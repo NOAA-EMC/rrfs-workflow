@@ -1,74 +1,145 @@
-"""This script performs blending between regional and global weather
-forecast model restarts using the Fortran module raymond. The Raymond
-filter is a sixth-order tangent low-pass implicit filter and can be
-controlled via the cutoff length scale (Lx).
-
-"""
 import numpy as np
 from netCDF4 import Dataset
 import raymond
 import sys
+import multiprocessing as mp
 
-def check_file_nans(test_nc, vars_fg, vars_bg, name):
-    """Check for NaN values in specified variables of a netCDF file.
-
-    This function iterates over a list of variables and checks for NaN values in the provided
-    netCDF file. It prints the count of NaNs found for each variable and indicates whether
-    any NaNs were detected.
-
-    Again, if there are any NaNs found, I wanted to catch that here
-    instead of later when the model is running. I don't think there is
-    any reason to expect NaNs.
-
-    Parameters:
-    test_nc: Dataset
-    The test netCDF file containing the variables to be checked for NaN values.
-    vars_fg: list of str
-    A list of variable names from the regional model (foreground) to check.
-    vars_bg: list of str
-    A corresponding list of variable names from the global model (background) to check.
-    name: str
-    A string representing the context (e.g., 'glb' for global or 'reg' for regional)
-    to identify the source of the variables being checked.
-
-    Returns:
-    bool
-    Returns True if any NaN values are found in the specified variables;
-    otherwise, returns False.
-
-    """
-    nans = False
-    for (var_fg, var_bg) in zip(vars_fg, vars_bg):
-        i = vars_fg.index(var_fg)
-        if var_fg == "sphum":
-           continue
-        if name == "glb":
-           test = np.float64(test_nc[var_bg][:, :, :])
-        if name == "reg":
-           test = np.float64(test_nc[var_fg][:, :, :, :])  # (1, 65, 1093, 1820)
-        nan_count = np.sum(np.isnan(test))
-        print(f"Checking for NaNs: {name}({var_fg}), nan count: {nan_count}")
-        if nan_count > 0:
-           nans = True
-        return nans
+def check_variable_nans(var_fg, var_bg, glb_fg, reg_fg, reg_fg_t):
+    """Check a single variable pair for NaNs across global and regional files."""
+    with Dataset(glb_fg, "r") as glb_fg_nc, \
+         Dataset(reg_fg, "r") as reg_fg_nc, \
+         Dataset(reg_fg_t, "r") as reg_fg_t_nc:
+        has_nan = np.isnan(glb_fg_nc[var_bg]).any()
+        print(f"Checking for NaNs: glb({var_fg}), has nans: {has_nan}")
+        if has_nan:
+            return True
+        reg_nc = reg_fg_t_nc if var_fg == "sphum" else reg_fg_nc
+        has_nan = np.isnan(reg_nc[var_fg]).any()
+        print(f"Checking for NaNs: reg({var_fg}), has nans: {has_nan}")
+        if has_nan:
+            return True
+    return False
 
 def err_check(err):
-    """
-    Check for error.
-
-    err: Error code.
-    """
     if err > 0:
         print(f"An error ocurred in {sys.argv[0]}. Blending failed!!!")
         print(f"err={err}")
         sys.exit(err)
 
+def process_variable(var_fg, var_bg, glb_fg, reg_fg, reg_fg_t, nbdy, eps, blend, use_host_EnKF):
+    with Dataset(glb_fg, "r") as glb_fg_nc, \
+         Dataset(reg_fg, "a") as reg_fg_nc, \
+         Dataset(reg_fg_t, "a") as reg_fg_t_nc:
+        if var_fg == "sphum":
+            reg_nc = reg_fg_t_nc
+        else:
+            reg_nc = reg_fg_nc
+
+        dim = len(np.shape(reg_nc[var_fg])) - 1
+        if dim == 2:  # 2D vars
+            glb = glb_fg_nc[var_bg][:, :].astype(np.float64, copy=True)  # (   2700, 3950)
+            reg = reg_nc[var_fg][:, :, :].astype(np.float64, copy=True)  # (1, 2700, 3950)
+            ntim = np.shape(reg)[0]
+            nlat = np.shape(reg)[1]
+            nlon = np.shape(reg)[2]
+            nlev = 1
+            glb = np.reshape(glb, [ntim, nlat, nlon])     # add time dim bc missing from chgres
+            var_out = np.zeros(shape=(nlon, nlat, 1), dtype=np.float64)
+            var_work = np.zeros(shape=((nlon+nbdy), (nlat+nbdy), 1), dtype=np.float64)
+            field_work = np.zeros(shape=((nlon+nbdy)*(nlat+nbdy)), dtype=np.float64)
+        if dim == 3:  # 3D vars
+            glb = glb_fg_nc[var_bg][:, :, :].astype(np.float64, copy=True)  # (   65, 2700, 3950)
+            reg = reg_nc[var_fg][:, :, :, :].astype(np.float64, copy=True)  # (1, 65, 2700, 3950)
+            ntim = np.shape(reg)[0]
+            nlev = np.shape(reg)[1]
+            nlat = np.shape(reg)[2]
+            nlon = np.shape(reg)[3]
+            glb = np.reshape(glb, [ntim, nlev, nlat, nlon])  # add time dim bc missing from chgres
+            var_out = np.zeros(shape=(nlon, nlat, nlev, 1), dtype=np.float64)
+            var_work = np.zeros(shape=((nlon+nbdy), (nlat+nbdy), nlev, 1), dtype=np.float64)
+            field_work = np.zeros(shape=((nlon+nbdy)*(nlat+nbdy), nlev), dtype=np.float64)
+
+        glbT = np.transpose(glb)
+        regT = np.transpose(reg)
+
+        nlon_start = int(nbdy/2)
+        nlon_end = int(nlon+nbdy/2)
+        nlat_start = int(nbdy/2)
+        nlat_end = int(nlat+nbdy/2)
+
+        if blend:
+            print(f"Blending backgrounds for {var_fg}/{var_bg}")
+            var_work[nlon_start:nlon_end, nlat_start:nlat_end, :] = glbT - regT
+            field_work = var_work.reshape((nlon+nbdy)*(nlat+nbdy), nlev, order="F")  # order="F" (FORTRAN)
+            field_work = raymond.raymond(field_work, nlon+nbdy, nlat+nbdy, eps, nlev)
+            var_work = field_work.reshape(nlon+nbdy, nlat+nbdy, nlev, order="F")
+            var_out = var_work[nlon_start:nlon_end, nlat_start:nlat_end, :]
+            if dim == 2:  # 2D vars
+                var_out = var_out[:, :, 0] + regT[:, :, 0]
+                var_out = np.reshape(var_out, [nlon, nlat, 1])  # add the time ("1") dimension back
+            if dim == 3:  # 3D vars
+                var_out = var_out + regT[:, :, :, 0]
+                var_out = np.reshape(var_out, [nlon, nlat, nlev, 1])  # add the time ("1") dimension back
+        else:  # skip blending and use either host enkf (GDAS) or the RRFS enkf
+            print(f"Blending code is NOT executing blending!")
+            print(f"    This is used for finishing converting the cold start files into warm start format.")
+            if use_host_EnKF is not None and use_host_EnKF:
+                print(f"---> Use the GDAS EnKF")
+                var_out = glbT
+            else:
+                print(f"---> Use the RRFS EnKF")
+                var_out = regT
+
+        var_out = np.transpose(var_out)  # (1, 65, 2700, 3950)
+
+        # Clip negative values
+        if var_fg == "sphum":
+            var_out = np.where(var_out < 0, 0, var_out)
+
+        # Error checking
+        var_out_max = np.max(var_out)
+        var_out_min = np.min(var_out)
+        print(f"  var_out_max({var_fg}): {var_out_max}")
+        print(f"  var_out_min({var_fg}): {var_out_min}")
+        if var_fg == 'u' or var_fg == 'v':
+            val_max = 120
+            val_min = -120
+        if var_fg == 'T':
+            val_max = 350
+            val_min = 0
+        if var_fg == 'sphum':
+            val_max = 1
+            val_min = 0
+        if var_fg == 'delp':
+            val_max = 5000
+            val_min = 0
+
+        if var_out_max > val_max:
+            err = 0
+            exceed_threshold = var_out > val_max
+            count = np.sum(exceed_threshold)
+            print(f"Number of elements that exceed val_max: {count}")
+
+        if var_out_min < val_min:
+            err = 0
+            exceed_threshold = var_out < val_min
+            count = np.sum(exceed_threshold)
+            print(f"Number of elements that exceed val_min: {count}")
+
+        # Overwrite blended fields to blended file.
+        if dim == 2:  # 2D vars
+            reg_nc.variables[var_fg][:, :, :] = var_out
+        if dim == 3:  # 3D vars
+            reg_nc.variables[var_fg][:, :, :, :] = var_out
+
 err = 0
 print("Starting blending code")
-
 Lx = float(sys.argv[1])  # BLENDING_LENGTHSCALE
 pi = np.pi
 nbdy = 40  # 20 on each side
+
+# Initialize use_host_EnKF to None to avoid NameError
+use_host_EnKF = None
 
 blend = str(sys.argv[5]) # TRUE:  Blend RRFS and GDAS EnKF
                          # FALSE: Don't blend, activate cold2warm start only, and use either GDAS or RRFS
@@ -95,7 +166,6 @@ if not blend:
         print("variable 'use_host_EnKF' not set correctly")
         exit()
 
-
 # List of variables from the regional (fg) and global (bg) to blend respectively.
 vars_fg = ["u", "v", "T", "sphum", "delp"]
 vars_bg = ["u_cold2fv3", "v_cold2fv3", "t_cold2fv3", "sphum_cold2fv3", "delp_cold2fv3"]
@@ -105,26 +175,17 @@ vars_bg = ["u_cold2fv3", "v_cold2fv3", "t_cold2fv3", "sphum_cold2fv3", "delp_col
 # grid staggering and have the same orientation as the RRFS winds.
 glb_fg = str(sys.argv[2])
 glb_fg_nc = Dataset(glb_fg)
-nans = check_file_nans(glb_fg_nc, vars_fg, vars_bg, "glb")
-if nans:
-   err = 1
-   err_check(err)
-
-glb_nlon = glb_fg_nc.dimensions["lon"].size  # 1820   (lonp=1821)
-glb_nlat = glb_fg_nc.dimensions["lat"].size  # 1092   (latp=1093)
-glb_nlev = glb_fg_nc.dimensions["lev"].size  # 66     (levp=67)
+glb_nlon = glb_fg_nc.dimensions["lon"].size  # 3950   (lonp=3951)
+glb_nlat = glb_fg_nc.dimensions["lat"].size  # 2700   (latp=2701)
+#glb_nlev = glb_fg_nc.dimensions["lev"].size  # 66     (levp=67)
 glb_Dx = 3.0
 
 # RRFS EnKF restart file fv_core.res.tile1 on ESG grid.
 reg_fg = str(sys.argv[3])
 # Open the blended file for updating the required vars (use a copy of the regional file)
 reg_fg_nc = Dataset(reg_fg, mode="a")
-nans = check_file_nans(reg_fg_nc, vars_fg, vars_bg, "reg")
-if nans:
-   err = 2
-   err_check(err)
-nlon = reg_fg_nc.dimensions["xaxis_1"].size  # 1820   (xaxis_2=1821)
-nlat = reg_fg_nc.dimensions["yaxis_2"].size  # 1092   (yaxis_1=1093)
+nlon = reg_fg_nc.dimensions["xaxis_1"].size  # 3950   (xaxis_2=3951)
+nlat = reg_fg_nc.dimensions["yaxis_2"].size  # 2700   (yaxis_1=2701)
 nlev = reg_fg_nc.dimensions["zaxis_1"].size  # 65
 Dx = 3.0
 
@@ -161,117 +222,28 @@ print(f"Output")
 print(f"  Blended background file       : {reg_fg}, {reg_fg_t}")
 
 # Step 1. blend.
-for (var_fg, var_bg) in zip(vars_fg, vars_bg):
-    i = vars_fg.index(var_fg)
+# Prepare arguments for parallel processing
+args_list = [(var_fg, var_bg, glb_fg, reg_fg, reg_fg_t, nbdy, eps, blend, use_host_EnKF)
+             for var_fg, var_bg in zip(vars_fg, vars_bg)]
 
-    if var_fg == "sphum":
-        reg_nc = reg_fg_t_nc
-    else:
-        reg_nc = reg_fg_nc
-    glb_nc = glb_fg_nc
+# Number of processes (use minimum of variable count and CPU count)
+num_processes = min(len(vars_fg), mp.cpu_count())
 
-    dim = len(np.shape(reg_nc[var_fg]))-1
-    if dim == 2:  # 2D vars
-        glb = np.float64(glb_nc[var_bg][:, :])     # (   2700, 3950)
-        reg = np.float64(reg_nc[var_fg][:, :, :])  # (1, 2700, 3950)
-        ntim = np.shape(reg)[0]
-        nlat = np.shape(reg)[1]
-        nlon = np.shape(reg)[2]
-        nlev = 1
-        glb = np.reshape(glb, [ntim, nlat, nlon])  # add time dim bc missing from chgres
-        var_out = np.zeros(shape=(nlon, nlat, 1), dtype=np.float64)
-        var_work = np.zeros(shape=((nlon+nbdy), (nlat+nbdy), 1), dtype=np.float64)
-        field_work = np.zeros(shape=((nlon+nbdy)*(nlat+nbdy)), dtype=np.float64)
-    if dim == 3:  # 3D vars
-        glb = np.float64(glb_nc[var_bg][:, :, :])     # (   65, 2700, 3950)
-        reg = np.float64(reg_nc[var_fg][:, :, :, :])  # (1, 65, 2700, 3950)
-        ntim = np.shape(reg)[0]
-        nlev = np.shape(reg)[1]
-        nlat = np.shape(reg)[2]
-        nlon = np.shape(reg)[3]
-        glb = np.reshape(glb, [ntim, nlev, nlat, nlon])  # add time dim bc missing from chgres
-        var_out = np.zeros(shape=(nlon, nlat, nlev, 1), dtype=np.float64)
-        var_work = np.zeros(shape=((nlon+nbdy), (nlat+nbdy), nlev, 1), dtype=np.float64)
-        field_work = np.zeros(shape=((nlon+nbdy)*(nlat+nbdy), nlev), dtype=np.float64)
-    glbT = np.transpose(glb)  # (3950, 2700, 65   )
-    regT = np.transpose(reg)  # (3950, 2700, 65, 1)
-
-    nlon_start = int(nbdy/2)
-    nlon_end = int(nlon+nbdy/2)
-    nlat_start = int(nbdy/2)
-    nlat_end = int(nlat+nbdy/2)
-
-    if blend:
-        print(f"")
-        print(f"Blending backgrounds for {var_fg}/{var_bg}")
-        var_work[nlon_start:nlon_end, nlat_start:nlat_end, :] = glbT - regT
-        field_work = var_work.reshape((nlon+nbdy)*(nlat+nbdy), nlev, order="F")  # order="F" (FORTRAN)
-        field_work = raymond.raymond(field_work, nlon+nbdy, nlat+nbdy, eps, nlev)
-        var_work = field_work.reshape(nlon+nbdy, nlat+nbdy, nlev, order="F")
-        var_out = var_work[nlon_start:nlon_end, nlat_start:nlat_end, :]
-        if dim == 2:  # 2D vars
-            var_out = var_out[:, :, 0] + regT[:, :, 0]
-            var_out = np.reshape(var_out, [nlon, nlat, 1])  # add the time ("1") dimension back
-        if dim == 3:  # 3D vars
-            var_out = var_out + regT[:, :, :, 0]
-            var_out = np.reshape(var_out, [nlon, nlat, nlev, 1])  # add the time ("1") dimension back
-    else:  # skip blending and use either host enkf (GDAS) or the RRFS enkf
-        print(f"Blending code is NOT executing blending!")
-        print(f"    This is used for finishing converting the cold start files into warm start format.")
-        if use_host_EnKF:
-            print(f"---> Use the GDAS EnKF")
-            var_out = glbT
-        else:
-            print(f"---> Use the RRFS EnKF")
-            var_out = regT
-
-    var_out = np.transpose(var_out)  # (1, 65, 2700, 3950)
-
-    # Clip negative values
-    if var_fg == "sphum":
-        var_out = np.where(var_out < 0, 0, var_out)
-
-    # Error checking
-    var_out_max = np.max(var_out)
-    var_out_min = np.min(var_out)
-    print(f"  var_out_max({var_fg}): {var_out_max}")
-    print(f"  var_out_min({var_fg}): {var_out_min}")
-    if var_fg == 'u' or var_fg == 'v':
-        val_max = 120
-        val_min = -120
-    if var_fg == 'T':
-        val_max = 350
-        val_min = 0
-    if var_fg == 'sphum':
-        val_max = 1
-        val_min = 0
-    if var_fg == 'delp':
-        val_max = 5000
-        val_min = 0
-
-    if var_out_max > val_max:
-        err = 0
-        exceed_threshold = var_out > val_max
-        count = np.sum(exceed_threshold)
-        print(f"Number of elements that exceed val_max: {count}")
+# Parallel NaN check before processing
+with mp.Pool(processes=num_processes) as pool:
+    nan_results = pool.starmap(check_variable_nans, [(var_fg, var_bg, glb_fg, reg_fg, reg_fg_t) for var_fg, var_bg in zip(vars_fg, vars_bg)])
+    if any(nan_results):
+        err = 1
         err_check(err)
 
-    if var_out_min < val_min:
-        err = 0
-        exceed_threshold = var_out < val_min
-        count = np.sum(exceed_threshold)
-        print(f"Number of elements that exceed val_min: {count}")
-        err_check(err)
-
-    # Overwrite blended fields to blended file.
-    if dim == 2:  # 2D vars
-        reg_nc.variables[var_fg][:, :, :] = var_out
-    if dim == 3:  # 3D vars
-        reg_nc.variables[var_fg][:, :, :, :] = var_out
+# Process variables in parallel
+with mp.Pool(processes=num_processes) as pool:
+    pool.starmap(process_variable, args_list)
 
 # Close nc files
-reg_nc.close()  # blended file
-glb_nc.close()
+reg_fg_nc.close()  # blended file
+glb_fg_nc.close()
+reg_fg_t_nc.close()
 
 print("Blending finished successfully.")
 
