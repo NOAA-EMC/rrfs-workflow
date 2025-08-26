@@ -15,6 +15,9 @@ load(pathJoin("hdf5", os.getenv("hdf5_ver")))
 load(pathJoin("netcdf", os.getenv("netcdf_ver")))
 load(pathJoin("wgrib2", os.getenv("wgrib2_ver")))
 
+prepend_path("MODULEPATH","/lfs/h2/emc/eib/save/hang.lei/forgdit/nco_wcoss2/install2/modulefiles/compiler/intel/19.1.3.304")
+load(pathJoin("grib_util", os.getenv("grib_util_ver")))
+
 load(pathJoin("udunits", os.getenv("udunits_ver")))
 load(pathJoin("gsl", os.getenv("gsl_ver")))
 load(pathJoin("nco", os.getenv("nco_ver")))
