@@ -8,6 +8,7 @@
 #PBS -l place=scatter
 #PBS -l debug=true
 
+set -x
 model=rrfs
 export cyc="%CYC%"
 %include <head.h>

@@ -1,5 +1,6 @@
 #!/bin/bash -l
 
+set -x
 model=rrfs
 %include <head.h>
 %include <envir-p1.h>

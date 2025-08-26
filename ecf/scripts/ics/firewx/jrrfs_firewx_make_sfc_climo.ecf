@@ -8,6 +8,7 @@
 #PBS -l select=9:mpiprocs=8:ncpus=8
 #PBS -l debug=true
 
+set -x
 model=rrfs
 export cyc="%CYC%"
 %include <head.h>
