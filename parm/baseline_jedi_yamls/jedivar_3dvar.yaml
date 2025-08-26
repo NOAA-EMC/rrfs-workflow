@@ -56,6 +56,7 @@ cost function:
     - isltyp
     - snowh
     - vegetation_area_fraction
+    - air_temperature_at_2m
     - eastward_wind_at_10m
     - northward_wind_at_10m
     - lai
@@ -68,44 +69,63 @@ cost function:
     - rain_water
     - snow_water
     - cldfrac
-    filename: mpasout.nc
+    - equivalent_reflectivity_factor
+    filename: '@backgroundFile@'
     date: *analysisDate
   background error:
-    covariance model: hybrid
-    components:
-    - covariance:
-        covariance model: ensemble
-        localization:
-          localization method: SABER
-          saber central block:
-            saber block name: BUMP_NICAS
-            active variables: *incvars
-            read:
-              io:
-                data directory: data/bumploc
-                files prefix: bumploc
-              drivers:
-                multivariate strategy: duplicated
-                read local nicas: true
-              model:
-                level for 2d variables: last
-        members from template:
-          template:
-            <<: *memberConfig
-            filename: ./data/ens/mem%iMember%.nc
-          pattern: "%iMember%"
-          start: 1
-          zero padding: 3
-          nmembers: 30
-      weight:
-        value: "1.0"
+    covariance model: SABER
+    saber central block:
+      saber block name: gsi static covariance
+      read:
+        gsi akbk: DataFix/fix/akbk66.nc
+        gsi error covariance file: berror_stats
+        gsi berror namelist file: gsiparm_regional.anl
+        #processor layout x direction: 16
+        #processor layout y direction: 10
+        processor layout x direction: 10
+        processor layout y direction: 8
+        debugging deep bypass gsi B error: false
+        debugging mode: false
+    saber outer blocks:
+    - saber block name: interpolation
+      inner geometry:
+        function space: StructuredColumns
+        custom grid matching gsi:
+          type: rotated_lonlat
+          lats: 252
+          lons: 420
+          lat_start: -24.9348669009475
+          lat_end: 24.9348669009475
+          lon_start: -42.5281334130269
+          lon_end: 42.5281334130269
+          north_pole_lat: 128.500001147
+          north_pole_lon: 82.5000182247
+        custom partitioner matching gsi:
+          #bands: 10  # matches GSI partition for 1 or 2 MPI tasks, but too simplistic in general
+          bands: 8  # matches GSI partition for 1 or 2 MPI tasks, but too simplistic in general
+        halo: 1
+      forward interpolator:
+        local interpolator type: oops unstructured grid interpolator
+      inverse interpolator:
+        local interpolator type: oops unstructured grid interpolator
+      state variables to inverse:  # Make sure to also re-order the state passed to GSI-B constructor
+      - eastward_wind
+      - northward_wind
+      - air_temperature
+      - air_pressure_at_surface
+      - water_vapor_mixing_ratio_wrt_moist_air
+    linear variable change:
+      linear variable change name: Control2Analysis
+      input variables: [eastward_wind,northward_wind,air_temperature,relative_humidity,air_pressure_at_surface]
+      output variables: [eastward_wind,northward_wind,air_temperature,water_vapor_mixing_ratio_wrt_moist_air,air_pressure_at_surface]
+
   observations:
      observers:
      - obs space:
          name: adpupa_airTemperature_120
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -145,7 +165,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -155,8 +175,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 120
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 120
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -385,7 +418,7 @@ cost function:
          name: adpupa_specificHumidity_120
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -425,7 +458,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -435,8 +468,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_in: 120
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_not_in: 120
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -665,7 +711,7 @@ cost function:
          name: adpupa_stationPressure_120
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -698,7 +744,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -708,8 +754,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: stationPressure
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 120
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: stationPressure
+           where:
+           - variable: ObsType/stationPressure
+             is_not_in: 120
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -938,7 +997,7 @@ cost function:
          name: adpupa_winds_220
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -979,7 +1038,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -990,8 +1049,22 @@ cost function:
            filter variables:
            - name: windEastward
            - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 220
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 220
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -1255,7 +1328,7 @@ cost function:
          name: aircar_airTemperature_133
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -1295,7 +1368,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -1305,8 +1378,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 133
            action:
              name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 133
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -1535,7 +1621,7 @@ cost function:
          name: aircar_specificHumidity_133
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -1575,7 +1661,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -1585,8 +1671,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_in: 133
            action:
              name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_not_in: 133
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -1815,7 +1914,7 @@ cost function:
          name: aircar_winds_233
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -1856,7 +1955,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -1867,8 +1966,22 @@ cost function:
            filter variables:
            - name: windEastward
            - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 233
            action:
              name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 233
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -2132,7 +2245,7 @@ cost function:
          name: aircft_airTemperature_130
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -2172,7 +2285,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -2182,8 +2295,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 130
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 130
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -2412,7 +2538,7 @@ cost function:
          name: aircft_airTemperature_131
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -2452,7 +2578,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -2462,8 +2588,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 131
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 131
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -2692,7 +2831,7 @@ cost function:
          name: aircft_airTemperature_134
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -2732,7 +2871,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -2742,8 +2881,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 134
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 134
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -2972,7 +3124,7 @@ cost function:
          name: aircft_airTemperature_135
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -3012,7 +3164,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -3022,8 +3174,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 135
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 135
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -3252,7 +3417,7 @@ cost function:
          name: aircft_specificHumidity_134
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -3292,7 +3457,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -3302,8 +3467,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_in: 134
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_not_in: 134
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -3532,7 +3710,7 @@ cost function:
          name: aircft_winds_230
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -3573,7 +3751,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -3584,8 +3762,22 @@ cost function:
            filter variables:
            - name: windEastward
            - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 230
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 230
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -3849,7 +4041,7 @@ cost function:
          name: aircft_winds_231
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -3890,7 +4082,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -3901,8 +4093,22 @@ cost function:
            filter variables:
            - name: windEastward
            - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 231
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 231
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -4166,7 +4372,7 @@ cost function:
          name: aircft_winds_234
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -4207,7 +4413,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -4218,8 +4424,22 @@ cost function:
            filter variables:
            - name: windEastward
            - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 234
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 234
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -4483,7 +4703,7 @@ cost function:
          name: aircft_winds_235
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -4524,7 +4744,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -4535,8 +4755,22 @@ cost function:
            filter variables:
            - name: windEastward
            - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 235
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 235
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -4800,7 +5034,7 @@ cost function:
          name: msonet_airTemperature_188
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -4840,7 +5074,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -4850,8 +5084,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 188
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 188
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -5080,7 +5327,7 @@ cost function:
          name: msonet_specificHumidity_188
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -5120,7 +5367,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -5130,8 +5377,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_in: 188
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_not_in: 188
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -5360,7 +5620,7 @@ cost function:
          name: msonet_stationPressure_188
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -5393,7 +5653,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -5403,8 +5663,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: stationPressure
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 188
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: stationPressure
+           where:
+           - variable: ObsType/stationPressure
+             is_not_in: 188
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -5633,7 +5906,7 @@ cost function:
          name: adpsfc_airTemperature_181
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -5673,7 +5946,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -5683,8 +5956,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 181
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 181
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -5921,12 +6207,13 @@ cost function:
          name: adpsfc_airTemperature_183
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_adpsfc.nc"
              missing file action: "warn"
+             #obsfile: "obsout/sfcship_tsen_obs_2024052700_dc.nc4"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -5961,7 +6248,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -5971,8 +6258,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 183
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 183
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -6209,7 +6509,7 @@ cost function:
          name: adpsfc_airTemperature_187
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -6246,7 +6546,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -6256,8 +6556,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 187
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 187
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -6498,7 +6811,7 @@ cost function:
          name: adpsfc_specificHumidity_181
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -6538,7 +6851,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -6548,8 +6861,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_in: 181
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_not_in: 181
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -6778,12 +7104,13 @@ cost function:
          name: adpsfc_specificHumidity_183
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_adpsfc.nc"
              missing file action: "warn"
+             #obsfile: "obsout/sfcship_q_obs_2024052700_dc.nc4"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -6818,7 +7145,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -6828,8 +7155,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_in: 183
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_not_in: 183
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -7058,7 +7398,7 @@ cost function:
          name: adpsfc_specificHumidity_187
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -7095,7 +7435,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -7105,8 +7445,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_in: 187
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_not_in: 187
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -7339,7 +7692,7 @@ cost function:
          name: adpsfc_stationPressure_181
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -7372,7 +7725,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -7382,8 +7735,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: stationPressure
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 181
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: stationPressure
+           where:
+           - variable: ObsType/stationPressure
+             is_not_in: 181
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -7612,7 +7978,7 @@ cost function:
          name: adpsfc_stationPressure_187
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -7645,7 +8011,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -7655,8 +8021,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: stationPressure
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 187
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: stationPressure
+           where:
+           - variable: ObsType/stationPressure
+             is_not_in: 187
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -7885,7 +8264,7 @@ cost function:
          name: adpsfc_winds_281
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -7907,9 +8286,6 @@ cost function:
 
        obs operator:
            name: VertInterp
-           hofx_scaling: true
-           hofx scaling field: wind_reduction_factor_at_10m
-           hofx scaling field group: GeoVaLs
            vertical coordinate: air_pressure
            observation vertical coordinate: pressure
            observation vertical coordinate group: MetaData
@@ -7929,7 +8305,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -7940,8 +8316,22 @@ cost function:
            filter variables:
            - name: windEastward
            - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 281
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 281
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -8211,12 +8601,13 @@ cost function:
          name: adpsfc_winds_284
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_adpsfc.nc"
              missing file action: "warn"
+             #obsfile: "obsout/sfcship_uv_obs_2024052700_dc.nc4"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -8252,7 +8643,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -8263,8 +8654,22 @@ cost function:
            filter variables:
            - name: windEastward
            - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 284
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 284
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -8534,7 +8939,7 @@ cost function:
          name: adpsfc_winds_287
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -8556,9 +8961,6 @@ cost function:
 
        obs operator:
            name: VertInterp
-           hofx_scaling: true
-           hofx scaling field: wind_reduction_factor_at_10m
-           hofx scaling field group: GeoVaLs
            vertical coordinate: air_pressure
            observation vertical coordinate: pressure
            observation vertical coordinate group: MetaData
@@ -8575,7 +8977,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -8586,8 +8988,22 @@ cost function:
            filter variables:
            - name: windEastward
            - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 287
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 287
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -8857,7 +9273,7 @@ cost function:
          name: adpupa_airTemperature_132
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -8897,7 +9313,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -8907,8 +9323,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 132
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 132
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -9137,7 +9566,7 @@ cost function:
          name: adpupa_specificHumidity_132
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -9177,7 +9606,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -9187,8 +9616,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_in: 132
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_not_in: 132
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -9417,7 +9859,7 @@ cost function:
          name: msonet_winds_288
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -9439,9 +9881,6 @@ cost function:
 
        obs operator:
            name: VertInterp
-           hofx_scaling: true
-           hofx scaling field: wind_reduction_factor_at_10m
-           hofx scaling field group: GeoVaLs
            vertical coordinate: air_pressure
            observation vertical coordinate: pressure
            observation vertical coordinate group: MetaData
@@ -9461,7 +9900,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -9737,8 +10176,21 @@ cost function:
            where:
            - variable: QCflagsData/windEastward
              is_in: 0
+           - variable: ObsType/windEastward
+             is_in: 288
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 288
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -10049,7 +10501,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -10060,8 +10512,22 @@ cost function:
            filter variables:
            - name: windEastward
            - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 227
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 227
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -10369,7 +10835,7 @@ cost function:
          name: rassda_airTemperature_126
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -10409,7 +10875,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -10419,8 +10885,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 126
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 126
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -10649,7 +11128,7 @@ cost function:
          name: sfcshp_airTemperature_180
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -10689,7 +11168,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -10699,8 +11178,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 180
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 180
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -10929,7 +11421,7 @@ cost function:
          name: sfcshp_airTemperature_182
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -10969,7 +11461,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -10979,8 +11471,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 182
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 182
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -11209,12 +11714,13 @@ cost function:
          name: sfcshp_airTemperature_183
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_sfcshp.nc"
              missing file action: "warn"
+             #obsfile: "obsout/sfcship_tsen_obs_2024052700_dc.nc4"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -11249,7 +11755,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -11259,8 +11765,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 183
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 183
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -11489,7 +12008,7 @@ cost function:
          name: sfcshp_specificHumidity_180
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -11529,7 +12048,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -11539,8 +12058,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_in: 180
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_not_in: 180
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -11769,7 +12301,7 @@ cost function:
          name: sfcshp_specificHumidity_182
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -11809,7 +12341,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -11819,8 +12351,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_in: 182
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_not_in: 182
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -12049,12 +12594,13 @@ cost function:
          name: sfcshp_specificHumidity_183
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_sfcshp.nc"
              missing file action: "warn"
+             #obsfile: "obsout/sfcship_q_obs_2024052700_dc.nc4"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -12089,7 +12635,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -12099,8 +12645,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_in: 183
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_not_in: 183
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -12329,7 +12888,7 @@ cost function:
          name: sfcshp_stationPressure_180
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -12362,7 +12921,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -12372,8 +12931,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: stationPressure
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 180
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: stationPressure
+           where:
+           - variable: ObsType/stationPressure
+             is_not_in: 180
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -12611,7 +13183,7 @@ cost function:
          name: sfcshp_stationPressure_182
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -12644,7 +13216,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -12654,8 +13226,21 @@ cost function:
          - filter: Perform Action
            filter variables:
            - name: stationPressure
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 182
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: stationPressure
+           where:
+           - variable: ObsType/stationPressure
+             is_not_in: 182
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -12885,7 +13470,7 @@ cost function:
          name: sfcshp_winds_280
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -12907,9 +13492,6 @@ cost function:
 
        obs operator:
            name: VertInterp
-           hofx_scaling: true
-           hofx scaling field: wind_reduction_factor_at_10m
-           hofx scaling field group: GeoVaLs
            vertical coordinate: air_pressure
            observation vertical coordinate: pressure
            observation vertical coordinate group: MetaData
@@ -12929,7 +13511,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -12940,8 +13522,22 @@ cost function:
            filter variables:
            - name: windEastward
            - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 280
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 280
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -13211,7 +13807,7 @@ cost function:
          name: sfcshp_winds_282
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -13233,9 +13829,6 @@ cost function:
 
        obs operator:
            name: VertInterp
-           hofx_scaling: true
-           hofx scaling field: wind_reduction_factor_at_10m
-           hofx scaling field group: GeoVaLs
            vertical coordinate: air_pressure
            observation vertical coordinate: pressure
            observation vertical coordinate group: MetaData
@@ -13255,7 +13848,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -13266,8 +13859,22 @@ cost function:
            filter variables:
            - name: windEastward
            - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 282
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 282
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -13537,12 +14144,13 @@ cost function:
          name: sfcshp_winds_284
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_sfcshp.nc"
              missing file action: "warn"
+             #obsfile: "obsout/sfcship_uv_obs_2024052700_dc.nc4"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -13578,7 +14186,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -13589,8 +14197,22 @@ cost function:
            filter variables:
            - name: windEastward
            - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 284
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 284
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
@@ -13860,7 +14482,7 @@ cost function:
          name: vadwnd_winds_224
          distribution:
            name: "RoundRobin"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -13901,7 +14523,7 @@ cost function:
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -13912,8 +14534,22 @@ cost function:
            filter variables:
            - name: windEastward
            - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 224
            action:
-             name: passivate # accept, reject, passivate
+             name: @analysisUse@ # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 224
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
