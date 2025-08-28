@@ -16,22 +16,18 @@ fhr=$3
 
 cd "$DATA/$RUNTYPE"
 
-# Hourly GEMPAK files created until this hour, then 3 hourly
-HOURLY_LIMIT=60
-
 msg="Begin job for $job"
 postmsg "$msg"
 
 export PS4='GEMPAK_T$SECONDS + '
 
-# RRFSFIXgem=${HOMErrfs}/util/fix_grib2
 NAGRIB=nagrib2
 
 # --- Copy GEMPAK Tables ---
-cp "$RRFSFIXgem/rrfs_g2varsncep1.tbl" g2varsncep1.tbl
-cp "$RRFSFIXgem/rrfs_g2varswmo2.tbl" g2varswmo2.tbl
-cp "$RRFSFIXgem/rrfs_g2vcrdncep1.tbl" g2vcrdncep1.tbl
-cp "$RRFSFIXgem/rrfs_g2vcrdwmo2.tbl" g2vcrdwmo2.tbl
+cp "$GEMPAK_FIX/rrfs_g2varsncep1.tbl" g2varsncep1.tbl
+cp "$GEMPAK_FIX/rrfs_g2varswmo2.tbl" g2varswmo2.tbl
+cp "$GEMPAK_FIX/rrfs_g2vcrdncep1.tbl" g2vcrdncep1.tbl
+cp "$GEMPAK_FIX/rrfs_g2vcrdwmo2.tbl" g2vcrdwmo2.tbl
 
 # --- Set GEMPAK Parameters ---
 cpyfil=gds
@@ -46,10 +42,7 @@ pdsext=no
 maxtries=720
 
 # --- Format Forecast Hour (fhr) ---
-# KSH 'typeset -Z' is replaced with 'printf' for zero-padding
 
-# MEP I tried making fhr_padded uniformly 3 digits (avoiding the fhr -ge 100) 
-# check.  May have helped, but was not sure. Backed out this change.
  if [[ $((10#$fhr)) -ge 100 ]]; then
  fhr_padded=$(printf "%03d" "$((10#$fhr))")
  else
@@ -57,11 +50,8 @@ maxtries=720
  fi
 (( fhcnt3 = 10#$fhr % 3 ))
 
-# KSH 'typeset -Z3 fhr3' is replaced with printf
 fhr3=$(printf "%03d" "$((10#$fhr))")
 
-# KSH 'let' and 'typeset' are replaced with Bash arithmetic and printf
-# Use 10# to ensure base-10 interpretation of zero-padded numbers
 (( fhr3m1 = 10#$fhr3 - 1 ))
 fhr3m1=$(printf "%03d" "$fhr3m1")
 
@@ -139,13 +129,13 @@ done
 # --- Process GRIB files based on RUNTYPE ---
 case "$RUNTYPE" in
   rrfs_alaska)
-    "$WGRIB2" -s "$GRIBIN" | grep -f "$RRFSFIXgem/rrfs.parmlist" | "$WGRIB2" -i -grib temp "$GRIBIN"
+    "$WGRIB2" -s "$GRIBIN" | grep -f "$GEMPAK_FIX/rrfs.parmlist" | "$WGRIB2" -i -grib temp "$GRIBIN"
     mv temp "grib${fhr_padded}"
     ;;
   rrfs_conus)
     "$WGRIB2" "$GRIBIN" | grep "REFD:263 K" | grep max | "$WGRIB2" -i -grib tempref263k "$GRIBIN"
     "$WGRIB2" tempref263k -set_byte 4 11 198 -grib tempmaxref263k
-    "$WGRIB2" -s "$GRIBIN" | grep -f "$RRFSFIXgem/rrfs.parmlist" | "$WGRIB2" -i -grib temp "$GRIBIN"
+    "$WGRIB2" -s "$GRIBIN" | grep -f "$GEMPAK_FIX/rrfs.parmlist" | "$WGRIB2" -i -grib temp "$GRIBIN"
     cat temp tempmaxref263k > "grib${fhr_padded}"
     ;;
   rrfs_conus_subh)
@@ -156,17 +146,17 @@ case "$RUNTYPE" in
     wgrib2 "${GRIBIN}" -match "$timed h"   -grib "grib${fhr_padded}_${timed}"
     ;;
   rrfs_conus_cam)
-    "$WGRIB2" -s "$GRIBIN" | grep -f "$RRFSFIXgem/rrfs.parmlist_mag" | "$WGRIB2" -i -grib temp "$GRIBIN"
+    "$WGRIB2" -s "$GRIBIN" | grep -f "$GEMPAK_FIX/rrfs.parmlist_mag" | "$WGRIB2" -i -grib temp "$GRIBIN"
     "$WGRIB2" "$GRIBIN" | grep "REFD:263 K" | grep max | "$WGRIB2" -i -grib tempref263k "$GRIBIN"
     "$WGRIB2" tempref263k -set_byte 4 11 198 -grib tempmaxref263k
     cat "$GRIBIN" tempmaxref263k > "grib${fhr_padded}"
     ;;
   rrfs_hawaii)
-    "$WGRIB2" -s "$GRIBIN" | grep -f "$RRFSFIXgem/rrfs.parmlist" | "$WGRIB2" -i -grib temp "$GRIBIN"
+    "$WGRIB2" -s "$GRIBIN" | grep -f "$GEMPAK_FIX/rrfs.parmlist" | "$WGRIB2" -i -grib temp "$GRIBIN"
     mv temp "grib${fhr_padded}"
     ;;
   rrfs_prico)
-    "$WGRIB2" -s "$GRIBIN" | grep -f "$RRFSFIXgem/rrfs.parmlist" | "$WGRIB2" -i -grib temp "$GRIBIN"
+    "$WGRIB2" -s "$GRIBIN" | grep -f "$GEMPAK_FIX/rrfs.parmlist" | "$WGRIB2" -i -grib temp "$GRIBIN"
     mv temp "grib${fhr_padded}"
     ;;
   *)

@@ -32,7 +32,7 @@ export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 export FIXam=${FIXam:-${FIXrrfs}/am}
 
-export RRFSFIXgem=${RRFSFIXgem:-${FIXrrfs}/gempak/fix}
+export GEMPAK_FIX=${GEMPAK_FIX:-${FIXrrfs}/gempak/fix}
 
 
 #-----------------------------------------------------------------------
