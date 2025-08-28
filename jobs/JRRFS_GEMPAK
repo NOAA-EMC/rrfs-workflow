@@ -1,0 +1,72 @@
+#!/bin/bash
+
+date
+export PS4='+ $SECONDS + '
+set -xue
+
+#-----------------------------------------------------------------------
+# RRFS Product Generation
+#-----------------------------------------------------------------------
+export pid=${pid:-$$}
+export outid=${outid:-"LL$job"}
+export RUN=${RUN:-rrfs}
+export fhr=${FHR:-}
+
+export DATA=${DATA:-${DATAROOT}/${jobid}}
+mkdir -p ${DATA}
+cd ${DATA}
+
+#-----------------------------------------------------------------------
+# Source the variable definitions file
+#-----------------------------------------------------------------------
+#
+. ${HOMErrfs}/ush/rrfs_nco_config.sh
+
+#-----------------------------------------------------------------------
+# Specify Execution Areas
+#-----------------------------------------------------------------------
+
+export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
+export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
+export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
+export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
+export FIXam=${FIXam:-${FIXrrfs}/am}
+
+export GEMPAK_FIX=${GEMPAK_FIX:-${FIXrrfs}/gempak/fix}
+
+
+#-----------------------------------------------------------------------
+# Source the bash utility functions.
+#-----------------------------------------------------------------------
+
+. $USHrrfs/source_util_funcs.sh
+
+export COMrrfs=${COMrrfs:-$(compath.py -o rrfs/${rrfs_ver})}
+export COMIN=${COMrrfs}/${RUN}.${PDY}/${cyc}
+export COMOUT=${COMOUT:-$(compath.py -o rrfs/${rrfs_ver}/${RUN}.${PDY}/${cyc}/gempak)}
+export cycle="t${cyc}z"
+if [ ! -f ${COMOUT} ] ; then
+	mkdir -p -m 775 ${COMOUT}
+fi
+
+#-----------------------------------------------------------------------
+# Execute the script.
+#-----------------------------------------------------------------------
+
+export pgmout="${DATA}/OUTPUT.$$"
+env
+
+${HOMErrfs}/scripts/exrrfs_gempak.sh
+export err=$?; err_chk
+
+if [ -e "$pgmout" ]; then
+  cat $pgmout
+fi
+
+#############################
+# Remove the Temporary working directory
+##############################
+cd $DATAROOT
+if [ ${KEEPDATA:-YES} = NO ] ; then rm -rf $DATA ; fi
+
+exit $err

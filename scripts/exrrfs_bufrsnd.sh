@@ -347,9 +347,9 @@ cd ${COMOUT}/bufr.${cyc}
 # Tar and gzip the individual bufr files and send them to /com
 tar -cf - . | /usr/bin/gzip > ../rrfs.t${cyc}z.bufrsnd.tar.gz
 
-cpreq -p $GEMPAKrrfs/fix/snrrfs.prm snrrfs.prm
-cpreq -p $GEMPAKrrfs/fix/sfrrfs.prm_aux sfrrfs.prm_aux
-cpreq -p $GEMPAKrrfs/fix/sfrrfs.prm sfrrfs.prm
+cpreq -p $GEMPAK_FIX/snrrfs.prm snrrfs.prm
+cpreq -p $GEMPAK_FIX/sfrrfs.prm_aux sfrrfs.prm_aux
+cpreq -p $GEMPAK_FIX/sfrrfs.prm sfrrfs.prm
 
 mkdir -p $COMOUT/gempak
 
