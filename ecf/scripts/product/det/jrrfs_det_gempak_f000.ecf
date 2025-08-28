@@ -4,7 +4,7 @@
 #PBS -q %QUEUE%
 #PBS -A %PROJ%-%PROJENVIR%
 #PBS -l walltime=00:20:00
-#PBS -l select=1:mpiprocs=7:ncpus=7:mem=28G
+#PBS -l select=1:ncpus=4:mem=28G
 ####PBS -l place=excl
 #PBS -l debug=true
 
@@ -17,17 +17,17 @@ export CDATE="${PDY}${cyc}"
 # Load modules
 ############################################################
 
-module load envvar/${envvar_ver}
-module load PrgEnv-intel/${PrgEnv_intel_ver}
-module load intel/${intel_ver}
-module load craype/${craype_ver}
-module load cray-mpich/${cray_mpich_ver}
-module load cray-pals/${cray_pals_ver}
-module load prod_util/${prod_util_ver}
-module load hdf5/${hdf5_ver}
-module load netcdf/${netcdf_ver}
-module load wgrib2/${wgrib2_ver}
-module load gempak/${gempak_ver}
+#module load envvar/${envvar_ver}
+#module load PrgEnv-intel/${PrgEnv_intel_ver}
+#module load intel/${intel_ver}
+#module load craype/${craype_ver}
+#module load cray-mpich/${cray_mpich_ver}
+#module load cray-pals/${cray_pals_ver}
+#module load prod_util/${prod_util_ver}
+#module load hdf5/${hdf5_ver}
+#module load netcdf/${netcdf_ver}
+#module load wgrib2/${wgrib2_ver}
+#module load gempak/${gempak_ver}
 
 module list
 export WGF="%WGF%"
@@ -35,7 +35,8 @@ export FHR="%FHR%"
 ############################################################
 # CALL executable job script here
 ############################################################
-${HOMErrfs}/jobs/JRRFS_GEMPAK
+#${HOMErrfs}/jobs/JRRFS_GEMPAK
+${HOMErrfs}/ush/load_modules_run_task.sh gempak ${HOMErrfs}/jobs/JRRFS_GEMPAK
 
 %include <tail.h>
 

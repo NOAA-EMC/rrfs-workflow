@@ -1,281 +1,140 @@
-#!/bin/ksh
-###################################################################
-echo "--------------------------------------------------------------"
-echo "exrrfs_nawips - convert RRFS NCEP GRIB files into GEMPAK Grids"
-echo "--------------------------------------------------------------"
-#####################################################################
-
+#!/bin/bash
 set -xa
 
-RUNTYPE=$1
-GRIB=$2
-fhr=$3
+#################################################
+# Set up model and cycle specific variables
+#################################################
 
-cd $DATA/$RUNTYPE
+export model=`echo $RUN | awk '{print tolower($0)}'`
+export GRIB=prslev
+export DBN_ALERT_TYPE=RRFS_GEMPAK
+FHR=$(echo $FHR | cut -c1-3)
+#################################################################
+# Execute the script to make conus GEMPAK grids
 
-# Hourly GEMPAK files created until this hour, then 3 hourly
-HOURLY_LIMIT=60
+mkdir -p $DATA/rrfs_conus
+cd $DATA/rrfs_conus
 
-msg="Begin job for $job"
+if [ -e ${DATA}/poescript ]
+then
+rm -f ${DATA}/poescript
+fi
+
+# Copy model specific GEMPAK tables into working directory
+#
+cp ${RRFSFIXgem}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
+cp ${RRFSFIXgem}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
+cp ${RRFSFIXgem}/rrfs_wmogrib2.tbl wmogrib2.tbl
+cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
+
+cd $DATA
+export GRIB=prslev
+export type=rrfs_conus
+echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR" > $DATA/poescript
+#################################################################
+
+#################################################################
+#
+
+if [ $FHR -ge 01 -a $FHR -le 18 ]
+then
+mkdir -p $DATA/rrfs_conus_subh
+cd $DATA/rrfs_conus_subh
+
+# Copy model specific GEMPAK tables into working directory
+#
+cp ${RRFSFIXgem}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
+cp ${RRFSFIXgem}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
+cp ${RRFSFIXgem}/rrfs_wmogrib2.tbl wmogrib2.tbl
+cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
+
+cd $DATA
+export GRIB=prslev
+export type=rrfs_conus_subh
+echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
+fi
+#################################################################
+
+#################################################################
+# Execute the script to make conus GEMPAK grids (Common convection-allowing model fields)
+#
+# won't work currently as CONUS testbed files lack .idx files
+#
+#
+# mkdir -p $DATA/rrfs_conus_cam
+# cd $DATA/rrfs_conus_cam
+
+# Copy model specific GEMPAK tables into working directory
+#
+# cp ${RRFSFIXgem}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
+# cp ${RRFSFIXgem}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
+# cp ${RRFSFIXgem}/rrfs_wmogrib2.tbl wmogrib2.tbl
+# cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
+
+# cd $DATA
+# export GRIB=testbed
+# export type=rrfs_conus_cam
+# echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
+#################################################################
+
+#################################################################
+# Execute the script to make alaska GEMPAK grids
+mkdir -p $DATA/rrfs_alaska
+cd $DATA/rrfs_alaska
+
+# Copy model specific GEMPAK tables into working directory
+#
+cp ${RRFSFIXgem}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
+cp ${RRFSFIXgem}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
+cp ${RRFSFIXgem}/rrfs_wmogrib2.tbl wmogrib2.tbl
+cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
+
+cd $DATA
+export GRIB=prslev
+export type=rrfs_alaska
+echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
+#################################################################
+# Execute the script to make Puerto Rico GEMPAK grids
+mkdir -p $DATA/rrfs_prico
+cd $DATA/rrfs_prico
+
+# Copy model specific GEMPAK tables into working directory
+#
+cp ${RRFSFIXgem}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
+cp ${RRFSFIXgem}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
+cp ${RRFSFIXgem}/rrfs_wmogrib2.tbl wmogrib2.tbl
+cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
+
+cd $DATA
+export GRIB=prslev
+export type=rrfs_prico
+echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
+#################################################################
+# Execute the script to make Hawaii GEMPAK grids
+mkdir -p $DATA/rrfs_hawaii
+cd $DATA/rrfs_hawaii
+
+# Copy model specific GEMPAK tables into working directory
+#
+cp ${RRFSFIXgem}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
+cp ${RRFSFIXgem}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
+cp ${RRFSFIXgem}/rrfs_wmogrib2.tbl wmogrib2.tbl
+cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
+
+cd $DATA
+export GRIB=prslev
+export type=rrfs_hawaii
+echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
+#################################################################
+cat poescript
+
+chmod 775 $DATA/poescript
+
+export CMDFILE=$DATA/poescript
+# Execute the script.
+mpiexec -cpu-bind core -configfile $CMDFILE
+export err=$?; err_chk
+
+date
+msg="ENDED NORMALLY."
 postmsg "$msg"
-
-export PS4='GEMPAK_T$SECONDS + '
-
-# RRFSFIXgem=${HOMErrfs}/util/fix_grib2
-NAGRIB=nagrib2
-
-cp $RRFSFIXgem/rrfs_g2varsncep1.tbl g2varsncep1.tbl
-cp $RRFSFIXgem/rrfs_g2varswmo2.tbl g2varswmo2.tbl
-cp $RRFSFIXgem/rrfs_g2vcrdncep1.tbl g2vcrdncep1.tbl
-cp $RRFSFIXgem/rrfs_g2vcrdwmo2.tbl g2vcrdwmo2.tbl
-
-cpyfil=gds
-garea=dset
-gbtbls=""
-maxgrd=4999
-kxky=""
-grdarea=""
-proj=""
-output=T
-  
-pdsext=no
-
-maxtries=720
-  if [ $fhr -ge 100 ] ; then
-    typeset -Z3 fhr
-  else
-    typeset -Z2 fhr
-  fi
-  fhcnt3=`expr $fhr % 3`
-
-  fhr3=$fhr
-  typeset -Z3 fhr3
-  let "fhr3m1=fhr3-1"
-  typeset -Z3 fhr3m1
-  GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3}
-
-  case $RUNTYPE in
-   rrfs_alaska) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.ak.grib2
-                GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
-   rrfs_conus) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.conus.grib2
-                GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
-   rrfs_conus_subh) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.3km.subh.f${fhr3}.conus.grib2
-                GEMGRDa=${RUNTYPE}_${PDY}${cyc}f${fhr3m1}15 
-		let "timea=fhr3m1*60+15" 
-                GEMGRDb=${RUNTYPE}_${PDY}${cyc}f${fhr3m1}30
-		let "timeb=fhr3m1*60+30" 
-                GEMGRDc=${RUNTYPE}_${PDY}${cyc}f${fhr3m1}45
-		let "timec=fhr3m1*60+45" 
-                GEMGRDd=${RUNTYPE}_${PDY}${cyc}f${fhr3}00 
-		let "timed=fhr" ;;
-   rrfs_conus_cam) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.conus.grib2
-                GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
-   rrfs_hawaii) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.2p5km.f${fhr3}.hi.grib2
-                GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
-   rrfs_prico) GRIBIN=$COMIN/${model}.${cycle}.${GRIB}.2p5km.f${fhr3}.pr.grib2
-                GEMGRD=${RUNTYPE}_${PDY}${cyc}f${fhr3} ;;
-  esac
-
-  if [ $RUNTYPE = "rrfs_alaska" ] ; then
-    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.ak.grib2.idx
-  elif [ $RUNTYPE = "rrfs_conus" ] ; then
-    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.conus.grib2.idx
-  elif [ $RUNTYPE = "rrfs_conus_subh" ] ; then
-    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.subh.f${fhr3}.conus.grib2.idx
-  elif [ $RUNTYPE = "rrfs_conus_cam" ] ; then
-    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.conus.grib2.idx
-  elif [ $RUNTYPE = "rrfs_hawaii" ] ; then
-    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.2p5km.f${fhr3}.hi.grib2.idx
-  elif [ $RUNTYPE = "rrfs_prico" ] ; then
-    GRIBIN_chk=$COMIN/${model}.${cycle}.${GRIB}.2p5km.f${fhr3}.pr.grib2.idx
-  else
-    GRIBIN_chk=$GRIBIN
-  fi
-
-
-  icnt=1
-  while [ $icnt -lt 1000 ]
-  do
-    if [ -r $GRIBIN_chk ] ; then
-      # JY sleep 20
-      sleep 5
-      break
-    else
-      let "icnt=icnt+1"
-      sleep 20
-    fi
-    if [ $icnt -ge $maxtries ]
-    then
-      msg="ABORTING after 2 hours of waiting for F$fhr to end."
-      err_exit $msg
-    fi
-  done
-
-  case $RUNTYPE in
-   rrfs_alaska)
-         $WGRIB2 -s $GRIBIN | grep -f $RRFSFIXgem/rrfs.parmlist|$WGRIB2 -i -grib temp $GRIBIN
-         mv temp grib$fhr
-     ;;
-   rrfs_conus)
-         $WGRIB2 $GRIBIN | grep "REFD:263 K" | grep max | $WGRIB2 -i -grib tempref263k $GRIBIN
-         $WGRIB2 tempref263k -set_byte 4 11 198 -grib tempmaxref263k
-         $WGRIB2 -s $GRIBIN | grep -f $RRFSFIXgem/rrfs.parmlist|$WGRIB2 -i -grib temp $GRIBIN
-         cat temp tempmaxref263k > grib$fhr
-     ;;
-   rrfs_conus_subh)
-#         $WGRIB2 -s $GRIBIN | grep -f $RRFSFIXgem/rrfs.parmlist_mag|$WGRIB2 -i -grib temp $GRIBIN
-#         mv temp grib$fhr
-         cp $GRIBIN grib$fhr
-	 wgrib2 ${GRIBIN} -match "$timea min" -grib  grib${fhr}_${timea}
-	 wgrib2 ${GRIBIN} -match "$timeb min" -grib  grib${fhr}_${timeb}
-	 wgrib2 ${GRIBIN} -match "$timec min" -grib  grib${fhr}_${timec}
-	 wgrib2 ${GRIBIN} -match "$timed h" -grib  grib${fhr}_${timed}
-     ;;
-   rrfs_conus_cam)
-         $WGRIB2 -s $GRIBIN | grep -f $RRFSFIXgem/rrfs.parmlist_mag|$WGRIB2 -i -grib temp $GRIBIN
-         $WGRIB2 $GRIBIN | grep "REFD:263 K" | grep max | $WGRIB2 -i -grib tempref263k $GRIBIN
-         $WGRIB2 tempref263k -set_byte 4 11 198 -grib tempmaxref263k
-         cat $GRIBIN tempmaxref263k > grib$fhr
-     ;;
-   rrfs_hawaii)
-         $WGRIB2 -s $GRIBIN | grep -f $RRFSFIXgem/rrfs.parmlist|$WGRIB2 -i -grib temp $GRIBIN
-         mv temp grib$fhr
-     ;;
-   rrfs_prico)
-         $WGRIB2 -s $GRIBIN | grep -f $RRFSFIXgem/rrfs.parmlist|$WGRIB2 -i -grib temp $GRIBIN
-         mv temp grib$fhr
-     ;;
-   *)
-     cp $GRIBIN grib$fhr
-  esac
-
-
-
-  if [ $RUNTYPE = "rrfs_conus_subh" ] ; then
-  
-
-  export pgm="nagrib2 F$fhr"
-  startmsg
-
-
-  $NAGRIB << EOF
-   GBFILE   = grib${fhr}_${timea}
-   INDXFL   = 
-   GDOUTF   = $GEMGRDa
-   PROJ     = $proj
-   GRDAREA  = $grdarea
-   KXKY     = $kxky
-   MAXGRD   = $maxgrd
-   CPYFIL   = $cpyfil
-   GAREA    = $garea
-   OUTPUT   = $output
-   GBTBLS   = $gbtbls
-   GBDIAG   = 
-   PDSEXT   = $pdsext
-  l
-  r
-EOF
-
-  $NAGRIB << EOF
-   GBFILE   = grib${fhr}_${timeb}
-   INDXFL   = 
-   GDOUTF   = $GEMGRDb
-  r
-EOF
-
-  $NAGRIB << EOF
-   GBFILE   = grib${fhr}_${timec}
-   INDXFL   = 
-   GDOUTF   = $GEMGRDc
-  r
-EOF
-
-  $NAGRIB << EOF
-   GBFILE   = grib${fhr}_${timed}
-   INDXFL   = 
-   GDOUTF   = $GEMGRDd
-  r
-EOF
-
-  export err=$?;err_chk
-
-  else
-
-  export pgm="nagrib2 F$fhr"
-  startmsg
-
-  $NAGRIB << EOF
-   GBFILE   = grib$fhr
-   INDXFL   = 
-   GDOUTF   = $GEMGRD
-   PROJ     = $proj
-   GRDAREA  = $grdarea
-   KXKY     = $kxky
-   MAXGRD   = $maxgrd
-   CPYFIL   = $cpyfil
-   GAREA    = $garea
-   OUTPUT   = $output
-   GBTBLS   = $gbtbls
-   GBDIAG   = 
-   PDSEXT   = $pdsext
-  l
-  r
-EOF
-  export err=$?;err_chk
-
-  fi
-
-  #####################################################
-  # GEMPAK DOES NOT ALWAYS HAVE A NON ZERO RETURN CODE
-  # WHEN IT CAN NOT PRODUCE THE DESIRED GRID.  CHECK
-  # FOR THIS CASE HERE.
-  #####################################################
-  if [ $RUNTYPE != "rrfs_conus_subh" ] ; then
-    ls -l $GEMGRD
-    export err=$?;export pgm="GEMPAK CHECK FILE";err_chk
-  else
-    ls -l $GEMGRDa $GEMGRDb $GEMGRDc $GEMGRDd
-    export err=$?;export pgm="GEMPAK CHECK FILE";err_chk
-  fi
-
-  if [ "$NAGRIB" = "nagrib2" ] ; then
-    gpend
-  fi
-
-
-  if [ $SENDCOM = "YES" ] ; then
-    if [ $RUNTYPE != "rrfs_conus_subh" ] ; then
-     cpfs $GEMGRD $COMOUT/$GEMGRD
-    else
-     cpfs $GEMGRDa $COMOUT/$GEMGRDa
-     cpfs $GEMGRDb $COMOUT/$GEMGRDb
-     cpfs $GEMGRDc $COMOUT/$GEMGRDc
-     cpfs $GEMGRDd $COMOUT/$GEMGRDd
-    fi
-     if [ $SENDDBN = "YES" ] ; then
-       if [ $RUNTYPE = "rrfs" -a $fhcnt3 -ne 0 ] ; then
-         $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_2} $job \
-            $COMOUT/$GEMGRD
-       else
-         $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE} $job \
-           $COMOUT/$GEMGRD
-       fi
-     else
-       echo "##### DBN_ALERT_TYPE is: ${DBN_ALERT_TYPE} #####"
-     fi
-  fi
-
-#####################################################################
-# GOOD RUN
-set +x
-echo "**************JOB $RUNTYPE NAWIPS COMPLETED NORMALLY"
-echo "**************JOB $RUNTYPE NAWIPS COMPLETED NORMALLY"
-echo "**************JOB $RUNTYPE NAWIPS COMPLETED NORMALLY"
-set -x
-#####################################################################
-
-msg='Job completed normally.'
-echo $msg
-postmsg "$msg"
-
-############################### END OF SCRIPT #######################

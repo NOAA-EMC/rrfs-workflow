@@ -4,6 +4,17 @@ date
 export PS4='+ $SECONDS + '
 set -xue
 
+#-----------------------------------------------------------------------
+# RRFS Product Generation
+#-----------------------------------------------------------------------
+export pid=${pid:-$$}
+export outid=${outid:-"LL$job"}
+export RUN=${RUN:-rrfs}
+export fhr=${FHR:-}
+
+export DATA=${DATA:-${DATAROOT}/${jobid}}
+mkdir -p ${DATA}
+cd ${DATA}
 
 #-----------------------------------------------------------------------
 # Source the variable definitions file
@@ -21,7 +32,7 @@ export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 export FIXam=${FIXam:-${FIXrrfs}/am}
 
-export RRFSFIXgem=${RRFSFIXgem:-${FIXrrfs/gempak/fix}
+export RRFSFIXgem=${RRFSFIXgem:-${FIXrrfs}/gempak/fix}
 
 
 #-----------------------------------------------------------------------
@@ -31,150 +42,26 @@ export RRFSFIXgem=${RRFSFIXgem:-${FIXrrfs/gempak/fix}
 . $USHrrfs/source_util_funcs.sh
 
 export COMrrfs=${COMrrfs:-$(compath.py -o rrfs/${rrfs_ver})}
+export COMIN=${COMrrfs}/${RUN}.${PDY}/${cyc}
 export COMOUT=${COMOUT:-$(compath.py -o rrfs/${rrfs_ver}/${RUN}.${PDY}/${cyc}/gempak)}
-
+export cycle="t${cyc}z"
 if [ ! -f ${COMOUT} ] ; then
 	mkdir -p -m 775 ${COMOUT}
 fi
 
-#################################################
-# Set up model and cycle specific variables
-#################################################
-
-export model=`echo $RUN | awk '{print tolower($0)}'`
-export GRIB=prslev
-export DBN_ALERT_TYPE=RRFS_GEMPAK
-
-#################################################################
-# Execute the script to make conus GEMPAK grids
-
-mkdir -p $DATA/rrfs_conus
-cd $DATA/rrfs_conus
-
-if [ -e ${DATA}/poescript ]
-then
-rm -f ${DATA}/poescript
-fi
-
-# Copy model specific GEMPAK tables into working directory
-#
-cp ${RRFSFIXgem}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
-cp ${RRFSFIXgem}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
-cp ${RRFSFIXgem}/rrfs_wmogrib2.tbl wmogrib2.tbl
-cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
-
-cd $DATA
-export GRIB=prslev
-export type=rrfs_conus
-echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB $FHR" > $DATA/poescript
-#################################################################
-
-#################################################################
-#
-
-if [ $FHR -ge 01 -a $FHR -le 18 ]
-then
-mkdir -p $DATA/rrfs_conus_subh
-cd $DATA/rrfs_conus_subh
-
-# Copy model specific GEMPAK tables into working directory
-#
-cp ${RRFSFIXgem}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
-cp ${RRFSFIXgem}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
-cp ${RRFSFIXgem}/rrfs_wmogrib2.tbl wmogrib2.tbl
-cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
-
-cd $DATA
-export GRIB=prslev
-export type=rrfs_conus_subh
-echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
-fi
-#################################################################
-
-#################################################################
-# Execute the script to make conus GEMPAK grids (Common convection-allowing model fields)
-#
-# won't work currently as CONUS testbed files lack .idx files
-#
-#
-# mkdir -p $DATA/rrfs_conus_cam
-# cd $DATA/rrfs_conus_cam
-
-# Copy model specific GEMPAK tables into working directory
-#
-# cp ${RRFSFIXgem}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
-# cp ${RRFSFIXgem}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
-# cp ${RRFSFIXgem}/rrfs_wmogrib2.tbl wmogrib2.tbl
-# cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
-
-# cd $DATA
-# export GRIB=testbed
-# export type=rrfs_conus_cam
-# echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
-#################################################################
-
-#################################################################
-# Execute the script to make alaska GEMPAK grids
-mkdir -p $DATA/rrfs_alaska
-cd $DATA/rrfs_alaska
-
-# Copy model specific GEMPAK tables into working directory
-#
-cp ${RRFSFIXgem}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
-cp ${RRFSFIXgem}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
-cp ${RRFSFIXgem}/rrfs_wmogrib2.tbl wmogrib2.tbl
-cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
-
-cd $DATA
-export GRIB=prslev
-export type=rrfs_alaska
-echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
-#################################################################
-# Execute the script to make Puerto Rico GEMPAK grids
-mkdir -p $DATA/rrfs_prico
-cd $DATA/rrfs_prico
-
-# Copy model specific GEMPAK tables into working directory
-#
-cp ${RRFSFIXgem}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
-cp ${RRFSFIXgem}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
-cp ${RRFSFIXgem}/rrfs_wmogrib2.tbl wmogrib2.tbl
-cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
-
-cd $DATA
-export GRIB=prslev
-export type=rrfs_prico
-echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
-#################################################################
-# Execute the script to make Hawaii GEMPAK grids
-mkdir -p $DATA/rrfs_hawaii
-cd $DATA/rrfs_hawaii
-
-# Copy model specific GEMPAK tables into working directory
-#
-cp ${RRFSFIXgem}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
-cp ${RRFSFIXgem}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
-cp ${RRFSFIXgem}/rrfs_wmogrib2.tbl wmogrib2.tbl
-cp ${RRFSFIXgem}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
-
-cd $DATA
-export GRIB=prslev
-export type=rrfs_hawaii
-echo "$HOMErrfs/scripts/exrrfs_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
-#################################################################
-cat poescript
-
-chmod 775 $DATA/poescript
-
-export CMDFILE=$DATA/poescript
+#-----------------------------------------------------------------------
 # Execute the script.
-${MPIEXEC} -cpu-bind core -configfile $CMDFILE
+#-----------------------------------------------------------------------
+
+export pgmout="${DATA}/OUTPUT.$$"
+env
+
+${HOMErrfs}/scripts/exrrfs_gempak.sh
 export err=$?; err_chk
 
-cat $pgmout
-date
-msg="ENDED NORMALLY."
-postmsg "$msg"
+if [ -e "$pgmout" ]; then
+  cat $pgmout
+fi
 
 #############################
 # Remove the Temporary working directory
