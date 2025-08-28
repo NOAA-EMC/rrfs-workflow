@@ -191,11 +191,11 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
      Lx=$ENS_BLENDING_LENGTHSCALE
      # Using gfs_data.tile7.halo0.nc from umberlla ics directory as out.atm.tile${TILE_RGNL}.nc
      if [ -s ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo0.nc ]; then
-       ln -s ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo0.nc out.atm.tile${TILE_RGNL}.nc
+       ln -s ${shared_output_data}/cold2warm_all.nc cold2warm_all.nc
      else
        err_exit "FATAL: gfs_data.tile${TILE_RGNL}.halo0.nc not found in ${shared_output_data} - check make ics step"
      fi
-     glb=./out.atm.tile${TILE_RGNL}.nc
+     glb=./cold2warm_all.nc
      reg=./fv_core.res.tile1.nc
      trcr=./fv_tracer.res.tile1.nc
 
