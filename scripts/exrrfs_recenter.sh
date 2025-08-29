@@ -50,8 +50,8 @@ cat << EOF > namelist.ens
   ens_size=${ENS_SIZE},
   filebase='mpasout'
   filetail(1)='.nc'
-  numvar(1)=6
-  varlist(1)="qv u w theta tslb q2"
+  numvar(1)=24
+  varlist(1)="pressure_p rho qv qc qr qi qs qg ni nr ng nc nifa nwfa volg surface_pressure theta tslb q2 u uReconstructZonal uReconstructMeridional refl10cm w"
   l_write_mean=.true.
   l_recenter=.true.
 /

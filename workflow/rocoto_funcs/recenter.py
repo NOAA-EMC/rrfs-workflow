@@ -20,7 +20,39 @@ def recenter(xmlFile, expdir):
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
     # ~~
     if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
-        dependencies = f'''
+        datadep = '     <datadep age="00:05:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/jedivar/det/mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'
+        taskdep = '     <taskdep task="getkf_solver"/>'
+        # If not doing DA during cold start cycles, then just check for cycle and then only wait for GETKF to finish
+        if os.getenv("COLDSTART_CYCS_DO_DA", "TRUE").upper() == "FALSE":
+            coldhrs = os.getenv('COLDSTART_CYCS', '03 15')
+            coldhrs = coldhrs.split(' ')
+            streqs = ""
+            strneqs = ""
+            for hr in coldhrs:
+                hr = f"{hr:0>2}"
+                streqs = streqs + f"\n        <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
+                strneqs = strneqs + f"\n        <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
+            dependencies = f'''
+  <dependency>
+  <and>{timedep}
+   <or>
+    <and>
+      <or>{streqs}
+      </or>
+ {taskdep}
+    </and>
+    <and>
+      <and>{strneqs}
+   {datadep}
+   {taskdep}
+      </and>
+    </and>
+   </or>
+  </and>
+  </dependency>'''
+        # If doing DA during cold start cycles then just need to wait for GETKF and JEDIVAR to finish
+        else:
+            dependencies = f'''
   <dependency>
   <and>{timedep}
     <datadep age="00:05:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/jedivar/det/mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
