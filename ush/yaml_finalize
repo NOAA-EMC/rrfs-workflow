@@ -41,6 +41,18 @@ if float(HYB_WGT_ENS) == 0.0:
     querystr = "cost function/background error/components/1"
     hy.drop(data, querystr)
 
+# modify variable list if do_radar_ref
+do_radar_ref = ( os.getenv("DO_RADAR_REF", "FASLE").upper() == "TRUE" )
+do_radar_ref = True # gtmos.debug
+varlist = "state variables: &incvars [water_vapor_mixing_ratio_wrt_moist_air, air_pressure_at_surface, air_temperature, northward_wind, eastward_wind, cloud_liquid_water, cloud_liquid_ice, rain_water, snow_water, graupel, equivalent_reflectivity_factor, upward_air_velocity]"
+if do_radar_ref:
+    hy.modify(data, "-member/state variables", varlist)
+    pos = hy.get_start_pos(data, "cost function/background/state variables")
+    next_one = hy.next_pos(data, pos)
+    spaces = " " * hy.strip_indentations(data[next_one - 1])[0]
+    extra_vars = [f"{spaces}- equivalent_reflectivity_factor", f"{spaces}- w", f"{spaces}- upward_air_velocity"]
+    data[next_one:next_one] = extra_vars  # insert new variables to the list
+
 # tweaks for cold start DA
 if ytype == "jedivar" and start_type == "cold":
     hy.modify(data, "output/filename", "filename: ana.nc")
@@ -75,8 +87,7 @@ for name, observer in dcObs.items():
                 tmp = data[observer["pos1"]:observer["pos2"]]
                 for i in range(len(tmp)):
                     if "obs filters:" in tmp[i]:
-                        nspace = hy.strip_indentations(tmp[i])[0] + 2 # default to 2 extra indentations
-                        spaces = " " * nspace
+                        spaces = " " * (hy.strip_indentations(tmp[i])[0] + 2) # default to 2 extra indentations
                         passivate = [
                             f"{spaces}- filter: Perform Action",
                             f"{spaces}  action:",
