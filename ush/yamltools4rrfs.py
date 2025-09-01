@@ -50,8 +50,6 @@ def load_convinfo():
 
 
 # load the satinfo file, return dcSatInfo
-# read satinfo
-#
 def load_satinfo():
     dcSatInfo = {}
     if os.path.exists('satinfo'):
@@ -124,7 +122,7 @@ def get_all_filters(data, pos1, pos2):
     return filters
 
 
-# get all observers of a JEDI YAML file
+# get all observers of a JEDI YAML file, return dcObs
 def get_all_obs(data, shallow=False):
     dcObs = {}
     cur = 0
