@@ -43,8 +43,7 @@ if ytype == "jedivar":
         hy.drop(data, querystr)
 
 # modify variable list if do_radar_ref
-do_radar_ref = ( os.getenv("DO_RADAR_REF", "FASLE").upper() == "TRUE" )
-do_radar_ref = True # gtmos.debug
+do_radar_ref = (os.getenv("DO_RADAR_REF", "FASLE").upper() == "TRUE")
 if do_radar_ref and ytype == "jedivar":
     varlist = "state variables: &incvars [water_vapor_mixing_ratio_wrt_moist_air, air_pressure_at_surface, air_temperature, northward_wind, eastward_wind, cloud_liquid_water, cloud_liquid_ice, rain_water, snow_water, graupel, equivalent_reflectivity_factor, upward_air_velocity]"
     hy.modify(data, "_member/state variables", varlist)
@@ -72,8 +71,7 @@ elif ytype == "getkf" and start_type == "cold":
 
 # tweaks getkf.yaml from the observer mode to the solver mode
 need_getkf_solver = False
-GETKF_TYPE = "solver"  # gtmos_debug
-solver_driver_str='''
+solver_driver_str = '''
 driver:
   read HX from disk: true
   save posterior ensemble: true
@@ -81,7 +79,7 @@ driver:
   save posterior mean: true
   do posterior observer: false
 '''
-if ytype == "getkf" and ( GETKF_TYPE == "solver" or GETKF_TYPE == "post" ):
+if ytype == "getkf" and (GETKF_TYPE == "solver" or GETKF_TYPE == "post"):
     need_getkf_solver = True
     block = hy.text_to_yblock(solver_driver_str)
     hy.modify(data, "driver", block)
@@ -121,14 +119,14 @@ if use_conv_sat_info:
                         if info['iuse'] == "-1":   # monitor, need to insert a passivate filter
                             for i in range(len(tmp)):
                                 if "obs filters:" in tmp[i]:
-                                    spaces = " " * (hy.strip_indentations(tmp[i])[0] + 2) # default to 2 extra indentations
+                                    spaces = " " * (hy.strip_indentations(tmp[i])[0] + 2)  # default to 2 extra indentations
                                     passivate = [
                                         f"{spaces}- filter: Perform Action",
                                         f"{spaces}  action:",
                                         f"{spaces}    name: passivate",
                                         "",
                                     ]
-                                    tmp[i+1:i+1] = passivate  # insert the passivate filter
+                                    tmp[i + 1:i + 1] = passivate  # insert the passivate filter
                                     break
                         output.extend(tmp)
                     # ~~~~~~~

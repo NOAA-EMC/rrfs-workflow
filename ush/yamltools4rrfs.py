@@ -20,9 +20,12 @@ def list_to_delimited_string(lst, spaces='  ', delimiter=', ', elements_per_line
     # formatted_lines[0] = formatted_lines[0].lstrip(' ')
     return formatted_lines
 
-# write out msg for debugging purpose
-def gtmos_debug(msg):
-    sys.stderr.write(f"{msg}\n")
+
+# print information for debugging purpose
+def dbgprint(*parms):
+    msg = " ".join(str(p) for p in parms)
+    sys.stderr.write(msg + "\n")
+
 
 # load the convinfo file, return dcConvInfo
 def load_convinfo():
@@ -96,7 +99,7 @@ def update_sat_anchor(data, dcSatInfo, anchor):
 
     _, spaces, line = hy.strip_indentations(data[pos1])
     mysis = line.split('&')[1].strip().split(' ', 1)[0].strip()[:-len(f'{anchor_cat}_')]  # get the SIS id
-    pre_spaces = spaces + "    " #  add extra 4 spaces for anchor values
+    pre_spaces = spaces + "    "  # add extra 4 spaces for anchor values
     if len(dcSatInfo[mysis][anchor_cat]) < 100:
         elements_per_line = 10
     else:
@@ -105,9 +108,10 @@ def update_sat_anchor(data, dcSatInfo, anchor):
     # insert the first anchor information line
     block.insert(0, f"{spaces}_anchor_{anchor_cat}: &{mysis}_{anchor_cat}")
     if anchor_cat != "channels":  # channels is a string while others are lists
-        block[0] = block[0]+ " ["
-        block[len(block)-1] = block[len(block)-1] + "]"
+        block[0] = block[0] + " ["
+        block[len(block) - 1] = block[len(block) - 1] + "]"
     data[pos1:pos2] = block
+
 
 # update satellite anchors
 def update_sat_anchors(data, dcInfo):
@@ -131,6 +135,7 @@ def convert_observer_to_solver(data):
         pos, _ = hy.get_start_pos(data, "obsdatain/engine/obsfile")
         spaces = hy.strip_indentations(data[pos])[1]
         data[pos] = f"{spaces}obsfile: data/jdiag/{diagfile}"
+
 
 # get all filters given a line range(pos1, pos2)
 def get_all_filters(data, pos1, pos2):

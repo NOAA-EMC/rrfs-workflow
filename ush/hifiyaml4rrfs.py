@@ -26,6 +26,12 @@ def text_to_yblock(text):
     return text.splitlines()
 
 
+# print information for debugging purpose
+def dbgprint(*parms):
+    msg = " ".join(str(p) for p in parms)
+    sys.stderr.write(msg + "\n")
+
+
 # strip the indetation of a given string, and return the leading space information
 def strip_indentations(ystr):
     org_len = len(ystr)
@@ -219,7 +225,7 @@ def modify(data, querystr, newblock):
 
     pos2 = next_pos(data, pos1)
     # check whether pos2-1, -2 ... are empty lines
-    for i in range(pos2-1, pos1, -1):
+    for i in range(pos2 - 1, pos1, -1):
         if data[i].strip():
             break
         else:
