@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 import os
 import sys
-import hifiyaml as hy
+import hifiyaml4rrfs as hy
+import yamltools4rrfs as yt
 
 args = sys.argv
 nargs = len(args) - 1
 if nargs < 1:
-    sys.stderr.write("yamlfinalize <jedivar|getkf>\n")
+    sys.stderr.write("yamlfinalize <jedivar.yaml|getkf.yaml>\n")
     sys.exit(1)
+yfile = args[1]
+ytype = yfile.split(".")[0]
 
-ytype = args[1]
-yfile = ytype + ".yaml"
-
-# read needed environmental variables
+# get environmental variables
 analysisDate = os.getenv("analysisDate", "analysisDate_NOT_DEFINED")
 beginDate = os.getenv("beginDate", "beginDate_NOT_DEFINED")
 HYB_WGT_STATIC = os.getenv("HYB_WGT_STATIC", "1.0")
@@ -31,7 +31,7 @@ replacements = {
 # load the YAML data and complete the pattern replacement
 data = hy.load(yfile, replacements)
 
-# modify a key:value YAML block
+# modify BEC models
 if float(HYB_WGT_STATIC) == 0.0:
     # remove the static BEC component, yield a pure 3DEnVar
     querystr = "cost function/background error/components/0"
@@ -48,6 +48,52 @@ if ytype == "jedivar" and start_type == "cold":
 elif ytype == "getkf" and start_type == "cold":
     hy.modify(data, "output/filename", "filename: ./data/ana/mem%{member}%.nc")
 
-# querystr = "cost function/background error/components/1/convariance/members from template/template/filename"
-hy.dump(data)
+# keep/drop/passivate observations based on convifo/satinfo
+dcConvInfo = yt.load_convinfo()
+dcSatInfo = yt.load_satinfo()
+if not dcConvInfo and not dcSatInfo:
+    print("INFO: no convinfo/satinfo, or empty/corrupt convinfo/satinfo")
+elif not dcConvInfo:
+    print("INFO: no convinfo, or empty/corrupt convinfo")
+elif not dcSatInfo:
+    print("INFO: no satinfo, or empty/corrupt satinfo")
+
+# get the YAML head section
+head_end = hy.get_start_pos(data, "cost function/observations/observers")
+output = data[0:head_end + 1]
+# assemble observers
+dcObs = yt.get_all_obs(data, shallow=True)
+for name, observer in dcObs.items():
+    found = False
+    sname = observer["sname"]
+    # check with convinfo
+    for iname, info in dcConvInfo.items():
+        if iname == sname:
+            if info['iuse'] == "1":  # assimilate or monitor
+                output.extend(data[observer["pos1"]:observer["pos2"]])
+            elif info['iuse'] == "-1":   # monitor
+                tmp = data[observer["pos1"]:observer["pos2"]]
+                for i in range(len(tmp)):
+                    if "obs filters:" in tmp[i]:
+                        nspace = hy.strip_indentations(tmp[i])[0] + 2 # default to 2 extra indentations
+                        spaces = " " * nspace
+                        passivate = [
+                            f"{spaces}- filter: Perform Action",
+                            f"{spaces}  action:",
+                            f"{spaces}    name: passivate",
+                            "",
+                        ]
+                        tmp[i+1:i+1] = passivate  # insert the passivate filter
+                        break
+                output.extend(tmp)
+            # elif info['iuse'] == "0":  # do not use
+            found = True
+            break
+    # check with satinfo if not found in convinfo
+    if not found:
+        for sis, info in dcSatInfo.items():
+            if sis == sname:
+                output.extend(data[observer["pos1"]:observer["pos2"]])
+
+hy.dump(output)
 sys.exit(0)
