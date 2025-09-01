@@ -192,7 +192,7 @@ def drop(data, querystr):
         else:
             break  # exit the loop if not a comment or different indentation level
 
-    del (data[pos1:pos2])
+    del data[pos1:pos2]
 
 
 # modify a YAML bock specified by a querystr with a newblock
