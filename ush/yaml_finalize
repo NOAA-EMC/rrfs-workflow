@@ -10,7 +10,7 @@ if nargs < 1:
     sys.stderr.write("yamlfinalize <jedivar.yaml|getkf.yaml|hofx.yaml|test.yaml>\n")
     sys.exit(1)
 yfile = args[1]
-ytype = yfile.split(".")[0]
+ytype = yfile.rsplit(".", 1)  # remove the suffix
 
 # get environmental variables
 analysisDate = os.getenv("analysisDate", "analysisDate_NOT_DEFINED")
@@ -135,6 +135,15 @@ if use_conv_sat_info:
 else:  # skip convinfo/satinfo
     output = data
 
+# find an available file name to backup the old yaml file
+yfile2 = ytype + "_old001.yaml"
+if os.path.exists(yfile2):
+    knt = 1
+    yfile2 = f'{ytype}_old{knt:03}.yaml'
+    while os.path.exists(yfile2):
+        knt += 1
+        yfile2 = f'{ytype}_old{knt:03}.yaml'
+os.replace(yfile, yfile2)  # move yfile to yfile2
 # dump the final YAML file
-hy.dump(output)
+hy.dump(output, fpath=yfile)
 sys.exit(0)
