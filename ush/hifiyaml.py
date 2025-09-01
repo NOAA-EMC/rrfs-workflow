@@ -170,9 +170,9 @@ def dump(data, querystr="", fpath=None):
             outfile.write(line+'\n')
 
 
-# drop a YAML block specificed by a querystr and return the newdata
+# drop a YAML block specificed by a querystr from data
 def drop(data, querystr):
-    newdata = data.copy()  # no nesting in data, so shallow copy is enough
+    #newdata = data.copy()  # no nesting in data, so shallow copy is enough
     pos1 = get_start_pos(data, querystr)
     if pos1 == -1:  # empty querystr, no drop action
         return
@@ -190,16 +190,14 @@ def drop(data, querystr):
         else:
             break  # exit the loop if not a comment or different indentation level
 
-    del (newdata[pos1:pos2])
-    return newdata
+    del (data[pos1:pos2])
 
 
-# modify a YAML bock specified by a querystr with a newblock, return newdata
+# modify a YAML bock specified by a querystr with a newblock
 def modify(data, querystr, newblock):
     if isinstance(newblock, str):  # if newblock is a string, convert it to a list
         newblock = [newblock]
 
-    newdata = data.copy()  # no nesting in data, no shallow copy is enough
     pos1 = get_start_pos(data, querystr)
     if pos1 == -1:  # empty querystr, no modify action
         return
@@ -225,5 +223,4 @@ def modify(data, querystr, newblock):
         for i, line in enumerate(newblock):
             newblock[i] = spaces + line.lstrip()
 
-    newdata[pos1:pos2] = newblock
-    return newdata
+    data[pos1:pos2] = newblock
