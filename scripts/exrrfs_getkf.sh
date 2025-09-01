@@ -30,7 +30,7 @@ mkdir -p obs ens jdiag
 #
 # copy observations files
 #
-if [[ "${TYPE}" == "observer" ]]; then
+if [[ "${GETKF_TYPE}" == "observer" ]]; then
   source "${USHrrfs}/copy_obs.sh" "getkf"
 else
   ln -snf "${UMBRELLA_GETKF_OBSERVER_DATA}"/jdiag* jdiag/
@@ -94,7 +94,7 @@ case ${YAML_GEN_METHOD:-1} in
 esac
 
 # For post task, change a few yaml settings and remove "reduce obs space"
-if [[ "${TYPE}" == "post" ]]; then
+if [[ "${GETKF_TYPE}" == "post" ]]; then
   "${USHrrfs}"/yaml_getkf_post getkf.yaml
 fi
 
@@ -110,11 +110,11 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
   export err=$?
   err_chk
   #
-  cp "${DATA}"/getkf*.yaml "${COMOUT}/getkf_${TYPE}/${WGF}"
-  cp "${DATA}"/log.* "${COMOUT}/getkf_${TYPE}/${WGF}"
+  cp "${DATA}"/getkf*.yaml "${COMOUT}/getkf_${GETKF_TYPE}/${WGF}"
+  cp "${DATA}"/log.* "${COMOUT}/getkf_${GETKF_TYPE}/${WGF}"
 
   # rename ombg to oman for posterior observer jdiag files
-  if [[ "${TYPE}" == "post" ]]; then
+  if [[ "${GETKF_TYPE}" == "post" ]]; then
     for jdiag in "${DATA}"/jdiag*; do
       jdiag_tmp="${jdiag%.nc}_tmp.nc"
       nccopy -k 3 "${jdiag}" "${jdiag_tmp}"
@@ -124,8 +124,8 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
   fi
 
   # move jdiag* files to the umbrella directory if observer
-  if [[ "${TYPE}" == "observer" || "${TYPE}" == "post" ]]; then
-    cp "${DATA}"/jdiag* "${COMOUT}/getkf_${TYPE}/${WGF}"
+  if [[ "${GETKF_TYPE}" == "observer" || "${GETKF_TYPE}" == "post" ]]; then
+    cp "${DATA}"/jdiag* "${COMOUT}/getkf_${GETKF_TYPE}/${WGF}"
     mv jdiag* "${UMBRELLA_GETKF_DATA}"/.
   else # move post mean to umbrella if solver
     # ncks increments to cold_start IC
@@ -147,9 +147,9 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
   fi
 
   # Save analysis files if requested
-  if [[ "${TYPE}" == "post" && "${SAVE_GETKF_ANL}" == "true" ]]; then
+  if [[ "${GETKF_TYPE}" == "post" && "${SAVE_GETKF_ANL}" == "true" ]]; then
     for mem in $(seq -w 1 030); do
-      cp -rL "${DATA}"/data/ens/mem"${mem}".nc "${COMOUT}"/getkf_"${TYPE}"/"${WGF}"/mem"${mem}".nc
+      cp -rL "${DATA}"/data/ens/mem"${mem}".nc "${COMOUT}"/getkf_"${GETKF_TYPE}"/"${WGF}"/mem"${mem}".nc
     done
   fi
 
