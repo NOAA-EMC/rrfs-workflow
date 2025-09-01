@@ -5,6 +5,7 @@
 import hifiyaml4rrfs as hy
 import os
 import shutil
+import sys
 
 
 def list_to_delimited_string(lst, spaces='  ', delimiter=', ', elements_per_line=20):
@@ -45,7 +46,7 @@ def load_convinfo():
                         }
                         dcConvInfo[atype] = dcTMP
                     else:
-                        print(f"read_convinfo Warning: expected 9 fields\n{line}")
+                        sys.stderr.write(f"read_convinfo Warning: expected 9 fields\n{line}\n")
     return dcConvInfo
 
 
@@ -78,7 +79,7 @@ def load_satinfo():
                         dcSIS['iaerosol'].append(fields[10])
                         dcSatInfo[sis] = dcSIS
                     else:
-                        print(f"read_satinfo warning: expected 11 fields\n{line}")
+                        sys.stderr.write(f"read_satinfo warning: expected 11 fields\n{line}\n")
     return dcSatInfo
 
 

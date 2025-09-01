@@ -3,6 +3,7 @@
 # customized for rrfs
 # ------------------------------
 import re
+import sys
 
 
 # load a YAML file
@@ -111,25 +112,31 @@ def get_start_pos(data, querystr):
     cur = 0
     end = len(data)
     for s in query_list:
+        found = False
         for i in range(cur, end):
             line = data[i].strip()
             if s.isdigit():  # search for [ or -
                 line = re.sub(r'(["\']).*?\1', r'\1\1', line)  # remove all contents inside quotes
                 if "[" in line:
-                    print("!! Directly modfiying [....] needs further development !!")
-                    exit()
+                    sys.stderr.write("!! Directly modfiying [....] needs further development !!\n")
+                    sys.exit(1)
                 elif "- " in line:
                     nextpos = i
                     knt = int(s)
                     for j in range(0, knt):
                         nextpos = next_pos(data, nextpos)
                     cur = nextpos
-                    break  # break the nest loop
+                    found = True
+                    break
 
             else:  # dictionary key
                 if f"{s}:" in line:
                     cur = i
-                    break  # break the nest loop
+                    found = True
+                    break
+        if not found:
+            sys.stderr.write(f"key error: '{s}' not found\n")
+            sys.exit(1)
     # ~~~~~~~~~~~~~~~~~
     return cur
 
@@ -205,6 +212,12 @@ def modify(data, querystr, newblock):
         return
 
     pos2 = next_pos(data, pos1)
+    # check whether pos2-1, -2 ... are empty lines
+    for i in range(pos2-1, pos1, -1):
+        if data[i].strip():
+            break
+        else:
+            pos2 = i
 
     # get the number of indentation spaces
     nspace, spaces, _ = strip_indentations(data[pos1])

@@ -31,23 +31,33 @@ replacements = {
 # load the YAML data and complete the pattern replacement
 data = hy.load(yfile, replacements)
 
-# modify BEC models
-if float(HYB_WGT_STATIC) == 0.0:
-    # remove the static BEC component, yield a pure 3DEnVar
-    querystr = "cost function/background error/components/0"
-    hy.drop(data, querystr)
-if float(HYB_WGT_ENS) == 0.0:
-    # remove the ensemble BEC component, yield a pure 3DVar
-    querystr = "cost function/background error/components/1"
-    hy.drop(data, querystr)
+# modify BEC models for jedivar
+if ytype == "jedivar":
+    if float(HYB_WGT_STATIC) == 0.0:
+        # remove the static BEC component, yield a pure 3DEnVar
+        querystr = "cost function/background error/components/0"
+        hy.drop(data, querystr)
+    if float(HYB_WGT_ENS) == 0.0:
+        # remove the ensemble BEC component, yield a pure 3DVar
+        querystr = "cost function/background error/components/1"
+        hy.drop(data, querystr)
 
 # modify variable list if do_radar_ref
 do_radar_ref = ( os.getenv("DO_RADAR_REF", "FASLE").upper() == "TRUE" )
 do_radar_ref = True # gtmos.debug
-varlist = "state variables: &incvars [water_vapor_mixing_ratio_wrt_moist_air, air_pressure_at_surface, air_temperature, northward_wind, eastward_wind, cloud_liquid_water, cloud_liquid_ice, rain_water, snow_water, graupel, equivalent_reflectivity_factor, upward_air_velocity]"
-if do_radar_ref:
-    hy.modify(data, "-member/state variables", varlist)
+if do_radar_ref and ytype == "jedivar":
+    varlist = "state variables: &incvars [water_vapor_mixing_ratio_wrt_moist_air, air_pressure_at_surface, air_temperature, northward_wind, eastward_wind, cloud_liquid_water, cloud_liquid_ice, rain_water, snow_water, graupel, equivalent_reflectivity_factor, upward_air_velocity]"
+    hy.modify(data, "_member/state variables", varlist)
     pos = hy.get_start_pos(data, "cost function/background/state variables")
+    next_one = hy.next_pos(data, pos)
+    spaces = " " * hy.strip_indentations(data[next_one - 1])[0]
+    extra_vars = [f"{spaces}- equivalent_reflectivity_factor", f"{spaces}- w", f"{spaces}- upward_air_velocity"]
+    data[next_one:next_one] = extra_vars  # insert new variables to the list
+
+elif do_radar_ref and ytype == "getkf":
+    varlist = "increment variables: [air_temperature, water_vapor_mixing_ratio_wrt_moist_air, eastward_wind, northward_wind, air_pressure_at_surface, cloud_liquid_water, cloud_liquid_ice, rain_water, snow_water, graupel, equivalent_reflectivity_factor, upward_air_velocity]"
+    hy.modify(data, "increment variables", varlist)
+    pos = hy.get_start_pos(data, "_member/state variables")
     next_one = hy.next_pos(data, pos)
     spaces = " " * hy.strip_indentations(data[next_one - 1])[0]
     extra_vars = [f"{spaces}- equivalent_reflectivity_factor", f"{spaces}- w", f"{spaces}- upward_air_velocity"]
@@ -61,50 +71,56 @@ elif ytype == "getkf" and start_type == "cold":
     hy.modify(data, "output/filename", "filename: ./data/ana/mem%{member}%.nc")
 
 # keep/drop/passivate observations based on convifo/satinfo
-dcConvInfo = yt.load_convinfo()
-dcSatInfo = yt.load_satinfo()
-if not dcConvInfo and not dcSatInfo:
-    print("INFO: no convinfo/satinfo, or empty/corrupt convinfo/satinfo")
-elif not dcConvInfo:
-    print("INFO: no convinfo, or empty/corrupt convinfo")
-elif not dcSatInfo:
-    print("INFO: no satinfo, or empty/corrupt satinfo")
+use_conv_sat_info = True
+if use_conv_sat_info:
+    dcConvInfo = yt.load_convinfo()
+    dcSatInfo = yt.load_satinfo()
+    if not dcConvInfo and not dcSatInfo:
+        sys.stderr.write("INFO: no convinfo/satinfo, or empty/corrupt convinfo/satinfo\n")
+    elif not dcConvInfo:
+        sys.stderr.write("INFO: no convinfo, or empty/corrupt convinfo\n")
+    elif not dcSatInfo:
+        sys.stderr.write("INFO: no satinfo, or empty/corrupt satinfo\n")
 
-# get the YAML head section
-head_end = hy.get_start_pos(data, "cost function/observations/observers")
-output = data[0:head_end + 1]
-# assemble observers
-dcObs = yt.get_all_obs(data, shallow=True)
-for name, observer in dcObs.items():
-    found = False
-    sname = observer["sname"]
-    # check with convinfo
-    for iname, info in dcConvInfo.items():
-        if iname == sname:
-            if info['iuse'] == "1":  # assimilate or monitor
-                output.extend(data[observer["pos1"]:observer["pos2"]])
-            elif info['iuse'] == "-1":   # monitor
-                tmp = data[observer["pos1"]:observer["pos2"]]
-                for i in range(len(tmp)):
-                    if "obs filters:" in tmp[i]:
-                        spaces = " " * (hy.strip_indentations(tmp[i])[0] + 2) # default to 2 extra indentations
-                        passivate = [
-                            f"{spaces}- filter: Perform Action",
-                            f"{spaces}  action:",
-                            f"{spaces}    name: passivate",
-                            "",
-                        ]
-                        tmp[i+1:i+1] = passivate  # insert the passivate filter
-                        break
-                output.extend(tmp)
-            # elif info['iuse'] == "0":  # do not use
-            found = True
-            break
-    # check with satinfo if not found in convinfo
-    if not found:
-        for sis, info in dcSatInfo.items():
-            if sis == sname:
-                output.extend(data[observer["pos1"]:observer["pos2"]])
+    # get the YAML head section
+    head_end = hy.get_start_pos(data, "observations/observers")
+    output = data[0:head_end + 1]
+    # assemble observers
+    dcObs = yt.get_all_obs(data, shallow=True)
+    for name, observer in dcObs.items():
+        found = False
+        sname = observer["sname"]
+        # check with convinfo
+        for iname, info in dcConvInfo.items():
+            if iname == sname:
+                if info['iuse'] == "1":  # assimilate or monitor
+                    output.extend(data[observer["pos1"]:observer["pos2"]])
+                elif info['iuse'] == "-1":   # monitor
+                    tmp = data[observer["pos1"]:observer["pos2"]]
+                    for i in range(len(tmp)):
+                        if "obs filters:" in tmp[i]:
+                            spaces = " " * (hy.strip_indentations(tmp[i])[0] + 2) # default to 2 extra indentations
+                            passivate = [
+                                f"{spaces}- filter: Perform Action",
+                                f"{spaces}  action:",
+                                f"{spaces}    name: passivate",
+                                "",
+                            ]
+                            tmp[i+1:i+1] = passivate  # insert the passivate filter
+                            break
+                    output.extend(tmp)
+                # elif info['iuse'] == "0":  # do not use
+                found = True
+                break
+        # check with satinfo if not found in convinfo
+        if not found:
+            for sis, info in dcSatInfo.items():
+                if sis == sname:
+                    output.extend(data[observer["pos1"]:observer["pos2"]])
 
+else:  # skip convinfo/satinfo
+    output = data
+
+# dump the final YAML file
 hy.dump(output)
 sys.exit(0)

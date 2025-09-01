@@ -31,12 +31,9 @@ _member: &memberConfig
   - rain_water
   - snow_water
   - cldfrac
-  - equivalent_reflectivity_factor
-  - w
-  - upward_air_velocity
   stream name: background
 
-increment variables: [air_temperature, water_vapor_mixing_ratio_wrt_moist_air, eastward_wind, northward_wind, air_pressure_at_surface, cloud_liquid_water, cloud_liquid_ice, rain_water, snow_water, graupel, equivalent_reflectivity_factor, upward_air_velocity]
+increment variables: [air_temperature, water_vapor_mixing_ratio_wrt_moist_air, eastward_wind, northward_wind, air_pressure_at_surface]
 
 output mean prior:
   filename: ./prior_mean.nc
