@@ -7,7 +7,7 @@ import yamltools4rrfs as yt
 args = sys.argv
 nargs = len(args) - 1
 if nargs < 1:
-    sys.stderr.write("yamlfinalize <jedivar.yaml|getkf.yaml>\n")
+    sys.stderr.write("yamlfinalize <jedivar.yaml|getkf.yaml|hofx.yaml|test.yaml>\n")
     sys.exit(1)
 yfile = args[1]
 ytype = yfile.split(".")[0]
@@ -88,35 +88,35 @@ if use_conv_sat_info:
     # assemble observers
     dcObs = yt.get_all_obs(data, shallow=True)
     for name, observer in dcObs.items():
-        found = False
         sname = observer["sname"]
-        # check with convinfo
-        for iname, info in dcConvInfo.items():
-            if iname == sname:
-                if info['iuse'] == "1":  # assimilate or monitor
-                    output.extend(data[observer["pos1"]:observer["pos2"]])
-                elif info['iuse'] == "-1":   # monitor
-                    tmp = data[observer["pos1"]:observer["pos2"]]
-                    for i in range(len(tmp)):
-                        if "obs filters:" in tmp[i]:
-                            spaces = " " * (hy.strip_indentations(tmp[i])[0] + 2) # default to 2 extra indentations
-                            passivate = [
-                                f"{spaces}- filter: Perform Action",
-                                f"{spaces}  action:",
-                                f"{spaces}    name: passivate",
-                                "",
-                            ]
-                            tmp[i+1:i+1] = passivate  # insert the passivate filter
-                            break
-                    output.extend(tmp)
-                # elif info['iuse'] == "0":  # do not use
-                found = True
-                break
-        # check with satinfo if not found in convinfo
-        if not found:
+        if observer["is_sat_radiance"]:  # check against satinfo
             for sis, info in dcSatInfo.items():
                 if sis == sname:
-                    output.extend(data[observer["pos1"]:observer["pos2"]])
+                    tmp = data[observer["pos1"]:observer["pos2"]]
+                    yt.update_sat_anchors(tmp, dcSatInfo)
+                    output.extend(tmp)
+                    break
+        else:  # check against convinfo
+            for iname, info in dcConvInfo.items():
+                if iname == sname:
+                    if info['iuse'] == "1":  # assimilate
+                        output.extend(data[observer["pos1"]:observer["pos2"]])
+                    elif info['iuse'] == "-1":   # monitor
+                        tmp = data[observer["pos1"]:observer["pos2"]]
+                        for i in range(len(tmp)):
+                            if "obs filters:" in tmp[i]:
+                                spaces = " " * (hy.strip_indentations(tmp[i])[0] + 2) # default to 2 extra indentations
+                                passivate = [
+                                    f"{spaces}- filter: Perform Action",
+                                    f"{spaces}  action:",
+                                    f"{spaces}    name: passivate",
+                                    "",
+                                ]
+                                tmp[i+1:i+1] = passivate  # insert the passivate filter
+                                break
+                        output.extend(tmp)
+                    # ~~~~~~~
+                    break
 
 else:  # skip convinfo/satinfo
     output = data
