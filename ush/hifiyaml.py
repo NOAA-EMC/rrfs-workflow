@@ -191,6 +191,9 @@ def drop(data, querystr):
 
 # modify a YAML bock specified by a querystr with a newblock, return newdata
 def modify(data, querystr, newblock):
+    if isinstance(newblock, str):  # if newblock is a string, convert it to a list
+        newblock = [newblock]
+
     newdata = data.copy()  # no nesting in data, no shallow copy is enough
     pos1 = get_start_pos(data, querystr)
     if pos1 == -1:  # empty querystr, no modify action
