@@ -79,7 +79,13 @@ beginDate="${CDATEm2:0:4}-${CDATEm2:4:2}-${CDATEm2:6:2}T${CDATEm2:8:2}:00:00Z"
 # generate getkf.yaml based on how YAML_GEN_METHOD is set
 case ${YAML_GEN_METHOD:-1} in
   1) # from ${PARMrrfs}
-    source "${USHrrfs}"/yaml_from_parm.sh "getkf"
+    cp ${EXPDIR}/config/getkf.yaml getkfkf.yaml
+    cp "${EXPDIR}/config/convinfo" .
+    cp "${EXPDIR}/config/satinfo" .
+    cp "${USHrrfs}/hifiyaml4rrfs.py" .
+    cp "${USHrrfs}/yamltools4rrfs.py" .
+    cp "${USHrrfs}/yaml_finalize" .
+    ./yaml_finalize getkf.yaml
     ;;
   2) # cat together from inside sorc/RDASApp
     source "${USHrrfs}"/yaml_cat_together.sh
