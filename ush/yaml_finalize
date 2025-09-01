@@ -73,8 +73,18 @@ elif ytype == "getkf" and start_type == "cold":
 # tweaks getkf.yaml from the observer mode to the solver mode
 need_getkf_solver = False
 GETKF_TYPE = "solver"  # gtmos_debug
+solver_driver_str='''
+driver:
+  read HX from disk: true
+  save posterior ensemble: true
+  save prior mean: true
+  save posterior mean: true
+  do posterior observer: false
+'''
 if ytype == "getkf" and ( GETKF_TYPE == "solver" or GETKF_TYPE == "post" ):
     need_getkf_solver = True
+    block = hy.text_to_yblock(solver_driver_str)
+    hy.modify(data, "driver", block)
 
 # keep/drop/passivate observations based on convifo/satinfo
 use_conv_sat_info = True
