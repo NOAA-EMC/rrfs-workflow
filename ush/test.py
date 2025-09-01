@@ -6,8 +6,8 @@ import hifiyaml as hy
 args = sys.argv
 nargs = len(args) - 1
 if nargs < 1:
-    print(f"yamlfinalize <jedivar|getkf>")
-    exit()
+    sys.stderr.write("yamlfinalize <jedivar|getkf>\n")
+    sys.exit(1)
 
 ytype = args[1]
 yfile = ytype + ".yaml"
@@ -50,3 +50,4 @@ elif ytype == "getkf":
 
 # querystr = "cost function/background error/components/1/convariance/members from template/template/filename"
 hy.dump(data)
+sys.exit(0)
