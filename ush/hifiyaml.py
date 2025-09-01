@@ -1,8 +1,8 @@
 # ------------------------------
 # copied from https://github.com/hifiyaml/hifiyaml
 # ------------------------------
-
 import re
+
 
 # load a YAML file
 def load(fpath, replacements=None):
@@ -98,6 +98,7 @@ def next_pos(data, pos):
 
     return next_pos
 
+
 # get the start postion of a YAML block specificed by a querystr,
 #    eg: querystr = "cost function/background error/components/1/convariance/members from template"
 def get_start_pos(data, querystr):
@@ -167,12 +168,12 @@ def dump(data, querystr="", fpath=None):
         if fpath is None:
             print(line)
         else:
-            outfile.write(line+'\n')
+            outfile.write(line + '\n')
 
 
 # drop a YAML block specificed by a querystr from data
 def drop(data, querystr):
-    #newdata = data.copy()  # no nesting in data, so shallow copy is enough
+    # newdata = data.copy()  # no nesting in data, so shallow copy is enough
     pos1 = get_start_pos(data, querystr)
     if pos1 == -1:  # empty querystr, no drop action
         return

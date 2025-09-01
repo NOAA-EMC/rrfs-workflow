@@ -3,9 +3,9 @@ import os
 import sys
 import hifiyaml as hy
 
-args=sys.argv
-nargs=len(args)-1
-if nargs <1:
+args = sys.argv
+nargs = len(args) - 1
+if nargs < 1:
     print(f"yamlfinalize <jedivar|getkf>")
     exit()
 
@@ -48,7 +48,5 @@ if ytype == "jedivar":
 elif ytype == "getkf":
     hy.modify(data, "output/filename", "filename: ./data/ana/mem%{member}%.nc")
 
-
-
-#querystr = "cost function/background error/components/1/convariance/members from template/template/filename"
+# querystr = "cost function/background error/components/1/convariance/members from template/template/filename"
 hy.dump(data)

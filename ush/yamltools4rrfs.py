@@ -35,11 +35,11 @@ def get_all_filters(data, pos1, pos2):
         # ~~~~~~~~~~~~~~
         # get the whole block of an obs filter
         dcFilter = {
-                "category": category,
-                "pos1": cur,
-                "pos2": next_one,
-                "block": [],
-                }
+            "category": category,
+            "pos1": cur,
+            "pos2": next_one,
+            "block": [],
+        }
         for i in range(cur, next_one):
             dcFilter["block"].append(data[i])
 
@@ -61,7 +61,7 @@ def get_all_obs(data):
                 cur = i
                 break
 
-        name = data[cur+1].split(":")[1].strip()  # "name:" is expected to follow "- obs space:"
+        name = data[cur + 1].split(":")[1].strip()  # "name:" is expected to follow "- obs space:"
         tmp = name.split("_")
         if len(tmp) > 1:
             sname = tmp[1].strip()
@@ -301,11 +301,11 @@ plain_pack: ignore all indentation settings, pack as-is;
             filterlist = []
             # use the "filter_type" dictionary to mark whether the corresponding key has been added
             filter_type = {
-                    "filter": [0, "obs filters:"],
-                    "prefilter": [0, "obs pre filters:"],
-                    "priorfilter": [0, "obs prior filters:"],
-                    "postfilter": [0, "obs post filters:"],
-                        }
+                "filter": [0, "obs filters:"],
+                "prefilter": [0, "obs pre filters:"],
+                "priorfilter": [0, "obs prior filters:"],
+                "postfilter": [0, "obs post filters:"],
+            }
             with open(os.path.join(dirname, f"{obsname}/filterlist.txt"), 'r') as infile:
                 for line in infile:
                     if line.strip():
