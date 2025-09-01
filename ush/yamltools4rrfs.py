@@ -89,7 +89,9 @@ def load_satinfo():
 # update one satellite anchor
 def update_sat_anchor(data, dcSatInfo, anchor):
     anchor_cat = anchor[8:]  # anchor category: channels, use_flag, use_flag_clddet, error, obserr_bound_max
-    pos1 = hy.get_start_pos(data, anchor)
+    pos1, errmsg = hy.get_start_pos(data, anchor, ignore_error=True)
+    if errmsg is not None:  # if "_anchor" does not exisit, just return
+        return
     pos2 = hy.next_pos(data, pos1)
 
     _, spaces, line = hy.strip_indentations(data[pos1])
@@ -114,6 +116,21 @@ def update_sat_anchors(data, dcInfo):
     update_sat_anchor(data, dcInfo, "_anchor_use_flag_clddet")
     update_sat_anchor(data, dcInfo, "_anchor_error")
     update_sat_anchor(data, dcInfo, "_anchor_obserr_bound_max")
+
+
+# convert observer to solver
+# be sure to pass the whole list instead of a list slice
+#   for example, convert_observer_to_solver(data[i:j])
+#    will not return updated list
+def convert_observer_to_solver(data):
+    for i in range(0, len(data)):
+        if "RoundRobin" in data[i]:
+            data[i] = data[i].replace("RoundRobin", "Halo")
+        pos, _ = hy.get_start_pos(data, "obsdataout/engine/obsfile")
+        diagfile = data[pos].split(":")[1].strip()
+        pos, _ = hy.get_start_pos(data, "obsdatain/engine/obsfile")
+        spaces = hy.strip_indentations(data[pos])[1]
+        data[pos] = f"{spaces}obsfile: data/jdiag/{diagfile}"
 
 # get all filters given a line range(pos1, pos2)
 def get_all_filters(data, pos1, pos2):
@@ -271,7 +288,7 @@ def split(fpath, level=1, dirname=".", clean_extra_indentations=False):
     os.makedirs(toppath, exist_ok=True)
 
     # write head.yaml
-    yhead_end = hy.get_start_pos(data, "cost function/observations/observers")
+    yhead_end, _ = hy.get_start_pos(data, "cost function/observations/observers")
     with open(f'{toppath}/head.yaml', 'w') as outfile:
         for i in range(yhead_end + 1):
             outfile.write(data[i] + '\n')

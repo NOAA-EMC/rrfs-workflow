@@ -19,7 +19,7 @@ def getkf(xmlFile, expdir, taskType):
         'COLDSTART_CYCS_DO_DA': os.getenv('COLDSTART_CYCS_DO_DA', 'true'),
         'SAVE_GETKF_ANL': os.getenv('SAVE_GETKF_ANL', 'false'),
         'ENS_SIZE': os.getenv("ENS_SIZE", '5'),
-        'TYPE': taskType.lower(),
+        'GETKF_TYPE': taskType.lower(),
     }
     if taskType.upper() == "OBSERVER":
         task_id = "getkf_observer"
