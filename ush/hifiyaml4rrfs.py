@@ -1,5 +1,6 @@
 # ------------------------------
-# copied from https://github.com/hifiyaml/hifiyaml
+# based on https://github.com/hifiyaml/hifiyaml
+# customized for rrfs
 # ------------------------------
 import re
 
