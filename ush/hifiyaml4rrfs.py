@@ -103,14 +103,16 @@ def next_pos(data, pos):
 
 # get the start postion of a YAML block specificed by a querystr,
 #    eg: querystr = "cost function/background error/components/1/convariance/members from template"
-def get_start_pos(data, querystr):
+def get_start_pos(data, querystr, ignore_error=False):
+    errmsg = None
     if querystr:
         query_list = querystr.strip("/").split("/")   # strip leading and trailing / and then split
     else:
-        return -1
+        return -1, None
 
     cur = 0
     end = len(data)
+
     for s in query_list:
         found = False
         for i in range(cur, end):
@@ -118,8 +120,10 @@ def get_start_pos(data, querystr):
             if s.isdigit():  # search for [ or -
                 line = re.sub(r'(["\']).*?\1', r'\1\1', line)  # remove all contents inside quotes
                 if "[" in line:
-                    sys.stderr.write("!! Directly modfiying [....] needs further development !!\n")
-                    sys.exit(1)
+                    errmsg = "!! Directly modfiying [....] needs further development !!"
+                    if not ignore_error:
+                        sys.stderr.write(f"{errmsg}\n")
+                        sys.exit(1)
                 elif "- " in line:
                     nextpos = i
                     knt = int(s)
@@ -135,16 +139,18 @@ def get_start_pos(data, querystr):
                     found = True
                     break
         if not found:
-            sys.stderr.write(f"key error: '{s}' not found\n")
-            sys.exit(1)
+            errmsg = f"key error: '{s}' not found\n"
+            if not ignore_error:
+                sys.stderr.write(f"{errmsg}\n")
+                sys.exit(1)
     # ~~~~~~~~~~~~~~~~~
-    return cur
+    return cur, errmsg
 
 
 # get the content of a YAML block referred to by a querystr
 def get(data, querystr):
     block = []
-    pos1 = get_start_pos(data, querystr)
+    pos1, _ = get_start_pos(data, querystr)
     pos2 = next_pos(data, pos1)
     if pos1 == -1:  # empty querystr, so dump the full YAML data
         pos1 = 0
@@ -182,7 +188,7 @@ def dump(data, querystr="", fpath=None):
 # drop a YAML block specificed by a querystr from data
 def drop(data, querystr):
     # newdata = data.copy()  # no nesting in data, so shallow copy is enough
-    pos1 = get_start_pos(data, querystr)
+    pos1, _ = get_start_pos(data, querystr)
     if pos1 == -1:  # empty querystr, no drop action
         return
 
@@ -207,7 +213,7 @@ def modify(data, querystr, newblock):
     if isinstance(newblock, str):  # if newblock is a string, convert it to a list
         newblock = [newblock]
 
-    pos1 = get_start_pos(data, querystr)
+    pos1, _ = get_start_pos(data, querystr)
     if pos1 == -1:  # empty querystr, no modify action
         return
 
