@@ -5,11 +5,16 @@
 import re
 
 # load a YAML file
-def load(fpath):
+def load(fpath, replacements=None):
+    # precompile regex to match @VAR@
+    pattern = re.compile(r"@(\w+)@")
+
     data = []
     with open(fpath, 'r') as infile:
         for line in infile:
             line = line.rstrip()  # strip all trailing empty spaces
+            if replacements:
+                line = pattern.sub(lambda m: replacements.get(m.group(1), m.group(0)), line)
             data.append(line)
     return data
 
