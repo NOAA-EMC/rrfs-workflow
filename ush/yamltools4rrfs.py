@@ -1,12 +1,87 @@
 # ---------------------------------------------------------------------------
-# yamltools for RRFSv2 super YAML files: |
-#   may be adapted for applications other than RRFSv2
-#   Aug. 31st, 2025
+# yamltools for RRFSv2 super YAML files, Aug. 31st, 2025
 # --------------------------------------------------------------------------
 #
-import hifiyaml as hy
+import hifiyaml4rrfs as hy
 import os
 import shutil
+
+
+def list_to_delimited_string(lst, spaces='  ', delimiter=', ', elements_per_line=20):
+    # Convert the list to a comma-separated string with the specified delimiter
+    joined_string = delimiter.join(map(str, lst))
+    # Split the joined string into chunks of elements_per_line
+    elements = joined_string.split(delimiter)
+    # Create lines of up to elements_per_line elements
+    lines = [delimiter.join(elements[i:i + elements_per_line]) for i in range(0, len(elements), elements_per_line)]
+    # Add a comma at the end of each line except the last line
+    formatted_lines = [spaces + line + delimiter.rstrip(' ') if i < len(lines) - 1 else spaces + line for i, line in enumerate(lines)]
+    # formatted_lines[0] = formatted_lines[0].lstrip(' ')
+    return formatted_lines
+
+
+# load the convinfo file, return dcConvInfo
+def load_convinfo():
+    dcConvInfo = {}
+    if os.path.exists('convinfo'):
+        with open('convinfo', 'r') as sfile:
+            for line in sfile:
+                if not line.strip().startswith("!"):
+                    fields = line.split()
+                    if len(fields) == 9:
+                        atype = fields[0]
+                        if fields[1] != '0':
+                            atype += fields[1].zfill(3)
+                        if fields[2] != '0':
+                            atype += "_" + fields[2].zfill(3)
+                        #
+                        dcTMP = {
+                            'iuse': fields[3],
+                            'twindow': fields[4],
+                            'gross': fields[5],
+                            'ermax': fields[6],
+                            'ermin': fields[7],
+                            'msgtype': fields[8],
+                        }
+                        dcConvInfo[atype] = dcTMP
+                    else:
+                        print(f"read_convinfo Warning: expected 9 fields\n{line}")
+    return dcConvInfo
+
+
+# load the satinfo file, return dcSatInfo
+# read satinfo
+#
+def load_satinfo():
+    dcSatInfo = {}
+    if os.path.exists('satinfo'):
+        with open('satinfo', 'r') as sfile:
+            for line in sfile:
+                if not line.strip().startswith("!"):
+                    fields = line.split()
+                    if len(fields) == 11:
+                        sis = fields[0]  # sensor/instr/sat
+                        if sis in dcSatInfo:
+                            dcSIS = dcSatInfo[sis]
+                        else:
+                            dcSIS = {'channels': [], 'use_flag': [], 'error': [], 'error_cld': [], 'obserr_bound_max': [],
+                                     'var_b': [], 'var_pg': [], 'use_flag_clddet': [], 'icloud': [], 'iaerosol': [],
+                                     }
+                        #
+                        dcSIS['channels'].append(fields[1])
+                        dcSIS['use_flag'].append(fields[2])
+                        dcSIS['error'].append(fields[3])
+                        dcSIS['error_cld'].append(fields[4])
+                        dcSIS['obserr_bound_max'].append(fields[5])
+                        dcSIS['var_b'].append(fields[6])
+                        dcSIS['var_pg'].append(fields[7])
+                        dcSIS['use_flag_clddet'].append(fields[8])
+                        dcSIS['icloud'].append(fields[9])
+                        dcSIS['iaerosol'].append(fields[10])
+                        dcSatInfo[sis] = dcSIS
+                    else:
+                        print(f"read_satinfo warning: expected 11 fields\n{line}")
+    return dcSatInfo
 
 
 # get all filters given a line range(pos1, pos2)
@@ -50,7 +125,7 @@ def get_all_filters(data, pos1, pos2):
 
 
 # get all observers of a JEDI YAML file
-def get_all_obs(data):
+def get_all_obs(data, shallow=False):
     dcObs = {}
     cur = 0
     end = len(data)
@@ -92,22 +167,23 @@ def get_all_obs(data):
             "block": [],
         }
 
-        # get the whole block of an observer
-        for j in range(cur, next_one):
-            obs["block"].append(data[j])
+        if not shallow:
+            # get the whole block of an observer
+            for j in range(cur, next_one):
+                obs["block"].append(data[j])
 
-        # assemble filters
-        def assemble_filters(key):
-            for i in range(cur, next_one):
-                if f"obs {key}:" in data[i]:
-                    pos1 = i
-                    pos2 = hy.next_pos(data, pos1)
-                    obs[key] = get_all_filters(data, pos1, pos2)
-                    break
-        assemble_filters("filters")
-        assemble_filters("pre filters")
-        assemble_filters("prior filters")
-        assemble_filters("post filters")
+            # assemble filters
+            def assemble_filters(key):
+                for i in range(cur, next_one):
+                    if f"obs {key}:" in data[i]:
+                        pos1 = i
+                        pos2 = hy.next_pos(data, pos1)
+                        obs[key] = get_all_filters(data, pos1, pos2)
+                        break
+            assemble_filters("filters")
+            assemble_filters("pre filters")
+            assemble_filters("prior filters")
+            assemble_filters("post filters")
 
         dcObs[name] = obs
         cur = next_one
