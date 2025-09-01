@@ -20,6 +20,9 @@ def list_to_delimited_string(lst, spaces='  ', delimiter=', ', elements_per_line
     # formatted_lines[0] = formatted_lines[0].lstrip(' ')
     return formatted_lines
 
+# write out msg for debugging purpose
+def gtmos_debug(msg):
+    sys.stderr.write(f"{msg}\n")
 
 # load the convinfo file, return dcConvInfo
 def load_convinfo():
@@ -83,6 +86,35 @@ def load_satinfo():
     return dcSatInfo
 
 
+# update one satellite anchor
+def update_sat_anchor(data, dcSatInfo, anchor):
+    anchor_cat = anchor[8:]  # anchor category: channels, use_flag, use_flag_clddet, error, obserr_bound_max
+    pos1 = hy.get_start_pos(data, anchor)
+    pos2 = hy.next_pos(data, pos1)
+
+    _, spaces, line = hy.strip_indentations(data[pos1])
+    mysis = line.split('&')[1].strip().split(' ', 1)[0].strip()[:-len(f'{anchor_cat}_')]  # get the SIS id
+    pre_spaces = spaces + "    " #  add extra 4 spaces for anchor values
+    if len(dcSatInfo[mysis][anchor_cat]) < 100:
+        elements_per_line = 10
+    else:
+        elements_per_line = 20
+    block = list_to_delimited_string(dcSatInfo[mysis][anchor_cat], pre_spaces, elements_per_line=elements_per_line)
+    # insert the first anchor information line
+    block.insert(0, f"{spaces}_anchor_{anchor_cat}: &{mysis}_{anchor_cat}")
+    if anchor_cat != "channels":  # channels is a string while others are lists
+        block[0] = block[0]+ " ["
+        block[len(block)-1] = block[len(block)-1] + "]"
+    data[pos1:pos2] = block
+
+# update satellite anchors
+def update_sat_anchors(data, dcInfo):
+    update_sat_anchor(data, dcInfo, "_anchor_channels")
+    update_sat_anchor(data, dcInfo, "_anchor_use_flag")
+    update_sat_anchor(data, dcInfo, "_anchor_use_flag_clddet")
+    update_sat_anchor(data, dcInfo, "_anchor_error")
+    update_sat_anchor(data, dcInfo, "_anchor_obserr_bound_max")
+
 # get all filters given a line range(pos1, pos2)
 def get_all_filters(data, pos1, pos2):
     filters = []
@@ -136,13 +168,21 @@ def get_all_obs(data, shallow=False):
                 break
 
         name = data[cur + 1].split(":")[1].strip()  # "name:" is expected to follow "- obs space:"
+        next_one = hy.next_pos(data, cur)
+
+        # check if this is a satellite radiance observer
+        is_sat_radiance = False
+        for i in range(cur, next_one):
+            if "name: CRTM" in data[i]:
+                is_sat_radiance = True
+                break
+
+        # get the shortest observer name
         tmp = name.split("_")
-        if len(tmp) > 1:
+        if len(tmp) > 1 and not is_sat_radiance:
             sname = tmp[1].strip()
         else:
             sname = name
-
-        next_one = hy.next_pos(data, cur)
 
         # check if there are matching comments immediately before this YAML block
         nspace = hy.strip_indentations(data[cur])[0]
@@ -157,6 +197,7 @@ def get_all_obs(data, shallow=False):
         obs = {
             "name": name,
             "sname": sname,
+            "is_sat_radiance": is_sat_radiance,
             "pos1": cur,
             "pos2": next_one,
             "pre filters": {},
