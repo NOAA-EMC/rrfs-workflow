@@ -10,7 +10,7 @@ if nargs < 1:
     sys.stderr.write("yamlfinalize <jedivar.yaml|getkf.yaml|hofx.yaml|test.yaml>\n")
     sys.exit(1)
 yfile = args[1]
-ytype = yfile.rsplit(".", 1)  # remove the suffix
+ytype = yfile.rsplit(".", 1)[0]  # remove the suffix
 
 # get environmental variables
 analysisDate = os.getenv("analysisDate", "analysisDate_NOT_DEFINED")
@@ -19,6 +19,7 @@ HYB_WGT_STATIC = os.getenv("HYB_WGT_STATIC", "1.0")
 HYB_WGT_ENS = os.getenv("HYB_WGT_ENS", "0.0")
 start_type = os.getenv("start_type", "start_type_NOT_DEFINED")
 GETKF_TYPE = os.getenv("GETKF_TYPE", "TYPE_NOT_DEFINED")
+use_conv_sat_info = (os.getenv("USE_CONV_SAT_INFO", "True").upper() != "FALSE")
 
 # replacements for the @VAR@ patterns
 replacements = {
@@ -89,11 +90,9 @@ use_conv_sat_info = True
 if use_conv_sat_info:
     dcConvInfo = yt.load_convinfo()
     dcSatInfo = yt.load_satinfo()
-    if not dcConvInfo and not dcSatInfo:
-        sys.stderr.write("INFO: no convinfo/satinfo, or empty/corrupt convinfo/satinfo\n")
-    elif not dcConvInfo:
+    if not dcConvInfo:
         sys.stderr.write("INFO: no convinfo, or empty/corrupt convinfo\n")
-    elif not dcSatInfo:
+    if not dcSatInfo:
         sys.stderr.write("INFO: no satinfo, or empty/corrupt satinfo\n")
 
     # get the YAML head section
