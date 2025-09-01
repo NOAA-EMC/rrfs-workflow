@@ -94,9 +94,10 @@ case ${YAML_GEN_METHOD:-1} in
     cp ${EXPDIR}/config/jedivar.yaml jedivar.yaml
     cp "${EXPDIR}/config/convinfo" .
     cp "${EXPDIR}/config/satinfo" .
-    cp "${USHrrfs}/hifiyaml.py" .
-    cp "${USHrrfs}/yamltools2rrfs.py" .
-    "${USHrrfs}/yaml_finalize" jedivar
+    cp "${USHrrfs}/hifiyaml4rrfs.py" .
+    cp "${USHrrfs}/yamltools4rrfs.py" .
+    cp "${USHrrfs}/yaml_finalize" .
+    ./yaml_finalize jedivar.yaml
     ;;
   2) # update placeholders in static yaml from gen_jedivar_yaml_nonjcb.sh
     source "${USHrrfs}"/yaml_replace_placeholders.sh
