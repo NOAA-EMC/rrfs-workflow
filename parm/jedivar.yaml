@@ -1,6 +1,6 @@
 _member: &memberConfig
   date: &analysisDate '@analysisDate@'
-  state variables: &incvars [water_vapor_mixing_ratio_wrt_moist_air, air_pressure_at_surface, air_temperature, northward_wind, eastward_wind, cloud_liquid_water, cloud_liquid_ice, rain_water, snow_water, graupel, equivalent_reflectivity_factor, upward_air_velocity]
+  state variables: &incvars [water_vapor_mixing_ratio_wrt_moist_air, air_pressure_at_surface, air_temperature, northward_wind, eastward_wind]
   stream name: ensemble
 
 output:
@@ -69,9 +69,6 @@ cost function:
     - rain_water
     - snow_water
     - cldfrac
-    - equivalent_reflectivity_factor
-    - w
-    - upward_air_velocity
     filename: mpasout.nc
     date: *analysisDate
   background error:
@@ -174,6 +171,7 @@ cost function:
          observation vertical coordinate: height
          interpolation method: linear
          observation alias file: obsop_name_map.yaml
+       _obsname: refl10cm
        obs filters:
        - filter: Background Check
          filter variables:
@@ -181,7 +179,6 @@ cost function:
          threshold: 12.0
          action:
            name: reject
-       _obsname: refl10cm
      - obs space:
          name: adpsfc_t181
          distribution:

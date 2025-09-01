@@ -114,6 +114,7 @@ observations:
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
            lengthscale: 200e3 # orig
+       _obsname: refl10cm
        obs filters:
        - filter: Background Check
          filter variables:
@@ -121,7 +122,6 @@ observations:
          threshold: 12.0
          action:
            name: reject
-       _obsname: refl10cm
      - obs space:
          name: adpsfc_t181
          distribution:
