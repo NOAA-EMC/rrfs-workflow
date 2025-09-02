@@ -49,12 +49,14 @@ def strip_leading_empty_lines(block):
     while block and block[0] == "":
         block.pop(0)
 
+
 # dedent a YAML block
 def dedent(block):
     nspace = strip_indentations(block[0])[0]
     if nspace > 0:
         for i in range(0, len(block)):
             block[i] = block[i][nspace:]
+
 
 # find the next line postion with the same or less indentation level
 def next_pos(data, pos):
@@ -105,14 +107,18 @@ def next_pos(data, pos):
     return next_pos
 
 
-# get the start postion of a YAML block specificed by a querystr,
+# get the start postion of a YAML block specificed by a querystr or linestr
 #    eg: querystr = "cost function/background error/components/1/convariance/members from template"
-def get_start_pos(data, querystr, ignore_error=False):
+#        linestr = "- filter: Temporal Thinning" # to find a line contains this linestr
+def get_start_pos(data, querystr="", ignore_error=False, linestr=""):
     errmsg = None
     if querystr:
         query_list = querystr.strip("/").split("/")   # strip leading and trailing / and then split
     else:
-        return -1, None
+        if not linestr:  # linestr only takes effect when querystr="" and if linestr="", return
+            return -1, None
+        else:  # if linestr presents, create a placeholder querylist
+            query_list = ["place:holder:query:list:longmont:colorado:USA"]
 
     cur = 0
     end = len(data)
@@ -137,8 +143,8 @@ def get_start_pos(data, querystr, ignore_error=False):
                     found = True
                     break
 
-            else:  # dictionary key
-                if f"{s}:" in line:
+            else:  # dictionary key or linestr
+                if (linestr and linestr in data[i]) or f"{s}:" in line:
                     cur = i
                     found = True
                     break
