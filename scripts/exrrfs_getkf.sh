@@ -99,11 +99,6 @@ case ${YAML_GEN_METHOD:-1} in
     ;;
 esac
 
-# For post task, change a few yaml settings and remove "reduce obs space"
-if [[ "${GETKF_TYPE}" == "post" ]]; then
-  "${USHrrfs}"/yaml_getkf_post getkf.yaml
-fi
-
 if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CYCS_DO_DA} == "true" ]]; then
   # run mpasjedi_enkf.x
   #export OOPS_TRACE=1
