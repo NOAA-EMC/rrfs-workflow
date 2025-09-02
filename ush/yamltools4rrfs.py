@@ -22,7 +22,7 @@ def list_to_delimited_string(lst, spaces='  ', delimiter=', ', elements_per_line
 
 
 # print information for debugging purpose
-def dbgprint(*parms):
+def debugprint(*parms):
     msg = " ".join(str(p) for p in parms)
     sys.stderr.write(msg + "\n")
 
@@ -122,19 +122,40 @@ def update_sat_anchors(data, dcInfo):
     update_sat_anchor(data, dcInfo, "_anchor_obserr_bound_max")
 
 
-# convert observer to solver
+# tweak observers for getkf solver or post:
+#  1. if solver, change the distribution from RoundRobin to Halo
+#  2. transfer the obsdataout obsfile to obsdatain
+#  3. if post, remove the "reduce obs space" actions and "temporal thinning" filters
 # be sure to pass the whole list instead of a list slice
-#   for example, convert_observer_to_solver(data[i:j])
-#    will not return updated list
-def convert_observer_to_solver(data):
-    for i in range(0, len(data)):
-        if "RoundRobin" in data[i]:
-            data[i] = data[i].replace("RoundRobin", "Halo")
-        pos, _ = hy.get_start_pos(data, "obsdataout/engine/obsfile")
-        diagfile = data[pos].split(":")[1].strip()
-        pos, _ = hy.get_start_pos(data, "obsdatain/engine/obsfile")
-        spaces = hy.strip_indentations(data[pos])[1]
-        data[pos] = f"{spaces}obsfile: data/jdiag/{diagfile}"
+#   for example, getkf_observer_tweak(data[i:j]) will not return an updated list
+def getkf_observer_tweak(data, getkf_type):
+    if getkf_type == "solver":  # solver cannot use RoundRobin
+        for i in range(0, len(data)):
+            if "RoundRobin" in data[i]:
+                data[i] = data[i].replace("RoundRobin", "Halo")
+
+    # transfer the obsdataout obsfile to obsdatain
+    pos, _ = hy.get_start_pos(data, "obsdataout/engine/obsfile")
+    diagfile = data[pos].split(":")[1].strip()
+    pos, _ = hy.get_start_pos(data, "obsdatain/engine/obsfile")
+    spaces = hy.strip_indentations(data[pos])[1]
+    data[pos] = f"{spaces}obsfile: data/jdiag/{diagfile}"
+
+    # if post, remove the "reduce obs space" actions and "temporal thinning" filters
+    if getkf_type == "post":
+        i = 0
+        while i < len(data) - 1:
+            if (data[i].strip().startswith("action:") and data[i+1].strip().startswith("name: reduce obs space")):
+                del data[i:i+2]  # delete and move to the next line
+            else:
+                i += 1  # if no deletion, move to the next line
+
+        # remove the "- filter: Temporal Thinning" block
+        # assume only one of this filter in each observer
+        pos, errmsg = hy.get_start_pos(data, linestr="- filter: Temporal Thinning", ignore_error=True)
+        if errmsg is None and not data[pos].strip().startswith("#"):  # do nothing if not found or commented out
+            next_one = hy.next_pos(data, pos)
+            del data[pos:next_one]
 
 
 # get all filters given a line range(pos1, pos2)
