@@ -13,8 +13,8 @@ load(pathJoin("cmake", os.getenv("cmake_ver") or "3.23.1"))
 load("rrfs_common")
 load(pathJoin("wgrib2", os.getenv("wgrib2_ver") or "2.0.8"))
 
-prepend_path("MODULEPATH", "/scratch2/BMC/rtrr/gge/lua")
-load("prod_util/2.0.15")
+prepend_path("MODULEPATH", "/scratch4/BMC/rtrr/gge/hera")
+load("prod_util/2.1.1")
 
 unload("fms/2023.02.01")
 unload("g2tmpl/1.10.2")
