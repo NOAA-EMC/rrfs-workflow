@@ -22,7 +22,6 @@ elif [[ "${hostnamestr}" == *"gaea"* ]]; then
 elif [[ "${hostnamestr}" == *"ufe"* ]]; then
    MACHINE_ID=ursa
    PLATFORM=ursa
-   #FIX_RRFS_LOCATION=/gpfs/f5/gsl-glo/world-shared/role.rrfsfix/FIX_RRFS
    FIX_RRFS_LOCATION="/scratch4/BMC/rtrr/FIX_RRFS"
 elif [[ -d /lfs/h2 ]] ; then
     PLATFORM=wcoss2
