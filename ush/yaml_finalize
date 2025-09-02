@@ -51,14 +51,14 @@ if not do_radar_ref and ytype == "jedivar":
     hy.modify(data, "_member/state variables", varlist)
     pos, _ = hy.get_start_pos(data, "cost function/background/state variables")
     next_one = hy.next_pos(data, pos)
-    del data[next_one-3:next_one]  # delete the extra 3 lines: equivalent_reflectivity_factor, w, upward_air_velocity
+    del data[next_one - 3:next_one]  # delete the extra 3 lines: equivalent_reflectivity_factor, w, upward_air_velocity
 
 elif do_radar_ref and ytype == "getkf":
     varlist = "increment variables: [air_temperature, water_vapor_mixing_ratio_wrt_moist_air, eastward_wind, northward_wind, air_pressure_at_surface]"
     hy.modify(data, "increment variables", varlist)
     pos, _ = hy.get_start_pos(data, "_member/state variables")
     next_one = hy.next_pos(data, pos)
-    del data[next_one-3:next_one]  # delete the extra 3 lines: equivalent_reflectivity_factor, w, upward_air_velocity
+    del data[next_one - 3:next_one]  # delete the extra 3 lines: equivalent_reflectivity_factor, w, upward_air_velocity
 
 # tweaks for cold start DA
 if ytype == "jedivar" and start_type == "cold":

@@ -145,8 +145,8 @@ def getkf_observer_tweak(data, getkf_type):
     if getkf_type == "post":
         i = 0
         while i < len(data) - 1:
-            if (data[i].strip().startswith("action:") and data[i+1].strip().startswith("name: reduce obs space")):
-                del data[i:i+2]  # delete and move to the next line
+            if (data[i].strip().startswith("action:") and data[i + 1].strip().startswith("name: reduce obs space")):
+                del data[i:i + 2]  # delete and move to the next line
             else:
                 i += 1  # if no deletion, move to the next line
 
