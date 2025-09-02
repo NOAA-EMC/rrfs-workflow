@@ -27,7 +27,7 @@ def text_to_yblock(text):
 
 
 # print information for debugging purpose
-def dbgprint(*parms):
+def debugprint(*parms):
     msg = " ".join(str(p) for p in parms)
     sys.stderr.write(msg + "\n")
 
@@ -46,17 +46,15 @@ def strip_indentations(ystr):
 # non-leading empty lines are intact,
 # some may use trailing empty lines to increaset readability
 def strip_leading_empty_lines(block):
-    newblock = []
-    leading = True
-    for line in block:
-        if line.strip():
-            leading = False
-            newblock.append(line)
-        else:
-            if not leading:
-                newblock.append(line)
-    return newblock
+    while block and block[0] == "":
+        block.pop(0)
 
+# dedent a YAML block
+def dedent(block):
+    nspace = strip_indentations(block[0])[0]
+    if nspace > 0:
+        for i in range(0, len(block)):
+            block[i] = block[i][nspace:]
 
 # find the next line postion with the same or less indentation level
 def next_pos(data, pos):
@@ -243,11 +241,12 @@ def modify(data, querystr, newblock):
             break  # exit the loop if not a comment or different indentation level
 
     # strip any possible leading empty lines in newblock
-    newblock = strip_leading_empty_lines(newblock)
+    strip_leading_empty_lines(newblock)
+    # dedent to make sure no leading empty spaces in the first line
+    dedent(newblock)
     # align the newblock indentations to match the querystr block
-    nspaceBlock = strip_indentations(newblock[0])[0]
-    if nspaceBlock != nspace:
+    if nspace > 0:
         for i, line in enumerate(newblock):
-            newblock[i] = spaces + line.lstrip()
+            newblock[i] = spaces + line
 
     data[pos1:pos2] = newblock
