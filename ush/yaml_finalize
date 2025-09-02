@@ -86,7 +86,6 @@ if ytype == "getkf" and (GETKF_TYPE == "solver" or GETKF_TYPE == "post"):
     hy.modify(data, "driver", block)
 
 # keep/drop/passivate observations based on convifo/satinfo
-use_conv_sat_info = True
 if use_conv_sat_info:
     dcConvInfo = yt.load_convinfo()
     dcSatInfo = yt.load_satinfo()
