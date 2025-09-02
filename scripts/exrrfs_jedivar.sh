@@ -91,7 +91,7 @@ export beginDate=""${CDATEm2:0:4}-${CDATEm2:4:2}-${CDATEm2:6:2}T${CDATEm2:8:2}:0
 # generate jedivar.yaml based on how YAML_GEN_METHOD is set
 case ${YAML_GEN_METHOD:-1} in
   1) # from ${PARMrrfs}
-    cp ${EXPDIR}/config/jedivar.yaml jedivar.yaml
+    cp "${EXPDIR}/config/jedivar.yaml" jedivar.yaml
     cp "${EXPDIR}/config/convinfo" .
     cp "${EXPDIR}/config/satinfo" .
     cp "${USHrrfs}/hifiyaml4rrfs.py" .
