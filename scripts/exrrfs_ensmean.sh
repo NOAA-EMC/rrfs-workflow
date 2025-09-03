@@ -32,13 +32,13 @@ for (( ii=0; ii<"${num_fhrs}"; ii=ii+"${group_total_num}" )); do
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
 
     # decide the history files
-    history_file=${UMBRELLA_ENSMEAN_DATA}/history.${timestr}.nc
-    diag_file=${UMBRELLA_ENSMEAN_DATA}/diag.${timestr}.nc
+    history_file="${UMBRELLA_ENSMEAN_DATA}/history.${timestr}.nc"
+    diag_file="${UMBRELLA_ENSMEAN_DATA}/diag.${timestr}.nc"
     # wait for history file available
     while true; do
-        historyfiles=${UMBRELLA_SAVE_FCST_DATA}/mem*/history.${timestr}.nc
-        num_historyfiles=$( files=(${historyfiles}) && echo ${#files[@]} )
-        if [[ ${num_historyfiles} == ${ENS_SIZE} ]]; then
+        historyfiles="${UMBRELLA_SAVE_FCST_DATA}/mem*/history.${timestr}.nc"
+        num_historyfiles=$( files=("${historyfiles}") && echo ${#files[@]} )
+        if [[ ${num_historyfiles} == "${ENS_SIZE}" ]]; then
            echo "find enough ensemble history forecast files: ${num_historyfiles} files"
            break
         else
@@ -46,14 +46,14 @@ for (( ii=0; ii<"${num_fhrs}"; ii=ii+"${group_total_num}" )); do
            sleep 5
         fi
     done
-    rm -f  ${history_file}
+    rm -f  "${history_file}"
     echo "Processing ensemble mean for history.${timestr}.nc ..."
-    ncea --no_tmp_fl  ${historyfiles}  ${history_file} &
+    ncea --no_tmp_fl  "${historyfiles}"  "${history_file}" &
     # wait for diag file available
     while true; do
-        diagfiles=${UMBRELLA_SAVE_FCST_DATA}/mem*/diag.${timestr}.nc
-        num_diagfiles=$( files=(${diagfiles}) && echo ${#files[@]} )
-        if [[ ${num_diagfiles} == ${ENS_SIZE} ]]; then
+        diagfiles="${UMBRELLA_SAVE_FCST_DATA}/mem*/diag.${timestr}.nc"
+        num_diagfiles=$( files=("${diagfiles}") && echo ${#files[@]} )
+        if [[ ${num_diagfiles} == "${ENS_SIZE}" ]]; then
            echo "find enough ensemble diag forecast files: ${num_historyfiles} files"
            break
         else
@@ -61,9 +61,9 @@ for (( ii=0; ii<"${num_fhrs}"; ii=ii+"${group_total_num}" )); do
            sleep 5
         fi
     done
-    rm -f ${diag_file}
+    rm -f "${diag_file}"
     echo "Processing ensemble mean for diag.${timestr}.nc ..."
-    ncea --no_tmp_fl  ${diagfiles}  ${diag_file} &
+    ncea --no_tmp_fl  "${diagfiles}"  "${diag_file}" &
 done
 
 # Wait for all background jobs to finish
