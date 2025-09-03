@@ -34,6 +34,7 @@ def jedivar(xmlFile, expdir, do_spinup=False):
         'HYB_ENS_TYPE': os.getenv('HYB_ENS_TYPE', '0'),
         'HYB_ENS_PATH': os.getenv('HYB_ENS_PATH', ''),
         'ENS_BEC_LOOK_BACK_HRS': f'{ens_bec_look_back_hrs}',
+        'USE_CONV_SAT_INFO': os.getenv('USE_CONV_SAT_INFO', 'true'),
     }
     if do_spinup:
         dcTaskEnv['DO_SPINUP'] = 'TRUE'
