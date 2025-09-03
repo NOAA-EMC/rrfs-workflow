@@ -140,7 +140,7 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     FIRE_RAVE_DIR=${RETRODATAPATH}/RAVE_RAW
   fi
   if [[ $MACHINE == "hera" ]] ; then
-    RETRODATAPATH="/scratch4/BMC/zrtrr/Ruifang.Li/RRFS_RETRO_DATA"
+    RETRODATAPATH="/scratch3/BMC/zrtrr/RRFS_RETRO_DATA"
     if [[ ${DO_ENSEMBLE} == "TRUE" ]]; then
       if [[ ${EXTRN_MDL_NAME_ICS} == "GEFS" ]]; then
         EXTRN_MDL_SOURCE_BASEDIR_ICS="${RETRODATAPATH}/GEFS"
