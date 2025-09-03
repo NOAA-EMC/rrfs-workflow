@@ -4,6 +4,7 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 
 # begin of ensmean --------------------------------------------------------
 
+
 def ensmean(xmlFile, expdir):
     meta_id = 'ensmean'
     cycledefs = 'prod'

@@ -38,7 +38,7 @@ def upp(xmlFile, expdir, do_ensemble=False, do_ensmean_post=False):
         memdir = ""
     else:
         if not do_ensmean_post:
-        # metatask (nested or not)
+            # metatask (nested or not)
             ens_size = int(os.getenv('ENS_SIZE', '2'))
             ens_indices = ''.join(f'{i:03d} ' for i in range(1, int(ens_size) + 1)).strip()
             meta_bgn = f'''
