@@ -13,6 +13,7 @@ export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
 #
 export DO_ENSEMBLE=true
+export DO_ENSMEAN_POST=true
 export IC_ONLY=false  # interpolate GEFS/GDAS to the target mesh to provide ensemble BEC
 export DO_DETERMINISTIC=false
 export ENS_SIZE=30
@@ -34,6 +35,7 @@ export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
 export MPASSIT_GROUP_TOTAL_NUM=1
 export UPP_GROUP_TOTAL_NUM=1
+export ENSMEAN_GROUP_TOTAL_NUM=3
 
 export IC_OFFSET=30
 export LBC_OFFSET=6
@@ -55,6 +57,7 @@ export NODES_UPP="<nodes>1:ppn=40</nodes>"
 export NODES_GETKF="<nodes>4:ppn=20</nodes>"
 export NODES_RECENTER="<nodes>2:ppn=16</nodes>"
 export NODES_IODA_MRMS_REFL="<nodes>1:ppn=40</nodes>"
+export NODES_ENSMEAN="<nodes>2:ppn=40</nodes>"
 #
 export WALLTIME_FCST="1:30:00"
 export WALLTIME_SAVE_FCST="1:30:00"

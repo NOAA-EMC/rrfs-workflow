@@ -5,7 +5,7 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 # begin of upp --------------------------------------------------------
 
 
-def upp(xmlFile, expdir, do_ensemble=False):
+def upp(xmlFile, expdir, do_ensemble=False, do_ensmean_post=False):
     meta_id = 'upp'
     cycledefs = 'prod'
     #
@@ -35,21 +35,39 @@ def upp(xmlFile, expdir, do_ensemble=False):
         meta_end = f'</metatask>\n'
         task_id = f'{meta_id}_g#group_index#'
         ensindexstr = ""
+        memdir = ""
     else:
+        if not do_ensmean_post:
         # metatask (nested or not)
-        ens_size = int(os.getenv('ENS_SIZE', '2'))
-        ens_indices = ''.join(f'{i:03d} ' for i in range(1, int(ens_size) + 1)).strip()
-        meta_bgn = f'''
+            ens_size = int(os.getenv('ENS_SIZE', '2'))
+            ens_indices = ''.join(f'{i:03d} ' for i in range(1, int(ens_size) + 1)).strip()
+            meta_bgn = f'''
 <metatask name="{meta_id}">
 <var name="ens_index">{ens_indices}</var>
 <metatask name="{meta_id}_m#ens_index#">
 <var name="group_index">{group_indices}</var>
 <var name="fhr2">{fhr2}</var>
 '''
-        meta_end = f'</metatask>\n</metatask>\n'
-        task_id = f'{meta_id}_m#ens_index#_g#group_index#'
-        dcTaskEnv['ENS_INDEX'] = "#ens_index#"
-        ensindexstr = "_m#ens_index#"
+            meta_end = f'</metatask>\n</metatask>\n'
+            task_id = f'{meta_id}_m#ens_index#_g#group_index#'
+            dcTaskEnv['ENS_INDEX'] = "#ens_index#"
+            ensindexstr = "_m#ens_index#"
+            memdir = "/mem#ens_index#"
+
+        else:
+            # metatask (nested or not)
+            meta_id = "upp_ensmean"
+            meta_bgn = f'''
+<metatask name="{meta_id}">
+<var name="group_index">{group_indices}</var>
+<var name="fhr2">{fhr2}</var>
+'''
+            meta_end = f'</metatask>\n'
+            task_id = f'{meta_id}_g#group_index#'
+            memdir = "/ensmean"
+            ensindexstr = "_ensmean"
+
+    dcTaskEnv['MEMDIR'] = f'{memdir}'
 
     # dependencies
     timedep = ""
