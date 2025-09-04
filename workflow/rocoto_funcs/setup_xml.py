@@ -121,7 +121,7 @@ def setup_xml(HOMErrfs, expdir):
             save_fcst(xmlFile, expdir, do_ensemble=True)
             mpassit(xmlFile, expdir, do_ensemble=True)
             upp(xmlFile, expdir, do_ensemble=True)
-            if os.getenv("DO_ENSMEAN_POST", 'FALSE').upper() == "TRUE":
+            if do_ensmean_post == "TRUE":
                 ensmean(xmlFile, expdir)
                 mpassit(xmlFile, expdir, do_ensemble=True, do_ensmean_post=True)
                 upp(xmlFile, expdir, do_ensemble=True, do_ensmean_post=True)
