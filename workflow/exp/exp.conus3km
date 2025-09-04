@@ -26,6 +26,18 @@ export RADARREFL_TIMELEVEL="00"  # 00 15 30 45 min
 export ENS_SIZE=30
 export ENS_BEC_LOOK_BACK_HRS=1  # define the hours going back for ensemble forecast files for the ensemble BEC
 
+export STATIC_BEC_MODEL="GSIBEC" # the static bec model, GSIBEC and BUMPBEC
+export GSIBEC_X=40
+export GSIBEC_Y=20
+export GSIBEC_NLAT=1092
+export GSIBEC_NLON=1820
+export GSIBEC_NORTH_POLE_LAT=128.500000
+export GSIBEC_NORTH_POLE_LON=82.500002
+export GSIBEC_LON_START=-50.159868
+export GSIBEC_LON_END=50.159868
+export GSIBEC_LAT_START=-29.433115
+export GSIBEC_LAT_END=29.433115
+
 export DO_CYC=true
 export CYC_INTERVAL=1
 for i in {0..23};    do arr[$i]="03"; done # 3hr fcst

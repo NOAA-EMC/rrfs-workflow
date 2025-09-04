@@ -59,6 +59,24 @@ cp ../_workaround_/RDASApp/direct_refl/mpas_fields_mod.F90 sorc/mpas-jedi/src/mp
 cp ../_workaround_/RDASApp/direct_refl/mpas_state_mod.F90 sorc/mpas-jedi/src/mpasjedi/State/mpas_state_mod.F90
 cp ../_workaround_/RDASApp/direct_refl/mpas2ufo_vars_mod.F90 sorc/mpas-jedi/src/mpasjedi/Utilities/mpas2ufo_vars_mod.F90
 
+# workaround for GSIbec
+# no PR yet
+cp ../_workaround_/RDASApp/gsibec/balmod.F90 sorc/gsibec/src/gsibec/gsi/balmod.F90
+cp ../_workaround_/RDASApp/gsibec/control2state_ad.F90 sorc/gsibec/src/gsibec/gsi/control2state_ad.F90
+cp ../_workaround_/RDASApp/gsibec/control2state.F90 sorc/gsibec/src/gsibec/gsi/control2state.F90
+cp ../_workaround_/RDASApp/gsibec/gsimod.F90 sorc/gsibec/src/gsibec/gsi/gsimod.F90
+cp ../_workaround_/RDASApp/gsibec/gsi_rfv3io_mod.f90 sorc/gsibec/src/gsibec/gsi/gsi_rfv3io_mod.f90
+cp ../_workaround_/RDASApp/gsibec/mod_fv3_lola.f90 sorc/gsibec/src/gsibec/gsi/mod_fv3_lola.f90
+
+cp ../_workaround_/RDASApp/saber/gsi_covariance_mod.f90 sorc/saber/src/saber/gsi/covariance/gsi_covariance_mod.f90
+cp ../_workaround_/RDASApp/saber/gsi_grid_mod.f90 sorc/saber/src/saber/gsi/grid/gsi_grid_mod.f90
+cp ../_workaround_/RDASApp/saber/GridCheckHelper.cc sorc/saber/src/saber/gsi/utils/GridCheckHelper.cc
+cp ../_workaround_/RDASApp/saber/GSIParameters.h sorc/saber/src/saber/gsi/utils/GSIParameters.h
+cp ../_workaround_/RDASApp/saber/Geometry.cc sorc/saber/src/saber/interpolation/Geometry.cc
+cp ../_workaround_/RDASApp/saber/ErrorCovarianceToolbox.h sorc/saber/src/saber/oops/ErrorCovarianceToolbox.h
+cp ../_workaround_/RDASApp/saber/ProcessPerts.h sorc/saber/src/saber/oops/ProcessPerts.h
+cp ../_workaround_/RDASApp/saber/MoistIncrOp.cc sorc/saber/src/saber/vader/MoistIncrOp.cc
+
 rm -rf build/
 ./build.sh -m MPAS -t NO
 

@@ -1,0 +1,47 @@
+- covariance:
+    covariance model: SABER
+    saber central block:
+      saber block name: BUMP_NICAS
+      active variables: &ctlvars
+      - air_horizontal_streamfunction
+      - air_horizontal_velocity_potential
+      - air_temperature
+      - water_vapor_mixing_ratio_wrt_moist_air
+      - air_pressure_at_surface
+      read:
+        io:
+          data directory: data/static_bec/nicas
+          files prefix: mpas
+        drivers:
+          multivariate strategy: univariate
+          read local nicas: true
+    saber outer blocks:
+    - saber block name: StdDev
+      read:
+        model file:
+          filename: data/static_bec/stddev.nc
+          date: *analysisDate
+          stream name: control
+    - saber block name: BUMP_VerticalBalance
+      read:
+        io:
+          data directory: data/static_bec/vbal
+          files prefix: mpas_vbal
+        drivers:
+          read local sampling: true
+          read vertical balance: true
+        vertical balance:
+          vbal:
+          - balanced variable: air_horizontal_velocity_potential
+            unbalanced variable: air_horizontal_streamfunction
+            diagonal regression: true
+          - balanced variable: air_temperature
+            unbalanced variable: air_horizontal_streamfunction
+          - balanced variable: air_pressure_at_surface
+            unbalanced variable: air_horizontal_streamfunction
+    linear variable change:
+      linear variable change name: Control2Analysis
+      input variables: *ctlvars
+      output variables: *incvars
+  weight:
+    value: "@HYB_WGT_STATIC@"

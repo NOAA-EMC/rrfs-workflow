@@ -21,6 +21,7 @@ HYB_WGT_ENS = os.getenv("HYB_WGT_ENS", "0.0")
 start_type = os.getenv("start_type", "start_type_NOT_DEFINED")
 GETKF_TYPE = os.getenv("GETKF_TYPE", "TYPE_NOT_DEFINED")
 use_conv_sat_info = (os.getenv("USE_CONV_SAT_INFO", "True").upper() != "FALSE")
+STATIC_BEC_MODEL = os.getenv("STATIC_BEC_MODEL", "GSIBEC" 
 
 # replacements for the @VAR@ patterns
 replacements = {
@@ -43,6 +44,11 @@ if ytype == "jedivar":
         # remove the ensemble BEC component, yield a pure 3DVar
         querystr = "cost function/background error/components/1"
         hy.drop(data, querystr)
+    if float(STATIC_BEC_MODEL) == "BUMPBEC":
+        # replace the gsibec component with bumpbec component
+        bec = hy.load("bec_bump.yaml")
+        querystr = "cost function/background error/components/0"
+        hy.modify(data, querystr, bec)
 
 # modify variable list if do_radar_ref
 do_radar_ref = (os.getenv("DO_RADAR_REF", "FASLE").upper() == "TRUE")
