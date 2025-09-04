@@ -34,7 +34,7 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 export FIX_BUFRSND=${FIXrrfs}/bufrsnd
 
 # This path will need to be updated prior to implementation
-export GEMPAKrrfs=/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/gempak
+export GEMPAK_FIX=${GEMPAK_FIX:-${FIXrrfs}/gempak/fix}
 
 #-----------------------------------------------------------------------
 # Source the bash utility functions.
