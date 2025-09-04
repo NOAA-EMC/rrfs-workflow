@@ -57,7 +57,7 @@ export NODES_UPP="<nodes>1:ppn=40</nodes>"
 export NODES_GETKF="<nodes>4:ppn=20</nodes>"
 export NODES_RECENTER="<nodes>2:ppn=16</nodes>"
 export NODES_IODA_MRMS_REFL="<nodes>1:ppn=40</nodes>"
-export NODES_ENSMEAN="<nodes>2:ppn=40</nodes>"
+export NODES_ENSMEAN="<nodes>1:ppn=40</nodes>"
 #
 export WALLTIME_FCST="1:30:00"
 export WALLTIME_SAVE_FCST="1:30:00"

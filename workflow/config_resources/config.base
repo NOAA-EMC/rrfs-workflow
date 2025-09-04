@@ -69,6 +69,12 @@ export WALLTIME_FCST=${WALLTIME_FCST:-"00:50:00"}
 export NODES_SAVE_FCST=${NODES_SAVE_FCST:-"<nodes>1:ppn=1</nodes>"}
 export WALLTIME_SAVE_FCST=${WALLTIME_SAVE_FCST:-"00:50:00"}
 
+# ensmean
+export NODES_ENSMEAN=${NODES_ENSMEAN:-"<nodes>2:ppn=40</nodes>"}
+export WALLTIME_ENSMEAN=${WALLTIME_ENSMEAN:-"00:30:00"}
+export NATIVE_ENSMEAN=${NATIVE_ENSMEAN:-""}
+
+
 # mpassit
 export NODES_MPASSIT=${NODES_MPASSIT:-"<nodes>2:ppn=40</nodes>"}
 export WALLTIME_MPASSIT=${WALLTIME_MPASSIT:-"00:50:00"}
