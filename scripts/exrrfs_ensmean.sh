@@ -21,6 +21,7 @@ num_fhrs=${#fhr_all[@]}
 group_total_num=$((10#${GROUP_TOTAL_NUM}))
 group_index=$((10#${GROUP_INDEX}))
 
+job_pids=()
 for (( ii=0; ii<"${num_fhrs}"; ii=ii+"${group_total_num}" )); do
     i=$(( ii + "${group_index}" - 1 ))
     if (( i >= num_fhrs )); then
@@ -36,8 +37,8 @@ for (( ii=0; ii<"${num_fhrs}"; ii=ii+"${group_total_num}" )); do
     diag_file="${UMBRELLA_ENSMEAN_DATA}/diag.${timestr}.nc"
     # wait for history file available
     while true; do
-        historyfiles="${UMBRELLA_SAVE_FCST_DATA}/mem*/history.${timestr}.nc"
-        num_historyfiles=$( files=("${historyfiles}") && echo ${#files[@]} )
+        historyfiles=("${UMBRELLA_SAVE_FCST_DATA}"/mem*/"history.${timestr}.nc")
+        num_historyfiles=${#historyfiles[@]}
         if [[ ${num_historyfiles} == "${ENS_SIZE}" ]]; then
            echo "find enough ensemble history forecast files: ${num_historyfiles} files"
            break
@@ -48,13 +49,13 @@ for (( ii=0; ii<"${num_fhrs}"; ii=ii+"${group_total_num}" )); do
     done
     rm -f  "${history_file}"
     echo "Processing ensemble mean for history.${timestr}.nc ..."
-    ncea --no_tmp_fl  "${historyfiles}"  "${history_file}" &
+    ncea --no_tmp_fl  "${UMBRELLA_SAVE_FCST_DATA}"/mem*/"history.${timestr}.nc"  "${history_file}" & job_pids+=($!)
     # wait for diag file available
     while true; do
-        diagfiles="${UMBRELLA_SAVE_FCST_DATA}/mem*/diag.${timestr}.nc"
-        num_diagfiles=$( files=("${diagfiles}") && echo ${#files[@]} )
+        diagfiles=("${UMBRELLA_SAVE_FCST_DATA}"/mem*/"diag.${timestr}.nc")
+        num_diagfiles=${#diagfiles[@]}
         if [[ ${num_diagfiles} == "${ENS_SIZE}" ]]; then
-           echo "find enough ensemble diag forecast files: ${num_historyfiles} files"
+           echo "find enough ensemble diag forecast files: ${num_diagfiles} files"
            break
         else
            echo "no enough ensemble diag forecast files: ${num_diagfiles} files"
@@ -63,17 +64,15 @@ for (( ii=0; ii<"${num_fhrs}"; ii=ii+"${group_total_num}" )); do
     done
     rm -f "${diag_file}"
     echo "Processing ensemble mean for diag.${timestr}.nc ..."
-    ncea --no_tmp_fl  "${diagfiles}"  "${diag_file}" &
+    ncea --no_tmp_fl  "${UMBRELLA_SAVE_FCST_DATA}"/mem*/"diag.${timestr}.nc"  "${diag_file}" & job_pids+=($!)
 done
 
-# Wait for all background jobs to finish
-#wait
-while true; do
-  wait -n || {
-    code="$?"
-    ([[ $code = "127" ]] && exit 0 || exit "$code")
-    break
-  }
+# Wait for all background jobs to finish; exit error if any jobs failed
+for pid in "${job_pids[@]}"; do
+    if ! wait "$pid"; then
+        echo "Ensmean job with PID $pid failed."
+        exit 1
+    fi
 done
 
 echo " All ensemble means computed by forecast hour and saved in ${UMBRELLA_ENSMEAN_DATA}"

@@ -25,7 +25,6 @@ def ensmean(xmlFile, expdir):
         'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycles}',
         'GROUP_TOTAL_NUM': f'{ensmean_group_total_num}',
         'GROUP_INDEX': f'#group_index#',
-        'MEMDIR': '/ensmean',
         'ENS_SIZE': f'{ens_size}',
     }
 
