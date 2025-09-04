@@ -30,7 +30,7 @@ mkdir -p obs ens jdiag
 #
 # copy observations files
 #
-if [[ "${TYPE}" == "observer" ]]; then
+if [[ "${GETKF_TYPE}" == "observer" ]]; then
   source "${USHrrfs}/copy_obs.sh" "getkf"
 else
   ln -snf "${UMBRELLA_GETKF_OBSERVER_DATA}"/jdiag* jdiag/
@@ -72,14 +72,20 @@ radt=30
 file_content=$(< "${PARMrrfs}/${physics_suite}/namelist.atmosphere") # read in all content
 eval "echo \"${file_content}\"" > namelist.atmosphere
 ${cpreq} "${PARMrrfs}"/streams.atmosphere.getkf streams.atmosphere
-analysisDate="${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z"
+export analysisDate="${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z"
 CDATEm2=$(${NDATE} -2 "${CDATE}")
-beginDate="${CDATEm2:0:4}-${CDATEm2:4:2}-${CDATEm2:6:2}T${CDATEm2:8:2}:00:00Z"
+export beginDate="${CDATEm2:0:4}-${CDATEm2:4:2}-${CDATEm2:6:2}T${CDATEm2:8:2}:00:00Z"
 #
 # generate getkf.yaml based on how YAML_GEN_METHOD is set
 case ${YAML_GEN_METHOD:-1} in
   1) # from ${PARMrrfs}
-    source "${USHrrfs}"/yaml_from_parm.sh "getkf"
+    cp "${EXPDIR}/config/getkf.yaml" getkf.yaml
+    cp "${EXPDIR}/config/convinfo" .
+    cp "${EXPDIR}/config/satinfo" .
+    cp "${USHrrfs}/hifiyaml4rrfs.py" .
+    cp "${USHrrfs}/yamltools4rrfs.py" .
+    cp "${USHrrfs}/yaml_finalize" .
+    ./yaml_finalize getkf.yaml
     ;;
   2) # cat together from inside sorc/RDASApp
     source "${USHrrfs}"/yaml_cat_together.sh
@@ -93,11 +99,6 @@ case ${YAML_GEN_METHOD:-1} in
     ;;
 esac
 
-# For post task, change a few yaml settings and remove "reduce obs space"
-if [[ "${TYPE}" == "post" ]]; then
-  "${USHrrfs}"/yaml_getkf_post getkf.yaml
-fi
-
 if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CYCS_DO_DA} == "true" ]]; then
   # run mpasjedi_enkf.x
   #export OOPS_TRACE=1
@@ -110,11 +111,11 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
   export err=$?
   err_chk
   #
-  cp "${DATA}"/getkf*.yaml "${COMOUT}/getkf_${TYPE}/${WGF}"
-  cp "${DATA}"/log.* "${COMOUT}/getkf_${TYPE}/${WGF}"
+  cp "${DATA}"/getkf*.yaml "${COMOUT}/getkf_${GETKF_TYPE}/${WGF}"
+  cp "${DATA}"/log.* "${COMOUT}/getkf_${GETKF_TYPE}/${WGF}"
 
   # rename ombg to oman for posterior observer jdiag files
-  if [[ "${TYPE}" == "post" ]]; then
+  if [[ "${GETKF_TYPE}" == "post" ]]; then
     for jdiag in "${DATA}"/jdiag*; do
       jdiag_tmp="${jdiag%.nc}_tmp.nc"
       nccopy -k 3 "${jdiag}" "${jdiag_tmp}"
@@ -124,8 +125,8 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
   fi
 
   # move jdiag* files to the umbrella directory if observer
-  if [[ "${TYPE}" == "observer" || "${TYPE}" == "post" ]]; then
-    cp "${DATA}"/jdiag* "${COMOUT}/getkf_${TYPE}/${WGF}"
+  if [[ "${GETKF_TYPE}" == "observer" || "${GETKF_TYPE}" == "post" ]]; then
+    cp "${DATA}"/jdiag* "${COMOUT}/getkf_${GETKF_TYPE}/${WGF}"
     mv jdiag* "${UMBRELLA_GETKF_DATA}"/.
   else # move post mean to umbrella if solver
     # ncks increments to cold_start IC
@@ -147,9 +148,9 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
   fi
 
   # Save analysis files if requested
-  if [[ "${TYPE}" == "post" && "${SAVE_GETKF_ANL}" == "true" ]]; then
+  if [[ "${GETKF_TYPE}" == "post" && "${SAVE_GETKF_ANL}" == "true" ]]; then
     for mem in $(seq -w 1 030); do
-      cp -rL "${DATA}"/data/ens/mem"${mem}".nc "${COMOUT}"/getkf_"${TYPE}"/"${WGF}"/mem"${mem}".nc
+      cp -rL "${DATA}"/data/ens/mem"${mem}".nc "${COMOUT}"/getkf_"${GETKF_TYPE}"/"${WGF}"/mem"${mem}".nc
     done
   fi
 

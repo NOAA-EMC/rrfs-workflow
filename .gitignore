@@ -1,4 +1,5 @@
 exec/
+tmp/
 fix/.agent
 fix/tmp
 fix/INIT_DONE
