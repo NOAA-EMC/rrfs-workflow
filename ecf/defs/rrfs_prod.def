@@ -515,7 +515,7 @@ suite rrfs_dev
                 task jrrfs_det_process_smoke
                   trigger :TIME >= 0035 and :TIME < 0110
                 task jrrfs_det_process_radar
-                  trigger :TIME >= 0015 and :TIME < 0105
+                  trigger :TIME >= 0025 and :TIME < 0105
                 task jrrfs_det_process_lightning
                   trigger :TIME >= 0015 and :TIME < 0105
                 task jrrfs_det_process_bufr
@@ -525,7 +525,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0015 and :TIME < 0105 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0025 and :TIME < 0105 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0015 and :TIME < 0105 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -4713,6 +4713,144 @@ suite rrfs_dev
                   trigger ../../post/det/jrrfs_det_post_f084_00_00_long==complete
                 task jrrfs_det_bufrsnd_long
                   trigger ../../fsm/jrrfs_fsm:release_det_post_f000_00_36_long
+                task jrrfs_gempak_f000
+                  trigger ../../product/det/jrrfs_det_prdgen_f000_00_36_long==complete
+                task jrrfs_gempak_f001
+                  trigger ../../product/det/jrrfs_det_prdgen_f001_00_00_long==complete
+                task jrrfs_gempak_f002
+                  trigger ../../product/det/jrrfs_det_prdgen_f002_00_00_long==complete
+                task jrrfs_gempak_f003
+                  trigger ../../product/det/jrrfs_det_prdgen_f003_00_00_long==complete
+                task jrrfs_gempak_f004
+                  trigger ../../product/det/jrrfs_det_prdgen_f004_00_00_long==complete
+                task jrrfs_gempak_f005
+                  trigger ../../product/det/jrrfs_det_prdgen_f005_00_00_long==complete
+                task jrrfs_gempak_f006
+                  trigger ../../product/det/jrrfs_det_prdgen_f006_00_00_long==complete
+                task jrrfs_gempak_f007
+                  trigger ../../product/det/jrrfs_det_prdgen_f007_00_00_long==complete
+                task jrrfs_gempak_f008
+                  trigger ../../product/det/jrrfs_det_prdgen_f008_00_00_long==complete
+                task jrrfs_gempak_f009
+                  trigger ../../product/det/jrrfs_det_prdgen_f009_00_00_long==complete
+                task jrrfs_gempak_f010
+                  trigger ../../product/det/jrrfs_det_prdgen_f010_00_00_long==complete
+                task jrrfs_gempak_f011
+                  trigger ../../product/det/jrrfs_det_prdgen_f011_00_00_long==complete
+                task jrrfs_gempak_f012
+                  trigger ../../product/det/jrrfs_det_prdgen_f012_00_00_long==complete
+                task jrrfs_gempak_f013
+                  trigger ../../product/det/jrrfs_det_prdgen_f013_00_00_long==complete
+                task jrrfs_gempak_f014
+                  trigger ../../product/det/jrrfs_det_prdgen_f014_00_00_long==complete
+                task jrrfs_gempak_f015
+                  trigger ../../product/det/jrrfs_det_prdgen_f015_00_00_long==complete
+                task jrrfs_gempak_f016
+                  trigger ../../product/det/jrrfs_det_prdgen_f016_00_00_long==complete
+                task jrrfs_gempak_f017
+                  trigger ../../product/det/jrrfs_det_prdgen_f017_00_00_long==complete
+                task jrrfs_gempak_f018
+                  trigger ../../product/det/jrrfs_det_prdgen_f018_00_00_long==complete
+                task jrrfs_gempak_f019
+                  trigger ../../product/det/jrrfs_det_prdgen_f019_00_00_long==complete
+                task jrrfs_gempak_f020
+                  trigger ../../product/det/jrrfs_det_prdgen_f020_00_00_long==complete
+                task jrrfs_gempak_f021
+                  trigger ../../product/det/jrrfs_det_prdgen_f021_00_00_long==complete
+                task jrrfs_gempak_f022
+                  trigger ../../product/det/jrrfs_det_prdgen_f022_00_00_long==complete
+                task jrrfs_gempak_f023
+                  trigger ../../product/det/jrrfs_det_prdgen_f023_00_00_long==complete
+                task jrrfs_gempak_f024
+                  trigger ../../product/det/jrrfs_det_prdgen_f024_00_00_long==complete
+                task jrrfs_gempak_f025
+                  trigger ../../product/det/jrrfs_det_prdgen_f025_00_00_long==complete
+                task jrrfs_gempak_f026
+                  trigger ../../product/det/jrrfs_det_prdgen_f026_00_00_long==complete
+                task jrrfs_gempak_f027
+                  trigger ../../product/det/jrrfs_det_prdgen_f027_00_00_long==complete
+                task jrrfs_gempak_f028
+                  trigger ../../product/det/jrrfs_det_prdgen_f028_00_00_long==complete
+                task jrrfs_gempak_f029
+                  trigger ../../product/det/jrrfs_det_prdgen_f029_00_00_long==complete
+                task jrrfs_gempak_f030
+                  trigger ../../product/det/jrrfs_det_prdgen_f030_00_00_long==complete
+                task jrrfs_gempak_f031
+                  trigger ../../product/det/jrrfs_det_prdgen_f031_00_00_long==complete
+                task jrrfs_gempak_f032
+                  trigger ../../product/det/jrrfs_det_prdgen_f032_00_00_long==complete
+                task jrrfs_gempak_f033
+                  trigger ../../product/det/jrrfs_det_prdgen_f033_00_00_long==complete
+                task jrrfs_gempak_f034
+                  trigger ../../product/det/jrrfs_det_prdgen_f034_00_00_long==complete
+                task jrrfs_gempak_f035
+                  trigger ../../product/det/jrrfs_det_prdgen_f035_00_00_long==complete
+                task jrrfs_gempak_f036
+                  trigger ../../product/det/jrrfs_det_prdgen_f036_00_00_long==complete
+                task jrrfs_gempak_f037
+                  trigger ../../product/det/jrrfs_det_prdgen_f037_00_00_long==complete
+                task jrrfs_gempak_f038
+                  trigger ../../product/det/jrrfs_det_prdgen_f038_00_00_long==complete
+                task jrrfs_gempak_f039
+                  trigger ../../product/det/jrrfs_det_prdgen_f039_00_00_long==complete
+                task jrrfs_gempak_f040
+                  trigger ../../product/det/jrrfs_det_prdgen_f040_00_00_long==complete
+                task jrrfs_gempak_f041
+                  trigger ../../product/det/jrrfs_det_prdgen_f041_00_00_long==complete
+                task jrrfs_gempak_f042
+                  trigger ../../product/det/jrrfs_det_prdgen_f042_00_00_long==complete
+                task jrrfs_gempak_f043
+                  trigger ../../product/det/jrrfs_det_prdgen_f043_00_00_long==complete
+                task jrrfs_gempak_f044
+                  trigger ../../product/det/jrrfs_det_prdgen_f044_00_00_long==complete
+                task jrrfs_gempak_f045
+                  trigger ../../product/det/jrrfs_det_prdgen_f045_00_00_long==complete
+                task jrrfs_gempak_f046
+                  trigger ../../product/det/jrrfs_det_prdgen_f046_00_00_long==complete
+                task jrrfs_gempak_f047
+                  trigger ../../product/det/jrrfs_det_prdgen_f047_00_00_long==complete
+                task jrrfs_gempak_f048
+                  trigger ../../product/det/jrrfs_det_prdgen_f048_00_00_long==complete
+                task jrrfs_gempak_f049
+                  trigger ../../product/det/jrrfs_det_prdgen_f049_00_00_long==complete
+                task jrrfs_gempak_f050
+                  trigger ../../product/det/jrrfs_det_prdgen_f050_00_00_long==complete
+                task jrrfs_gempak_f051
+                  trigger ../../product/det/jrrfs_det_prdgen_f051_00_00_long==complete
+                task jrrfs_gempak_f052
+                  trigger ../../product/det/jrrfs_det_prdgen_f052_00_00_long==complete
+                task jrrfs_gempak_f053
+                  trigger ../../product/det/jrrfs_det_prdgen_f053_00_00_long==complete
+                task jrrfs_gempak_f054
+                  trigger ../../product/det/jrrfs_det_prdgen_f054_00_00_long==complete
+                task jrrfs_gempak_f055
+                  trigger ../../product/det/jrrfs_det_prdgen_f055_00_00_long==complete
+                task jrrfs_gempak_f056
+                  trigger ../../product/det/jrrfs_det_prdgen_f056_00_00_long==complete
+                task jrrfs_gempak_f057
+                  trigger ../../product/det/jrrfs_det_prdgen_f057_00_00_long==complete
+                task jrrfs_gempak_f058
+                  trigger ../../product/det/jrrfs_det_prdgen_f058_00_00_long==complete
+                task jrrfs_gempak_f059
+                  trigger ../../product/det/jrrfs_det_prdgen_f059_00_00_long==complete
+                task jrrfs_gempak_f060
+                  trigger ../../product/det/jrrfs_det_prdgen_f060_00_00_long==complete
+                task jrrfs_gempak_f063
+                  trigger ../../product/det/jrrfs_det_prdgen_f063_00_00_long==complete
+                task jrrfs_gempak_f066
+                  trigger ../../product/det/jrrfs_det_prdgen_f066_00_00_long==complete
+                task jrrfs_gempak_f069
+                  trigger ../../product/det/jrrfs_det_prdgen_f069_00_00_long==complete
+                task jrrfs_gempak_f072
+                  trigger ../../product/det/jrrfs_det_prdgen_f072_00_00_long==complete
+                task jrrfs_gempak_f075
+                  trigger ../../product/det/jrrfs_det_prdgen_f075_00_00_long==complete
+                task jrrfs_gempak_f078
+                  trigger ../../product/det/jrrfs_det_prdgen_f078_00_00_long==complete
+                task jrrfs_gempak_f081
+                  trigger ../../product/det/jrrfs_det_prdgen_f081_00_00_long==complete
+                task jrrfs_gempak_f084
+                  trigger ../../product/det/jrrfs_det_prdgen_f084_00_00_long==complete
               endfamily   # det
               family ensf
                 edit WGF 'ensf'
@@ -6195,7 +6333,7 @@ suite rrfs_dev
                 task jrrfs_det_process_smoke
                   trigger :TIME >= 0135 and :TIME < 0210
                 task jrrfs_det_process_radar
-                  trigger :TIME >= 0115 and :TIME < 0205
+                  trigger :TIME >= 0125 and :TIME < 0205
                 task jrrfs_det_process_lightning
                   trigger :TIME >= 0115 and :TIME < 0205
                 task jrrfs_det_process_bufr
@@ -6205,7 +6343,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0115 and :TIME < 0205 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0125 and :TIME < 0205 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0115 and :TIME < 0205 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -7199,7 +7337,7 @@ suite rrfs_dev
                 task jrrfs_det_process_smoke
                   trigger :TIME >= 0235 and :TIME < 0310
                 task jrrfs_det_process_radar
-                  trigger :TIME >= 0215 and :TIME < 0305
+                  trigger :TIME >= 0225 and :TIME < 0305
                 task jrrfs_det_process_lightning
                   trigger :TIME >= 0215 and :TIME < 0305
                 task jrrfs_det_process_bufr
@@ -7209,7 +7347,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0215 and :TIME < 0305 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0225 and :TIME < 0305 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0215 and :TIME < 0305 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -8206,7 +8344,7 @@ suite rrfs_dev
                   trigger :TIME >= 0335 and :TIME < 0410
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 0315 and :TIME < 0405
+                  trigger :TIME >= 0325 and :TIME < 0405
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 0315 and :TIME < 0405
@@ -8230,7 +8368,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0315 and :TIME < 0405 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0325 and :TIME < 0405 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0315 and :TIME < 0405 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -9259,7 +9397,7 @@ suite rrfs_dev
                   trigger :TIME >= 0435 and :TIME < 0510 
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 0415 and :TIME < 0505
+                  trigger :TIME >= 0425 and :TIME < 0505
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 0415 and :TIME < 0505
@@ -9283,7 +9421,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0415 and :TIME < 0505 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0425 and :TIME < 0505 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0415 and :TIME < 0505 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -10305,7 +10443,7 @@ suite rrfs_dev
                   trigger :TIME >= 0535 and :TIME < 0610
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 0515 and :TIME < 0605
+                  trigger :TIME >= 0525 and :TIME < 0605
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 0515 and :TIME < 0605
@@ -10329,7 +10467,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0515 and :TIME < 0605 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0525 and :TIME < 0605 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0515 and :TIME < 0605 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -11740,7 +11878,7 @@ suite rrfs_dev
                   trigger :TIME >= 0635 and :TIME < 0710 
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 0615 and :TIME < 0705
+                  trigger :TIME >= 0625 and :TIME < 0705
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 0615 and :TIME < 0705
@@ -11764,7 +11902,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0615 and :TIME < 0705 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0625 and :TIME < 0705 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0615 and :TIME < 0705 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -15984,6 +16122,144 @@ suite rrfs_dev
                   trigger ../../post/det/jrrfs_det_post_f084_00_00_long==complete
                 task jrrfs_det_bufrsnd_long
                   trigger ../../fsm/jrrfs_fsm:release_det_post_f000_00_36_long
+                task jrrfs_gempak_f000
+                  trigger ../../product/det/jrrfs_det_prdgen_f000_00_36_long==complete
+                task jrrfs_gempak_f001
+                  trigger ../../product/det/jrrfs_det_prdgen_f001_00_00_long==complete
+                task jrrfs_gempak_f002
+                  trigger ../../product/det/jrrfs_det_prdgen_f002_00_00_long==complete
+                task jrrfs_gempak_f003
+                  trigger ../../product/det/jrrfs_det_prdgen_f003_00_00_long==complete
+                task jrrfs_gempak_f004
+                  trigger ../../product/det/jrrfs_det_prdgen_f004_00_00_long==complete
+                task jrrfs_gempak_f005
+                  trigger ../../product/det/jrrfs_det_prdgen_f005_00_00_long==complete
+                task jrrfs_gempak_f006
+                  trigger ../../product/det/jrrfs_det_prdgen_f006_00_00_long==complete
+                task jrrfs_gempak_f007
+                  trigger ../../product/det/jrrfs_det_prdgen_f007_00_00_long==complete
+                task jrrfs_gempak_f008
+                  trigger ../../product/det/jrrfs_det_prdgen_f008_00_00_long==complete
+                task jrrfs_gempak_f009
+                  trigger ../../product/det/jrrfs_det_prdgen_f009_00_00_long==complete
+                task jrrfs_gempak_f010
+                  trigger ../../product/det/jrrfs_det_prdgen_f010_00_00_long==complete
+                task jrrfs_gempak_f011
+                  trigger ../../product/det/jrrfs_det_prdgen_f011_00_00_long==complete
+                task jrrfs_gempak_f012
+                  trigger ../../product/det/jrrfs_det_prdgen_f012_00_00_long==complete
+                task jrrfs_gempak_f013
+                  trigger ../../product/det/jrrfs_det_prdgen_f013_00_00_long==complete
+                task jrrfs_gempak_f014
+                  trigger ../../product/det/jrrfs_det_prdgen_f014_00_00_long==complete
+                task jrrfs_gempak_f015
+                  trigger ../../product/det/jrrfs_det_prdgen_f015_00_00_long==complete
+                task jrrfs_gempak_f016
+                  trigger ../../product/det/jrrfs_det_prdgen_f016_00_00_long==complete
+                task jrrfs_gempak_f017
+                  trigger ../../product/det/jrrfs_det_prdgen_f017_00_00_long==complete
+                task jrrfs_gempak_f018
+                  trigger ../../product/det/jrrfs_det_prdgen_f018_00_00_long==complete
+                task jrrfs_gempak_f019
+                  trigger ../../product/det/jrrfs_det_prdgen_f019_00_00_long==complete
+                task jrrfs_gempak_f020
+                  trigger ../../product/det/jrrfs_det_prdgen_f020_00_00_long==complete
+                task jrrfs_gempak_f021
+                  trigger ../../product/det/jrrfs_det_prdgen_f021_00_00_long==complete
+                task jrrfs_gempak_f022
+                  trigger ../../product/det/jrrfs_det_prdgen_f022_00_00_long==complete
+                task jrrfs_gempak_f023
+                  trigger ../../product/det/jrrfs_det_prdgen_f023_00_00_long==complete
+                task jrrfs_gempak_f024
+                  trigger ../../product/det/jrrfs_det_prdgen_f024_00_00_long==complete
+                task jrrfs_gempak_f025
+                  trigger ../../product/det/jrrfs_det_prdgen_f025_00_00_long==complete
+                task jrrfs_gempak_f026
+                  trigger ../../product/det/jrrfs_det_prdgen_f026_00_00_long==complete
+                task jrrfs_gempak_f027
+                  trigger ../../product/det/jrrfs_det_prdgen_f027_00_00_long==complete
+                task jrrfs_gempak_f028
+                  trigger ../../product/det/jrrfs_det_prdgen_f028_00_00_long==complete
+                task jrrfs_gempak_f029
+                  trigger ../../product/det/jrrfs_det_prdgen_f029_00_00_long==complete
+                task jrrfs_gempak_f030
+                  trigger ../../product/det/jrrfs_det_prdgen_f030_00_00_long==complete
+                task jrrfs_gempak_f031
+                  trigger ../../product/det/jrrfs_det_prdgen_f031_00_00_long==complete
+                task jrrfs_gempak_f032
+                  trigger ../../product/det/jrrfs_det_prdgen_f032_00_00_long==complete
+                task jrrfs_gempak_f033
+                  trigger ../../product/det/jrrfs_det_prdgen_f033_00_00_long==complete
+                task jrrfs_gempak_f034
+                  trigger ../../product/det/jrrfs_det_prdgen_f034_00_00_long==complete
+                task jrrfs_gempak_f035
+                  trigger ../../product/det/jrrfs_det_prdgen_f035_00_00_long==complete
+                task jrrfs_gempak_f036
+                  trigger ../../product/det/jrrfs_det_prdgen_f036_00_00_long==complete
+                task jrrfs_gempak_f037
+                  trigger ../../product/det/jrrfs_det_prdgen_f037_00_00_long==complete
+                task jrrfs_gempak_f038
+                  trigger ../../product/det/jrrfs_det_prdgen_f038_00_00_long==complete
+                task jrrfs_gempak_f039
+                  trigger ../../product/det/jrrfs_det_prdgen_f039_00_00_long==complete
+                task jrrfs_gempak_f040
+                  trigger ../../product/det/jrrfs_det_prdgen_f040_00_00_long==complete
+                task jrrfs_gempak_f041
+                  trigger ../../product/det/jrrfs_det_prdgen_f041_00_00_long==complete
+                task jrrfs_gempak_f042
+                  trigger ../../product/det/jrrfs_det_prdgen_f042_00_00_long==complete
+                task jrrfs_gempak_f043
+                  trigger ../../product/det/jrrfs_det_prdgen_f043_00_00_long==complete
+                task jrrfs_gempak_f044
+                  trigger ../../product/det/jrrfs_det_prdgen_f044_00_00_long==complete
+                task jrrfs_gempak_f045
+                  trigger ../../product/det/jrrfs_det_prdgen_f045_00_00_long==complete
+                task jrrfs_gempak_f046
+                  trigger ../../product/det/jrrfs_det_prdgen_f046_00_00_long==complete
+                task jrrfs_gempak_f047
+                  trigger ../../product/det/jrrfs_det_prdgen_f047_00_00_long==complete
+                task jrrfs_gempak_f048
+                  trigger ../../product/det/jrrfs_det_prdgen_f048_00_00_long==complete
+                task jrrfs_gempak_f049
+                  trigger ../../product/det/jrrfs_det_prdgen_f049_00_00_long==complete
+                task jrrfs_gempak_f050
+                  trigger ../../product/det/jrrfs_det_prdgen_f050_00_00_long==complete
+                task jrrfs_gempak_f051
+                  trigger ../../product/det/jrrfs_det_prdgen_f051_00_00_long==complete
+                task jrrfs_gempak_f052
+                  trigger ../../product/det/jrrfs_det_prdgen_f052_00_00_long==complete
+                task jrrfs_gempak_f053
+                  trigger ../../product/det/jrrfs_det_prdgen_f053_00_00_long==complete
+                task jrrfs_gempak_f054
+                  trigger ../../product/det/jrrfs_det_prdgen_f054_00_00_long==complete
+                task jrrfs_gempak_f055
+                  trigger ../../product/det/jrrfs_det_prdgen_f055_00_00_long==complete
+                task jrrfs_gempak_f056
+                  trigger ../../product/det/jrrfs_det_prdgen_f056_00_00_long==complete
+                task jrrfs_gempak_f057
+                  trigger ../../product/det/jrrfs_det_prdgen_f057_00_00_long==complete
+                task jrrfs_gempak_f058
+                  trigger ../../product/det/jrrfs_det_prdgen_f058_00_00_long==complete
+                task jrrfs_gempak_f059
+                  trigger ../../product/det/jrrfs_det_prdgen_f059_00_00_long==complete
+                task jrrfs_gempak_f060
+                  trigger ../../product/det/jrrfs_det_prdgen_f060_00_00_long==complete
+                task jrrfs_gempak_f063
+                  trigger ../../product/det/jrrfs_det_prdgen_f063_00_00_long==complete
+                task jrrfs_gempak_f066
+                  trigger ../../product/det/jrrfs_det_prdgen_f066_00_00_long==complete
+                task jrrfs_gempak_f069
+                  trigger ../../product/det/jrrfs_det_prdgen_f069_00_00_long==complete
+                task jrrfs_gempak_f072
+                  trigger ../../product/det/jrrfs_det_prdgen_f072_00_00_long==complete
+                task jrrfs_gempak_f075
+                  trigger ../../product/det/jrrfs_det_prdgen_f075_00_00_long==complete
+                task jrrfs_gempak_f078
+                  trigger ../../product/det/jrrfs_det_prdgen_f078_00_00_long==complete
+                task jrrfs_gempak_f081
+                  trigger ../../product/det/jrrfs_det_prdgen_f081_00_00_long==complete
+                task jrrfs_gempak_f084
+                  trigger ../../product/det/jrrfs_det_prdgen_f084_00_00_long==complete
               endfamily   # det
               family ensf
                 edit WGF 'ensf'
@@ -17438,7 +17714,7 @@ suite rrfs_dev
                   trigger :TIME >= 0735 and :TIME < 0810
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 0715 and :TIME < 0805
+                  trigger :TIME >= 0725 and :TIME < 0805
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 0715 and :TIME < 0805
@@ -17462,7 +17738,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'spinup'
                 task jrrfs_enkf_process_radar_spinup
-                  trigger :TIME >= 0715 and :TIME < 0805 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0725 and :TIME < 0805 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning_spinup
                   trigger :TIME >= 0715 and :TIME < 0805 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr_spinup
@@ -18943,7 +19219,7 @@ suite rrfs_dev
                   trigger :TIME >= 0835 and :TIME < 0910
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 0815 and :TIME < 0905
+                  trigger :TIME >= 0825 and :TIME < 0905
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 0815 and :TIME < 0905
@@ -18967,7 +19243,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0815 and :TIME < 0905 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0825 and :TIME < 0905 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0815 and :TIME < 0905 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -19989,7 +20265,7 @@ suite rrfs_dev
                   trigger :TIME >= 0935 and :TIME < 1010
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 0915 and :TIME < 1005
+                  trigger :TIME >= 0925 and :TIME < 1005
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 0915 and :TIME < 1005
@@ -20001,7 +20277,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0915 and :TIME < 1005 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0925 and :TIME < 1005 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0915 and :TIME < 1005 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -20995,7 +21271,7 @@ suite rrfs_dev
                 task jrrfs_det_process_smoke
                   trigger :TIME >= 1035 and :TIME < 1110
                 task jrrfs_det_process_radar
-                  trigger :TIME >= 1015 and :TIME < 1105
+                  trigger :TIME >= 1025 and :TIME < 1105
                 task jrrfs_det_process_lightning
                   trigger :TIME >= 1015 and :TIME < 1105
                 task jrrfs_det_process_bufr
@@ -21005,7 +21281,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1015 and :TIME < 1105 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1025 and :TIME < 1105 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1015 and :TIME < 1105 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -21999,7 +22275,7 @@ suite rrfs_dev
                 task jrrfs_det_process_smoke
                   trigger :TIME >= 1135 and :TIME < 1210
                 task jrrfs_det_process_radar
-                  trigger :TIME >= 1115 and :TIME < 1205
+                  trigger :TIME >= 1125 and :TIME < 1205
                 task jrrfs_det_process_lightning
                   trigger :TIME >= 1115 and :TIME < 1205
                 task jrrfs_det_process_bufr
@@ -22009,7 +22285,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1115 and :TIME < 1205 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1125 and :TIME < 1205 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1115 and :TIME < 1205 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -23391,7 +23667,7 @@ suite rrfs_dev
                 task jrrfs_det_process_smoke
                   trigger :TIME >= 1235 and :TIME < 1310
                 task jrrfs_det_process_radar
-                  trigger :TIME >= 1215 and :TIME < 1305
+                  trigger :TIME >= 1225 and :TIME < 1305
                 task jrrfs_det_process_lightning
                   trigger :TIME >= 1215 and :TIME < 1305
                 task jrrfs_det_process_bufr
@@ -23401,7 +23677,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1215 and :TIME < 1305 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1225 and :TIME < 1305 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1215 and :TIME < 1305 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -27591,6 +27867,144 @@ suite rrfs_dev
                   trigger ../../post/det/jrrfs_det_post_f084_00_00_long==complete
                 task jrrfs_det_bufrsnd_long
                   trigger ../../fsm/jrrfs_fsm:release_det_post_f000_00_36_long
+                task jrrfs_gempak_f000
+                  trigger ../../product/det/jrrfs_det_prdgen_f000_00_36_long==complete
+                task jrrfs_gempak_f001
+                  trigger ../../product/det/jrrfs_det_prdgen_f001_00_00_long==complete
+                task jrrfs_gempak_f002
+                  trigger ../../product/det/jrrfs_det_prdgen_f002_00_00_long==complete
+                task jrrfs_gempak_f003
+                  trigger ../../product/det/jrrfs_det_prdgen_f003_00_00_long==complete
+                task jrrfs_gempak_f004
+                  trigger ../../product/det/jrrfs_det_prdgen_f004_00_00_long==complete
+                task jrrfs_gempak_f005
+                  trigger ../../product/det/jrrfs_det_prdgen_f005_00_00_long==complete
+                task jrrfs_gempak_f006
+                  trigger ../../product/det/jrrfs_det_prdgen_f006_00_00_long==complete
+                task jrrfs_gempak_f007
+                  trigger ../../product/det/jrrfs_det_prdgen_f007_00_00_long==complete
+                task jrrfs_gempak_f008
+                  trigger ../../product/det/jrrfs_det_prdgen_f008_00_00_long==complete
+                task jrrfs_gempak_f009
+                  trigger ../../product/det/jrrfs_det_prdgen_f009_00_00_long==complete
+                task jrrfs_gempak_f010
+                  trigger ../../product/det/jrrfs_det_prdgen_f010_00_00_long==complete
+                task jrrfs_gempak_f011
+                  trigger ../../product/det/jrrfs_det_prdgen_f011_00_00_long==complete
+                task jrrfs_gempak_f012
+                  trigger ../../product/det/jrrfs_det_prdgen_f012_00_00_long==complete
+                task jrrfs_gempak_f013
+                  trigger ../../product/det/jrrfs_det_prdgen_f013_00_00_long==complete
+                task jrrfs_gempak_f014
+                  trigger ../../product/det/jrrfs_det_prdgen_f014_00_00_long==complete
+                task jrrfs_gempak_f015
+                  trigger ../../product/det/jrrfs_det_prdgen_f015_00_00_long==complete
+                task jrrfs_gempak_f016
+                  trigger ../../product/det/jrrfs_det_prdgen_f016_00_00_long==complete
+                task jrrfs_gempak_f017
+                  trigger ../../product/det/jrrfs_det_prdgen_f017_00_00_long==complete
+                task jrrfs_gempak_f018
+                  trigger ../../product/det/jrrfs_det_prdgen_f018_00_00_long==complete
+                task jrrfs_gempak_f019
+                  trigger ../../product/det/jrrfs_det_prdgen_f019_00_00_long==complete
+                task jrrfs_gempak_f020
+                  trigger ../../product/det/jrrfs_det_prdgen_f020_00_00_long==complete
+                task jrrfs_gempak_f021
+                  trigger ../../product/det/jrrfs_det_prdgen_f021_00_00_long==complete
+                task jrrfs_gempak_f022
+                  trigger ../../product/det/jrrfs_det_prdgen_f022_00_00_long==complete
+                task jrrfs_gempak_f023
+                  trigger ../../product/det/jrrfs_det_prdgen_f023_00_00_long==complete
+                task jrrfs_gempak_f024
+                  trigger ../../product/det/jrrfs_det_prdgen_f024_00_00_long==complete
+                task jrrfs_gempak_f025
+                  trigger ../../product/det/jrrfs_det_prdgen_f025_00_00_long==complete
+                task jrrfs_gempak_f026
+                  trigger ../../product/det/jrrfs_det_prdgen_f026_00_00_long==complete
+                task jrrfs_gempak_f027
+                  trigger ../../product/det/jrrfs_det_prdgen_f027_00_00_long==complete
+                task jrrfs_gempak_f028
+                  trigger ../../product/det/jrrfs_det_prdgen_f028_00_00_long==complete
+                task jrrfs_gempak_f029
+                  trigger ../../product/det/jrrfs_det_prdgen_f029_00_00_long==complete
+                task jrrfs_gempak_f030
+                  trigger ../../product/det/jrrfs_det_prdgen_f030_00_00_long==complete
+                task jrrfs_gempak_f031
+                  trigger ../../product/det/jrrfs_det_prdgen_f031_00_00_long==complete
+                task jrrfs_gempak_f032
+                  trigger ../../product/det/jrrfs_det_prdgen_f032_00_00_long==complete
+                task jrrfs_gempak_f033
+                  trigger ../../product/det/jrrfs_det_prdgen_f033_00_00_long==complete
+                task jrrfs_gempak_f034
+                  trigger ../../product/det/jrrfs_det_prdgen_f034_00_00_long==complete
+                task jrrfs_gempak_f035
+                  trigger ../../product/det/jrrfs_det_prdgen_f035_00_00_long==complete
+                task jrrfs_gempak_f036
+                  trigger ../../product/det/jrrfs_det_prdgen_f036_00_00_long==complete
+                task jrrfs_gempak_f037
+                  trigger ../../product/det/jrrfs_det_prdgen_f037_00_00_long==complete
+                task jrrfs_gempak_f038
+                  trigger ../../product/det/jrrfs_det_prdgen_f038_00_00_long==complete
+                task jrrfs_gempak_f039
+                  trigger ../../product/det/jrrfs_det_prdgen_f039_00_00_long==complete
+                task jrrfs_gempak_f040
+                  trigger ../../product/det/jrrfs_det_prdgen_f040_00_00_long==complete
+                task jrrfs_gempak_f041
+                  trigger ../../product/det/jrrfs_det_prdgen_f041_00_00_long==complete
+                task jrrfs_gempak_f042
+                  trigger ../../product/det/jrrfs_det_prdgen_f042_00_00_long==complete
+                task jrrfs_gempak_f043
+                  trigger ../../product/det/jrrfs_det_prdgen_f043_00_00_long==complete
+                task jrrfs_gempak_f044
+                  trigger ../../product/det/jrrfs_det_prdgen_f044_00_00_long==complete
+                task jrrfs_gempak_f045
+                  trigger ../../product/det/jrrfs_det_prdgen_f045_00_00_long==complete
+                task jrrfs_gempak_f046
+                  trigger ../../product/det/jrrfs_det_prdgen_f046_00_00_long==complete
+                task jrrfs_gempak_f047
+                  trigger ../../product/det/jrrfs_det_prdgen_f047_00_00_long==complete
+                task jrrfs_gempak_f048
+                  trigger ../../product/det/jrrfs_det_prdgen_f048_00_00_long==complete
+                task jrrfs_gempak_f049
+                  trigger ../../product/det/jrrfs_det_prdgen_f049_00_00_long==complete
+                task jrrfs_gempak_f050
+                  trigger ../../product/det/jrrfs_det_prdgen_f050_00_00_long==complete
+                task jrrfs_gempak_f051
+                  trigger ../../product/det/jrrfs_det_prdgen_f051_00_00_long==complete
+                task jrrfs_gempak_f052
+                  trigger ../../product/det/jrrfs_det_prdgen_f052_00_00_long==complete
+                task jrrfs_gempak_f053
+                  trigger ../../product/det/jrrfs_det_prdgen_f053_00_00_long==complete
+                task jrrfs_gempak_f054
+                  trigger ../../product/det/jrrfs_det_prdgen_f054_00_00_long==complete
+                task jrrfs_gempak_f055
+                  trigger ../../product/det/jrrfs_det_prdgen_f055_00_00_long==complete
+                task jrrfs_gempak_f056
+                  trigger ../../product/det/jrrfs_det_prdgen_f056_00_00_long==complete
+                task jrrfs_gempak_f057
+                  trigger ../../product/det/jrrfs_det_prdgen_f057_00_00_long==complete
+                task jrrfs_gempak_f058
+                  trigger ../../product/det/jrrfs_det_prdgen_f058_00_00_long==complete
+                task jrrfs_gempak_f059
+                  trigger ../../product/det/jrrfs_det_prdgen_f059_00_00_long==complete
+                task jrrfs_gempak_f060
+                  trigger ../../product/det/jrrfs_det_prdgen_f060_00_00_long==complete
+                task jrrfs_gempak_f063
+                  trigger ../../product/det/jrrfs_det_prdgen_f063_00_00_long==complete
+                task jrrfs_gempak_f066
+                  trigger ../../product/det/jrrfs_det_prdgen_f066_00_00_long==complete
+                task jrrfs_gempak_f069
+                  trigger ../../product/det/jrrfs_det_prdgen_f069_00_00_long==complete
+                task jrrfs_gempak_f072
+                  trigger ../../product/det/jrrfs_det_prdgen_f072_00_00_long==complete
+                task jrrfs_gempak_f075
+                  trigger ../../product/det/jrrfs_det_prdgen_f075_00_00_long==complete
+                task jrrfs_gempak_f078
+                  trigger ../../product/det/jrrfs_det_prdgen_f078_00_00_long==complete
+                task jrrfs_gempak_f081
+                  trigger ../../product/det/jrrfs_det_prdgen_f081_00_00_long==complete
+                task jrrfs_gempak_f084
+                  trigger ../../product/det/jrrfs_det_prdgen_f084_00_00_long==complete
               endfamily   # det
               family ensf
                 edit WGF 'ensf'
@@ -29073,7 +29487,7 @@ suite rrfs_dev
                 task jrrfs_det_process_smoke
                   trigger :TIME >= 1335 and :TIME < 1410
                 task jrrfs_det_process_radar
-                  trigger :TIME >= 1315 and :TIME < 1405
+                  trigger :TIME >= 1325 and :TIME < 1405
                 task jrrfs_det_process_lightning
                   trigger :TIME >= 1315 and :TIME < 1405
                 task jrrfs_det_process_bufr
@@ -29083,7 +29497,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1315 and :TIME < 1405 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1325 and :TIME < 1405 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1315 and :TIME < 1405 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -30077,7 +30491,7 @@ suite rrfs_dev
                 task jrrfs_det_process_smoke
                   trigger :TIME >= 1435 and :TIME < 1510
                 task jrrfs_det_process_radar
-                  trigger :TIME >= 1415 and :TIME < 1505
+                  trigger :TIME >= 1425 and :TIME < 1505
                 task jrrfs_det_process_lightning
                   trigger :TIME >= 1415 and :TIME < 1505
                 task jrrfs_det_process_bufr
@@ -30087,7 +30501,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1415 and :TIME < 1505 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1425 and :TIME < 1505 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1415 and :TIME < 1505 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -31084,7 +31498,7 @@ suite rrfs_dev
                   trigger :TIME >= 1535 and :TIME < 1610
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 1515 and :TIME < 1605
+                  trigger :TIME >= 1525 and :TIME < 1605
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 1515 and :TIME < 1605
@@ -31108,7 +31522,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1515 and :TIME < 1605 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1525 and :TIME < 1605 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1515 and :TIME < 1605 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -32138,7 +32552,7 @@ suite rrfs_dev
                   trigger :TIME >= 1635 and :TIME < 1710
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 1615 and :TIME < 1705
+                  trigger :TIME >= 1625 and :TIME < 1705
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 1615 and :TIME < 1705
@@ -32162,7 +32576,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1615 and :TIME < 1705 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1625 and :TIME < 1705 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1615 and :TIME < 1705 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -33185,7 +33599,7 @@ suite rrfs_dev
                   trigger :TIME >= 1735 and :TIME < 1810
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 1715 and :TIME < 1805
+                  trigger :TIME >= 1725 and :TIME < 1805
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 1715 and :TIME < 1805
@@ -33209,7 +33623,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1715 and :TIME < 1805 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1725 and :TIME < 1805 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1715 and :TIME < 1805 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -34620,7 +35034,7 @@ suite rrfs_dev
                   trigger :TIME >= 1835 and :TIME < 1910
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 1815 and :TIME < 1905
+                  trigger :TIME >= 1825 and :TIME < 1905
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 1815 and :TIME < 1905
@@ -34644,7 +35058,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1815 and :TIME < 1905 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1825 and :TIME < 1905 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1815 and :TIME < 1905 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -38865,6 +39279,144 @@ suite rrfs_dev
                   trigger ../../post/det/jrrfs_det_post_f084_00_00_long==complete
                 task jrrfs_det_bufrsnd_long
                   trigger ../../fsm/jrrfs_fsm:release_det_post_f000_00_36_long
+                task jrrfs_gempak_f000
+                  trigger ../../product/det/jrrfs_det_prdgen_f000_00_36_long==complete
+                task jrrfs_gempak_f001
+                  trigger ../../product/det/jrrfs_det_prdgen_f001_00_00_long==complete
+                task jrrfs_gempak_f002
+                  trigger ../../product/det/jrrfs_det_prdgen_f002_00_00_long==complete
+                task jrrfs_gempak_f003
+                  trigger ../../product/det/jrrfs_det_prdgen_f003_00_00_long==complete
+                task jrrfs_gempak_f004
+                  trigger ../../product/det/jrrfs_det_prdgen_f004_00_00_long==complete
+                task jrrfs_gempak_f005
+                  trigger ../../product/det/jrrfs_det_prdgen_f005_00_00_long==complete
+                task jrrfs_gempak_f006
+                  trigger ../../product/det/jrrfs_det_prdgen_f006_00_00_long==complete
+                task jrrfs_gempak_f007
+                  trigger ../../product/det/jrrfs_det_prdgen_f007_00_00_long==complete
+                task jrrfs_gempak_f008
+                  trigger ../../product/det/jrrfs_det_prdgen_f008_00_00_long==complete
+                task jrrfs_gempak_f009
+                  trigger ../../product/det/jrrfs_det_prdgen_f009_00_00_long==complete
+                task jrrfs_gempak_f010
+                  trigger ../../product/det/jrrfs_det_prdgen_f010_00_00_long==complete
+                task jrrfs_gempak_f011
+                  trigger ../../product/det/jrrfs_det_prdgen_f011_00_00_long==complete
+                task jrrfs_gempak_f012
+                  trigger ../../product/det/jrrfs_det_prdgen_f012_00_00_long==complete
+                task jrrfs_gempak_f013
+                  trigger ../../product/det/jrrfs_det_prdgen_f013_00_00_long==complete
+                task jrrfs_gempak_f014
+                  trigger ../../product/det/jrrfs_det_prdgen_f014_00_00_long==complete
+                task jrrfs_gempak_f015
+                  trigger ../../product/det/jrrfs_det_prdgen_f015_00_00_long==complete
+                task jrrfs_gempak_f016
+                  trigger ../../product/det/jrrfs_det_prdgen_f016_00_00_long==complete
+                task jrrfs_gempak_f017
+                  trigger ../../product/det/jrrfs_det_prdgen_f017_00_00_long==complete
+                task jrrfs_gempak_f018
+                  trigger ../../product/det/jrrfs_det_prdgen_f018_00_00_long==complete
+                task jrrfs_gempak_f019
+                  trigger ../../product/det/jrrfs_det_prdgen_f019_00_00_long==complete
+                task jrrfs_gempak_f020
+                  trigger ../../product/det/jrrfs_det_prdgen_f020_00_00_long==complete
+                task jrrfs_gempak_f021
+                  trigger ../../product/det/jrrfs_det_prdgen_f021_00_00_long==complete
+                task jrrfs_gempak_f022
+                  trigger ../../product/det/jrrfs_det_prdgen_f022_00_00_long==complete
+                task jrrfs_gempak_f023
+                  trigger ../../product/det/jrrfs_det_prdgen_f023_00_00_long==complete
+                task jrrfs_gempak_f024
+                  trigger ../../product/det/jrrfs_det_prdgen_f024_00_00_long==complete
+                task jrrfs_gempak_f025
+                  trigger ../../product/det/jrrfs_det_prdgen_f025_00_00_long==complete
+                task jrrfs_gempak_f026
+                  trigger ../../product/det/jrrfs_det_prdgen_f026_00_00_long==complete
+                task jrrfs_gempak_f027
+                  trigger ../../product/det/jrrfs_det_prdgen_f027_00_00_long==complete
+                task jrrfs_gempak_f028
+                  trigger ../../product/det/jrrfs_det_prdgen_f028_00_00_long==complete
+                task jrrfs_gempak_f029
+                  trigger ../../product/det/jrrfs_det_prdgen_f029_00_00_long==complete
+                task jrrfs_gempak_f030
+                  trigger ../../product/det/jrrfs_det_prdgen_f030_00_00_long==complete
+                task jrrfs_gempak_f031
+                  trigger ../../product/det/jrrfs_det_prdgen_f031_00_00_long==complete
+                task jrrfs_gempak_f032
+                  trigger ../../product/det/jrrfs_det_prdgen_f032_00_00_long==complete
+                task jrrfs_gempak_f033
+                  trigger ../../product/det/jrrfs_det_prdgen_f033_00_00_long==complete
+                task jrrfs_gempak_f034
+                  trigger ../../product/det/jrrfs_det_prdgen_f034_00_00_long==complete
+                task jrrfs_gempak_f035
+                  trigger ../../product/det/jrrfs_det_prdgen_f035_00_00_long==complete
+                task jrrfs_gempak_f036
+                  trigger ../../product/det/jrrfs_det_prdgen_f036_00_00_long==complete
+                task jrrfs_gempak_f037
+                  trigger ../../product/det/jrrfs_det_prdgen_f037_00_00_long==complete
+                task jrrfs_gempak_f038
+                  trigger ../../product/det/jrrfs_det_prdgen_f038_00_00_long==complete
+                task jrrfs_gempak_f039
+                  trigger ../../product/det/jrrfs_det_prdgen_f039_00_00_long==complete
+                task jrrfs_gempak_f040
+                  trigger ../../product/det/jrrfs_det_prdgen_f040_00_00_long==complete
+                task jrrfs_gempak_f041
+                  trigger ../../product/det/jrrfs_det_prdgen_f041_00_00_long==complete
+                task jrrfs_gempak_f042
+                  trigger ../../product/det/jrrfs_det_prdgen_f042_00_00_long==complete
+                task jrrfs_gempak_f043
+                  trigger ../../product/det/jrrfs_det_prdgen_f043_00_00_long==complete
+                task jrrfs_gempak_f044
+                  trigger ../../product/det/jrrfs_det_prdgen_f044_00_00_long==complete
+                task jrrfs_gempak_f045
+                  trigger ../../product/det/jrrfs_det_prdgen_f045_00_00_long==complete
+                task jrrfs_gempak_f046
+                  trigger ../../product/det/jrrfs_det_prdgen_f046_00_00_long==complete
+                task jrrfs_gempak_f047
+                  trigger ../../product/det/jrrfs_det_prdgen_f047_00_00_long==complete
+                task jrrfs_gempak_f048
+                  trigger ../../product/det/jrrfs_det_prdgen_f048_00_00_long==complete
+                task jrrfs_gempak_f049
+                  trigger ../../product/det/jrrfs_det_prdgen_f049_00_00_long==complete
+                task jrrfs_gempak_f050
+                  trigger ../../product/det/jrrfs_det_prdgen_f050_00_00_long==complete
+                task jrrfs_gempak_f051
+                  trigger ../../product/det/jrrfs_det_prdgen_f051_00_00_long==complete
+                task jrrfs_gempak_f052
+                  trigger ../../product/det/jrrfs_det_prdgen_f052_00_00_long==complete
+                task jrrfs_gempak_f053
+                  trigger ../../product/det/jrrfs_det_prdgen_f053_00_00_long==complete
+                task jrrfs_gempak_f054
+                  trigger ../../product/det/jrrfs_det_prdgen_f054_00_00_long==complete
+                task jrrfs_gempak_f055
+                  trigger ../../product/det/jrrfs_det_prdgen_f055_00_00_long==complete
+                task jrrfs_gempak_f056
+                  trigger ../../product/det/jrrfs_det_prdgen_f056_00_00_long==complete
+                task jrrfs_gempak_f057
+                  trigger ../../product/det/jrrfs_det_prdgen_f057_00_00_long==complete
+                task jrrfs_gempak_f058
+                  trigger ../../product/det/jrrfs_det_prdgen_f058_00_00_long==complete
+                task jrrfs_gempak_f059
+                  trigger ../../product/det/jrrfs_det_prdgen_f059_00_00_long==complete
+                task jrrfs_gempak_f060
+                  trigger ../../product/det/jrrfs_det_prdgen_f060_00_00_long==complete
+                task jrrfs_gempak_f063
+                  trigger ../../product/det/jrrfs_det_prdgen_f063_00_00_long==complete
+                task jrrfs_gempak_f066
+                  trigger ../../product/det/jrrfs_det_prdgen_f066_00_00_long==complete
+                task jrrfs_gempak_f069
+                  trigger ../../product/det/jrrfs_det_prdgen_f069_00_00_long==complete
+                task jrrfs_gempak_f072
+                  trigger ../../product/det/jrrfs_det_prdgen_f072_00_00_long==complete
+                task jrrfs_gempak_f075
+                  trigger ../../product/det/jrrfs_det_prdgen_f075_00_00_long==complete
+                task jrrfs_gempak_f078
+                  trigger ../../product/det/jrrfs_det_prdgen_f078_00_00_long==complete
+                task jrrfs_gempak_f081
+                  trigger ../../product/det/jrrfs_det_prdgen_f081_00_00_long==complete
+                task jrrfs_gempak_f084
+                  trigger ../../product/det/jrrfs_det_prdgen_f084_00_00_long==complete
               endfamily   # det
               family ensf
                 edit WGF 'ensf'
@@ -40319,7 +40871,7 @@ suite rrfs_dev
                   trigger :TIME >= 1935 and :TIME < 2010
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 1915 and :TIME < 2005
+                  trigger :TIME >= 1925 and :TIME < 2005
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 1915 and :TIME < 2005
@@ -40343,7 +40895,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'spinup'
                 task jrrfs_enkf_process_radar_spinup
-                  trigger :TIME >= 1915 and :TIME < 2005 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1925 and :TIME < 2005 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning_spinup
                   trigger :TIME >= 1915 and :TIME < 2005 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr_spinup
@@ -41825,7 +42377,7 @@ suite rrfs_dev
                   trigger :TIME >= 2035 and :TIME < 2110
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 2015 and :TIME < 2105
+                  trigger :TIME >= 2025 and :TIME < 2105
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 2015 and :TIME < 2105
@@ -41849,7 +42401,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 2015 and :TIME < 2105 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 2025 and :TIME < 2105 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 2015 and :TIME < 2105 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -42870,7 +43422,7 @@ suite rrfs_dev
                 task jrrfs_det_process_smoke
                   trigger :TIME >= 2135 and :TIME < 2210
                 task jrrfs_det_process_radar
-                  trigger :TIME >= 2115 and :TIME < 2205
+                  trigger :TIME >= 2125 and :TIME < 2205
                 task jrrfs_det_process_lightning
                   trigger :TIME >= 2115 and :TIME < 2205
                 task jrrfs_det_process_bufr
@@ -42880,7 +43432,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 2115 and :TIME < 2205 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 2125 and :TIME < 2205 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 2115 and :TIME < 2205 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -43874,7 +44426,7 @@ suite rrfs_dev
                 task jrrfs_det_process_smoke
                   trigger :TIME >= 2235 and :TIME < 2310
                 task jrrfs_det_process_radar
-                  trigger :TIME >= 2215 and :TIME < 2305
+                  trigger :TIME >= 2225 and :TIME < 2305
                 task jrrfs_det_process_lightning
                   trigger :TIME >= 2215 and :TIME < 2305
                 task jrrfs_det_process_bufr
@@ -43884,7 +44436,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 2215 and :TIME < 2305 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 2225 and :TIME < 2305 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 2215 and :TIME < 2305 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -44878,7 +45430,7 @@ suite rrfs_dev
                 task jrrfs_det_process_smoke
                   trigger :TIME >= 2335 and :TIME < 2359
                 task jrrfs_det_process_radar
-                  trigger :TIME >= 2315 and :TIME < 2359
+                  trigger :TIME >= 2325 and :TIME < 2359
                 task jrrfs_det_process_lightning
                   trigger :TIME >= 2315 and :TIME < 2359
                 task jrrfs_det_process_bufr
@@ -44888,7 +45440,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 2315 and :TIME < 2359 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 2325 and :TIME < 2359 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 2315 and :TIME < 2359 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
