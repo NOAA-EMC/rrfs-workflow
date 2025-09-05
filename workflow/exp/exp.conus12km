@@ -27,7 +27,7 @@ export ENS_SIZE=30
 export ENS_BEC_LOOK_BACK_HRS=1  # define the hours going back for ensemble forecast files for the ensemble BEC
 
 export STATIC_BEC_MODEL="GSIBEC" # the static bec model, GSIBEC and BUMPBEC
-export GSIBEC_X=8
+export GSIBEC_X=8 #GSIBEC_X * GSIBEC_Y should match the number of MPI tasks 
 export GSIBEC_Y=10
 export GSIBEC_NLAT=252
 export GSIBEC_NLON=420

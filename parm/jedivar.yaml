@@ -4,7 +4,7 @@ _member: &memberConfig
   stream name: ensemble
 
 output:
-  filename: ana.nc
+  filename: mpasout.nc
   stream name: analysis
 variational:
   minimizer:
@@ -179,6 +179,7 @@ cost function:
          observation vertical coordinate: height
          interpolation method: linear
          observation alias file: obsop_name_map.yaml
+       _obsname: refl10cm
        obs filters:
        - filter: Background Check
          filter variables:
@@ -186,7 +187,6 @@ cost function:
          threshold: 12.0
          action:
            name: reject
-       _obsname: refl10cm
      - obs space:
          name: adpsfc_t181
          distribution:

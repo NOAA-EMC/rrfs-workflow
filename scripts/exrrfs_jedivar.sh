@@ -54,12 +54,7 @@ if [[ ${STATIC_BEC_MODEL} == "GSIBEC" ]]; then
   ln -snf "${FIXrrfs}/gsi_bec/fv3_grid_spec.${MESH_NAME}" ${DATA}/fv3_grid_spec
   ln -snf "${FIXrrfs}/gsi_bec/fv3_akbk" ${DATA}/fv3_akbk
   ${cpreq} "${FIXrrfs}/gsi_bec/coupler.res" ${DATA}/coupler.res
-  YYYYMMDDHH=$(date +%Y%m%d%H -d "${CDATE:0:8} ${CDATE:8:2}")
-  YYYY=${YYYYMMDDHH:0:4}
-  MM=${YYYYMMDDHH:4:2}
-  DD=${YYYYMMDDHH:6:2}
-  HH=${YYYYMMDDHH:8:2}
-  sed -i -e "s/yyyy/${YYYY}/" -e "s/mm/${MM}/" -e "s/dd/${DD}/" -e "s/hh/${HH}/" ${DATA}/coupler.res
+  sed -i -e "s/yyyy   mm   dd    hh/${CDATE:0:4}    ${CDATE:4:2}   ${CDATE:6:2}   ${CDATE:8:2}"  ${DATA}/coupler.res
 else
   # bump bec
   mkdir -p static_bec
