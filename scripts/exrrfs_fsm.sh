@@ -784,7 +784,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
     echo "Proceeding with scan_release_enkf_observer_gsi_ensmean"
     source_file_found="YES"
     if [ ${RRFS_Current_cyc} == 00 ] || [ ${RRFS_Current_cyc} == 12 ];then
-      obsproc_rrfs_inp_file=${OBSPATH}/${obs_source}.${RRFS_Current_PDY}/${obs_source}_e.t${RRFS_Current_cyc}z.prepbufr.tm00
+      obsproc_rrfs_inp_file=${OBSPATH}/${obs_source}_e.${RRFS_Current_PDY}/${obs_source}_e.t${RRFS_Current_cyc}z.prepbufr.tm00
     else
       obsproc_rrfs_inp_file=${OBSPATH}/${obs_source}.${RRFS_Current_PDY}/${obs_source}.t${RRFS_Current_cyc}z.prepbufr.tm00
     fi
