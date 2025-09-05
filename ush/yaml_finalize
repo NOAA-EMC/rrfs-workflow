@@ -58,7 +58,7 @@ if ytype == "jedivar":
     if STATIC_BEC_MODEL == "BUMPBEC":
         # replace the gsibec component with bumpbec component
         bec = hy.load("bec_bump.yaml")
-        querystr = "cost function/background error/components/0"
+        querystr = "cost function/background error/components/0/covariance"
         hy.modify(data, querystr, bec)
     if float(HYB_WGT_STATIC) == 0.0:
         # remove the static BEC component, yield a pure 3DEnVar
