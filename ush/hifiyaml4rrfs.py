@@ -15,7 +15,6 @@ def load(fpath, replacements=None):
     with open(fpath, 'r') as infile:
         for line in infile:
             line = line.rstrip()  # strip all trailing empty spaces
-            print("line:",line)
             if replacements:
                 line = pattern.sub(lambda m: replacements.get(m.group(1), m.group(0)), line)
             data.append(line)
