@@ -12,6 +12,12 @@ export outid=${outid:-"LL$job"}
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p ${DATA}
 cd ${DATA}
+
+# move to rrfs_nco_config.sh?
+export cycle="t${cyc}z"
+setpdy.sh
+. ./PDY
+
 #-----------------------------------------------------------------------
 # Source the variable definitions file
 #-----------------------------------------------------------------------

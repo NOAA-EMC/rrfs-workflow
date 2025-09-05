@@ -10,6 +10,7 @@ set -xue
 export pid=${pid:-$$}
 export outid=${outid:-"LL$job"}
 export RUN=${RUN:-rrfs}
+export cycle="t${cyc}z"
 
 if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
   export ENSMEM_INDX=${MEMBER_NAME}
@@ -42,14 +43,10 @@ esac
 #-----------------------------------------------------------------------
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
-export COMrrfs=${COMrrfs:-$(compath.py -o rrfs/${rrfs_ver})}
-export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}
 export umbrella_forecast_data=${DATAROOT}/${RUN}_forecast_${cyc}_${rrfs_ver}/${WGF}
 if [ ${CYCLE_TYPE} = "spinup" ]; then
-  export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}_spinup
   export umbrella_forecast_data=${DATAROOT}/${RUN}_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}_spinup/${mem_num}
     export umbrella_ics_data="${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}/ics"
     export umbrella_forecast_data=${DATAROOT}/${RUN}_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
   else
@@ -57,7 +54,6 @@ if [ ${CYCLE_TYPE} = "spinup" ]; then
   fi
 else
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}/${mem_num}
     export umbrella_ics_data="${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}/ics"
     export umbrella_forecast_data=${DATAROOT}/${RUN}_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
   elif [ "${WGF}" = "firewx" ]; then
@@ -73,10 +69,32 @@ export FORECAST_INPUT_PRODUCT=${umbrella_forecast_data}/INPUT
 export shared_forecast_output_data=${umbrella_forecast_data}/output
 export shared_forecast_restart_data=${umbrella_forecast_data}/RESTART
 export DATA=${DATA:-${umbrella_forecast_data}/${jobid}}
-mkdir -p ${COMOUT}/forecast/RESTART ${DATA}/INPUT ${DATA}/RESTART ${shared_forecast_output_data} ${shared_forecast_restart_data}
+mkdir -p ${DATA}/INPUT ${DATA}/RESTART ${shared_forecast_output_data} ${shared_forecast_restart_data}
 cd ${DATA}
 export umbrella_post_data=${DATAROOT}/${RUN}_post_${cyc}_${rrfs_ver}/${WGF}
 [[ -d ${umbrella_post_data} ]]&& rm -rf ${umbrella_post_data}
+
+#-----------------------------------------------------------------------
+# Set PDY and create COM directories
+#-----------------------------------------------------------------------
+setpdy.sh
+. ./PDY
+export CDATE="${PDY}${cyc}"
+
+export COMrrfs=${COMrrfs:-$(compath.py -o rrfs/${rrfs_ver})}
+export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}
+if [ ${CYCLE_TYPE} = "spinup" ]; then
+  export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}_spinup
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}_spinup/${mem_num}
+  fi
+else
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}/${mem_num}
+  fi
+fi
+mkdir -p ${COMOUT}/forecast/RESTART
+
 #-----------------------------------------------------------------------
 # Source the variable definitions file
 #-----------------------------------------------------------------------

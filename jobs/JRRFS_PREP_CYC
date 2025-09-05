@@ -38,6 +38,11 @@ export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p ${DATA}
 cd ${DATA}
 
+export cycle="t${cyc}z"
+setpdy.sh
+. ./PDY
+export CDATE="${PDY}${cyc}"
+
 #-----------------------------------------------------------------------
 # Source the variable definitions file
 #-----------------------------------------------------------------------

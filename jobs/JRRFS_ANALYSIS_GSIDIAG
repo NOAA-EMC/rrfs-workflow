@@ -10,6 +10,9 @@ set -xue
 export pid=${pid:-$$}
 export outid=${outid:-"LL$job"}
 export RUN=${RUN:-rrfs}
+export NET=${NET:-rrfs}
+export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
+
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   export umbrella_analysis_data=${umbrella_analysis_data:-${DATAROOT}/${RUN}_analysis_gsi_spinup_${cyc}_${rrfs_ver}/${WGF}}
@@ -20,6 +23,12 @@ fi
 export DATA=${DATA:-${umbrella_analysis_data}/${jobid}}
 mkdir -p ${DATA}
 cd ${DATA}
+
+export cycle="t${cyc}z"
+setpdy.sh
+. ./PDY
+export CDATE="${PDY}${cyc}"
+
 
 #-----------------------------------------------------------------------
 # Source the variable definitions file
