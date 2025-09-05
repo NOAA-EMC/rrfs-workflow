@@ -54,13 +54,14 @@ if [[ ${STATIC_BEC_MODEL} == "GSIBEC" ]]; then
   ln -snf "${FIXrrfs}/gsi_bec/fv3_grid_spec.${MESH_NAME}" ${DATA}/fv3_grid_spec
   ln -snf "${FIXrrfs}/gsi_bec/fv3_akbk" ${DATA}/fv3_akbk
   ${cpreq} "${FIXrrfs}/gsi_bec/coupler.res" ${DATA}/coupler.res
-  sed -i -e "s/yyyy   mm   dd    hh/${CDATE:0:4}    ${CDATE:4:2}   ${CDATE:6:2}   ${CDATE:8:2}"  ${DATA}/coupler.res
+  sed -i -e "s/yyyy    mm    dd    hh/${CDATE:0:4}    ${CDATE:4:2}    ${CDATE:6:2}    ${CDATE:8:2}/"  ${DATA}/coupler.res
 else
   # bump bec
   mkdir -p static_bec
   ln -snf "${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/stddev.nc"  static_bec/stddev.nc
   ln -snf "${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/nicas_${NTASKS}"  static_bec/nicas
   ln -snf "${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/vbal_${NTASKS}"  static_bec/vbal
+  ${cpreq}  "${EXPDIR}/config/bec_bump.yaml" ${DATA}/bec_bump.yaml
 fi
 
 #for satllite radiance

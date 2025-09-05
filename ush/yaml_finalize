@@ -22,16 +22,16 @@ start_type = os.getenv("start_type", "start_type_NOT_DEFINED")
 GETKF_TYPE = os.getenv("GETKF_TYPE", "TYPE_NOT_DEFINED")
 use_conv_sat_info = (os.getenv("USE_CONV_SAT_INFO", "True").upper() != "FALSE")
 STATIC_BEC_MODEL = os.getenv("STATIC_BEC_MODEL", "GSIBEC")
-GSIBEC_X = os.getenv('GSIBEC_X', '10'),
-GSIBEC_Y = os.getenv('GSIBEC_Y', '8'),
-GSIBEC_NLAT = os.getenv('GSIBEC_NLAT', '252'),
-GSIBEC_NLON = os.getenv('GSIBEC_NLON', '420'),
-GSIBEC_LAT_START = os.getenv('GSIBEC_LAT_START', '-50.033098'),
-GSIBEC_LAT_END = os.getenv('GSIBEC_LAT_END', '50.033098'),
-GSIBEC_LON_START = os.getenv('GSIBEC_LON_START', '-29.335138'),
-GSIBEC_LON_END = os.getenv('GSIBEC_LON_END', '29.335138'),
-GSIBEC_NORTH_POLE_LAT = os.getenv('GSIBEC_NORTH_POLE_LAT', '128.500001'),
-GSIBEC_NORTH_POLE_LON = os.getenv('GSIBEC_NORTH_POLE_LON', '82.500018'),
+GSIBEC_X = os.getenv("GSIBEC_X", "10")
+GSIBEC_Y = os.getenv("GSIBEC_Y", "8")
+GSIBEC_NLAT = os.getenv("GSIBEC_NLAT", "252")
+GSIBEC_NLON = os.getenv("GSIBEC_NLON", "420")
+GSIBEC_LAT_START = os.getenv("GSIBEC_LAT_START", "-50.033098")
+GSIBEC_LAT_END = os.getenv("GSIBEC_LAT_END", "50.033098")
+GSIBEC_LON_START = os.getenv("GSIBEC_LON_START", "-29.335138")
+GSIBEC_LON_END = os.getenv("GSIBEC_LON_END", "29.335138")
+GSIBEC_NORTH_POLE_LAT = os.getenv("GSIBEC_NORTH_POLE_LAT", "128.500001")
+GSIBEC_NORTH_POLE_LON = os.getenv("GSIBEC_NORTH_POLE_LON", "82.500018")
 
 # replacements for the @VAR@ patterns
 replacements = {
@@ -53,7 +53,6 @@ replacements = {
 
 # load the YAML data and complete the pattern replacement
 data = hy.load(yfile, replacements)
-
 # modify BEC models for jedivar
 if ytype == "jedivar":
     if STATIC_BEC_MODEL == "BUMPBEC":

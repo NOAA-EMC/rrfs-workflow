@@ -89,8 +89,8 @@ cost function:
           - air_pressure_at_surface
           read:
             gsi akbk: foo.nc
-            gsi error covariance file: data/gsi_bec/berror_stats
-            gsi berror namelist file: data/gsi_bec/gsiparm_regional.anl
+            gsi error covariance file: berror_stats
+            gsi berror namelist file: gsiparm_regional.anl
             processor layout x direction: "@GSIBEC_X@"
             processor layout y direction: "@GSIBEC_Y@"
             debugging deep bypass gsi B error: false
