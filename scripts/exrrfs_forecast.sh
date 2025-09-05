@@ -682,7 +682,7 @@ if [ "${DO_FCST_RESTART}" = "TRUE" ] && [ $coupler_res_ct -gt 0 ] && [ $FCST_LEN
   flag_fcst_restart="TRUE"
   # Update FV3 input.nml for restart
    $USHrrfs/update_input_nml.py \
-    --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
+    --path-to-defns "./${GLOBAL_VAR_DEFNS_FP}" \
     --run_dir "${DATA}" \
     --restart
   export err=$?
@@ -764,7 +764,7 @@ fi
 #-----------------------------------------------------------------------
 #
 $USHrrfs/create_model_configure_file.py \
-  --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
+  --path-to-defns "./${GLOBAL_VAR_DEFNS_FP}" \
   --cdate "${CDATE}" \
   --cycle_type "${CYCLE_TYPE}" \
   --cycle_subtype "${CYCLE_SUBTYPE}" \
@@ -788,7 +788,7 @@ fi
 #-----------------------------------------------------------------------
 #
 $USHrrfs/create_diag_table_file.py \
-  --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
+  --path-to-defns "./${GLOBAL_VAR_DEFNS_FP}" \
   --run-dir ${DATA}
 export err=$?
 if [ $err -ne 0 ]; then
@@ -812,7 +812,7 @@ fi
 #-----------------------------------------------------------------------
 #
 $USHrrfs/create_ufs_configure_file.py \
-  --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
+  --path-to-defns "./${GLOBAL_VAR_DEFNS_FP}" \
   --run-dir ${DATA} 
 export err=$?
 if [ $err -ne 0 ]; then

@@ -35,6 +35,10 @@ export DATA=${DATA:-${umbrella_ics_data}/${jobid}}
 mkdir -p ${DATA} ${shared_output_data}
 cd ${DATA}
 
+export cycle="t${cyc}z"
+setpdy.sh
+. ./PDY
+
 #-----------------------------------------------------------------------
 # Source the variable definitions file
 #-----------------------------------------------------------------------
