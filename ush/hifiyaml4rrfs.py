@@ -82,7 +82,7 @@ def next_pos(data, pos, querystr=""):
 
     line1 = data[pos]
     nspace, spaces, line1 = strip_indentations(line1)
-    if len(query_list) >=2 and query_list[-2].isdigit() and not query_list[-1].isdigit():
+    if len(query_list) >= 2 and query_list[-2].isdigit() and not query_list[-1].isdigit():
         # i.e, the ".../0/key" situation
         # more complicated situations, such as a list of list (of list ...)
         # are suggested to be handled based on the first list block outside hifiyaml
@@ -182,9 +182,6 @@ def get(data, querystr, do_dedent=True):
     else:
         pos1, _ = get_start_pos(data, querystr)
         pos2 = next_pos(data, pos1, querystr)
-
-    # get the number of indentation spaces
-    nspace = strip_indentations(data[pos1])[0]
 
     # check if there are comments immediately before this YAML block
     for i in range(pos1 - 1, -1, -1):
