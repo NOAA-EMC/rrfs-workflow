@@ -61,12 +61,7 @@ cp ../_workaround_/RDASApp/direct_refl/mpas2ufo_vars_mod.F90 sorc/mpas-jedi/src/
 
 # workaround for GSIbec
 # no PR yet
-cp ../_workaround_/RDASApp/gsibec/balmod.F90 sorc/gsibec/src/gsibec/gsi/balmod.F90
-cp ../_workaround_/RDASApp/gsibec/control2state_ad.F90 sorc/gsibec/src/gsibec/gsi/control2state_ad.F90
-cp ../_workaround_/RDASApp/gsibec/control2state.F90 sorc/gsibec/src/gsibec/gsi/control2state.F90
-cp ../_workaround_/RDASApp/gsibec/gsimod.F90 sorc/gsibec/src/gsibec/gsi/gsimod.F90
-cp ../_workaround_/RDASApp/gsibec/gsi_rfv3io_mod.f90 sorc/gsibec/src/gsibec/gsi/gsi_rfv3io_mod.f90
-cp ../_workaround_/RDASApp/gsibec/mod_fv3_lola.f90 sorc/gsibec/src/gsibec/gsi/mod_fv3_lola.f90
+cp ../_workaround_/RDASApp/gsibec/* sorc/gsibec/src/gsibec/gsi
 
 cp ../_workaround_/RDASApp/saber/gsi_covariance_mod.f90 sorc/saber/src/saber/gsi/covariance/gsi_covariance_mod.f90
 cp ../_workaround_/RDASApp/saber/gsi_grid_mod.f90 sorc/saber/src/saber/gsi/grid/gsi_grid_mod.f90

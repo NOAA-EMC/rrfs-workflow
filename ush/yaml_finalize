@@ -53,6 +53,7 @@ replacements = {
 
 # load the YAML data and complete the pattern replacement
 data = hy.load(yfile, replacements)
+
 # modify BEC models for jedivar
 if ytype == "jedivar":
     if STATIC_BEC_MODEL == "BUMPBEC":
