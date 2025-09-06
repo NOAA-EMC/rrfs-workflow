@@ -93,8 +93,7 @@ def next_pos(data, pos, querystr=""):
     end = len(data)
     next_pos = None
     for i in range(pos + 1, end):
-        line2 = data[i]
-        nspace2, spaces2, line2 = strip_indentations(line2)
+        nspace2, spaces2, line2 = strip_indentations(data[i])
         if not line2 or line2.startswith("#"):
             pass  # ignore empty lines and comment lines when finding the positions
         elif nspace2 == nspace:  # next peer, i.e. the same indentation level
@@ -112,10 +111,11 @@ def next_pos(data, pos, querystr=""):
     if next_pos is None:
         next_pos = end
     else:
-        # check if there are comment lines immediately before next_pos
+        # check if there are comment lines immediately before next_pos and with less indentations
         # if yes, move next_pos back until a non-comment line
         for i in range(next_pos - 1, pos, -1):
-            if data[i].strip().startswith('#'):
+            nspace2 = strip_indentations(data[i])[0]
+            if data[i].strip().startswith('#') and nspace2 <= nspace:
                 next_pos = i
             else:
                 break

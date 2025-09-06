@@ -16,8 +16,8 @@ ytype = yfile.split(".", 1)[0]  # get the yaml file type: jedivar, getkf, hofx, 
 # get environmental variables
 analysisDate = os.getenv("analysisDate", "analysisDate_NOT_DEFINED")
 beginDate = os.getenv("beginDate", "beginDate_NOT_DEFINED")
-HYB_WGT_STATIC = os.getenv("HYB_WGT_STATIC", "1.0")
-HYB_WGT_ENS = os.getenv("HYB_WGT_ENS", "0.0")
+HYB_WGT_STATIC = os.getenv("HYB_WGT_STATIC", "0.5")
+HYB_WGT_ENS = os.getenv("HYB_WGT_ENS", "0.5")
 start_type = os.getenv("start_type", "start_type_NOT_DEFINED")
 GETKF_TYPE = os.getenv("GETKF_TYPE", "TYPE_NOT_DEFINED")
 use_conv_sat_info = (os.getenv("USE_CONV_SAT_INFO", "True").upper() != "FALSE")
