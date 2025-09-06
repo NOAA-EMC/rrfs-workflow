@@ -40,14 +40,29 @@ ${cpreq} "${FIXrrfs}"/jedi/geovars.yaml .
 # create data directory
 #
 mkdir -p data; cd data || exit 1
-mkdir -p obs ens static_bec satbias_in satbias_out
+mkdir -p obs ens satbias_in satbias_out
 #
 #  bump files and static BEC files
 #
 ln -snf "${FIXrrfs}/bumploc/${MESH_NAME}_L${nlevel}_${NTASKS}_401km11levels"  bumploc
-ln -snf "${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/stddev.nc"  static_bec/stddev.nc
-ln -snf "${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/nicas_${NTASKS}"  static_bec/nicas
-ln -snf "${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/vbal_${NTASKS}"  static_bec/vbal
+
+if [[ ${STATIC_BEC_MODEL} == "GSIBEC" ]]; then
+  # gsibec
+  ln -snf "${FIXrrfs}/gsi_bec/berror_stats" "${DATA}"/berror_stats
+  ln -snf "${FIXrrfs}/gsi_bec/gsiparm_regional.anl.${MESH_NAME}" "${DATA}"/gsiparm_regional.anl
+  ln -snf "${FIXrrfs}/gsi_bec/mpas_pave_L${nlevel}.txt" "${DATA}"/mpas_pave.txt
+  ln -snf "${FIXrrfs}/gsi_bec/fv3_grid_spec.${MESH_NAME}" "${DATA}"/fv3_grid_spec
+  ln -snf "${FIXrrfs}/gsi_bec/fv3_akbk" "${DATA}"/fv3_akbk
+  ${cpreq} "${FIXrrfs}/gsi_bec/coupler.res" "${DATA}"/coupler.res
+  sed -i -e "s/yyyy    mm    dd    hh/${CDATE:0:4}    ${CDATE:4:2}    ${CDATE:6:2}    ${CDATE:8:2}/"  "${DATA}"/coupler.res
+else
+  # bump bec
+  mkdir -p static_bec
+  ln -snf "${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/stddev.nc"  static_bec/stddev.nc
+  ln -snf "${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/nicas_${NTASKS}"  static_bec/nicas
+  ln -snf "${FIXrrfs}/static_bec/${MESH_NAME}_L${nlevel}/vbal_${NTASKS}"  static_bec/vbal
+  ${cpreq}  "${EXPDIR}/config/bec_bump.yaml" "${DATA}"/bec_bump.yaml
+fi
 
 #for satllite radiance
 ln -snf "${FIXrrfs}"/crtm/2.4.0_jedi crtm

@@ -35,6 +35,17 @@ def jedivar(xmlFile, expdir, do_spinup=False):
         'HYB_ENS_PATH': os.getenv('HYB_ENS_PATH', ''),
         'ENS_BEC_LOOK_BACK_HRS': f'{ens_bec_look_back_hrs}',
         'USE_CONV_SAT_INFO': os.getenv('USE_CONV_SAT_INFO', 'true'),
+        'STATIC_BEC_MODEL': os.getenv('STATIC_BEC_MODEL', 'GSIBEC'),
+        'GSIBEC_X': os.getenv('GSIBEC_X', '10'),
+        'GSIBEC_Y': os.getenv('GSIBEC_Y', '8'),
+        'GSIBEC_NLAT': os.getenv('GSIBEC_NLAT', '252'),
+        'GSIBEC_NLON': os.getenv('GSIBEC_NLON', '420'),
+        'GSIBEC_LAT_START': os.getenv('GSIBEC_LAT_START', '-50.033098'),
+        'GSIBEC_LAT_END': os.getenv('GSIBEC_LAT_END', '50.033098'),
+        'GSIBEC_LON_START': os.getenv('GSIBEC_LON_START', '-29.335138'),
+        'GSIBEC_LON_END': os.getenv('GSIBEC_LON_END', '29.335138'),
+        'GSIBEC_NORTH_POLE_LAT': os.getenv('GSIBEC_NORTH_POLE_LAT', '128.500001'),
+        'GSIBEC_NORTH_POLE_LON': os.getenv('GSIBEC_NORTH_POLE_LON', '82.500018'),
     }
     if do_spinup:
         dcTaskEnv['DO_SPINUP'] = 'TRUE'

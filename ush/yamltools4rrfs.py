@@ -231,7 +231,7 @@ def get_all_obs(data, shallow=False):
         nspace = hy.strip_indentations(data[cur])[0]
         for i in range(cur - 1, -1, -1):
             nspace2, _, line = hy.strip_indentations(data[i])
-            if nspace2 == nspace and line.startswith('#'):
+            if nspace2 <= nspace and line.startswith('#'):
                 cur = i
             else:
                 break  # exit the loop if not a comment or different indentation level
