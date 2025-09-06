@@ -43,5 +43,3 @@
       linear variable change name: Control2Analysis
       input variables: *ctlvars
       output variables: *incvars
-  weight:
-    value: "@HYB_WGT_STATIC@"
