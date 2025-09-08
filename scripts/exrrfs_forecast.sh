@@ -770,6 +770,19 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+
+# figure out how best to define the quilt resources here for different runs
+if [ ${FCST_LEN_HRS} -eq '84' ]; then
+   export WRTCMP_write_groups=$WRTCMP_write_groups_LONGDET
+   export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_LONGDET
+elif [ ${FCST_LEN_HRS} -eq '18' ]; then
+   export WRTCMP_write_groups=$WRTCMP_write_groups_18HDET
+   export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_18HDET
+elif [ ${FCST_LEN_HRS} -eq '1' ]; then
+   export WRTCMP_write_groups=$WRTCMP_write_groups_SPINUP
+   export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_SPINUP
+fi
+
 $USHrrfs/create_model_configure_file.py \
   --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
   --cdate "${CDATE}" \
