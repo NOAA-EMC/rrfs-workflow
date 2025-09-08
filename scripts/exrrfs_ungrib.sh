@@ -18,6 +18,15 @@ elif [[ "${EXTRN_MDL_SOURCE}" == "GEFS_NCO" ]]; then
 fi
 prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
 
+# 
+# Account for whethere smoke/dust should be ungribbed
+# If so, will need to use a different Vtable and a different
+# ungrib.exe since the # of columns have changed.
+#
+if [[ "${prefix}" == "RAP" ]]
+  prefix=${prefix}.SD
+fi 
+
 cd "${DATA}" || exit 1
 ${cpreq} "${FIXrrfs}/ungrib/Vtable.${prefix}" Vtable
 #

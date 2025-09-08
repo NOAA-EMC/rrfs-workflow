@@ -73,6 +73,12 @@ sed -e "s/@restart_interval@/${restart_interval}/" -e "s/@history_interval@/${hi
     -e "s/@diag_interval@/${diag_interval}/" -e "s/@lbc_interval@/${lbc_interval}/" \
     "${PARMrrfs}"/streams.atmosphere  > streams.atmosphere
 #
+# append the chemistry streams
+if [[ ${DO_CHEMISTRY} == "TRUE" ]] ; then
+cat  "${PARMrrfs}"/streams.atmosphere.chem >> streams.atmosphere
+fi
+
+#
 # prelink the forecast output files to umbrella
 history_all=$(seq 0 $((10#${history_interval})) $((10#${fcst_len_hrs_thiscyc} )) )
 for fhr in ${history_all}; do

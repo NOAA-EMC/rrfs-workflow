@@ -15,6 +15,11 @@ ${cpreq} "${FIXrrfs}"/mpassit/histlist_2d                 histlist_2d
 ${cpreq} "${FIXrrfs}"/mpassit/histlist_3d                 histlist_3d
 ${cpreq} "${FIXrrfs}"/mpassit/histlist_soil               histlist_soil
 #
+if [[ ${DO_CHEMISTRY} == "TRUE" ]]; then
+   cat "${FIXrrfs}"/mpassit/histlist_2d_chem          histlist_2d
+   cat "${FIXrrfs}"/mpassit/histlist_3d_chem          histlist_3d
+fi
+#   
 nx=${MPASSIT_NX:-480}
 ny=${MPASSIT_NY:-280}
 dx=${MPASSIT_DX:-12000.0}

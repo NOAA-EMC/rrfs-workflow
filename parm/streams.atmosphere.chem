@@ -1,0 +1,31 @@
+<immutable_stream name="bio_input"
+                  type="input"
+                  filename_template="bio.init.nc"
+                  io_type="netcdf,netcdf4"
+                  input_interval="initial_only" />
+
+<immutable_stream name="anthro_input"
+                  type="input"
+                  filename_template="anthro.init.$Y-$M-$D_$h.$m.$s.nc"
+                  input_interval="1:00:00"
+                  io_type="netcdf,netcdf4"
+                  filename_interval="input_interval"/>
+
+<immutable_stream name="smoke_retro_input"
+                  type="input"
+                  filename_template="smoke.init.retro.$Y-$M-$D_$h.$m.$s.nc"
+                  io_type="netcdf,netcdf4"
+                  input_interval="1:00:00"
+                  filename_interval="input_interval"/>
+
+<immutable_stream name="rwc_input"
+                  type="input"
+                  filename_template="rwc.init.nc"
+                  io_type="netcdf,netcdf4"
+                  input_interval="initial_only" />
+
+<immutable_stream name="dust_input"
+                  type="input"
+                  filename_template="dust.init.nc"
+                  io_type="netcdf,netcdf4"
+                  input_interval="initial_only" />

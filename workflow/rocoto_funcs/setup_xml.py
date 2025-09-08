@@ -23,6 +23,7 @@ from rocoto_funcs.ioda_mrms_refl import ioda_mrms_refl
 from rocoto_funcs.clean import clean
 from rocoto_funcs.graphics import graphics
 from rocoto_funcs.misc import misc
+from rocoto_funcs.prep_chem import prep_chem
 
 # setup_xml
 
@@ -35,6 +36,7 @@ def setup_xml(HOMErrfs, expdir):
     machine = os.getenv('MACHINE').lower()
     do_deterministic = os.getenv('DO_DETERMINISTIC', 'true').upper()
     do_ensemble = os.getenv('DO_ENSEMBLE', 'false').upper()
+    do_chemistry=os.getenv('DO_CHEMISTRY','false').upper()   
     #
     source(f"{HOMErrfs}/workflow/config_resources/config.{machine}")
     source(f"{HOMErrfs}/workflow/config_resources/config.meshdep")
@@ -75,6 +77,8 @@ def setup_xml(HOMErrfs, expdir):
                 # spin up line
                 prep_ic(xmlFile, expdir, spinup_mode=1)
                 jedivar(xmlFile, expdir, do_spinup=True)
+                if do_chemistry == "TRUE":
+                  prep_chem(xmlFile,expdir)
                 fcst(xmlFile, expdir, do_spinup=True)
                 # prod line
                 prep_ic(xmlFile, expdir, spinup_mode=-1)
@@ -86,6 +90,8 @@ def setup_xml(HOMErrfs, expdir):
                 prep_lbc(xmlFile, expdir)
                 if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
                     jedivar(xmlFile, expdir)
+                if do_chemistry == "TRUE":
+                  prep_chem(xmlFile,expdir)
                 fcst(xmlFile, expdir)
                 save_fcst(xmlFile, expdir)
             #

@@ -1,0 +1,12 @@
+smoke_fine                      SMOKE_FINE
+smoke_coarse			SMOKE_COARSE
+polp_tree                       POLP_TREE
+polp_grass                      POLP_GRASS
+polp_weed                       POLP_WEED
+pols_all                        POLS_ALL
+PM2_5                           PM2_5
+PM10				PM10
+unspc_fine			UNSPC_FINE
+unspc_coarse			UNSPC_COARSE
+dust_fine			DUST_FINE
+dust_coarse			DUST_COARSE
