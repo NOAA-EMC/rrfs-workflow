@@ -110,7 +110,12 @@ search_cyc_10=$($NDATE -10 ${CDATE} | cut -c9-10)
 search_cyc_09=$($NDATE -9 ${CDATE} | cut -c9-10)
 for idx_cyc in ${search_cyc_18#0} ${search_cyc_17#0} ${search_cyc_16#0} ${search_cyc_15#0} ${search_cyc_14#0} ${search_cyc_13#0} ${search_cyc_12#0} ${search_cyc_11#0} ${search_cyc_10#0} ${search_cyc_09#0}; do
   idx_cyc2d=$( printf "%02d" "${idx_cyc#0}" )
-  fcst_state=$(ecflow_client --query state /nco_rrfs_dev_${idx_cyc2d}/primary/${idx_cyc2d}/rrfs/v1.0/forecast)
+  [[ ${idx_cyc} -lt 6 ]]&& cyc_idx=00
+  [[ ${idx_cyc} -ge 6 ]]&& cyc_idx=06
+  [[ ${idx_cyc} -ge 12 ]]&& cyc_idx=12
+  [[ ${idx_cyc} -ge 18 ]]&& cyc_idx=18
+  #### fcst_state=$(ecflow_client --query state /nco_rrfs_dev_${idx_cyc2d}/primary/${idx_cyc2d}/rrfs/v1.0/forecast)
+  fcst_state=$(ecflow_client --query state /rrfs_dev/primary/${cyc_idx}/rrfs/v1.0/${idx_cyc2d}/forecast)
 
   #### Temporary keep all 13Z for debug
   # if [ ${idx_cyc2d} == 19 ] || [ ${idx_cyc2d} == 12 ]; then

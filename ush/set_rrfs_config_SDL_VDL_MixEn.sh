@@ -1,3 +1,5 @@
+#!/bin/bash
+set -x
 
 l_both_fv3sar_gfs_ens=.false. #if true, ensemble size is increased with GDAS ensemble (MixEn)
 assign_vdl_nml=.false.        #if true, vdl_scale and vloc_varlist are used to set VDL

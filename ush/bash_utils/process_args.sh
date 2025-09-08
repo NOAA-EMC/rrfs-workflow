@@ -81,15 +81,7 @@
 #-----------------------------------------------------------------------
 #
 function process_args() {
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-  { save_shell_opts; set -u -x; } > /dev/null 2>&1
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -246,7 +238,6 @@ ments (num_valid_args) specified in the array valid_arg_names:
 #-----------------------------------------------------------------------
 #
   if [ ${num_valid_args} -eq 0 ]; then
-    { restore_shell_opts; } > /dev/null 2>&1
     return
   fi
 #
@@ -386,14 +377,5 @@ Please assign values to arguments only once on the command line."
 
   done
 #
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
-#
-#-----------------------------------------------------------------------
-#
-  { restore_shell_opts; } > /dev/null 2>&1
-
 }
 

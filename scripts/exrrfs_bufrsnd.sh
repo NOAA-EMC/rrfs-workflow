@@ -1,4 +1,7 @@
 #!/bin/bash
+set -x
+
+source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
 #
 #-----------------------------------------------------------------------
@@ -7,17 +10,7 @@
 #
 #-----------------------------------------------------------------------
 #
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -347,9 +340,9 @@ cd ${COMOUT}/bufr.${cyc}
 # Tar and gzip the individual bufr files and send them to /com
 tar -cf - . | /usr/bin/gzip > ../rrfs.t${cyc}z.bufrsnd.tar.gz
 
-cpreq -p $GEMPAKrrfs/fix/snrrfs.prm snrrfs.prm
-cpreq -p $GEMPAKrrfs/fix/sfrrfs.prm_aux sfrrfs.prm_aux
-cpreq -p $GEMPAKrrfs/fix/sfrrfs.prm sfrrfs.prm
+cpreq -p ${GEMPAK_FIX}/fix/snrrfs.prm snrrfs.prm
+cpreq -p ${GEMPAK_FIX}/fix/sfrrfs.prm_aux sfrrfs.prm_aux
+cpreq -p ${GEMPAK_FIX}/fix/sfrrfs.prm sfrrfs.prm
 
 mkdir -p $COMOUT/gempak
 
@@ -378,12 +371,3 @@ BUFR-sounding -processing completed successfully.
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-#
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ restore_shell_opts; } > /dev/null 2>&1
-

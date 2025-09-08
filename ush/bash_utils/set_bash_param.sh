@@ -7,15 +7,7 @@
 #-----------------------------------------------------------------------
 #
 function set_bash_param() {
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -131,14 +123,5 @@ lar expression (regex_search):
 
   sed -i -r -e "s%${regex_search}%${regex_replace}%" "${file_full_path}"
 #
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
-#
-#-----------------------------------------------------------------------
-#
-  { restore_shell_opts; } > /dev/null 2>&1
-
 }
 

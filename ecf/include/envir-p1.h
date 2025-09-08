@@ -40,6 +40,7 @@ export COMrrfs=$(compath.py rrfs/${rrfs_ver})
 export COMOUT_PREP="$(compath.py obsproc/v1.2)"
 
 export DATAROOT=/lfs/h3/emc/lam/noscrub/ecflow/stmp/${USER}/${model}/${PSLOT}
+#### export DATAROOT=/lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/ecflow/stmp/${USER}/${model}/${PSLOT}
 #### export umbrella_fsm_data=${DATAROOT}/rrfs_fsm_${PDY}${cyc}_${rrfs_ver}/${WGF}
 #if [ "${CYCLE_TYPE}" = "spinup" ]; then
 #  export umbrella_init_data="${DATAROOT}/${PDY}/${RUN}_init_spinup_${cyc}_${rrfs_ver}/${WGF}"

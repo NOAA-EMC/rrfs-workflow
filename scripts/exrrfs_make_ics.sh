@@ -1,4 +1,7 @@
 #!/bin/bash
+set -x
+
+source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
 #
 #-----------------------------------------------------------------------
@@ -7,17 +10,7 @@
 #
 #-----------------------------------------------------------------------
 #
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -172,6 +165,8 @@ case "$MACHINE" in
     export MPICH_OFI_STARTUP_CONNECT=1
     ncores=$(( NNODES_MAKE_ICS*PPN_MAKE_ICS ))
     APRUN="mpiexec -n ${ncores} -ppn ${PPN_MAKE_ICS} --cpu-bind core --depth ${OMP_NUM_THREADS}"
+    ncores_blending=$(( NNODES_MAKE_ICS*PPN_PRE_BLENDING ))
+    APRUN_PRE_BLENDING="mpiexec -n ${ncores_blending} -ppn ${PPN_PRE_BLENDING} --cpu-bind core --depth 2"
     ;;
 
   "HERA")
@@ -820,7 +815,13 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
   bndy=./gfs.bndy.nc
 
   # Run convert coldstart files to fv3 restart (rotate winds and remap).
-  python ${USHrrfs}/chgres_cold2fv3.py $cold $grid $akbk $akbkcold $orog
+  export OMP_NUM_THREADS=2
+  fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
+  cp ${fixgriddir}/cold2warm_all.nc .
+  export pgm1=fv3lam_pre_blending.exe
+  ${APRUN_PRE_BLENDING} ${EXECrrfs}/$pgm1 >>$pgmout 2>errfile
+  export err=$?; err_chk
+  mv ${DATA}/cold2warm_all.nc ${shared_output_data}/.
 
   echo "Pre-Blending end `date`"
 
@@ -900,11 +901,3 @@ with the external model from which to generate ${ics_or_lbcs} returned with a
 nonzero status.  The full path to this variable definitions file is:
   extrn_mdl_var_defns_fp = \"${extrn_mdl_var_defns_fp}\""
 fi
-#
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ restore_shell_opts; } > /dev/null 2>&1

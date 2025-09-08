@@ -1,7 +1,7 @@
 #!/bin/bash
 
 date
-export PS4='+ $SECONDS + ' 
+export PS4='+ $SECONDS + '
 set -xue
 
 #-----------------------------------------------------------------------
@@ -66,13 +66,12 @@ if [ $WGF == "firewx" ]; then
 fi
 
 #-----------------------------------------------------------------------
-# RRFS Bufr Sounding
+# RRFS Product Generation
 #-----------------------------------------------------------------------
 export pid=${pid:-$$}
 export outid=${outid:-"LL$job"}
 export RUN=${RUN:-rrfs}
-export fhr=01
-export tmmark=tm00
+export fhr=${FHR:-}
 
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p ${DATA}
@@ -84,57 +83,13 @@ cd ${DATA}
 
 . $USHrrfs/source_util_funcs.sh
 
-#-----------------------------------------------------------------------
-# Get the full path to the file in which this script/function is located 
-# (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
-# which the file is located (scrfunc_dir).
-#-----------------------------------------------------------------------
-
-scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
-scrfunc_fn=$( basename "${scrfunc_fp}" )
-scrfunc_dir=$( dirname "${scrfunc_fp}" )
-
-#-----------------------------------------------------------------------
-# Print message indicating entry into script.
-#-----------------------------------------------------------------------
-
-print_info_msg "
-========================================================================
-Entering script:  \"${scrfunc_fn}\"
-In directory:     \"${scrfunc_dir}\"
-
-This is the J-job script for the task that runs the bufr sounding
-on the output files corresponding to a specified forecast hour.
-========================================================================"
-
-#-----------------------------------------------------------------------
-# Define the umbrella data and COM directories
-#-----------------------------------------------------------------------
-
-if [ $WGF = "ensf" ]; then
-  export ENSMEM_INDX=${MEMBER_NAME}
-  export FHRLIM=60
-  DO_ENSFCST="TRUE"
-elif [ $WGF = "det" ]; then
-  export ENSMEM_INDX=""
-  export FHRLIM=84
+export COMrrfs=${COMrrfs:-$(compath.py -o rrfs/${rrfs_ver})}
+export COMIN=${COMrrfs}/${RUN}.${PDY}/${cyc}
+export COMOUT=${COMOUT:-$(compath.py -o rrfs/${rrfs_ver}/${RUN}.${PDY}/${cyc}/gempak)}
+export cycle="t${cyc}z"
+if [ ! -f ${COMOUT} ] ; then
+	mkdir -p -m 775 ${COMOUT}
 fi
-export mem_num=m$(echo "${ENSMEM_INDX}")
-
-CYCLE_TYPE=${CYCLE_TYPE:-prod}
-export DO_ENSFCST=${DO_ENSFCST:-"FALSE"}
-export COMOUT=${COMOUT:-$(compath.py -o rrfs/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-export umbrella_forecast_data="${DATAROOT}/${RUN}_forecast_${cyc}_${rrfs_ver}/${WGF}"
-
-if [ "${DO_ENSFCST}" = "TRUE" ]; then
-  export COMOUT=${COMOUT}/${mem_num}
-  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
-fi
-
-# Location of dyn/phy files from forecast task
-export shared_forecast_output_data=${umbrella_forecast_data}/output
-
-mkdir -p "${COMOUT}"
 
 #-----------------------------------------------------------------------
 # Execute the script.
@@ -143,19 +98,17 @@ mkdir -p "${COMOUT}"
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$HOMErrfs/scripts/exrrfs_bufrsnd.sh
+${HOMErrfs}/scripts/exrrfs_gempak.sh
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then
   cat $pgmout
 fi
 
-#-----------------------------------------------------------------------
-# Print exit message.
-#-----------------------------------------------------------------------
+#############################
+# Remove the Temporary working directory
+##############################
+cd $DATAROOT
+if [ ${KEEPDATA:-YES} = NO ] ; then rm -rf $DATA ; fi
 
-print_info_msg "
-========================================================================
-Exiting script:  \"${scrfunc_fn}\"
-In directory:    \"${scrfunc_dir}\"
-========================================================================"
+exit $err
