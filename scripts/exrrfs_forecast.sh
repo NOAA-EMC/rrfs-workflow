@@ -492,7 +492,14 @@ if [ ${BKTYPE} -eq 0 ]; then
   if [ "${STOCH}" = "TRUE" ]; then
     cpreq -p ${FV3_NML_RESTART_STOCH_FP} ${DATA}/${FV3_NML_FN}
   else
-    cpreq -p ${FV3_NML_RESTART_FP} ${DATA}/${FV3_NML_FN}
+  # believe need to create options here on the FV3_NML_RESTART_FP to copy in for different configs.
+    if [ $FCST_LEN_HRS -eq '18' ] then
+    cpreq -p ${FV3_NML_RESTART_18HFORE_FP} ${DATA}/${FV3_NML_FN}
+    elif [ $FCST_LEN_HRS -eq '84' ] then
+    cpreq -p ${FV3_NML_RESTART_LONG_FP} ${DATA}/${FV3_NML_FN}
+    elif [ $FCST_LEN_HRS -eq '1' ] then
+    cpreq -p ${FV3_NML_RESTART_SPINUPCYC_FP} ${DATA}/${FV3_NML_FN}
+    fi
   fi
 else
   if [ -f "INPUT/cycle_surface.done" ]; then
