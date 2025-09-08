@@ -33,8 +33,8 @@ for (( ii=0; ii<"${num_fhrs}"; ii=ii+"${group_total_num}" )); do
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
 
     # decide the history files
-    history_file="${UMBRELLA_ENSMEAN_DATA}/history.${timestr}.nc"
-    diag_file="${UMBRELLA_ENSMEAN_DATA}/diag.${timestr}.nc"
+    history_mean="${UMBRELLA_ENSMEAN_DATA}/history.${timestr}.nc"
+    diag_mean="${UMBRELLA_ENSMEAN_DATA}/diag.${timestr}.nc"
     # wait for history file available
     while true; do
         historyfiles=("${UMBRELLA_SAVE_FCST_DATA}"/mem*/"history.${timestr}.nc")
@@ -43,13 +43,13 @@ for (( ii=0; ii<"${num_fhrs}"; ii=ii+"${group_total_num}" )); do
            echo "find enough ensemble history forecast files: ${num_historyfiles} files"
            break
         else
-           echo "no enough ensemble history forecast files: ${num_historyfiles} files"
+           echo "${num_historyfiles} ensemble history file(s) available, waiting for more ..."
            sleep 5
         fi
     done
-    rm -f  "${history_file}"
+    rm -f  "${history_mean}"
     echo "Processing ensemble mean for history.${timestr}.nc ..."
-    ncea --no_tmp_fl  "${UMBRELLA_SAVE_FCST_DATA}"/mem*/"history.${timestr}.nc"  "${history_file}" & job_pids+=($!)
+    ncea --no_tmp_fl  "${UMBRELLA_SAVE_FCST_DATA}"/mem*/"history.${timestr}.nc"  "${history_mean}" & job_pids+=($!)
     # wait for diag file available
     while true; do
         diagfiles=("${UMBRELLA_SAVE_FCST_DATA}"/mem*/"diag.${timestr}.nc")
@@ -58,13 +58,13 @@ for (( ii=0; ii<"${num_fhrs}"; ii=ii+"${group_total_num}" )); do
            echo "find enough ensemble diag forecast files: ${num_diagfiles} files"
            break
         else
-           echo "no enough ensemble diag forecast files: ${num_diagfiles} files"
+           echo "${num_diagfiles} ensemble diag file(s) available, waiting for more ..."
            sleep 5
         fi
     done
-    rm -f "${diag_file}"
+    rm -f "${diag_mean}"
     echo "Processing ensemble mean for diag.${timestr}.nc ..."
-    ncea --no_tmp_fl  "${UMBRELLA_SAVE_FCST_DATA}"/mem*/"diag.${timestr}.nc"  "${diag_file}" & job_pids+=($!)
+    ncea --no_tmp_fl  "${UMBRELLA_SAVE_FCST_DATA}"/mem*/"diag.${timestr}.nc"  "${diag_mean}" & job_pids+=($!)
 done
 
 # Wait for all background jobs to finish; exit error if any jobs failed

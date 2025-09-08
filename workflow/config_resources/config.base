@@ -74,7 +74,6 @@ export NODES_ENSMEAN=${NODES_ENSMEAN:-"<nodes>2:ppn=40</nodes>"}
 export WALLTIME_ENSMEAN=${WALLTIME_ENSMEAN:-"00:30:00"}
 export NATIVE_ENSMEAN=${NATIVE_ENSMEAN:-""}
 
-
 # mpassit
 export NODES_MPASSIT=${NODES_MPASSIT:-"<nodes>2:ppn=40</nodes>"}
 export WALLTIME_MPASSIT=${WALLTIME_MPASSIT:-"00:50:00"}

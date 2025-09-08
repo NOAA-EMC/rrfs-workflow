@@ -29,7 +29,7 @@ def ensmean(xmlFile, expdir):
     }
 
     # metatask (nested or not)
-    fhr = os.getenv('ENS_FCST_LENGTH', '3')
+    fhr = os.getenv('FCST_LENGTH', '3')
     if int(fhr) >= 100:
         print(f'FCST_LENGTH>=100 not supported: {fhr}')
         exit()
