@@ -16,11 +16,22 @@ ytype = yfile.split(".", 1)[0]  # get the yaml file type: jedivar, getkf, hofx, 
 # get environmental variables
 analysisDate = os.getenv("analysisDate", "analysisDate_NOT_DEFINED")
 beginDate = os.getenv("beginDate", "beginDate_NOT_DEFINED")
-HYB_WGT_STATIC = os.getenv("HYB_WGT_STATIC", "1.0")
-HYB_WGT_ENS = os.getenv("HYB_WGT_ENS", "0.0")
+HYB_WGT_STATIC = os.getenv("HYB_WGT_STATIC", "0.5")
+HYB_WGT_ENS = os.getenv("HYB_WGT_ENS", "0.5")
 start_type = os.getenv("start_type", "start_type_NOT_DEFINED")
 GETKF_TYPE = os.getenv("GETKF_TYPE", "TYPE_NOT_DEFINED")
 use_conv_sat_info = (os.getenv("USE_CONV_SAT_INFO", "True").upper() != "FALSE")
+STATIC_BEC_MODEL = os.getenv("STATIC_BEC_MODEL", "GSIBEC")
+GSIBEC_X = os.getenv("GSIBEC_X", "10")
+GSIBEC_Y = os.getenv("GSIBEC_Y", "8")
+GSIBEC_NLAT = os.getenv("GSIBEC_NLAT", "252")
+GSIBEC_NLON = os.getenv("GSIBEC_NLON", "420")
+GSIBEC_LAT_START = os.getenv("GSIBEC_LAT_START", "-50.033098")
+GSIBEC_LAT_END = os.getenv("GSIBEC_LAT_END", "50.033098")
+GSIBEC_LON_START = os.getenv("GSIBEC_LON_START", "-29.335138")
+GSIBEC_LON_END = os.getenv("GSIBEC_LON_END", "29.335138")
+GSIBEC_NORTH_POLE_LAT = os.getenv("GSIBEC_NORTH_POLE_LAT", "128.500001")
+GSIBEC_NORTH_POLE_LON = os.getenv("GSIBEC_NORTH_POLE_LON", "82.500018")
 
 # replacements for the @VAR@ patterns
 replacements = {
@@ -28,6 +39,16 @@ replacements = {
     "beginDate": f"{beginDate}",
     "HYB_WGT_STATIC": f"{HYB_WGT_STATIC}",
     "HYB_WGT_ENS": f"{HYB_WGT_ENS}",
+    "GSIBEC_X": f"{GSIBEC_X}",
+    "GSIBEC_Y": f"{GSIBEC_Y}",
+    "GSIBEC_NLAT": f"{GSIBEC_NLAT}",
+    "GSIBEC_NLON": f"{GSIBEC_NLON}",
+    "GSIBEC_LAT_START": f"{GSIBEC_LAT_START}",
+    "GSIBEC_LAT_END": f"{GSIBEC_LAT_END}",
+    "GSIBEC_LON_START": f"{GSIBEC_LON_START}",
+    "GSIBEC_LON_END": f"{GSIBEC_LON_END}",
+    "GSIBEC_NORTH_POLE_LAT": f"{GSIBEC_NORTH_POLE_LAT}",
+    "GSIBEC_NORTH_POLE_LON": f"{GSIBEC_NORTH_POLE_LON}",
 }
 
 # load the YAML data and complete the pattern replacement
@@ -35,6 +56,11 @@ data = hy.load(yfile, replacements)
 
 # modify BEC models for jedivar
 if ytype == "jedivar":
+    if STATIC_BEC_MODEL == "BUMPBEC":
+        # replace the gsibec component with bumpbec component
+        bec = hy.load("bec_bump.yaml")
+        querystr = "cost function/background error/components/0/covariance"
+        hy.modify(data, querystr, bec)
     if float(HYB_WGT_STATIC) == 0.0:
         # remove the static BEC component, yield a pure 3DEnVar
         querystr = "cost function/background error/components/0"
