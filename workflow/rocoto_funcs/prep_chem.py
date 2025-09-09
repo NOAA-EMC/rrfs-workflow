@@ -15,11 +15,18 @@ def prep_chem(xmlFile, expdir,do_ensemble=False, do_spinup=False):
 #      cycledefs='spinup,spinup2,spinup3'
 #  else:
 #    cycledefs='prod'
+  realtime=os.getenv("REALTIME","false")
 
   # Task-specific EnVars beyond the task_common_vars
   datadir_chem=os.getenv('DATADIR_CHEM','/lfs6/BMC/rtwbl/cheMPAS-Fire/input/')
   mesh_name=os.getenv('MESH_NAME','conus3km').lower()
   fcst_length=os.getenv('FCST_LENGTH','24')
+  if realtime.upper() == "TRUE":
+     rave_dir='/public/data/grids/nesdis/3km_fire_emissions/'
+  else:
+     rave_dir=datadir_chem + '/input/emissions/RAVE/'
+
+  dcTaskEnv['RAVE_DIR']=rave_dir
 
   dcTaskEnv={
     'FCST_LENGTH': f'{fcst_length}',
@@ -47,10 +54,10 @@ def prep_chem(xmlFile, expdir,do_ensemble=False, do_spinup=False):
   # dependencies
 
   timedep=f''
-  realtime=os.getenv("REALTIME","false")
   if realtime.upper() == "TRUE":
     starttime=get_cascade_env(f"STARTTIME_{task_id}".upper())
     timedep=f'\n   <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+    
   #
   initdep=f'\n   <taskdep task="prep_ic"/>'
   dependencies=f'''
