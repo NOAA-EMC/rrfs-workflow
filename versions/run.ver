@@ -59,3 +59,5 @@ export CLEAN_OLDRUN_HRS="72"
 export CLEAN_OLDFCST_HRS="72"
 export CLEAN_OLDSTMPPOST_HRS="0"
 export CLEAN_NWGES_HRS="72"
+
+export OBSPATH="/lfs/h2/emc/lam/noscrub/emc.lam/obsproc.DATA/CRON/com/obsproc/v1.3"
