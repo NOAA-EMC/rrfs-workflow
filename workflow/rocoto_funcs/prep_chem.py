@@ -17,7 +17,7 @@ def prep_chem(xmlFile, expdir,do_ensemble=False, do_spinup=False):
 #    cycledefs='prod'
 
   # Task-specific EnVars beyond the task_common_vars
-  datadir_chem=os.getenv('DATADIR_CHEM','/lfs5/BMC/rtwbl/rap-chem/MPAS/input/')
+  datadir_chem=os.getenv('DATADIR_CHEM','/lfs6/BMC/rtwbl/cheMPAS-Fire/input/')
   mesh_name=os.getenv('MESH_NAME','conus3km').lower()
   fcst_length=os.getenv('FCST_LENGTH','24')
 
@@ -59,5 +59,5 @@ def prep_chem(xmlFile, expdir,do_ensemble=False, do_spinup=False):
   </and>
   </dependency>'''
 
-  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"PREP_CHEM",do_ensemble)
+  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"PREP_CHEM")
 ### end of prep_chem --------------------------------------------------------
