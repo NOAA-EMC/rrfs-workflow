@@ -41,7 +41,7 @@ export GSIBEC_LAT_START=-29.335138
 export GSIBEC_LAT_END=29.335138
 
 export DO_CYC=true
-export CYC_INTERVAL=1
+export CYC_INTERVAL=24
 for i in {0..23};    do arr[$i]="00"; done # no forecast
 arr[0]="24" # 24hr fcst every 24hrs @ 00 Z
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
@@ -124,7 +124,7 @@ case ${MACHINE} in
     export OBSPATH="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
     export OBSPATH_NSSLMOSIAC="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/reflectivity"
     export CHEMPATH="/lfs6/BMC/rtwbl/cheMPAS-Fire/input"
-    export ACCOUNT="nrtrr"
+    export ACCOUNT="rtwbl"
     export QUEUE="batch"
     export PARTITION="kjet"
     ;;

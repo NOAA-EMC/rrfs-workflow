@@ -39,23 +39,24 @@ def prep_chem(xmlFile, expdir,do_ensemble=False, do_spinup=False):
 
 
   meta_bgn=f'''
-<metatask name="{meta_id}_">
+<metatask name="{meta_id}">
 <var name="sector">{emis_sectors}</var>'''
   meta_end=f'\
 </metatask>\n'
 
   # dependencies
 
-  timedep=""
+  timedep=f''
   realtime=os.getenv("REALTIME","false")
   if realtime.upper() == "TRUE":
     starttime=get_cascade_env(f"STARTTIME_{task_id}".upper())
     timedep=f'\n   <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
   #
-  #initdep=f'\n   <taskdep><task="init_ctl"/>'
+  initdep=f'\n   <taskdep task="prep_ic"/>'
   dependencies=f'''
   <dependency>
   <and>{timedep}
+  {initdep}
   </and>
   </dependency>'''
 
