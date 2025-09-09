@@ -42,8 +42,9 @@ export GSIBEC_LAT_END=29.433115
 
 export DO_CYC=true
 export CYC_INTERVAL=24
+export FCST_LENGTH=24
 for i in {0..23};    do arr[$i]="00"; done # no forecast
-arr[0]="24" # 24hr fcst every 24hrs @ 00Z
+arr[0]="${FCST_LENGTH}" # 24hr fcst every 24hrs @ 00Z
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
 export MPASSIT_GROUP_TOTAL_NUM=12 # One group per 2 output files

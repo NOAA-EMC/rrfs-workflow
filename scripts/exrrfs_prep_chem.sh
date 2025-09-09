@@ -100,51 +100,24 @@ if [ -z "${INTERP_METHOD}" ]; then
    export INTERP_METHOD="bilinear"
 fi
 #
-INITFILE=/lfs5/BMC/rtwbl/rap-chem/mpas_conus3km/cycledir/stmp/${YYYY}${MM}${DD}${HH}/init/ctl/hrrrv5.init.nc
 # Set the init/mesh file name and link here:\
-
-if [[ "${MESH_NAME}" -eq "conus12km" ]]; then
-
-
-if [[ -r ${UMBRELLA_PREP_IC_DATA}/init.nc ]]; then
-    ln -sf ${UMBRELLA_PREP_IC_DATA}/init.nc ./${MESH_NAME}.init.nc
-elif [[ -r ${UMBRELLA_PREP_IC_DATA}/hrrrv5.init.nc ]]; then
-    ln -sf ${UMBRELLA_PREP_IC_DATA}/hrrrv5.init.nc ./${MESH_NAME}.init.nc
-elif [[ -r  ${UMBRELLA_PREP_IC_DATA_GFS}/init.nc ]]; then
-    ln -sf ${UMBRELLA_PREP_IC_DATA_GFS}/init.nc ./${MESH_NAME}.init.nc
-elif [[ -r ${UMBRELLA_FCST_DATA}/fcst_${HH}/mpasin.nc ]]; then
-    ln -sf ${UMBRELLA_FCST_DATA}/fcst_${HH}/mpasin.nc ./${MESH_NAME}.init.nc
+if [[ ${keepdata} == "YES" ]]; then
+   if [[ -r ${UMBRELLA_PREP_IC_DATA}/init.nc ]]; then
+       ln -sf ${UMBRELLA_PREP_IC_DATA}/init.nc ./${MESH_NAME}.init.nc
+   else
+       echo "WARNING: NO Init File available, cannot reinterpolate if files are missing, did you run the task out of order?"
+       has_init=0
+   fi
 else
-    echo "WARNING: NO Init File available, cannot reinterpolate if files are missing, did you run the task out of order?"
-    has_init=0
+   if [[ -r ${COMOUT}/ic/${WGF}${MEMDIR}/init.nc  ]]; then
+       ln -sf  ${COMOUT}/ic/${WGF}${MEMDIR}/init.nc ./${MESH_NAME}.init.nc
+   else
+       echo "WARNING: NO Init File available, cannot reinterpolate if files are missing, did you run the task out of order?"
+       has_init=0
+   fi
 fi
-
-else
-
-if [[ -r ${UMBRELLA_PREP_IC_DATA}/init.nc ]]; then
-    ln -sf ${UMBRELLA_PREP_IC_DATA}/init.nc ./${MESH_NAME}.init.nc
-elif [[ -r ${UMBRELLA_PREP_IC_DATA}/hrrrv5.init.nc ]]; then
-    ln -sf ${UMBRELLA_PREP_IC_DATA}/hrrrv5.init.nc ./${MESH_NAME}.init.nc
-elif [[ -r ${INITFILE} ]]; then
-    ln -sf ${INITFILE} ./${MESH_NAME}.init.nc
-elif [[ -r ${UMBRELLA_FCST_DATA}/fcst_${HH}/mpasin.nc ]]; then
-    ln -sf ${UMBRELLA_FCST_DATA}/fcst_${HH}/mpasin.nc ./${MESH_NAME}.init.nc
-elif [[ -r  ${UMBRELLA_PREP_IC_DATA_GFS}/init.nc ]]; then
-    ln -sf ${UMBRELLA_PREP_IC_DATA_GFS}/init.nc ./${MESH_NAME}.init.nc
-else
-    echo "WARNING: NO Init File available, cannot reinterpolate if files are missing, did you run the task out of order?"
-    has_init=0
-fi
-
-
-
-fi
-
-
 
 #
-MPAS_BASEFILE=${DATADIR_CHEM}/grids/domain_latlons/mpas_${MESH_NAME}_init.nc
-#SCRIPT=${HOMErrfs}/scripts/regrid_chem_to_mpas.py
 SCRIPT=${HOMErrfs}/scripts/exrrfs_regrid_chem.py
 INTERP_WEIGHTS_DIR=${DATADIR_CHEM}/grids/interpolation_weights/  
 #
@@ -165,15 +138,17 @@ if [[ "${EMIS_SECTOR_TO_PROCESS}" == "smoke" ]]; then
 if [[ ! ${RAVE_DIR} ]]; then
 RAVE_INPUTDIR=/public/data/grids/nesdis/3km_fire_emissions/ # JLS, TODO, should come from a config/namelist
 else
-RAVE_INPUTDIR=${RAVE_DIR}
+RAVE_INPUTDIR=${RAVE_DIR}/raw/
 fi
-RAVE_OUTPUTDIR=${DATADIR_CHEM}/emissions/fire/processed/rave/
+RAVE_OUTPUTDIR=${RAVE_DIR}/processed/
+#
 ECO_INPUTDIR=${DATADIR_CHEM}/aux/ecoregion/
 ECO_OUTPUTDIR=${DATADIR_CHEM}/aux/ecoregion/
+#
 FMC_INPUTDIR=${DATADIR_CHEM}/aux/FMC/${YYYY}/${MM}/
 FMC_OUTPUTDIR=${DATADIR_CHEM}/aux/FMC/${YYYY}/${MM}/
 #
-dummyRAVE=${DATADIR_CHEM}/emissions/fire/processed/rave/${MESH_NAME}_dummy_rave.nc
+dummyRAVE=${RAVE_DIR}/processed/RAVE.dummy.${MESH_NAME}.nc
 mkdir -p ${RAVE_OUTPUTDIR}
 #
 # Create a temporary directory to process the emissions so we don't mess with the raw data
@@ -225,6 +200,8 @@ ncrcat ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.retro.*.00.00.nc ${UMBRELLA_PREP_CH
 # Calculate previous 24 hour average HWP
 #
 # TODO
+ncap2 -O -s 'hwp_prev24=0.0*frp_in+30.' -s 'totprcp_prev24=0.0*frp_in+0.1' ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc
+ncrename -v frp_in,frp_prev24 -v fre_in,fre_prev24 ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc
 #
 # Emissions to be calculated inside of model
 if [[ ! -r "${ECO_OUTPUTDIR}/ecoregions_${MESH_NAME}_mpas.nc" ]]; then
@@ -239,10 +216,8 @@ if [[ ! -r "${ECO_OUTPUTDIR}/ecoregions_${MESH_NAME}_mpas.nc" ]]; then
                    ${YYYY}${MM}${DD}${HH} \
                    ${MESH_NAME}
 
-fi
 ncks -A -v ecoregion_ID ${ECO_OUTPUTDIR}/ecoregions_${MESH_NAME}_mpas.nc ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc
-ncap2 -O -s 'hwp_prev24=0.0*frp_in+30.' -s 'totprcp_prev24=0.0*frp_in+0.1' ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc
-ncrename -v frp_in,frp_prev24 -v fre_in,fre_prev24 ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc
+fi
 # 
 
 n_fmc=`ls ${FMC_INPUTDIR}/fmc_${YYYY}${MM}${DD}* | wc -l`
@@ -265,13 +240,7 @@ else
   ncap2 -O -s 'fmc_prev24=0*frp_prev24+0.2' ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc
 fi
 
-# Cut out only the first 24 hours
-ncks -O -d Time,0,23 ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc
- 
 fi
-
-
-
 #
 #==================================================================================================
 #                                 ... Anthropogenic ...                                             
