@@ -24,6 +24,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     history_interval = os.getenv('HISTORY_INTERVAL', '1')
     restart_interval = os.getenv('RESTART_INTERVAL', '9999')
     physics_suite = os.getenv('PHYSICS_SUITE', 'PHYSICS_SUITE_not_defined')
+    do_chemistry = os.getenv("DO_CHEMISTRY","false").upper()
     dcTaskEnv = {
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
         'FCST_LENGTH': f'{fcst_length}',
@@ -65,6 +66,12 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
 
     # dependencies
     timedep = ""
+    if do_chemistry.upper() == "TRUE":
+        chemdep1 = f'<taskdep task="prep_chem_icbc"/>'
+        chemdep2 = f'<metataskdep metatask="prep_chem"/>'
+    else:
+        chemdep1 = ""
+        chemdep2 = ""
     realtime = os.getenv("REALTIME", "false")
     if realtime.upper() == "TRUE":
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
@@ -93,6 +100,8 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     {prep_ic_dep}
     {recenterdep}
     {jedidep}
+    {chemdep1}
+    {chemdep2}
   </and>
   </dependency>'''
 

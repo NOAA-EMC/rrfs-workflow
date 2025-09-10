@@ -73,9 +73,34 @@ sed -e "s/@restart_interval@/${restart_interval}/" -e "s/@history_interval@/${hi
     -e "s/@diag_interval@/${diag_interval}/" -e "s/@lbc_interval@/${lbc_interval}/" \
     "${PARMrrfs}"/streams.atmosphere  > streams.atmosphere
 #
-# append the chemistry streams
+# append the chemistry streams, link the emissions
 if [[ ${DO_CHEMISTRY} == "TRUE" ]] ; then
+#
 cat  "${PARMrrfs}"/streams.atmosphere.chem >> streams.atmosphere
+#
+   # Biogenic/Pollen
+   if [[ -r "${UMBRELLA_PREP_CHEM_DATA}/bio.init.nc" ]]; then
+      ln -snf ${UMBRELLA_PREP_CHEM_DATA}/bio.init.nc bio.init.nc
+   fi
+   # Dust
+   if [[ -r "${UMBRELLA_PREP_CHEM_DATA}/dust.init.nc" ]]; then
+      ln -snf ${UMBRELLA_PREP_CHEM_DATA}/dust.init.nc dust.init.nc
+   fi
+   # Anthropogenic
+   nanthrofiles=`ls ${UMBRELLA_PREP_CHEM_DATA}/anthro.init* | wc -l`
+   if [[ ${nanthrofiles} -gt 0 ]]; then
+      ln -snf ${UMBRELLA_PREP_CHEM_DATA}/anthro.init* ./
+   fi
+   # Smoke/Wildfire
+   nfirefiles=`ls ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.* | wc -l`
+   if [[ ${nfirefiles} -gt 0 ]]; then
+      ln -snf ${UMBRELLA_PREP_CHEM_DATA}/smoke.init* ./
+   fi
+   # RWC
+   if [[ -r "${UMBRELLA_PREP_CHEM_DATA}/rwc.init.nc" ]]; then
+      ln -snf ${UMBRELLA_PREP_CHEM_DATA}/rwc.init.nc rwc.init.nc
+   fi
+#
 fi
 
 #
