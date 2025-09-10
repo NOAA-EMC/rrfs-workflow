@@ -71,6 +71,7 @@ def header_entities(xmlFile, expdir):
     wgf = os.getenv('WGF', 'det')
     cyc_interval = os.getenv('CYC_INTERVAL', '3')
     realtime = os.getenv("REALTIME", "false").upper()
+    do_chemistry=os.getenv('DO_CHEMISTRY','false').upper()   
 # figure out run period for realtime experiments
     if realtime == 'TRUE':
         now = datetime.now()
@@ -135,6 +136,7 @@ def header_entities(xmlFile, expdir):
 <envar><name>MESH_NAME</name><value>{mesh_name}</value></envar>
 <envar><name>WGF</name><value>{wgf}</value></envar>
 <envar><name>CYC_INTERVAL</name><value>{cyc_interval}</value></envar>
+<envar><name>DO_CHEMISTRY</name><value>{do_chemistry}</value></envar>
 "
 >{entities_for_cycledef}
 '''

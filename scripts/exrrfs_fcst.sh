@@ -69,14 +69,21 @@ lbc_interval=${LBC_INTERVAL:-3}
 restart_interval=${RESTART_INTERVAL:-99}
 history_interval=${HISTORY_INTERVAL:-1}
 diag_interval=${HISTORY_INTERVAL:-1}
+
+
+if [[ ${DO_CHEMISTRY} == "TRUE" ]] ; then
+
+sed -e "s/@restart_interval@/${restart_interval}/" -e "s/@history_interval@/${history_interval}/" \
+    -e "s/@diag_interval@/${diag_interval}/" -e "s/@lbc_interval@/${lbc_interval}/" \
+    "${PARMrrfs}"/streams.atmosphere.chem  > streams.atmosphere
+else
 sed -e "s/@restart_interval@/${restart_interval}/" -e "s/@history_interval@/${history_interval}/" \
     -e "s/@diag_interval@/${diag_interval}/" -e "s/@lbc_interval@/${lbc_interval}/" \
     "${PARMrrfs}"/streams.atmosphere  > streams.atmosphere
+fi
 #
 # append the chemistry streams, link the emissions
 if [[ ${DO_CHEMISTRY} == "TRUE" ]] ; then
-#
-cat  "${PARMrrfs}"/streams.atmosphere.chem >> streams.atmosphere
 #
    # Biogenic/Pollen
    if [[ -r "${UMBRELLA_PREP_CHEM_DATA}/bio.init.nc" ]]; then
