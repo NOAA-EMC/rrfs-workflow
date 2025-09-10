@@ -3,8 +3,8 @@ import os
 from rocoto_funcs.base import xml_task, source, get_cascade_env
 
 ### begin of prep_chem --------------------------------------------------------
-def prep_chem(xmlFile, expdir,do_ensemble=False, do_spinup=False):
-  meta_id='prep_chem'
+def prep_chem_icbc(xmlFile, expdir,do_ensemble=False, do_spinup=False):
+  meta_id='prep_chem_icbc'
   cycledefs='prod'
 #  if do_spinup:
 #    cycledefs='spinup'
@@ -27,29 +27,11 @@ def prep_chem(xmlFile, expdir,do_ensemble=False, do_spinup=False):
     'MESH_NAME': f'{mesh_name}',
     'DATADIR_CHEM': f'{datadir_chem}' }
 #
-  if realtime.upper() == "TRUE":
-     rave_dir='/public/data/grids/nesdis/3km_fire_emissions/'
-  else:
-     rave_dir=datadir_chem + '/emissions/RAVE/'
 
-  dcTaskEnv['RAVE_DIR']=f'{rave_dir}'
-  metatask=True
-  task_id=f'{meta_id}_#sector#'
-  dcTaskEnv['EMIS_SECTOR_TO_PROCESS']='#sector#'
-  dcTaskEnv['ANTHRO_EMISINV']='GRA2PES'
+  metatask=False
+  task_id=f'{meta_id}'
   meta_bgn=""
   meta_end=""
-
-  num_emis=int(os.getenv('NUM_EMIS_SECTORS','1'))
-#  emis_indices=''.join(f'{i:03d} ' for i in range(1,int(num_emis)+1)).strip()
-  emis_sectors='smoke anthro pollen dust rwc'.strip()
-
-
-  meta_bgn=f'''
-<metatask name="{meta_id}">
-<var name="sector">{emis_sectors}</var>'''
-  meta_end=f'\
-</metatask>\n'
 
   # dependencies
 
@@ -67,5 +49,5 @@ def prep_chem(xmlFile, expdir,do_ensemble=False, do_spinup=False):
   </and>
   </dependency>'''
 
-  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"PREP_CHEM")
+  xml_task(xmlFile,expdir,task_id,cycledefs,dcTaskEnv,dependencies,metatask,meta_id,meta_bgn,meta_end,"PREP_CHEM_ICBC")
 ### end of prep_chem --------------------------------------------------------

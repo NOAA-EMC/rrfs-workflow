@@ -700,7 +700,7 @@ def main() -> None:
        InterpMethod = "CONSERVE"
        #InterpMethod = "BILINEAR"
     elif dataset_name == "GRA2PES":
-       field_names = ("PM25-PRI","PM10-PRI","HC01")
+       field_names = ("PM25-PRI","PM10-PRI") # ,"HC01"=methane BAQMS, summer, 2025
        x_center = "XLONG" #"XLONG_M"
        y_center = "XLAT" #"XLAT_M"
        x_dim    = "west_east"
@@ -925,7 +925,7 @@ def main() -> None:
           _LOGGER.info("success")
 #
     elif dataset_name == "GRA2PES":
-       rave_path    = Path( input_dir + "/GRA2PESv1.0_total_2023" + MM + "_" + DOWs +"_00to11Z.nc")
+       rave_path    = Path( input_dir + "/GRA2PESv1.0_total_2021" + MM + "_" + DOWs +"_00to11Z.nc")
        new_dst_path = Path(output_dir + "/" +dataset_name+"_"+mesh_name+"_00to11Z.nc")
        context = RaveToMpasRegridContext(
            dataset_name=dataset_name,
@@ -961,7 +961,7 @@ def main() -> None:
       
        _LOGGER.info("success")
        
-       rave_path    = Path( input_dir + "/GRA2PESv1.0_total_2023" + MM + "_" + DOWs +"_12to23Z.nc")
+       rave_path    = Path( input_dir + "/GRA2PESv1.0_total_2021" + MM + "_" + DOWs +"_12to23Z.nc")
        new_dst_path = Path(output_dir + "/" +dataset_name+"_"+mesh_name+"_12to23Z.nc")
        context = RaveToMpasRegridContext(
            dataset_name=dataset_name,
@@ -1002,20 +1002,20 @@ def main() -> None:
           rave_path    = Path( input_dir  + "/pollen_obs_" + YYYY + "_BELD6_ef_T_" + JJJ +".nc")
           new_dst_path = Path( output_dir + "/pollen_ef_"+mesh_name+"_"+YYYY+"_"+JJJ+".nc")
        elif dataset_name == "NEMO":
-          rave_path    = Path ( input_dir + "/NEMO_RWC_POC_PEC_PMOTHR.annual.2017_Time.nc")
+          rave_path    = Path ( input_dir + "/NEMO_RWC_POC_PEC_PMOTHR.annual.2017.nc")
           new_dst_path = Path ( output_dir +"/NEMO_RWC_ANNUAL_TOTAL_"+mesh_name+".nc")
        elif dataset_name == "NARR":
           rave_path    = Path ( input_dir + "/rwc_emission_denominator.2017.nc")
           new_dst_path = Path ( output_dir + "/NEMO_RWC_DENOMINATOR_2017_"+mesh_name+".nc")
        elif dataset_name == "ECOREGION":
-          rave_path    = Path ( input_dir + "NA_RRFS_Ecoregions_and_EFsoriginal.nc") 
+          rave_path    = Path ( input_dir + "/veg_map.nc") 
           new_dst_path = Path ( output_dir + "ecoregions_"+mesh_name+"_mpas.nc")
        elif dataset_name == "FENGSHA_1":
-          rave_path    = Path ( input_dir + "FENGSHA_2022_NESDIS_inputs_10km_v3.2.nc")
-          new_dst_path = Path ( output_dir + "FENGSHA_2022_NESDIS_inputs_"+mesh_name + "_v3.2.nc")
+          rave_path    = Path ( input_dir + "/FENGSHA_2022_NESDIS_inputs_10km_v3.2.nc")
+          new_dst_path = Path ( output_dir + "/FENGSHA_2022_NESDIS_inputs_"+mesh_name + "_v3.2.nc")
        elif dataset_name == "FENGSHA_2":
-          rave_path    = Path ( input_dir + "LAI_GVF_PC_DRAG_CLIMATOLOGY_2024v1.0.nc4")
-          new_dst_path = Path ( output_dir + "LAI_GVF_PC_DRAG_CLIMATOLOGY_2024v1.0."+mesh_name + ".nc")
+          rave_path    = Path ( input_dir + "/LAI_GVF_PC_DRAG_CLIMATOLOGY_2024v1.0.nc4")
+          new_dst_path = Path ( output_dir + "/LAI_GVF_PC_DRAG_CLIMATOLOGY_2024v1.0."+mesh_name + ".nc")
       
     
        context = RaveToMpasRegridContext(

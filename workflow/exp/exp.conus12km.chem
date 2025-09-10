@@ -4,7 +4,7 @@
 export NET=rrfs                    # rrfs, rtma, 
 export MESH_NAME=conus12km         # conus12km, conus3km, south3.5km, etc
 export WGF="det"   # working group function = "det", "enkf", "ens", "firewx"
-export EXP_NAME=hrly_12km
+export EXP_NAME=daily_12km
 export VERSION=$(cat ./VERSION)
 export TAG=d12km
 export OPSROOT=/lfs6/BMC/rtwbl/cheMPAS-Fire/run/${EXP_NAME}/
@@ -52,8 +52,8 @@ export UPP_GROUP_TOTAL_NUM=1
 
 export IC_OFFSET=6
 export LBC_OFFSET=6
-export LBC_LENGTH=18
-export LBC_INTERVAL=1
+export LBC_LENGTH=24
+export LBC_INTERVAL=3
 export LBC_UNGRIB_GROUP_TOTAL_NUM=1
 export LBC_GROUP_TOTAL_NUM=1
 
@@ -74,15 +74,18 @@ export COLDSTART_CYCS="00"   # cycles to cold start from external models
 export NODES_IC="<nodes>1:ppn=40</nodes>"
 export NODES_LBC="<nodes>1:ppn=40</nodes>"
 export NODES_PREP_CHEM="<nodes>1:ppn=20</nodes>"
+export NODES_PREP_CHEM_ICBC="<nodes>1:ppn=1</nodes>"
 export NODES_FCST="<nodes>2:ppn=40</nodes>"
 export NODES_MPASSIT="<nodes>1:ppn=40</nodes>"
 export NODES_UPP="<nodes>1:ppn=40</nodes>"
 export NODES_JEDIVAR="<nodes>4:ppn=20</nodes>"
 export NODES_IODA_MRMS_REFL="<nodes>1:ppn=40</nodes>"
 #
-export PARTITION_PREP_CHEM="bigmem"
+export MEMORY_PREP_CHEM="60G"
+export MEMORY_PREP_CHEM_ICBC="60G"
 #
 export WALLTIME_PREP_CHEM="00:30:00"
+export WALLTIME_PREP_CHEM_ICBC="00:30:00"
 export WALLTIME_FCST="2:00:00"
 export WALLTIME_SAVE_FCST="2:00:00"
 export WALLTIME_MPASSIT="1:30:00"
@@ -129,7 +132,7 @@ case ${MACHINE} in
     export CHEMPATH="/lfs6/BMC/rtwbl/cheMPAS-Fire/input"
     export ACCOUNT="rtwbl"
     export QUEUE="batch"
-    export PARTITION="kjet"
+    export PARTITION="xjet"
     ;;
   "orion"|"hercules")
     export IC_EXTRN_MDL_BASEDIR="/work2/noaa/wrfruc/RRFS2_RETRO_DATA/May2024/GFS"

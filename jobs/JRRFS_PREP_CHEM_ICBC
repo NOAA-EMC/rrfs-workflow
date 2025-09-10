@@ -32,13 +32,12 @@ else
   export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_prep_ic_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
   export UMBRELLA_FCST_DATA=${UMBRELLA_FCST_DATA:-${DATAROOT}/${RUN}_fcst_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
 fi
-export DATA=${DATA:-${UMBRELLA_FCST_DATA}/${jobid}}
+export UMBRELLA_PREP_CHEM_DATA=${UMBRELLA_PREP_CHEM_DATA:-${DATAROOT}/${RUN}_prep_chem_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
+export DATA=${DATA:-${UMBRELLA_PREP_CHEM_DATA}/${jobid}}/
 
-#if [[ -d "${DATA}" ]]; then # remove the "${DATA}" directory if existed
-#  rm -rf "${DATA}"
-#fi
-mkdir -p "${DATA}"
-#
+if [[! -d "${DATA}" ]]; then # remove the "${DATA}" directory if existed
+  mkdir -p "${DATA}"
+fi
 #-----------------------------------------------------------------------
 # Define COM directories
 #-----------------------------------------------------------------------
@@ -55,7 +54,7 @@ fi
 # Execute the script.
 #----------------------------------------
 export pgmout="${DATA}/OUTPUT.$$"
-"${HOMErrfs}"/scripts/exrrfs_prep_icbcs_from_rrfsa.sh
+"${HOMErrfs}"/scripts/exrrfs_prep_chem_icbc.sh
 export err=$?; err_chk
 
 if [[ -e "${pgmout}" ]]; then

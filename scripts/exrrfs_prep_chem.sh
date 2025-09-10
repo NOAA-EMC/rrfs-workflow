@@ -123,7 +123,7 @@ INTERP_WEIGHTS_DIR=${DATADIR_CHEM}/grids/interpolation_weights/
 #
 # Set a few things for the CONDA environment
 export REGRID_WRAPPER_LOG_DIR=${DATA}
-regrid_wrapper_dir=/lfs5/BMC/rtwbl/rap-chem/mpas_rt/working/ben_interp/regrid-wrapper
+regrid_wrapper_dir=/lfs5/BMC/rtwbl/rap-chem/mpas_rt/working/ben_interp/regrid-wrapper/
 PYTHONDIR=${regrid_wrapper_dir}/src
 CONDAENV=/lfs5/BMC/rtwbl/rap-chem/miniconda/envs/regrid-wrapper
 export PATH=${CONDAENV}/bin:${PATH}
@@ -135,6 +135,9 @@ export PYTHONPATH=${PYTHONDIR}:${PYTHONPATH}
 #==================================================================================================#
 if [[ "${EMIS_SECTOR_TO_PROCESS}" == "smoke" ]]; then
 #
+# Remove any old files
+rm -f ${UMBRELLA_PREP_CHEM_DATA}/smoke.init*nc
+#
 if [[ ! ${RAVE_DIR} ]]; then
 RAVE_INPUTDIR=/public/data/grids/nesdis/3km_fire_emissions/ # JLS, TODO, should come from a config/namelist
 else
@@ -142,11 +145,11 @@ RAVE_INPUTDIR=${RAVE_DIR}/raw/
 fi
 RAVE_OUTPUTDIR=${RAVE_DIR}/processed/
 #
-ECO_INPUTDIR=${DATADIR_CHEM}/aux/ecoregion/
-ECO_OUTPUTDIR=${DATADIR_CHEM}/aux/ecoregion/
+ECO_INPUTDIR=${DATADIR_CHEM}/aux/ecoregion/raw/
+ECO_OUTPUTDIR=${DATADIR_CHEM}/aux/ecoregion/processed/
 #
-FMC_INPUTDIR=${DATADIR_CHEM}/aux/FMC/${YYYY}/${MM}/
-FMC_OUTPUTDIR=${DATADIR_CHEM}/aux/FMC/${YYYY}/${MM}/
+FMC_INPUTDIR=${DATADIR_CHEM}/aux/FMC/raw/${YYYY}/${MM}/
+FMC_OUTPUTDIR=${DATADIR_CHEM}/aux/FMC/processed/${YYYY}/${MM}/
 #
 dummyRAVE=${RAVE_DIR}/processed/RAVE.dummy.${MESH_NAME}.nc
 mkdir -p ${RAVE_OUTPUTDIR}
@@ -179,7 +182,8 @@ do
    EMISFILE=${UMBRELLA_PREP_CHEM_DATA}/smoke.init.retro.${timestr2}.00.00.nc
    EMISFILE2="${RAVE_OUTPUTDIR}/${MESH_NAME}-RAVE-${timestr1}.nc"
    if [[ -r ${EMISFILE2} ]]; then
-      ncrename -v PM25,e_bb_in_smoke_fine -v FRP_MEAN,frp_in -v FRE,fre_in ${EMISFILE2}
+      ncrename -v PM25,e_bb_in_smoke_fine ${EMISFILE2}
+      ncrename -v FRP_MEAN,frp_in -v FRE,fre_in ${EMISFILE2}
       ncrename -v SO2,e_bb_in_so2 -v NH3,e_bb_in_nh3 ${EMISFILE2}
       ncrename -v CH4,e_bb_in_ch4 ${EMISFILE2}
       ncrename -v PM10,e_bb_in_smoke_coarse ${EMISFILE2}
@@ -204,9 +208,9 @@ ncap2 -O -s 'hwp_prev24=0.0*frp_in+30.' -s 'totprcp_prev24=0.0*frp_in+0.1' ${UMB
 ncrename -v frp_in,frp_prev24 -v fre_in,fre_prev24 ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc
 #
 # Emissions to be calculated inside of model
-if [[ ! -r "${ECO_OUTPUTDIR}/ecoregions_${MESH_NAME}_mpas.nc" ]]; then
+if [[ ! -r "${ECO_OUTPUTDIR}/ecoregions_${MESH_NAME}_mpas.nc" ]] && [[ -r "${ECO_INPUTDIR}/veg_map.nc" ]]; then
+
    echo "Regridding ECO_REGION"
-   ln -s ${ECO_INPUTFILE} ${DATA}/
    srun python -u ${SCRIPT}   \
                    "ECOREGION" \
                    ${DATA} \
@@ -216,10 +220,9 @@ if [[ ! -r "${ECO_OUTPUTDIR}/ecoregions_${MESH_NAME}_mpas.nc" ]]; then
                    ${YYYY}${MM}${DD}${HH} \
                    ${MESH_NAME}
 
-ncks -A -v ecoregion_ID ${ECO_OUTPUTDIR}/ecoregions_${MESH_NAME}_mpas.nc ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc
+  ncks -A -v ecoregion_ID ${ECO_OUTPUTDIR}/ecoregions_${MESH_NAME}_mpas.nc ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc
 fi
 # 
-
 n_fmc=`ls ${FMC_INPUTDIR}/fmc_${YYYY}${MM}${DD}* | wc -l`
 if [[ ${n_fmc} -gt 0 ]]; then
   echo "Have at least some soil moisture information, will interpolate"
@@ -252,9 +255,9 @@ if [[ "${EMIS_SECTOR_TO_PROCESS}" == "rwc" ]]; then
 # --- Set the file expression and lat/lon dimension names
 #
    INPUTDIR=${DATADIR_CHEM}/emissions/anthro/raw/NEMO/RWC/total/
-   OUTPUTDIR=${DATADIR_CHEM}/emissions/anthro/processed/NEMO/RWC/total/
-   NARR_INPUTDIR=${DATADIR_CHEM}/aux/narr_reanalysis_t2m/
-   NARR_OUTPUTDIR=${DATADIR_CHEM}/aux/narr_reanalysis_t2m/
+   OUTPUTDIR=${DATADIR_CHEM}/emissions/anthro/processed/NEMO/RWC/total
+   NARR_INPUTDIR=${DATADIR_CHEM}/aux/narr_reanalysis_t2m/raw/
+   NARR_OUTPUTDIR=${DATADIR_CHEM}/aux/narr_reanalysis_t2m/processed/
    #
    ${MKDIR} -p ${OUTPUTDIR}
    # 
@@ -314,15 +317,18 @@ if [[ "${EMIS_SECTOR_TO_PROCESS}" == "anthro" ]]; then
 #
    ANTHROEMIS_STATICDIR=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/
    #
-   GRA2PES_VERSION=total_plus_methane_final_7-15-2025
+   # TODO, if residential wood burning emissions are turned on, we need to use the
+   # GRA2PES_VERSION=total_minus_res to not double count those emissions
+   GRA2PES_VERSION=total
+   GRA2PES_YEAR=2021
    #
-   ANTHROEMIS_INPUTDIR=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_VERSION}/2023${MM}/${DOW_STRING}/
+   ANTHROEMIS_INPUTDIR=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_VERSION}/${GRA2PES_YEAR}${MM}/${DOW_STRING}/
    ANTHROEMIS_OUTPUTDIR=${DATADIR_CHEM}/emissions/anthro/processed/${ANTHRO_EMISINV}/${MOY}/${DOW_STRING}/
    ${MKDIR} -p ${ANTHROEMIS_OUTPUTDIR}
    
     #
-    EMISFILE_BASE_RAW1=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_VERSION}/2023${MM}/${DOW_STRING}/GRA2PESv1.0_total_2023${MM}_${DOW_STRING}_00to11Z.nc
-    EMISFILE_BASE_RAW2=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_VERSION}/2023${MM}/${DOW_STRING}/GRA2PESv1.0_total_2023${MM}_${DOW_STRING}_12to23Z.nc
+    EMISFILE_BASE_RAW1=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_VERSION}/${GRA2PES_YEAR}${MM}/${DOW_STRING}/GRA2PESv1.0_total_${GRA2PES_YEAR}${MM}_${DOW_STRING}_00to11Z.nc
+    EMISFILE_BASE_RAW2=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_VERSION}/${GRA2PES_YEAR}${MM}/${DOW_STRING}/GRA2PESv1.0_total_${GRA2PES_YEAR}${MM}_${DOW_STRING}_12to23Z.nc
     INPUT_GRID=${DATADIR_CHEM}/grids/domain_latlons/GRA2PESv1.0_CONUS4km_grid_info.nc
 
     #
@@ -406,8 +412,8 @@ fi # anthro?
 # --- Are we adding pollen or other biogenics?
 if [[ "${EMIS_SECTOR_TO_PROCESS}" == "pollen" ]]; then
 #
-EMISINPUTDIR=${DATADIR_CHEM}/emissions/pollen/raw/${YYYY}
-EMISOUTPUTDIR=${DATADIR_CHEM}/emissions/pollen/processed/${YYYY}
+EMISINPUTDIR=${DATADIR_CHEM}/emissions/pollen/raw/${YYYY}/
+EMISOUTPUTDIR=${DATADIR_CHEM}/emissions/pollen/processed/${YYYY}/
 ${MKDIR} -p ${EMISOUTPUTDIR}
 #
 # --- Do we have emissions regridded to our domain?
@@ -487,12 +493,12 @@ if [[ "${EMIS_SECTOR_TO_PROCESS}" == "dust" ]]; then
                  ${YYYY}${MM}${DD}${HH} \
                  ${MESH_NAME}
       OUTFILE_2=${DUST_OUTPUTDIR}/LAI_GVF_PC_DRAG_CLIMATOLOGY_2024v1.0.${MESH_NAME}.nc
-      #ncks -A -v feff ${OUTFILE_2} ${OUTFILE_1}
-      #cp ${OUTFILE_1} ${DUST_OUTFILE}
-      #ncrename -d Time,nMonths ${DUST_OUTFILE}
-      #ncrename -v sep,sep_in -v sandfrac,sandfrac_in -v clayfrac,clayfrac_in -v uthres,uthres_in -v uthres_sg,uthres_sg_in -v feff,feff_m_in -v albedo_drag,albedo_drag_m_in ${DUST_OUTFILE}
-      #ncks -O -6 ${DUST_OUTFILE} ${DUST_OUTFILE}
-      #ln -sf ${DUST_OUTFILE} ${LINKEDEMISFILE}
+      ncks -A -v feff ${OUTFILE_2} ${OUTFILE_1}
+      cp ${OUTFILE_1} ${DUST_OUTFILE}
+      ncrename -d Time,nMonths ${DUST_OUTFILE}
+      ncrename -v sep,sep_in -v sandfrac,sandfrac_in -v clayfrac,clayfrac_in -v uthres,uthres_in -v uthres_sg,uthres_sg_in -v feff,feff_m_in -v albedo_drag,albedo_drag_m_in ${DUST_OUTFILE}
+      ncks -O -6 ${DUST_OUTFILE} ${DUST_OUTFILE}
+      ln -sf ${DUST_OUTFILE} ${LINKEDEMISFILE}
    else
       echo "Dust file exists, linking"
       ln -sf ${DUST_OUTFILE} ${LINKEDEMISFILE}

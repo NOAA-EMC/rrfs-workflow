@@ -4,7 +4,7 @@
 export NET=rrfs                    # rrfs, rtma, 
 export MESH_NAME=conus3km         # conus12km, conus3km, south3.5km, etc
 export WGF="det"   # working group function = "det", "enkf", "ens", "firewx"
-export EXP_NAME=hrly_3km
+export EXP_NAME=daily_3km
 export VERSION=$(cat ./VERSION)
 export TAG=d3km
 export OPSROOT=/lfs6/BMC/rtwbl/cheMPAS-Fire/run/${EXP_NAME}/
@@ -52,8 +52,8 @@ export UPP_GROUP_TOTAL_NUM=2 # ?? For cheMPAS-Fire?
 
 export IC_OFFSET=6
 export LBC_OFFSET=6
-export LBC_LENGTH=15
-export LBC_INTERVAL=1
+export LBC_LENGTH=24
+export LBC_INTERVAL=3
 export LBC_UNGRIB_GROUP_TOTAL_NUM=2
 export LBC_GROUP_TOTAL_NUM=2
 
@@ -78,10 +78,15 @@ export NODES_MPASSIT="<nodes>4:ppn=20</nodes>"
 export NODES_UPP="<nodes>4:ppn=20</nodes>"
 export NODES_JEDIVAR="<nodes>80:ppn=10</nodes>"
 export NODES_PREP_CHEM="<nodes>1:ppn=20</nodes>"
+export NODES_PREP_CHEM_ICBC="<nodes>1:ppn=1</nodes>"
 #
 export PARTITION_PREP_CHEM="bigmem"
+export PARTITION_PREP_CHEM_ICBC="bigmem"
+export MEMORY_PREP_CHEM="200G"
+export MEMORY_PREP_CHEM_ICBC="200G"
 #
-export WALLTIME_PREP_CHEM="00:00:30"
+export WALLTIME_PREP_CHEM="00:30:00"
+export WALLTIME_PREP_CHEM_ICBC="00:30:00"
 export WALLTIME_FCST="3:00:00"
 export WALLTIME_SAVE_FCST="3:00:00"
 export WALLTIME_MPASSIT="3:00:00"
@@ -128,7 +133,7 @@ case ${MACHINE} in
     export CHEMPATH="/lfs6/BMC/rtwbl/cheMPAS-Fire/input"
     export ACCOUNT="rtwbl"
     export QUEUE="batch"
-    export PARTITION="kjet"
+    export PARTITION="xjet"
     ;;
   "orion"|"hercules")
     export IC_EXTRN_MDL_BASEDIR="/work2/noaa/wrfruc/RRFS2_RETRO_DATA/May2024/GFS"

@@ -24,6 +24,7 @@ from rocoto_funcs.clean import clean
 from rocoto_funcs.graphics import graphics
 from rocoto_funcs.misc import misc
 from rocoto_funcs.prep_chem import prep_chem
+from rocoto_funcs.prep_chem_icbc import prep_chem_icbc
 
 # setup_xml
 
@@ -79,6 +80,7 @@ def setup_xml(HOMErrfs, expdir):
                 jedivar(xmlFile, expdir, do_spinup=True)
                 if do_chemistry == "TRUE":
                   prep_chem(xmlFile,expdir)
+                  prep_chem_icbc(xmlFile,expdir)
                 fcst(xmlFile, expdir, do_spinup=True)
                 # prod line
                 prep_ic(xmlFile, expdir, spinup_mode=-1)
@@ -92,6 +94,7 @@ def setup_xml(HOMErrfs, expdir):
                     jedivar(xmlFile, expdir)
                 if do_chemistry == "TRUE":
                   prep_chem(xmlFile,expdir)
+                  prep_chem_icbc(xmlFile,expdir)
                 fcst(xmlFile, expdir)
                 save_fcst(xmlFile, expdir)
             #
