@@ -554,7 +554,7 @@ if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
     cpreq -p ${COMINobsproc}/${YYJJJ2200000000} latest.SNOW_IMS
   elif [ -r "${COMINobsproc}/${OBSTYPE_SOURCE}.${YYYYMMDD}/${OBSTYPE_SOURCE}.t${HH}z.imssnow.grib2" ]; then
     cpreq -p ${COMINobsproc}/${OBSTYPE_SOURCE}.${YYYYMMDD}/${OBSTYPE_SOURCE}.t${HH}z.imssnow.grib2  latest.SNOW_IMS
-  elif [ -r "${COMINobsproc}/${OBSTYPE_SOURCE}_e.${YYYYMMDD}/rap_e.t${HH}z.imssnow.grib2" ]; then
+  elif [ -r "${COMINobsproc}/${OBSTYPE_SOURCE}_e.${YYYYMMDD}/${OBSTYPE_SOURCE}_e.t${HH}z.imssnow.grib2" ]; then
     cpreq -p ${COMINobsproc}/${OBSTYPE_SOURCE}_e.${YYYYMMDD}/${OBSTYPE_SOURCE}_e.t${HH}z.imssnow.grib2  latest.SNOW_IMS
   else
     echo "${COMINobsproc} data does not exist!!"

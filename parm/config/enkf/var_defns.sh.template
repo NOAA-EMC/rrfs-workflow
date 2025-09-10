@@ -85,13 +85,15 @@ VCOORD_FILE='global_hyblev_fcst_rrfsL65.txt'
 HALO_BLEND='20'
 
 # [prep step]
-OBSTYPE_SOURCE='rap'
+OBSTYPE_SOURCE='rrfs'
+#OBSTYPE_SOURCE='rap'
 SST_update_hour='99'
 GVF_update_hour='99'
 SNOWICE_update_hour='99'
 SOIL_SURGERY_time='9999999999'
 USE_FVCOM='FALSE'
 PREP_FVCOM='FALSE'
+#OBSPATH="/lfs/h2/emc/lam/noscrub/emc.lam/obsproc.DATA/CRON/com/obsproc/v1.3"
 OBSPATH_NSSLMOSIAC="${DCOMROOT}/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC"
 GLMFED_EAST_ROOT="${DCOMROOT}/ldmdata/obs/GOES-19/GLM/tiles"
 GLMFED_WEST_ROOT="${DCOMROOT}/ldmdata/obs/GOES-18/GLM/tiles"
