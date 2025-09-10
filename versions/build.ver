@@ -25,8 +25,7 @@ export libpng_ver=1.6.37
 export module_ver=8.5.2
 export ncdiag_ver=1.1.2
 export ncio_ver=1.1.2
-# updating nemsio_ver to 2.5.4 created compilation problems like happened with w3emc_ver
-export nemsio_ver=2.5.2
+export nemsio_ver=2.5.4
 export netcdf_ver=4.9.2
 export pio_ver=2.5.10
 export PrgEnv_intel_ver=8.5.0
@@ -34,7 +33,6 @@ export sigio_ver=2.3.2
 export sfcio_ver=1.4.1
 export sp_ver=2.3.3
 export udunits_ver=2.2.28
-# updating w3emc_ver to 2.12.0 created complaints about libjpeg
 export w3emc_ver=2.12.0
 export wrf_io_ver=1.2.0
 export zlib_ver=1.2.11
