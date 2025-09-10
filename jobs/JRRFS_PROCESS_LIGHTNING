@@ -10,6 +10,8 @@ set -xue
 export pid=${pid:-$$}
 export outid=${outid:-"LL$job"}
 export RUN=${RUN:-rrfs}
+export NET=${NET:-rrfs}
+export cycle="t${cyc}z"
 
 #-----------------------------------------------------------------------
 # Define umbrella data directories
@@ -18,10 +20,8 @@ export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/${RUN}_init_spinup_${cyc}_${rrfs_ver}/${WGF}}
-  export COMOUT_ANALYSIS=${COMrrfs}/${RUN}.${PDY}/${cyc}_spinup/analysis
 else
   export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/${RUN}_init_${cyc}_${rrfs_ver}/${WGF}}
-  export COMOUT_ANALYSIS=${COMrrfs}/${RUN}.${PDY}/${cyc}/analysis
 fi
 export shared_output_data=${umbrella_init_data}/output
 
@@ -29,8 +29,22 @@ export shared_output_data=${umbrella_init_data}/output
 # Define data directories
 #-----------------------------------------------------------------------
 export DATA=${DATA:-${umbrella_init_data}/${jobid}}
-mkdir -p ${DATA} ${shared_output_data} ${COMOUT_ANALYSIS}
+mkdir -p ${DATA} ${shared_output_data} 
 cd ${DATA}
+
+#-----------------------------------------------------------------------
+# Set PDY; define and make COMOUT_ANALYSIS directories
+#------------------------i----------------------------------------------
+setpdy.sh
+. ./PDY
+export CDATE="${PDY}${cyc}"
+
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export COMOUT_ANALYSIS=${COMrrfs}/${RUN}.${PDY}/${cyc}_spinup/analysis
+else
+  export COMOUT_ANALYSIS=${COMrrfs}/${RUN}.${PDY}/${cyc}/analysis
+fi
+mkdir -p ${COMOUT_ANALYSIS}
 
 #-----------------------------------------------------------------------
 # Source the variable definitions file

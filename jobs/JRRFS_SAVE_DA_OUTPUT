@@ -9,9 +9,15 @@ set -xue
 #-----------------------------------------------------------------------
 export pid=${pid:-$$}
 export outid=${outid:-"LL$job"}
+export RUN=${RUN:-rrfs}
+export NET=${NET:-rrfs}
+export cycle="t${cyc}z"
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p ${DATA}
 cd ${DATA}
+setpdy.sh
+. ./PDY
+export CDATE="${PDY}${cyc}"
 
 #-----------------------------------------------------------------------
 # Source the variable definitions file
@@ -66,9 +72,6 @@ This is the J-job script for the task that saves DA analysis files to nwges.
 #-----------------------------------------------------------------------
 # Obtain unique process id (pid) and set the run directory (DATA).
 #-----------------------------------------------------------------------
-
-export pid=${pid:-$$}
-export RUN=${RUN:-rrfs}
 
 if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
   export ENSMEM_INDX=${MEMBER_NAME}
