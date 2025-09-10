@@ -1,4 +1,8 @@
 #!/bin/bash
+set -x
+
+source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+
 #
 #-----------------------------------------------------------------------
 #
@@ -6,17 +10,7 @@
 #
 #-----------------------------------------------------------------------
 #
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ save_shell_opts; set -e -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -1181,12 +1175,3 @@ ANALYSIS GSI completed successfully!!!
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-#
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ restore_shell_opts; } > /dev/null 2>&1
-

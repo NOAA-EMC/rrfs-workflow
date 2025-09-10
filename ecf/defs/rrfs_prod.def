@@ -515,7 +515,7 @@ suite rrfs_dev
                 task jrrfs_det_process_smoke
                   trigger :TIME >= 0035 and :TIME < 0110
                 task jrrfs_det_process_radar
-                  trigger :TIME >= 0025 and :TIME < 0105
+                  trigger :TIME >= 0015 and :TIME < 0105
                 task jrrfs_det_process_lightning
                   trigger :TIME >= 0015 and :TIME < 0105
                 task jrrfs_det_process_bufr
@@ -525,7 +525,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0025 and :TIME < 0105 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0015 and :TIME < 0105 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0015 and :TIME < 0105 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -6402,7 +6402,7 @@ suite rrfs_dev
                 task jrrfs_det_process_smoke
                   trigger :TIME >= 0135 and :TIME < 0210
                 task jrrfs_det_process_radar
-                  trigger :TIME >= 0125 and :TIME < 0205
+                  trigger :TIME >= 0115 and :TIME < 0205
                 task jrrfs_det_process_lightning
                   trigger :TIME >= 0115 and :TIME < 0205
                 task jrrfs_det_process_bufr
@@ -6412,7 +6412,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0125 and :TIME < 0205 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0115 and :TIME < 0205 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0115 and :TIME < 0205 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -7406,7 +7406,7 @@ suite rrfs_dev
                 task jrrfs_det_process_smoke
                   trigger :TIME >= 0235 and :TIME < 0310
                 task jrrfs_det_process_radar
-                  trigger :TIME >= 0225 and :TIME < 0305
+                  trigger :TIME >= 0215 and :TIME < 0305
                 task jrrfs_det_process_lightning
                   trigger :TIME >= 0215 and :TIME < 0305
                 task jrrfs_det_process_bufr
@@ -7416,7 +7416,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0225 and :TIME < 0305 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0215 and :TIME < 0305 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0215 and :TIME < 0305 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -8413,7 +8413,7 @@ suite rrfs_dev
                   trigger :TIME >= 0335 and :TIME < 0410
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 0325 and :TIME < 0405
+                  trigger :TIME >= 0315 and :TIME < 0405
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 0315 and :TIME < 0405
@@ -8437,7 +8437,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0325 and :TIME < 0405 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0315 and :TIME < 0405 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0315 and :TIME < 0405 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -9466,7 +9466,7 @@ suite rrfs_dev
                   trigger :TIME >= 0435 and :TIME < 0510 
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 0425 and :TIME < 0505
+                  trigger :TIME >= 0415 and :TIME < 0505
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 0415 and :TIME < 0505
@@ -9490,7 +9490,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0425 and :TIME < 0505 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0415 and :TIME < 0505 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0415 and :TIME < 0505 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -10512,7 +10512,7 @@ suite rrfs_dev
                   trigger :TIME >= 0535 and :TIME < 0610
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 0525 and :TIME < 0605
+                  trigger :TIME >= 0515 and :TIME < 0605
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 0515 and :TIME < 0605
@@ -10536,7 +10536,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0525 and :TIME < 0605 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0515 and :TIME < 0605 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0515 and :TIME < 0605 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -11947,7 +11947,7 @@ suite rrfs_dev
                   trigger :TIME >= 0635 and :TIME < 0710 
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 0625 and :TIME < 0705
+                  trigger :TIME >= 0615 and :TIME < 0705
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 0615 and :TIME < 0705
@@ -11971,7 +11971,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0625 and :TIME < 0705 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0615 and :TIME < 0705 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0615 and :TIME < 0705 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -17852,7 +17852,7 @@ suite rrfs_dev
                   trigger :TIME >= 0735 and :TIME < 0810
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 0725 and :TIME < 0805
+                  trigger :TIME >= 0715 and :TIME < 0805
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 0715 and :TIME < 0805
@@ -17876,7 +17876,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'spinup'
                 task jrrfs_enkf_process_radar_spinup
-                  trigger :TIME >= 0725 and :TIME < 0805 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0715 and :TIME < 0805 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning_spinup
                   trigger :TIME >= 0715 and :TIME < 0805 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr_spinup
@@ -18268,7 +18268,7 @@ suite rrfs_dev
                   edit CYCLE_SUBTYPE 'spinup'
                   trigger ../../forecast/enkf/jrrfs_enkf_save_restart_ensinit_mem030==complete
                 task jrrfs_enkf_recenter_spinup
-                  trigger ../../analysis/det/jrrfs_det_analysis_nonvarcld_spinup==complete and ./jrrfs_enkf_prep_cyc_spinup_ensmean==complete and ./jrrfs_enkf_prep_cyc_spinup_mem001==complete and ./jrrfs_enkf_prep_cyc_spinup_mem002==complete and ./jrrfs_enkf_prep_cyc_spinup_mem003==complete and ./jrrfs_enkf_prep_cyc_spinup_mem004==complete and ./jrrfs_enkf_prep_cyc_spinup_mem005==complete and ./jrrfs_enkf_prep_cyc_spinup_mem006==complete and ./jrrfs_enkf_prep_cyc_spinup_mem007==complete and ./jrrfs_enkf_prep_cyc_spinup_mem008==complete and ./jrrfs_enkf_prep_cyc_spinup_mem009==complete and ./jrrfs_enkf_prep_cyc_spinup_mem010==complete and ./jrrfs_enkf_prep_cyc_spinup_mem011==complete and ./jrrfs_enkf_prep_cyc_spinup_mem012==complete and ./jrrfs_enkf_prep_cyc_spinup_mem013==complete and ./jrrfs_enkf_prep_cyc_spinup_mem014==complete and ./jrrfs_enkf_prep_cyc_spinup_mem015==complete and ./jrrfs_enkf_prep_cyc_spinup_mem016==complete and ./jrrfs_enkf_prep_cyc_spinup_mem017==complete and ./jrrfs_enkf_prep_cyc_spinup_mem018==complete and ./jrrfs_enkf_prep_cyc_spinup_mem019==complete and ./jrrfs_enkf_prep_cyc_spinup_mem020==complete and ./jrrfs_enkf_prep_cyc_spinup_mem021==complete and ./jrrfs_enkf_prep_cyc_spinup_mem022==complete and ./jrrfs_enkf_prep_cyc_spinup_mem023==complete and ./jrrfs_enkf_prep_cyc_spinup_mem024==complete and ./jrrfs_enkf_prep_cyc_spinup_mem025==complete and ./jrrfs_enkf_prep_cyc_spinup_mem026==complete and ./jrrfs_enkf_prep_cyc_spinup_mem027==complete and ./jrrfs_enkf_prep_cyc_spinup_mem028==complete and ./jrrfs_enkf_prep_cyc_spinup_mem029==complete and ./jrrfs_enkf_prep_cyc_spinup_mem030==complete
+                  trigger ../../analysis/det/jrrfs_det_analysis_gsi_spinup==complete and ./jrrfs_enkf_prep_cyc_spinup_ensmean==complete and ./jrrfs_enkf_prep_cyc_spinup_mem001==complete and ./jrrfs_enkf_prep_cyc_spinup_mem002==complete and ./jrrfs_enkf_prep_cyc_spinup_mem003==complete and ./jrrfs_enkf_prep_cyc_spinup_mem004==complete and ./jrrfs_enkf_prep_cyc_spinup_mem005==complete and ./jrrfs_enkf_prep_cyc_spinup_mem006==complete and ./jrrfs_enkf_prep_cyc_spinup_mem007==complete and ./jrrfs_enkf_prep_cyc_spinup_mem008==complete and ./jrrfs_enkf_prep_cyc_spinup_mem009==complete and ./jrrfs_enkf_prep_cyc_spinup_mem010==complete and ./jrrfs_enkf_prep_cyc_spinup_mem011==complete and ./jrrfs_enkf_prep_cyc_spinup_mem012==complete and ./jrrfs_enkf_prep_cyc_spinup_mem013==complete and ./jrrfs_enkf_prep_cyc_spinup_mem014==complete and ./jrrfs_enkf_prep_cyc_spinup_mem015==complete and ./jrrfs_enkf_prep_cyc_spinup_mem016==complete and ./jrrfs_enkf_prep_cyc_spinup_mem017==complete and ./jrrfs_enkf_prep_cyc_spinup_mem018==complete and ./jrrfs_enkf_prep_cyc_spinup_mem019==complete and ./jrrfs_enkf_prep_cyc_spinup_mem020==complete and ./jrrfs_enkf_prep_cyc_spinup_mem021==complete and ./jrrfs_enkf_prep_cyc_spinup_mem022==complete and ./jrrfs_enkf_prep_cyc_spinup_mem023==complete and ./jrrfs_enkf_prep_cyc_spinup_mem024==complete and ./jrrfs_enkf_prep_cyc_spinup_mem025==complete and ./jrrfs_enkf_prep_cyc_spinup_mem026==complete and ./jrrfs_enkf_prep_cyc_spinup_mem027==complete and ./jrrfs_enkf_prep_cyc_spinup_mem028==complete and ./jrrfs_enkf_prep_cyc_spinup_mem029==complete and ./jrrfs_enkf_prep_cyc_spinup_mem030==complete
                 task jrrfs_enkf_calc_ensmean_spinup
                   trigger ./jrrfs_enkf_recenter_spinup==complete
                 task jrrfs_enkf_observer_gsi_ensmean_spinup
@@ -19357,7 +19357,7 @@ suite rrfs_dev
                   trigger :TIME >= 0835 and :TIME < 0910
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 0825 and :TIME < 0905
+                  trigger :TIME >= 0815 and :TIME < 0905
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 0815 and :TIME < 0905
@@ -19381,7 +19381,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0825 and :TIME < 0905 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0815 and :TIME < 0905 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0815 and :TIME < 0905 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -20403,7 +20403,7 @@ suite rrfs_dev
                   trigger :TIME >= 0935 and :TIME < 1010
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 0925 and :TIME < 1005
+                  trigger :TIME >= 0915 and :TIME < 1005
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 0915 and :TIME < 1005
@@ -20415,7 +20415,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0925 and :TIME < 1005 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0915 and :TIME < 1005 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0915 and :TIME < 1005 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -21409,7 +21409,7 @@ suite rrfs_dev
                 task jrrfs_det_process_smoke
                   trigger :TIME >= 1035 and :TIME < 1110
                 task jrrfs_det_process_radar
-                  trigger :TIME >= 1025 and :TIME < 1105
+                  trigger :TIME >= 1015 and :TIME < 1105
                 task jrrfs_det_process_lightning
                   trigger :TIME >= 1015 and :TIME < 1105
                 task jrrfs_det_process_bufr
@@ -21419,7 +21419,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1025 and :TIME < 1105 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1015 and :TIME < 1105 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1015 and :TIME < 1105 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -22413,7 +22413,7 @@ suite rrfs_dev
                 task jrrfs_det_process_smoke
                   trigger :TIME >= 1135 and :TIME < 1210
                 task jrrfs_det_process_radar
-                  trigger :TIME >= 1125 and :TIME < 1205
+                  trigger :TIME >= 1115 and :TIME < 1205
                 task jrrfs_det_process_lightning
                   trigger :TIME >= 1115 and :TIME < 1205
                 task jrrfs_det_process_bufr
@@ -22423,7 +22423,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1125 and :TIME < 1205 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1115 and :TIME < 1205 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1115 and :TIME < 1205 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -23805,7 +23805,7 @@ suite rrfs_dev
                 task jrrfs_det_process_smoke
                   trigger :TIME >= 1235 and :TIME < 1310
                 task jrrfs_det_process_radar
-                  trigger :TIME >= 1225 and :TIME < 1305
+                  trigger :TIME >= 1215 and :TIME < 1305
                 task jrrfs_det_process_lightning
                   trigger :TIME >= 1215 and :TIME < 1305
                 task jrrfs_det_process_bufr
@@ -23815,7 +23815,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1225 and :TIME < 1305 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1215 and :TIME < 1305 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1215 and :TIME < 1305 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -29694,7 +29694,7 @@ suite rrfs_dev
                 task jrrfs_det_process_smoke
                   trigger :TIME >= 1335 and :TIME < 1410
                 task jrrfs_det_process_radar
-                  trigger :TIME >= 1325 and :TIME < 1405
+                  trigger :TIME >= 1315 and :TIME < 1405
                 task jrrfs_det_process_lightning
                   trigger :TIME >= 1315 and :TIME < 1405
                 task jrrfs_det_process_bufr
@@ -29704,7 +29704,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1325 and :TIME < 1405 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1315 and :TIME < 1405 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1315 and :TIME < 1405 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -30698,7 +30698,7 @@ suite rrfs_dev
                 task jrrfs_det_process_smoke
                   trigger :TIME >= 1435 and :TIME < 1510
                 task jrrfs_det_process_radar
-                  trigger :TIME >= 1425 and :TIME < 1505
+                  trigger :TIME >= 1415 and :TIME < 1505
                 task jrrfs_det_process_lightning
                   trigger :TIME >= 1415 and :TIME < 1505
                 task jrrfs_det_process_bufr
@@ -30708,7 +30708,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1425 and :TIME < 1505 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1415 and :TIME < 1505 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1415 and :TIME < 1505 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -31705,7 +31705,7 @@ suite rrfs_dev
                   trigger :TIME >= 1535 and :TIME < 1610
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 1525 and :TIME < 1605
+                  trigger :TIME >= 1515 and :TIME < 1605
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 1515 and :TIME < 1605
@@ -31729,7 +31729,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1525 and :TIME < 1605 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1515 and :TIME < 1605 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1515 and :TIME < 1605 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -32759,7 +32759,7 @@ suite rrfs_dev
                   trigger :TIME >= 1635 and :TIME < 1710
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 1625 and :TIME < 1705
+                  trigger :TIME >= 1615 and :TIME < 1705
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 1615 and :TIME < 1705
@@ -32783,7 +32783,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1625 and :TIME < 1705 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1615 and :TIME < 1705 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1615 and :TIME < 1705 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -33806,7 +33806,7 @@ suite rrfs_dev
                   trigger :TIME >= 1735 and :TIME < 1810
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 1725 and :TIME < 1805
+                  trigger :TIME >= 1715 and :TIME < 1805
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 1715 and :TIME < 1805
@@ -33830,7 +33830,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1725 and :TIME < 1805 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1715 and :TIME < 1805 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1715 and :TIME < 1805 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -35241,7 +35241,7 @@ suite rrfs_dev
                   trigger :TIME >= 1835 and :TIME < 1910
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 1825 and :TIME < 1905
+                  trigger :TIME >= 1815 and :TIME < 1905
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 1815 and :TIME < 1905
@@ -35265,7 +35265,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1825 and :TIME < 1905 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1815 and :TIME < 1905 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1815 and :TIME < 1905 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -41147,7 +41147,7 @@ suite rrfs_dev
                   trigger :TIME >= 1935 and :TIME < 2010
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 1925 and :TIME < 2005
+                  trigger :TIME >= 1915 and :TIME < 2005
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 1915 and :TIME < 2005
@@ -41171,7 +41171,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'spinup'
                 task jrrfs_enkf_process_radar_spinup
-                  trigger :TIME >= 1925 and :TIME < 2005 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1915 and :TIME < 2005 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning_spinup
                   trigger :TIME >= 1915 and :TIME < 2005 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr_spinup
@@ -41563,7 +41563,7 @@ suite rrfs_dev
                   edit CYCLE_SUBTYPE 'spinup'
                   trigger ../../forecast/enkf/jrrfs_enkf_save_restart_ensinit_mem030==complete
                 task jrrfs_enkf_recenter_spinup
-                  trigger ../../analysis/det/jrrfs_det_analysis_nonvarcld_spinup==complete and ./jrrfs_enkf_prep_cyc_spinup_ensmean==complete and ./jrrfs_enkf_prep_cyc_spinup_mem001==complete and ./jrrfs_enkf_prep_cyc_spinup_mem002==complete and ./jrrfs_enkf_prep_cyc_spinup_mem003==complete and ./jrrfs_enkf_prep_cyc_spinup_mem004==complete and ./jrrfs_enkf_prep_cyc_spinup_mem005==complete and ./jrrfs_enkf_prep_cyc_spinup_mem006==complete and ./jrrfs_enkf_prep_cyc_spinup_mem007==complete and ./jrrfs_enkf_prep_cyc_spinup_mem008==complete and ./jrrfs_enkf_prep_cyc_spinup_mem009==complete and ./jrrfs_enkf_prep_cyc_spinup_mem010==complete and ./jrrfs_enkf_prep_cyc_spinup_mem011==complete and ./jrrfs_enkf_prep_cyc_spinup_mem012==complete and ./jrrfs_enkf_prep_cyc_spinup_mem013==complete and ./jrrfs_enkf_prep_cyc_spinup_mem014==complete and ./jrrfs_enkf_prep_cyc_spinup_mem015==complete and ./jrrfs_enkf_prep_cyc_spinup_mem016==complete and ./jrrfs_enkf_prep_cyc_spinup_mem017==complete and ./jrrfs_enkf_prep_cyc_spinup_mem018==complete and ./jrrfs_enkf_prep_cyc_spinup_mem019==complete and ./jrrfs_enkf_prep_cyc_spinup_mem020==complete and ./jrrfs_enkf_prep_cyc_spinup_mem021==complete and ./jrrfs_enkf_prep_cyc_spinup_mem022==complete and ./jrrfs_enkf_prep_cyc_spinup_mem023==complete and ./jrrfs_enkf_prep_cyc_spinup_mem024==complete and ./jrrfs_enkf_prep_cyc_spinup_mem025==complete and ./jrrfs_enkf_prep_cyc_spinup_mem026==complete and ./jrrfs_enkf_prep_cyc_spinup_mem027==complete and ./jrrfs_enkf_prep_cyc_spinup_mem028==complete and ./jrrfs_enkf_prep_cyc_spinup_mem029==complete and ./jrrfs_enkf_prep_cyc_spinup_mem030==complete
+                  trigger ../../analysis/det/jrrfs_det_analysis_gsi_spinup==complete and ./jrrfs_enkf_prep_cyc_spinup_ensmean==complete and ./jrrfs_enkf_prep_cyc_spinup_mem001==complete and ./jrrfs_enkf_prep_cyc_spinup_mem002==complete and ./jrrfs_enkf_prep_cyc_spinup_mem003==complete and ./jrrfs_enkf_prep_cyc_spinup_mem004==complete and ./jrrfs_enkf_prep_cyc_spinup_mem005==complete and ./jrrfs_enkf_prep_cyc_spinup_mem006==complete and ./jrrfs_enkf_prep_cyc_spinup_mem007==complete and ./jrrfs_enkf_prep_cyc_spinup_mem008==complete and ./jrrfs_enkf_prep_cyc_spinup_mem009==complete and ./jrrfs_enkf_prep_cyc_spinup_mem010==complete and ./jrrfs_enkf_prep_cyc_spinup_mem011==complete and ./jrrfs_enkf_prep_cyc_spinup_mem012==complete and ./jrrfs_enkf_prep_cyc_spinup_mem013==complete and ./jrrfs_enkf_prep_cyc_spinup_mem014==complete and ./jrrfs_enkf_prep_cyc_spinup_mem015==complete and ./jrrfs_enkf_prep_cyc_spinup_mem016==complete and ./jrrfs_enkf_prep_cyc_spinup_mem017==complete and ./jrrfs_enkf_prep_cyc_spinup_mem018==complete and ./jrrfs_enkf_prep_cyc_spinup_mem019==complete and ./jrrfs_enkf_prep_cyc_spinup_mem020==complete and ./jrrfs_enkf_prep_cyc_spinup_mem021==complete and ./jrrfs_enkf_prep_cyc_spinup_mem022==complete and ./jrrfs_enkf_prep_cyc_spinup_mem023==complete and ./jrrfs_enkf_prep_cyc_spinup_mem024==complete and ./jrrfs_enkf_prep_cyc_spinup_mem025==complete and ./jrrfs_enkf_prep_cyc_spinup_mem026==complete and ./jrrfs_enkf_prep_cyc_spinup_mem027==complete and ./jrrfs_enkf_prep_cyc_spinup_mem028==complete and ./jrrfs_enkf_prep_cyc_spinup_mem029==complete and ./jrrfs_enkf_prep_cyc_spinup_mem030==complete
                 task jrrfs_enkf_calc_ensmean_spinup
                   trigger ./jrrfs_enkf_recenter_spinup==complete
                 task jrrfs_enkf_observer_gsi_ensmean_spinup
@@ -42653,7 +42653,7 @@ suite rrfs_dev
                   trigger :TIME >= 2035 and :TIME < 2110
                 task jrrfs_det_process_radar
                   edit CYCLE_TYPE 'prod'
-                  trigger :TIME >= 2025 and :TIME < 2105
+                  trigger :TIME >= 2015 and :TIME < 2105
                 task jrrfs_det_process_lightning
                   edit CYCLE_TYPE 'prod'
                   trigger :TIME >= 2015 and :TIME < 2105
@@ -42677,7 +42677,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 2025 and :TIME < 2105 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 2015 and :TIME < 2105 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 2015 and :TIME < 2105 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -43698,7 +43698,7 @@ suite rrfs_dev
                 task jrrfs_det_process_smoke
                   trigger :TIME >= 2135 and :TIME < 2210
                 task jrrfs_det_process_radar
-                  trigger :TIME >= 2125 and :TIME < 2205
+                  trigger :TIME >= 2115 and :TIME < 2205
                 task jrrfs_det_process_lightning
                   trigger :TIME >= 2115 and :TIME < 2205
                 task jrrfs_det_process_bufr
@@ -43708,7 +43708,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 2125 and :TIME < 2205 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 2115 and :TIME < 2205 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 2115 and :TIME < 2205 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -44702,7 +44702,7 @@ suite rrfs_dev
                 task jrrfs_det_process_smoke
                   trigger :TIME >= 2235 and :TIME < 2310
                 task jrrfs_det_process_radar
-                  trigger :TIME >= 2225 and :TIME < 2305
+                  trigger :TIME >= 2215 and :TIME < 2305
                 task jrrfs_det_process_lightning
                   trigger :TIME >= 2215 and :TIME < 2305
                 task jrrfs_det_process_bufr
@@ -44712,7 +44712,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 2225 and :TIME < 2305 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 2215 and :TIME < 2305 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 2215 and :TIME < 2305 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr
@@ -45706,7 +45706,7 @@ suite rrfs_dev
                 task jrrfs_det_process_smoke
                   trigger :TIME >= 2335 and :TIME < 2359
                 task jrrfs_det_process_radar
-                  trigger :TIME >= 2325 and :TIME < 2359
+                  trigger :TIME >= 2315 and :TIME < 2359
                 task jrrfs_det_process_lightning
                   trigger :TIME >= 2315 and :TIME < 2359
                 task jrrfs_det_process_bufr
@@ -45716,7 +45716,7 @@ suite rrfs_dev
                 edit WGF 'enkf'
                 edit CYCLE_TYPE 'prod'
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 2325 and :TIME < 2359 and ../det/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 2315 and :TIME < 2359 and ../det/jrrfs_det_process_radar==complete
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 2315 and :TIME < 2359 and ../det/jrrfs_det_process_lightning==complete
                 task jrrfs_enkf_process_bufr

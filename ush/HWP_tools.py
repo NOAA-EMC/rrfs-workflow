@@ -101,7 +101,7 @@ def copy_missing_restart(comrrfs, hwp_non_avail_hours, hourly_hwpdir):
                     #    restart_nonavail_hours_test.append(cycle)
 
             except (FileNotFoundError, IOError, OSError, RuntimeError) as e:
-                print(f"Error accessing directory {source_restart_dir}: {e}")
+                print(f"WARNING: Unable to access directory {source_restart_dir}: {e}")
                 restart_nonavail_hours_test.append(cycle)
 
         except (ValueError, TypeError) as e:

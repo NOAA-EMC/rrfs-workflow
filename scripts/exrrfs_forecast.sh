@@ -1,4 +1,8 @@
 #!/bin/bash
+set -x
+
+source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+
 #
 #-----------------------------------------------------------------------
 #
@@ -6,19 +10,9 @@
 #
 #-----------------------------------------------------------------------
 #
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
 . $USHrrfs/set_FV3nml_ens_stoch_seeds.sh
 . $USHrrfs/set_FV3nml_sfc_climo_filenames.sh
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -52,23 +46,16 @@ specified cycle.
 # For the fire weather grid, read in the center lat/lon from the
 # operational NAM fire weather nest.  The center lat/lon is set by the
 # SDM.  When RRFS is implemented, a similar file will be needed.
-# Rewrite the default center lat/lon values in var_defns.sh, if needed.
 #
 #-----------------------------------------------------------------------
 #
 if [ ${WGF} = "firewx" ]; then
   hh="${CDATE:8:2}"
   firewx_loc="${COMINnam}/input/nam_firewx_loc"
-  center_lat=${LAT_CTR}
-  center_lon=${LON_CTR}
   LAT_CTR=`grep ${hh}z $firewx_loc | awk '{print $2}'`
   LON_CTR=`grep ${hh}z $firewx_loc | awk '{print $3}'`
-
-  if [ ${center_lat} != ${LAT_CTR} ] || [ ${center_lon} != ${LON_CTR} ]; then
-    sed -i -e "s/${center_lat}/${LAT_CTR}/g" ${GLOBAL_VAR_DEFNS_FP}
-    sed -i -e "s/${center_lon}/${LON_CTR}/g" ${GLOBAL_VAR_DEFNS_FP}
-    . ${GLOBAL_VAR_DEFNS_FP}
-  fi
+  WRTCMP_cen_lat=${LAT_CTR}
+  WRTCMP_cen_lon=${LON_CTR}
 fi
 #
 #-----------------------------------------------------------------------
@@ -483,6 +470,7 @@ if [ "${DO_ENSEMBLE}" = TRUE ] && ([ "${DO_SPP}" = TRUE ] || [ "${DO_SPPT}" = TR
    for cyc_start in "${CYCL_HRS_STOCH[@]}"; do
      if [ ${HH} -eq ${cyc_start} ]; then 
        STOCH="TRUE"
+       FV3_NML_RESTART_STOCH_FP=${PARMrrfs}/config/${WGF}/input.nml_restart_stoch
      fi
    done
 fi
@@ -539,9 +527,9 @@ if [ ${WGF} = "firewx" ]; then
   file failed."
   fi
 
-  if [ ${center_lat} != ${LAT_CTR} ] || [ ${center_lon} != ${LON_CTR} ]; then
-    sed -i -e "s/${center_lat}/${LAT_CTR}/g" ${DATA}/${FV3_NML_FN}
-    sed -i -e "s/${center_lon}/${LON_CTR}/g" ${DATA}/${FV3_NML_FN}
+  if [ ${LAT_CTR} != 49.3 ] || [ ${LON_CTR} != -123.0 ]; then
+    sed -i -e "s/49.3/${LAT_CTR}/g" ${DATA}/${FV3_NML_FN}
+    sed -i -e "s/-123.0/${LON_CTR}/g" ${DATA}/${FV3_NML_FN}
   fi
 fi
 
@@ -764,7 +752,7 @@ fi
 #-----------------------------------------------------------------------
 #
 $USHrrfs/create_model_configure_file.py \
-  --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
+  --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf \
   --cdate "${CDATE}" \
   --cycle_type "${CYCLE_TYPE}" \
   --cycle_subtype "${CYCLE_SUBTYPE}" \
@@ -772,7 +760,9 @@ $USHrrfs/create_model_configure_file.py \
   --run-dir "${DATA}" \
   --fhrot "${FHROT}" \
   --nthreads "${OMP_NUM_THREADS}" \
-  --restart_hrs="${RESTART_HRS}"
+  --restart_hrs="${RESTART_HRS}" \
+  --cen_lat="${WRTCMP_cen_lat}" \
+  --cen_lon="${WRTCMP_cen_lon}"
 export err=$?
 if [ $err -ne 0 ]; then
   err_exit "Call to function to create the model_configure file for
@@ -788,7 +778,7 @@ fi
 #-----------------------------------------------------------------------
 #
 $USHrrfs/create_diag_table_file.py \
-  --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
+  --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf \
   --run-dir ${DATA}
 export err=$?
 if [ $err -ne 0 ]; then
@@ -812,7 +802,7 @@ fi
 #-----------------------------------------------------------------------
 #
 $USHrrfs/create_ufs_configure_file.py \
-  --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
+  --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf \
   --run-dir ${DATA} 
 export err=$?
 if [ $err -ne 0 ]; then
@@ -890,12 +880,3 @@ RRFS forecast completed successfully!!!
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-#
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ restore_shell_opts; } > /dev/null 2>&1
-

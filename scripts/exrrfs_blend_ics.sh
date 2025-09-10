@@ -1,4 +1,8 @@
 #!/bin/bash
+set -x
+
+source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+
 #
 #-----------------------------------------------------------------------
 #
@@ -6,17 +10,7 @@
 #
 #-----------------------------------------------------------------------
 #
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -52,8 +46,8 @@ NUM_ENS_MEMBERS=${NUM_ENS_MEMBERS:-0}
 #
 #-----------------------------------------------------------------------
 #
-# Get the EXTRN_MDL_CDATE from make_ics job in shared dir
-. ${shared_output_data}/extrn_mdl_ics_var_defns.sh
+#### # Get the EXTRN_MDL_CDATE from make_ics job in shared dir
+#### . ${shared_output_data}/extrn_mdl_ics_var_defns.sh
 yyyymmdd="${EXTRN_MDL_CDATE:0:8}"
 mm="${EXTRN_MDL_CDATE:4:2}"
 dd="${EXTRN_MDL_CDATE:6:2}"
@@ -190,7 +184,7 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
      # Shortcut the file names/arguments.
      Lx=$ENS_BLENDING_LENGTHSCALE
      # Using gfs_data.tile7.halo0.nc from umberlla ics directory as out.atm.tile${TILE_RGNL}.nc
-     if [ -s ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo0.nc ]; then
+     if [ -s ${shared_output_data}/cold2warm_all.nc ]; then
        ln -s ${shared_output_data}/cold2warm_all.nc cold2warm_all.nc
      else
        err_exit "FATAL: gfs_data.tile${TILE_RGNL}.halo0.nc not found in ${shared_output_data} - check make ics step"
@@ -254,11 +248,3 @@ files (in NetCDF format) for FV3 generated successfully!!!
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-#
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ restore_shell_opts; } > /dev/null 2>&1
