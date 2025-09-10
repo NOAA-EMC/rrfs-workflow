@@ -11,3 +11,4 @@ workflow/myrrfsexps
 workflow/convinfo*
 workflow/satinfo*
 workflow/ush/output.linter_shellcheck
+ush/test_yaml_finalize
