@@ -26,11 +26,6 @@ export HISTORY_INTERVAL=${HISTORY_INTERVAL:-1}
 #-----------------------------------------------------------------------
 #
 export pid=${pid:-$$}
-if [[ -z "${ENS_INDEX}" ]]; then
-  export MEMDIR=""
-else
-  export MEMDIR="/mem${ENS_INDEX}"
-fi
 export UMBRELLA_MPASSIT_DATA=${UMBRELLA_MPASSIT_DATA:-${DATAROOT}/${RUN}_mpassit_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
 export jobid=${jobid:-upp_g${GROUP_INDEX}_${cyc}}
 export UMBRELLA_UPP_DATA=${UMBRELLA_UPP_DATA:-${DATAROOT}/${RUN}_upp_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
