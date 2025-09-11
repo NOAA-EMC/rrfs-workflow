@@ -105,8 +105,6 @@ if [ "${WORKFLOW_MANAGER}" != "ecflow" ]; then
 fi
 module use "${default_modules_dir}"
 
-echo "Lin Gan machine is ${machine}"
-
 if [ "${machine}" != "wcoss2" ]; then
   BUILD_MOD_FN="build_${machine}_intel"
   module load "${BUILD_MOD_FN}" || print_err_msg_exit "\

@@ -84,6 +84,10 @@ esac
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p ${DATA}
 cd ${DATA}
+setpdy.sh
+. ./PDY
+export CDATE="${PDY}${cyc}"
+
 
 #-----------------------------------------------------------------------
 # Source the bash utility functions.

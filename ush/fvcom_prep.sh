@@ -205,7 +205,7 @@ rm time.nc
 # add a variable container for tsfc
 echo 'adding variables (blank for now) to output file ...'
 
-#### Lin Gan fix this before code delivery
+#### fix this before code delivery
 module reset
 module use ${HOMErrfs}/modulefiles/tasks/wcoss2
 module load save_restart.local

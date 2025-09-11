@@ -670,7 +670,7 @@ if [ "${DO_FCST_RESTART}" = "TRUE" ] && [ $coupler_res_ct -gt 0 ] && [ $FCST_LEN
   flag_fcst_restart="TRUE"
   # Update FV3 input.nml for restart
    $USHrrfs/update_input_nml.py \
-    --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
+    --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf \
     --run_dir "${DATA}" \
     --restart
   export err=$?

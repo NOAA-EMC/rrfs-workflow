@@ -114,7 +114,6 @@ for idx_cyc in ${search_cyc_18#0} ${search_cyc_17#0} ${search_cyc_16#0} ${search
   [[ ${idx_cyc} -ge 6 ]]&& cyc_idx=06
   [[ ${idx_cyc} -ge 12 ]]&& cyc_idx=12
   [[ ${idx_cyc} -ge 18 ]]&& cyc_idx=18
-  #### fcst_state=$(ecflow_client --query state /nco_rrfs_dev_${idx_cyc2d}/primary/${idx_cyc2d}/rrfs/v1.0/forecast)
   fcst_state=$(ecflow_client --query state /rrfs_dev/primary/${cyc_idx}/rrfs/v1.0/${idx_cyc2d}/forecast)
 
   #### Temporary keep all 13Z for debug

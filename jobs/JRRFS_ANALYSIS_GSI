@@ -82,6 +82,7 @@ case "${WGF}" in
     ;;
 esac
 export MEM_TYPE=${MEM_TYPE:-"MEAN"}
+export cycle="t${cyc}z"
 
 if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
   export GSI_TYPE=${GSI_TYPE:-"OBSERVER"}
@@ -101,22 +102,23 @@ fi
 
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
+
+#-----------------------------------------------------------------------
+# Define umbrella data directories
+#-----------------------------------------------------------------------
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   export umbrella_analysis_data=${umbrella_analysis_data:-${DATAROOT}/rrfs_analysis_gsi_spinup_${cyc}_${rrfs_ver}/${WGF}}
   export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/rrfs_init_spinup_${cyc}_${rrfs_ver}/${WGF}}
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
     if [ "${MEM_TYPE}" = "MEAN" ]; then
       export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}/ensmean
-      export COMOUT=${COMrrfs}/enkfrrfs.${PDY}/${cyc}_spinup/ensmean/analysis
       export shared_output_data=${umbrella_analysis_data}/output/ensmean
     else
       export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
-      export COMOUT=${COMrrfs}/enkfrrfs.${PDY}/${cyc}_spinup/${mem_num}/analysis
       export shared_output_data=${umbrella_analysis_data}/output/${mem_num}
     fi
   else
     export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
-    export COMOUT=${COMrrfs}/${RUN}.${PDY}/${cyc}_spinup/analysis
     export shared_output_data=${umbrella_analysis_data}/output
   fi
 else
@@ -124,16 +126,13 @@ else
   export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/rrfs_init_${cyc}_${rrfs_ver}/${WGF}}
   if [ "${MEM_TYPE}" = "MEAN" ]; then
     export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/ensmean
-    export COMOUT=${COMrrfs}/enkfrrfs.${PDY}/${cyc}/ensmean/analysis
     export shared_output_data=${umbrella_analysis_data}/output/ensmean
   else
     if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
       export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
-      export COMOUT=${COMrrfs}/enkfrrfs.${PDY}/${cyc}/${mem_num}/analysis
       export shared_output_data=${umbrella_analysis_data}/output/${mem_num}
     else
       export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}
-      export COMOUT=${COMrrfs}/${RUN}.${PDY}/${cyc}/analysis
       export shared_output_data=${umbrella_analysis_data}/output
     fi
   fi
@@ -143,8 +142,37 @@ fi
 # Define data directories
 #-----------------------------------------------------------------------
 export DATA=${DATA:-${umbrella_analysis_data}/${jobid}}
-mkdir -p ${DATA} ${shared_output_data} ${COMOUT}
+mkdir -p ${DATA} ${shared_output_data}
 cd ${DATA}
+
+#-----------------------------------------------------------------------
+# Set PDY and define COMOUT
+#-----------------------------------------------------------------------
+setpdy.sh
+. ./PDY
+
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    if [ "${MEM_TYPE}" = "MEAN" ]; then
+      export COMOUT=${COMrrfs}/enkfrrfs.${PDY}/${cyc}_spinup/ensmean/analysis
+    else
+      export COMOUT=${COMrrfs}/enkfrrfs.${PDY}/${cyc}_spinup/${mem_num}/analysis
+    fi
+  else
+    export COMOUT=${COMrrfs}/${RUN}.${PDY}/${cyc}_spinup/analysis
+  fi
+else
+  if [ "${MEM_TYPE}" = "MEAN" ]; then
+    export COMOUT=${COMrrfs}/enkfrrfs.${PDY}/${cyc}/ensmean/analysis
+  else
+    if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+      export COMOUT=${COMrrfs}/enkfrrfs.${PDY}/${cyc}/${mem_num}/analysis
+    else
+      export COMOUT=${COMrrfs}/${RUN}.${PDY}/${cyc}/analysis
+    fi
+  fi
+fi 
+mkdir -p ${COMOUT}
 
 #-----------------------------------------------------------------------
 # Define forecast INPUT directories

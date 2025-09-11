@@ -88,6 +88,10 @@ export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p ${DATA}
 cd ${DATA}
 
+export cycle="t${cyc}z"
+setpdy.sh
+. ./PDY
+
 #-----------------------------------------------------------------------
 # Source the bash utility functions.
 #-----------------------------------------------------------------------

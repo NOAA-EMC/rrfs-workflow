@@ -92,37 +92,55 @@ else
 fi
 
 #-----------------------------------------------------------------------
-# Define the umbrella data and COM directories.
+# Define the umbrella data directories.
 # Create the INPUT and RESTART directories under the run directory.
 #-----------------------------------------------------------------------
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
 export COMrrfs=${COMrrfs:-$(compath.py -o rrfs/${rrfs_ver})}
-export COMOUT=${COMOUT:-$(compath.py -o rrfs/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
 export SURFACE_DIR=${SURFACE_DIR:-${COMrrfs}/surface}
 export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}
 
 if [ ${CYCLE_TYPE} = "spinup" ]; then
-  export COMOUT=${COMrrfs}/rrfs.${PDY}/${cyc}_spinup
   export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export COMOUT=${COMrrfs}/enkfrrfs.${PDY}/${cyc}_spinup/${mem_num}
     export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
   fi
 else
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export COMOUT=${COMrrfs}/enkfrrfs.${PDY}/${cyc}/${mem_num}
     export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
   fi
 fi
 
-export COMOUT=${COMOUT}/forecast
 export shared_forecast_output_data=${umbrella_forecast_data}/output
 export shared_forecast_restart_data=${umbrella_forecast_data}/RESTART
 
 export DATA=${DATA:-${DATAROOT}/${jobid}}
-mkdir -p ${DATA} ${COMOUT}/RESTART ${COMOUT}/INPUT ${SURFACE_DIR}
+mkdir -p ${DATA} ${SURFACE_DIR}
 cd ${DATA}
+
+#-----------------------------------------------------------------------
+# Set PDY, define and create the COM directories.
+#-----------------------------------------------------------------------
+setpdy.sh
+. ./PDY
+export CDATE="${PDY}${cyc}"
+
+export COMOUT=${COMOUT:-$(compath.py -o rrfs/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
+
+if [ ${CYCLE_TYPE} = "spinup" ]; then
+  export COMOUT=${COMrrfs}/rrfs.${PDY}/${cyc}_spinup
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    export COMOUT=${COMrrfs}/enkfrrfs.${PDY}/${cyc}_spinup/${mem_num}
+  fi
+else
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    export COMOUT=${COMrrfs}/enkfrrfs.${PDY}/${cyc}/${mem_num}
+  fi
+fi
+
+export COMOUT=${COMOUT}/forecast
+mkdir -p ${COMOUT}/RESTART ${COMOUT}/INPUT
 
 #-----------------------------------------------------------------------
 # Source the bash utility functions.

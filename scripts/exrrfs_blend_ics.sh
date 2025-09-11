@@ -46,8 +46,6 @@ NUM_ENS_MEMBERS=${NUM_ENS_MEMBERS:-0}
 #
 #-----------------------------------------------------------------------
 #
-#### # Get the EXTRN_MDL_CDATE from make_ics job in shared dir
-#### . ${shared_output_data}/extrn_mdl_ics_var_defns.sh
 yyyymmdd="${EXTRN_MDL_CDATE:0:8}"
 mm="${EXTRN_MDL_CDATE:4:2}"
 dd="${EXTRN_MDL_CDATE:6:2}"

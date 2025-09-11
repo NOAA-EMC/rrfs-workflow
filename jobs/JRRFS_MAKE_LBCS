@@ -70,6 +70,10 @@ export outid=${outid:-"LL$job"}
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p ${DATA}
 cd ${DATA}
+export cycle="t${cyc}z"
+setpdy.sh
+. ./PDY
+
 case "${WGF}" in
   "det")
     export RUN="rrfs"
@@ -120,11 +124,11 @@ hour zero).
 # Send data to COMOUT since the LBCs jobs share data with other jobs
 # outside of the current cycle
 
-if [ $WGF == "enkf" ] || [ $WGF == "ensf" ]; then
+if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
   export ENSMEM_INDX=${MEMBER_NAME}
   export mem_num=m$(echo "${ENSMEM_INDX}")
   export COMOUT="${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/${mem_num}/lbcs)}"
-elif [ $WGF == "firewx" ]; then
+elif [ $WGF = "firewx" ]; then
   export ENSMEM_INDX=""
   export COMOUT="${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/lbcs)}"
 
@@ -142,11 +146,10 @@ mkdir -p "${COMOUT}"
 #-----------------------------------------------------------------------
 
 export pgmout="${DATA}/OUTPUT.$$"
-#### env
-echo "Calling exrrfs_make_lbcs start"
+env
+
 ${HOMErrfs}/scripts/exrrfs_make_lbcs.sh
 export err=$?; err_chk
-echo "Calling exrrfs_make_lbcs end"
 
 if [ -e "$pgmout" ]; then
   cat $pgmout
