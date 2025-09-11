@@ -426,7 +426,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
     source_file_found="NO"
     skip_this_scan="NO"
     # Example of target file: /lfs/h1/ops/prod/com/obsproc/v1.2/rap.20240610/rap.t00z.prepbufr.tm00
-    obsproc_rrfs_inp_file=${OBSPATH}/${obs_source}.${RRFS_Current_PDY}/${obs_source}.t${RRFS_Current_cyc}z.prepbufr.tm00
+    obsproc_rrfs_inp_file=${OBSPATH}/rrfs.${RRFS_Current_PDY}/rrfs.t${RRFS_Current_cyc}z.prepbufr.tm00
     # /lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/rrfs/v0.9.5/nwges/2024060923/mem0001~0030/fcst_fv3lam/RESTART/20240610.000000.coupler.res
     if [ -s ${obsproc_rrfs_inp_file} ]; then
       source_file_found="YES"
@@ -781,9 +781,9 @@ while [ $proceed_trigger_scan == "YES" ]; do
     echo "Proceeding with scan_release_enkf_observer_gsi_ensmean"
     source_file_found="YES"
     if [ ${RRFS_Current_cyc} == 00 ] || [ ${RRFS_Current_cyc} == 12 ];then
-      obsproc_rrfs_inp_file=${OBSPATH}/${obs_source}_e.${RRFS_Current_PDY}/${obs_source}_e.t${RRFS_Current_cyc}z.prepbufr.tm00
+      obsproc_rrfs_inp_file=${OBSPATH}/rrfs_e.${RRFS_Current_PDY}/rrfs_e.t${RRFS_Current_cyc}z.prepbufr.tm00
     else
-      obsproc_rrfs_inp_file=${OBSPATH}/${obs_source}.${RRFS_Current_PDY}/${obs_source}.t${RRFS_Current_cyc}z.prepbufr.tm00
+      obsproc_rrfs_inp_file=${OBSPATH}/rrfs.${RRFS_Current_PDY}/rrfs.t${RRFS_Current_cyc}z.prepbufr.tm00
     fi
     [[ ! -s ${obsproc_rrfs_inp_file} ]]&& source_file_found="NO"
     if [ ${source_file_found} == "YES" ]; then
