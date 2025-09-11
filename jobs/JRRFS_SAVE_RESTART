@@ -122,6 +122,7 @@ cd ${DATA}
 #-----------------------------------------------------------------------
 # Set PDY, define and create the COM directories.
 #-----------------------------------------------------------------------
+export cycle="t${cyc}z"
 setpdy.sh
 . ./PDY
 export CDATE="${PDY}${cyc}"

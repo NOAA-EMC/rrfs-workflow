@@ -67,10 +67,10 @@ fi
 #-----------------------------------------------------------------------
 export pid=${pid:-$$}
 export outid=${outid:-"LL$job"}
-export cycle="t${cyc}z"
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p ${DATA}
 cd ${DATA}
+export cycle="t${cyc}z"
 setpdy.sh
 . ./PDY
 export CDATE="${PDY}${cyc}"

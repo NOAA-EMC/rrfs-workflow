@@ -103,6 +103,7 @@ cd ${DATA}
 #-----------------------------------------------------------------------
 # Set PDY; define and make COMOUT_ANALYSIS directories
 #------------------------i----------------------------------------------
+export cycle="t${cyc}z"
 setpdy.sh
 . ./PDY
 if [ "${CYCLE_TYPE}" = "spinup" ]; then

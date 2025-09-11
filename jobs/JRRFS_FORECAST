@@ -68,7 +68,6 @@ fi
 #-----------------------------------------------------------------------
 export pid=${pid:-$$}
 export outid=${outid:-"LL$job"}
-export cycle="t${cyc}z"
 case "${WGF}" in
   "det")
     export RUN="rrfs"
@@ -148,6 +147,7 @@ export umbrella_post_data=${DATAROOT}/rrfs_post_${cyc}_${rrfs_ver}/${WGF}
 #-----------------------------------------------------------------------
 # Set PDY and create COM directories
 #-----------------------------------------------------------------------
+export cycle="t${cyc}z"
 setpdy.sh
 . ./PDY
 export CDATE="${PDY}${cyc}"
