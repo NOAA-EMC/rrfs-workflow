@@ -123,6 +123,7 @@ cpreq -p $BUFR_TABLE prepobs_prep.bufrtable
 #
 #-----------------------------------------------------------------------
 OBSPATH=${OBSPATH:-$(compath.py obsproc/${obsproc_ver})}
+OBSTYPE_SOURCE=${OBSTYPE_SOURCE:-"rrfs"}
 if [[ "${NET}" = "RTMA"* ]] && [[ "${RTMA_OBS_FEED}" = "NCO" ]]; then
   SUBH=$(date +%M -d "${START_DATE}")
   obs_source="rtma_ru"
