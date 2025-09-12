@@ -142,6 +142,7 @@ fi
 # Define data directories
 #-----------------------------------------------------------------------
 export DATA=${DATA:-${umbrella_analysis_data}/${jobid}}
+[[ -d ${shared_output_data} ]]&& mv ${shared_output_data} ${shared_output_data}_$$
 mkdir -p ${DATA} ${shared_output_data}
 cd ${DATA}
 
