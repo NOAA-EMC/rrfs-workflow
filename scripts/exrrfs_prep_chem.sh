@@ -496,9 +496,19 @@ if [[ "${EMIS_SECTOR_TO_PROCESS}" == "dust" ]]; then
       ncks -A -v feff ${OUTFILE_2} ${OUTFILE_1}
       cp ${OUTFILE_1} ${DUST_OUTFILE}
       ncrename -d Time,nMonths ${DUST_OUTFILE}
-      ncrename -v sep,sep_in -v sandfrac,sandfrac_in -v clayfrac,clayfrac_in -v uthres,uthres_in -v uthres_sg,uthres_sg_in -v feff,feff_m_in -v albedo_drag,albedo_drag_m_in ${DUST_OUTFILE}
+      ncrename -v sep,sep_in -v sandfrac,sandfrac_in -v clayfrac,clayfrac_in -v uthres,uthres_in -v uthres_sg,uthres_sg_in -v feff,feff_m_in ${DUST_OUTFILE}
+      ncdump -hv albedo_drag ${DUST_OUTFILE}
+      if [[ $? -eq 0 ]]; then
+         # Processed old drag
+         ncrename -v albedo_drag,albedo_drag_m_in ${DUST_OUTFILE}
+      else
+         # Old drag = new drag
+         ncap2 -O -s 'albedo_drag_m_in=feff_m_in' ${DUST_OUTFILE} ${DUST_OUTFILE}
+      fi   
       ncks -O -6 ${DUST_OUTFILE} ${DUST_OUTFILE}
       ln -sf ${DUST_OUTFILE} ${LINKEDEMISFILE}
+      timestr3=`date +%Y-%m-%d_%H:00:00 -d "$current_day"`
+      ncap2 -O -s xtime=\"${timestr3}\" ${EMISFILE} ${EMISFILE}  
    else
       echo "Dust file exists, linking"
       ln -sf ${DUST_OUTFILE} ${LINKEDEMISFILE}

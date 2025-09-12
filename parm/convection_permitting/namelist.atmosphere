@@ -71,14 +71,9 @@
     config_jedi_da = ${jedi_da}
 /
 &chemistry
-    config_smoke_scheme  = 'off'
-    config_pollen_scheme = 'off'
-    config_dust_scheme = 'off'
-    config_anthro_scheme = 'off'
-    config_ssalt_scheme = 'off'
-    config_sna_scheme = 'off'
-    config_methane_scheme = 'off'
-    num_chem = 0
+    config_smoke_scheme  = 'on'
+    config_dust_scheme = 'on'
+    num_chem = 3
     plume_wind_eff = 0
     ebb_dcycle = 1
     hwp_method = 2
@@ -88,7 +83,6 @@
     wetdep_ls_opt = 1
     plume_alpha = 0.05
     bb_emis_scale_factor = 1.0
-    pollen_emis_scale_factor = 1.
     plumerise_opt = 1
     drydep_opt = 1
     pm_settling = 1
@@ -96,9 +90,8 @@
     dust_gamma = 1.0
     dust_drylimit_factor = 0.1
     dust_moist_correction = 0.1
-    kemit = 20
-    kbio = 1
-    kfire = 1
     aero_dir_rad_fdb = false
     config_mynn_enh_mix = false
+    kanthro = 20
+    kwildfire = 1
 /

@@ -99,6 +99,7 @@ class RaveField1d(AbstractRaveField):
     def reshape_field_data(self, target: np.ndarray) -> np.ndarray:
         return target.reshape(-1)
 
+
 class RaveField2d(AbstractRaveField):
 
     def create_dimension_collection(
@@ -203,11 +204,13 @@ class RaveToMpasRegridContext(BaseModel):
                     "time_size": self.time_size,
                     "num_cells": self.num_cells,
                 }
-                if field_name in ("FRE", "FRP_MEAN","RWC_denominator","ecoregion_ID","10h_dead_fuel_moisture_content"):
+                if field_name in ("clayfrac","sandfrac","uthres_sg","uthres","sep"):
+                    app = RaveField1d.model_validate(init_data)
+                elif field_name in ("FRE", "FRP_MEAN","RWC_denominator","ecoregion_ID","10h_dead_fuel_moisture_content"):
                     app = RaveField2d.model_validate(init_data)
                 elif field_name in ("PM25", "NH3", "SO2","DBL_POLL","ENL_POLL","GRA_POLL","RAG_POLL","PEC","POC","PMOTHR","PMC","TPM","NOx","CH4"):
                     app = RaveField3d.model_validate(init_data)
-                elif field_name in ("albedo_drag","LAI","GVF","PC","fveg","fbare","feff","lcbare","lcveg","clayfrac","sandfrac","uthres_sg","uthres","sep"):
+                elif field_name in ("albedo_drag","feff","LAI","GVF","PC","fveg","fbare","lcbare","lcveg"):
                     app = RaveField2d_plusTime.model_validate(init_data)
 # GRAPES anthro data - 12 x 20 x lat x lon --> (latXlon) x (level) x (time) -----(then, back in the shell script)----> Time x nCells x nkemit
                 elif field_name in ("HC01","PM25-PRI","PM10-PRI"):
@@ -379,8 +382,11 @@ class RaveToMpasRegridProcessor:
                 if self.context.time_size > 1:
                    print("creating time dimension with size = " + str(self.context.time_size))
                    dst_nc.createDimension("Time",self.context.time_size)
-                else:
+                elif self.context.time_size == 1:
+                   print("creating time dimension with size = 1")
                    dst_nc.createDimension("Time")
+                else:
+                   print("not creating a time dimension")
                 dst_nc.setncattr("created_at", str(datetime.now(timezone.utc)))
                 dst_nc.setncattr("src_path", str(self.context.src_path))
                 dst_nc.setncattr("dst_path", str(self.context.dst_path))
@@ -388,6 +394,9 @@ class RaveToMpasRegridProcessor:
                 with open_nc(self.context.dst_path, mode="r", parallel=False) as src_nc:
                     if self.context.dataset_name in ("RAVE"):
                         for varname in ("latCell", "lonCell","areaCell","xland","xtime"):
+                            copy_nc_variable(src_nc, dst_nc, varname, copy_data=True)
+                    elif self.context.dataset_name in ("FENGSHA_1"):
+                        for varname in ("latCell", "lonCell"):
                             copy_nc_variable(src_nc, dst_nc, varname, copy_data=True)
                     else:
                         for varname in ("latCell", "lonCell","xtime"):
@@ -577,6 +586,14 @@ class RaveToMpasRegridProcessor:
                 dim_time=(self.context.time_name,),
                 dim_level=(self.context.level_in_name,),
             ).create_field_wrapper()
+        elif field_name in ("clayfrac","sandfrac","uthres","uthres_sg","sep"):
+            src_fwrap = NcToField(
+                path=self.context.src_path,
+                name=field_name,
+                gwrap=self.get_src_gwrap(),
+                dim_time=None,
+                dim_level=(self.context.level_in_name,),
+            ).create_field_wrapper()
         else:
             src_fwrap = NcToField(
                 path=self.context.src_path,
@@ -693,7 +710,7 @@ def main() -> None:
        y_corner_dim = "grid_y"
        level_in_name = "None"
        #level_in_size = None
-       level_out_name= "nkfire"
+       level_out_name= "nkwildfire"
        level_out_size = 1
        time_name  = "time"
        time_size  = 1
@@ -710,7 +727,7 @@ def main() -> None:
        x_corner_dim = "west_east_stag"
        y_corner_dim = "south_north_stag"
        level_in_name = "bottom_top"
-       level_out_name = "nkemit"
+       level_out_name = "nkanthro"
        level_out_size = 20
        time_name  = "Time"
        time_size  = 12
@@ -727,7 +744,7 @@ def main() -> None:
        x_corner_dim = "COLC"
        y_corner_dim = "ROWC"
        level_in_name = "None"
-       level_out_name = "nkemit"
+       level_out_name = "nkreswoodcomb"
        level_out_size = 1
        time_name  = "Time"
        time_size  = 1
@@ -744,7 +761,7 @@ def main() -> None:
        x_corner_dim = "COLC"
        y_corner_dim = "ROWC"
        level_in_name = "None"
-       level_out_name= "nkbio"
+       level_out_name= "nkbiogenic"
        level_out_size = 1
        time_name  = "time"
        time_size  = 1
@@ -760,7 +777,7 @@ def main() -> None:
        x_corner_dim = None
        y_corner_dim = None
        level_in_name = "None"
-       level_out_name = "nkfire"
+       level_out_name = "nkwildfire"
        level_out_size = 1
        time_name  = "time"
        time_size  = 1
@@ -776,13 +793,13 @@ def main() -> None:
        x_corner_dim = None
        y_corner_dim = None
        level_in_name = "None"
-       level_out_name = "nkemit"
+       level_out_name = "nkreswoodcomb"
        level_out_size = 1
        time_name  = "Time"
        time_size  = 1
        InterpMethod = "BILINEAR"
     elif dataset_name == "FENGSHA_1":
-       field_names = ("albedo_drag","clayfrac","sandfrac","uthres","uthres_sg","sep")
+       field_names = ("clayfrac","sandfrac","uthres","uthres_sg","sep")
        x_center = "lon2d"
        y_center = "lat2d"
        x_dim    = "lon"
@@ -795,7 +812,7 @@ def main() -> None:
        level_out_name = "nkemit"
        level_out_size = 1
        time_name  = "time"
-       time_size  = 12
+       time_size  = 0
        InterpMethod = "BILINEAR"
     elif dataset_name == "FENGSHA_2":
        field_names = ("feff",)
@@ -831,7 +848,7 @@ def main() -> None:
        x_corner_dim = None
        y_corner_dim = None
        level_in_name = "None"
-       level_out_name = "nkfire"
+       level_out_name = "nkwildfire"
        level_out_size = 1
        time_name  = "time"
        time_size  = 1

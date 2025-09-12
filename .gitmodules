@@ -5,8 +5,8 @@
         ignore = all
 [submodule "sorc/MPAS-Model"]
 	path = sorc/MPAS-Model
-	url = https://github.com/cheMPAS-Fire/MPAS-Model.git
-        branch = cheMPASv0_MPASv8.3
+	url = https://github.com/haiqinli/MPAS-Model.git
+        branch = gsl/develop-202504-smoke
         ignore = all
 [submodule "sorc/RDASApp"]
 	path = sorc/RDASApp

@@ -50,10 +50,32 @@
         <file name="stream_list/stream_list.atmosphere.diagnostics"/>
 </stream>
 
-<immutable_stream name="bio_input"
+<stream name="surface"
+        type="input"
+        filename_template="sfc_update.nc"
+        filename_interval="none"
+        input_interval="none" >
+        <file name="stream_list/stream_list.atmosphere.surface"/>
+</stream>
+
+<immutable_stream name="iau"
                   type="input"
-                  filename_template="bio.init.nc"
-                  io_type="netcdf,netcdf4"
+                  filename_template="AmB.$Y-$M-$D_$h.$m.$s.nc"
+                  filename_interval="none"
+                  packages="iau"
+                  input_interval="initial_only" />
+
+<immutable_stream name="lbc_in"
+                  type="input"
+                  filename_template="lbc.$Y-$M-$D_$h.$m.$s.nc"
+                  filename_interval="input_interval"
+                  io_type="pnetcdf,cdf5"
+                  packages="limited_area"
+                  input_interval="@lbc_interval@:00:00" />
+
+<immutable_stream name="ugwp_oro_data_in"
+                  type="input"
+                  filename_template="ugwp_oro_data.nc"
                   input_interval="initial_only" />
 
 <immutable_stream name="anthro_input"
@@ -69,12 +91,6 @@
                   io_type="netcdf,netcdf4"
                   input_interval="1:00:00"
                   filename_interval="input_interval"/>
-
-<immutable_stream name="rwc_input"
-                  type="input"
-                  filename_template="rwc.init.nc"
-                  io_type="netcdf,netcdf4"
-                  input_interval="initial_only" />
 
 <immutable_stream name="dust_input"
                   type="input"
