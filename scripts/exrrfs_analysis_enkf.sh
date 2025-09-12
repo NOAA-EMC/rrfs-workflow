@@ -1,4 +1,8 @@
 #!/bin/bash
+set -x
+
+source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+
 #
 #-----------------------------------------------------------------------
 #
@@ -6,22 +10,12 @@
 #
 #-----------------------------------------------------------------------
 #
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
 
 function ncvarlst_noaxis_time { ncks --trd -m ${1} | grep -E ': type' | cut -f 1 -d ' ' | sed 's/://' | sort |grep -v -i -E "axis|time" ;  }
 function ncvarlst_noaxis_time_new { ncks -m  ${1} | grep -E 'float' | cut -d "(" -f 1 | cut -c 10- ;  }
 export HDF5_USE_FILE_LOCKING=FALSE #clt to avoild recenter's error "NetCDF: HDF error"
 export MPICH_COLL_OPT_OFF=1  # to fix non-physical EnKF analysis increments
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -413,11 +407,3 @@ EnKF PROCESS completed successfully!!!
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-#
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ restore_shell_opts; } > /dev/null 2>&1

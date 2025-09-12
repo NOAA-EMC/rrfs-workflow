@@ -24,7 +24,7 @@ from fill_jinja_template import fill_jinja_template
 
 
 def create_model_configure_file(
-    cdate, cycle_type, cycle_subtype, stoch, run_dir, fhrot, nthreads, restart_hrs
+    cdate, cycle_type, cycle_subtype, stoch, run_dir, fhrot, nthreads, restart_hrs, WRTCMP_cen_lat, WRTCMP_cen_lon
 ):
     """Creates a model configuration file in the specified
     run directory
@@ -38,6 +38,8 @@ def create_model_configure_file(
         fhrot: forecast hour at restart
         nthreads: omp_num_threads
         restart_hrs: restart hours
+        cen_lat: center latitude of grid
+        cen_lon: center longitude of grid
     Returns:
         Boolean
     """
@@ -353,6 +355,20 @@ def parse_args(argv):
     )
 
     parser.add_argument(
+        "--cen_lat",
+        dest="cen_lat",
+        required=True,
+        help="Center latitude of grid.",
+    )
+
+    parser.add_argument(
+        "--cen_lon",
+        dest="cen_lon",
+        required=True,
+        help="Center longitude of grid.",
+    )
+
+    parser.add_argument(
         "-p",
         "--path-to-defns",
         dest="path_to_defns",
@@ -377,5 +393,7 @@ if __name__ == "__main__":
         fhrot=str_to_type(args.fhrot),
         nthreads=str_to_type(args.nthreads),
         restart_hrs=str_to_type(args.restart_hrs),
+        WRTCMP_cen_lat=str_to_type(args.cen_lat),
+        WRTCMP_cen_lon=str_to_type(args.cen_lon),
     )
 

@@ -1,4 +1,6 @@
-#!/bin/bash -f
+#!/bin/bash
+set -x
+
 ###########################################################
 # get layout for given nx and ny
 # INPUT: nx, ny, number of cpu to be used (optional).

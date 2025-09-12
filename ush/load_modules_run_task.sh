@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 #
 #-----------------------------------------------------------------------
@@ -14,16 +15,9 @@ MACHINE="WCOSS2"
 VERBOSE='TRUE'
 
 #### . ${GLOBAL_VAR_DEFNS_FP}
+echo "load_modules_run_task calling source_util_funcs.sh start"
 . $USHrrfs/source_util_funcs.sh
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ save_shell_opts; set -u -x; } > /dev/null 2>&1
+echo "load_modules_run_task calling source_util_funcs.sh end"
 #
 #-----------------------------------------------------------------------
 #
@@ -84,19 +78,19 @@ jjob_fp="$2"
 #
 #-----------------------------------------------------------------------
 #
-set +u
-if [ ! -z ${SLURM_JOB_ID} ]; then
-    export job=${SLURM_JOB_NAME}
-    export pid=${pid:-${SLURM_JOB_ID}}
-elif [ ! -z ${PBS_JOBID} ]; then
-    export job=${PBS_JOBNAME}
-    export pid=${pid:-${PBS_JOBID}}
-else
-    export job=${task_name}
-    export pid=${pid:-$$}
-fi
-export jobid=${job}.${pid}
-set -u
+#### set +u
+#### if [ ! -z ${SLURM_JOB_ID} ]; then
+####     export job=${SLURM_JOB_NAME}
+####     export pid=${pid:-${SLURM_JOB_ID}}
+#### elif [ ! -z ${PBS_JOBID} ]; then
+####     export job=${PBS_JOBNAME}
+####     export pid=${pid:-${PBS_JOBID}}
+#### else
+####     export job=${task_name}
+####     export pid=${pid:-$$}
+#### fi
+#### export jobid=${job}.${pid}
+#### set -u
 #
 #-----------------------------------------------------------------------
 #
@@ -214,19 +208,12 @@ Launching J-job (jjob_fp) for task \"${task_name}\" ...
 "
 
 if [ "${WORKFLOW_MANAGER}" = "ecflow" ]; then
+  echo "load_modules_run_task is now running j-job"
   /bin/bash "${jjob_fp}"
   export err=$?
-  [ $err -ne 0 ]&& exit $err
+  echo "load_modules_run_task finished running j-job"
+  [[ $err -ne 0 ]]&& exit $err
 else
   exec "${jjob_fp}"
 fi
-
-#
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ restore_shell_opts; } > /dev/null 2>&1
-
+exit 0

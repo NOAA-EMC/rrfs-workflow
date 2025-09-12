@@ -1,5 +1,10 @@
 #!/bin/bash
+set -x
 
+source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+
+export CRES=${CRES:-"C3463"}
+export PREDEF_GRID_NAME=${PREDEF_GRID_NAME:-"RRFS_NA_3km"}
 #
 #-----------------------------------------------------------------------
 #
@@ -7,17 +12,7 @@
 #
 #-----------------------------------------------------------------------
 #
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -1303,12 +1298,3 @@ Prepare start completed successfully!!!
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-#
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ restore_shell_opts; } > /dev/null 2>&1
-

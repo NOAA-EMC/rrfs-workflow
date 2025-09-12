@@ -1,4 +1,5 @@
 #!/bin/sh
+set -x
 #
 # FIX_RRFS locaitons at different HPC platforms
 #

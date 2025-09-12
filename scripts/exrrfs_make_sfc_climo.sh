@@ -1,4 +1,7 @@
 #!/bin/bash
+set -x
+
+source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
 #
 #-----------------------------------------------------------------------
@@ -7,17 +10,7 @@
 #
 #-----------------------------------------------------------------------
 #
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -61,23 +54,14 @@ nprocs=$(( NNODES_MAKE_SFC_CLIMO * PPN_MAKE_SFC_CLIMO ))
 # For the fire weather grid, read in the center lat/lon from the
 # operational NAM fire weather nest.  The center lat/lon is set by the
 # SDM.  When RRFS is implemented, a similar file will be needed.
-# Rewrite the default center lat/lon values in var_defns.sh, if needed.
 #
 #-----------------------------------------------------------------------
 #
 if [ ${WGF} = "firewx" ]; then
   hh="${CDATE:8:2}"
   firewx_loc="${COMINnam}/input/nam_firewx_loc"
-  center_lat=${LAT_CTR}
-  center_lon=${LON_CTR}
   LAT_CTR=`grep ${hh}z $firewx_loc | awk '{print $2}'`
   LON_CTR=`grep ${hh}z $firewx_loc | awk '{print $3}'`
-
-  if [ ${center_lat} != ${LAT_CTR} ] || [ ${center_lon} != ${LON_CTR} ]; then
-    sed -i -e "s/${center_lat}/${LAT_CTR}/g" ${GLOBAL_VAR_DEFNS_FP}
-    sed -i -e "s/${center_lon}/${LON_CTR}/g" ${GLOBAL_VAR_DEFNS_FP}
-    . ${GLOBAL_VAR_DEFNS_FP}
-  fi
 fi
 #
 #-----------------------------------------------------------------------
@@ -280,11 +264,3 @@ All surface climatology files generated successfully!!!
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-#
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ restore_shell_opts; } > /dev/null 2>&1

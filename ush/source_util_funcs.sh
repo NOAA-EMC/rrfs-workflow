@@ -1,4 +1,8 @@
+#!/bin/bash
+set -x
 function source_util_funcs() {
+set -x
+  echo "source_util_funcs start"
 #
 #-----------------------------------------------------------------------
 #
@@ -32,15 +36,6 @@ function source_util_funcs() {
 #
   local USHrrfs="${scrfunc_dir}"
   local bashutils_dir="${USHrrfs}/bash_utils"
-#
-#-----------------------------------------------------------------------
-#
-# Source the file containing functions to save and restore shell op-
-# tions.
-#
-#-----------------------------------------------------------------------
-#
-  . ${bashutils_dir}/save_restore_shell_opts.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -220,7 +215,7 @@ function source_util_funcs() {
 #-----------------------------------------------------------------------
 #
   . ${bashutils_dir}/source_config.sh
-
+  echo "source_util_funcs end"
 }
 source_util_funcs
 

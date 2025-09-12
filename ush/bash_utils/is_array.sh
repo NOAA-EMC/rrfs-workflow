@@ -12,16 +12,8 @@
 # 
 #-----------------------------------------------------------------------
 #
-function is_array() { 
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
+function is_array() {
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -79,14 +71,6 @@ or not it is an array.
   printf "%s" "$declare_output" | grep --extended-regexp "$regex" >/dev/null 
   is_an_array="$?"
 #
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
-#
-#-----------------------------------------------------------------------
-#
-  { restore_shell_opts; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #

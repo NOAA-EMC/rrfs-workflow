@@ -5,16 +5,8 @@
 # 
 #-----------------------------------------------------------------------
 #
-function is_element_of() { 
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
+function is_element_of() {
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -132,14 +124,6 @@ Use this function in a script as follows:
     fi
   done
 #
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
-#
-#-----------------------------------------------------------------------
-#
-  { restore_shell_opts; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -148,6 +132,5 @@ Use this function in a script as follows:
 #-----------------------------------------------------------------------
 #
   return ${found_match}
-
 }
 

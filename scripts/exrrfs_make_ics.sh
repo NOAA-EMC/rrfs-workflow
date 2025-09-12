@@ -1,4 +1,7 @@
 #!/bin/bash
+set -x
+
+source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
 #
 #-----------------------------------------------------------------------
@@ -7,17 +10,7 @@
 #
 #-----------------------------------------------------------------------
 #
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -52,23 +45,14 @@ This is the ex-script for the task that generates initial condition
 # For the fire weather grid, read in the center lat/lon from the
 # operational NAM fire weather nest.  The center lat/lon is set by the
 # SDM.  When RRFS is implemented, a similar file will be needed.
-# Rewrite the default center lat/lon values in var_defns.sh, if needed.
 #
 #-----------------------------------------------------------------------
 #
 if [ ${WGF} = "firewx" ]; then
   hh="${CDATE:8:2}"
   firewx_loc="${COMINnam}/input/nam_firewx_loc"
-  center_lat=${LAT_CTR}
-  center_lon=${LON_CTR}
   LAT_CTR=`grep ${hh}z $firewx_loc | awk '{print $2}'`
   LON_CTR=`grep ${hh}z $firewx_loc | awk '{print $3}'`
-
-  if [ ${center_lat} != ${LAT_CTR} ] || [ ${center_lon} != ${LON_CTR} ]; then
-    sed -i -e "s/${center_lat}/${LAT_CTR}/g" ${GLOBAL_VAR_DEFNS_FP}
-    sed -i -e "s/${center_lon}/${LON_CTR}/g" ${GLOBAL_VAR_DEFNS_FP}
-    . ${GLOBAL_VAR_DEFNS_FP}
-  fi
 fi
 #
 #-----------------------------------------------------------------------
@@ -828,7 +812,6 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
   export pgm1=fv3lam_pre_blending.exe
   ${APRUN_PRE_BLENDING} ${EXECrrfs}/$pgm1 >>$pgmout 2>errfile
   export err=$?; err_chk
-  #cpreq -p ${DATA}/cold2warm_all.nc ${shared_output_data}/.
   mv ${DATA}/cold2warm_all.nc ${shared_output_data}/.
 
   echo "Pre-Blending end `date`"
@@ -909,11 +892,3 @@ with the external model from which to generate ${ics_or_lbcs} returned with a
 nonzero status.  The full path to this variable definitions file is:
   extrn_mdl_var_defns_fp = \"${extrn_mdl_var_defns_fp}\""
 fi
-#
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ restore_shell_opts; } > /dev/null 2>&1

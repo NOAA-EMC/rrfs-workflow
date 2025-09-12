@@ -1,3 +1,6 @@
+#!/bin/bash
+set -x
+
 #
 #-----------------------------------------------------------------------
 #
@@ -8,15 +11,6 @@
 #-----------------------------------------------------------------------
 #
 function set_gridparams_ESGgrid() {
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -162,14 +156,5 @@ function set_gridparams_ESGgrid() {
   eval ${output_varname_neg_nx_of_dom_with_wide_halo}="${neg_nx_of_dom_with_wide_halo}"
   eval ${output_varname_neg_ny_of_dom_with_wide_halo}="${neg_ny_of_dom_with_wide_halo}"
 #
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
-#
-#-----------------------------------------------------------------------
-#
-  { restore_shell_opts; } > /dev/null 2>&1
-
 }
 

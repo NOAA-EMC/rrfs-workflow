@@ -15,10 +15,8 @@
 # 
 #-----------------------------------------------------------------------
 #
-function get_bash_file_contents() { 
-
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
-
+function get_bash_file_contents() {
+set -x
   local valid_args=( \
     "fp" \
     "outvarname_contents" \
@@ -64,8 +62,5 @@ read was not specified in the call to this function:
   # Set output variables.
   #
   printf -v ${outvarname_contents} "%s" "${contents}"
-
-  { restore_shell_opts; } > /dev/null 2>&1
-
 }
 
