@@ -21,6 +21,7 @@ export PHYSICS_SUITE=${PHYSICS_SUITE:-"convection_permitting"} # mesoscale_refer
 export KEEPDATA=${KEEPDATA:-"NO"}
 export MPI_RUN_CMD=${MPI_RUN_CMD:-"srun"}
 export USE_CONV_SAT_INFO=${USE_CONV_SAT_INFO:-true}
+export EMPTY_OBS_SPACE_ACTION=${EMPTY_OBS_SPACE_ACTION:-"skip output"}
 
 # PREP_LBC_LOOK_BACK_HRS
 if ${REALTIME:-false}; then
