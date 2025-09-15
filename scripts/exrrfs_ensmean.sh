@@ -5,6 +5,10 @@ set -x
 
 cpreq=${cpreq:-cpreq}
 cd "${DATA}"  || exit 1
+
+export CMDFILE=$DATA/poescript_ncea
+: > "$CMDFILE"  # Clear or create the CMDFILE
+
 #
 # find forecst length for this cycle
 #
@@ -21,7 +25,6 @@ num_fhrs=${#fhr_all[@]}
 group_total_num=$((10#${GROUP_TOTAL_NUM}))
 group_index=$((10#${GROUP_INDEX}))
 
-job_pids=()
 for (( ii=0; ii<"${num_fhrs}"; ii=ii+"${group_total_num}" )); do
     i=$(( ii + "${group_index}" - 1 ))
     if (( i >= num_fhrs )); then
@@ -49,7 +52,7 @@ for (( ii=0; ii<"${num_fhrs}"; ii=ii+"${group_total_num}" )); do
     done
     rm -f  "${history_mean}"
     echo "Processing ensemble mean for history.${timestr}.nc ..."
-    ncea --no_tmp_fl  "${UMBRELLA_SAVE_FCST_DATA}"/mem*/"history.${timestr}.nc"  "${history_mean}" & job_pids+=($!)
+    echo ncea --no_tmp_fl  "${UMBRELLA_SAVE_FCST_DATA}"/mem*/"history.${timestr}.nc"  "${history_mean}"  >> "$CMDFILE"
     # wait for diag file available
     while true; do
         diagfiles=("${UMBRELLA_SAVE_FCST_DATA}"/mem*/"diag.${timestr}.nc")
@@ -64,16 +67,35 @@ for (( ii=0; ii<"${num_fhrs}"; ii=ii+"${group_total_num}" )); do
     done
     rm -f "${diag_mean}"
     echo "Processing ensemble mean for diag.${timestr}.nc ..."
-    ncea --no_tmp_fl  "${UMBRELLA_SAVE_FCST_DATA}"/mem*/"diag.${timestr}.nc"  "${diag_mean}" & job_pids+=($!)
+    echo ncea --no_tmp_fl  "${UMBRELLA_SAVE_FCST_DATA}"/mem*/"diag.${timestr}.nc"  "${diag_mean}"  >> "$CMDFILE"
 done
 
-# Wait for all background jobs to finish; exit error if any jobs failed
-for pid in "${job_pids[@]}"; do
-    if ! wait "$pid"; then
-        echo "Ensmean job with PID $pid failed."
-        exit 1
-    fi
-done
+NUM_CMDS=$(wc -l < "$CMDFILE")
+NTASKS=${SLURM_NTASKS:-1}  # Default 1 if SLURM_NTASKS not set
 
-echo " All ensemble means computed by forecast hour and saved in ${UMBRELLA_ENSMEAN_DATA}"
+#
+# add rank numbers (0, 1, 2, ...) at the start of each command line
+# so it can be used with srun --multi-prog
+nl -v 0 -w 1 -s ' ' "$CMDFILE" > "${CMDFILE}".multi
+
+if (( NTASKS > NUM_CMDS )); then
+  for ((i=NUM_CMDS; i<NTASKS; i++)); do
+    echo "$i /bin/true" >> "${CMDFILE}".multi
+  done
+elif (( NTASKS < NUM_CMDS )); then
+  echo "ERROR: SLURM_NTASKS ($NTASKS) < number of commands ($NUM_CMDS)"
+  exit 1
+fi
+
+echo "Running all NCEA commands with $NTASKS tasks for $NUM_CMDS commands"
+srun --multi-prog "${CMDFILE}".multi
+
+# Check for errors
+export err=$?
+if [ $err -ne 0 ]; then
+    echo "NCEA parallel execution failed with error code $err"
+    exit $err
+else
+    echo "NCEA parallel execution completed successfully"
+fi
 
