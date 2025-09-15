@@ -18,49 +18,8 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 export SORCrrfs=${SORCrrfs:-${HOMErrfs}/sorc}
 export FIXam=${FIXam:-${HOMErrfs}/fix/am}
 export FIXLAM=${FIXLAM:-${HOMErrfs}/fix/lam/RRFS_NA_3km}
-export FIXgsm=${FIXgsm:-${HOMErrfs}/fix/am}
 export FIX_GSI="${FIXrrfs}/gsi"
-export FIX_UPP="${FIXrrfs}/upp"
-export FIXprdgen="${FIXrrfs}/prdgen"
-export FIX_SMOKE_DUST="${FIXrrfs}/smoke_dust"
-export GRID_DIR="${HOMErrfs}/fix/lam/RRFS_NA_3km"
-export OROG_DIR="${HOMErrfs}/fix/lam/RRFS_NA_3km"
-export SFC_CLIMO_DIR="${HOMErrfs}/fix/lam/RRFS_NA_3km"
-export DIAG_TABLE_TMPL_FP="${PARMrrfs}/diag_table.RRFS_sas_clm"
-export MODEL_CONFIG_TMPL_FP="${PARMrrfs}/model_configure"
-export UFS_CONFIG_TMPL_FP="${PARMrrfs}/ufs.configure"
-export CCPP_PHYS_SUITE_FP="${PARMrrfs}/config/${WGF}/suite_RRFS_sas.xml"
-export FV3_NML_FN="input.nml"
-export FV3_EXEC_FP="${EXECrrfs}/ufs_model"
-export THOMPSON_MP_CLIMO_FP="${FIXam}/Thompson_MP_MONTHLY_CLIMO.nc"
-export GRID_DIR="${HOMErrfs}/fix/lam/RRFS_NA_3km"
-export OROG_DIR="${HOMErrfs}/fix/lam/RRFS_NA_3km"
-export SFC_CLIMO_DIR="${HOMErrfs}/fix/lam/RRFS_NA_3km"
-export OBSPATH_NSSLMOSIAC="${DCOMROOT}/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC"
-export GLMFED_EAST_ROOT="${DCOMROOT}/ldmdata/obs/GOES-19/GLM/tiles"
-export GLMFED_WEST_ROOT="${DCOMROOT}/ldmdata/obs/GOES-18/GLM/tiles"
 export GVF_ROOT="${DCOMROOT}/viirs"
-export FIRE_RAVE_DIR="${DCOMROOT}"
-export TOPO_DIR="${FIXrrfs}/fix_orog"
-export SFC_CLIMO_INPUT_DIR="${FIXrrfs}/fix_sfc_climo"
-export AIRCRAFT_REJECT="${FIXrrfs}/gsi"
-export SFCOBS_USELIST="${FIXrrfs}/gsi"
-export CUSTOM_POST_CONFIG_FP="${FIXrrfs}/upp/postxconfig-NT-rrfs.txt"
-export CUSTOM_POST_PARAMS_FP="${FIXrrfs}/upp/params_grib2_tbl_new"
-export DATA_TABLE_FP="${PARMrrfs}/config/${WGF}/data_table"
-export FIELD_TABLE_FP="${PARMrrfs}/config/${WGF}/field_table"
-export FV3_NML_FP="${PARMrrfs}/config/${WGF}/input.nml"
-export UFS_YAML_FP="${PARMrrfs}/config/${WGF}/fd_ufs.yaml"
-export FV3_NML_RESTART_FP="${PARMrrfs}/config/${WGF}/input.nml_restart"
-if [ $WGF == "ensf" ]; then
-  export CUSTOM_POST_CONFIG_FP="${FIXrrfs}/upp/postxconfig-NT-refs.txt"
-fi
-if [ $WGF == "firewx" ]; then
-  export DIAG_TABLE_TMPL_FP="${PARMrrfs}/diag_table.RRFS_sas_nogwd"
-  export CCPP_PHYS_SUITE_FP="${PARMrrfs}/config/${WGF}/suite_RRFS_sas_nogwd.xml"
-  export CCPP_PHYS_SUITE='RRFS_sas_nogwd'
-  export CUSTOM_POST_CONFIG_FP="${FIXrrfs}/upp/postxconfig-NT-firewx.txt"
-fi
 
 #-----------------------------------------------------------------------
 # RRFS Prep Cyc
