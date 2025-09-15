@@ -208,7 +208,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_adpsfc_t181.nc
@@ -484,7 +484,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_adpsfc_t183.nc
@@ -758,7 +758,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_adpsfc_t187.nc
@@ -1033,7 +1033,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_adpsfc_q181.nc
@@ -1308,7 +1308,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_adpsfc_q183.nc
@@ -1582,7 +1582,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_adpsfc_q187.nc
@@ -1857,7 +1857,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_adpsfc_ps181.nc
@@ -2125,7 +2125,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_adpsfc_ps187.nc
@@ -2393,7 +2393,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_adpsfc_uv281.nc
@@ -2710,7 +2710,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_adpsfc_uv284.nc
@@ -3026,7 +3026,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_adpsfc_uv287.nc
@@ -3339,7 +3339,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_adpupa_t120.nc
@@ -3613,7 +3613,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_adpupa_t132.nc
@@ -3887,7 +3887,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_adpupa_q120.nc
@@ -4161,7 +4161,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_adpupa_q132.nc
@@ -4435,7 +4435,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_adpupa_ps120.nc
@@ -4702,7 +4702,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_adpupa_uv220.nc
@@ -5012,7 +5012,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_adpupa_uv232.nc
@@ -5322,7 +5322,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_aircar_t133.nc
@@ -5596,7 +5596,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_aircar_q133.nc
@@ -5870,7 +5870,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_aircar_uv233.nc
@@ -6180,7 +6180,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_aircft_t130.nc
@@ -6454,7 +6454,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_aircft_t131.nc
@@ -6728,7 +6728,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_aircft_t134.nc
@@ -7002,7 +7002,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_aircft_t135.nc
@@ -7276,7 +7276,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_aircft_q134.nc
@@ -7550,7 +7550,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_aircft_uv230.nc
@@ -7860,7 +7860,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_aircft_uv231.nc
@@ -8170,7 +8170,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_aircft_uv234.nc
@@ -8480,7 +8480,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_aircft_uv235.nc
@@ -8793,7 +8793,7 @@ cost function:
            sort variable: "pressure"
            sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_gnss_ztd.nc
@@ -8864,7 +8864,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_msonet_t188.nc
@@ -9138,7 +9138,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_msonet_q188.nc
@@ -9412,7 +9412,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_msonet_ps188.nc
@@ -9679,7 +9679,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_msonet_uv288.nc
@@ -10257,7 +10257,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_proflr_uv227.nc
@@ -10611,7 +10611,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_rassda_t126.nc
@@ -10885,7 +10885,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_sfcshp_t180.nc
@@ -11159,7 +11159,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_sfcshp_t182.nc
@@ -11434,7 +11434,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_sfcshp_t183.nc
@@ -11708,7 +11708,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_sfcshp_q180.nc
@@ -11982,7 +11982,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_sfcshp_q182.nc
@@ -12257,7 +12257,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_sfcshp_q183.nc
@@ -12531,7 +12531,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_sfcshp_ps180.nc
@@ -12807,7 +12807,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_sfcshp_uv280.nc
@@ -13123,7 +13123,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_sfcshp_uv282.nc
@@ -13440,7 +13440,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_sfcshp_uv284.nc
@@ -13756,7 +13756,7 @@ cost function:
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_vadwnd_uv224.nc
@@ -14121,7 +14121,7 @@ cost function:
              obsfile: "data/obs/ioda_amsua_n19.nc"
              missing file action: "warn"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_amsua_n19.nc
@@ -14533,7 +14533,7 @@ cost function:
              obsfile: "data/obs/ioda_atms_n20.nc"
              missing file action: "warn"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_atms_n20.nc
@@ -15077,7 +15077,7 @@ cost function:
              obsfile: "data/obs/ioda_atms_npp.nc"
              missing file action: "warn"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_atms_npp.nc
@@ -15609,7 +15609,7 @@ cost function:
              obsfile: "data/obs/ioda_abi_g16.nc"
              missing file action: "warn"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_abi_g16.nc
@@ -16090,7 +16090,7 @@ cost function:
              obsfile: "data/obs/ioda_abi_g18.nc"
              missing file action: "warn"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_abi_g18.nc
@@ -16582,7 +16582,7 @@ cost function:
              obsfile: "data/obs/ioda_atms_n21.nc"
              missing file action: "warn"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_atms_n21.nc
@@ -17115,7 +17115,7 @@ cost function:
              obsfile: "data/obs/ioda_amsua_metop-b.nc"
              missing file action: "warn"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_amsua_metop-b.nc
@@ -17516,7 +17516,7 @@ cost function:
              obsfile: "data/obs/ioda_amsua_metop-c.nc"
              missing file action: "warn"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_amsua_metop-c.nc
