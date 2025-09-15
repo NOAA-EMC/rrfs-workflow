@@ -76,15 +76,12 @@ case "${WGF}" in
     export RUN="enkfrrfs"
     ;;
   "ensf")
-    export RUN="refs"
+    export RUN="enkfrrfs"
     ;;
   "firewx")
     export RUN="firewx"
     ;;
 esac
-if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
-  export RUN="enkfrrfs"
-fi
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${CYCLE_TYPE}" == "spinup" ]; then
   export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
