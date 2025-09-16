@@ -138,21 +138,30 @@ if [[ "${EMIS_SECTOR_TO_PROCESS}" == "smoke" ]]; then
 # Remove any old files
 rm -f ${UMBRELLA_PREP_CHEM_DATA}/smoke.init*nc
 #
+# TODO - check for REALTIME
 if [[ ! ${RAVE_DIR} ]]; then
 RAVE_INPUTDIR=/public/data/grids/nesdis/3km_fire_emissions/ # JLS, TODO, should come from a config/namelist
 else
 RAVE_INPUTDIR=${RAVE_DIR}/raw/
 fi
-RAVE_OUTPUTDIR=${RAVE_DIR}/processed/
-#
 ECO_INPUTDIR=${DATADIR_CHEM}/aux/ecoregion/raw/
-ECO_OUTPUTDIR=${DATADIR_CHEM}/aux/ecoregion/processed/
 #
 FMC_INPUTDIR=${DATADIR_CHEM}/aux/FMC/raw/${YYYY}/${MM}/
-FMC_OUTPUTDIR=${DATADIR_CHEM}/aux/FMC/processed/${YYYY}/${MM}/
+
+#if [[ "${CREATE_OWN_DATA}" == "TRUE" ]];
+RAVE_OUTPUTDIR=${DATA}
+ECO_OUTPUTDIR=${DATA}
+FMC_OUTPUTDIR=${DATA}
+#else
+#RAVE_OUTPUTDIR=${RAVE_DIR}/processed/
+#ECO_OUTPUTDIR=${DATADIR_CHEM}/aux/ecoregion/processed/
+#FMC_OUTPUTDIR=${DATADIR_CHEM}/aux/FMC/processed/${YYYY}/${MM}/
+#fi
 #
 dummyRAVE=${RAVE_DIR}/processed/RAVE.dummy.${MESH_NAME}.nc
 mkdir -p ${RAVE_OUTPUTDIR}
+mkdir -p ${ECO_OUTPUTDIR}
+mkdir -p ${FMC_OUTPUTDIR}
 #
 # Create a temporary directory to process the emissions so we don't mess with the raw data
 #
@@ -255,7 +264,7 @@ if [[ "${EMIS_SECTOR_TO_PROCESS}" == "rwc" ]]; then
 # --- Set the file expression and lat/lon dimension names
 #
    INPUTDIR=${DATADIR_CHEM}/emissions/anthro/raw/NEMO/RWC/total/
-   OUTPUTDIR=${DATADIR_CHEM}/emissions/anthro/processed/NEMO/RWC/total
+   OUTPUTDIR=${DATA} #${DATADIR_CHEM}/emissions/anthro/processed/NEMO/RWC/total
    NARR_INPUTDIR=${DATADIR_CHEM}/aux/narr_reanalysis_t2m/raw/
    NARR_OUTPUTDIR=${DATADIR_CHEM}/aux/narr_reanalysis_t2m/processed/
    #
@@ -323,7 +332,7 @@ if [[ "${EMIS_SECTOR_TO_PROCESS}" == "anthro" ]]; then
    GRA2PES_YEAR=2021
    #
    ANTHROEMIS_INPUTDIR=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_VERSION}/${GRA2PES_YEAR}${MM}/${DOW_STRING}/
-   ANTHROEMIS_OUTPUTDIR=${DATADIR_CHEM}/emissions/anthro/processed/${ANTHRO_EMISINV}/${MOY}/${DOW_STRING}/
+   ANTHROEMIS_OUTPUTDIR=${DATA} # ${DATADIR_CHEM}/emissions/anthro/processed/${ANTHRO_EMISINV}/${MOY}/${DOW_STRING}/
    ${MKDIR} -p ${ANTHROEMIS_OUTPUTDIR}
    
     #
@@ -413,7 +422,7 @@ fi # anthro?
 if [[ "${EMIS_SECTOR_TO_PROCESS}" == "pollen" ]]; then
 #
 EMISINPUTDIR=${DATADIR_CHEM}/emissions/pollen/raw/${YYYY}/
-EMISOUTPUTDIR=${DATADIR_CHEM}/emissions/pollen/processed/${YYYY}/
+EMISOUTPUTDIR=${DATA} #${DATADIR_CHEM}/emissions/pollen/processed/${YYYY}/
 ${MKDIR} -p ${EMISOUTPUTDIR}
 #
 # --- Do we have emissions regridded to our domain?
@@ -468,7 +477,8 @@ if [[ "${EMIS_SECTOR_TO_PROCESS}" == "dust" ]]; then
    LINKEDEMISFILE=${UMBRELLA_PREP_CHEM_DATA}/dust.init.nc
 
    DUST_INPUTDIR=${DATADIR_CHEM}/dust/raw/
-   DUST_OUTPUTDIR=${DATADIR_CHEM}/dust/processed/
+   DUST_OUTPUTDIR=${DATA} # ${DATADIR_CHEM}/dust/processed/
+   mkdir -p ${DUST_OUTPUTDIR}
 
    DUST_OUTFILE=${DATADIR_CHEM}/dust/processed/fengsha_dust_inputs.${MESH_NAME}.nc
 
