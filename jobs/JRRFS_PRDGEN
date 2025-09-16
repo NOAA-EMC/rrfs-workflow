@@ -15,7 +15,6 @@ export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
-export SORCrrfs=${SORCrrfs:-${HOMErrfs}/sorc}
 export FIX_UPP="${FIXrrfs}/upp"
 export FIXprdgen="${FIXrrfs}/prdgen"
 
@@ -96,7 +95,7 @@ export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})
 if [ "${DO_ENSFCST}" = "TRUE" ]; then
   export COMOUT=${COMOUT}/${mem_num}
 fi
-mkdir -p "${COMOUT}"
+mkdir -p "${COMOUT}" "${COMOUT}/wmo"
 
 #-----------------------------------------------------------------------
 # Execute the script.

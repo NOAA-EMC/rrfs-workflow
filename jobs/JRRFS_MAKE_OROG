@@ -15,7 +15,6 @@ export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
-export SORCrrfs=${SORCrrfs:-${HOMErrfs}/sorc}
 export TOPO_DIR="${FIXrrfs}/fix_orog"
 export FIXam=${FIXam:-${HOMErrfs}/fix/am}
 export TOPO_DIR="${FIXrrfs}/fix_orog"

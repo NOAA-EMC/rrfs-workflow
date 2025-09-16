@@ -540,7 +540,6 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-COMINobsproc="${COMINobsproc:-$(compath.py obsproc/${obsproc_ver})}"
 if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
   echo "Update snow cover based on imssnow  at ${SNOWICE_update_hour}z"
   if [ -r "${COMINobsproc}/latest.SNOW_IMS" ]; then

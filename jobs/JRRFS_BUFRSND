@@ -15,7 +15,6 @@ export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
-export SORCrrfs=${SORCrrfs:-${HOMErrfs}/sorc}
 export FIX_BUFRSND="${FIXrrfs}/bufrsnd"
 export GEMPAK_FIX=${GEMPAK_FIX:-${FIXrrfs}/gempak/fix}
 

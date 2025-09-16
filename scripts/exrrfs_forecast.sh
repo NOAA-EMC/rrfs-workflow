@@ -721,7 +721,6 @@ if [ "${DO_FCST_RESTART}" = "TRUE" ] && [ $coupler_res_ct -gt 0 ] && [ $FCST_LEN
   if [ ${restart_set_found} == "YES" ]; then
     cd $shared_forecast_output_data
     [[ -f output_file_backup.sh ]]&& rm -f output_file_backup.sh
-    [[ ! -d OLD ]]&& mkdir OLD
     for (( fhr_to_remove=${FHROT_UPPER_RANGE}; fhr_to_remove>=${FHROT}; fhr_to_remove-- )); do
       fhr_to_remove3d=$( printf "%03d" "${fhr_to_remove}" )
       if [ $fhr_to_remove -eq $FHROT ]; then
@@ -739,7 +738,11 @@ if [ "${DO_FCST_RESTART}" = "TRUE" ] && [ $coupler_res_ct -gt 0 ] && [ $FCST_LEN
         $(find -name "dynf*${fhr_to_remove3d}.nc" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
       fi
     done
-    [[ -s output_file_backup.sh ]]&& sh output_file_backup.sh
+    if [ -s output_file_backup.sh ]; then
+      echo "The RESTART has found previous output in umbrella output and will move to an OLD directory"
+      [[ ! -d OLD ]]&& mkdir OLD
+      sh output_file_backup.sh
+    fi
     cd ${DATA}
   fi
 fi
