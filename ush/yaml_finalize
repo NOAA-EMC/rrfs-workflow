@@ -21,6 +21,8 @@ HYB_WGT_ENS = os.getenv("HYB_WGT_ENS", "0.5")
 start_type = os.getenv("start_type", "start_type_NOT_DEFINED")
 GETKF_TYPE = os.getenv("GETKF_TYPE", "TYPE_NOT_DEFINED")
 use_conv_sat_info = (os.getenv("USE_CONV_SAT_INFO", "True").upper() != "FALSE")
+emptyObsSpaceAction = os.getenv("EMPTY_OBS_SPACE_ACTION", "skip output")
+
 STATIC_BEC_MODEL = os.getenv("STATIC_BEC_MODEL", "GSIBEC")
 GSIBEC_X = os.getenv("GSIBEC_X", "10")
 GSIBEC_Y = os.getenv("GSIBEC_Y", "8")
@@ -39,6 +41,7 @@ replacements = {
     "beginDate": f"{beginDate}",
     "HYB_WGT_STATIC": f"{HYB_WGT_STATIC}",
     "HYB_WGT_ENS": f"{HYB_WGT_ENS}",
+    "emptyObsSpaceAction": f"{emptyObsSpaceAction}",
     "GSIBEC_X": f"{GSIBEC_X}",
     "GSIBEC_Y": f"{GSIBEC_Y}",
     "GSIBEC_NLAT": f"{GSIBEC_NLAT}",
