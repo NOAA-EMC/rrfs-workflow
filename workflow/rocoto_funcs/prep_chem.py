@@ -16,6 +16,8 @@ def prep_chem(xmlFile, expdir,do_ensemble=False, do_spinup=False):
 #  else:
 #    cycledefs='prod'
   realtime=os.getenv("REALTIME","false")
+  
+  create_own_data=os.getenv('CREATE_OWN_DATA',"FALSE").upper()
 
   # Task-specific EnVars beyond the task_common_vars
   datadir_chem=os.getenv('CHEMPATH','/lfs6/BMC/rtwbl/cheMPAS-Fire/input/')
@@ -25,7 +27,8 @@ def prep_chem(xmlFile, expdir,do_ensemble=False, do_spinup=False):
   dcTaskEnv={
     'FCST_LENGTH': f'{fcst_length}',
     'MESH_NAME': f'{mesh_name}',
-    'DATADIR_CHEM': f'{datadir_chem}' }
+    'DATADIR_CHEM': f'{datadir_chem}',
+    'CREATE_OWN_DATA' : f'{create_own_data}' }
 #
   if realtime.upper() == "TRUE":
      rave_dir='/public/data/grids/nesdis/3km_fire_emissions/'
@@ -40,18 +43,17 @@ def prep_chem(xmlFile, expdir,do_ensemble=False, do_spinup=False):
   meta_bgn=""
   meta_end=""
 
+# Emission sectors / metatask
+
   emis_sectors_test= ["smoke", "anthro", "pollen","dust","rwc"]
-  emis_sectors="'"
+  emis_sectors=""
   for sector in emis_sectors_test:
-     emis_sectors=emis_sectors+sector
-  emis_sectors=emis_sectors+"'"
+     testval = os.getenv('DO_' + sector.upper(),'FALSE').upper()
+     if testval == "TRUE":
+        emis_sectors=emis_sectors+sector + ' '
+  emis_sectors = emis_sectors.strip()
 
-  
-
-  num_emis=int(os.getenv('NUM_EMIS_SECTORS','1'))
-#  emis_indices=''.join(f'{i:03d} ' for i in range(1,int(num_emis)+1)).strip()
-  emis_sectors='smoke anthro pollen dust rwc'.strip()
-
+#
 
   meta_bgn=f'''
 <metatask name="{meta_id}">
