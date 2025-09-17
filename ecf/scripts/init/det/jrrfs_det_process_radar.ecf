@@ -14,7 +14,6 @@ export WGF="%WGF%"
 export CYCLE_TYPE="%CYCLE_TYPE%"
 %include <head.h>
 %include <envir-p1.h>
-export CDATE="${PDY}${cyc}"
 ############################################################
 # Load modules
 ############################################################
