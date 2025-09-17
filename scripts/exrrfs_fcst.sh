@@ -69,42 +69,43 @@ lbc_interval=${LBC_INTERVAL:-3}
 restart_interval=${RESTART_INTERVAL:-99}
 history_interval=${HISTORY_INTERVAL:-1}
 diag_interval=${HISTORY_INTERVAL:-1}
-
-
-if [[ ${DO_CHEMISTRY} == "TRUE" ]] ; then
-
-sed -e "s/@restart_interval@/${restart_interval}/" -e "s/@history_interval@/${history_interval}/" \
-    -e "s/@diag_interval@/${diag_interval}/" -e "s/@lbc_interval@/${lbc_interval}/" \
-    "${PARMrrfs}"/streams.atmosphere.chem  > streams.atmosphere
-else
 sed -e "s/@restart_interval@/${restart_interval}/" -e "s/@history_interval@/${history_interval}/" \
     -e "s/@diag_interval@/${diag_interval}/" -e "s/@lbc_interval@/${lbc_interval}/" \
     "${PARMrrfs}"/streams.atmosphere  > streams.atmosphere
-fi
-#
+
 # append the chemistry streams, link the emissions
+    if [[ "${DO_ANTHRO}" == "TRUE" ]] ; then 
+    fi
+
+#
 if [[ ${DO_CHEMISTRY} == "TRUE" ]] ; then
 #
    # Biogenic/Pollen
    if [[ -r "${UMBRELLA_PREP_CHEM_DATA}/bio.init.nc" ]]; then
+      sed -i "`wc -l < "${PARMrrfs}"/streams.atmosphere`i\\`cat streams.atmosphere.pollen`\\" streams.atmosphere
       ln -snf ${UMBRELLA_PREP_CHEM_DATA}/bio.init.nc bio.init.nc
    fi
    # Dust
    if [[ -r "${UMBRELLA_PREP_CHEM_DATA}/dust.init.nc" ]]; then
+      sed -i "`wc -l < "${PARMrrfs}"/chemistry/streams.atmosphere`i\\`cat streams.atmosphere.dust`\\" streams.atmosphere
       ln -snf ${UMBRELLA_PREP_CHEM_DATA}/dust.init.nc dust.init.nc
    fi
    # Anthropogenic
    nanthrofiles=`ls ${UMBRELLA_PREP_CHEM_DATA}/anthro.init* | wc -l`
    if [[ ${nanthrofiles} -gt 0 ]]; then
+      sed -i "`wc -l < "${PARMrrfs}"/chemistry/streams.atmosphere`i\\`cat streams.atmosphere.anthro`\\" streams.atmosphere
       ln -snf ${UMBRELLA_PREP_CHEM_DATA}/anthro.init* ./
    fi
    # Smoke/Wildfire
    nfirefiles=`ls ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.* | wc -l`
    if [[ ${nfirefiles} -gt 0 ]]; then
+      # TODO, retro vs. forecast option
+      sed -i "`wc -l < "${PARMrrfs}"/chemistry/streams.atmosphere`i\\`cat streams.atmosphere.smoke_retro`\\" streams.atmosphere
       ln -snf ${UMBRELLA_PREP_CHEM_DATA}/smoke.init* ./
    fi
    # RWC
    if [[ -r "${UMBRELLA_PREP_CHEM_DATA}/rwc.init.nc" ]]; then
+      sed -i "`wc -l < "${PARMrrfs}"/chemistry/streams.atmosphere`i\\`cat streams.atmosphere.smoke_forecast`\\" streams.atmosphere
       ln -snf ${UMBRELLA_PREP_CHEM_DATA}/rwc.init.nc rwc.init.nc
    fi
 #

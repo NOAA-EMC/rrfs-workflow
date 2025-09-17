@@ -72,6 +72,12 @@ def header_entities(xmlFile, expdir):
     cyc_interval = os.getenv('CYC_INTERVAL', '3')
     realtime = os.getenv("REALTIME", "false").upper()
     do_chemistry=os.getenv('DO_CHEMISTRY','false').upper()   
+    do_smoke_retro=os.getenv('DO_SMOKE_RETRO','false').upper()
+    do_smoke_fcst=os.getenv('DO_SMOKE_FCST','false').upper()
+    do_anthro=os.getenv('DO_ANTHRO','false').upper()
+    do_pollen=os.getenv('DO_POLLEN','false').upper()
+    do_dust=os.getenv('DO_DUST','false').upper()
+    do_rwc=os.getenv('DO_RWC','false').upper()
 # figure out run period for realtime experiments
     if realtime == 'TRUE':
         now = datetime.now()
@@ -137,6 +143,12 @@ def header_entities(xmlFile, expdir):
 <envar><name>WGF</name><value>{wgf}</value></envar>
 <envar><name>CYC_INTERVAL</name><value>{cyc_interval}</value></envar>
 <envar><name>DO_CHEMISTRY</name><value>{do_chemistry}</value></envar>
+<envar><name>DO_SMOKE_RETRO</name><value>{do_smoke_retro}</value></envar>
+<envar><name>DO_SMOKE_FCST</name><value>{do_smoke_fcst}</value></envar>
+<envar><name>DO_ANTHRO</name><value>{do_anthro}</value></envar>
+<envar><name>DO_POLLEN</name><value>{do_pollen}</value></envar>
+<envar><name>DO_DUST</name><value>{do_dust}</value></envar>
+<envar><name>DO_RWC</name><value>{do_rwc}</value></envar>
 "
 >{entities_for_cycledef}
 '''

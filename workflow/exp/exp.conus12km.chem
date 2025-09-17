@@ -13,6 +13,13 @@ export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
 #
 export DO_CHEMISTRY=true
+export DO_SMOKE_RETRO=true
+export DO_SMOKE_FCST=false
+export DO_ANTHRO=false
+export DO_POLLEN=false
+export DO_DUST=false
+export DO_RWC=false
+#
 #
 export ZETA_LEVELS="L60.txt"
 #
@@ -110,6 +117,8 @@ case ${MACHINE} in
     export OBSPATH="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
     export OBSPATH_NSSLMOSIAC="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/reflectivity"
     export CHEMPATH="/scratch4/BMC/acomp/cheMPAS-Fire/input"
+    export REGRID_WRAPPER_BASEDIR=""
+    export CONDAENV="/lfs5/BMC/rtwbl/rap-chem/miniconda/envs/regrid-wrapper"
     export ACCOUNT="acomp"
     export QUEUE="batch"
     export PARTITION="hera"
@@ -120,6 +129,8 @@ case ${MACHINE} in
     export OBSPATH="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
     export OBSPATH_NSSLMOSIAC="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/reflectivity"
     export CHEMPATH="/scratch4/BMC/acomp/cheMPAS-Fire/input"
+    export REGRID_WRAPPER_BASEDIR=""
+    export CONDAENV="/lfs5/BMC/rtwbl/rap-chem/miniconda/envs/regrid-wrapper"
     export ACCOUNT="acomp"
     export QUEUE="batch"
     export PARTITION="u1-compute"
@@ -130,6 +141,8 @@ case ${MACHINE} in
     export OBSPATH="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
     export OBSPATH_NSSLMOSIAC="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/reflectivity"
     export CHEMPATH="/lfs6/BMC/rtwbl/cheMPAS-Fire/input"
+    #export REGRID_WRAPPER_BASEDIR="/lfs5/BMC/rtwbl/rap-chem/mpas_rt/working/ben_interp/regrid-wrapper/"
+    #export CONDAENV="/lfs5/BMC/rtwbl/rap-chem/miniconda/envs/regrid-wrapper"
     export ACCOUNT="rtwbl"
     export QUEUE="batch"
     export PARTITION="kjet"

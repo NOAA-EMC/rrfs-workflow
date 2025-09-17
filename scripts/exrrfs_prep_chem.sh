@@ -148,20 +148,20 @@ ECO_INPUTDIR=${DATADIR_CHEM}/aux/ecoregion/raw/
 #
 FMC_INPUTDIR=${DATADIR_CHEM}/aux/FMC/raw/${YYYY}/${MM}/
 
-#if [[ "${CREATE_OWN_DATA}" == "TRUE" ]];
+if [[ "${CREATE_OWN_DATA}" == "TRUE" ]];
 RAVE_OUTPUTDIR=${DATA}
 ECO_OUTPUTDIR=${DATA}
 FMC_OUTPUTDIR=${DATA}
-#else
-#RAVE_OUTPUTDIR=${RAVE_DIR}/processed/
-#ECO_OUTPUTDIR=${DATADIR_CHEM}/aux/ecoregion/processed/
-#FMC_OUTPUTDIR=${DATADIR_CHEM}/aux/FMC/processed/${YYYY}/${MM}/
-#fi
+else
+RAVE_OUTPUTDIR=${RAVE_DIR}/processed/
+ECO_OUTPUTDIR=${DATADIR_CHEM}/aux/ecoregion/processed/
+FMC_OUTPUTDIR=${DATADIR_CHEM}/aux/FMC/processed/${YYYY}/${MM}/
+fi
 #
 dummyRAVE=${RAVE_DIR}/processed/RAVE.dummy.${MESH_NAME}.nc
-mkdir -p ${RAVE_OUTPUTDIR}
-mkdir -p ${ECO_OUTPUTDIR}
-mkdir -p ${FMC_OUTPUTDIR}
+${MKDIR} -p ${RAVE_OUTPUTDIR}
+${MKDIR} -p ${ECO_OUTPUTDIR}
+${MKDIR} -p ${FMC_OUTPUTDIR}
 #
 # Create a temporary directory to process the emissions so we don't mess with the raw data
 #
@@ -264,11 +264,18 @@ if [[ "${EMIS_SECTOR_TO_PROCESS}" == "rwc" ]]; then
 # --- Set the file expression and lat/lon dimension names
 #
    INPUTDIR=${DATADIR_CHEM}/emissions/anthro/raw/NEMO/RWC/total/
-   OUTPUTDIR=${DATA} #${DATADIR_CHEM}/emissions/anthro/processed/NEMO/RWC/total
    NARR_INPUTDIR=${DATADIR_CHEM}/aux/narr_reanalysis_t2m/raw/
-   NARR_OUTPUTDIR=${DATADIR_CHEM}/aux/narr_reanalysis_t2m/processed/
+   
+   if [[ "${CREATE_OWN_DATA}" == "TRUE" ]];
+      NARR_OUTPUTDIR=${DATA}
+      OUTPUTDIR=${DATA}
+   else
+      NARR_OUTPUTDIR=${DATADIR_CHEM}/aux/narr_reanalysis_t2m/processed/
+      OUTPUTDIR=${DATADIR_CHEM}/emissions/anthro/processed/NEMO/RWC/total
+   fi
    #
-   ${MKDIR} -p ${OUTPUTDIR}
+   ${MKDIR} -p ${OUTPUTDIR} 
+   ${MKDIR} -p ${NARR_OUTPUTDIR}
    # 
    EMISFILE_RWC_PROCESSED=${OUTPUTDIR}/NEMO_RWC_ANNUAL_TOTAL_${MESH_NAME}.nc
    #
@@ -328,21 +335,26 @@ if [[ "${EMIS_SECTOR_TO_PROCESS}" == "anthro" ]]; then
    #
    # TODO, if residential wood burning emissions are turned on, we need to use the
    # GRA2PES_VERSION=total_minus_res to not double count those emissions
-   GRA2PES_VERSION=total
+   GRA2PES_SECTOR=total
    GRA2PES_YEAR=2021
+   GRA2PES_VERSION=v1.0
    #
-   ANTHROEMIS_INPUTDIR=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_VERSION}/${GRA2PES_YEAR}${MM}/${DOW_STRING}/
-   ANTHROEMIS_OUTPUTDIR=${DATA} # ${DATADIR_CHEM}/emissions/anthro/processed/${ANTHRO_EMISINV}/${MOY}/${DOW_STRING}/
+   ANTHROEMIS_INPUTDIR=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_SECTOR}/${GRA2PES_YEAR}${MM}/${DOW_STRING}/
+   if [[ "${CREATE_OWN_DATA}" == "TRUE" ]];
+      ANTHROEMIS_OUTPUTDIR=${DATA}
+   else
+      ANTHROEMIS_OUTPUTDIR=${DATADIR_CHEM}/emissions/anthro/processed/${ANTHRO_EMISINV}/${MOY}/${DOW_STRING}/
+   fi
    ${MKDIR} -p ${ANTHROEMIS_OUTPUTDIR}
    
     #
-    EMISFILE_BASE_RAW1=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_VERSION}/${GRA2PES_YEAR}${MM}/${DOW_STRING}/GRA2PESv1.0_total_${GRA2PES_YEAR}${MM}_${DOW_STRING}_00to11Z.nc
-    EMISFILE_BASE_RAW2=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_VERSION}/${GRA2PES_YEAR}${MM}/${DOW_STRING}/GRA2PESv1.0_total_${GRA2PES_YEAR}${MM}_${DOW_STRING}_12to23Z.nc
-    INPUT_GRID=${DATADIR_CHEM}/grids/domain_latlons/GRA2PESv1.0_CONUS4km_grid_info.nc
+    EMISFILE_BASE_RAW1=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_SECTOR}/${GRA2PES_YEAR}${MM}/${DOW_STRING}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${GRA2PES_YEAR}${MM}_${DOW_STRING}_00to11Z.nc
+    EMISFILE_BASE_RAW2=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_SECTOR}/${GRA2PES_YEAR}${MM}/${DOW_STRING}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${GRA2PES_YEAR}${MM}_${DOW_STRING}_12to23Z.nc
+    INPUT_GRID=${DATADIR_CHEM}/grids/domain_latlons/${ANTHRO_EMISINV}${GRA2PES_VERSION}_CONUS4km_grid_info.nc
 
     #
-    EMISFILE1=${ANTHROEMIS_OUTPUTDIR}/${ANTHRO_EMISINV}_${MESH_NAME}_00to11Z.nc
-    EMISFILE2=${ANTHROEMIS_OUTPUTDIR}/${ANTHRO_EMISINV}_${MESH_NAME}_12to23Z.nc
+    EMISFILE1=${ANTHROEMIS_OUTPUTDIR}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${MESH_NAME}_00to11Z.nc
+    EMISFILE1=${ANTHROEMIS_OUTPUTDIR}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${MESH_NAME}_12to23Z.nc
     #
     if [[ -r ${EMISFILE_BASE_RAW1} ]] && [[ -r ${EMISFILE_BASE_RAW2} ]]; then
        echo "Checking to make sure we have corner coords"
@@ -422,7 +434,11 @@ fi # anthro?
 if [[ "${EMIS_SECTOR_TO_PROCESS}" == "pollen" ]]; then
 #
 EMISINPUTDIR=${DATADIR_CHEM}/emissions/pollen/raw/${YYYY}/
-EMISOUTPUTDIR=${DATA} #${DATADIR_CHEM}/emissions/pollen/processed/${YYYY}/
+if [[ "${CREATE_OWN_DATA}" == "TRUE" ]];
+   EMISOUTPUTDIR=${DATA}
+else
+   EMISOUTPUTDIR=${DATADIR_CHEM}/emissions/pollen/processed/${YYYY}/
+fi
 ${MKDIR} -p ${EMISOUTPUTDIR}
 #
 # --- Do we have emissions regridded to our domain?
@@ -477,11 +493,15 @@ if [[ "${EMIS_SECTOR_TO_PROCESS}" == "dust" ]]; then
    LINKEDEMISFILE=${UMBRELLA_PREP_CHEM_DATA}/dust.init.nc
 
    DUST_INPUTDIR=${DATADIR_CHEM}/dust/raw/
-   DUST_OUTPUTDIR=${DATA} # ${DATADIR_CHEM}/dust/processed/
-   mkdir -p ${DUST_OUTPUTDIR}
-
+   if [[ "${CREATE_OWN_DATA}" == "TRUE" ]];
+      DUST_OUTPUTDIR=${DATA} 
+   else
+      DUST_OUTPUTDIR=${DATADIR_CHEM}/dust/processed/
+   fi
+   ${MKDIR} -p ${DUST_OUTPUTDIR}
+   #
    DUST_OUTFILE=${DATADIR_CHEM}/dust/processed/fengsha_dust_inputs.${MESH_NAME}.nc
-
+   #
    if [[ ! -r ${DUST_OUTFILE} ]]; then
       ${ECHO} "Interpolated dust file: ${DUST_OUTFILE} does not exist, will attempt to create"
       srun python -u ${SCRIPT}   \

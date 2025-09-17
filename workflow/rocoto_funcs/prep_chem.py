@@ -18,7 +18,7 @@ def prep_chem(xmlFile, expdir,do_ensemble=False, do_spinup=False):
   realtime=os.getenv("REALTIME","false")
 
   # Task-specific EnVars beyond the task_common_vars
-  datadir_chem=os.getenv('DATADIR_CHEM','/lfs6/BMC/rtwbl/cheMPAS-Fire/input/')
+  datadir_chem=os.getenv('CHEMPATH','/lfs6/BMC/rtwbl/cheMPAS-Fire/input/')
   mesh_name=os.getenv('MESH_NAME','conus3km').lower()
   fcst_length=os.getenv('FCST_LENGTH','24')
 
@@ -39,6 +39,14 @@ def prep_chem(xmlFile, expdir,do_ensemble=False, do_spinup=False):
   dcTaskEnv['ANTHRO_EMISINV']='GRA2PES'
   meta_bgn=""
   meta_end=""
+
+  emis_sectors_test= ["smoke", "anthro", "pollen","dust","rwc"]
+  emis_sectors="'"
+  for sector in emis_sectors_test:
+     emis_sectors=emis_sectors+sector
+  emis_sectors=emis_sectors+"'"
+
+  
 
   num_emis=int(os.getenv('NUM_EMIS_SECTORS','1'))
 #  emis_indices=''.join(f'{i:03d} ' for i in range(1,int(num_emis)+1)).strip()
