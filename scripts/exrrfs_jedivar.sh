@@ -14,11 +14,11 @@ time_min="${subcyc:-00}"
 # determine whether to begin new cycles
 #
 if [[ -r "${UMBRELLA_PREP_IC_DATA}/init.nc" ]]; then
-  start_type='cold'
+  export start_type='cold'
   do_DAcycling='false'
   initial_file=init.nc
 else
-  start_type='warm'
+  export start_type='warm'
   do_DAcycling='true'
   initial_file=mpasout.nc
 fi
