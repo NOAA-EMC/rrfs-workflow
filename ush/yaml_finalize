@@ -74,7 +74,7 @@ if ytype == "jedivar":
         hy.drop(data, querystr)
 
 # modify variable list if do_radar_ref
-do_radar_ref = (os.getenv("DO_RADAR_REF", "FASLE").upper() == "TRUE")
+do_radar_ref = (os.getenv("DO_RADAR_REF", "FASLE").upper() == "TRUE" and start_type != "cold")
 if not do_radar_ref and ytype == "jedivar":
     varlist = "state variables: &incvars [water_vapor_mixing_ratio_wrt_moist_air, air_pressure_at_surface, air_temperature, northward_wind, eastward_wind]"
     hy.modify(data, "_member/state variables", varlist, oneline_change=True)
