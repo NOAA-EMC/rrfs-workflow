@@ -42,7 +42,7 @@ output mean prior:
   filename: ./prior_mean.nc
   stream name: background
 
-output: # for outputting mean posterior
+output:
   filename: ./data/ens/mem%{member}%.nc
   stream name: analysis
 
