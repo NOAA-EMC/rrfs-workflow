@@ -32,10 +32,14 @@ nlevel=$(wc -l < "${zeta_levels}")
 ln -snf "${FIXrrfs}/meshes/${MESH_NAME}.invariant.nc_L${nlevel}_${prefix}"  ./invariant.nc
 mkdir -p graphinfo stream_list
 ln -snf "${FIXrrfs}"/graphinfo/*  graphinfo/
-ln -snf "${FIXrrfs}/stream_list/${PHYSICS_SUITE}"/*  stream_list/
+${cpreq} "${FIXrrfs}/stream_list/${PHYSICS_SUITE}"/*  stream_list/
 ${cpreq} "${FIXrrfs}"/jedi/obsop_name_map.yaml .
 ${cpreq} "${FIXrrfs}"/jedi/keptvars.yaml .
 ${cpreq} "${FIXrrfs}"/jedi/geovars.yaml .
+# if cold_start or not do_radar_ref, remove refl10cm and w from stream_list.atmosphere.analysis
+if [[ "${start_type}" == "cold"  ]] || ! ${DO_RADAR_REF} ; then
+  sed -i '$d;N;$d' stream_list/stream_list.atmosphere.analysis
+fi
 #
 # create data directory
 #
