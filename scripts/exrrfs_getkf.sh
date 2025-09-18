@@ -22,10 +22,6 @@ ${cpreq} "${FIXrrfs}/stream_list/${PHYSICS_SUITE}"/* stream_list/
 ${cpreq} "${FIXrrfs}"/jedi/obsop_name_map.yaml .
 ${cpreq} "${FIXrrfs}"/jedi/keptvars.yaml .
 ${cpreq} "${FIXrrfs}"/jedi/geovars.yaml .
-# if cold_start or not do_radar_ref, remove refl10cm and w from stream_list.atmosphere.analysis
-if [[ "${start_type}" == "cold"  ]] || ! ${DO_RADAR_REF} ; then
-  sed -i '$d;N;$d' stream_list/stream_list.atmosphere.analysis
-fi
 #
 # create data directory 
 #
@@ -44,12 +40,15 @@ fi
 #
 do_DAcycling='false'
 if [[ -r "${UMBRELLA_PREP_IC_DATA}/mem001/init.nc" ]]; then
-  start_type='cold'
+  export start_type='cold'
   initial_file='init.nc'
-  mkdir -p ana
 else
-  start_type='warm'
+  export start_type='warm'
   initial_file='mpasout.nc'
+fi
+# if cold_start or not do_radar_ref, remove refl10cm and w from stream_list.atmosphere.analysis
+if [[ "${start_type}" == "cold"  ]] || ! ${DO_RADAR_REF} ; then
+  sed -i '$d;N;$d' stream_list/stream_list.atmosphere.analysis
 fi
 # link ensembles to data/ens/
 for i in $(seq -w 001 "${ENS_SIZE}"); do
