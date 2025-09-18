@@ -350,7 +350,6 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
 
   #-- Generate AWIPS/wmo products for RRFS
   #-- AWIPS/wmo products are not generated for ensemble forecasts
-# THIS IS NOT CURRENTLY WORKING - UNCOMMENT AFTER TESTING SUCCESSFULLY
 #  if [ ${DO_ENSFCST} = "FALSE" ]; then
 #    ${USHrrfs}/prdgen/rrfs_mkawp.sh ${fhr}
 #  fi
