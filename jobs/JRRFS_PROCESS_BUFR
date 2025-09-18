@@ -5,61 +5,76 @@ export PS4='+ $SECONDS + '
 set -xue
 
 #-----------------------------------------------------------------------
+# Specify Package Location
+#-----------------------------------------------------------------------
+export NET='rrfs'
+export MACHINE="WCOSS2"
+export WORKFLOW_MANAGER="ecflow"
+export HOMErrfs=${HOMErrfs:-""}
+export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
+export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
+export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
+export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
+export FIXam=${FIXam:-${HOMErrfs}/fix/am}
+export FIXLAM=${FIXLAM:-${HOMErrfs}/fix/lam/RRFS_NA_3km}
+export FIX_GSI="${FIXrrfs}/gsi"
+
+#-----------------------------------------------------------------------
 # RRFS BUFR Preprocessing
 #-----------------------------------------------------------------------
 export pid=${pid:-$$}
 export outid=${outid:-"LL$job"}
-export RUN=${RUN:-rrfs}
-
+case "${WGF}" in
+  "det")
+    export RUN="rrfs"
+    ;;
+  "enkf")
+    export RUN="enkfrrfs"
+    ;;
+  "ensf")
+    export RUN="refs"
+    ;;
+  "firewx")
+    export RUN="firewx"
+    ;;
+esac
 #-----------------------------------------------------------------------
 # Define umbrella data directories
 #------------------------i----------------------------------------------
 export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/${RUN}_init_spinup_${cyc}_${rrfs_ver}/${WGF}}
-  export COMOUT_ANALYSIS=${COMrrfs}/${RUN}.${PDY}/${cyc}_spinup/analysis
+  export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/rrfs_init_spinup_${cyc}_${rrfs_ver}/${WGF}}
 else
-  export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/${RUN}_init_${cyc}_${rrfs_ver}/${WGF}}
-  export COMOUT_ANALYSIS=${COMrrfs}/${RUN}.${PDY}/${cyc}/analysis
+  export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/rrfs_init_${cyc}_${rrfs_ver}/${WGF}}
 fi
 export shared_output_data=${umbrella_init_data}/output
 
 #-----------------------------------------------------------------------
-# Define data directories
+# Define and make data directories
 #-----------------------------------------------------------------------
 export DATA=${DATA:-${umbrella_init_data}/${jobid}}
-mkdir -p ${DATA} ${shared_output_data} ${COMOUT_ANALYSIS}
+mkdir -p ${DATA} ${shared_output_data}
 cd ${DATA}
 
 #-----------------------------------------------------------------------
-# Source the variable definitions file
-#-----------------------------------------------------------------------
-
-. ${HOMErrfs}/ush/rrfs_nco_config.sh
-
-#-----------------------------------------------------------------------
-# Specify Execution Areas
-#-----------------------------------------------------------------------
-
-export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
-export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
-export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
-export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
-export FIX_GSI=${FIXrrfs}/gsi
+# Set PDY; define and make COMOUT_ANALYSIS directories
+#------------------------i----------------------------------------------
+export cycle="t${cyc}z"
+setpdy.sh
+. ./PDY
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export COMOUT_ANALYSIS=${COMrrfs}/${RUN}.${PDY}/${cyc}_spinup/analysis
+else
+  export COMOUT_ANALYSIS=${COMrrfs}/${RUN}.${PDY}/${cyc}/analysis
+fi
+mkdir -p ${COMOUT_ANALYSIS}
 
 #-----------------------------------------------------------------------
 # Source the bash utility functions.
 #-----------------------------------------------------------------------
 
 . $USHrrfs/source_util_funcs.sh
-
-#-----------------------------------------------------------------------
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#-----------------------------------------------------------------------
-
-{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 
 #-----------------------------------------------------------------------
 # Get the full path to the file in which this script/function is located 
@@ -107,10 +122,3 @@ print_info_msg "
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-
-#-----------------------------------------------------------------------
-# Restore the shell options saved at the beginning of this script/function.
-#-----------------------------------------------------------------------
-
-{ restore_shell_opts; } > /dev/null 2>&1
-

@@ -1,5 +1,7 @@
 #!/bin/bash
-set -xa
+set -x
+
+source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
 #################################################
 # Set up model and cycle specific variables

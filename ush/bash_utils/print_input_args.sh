@@ -12,16 +12,8 @@
 # 
 #-----------------------------------------------------------------------
 #
-function print_input_args() { 
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
+function print_input_args() {
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -179,14 +171,5 @@ have been set as follows:
     print_info_msg "$VERBOSE" "$msg"
   fi
 #
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
-#
-#-----------------------------------------------------------------------
-#
-  { restore_shell_opts; } > /dev/null 2>&1
-
 }
 

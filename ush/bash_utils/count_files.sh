@@ -7,15 +7,7 @@
 #-----------------------------------------------------------------------
 #
 function count_files() {
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -73,14 +65,4 @@ rent directory that end with \".${file_extension}\".
   local num_files=$( ls -1 ${glob_pattern} 2>/dev/null | wc -l )
   print_info_msg "${num_files}"
 #
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
-#
-#-----------------------------------------------------------------------
-#
-  { restore_shell_opts; } > /dev/null 2>&1
-
 }
-

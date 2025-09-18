@@ -1,3 +1,6 @@
+#!/bin/bash
+set -x
+
 #
 #-----------------------------------------------------------------------
 #
@@ -12,15 +15,6 @@
 #-----------------------------------------------------------------------
 #
 function set_FV3nml_sfc_climo_filenames() {
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-  { save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -210,14 +204,5 @@ failed.  Parameters passed to this script are:
 $settings"
 
 rm "${DATA}/${fv3_nml_base_fp}"
-#
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/function.
-#
-#-----------------------------------------------------------------------
-#
-  { restore_shell_opts; } > /dev/null 2>&1
-
 }
 

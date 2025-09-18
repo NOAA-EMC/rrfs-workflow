@@ -57,11 +57,7 @@ suite rrfs_dev
                 event 35 release_enkf_prep_cyc_mem030
                 event 36 release_det_analysis_gsi
                 event 37 release_save_restart_long_1
-                event 38 release_save_restart_long_2
-                event 39 release_save_restart_long_12
-                event 40 release_save_restart_long_24
-                event 41 release_save_restart_long_36
-                event 42 release_save_restart_long_48
+                event 38 release_save_restart_long_6
                 event 43 release_det_post_f000_00_36_long
                 event 44 release_det_post_f000_15_00_long
                 event 45 release_det_post_f000_30_00_long
@@ -2479,21 +2475,9 @@ suite rrfs_dev
                 task jrrfs_det_save_restart_long_1
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_long_1
-                task jrrfs_det_save_restart_long_2
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_long_2
-                task jrrfs_det_save_restart_long_12
-                  edit FHR '012'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_long_12
-                task jrrfs_det_save_restart_long_24
-                  edit FHR '024'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_long_24
-                task jrrfs_det_save_restart_long_36
-                  edit FHR '036'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_long_36
-                task jrrfs_det_save_restart_long_48
-                  edit FHR '048'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_long_48
+                task jrrfs_det_save_restart_long_6
+                  edit FHR '006'
+                  trigger ../../fsm/jrrfs_fsm:release_save_restart_long_6
               endfamily   # det
               family enkf
                 edit WGF 'enkf'
@@ -6319,7 +6303,6 @@ suite rrfs_dev
                 event 31 release_enkf_prep_cyc_mem030
                 event 32 release_det_analysis_gsi
                 event 33 release_save_restart_f1
-                event 34 release_save_restart_f2
                 event 35 release_det_post_f000_00_36
                 event 36 release_det_post_f000_15_00
                 event 37 release_det_post_f000_30_00
@@ -6773,9 +6756,6 @@ suite rrfs_dev
                 task jrrfs_det_save_restart_f1
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_f1
-                task jrrfs_det_save_restart_f2
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_f2
               endfamily   # det
               family enkf
                 edit WGF 'enkf'
@@ -7323,7 +7303,6 @@ suite rrfs_dev
                 event 31 release_enkf_prep_cyc_mem030
                 event 32 release_det_analysis_gsi
                 event 33 release_save_restart_f1
-                event 34 release_save_restart_f2
                 event 35 release_det_post_f000_00_36
                 event 36 release_det_post_f000_15_00
                 event 37 release_det_post_f000_30_00
@@ -7777,9 +7756,6 @@ suite rrfs_dev
                 task jrrfs_det_save_restart_f1
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_f1
-                task jrrfs_det_save_restart_f2
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_f2
               endfamily   # det
               family enkf
                 edit WGF 'enkf'
@@ -8328,7 +8304,6 @@ suite rrfs_dev
                 event 32 release_enkf_prep_cyc_mem030
                 event 33 release_det_analysis_gsi
                 event 34 release_save_restart_f1
-                event 35 release_save_restart_f2
                 event 36 release_save_restart_spinup_f001
                 event 37 release_det_post_f000_00_36
                 event 38 release_det_post_f000_15_00
@@ -8824,10 +8799,6 @@ suite rrfs_dev
                   edit CYCLE_TYPE 'prod'
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_f1
-                task jrrfs_det_save_restart_f2
-                  edit CYCLE_TYPE 'prod'
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_f2
                 task jrrfs_det_forecast_spinup
                   edit CYCLE_TYPE 'spinup'
                   trigger ../../analysis/det/jrrfs_det_analysis_nonvarcld_spinup==complete
@@ -9381,7 +9352,6 @@ suite rrfs_dev
                 event 30 release_enkf_prep_cyc_mem030
                 event 31 release_det_analysis_gsi
                 event 32 release_save_restart_f1
-                event 33 release_save_restart_f2
                 event 34 release_save_restart_spinup_f001
                 event 35 release_det_post_f000_00_36
                 event 36 release_det_post_f000_15_00
@@ -9870,10 +9840,6 @@ suite rrfs_dev
                   edit CYCLE_TYPE 'prod'
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_f1
-                task jrrfs_det_save_restart_f2
-                  edit CYCLE_TYPE 'prod'
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_f2
                 task jrrfs_det_forecast_spinup
                   edit CYCLE_TYPE 'spinup'
                   trigger ../../analysis/det/jrrfs_det_analysis_nonvarcld_spinup==complete
@@ -10427,7 +10393,6 @@ suite rrfs_dev
                 event 30 release_enkf_prep_cyc_mem030
                 event 31 release_det_analysis_gsi
                 event 32 release_save_restart_f1
-                event 33 release_save_restart_f2
                 event 34 release_save_restart_spinup_f001
                 event 35 release_det_post_f000_00_36
                 event 36 release_det_post_f000_15_00
@@ -10916,10 +10881,6 @@ suite rrfs_dev
                   edit CYCLE_TYPE 'prod'
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_f1
-                task jrrfs_det_save_restart_f2
-                  edit CYCLE_TYPE 'prod'
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_f2
                 task jrrfs_det_forecast_spinup
                   edit CYCLE_TYPE 'spinup'
                   trigger ../../analysis/det/jrrfs_det_analysis_nonvarcld_spinup==complete
@@ -11488,11 +11449,7 @@ suite rrfs_dev
                 event 35 release_det_analysis_gsi
                 event 36 release_save_restart_spinup_f001
                 event 37 release_save_restart_long_1
-                event 38 release_save_restart_long_2
                 event 39 release_save_restart_long_12
-                event 40 release_save_restart_long_24
-                event 41 release_save_restart_long_36
-                event 42 release_save_restart_long_48
                 event 43 release_det_post_f000_00_36_long
                 event 44 release_det_post_f000_15_00_long
                 event 45 release_det_post_f000_30_00_long
@@ -13945,26 +13902,10 @@ suite rrfs_dev
                   edit CYCLE_TYPE 'prod'
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_long_1
-                task jrrfs_det_save_restart_long_2
-                  edit CYCLE_TYPE 'prod'
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_long_2
                 task jrrfs_det_save_restart_long_12
                   edit CYCLE_TYPE 'prod'
                   edit FHR '012'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_long_12
-                task jrrfs_det_save_restart_long_24
-                  edit CYCLE_TYPE 'prod'
-                  edit FHR '024'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_long_24
-                task jrrfs_det_save_restart_long_36
-                  edit CYCLE_TYPE 'prod'
-                  edit FHR '036'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_long_36
-                task jrrfs_det_save_restart_long_48
-                  edit CYCLE_TYPE 'prod'
-                  edit FHR '048'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_long_48
                 task jrrfs_det_forecast_spinup
                   edit CYCLE_TYPE 'spinup'
                   trigger ../../analysis/det/jrrfs_det_analysis_nonvarcld_spinup==complete
@@ -17768,7 +17709,6 @@ suite rrfs_dev
                 event 2 release_enkf_observer_gsi_ensmean
                 event 3 release_det_analysis_gsi
                 event 4 release_save_restart_f1
-                event 5 release_save_restart_f2
                 event 6 release_save_restart_spinup_f001
                 event 7 release_det_post_f000_00_36
                 event 8 release_det_post_f000_15_00
@@ -18534,10 +18474,6 @@ suite rrfs_dev
                   edit CYCLE_TYPE 'prod'
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_f1
-                task jrrfs_det_save_restart_f2
-                  edit CYCLE_TYPE 'prod'
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_f2
                 task jrrfs_det_forecast_spinup
                   edit CYCLE_TYPE 'spinup'
                   trigger ../../analysis/det/jrrfs_det_analysis_nonvarcld_spinup==complete
@@ -19272,7 +19208,6 @@ suite rrfs_dev
                 event 30 release_enkf_prep_cyc_mem030
                 event 31 release_det_analysis_gsi
                 event 32 release_save_restart_f1
-                event 33 release_save_restart_f2
                 event 34 release_save_restart_spinup_f001
                 event 35 release_det_post_f000_00_36
                 event 36 release_det_post_f000_15_00
@@ -19761,10 +19696,6 @@ suite rrfs_dev
                   edit CYCLE_TYPE 'prod'
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_f1
-                task jrrfs_det_save_restart_f2
-                  edit CYCLE_TYPE 'prod'
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_f2
                 task jrrfs_det_forecast_spinup
                   edit CYCLE_TYPE 'spinup'
                   trigger ../../analysis/det/jrrfs_det_analysis_nonvarcld_spinup==complete
@@ -20319,7 +20250,6 @@ suite rrfs_dev
                 event 31 release_enkf_prep_cyc_mem030
                 event 32 release_det_analysis_gsi
                 event 33 release_save_restart_f1
-                event 34 release_save_restart_f2
                 event 35 release_det_post_f000_00_36
                 event 36 release_det_post_f000_15_00
                 event 37 release_det_post_f000_30_00
@@ -20776,9 +20706,6 @@ suite rrfs_dev
                 task jrrfs_det_save_restart_f1
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_f1
-                task jrrfs_det_save_restart_f2
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_f2
               endfamily   # det
               family enkf
                 edit WGF 'enkf'
@@ -21326,7 +21253,6 @@ suite rrfs_dev
                 event 31 release_enkf_prep_cyc_mem030
                 event 32 release_det_analysis_gsi
                 event 33 release_save_restart_f1
-                event 34 release_save_restart_f2
                 event 35 release_det_post_f000_00_36
                 event 36 release_det_post_f000_15_00
                 event 37 release_det_post_f000_30_00
@@ -21780,9 +21706,6 @@ suite rrfs_dev
                 task jrrfs_det_save_restart_f1
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_f1
-                task jrrfs_det_save_restart_f2
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_f2
               endfamily   # det
               family enkf
                 edit WGF 'enkf'
@@ -22330,7 +22253,6 @@ suite rrfs_dev
                 event 31 release_enkf_prep_cyc_mem030
                 event 32 release_det_analysis_gsi
                 event 33 release_save_restart_f1
-                event 34 release_save_restart_f2
                 event 35 release_det_post_f000_00_36
                 event 36 release_det_post_f000_15_00
                 event 37 release_det_post_f000_30_00
@@ -22784,9 +22706,6 @@ suite rrfs_dev
                 task jrrfs_det_save_restart_f1
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_f1
-                task jrrfs_det_save_restart_f2
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_f2
               endfamily   # det
               family enkf
                 edit WGF 'enkf'
@@ -23347,11 +23266,7 @@ suite rrfs_dev
                 event 34 release_enkf_prep_cyc_mem030
                 event 35 release_det_analysis_gsi
                 event 36 release_save_restart_long_1
-                event 37 release_save_restart_long_2
-                event 38 release_save_restart_long_12
-                event 39 release_save_restart_long_24
-                event 40 release_save_restart_long_36
-                event 41 release_save_restart_long_48
+                event 37 release_save_restart_long_6
                 event 42 release_det_post_f000_00_36_long
                 event 43 release_det_post_f000_15_00_long
                 event 44 release_det_post_f000_30_00_long
@@ -25771,21 +25686,9 @@ suite rrfs_dev
                 task jrrfs_det_save_restart_long_1
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_long_1
-                task jrrfs_det_save_restart_long_2
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_long_2
-                task jrrfs_det_save_restart_long_12
-                  edit FHR '012'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_long_12
-                task jrrfs_det_save_restart_long_24
-                  edit FHR '024'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_long_24
-                task jrrfs_det_save_restart_long_36
-                  edit FHR '036'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_long_36
-                task jrrfs_det_save_restart_long_48
-                  edit FHR '048'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_long_48
+                task jrrfs_det_save_restart_long_6
+                  edit FHR '006'
+                  trigger ../../fsm/jrrfs_fsm:release_save_restart_long_6
               endfamily   # det
               family enkf
                 edit WGF 'enkf'
@@ -29611,7 +29514,6 @@ suite rrfs_dev
                 event 31 release_enkf_prep_cyc_mem030
                 event 32 release_det_analysis_gsi
                 event 33 release_save_restart_f1
-                event 34 release_save_restart_f2
                 event 35 release_det_post_f000_00_36
                 event 36 release_det_post_f000_15_00
                 event 37 release_det_post_f000_30_00
@@ -30065,9 +29967,6 @@ suite rrfs_dev
                 task jrrfs_det_save_restart_f1
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_f1
-                task jrrfs_det_save_restart_f2
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_f2
               endfamily   # det
               family enkf
                 edit WGF 'enkf'
@@ -30615,7 +30514,6 @@ suite rrfs_dev
                 event 31 release_enkf_prep_cyc_mem030
                 event 32 release_det_analysis_gsi
                 event 33 release_save_restart_f1
-                event 34 release_save_restart_f2
                 event 35 release_det_post_f000_00_36
                 event 36 release_det_post_f000_15_00
                 event 37 release_det_post_f000_30_00
@@ -31069,9 +30967,6 @@ suite rrfs_dev
                 task jrrfs_det_save_restart_f1
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_f1
-                task jrrfs_det_save_restart_f2
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_f2
               endfamily   # det
               family enkf
                 edit WGF 'enkf'
@@ -31620,7 +31515,6 @@ suite rrfs_dev
                 event 32 release_enkf_prep_cyc_mem030
                 event 33 release_det_analysis_gsi
                 event 34 release_save_restart_f1
-                event 35 release_save_restart_f2
                 event 36 release_save_restart_spinup_f001
                 event 37 release_det_post_f000_00_36
                 event 38 release_det_post_f000_15_00
@@ -32116,10 +32010,6 @@ suite rrfs_dev
                   edit CYCLE_TYPE 'prod'
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_f1
-                task jrrfs_det_save_restart_f2
-                  edit CYCLE_TYPE 'prod'
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_f2
                 task jrrfs_det_forecast_spinup
                   edit CYCLE_TYPE 'spinup'
                   trigger ../../analysis/det/jrrfs_det_analysis_nonvarcld_spinup==complete
@@ -32674,7 +32564,6 @@ suite rrfs_dev
                 event 31 release_enkf_prep_cyc_mem030
                 event 32 release_det_analysis_gsi
                 event 33 release_save_restart_f1
-                event 34 release_save_restart_f2
                 event 35 release_save_restart_spinup_f001
                 event 36 release_det_post_f000_00_36
                 event 37 release_det_post_f000_15_00
@@ -33163,10 +33052,6 @@ suite rrfs_dev
                   edit CYCLE_TYPE 'prod'
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_f1
-                task jrrfs_det_save_restart_f2
-                  edit CYCLE_TYPE 'prod'
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_f2
                 task jrrfs_det_forecast_spinup
                   edit CYCLE_TYPE 'spinup'
                   trigger ../../analysis/det/jrrfs_det_analysis_nonvarcld_spinup==complete
@@ -33721,7 +33606,6 @@ suite rrfs_dev
                 event 31 release_enkf_prep_cyc_mem030
                 event 32 release_det_analysis_gsi
                 event 33 release_save_restart_f1
-                event 34 release_save_restart_f2
                 event 35 release_save_restart_spinup_f001
                 event 36 release_det_post_f000_00_36
                 event 37 release_det_post_f000_15_00
@@ -34210,10 +34094,6 @@ suite rrfs_dev
                   edit CYCLE_TYPE 'prod'
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_f1
-                task jrrfs_det_save_restart_f2
-                  edit CYCLE_TYPE 'prod'
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_f2
                 task jrrfs_det_forecast_spinup
                   edit CYCLE_TYPE 'spinup'
                   trigger ../../analysis/det/jrrfs_det_analysis_nonvarcld_spinup==complete
@@ -34782,11 +34662,7 @@ suite rrfs_dev
                 event 35 release_det_analysis_gsi
                 event 36 release_save_restart_spinup_f001
                 event 37 release_save_restart_long_1
-                event 38 release_save_restart_long_2
                 event 39 release_save_restart_long_12
-                event 40 release_save_restart_long_24
-                event 41 release_save_restart_long_36
-                event 42 release_save_restart_long_48
                 event 43 release_det_post_f000_00_36_long
                 event 44 release_det_post_f000_15_00_long
                 event 45 release_det_post_f000_30_00_long
@@ -37240,26 +37116,10 @@ suite rrfs_dev
                   edit CYCLE_TYPE 'prod'
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_long_1
-                task jrrfs_det_save_restart_long_2
-                  edit CYCLE_TYPE 'prod'
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_long_2
                 task jrrfs_det_save_restart_long_12
                   edit CYCLE_TYPE 'prod'
                   edit FHR '012'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_long_12
-                task jrrfs_det_save_restart_long_24
-                  edit CYCLE_TYPE 'prod'
-                  edit FHR '024'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_long_24
-                task jrrfs_det_save_restart_long_36
-                  edit CYCLE_TYPE 'prod'
-                  edit FHR '036'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_long_36
-                task jrrfs_det_save_restart_long_48
-                  edit CYCLE_TYPE 'prod'
-                  edit FHR '048'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_long_48
                 task jrrfs_det_forecast_spinup
                   edit CYCLE_TYPE 'spinup'
                   trigger ../../analysis/det/jrrfs_det_analysis_nonvarcld_spinup==complete
@@ -41063,7 +40923,6 @@ suite rrfs_dev
                 event 2 release_enkf_observer_gsi_ensmean
                 event 3 release_det_analysis_gsi
                 event 4 release_save_restart_f1
-                event 5 release_save_restart_f2
                 event 6 release_save_restart_spinup_f001
                 event 7 release_det_post_f000_00_36
                 event 8 release_det_post_f000_15_00
@@ -41829,10 +41688,6 @@ suite rrfs_dev
                   edit CYCLE_TYPE 'prod'
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_f1
-                task jrrfs_det_save_restart_f2
-                  edit CYCLE_TYPE 'prod'
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_f2
                 task jrrfs_det_forecast_spinup
                   edit CYCLE_TYPE 'spinup'
                   trigger ../../analysis/det/jrrfs_det_analysis_nonvarcld_spinup==complete
@@ -42568,7 +42423,6 @@ suite rrfs_dev
                 event 31 release_enkf_prep_cyc_mem030
                 event 32 release_det_analysis_gsi
                 event 33 release_save_restart_f1
-                event 34 release_save_restart_f2
                 event 35 release_save_restart_spinup_f001
                 event 36 release_det_post_f000_00_36
                 event 37 release_det_post_f000_15_00
@@ -43057,10 +42911,6 @@ suite rrfs_dev
                   edit CYCLE_TYPE 'prod'
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_f1
-                task jrrfs_det_save_restart_f2
-                  edit CYCLE_TYPE 'prod'
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_f2
                 task jrrfs_det_forecast_spinup
                   edit CYCLE_TYPE 'spinup'
                   trigger ../../analysis/det/jrrfs_det_analysis_nonvarcld_spinup==complete
@@ -43615,7 +43465,6 @@ suite rrfs_dev
                 event 31 release_enkf_prep_cyc_mem030
                 event 32 release_det_analysis_gsi
                 event 33 release_save_restart_f1
-                event 34 release_save_restart_f2
                 event 35 release_det_post_f000_00_36
                 event 36 release_det_post_f000_15_00
                 event 37 release_det_post_f000_30_00
@@ -44069,9 +43918,6 @@ suite rrfs_dev
                 task jrrfs_det_save_restart_f1
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_f1
-                task jrrfs_det_save_restart_f2
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_f2
               endfamily   # det
               family enkf
                 edit WGF 'enkf'
@@ -44619,7 +44465,6 @@ suite rrfs_dev
                 event 31 release_enkf_prep_cyc_mem030
                 event 32 release_det_analysis_gsi
                 event 33 release_save_restart_f1
-                event 34 release_save_restart_f2
                 event 35 release_det_post_f000_00_36
                 event 36 release_det_post_f000_15_00
                 event 37 release_det_post_f000_30_00
@@ -45073,9 +44918,6 @@ suite rrfs_dev
                 task jrrfs_det_save_restart_f1
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_f1
-                task jrrfs_det_save_restart_f2
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_f2
               endfamily   # det
               family enkf
                 edit WGF 'enkf'
@@ -45623,7 +45465,6 @@ suite rrfs_dev
                 event 31 release_enkf_prep_cyc_mem030
                 event 32 release_det_analysis_gsi
                 event 33 release_save_restart_f1
-                event 34 release_save_restart_f2
                 event 35 release_det_post_f000_00_36
                 event 36 release_det_post_f000_15_00
                 event 37 release_det_post_f000_30_00
@@ -46077,9 +45918,6 @@ suite rrfs_dev
                 task jrrfs_det_save_restart_f1
                   edit FHR '001'
                   trigger ../../fsm/jrrfs_fsm:release_save_restart_f1
-                task jrrfs_det_save_restart_f2
-                  edit FHR '002'
-                  trigger ../../fsm/jrrfs_fsm:release_save_restart_f2
               endfamily   # det
               family enkf
                 edit WGF 'enkf'

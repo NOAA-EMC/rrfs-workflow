@@ -8,16 +8,8 @@
 # 
 #-----------------------------------------------------------------------
 #
-function interpol_to_arbit_CRES() { 
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
+function interpol_to_arbit_CRES() {
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -141,14 +133,5 @@ where the arguments are defined as follows:
   prop=$( printf "%e\n" $prop )
   echo "$prop"
 #
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
-#
-#-----------------------------------------------------------------------
-#
-  { restore_shell_opts; } > /dev/null 2>&1
-
 }
 

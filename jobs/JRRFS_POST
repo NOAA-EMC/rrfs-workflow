@@ -5,46 +5,61 @@ export PS4='+ $SECONDS + '
 set -xue
 
 #-----------------------------------------------------------------------
+# Specify Package Location
+#-----------------------------------------------------------------------
+export NET='rrfs'
+export MACHINE="WCOSS2"
+export WORKFLOW_MANAGER="ecflow"
+export HOMErrfs=${HOMErrfs:-""}
+export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
+export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
+export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
+export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
+export FIX_UPP="${FIXrrfs}/upp"
+export FIX_UPP_CRTM="${CRTM_FIX}"
+export CUSTOM_POST_CONFIG_FP="${FIXrrfs}/upp/postxconfig-NT-rrfs.txt"
+export CUSTOM_POST_PARAMS_FP="${FIXrrfs}/upp/params_grib2_tbl_new"
+if [ $WGF == "ensf" ]; then
+  export CUSTOM_POST_CONFIG_FP="${FIXrrfs}/upp/postxconfig-NT-refs.txt"
+fi
+if [ $WGF == "firewx" ]; then
+  export CUSTOM_POST_CONFIG_FP="${FIXrrfs}/upp/postxconfig-NT-firewx.txt"
+fi
+
+#-----------------------------------------------------------------------
 # RRFS Post-Processing
 #-----------------------------------------------------------------------
 export pid=${pid:-$$}
 export outid=${outid:-"LL$job"}
-export RUN=${RUN:-rrfs}
+case "${WGF}" in
+  "det")
+    export RUN="rrfs"
+    ;;
+  "enkf")
+    export RUN="enkfrrfs"
+    ;;
+  "ensf")
+    export RUN="refs"
+    ;;
+  "firewx")
+    export RUN="firewx"
+    ;;
+esac
 export fhr=${FHR:-}
 
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p ${DATA}
 cd ${DATA}
 
-#-----------------------------------------------------------------------
-# Source the variable definitions file
-#-----------------------------------------------------------------------
-
-. ${HOMErrfs}/ush/rrfs_nco_config.sh
-
-#-----------------------------------------------------------------------
-# Specify Execution Areas
-#-----------------------------------------------------------------------
-
-export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
-export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
-export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
-export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
-export FIX_UPP=${FIXrrfs}/upp
-export FIX_UPP_CRTM=${CRTM_FIX}		# CRTM_FIX is from CRTM module
+export cycle="t${cyc}z"
+setpdy.sh
+. ./PDY
 
 #-----------------------------------------------------------------------
 # Source the bash utility functions.
 #-----------------------------------------------------------------------
 
 . $USHrrfs/source_util_funcs.sh
-
-#-----------------------------------------------------------------------
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#-----------------------------------------------------------------------
-
-{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 
 #-----------------------------------------------------------------------
 # Get the full path to the file in which this script/function is located 
@@ -84,10 +99,10 @@ export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export DO_ENSFCST=${DO_ENSFCST:-"FALSE"}
 export COMrrfs=${COMrrfs:-$(compath.py -o rrfs/${rrfs_ver})}
 export COMOUT=${COMOUT:-$(compath.py -o rrfs/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-export umbrella_forecast_data=${DATAROOT}/${RUN}_forecast_${cyc}_${rrfs_ver}/${WGF}
+export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}
 
 # Output from 15-min, 30-min, 45-min subhourly post jobs goes to umbrella data
-export umbrella_post_data=${DATAROOT}/${RUN}_post_${cyc}_${rrfs_ver}/${WGF}
+export umbrella_post_data=${DATAROOT}/rrfs_post_${cyc}_${rrfs_ver}/${WGF}
 
 # Post jobs do not run for spinup cycles, subhourly post jobs are only for deterministic runs
 if [ ${DO_ENSFCST} = "TRUE" ]; then
@@ -125,10 +140,3 @@ print_info_msg "
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-
-#-----------------------------------------------------------------------
-# Restore the shell options saved at the beginning of this script/function.
-#-----------------------------------------------------------------------
-
-{ restore_shell_opts; } > /dev/null 2>&1
-

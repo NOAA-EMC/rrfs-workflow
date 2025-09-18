@@ -1,4 +1,7 @@
 #!/bin/bash
+set -x
+
+source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
 #
 #-----------------------------------------------------------------------
@@ -7,17 +10,7 @@
 #
 #-----------------------------------------------------------------------
 #
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -176,7 +169,6 @@ fi
 #-----------------------------------------------------------------------
 #
 if [ ${BKTYPE} -eq 0 ] && [ "${DO_UPDATE_BC}" = "TRUE" ]; then  # warm start
-  cpreq ${bkpath}/gfs_bndy.tile7.000.nc ${bkpath}/gfs_bndy.tile7.000.nc_before_update
   ln -s ${bkpath}/gfs_bndy.tile7.000.nc .
 
 cat << EOF > namelist.updatebc
@@ -209,12 +201,3 @@ Update LBC soil completed successfully!!!
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-#
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ restore_shell_opts; } > /dev/null 2>&1
-
