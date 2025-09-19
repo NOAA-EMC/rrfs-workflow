@@ -1041,6 +1041,7 @@ if [ -r ${FIX_GSI}/${PREDEF_GRID_NAME}/xnorm_new.240.1351.1976 ] && [ -r ${FIX_G
 fi
 
 $APRUN ./$pgm < gsiparm.anl >>$pgmout 2>errfile
+cp $pgmout rrfs.t${HH}z.gsiout.tm00
 export err=$?; err_chk
 mv errfile errfile_gsi
 
