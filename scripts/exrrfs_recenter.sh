@@ -10,26 +10,23 @@ cpreq=${cpreq:-cpreq}
 #
 cd "${DATA}" || exit 1
 
-for hr in ${RECENTER_CYCS:-"99"}; do
-  rhr=$(printf '%02d' $((10#$hr)) )
-  if [[ "${cyc}" != "${rhr}" ]]; then
-    echo "INFO: No recentering at this cycle - ${cyc}"
-    exit 0
-  fi
-done
+if [[ " ${RECENTER_CYCS:-99} " != *" ${cyc} "* ]]; then
+  echo "INFO: No recentering at this cycle - ${cyc}"
+  exit 0
+fi
 
 #
 # determine cold or warm start cycles and use correct ensemble files and different varlist
 #
 if [[ -s "${UMBRELLA_PREP_IC_DATA}/mem001/init.nc" ]]; then
   initial_file='init.nc'
-  numvar1=4
   varlist1="rho qv theta u"
 else
   initial_file='mpasout.nc'
-  numvar1=24
   varlist1="pressure_p rho qv qc qr qi qs qg ni nr ng nc nifa nwfa volg surface_pressure theta tslb q2 u uReconstructZonal uReconstructMeridional refl10cm w"
 fi
+
+numvar1=$(wc -w <<< "${varlist1}")
 
 #
 # link ensemble members
@@ -44,12 +41,12 @@ done
 #
 #-----------------------------------------------------------------------
 #
-mpasoutfile="${UMBRELLA_PREP_CONTROL_IC_DATA}/${initial_file}"
-if [ -s "${mpasoutfile}" ] ; then
-  ln -sf "${mpasoutfile}"  ./mpasout_control.nc
-  ${cpreq} "${mpasoutfile}"  ./mpasout_mean.nc
+controlfile="${UMBRELLA_PREP_CONTROL_IC_DATA}/${initial_file}"
+if [ -s "${controlfile}" ] ; then
+  ln -sf "${controlfile}"  ./mpasout_control.nc
+  ${cpreq} "${controlfile}"  ./mpasout_mean.nc
 else
-  err_exit "Cannot find control background: ${mpasoutfile}"
+  err_exit "Cannot find control background: ${controlfile}"
 fi
 
 #
@@ -61,7 +58,7 @@ cat << EOF > namelist.ens
   filebase='mpasout'
   filetail(1)='.nc'
   numvar(1)=${numvar1}
-  varlist(1)=${varlist1}
+  varlist(1)="${varlist1}"
   l_write_mean=.true.
   l_recenter=.true.
 /
