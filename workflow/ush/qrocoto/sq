@@ -1,0 +1,37 @@
+#!/bin/bash
+# shellcheck disable=all
+# by Guoqing.Ge, May 2019
+maxjoblength=40
+myuser=$(echo $USER)
+jobid=""
+
+for arg in "$@"; do
+  if [[ "$arg" =~ ^[0-9]+$ ]]; then
+    if (( arg <= 99 )); then
+      maxjoblength="$arg"
+    elif (( arg >= 100 )); then
+      jobid="$arg"
+    fi
+  else
+    myuser="$arg"
+  fi
+done
+
+if [[ "${myuser}" == "all" ]]; then
+  usrlen=22
+else
+  usrlen=${#myuser}
+fi
+outformat="%.10i %.7P %.7q %.8v %.${maxjoblength}j %.8T %.9M %.9l %.${usrlen}u %.8a %.5D %40R"
+if [[ -z $jobid ]]; then
+  if [[ "${myuser}" == "all" ]]; then
+    output=$(squeue -o "$outformat")
+  else
+    output=$(squeue -u $myuser -o "$outformat")
+  fi
+else
+  output=$(squeue -o "$outformat" -j $jobid)
+fi
+firstline=$(echo "$output"|head -n 1)
+echo -e "$output"
+echo -e "$firstline"
