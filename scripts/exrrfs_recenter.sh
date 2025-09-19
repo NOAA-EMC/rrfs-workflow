@@ -8,19 +8,29 @@ cpreq=${cpreq:-cpreq}
 #
 # enter the run directory
 #
-cd "${DATA}" || exit
+cd "${DATA}" || exit 1
 
-#start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S) 
-#timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 
+for hr in ${RECENTER_CYCS:-"99"}; do
+  rhr=$(printf '%02d' $((10#$hr)) )
+  if [[ "${cyc}" != "${rhr}" ]]; then
+    echo "INFO: No recentering at this cycle - ${cyc}"
+    exit 0
+  fi
+done
+
 #
-# determine whether to begin new cycles and link correct ensembles
+# determine cold or warm start cycles and use correct ensemble files and different varlist
 #
 if [[ -s "${UMBRELLA_PREP_IC_DATA}/mem001/init.nc" ]]; then
-  echo "recentering does not work for cold start!"
-  exit 0
+  initial_file='init.nc'
+  numvar1=4
+  varlist1="rho qv theta u"
 else
   initial_file='mpasout.nc'
+  numvar1=24
+  varlist1="pressure_p rho qv qc qr qi qs qg ni nr ng nc nifa nwfa volg surface_pressure theta tslb q2 u uReconstructZonal uReconstructMeridional refl10cm w"
 fi
+
 #
 # link ensemble members
 #
@@ -30,11 +40,11 @@ done
 
 #-----------------------------------------------------------------------
 #
-# link the control member 
+# link the control member
 #
 #-----------------------------------------------------------------------
 #
-mpasoutfile="${UMBRELLA_PREP_CONTROL_IC_DATA}/mpasout.nc"
+mpasoutfile="${UMBRELLA_PREP_CONTROL_IC_DATA}/${initial_file}"
 if [ -s "${mpasoutfile}" ] ; then
   ln -sf "${mpasoutfile}"  ./mpasout_control.nc
   ${cpreq} "${mpasoutfile}"  ./mpasout_mean.nc
@@ -50,8 +60,8 @@ cat << EOF > namelist.ens
   ens_size=${ENS_SIZE},
   filebase='mpasout'
   filetail(1)='.nc'
-  numvar(1)=24
-  varlist(1)="pressure_p rho qv qc qr qi qs qg ni nr ng nc nifa nwfa volg surface_pressure theta tslb q2 u uReconstructZonal uReconstructMeridional refl10cm w"
+  numvar(1)=${numvar1}
+  varlist(1)=${varlist1}
   l_write_mean=.true.
   l_recenter=.true.
 /

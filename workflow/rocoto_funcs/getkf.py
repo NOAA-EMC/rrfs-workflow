@@ -10,6 +10,7 @@ def getkf(xmlFile, expdir, taskType):
     # Task-specific EnVars beyond the task_common_vars
     extrn_mdl_source = os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined')
     physics_suite = os.getenv('PHYSICS_SUITE', 'PHYSICS_SUITE_not_defined')
+    recenter_cycs = os.getenv('RECENTER_CYCS', '99')
     dcTaskEnv = {
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
         'PHYSICS_SUITE': f'{physics_suite}',
@@ -42,11 +43,26 @@ def getkf(xmlFile, expdir, taskType):
         else:
             iodadep = f'<datadep age="00:01:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/ioda_bufr/det/ioda_aircar.nc</cyclestr></datadep>'
             dcTaskEnv['IODA_BUFR_WGF'] = 'det'
+
+        recenterdep = ""
+        if os.getenv("DO_RECENTER", "FALSE").upper() == "TRUE":
+            recenterhrs = recenter_cycs.split(' ')
+            streqs = ""
+            for hr in recenterhrs:
+                hr = f"{hr:0>2}"
+                streqs = streqs + f"\n        <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
+            recenterdep = f'''<and>
+      <or>{streqs}
+      </or>
+      <taskdep task="recenter"/>
+    </and>'''
+
         dependencies = f'''
   <dependency>
   <and>{timedep}
     <metataskdep metatask="prep_ic"/>
     {iodadep}
+    {recenterdep}
   </and>
   </dependency>'''
     elif taskType.upper() == "SOLVER":
