@@ -1,3 +1,6 @@
+#!/bin/bash
+set -x
+
 #
 #-----------------------------------------------------------------------
 #
@@ -12,15 +15,6 @@
 #-----------------------------------------------------------------------
 #
 function set_cycle_dates() {
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -117,14 +111,5 @@ End date (date_end) must be at or after start date (date_start):
 #
   all_cdates_str="( "$( printf "\"%s\" " "${all_cdates[@]}" )")"     
   eval ${output_varname_all_cdates}=${all_cdates_str}             
-#
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/function.
-#
-#-----------------------------------------------------------------------
-#
-  { restore_shell_opts; } > /dev/null 2>&1
-
 }
 

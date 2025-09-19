@@ -15,15 +15,7 @@
 #-----------------------------------------------------------------------
 #
 function print_info_msg() {
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -118,14 +110,6 @@ only if verbose is set to \"TRUE\".
     printf "%s\n" "${info_msg}"
   fi
 #
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
-#
-#-----------------------------------------------------------------------
-#
-  { restore_shell_opts; } > /dev/null 2>&1
 }
 
 
@@ -140,15 +124,7 @@ only if verbose is set to \"TRUE\".
 #-----------------------------------------------------------------------
 #
 function print_err_msg_exit() {
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -279,18 +255,4 @@ the header and footer.
     exit 1
 
   fi
-#
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/func-
-# tion.  This statement will not be reached due to the preceeding exit
-# statement, but we include it here for completeness (i.e. there should
-# be a call to restore_shell_opts that matches a preceeding call to 
-# save_shell_opts).
-#
-#-----------------------------------------------------------------------
-#
-  { restore_shell_opts; } > /dev/null 2>&1
-
 }
-

@@ -12,7 +12,6 @@ model=rrfs
 export cyc="%CYC%"
 %include <head.h>
 %include <envir-p1.h>
-export CDATE="${PDY}${cyc}"
 ############################################################
 # Load modules
 ############################################################

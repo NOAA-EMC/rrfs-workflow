@@ -7,7 +7,6 @@ module load prod_util
 set -x
 cyc=%CYC%
 export cycle=t${cyc}z
-export CDATE="$PDY$cyc"
 case ${cyc} in
   00)
      g_cyc=00
