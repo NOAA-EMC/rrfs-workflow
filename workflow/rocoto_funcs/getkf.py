@@ -42,11 +42,17 @@ def getkf(xmlFile, expdir, taskType):
         else:
             iodadep = f'<datadep age="00:01:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/ioda_bufr/det/ioda_aircar.nc</cyclestr></datadep>'
             dcTaskEnv['IODA_BUFR_WGF'] = 'det'
+
+        recenterdep = ""
+        if os.getenv("DO_RECENTER", "FALSE").upper() == "TRUE":
+            recenterdep = f'<taskdep task="recenter"/>'
+
         dependencies = f'''
   <dependency>
   <and>{timedep}
     <metataskdep metatask="prep_ic"/>
     {iodadep}
+    {recenterdep}
   </and>
   </dependency>'''
     elif taskType.upper() == "SOLVER":
