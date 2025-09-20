@@ -27,22 +27,31 @@ def recenter(xmlFile, expdir):
     else:
         datadep_init = f'<datadep age="00:05:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_prep_ic_@H_&rrfs_ver;/det/init.nc</cyclestr></datadep>'
 
-    datadep = f''' <or>
-      {datadep_init}
-      <datadep age="00:05:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/jedivar/det/mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
-    </or>'''
+    datadep = f'''<or>
+         {datadep_init}
+         <datadep age="00:05:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/jedivar/det/mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+       </or>'''
 
     recenterhrs = recenter_cycs.split(' ')
     streqs = ""
+    strneqs = ""
     for hr in recenterhrs:
         hr = f"{hr:0>2}"
-        streqs = streqs + f"\n      <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
-        dependencies = f'''
+        streqs = streqs + f"\n         <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
+        strneqs = strneqs + f"\n         <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
+
+    dependencies = f'''
   <dependency>
   <and>{timedep}
-    <or>{streqs}
+    <or>
+      <and>
+       <or>{streqs}
+       </or>
+       {datadep}
+      </and>
+      <and>{strneqs}
+      </and>
     </or>
-   {datadep}
     <metataskdep metatask="prep_ic"/>
   </and>
   </dependency>'''
