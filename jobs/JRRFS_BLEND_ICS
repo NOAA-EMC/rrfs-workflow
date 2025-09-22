@@ -5,6 +5,18 @@ export PS4='+ $SECONDS + '
 set -xue
 
 #-----------------------------------------------------------------------
+# Specify Package Location
+#-----------------------------------------------------------------------
+export NET='rrfs'
+export MACHINE="WCOSS2"
+export WORKFLOW_MANAGER="ecflow"
+export HOMErrfs=${HOMErrfs:-""}
+export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
+export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
+export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
+export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
+
+#-----------------------------------------------------------------------
 # RRFS Blend ICs
 #-----------------------------------------------------------------------
 export pid=${pid:-$$}
@@ -18,9 +30,9 @@ fi
 export mem_num=m$(echo "${ENSMEM_INDX}")
 
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}}
+  export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}}
 else
-  export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}}
+  export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver}/${WGF}}
 fi
 export shared_output_data=${umbrella_ics_data}/ics
 
@@ -32,32 +44,10 @@ mkdir -p ${DATA}
 cd ${DATA}
 
 #-----------------------------------------------------------------------
-# Source the variable definitions file
-#-----------------------------------------------------------------------
-
-. ${HOMErrfs}/ush/rrfs_nco_config.sh
-
-#-----------------------------------------------------------------------
-# Specify Execution Areas
-#-----------------------------------------------------------------------
-
-export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
-export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
-export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
-export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
-
-#-----------------------------------------------------------------------
 # Source the bash utility functions.
 #-----------------------------------------------------------------------
 
 . $USHrrfs/source_util_funcs.sh
-
-#-----------------------------------------------------------------------
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#-----------------------------------------------------------------------
-
-{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 
 #-----------------------------------------------------------------------
 # Get the full path to the file in which this script/function is located 
@@ -87,8 +77,20 @@ on the RRFS initial conditions.
 #-----------------------------------------------------------------------
 export pid=${pid:-$$}
 export outid=${outid:-"LL$job"}
-export RUN=${RUN:-rrfs}
-
+case "${WGF}" in
+  "det")
+    export RUN="rrfs"
+    ;;
+  "enkf")
+    export RUN="enkfrrfs"
+    ;;
+  "ensf")
+    export RUN="refs"
+    ;;
+  "firewx")
+    export RUN="firewx"
+    ;;
+esac
 if [ $WGF = "enkf" ] && [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   export ENSMEM_INDX=${MEMBER_NAME}
   export mem_num=m$(echo "${ENSMEM_INDX}")
@@ -98,7 +100,7 @@ else
   exit 1
 fi
 
-export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}}
+export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}}
 export shared_output_data=${umbrella_ics_data}/ics
 
 #-----------------------------------------------------------------------
@@ -128,10 +130,3 @@ print_info_msg "
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-
-#-----------------------------------------------------------------------
-# Restore the shell options saved at the beginning of this script/function.
-#-----------------------------------------------------------------------
-
-{ restore_shell_opts; } > /dev/null 2>&1
-

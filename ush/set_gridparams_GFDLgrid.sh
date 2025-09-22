@@ -1,3 +1,6 @@
+#!/bin/bash
+set -x
+
 #
 #-----------------------------------------------------------------------
 #
@@ -8,15 +11,6 @@
 #-----------------------------------------------------------------------
 #
 function set_gridparams_GFDLgrid() {
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -318,15 +312,6 @@ function set_gridparams_GFDLgrid() {
 #
 #-----------------------------------------------------------------------
 #
-# Save the current shell options and temporarily turn off the xtrace op-
-# tion to prevent clutter in stdout.
-#
-#-----------------------------------------------------------------------
-#
-  { save_shell_opts; set +x; } > /dev/null 2>&1
-#
-#-----------------------------------------------------------------------
-#
 # Now that the starting and ending tile 6 supergrid indices of the re-
 # gional grid with the wide halo have been calculated (and adjusted), we
 # recalculate the width of the wide halo on:
@@ -469,14 +454,5 @@ jend_of_t7_with_halo_on_t6sg = ${jend_of_t7_with_halo_on_t6sg})"
   eval ${output_varname_iend_of_t7_with_halo_on_t6sg}="${iend_of_t7_with_halo_on_t6sg}"
   eval ${output_varname_jstart_of_t7_with_halo_on_t6sg}="${jstart_of_t7_with_halo_on_t6sg}"
   eval ${output_varname_jend_of_t7_with_halo_on_t6sg}="${jend_of_t7_with_halo_on_t6sg}"
-#
-#-----------------------------------------------------------------------
-#
-# Restore the shell options before turning off xtrace.
-#
-#-----------------------------------------------------------------------
-#
-  { restore_shell_opts; } > /dev/null 2>&1
-
 }
 

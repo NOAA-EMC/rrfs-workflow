@@ -7,15 +7,7 @@
 #-----------------------------------------------------------------------
 #
 function check_var_valid_value() {
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-  { save_shell_opts; set -u +x; } > /dev/null 2>&1
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -132,14 +124,5 @@ ${var_name} must be set to one of the following:
   ${valid_var_values_str}"; \
     }
   fi
-#
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/function.
-#
-#-----------------------------------------------------------------------
-#
-  { restore_shell_opts; } > /dev/null 2>&1
-
 }
 

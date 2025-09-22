@@ -5,12 +5,83 @@ export PS4='+ $SECONDS + '
 set -xue
 
 #-----------------------------------------------------------------------
+# Specify Package Location
+#-----------------------------------------------------------------------
+export NET='rrfs'
+export MACHINE="WCOSS2"
+export WORKFLOW_MANAGER="ecflow"
+export HOMErrfs=${HOMErrfs:-""}
+export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
+export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
+export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
+export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
+export SORCrrfs=${SORCrrfs:-${HOMErrfs}/sorc}
+export FIXam=${FIXam:-${HOMErrfs}/fix/am}
+export FIXLAM=${FIXLAM:-${HOMErrfs}/fix/lam/RRFS_NA_3km}
+export FIXgsm=${FIXgsm:-${HOMErrfs}/fix/am}
+export FIX_GSI="${FIXrrfs}/gsi"
+export FIX_UPP="${FIXrrfs}/upp"
+export FIXprdgen="${FIXrrfs}/prdgen"
+export FIX_SMOKE_DUST="${FIXrrfs}/smoke_dust"
+export GRID_DIR="${HOMErrfs}/fix/lam/RRFS_NA_3km"
+export OROG_DIR="${HOMErrfs}/fix/lam/RRFS_NA_3km"
+export SFC_CLIMO_DIR="${HOMErrfs}/fix/lam/RRFS_NA_3km"
+export DIAG_TABLE_TMPL_FP="${PARMrrfs}/diag_table.RRFS_sas_clm"
+export MODEL_CONFIG_TMPL_FP="${PARMrrfs}/model_configure"
+export UFS_CONFIG_TMPL_FP="${PARMrrfs}/ufs.configure"
+export CCPP_PHYS_SUITE_FP="${PARMrrfs}/config/${WGF}/suite_RRFS_sas.xml"
+export DIAG_TABLE_FN="diag_table"
+export FV3_NML_FN="input.nml"
+export FV3_EXEC_FP="${EXECrrfs}/ufs_model"
+export THOMPSON_MP_CLIMO_FP="${FIXam}/Thompson_MP_MONTHLY_CLIMO.nc"
+export GRID_DIR="${HOMErrfs}/fix/lam/RRFS_NA_3km"
+export OROG_DIR="${HOMErrfs}/fix/lam/RRFS_NA_3km"
+export SFC_CLIMO_DIR="${HOMErrfs}/fix/lam/RRFS_NA_3km"
+export OBSPATH_NSSLMOSIAC="${DCOMROOT}/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC"
+export GLMFED_EAST_ROOT="${DCOMROOT}/ldmdata/obs/GOES-19/GLM/tiles"
+export GLMFED_WEST_ROOT="${DCOMROOT}/ldmdata/obs/GOES-18/GLM/tiles"
+export GVF_ROOT="${DCOMROOT}/viirs"
+export FIRE_RAVE_DIR="${DCOMROOT}"
+export TOPO_DIR="${FIXrrfs}/fix_orog"
+export SFC_CLIMO_INPUT_DIR="${FIXrrfs}/fix_sfc_climo"
+export AIRCRAFT_REJECT="${FIXrrfs}/gsi"
+export SFCOBS_USELIST="${FIXrrfs}/gsi"
+export CUSTOM_POST_CONFIG_FP="${FIXrrfs}/upp/postxconfig-NT-rrfs.txt"
+export CUSTOM_POST_PARAMS_FP="${FIXrrfs}/upp/params_grib2_tbl_new"
+export DATA_TABLE_FP="${PARMrrfs}/config/${WGF}/data_table"
+export FIELD_TABLE_FP="${PARMrrfs}/config/${WGF}/field_table"
+export FV3_NML_FP="${PARMrrfs}/config/${WGF}/input.nml"
+export UFS_YAML_FP="${PARMrrfs}/config/${WGF}/fd_ufs.yaml"
+export FV3_NML_RESTART_FP="${PARMrrfs}/config/${WGF}/input.nml_restart"
+if [ $WGF == "ensf" ]; then
+  export CUSTOM_POST_CONFIG_FP="${FIXrrfs}/upp/postxconfig-NT-refs.txt"
+fi
+if [ $WGF == "firewx" ]; then
+  export DIAG_TABLE_TMPL_FP="${PARMrrfs}/diag_table.RRFS_sas_nogwd"
+  export CCPP_PHYS_SUITE_FP="${PARMrrfs}/config/${WGF}/suite_RRFS_sas_nogwd.xml"
+  export CCPP_PHYS_SUITE='RRFS_sas_nogwd'
+  export CUSTOM_POST_CONFIG_FP="${FIXrrfs}/upp/postxconfig-NT-firewx.txt"
+fi
+
+#-----------------------------------------------------------------------
 # RRFS Forecast
 #-----------------------------------------------------------------------
 export pid=${pid:-$$}
 export outid=${outid:-"LL$job"}
-export RUN=${RUN:-rrfs}
-
+case "${WGF}" in
+  "det")
+    export RUN="rrfs"
+    ;;
+  "enkf")
+    export RUN="enkfrrfs"
+    ;;
+  "ensf")
+    export RUN="refs"
+    ;;
+  "firewx")
+    export RUN="firewx"
+    ;;
+esac
 if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
   export ENSMEM_INDX=${MEMBER_NAME}
   export mem_num=m$(echo "${ENSMEM_INDX}")
@@ -42,70 +113,64 @@ esac
 #-----------------------------------------------------------------------
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
-export COMrrfs=${COMrrfs:-$(compath.py -o rrfs/${rrfs_ver})}
-export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}
-export umbrella_forecast_data=${DATAROOT}/${RUN}_forecast_${cyc}_${rrfs_ver}/${WGF}
+export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}
 if [ ${CYCLE_TYPE} = "spinup" ]; then
-  export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}_spinup
-  export umbrella_forecast_data=${DATAROOT}/${RUN}_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
+  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}_spinup/${mem_num}
-    export umbrella_ics_data="${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}/ics"
-    export umbrella_forecast_data=${DATAROOT}/${RUN}_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
+    export umbrella_ics_data="${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}/ics"
+    export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
   else
-    export umbrella_ics_data="${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}/ics"
+    export umbrella_ics_data="${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver}/${WGF}/ics"
   fi
 else
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}/${mem_num}
-    export umbrella_ics_data="${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}/ics"
-    export umbrella_forecast_data=${DATAROOT}/${RUN}_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
+    export umbrella_ics_data="${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}/ics"
+    export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
   elif [ "${WGF}" = "firewx" ]; then
     export umbrella_ics_data="${DATAROOT}/firewx_ics_${cyc}_${rrfs_ver}/${WGF}/ics"
 
   # Fire weather nest location from NAM
     export COMINnam=${COMINnam:-$(compath.py nam/${nam_ver})}
   else
-    export umbrella_ics_data="${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}/ics"
+    export umbrella_ics_data="${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver}/${WGF}/ics"
   fi
 fi
 export FORECAST_INPUT_PRODUCT=${umbrella_forecast_data}/INPUT
 export shared_forecast_output_data=${umbrella_forecast_data}/output
 export shared_forecast_restart_data=${umbrella_forecast_data}/RESTART
 export DATA=${DATA:-${umbrella_forecast_data}/${jobid}}
-mkdir -p ${COMOUT}/forecast/RESTART ${DATA}/INPUT ${DATA}/RESTART ${shared_forecast_output_data} ${shared_forecast_restart_data}
+mkdir -p ${DATA}/INPUT ${DATA}/RESTART ${shared_forecast_output_data} ${shared_forecast_restart_data}
 cd ${DATA}
-export umbrella_post_data=${DATAROOT}/${RUN}_post_${cyc}_${rrfs_ver}/${WGF}
+export umbrella_post_data=${DATAROOT}/rrfs_post_${cyc}_${rrfs_ver}/${WGF}
 [[ -d ${umbrella_post_data} ]]&& rm -rf ${umbrella_post_data}
-#-----------------------------------------------------------------------
-# Source the variable definitions file
-#-----------------------------------------------------------------------
-
-. ${HOMErrfs}/ush/rrfs_nco_config.sh
 
 #-----------------------------------------------------------------------
-# Specify Execution Areas
+# Set PDY and create COM directories
 #-----------------------------------------------------------------------
+export cycle="t${cyc}z"
+setpdy.sh
+. ./PDY
+export CDATE="${PDY}${cyc}"
 
-export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
-export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
-export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
-export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
-export FIXam=${FIXam:-${FIXrrfs}/am}
-export FIX_SMOKE_DUST=${FIXrrfs}/smoke_dust
+export COMrrfs=${COMrrfs:-$(compath.py -o rrfs/${rrfs_ver})}
+export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}
+if [ ${CYCLE_TYPE} = "spinup" ]; then
+  export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}_spinup
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}_spinup/${mem_num}
+  fi
+else
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}/${mem_num}
+  fi
+fi
+mkdir -p ${COMOUT}/forecast/RESTART
 
 #-----------------------------------------------------------------------
 # Source the bash utility functions.
 #-----------------------------------------------------------------------
 
 . $USHrrfs/source_util_funcs.sh
-
-#-----------------------------------------------------------------------
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#-----------------------------------------------------------------------
-
-{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 
 #-----------------------------------------------------------------------
 # Get the full path to the file in which this script/function is located 
@@ -153,10 +218,3 @@ print_info_msg "
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-
-#-----------------------------------------------------------------------
-# Restore the shell options saved at the beginning of this script/function.
-#-----------------------------------------------------------------------
-
-{ restore_shell_opts; } > /dev/null 2>&1
-

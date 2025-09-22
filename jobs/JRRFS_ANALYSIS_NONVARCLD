@@ -5,12 +5,38 @@ export PS4='+ $SECONDS + '
 set -xue
 
 #-----------------------------------------------------------------------
+# Specify Package Location
+#-----------------------------------------------------------------------
+export NET='rrfs'
+export MACHINE="WCOSS2"
+export WORKFLOW_MANAGER="ecflow"
+export HOMErrfs=${HOMErrfs:-""}
+export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
+export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
+export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
+export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
+export FIX_GSI="${FIXrrfs}/gsi"
+
+
+#-----------------------------------------------------------------------
 # RRFS Non-Var Cloud Analysis
 #-----------------------------------------------------------------------
 export pid=${pid:-$$}
 export outid=${outid:-"LL$job"}
-export RUN=${RUN:-rrfs}
-
+case "${WGF}" in
+  "det")
+    export RUN="rrfs"
+    ;;
+  "enkf")
+    export RUN="enkfrrfs"
+    ;;
+  "ensf")
+    export RUN="refs"
+    ;;
+  "firewx")
+    export RUN="firewx"
+    ;;
+esac
 if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
   export ENSMEM_INDX=${MEMBER_NAME}
   export mem_num=m$(echo "${ENSMEM_INDX}")
@@ -39,21 +65,17 @@ esac
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
 if [ ${CYCLE_TYPE} = "spinup" ]; then
-  export umbrella_analysis_data=${umbrella_analysis_data:-${DATAROOT}/${RUN}_analysis_gsi_spinup_${cyc}_${rrfs_ver}/${WGF}}
-  export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/${RUN}_init_spinup_${cyc}_${rrfs_ver}/${WGF}}
-  export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}_spinup
-  export umbrella_forecast_data=${DATAROOT}/${RUN}_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
+  export umbrella_analysis_data=${umbrella_analysis_data:-${DATAROOT}/rrfs_analysis_gsi_spinup_${cyc}_${rrfs_ver}/${WGF}}
+  export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/rrfs_init_spinup_${cyc}_${rrfs_ver}/${WGF}}
+  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
 else
-  export umbrella_analysis_data=${umbrella_analysis_data:-${DATAROOT}/${RUN}_analysis_gsi_${cyc}_${rrfs_ver}/${WGF}}
-  export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/${RUN}_init_${cyc}_${rrfs_ver}/${WGF}}
-  export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}
-  export umbrella_forecast_data=${DATAROOT}/${RUN}_forecast_${cyc}_${rrfs_ver}/${WGF}
+  export umbrella_analysis_data=${umbrella_analysis_data:-${DATAROOT}/rrfs_analysis_gsi_${cyc}_${rrfs_ver}/${WGF}}
+  export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/rrfs_init_${cyc}_${rrfs_ver}/${WGF}}
+  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}
 fi
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  export COMOUT=${COMOUT}/${mem_num}
   export umbrella_forecast_data=${umbrella_forecast_data}/${mem_num}
 fi
-export COMOUT=${COMOUT}/analysis
 
 #-----------------------------------------------------------------------
 # Define forecast INPUT directories
@@ -66,37 +88,33 @@ export FORECAST_INPUT_PRODUCT=${umbrella_forecast_data}/INPUT
 export shared_output_data=${umbrella_analysis_data}/output
 export shared_output_data_init=${umbrella_init_data}/output
 export DATA=${DATA:-${DATAROOT}/${jobid}}
-mkdir -p ${DATA} ${shared_output_data} ${shared_output_data_init} ${COMOUT} ${FORECAST_INPUT_PRODUCT}
+mkdir -p ${DATA} ${shared_output_data} ${shared_output_data_init} ${FORECAST_INPUT_PRODUCT}
 cd ${DATA}
 
 #-----------------------------------------------------------------------
-# Source the variable definitions file
+# Set PDY and define COMOUT
 #-----------------------------------------------------------------------
+export cycle="t${cyc}z"
+setpdy.sh
+. ./PDY
 
-. ${HOMErrfs}/ush/rrfs_nco_config.sh
-
-#-----------------------------------------------------------------------
-# Specify Execution Areas
-#-----------------------------------------------------------------------
-
-export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
-export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
-export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
-export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
-export FIX_GSI=${FIXrrfs}/gsi
+if [ ${CYCLE_TYPE} = "spinup" ]; then
+  export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}_spinup
+else
+  export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}
+fi
+if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  export COMOUT=${COMOUT}/${mem_num}
+  export umbrella_forecast_data=${umbrella_forecast_data}/${mem_num}
+fi
+export COMOUT=${COMOUT}/analysis
+mkdir -p ${COMOUT}
 
 #-----------------------------------------------------------------------
 # Source the bash utility functions.
 #-----------------------------------------------------------------------
 
 . $USHrrfs/source_util_funcs.sh
-
-#-----------------------------------------------------------------------
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#-----------------------------------------------------------------------
-
-{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 
 #-----------------------------------------------------------------------
 # Get the full path to the file in which this script/function is located 
@@ -146,10 +164,3 @@ print_info_msg "
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-
-#-----------------------------------------------------------------------
-# Restore the shell options saved at the beginning of this script/function.
-#-----------------------------------------------------------------------
-
-{ restore_shell_opts; } > /dev/null 2>&1
-

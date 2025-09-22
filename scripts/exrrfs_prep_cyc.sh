@@ -1,5 +1,10 @@
 #!/bin/bash
+set -x
 
+source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+
+export CRES=${CRES:-"C3463"}
+export PREDEF_GRID_NAME=${PREDEF_GRID_NAME:-"RRFS_NA_3km"}
 #
 #-----------------------------------------------------------------------
 #
@@ -7,17 +12,7 @@
 #
 #-----------------------------------------------------------------------
 #
-. ${GLOBAL_VAR_DEFNS_FP}
 . $USHrrfs/source_util_funcs.sh
-#
-#-----------------------------------------------------------------------
-#
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ save_shell_opts; set -u -x; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -545,7 +540,6 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-COMINobsproc="${COMINobsproc:-$(compath.py obsproc/${obsproc_ver})}"
 if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
   echo "Update snow cover based on imssnow  at ${SNOWICE_update_hour}z"
   if [ -r "${COMINobsproc}/latest.SNOW_IMS" ]; then
@@ -554,7 +548,7 @@ if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
     cpreq -p ${COMINobsproc}/${YYJJJ2200000000} latest.SNOW_IMS
   elif [ -r "${COMINobsproc}/${OBSTYPE_SOURCE}.${YYYYMMDD}/${OBSTYPE_SOURCE}.t${HH}z.imssnow.grib2" ]; then
     cpreq -p ${COMINobsproc}/${OBSTYPE_SOURCE}.${YYYYMMDD}/${OBSTYPE_SOURCE}.t${HH}z.imssnow.grib2  latest.SNOW_IMS
-  elif [ -r "${COMINobsproc}/${OBSTYPE_SOURCE}_e.${YYYYMMDD}/rap_e.t${HH}z.imssnow.grib2" ]; then
+  elif [ -r "${COMINobsproc}/${OBSTYPE_SOURCE}_e.${YYYYMMDD}/${OBSTYPE_SOURCE}_e.t${HH}z.imssnow.grib2" ]; then
     cpreq -p ${COMINobsproc}/${OBSTYPE_SOURCE}_e.${YYYYMMDD}/${OBSTYPE_SOURCE}_e.t${HH}z.imssnow.grib2  latest.SNOW_IMS
   else
     echo "${COMINobsproc} data does not exist!!"
@@ -1303,12 +1297,3 @@ Prepare start completed successfully!!!
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-#
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/function.
-#
-#-----------------------------------------------------------------------
-#
-{ restore_shell_opts; } > /dev/null 2>&1
-
