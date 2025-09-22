@@ -18,10 +18,10 @@ Charter](https://docs.google.com/document/d/1uLbPx-pOWp7eECz_7VHRt_tQyD8PLFdrwo8
 
 The rrfs-workflow code is organized in the following subdirectories:
 
-* doc - the User Guide documentation.
+* docs - the User Guide documentation.
 * ecf - the ecFlow contents which will drive the RRFS workflow in NWS
   operations.
-* fix - static data.
+* fix - static data (not on git repo)
 * jobs - the main driver scripts (known as J-jobs) for each task. The
   workflow driver (either ecFlow or rocoto) submits these J-jobs.
 * modulefiles - module files for NOAA HPC systems.
