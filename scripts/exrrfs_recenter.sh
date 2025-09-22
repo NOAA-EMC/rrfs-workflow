@@ -46,7 +46,8 @@ if [ -s "${controlfile}" ] ; then
   ln -sf "${controlfile}"  ./mpasout_control.nc
   ${cpreq} "${controlfile}"  ./mpasout_mean.nc
 else
-  err_exit "Cannot find control background: ${controlfile}"
+  echo "Cannot find control background: ${controlfile}"
+  err_exit
 fi
 
 #
