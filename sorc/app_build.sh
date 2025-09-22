@@ -524,21 +524,8 @@ if [ $USE_SUB_MODULES = true ]; then
         load_module ""
     fi
 else
-	echo going to use ${HOME_DIR}/modulefiles
     module use ${HOME_DIR}/modulefiles
-        echo going to load ${MODULE_FILE}
     module load ${MODULE_FILE}
-    # unload unwanted old netcdf/hdf5
-    module unload netcdf/4.7.4
-    module unload hdf5/1.10.6
-    module load netcdf-B/4.9.2
-    module load hdf5-B/1.14.0
-
-    env | grep  NET
-    
-#    export NETCDF_INCLUDES
-    echo "NETCDF_INCLUDES is $NETCDF_INCLUDES"
-
 fi
 module list
 
