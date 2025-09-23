@@ -480,7 +480,14 @@ if [ ${BKTYPE} -eq 0 ]; then
   if [ "${STOCH}" = "TRUE" ]; then
     cpreq -p ${FV3_NML_RESTART_STOCH_FP} ${DATA}/${FV3_NML_FN}
   else
-    cpreq -p ${FV3_NML_RESTART_FP} ${DATA}/${FV3_NML_FN}
+  # believe need to create options here on the FV3_NML_RESTART_FP to copy in for different configs.
+    if [ $FCST_LEN_HRS -eq '18' ]; then
+    cpreq -p ${FV3_NML_RESTART_18HFORE_FP} ${DATA}/${FV3_NML_FN}
+    elif [ $FCST_LEN_HRS -eq '84' ]; then
+    cpreq -p ${FV3_NML_RESTART_LONG_FP} ${DATA}/${FV3_NML_FN}
+    elif [ $FCST_LEN_HRS -eq '1' ]; then
+    cpreq -p ${FV3_NML_RESTART_SPINUPCYC_FP} ${DATA}/${FV3_NML_FN}
+    fi
   fi
 else
   if [ -f "INPUT/cycle_surface.done" ]; then
@@ -754,6 +761,19 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+
+# figure out how best to define the quilt resources here for different runs
+if [ ${FCST_LEN_HRS} -eq '84' ]; then
+   export WRTCMP_write_groups=$WRTCMP_write_groups_LONGDET
+   export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_LONGDET
+elif [ ${FCST_LEN_HRS} -eq '18' ]; then
+   export WRTCMP_write_groups=$WRTCMP_write_groups_18HDET
+   export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_18HDET
+elif [ ${FCST_LEN_HRS} -eq '1' ]; then
+   export WRTCMP_write_groups=$WRTCMP_write_groups_SPINUP
+   export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_SPINUP
+fi
+
 $USHrrfs/create_model_configure_file.py \
   --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf \
   --cdate "${CDATE}" \
