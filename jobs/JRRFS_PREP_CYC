@@ -136,7 +136,6 @@ if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   fi
 fi
 export FORECAST_INPUT_PRODUCT=${umbrella_forecast_data}/INPUT
-#### [[ -d ${FORECAST_INPUT_PRODUCT} ]]&& rm -rf ${FORECAST_INPUT_PRODUCT}
 if [ ${CYCLE_SUBTYPE} == "ensinit" ] && [ -d ${FORECAST_INPUT_PRODUCT} ]; then
   echo "The forecast Umbrella INPUT directory exist. This is a rerun. Save the previous INPUT directory."
   mv ${FORECAST_INPUT_PRODUCT} ${FORECAST_INPUT_PRODUCT}_$$
