@@ -148,7 +148,7 @@ ECO_INPUTDIR=${DATADIR_CHEM}/aux/ecoregion/raw/
 #
 FMC_INPUTDIR=${DATADIR_CHEM}/aux/FMC/raw/${YYYY}/${MM}/
 
-if [[ "${CREATE_OWN_DATA}" == "TRUE" ]];
+if [[ "${CREATE_OWN_DATA}" == "TRUE" ]]; then
 RAVE_OUTPUTDIR=${DATA}
 ECO_OUTPUTDIR=${DATA}
 FMC_OUTPUTDIR=${DATA}
@@ -266,7 +266,7 @@ if [[ "${EMIS_SECTOR_TO_PROCESS}" == "rwc" ]]; then
    INPUTDIR=${DATADIR_CHEM}/emissions/anthro/raw/NEMO/RWC/total/
    NARR_INPUTDIR=${DATADIR_CHEM}/aux/narr_reanalysis_t2m/raw/
    
-   if [[ "${CREATE_OWN_DATA}" == "TRUE" ]];
+   if [[ "${CREATE_OWN_DATA}" == "TRUE" ]]; then
       NARR_OUTPUTDIR=${DATA}
       OUTPUTDIR=${DATA}
    else
@@ -340,7 +340,7 @@ if [[ "${EMIS_SECTOR_TO_PROCESS}" == "anthro" ]]; then
    GRA2PES_VERSION=v1.0
    #
    ANTHROEMIS_INPUTDIR=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_SECTOR}/${GRA2PES_YEAR}${MM}/${DOW_STRING}/
-   if [[ "${CREATE_OWN_DATA}" == "TRUE" ]];
+   if [[ "${CREATE_OWN_DATA}" == "TRUE" ]]; then
       ANTHROEMIS_OUTPUTDIR=${DATA}
    else
       ANTHROEMIS_OUTPUTDIR=${DATADIR_CHEM}/emissions/anthro/processed/${ANTHRO_EMISINV}/${MOY}/${DOW_STRING}/
@@ -434,7 +434,7 @@ fi # anthro?
 if [[ "${EMIS_SECTOR_TO_PROCESS}" == "pollen" ]]; then
 #
 EMISINPUTDIR=${DATADIR_CHEM}/emissions/pollen/raw/${YYYY}/
-if [[ "${CREATE_OWN_DATA}" == "TRUE" ]];
+if [[ "${CREATE_OWN_DATA}" == "TRUE" ]]; then
    EMISOUTPUTDIR=${DATA}
 else
    EMISOUTPUTDIR=${DATADIR_CHEM}/emissions/pollen/processed/${YYYY}/
@@ -493,7 +493,7 @@ if [[ "${EMIS_SECTOR_TO_PROCESS}" == "dust" ]]; then
    LINKEDEMISFILE=${UMBRELLA_PREP_CHEM_DATA}/dust.init.nc
 
    DUST_INPUTDIR=${DATADIR_CHEM}/dust/raw/
-   if [[ "${CREATE_OWN_DATA}" == "TRUE" ]];
+   if [[ "${CREATE_OWN_DATA}" == "TRUE" ]]; then
       DUST_OUTPUTDIR=${DATA} 
    else
       DUST_OUTPUTDIR=${DATADIR_CHEM}/dust/processed/
