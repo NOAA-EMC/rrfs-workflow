@@ -73,10 +73,6 @@ sed -e "s/@restart_interval@/${restart_interval}/" -e "s/@history_interval@/${hi
     -e "s/@diag_interval@/${diag_interval}/" -e "s/@lbc_interval@/${lbc_interval}/" \
     "${PARMrrfs}"/streams.atmosphere  > streams.atmosphere
 
-# append the chemistry streams, link the emissions
-    if [[ "${DO_ANTHRO}" == "TRUE" ]] ; then 
-    fi
-
 #
 if [[ ${DO_CHEMISTRY} == "TRUE" ]] ; then
 #
