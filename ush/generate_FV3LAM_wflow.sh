@@ -742,6 +742,16 @@ if [ "${DO_DACYCLE}" = "TRUE" ]; then
     Please ensure that path_resolved is an existing directory and then rerun
     the experiment generation script."
   fi
+  # Resolve the target directory that the FIXjedi symlink points to
+  ln -fsn "$FIX_JEDI" "$FIXjedi"
+  path_resolved=$( readlink -m "$FIXjedi" )
+  if [ ! -d "${path_resolved}" ]; then
+    print_err_msg_exit "Missing link to FIXjedi
+    FIXjedi = \"$FIXjedi\"
+    path_resolved = \"${path_resolved}\"
+    Please ensure that path_resolved is an existing directory and then rerun
+    the experiment generation script."
+  fi
 fi  # check if DA
 
 # Resolve the target directory that the FIXcrtm symlink points to
