@@ -477,10 +477,8 @@ ${MKDIR} -p ${EMISOUTPUTDIR}
    else
       ncrename -v GRA_POLL,e_bio_in_polp_grass -v RAG_POLL,e_bio_in_polp_weed -v TREE_POLL,e_bio_in_polp_tree ${EMISFILE}
       ncks -O -6 ${EMISFILE} ${EMISFILE}
-      ncks -A -v  ${DATA}/${MESH_NAME}.init.nc ${EMISFILE}
       ${LN} -sf ${EMISFILE} ${LINKEDEMISFILE}
       ${ECHO} "Linked pollen file ${EMISFILE}, exiting"
-      exit 0
    fi
 fi # bio/pollen
 

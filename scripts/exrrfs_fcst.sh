@@ -78,30 +78,30 @@ if [[ ${DO_CHEMISTRY} == "TRUE" ]] ; then
 #
    # Biogenic/Pollen
    if [[ -r "${UMBRELLA_PREP_CHEM_DATA}/bio.init.nc" ]]; then
-      sed -i "`wc -l < "${PARMrrfs}"/streams.atmosphere`i\\`cat streams.atmosphere.pollen`\\" streams.atmosphere
+      sed -i '$e cat "${PARMrrfs}"/chemistry/streams.atmosphere.pollen' streams.atmosphere
       ln -snf ${UMBRELLA_PREP_CHEM_DATA}/bio.init.nc bio.init.nc
    fi
    # Dust
    if [[ -r "${UMBRELLA_PREP_CHEM_DATA}/dust.init.nc" ]]; then
-      sed -i "`wc -l < "${PARMrrfs}"/chemistry/streams.atmosphere`i\\`cat streams.atmosphere.dust`\\" streams.atmosphere
+      sed -i '$e cat "${PARMrrfs}"/chemistry/streams.atmosphere.dust' streams.atmosphere
       ln -snf ${UMBRELLA_PREP_CHEM_DATA}/dust.init.nc dust.init.nc
    fi
    # Anthropogenic
    nanthrofiles=`ls ${UMBRELLA_PREP_CHEM_DATA}/anthro.init* | wc -l`
    if [[ ${nanthrofiles} -gt 0 ]]; then
-      sed -i "`wc -l < "${PARMrrfs}"/chemistry/streams.atmosphere`i\\`cat streams.atmosphere.anthro`\\" streams.atmosphere
+      sed -i '$e cat "${PARMrrfs}"/chemistry/streams.atmosphere.anthro' streams.atmosphere
       ln -snf ${UMBRELLA_PREP_CHEM_DATA}/anthro.init* ./
    fi
    # Smoke/Wildfire
    nfirefiles=`ls ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.* | wc -l`
    if [[ ${nfirefiles} -gt 0 ]]; then
+      sed -i '$e cat "${PARMrrfs}"/chemistry/streams.atmosphere.smoke_retro' streams.atmosphere
       # TODO, retro vs. forecast option
-      sed -i "`wc -l < "${PARMrrfs}"/chemistry/streams.atmosphere`i\\`cat streams.atmosphere.smoke_retro`\\" streams.atmosphere
       ln -snf ${UMBRELLA_PREP_CHEM_DATA}/smoke.init* ./
    fi
    # RWC
    if [[ -r "${UMBRELLA_PREP_CHEM_DATA}/rwc.init.nc" ]]; then
-      sed -i "`wc -l < "${PARMrrfs}"/chemistry/streams.atmosphere`i\\`cat streams.atmosphere.smoke_forecast`\\" streams.atmosphere
+      sed -i '$e cat "${PARMrrfs}"/chemistry/streams.atmosphere.rwc' streams.atmosphere
       ln -snf ${UMBRELLA_PREP_CHEM_DATA}/rwc.init.nc rwc.init.nc
    fi
 #
