@@ -554,17 +554,17 @@ if [ ${CYCLE_TYPE} = "spinup" ]; then
   WRITE_TSK="${WRTCMP_write_tasks_per_group_SPINUP}"
 else
   FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$cyc]}
-  if [ $FCST_LEN_HRS -eq 18 ]; then
+  if [ $FCST_LEN_HRS -eq '18' ]; then
     LAYOUT_X="${LAYOUT_X_18H}" 
     LAYOUT_Y="${LAYOUT_Y_18H}" 
     WRITE_GRP="${WRTCMP_write_groups_18H}"
     WRITE_TSK="${WRTCMP_write_tasks_per_group_18H}"
-  elif [ $FCST_LEN_HRS -eq 84 ] ; then
+  elif [ $FCST_LEN_HRS -eq '84' ] ; then
     LAYOUT_X="${LAYOUT_X_LONG}" 
     LAYOUT_Y="${LAYOUT_Y_LONG}" 
     WRITE_GRP="${WRTCMP_write_groups_LONG}"
     WRITE_TSK="${WRTCMP_write_tasks_per_group_LONG}"
-  elif [ $FCST_LEN_HRS -eq 60 ] ; then
+  elif [ $FCST_LEN_HRS -eq '60' ] ; then
     LAYOUT_X="${LAYOUT_X_ENSF}" 
     LAYOUT_Y="${LAYOUT_Y_ENSF}" 
     WRITE_GRP="${WRTCMP_write_groups_ENSF}"
@@ -787,11 +787,14 @@ fi
 
 # figure out how best to define the quilt resources here for different runs
 if [ ${FCST_LEN_HRS} -eq '84' ]; then
-   export WRTCMP_write_groups=$WRTCMP_write_groups_LONGDET
-   export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_LONGDET
+   export WRTCMP_write_groups=$WRTCMP_write_groups_LONG
+   export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_LONG
+elif [ ${FCST_LEN_HRS} -eq '60' ]; then
+   export WRTCMP_write_groups=$WRTCMP_write_groups_ENSF
+   export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_ENSF
 elif [ ${FCST_LEN_HRS} -eq '18' ]; then
-   export WRTCMP_write_groups=$WRTCMP_write_groups_18HDET
-   export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_18HDET
+   export WRTCMP_write_groups=$WRTCMP_write_groups_18H
+   export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_18H
 elif [ ${FCST_LEN_HRS} -eq '1' ]; then
    export WRTCMP_write_groups=$WRTCMP_write_groups_SPINUP
    export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_SPINUP
