@@ -3,7 +3,7 @@
 #
 #-----------------------------------------------------------------------
 #
-# This J-JOB script runs the applications after analysis 
+# This J-JOB script runs the GSI analysis 
 #
 #-----------------------------------------------------------------------
 
@@ -72,30 +72,19 @@ if [ "${CYCLE_TYPE}" = "spinup" ]; then
 else
   analworkname="_gsi"
 fi
-
-if [[ ! -v OB_TYPE ]]; then
-  OB_TYPE="conv"
-fi
-if [ "${GSI_TYPE}" = "OBSERVER" ]; then
-  if [ "${MEM_TYPE}" = "MEAN" ]; then
-    analworkdir="${CYCLE_DIR}/ensmean/observer${analworkname}"
-    SLASH_ENSMEM_SUBDIR=""
-  else
-    analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/observer${analworkname}"
-  fi
+analworkdir_conv_dbz="${CYCLE_DIR}/anal_conv_dbz${analworkname}"
+if [ -r ${analworkdir_conv_dbz} ] ; then
+  export analworkdir_conv="${analworkdir_conv_dbz}"
+  export analworkdir_dbz="${analworkdir_conv_dbz}"
 else
-  analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/anal_${OB_TYPE}${analworkname}"
+  export analworkdir_conv="${CYCLE_DIR}/anal_conv${analworkname}"
+  export analworkdir_dbz="${CYCLE_DIR}/anal_radardbz${analworkname}"
 fi
 
-if [[ ! -d ${analworkdir} ]]; then
-  echo "cannot find analysis directory"
-  exit 
+if [ ! -d "${SATBIAS_DIR}" ]; then
+  echo "making satbias_dir directory for cycling bias correction files" 
+  mkdir -p ${SATBIAS_DIR}
 fi
-cd ${analworkdir}
-#
-#  directory has grid_spec files for restart subdomains
-#
-export gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #
 #-----------------------------------------------------------------------
 #
@@ -103,9 +92,14 @@ export gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #
 #-----------------------------------------------------------------------
 #
-export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
+else
+  if [ "${MEM_TYPE}" = "MEAN" ]; then
+    export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc/ensmean"
+  else
+    export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}${SLASH_ENSMEM_SUBDIR}"
+  fi
 fi
 mkdir -p "${COMOUT}"
 #
@@ -115,16 +109,14 @@ mkdir -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #
-export pgmout="${analworkdir}/OUTPUT.$$"
+# Below path to pgmout is temporary. It should be modified later
+export pgmout="${COMOUT}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_run_postanal.sh \
-             cycle_dir="${CYCLE_DIR}" \
+$SCRIPTSdir/exrrfs_analysis_gsidiag.sh \
              gsi_type="${GSI_TYPE}" \
              mem_type="${MEM_TYPE}" \
-             slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}" \
-             satbias_dir="${SATBIAS_DIR}" \
-             ob_type="${OB_TYPE}"
+             satbias_dir="${SATBIAS_DIR}"
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then
