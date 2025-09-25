@@ -94,8 +94,8 @@ case $MACHINE in
     export MPICH_OFI_STARTUP_CONNECT=1
     export MPICH_OFI_VERBOSE=1
     export MPICH_OFI_NIC_VERBOSE=1
-#    APRUN="mpiexec -n ${PE_MEMBER01} -ppn ${PPN_FORECAST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
     ;;
+#    APRUN="mpiexec -n ${PE_MEMBER01} -ppn ${PPN_FORECAST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
 
   "HERA")
     APRUN="srun --export=ALL --mem=0"
@@ -481,12 +481,16 @@ if [ ${BKTYPE} -eq 0 ]; then
     cpreq -p ${FV3_NML_RESTART_STOCH_FP} ${DATA}/${FV3_NML_FN}
   else
   # believe need to create options here on the FV3_NML_RESTART_FP to copy in for different configs.
+
+    if [ ${CYCLE_TYPE} = "spinup" ]; then
+    cpreq -p ${FV3_NML_RESTART_SPINUPCYC_FP} ${DATA}/${FV3_NML_FN}
+    else
+
     if [ $FCST_LEN_HRS -eq '18' ]; then
     cpreq -p ${FV3_NML_RESTART_18HFORE_FP} ${DATA}/${FV3_NML_FN}
     elif [ $FCST_LEN_HRS -eq '84' ]; then
     cpreq -p ${FV3_NML_RESTART_LONG_FP} ${DATA}/${FV3_NML_FN}
-    elif [ $FCST_LEN_HRS -eq '1' ]; then
-    cpreq -p ${FV3_NML_RESTART_SPINUPCYC_FP} ${DATA}/${FV3_NML_FN}
+    fi
     fi
   fi
 else
@@ -570,10 +574,11 @@ else
     WRITE_GRP="${WRTCMP_write_groups_ENSF}"
     WRITE_TSK="${WRTCMP_write_tasks_per_group_ENSF}"
   fi
-PE_RAW=$(( LAYOUT_X*LAYOUT_Y ))
-PE_FCST==$(( ${PE_RAW} + ${WRITE_GRP}*${WRITE_TSK} ))
-APRUN="mpiexec -n ${PE_FCST} -ppn ${PPN_FORECAST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
 fi
+
+PE_RAW=$(( LAYOUT_X*LAYOUT_Y ))
+PE_FCST=$(( ${PE_RAW} + ${WRITE_GRP}*${WRITE_TSK} ))
+APRUN="mpiexec -n ${PE_FCST} -ppn ${PPN_FORECAST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
 
 #
 #-----------------------------------------------------------------------
@@ -786,6 +791,11 @@ fi
 #
 
 # figure out how best to define the quilt resources here for different runs
+if [ ${CYCLE_TYPE} = "spinup" ]; then
+   export WRTCMP_write_groups=$WRTCMP_write_groups_SPINUP
+   export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_SPINUP
+else
+
 if [ ${FCST_LEN_HRS} -eq '84' ]; then
    export WRTCMP_write_groups=$WRTCMP_write_groups_LONG
    export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_LONG
@@ -795,9 +805,8 @@ elif [ ${FCST_LEN_HRS} -eq '60' ]; then
 elif [ ${FCST_LEN_HRS} -eq '18' ]; then
    export WRTCMP_write_groups=$WRTCMP_write_groups_18H
    export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_18H
-elif [ ${FCST_LEN_HRS} -eq '1' ]; then
-   export WRTCMP_write_groups=$WRTCMP_write_groups_SPINUP
-   export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_SPINUP
+fi
+
 fi
 
 $USHrrfs/create_model_configure_file.py \
