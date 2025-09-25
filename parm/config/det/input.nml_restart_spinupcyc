@@ -102,7 +102,7 @@
     kord_tm = -9
     kord_tr = 9
     kord_wz = 9
-    layout = 25, 64
+    layout = 29, 64
     make_nh = .false.
     mountain = .true.
     n_split = 5
