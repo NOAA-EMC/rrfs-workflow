@@ -94,7 +94,7 @@ case $MACHINE in
     export MPICH_OFI_STARTUP_CONNECT=1
     export MPICH_OFI_VERBOSE=1
     export MPICH_OFI_NIC_VERBOSE=1
-    APRUN="mpiexec -n ${PE_MEMBER01} -ppn ${PPN_FORECAST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
+#    APRUN="mpiexec -n ${PE_MEMBER01} -ppn ${PPN_FORECAST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
     ;;
 
   "HERA")
@@ -547,9 +547,32 @@ fi
 #-----------------------------------------------------------------------
 #
 if [ ${CYCLE_TYPE} = "spinup" ]; then
-  FCST_LEN_HRS=${FCST_LEN_HRS_SPINUP}
+  FCST_LEN_HRS="${FCST_LEN_HRS_SPINUP}"
+  LAYOUT_X="${LAYOUT_X_SPINUP}"
+  LAYOUT_Y="${LAYOUT_Y_SPINUP}"
+  WRITE_GRP="${WRTCMP_write_groups_SPINUP}"
+  WRITE_TSK="${WRTCMP_write_tasks_per_group_SPINUP}"
 else
   FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$cyc]}
+  if [ $FCST_LEN_HRS -eq 18 ]; then
+    LAYOUT_X="${LAYOUT_X_18H}" 
+    LAYOUT_Y="${LAYOUT_Y_18H}" 
+    WRITE_GRP="${WRTCMP_write_groups_18H}"
+    WRITE_TSK="${WRTCMP_write_tasks_per_group_18H}"
+  elif [ $FCST_LEN_HRS -eq 84 ] ; then
+    LAYOUT_X="${LAYOUT_X_LONG}" 
+    LAYOUT_Y="${LAYOUT_Y_LONG}" 
+    WRITE_GRP="${WRTCMP_write_groups_LONG}"
+    WRITE_TSK="${WRTCMP_write_tasks_per_group_LONG}"
+  elif [ $FCST_LEN_HRS -eq 60 ] ; then
+    LAYOUT_X="${LAYOUT_X_ENSF}" 
+    LAYOUT_Y="${LAYOUT_Y_ENSF}" 
+    WRITE_GRP="${WRTCMP_write_groups_ENSF}"
+    WRITE_TSK="${WRTCMP_write_tasks_per_group_ENSF}"
+  fi
+PE_RAW=$(( LAYOUT_X*LAYOUT_Y ))
+PE_FCST==$(( ${PE_RAW} + ${WRITE_GRP}*${WRITE_TSK} ))
+APRUN="mpiexec -n ${PE_FCST} -ppn ${PPN_FORECAST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
 fi
 
 #
