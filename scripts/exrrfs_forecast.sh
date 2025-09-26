@@ -486,6 +486,7 @@ if [ ${BKTYPE} -eq 0 ]; then
     cpreq -p ${FV3_NML_RESTART_SPINUPCYC_FP} ${DATA}/${FV3_NML_FN}
     else
 
+    FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$cyc]}
     if [ $FCST_LEN_HRS -eq '18' ]; then
     cpreq -p ${FV3_NML_RESTART_18HFORE_FP} ${DATA}/${FV3_NML_FN}
     elif [ $FCST_LEN_HRS -eq '84' ]; then
