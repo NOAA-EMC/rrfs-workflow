@@ -66,25 +66,53 @@ the specified cycle.
 #   others(prod): this job is for product cycle
 #
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
+export observer_nwges_dir=""
 
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   analworkname="_gsi_spinup"
 else
   analworkname="_gsi"
 fi
-analworkdir_conv_dbz="${CYCLE_DIR}/anal_conv_dbz${analworkname}"
-if [ -r ${analworkdir_conv_dbz} ] ; then
-  export analworkdir_conv="${analworkdir_conv_dbz}"
-  export analworkdir_dbz="${analworkdir_conv_dbz}"
-else
-  export analworkdir_conv="${CYCLE_DIR}/anal_conv${analworkname}"
-  export analworkdir_dbz="${CYCLE_DIR}/anal_radardbz${analworkname}"
+
+if [[ ! -v OB_TYPE ]]; then
+  OB_TYPE="conv"
 fi
+if [ "${GSI_TYPE}" = "OBSERVER" ]; then
+  if [ "${MEM_TYPE}" = "MEAN" ]; then
+    export analworkdir="${CYCLE_DIR}/ensmean/observer${analworkname}"
+    SLASH_ENSMEM_SUBDIR=""
+    observer_nwges_dir="${NWGES_DIR}/ensmean/observer${analworkname}"
+  else
+    export analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/observer${analworkname}"
+    observer_nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/observer${analworkname}"
+  fi
+  mkdir -p ${observer_nwges_dir}
+else
+  export analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/anal_${OB_TYPE}${analworkname}"
+fi
+
+rm -fr ${analworkdir}
+mkdir -p ${analworkdir}
+cd ${analworkdir}
 
 if [ ! -d "${SATBIAS_DIR}" ]; then
   echo "making satbias_dir directory for cycling bias correction files" 
   mkdir -p ${SATBIAS_DIR}
 fi
+
+# Folder for storing EnKF related satbias files
+if [ "${GSI_TYPE}" = "OBSERVER" ]; then
+  if [ "${MEM_TYPE}" = "MEAN" ]; then
+    if [ ! -d "${SATBIAS_DIR}_ensmean" ]; then
+      echo "making satbias_dir ensmean directory for cycling bias correction files" 
+      mkdir -p ${SATBIAS_DIR}_ensmean
+    fi    	  
+  fi
+fi
+#
+#  directory has grid_spec files for restart subdomains
+#
+export gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #
 #-----------------------------------------------------------------------
 #
@@ -105,18 +133,21 @@ mkdir -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job
+# Call the ex-script for this J-job.
 #
 #-----------------------------------------------------------------------
 #
-# Below path to pgmout is temporary. It should be modified later
-export pgmout="${COMOUT}/OUTPUT.$$"
+export pgmout="${analworkdir}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_run_gsidiag.sh \
+$SCRIPTSdir/exrrfs_analysis_gsi.sh \
+             cycle_dir="${CYCLE_DIR}" \
              gsi_type="${GSI_TYPE}" \
              mem_type="${MEM_TYPE}" \
-             satbias_dir="${SATBIAS_DIR}"
+             slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}" \
+             rrfse_fg_root="${RRFSE_NWGES_BASEDIR}" \
+             satbias_dir="${SATBIAS_DIR}" \
+             ob_type="${OB_TYPE}"
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then

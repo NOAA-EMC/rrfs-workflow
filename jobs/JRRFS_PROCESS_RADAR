@@ -3,8 +3,7 @@
 #
 #-----------------------------------------------------------------------
 #
-# This script runs the post-processor (UPP) on the NetCDF output files
-# of the write component of the FV3-LAM model.
+# This J-JOB script runs the radar reflectivity preprocess 
 #
 #-----------------------------------------------------------------------
 #
@@ -54,60 +53,45 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs the post-processor (UPP)
-on the output files corresponding to a specified forecast hour.
+This is the J-job script for the task that runs a radar reflectivity 
+preprocess with FV3 for the specified cycle.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
 #
-# Set the run directory.
+# Create the working directory under the cycle directory.
 #
 #-----------------------------------------------------------------------
-# CYCLE_TYPE is to indicate which type of cycle this job for:
-#   spinup: this job is for spin-up cycles
-#   others(prod): this job is for product cycle
 #
-CYCLE_TYPE=${CYCLE_TYPE:-prod}
-if [ ${CYCLE_TYPE} == "spinup" ]; then
-  export run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_spinup"
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export workdir=${CYCLE_DIR}/process_radarref_spinup
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    workdir=${CYCLE_DIR}/process_radarref_spinup_enkf
+  fi
 else
-  export run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
+  export workdir=${CYCLE_DIR}/process_radarref
+  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+    workdir=${CYCLE_DIR}/process_radarref_enkf
+  fi
 fi
+rm -fr ${workdir}
+mkdir -p ${workdir}
+cd ${workdir}
+#
+export gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #
 #-----------------------------------------------------------------------
 #
-# If it doesn't already exist, create the directory (postprd_dir) in which 
-# to store post-processing output.  (Note that postprd_dir may already 
-# have been created by this post-processing script run for a different 
-# forecast hour of the same cycle and/or ensemble member.)  Also, create 
-# a temporary work directory (fhr_dir) for the current forecast hour.  
-# fhr_dir will be deleted later after the processing for the current 
-# forecast hour is complete.  Then change location to fhr_dir.
-#
-# Note that there may be a preexisting version of fhr_dir from previous 
-# runs of this script for the current forecast hour (and current cycle), 
-# e.g. from the workflow task that runs this script failing and then being 
-# called again.  Thus, we first make sure preexisting versions are deleted.
+# create COMOUT directory
 #
 #-----------------------------------------------------------------------
 #
-export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
-if [ ${CYCLE_TYPE} = "spinup" ]; then
-  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
+else
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
 fi
 mkdir -p "${COMOUT}"
-
-export postprd_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/postprd"
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  postprd_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/postprd_spinup"
-fi
-mkdir -p "${postprd_dir}"
-
-export fhr_dir="${postprd_dir}/$fhr"
-check_for_preexist_dir_file "${fhr_dir}" "delete"
-mkdir -p "${fhr_dir}"
-
-cd "${fhr_dir}"
 #
 #-----------------------------------------------------------------------
 #
@@ -115,15 +99,12 @@ cd "${fhr_dir}"
 #
 #-----------------------------------------------------------------------
 #
-export pgmout="${fhr_dir}/OUTPUT.$$"
+export pgmout="${workdir}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_run_post.sh \
-  cdate="${CDATE}" \
-  fhr="${fhr}" \
-  tmmark="${TMMARK}" \
-  cycle_type="${CYCLE_TYPE}" \
-  ensmem_indx="${ENSMEM_INDX}"
+$SCRIPTSdir/exrrfs_process_radar.sh \
+  CYCLE_DIR="${CYCLE_DIR}" cycle_type="${CYCLE_TYPE}" \
+  RADAR_REF_THINNING="${RADAR_REF_THINNING}"
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then
