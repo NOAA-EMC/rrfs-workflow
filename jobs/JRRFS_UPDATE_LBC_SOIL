@@ -3,12 +3,9 @@
 #
 #-----------------------------------------------------------------------
 #
-# This script copies files from various directories into the experiment
-# directory, creates links to some of them, and modifies others (e.g. 
-# templates) to customize them for the current experiment setup.
+# This J-JOB script runs the applications after analysis 
 #
 #-----------------------------------------------------------------------
-#
 
 #
 #-----------------------------------------------------------------------
@@ -55,53 +52,79 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs a forecast with FV3 for 
+This is the J-job script for the task that runs a analysis with FV3 for 
 the specified cycle.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
 #
-# Create the INPUT and RESTART directories under the run directory.
+# Create the working directory under the cycle directory.
 #
 #-----------------------------------------------------------------------
 # CYCLE_TYPE is to indicate which type of cycle this job for:
 #   spinup: this job is for spin-up cycles
 #   others(prod): this job is for product cycle
 #
-CYCLE_TYPE=${CYCLE_TYPE:-prod}
-CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
-if [ ${CYCLE_TYPE} == "spinup" ]; then
-  export run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_spinup"
-  if  [ ${CYCLE_SUBTYPE} == "ensinit" ]; then
-    run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam_ensinit"
-  fi
+export CYCLE_TYPE=${CYCLE_TYPE:-prod}
+
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  analworkname="_gsi_spinup"
 else
-  export run_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/fcst_fv3lam"
+  analworkname="_gsi"
 fi
 
-mkdir -p ${run_dir}/INPUT
-mkdir -p ${run_dir}/RESTART
+if [[ ! -v OB_TYPE ]]; then
+  OB_TYPE="conv"
+fi
+if [ "${GSI_TYPE}" = "OBSERVER" ]; then
+  if [ "${MEM_TYPE}" = "MEAN" ]; then
+    analworkdir="${CYCLE_DIR}/ensmean/observer${analworkname}"
+    SLASH_ENSMEM_SUBDIR=""
+  else
+    analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/observer${analworkname}"
+  fi
+else
+  analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/anal_${OB_TYPE}${analworkname}"
+fi
 
+if [[ ! -d ${analworkdir} ]]; then
+  echo "cannot find analysis directory"
+  exit 
+fi
+cd ${analworkdir}
+#
+#  directory has grid_spec files for restart subdomains
+#
 export gridspec_dir=${NWGES_BASEDIR}/grid_spec
-mkdir -p ${gridspec_dir}
-
-cd ${run_dir}
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job.
+# create COMOUT directory
 #
 #-----------------------------------------------------------------------
 #
-export pgmout="${run_dir}/OUTPUT.$$"
+export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc${SLASH_ENSMEM_SUBDIR}"
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
+  COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
+fi
+mkdir -p "${COMOUT}"
+#
+#-----------------------------------------------------------------------
+#
+# Call the ex-script for this J-job
+#
+#-----------------------------------------------------------------------
+#
+export pgmout="${analworkdir}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_run_fcst.sh \
-  cdate="${CDATE}" \
-  cycle_type="${CYCLE_TYPE}" \
-  cycle_subtype="${CYCLE_SUBTYPE}" \
-  ensmem_indx="${ENSMEM_INDX}" \
-  slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}"
+$SCRIPTSdir/exrrfs_update_lbc_soil.sh \
+             cycle_dir="${CYCLE_DIR}" \
+             gsi_type="${GSI_TYPE}" \
+             mem_type="${MEM_TYPE}" \
+             slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}" \
+             satbias_dir="${SATBIAS_DIR}" \
+             ob_type="${OB_TYPE}"
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then
