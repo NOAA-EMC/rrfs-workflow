@@ -65,7 +65,7 @@ fi
 if [[ $DO_RETRO == "TRUE" ]] ; then
 
   if [[ $MACHINE == "jet" ]] ; then
-    RETRODATAPATH="/lfs4/BMC/wrfruc/RRFS_RETRO_DATA"
+    RETRODATAPATH="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024"
     if [ ${EXTRN_MDL_NAME_ICS} == "FV3GFS" ] ; then
       EXTRN_MDL_SOURCE_BASEDIR_ICS=${RETRODATAPATH}/gfs/0p25deg/grib2
     elif [ ${EXTRN_MDL_NAME_ICS} == "GEFS" ] ; then
