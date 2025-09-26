@@ -100,6 +100,7 @@ Settings:
   BUILD_RRFS_UTILS=${BUILD_RRFS_UTILS}
   BUILD_NEXUS=${BUILD_NEXUS}
   BUILD_AQM_UTILS=${BUILD_AQM_UTILS}
+  BUILD_RDASAPP=${BUILD_RDASAPP}
 
 EOF_SETTINGS
 }
@@ -142,6 +143,7 @@ BUILD_GSI="off"
 BUILD_RRFS_UTILS="off"
 BUILD_NEXUS="off"
 BUILD_AQM_UTILS="off"
+BUILD_RDASAPP="off"
 
 # Make options
 CLEAN=false
@@ -200,7 +202,8 @@ while :; do
     default) ;;
     all) DEFAULT_BUILD=false; BUILD_UFS="on";
          BUILD_UFS_UTILS="on"; BUILD_UPP="on";
-         BUILD_GSI="on"; BUILD_RRFS_UTILS="on";;
+         BUILD_GSI="on"; BUILD_RRFS_UTILS="on";
+         BUILD_RDASAPP="on";;
     ufs) DEFAULT_BUILD=false; BUILD_UFS="on" ;;
     ufs_utils) DEFAULT_BUILD=false; BUILD_UFS_UTILS="on" ;;
     upp) DEFAULT_BUILD=false; BUILD_UPP="on" ;;
@@ -208,6 +211,7 @@ while :; do
     rrfs_utils) DEFAULT_BUILD=false; BUILD_RRFS_UTILS="on" ;;
     nexus) DEFAULT_BUILD=false; BUILD_NEXUS="on" ;;
     aqm_utils) DEFAULT_BUILD=false; BUILD_AQM_UTILS="on" ;;
+    rdasapp) DEFAULT_BUILD=false; BUILD_RDASAPP="on" ;;
     # unknown
     -?*|?*) usage_error "Unknown option $1" ;;
     *) break
@@ -297,6 +301,10 @@ if [ "${EXTRN}" = true ]; then
     printf "... removing AQM-utils ...\n"
     rm -rf "${SORC_DIR}/AQM-utils"
   fi
+  if [ -d "${SORC_DIR}/RDASApp" ]; then
+    printf "... removing RDASApp ...\n"
+    rm -rf "${HOME_DIR}/RDASApp"
+  fi
 
   # run check-out
   python --version 1>/dev/null 2>/dev/null
@@ -319,6 +327,7 @@ if [ "${DEFAULT_BUILD}" = true ]; then
   BUILD_GSI="on"
   BUILD_RRFS_UTILS="on"
   BUILD_AQM_UTILS="on"
+  BUILD_RDASAPP="on"
 fi
 
 # Choose components to build for air quality modeling (RRFS-AQM)
@@ -427,6 +436,7 @@ CMAKE_SETTINGS="\
  -DBUILD_RRFS_UTILS=${BUILD_RRFS_UTILS}\
  -DBUILD_NEXUS=${BUILD_NEXUS}\
  -DBUILD_AQM_UTILS=${BUILD_AQM_UTILS}\
+ -DBUILD_RDASAPP=${BUILD_RDASAPP}\
  -DBUILD_IFI=${BUILD_IFI}\
  -DBUILD_GTG=${BUILD_GTG}\
  -DENABLE_PARALLELRESTART=${ENABLE_PARALLELRESTART}\
@@ -530,6 +540,11 @@ if [ $USE_SUB_MODULES = true ]; then
     if [ $BUILD_AQM_UTILS = "on" ]; then
         printf "... Loading AQM-utils modules ...\n"
         module use ${SORC_DIR}/AQM-utils/modulefiles
+        load_module ""
+    fi
+    if [ $BUILD_RDASAPP = "on" ]; then
+        printf "... Loading RDASApp modules ...\n"
+        module use ${SORC_DIR}/RDASApp/modulefiles
         load_module ""
     fi
 else

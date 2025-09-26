@@ -128,7 +128,7 @@ PREYYJJJHH=$(date +"%y%j%H" -d "${START_DATE} 1 hours ago")
 #
 #-----------------------------------------------------------------------
 #
-cp ${PARM_IODACONV}/*.yaml .
+cp ${PARM_IODACONV}/prepbufr_*.yaml .
 #
 #-----------------------------------------------------------------------
 #
@@ -142,8 +142,8 @@ export pgm="bufr2ioda.x"
 #
 #-----------------------------------------------------------------------
 #
-# check the existence of the PrepBUFR file for the current cycle, 
-# if the file is present, convert the data into ioda format for 
+# check the existence of the PrepBUFR file for the current cycle,
+# if the file is present, convert the data into ioda format for
 # aircraft, ascatw, gpsipw, mesonet, profiler, rassda,
 # satwnd, surface, upperair subsets.
 #
@@ -164,21 +164,21 @@ fi
 #-----------------------------------------------------------------------
 #
 # Modify yaml template and run the process
-# for converting prepbufr file 
+# for converting prepbufr file
 #
 #-----------------------------------------------------------------------
 #
 formatted_time=$(date -d"${YYYYMMDDHH:0:8} ${YYYYMMDDHH:8:2}" '+%Y-%m-%dT%H:%M:%SZ')
 
 for yamlfile in *.yaml; do
-  message_type=$(echo "$yamlfile" | cut -d'_' -f4 | sed 's/\..*//')
+  message_type=$(basename "$yamlfile" .yaml | awk -F'_' '{print $NF}')
 
-  if grep -q "referenceTime" ${yamlfile}; then
-    sed -i "s/referenceTime:.*/referenceTime: ${formatted_time}/" ${yamlfile}
-  fi
+  sed -i "s/@referenceTime@/${formatted_time}/" "${yamlfile}"
+
+  cp -p ${FIX_JEDI}/ioda_empty.nc  ioda_${message_type}.nc
 
   if [[ ${run_process_prepbufr} ]]; then
-    $APRUN ${EXECdir}/$pgm ${yamlfile} >> $pgmout 2>errfile
+    ${EXECdir}/bin/$pgm ${yamlfile} >> $pgmout 2>errfile
     export err=$?; err_chk
     mv errfile errfile_${message_type}
   fi

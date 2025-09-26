@@ -843,6 +843,7 @@ LIB64dir="$HOMErrfs/sorc/build/lib64"
 FIXgsm=${FIXgsm:-"$HOMErrfs/fix/am"}
 FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"$HOMErrfs/fix/lam"}
 FIX_GSI=${FIX_GSI:-"${HOMErrfs}/fix/gsi"}
+FIX_JEDI=${FIX_JEDI:-"${HOMErrfs}/fix/jedi"}
 FIX_UPP=${FIX_UPP:-"${HOMErrfs}/fix/upp"}
 FIXprdgen=${FIXprdgen:-"$HOMErrfs/fix/prdgen"}
 FIX_CRTM=${FIX_CRTM:-"${CRTM_FIX}"}
@@ -1299,6 +1300,9 @@ check_for_preexist_dir_file "$EXPTDIR" "${PREEXISTING_DIR_METHOD}"
 # FIXgsi:
 # This is the directory that will contain the fixed files for GSI run
 #
+# FIXjedi:
+# This is the directory that will contain the fixed files for JEDI run
+#
 # FIXcrtm:
 # This is the directory that will contain the coefficient files for CRTM
 #
@@ -1334,6 +1338,7 @@ check_for_preexist_dir_file "$EXPTDIR" "${PREEXISTING_DIR_METHOD}"
 FIXam="${EXPTDIR}/fix_am"
 FIXLAM="${EXPTDIR}/fix_lam"
 FIXgsi="${EXPTDIR}/fix_gsi"
+FIXjedi="${EXPTDIR}/fix_jedi"
 FIXcrtm="${EXPTDIR}/fix_crtm"
 FIXuppcrtm="${EXPTDIR}/fix_upp_crtm"
 FIXsmokedust="${EXPTDIR}/fix_smoke_dust"
@@ -2495,6 +2500,7 @@ GLMFED_WEST_ROOT="${GLMFED_WEST_ROOT}"
 ENKF_FCST="${ENKF_FCST}"
 
 FIX_GSI="${FIX_GSI}"
+FIX_JEDI="${FIX_JEDI}"
 FIX_CRTM="${FIX_CRTM}"
 FIX_UPP_CRTM="${FIX_UPP_CRTM}"
 FIX_SMOKE_DUST="${FIX_SMOKE_DUST}"

@@ -1691,6 +1691,7 @@ FIX_CRTM=""
 FIX_UPP_CRTM=""
 FIX_SMOKE_DUST=""
 FIX_BUFRSND=""
+FIX_JEDI=""
 
 FNGLAC="global_glacier.2x2.grb"
 FNMXIC="global_maxice.2x2.grb"

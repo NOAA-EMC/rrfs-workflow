@@ -120,6 +120,7 @@ include(ExternalProject)
 option(BUILD_UFS "Build UFS weather model" ON)
 option(BUILD_UFS_UTILS "Build UFS utilities" ON)
 option(BUILD_UPP "Build UPP" ON)
+option(BUILD_RDASAPP "Build RDASApp" ON)
 option(BUILD_GSI "Build GSI" ON)
 option(BUILD_RRFS_UTILS "Build RRFS utilities" ON)
 option(BUILD_AQM_UTILS "Build AQM utilities" ON)
@@ -130,6 +131,7 @@ option(ENABLE_RRFS_WAR "Build PARALLEL RESTART" ON)
 
 message(STATUS "BUILD_UFS ............... ${BUILD_UFS}")
 message(STATUS "BUILD_UFS_UTILS ......... ${BUILD_UFS_UTILS}")
+message(STATUS "BUILD_RDASAPP ........... ${BUILD_RDASAPP}")
 message(STATUS "BUILD_GSI ............... ${BUILD_GSI}")
 message(STATUS "BUILD_UPP ............... ${BUILD_UPP}")
 message(STATUS "BUILD_RRFS_UTILS ........ ${BUILD_RRFS_UTILS}")
@@ -139,6 +141,23 @@ message(STATUS "BUILD_IFI ............... ${BUILD_IFI}")
 message(STATUS "BUILD_GTG ............... ${BUILD_GTG}")
 message(STATUS "ENABLE_PARALLELRESTART ............... ${ENABLE_PARALLELRESTART}")
 message(STATUS "ENABLE_RRFS_WAR ...................... ${ENABLE_RRFS_WAR}")
+
+# Build RDASApp
+if(BUILD_RDASAPP)
+  list(APPEND TARGET_LIST RDASApp)
+
+  # Use build.sh directly so we stay consistent with standalone builds
+  ExternalProject_Add(RDASApp
+    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/RDASApp
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/RDASApp
+    # build.sh handles configure, build, and install
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND bash -c "${CMAKE_CURRENT_SOURCE_DIR}/RDASApp/build.sh -p ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR} -f -m FV3andMPAS"
+    INSTALL_COMMAND ""  # build.sh already installs when -p is given
+    BUILD_ALWAYS TRUE
+    STEP_TARGETS build
+  )
+endif()
 
 # Set dependency of ufs weather model only for coupled model
 if (NOT APP)
