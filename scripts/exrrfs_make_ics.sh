@@ -96,6 +96,9 @@ case "$MACHINE" in
     export MPICH_OFI_STARTUP_CONNECT=1
     ncores=$(( NNODES_MAKE_ICS*PPN_MAKE_ICS ))
     APRUN="mpiexec -n ${ncores} -ppn ${PPN_MAKE_ICS} --cpu-bind core --depth ${OMP_NUM_THREADS}"
+    PPN_PRE_BLENDING=$(( PPN_MAKE_ICS*2 ))
+    ncores_blending=$(( NNODES_MAKE_ICS*PPN_PRE_BLENDING ))
+    APRUN_PRE_BLENDING="mpiexec -n ${ncores_blending} -ppn ${PPN_PRE_BLENDING} --cpu-bind core --depth 2"
     ;;
 
   "HERA")
@@ -917,7 +920,14 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
   bndy=./gfs.bndy.nc
 
   # Run convert coldstart files to fv3 restart (rotate winds and remap).
-  python ${USHdir}/chgres_cold2fv3.py $cold $grid $akbk $akbkcold $orog
+  #python ${USHdir}/chgres_cold2fv3.py $cold $grid $akbk $akbkcold $orog
+  fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
+  cp ${fixgriddir}/cold2warm_all.nc .
+  export pgm1=fv3lam_pre_blending.exe
+  ${APRUN_PRE_BLENDING} ${EXECdir}/$pgm1 >>$pgmout 2>errfile
+  #mv cold2warm_all.nc fv_core.res.tile1.nc
+  cp cold2warm_all.nc out.atm.tile7.nc
+  export err=$?; err_chk
 
 fi
 #
