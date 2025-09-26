@@ -309,7 +309,11 @@ if [ "${EXTRN}" = true ]; then
   # run check-out
   python --version 1>/dev/null 2>/dev/null
   if [[ $? -ne 0 ]]; then
-       module load python
+       if [ "${PLATFORM}" = "wcoss2" ]; then
+         module load cray-python/3.11.7
+       else
+         module load python
+       fi
   fi
   printf "... checking out external components ...\n"
   ./manage_externals/checkout_externals
