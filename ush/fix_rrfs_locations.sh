@@ -28,7 +28,7 @@ elif [[ -d /lfs/h2 ]] ; then
     FIX_RRFS_LOCATION="/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS"
 elif [[ -d /jetmon ]] ; then
     PLATFORM=jet
-    FIX_RRFS_LOCATION="/lfs4/BMC/nrtrr/FIX_RRFS"
+    FIX_RRFS_LOCATION="/lfs5/BMC/nrtrr/FIX_RRFS"
 elif [[ -d /work ]]; then
     FIX_RRFS_LOCATION="/work/noaa/rtrr/FIX_RRFS"
     hoststr=$(hostname)

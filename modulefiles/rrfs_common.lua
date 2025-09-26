@@ -8,7 +8,7 @@ load(pathJoin("libpng", os.getenv("libpng_ver") or "1.6.37"))
 load(pathJoin("parallelio", os.getenv("pio_ver") or "2.5.10"))
 --loading parallelio will load netcdf_c, netcdf_fortran, hdf5, zlib, etc
 load(pathJoin("esmf", os.getenv("esmf_ver") or "8.6.0"))
-load(pathJoin("fms", os.getenv("fms_ver") or "2023.04"))
+--load(pathJoin("fms", os.getenv("fms_ver") or "2023.04"))
 
 load(pathJoin("bacio", os.getenv("bacio_ver") or "2.4.1"))
 load(pathJoin("crtm", os.getenv("crtm_ver") or "2.4.0"))
@@ -28,8 +28,8 @@ load(pathJoin("nemsio", os.getenv("nemsio_ver") or "2.5.4"))
 load(pathJoin("wrf-io", os.getenv("wrf_io_ver") or "1.2.0"))
 load(pathJoin("ncio", os.getenv("ncio_ver") or "1.1.2"))
 load(pathJoin("gsi-ncdiag", os.getenv("gsi-ncdiag_ver") or "1.1.2"))
-load(pathJoin("w3emc", os.getenv("w3emc_ver") or "2.10.0"))
 load(pathJoin("w3nco", os.getenv("w3nco_ver") or "2.4.1"))
+--load(pathJoin("w3emc", os.getenv("w3emc_ver") or "2.10.0"))
 
 load(pathJoin("nco", os.getenv("nco_ver") or "5.0.6"))
 load(pathJoin("prod_util", os.getenv("prod_util_ver") or "2.1.1"))
