@@ -1821,6 +1821,7 @@ RUN_POST_TN="run_post"
 RUN_PRDGEN_TN="run_prdgen"
 RUN_BUFRSND_TN="run_bufrsnd"
 
+ANALYSIS_JEDI_TN="analysis_jedi_input"
 ANALYSIS_GSI_TN="analysis_gsi_input"
 ANALYSIS_GSIDIAG_TN="analysis_gsi_diag"
 ANALYSIS_SD_GSI_TN="analysis_sd_gsi_input"
@@ -2019,6 +2020,7 @@ MAXTRIES_BLEND_ICS="2"
 MAXTRIES_MAKE_LBCS="2"
 MAXTRIES_RUN_PREPSTART="1"
 MAXTRIES_RUN_FCST="1"
+MAXTRIES_ANALYSIS_JEDI="1"
 MAXTRIES_ANALYSIS_GSI="1"
 MAXTRIES_POSTANAL="1"
 MAXTRIES_ANALYSIS_ENKF="1"
@@ -2591,6 +2593,16 @@ DO_JEDI_ENVAR_IODA="FALSE"
 #-----------------------------------------------------------------------
 #
 DO_IODA_PREPBUFR="FALSE"
+#
+#-----------------------------------------------------------------------
+#
+# Parameters for JEDI var analysis
+#
+# DO_JEDIVAR:
+# Flag turn on the IODA converters for conventional observations in prepbufr files.
+#-----------------------------------------------------------------------
+#
+DO_JEDIVAR="FALSE"
 #
 #-----------------------------------------------------------------------
 #

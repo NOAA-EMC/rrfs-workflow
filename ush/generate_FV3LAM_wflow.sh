@@ -203,6 +203,7 @@ settings="\
   'run_fcst_tn': ${RUN_FCST_TN}
   'run_post_tn': ${RUN_POST_TN}
   'run_prdgen_tn': ${RUN_PRDGEN_TN}
+  'analysis_jedi': ${ANALYSIS_JEDI_TN}
   'analysis_gsi': ${ANALYSIS_GSI_TN}
   'analysis_gsidiag': ${ANALYSIS_GSIDIAG_TN}
   'analysis_sd_gsi': ${ANALYSIS_SD_GSI_TN}
@@ -403,6 +404,7 @@ settings="\
   'maxtries_make_lbcs': ${MAXTRIES_MAKE_LBCS}
   'maxtries_run_prepstart': ${MAXTRIES_RUN_PREPSTART}
   'maxtries_run_fcst': ${MAXTRIES_RUN_FCST}
+  'maxtries_analysis_jedi': ${MAXTRIES_ANALYSIS_JEDI}
   'maxtries_analysis_gsi': ${MAXTRIES_ANALYSIS_GSI}
   'maxtries_postanal': ${MAXTRIES_POSTANAL}
   'maxtries_analysis_enkf': ${MAXTRIES_ANALYSIS_ENKF}
@@ -576,6 +578,10 @@ settings="\
 #
   'do_ioda_prepbufr': ${DO_IODA_PREPBUFR}
 #
+# JEDIVAR related parameters
+#
+  'do_jedivar': ${DO_JEDIVAR}
+# 
 # smoke and dust related parameters.
 #
   'do_smoke_dust': ${DO_SMOKE_DUST}
