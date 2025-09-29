@@ -1,0 +1,280 @@
+# This part is for testing only. Normally this would just show algorithm: <algorithm>
+# -----------------------------------------------------------------------------------
+supported_algorithms:
+- 3dvar
+- hofx3d
+#- hofx4d
+#- local_ensemble_da
+# Local algorithms
+#- fv3jedi_fv3inc_lgetkf
+#- fv3jedi_fv3inc_variational
+
+# This is overwritten in the testing but allows command line test of jcb
+#algorithm: fv3jedi_fv3inc_variational
+#algorithm: 3dvar
+algorithm: fv3jedi_3denvar_ctest
+
+# Search path for model and obs for JCB (relative for the submodule, or can be absolute)
+# --------------------------------------------------------------------------------------
+app_path_algorithm: rdas/algorithm/atmosphere
+app_path_model: rdas/model/atmosphere
+app_path_observations: rdas/observations/atmosphere
+app_path_observation_chronicle: rdas/observation_chronicle/atmosphere
+
+
+# Places where we deviate from the generic file name of a yaml
+# ------------------------------------------------------------
+#final_increment_file: atmosphere_final_increment_gaussian
+output_file: atmosphere_output
+output_ensemble_increments_file: atmosphere_output_ensemble_increments_gaussian
+model_file: atmosphere_model_pseudo
+initial_condition_file: atmosphere_background
+background_error_file: atmosphere_background_error_3denvar_bump
+
+
+# Global analysis things
+# ----------------------
+window_begin: @WINDOW_BEGIN@ #'2025-07-06T00:00:00Z'
+window_length: PT6H
+bound_to_include: begin
+minimizer: DRPCG
+final_diagnostics_departures: oman
+analysis_variables: [eastward_wind,northward_wind,air_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio]
+number_of_outer_loops: 2
+distribution: RoundRobin
+empty_obs_space_action: create output
+
+# Testing
+# -------
+
+do_testing: false
+
+# Model things
+# ------------
+atmosphere_layout_x: 16
+atmosphere_layout_y: 10
+atmosphere_npx_ges: 420 #not sure if correct
+atmosphere_npy_ges: 252 #not sure if correct
+atmosphere_npz_ges: 65
+atmosphere_npx_anl: 420 #not sure if correct
+atmosphere_npy_anl: 252 #not sure if correct
+atmosphere_npz_anl: 65
+atmosphere_fv3jedi_files_path: DataFix #DATA/fv3jedi
+atmosphere_fv3jedi_files_path: DataFix #DATA/fv3jedi
+atmosphere_ntiles: 1
+atmosphere_io_layout_x: 1
+atmosphere_io_layout_y: 1
+gradient_norm_reduction: 1e-3
+ninner: 50
+
+# Background
+atmosphere_background_path: data/bkg
+atmosphere_background_ensemble_path: "data/inputs/mem%mem%"
+
+atmosphere_variational_history_prefix: "bkg_"
+atmosphere_ensemble_history_prefix: "ens_"
+
+atmosphere_background_time_iso: @ATMOSPHERE_BACKGROUND_TIME_ISO@ #'2025-07-06T03:00:00Z'
+atmosphere_background_time_prefix: @ATMOSPHERE_BACKGROUND_TIME_PREFIX@ #'20240527.030000.'
+state_variables: [eastward_wind, northward_wind, air_temperature, air_pressure_thickness, water_vapor_mixing_ratio_wrt_moist_air ,cloud_liquid_ice, cloud_liquid_water, ozone_mass_mixing_ratio, geopotential_height_times_gravity_at_surface, f10m, slmsk, sheleg, skin_temperature_at_surface, vtype, stype, vfrac, soilt, soilm, eastward_wind_at_surface, northward_wind_at_surface]
+eastward_wind: ua
+northward_wind: va
+air_temperature: T
+air_pressure_thickness: DELP
+water_vapor_mixing_ratio_wrt_moist_air: sphum
+cloud_liquid_ice: ice_wat
+cloud_liquid_water: liq_wat
+ozone_mass_mixing_ratio: o3mr
+geopotential_height_times_gravity_at_surface: phis
+skin_temperature_at_surface: tsfc
+soilt: tslb
+soilm: smois
+eastward_wind_at_surface: u_srf
+northward_wind_at_surface: v_srf
+
+# Background error
+atmosphere_bump_data_directory: DATA/berror
+atmosphere_gsibec_path: DATA/berror
+atmosphere_number_ensemble_members: 30
+atmosphere_layout_gsib_x: 16
+atmosphere_layout_gsib_y: 10
+
+
+# Forecasting
+atmosphere_forecast_length: PT6H
+atmosphere_forecast_timestep: PT1H
+
+# Write final increment on Gaussian grid in variational
+atmosphere_final_increment_prefix: "./anl/atminc."
+
+
+# Observation things
+# ------------------
+observations:
+#- all_observations # use this for all or can uncomment any number below.
+
+# Upper-air conventional
+#- adpupa_airTemperature_120
+#- adpupa_airTemperature_132
+#- adpupa_specificHumidity_120
+#- adpupa_specificHumidity_132
+#- adpupa_stationPressure_120
+#- adpupa_winds_220
+#- adpupa_winds_232
+
+- aircar_airTemperature_133
+#- aircar_specificHumidity_133
+#- aircar_winds_233
+#
+#- aircft_airTemperature_130
+#- aircft_airTemperature_131
+#- aircft_airTemperature_134
+#- aircft_airTemperature_135
+#- aircft_specificHumidity_134
+#- aircft_winds_230
+#- aircft_winds_231
+#- aircft_winds_234
+#- aircft_winds_235
+
+#- proflr_winds_227
+#- vadwnd_winds_224
+#- rassda_airTemperature_126
+
+# Surface conventional
+#- adpsfc_airTemperature_181
+#- adpsfc_airTemperature_183
+#- adpsfc_airTemperature_187
+#- adpsfc_specificHumidity_181
+#- adpsfc_specificHumidity_183
+#- adpsfc_specificHumidity_187
+#- adpsfc_stationPressure_181
+#- adpsfc_stationPressure_187
+#- adpsfc_winds_281
+#- adpsfc_winds_284
+#- adpsfc_winds_287
+#- msonet_airTemperature_188
+#- msonet_specificHumidity_188
+#- msonet_stationPressure_188
+#- msonet_winds_288
+
+#- sfcshp_airTemperature_180
+#- sfcshp_airTemperature_182
+#- sfcshp_airTemperature_183
+#- sfcshp_specificHumidity_180
+#- sfcshp_specificHumidity_182
+#- sfcshp_specificHumidity_183
+#- sfcshp_stationPressure_180
+#- sfcshp_stationPressure_182
+#- sfcshp_winds_280
+#- sfcshp_winds_282
+#- sfcshp_winds_284
+
+# Analysis iuse flag (default: passivate)
+# Upper-air conventional
+iuse_adpupa_airTemperature_120: accept
+iuse_adpupa_airTemperature_132: accept
+iuse_adpupa_specificHumidity_120: accept
+iuse_adpupa_specificHumidity_132: accept
+iuse_adpupa_stationPressure_120: accept
+iuse_adpupa_winds_220: accept
+iuse_adpupa_winds_232: accept
+
+iuse_aircar_airTemperature_133: accept
+iuse_aircar_specificHumidity_133: accept
+iuse_aircar_winds_233: accept
+
+iuse_aircft_airTemperature_130: accept
+iuse_aircft_airTemperature_131: accept
+iuse_aircft_airTemperature_134: accept
+iuse_aircft_airTemperature_135: accept
+iuse_aircft_specificHumidity_134: accept
+iuse_aircft_winds_230: accept
+iuse_aircft_winds_231: accept
+iuse_aircft_winds_234: accept
+iuse_aircft_winds_235: accept
+
+iuse_proflr_winds_227: accept
+iuse_vadwnd_winds_224: accept
+iuse_rassda_airTemperature_126: accept
+
+# Surface conventional
+iuse_adpsfc_airTemperature_181: accept
+iuse_adpsfc_airTemperature_183: accept
+iuse_adpsfc_airTemperature_187: accept
+iuse_adpsfc_specificHumidity_181: accept
+iuse_adpsfc_specificHumidity_183: accept
+iuse_adpsfc_specificHumidity_187: accept
+iuse_adpsfc_stationPressure_181: accept
+iuse_adpsfc_stationPressure_187: accept
+iuse_adpsfc_winds_281: accept
+iuse_adpsfc_winds_284: accept
+iuse_adpsfc_winds_287: accept
+iuse_msonet_airTemperature_188: accept
+iuse_msonet_specificHumidity_188: accept
+iuse_msonet_stationPressure_188: accept
+iuse_msonet_winds_288: accept
+
+iuse_sfcshp_airTemperature_180: accept
+iuse_sfcshp_airTemperature_182: accept
+iuse_sfcshp_airTemperature_183: accept
+iuse_sfcshp_specificHumidity_180: accept
+iuse_sfcshp_specificHumidity_182: accept
+iuse_sfcshp_specificHumidity_183: accept
+iuse_sfcshp_stationPressure_180: accept
+iuse_sfcshp_stationPressure_182: accept
+iuse_sfcshp_winds_280: accept
+iuse_sfcshp_winds_282: accept
+iuse_sfcshp_winds_284: accept
+
+crtm_coefficient_path: "Data/crtm"
+
+# Naming conventions for observational files
+atmosphere_obsdatain_path: Data/obs
+atmosphere_obsdatain_prefix: OPREFIX_
+atmosphere_obsdatain_suffix: ".@SUFFIX@.nc"
+
+atmosphere_obsdataout_path: Data/diags
+atmosphere_obsdataout_prefix: diag_
+atmosphere_obsdataout_suffix: "_@SUFFIX@.nc"
+
+# Naming conventions for bias correction files
+atmosphere_obsbiasin_path: Data/obs
+atmosphere_obsbiasin_prefix: GPREFIX
+atmosphere_obsbiasin_suffix: ".satbias.nc"
+atmosphere_obstlapsein_prefix: GPREFIX
+atmosphere_obstlapsein_suffix: ".tlapse.txt"
+atmosphere_obsbiascovin_prefix: GPREFIX
+atmosphere_obsbiascovin_suffix: ".satbias_cov.nc"
+
+atmosphere_obsbiasout_path: Data/bc
+atmosphere_obsbiasout_prefix: APREFIX
+atmosphere_obsbiasout_suffix: ".satbias.nc"
+atmosphere_obsbiascovout_prefix: APREFIX
+atmosphere_obsbiascovout_suffix: ".satbias_cov.nc"
+
+
+# Local Ensemble DA (LETKF)
+# -------------------------
+local_ensemble_da_solver: GETKF
+
+increment_variables: [eastward_wind,northward_wind,air_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio]
+
+# Veritcal localization for GETKF
+vl_fraction_of_retained_variance: 0.750
+vl_lengthscale: 2.1
+vl_lengthscale_units: logp
+inflation_rtps: 0.85
+inflation_rtpp: 0.0
+inflation_mult: 1.0
+
+# Driver
+driver_update_obs_config_with_geometry_info: true
+driver_save_posterior_mean: false
+driver_save_posterior_ensemble: false
+driver_save_prior_mean: false
+driver_save_posterior_mean_increment: false
+driver_save_posterior_ensemble_increments: true
+
+# Diagnostics
+atmosphere_ensemble_increment_prefix: "./anl/mem%{member}%/atminc."
+atmosphere_posterior_output_gaussian: "./mem%{member}%/atmanl."

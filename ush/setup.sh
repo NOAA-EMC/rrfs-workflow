@@ -513,6 +513,7 @@ optionList[29]=GLMFED_DATA_MODE
 optionList[30]=DO_IODA_PREPBUFR
 optionList[31]=EBB_DCYCLE
 optionList[32]=PREP_MODEL_FOR_FED
+optionList[33]=DO_JEDIVAR
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));
@@ -951,6 +952,18 @@ if [ ! -d "${UPP_DIR}" ]; then
 The base directory in which the UPP source code should be located
 (UPP_DIR) does not exist:
   UPP_DIR = \"${UPP_DIR}\"
+Please clone the external repository containing the code in this directory,
+build the executable, and then rerun the workflow."
+fi
+#
+# Get the base directory of the RDASApp code.
+#
+RDASAPP_DIR="${SORCdir}/RDASApp"
+if [ ! -d "${RDASAPP_DIR}" ]; then
+  print_err_msg_exit "\
+The base directory in which the RDASApp source code should be located
+(RDASAPP_DIR) does not exist:
+  RDASAPP_DIR = \"${RDASPP_DIR}\"
 Please clone the external repository containing the code in this directory,
 build the executable, and then rerun the workflow."
 fi
@@ -2470,6 +2483,7 @@ UFS_UTILS_DIR="${UFS_UTILS_DIR}"
 SFC_CLIMO_INPUT_DIR="${SFC_CLIMO_INPUT_DIR}"
 TOPO_DIR="${TOPO_DIR}"
 UPP_DIR="${UPP_DIR}"
+RDASAPP_DIR="${RDASAPP_DIR}"
 PYTHON_GRAPHICS_DIR="${PYTHON_GRAPHICS_DIR}"
 
 ARCHIVEDIR="${ARCHIVEDIR}"
