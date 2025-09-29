@@ -504,12 +504,15 @@ else
       cpreq -p ${FV3_NML_STOCH_FP} ${DATA}/${FV3_NML_FN}
      else
       # is there a cold start spinup need?
-       FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$cyc]}
-       if [ $FCST_LEN_HRS -eq '18' ]; then
-       cpreq -p ${FV3_NML_18HFORE_FP} ${DATA}/${FV3_NML_FN}
-       elif [ $FCST_LEN_HRS -eq '84' ]; then
-       cpreq -p ${FV3_NML_LONG_FP} ${DATA}/${FV3_NML_FN}
-       fi
+       if [ ${CYCLE_TYPE} = "spinup" ]; then
+         cpreq -p ${FV3_NML_SPINUPCYC_FP} ${DATA}/${FV3_NML_FN}
+       else
+         FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$cyc]}
+         if [ $FCST_LEN_HRS -eq '18' ]; then
+           cpreq -p ${FV3_NML_18HFORE_FP} ${DATA}/${FV3_NML_FN}
+         elif [ $FCST_LEN_HRS -eq '84' ]; then
+           cpreq -p ${FV3_NML_LONG_FP} ${DATA}/${FV3_NML_FN}
+         fi
     fi
   fi
 fi
