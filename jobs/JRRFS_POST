@@ -54,6 +54,7 @@ cd ${DATA}
 export cycle="t${cyc}z"
 setpdy.sh
 . ./PDY
+export CDATE="${PDY}${cyc}"
 
 #-----------------------------------------------------------------------
 # Source the bash utility functions.

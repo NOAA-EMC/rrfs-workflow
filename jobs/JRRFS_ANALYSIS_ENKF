@@ -37,6 +37,18 @@ case "${WGF}" in
     export RUN="firewx"
     ;;
 esac
+#-----------------------------------------------------------------------
+# Define data directories
+#-----------------------------------------------------------------------
+export DATA=${DATA:-${DATAROOT}/${jobid}}
+mkdir -p ${DATA}
+cd ${DATA}
+
+export cycle="t${cyc}z"
+setpdy.sh
+. ./PDY
+export CDATE="${PDY}${cyc}"
+
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${CYCLE_TYPE}" == "spinup" ]; then
   export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
@@ -47,13 +59,6 @@ else
 fi
   
 export FORECAST_INPUT_PRODUCT=${umbrella_forecast_data}
-#-----------------------------------------------------------------------
-# Define data directories
-#-----------------------------------------------------------------------
-export DATA=${DATA:-${DATAROOT}/${jobid}}
-mkdir -p ${DATA}
-cd ${DATA}
-
 #-----------------------------------------------------------------------
 # Source the bash utility functions.
 #-----------------------------------------------------------------------
