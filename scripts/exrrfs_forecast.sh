@@ -513,6 +513,7 @@ else
          elif [ $FCST_LEN_HRS -eq '84' ]; then
            cpreq -p ${FV3_NML_LONG_FP} ${DATA}/${FV3_NML_FN}
          fi
+       fi
     fi
   fi
 fi
