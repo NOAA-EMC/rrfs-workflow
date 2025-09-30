@@ -11,15 +11,44 @@ ushdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 # shellcheck disable=SC1091
 source "${ushdir}/detect_machine.sh"
 
-module use "${ushdir}/../../modulefiles"
-if [[ "${MACHINE}" == "gaea" ]]; then
-  if [[ -d /gpfs/f5 ]]; then
-    module load "BOKEH/${MACHINE}C5"
-  elif [[ -d /gpfs/f6 ]]; then
-    module load "BOKEH/${MACHINE}C6"
-  else
-    echo "not supported gaea cluster: ${MACHINE}"
-  fi
-else
-  module load "BOKEH/${MACHINE}"
-fi
+case ${MACHINE} in
+  wcoss2)
+    BASEDIR=/to/be/added
+    ;;
+  hera)
+    BASEDIR=/scratch3/BMC/wrfruc/hera/Miniforge3
+    ;;
+  ursa)
+    BASEDIR=/scratch3/BMC/wrfruc/gge/Miniforge3
+    ;;
+  derecho)
+    BASEDIR=/glade/work/geguo/Miniforge3
+    ;;
+  jet)
+    BASEDIR=/lfs6/BMC/wrfruc/gge/Miniforge3
+    ;;
+  orion)
+    BASEDIR=/work/noaa/zrtrr/gge/Miniforge3
+    ;;
+  hercules)
+    BASEDIR=/work/noaa/zrtrr/gge/hercules/Miniforge3
+    ;;
+  gaea)
+    if [[ -d /gpfs/f5 ]]; then
+      BASEDIR=/to/be/added
+    elif [[ -d /gpfs/f6 ]]; then
+      BASEDIR=/gpfs/f6/bil-fire10-oar/world-shared/gge/Miniforge3
+    else
+      echo "unsupported gaea cluster: ${MACHINE}"
+      exit 1
+    fi
+    ;;
+  *)
+    BASEDIR=/unknown/location
+    echo "platform not supported: ${MACHINE}"
+    exit 1
+    ;;
+esac
+eval "$($BASEDIR/bin/micromamba shell hook --shell bash)"
+micromamba activate ${BASEDIR}/envs/bokeh
+alias conda=micromamba

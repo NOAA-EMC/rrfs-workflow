@@ -1,0 +1,27 @@
+#!/bin/bash
+# shellcheck disable=all
+# by Guoqing.Ge, May 2019
+maxjoblength=40
+myuser=$(echo $USER)
+jobid=""
+interval=30  # refresh every 30 seconds
+
+for arg in "$@"; do
+  if [[ "$arg" =~ ^[0-9]+$ ]]; then
+    if (( arg <= 99 )); then
+      maxjoblength="$arg"
+    elif (( arg >= 100 )); then
+      jobid="$arg"
+    fi
+  else
+    myuser="$arg"
+  fi
+done
+
+usrlen=${#myuser}
+outformat="%.10i %.7P %.7q %.8v %.${maxjoblength}j %.8T %.9M %.9l %.${usrlen}u %.8a %.5D %40R"
+if [[ -z $jobid ]]; then
+  squeue -u $myuser -o "$outformat" -i $interval
+else
+  squeue -o "$outformat" -j $jobid -i $interval
+fi
