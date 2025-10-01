@@ -46,7 +46,7 @@ NUM_ENS_MEMBERS=${NUM_ENS_MEMBERS:-0}
 #
 #-----------------------------------------------------------------------
 #
-cdate_crnt_fhr="${cdate}"
+cdate_crnt_fhr="${CDATE}"
 #
 # Get the month, day, and hour corresponding to the current forecast time
 # of the the external model.
