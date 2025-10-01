@@ -19,6 +19,6 @@ if mode() == "unload" then
   unsetenv("PIO")
 end
 
-setenv("CMAKE_C_COMPILER", "cc")
-setenv("CMAKE_CXX_COMPILER", "CC")
-setenv("CMAKE_Fortran_COMPILER", "fn")
+setenv("CMAKE_C_COMPILER", "mpicc")
+setenv("CMAKE_CXX_COMPILER", "mpic++")
+setenv("CMAKE_Fortran_COMPILER", "mpifort")
