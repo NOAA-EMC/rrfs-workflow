@@ -67,7 +67,7 @@ fi
 run_blending=${COMOUT}/run_blending
 run_ensinit=${COMOUT}/run_ensinit
 if [[ ${CYCLE_SUBTYPE} == "ensinit" && -e $run_blending && ! -e $run_ensinit ]]; then
-   echo "FATAL: Design issue found in forecast. clean exit ensinit, blending used instead of ensinit."
+   echo "Skip ensinit forecast because this cycle is warm started and blending job has completed."
    exit 0
 fi
 #
