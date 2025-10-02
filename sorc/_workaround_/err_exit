@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=all
 
 # SCRIPT NAME:  err_exit
 #
