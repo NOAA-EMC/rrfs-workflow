@@ -3,10 +3,10 @@
 #
 #-----------------------------------------------------------------------
 #
-# This J-JOB script runs the JEDI analysis
+# This J-JOB script runs the preprocess of PREPBUFR observation
 #
 #-----------------------------------------------------------------------
-
+#
 #
 #-----------------------------------------------------------------------
 #
@@ -31,7 +31,7 @@ export PS4='+ $SECONDS + '
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located
+# Get the full path to the file in which this script/function is located 
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -52,7 +52,7 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs a analysis with FV3 for
+This is the J-job script for the task that runs a PREPBUFR preprocess for 
 the specified cycle.
 ========================================================================"
 #
@@ -61,58 +61,21 @@ the specified cycle.
 # Create the working directory under the cycle directory.
 #
 #-----------------------------------------------------------------------
-# CYCLE_TYPE is to indicate which type of cycle this job for:
-#   spinup: this job is for spin-up cycles
-#   others(prod): this job is for product cycle
 #
-export CYCLE_TYPE=${CYCLE_TYPE:-prod}
-export observer_nwges_dir=""
-
-if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  analworkname="_jedi_spinup"
-else
-  analworkname="_jedi"
-fi
-
-if [[ ! -v OB_TYPE ]]; then
-  OB_TYPE="conv"
-fi
-if [ "${JEDI_TYPE}" = "OBSERVER" ]; then
-  if [ "${MEM_TYPE}" = "MEAN" ]; then
-    export analworkdir="${CYCLE_DIR}/ensmean/observer${analworkname}"
-    SLASH_ENSMEM_SUBDIR=""
-    observer_nwges_dir="${NWGES_DIR}/ensmean/observer${analworkname}"
-  else
-    export analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/observer${analworkname}"
-    observer_nwges_dir="${NWGES_DIR}${SLASH_ENSMEM_SUBDIR}/observer${analworkname}"
+if [ ${CYCLE_TYPE} == "spinup" ]; then
+  workdir=${CYCLE_DIR}/ioda_bufr_spinup
+  if [ ${DO_ENSEMBLE} == "TRUE" ]; then
+     workdir=${CYCLE_DIR}/ioda_bufr_spinup_enkf
   fi
-  mkdir -p ${observer_nwges_dir}
 else
-  export analworkdir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/anal_${OB_TYPE}${analworkname}"
-fi
-
-rm -fr ${analworkdir}
-mkdir -p ${analworkdir}
-cd ${analworkdir}
-
-if [ ! -d "${SATBIAS_DIR}" ]; then
-  echo "making satbias_dir directory for cycling bias correction files"
-  mkdir -p ${SATBIAS_DIR}
-fi
-
-# Folder for storing EnKF related satbias files
-if [ "${JEDI_TYPE}" = "OBSERVER" ]; then
-  if [ "${MEM_TYPE}" = "MEAN" ]; then
-    if [ ! -d "${SATBIAS_DIR}_ensmean" ]; then
-      echo "making satbias_dir ensmean directory for cycling bias correction files"
-      mkdir -p ${SATBIAS_DIR}_ensmean
-    fi
+  workdir=${CYCLE_DIR}/ioda_bufr
+  if [ ${DO_ENSEMBLE} == "TRUE" ]; then
+     workdir=${CYCLE_DIR}/ioda_bufr_enkf
   fi
 fi
-#
-#  directory has grid_spec files for restart subdomains
-#
-export gridspec_dir=${NWGES_BASEDIR}/grid_spec
+rm -fr ${workdir}
+mkdir -p ${workdir}
+cd ${workdir}
 #
 #-----------------------------------------------------------------------
 #
@@ -121,13 +84,9 @@ export gridspec_dir=${NWGES_BASEDIR}/grid_spec
 #-----------------------------------------------------------------------
 #
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup${SLASH_ENSMEM_SUBDIR}"
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
 else
-  if [ "${MEM_TYPE}" = "MEAN" ]; then
-    export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/$cyc/ensmean"
-  else
-    export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}${SLASH_ENSMEM_SUBDIR}"
-  fi
+  export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
 fi
 mkdir -p "${COMOUT}"
 #
@@ -137,17 +96,11 @@ mkdir -p "${COMOUT}"
 #
 #-----------------------------------------------------------------------
 #
-export pgmout="${analworkdir}/OUTPUT.$$"
+export pgmout="${workdir}/OUTPUT.$$"
 env
 
-$SCRIPTSdir/exrrfs_run_analysis_jedi.sh \
-             cycle_dir="${CYCLE_DIR}" \
-             jedi_type="${JEDI_TYPE}" \
-             mem_type="${MEM_TYPE}" \
-             slash_ensmem_subdir="${SLASH_ENSMEM_SUBDIR}" \
-             rrfse_fg_root="${RRFSE_NWGES_BASEDIR}" \
-             satbias_dir="${SATBIAS_DIR}" \
-             ob_type="${OB_TYPE}"
+$SCRIPTSdir/exrrfs_ioda_bufr.sh \
+  CYCLE_DIR="${CYCLE_DIR}" comout="${COMOUT}"
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then
@@ -168,7 +121,8 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-# Restore the shell options saved at the beginning of this script/function.
+# Restore the shell options saved at the beginning of this script/func-
+# tion.
 #
 #-----------------------------------------------------------------------
 #
