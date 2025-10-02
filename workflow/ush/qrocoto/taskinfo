@@ -17,7 +17,7 @@ RUN=rrfs
 
 CDATE=$1
 taskraw=$2
-task=${tasksraw%_g*}
+task=${taskraw%_g*}
 PDY=${CDATE:0:8}
 cyc=${CDATE:8:2}
 logroot=${COMROOT}/${NET}/${VERSION}/logs
