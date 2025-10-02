@@ -2443,7 +2443,7 @@ suite rrfs_dev
               family ensf
                 edit WGF 'ensf'
                 task jrrfs_ensf_recenter
-                  trigger ../../forecast/det/jrrfs_det_save_restart_long_1==complete and ../../prep/ensf==complete
+                  trigger ../det/jrrfs_det_analysis_nonvarcld==complete and ../../prep/ensf==complete
                 task jrrfs_ensf_save_da_output_mem001
                   edit CYCLE_TYPE 'enfcst'
                   edit MEMBER_NAME '001'
@@ -13869,7 +13869,7 @@ suite rrfs_dev
               family ensf
                 edit WGF 'ensf'
                 task jrrfs_ensf_recenter
-                  trigger ../../forecast/det/jrrfs_det_save_restart_long_1==complete and ../../prep/ensf==complete
+                  trigger ../det/jrrfs_det_analysis_nonvarcld==complete and ../../prep/ensf==complete
                 task jrrfs_ensf_save_da_output_mem001
                   edit CYCLE_TYPE 'enfcst'
                   edit MEMBER_NAME '001'
@@ -25654,7 +25654,7 @@ suite rrfs_dev
               family ensf 
                 edit WGF 'ensf'
                 task jrrfs_ensf_recenter
-                  trigger ../../forecast/det/jrrfs_det_save_restart_long_1==complete and ../../prep/ensf==complete
+                  trigger ../det/jrrfs_det_analysis_nonvarcld==complete and ../../prep/ensf==complete
                 task jrrfs_ensf_save_da_output_mem001
                   edit CYCLE_TYPE 'enfcst'
                   edit MEMBER_NAME '001'
@@ -37083,7 +37083,7 @@ suite rrfs_dev
               family ensf 
                 edit WGF 'ensf'
                 task jrrfs_ensf_recenter
-                  trigger ../../forecast/det/jrrfs_det_save_restart_long_1==complete and ../../prep/ensf==complete
+                  trigger ../det/jrrfs_det_analysis_nonvarcld==complete and ../../prep/ensf==complete
                 task jrrfs_ensf_save_da_output_mem001
                   edit CYCLE_TYPE 'enfcst'
                   edit MEMBER_NAME '001'
