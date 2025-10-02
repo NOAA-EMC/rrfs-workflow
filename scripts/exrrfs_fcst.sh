@@ -68,7 +68,7 @@ if [[ "${MESH_NAME}" == "conus12km" ]]; then
   sed -i -e "s/    config_physics_suite = 'hrrrv5'/\
     config_physics_suite = 'hrrrv5'\n\
     config_convection_scheme = 'cu_ntiedtke'\n\
-    config_gf_sub3d = 1/" namelist.atmosphere
+    config_gfl_sub3d = 1/" namelist.atmosphere
 fi
 
 # generate the streams file on the fly using sed as this file contains "filename_template='lbc.$Y-$M-$D_$h.$m.$s.nc'"
