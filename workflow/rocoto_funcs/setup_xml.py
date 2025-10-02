@@ -16,6 +16,7 @@ from rocoto_funcs.fcst import fcst
 from rocoto_funcs.save_fcst import save_fcst
 from rocoto_funcs.getkf import getkf
 from rocoto_funcs.recenter import recenter
+from rocoto_funcs.ensmean import ensmean
 from rocoto_funcs.mpassit import mpassit
 from rocoto_funcs.upp import upp
 from rocoto_funcs.ioda_bufr import ioda_bufr
@@ -38,6 +39,7 @@ def setup_xml(HOMErrfs, expdir):
     do_deterministic = os.getenv('DO_DETERMINISTIC', 'true').upper()
     do_ensemble = os.getenv('DO_ENSEMBLE', 'false').upper()
     do_chemistry=os.getenv('DO_CHEMISTRY','false').upper()   
+    do_ensmean_post = os.getenv('DO_ENSMEAN_POST', 'false').upper()
     #
     source(f"{HOMErrfs}/workflow/config_resources/config.{machine}")
     source(f"{HOMErrfs}/workflow/config_resources/config.meshdep")
@@ -128,6 +130,10 @@ def setup_xml(HOMErrfs, expdir):
             save_fcst(xmlFile, expdir, do_ensemble=True)
             mpassit(xmlFile, expdir, do_ensemble=True)
             upp(xmlFile, expdir, do_ensemble=True)
+            if do_ensmean_post == "TRUE":
+                ensmean(xmlFile, expdir)
+                mpassit(xmlFile, expdir, do_ensemble=True, do_ensmean_post=True)
+                upp(xmlFile, expdir, do_ensemble=True, do_ensmean_post=True)
 
 # ---------------------------------------------------------------------------
         if os.getenv("DO_CLEAN", 'FALSE').upper() == "TRUE":  # write out the clean task if needed, usually for realtime runs

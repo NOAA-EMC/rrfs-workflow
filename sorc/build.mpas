@@ -18,8 +18,10 @@ if [[ "${MACHINE}" == "wcoss2" ]]; then
     source "${BUILD_VERSION_FILE}"
   fi
   compiler_str="ftn-wcoss2"
-elif [[ "${MACHINE}" == "gaea" ]] || [[ "${MACHINE}" == "derecho" ]] ; then
+elif [[ "${MACHINE}" == "derecho" ]]; then
   compiler_str="ifort"
+elif [[ "${MACHINE}" == "gaea" ]]; then
+  compiler_str="ifort_icx"
 elif [[ "${MACHINE}" == "ursa" ]]; then
   compiler_str="intel-mpi-ursa"
 fi

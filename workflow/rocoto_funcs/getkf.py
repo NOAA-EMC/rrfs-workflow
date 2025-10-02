@@ -21,6 +21,7 @@ def getkf(xmlFile, expdir, taskType):
         'ENS_SIZE': os.getenv("ENS_SIZE", '5'),
         'GETKF_TYPE': taskType.lower(),
         'USE_CONV_SAT_INFO': os.getenv('USE_CONV_SAT_INFO', 'true'),
+        'EMPTY_OBS_SPACE_ACTION': os.getenv('EMPTY_OBS_SPACE_ACTION', 'skip output'),
     }
     if taskType.upper() == "OBSERVER":
         task_id = "getkf_observer"
@@ -41,11 +42,17 @@ def getkf(xmlFile, expdir, taskType):
         else:
             iodadep = f'<datadep age="00:01:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/ioda_bufr/det/ioda_aircar.nc</cyclestr></datadep>'
             dcTaskEnv['IODA_BUFR_WGF'] = 'det'
+
+        recenterdep = ""
+        if os.getenv("DO_RECENTER", "FALSE").upper() == "TRUE":
+            recenterdep = f'<taskdep task="recenter"/>'
+
         dependencies = f'''
   <dependency>
   <and>{timedep}
     <metataskdep metatask="prep_ic"/>
     {iodadep}
+    {recenterdep}
   </and>
   </dependency>'''
     elif taskType.upper() == "SOLVER":

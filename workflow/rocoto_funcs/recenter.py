@@ -8,9 +8,12 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 def recenter(xmlFile, expdir):
     task_id = 'recenter'
     cycledefs = 'prod'
+    recenter_cycs = os.getenv('RECENTER_CYCS', '99')
+    det_recentercycs_do_da = os.getenv('DET_RECENTERCYCS_DO_DA', 'false')
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
-        'ENS_SIZE': os.getenv("ENS_SIZE", '5')
+        'ENS_SIZE': os.getenv("ENS_SIZE", '5'),
+        'RECENTER_CYCS': f'{recenter_cycs}',
     }
     # dependencies
     timedep = ""
@@ -18,55 +21,41 @@ def recenter(xmlFile, expdir):
     if realtime.upper() == "TRUE":
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
-    # ~~
-    if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
-        datadep = '     <datadep age="00:05:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/jedivar/det/mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'
-        taskdep = '     <taskdep task="getkf_solver"/>'
-        # If not doing DA during cold start cycles, then just check for cycle and then only wait for GETKF to finish
-        if os.getenv("COLDSTART_CYCS_DO_DA", "TRUE").upper() == "FALSE":
-            coldhrs = os.getenv('COLDSTART_CYCS', '03 15')
-            coldhrs = coldhrs.split(' ')
-            streqs = ""
-            strneqs = ""
-            for hr in coldhrs:
-                hr = f"{hr:0>2}"
-                streqs = streqs + f"\n        <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
-                strneqs = strneqs + f"\n        <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
-            dependencies = f'''
-  <dependency>
-  <and>{timedep}
-   <or>
-    <and>
-      <or>{streqs}
-      </or>
- {taskdep}
-    </and>
-    <and>
-      <and>{strneqs}
-   {datadep}
-   {taskdep}
-      </and>
-    </and>
-   </or>
-  </and>
-  </dependency>'''
-        # If doing DA during cold start cycles then just need to wait for GETKF and JEDIVAR to finish
-        else:
-            dependencies = f'''
-  <dependency>
-  <and>{timedep}
-    <datadep age="00:05:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/jedivar/det/mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
-    <taskdep task="getkf_solver"/>
-  </and>
-  </dependency>'''
+
+    if det_recentercycs_do_da.upper() == "TRUE":
+        datadep_init = f'<datadep age="00:05:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/jedivar/det/init.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'
     else:
-        dependencies = f'''
+        datadep_init = f'<datadep age="00:05:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_prep_ic_@H_&rrfs_ver;/det/init.nc</cyclestr></datadep>'
+
+    datadep = f'''<or>
+         {datadep_init}
+         <datadep age="00:05:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/jedivar/det/mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+       </or>'''
+
+    recenterhrs = recenter_cycs.split(' ')
+    streqs = ""
+    strneqs = ""
+    for hr in recenterhrs:
+        hr = f"{hr:0>2}"
+        streqs = streqs + f"\n         <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
+        strneqs = strneqs + f"\n         <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
+
+    dependencies = f'''
   <dependency>
   <and>{timedep}
-    <datadep age="00:05:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/jedivar/det/mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+    <or>
+      <and>
+       <or>{streqs}
+       </or>
+       {datadep}
+      </and>
+      <and>{strneqs}
+      </and>
+    </or>
     <metataskdep metatask="prep_ic"/>
   </and>
   </dependency>'''
     #
+
     xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv=dcTaskEnv, dependencies=dependencies, command_id="RECENTER")
 # end of recenter --------------------------------------------------------

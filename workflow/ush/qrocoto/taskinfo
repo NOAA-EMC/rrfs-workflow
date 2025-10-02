@@ -16,11 +16,12 @@ fi
 RUN=rrfs
 
 CDATE=$1
-task=$2
+taskraw=$2
+task=${taskraw%_g*}
 PDY=${CDATE:0:8}
 cyc=${CDATE:8:2}
 logroot=${COMROOT}/${NET}/${VERSION}/logs
-logfile="${logroot}/${RUN}.${PDY}/${cyc}/${WGF}/${RUN}_${task}_${TAG}_${PDY}${cyc}.log"
+logfile="${logroot}/${RUN}.${PDY}/${cyc}/${WGF}/${RUN}_${taskraw}_${TAG}_${PDY}${cyc}.log"
 echo "----log file:"
 ls ${logfile}*
 

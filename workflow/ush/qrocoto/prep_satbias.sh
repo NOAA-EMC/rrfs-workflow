@@ -28,6 +28,8 @@ if [[ -z "${satbias_path}" ]]; then
 fi
 
 echo "copy satbias files from ${HOMErrfs}/fix/satbias_init"
+chmod +w "${dest_path}"/*satbias*.nc
 cp "${satbias_path}"/*satbias*.nc  "${dest_path}"
+chmod +w "${dest_path}"/*satbias*.nc
 touch "${dest_path}/satbias_jumpstart"  # this file will jump start the very first cycle of a retro
 echo "to ${dest_path}"
