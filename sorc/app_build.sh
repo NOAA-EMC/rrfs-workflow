@@ -303,7 +303,7 @@ if [ "${EXTRN}" = true ]; then
   fi
   if [ -d "${SORC_DIR}/RDASApp" ]; then
     printf "... removing RDASApp ...\n"
-    rm -rf "${HOME_DIR}/RDASApp"
+    rm -rf "${SORC_DIR}/RDASApp"
   fi
 
   # run check-out
