@@ -16,7 +16,7 @@ fi
 RUN=rrfs
 
 CDATE=$1
-task=$2
+task=${2%_g*}
 PDY=${CDATE:0:8}
 cyc=${CDATE:8:2}
 logroot=${COMROOT}/${NET}/${VERSION}/logs
