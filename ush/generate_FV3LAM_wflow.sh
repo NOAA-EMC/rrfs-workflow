@@ -231,7 +231,7 @@ settings="\
   'net': ${NET}
   'run': ${RUN}
   'jedi_envar_ioda': ${JEDI_ENVAR_IODA_TN}
-  'ioda_prepbufr': ${IODA_PREPBUFR_TN}
+  'ioda_bufr': ${IODA_BUFR_TN}
 #
 # Number of nodes to use for each task.
 #
@@ -246,6 +246,7 @@ settings="\
   'nnodes_run_prepstart': ${NNODES_RUN_PREPSTART}
   'nnodes_run_fcst': ${NNODES_RUN_FCST}
   'nnodes_run_analysis': ${NNODES_RUN_ANALYSIS}
+  'nnodes_run_analysis_jedi': ${NNODES_RUN_ANALYSIS_JEDI}
   'nnodes_run_gsidiag': ${NNODES_RUN_GSIDIAG}
   'nnodes_run_postanal': ${NNODES_RUN_POSTANAL}
   'nnodes_run_enkf': ${NNODES_RUN_ENKF}
@@ -265,7 +266,7 @@ settings="\
   'nnodes_run_bufrsnd': ${NNODES_RUN_BUFRSND}
   'nnodes_save_restart': ${NNODES_SAVE_RESTART}
   'nnodes_run_jedienvar_ioda': ${NNODES_RUN_JEDIENVAR_IODA}
-  'nnodes_run_ioda_prepbufr': ${NNODES_RUN_IODA_PREPBUFR}
+  'nnodes_run_ioda_bufr': ${NNODES_RUN_IODA_BUFR}
   'nnodes_add_aerosol': ${NNODES_ADD_AEROSOL}
 #
 # Number of cores used for a task
@@ -292,6 +293,7 @@ settings="\
   'ppn_run_prepstart': ${PPN_RUN_PREPSTART}
   'ppn_run_fcst': ${PPN_RUN_FCST}
   'ppn_run_analysis': ${PPN_RUN_ANALYSIS}
+  'ppn_run_analysis_jedi': ${PPN_RUN_ANALYSIS_JEDI}
   'ppn_run_gsidiag': ${PPN_RUN_GSIDIAG}
   'ppn_run_postanal': ${PPN_RUN_POSTANAL}
   'ppn_run_enkf': ${PPN_RUN_ENKF}
@@ -311,12 +313,13 @@ settings="\
   'ppn_run_bufrsnd': ${PPN_RUN_BUFRSND}
   'ppn_save_restart': ${PPN_SAVE_RESTART}
   'ppn_run_jedienvar_ioda': ${PPN_RUN_JEDIENVAR_IODA}
-  'ppn_run_ioda_prepbufr': ${PPN_RUN_IODA_PREPBUFR}
+  'ppn_run_ioda_bufr': ${PPN_RUN_IODA_BUFR}
   'ppn_add_aerosol': ${PPN_ADD_AEROSOL}
 #
   'tpp_make_ics': ${TPP_MAKE_ICS}
   'tpp_make_lbcs': ${TPP_MAKE_LBCS}
   'tpp_run_analysis': ${TPP_RUN_ANALYSIS}
+  'tpp_run_analysis_jedi': ${TPP_RUN_ANALYSIS_JEDI}
   'tpp_run_enkf': ${TPP_RUN_ENKF}
   'tpp_run_fcst': ${TPP_RUN_FCST}
   'tpp_run_post': ${TPP_RUN_POST}
@@ -356,7 +359,7 @@ settings="\
   'wtime_run_bufrsnd': ${WTIME_RUN_BUFRSND}
   'wtime_save_restart': ${WTIME_SAVE_RESTART}
   'wtime_run_jedienvar_ioda': ${WTIME_RUN_JEDIENVAR_IODA}
-  'wtime_run_ioda_prepbufr': ${WTIME_RUN_IODA_PREPBUFR}
+  'wtime_run_ioda_bufr': ${WTIME_RUN_IODA_BUFR}
   'wtime_add_aerosol': ${WTIME_ADD_AEROSOL}
 #
 # start time for each task.
@@ -367,7 +370,7 @@ settings="\
   'start_time_blending': ${START_TIME_BLENDING}
   'start_time_late_analysis': ${START_TIME_LATE_ANALYSIS}
   'start_time_conventional': ${START_TIME_CONVENTIONAL}
-  'start_time_ioda_prepbufr': ${START_TIME_IODA_PREPBUFR}
+  'start_time_ioda_bufr': ${START_TIME_IODA_BUFR}
   'start_time_nsslmosiac': ${START_TIME_NSSLMOSIAC}
   'start_time_lightningnc': ${START_TIME_LIGHTNINGNC}
   'start_time_proc_glmfed': ${START_TIME_GLMFED}
@@ -382,7 +385,7 @@ settings="\
   'memo_run_prepstart': ${MEMO_RUN_PREPSTART}
   'memo_run_prdgen': ${MEMO_RUN_PRDGEN}
   'memo_run_jedienvar_ioda': ${MEMO_RUN_JEDIENVAR_IODA}
-  'memo_run_ioda_prepbufr': ${MEMO_RUN_IODA_PREPBUFR}
+  'memo_run_ioda_bufr': ${MEMO_RUN_IODA_BUFR}
   'memo_prep_cyc': ${MEMO_PREP_CYC}
   'memo_save_restart': ${MEMO_SAVE_RESTART}
   'memo_save_input': ${MEMO_SAVE_INPUT}
@@ -422,7 +425,7 @@ settings="\
   'maxtries_save_restart': ${MAXTRIES_SAVE_RESTART}
   'maxtries_save_da_output': ${MAXTRIES_SAVE_DA_OUTPUT}
   'maxtries_jedi_envar_ioda': ${MAXTRIES_JEDI_ENVAR_IODA}
-  'maxtries_ioda_prepbufr': ${MAXTRIES_IODA_PREPBUFR}
+  'maxtries_ioda_bufr': ${MAXTRIES_IODA_BUFR}
   'maxtries_add_aerosol': ${MAXTRIES_ADD_AEROSOL}
 #
 # Flags that determine whether to run the specific tasks.
@@ -576,7 +579,7 @@ settings="\
 #
 # IODA related parameters
 #
-  'do_ioda_prepbufr': ${DO_IODA_PREPBUFR}
+  'do_ioda_bufr': ${DO_IODA_BUFR}
 #
 # JEDIVAR related parameters
 #

@@ -1,18 +1,5 @@
-# This part is for testing only. Normally this would just show algorithm: <algorithm>
-# -----------------------------------------------------------------------------------
-supported_algorithms:
-- 3dvar
-- hofx3d
-#- hofx4d
-#- local_ensemble_da
-# Local algorithms
-#- fv3jedi_fv3inc_lgetkf
-#- fv3jedi_fv3inc_variational
-
 # This is overwritten in the testing but allows command line test of jcb
-#algorithm: fv3jedi_fv3inc_variational
-#algorithm: 3dvar
-algorithm: fv3jedi_3denvar_ctest
+algorithm: 3dvar
 
 # Search path for model and obs for JCB (relative for the submodule, or can be absolute)
 # --------------------------------------------------------------------------------------
@@ -29,24 +16,31 @@ output_file: atmosphere_output
 output_ensemble_increments_file: atmosphere_output_ensemble_increments_gaussian
 model_file: atmosphere_model_pseudo
 initial_condition_file: atmosphere_background
-background_error_file: atmosphere_background_error_3denvar_bump
+#background_error_file: atmosphere_background_error_3denvar_bump
+#background_error_file: atmosphere_background_error_3dvar_gsibec
+background_error_file: atmosphere_background_error_3dvar_bumpID
 
 
 # Global analysis things
 # ----------------------
-window_begin: @WINDOW_BEGIN@ #'2025-07-06T00:00:00Z'
+window_begin: @WINDOW_BEGIN@
 window_length: PT6H
 bound_to_include: begin
 minimizer: DRPCG
 final_diagnostics_departures: oman
-analysis_variables: [eastward_wind,northward_wind,air_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio]
 number_of_outer_loops: 2
 distribution: RoundRobin
 empty_obs_space_action: create output
 
+analysis_variables:
+- eastward_wind
+- northward_wind
+- air_temperature
+- water_vapor_mixing_ratio_wrt_moist_air
+- air_pressure_at_surface
+
 # Testing
 # -------
-
 do_testing: false
 
 # Model things
@@ -59,8 +53,6 @@ atmosphere_npz_ges: 65
 atmosphere_npx_anl: 420 #not sure if correct
 atmosphere_npy_anl: 252 #not sure if correct
 atmosphere_npz_anl: 65
-atmosphere_fv3jedi_files_path: DataFix #DATA/fv3jedi
-atmosphere_fv3jedi_files_path: DataFix #DATA/fv3jedi
 atmosphere_ntiles: 1
 atmosphere_io_layout_x: 1
 atmosphere_io_layout_y: 1
@@ -68,19 +60,45 @@ gradient_norm_reduction: 1e-3
 ninner: 50
 
 # Background
-atmosphere_background_path: data/bkg
+atmosphere_background_path: "./"
 atmosphere_background_ensemble_path: "data/inputs/mem%mem%"
 
-atmosphere_variational_history_prefix: "bkg_"
-atmosphere_ensemble_history_prefix: "ens_"
+atmosphere_background_time_iso: @ATMOSPHERE_BACKGROUND_TIME_ISO@
+atmosphere_background_time_prefix: ""
+filename_core: fv3_dynvars # fv_core.res.tile1.nc
+filename_trcr: fv3_tracer  # fv_tracer.res.tile1.nc
+filename_sfcd: fv3_sfcdata # sfc_data.nc
+filename_sfcw: fv_srf_wnd.res.tile1.nc
+filename_cplr: coupler.res
 
-atmosphere_background_time_iso: @ATMOSPHERE_BACKGROUND_TIME_ISO@ #'2025-07-06T03:00:00Z'
-atmosphere_background_time_prefix: @ATMOSPHERE_BACKGROUND_TIME_PREFIX@ #'20240527.030000.'
-state_variables: [eastward_wind, northward_wind, air_temperature, air_pressure_thickness, water_vapor_mixing_ratio_wrt_moist_air ,cloud_liquid_ice, cloud_liquid_water, ozone_mass_mixing_ratio, geopotential_height_times_gravity_at_surface, f10m, slmsk, sheleg, skin_temperature_at_surface, vtype, stype, vfrac, soilt, soilm, eastward_wind_at_surface, northward_wind_at_surface]
+state_variables:
+- eastward_wind
+- northward_wind
+- air_temperature
+- air_pressure_thickness
+- water_vapor_mixing_ratio_wrt_moist_air
+- cloud_liquid_ice
+- cloud_liquid_water
+- ozone_mass_mixing_ratio
+- geopotential_height_times_gravity_at_surface
+- f10m
+- slmsk
+- sheleg
+- skin_temperature_at_surface
+- vtype
+- stype
+- vfrac
+- soilt
+- soilm
+- eastward_wind_at_surface
+- northward_wind_at_surface
+- air_pressure_at_surface
+
 eastward_wind: ua
 northward_wind: va
 air_temperature: T
-air_pressure_thickness: DELP
+air_pressure_thickness: delp
+air_pressure_at_surface: ps
 water_vapor_mixing_ratio_wrt_moist_air: sphum
 cloud_liquid_ice: ice_wat
 cloud_liquid_water: liq_wat
@@ -111,8 +129,6 @@ atmosphere_final_increment_prefix: "./anl/atminc."
 # Observation things
 # ------------------
 observations:
-#- all_observations # use this for all or can uncomment any number below.
-
 # Upper-air conventional
 #- adpupa_airTemperature_120
 #- adpupa_airTemperature_132
@@ -257,7 +273,15 @@ atmosphere_obsbiascovout_suffix: ".satbias_cov.nc"
 # -------------------------
 local_ensemble_da_solver: GETKF
 
-increment_variables: [eastward_wind,northward_wind,air_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio]
+increment_variables:
+- eastward_wind
+- northward_wind
+- air_temperature
+- air_pressure_thickness
+- water_vapor_mixing_ratio_wrt_moist_air
+- cloud_liquid_ice
+- cloud_liquid_water
+- ozone_mass_mixing_ratio
 
 # Veritcal localization for GETKF
 vl_fraction_of_retained_variance: 0.750

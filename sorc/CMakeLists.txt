@@ -152,7 +152,7 @@ if(BUILD_RDASAPP)
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/RDASApp
     # build.sh handles configure, build, and install
     CONFIGURE_COMMAND ""
-    BUILD_COMMAND bash -c "${CMAKE_CURRENT_SOURCE_DIR}/RDASApp/build.sh -p ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR} -f -m FV3andMPAS"
+    BUILD_COMMAND bash -c "${CMAKE_CURRENT_SOURCE_DIR}/RDASApp/build.sh -p ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR} -f -m FV3 -b YES"
     INSTALL_COMMAND ""  # build.sh already installs when -p is given
     BUILD_ALWAYS TRUE
     STEP_TARGETS build

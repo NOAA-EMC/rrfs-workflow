@@ -77,7 +77,10 @@ print_input_args valid_args
 #-----------------------------------------------------------------------
 #
 ulimit -s unlimited
+ulimit -v unlimited
 ulimit -a
+export OOPS_TRACE=0
+export LD_LIBRARY_PATH="${RDASAPP_DIR}/build/lib64:${LD_LIBRARY_PATH}"
 
 case $MACHINE in
 #
@@ -85,8 +88,8 @@ case $MACHINE in
   export FI_OFI_RXM_SAR_LIMIT=3145728
   export OMP_STACKSIZE=500M
   export OMP_NUM_THREADS=1 #${TPP_RUN_ANALYSIS}
-  ncores=160 #$(( NNODES_RUN_ANALYSIS*PPN_RUN_ANALYSIS))
-  APRUN="-l -n ${ncores}"
+  #ncores=160 #$(( NNODES_RUN_ANALYSIS*PPN_RUN_ANALYSIS))
+  APRUN="mpirun -n 160 -ppn 80 --cpu-bind core --depth 1"
   ;;
 #
 "HERA")
@@ -206,7 +209,7 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
     fi
     (( imem += 1 ))
   done
- 
+
   fi
   done
 
@@ -308,11 +311,19 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-export PYTHONPATH="${PYTHONPATH}:$RDASAPP_DIR/sorc/jcb/src/:$RDASAPP_DIR/build/lib/python3.*:${RDASAPP_DIR}/sorc/wxflow/src"
-cp ${PARMdir}/rdas-atmosphere-templates-fv3.yaml .
+anav_type=${ob_type}
+# pyioda libraries
+shopt -s nullglob
+dirs=("$RDASAPP_DIR"/build/lib/python3.*)
+PYIODALIB=${dirs[0]}
+WXFLOWLIB=${RDASAPP_DIR}/sorc/wxflow/src
+JCBLIB=${RDASAPP_DIR}/sorc/jcb/src
+export PYTHONPATH="${JCBLIB}:${WXFLOWLIB}:${PYIODALIB}:${PYTHONPATH}"
+
+cp ${PARMdir}/rdas-atmosphere-templates-fv3_c13.yaml .
 cp ${USHdir}/run_jcb.py .
 
-#sed - fv3-rdas-atmosphere-templates.yaml
+#sed - rdas-atmosphere-templates.yaml
 WIN=$(date -u -d "${YYYY}-${MM}-${DD} ${HH}:00:00 UTC -3 hours" +"%Y-%m-%dT%H:00:00Z")
 # set other placeholders
 WIN_ISO="${YYYY}-${MM}-${DD}T${HH}:00:00Z"
@@ -325,9 +336,9 @@ sed -i \
   -e "s|@ATMOSPHERE_BACKGROUND_TIME_ISO@|'${WIN_ISO}'|" \
   -e "s|@ATMOSPHERE_BACKGROUND_TIME_PREFIX@|'${WIN_PREFIX}'|" \
   -e "s|@SUFFIX@|${SUFFIX}|g" \
-  rdas-atmosphere-templates-fv3.yaml
+  rdas-atmosphere-templates-fv3_c13.yaml
 
-python run_jcb.py $YYYYMMDDHH fv3
+python run_jcb.py $YYYYMMDDHH fv3 c13
 #
 #-----------------------------------------------------------------------
 #
@@ -342,12 +353,9 @@ python run_jcb.py $YYYYMMDDHH fv3
 n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
-ln -snf ${fixgriddir}/fv3_akbk  fv3_akbk
-ln -snf ${fixgriddir}/fv3_grid_spec  fv3_grid_spec
-
 if [ ${BKTYPE} -eq 1 ]; then  # cold start uses background from INPUT
   ln -snf ${fixgriddir}/phis.nc  phis.nc
-  ncks -A -v  phis  phis.nc  ${bkpath}/gfs_data.tile7.halo0.nc 
+  ncks -A -v  phis  phis.nc  ${bkpath}/gfs_data.tile7.halo0.nc
 
   ln -snf ${bkpath}/sfc_data.tile7.halo0.nc  fv3_sfcdata
   ln -snf ${bkpath}/gfs_data.tile7.halo0.nc  fv3_dynvars
@@ -357,6 +365,7 @@ if [ ${BKTYPE} -eq 1 ]; then  # cold start uses background from INPUT
 else                          # cycle uses background from restart
   if [ "${IO_LAYOUT_Y}" == "1" ]; then
     ln -snf ${bkpath}/fv_core.res.tile1.nc  fv3_dynvars
+    ln -snf ${bkpath}/fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
     if [ "${anav_type}" = "AERO" ]; then
       cp ${bkpath}/fv_tracer.res.tile1.nc  fv3_tracer
     else
@@ -396,7 +405,8 @@ sed -i "s/hh/${HH}/"     coupler.res
 #
 #-----------------------------------------------------------------------
 #
-cp $COMOUT/ioda_*.nc .
+mkdir -p data/obs
+cp $COMOUT/ioda_*.nc data/obs/.
 #
 #-----------------------------------------------------------------------
 #
@@ -426,6 +436,19 @@ cp $COMOUT/ioda_*.nc .
 #
 #-----------------------------------------------------------------------
 #
+mkdir -p INPUT
+ln -snf ${fixgriddir}/fv3_akbk  fv3_akbk
+ln -snf ${fixgriddir}/fv3_grid_spec  fv3_grid_spec
+ln -snf ${FIXLAM}/C775_grid.tile7.halo3.nc INPUT/C775_grid.tile7.halo3.nc
+ln -snf ${FIXLAM}/C775_mosaic.halo3.nc INPUT/grid_spec.nc
+cp ${FIX_JEDI}/coupler.res .
+cp ${FIX_JEDI}/dynamics_lam_cmaq.yaml .
+cp ${FIX_JEDI}/field_table .
+cp ${FIX_JEDI}/fmsmpp.nml .
+cp ${FIX_JEDI}/gfs-restart.yaml .
+cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/berror_stats .
+cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/gsiparm_regional.anl .
+cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/input_lam_C775_NP16X10.nml .
 #
 #-----------------------------------------------------------------------
 #
@@ -463,11 +486,18 @@ cp $COMOUT/ioda_*.nc .
 #
 #-----------------------------------------------------------------------
 #
-jedi_exec="${EXECdir}/bin/fv3jedi_var.x"
-cp ${jedi_exec} ${analworkdir}/fv3jedi_var.x
-
+#export OOPS_TRACE=1
+#export OOPS_DEBUG=1
+export OMP_NUM_THREADS=1
 export pgm="fv3jedi_var.x"
+jedi_exec="${EXECdir}/bin/${pgm}"
+cp ${jedi_exec} ${analworkdir}/${pgm}
+
 . prep_step
+
+${APRUN} ./$pgm jedivar.yaml >>$pgmout 2>errfile
+export err=$?; err_chk
+mv errfile errfile_jedi
 #
 #-----------------------------------------------------------------------
 #
