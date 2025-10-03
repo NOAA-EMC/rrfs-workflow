@@ -118,6 +118,9 @@ fi
 module load "prod_util/${MACHINE}"
 module list
 set -x
+# workaround for err_exit, https://github.com/NOAA-EMC/NCEPLIBS-prod_util/pull/73
+export PATH=${HOMErrfs}/sorc/_workaround_:${PATH}
+
 # check whether prod_util is correctly loaded
 if [[ "${NDATE}" == "" ]]; then
   echo "FATAL ERROR: ${NDATE} is not defined; prod_util is not loaded!"
