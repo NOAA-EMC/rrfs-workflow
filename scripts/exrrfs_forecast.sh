@@ -483,18 +483,22 @@ if [ ${BKTYPE} -eq 0 ]; then
   # believe need to create options here on the FV3_NML_RESTART_FP to copy in for different configs.
 
     if [ ${CYCLE_TYPE} = "spinup" ]; then
-    cpreq -p ${FV3_NML_RESTART_SPINUPCYC_FP} ${DATA}/${FV3_NML_FN}
+      cpreq -p ${FV3_NML_RESTART_SPINUPCYC_FP} ${DATA}/${FV3_NML_FN}
     else
-
-    FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$cyc]}
-    if [ $FCST_LEN_HRS -eq '18' ]; then
-    cpreq -p ${FV3_NML_RESTART_18H_FP} ${DATA}/${FV3_NML_FN}
-    elif [ $FCST_LEN_HRS -eq '84' ]; then
-    cpreq -p ${FV3_NML_RESTART_LONG_FP} ${DATA}/${FV3_NML_FN}
-    fi
+      if [ ${WGF} = "enkf" ]; then
+       FCST_LEN_HRS=1
+       cpreq -p ${FV3_NML_RESTART_FP} ${DATA}/${FV3_NML_FN}
+      else
+        FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$cyc]}
+        if [ $FCST_LEN_HRS -eq '18' ]; then
+          cpreq -p ${FV3_NML_RESTART_18H_FP} ${DATA}/${FV3_NML_FN}
+        elif [ $FCST_LEN_HRS -eq '84' ]; then
+          cpreq -p ${FV3_NML_RESTART_LONG_FP} ${DATA}/${FV3_NML_FN}
+        fi
+      fi
     fi
   fi
-else
+else # not cycling
   if [ -f "INPUT/cycle_surface.done" ]; then
   # namelist for cold start with surface cycle
     cpreq -p ${FV3_NML_CYCSFC_FP} ${DATA}/${FV3_NML_FN}
@@ -506,6 +510,8 @@ else
       # is there a cold start spinup need?
        if [ ${CYCLE_TYPE} = "spinup" ]; then
          cpreq -p ${FV3_NML_SPINUPCYC_FP} ${DATA}/${FV3_NML_FN}
+       elif [ ${WGF} = "firewx" ] || [ ${WGF} = "enkf" ]; then
+         cpreq -p ${FV3_NML_FP} ${DATA}/${FV3_NML_FN}
        else
          FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$cyc]}
          if [ $FCST_LEN_HRS -eq '18' ]; then
@@ -568,22 +574,28 @@ if [ ${CYCLE_TYPE} = "spinup" ]; then
   WRITE_GRP="${WRTCMP_write_groups_SPINUP}"
   WRITE_TSK="${WRTCMP_write_tasks_per_group_SPINUP}"
 else
-  FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$cyc]}
-  if [ $FCST_LEN_HRS -eq '18' ]; then
-    LAYOUT_X="${LAYOUT_X_18H}" 
-    LAYOUT_Y="${LAYOUT_Y_18H}" 
-    WRITE_GRP="${WRTCMP_write_groups_18H}"
-    WRITE_TSK="${WRTCMP_write_tasks_per_group_18H}"
-  elif [ $FCST_LEN_HRS -eq '84' ] ; then
-    LAYOUT_X="${LAYOUT_X_LONG}" 
-    LAYOUT_Y="${LAYOUT_Y_LONG}" 
-    WRITE_GRP="${WRTCMP_write_groups_LONG}"
-    WRITE_TSK="${WRTCMP_write_tasks_per_group_LONG}"
-  elif [ $FCST_LEN_HRS -eq '60' ] ; then
-    LAYOUT_X="${LAYOUT_X_ENSF}" 
-    LAYOUT_Y="${LAYOUT_Y_ENSF}" 
-    WRITE_GRP="${WRTCMP_write_groups_ENSF}"
-    WRITE_TSK="${WRTCMP_write_tasks_per_group_ENSF}"
+  if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ] ; then
+    FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$cyc]}
+    if [ $FCST_LEN_HRS -eq '18' ]; then
+      LAYOUT_X="${LAYOUT_X_18H}" 
+      LAYOUT_Y="${LAYOUT_Y_18H}" 
+      WRITE_GRP="${WRTCMP_write_groups_18H}"
+      WRITE_TSK="${WRTCMP_write_tasks_per_group_18H}"
+    elif [ $FCST_LEN_HRS -eq '84' ] ; then
+      LAYOUT_X="${LAYOUT_X_LONG}" 
+      LAYOUT_Y="${LAYOUT_Y_LONG}" 
+      WRITE_GRP="${WRTCMP_write_groups_LONG}"
+      WRITE_TSK="${WRTCMP_write_tasks_per_group_LONG}"
+    elif [ $FCST_LEN_HRS -eq '60' ] ; then
+      LAYOUT_X="${LAYOUT_X_ENSF}" 
+      LAYOUT_Y="${LAYOUT_Y_ENSF}" 
+      WRITE_GRP="${WRTCMP_write_groups_ENSF}"
+      WRITE_TSK="${WRTCMP_write_tasks_per_group_ENSF}"
+    fi
+  elif [ ${WGF} = "enkf" ] || [ ${WGF} = "firewx" ]; then
+# should already have LAYOUT_X and LAYOUT_Y
+    WRITE_GRP="${WRTCMP_write_groups}"
+    WRITE_TSK="${WRTCMP_write_tasks_per_group}"
   fi
 fi
 
