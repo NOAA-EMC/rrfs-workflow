@@ -53,6 +53,12 @@ export FIELD_TABLE_FP="${PARMrrfs}/config/${WGF}/field_table"
 export FV3_NML_FP="${PARMrrfs}/config/${WGF}/input.nml"
 export UFS_YAML_FP="${PARMrrfs}/config/${WGF}/fd_ufs.yaml"
 export FV3_NML_RESTART_FP="${PARMrrfs}/config/${WGF}/input.nml_restart"
+export FV3_NML_RESTART_18H_FP="${PARMrrfs}/config/${WGF}/input.nml_restart_18h"
+export FV3_NML_RESTART_LONG_FP="${PARMrrfs}/config/${WGF}/input.nml_restart_long"
+export FV3_NML_RESTART_SPINUPCYC_FP="${PARMrrfs}/config/${WGF}/input.nml_restart_spinupcyc"
+export FV3_NML_18H_FP="${PARMrrfs}/config/${WGF}/input.nml_18h"
+export FV3_NML_LONG_FP="${PARMrrfs}/config/${WGF}/input.nml_long"
+export FV3_NML_SPINUPCYC_FP="${PARMrrfs}/config/${WGF}/input.nml_spinupcyc"
 if [ $WGF == "ensf" ]; then
   export CUSTOM_POST_CONFIG_FP="${FIXrrfs}/upp/postxconfig-NT-refs.txt"
 fi
