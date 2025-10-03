@@ -72,12 +72,13 @@ subroutine add_incr(self, increment)
    integer :: i, k, ngrid
    type (mpas_pool_type), pointer :: state, diag, mesh
    type (field2DReal), pointer :: fld2d_pb, fld2d_u, fld2d_u_inc, fld2d_uRm, fld2d_uRz
+   type (field1DReal), pointer :: fld1d_u10, fld1d_v10
    type (field2DReal), pointer :: fld2d_p, fld2d_dp, fld2d_drho, fld2d_dth, fld2d_dqv
    real(kind=RKIND), dimension(:,:), pointer :: ptrr2_qv, ptrr2_sh
    real(kind=RKIND), dimension(:,:), pointer :: ptrr2_p, ptrr2_rho, ptrr2_t, ptrr2_th, ptrr2_pp
    real(kind=RKIND), dimension(:,:), pointer :: ptrr2_dp, ptrr2_drho, ptrr2_dt, ptrr2_dth, ptrr2_dsh
    real(kind=RKIND), dimension(:,:), pointer :: ptrr2_w, ptrr2_wa
-   real(kind=RKIND), dimension(:), pointer :: ptrr1_ps, ptrr1_dps
+   real(kind=RKIND), dimension(:), pointer :: ptrr1_ps, ptrr1_dps, ptrr1_2mt, ptrr1_2msh
 
    ! Difference with self_add other is that self%subFields can contain extra fields
    ! beyond increment%subFields and the resolution of increment can be different.
@@ -113,6 +114,8 @@ subroutine add_incr(self, increment)
          call self%get('air_pressure_at_surface', ptrr1_ps)
          call self%get(     'air_temperature', ptrr2_t)
          call self%get(           'air_potential_temperature', ptrr2_th)
+         call self%get('air_temperature_at_2m', ptrr1_2mt)
+         call self%get(              'water_vapor_mixing_ratio_wrt_moist_air_at_2m', ptrr1_2msh)
          call increment%get(     'air_temperature', ptrr2_dt)
          call increment%get('air_pressure_at_surface', ptrr1_dps)
 
@@ -156,6 +159,10 @@ subroutine add_incr(self, increment)
       kind_op = 'add'
       call da_operator(trim(kind_op), self%subFields, increment%subFields, fld_select = increment%fldnames_ci)
 
+      ! Third, update thermodynamic subFields at surface
+      ptrr1_2mt(1:ngrid)  = ptrr1_2mt(1:ngrid) + ptrr2_dt(1,1:ngrid)
+      ptrr1_2msh(1:ngrid) = ptrr1_2msh(1:ngrid) + ptrr2_dsh(1,1:ngrid)
+
       ! Impose positive-definite limits on hydrometeors and moistureFields
       ! note: nonlinear change of variable
       call da_posdef( self%subFields, mpas_hydrometeor_fields)
@@ -189,6 +196,12 @@ subroutine add_incr(self, increment)
          call mpas_pool_get_field(self%subFields, 'u', fld2d_u)
          call mpas_pool_get_field(increment%subFields, 'northward_wind', fld2d_uRm)
          call mpas_pool_get_field(increment%subFields, 'eastward_wind', fld2d_uRz)
+
+         ! Update dynamic subFields at surface
+         call mpas_pool_get_field(self%subFields, 'eastward_wind_at_10m', fld1d_u10)
+         call mpas_pool_get_field(self%subFields, 'northward_wind_at_10m', fld1d_v10)
+         fld1d_u10%array(1:ngrid) = fld1d_u10%array(1:ngrid) + fld2d_uRz%array(1,1:ngrid)
+         fld1d_v10%array(1:ngrid) = fld1d_v10%array(1:ngrid) + fld2d_uRm%array(1,1:ngrid)
 
          call mpas_duplicate_field(fld2d_u, fld2d_u_inc)
 

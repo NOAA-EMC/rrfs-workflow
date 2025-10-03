@@ -23,9 +23,7 @@ namespace ufo {
 
 /// enum type for surface correction type, and ParameterTraitsHelper for it
 enum class SfcCorrectionType {
-  UKMO,   /// WRFDA method uses model surface and level 1 data.
-  WRFDA,  /// UKMO method uses model surface and 2000m data.
-  GSL     /// GSL method uses model surface and level 1 data.
+  UKMO, WRFDA, GSL
 };
 struct SfcCorrectionTypeParameterTraitsHelper {
   typedef SfcCorrectionType EnumType;
@@ -171,6 +169,9 @@ class ObsSfcCorrectedParameters : public ObsOperatorParametersBase {
       "stationElevation",
       this};
 
+  // WRFDA method uses model surface and level 1 data.
+  // UKMO method uses model surface and 2000m data.
+  // GSL method uses model surface data.
   oops::Parameter<SfcCorrectionType> correctionType{
       "correction scheme to use",
       "Scheme used for correction ('WRFDA' or 'UKMO' or 'GSL')",
