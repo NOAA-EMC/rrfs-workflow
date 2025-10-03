@@ -353,21 +353,6 @@ python run_jcb.py $YYYYMMDDHH fv3 c13
 n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
-mkdir -p INPUT
-ln -snf ${fixgriddir}/fv3_akbk  fv3_akbk
-ln -snf ${fixgriddir}/fv3_grid_spec  fv3_grid_spec
-ln -snf ${FIXLAM}/C775_grid.tile7.halo3.nc INPUT/C775_grid.tile7.halo3.nc
-ln -snf /${FIXLAM}/C775_mosaic.halo3.nc INPUT/grid_spec.nc
-
-cp /lfs/h2/emc/da/noscrub/donald.e.lippi/RRFSv1/fix/jedi/coupler.res .
-cp /lfs/h2/emc/da/noscrub/donald.e.lippi/RRFSv1/fix/jedi/dynamics_lam_cmaq.yaml .
-cp /lfs/h2/emc/da/noscrub/donald.e.lippi/RRFSv1/fix/jedi/field_table .
-cp /lfs/h2/emc/da/noscrub/donald.e.lippi/RRFSv1/fix/jedi/fmsmpp.nml .
-cp /lfs/h2/emc/da/noscrub/donald.e.lippi/RRFSv1/fix/jedi/gfs-restart.yaml .
-cp /lfs/h2/emc/da/noscrub/donald.e.lippi/RRFSv1/fix/jedi/${PREDEF_GRID_NAME}/berror_stats .
-cp /lfs/h2/emc/da/noscrub/donald.e.lippi/RRFSv1/fix/jedi/${PREDEF_GRID_NAME}/gsiparm_regional.anl .
-cp /lfs/h2/emc/da/noscrub/donald.e.lippi/RRFSv1/fix/jedi/${PREDEF_GRID_NAME}/input_lam_C775_NP16X10.nml .
-
 if [ ${BKTYPE} -eq 1 ]; then  # cold start uses background from INPUT
   ln -snf ${fixgriddir}/phis.nc  phis.nc
   ncks -A -v  phis  phis.nc  ${bkpath}/gfs_data.tile7.halo0.nc
@@ -451,6 +436,19 @@ cp $COMOUT/ioda_*.nc data/obs/.
 #
 #-----------------------------------------------------------------------
 #
+mkdir -p INPUT
+ln -snf ${fixgriddir}/fv3_akbk  fv3_akbk
+ln -snf ${fixgriddir}/fv3_grid_spec  fv3_grid_spec
+ln -snf ${FIXLAM}/C775_grid.tile7.halo3.nc INPUT/C775_grid.tile7.halo3.nc
+ln -snf ${FIXLAM}/C775_mosaic.halo3.nc INPUT/grid_spec.nc
+cp ${FIX_JEDI}/coupler.res .
+cp ${FIX_JEDI}/dynamics_lam_cmaq.yaml .
+cp ${FIX_JEDI}/field_table .
+cp ${FIX_JEDI}/fmsmpp.nml .
+cp ${FIX_JEDI}/gfs-restart.yaml .
+cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/berror_stats .
+cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/gsiparm_regional.anl .
+cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/input_lam_C775_NP16X10.nml .
 #
 #-----------------------------------------------------------------------
 #
