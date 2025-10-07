@@ -489,7 +489,7 @@ if [ ${BKTYPE} -eq 0 ]; then
        FCST_LEN_HRS=1
        cpreq -p ${FV3_NML_RESTART_FP} ${DATA}/${FV3_NML_FN}
       else
-        FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$cyc]}
+        FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$((10#$cyc))]}
         if [ $FCST_LEN_HRS -eq '18' ]; then
           cpreq -p ${FV3_NML_RESTART_18H_FP} ${DATA}/${FV3_NML_FN}
         elif [ $FCST_LEN_HRS -eq '84' ]; then
@@ -513,7 +513,7 @@ else # not cycling
        elif [ ${WGF} = "firewx" ] || [ ${WGF} = "enkf" ]; then
          cpreq -p ${FV3_NML_FP} ${DATA}/${FV3_NML_FN}
        else
-         FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$cyc]}
+         FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$((10#$cyc))]}
          if [ $FCST_LEN_HRS -eq '18' ]; then
            cpreq -p ${FV3_NML_18H_FP} ${DATA}/${FV3_NML_FN}
          elif [ $FCST_LEN_HRS -eq '84' ]; then
@@ -575,7 +575,7 @@ if [ ${CYCLE_TYPE} = "spinup" ]; then
   WRITE_TSK="${WRTCMP_write_tasks_per_group_SPINUP}"
 else
   if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ] ; then
-    FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$cyc]}
+    FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$((10#$cyc))]}
     if [ $FCST_LEN_HRS -eq '18' ]; then
       LAYOUT_X="${LAYOUT_X_18H}" 
       LAYOUT_Y="${LAYOUT_Y_18H}" 
