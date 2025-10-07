@@ -1,5 +1,6 @@
 /*
  * (C) Crown Copyright 2024, Met Office
+ * (C) Copyright 2025, GSL
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -249,8 +250,8 @@ airTemperature_GSL::airTemperature_GSL(const std::string & name,
 void airTemperature_GSL::simobs(const ufo::GeoVaLs & gv,
                                     const ioda::ObsSpace & obsdb,
                                     std::vector<float> & hofx) const {
-  oops::Log::trace() << "airTemperature_GSL::simobs starting" << std::endl;
-
+  oops::Log::trace() << "airTemperatureAt2M_GSL::simobs starting" << std::endl;
+  
   // Setup parameters used throughout
   const size_t nobs = obsdb.nlocs();
   const float missing = util::missingValue<float>();
@@ -346,7 +347,7 @@ void airTemperature_GSL::simobs(const ufo::GeoVaLs & gv,
     }
   }
 
-  oops::Log::trace() << "airTemperature_GSL::simobs complete" << std::endl;
+  oops::Log::trace() << "airTemperatureAt2M_GSL::simobs complete" << std::endl;
 }
 
 void airTemperature_GSL::settraj() const {

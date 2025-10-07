@@ -42,22 +42,15 @@ EXEC3="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_enkf.x"
 EXEC4="${HOMErrfs}/sorc/RDASApp/build/bin/bufr2netcdf.x"
 cd "${HOMErrfs}/sorc/RDASApp" || exit 1
 
-# workaround for ramp option in ObsErrorFactorPressureCheck
-# https://github.com/JCSDA-internal/ufo/pull/3705 by Sijie
-cp ../_workaround_/RDASApp/ObsErrorFactorPressureCheck.cc sorc/ufo/src/ufo/filters/obsfunctions/ObsErrorFactorPressureCheck.cc
-cp ../_workaround_/RDASApp/ObsErrorFactorPressureCheck.h sorc/ufo/src/ufo/filters/obsfunctions/ObsErrorFactorPressureCheck.h
-
 # workaround for using the GSL surface operator
 # https://github.com/JCSDA-internal/ufo/pull/3622 by Sijie
-cp ../_workaround_/RDASApp/sfccorrected/EvalSurfaceTemperature.cc sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceTemperature.cc
-cp ../_workaround_/RDASApp/sfccorrected/EvalSurfaceTemperature.h sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceTemperature.h
-cp ../_workaround_/RDASApp/sfccorrected/ObsSfcCorrectedParameters.h sorc/ufo/src/ufo/operators/sfccorrected/ObsSfcCorrectedParameters.h
+cp ../_workaround_/RDASApp/sfccorrected/* sorc/ufo/src/ufo/operators/sfccorrected/
 
 # workaround for direct radar refl DA
 # https://github.com/JCSDA-internal/mpas-jedi/pull/1045 by Yongming Wang
-cp ../_workaround_/RDASApp/direct_refl/mpas_fields_mod.F90 sorc/mpas-jedi/src/mpasjedi/Fields/mpas_fields_mod.F90
-cp ../_workaround_/RDASApp/direct_refl/mpas_state_mod.F90 sorc/mpas-jedi/src/mpasjedi/State/mpas_state_mod.F90
-cp ../_workaround_/RDASApp/direct_refl/mpas2ufo_vars_mod.F90 sorc/mpas-jedi/src/mpasjedi/Utilities/mpas2ufo_vars_mod.F90
+cp ../_workaround_/RDASApp/mpas-jedi/mpas_fields_mod.F90 sorc/mpas-jedi/src/mpasjedi/Fields/mpas_fields_mod.F90
+cp ../_workaround_/RDASApp/mpas-jedi/mpas_state_mod.F90 sorc/mpas-jedi/src/mpasjedi/State/mpas_state_mod.F90
+cp ../_workaround_/RDASApp/mpas-jedi/mpas2ufo_vars_mod.F90 sorc/mpas-jedi/src/mpasjedi/Utilities/mpas2ufo_vars_mod.F90
 
 # workaround for GSIbec
 # no PR yet
