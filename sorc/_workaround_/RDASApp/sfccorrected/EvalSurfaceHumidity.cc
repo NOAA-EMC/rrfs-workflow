@@ -59,7 +59,7 @@ void specificHumidity_GSL::simobs(const ufo::GeoVaLs & gv,
   for (size_t iloc = 0; iloc < nobs; ++iloc) {
     hofx[iloc] = missing;
     if (obs_height[iloc] != missing && model_Q_surface[iloc] != missing) {
-      // Use 2m Q as background
+      // Use 2m specific humidity as background
       hofx[iloc] = model_Q_surface[iloc];
     }
   }

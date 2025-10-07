@@ -60,7 +60,7 @@ void windEastward_GSL::simobs(const ufo::GeoVaLs & gv,
   for (size_t iloc = 0; iloc < nobs; ++iloc) {
     hofx[iloc] = missing;
     if (obs_height[iloc] != missing && model_U10_surface[iloc] != missing) {
-      // Use 2m Q as background
+      // Use 10m eastward wind as background
       hofx[iloc] = model_U10_surface[iloc];
     }
   }
@@ -115,7 +115,7 @@ void windNorthward_GSL::simobs(const ufo::GeoVaLs & gv,
   for (size_t iloc = 0; iloc < nobs; ++iloc) {
     hofx[iloc] = missing;
     if (obs_height[iloc] != missing && model_V10_surface[iloc] != missing) {
-      // Use 2m Q as background
+      // Use 10m northward wind as background
       hofx[iloc] = model_V10_surface[iloc];
     }
   }
