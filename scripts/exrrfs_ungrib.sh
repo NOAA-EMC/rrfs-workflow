@@ -23,7 +23,7 @@ prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
 # If so, will need to use a different Vtable and a different
 # ungrib.exe since the # of columns have changed.
 #
-if [[ "${prefix}" == "RAP" ]] && [[ "${DO_CHEMISTRY}" == "TRUE" ]]; then
+if ([[ "${prefix}" == "RAP" ]] || [[ "${prefix}" == "RAP" ]]) && [[ "${DO_CHEMISTRY}" == "TRUE" ]]; then
   prefix=${prefix}.SD
 fi 
 

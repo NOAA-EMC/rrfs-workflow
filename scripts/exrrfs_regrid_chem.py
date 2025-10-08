@@ -213,7 +213,7 @@ class RaveToMpasRegridContext(BaseModel):
                 elif field_name in ("albedo_drag","feff","LAI","GVF","PC","fveg","fbare","lcbare","lcveg"):
                     app = RaveField2d_plusTime.model_validate(init_data)
 # GRAPES anthro data - 12 x 20 x lat x lon --> (latXlon) x (level) x (time) -----(then, back in the shell script)----> Time x nCells x nkemit
-                elif field_name in ("HC01","PM25-PRI","PM10-PRI"):
+                elif field_name in ("HC01","PM25-PRI","PM10-PRI","h_agl"):
                     app = RaveField4d.model_validate(init_data)
                 else:
                     raise NotImplementedError(field_name)
@@ -578,7 +578,7 @@ class RaveToMpasRegridProcessor:
 
     def create_src_field_wrapper(self, field_name: str) -> FieldWrapper:
         _LOGGER.info("create source field")
-        if field_name in ("PM25-PRI","PM10-PRI","HC01"):
+        if field_name in ("PM25-PRI","PM10-PRI","HC01","h_agl"):
             src_fwrap = NcToField(
                 path=self.context.src_path,
                 name=field_name,
@@ -717,7 +717,7 @@ def main() -> None:
        InterpMethod = "CONSERVE"
        #InterpMethod = "BILINEAR"
     elif dataset_name == "GRA2PES":
-       field_names = ("PM25-PRI","PM10-PRI") # ,"HC01"=methane BAQMS, summer, 2025
+       field_names = ("PM25-PRI","PM10-PRI","h_agl") # ,"HC01"=methane BAQMS, summer, 2025
        x_center = "XLONG" #"XLONG_M"
        y_center = "XLAT" #"XLAT_M"
        x_dim    = "west_east"

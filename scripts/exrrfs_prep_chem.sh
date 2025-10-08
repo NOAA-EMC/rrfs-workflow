@@ -104,6 +104,7 @@ fi
 if [[ ${keepdata} == "YES" ]]; then
    if [[ -r ${UMBRELLA_PREP_IC_DATA}/init.nc ]]; then
        ln -sf ${UMBRELLA_PREP_IC_DATA}/init.nc ./${MESH_NAME}.init.nc
+       INIT_FILE=./${MESH_NAME}.init.nc
    else
        echo "WARNING: NO Init File available, cannot reinterpolate if files are missing, did you run the task out of order?"
        has_init=0
@@ -111,6 +112,7 @@ if [[ ${keepdata} == "YES" ]]; then
 else
    if [[ -r ${COMOUT}/ic/${WGF}${MEMDIR}/init.nc  ]]; then
        ln -sf  ${COMOUT}/ic/${WGF}${MEMDIR}/init.nc ./${MESH_NAME}.init.nc
+       INIT_FILE=./${MESH_NAME}.init.nc
    else
        echo "WARNING: NO Init File available, cannot reinterpolate if files are missing, did you run the task out of order?"
        has_init=0
@@ -119,6 +121,7 @@ fi
 
 #
 SCRIPT=${HOMErrfs}/scripts/exrrfs_regrid_chem.py
+VINTERP_SCRIPT=${HOMErrfs}/scripts/exrrfs_vinterp_chem.py
 INTERP_WEIGHTS_DIR=${DATADIR_CHEM}/grids/interpolation_weights/  
 #
 # Set a few things for the CONDA environment
@@ -355,6 +358,8 @@ if [[ "${EMIS_SECTOR_TO_PROCESS}" == "anthro" ]]; then
     #
     EMISFILE1=${ANTHROEMIS_OUTPUTDIR}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${MESH_NAME}_00to11Z.nc
     EMISFILE2=${ANTHROEMIS_OUTPUTDIR}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${MESH_NAME}_12to23Z.nc
+    EMISFILE1_vinterp=${ANTHROEMIS_OUTPUTDIR}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${MESH_NAME}_00to11Z_vinterp.nc
+    EMISFILE2_vinterp=${ANTHROEMIS_OUTPUTDIR}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${MESH_NAME}_12to23Z_vinterp.nc
     #
     if [[ -r ${EMISFILE_BASE_RAW1} ]] && [[ -r ${EMISFILE_BASE_RAW2} ]]; then
        echo "Checking to make sure we have corner coords"
@@ -387,6 +392,9 @@ if [[ "${EMIS_SECTOR_TO_PROCESS}" == "anthro" ]]; then
              ncks -O --mk_rec_dmn Time ${EMISFILE2} ${EMISFILE2}
              ncks -O -6  ${EMISFILE1} ${EMISFILE1}
              ncks -O -6  ${EMISFILE2} ${EMISFILE2}
+             # Vertically interpolate the emissions based on the MPAS grid
+             # python ${VINTERP_SCRIPT} ${EMISFILE1} ${INIT_FILE} ${EMISFILE1_vinterp} "PM25-PRI" "h_agl" "zgrid"
+
              for ihour in $(seq 0 ${FCST_LENGTH}) 
              do
                  YYYY_EMIS=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${ihour} hours" +%Y)

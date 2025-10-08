@@ -16,12 +16,12 @@ fcst_len_hrs_thiscyc=$("${USHrrfs}/find_fcst_length.sh" "${fcst_len_hrs_cycles}"
 echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
 #
 YYYYMMDDHH=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y%m%d%H)
-yesterday_name=$(date -d "${CDATE:0:8} ${CDATE:8:2} - 24 hours" +%Y%m%d%H)
-twodaysago_name=$(date -d "${CDATE:0:8} ${CDATE:8:2} - 48 hours" +%Y%m%d%H)
+yesterday_name=$(date -d "${CDATE:0:8} ${CDATE:8:2} - 24 hours" +%Y%m%d)
+twodaysago_name=$(date -d "${CDATE:0:8} ${CDATE:8:2} - 48 hours" +%Y%m%d)
 today_name=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H) # history.2025-03-17_00.00.00.nc
 today_HH=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%H)
-yesterday_chem_name=${DATAROOT}/${yesterday_name}/rrfs_fcst_${today_HH}_${rrfs_ver}/det/fcst_${today_HH}/mpasout.${today_name}.00.00.nc
-twodayago_chem_name=${DATAROOT}/${twodaysago_name}/rrfs_fcst_${today_HH}__${rrfs_ver}/det/fcst_${today_HH}/mpasout.${today_name}.00.00.nc
+yesterday_chem_name=${DATAROOT}/../${yesterday_name}/rrfs_fcst_${today_HH}_${rrfs_ver}/det/fcst_${today_HH}/mpasout.${today_name}.00.00.nc
+twodayago_chem_name=${DATAROOT}/../${twodaysago_name}/rrfs_fcst_${today_HH}__${rrfs_ver}/det/fcst_${today_HH}/mpasout.${today_name}.00.00.nc
 
 if [[ -e "${UMBRELLA_PREP_IC_DATA}/init.nc" ]]; then
    CYCLETOFILE=${UMBRELLA_PREP_IC_DATA}/init.nc
