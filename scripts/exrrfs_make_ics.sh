@@ -925,8 +925,8 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
   cp ${fixgriddir}/cold2warm_all.nc .
   export pgm1=fv3lam_pre_blending.exe
   ${APRUN_PRE_BLENDING} ${EXECdir}/$pgm1 >>$pgmout 2>errfile
-  #mv cold2warm_all.nc fv_core.res.tile1.nc
-  cp cold2warm_all.nc out.atm.tile7.nc
+  mv cold2warm_all.nc fv_core.res.tile1.nc
+  #cp cold2warm_all.nc out.atm.tile7.nc
   export err=$?; err_chk
 
 fi
