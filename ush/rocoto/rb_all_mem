@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+cyctime=$1
+taskname=$2
+taskname="${taskname%_mem*}"
+
+echo "$cyctime"
+echo "$taskname"
+
+cmd="rocotoboot"
+#cmd="rocotorewind"
+
+# Build task list
+tasks=""
+for i in $(seq -w 1 0030); do
+  echo ${taskname}_mem${i}
+  tasks="$tasks${taskname}_mem${i},"
+done
+
+# strip the trailing comma
+tasks="${tasks%,}"
+
+# Run command
+$cmd -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -c "$cyctime" -t \'"${tasks}"\'

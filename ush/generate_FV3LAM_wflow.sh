@@ -1311,6 +1311,22 @@ cp $USHdir/${EXPT_CONFIG_FN} $EXPTDIR
 #
 #-----------------------------------------------------------------------
 #
+# For convenience, copy some rocoto tools to the experiment directory.
+# rb - rocotoboot
+# rc - rocotocheck
+# rr - rocotorewind
+# rs - rocotostat
+# rb_all_mem - rocotoboot N member tasks
+#-----------------------------------------------------------------------
+#
+cp $USHdir/rocoto/rb $EXPTDIR
+cp $USHdir/rocoto/rc $EXPTDIR
+cp $USHdir/rocoto/rr $EXPTDIR
+cp $USHdir/rocoto/rs $EXPTDIR
+cp $USHdir/rocoto/rb_all_mem $EXPTDIR
+#
+#-----------------------------------------------------------------------
+#
 # For convenience, print out the commands that need to be issued on the
 # command line in order to launch the workflow and to check its status.
 # Also, print out the command that should be placed in the user's cron-
