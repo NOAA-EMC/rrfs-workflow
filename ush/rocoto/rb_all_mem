@@ -21,4 +21,4 @@ done
 tasks="${tasks%,}"
 
 # Run command
-$cmd -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -c "$cyctime" -t \'"${tasks}"\'
+$cmd -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -c "$cyctime" -t "${tasks}"
