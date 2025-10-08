@@ -95,7 +95,6 @@ case $MACHINE in
     export MPICH_OFI_VERBOSE=1
     export MPICH_OFI_NIC_VERBOSE=1
     ;;
-#    APRUN="mpiexec -n ${PE_MEMBER01} -ppn ${PPN_FORECAST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
 
   "HERA")
     APRUN="srun --export=ALL --mem=0"
