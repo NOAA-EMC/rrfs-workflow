@@ -16,10 +16,13 @@ trap cleanup SIGINT SIGTERM
 echo "building all components, it may take more than one hour..."
 ./build.wps  &> ./log.build.wps  2>&1 &
 ./build.mpas &> ./log.build.mpas 2>&1 &
-./build.rdas &> ./log.build.rdas 2>&1 &
 ./build.upp  &> ./log.build.upp  2>&1 &
 ./build.mpassit  &> ./log.build.mpassit  2>&1 &
 ./build.utils  &> ./log.build.utils  2>&1 &
+
+if [[ "$1" != "noda" ]] && [[ "$1" != "NODA" ]] && [[ "$1" != "noDA" ]]; then
+  ./build.rdas &> ./log.build.rdas 2>&1 &
+fi
 
 wait
 nEXEC=$(find ../exec/* | wc -l)
