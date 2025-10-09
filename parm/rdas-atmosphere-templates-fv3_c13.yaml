@@ -17,8 +17,8 @@ output_ensemble_increments_file: atmosphere_output_ensemble_increments_gaussian
 model_file: atmosphere_model_pseudo
 initial_condition_file: atmosphere_background
 #background_error_file: atmosphere_background_error_3denvar_bump
-#background_error_file: atmosphere_background_error_3dvar_gsibec
-background_error_file: atmosphere_background_error_3dvar_bumpID
+background_error_file: atmosphere_background_error_3dvar_gsibec
+#background_error_file: atmosphere_background_error_3dvar_bumpID
 
 
 # Global analysis things
