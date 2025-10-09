@@ -156,6 +156,7 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
       if [[ -f $run_ensinit ]]; then
          rm -f $run_ensinit
       fi
+      mv fv_core.res.tile1.nc out.atm.tile7.nc
   else
       # Check if run_ensinit file exists, and if not, touch it
       if [[ ! -f $run_ensinit ]]; then

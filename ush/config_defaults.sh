@@ -1844,7 +1844,6 @@ RADAR_REFL2TTEN_TN="radar_refl2tten"
 CLDANL_NONVAR_TN="cldanl_nonvar"
 SAVE_RESTART_TN="save_restart"
 SAVE_DA_OUTPUT_TN="save_da_output"
-JEDI_ENVAR_IODA_TN="jedi_envar_ioda"
 IODA_BUFR_TN="ioda_bufr"
 PROCESS_GLMFED_TN="process_glmfed"
 ADD_AEROSOL_TN="add_aerosol"
@@ -1881,7 +1880,6 @@ NNODES_RUN_GRAPHICS="1"
 NNODES_RUN_ENSPOST="1"
 NNODES_RUN_BUFRSND="1"
 NNODES_SAVE_RESTART="1"
-NNODES_RUN_JEDIENVAR_IODA="1"
 NNODES_RUN_IODA_BUFR="1"
 NNODES_ADD_AEROSOL="1"
 #
@@ -1926,7 +1924,6 @@ PPN_RUN_GRAPHICS="12"
 PPN_RUN_ENSPOST="1"
 PPN_RUN_BUFRSND="28"
 PPN_SAVE_RESTART="1"
-PPN_RUN_JEDIENVAR_IODA="1"
 PPN_RUN_IODA_BUFR="1"
 PPN_ADD_AEROSOL="9"
 #
@@ -1974,7 +1971,6 @@ WTIME_RUN_NONVARCLDANL="00:20:00"
 WTIME_RUN_BUFRSND="00:45:00"
 WTIME_SAVE_RESTART="00:15:00"
 WTIME_RUN_ENSPOST="00:30:00"
-WTIME_RUN_JEDIENVAR_IODA="00:30:00"
 WTIME_RUN_IODA_BUFR="00:20:00"
 WTIME_ADD_AEROSOL="00:30:00"
 #
@@ -2000,7 +1996,6 @@ MEMO_RUN_REF2TTEN="20G"
 MEMO_RUN_NONVARCLDANL="20G"
 MEMO_RUN_PREPSTART="24G"
 MEMO_RUN_PRDGEN="24G"
-MEMO_RUN_JEDIENVAR_IODA="20G"
 MEMO_RUN_IODA_BUFR="20G"
 MEMO_PREP_CYC="40G"
 MEMO_SAVE_RESTART="40G"
@@ -2042,7 +2037,6 @@ MAXTRIES_RADAR_REF2TTEN="1"
 MAXTRIES_CLDANL_NONVAR="1"
 MAXTRIES_SAVE_RESTART="1"
 MAXTRIES_SAVE_DA_OUTPUT="1"
-MAXTRIES_JEDI_ENVAR_IODA="1"
 MAXTRIES_IODA_BUFR="1"
 MAXTRIES_ADD_AEROSOL="1"
 #
@@ -2575,17 +2569,6 @@ COMPILER="intel"
 #-----------------------------------------------------------------------
 #
 GWD_HRRRsuite_BASEDIR=""
-#
-#-----------------------------------------------------------------------
-#
-# Parameters for JEDI options
-#
-# DO_JEDI_ENVAR_IODA:
-# Flag turn on the JEDI-IODA converters for EnVAR.  It requires GSI 
-# to produce NetCDF diag files
-#-----------------------------------------------------------------------
-#
-DO_JEDI_ENVAR_IODA="FALSE"
 #
 #-----------------------------------------------------------------------
 #
