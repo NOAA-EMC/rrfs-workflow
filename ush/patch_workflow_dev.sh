@@ -40,11 +40,11 @@ done
 
 files="../parm/config/ensf/input.nml_restart_stoch_ensphy?"
 #
-# 45,128 --> 43,64
+# 45,128 --> 50,64
 #
 for fl in $files
 do
-	cat $fl | sed s:45:43:g > ${fl}_new
+	cat $fl | sed s:45:50:g > ${fl}_new
 	cat ${fl}_new | sed s:128:64:g > ${fl}
 	rm -f ${fl}_new
 done
