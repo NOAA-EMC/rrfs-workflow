@@ -493,7 +493,7 @@ optionList[9]=DO_RADDA
 optionList[10]=DO_RECENTER
 optionList[11]=DO_BUFRSND
 optionList[12]=USE_RRFSE_ENS
-optionList[13]=DO_JEDI_ENVAR_IODA
+optionList[13]=DO_JEDIVAR
 optionList[14]=DO_SMOKE_DUST
 optionList[15]=DO_POST_PROD
 optionList[16]=DO_POST_SPINUP
@@ -513,7 +513,6 @@ optionList[29]=GLMFED_DATA_MODE
 optionList[30]=DO_IODA_BUFR
 optionList[31]=EBB_DCYCLE
 optionList[32]=PREP_MODEL_FOR_FED
-optionList[33]=DO_JEDIVAR
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));

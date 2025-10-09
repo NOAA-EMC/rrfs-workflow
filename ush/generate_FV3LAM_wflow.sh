@@ -230,7 +230,6 @@ settings="\
   'tag': ${TAG}
   'net': ${NET}
   'run': ${RUN}
-  'jedi_envar_ioda': ${JEDI_ENVAR_IODA_TN}
   'ioda_bufr': ${IODA_BUFR_TN}
 #
 # Number of nodes to use for each task.
@@ -265,7 +264,6 @@ settings="\
   'nnodes_run_enspost': ${NNODES_RUN_ENSPOST}
   'nnodes_run_bufrsnd': ${NNODES_RUN_BUFRSND}
   'nnodes_save_restart': ${NNODES_SAVE_RESTART}
-  'nnodes_run_jedienvar_ioda': ${NNODES_RUN_JEDIENVAR_IODA}
   'nnodes_run_ioda_bufr': ${NNODES_RUN_IODA_BUFR}
   'nnodes_add_aerosol': ${NNODES_ADD_AEROSOL}
 #
@@ -312,7 +310,6 @@ settings="\
   'ppn_run_enspost': ${PPN_RUN_ENSPOST}
   'ppn_run_bufrsnd': ${PPN_RUN_BUFRSND}
   'ppn_save_restart': ${PPN_SAVE_RESTART}
-  'ppn_run_jedienvar_ioda': ${PPN_RUN_JEDIENVAR_IODA}
   'ppn_run_ioda_bufr': ${PPN_RUN_IODA_BUFR}
   'ppn_add_aerosol': ${PPN_ADD_AEROSOL}
 #
@@ -358,7 +355,6 @@ settings="\
   'wtime_run_nonvarcldanl': ${WTIME_RUN_NONVARCLDANL}
   'wtime_run_bufrsnd': ${WTIME_RUN_BUFRSND}
   'wtime_save_restart': ${WTIME_SAVE_RESTART}
-  'wtime_run_jedienvar_ioda': ${WTIME_RUN_JEDIENVAR_IODA}
   'wtime_run_ioda_bufr': ${WTIME_RUN_IODA_BUFR}
   'wtime_add_aerosol': ${WTIME_ADD_AEROSOL}
 #
@@ -384,7 +380,6 @@ settings="\
   'memo_run_nonvarcldanl': ${MEMO_RUN_NONVARCLDANL}
   'memo_run_prepstart': ${MEMO_RUN_PREPSTART}
   'memo_run_prdgen': ${MEMO_RUN_PRDGEN}
-  'memo_run_jedienvar_ioda': ${MEMO_RUN_JEDIENVAR_IODA}
   'memo_run_ioda_bufr': ${MEMO_RUN_IODA_BUFR}
   'memo_prep_cyc': ${MEMO_PREP_CYC}
   'memo_save_restart': ${MEMO_SAVE_RESTART}
@@ -424,7 +419,6 @@ settings="\
   'maxtries_cldanl_nonvar': ${MAXTRIES_CLDANL_NONVAR}
   'maxtries_save_restart': ${MAXTRIES_SAVE_RESTART}
   'maxtries_save_da_output': ${MAXTRIES_SAVE_DA_OUTPUT}
-  'maxtries_jedi_envar_ioda': ${MAXTRIES_JEDI_ENVAR_IODA}
   'maxtries_ioda_bufr': ${MAXTRIES_IODA_BUFR}
   'maxtries_add_aerosol': ${MAXTRIES_ADD_AEROSOL}
 #
@@ -573,10 +567,6 @@ settings="\
   'endday': ${ENDDAY}
   'endhour': ${ENDHOUR}
 #
-# JEDI related parameters (liaofan)
-#
-  'do_jedi_envar_ioda': ${DO_JEDI_ENVAR_IODA}
-#
 # IODA related parameters
 #
   'do_ioda_bufr': ${DO_IODA_BUFR}
@@ -584,7 +574,7 @@ settings="\
 # JEDIVAR related parameters
 #
   'do_jedivar': ${DO_JEDIVAR}
-# 
+#
 # smoke and dust related parameters.
 #
   'do_smoke_dust': ${DO_SMOKE_DUST}
@@ -1318,6 +1308,22 @@ fi
 #-----------------------------------------------------------------------
 #
 cp $USHdir/${EXPT_CONFIG_FN} $EXPTDIR
+#
+#-----------------------------------------------------------------------
+#
+# For convenience, copy some rocoto tools to the experiment directory.
+# rb - rocotoboot
+# rc - rocotocheck
+# rr - rocotorewind
+# rs - rocotostat
+# rb_all_mem - rocotoboot N member tasks
+#-----------------------------------------------------------------------
+#
+cp $USHdir/rocoto/rb $EXPTDIR
+cp $USHdir/rocoto/rc $EXPTDIR
+cp $USHdir/rocoto/rr $EXPTDIR
+cp $USHdir/rocoto/rs $EXPTDIR
+cp $USHdir/rocoto/rb_all_mem $EXPTDIR
 #
 #-----------------------------------------------------------------------
 #
