@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eux
 # Assume resource is using NCO production configuration
-resource_config="NCO"
+resource_config="EMC"
 ECF_DIR=$(pwd)
 
 # Function that loops over forecast hours and
@@ -29,6 +29,17 @@ create_ecf_file() {
 
 ################################################################################################
 ################################################################################################
+
+# Assign production resource version of the master file
+cd $ECF_DIR/scripts/forecast/ensf
+echo "Assign production resource version of the master files ..."
+if [ ${resource_config} == "NCO" ]; then
+  rm -f jrrfs_ensf_forecast_master.ecf
+  ln -s jrrfs_ensf_forecast_master.ecf-prod-resource jrrfs_ensf_forecast_master.ecf
+else
+  rm -f jrrfs_ensf_forecast_master.ecf
+  ln -s jrrfs_ensf_forecast_master.ecf-dev-resource jrrfs_ensf_forecast_master.ecf
+fi
 
 # det prdgen files
 cd $ECF_DIR/scripts/product/det
@@ -474,16 +485,72 @@ if [ ${resource_config} == "NCO" ]; then
     rm -f ${file}.ecf
     ln -s ${file}.ecf--prod-resource ${file}.ecf
   done
-  cd $ECF_DIR/scripts/forecast/ensf
-  rm -f jrrfs_ensf_forecast_master.ecf
-  ln -s jrrfs_ensf_forecast_master.ecf-prod-resource jrrfs_ensf_forecast_master.ecf
 else
   cd $ECF_DIR/scripts/forecast/det
   for file in jrrfs_det_forecast jrrfs_det_forecast_long; do
     rm -f ${file}.ecf
     ln -s ${file}.ecf--dev-resource ${file}.ecf
   done
-  cd $ECF_DIR/scripts/forecast/ensf
-  rm -f jrrfs_ensf_forecast_master.ecf
-  ln -s jrrfs_ensf_forecast_master.ecf-dev-resource jrrfs_ensf_forecast_master.ecf
+fi
+
+if [ ${resource_config} == "EMC" ]; then
+
+cd $ECF_DIR
+
+# updates input.nml namelist files for 52 node configuration
+
+files="../parm/config/det/input.nml_18h ../parm/config/det/input.nml_restart_18h"
+
+# 53,128 --> 43,64
+#
+
+for fl in $files
+do
+	cat ${fl} | sed s:53:43:g | sed s:128:64:g > ${fl}_new
+        mv ${fl}_new  ${fl}
+done
+
+
+files="../parm/config/det/input.nml_restart_long ../parm/config/det/input.nml_long"
+
+# 71,128 --> 43,64
+#
+for fl in $files
+do
+        cat $fl | sed s:71:43:g | sed s:128:64:g > ${fl}_new
+        mv ${fl}_new  ${fl}
+done
+
+files="../parm/config/det/input.nml_restart_spinupcyc ../parm/config/det/input.nml_spinupcyc"
+# 29,64 --> 43,64
+#
+for fl in $files
+do
+        cat $fl | sed s:29:43:g > ${fl}_new
+        mv ${fl}_new ${fl}
+done
+
+
+files="../parm/config/ensf/input.nml_restart_stoch_ensphy?"
+#
+# 45,128 --> 50,64
+#
+for fl in $files
+do
+        cat $fl | sed s:45:50:g | sed s:128:64:g > ${fl}_new
+        mv ${fl}_new ${fl}
+done
+
+
+# point at dev version of FIX workflow.config file
+#
+
+file="../scripts/exrrfs_forecast.sh"
+
+# do not want to make this change twice on same file
+git checkout -- ${file}
+
+cat ${file} | sed s:workflow.conf:workflow.conf_dev:g > ${file}_new
+mv ${file}_new ${file}
+
 fi
