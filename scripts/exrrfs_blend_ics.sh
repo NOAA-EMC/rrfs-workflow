@@ -166,6 +166,19 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
 
      echo "Blending Starting."
 
+     if [ ${cyc} == "07" ] || [ ${cyc} == "19" ]; then
+       echo "Currently running ENKF 07Z or 19Z Blending - will set enkf ensinit forecast and save restart job to complete"
+       if [ ${cyc} == "07" ]; then
+         cycmaj=06
+       else
+         cycmaj=18
+       fi
+       for completed_ensinit_member in $(seq 1 30); do
+         completed_ensinit_member_3d=$( printf "%03d" "${completed_ensinit_member}" )
+         ecflow_client --force=complete /rrfs_dev/primary/${cycmaj}/rrfs/v1.0/${cyc}/forecast/enkf/jrrfs_enkf_forecast_ensinit_mem${completed_ensinit_member_3d} /rrfs_dev/primary/${cycmaj}/rrfs/v1.0/${cyc}/forecast/enkf/jrrfs_enkf_save_restart_ensinit_mem${completed_ensinit_member_3d}
+       done
+     fi
+
      # F2Py shared object files to PYTHONPATH
      export PYTHONPATH=$PYTHONPATH:$HOMErrfs/sorc/build/lib64
 

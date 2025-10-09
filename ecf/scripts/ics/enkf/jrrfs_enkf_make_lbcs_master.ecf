@@ -1,0 +1,32 @@
+#PBS -N rrfs_enkf_make_lbcs_@enkf_make_lbcs_grp_mem@_%CYC%
+#PBS -j oe
+#PBS -S /bin/bash
+#PBS -q %QUEUE%
+#PBS -A %PROJ%-%PROJENVIR%
+#PBS -l walltime=02:30:00
+#PBS -l place=vscatter:shared,select=1:ncpus=128:ompthreads=2:mem=260G
+#PBS -l debug=true
+
+model=rrfs
+export cyc="%CYC%"
+%include <head.h>
+%include <envir-p1.h>
+############################################################
+# Load modules
+############################################################
+
+
+module list
+export WGF="%WGF%"
+export BCGRPNUM="%BCGRPNUM%"
+export MEMBER_NAME="%MEMBER_NAME%"
+export BCGRP="%BCGRP%"
+############################################################
+# CALL executable job script here
+############################################################
+${HOMErrfs}/ush/load_modules_run_task.sh make_lbcs ${HOMErrfs}/jobs/JRRFS_MAKE_LBCS
+
+%include <tail.h>
+
+%manual
+%end
