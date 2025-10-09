@@ -16,30 +16,37 @@
 
 set -xa
 
-#### fix this before code delivery
-module reset
-module load craype/2.7.13
-module load intel/19.1.3.304
-module load prod_util/2.0.14
-module load libjpeg-turbo/2.1.0
-module load libjpeg/9c
-module load grib_util/1.5.0
-
 fhr=$1
 
 runRRFS="000 001 002 003 004 005 006 007 008 009 010 011 012 013 014 015 016 017 018 019 020 021 022 023 024 025 026 027 028 029 030 031 032 033 034 035 036 037 038 039 040 041 042 043 044 045 046 047 048 049 050 051 052 053 054 055 056 057 058 059 060 063 066 069 072 075 078 081 084"
 if  echo $runRRFS |grep $fhr;
 then
   # Processing AWIPS grid (RRFS 3-km North America grid)
+  export INPUTfile=${COMOUT}/rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2
+
+  # Only grab records that need WMO headers for AWIPS
+  # Split into 2 parts - one for wind speed records, one for everything else
+  $WGRIB2 ${INPUTfile} | grep -F -f ${PARMrrfs}/wmo/rrfsparams_3km | $WGRIB2 -i ${INPUTfile} -new_grid_winds grid -set_grib_type same -grib rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2
+  $WGRIB2 ${INPUTfile} | grep -F -f ${PARMrrfs}/wmo/rrfsparams_3km_wind | $WGRIB2 -i ${INPUTfile} -new_grid_winds grid -set_grib_type same -grib rrfs.t${cyc}z.prslev.3km.f${fhr}.na.wind.grib2
+
+  # Run tocgrib2 twice and cat the files together
 
   export pgm="tocgrib2"
   . prep_step
 
-  export FORT11=${COMOUT}/rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2
-  export FORT12=${COMOUT}/rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2.idx
-  export FORT51=grib2.t${cyc}z.awprrfs_f${fhr}_${cyc}
-  tocgrib2 < $PARMrrfs/wmo/grib2_awips_rrfs_f${fhr} # >> $pgmout 2> errfile
+  # All records not including wind speed
+  export FORT11=rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2
+  export FORT51=grib2.t${cyc}z.awprrfs_f${fhr}
+  $TOCGRIB2 < $PARMrrfs/wmo/grib2_awips_rrfs_f${fhr}
   export err=$?; err_chk
+
+  # Wind speed records
+  export FORT11=rrfs.t${cyc}z.prslev.3km.f${fhr}.na.wind.grib2
+  export FORT51=grib2.t${cyc}z.awprrfs_f${fhr}_wind
+  $TOCGRIB2 < $PARMrrfs/wmo/grib2_awips_rrfs_f${fhr}_wind
+  export err=$?; err_chk
+
+  cat grib2.t${cyc}z.awprrfs_f${fhr} grib2.t${cyc}z.awprrfs_f${fhr}_wind > grib2.t${cyc}z.awprrfs_f${fhr}_${cyc}
 
   cpreq -p grib2.t${cyc}z.awprrfs_f${fhr}_${cyc} ${COMOUT}/wmo
 
@@ -60,8 +67,5 @@ else
   err_exit "AWIPS file was not generated successfully for forecast hour ${fhr}.  :("
 fi
 
-module reset
-module use ${HOMErrfs}/modulefiles/tasks/wcoss2
-module load prdgen.local
 
 exit
