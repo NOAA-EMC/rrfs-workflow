@@ -67,7 +67,7 @@ fi
 run_blending=${COMOUT}/run_blending
 run_ensinit=${COMOUT}/run_ensinit
 if [[ ${CYCLE_SUBTYPE} == "ensinit" && -e $run_blending && ! -e $run_ensinit ]]; then
-   echo "FATAL: Design issue found in forecast. clean exit ensinit, blending used instead of ensinit."
+   echo "Skip ensinit forecast because this cycle is warm started and blending job has completed."
    exit 0
 fi
 #
@@ -94,7 +94,6 @@ case $MACHINE in
     export MPICH_OFI_STARTUP_CONNECT=1
     export MPICH_OFI_VERBOSE=1
     export MPICH_OFI_NIC_VERBOSE=1
-    APRUN="mpiexec -n ${PE_MEMBER01} -ppn ${PPN_FORECAST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
     ;;
 
   "HERA")
@@ -480,9 +479,25 @@ if [ ${BKTYPE} -eq 0 ]; then
   if [ "${STOCH}" = "TRUE" ]; then
     cpreq -p ${FV3_NML_RESTART_STOCH_FP} ${DATA}/${FV3_NML_FN}
   else
-    cpreq -p ${FV3_NML_RESTART_FP} ${DATA}/${FV3_NML_FN}
+  # believe need to create options here on the FV3_NML_RESTART_FP to copy in for different configs.
+
+    if [ ${CYCLE_TYPE} = "spinup" ]; then
+      cpreq -p ${FV3_NML_RESTART_SPINUPCYC_FP} ${DATA}/${FV3_NML_FN}
+    else
+      if [ ${WGF} = "enkf" ]; then
+       FCST_LEN_HRS=1
+       cpreq -p ${FV3_NML_RESTART_FP} ${DATA}/${FV3_NML_FN}
+      else
+        FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$((10#$cyc))]}
+        if [ $FCST_LEN_HRS -eq '18' ]; then
+          cpreq -p ${FV3_NML_RESTART_18H_FP} ${DATA}/${FV3_NML_FN}
+        elif [ $FCST_LEN_HRS -eq '84' ]; then
+          cpreq -p ${FV3_NML_RESTART_LONG_FP} ${DATA}/${FV3_NML_FN}
+        fi
+      fi
+    fi
   fi
-else
+else # not cycling
   if [ -f "INPUT/cycle_surface.done" ]; then
   # namelist for cold start with surface cycle
     cpreq -p ${FV3_NML_CYCSFC_FP} ${DATA}/${FV3_NML_FN}
@@ -491,7 +506,19 @@ else
     if [ "${STOCH}" = "TRUE" ]; then
       cpreq -p ${FV3_NML_STOCH_FP} ${DATA}/${FV3_NML_FN}
      else
-      cpreq -p ${FV3_NML_FP} ${DATA}/${FV3_NML_FN}
+      # is there a cold start spinup need?
+       if [ ${CYCLE_TYPE} = "spinup" ]; then
+         cpreq -p ${FV3_NML_SPINUPCYC_FP} ${DATA}/${FV3_NML_FN}
+       elif [ ${WGF} = "firewx" ] || [ ${WGF} = "enkf" ]; then
+         cpreq -p ${FV3_NML_FP} ${DATA}/${FV3_NML_FN}
+       else
+         FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$((10#$cyc))]}
+         if [ $FCST_LEN_HRS -eq '18' ]; then
+           cpreq -p ${FV3_NML_18H_FP} ${DATA}/${FV3_NML_FN}
+         elif [ $FCST_LEN_HRS -eq '84' ]; then
+           cpreq -p ${FV3_NML_LONG_FP} ${DATA}/${FV3_NML_FN}
+         fi
+       fi
     fi
   fi
 fi
@@ -540,10 +567,40 @@ fi
 #-----------------------------------------------------------------------
 #
 if [ ${CYCLE_TYPE} = "spinup" ]; then
-  FCST_LEN_HRS=${FCST_LEN_HRS_SPINUP}
+  FCST_LEN_HRS="${FCST_LEN_HRS_SPINUP}"
+  LAYOUT_X="${LAYOUT_X_SPINUP}"
+  LAYOUT_Y="${LAYOUT_Y_SPINUP}"
+  WRITE_GRP="${WRTCMP_write_groups_SPINUP}"
+  WRITE_TSK="${WRTCMP_write_tasks_per_group_SPINUP}"
 else
-  FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$cyc]}
+  if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ] ; then
+    FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$((10#$cyc))]}
+    if [ $FCST_LEN_HRS -eq '18' ]; then
+      LAYOUT_X="${LAYOUT_X_18H}" 
+      LAYOUT_Y="${LAYOUT_Y_18H}" 
+      WRITE_GRP="${WRTCMP_write_groups_18H}"
+      WRITE_TSK="${WRTCMP_write_tasks_per_group_18H}"
+    elif [ $FCST_LEN_HRS -eq '84' ] ; then
+      LAYOUT_X="${LAYOUT_X_LONG}" 
+      LAYOUT_Y="${LAYOUT_Y_LONG}" 
+      WRITE_GRP="${WRTCMP_write_groups_LONG}"
+      WRITE_TSK="${WRTCMP_write_tasks_per_group_LONG}"
+    elif [ $FCST_LEN_HRS -eq '60' ] ; then
+      LAYOUT_X="${LAYOUT_X_ENSF}" 
+      LAYOUT_Y="${LAYOUT_Y_ENSF}" 
+      WRITE_GRP="${WRTCMP_write_groups_ENSF}"
+      WRITE_TSK="${WRTCMP_write_tasks_per_group_ENSF}"
+    fi
+  elif [ ${WGF} = "enkf" ] || [ ${WGF} = "firewx" ]; then
+# should already have LAYOUT_X and LAYOUT_Y
+    WRITE_GRP="${WRTCMP_write_groups}"
+    WRITE_TSK="${WRTCMP_write_tasks_per_group}"
+  fi
 fi
+
+PE_RAW=$(( LAYOUT_X*LAYOUT_Y ))
+PE_FCST=$(( ${PE_RAW} + ${WRITE_GRP}*${WRITE_TSK} ))
+APRUN="mpiexec -n ${PE_FCST} -ppn ${PPN_FORECAST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
 
 #
 #-----------------------------------------------------------------------
@@ -754,6 +811,26 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+
+# figure out how best to define the quilt resources here for different runs
+if [ ${CYCLE_TYPE} = "spinup" ]; then
+   export WRTCMP_write_groups=$WRTCMP_write_groups_SPINUP
+   export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_SPINUP
+else
+
+if [ ${FCST_LEN_HRS} -eq '84' ]; then
+   export WRTCMP_write_groups=$WRTCMP_write_groups_LONG
+   export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_LONG
+elif [ ${FCST_LEN_HRS} -eq '60' ]; then
+   export WRTCMP_write_groups=$WRTCMP_write_groups_ENSF
+   export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_ENSF
+elif [ ${FCST_LEN_HRS} -eq '18' ]; then
+   export WRTCMP_write_groups=$WRTCMP_write_groups_18H
+   export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_18H
+fi
+
+fi
+
 $USHrrfs/create_model_configure_file.py \
   --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf \
   --cdate "${CDATE}" \

@@ -1,0 +1,29 @@
+#PBS -N rrfs_det_forecast_%CYC%
+#PBS -j oe
+#PBS -S /bin/bash
+#PBS -q %QUEUE%
+#PBS -A %PROJ%-%PROJENVIR%
+#PBS -l walltime=01:45:00
+#PBS -l place=vscatter:excl,select=115:ncpus=128:ompthreads=2:mem=500G
+#PBS -l debug=true
+
+model=rrfs
+export cyc="%CYC%"
+%include <head.h>
+%include <envir-p1.h>
+############################################################
+# Load modules
+############################################################
+
+
+module list
+export WGF="%WGF%"
+############################################################
+# CALL executable job script here
+############################################################
+${HOMErrfs}/ush/load_modules_run_task.sh forecast ${HOMErrfs}/jobs/JRRFS_FORECAST
+
+%include <tail.h>
+
+%manual
+%end

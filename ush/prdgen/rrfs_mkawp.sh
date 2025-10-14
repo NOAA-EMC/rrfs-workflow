@@ -22,16 +22,31 @@ runRRFS="000 001 002 003 004 005 006 007 008 009 010 011 012 013 014 015 016 017
 if  echo $runRRFS |grep $fhr;
 then
   # Processing AWIPS grid (RRFS 3-km North America grid)
+  export INPUTfile=${COMOUT}/rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2
 
-  export FORT11=${COMOUT}/rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2
-  export FORT12=${COMOUT}/rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2.idx
-  export FORT51=grib2.t${cyc}z.awprrfs_f${fhr}_${cyc}
+  # Only grab records that need WMO headers for AWIPS
+  # Split into 2 parts - one for wind speed records, one for everything else
+  $WGRIB2 ${INPUTfile} | grep -F -f ${PARMrrfs}/wmo/rrfsparams_3km | $WGRIB2 -i ${INPUTfile} -new_grid_winds grid -set_grib_type same -grib rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2
+  $WGRIB2 ${INPUTfile} | grep -F -f ${PARMrrfs}/wmo/rrfsparams_3km_wind | $WGRIB2 -i ${INPUTfile} -new_grid_winds grid -set_grib_type same -grib rrfs.t${cyc}z.prslev.3km.f${fhr}.na.wind.grib2
+
+  # Run tocgrib2 twice and cat the files together
 
   export pgm="tocgrib2"
   . prep_step
 
-  $TOCGRIB2 < $PARMrrfs/wmo/grib2_awips_rrfs_f${fhr} # >> $pgmout 2> errfile
+  # All records not including wind speed
+  export FORT11=rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2
+  export FORT51=grib2.t${cyc}z.awprrfs_f${fhr}
+  $TOCGRIB2 < $PARMrrfs/wmo/grib2_awips_rrfs_f${fhr}
   export err=$?; err_chk
+
+  # Wind speed records
+  export FORT11=rrfs.t${cyc}z.prslev.3km.f${fhr}.na.wind.grib2
+  export FORT51=grib2.t${cyc}z.awprrfs_f${fhr}_wind
+  $TOCGRIB2 < $PARMrrfs/wmo/grib2_awips_rrfs_f${fhr}_wind
+  export err=$?; err_chk
+
+  cat grib2.t${cyc}z.awprrfs_f${fhr} grib2.t${cyc}z.awprrfs_f${fhr}_wind > grib2.t${cyc}z.awprrfs_f${fhr}_${cyc}
 
   cpreq -p grib2.t${cyc}z.awprrfs_f${fhr}_${cyc} ${COMOUT}/wmo
 
@@ -46,10 +61,11 @@ else
   exit
 fi
 
-if [ $err -ne 0 ]; then
+if [ $err -eq 0 ]; then
   echo "AWIPS file was generated successfully for forecast hour ${fhr}!"
 else
   err_exit "AWIPS file was not generated successfully for forecast hour ${fhr}.  :("
 fi
+
 
 exit

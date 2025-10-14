@@ -53,6 +53,12 @@ export FIELD_TABLE_FP="${PARMrrfs}/config/${WGF}/field_table"
 export FV3_NML_FP="${PARMrrfs}/config/${WGF}/input.nml"
 export UFS_YAML_FP="${PARMrrfs}/config/${WGF}/fd_ufs.yaml"
 export FV3_NML_RESTART_FP="${PARMrrfs}/config/${WGF}/input.nml_restart"
+export FV3_NML_RESTART_18H_FP="${PARMrrfs}/config/${WGF}/input.nml_restart_18h"
+export FV3_NML_RESTART_LONG_FP="${PARMrrfs}/config/${WGF}/input.nml_restart_long"
+export FV3_NML_RESTART_SPINUPCYC_FP="${PARMrrfs}/config/${WGF}/input.nml_restart_spinupcyc"
+export FV3_NML_18H_FP="${PARMrrfs}/config/${WGF}/input.nml_18h"
+export FV3_NML_LONG_FP="${PARMrrfs}/config/${WGF}/input.nml_long"
+export FV3_NML_SPINUPCYC_FP="${PARMrrfs}/config/${WGF}/input.nml_spinupcyc"
 if [ $WGF == "ensf" ]; then
   export CUSTOM_POST_CONFIG_FP="${FIXrrfs}/upp/postxconfig-NT-refs.txt"
 fi
@@ -114,6 +120,7 @@ esac
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
 export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}
+export umbrella_post_data=${DATAROOT}/rrfs_post_${cyc}_${rrfs_ver}/${WGF}
 if [ ${CYCLE_TYPE} = "spinup" ]; then
   export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
@@ -126,13 +133,13 @@ else
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
     export umbrella_ics_data="${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}/ics"
     export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
-  elif [ "${WGF}" = "firewx" ]; then
-    export umbrella_ics_data="${DATAROOT}/firewx_ics_${cyc}_${rrfs_ver}/${WGF}/ics"
-
-  # Fire weather nest location from NAM
-    export COMINnam=${COMINnam:-$(compath.py nam/${nam_ver})}
   else
-    export umbrella_ics_data="${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver}/${WGF}/ics"
+    if [ "${WGF}" = "firewx" ]; then
+      export umbrella_ics_data="${DATAROOT}/firewx_ics_${cyc}_${rrfs_ver}/${WGF}/ics"
+      export COMINnam=${COMINnam:-$(compath.py nam/${nam_ver})}   # Fire weather nest location from NAM
+    else
+      export umbrella_ics_data="${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver}/${WGF}/ics"
+    fi
   fi
 fi
 export FORECAST_INPUT_PRODUCT=${umbrella_forecast_data}/INPUT
@@ -141,8 +148,6 @@ export shared_forecast_restart_data=${umbrella_forecast_data}/RESTART
 export DATA=${DATA:-${umbrella_forecast_data}/${jobid}}
 mkdir -p ${DATA}/INPUT ${DATA}/RESTART ${shared_forecast_output_data} ${shared_forecast_restart_data}
 cd ${DATA}
-export umbrella_post_data=${DATAROOT}/rrfs_post_${cyc}_${rrfs_ver}/${WGF}
-[[ -d ${umbrella_post_data} ]]&& rm -rf ${umbrella_post_data}
 
 #-----------------------------------------------------------------------
 # Set PDY and create COM directories
