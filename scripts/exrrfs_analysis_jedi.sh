@@ -324,21 +324,25 @@ cp ${PARMdir}/rdas-atmosphere-templates-fv3_c13.yaml .
 cp ${USHdir}/run_jcb.py .
 
 #sed - rdas-atmosphere-templates.yaml
-WIN=$(date -u -d "${YYYY}-${MM}-${DD} ${HH}:00:00 UTC -3 hours" +"%Y-%m-%dT%H:00:00Z")
+WIN_BEG=$(date -u -d "${YYYY}-${MM}-${DD} ${HH}:00:00 UTC -1 hour -30 minutes" +"%Y-%m-%dT%H:%M:%SZ")
+WIN_END=$(date -u -d "${YYYY}-${MM}-${DD} ${HH}:00:00 UTC +1 hour +30 minutes" +"%Y-%m-%dT%H:%M:%SZ")
 # set other placeholders
 WIN_ISO="${YYYY}-${MM}-${DD}T${HH}:00:00Z"
 WIN_PREFIX="${YYYY}${MM}${DD}.${HH}0000."
 SUFFIX="${CDATE}"
+jcb_config="rdas-atmosphere-templates-fv3_c13.yaml"
+jedi_yaml="jedivar.yaml"
 
 # do replacements
 sed -i \
-  -e "s|@WINDOW_BEGIN@|'${WIN}'|" \
+  -e "s|@WINDOW_BEGIN@|'${WIN_BEG}'|" \
+  -e "s|@WINDOW_END@|'${WIN_END}'|" \
   -e "s|@ATMOSPHERE_BACKGROUND_TIME_ISO@|'${WIN_ISO}'|" \
   -e "s|@ATMOSPHERE_BACKGROUND_TIME_PREFIX@|'${WIN_PREFIX}'|" \
   -e "s|@SUFFIX@|${SUFFIX}|g" \
-  rdas-atmosphere-templates-fv3_c13.yaml
+  ${jcb_config}
 
-python run_jcb.py $YYYYMMDDHH fv3 c13
+python run_jcb.py "${YYYYMMDDHH}" "${jcb_config}" "${jedi_yaml}"
 #
 #-----------------------------------------------------------------------
 #
