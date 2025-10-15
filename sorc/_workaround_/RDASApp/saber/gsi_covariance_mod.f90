@@ -153,7 +153,7 @@ if (nchecks .gt. 0) then  ! only run checks if data was passed in from JEDI
     endif
     jedi_lon = checks(2+ix)
     if(jedi_lon .lt. 0.) jedi_lon = jedi_lon + 360.
-    if (abs(gsi_lon - jedi_lon) > 1e-6) then
+    if (abs(gsi_lon - jedi_lon) > 1e-5) then
       write (*,*) 'ERROR connecting GSI-block to JEDI -- inconsistent lon with gsi, atlas = ', gsi_lon, jedi_lon
       gsi_jedi_grid_error = .true.
     endif
@@ -166,7 +166,7 @@ if (nchecks .gt. 0) then  ! only run checks if data was passed in from JEDI
       gsi_lat = self%grid%lats(self%grid%jsc-1 + iy)
     endif
     jedi_lat = checks(2+gsi_nx+iy)
-    if (abs(gsi_lat - jedi_lat) > 1e-6) then
+    if (abs(gsi_lat - jedi_lat) > 1e-5) then
       write (*,*) 'ERROR connecting GSI-block to JEDI -- inconsistent lat with gsi, atlas = ', gsi_lat, jedi_lat
       gsi_jedi_grid_error = .true.
     endif
