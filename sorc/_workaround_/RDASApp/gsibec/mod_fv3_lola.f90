@@ -67,7 +67,7 @@ module mod_fv3_lola
   implicit none
 !
   private
-  public :: generate_anl_grid,m_generate_anl_grid,fv3_h_to_ll,fv3_ll_to_h,fv3uv2earth,earthuv2fv3
+  public :: generate_anl_grid,m_generate_anl_grid_fv3_regional,m_generate_anl_grid_mpas_regional,fv3_h_to_ll,fv3_ll_to_h,fv3uv2earth,earthuv2fv3
   public :: fv3dx,fv3dx1,fv3dy,fv3dy1,fv3ix,fv3ixp,fv3jy,fv3jyp,a3dx,a3dx1,a3dy,a3dy1,a3ix,a3ixp,a3jy,a3jyp
   public :: nxa,nya,cangu,sangu,cangv,sangv,nx,ny,bilinear
   public :: definecoef_regular_grids,fv3_h_to_ll_ens,fv3uv2earthens
@@ -595,7 +595,7 @@ subroutine generate_anl_grid(nx,ny,grid_lon,grid_lont,grid_lat,grid_latt)
   deallocate(rlat_in,rlon_in)
 end subroutine generate_anl_grid
 
-subroutine m_generate_anl_grid(nx,ny,grid_lon,grid_lont,grid_lat,grid_latt,gsi_lats,gsi_lons)
+subroutine m_generate_anl_grid_fv3_regional(nx,ny,grid_lon,grid_lont,grid_lat,grid_latt,gsi_lats,gsi_lons)
 !$$$  subprogram documentation block
 !                .      .    .                                       .
 ! subprogram:    generate_anl_grid
@@ -820,17 +820,198 @@ subroutine m_generate_anl_grid(nx,ny,grid_lon,grid_lont,grid_lat,grid_latt,gsi_l
      enddo
   enddo
   
-  !call init_general_transform(glat_an,glon_an)
- 
-  !deallocate(glat_an,glon_an)
-
   deallocate( xc,yc,zc,gclat,gclon,gcrlat,gcrlon)
   deallocate(rlat_in,rlon_in)
 
   deallocate(region_dxi,region_dyi)
-  !deallocate(coeffx,coeffy)
 
-end subroutine m_generate_anl_grid
+end subroutine m_generate_anl_grid_fv3_regional
+
+subroutine m_generate_anl_grid_mpas_regional(gsi_lats,gsi_lons)
+!$$$  subprogram documentation block
+!                .      .    .                                       .
+! subprogram:    generate_anl_grid
+!   prgmmr: parrish
+!
+! abstract:  define rotated lat-lon analysis grid which is centered on fv3 tile
+!             and oriented to completely cover the tile.
+!
+! program history log:
+!   2017-05-02  parrish
+!   2017-10-10  wu   - 1. setup analysis A-grid,
+!                      2. compute/setup FV3 to A grid interpolation parameters
+!                      3. compute/setup A to FV3 grid interpolation parameters
+!                      4. setup weightings for wind conversion from FV3 to earth
+!   2019-11-01  wu   - add checks to present the mean longitude correctly to fix
+!                       problem near lon=0
+!
+!   2021-08-11   lei - a fix for an upper bound of the dimnsion of  a3jyp
+!   input argument list:
+!    nx, ny               - number of cells = nx*ny
+!    grid_lon ,grid_lat   - longitudes and latitudes of fv3 grid cell corners
+!    grid_lont,grid_latt  - longitudes and latitudes of fv3 grid cell centers
+!
+!   output argument list:
+!
+! attributes:
+!   language: f90
+!   machine:
+!
+!$$$ end documentation block
+
+  use m_kinds, only: r_kind,i_kind
+  use constants, only: quarter,one,two,half,zero,deg2rad,rearth,rad2deg,pi
+  use gridmod,  only:grid_ratio_fv3_regional, region_lat,region_lon,nlat,nlon
+  use gridmod,  only: region_dy,region_dx,region_dyi,region_dxi,coeffy,coeffx
+  use gridmod,  only:init_general_transform,region_dy,region_dx
+  use gridmod,  only: rlat_start,rlat_end,rlon_start,rlon_end
+  use gridmod,  only: north_pole_lat, north_pole_lon
+  use m_mpimod, only: mype
+  use egrid2agrid_mod, only: egrid2agrid_parm
+  implicit none
+
+  real(r_kind) dyy,dxx,dyyi,dxxi
+  real(r_kind) dyyh,dxxh
+
+  real(r_kind),intent(inout) :: gsi_lats(:,:),gsi_lons(:,:)
+
+  integer(i_kind) i,j,ir,jr,n
+  real(r_kind),allocatable,dimension(:,:) :: rlon_in,rlat_in
+  real(r_kind) centlat,centlon
+  real(r_kind) lonmin,lonmax,latmin,latmax
+  real(r_kind) adlon,adlat,alon,clat,clon
+  integer(i_kind) nlonh,nlath,nxh,nyh
+  integer(i_kind) ib1,ib2,jb1,jb2,jj
+
+  integer(i_kind) nord_e2a
+  real(r_kind)gxa,gya
+
+  real(r_kind) cx,cy
+  real(r_kind) diff,sq180
+  real(r_kind) d(4),ds
+  integer(i_kind) kk,k
+
+
+  nord_e2a=4
+  bilinear=.false.
+
+! centlat/lon from the JEDI yaml
+  centlat = 90.0 - north_pole_lat
+  centlon = north_pole_lon - 180.0
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!  compute analysis A-grid  lats, lons
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+!- analysis grid dimensions from the JEDI yaml
+  if(mype==0) print *,'nlat,nlon= ',nlat,nlon
+
+!- Read xrange and yrange from the JEDI code and obtain analysis grid spacing
+  lonmin = rlon_start
+  lonmax = rlon_end
+  latmin = rlat_start
+  latmax = rlat_end
+  adlat=(latmax-latmin)/(nlat-1)
+  adlon=(lonmax-lonmin)/(nlon-1)
+
+!-------setup analysis A-grid; find center of the domain
+  nlonh=nlon/2
+  nlath=nlat/2
+
+  if(nlonh*2==nlon)then
+     clon=adlon/two
+     cx=half
+  else
+     clon=adlon
+     cx=one
+  endif
+
+  if(nlath*2==nlat)then
+     clat=adlat/two
+     cy=half
+  else
+     clat=adlat
+     cy=one
+  endif
+
+!
+!-----setup analysis A-grid from center of the domain
+!
+  if (allocated(rlat_in)) deallocate(rlat_in)
+  if (allocated(rlon_in)) deallocate(rlon_in)
+  allocate(rlat_in(nlat,nlon))
+  allocate(rlon_in(nlat,nlon))
+  do j=1,nlon
+     alon=(j-nlonh)*adlon-clon
+     do i=1,nlat
+        rlon_in(i,j)=alon
+     enddo
+  enddo
+
+
+  do j=1,nlon
+     do i=1,nlat
+        rlat_in(i,j)=(i-nlath)*adlat-clat
+     enddo
+  enddo
+
+  if (allocated(region_dx )) deallocate(region_dx )
+  if (allocated(region_dy )) deallocate(region_dy )
+  if (allocated(region_dxi )) deallocate(region_dxi )
+  if (allocated(region_dyi )) deallocate(region_dyi )
+  if (allocated(coeffx )) deallocate(coeffx )
+  if (allocated(coeffy )) deallocate(coeffy )
+  allocate(region_dx(nlat,nlon),region_dy(nlat,nlon))
+  allocate(region_dxi(nlat,nlon),region_dyi(nlat,nlon))
+  allocate(coeffx(nlat,nlon),coeffy(nlat,nlon))
+  dyy=rearth*adlat*deg2rad
+  dyyi=one/dyy
+  dyyh=half/dyy
+  do j=1,nlon
+     do i=1,nlat
+        region_dy(i,j)=dyy
+        region_dyi(i,j)=dyyi
+        coeffy(i,j)=dyyh
+     enddo
+  enddo
+
+  do i=1,nlat
+     dxx=rearth*cos(rlat_in(i,1)*deg2rad)*adlon*deg2rad
+     dxxi=one/dxx
+     dxxh=half/dxx
+     do j=1,nlon
+        region_dx(i,j)=dxx
+        region_dxi(i,j)=dxxi
+        coeffx(i,j)=dxxh
+     enddo
+  enddo
+
+!
+!----------  setup  region_lat,region_lon in earth coord
+!
+  if (allocated(region_lat)) deallocate(region_lat)
+  if (allocated(region_lon)) deallocate(region_lon)
+  allocate(region_lat(nlat,nlon),region_lon(nlat,nlon))
+
+  call unrotate2deg(region_lon,region_lat,rlon_in,rlat_in, &
+                    centlon,centlat,nlat,nlon)
+
+  region_lat=region_lat*deg2rad
+  region_lon=region_lon*deg2rad
+
+  do j=1,nlat
+     do i=1,nlon
+        gsi_lats(i,j)=region_lat(j,i)
+        gsi_lons(i,j)=region_lon(j,i)
+        if(gsi_lons(i,j)<0.) gsi_lons(i,j)= gsi_lons(i,j) + 2.*pi
+     enddo
+  enddo
+
+
+  deallocate(rlat_in,rlon_in)
+  deallocate(region_dxi,region_dyi)
+
+end subroutine m_generate_anl_grid_mpas_regional
 
 subroutine definecoef_regular_grids(nxen,nyen,grid_lon,grid_lont,grid_lat,grid_latt)
 !$$$  subprogram documentation block
