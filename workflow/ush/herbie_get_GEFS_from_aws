@@ -13,7 +13,7 @@ nargs = len(args) - 1
 if nargs < 2:
     print(f"{args[0]} YYYYMMDD-YYYYMMDD fhr-fhr\n")
     print(f'  the first parameter specifies the date range with date2 larger than or equal to date1')
-    print(f'  the second parameter specifies the fhr range,example: 0-70')
+    print(f'  the second parameter specifies the fhr range, example: 0-70')
     exit()
 
 date_range = args[1]
