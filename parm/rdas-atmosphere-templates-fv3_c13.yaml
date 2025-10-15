@@ -16,15 +16,13 @@ output_file: atmosphere_output
 output_ensemble_increments_file: atmosphere_output_ensemble_increments_gaussian
 model_file: atmosphere_model_pseudo
 initial_condition_file: atmosphere_background
-#background_error_file: atmosphere_background_error_3denvar_bump
 background_error_file: atmosphere_background_error_3dvar_gsibec
-#background_error_file: atmosphere_background_error_3dvar_bumpID
-
 
 # Global analysis things
 # ----------------------
 window_begin: @WINDOW_BEGIN@
-window_length: PT6H
+window_end: @WINDOW_END@
+window_length: PT3H
 bound_to_include: begin
 minimizer: DRPCG
 final_diagnostics_departures: oman
@@ -38,6 +36,7 @@ analysis_variables:
 - air_temperature
 - water_vapor_mixing_ratio_wrt_moist_air
 - air_pressure_at_surface
+- ozone_mass_mixing_ratio
 
 # Testing
 # -------
@@ -109,6 +108,7 @@ soilt: tslb
 soilm: smois
 eastward_wind_at_surface: u_srf
 northward_wind_at_surface: v_srf
+abi_simulated_channels: 7-16
 
 # Background error
 atmosphere_bump_data_directory: DATA/berror
@@ -116,10 +116,15 @@ atmosphere_gsibec_path: DATA/berror
 atmosphere_number_ensemble_members: 30
 atmosphere_layout_gsib_x: 16
 atmosphere_layout_gsib_y: 10
-
+lat_start: -29.335138
+lat_end: 29.335138
+lon_start: -50.033098
+lon_end: 50.033098
+north_pole_lat: 51.499998
+north_pole_lon: 82.500018
 
 # Forecasting
-atmosphere_forecast_length: PT6H
+atmosphere_forecast_length: PT3H
 atmosphere_forecast_timestep: PT1H
 
 # Write final increment on Gaussian grid in variational
@@ -185,6 +190,14 @@ observations:
 #- sfcshp_winds_282
 #- sfcshp_winds_284
 
+# Remote
+#- gnss_zenithTotalDelay
+#- satwnd_winds_245_270
+#- satwnd_winds_245_272
+
+# SatRad
+#- abi_g16
+
 # Analysis iuse flag (default: passivate)
 # Upper-air conventional
 iuse_adpupa_airTemperature_120: accept
@@ -241,6 +254,14 @@ iuse_sfcshp_stationPressure_182: accept
 iuse_sfcshp_winds_280: accept
 iuse_sfcshp_winds_282: accept
 iuse_sfcshp_winds_284: accept
+
+# Remote
+iuse_gnss_zenithTotalDelay: accept
+iuse_satwnd_winds_245_270: accept
+iuse_satwnd_winds_245_272: accept
+
+# SatRad
+iuse_abi_g16: accept
 
 crtm_coefficient_path: "Data/crtm"
 
