@@ -4,8 +4,8 @@
  /
  &GRIDOPTS
    regional=.true.,fv3_regional=.false.,mpas_regional=.true.,
-   nlon=GSIBEC_NLON,nlat=GSIBEC_NLAT,nsig=GSIBEC_NSIG,rlat_start=GSIBEC_LAT_START,rlat_end=GSIBEC_LAT_END,rlon_start=GSIBEC_LON_START,rlon_end=GSIBEC_LON_END,
-   north_pole_lat=GSIBEC_NORTH_POLE_LAT,north_pole_lon=GSIBEC_NORTH_POLE_LON,
+   nlon=@GSIBEC_NLON@,nlat=@GSIBEC_NLAT@,nsig=@GSIBEC_NSIG@,rlat_start=@GSIBEC_LAT_START@,rlat_end=@GSIBEC_LAT_END@,rlon_start=@GSIBEC_LON_START@,rlon_end=@GSIBEC_LON_END@,
+   north_pole_lat=@GSIBEC_NORTH_POLE_LAT@,north_pole_lon=@GSIBEC_NORTH_POLE_LON@,
  /
  &BKGERR
    hzscl=0.7,1.4,2.8,

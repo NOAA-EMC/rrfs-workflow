@@ -51,16 +51,11 @@ if [[ ${STATIC_BEC_MODEL} == "GSIBEC" ]]; then
   ln -snf "${FIXrrfs}/gsi_bec/berror_stats" "${DATA}"/berror_stats
   ln -snf "${FIXrrfs}/gsi_bec/mpas_pave_L${nlevel}.txt" "${DATA}"/mpas_pave.txt
   ${cpreq} "${FIXrrfs}/gsi_bec/gsiparm_regional.anl" "${DATA}"/gsiparm_regional.anl
-  sed -i -e "s/GSIBEC_NLAT/${GSIBEC_NLAT}/"  "${DATA}"/gsiparm_regional.anl
-  sed -i -e "s/GSIBEC_NLON/${GSIBEC_NLON}/"  "${DATA}"/gsiparm_regional.anl
   nlevelm1=$((nlevel - 1))
-  sed -i -e "s/GSIBEC_NSIG/${nlevelm1}/"  "${DATA}"/gsiparm_regional.anl
-  sed -i -e "s/GSIBEC_LAT_START/${GSIBEC_LAT_START}/"  "${DATA}"/gsiparm_regional.anl
-  sed -i -e "s/GSIBEC_LAT_END/${GSIBEC_LAT_END}/"  "${DATA}"/gsiparm_regional.anl
-  sed -i -e "s/GSIBEC_LON_START/${GSIBEC_LON_START}/"  "${DATA}"/gsiparm_regional.anl
-  sed -i -e "s/GSIBEC_LON_END/${GSIBEC_LON_END}/"  "${DATA}"/gsiparm_regional.anl
-  sed -i -e "s/GSIBEC_NORTH_POLE_LAT/${GSIBEC_NORTH_POLE_LAT}/"  "${DATA}"/gsiparm_regional.anl
-  sed -i -e "s/GSIBEC_NORTH_POLE_LON/${GSIBEC_NORTH_POLE_LON}/"  "${DATA}"/gsiparm_regional.anl
+  sed -i -e "s/@GSIBEC_NLAT@/${GSIBEC_NLAT}/" -e "s/@GSIBEC_NLON@/${GSIBEC_NLON}/" -e "s/@GSIBEC_NSIG@/${nlevelm1}/" \
+	 -e "s/@GSIBEC_LAT_START@/${GSIBEC_LAT_START}/" -e "s/@GSIBEC_LAT_END@/${GSIBEC_LAT_END}/" \
+	 -e "s/@GSIBEC_LON_START@/${GSIBEC_LON_START}/" -e "s/@GSIBEC_LON_END@/${GSIBEC_LON_END}/" \
+	 -e "s/@GSIBEC_NORTH_POLE_LAT@/${GSIBEC_NORTH_POLE_LAT}/"  -e "s/@GSIBEC_NORTH_POLE_LON@/${GSIBEC_NORTH_POLE_LON}/"  "${DATA}"/gsiparm_regional.anl
 else
   # bump bec
   mkdir -p static_bec
