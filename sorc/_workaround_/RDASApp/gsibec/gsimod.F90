@@ -44,7 +44,10 @@
      init_grid,init_grid_vars,&
      nlayers,jcap,jcap_b,vlevs,&
      use_sp_eqspace,final_grid_vars,&
-     jcap_gfs,nlat_gfs,nlon_gfs,jcap_cut
+     jcap_gfs,nlat_gfs,nlon_gfs,jcap_cut,&
+     rlat_start,rlat_end,&
+     rlon_start,rlon_end,&
+     north_pole_lat,north_pole_lon
 
   use gridmod, only: init_reg_glob_ll,regional,fv3_regional,grid_ratio_fv3_regional,mpas_regional
 
@@ -387,7 +390,8 @@
 
 
   namelist/gridopts/jcap,jcap_b,nlat,nlon,nsig,use_sp_eqspace,fv3_regional,grid_ratio_fv3_regional,&
-                    regional,mpas_regional
+                    regional,mpas_regional,rlat_start,rlat_end,rlon_start,rlon_end,&
+                    north_pole_lat,north_pole_lon
 
 ! BKGERR (background error related variables):
 !     vs       - scale factor for vertical correlation lengths for background error
@@ -701,10 +705,6 @@
      tendsflag =.true.
      switch_on_derivatives = .true.
      if (mype==0) write(6,*)'GSIMOD:  tendencies and derivatives are on'
-  endif
-
-  if (regional) then
-     call convert_fv3_regional
   endif
 
 ! Initialize variables, create/initialize arrays
