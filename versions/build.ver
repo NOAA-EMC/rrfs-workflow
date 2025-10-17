@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export bacio_ver=2.4.1
-export bufr_ver=11.7.0
+export bufr_ver=12.2.0
 export cmake_ver=3.20.2
 export cray_mpich_ver=8.1.19
 export cray_pals_ver=1.3.2
@@ -12,6 +12,7 @@ export esmf_ver=8.5.0
 export fms_ver=2024.01
 export g2_ver=3.5.1
 export g2tmpl_ver=1.15.0
+#export g2tmpl_ver=1.17.0
 export gfsio_ver=1.4.1
 export gftl_shared_ver=1.6.1
 export gsl_ver=2.7
@@ -21,7 +22,6 @@ export ip_ver=5.2.0
 export jasper_ver=2.0.25
 export libjpeg_ver=9c
 export libpng_ver=1.6.37
-export module_ver=8.5.2
 export ncdiag_ver=1.1.1
 export ncio_ver=1.1.2
 export nemsio_ver=2.5.4
