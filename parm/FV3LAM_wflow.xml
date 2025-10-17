@@ -309,7 +309,6 @@ define resources used for each tasks
 <!ENTITY MEMO_NONVAR_CLD   "">
 <!ENTITY MEMO_PROC_GLMFED  "">
 <!ENTITY MEMO_SAVE_DA_OUTPUT "">
-<!ENTITY MEMO_SAVE_DA_OUTPUT "">
 <!ENTITY MEMO_ADD_AEROSOL  "">
 {%- else %}
 <!ENTITY MEMO_PROC_SMOKE   "{{ memo_proc_smoke }}">
