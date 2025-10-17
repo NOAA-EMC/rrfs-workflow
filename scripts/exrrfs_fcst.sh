@@ -51,16 +51,8 @@ run_duration=${fcst_len_hrs_thiscyc:-1}:00:00
 physics_suite=${PHYSICS_SUITE:-'mesoscale_reference'}
 jedi_da="true" #true
 
-if [[ "${MESH_NAME}" == "conus12km" ]]; then
-  pio_num_iotasks=1
-  pio_stride=40
-elif [[ "${MESH_NAME}" == "conus3km" ]]; then
-  pio_num_iotasks=40
-  pio_stride=20
-elif [[ "${MESH_NAME}" == "south3.5km" ]]; then
-  pio_num_iotasks=10
-  pio_stride=24
-fi
+pio_num_iotasks=${PIO_NUM_IOTASKS}
+pio_stride=${PIO_STRIDE}
 file_content=$(< "${PARMrrfs}/${physics_suite}/namelist.atmosphere") # read in all content
 eval "echo \"${file_content}\"" > namelist.atmosphere
 
