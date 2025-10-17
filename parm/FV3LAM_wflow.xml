@@ -318,6 +318,7 @@ define resources used for each tasks
 <!ENTITY MEMO_RUN_PRDGEN   "{{ memo_run_prdgen }}">
 <!ENTITY MEMO_NONVAR_CLD   "{{ memo_run_nonvarcldanl }}">
 <!ENTITY MEMO_PROC_GLMFED  "{{ memo_proc_glmfed }}">
+<!ENTITY MEMO_SAVE_DA_OUTPUT "{{memo_save_da_output}}">
 <!ENTITY MEMO_ADD_AEROSOL  "{{ memo_add_aerosol }}">
 {%- endif %}
 
@@ -3212,7 +3213,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>{{ wtime_save_restart }}</walltime>
     &NODESIZE_ALL;
     &NATIVE_ALL;
-    <memory>{{ memo_save_da_output }}</memory>
+    <memory>&MEMO_SAVE_DA_OUTPUT;</memory>
     <jobname>&TAG;_&SAVE_DA_OUTPUT_TN;{{ uscore_ensmem_name }}</jobname>
     <join><cyclestr>&LOGDIR;/&SAVE_DA_OUTPUT_TN;_&TAG;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
