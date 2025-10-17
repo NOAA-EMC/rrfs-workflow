@@ -51,8 +51,8 @@ run_duration=${fcst_len_hrs_thiscyc:-1}:00:00
 physics_suite=${PHYSICS_SUITE:-'mesoscale_reference'}
 jedi_da="true" #true
 
-pio_num_iotasks=${PIO_NUM_IOTASKS}
-pio_stride=${PIO_STRIDE}
+pio_num_iotasks=${FCST_PIO_NUM_IOTASKS}
+pio_stride=${FCST_PIO_STRIDE}
 file_content=$(< "${PARMrrfs}/${physics_suite}/namelist.atmosphere") # read in all content
 eval "echo \"${file_content}\"" > namelist.atmosphere
 
