@@ -46,7 +46,7 @@ export LBC_GROUP_TOTAL_NUM=1
 
 export RETRO_PERIOD="2024052700-2024052800"
 export CYCLEDEF_IC_STEP_HRS=6
-export CYCLEDEF_LBC_STEP_HRS=6
+export LBC_CYCS="00 06 12 18"
 export COLDSTART_CYCS="00 06 12 18"   # cycles to cold start from external models
 export RECENTER_CYCS="${COLDSTART_CYCS}"
 export DET_RECENTERCYCS_DO_DA=false # whether or not do detministic DA at RECENTER_CYCS
