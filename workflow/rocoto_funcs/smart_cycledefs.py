@@ -16,12 +16,12 @@ def smart_cycledefs():
         cycledef_spinup = os.getenv('CYCLEDEF_SPINUP', 'not_defined')
     else:  # compute cycledef automatically if no CYCLEDEF_* environment variables
         ic_step = os.getenv('CYCLEDEF_IC_STEP_HRS', '6')
-        lbc_cycs = os.getenv('LBC_CYCS', '00 12').strip().split(' ')
+        lbc_cycs = os.getenv('LBC_CYCS', '00 12').strip().split()
         lbc_step = str(int(24 / len(lbc_cycs)))
         lbc_startcyc = lbc_cycs[0]
         cyc_interval = os.getenv('CYC_INTERVAL', '3')
-        cold_cycs = os.getenv('COLDSTART_CYCS', '03 15').strip().split(' ')
-        prodswitch_cycs = os.getenv('PRODSWITCH_CYCS', '09 21').strip().split(' ')
+        cold_cycs = os.getenv('COLDSTART_CYCS', '03 15').strip().split()
+        prodswitch_cycs = os.getenv('PRODSWITCH_CYCS', '09 21').strip().split()
         # compute spinup_hrs (usually coldstart at 03 or 15)
         spinup_hrs = cold_cycs[0] + "-" + f'{int(prodswitch_cycs[0])-1:02},'
         if len(cold_cycs) > 1:
