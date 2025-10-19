@@ -23,7 +23,7 @@ def ioda_bufr(xmlFile, expdir):
         'OBSPATH': f'{OBSPATH}'
     }
 
-    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper())
+    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
     fpath = f'{OBSPATH}/@Y@m@d@H.rap.t@Hz.prepbufr.tm00'
 

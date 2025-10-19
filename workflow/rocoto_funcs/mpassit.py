@@ -76,7 +76,7 @@ def mpassit(xmlFile, expdir, do_ensemble=False, do_ensmean_post=False):
             memdir = "/ensmean"
 
     dcTaskEnv['MEMDIR'] = f'{memdir}'
-    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper())
+    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
     timedep = ""
     realtime = os.getenv("REALTIME", "false")

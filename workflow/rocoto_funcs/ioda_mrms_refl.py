@@ -24,7 +24,7 @@ def ioda_mrms_refl(xmlFile, expdir):
         'RADARREFL_TIMELEVEL': f'{RADARREFL_TIMELEVEL}'
     }
 
-    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper())
+    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
     timedep = ""
     realtime = os.getenv("REALTIME", "false")
