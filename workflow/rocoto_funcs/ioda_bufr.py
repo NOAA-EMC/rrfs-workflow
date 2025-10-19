@@ -22,6 +22,8 @@ def ioda_bufr(xmlFile, expdir):
         'YAML_GEN_METHOD': os.getenv('YAML_GEN_METHOD', '1'),
         'OBSPATH': f'{OBSPATH}'
     }
+
+    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper())
     # dependencies
     fpath = f'{OBSPATH}/@Y@m@d@H.rap.t@Hz.prepbufr.tm00'
 

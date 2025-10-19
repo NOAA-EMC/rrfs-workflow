@@ -50,6 +50,8 @@ def jedivar(xmlFile, expdir, do_spinup=False):
     }
     if do_spinup:
         dcTaskEnv['DO_SPINUP'] = 'TRUE'
+
+    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper())
     # dependencies
     timedep = ""
     realtime = os.getenv("REALTIME", "false")

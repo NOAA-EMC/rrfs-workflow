@@ -15,6 +15,8 @@ def recenter(xmlFile, expdir):
         'ENS_SIZE': os.getenv("ENS_SIZE", '5'),
         'RECENTER_CYCS': f'{recenter_cycs}',
     }
+
+    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper())
     # dependencies
     timedep = ""
     realtime = os.getenv("REALTIME", "false")

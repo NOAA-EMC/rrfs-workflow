@@ -29,6 +29,8 @@ def getkf(xmlFile, expdir, taskType):
         task_id = "getkf_solver"
     elif taskType.upper() == "POST":
         task_id = "getkf_post"
+
+    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper())
     # dependencies
     timedep = ""
     realtime = os.getenv("REALTIME", "false")
