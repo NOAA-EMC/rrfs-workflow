@@ -47,6 +47,7 @@ def prep_lbc(xmlFile, expdir, do_ensemble=False):
 </metatask>\n'
         ensindexstr = "_m#ens_index#"
 
+    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
     timedep = ""
     realtime = os.getenv("REALTIME", "false")

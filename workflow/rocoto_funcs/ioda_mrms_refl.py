@@ -23,8 +23,9 @@ def ioda_mrms_refl(xmlFile, expdir):
         'OBSPATH_NSSLMOSIAC': f'{OBSPATH_NSSLMOSIAC}',
         'RADARREFL_TIMELEVEL': f'{RADARREFL_TIMELEVEL}'
     }
-    # dependencies
 
+    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
+    # dependencies
     timedep = ""
     realtime = os.getenv("REALTIME", "false")
     if realtime.upper() == "TRUE":
