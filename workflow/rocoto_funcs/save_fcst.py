@@ -47,6 +47,7 @@ def save_fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
 </metatask>\n'
         ensdirstr = "/mem#ens_index#"
 
+    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
     if do_spinup:
         datadep = f'''<datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_spinup_@H_&rrfs_ver;/&WGF;{ensdirstr}/fcst_spinup_@H/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''

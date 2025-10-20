@@ -40,6 +40,7 @@ def ensmean(xmlFile, expdir):
     meta_end = f'</metatask>\n'
     task_id = f'{meta_id}_g#group_index#'
 
+    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
     timedep = ""
     realtime = os.getenv("REALTIME", "false")
