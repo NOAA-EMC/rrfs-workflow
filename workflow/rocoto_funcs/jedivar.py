@@ -39,14 +39,14 @@ def jedivar(xmlFile, expdir, do_spinup=False):
         'STATIC_BEC_MODEL': os.getenv('STATIC_BEC_MODEL', 'GSIBEC'),
         'GSIBEC_X': os.getenv('GSIBEC_X', '10'),
         'GSIBEC_Y': os.getenv('GSIBEC_Y', '8'),
-        'GSIBEC_NLAT': os.getenv('GSIBEC_NLAT', '252'),
-        'GSIBEC_NLON': os.getenv('GSIBEC_NLON', '420'),
-        'GSIBEC_LAT_START': os.getenv('GSIBEC_LAT_START', '-50.033098'),
-        'GSIBEC_LAT_END': os.getenv('GSIBEC_LAT_END', '50.033098'),
-        'GSIBEC_LON_START': os.getenv('GSIBEC_LON_START', '-29.335138'),
-        'GSIBEC_LON_END': os.getenv('GSIBEC_LON_END', '29.335138'),
-        'GSIBEC_NORTH_POLE_LAT': os.getenv('GSIBEC_NORTH_POLE_LAT', '128.500001'),
-        'GSIBEC_NORTH_POLE_LON': os.getenv('GSIBEC_NORTH_POLE_LON', '82.500018'),
+        'GSIBEC_NLAT': os.getenv('GSIBEC_NLAT', '179'),
+        'GSIBEC_NLON': os.getenv('GSIBEC_NLON', '288'),
+        'GSIBEC_LAT_START': os.getenv('GSIBEC_LAT_START', '-20.470000'),
+        'GSIBEC_LAT_END': os.getenv('GSIBEC_LAT_END', '20.470000'),
+        'GSIBEC_LON_START': os.getenv('GSIBEC_LON_START', '-33.005000'),
+        'GSIBEC_LON_END': os.getenv('GSIBEC_LON_END', '33.005000'),
+        'GSIBEC_NORTH_POLE_LAT': os.getenv('GSIBEC_NORTH_POLE_LAT', '48.554305'),
+        'GSIBEC_NORTH_POLE_LON': os.getenv('GSIBEC_NORTH_POLE_LON', '82.649802'),
     }
     if do_spinup:
         dcTaskEnv['DO_SPINUP'] = 'TRUE'
