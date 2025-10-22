@@ -177,6 +177,13 @@ fi
 if  [ ${ob_type} != "conv" ] || [ ${BKTYPE} -eq 1 ]; then #not using GDAS
   l_both_fv3sar_gfs_ens=.false.
 fi
+
+if [ -d "${bkpath}.gsi" ]; then
+  rm -rf "${bkpath}.gsi"
+fi
+cp -rL $bkpath ${bkpath}.gsi
+bkpath=${bkpath}.gsi
+
 #
 #---------------------------------------------------------------------
 #
