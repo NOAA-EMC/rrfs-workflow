@@ -14,6 +14,7 @@ prepend_path("MODULEPATH", os.getenv("modulepath_mpi"))
 
 load(pathJoin("hdf5-D", os.getenv("hdf5_ver")))
 load(pathJoin("netcdf-D", os.getenv("netcdf_ver")))
+load(pathJoin("pnetcdf-D", os.getenv("pnetcdf_ver")))
 load(pathJoin("libjpeg", os.getenv("libjpeg_ver")))
 
 load(pathJoin("udunits", os.getenv("udunits_ver")))

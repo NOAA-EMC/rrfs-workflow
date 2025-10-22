@@ -14,6 +14,7 @@ load(pathJoin("zlib", os.getenv("zlib_ver")))
 load(pathJoin("libpng", os.getenv("libpng_ver")))
 load(pathJoin("hdf5-D", os.getenv("hdf5_ver")))
 load(pathJoin("netcdf-D", os.getenv("netcdf_ver")))
+load(pathJoin("pnetcdf-D", os.getenv("pnetcdf_ver")))
 
 load(pathJoin("bacio", os.getenv("bacio_ver")))
 load(pathJoin("ip", os.getenv("ip_ver")))
