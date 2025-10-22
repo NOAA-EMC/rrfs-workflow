@@ -9,7 +9,7 @@ load(pathJoin("cray-pals", os.getenv("cray_pals_ver")))
 prepend_path("MODULEPATH", os.getenv("modulepath_compiler"))
 prepend_path("MODULEPATH", os.getenv("modulepath_mpi"))
 
-load(pathJoin("netcdf-B", os.getenv("netcdf_ver")))
+load(pathJoin("netcdf-D", os.getenv("netcdf_ver")))
 load(pathJoin("bacio", os.getenv("bacio_ver")))
 load(pathJoin("w3emc", os.getenv("w3emc_ver")))
 load(pathJoin("sp", os.getenv("sp_ver")))

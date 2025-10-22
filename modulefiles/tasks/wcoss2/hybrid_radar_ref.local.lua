@@ -9,8 +9,8 @@ load(pathJoin("cray-pals", os.getenv("cray_pals_ver")))
 prepend_path("MODULEPATH", os.getenv("modulepath_compiler"))
 prepend_path("MODULEPATH", os.getenv("modulepath_mpi"))
 
-load(pathJoin("hdf5-B", os.getenv("hdf5_ver")))
-load(pathJoin("netcdf-B", os.getenv("netcdf_ver")))
+load(pathJoin("hdf5-D", os.getenv("hdf5_ver")))
+load(pathJoin("netcdf-D", os.getenv("netcdf_ver")))
 
 load(pathJoin("udunits", os.getenv("udunits_ver")))
 load(pathJoin("gsl", os.getenv("gsl_ver")))
