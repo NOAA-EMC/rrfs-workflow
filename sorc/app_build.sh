@@ -147,7 +147,7 @@ BUILD_AQM_UTILS="off"
 CLEAN=false
 BUILD=false
 MOVE=false
-USE_SUB_MODULES=false #change default to true later
+USE_SUB_MODULES=false  #change default to true later
 
 # process required arguments
 if [[ ("$1" == "--help") || ("$1" == "-h") ]]; then
@@ -526,11 +526,6 @@ if [ $USE_SUB_MODULES = true ]; then
 else
     module use ${HOME_DIR}/modulefiles
     module load ${MODULE_FILE}
-    # unload unwanted old netcdf/hdf5
-    module unload netcdf/4.7.4
-    module unload hdf5/1.10.6
-    module load netcdf-B/4.9.2
-    module load hdf5-B/1.14.0
 
 fi
 module list
