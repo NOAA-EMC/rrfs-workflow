@@ -74,6 +74,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
 
     jedidep = ""
+    recenterdep = ""
     if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
         if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
             jedidep = f'<taskdep task="getkf_solver"/>'
@@ -81,6 +82,10 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
             jedidep = f'<taskdep task="jedivar_spinup"/>'
         else:
             jedidep = f'<taskdep task="jedivar"/>'
+    else:
+        if os.getenv("DO_RECENTER", "FALSE").upper() == "TRUE":
+            if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
+                recenterdep = f'<taskdep task="recenter"/>'
 
     prep_ic_dep = f'<taskdep task="prep_ic{ensindexstr}"/>'
     if do_spinup:
@@ -92,6 +97,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     <taskdep task="prep_lbc{ensindexstr}" cycle_offset="0:00:00"/>
     {prep_ic_dep}
     {jedidep}
+    {recenterdep}
   </and>
   </dependency>'''
 
