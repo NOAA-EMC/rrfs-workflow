@@ -17,7 +17,7 @@ export DO_FCST=${DO_FCST:-true}
 export DO_POST=${DO_POST:-true}
 export DO_IC_LBC=${DO_IC_LBC:-true}
 export USE_THE_LATEST_SATBIAS=${USE_THE_LATEST_SATBIAS:-false} # whether DA tasks use the latest satbias from the previous cycle
-export PHYSICS_SUITE=${PHYSICS_SUITE:-"convection_permitting"} # mesoscale_reference, convection_permitting
+export PHYSICS_SUITE=${PHYSICS_SUITE:-"hrrrv5"} # hrrrv5, mesoscale_reference, convection_permitting
 export KEEPDATA=${KEEPDATA:-"NO"}
 export MPI_RUN_CMD=${MPI_RUN_CMD:-"srun"}
 export USE_CONV_SAT_INFO=${USE_CONV_SAT_INFO:-true}
@@ -27,7 +27,9 @@ export EMPTY_OBS_SPACE_ACTION=${EMPTY_OBS_SPACE_ACTION:-"skip output"}
 if ${REALTIME:-false}; then
   export PREP_LBC_LOOK_BACK_HRS=${PREP_LBC_LOOK_BACK_HRS:-13} # Python range(0,13) will make it 0-12
 else
-  export PREP_LBC_LOOK_BACK_HRS=${PREP_LBC_LOOK_BACK_HRS:-${CYCLEDEF_LBC_STEP_HRS}}
+  LBC_CYCS=$(echo "${LBC_CYCS}" | xargs) # trim any leading, trailing and extra spaces
+  lbc_step_hrs=$(( 24*3/(${#LBC_CYCS}+1) ))
+  export PREP_LBC_LOOK_BACK_HRS=${PREP_LBC_LOOK_BACK_HRS:-${lbc_step_hrs}}
 fi
 
 # DO_CLEAN
