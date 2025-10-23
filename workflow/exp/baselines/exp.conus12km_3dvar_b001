@@ -12,7 +12,7 @@ export EXPDIR=${OPSROOT}/exp/${EXP_NAME}/rrfs${WGF}
 export COMROOT=${OPSROOT}/exp/${EXP_NAME}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/exp/${EXP_NAME}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
 #
-export ZETA_LEVELS="L60.txt"
+export ZETA_LEVELS="L65.txt"
 #
 export YAML_GEN_METHOD=2
 export COLDSTART_CYCS_DO_DA=false
