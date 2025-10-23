@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# shellcheck disable=SC1091
+# shellcheck disable=all
 run_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 source "${run_dir}/../detect_machine.sh"
 HOMErrfs="${run_dir}/../../.."
