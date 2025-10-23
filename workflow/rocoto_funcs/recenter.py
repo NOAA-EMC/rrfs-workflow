@@ -27,7 +27,10 @@ def recenter(xmlFile, expdir):
     if det_recentercycs_do_da.upper() == "TRUE":
         datadep_init = f'<datadep age="00:05:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/jedivar/det/init.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'
     else:
-        datadep_init = f'<datadep age="00:05:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_prep_ic_@H_&rrfs_ver;/det/init.nc</cyclestr></datadep>'
+        datadep_init = f'''<or>
+           <datadep age="00:05:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_prep_ic_@H_&rrfs_ver;/det/init.nc</cyclestr></datadep>
+           <datadep age="00:05:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_prep_ic_@H_&rrfs_ver;/det/mpasout.nc</cyclestr></datadep>
+         </or>'''
 
     datadep = f'''<or>
          {datadep_init}

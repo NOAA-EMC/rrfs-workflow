@@ -14,13 +14,13 @@ time_min="${subcyc:-00}"
 # determine whether to begin new cycles
 #
 if [[ -r "${UMBRELLA_PREP_IC_DATA}/init.nc" ]]; then
-  start_type='cold'
+  export start_type='cold'
   do_DAcycling='false'
-  initial_file=${UMBRELLA_PREP_IC_DATA}/init.nc
+  initial_file=init.nc
 else
-  start_type='warm'
+  export start_type='warm'
   do_DAcycling='true'
-  initial_file=${UMBRELLA_PREP_IC_DATA}/mpasout.nc
+  initial_file=mpasout.nc
 fi
 #
 # link fix files from physics, meshes, graphinfo, stream list, and jedi
@@ -32,10 +32,14 @@ nlevel=$(wc -l < "${zeta_levels}")
 ln -snf "${FIXrrfs}/meshes/${MESH_NAME}.invariant.nc_L${nlevel}_${prefix}"  ./invariant.nc
 mkdir -p graphinfo stream_list
 ln -snf "${FIXrrfs}"/graphinfo/*  graphinfo/
-ln -snf "${FIXrrfs}/stream_list/${PHYSICS_SUITE}"/*  stream_list/
+${cpreq} "${FIXrrfs}/stream_list/${PHYSICS_SUITE}"/*  stream_list/
 ${cpreq} "${FIXrrfs}"/jedi/obsop_name_map.yaml .
 ${cpreq} "${FIXrrfs}"/jedi/keptvars.yaml .
 ${cpreq} "${FIXrrfs}"/jedi/geovars.yaml .
+# if cold_start or not do_radar_ref, remove refl10cm and w from stream_list.atmosphere.analysis
+if [[ "${start_type}" == "cold"  ]] || ! ${DO_RADAR_REF} ; then
+  sed -i '$d;N;$d' stream_list/stream_list.atmosphere.analysis
+fi
 #
 # create data directory
 #
@@ -82,7 +86,7 @@ source "${USHrrfs}/find_ensembles.sh"
 #  link background
 #
 cd "${DATA}" || exit 1
-ln -snf "${initial_file}" .
+ln -snf "${UMBRELLA_PREP_IC_DATA}/${initial_file}" .
 #
 # generate namelist, streams, and jedivar.yaml on the fly
 run_duration=1:00:00
@@ -139,21 +143,8 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
   # check the status
   export err=$?
   err_chk
-  #
-  # ncks increments to cold_start IC
-  if [[ ${start_type} == "cold" ]]; then
-    var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional,refl10cm,w"
-    ncks -O -C -x -v ${var_list} init.nc tmp.nc
-    ncks -A -v ${var_list} ana.nc tmp.nc
-    export err=$?
-    err_chk
-    mv tmp.nc "$(readlink -f init.nc)"
-    mv ana.nc ..
-  else
-    cp "${DATA}"/mpasout.nc "${COMOUT}/jedivar/${WGF}/mpasout.${timestr}.nc"
-  fi
-  #
   # the input/output file are linked from the umbrella directory, so no need to copy
+  cp "${DATA}/${initial_file}" "${COMOUT}/jedivar/${WGF}/${initial_file%.nc}.${timestr}.nc"
   cp "${DATA}"/jdiag* "${COMOUT}/jedivar/${WGF}"
   cp "${DATA}"/jedivar*.yaml "${COMOUT}/jedivar/${WGF}"
   cp "${DATA}"/log.out "${COMOUT}/jedivar/${WGF}"

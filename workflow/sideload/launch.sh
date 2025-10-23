@@ -100,11 +100,11 @@ case ${task_id} in
     module purge
     module use "${HOMErrfs}/sorc/RRFS_UTILS/modulefiles"
     module load "build_${MACHINE}_intel"
+    module load "rrfs/${MACHINE}.intel"
     ;;
   ensmean)
     module purge
-    module use "${HOMErrfs}/sorc/RRFS_UTILS/modulefiles"
-    module load "build_${MACHINE}_intel"
+    module load "rrfs/${MACHINE}.intel"
     module load nco
     ;;
   *)
