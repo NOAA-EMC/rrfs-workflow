@@ -47,10 +47,12 @@ with open(f'{expdir}/rrfs.xml') as infile:
             FCST_LEN_HRS_CYCLES = get_value(line)
         elif "getkf_observer" in line:
             getkf = True
+        elif "STATIC_BEC_MODEL" in line:
+            STATIC_BEC_MODEL = get_value(line)
 
 # prepare a summary
 if float(HYB_WGT_ENS) == 0.0 and float(HYB_WGT_STATIC) == 1.0:
-    summary = "Pure 3DVAR"
+    summary = f"Pure 3DVAR, using {STATIC_BEC_MODEL}"
 else:
     if float(HYB_WGT_ENS) == 1.0 and float(HYB_WGT_STATIC) == 0.0:
         summary = "Pure 3DEnVAR"
