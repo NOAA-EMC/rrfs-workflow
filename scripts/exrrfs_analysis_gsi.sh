@@ -183,7 +183,8 @@ if [ -d "${bkpath}.gsi" ]; then
 fi
 cp -rL $bkpath ${bkpath}.gsi
 bkpath=${bkpath}.gsi
-
+#touch a file in INPUT.gsi its clear if jedi/gsi analysis restarts were used
+touch ${bkpath}/gsi
 #
 #---------------------------------------------------------------------
 #

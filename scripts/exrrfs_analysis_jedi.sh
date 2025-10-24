@@ -580,7 +580,12 @@ cp analysis_jedi.fv_tracer.res.nc   ${bkpath}/fv_tracer.res.tile1.nc
 #cp analysis_jedi.sfc_data.nc        ${bkpath}/sfc_data.nc
 #cp analysis_jedi.phy_data.nc        ${bkpath}/phy_data.nc
 #cp analysis_jedi.coupler.res        ${bkpath}/coupler.res
+
+# Temporary solution: Use sfc from gsi. Likely just need to add more state vars to jedi.
 cp ${bkpath}/../INPUT.gsi/sfc_data.nc ${bkpath}/sfc_data.nc
+
+# touch a file in INPUT.jedi its clear if jedi/gsi analysis restarts were used
+touch ${bkpath}/jedi
 #
 #-----------------------------------------------------------------------
 #
