@@ -26,6 +26,7 @@ export nco_ver=5.2.4
 export nemsio_ver=2.5.4
 export netcdf_ver=4.9.2
 export pio_ver=2.5.10
+export pnetcdf_ver=1.12.2
 export PrgEnv_intel_ver=8.5.0
 export prod_util_ver=2.0.14
 export prod_envir_ver=2.0.6
