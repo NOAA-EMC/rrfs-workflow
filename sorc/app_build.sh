@@ -147,7 +147,7 @@ BUILD_AQM_UTILS="off"
 CLEAN=false
 BUILD=false
 MOVE=false
-USE_SUB_MODULES=false  #change default to true later
+USE_SUB_MODULES=false #change default to true later
 
 # process required arguments
 if [[ ("$1" == "--help") || ("$1" == "-h") ]]; then
@@ -526,7 +526,6 @@ if [ $USE_SUB_MODULES = true ]; then
 else
     module use ${HOME_DIR}/modulefiles
     module load ${MODULE_FILE}
-
 fi
 module list
 
