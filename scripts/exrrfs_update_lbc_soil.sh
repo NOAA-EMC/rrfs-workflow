@@ -165,6 +165,22 @@ if [ -r "${bkpath}/coupler.res" ]; then
 else
   BKTYPE=1              # cold start
 fi
+
+if [[ ${BKTYPE} == 1 ]]; then #coldstart
+  DA_SYSTEM="$DA_SYSTEM_COLD"
+fi
+echo "DA_SYSTEM: $DA_SYSTEM"
+case "$DA_SYSTEM" in
+  GSI)
+    rm -rf $bkpath
+    cp -r $bkpath.gsi $bkpath
+    ;;
+  JEDI)
+    rm -rf $bkpath
+    cp -r $bkpath.jedi $bkpath
+    ;;
+esac
+
 #
 #-----------------------------------------------------------------------
 #
