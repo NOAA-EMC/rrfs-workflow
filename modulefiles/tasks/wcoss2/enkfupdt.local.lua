@@ -6,9 +6,6 @@ load(pathJoin("prod_util", os.getenv("prod_util_ver")))
 load(pathJoin("cray-mpich", os.getenv("cray_mpich_ver")))
 load(pathJoin("cray-pals", os.getenv("cray_pals_ver")))
 
-prepend_path("MODULEPATH", os.getenv("modulepath_compiler"))
-prepend_path("MODULEPATH", os.getenv("modulepath_mpi"))
-
 load(pathJoin("jasper", os.getenv("jasper_ver")))
 load(pathJoin("zlib", os.getenv("zlib_ver")))
 load(pathJoin("libpng", os.getenv("libpng_ver")))
