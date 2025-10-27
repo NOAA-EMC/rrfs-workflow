@@ -195,7 +195,7 @@ basetime=$( date +%y%j%H%M -d "${yyyymmdd} ${hh}" )
 
 if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
   if [ -f  ${DATA}/${testbed} ]; then
-    cp ${DATA}/${testbed}  ${COMOUT}/${testbed}
+    cpreq ${DATA}/${testbed}  ${COMOUT}/${testbed}
   fi
 fi
 

@@ -50,17 +50,6 @@ if [[ ! -v OB_TYPE ]]; then
 fi
 export OB_TYPE=${OB_TYPE}
 
-#export observer_gsi_dir=""
-# GSI_TYPE = OBSERVER is only for EnKF (ensemble forecasts do not have ANALYSIS tasks)
-#if [ "${GSI_TYPE}" = "OBSERVER" ]; then
-#  if [ "${CYCLE_TYPE}" = "spinup" ]; then
-#    observer_gsi_dir=${COMOUT}/observer_gsi_spinup
-#  else
-#    observer_gsi_dir=${COMOUT}/observer_gsi
-#  fi
-#  mkdir -p ${observer_gsi_dir}
-#fi
-
 # SATBIAS_DIR directory for cycling bias correction files
 SATBIAS_DIR=$(compath.py -o ${NET}/${rrfs_ver}/satbias)
 mkdir -p ${SATBIAS_DIR}
@@ -180,47 +169,48 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
   ens_nstarthr=$( printf "%02d" ${DA_CYCLE_INTERV} )
   imem=1
   ifound=0
+  touch ${DATA}/parallel_copy.sh
   for hrs in ${CYCL_HRS_HYB_FV3LAM_ENS[@]}; do
-  if [ $HH == ${hrs} ]; then
-
-  while [[ $imem -le ${NUM_ENS_MEMBERS} ]];do
-    memcharv0=$( printf "%03d" $imem )
-    memchar=m$( printf "%03d" $imem )
-
-    YYYYMMDDInterv=$( date +%Y%m%d -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
-    HHInterv=$( date +%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
-    restart_prefix="${YYYYMMDD}.${HH}0000."
-    bkpathmem=${COMrrfs}/enkfrrfs.${YYYYMMDDInterv}/${HHInterv}/${memchar}/forecast/RESTART
-    if [ ${DO_SPINUP} == "TRUE" ]; then
-      for cycl_hrs in ${CYCL_HRS_PRODSTART_ENS[@]}; do
-       if [ $HH == ${cycl_hrs} ]; then
-         bkpathmem=${COMrrfs}/enkfrrfs.${YYYYMMDDInterv}/${HHInterv}_spinup/${memchar}/forecast/RESTART
-       fi
+    if [ $HH == ${hrs} ]; then
+      while [[ $imem -le ${NUM_ENS_MEMBERS} ]];do
+        memcharv0=$( printf "%03d" $imem )
+        memchar=m$( printf "%03d" $imem )
+        YYYYMMDDInterv=$( date +%Y%m%d -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
+        HHInterv=$( date +%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
+        restart_prefix="${YYYYMMDD}.${HH}0000."
+        bkpathmem=${COMrrfs}/enkfrrfs.${YYYYMMDDInterv}/${HHInterv}/${memchar}/forecast/RESTART
+        if [ ${DO_SPINUP} == "TRUE" ]; then
+          for cycl_hrs in ${CYCL_HRS_PRODSTART_ENS[@]}; do
+           if [ $HH == ${cycl_hrs} ]; then
+             bkpathmem=${COMrrfs}/enkfrrfs.${YYYYMMDDInterv}/${HHInterv}_spinup/${memchar}/forecast/RESTART
+           fi
+          done
+        fi
+        dynvarfile=${bkpathmem}/${restart_prefix}fv_core.res.tile1.nc
+        tracerfile=${bkpathmem}/${restart_prefix}fv_tracer.res.tile1.nc
+        phyvarfile=${bkpathmem}/${restart_prefix}phy_data.nc
+        if [ -r "${dynvarfile}" ] && [ -r "${tracerfile}" ] && [ -r "${phyvarfile}" ] ; then
+          echo "cpfs ${bkpathmem}/${restart_prefix}fv_core.res.tile1.nc fv3SAR${ens_nstarthr}_ens_mem${memcharv0}-fv3_dynvars" >> ${DATA}/parallel_copy.sh
+          echo "cpfs ${bkpathmem}/${restart_prefix}fv_tracer.res.tile1.nc fv3SAR${ens_nstarthr}_ens_mem${memcharv0}-fv3_tracer" >> ${DATA}/parallel_copy.sh
+          echo "cpfs ${bkpathmem}/${restart_prefix}phy_data.nc fv3SAR${ens_nstarthr}_ens_mem${memcharv0}-fv3_phyvars" >> ${DATA}/parallel_copy.sh
+          (( ifound += 1 ))
+        else
+          print_info_msg "WARNING: Cannot find ensemble files: ${dynvarfile} ${tracerfile} ${phyvarfile} "
+          date
+          [[ -d ${bkpathmem} ]]&& ls -alrt ${bkpathmem}
+        fi
+        (( imem += 1 ))
       done
     fi
-    dynvarfile=${bkpathmem}/${restart_prefix}fv_core.res.tile1.nc
-    tracerfile=${bkpathmem}/${restart_prefix}fv_tracer.res.tile1.nc
-    phyvarfile=${bkpathmem}/${restart_prefix}phy_data.nc
-    if [ -r "${dynvarfile}" ] && [ -r "${tracerfile}" ] && [ -r "${phyvarfile}" ] ; then
-      ln -snf ${bkpathmem}/${restart_prefix}fv_core.res.tile1.nc       fv3SAR${ens_nstarthr}_ens_mem${memcharv0}-fv3_dynvars
-      ln -snf ${bkpathmem}/${restart_prefix}fv_tracer.res.tile1.nc     fv3SAR${ens_nstarthr}_ens_mem${memcharv0}-fv3_tracer
-      ln -snf ${bkpathmem}/${restart_prefix}phy_data.nc                fv3SAR${ens_nstarthr}_ens_mem${memcharv0}-fv3_phyvars
-      (( ifound += 1 ))
-    else
-      print_info_msg "WARNING: Cannot find ensemble files: ${dynvarfile} ${tracerfile} ${phyvarfile} "
-      date
-      [[ -d ${bkpathmem} ]]&& ls -alrt ${bkpathmem}
-    fi
-    (( imem += 1 ))
-  done
- 
-  fi
   done
 
   if [[ $ifound -ne ${NUM_ENS_MEMBERS} ]] || [[ ${BKTYPE} -eq 1 ]]; then
     print_info_msg "Not enough FV3_LAM ensembles, will fall to GDAS"
     regional_ensemble_option=1
     l_both_fv3sar_gfs_ens=.false.
+  else
+    cat ${DATA}/parallel_copy.sh | parallel --verbose
+    sleep 3
   fi
 fi
 #
@@ -589,7 +579,7 @@ do
   obs_file=${obs_files_source[$i]}
   obs_file_t=${obs_files_target[$i]}
   if [ -r "${obs_file}" ]; then
-    ln -s "${obs_file}" "${obs_file_t}"
+    cpreq "${obs_file}" "${obs_file_t}"
   else
     print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist!"
   fi
@@ -1052,7 +1042,7 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
       count=$(ls pe*.${type}_${loop} | wc -l)
       if [[ $count -gt 0 ]]; then
          $(cat pe*.${type}_${loop} > diag_${type}_${string}.${YYYYMMDDHH})
-         cp diag_${type}_${string}.${YYYYMMDDHH} $COMOUT
+         cpreq diag_${type}_${string}.${YYYYMMDDHH} $COMOUT
          echo "diag_${type}_${string}.${YYYYMMDDHH}" >> listrad_bin
          numfile_rad_bin=`expr ${numfile_rad_bin} + 1`
       fi
@@ -1074,7 +1064,7 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
 	 mv errfile errfile_nc_diag_cat_$type
          if [[ -s diag_${type}_${string}.${YYYYMMDDHH}.nc4 ]]; then
            gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4
-           cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
+           cpreq diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
            echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listcnv
          numfile_cnv=`expr ${numfile_cnv} + 1`
          fi
@@ -1089,7 +1079,7 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
 	export err=$?; err_chk
 	mv errfile errfile_nc_diag_cat_$type
         gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4
-        cp diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
+        cpreq diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
         echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listrad
         numfile_rad=`expr ${numfile_rad} + 1`
       else
@@ -1125,22 +1115,22 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
     fi
     if [ ${numfile_cnv} -gt 0 ]; then
       tar -cvzf rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat_nc `cat listcnv`
-      cp ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat_nc  ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat
+      cpreq ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat_nc  ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat
     fi
     if [ ${numfile_rad} -gt 0 ]; then
       tar -cvzf rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat_nc `cat listrad`
-      cp ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat_nc  ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
+      cpreq ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat_nc  ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
     fi
     if [ ${numfile_rad_bin} -gt 0 ]; then
       tar -cvzf rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat `cat listrad_bin`
-      cp ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat  ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
+      cpreq ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat  ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
     fi
 
     # For EnVar DA  
-    cp ./satbias_out ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
-    cp ./satbias_pc.out ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
-    cp ./satbias_out ${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
-    cp ./satbias_pc.out ${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
+    cpreq ./satbias_out ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
+    cpreq ./satbias_pc.out ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
+    cpreq ./satbias_out ${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
+    cpreq ./satbias_pc.out ${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
   fi
 fi # run diag inline (with GSI)
 

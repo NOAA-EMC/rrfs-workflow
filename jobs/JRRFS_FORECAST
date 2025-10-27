@@ -119,29 +119,24 @@ esac
 #-----------------------------------------------------------------------
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
-export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}
+export umbrella_ics_data="${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver}/${WGF}/ics"
 export umbrella_post_data=${DATAROOT}/rrfs_post_${cyc}_${rrfs_ver}/${WGF}
+spinup_prefix=""
+spinup_postfix=""
 if [ ${CYCLE_TYPE} = "spinup" ]; then
-  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
-  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export umbrella_ics_data="${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}/ics"
-    export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
-  else
-    export umbrella_ics_data="${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver}/${WGF}/ics"
-  fi
+  spinup_prefix="_spinup"
 else
-  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export umbrella_ics_data="${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}/ics"
-    export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
-  else
+  if [ ! "${DO_ENSEMBLE}" = "TRUE" ]; then
     if [ "${WGF}" = "firewx" ]; then
-      export umbrella_ics_data="${DATAROOT}/firewx_ics_${cyc}_${rrfs_ver}/${WGF}/ics"
       export COMINnam=${COMINnam:-$(compath.py nam/${nam_ver})}   # Fire weather nest location from NAM
-    else
-      export umbrella_ics_data="${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver}/${WGF}/ics"
     fi
   fi
 fi
+if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  spinup_postfix="/${mem_num}"
+  export umbrella_ics_data="${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}/ics"
+fi
+export umbrella_forecast_data=${DATAROOT}/rrfs_forecast${spinup_prefix}_${cyc}_${rrfs_ver}/${WGF}${spinup_postfix}
 export FORECAST_INPUT_PRODUCT=${umbrella_forecast_data}/INPUT
 export shared_forecast_output_data=${umbrella_forecast_data}/output
 export shared_forecast_restart_data=${umbrella_forecast_data}/RESTART

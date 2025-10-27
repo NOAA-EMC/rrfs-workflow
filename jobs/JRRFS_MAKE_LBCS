@@ -93,15 +93,19 @@ if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
 elif [ $WGF = "firewx" ]; then
   export ENSMEM_INDX=""
   export COMOUT="${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/lbcs)}"
-
+  export firewx_input_dir="${COMrrfs}/firewx_input"
 # Fire weather nest location from NAM
   export COMINnam=${COMINnam:-$(compath.py nam/${nam_ver})}
 
 else
   export ENSMEM_INDX=""
   export COMOUT="${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/lbcs)}"
+  export umbrella_lbcops_data=${umbrella_ops_data:-${DATAROOT}/rrfs_lbcops_${cyc}_${rrfs_ver}/${WGF}}
+  if [ -d ${umbrella_lbcops_data} ] && [ ${BCGRP} = "00" ]; then
+    mv ${umbrella_lbcops_data} ${umbrella_lbcops_data}_$$
+  fi
 fi
-mkdir -p "${COMOUT}"
+mkdir -p ${COMOUT} ${umbrella_lbcops_data}
 
 #-----------------------------------------------------------------------
 # Execute the script.
@@ -116,7 +120,9 @@ export err=$?; err_chk
 if [ -e "$pgmout" ]; then
   cat $pgmout
 fi
-
+if [ "${KEEPDATA}" != "YES" ]; then
+   rm -rf ${DATA}
+fi
 #-----------------------------------------------------------------------
 # Print exit message.
 #-----------------------------------------------------------------------

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+source ${FIXrrfs}/workflow/${WGF}/workflow.conf_dev
 
 #
 #-----------------------------------------------------------------------
@@ -160,7 +160,7 @@ relative_or_null=""
 target="${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo${NH3}.nc" # must use *mosaic.halo3.nc
 symlink="grid_spec.nc"
 if [ -f "${target}" ]; then
-  ln -sf ${relative_or_null} $target $symlink
+  cpreq $target $symlink
 else
   err_exit "\
 Cannot create symlink because target does not exist:
@@ -174,7 +174,7 @@ grid_fn=$( get_charvar_from_netcdf "${mosaic_fn}" "gridfiles" )
 target="${FIXLAM}/${CRES}${DOT_OR_USCORE}grid.tile7.halo${NH3}.nc"
 symlink="${grid_fn}"
 if [ -f "${target}" ]; then
-  ln -sf ${relative_or_null} $target $symlink
+  cpreq $target $symlink
 else
   err_exit "\
 Cannot create symlink because target does not exist:
@@ -196,7 +196,7 @@ fi
 target="${FIXLAM}/${CRES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH4}.nc"
 symlink="grid.tile${TILE_RGNL}.halo${NH4}.nc"
 if [ -f "${target}" ]; then
-  ln -sf ${relative_or_null} $target $symlink
+  cpreq $target $symlink
 else
   err_exit "\
 Cannot create symlink because target does not exist:
@@ -209,7 +209,7 @@ relative_or_null=""
 target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH0}.nc"
 symlink="oro_data.nc"
 if [ -f "${target}" ]; then
-  ln -sf ${relative_or_null} $target $symlink
+  cpreq $target $symlink
 else
   err_exit "\
 Cannot create symlink because target does not exist:
@@ -232,7 +232,7 @@ fi
 target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH4}.nc"
 symlink="oro_data.tile${TILE_RGNL}.halo${NH4}.nc"
 if [ -f "${target}" ]; then
-  ln -sf ${relative_or_null} $target $symlink
+  cpreq $target $symlink
 else
   err_exit "\
 Cannot create symlink because target does not exist:
@@ -252,7 +252,7 @@ if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" ]] ; then
     target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data_${fileid}.tile${TILE_RGNL}.halo${NH0}.nc"
     symlink="oro_data_${fileid}.nc"
     if [ -f "${target}" ]; then
-      ln -sf ${relative_or_null} $target $symlink
+      cpreq $target $symlink
     else
       err_exit "\
 Cannot create symlink because target does not exist:
@@ -288,7 +288,6 @@ of the current run directory (DATA), where
 #The forecast has BKTYPE $BKTYPE (1:cold start ; 0 cycling)"
 
 cd ${DATA}/INPUT
-# Link to all files in FORECAST_INPUT_PRODUCT directory inside COMOUT
 # Do not need to do this for firewx, which is a cold start
 if [ ${WGF} != "firewx" ]; then
   ln -sf ${FORECAST_INPUT_PRODUCT}/* .
@@ -389,7 +388,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then
   smokefile=${COMrrfs}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc
   echo "try to use smoke file=",${smokefile}
   if [ -f ${smokefile} ]; then
-    ln -snf ${smokefile} ${DATA}/INPUT/SMOKE_RRFS_data.nc
+    cpreq -p ${smokefile} ${DATA}/INPUT/SMOKE_RRFS_data.nc
   else
     ln -snf ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/dummy_24hr_smoke.nc ${DATA}/INPUT/SMOKE_RRFS_data.nc
     echo "WARNING: Smoke file is not available, use dummy_24hr_smoke.nc instead"
@@ -455,9 +454,9 @@ input files in the main experiment directory..."
 
 relative_or_null=""
 
-ln -sf ${relative_or_null} ${DATA_TABLE_FP} ${DATA}
-ln -sf ${relative_or_null} ${FIELD_TABLE_FP} ${DATA}
-ln -sf ${relative_or_null} ${UFS_YAML_FP} ${DATA}
+cpreq ${relative_or_null} ${DATA_TABLE_FP} ${DATA}
+cpreq ${relative_or_null} ${FIELD_TABLE_FP} ${DATA}
+cpreq ${relative_or_null} ${UFS_YAML_FP} ${DATA}
 
 #
 # Determine if running stochastic physics for the specified cycles in CYCL_HRS_STOCH
@@ -727,7 +726,7 @@ if [ "${DO_FCST_RESTART}" = "TRUE" ] && [ $coupler_res_ct -gt 0 ] && [ $FCST_LEN
   flag_fcst_restart="TRUE"
   # Update FV3 input.nml for restart
    $USHrrfs/update_input_nml.py \
-    --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf \
+    --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf_dev \
     --run_dir "${DATA}" \
     --restart
   export err=$?
@@ -798,7 +797,8 @@ if [ "${DO_FCST_RESTART}" = "TRUE" ] && [ $coupler_res_ct -gt 0 ] && [ $FCST_LEN
     if [ -s output_file_backup.sh ]; then
       echo "The RESTART has found previous output in umbrella output and will move to an OLD directory"
       [[ ! -d OLD ]]&& mkdir OLD
-      sh output_file_backup.sh
+      chmod 755 output_file_backup.sh
+      output_file_backup.sh
     fi
     cd ${DATA}
   fi
@@ -832,7 +832,7 @@ fi
 fi
 
 $USHrrfs/create_model_configure_file.py \
-  --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf \
+  --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf_dev \
   --cdate "${CDATE}" \
   --cycle_type "${CYCLE_TYPE}" \
   --cycle_subtype "${CYCLE_SUBTYPE}" \
@@ -858,7 +858,7 @@ fi
 #-----------------------------------------------------------------------
 #
 $USHrrfs/create_diag_table_file.py \
-  --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf \
+  --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf_dev \
   --run-dir ${DATA}
 export err=$?
 if [ $err -ne 0 ]; then
@@ -882,35 +882,13 @@ fi
 #-----------------------------------------------------------------------
 #
 $USHrrfs/create_ufs_configure_file.py \
-  --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf \
+  --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf_dev \
   --run-dir ${DATA} 
 export err=$?
 if [ $err -ne 0 ]; then
   err_exit "Call to function to create the UFS configuration file for
 the current cycle's (CDATE) run directory (DATA) failed:
   DATA = \"${DATA}\""
-fi
-#
-#-----------------------------------------------------------------------
-#
-# If INPUT/phy_data.nc exists, convert it from NetCDF4 to NetCDF3
-# (happens for cycled runs, not cold-started)
-#
-#-----------------------------------------------------------------------
-#
-if [[ -f phy_data.nc ]] ; then
-  echo "convert phy_data.nc from NetCDF4 to NetCDF3"
-  cd INPUT
-  rm -f phy_data.nc3 phy_data.nc4
-  cp -fp phy_data.nc phy_data.nc4
-  if ( ! time ( module purge ; module load intel szip hdf5 netcdf nco ; module list ; set -x ; ncks -3 --64 phy_data.nc4 phy_data.nc3) ) ; then
-    mv -f phy_data.nc4 phy_data.nc
-    rm -f phy_data.nc3
-    echo "NetCDF 4=>3 conversion failed. :-( Continuing with NetCDF 4 data."
-  else
-    mv -f phy_data.nc3 phy_data.nc
-  fi
-  cd ..
 fi
 #
 #-----------------------------------------------------------------------
@@ -923,7 +901,6 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-module list
 
 # Ensure acsnow is in sfc_data.nc
 cd INPUT
