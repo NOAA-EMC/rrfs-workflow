@@ -61,7 +61,3 @@
 &decomposition
     config_block_decomp_file_prefix = '${decomp_file_prefix}'
 /
-&chemistry
-    config_smoke_scheme  = 'off'
-    config_dust_scheme = 'off'
-/

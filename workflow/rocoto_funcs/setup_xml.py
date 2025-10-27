@@ -38,7 +38,14 @@ def setup_xml(HOMErrfs, expdir):
     machine = os.getenv('MACHINE').lower()
     do_deterministic = os.getenv('DO_DETERMINISTIC', 'true').upper()
     do_ensemble = os.getenv('DO_ENSEMBLE', 'false').upper()
-    do_chemistry=os.getenv('DO_CHEMISTRY','false').upper()   
+    do_smoke=os.getenv('DO_SMOKE','false').upper()
+    do_anthro=os.getenv('DO_ANTHRO','false').upper()
+    do_pollen=os.getenv('DO_POLLEN','false').upper()
+    do_dust=os.getenv('DO_DUST','false').upper()
+    do_rwc=os.getenv('DO_RWC','false').upper()
+    do_chemistry='FALSE'
+    if do_anthro == 'TRUE' or do_pollen == 'TRUE' or do_dust == 'TRUE' or do_rwc == 'TRUE' or do_smoke == 'TRUE':
+       do_chemistry='TRUE'   
     do_ensmean_post = os.getenv('DO_ENSMEAN_POST', 'false').upper()
     #
     source(f"{HOMErrfs}/workflow/config_resources/config.{machine}")

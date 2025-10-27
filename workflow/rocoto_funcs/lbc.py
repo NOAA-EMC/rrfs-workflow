@@ -15,11 +15,13 @@ def lbc(xmlFile, expdir, do_ensemble=False):
     lbc_group_total_num = int(os.getenv('LBC_GROUP_TOTAL_NUM', '1'))
     group_indices = ''.join(f'{i:02d} ' for i in range(1, int(lbc_group_total_num) + 1)).strip()
     physics_suite = os.getenv('PHYSICS_SUITE', 'PHYSICS_SUITE_not_defined')
+    use_external_chem_lbcs=os.getenv('USE_EXTERNAL_CHEM_LBCS','FALSE').upper()
 
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
         'EXTRN_MDL_SOURCE': f'{extern_mdl_source}',
         'PHYSICS_SUITE': f'{physics_suite}',
+        'USE_EXTERNAL_CHEM_LBCS': f'{use_external_chem_lbcs}',
         'OFFSET': f'{offset}',
         'LENGTH': f'{length}',
         'INTERVAL': f'{interval}',

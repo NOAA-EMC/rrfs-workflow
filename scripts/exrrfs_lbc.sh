@@ -54,7 +54,19 @@ decomp_file_prefix="${MESH_NAME}.graph.info.part."
 physics_suite=${PHYSICS_SUITE:-'PHYSICS_SUITE_not_defined'}
 file_content=$(< "${PARMrrfs}/${physics_suite}/namelist.init_atmosphere") # read in all content
 eval "echo \"${file_content}\"" > namelist.init_atmosphere
-
+#
+# If any chemistry is activated, cat in the namelist
+cat "${PARMrrfs}/chemistry/namelist.init_atmosphere" >> namelist.init_atmosphere
+#
+# Now adjust the configure options based on the DO_* environemnt variables 
+if [[ "${DO_SMOKE}" -eq "TRUE" ]] && [[ ${USE_EXTERNAL_CHEM_LBCS} == "TRUE" ]]; then
+   sed -i "s/config_smoke_scheme\s*=\s*'off'/config_smoke_scheme = 'on'/g" namelist.init_atmosphere
+fi
+#
+if [[ "${DO_DUST}" -eq "TRUE" ]] && [[ ${USE_EXTERNAL_CHEM_LBCS} == "TRUE" ]]; then
+   sed -i "s/config_dust_scheme\s*=\s*'off'/config_dust_scheme = 'on'/g" namelist.init_atmosphere
+fi
+#
 #
 # generate the streams file on the fly
 # using sed as this file contains "filename_template='lbc.$Y-$M-$D_$h.$m.$s.nc'"

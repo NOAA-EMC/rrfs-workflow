@@ -23,12 +23,14 @@ prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
 # If so, will need to use a different Vtable and a different
 # ungrib.exe since the # of columns have changed.
 #
-if ([[ "${prefix}" == "RAP" ]] || [[ "${prefix}" == "RAP" ]]) && [[ "${DO_CHEMISTRY}" == "TRUE" ]]; then
-  prefix=${prefix}.SD
+if ([[ "${prefix}" == "RAP" ]] || [[ "${prefix}" == "RRFS" ]]) && [[ "${DO_CHEMISTRY}" == "TRUE" ]] && ([[ "${USE_EXTERNAL_CHEM_LBCS}" == "TRUE" ]] || [[ "${USE_EXTERNAL_CHEM_ICS}" == "TRUE" ]]); then
+  SDprefix=".SD"
+else
+  SDprefix=""
 fi 
 
 cd "${DATA}" || exit 1
-${cpreq} "${FIXrrfs}/ungrib/Vtable.${prefix}" Vtable
+${cpreq} "${FIXrrfs}/ungrib/Vtable.${prefix}${SDprefix}" Vtable
 #
 # find start and end time
 #

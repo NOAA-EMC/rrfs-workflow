@@ -71,13 +71,15 @@ def header_entities(xmlFile, expdir):
     wgf = os.getenv('WGF', 'det')
     cyc_interval = os.getenv('CYC_INTERVAL', '3')
     realtime = os.getenv("REALTIME", "false").upper()
-    do_chemistry=os.getenv('DO_CHEMISTRY','false').upper()   
-    do_smoke_retro=os.getenv('DO_SMOKE_RETRO','false').upper()
-    do_smoke_fcst=os.getenv('DO_SMOKE_FCST','false').upper()
+    do_smoke=os.getenv('DO_SMOKE','false').upper()
+    ebb_dcycle=os.getenv('EBB_DCYCLE',0)
     do_anthro=os.getenv('DO_ANTHRO','false').upper()
     do_pollen=os.getenv('DO_POLLEN','false').upper()
     do_dust=os.getenv('DO_DUST','false').upper()
     do_rwc=os.getenv('DO_RWC','false').upper()
+    do_chemistry='FALSE'
+    if do_anthro == 'TRUE' or do_pollen == 'TRUE' or do_dust == 'TRUE' or do_rwc == 'TRUE' or do_smoke == 'TRUE':
+       do_chemistry='TRUE'   
 # figure out run period for realtime experiments
     if realtime == 'TRUE':
         now = datetime.now()
@@ -143,8 +145,8 @@ def header_entities(xmlFile, expdir):
 <envar><name>WGF</name><value>{wgf}</value></envar>
 <envar><name>CYC_INTERVAL</name><value>{cyc_interval}</value></envar>
 <envar><name>DO_CHEMISTRY</name><value>{do_chemistry}</value></envar>
-<envar><name>DO_SMOKE_RETRO</name><value>{do_smoke_retro}</value></envar>
-<envar><name>DO_SMOKE_FCST</name><value>{do_smoke_fcst}</value></envar>
+<envar><name>DO_SMOKE</name><value>{do_smoke}</value></envar>
+<envar><name>EBB_DCYCLE</name><value>{ebb_dcycle}</value></envar>
 <envar><name>DO_ANTHRO</name><value>{do_anthro}</value></envar>
 <envar><name>DO_POLLEN</name><value>{do_pollen}</value></envar>
 <envar><name>DO_DUST</name><value>{do_dust}</value></envar>

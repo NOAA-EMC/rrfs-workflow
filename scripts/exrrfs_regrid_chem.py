@@ -579,13 +579,23 @@ class RaveToMpasRegridProcessor:
     def create_src_field_wrapper(self, field_name: str) -> FieldWrapper:
         _LOGGER.info("create source field")
         if field_name in ("PM25-PRI","PM10-PRI","HC01","h_agl"):
-            src_fwrap = NcToField(
-                path=self.context.src_path,
-                name=field_name,
-                gwrap=self.get_src_gwrap(),
-                dim_time=(self.context.time_name,),
-                dim_level=(self.context.level_in_name,),
-            ).create_field_wrapper()
+            if field_name in ("h_agl",):
+               src_fwrap = NcToField(
+                   path=self.context.src_path,
+                   name=field_name,
+                   gwrap=self.get_src_gwrap(),
+                   dim_time=(self.context.time_name,),
+                   dim_level=('bottom_top_stag'),
+               ).create_field_wrapper()
+            else:
+               src_fwrap = NcToField(
+                   path=self.context.src_path,
+                   name=field_name,
+                   gwrap=self.get_src_gwrap(),
+                   dim_time=(self.context.time_name,),
+                   dim_level=(self.context.level_in_name,),
+               ).create_field_wrapper()
+
         elif field_name in ("clayfrac","sandfrac","uthres","uthres_sg","sep"):
             src_fwrap = NcToField(
                 path=self.context.src_path,

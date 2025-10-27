@@ -64,14 +64,14 @@ fi
 file_content=$(< "${PARMrrfs}/${physics_suite}/namelist.atmosphere") # read in all content
 eval "echo \"${file_content}\"" > namelist.atmosphere
 
+# generate the streams file on the fly using sed as this file contains "filename_template='lbc.$Y-$M-$D_$h.$m.$s.nc'"
 if [[ "${MESH_NAME}" == "conus12km" ]]; then
   sed -i -e "s/    config_physics_suite = 'hrrrv5'/\
     config_physics_suite = 'hrrrv5'\n\
     config_convection_scheme = 'cu_ntiedtke'\n\
     config_gfl_sub3d = 1/" namelist.atmosphere
 fi
-
-# generate the streams file on the fly using sed as this file contains "filename_template='lbc.$Y-$M-$D_$h.$m.$s.nc'"
+#
 lbc_interval=${LBC_INTERVAL:-3}
 restart_interval=${RESTART_INTERVAL:-99}
 history_interval=${HISTORY_INTERVAL:-1}
@@ -80,37 +80,86 @@ sed -e "s/@restart_interval@/${restart_interval}/" -e "s/@history_interval@/${hi
     -e "s/@diag_interval@/${diag_interval}/" -e "s/@lbc_interval@/${lbc_interval}/" \
     "${PARMrrfs}"/streams.atmosphere  > streams.atmosphere
 
+
 #
 if [[ ${DO_CHEMISTRY} == "TRUE" ]] ; then
+#
+   num_chem=0
+   # If any chemistry is activated, cat in the namelist
+   cat "${PARMrrfs}/chemistry/namelist.atmosphere" >> namelist.atmosphere
 #
    # Biogenic/Pollen
    if [[ -r "${UMBRELLA_PREP_CHEM_DATA}/bio.init.nc" ]]; then
       sed -i '$e cat "${PARMrrfs}"/chemistry/streams.atmosphere.pollen' streams.atmosphere
       ln -snf ${UMBRELLA_PREP_CHEM_DATA}/bio.init.nc bio.init.nc
+      #
+      # Make sure pollen scheme is on
+      if [[ "${DO_POLLEN}" -eq "TRUE" ]]; then
+         sed -i "s/config_pollen_scheme\s*=\s*'off'/config_pollen_scheme  = 'speciated_pollen_primary'/g" namelist.atmosphere
+         num_chem=$(( ${num_chem} + 4 ))
+      fi
    fi
    # Dust
    if [[ -r "${UMBRELLA_PREP_CHEM_DATA}/dust.init.nc" ]]; then
       sed -i '$e cat "${PARMrrfs}"/chemistry/streams.atmosphere.dust' streams.atmosphere
       ln -snf ${UMBRELLA_PREP_CHEM_DATA}/dust.init.nc dust.init.nc
+      #
+      # Make sure pollen scheme is on
+      if [[ "${DO_DUST}" -eq "TRUE" ]]; then
+         sed -i "s/config_dust_scheme\s*=\s*'off'/config_dust_scheme  = 'on'/g" namelist.atmosphere
+         num_chem=$(( ${num_chem} + 2 ))
+      fi
    fi
    # Anthropogenic
    nanthrofiles=`ls ${UMBRELLA_PREP_CHEM_DATA}/anthro.init* | wc -l`
    if [[ ${nanthrofiles} -gt 0 ]]; then
       sed -i '$e cat "${PARMrrfs}"/chemistry/streams.atmosphere.anthro' streams.atmosphere
       ln -snf ${UMBRELLA_PREP_CHEM_DATA}/anthro.init* ./
+      #
+      # Make sure anthro scheme is on
+      if [[ "${DO_ANTHRO}" -eq "TRUE" ]]; then
+         sed -i "s/config_anthro_scheme\s*=\s*'off'/config_anthro_scheme  = 'on'/g" namelist.atmosphere
+         num_chem=$(( ${num_chem} + 6 ))
+         if [[ "${DO_DUST}" -eq "TRUE" ]]; then
+            num_chem=$(( ${num_chem} - 2 ))
+         fi
+         if [[ "${DO_SMOKE}" -eq "TRUE" ]]; then
+            num_chem=$(( ${num_chem} - 2 ))
+         fi
+      fi
+      
    fi
    # Smoke/Wildfire
    nfirefiles=`ls ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.* | wc -l`
    if [[ ${nfirefiles} -gt 0 ]]; then
-      sed -i '$e cat "${PARMrrfs}"/chemistry/streams.atmosphere.smoke_retro' streams.atmosphere
+      #
+      if [[ "${EBB_DCYCLE}" -eq 1 ]]; then
+         sed -i '$e cat "${PARMrrfs}"/chemistry/streams.atmosphere.smoke_retro' streams.atmosphere
+      elif [[ "${EBB_DCYCLE}" -eq 2 ]]; then
+         sed -i '$e cat "${PARMrrfs}"/chemistry/streams.atmosphere.smoke_forecast' streams.atmosphere
+      else
+         echo "Not appending any smoke stream"
+      fi
       # TODO, retro vs. forecast option
       ln -snf ${UMBRELLA_PREP_CHEM_DATA}/smoke.init* ./
+      #
+      # Make sure smoke scheme is on
+      if [[ "${DO_SMOKE}" -eq "TRUE" ]]; then
+         sed -i "s/config_smoke_scheme\s*=\s*'off'/config_smoke_scheme = 'on'/g" namelist.atmosphere
+         num_chem=$(( ${num_chem} + 2 ))
+      fi
+      # Set EBB_DCYCLE
+      sed -e "s/@ebb_dcycle@/${EBB_DCYCLE}/" namelist.atmosphere 
    fi
    # RWC
    if [[ -r "${UMBRELLA_PREP_CHEM_DATA}/rwc.init.nc" ]]; then
       sed -i '$e cat "${PARMrrfs}"/chemistry/streams.atmosphere.rwc' streams.atmosphere
       ln -snf ${UMBRELLA_PREP_CHEM_DATA}/rwc.init.nc rwc.init.nc
+      # Set namelist
+#      sed -e "s/@online_rwc_emis@/1/" "${PARMrrfs}"/namelist.atmosphere  > namelist.atmosphere 
    fi
+   # Replace the num_chem value with the correct number
+   sed -i "s/num_chem\s*=\s*[0-9]*/num_chem  = ${num_chem}/" namelist.atmosphere
 #
 fi
 

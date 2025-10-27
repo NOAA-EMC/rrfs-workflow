@@ -11,12 +11,11 @@
 #
 ## Required Input Arguments
 #
-# 1. INTERP_METHOD             -- likely a metatask variable for each input type, determines interpolation method
-# 2. EMIS_SECTOR_TO_PROCESS    -- which emission sector is this task performing? (anthro, pollen, dust)
-# 3. ANTHRO_EMISINV            -- undecided, may merge for custom dataset, or leave option to combine
-# 4. DATADIR_CHEM             -- location of interpolated files, ready to be used
-# 5. MESH_NAME                -- name of the MPAS domain, required to know if we have weights or data intepolated to the domain 
-# 6. FCST_LENGTH               -- nhours of forecast
+# 1. EMIS_SECTOR_TO_PROCESS    -- which emission sector is this task performing? (anthro, pollen, dust)
+# 2. ANTHRO_EMISINV            -- undecided, may merge for custom dataset, or leave option to combine
+# 3. DATADIR_CHEM             -- location of interpolated files, ready to be used
+# 4. MESH_NAME                -- name of the MPAS domain, required to know if we have weights or data intepolated to the domain 
+# 5. FCST_LENGTH               -- nhours of forecast
 #
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]${id}: '
 set -x
@@ -94,12 +93,6 @@ fi
 #
 DOY_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${FCST_LENGTH} hours" +%j)  # Julian day 
 #
-# Set the interpolation method if none is selected
-if [ -z "${INTERP_METHOD}" ]; then
-   ${ECHO} "No interpolation method selected, defaulting to 'conserve'"
-   export INTERP_METHOD="bilinear"
-fi
-#
 # Set the init/mesh file name and link here:\
 if [[ ${keepdata} == "YES" ]]; then
    if [[ -r ${UMBRELLA_PREP_IC_DATA}/init.nc ]]; then
@@ -126,11 +119,11 @@ INTERP_WEIGHTS_DIR=${DATADIR_CHEM}/grids/interpolation_weights/
 #
 # Set a few things for the CONDA environment
 export REGRID_WRAPPER_LOG_DIR=${DATA}
-regrid_wrapper_dir=/lfs5/BMC/rtwbl/rap-chem/mpas_rt/working/ben_interp/regrid-wrapper/
+regrid_wrapper_dir=${REGRID_WRAPPER_DIR} #/lfs5/BMC/rtwbl/rap-chem/mpas_rt/working/ben_interp/regrid-wrapper/
 PYTHONDIR=${regrid_wrapper_dir}/src
-CONDAENV=/lfs5/BMC/rtwbl/rap-chem/miniconda/envs/regrid-wrapper
-export PATH=${CONDAENV}/bin:${PATH}
-export ESMFMKFILE=${CONDAENV}/lib/esmf.mk
+regrid_conda_env=${REGRID_CONDA_ENV} #CONDAENV=/lfs5/BMC/rtwbl/rap-chem/miniconda/envs/regrid-wrapper
+export PATH=${regrid_conda_env}/bin:${PATH}
+export ESMFMKFILE=${regrid_conda_env}/lib/esmf.mk
 export PYTHONPATH=${PYTHONDIR}:${PYTHONPATH}
 #
 #==================================================================================================
@@ -178,7 +171,26 @@ srun python -u ${SCRIPT} \
                ${YYYY}${MM}${DD}${HH} \
                ${MESH_NAME}
 mv *.log *.ESMF_LogFile logs || echo "could not move logs"
-# 
+#
+# Look for a file to create a dummy file if one doesn't already exist
+if [[ ! -e ${dummyRAVE} ]]; then
+ if [[ $(ls -A "${RAVE_OUTPUTDIR}/${MESH_NAME}*") ]]; then
+    dummyRAVEtemplate=$(ls "${RAVE_OUTPUTDIR}/${MESH_NAME}*" | head -n 1)
+    echo "Dummy RAVE file doesn't exist, but creating one using: ${dummyRAVEtemplate}"
+    cp ${dummyRAVEtemplate} ${dummyRAVE}
+    ncap2 -O -s 'e_bb_in_smoke_fine=0.*e_bb_in_smoke_fine' ${dummyRAVE} ${dummyRAVE}    
+    ncap2 -O -s 'e_bb_in_smoke_coarse=0.*e_bb_in_smoke_fine' ${dummyRAVE} ${dummyRAVE}    
+    ncap2 -O -s 'e_bb_in_smoke_so2=0.*e_bb_in_smoke_fine' ${dummyRAVE} ${dummyRAVE}    
+    ncap2 -O -s 'e_bb_in_smoke_ch4=0.*e_bb_in_smoke_fine' ${dummyRAVE} ${dummyRAVE}    
+    ncap2 -O -s 'e_bb_in_smoke_nh3=0.*e_bb_in_smoke_fine' ${dummyRAVE} ${dummyRAVE}    
+    ncap2 -O -s 'frp_in=0.*frp_in' ${dummyRAVE} ${dummyRAVE}    
+    ncap2 -O -s 'fre_in=0.*fre_in' ${dummyRAVE} ${dummyRAVE}   
+ fi 
+else
+    echo "Do not have and cannot create dummy RAVE file as no RAVE data is available"
+fi
+# Loop through the hours and link the files so they have the correct filename and variable names 
+# TODO - Update variable names via outside script or within regrid.py -- mapping table?
 for ihour in $(seq 0 ${FCST_LENGTH}); 
 do
 #
@@ -210,18 +222,18 @@ do
 done
 #
 #
+echo "Concatenating hourly files for use in forecast mode"
 # Concatenate for ebb2
 ncrcat ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.retro.*.00.00.nc ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc
 #
 # Calculate previous 24 hour average HWP
 #
-# TODO
+# TODO - presently hwp and totprcp have constant values
 ncap2 -O -s 'hwp_prev24=0.0*frp_in+30.' -s 'totprcp_prev24=0.0*frp_in+0.1' ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc
 ncrename -v frp_in,frp_prev24 -v fre_in,fre_prev24 ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc
 #
 # Emissions to be calculated inside of model
 if [[ ! -r "${ECO_OUTPUTDIR}/ecoregions_${MESH_NAME}_mpas.nc" ]] && [[ -r "${ECO_INPUTDIR}/veg_map.nc" ]]; then
-
    echo "Regridding ECO_REGION"
    srun python -u ${SCRIPT}   \
                    "ECOREGION" \
@@ -252,6 +264,7 @@ if [[ ${n_fmc} -gt 0 ]]; then
   ncks -A -v 10h_dead_fuel_moisture_content ${UMBRELLA_PREP_CHEM_DATA}/fmc.init.nc ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc
   ncrename -v 10h_dead_fuel_moisture_content,fmc_prev24 ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc
 else
+  echo "No soil moisture information available, using static value of 0.2"
   ncap2 -O -s 'fmc_prev24=0*frp_prev24+0.2' ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc
 fi
 

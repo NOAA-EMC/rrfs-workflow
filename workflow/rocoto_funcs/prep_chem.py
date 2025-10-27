@@ -23,17 +23,27 @@ def prep_chem(xmlFile, expdir,do_ensemble=False, do_spinup=False):
   datadir_chem=os.getenv('CHEMPATH','/lfs6/BMC/rtwbl/cheMPAS-Fire/input/')
   mesh_name=os.getenv('MESH_NAME','conus3km').lower()
   fcst_length=os.getenv('FCST_LENGTH','24')
+  rave_dir=os.getenv('RAVE_DIR','').lower()
+  regrid_wrapper_dir=os.getenv('REGRID_WRAPPER_DIR')
+  regrid_conda_env=os.getenv('REGRID_CONDA_ENV')
+  
 
   dcTaskEnv={
     'FCST_LENGTH': f'{fcst_length}',
     'MESH_NAME': f'{mesh_name}',
     'DATADIR_CHEM': f'{datadir_chem}',
-    'CREATE_OWN_DATA' : f'{create_own_data}' }
+    'CREATE_OWN_DATA' : f'{create_own_data}',
+    'REALTIME' : f'{realtime}',
+    'REGRID_WRAPPER_DIR' : f'{regrid_wrapper_dir}',
+    'REGRID_CONDA_ENV' : f'{regrid_conda_env}' }
 #
   if realtime.upper() == "TRUE":
      rave_dir='/public/data/grids/nesdis/3km_fire_emissions/'
   else:
-     rave_dir=datadir_chem + '/emissions/RAVE/'
+     if len(rave_dir) > 1: 
+        rave_dir=rave_dir
+     else:
+        rave_dir=datadir_chem + '/emissions/RAVE/'
 
   dcTaskEnv['RAVE_DIR']=f'{rave_dir}'
   metatask=True

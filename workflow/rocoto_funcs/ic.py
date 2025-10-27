@@ -11,9 +11,11 @@ def ic(xmlFile, expdir, do_ensemble=False):
     # Task-specific EnVars beyond the task_common_vars
     extrn_mdl_source = os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined')
     physics_suite = os.getenv('PHYSICS_SUITE', 'PHYSICS_SUITE_not_defined')
+    use_external_chem_ics=os.getenv('USE_EXTERNAL_CHEM_ICS','FALSE').upper()
     dcTaskEnv = {
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
         'PHYSICS_SUITE': f'{physics_suite}',
+        'USE_EXTERNAL_CHEM_ICS': f'{use_external_chem_ics}',
         'NSOIL_LEVELS': os.getenv('NSOIL_LEVELS', '9'),
     }
     if not do_ensemble:

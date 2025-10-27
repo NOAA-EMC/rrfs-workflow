@@ -14,12 +14,14 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
     ic_name_pattern = os.getenv('IC_EXTRN_MDL_NAME_PATTERN', 'NAME_PATTERN_not_defined')
     ic_name_pattern_b = os.getenv('IC_EXTRN_MDL_NAME_PATTERN_B', '')
     offset = os.getenv('IC_OFFSET', '3')
+    use_external_chem_ics=os.getenv('USE_EXTERNAL_CHEM_ICS','FALSE').upper()
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
         'TYPE': 'ic',
         'SOURCE_BASEDIR': f'<cyclestr offset="-{offset}:00:00">{ic_source_basedir}</cyclestr>',
         'NAME_PATTERN': f'<cyclestr offset="-{offset}:00:00">{ic_name_pattern}</cyclestr>',
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
+        'USE_EXTERNAL_CHEM_ICS' : f'{use_external_chem_ics}',
         'OFFSET': f'{offset}',
     }
     #

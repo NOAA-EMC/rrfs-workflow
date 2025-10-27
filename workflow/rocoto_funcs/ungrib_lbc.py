@@ -18,6 +18,8 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     lbc_name_pattern_b = os.getenv('LBC_EXTRN_MDL_NAME_PATTERN_B', '')
     lbc_ungrib_group_total_num = int(os.getenv('LBC_UNGRIB_GROUP_TOTAL_NUM', '1'))
     group_indices = ''.join(f'{i:02d} ' for i in range(1, int(lbc_ungrib_group_total_num) + 1)).strip()
+    use_external_chem_lbcs=os.getenv('USE_EXTERNAL_CHEM_LBCS','FALSE').upper()
+    use_external_chem_ics=os.getenv('USE_EXTERNAL_CHEM_ICS','FALSE').upper()
 
 # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
@@ -25,6 +27,8 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
         'SOURCE_BASEDIR': f'<cyclestr offset="-{offset}:00:00">{lbc_source_basedir}</cyclestr>',
         'NAME_PATTERN': f'<cyclestr offset="-{offset}:00:00">{lbc_name_pattern}</cyclestr>',
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
+        'USE_EXTERNAL_CHEM_LBCS' : f'{use_external_chem_lbcs}',
+        'USE_EXTERNAL_CHEM_ICS' : f'{use_external_chem_ics}',
         'OFFSET': f'{offset}',
         'LENGTH': f'{length}',
         'INTERVAL': f'{interval}',

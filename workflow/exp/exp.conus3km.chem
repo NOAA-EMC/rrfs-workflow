@@ -13,14 +13,14 @@ export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
 #
 export CREATE_OWN_DATA=true
-export DO_CHEMISTRY=true
-export DO_SMOKE_RETRO=true
-export DO_SMOKE_FCST=false
 export DO_SMOKE=true 
+export EBB_DCYCLE=1
 export DO_ANTHRO=false
 export DO_POLLEN=false
 export DO_DUST=false
 export DO_RWC=false
+export USE_EXTERNAL_CHEM_LBCS=true
+export USE_EXTERNAL_CHEM_ICS=false
 #
 export ZETA_LEVELS="L60.txt"
 #
@@ -58,12 +58,12 @@ export HISTORY_INTERVAL=1
 export MPASSIT_GROUP_TOTAL_NUM=12 # One group per 2 output files
 export UPP_GROUP_TOTAL_NUM=2 # ?? For cheMPAS-Fire?
 
-export IC_OFFSET=6
-export LBC_OFFSET=6
+export IC_OFFSET=0
+export LBC_OFFSET=0
 export LBC_LENGTH=24
 export LBC_INTERVAL=3
-export LBC_UNGRIB_GROUP_TOTAL_NUM=2
-export LBC_GROUP_TOTAL_NUM=2
+export LBC_UNGRIB_GROUP_TOTAL_NUM=1
+export LBC_GROUP_TOTAL_NUM=1
 
 export RETRO_PERIOD="2024052700-2024052800"
 export CYCLEDEF_IC_STEP_HRS=24  # do ic jobs every step hours
@@ -88,8 +88,6 @@ export NODES_JEDIVAR="<nodes>80:ppn=10</nodes>"
 export NODES_PREP_CHEM="<nodes>1:ppn=20</nodes>"
 export NODES_PREP_CHEM_ICBC="<nodes>1:ppn=1</nodes>"
 #
-export PARTITION_PREP_CHEM="bigmem"
-export PARTITION_PREP_CHEM_ICBC="bigmem"
 export MEMORY_PREP_CHEM="200G"
 export MEMORY_PREP_CHEM_ICBC="200G"
 #
@@ -119,9 +117,13 @@ case ${MACHINE} in
     export OBSPATH="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
     export OBSPATH_NSSLMOSIAC="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/reflectivity"
     export CHEMPATH="/scratch4/BMC/acomp/cheMPAS-Fire/input"
+    export REGRID_WRAPPER_DIR="/scratch4/BMC/acomp/Sudheer/Fire-nest/RRFS-SD/Tools/regrid-wrapper"
+    export REGRID_CONDA_ENV="/scratch3/BMC/acomp/Sudheer/anaconda3/envs/regrid-wrapper"
     export ACCOUNT="acomp"
     export QUEUE="batch"
     export PARTITION="hera"
+    export PARTITION_PREP_CHEM="bigmem"
+    export PARTITION_PREP_CHEM_ICBC="bigmem"
     ;;
   "ursa")
     export IC_EXTRN_MDL_BASEDIR="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/GFS"
@@ -129,9 +131,13 @@ case ${MACHINE} in
     export OBSPATH="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
     export OBSPATH_NSSLMOSIAC="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/reflectivity"
     export CHEMPATH="/scratch4/BMC/acomp/cheMPAS-Fire/input"
+    export REGRID_WRAPPER_DIR="/scratch4/BMC/acomp/Sudheer/Fire-nest/RRFS-SD/Tools/regrid-wrapper"
+    export REGRID_CONDA_ENV="/scratch3/BMC/acomp/Sudheer/anaconda3/envs/regrid-wrapper"
     export ACCOUNT="acomp"
     export QUEUE="batch"
     export PARTITION="u1-compute"
+    export PARTITION_PREP_CHEM="u1-compute"
+    export PARTITION_PREP_CHEM_ICBC="u1-compute"
     ;;
   "jet")
     export IC_EXTRN_MDL_BASEDIR="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/GFS"
@@ -142,6 +148,8 @@ case ${MACHINE} in
     export ACCOUNT="rtwbl"
     export QUEUE="batch"
     export PARTITION="kjet"
+    export PARTITION_PREP_CHEM="bigmem"
+    export PARTITION_PREP_CHEM_ICBC="bigmem"
     ;;
   "orion"|"hercules")
     export IC_EXTRN_MDL_BASEDIR="/work2/noaa/wrfruc/RRFS2_RETRO_DATA/May2024/GFS"

@@ -24,7 +24,15 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     history_interval = os.getenv('HISTORY_INTERVAL', '1')
     restart_interval = os.getenv('RESTART_INTERVAL', '9999')
     physics_suite = os.getenv('PHYSICS_SUITE', 'PHYSICS_SUITE_not_defined')
-    do_chemistry = os.getenv("DO_CHEMISTRY","false").upper()
+    do_smoke=os.getenv('DO_SMOKE','false').upper()
+    ebb_dcycle=os.getenv('EBB_DCYCLE',0)
+    do_anthro=os.getenv('DO_ANTHRO','false').upper()
+    do_pollen=os.getenv('DO_POLLEN','false').upper()
+    do_dust=os.getenv('DO_DUST','false').upper()
+    do_rwc=os.getenv('DO_RWC','false').upper()
+    do_chemistry='FALSE'
+    if do_anthro == 'TRUE' or do_pollen == 'TRUE' or do_dust == 'TRUE' or do_rwc == 'TRUE' or do_smoke == 'TRUE':
+       do_chemistry='TRUE'   
     dcTaskEnv = {
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
         'FCST_LENGTH': f'{fcst_length}',
