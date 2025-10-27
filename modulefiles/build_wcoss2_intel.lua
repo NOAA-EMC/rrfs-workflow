@@ -17,9 +17,6 @@ local cray_lib_path=os.getenv("CRAY_LD_LIBRARY_PATH") or ""
 prepend_path("LD_LIBRARY_PATH", cray_lib_path)
 load(pathJoin("cmake", os.getenv("cmake_ver")))
 
-prepend_path("MODULEPATH", os.getenv("modulepath_compiler"))
-prepend_path("MODULEPATH", os.getenv("modulepath_mpi"))
-
 load(pathJoin("jasper", os.getenv("jasper_ver")))
 load(pathJoin("zlib", os.getenv("zlib_ver")))
 load(pathJoin("libpng", os.getenv("libpng_ver")))
