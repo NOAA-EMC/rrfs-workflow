@@ -803,17 +803,17 @@ fi
 # set coefficient under crtm_coeffs_path='./crtm_coeffs/',
 #-----------------------------------------------------------------------
 #
-emiscoef_IRwater=${FIX_CRTM}/Nalli.IRwater.EmisCoeff.bin
-emiscoef_IRice=${FIX_CRTM}/NPOESS.IRice.EmisCoeff.bin
-emiscoef_IRland=${FIX_CRTM}/NPOESS.IRland.EmisCoeff.bin
-emiscoef_IRsnow=${FIX_CRTM}/NPOESS.IRsnow.EmisCoeff.bin
-emiscoef_VISice=${FIX_CRTM}/NPOESS.VISice.EmisCoeff.bin
-emiscoef_VISland=${FIX_CRTM}/NPOESS.VISland.EmisCoeff.bin
-emiscoef_VISsnow=${FIX_CRTM}/NPOESS.VISsnow.EmisCoeff.bin
-emiscoef_VISwater=${FIX_CRTM}/NPOESS.VISwater.EmisCoeff.bin
-emiscoef_MWwater=${FIX_CRTM}/FASTEM6.MWwater.EmisCoeff.bin
-aercoef=${FIX_CRTM}/AerosolCoeff.bin
-cldcoef=${FIX_CRTM}/CloudCoeff.bin
+emiscoef_IRwater=${CRTM_FIX}/Nalli.IRwater.EmisCoeff.bin
+emiscoef_IRice=${CRTM_FIX}/NPOESS.IRice.EmisCoeff.bin
+emiscoef_IRland=${CRTM_FIX}/NPOESS.IRland.EmisCoeff.bin
+emiscoef_IRsnow=${CRTM_FIX}/NPOESS.IRsnow.EmisCoeff.bin
+emiscoef_VISice=${CRTM_FIX}/NPOESS.VISice.EmisCoeff.bin
+emiscoef_VISland=${CRTM_FIX}/NPOESS.VISland.EmisCoeff.bin
+emiscoef_VISsnow=${CRTM_FIX}/NPOESS.VISsnow.EmisCoeff.bin
+emiscoef_VISwater=${CRTM_FIX}/NPOESS.VISwater.EmisCoeff.bin
+emiscoef_MWwater=${CRTM_FIX}/FASTEM6.MWwater.EmisCoeff.bin
+aercoef=${CRTM_FIX}/AerosolCoeff.bin
+cldcoef=${CRTM_FIX}/CloudCoeff.bin
 
 mkdir -p crtm_coeffs
 ln -s ${emiscoef_IRwater} ./crtm_coeffs/Nalli.IRwater.EmisCoeff.bin
@@ -830,8 +830,8 @@ ln -s $cldcoef  ./crtm_coeffs/CloudCoeff.bin
 
 # Copy CRTM coefficient files based on entries in satinfo file
 for file in $(awk '{if($1!~"!"){print $1}}' ./satinfo | sort | uniq) ;do
-   ln -s ${FIX_CRTM}/${file}.SpcCoeff.bin ./crtm_coeffs/.
-   ln -s ${FIX_CRTM}/${file}.TauCoeff.bin ./crtm_coeffs/.
+   ln -s ${CRTM_FIX}/${file}.SpcCoeff.bin ./crtm_coeffs/.
+   ln -s ${CRTM_FIX}/${file}.TauCoeff.bin ./crtm_coeffs/.
 done
 
 #-----------------------------------------------------------------------
