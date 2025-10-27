@@ -50,7 +50,7 @@ case ${task_id} in
     else
       module load py-jinja2 py-matplotlib py-cartopy py-netcdf4
     fi
-    export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOMErrfs}/sorc/RDASApp/build/lib64
+    export LD_LIBRARY_PATH=${HOMErrfs}/sorc/RDASApp/build/lib64:${LD_LIBRARY_PATH}
     ;;
   ungrib)
     module purge
@@ -66,13 +66,13 @@ case ${task_id} in
     module purge
     module use "${HOMErrfs}/sorc/RDASApp/modulefiles"
     module load "RDAS/${MACHINE}.intel"
-    export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOMErrfs}/sorc/RDASApp/build/lib64
+    export LD_LIBRARY_PATH=${HOMErrfs}/sorc/RDASApp/build/lib64:${LD_LIBRARY_PATH}
     ;;
   ioda_mrms_refl)
     module purge
     module use "${HOMErrfs}/sorc/RDASApp/modulefiles"
     module load "RDAS/${MACHINE}.intel"
-    export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOMErrfs}/sorc/RDASApp/build/lib64
+    export LD_LIBRARY_PATH=${HOMErrfs}/sorc/RDASApp/build/lib64:${LD_LIBRARY_PATH}
     ;;
   mpassit)
     module purge
@@ -100,11 +100,11 @@ case ${task_id} in
     module purge
     module use "${HOMErrfs}/sorc/RRFS_UTILS/modulefiles"
     module load "build_${MACHINE}_intel"
+    module load "rrfs/${MACHINE}.intel"
     ;;
   ensmean)
     module purge
-    module use "${HOMErrfs}/sorc/RRFS_UTILS/modulefiles"
-    module load "build_${MACHINE}_intel"
+    module load "rrfs/${MACHINE}.intel"
     module load nco
     ;;
   *)
@@ -118,6 +118,9 @@ fi
 module load "prod_util/${MACHINE}"
 module list
 set -x
+# workaround for err_exit, https://github.com/NOAA-EMC/NCEPLIBS-prod_util/pull/73
+export PATH=${HOMErrfs}/sorc/_workaround_:${PATH}
+
 # check whether prod_util is correctly loaded
 if [[ "${NDATE}" == "" ]]; then
   echo "FATAL ERROR: ${NDATE} is not defined; prod_util is not loaded!"

@@ -3612,10 +3612,10 @@ subroutine m_gsi_rfv3io_get_grid_specs(gsi_lats,gsi_lons,ierr)
   use netcdf, only: nf90_nowrite,nf90_inquire,nf90_inquire_dimension
   use netcdf, only: nf90_inquire_variable
   use m_mpimod, only: mype
-  use mod_fv3_lola, only: m_generate_anl_grid
+  use mod_fv3_lola, only: m_generate_anl_grid_fv3_regional,m_generate_anl_grid_mpas_regional
   use gridmod,  only:nsig,regional_time,regional_fhr,regional_fmin,aeta1_ll,aeta2_ll
   use gridmod,  only:nlon_regional,nlat_regional,eta1_ll,eta2_ll
-  use gridmod,  only:grid_type_fv3_regional,mpas_regional
+  use gridmod,  only:grid_type_fv3_regional,fv3_regional,mpas_regional
   use m_kinds, only: i_kind,r_kind
   use constants, only: half,zero
   use m_mpimod, only: gsi_mpi_comm_world,mpi_itype,mpi_rtype
@@ -3640,6 +3640,8 @@ subroutine m_gsi_rfv3io_get_grid_specs(gsi_lats,gsi_lons,ierr)
   character(len=180)  :: filename_layout
   integer(i_kind) :: ios
   real(r_kind) :: pmpas
+
+  if(fv3_regional) then
 
     coupler_res_filenam='coupler.res'
     grid_spec='fv3_grid_spec'
@@ -3792,16 +3794,6 @@ subroutine m_gsi_rfv3io_get_grid_specs(gsi_lats,gsi_lons,ierr)
     !if(mype==0)write(6,'(" nz=",i5)') nz
 
     nsig=nz-1
-    if(mpas_regional) then
-      nsig=0
-      open(11,file='mpas_pave.txt')
-      do
-        read(11,*,iostat=ios) pmpas
-        if(ios /= 0) exit
-        nsig = nsig + 1
-      enddo
-      close(11)
-    endif
 
 !!!    get ak,bk
 
@@ -3845,15 +3837,29 @@ subroutine m_gsi_rfv3io_get_grid_specs(gsi_lats,gsi_lons,ierr)
     !   enddo
     !endif
 
+  endif
+
+  if(mpas_regional) then
+    nsig=0
+    open(11,file='mpas_pave.txt')
+    do
+      read(11,*,iostat=ios) pmpas
+      if(ios /= 0) exit
+      nsig = nsig + 1
+    enddo
+    close(11)
+  endif
+
 !!!!!!! setup A grid and interpolation/rotation coeff.
-    call m_generate_anl_grid(nx,ny,grid_lon,grid_lont,grid_lat,grid_latt,gsi_lats,gsi_lons)
-
+  if(fv3_regional) then
+    call m_generate_anl_grid_fv3_regional(nx,ny,grid_lon,grid_lont,grid_lat,grid_latt,gsi_lats,gsi_lons)
     deallocate (grid_lon,grid_lat,grid_lont,grid_latt)
-    !deallocate (ak,bk,abk_fv3)
-
     deallocate(ny_layout_len,ny_layout_b,ny_layout_e)
-    !deallocate(aeta1_ll,aeta2_ll)
-    !deallocate(eta1_ll,eta2_ll)
+  endif
+
+  if(mpas_regional) then
+    call m_generate_anl_grid_mpas_regional(gsi_lats,gsi_lons)
+  endif
 
     return
 end subroutine m_gsi_rfv3io_get_grid_specs

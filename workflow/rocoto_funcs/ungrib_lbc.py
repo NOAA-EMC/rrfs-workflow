@@ -63,7 +63,8 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     dcTaskEnv['GROUP_INDEX'] = f'#group_index#'
     dcTaskEnv['GROUP_TOTAL_NUM'] = f'{lbc_ungrib_group_total_num}'
 
-# dependencies
+    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
+    # dependencies
     if extrn_mdl_source == "GFS_NCO":
         COMINgfs = os.getenv("COMINgfs", 'COMINgfs_not_defined')
         fpath = f'{COMINgfs}/gfs.@Y@m@d/@H/gfs.t@Hz.pgrb2.0p25.f{offset:>03}'

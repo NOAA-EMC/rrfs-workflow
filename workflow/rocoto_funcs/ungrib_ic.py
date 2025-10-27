@@ -43,6 +43,7 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
 <var name="gmem">{gmems}</var>'''
         meta_end = f'</metatask>\n'
 
+    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
     if extrn_mdl_source == "GFS_NCO":
         COMINgfs = os.getenv("COMINgfs", 'COMINgfs_not_defined')

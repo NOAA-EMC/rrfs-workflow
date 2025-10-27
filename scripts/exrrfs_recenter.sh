@@ -41,15 +41,19 @@ done
 #
 #-----------------------------------------------------------------------
 #
-controlfile="${UMBRELLA_PREP_CONTROL_IC_DATA}/${initial_file}"
-if [ -s "${controlfile}" ] ; then
-  ln -sf "${controlfile}"  ./mpasout_control.nc
-  ${cpreq} "${controlfile}"  ./mpasout_mean.nc
+controlfile_init="${UMBRELLA_PREP_CONTROL_IC_DATA}/init.nc"
+controlfile_mpasout="${UMBRELLA_PREP_CONTROL_IC_DATA}/mpasout.nc"
+if [ -s "${controlfile_init}" ] ; then
+  controlfile="${controlfile_init}"
+elif [ -s "${controlfile_mpasout}" ] ; then
+  controlfile="${controlfile_mpasout}"
 else
-  echo "Cannot find control background: ${controlfile}"
+  echo "Cannot find control background: ${controlfile_init} or ${controlfile_mpasout}"
   err_exit
 fi
 
+ln -sf "${controlfile}"  ./mpasout_control.nc
+${cpreq} "${controlfile}"  ./mpasout_mean.nc
 #
 # generate the namelist.ens
 #

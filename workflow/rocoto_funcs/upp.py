@@ -22,7 +22,8 @@ def upp(xmlFile, expdir, do_ensemble=False, do_ensmean_post=False):
         'HISTORY_INTERVAL': f'{history_interval}',
         'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycles}',
         'GROUP_TOTAL_NUM': f'{upp_group_total_num}',
-        'GROUP_INDEX': f'#group_index#'
+        'GROUP_INDEX': f'#group_index#',
+        'UPP_DOMAIN': os.getenv('UPP_DOMAIN', ''),
     }
 
     if not do_ensemble:
@@ -69,6 +70,7 @@ def upp(xmlFile, expdir, do_ensemble=False, do_ensmean_post=False):
 
     dcTaskEnv['MEMDIR'] = f'{memdir}'
 
+    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
     timedep = ""
     realtime = os.getenv("REALTIME", "false")

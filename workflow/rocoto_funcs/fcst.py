@@ -44,6 +44,8 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         'FCST_DT': os.getenv('FCST_DT', 'FCST_DT_not_defined'),
         'FCST_SUBSteps': os.getenv('FCST_SUBSTEPS', 'FCST_SUBSTEPS_not_defined'),
         'FCST_RADT': os.getenv('FCST_RADT', 'FCST_RADT_not_defined'),
+        'FCST_PIO_NUM_IOTASKS': os.getenv('FCST_PIO_NUM_IOTASKS', 'FCST_PIO_NUM_IOTASKS_not_defined'),
+        'FCST_PIO_STRIDE': os.getenv('FCST_PIO_STRIDE', 'FCST_PIO_STRIDE_not_defined'),
     }
     if do_spinup:
         dcTaskEnv['DO_SPINUP'] = "TRUE"
@@ -72,6 +74,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
 </metatask>\n'
         ensindexstr = "_m#ens_index#"
 
+    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
     timedep = ""
     if do_chemistry.upper() == "TRUE":
@@ -86,6 +89,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
 
     jedidep = ""
+    recenterdep = ""
     if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
         if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
             jedidep = f'<taskdep task="getkf_solver"/>'
@@ -93,6 +97,10 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
             jedidep = f'<taskdep task="jedivar_spinup"/>'
         else:
             jedidep = f'<taskdep task="jedivar"/>'
+    else:
+        if os.getenv("DO_RECENTER", "FALSE").upper() == "TRUE":
+            if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
+                recenterdep = f'<taskdep task="recenter"/>'
 
     prep_ic_dep = f'<taskdep task="prep_ic{ensindexstr}"/>'
     if do_spinup:
@@ -106,6 +114,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     {jedidep}
     {chemdep1}
     {chemdep2}
+    {recenterdep}
   </and>
   </dependency>'''
 
