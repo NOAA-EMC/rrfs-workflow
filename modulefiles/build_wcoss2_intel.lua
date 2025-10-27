@@ -51,16 +51,6 @@ load(pathJoin("w3emc", os.getenv("w3emc_ver")))
 load(pathJoin("w3nco", os.getenv("w3nco_ver")))
 load(pathJoin("nemsio", os.getenv("nemsio_ver")))
 
-
---prepend_path("MODULEPATH","/u/wen.meng/noscrub/ncep_post/g2tmpl/libs/modulefiles/compiler/intel/19.1.3.304")
---prepend_path("MODULEPATH","/lfs/h2/emc/eib/save/hang.lei/forgdit/nco_wcoss2/install2/modulefiles/compiler/intel/19.1.3.304")
-
---setenv("FMS_ROOT","/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/lib/fms.2024.01/build")
---setenv("FMS_VERSION","2024.01")
-
---setenv("FMS_ROOT","/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/lib/fms.ParallelStartup")
---setenv("FMS_VERSION","2023.02")
-
 setenv("CMAKE_C_COMPILER","cc")
 setenv("CMAKE_CXX_COMPILER","CC")
 setenv("CMAKE_Fortran_COMPILER","ftn")
