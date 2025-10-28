@@ -12,6 +12,8 @@ export EXPDIR=${OPSROOT}/exp/rrfs${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
 #
+# OPTIONS FOR cheMPAS-Fire
+#
 export CREATE_OWN_DATA=true
 export DO_SMOKE=true 
 export EBB_DCYCLE=1
@@ -21,6 +23,7 @@ export DO_DUST=true
 export DO_RWC=false
 export USE_EXTERNAL_CHEM_LBCS=true
 export USE_EXTERNAL_CHEM_ICS=false
+# export RAVE_DIR=/path/to/your/rave/dir/ # (files expected in ${RAVE_DIR}/raw and will be placed in ${RAVE_DIR}/processed/${MESH_NAME}-RAVE-${YYYYMMDDHH}.nc 
 #
 #
 #
