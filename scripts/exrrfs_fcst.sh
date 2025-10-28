@@ -44,6 +44,7 @@ mkdir -p graphinfo stream_list
 ln -snf "${FIXrrfs}"/graphinfo/* graphinfo/
 ln -snf "${FIXrrfs}/stream_list/${PHYSICS_SUITE}"/* stream_list/
 
+
 # generate the namelist on the fly
 # do_restart already defined in the above
 start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S) 
@@ -79,6 +80,11 @@ if [[ ${DO_CHEMISTRY} == "TRUE" ]] ; then
    num_chem=0
    # If any chemistry is activated, cat in the namelist
    cat "${PARMrrfs}/chemistry/namelist.atmosphere" >> namelist.atmosphere
+   # First copy in the stream list so we don't overrite the link - 
+   rm -f ./stream_list/stream_list.atmosphere.output
+   cp "${FIXrrfs}/stream_list/${PHYSICS_SUITE}"/stream_list.atmosphere.output ./stream_list/stream_list.atmosphere.output 
+   #Cat in the chemistry stream list
+   cat "${FIXrrfs}/stream_list/chemistry/stream_list.atmosphere.output" >> ./stream_list/stream_list.atmosphere.output
 #
    # Biogenic/Pollen
    if [[ -r "${UMBRELLA_PREP_CHEM_DATA}/bio.init.nc" ]]; then
@@ -124,6 +130,8 @@ if [[ ${DO_CHEMISTRY} == "TRUE" ]] ; then
    # Smoke/Wildfire
    nfirefiles=`ls ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.* | wc -l`
    if [[ ${nfirefiles} -gt 0 ]]; then
+      #
+      cat "${FIXrrfs}/stream_list/chemistry/stream_list.atmosphere.smoke.output" >> ./stream_list/stream_list.atmosphere.output
       #
       if [[ "${EBB_DCYCLE}" -eq 1 ]]; then
          sed -i '$e cat "${PARMrrfs}"/chemistry/streams.atmosphere.smoke_retro' streams.atmosphere

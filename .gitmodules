@@ -6,7 +6,7 @@
 [submodule "sorc/MPAS-Model"]
 	path = sorc/MPAS-Model
 	url = https://github.com/cheMPAS-Fire/MPAS-Model.git
-        branch = cheMPAS-Fire_v8.3.1
+        branch = chem/develop
         ignore = all
 [submodule "sorc/RDASApp"]
 	path = sorc/RDASApp

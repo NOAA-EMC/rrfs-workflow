@@ -86,13 +86,13 @@ export COLDSTART_CYCS="00"   # cycles to cold start from external models
 #
 export NODES_IC="<nodes>2:ppn=20</nodes>"
 export NODES_LBC="<nodes>2:ppn=20</nodes>"
-export NODES_PREP_CHEM="<nodes>1:ppn=20</nodes>"
-export NODES_PREP_CHEM_ICBC="<nodes>1:ppn=1</nodes>"
 export NODES_FCST="<nodes>4:ppn=20</nodes>"
 export NODES_MPASSIT="<nodes>2:ppn=20</nodes>"
 export NODES_UPP="<nodes>2:ppn=20</nodes>"
 export NODES_JEDIVAR="<nodes>4:ppn=20</nodes>"
 export NODES_IODA_MRMS_REFL="<nodes>2:ppn=20</nodes>"
+export NODES_PREP_CHEM="<nodes>1:ppn=20</nodes>"
+export NODES_PREP_CHEM_ICBC="<nodes>1:ppn=1</nodes>"
 #
 export MEMORY_PREP_CHEM="60G"
 export MEMORY_PREP_CHEM_ICBC="60G"
@@ -128,6 +128,12 @@ case ${MACHINE} in
     export ACCOUNT="acomp"
     export QUEUE="batch"
     export PARTITION="hera"
+    export PARTITION_PREP_CHEM="bigmem"
+    export PARTITION_PREP_CHEM_ICBC="bigmem"
+    export NODES_PREP_CHEM="<nodes>1:ppn=20</nodes>"
+    export NODES_PREP_CHEM_ICBC="<nodes>1:ppn=1</nodes>"
+    export MEMORY_PREP_CHEM="200G"
+    export MEMORY_PREP_CHEM_ICBC="200G"
     ;;
   "ursa")
     export IC_EXTRN_MDL_BASEDIR="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/GFS"
@@ -140,6 +146,12 @@ case ${MACHINE} in
     export ACCOUNT="acomp"
     export QUEUE="batch"
     export PARTITION="u1-compute"
+    export PARTITION_PREP_CHEM="u1-compute"
+    export PARTITION_PREP_CHEM_ICBC="u1-compute"
+    export NODES_PREP_CHEM="<nodes>1:ppn=150</nodes>"
+    export NODES_PREP_CHEM_ICBC="<nodes>1:ppn=1</nodes>"
+    export MEMORY_PREP_CHEM="200G"
+    export MEMORY_PREP_CHEM_ICBC="200G"
     ;;
   "jet")
     export IC_EXTRN_MDL_BASEDIR="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/GFS"
@@ -152,6 +164,12 @@ case ${MACHINE} in
     export ACCOUNT="rtwbl"
     export QUEUE="batch"
     export PARTITION="xjet"
+    export PARTITION_PREP_CHEM="bigmem"
+    export PARTITION_PREP_CHEM_ICBC="bigmem"
+    export NODES_PREP_CHEM="<nodes>1:ppn=20</nodes>"
+    export NODES_PREP_CHEM_ICBC="<nodes>1:ppn=1</nodes>"
+    export MEMORY_PREP_CHEM="200G"
+    export MEMORY_PREP_CHEM_ICBC="200G"
     ;;
   "orion"|"hercules")
     export IC_EXTRN_MDL_BASEDIR="/work2/noaa/wrfruc/RRFS2_RETRO_DATA/May2024/GFS"
@@ -175,6 +193,10 @@ case ${MACHINE} in
     export QUEUE="normal"
     export PARTITION="batch"
     export CLUSTER="c6"
+    export NODES_PREP_CHEM="<nodes>1:ppn=150</nodes>"
+    export NODES_PREP_CHEM_ICBC="<nodes>1:ppn=1</nodes>"
+    export MEMORY_PREP_CHEM="200G"
+    export MEMORY_PREP_CHEM_ICBC="200G"
     ;;
   "wcoss2")
     export IC_EXTRN_MDL_BASEDIR="/lfs/h2/emc/lam/noscrub/RRFS2_RETRO_DATA/May2024/GFS"

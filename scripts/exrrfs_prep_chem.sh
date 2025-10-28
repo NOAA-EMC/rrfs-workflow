@@ -118,6 +118,8 @@ VINTERP_SCRIPT=${HOMErrfs}/scripts/exrrfs_vinterp_chem.py
 INTERP_WEIGHTS_DIR=${DATADIR_CHEM}/grids/interpolation_weights/  
 #
 # Set a few things for the CONDA environment
+
+
 export REGRID_WRAPPER_LOG_DIR=${DATA}
 regrid_wrapper_dir=${REGRID_WRAPPER_DIR} #/lfs5/BMC/rtwbl/rap-chem/mpas_rt/working/ben_interp/regrid-wrapper/
 PYTHONDIR=${regrid_wrapper_dir}/src
@@ -134,9 +136,8 @@ if [[ "${EMIS_SECTOR_TO_PROCESS}" == "smoke" ]]; then
 # Remove any old files
 rm -f ${UMBRELLA_PREP_CHEM_DATA}/smoke.init*nc
 #
-# TODO - check for REALTIME
 if [[ ! ${RAVE_DIR} ]]; then
-RAVE_INPUTDIR=/public/data/grids/nesdis/3km_fire_emissions/ # JLS, TODO, should come from a config/namelist
+RAVE_INPUTDIR=/public/data/grids/nesdis/3km_fire_emissions/
 else
 RAVE_INPUTDIR=${RAVE_DIR}/raw/
 fi
@@ -149,6 +150,7 @@ RAVE_OUTPUTDIR=${DATA}
 ECO_OUTPUTDIR=${DATA}
 FMC_OUTPUTDIR=${DATA}
 else
+# TODO, check for pregenerated data
 RAVE_OUTPUTDIR=${RAVE_DIR}/processed/
 ECO_OUTPUTDIR=${DATADIR_CHEM}/aux/ecoregion/processed/
 FMC_OUTPUTDIR=${DATADIR_CHEM}/aux/FMC/processed/${YYYY}/${MM}/
@@ -158,9 +160,6 @@ dummyRAVE=${RAVE_DIR}/processed/RAVE.dummy.${MESH_NAME}.nc
 ${MKDIR} -p ${RAVE_OUTPUTDIR}
 ${MKDIR} -p ${ECO_OUTPUTDIR}
 ${MKDIR} -p ${FMC_OUTPUTDIR}
-#
-# Create a temporary directory to process the emissions so we don't mess with the raw data
-#
 #
 srun python -u ${SCRIPT} \
                "RAVE" \
