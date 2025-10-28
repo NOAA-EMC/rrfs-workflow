@@ -90,13 +90,6 @@ if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
   export ENSMEM_INDX=${MEMBER_NAME}
   export mem_num=m$(echo "${ENSMEM_INDX}")
   export COMOUT="${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/${mem_num}/lbcs)}"
-elif [ $WGF = "firewx" ]; then
-  export ENSMEM_INDX=""
-  export COMOUT="${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/lbcs)}"
-  export firewx_input_dir="${COMrrfs}/firewx_input"
-# Fire weather nest location from NAM
-  export COMINnam=${COMINnam:-$(compath.py nam/${nam_ver})}
-
 else
   export ENSMEM_INDX=""
   export COMOUT="${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/lbcs)}"
@@ -104,8 +97,13 @@ else
   if [ -d ${umbrella_lbcops_data} ] && [ ${BCGRP} = "00" ]; then
     mv ${umbrella_lbcops_data} ${umbrella_lbcops_data}_$$
   fi
+  mkdir -p ${umbrella_lbcops_data}
+  if [ $WGF = "firewx" ]; then
+    export firewx_input_dir="${COMrrfs}/firewx_input"
+    export COMINnam=${COMINnam:-$(compath.py nam/${nam_ver})}
+  fi
 fi
-mkdir -p ${COMOUT} ${umbrella_lbcops_data}
+mkdir -p ${COMOUT}
 
 #-----------------------------------------------------------------------
 # Execute the script.

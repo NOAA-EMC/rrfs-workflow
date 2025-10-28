@@ -162,13 +162,9 @@ extrn_mdl_sysdir="${sysdir}"
 extrn_mdl_sysdir2="${sysdir2}"
 export extrn_mdl_source_dir="${extrn_mdl_sysdir}"
 export extrn_mdl_source_dir2="${extrn_mdl_sysdir2}"
-
 extrn_mdl_lbc_spec_fhrs="( "$( printf "\"%s\" " "${lbc_spec_fhrs[@]}" )")"
-
 extrn_mdl_fns_on_disk="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
-
 extrn_mdl_fns_on_disk2="( "$( printf "\"%s\" " "${fns_on_disk2[@]}" )")"
-
 export use_user_staged_extrn_files="FALSE"
 export extrn_mdl_staging_dir="${DATA}"
 
@@ -225,10 +221,8 @@ fi
 #-----------------------------------------------------------------------
 #
 num_files_to_copy="${#fns_on_disk[@]}"
-
 prefix="${extrn_mdl_source_dir}/"
 extrn_mdl_fps_on_disk=( "${fns_on_disk[@]/#/$prefix}" )
-
 prefix2="${extrn_mdl_source_dir2}"
 extrn_mdl_fps_on_disk2=( "${fns_on_disk2[@]/#/$prefix2}" )
 #
@@ -348,12 +342,17 @@ if [ ${extrn_mdl_name} != GEFS ] ; then
  else
    # 3 second of file system refreshment
    sleep 3
-   while [ $(ls ${umbrella_lbcops_data} |grep -v cptmp| wc -l) -lt 97 ]; do
+   if [ ${WGF} = firewx ]; then
+     # case for firewx
+     t_file_ct=36
+   else
+     # case for det
+     t_file_ct=97
+   fi
+   while [ $(ls ${umbrella_lbcops_data} |grep -v cptmp| wc -l) -lt ${t_file_ct} ]; do
      sleep 66
    done
  fi
- # ln -sf -t ${DATA} ${extrn_mdl_fps_on_disk[@]}
- # ln -sf -t ${DATA} ${extrn_mdl_fns_on_disk[@]}
  for file_to_link in ${umbrella_lbcops_data}/*; do
    ln -sf -t ${DATA} ${file_to_link}
  done

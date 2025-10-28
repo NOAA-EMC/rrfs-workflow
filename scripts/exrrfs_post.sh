@@ -393,9 +393,11 @@ net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
 if [ ${DO_ENSFCST} = "TRUE" ]; then
   prslev=${DATA}/${net4}.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
   natlev=${DATA}/${net4}.t${cyc}z.${mem_num}.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
+  nbmfld=${DATA}/${net4}.t${cyc}z.${mem_num}.nbmfld.${gridspacing}.f${fhr}.${gridname}.grib2
 else
   prslev=${DATA}/${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
   natlev=${DATA}/${net4}.t${cyc}z.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
+  nbmfld=${DATA}/${net4}.t${cyc}z.nbmfld.${gridspacing}.f${fhr}.${gridname}.grib2
 fi
 
 if [ -f PRSLEV.GrbF${post_fhr} ]; then
@@ -454,6 +456,10 @@ fi # PRSLEV test
 if [ -f NATLEV.GrbF${post_fhr} ]; then
   wgrib2 NATLEV.GrbF${post_fhr} -set center 7 -grib ${natlev} >>$pgmout 2>>errfile
 fi
+
+if [ -f NBMFLD.GrbF${post_fhr} ]; then
+  wgrib2 NBMFLD.GrbF${post_fhr} -set center 7 -grib ${nbmfld} >>$pgmout 2>>errfile
+fi
 #
 #-----------------------------------------------------------------------
 #   copy post-processed grib2 files to COMOUT
@@ -464,6 +470,11 @@ cpreq -p ${prslev} ${COMOUT}
 if [[ -f ${natlev} ]]; then
   cpreq -p ${natlev} ${COMOUT}
 fi
+# NBMFLD file is only generated for RRFS and REFS
+if [[ -f ${nbmfld} ]]; then
+  cpreq -p ${nbmfld} ${COMOUT}
+fi
+
 # Only one latlons_corners file per cycle is needed in COMOUT - make this change later
 if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
   cpreq -p latlons_corners.txt.f${fhr} ${COMOUT}

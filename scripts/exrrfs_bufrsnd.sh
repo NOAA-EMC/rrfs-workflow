@@ -178,8 +178,8 @@ do
   LOGFILE=log.atm.f0${fhr}
   if [ $model = "FV3S" ]; then
     if [ ${nsout_min} -ge 60 ]; then
-      OUTFILDYN=dynf0${fhr}.nc
-      OUTFILPHYS=phyf0${fhr}.nc
+      OUTFILDYN=${shared_forecast_output_data}/dynf0${fhr}.nc
+      OUTFILPHYS=${shared_forecast_output_data}/phyf0${fhr}.nc
       LOGFILE=log.atm.f0${fhr}
     else
       if [ ${fhr} -eq 00 ]; then
