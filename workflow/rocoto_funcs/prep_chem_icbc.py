@@ -18,14 +18,14 @@ def prep_chem_icbc(xmlFile, expdir,do_ensemble=False, do_spinup=False):
   realtime=os.getenv("REALTIME","false")
 
   # Task-specific EnVars beyond the task_common_vars
-  chempath=os.getenv('CHEMPATH','/lfs6/BMC/rtwbl/cheMPAS-Fire/input/')
+  datadir_chem=os.getenv('CHEMPATH','/lfs6/BMC/rtwbl/cheMPAS-Fire/input/')
   mesh_name=os.getenv('MESH_NAME','conus3km').lower()
   fcst_length=os.getenv('FCST_LENGTH','24')
 
   dcTaskEnv={
     'FCST_LENGTH': f'{fcst_length}',
     'MESH_NAME': f'{mesh_name}',
-    'CHEMPATH': f'{chempath}' }
+    'DATADIR_CHEM': f'{datadir_chem}' }
 #
 
   metatask=False
