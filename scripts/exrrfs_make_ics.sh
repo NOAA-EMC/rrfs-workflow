@@ -810,7 +810,8 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
   fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
   cp ${fixgriddir}/cold2warm_all.nc .
   export pgm1=fv3lam_pre_blending.exe
-  ${APRUN_PRE_BLENDING} ${EXECrrfs}/$pgm1 >>$pgmout 2>errfile
+. prep_step
+  ${APRUN_PRE_BLENDING} ${EXECrrfs}/$pgm1 >>$pgmout_pre_blending 2>errfile_pre_blending
   export err=$?; err_chk
   mv ${DATA}/cold2warm_all.nc ${shared_output_data}/.
 
