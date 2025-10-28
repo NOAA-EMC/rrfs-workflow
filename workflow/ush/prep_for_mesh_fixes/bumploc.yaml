@@ -1,0 +1,42 @@
+geometry:
+  nml_file: "namelist.atmosphere"
+  streams_file: "streams.atmosphere"
+  deallocate non-da fields: true
+  bump vunit: "modellevel" # modellevel, height, logp
+background:
+  state variables: [water_vapor_mixing_ratio_wrt_moist_air, air_pressure_at_surface, air_temperature, northward_wind, eastward_wind]
+  filename: "init.nc"
+  date: '2024-05-06T00:00:00Z'
+
+background error:
+  covariance model: SABER
+
+  saber central block:
+    saber block name: BUMP_NICAS
+    calibration:
+      io:
+        files prefix: bumploc
+
+      drivers:
+        multivariate strategy: duplicated
+        compute nicas: true
+        write local nicas: true
+        #write nicas grids: true
+        internal dirac test: false 
+      model:
+        level for 2d variables: last
+      nicas:
+        resolution: 8.0
+        explicit length-scales: true
+        horizontal length-scale:
+          - groups: [common]
+            value: 401.0e3
+        vertical length-scale:
+          - groups: [common]
+            value: 11
+      output model files:
+      - parameter: nicas_norm
+        file:
+          filename: nicas_norm.nc
+          #date: '2024-05-06T00:00:00Z'
+          stream name: control

@@ -1,134 +1,155 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
 
+# shellcheck disable=SC1091
 source init.sh
 
+# --- Inputs and environment
 DEFAULT_FILE="../exp.setup"
 INPUT_FILE="${1:-$DEFAULT_FILE}"
 
-source $INPUT_FILE
+# shellcheck disable=SC1090
+source "$INPUT_FILE"
 
+# shellcheck disable=SC2154
 validated_yamls="${run_dir}/../../sorc/RDASApp/rrfs-test/validated_yamls"
-cd $validated_yamls
+cd "$validated_yamls" || exit 1
 
-# Define the basic configuration YAML
-basic_config="mpasjedi_hyb3denvar.yaml"
+# --- Configurations
+TEMPLATES_DIR="./templates"
+BASIC_CONFIG="mpasjedi_hyb3denvar.yaml"
+#BASIC_CONFIG="mpasjedi_3dvar.yaml"
+OBTYPE_DIR="$TEMPLATES_DIR/obtype_config"
+OUT="jedivar.yaml"
+DISTRO="RoundRobin"
+LENGTH=4
 
-# Which observation distribution to use? Halo or RoundRobin
-distribution="RoundRobin"
-
-# Analysis window length
-length=4
-
-# Define all observation type configurations
+# --- Observation type configs
 obtype_configs=(
-    # Phase 3 - ready (just don't use specificHumidity yet!)
+    # Upper-air conventional
     "adpupa_airTemperature_120.yaml"
-    #"adpupa_specificHumidity_120.yaml"
-    #"adpupa_winds_220.yaml"
-    "aircar_airTemperature_133.yaml"
-    #"aircar_specificHumidity_133.yaml"
-    #"aircar_winds_233.yaml"
-    #"aircft_airTemperature_130.yaml"
-    #"aircft_airTemperature_131.yaml"
-    #"aircft_airTemperature_134.yaml"
-    #"aircft_airTemperature_135.yaml"
-    #"aircft_specificHumidity_134.yaml"
-    #"aircft_winds_230.yaml"
-    #"aircft_winds_231.yaml"
-    #"aircft_winds_234.yaml"
-    #"aircft_winds_235.yaml"
-    #"msonet_airTemperature_188.yaml"
-    #"msonet_specificHumidity_188.yaml"
-    #"msonet_stationPressure_188.yaml"
+    "adpupa_airTemperature_132.yaml"
+    "adpupa_specificHumidity_120.yaml"
+    "adpupa_specificHumidity_132.yaml"
+    "adpupa_stationPressure_120.yaml"
+    "adpupa_winds_220.yaml"
+    "adpupa_winds_232.yaml"
 
-    # Phase 1 or 2 - not ready for MPAS-JEDI
-    #"adpsfc_airTemperature_181.yaml"
-    #"adpsfc_airTemperature_183.yaml"
-    #"adpsfc_airTemperature_187.yaml"
-    #"adpsfc_specificHumidity_181.yaml"
-    #"adpsfc_specificHumidity_183.yaml"
-    #"adpsfc_specificHumidity_187.yaml"
-    #"adpsfc_stationPressure_181.yaml"
-    #"adpsfc_stationPressure_187.yaml"
-    #"adpsfc_winds_281.yaml"
-    #"adpsfc_winds_284.yaml"
-    #"adpsfc_winds_287.yaml"
-    #"adpupa_airTemperature_132.yaml"
-    #"adpupa_specificHumidity_132.yaml"
-    #"adpupa_stationPressure_120.yaml"
-    #"msonet_winds_288.yaml"
-    #"proflr_winds_227.yaml"
-    #"rassda_airTemperature_126.yaml"
-    #"sfcshp_airTemperature_180.yaml"
-    #"sfcshp_airTemperature_182.yaml"
-    #"sfcshp_airTemperature_183.yaml"
-    #"sfcshp_specificHumidity_180.yaml"
-    #"sfcshp_specificHumidity_182.yaml"
-    #"sfcshp_specificHumidity_183.yaml"
-    #"sfcshp_stationPressure_180.yaml"
-    #"sfcshp_stationPressure_182.yaml"
-    #"sfcshp_winds_280.yaml"
-    #"sfcshp_winds_282.yaml"
-    #"sfcshp_winds_284.yaml"
-    #"vadwnd_winds_224.yaml"
+    "aircar_airTemperature_133.yaml"
+    "aircar_specificHumidity_133.yaml"
+    "aircar_winds_233.yaml"
+
+    "aircft_airTemperature_130.yaml"
+    "aircft_airTemperature_131.yaml"
+    "aircft_airTemperature_134.yaml"
+    "aircft_airTemperature_135.yaml"
+    "aircft_specificHumidity_134.yaml"
+    "aircft_winds_230.yaml"
+    "aircft_winds_231.yaml"
+    "aircft_winds_234.yaml"
+    "aircft_winds_235.yaml"
+
+    "proflr_winds_227.yaml"
+    "vadwnd_winds_224.yaml"
+    "rassda_airTemperature_126.yaml"
+
+    # Surface conventional
+    "adpsfc_airTemperature_181.yaml"
+    "adpsfc_airTemperature_183.yaml"
+    "adpsfc_airTemperature_187.yaml"
+    "adpsfc_specificHumidity_181.yaml"
+    "adpsfc_specificHumidity_183.yaml"
+    "adpsfc_specificHumidity_187.yaml"
+    "adpsfc_stationPressure_181.yaml"
+    "adpsfc_stationPressure_187.yaml"
+    "adpsfc_winds_281.yaml"
+    "adpsfc_winds_284.yaml"
+    "adpsfc_winds_287.yaml"
+
+    "msonet_airTemperature_188.yaml"
+    "msonet_specificHumidity_188.yaml"
+    "msonet_stationPressure_188.yaml"
+    "msonet_winds_288.yaml"
+
+    "sfcshp_airTemperature_180.yaml"
+    "sfcshp_airTemperature_182.yaml"
+    "sfcshp_airTemperature_183.yaml"
+    "sfcshp_specificHumidity_180.yaml"
+    "sfcshp_specificHumidity_182.yaml"
+    "sfcshp_specificHumidity_183.yaml"
+    "sfcshp_stationPressure_180.yaml"
+    "sfcshp_stationPressure_182.yaml"
+    "sfcshp_winds_280.yaml"
+    "sfcshp_winds_282.yaml"
+    "sfcshp_winds_284.yaml"
 )
 
-rm -f jedivar.yaml  # Remove any existing file
-rm -f temp.yaml  # Remove any existing file
+# --- Temp files (auto-removed)
+TMP_COMBINED=$(mktemp)
+trap 'rm -f "$TMP_COMBINED" "$TMP_COMBINED.out"' EXIT
+: > "$TMP_COMBINED"
 
-# Process each YAML file
-declare -A processed_groups
-
-for config in "${obtype_configs[@]}"; do
-    echo "Appending YAMLs for $config"
-    # Append YAML content
-    cat "./templates/obtype_config/$config" >> temp.yaml
+echo "Building combined obtype yaml into $TMP_COMBINED..."
+for ob in "${obtype_configs[@]}"; do
+  src="$OBTYPE_DIR/$ob"
+  if [[ -f "$src" ]]; then
+    echo "  appending $ob"
+    cat "$src" >> "$TMP_COMBINED"
+  else
+    echo "  WARNING: missing $src"
+  fi
 done
 
-# Copy the basic configuration yaml into the super yaml
-cp -p templates/basic_config/$basic_config ./jedivar.yaml
+cp "$TMP_COMBINED" "${TMP_COMBINED}.out"
 
-# Replace @OBSERVATIONS@ placeholder with the contents of the combined yaml
+# --- Build super-YAML
+cp "$TEMPLATES_DIR/basic_config/$BASIC_CONFIG" "$OUT"
+#cp "/scratch4/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/basic_config/$BASIC_CONFIG" "$OUT"
+
+# Replace @OBSERVATIONS@ with obtype block
 sed -i '/@OBSERVATIONS@/{
-    r ./'"temp.yaml"'
-    d
-}' ./jedivar.yaml
-rm -f temp.yaml # Clean up temporary yaml
+  r '"${TMP_COMBINED}.out"'
+  d
+}' "$OUT"
 
-# Temporary solution, replace actual date strings with placeholders
-date_pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z"
+# --- Placeholder substitutions
+date_pattern='[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z'
+
 sed -i -E \
-    -e "s/date: &analysisDate '$date_pattern'/date: &analysisDate '@analysisDate@'/" \
-    -e "s/begin: '$date_pattern'/begin: '@beginDate@'/" \
-    -e "s/seed_time: \"$date_pattern\"/seed_time: '@analysisDate@'/" \
-    -e "s/length: PT[0-9]H/length: 'PT${length}H'/" \
-    -e "s/@DISTRIBUTION@/$distribution/" \
-    ./jedivar.yaml
+  -e "s/date: \&analysisDate '${date_pattern}'/date: \&analysisDate '@analysisDate@'/" \
+  -e "s/begin: '${date_pattern}'/begin: '@beginDate@'/" \
+  -e "s/seed_time: \"${date_pattern}\"/seed_time: '@analysisDate@'/" \
+  -e "s/length: PT[0-9]H/length: 'PT${LENGTH}H'/" \
+  -e "0,/filename: mpasin.nc/s/filename: mpasin.nc/filename: '@analysisFile@'/" \
+  -e "0,/filename: mpasin.nc/s/filename: mpasin.nc/filename: '@backgroundFile@'/" \
+  -e "s/name: accept/name: @analysisUse@/" \
+  -e "s/@DISTRIBUTION@/${DISTRO}/" \
+  "$OUT"
 
-if [[ "${HYB_WGT_ENS}" == "0" ]] || [[ "${HYB_WGT_ENS}" == "0.0" ]]; then
-    # deletes all lines from "covariance model: ensemble" to "weight:".
-    sed -i '/covariance model: ensemble/,/weight:/d' jedivar.yaml
-    # deletes the lines "- covariance:" is directly followed by "value: "@HYB_WGT_ENS@""
-    sed -i '/- covariance:/ {N; /value: "@HYB_WGT_ENS@"/{d;}}' jedivar.yaml
-elif [[ "${HYB_WGT_STATIC}" == "0" ]] || [[ "${HYB_WGT_STATIC}" == "0.0" ]]; then
-    # deletes all lines from "covariance model: SABER" to "weight:".
-    sed -i '/covariance model: SABER/,/weight:/d' jedivar.yaml
-    # deletes the lines "- covariance:" is directly followed by "value: "@HYB_WGT_STATIC@""
-    sed -i '/- covariance:/ {N; /value: "@HYB_WGT_STATIC@"/{d;}}' jedivar.yaml
-fi
+if [[ ${BASIC_CONFIG} == "mpasjedi_hyb3denvar.yaml" ]]; then
+  # --- Hybrid weights
+  if [[ "${HYB_WGT_ENS}" == "0" || "${HYB_WGT_ENS}" == "0.0" ]]; then
+    sed -i '/covariance model: ensemble/,/weight:/d' "$OUT"
+    sed -i '/- covariance:/ {N; /value: "@HYB_WGT_ENS@"/d;}' "$OUT"
+  elif [[ "${HYB_WGT_STATIC}" == "0" || "${HYB_WGT_STATIC}" == "0.0" ]]; then
+    sed -i '/covariance model: SABER/,/weight:/d' "$OUT"
+    sed -i '/- covariance:/ {N; /value: "@HYB_WGT_STATIC@"/d;}' "$OUT"
+  fi
 
-sed -i \
+  sed -i \
     -e "s/@HYB_WGT_STATIC@/${HYB_WGT_STATIC}/" \
     -e "s/@HYB_WGT_ENS@/${HYB_WGT_ENS}/" \
-    ./jedivar.yaml
+    "$OUT"
+fi
 
-echo "Super YAML created in jedivar.yaml"
+# --- Copy to destinations
+echo "Super YAML created in $OUT"
+cp -p "$OUT" "${run_dir}/jedivar.yaml"
 
-# Save to where gen yamls was run
-cp -p jedivar.yaml ${run_dir}/.
-
-# Save to parm directory
-cp -p jedivar.yaml ${run_dir}/../../parm/.
+mkdir -p "${run_dir}/../../parm/baseline_jedi_yamls"
+cp -p "$OUT" "${run_dir}/../../parm/baseline_jedi_yamls/jedivar.yaml"
 
 echo "Generated jedivar.yaml to:"
-echo "   ${run_dir}/../../parm/jedivar.yaml"
+echo "   ${run_dir}/../../parm/baseline_jedi_yamls/jedivar.yaml"
+

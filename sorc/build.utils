@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -x
+date
+rundir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+HOMErrfs="$(dirname "$rundir")"
+
+source "${HOMErrfs}"/workflow/ush/detect_machine.sh
+source "${HOMErrfs}"/workflow/ush/init.sh
+
+cd "${HOMErrfs}/sorc/RRFS_UTILS" || exit
+rm -rf build/
+./build.sh
+
+mkdir -p "${HOMErrfs}/exec"
+EXEC="${HOMErrfs}/sorc/RRFS_UTILS/build/bin/gen_ensmean_recenter.exe"
+cp "${EXEC}" "${HOMErrfs}/exec/gen_ensmean_recenter.exe"
+EXEC="${HOMErrfs}/sorc/RRFS_UTILS/build/bin/process_NSSL_mosaic.exe"
+cp "${EXEC}" "${HOMErrfs}/exec/process_NSSL_mosaic.exe"
+
+exit 0

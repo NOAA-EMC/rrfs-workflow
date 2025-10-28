@@ -1,0 +1,20 @@
+#!/bin/bash
+# shellcheck disable=all
+
+if (( $# > 0 )); then
+  xmlfile="$1/rrfs.xml"
+else
+  xmlfile="rrfs.xml"
+fi
+
+echo -e "======= metatasks ======"
+grep "<metatask name=" ${xmlfile}
+
+echo -e "\n======= tasks ======"
+grep "<task name=" ${xmlfile}
+
+echo -e "\n======= cycledefs ======"
+grep "<cycledef group=" ${xmlfile}
+
+echo -e "\n======= any undefined variable? ======"
+grep "_not_defined" ${xmlfile}

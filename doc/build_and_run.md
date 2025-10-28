@@ -1,36 +1,18 @@
 # 1. Build
-If running on Orion/Hercules/Gaea, you will need to run `module load git-lfs` before cloning.    
-`git clone -b rrfs-mpas-jedi --recursive https://github.com/NOAA-EMC/rrfs-workflow.git`
-
-`cd rrfs-workflow/sorc` and run the following command to build the system:
 ```
-build.all
+which git-lfs 2>/dev/null ||  module load git-lfs
+GIT_LFS_SKIP_SMUDGE=1 git clone -b rrfs-mpas-jedi --recursive https://github.com/NOAA-EMC/rrfs-workflow
+cd rrfs-workflow/sorc
+./build.all
 ```
-
-The above script compiles WPS, MPAS, MPASSIT, RDASApp and UPP simultaneously.  
-Build logs for each component can be found under sorc/:
-```
-log.build.mpas
-log.build.rdas
-log.build.wps
-log.build.mpassit
-log.build.upp
-```
-
-Executables can be found under `exec/`:
-```
-ungrib.x
-init_atmosphere_model.x
-atmosphere_model.x
-mpasjedi_variational.x
-mpasjedi_enkf.x
-bufr2ioda.x
-mpassit.x
-upp.x
-```
+Note: 
+1. The first command is to make sure `git-lfs` is loaded as it is required for cloning RDASApp
+2. `GIT_LFS_SKIP_SMUDGE=1` is to skip downloading git-lfs binary data used by JEDI ctests, which is NOT needed by rrfs-workflow.  
+   This will avoid intermittent RDASApp checkout failures when JCSDA repositories exceed their LFS budget.
+3. If you run cold start forecasts only and don't need data assimilation, you can `vi build.all` and comment out this line `./build.rdas &> ./log.build.rdas 2>&1 &` before running `./build.all`
 
 # 2. Setup and run experiments:
-### 2.1. cat/copy and modify exp.setup
+### 2.1. copy and modify exp.setup
 ```
 cd workflow
 # find the target exp setup template file, copy it. Here we use exp.conus12km as an example:
@@ -47,7 +29,16 @@ Refer to [this guide](https://github.com/NOAA-EMC/rrfs-workflow/wiki/deploy-a-re
 ./setup_rocoto.py exp.conus12km
 ```   
     
-This Python script creates an experiment directory (i.e. `EXPDIR`), writes out a runtime version of `exp.setup` under EXPDIR, and  then copies runtime config files from `HOMErrfs/parm` to `EXPDIR`.
+This Python script creates an experiment directory (i.e. `EXPDIR`), writes out a runtime version of `exp.setup` under EXPDIR, and  then copies runtime config files to `EXPDIR`.  
+
+If you get errors when running `setup_rocoto.py`, it is mostly because the currently loaded Python version is lower than expected.  
+`setup_rocoto.py` requires **Python 3.8** or higher. The Default `/usr/bin/python` on Hera and Jet is version 3.6.8, which is too old.  
+You may load Python 3.11.11 included in rrfs-workflow by running
+```
+source ../workflow/ush/load_bokeh.sh
+```
+and then run `setup_rocoto.py` again.  
+If the above source command fails to load a working Python environment, it usually means there is a module conflict. You may do `module purge` and/or start over from a clean terminal window.
        
 ### 2.3 run and monitor experiments using rocoto commands
 
@@ -57,8 +48,16 @@ Use `./run_rocoto.sh` to run the experiment. Add an entry to your crontab simila
 ```
 */5 * * * * /home/role.rtrr/RRFS/1.0.1/conus3km/run_rocoto.sh
 ```
-Check the first few tasks/cycles to make sure everything works well. You may use [this handy rocoto tool](https://github.com/rrfsx/qrocoto/wiki/qrocoto) to check the workflow running status.
+Check the first few tasks/cycles to make sure everything works well. 
 
+The handy rocoto tool `qrocoto` is available under EXPDIR, run  
+```
+source qrocoto/load_qrocoto.sh
+```
+to load qrocoto to the current environment.  
+Now you can use all handy rocoto commands to run/check the workflow, such as `rstat`, `rrun`, etc  
+Check [README.md](../workflow/ush/qrocoto/README.md) or [detailed instructions](https://github.com/rrfsx/qrocoto/wiki/qrocoto) for more details.
+  
 ### note
 The workflow depends on the environmental variables. If your environment defines and exports rrfs-workflow-specific environmental variables in an unexpected way or your environment is corrupt, the setup step may fail or generate unexpected results. Check the `rrfs.xml` file before `run_rocoto.sh`. Starting from a fresh terminal or `module purge` usually solves the above problem.
 

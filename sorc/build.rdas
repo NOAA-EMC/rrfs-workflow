@@ -1,33 +1,80 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC1091
 set -x
 date
 rundir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 HOMErrfs="$(dirname "$rundir")"
 
-source ${HOMErrfs}/workflow/ush/detect_machine.sh
-source ${HOMErrfs}/workflow/ush/init.sh
+source "${HOMErrfs}/workflow/ush/detect_machine.sh"
+source "${HOMErrfs}/workflow/ush/init.sh"
+
+if [[ "${MACHINE}" == "derecho" ]]; then
+  #export GFORTRAN_CONVERT_UNIT='big_endian:101-200'
+  #export LMOD_TMOD_FIND_FIRST=yes
+  export COMPILER=gnu
+fi
+
+# get a clean copy of the same MPAS-Model as in the workflow
+# if RDASApp has a different version from the workflow
+# and users don't specify 'different_mpas' at the command line
+if [[ "$1" == "different_mpas" ]]; then
+  use_same_mpas=no
+else
+  use_same_mpas=yes
+fi
+cd "${HOMErrfs}/sorc/MPAS-Model" || exit 1
+remote_url=$(git remote get-url origin)
+hash_workflow=$(git rev-parse HEAD)
+cd "${HOMErrfs}/sorc/RDASApp/sorc/mpas" || exit 1
+hash_rdasapp=$(git rev-parse HEAD)
+if [[ "${hash_workflow}" != "${hash_rdasapp}" ]] && [[ "${use_same_mpas}" == "yes" ]]; then
+  cd "${HOMErrfs}/sorc/RDASApp/sorc" || exit 1
+  mv mpas "mpas.$(date +%s)" # save a copy of current RDASApp mpas
+  git clone "${remote_url}" mpas
+  cd "${HOMErrfs}/sorc/RDASApp/sorc/mpas" || exit 1
+  git checkout "${hash_workflow}"
+  git submodule update --init --recursive
+fi
 
 EXEC="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_variational.x"
 EXEC2="${HOMErrfs}/sorc/RDASApp/build/bin/bufr2ioda.x"
 EXEC3="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_enkf.x"
-cd ${HOMErrfs}/sorc/RDASApp
-cp ../_workaround_/Registry.xml sorc/mpas/src/core_atmosphere
-cp ../_workaround_/CMakeLists.txt sorc/ufo/src/ufo
-cp -r ../_workaround_/sfccorrected sorc/ufo/src/ufo/operators
-if [[ "${MACHINE}" == "gaea" ]]; then
-  cp ../_workaround_/TimeoffsetVariable.cpp sorc/iodaconv/src/bufr/BufrParser/Exports/Variables
-fi
-#cp ../_workaround_/hera.gnu.lua modulefiles/RDAS/hera.intel.lua #gge.tmp.debug: use GNU for jedivar on Hera
-rm -rf build/
-./build.sh -m MPAS
+EXEC4="${HOMErrfs}/sorc/RDASApp/build/bin/bufr2netcdf.x"
+cd "${HOMErrfs}/sorc/RDASApp" || exit 1
 
-mkdir -p ${HOMErrfs}/exec
+# workaround for using the GSL surface operator
+# https://github.com/JCSDA-internal/ufo/pull/3622 by Sijie
+cp ../_workaround_/RDASApp/sfccorrected/* sorc/ufo/src/ufo/operators/sfccorrected/
+
+# workaround for direct radar refl DA
+# https://github.com/JCSDA-internal/mpas-jedi/pull/1045 by Yongming Wang
+cp ../_workaround_/RDASApp/mpas-jedi/mpas_fields_mod.F90 sorc/mpas-jedi/src/mpasjedi/Fields/mpas_fields_mod.F90
+cp ../_workaround_/RDASApp/mpas-jedi/mpas_state_mod.F90 sorc/mpas-jedi/src/mpasjedi/State/mpas_state_mod.F90
+cp ../_workaround_/RDASApp/mpas-jedi/mpas2ufo_vars_mod.F90 sorc/mpas-jedi/src/mpasjedi/Utilities/mpas2ufo_vars_mod.F90
+
+# workaround for GSIbec
+# no PR yet
+cp ../_workaround_/RDASApp/gsibec/* sorc/gsibec/src/gsibec/gsi
+
+cp ../_workaround_/RDASApp/saber/gsi_covariance_mod.f90 sorc/saber/src/saber/gsi/covariance/gsi_covariance_mod.f90
+cp ../_workaround_/RDASApp/saber/gsi_grid_mod.f90 sorc/saber/src/saber/gsi/grid/gsi_grid_mod.f90
+cp ../_workaround_/RDASApp/saber/GridCheckHelper.cc sorc/saber/src/saber/gsi/utils/GridCheckHelper.cc
+cp ../_workaround_/RDASApp/saber/GSIParameters.h sorc/saber/src/saber/gsi/utils/GSIParameters.h
+cp ../_workaround_/RDASApp/saber/Geometry.cc sorc/saber/src/saber/interpolation/Geometry.cc
+
+rm -rf build/
+./build.sh -m MPAS -t NO -w NO
+
+mkdir -p "${HOMErrfs}/exec"
 echo "copy ${EXEC} to ../exec/mpasjedi_variational.x"
-cp ${EXEC} ${HOMErrfs}/exec/mpasjedi_variational.x
+cp "${EXEC}" "${HOMErrfs}/exec/mpasjedi_variational.x"
 
 echo "copy ${EXEC2} to ../exec/bufr2ioda.x"
-cp ${EXEC2} ${HOMErrfs}/exec/bufr2ioda.x
+cp "${EXEC2}" "${HOMErrfs}/exec/bufr2ioda.x"
 
 echo "copy ${EXEC3} to ../exec/mpasjedi_enkf.x"
-cp ${EXEC3} ${HOMErrfs}/exec/mpasjedi_enkf.x
+cp "${EXEC3}" "${HOMErrfs}/exec/mpasjedi_enkf.x"
+
+echo "copy ${EXEC4} to ../exec/bufr2netcdf.x"
+cp "${EXEC4}" "${HOMErrfs}/exec/bufr2netcdf.x"
 exit 0

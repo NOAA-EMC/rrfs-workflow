@@ -25,7 +25,7 @@ background error:
         compute nicas: true
         write local nicas: true
         #write nicas grids: true
-        internal dirac test: false 
+        internal dirac test: false
       model:
         level for 2d variables: last
       nicas:

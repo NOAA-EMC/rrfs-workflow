@@ -1,0 +1,43 @@
+#!/bin/bash
+# shellcheck disable=all
+# find rrfs directories for an experiment
+# by Guoqing Ge, 2024/07
+#
+if [[ -s exp.setup ]]; then
+  # this is the expdir
+  source exp.setup
+  echo "exp: ${EXPDIR}"
+  echo "logs: ${COMROOT}/${NET}/${VERSION}/logs"
+  echo "com: ${COMROOT}/${NET}/${VERSION}"
+  echo "stmp: ${DATAROOT}"
+else
+  pwd=${PWD}
+  if [[ "${pwd}" == */logs/* ]]; then
+    expdir=${pwd/com/expdir}
+    expdir=${expdir%%expdir/*}
+    echo "exp: ${expdir}exp"
+    echo "logs: ${pwd}"
+    com=${pwd/\/logs/}
+    stmp=${pwd/com/stmp}
+    stmp=${stmp%%stmp/*}
+    echo "com: ${com}"
+    echo "stmp: ${stmp}stmp"
+  elif [[ "${pwd}" == */com/* ]]; then
+    expdir=${pwd/com/expdir}
+    expdir=${expdir%%expdir/*}
+    echo "exp: ${expdir}exp"
+    log=${pwd/\/rrfsdet./\/logs\/rrfsdet.}
+    log=${log/\/rrfsens./\/logs\/rrfsens.}
+    stmp=${pwd/com/stmp}
+    stmp=${stmp%%stmp/*}
+    echo "logs: ${log}"
+    echo "com: ${pwd}"
+    echo "stmp: ${stmp}stmp"
+  elif [[ "${pwd}" == */stmp/* ]]; then
+    stmp=${pwd%%stmp/*}
+    echo "exp: ${stmp}exp"
+    echo "logs: ${stmp}com/rrfs/*/logs"
+    echo "com: ${stmp}com/rrfs"
+    echo "stmp: ${stmp}"
+  fi
+fi

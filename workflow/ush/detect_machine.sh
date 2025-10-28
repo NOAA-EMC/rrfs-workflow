@@ -19,14 +19,20 @@ case $(hostname -f) in
   hfe1[0-2]) MACHINE=hera ;; ### hera10-12
   hecflow01) MACHINE=hera ;; ### heraecflow01
 
+  ufe*) MACHINE=ursa ;;
+  u01*) MACHINE=ursa ;;
+  uecflow01) MACHINE=ursa ;;
+
+  derecho*) MACHINE=derecho ;;
+
   s4-submit.ssec.wisc.edu) MACHINE=s4 ;; ### s4
 
   fe[1-8]) MACHINE=jet ;; ### jet01-8
   tfe[12]) MACHINE=jet ;; ### tjet1-2
 
-  Orion-login-[1-4].HPC.MsState.Edu) MACHINE=orion ;; ### orion1-4
+  orion*|Orion*) MACHINE=orion ;;
 
-  [Hh]ercules-login-[1-4].[Hh][Pp][Cc].[Mm]s[Ss]tate.[Ee]du) MACHINE=hercules ;; ### hercules1-4
+  hercules*|Hercules*) MACHINE=hercules ;;
 
   login[1-4].stampede2.tacc.utexas.edu) MACHINE=stampede ;; ### stampede1-4
 
@@ -58,6 +64,12 @@ if [[ "${MACHINE}" == "UNKNOWN" ]]; then
   elif [[ -d /scratch1 ]]; then
     # We are on NOAA Hera
     MACHINE=hera
+  elif [[ -d /scratch3 ]]; then
+    # We are on NOAA Ursa
+    MACHINE=ursa
+  elif [[ -d /glade/derecho ]]; then
+    # We are on Derecho
+    MACHINE=derecho
   elif [[ -d /work ]]; then
     # We are on MSU Orion or Hercules
     if [[ -d /apps/other ]]; then

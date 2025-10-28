@@ -10,7 +10,7 @@
         type="input;output"
         precision="single"
         io_type="pnetcdf,cdf5"
-        filename_template="foo.nc"
+        filename_template="foo1.nc"
         input_interval="none"
         output_interval="none"
         clobber_mode="overwrite">
@@ -23,19 +23,9 @@
         io_type="pnetcdf,cdf5"
         filename_template="foo2.nc"
         output_interval="none"
+        gattr_update="no"
         clobber_mode="overwrite">
         <file name="stream_list/stream_list.atmosphere.analysis"/>
-</stream>
-
-<stream name="ensemble"
-        type="input;output"
-        precision="single"
-        io_type="pnetcdf,cdf5"
-        filename_template="foo3.nc"
-        input_interval="none"
-        output_interval="none"
-        clobber_mode="overwrite">
-        <file name="stream_list/stream_list.atmosphere.ensemble"/>
 </stream>
 
 <stream name="control"

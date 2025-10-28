@@ -1,4 +1,5 @@
 exec/
+tmp/
 fix/.agent
 fix/tmp
 fix/INIT_DONE
@@ -7,3 +8,7 @@ __pycache__
 log*
 workflow/exp.*
 workflow/myrrfsexps
+workflow/convinfo*
+workflow/satinfo*
+workflow/ush/output.linter_shellcheck
+ush/test_yaml_finalize

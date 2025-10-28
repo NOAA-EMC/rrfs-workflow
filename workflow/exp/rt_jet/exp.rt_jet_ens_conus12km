@@ -15,18 +15,18 @@ export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed i
 export REALTIME=true     # true, false
 #
 export DO_ENSEMBLE=true
+export IC_ONLY=false  # interpolate GEFS/GDAS to the target mesh to provide ensemble BEC
 export DO_DETERMINISTIC=false
 export ENS_SIZE=30
 export ZETA_LEVELS="L60.txt"
 #
-export DO_IODA="false"
+export DO_IODA=false
 export DO_JEDI=true
-export OBS_TYPE_USE="t133"   # The workflow will check 'OBS_TYPE_USE' first and then apply 'OBS_TYPE_REMOVE'
-export OBS_TYPE_REMOVE=""    # empty means "not applicable". check ush/obs_type_all for all available obs_types
+export COLDSTART_CYCS_DO_DA=false
+export DO_RECENTER=false
 
 export DO_CYC=true
 export CYC_INTERVAL=3
-export FCST_LENGTH=3
 for i in {0..23};    do arr[$i]="03"; done # 3hr fcst
 for i in {0..23..6}; do arr[$i]="06"; done # 3hr fcst every 6hrs
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
@@ -43,7 +43,7 @@ export LBC_GROUP_TOTAL_NUM=1
 
 export RETRO_PERIOD="2024052700-2024052800"
 export CYCLEDEF_IC_STEP_HRS=6
-export CYCLEDEF_LBC_STEP_HRS=6
+export LBC_CYCS="00 06 12 18"
 export COLDSTART_CYCS="00 12"   # cycles to cold start from external models
 #
 export NODES_IC="<nodes>1:ppn=40</nodes>"
@@ -52,6 +52,7 @@ export NODES_FCST="<nodes>1:ppn=40</nodes>"
 export NODES_MPASSIT="<nodes>1:ppn=40</nodes>"
 export NODES_UPP="<nodes>1:ppn=40</nodes>"
 export NODES_GETKF="<nodes>4:ppn=20</nodes>"
+export NODES_RECENTER="<nodes>2:ppn=16</nodes>"
 #
 export WALLTIME_FCST="1:30:00"
 export WALLTIME_SAVE_FCST="1:30:00"
@@ -59,18 +60,19 @@ export WALLTIME_MPASSIT="1:00:00"
 export WALLTIME_UPP="1:00:00"
 export WALLTIME_GETKF="00:30:00"
 #
-export KEEPDATA=yes
-export MPI_RUN_CMD=srun
+export KEEPDATA=no
 export RETRO_TASKTHROTTLE=60
 #
 # local.setup: setup some local options specific to a platform or an experiment
 #
 # set up IC, LBC sources and A/Q/P/R information
 export IC_EXTRN_MDL_NAME="GEFS"
-export IC_EXTRN_MDL_NAME_PATTERN="gep#gmem#/@y@j@H000fHHH"
+export IC_EXTRN_MDL_NAME_PATTERN="gefs.@Y@m@d/@H/atmos/pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.ffHHH"
+export IC_EXTRN_MDL_NAME_PATTERN_B="gefs.@Y@m@d/@H/atmos/pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.ffHHH"
 export LBC_EXTRN_MDL_NAME=${IC_EXTRN_MDL_NAME}
 export LBC_EXTRN_MDL_NAME_PATTERN=${IC_EXTRN_MDL_NAME_PATTERN}
-export IC_EXTRN_MDL_BASEDIR="/mnt/lfs5/BMC/public/data/grids/gens/pgrb2b"
+export LBC_EXTRN_MDL_NAME_PATTERN_B=${IC_EXTRN_MDL_NAME_PATTERN_B}
+export IC_EXTRN_MDL_BASEDIR="/public/data/grids/gefs/ncep"
 export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
 export OBSPATH="/public/data/grids/rap/obs"
 #
@@ -90,3 +92,5 @@ export STARTTIME_PREP_IC="00:30:00"
 export STARTTIME_PREP_LBC="00:30:00"
 export MORE_XML_ENTITIES=true
 export DO_CLEAN=true
+export RESERVATION_CLEAN=${RESERVATION}
+export USE_THE_LATEST_SATBIAS=false

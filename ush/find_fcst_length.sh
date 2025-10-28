@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]${id}: '
+declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 #
 #  $1=${fcst_len_hrs_cycles}
 #  $2=${cyc}
 #  $3=${fcst_length}
 #
 set -x
-array=($1)
+read -ra array <<< "$1"
 cyc=$2
 fcst_length=$3
 num_fhrs=${#array[@]}
-if (( $num_fhrs == 24 )); then
+if (( num_fhrs == 24 )); then
   icyc=$((10#${cyc}))
-  if (( ${icyc} < ${num_fhrs} )); then
+  if (( icyc < num_fhrs )); then
     thiscyc=${array[$icyc]}
     fcst_len_hrs_thiscyc=$((10#${thiscyc}))
   else
@@ -22,4 +22,4 @@ if (( $num_fhrs == 24 )); then
 else
   fcst_len_hrs_thiscyc=${fcst_length}
 fi
-echo ${fcst_len_hrs_thiscyc}
+echo "${fcst_len_hrs_thiscyc}"

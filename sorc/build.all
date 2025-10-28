@@ -2,16 +2,30 @@
 rundir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 HOMErrfs="$(dirname "$rundir")"
 
-cd ${HOMErrfs}/sorc
+cd "${HOMErrfs}/sorc" || exit 1
+
+# kill the whole build process if Ctrl+C is entered
+# shellcheck disable=SC2317
+cleanup() {
+  echo "Caught Ctrl+C. Killing all background processes..."
+  pkill -P $$  # Kills all child processes of this script
+  exit 1
+}
+trap cleanup SIGINT SIGTERM
 
 echo "building all components, it may take more than one hour..."
 ./build.wps  &> ./log.build.wps  2>&1 &
 ./build.mpas &> ./log.build.mpas 2>&1 &
-./build.rdas &> ./log.build.rdas 2>&1 &
 ./build.upp  &> ./log.build.upp  2>&1 &
 ./build.mpassit  &> ./log.build.mpassit  2>&1 &
+./build.utils  &> ./log.build.utils  2>&1 &
+
+if [[ "$1" != "noda" ]] && [[ "$1" != "NODA" ]] && [[ "$1" != "noDA" ]]; then
+  ./build.rdas &> ./log.build.rdas 2>&1 &
+fi
+
 wait
-nEXEC=$(ls -1 ../exec | wc -l)
+nEXEC=$(find ../exec/* | wc -l)
 echo "check the exec/ directory ==== a total of ${nEXEC} executables"
 ls -lrth ../exec
 echo "check the build logs ===="

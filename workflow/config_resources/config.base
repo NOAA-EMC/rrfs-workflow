@@ -4,8 +4,7 @@
 #  (if you don't use a specific task, those variables will not take any impact)
 #
 export NODES=${NODES:-"<nodes>1:ppn=1</nodes>"} #the NODES variable has to include the tag <nodes> or <cores>
-export WALLTIME=${WALLTIME:-"00:30:00"}
-export NATIVE=${NATIVE:-""}
+export WALLTIME=${WALLTIME:-"00:50:00"}
 export MEMORY=${MEMORY:-""}
 export MAXTRIES=${MAXTRIES:-"1"}
 export RESERVATION=${RESERVATION:-""}
@@ -13,9 +12,40 @@ export CLUSTER=${CLUSTER:-""}
 export NATIVE=${NATIVE:-""}
 export MORE_XML_ENTITIES=${MORE_XML_ENTITIES:-false}
 export REALTIME_MONTHS=${REALTIME_MONTHS:-2}
+export FCST_LENGTH=1
+export DO_FCST=${DO_FCST:-true}
+export DO_POST=${DO_POST:-true}
+export DO_IC_LBC=${DO_IC_LBC:-true}
+export USE_THE_LATEST_SATBIAS=${USE_THE_LATEST_SATBIAS:-false} # whether DA tasks use the latest satbias from the previous cycle
+export PHYSICS_SUITE=${PHYSICS_SUITE:-"hrrrv5"} # hrrrv5, mesoscale_reference, convection_permitting
+export KEEPDATA=${KEEPDATA:-"NO"}
+export MPI_RUN_CMD=${MPI_RUN_CMD:-"srun"}
+export USE_CONV_SAT_INFO=${USE_CONV_SAT_INFO:-true}
+export EMPTY_OBS_SPACE_ACTION=${EMPTY_OBS_SPACE_ACTION:-"skip output"}
+
+# PREP_LBC_LOOK_BACK_HRS
+if ${REALTIME:-false}; then
+  export PREP_LBC_LOOK_BACK_HRS=${PREP_LBC_LOOK_BACK_HRS:-13} # Python range(0,13) will make it 0-12
+else
+  LBC_CYCS=$(echo "${LBC_CYCS}" | xargs) # trim any leading, trailing and extra spaces
+  lbc_step_hrs=$(( 24*3/(${#LBC_CYCS}+1) ))
+  export PREP_LBC_LOOK_BACK_HRS=${PREP_LBC_LOOK_BACK_HRS:-${lbc_step_hrs}}
+fi
+
+# DO_CLEAN
+if ${DO_CLEAN:-false} && ! ${REALTIME:-false}; then
+  # when DO_CLEAN is set to true in retros, if STMP_CLEAN_HRS, COM_CLEAN_HRS and LOG_CLEAN_HRS
+  # are not specified, use the following values
+  export STMP_CLEAN_HRS=${STMP_CLEAN_HRS:-24}
+  export COM_CLEAN_HRS=${COM_CLEAN_HRS:-2400}  # 100 days
+  export LOG_CLEAN_HRS=${LOG_CLEAN_HRS:-2400}
+fi
 
 # ioda_bufr
 export NODES_IODA_BUFR=${NODES_IODA_BUFR:-"<nodes>1:ppn=1</nodes>"}
+
+# ioda_mrms_refl
+export NODES_IODA_MRMS_REFL=${NODES_IODA_MRMS_REFL:-"<nodes>1:ppn=20</nodes>"}
 
 # ic
 export NODES_IC=${NODES_IC:-"<nodes>1:ppn=40</nodes>"}
@@ -42,6 +72,11 @@ export WALLTIME_FCST=${WALLTIME_FCST:-"00:50:00"}
 export NODES_SAVE_FCST=${NODES_SAVE_FCST:-"<nodes>1:ppn=1</nodes>"}
 export WALLTIME_SAVE_FCST=${WALLTIME_SAVE_FCST:-"00:50:00"}
 
+# ensmean
+export NODES_ENSMEAN=${NODES_ENSMEAN:-"<nodes>2:ppn=40</nodes>"}
+export WALLTIME_ENSMEAN=${WALLTIME_ENSMEAN:-"00:60:00"}
+export NATIVE_ENSMEAN=${NATIVE_ENSMEAN:-""}
+
 # mpassit
 export NODES_MPASSIT=${NODES_MPASSIT:-"<nodes>2:ppn=40</nodes>"}
 export WALLTIME_MPASSIT=${WALLTIME_MPASSIT:-"00:50:00"}
@@ -49,7 +84,7 @@ export WALLTIME_MPASSIT=${WALLTIME_MPASSIT:-"00:50:00"}
 # upp
 export NODES_UPP=${NODES_UPP:-"<nodes>2:ppn=40</nodes>"}
 export WALLTIME_UPP=${WALLTIME_UPP:-"00:50:00"}
-export NATIVE_UPP=${NATIVE_UPP:-"--exclusive"}
+export NATIVE_UPP=${NATIVE_UPP:-""}
 
 # graphics
 export NODES_GRAPHICS="<nodes>1:ppn=20</nodes>"
@@ -60,7 +95,7 @@ export NATIVE_GRAPHICS="--exclusive"
 export ACCOUNT_CLEAN=${ACCOUNT2:-$ACCOUNT}
 export QUEUE_CLEAN=${QUEUE2:-$QUEUE}
 export PARTITION_CLEAN=${PARTITION2:-$PATITION}
-export RESERVATION_CLEAN=""
+export RESERVATION_CLEAN=${RESERVATION_CLEAN:-""}
 export NODES_CLEAN="<cores>1</cores>"
-# dummy
-export NODES_DUMMY="<cores>1</cores>"
+# misc
+export NODES_MISC="<cores>1</cores>"

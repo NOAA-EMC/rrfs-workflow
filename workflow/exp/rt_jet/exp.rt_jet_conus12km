@@ -18,16 +18,16 @@ export ZETA_LEVELS="L60.txt"
 #
 export DO_IODA=true
 export DO_JEDI=true
+export COLDSTART_CYCS_DO_DA=false
 export HYB_WGT_ENS=0.0
 export HYB_WGT_STATIC=1.0
-export HYB_ENS_TYPE=1      # 1.rrfs; 2.GDAS; 0.TBD on the fly (rrfs->GDAS->3DVAR)
+export HYB_ENS_TYPE=1      # 1.rrfs; 2.interpolated GEFS/GDAS; 0.TBD on the fly (rrfs->GDAS->3DVAR)
 export HYB_ENS_PATH=""     # if empty, the workflow will try to find ensembles automatically
-export OBS_TYPE_USE="t133"   # The workflow will check 'OBS_TYPE_USE' first and then apply 'OBS_TYPE_REMOVE'
-export OBS_TYPE_REMOVE=""    # empty means "not applicable". check ush/obs_type_all for all available obs_types
+export ENS_SIZE=30
+export ENS_BEC_LOOK_BACK_HRS=1  # define the hours going back for ensemble forecast files for the ensemble BEC
 
 export DO_CYC=true
 export CYC_INTERVAL=1
-export FCST_LENGTH=3
 for i in {0..23};    do arr[$i]="03"; done # 3hr fcst
 for i in {0..23..6}; do arr[$i]="12"; done # 12hr fcst every 6hrs
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
@@ -44,7 +44,7 @@ export LBC_GROUP_TOTAL_NUM=1
 
 export RETRO_PERIOD="2024052700-2024052800"
 export CYCLEDEF_IC_STEP_HRS=6   # do ic jobs every step hours
-export CYCLEDEF_LBC_STEP_HRS=6  # do lbc jobs every step hours
+export LBC_CYCS="00 06 12 18"  # do lbc jobs every step hours
 export COLDSTART_CYCS="00 12"   # cycles to cold start from external models
 #export DO_SPINUP=true
 #export PRODSWITCH_CYCS="06 18"  # cycles to PROD switch to the spun-up ICs
@@ -69,18 +69,17 @@ export WALLTIME_MPASSIT="1:00:00"
 export WALLTIME_UPP="1:00:00"
 export WALLTIME_JEDIVAR="00:30:00"
 #
-export KEEPDATA=yes
-export MPI_RUN_CMD=srun
+export KEEPDATA=no
 #
 # local.setup: setup some local options specific to a platform or an experiment
 #
 # set up IC, LBC sources and A/Q/P/R information
 export IC_EXTRN_MDL_NAME="GFS"
-export IC_EXTRN_MDL_NAME_PATTERN="gfs.@Y@m@d/@H/atmos/gfs.@Hz.pgrb2.0p25.ffHHH"
-export IC_EXTRN_MDL_NAME_PATTERN_B="gfs.@Y@m@d/@H/atmos/gfs.@Hz.pgrb2b.0p25.ffHHH"
+export IC_EXTRN_MDL_NAME_PATTERN="gfs.@Y@m@d/@H/atmos/gfs.t@Hz.pgrb2.0p25.ffHHH"
+export IC_EXTRN_MDL_NAME_PATTERN_B="gfs.@Y@m@d/@H/atmos/gfs.t@Hz.pgrb2b.0p25.ffHHH"
 export LBC_EXTRN_MDL_NAME=${IC_EXTRN_MDL_NAME}
 export LBC_EXTRN_MDL_NAME_PATTERN=${IC_EXTRN_MDL_NAME_PATTERN}
-export IC_EXTRN_MDL_BASEDIR="/public/data/ops/NOAA/NODD"
+export IC_EXTRN_MDL_BASEDIR="/public/data/grids/gfs/ncep"
 export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
 export OBSPATH="/public/data/grids/rap/obs"
 #
@@ -100,3 +99,5 @@ export STARTTIME_PREP_IC="00:30:00"
 export STARTTIME_PREP_LBC="00:30:00"
 export MORE_XML_ENTITIES=true
 export DO_CLEAN=true
+export RESERVATION_CLEAN=${RESERVATION}
+export USE_THE_LATEST_SATBIAS=false
