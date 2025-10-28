@@ -159,6 +159,14 @@ fi
 if  [ ${ob_type} != "conv" ] || [ ${BKTYPE} -eq 1 ]; then #not using GDAS
   l_both_fv3sar_gfs_ens=.false.
 fi
+
+if [ -d "${bkpath}.jedi" ]; then
+  rm -rf "${bkpath}.jedi"
+fi
+rm -rf ${bkpath}.jedi
+cp -rL $bkpath ${bkpath}.jedi
+bkpath=${bkpath}.jedi
+
 #
 #---------------------------------------------------------------------
 #
@@ -484,18 +492,22 @@ cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/input_lam_C775_NP16X10.nml .
 #
 #-----------------------------------------------------------------------
 #
-# Run the JEDI.  Note that we have to launch the forecast from
+# Run JEDI. Note that we have to launch the forecast from
 # the current cycle's run directory because the JEDI executable will look
 # for input files in the current directory.
 #
 #-----------------------------------------------------------------------
 #
+if [ ${BKTYPE} -eq 1 ]; then
+  echo "JEDI can't do cold start yet -- do early clean exit"
+  exit 0
+fi
 #export OOPS_TRACE=1
 #export OOPS_DEBUG=1
 export OMP_NUM_THREADS=1
 export pgm="fv3jedi_var.x"
 jedi_exec="${EXECdir}/bin/${pgm}"
-cp ${jedi_exec} ${analworkdir}/${pgm}
+cp "${jedi_exec}" "${analworkdir}/${pgm}"
 
 . prep_step
 
@@ -505,11 +517,87 @@ mv errfile errfile_jedi
 #
 #-----------------------------------------------------------------------
 #
-# touch a file "gsi_complete.txt" after the successful GSI run. This is to inform
+# Compute u/v from ua/va
+#
+#-----------------------------------------------------------------------
+#
+export LD_LIBRARY_PATH="/apps/ops/test/spack-stack-nco-1.9/oneapi/2024.2.1/hdf5-1.14.3-umtw5lv/lib:${LD_LIBRARY_PATH}"
+export pgm="rdas_ua2u.x"
+ua2u_exec="${EXECdir}/bin/${pgm}"
+ua2u_exec=/lfs/h2/emc/da/noscrub/donald.e.lippi/RRFSv1/PRs/RDASApp.20251020.ua_update_u/build/bin/rdas_ua2u.x
+cp "${ua2u_exec}" "${analworkdir}/${pgm}"
+
+# Rename input before running conversion
+mv analysis_jedi.fv_core.res.nc uava_analysis_jedi.fv_core.res.nc
+
+${APRUN} ./rdas_ua2u.x ua_update_u --in_grid=fv3_grid_spec --in_file=uava_analysis_jedi.fv_core.res.nc --out_file=analysis_jedi.fv_core.res.nc >>$pgmout 2>errfile
+export err=$?; err_chk
+mv errfile errfile_ua2u
+#
+#-----------------------------------------------------------------------
+#
+# Post-process: type conversion and compression
+#
+#-----------------------------------------------------------------------
+#
+files=(
+  analysis_jedi.fv_core.res.nc
+  analysis_jedi.fv_tracer.res.nc
+)
+
+for file in "${files[@]}"; do
+
+  # Extract variable names declared as double
+  vars=$(ncks -m "$file" | awk '/^ *double /{gsub("double",""); gsub("\\(.*",""); gsub(";",""); print $1}')
+
+  echo "Found variables: $vars"
+
+  # Convert each variable to float (from double)
+  for v in $vars; do
+    echo "Converting $v to float..."
+    ncap2 -O -s "${v}=float(${v})" "$file" "$file"
+  done
+
+  # Remove stale checksums
+  ncatted -a checksum,,d,, "$file"
+
+  # Optional: compress (NetCDF4, level 1)
+    ncks -O -4 -L 1 "$file" "$file"
+done
+
+# inject DZ from background
+ncks -A -v DZ fv3_dynvars analysis_jedi.fv_core.res.nc
+
+# Fix the Time dimensions
+ncks --mk_rec_dmn Time analysis_jedi.fv_core.res.nc tmp_core.nc
+mv tmp_core.nc analysis_jedi.fv_core.res.nc
+ncks --mk_rec_dmn Time analysis_jedi.fv_tracer.res.nc tmp_tracer.nc
+mv tmp_tracer.nc analysis_jedi.fv_tracer.res.nc
+
+cp analysis_jedi.fv_core.res.nc     ${bkpath}/fv_core.res.tile1.nc
+cp analysis_jedi.fv_tracer.res.nc   ${bkpath}/fv_tracer.res.tile1.nc
+#cp analysis_jedi.fv_srf_wnd.res.nc  ${bkpath}/fv_srf_wnd.res.tile1.nc
+#cp analysis_jedi.sfc_data.nc        ${bkpath}/sfc_data.nc
+#cp analysis_jedi.phy_data.nc        ${bkpath}/phy_data.nc
+#cp analysis_jedi.coupler.res        ${bkpath}/coupler.res
+
+# Temporary solution: Use sfc from gsi. Likely just need to add more state vars to jedi.
+cp ${bkpath}/../INPUT.gsi/sfc_data.nc ${bkpath}/sfc_data.nc
+
+# touch a file in INPUT.jedi its clear if jedi/gsi analysis restarts were used
+touch ${bkpath}/jedi
+#
+#-----------------------------------------------------------------------
+#
+# touch a file "jedi_complete.txt" after the successful JEDI run. This is to inform
 # the successful analysis for the EnKF recentering
 #
 #-----------------------------------------------------------------------
 #
+touch ${COMOUT}/jedi_complete.txt
+if [[ ${anav_type} == "radardbz" || ${anav_type} == "conv_dbz" ]]; then
+  touch ${COMOUT}/jedi_complete_radar.txt # for nonvarcldanl
+fi
 #
 #-----------------------------------------------------------------------
 # Loop over first and last outer loops to generate innovation

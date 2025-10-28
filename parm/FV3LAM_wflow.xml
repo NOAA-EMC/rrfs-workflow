@@ -1900,7 +1900,14 @@ MODULES_RUN_TASK_FP script.
     {%- endif %}
 
     <dependency>
+       {%- if do_jedivar %}
+       <and>
+         <taskdep task="&ANALYSIS_GSI_TN;_spinup{{ uscore_ensmem_name }}"/>
+         <taskdep task="&ANALYSIS_JEDI_TN;_spinup{{ uscore_ensmem_name }}"/>
+       </and>
+       {%- else  %}
        <taskdep task="&ANALYSIS_GSI_TN;_spinup{{ uscore_ensmem_name }}"/>
+       {%- endif %}
        {%- if do_pm_da %}
          <taskdep task="&ANALYSIS_SD_GSI_TN;_spinup{{ uscore_ensmem_name }}"/>
        {%- endif %}
@@ -2912,7 +2919,14 @@ MODULES_RUN_TASK_FP script.
     {%- endif %}
 
     <dependency>
+       {%- if do_jedivar %}
+       <and>
+         <taskdep task="&ANALYSIS_GSI_TN;_prod{{ uscore_ensmem_name }}"/>
+         <taskdep task="&ANALYSIS_JEDI_TN;_prod{{ uscore_ensmem_name }}"/>
+       </and>
+       {%- else  %}
        <taskdep task="&ANALYSIS_GSI_TN;_prod{{ uscore_ensmem_name }}"/>
+       {%- endif %}
        {%- if do_pm_da %}
          <taskdep task="&ANALYSIS_SD_GSI_TN;_prod{{ uscore_ensmem_name }}"/>
        {%- endif %}
