@@ -23,10 +23,11 @@
 	url = https://github.com/NOAA-GSL/MPASSIT.git
         branch = gsl/develop
         ignore = all
+[submodule "sorc/RRFS_UTILS"]
+	path = sorc/RRFS_UTILS
+	url = https://github.com/NOAA-GSL/RRFS_UTILS
+        ignore = all
 [submodule "ush/wxflow"]
 	path = ush/wxflow
 	url = https://github.com/NOAA-EMC/wxflow.git
         ignore = all
-[submodule "sorc/RRFS_UTILS"]
-	path = sorc/RRFS_UTILS
-	url = https://github.com/NOAA-GSL/RRFS_UTILS
