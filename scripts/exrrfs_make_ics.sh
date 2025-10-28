@@ -754,43 +754,6 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
   export FI_MR_CACHE_MAX_COUNT=0
   export MPICH_OFI_STARTUP_CONNECT=1
 
-  case "$MACHINE" in
-
-    "WCOSS2")
-       if [[ $NCORES_PER_NODE -gt 96 ]]; then
-          export OMP_NUM_THREADS="96"
-       fi
-      ;;
-
-    "HERA")
-       if [[ $NCORES_PER_NODE -gt 80 ]]; then
-          export OMP_NUM_THREADS="80"
-       fi
-      ;;
-
-    "ORION")
-       if [[ $NCORES_PER_NODE -gt 80 ]]; then
-          export OMP_NUM_THREADS="80"
-       fi
-      ;;
-
-    "HERCULES")
-       if [[ $NCORES_PER_NODE -gt 80 ]]; then
-          export OMP_NUM_THREADS="80"
-       fi
-      ;;
-
-    "JET")
-       if [[ $NCORES_PER_NODE -gt 80 ]]; then
-          export OMP_NUM_THREADS="80"
-       fi
-      ;;
-
-  esac
-
-  # F2Py shared object files to PYTHONPATH
-  export PYTHONPATH=$PYTHONPATH:$HOMErrfs/sorc/build/lib64
-
   # Required FIX files
   cpreq -p $FIXLAM/${CRES}_grid.tile7.nc .
   cpreq -p $FIXLAM/${CRES}_oro_data.tile7.halo0.nc .
