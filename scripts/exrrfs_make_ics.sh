@@ -179,7 +179,7 @@ case "$MACHINE" in
 esac
 
 if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
-  export FIXLAM=${COMOUT}/fix
+  export FIXLAM=${firewx_input_dir}/${PDY}${cyc}
 else
   export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
 fi

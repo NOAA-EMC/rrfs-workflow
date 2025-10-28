@@ -92,8 +92,8 @@ input_slope_type_file="${SFC_CLIMO_INPUT_DIR}/slope_type.1.0.nc"
 input_soil_type_file="${input_soil_type_file}"
 input_vegetation_type_file="${input_vegetation_type_file}"
 input_vegetation_greenness_file="${SFC_CLIMO_INPUT_DIR}/vegetation_greenness.0.144.nc"
-mosaic_file_mdl="${COMOUT}/fix/${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc"
-orog_dir_mdl="${COMOUT}/fix"
+mosaic_file_mdl="${firewx_input_dir}/${PDY}${cyc}/${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc"
+orog_dir_mdl="${firewx_input_dir}/${PDY}${cyc}"
 orog_files_mdl="${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH4}.nc"
 halo=${NH4}
 maximum_snow_albedo_method="bilinear"
@@ -167,13 +167,13 @@ case "$GTYPE" in
 #
 "global" | "stretch" | "nested")
 #
-# Move all files ending with ".nc" to the COMOUT directory.
+# Move all files ending with ".nc" to the COM directory.
 # In the process, rename them so that the file names start with the C-
 # resolution (followed by an underscore).
 #
   for fn in *.nc; do
     if [[ -f $fn ]]; then
-      cpreq -p $fn ${COMOUT}/fix/${CRES}_${fn}
+      cpreq -p $fn ${firewx_input_dir}/${PDY}${cyc}/${CRES}_${fn}
     fi
   done
   ;;
@@ -192,12 +192,12 @@ case "$GTYPE" in
   for fn in *.halo.nc; do
     if [ -f $fn ]; then
       bn="${fn%.halo.nc}"
-      cpreq -p $fn ${COMOUT}/fix/${CRES}.${bn}.halo${NH4}.nc
+      cpreq -p $fn ${firewx_input_dir}/${PDY}${cyc}/${CRES}.${bn}.halo${NH4}.nc
     fi
   done
 #
 # Move all remaining files ending with ".nc" (which are the files for a
-# grid that doesn't include a halo) to the COMOUT directory.
+# grid that doesn't include a halo) to the COM directory.
 # In the process, rename them so that the file names start with the C-
 # resolution (followed by a dot) and contain the string "halo0" to indi-
 # cate that the grids in these files do not contain a halo.
@@ -205,7 +205,7 @@ case "$GTYPE" in
   for fn in *.nc; do
     if [ -f $fn ]; then
       bn="${fn%.nc}"
-      cpreq -p $fn ${COMOUT}/fix/${CRES}.${bn}.halo${NH0}.nc
+      cpreq -p $fn ${firewx_input_dir}/${PDY}${cyc}/${CRES}.${bn}.halo${NH0}.nc
     fi
   done
   ;;
@@ -220,18 +220,18 @@ esac
 #-----------------------------------------------------------------------
 #
 if [ $vegsoilt_frac = .true. ]; then
-  ncrename -d nx,lon -d ny,lat ${COMOUT}/fix/${CRES}.soil_type.tile7.halo0.nc
-  ncrename -d nx,lon -d ny,lat ${COMOUT}/fix/${CRES}.soil_type.tile7.halo4.nc
-  ncrename -d nx,lon -d ny,lat ${COMOUT}/fix/${CRES}.vegetation_type.tile7.halo0.nc
-  ncrename -d nx,lon -d ny,lat ${COMOUT}/fix/${CRES}.vegetation_type.tile7.halo4.nc
-  ncrename -d num_categories,num_veg_cat ${COMOUT}/fix/${CRES}.vegetation_type.tile7.halo0.nc
-  ncrename -d num_categories,num_veg_cat ${COMOUT}/fix/${CRES}.vegetation_type.tile7.halo4.nc
-  ncrename -d num_categories,num_soil_cat ${COMOUT}/fix/${CRES}.soil_type.tile7.halo0.nc
-  ncrename -d num_categories,num_soil_cat ${COMOUT}/fix/${CRES}.soil_type.tile7.halo4.nc
-  ncks -v vegetation_type_pct ${COMOUT}/fix/${CRES}.vegetation_type.tile7.halo0.nc -A ${COMOUT}/fix/${CRES}_oro_data.tile7.halo0.nc
-  ncks -v vegetation_type_pct ${COMOUT}/fix/${CRES}.vegetation_type.tile7.halo4.nc -A ${COMOUT}/fix/${CRES}_oro_data.tile7.halo4.nc
-  ncks -v soil_type_pct ${COMOUT}/fix/${CRES}.soil_type.tile7.halo0.nc -A ${COMOUT}/fix/${CRES}_oro_data.tile7.halo0.nc
-  ncks -v soil_type_pct ${COMOUT}/fix/${CRES}.soil_type.tile7.halo4.nc -A ${COMOUT}/fix/${CRES}_oro_data.tile7.halo4.nc
+  ncrename -d nx,lon -d ny,lat ${firewx_input_dir}/${PDY}${cyc}/${CRES}.soil_type.tile7.halo0.nc
+  ncrename -d nx,lon -d ny,lat ${firewx_input_dir}/${PDY}${cyc}/${CRES}.soil_type.tile7.halo4.nc
+  ncrename -d nx,lon -d ny,lat ${firewx_input_dir}/${PDY}${cyc}/${CRES}.vegetation_type.tile7.halo0.nc
+  ncrename -d nx,lon -d ny,lat ${firewx_input_dir}/${PDY}${cyc}/${CRES}.vegetation_type.tile7.halo4.nc
+  ncrename -d num_categories,num_veg_cat ${firewx_input_dir}/${PDY}${cyc}/${CRES}.vegetation_type.tile7.halo0.nc
+  ncrename -d num_categories,num_veg_cat ${firewx_input_dir}/${PDY}${cyc}/${CRES}.vegetation_type.tile7.halo4.nc
+  ncrename -d num_categories,num_soil_cat ${firewx_input_dir}/${PDY}${cyc}/${CRES}.soil_type.tile7.halo0.nc
+  ncrename -d num_categories,num_soil_cat ${firewx_input_dir}/${PDY}${cyc}/${CRES}.soil_type.tile7.halo4.nc
+  ncks -v vegetation_type_pct ${firewx_input_dir}/${PDY}${cyc}/${CRES}.vegetation_type.tile7.halo0.nc -A ${firewx_input_dir}/${PDY}${cyc}/${CRES}_oro_data.tile7.halo0.nc
+  ncks -v vegetation_type_pct ${firewx_input_dir}/${PDY}${cyc}/${CRES}.vegetation_type.tile7.halo4.nc -A ${firewx_input_dir}/${PDY}${cyc}/${CRES}_oro_data.tile7.halo4.nc
+  ncks -v soil_type_pct ${firewx_input_dir}/${PDY}${cyc}/${CRES}.soil_type.tile7.halo0.nc -A ${firewx_input_dir}/${PDY}${cyc}/${CRES}_oro_data.tile7.halo0.nc
+  ncks -v soil_type_pct ${firewx_input_dir}/${PDY}${cyc}/${CRES}.soil_type.tile7.halo4.nc -A ${firewx_input_dir}/${PDY}${cyc}/${CRES}_oro_data.tile7.halo4.nc
 fi
 #
 #-----------------------------------------------------------------------
@@ -241,14 +241,14 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-cpreq -p ${COMOUT}/fix/${CRES}.facsf.tile7.halo4.nc ${COMOUT}/fix/${CRES}.facsf.tile7.nc
-cpreq -p ${COMOUT}/fix/${CRES}.maximum_snow_albedo.tile7.halo4.nc ${COMOUT}/fix/${CRES}.maximum_snow_albedo.tile7.nc
-cpreq -p ${COMOUT}/fix/${CRES}.slope_type.tile7.halo4.nc ${COMOUT}/fix/${CRES}.slope_type.tile7.nc
-cpreq -p ${COMOUT}/fix/${CRES}.snowfree_albedo.tile7.halo4.nc ${COMOUT}/fix/${CRES}.snowfree_albedo.tile7.nc
-cpreq -p ${COMOUT}/fix/${CRES}.soil_type.tile7.halo4.nc ${COMOUT}/fix/${CRES}.soil_type.tile7.nc
-cpreq -p ${COMOUT}/fix/${CRES}.substrate_temperature.tile7.halo4.nc ${COMOUT}/fix/${CRES}.substrate_temperature.tile7.nc
-cpreq -p ${COMOUT}/fix/${CRES}.vegetation_greenness.tile7.halo4.nc ${COMOUT}/fix/${CRES}.vegetation_greenness.tile7.nc
-cpreq -p ${COMOUT}/fix/${CRES}.vegetation_type.tile7.halo4.nc ${COMOUT}/fix/${CRES}.vegetation_type.tile7.nc
+cpreq -p ${firewx_input_dir}/${PDY}${cyc}/${CRES}.facsf.tile7.halo4.nc ${firewx_input_dir}/${PDY}${cyc}/${CRES}.facsf.tile7.nc
+cpreq -p ${firewx_input_dir}/${PDY}${cyc}/${CRES}.maximum_snow_albedo.tile7.halo4.nc ${firewx_input_dir}/${PDY}${cyc}/${CRES}.maximum_snow_albedo.tile7.nc
+cpreq -p ${firewx_input_dir}/${PDY}${cyc}/${CRES}.slope_type.tile7.halo4.nc ${firewx_input_dir}/${PDY}${cyc}/${CRES}.slope_type.tile7.nc
+cpreq -p ${firewx_input_dir}/${PDY}${cyc}/${CRES}.snowfree_albedo.tile7.halo4.nc ${firewx_input_dir}/${PDY}${cyc}/${CRES}.snowfree_albedo.tile7.nc
+cpreq -p ${firewx_input_dir}/${PDY}${cyc}/${CRES}.soil_type.tile7.halo4.nc ${firewx_input_dir}/${PDY}${cyc}/${CRES}.soil_type.tile7.nc
+cpreq -p ${firewx_input_dir}/${PDY}${cyc}/${CRES}.substrate_temperature.tile7.halo4.nc ${firewx_input_dir}/${PDY}${cyc}/${CRES}.substrate_temperature.tile7.nc
+cpreq -p ${firewx_input_dir}/${PDY}${cyc}/${CRES}.vegetation_greenness.tile7.halo4.nc ${firewx_input_dir}/${PDY}${cyc}/${CRES}.vegetation_greenness.tile7.nc
+cpreq -p ${firewx_input_dir}/${PDY}${cyc}/${CRES}.vegetation_type.tile7.halo4.nc ${firewx_input_dir}/${PDY}${cyc}/${CRES}.vegetation_type.tile7.nc
 
 #
 #-----------------------------------------------------------------------

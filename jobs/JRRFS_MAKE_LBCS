@@ -93,7 +93,7 @@ if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
 elif [ $WGF = "firewx" ]; then
   export ENSMEM_INDX=""
   export COMOUT="${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/lbcs)}"
-
+  export firewx_input_dir="${COMrrfs}/firewx_input"
 # Fire weather nest location from NAM
   export COMINnam=${COMINnam:-$(compath.py nam/${nam_ver})}
 
