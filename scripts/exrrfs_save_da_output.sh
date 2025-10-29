@@ -65,24 +65,24 @@ n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
 if [ ! -r ${COMOUT}/DA_OUTPUT/gfs_ctrl.nc ]; then
-  cpreq -p ${umbrella_forecast_data}/gfs_ctrl.nc ${COMOUT}/DA_OUTPUT/gfs_ctrl.nc
+  cpreq ${umbrella_forecast_data}/gfs_ctrl.nc ${COMOUT}/DA_OUTPUT/gfs_ctrl.nc
 fi
 if [ -r ${umbrella_forecast_data}/coupler.res ]; then  # warm start
     if [ "${IO_LAYOUT_Y}" = "1" ]; then
       for file in ${filelistn}; do
-        cpreq -p ${umbrella_forecast_data}/${file} ${COMOUT}/DA_OUTPUT/${file}
+        cpreq ${umbrella_forecast_data}/${file} ${COMOUT}/DA_OUTPUT/${file}
       done
     else
       for file in ${filelistn}; do
         for ii in ${list_iolayout}
         do
           iii=$(printf %4.4i $ii)
-         cp ${umbrella_forecast_data}/${file}.${iii} ${COMOUT}/DA_OUTPUT/${file}.${iii}
+         cpreq ${umbrella_forecast_data}/${file}.${iii} ${COMOUT}/DA_OUTPUT/${file}.${iii}
         done
       done
     fi
     for file in ${filelist}; do
-      cp ${umbrella_forecast_data}/${file} ${COMOUT}/DA_OUTPUT/${file}
+      cpreq ${umbrella_forecast_data}/${file} ${COMOUT}/DA_OUTPUT/${file}
     done
 else  # cold start
     print_info_msg "$VERBOSE" "\

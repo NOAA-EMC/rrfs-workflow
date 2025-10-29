@@ -80,9 +80,9 @@ climatology.
 #-----------------------------------------------------------------------
 # Define COM directories
 #-----------------------------------------------------------------------
-# Send fix files to COMOUT
-export COMOUT="${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}"
-mkdir -p "${COMOUT}" "${COMOUT}/fix"
+# Send fix files to COM
+export firewx_input_dir="${COMrrfs}/firewx_input"
+mkdir -p "${firewx_input_dir}" "${firewx_input_dir}/${PDY}${cyc}"
 
 # Fire weather nest location from NAM
 export COMINnam=${COMINnam:-$(compath.py nam/${nam_ver})}
