@@ -23,7 +23,7 @@ def prep_chem(xmlFile, expdir,do_ensemble=False, do_spinup=False):
   datadir_chem=os.getenv('CHEMPATH','/lfs6/BMC/rtwbl/cheMPAS-Fire/input/')
   mesh_name=os.getenv('MESH_NAME','conus3km').lower()
   fcst_length=os.getenv('FCST_LENGTH','24')
-  rave_dir=os.getenv('RAVE_DIR','').lower()
+  rave_dir=os.getenv('RAVE_DIR','')
   regrid_wrapper_dir=os.getenv('REGRID_WRAPPER_DIR')
   regrid_conda_env=os.getenv('REGRID_CONDA_ENV')
   
