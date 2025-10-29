@@ -179,7 +179,7 @@ case "$MACHINE" in
 esac
 
 if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
-  export FIXLAM=${COMOUT}/fix
+  export FIXLAM=${firewx_input_dir}/${PDY}${cyc}
 else
   export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
 fi
@@ -293,7 +293,6 @@ done
 #
 extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
 
-#### Need to change later
 print_info_msg "
 Creating links in staging directory (extrn_mdl_staging_dir) to external
 model files on disk (extrn_mdl_fns_on_disk) in the source directory
@@ -302,8 +301,7 @@ extrn_mdl_staging_dir = \"${extrn_mdl_staging_dir}\"
 extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
 extrn_mdl_fns_on_disk = ${extrn_mdl_fns_on_disk_str}"
 
-#### ln -sf -t ${extrn_mdl_staging_dir} ${extrn_mdl_fps_on_disk[@]}
-cpreq -p ${extrn_mdl_fps_on_disk[@]} ${extrn_mdl_staging_dir}
+cpreq ${extrn_mdl_fps_on_disk[@]} ${extrn_mdl_staging_dir}
 #
 #-----------------------------------------------------------------------
 #
@@ -792,9 +790,9 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
   export PYTHONPATH=$PYTHONPATH:$HOMErrfs/sorc/build/lib64
 
   # Required FIX files
-  cpreq -p $FIXLAM/${CRES}_grid.tile7.nc .
-  cpreq -p $FIXLAM/${CRES}_oro_data.tile7.halo0.nc .
-  cpreq -p $FIX_GSI/$PREDEF_GRID_NAME/fv3_akbk fv_core.res.nc
+  cpreq  $FIXLAM/${CRES}_grid.tile7.nc .
+  cpreq  $FIXLAM/${CRES}_oro_data.tile7.halo0.nc .
+  cpreq  $FIX_GSI/$PREDEF_GRID_NAME/fv3_akbk fv_core.res.nc
 
   # Shortcut the file names
   warm=./fv_core.res.tile1.nc
@@ -808,7 +806,7 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
   # Run convert coldstart files to fv3 restart (rotate winds and remap).
   export OMP_NUM_THREADS=2
   fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
-  cp ${fixgriddir}/cold2warm_all.nc .
+  cpreq ${fixgriddir}/cold2warm_all.nc .
   export pgm1=fv3lam_pre_blending.exe
   ${APRUN_PRE_BLENDING} ${EXECrrfs}/$pgm1 >>$pgmout 2>errfile
   export err=$?; err_chk
@@ -824,32 +822,10 @@ fi
 # ary files to umbrella data.
 #-----------------------------------------------------------------------
 #
-#### if [[ $DO_ENS_BLENDING = "TRUE" ]]; then
-  #### mv out.atm.tile${TILE_RGNL}.nc \
-  ####       ${DATA}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
-cpreq -p ${DATA}/out.atm.tile${TILE_RGNL}.nc ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
-
-  #### mv out.sfc.tile${TILE_RGNL}.nc \
-  ####       ${DATA}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
-cpreq -p ${DATA}/out.sfc.tile${TILE_RGNL}.nc ${shared_output_data}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
-
-  #### mv gfs_ctrl.nc ${DATA}
-cpreq -p ${DATA}/gfs_ctrl.nc ${shared_output_data}
-
-  #### mv gfs.bndy.nc ${DATA}/gfs_bndy.tile${TILE_RGNL}.000.nc
-cpreq -p ${DATA}/gfs.bndy.nc ${shared_output_data}/gfs_bndy.tile${TILE_RGNL}.000.nc
-
-#### fi
-#
-#-----------------------------------------------------------------------
-#
-# copy results to nwges for longer time disk storage.
-#
-#-----------------------------------------------------------------------
-#
-#### if [ $DO_ENS_BLENDING = "FALSE" ]; then
-####   cp ${DATA}/*.nc ${NWGES_DIR}/.
-#### fi
+cpreq ${DATA}/out.atm.tile${TILE_RGNL}.nc ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
+cpreq ${DATA}/out.sfc.tile${TILE_RGNL}.nc ${shared_output_data}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
+cpreq ${DATA}/gfs_ctrl.nc ${shared_output_data}
+cpreq ${DATA}/gfs.bndy.nc ${shared_output_data}/gfs_bndy.tile${TILE_RGNL}.000.nc
 #
 #-----------------------------------------------------------------------
 #

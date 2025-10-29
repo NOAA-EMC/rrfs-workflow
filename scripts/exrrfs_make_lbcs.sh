@@ -162,30 +162,12 @@ extrn_mdl_sysdir="${sysdir}"
 extrn_mdl_sysdir2="${sysdir2}"
 export extrn_mdl_source_dir="${extrn_mdl_sysdir}"
 export extrn_mdl_source_dir2="${extrn_mdl_sysdir2}"
-
-#### extrn_mdl_lbc_spec_fhrs_str="( "$( printf "\"%s\" " "${lbc_spec_fhrs[@]}" )")"
 extrn_mdl_lbc_spec_fhrs="( "$( printf "\"%s\" " "${lbc_spec_fhrs[@]}" )")"
-
-#### extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
 extrn_mdl_fns_on_disk="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
-
-#### extrn_mdl_fns_on_disk_str2="( "$( printf "\"%s\" " "${fns_on_disk2[@]}" )")"
 extrn_mdl_fns_on_disk2="( "$( printf "\"%s\" " "${fns_on_disk2[@]}" )")"
-
 export use_user_staged_extrn_files="FALSE"
 export extrn_mdl_staging_dir="${DATA}"
 
-#
-#-----------------------------------------------------------------------
-#
-# Specify the set of valid argument names for this script/function.  Then
-# process the arguments provided to this script/function (which should
-# consist of a set of name-value pairs of the form arg1="value1", etc).
-#
-#-----------------------------------------------------------------------
-#
-#### valid_args=( "extrn_mdl_lbc_spec_fhrs" "extrn_mdl_fns_on_disk" "extrn_mdl_fns_on_disk2" )
-#### process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
 #
@@ -223,7 +205,7 @@ case "$MACHINE" in
 esac
 
 if [ ${WGF} = "firewx" ]; then
-  export FIXLAM=${COMOUT}/../fix
+  export FIXLAM=${firewx_input_dir}/${PDY}${cyc}
 else
   export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
 fi
@@ -238,15 +220,10 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-#### num_files_to_copy="${#extrn_mdl_fns_on_disk[@]}"
 num_files_to_copy="${#fns_on_disk[@]}"
-
 prefix="${extrn_mdl_source_dir}/"
-#### extrn_mdl_fps_on_disk=( "${extrn_mdl_fns_on_disk[@]/#/$prefix}" )
 extrn_mdl_fps_on_disk=( "${fns_on_disk[@]/#/$prefix}" )
-
 prefix2="${extrn_mdl_source_dir2}"
-#### extrn_mdl_fps_on_disk2=( "${extrn_mdl_fns_on_disk2[@]/#/$prefix2}" )
 extrn_mdl_fps_on_disk2=( "${fns_on_disk2[@]/#/$prefix2}" )
 #
 #-----------------------------------------------------------------------
@@ -342,11 +319,10 @@ done
 #
 #-----------------------------------------------------------------------
 #
-#### extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" )")"
 extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
 
 print_info_msg "
-Creating links in staging directory (extrn_mdl_staging_dir) to external
+copy files into staging directory (extrn_mdl_staging_dir) from external
 model files on disk (extrn_mdl_fns_on_disk) in the source directory
 (extrn_mdl_source_dir):
 extrn_mdl_staging_dir = \"${extrn_mdl_staging_dir}\"
@@ -354,23 +330,46 @@ extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
 extrn_mdl_fns_on_disk = ${extrn_mdl_fns_on_disk_str}"
 
 if [ ${extrn_mdl_name} != GEFS ] ; then
-  ln -sf -t ${extrn_mdl_staging_dir} ${extrn_mdl_fps_on_disk[@]}
+ # Wait for files to become available in umbrella_lbcops_data location
+ #   Only do parallel copy if BCGRP=00
+ if [ ${BCGRP} = "00" ]; then
+   touch ${DATA}/parallel_copy.sh
+   for file_to_copy in "${extrn_mdl_fps_on_disk[@]}"; do
+     echo "Add file - ${file_to_copy} to parallel transfer job list"
+     echo "cpfs ${file_to_copy} ${umbrella_lbcops_data}" >> ${DATA}/parallel_copy.sh
+   done
+   [[ -s ${DATA}/parallel_copy.sh ]]&& cat ${DATA}/parallel_copy.sh | parallel --verbose
+ else
+   # 3 second of file system refreshment
+   sleep 3
+   if [ ${WGF} = firewx ]; then
+     # case for firewx
+     t_file_ct=36
+   else
+     # case for det
+     t_file_ct=97
+   fi
+   while [ $(ls ${umbrella_lbcops_data} |grep -v cptmp| wc -l) -lt ${t_file_ct} ]; do
+     sleep 66
+   done
+ fi
+ for file_to_link in ${umbrella_lbcops_data}/*; do
+   ln -sf -t ${DATA} ${file_to_link}
+ done
 elif [ ${extrn_mdl_name} = GEFS ] ; then
 # Get GEFS files and do time interpolation using wgrib2
   length=${#extrn_mdl_fps_on_disk[@]}
-
   for (( j=0; j<length; j++ ));
   do
     fps=${extrn_mdl_fps_on_disk[$j]}
     fps2=${extrn_mdl_fps_on_disk2[$j]}
-    #### fps_name=${extrn_mdl_fns_on_disk[$j]}
     fps_name=${fns_on_disk[$j]}
     if [ -f "$fps" ]; then
       #
       # Increment the counter that keeps track of the number of external
       # model files found on disk and print out an informational message.
       #
-      cpreq -p ${fps} ${extrn_mdl_staging_dir}/${fps_name}
+      cpreq ${fps} ${extrn_mdl_staging_dir}/${fps_name}
       if [ -f "$fps2" ]; then
         cat ${fps2} >>  ${extrn_mdl_staging_dir}/${fps_name}
       fi
@@ -469,11 +468,9 @@ generating lateral boundary conditions for the RRFS forecast!!!
 #
 eval EXTRN_MDL_CDATE=${extrn_mdl_cdate}
 
-#### extrn_mdl_fns_str="( "$( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" )")"
 extrn_mdl_fns_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
 eval EXTRN_MDL_FNS=${extrn_mdl_fns_str}
 
-#### extrn_mdl_lbc_spec_fhrs_str="( "$( printf "\"%s\" " "${extrn_mdl_lbc_spec_fhrs[@]}" )")"
 extrn_mdl_lbc_spec_fhrs_str="( "$( printf "\"%s\" " "${lbc_spec_fhrs[@]}" )")"
 eval EXTRN_MDL_LBC_SPEC_FHRS=${extrn_mdl_lbc_spec_fhrs_str}
 #
@@ -643,7 +640,7 @@ bcgrpnum10=${bcgrpnum#0}
 for (( ii=0; ii<${num_fhrs}; ii=ii+bcgrpnum10 )); do
   i=$(( ii + bcgrp10 ))
   if [ ${i} -lt ${num_fhrs} ]; then
-    echo " group ${bcgrp10} processes member ${i}"
+    echo " group ${bcgrp10} processes FHR ${i}"
 #
 # Get the forecast hour of the external model.
 #
@@ -803,7 +800,7 @@ $settings"
   fcst_hhh_FV3LAM=`printf %3.3i $fcst_hhh`
 
 # copy results to COMOUT for longer time disk storage.
-  cpreq -p gfs.bndy.nc ${COMOUT}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc
+  cpreq gfs.bndy.nc ${COMOUT}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc
 
   fi
 done

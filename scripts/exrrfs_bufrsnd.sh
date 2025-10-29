@@ -177,19 +177,18 @@ do
 
   LOGFILE=log.atm.f0${fhr}
   if [ $model = "FV3S" ]; then
-
     if [ ${nsout_min} -ge 60 ]; then
       OUTFILDYN=${shared_forecast_output_data}/dynf0${fhr}.nc
       OUTFILPHYS=${shared_forecast_output_data}/phyf0${fhr}.nc
       LOGFILE=log.atm.f0${fhr}
     else
       if [ ${fhr} -eq 00 ]; then
-        SUBOUTFILDYN=${shared_forecast_output_data}/dynf0${fhr}-00-36.nc
-        SUBOUTFILPHYS=${shared_forecast_output_data}/phyf0${fhr}-00-36.nc
+        SUBOUTFILDYN=dynf0${fhr}-00-36.nc
+        SUBOUTFILPHYS=phyf0${fhr}-00-36.nc
         LOGFILE=log.atm.f0${fhr}-00-36
       else
-        SUBOUTFILDYN=${shared_forecast_output_data}/dynf0${fhr}-00-00.nc
-        SUBOUTFILPHYS=${shared_forecast_output_data}/phyf0${fhr}-00-00.nc
+        SUBOUTFILDYN=dynf0${fhr}-00-00.nc
+        SUBOUTFILPHYS=phyf0${fhr}-00-00.nc
         LOGFILE=log.atm.f0${fhr}-00-00
       fi
       OUTFILDYN=${shared_forecast_output_data}/dynf0${fhr}.nc
@@ -197,7 +196,6 @@ do
       ln -s ${SUBOUTFILDYN} ${OUTFILDYN}
       ln -s ${SUBOUTFILPHYS} ${OUTFILPHYS}
     fi
-
     icnt=1
 
     # wait for model restart file
