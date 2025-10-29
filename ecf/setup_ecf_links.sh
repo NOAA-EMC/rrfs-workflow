@@ -510,43 +510,35 @@ else
 fi
 
 if [ ${resource_config} == "EMC" ]; then
-
-# updates input.nml namelist files for 52 node configuration
-
-files="../parm/config/det/input.nml_18h ../parm/config/det/input.nml_restart_18h"
-
-# 53,128 --> 43,64
-#
-
-for fl in $files
-do
-        cat $fl | sed s:53:43:g > ${fl}_new
-        cat ${fl}_new | sed s:128:64:g > ${fl}
-        rm -f ${fl}_new
-done
-
-files="../parm/config/det/input.nml_restart_long ../parm/config/det/input.nml_long"
-
-# 71,128 --> 43,64
-#
-for fl in $files
-do
-        cat $fl | sed s:71:43:g > ${fl}_new
-        cat ${fl}_new | sed s:128:64:g > ${fl}
-        rm -f ${fl}_new
-done
-
-
-files="../parm/config/ensf/input.nml_restart_stoch_ensphy?"
-#
-# 45,128 --> 50,64
-#
-for fl in $files
-do
-        cat $fl | sed s:45:50:g > ${fl}_new
-        cat ${fl}_new | sed s:128:64:g > ${fl}
-        rm -f ${fl}_new
-done
-
-
+  # updates input.nml namelist files for 52 node configuration
+  files="${ECF_DIR}/../parm/config/det/input.nml_18h ${ECF_DIR}/../parm/config/det/input.nml_restart_18h"
+  # 53,128 --> 43,64
+  #
+  for fl in $files
+  do
+          cat $fl | sed s:53:43:g > ${fl}_new
+          cat ${fl}_new | sed s:128:64:g > ${fl}
+          rm -f ${fl}_new
+  done
+  
+  files="${ECF_DIR}/../parm/config/det/input.nml_restart_long ${ECF_DIR}/../parm/config/det/input.nml_long"
+  # 71,128 --> 43,64
+  #
+  for fl in $files
+  do
+          cat $fl | sed s:71:43:g > ${fl}_new
+          cat ${fl}_new | sed s:128:64:g > ${fl}
+          rm -f ${fl}_new
+  done
+  
+  files="${ECF_DIR}/../parm/config/ensf/input.nml_restart_stoch_ensphy?"
+  #
+  # 45,128 --> 50,64
+  #
+  for fl in $files
+  do
+          cat $fl | sed s:45:50:g > ${fl}_new
+          cat ${fl}_new | sed s:128:64:g > ${fl}
+          rm -f ${fl}_new
+  done
 fi
