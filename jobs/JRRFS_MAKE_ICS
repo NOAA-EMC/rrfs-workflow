@@ -56,7 +56,7 @@ fi
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}}
 elif [ $WGF = "firewx" ]; then
-  export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/firewx_ics_${cyc}_${rrfs_ver}/${WGF}}
+  export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver}/${WGF}}
 else
   export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver}/${WGF}}
 fi
@@ -109,9 +109,8 @@ for the RRFS (in NetCDF format).
 #### export COMINgfs=${COMINgfs:-$(compath.py gfs/${gfs_ver})}
 
 if [ ${WGF} = "firewx" ]; then
-# Path to fix files in COMOUT
-  export COMOUT="${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}"
-  mkdir -p "${COMOUT}" "${COMOUT}/fix"
+# Path to fix files in COM
+  export firewx_input_dir="${COMrrfs}/firewx_input"
 
 # Fire weather nest location from NAM
   export COMINnam=${COMINnam:-$(compath.py nam/${nam_ver})}
