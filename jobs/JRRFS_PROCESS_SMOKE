@@ -79,6 +79,10 @@ for the specified cycle.
 #-----------------------------------------------------------------------
 
 export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
+export COMOUT_HWP=${COMrrfs}/hourly_hwp.${PDY}
+export COMOUT_RAVE=${COMrrfs}/rave_intp.${PDY}
+mkdir -p ${COMOUT_HWP}
+mkdir -p ${COMOUT_RAVE}
 
 #-----------------------------------------------------------------------
 # Execute the script.
