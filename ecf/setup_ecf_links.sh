@@ -41,6 +41,22 @@ else
   ln -s jrrfs_ensf_forecast_master.ecf-dev-resource jrrfs_ensf_forecast_master.ecf
 fi
 
+# point at proper resource fix file
+cd ${ECF_DIR}/../fix/workflow/
+echo "point at proper workflow.conf version..."
+  rm -f ./det/workflow.conf ./enkf/workflow.conf ./ensf/workflow.conf ./firewx/workflow.conf
+if [ ${resource_config} == "NCO" ]; then
+  ln -s ./det/workflow.conf_prod ./det/workflow.conf
+  ln -s ./enkf/workflow.conf_prod ./enkf/workflow.conf
+  ln -s ./ensf/workflow.conf_prod ./ensf/workflow.conf
+  ln -s ./firewx/workflow.conf_prod ./firewx/workflow.conf
+else
+  ln -s ./det/workflow.conf_dev ./det/workflow.conf
+  ln -s ./enkf/workflow.conf_dev ./enkf/workflow.conf
+  ln -s ./ensf/workflow.conf_dev ./ensf/workflow.conf
+  ln -s ./firewx/workflow.conf_dev ./firewx/workflow.conf
+fi
+
 # det prdgen files
 cd $ECF_DIR/scripts/product/det
 echo "Copy det prdgen files ..."
@@ -483,19 +499,17 @@ if [ ${resource_config} == "NCO" ]; then
   cd $ECF_DIR/scripts/forecast/det
   for file in jrrfs_det_forecast jrrfs_det_forecast_long; do
     rm -f ${file}.ecf
-    ln -s ${file}.ecf--prod-resource ${file}.ecf
+    ln -s ${file}.ecf-prod-resource ${file}.ecf
   done
 else
   cd $ECF_DIR/scripts/forecast/det
   for file in jrrfs_det_forecast jrrfs_det_forecast_long; do
     rm -f ${file}.ecf
-    ln -s ${file}.ecf--dev-resource ${file}.ecf
+    ln -s ${file}.ecf-dev-resource ${file}.ecf
   done
 fi
 
 if [ ${resource_config} == "EMC" ]; then
-
-cd $ECF_DIR
 
 # updates input.nml namelist files for 52 node configuration
 
@@ -506,10 +520,10 @@ files="../parm/config/det/input.nml_18h ../parm/config/det/input.nml_restart_18h
 
 for fl in $files
 do
-	cat ${fl} | sed s:53:43:g | sed s:128:64:g > ${fl}_new
-        mv ${fl}_new  ${fl}
+        cat $fl | sed s:53:43:g > ${fl}_new
+        cat ${fl}_new | sed s:128:64:g > ${fl}
+        rm -f ${fl}_new
 done
-
 
 files="../parm/config/det/input.nml_restart_long ../parm/config/det/input.nml_long"
 
@@ -517,17 +531,9 @@ files="../parm/config/det/input.nml_restart_long ../parm/config/det/input.nml_lo
 #
 for fl in $files
 do
-        cat $fl | sed s:71:43:g | sed s:128:64:g > ${fl}_new
-        mv ${fl}_new  ${fl}
-done
-
-files="../parm/config/det/input.nml_restart_spinupcyc ../parm/config/det/input.nml_spinupcyc"
-# 29,64 --> 43,64
-#
-for fl in $files
-do
-        cat $fl | sed s:29:43:g > ${fl}_new
-        mv ${fl}_new ${fl}
+        cat $fl | sed s:71:43:g > ${fl}_new
+        cat ${fl}_new | sed s:128:64:g > ${fl}
+        rm -f ${fl}_new
 done
 
 
@@ -537,20 +543,10 @@ files="../parm/config/ensf/input.nml_restart_stoch_ensphy?"
 #
 for fl in $files
 do
-        cat $fl | sed s:45:50:g | sed s:128:64:g > ${fl}_new
-        mv ${fl}_new ${fl}
+        cat $fl | sed s:45:50:g > ${fl}_new
+        cat ${fl}_new | sed s:128:64:g > ${fl}
+        rm -f ${fl}_new
 done
 
-
-# point at dev version of FIX workflow.config file
-#
-
-file="../scripts/exrrfs_forecast.sh"
-
-# do not want to make this change twice on same file
-git checkout -- ${file}
-
-cat ${file} | sed s:workflow.conf:workflow.conf_dev:g > ${file}_new
-mv ${file}_new ${file}
 
 fi

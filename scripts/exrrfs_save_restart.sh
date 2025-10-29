@@ -92,7 +92,7 @@ fi
 if_save_input=FALSE
 
 if [ -s ${umbrella_forecast_data}/INPUT/gfs_ctrl.nc ]; then
-  cpreq -p ${umbrella_forecast_data}/INPUT/gfs_ctrl.nc ${COMOUT}/INPUT
+  cpreq ${umbrella_forecast_data}/INPUT/gfs_ctrl.nc ${COMOUT}/INPUT
   if_save_input=TRUE
 fi
 
@@ -149,12 +149,12 @@ fi
 #
 if [ "${CYCLE_TYPE}" = "prod" ] && [ "${CYCLE_SUBTYPE}" = "control" ]; then
   if [ "${IO_LAYOUT_Y}" = "1" ]; then
-    cp ${COMOUT}/RESTART/${restart_prefix}.sfc_data.nc ${SURFACE_DIR}/${restart_prefix}.sfc_data.nc.${CDATE}
+    cpreq ${COMOUT}/RESTART/${restart_prefix}.sfc_data.nc ${SURFACE_DIR}/${restart_prefix}.sfc_data.nc.${CDATE}
   else
     for ii in ${list_iolayout}
     do
       iii=$(printf %4.4i $ii)
-      cp ${COMOUT}/RESTART/${restart_prefix}.sfc_data.nc.${iii} ${SURFACE_DIR}/${restart_prefix}.sfc_data.nc.${CDATE}.${iii}
+      cpreq ${COMOUT}/RESTART/${restart_prefix}.sfc_data.nc.${iii} ${SURFACE_DIR}/${restart_prefix}.sfc_data.nc.${CDATE}.${iii}
     done
   fi
 fi
@@ -167,25 +167,25 @@ if [ "${if_save_input}" = TRUE ]; then
   if [ "${DO_SAVE_INPUT}" = TRUE ]; then
     if [ -r ${umbrella_forecast_data}/INPUT/coupler.res ]; then  # warm start
       if [ "${IO_LAYOUT_Y}" = "1" ]; then
-        [[ -f ${umbrella_forecast_data}/INPUT/fv_diag.res.tile1.nc ]]&& cp ${umbrella_forecast_data}/INPUT/fv_diag.res.tile1.nc ${COMOUT}/INPUT
+        [[ -f ${umbrella_forecast_data}/INPUT/fv_diag.res.tile1.nc ]]&& cpreq ${umbrella_forecast_data}/INPUT/fv_diag.res.tile1.nc ${COMOUT}/INPUT
         for file in ${filelistn}; do
-          cp ${umbrella_forecast_data}/INPUT/${file} ${COMOUT}/INPUT/${file}
+          cpreq ${umbrella_forecast_data}/INPUT/${file} ${COMOUT}/INPUT/${file}
         done
       else
         for file in ${filelistn}; do
           for ii in ${list_iolayout}
           do
             iii=$(printf %4.4i $ii)
-           cp ${umbrella_forecast_data}/INPUT/${file}.${iii} ${COMOUT}/INPUT/${file}.${iii}
+           cpreq ${umbrella_forecast_data}/INPUT/${file}.${iii} ${COMOUT}/INPUT/${file}.${iii}
           done
         done
       fi
       for file in ${filelist}; do
-        cp ${umbrella_forecast_data}/INPUT/${file} ${COMOUT}/INPUT/${file}
+        cpreq ${umbrella_forecast_data}/INPUT/${file} ${COMOUT}/INPUT/${file}
       done
     else  # cold start
       for file in ${filelistcold}; do
-        cp ${umbrella_forecast_data}/INPUT/${file} ${COMOUT}/INPUT/${file}
+        cpreq ${umbrella_forecast_data}/INPUT/${file} ${COMOUT}/INPUT/${file}
       done
     fi
   fi

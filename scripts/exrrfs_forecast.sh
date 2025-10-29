@@ -128,7 +128,7 @@ esac
 [[ -e ${umbrella_forecast_data}/forecast_clean.flag ]] && rm -f ${umbrella_forecast_data}/forecast_clean.flag
 
 if [ ${WGF} = "firewx" ]; then
-  export FIXLAM=${COMOUT}/fix
+  export FIXLAM=${COMrrfs}/firewx_input/${CDATE}
 else
   export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
 fi
@@ -160,7 +160,7 @@ relative_or_null=""
 target="${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo${NH3}.nc" # must use *mosaic.halo3.nc
 symlink="grid_spec.nc"
 if [ -f "${target}" ]; then
-  ln -sf ${relative_or_null} $target $symlink
+  cpreq $target $symlink
 else
   err_exit "\
 Cannot create symlink because target does not exist:
@@ -174,7 +174,7 @@ grid_fn=$( get_charvar_from_netcdf "${mosaic_fn}" "gridfiles" )
 target="${FIXLAM}/${CRES}${DOT_OR_USCORE}grid.tile7.halo${NH3}.nc"
 symlink="${grid_fn}"
 if [ -f "${target}" ]; then
-  ln -sf ${relative_or_null} $target $symlink
+  cpreq $target $symlink
 else
   err_exit "\
 Cannot create symlink because target does not exist:
@@ -196,7 +196,7 @@ fi
 target="${FIXLAM}/${CRES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH4}.nc"
 symlink="grid.tile${TILE_RGNL}.halo${NH4}.nc"
 if [ -f "${target}" ]; then
-  ln -sf ${relative_or_null} $target $symlink
+  cpreq $target $symlink
 else
   err_exit "\
 Cannot create symlink because target does not exist:
@@ -209,7 +209,7 @@ relative_or_null=""
 target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH0}.nc"
 symlink="oro_data.nc"
 if [ -f "${target}" ]; then
-  ln -sf ${relative_or_null} $target $symlink
+  cpreq $target $symlink
 else
   err_exit "\
 Cannot create symlink because target does not exist:
@@ -232,7 +232,7 @@ fi
 target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH4}.nc"
 symlink="oro_data.tile${TILE_RGNL}.halo${NH4}.nc"
 if [ -f "${target}" ]; then
-  ln -sf ${relative_or_null} $target $symlink
+  cpreq $target $symlink
 else
   err_exit "\
 Cannot create symlink because target does not exist:
@@ -252,7 +252,7 @@ if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" ]] ; then
     target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data_${fileid}.tile${TILE_RGNL}.halo${NH0}.nc"
     symlink="oro_data_${fileid}.nc"
     if [ -f "${target}" ]; then
-      ln -sf ${relative_or_null} $target $symlink
+      cpreq $target $symlink
     else
       err_exit "\
 Cannot create symlink because target does not exist:
@@ -280,15 +280,7 @@ of the current run directory (DATA), where
   DATA = \"${DATA}\"
 ..."
 
-#BKTYPE=1    # cold start using INPUT
-#if [ -r ${DATA}/INPUT/coupler.res ] ; then
-#  BKTYPE=0  # cycling using RESTART
-#fi
-#print_info_msg "$VERBOSE" "
-#The forecast has BKTYPE $BKTYPE (1:cold start ; 0 cycling)"
-
 cd ${DATA}/INPUT
-# Link to all files in FORECAST_INPUT_PRODUCT directory inside COMOUT
 # Do not need to do this for firewx, which is a cold start
 if [ ${WGF} != "firewx" ]; then
   ln -sf ${FORECAST_INPUT_PRODUCT}/* .
@@ -389,7 +381,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then
   smokefile=${COMrrfs}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc
   echo "try to use smoke file=",${smokefile}
   if [ -f ${smokefile} ]; then
-    ln -snf ${smokefile} ${DATA}/INPUT/SMOKE_RRFS_data.nc
+    cpreq -p ${smokefile} ${DATA}/INPUT/SMOKE_RRFS_data.nc
   else
     ln -snf ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/dummy_24hr_smoke.nc ${DATA}/INPUT/SMOKE_RRFS_data.nc
     echo "WARNING: Smoke file is not available, use dummy_24hr_smoke.nc instead"
@@ -455,9 +447,9 @@ input files in the main experiment directory..."
 
 relative_or_null=""
 
-ln -sf ${relative_or_null} ${DATA_TABLE_FP} ${DATA}
-ln -sf ${relative_or_null} ${FIELD_TABLE_FP} ${DATA}
-ln -sf ${relative_or_null} ${UFS_YAML_FP} ${DATA}
+cpreq ${relative_or_null} ${DATA_TABLE_FP} ${DATA}
+cpreq ${relative_or_null} ${FIELD_TABLE_FP} ${DATA}
+cpreq ${relative_or_null} ${UFS_YAML_FP} ${DATA}
 
 #
 # Determine if running stochastic physics for the specified cycles in CYCL_HRS_STOCH
@@ -798,7 +790,8 @@ if [ "${DO_FCST_RESTART}" = "TRUE" ] && [ $coupler_res_ct -gt 0 ] && [ $FCST_LEN
     if [ -s output_file_backup.sh ]; then
       echo "The RESTART has found previous output in umbrella output and will move to an OLD directory"
       [[ ! -d OLD ]]&& mkdir OLD
-      sh output_file_backup.sh
+      chmod 755 output_file_backup.sh
+      output_file_backup.sh
     fi
     cd ${DATA}
   fi
@@ -893,28 +886,6 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# If INPUT/phy_data.nc exists, convert it from NetCDF4 to NetCDF3
-# (happens for cycled runs, not cold-started)
-#
-#-----------------------------------------------------------------------
-#
-if [[ -f phy_data.nc ]] ; then
-  echo "convert phy_data.nc from NetCDF4 to NetCDF3"
-  cd INPUT
-  rm -f phy_data.nc3 phy_data.nc4
-  cp -fp phy_data.nc phy_data.nc4
-  if ( ! time ( module purge ; module load intel szip hdf5 netcdf nco ; module list ; set -x ; ncks -3 --64 phy_data.nc4 phy_data.nc3) ) ; then
-    mv -f phy_data.nc4 phy_data.nc
-    rm -f phy_data.nc3
-    echo "NetCDF 4=>3 conversion failed. :-( Continuing with NetCDF 4 data."
-  else
-    mv -f phy_data.nc3 phy_data.nc
-  fi
-  cd ..
-fi
-#
-#-----------------------------------------------------------------------
-#
 # Run the RRFS model.  Note that we have to launch the forecast from the
 # current cycle's directory because the FV3 executable will look for
 # input files in the current directory. Since those files have been
@@ -923,7 +894,6 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-module list
 
 # Ensure acsnow is in sfc_data.nc
 cd INPUT

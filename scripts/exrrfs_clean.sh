@@ -51,7 +51,7 @@ cd $DATA
 cd $DATAROOT
 if [ ${KEEPDATA} == "YES" ]; then
   # Keep all unique id DATA and rename the Umbrella Data directory to ensure new job will not run on the same directory
-  for dir_remove in rrfs_analysis_gsi rrfs_analysis_gsi_spinup rrfs_calc_ensmean rrfs_forecast_spinup rrfs_init rrfs_init_spinup; do
+  for dir_remove in rrfs_analysis_gsi rrfs_analysis_gsi_spinup rrfs_calc_ensmean rrfs_forecast_spinup rrfs_init rrfs_init_spinup rrfs_ics; do
     [[ -d ${dir_remove}_${cyc}_v1.0 ]]&& mv ${dir_remove}_${cyc}_v1.0 ${dir_remove}_$$_${cyc}_v1.0
   done
 else
@@ -59,13 +59,16 @@ else
   [[ -f ${DATA}/cleanup_run.sh ]]&& rm -f ${DATA}/cleanup_run.sh
   echo "set -x" &> ${DATA}/cleanup_run.sh
   idx_cyc2d=${cyc}
-  ls -lart|grep -v "\_${idx_cyc2d}\_"|grep "_${idx_cyc2d}\."|grep -v "rrfs_clean_${idx_cyc2d}"|awk '{print "rm -rf",$9}' >> ${DATA}/cleanup_run.sh
-  ls -lart|grep "\_${idx_cyc2d}\_v1\.0"|awk '{print "rm -rf",$9}' >> ${DATA}/cleanup_run.sh
+  # Find all unique id data to remove
+  ls -lart rrfs_* | grep -v "\_${idx_cyc2d}\_"|grep "_${idx_cyc2d}\."|grep -v "rrfs_clean_${idx_cyc2d}"|awk '{print "rm -rf",$9}' >> ${DATA}/cleanup_run.sh
+  # Find all Umbrella Data to remove
+  ls -lart rrfs_* | grep "\_${idx_cyc2d}\_v1\.0"|awk '{print "rm -rf",$9}' >> ${DATA}/cleanup_run.sh
   cat ${DATA}/cleanup_run.sh
-  [[ $(cat ${DATA}/cleanup_run.sh|wc -l) -gt 1 ]]&& sh ${DATA}/cleanup_run.sh &> ${DATA}/cleanup_run_$$.log
+  chmod 755 ${DATA}/cleanup_run.sh
+  [[ $(cat ${DATA}/cleanup_run.sh|wc -l) -gt 1 ]]&& ${DATA}/cleanup_run.sh &> ${DATA}/cleanup_run_$$.log
   # Double check and delete all Umbrella Data for this cycle
-  for dir_remove in rrfs_analysis_gsi rrfs_analysis_gsi_spinup rrfs_calc_ensmean rrfs_forecast_spinup rrfs_init rrfs_init_spinup; do
-    [[ -d ${dir_remove}_${cyc}_v1.0 ]]&& rm -rf ${dir_remove}_${cyc}_v1.0
+  for dir_remove in *_${idx_cyc2d}_v1.0; do
+    [[ -d ${dir_remove} ]]&& rm -rf ${dir_remove}
   done
 fi
 #-----------------------------------------------------------------------
@@ -79,22 +82,21 @@ if [ ${KEEPDATA} == "YES" ]; then
   [[ -f ${DATA}/post_prdgen_data_clean1.sh ]]&& rm -f ${DATA}/post_prdgen_data_clean1.sh
   echo "set -x" &> ${DATA}/post_prdgen_data_clean1.sh
   idx_cyc2d=${cyc}
-  ls -lart|grep "\_post_${idx_cyc2d}\_v1\.0"|awk '{print "rm -rf",$9}' >> ${DATA}/post_prdgen_data_clean1.sh
+  ls -lart rrfs_* | grep "\_post_${idx_cyc2d}\_v1\.0"|awk '{print "rm -rf",$9}' >> ${DATA}/post_prdgen_data_clean1.sh
   # Remove post
-  ls -lart|grep -v "\_${idx_cyc2d}\_"|grep "_${idx_cyc2d}\."|grep "_post_"|grep -v "rrfs_clean_${idx_cyc2d}"|awk '{print "rm -rf",$9}' >> ${DATA}/post_prdgen_data_clean1.sh
+  ls -lart rrfs_* | grep -v "\_${idx_cyc2d}\_"|grep "_${idx_cyc2d}\."|grep "_post_"|grep -v "rrfs_clean_${idx_cyc2d}"|awk '{print "rm -rf",$9}' >> ${DATA}/post_prdgen_data_clean1.sh
   # Remove prdgen
-  ls -lart|grep -v "\_${idx_cyc2d}\_"|grep "_${idx_cyc2d}\."|grep "_prdgen_"|grep -v "rrfs_clean_${idx_cyc2d}"|awk '{print "rm -rf",$9}' >> ${DATA}/post_prdgen_data_clean1.sh
-#  if [ ${idx_cyc2d} == 00 ] || [ ${idx_cyc2d} == 06 ] || [ ${idx_cyc2d} == 12 ] || [ ${idx_cyc2d} == 18 ]; then
-#    # Remove ensf
-#    ls -lart|grep -v "\_${idx_cyc2d}\_"|grep "_${idx_cyc2d}\."|grep "_ensf_"|grep -v "rrfs_clean_${idx_cyc2d}"|awk '{print "rm -rf",$9}' >> ${DATA}/post_prdgen_data_clean1.sh
-#    # Remove firewx
-#    ls -lart|grep -v "\_${idx_cyc2d}\_"|grep "_${idx_cyc2d}\."|grep "_firewx_"|grep -v "rrfs_clean_${idx_cyc2d}"|awk '{print "rm -rf",$9}' >> ${DATA}/post_prdgen_data_clean1.sh
-#  fi
+  ls -lart rrfs_* | grep -v "\_${idx_cyc2d}\_"|grep "_${idx_cyc2d}\."|grep "_prdgen_"|grep -v "rrfs_clean_${idx_cyc2d}"|awk '{print "rm -rf",$9}' >> ${DATA}/post_prdgen_data_clean1.sh
   cat ${DATA}/post_prdgen_data_clean1.sh
-  [[ $(cat ${DATA}/post_prdgen_data_clean1.sh|wc -l) -gt 1 ]]&& sh ${DATA}/post_prdgen_data_clean1.sh &> ${DATA}/post_prdgen_data_clean1_run_$$.log
+  chmod 755 ${DATA}/post_prdgen_data_clean1.sh
+  [[ $(cat ${DATA}/post_prdgen_data_clean1.sh|wc -l) -gt 1 ]]&& ${DATA}/post_prdgen_data_clean1.sh &> ${DATA}/post_prdgen_data_clean1_run_$$.log
 fi
 
 [[ ${KEEPDATA} == "NO" ]]&& exit 0
+
+# Remove old DATA in development mode under KEEPDATA=YES
+#   Remove all DATA older then 8 cycles
+#   Proceed with remove when the forecast job for target cycle is completed
 [[ -f ${DATA}/data_clean1.sh ]]&& rm -f ${DATA}/data_clean1.sh
 cd $DATAROOT
 echo "set -x" >> ${DATA}/data_clean1.sh
@@ -123,12 +125,13 @@ for idx_cyc in ${search_cyc_18#0} ${search_cyc_17#0} ${search_cyc_16#0} ${search
 
   if [ ${fcst_state} == "complete" ]; then
     echo "Cycle ${idx_cyc2d} is completed - proceed with cleanup"
-    ls|grep "_${idx_cyc2d}\."|awk -v DATAROOT="$DATAROOT" '{print "rm -rf",DATAROOT"/"$1}' >> ${DATA}/data_clean1.sh
+    ls rrfs_* | grep "_${idx_cyc2d}\."|awk -v DATAROOT="$DATAROOT" '{print "rm -rf",DATAROOT"/"$1}' >> ${DATA}/data_clean1.sh
     # Include the backup umbrella data directories
-    ls -d */ |grep "_${idx_cyc2d}_v1\.0" |awk -v DATAROOT="$DATAROOT" '{print "rm -rf",DATAROOT"/"$1}' >> ${DATA}/data_clean1.sh
+    ls -d rrfs_*/ | grep "_${idx_cyc2d}_v1\.0" |awk -v DATAROOT="$DATAROOT" '{print "rm -rf",DATAROOT"/"$1}' >> ${DATA}/data_clean1.sh
   fi
 done
-[[ $(cat ${DATA}/data_clean1.sh|wc -l) -gt 1 ]]&& sh ${DATA}//data_clean1.sh
+chmod 755 ${DATA}//data_clean1.sh
+[[ $(cat ${DATA}/data_clean1.sh|wc -l) -gt 1 ]]&& ${DATA}//data_clean1.sh
 cd $DATA
 
 exit 0

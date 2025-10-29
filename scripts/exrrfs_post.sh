@@ -168,22 +168,30 @@ EOF
 
 #-----------------------------------------------------------------------
 #
-# GTG_rrfs config file in UPP source code sub directory
-#
-#-----------------------------------------------------------------------
-
-cp ${UPP_DIR}/sorc/ncep_post.fd/post_gtg.fd/gtg.config.rrfs ./gtg.config.rrfs
-cp ${UPP_DIR}/sorc/ncep_post.fd/post_gtg.fd/gtg.input.rrfs ./gtg.input.rrfs
-
-#-----------------------------------------------------------------------
-#
 # stage necessary files in run directory.
 #
 #-----------------------------------------------------------------------
 #
 cpreq -p ${UPP_DIR}/parm/nam_micro_lookup.dat ./eta_micro_lookup.dat
 
-ln -snf ${FIX_UPP_CRTM}/*bin ./
+# get crtm fix files
+for what in "amsre_aqua" "imgr_g11" "imgr_g12" "imgr_g13" \
+    "imgr_g15" "imgr_mt1r" "imgr_mt2" "seviri_m10" \
+    "ssmi_f13" "ssmi_f14" "ssmi_f15" "ssmis_f16" \
+    "ssmis_f17" "ssmis_f18" "ssmis_f19" "ssmis_f20" \
+    "tmi_trmm" "v.seviri_m10" "imgr_insat3d" "abi_gr" \
+    "ahi_himawari8" ; do
+    ln -s "${FIX_UPP_CRTM}/${what}.TauCoeff.bin" .
+    ln -s "${FIX_UPP_CRTM}/${what}.SpcCoeff.bin" .
+done
+
+for what in 'Aerosol' 'Cloud' ; do
+    ln -s "${FIX_UPP_CRTM}/${what}Coeff.bin" .
+done
+
+for what in  ${FIX_UPP_CRTM}/*Emis* ; do
+   ln -s $what .
+done
 
 if [ ${USE_CUSTOM_POST_CONFIG_FILE} = "TRUE" ]; then
 # For RRFS: use special postcntrl for fhr=0,1 to eliminate duplicate 
@@ -385,17 +393,16 @@ net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
 if [ ${DO_ENSFCST} = "TRUE" ]; then
   prslev=${DATA}/${net4}.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
   natlev=${DATA}/${net4}.t${cyc}z.${mem_num}.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
+  nbmfld=${DATA}/${net4}.t${cyc}z.${mem_num}.nbmfld.${gridspacing}.f${fhr}.${gridname}.grib2
 else
   prslev=${DATA}/${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
   natlev=${DATA}/${net4}.t${cyc}z.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
+  nbmfld=${DATA}/${net4}.t${cyc}z.nbmfld.${gridspacing}.f${fhr}.${gridname}.grib2
 fi
 
 if [ -f PRSLEV.GrbF${post_fhr} ]; then
 # If post_min is 15, 30, or 45, then copy the grib2 file to umbrella_post_data
   if [ $post_min = 15 -o $post_min = 30 -o $post_min = 45 ]; then
-    if [ ! -d ${umbrella_post_data} ]; then
-      mkdir -p ${umbrella_post_data}
-    fi
     cpreq -p PRSLEV.GrbF${post_fhr} ${umbrella_post_data}
     echo "Subhourly file copied to umbrella data directory, exit post task"
     exit
@@ -449,6 +456,10 @@ fi # PRSLEV test
 if [ -f NATLEV.GrbF${post_fhr} ]; then
   wgrib2 NATLEV.GrbF${post_fhr} -set center 7 -grib ${natlev} >>$pgmout 2>>errfile
 fi
+
+if [ -f NBMFLD.GrbF${post_fhr} ]; then
+  wgrib2 NBMFLD.GrbF${post_fhr} -set center 7 -grib ${nbmfld} >>$pgmout 2>>errfile
+fi
 #
 #-----------------------------------------------------------------------
 #   copy post-processed grib2 files to COMOUT
@@ -459,6 +470,11 @@ cpreq -p ${prslev} ${COMOUT}
 if [[ -f ${natlev} ]]; then
   cpreq -p ${natlev} ${COMOUT}
 fi
+# NBMFLD file is only generated for RRFS and REFS
+if [[ -f ${nbmfld} ]]; then
+  cpreq -p ${nbmfld} ${COMOUT}
+fi
+
 # Only one latlons_corners file per cycle is needed in COMOUT - make this change later
 if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
   cpreq -p latlons_corners.txt.f${fhr} ${COMOUT}

@@ -83,7 +83,7 @@
     dwind_2d = .false.
     dz_min = 2.0
     external_eta = .true.
-    external_ic = .false.
+    external_ic = .true.
     fill = .true.
     full_zs_filter = .false.
     fv_debug = .false.
@@ -103,14 +103,14 @@
     kord_tr = 9
     kord_wz = 9
     layout = 16, 48
-    make_nh = .false.
-    mountain = .true.
+    make_nh = .true.
+    mountain = .false.
     n_split = 5
     n_sponge = -1
     n_zs_filter = 0
-    na_init = 0
+    na_init = 1
     ncep_ic = .false.
-    nggps_ic = .false.
+    nggps_ic = .true.
     no_dycore = .false.
     nord = 3
     nord_tr = 0
@@ -139,7 +139,7 @@
     tau = 5.0
     use_hydro_pressure = .false.
     vtdm4 = 0.02
-    warm_start = .true.
+    warm_start = .false.
     write_restart_with_bcs = .false.
     z_tracer = .true.
 /
@@ -247,7 +247,7 @@
     lradar = .true.
     lrefres = .true.
     lsm = 3
-    lsoil = 9
+    lsoil = 4
     lsoil_lsm = 9
     ltaerosol = .true.
     lwhtr = .true.
@@ -274,8 +274,8 @@
     sc_factor = 1.0
     seas_opt = 0
     sfclay_compute_flux = .true.
-    sigmab_coldstart = .true.
     shal_cnv = .false.
+    sigmab_coldstart = .true.
     smoke_conv_wet_coef = 0.5, 0.5, 0.5
     swhtr = .true.
     thsfc_loc = .false.
