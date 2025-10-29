@@ -122,6 +122,7 @@ fi
 #-----------------------------------------------------------------------
 
 export pgmout="${DATA}/OUTPUT.$$"
+export pgmout_pre_blending="${DATA}/OUTPUT_pre_blending.$$"
 env
 
 ${HOMErrfs}/scripts/exrrfs_make_ics.sh
@@ -131,6 +132,9 @@ if [ -e "$pgmout" ]; then
   cat $pgmout
 fi
 
+if [ -e "$pgmout_pre_blending" ]; then
+  cat $pgmout_pre_blending
+fi
 #-----------------------------------------------------------------------
 # Print exit message.
 #-----------------------------------------------------------------------

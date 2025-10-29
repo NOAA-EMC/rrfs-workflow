@@ -745,49 +745,13 @@ export err=$?; err_chk
 if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
 
   echo "Pre-Blending Starting. `date`"
+  sleep 6
   ulimit -s unlimited
   #Add the size of the variables declared as private and multiply by the OMP_NUMTHREADS
   export OMP_STACKSIZE=600M #8*[3951*{65+67+66}]*96/1048576 = 600804864/1048576 = 573 MB
   export FI_OFI_RXM_SAR_LIMIT=3145728
   export FI_MR_CACHE_MAX_COUNT=0
   export MPICH_OFI_STARTUP_CONNECT=1
-
-  case "$MACHINE" in
-
-    "WCOSS2")
-       if [[ $NCORES_PER_NODE -gt 96 ]]; then
-          export OMP_NUM_THREADS="96"
-       fi
-      ;;
-
-    "HERA")
-       if [[ $NCORES_PER_NODE -gt 80 ]]; then
-          export OMP_NUM_THREADS="80"
-       fi
-      ;;
-
-    "ORION")
-       if [[ $NCORES_PER_NODE -gt 80 ]]; then
-          export OMP_NUM_THREADS="80"
-       fi
-      ;;
-
-    "HERCULES")
-       if [[ $NCORES_PER_NODE -gt 80 ]]; then
-          export OMP_NUM_THREADS="80"
-       fi
-      ;;
-
-    "JET")
-       if [[ $NCORES_PER_NODE -gt 80 ]]; then
-          export OMP_NUM_THREADS="80"
-       fi
-      ;;
-
-  esac
-
-  # F2Py shared object files to PYTHONPATH
-  export PYTHONPATH=$PYTHONPATH:$HOMErrfs/sorc/build/lib64
 
   # Required FIX files
   cpreq  $FIXLAM/${CRES}_grid.tile7.nc .
@@ -808,7 +772,8 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
   fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
   cpreq ${fixgriddir}/cold2warm_all.nc .
   export pgm1=fv3lam_pre_blending.exe
-  ${APRUN_PRE_BLENDING} ${EXECrrfs}/$pgm1 >>$pgmout 2>errfile
+. prep_step
+  ${APRUN_PRE_BLENDING} ${EXECrrfs}/$pgm1 >>$pgmout_pre_blending 2>errfile_pre_blending
   export err=$?; err_chk
   mv ${DATA}/cold2warm_all.nc ${shared_output_data}/.
 
