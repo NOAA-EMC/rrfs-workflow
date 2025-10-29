@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf_dev
+source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
 #
 #-----------------------------------------------------------------------
@@ -279,13 +279,6 @@ Creating links with names that RRFS looks for in the INPUT subdirectory
 of the current run directory (DATA), where
   DATA = \"${DATA}\"
 ..."
-
-#BKTYPE=1    # cold start using INPUT
-#if [ -r ${DATA}/INPUT/coupler.res ] ; then
-#  BKTYPE=0  # cycling using RESTART
-#fi
-#print_info_msg "$VERBOSE" "
-#The forecast has BKTYPE $BKTYPE (1:cold start ; 0 cycling)"
 
 cd ${DATA}/INPUT
 # Do not need to do this for firewx, which is a cold start
@@ -726,7 +719,7 @@ if [ "${DO_FCST_RESTART}" = "TRUE" ] && [ $coupler_res_ct -gt 0 ] && [ $FCST_LEN
   flag_fcst_restart="TRUE"
   # Update FV3 input.nml for restart
    $USHrrfs/update_input_nml.py \
-    --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf_dev \
+    --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf \
     --run_dir "${DATA}" \
     --restart
   export err=$?
@@ -832,7 +825,7 @@ fi
 fi
 
 $USHrrfs/create_model_configure_file.py \
-  --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf_dev \
+  --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf \
   --cdate "${CDATE}" \
   --cycle_type "${CYCLE_TYPE}" \
   --cycle_subtype "${CYCLE_SUBTYPE}" \
@@ -858,7 +851,7 @@ fi
 #-----------------------------------------------------------------------
 #
 $USHrrfs/create_diag_table_file.py \
-  --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf_dev \
+  --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf \
   --run-dir ${DATA}
 export err=$?
 if [ $err -ne 0 ]; then
@@ -882,7 +875,7 @@ fi
 #-----------------------------------------------------------------------
 #
 $USHrrfs/create_ufs_configure_file.py \
-  --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf_dev \
+  --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf \
   --run-dir ${DATA} 
 export err=$?
 if [ $err -ne 0 ]; then
