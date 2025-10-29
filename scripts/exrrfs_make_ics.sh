@@ -745,6 +745,7 @@ export err=$?; err_chk
 if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
 
   echo "Pre-Blending Starting. `date`"
+  sleep 6
   ulimit -s unlimited
   #Add the size of the variables declared as private and multiply by the OMP_NUMTHREADS
   export OMP_STACKSIZE=600M #8*[3951*{65+67+66}]*96/1048576 = 600804864/1048576 = 573 MB
