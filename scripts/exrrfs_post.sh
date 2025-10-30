@@ -473,6 +473,7 @@ fi
 # NBMFLD file is only generated for RRFS and REFS
 if [[ -f ${nbmfld} ]]; then
   cpreq -p ${nbmfld} ${COMOUT}
+  wgrib2 ${nbmfld} -s > ${COMOUT}/${nbmfld}.idx
 fi
 
 # Only one latlons_corners file per cycle is needed in COMOUT - make this change later
