@@ -157,6 +157,18 @@ FMC_OUTPUTDIR=${DATADIR_CHEM}/aux/FMC/processed/${YYYY}/${MM}/
 fi
 #
 dummyRAVE=${RAVE_DIR}/processed/RAVE.dummy.${MESH_NAME}.nc
+if [[ ! -e ${dummyRAVE} ]]; then
+   shared_dummy_rave=${DATADIR_CHEM}/emissions/RAVE/processed/RAVE.dummy.${MESH_NAME}.nc
+   if [[ -e ${shared_dummy_rave} ]]; then
+      echo "Dummy RAVE file bein copied from ${shared_dummy_rave} to ${dummyRAVE}"
+      cp ${shared_dummy_rave} ${dummyRAVE}
+   else
+      echo "Shared dummy RAVE does not exist for this mesh"
+      echo "If any RAVE files are missing, your simulation will error.. (for now)"
+   fi
+else
+   echo "Will use dummy RAVE file: ${dummyRAVE}"
+fi
 ${MKDIR} -p ${RAVE_OUTPUTDIR}
 ${MKDIR} -p ${ECO_OUTPUTDIR}
 ${MKDIR} -p ${FMC_OUTPUTDIR}
