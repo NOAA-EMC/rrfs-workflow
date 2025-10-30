@@ -1,0 +1,26 @@
+#PBS -N rrfs_ensf_post_manager_%CYC%
+#PBS -j oe
+#PBS -S /bin/bash
+#PBS -q %QUEUE%
+#PBS -A %PROJ%-%PROJENVIR%
+#PBS -l walltime=04:15:00
+#PBS -l place=shared,select=1:ncpus=1:mem=10GB
+#PBS -l debug=true
+
+export model=rrfs
+
+%include <head.h>
+%include <envir-p1.h>
+
+export cyc="%CYC%"
+export WGF="%WGF%"
+
+############################################################
+# CALL executable job script here
+############################################################
+${HOMErrfs}/jobs/JRRFS_POST_MANAGER
+
+%include <tail.h>
+
+%manual
+%end
