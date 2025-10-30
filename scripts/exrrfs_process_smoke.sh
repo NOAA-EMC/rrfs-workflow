@@ -103,8 +103,7 @@ python -u  ${USHrrfs}/generate_fire_emissions.py \
   "${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}" \
   "${fire_rave_dir_work}" \
   "${DATA}" \
-  "${PREDEF_GRID_NAME}" \
-  "${EBB_DCYCLE}" 
+  "${PREDEF_GRID_NAME}" 
 export err=$?; err_chk
 
 #Copy the the hourly, interpolated RAVE data to $rave_dir so it

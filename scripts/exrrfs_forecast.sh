@@ -379,7 +379,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then
   yyyymmddhh=${CDATE:0:10}
   yyyymmdd=${CDATE:0:8}
   echo ${yyyymmddhh}
-  smokefile=${COMrrfs}/${COMrrfs}/rave_intp.${yyyymmdd}/SMOKE_RRFS_data_${yyyymmddhh}00.nc
+  smokefile=${COMrrfs}/rave_intp.${yyyymmdd}/SMOKE_RRFS_data_${yyyymmddhh}00.nc
   echo "try to use smoke file=",${smokefile}
   if [ -f ${smokefile} ]; then
     cpreq -p ${smokefile} ${DATA}/INPUT/SMOKE_RRFS_data.nc
