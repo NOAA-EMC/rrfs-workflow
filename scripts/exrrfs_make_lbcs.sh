@@ -338,7 +338,6 @@ if [ ${extrn_mdl_name} != GEFS ] ; then
      echo "Add file - ${file_to_copy} to parallel transfer job list"
      echo "cpfs ${file_to_copy} ${umbrella_lbcops_data}" >> ${DATA}/parallel_copy.sh
    done
-   #### [[ -s ${DATA}/parallel_copy.sh ]]&& cat ${DATA}/parallel_copy.sh | parallel --verbose
    if [ -s ${DATA}/parallel_copy.sh ]; then
      split -l 10 parallel_copy.sh parallel_copy_run
      for file_to_p_copy in parallel_copy_run*; do

@@ -209,7 +209,6 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
     regional_ensemble_option=1
     l_both_fv3sar_gfs_ens=.false.
   else
-####    cat ${DATA}/parallel_copy.sh | parallel --verbose
     split -l 10 parallel_copy.sh parallel_copy_run
     for file_to_p_copy in parallel_copy_run*; do
        echo "Working on ${file_to_p_copy}"
