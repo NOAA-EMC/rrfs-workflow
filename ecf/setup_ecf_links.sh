@@ -1,5 +1,7 @@
 #!/bin/bash
 set -eux
+# not sure if this load is needed, but want to make sure cpreq is available.
+module load prod_util
 # Assume resource is using NCO production configuration
 resource_config="EMC"
 ECF_DIR=$(pwd)
@@ -46,15 +48,15 @@ cd ${ECF_DIR}/../fix/workflow/
 echo "point at proper workflow.conf version..."
   rm -f ./det/workflow.conf ./enkf/workflow.conf ./ensf/workflow.conf ./firewx/workflow.conf
 if [ ${resource_config} == "NCO" ]; then
-  ln -s ./det/workflow.conf_prod ./det/workflow.conf
-  ln -s ./enkf/workflow.conf_prod ./enkf/workflow.conf
-  ln -s ./ensf/workflow.conf_prod ./ensf/workflow.conf
-  ln -s ./firewx/workflow.conf_prod ./firewx/workflow.conf
+  cpreq ./det/workflow.conf_prod ./det/workflow.conf
+  cpreq ./enkf/workflow.conf_prod ./enkf/workflow.conf
+  cpreq ./ensf/workflow.conf_prod ./ensf/workflow.conf
+  cpreq ./firewx/workflow.conf_prod ./firewx/workflow.conf
 else
-  ln -s ./det/workflow.conf_dev ./det/workflow.conf
-  ln -s ./enkf/workflow.conf_dev ./enkf/workflow.conf
-  ln -s ./ensf/workflow.conf_dev ./ensf/workflow.conf
-  ln -s ./firewx/workflow.conf_dev ./firewx/workflow.conf
+  cpreq ./det/workflow.conf_dev ./det/workflow.conf
+  cpreq ./enkf/workflow.conf_dev ./enkf/workflow.conf
+  cpreq ./ensf/workflow.conf_dev ./ensf/workflow.conf
+  cpreq ./firewx/workflow.conf_dev ./firewx/workflow.conf
 fi
 
 # det prdgen files
