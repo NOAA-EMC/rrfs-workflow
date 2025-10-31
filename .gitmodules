@@ -1,7 +1,7 @@
 [submodule "sorc/WPS"]
 	path = sorc/WPS
-	url = https://github.com/wrf-model/WPS
-        branch = master
+	url = https://github.com/NOAA-GSL/WPS
+        branch = rrfs
         ignore = all
 [submodule "sorc/MPAS-Model"]
 	path = sorc/MPAS-Model
