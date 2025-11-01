@@ -1,0 +1,25 @@
+&chemistry
+    config_smoke_scheme  = 'off'
+    config_dust_scheme = 'off'
+    num_chem = 0
+    plume_wind_eff = 0
+    ebb_dcycle = 1
+    hwp_method = 2
+    add_fire_heat_flux = false
+    add_fire_moist_flux = false
+    wetdep_ls_alpha = 0.5
+    wetdep_ls_opt = 1
+    plume_alpha = 0.05
+    bb_emis_scale_factor = 1.0
+    plumerise_opt = 1
+    drydep_opt = 1
+    pm_settling = 1
+    dust_alpha  = 1.0
+    dust_gamma = 1.0
+    dust_drylimit_factor = 0.1
+    dust_moist_correction = 0.1
+    aero_dir_rad_fdb = false
+    config_mynn_enh_mix = false
+    kanthro = 20
+    kwildfire = 1
+/

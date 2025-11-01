@@ -1,0 +1,6 @@
+<immutable_stream name="anthro_input"
+                  type="input"
+                  filename_template="anthro.init.$Y-$M-$D_$h.$m.$s.nc"
+                  input_interval="1:00:00"
+                  io_type="netcdf,netcdf4"
+                  filename_interval="input_interval"/>
