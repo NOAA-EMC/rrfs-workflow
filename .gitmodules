@@ -31,3 +31,7 @@
 	path = ush/wxflow
 	url = https://github.com/NOAA-EMC/wxflow.git
         ignore = all
+[submodule "sorc/rank_run"]
+	path = sorc/rank_run
+	url = https://github.com/RRFSx/rank_run
+        ignore = all
