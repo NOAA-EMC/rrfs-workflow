@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
+set -x
+date
+#
+#-----------------------------------------------------------------------
+# Specify Execution Areas
+#-----------------------------------------------------------------------
+#
+export HOMErrfs=${HOMErrfs} #comes from the workflow at runtime
+export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
+export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
+export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
+export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
+#
+#-----------------------------------------------------------------------
+# Obtain unique process id (pid) and create the run directory (DATA).
+#-----------------------------------------------------------------------
+#
+export pid=${pid:-$$}
+export UMBRELLA_PREP_CHEM_DATA=${UMBRELLA_PREP_CHEM_DATA:-${DATAROOT}/${RUN}_prep_chem_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
+if [[ "${SPINUP_MODE:-0}" == "1" ]];  then
+  prep_ic_str="prep_ic_spinup"
+else
+  prep_ic_str="prep_ic"
+fi
+export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_${prep_ic_str}_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
+
+export jobid=${jobid:-prep_chem_${cyc}}
+export DATA=${DATA:-${UMBRELLA_PREP_CHEM_DATA}/${jobid}}_${EMIS_SECTOR_TO_PROCESS}
+
+if [[ -d "${DATA}" ]]; then # remove the "${DATA}" directory if existed
+  rm -rf "${DATA}"
+fi
+mkdir -p "${DATA}"
+#
+#-----------------------------------------------------------------------
+# Define COM directories
+#-----------------------------------------------------------------------
+#
+export COMINrrfs=${COMINrrfs:-$(compath.py "$envir/rrfs/$rrfs_ver")}
+export COMOUT=${COMOUT:-$(compath.py -o "${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}")}
+#
+#----------------------------------------
+# Execute the script.
+#----------------------------------------
+export pgmout="${DATA}/OUTPUT.$$"
+"${HOMErrfs}"/scripts/exrrfs_prep_chem.sh 
+export err=$?; err_chk
+
+if [[ -e "${pgmout}" ]]; then
+  cat "${pgmout}"
+fi
+#
+#----------------------------------------
+# Remove the Temporary working directory
+#----------------------------------------
+if [[ "${KEEPDATA}" == "NO" ]] && [[ ${CREATE_OWN_DATA} == "FALSE" ]]; then
+  rm -rf "${DATA}"
+fi
+#
+date
+echo "JOB ${jobid:-} HAS COMPLETED NORMALLY!"
+exit 0
