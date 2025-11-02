@@ -17,6 +17,7 @@
 # 4. MESH_NAME                -- name of the MPAS domain, required to know if we have weights or data intepolated to the domain 
 # 5. FCST_LENGTH               -- nhours of forecast
 #
+# shellcheck disable=SC1091,SC2153,SC2154,SC2034
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
 nt=${SLURM_NTASKS}
@@ -43,11 +44,11 @@ MMp=$(date -d "${CDATE:0:8} ${CDATE:8:2} - 1 day" +%m)
 DDp=$(date -d "${CDATE:0:8} ${CDATE:8:2} - 1 day" +%d)
 HHp=$(date -d "${CDATE:0:8} ${CDATE:8:2}- 1 day" +%H)
 #
-current_day=`${DATE} -d "${YYYY}${MM}${DD}"`
-current_hh=`${DATE} -d ${HH} +"%H"`
+current_day=$(date -d "${YYYY}${MM}${DD}")
+current_hh=$(date -d "${HH}" +"%H")
 #
-prev_hh=`${DATE} -d "$current_hh -24 hour" +"%H"`
-previous_day=`${DATE} '+%C%y%m%d' -d "$current_day-1 days"`
+prev_hh=$(date -d "$current_hh -24 hour" +"%H")
+previous_day=$(date '+%C%y%m%d' -d "$current_day-1 days")
 previous_day="${previous_day} ${prev_hh}"
 #
 if [[ ${DOW} -le 5 ]]; then
@@ -70,7 +71,7 @@ MOY_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${FCST_LENGTH} hours" +%B)  # ful
 DOY=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%j)  # Julian day 
 #
 if [[ "${DOY}" -ne 0 ]]; then
-  DOY_m1=$((${DOY}-1))
+  DOY_m1=$((DOY-1))
 else
   DOY_m1=0
 fi
@@ -80,7 +81,7 @@ DOY_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${FCST_LENGTH} hours" +%j)  # Jul
 # Set the init/mesh file name and link here:\
 if [[ ${keepdata} == "YES" ]]; then  # keepdata or not, umbrella is always there. gge.debug
    if [[ -r ${UMBRELLA_PREP_IC_DATA}/init.nc ]]; then
-       ln -sf ${UMBRELLA_PREP_IC_DATA}/init.nc ./${MESH_NAME}.init.nc
+       ln -sf "${UMBRELLA_PREP_IC_DATA}"/init.nc ./"${MESH_NAME}".init.nc
        INIT_FILE=./${MESH_NAME}.init.nc
    else
        echo "WARNING: NO Init File available, cannot reinterpolate if files are missing, did you run the task out of order?"
@@ -88,7 +89,7 @@ if [[ ${keepdata} == "YES" ]]; then  # keepdata or not, umbrella is always there
    fi
 else
    if [[ -r ${COMOUT}/ic/${WGF}${MEMDIR}/init.nc  ]]; then
-       ln -sf  ${COMOUT}/ic/${WGF}${MEMDIR}/init.nc ./${MESH_NAME}.init.nc
+       ln -sf  "${COMOUT}/ic/${WGF}${MEMDIR}"/init.nc ./"${MESH_NAME}".init.nc
        INIT_FILE=./${MESH_NAME}.init.nc
    else
        echo "WARNING: NO Init File available, cannot reinterpolate if files are missing, did you run the task out of order?"
