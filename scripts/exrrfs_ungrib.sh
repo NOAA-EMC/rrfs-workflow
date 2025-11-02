@@ -20,6 +20,9 @@ prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
 
 cd "${DATA}" || exit 1
 ${cpreq} "${FIXrrfs}/ungrib/Vtable.${prefix}" Vtable
+if ${DO_CHMISTRY:-false} && ${USE_EXTERNAL_CHEM:-false}; then
+  ${cpreq} "${FIXrrfs}/ungrib/Vtable.${prefix}.SD" Vtable
+fi
 #
 # find start and end time
 #
