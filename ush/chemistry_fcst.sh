@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# find ensemble forecasts based on user settings
+# Configure appropriate chemistry settings for the fcst task
 #
 # shellcheck disable=SC2154,SC2153
 num_chem=0

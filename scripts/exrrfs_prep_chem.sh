@@ -78,7 +78,7 @@ fi
 DOY_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${FCST_LENGTH} hours" +%j)  # Julian day 
 #
 # Set the init/mesh file name and link here:\
-if [[ ${keepdata} == "YES" ]]; then
+if [[ ${keepdata} == "YES" ]]; then  # keepdata or not, umbrella is always there. gge.debug
    if [[ -r ${UMBRELLA_PREP_IC_DATA}/init.nc ]]; then
        ln -sf ${UMBRELLA_PREP_IC_DATA}/init.nc ./${MESH_NAME}.init.nc
        INIT_FILE=./${MESH_NAME}.init.nc
@@ -110,8 +110,6 @@ export PATH=${regrid_conda_env}/bin:${PATH}
 export ESMFMKFILE=${regrid_conda_env}/lib/esmf.mk
 export PYTHONPATH=${PYTHONDIR}:${PYTHONPATH}
 #
-#==================================================================================================
-#                                 ... Wildfire ...                                             
 #==================================================================================================#
 if [[ "${EMIS_SECTOR_TO_PROCESS}" == "smoke" ]]; then
   source "USHrrfs"/prep_smoke.sh
