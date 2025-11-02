@@ -17,27 +17,11 @@
 # 4. MESH_NAME                -- name of the MPAS domain, required to know if we have weights or data intepolated to the domain 
 # 5. FCST_LENGTH               -- nhours of forecast
 #
-declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]${id}: '
+declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
-nt=$SLURM_NTASKS
+nt=${SLURM_NTASKS}
 cpreq=${cpreq:-cpreq}
-#
-LS=/bin/ls
-LN=/bin/ln
-RM=/bin/rm
-MKDIR=/bin/mkdir
-CP=/bin/cp
-MV=/bin/mv
-ECHO=/bin/echo
-CAT=/bin/cat
-GREP=/bin/grep
-CUT=`which cut`
-AWK="/bin/gawk --posix"
-SED=/bin/sed
-DATE=/bin/date
-# 
-# ... Go to the main PREP directory
-cd ${DATA}
+cd "${DATA}" || exit 1
 #
 # ... Set some date variables
 #
@@ -86,9 +70,9 @@ MOY_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${FCST_LENGTH} hours" +%B)  # ful
 DOY=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%j)  # Julian day 
 #
 if [[ "${DOY}" -ne 0 ]]; then
-DOY_m1=$((${DOY}-1))
+  DOY_m1=$((${DOY}-1))
 else
-DOY_m1=0
+  DOY_m1=0
 fi
 #
 DOY_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${FCST_LENGTH} hours" +%j)  # Julian day 
@@ -118,12 +102,10 @@ VINTERP_SCRIPT=${HOMErrfs}/scripts/exrrfs_vinterp_chem.py
 INTERP_WEIGHTS_DIR=${DATADIR_CHEM}/grids/interpolation_weights/  
 #
 # Set a few things for the CONDA environment
-
-
 export REGRID_WRAPPER_LOG_DIR=${DATA}
 regrid_wrapper_dir=${REGRID_WRAPPER_DIR} #/lfs5/BMC/rtwbl/rap-chem/mpas_rt/working/ben_interp/regrid-wrapper/
 PYTHONDIR=${regrid_wrapper_dir}/src
-regrid_conda_env=${REGRID_CONDA_ENV} #CONDAENV=/lfs5/BMC/rtwbl/rap-chem/miniconda/envs/regrid-wrapper
+regrid_conda_env=${REGRID_CONDA_ENV}  #CONDAENV=/lfs5/BMC/rtwbl/rap-chem/miniconda/envs/regrid-wrapper
 export PATH=${regrid_conda_env}/bin:${PATH}
 export ESMFMKFILE=${regrid_conda_env}/lib/esmf.mk
 export PYTHONPATH=${PYTHONDIR}:${PYTHONPATH}
@@ -132,450 +114,21 @@ export PYTHONPATH=${PYTHONDIR}:${PYTHONPATH}
 #                                 ... Wildfire ...                                             
 #==================================================================================================#
 if [[ "${EMIS_SECTOR_TO_PROCESS}" == "smoke" ]]; then
-#
-# Remove any old files
-rm -f ${UMBRELLA_PREP_CHEM_DATA}/smoke.init*nc
-#
-if [[ ! ${RAVE_DIR} ]]; then
-RAVE_INPUTDIR=/public/data/grids/nesdis/3km_fire_emissions/
-else
-RAVE_INPUTDIR=${RAVE_DIR}/raw/
-fi
-ECO_INPUTDIR=${DATADIR_CHEM}/aux/ecoregion/raw/
-#
-FMC_INPUTDIR=${DATADIR_CHEM}/aux/FMC/raw/${YYYY}/${MM}/
-
-if [[ "${CREATE_OWN_DATA}" == "TRUE" ]]; then
-RAVE_OUTPUTDIR=${DATA}
-ECO_OUTPUTDIR=${DATA}
-FMC_OUTPUTDIR=${DATA}
-else
-# TODO, check for pregenerated data
-RAVE_OUTPUTDIR=${RAVE_DIR}/processed/
-ECO_OUTPUTDIR=${DATADIR_CHEM}/aux/ecoregion/processed/
-FMC_OUTPUTDIR=${DATADIR_CHEM}/aux/FMC/processed/${YYYY}/${MM}/
-fi
-#
-dummyRAVE=${RAVE_DIR}/processed/RAVE.dummy.${MESH_NAME}.nc
-if [[ ! -e ${dummyRAVE} ]]; then
-   shared_dummy_rave=${DATADIR_CHEM}/emissions/RAVE/processed/RAVE.dummy.${MESH_NAME}.nc
-   if [[ -e ${shared_dummy_rave} ]]; then
-      echo "Dummy RAVE file bein copied from ${shared_dummy_rave} to ${dummyRAVE}"
-      cp ${shared_dummy_rave} ${dummyRAVE}
-   else
-      echo "Shared dummy RAVE does not exist for this mesh"
-      echo "If any RAVE files are missing, your simulation will error.. (for now)"
-   fi
-else
-   echo "Will use dummy RAVE file: ${dummyRAVE}"
-fi
-${MKDIR} -p ${RAVE_OUTPUTDIR}
-${MKDIR} -p ${ECO_OUTPUTDIR}
-${MKDIR} -p ${FMC_OUTPUTDIR}
-#
-srun python -u ${SCRIPT} \
-               "RAVE" \
-               ${DATA} \
-               ${RAVE_INPUTDIR} \
-               ${RAVE_OUTPUTDIR} \
-               ${INTERP_WEIGHTS_DIR} \
-               ${YYYY}${MM}${DD}${HH} \
-               ${MESH_NAME}
-mv *.log *.ESMF_LogFile logs || echo "could not move logs"
-#
-# Look for a file to create a dummy file if one doesn't already exist
-if [[ ! -e ${dummyRAVE} ]]; then
- if [[ $(ls -A "${RAVE_OUTPUTDIR}/${MESH_NAME}*") ]]; then
-    dummyRAVEtemplate=$(ls "${RAVE_OUTPUTDIR}/${MESH_NAME}*" | head -n 1)
-    echo "Dummy RAVE file doesn't exist, but creating one using: ${dummyRAVEtemplate}"
-    cp ${dummyRAVEtemplate} ${dummyRAVE}
-    ncap2 -O -s 'e_bb_in_smoke_fine=0.*e_bb_in_smoke_fine' ${dummyRAVE} ${dummyRAVE}    
-    ncap2 -O -s 'e_bb_in_smoke_coarse=0.*e_bb_in_smoke_fine' ${dummyRAVE} ${dummyRAVE}    
-    ncap2 -O -s 'e_bb_in_smoke_so2=0.*e_bb_in_smoke_fine' ${dummyRAVE} ${dummyRAVE}    
-    ncap2 -O -s 'e_bb_in_smoke_ch4=0.*e_bb_in_smoke_fine' ${dummyRAVE} ${dummyRAVE}    
-    ncap2 -O -s 'e_bb_in_smoke_nh3=0.*e_bb_in_smoke_fine' ${dummyRAVE} ${dummyRAVE}    
-    ncap2 -O -s 'frp_in=0.*frp_in' ${dummyRAVE} ${dummyRAVE}    
-    ncap2 -O -s 'fre_in=0.*fre_in' ${dummyRAVE} ${dummyRAVE}   
- fi 
-else
-    echo "Do not have and cannot create dummy RAVE file as no RAVE data is available"
-fi
-# Loop through the hours and link the files so they have the correct filename and variable names 
-# TODO - Update variable names via outside script or within regrid.py -- mapping table?
-for ihour in $(seq 0 ${FCST_LENGTH}); 
-do
-#
-   if [[ ${ihour} -gt 24 ]]; then
-      ihour2=$((${ihour}-24))
-   else
-      ihour2=${ihour}
-   fi
-   timestr1=`date +%Y%m%d%H -d "$previous_day + $ihour2 hours"`
-   timestr2=`date +%Y-%m-%d_%H -d "$current_day + $ihour hours"`
-   timestr3=`date +%Y-%m-%d_%H:00:00 -d "$current_day + $ihour hours"`
-#
-   EMISFILE=${UMBRELLA_PREP_CHEM_DATA}/smoke.init.retro.${timestr2}.00.00.nc
-   EMISFILE2="${RAVE_OUTPUTDIR}/${MESH_NAME}-RAVE-${timestr1}.nc"
-   if [[ -r ${EMISFILE2} ]]; then
-      ncrename -v PM25,e_bb_in_smoke_fine ${EMISFILE2}
-      ncrename -v FRP_MEAN,frp_in -v FRE,fre_in ${EMISFILE2}
-      ncrename -v SO2,e_bb_in_so2 -v NH3,e_bb_in_nh3 ${EMISFILE2}
-      ncrename -v CH4,e_bb_in_ch4 ${EMISFILE2}
-      ncrename -v PM10,e_bb_in_smoke_coarse ${EMISFILE2}
-      ln -sf ${EMISFILE2} ${EMISFILE}
-   else
-      cp ${dummyRAVE} ${EMISFILE}
-   fi
-   ncks -O -6 ${EMISFILE} ${EMISFILE}
-   ncks -A -v xtime ${DATA}/${MESH_NAME}.init.nc ${EMISFILE}
-   ncap2 -O -s xtime=\"${timestr3}\" ${EMISFILE} ${EMISFILE}  
-#
-done
-#
-#
-echo "Concatenating hourly files for use in forecast mode"
-# Concatenate for ebb2
-ncrcat ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.retro.*.00.00.nc ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc
-#
-# Calculate previous 24 hour average HWP
-#
-# TODO - presently hwp and totprcp have constant values
-ncap2 -O -s 'hwp_prev24=0.0*frp_in+30.' -s 'totprcp_prev24=0.0*frp_in+0.1' ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc
-ncrename -v frp_in,frp_prev24 -v fre_in,fre_prev24 ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc
-#
-# Emissions to be calculated inside of model
-if [[ ! -r "${ECO_OUTPUTDIR}/ecoregions_${MESH_NAME}_mpas.nc" ]] && [[ -r "${ECO_INPUTDIR}/veg_map.nc" ]]; then
-   echo "Regridding ECO_REGION"
-   srun python -u ${SCRIPT}   \
-                   "ECOREGION" \
-                   ${DATA} \
-                   ${ECO_INPUTDIR} \
-                   ${ECO_OUTPUTDIR} \
-                   ${INTERP_WEIGHTS_DIR} \
-                   ${YYYY}${MM}${DD}${HH} \
-                   ${MESH_NAME}
-
-  ncks -A -v ecoregion_ID ${ECO_OUTPUTDIR}/ecoregions_${MESH_NAME}_mpas.nc ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc
-fi
-# 
-n_fmc=`ls ${FMC_INPUTDIR}/fmc_${YYYY}${MM}${DD}* | wc -l`
-if [[ ${n_fmc} -gt 0 ]]; then
-  echo "Have at least some soil moisture information, will interpolate"
-     ln -s ${FMC_INPUTDIR}/* ${DATA}/
-     srun python -u ${SCRIPT}   \
-                     "FMC" \
-                     ${DATA} \
-                     ${FMC_INPUTDIR} \
-                     ${FMC_OUTPUTDIR} \
-                     ${INTERP_WEIGHTS_DIR} \
-                     ${YYYY}${MM}${DD}${HH} \
-                     ${MESH_NAME}
-  # Average for ebb2
-  ncrcat ${FMC_OUTPUTDIR}/fmc*${MESH_NAME}*nc ${UMBRELLA_PREP_CHEM_DATA}/fmc.init.nc
-  ncks -A -v 10h_dead_fuel_moisture_content ${UMBRELLA_PREP_CHEM_DATA}/fmc.init.nc ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc
-  ncrename -v 10h_dead_fuel_moisture_content,fmc_prev24 ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc
-else
-  echo "No soil moisture information available, using static value of 0.2"
-  ncap2 -O -s 'fmc_prev24=0*frp_prev24+0.2' ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc ${UMBRELLA_PREP_CHEM_DATA}/smoke.init.nc
+  source "USHrrfs"/prep_smoke.sh
 fi
 
-fi
-#
-#==================================================================================================
-#                                 ... Anthropogenic ...                                             
-#==================================================================================================
-#
-# --- Are we adding anthropogenic sectors?
 if [[ "${EMIS_SECTOR_TO_PROCESS}" == "rwc" ]]; then
-#
-# --- Set the file expression and lat/lon dimension names
-#
-   INPUTDIR=${DATADIR_CHEM}/emissions/anthro/raw/NEMO/RWC/total/
-   NARR_INPUTDIR=${DATADIR_CHEM}/aux/narr_reanalysis_t2m/raw/
-   
-   if [[ "${CREATE_OWN_DATA}" == "TRUE" ]]; then
-      NARR_OUTPUTDIR=${DATA}
-      OUTPUTDIR=${DATA}
-   else
-      NARR_OUTPUTDIR=${DATADIR_CHEM}/aux/narr_reanalysis_t2m/processed/
-      OUTPUTDIR=${DATADIR_CHEM}/emissions/anthro/processed/NEMO/RWC/total
-   fi
-   #
-   ${MKDIR} -p ${OUTPUTDIR} 
-   ${MKDIR} -p ${NARR_OUTPUTDIR}
-   # 
-   EMISFILE_RWC_PROCESSED=${OUTPUTDIR}/NEMO_RWC_ANNUAL_TOTAL_${MESH_NAME}.nc
-   #
-   if [[ ! -r ${EMISFILE_RWC_PROCESSED} ]]; then
-      srun python -u ${SCRIPT} \
-                       "NEMO" \
-                       ${DATA} \
-                       ${INPUTDIR} \
-                       ${OUTPUTDIR} \
-                       ${INTERP_WEIGHTS_DIR} \
-                       ${YYYY}${MM}${DD}${HH} \
-                       ${MESH_NAME}
-
-      # Convert to how we want it
-      ncap2 -O -s 'RWC_annual_sum=PEC+POC+PMOTHR' ${EMISFILE_RWC_PROCESSED} ${EMISFILE_RWC_PROCESSED}
-      ncap2 -O -s 'RWC_annual_sum_smoke_fine=PEC+POC' ${EMISFILE_RWC_PROCESSED}  ${EMISFILE_RWC_PROCESSED}
-      ncap2 -O -s 'RWC_annual_sum_smoke_coarse=0*RWC_annual_sum_smoke_fine' ${EMISFILE_RWC_PROCESSED}  ${EMISFILE_RWC_PROCESSED}
-      ncrename -v PMOTHR,RWC_annual_sum_unspc_fine ${EMISFILE_RWC_PROCESSED}
-      ncrename -v PMC,RWC_annual_sum_unspc_coarse ${EMISFILE_RWC_PROCESSED}
-   fi
-
-   # Regrid the summed minimum temperature equation:
-   EMISFILE_DENOM_PROCESSED=${NARR_OUTPUTDIR}/NEMO_RWC_DENOMINATOR_2017_${MESH_NAME}.nc
-   #
-   if [[ ! -r ${EMISFILE_DENOM_PROCESSED} ]] ; then
-        
-        srun python -u ${SCRIPT} \
-            "NARR" \
-            ${DATA} \
-            ${NARR_INPUTDIR} \
-            ${NARR_OUTPUTDIR} \
-            ${INTERP_WEIGHTS_DIR} \
-            ${YYYY}${MM}${DD}${HH} \
-            ${MESH_NAME}
-   
-   #
-   ncks -A -v RWC_annual_sum,RWC_annual_sum_smoke_fine,RWC_annual_sum_smoke_coarse,RWC_annual_sum_unspc_fine,RWC_annual_sum_unspc_coarse ${EMISFILE_RWC_PROCESSED} ${EMISFILE_DENOM_PROCESSED}
-   timestr3=`date +%Y-%m-%d_%H:00:00 -d "$current_day"`
-   ncap2 -O -s xtime=\"${timestr3}\"  ${EMISFILE_DENOM_PROCESSED}  ${EMISFILE_DENOM_PROCESSED}  
-   ncks -O -6 ${EMISFILE_DENOM_PROCESSED} ${EMISFILE_DENOM_PROCESSED}
-   #
-   LINKEDEMISFILE=${UMBRELLA_PREP_CHEM_DATA}/rwc.init.nc
-   #
-   ${LN} -sf ${EMISFILE_DENOM_PROCESSED} ${LINKEDEMISFILE}   
-
-   else
-   ${LN} -sf ${EMISFILE_DENOM_PROCESSED} ${LINKEDEMISFILE}
-   fi
-fi
-
+  source "USHrrfs"/prep_rwc.sh
+fi #rwc
 
 if [[ "${EMIS_SECTOR_TO_PROCESS}" == "anthro" ]]; then
-#
-# --- Set the file expression and lat/lon dimension names
-#
-   ANTHROEMIS_STATICDIR=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/
-   #
-   # TODO, if residential wood burning emissions are turned on, we need to use the
-   # GRA2PES_VERSION=total_minus_res to not double count those emissions
-   GRA2PES_SECTOR=total
-   GRA2PES_YEAR=2021
-   GRA2PES_VERSION=v1.0
-   #
-   ANTHROEMIS_INPUTDIR=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_SECTOR}/${GRA2PES_YEAR}${MM}/${DOW_STRING}/
-   if [[ "${CREATE_OWN_DATA}" == "TRUE" ]]; then
-      ANTHROEMIS_OUTPUTDIR=${DATA}
-   else
-      ANTHROEMIS_OUTPUTDIR=${DATADIR_CHEM}/emissions/anthro/processed/${ANTHRO_EMISINV}/${MOY}/${DOW_STRING}/
-   fi
-   ${MKDIR} -p ${ANTHROEMIS_OUTPUTDIR}
-   
-    #
-    EMISFILE_BASE_RAW1=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_SECTOR}/${GRA2PES_YEAR}${MM}/${DOW_STRING}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${GRA2PES_YEAR}${MM}_${DOW_STRING}_00to11Z.nc
-    EMISFILE_BASE_RAW2=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_SECTOR}/${GRA2PES_YEAR}${MM}/${DOW_STRING}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${GRA2PES_YEAR}${MM}_${DOW_STRING}_12to23Z.nc
-    INPUT_GRID=${DATADIR_CHEM}/grids/domain_latlons/${ANTHRO_EMISINV}${GRA2PES_VERSION}_CONUS4km_grid_info.nc
+  source "USHrrfs"/prep_anthro.sh
+fi # anthro
 
-    #
-    EMISFILE1=${ANTHROEMIS_OUTPUTDIR}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${MESH_NAME}_00to11Z.nc
-    EMISFILE2=${ANTHROEMIS_OUTPUTDIR}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${MESH_NAME}_12to23Z.nc
-    EMISFILE1_vinterp=${ANTHROEMIS_OUTPUTDIR}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${MESH_NAME}_00to11Z_vinterp.nc
-    EMISFILE2_vinterp=${ANTHROEMIS_OUTPUTDIR}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${MESH_NAME}_12to23Z_vinterp.nc
-    #
-    if [[ -r ${EMISFILE_BASE_RAW1} ]] && [[ -r ${EMISFILE_BASE_RAW2} ]]; then
-       echo "Checking to make sure we have corner coords"
-       ncdump -hv XLAT_C ${EMISFILE_BASE_RAW1}
-       if [[ $? -ne 0 ]]; then
-         echo ".. we don't, cutting in from ${INPUT_GRID}"
-         ncks -A -v XLAT_C,XLAT_M,XLONG_C,XLONG_M ${INPUT_GRID} ${EMISFILE_BASE_RAW1}
-         ncks -A -v XLAT_C,XLAT_M,XLONG_C,XLONG_M ${INPUT_GRID} ${EMISFILE_BASE_RAW2}
-       else
-         echo "...we do!"
-       fi
-       ${ECHO} "Found base emission files: ${EMISFILE_BASE_RAW1} and ${EMISFILE_BASE_RAW2}, will interpolate"
-       # -- Start the regridding process
-          mpirun -np ${nt} python -u ${SCRIPT}   \
-                     "GRA2PES" \
-                     ${DATA} \
-                     ${ANTHROEMIS_INPUTDIR} \
-                     ${ANTHROEMIS_OUTPUTDIR} \
-                     ${INTERP_WEIGHTS_DIR} \
-                     ${YYYY}${MM}${DD}${HH} \
-                     ${MESH_NAME}
-  
-          if [[ ! -r ${EMISFILE1} ]] || [[ ! -r ${EMISFILE2} ]]; then
-             ${ECHO} "ERROR: Did not interpolate ${ANTHRO_EMISINV}"
-             exit 1
-          else
-             ncpdq -O -a Time,nCells,nkemit ${EMISFILE1} ${EMISFILE1}
-             ncpdq -O -a Time,nCells,nkemit ${EMISFILE2} ${EMISFILE2}
-             ncks -O --mk_rec_dmn Time ${EMISFILE1} ${EMISFILE1}
-             ncks -O --mk_rec_dmn Time ${EMISFILE2} ${EMISFILE2}
-             ncks -O -6  ${EMISFILE1} ${EMISFILE1}
-             ncks -O -6  ${EMISFILE2} ${EMISFILE2}
-             # Vertically interpolate the emissions based on the MPAS grid
-             # python ${VINTERP_SCRIPT} ${EMISFILE1} ${INIT_FILE} ${EMISFILE1_vinterp} "PM25-PRI" "h_agl" "zgrid"
-
-             for ihour in $(seq 0 ${FCST_LENGTH}) 
-             do
-                 YYYY_EMIS=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${ihour} hours" +%Y)
-                 MM_EMIS=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${ihour} hours" +%m)
-                 DD_EMIS=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${ihour} hours" +%d)
-                 HH_EMIS=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${ihour} hours" +%H)
-                 MOY_EMIS=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${ihour} hours" +%B)
-                 DOW_EMIS=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${ihour} hours" +%A)
-                 LINKEDEMISFILE=${UMBRELLA_PREP_CHEM_DATA}/anthro.init.${YYYY_EMIS}-${MM_EMIS}-${DD_EMIS}_${HH_EMIS}.00.00.nc
-                 if [ "${HH_EMIS}" -gt 11 ]; then
-                    offset=12
-                    EMISFILE=${EMISFILE1}
-                 else
-                    offset=0
-                    EMISFILE=${EMISFILE2}
-                 fi
-                 t_ix=$((10#$HH_EMIS-${offset}))
-                 #
-                 EMISFILE_FINAL=${ANTHROEMIS_OUTPUTDIR}/${ANTHRO_EMISINV}_${MESH_NAME}_${HH_EMIS}Z.nc
-                 # Reorder
-                 if [[ -r ${EMISFILE_FINAL} ]]; then
-                    ${LN} -sf ${EMISFILE_FINAL} ${LINKEDEMISFILE}
-                 else
-                    ${ECHO} "Reordering dimensions -- cell x level x time -- >  Time x Cell x Level "
-                    ncks -d Time,${t_ix},${t_ix} ${EMISFILE} ${EMISFILE_FINAL}
-                    ${ECHO} "Created file #${ihour}/${FCST_LENGTH} at ${EMISFILE_FINAL}"
-                    ncrename -v PM25-PRI,e_ant_in_unspc_fine -v PM10-PRI,e_ant_in_unspc_coarse ${EMISFILE_FINAL}
-                    ncrename -v HC01,e_ant_in_ch4 ${EMISFILE_FINAL}
-                  # TODO, other species
-                    ncap2 -O -s 'e_ant_in_smoke_fine=0.0*e_ant_in_unspc_fine' ${EMISFILE_FINAL} ${EMISFILE_FINAL}
-                    ncap2 -O -s 'e_ant_in_smoke_coarse=0.0*e_ant_in_unspc_fine' ${EMISFILE_FINAL} ${EMISFILE_FINAL}
-                    ncap2 -O -s 'e_ant_in_dust_fine=0.0*e_ant_in_unspc_fine' ${EMISFILE_FINAL} ${EMISFILE_FINAL}
-                    ncap2 -O -s 'e_ant_in_dust_coarse=0.0*e_ant_in_unspc_fine' ${EMISFILE_FINAL} ${EMISFILE_FINAL}
-                    ${LN} -sf ${EMISFILE_FINAL} ${LINKEDEMISFILE}
-                 fi
-             done
-          fi # Did inerp succeed?
-    fi # Do the emission files exist
-fi # anthro?
-
-#==================================================================================================
-#                                 ... Biogenic/Pollen ...                                             
-#==================================================================================================
-# --- Are we adding pollen or other biogenics?
 if [[ "${EMIS_SECTOR_TO_PROCESS}" == "pollen" ]]; then
-#
-EMISINPUTDIR=${DATADIR_CHEM}/emissions/pollen/raw/${YYYY}/
-if [[ "${CREATE_OWN_DATA}" == "TRUE" ]]; then
-   EMISOUTPUTDIR=${DATA}
-else
-   EMISOUTPUTDIR=${DATADIR_CHEM}/emissions/pollen/processed/${YYYY}/
-fi
-${MKDIR} -p ${EMISOUTPUTDIR}
-#
-# --- Do we have emissions regridded to our domain?
-# --- If we already have the emissions, link them..
-#
-   EMISFILE=${EMISOUTPUTDIR}/pollen_ef_${MESH_NAME}_${YYYY}_${DOY}.nc
-   LINKEDEMISFILE=${UMBRELLA_PREP_CHEM_DATA}/bio.init.nc
-   if [ ! -r ${EMISFILE} ]; then
-      ${ECHO} "No pollen input file regridded to this specific day and mesh: ${EMISFILE}, will look for a file to interpoloate"
-   else
-      ${LN} -sf ${EMISFILE} ${LINKEDEMISFILE}
-      ${ECHO} "Linked pollen file ${EMISFILE}, exiting"
-      exit 0
-   fi
-#
-# -- Look for the base emission file
-#
-   EMISFILE_BASE=${EMISINPUTDIR}/pollen_obs_${YYYY}_BELD6_ef_T_${DOY}.nc
-   if [[ -r ${EMISFILE_BASE} ]];then
-      ${ECHO} "Found base emission file: ${EMISFILE_BASE}"
-   else
-      ${ECHO} "Cannot regrid, no base emission file: ${EMISFILE_BASE}"
-      exit 1
-   fi
-   srun python -u ${SCRIPT}   \
-              "PECM" \
-              ${DATA} \
-              ${EMISINPUTDIR} \
-              ${EMISOUTPUTDIR} \
-              ${INTERP_WEIGHTS_DIR} \
-              ${YYYY}${MM}${DD}${HH} \
-              ${MESH_NAME}
-   if [ ! -r ${EMISFILE} ]; then
-      ${ECHO} "Regrid failed, check the logs"
-      exit 1
-   else
-      ncrename -v GRA_POLL,e_bio_in_polp_grass -v RAG_POLL,e_bio_in_polp_weed -v TREE_POLL,e_bio_in_polp_tree ${EMISFILE}
-      ncks -O -6 ${EMISFILE} ${EMISFILE}
-      ${LN} -sf ${EMISFILE} ${LINKEDEMISFILE}
-      ${ECHO} "Linked pollen file ${EMISFILE}, exiting"
-   fi
+  source "USHrrfs"/prep_pollen.sh
 fi # bio/pollen
 
-#==================================================================================================
-#                                 ... Dust ...                                             
-#==================================================================================================
-# --- Are we adding pollen or other biogenics?
 if [[ "${EMIS_SECTOR_TO_PROCESS}" == "dust" ]]; then
-
-   LINKEDEMISFILE=${UMBRELLA_PREP_CHEM_DATA}/dust.init.nc
-
-   DUST_INPUTDIR=${DATADIR_CHEM}/dust/raw/
-   if [[ "${CREATE_OWN_DATA}" == "TRUE" ]]; then
-      DUST_OUTPUTDIR=${DATA} 
-   else
-      DUST_OUTPUTDIR=${DATADIR_CHEM}/dust/processed/
-   fi
-   ${MKDIR} -p ${DUST_OUTPUTDIR}
-   #
-   DUST_OUTFILE=${DATADIR_CHEM}/dust/processed/fengsha_dust_inputs.${MESH_NAME}.nc
-   #
-   if [[ ! -r ${DUST_OUTFILE} ]]; then
-      ${ECHO} "Interpolated dust file: ${DUST_OUTFILE} does not exist, will attempt to create"
-      srun python -u ${SCRIPT}   \
-                 "FENGSHA_1" \
-                 ${DATA} \
-                 ${DUST_INPUTDIR} \
-                 ${DUST_OUTPUTDIR} \
-                 ${INTERP_WEIGHTS_DIR} \
-                 ${YYYY}${MM}${DD}${HH} \
-                 ${MESH_NAME}
-      OUTFILE_1=${DUST_OUTPUTDIR}/FENGSHA_2022_NESDIS_inputs_${MESH_NAME}_v3.2.nc
-
-      srun python -u ${SCRIPT}   \
-                 "FENGSHA_2" \
-                 ${DATA} \
-                 ${DUST_INPUTDIR} \
-                 ${DUST_OUTPUTDIR} \
-                 ${INTERP_WEIGHTS_DIR} \
-                 ${YYYY}${MM}${DD}${HH} \
-                 ${MESH_NAME}
-      OUTFILE_2=${DUST_OUTPUTDIR}/LAI_GVF_PC_DRAG_CLIMATOLOGY_2024v1.0.${MESH_NAME}.nc
-      ncks -A -v feff ${OUTFILE_2} ${OUTFILE_1}
-      cp ${OUTFILE_1} ${DUST_OUTFILE}
-      ncrename -d Time,nMonths ${DUST_OUTFILE}
-      ncrename -v sep,sep_in -v sandfrac,sandfrac_in -v clayfrac,clayfrac_in -v uthres,uthres_in -v uthres_sg,uthres_sg_in -v feff,feff_m_in ${DUST_OUTFILE}
-      ncdump -hv albedo_drag ${DUST_OUTFILE}
-      if [[ $? -eq 0 ]]; then
-         # Processed old drag
-         ncrename -v albedo_drag,albedo_drag_m_in ${DUST_OUTFILE}
-      else
-         # Old drag = new drag
-         ncap2 -O -s 'albedo_drag_m_in=feff_m_in' ${DUST_OUTFILE} ${DUST_OUTFILE}
-      fi   
-      ncks -O -6 ${DUST_OUTFILE} ${DUST_OUTFILE}
-      ln -sf ${DUST_OUTFILE} ${LINKEDEMISFILE}
-      timestr3=`date +%Y-%m-%d_%H:00:00 -d "$current_day"`
-      ncap2 -O -s xtime=\"${timestr3}\" ${EMISFILE} ${EMISFILE}  
-   else
-      echo "Dust file exists, linking"
-      ln -sf ${DUST_OUTFILE} ${LINKEDEMISFILE}
-   fi
-
+  source "${USHrrfs}/prep_dust.sh"
 fi # dust
-
-
-
-exit 0
