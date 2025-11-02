@@ -1,0 +1,102 @@
+#
+# --- Set the file expression and lat/lon dimension names
+#
+   ANTHROEMIS_STATICDIR=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/
+   #
+   # TODO, if residential wood burning emissions are turned on, we need to use the
+   # GRA2PES_VERSION=total_minus_res to not double count those emissions
+   GRA2PES_SECTOR=total
+   GRA2PES_YEAR=2021
+   GRA2PES_VERSION=v1.0
+   #
+   ANTHROEMIS_INPUTDIR=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_SECTOR}/${GRA2PES_YEAR}${MM}/${DOW_STRING}/
+   if [[ "${CREATE_OWN_DATA}" == "TRUE" ]]; then
+      ANTHROEMIS_OUTPUTDIR=${DATA}
+   else
+      ANTHROEMIS_OUTPUTDIR=${DATADIR_CHEM}/emissions/anthro/processed/${ANTHRO_EMISINV}/${MOY}/${DOW_STRING}/
+   fi
+   ${MKDIR} -p ${ANTHROEMIS_OUTPUTDIR}
+   
+    #
+    EMISFILE_BASE_RAW1=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_SECTOR}/${GRA2PES_YEAR}${MM}/${DOW_STRING}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${GRA2PES_YEAR}${MM}_${DOW_STRING}_00to11Z.nc
+    EMISFILE_BASE_RAW2=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_SECTOR}/${GRA2PES_YEAR}${MM}/${DOW_STRING}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${GRA2PES_YEAR}${MM}_${DOW_STRING}_12to23Z.nc
+    INPUT_GRID=${DATADIR_CHEM}/grids/domain_latlons/${ANTHRO_EMISINV}${GRA2PES_VERSION}_CONUS4km_grid_info.nc
+
+    #
+    EMISFILE1=${ANTHROEMIS_OUTPUTDIR}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${MESH_NAME}_00to11Z.nc
+    EMISFILE2=${ANTHROEMIS_OUTPUTDIR}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${MESH_NAME}_12to23Z.nc
+    EMISFILE1_vinterp=${ANTHROEMIS_OUTPUTDIR}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${MESH_NAME}_00to11Z_vinterp.nc
+    EMISFILE2_vinterp=${ANTHROEMIS_OUTPUTDIR}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${MESH_NAME}_12to23Z_vinterp.nc
+    #
+    if [[ -r ${EMISFILE_BASE_RAW1} ]] && [[ -r ${EMISFILE_BASE_RAW2} ]]; then
+       echo "Checking to make sure we have corner coords"
+       ncdump -hv XLAT_C ${EMISFILE_BASE_RAW1}
+       if [[ $? -ne 0 ]]; then
+         echo ".. we don't, cutting in from ${INPUT_GRID}"
+         ncks -A -v XLAT_C,XLAT_M,XLONG_C,XLONG_M ${INPUT_GRID} ${EMISFILE_BASE_RAW1}
+         ncks -A -v XLAT_C,XLAT_M,XLONG_C,XLONG_M ${INPUT_GRID} ${EMISFILE_BASE_RAW2}
+       else
+         echo "...we do!"
+       fi
+       ${ECHO} "Found base emission files: ${EMISFILE_BASE_RAW1} and ${EMISFILE_BASE_RAW2}, will interpolate"
+       # -- Start the regridding process
+          mpirun -np ${nt} python -u ${SCRIPT}   \
+                     "GRA2PES" \
+                     ${DATA} \
+                     ${ANTHROEMIS_INPUTDIR} \
+                     ${ANTHROEMIS_OUTPUTDIR} \
+                     ${INTERP_WEIGHTS_DIR} \
+                     ${YYYY}${MM}${DD}${HH} \
+                     ${MESH_NAME}
+  
+          if [[ ! -r ${EMISFILE1} ]] || [[ ! -r ${EMISFILE2} ]]; then
+             ${ECHO} "ERROR: Did not interpolate ${ANTHRO_EMISINV}"
+             exit 1
+          else
+             ncpdq -O -a Time,nCells,nkemit ${EMISFILE1} ${EMISFILE1}
+             ncpdq -O -a Time,nCells,nkemit ${EMISFILE2} ${EMISFILE2}
+             ncks -O --mk_rec_dmn Time ${EMISFILE1} ${EMISFILE1}
+             ncks -O --mk_rec_dmn Time ${EMISFILE2} ${EMISFILE2}
+             ncks -O -6  ${EMISFILE1} ${EMISFILE1}
+             ncks -O -6  ${EMISFILE2} ${EMISFILE2}
+             # Vertically interpolate the emissions based on the MPAS grid
+             # python ${VINTERP_SCRIPT} ${EMISFILE1} ${INIT_FILE} ${EMISFILE1_vinterp} "PM25-PRI" "h_agl" "zgrid"
+
+             for ihour in $(seq 0 ${FCST_LENGTH}) 
+             do
+                 YYYY_EMIS=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${ihour} hours" +%Y)
+                 MM_EMIS=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${ihour} hours" +%m)
+                 DD_EMIS=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${ihour} hours" +%d)
+                 HH_EMIS=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${ihour} hours" +%H)
+                 MOY_EMIS=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${ihour} hours" +%B)
+                 DOW_EMIS=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${ihour} hours" +%A)
+                 LINKEDEMISFILE=${UMBRELLA_PREP_CHEM_DATA}/anthro.init.${YYYY_EMIS}-${MM_EMIS}-${DD_EMIS}_${HH_EMIS}.00.00.nc
+                 if [ "${HH_EMIS}" -gt 11 ]; then
+                    offset=12
+                    EMISFILE=${EMISFILE1}
+                 else
+                    offset=0
+                    EMISFILE=${EMISFILE2}
+                 fi
+                 t_ix=$((10#$HH_EMIS-${offset}))
+                 #
+                 EMISFILE_FINAL=${ANTHROEMIS_OUTPUTDIR}/${ANTHRO_EMISINV}_${MESH_NAME}_${HH_EMIS}Z.nc
+                 # Reorder
+                 if [[ -r ${EMISFILE_FINAL} ]]; then
+                    ${LN} -sf ${EMISFILE_FINAL} ${LINKEDEMISFILE}
+                 else
+                    ${ECHO} "Reordering dimensions -- cell x level x time -- >  Time x Cell x Level "
+                    ncks -d Time,${t_ix},${t_ix} ${EMISFILE} ${EMISFILE_FINAL}
+                    ${ECHO} "Created file #${ihour}/${FCST_LENGTH} at ${EMISFILE_FINAL}"
+                    ncrename -v PM25-PRI,e_ant_in_unspc_fine -v PM10-PRI,e_ant_in_unspc_coarse ${EMISFILE_FINAL}
+                    ncrename -v HC01,e_ant_in_ch4 ${EMISFILE_FINAL}
+                  # TODO, other species
+                    ncap2 -O -s 'e_ant_in_smoke_fine=0.0*e_ant_in_unspc_fine' ${EMISFILE_FINAL} ${EMISFILE_FINAL}
+                    ncap2 -O -s 'e_ant_in_smoke_coarse=0.0*e_ant_in_unspc_fine' ${EMISFILE_FINAL} ${EMISFILE_FINAL}
+                    ncap2 -O -s 'e_ant_in_dust_fine=0.0*e_ant_in_unspc_fine' ${EMISFILE_FINAL} ${EMISFILE_FINAL}
+                    ncap2 -O -s 'e_ant_in_dust_coarse=0.0*e_ant_in_unspc_fine' ${EMISFILE_FINAL} ${EMISFILE_FINAL}
+                    ${LN} -sf ${EMISFILE_FINAL} ${LINKEDEMISFILE}
+                 fi
+             done
+          fi # Did inerp succeed?
+    fi # Do the emission files exist
