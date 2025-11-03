@@ -26,7 +26,7 @@ dummyRAVE=${RAVE_DIR}/processed/RAVE.dummy.${MESH_NAME}.nc
 if [[ ! -e ${dummyRAVE} ]]; then
    shared_dummy_rave=${DATADIR_CHEM}/emissions/RAVE/processed/RAVE.dummy.${MESH_NAME}.nc
    if [[ -e ${shared_dummy_rave} ]]; then
-      echo "Dummy RAVE file bein copied from ${shared_dummy_rave} to ${dummyRAVE}"
+      echo "Dummy RAVE file being copied from ${shared_dummy_rave} to ${dummyRAVE}"
       cp "${shared_dummy_rave}" "${dummyRAVE}"
    else
       echo "Shared dummy RAVE does not exist for this mesh"

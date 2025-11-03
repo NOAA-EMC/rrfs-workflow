@@ -56,7 +56,7 @@ file_content=$(< "${PARMrrfs}/${physics_suite}/namelist.init_atmosphere") # read
 eval "echo \"${file_content}\"" > namelist.init_atmosphere
 
 # If any chemistry is activated, cat chemistry information to the namelist
-if ${DO_CHMISTRY:-false}; then
+if ${DO_CHEMISTRY:-false}; then
   cat "${PARMrrfs}/chemistry/namelist.init_atmosphere" >> namelist.init_atmosphere
   #
   # Now adjust the configure options based on activated CHEMISTRY_SPECIES
