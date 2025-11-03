@@ -1,0 +1,5 @@
+<immutable_stream name="dust_input"
+                  type="input"
+                  filename_template="dust.init.nc"
+                  io_type="netcdf,netcdf4"
+                  input_interval="initial_only" />
