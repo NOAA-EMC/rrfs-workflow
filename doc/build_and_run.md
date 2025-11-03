@@ -56,11 +56,11 @@ We will need to execute `rrun` continously every a while to proceed from one tas
 
 To reduce manual effort, we can execute `bkg_rrun` at the command line instead. This utility will execute the `rrun` command continously every 1 minute. _(Bonus: we may put `bkg_rrun` in a [TMUX](https://github.com/tmux/tmux/wiki) or a [SCREEN](https://www.gnu.org/software/screen/manual/screen.html) window so that `bkg_rrun` continues to run even we lose network connection or close the terminal)_     
 
-(c) Execute `rstat` to check workflow status, `rcheck YYYYMMDDHH task` to check details of a given task (such as why a task has not been submitted), `taskinfo YYYYMMDDHH task` to quick get the locatiaon of the corresponding log file, STMP and COMROOT directories of a task.    
+(c) Execute `rstat` to check workflow status, `rcheck YYYYMMDDHH task` to check details of a given task (such as why a task has not been submitted), `taskinfo YYYYMMDDHH task` to quickly get the locatiaon of the corresponding log file, STMP and COMROOT directories of a task.    
 
 **NOTE:**
 - Check [README.md](../workflow/ush/qrocoto/README.md) or [detailed instructions](https://github.com/rrfsx/qrocoto/wiki/qrocoto) for more information about `qrocoto`.
-- If you get an error `Lmod has detected the following error...` or `...command not found...`, it means the rocoto module is NOT available in you current environment.    
+- If you get an error message, such as `Lmod has detected the following error...` or `...command not found...`, it means the rocoto module is NOT available in your current environment.    
 
 Do as follows to solve the issue:    
 [Orion/Hercules]    
