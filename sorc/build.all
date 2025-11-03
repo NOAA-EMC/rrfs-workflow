@@ -30,6 +30,7 @@ echo "building all components, it may take more than one hour..."
 ./build.upp  &> ./log.build.upp  2>&1 &
 ./build.mpassit  &> ./log.build.mpassit  2>&1 &
 ./build.utils  &> ./log.build.utils  2>&1 &
+./build.rank_run  &> ./log.build.rank_run  2>&1 &
 
 if [[ "${1,,}" != "noda" ]] && [[ "${2,,}" != "noda" ]]; then
   ./build.rdas &> ./log.build.rdas 2>&1 &
