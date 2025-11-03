@@ -31,7 +31,7 @@ Refer to [this guide](https://github.com/NOAA-EMC/rrfs-workflow/wiki/deploy-a-re
     
 This Python script creates an experiment directory (i.e. `EXPDIR`), writes out a runtime version of `exp.setup` under EXPDIR, and  then copies runtime config files to `EXPDIR`.  
 
-If you get any errors when running `setup_rocoto.py`, it is mostly because the currently loaded Python version is lower than expected.  
+If you get any errors when running `setup_rocoto.py`, it is mostly because the currently loaded Python does not have required packages (such as 'dateutil').
 You can load the Python environment included in rrfs-workflow by running
 ```
 source ../workflow/ush/load_bokeh.sh
