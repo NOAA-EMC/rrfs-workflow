@@ -1,0 +1,9 @@
+PM2_5                           PM2_5
+PM10				PM10
+polp_tree                       POLP_TREE
+polp_grass                      POLP_GRASS
+polp_weed                       POLP_WEED
+pols_all                        POLS_ALL
+e_bio_out_polp_tree             E_BIO_OUT_POLP_TREE
+e_bio_out_polp_grass		E_BIO_OUT_POLP_GRASS
+e_bio_out_polp_weed		E_BIO_OUT_POLP_WEED
