@@ -31,8 +31,8 @@ Refer to [this guide](https://github.com/NOAA-EMC/rrfs-workflow/wiki/deploy-a-re
     
 This Python script creates an experiment directory (i.e. `EXPDIR`), writes out a runtime version of `exp.setup` under EXPDIR, and  then copies runtime config files to `EXPDIR`.  
 
-If you get any errors when running `setup_rocoto.py`, it is mostly because the currently loaded Python does not have required packages (such as 'dateutil').
-You can load the Python environment included in rrfs-workflow by running
+If you get any errors when running `setup_rocoto.py`, it is mostly because the currently loaded Python does not have required packages (such as 'dateutil').    
+You can use the Python environment included in rrfs-workflow by running
 ```
 source ../workflow/ush/load_bokeh.sh
 ```
@@ -40,23 +40,23 @@ and then run `setup_rocoto.py` again.
 If the above source command fails to load a working Python environment, it usually means there is a module conflict. You may do `module purge` and/or start over from a clean terminal window.
        
 ### 2.3 run and monitor experiments
-Currently, rrfs-workflow supports the [`rocoto`](https://christopherwharrop.github.io/rocoto/) workflow management system. All tasks are defined in the `rrfs.xml` file under `EXPDIR`, which is set up in the previous step.    
+Currently, rrfs-workflow supports the [`rocoto`](https://christopherwharrop.github.io/rocoto/) workflow management system. All tasks are defined in the `rrfs.xml` file under `EXPDIR`, which is created in the previous step.    
 There are two ways to run `rrfs.xml` and monitor its progress. Use either one based on your preference.    
 
 #### 2.3.1 Use the `qrocoto` utilities (recommended for retro runs)
-The [`qrocoto`](https://github.com/RRFSx/qrocoto/wiki/qrocoto) utilities are included in rrfs-workflow and ready to use under `EXPDIR`.    
+The [`qrocoto`](https://github.com/RRFSx/qrocoto/wiki/qrocoto) utilities are included in rrfs-workflow and ready to use under `EXPDIR/qrocoto`.    
 
 Go to `EXPDIR`,    
 (a) load the `qrocoto` module    
 ```
 source qrocoto/load_qrocoto.sh
 ```    
-(b) Enter `rrun` to lauch the expriment (submit jobs)        
+(b) Enter `rrun` to lauch the expriment (i.e., submit jobs)        
 We will need to execute `rrun` continously every a while to proceed from one task to the next task, one cycle to the next cycle.   
 
 To reduce manual effort, we can execute `bkg_rrun` at the command line instead. This utility will execute the `rrun` command continously every 1 minute. _(Bonus: we may put `bkg_rrun` in a [TMUX](https://github.com/tmux/tmux/wiki) or a [SCREEN](https://www.gnu.org/software/screen/manual/screen.html) window so that `bkg_rrun` continues to run even we lose network connection or close the terminal)_     
 
-(c) Execute `rstat` to check workflow status, `rcheck YYYYMMDDHH task` to check details of a given task (such as why a task has not been submitted), `taskinfo YYYYMMDDHH task` to quick get the locatiaon of the corresponding log file, STMP and COMROOT directories.    
+(c) Execute `rstat` to check workflow status, `rcheck YYYYMMDDHH task` to check details of a given task (such as why a task has not been submitted), `taskinfo YYYYMMDDHH task` to quick get the locatiaon of the corresponding log file, STMP and COMROOT directories of a task.    
 
 **NOTE:**
 - Check [README.md](../workflow/ush/qrocoto/README.md) or [detailed instructions](https://github.com/rrfsx/qrocoto/wiki/qrocoto) for more information about `qrocoto`.
@@ -77,11 +77,12 @@ module use /glade/work/epicufsrt/contrib/derecho/modulefiles
 ```
 
 #### 2.3.2 Use `run_rocoto.sh` and crontab
-Use `./run_rocoto.sh` to run the experiment. Add an entry to your crontab similar to the following to run the experiment continuously.
+We can also use `./run_rocoto.sh` to launch the experiment.    
+Add a crontab entry similar to the following to run the experiment continuously.
 ```
 */5 * * * * /home/role.rtrr/RRFS/1.0.1/conus3km/run_rocoto.sh
 ```
 # 3. Others
-The workflow depends on the environmental variables. If your environment defines and exports rrfs-workflow-specific environmental variables in an unexpected way or your environment is corrupt, the setup step may fail or generate unexpected results. Check the `rrfs.xml` file before `run_rocoto.sh`. Starting from a fresh terminal or `module purge` usually solves the above problem.
+The workflow depends on the environmental variables. If your environment defines and exports rrfs-workflow-specific environmental variables in an unexpected way or your environment is corrupt, the setup step may fail or generate incorrect `rrfs.xml`. Starting from a fresh terminal or `module purge` usually solves the problem.
 
 
