@@ -71,6 +71,11 @@ def header_entities(xmlFile, expdir):
     wgf = os.getenv('WGF', 'det')
     cyc_interval = os.getenv('CYC_INTERVAL', '3')
     realtime = os.getenv("REALTIME", "false").upper()
+
+    if os.getenv('DO_CHEMISTRY','fase').lower() == "true":
+        chem_envar = "\n<envar><name>DO_CHEMISTRY</name><value>true</value></envar>"
+    else:
+        chem_envar = ""
 # figure out run period for realtime experiments
     if realtime == 'TRUE':
         now = datetime.now()
@@ -134,7 +139,7 @@ def header_entities(xmlFile, expdir):
 <envar><name>MPI_RUN_CMD</name><value>{mpi_run_cmd}</value></envar>
 <envar><name>MESH_NAME</name><value>{mesh_name}</value></envar>
 <envar><name>WGF</name><value>{wgf}</value></envar>
-<envar><name>CYC_INTERVAL</name><value>{cyc_interval}</value></envar>
+<envar><name>CYC_INTERVAL</name><value>{cyc_interval}</value></envar>{chem_envar}
 "
 >{entities_for_cycledef}
 '''

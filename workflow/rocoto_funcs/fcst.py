@@ -41,6 +41,13 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     if do_spinup:
         dcTaskEnv['DO_SPINUP'] = "TRUE"
 
+    if os.getenv('DO_CHEMISTRY','fase').lower() == "true":
+        dsTaskEnv['EBB_DCYCLE'] = os.getenv('EBB_DCYCLE',0)
+        dsTaskEnv['CHEM_GROUPS'] = os.getenv('CHEM_GROUPS','dust')
+        chemdep = '\n<metataskdep metatask="prep_chem"/>'
+    else:
+        chemdep = ""
+
     if not do_ensemble:
         metatask = False
         if do_spinup:
@@ -77,15 +84,15 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     recenterdep = ""
     if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
         if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
-            jedidep = f'<taskdep task="getkf_solver"/>'
+            jedidep = f'\n<taskdep task="getkf_solver"/>'
         elif do_spinup:
-            jedidep = f'<taskdep task="jedivar_spinup"/>'
+            jedidep = f'\n<taskdep task="jedivar_spinup"/>'
         else:
-            jedidep = f'<taskdep task="jedivar"/>'
+            jedidep = f'\n<taskdep task="jedivar"/>'
     else:
         if os.getenv("DO_RECENTER", "FALSE").upper() == "TRUE":
             if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
-                recenterdep = f'<taskdep task="recenter"/>'
+                recenterdep = f'\n<taskdep task="recenter"/>'
 
     prep_ic_dep = f'<taskdep task="prep_ic{ensindexstr}"/>'
     if do_spinup:
@@ -95,9 +102,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
   <dependency>
   <and>{timedep}
     <taskdep task="prep_lbc{ensindexstr}" cycle_offset="0:00:00"/>
-    {prep_ic_dep}
-    {jedidep}
-    {recenterdep}
+    {prep_ic_dep}{jedidep}{chemdep}{recenterdep}
   </and>
   </dependency>'''
 
