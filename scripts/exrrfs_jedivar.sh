@@ -60,7 +60,7 @@ if [[ ${STATIC_BEC_MODEL} == "GSIBEC" ]]; then
 	 -e "s/@GSIBEC_LAT_START@/${GSIBEC_LAT_START}/" -e "s/@GSIBEC_LAT_END@/${GSIBEC_LAT_END}/" \
 	 -e "s/@GSIBEC_LON_START@/${GSIBEC_LON_START}/" -e "s/@GSIBEC_LON_END@/${GSIBEC_LON_END}/" \
 	 -e "s/@GSIBEC_NORTH_POLE_LAT@/${GSIBEC_NORTH_POLE_LAT}/"  -e "s/@GSIBEC_NORTH_POLE_LON@/${GSIBEC_NORTH_POLE_LON}/"  \
-          -e "s/@GSIBEC_NSIGP1@/${nlevel}/"       "${DATA}"/gsiparm_regional.anl
+         -e "s/@GSIBEC_NSIGP1@/${nlevel}/"       "${DATA}"/gsiparm_regional.anl
 else
   # bump bec
   mkdir -p static_bec
