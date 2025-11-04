@@ -14,7 +14,7 @@ if [[ -r "${UMBRELLA_PREP_CHEM_DATA}/bio.init.nc" ]]; then
   cat "${PARMrrfs}"/chemistry/streams.atmosphere.pollen >> ./streams.atmosphere
   ln -snf "${UMBRELLA_PREP_CHEM_DATA}"/bio.init.nc bio.init.nc
   #
-  if [[ "${CHEMISTRY_SPECIES,,}" == *pollen* ]]; then
+  if [[ "${CHEM_GROUPS,,}" == *pollen* ]]; then
      sed -i "s/config_pollen_scheme\s*=\s*'off'/config_pollen_scheme  = 'speciated_pollen_primary'/g" namelist.atmosphere
      num_chem=$(( num_chem + 4 ))
   fi
@@ -25,7 +25,7 @@ if [[ -r "${UMBRELLA_PREP_CHEM_DATA}/dust.init.nc" ]]; then
   cat "${PARMrrfs}"/chemistry/streams.atmosphere.dust >> streams.atmosphere
   ln -snf "${UMBRELLA_PREP_CHEM_DATA}"/dust.init.nc dust.init.nc
   #
-  if [[ "${CHEMISTRY_SPECIES,,}" == *dust* ]]; then
+  if [[ "${CHEM_GROUPS,,}" == *dust* ]]; then
      sed -i "s/config_dust_scheme\s*=\s*'off'/config_dust_scheme  = 'on'/g" namelist.atmosphere
      num_chem=$(( num_chem + 2 ))
   fi
@@ -42,13 +42,13 @@ if (( ${#files[@]}  )); then  # at least one file exists
   cat "${PARMrrfs}"/chemistry/streams.atmosphere.anthro >> streams.atmosphere
   ln -snf "${UMBRELLA_PREP_CHEM_DATA}"/anthro.init* ./
   #
-  if [[ "${CHEMISTRY_SPECIES,,}" == *anthro* ]]; then
+  if [[ "${CHEM_GROUPS,,}" == *anthro* ]]; then
      sed -i "s/config_anthro_scheme\s*=\s*'off'/config_anthro_scheme  = 'on'/g" namelist.atmosphere
      num_chem=$(( num_chem + 6 ))
-     if [[ "${CHEMISTRY_SPECIES,,}" == *dust* ]]; then
+     if [[ "${CHEM_GROUPS,,}" == *dust* ]]; then
         num_chem=$(( num_chem - 2 ))
      fi
-     if [[ "${CHEMISTRY_SPECIES,,}" == *smoke* ]]; then
+     if [[ "${CHEM_GROUPS,,}" == *smoke* ]]; then
         num_chem=$(( num_chem - 2 ))
      fi
   fi
@@ -70,7 +70,7 @@ if (( ${#files[@]}  )); then  # at least one file exists
   # TODO, retro vs. forecast option
   ln -snf "${UMBRELLA_PREP_CHEM_DATA}"/smoke.init* ./
   #
-  if [[ "${CHEMISTRY_SPECIES,,}" == *smoke* ]]; then
+  if [[ "${CHEM_GROUPS,,}" == *smoke* ]]; then
      sed -i "s/config_smoke_scheme\s*=\s*'off'/config_smoke_scheme = 'on'/g" namelist.atmosphere
      num_chem=$(( num_chem + 2 ))
   fi
