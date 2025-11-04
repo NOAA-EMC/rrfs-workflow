@@ -55,19 +55,8 @@ physics_suite=${PHYSICS_SUITE:-'PHYSICS_SUITE_not_defined'}
 file_content=$(< "${PARMrrfs}/${physics_suite}/namelist.init_atmosphere") # read in all content
 eval "echo \"${file_content}\"" > namelist.init_atmosphere
 
-# If any chemistry is activated, cat chemistry information to the namelist
 if ${DO_CHEMISTRY:-false}; then
-  cat "${PARMrrfs}/chemistry/namelist.init_atmosphere" >> namelist.init_atmosphere
-  #
-  # Now adjust the configure options based on activated CHEMISTRY_SPECIES
-  if [[ "${USE_EXTERNAL_CHEM_ICS}" == "TRUE" ]]; then
-    if [[ "${CHEMISTRY_SPECIES}" == *smoke* ]]; then
-      sed -i "s/config_smoke_scheme\s*=\s*'off'/config_smoke_scheme = 'on'/g" namelist.init_atmosphere
-    fi
-    if [[ "${CHEMISTRY_SPECIES}" == *dust* ]]; then
-       sed -i "s/config_dust_scheme\s*=\s*'off'/config_dust_scheme = 'on'/g" namelist.init_atmosphere
-    fi
-  fi
+  source ${USHrrfs}/chemistry_ic_lbc.sh
 fi
 #
 # generate the streams file on the fly
