@@ -18,7 +18,7 @@ export DO_ENSEMBLE=true
 export IC_ONLY=false  # interpolate GEFS/GDAS to the target mesh to provide ensemble BEC
 export DO_DETERMINISTIC=false
 export ENS_SIZE=30
-export ZETA_LEVELS="L60.txt"
+export ZETA_LEVELS="L65.txt"
 #
 export DO_IODA=false
 export DO_JEDI=true
