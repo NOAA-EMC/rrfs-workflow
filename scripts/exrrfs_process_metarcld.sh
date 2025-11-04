@@ -8,18 +8,6 @@ cd "${DATA}" || exit 1
 #
 #-----------------------------------------------------------------------
 #
-# Extract from CDATE the starting year, month, day, and hour of the
-# forecast.  These are needed below for various operations.
-#
-#-----------------------------------------------------------------------
-#
-YYYY=${CDATE:0:4}
-MM=${CDATE:4:2}
-DD=${CDATE:6:2}
-HH=${CDATE:8:2}
-#
-#-----------------------------------------------------------------------
-#
 # Copy required input files
 #
 #-----------------------------------------------------------------------
