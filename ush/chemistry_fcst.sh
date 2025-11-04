@@ -11,7 +11,7 @@ cat "${FIXrrfs}/stream_list/chemistry/stream_list.atmosphere.output" >> ./stream
 #
 # Biogenic/Pollen
 if [[ -r "${UMBRELLA_PREP_CHEM_DATA}/bio.init.nc" ]]; then
-  sed -i '$e cat "${PARMrrfs}"/chemistry/streams.atmosphere.pollen' streams.atmosphere # append before the last line (</stream>)
+  sed -i "\$e cat ${PARMrrfs}/chemistry/streams.atmosphere.pollen" streams.atmosphere # append before the last line (i.e. </stream>)
   ln -snf "${UMBRELLA_PREP_CHEM_DATA}"/bio.init.nc bio.init.nc
   #
   if [[ "${CHEM_GROUPS,,}" == *pollen* ]]; then
@@ -21,7 +21,7 @@ if [[ -r "${UMBRELLA_PREP_CHEM_DATA}/bio.init.nc" ]]; then
 fi
 # Dust
 if [[ -r "${UMBRELLA_PREP_CHEM_DATA}/dust.init.nc" ]]; then
-  sed -i '$e cat "${PARMrrfs}"/chemistry/streams.atmosphere.dust' streams.atmosphere
+  sed -i "\$e cat ${PARMrrfs}/chemistry/streams.atmosphere.dust" streams.atmosphere
   ln -snf "${UMBRELLA_PREP_CHEM_DATA}"/dust.init.nc dust.init.nc
   #
   if [[ "${CHEM_GROUPS,,}" == *dust* ]]; then
@@ -37,7 +37,7 @@ shopt -s nullglob
 # Anthropogenic
 files=("${UMBRELLA_PREP_CHEM_DATA}"/anthro.init*)
 if (( ${#files[@]}  )); then  # at least one file exists
-  sed -i '$e cat "${PARMrrfs}"/chemistry/streams.atmosphere.anthro' streams.atmosphere
+  sed -i "\$e cat ${PARMrrfs}/chemistry/streams.atmosphere.anthro" streams.atmosphere
   ln -snf "${UMBRELLA_PREP_CHEM_DATA}"/anthro.init* ./
   #
   if [[ "${CHEM_GROUPS,,}" == *anthro* ]]; then
@@ -58,9 +58,9 @@ if (( ${#files[@]}  )); then  # at least one file exists
   cat "${FIXrrfs}/stream_list/chemistry/stream_list.atmosphere.smoke.output" >> ./stream_list/stream_list.atmosphere.output
   #
   if [[ "${EBB_DCYCLE}" -eq 1 ]]; then  # Emissions from Biomass Burning, diurnal cycle? gge.debug
-     sed -i '$e cat "${PARMrrfs}"/chemistry/streams.atmosphere.smoke_retro' streams.atmosphere
+     sed -i "\$e cat ${PARMrrfs}/chemistry/streams.atmosphere.smoke_retro" streams.atmosphere
   elif [[ "${EBB_DCYCLE}" -eq 2 ]]; then
-     sed -i '$e cat "${PARMrrfs}"/chemistry/streams.atmosphere.smoke_forecast' streams.atmosphere
+     sed -i "\$e cat ${PARMrrfs}/chemistry/streams.atmosphere.smoke_forecast" streams.atmosphere
   else
      echo "Not appending any smoke stream"
   fi
@@ -77,7 +77,7 @@ fi
 
 # RWC - Residual Wood Combustion
 if [[ -r "${UMBRELLA_PREP_CHEM_DATA}/rwc.init.nc" ]]; then
-  sed -i '$e cat "${PARMrrfs}"/chemistry/streams.atmosphere.rwc' streams.atmosphere
+  sed -i "\$e cat ${PARMrrfs}/chemistry/streams.atmosphere.rwc" streams.atmosphere
   ln -snf "${UMBRELLA_PREP_CHEM_DATA}"/rwc.init.nc rwc.init.nc
   # Set namelist
   #sed -e "s/@online_rwc_emis@/1/" "${PARMrrfs}"/namelist.atmosphere  > namelist.atmosphere 
