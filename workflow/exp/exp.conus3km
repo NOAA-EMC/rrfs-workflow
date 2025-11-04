@@ -42,7 +42,7 @@ export GSIBEC_LAT_END=29.433115
 export DO_CYC=true
 export CYC_INTERVAL=1
 for i in {0..23};    do arr[$i]="03"; done # 3hr fcst
-for i in {0..23..6}; do arr[$i]="12"; done # 12hr fcst every 6hrs
+for i in {0..23..12}; do arr[$i]="12"; done # 12hr fcst every 12hrs
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
 export MPASSIT_GROUP_TOTAL_NUM=2
@@ -50,7 +50,7 @@ export UPP_GROUP_TOTAL_NUM=2
 
 export IC_OFFSET=6
 export LBC_OFFSET=6
-export LBC_LENGTH=15
+export LBC_LENGTH=18
 export LBC_INTERVAL=1
 export LBC_UNGRIB_GROUP_TOTAL_NUM=2
 export LBC_GROUP_TOTAL_NUM=2
