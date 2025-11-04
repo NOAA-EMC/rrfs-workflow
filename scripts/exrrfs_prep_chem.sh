@@ -103,21 +103,21 @@ export PYTHONPATH=${PYTHONDIR}:${PYTHONPATH}
 #
 #==================================================================================================#
 if [[ "${EMIS_SECTOR_TO_PROCESS}" == "smoke" ]]; then
-  source "USHrrfs"/prep_smoke.sh
+  source "${USHrrfs}"/prep_smoke.sh
 fi
 
 if [[ "${EMIS_SECTOR_TO_PROCESS}" == "rwc" ]]; then
-  source "USHrrfs"/prep_rwc.sh
+  source "${USHrrfs}"/prep_rwc.sh
 fi #rwc
 
 if [[ "${EMIS_SECTOR_TO_PROCESS}" == "anthro" ]]; then
-  source "USHrrfs"/prep_anthro.sh
+  source "${USHrrfs}"/prep_anthro.sh
 fi # anthro
 
 if [[ "${EMIS_SECTOR_TO_PROCESS}" == "pollen" ]]; then
-  source "USHrrfs"/prep_pollen.sh
+  source "${USHrrfs}"/prep_pollen.sh
 fi # bio/pollen
 
 if [[ "${EMIS_SECTOR_TO_PROCESS}" == "dust" ]]; then
-  source "${USHrrfs}/prep_dust.sh"
+  source "${USHrrfs}"/prep_dust.sh
 fi # dust
