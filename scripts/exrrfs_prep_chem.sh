@@ -79,27 +79,17 @@ fi
 DOY_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${FCST_LENGTH} hours" +%j)  # Julian day 
 #
 # Set the init/mesh file name and link here:\
-if [[ ${keepdata} == "YES" ]]; then  # keepdata or not, umbrella is always there. gge.debug
-   if [[ -r ${UMBRELLA_PREP_IC_DATA}/init.nc ]]; then
-       ln -sf "${UMBRELLA_PREP_IC_DATA}"/init.nc ./"${MESH_NAME}".init.nc
-       INIT_FILE=./${MESH_NAME}.init.nc
-   else
-       echo "WARNING: NO Init File available, cannot reinterpolate if files are missing, did you run the task out of order?"
-       has_init=0
-   fi
+if [[ -r "${UMBRELLA_PREP_IC_DATA}"/init.nc ]]; then
+   ln -sf "${UMBRELLA_PREP_IC_DATA}"/init.nc ./"${MESH_NAME}".init.nc
+   INIT_FILE=./${MESH_NAME}.init.nc
 else
-   if [[ -r ${COMOUT}/ic/${WGF}${MEMDIR}/init.nc  ]]; then
-       ln -sf  "${COMOUT}/ic/${WGF}${MEMDIR}"/init.nc ./"${MESH_NAME}".init.nc
-       INIT_FILE=./${MESH_NAME}.init.nc
-   else
-       echo "WARNING: NO Init File available, cannot reinterpolate if files are missing, did you run the task out of order?"
-       has_init=0
-   fi
+   echo "WARNING: NO Init File available, cannot reinterpolate if files are missing, did you run the task out of order?"
+   has_init=0
 fi
 
 #
-SCRIPT=${HOMErrfs}/scripts/exrrfs_regrid_chem.py
-VINTERP_SCRIPT=${HOMErrfs}/scripts/exrrfs_vinterp_chem.py
+SCRIPT=${USHrrfs}/chem_regrid.py
+VINTERP_SCRIPT=${USHrrfs}/chem_vinterp.py
 INTERP_WEIGHTS_DIR=${DATADIR_CHEM}/grids/interpolation_weights/  
 #
 # Set a few things for the CONDA environment
