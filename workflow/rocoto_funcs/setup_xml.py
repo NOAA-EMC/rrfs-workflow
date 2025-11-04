@@ -88,7 +88,7 @@ def setup_xml(HOMErrfs, expdir):
                 prep_ic(xmlFile, expdir)
                 prep_lbc(xmlFile, expdir)
                 if os.getenv("DO_CHEMISTRY", "false").upper() == "TRUE":
-                    prep_chem(xmlFile,expdir)
+                    prep_chem(xmlFile, expdir)
                 if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
                     jedivar(xmlFile, expdir)
                 fcst(xmlFile, expdir)
