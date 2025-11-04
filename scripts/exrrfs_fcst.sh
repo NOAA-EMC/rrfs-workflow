@@ -42,7 +42,7 @@ nlevel=$(wc -l < "${zeta_levels}")
 ln -snf "${FIXrrfs}/meshes/${MESH_NAME}.invariant.nc_L${nlevel}_${prefix}" ./invariant.nc
 mkdir -p graphinfo stream_list
 ln -snf "${FIXrrfs}"/graphinfo/* graphinfo/
-ln -snf "${FIXrrfs}/stream_list/${PHYSICS_SUITE}"/* stream_list/
+${cpreq} "${FIXrrfs}/stream_list/${PHYSICS_SUITE}"/* stream_list/
 
 # generate the namelist on the fly
 # do_restart already defined in the above
@@ -71,6 +71,11 @@ diag_interval=${HISTORY_INTERVAL:-1}
 sed -e "s/@restart_interval@/${restart_interval}/" -e "s/@history_interval@/${history_interval}/" \
     -e "s/@diag_interval@/${diag_interval}/" -e "s/@lbc_interval@/${lbc_interval}/" \
     "${PARMrrfs}"/streams.atmosphere  > streams.atmosphere
+#
+# chemistry related processing
+if ${DO_CHEMISTRY:-false}; then
+  source "${USHrrfs}"/chemistry_fcst.sh
+fi
 #
 # prelink the forecast output files to umbrella
 history_all=$(seq 0 $((10#${history_interval})) $((10#${fcst_len_hrs_thiscyc} )) )
