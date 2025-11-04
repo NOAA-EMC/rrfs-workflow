@@ -18,22 +18,16 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 #-----------------------------------------------------------------------
 #
 export pid=${pid:-$$}
-if [[ -z "${ENS_INDEX}" ]]; then
-  export MEMDIR=""
+export UMBRELLA_PREP_CHEM_DATA=${UMBRELLA_PREP_CHEM_DATA:-${DATAROOT}/${RUN}_prep_chem_${cyc}_${rrfs_ver}/${WGF}${MEMID}}
+if [[ "${SPINUP_MODE:-0}" == "1" ]];  then
+  prep_ic_str="prep_ic_spinup"
 else
-  export MEMDIR="/mem${ENS_INDEX}"
+  prep_ic_str="prep_ic"
 fi
-export UMBRELLA_PREP_LBC_DATA=${UMBRELLA_PREP_LBC_DATA:-${DATAROOT}/${RUN}_prep_lbc_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
-export jobid=${jobid:-fcst_${cyc}}
-if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
-  export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_prep_ic_spinup_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
-  export UMBRELLA_FCST_DATA=${UMBRELLA_FCST_DATA:-${DATAROOT}/${RUN}_fcst_spinup_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
-else
-  export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_prep_ic_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
-  export UMBRELLA_FCST_DATA=${UMBRELLA_FCST_DATA:-${DATAROOT}/${RUN}_fcst_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
-fi
-export UMBRELLA_PREP_CHEM_DATA=${UMBRELLA_PREP_CHEM_DATA:-${DATAROOT}/${RUN}_prep_chem_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
-export DATA=${DATA:-${UMBRELLA_FCST_DATA}/${jobid}}
+export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_${prep_ic_str}_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
+
+export jobid=${jobid:-prep_chem_${cyc}}
+export DATA=${DATA:-${UMBRELLA_PREP_CHEM_DATA}/${jobid}}_${EMIS_SECTOR_TO_PROCESS}
 
 if [[ -d "${DATA}" ]]; then # remove the "${DATA}" directory if existed
   rm -rf "${DATA}"
@@ -44,19 +38,14 @@ mkdir -p "${DATA}"
 # Define COM directories
 #-----------------------------------------------------------------------
 #
-export COMINrrfs=${COMINrrfs:-$(compath.py "${envir}/rrfs/${rrfs_ver}")}
+export COMINrrfs=${COMINrrfs:-$(compath.py "$envir/rrfs/$rrfs_ver")}
 export COMOUT=${COMOUT:-$(compath.py -o "${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}")}
-if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
-  mkdir -p "${COMOUT}/fcst_spinup/${WGF}${MEMDIR}"
-else
-  mkdir -p "${COMOUT}/fcst/${WGF}${MEMDIR}"
-fi
 #
 #----------------------------------------
 # Execute the script.
 #----------------------------------------
 export pgmout="${DATA}/OUTPUT.$$"
-"${HOMErrfs}"/scripts/exrrfs_fcst.sh
+"${HOMErrfs}"/scripts/exrrfs_prep_chem.sh 
 export err=$?; err_chk
 
 if [[ -e "${pgmout}" ]]; then
@@ -66,8 +55,9 @@ fi
 #----------------------------------------
 # Remove the Temporary working directory
 #----------------------------------------
-# [[ "${KEEPDATA}" == "NO" ]] && rm -rf "${DATA}"
-# we cannot remove fcst DATA here since save_fcst lags behind and still need to access them
+if [[ "${KEEPDATA^^}" == "NO" ]] && [[ ${CREATE_OWN_DATA^^} == "FALSE" ]]; then
+  rm -rf "${DATA}"
+fi
 #
 date
 echo "JOB ${jobid:-} HAS COMPLETED NORMALLY!"

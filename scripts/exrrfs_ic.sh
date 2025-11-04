@@ -40,6 +40,9 @@ physics_suite=${PHYSICS_SUITE:-'PHYSICS_SUITE_not_defined'}
 file_content=$(< "${PARMrrfs}/${physics_suite}/namelist.init_atmosphere") # read in all content
 eval "echo \"${file_content}\"" > namelist.init_atmosphere
 
+if ${DO_CHEMISTRY:-false}; then
+  source "${USHrrfs}"/chemistry_ic_lbc.sh
+fi
 #
 # generate the streams file on the fly 
 # using sed as this file contains "filename_template='lbc.$Y-$M-$D_$h.$m.$s.nc'"
