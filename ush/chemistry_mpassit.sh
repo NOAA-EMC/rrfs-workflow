@@ -5,7 +5,7 @@
 
 cat "${FIXrrfs}"/mpassit/chemistry/histlist_2d_chem >> histlist_2d
 if [[ "${CHEM_GROUPS}" == *dust* ]]; then
-  cat "${FIXrrfs}"/mpassit/chemistry/histlist_23d_dust >> histlist_3d
+  cat "${FIXrrfs}"/mpassit/chemistry/histlist_3d_dust >> histlist_3d
 fi
 if [[ "${CHEM_GROUPS}" == *smoke* ]]; then
    # TODO, FCST vs. RETRO

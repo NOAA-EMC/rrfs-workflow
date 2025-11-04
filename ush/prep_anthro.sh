@@ -76,10 +76,10 @@ if [[ -r ${EMISFILE_BASE_RAW1} ]] && [[ -r ${EMISFILE_BASE_RAW2} ]]; then
          LINKEDEMISFILE=${UMBRELLA_PREP_CHEM_DATA}/anthro.init.${YYYY_EMIS}-${MM_EMIS}-${DD_EMIS}_${HH_EMIS}.00.00.nc
          if [ "${HH_EMIS}" -gt 11 ]; then
             offset=12
-            EMISFILE=${EMISFILE1}
+            EMISFILE=${EMISFILE2}
          else
             offset=0
-            EMISFILE=${EMISFILE2}
+            EMISFILE=${EMISFILE1}
          fi
          t_ix=$((10#$HH_EMIS - offset))
          #
@@ -101,5 +101,5 @@ if [[ -r ${EMISFILE_BASE_RAW1} ]] && [[ -r ${EMISFILE_BASE_RAW2} ]]; then
             ln -sf "${EMISFILE_FINAL}" "${LINKEDEMISFILE}"
          fi
      done
-  fi # Did inerp succeed?
+  fi # Did interp succeed?
 fi # Do the emission files exist

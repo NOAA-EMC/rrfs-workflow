@@ -62,9 +62,9 @@ if [[ ! -e ${dummyRAVE} ]]; then
     ncap2 -O -s 'e_bb_in_smoke_nh3=0.*e_bb_in_smoke_fine' "${dummyRAVE}" "${dummyRAVE}"
     ncap2 -O -s 'frp_in=0.*frp_in' "${dummyRAVE}" "${dummyRAVE}"
     ncap2 -O -s 'fre_in=0.*fre_in' "${dummyRAVE}" "${dummyRAVE}"
+  else
+      echo "Do not have and cannot create dummy RAVE file as no RAVE data is available"
  fi 
-else
-    echo "Do not have and cannot create dummy RAVE file as no RAVE data is available"
 fi
 # Loop through the hours and link the files so they have the correct filename and variable names 
 # TODO - Update variable names via outside script or within regrid.py -- mapping table?
