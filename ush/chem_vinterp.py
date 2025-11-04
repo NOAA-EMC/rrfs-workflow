@@ -3,6 +3,7 @@ import xarray as xr
 from scipy.interpolate import interp1d
 import argparse
 
+
 def log_interpolate_netcdf(input_file, template_file, output_file, data_var_name, old_kemit_coord_name, new_kemit_coord_name):
     """
     Log-interpolates a 3D NetCDF dataset along a specified coordinate, using
@@ -31,25 +32,25 @@ def log_interpolate_netcdf(input_file, template_file, output_file, data_var_name
                 print("Warning: Input data contains non-positive values. Adding a small epsilon.")
                 epsilon = np.finfo(float).eps
                 data_3d = data_3d + epsilon
-            
+
             # --- Log-interpolation logic ---
             log_data_3d = np.log10(data_3d)
             log_kemit_old = np.log10(kemit_old)
             log_kemit_new = np.log10(kemit_new)
-            
+
             interpolator = interp1d(log_kemit_old, log_data_3d, axis=2, kind='linear',
                                     bounds_error=False, fill_value='extrapolate')
-            
+
             log_data_interp = interpolator(log_kemit_new)
             data_interp = np.power(10, log_data_interp)
-            
+
             # --- Write the new NetCDF file ---
             # Use the input dataset as a template for the output
             ds_out = ds_in.copy(deep=False)
-            
+
             # Replace the kemit coordinate with the new values
             ds_out[new_kemit_coord_name] = kemit_new
-            
+
             # Create a new DataArray for the interpolated data with updated coordinates
             da_interp = xr.DataArray(
                 data_interp,
@@ -80,7 +81,7 @@ if __name__ == "__main__":
     parser.add_argument("data_var_name", help="Name of the data variable to interpolate.")
     parser.add_argument("old_kemit_coord_name", help="Name of the old kemit coordinate variable.")
     parser.add_argument("new_kemit_coord_name", help="Name of the new kemit coordinate variable.")
-    
+
     args = parser.parse_args()
 
     log_interpolate_netcdf(
@@ -91,4 +92,3 @@ if __name__ == "__main__":
         args.old_kemit_coord_name,
         args.new_kemit_coord_name,
     )
-
