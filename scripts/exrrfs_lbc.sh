@@ -56,7 +56,7 @@ file_content=$(< "${PARMrrfs}/${physics_suite}/namelist.init_atmosphere") # read
 eval "echo \"${file_content}\"" > namelist.init_atmosphere
 
 if ${DO_CHEMISTRY:-false}; then
-  source ${USHrrfs}/chemistry_ic_lbc.sh
+  source "${USHrrfs}"/chemistry_ic_lbc.sh
 fi
 #
 # generate the streams file on the fly
