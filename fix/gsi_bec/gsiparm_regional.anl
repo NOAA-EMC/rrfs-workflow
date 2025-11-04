@@ -26,56 +26,56 @@ met_guess::
 !var     level    crtm_use    desc              orig_name
   ps        1      -1         surface_pressure     ps
 #  z         1      -1         geopotential_height  phis
-  u        59       2         zonal_wind           u
-  v        59       2         meridional_wind      v
-  tv       59       2         virtual_temperature  tv
-  tsen     59       2         sensible_temperature tsen 
-  sphum    59       2         specific_humidity    sphum
-#  oz       65       2         ozone                o3mr 
-#  delp     65      -1         fv3_del_pressure     delp    
+  u        @GSIBEC_NSIG@       2         zonal_wind           u
+  v        @GSIBEC_NSIG@       2         meridional_wind      v
+  tv       @GSIBEC_NSIG@       2         virtual_temperature  tv
+  tsen     @GSIBEC_NSIG@       2         sensible_temperature tsen 
+  sphum    @GSIBEC_NSIG@       2         specific_humidity    sphum
+#  oz       @GSIBEC_NSIG@       2         ozone                o3mr 
+#  delp     @GSIBEC_NSIG@      -1         fv3_del_pressure     delp    
 ::
 
 state_derivatives::
 !var  level  src
  ps   1      met_guess
- u    59     met_guess
- v    59     met_guess
- tv   59     met_guess
- q    59     met_guess
- oz   59     met_guess
- prse 60     met_guess
+ u    @GSIBEC_NSIG@     met_guess
+ v    @GSIBEC_NSIG@     met_guess
+ tv   @GSIBEC_NSIG@     met_guess
+ q    @GSIBEC_NSIG@     met_guess
+ oz   @GSIBEC_NSIG@     met_guess
+ prse @GSIBEC_NSIGP1@     met_guess
 ::
 
 state_tendencies::
 !var  levels  source
- u    59      met_guess
- v    59      met_guess
- tv   59      met_guess
- q    59      met_guess
- oz   59      met_guess
- prse 60      met_guess
+ u    @GSIBEC_NSIG@      met_guess
+ v    @GSIBEC_NSIG@      met_guess
+ tv   @GSIBEC_NSIG@      met_guess
+ q    @GSIBEC_NSIG@      met_guess
+ oz   @GSIBEC_NSIG@      met_guess
+ prse @GSIBEC_NSIGP1@      met_guess
 ::
 
 state_vector::
 !var     level  itracer source     funcof
- u        59      0     met_guess    u
- v        59      0     met_guess    v
- tv       59      0     met_guess    tv
-# tsen     65      0     met_guess    tv,q
- q        59      1     met_guess    q
-#oz       65      1     met_guess    oz
-# prse     66      0     met_guess    prse
+ u        @GSIBEC_NSIG@      0     met_guess    u
+ v        @GSIBEC_NSIG@      0     met_guess    v
+ tv       @GSIBEC_NSIG@      0     met_guess    tv
+# tsen     @GSIBEC_NSIG@      0     met_guess    tv,q
+ q        @GSIBEC_NSIG@      1     met_guess    q
+#oz       @GSIBEC_NSIG@      1     met_guess    oz
+# prse     @GSIBEC_NSIGP1@      0     met_guess    prse
  ps        1      0     met_guess    ps   
 # sst       1      0     met_guess    sst
 ::
 
 control_vector::
 !var     level  itracer as/tsfc_sdv  an_amp0   source  funcof
- sf       59      0       0.90        -1.0     state    u,v
- vp       59      0       0.90        -1.0     state    u,v
+ sf       @GSIBEC_NSIG@      0       0.90        -1.0     state    u,v
+ vp       @GSIBEC_NSIG@      0       0.90        -1.0     state    u,v
  ps        1      0       1.00        -1.0     state    prse
- t        59      0       1.40        -1.0     state    tv
- q        59      1       0.80        -1.0     state    q
+ t        @GSIBEC_NSIG@      0       1.40        -1.0     state    tv
+ q        @GSIBEC_NSIG@      1       0.80        -1.0     state    q
 # sst       1      0       1.00        -1.0     state    sst
 # stl       1      0       1.00        -1.0     motley   sst
 # sti       1      0       1.00        -1.0     motley   sst
