@@ -440,6 +440,8 @@ class RaveToMpasRegridProcessor:
                 )
                 for k, v in rave_field.attrs.items():
                     setattr(var, k, v)
+
+                # Multiply FRE/FRP by output area so it is back to W or J*s
                 if rave_field.name in ("FRP_MEAN", "FRE"):
                     set_variable_data(
                         var,
@@ -458,7 +460,7 @@ class RaveToMpasRegridProcessor:
                         rave_field.reshape_field_data(dst_field.data),
                         collective=True,
                     )
-            # Multiply FRE/FRP by output area so it is back to W or J*s
+
             if rave_field.name == "ENL_POLL":
                 with open_nc(self.context.new_dst_path, mode="a") as ds:
                     _LOGGER.info(f"renaming and combining tree fields")
