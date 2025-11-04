@@ -48,10 +48,10 @@ if [[ ! -r ${DUST_OUTFILE} ]]; then
       ncap2 -O -s 'albedo_drag_m_in=feff_m_in' "${DUST_OUTFILE}" "${DUST_OUTFILE}"
    fi   
    ncks -O -6 "${DUST_OUTFILE}" "${DUST_OUTFILE}"
-   ln -sf "${DUST_OUTFILE}" "${LINKEDEMISFILE}"
    timestr3=$(date +%Y-%m-%d_%H:00:00 -d "$current_day")
    #shellcheck disable=SC2086
-   ncap2 -O -s xtime=\"${timestr3}\" "${EMISFILE}" "${EMISFILE}"
+   ncap2 -O -s xtime=\"${timestr3}\" "${DUST_OUTFILE}" "${DUST_OUTFILE}"
+   ln -sf "${DUST_OUTFILE}" "${LINKEDEMISFILE}"
 else
    echo "Dust file exists, linking"
    ln -sf "${DUST_OUTFILE}" "${LINKEDEMISFILE}"
