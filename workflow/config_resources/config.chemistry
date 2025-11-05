@@ -2,7 +2,7 @@
 # Aloha! This file is to setup chemistry configurations
 #
 export CREATE_OWN_DATA=true
-export CHEMISTRY_SPECIES="smoke" # any combination of "smoke, anthro, pollen, dust, rwc"
+export CHEM_GROUPS="smoke" # any combination of "smoke, anthro, pollen, dust, rwc"
 export EBB_DCYCLE=1
 export USE_EXTERNAL_CHEM_LBCS=true
 export USE_EXTERNAL_CHEM_ICS=false

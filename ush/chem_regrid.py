@@ -688,7 +688,7 @@ def main() -> None:
     else:
         scrip_path = Path(workdir + "/mpas_" + dataset_name + "-" + mesh_name + "_scrip.nc")
     #
-    dst_path = Path(workdir + "/" + mesh_name + ".init.nc")
+    dst_path = Path(workdir + "/init.nc")
     desc_stats_out = Path(workdir + "/desc_stats-" + cycle + ".csv")
     #
     YYYY = cycle[0:4]
