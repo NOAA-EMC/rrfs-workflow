@@ -30,6 +30,9 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
         'INTERVAL': f'{interval}',
     }
 
+    if os.getenv('DO_CHEMISTRY', 'false').lower() == "true":
+        dcTaskEnv['USE_EXTERNAL_CHEM'] = os.getenv('USE_EXTERNAL_CHEM_LBCS', 'FALSE').lower()
+
     if not do_ensemble:
         meta_bgn = ""
         meta_end = ""

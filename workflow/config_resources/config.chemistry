@@ -2,17 +2,14 @@
 # Aloha! This file is to setup chemistry configurations
 #
 export CREATE_OWN_DATA=true
-export CHEMISTRY_SPECIES="smoke" # any combination of "smoke, anthro, pollen, dust, rwc"
+export CHEM_GROUPS="smoke" # any combinations of "smoke, anthro, pollen, dust, rwc"
 export EBB_DCYCLE=1
 export USE_EXTERNAL_CHEM_LBCS=true
 export USE_EXTERNAL_CHEM_ICS=false
 # export RAVE_DIR=/path/to/your/rave/dir/ # (files expected in ${RAVE_DIR}/raw and will be placed in ${RAVE_DIR}/processed/${MESH_NAME}-RAVE-${YYYYMMDDHH}.nc
 #
-export NODES_PREP_CHEM="<nodes>1:ppn=20</nodes>"
-export NODES_PREP_CHEM_ICBC="<nodes>1:ppn=1</nodes>"
-#
-export MEMORY_PREP_CHEM="60G"
-export MEMORY_PREP_CHEM_ICBC="60G"
+export MEMORY_PREP_CHEM="200G"
+export MEMORY_PREP_CHEM_ICBC="200G"
 #
 export WALLTIME_PREP_CHEM="00:30:00"
 export WALLTIME_PREP_CHEM_ICBC="00:30:00"
@@ -29,8 +26,6 @@ case ${MACHINE} in
     export PARTITION_PREP_CHEM_ICBC="bigmem"
     export NODES_PREP_CHEM="<nodes>1:ppn=20</nodes>"
     export NODES_PREP_CHEM_ICBC="<nodes>1:ppn=1</nodes>"
-    export MEMORY_PREP_CHEM="200G"
-    export MEMORY_PREP_CHEM_ICBC="200G"
     ;;
   "ursa")
     export CHEMPATH="/scratch4/BMC/acomp/cheMPAS-Fire/input"
@@ -41,8 +36,6 @@ case ${MACHINE} in
     export PARTITION_PREP_CHEM_ICBC="u1-compute"
     export NODES_PREP_CHEM="<nodes>1:ppn=150</nodes>"
     export NODES_PREP_CHEM_ICBC="<nodes>1:ppn=1</nodes>"
-    export MEMORY_PREP_CHEM="200G"
-    export MEMORY_PREP_CHEM_ICBC="200G"
     ;;
   "jet")
     export CHEMPATH="/lfs6/BMC/rtwbl/cheMPAS-Fire/input"
@@ -54,8 +47,6 @@ case ${MACHINE} in
     export PARTITION_PREP_CHEM_ICBC="bigmem"
     export NODES_PREP_CHEM="<nodes>1:ppn=20</nodes>"
     export NODES_PREP_CHEM_ICBC="<nodes>1:ppn=1</nodes>"
-    export MEMORY_PREP_CHEM="200G"
-    export MEMORY_PREP_CHEM_ICBC="200G"
     ;;
   "gaea")
     export CHEMPATH="/gpfs/f6/drsa-fire3/world-shared/cheMPAS-Fire/"
@@ -63,8 +54,6 @@ case ${MACHINE} in
     export REGRID_CONDA_ENV="/gpfs/f6/drsa-fire3/world-shared/Sudheer/anaconda3/envs/regrid-wrapper/"
     export NODES_PREP_CHEM="<nodes>1:ppn=150</nodes>"
     export NODES_PREP_CHEM_ICBC="<nodes>1:ppn=1</nodes>"
-    export MEMORY_PREP_CHEM="200G"
-    export MEMORY_PREP_CHEM_ICBC="200G"
     ;;
   *)
     echo "!!! unsupported platform:'${MACHINE}'!!!"
