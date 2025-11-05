@@ -5,8 +5,8 @@ date
 rundir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 HOMErrfs="$(dirname "$rundir")"
 
-source "${HOMErrfs}/workflow/ush/detect_machine.sh"
-source "${HOMErrfs}/workflow/ush/init.sh"
+source "${HOMErrfs}/workflow/tools/detect_machine.sh"
+source "${HOMErrfs}/workflow/tools/init.sh"
 
 EXEC="${HOMErrfs}/sorc/rank_run/build/rank_run.x"
 

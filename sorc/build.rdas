@@ -5,8 +5,8 @@ date
 rundir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 HOMErrfs="$(dirname "$rundir")"
 
-source "${HOMErrfs}/workflow/ush/detect_machine.sh"
-source "${HOMErrfs}/workflow/ush/init.sh"
+source "${HOMErrfs}/workflow/tools/detect_machine.sh"
+source "${HOMErrfs}/workflow/tools/init.sh"
 
 if [[ "${MACHINE}" == "derecho" ]]; then
   #export GFORTRAN_CONVERT_UNIT='big_endian:101-200'

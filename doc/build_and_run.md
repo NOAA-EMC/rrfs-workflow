@@ -34,7 +34,7 @@ This Python script creates an experiment directory (i.e. `EXPDIR`), writes out a
 If you get any errors when running `setup_rocoto.py`, it is mostly because the currently loaded Python does not have required packages (such as 'dateutil').    
 You can use the Python environment included in rrfs-workflow by running
 ```
-source ../workflow/ush/load_bokeh.sh
+source ../workflow/tools/load_bokeh.sh
 ```
 and then run `setup_rocoto.py` again.  
 If the above source command fails to load a working Python environment, it usually means there is a module conflict. You may do `module purge` and/or start over from a clean terminal window.
@@ -59,7 +59,7 @@ To reduce manual effort, we can execute `bkg_rrun` at the command line instead. 
 (c) Execute `rstat` to check workflow status, `rcheck YYYYMMDDHH task` to check details of a given task (such as why a task has not been submitted), `taskinfo YYYYMMDDHH task` to quickly get the location of the corresponding log file, STMP and COMROOT directories of a task.    
 
 **NOTE:**
-- Check [README.md](../workflow/ush/qrocoto/README.md) or [detailed instructions](https://github.com/rrfsx/qrocoto/wiki/qrocoto) for more information about `qrocoto`.
+- Check [README.md](../workflow/tools/qrocoto/README.md) or [detailed instructions](https://github.com/rrfsx/qrocoto/wiki/qrocoto) for more information about `qrocoto`.
 - If you get an error message, such as `Lmod has detected the following error...` or `...command not found...`, it means the rocoto module is NOT available in your current environment.    
 
 Do as follows to solve the issue:    
