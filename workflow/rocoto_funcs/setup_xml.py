@@ -23,6 +23,7 @@ from rocoto_funcs.ioda_bufr import ioda_bufr
 from rocoto_funcs.ioda_mrms_refl import ioda_mrms_refl
 from rocoto_funcs.proc_bufr_nonvar import proc_bufr_nonvar
 from rocoto_funcs.refmosaic_nonvar import refmosaic_nonvar
+from rocoto_funcs.cloudanalysis_nonvar import cloudanalysis_nonvar
 from rocoto_funcs.clean import clean
 from rocoto_funcs.graphics import graphics
 from rocoto_funcs.misc import misc
@@ -82,10 +83,14 @@ def setup_xml(HOMErrfs, expdir):
                 # spin up line
                 prep_ic(xmlFile, expdir, spinup_mode=1)
                 jedivar(xmlFile, expdir, do_spinup=True)
+                if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
+                    cloudanalysis_nonvar(xmlFile, expdir, do_spinup=True)
                 fcst(xmlFile, expdir, do_spinup=True)
                 # prod line
                 prep_ic(xmlFile, expdir, spinup_mode=-1)
                 jedivar(xmlFile, expdir)
+                if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
+                    cloudanalysis_nonvar(xmlFile, expdir)
                 fcst(xmlFile, expdir)
                 save_fcst(xmlFile, expdir)
             elif os.getenv("DO_FCST", "TRUE").upper() == "TRUE":
@@ -93,6 +98,8 @@ def setup_xml(HOMErrfs, expdir):
                 prep_lbc(xmlFile, expdir)
                 if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
                     jedivar(xmlFile, expdir)
+                if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
+                    cloudanalysis_nonvar(xmlFile, expdir)
                 fcst(xmlFile, expdir)
                 save_fcst(xmlFile, expdir)
             #

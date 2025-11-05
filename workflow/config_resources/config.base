@@ -71,6 +71,10 @@ export WALLTIME_PREP_LBC=${WALLTIME_PREP_LBC:-"00:30:00"}
 # da
 export NODES_DA=${NODES_DA:-"<nodes>1:ppn=40</nodes>"}
 
+# cloudanalysis_nonvar
+export NODES_CLOUDANALYSIS_NONVAR=${NODES_CLOUDANALYSIS_NONVAR:-"<nodes>2:ppn=20</nodes>"}
+export WALLTIME_CLOUDANALYSIS_NONVAR=${WALLTIME_CLOUDANALYSIS_NONVAR:-"00:20:00"}
+
 # fcst
 export NODES_FCST=${NODES_FCST:-"<nodes>3:ppn=40</nodes>"}
 export WALLTIME_FCST=${WALLTIME_FCST:-"00:50:00"}

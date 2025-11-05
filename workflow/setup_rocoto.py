@@ -28,6 +28,14 @@ else:
     print(f'{EXPin}: no such file')
     exit()
 
+# Check compatability of setup with nonvar cloud analysis
+if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
+    mesh = os.getenv("MESH_NAME", "conus3km")
+    if mesh not in ["conus3km", "south3.5km", "conus12km"]:
+        print(f'{mesh} is not compatible with the nonvar cloud analysis')
+        print('Please set DO_NONVAR_CLOUD_ANA=false and try again')
+        exit()
+
 # create comroot (no matter exists or not)
 comroot = get_required_env('COMROOT')
 dataroot = get_required_env('DATAROOT')

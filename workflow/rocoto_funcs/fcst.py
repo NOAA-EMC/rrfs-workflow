@@ -74,8 +74,14 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
 
     jedidep = ""
+    cloudana_dep = ""
     recenterdep = ""
-    if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
+    if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
+        if do_spinup:
+            cloudana_dep = f'<taskdep task="cloudanalysis_nonvar_spinup"/>'
+        else:
+            cloudana_dep = f'<taskdep task="cloudanalysis_nonvar"/>'
+    elif os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
         if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
             jedidep = f'<taskdep task="getkf_solver"/>'
         elif do_spinup:
@@ -97,6 +103,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     <taskdep task="prep_lbc{ensindexstr}" cycle_offset="0:00:00"/>
     {prep_ic_dep}
     {jedidep}
+    {cloudana_dep}
     {recenterdep}
   </and>
   </dependency>'''
