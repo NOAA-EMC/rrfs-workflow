@@ -38,10 +38,14 @@ def setup_xml(HOMErrfs, expdir):
     do_deterministic = os.getenv('DO_DETERMINISTIC', 'true').upper()
     do_ensemble = os.getenv('DO_ENSEMBLE', 'false').upper()
     do_ensmean_post = os.getenv('DO_ENSMEAN_POST', 'false').upper()
+    do_chemistry = os.getenv('DO_CHEMISTRY', 'false').upper()
     #
     source(f"{HOMErrfs}/workflow/config_resources/config.{machine}")
     source(f"{HOMErrfs}/workflow/config_resources/config.meshdep")
     source(f"{HOMErrfs}/workflow/config_resources/config.base")
+    if do_chemistry == "TRUE":
+        source(f"{HOMErrfs}/workflow/config_resources/config.chemistry")
+
     realtime = os.getenv('REALTIME', 'false')
     if realtime.upper() == "TRUE":
         source(f"{HOMErrfs}/workflow/config_resources/config.realtime")
@@ -87,7 +91,7 @@ def setup_xml(HOMErrfs, expdir):
             elif os.getenv("DO_FCST", "TRUE").upper() == "TRUE":
                 prep_ic(xmlFile, expdir)
                 prep_lbc(xmlFile, expdir)
-                if os.getenv("DO_CHEMISTRY", "false").upper() == "TRUE":
+                if do_chemistry == "TRUE":
                     prep_chem(xmlFile, expdir)
                 if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
                     jedivar(xmlFile, expdir)
