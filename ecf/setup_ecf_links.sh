@@ -1,12 +1,7 @@
 #!/bin/bash
 set -eux
-<<<<<<< HEAD
-# not sure if this load is needed, but want to make sure cpreq is available.
-module load prod_util
-=======
 module load prod_util
 
->>>>>>> 3a353022 (Modify job card resource and cleanup method)
 # Assume resource is using NCO production configuration
 resource_config="EMC"
 ECF_DIR=$(pwd)

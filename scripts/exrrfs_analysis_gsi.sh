@@ -212,16 +212,10 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
     split -l 10 parallel_copy.sh parallel_copy_run
     for file_to_p_copy in parallel_copy_run*; do
        echo "Working on ${file_to_p_copy}"
-<<<<<<< HEAD
-       cat ${file_to_p_copy} | parallel --verbose 
-    done
-    sleep 3
-=======
        cat ${file_to_p_copy} | parallel --verbose --halt-on-error 1
        export err=$?; err_chk
        sleep 6 
     done
->>>>>>> 3a353022 (Modify job card resource and cleanup method)
   fi
 fi
 #

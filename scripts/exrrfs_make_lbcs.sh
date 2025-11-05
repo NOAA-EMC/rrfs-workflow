@@ -339,12 +339,6 @@ if [ ${extrn_mdl_name} != GEFS ] ; then
      echo "cpfs ${file_to_copy} ${umbrella_lbcops_data}" >> ${DATA}/parallel_copy.sh
    done
    if [ -s ${DATA}/parallel_copy.sh ]; then
-<<<<<<< HEAD
-     split -l 10 parallel_copy.sh parallel_copy_run
-     for file_to_p_copy in parallel_copy_run*; do
-       echo "Working on ${file_to_p_copy}"
-       cat ${file_to_p_copy} | parallel --verbose 
-=======
      lop_slp=2
      split -l 10 parallel_copy.sh parallel_copy_run
      for file_to_p_copy in parallel_copy_run*; do
@@ -353,7 +347,6 @@ if [ ${extrn_mdl_name} != GEFS ] ; then
        cat ${file_to_p_copy} | parallel --verbose --halt-on-error 1
        export err=$?; err_chk
        lop_slp=$(($lop_slp+8))
->>>>>>> 3a353022 (Modify job card resource and cleanup method)
      done
    fi
  else

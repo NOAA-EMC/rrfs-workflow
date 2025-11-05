@@ -473,15 +473,7 @@ fi
 # NBMFLD file is only generated for RRFS and REFS
 if [[ -f ${nbmfld} ]]; then
   cpreq -p ${nbmfld} ${COMOUT}
-<<<<<<< HEAD
-  if [ ${DO_ENSFCST} = "TRUE" ]; then
-    wgrib2 ${nbmfld} -s > ${COMOUT}/${net4}.t${cyc}z.${mem_num}.nbmfld.${gridspacing}.f${fhr}.${gridname}.grib2.idx
-  else
-    wgrib2 ${nbmfld} -s > ${COMOUT}/${net4}.t${cyc}z.nbmfld.${gridspacing}.f${fhr}.${gridname}.grib2.idx
-  fi
-=======
   wgrib2 ${nbmfld} -s > ${COMOUT}/${net4}.t${cyc}z.nbmfld.${gridspacing}.f${fhr}.${gridname}.grib2.idx
->>>>>>> 3a353022 (Modify job card resource and cleanup method)
 fi
 
 # Only one latlons_corners file per cycle is needed in COMOUT - make this change later
