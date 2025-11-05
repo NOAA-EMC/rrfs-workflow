@@ -37,7 +37,7 @@ def prep_chem(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         'REALTIME': f'{realtime}',
         'REGRID_WRAPPER_DIR': f'{regrid_wrapper_dir}',
         'REGRID_CONDA_ENV': f'{regrid_conda_env}'}
-#
+    #
     if realtime.upper() == "TRUE":
         rave_dir = '/public/data/grids/nesdis/3km_fire_emissions/'
     else:
@@ -51,11 +51,8 @@ def prep_chem(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     task_id = f'{meta_id}_#sector#'
     dcTaskEnv['EMIS_SECTOR_TO_PROCESS'] = '#sector#'
     dcTaskEnv['ANTHRO_EMISINV'] = 'GRA2PES'
-    meta_bgn = ""
-    meta_end = ""
 
-# Emission sectors / metatask
-
+    # Emission sectors / metatask
     emis_sectors_test = ["smoke", "anthro", "pollen", "dust", "rwc"]
     emis_sectors = ""
     for sector in emis_sectors_test:
@@ -63,28 +60,22 @@ def prep_chem(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         if testval == "TRUE":
             emis_sectors = emis_sectors + sector + ' '
     emis_sectors = emis_sectors.strip()
-
-#
-
+    #
     meta_bgn = f'''
 <metatask name="{meta_id}">
 <var name="sector">{emis_sectors}</var>'''
-    meta_end = f'\
-</metatask>\n'
+    meta_end = f'</metatask>\n'
 
     # dependencies
-
-    timedep = f''
+    timedep = ''
     if realtime.upper() == "TRUE":
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
-        timedep = f'\n   <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+        timedep = f'\n  <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
 
-    #
-    initdep = f'\n   <taskdep task="prep_ic"/>'
     dependencies = f'''
   <dependency>
   <and>{timedep}
-  {initdep}
+    <taskdep task="prep_ic"/>
   </and>
   </dependency>'''
 
