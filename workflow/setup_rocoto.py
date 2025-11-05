@@ -16,8 +16,8 @@ else:
 # find the HOMErrfs directory and the MACHINE; run init.sh
 HOMErrfs = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.environ["HOMErrfs"] = HOMErrfs
-os.system(f'{HOMErrfs}/workflow/ush/init.sh')
-source(f'{HOMErrfs}/workflow/ush/detect_machine.sh')
+os.system(f'{HOMErrfs}/workflow/tools/init.sh')
+source(f'{HOMErrfs}/workflow/tools/detect_machine.sh')
 machine = os.getenv('MACHINE')
 if machine == 'UNKNOWN':
     print(f'WARNING: machine is UNKNOWN! ')
@@ -122,7 +122,7 @@ setup_xml(HOMErrfs, expdir)
 
 if os.getenv('YAML_GEN_METHOD', '1') == '1':
     # copy qrocoto utilities to expdir/qrocoto
-    srcdir = f'{HOMErrfs}/workflow/ush/qrocoto'
+    srcdir = f'{HOMErrfs}/workflow/tools/qrocoto'
     dstdir = f'{expdir}/qrocoto'
     shutil.copytree(srcdir, dstdir, dirs_exist_ok=True)
     if os.getenv("DO_JEDI", 'false').upper() == "TRUE" and os.path.exists('satinfo'):
@@ -134,8 +134,8 @@ check https://github.com/NOAA-EMC/rrfs-workflow/wiki for more details''')
 
 elif os.getenv('YAML_GEN_METHOD', '1') == '2':
     print("If doing radiance DA, run `prep_satbias.sh` to prepare the initial stabias files")
-    # Copy files from HOMErrfs/workflow/ush to expdir
-    shutil.copy2(f'{HOMErrfs}/workflow/ush/qrocoto/prep_satbias.sh', expdir)
+    # Copy files from HOMErrfs/workflow/tools to expdir
+    shutil.copy2(f'{HOMErrfs}/workflow/tools/qrocoto/prep_satbias.sh', expdir)
     source_dir = os.path.join(HOMErrfs, 'workflow', 'ush')
     target_files = ['rr', 'rc', 'rb', 'rs']
     if os.path.isdir(source_dir):
