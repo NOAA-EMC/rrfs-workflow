@@ -1,7 +1,12 @@
 #!/bin/bash
 set -eux
+<<<<<<< HEAD
 # not sure if this load is needed, but want to make sure cpreq is available.
 module load prod_util
+=======
+module load prod_util
+
+>>>>>>> 3a353022 (Modify job card resource and cleanup method)
 # Assume resource is using NCO production configuration
 resource_config="EMC"
 ECF_DIR=$(pwd)
@@ -252,9 +257,9 @@ done
 # firewx ics lbcs files
 cd $ECF_DIR/scripts/ics/firewx
 echo "Copy firewx ics lbcs files ..."
-rm -f jrrfs_firewx_make_lbcs_??.ecf
-for fhrs in $(seq 0 35); do
+for fhrs in $(seq 1 35); do
   fhr_2d=$( printf "%02d" "${fhrs}" )
+  rm -f jrrfs_firewx_make_lbcs_${fhr_2d}.ecf
   cp jrrfs_firewx_make_lbcs_master.ecf jrrfs_firewx_make_lbcs_${fhr_2d}.ecf
   sed -i -e "s|@firewx_make_lbcs_fhr@|${fhr_2d}|g" jrrfs_firewx_make_lbcs_${fhr_2d}.ecf
 done

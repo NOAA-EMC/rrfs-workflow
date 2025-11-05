@@ -51,7 +51,7 @@ cd $DATA
 cd $DATAROOT
 if [ ${KEEPDATA} == "YES" ]; then
   # Keep all unique id DATA and rename the Umbrella Data directory to ensure new job will not run on the same directory
-  for dir_remove in rrfs_analysis_gsi rrfs_analysis_gsi_spinup rrfs_calc_ensmean rrfs_forecast_spinup rrfs_init rrfs_init_spinup rrfs_ics; do
+  for dir_remove in rrfs_analysis_gsi rrfs_analysis_gsi_spinup rrfs_calc_ensmean rrfs_forecast_spinup rrfs_forecast rrfs_init rrfs_init_spinup rrfs_ics rrfs_lbcops; do
     [[ -d ${dir_remove}_${cyc}_v1.0 ]]&& mv ${dir_remove}_${cyc}_v1.0 ${dir_remove}_$$_${cyc}_v1.0
   done
 else
@@ -60,9 +60,9 @@ else
   echo "set -x" &> ${DATA}/cleanup_run.sh
   idx_cyc2d=${cyc}
   # Find all unique id data to remove
-  ls -lart rrfs_* | grep -v "\_${idx_cyc2d}\_"|grep "_${idx_cyc2d}\."|grep -v "rrfs_clean_${idx_cyc2d}"|awk '{print "rm -rf",$9}' >> ${DATA}/cleanup_run.sh
+    find . -maxdepth 1 -type d -name "rrfs_*_${idx_cyc2d}\.*"| sed 's|^\./||'|grep "_${idx_cyc2d}\."|awk '{print "rm -rf",$1}' >> ${DATA}/cleanup_run.sh
   # Find all Umbrella Data to remove
-  ls -lart rrfs_* | grep "\_${idx_cyc2d}\_v1\.0"|awk '{print "rm -rf",$9}' >> ${DATA}/cleanup_run.sh
+    find . -maxdepth 1 -type d -name "rrfs_*_${idx_cyc2d}_v1\.0"| sed 's|^\./||'|awk '{print "rm -rf",$1}' >> ${DATA}/cleanup_run.sh
   cat ${DATA}/cleanup_run.sh
   chmod 755 ${DATA}/cleanup_run.sh
   [[ $(cat ${DATA}/cleanup_run.sh|wc -l) -gt 1 ]]&& ${DATA}/cleanup_run.sh &> ${DATA}/cleanup_run_$$.log
@@ -71,10 +71,10 @@ else
     [[ -d ${dir_remove} ]]&& rm -rf ${dir_remove}
   done
 fi
+
 #-----------------------------------------------------------------------
 # Remove this session before NCO code delivery
-# Delete development data directories if KEEPDATA set to YES
-# Keep DATA for development for the last 12 hours
+# Delete post and prdgen data directories for current cyc if KEEPDATA set to YES
 # Remove this session after turn on the KEEPDATA function
 #-----------------------------------------------------------------------
 cd $DATAROOT
@@ -82,11 +82,11 @@ if [ ${KEEPDATA} == "YES" ]; then
   [[ -f ${DATA}/post_prdgen_data_clean1.sh ]]&& rm -f ${DATA}/post_prdgen_data_clean1.sh
   echo "set -x" &> ${DATA}/post_prdgen_data_clean1.sh
   idx_cyc2d=${cyc}
-  ls -lart rrfs_* | grep "\_post_${idx_cyc2d}\_v1\.0"|awk '{print "rm -rf",$9}' >> ${DATA}/post_prdgen_data_clean1.sh
   # Remove post
-  ls -lart rrfs_* | grep -v "\_${idx_cyc2d}\_"|grep "_${idx_cyc2d}\."|grep "_post_"|grep -v "rrfs_clean_${idx_cyc2d}"|awk '{print "rm -rf",$9}' >> ${DATA}/post_prdgen_data_clean1.sh
+  [[ -d rrfs_post_${idx_cyc2d}_v1.0 ]]&& rm -rf rrfs_post_${idx_cyc2d}_v1.0
+  find . -maxdepth 1 -type d -name "rrfs_*_post_*"| sed 's|^\./||'|grep "_${idx_cyc2d}\."|awk '{print "rm -rf",$1}' >> ${DATA}/post_prdgen_data_clean1.sh
   # Remove prdgen
-  ls -lart rrfs_* | grep -v "\_${idx_cyc2d}\_"|grep "_${idx_cyc2d}\."|grep "_prdgen_"|grep -v "rrfs_clean_${idx_cyc2d}"|awk '{print "rm -rf",$9}' >> ${DATA}/post_prdgen_data_clean1.sh
+  find . -maxdepth 1 -type d -name "rrfs_*_prdgen_*"| sed 's|^\./||'|grep "_${idx_cyc2d}\."|awk '{print "rm -rf",$1}' >> ${DATA}/post_prdgen_data_clean1.sh
   cat ${DATA}/post_prdgen_data_clean1.sh
   chmod 755 ${DATA}/post_prdgen_data_clean1.sh
   [[ $(cat ${DATA}/post_prdgen_data_clean1.sh|wc -l) -gt 1 ]]&& ${DATA}/post_prdgen_data_clean1.sh &> ${DATA}/post_prdgen_data_clean1_run_$$.log
@@ -94,9 +94,12 @@ fi
 
 [[ ${KEEPDATA} == "NO" ]]&& exit 0
 
+#-----------------------------------------------------------------------
+# Remove this session before NCO code delivery
 # Remove old DATA in development mode under KEEPDATA=YES
-#   Remove all DATA older then 8 cycles
-#   Proceed with remove when the forecast job for target cycle is completed
+# Remove all DATA older then 8 cycles
+# Proceed with remove when the forecast job for target cycle is completed
+#-----------------------------------------------------------------------
 [[ -f ${DATA}/data_clean1.sh ]]&& rm -f ${DATA}/data_clean1.sh
 cd $DATAROOT
 echo "set -x" >> ${DATA}/data_clean1.sh
@@ -118,20 +121,20 @@ for idx_cyc in ${search_cyc_18#0} ${search_cyc_17#0} ${search_cyc_16#0} ${search
   [[ ${idx_cyc} -ge 18 ]]&& cyc_idx=18
   fcst_state=$(ecflow_client --query state /rrfs_dev/primary/${cyc_idx}/rrfs/v1.0/${idx_cyc2d}/forecast)
 
-  #### Temporary keep all 13Z for debug
+  # Temporary keep all 13Z for debug
   # if [ ${idx_cyc2d} == 19 ] || [ ${idx_cyc2d} == 12 ]; then
   #   fcst_state="reserved"
   # fi
 
   if [ ${fcst_state} == "complete" ]; then
     echo "Cycle ${idx_cyc2d} is completed - proceed with cleanup"
-    ls rrfs_* | grep "_${idx_cyc2d}\."|awk -v DATAROOT="$DATAROOT" '{print "rm -rf",DATAROOT"/"$1}' >> ${DATA}/data_clean1.sh
+    find . -maxdepth 1 -type d -name "rrfs_*_${idx_cyc2d}\.*"| sed 's|^\./||'|awk '{print "rm -rf",$1}' >> ${DATA}/data_clean1.sh
     # Include the backup umbrella data directories
-    ls -d rrfs_*/ | grep "_${idx_cyc2d}_v1\.0" |awk -v DATAROOT="$DATAROOT" '{print "rm -rf",DATAROOT"/"$1}' >> ${DATA}/data_clean1.sh
+    find . -maxdepth 1 -type d -name "rrfs_*_${idx_cyc2d}_v1\.0"| sed 's|^\./||'|awk '{print "rm -rf",$1}' >> ${DATA}/data_clean1.sh
   fi
 done
-chmod 755 ${DATA}//data_clean1.sh
-[[ $(cat ${DATA}/data_clean1.sh|wc -l) -gt 1 ]]&& ${DATA}//data_clean1.sh
+chmod 755 ${DATA}/data_clean1.sh
+[[ $(cat ${DATA}/data_clean1.sh|wc -l) -gt 1 ]]&& ${DATA}/data_clean1.sh
 cd $DATA
 
 exit 0

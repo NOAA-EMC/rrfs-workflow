@@ -1,14 +1,10 @@
-#PBS -N rrfs_firewx_make_lbcs_@firewx_make_lbcs_fhr@_%CYC%
+#PBS -N rrfs_firewx_make_lbcs_00_%CYC%
 #PBS -j oe
 #PBS -S /bin/bash
 #PBS -q %QUEUE%
 #PBS -A %PROJ%-%PROJENVIR%
 #PBS -l walltime=01:30:00
-<<<<<<< HEAD
-#PBS -l place=scatter:shared,select=1:ncpus=36:mem=220G
-=======
-#PBS -l place=scatter:shared,select=1:ncpus=36:mem=260G
->>>>>>> 3a353022 (Modify job card resource and cleanup method)
+#PBS -l place=excl,select=1:ncpus=64:ompthreads=2:mem=1000G:prepost=true
 #PBS -l debug=true
 
 model=rrfs
