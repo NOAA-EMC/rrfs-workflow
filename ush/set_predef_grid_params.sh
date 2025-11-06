@@ -896,6 +896,152 @@ case ${PREDEF_GRID_NAME} in
   fi
   ;;
 #
+# The RRFS North America domain with ~6km cells.
+#
+#-----------------------------------------------------------------------
+#
+"RRFS_NA_6km")
+
+  GRID_GEN_METHOD="ESGgrid"
+  ESGgrid_LON_CTR="-112.5"
+  ESGgrid_LAT_CTR="55.0"
+  ESGgrid_DELX="6000.0"
+  ESGgrid_DELY="6000.0"
+  ESGgrid_NX=1975
+  ESGgrid_NY=1350
+  ESGgrid_PAZI="0.0"
+  ESGgrid_WIDE_HALO_WIDTH="6"
+  DT_ATMOS="${DT_ATMOS:-60}"
+  LAYOUT_X="${LAYOUT_X:-40}"
+  LAYOUT_Y="${LAYOUT_Y:-45}"
+  BLOCKSIZE="${BLOCKSIZE:-28}"
+
+  if [ "$QUILTING" = "TRUE" ]; then
+    WRTCMP_write_groups="${WRTCMP_write_groups:-1}"
+    WRTCMP_write_tasks_per_group="${WRTCMP_write_tasks_per_group:-50}"
+    WRTCMP_output_grid="${WRTCMP_output_grid:-rotated_latlon}"
+    if [ "${WRTCMP_output_grid}" = "rotated_latlon" ]; then
+      WRTCMP_cen_lon="-113.0"
+      WRTCMP_cen_lat="55.0"
+      WRTCMP_lon_lwr_left="-61.0"
+      WRTCMP_lat_lwr_left="-37.0"
+      WRTCMP_lon_upr_rght="61.0"
+      WRTCMP_lat_upr_rght="37.0"
+      if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
+        if [[ ${DO_ENSFCST} != "TRUE" ]] ; then
+          WRTCMP_lon_lwr_left="-0.1"
+          WRTCMP_lat_lwr_left="-0.1"
+          WRTCMP_lon_upr_rght="0.1"
+          WRTCMP_lat_upr_rght="0.1"
+        fi
+      fi
+      WRTCMP_dlon="0.05"
+      WRTCMP_dlat="0.05"
+    elif [ "${WRTCMP_output_grid}" = "regional_latlon" ]; then
+      WRTCMP_lon_lwr_left="-135.0"
+      WRTCMP_lat_lwr_left="22.0"
+      WRTCMP_lon_upr_rght="-60.0"
+      WRTCMP_lat_upr_rght="53.5"
+      WRTCMP_dlon="0.06"
+      WRTCMP_dlat="0.06"
+    fi
+  fi
+  ;;
+#-----------------------------------------------------------------------
+"RRFS_NA_9km")
+
+  GRID_GEN_METHOD="ESGgrid"
+  ESGgrid_LON_CTR="-112.5"
+  ESGgrid_LAT_CTR="55.0"
+  ESGgrid_DELX="9000.0"
+  ESGgrid_DELY="9000.0"
+  ESGgrid_NX=1317
+  ESGgrid_NY=900
+  ESGgrid_PAZI="0.0"
+  ESGgrid_WIDE_HALO_WIDTH="6"
+  DT_ATMOS="${DT_ATMOS:-60}"
+  LAYOUT_X="${LAYOUT_X:-40}"
+  LAYOUT_Y="${LAYOUT_Y:-45}"
+  BLOCKSIZE="${BLOCKSIZE:-28}"
+
+  if [ "$QUILTING" = "TRUE" ]; then
+    WRTCMP_write_groups="${WRTCMP_write_groups:-1}"
+    WRTCMP_write_tasks_per_group="${WRTCMP_write_tasks_per_group:-50}"
+    WRTCMP_output_grid="${WRTCMP_output_grid:-rotated_latlon}"
+    if [ "${WRTCMP_output_grid}" = "rotated_latlon" ]; then
+      WRTCMP_cen_lon="-113.0"
+      WRTCMP_cen_lat="55.0"
+      WRTCMP_lon_lwr_left="-61.0"
+      WRTCMP_lat_lwr_left="-37.0"
+      WRTCMP_lon_upr_rght="61.0"
+      WRTCMP_lat_upr_rght="37.0"
+      if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
+        if [[ ${DO_ENSFCST} != "TRUE" ]] ; then
+          WRTCMP_lon_lwr_left="-0.1"
+          WRTCMP_lat_lwr_left="-0.1"
+          WRTCMP_lon_upr_rght="0.1"
+          WRTCMP_lat_upr_rght="0.1"
+        fi
+      fi
+      WRTCMP_dlon="0.075"
+      WRTCMP_dlat="0.075"
+    elif [ "${WRTCMP_output_grid}" = "regional_latlon" ]; then
+      WRTCMP_lon_lwr_left="-135.0"
+      WRTCMP_lat_lwr_left="22.0"
+      WRTCMP_lon_upr_rght="-60.0"
+      WRTCMP_lat_upr_rght="53.5"
+      WRTCMP_dlon="0.09"
+      WRTCMP_dlat="0.09"
+    fi
+  fi
+  ;;
+"RRFS_NA_12km")
+
+  GRID_GEN_METHOD="ESGgrid"
+  ESGgrid_LON_CTR="-112.5"
+  ESGgrid_LAT_CTR="55.0"
+  ESGgrid_DELX="12000.0"
+  ESGgrid_DELY="12000.0"
+  ESGgrid_NX=988
+  ESGgrid_NY=675
+  ESGgrid_PAZI="0.0"
+  ESGgrid_WIDE_HALO_WIDTH="6"
+  DT_ATMOS="${DT_ATMOS:-60}"
+  LAYOUT_X="${LAYOUT_X:-40}"
+  LAYOUT_Y="${LAYOUT_Y:-45}"
+  BLOCKSIZE="${BLOCKSIZE:-28}"
+
+  if [ "$QUILTING" = "TRUE" ]; then
+    WRTCMP_write_groups="${WRTCMP_write_groups:-1}"
+    WRTCMP_write_tasks_per_group="${WRTCMP_write_tasks_per_group:-50}"
+    WRTCMP_output_grid="${WRTCMP_output_grid:-rotated_latlon}"
+    if [ "${WRTCMP_output_grid}" = "rotated_latlon" ]; then
+      WRTCMP_cen_lon="-113.0"
+      WRTCMP_cen_lat="55.0"
+      WRTCMP_lon_lwr_left="-61.0"
+      WRTCMP_lat_lwr_left="-37.0"
+      WRTCMP_lon_upr_rght="61.0"
+      WRTCMP_lat_upr_rght="37.0"
+      if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
+        if [[ ${DO_ENSFCST} != "TRUE" ]] ; then
+          WRTCMP_lon_lwr_left="-0.1"
+          WRTCMP_lat_lwr_left="-0.1"
+          WRTCMP_lon_upr_rght="0.1"
+          WRTCMP_lat_upr_rght="0.1"
+        fi
+      fi
+      WRTCMP_dlon="0.1"
+      WRTCMP_dlat="0.1"
+    elif [ "${WRTCMP_output_grid}" = "regional_latlon" ]; then
+      WRTCMP_lon_lwr_left="-135.0"
+      WRTCMP_lat_lwr_left="22.0"
+      WRTCMP_lon_upr_rght="-60.0"
+      WRTCMP_lat_upr_rght="53.5"
+      WRTCMP_dlon="0.12"
+      WRTCMP_dlat="0.12"
+    fi
+  fi
+  ;;
 #-----------------------------------------------------------------------
 #
 # The RRFS Fire Weather domain with ~1.5km cells.
