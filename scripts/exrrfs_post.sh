@@ -294,6 +294,19 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+# If this is a subhourly post job, use the subhourly post resources
+# defined in workflow.conf - fewer nodes/cores needed.
+#
+#-----------------------------------------------------------------------
+#
+if [ $post_min = 15 -o $post_min = 30 -o $post_min = 45 ]; then 
+  export OMP_NUM_THREADS=${TPP_POST_SUBH}
+  ncores=$(( NNODES_POST_SUBH*PPN_POST_SUBH))
+  APRUN="mpiexec -n ${ncores} -ppn ${PPN_POST_SUBH} --cpu-bind core --depth ${OMP_NUM_THREADS}"
+fi
+#
+#-----------------------------------------------------------------------
+#
 # Run the post-processor.
 #
 #-----------------------------------------------------------------------

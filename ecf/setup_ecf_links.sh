@@ -165,7 +165,8 @@ done
 cd $ECF_DIR/scripts/post/det
 echo "Copy det post files ..."
 rm -f jrrfs_det_post_f*
-MASTER_FILE="jrrfs_det_post_master.ecf"
+MASTER_FILE_HOUR="jrrfs_det_post_master.ecf"
+MASTER_FILE_SUBHOUR="jrrfs_det_post_subhour_master.ecf"
 # =========================================================================
 #  Generate Standard Forecast Files (short-range, 15-min intervals)
 # =========================================================================
@@ -179,9 +180,15 @@ for fhr in $(seq 0 17); do
     fi
     hour_combo="${fhr_padded}_${min}_00"
     output_file="jrrfs_det_post_f${hour_combo}.ecf"
+    if [[ ${min} == "00" ]]; then
+      MASTER_FILE=${MASTER_FILE_HOUR}
+    else
+      MASTER_FILE=${MASTER_FILE_SUBHOUR}
+    fi
     create_ecf_file "${hour_combo}" "${output_file}"
   done
 done
+MASTER_FILE=${MASTER_FILE_HOUR}
 # Handle the two special cases for the standard files.
 create_ecf_file "000_00_36" "jrrfs_det_post_f000_00_36.ecf"
 create_ecf_file "018_00_00"    "jrrfs_det_post_f018_00_00.ecf"
@@ -198,12 +205,15 @@ for fhr in $(seq 0 17); do
     fi
     hour_combo="${fhr_padded}_${min}_00_long"
     output_file="jrrfs_det_post_f${hour_combo}.ecf"
+    if [[ ${min} == "00" ]]; then
+      MASTER_FILE=${MASTER_FILE_HOUR}
+    else
+      MASTER_FILE=${MASTER_FILE_SUBHOUR}
+    fi
     create_ecf_file "${hour_combo}" "${output_file}"
   done
 done
-
-# NOTE: The original script had a bug here. It tried to rename a file that had already
-# been moved and used an incorrect variable. The logic below corrects this by directly
+MASTER_FILE=${MASTER_FILE_HOUR}
 # creating the intended special-case file.
 create_ecf_file "000_00_36_long" "jrrfs_det_post_f000_00_36_long.ecf"
 # Loop for hours 18-84 at hourly intervals for the "_long" files.
