@@ -216,7 +216,6 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
       ln -snf ${bkpathmem}/${restart_prefix}sfc_data.nc                data/inputs/mem${memcharv0}/fv3_sfcdata
       ln -snf ${bkpathmem}/${restart_prefix}fv_srf_wnd.res.tile1.nc    data/inputs/mem${memcharv0}/fv_srf_wnd.res.tile1.nc
       ln -snf ${bkpathmem}/${restart_prefix}coupler.res                data/inputs/mem${memcharv0}/coupler.res
-
       (( ifound += 1 ))
     else
       print_info_msg "WARNING: Cannot find ensemble files: ${dynvarfile} ${tracerfile} ${phyvarfile} "
