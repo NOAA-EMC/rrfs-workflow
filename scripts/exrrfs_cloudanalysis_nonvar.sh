@@ -31,7 +31,9 @@ HH=${CDATE:8:2}
 
 # Model background
 if [[ -r "${UMBRELLA_PREP_IC_DATA}/init.nc" ]]; then
-  initial_file=init.nc
+  echo "INFO: Skipping nonvar cloud analysis because this is a cold start"
+  echo "INFO: The 'cldfrac' field, which is required, is not available for cold starts"
+  exit 0
 else
   initial_file=mpasout.nc
 fi
@@ -44,7 +46,7 @@ ln -snf "${FIXrrfs}/meshes/${MESH_NAME}.invariant.nc_L${nlevel}_${prefix}" ./inv
 
 # Processed observations
 ${cpreq} "${COMOUT}/proc_bufr_nonvar/${WGF}/NASALaRC_cloud4mpas.bin" .
-${cpreq} "${COMOUT}/proc_bufr_nonvar/${WGF}/LightningInMPAS.bin" .
+${cpreq} "${COMOUT}/proc_bufr_nonvar/${WGF}/LightningInMPAS.dat" .
 ${cpreq} "${COMOUT}/proc_bufr_nonvar/${WGF}/mpas_metarcloud.bin" .
 ${cpreq} "${COMOUT}/refmosaic_nonvar/${WGF}/RefInGSI3D.dat" .
 
@@ -97,5 +99,8 @@ export err=$?
 err_chk
 
 # No need to copy output b/c mpasout.nc was linked from UMBRELLA_PREP_IC_DATA
+
+# Copy log files to COM directory
+${cpreq} stdout_cloudanalysis* "${COMOUT}/cloudanalysis_nonvar/${WGF}/"
 
 exit 0
