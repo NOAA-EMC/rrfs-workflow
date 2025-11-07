@@ -18,7 +18,6 @@ meshgriddir="${FIXrrfs}"/meshes
 echo "INFO: meshgriddir is $meshgriddir"
 
 ${cpreq} "${meshgriddir}"/"${MESH_NAME}".grid.nc mesh.nc
-${cpreq} "${OBSPATH}/${CDATE}.rap.t${cyc}z.prepbufr.tm00" prepbufr
 ${cpreq} "${FIXrrfs}"/cloudanalysis/prepobs_prep_RAP.bufrtable prepobs_prep.bufrtable
 
 #
@@ -81,7 +80,7 @@ ${MPI_RUN_CMD} ./${pgm}
 export err=$?
 err_chk
 
-cp NASALaRC_cloud4mpas.bin "${COMOUT}/proc_bufr_nonvar/${WGF}/NASALaRC_cloud4mpas.bin"
+${cpreq} NASALaRC_cloud4mpas.bin "${COMOUT}/proc_bufr_nonvar/${WGF}/NASALaRC_cloud4mpas.bin"
 
 #
 #-----------------------------------------------------------------------
@@ -115,7 +114,7 @@ ${MPI_RUN_CMD} ./${pgm}
 export err=$?
 err_chk
 
-cp LightningInMPAS.dat "${COMOUT}/proc_bufr_nonvar/${WGF}/LightningInMPAS.dat"
+${cpreq} LightningInMPAS.dat "${COMOUT}/proc_bufr_nonvar/${WGF}/LightningInMPAS.dat"
 
 #
 #-----------------------------------------------------------------------
@@ -148,6 +147,6 @@ ${MPI_RUN_CMD} ./${pgm}
 export err=$?
 err_chk
 
-cp mpas_metarcloud.bin "${COMOUT}/proc_bufr_nonvar/${WGF}/mpas_metarcloud.bin"
+${cpreq} mpas_metarcloud.bin "${COMOUT}/proc_bufr_nonvar/${WGF}/mpas_metarcloud.bin"
 
 exit 0
