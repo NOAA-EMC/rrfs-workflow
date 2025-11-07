@@ -74,6 +74,15 @@ case ${task_id} in
     module load "RDAS/${MACHINE}.intel"
     export LD_LIBRARY_PATH=${HOMErrfs}/sorc/RDASApp/build/lib64:${LD_LIBRARY_PATH}
     ;;
+  process_metarcld)
+    module purge
+    module use "${HOMErrfs}/sorc/RRFS_UTILS/modulefiles"
+    if [[ ${MACHINE} == "gaea" ]]; then
+      module load "build_gaeaC6_intel"
+    else
+      module load "build_${MACHINE}_intel"
+    fi
+    ;;
   mpassit)
     module purge
     module use "${HOMErrfs}/sorc/MPASSIT/modulefiles"
