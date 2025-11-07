@@ -294,6 +294,19 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+# If this is a subhourly post job, use the subhourly post resources
+# defined in workflow.conf - fewer nodes/cores needed.
+#
+#-----------------------------------------------------------------------
+#
+if [ $post_min = 15 -o $post_min = 30 -o $post_min = 45 ]; then 
+  export OMP_NUM_THREADS=${TPP_POST_SUBH}
+  ncores=$(( NNODES_POST_SUBH*PPN_POST_SUBH))
+  APRUN="mpiexec -n ${ncores} -ppn ${PPN_POST_SUBH} --cpu-bind core --depth ${OMP_NUM_THREADS}"
+fi
+#
+#-----------------------------------------------------------------------
+#
 # Run the post-processor.
 #
 #-----------------------------------------------------------------------
@@ -473,6 +486,11 @@ fi
 # NBMFLD file is only generated for RRFS and REFS
 if [[ -f ${nbmfld} ]]; then
   cpreq -p ${nbmfld} ${COMOUT}
+  if [ ${DO_ENSFCST} = "TRUE" ]; then
+    wgrib2 ${nbmfld} -s > ${COMOUT}/${net4}.t${cyc}z.${mem_num}.nbmfld.${gridspacing}.f${fhr}.${gridname}.grib2.idx
+  else
+    wgrib2 ${nbmfld} -s > ${COMOUT}/${net4}.t${cyc}z.nbmfld.${gridspacing}.f${fhr}.${gridname}.grib2.idx
+  fi
 fi
 
 # Only one latlons_corners file per cycle is needed in COMOUT - make this change later
