@@ -2,11 +2,11 @@
 import os
 from rocoto_funcs.base import xml_task, get_cascade_env
 
-# begin of process_metarcld --------------------------------------------------------
+# begin of proc_bufr_nonvar --------------------------------------------------------
 
 
-def process_metarcld(xmlFile, expdir):
-    task_id = 'process_metarcld'
+def proc_bufr_nonvar(xmlFile, expdir):
+    task_id = 'proc_bufr_nonvar'
     cycledefs = 'prod'
     num_spinup_cycledef = int(os.getenv('NUM_SPINUP_CYCLEDEF', '0'))
     if num_spinup_cycledef == 1:
@@ -24,21 +24,24 @@ def process_metarcld(xmlFile, expdir):
 
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
-    fpath = f'{OBSPATH}/@Y@m@d@H.rap.t@Hz.prepbufr.tm00'
+    larc_path = f'{OBSPATH}/@Y@m@d@H.rap.t@Hz.lgycld.tm00.bufr_d'
+    lght_path = f'{OBSPATH}/@Y@m@d@H.rap.t@Hz.lghtng.tm00.bufr_d'
+    metar_path = f'{OBSPATH}/@Y@m@d@H.rap.t@Hz.prepbufr.tm00'
 
     timedep = ""
     realtime = os.getenv("REALTIME", "false")
     if realtime.upper() == "TRUE":
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
-        dependencies = f'''
+    #
+    dependencies = f'''
   <dependency>
   <and>{timedep}
-    <datadep age="00:05:00"><cyclestr>{fpath}</cyclestr></datadep>
+    <datadep age="00:05:00"><cyclestr>{larc_path}</cyclestr></datadep>
+    <datadep age="00:05:00"><cyclestr>{lght_path}</cyclestr></datadep>
+    <datadep age="00:05:00"><cyclestr>{metar_path}</cyclestr></datadep>
   </and>
   </dependency>'''
-    else:
-        dependencies = f' '
     #
     xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies)
-# end of process_metarcld --------------------------------------------------------
+# end of proc_bufr_nonvar --------------------------------------------------------

@@ -21,8 +21,10 @@ from rocoto_funcs.mpassit import mpassit
 from rocoto_funcs.upp import upp
 from rocoto_funcs.ioda_bufr import ioda_bufr
 from rocoto_funcs.ioda_mrms_refl import ioda_mrms_refl
-from rocoto_funcs.prep_chem import prep_chem
+from rocoto_funcs.proc_bufr_nonvar import proc_bufr_nonvar
+from rocoto_funcs.refmosaic_nonvar import refmosaic_nonvar
 from rocoto_funcs.process_metarcld import process_metarcld
+from rocoto_funcs.prep_chem import prep_chem
 from rocoto_funcs.clean import clean
 from rocoto_funcs.graphics import graphics
 from rocoto_funcs.misc import misc
@@ -71,8 +73,9 @@ def setup_xml(HOMErrfs, expdir):
                 ioda_bufr(xmlFile, expdir)
             if os.getenv("DO_RADAR_REF", "FALSE").upper() == "TRUE":
                 ioda_mrms_refl(xmlFile, expdir)
-            if os.getenv("DO_CLOUD_ANA", "FALSE").upper() == "TRUE":
-                process_metarcld(xmlFile, expdir)
+            if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
+                proc_bufr_nonvar(xmlFile, expdir)
+                refmosaic_nonvar(xmlFile, expdir)
             #
             if os.getenv("DO_IC_LBC", "TRUE").upper() == "TRUE":
                 ungrib_ic(xmlFile, expdir)

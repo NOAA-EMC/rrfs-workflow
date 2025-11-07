@@ -18,9 +18,9 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 #-----------------------------------------------------------------------
 #
 export pid=${pid:-$$}
-export jobid=${jobid:-process_metarcld_${cyc}}
-export UMBRELLA_PROCESS_METARCLD_DATA=${UMBRELLA_PROCESS_METARCLD_DATA:-${DATAROOT}/${RUN}_process_metarcld_${cyc}_${rrfs_ver}/${WGF}}
-export DATA=${DATA:-${UMBRELLA_PROCESS_METARCLD_DATA}/${jobid}}
+export jobid=${jobid:-refmosaic_nonvar_${cyc}}
+export UMBRELLA_REFMOSAIC_NONVAR_DATA=${UMBRELLA_REFMOSAIC_NONVAR_DATA:-${DATAROOT}/${RUN}_refmosaic_nonvar_${cyc}_${rrfs_ver}/${WGF}}
+export DATA=${DATA:-${UMBRELLA_REFMOSAIC_NONVAR_DATA}/${jobid}}
 
 if [[ -d "${DATA}" ]]; then #remove the ${DATA} directory before a new run
   rm -rf "${DATA}"
@@ -33,13 +33,13 @@ mkdir -p "${DATA}"
 #
 export COMINrrfs=${COMINrrfs:-$(compath.py "${envir}/rrfs/${rrfs_ver}")}
 export COMOUT=${COMOUT:-$(compath.py -o "${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}")}
-mkdir -p "${COMOUT}/process_metarcld/${WGF}"
+mkdir -p "${COMOUT}/refmosaic_nonvar/${WGF}"
 #
 #----------------------------------------
 # Execute the script.
 #----------------------------------------
 export pgmout="${DATA}/OUTPUT.$$"
-"${HOMErrfs}"/scripts/exrrfs_process_metarcld.sh
+"${HOMErrfs}"/scripts/exrrfs_refmosaic_nonvar.sh
 export err=$?; err_chk
 
 if [[ -e "${pgmout}" ]]; then
