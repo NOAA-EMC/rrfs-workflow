@@ -45,6 +45,19 @@ def setup_xml(HOMErrfs, expdir):
     source(f"{HOMErrfs}/workflow/config_resources/config.base")
     if do_chemistry == "TRUE":
         source(f"{HOMErrfs}/workflow/config_resources/config.chemistry")
+        if "smoke" in os.getenv('CHEM_GROUPS', 'smoke'):
+            CHEM_INPUT = os.getenv('CHEM_INPUT', 'CHEM_INPUT_undefined')
+            COMROOT = os.getenv('COMROOT', 'COMROOT_undefined')
+            NET = os.getenv('NET', 'NET_undefined')
+            VERSION = os.getenv('VERSION', 'VERSION_undefined')
+            MESH_NAME = os.getenv('MESH_NAME', 'MESH_NAME_undefined')
+            rave_dummy = f'{CHEM_INPUT}/emissions/RAVE/processed/RAVE.dummy.{MESH_NAME}.nc'
+            dest = f'{COMROOT}/{NET}/{VERSION}/Rave.dummy.nc'
+            if not os.path.exists(dest):
+                if os.path.exists(rave_dummy):
+                    os.symlink(rave_dummy, dest)
+                else:
+                    print(f'!!! RAVE_dummy not found: {rave_dummy} !!!')
 
     realtime = os.getenv('REALTIME', 'false')
     if realtime.upper() == "TRUE":

@@ -33,7 +33,6 @@ def prep_chem(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         'REGRID_WRAPPER_DIR': f'{regrid_wrapper_dir}',
         'REGRID_CONDA_ENV': f'{regrid_conda_env}',
         'RAVE_INPUT': os.getenv('RAVE_INPUT', 'RAVE_INPUT_undefined'),
-        'RAVE_DUMMY': os.getenv('RAVE_DUMMY', 'RAVE_DUMMY_undefined'),
     }
     #
     metatask = True
