@@ -3,7 +3,7 @@
 # Remove any old files
 rm -f "${UMBRELLA_PREP_CHEM_DATA}"/smoke.init*nc # why we need this?
 
-# RAVE_INPUTDIR is provided by the job card directly
+# RAVE_INPUT is provided by the job card directly
 ECO_INPUTDIR=${CHEM_INPUT}/aux/ecoregion/raw/
 FMC_INPUTDIR=${CHEM_INPUT}/aux/FMC/raw/${YYYY}/${MM}/
 
@@ -16,7 +16,7 @@ FMC_OUTPUTDIR=${DATA}
 #ECO_OUTPUTDIR=${CHEM_INPUT}/aux/ecoregion/processed/
 #FMC_OUTPUTDIR=${CHEM_INPUT}/aux/FMC/processed/${YYYY}/${MM}/
 #
-dummyRAVE=${RAVE_DUMMYFILE}  # if exists, use it; otherwise, create it
+dummyRAVE=${RAVE_DUMMY}  # if exists, use it; otherwise, create it
 if [[ ! -e ${dummyRAVE} ]]; then
    shared_dummy_rave=${CHEM_INPUT}/emissions/RAVE/processed/RAVE.dummy.${MESH_NAME}.nc
    if [[ -e ${shared_dummy_rave} ]]; then
@@ -36,7 +36,7 @@ mkdir -p "${FMC_OUTPUTDIR}"
 srun python -u "${SCRIPT}" \
                "RAVE" \
                "${DATA}" \
-               "${RAVE_INPUTDIR}" \
+               "${RAVE_INPUT}" \
                "${RAVE_OUTPUTDIR}" \
                "${INTERP_WEIGHTS_DIR}" \
                "${YYYY}${MM}${DD}${HH}" \
