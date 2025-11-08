@@ -74,7 +74,7 @@ sed -e "s/@restart_interval@/${restart_interval}/" -e "s/@history_interval@/${hi
 #
 # chemistry related processing
 if ${DO_CHEMISTRY:-false}; then
-  source "${USHrrfs}"/chemistry_fcst.sh
+  source "${USHrrfs}"/chem_fcst.sh
 fi
 #
 # prelink the forecast output files to umbrella
