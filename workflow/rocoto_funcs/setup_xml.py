@@ -53,7 +53,7 @@ def setup_xml(HOMErrfs, expdir):
             MESH_NAME = os.getenv('MESH_NAME', 'MESH_NAME_undefined')
             rave_dummy = f'{CHEM_INPUT}/emissions/RAVE/processed/RAVE.dummy.{MESH_NAME}.nc'
             os.makedirs(f'{COMROOT}/{NET}/{VERSION}', exist_ok=True)
-            dest = f'{COMROOT}/{NET}/{VERSION}/Rave.dummy.nc'
+            dest = f'{COMROOT}/{NET}/{VERSION}/RAVE.dummy.nc'
             if not os.path.exists(dest):
                 if os.path.exists(rave_dummy):
                     os.symlink(rave_dummy, dest)

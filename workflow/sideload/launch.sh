@@ -110,6 +110,7 @@ case ${task_id} in
   *)
     module purge
     module load "rrfs/${MACHINE}.intel"
+    module load nco
     ;;
 esac
 if [[ ${MACHINE} == "wcoss2" ]]; then

@@ -11,7 +11,7 @@
 #
 ## Required Input Arguments
 #
-# 1. EMIS_SECTOR_TO_PROCESS    -- which emission sector is this task performing? (anthro, pollen, dust)
+# 1. CHEM_GROUP    -- which emission sector is this task performing? (anthro, pollen, dust)
 # 2. ANTHRO_EMISINV            -- undecided, may merge for custom dataset, or leave option to combine
 # 3. CHEM_INPUT             -- location of interpolated files, ready to be used
 # 4. MESH_NAME                -- name of the MPAS domain, required to know if we have weights or data intepolated to the domain 
@@ -101,22 +101,22 @@ export ESMFMKFILE=${regrid_conda_env}/lib/esmf.mk
 export PYTHONPATH=${PYTHONDIR}:${PYTHONPATH}
 #
 #==================================================================================================#
-if [[ "${EMIS_SECTOR_TO_PROCESS}" == "smoke" ]]; then
+if [[ "${CHEM_GROUP}" == "smoke" ]]; then
   source "${USHrrfs}"/chem_prep_smoke.sh
 fi
 
-if [[ "${EMIS_SECTOR_TO_PROCESS}" == "rwc" ]]; then
+if [[ "${CHEM_GROUP}" == "rwc" ]]; then
   source "${USHrrfs}"/chem_prep_rwc.sh
 fi #rwc
 
-if [[ "${EMIS_SECTOR_TO_PROCESS}" == "anthro" ]]; then
+if [[ "${CHEM_GROUP}" == "anthro" ]]; then
   source "${USHrrfs}"/chem_prep_anthro.sh
 fi # anthro
 
-if [[ "${EMIS_SECTOR_TO_PROCESS}" == "pollen" ]]; then
+if [[ "${CHEM_GROUP}" == "pollen" ]]; then
   source "${USHrrfs}"/chem_prep_pollen.sh
 fi # bio/pollen
 
-if [[ "${EMIS_SECTOR_TO_PROCESS}" == "dust" ]]; then
+if [[ "${CHEM_GROUP}" == "dust" ]]; then
   source "${USHrrfs}"/chem_prep_dust.sh
 fi # dust

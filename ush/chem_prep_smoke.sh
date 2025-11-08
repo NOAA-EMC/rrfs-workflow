@@ -49,7 +49,7 @@ do
     ncrename -v PM10,e_bb_in_smoke_coarse "${EMISFILE2}"
     ln -sf "${EMISFILE2}" "${EMISFILE}"
   else
-    dummyRAVE=${COMINrrfs}/RAVE_dummy.nc
+    dummyRAVE=${COMINrrfs}/RAVE.dummy.nc
     if [[ -s ${dummyRAVE} ]]; then
       cp "${dummyRAVE}" "${EMISFILE}"
     else

@@ -30,6 +30,7 @@ def lbc(xmlFile, expdir, do_ensemble=False):
 
     if os.getenv('DO_CHEMISTRY', 'false').lower() == "true":
         dcTaskEnv['USE_EXTERNAL_CHEM'] = os.getenv('USE_EXTERNAL_CHEM_LBCS', 'FALSE').lower()
+        dcTaskEnv['CHEM_GROUPS'] = os.getenv('CHEM_GROUPS', 'smoke')
 
     if not do_ensemble:
         # metatask (nested or not)
