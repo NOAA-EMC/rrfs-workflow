@@ -5,7 +5,6 @@ export CHEM_GROUPS="smoke" # any combinations of "smoke, anthro, pollen, dust, r
 export EBB_DCYCLE=1
 export USE_EXTERNAL_CHEM_LBCS=true
 export USE_EXTERNAL_CHEM_ICS=false
-# export RAVE_DIR=/path/to/your/rave/dir/ # (files expected in ${RAVE_DIR}/raw and will be placed in ${RAVE_DIR}/processed/${MESH_NAME}-RAVE-${YYYYMMDDHH}.nc
 #
 export WALLTIME_PREP_CHEM="00:30:00"
 export WALLTIME_PREP_CHEM_ICBC="00:30:00"
@@ -22,6 +21,10 @@ case ${MACHINE} in
     export PARTITION_PREP_CHEM="hera"
     export NODES_PREP_CHEM="<nodes>1:ppn=20</nodes>"
     export MEMORY_PREP_CHEM="50G"
+    if [[ "${MESH_NAME}" == "conus3km" ]]; then
+      export PARTITION_PREP_CHEM="bigmem"
+      export MEMORY_PREP_CHEM="200G"
+    fi
     ;;
   "ursa")
     export CHEM_INPUT="/scratch4/BMC/acomp/cheMPAS-Fire/input"
@@ -32,10 +35,18 @@ case ${MACHINE} in
     export PARTITION_PREP_CHEM="u1-compute"
     export NODES_PREP_CHEM="<nodes>1:ppn=50</nodes>"
     export MEMORY_PREP_CHEM="50G"
+    if [[ "${MESH_NAME}" == "conus3km" ]]; then
+      export NODES_PREP_CHEM="<nodes>1:ppn=150</nodes>"
+      export MEMORY_PREP_CHEM="200G"
+    fi
     ;;
   "jet")
     export CHEM_INPUT="/lfs6/BMC/rtwbl/cheMPAS-Fire/input"
-    export RAVE_INPUT="${CHEM_INPUT}/emissions/RAVE/raw"
+    if ${REALTIME:-false}; then
+      export RAVE_INPUT="/public/data/grids/nesdis/3km_fire_emissions"
+    else
+      export RAVE_INPUT="${CHEM_INPUT}/emissions/RAVE/raw"
+    fi
     export REGRID_WRAPPER_DIR="/lfs5/BMC/rtwbl/rap-chem/mpas_rt/working/ben_interp/regrid-wrapper/"
     export REGRID_CONDA_ENV="/lfs5/BMC/rtwbl/rap-chem/miniconda/envs/regrid-wrapper"
     export ACCOUNT="rtwbl"
@@ -43,6 +54,10 @@ case ${MACHINE} in
     export PARTITION_PREP_CHEM="xjet:kjet"
     export NODES_PREP_CHEM="<nodes>1:ppn=20</nodes>"
     export MEMORY_PREP_CHEM="50G"
+    if [[ "${MESH_NAME}" == "conus3km" ]]; then
+      export PARTITION_PREP_CHEM="bigmem"
+      export MEMORY_PREP_CHEM="200G"
+    fi
     ;;
   "gaea")
     export CHEM_INPUT="/gpfs/f6/drsa-fire3/world-shared/cheMPAS-Fire/input"
@@ -56,3 +71,6 @@ case ${MACHINE} in
     echo "!!! unsupported platform:'${MACHINE}'!!!"
     ;;
 esac
+#
+# users may overwrite some variables in the below, such as:
+#  export RAVE_INPUT="/path/to/my/RAVE/INPUT"
