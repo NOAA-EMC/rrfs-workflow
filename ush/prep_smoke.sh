@@ -2,27 +2,21 @@
 # shellcheck disable=SC2154,SC2153,SC2012
 # Remove any old files
 rm -f "${UMBRELLA_PREP_CHEM_DATA}"/smoke.init*nc # why we need this?
-#
-if [[ ! ${RAVE_DIR} ]]; then
-  RAVE_INPUTDIR=/public/data/grids/nesdis/3km_fire_emissions/
-else
-  RAVE_INPUTDIR=${RAVE_DIR}/raw/
-fi
+
+# RAVE_INPUTDIR is provided by the job card directly
 ECO_INPUTDIR=${DATADIR_CHEM}/aux/ecoregion/raw/
 FMC_INPUTDIR=${DATADIR_CHEM}/aux/FMC/raw/${YYYY}/${MM}/
 
-if [[ "${CREATE_OWN_DATA}" == "TRUE" ]]; then
-  RAVE_OUTPUTDIR=${DATA}
-  ECO_OUTPUTDIR=${DATA}
-  FMC_OUTPUTDIR=${DATA}
-else
-  # TODO, check for pregenerated data
-  RAVE_OUTPUTDIR=${RAVE_DIR}/processed/
-  ECO_OUTPUTDIR=${DATADIR_CHEM}/aux/ecoregion/processed/
-  FMC_OUTPUTDIR=${DATADIR_CHEM}/aux/FMC/processed/${YYYY}/${MM}/
-fi
+# output directories
+RAVE_OUTPUTDIR=${DATA}
+ECO_OUTPUTDIR=${DATA}
+FMC_OUTPUTDIR=${DATA}
+# TODO, check for pregenerated data
+#RAVE_OUTPUTDIR=${RAVE_DIR}/processed/
+#ECO_OUTPUTDIR=${DATADIR_CHEM}/aux/ecoregion/processed/
+#FMC_OUTPUTDIR=${DATADIR_CHEM}/aux/FMC/processed/${YYYY}/${MM}/
 #
-dummyRAVE=${RAVE_DIR}/processed/RAVE.dummy.${MESH_NAME}.nc
+dummyRAVE=${RAVE_DUMMYFILE}  # if exists, use it; otherwise, create it
 if [[ ! -e ${dummyRAVE} ]]; then
    shared_dummy_rave=${DATADIR_CHEM}/emissions/RAVE/processed/RAVE.dummy.${MESH_NAME}.nc
    if [[ -e ${shared_dummy_rave} ]]; then

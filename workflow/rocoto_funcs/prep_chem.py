@@ -19,8 +19,6 @@ def prep_chem(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         cycledefs = 'prod'
     realtime = os.getenv("REALTIME", "false")
 
-    create_own_data = os.getenv('CREATE_OWN_DATA', "FALSE").upper()
-
     # Task-specific EnVars beyond the task_common_vars
     datadir_chem = os.getenv('CHEMPATH', '/lfs6/BMC/rtwbl/cheMPAS-Fire/input/')
     mesh_name = os.getenv('MESH_NAME', 'conus3km').lower()
@@ -33,7 +31,6 @@ def prep_chem(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         'FCST_LENGTH': f'{fcst_length}',
         'MESH_NAME': f'{mesh_name}',
         'DATADIR_CHEM': f'{datadir_chem}',
-        'CREATE_OWN_DATA': f'{create_own_data}',
         'REALTIME': f'{realtime}',
         'REGRID_WRAPPER_DIR': f'{regrid_wrapper_dir}',
         'REGRID_CONDA_ENV': f'{regrid_conda_env}'}

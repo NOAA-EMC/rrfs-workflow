@@ -4,11 +4,9 @@
 LINKEDEMISFILE=${UMBRELLA_PREP_CHEM_DATA}/dust.init.nc
 
 DUST_INPUTDIR=${DATADIR_CHEM}/dust/raw/
-if [[ "${CREATE_OWN_DATA}" == "TRUE" ]]; then
-   DUST_OUTPUTDIR=${DATA} 
-else
-   DUST_OUTPUTDIR=${DATADIR_CHEM}/dust/processed/
-fi
+DUST_OUTPUTDIR=${DATA}
+#TODO:
+#DUST_OUTPUTDIR=${DATADIR_CHEM}/dust/processed/
 mkdir -p "${DUST_OUTPUTDIR}"
 #
 DUST_OUTFILE=${DATADIR_CHEM}/dust/processed/fengsha_dust_inputs.${MESH_NAME}.nc

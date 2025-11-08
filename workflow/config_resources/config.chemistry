@@ -1,15 +1,11 @@
 #!/usr/bin/env bash
 # Aloha! This file is to setup chemistry configurations
 #
-export CREATE_OWN_DATA=true
 export CHEM_GROUPS="smoke" # any combinations of "smoke, anthro, pollen, dust, rwc"
 export EBB_DCYCLE=1
 export USE_EXTERNAL_CHEM_LBCS=true
 export USE_EXTERNAL_CHEM_ICS=false
 # export RAVE_DIR=/path/to/your/rave/dir/ # (files expected in ${RAVE_DIR}/raw and will be placed in ${RAVE_DIR}/processed/${MESH_NAME}-RAVE-${YYYYMMDDHH}.nc
-#
-export MEMORY_PREP_CHEM="200G"
-export MEMORY_PREP_CHEM_ICBC="200G"
 #
 export WALLTIME_PREP_CHEM="00:30:00"
 export WALLTIME_PREP_CHEM_ICBC="00:30:00"
@@ -18,42 +14,39 @@ export WALLTIME_PREP_CHEM_ICBC="00:30:00"
 
 case ${MACHINE} in
   "hera")
-    export CHEMPATH="/scratch4/BMC/acomp/cheMPAS-Fire/input"
+    export CHEM_INPUT="/scratch4/BMC/acomp/cheMPAS-Fire/input"
     export REGRID_WRAPPER_DIR="/scratch4/BMC/acomp/Sudheer/Fire-nest/RRFS-SD/Tools/regrid-wrapper"
     export REGRID_CONDA_ENV="/scratch3/BMC/acomp/Sudheer/anaconda3/envs/regrid-wrapper"
     export ACCOUNT="acomp"
-    export PARTITION_PREP_CHEM="bigmem"
-    export PARTITION_PREP_CHEM_ICBC="bigmem"
+    export PARTITION_PREP_CHEM="hera"
     export NODES_PREP_CHEM="<nodes>1:ppn=20</nodes>"
-    export NODES_PREP_CHEM_ICBC="<nodes>1:ppn=1</nodes>"
+    export MEMORY_PREP_CHEM="50G"
     ;;
   "ursa")
-    export CHEMPATH="/scratch4/BMC/acomp/cheMPAS-Fire/input"
+    export CHEM_INPUT="/scratch4/BMC/acomp/cheMPAS-Fire/input"
     export REGRID_WRAPPER_DIR="/scratch4/BMC/acomp/Sudheer/Fire-nest/RRFS-SD/Tools/regrid-wrapper"
     export REGRID_CONDA_ENV="/scratch4/BMC/acomp/Sudheer/anaconda3Ursa/envs/regrid-wrapper"
     export ACCOUNT="acomp"
     export PARTITION_PREP_CHEM="u1-compute"
-    export PARTITION_PREP_CHEM_ICBC="u1-compute"
-    export NODES_PREP_CHEM="<nodes>1:ppn=150</nodes>"
-    export NODES_PREP_CHEM_ICBC="<nodes>1:ppn=1</nodes>"
+    export NODES_PREP_CHEM="<nodes>1:ppn=50</nodes>"
+    export MEMORY_PREP_CHEM="50G"
     ;;
   "jet")
-    export CHEMPATH="/lfs6/BMC/rtwbl/cheMPAS-Fire/input"
+    export CHEM_INPUT="/lfs6/BMC/rtwbl/cheMPAS-Fire/input"
     export REGRID_WRAPPER_DIR="/lfs5/BMC/rtwbl/rap-chem/mpas_rt/working/ben_interp/regrid-wrapper/"
     export REGRID_CONDA_ENV="/lfs5/BMC/rtwbl/rap-chem/miniconda/envs/regrid-wrapper"
     export ACCOUNT="rtwbl"
     export PARTITION="xjet"
-    export PARTITION_PREP_CHEM="bigmem"
-    export PARTITION_PREP_CHEM_ICBC="bigmem"
+    export PARTITION_PREP_CHEM="xjet:kjet"
     export NODES_PREP_CHEM="<nodes>1:ppn=20</nodes>"
-    export NODES_PREP_CHEM_ICBC="<nodes>1:ppn=1</nodes>"
+    export MEMORY_PREP_CHEM="50G"
     ;;
   "gaea")
-    export CHEMPATH="/gpfs/f6/drsa-fire3/world-shared/cheMPAS-Fire/"
+    export CHEM_INPUT="/gpfs/f6/drsa-fire3/world-shared/cheMPAS-Fire/input"
     export REGRID_WRAPPER_DIR="/gpfs/f6/drsa-fire3/world-shared/Sudheer/MPAS/Tools/regrid-wrapper/"
     export REGRID_CONDA_ENV="/gpfs/f6/drsa-fire3/world-shared/Sudheer/anaconda3/envs/regrid-wrapper/"
-    export NODES_PREP_CHEM="<nodes>1:ppn=150</nodes>"
-    export NODES_PREP_CHEM_ICBC="<nodes>1:ppn=1</nodes>"
+    export NODES_PREP_CHEM="<nodes>1:ppn=1</nodes>"
+    export MEMORY_PREP_CHEM="200G"
     ;;
   *)
     echo "!!! unsupported platform:'${MACHINE}'!!!"

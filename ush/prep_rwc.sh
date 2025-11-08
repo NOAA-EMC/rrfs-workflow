@@ -6,13 +6,11 @@
 INPUTDIR=${DATADIR_CHEM}/emissions/anthro/raw/NEMO/RWC/total/
 NARR_INPUTDIR=${DATADIR_CHEM}/aux/narr_reanalysis_t2m/raw/
 
-if [[ "${CREATE_OWN_DATA}" == "TRUE" ]]; then
-   NARR_OUTPUTDIR=${DATA}
-   OUTPUTDIR=${DATA}
-else
-   NARR_OUTPUTDIR=${DATADIR_CHEM}/aux/narr_reanalysis_t2m/processed/
-   OUTPUTDIR=${DATADIR_CHEM}/emissions/anthro/processed/NEMO/RWC/total
-fi
+NARR_OUTPUTDIR=${DATA}
+OUTPUTDIR=${DATA}
+#TODO:
+#NARR_OUTPUTDIR=${DATADIR_CHEM}/aux/narr_reanalysis_t2m/processed/
+#OUTPUTDIR=${DATADIR_CHEM}/emissions/anthro/processed/NEMO/RWC/total
 #
 mkdir -p "${OUTPUTDIR}" 
 mkdir -p "${NARR_OUTPUTDIR}"

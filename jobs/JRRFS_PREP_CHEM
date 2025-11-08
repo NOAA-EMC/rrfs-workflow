@@ -55,7 +55,7 @@ fi
 #----------------------------------------
 # Remove the Temporary working directory
 #----------------------------------------
-if [[ "${KEEPDATA^^}" == "NO" ]] && [[ ${CREATE_OWN_DATA^^} == "FALSE" ]]; then
+if [[ "${KEEPDATA^^}" == "NO" ]]; then
   rm -rf "${DATA}"
 fi
 #
