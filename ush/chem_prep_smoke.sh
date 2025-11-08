@@ -16,23 +16,6 @@ FMC_OUTPUTDIR=${DATA}
 #ECO_OUTPUTDIR=${CHEM_INPUT}/aux/ecoregion/processed/
 #FMC_OUTPUTDIR=${CHEM_INPUT}/aux/FMC/processed/${YYYY}/${MM}/
 #
-dummyRAVE=${RAVE_DUMMY}  # if exists, use it; otherwise, create it
-if [[ ! -e ${dummyRAVE} ]]; then
-   shared_dummy_rave=${CHEM_INPUT}/emissions/RAVE/processed/RAVE.dummy.${MESH_NAME}.nc
-   if [[ -e ${shared_dummy_rave} ]]; then
-      echo "Dummy RAVE file being copied from ${shared_dummy_rave} to ${dummyRAVE}"
-      cp "${shared_dummy_rave}" "${dummyRAVE}"
-   else
-      echo "Shared dummy RAVE does not exist for this mesh"
-      echo "If any RAVE files are missing, your simulation will error.. (for now)"
-   fi
-else
-   echo "Will use dummy RAVE file: ${dummyRAVE}"
-fi
-mkdir -p "${RAVE_OUTPUTDIR}"
-mkdir -p "${ECO_OUTPUTDIR}"
-mkdir -p "${FMC_OUTPUTDIR}"
-#
 srun python -u "${SCRIPT}" \
                "RAVE" \
                "${DATA}" \
@@ -43,54 +26,41 @@ srun python -u "${SCRIPT}" \
                "${MESH_NAME}"  # CDATE?
 mv ./*.log ./*.ESMF_LogFile logs || echo "could not move logs"
 #
-# Look for a file to create a dummy file if one doesn't already exist
-if [[ ! -e ${dummyRAVE} ]]; then
- if [[ $(ls -A "${RAVE_OUTPUTDIR}/${MESH_NAME}*") ]]; then
-    dummyRAVEtemplate=$(ls "${RAVE_OUTPUTDIR}/${MESH_NAME}*" | head -n 1)
-    echo "Dummy RAVE file doesn't exist, but creating one using: ${dummyRAVEtemplate}"
-    cp "${dummyRAVEtemplate}" "${dummyRAVE}"
-    ncap2 -O -s 'e_bb_in_smoke_fine=0.*e_bb_in_smoke_fine' "${dummyRAVE}" "${dummyRAVE}"
-    ncap2 -O -s 'e_bb_in_smoke_coarse=0.*e_bb_in_smoke_fine' "${dummyRAVE}" "${dummyRAVE}"
-    ncap2 -O -s 'e_bb_in_smoke_so2=0.*e_bb_in_smoke_fine' "${dummyRAVE}" "${dummyRAVE}"
-    ncap2 -O -s 'e_bb_in_smoke_ch4=0.*e_bb_in_smoke_fine' "${dummyRAVE}" "${dummyRAVE}"
-    ncap2 -O -s 'e_bb_in_smoke_nh3=0.*e_bb_in_smoke_fine' "${dummyRAVE}" "${dummyRAVE}"
-    ncap2 -O -s 'frp_in=0.*frp_in' "${dummyRAVE}" "${dummyRAVE}"
-    ncap2 -O -s 'fre_in=0.*fre_in' "${dummyRAVE}" "${dummyRAVE}"
-  else
-      echo "Do not have and cannot create dummy RAVE file as no RAVE data is available"
- fi 
-fi
 # Loop through the hours and link the files so they have the correct filename and variable names 
 # TODO - Update variable names via outside script or within regrid.py -- mapping table?
 for ihour in $(seq 0 "${FCST_LENGTH}"); 
 do
-#
-   if [[ ${ihour} -gt 24 ]]; then
-      ihour2=$((ihour-24))
-   else
-      ihour2=${ihour}
-   fi
-   timestr1=$(date +%Y%m%d%H -d "$previous_day + $ihour2 hours")
-   timestr2=$(date +%Y-%m-%d_%H -d "$current_day + $ihour hours")
-   timestr3=$(date +%Y-%m-%d_%H:00:00 -d "$current_day + $ihour hours")
-#
-   EMISFILE=${UMBRELLA_PREP_CHEM_DATA}/smoke.init.retro.${timestr2}.00.00.nc
-   EMISFILE2="${RAVE_OUTPUTDIR}/${MESH_NAME}-RAVE-${timestr1}.nc"
-   if [[ -r "${EMISFILE2}" ]]; then
-      ncrename -v PM25,e_bb_in_smoke_fine "${EMISFILE2}"
-      ncrename -v FRP_MEAN,frp_in -v FRE,fre_in "${EMISFILE2}"
-      ncrename -v SO2,e_bb_in_so2 -v NH3,e_bb_in_nh3 "${EMISFILE2}"
-      ncrename -v CH4,e_bb_in_ch4 "${EMISFILE2}"
-      ncrename -v PM10,e_bb_in_smoke_coarse "${EMISFILE2}"
-      ln -sf "${EMISFILE2}" "${EMISFILE}"
-   else
+  if [[ ${ihour} -gt 24 ]]; then
+    ihour2=$((ihour-24))
+  else
+    ihour2=${ihour}
+  fi
+  timestr1=$(date +%Y%m%d%H -d "$previous_day + $ihour2 hours")
+  timestr2=$(date +%Y-%m-%d_%H -d "$current_day + $ihour hours")
+  timestr3=$(date +%Y-%m-%d_%H:00:00 -d "$current_day + $ihour hours")
+  #
+  EMISFILE=${UMBRELLA_PREP_CHEM_DATA}/smoke.init.retro.${timestr2}.00.00.nc
+  EMISFILE2="${RAVE_OUTPUTDIR}/${MESH_NAME}-RAVE-${timestr1}.nc"
+  if [[ -r "${EMISFILE2}" ]]; then
+    ncrename -v PM25,e_bb_in_smoke_fine "${EMISFILE2}"
+    ncrename -v FRP_MEAN,frp_in -v FRE,fre_in "${EMISFILE2}"
+    ncrename -v SO2,e_bb_in_so2 -v NH3,e_bb_in_nh3 "${EMISFILE2}"
+    ncrename -v CH4,e_bb_in_ch4 "${EMISFILE2}"
+    ncrename -v PM10,e_bb_in_smoke_coarse "${EMISFILE2}"
+    ln -sf "${EMISFILE2}" "${EMISFILE}"
+  else
+    dummyRAVE=${COMINrrfs}/RAVE_dummy.nc
+    if [[ -s ${dummyRAVE} ]]; then
       cp "${dummyRAVE}" "${EMISFILE}"
-   fi
-   ncks -O -6 "${EMISFILE}" "${EMISFILE}"
-   ncks -A -v xtime "${DATA}/${MESH_NAME}.init.nc" "${EMISFILE}"
-   #shellcheck disable=SC2086
-   ncap2 -O -s xtime=\"${timestr3}\" "${EMISFILE}" "${EMISFILE}"  
-#
+    else
+      echo "${dummyRAVE} not found, stop the workflow..."
+      err_exit
+    fi
+  fi
+  ncks -O -6 "${EMISFILE}" "${EMISFILE}"
+  ncks -A -v xtime "${DATA}/${MESH_NAME}.init.nc" "${EMISFILE}"
+  #shellcheck disable=SC2086
+  ncap2 -O -s xtime=\"${timestr3}\" "${EMISFILE}" "${EMISFILE}"  
 done
 #
 #
