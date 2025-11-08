@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2154,SC2153
 #
-EMISINPUTDIR=${DATADIR_CHEM}/emissions/pollen/raw/${YYYY}/
+EMISINPUTDIR=${CHEM_INPUT}/emissions/pollen/raw/${YYYY}/
 EMISOUTPUTDIR=${DATA}
 #TODO:
-#EMISOUTPUTDIR=${DATADIR_CHEM}/emissions/pollen/processed/${YYYY}/
+#EMISOUTPUTDIR=${CHEM_INPUT}/emissions/pollen/processed/${YYYY}/
 mkdir -p "${EMISOUTPUTDIR}"
 #
 # --- Do we have emissions regridded to our domain?

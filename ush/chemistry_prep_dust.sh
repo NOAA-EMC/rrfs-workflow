@@ -3,13 +3,13 @@
 
 LINKEDEMISFILE=${UMBRELLA_PREP_CHEM_DATA}/dust.init.nc
 
-DUST_INPUTDIR=${DATADIR_CHEM}/dust/raw/
+DUST_INPUTDIR=${CHEM_INPUT}/dust/raw/
 DUST_OUTPUTDIR=${DATA}
 #TODO:
-#DUST_OUTPUTDIR=${DATADIR_CHEM}/dust/processed/
+#DUST_OUTPUTDIR=${CHEM_INPUT}/dust/processed/
 mkdir -p "${DUST_OUTPUTDIR}"
 #
-DUST_OUTFILE=${DATADIR_CHEM}/dust/processed/fengsha_dust_inputs.${MESH_NAME}.nc
+DUST_OUTFILE=${CHEM_INPUT}/dust/processed/fengsha_dust_inputs.${MESH_NAME}.nc
 #
 if [[ ! -r ${DUST_OUTFILE} ]]; then
    echo "Interpolated dust file: ${DUST_OUTFILE} does not exist, will attempt to create"

@@ -4,21 +4,21 @@
 rm -f "${UMBRELLA_PREP_CHEM_DATA}"/smoke.init*nc # why we need this?
 
 # RAVE_INPUTDIR is provided by the job card directly
-ECO_INPUTDIR=${DATADIR_CHEM}/aux/ecoregion/raw/
-FMC_INPUTDIR=${DATADIR_CHEM}/aux/FMC/raw/${YYYY}/${MM}/
+ECO_INPUTDIR=${CHEM_INPUT}/aux/ecoregion/raw/
+FMC_INPUTDIR=${CHEM_INPUT}/aux/FMC/raw/${YYYY}/${MM}/
 
 # output directories
 RAVE_OUTPUTDIR=${DATA}
 ECO_OUTPUTDIR=${DATA}
 FMC_OUTPUTDIR=${DATA}
 # TODO, check for pregenerated data
-#RAVE_OUTPUTDIR=${RAVE_DIR}/processed/
-#ECO_OUTPUTDIR=${DATADIR_CHEM}/aux/ecoregion/processed/
-#FMC_OUTPUTDIR=${DATADIR_CHEM}/aux/FMC/processed/${YYYY}/${MM}/
+#RAVE_OUTPUTDIR=${CHEM_INPUT}/processed/
+#ECO_OUTPUTDIR=${CHEM_INPUT}/aux/ecoregion/processed/
+#FMC_OUTPUTDIR=${CHEM_INPUT}/aux/FMC/processed/${YYYY}/${MM}/
 #
 dummyRAVE=${RAVE_DUMMYFILE}  # if exists, use it; otherwise, create it
 if [[ ! -e ${dummyRAVE} ]]; then
-   shared_dummy_rave=${DATADIR_CHEM}/emissions/RAVE/processed/RAVE.dummy.${MESH_NAME}.nc
+   shared_dummy_rave=${CHEM_INPUT}/emissions/RAVE/processed/RAVE.dummy.${MESH_NAME}.nc
    if [[ -e ${shared_dummy_rave} ]]; then
       echo "Dummy RAVE file being copied from ${shared_dummy_rave} to ${dummyRAVE}"
       cp "${shared_dummy_rave}" "${dummyRAVE}"

@@ -13,7 +13,7 @@
 #
 # 1. EMIS_SECTOR_TO_PROCESS    -- which emission sector is this task performing? (anthro, pollen, dust)
 # 2. ANTHRO_EMISINV            -- undecided, may merge for custom dataset, or leave option to combine
-# 3. DATADIR_CHEM             -- location of interpolated files, ready to be used
+# 3. CHEM_INPUT             -- location of interpolated files, ready to be used
 # 4. MESH_NAME                -- name of the MPAS domain, required to know if we have weights or data intepolated to the domain 
 # 5. FCST_LENGTH               -- nhours of forecast
 #
@@ -89,7 +89,7 @@ fi
 #
 SCRIPT=${USHrrfs}/chem_regrid.py
 VINTERP_SCRIPT=${USHrrfs}/chem_vinterp.py
-INTERP_WEIGHTS_DIR=${DATADIR_CHEM}/grids/interpolation_weights/  
+INTERP_WEIGHTS_DIR=${CHEM_INPUT}/grids/interpolation_weights/
 #
 # Set a few things for the CONDA environment
 export REGRID_WRAPPER_LOG_DIR=${DATA}
