@@ -20,18 +20,12 @@ def prep_chem(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     realtime = os.getenv("REALTIME", "false")
 
     # Task-specific EnVars beyond the task_common_vars
-    mesh_name = os.getenv('MESH_NAME', 'conus3km').lower()
-    fcst_length = os.getenv('FCST_LENGTH', '24')
-    regrid_wrapper_dir = os.getenv('REGRID_WRAPPER_DIR')
-    regrid_conda_env = os.getenv('REGRID_CONDA_ENV')
-
     dcTaskEnv = {
-        'FCST_LENGTH': f'{fcst_length}',
-        'MESH_NAME': f'{mesh_name}',
+        'FCST_LEN_HRS_CYCLES': os.getenv('FCST_LEN_HRS_CYCLES', '01 01'),
+        'MESH_NAME': os.getenv('MESH_NAME', 'MESH_NAME_undefined'),
         'CHEM_INPUT': os.getenv('CHEM_INPUT', 'CHEM_INPUT_undefined'),
-        'REALTIME': f'{realtime}',
-        'REGRID_WRAPPER_DIR': f'{regrid_wrapper_dir}',
-        'REGRID_CONDA_ENV': f'{regrid_conda_env}',
+        'REGRID_WRAPPER_DIR': os.getenv('REGRID_WRAPPER_DIR', 'REGRID_WRAPPER_DIR_undefined'),
+        'REGRID_CONDA_ENV': os.getenv('REGRID_CONDA_ENV', 'REGRID_CONDA_ENV_undefined'),
         'RAVE_INPUT': os.getenv('RAVE_INPUT', 'RAVE_INPUT_undefined'),
     }
     #

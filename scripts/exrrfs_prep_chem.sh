@@ -15,7 +15,6 @@
 # 2. ANTHRO_EMISINV            -- undecided, may merge for custom dataset, or leave option to combine
 # 3. CHEM_INPUT             -- location of interpolated files, ready to be used
 # 4. MESH_NAME                -- name of the MPAS domain, required to know if we have weights or data intepolated to the domain 
-# 5. FCST_LENGTH               -- nhours of forecast
 #
 # shellcheck disable=SC1091,SC2153,SC2154,SC2034
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
@@ -23,6 +22,13 @@ set -x
 nt=${SLURM_NTASKS}
 cpreq=${cpreq:-cpreq}
 cd "${DATA}" || exit 1
+#
+# find forecst length for this cycle
+#
+fcst_length=${FCST_LENGTH:-1}
+fcst_len_hrs_cycles=${FCST_LEN_HRS_CYCLES:-"01 01"}
+my_fcst_length=$("${USHrrfs}/find_fcst_length.sh" "${fcst_len_hrs_cycles}" "${cyc}" "${fcst_length}")
+echo "forecast length for this cycle is ${my_fcst_length}"
 #
 # ... Set some date variables
 #
@@ -33,11 +39,11 @@ DD=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%d)
 HH=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%H)
 DOW=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%u)  # 1-7, Monday-Sunday
 #
-YYYY_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${FCST_LENGTH} hours" +%Y)
-MM_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${FCST_LENGTH} hours" +%m)
-DD_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${FCST_LENGTH} hours" +%d)
-HH_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${FCST_LENGTH} hours" +%H)
-DOW_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${FCST_LENGTH} hours " +%A)  # 1-7, Monday-Sunday
+YYYY_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${my_fcst_length} hours" +%Y)
+MM_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${my_fcst_length} hours" +%m)
+DD_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${my_fcst_length} hours" +%d)
+HH_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${my_fcst_length} hours" +%H)
+DOW_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${my_fcst_length} hours " +%A)  # 1-7, Monday-Sunday
 #
 YYYYp=$(date -d "${CDATE:0:8} ${CDATE:8:2} - 1 day" +%Y)
 MMp=$(date -d "${CDATE:0:8} ${CDATE:8:2} - 1 day" +%m)
@@ -67,7 +73,7 @@ else
 fi
 #
 MOY=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%B)  # full month name (e.g., January)
-MOY_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${FCST_LENGTH} hours" +%B)  # full month name (e.g., January)
+MOY_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${my_fcst_length} hours" +%B)  # full month name (e.g., January)
 DOY=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%j)  # Julian day 
 #
 if [[ "${DOY}" -ne 0 ]]; then
@@ -76,7 +82,7 @@ else
   DOY_m1=0
 fi
 #
-DOY_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${FCST_LENGTH} hours" +%j)  # Julian day 
+DOY_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${my_fcst_length} hours" +%j)  # Julian day
 #
 # Set the init/mesh file name and link here:\
 if [[ -r "${UMBRELLA_PREP_IC_DATA}"/init.nc ]]; then

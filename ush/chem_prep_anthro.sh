@@ -62,7 +62,7 @@ if [[ -r ${EMISFILE_BASE_RAW1} ]] && [[ -r ${EMISFILE_BASE_RAW2} ]]; then
      # Vertically interpolate the emissions based on the MPAS grid
      # python ${VINTERP_SCRIPT} ${EMISFILE1} ${INIT_FILE} ${EMISFILE1_vinterp} "PM25-PRI" "h_agl" "zgrid"
 
-     for ihour in $(seq 0 "${FCST_LENGTH}") 
+     for ihour in $(seq 0 "${my_fcst_length}")
      do
          YYYY_EMIS=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${ihour} hours" +%Y)
          MM_EMIS=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${ihour} hours" +%m)
@@ -88,7 +88,7 @@ if [[ -r ${EMISFILE_BASE_RAW1} ]] && [[ -r ${EMISFILE_BASE_RAW2} ]]; then
          else
             echo "Reordering dimensions -- cell x level x time -- >  Time x Cell x Level "
             ncks -d Time,${t_ix},${t_ix} "${EMISFILE}" "${EMISFILE_FINAL}"
-            echo "Created file #${ihour}/${FCST_LENGTH} at ${EMISFILE_FINAL}"
+            echo "Created file #${ihour}/${my_fcst_length} at ${EMISFILE_FINAL}"
             ncrename -v PM25-PRI,e_ant_in_unspc_fine -v PM10-PRI,e_ant_in_unspc_coarse "${EMISFILE_FINAL}"
             ncrename -v HC01,e_ant_in_ch4 "${EMISFILE_FINAL}"
           # TODO, other species

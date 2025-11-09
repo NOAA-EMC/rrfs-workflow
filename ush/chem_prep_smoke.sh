@@ -24,11 +24,12 @@ srun python -u "${SCRIPT}" \
                "${INTERP_WEIGHTS_DIR}" \
                "${YYYY}${MM}${DD}${HH}" \
                "${MESH_NAME}"  # CDATE?
+mkdir -p logs
 mv ./*.log ./*.ESMF_LogFile logs || echo "could not move logs"
 #
 # Loop through the hours and link the files so they have the correct filename and variable names 
 # TODO - Update variable names via outside script or within regrid.py -- mapping table?
-for ihour in $(seq 0 "${FCST_LENGTH}"); 
+for ihour in $(seq 0 "${my_fcst_length}");
 do
   if [[ ${ihour} -gt 24 ]]; then
     ihour2=$((ihour-24))
@@ -58,7 +59,7 @@ do
     fi
   fi
   ncks -O -6 "${EMISFILE}" "${EMISFILE}"
-  ncks -A -v xtime "${DATA}/${MESH_NAME}.init.nc" "${EMISFILE}"
+  ncks -A -v xtime init.nc  "${EMISFILE}"
   #shellcheck disable=SC2086
   ncap2 -O -s xtime=\"${timestr3}\" "${EMISFILE}" "${EMISFILE}"  
 done
