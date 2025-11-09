@@ -15,7 +15,9 @@ export COLDSTART_CYCS="00"
 for i in {0..23}; do arr[$i]="24"; done # 24hr fcst, only take effect at coldstart cycles
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export LBC_LENGTH=24
+export REALTIME=false
 #
+# ---------------------------------------------
 export CHEM_GROUPS="smoke" # any combinations of "smoke, anthro, pollen, dust, rwc"
 export EBB_DCYCLE=1
 export USE_EXTERNAL_CHEM_LBCS=true
