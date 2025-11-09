@@ -46,7 +46,7 @@ def setup_xml(HOMErrfs, expdir):
     source(f"{HOMErrfs}/workflow/config_resources/config.base")
     if do_chemistry == "TRUE":
         source(f"{HOMErrfs}/workflow/config_resources/config.chemistry")
-        shutil.copy(f'{HOMErrfs}/workflow/config_resources/config.chemistry', f'{expdir}/config/config.chemistry') # save a copy for reference
+        shutil.copy(f'{HOMErrfs}/workflow/config_resources/config.chemistry', f'{expdir}/config/config.chemistry')  # save a copy for reference
         if "smoke" in os.getenv('CHEM_GROUPS', 'smoke'):
             CHEM_INPUT = os.getenv('CHEM_INPUT', 'CHEM_INPUT_undefined')
             COMROOT = os.getenv('COMROOT', 'COMROOT_undefined')
