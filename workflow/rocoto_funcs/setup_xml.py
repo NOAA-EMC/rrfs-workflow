@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #
 import os
+import shutil
 import stat
 from rocoto_funcs.base import header_begin, header_entities, header_end, source, \
     wflow_begin, wflow_log, wflow_cycledefs, wflow_end
@@ -45,6 +46,7 @@ def setup_xml(HOMErrfs, expdir):
     source(f"{HOMErrfs}/workflow/config_resources/config.base")
     if do_chemistry == "TRUE":
         source(f"{HOMErrfs}/workflow/config_resources/config.chemistry")
+        shutil.copy(f'{HOMErrfs}/workflow/config_resources/config.chemistry', f'{expdir}/config/config.chemistry') # save a copy for reference
         if "smoke" in os.getenv('CHEM_GROUPS', 'smoke'):
             CHEM_INPUT = os.getenv('CHEM_INPUT', 'CHEM_INPUT_undefined')
             COMROOT = os.getenv('COMROOT', 'COMROOT_undefined')

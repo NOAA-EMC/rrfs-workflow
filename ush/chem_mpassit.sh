@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Configure appropriate chemistry settings for the ic or lbc task
+# Configure appropriate chemistry settings for the mpassit task
 #
 # shellcheck disable=SC2154,SC2153
 
