@@ -59,7 +59,7 @@ do
     fi
   fi
   ncks -O -6 "${EMISFILE}" "${EMISFILE}"
-  ncks -A -v xtime init.nc  "${EMISFILE}"
+  ncks -A -v xtime ./init.nc  "${EMISFILE}"
   #shellcheck disable=SC2086
   ncap2 -O -s xtime=\"${timestr3}\" "${EMISFILE}" "${EMISFILE}"  
 done

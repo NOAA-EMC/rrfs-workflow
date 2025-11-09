@@ -28,7 +28,7 @@ done
 if ${found}; then
    for species in "${species_list[@]}"; do
       # Check to see if the species is in the file
-      if ncdump -hv "${species}" "${mpasout}"; then
+      if ncdump -hv "${species}" "${mpasout}" 1>/dev/null; then
         ncks -A -v "${species}" "${mpasout}" init.nc
       fi
    done
