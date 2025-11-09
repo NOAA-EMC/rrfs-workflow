@@ -3,7 +3,7 @@
 # copy this file to the run directory of the prep_chem task, where you can find RAVE emission files,
 # run it and then copy the created RAVE.dummy.nc file to ${COMINrrfs} or an archive location
 #
-# shellcheck disable=SC2012
+# shellcheck disable=SC2012,SC2016,SC2035
 #
 # make sure the nco module can be loaded
 #   if one has difficulties to load nco by default,
