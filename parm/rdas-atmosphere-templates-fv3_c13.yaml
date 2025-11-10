@@ -20,9 +20,7 @@ background_error_file: atmosphere_background_error_3dvar_gsibec
 
 # Global analysis things
 # ----------------------
-window_begin: @WINDOW_BEGIN@
-window_end: @WINDOW_END@
-window_length: PT3H
+window_length: PT6H
 bound_to_include: begin
 minimizer: DRPCG
 final_diagnostics_departures: oman
@@ -124,6 +122,42 @@ rain_number_concentration: rain_nc
 upward_air_velocity: W
 
 abi_simulated_channels: 7-16
+abi_active_channels: [-1, 1, 1, 1, -1, -1, -1, -1, -1, -1]
+abi_use_flag_clddet: [-2, -2, -2, -2, -2, -2, -2, -2, -2, -2]
+abi_obs_error: [ 2.2, 1.756, 1.587, 1.185, 2.2, 2.2, 2.2, 2.2, 2.2, 2.2 ]
+abi_obserr_bound_max: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+
+amsua_simulated_channels: 1-15
+amsua_obs_error: [2.500, 2.200, 2.000, 0.550, 0.300,
+                  0.230, 0.230, 0.250, 0.250, 0.350,
+                  0.400, 0.550, 0.800, 3.000, 3.500]
+amsua_obserr_bound_max: [4.5, 4.5, 4.5, 2.5, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.5, 3.5, 4.5, 4.5, 4.5]
+
+amsua_n19_use_flag: [ 1,  1,  1,  1,  1, 1, -1, -1,  1,  1, -1,  -1,  -1,  1,  1 ]
+
+amsua_metop_b_use_flag: [ -1,  -1,  -1,  -1,  -1, -1, -1,  1,  1,  1,  -1,   -1,   -1, -1,  -1 ]
+
+amsua_metop_c_use_flag: [ 1,  1,  1,  1,  1, 1, 1,  1,  1,  1, -1,  -1,  -1, 1,  1 ]
+
+atms_simulated_channels: 1-22
+atms_obs_error: [
+             4.500,  4.500,  4.500,  2.500,  0.550,
+             0.300,  0.300,  0.400,  0.400,  0.400,
+             0.450,  0.450,  0.550,  0.800,  4.000,
+             4.000,  4.000,  3.500,  3.000,  3.000,
+             3.000,  3.000 ]
+
+atms_obserr_bound_max: [4.5, 4.5, 3.0, 3.0, 1.0,
+              1.0, 1.0, 1.0, 1.0, 1.0,
+              1.0, 1.0, 1.0, 2.0, 4.5,
+              4.5, 2.0, 2.0, 2.0, 2.0,
+              2.0, 2.0]
+
+atms_npp_use_flag: [ 1,  1,  1,  1,  1, 1,  1,  1,  1,  1, 1,  1,  1, -1, -1, 1,  1,  1,  1,  1, 1,  1]
+
+atms_n20_use_flag: [ 1,  1,  1,  1,  1, 1,  1,  1,  1,  1, 1,  1,  1, -1, -1, 1,  1,  1,  1,  1, 1,  1]
+
+atms_n21_use_flag: [ 1,  1,  1,  1,  1, 1,  1,  1,  1,  1, 1,  1,  1, -1, -1, 1,  1,  1,  1,  1, 1,  1]
 
 # Background error
 atmosphere_bump_data_directory: DATA/berror
@@ -139,7 +173,7 @@ north_pole_lat: 51.499998
 north_pole_lon: 82.500018
 
 # Forecasting
-atmosphere_forecast_length: PT3H
+atmosphere_forecast_length: PT6H
 atmosphere_forecast_timestep: PT1H
 
 # Write final increment on Gaussian grid in variational
@@ -212,6 +246,13 @@ observations:
 
 # SatRad
 #- abi_g16
+#- abi_g18
+#- amsua_n19
+#- amsua_metop-b
+#- amsua_metop-c
+#- atms_npp
+#- atms_n20
+#- atms_n21
 
 # Analysis iuse flag (default: passivate)
 # Upper-air conventional
@@ -277,6 +318,13 @@ iuse_satwnd_winds_245_272: accept
 
 # SatRad
 iuse_abi_g16: accept
+iuse_abi_g18: accept
+iuse_amsua_n19: accept
+iuse_amsua_metop-b: accept
+iuse_amsua_metop-c: accept
+iuse_atms_npp: accept
+iuse_atms_n20: accept
+iuse_atms_n21: accept
 
 crtm_coefficient_path: "Data/crtm"
 

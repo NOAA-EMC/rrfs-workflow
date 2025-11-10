@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import yaml
+import re
 from datetime import datetime, timedelta
 from jcb import render
 from wxflow import parse_j2yaml
@@ -13,9 +14,17 @@ def update_cycle_times(config, cycle_str):
     iso_str = cycle_time.strftime("%Y-%m-%dT%H:%M:%SZ")
     prefix_str = cycle_time.strftime("%Y%m%d.%H%M%S.")
 
+    # Extract numeric value from window_length (default to 6 if missing)
+    window_len_str = config.get("window_length", "PT6H")
+    match = re.search(r"PT(\d+)H", window_len_str)
+    window_len_hrs = int(match.group(1)) if match else 6
+
+    # Divide by 2 for symmetric window around the cycle
+    half_window = window_len_hrs / 2
+
     # Example: window_begin is 3h before cycle
-    config["window_begin"] = (cycle_time - timedelta(hours=1.5)).strftime("%Y-%m-%dT%H:%M:%SZ")
-    config["window_end"] = (cycle_time + timedelta(hours=1.5)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    config["window_begin"] = (cycle_time - timedelta(hours=half_window)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    config["window_end"] = (cycle_time + timedelta(hours=half_window)).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     return config
 
