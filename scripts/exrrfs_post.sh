@@ -466,12 +466,21 @@ if [ -f PRSLEV.GrbF${post_fhr} ]; then
   fi # SUB_GEN=1 test
 fi # PRSLEV test
 
+# post process 2m dew point for NBM 
+export pgm="dpt2m_post.exe"
+. prep_step
+
+$EXECrrfs/$pgm NATLEV.GrbF${post_fhr} DPT2M.GrbF${post_fhr} >>$pgmout 2>errfile
+export err=$?; err_chk
+
+cat NBMFLD.GrbF${post_fhr} DPT2M.GrbF${post_fhr} > NBMFLD_new.GrbF${post_fhr} 
+
 if [ -f NATLEV.GrbF${post_fhr} ]; then
   wgrib2 NATLEV.GrbF${post_fhr} -set center 7 -grib ${natlev} >>$pgmout 2>>errfile
 fi
 
-if [ -f NBMFLD.GrbF${post_fhr} ]; then
-  wgrib2 NBMFLD.GrbF${post_fhr} -set center 7 -grib ${nbmfld} >>$pgmout 2>>errfile
+if [ -f NBMFLD_new.GrbF${post_fhr} ]; then
+  wgrib2 NBMFLD_new.GrbF${post_fhr} -set center 7 -grib ${nbmfld} >>$pgmout 2>>errfile
 fi
 #
 #-----------------------------------------------------------------------
