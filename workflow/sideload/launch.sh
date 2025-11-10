@@ -8,10 +8,8 @@ set -x
 #source ${EXPDIR}/exp.setup
 # tweaks for non-NCO runs
 COMMAND=$1  #get the J-JOB name
-HOMErrfs=$2  #get the system location
 task_id=${COMMAND#*_} # remove the "JRRFS_" part
 export task_id=${task_id,,} #to lower case
-source "${HOMErrfs}/workflow/tools/detect_machine.sh"
 echo "run on ${MACHINE}"
 if [[ ${MACHINE} == "wcoss2" ]]; then
   source "${HOMErrfs}/versions/run.ver"
