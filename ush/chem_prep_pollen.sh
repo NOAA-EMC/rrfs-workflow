@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2154,SC2153
 #
-EMISINPUTDIR=${DATADIR_CHEM}/emissions/pollen/raw/${YYYY}/
-if [[ "${CREATE_OWN_DATA}" == "TRUE" ]]; then
-   EMISOUTPUTDIR=${DATA}
-else
-   EMISOUTPUTDIR=${DATADIR_CHEM}/emissions/pollen/processed/${YYYY}/
-fi
+EMISINPUTDIR=${CHEM_INPUT}/emissions/pollen/raw/${YYYY}/
+EMISOUTPUTDIR=${DATA}
+#TODO:
+#EMISOUTPUTDIR=${CHEM_INPUT}/emissions/pollen/processed/${YYYY}/
 mkdir -p "${EMISOUTPUTDIR}"
 #
 # --- Do we have emissions regridded to our domain?

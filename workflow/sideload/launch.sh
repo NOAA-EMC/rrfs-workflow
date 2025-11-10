@@ -1,17 +1,15 @@
 #!/usr/bin/env bash
 # tweaks for non-NCO experiments
 # This script will NOT be needed by NCO
-# shellcheck disable=SC1090,SC1091
+# shellcheck disable=SC1090,SC1091,SC2154
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
 #
 #source ${EXPDIR}/exp.setup
 # tweaks for non-NCO runs
 COMMAND=$1  #get the J-JOB name
-HOMErrfs=$2  #get the system location
 task_id=${COMMAND#*_} # remove the "JRRFS_" part
 export task_id=${task_id,,} #to lower case
-source "${HOMErrfs}/workflow/tools/detect_machine.sh"
 echo "run on ${MACHINE}"
 if [[ ${MACHINE} == "wcoss2" ]]; then
   source "${HOMErrfs}/versions/run.ver"
@@ -119,6 +117,7 @@ case ${task_id} in
   *)
     module purge
     module load "rrfs/${MACHINE}.intel"
+    module load nco
     ;;
 esac
 if [[ ${MACHINE} == "wcoss2" ]]; then

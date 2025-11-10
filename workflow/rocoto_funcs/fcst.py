@@ -43,7 +43,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
 
     if os.getenv('DO_CHEMISTRY', 'false').lower() == "true":
         dcTaskEnv['EBB_DCYCLE'] = os.getenv('EBB_DCYCLE', 0)
-        dcTaskEnv['CHEM_GROUPS'] = os.getenv('CHEM_GROUPS', 'dust')
+        dcTaskEnv['CHEM_GROUPS'] = os.getenv('CHEM_GROUPS', 'smoke')
         chemdep = '\n<metataskdep metatask="prep_chem"/>'
     else:
         chemdep = ""

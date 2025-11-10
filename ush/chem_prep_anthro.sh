@@ -3,7 +3,7 @@
 #
 # --- Set the file expression and lat/lon dimension names
 #
-#ANTHROEMIS_STATICDIR=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/  # this is not used
+#ANTHROEMIS_STATICDIR=${CHEM_INPUT}/emissions/anthro/raw/${ANTHRO_EMISINV}/  # this is not used
 #
 # TODO, if residential wood burning emissions are turned on, we need to use the
 # GRA2PES_VERSION=total_minus_res to not double count those emissions
@@ -11,17 +11,15 @@ GRA2PES_SECTOR=total
 GRA2PES_YEAR=2021
 GRA2PES_VERSION=v1.0
 #
-ANTHROEMIS_INPUTDIR=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_SECTOR}/${GRA2PES_YEAR}${MM}/${DOW_STRING}/
-if [[ "${CREATE_OWN_DATA}" == "TRUE" ]]; then
-   ANTHROEMIS_OUTPUTDIR=${DATA}
-else
-   ANTHROEMIS_OUTPUTDIR=${DATADIR_CHEM}/emissions/anthro/processed/${ANTHRO_EMISINV}/${MOY}/${DOW_STRING}/
-fi
+ANTHROEMIS_INPUTDIR=${CHEM_INPUT}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_SECTOR}/${GRA2PES_YEAR}${MM}/${DOW_STRING}/
+ANTHROEMIS_OUTPUTDIR=${DATA}
+#TODO:
+#ANTHROEMIS_OUTPUTDIR=${CHEM_INPUT}/emissions/anthro/processed/${ANTHRO_EMISINV}/${MOY}/${DOW_STRING}/
 mkdir -p "${ANTHROEMIS_OUTPUTDIR}"
 
-EMISFILE_BASE_RAW1=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_SECTOR}/${GRA2PES_YEAR}${MM}/${DOW_STRING}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${GRA2PES_YEAR}${MM}_${DOW_STRING}_00to11Z.nc
-EMISFILE_BASE_RAW2=${DATADIR_CHEM}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_SECTOR}/${GRA2PES_YEAR}${MM}/${DOW_STRING}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${GRA2PES_YEAR}${MM}_${DOW_STRING}_12to23Z.nc
-INPUT_GRID=${DATADIR_CHEM}/grids/domain_latlons/${ANTHRO_EMISINV}${GRA2PES_VERSION}_CONUS4km_grid_info.nc
+EMISFILE_BASE_RAW1=${CHEM_INPUT}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_SECTOR}/${GRA2PES_YEAR}${MM}/${DOW_STRING}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${GRA2PES_YEAR}${MM}_${DOW_STRING}_00to11Z.nc
+EMISFILE_BASE_RAW2=${CHEM_INPUT}/emissions/anthro/raw/${ANTHRO_EMISINV}/${GRA2PES_SECTOR}/${GRA2PES_YEAR}${MM}/${DOW_STRING}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${GRA2PES_YEAR}${MM}_${DOW_STRING}_12to23Z.nc
+INPUT_GRID=${CHEM_INPUT}/grids/domain_latlons/${ANTHRO_EMISINV}${GRA2PES_VERSION}_CONUS4km_grid_info.nc
 
 EMISFILE1=${ANTHROEMIS_OUTPUTDIR}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${MESH_NAME}_00to11Z.nc
 EMISFILE2=${ANTHROEMIS_OUTPUTDIR}/${ANTHRO_EMISINV}${GRA2PES_VERSION}_${GRA2PES_SECTOR}_${MESH_NAME}_12to23Z.nc
@@ -64,7 +62,7 @@ if [[ -r ${EMISFILE_BASE_RAW1} ]] && [[ -r ${EMISFILE_BASE_RAW2} ]]; then
      # Vertically interpolate the emissions based on the MPAS grid
      # python ${VINTERP_SCRIPT} ${EMISFILE1} ${INIT_FILE} ${EMISFILE1_vinterp} "PM25-PRI" "h_agl" "zgrid"
 
-     for ihour in $(seq 0 "${FCST_LENGTH}") 
+     for ihour in $(seq 0 "${my_fcst_length}")
      do
          YYYY_EMIS=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${ihour} hours" +%Y)
          MM_EMIS=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${ihour} hours" +%m)
@@ -90,7 +88,7 @@ if [[ -r ${EMISFILE_BASE_RAW1} ]] && [[ -r ${EMISFILE_BASE_RAW2} ]]; then
          else
             echo "Reordering dimensions -- cell x level x time -- >  Time x Cell x Level "
             ncks -d Time,${t_ix},${t_ix} "${EMISFILE}" "${EMISFILE_FINAL}"
-            echo "Created file #${ihour}/${FCST_LENGTH} at ${EMISFILE_FINAL}"
+            echo "Created file #${ihour}/${my_fcst_length} at ${EMISFILE_FINAL}"
             ncrename -v PM25-PRI,e_ant_in_unspc_fine -v PM10-PRI,e_ant_in_unspc_coarse "${EMISFILE_FINAL}"
             ncrename -v HC01,e_ant_in_ch4 "${EMISFILE_FINAL}"
           # TODO, other species

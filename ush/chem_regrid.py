@@ -681,12 +681,13 @@ def main() -> None:
     mesh_name = sys.argv[7]  # Name of the domain
     #
     # Test to see if scrip files exist
-    testpath = Path(weight_dir + "/scrip_files/mpas_" + mesh_name + "_scrip.nc")
+    # testpath = Path(weight_dir + "/scrip_files/mpas_" + mesh_name + "_scrip.nc")
     # If we have the file set the path, otherwise it will be built in the workdir
-    if testpath.exists():
-        scrip_path = testpath
-    else:
-        scrip_path = Path(workdir + "/mpas_" + dataset_name + "-" + mesh_name + "_scrip.nc")
+    # if testpath.exists():
+    #    scrip_path = testpath
+    # else:
+    # FOR NOW, ALWAYS CREATE SCRIP
+    scrip_path = Path(workdir + "/mpas_" + dataset_name + "-" + mesh_name + "_scrip.nc")
     #
     dst_path = Path(workdir + "/init.nc")
     desc_stats_out = Path(workdir + "/desc_stats-" + cycle + ".csv")

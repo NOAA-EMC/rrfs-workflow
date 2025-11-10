@@ -31,6 +31,9 @@ def mpassit(xmlFile, expdir, do_ensemble=False, do_ensmean_post=False):
         'MPASSIT_REF_LON': os.getenv('MPASSIT_REF_LON', 'MPASSIT_REF_LON_not_defined'),
     }
 
+    if os.getenv('DO_CHEMISTRY', 'false').lower() == "true":
+        dcTaskEnv['CHEM_GROUPS'] = os.getenv('CHEM_GROUPS', 'smoke')
+
     if not do_ensemble:
         # metatask (nested or not)
         meta_bgn = f'''
