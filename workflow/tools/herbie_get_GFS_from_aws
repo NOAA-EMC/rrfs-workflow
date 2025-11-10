@@ -1,20 +1,22 @@
 #!/usr/bin/env python
 #  User the Python package Herbie to download gfs/rap/gefs data from AWS, which is more reliable
 #
+import sys
+# check the command line options first, before loading other Python packages
+args = sys.argv
+nargs = len(args) - 1
+if nargs < 2:
+    print(f"{args[0]} YYYYMMDDHH-YYYYMMDDHH fhr-fhr\n")
+    print(f'  the first parameter specifies the cycle range')
+    print(f'  the second parameter specifies the fhr range, example: 0-70')
+    exit()
+
+print(f'each cycle data will be downloaded to ./tmp/ temporarily and then moved to ./downloads/')
 from herbie import Herbie
 from datetime import datetime, timedelta
 import os
 import shutil
-import sys
 import time
-
-args = sys.argv
-nargs = len(args) - 1
-if nargs < 2:
-    print(f"{args[0]} YYYYMMDD-YYYYMMDD fhr-fhr\n")
-    print(f'  the first parameter specifies the date range with date2 larger than or equal to date1')
-    print(f'  the second parameter specifies the fhr range, example: 0-70')
-    exit()
 
 date_range = args[1]
 fhr_range = args[2]
@@ -25,9 +27,8 @@ fhr_interval = 1
 cyc_interval = 6
 
 two_dates = date_range.split("-")
-date1 = datetime.strptime(two_dates[0], "%Y%m%d")
-date2 = datetime.strptime(two_dates[1], "%Y%m%d")
-date2 += timedelta(hours=23)
+date1 = datetime.strptime(two_dates[0], "%Y%m%d%H")
+date2 = datetime.strptime(two_dates[1], "%Y%m%d%H")
 cur_date = date1
 fhrs = fhr_range.split("-")
 
