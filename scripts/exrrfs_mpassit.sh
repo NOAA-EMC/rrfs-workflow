@@ -16,7 +16,7 @@ ${cpreq} "${FIXrrfs}"/mpassit/histlist_3d                 histlist_3d
 ${cpreq} "${FIXrrfs}"/mpassit/histlist_soil               histlist_soil
 #
 if ${DO_CHEMISTRY:-false}; then
-  source "${USHrrfs}"/chemistry_mpassit.sh
+  source "${USHrrfs}"/chem_mpassit.sh
 fi
 #
 nx=${MPASSIT_NX:-480}

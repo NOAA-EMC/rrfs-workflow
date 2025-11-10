@@ -27,7 +27,7 @@ fi
 export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_${prep_ic_str}_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
 
 export jobid=${jobid:-prep_chem_${cyc}}
-export DATA=${DATA:-${UMBRELLA_PREP_CHEM_DATA}/${jobid}}_${EMIS_SECTOR_TO_PROCESS}
+export DATA=${DATA:-${UMBRELLA_PREP_CHEM_DATA}/${jobid}}
 
 if [[ -d "${DATA}" ]]; then # remove the "${DATA}" directory if existed
   rm -rf "${DATA}"
@@ -55,7 +55,7 @@ fi
 #----------------------------------------
 # Remove the Temporary working directory
 #----------------------------------------
-if [[ "${KEEPDATA^^}" == "NO" ]] && [[ ${CREATE_OWN_DATA^^} == "FALSE" ]]; then
+if [[ "${KEEPDATA^^}" == "NO" ]]; then
   rm -rf "${DATA}"
 fi
 #

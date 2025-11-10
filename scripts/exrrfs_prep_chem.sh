@@ -11,11 +11,10 @@
 #
 ## Required Input Arguments
 #
-# 1. EMIS_SECTOR_TO_PROCESS    -- which emission sector is this task performing? (anthro, pollen, dust)
+# 1. CHEM_GROUP    -- which chem emission group is this task performing? (anthro, pollen, dust)
 # 2. ANTHRO_EMISINV            -- undecided, may merge for custom dataset, or leave option to combine
-# 3. DATADIR_CHEM             -- location of interpolated files, ready to be used
+# 3. CHEM_INPUT             -- location of interpolated files, ready to be used
 # 4. MESH_NAME                -- name of the MPAS domain, required to know if we have weights or data intepolated to the domain 
-# 5. FCST_LENGTH               -- nhours of forecast
 #
 # shellcheck disable=SC1091,SC2153,SC2154,SC2034
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
@@ -23,6 +22,13 @@ set -x
 nt=${SLURM_NTASKS}
 cpreq=${cpreq:-cpreq}
 cd "${DATA}" || exit 1
+#
+# find forecst length for this cycle
+#
+fcst_length=${FCST_LENGTH:-1}
+fcst_len_hrs_cycles=${FCST_LEN_HRS_CYCLES:-"01 01"}
+my_fcst_length=$("${USHrrfs}/find_fcst_length.sh" "${fcst_len_hrs_cycles}" "${cyc}" "${fcst_length}")
+echo "forecast length for this cycle is ${my_fcst_length}"
 #
 # ... Set some date variables
 #
@@ -33,11 +39,11 @@ DD=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%d)
 HH=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%H)
 DOW=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%u)  # 1-7, Monday-Sunday
 #
-YYYY_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${FCST_LENGTH} hours" +%Y)
-MM_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${FCST_LENGTH} hours" +%m)
-DD_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${FCST_LENGTH} hours" +%d)
-HH_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${FCST_LENGTH} hours" +%H)
-DOW_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${FCST_LENGTH} hours " +%A)  # 1-7, Monday-Sunday
+YYYY_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${my_fcst_length} hours" +%Y)
+MM_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${my_fcst_length} hours" +%m)
+DD_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${my_fcst_length} hours" +%d)
+HH_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${my_fcst_length} hours" +%H)
+DOW_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${my_fcst_length} hours " +%A)  # 1-7, Monday-Sunday
 #
 YYYYp=$(date -d "${CDATE:0:8} ${CDATE:8:2} - 1 day" +%Y)
 MMp=$(date -d "${CDATE:0:8} ${CDATE:8:2} - 1 day" +%m)
@@ -67,7 +73,7 @@ else
 fi
 #
 MOY=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%B)  # full month name (e.g., January)
-MOY_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${FCST_LENGTH} hours" +%B)  # full month name (e.g., January)
+MOY_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${my_fcst_length} hours" +%B)  # full month name (e.g., January)
 DOY=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%j)  # Julian day 
 #
 if [[ "${DOY}" -ne 0 ]]; then
@@ -76,7 +82,7 @@ else
   DOY_m1=0
 fi
 #
-DOY_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${FCST_LENGTH} hours" +%j)  # Julian day 
+DOY_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${my_fcst_length} hours" +%j)  # Julian day
 #
 # Set the init/mesh file name and link here:\
 if [[ -r "${UMBRELLA_PREP_IC_DATA}"/init.nc ]]; then
@@ -89,7 +95,7 @@ fi
 #
 SCRIPT=${USHrrfs}/chem_regrid.py
 VINTERP_SCRIPT=${USHrrfs}/chem_vinterp.py
-INTERP_WEIGHTS_DIR=${DATADIR_CHEM}/grids/interpolation_weights/  
+INTERP_WEIGHTS_DIR=${CHEM_INPUT}/grids/interpolation_weights/
 #
 # Set a few things for the CONDA environment
 export REGRID_WRAPPER_LOG_DIR=${DATA}
@@ -101,22 +107,22 @@ export ESMFMKFILE=${regrid_conda_env}/lib/esmf.mk
 export PYTHONPATH=${PYTHONDIR}:${PYTHONPATH}
 #
 #==================================================================================================#
-if [[ "${EMIS_SECTOR_TO_PROCESS}" == "smoke" ]]; then
-  source "${USHrrfs}"/prep_smoke.sh
+if [[ "${CHEM_GROUP}" == "smoke" ]]; then
+  source "${USHrrfs}"/chem_prep_smoke.sh
 fi
 
-if [[ "${EMIS_SECTOR_TO_PROCESS}" == "rwc" ]]; then
-  source "${USHrrfs}"/prep_rwc.sh
+if [[ "${CHEM_GROUP}" == "rwc" ]]; then
+  source "${USHrrfs}"/chem_prep_rwc.sh
 fi #rwc
 
-if [[ "${EMIS_SECTOR_TO_PROCESS}" == "anthro" ]]; then
-  source "${USHrrfs}"/prep_anthro.sh
+if [[ "${CHEM_GROUP}" == "anthro" ]]; then
+  source "${USHrrfs}"/chem_prep_anthro.sh
 fi # anthro
 
-if [[ "${EMIS_SECTOR_TO_PROCESS}" == "pollen" ]]; then
-  source "${USHrrfs}"/prep_pollen.sh
+if [[ "${CHEM_GROUP}" == "pollen" ]]; then
+  source "${USHrrfs}"/chem_prep_pollen.sh
 fi # bio/pollen
 
-if [[ "${EMIS_SECTOR_TO_PROCESS}" == "dust" ]]; then
-  source "${USHrrfs}"/prep_dust.sh
+if [[ "${CHEM_GROUP}" == "dust" ]]; then
+  source "${USHrrfs}"/chem_prep_dust.sh
 fi # dust

@@ -19,51 +19,24 @@ def prep_chem(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         cycledefs = 'prod'
     realtime = os.getenv("REALTIME", "false")
 
-    create_own_data = os.getenv('CREATE_OWN_DATA', "FALSE").upper()
-
     # Task-specific EnVars beyond the task_common_vars
-    datadir_chem = os.getenv('CHEMPATH', '/lfs6/BMC/rtwbl/cheMPAS-Fire/input/')
-    mesh_name = os.getenv('MESH_NAME', 'conus3km').lower()
-    fcst_length = os.getenv('FCST_LENGTH', '24')
-    rave_dir = os.getenv('RAVE_DIR', '')
-    regrid_wrapper_dir = os.getenv('REGRID_WRAPPER_DIR')
-    regrid_conda_env = os.getenv('REGRID_CONDA_ENV')
-
     dcTaskEnv = {
-        'FCST_LENGTH': f'{fcst_length}',
-        'MESH_NAME': f'{mesh_name}',
-        'DATADIR_CHEM': f'{datadir_chem}',
-        'CREATE_OWN_DATA': f'{create_own_data}',
-        'REALTIME': f'{realtime}',
-        'REGRID_WRAPPER_DIR': f'{regrid_wrapper_dir}',
-        'REGRID_CONDA_ENV': f'{regrid_conda_env}'}
+        'FCST_LEN_HRS_CYCLES': os.getenv('FCST_LEN_HRS_CYCLES', '01 01'),
+        'CHEM_INPUT': os.getenv('CHEM_INPUT', 'CHEM_INPUT_undefined'),
+        'REGRID_WRAPPER_DIR': os.getenv('REGRID_WRAPPER_DIR', 'REGRID_WRAPPER_DIR_undefined'),
+        'REGRID_CONDA_ENV': os.getenv('REGRID_CONDA_ENV', 'REGRID_CONDA_ENV_undefined'),
+        'RAVE_INPUT': os.getenv('RAVE_INPUT', 'RAVE_INPUT_undefined'),
+    }
     #
-    if realtime.upper() == "TRUE":
-        rave_dir = '/public/data/grids/nesdis/3km_fire_emissions/'
-    else:
-        if len(rave_dir) > 1:
-            rave_dir = rave_dir
-        else:
-            rave_dir = datadir_chem + '/emissions/RAVE/'
-
-    dcTaskEnv['RAVE_DIR'] = f'{rave_dir}'
     metatask = True
-    task_id = f'{meta_id}_#sector#'
-    dcTaskEnv['EMIS_SECTOR_TO_PROCESS'] = '#sector#'
+    task_id = f'{meta_id}_#group#'
+    dcTaskEnv['CHEM_GROUP'] = '#group#'
     dcTaskEnv['ANTHRO_EMISINV'] = 'GRA2PES'
-
-    # Emission sectors / metatask
-    emis_sectors_test = ["smoke", "anthro", "pollen", "dust", "rwc"]
-    emis_sectors = ""
-    for sector in emis_sectors_test:
-        testval = os.getenv('DO_' + sector.upper(), 'FALSE').upper()
-        if testval == "TRUE":
-            emis_sectors = emis_sectors + sector + ' '
-    emis_sectors = emis_sectors.strip()
     #
+    chem_groups = os.getenv('CHEM_GROUPS', 'smoke').replace(',', ' ')
     meta_bgn = f'''
 <metatask name="{meta_id}">
-<var name="sector">{emis_sectors}</var>'''
+<var name="group">{chem_groups}</var>'''
     meta_end = f'</metatask>\n'
 
     # dependencies
