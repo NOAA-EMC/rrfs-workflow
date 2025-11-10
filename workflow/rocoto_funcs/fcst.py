@@ -19,14 +19,12 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     # Task-specific EnVars beyond the task_common_vars
     extrn_mdl_source = os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined')
     fcst_len_hrs_cycles = os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
-    fcst_length = os.getenv('FCST_LENGTH', '1')
     lbc_interval = os.getenv('LBC_INTERVAL', '3')
     history_interval = os.getenv('HISTORY_INTERVAL', '1')
     restart_interval = os.getenv('RESTART_INTERVAL', '9999')
     physics_suite = os.getenv('PHYSICS_SUITE', 'PHYSICS_SUITE_not_defined')
     dcTaskEnv = {
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
-        'FCST_LENGTH': f'{fcst_length}',
         'LBC_INTERVAL': f'{lbc_interval}',
         'HISTORY_INTERVAL': f'{history_interval}',
         'RESTART_INTERVAL': f'{restart_interval}',
