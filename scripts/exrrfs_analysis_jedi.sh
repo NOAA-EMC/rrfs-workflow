@@ -89,7 +89,7 @@ case $MACHINE in
   export OMP_STACKSIZE=500M
   export OMP_NUM_THREADS=1 #${TPP_RUN_ANALYSIS}
   #ncores=160 #$(( NNODES_RUN_ANALYSIS*PPN_RUN_ANALYSIS))
-  APRUN="mpirun -n 160 -ppn 80 --cpu-bind core --depth 1"
+  APRUN="mpirun -n 196 -ppn 98 --cpu-bind core --depth 1"
   ;;
 #
 "HERA")
@@ -179,6 +179,7 @@ print_info_msg "$VERBOSE" "FIX_GSI is $FIX_GSI"
 print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
 print_info_msg "$VERBOSE" "default bkpath is $bkpath"
 print_info_msg "$VERBOSE" "background type is $BKTYPE"
+mkdir -p data/inputs
 #
 # Check if we have enough FV3-LAM ensembles when regional_ensemble_option=5
 #
@@ -192,6 +193,7 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
   while [[ $imem -le ${NUM_ENS_MEMBERS} ]];do
     memcharv0=$( printf "%03d" $imem )
     memchar=mem$( printf "%04d" $imem )
+    mkdir -p data/inputs/mem${memcharv0}
 
     YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
     restart_prefix="${YYYYMMDD}.${HH}0000."
@@ -208,9 +210,12 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
     tracerfile=${bkpathmem}/${restart_prefix}fv_tracer.res.tile1.nc
     phyvarfile=${bkpathmem}/${restart_prefix}phy_data.nc
     if [ -r "${dynvarfile}" ] && [ -r "${tracerfile}" ] && [ -r "${phyvarfile}" ] ; then
-      ln -snf ${bkpathmem}/${restart_prefix}fv_core.res.tile1.nc       fv3SAR${ens_nstarthr}_ens_mem${memcharv0}-fv3_dynvars
-      ln -snf ${bkpathmem}/${restart_prefix}fv_tracer.res.tile1.nc     fv3SAR${ens_nstarthr}_ens_mem${memcharv0}-fv3_tracer
-      ln -snf ${bkpathmem}/${restart_prefix}phy_data.nc                fv3SAR${ens_nstarthr}_ens_mem${memcharv0}-fv3_phyvars
+      ln -snf ${bkpathmem}/${restart_prefix}fv_core.res.tile1.nc       data/inputs/mem${memcharv0}/fv3_dynvars
+      ln -snf ${bkpathmem}/${restart_prefix}fv_tracer.res.tile1.nc     data/inputs/mem${memcharv0}/fv3_tracer
+      ln -snf ${bkpathmem}/${restart_prefix}phy_data.nc                data/inputs/mem${memcharv0}/fv3_phyvars
+      ln -snf ${bkpathmem}/${restart_prefix}sfc_data.nc                data/inputs/mem${memcharv0}/fv3_sfcdata
+      ln -snf ${bkpathmem}/${restart_prefix}fv_srf_wnd.res.tile1.nc    data/inputs/mem${memcharv0}/fv_srf_wnd.res.tile1.nc
+      ln -snf ${bkpathmem}/${restart_prefix}coupler.res                data/inputs/mem${memcharv0}/coupler.res
       (( ifound += 1 ))
     else
       print_info_msg "WARNING: Cannot find ensemble files: ${dynvarfile} ${tracerfile} ${phyvarfile} "
@@ -456,7 +461,8 @@ cp ${FIX_JEDI}/fmsmpp.nml .
 cp ${FIX_JEDI}/gfs-restart.yaml .
 cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/berror_stats .
 cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/gsiparm_regional.anl .
-cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/input_lam_C775_NP16X10.nml .
+cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/input_lam_C775_NP14X14.nml .
+cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/mgbf_p196_14x14.nml .
 #
 #-----------------------------------------------------------------------
 #
