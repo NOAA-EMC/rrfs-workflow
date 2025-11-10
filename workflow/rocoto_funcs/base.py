@@ -55,6 +55,7 @@ def header_begin(xmlFile):
 
 
 def header_entities(xmlFile, expdir):
+    MACHINE = os.getenv('MACHINE', 'MACHINE_not_defined')
     HOMErrfs = os.getenv('HOMErrfs', 'HOMErrfs_not_defined')
     DATAROOT = os.getenv('DATAROOT', 'DATAROOT_not_defined')
     COMROOT = os.getenv('COMROOT', 'COMROOT_not_defined')
@@ -110,6 +111,7 @@ def header_entities(xmlFile, expdir):
         text = ''
     #
     text = text + f'''
+<!ENTITY MACHINE         "{MACHINE}">
 <!ENTITY HOMErrfs        "{HOMErrfs}">
 <!ENTITY EXPDIR          "{expdir}">
 <!ENTITY DATAROOT        "{DATAROOT}">
@@ -123,6 +125,7 @@ def header_entities(xmlFile, expdir):
 
 <!ENTITY task_common_vars
 "
+<envar><name>MACHINE</name><value>&MACHINE;</value></envar>
 <envar><name>HOMErrfs</name><value>&HOMErrfs;</value></envar>
 <envar><name>EXPDIR</name><value>&EXPDIR;</value></envar>
 <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
@@ -218,7 +221,7 @@ class objTask:
         xmlFile.write(text)
 
     def wflow_task_part1(self, xmlFile):  # write out part1 which excludes dependencies
-        text = f'  <command>{self.dcTaskRes["command"]} &HOMErrfs;</command>\n'
+        text = f'  <command>{self.dcTaskRes["command"]}</command>\n'
         text = text + f'  <join><cyclestr>{self.dcTaskRes["join"]}</cyclestr></join>\n'
         text = text + f'\n  <jobname><cyclestr>{self.dcTaskRes["jobname"]}</cyclestr></jobname>\n'
         if os.getenv('MORE_XML_ENTITIES', 'false').upper() == 'TRUE':
