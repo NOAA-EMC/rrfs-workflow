@@ -526,7 +526,7 @@ mv errfile errfile_jedi
 export LD_LIBRARY_PATH="/apps/ops/test/spack-stack-nco-1.9/oneapi/2024.2.1/hdf5-1.14.3-umtw5lv/lib:${LD_LIBRARY_PATH}"
 export pgm="rdas_ua2u.x"
 ua2u_exec="${EXECdir}/bin/${pgm}"
-ua2u_exec=/lfs/h2/emc/da/noscrub/donald.e.lippi/RRFSv1/PRs/RDASApp.20251020.ua_update_u/build/bin/rdas_ua2u.x
+#ua2u_exec=/lfs/h2/emc/da/noscrub/donald.e.lippi/RRFSv1/PRs/RDASApp.20251020.ua_update_u/build/bin/rdas_ua2u.x
 cp "${ua2u_exec}" "${analworkdir}/${pgm}"
 
 # Rename input before running conversion
