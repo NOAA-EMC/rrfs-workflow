@@ -133,7 +133,7 @@ cat << EOF > namelist.metarcld
   analysis_time = ${CDATE},
   prepbufrfile='prepbufr'
   twindin=0.5,
-  metar_impact_radius=${impact_radius},
+  metar_impact_radius=${metar_impact_radius},
   proj_name="${proj_name}",
   debug=0,
  /
