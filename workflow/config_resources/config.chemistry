@@ -8,7 +8,6 @@ export DO_CYC=false
 export DO_SPINUP=false
 
 export CYC_INTERVAL=24
-export CYCLEDEF_IC_STEP_HRS=24  # do ic jobs every step hours
 export LBC_CYCS="00"  # evenly divide 24 hours, e.g., "00 12", "00 06 12 18", etc
 export COLDSTART_CYCS="00"
 
