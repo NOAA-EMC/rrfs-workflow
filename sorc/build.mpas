@@ -20,7 +20,7 @@ if [[ "${MACHINE}" == "wcoss2" ]]; then
   compiler_str="ftn-wcoss2"
 elif [[ "${MACHINE}" == "derecho" ]]; then
   compiler_str="ifort"
-elif [[ "${MACHINE}" == "gaea" ]]; then
+elif [[ "${MACHINE}" == "gaeac6" ]]; then
   compiler_str="ifort_icx"
 elif [[ "${MACHINE}" == "ursa" ]]; then
   compiler_str="intel-mpi-ursa"
