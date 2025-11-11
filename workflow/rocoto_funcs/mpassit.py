@@ -10,16 +10,13 @@ def mpassit(xmlFile, expdir, do_ensemble=False, do_ensmean_post=False):
     cycledefs = 'prod'
     #
     mpassit_group_total_num = int(os.getenv('MPASSIT_GROUP_TOTAL_NUM', '1'))
-    fcst_length = os.getenv('FCST_LENGTH', '1')
     history_interval = os.getenv('HISTORY_INTERVAL', '1')
     fcst_len_hrs_cycles = os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
     group_indices = ''.join(f'{i:02d} ' for i in range(
         1, int(mpassit_group_total_num) + 1, int(history_interval))).strip()
-    fhr2 = ''.join(f'{i:02d} ' for i in range(0, int(mpassit_group_total_num), int(history_interval))).strip()
 
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
-        'FCST_LENGTH': f'{fcst_length}',
         'HISTORY_INTERVAL': f'{history_interval}',
         'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycles}',
         'GROUP_TOTAL_NUM': f'{mpassit_group_total_num}',
@@ -39,7 +36,6 @@ def mpassit(xmlFile, expdir, do_ensemble=False, do_ensmean_post=False):
         meta_bgn = f'''
 <metatask name="{meta_id}">
 <var name="group_index">{group_indices}</var>
-<var name="fhr2">{fhr2}</var>
 '''
         meta_end = f'</metatask>\n'
         task_id = f'{meta_id}_g#group_index#'
@@ -48,10 +44,6 @@ def mpassit(xmlFile, expdir, do_ensemble=False, do_ensmean_post=False):
         memdir = ""
     else:
         # metatask (nested or not)
-        fhr = os.getenv('ENS_FCST_LENGTH', '3')
-        if int(fhr) >= 100:
-            print(f'FCST_LENGTH>=100 not supported: {fhr}')
-            exit()
         ens_size = int(os.getenv('ENS_SIZE', '2'))
         if not do_ensmean_post:
             ens_indices = ''.join(f'{i:03d} ' for i in range(1, int(ens_size) + 1)).strip()
@@ -59,8 +51,7 @@ def mpassit(xmlFile, expdir, do_ensemble=False, do_ensmean_post=False):
 <metatask name="{meta_id}">
 <var name="ens_index">{ens_indices}</var>
 <metatask name="{meta_id}_m#ens_index#">
-<var name="group_index">{group_indices}</var>
-<var name="fhr2">{fhr2}</var>'''
+<var name="group_index">{group_indices}</var>'''
             meta_end = f'</metatask>\n</metatask>\n'
             task_id = f'{meta_id}_m#ens_index#_g#group_index#'
             dcTaskEnv['ENS_INDEX'] = "#ens_index#"
@@ -72,7 +63,6 @@ def mpassit(xmlFile, expdir, do_ensemble=False, do_ensmean_post=False):
             meta_bgn = f'''
 <metatask name="{meta_id}">
 <var name="group_index">{group_indices}</var>
-<var name="fhr2">{fhr2}</var>
 '''
             meta_end = f'</metatask>\n'
             task_id = f'{meta_id}_g#group_index#'
