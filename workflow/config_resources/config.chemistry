@@ -76,7 +76,7 @@ case ${MACHINE} in
       export MEMORY_PREP_CHEM="200G"
     fi
     ;;
-  "gaea")
+  "gaeac6")
     export CHEM_INPUT="/gpfs/f6/drsa-fire3/world-shared/cheMPAS-Fire/input"
     export RAVE_INPUT="${CHEM_INPUT}/emissions/RAVE/raw"
     export REGRID_WRAPPER_DIR="/gpfs/f6/drsa-fire3/world-shared/Sudheer/MPAS/Tools/regrid-wrapper/"
