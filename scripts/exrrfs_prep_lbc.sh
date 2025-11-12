@@ -9,9 +9,8 @@ lbc_interval=${LBC_INTERVAL:-3}
 #
 # find forecst length for this cycle
 #
-fcst_length=${FCST_LENGTH:-1}
 fcst_len_hrs_cycles=${FCST_LEN_HRS_CYCLES:-"01 01"}
-fcst_len_hrs_thiscyc=$( "${USHrrfs}/find_fcst_length.sh"  "${fcst_len_hrs_cycles}" "${cyc}"  "${fcst_length}")
+fcst_len_hrs_thiscyc=$( "${USHrrfs}/find_fcst_length.sh"  "${fcst_len_hrs_cycles}" "${cyc}" )
 echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
 #
 # find cycle that has boundary files 

@@ -25,9 +25,8 @@ cd "${DATA}" || exit 1
 #
 # find forecst length for this cycle
 #
-fcst_length=${FCST_LENGTH:-1}
 fcst_len_hrs_cycles=${FCST_LEN_HRS_CYCLES:-"01 01"}
-my_fcst_length=$("${USHrrfs}/find_fcst_length.sh" "${fcst_len_hrs_cycles}" "${cyc}" "${fcst_length}")
+my_fcst_length=$("${USHrrfs}/find_fcst_length.sh" "${fcst_len_hrs_cycles}" "${cyc}" )
 echo "forecast length for this cycle is ${my_fcst_length}"
 #
 # ... Set some date variables
