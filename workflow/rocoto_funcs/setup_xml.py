@@ -168,7 +168,7 @@ def setup_xml(HOMErrfs, expdir):
     extra = ""
     if machine in ['orion', 'hercules']:
         extra = "\nmodule load contrib"
-    elif machine in ['gaea']:
+    elif machine in ['gaeac6']:
         extra = "\nmodule use /ncrc/proj/epic/rocoto/modulefiles"
     elif machine in ['wcoss2']:
         extra = "\nmodule use /apps/ops/test/nco/modulefiles/core"
