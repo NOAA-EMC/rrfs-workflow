@@ -10,7 +10,7 @@ export TAG=e12km
 export OPSROOT=/lfs5/BMC/nrtrr/NCO_dirs/${EXP_NAME}
 export EXPDIR=${OPSROOT}/exp/${VERSION}/rrfs${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
-export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
+export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=YES
 #
 export REALTIME=true     # true, false
 #
@@ -60,7 +60,7 @@ export WALLTIME_MPASSIT="1:00:00"
 export WALLTIME_UPP="1:00:00"
 export WALLTIME_GETKF="00:30:00"
 #
-export KEEPDATA=no
+export KEEPDATA=NO
 export RETRO_TASKTHROTTLE=60
 #
 # local.setup: setup some local options specific to a platform or an experiment
