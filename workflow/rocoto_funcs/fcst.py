@@ -33,8 +33,6 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         'FCST_DT': os.getenv('FCST_DT', 'FCST_DT_not_defined'),
         'FCST_SUBSteps': os.getenv('FCST_SUBSTEPS', 'FCST_SUBSTEPS_not_defined'),
         'FCST_RADT': os.getenv('FCST_RADT', 'FCST_RADT_not_defined'),
-        'FCST_PIO_NUM_IOTASKS': os.getenv('FCST_PIO_NUM_IOTASKS', 'FCST_PIO_NUM_IOTASKS_not_defined'),
-        'FCST_PIO_STRIDE': os.getenv('FCST_PIO_STRIDE', 'FCST_PIO_STRIDE_not_defined'),
     }
     if do_spinup:
         dcTaskEnv['DO_SPINUP'] = "TRUE"
