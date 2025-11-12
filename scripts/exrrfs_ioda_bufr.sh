@@ -193,7 +193,14 @@ for yamlfile in "${yaml_list[@]}"; do
 
   if [[ ${run_process_prepbufr} ]]; then
     ${EXECdir}/bin/$pgm ${yamlfile} >> $pgmout 2>errfile
-    export err=$?; err_chk
+    export err=$?
+    if [ $err -ne 0 ]; then
+      if grep -qF "No valid BUFR subsets were found" errfile; then
+        echo "WARN: ${message_type}: no valid BUFR subsets in input. Skipping this type." >> "${pgmout}"
+        export err=0
+      fi
+    fi
+    err_chk
     mv errfile errfile_${message_type}
   fi
 done
