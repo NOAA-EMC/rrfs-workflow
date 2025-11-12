@@ -196,7 +196,7 @@ for yamlfile in "${yaml_list[@]}"; do
     export err=$?
     if [ $err -ne 0 ]; then
       if grep -qF "No valid BUFR subsets were found" errfile; then
-        echo "WARN: ${message_type}: no valid BUFR subsets in input. Skipping this type." >> "${pgmout}"
+        echo "WARNING: ${message_type}: no valid BUFR subsets in input. Skipping this type." >> "${pgmout}"
         export err=0
       fi
     fi
