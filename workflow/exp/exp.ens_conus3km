@@ -113,7 +113,7 @@ case ${MACHINE} in
     export PARTITION=${MACHINE}
     export CLUSTER=""
     ;;
-  "gaea")
+  "gaeac6")
     export IC_EXTRN_MDL_BASEDIR="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/GEFS"
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
     export OBSPATH="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/obs_rap"

@@ -33,7 +33,7 @@ case ${MACHINE} in
   hercules)
     BASEDIR=/work/noaa/zrtrr/gge/hercules/Miniforge3
     ;;
-  gaea)
+  gaeac?)
     if [[ -d /gpfs/f5 ]]; then
       BASEDIR=/to/be/added
     elif [[ -d /gpfs/f6 ]]; then

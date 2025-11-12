@@ -21,7 +21,7 @@ case ${MACHINE} in
   derecho)
     config_geog_data_path=/glade/work/geguo/WPS_GEOG
     ;;
-  gaea)
+  gaeac?)
     if [[ -d /gpfs/f5 ]]; then
       config_geog_data_path=/to/be/added
     elif [[ -d /gpfs/f6 ]]; then
