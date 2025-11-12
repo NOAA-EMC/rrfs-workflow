@@ -236,16 +236,13 @@ domain_path = Path(edge_points)
 obs_lat = obs_ds.groups['MetaData'].variables['latitude'][:]
 obs_lon = obs_ds.groups['MetaData'].variables['longitude'][:]
 obs_lon = np.where(obs_lon < 0, obs_lon + 360, obs_lon)
-
 # print(f"Max/Min obs Lat: {np.max(obs_lat)}, {np.min(obs_lat)}")
 # print(f"Max/Min obs Lon: {np.max(obs_lon)}, {np.min(obs_lon)}\n")
 
 # Pair the observation lat/lon as coordinates
 obs_coords = np.vstack((obs_lon, obs_lat)).T
-
 # Check if each observation is within the domain
 inside_domain = domain_path.contains_points(obs_coords)
-
 # Get indices of observations within the domain
 inside_indices = np.where(inside_domain)[0]
 toc(tic1, label="Time to find obs within domain: ")
@@ -261,6 +258,8 @@ fout = nc.Dataset(outfile, 'w')
 # Create dimensions and variables in the new file
 location_size = len(inside_indices)
 channel_size = obs_ds.dimensions['Channel'].size if 'Channel' in obs_ds.dimensions else 0  # Use the second dimension's size if exists
+if location_size == 0:
+    print(f"\nWARNING: no obs found within the model domain for: {obs_filename}\n")
 
 # Channel variable
 if '_FillValue' in obs_ds.variables['Channel'].ncattrs():
@@ -324,8 +323,8 @@ for group in groups:
                 g.createVariable(var, 'str', dimensions, fill_value=fill)
             else:
                 g.createVariable(var, vartype, dimensions, fill_value=fill)
-            for idy in range(0, len(invar[0, :])):  # new method for slicing very large 2d arrays
-                g.variables[var][:, idy] = itemgetter(*inside_indices)(invar[:, idy])
+            idx = np.asarray(inside_indices, dtype=np.int64)
+            g.variables[var][:] = np.take(invar[:], idx, axis=0)
 
             # Copy attributes for this variable
             for attr in invar.ncattrs():
