@@ -140,7 +140,7 @@ umask 022
 case ${task_id} in
   clean)
     case ${MACHINE} in
-      ursa|gaea|orion|hercules)
+      ursa|gaeac?|orion|hercules)
         set +x
         module load python
         set -x

@@ -9,8 +9,6 @@ if [[ ${MESH_NAME} == "conus12km" ]]; then
   export FCST_DT=60
   export FCST_SUBSTEPS=2
   export FCST_RADT=30
-  export FCST_PIO_NUM_IOTASKS=1
-  export FCST_PIO_STRIDE=40
   export UPP_DOMAIN="conus."
 
   export MPASSIT_NX=480
@@ -32,8 +30,6 @@ elif [[ ${MESH_NAME} == "conus3km" ]]; then
   export FCST_DT=15
   export FCST_SUBSTEPS=4
   export FCST_RADT=15
-  export FCST_PIO_NUM_IOTASKS=40
-  export FCST_PIO_STRIDE=20
   export UPP_DOMAIN="conus."
 
   export MPASSIT_NX=1800
@@ -55,8 +51,6 @@ elif [[ ${MESH_NAME} == "south3.5km" ]]; then
   export FCST_DT=25
   export FCST_SUBSTEPS=4
   export FCST_RADT=15
-  export FCST_PIO_NUM_IOTASKS=10
-  export FCST_PIO_STRIDE=24
   export UPP_DOMAIN="subconus."
 
   export MPASSIT_NX=660

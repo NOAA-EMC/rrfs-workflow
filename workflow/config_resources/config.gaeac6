@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Gaea -specific settings
+# gaeac6 -specific settings
 export ACCOUNT=${ACCOUNT:-rtrr}
 export ACCOUNT2=${ACCOUNT2:-${ACCOUNT}}
 export QUEUE=${QUEUE:-batch}

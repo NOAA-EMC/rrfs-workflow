@@ -23,7 +23,7 @@ case ${MACHINE} in
   derecho)
     EXEC_DIR=/glade/work/geguo/Miniforge3/envs/bokeh/bin
     ;;
-  gaea)
+  gaeac?)
     if [[ -d /gpfs/f5 ]]; then
       EXEC_DIR=/to/be/added
     elif [[ -d /gpfs/f6 ]]; then
