@@ -45,7 +45,6 @@ export LBC_UNGRIB_GROUP_TOTAL_NUM=1
 export LBC_GROUP_TOTAL_NUM=1
 
 export RETRO_PERIOD="2024052700-2024052800"
-export CYCLEDEF_IC_STEP_HRS=6
 export LBC_CYCS="00 06 12 18"
 export COLDSTART_CYCS="00 06 12 18"   # cycles to cold start from external models
 export RECENTER_CYCS="${COLDSTART_CYCS}"
@@ -125,7 +124,7 @@ case ${MACHINE} in
     export PARTITION=${MACHINE}
     export CLUSTER=""
     ;;
-  "gaea")
+  "gaeac6")
     export IC_EXTRN_MDL_BASEDIR="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/GEFS"
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
     export OBSPATH="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/obs_rap"
