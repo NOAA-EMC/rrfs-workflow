@@ -102,7 +102,7 @@ case ${MACHINE} in
     export NODES_LBC="<nodes>1:ppn=160</nodes>"
     export NODES_FCST="<nodes>1:ppn=160</nodes>"
     export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
-    export NODES_UPP="<nodes>1:ppn=160</nodes>"
+    export NODES_UPP="<nodes>1:ppn=80</nodes>"
     export NODES_ENSMEAN="<nodes>1:ppn=80</nodes>"
     export NODES_GETKF="<nodes>1:ppn=160</nodes>"
     ;;
@@ -138,7 +138,7 @@ case ${MACHINE} in
     export NODES_LBC="<nodes>1:ppn=160</nodes>"
     export NODES_FCST="<nodes>1:ppn=160</nodes>"
     export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
-    export NODES_UPP="<nodes>1:ppn=160</nodes>"
+    export NODES_UPP="<nodes>1:ppn=80</nodes>"
     export NODES_ENSMEAN="<nodes>1:ppn=80</nodes>"
     export NODES_GETKF="<nodes>1:ppn=160</nodes>"
     ;;

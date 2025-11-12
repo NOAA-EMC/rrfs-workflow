@@ -97,7 +97,7 @@ case ${MACHINE} in
     export NODES_LBC="<nodes>10:ppn=160</nodes>"
     export NODES_FCST="<nodes>10:ppn=160</nodes>"
     export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
-    export NODES_UPP="<nodes>1:ppn=160</nodes>"
+    export NODES_UPP="<nodes>1:ppn=80</nodes>"
     export NODES_RECENTER="<nodes>1:ppn=32</nodes>"
     export NODES_GETKF="<nodes>20:ppn=40</nodes>"
     ;;
@@ -133,7 +133,7 @@ case ${MACHINE} in
     export NODES_LBC="<nodes>10:ppn=160</nodes>"
     export NODES_FCST="<nodes>10:ppn=160</nodes>"
     export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
-    export NODES_UPP="<nodes>1:ppn=160</nodes>"
+    export NODES_UPP="<nodes>1:ppn=80</nodes>"
     export NODES_RECENTER="<nodes>1:ppn=32</nodes>"
     export NODES_GETKF="<nodes>20:ppn=40</nodes>"
     ;;
