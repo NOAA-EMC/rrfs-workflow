@@ -2,10 +2,10 @@
 import os
 from rocoto_funcs.base import xml_task, get_cascade_env
 
-# begin of cloudanalysis_nonvar --------------------------------------------------------
+# begin of nonvar_cldana --------------------------------------------------------
 
 
-def cloudanalysis_nonvar(xmlFile, expdir, do_spinup=False):
+def nonvar_cldana(xmlFile, expdir, do_spinup=False):
     if do_spinup:
         cycledefs = 'spinup'
         num_spinup_cycledef = os.getenv('NUM_SPINUP_CYCLEDEF', '1')
@@ -13,10 +13,10 @@ def cloudanalysis_nonvar(xmlFile, expdir, do_spinup=False):
             cycledefs = 'spinup,spinup2'
         elif num_spinup_cycledef == '3':
             cycledefs = 'spinup,spinup2,spinup3'
-        task_id = 'cloudanalysis_nonvar_spinup'
+        task_id = 'nonvar_cldana_spinup'
     else:
         cycledefs = 'prod'
-        task_id = 'cloudanalysis_nonvar'
+        task_id = 'nonvar_cldana'
     # Task-specific EnVars beyond the task_common_vars
     extrn_mdl_source = os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined')
     dcTaskEnv = {
@@ -51,10 +51,10 @@ def cloudanalysis_nonvar(xmlFile, expdir, do_spinup=False):
   <dependency>
   <and>{timedep}{prep_ic_dep}
     {jedidep}
-    <taskdep task="proc_bufr_nonvar"/>
-    <taskdep task="refmosaic_nonvar"/>
+    <taskdep task="nonvar_bufrobs"/>
+    <taskdep task="nonvar_reflobs"/>
   </and>
   </dependency>'''
     #
     xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies)
-# end of cloudanalysis_nonvar --------------------------------------------------------
+# end of nonvar_cldana --------------------------------------------------------

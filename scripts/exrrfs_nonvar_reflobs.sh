@@ -135,6 +135,6 @@ ${MPI_RUN_CMD} ./${pgm}
 export err=$?
 err_chk
 
-${cpreq} RefInGSI3D.dat "${COMOUT}/refmosaic_nonvar/${WGF}/RefInGSI3D.dat"
+${cpreq} RefInGSI3D.dat "${COMOUT}/nonvar_reflobs/${WGF}/RefInGSI3D.dat"
 
 exit 0

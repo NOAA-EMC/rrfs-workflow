@@ -80,7 +80,7 @@ ${MPI_RUN_CMD} ./${pgm}
 export err=$?
 err_chk
 
-${cpreq} NASALaRC_cloud4mpas.bin "${COMOUT}/proc_bufr_nonvar/${WGF}/NASALaRC_cloud4mpas.bin"
+${cpreq} NASALaRC_cloud4mpas.bin "${COMOUT}/nonvar_bufrobs/${WGF}/NASALaRC_cloud4mpas.bin"
 
 #
 #-----------------------------------------------------------------------
@@ -114,7 +114,7 @@ ${MPI_RUN_CMD} ./${pgm}
 export err=$?
 err_chk
 
-${cpreq} LightningInMPAS.dat "${COMOUT}/proc_bufr_nonvar/${WGF}/LightningInMPAS.dat"
+${cpreq} LightningInMPAS.dat "${COMOUT}/nonvar_bufrobs/${WGF}/LightningInMPAS.dat"
 
 #
 #-----------------------------------------------------------------------
@@ -147,6 +147,6 @@ ${MPI_RUN_CMD} ./${pgm}
 export err=$?
 err_chk
 
-${cpreq} mpas_metarcloud.bin "${COMOUT}/proc_bufr_nonvar/${WGF}/mpas_metarcloud.bin"
+${cpreq} mpas_metarcloud.bin "${COMOUT}/nonvar_bufrobs/${WGF}/mpas_metarcloud.bin"
 
 exit 0
