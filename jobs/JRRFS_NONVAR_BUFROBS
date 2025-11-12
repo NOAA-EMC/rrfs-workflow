@@ -18,9 +18,9 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 #-----------------------------------------------------------------------
 #
 export pid=${pid:-$$}
-export jobid=${jobid:-proc_bufr_nonvar_${cyc}}
-export UMBRELLA_PROC_BUFR_NONVAR_DATA=${UMBRELLA_PROC_BUFR_NONVAR_DATA:-${DATAROOT}/${RUN}_proc_bufr_nonvar_${cyc}_${rrfs_ver}/${WGF}}
-export DATA=${DATA:-${UMBRELLA_PROC_BUFR_NONVAR_DATA}/${jobid}}
+export jobid=${jobid:-nonvar_bufrobs_${cyc}}
+export UMBRELLA_NONVAR_BUFROBS_DATA=${UMBRELLA_NONVAR_BUFROBS_DATA:-${DATAROOT}/${RUN}_nonvar_bufrobs_${cyc}_${rrfs_ver}/${WGF}}
+export DATA=${DATA:-${UMBRELLA_NONVAR_BUFROBS_DATA}/${jobid}}
 
 if [[ -d "${DATA}" ]]; then #remove the ${DATA} directory before a new run
   rm -rf "${DATA}"
@@ -33,13 +33,13 @@ mkdir -p "${DATA}"
 #
 export COMINrrfs=${COMINrrfs:-$(compath.py "${envir}/rrfs/${rrfs_ver}")}
 export COMOUT=${COMOUT:-$(compath.py -o "${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}")}
-mkdir -p "${COMOUT}/proc_bufr_nonvar/${WGF}"
+mkdir -p "${COMOUT}/nonvar_bufrobs/${WGF}"
 #
 #----------------------------------------
 # Execute the script.
 #----------------------------------------
 export pgmout="${DATA}/OUTPUT.$$"
-"${HOMErrfs}"/scripts/exrrfs_proc_bufr_nonvar.sh
+"${HOMErrfs}"/scripts/exrrfs_nonvar_bufrobs.sh
 export err=$?; err_chk
 
 if [[ -e "${pgmout}" ]]; then

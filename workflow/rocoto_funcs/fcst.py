@@ -81,9 +81,9 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     recenterdep = ""
     if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
         if do_spinup:
-            cloudana_dep = f'\n<taskdep task="cloudanalysis_nonvar_spinup"/>'
+            cloudana_dep = f'\n<taskdep task="nonvar_cldana_spinup"/>'
         else:
-            cloudana_dep = f'\n<taskdep task="cloudanalysis_nonvar"/>'
+            cloudana_dep = f'\n<taskdep task="nonvar_cldana"/>'
     elif os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
         if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
             jedidep = f'\n<taskdep task="getkf_solver"/>'

@@ -45,10 +45,10 @@ nlevel=$(wc -l < "${zeta_levels}")
 ln -snf "${FIXrrfs}/meshes/${MESH_NAME}.invariant.nc_L${nlevel}_${prefix}" ./invariant.nc
 
 # Processed observations
-${cpreq} "${COMOUT}/proc_bufr_nonvar/${WGF}/NASALaRC_cloud4mpas.bin" .
-${cpreq} "${COMOUT}/proc_bufr_nonvar/${WGF}/LightningInMPAS.dat" .
-${cpreq} "${COMOUT}/proc_bufr_nonvar/${WGF}/mpas_metarcloud.bin" .
-${cpreq} "${COMOUT}/refmosaic_nonvar/${WGF}/RefInGSI3D.dat" .
+${cpreq} "${COMOUT}/nonvar_bufrobs/${WGF}/NASALaRC_cloud4mpas.bin" .
+${cpreq} "${COMOUT}/nonvar_bufrobs/${WGF}/LightningInMPAS.dat" .
+${cpreq} "${COMOUT}/nonvar_bufrobs/${WGF}/mpas_metarcloud.bin" .
+${cpreq} "${COMOUT}/nonvar_reflobs/${WGF}/RefInGSI3D.dat" .
 
 #
 #-----------------------------------------------------------------------
@@ -101,6 +101,6 @@ err_chk
 # No need to copy output b/c mpasout.nc was linked from UMBRELLA_PREP_IC_DATA
 
 # Copy log files to COM directory
-${cpreq} stdout_cloudanalysis* "${COMOUT}/cloudanalysis_nonvar/${WGF}/"
+${cpreq} stdout_cloudanalysis* "${COMOUT}/nonvar_cldana/${WGF}/"
 
 exit 0
