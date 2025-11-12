@@ -12,19 +12,28 @@ EXEC="${HOMErrfs}/sorc/MPAS-Model/init_atmosphere_model"
 EXEC2="${HOMErrfs}/sorc/MPAS-Model/atmosphere_model"
 
 compiler_str="intel-mpi"
-if [[ "${MACHINE}" == "wcoss2" ]]; then
-  BUILD_VERSION_FILE="${HOMErrfs}/versions/build.ver"
-  if [[ -f "${BUILD_VERSION_FILE}" ]]; then
-    source "${BUILD_VERSION_FILE}"
-  fi
-  compiler_str="ftn-wcoss2"
-elif [[ "${MACHINE}" == "derecho" ]]; then
-  compiler_str="ifort"
-elif [[ "${MACHINE}" == "gaea" ]]; then
-  compiler_str="ifort_icx"
-elif [[ "${MACHINE}" == "ursa" ]]; then
-  compiler_str="intel-mpi-ursa"
-fi
+case "${MACHINE}" in
+  wcoss2)
+    BUILD_VERSION_FILE="${HOMErrfs}/versions/build.ver"
+    if [[ -f "${BUILD_VERSION_FILE}" ]]; then
+      source "${BUILD_VERSION_FILE}"
+    fi
+    compiler_str="ftn-wcoss2"
+    ;;
+  derecho)
+    compiler_str="ifort"
+    ;;
+  ursa|orion|hercules)
+    compiler_str="intel-mpi-ursa"
+    ;;
+  gaea)
+    compiler_str="ifort_icx"
+    ;;
+  *)
+    echo "unsupported platforms: ${MACHINE}"
+    exit 1
+    ;;
+esac
 
 module purge                      
 module use "${HOMErrfs}/modulefiles"
