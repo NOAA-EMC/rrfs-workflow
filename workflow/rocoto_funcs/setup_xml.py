@@ -64,6 +64,10 @@ def setup_xml(HOMErrfs, expdir):
                     os.symlink(rave_dummy, dest)
                 else:
                     print(f'!!! RAVE_dummy not found: {rave_dummy} !!!')
+    if os.path.exists(f"{HOMErrfs}/workflow/config_resources/config.override"):
+        shutil.copy(f'{HOMErrfs}/workflow/config_resources/config.override', f'{expdir}/config/config.override')  # save a copy for reference
+        source(f"{HOMErrfs}/workflow/config_resources/config.override")
+        print("NOTE: config_resources/config.override found and it overrode some exp settings.\n")
 
     realtime = os.getenv('REALTIME', 'false')
     if realtime.upper() == "TRUE":

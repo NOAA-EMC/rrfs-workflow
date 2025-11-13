@@ -10,7 +10,7 @@ export TAG=e12km
 export OPSROOT=/scratch3/BMC/wrfruc/gge/OPSROOT/${EXP_NAME}
 export EXPDIR=${OPSROOT}/exp/rrfs${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
-export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
+export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=YES
 #
 export DO_ENSEMBLE=true
 export DO_ENSMEAN_POST=true
@@ -67,7 +67,7 @@ export WALLTIME_MPASSIT="1:00:00"
 export WALLTIME_UPP="1:00:00"
 export WALLTIME_GETKF="00:30:00"
 #
-export KEEPDATA=no
+export KEEPDATA=NO
 export RETRO_TASKTHROTTLE=60
 #
 # local.setup: setup some local options specific to a platform or an experiment
@@ -97,6 +97,14 @@ case ${MACHINE} in
     export ACCOUNT="wrfruc"
     export QUEUE="batch"
     export PARTITION="u1-compute"
+    export PARTITION="u1-compute"
+    export NODES_IC="<nodes>1:ppn=160</nodes>"
+    export NODES_LBC="<nodes>1:ppn=160</nodes>"
+    export NODES_FCST="<nodes>1:ppn=160</nodes>"
+    export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
+    export NODES_UPP="<nodes>1:ppn=80</nodes>"
+    export NODES_ENSMEAN="<nodes>1:ppn=80</nodes>"
+    export NODES_GETKF="<nodes>1:ppn=160</nodes>"
     ;;
   "jet")
     export IC_EXTRN_MDL_BASEDIR="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/GEFS"
@@ -126,6 +134,13 @@ case ${MACHINE} in
     export QUEUE="normal"
     export PARTITION="batch"
     export CLUSTER="c6"
+    export NODES_IC="<nodes>1:ppn=160</nodes>"
+    export NODES_LBC="<nodes>1:ppn=160</nodes>"
+    export NODES_FCST="<nodes>1:ppn=160</nodes>"
+    export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
+    export NODES_UPP="<nodes>1:ppn=80</nodes>"
+    export NODES_ENSMEAN="<nodes>1:ppn=80</nodes>"
+    export NODES_GETKF="<nodes>1:ppn=160</nodes>"
     ;;
   "wcoss2")
     export IC_EXTRN_MDL_BASEDIR="/lfs/h2/emc/lam/noscrub/RRFS2_RETRO_DATA/May2024/GEFS"
