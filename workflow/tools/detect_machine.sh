@@ -64,10 +64,10 @@ if [[ "${MACHINE}" == "UNKNOWN" ]]; then
   elif [[ -d /scratch3 ]]; then
     if [[ -d /apps/slurm_hera ]]; then
       # We are on Hera
-      MACHINE_ID=hera
+      MACHINE=hera
     else
       # We are on Ursa
-      MACHINE_ID=ursa
+      MACHINE=ursa
     fi
   elif [[ -d /glade/derecho ]]; then
     # We are on Derecho
