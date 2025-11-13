@@ -23,15 +23,11 @@ case "${MACHINE}" in
   derecho)
     compiler_str="ifort"
     ;;
-  ursa|orion|hercules)
+  ursa|orion|hercules|jet|hera)
     compiler_str="intel-mpi-ursa"
     ;;
   gaeac6)
     compiler_str="ifort_icx"
-    ;;
-  *)
-    echo "unsupported platforms: ${MACHINE}"
-    exit 1
     ;;
 esac
 
