@@ -75,11 +75,7 @@ case ${task_id} in
   nonvar_bufrobs|nonvar_reflobs|nonvar_cldana)
     module purge
     module use "${HOMErrfs}/sorc/RRFS_UTILS/modulefiles"
-    if [[ ${MACHINE} == "gaea" ]]; then
-      module load "build_gaeaC6_intel"
-    else
-      module load "build_${MACHINE}_intel"
-    fi
+    module load "build_${MACHINE}_intel"
     ;;
   mpassit)
     module purge

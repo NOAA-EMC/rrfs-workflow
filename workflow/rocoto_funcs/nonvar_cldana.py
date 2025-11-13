@@ -37,11 +37,11 @@ def nonvar_cldana(xmlFile, expdir, do_spinup=False):
     jedidep = ""
     if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
         if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
-            jedidep = f'<taskdep task="getkf_solver"/>'
+            jedidep = f'\n    <taskdep task="getkf_solver"/>'
         elif do_spinup:
-            jedidep = f'<taskdep task="jedivar_spinup"/>'
+            jedidep = f'\n    <taskdep task="jedivar_spinup"/>'
         else:
-            jedidep = f'<taskdep task="jedivar"/>'
+            jedidep = f'\n    <taskdep task="jedivar"/>'
     else:
         prep_ic_dep = f'\n    <taskdep task="prep_ic"/>'
         if do_spinup:
@@ -49,8 +49,7 @@ def nonvar_cldana(xmlFile, expdir, do_spinup=False):
     #
     dependencies = f'''
   <dependency>
-  <and>{timedep}{prep_ic_dep}
-    {jedidep}
+  <and>{timedep}{prep_ic_dep}{jedidep}
     <taskdep task="nonvar_bufrobs"/>
     <taskdep task="nonvar_reflobs"/>
   </and>

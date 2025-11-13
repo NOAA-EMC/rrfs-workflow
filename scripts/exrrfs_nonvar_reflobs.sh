@@ -64,7 +64,7 @@ for (( j=0; j < 4; $((j=j+1)) )); do
     break
   fi
   s=0
-  while (( $s <= 59 )); do
+  while (( s <= 59 )); do
     ss=$(printf %2.2i ${s})
     nsslfile="${NSSL}/${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.${obs_appendix}"
     if [[ -s ${nsslfile} ]]; then

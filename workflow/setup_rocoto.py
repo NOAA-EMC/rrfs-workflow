@@ -35,6 +35,10 @@ if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
         print(f'{mesh} is not compatible with the nonvar cloud analysis')
         print('Please set DO_NONVAR_CLOUD_ANA=false and try again')
         exit()
+    if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
+        print(f'Nonvar cloud analysis is not compatible with ensembles')
+        print('Please set DO_NONVAR_CLOUD_ANA=false and try again')
+        exit()
 
 # create comroot (no matter exists or not)
 comroot = get_required_env('COMROOT')

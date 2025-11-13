@@ -19,7 +19,11 @@ def nonvar_bufrobs(xmlFile, expdir):
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
         'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
-        'OBSPATH': f'{OBSPATH}'
+        'OBSPATH': f'{OBSPATH}',
+        'NONVAR_LARC_NPTS': os.getenv('NONVAR_LARC_NPTS', 'NONVAR_LARC_NPTS_not_defined'),
+        'NONVAR_METAR_IMPACT': os.getenv('NONVAR_METAR_IMPACT', 'NONVAR_METAR_IMPACT_not_defined'),
+        'NONVAR_PROJ_NAME': os.getenv('NONVAR_PROJ_NAME', 'NONVAR_PROJ_NAME_not_defined'),
+        'NONVAR_USERDX': os.getenv('NONVAR_USERDX', 'NONVAR_USERDX_not_defined')
     }
 
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
