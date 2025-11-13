@@ -9,9 +9,9 @@ load(pathJoin("prod_util", os.getenv("prod_util_ver")))
 load(pathJoin("cray-mpich", os.getenv("cray_mpich_ver")))
 load(pathJoin("cray-pals", os.getenv("cray_pals_ver")))
 
-load(pathJoin("hdf5-C", os.getenv("hdf5_ver")))
-load(pathJoin("netcdf-C", os.getenv("netcdf_ver")))
-load(pathJoin("pnetcdf-C", os.getenv("pnetcdf_ver")))
+load(pathJoin("hdf5-D", os.getenv("hdf5_ver")))
+load(pathJoin("netcdf-D", os.getenv("netcdf_ver")))
+load(pathJoin("pnetcdf-D", os.getenv("pnetcdf_ver")))
 load(pathJoin("libjpeg", os.getenv("libjpeg_ver")))
 
 load(pathJoin("udunits", os.getenv("udunits_ver")))
