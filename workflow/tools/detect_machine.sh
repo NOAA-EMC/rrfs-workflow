@@ -61,18 +61,20 @@ if [[ "${MACHINE}" == "UNKNOWN" ]]; then
   elif [[ -d /mnt/lfs5 ]]; then
     # We are on NOAA Jet
     MACHINE=jet
-  elif [[ -d /scratch1 ]]; then
-    # We are on NOAA Hera
-    MACHINE=hera
   elif [[ -d /scratch3 ]]; then
-    # We are on NOAA Ursa
-    MACHINE=ursa
+    if [[ -d /apps/slurm_hera ]]; then
+      # We are on Hera
+      MACHINE_ID=hera
+    else
+      # We are on Ursa
+      MACHINE_ID=ursa
+    fi
   elif [[ -d /glade/derecho ]]; then
     # We are on Derecho
     MACHINE=derecho
   elif [[ -d /work ]]; then
     # We are on MSU Orion or Hercules
-    if [[ -d /apps/other ]]; then
+    if [[ -d /apps/etc ]]; then
       # We are on Hercules
       MACHINE=hercules
     else
