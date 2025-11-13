@@ -158,6 +158,8 @@ fi
 #-----------------------------------------------------------------------
 #
 cp ${OBSPATH}/${YYYYMMDDHH}.rap.t${HH}z.satwnd.tm00.bufr_d satwndbufr
+cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.gsrcsr.tm00.bufr_d" abibufr
+cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.atms.tm00.bufr_d" atmsbufr
 #
 #-----------------------------------------------------------------------
 #
@@ -165,7 +167,7 @@ cp ${OBSPATH}/${YYYYMMDDHH}.rap.t${HH}z.satwnd.tm00.bufr_d satwndbufr
 #
 #-----------------------------------------------------------------------
 #
-#export LD_LIBRARY_PATH="${RDASAPP_DIR}/build/lib64:${LD_LIBRARY_PATH}"
+export LD_LIBRARY_PATH="${RDASAPP_DIR}/build/lib64:${LD_LIBRARY_PATH}"
 
 yaml_list=(
 "prepbufr_adpsfc.yaml"
@@ -204,10 +206,10 @@ done
 #
 #-----------------------------------------------------------------------
 #
-#export PYTHONUNBUFFERED=1
-#export PYIODALIB="$RDASAPP_DIR/build/lib/python3.*"
-#export PYTHONPATH="${PYTHONPATH}:$RDASAPP_DIR/build/lib/python3.*:$RDASAPP_DIR/sorc/wxflow/src"
-#export PYTHONPATH="$PYIODALIB:$RDASAPP_DIR/sorc/wxflow/src:${PYTHONPATH}"
+export PYTHONUNBUFFERED=1
+export PYIODALIB="$RDASAPP_DIR/build/lib/python3.*"
+export PYTHONPATH="${PYTHONPATH}:$RDASAPP_DIR/build/lib/python3.*:$RDASAPP_DIR/sorc/wxflow/src"
+export PYTHONPATH="$PYIODALIB:$RDASAPP_DIR/sorc/wxflow/src:${PYTHONPATH}"
 
 # pyioda libraries
 shopt -s nullglob
@@ -222,9 +224,9 @@ cp "${RDASAPP_DIR}"/rrfs-test/IODA/python/bufr2ioda_satwnd_amv_goes.json .
 cp "${RDASAPP_DIR}"/rrfs-test/IODA/python/bufr2ioda_satwnd_amv_goes.py .
 #cp "${RDASAPP_DIR}"/rrfs-test/IODA/python/bufr2ioda_ztd.py .
 #cp "${RDASAPP_DIR}"/rrfs-test/IODA/python/bufr2ioda.json .
-#cp "${RDASAPP_DIR}"/rrfs-test/IODA/python/bufr2ioda_gsrcsr.json .
-#cp "${RDASAPP_DIR}"/rrfs-test/IODA/python/bufr2ioda_gsrcsr.py .
-#cp "${USHdir}"/run_bufr2ioda_gsrcsr.sh .
+cp "${RDASAPP_DIR}"/rrfs-test/IODA/python/bufr2ioda_gsrcsr.json .
+cp "${RDASAPP_DIR}"/rrfs-test/IODA/python/bufr2ioda_gsrcsr.py .
+cp "${USHdir}"/run_bufr2ioda_gsrcsr.sh .
 
 # generate a JSON w CDATE from the template and convert to IODA
 cp "${RDASAPP_DIR}"/rrfs-test/IODA/python/gen_bufr2ioda_json.py .
@@ -237,6 +239,33 @@ cp -p ${FIX_JEDI}/ioda_empty.nc ioda_adpupa.nc
 # SATWND
 ./gen_bufr2ioda_json.py -t bufr2ioda_satwnd_amv_goes.json -o bufr2ioda_satwnd_amv_goes_0.json
 ./bufr2ioda_satwnd_amv_goes.py -c bufr2ioda_satwnd_amv_goes_0.json >> $pgmout
+
+# Satellite Radiance
+
+#1 ABI GSRCSR
+ln -sf abibufr "rap.t${cyc}z.gsrcsr.tm00.bufr_d"
+workdir=`pwd`
+./run_bufr2ioda_gsrcsr.sh "${CDATE}" rap "${workdir}" "${workdir}" "${workdir}" "${RDASAPP_DIR}"
+cp "rap.t${cyc}z.abi_g16.tm00.nc" "ioda_abi_g16.nc"
+cp "rap.t${cyc}z.abi_g18.tm00.nc" "ioda_abi_g18.nc"
+
+#2 ATMS
+cp "${FIX_JEDI}/atms_beamwidth.txt" .
+cp "${PARM_IODACONV}/bufr_atms_mapping.yaml" .
+input_file="atmsbufr"
+output_file="ioda_atms_{splits/satId}.nc"
+yaml="bufr_atms_mapping.yaml"
+if [[ -f "$input_file" ]]; then
+  ${EXECdir}/bin/bufr2netcdf.x "$input_file" "$yaml" "$output_file"
+else
+  echo "Input file $input_file does not exist."
+fi
+
+#3 AMSUA
+
+#4 CRIS
+
+
 #
 #-----------------------------------------------------------------------
 #
@@ -252,9 +281,9 @@ cp "${RDASAPP_DIR}"/rrfs-test/IODA/offline_vad_thinning.py .
 # offline domain check & patch
 for ioda_file in ioda*nc; do
   grid_file="${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec"
-  if [[ "${ioda_file}" == *abi* ]]; then
+  if [[ "${ioda_file}" == *ioda_abi* ]]; then
     echo " ${ioda_file} ioda file detected: running offline_domain_check_satrad.py"
-    ./offline_domain_check_satrad.py -o "${ioda_file}" -g "${grid_file}" -f -s 0.005 >> $pgmout
+    ./offline_domain_check_satrad.py -o "${ioda_file}" -g "${grid_file}" -s 0.005 >> $pgmout
     base_name=$(basename "$ioda_file" .nc)
     mv  "${base_name}_dc.nc" "${base_name}.nc"
   elif [[ "${ioda_file}" == *atms* || "${ioda_file}" == *cris* ]]; then
