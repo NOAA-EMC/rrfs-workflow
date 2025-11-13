@@ -14,7 +14,6 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import matplotlib.ticker as mticker
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
-from operator import itemgetter
 import shapely.speedups
 
 shapely.speedups.enable()
@@ -261,6 +260,8 @@ fout = nc.Dataset(outfile, 'w')
 # Create dimensions and variables in the new file
 location_size = len(inside_indices)
 channel_size = obs_ds.dimensions['Channel'].size if 'Channel' in obs_ds.dimensions else 0  # Use the second dimension's size if exists
+if location_size == 0:
+    print(f"\nWARNING: no obs found within the model domain for: {obs_filename}\n")
 
 # Channel variable
 if '_FillValue' in obs_ds.variables['Channel'].ncattrs():
@@ -324,8 +325,8 @@ for group in groups:
                 g.createVariable(var, 'str', dimensions, fill_value=fill)
             else:
                 g.createVariable(var, vartype, dimensions, fill_value=fill)
-            for idy in range(0, len(invar[0, :])):  # new method for slicing very large 2d arrays
-                g.variables[var][:, idy] = itemgetter(*inside_indices)(invar[:, idy])
+            idx = np.asarray(inside_indices, dtype=np.int64)
+            g.variables[var][:] = np.take(invar[:], idx, axis=0)
 
             # Copy attributes for this variable
             for attr in invar.ncattrs():
