@@ -76,7 +76,7 @@ for (( j=0; j < 4; $((j=j+1)) )); do
         cp ${NSSL}/${nsslfile1} .
         ls ${nsslfile1} > filelist_mrms
         echo "Creating links for ${YYYY}${MM}${DD}-${HH}${min}"
-	break
+        break
       fi
     fi
     ((s+=1))
