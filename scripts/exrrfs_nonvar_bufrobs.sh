@@ -18,7 +18,6 @@ meshgriddir="${FIXrrfs}"/meshes
 echo "INFO: meshgriddir is $meshgriddir"
 
 ${cpreq} "${meshgriddir}"/"${MESH_NAME}".grid.nc mesh.nc
-${cpreq} "${FIXrrfs}"/cloudanalysis/prepobs_prep_RAP.bufrtable prepobs_prep.bufrtable
 
 #
 #-----------------------------------------------------------------------
