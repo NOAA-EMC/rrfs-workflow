@@ -131,7 +131,7 @@ ${cpreq} "${OBSPATH}/${CDATE}.rap.t${cyc}z.prepbufr.tm00" prepbufr
 cat << EOF > namelist.metarcld
  &setup
   analysis_time = ${CDATE},
-  prepbufrfile='prepbufr'
+  prepbufrfile='prepbufr',
   twindin=0.5,
   metar_impact_radius=${metar_impact_radius},
   proj_name="${proj_name}",
