@@ -73,7 +73,7 @@ cat << EOF > gsiparm.anl
  &RAPIDREFRESH_CLDSURF
    l_conserve_thetaV=.true.,
    r_cleanSnow_WarmTs_threshold=5.0,
-   i_conserve_thetaV_iternum=3
+   i_conserve_thetaV_iternum=3,
    l_cld_bld=.true.,
    cld_bld_hgt=1200.0,
    build_cloud_frac_p=0.50,
