@@ -23,34 +23,6 @@ ${cpreq} "${FIXrrfs}"/cloudanalysis/prepobs_prep_RAP.bufrtable prepobs_prep.bufr
 #
 #-----------------------------------------------------------------------
 #
-# Set mesh-dependent parameters
-#
-#-----------------------------------------------------------------------
-#
-
-if [[ "${MESH_NAME}" == "conus3km" ]]; then
-  larc_npts=3
-  metar_impact_radius=20
-  proj_name="CONUS"
-  userDX=3000
-elif [[ "${MESH_NAME}" == "south3.5km" ]]; then
-  larc_npts=3
-  metar_impact_radius=20
-  proj_name="CONUS"
-  userDX=3500
-elif [[ "${MESH_NAME}" == "conus12km" ]]; then
-  larc_npts=4
-  metar_impact_radius=40
-  proj_name="CONUS"
-  userDX=12000
-else
-  echo "FATAL ERROR: Nonvariational cloud analysis is incompatible with mesh: ${MESH_NAME}"
-  err_exit
-fi
-
-#
-#-----------------------------------------------------------------------
-#
 # NASA LaRC observation processing
 #
 # See sorc/RRFS_UTILS for details
@@ -64,10 +36,10 @@ cat << EOF > namelist.nasalarc
  &setup
   analysis_time = ${CDATE},
   bufrfile='NASALaRCCloudInGSI_bufr.bufr',
-  npts_rad=${larc_npts},
+  npts_rad=${NONVAR_LARC_NPTS},
   ioption=2,
-  userDX=${userDX},
-  proj_name="${proj_name}",
+  userDX=${NONVAR_USER_DX},
+  proj_name="${NONVAR_PROJ_NAME}",
   debug=0,
  /
 EOF
@@ -101,7 +73,7 @@ cat << EOF > namelist.lightning
   trange_start=-10,
   trange_end=10,
   obs_type = "bufr",
-  proj_name = '${proj_name}',
+  proj_name = '${NONVAR_PROJ_NAME}',
   debug=0
  /
 EOF
@@ -133,8 +105,8 @@ cat << EOF > namelist.metarcld
   analysis_time = ${CDATE},
   prepbufrfile='prepbufr',
   twindin=0.5,
-  metar_impact_radius=${metar_impact_radius},
-  proj_name="${proj_name}",
+  metar_impact_radius=${NONVAR_METAR_IMPACT},
+  proj_name="${NONVAR_PROJ_NAME}",
   debug=0,
  /
 EOF

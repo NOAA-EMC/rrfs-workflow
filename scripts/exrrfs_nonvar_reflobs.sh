@@ -54,25 +54,25 @@ mrms="MergedReflectivityQC"
 #-----------------------------------------------------------------------
 #
 
-if [ -s filelist_mrms ]; then
+if [[ -s filelist_mrms ]]; then
   rm -f filelist_mrms
 fi
 for (( j=0; j < 4; $((j=j+1)) )); do
   min=$( printf %2.2i ${j} )
   echo "Looking for data valid:${YYYY}-${MM}-${DD} ${HH}:${min}"
-  if [[ -e filelist_mrms ]]; then
+  if [[ -s filelist_mrms ]]; then
     break
   fi
   s=0
-  while [[ $s -le 59 ]]; do
+  while (( $s <= 59 )); do
     ss=$(printf %2.2i ${s})
-    nsslfile="${NSSL}/*${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.${obs_appendix}"
-    if [ -s ${nsslfile} ]; then
+    nsslfile="${NSSL}/${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.${obs_appendix}"
+    if [[ -s ${nsslfile} ]]; then
       echo "Found ${nsslfile}"
       nsslfile1="*${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.${obs_appendix}"
       numgrib2=$(find ${NSSL}/${nsslfile1} -maxdepth 1 -type f | wc -l)
       echo "Number of GRIB-2 files: ${numgrib2}"
-      if [ "${numgrib2}" -ge 10 ] && [ ! -e filelist_mrms ]; then
+      if (( "${numgrib2}" >= 10 )) && [[ ! -e filelist_mrms ]]; then
         cp ${NSSL}/${nsslfile1} .
         ls ${nsslfile1} > filelist_mrms
         echo "Creating links for ${YYYY}${MM}${DD}-${HH}${min}"
@@ -86,17 +86,13 @@ done
 #
 #-----------------------------------------------------------------------
 #
-# remove filelist_mrms if zero bytes
+# Unzip GRIB2 files if needed, then run program
 #
 #-----------------------------------------------------------------------
 #
 
-if [ ! -s filelist_mrms ]; then
-  rm -f filelist_mrms
-fi
-
-if [ -s filelist_mrms ]; then
-  if [ "${obs_appendix}" == "grib2.gz" ]; then
+if [[ -s filelist_mrms ]]; then
+  if [[ "${obs_appendix}" == "grib2.gz" ]]; then
     gzip -d ./*.gz
     mv filelist_mrms filelist_mrms_org
     ls "MergedReflectivityQC_*_${YYYY}${MM}${DD}-${HH}????.grib2" > filelist_mrms

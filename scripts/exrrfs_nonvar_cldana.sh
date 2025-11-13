@@ -37,7 +37,7 @@ if [[ -r "${UMBRELLA_PREP_IC_DATA}/init.nc" ]]; then
 else
   initial_file=mpasout.nc
 fi
-ln -snf "${UMBRELLA_PREP_IC_DATA}/${initial_file}" ./mpasout.nc
+ln -snf "${UMBRELLA_PREP_IC_DATA}/${initial_file}" .
 
 # MPAS invariant file
 zeta_levels=${EXPDIR}/config/ZETA_LEVELS.txt
@@ -98,7 +98,7 @@ ${MPI_RUN_CMD} ./${pgm}
 export err=$?
 err_chk
 
-# No need to copy output b/c mpasout.nc was linked from UMBRELLA_PREP_IC_DATA
+# No need to copy output b/c ${initial_file} was linked from UMBRELLA_PREP_IC_DATA
 
 # Copy log files to COM directory
 ${cpreq} stdout_cloudanalysis* "${COMOUT}/nonvar_cldana/${WGF}/"
