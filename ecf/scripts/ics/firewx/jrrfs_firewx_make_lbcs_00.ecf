@@ -1,10 +1,10 @@
-#PBS -N rrfs_firewx_make_lbcs_@firewx_make_lbcs_fhr@_%CYC%
+#PBS -N rrfs_firewx_make_lbcs_00_%CYC%
 #PBS -j oe
 #PBS -S /bin/bash
 #PBS -q %QUEUE%
 #PBS -A %PROJ%-%PROJENVIR%
 #PBS -l walltime=01:30:00
-#PBS -l place=scatter:shared,select=1:ncpus=36:mem=260G
+#PBS -l place=excl,select=1:ncpus=64:ompthreads=2:mem=1000G:prepost=true
 #PBS -l debug=true
 
 model=rrfs

@@ -127,7 +127,13 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
           ((existing_files++))
           echo "checkfile count: $existing_files"
       else
-          echo "File missing: $checkfile"
+          sleep 180
+          if [[ -f $checkfile ]]; then
+            ((existing_files++))
+            echo "RESTART file from previous cycle has become available"
+          else
+            echo "File missing: $checkfile"
+          fi
       fi
   done
 

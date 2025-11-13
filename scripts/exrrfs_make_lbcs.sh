@@ -335,10 +335,19 @@ if [ ${extrn_mdl_name} != GEFS ] ; then
  if [ ${BCGRP} = "00" ]; then
    touch ${DATA}/parallel_copy.sh
    for file_to_copy in "${extrn_mdl_fps_on_disk[@]}"; do
+     while [ ! -s ${file_to_copy} ]; do
+       sleep 10
+     done
      echo "Add file - ${file_to_copy} to parallel transfer job list"
      echo "cpfs ${file_to_copy} ${umbrella_lbcops_data}" >> ${DATA}/parallel_copy.sh
    done
-   [[ -s ${DATA}/parallel_copy.sh ]]&& cat ${DATA}/parallel_copy.sh | parallel --verbose
+   if [ -s ${DATA}/parallel_copy.sh ]; then
+      poe_script=parallel_copy.sh
+      export MP_CMDFILE=${poe_script}
+      launcher="mpiexec -np 36 --cpu-bind core cfp"
+      $launcher $MP_CMDFILE
+      export err=$?; err_chk
+   fi
  else
    # 3 second of file system refreshment
    sleep 3

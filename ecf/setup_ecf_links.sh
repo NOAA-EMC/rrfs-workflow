@@ -1,5 +1,7 @@
 #!/bin/bash
 set -eux
+module load prod_util
+
 # Assume resource is using NCO production configuration
 resource_config="EMC"
 ECF_DIR=$(pwd)
@@ -46,15 +48,15 @@ cd ${ECF_DIR}/../fix/workflow/
 echo "point at proper workflow.conf version..."
   rm -f ./det/workflow.conf ./enkf/workflow.conf ./ensf/workflow.conf ./firewx/workflow.conf
 if [ ${resource_config} == "NCO" ]; then
-  ln -s ./det/workflow.conf_prod ./det/workflow.conf
-  ln -s ./enkf/workflow.conf_prod ./enkf/workflow.conf
-  ln -s ./ensf/workflow.conf_prod ./ensf/workflow.conf
-  ln -s ./firewx/workflow.conf_prod ./firewx/workflow.conf
+  cpreq ./det/workflow.conf_prod ./det/workflow.conf
+  cpreq ./enkf/workflow.conf_prod ./enkf/workflow.conf
+  cpreq ./ensf/workflow.conf_prod ./ensf/workflow.conf
+  cpreq ./firewx/workflow.conf_prod ./firewx/workflow.conf
 else
-  ln -s ./det/workflow.conf_dev ./det/workflow.conf
-  ln -s ./enkf/workflow.conf_dev ./enkf/workflow.conf
-  ln -s ./ensf/workflow.conf_dev ./ensf/workflow.conf
-  ln -s ./firewx/workflow.conf_dev ./firewx/workflow.conf
+  cpreq ./det/workflow.conf_dev ./det/workflow.conf
+  cpreq ./enkf/workflow.conf_dev ./enkf/workflow.conf
+  cpreq ./ensf/workflow.conf_dev ./ensf/workflow.conf
+  cpreq ./firewx/workflow.conf_dev ./firewx/workflow.conf
 fi
 
 # det prdgen files
@@ -163,7 +165,8 @@ done
 cd $ECF_DIR/scripts/post/det
 echo "Copy det post files ..."
 rm -f jrrfs_det_post_f*
-MASTER_FILE="jrrfs_det_post_master.ecf"
+MASTER_FILE_HOUR="jrrfs_det_post_master.ecf"
+MASTER_FILE_SUBHOUR="jrrfs_det_post_subhour_master.ecf"
 # =========================================================================
 #  Generate Standard Forecast Files (short-range, 15-min intervals)
 # =========================================================================
@@ -177,9 +180,15 @@ for fhr in $(seq 0 17); do
     fi
     hour_combo="${fhr_padded}_${min}_00"
     output_file="jrrfs_det_post_f${hour_combo}.ecf"
+    if [[ ${min} == "00" ]]; then
+      MASTER_FILE=${MASTER_FILE_HOUR}
+    else
+      MASTER_FILE=${MASTER_FILE_SUBHOUR}
+    fi
     create_ecf_file "${hour_combo}" "${output_file}"
   done
 done
+MASTER_FILE=${MASTER_FILE_HOUR}
 # Handle the two special cases for the standard files.
 create_ecf_file "000_00_36" "jrrfs_det_post_f000_00_36.ecf"
 create_ecf_file "018_00_00"    "jrrfs_det_post_f018_00_00.ecf"
@@ -196,12 +205,15 @@ for fhr in $(seq 0 17); do
     fi
     hour_combo="${fhr_padded}_${min}_00_long"
     output_file="jrrfs_det_post_f${hour_combo}.ecf"
+    if [[ ${min} == "00" ]]; then
+      MASTER_FILE=${MASTER_FILE_HOUR}
+    else
+      MASTER_FILE=${MASTER_FILE_SUBHOUR}
+    fi
     create_ecf_file "${hour_combo}" "${output_file}"
   done
 done
-
-# NOTE: The original script had a bug here. It tried to rename a file that had already
-# been moved and used an incorrect variable. The logic below corrects this by directly
+MASTER_FILE=${MASTER_FILE_HOUR}
 # creating the intended special-case file.
 create_ecf_file "000_00_36_long" "jrrfs_det_post_f000_00_36_long.ecf"
 # Loop for hours 18-84 at hourly intervals for the "_long" files.
@@ -250,9 +262,9 @@ done
 # firewx ics lbcs files
 cd $ECF_DIR/scripts/ics/firewx
 echo "Copy firewx ics lbcs files ..."
-rm -f jrrfs_firewx_make_lbcs_??.ecf
-for fhrs in $(seq 0 35); do
+for fhrs in $(seq 1 35); do
   fhr_2d=$( printf "%02d" "${fhrs}" )
+  rm -f jrrfs_firewx_make_lbcs_${fhr_2d}.ecf
   cp jrrfs_firewx_make_lbcs_master.ecf jrrfs_firewx_make_lbcs_${fhr_2d}.ecf
   sed -i -e "s|@firewx_make_lbcs_fhr@|${fhr_2d}|g" jrrfs_firewx_make_lbcs_${fhr_2d}.ecf
 done
