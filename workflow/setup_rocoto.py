@@ -28,6 +28,32 @@ else:
     print(f'{EXPin}: no such file')
     exit()
 
+# source the config cascase
+source(f"{HOMErrfs}/workflow/config_resources/config.{machine}")
+source(f"{HOMErrfs}/workflow/config_resources/config.meshdep")
+source(f"{HOMErrfs}/workflow/config_resources/config.base")
+if os.getenv('REALTIME', 'false').upper() == "TRUE":
+    source(f"{HOMErrfs}/workflow/config_resources/config.realtime")
+if os.getenv("DO_CHEMISTRY", "FALSE").upper() == "TRUE":
+    source(f"{HOMErrfs}/workflow/config_resources/config.chemistry")
+    if "smoke" in os.getenv('CHEM_GROUPS', 'smoke'):
+        CHEM_INPUT = os.getenv('CHEM_INPUT', 'CHEM_INPUT_undefined')
+        COMROOT = os.getenv('COMROOT', 'COMROOT_undefined')
+        NET = os.getenv('NET', 'NET_undefined')
+        VERSION = os.getenv('VERSION', 'VERSION_undefined')
+        MESH_NAME = os.getenv('MESH_NAME', 'MESH_NAME_undefined')
+        rave_dummy = f'{CHEM_INPUT}/emissions/RAVE/processed/RAVE.dummy.{MESH_NAME}.nc'
+        os.makedirs(f'{COMROOT}/{NET}/{VERSION}', exist_ok=True)
+        dest = f'{COMROOT}/{NET}/{VERSION}/RAVE.dummy.nc'
+        if not os.path.exists(dest):
+            if os.path.exists(rave_dummy):
+                os.symlink(rave_dummy, dest)
+            else:
+                print(f'!!! RAVE_dummy not found: {rave_dummy} !!!')
+if os.path.exists(f"{HOMErrfs}/workflow/config_resources/config.override"):
+    source(f"{HOMErrfs}/workflow/config_resources/config.override")
+    print("NOTE: config_resources/config.override found and some exp settings overwritten by it.\n")
+
 # Check compatibility of setup with nonvar cloud analysis
 if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
     mesh = os.getenv("MESH_NAME", "conus3km")
@@ -71,6 +97,10 @@ os.makedirs(exp_configdir, exist_ok=True)
 zeta_levels = os.getenv('ZETA_LEVELS', '')
 if zeta_levels != '':
     shutil.copy(f'{HOMErrfs}/fix/meshes/{zeta_levels}', f'{exp_configdir}/ZETA_LEVELS.txt')
+if os.getenv("DO_CHEMISTRY", "FALSE").upper() == "TRUE":
+    shutil.copy(f'{HOMErrfs}/workflow/config_resources/config.chemistry', f'{expdir}/config/config.chemistry')  # save a copy for reference
+if os.path.exists(f"{HOMErrfs}/workflow/config_resources/config.override"):
+    shutil.copy(f'{HOMErrfs}/workflow/config_resources/config.override', f'{expdir}/config/config.override')  # save a copy for reference
 
 # if DO_JEDI, copy the super YAML, convinfo, [satinfo] files to EXPDIR
 if os.getenv("DO_JEDI", 'false').upper() == "TRUE":

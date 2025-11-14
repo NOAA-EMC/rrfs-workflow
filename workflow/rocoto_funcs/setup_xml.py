@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 #
 import os
-import shutil
 import stat
-from rocoto_funcs.base import header_begin, header_entities, header_end, source, \
+from rocoto_funcs.base import header_begin, header_entities, header_end, \
     wflow_begin, wflow_log, wflow_cycledefs, wflow_end
 from rocoto_funcs.smart_cycledefs import smart_cycledefs
 from rocoto_funcs.ungrib_ic import ungrib_ic
@@ -34,7 +33,6 @@ from rocoto_funcs.misc import misc
 
 
 def setup_xml(HOMErrfs, expdir):
-    # source the config cascade
     if os.path.exists(f"{expdir}/config/satinfo") and os.getenv("USE_THE_LATEST_SATBIAS") is None:
         env_vars = {'USE_THE_LATEST_SATBIAS': 'true'}
         os.environ.update(env_vars)
@@ -43,35 +41,6 @@ def setup_xml(HOMErrfs, expdir):
     do_ensemble = os.getenv('DO_ENSEMBLE', 'false').upper()
     do_ensmean_post = os.getenv('DO_ENSMEAN_POST', 'false').upper()
     do_chemistry = os.getenv('DO_CHEMISTRY', 'false').upper()
-    #
-    source(f"{HOMErrfs}/workflow/config_resources/config.{machine}")
-    source(f"{HOMErrfs}/workflow/config_resources/config.meshdep")
-    source(f"{HOMErrfs}/workflow/config_resources/config.base")
-    if do_chemistry == "TRUE":
-        source(f"{HOMErrfs}/workflow/config_resources/config.chemistry")
-        shutil.copy(f'{HOMErrfs}/workflow/config_resources/config.chemistry', f'{expdir}/config/config.chemistry')  # save a copy for reference
-        if "smoke" in os.getenv('CHEM_GROUPS', 'smoke'):
-            CHEM_INPUT = os.getenv('CHEM_INPUT', 'CHEM_INPUT_undefined')
-            COMROOT = os.getenv('COMROOT', 'COMROOT_undefined')
-            NET = os.getenv('NET', 'NET_undefined')
-            VERSION = os.getenv('VERSION', 'VERSION_undefined')
-            MESH_NAME = os.getenv('MESH_NAME', 'MESH_NAME_undefined')
-            rave_dummy = f'{CHEM_INPUT}/emissions/RAVE/processed/RAVE.dummy.{MESH_NAME}.nc'
-            os.makedirs(f'{COMROOT}/{NET}/{VERSION}', exist_ok=True)
-            dest = f'{COMROOT}/{NET}/{VERSION}/RAVE.dummy.nc'
-            if not os.path.exists(dest):
-                if os.path.exists(rave_dummy):
-                    os.symlink(rave_dummy, dest)
-                else:
-                    print(f'!!! RAVE_dummy not found: {rave_dummy} !!!')
-    if os.path.exists(f"{HOMErrfs}/workflow/config_resources/config.override"):
-        shutil.copy(f'{HOMErrfs}/workflow/config_resources/config.override', f'{expdir}/config/config.override')  # save a copy for reference
-        source(f"{HOMErrfs}/workflow/config_resources/config.override")
-        print("NOTE: config_resources/config.override found and it overrode some exp settings.\n")
-
-    realtime = os.getenv('REALTIME', 'false')
-    if realtime.upper() == "TRUE":
-        source(f"{HOMErrfs}/workflow/config_resources/config.realtime")
     #
     # create cycledefs smartly
     dcCycledef = smart_cycledefs()
