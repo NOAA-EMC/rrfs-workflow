@@ -21,6 +21,7 @@ export ZETA_LEVELS="L65.txt"
 #
 export DO_IODA=false
 export DO_JEDI=false
+export DO_NONVAR_CLOUD_ANA=false
 export COLDSTART_CYCS_DO_DA=false
 export DO_RECENTER=false
 export DO_RADAR_REF=false

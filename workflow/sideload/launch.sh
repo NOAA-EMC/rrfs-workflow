@@ -72,6 +72,11 @@ case ${task_id} in
     module load "RDAS/${MACHINE}.intel"
     export LD_LIBRARY_PATH=${HOMErrfs}/sorc/RDASApp/build/lib64:${LD_LIBRARY_PATH}
     ;;
+  nonvar_bufrobs|nonvar_reflobs|nonvar_cldana)
+    module purge
+    module use "${HOMErrfs}/sorc/RRFS_UTILS/modulefiles"
+    module load "build_${MACHINE}_intel"
+    ;;
   mpassit)
     module purge
     module use "${HOMErrfs}/sorc/MPASSIT/modulefiles"

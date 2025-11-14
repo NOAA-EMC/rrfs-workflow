@@ -22,6 +22,9 @@ from rocoto_funcs.mpassit import mpassit
 from rocoto_funcs.upp import upp
 from rocoto_funcs.ioda_bufr import ioda_bufr
 from rocoto_funcs.ioda_mrms_refl import ioda_mrms_refl
+from rocoto_funcs.nonvar_bufrobs import nonvar_bufrobs
+from rocoto_funcs.nonvar_reflobs import nonvar_reflobs
+from rocoto_funcs.nonvar_cldana import nonvar_cldana
 from rocoto_funcs.prep_chem import prep_chem
 from rocoto_funcs.clean import clean
 from rocoto_funcs.graphics import graphics
@@ -90,6 +93,9 @@ def setup_xml(HOMErrfs, expdir):
                 ioda_bufr(xmlFile, expdir)
             if os.getenv("DO_RADAR_REF", "FALSE").upper() == "TRUE":
                 ioda_mrms_refl(xmlFile, expdir)
+            if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
+                nonvar_bufrobs(xmlFile, expdir)
+                nonvar_reflobs(xmlFile, expdir)
             #
             if os.getenv("DO_IC_LBC", "TRUE").upper() == "TRUE":
                 ungrib_ic(xmlFile, expdir)
@@ -102,10 +108,14 @@ def setup_xml(HOMErrfs, expdir):
                 # spin up line
                 prep_ic(xmlFile, expdir, spinup_mode=1)
                 jedivar(xmlFile, expdir, do_spinup=True)
+                if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
+                    nonvar_cldana(xmlFile, expdir, do_spinup=True)
                 fcst(xmlFile, expdir, do_spinup=True)
                 # prod line
                 prep_ic(xmlFile, expdir, spinup_mode=-1)
                 jedivar(xmlFile, expdir)
+                if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
+                    nonvar_cldana(xmlFile, expdir)
                 fcst(xmlFile, expdir)
                 save_fcst(xmlFile, expdir)
             elif os.getenv("DO_FCST", "TRUE").upper() == "TRUE":
@@ -115,6 +125,8 @@ def setup_xml(HOMErrfs, expdir):
                     prep_chem(xmlFile, expdir)
                 if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
                     jedivar(xmlFile, expdir)
+                if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
+                    nonvar_cldana(xmlFile, expdir)
                 fcst(xmlFile, expdir)
                 save_fcst(xmlFile, expdir)
             #
