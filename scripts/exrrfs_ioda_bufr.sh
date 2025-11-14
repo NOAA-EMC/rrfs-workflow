@@ -259,25 +259,33 @@ cp "${RDASAPP_DIR}"/rrfs-test/IODA/offline_vad_thinning.py .
 # offline domain check & patch
 for ioda_file in ioda*nc; do
   grid_file="${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec"
-  if [[ "${ioda_file}" == *abi* ]]; then
+  if [[ "${ioda_file}" == *abi* && "${ioda_file}" != *satwnd* ]]; then
     echo " ${ioda_file} ioda file detected: running offline_domain_check_satrad.py"
-    ./offline_domain_check_satrad.py -o "${ioda_file}" -g "${grid_file}" -f -s 0.005 >> $pgmout
+    export pgm="offline_domain_check_satrad.py"
+    ./offline_domain_check_satrad.py -o "${ioda_file}" -g "${grid_file}" -s 0.005 >> $pgmout
+    export err=$?; err_chk
     base_name=$(basename "$ioda_file" .nc)
     mv  "${base_name}_dc.nc" "${base_name}.nc"
   elif [[ "${ioda_file}" == *atms* || "${ioda_file}" == *cris* ]]; then
     echo " ${ioda_file} ioda file detected: temporarily skipping offline domain check"
   else
+    export pgm="offline_domain_check.py"
     ./offline_domain_check.py -o "${ioda_file}" -g "${grid_file}" -s 0.005
+    export err=$?; err_chk
     base_name=$(basename "$ioda_file" .nc)
     mv  "${base_name}_dc.nc" "${base_name}.nc"
+    export pgm="offline_ioda_patch.py"
     ./offline_ioda_patch.py -o "${ioda_file}" >> $pgmout
+    export err=$?; err_chk
     base_name=$(basename "$ioda_file" .nc)
     mv  "${base_name}_llp.nc" "${base_name}.nc"
   fi
 done
 
 # vadwnd thinning & superobbing
+export pgm="offline_vad_thinning.py"
 ./offline_vad_thinning.py -i ioda_vadwnd.nc -o ioda_vadwnd_thinned.nc >> $pgmout
+export err=$?; err_chk
 mv ioda_vadwnd_thinned.nc ioda_vadwnd.nc
 #
 #-----------------------------------------------------------------------
