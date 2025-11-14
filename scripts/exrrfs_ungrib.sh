@@ -52,6 +52,13 @@ for fhr in  ${fhr_all}; do
       echo "FATAL ERROR: ${GRIBFILE} missing"
       err_exit
     fi
+  elif [[ "${prefix}" == *RAP*  ]]; then
+    if [[ -s "${GRIBFILE}" ]]; then
+      source "${USHrrfs}"/ungrib_rap.sh # prepare "${GRIBFILE_LOCAL}"
+    else
+      echo "FATAL ERROR: ${GRIBFILE} missing"
+      err_exit
+    fi
   elif [[ -s "${GRIBFILE}" ]]; then
     ${cpreq} "${GRIBFILE}"  "${GRIBFILE_LOCAL}"
     # if NAME_PATTERN_B is defined and non-empty
