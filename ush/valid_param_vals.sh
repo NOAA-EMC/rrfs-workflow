@@ -22,6 +22,9 @@ valid_vals_PREDEF_GRID_NAME=( \
 "GSD_HRRR_AK_50km" \
 "GSD_RAP13km" \
 "RRFS_NA_3km" \
+"RRFS_NA_6km" \
+"RRFS_NA_9km" \
+"RRFS_NA_12km" \
 "RRFS_FIREWX_1.5km" \
 )
 valid_vals_CCPP_PHYS_SUITE=( \
