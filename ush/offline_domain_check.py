@@ -2,7 +2,6 @@
 import netCDF4 as nc
 import numpy as np
 from matplotlib.path import Path
-from scipy.spatial import ConvexHull, Delaunay
 import argparse
 import warnings
 import shapely.speedups
@@ -26,21 +25,24 @@ in tern means that it is going to be not an exact match of the domain grid
 # Disable warnings
 warnings.filterwarnings('ignore')
 
+
 def normalize_lon(lon):
     lon = np.asarray(lon)
     return np.where(lon < 0.0, lon + 360.0, lon)
 
+
 def bbox_filter(coords, ring):
     mins = ring.min(axis=0)
     maxs = ring.max(axis=0)
-    return (
-        (coords[:,0] >= mins[0]) & (coords[:,0] <= maxs[0]) &
-        (coords[:,1] >= mins[1]) & (coords[:,1] <= maxs[1])
-    )
+    in_x = (coords[:, 0] >= mins[0]) & (coords[:, 0] <= maxs[0])
+    in_y = (coords[:, 1] >= mins[1]) & (coords[:, 1] <= maxs[1])
+    return in_x & in_y
+
 
 def to_plain_array(a):
     # netCDF masked arrays to plain ndarray
     return np.array(a.filled(np.nan)) if np.ma.isMaskedArray(a) else np.array(a)
+
 
 def polygon_from_structured_edges(grid_ds):
     """
@@ -68,13 +70,14 @@ def polygon_from_structured_edges(grid_ds):
     glon = normalize_lon(glon)
 
     # Extract perimeter in CCW order: top > right > bottom > left
-    top    = np.c_[glon[0, :],          glat[0, :]]
-    right  = np.c_[glon[1:, -1],        glat[1:, -1]]
-    bottom = np.c_[glon[-1, -2::-1],    glat[-1, -2::-1]]     # exclude last to avoid dup
-    left   = np.c_[glon[-2:0:-1, 0],    glat[-2:0:-1, 0]]     # exclude corners already used
+    top = np.c_[glon[0, :], glat[0, :]]
+    right = np.c_[glon[1:, -1], glat[1:, -1]]
+    bottom = np.c_[glon[-1, -2::-1], glat[-1, -2::-1]]     # exclude last to avoid dup
+    left = np.c_[glon[-2:0:-1, 0], glat[-2:0:-1, 0]]     # exclude corners already used
 
     ring = np.vstack([top, right, bottom, left])
     return ring
+
 
 def polygon_from_mpas_boundary(grid_ds, simplify_target=20000):
     """
@@ -82,10 +85,10 @@ def polygon_from_mpas_boundary(grid_ds, simplify_target=20000):
     Returns ring as (N,2) [lon_deg, lat_deg] in [0,360) lon (no seam shift yet).
     simplify_target: if the ring has more vertices than this, subsample it.
     """
-    cellsOnEdge    = to_plain_array(grid_ds.variables["cellsOnEdge"][:])   # (nEdges, 2), int
-    verticesOnEdge = to_plain_array(grid_ds.variables["verticesOnEdge"][:])# (nEdges, 2), int
-    lonVertex      = to_plain_array(grid_ds.variables["lonVertex"][:])     # (nVertices,)
-    latVertex      = to_plain_array(grid_ds.variables["latVertex"][:])
+    cellsOnEdge = to_plain_array(grid_ds.variables["cellsOnEdge"][:])   # (nEdges, 2), int
+    verticesOnEdge = to_plain_array(grid_ds.variables["verticesOnEdge"][:])  # (nEdges, 2), int
+    lonVertex = to_plain_array(grid_ds.variables["lonVertex"][:])     # (nVertices,)
+    latVertex = to_plain_array(grid_ds.variables["latVertex"][:])
 
     # Convert to degrees; clean invalids
     lonv = np.degrees(lonVertex)
@@ -167,19 +170,19 @@ def polygon_from_mpas_boundary(grid_ds, simplify_target=20000):
 
     return ring
 
+
 def build_domain_ring(grid_ds):
     varsin = grid_ds.variables.keys()
-    if (('grid_lat' in varsin and 'grid_lon' in varsin) or
-        ('grid_latt' in varsin and 'grid_lont' in varsin)):
+    if (('grid_lat' in varsin and 'grid_lon' in varsin) or ('grid_latt' in varsin and 'grid_lont' in varsin)):
         ring = polygon_from_structured_edges(grid_ds)
-    elif {'cellsOnEdge','verticesOnEdge','lonVertex','latVertex'}.issubset(varsin):
+    elif {'cellsOnEdge', 'verticesOnEdge', 'lonVertex', 'latVertex'}.issubset(varsin):
         ring = polygon_from_mpas_boundary(grid_ds, simplify_target=20000)
     else:
         raise RuntimeError("Unsupported grid file: need grid_lat/grid_lon (or grid_latt/grid_lont) or cells/verticesOnEdge")
 
     # Normalize and optionally fix the dateline seam
-    ring[:,0] = normalize_lon(ring[:,0])
-    L = ring[:,0]
+    ring[:, 0] = normalize_lon(ring[:, 0])
+    L = ring[:, 0]
     span_direct = L.max() - L.min()
     L_shift = np.where(L > 180.0, L - 360.0, L)
     span_shift = L_shift.max() - L_shift.min()
@@ -188,10 +191,12 @@ def build_domain_ring(grid_ds):
         ring[:, 0] = L_shift
     return ring
 
+
 def shrink_boundary(points, factor=0.01):
     centroid = np.nanmean(points, axis=0)
     v = points - centroid
     return centroid + (1.0 - factor) * v
+
 
 # Parse command-line arguments
 # Note:
@@ -244,10 +249,10 @@ inside_small = domain_path.contains_points(obs_coords[candidates])
 inside_indices = candidates[inside_small]
 
 # Create a new NetCDF file to store the selected data using the more efficient method
-try:
-    outfile = obs_filename.replace('.nc', '_dc.nc')
-except:
+if '.nc4' in obs_filename:
     outfile = obs_filename.replace('.nc4', '_dc.nc4')
+else:
+    outfile = obs_filename.replace('.nc', '_dc.nc')
 fout = nc.Dataset(outfile, 'w')
 
 # Create dimensions and variables in the new file
@@ -271,22 +276,23 @@ for group in groups:
             vartype = invar.dtype
             fill = invar.getncattr('_FillValue')
             g.createVariable(var, vartype, 'Location', fill_value=fill)
-        except:  # String variables
+        except (TypeError, ValueError):  # String variables
             g.createVariable(var, 'str', 'Location')
         # Make sure lat/lon are not masked
-        if var in ['latitude', 'longitude']: 
+        if var in ['latitude', 'longitude']:
             g.variables[var][:] = invar[:][inside_indices].data
         else:
             g.variables[var][:] = invar[:][inside_indices]
         # Copy attributes for this variable
         for attr in invar.ncattrs():
-            if '_FillValue' in attr: continue
+            if '_FillValue' in attr:
+                continue
             g.variables[var].setncattr(attr, invar.getncattr(attr))
 
 # Finally add global attribute with the settings used to run this domain check
 fout.setncattr('Orig_obs_file', obs_filename)
 fout.setncattr('Grid_file', grid_filename)
-fout.setncattr('Shrink_factor',hull_shrink_factor)
+fout.setncattr('Shrink_factor', hull_shrink_factor)
 
 # Close the datasets
 obs_ds.close()
