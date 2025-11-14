@@ -38,3 +38,11 @@ ${HOMErrfs}/scripts/exrrfs_fsm.sh
 export err=$?; err_chk
 
 exit 0
+
+##################################################
+# Remove the Temporary working directory
+##################################################
+if [ "${KEEPDATA^^}" != YES ]; then
+  cd $DATAROOT
+  rm -rf $DATA
+fi

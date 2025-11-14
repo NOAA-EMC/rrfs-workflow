@@ -43,6 +43,6 @@ postmsg "$msg"
 # Remove the Temporary working directory
 ##################################################
 if [ "${KEEPDATA^^}" != YES ]; then
-  cd $DATAROOT          
+  cd $DATAROOT
   rm -rf $DATA
 fi
