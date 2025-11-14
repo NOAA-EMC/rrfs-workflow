@@ -208,19 +208,16 @@ def shrink_boundary(points, factor=0.01):
 parser = argparse.ArgumentParser()
 parser.add_argument('-g', '--grid', type=str, help='grid file', required=True)
 parser.add_argument('-o', '--obs', type=str, help='ioda observation file', required=True)
-parser.add_argument('-f', '--fig', action='store_true', help='disable figure (default is False)', required=False)
 parser.add_argument('-s', '--shrink', type=float, help='hull shrink factor', required=True)
 args = parser.parse_args()
 
 # Assign filenames
 obs_filename = args.obs
 grid_filename = args.grid  # see note above.
-make_fig = args.fig
 hull_shrink_factor = args.shrink
 
 print(f"Obs file: {obs_filename}")
 print(f"Grid file: {grid_filename}")
-print(f"Figure flag: {args.fig}")
 print(f"Hull shrink factor: {hull_shrink_factor}")
 
 grid_ds = nc.Dataset(grid_filename, 'r')
