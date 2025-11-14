@@ -36,7 +36,6 @@ if os.getenv('REALTIME', 'false').upper() == "TRUE":
     source(f"{HOMErrfs}/workflow/config_resources/config.realtime")
 if os.getenv("DO_CHEMISTRY", "FALSE").upper() == "TRUE":
     source(f"{HOMErrfs}/workflow/config_resources/config.chemistry")
-    shutil.copy(f'{HOMErrfs}/workflow/config_resources/config.chemistry', f'{expdir}/config/config.chemistry')  # save a copy for reference
     if "smoke" in os.getenv('CHEM_GROUPS', 'smoke'):
         CHEM_INPUT = os.getenv('CHEM_INPUT', 'CHEM_INPUT_undefined')
         COMROOT = os.getenv('COMROOT', 'COMROOT_undefined')

@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 #
 import os
-import shutil
 import stat
-from rocoto_funcs.base import header_begin, header_entities, header_end, source, \
+from rocoto_funcs.base import header_begin, header_entities, header_end, \
     wflow_begin, wflow_log, wflow_cycledefs, wflow_end
 from rocoto_funcs.smart_cycledefs import smart_cycledefs
 from rocoto_funcs.ungrib_ic import ungrib_ic
