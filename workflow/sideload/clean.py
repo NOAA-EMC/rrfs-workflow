@@ -60,11 +60,11 @@ def day_clean(srcPath, cyc1, cyc2, srcType, WGF):
 #
 
 
-def group_clean(cdate, clean_hrs, srcBase, srcType, NET, RUN, WGF, rrfs_ver):
+def group_clean(cdate, retention_hrs, srcBase, srcType, NET, RUN, WGF, rrfs_ver):
     clean_back_days = int(os.getenv("CLEAN_BACK_DAYS", "5"))
 
     srcBase = srcBase.rstrip('/')
-    pdate = cdate - timedelta(hours=clean_hrs)  # first cycle to be cleaned
+    pdate = cdate - timedelta(hours=retention_hrs)  # first cycle to be cleaned
     pPDY = pdate.strftime("%Y%m%d")
     pcyc = pdate.strftime("%H")
     #
@@ -124,9 +124,9 @@ if not all(envar.strip() for envar in list_envars):  # if not "all envars are no
 # ----------------------------------------------------------------------
 # get clean-related environmental variables
 #
-stmp_clean_hrs = int(os.getenv("STMP_CLEAN_HRS", "24"))
-com_clean_hrs = int(os.getenv("COM_CLEAN_HRS", "120"))
-log_clean_hrs = int(os.getenv("LOG_CLEAN_HRS", "840"))
+stmp_retention_hrs = int(os.getenv("STMP_RETENTION_HRS", "24"))
+com_retention_hrs = int(os.getenv("COM_RETENTION_HRS", "120"))
+log_retention_hrs = int(os.getenv("LOG_RETENTION_HRS", "840"))
 clean_back_days = int(os.getenv("CLEAN_BACK_DAYS", "5"))
 #
 # ----------------------------------------------------------------------
@@ -134,18 +134,18 @@ clean_back_days = int(os.getenv("CLEAN_BACK_DAYS", "5"))
 #
 cdate = datetime.strptime(f'{PDY}{cyc}', "%Y%m%d%H")
 print(f'cdate={cdate}')
-print(f'stmp_clean_hrs={stmp_clean_hrs}')
-print(f'com_clean_hrs={com_clean_hrs}')
-print(f'log_clean_hrs={log_clean_hrs}')
+print(f'stmp_retention_hrs={stmp_retention_hrs}')
+print(f'com_retention_hrs={com_retention_hrs}')
+print(f'log_retention_hrs={log_retention_hrs}')
 print(f'clean_back_days={clean_back_days}')
 
 print(f'\nclean stmp: {os.path.dirname(DATAROOT)}')
-group_clean(cdate, stmp_clean_hrs, DATAROOT, 'stmp', NET, RUN, WGF, rrfs_ver)
+group_clean(cdate, stmp_retention_hrs, DATAROOT, 'stmp', NET, RUN, WGF, rrfs_ver)
 
 print(f'\nclean com: {COMROOT}')
-group_clean(cdate, com_clean_hrs, COMROOT, 'com', NET, RUN, WGF, rrfs_ver)
+group_clean(cdate, com_retention_hrs, COMROOT, 'com', NET, RUN, WGF, rrfs_ver)
 
 print('\nclean log: ' + COMROOT.rstrip('/') + f'{NET}/{rrfs_ver}/logs')
-group_clean(cdate, log_clean_hrs, COMROOT, 'log', NET, RUN, WGF, rrfs_ver)
+group_clean(cdate, log_retention_hrs, COMROOT, 'log', NET, RUN, WGF, rrfs_ver)
 
 print('\nDone!')

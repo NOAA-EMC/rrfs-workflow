@@ -33,11 +33,9 @@ fi
 
 # DO_CLEAN
 if ${DO_CLEAN:-false} && ! ${REALTIME:-false}; then
-  # when DO_CLEAN is set to true in retros, if STMP_CLEAN_HRS, COM_CLEAN_HRS and LOG_CLEAN_HRS
-  # are not specified, use the following values
-  export STMP_CLEAN_HRS=${STMP_CLEAN_HRS:-24}
-  export COM_CLEAN_HRS=${COM_CLEAN_HRS:-2400}  # 100 days
-  export LOG_CLEAN_HRS=${LOG_CLEAN_HRS:-2400}
+  export STMP_RETENTION_HRS=${STMP_RETENTION_HRS:-24}
+  export COM_RETENTION_HRS=${COM_RETENTION_HRS:-2400}  # 100 days
+  export LOG_RETENTION_HRS=${LOG_RETENTION_HRS:-2400}
 fi
 
 # ioda_bufr
