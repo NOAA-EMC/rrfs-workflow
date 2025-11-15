@@ -4,7 +4,7 @@
 # shellcheck disable=SC2154,SC2153,SC2086
 
 budget_fields=":(WEASD|APCP|NCPCP|ACPCP|SNOD):"
-neighbor_fields=":(NCONCD|NCCICE|SPNCR|CLWMR|CICE|RWMR|SNMR|GRLE|PMTF|PMTC|REFC|CSNOW|CICEP|CFRZR|CRAIN|LAND|ICEC|TMP:surface|VEG|CCOND|SFEXC|MSLMA|PRES:tropopause|LAI|HPBL|HGT:planetary boundary layer):"
+neighbor_fields=":(NCONCD|NCCICE|SPNCR|CLWMR|CICE|RWMR|SNMR|GRLE|PMTF|PMTC|REFC|CSNOW|CICEP|CFRZR|CRAIN|LAND|ICEC|TMP:surface|VEG|CCOND|SFEXC|MSLMA|PRES:tropopause|LAI|HPBL|HGT:planetary boundary layer): "
 grid_specs="lambert:266:25.000000 234.862000:2000:3000.000000 18.281000:1450:3000.000000"
 
 wgrib2 "${GRIBFILE}" -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
