@@ -4,6 +4,7 @@ set -x
 date
 rundir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 HOMErrfs="$(dirname "$rundir")"
+COMPILER=${COMPILER:-intel}
 
 source "${HOMErrfs}/workflow/tools/detect_machine.sh"
 source "${HOMErrfs}/workflow/tools/init.sh"
@@ -20,7 +21,7 @@ fi
 set +x
 module purge                      
 module use "${HOMErrfs}/modulefiles"
-module load "rrfs/${MACHINE}.intel"
+module load "rrfs/${MACHINE}.${COMPILER}"
 module load netcdf
 module list
 set -x

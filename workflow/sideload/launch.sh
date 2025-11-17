@@ -5,7 +5,7 @@
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
 #
-#source ${EXPDIR}/exp.setup
+COMPILER=${COMPILER:-intel}
 # tweaks for non-NCO runs
 COMMAND=$1  #get the J-JOB name
 task_id=${COMMAND#*_} # remove the "JRRFS_" part
@@ -39,7 +39,7 @@ case ${task_id} in
   ioda_bufr)
     module purge
     module use "${HOMErrfs}/sorc/RDASApp/modulefiles"
-    module load "RDAS/${MACHINE}.intel"
+    module load "RDAS/${MACHINE}.${COMPILER}"
     if [[ ${MACHINE} == "wcoss2" ]]; then
       # spack-stack does not include these python modules on wcoss2
       # so we use a workaround of loading an existing python virtual environment
@@ -52,30 +52,30 @@ case ${task_id} in
     ;;
   ungrib)
     module purge
-    module load "rrfs/${MACHINE}.intel"
+    module load "rrfs/${MACHINE}.${COMPILER}"
     module load wgrib2
     ;;
   prep_ic)
     module purge
-    module load "rrfs/${MACHINE}.intel"
+    module load "rrfs/${MACHINE}.${COMPILER}"
     module load nco
     ;;
   jedivar|getkf*)
     module purge
     module use "${HOMErrfs}/sorc/RDASApp/modulefiles"
-    module load "RDAS/${MACHINE}.intel"
+    module load "RDAS/${MACHINE}.${COMPILER}"
     export LD_LIBRARY_PATH=${HOMErrfs}/sorc/RDASApp/build/lib64:${LD_LIBRARY_PATH}
     ;;
   ioda_mrms_refl)
     module purge
     module use "${HOMErrfs}/sorc/RDASApp/modulefiles"
-    module load "RDAS/${MACHINE}.intel"
+    module load "RDAS/${MACHINE}.${COMPILER}"
     export LD_LIBRARY_PATH=${HOMErrfs}/sorc/RDASApp/build/lib64:${LD_LIBRARY_PATH}
     ;;
   nonvar_bufrobs|nonvar_reflobs|nonvar_cldana)
     module purge
     module use "${HOMErrfs}/sorc/RRFS_UTILS/modulefiles"
-    module load "build_${MACHINE}_intel"
+    module load "build_${MACHINE}_${COMPILER}"
     ;;
   mpassit)
     module purge
@@ -83,7 +83,7 @@ case ${task_id} in
     if [[ ${MACHINE} == "ursa" ]]; then
       module load "build.${MACHINE}.intel-llvm"
     else
-      module load "build.${MACHINE}.intel"
+      module load "build.${MACHINE}.${COMPILER}"
     fi
     ;;
   upp)
@@ -92,27 +92,27 @@ case ${task_id} in
     if [[ ${MACHINE} == "wcoss2" ]]; then
       # need to unset module versions sourced earlier and load a couple more
       source "${HOMErrfs}/versions/unset.ver"
-      module load "${MACHINE}_intel"
+      module load "${MACHINE}_${COMPILER}"
       module load libjpeg/9c
       module load libfabric/1.20.1
     else
-      module load "${MACHINE}_intel"
+      module load "${MACHINE}_${COMPILER}"
     fi
     ;;
   recenter)
     module purge
     module use "${HOMErrfs}/sorc/RRFS_UTILS/modulefiles"
-    module load "build_${MACHINE}_intel"
-    module load "rrfs/${MACHINE}.intel"
+    module load "build_${MACHINE}_${COMPILER}"
+    module load "rrfs/${MACHINE}.${COMPILER}"
     ;;
   ensmean)
     module purge
-    module load "rrfs/${MACHINE}.intel"
+    module load "rrfs/${MACHINE}.${COMPILER}"
     module load nco
     ;;
   *)
     module purge
-    module load "rrfs/${MACHINE}.intel"
+    module load "rrfs/${MACHINE}.${COMPILER}"
     module load nco
     ;;
 esac
