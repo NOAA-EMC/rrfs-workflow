@@ -38,7 +38,7 @@ BUILD_JOBS=8
 #     -DCMAKE_EXE_LINKER_FLAGS_RELEASE="-O3" \
 #     -DCMAKE_MODULE_LINKER_FLAGS_RELEASE="-O3" \
 #     -DCMAKE_SHARED_LINKER_FLAGS_RELEASE="-O3" \
-cmake -DCMAKE_Fortran_FLAGS_RELEASE="-O0 -convert big_endian -free -align array64byte" \
+cmake -DCMAKE_Fortran_FLAGS_RELEASE="-O3 -convert big_endian -free -align array64byte" \
       -DMPAS_DOUBLE_PRECISION=OFF \
       -DMPAS_CORES="init_atmosphere;atmosphere" ..
 make -j "${BUILD_JOBS}"
