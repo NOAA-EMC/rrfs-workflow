@@ -166,9 +166,6 @@ else
   BKTYPE=1              # cold start
 fi
 
-if [[ ${BKTYPE} == 1 ]]; then #coldstart
-  DA_SYSTEM="$DA_SYSTEM_COLD"
-fi
 echo "DA_SYSTEM: $DA_SYSTEM"
 case "$DA_SYSTEM" in
   GSI)
