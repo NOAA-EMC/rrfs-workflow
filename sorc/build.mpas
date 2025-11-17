@@ -8,26 +8,15 @@ HOMErrfs="$(dirname "$rundir")"
 source "${HOMErrfs}/workflow/tools/detect_machine.sh"
 source "${HOMErrfs}/workflow/tools/init.sh"
 
-EXEC="${HOMErrfs}/sorc/MPAS-Model/init_atmosphere_model"
-EXEC2="${HOMErrfs}/sorc/MPAS-Model/atmosphere_model"
+EXEC="${HOMErrfs}/sorc/MPAS-Model/build/bin/mpas_init_atmosphere"
+EXEC2="${HOMErrfs}/sorc/MPAS-Model/build/bin/mpas_atmosphere"
 
-compiler_str="intel-mpi"
 case "${MACHINE}" in
   wcoss2)
     BUILD_VERSION_FILE="${HOMErrfs}/versions/build.ver"
     if [[ -f "${BUILD_VERSION_FILE}" ]]; then
       source "${BUILD_VERSION_FILE}"
     fi
-    compiler_str="ftn-wcoss2"
-    ;;
-  derecho)
-    compiler_str="ifort"
-    ;;
-  ursa|orion|hercules|jet|hera)
-    compiler_str="intel-mpi-ursa"
-    ;;
-  gaeac6)
-    compiler_str="ifort_icx"
     ;;
 esac
 
@@ -37,10 +26,22 @@ module load "rrfs/${MACHINE}.intel"
 module list
 
 cd "${HOMErrfs}/sorc/MPAS-Model" || exit 1
-make clean CORE=init_atmosphere
-make -j8 "${compiler_str}" CORE=init_atmosphere PRECISION=single
-make clean CORE=atmosphere
-make -j8 "${compiler_str}" CORE=atmosphere PRECISION=single
+rm -rf build
+mkdir -p build
+cd build || exit 1
+
+BUILD_JOBS=8
+#
+# list of possible future optimization options, -xHost, -fast, -fp-model fast=2, etc
+# -DCMAKE_INTERPROCEDURAL_OPTIMIZATION is to set `-ipo`
+#     -DCMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE=TRUE \
+#     -DCMAKE_EXE_LINKER_FLAGS_RELEASE="-O3" \
+#     -DCMAKE_MODULE_LINKER_FLAGS_RELEASE="-O3" \
+#     -DCMAKE_SHARED_LINKER_FLAGS_RELEASE="-O3" \
+cmake -DCMAKE_Fortran_FLAGS_RELEASE="-O0 -convert big_endian -free -align array64byte" \
+      -DMPAS_DOUBLE_PRECISION=OFF \
+      -DMPAS_CORES="init_atmosphere;atmosphere" ..
+make -j "${BUILD_JOBS}"
 
 mkdir -p "${HOMErrfs}/exec"
 echo "copy ${EXEC} to ../exec/init_atmosphere_model.x"
