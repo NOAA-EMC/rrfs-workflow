@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC1090,1091
+set -x
+date
+rundir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+HOMErrfs="$(dirname "$rundir")"
+COMPILER=${COMPILER:-intel}
+
+source "${HOMErrfs}/workflow/tools/detect_machine.sh"
+source "${HOMErrfs}/workflow/tools/init.sh"
+
+EXEC="${HOMErrfs}/sorc/MPAS-Model/init_atmosphere_model"
+EXEC2="${HOMErrfs}/sorc/MPAS-Model/atmosphere_model"
+
+compiler_str="intel-mpi"
+case "${MACHINE}" in
+  wcoss2)
+    BUILD_VERSION_FILE="${HOMErrfs}/versions/build.ver"
+    if [[ -f "${BUILD_VERSION_FILE}" ]]; then
+      source "${BUILD_VERSION_FILE}"
+    fi
+    compiler_str="ftn-wcoss2"
+    ;;
+  derecho)
+    compiler_str="ifort"
+    ;;
+  ursa|orion|hercules|jet|hera)
+    compiler_str="intel-mpi-ursa"
+    ;;
+  gaeac6)
+    compiler_str="ifort_icx"
+    ;;
+esac
+
+module purge                      
+module use "${HOMErrfs}/modulefiles"
+module load "rrfs/${MACHINE}.${COMPILER}"
+module list
+
+cd "${HOMErrfs}/sorc/MPAS-Model" || exit 1
+make clean CORE=init_atmosphere
+make -j8 "${compiler_str}" CORE=init_atmosphere PRECISION=single
+make clean CORE=atmosphere
+make -j8 "${compiler_str}" CORE=atmosphere PRECISION=single
+
+mkdir -p "${HOMErrfs}/exec"
+echo "copy ${EXEC} to ../exec/init_atmosphere_model.x"
+cp "${EXEC}"  "${HOMErrfs}/exec/init_atmosphere_model.x"
+echo "copy ${EXEC2} to ../exec/atmosphere_model.x"
+cp "${EXEC2}"  "${HOMErrfs}/exec/atmosphere_model.x"
+exit 0
