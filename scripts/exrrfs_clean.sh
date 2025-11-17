@@ -18,13 +18,13 @@ CDATE=${CDATE:-${PDY}${cyc}}
 #-----------------------------------------------------------------------
 # Remove this session before NCO code delivery
 # Clean up the COM
-# Keep all COM for the past 12 hours then clean up all files on the 13th cycle
+# Keep all COM for the past 9 hours then clean up all files on the 10th cycle
 #   with exception of analysis and grib2 files
 #-----------------------------------------------------------------------
 [[ -f ${DATA}/data_clean_com.sh ]]&& rm -f ${DATA}/data_clean_com.sh
 echo "set -x" &> ${DATA}/data_clean_com.sh
-target_cleanup_pdy=$($NDATE -13 ${CDATE} | cut -c1-8)
-target_cleanup_cyc=$($NDATE -13 ${CDATE} | cut -c9-10)
+target_cleanup_pdy=$($NDATE -10 ${CDATE} | cut -c1-8)
+target_cleanup_cyc=$($NDATE -10 ${CDATE} | cut -c9-10)
 [[ -z ${COMrrfs} ]]&& exit 0
 cd ${COMrrfs}
 for wgf_run in rrfs enkfrrfs; do
