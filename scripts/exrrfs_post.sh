@@ -470,7 +470,7 @@ fi # PRSLEV test
 export pgm="dpt2m_post.exe"
 . prep_step
 
-$EXECrrfs/$pgm NATLEV.GrbF${post_fhr} DPT2M.GrbF${post_fhr} >>$pgmout 2>errfile
+$EXECrrfs/$pgm PRSLEV.GrbF${post_fhr} DPT2M.GrbF${post_fhr} >>$pgmout 2>errfile
 export err=$?; err_chk
 
 cat NBMFLD.GrbF${post_fhr} DPT2M.GrbF${post_fhr} > NBMFLD_new.GrbF${post_fhr} 
