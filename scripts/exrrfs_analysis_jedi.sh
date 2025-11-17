@@ -500,8 +500,8 @@ cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/mgbf_p196_14x14.nml .
 #
 #-----------------------------------------------------------------------
 #
-if [ ${BKTYPE} -eq 1 ]; then
-  echo "JEDI can't do cold start yet -- do early clean exit"
+if [ ${DO_DACOLD} = "FALSE" ]; then
+  echo "Not performing DA for cold cycles - do early clean exit"
   exit 0
 fi
 #export OOPS_TRACE=1

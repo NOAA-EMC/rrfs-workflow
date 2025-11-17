@@ -2590,7 +2590,7 @@ DO_IODA_BUFR="FALSE"
 #
 DO_JEDIVAR="FALSE"
 DA_SYSTEM="GSI"
-DA_SYSTEM_COLD="GSI"
+DO_DACOLD="NO"
 #
 #-----------------------------------------------------------------------
 #

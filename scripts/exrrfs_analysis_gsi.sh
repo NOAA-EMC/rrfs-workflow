@@ -1029,6 +1029,10 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
+if [ ${DO_DACOLD} = "FALSE" ]; then
+  echo "Not performing DA for cold cycles - do early clean exit"
+  exit 0
+fi
 if [[ ${gsi_type} == "ANALYSIS" && ${anav_type} == "AERO" ]]; then
   gsi_exec="${EXECdir}/gsi.x.sd"
 else
