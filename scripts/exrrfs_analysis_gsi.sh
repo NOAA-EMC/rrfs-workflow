@@ -132,12 +132,12 @@ AIR_REJECT_FN=$(date +%Y%m%d -d "${START_DATE} -1 day")_rejects.txt
 #
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 regional_ensemble_option=${regional_ensemble_option:-"5"}
-
-if [ "${MEM_TYPE}" = "MEAN" ]; then
-  bkpath=${FORECAST_INPUT_PRODUCT}
-else
-  bkpath=${FORECAST_INPUT_PRODUCT}
-fi
+bkpath=${FORECAST_INPUT_PRODUCT}
+#if [ "${MEM_TYPE}" = "MEAN" ]; then
+#  bkpath=${FORECAST_INPUT_PRODUCT}
+#else
+#  bkpath=${FORECAST_INPUT_PRODUCT}
+#fi
 
 # decide background type
 if [ -r "${bkpath}/coupler.res" ]; then
@@ -209,8 +209,19 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
     regional_ensemble_option=1
     l_both_fv3sar_gfs_ens=.false.
   else
-    cat ${DATA}/parallel_copy.sh | parallel --verbose
-    sleep 3
+    poe_script=parallel_copy.sh
+    export MP_CMDFILE=${poe_script}
+    launcher="time mpiexec -np 128 --cpu-bind core cfp"
+    $launcher $MP_CMDFILE
+    export err=$?; err_chk
+
+#    split -l 10 parallel_copy.sh parallel_copy_run
+#    for file_to_p_copy in parallel_copy_run*; do
+#       echo "Working on ${file_to_p_copy}"
+#       cat ${file_to_p_copy} | parallel --verbose --halt-on-error 1
+#       export err=$?; err_chk
+#       sleep 6 
+#    done
   fi
 fi
 #
@@ -970,6 +981,7 @@ export pgm="gsi.x"
 
 $APRUN ./$pgm < gsiparm.anl >>$pgmout 2>errfile
 export err=$?; err_chk
+
 cpreq -p $pgmout $COMOUT/rrfs.t${HH}z.gsiout.tm00
 cpreq -p $pgmout rrfs.t${HH}z.gsiout.tm00
 
