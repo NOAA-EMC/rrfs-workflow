@@ -40,6 +40,7 @@ Workflow task names.
 <!ENTITY RUN_POST_TN             "{{ run_post_tn }}">
 <!ENTITY RUN_PRDGEN_TN           "{{ run_prdgen_tn }}">
 <!ENTITY RUN_BUFRSND_TN          "{{ run_bufrsnd_tn }}">
+<!ENTITY ARCHIVE_RETRO_TN        "{{ archive_retro }}">
 <!ENTITY ANALYSIS_JEDI_TN        "{{ analysis_jedi }}">
 <!ENTITY ANALYSIS_GSI_TN         "{{ analysis_gsi }}">
 <!ENTITY ANALYSIS_GSIDIAG_TN     "{{ analysis_gsidiag }}">
@@ -191,6 +192,7 @@ define resources used for each tasks
 <!ENTITY RESOURCES_MAKE_ICS     "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}:tpp={{ tpp_make_ics }}</nodes>">
 <!ENTITY RESOURCES_BLEND_ICS    "<nodes>{{ nnodes_blend_ics }}:ppn={{ ppn_blend_ics }}</nodes>">
 <!ENTITY RESOURCES_MAKE_LBCS    "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}:tpp={{ tpp_make_lbcs }}</nodes>">
+<!ENTITY RESOURCES_ARCHIVE_RETRO "<nodes>{{ nnodes_run_archive_retro }}:ppn={{ ppn_run_archive_retro }}:tpp={{ tpp_run_archive_retro }}</nodes>">
 <!ENTITY RESOURCES_ANALYSIS_JEDI "<nodes>{{ nnodes_run_analysis_jedi }}:ppn={{ ppn_run_analysis_jedi }}:tpp={{ tpp_run_analysis_jedi }}</nodes>">
 <!ENTITY RESOURCES_ANALYSIS_GSI "<nodes>{{ nnodes_run_analysis }}:ppn={{ ppn_run_analysis }}:tpp={{ tpp_run_analysis }}</nodes>">
 <!ENTITY RESOURCES_FCST_SPINUP  "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}:tpp={{ tpp_run_fcst }}</nodes>">
@@ -290,6 +292,7 @@ define resources used for each tasks
 <!ENTITY WALLTIME_MAKE_ICS        "{{ wtime_make_ics }}">
 <!ENTITY WALLTIME_BLEND_ICS       "{{ wtime_blend_ics }}">
 <!ENTITY WALLTIME_MAKE_LBCS       "{{ wtime_make_lbcs }}">
+<!ENTITY WALLTIME_RUN_ARCHIVE_RETRO    "{{ wtime_run_archive_retro }}">
 <!ENTITY WALLTIME_ANALYSIS_JEDI    "{{ wtime_run_analysis }}">
 <!ENTITY WALLTIME_ANALYSIS_GSI    "{{ wtime_run_analysis }}">
 <!ENTITY WALLTIME_FCST_SPINUP     "{{ wtime_run_fcst_spinup }}">
@@ -4006,6 +4009,70 @@ MODULES_RUN_TASK_FP script.
 {%- endif %}
 
 {%- if machine in ["WCOSS2"]  %}
+{%- if do_archive_retro and do_retro %}
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&ARCHIVE_RETRO_TN;" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_run_archive_retro }}">
+
+    &RSRV_HPSS;
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&ARCHIVE_RETRO_TN;" "&JOBSdir;/JRRFS_ARCHIVE_RETRO"</command>
+    &RESOURCES_ARCHIVE_RETRO;
+    <walltime>&WALLTIME_RUN_ARCHIVE_RETRO;</walltime>
+    <jobname>&TAG;_&ARCHIVE_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&ARCHIVE_TN;_&TAG;_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_ROOT</name><value><cyclestr>&CYCLE_BASEDIR;</cyclestr></value></envar>
+    <envar><name>CYCLE_TYPE</name><value><cyclestr>prod</cyclestr></value></envar>
+    <dependency>
+
+       <or>
+          <and>
+            <or>
+             <streq><left>00</left><right><cyclestr>@H</cyclestr></right></streq>
+             <streq><left>12</left><right><cyclestr>@H</cyclestr></right></streq>
+            </or>
+            <taskdep task="&RUN_PRDGEN_TN;_f012_long"/>
+          </and>
+          <and>
+            <or>
+              <streq><left>01</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>02</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>03</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>04</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>05</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>06</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>07</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>08</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>09</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>10</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>11</left><right><cyclestr>@H</cyclestr></right></streq>
+
+              <streq><left>13</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>14</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>15</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>16</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>17</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>18</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>19</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>20</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>21</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>22</left><right><cyclestr>@H</cyclestr></right></streq>
+              <streq><left>23</left><right><cyclestr>@H</cyclestr></right></streq>
+            </or>
+            <taskdep task="&RUN_PRDGEN_TN;_f003"/>
+          </and>
+       </or>
+    </dependency>
+
+  </task>
+{%- else %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -4060,6 +4127,7 @@ MODULES_RUN_TASK_FP script.
     </dependency>
 
   </task>
+{%- endif %}
 {%- endif %}
 
 {% if do_ensemble and do_ens_graphics %}
