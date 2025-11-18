@@ -9,7 +9,6 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
-echo "ARCHIVE RETRO.... EXITING!!!"
 #
 #-----------------------------------------------------------------------
 #
@@ -71,65 +70,6 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-# Set environment.
-#
-#-----------------------------------------------------------------------
-#
-ulimit -s unlimited
-ulimit -v unlimited
-ulimit -a
-export OOPS_TRACE=0
-export LD_LIBRARY_PATH="${RDASAPP_DIR}/build/lib64:${LD_LIBRARY_PATH}"
-
-case $MACHINE in
-#
-"WCOSS2")
-  export FI_OFI_RXM_SAR_LIMIT=3145728
-  export OMP_STACKSIZE=500M
-  export OMP_NUM_THREADS=${TPP_RUN_ARCHIVE_RETRO}
-  ncores=$(( NNODES_RUN_ARCHIVE_RETRO*PPN_RUN_ARCHIVE_RETRO))
-  APRUN="mpirun -n ${NNODES_RUN_ARCHIVE_RETRO} -ppn ${PPN_RUN_ARCHIVE_RETRO} --cpu-bind core --depth 1"
-  APRUN=""
-  ;;
-#
-"HERA")
-  APRUN="srun"
-  ;;
-  #
-"GAEA")
-  APRUN="srun"
-  ;;
-#
-"JET")
-  APRUN="srun"
-  ;;
-#
-"ORION")
-  APRUN="srun"
-  ;;
-#
-esac
-#
-#-----------------------------------------------------------------------
-#
-# Extract from CDATE the starting year, month, day, and hour of the
-# forecast.  These are needed below for various operations.
-#
-#-----------------------------------------------------------------------
-#
-START_DATE=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
-
-YYYYMMDDHH=$(date +%Y%m%d%H -d "${START_DATE}")
-JJJ=$(date +%j -d "${START_DATE}")
-
-YYYY=${YYYYMMDDHH:0:4}
-MM=${YYYYMMDDHH:4:2}
-DD=${YYYYMMDDHH:6:2}
-HH=${YYYYMMDDHH:8:2}
-YYYYMMDD=${YYYYMMDDHH:0:8}
-#
-#-----------------------------------------------------------------------
-#
 # Archive data for MATS verification to HPSS.
 #
 #-----------------------------------------------------------------------
@@ -146,7 +86,7 @@ htar -cvf "${ARCHIVEDIR}/rrfs.${PDY}/${cyc}.tar" "${cyc}"
 #
 print_info_msg "
 ========================================================================
-PREPBUFR PROCESS completed successfully!!!
+ARCHIVE PROCESS completed successfully!!!
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
