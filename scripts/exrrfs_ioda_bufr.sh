@@ -250,11 +250,8 @@ cp -p ${FIX_JEDI}/ioda_empty.nc ioda_adpupa.nc
 # Satellite Radiance
 
 #1 ABI GSRCSR
-ln -sf abibufr "rap.t${cyc}z.gsrcsr.tm00.bufr_d"
-workdir=`pwd`
-./run_bufr2ioda_gsrcsr.sh "${CDATE}" rap "${workdir}" "${workdir}" "${workdir}" "${RDASAPP_DIR}"
-cp "rap.t${cyc}z.abi_g16.tm00.nc" "ioda_abi_g16.nc"
-cp "rap.t${cyc}z.abi_g18.tm00.nc" "ioda_abi_g18.nc"
+./gen_bufr2ioda_json.py -t bufr2ioda_gsrcsr.json -o bufr2ioda_gsrcsr_0.json
+./bufr2ioda_gsrcsr.py -c bufr2ioda_gsrcsr_0.json >> $pgmout
 
 #2 ATMS
 cp "${FIX_JEDI}/atms_beamwidth.txt" .
