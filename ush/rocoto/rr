@@ -6,4 +6,8 @@ taskname=$2
 echo "$cyctime"
 echo "$taskname"
 
-rocotorewind -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -c "$cyctime" -t "$taskname"
+if [[ $taskname == "" ]]; then
+  rocotorewind -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -c "$cyctime" -a
+else
+  rocotorewind -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -c "$cyctime" -t "$taskname"
+fi
