@@ -77,8 +77,6 @@ export archworkdir="${CYCLE_DIR}/archive_retro${archworkname}"
 rm -fr ${archworkdir}
 mkdir -p ${archworkdir}
 cd ${archworkdir}
-#echo "$COMOUT_BASEDIR"
-#/lfs/h2/emc/ptmp/donald.e.lippi/May2024_retro/v0.8.6/rrfs_conus_13km.20251114.dev-sci/prod/rrfs.20240506/00
 #
 #-----------------------------------------------------------------------
 #
