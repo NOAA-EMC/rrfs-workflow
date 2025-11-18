@@ -73,6 +73,7 @@ cat << EOF > namelist.lightning
   trange_end=10,
   obs_type = "bufr",
   proj_name = '${NONVAR_PROJ_NAME}',
+  search_rad = ${NONVAR_SEARCH_RAD},
   debug=0
  /
 EOF
