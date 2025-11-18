@@ -583,7 +583,7 @@ cp analysis_jedi.fv_tracer.res.nc   ${bkpath}/fv_tracer.res.tile1.nc
 #cp analysis_jedi.coupler.res        ${bkpath}/coupler.res
 
 # Save the Jdiag files for diagnostic tools
-cp jdiag/* ${COMOUT}
+cp jdiag* ${COMOUT}
 
 # touch a file in INPUT.jedi its clear if jedi/gsi analysis restarts were used
 touch ${bkpath}/jedi
