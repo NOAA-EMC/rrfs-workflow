@@ -4,7 +4,7 @@
 #PBS -q %QUEUE%
 #PBS -A %PROJ%-%PROJENVIR%
 #PBS -l walltime=00:30:00
-#PBS -l place=vscatter:shared,select=1:mpiprocs=8:ncpus=8:mem=20G
+#PBS -l place=vscatter:shared,select=1:mpiprocs=8:ncpus=8:mem=260G
 #PBS -l debug=true
 
 model=rrfs
