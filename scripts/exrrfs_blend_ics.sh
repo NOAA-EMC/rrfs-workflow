@@ -121,16 +121,27 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
 
   # Loop through each ensemble member and check if the 1h RRFS EnKF files exist
   #### Check NUM_ENS_MEMBERS for all WGF case to remove thie for loop dead code
-  for imem in $(seq 1 ${NUM_ENS_MEMBERS}); do
-      checkfile="${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
-      if [[ -f $checkfile ]]; then
-          ((existing_files++))
-          echo "checkfile count: $existing_files"
-      else
-          echo "File missing: $checkfile"
-      fi
+  wait_for_restart_file=YES
+  while [[ $wait_for_restart_file = "YES" ]] ; do
+    for imem in $(seq 1 ${NUM_ENS_MEMBERS}); do
+        checkfile="${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
+        if [[ -f $checkfile ]]; then
+            ((existing_files++))
+            echo "checkfile count: $existing_files"
+        else
+            if [[ -f $checkfile ]]; then
+              ((existing_files++))
+              echo "RESTART file from previous cycle has become available"
+            else
+              echo "File missing: $checkfile"
+            fi
+        fi
+    done
+    if [ ! $existing_files -eq ${NUM_ENS_MEMBERS} ]; then
+      sleep 180
+    fi
+    wait_for_restart_file=NO
   done
-
   # Check if the number of existing files is equal to the total number of ensemble members
   if [[ $existing_files -eq ${NUM_ENS_MEMBERS} ]]; then
       # Check if run_blending file exists, and if not, touch it

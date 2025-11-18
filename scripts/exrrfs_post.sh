@@ -293,6 +293,19 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+# If this is a subhourly post job, use the subhourly post resources
+# defined in workflow.conf - fewer nodes/cores needed.
+#
+#-----------------------------------------------------------------------
+#
+if [ $post_min = 15 -o $post_min = 30 -o $post_min = 45 ]; then 
+  export OMP_NUM_THREADS=${TPP_POST_SUBH}
+  ncores=$(( NNODES_POST_SUBH*PPN_POST_SUBH))
+  APRUN="mpiexec -n ${ncores} -ppn ${PPN_POST_SUBH} --cpu-bind core --depth ${OMP_NUM_THREADS}"
+fi
+#
+#-----------------------------------------------------------------------
+#
 # Run the post-processor.
 #
 #-----------------------------------------------------------------------
@@ -452,12 +465,23 @@ if [ -f PRSLEV.GrbF${post_fhr} ]; then
   fi # SUB_GEN=1 test
 fi # PRSLEV test
 
+# post process 2m dew point for NBM - this is needed for RRFS (det) and REFS (ensf)
+if [ $WGF = "det" ] || [ $WGF = "ensf" ]; then
+  export pgm="dpt2m_post.exe"
+  . prep_step
+
+  $EXECrrfs/$pgm PRSLEV.GrbF${post_fhr} DPT2M.GrbF${post_fhr} >>$pgmout 2>errfile
+  export err=$?; err_chk
+
+  cat NBMFLD.GrbF${post_fhr} DPT2M.GrbF${post_fhr} > NBMFLD_new.GrbF${post_fhr}
+fi
+
 if [ -f NATLEV.GrbF${post_fhr} ]; then
   wgrib2 NATLEV.GrbF${post_fhr} -set center 7 -grib ${natlev} >>$pgmout 2>>errfile
 fi
 
-if [ -f NBMFLD.GrbF${post_fhr} ]; then
-  wgrib2 NBMFLD.GrbF${post_fhr} -set center 7 -grib ${nbmfld} >>$pgmout 2>>errfile
+if [ -f NBMFLD_new.GrbF${post_fhr} ]; then
+  wgrib2 NBMFLD_new.GrbF${post_fhr} -set center 7 -grib ${nbmfld} >>$pgmout 2>>errfile
 fi
 #
 #-----------------------------------------------------------------------
@@ -472,6 +496,11 @@ fi
 # NBMFLD file is only generated for RRFS and REFS
 if [[ -f ${nbmfld} ]]; then
   cpreq -p ${nbmfld} ${COMOUT}
+  if [ ${DO_ENSFCST} = "TRUE" ]; then
+    wgrib2 ${nbmfld} -s > ${COMOUT}/${net4}.t${cyc}z.${mem_num}.nbmfld.${gridspacing}.f${fhr}.${gridname}.grib2.idx
+  else
+    wgrib2 ${nbmfld} -s > ${COMOUT}/${net4}.t${cyc}z.nbmfld.${gridspacing}.f${fhr}.${gridname}.grib2.idx
+  fi
 fi
 
 # Only one latlons_corners file per cycle is needed in COMOUT - make this change later

@@ -6,14 +6,12 @@ load(pathJoin("prod_util", os.getenv("prod_util_ver")))
 load(pathJoin("cray-mpich", os.getenv("cray_mpich_ver")))
 load(pathJoin("cray-pals", os.getenv("cray_pals_ver")))
 
-prepend_path("MODULEPATH", os.getenv("modulepath_compiler"))
-prepend_path("MODULEPATH", os.getenv("modulepath_mpi"))
-
 load(pathJoin("jasper", os.getenv("jasper_ver")))
 load(pathJoin("zlib", os.getenv("zlib_ver")))
 load(pathJoin("libpng", os.getenv("libpng_ver")))
-load(pathJoin("hdf5", os.getenv("hdf5_ver")))
-load(pathJoin("netcdf", os.getenv("netcdf_ver")))
+load(pathJoin("hdf5-D", os.getenv("hdf5_ver")))
+load(pathJoin("netcdf-D", os.getenv("netcdf_ver")))
+load(pathJoin("pnetcdf-D", os.getenv("pnetcdf_ver")))
 
 load(pathJoin("bacio", os.getenv("bacio_ver")))
 load(pathJoin("ip", os.getenv("ip_ver")))
