@@ -119,9 +119,7 @@ export err=$?; err_chk
 if [ -e "$pgmout" ]; then
   cat $pgmout
 fi
-if [ "${KEEPDATA}" != "YES" ]; then
-   rm -rf ${DATA}
-fi
+
 #-----------------------------------------------------------------------
 # Print exit message.
 #-----------------------------------------------------------------------
@@ -131,3 +129,11 @@ print_info_msg "
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
+
+##################################################
+# Remove the Temporary working directory
+##################################################
+if [ "${KEEPDATA^^}" != YES ]; then
+  cd $DATAROOT
+  rm -rf $DATA
+fi
