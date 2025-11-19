@@ -75,8 +75,12 @@ print_input_args valid_args
 #-----------------------------------------------------------------------
 #
 hsi "mkdir -p $ARCHIVEDIR/rrfs.${PDY}"
+export err=$?; err_chk
+
 cd "${COMOUT_BASEDIR}/rrfs.${PDY}"
-htar -cvf "${ARCHIVEDIR}/rrfs.${PDY}/${cyc}.tar" "${cyc}"
+
+htar -cvf "${ARCHIVEDIR}/rrfs.${PDY}/${cyc}.tar" "${cyc}" >>$pgmout
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
