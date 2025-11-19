@@ -157,9 +157,9 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-cp ${OBSPATH}/${YYYYMMDDHH}.rap.t${HH}z.satwnd.tm00.bufr_d satwndbufr
-cp "${OBSPATH}/${YYYYMMDDHH}.rap.t${HH}z.gsrcsr.tm00.bufr_d" abibufr
-cp "${OBSPATH}/${YYYYMMDDHH}.rap.t${HH}z.atms.tm00.bufr_d" atmsbufr
+cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.satwnd.tm00.bufr_d" satwndbufr
+cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.gsrcsr.tm00.bufr_d" abibufr
+cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.atms.tm00.bufr_d" atmsbufr
 #
 #-----------------------------------------------------------------------
 #
