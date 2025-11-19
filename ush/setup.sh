@@ -515,6 +515,7 @@ optionList[31]=EBB_DCYCLE
 optionList[32]=PREP_MODEL_FOR_FED
 optionList[33]=DA_SYSTEM
 optionList[34]=DO_DACOLD
+optionList[35]=DO_ARCHIVE_RETRO
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));
