@@ -4038,6 +4038,18 @@ MODULES_RUN_TASK_FP script.
              <streq><left>00</left><right><cyclestr>@H</cyclestr></right></streq>
              <streq><left>12</left><right><cyclestr>@H</cyclestr></right></streq>
             </or>
+            <taskdep task="&RUN_PRDGEN_TN;_f000_long"/>
+            <taskdep task="&RUN_PRDGEN_TN;_f001_long"/>
+            <taskdep task="&RUN_PRDGEN_TN;_f002_long"/>
+            <taskdep task="&RUN_PRDGEN_TN;_f003_long"/>
+            <taskdep task="&RUN_PRDGEN_TN;_f004_long"/>
+            <taskdep task="&RUN_PRDGEN_TN;_f005_long"/>
+            <taskdep task="&RUN_PRDGEN_TN;_f006_long"/>
+            <taskdep task="&RUN_PRDGEN_TN;_f007_long"/>
+            <taskdep task="&RUN_PRDGEN_TN;_f008_long"/>
+            <taskdep task="&RUN_PRDGEN_TN;_f009_long"/>
+            <taskdep task="&RUN_PRDGEN_TN;_f010_long"/>
+            <taskdep task="&RUN_PRDGEN_TN;_f011_long"/>
             <taskdep task="&RUN_PRDGEN_TN;_f012_long"/>
           </and>
           <and>
@@ -4066,6 +4078,9 @@ MODULES_RUN_TASK_FP script.
               <streq><left>22</left><right><cyclestr>@H</cyclestr></right></streq>
               <streq><left>23</left><right><cyclestr>@H</cyclestr></right></streq>
             </or>
+            <taskdep task="&RUN_PRDGEN_TN;_f000"/>
+            <taskdep task="&RUN_PRDGEN_TN;_f001"/>
+            <taskdep task="&RUN_PRDGEN_TN;_f002"/>
             <taskdep task="&RUN_PRDGEN_TN;_f003"/>
           </and>
        </or>
