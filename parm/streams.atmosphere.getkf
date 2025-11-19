@@ -23,6 +23,7 @@
         io_type="pnetcdf,cdf5"
         filename_template="foo2.nc"
         output_interval="none"
+        gattr_update="no"
         clobber_mode="overwrite">
         <file name="stream_list/stream_list.atmosphere.analysis"/>
 </stream>

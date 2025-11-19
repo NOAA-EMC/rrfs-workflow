@@ -19,14 +19,12 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     # Task-specific EnVars beyond the task_common_vars
     extrn_mdl_source = os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined')
     fcst_len_hrs_cycles = os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
-    fcst_length = os.getenv('FCST_LENGTH', '1')
     lbc_interval = os.getenv('LBC_INTERVAL', '3')
     history_interval = os.getenv('HISTORY_INTERVAL', '1')
     restart_interval = os.getenv('RESTART_INTERVAL', '9999')
     physics_suite = os.getenv('PHYSICS_SUITE', 'PHYSICS_SUITE_not_defined')
     dcTaskEnv = {
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
-        'FCST_LENGTH': f'{fcst_length}',
         'LBC_INTERVAL': f'{lbc_interval}',
         'HISTORY_INTERVAL': f'{history_interval}',
         'RESTART_INTERVAL': f'{restart_interval}',
@@ -38,6 +36,13 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     }
     if do_spinup:
         dcTaskEnv['DO_SPINUP'] = "TRUE"
+
+    if os.getenv('DO_CHEMISTRY', 'false').lower() == "true":
+        dcTaskEnv['EBB_DCYCLE'] = os.getenv('EBB_DCYCLE', 0)
+        dcTaskEnv['CHEM_GROUPS'] = os.getenv('CHEM_GROUPS', 'smoke')
+        chemdep = '\n<metataskdep metatask="prep_chem"/>'
+    else:
+        chemdep = ""
 
     if not do_ensemble:
         metatask = False
@@ -63,6 +68,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
 </metatask>\n'
         ensindexstr = "_m#ens_index#"
 
+    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
     timedep = ""
     realtime = os.getenv("REALTIME", "false")
@@ -71,13 +77,24 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
 
     jedidep = ""
-    if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
-        if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
-            jedidep = f'<taskdep task="getkf_solver"/>'
-        elif do_spinup:
-            jedidep = f'<taskdep task="jedivar_spinup"/>'
+    cloudana_dep = ""
+    recenterdep = ""
+    if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
+        if do_spinup:
+            cloudana_dep = f'\n<taskdep task="nonvar_cldana_spinup"/>'
         else:
-            jedidep = f'<taskdep task="jedivar"/>'
+            cloudana_dep = f'\n<taskdep task="nonvar_cldana"/>'
+    elif os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
+        if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
+            jedidep = f'\n<taskdep task="getkf_solver"/>'
+        elif do_spinup:
+            jedidep = f'\n<taskdep task="jedivar_spinup"/>'
+        else:
+            jedidep = f'\n<taskdep task="jedivar"/>'
+    else:
+        if os.getenv("DO_RECENTER", "FALSE").upper() == "TRUE":
+            if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
+                recenterdep = f'\n<taskdep task="recenter"/>'
 
     prep_ic_dep = f'<taskdep task="prep_ic{ensindexstr}"/>'
     if do_spinup:
@@ -87,8 +104,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
   <dependency>
   <and>{timedep}
     <taskdep task="prep_lbc{ensindexstr}" cycle_offset="0:00:00"/>
-    {prep_ic_dep}
-    {jedidep}
+    {prep_ic_dep}{jedidep}{chemdep}{cloudana_dep}{recenterdep}
   </and>
   </dependency>'''
 

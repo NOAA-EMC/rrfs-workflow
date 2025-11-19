@@ -19,8 +19,8 @@ def graphics(xmlFile, expdir):
 
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
-        'FHR': os.getenv('FCST_LENGTH', '6'),
-        'AREA': '#area#'
+        'FCST_LEN_HRS_CYCLES': os.getenv('FCST_LEN_HRS_CYCLES', '03 03'),
+        'AREA': '#area#',
     }
     task_id = f'{meta_id}_#area#'
 

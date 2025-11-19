@@ -16,6 +16,11 @@ def ic(xmlFile, expdir, do_ensemble=False):
         'PHYSICS_SUITE': f'{physics_suite}',
         'NSOIL_LEVELS': os.getenv('NSOIL_LEVELS', '9'),
     }
+
+    if os.getenv('DO_CHEMISTRY', 'false').lower() == "true":
+        dcTaskEnv['USE_EXTERNAL_CHEM'] = os.getenv('USE_EXTERNAL_CHEM_ICS', 'FALSE').lower()
+        dcTaskEnv['CHEM_GROUPS'] = os.getenv('CHEM_GROUPS', 'smoke')
+
     if not do_ensemble:
         metatask = False
         task_id = f'{meta_id}'
@@ -35,6 +40,7 @@ def ic(xmlFile, expdir, do_ensemble=False):
 </metatask>\n'
         ensindexstr = "_m#ens_index#"
 
+    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
     timedep = ""
     realtime = os.getenv("REALTIME", "false")

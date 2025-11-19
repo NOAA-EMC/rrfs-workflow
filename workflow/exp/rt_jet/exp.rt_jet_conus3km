@@ -11,10 +11,10 @@ export TAG=dev4
 export OPSROOT=/lfs5/BMC/nrtrr/NCO_dirs/${EXP_NAME}
 export EXPDIR=${OPSROOT}/exp/${VERSION}/rrfs${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
-export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
+export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=YES
 #
 export REALTIME=true     # true, false
-export ZETA_LEVELS="L60.txt"
+export ZETA_LEVELS="L65.txt"
 #
 export DO_IODA=true
 export DO_JEDI=true
@@ -43,8 +43,7 @@ export LBC_UNGRIB_GROUP_TOTAL_NUM=2
 export LBC_GROUP_TOTAL_NUM=2
 
 export RETRO_PERIOD="2024052700-2024052800"
-export CYCLEDEF_IC_STEP_HRS=12  # do ic jobs every step hours
-export CYCLEDEF_LBC_STEP_HRS=12 # do lbc jobs every step hours
+export LBC_CYCS="00 06 12 18"  # evenly divide 24 hours, e.g., "00 12", "00 06 12 18", etc
 export COLDSTART_CYCS="00 12"   # cycles to cold start from external models
 export SFC_UPDATE_CYCS=${COLDSTART_CYCS}
 
@@ -54,7 +53,6 @@ export SFC_UPDATE_CYCS=${COLDSTART_CYCS}
 # set as follows to start spinup at 03/15z
 #export DO_SPINUP=true
 #export IC_OFFSET=3
-#export CYCLEDEF_IC_STEP_HRS=12
 #export COLDSTART_CYCS="03 15"
 #export PRODSWITCH_CYCS="09 21"
 #
@@ -71,7 +69,7 @@ export WALLTIME_MPASSIT="2:00:00"
 export WALLTIME_UPP="2:00:00"
 export WALLTIME_JEDIVAR="00:30:00"
 #
-export KEEPDATA=no
+export KEEPDATA=NO
 #
 # local.setup: setup some local options specific to a platform or an experiment
 #

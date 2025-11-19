@@ -10,13 +10,16 @@ export TAG=d12km
 export OPSROOT=/scratch3/BMC/wrfruc/gge/OPSROOT/${EXP_NAME}
 export EXPDIR=${OPSROOT}/exp/rrfs${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
-export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
+export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=YES
 #
-export ZETA_LEVELS="L60.txt"
+export ZETA_LEVELS="L65.txt"
 #
 export DO_IODA=true
 export DO_JEDI=true
+export DO_NONVAR_CLOUD_ANA=false
 export COLDSTART_CYCS_DO_DA=false
+export DO_CHEMISTRY=false
+export DO_CLEAN=true
 export HYB_WGT_ENS=0.0
 export HYB_WGT_STATIC=1.0
 export HYB_ENS_TYPE=1      # 1.rrfs; 2.interpolated GEFS/GDAS; 0.TBD on the fly (rrfs->GDAS->3DVAR)
@@ -29,19 +32,11 @@ export ENS_BEC_LOOK_BACK_HRS=1  # define the hours going back for ensemble forec
 export STATIC_BEC_MODEL="GSIBEC" # the static bec model, GSIBEC and BUMPBEC
 export GSIBEC_X=8 #GSIBEC_X * GSIBEC_Y should match the number of MPI tasks
 export GSIBEC_Y=10
-export GSIBEC_NLAT=252
-export GSIBEC_NLON=420
-export GSIBEC_NORTH_POLE_LAT=128.500001
-export GSIBEC_NORTH_POLE_LON=82.500018
-export GSIBEC_LON_START=-50.033098
-export GSIBEC_LON_END=50.033098
-export GSIBEC_LAT_START=-29.335138
-export GSIBEC_LAT_END=29.335138
 
 export DO_CYC=true
 export CYC_INTERVAL=1
 for i in {0..23};    do arr[$i]="03"; done # 3hr fcst
-for i in {0..23..6}; do arr[$i]="12"; done # 12hr fcst every 6hrs
+for i in {0..23..12}; do arr[$i]="12"; done # 12hr fcst every 12hrs
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
 export MPASSIT_GROUP_TOTAL_NUM=1
@@ -55,8 +50,7 @@ export LBC_UNGRIB_GROUP_TOTAL_NUM=1
 export LBC_GROUP_TOTAL_NUM=1
 
 export RETRO_PERIOD="2024052700-2024052800"
-export CYCLEDEF_IC_STEP_HRS=12  # do ic jobs every step hours
-export CYCLEDEF_LBC_STEP_HRS=12  # do lbc jobs every step hours
+export LBC_CYCS="00 12"  # evenly divide 24 hours, e.g., "00 12", "00 06 12 18", etc
 export COLDSTART_CYCS="00 12"   # cycles to cold start from external models
 #export DO_SPINUP=true
 #export PRODSWITCH_CYCS="06 18"  # cycles to PROD switch to the spun-up ICs
@@ -64,7 +58,6 @@ export COLDSTART_CYCS="00 12"   # cycles to cold start from external models
 # set as follows to start spinup at 03/15z
 #export DO_SPINUP=true
 #export IC_OFFSET=3
-#export CYCLEDEF_IC_STEP_HRS=12
 #export COLDSTART_CYCS="03 15"
 #export PRODSWITCH_CYCS="09 21"
 #
@@ -82,7 +75,7 @@ export WALLTIME_MPASSIT="1:00:00"
 export WALLTIME_UPP="1:00:00"
 export WALLTIME_JEDIVAR="00:30:00"
 #
-export KEEPDATA=no
+export KEEPDATA=NO
 #
 # local.setup: setup some local options specific to a platform or an experiment
 #
@@ -111,6 +104,13 @@ case ${MACHINE} in
     export ACCOUNT="wrfruc"
     export QUEUE="batch"
     export PARTITION="u1-compute"
+    export NODES_IC="<nodes>1:ppn=160</nodes>"
+    export NODES_LBC="<nodes>1:ppn=160</nodes>"
+    export NODES_FCST="<nodes>1:ppn=160</nodes>"
+    export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
+    export NODES_UPP="<nodes>1:ppn=80</nodes>"
+    export NODES_JEDIVAR="<nodes>1:ppn=80</nodes>"
+    export NODES_IODA_MRMS_REFL="<nodes>1:ppn=80</nodes>"
     ;;
   "jet")
     export IC_EXTRN_MDL_BASEDIR="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/GFS"
@@ -131,7 +131,7 @@ case ${MACHINE} in
     export PARTITION=${MACHINE}
     export CLUSTER=""
     ;;
-  "gaea")
+  "gaeac6")
     export IC_EXTRN_MDL_BASEDIR="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/GFS"
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
     export OBSPATH="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/obs_rap"
@@ -140,6 +140,13 @@ case ${MACHINE} in
     export QUEUE="normal"
     export PARTITION="batch"
     export CLUSTER="c6"
+    export NODES_IC="<nodes>1:ppn=160</nodes>"
+    export NODES_LBC="<nodes>1:ppn=160</nodes>"
+    export NODES_FCST="<nodes>1:ppn=160</nodes>"
+    export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
+    export NODES_UPP="<nodes>1:ppn=80</nodes>"
+    export NODES_JEDIVAR="<nodes>1:ppn=80</nodes>"
+    export NODES_IODA_MRMS_REFL="<nodes>1:ppn=80</nodes>"
     ;;
   "wcoss2")
     export IC_EXTRN_MDL_BASEDIR="/lfs/h2/emc/lam/noscrub/RRFS2_RETRO_DATA/May2024/GFS"

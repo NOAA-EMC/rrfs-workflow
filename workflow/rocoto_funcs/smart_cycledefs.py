@@ -15,11 +15,13 @@ def smart_cycledefs():
         cycledef_prod = os.getenv('CYCLEDEF_PROD', 'not_defined')
         cycledef_spinup = os.getenv('CYCLEDEF_SPINUP', 'not_defined')
     else:  # compute cycledef automatically if no CYCLEDEF_* environment variables
-        ic_step = os.getenv('CYCLEDEF_IC_STEP_HRS', '6')
-        lbc_step = os.getenv('CYCLEDEF_LBC_STEP_HRS', '6')
+        lbc_cycs = os.getenv('LBC_CYCS', '00 12').strip().split()
+        lbc_step = str(int(24 / len(lbc_cycs)))
+        lbc_startcyc = lbc_cycs[0]
         cyc_interval = os.getenv('CYC_INTERVAL', '3')
-        cold_cycs = os.getenv('COLDSTART_CYCS', '03 15').strip().split(' ')
-        prodswitch_cycs = os.getenv('PRODSWITCH_CYCS', '09 21').strip().split(' ')
+        cold_cycs = os.getenv('COLDSTART_CYCS', '03 15').strip().split()
+        ic_step = str(int(24 / len(cold_cycs)))
+        prodswitch_cycs = os.getenv('PRODSWITCH_CYCS', '09 21').strip().split()
         # compute spinup_hrs (usually coldstart at 03 or 15)
         spinup_hrs = cold_cycs[0] + "-" + f'{int(prodswitch_cycs[0])-1:02},'
         if len(cold_cycs) > 1:
@@ -30,7 +32,7 @@ def smart_cycledefs():
         spinup = os.getenv('DO_SPINUP', 'false')
         if realtime.upper() == "TRUE":
             cycledef_ic = f'''  &Y1;&M1;&D1;{cold_cycs[0]}00 &Y2;&M2;&D2;2300 {ic_step.zfill(2)}:00:00'''
-            cycledef_lbc = f''' &Y1;&M1;&D1;0000 &Y2;&M2;&D2;2300 {lbc_step.zfill(2)}:00:00'''
+            cycledef_lbc = f''' &Y1;&M1;&D1;{lbc_startcyc.zfill(2)}00 &Y2;&M2;&D2;2300 {lbc_step.zfill(2)}:00:00'''
             cycledef_prod = f'''&Y1;&M1;&D1;0000 &Y2;&M2;&D2;2300 {cyc_interval.zfill(2)}:00:00'''
             if spinup.upper() == 'TRUE':
                 cycledef_spinup = f'''00 {spinup_hrs} * &M1;,&M2; &Y1;,&Y2; *'''

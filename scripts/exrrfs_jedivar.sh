@@ -14,13 +14,13 @@ time_min="${subcyc:-00}"
 # determine whether to begin new cycles
 #
 if [[ -r "${UMBRELLA_PREP_IC_DATA}/init.nc" ]]; then
-  start_type='cold'
+  export start_type='cold'
   do_DAcycling='false'
-  initial_file=${UMBRELLA_PREP_IC_DATA}/init.nc
+  initial_file=init.nc
 else
-  start_type='warm'
+  export start_type='warm'
   do_DAcycling='true'
-  initial_file=${UMBRELLA_PREP_IC_DATA}/mpasout.nc
+  initial_file=mpasout.nc
 fi
 #
 # link fix files from physics, meshes, graphinfo, stream list, and jedi
@@ -32,10 +32,14 @@ nlevel=$(wc -l < "${zeta_levels}")
 ln -snf "${FIXrrfs}/meshes/${MESH_NAME}.invariant.nc_L${nlevel}_${prefix}"  ./invariant.nc
 mkdir -p graphinfo stream_list
 ln -snf "${FIXrrfs}"/graphinfo/*  graphinfo/
-ln -snf "${FIXrrfs}/stream_list/${PHYSICS_SUITE}"/*  stream_list/
+${cpreq} "${FIXrrfs}/stream_list/${PHYSICS_SUITE}"/*  stream_list/
 ${cpreq} "${FIXrrfs}"/jedi/obsop_name_map.yaml .
 ${cpreq} "${FIXrrfs}"/jedi/keptvars.yaml .
 ${cpreq} "${FIXrrfs}"/jedi/geovars.yaml .
+# if cold_start or not do_radar_ref, remove refl10cm and w from stream_list.atmosphere.analysis
+if [[ "${start_type}" == "cold"  ]] || ! ${DO_RADAR_REF} ; then
+  sed -i '$d;N;$d' stream_list/stream_list.atmosphere.analysis
+fi
 #
 # create data directory
 #
@@ -49,12 +53,14 @@ ln -snf "${FIXrrfs}/bumploc/${MESH_NAME}_L${nlevel}_${NTASKS}_401km11levels"  bu
 if [[ ${STATIC_BEC_MODEL} == "GSIBEC" ]]; then
   # gsibec
   ln -snf "${FIXrrfs}/gsi_bec/berror_stats" "${DATA}"/berror_stats
-  ln -snf "${FIXrrfs}/gsi_bec/gsiparm_regional.anl.${MESH_NAME}" "${DATA}"/gsiparm_regional.anl
   ln -snf "${FIXrrfs}/gsi_bec/mpas_pave_L${nlevel}.txt" "${DATA}"/mpas_pave.txt
-  ln -snf "${FIXrrfs}/gsi_bec/fv3_grid_spec.${MESH_NAME}" "${DATA}"/fv3_grid_spec
-  ln -snf "${FIXrrfs}/gsi_bec/fv3_akbk" "${DATA}"/fv3_akbk
-  ${cpreq} "${FIXrrfs}/gsi_bec/coupler.res" "${DATA}"/coupler.res
-  sed -i -e "s/yyyy    mm    dd    hh/${CDATE:0:4}    ${CDATE:4:2}    ${CDATE:6:2}    ${CDATE:8:2}/"  "${DATA}"/coupler.res
+  ${cpreq} "${FIXrrfs}/gsi_bec/gsiparm_regional.anl" "${DATA}"/gsiparm_regional.anl
+  nlevelm1=$((nlevel - 1))
+  sed -i -e "s/@GSIBEC_NLAT@/${GSIBEC_NLAT}/" -e "s/@GSIBEC_NLON@/${GSIBEC_NLON}/" -e "s/@GSIBEC_NSIG@/${nlevelm1}/" \
+	 -e "s/@GSIBEC_LAT_START@/${GSIBEC_LAT_START}/" -e "s/@GSIBEC_LAT_END@/${GSIBEC_LAT_END}/" \
+	 -e "s/@GSIBEC_LON_START@/${GSIBEC_LON_START}/" -e "s/@GSIBEC_LON_END@/${GSIBEC_LON_END}/" \
+	 -e "s/@GSIBEC_NORTH_POLE_LAT@/${GSIBEC_NORTH_POLE_LAT}/"  -e "s/@GSIBEC_NORTH_POLE_LON@/${GSIBEC_NORTH_POLE_LON}/"  \
+         -e "s/@GSIBEC_NSIGP1@/${nlevel}/"       "${DATA}"/gsiparm_regional.anl
 else
   # bump bec
   mkdir -p static_bec
@@ -81,7 +87,7 @@ source "${USHrrfs}/find_ensembles.sh"
 #  link background
 #
 cd "${DATA}" || exit 1
-ln -snf "${initial_file}" .
+ln -snf "${UMBRELLA_PREP_IC_DATA}/${initial_file}" .
 #
 # generate namelist, streams, and jedivar.yaml on the fly
 run_duration=1:00:00
@@ -138,21 +144,8 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
   # check the status
   export err=$?
   err_chk
-  #
-  # ncks increments to cold_start IC
-  if [[ ${start_type} == "cold" ]]; then
-    var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional,refl10cm,w"
-    ncks -O -C -x -v ${var_list} init.nc tmp.nc
-    ncks -A -v ${var_list} ana.nc tmp.nc
-    export err=$?
-    err_chk
-    mv tmp.nc "$(readlink -f init.nc)"
-    mv ana.nc ..
-  else
-    cp "${DATA}"/mpasout.nc "${COMOUT}/jedivar/${WGF}/mpasout.${timestr}.nc"
-  fi
-  #
   # the input/output file are linked from the umbrella directory, so no need to copy
+  cp "${DATA}/${initial_file}" "${COMOUT}/jedivar/${WGF}/${initial_file%.nc}.${timestr}.nc"
   cp "${DATA}"/jdiag* "${COMOUT}/jedivar/${WGF}"
   cp "${DATA}"/jedivar*.yaml "${COMOUT}/jedivar/${WGF}"
   cp "${DATA}"/log.out "${COMOUT}/jedivar/${WGF}"

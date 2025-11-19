@@ -5,21 +5,7 @@ set -x
 
 cpreq=${cpreq:-cpreq}
 cd "${DATA}" || exit 1
-
-#
-# determine domain name
-#
-
-if [[ ${MESH_NAME} == "conus12km" ]]; then
-  domain="conus."
-elif [[ ${MESH_NAME} == "conus3km" ]]; then
-  domain="conus."
-elif [[ ${MESH_NAME} == "south3.5km" ]]; then
-  domain="subconus."
-else
-  domain=""
-fi
-
+domain=${UPP_DOMAIN:-""}
 #
 #  cpy excutable and fix files; decide mesh
 #
@@ -36,9 +22,8 @@ YYJJJHH=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%y%j%H)
 #
 # find forecst length for this cycle
 #
-fcst_length=${FCST_LENGTH:-1}
 fcst_len_hrs_cycles=${FCST_LEN_HRS_CYCLES:-"01 01"}
-fcst_len_hrs_thiscyc=$( "${USHrrfs}/find_fcst_length.sh"  "${fcst_len_hrs_cycles}"  "${cyc}"  "${fcst_length}")
+fcst_len_hrs_thiscyc=$( "${USHrrfs}/find_fcst_length.sh"  "${fcst_len_hrs_cycles}"  "${cyc}" )
 echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
 #
 # loop through forecast history files for this group

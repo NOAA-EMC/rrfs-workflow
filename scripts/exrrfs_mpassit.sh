@@ -15,6 +15,10 @@ ${cpreq} "${FIXrrfs}"/mpassit/histlist_2d                 histlist_2d
 ${cpreq} "${FIXrrfs}"/mpassit/histlist_3d                 histlist_3d
 ${cpreq} "${FIXrrfs}"/mpassit/histlist_soil               histlist_soil
 #
+if ${DO_CHEMISTRY:-false}; then
+  source "${USHrrfs}"/chem_mpassit.sh
+fi
+#
 nx=${MPASSIT_NX:-480}
 ny=${MPASSIT_NY:-280}
 dx=${MPASSIT_DX:-12000.0}
@@ -24,9 +28,8 @@ ref_lon=${MPASSIT_REF_LON:-"-97.5"}
 #
 # find forecst length for this cycle
 #
-fcst_length=${FCST_LENGTH:-1}
 fcst_len_hrs_cycles=${FCST_LEN_HRS_CYCLES:-"01 01"}
-fcst_len_hrs_thiscyc=$("${USHrrfs}/find_fcst_length.sh" "${fcst_len_hrs_cycles}" "${cyc}" "${fcst_length}")
+fcst_len_hrs_thiscyc=$("${USHrrfs}/find_fcst_length.sh" "${fcst_len_hrs_cycles}" "${cyc}" )
 echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
 #
 # loop through forecast history files for this group

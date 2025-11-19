@@ -11,20 +11,22 @@ export TAG=e3km
 export OPSROOT=/scratch3/BMC/wrfruc/gge/OPSROOT/${EXP_NAME}
 export EXPDIR=${OPSROOT}/exp/rrfs${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
-export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
+export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=YES
 #
 export DO_ENSEMBLE=true
 export IC_ONLY=false  # interpolate GEFS/GDAS to the target mesh to provide ensemble BEC
 export DO_DETERMINISTIC=false
 export ENS_SIZE=30
-export ZETA_LEVELS="L60.txt"
+export ZETA_LEVELS="L65.txt"
 #
 export DO_IODA=false
 export DO_JEDI=false
+export DO_NONVAR_CLOUD_ANA=false
 export COLDSTART_CYCS_DO_DA=false
 export DO_RECENTER=false
 export DO_RADAR_REF=false
 export SAVE_GETKF_ANL=false
+export DO_CLEAN=true
 export RADARREFL_TIMELEVEL="00"  # 00 15 30 45 min
 
 export DO_CYC=true
@@ -44,8 +46,7 @@ export LBC_UNGRIB_GROUP_TOTAL_NUM=2
 export LBC_GROUP_TOTAL_NUM=2
 
 export RETRO_PERIOD="2024052700-2024052712"
-export CYCLEDEF_IC_STEP_HRS=6
-export CYCLEDEF_LBC_STEP_HRS=6
+export LBC_CYCS="00 06 12 18"
 export COLDSTART_CYCS="00 06 12 18"   # cycles to cold start from external models
 #
 export NODES_IC="<nodes>40:ppn=40</nodes>"
@@ -63,7 +64,7 @@ export WALLTIME_MPASSIT="2:00:00"
 export WALLTIME_UPP="2:00:00"
 export WALLTIME_GETKF="00:30:00"
 #
-export KEEPDATA=no
+export KEEPDATA=NO
 export RETRO_TASKTHROTTLE=60
 #
 # local.setup: setup some local options specific to a platform or an experiment
@@ -93,6 +94,13 @@ case ${MACHINE} in
     export ACCOUNT="wrfruc"
     export QUEUE="batch"
     export PARTITION="u1-compute"
+    export NODES_IC="<nodes>10:ppn=160</nodes>"
+    export NODES_LBC="<nodes>10:ppn=160</nodes>"
+    export NODES_FCST="<nodes>10:ppn=160</nodes>"
+    export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
+    export NODES_UPP="<nodes>1:ppn=80</nodes>"
+    export NODES_RECENTER="<nodes>1:ppn=32</nodes>"
+    export NODES_GETKF="<nodes>20:ppn=40</nodes>"
     ;;
   "jet")
     export IC_EXTRN_MDL_BASEDIR="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/GEFS"
@@ -113,7 +121,7 @@ case ${MACHINE} in
     export PARTITION=${MACHINE}
     export CLUSTER=""
     ;;
-  "gaea")
+  "gaeac6")
     export IC_EXTRN_MDL_BASEDIR="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/GEFS"
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
     export OBSPATH="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/obs_rap"
@@ -122,6 +130,13 @@ case ${MACHINE} in
     export QUEUE="normal"
     export PARTITION="batch"
     export CLUSTER="c6"
+    export NODES_IC="<nodes>10:ppn=160</nodes>"
+    export NODES_LBC="<nodes>10:ppn=160</nodes>"
+    export NODES_FCST="<nodes>10:ppn=160</nodes>"
+    export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
+    export NODES_UPP="<nodes>1:ppn=80</nodes>"
+    export NODES_RECENTER="<nodes>1:ppn=32</nodes>"
+    export NODES_GETKF="<nodes>20:ppn=40</nodes>"
     ;;
   "wcoss2")
     export IC_EXTRN_MDL_BASEDIR="/lfs/h2/emc/lam/noscrub/RRFS2_RETRO_DATA/May2024/GEFS"

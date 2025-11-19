@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+# Aloha! This file is to setup chemistry configurations
+#
+# turn off DA by default. If doing DA, need to change them back to true
+export DO_IODA=false
+export DO_JEDI=false
+export DO_CYC=false
+export DO_SPINUP=false
+
+export CYC_INTERVAL=24
+export LBC_CYCS="00"  # evenly divide 24 hours, e.g., "00 12", "00 06 12 18", etc
+export COLDSTART_CYCS="00"
+
+for i in {0..23}; do arr[i]="24"; done # 24hr fcst, only take effect at coldstart cycles
+export FCST_LEN_HRS_CYCLES="${arr[*]}"
+export LBC_LENGTH=24
+export REALTIME=false
+#
+# ---------------------------------------------
+export CHEM_GROUPS="smoke" # any combinations of "smoke, anthro, pollen, dust, rwc"
+export EBB_DCYCLE=1
+export USE_EXTERNAL_CHEM_LBCS=true
+export USE_EXTERNAL_CHEM_ICS=false
+#
+export WALLTIME_PREP_CHEM="00:30:00"
+export WALLTIME_PREP_CHEM_ICBC="00:30:00"
+#
+# add mesh dependent logic when needed, such as case ${MESH_NAME} in "conus12km", etc
+
+case ${MACHINE} in
+  "hera")
+    export CHEM_INPUT="/scratch4/BMC/acomp/cheMPAS-Fire/input"
+    export RAVE_INPUT="${CHEM_INPUT}/emissions/RAVE/raw"
+    export REGRID_WRAPPER_DIR="/scratch4/BMC/acomp/Sudheer/Fire-nest/RRFS-SD/Tools/regrid-wrapper"
+    export REGRID_CONDA_ENV="/scratch3/BMC/acomp/Sudheer/anaconda3/envs/regrid-wrapper"
+    export ACCOUNT="acomp"
+    export PARTITION_PREP_CHEM="hera"
+    export NODES_PREP_CHEM="<nodes>1:ppn=20</nodes>"
+    export MEMORY_PREP_CHEM="50G"
+    if [[ "${MESH_NAME}" == "conus3km" ]]; then
+      export PARTITION_PREP_CHEM="bigmem"
+      export MEMORY_PREP_CHEM="200G"
+    fi
+    ;;
+  "ursa")
+    export CHEM_INPUT="/scratch4/BMC/acomp/cheMPAS-Fire/input"
+    export RAVE_INPUT="${CHEM_INPUT}/emissions/RAVE/raw"
+    export REGRID_WRAPPER_DIR="/scratch4/BMC/acomp/Sudheer/Fire-nest/RRFS-SD/Tools/regrid-wrapper"
+    export REGRID_CONDA_ENV="/scratch4/BMC/acomp/Sudheer/anaconda3Ursa/envs/regrid-wrapper"
+    export ACCOUNT="acomp"
+    export PARTITION_PREP_CHEM="u1-compute"
+    export NODES_PREP_CHEM="<nodes>1:ppn=50</nodes>"
+    export MEMORY_PREP_CHEM="50G"
+    if [[ "${MESH_NAME}" == "conus3km" ]]; then
+      export NODES_PREP_CHEM="<nodes>1:ppn=150</nodes>"
+      export MEMORY_PREP_CHEM="200G"
+    fi
+    ;;
+  "jet")
+    export CHEM_INPUT="/lfs6/BMC/rtwbl/cheMPAS-Fire/input"
+    if ${REALTIME:-false}; then
+      export RAVE_INPUT="/public/data/grids/nesdis/3km_fire_emissions"
+    else
+      export RAVE_INPUT="${CHEM_INPUT}/emissions/RAVE/raw"
+    fi
+    export REGRID_WRAPPER_DIR="/lfs5/BMC/rtwbl/rap-chem/mpas_rt/working/ben_interp/regrid-wrapper/"
+    export REGRID_CONDA_ENV="/lfs5/BMC/rtwbl/rap-chem/miniconda/envs/regrid-wrapper"
+    export ACCOUNT="rtwbl"
+    export PARTITION="xjet"
+    export PARTITION_PREP_CHEM="xjet:kjet"
+    export NODES_PREP_CHEM="<nodes>1:ppn=20</nodes>"
+    export MEMORY_PREP_CHEM="50G"
+    if [[ "${MESH_NAME}" == "conus3km" ]]; then
+      export PARTITION_PREP_CHEM="bigmem"
+      export MEMORY_PREP_CHEM="200G"
+    fi
+    ;;
+  "gaeac6")
+    export CHEM_INPUT="/gpfs/f6/drsa-fire3/world-shared/cheMPAS-Fire/input"
+    export RAVE_INPUT="${CHEM_INPUT}/emissions/RAVE/raw"
+    export REGRID_WRAPPER_DIR="/gpfs/f6/drsa-fire3/world-shared/Sudheer/MPAS/Tools/regrid-wrapper/"
+    export REGRID_CONDA_ENV="/gpfs/f6/drsa-fire3/world-shared/Sudheer/anaconda3/envs/regrid-wrapper/"
+    export NODES_PREP_CHEM="<nodes>1:ppn=1</nodes>"
+    export MEMORY_PREP_CHEM="200G"
+    ;;
+  *)
+    echo "!!! unsupported platform:'${MACHINE}'!!!"
+    ;;
+esac
+#
+# users may overwrite some variables in the below, such as:
+#  export RAVE_INPUT="/path/to/my/RAVE/INPUT"

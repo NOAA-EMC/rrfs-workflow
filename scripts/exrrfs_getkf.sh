@@ -18,7 +18,7 @@ nlevel=$(wc -l < "${zeta_levels}")
 ln -snf "${FIXrrfs}/meshes/${MESH_NAME}.invariant.nc_L${nlevel}_${prefix}" ./invariant.nc
 mkdir -p graphinfo stream_list
 ln -snf "${FIXrrfs}"/graphinfo/* graphinfo/
-ln -snf "${FIXrrfs}/stream_list/${PHYSICS_SUITE}"/* stream_list/
+${cpreq} "${FIXrrfs}/stream_list/${PHYSICS_SUITE}"/* stream_list/
 ${cpreq} "${FIXrrfs}"/jedi/obsop_name_map.yaml .
 ${cpreq} "${FIXrrfs}"/jedi/keptvars.yaml .
 ${cpreq} "${FIXrrfs}"/jedi/geovars.yaml .
@@ -40,12 +40,15 @@ fi
 #
 do_DAcycling='false'
 if [[ -r "${UMBRELLA_PREP_IC_DATA}/mem001/init.nc" ]]; then
-  start_type='cold'
+  export start_type='cold'
   initial_file='init.nc'
-  mkdir -p ana
 else
-  start_type='warm'
+  export start_type='warm'
   initial_file='mpasout.nc'
+fi
+# if cold_start or not do_radar_ref, remove refl10cm and w from stream_list.atmosphere.analysis
+if [[ "${start_type}" == "cold"  ]] || ! ${DO_RADAR_REF} ; then
+  sed -i '$d;N;$d' stream_list/stream_list.atmosphere.analysis
 fi
 # link ensembles to data/ens/
 for i in $(seq -w 001 "${ENS_SIZE}"); do
@@ -129,22 +132,7 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
     cp "${DATA}"/jdiag* "${COMOUT}/getkf_${GETKF_TYPE}/${WGF}"
     mv jdiag* "${UMBRELLA_GETKF_DATA}"/.
   else # move post mean to umbrella if solver
-    # ncks increments to cold_start IC
-    if [[ "${start_type}" == "cold" ]]; then
-      var_list="pressure_p,rho,qv,qc,qr,qi,qs,qg,ni,nr,ng,nc,nifa,nwfa,volg,surface_pressure,theta,u,uReconstructZonal,uReconstructMeridional,refl10cm,w"
-      for mem in $(seq -w 1 030); do
-        ncks -O -C -x -v ${var_list} "data/ens/mem${mem}.nc" "data/ens/tmp${mem}.nc"
-        ncks -A -v ${var_list} "data/ana/mem${mem}.nc" "data/ens/tmp${mem}.nc"
-        export err=$?
-        err_chk
-        dest=$(readlink -f "data/ens/mem${mem}.nc")
-        mv "data/ens/tmp${mem}.nc" "${dest}"
-      done
-      rm -rf ../ana
-      mv data/ana ../
-    else
-      mv "${DATA}"/data/ens/mem000.nc "${UMBRELLA_GETKF_DATA}"/post_mean.nc
-    fi
+    mv "${DATA}"/data/ens/mem000.nc "${UMBRELLA_GETKF_DATA}"/post_mean.nc
   fi
 
   # Save analysis files if requested

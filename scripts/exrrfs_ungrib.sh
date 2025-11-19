@@ -20,6 +20,9 @@ prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
 
 cd "${DATA}" || exit 1
 ${cpreq} "${FIXrrfs}/ungrib/Vtable.${prefix}" Vtable
+if ${DO_CHEMISTRY:-false} && ${USE_EXTERNAL_CHEM:-false}; then
+  ${cpreq} "${FIXrrfs}/ungrib/Vtable.${prefix}.SD" Vtable
+fi
 #
 # find start and end time
 #
@@ -42,7 +45,21 @@ for fhr in  ${fhr_all}; do
   GRIBFILE_LOCAL=$( "${USHrrfs}/num_to_GRIBFILE.XXX.sh"  "${knt}" )
   NAME_FILE=${NAME_PATTERN/fHHH/${HHH}}
   GRIBFILE="${SOURCE_BASEDIR}/${NAME_FILE}"
-  if [[ -s "${GRIBFILE}" ]]; then 
+  if [[ "${prefix}" == *RRFS*  ]]; then
+    if [[ -s "${GRIBFILE}" ]]; then
+      source "${USHrrfs}"/ungrib_rrfs.sh # prepare "${GRIBFILE_LOCAL}"
+    else
+      echo "FATAL ERROR: ${GRIBFILE} missing"
+      err_exit
+    fi
+  elif [[ "${prefix}" == *RAP*  ]]; then
+    if [[ -s "${GRIBFILE}" ]]; then
+      source "${USHrrfs}"/ungrib_rap.sh # prepare "${GRIBFILE_LOCAL}"
+    else
+      echo "FATAL ERROR: ${GRIBFILE} missing"
+      err_exit
+    fi
+  elif [[ -s "${GRIBFILE}" ]]; then
     ${cpreq} "${GRIBFILE}"  "${GRIBFILE_LOCAL}"
     # if NAME_PATTERN_B is defined and non-empty
     if [ -n "${NAME_PATTERN_B+x}" ] && [ -n "${NAME_PATTERN_B}" ]; then

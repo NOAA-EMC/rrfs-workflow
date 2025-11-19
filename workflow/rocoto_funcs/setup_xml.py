@@ -2,7 +2,7 @@
 #
 import os
 import stat
-from rocoto_funcs.base import header_begin, header_entities, header_end, source, \
+from rocoto_funcs.base import header_begin, header_entities, header_end, \
     wflow_begin, wflow_log, wflow_cycledefs, wflow_end
 from rocoto_funcs.smart_cycledefs import smart_cycledefs
 from rocoto_funcs.ungrib_ic import ungrib_ic
@@ -21,6 +21,10 @@ from rocoto_funcs.mpassit import mpassit
 from rocoto_funcs.upp import upp
 from rocoto_funcs.ioda_bufr import ioda_bufr
 from rocoto_funcs.ioda_mrms_refl import ioda_mrms_refl
+from rocoto_funcs.nonvar_bufrobs import nonvar_bufrobs
+from rocoto_funcs.nonvar_reflobs import nonvar_reflobs
+from rocoto_funcs.nonvar_cldana import nonvar_cldana
+from rocoto_funcs.prep_chem import prep_chem
 from rocoto_funcs.clean import clean
 from rocoto_funcs.graphics import graphics
 from rocoto_funcs.misc import misc
@@ -29,7 +33,6 @@ from rocoto_funcs.misc import misc
 
 
 def setup_xml(HOMErrfs, expdir):
-    # source the config cascade
     if os.path.exists(f"{expdir}/config/satinfo") and os.getenv("USE_THE_LATEST_SATBIAS") is None:
         env_vars = {'USE_THE_LATEST_SATBIAS': 'true'}
         os.environ.update(env_vars)
@@ -37,13 +40,7 @@ def setup_xml(HOMErrfs, expdir):
     do_deterministic = os.getenv('DO_DETERMINISTIC', 'true').upper()
     do_ensemble = os.getenv('DO_ENSEMBLE', 'false').upper()
     do_ensmean_post = os.getenv('DO_ENSMEAN_POST', 'false').upper()
-    #
-    source(f"{HOMErrfs}/workflow/config_resources/config.{machine}")
-    source(f"{HOMErrfs}/workflow/config_resources/config.meshdep")
-    source(f"{HOMErrfs}/workflow/config_resources/config.base")
-    realtime = os.getenv('REALTIME', 'false')
-    if realtime.upper() == "TRUE":
-        source(f"{HOMErrfs}/workflow/config_resources/config.realtime")
+    do_chemistry = os.getenv('DO_CHEMISTRY', 'false').upper()
     #
     # create cycledefs smartly
     dcCycledef = smart_cycledefs()
@@ -65,6 +62,9 @@ def setup_xml(HOMErrfs, expdir):
                 ioda_bufr(xmlFile, expdir)
             if os.getenv("DO_RADAR_REF", "FALSE").upper() == "TRUE":
                 ioda_mrms_refl(xmlFile, expdir)
+            if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
+                nonvar_bufrobs(xmlFile, expdir)
+                nonvar_reflobs(xmlFile, expdir)
             #
             if os.getenv("DO_IC_LBC", "TRUE").upper() == "TRUE":
                 ungrib_ic(xmlFile, expdir)
@@ -77,17 +77,25 @@ def setup_xml(HOMErrfs, expdir):
                 # spin up line
                 prep_ic(xmlFile, expdir, spinup_mode=1)
                 jedivar(xmlFile, expdir, do_spinup=True)
+                if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
+                    nonvar_cldana(xmlFile, expdir, do_spinup=True)
                 fcst(xmlFile, expdir, do_spinup=True)
                 # prod line
                 prep_ic(xmlFile, expdir, spinup_mode=-1)
                 jedivar(xmlFile, expdir)
+                if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
+                    nonvar_cldana(xmlFile, expdir)
                 fcst(xmlFile, expdir)
                 save_fcst(xmlFile, expdir)
             elif os.getenv("DO_FCST", "TRUE").upper() == "TRUE":
                 prep_ic(xmlFile, expdir)
                 prep_lbc(xmlFile, expdir)
+                if do_chemistry == "TRUE":
+                    prep_chem(xmlFile, expdir)
                 if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
                     jedivar(xmlFile, expdir)
+                if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
+                    nonvar_cldana(xmlFile, expdir)
                 fcst(xmlFile, expdir)
                 save_fcst(xmlFile, expdir)
             #
@@ -141,7 +149,7 @@ def setup_xml(HOMErrfs, expdir):
     extra = ""
     if machine in ['orion', 'hercules']:
         extra = "\nmodule load contrib"
-    elif machine in ['gaea']:
+    elif machine in ['gaeac6']:
         extra = "\nmodule use /ncrc/proj/epic/rocoto/modulefiles"
     elif machine in ['wcoss2']:
         extra = "\nmodule use /apps/ops/test/nco/modulefiles/core"

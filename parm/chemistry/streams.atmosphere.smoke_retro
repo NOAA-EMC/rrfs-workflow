@@ -1,0 +1,6 @@
+<immutable_stream name="smoke_retro_input"
+                  type="input"
+                  filename_template="smoke.init.retro.$Y-$M-$D_$h.$m.$s.nc"
+                  io_type="netcdf,netcdf4"
+                  input_interval="1:00:00"
+                  filename_interval="input_interval"/>

@@ -1,0 +1,82 @@
+
+ &SETUP
+   qoption=1
+ /
+ &GRIDOPTS
+   regional=.true.,fv3_regional=.false.,mpas_regional=.true.,
+   nlon=@GSIBEC_NLON@,nlat=@GSIBEC_NLAT@,nsig=@GSIBEC_NSIG@,
+   rlat_start=@GSIBEC_LAT_START@,rlat_end=@GSIBEC_LAT_END@,
+   rlon_start=@GSIBEC_LON_START@,rlon_end=@GSIBEC_LON_END@,
+   north_pole_lat=@GSIBEC_NORTH_POLE_LAT@,north_pole_lon=@GSIBEC_NORTH_POLE_LON@,
+ /
+ &BKGERR
+   hzscl=0.7,1.4,2.8,
+   vs=1.,bw=0.,fstat=.true.,simcv=.false.,usenewgfsberror=.true.,
+ /
+ $STRONGOPTS
+ /
+ &ANBKGERR
+   anisotropic=.false.,
+ /
+ &HYBRID_ENSEMBLE
+   l_hyb_ens=.false.,
+ /
+
+met_guess::
+!var     level    crtm_use    desc              orig_name
+  ps        1      -1         surface_pressure     ps
+#  z         1      -1         geopotential_height  phis
+  u        @GSIBEC_NSIG@       2         zonal_wind           u
+  v        @GSIBEC_NSIG@       2         meridional_wind      v
+  tv       @GSIBEC_NSIG@       2         virtual_temperature  tv
+  tsen     @GSIBEC_NSIG@       2         sensible_temperature tsen 
+  sphum    @GSIBEC_NSIG@       2         specific_humidity    sphum
+#  oz       @GSIBEC_NSIG@       2         ozone                o3mr 
+#  delp     @GSIBEC_NSIG@      -1         fv3_del_pressure     delp    
+::
+
+state_derivatives::
+!var  level  src
+ ps   1      met_guess
+ u    @GSIBEC_NSIG@     met_guess
+ v    @GSIBEC_NSIG@     met_guess
+ tv   @GSIBEC_NSIG@     met_guess
+ q    @GSIBEC_NSIG@     met_guess
+ oz   @GSIBEC_NSIG@     met_guess
+ prse @GSIBEC_NSIGP1@     met_guess
+::
+
+state_tendencies::
+!var  levels  source
+ u    @GSIBEC_NSIG@      met_guess
+ v    @GSIBEC_NSIG@      met_guess
+ tv   @GSIBEC_NSIG@      met_guess
+ q    @GSIBEC_NSIG@      met_guess
+ oz   @GSIBEC_NSIG@      met_guess
+ prse @GSIBEC_NSIGP1@      met_guess
+::
+
+state_vector::
+!var     level  itracer source     funcof
+ u        @GSIBEC_NSIG@      0     met_guess    u
+ v        @GSIBEC_NSIG@      0     met_guess    v
+ tv       @GSIBEC_NSIG@      0     met_guess    tv
+# tsen     @GSIBEC_NSIG@      0     met_guess    tv,q
+ q        @GSIBEC_NSIG@      1     met_guess    q
+#oz       @GSIBEC_NSIG@      1     met_guess    oz
+# prse     @GSIBEC_NSIGP1@      0     met_guess    prse
+ ps        1      0     met_guess    ps   
+# sst       1      0     met_guess    sst
+::
+
+control_vector::
+!var     level  itracer as/tsfc_sdv  an_amp0   source  funcof
+ sf       @GSIBEC_NSIG@      0       0.90        -1.0     state    u,v
+ vp       @GSIBEC_NSIG@      0       0.90        -1.0     state    u,v
+ ps        1      0       1.00        -1.0     state    prse
+ t        @GSIBEC_NSIG@      0       1.40        -1.0     state    tv
+ q        @GSIBEC_NSIG@      1       0.80        -1.0     state    q
+# sst       1      0       1.00        -1.0     state    sst
+# stl       1      0       1.00        -1.0     motley   sst
+# sti       1      0       1.00        -1.0     motley   sst
+::

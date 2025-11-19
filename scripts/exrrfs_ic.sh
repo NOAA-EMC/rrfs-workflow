@@ -40,6 +40,10 @@ physics_suite=${PHYSICS_SUITE:-'PHYSICS_SUITE_not_defined'}
 file_content=$(< "${PARMrrfs}/${physics_suite}/namelist.init_atmosphere") # read in all content
 eval "echo \"${file_content}\"" > namelist.init_atmosphere
 
+# update namelist.init_atmosphere if do_chemistry
+if ${DO_CHEMISTRY:-false}; then
+  source "${USHrrfs}"/chem_namelist_init.sh
+fi
 #
 # generate the streams file on the fly 
 # using sed as this file contains "filename_template='lbc.$Y-$M-$D_$h.$m.$s.nc'"
@@ -62,6 +66,11 @@ export err=$?; err_chk
 if [[ ! -s './init.nc' ]]; then
   echo "FATAL ERROR: failed to generate init.nc"
   err_exit
+fi
+
+# add/update chemistry species to init.nc
+if ${DO_CHEMISTRY:-false}; then
+  source "${USHrrfs}"/chem_ic_update.sh
 fi
 
 # copy init.nc to COMOUT

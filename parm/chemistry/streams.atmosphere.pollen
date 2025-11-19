@@ -1,0 +1,5 @@
+<immutable_stream name="bio_input"
+                  type="input"
+                  filename_template="bio.init.nc"
+                  io_type="netcdf,netcdf4"
+                  input_interval="initial_only" />

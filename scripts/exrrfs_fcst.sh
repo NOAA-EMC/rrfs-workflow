@@ -12,9 +12,8 @@ radt=${FCST_RADT:-30}
 #
 # find forecst length for this cycle
 #
-fcst_length=${FCST_LENGTH:-1}
 fcst_len_hrs_cycles=${FCST_LEN_HRS_CYCLES:-"01 01"}
-fcst_len_hrs_thiscyc=$("${USHrrfs}/find_fcst_length.sh" "${fcst_len_hrs_cycles}" "${cyc}" "${fcst_length}")
+fcst_len_hrs_thiscyc=$("${USHrrfs}/find_fcst_length.sh" "${fcst_len_hrs_cycles}" "${cyc}" )
 echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
 #
 # determine whether to begin new cycles
@@ -42,7 +41,7 @@ nlevel=$(wc -l < "${zeta_levels}")
 ln -snf "${FIXrrfs}/meshes/${MESH_NAME}.invariant.nc_L${nlevel}_${prefix}" ./invariant.nc
 mkdir -p graphinfo stream_list
 ln -snf "${FIXrrfs}"/graphinfo/* graphinfo/
-ln -snf "${FIXrrfs}/stream_list/${PHYSICS_SUITE}"/* stream_list/
+${cpreq} "${FIXrrfs}/stream_list/${PHYSICS_SUITE}"/* stream_list/
 
 # generate the namelist on the fly
 # do_restart already defined in the above
@@ -51,16 +50,8 @@ run_duration=${fcst_len_hrs_thiscyc:-1}:00:00
 physics_suite=${PHYSICS_SUITE:-'mesoscale_reference'}
 jedi_da="true" #true
 
-if [[ "${MESH_NAME}" == "conus12km" ]]; then
-  pio_num_iotasks=1
-  pio_stride=40
-elif [[ "${MESH_NAME}" == "conus3km" ]]; then
-  pio_num_iotasks=40
-  pio_stride=20
-elif [[ "${MESH_NAME}" == "south3.5km" ]]; then
-  pio_num_iotasks=10
-  pio_stride=24
-fi
+pio_num_iotasks=${NODES}
+pio_stride=${PPN}
 file_content=$(< "${PARMrrfs}/${physics_suite}/namelist.atmosphere") # read in all content
 eval "echo \"${file_content}\"" > namelist.atmosphere
 
@@ -68,7 +59,7 @@ if [[ "${MESH_NAME}" == "conus12km" ]]; then
   sed -i -e "s/    config_physics_suite = 'hrrrv5'/\
     config_physics_suite = 'hrrrv5'\n\
     config_convection_scheme = 'cu_ntiedtke'\n\
-    config_gf_sub3d = 1/" namelist.atmosphere
+    config_gfl_sub3d = 1/" namelist.atmosphere
 fi
 
 # generate the streams file on the fly using sed as this file contains "filename_template='lbc.$Y-$M-$D_$h.$m.$s.nc'"
@@ -79,6 +70,11 @@ diag_interval=${HISTORY_INTERVAL:-1}
 sed -e "s/@restart_interval@/${restart_interval}/" -e "s/@history_interval@/${history_interval}/" \
     -e "s/@diag_interval@/${diag_interval}/" -e "s/@lbc_interval@/${lbc_interval}/" \
     "${PARMrrfs}"/streams.atmosphere  > streams.atmosphere
+#
+# chemistry related processing
+if ${DO_CHEMISTRY:-false}; then
+  source "${USHrrfs}"/chem_fcst.sh
+fi
 #
 # prelink the forecast output files to umbrella
 history_all=$(seq 0 $((10#${history_interval})) $((10#${fcst_len_hrs_thiscyc} )) )

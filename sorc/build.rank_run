@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC1090,SC1091,SC2154
+set -x
+date
+rundir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+HOMErrfs="$(dirname "$rundir")"
+COMPILER=${COMPILER:-intel}
+
+source "${HOMErrfs}/workflow/tools/detect_machine.sh"
+source "${HOMErrfs}/workflow/tools/init.sh"
+
+EXEC="${HOMErrfs}/sorc/rank_run/build/rank_run.x"
+
+set +x
+module purge
+module use "${HOMErrfs}/modulefiles"
+module load "rrfs/${MACHINE}.${COMPILER}"
+module list
+set -x
+
+echo "compiling rank_run ..."
+cd "${HOMErrfs}/sorc/rank_run" || exit 1
+rm -rf build
+mkdir build
+cd build || exit 1
+cmake ..
+make
+
+mkdir -p "${HOMErrfs}/exec"
+echo "copy ${EXEC} to ../exec/rank_run.x"
+cp "${EXEC}" "${HOMErrfs}/exec/rank_run.x"
+exit 0

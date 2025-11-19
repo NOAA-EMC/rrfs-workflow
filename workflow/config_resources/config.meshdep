@@ -9,6 +9,7 @@ if [[ ${MESH_NAME} == "conus12km" ]]; then
   export FCST_DT=60
   export FCST_SUBSTEPS=2
   export FCST_RADT=30
+  export UPP_DOMAIN="conus."
 
   export MPASSIT_NX=480
   export MPASSIT_NY=280
@@ -16,10 +17,26 @@ if [[ ${MESH_NAME} == "conus12km" ]]; then
   export MPASSIT_REF_LAT=39.0
   export MPASSIT_REF_LON=-97.5
 
+  export GSIBEC_NLAT=179
+  export GSIBEC_NLON=288
+  export GSIBEC_NORTH_POLE_LAT=48.554305
+  export GSIBEC_NORTH_POLE_LON=82.649802
+  export GSIBEC_LON_START=-33.005000
+  export GSIBEC_LON_END=33.005000
+  export GSIBEC_LAT_START=-20.470000
+  export GSIBEC_LAT_END=20.470000
+  
+  export NONVAR_LARC_NPTS=4
+  export NONVAR_METAR_IMPACT=40
+  export NONVAR_PROJ_NAME="CONUS"
+  export NONVAR_USERDX=12000
+  export NONVAR_SEARCH_RAD=4
+
 elif [[ ${MESH_NAME} == "conus3km" ]]; then
-  export FCST_DT=20
+  export FCST_DT=15
   export FCST_SUBSTEPS=4
   export FCST_RADT=15
+  export UPP_DOMAIN="conus."
 
   export MPASSIT_NX=1800
   export MPASSIT_NY=1060
@@ -27,14 +44,36 @@ elif [[ ${MESH_NAME} == "conus3km" ]]; then
   export MPASSIT_REF_LAT=38.5
   export MPASSIT_REF_LON=-97.5
 
+  export GSIBEC_NLAT=593
+  export GSIBEC_NLON=921
+  export GSIBEC_NORTH_POLE_LAT=51.226749
+  export GSIBEC_NORTH_POLE_LON=82.592899
+  export GSIBEC_LON_START=-24.840000
+  export GSIBEC_LON_END=24.840000
+  export GSIBEC_LAT_START=-15.984000
+  export GSIBEC_LAT_END=15.984000
+
+  export NONVAR_LARC_NPTS=3
+  export NONVAR_METAR_IMPACT=20
+  export NONVAR_PROJ_NAME="CONUS"
+  export NONVAR_USERDX=3000
+  export NONVAR_SEARCH_RAD=1
+
 elif [[ ${MESH_NAME} == "south3.5km" ]]; then
   export FCST_DT=25
   export FCST_SUBSTEPS=4
   export FCST_RADT=15
+  export UPP_DOMAIN="subconus."
 
   export MPASSIT_NX=660
   export MPASSIT_NY=440
   export MPASSIT_DX=3500.0
   export MPASSIT_REF_LAT=34.0
   export MPASSIT_REF_LON=-91.5
+
+  export NONVAR_LARC_NPTS=3
+  export NONVAR_METAR_IMPACT=20
+  export NONVAR_PROJ_NAME="CONUS"
+  export NONVAR_USERDX=3500
+  export NONVAR_SEARCH_RAD=1
 fi

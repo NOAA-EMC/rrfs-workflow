@@ -22,6 +22,9 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
         'OFFSET': f'{offset}',
     }
+
+    if os.getenv('DO_CHEMISTRY', 'false').lower() == "true":
+        dcTaskEnv['USE_EXTERNAL_CHEM'] = os.getenv('USE_EXTERNAL_CHEM_ICS', 'FALSE').lower()
     #
     if not do_ensemble:
         metatask = False
@@ -41,6 +44,7 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
 <var name="gmem">{gmems}</var>'''
         meta_end = f'</metatask>\n'
 
+    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
     if extrn_mdl_source == "GFS_NCO":
         COMINgfs = os.getenv("COMINgfs", 'COMINgfs_not_defined')

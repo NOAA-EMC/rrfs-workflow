@@ -12,12 +12,11 @@ export CLUSTER=${CLUSTER:-""}
 export NATIVE=${NATIVE:-""}
 export MORE_XML_ENTITIES=${MORE_XML_ENTITIES:-false}
 export REALTIME_MONTHS=${REALTIME_MONTHS:-2}
-export FCST_LENGTH=1
 export DO_FCST=${DO_FCST:-true}
 export DO_POST=${DO_POST:-true}
 export DO_IC_LBC=${DO_IC_LBC:-true}
 export USE_THE_LATEST_SATBIAS=${USE_THE_LATEST_SATBIAS:-false} # whether DA tasks use the latest satbias from the previous cycle
-export PHYSICS_SUITE=${PHYSICS_SUITE:-"convection_permitting"} # mesoscale_reference, convection_permitting
+export PHYSICS_SUITE=${PHYSICS_SUITE:-"hrrrv5"} # hrrrv5, mesoscale_reference, convection_permitting
 export KEEPDATA=${KEEPDATA:-"NO"}
 export MPI_RUN_CMD=${MPI_RUN_CMD:-"srun"}
 export USE_CONV_SAT_INFO=${USE_CONV_SAT_INFO:-true}
@@ -27,16 +26,16 @@ export EMPTY_OBS_SPACE_ACTION=${EMPTY_OBS_SPACE_ACTION:-"skip output"}
 if ${REALTIME:-false}; then
   export PREP_LBC_LOOK_BACK_HRS=${PREP_LBC_LOOK_BACK_HRS:-13} # Python range(0,13) will make it 0-12
 else
-  export PREP_LBC_LOOK_BACK_HRS=${PREP_LBC_LOOK_BACK_HRS:-${CYCLEDEF_LBC_STEP_HRS}}
+  LBC_CYCS=$(echo "${LBC_CYCS}" | xargs) # trim any leading, trailing and extra spaces
+  lbc_step_hrs=$(( 24*3/(${#LBC_CYCS}+1) ))
+  export PREP_LBC_LOOK_BACK_HRS=${PREP_LBC_LOOK_BACK_HRS:-${lbc_step_hrs}}
 fi
 
 # DO_CLEAN
 if ${DO_CLEAN:-false} && ! ${REALTIME:-false}; then
-  # when DO_CLEAN is set to true in retros, if STMP_CLEAN_HRS, COM_CLEAN_HRS and LOG_CLEAN_HRS
-  # are not specified, use the following values
-  export STMP_CLEAN_HRS=${STMP_CLEAN_HRS:-24}
-  export COM_CLEAN_HRS=${COM_CLEAN_HRS:-2400}  # 100 days
-  export LOG_CLEAN_HRS=${LOG_CLEAN_HRS:-2400}
+  export STMP_RETENTION_CYCS=${STMP_RETENTION_CYCS:-24}
+  export COM_RETENTION_CYCS=${COM_RETENTION_CYCS:-2400}  # 100 days
+  export LOG_RETENTION_CYCS=${LOG_RETENTION_CYCS:-2400}
 fi
 
 # ioda_bufr
@@ -44,6 +43,13 @@ export NODES_IODA_BUFR=${NODES_IODA_BUFR:-"<nodes>1:ppn=1</nodes>"}
 
 # ioda_mrms_refl
 export NODES_IODA_MRMS_REFL=${NODES_IODA_MRMS_REFL:-"<nodes>1:ppn=20</nodes>"}
+
+# nonvar_bufrobs
+export WALLTIME_NONVAR_BUFROBS=${WALLTIME_NONVAR_BUFROBS:-"00:25:00"}
+
+# nonvar_reflobs
+export NODES_NONVAR_REFLOBS=${NODES_NONVAR_REFLOBS:-"<nodes>2:ppn=24</nodes>"}
+export WALLTIME_NONVAR_REFLOBS=${WALLTIME_NONVAR_REFLOBS:-"00:25:00"}
 
 # ic
 export NODES_IC=${NODES_IC:-"<nodes>1:ppn=40</nodes>"}
@@ -62,6 +68,10 @@ export WALLTIME_PREP_LBC=${WALLTIME_PREP_LBC:-"00:30:00"}
 # da
 export NODES_DA=${NODES_DA:-"<nodes>1:ppn=40</nodes>"}
 
+# nonvar_cldana
+export NODES_NONVAR_CLDANA=${NODES_NONVAR_CLDANA:-"<nodes>2:ppn=20</nodes>"}
+export WALLTIME_NONVAR_CLDANA=${WALLTIME_NONVAR_CLDANA:-"00:20:00"}
+
 # fcst
 export NODES_FCST=${NODES_FCST:-"<nodes>3:ppn=40</nodes>"}
 export WALLTIME_FCST=${WALLTIME_FCST:-"00:50:00"}
@@ -72,7 +82,7 @@ export WALLTIME_SAVE_FCST=${WALLTIME_SAVE_FCST:-"00:50:00"}
 
 # ensmean
 export NODES_ENSMEAN=${NODES_ENSMEAN:-"<nodes>2:ppn=40</nodes>"}
-export WALLTIME_ENSMEAN=${WALLTIME_ENSMEAN:-"00:30:00"}
+export WALLTIME_ENSMEAN=${WALLTIME_ENSMEAN:-"00:60:00"}
 export NATIVE_ENSMEAN=${NATIVE_ENSMEAN:-""}
 
 # mpassit

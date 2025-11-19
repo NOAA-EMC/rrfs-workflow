@@ -17,13 +17,9 @@ def prep_lbc(xmlFile, expdir, do_ensemble=False):
         cycledefs = 'prod,spinup,spinup2,spinup3'
 
     # Task-specific EnVars beyond the task_common_vars
-    fcst_length = os.getenv('FCST_LENGTH', '1')
-    lbc_interval = os.getenv('LBC_INTERVAL', '3')
-    fcst_len_hrs_cycles = os.getenv('FCST_LEN_HRS_CYCLES', '3 15')
     dcTaskEnv = {
-        'FCST_LENGTH': f'{fcst_length}',
-        'LBC_INTERVAL': f'{lbc_interval}',
-        'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycles}'
+        'LBC_INTERVAL': os.getenv('LBC_INTERVAL', '3'),
+        'FCST_LEN_HRS_CYCLES': os.getenv('FCST_LEN_HRS_CYCLES', '03 03'),
     }
 
     if not do_ensemble:
@@ -47,6 +43,7 @@ def prep_lbc(xmlFile, expdir, do_ensemble=False):
 </metatask>\n'
         ensindexstr = "_m#ens_index#"
 
+    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
     timedep = ""
     realtime = os.getenv("REALTIME", "false")

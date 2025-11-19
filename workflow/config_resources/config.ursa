@@ -11,3 +11,4 @@ export RESERVATION2=${RESERVATION2:-${RESERVATION}}
 export NATIVE="--exclusive"
 export NATIVE_PREP=""
 export NATIVE_SAVE=""
+export NATIVE_CLEAN=""

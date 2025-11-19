@@ -12,12 +12,10 @@ def save_fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     else:
         cycledefs = 'prod'
     # Task-specific EnVars beyond the task_common_vars
-    fcst_length = os.getenv('FCST_LENGTH', '1')
     history_interval = os.getenv('HISTORY_INTERVAL', '1')
     restart_interval = os.getenv('RESTART_INTERVAL', '9999')
     fcst_len_hrs_cycles = os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
     dcTaskEnv = {
-        'FCST_LENGTH': f'{fcst_length}',
         'HISTORY_INTERVAL': f'{history_interval}',
         'RESTART_INTERVAL': f'{restart_interval}',
         'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycles}'
@@ -47,6 +45,7 @@ def save_fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
 </metatask>\n'
         ensdirstr = "/mem#ens_index#"
 
+    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
     if do_spinup:
         datadep = f'''<datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_spinup_@H_&rrfs_ver;/&WGF;{ensdirstr}/fcst_spinup_@H/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''

@@ -1,0 +1,16 @@
+<streams>
+<immutable_stream name="input"
+                  type="input"
+                  io_type="pnetcdf,cdf5"
+                  filename_template="static.nc"
+                  input_interval="initial_only" />
+
+<immutable_stream name="output"
+                  type="output"
+                  filename_template="invariant.nc"
+                  io_type="pnetcdf,cdf5"
+                  packages="initial_conds"
+                  clobber_mode="replace_files"
+                  output_interval="initial_only" />
+
+</streams>

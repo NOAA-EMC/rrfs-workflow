@@ -5,8 +5,8 @@ date
 rundir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 HOMErrfs="$(dirname "$rundir")"
 
-source "${HOMErrfs}/workflow/ush/detect_machine.sh"
-source "${HOMErrfs}/workflow/ush/init.sh"
+source "${HOMErrfs}/workflow/tools/detect_machine.sh"
+source "${HOMErrfs}/workflow/tools/init.sh"
 
 if [[ "${MACHINE}" == "derecho" ]]; then
   #export GFORTRAN_CONVERT_UNIT='big_endian:101-200'
@@ -66,7 +66,7 @@ cp ../_workaround_/RDASApp/saber/GSIParameters.h sorc/saber/src/saber/gsi/utils/
 cp ../_workaround_/RDASApp/saber/Geometry.cc sorc/saber/src/saber/interpolation/Geometry.cc
 
 rm -rf build/
-./build.sh -m MPAS -t NO -w NO
+./build.sh -m MPAS -t NO -w NO -b NO
 
 mkdir -p "${HOMErrfs}/exec"
 echo "copy ${EXEC} to ../exec/mpasjedi_variational.x"
