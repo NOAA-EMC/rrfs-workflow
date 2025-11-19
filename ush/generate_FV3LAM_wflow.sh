@@ -203,6 +203,7 @@ settings="\
   'run_fcst_tn': ${RUN_FCST_TN}
   'run_post_tn': ${RUN_POST_TN}
   'run_prdgen_tn': ${RUN_PRDGEN_TN}
+  'archive_retro': ${ARCHIVE_RETRO_TN}
   'analysis_jedi': ${ANALYSIS_JEDI_TN}
   'analysis_gsi': ${ANALYSIS_GSI_TN}
   'analysis_gsidiag': ${ANALYSIS_GSIDIAG_TN}
@@ -244,6 +245,7 @@ settings="\
   'nnodes_make_lbcs': ${NNODES_MAKE_LBCS}
   'nnodes_run_prepstart': ${NNODES_RUN_PREPSTART}
   'nnodes_run_fcst': ${NNODES_RUN_FCST}
+  'nnodes_run_archive_retro': ${NNODES_RUN_ARCHIVE_RETRO}
   'nnodes_run_analysis': ${NNODES_RUN_ANALYSIS}
   'nnodes_run_analysis_jedi': ${NNODES_RUN_ANALYSIS_JEDI}
   'nnodes_run_gsidiag': ${NNODES_RUN_GSIDIAG}
@@ -290,6 +292,7 @@ settings="\
   'ppn_make_lbcs': ${PPN_MAKE_LBCS}
   'ppn_run_prepstart': ${PPN_RUN_PREPSTART}
   'ppn_run_fcst': ${PPN_RUN_FCST}
+  'ppn_run_archive_retro': ${PPN_RUN_ARCHIVE_RETRO}
   'ppn_run_analysis': ${PPN_RUN_ANALYSIS}
   'ppn_run_analysis_jedi': ${PPN_RUN_ANALYSIS_JEDI}
   'ppn_run_gsidiag': ${PPN_RUN_GSIDIAG}
@@ -315,6 +318,7 @@ settings="\
 #
   'tpp_make_ics': ${TPP_MAKE_ICS}
   'tpp_make_lbcs': ${TPP_MAKE_LBCS}
+  'tpp_run_archive_retro': ${TPP_RUN_ARCHIVE_RETRO}
   'tpp_run_analysis': ${TPP_RUN_ANALYSIS}
   'tpp_run_analysis_jedi': ${TPP_RUN_ANALYSIS_JEDI}
   'tpp_run_enkf': ${TPP_RUN_ENKF}
@@ -337,6 +341,7 @@ settings="\
   'wtime_run_fcst': ${WTIME_RUN_FCST}
   'wtime_run_fcst_long': ${WTIME_RUN_FCST_LONG}
   'wtime_run_fcst_spinup': ${WTIME_RUN_FCST_SPINUP}
+  'wtime_run_archive_retro': ${WTIME_RUN_ARCHIVE_RETRO}
   'wtime_run_analysis': ${WTIME_RUN_ANALYSIS}
   'wtime_run_gsidiag': ${WTIME_RUN_GSIDIAG}
   'wtime_run_postanal': ${WTIME_RUN_POSTANAL}
@@ -402,6 +407,7 @@ settings="\
   'maxtries_make_lbcs': ${MAXTRIES_MAKE_LBCS}
   'maxtries_run_prepstart': ${MAXTRIES_RUN_PREPSTART}
   'maxtries_run_fcst': ${MAXTRIES_RUN_FCST}
+  'maxtries_run_archive_retro': ${MAXTRIES_RUN_ARCHIVE_RETRO}
   'maxtries_analysis_jedi': ${MAXTRIES_ANALYSIS_JEDI}
   'maxtries_analysis_gsi': ${MAXTRIES_ANALYSIS_GSI}
   'maxtries_postanal': ${MAXTRIES_POSTANAL}
@@ -574,6 +580,10 @@ settings="\
 # JEDIVAR related parameters
 #
   'do_jedivar': ${DO_JEDIVAR}
+#
+# archive retro related parameters
+#
+  'do_archive_retro': ${DO_ARCHIVE_RETRO}
 #
 # smoke and dust related parameters.
 #
