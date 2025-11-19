@@ -214,9 +214,9 @@ done
 #-----------------------------------------------------------------------
 #
 export PYTHONUNBUFFERED=1
-export PYIODALIB="$RDASAPP_DIR/build/lib/python3.*"
-export PYTHONPATH="${PYTHONPATH}:$RDASAPP_DIR/build/lib/python3.*:$RDASAPP_DIR/sorc/wxflow/src"
-export PYTHONPATH="$PYIODALIB:$RDASAPP_DIR/sorc/wxflow/src:${PYTHONPATH}"
+#export PYIODALIB="$RDASAPP_DIR/build/lib/python3.*"
+#export PYTHONPATH="${PYTHONPATH}:$RDASAPP_DIR/build/lib/python3.*:$RDASAPP_DIR/sorc/wxflow/src"
+#export PYTHONPATH="$PYIODALIB:$RDASAPP_DIR/sorc/wxflow/src:${PYTHONPATH}"
 
 # pyioda libraries
 shopt -s nullglob
