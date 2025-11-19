@@ -15,7 +15,7 @@ if [[ "${1,,}" == "chem" ]] || [[ "${2,,}" == "chem" ]]; then
   cd "${HOMErrfs}/sorc" || exit 1
   echo "Option 'chem' found in the command line, downloading chem-specific MPAS-Model ......"
   remote_url="https://github.com/cheMPAS-Fire/MPAS-Model"
-  branch_commit="chem/develop"  # a branch name or a commit hash
+  branch_commit="a1e701f5"  # a branch name or a commit hash
   mv MPAS-Model "MPAS-Model.$(date +%s)" # save a copy of current MPAS-Model
   git clone "${remote_url}" MPAS-Model
   cd "${HOMErrfs}/sorc/MPAS-Model" || exit 1
