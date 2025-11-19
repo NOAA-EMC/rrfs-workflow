@@ -500,7 +500,7 @@ cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/mgbf_p196_14x14.nml .
 #
 #-----------------------------------------------------------------------
 #
-if [ ${DO_DACOLD} = "FALSE" ]; then
+if [ ${DO_DACOLD} = "FALSE" ] && [ ${BKTYPE} -eq 1 ]; then
   echo "Not performing DA for cold cycles - do early clean exit"
   exit 0
 fi
