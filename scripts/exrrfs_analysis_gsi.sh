@@ -1029,7 +1029,7 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-if [ ${DO_DACOLD} = "FALSE" ]; then
+if [[ "${DO_DACOLD}" = "FALSE" && "${BKTYPE}" -eq 1 ]]; then
   echo "Not performing DA for cold cycles - do early clean exit"
   exit 0
 fi
