@@ -30,6 +30,7 @@ if [[ ${MESH_NAME} == "conus12km" ]]; then
   export NONVAR_METAR_IMPACT=40
   export NONVAR_PROJ_NAME="CONUS"
   export NONVAR_USERDX=12000
+  export NONVAR_SEARCH_RAD=4
 
 elif [[ ${MESH_NAME} == "conus3km" ]]; then
   export FCST_DT=15
@@ -56,6 +57,7 @@ elif [[ ${MESH_NAME} == "conus3km" ]]; then
   export NONVAR_METAR_IMPACT=20
   export NONVAR_PROJ_NAME="CONUS"
   export NONVAR_USERDX=3000
+  export NONVAR_SEARCH_RAD=1
 
 elif [[ ${MESH_NAME} == "south3.5km" ]]; then
   export FCST_DT=25
@@ -73,4 +75,5 @@ elif [[ ${MESH_NAME} == "south3.5km" ]]; then
   export NONVAR_METAR_IMPACT=20
   export NONVAR_PROJ_NAME="CONUS"
   export NONVAR_USERDX=3500
+  export NONVAR_SEARCH_RAD=1
 fi

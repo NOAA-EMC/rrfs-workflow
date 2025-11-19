@@ -16,7 +16,7 @@ export ZETA_LEVELS="L65.txt"
 #
 export DO_IODA=true
 export DO_JEDI=true
-export DO_NONVAR_CLOUD_ANA=true
+export DO_NONVAR_CLOUD_ANA=false
 export COLDSTART_CYCS_DO_DA=false
 export DO_CHEMISTRY=false
 export DO_CLEAN=true
