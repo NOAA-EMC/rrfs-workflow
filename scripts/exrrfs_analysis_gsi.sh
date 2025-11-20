@@ -1054,6 +1054,7 @@ fi
 
 $APRUN ./$pgm < gsiparm.anl >>$pgmout 2>errfile
 cp $pgmout rrfs.t${HH}z.gsiout.tm00
+cp $pgmout ${COMOUT}/gsi_${YYYYMMDDHH}.log
 export err=$?; err_chk
 mv errfile errfile_gsi
 
