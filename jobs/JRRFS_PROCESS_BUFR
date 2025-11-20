@@ -63,6 +63,8 @@ cd ${DATA}
 export cycle="t${cyc}z"
 setpdy.sh
 . ./PDY
+export CDATE="${PDY}${cyc}"
+
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   export COMOUT_ANALYSIS=${COMrrfs}/${RUN}.${PDY}/${cyc}_spinup/analysis
 else
@@ -122,3 +124,11 @@ print_info_msg "
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
+
+##################################################
+# Remove the Temporary working directory
+##################################################
+if [ "${KEEPDATA^^}" != YES ]; then
+  cd $DATAROOT
+  rm -rf $DATA
+fi

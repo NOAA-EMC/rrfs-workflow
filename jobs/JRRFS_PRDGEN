@@ -46,6 +46,7 @@ cd ${DATA}
 export cycle="t${cyc}z"
 setpdy.sh
 . ./PDY
+export CDATE="${PDY}${cyc}"
 
 #-----------------------------------------------------------------------
 # Source the bash utility functions.
@@ -120,3 +121,11 @@ print_info_msg "
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
+
+##################################################
+# Remove the Temporary working directory
+##################################################
+if [ "${KEEPDATA^^}" != YES ]; then
+  cd $DATAROOT
+  rm -rf $DATA
+fi

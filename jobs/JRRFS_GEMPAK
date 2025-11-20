@@ -70,10 +70,10 @@ if [ -e "$pgmout" ]; then
   cat $pgmout
 fi
 
-#############################
+##################################################
 # Remove the Temporary working directory
-##############################
-cd $DATAROOT
-if [ ${KEEPDATA:-YES} = NO ] ; then rm -rf $DATA ; fi
-
-exit $err
+##################################################
+if [ "${KEEPDATA^^}" != YES ]; then
+  cd $DATAROOT
+  rm -rf $DATA
+fi
