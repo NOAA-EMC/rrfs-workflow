@@ -514,9 +514,9 @@ cp "${jedi_exec}" "${analworkdir}/${pgm}"
 . prep_step
 
 ${APRUN} ./$pgm jedivar.yaml >>$pgmout 2>errfile
+cp $pgmout ${COMOUT}/jedi_${YYYYMMDDHH}.log
 export err=$?; err_chk
 mv errfile errfile_jedi
-cp $pgmout ${COMOUT}/jedi_${YYYYMMDDHH}.log
 #
 #-----------------------------------------------------------------------
 #
