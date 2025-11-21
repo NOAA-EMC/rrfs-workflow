@@ -5,7 +5,7 @@
 
 grid_specs_20km="lambert:-97.5:38.5 -133.174:449:20000.0 5.47114:299:20000.0"
 
-${WGRIB2} ${GRIB_FILE} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
+${WGRIB2} ${GRIBFILE} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
        -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH"               \
        -new_grid_interpolation neighbor                                  \
        -new_grid ${grid_specs_20km} "tmp.${GRIBFILE_LOCAL}"

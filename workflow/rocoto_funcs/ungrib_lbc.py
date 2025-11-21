@@ -14,8 +14,8 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     interval = int(os.getenv('LBC_INTERVAL', '3'))
     extrn_mdl_source = os.getenv('LBC_EXTRN_MDL_NAME', 'GFS')
     lbc_source_basedir = os.getenv('LBC_EXTRN_MDL_BASEDIR', '')
-    lbc_name_pattern = os.getenv('LBC_EXTRN_MDL_NAME_PATTERN', '')
-    lbc_name_pattern_b = os.getenv('LBC_EXTRN_MDL_NAME_PATTERN_B', '')
+    lbc_filename_pattern = os.getenv('LBC_EXTRN_MDL_FILENAME_PATTERN', '')
+    lbc_filename_pattern_b = os.getenv('LBC_EXTRN_MDL_FILENAME_PATTERN_B', '')
     lbc_ungrib_group_total_num = int(os.getenv('LBC_UNGRIB_GROUP_TOTAL_NUM', '1'))
     group_indices = ''.join(f'{i:02d} ' for i in range(1, int(lbc_ungrib_group_total_num) + 1)).strip()
 
@@ -23,7 +23,7 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     dcTaskEnv = {
         'TYPE': 'lbc',
         'SOURCE_BASEDIR': f'<cyclestr offset="-{offset}:00:00">{lbc_source_basedir}</cyclestr>',
-        'NAME_PATTERN': f'<cyclestr offset="-{offset}:00:00">{lbc_name_pattern}</cyclestr>',
+        'FILENAME_PATTERN': f'<cyclestr offset="-{offset}:00:00">{lbc_filename_pattern}</cyclestr>',
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
         'OFFSET': f'{offset}',
         'LENGTH': f'{length}',
@@ -73,11 +73,11 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
         fpath = f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.f{offset:>03}'
         fpath2 = f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.f{offset:>03}'
     else:
-        fpath = f'{lbc_source_basedir}/{lbc_name_pattern}'
+        fpath = f'{lbc_source_basedir}/{lbc_filename_pattern}'
 
-    if lbc_name_pattern_b != '':
-        dcTaskEnv['NAME_PATTERN_B'] = f'<cyclestr offset="-{offset}:00:00">{lbc_name_pattern_b}</cyclestr>'
-        fpath2 = f'{lbc_source_basedir}/{lbc_name_pattern_b}'
+    if lbc_filename_pattern_b != '':
+        dcTaskEnv['FILENAME_PATTERN_B'] = f'<cyclestr offset="-{offset}:00:00">{lbc_filename_pattern_b}</cyclestr>'
+        fpath2 = f'{lbc_source_basedir}/{lbc_filename_pattern_b}'
 
     timedep = ""
     realtime = os.getenv("REALTIME", "false")
@@ -92,10 +92,12 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     for i in range(int(offset), int(length) + int(offset) + 1, int(interval)):
         comin_hr3 = str(i).zfill(3)
         fpath3 = fpath.replace('fHHH', comin_hr3)
+        fpath3 = fpath3.replace('fHH', str(i).zfill(2))
         datadep = datadep + \
             f'\n     <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath3}</cyclestr></datadep>'
-        if lbc_name_pattern_b != '':
+        if lbc_filename_pattern_b != '':
             fpath4 = fpath2.replace('fHHH', comin_hr3)
+            fpath4 = fpath4.replace('fHH', str(i).zfill(2))
             datadep = datadep + \
                 f'\n     <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath4}</cyclestr></datadep>'
 
