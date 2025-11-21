@@ -9,12 +9,12 @@ cpreq=${cpreq:-cpreq}
 CDATEin=$(${NDATE} "-${OFFSET}" "${CDATE}") #CDATE for input external data
 if [[ "${EXTRN_MDL_SOURCE}" == "GFS_NCO" ]]; then
   SOURCE_BASEDIR=${COMINgfs}/gfs.${CDATEin:0:8}/${CDATEin:8:2}
-  NAME_PATTERN=gfs.t${CDATEin:8:2}z.pgrb2.0p25.fHHH
-  NAME_PATTERN_B=gfs.t${CDATEin:8:2}z.pgrb2b.0p25.fHHH
+  FILENAME_PATTERN=gfs.t${CDATEin:8:2}z.pgrb2.0p25.fHHH
+  FILENAME_PATTERN_B=gfs.t${CDATEin:8:2}z.pgrb2b.0p25.fHHH
 elif [[ "${EXTRN_MDL_SOURCE}" == "GEFS_NCO" ]]; then
   SOURCE_BASEDIR=${COMINgefs}/gefs.${CDATEin:0:8}/${CDATEin:8:2}/pgrb2ap5
-  NAME_PATTERN=gep${ENS_INDEX:1}.t${CDATEin:8:2}z.pgrb2a.0p50.fHHH
-  NAME_PATTERN_B=gep${ENS_INDEX:1}.t${CDATEin:8:2}z.pgrb2b.0p50.fHHH
+  FILENAME_PATTERN=gep${ENS_INDEX:1}.t${CDATEin:8:2}z.pgrb2a.0p50.fHHH
+  FILENAME_PATTERN_B=gep${ENS_INDEX:1}.t${CDATEin:8:2}z.pgrb2b.0p50.fHHH
 fi
 prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
 
@@ -44,9 +44,9 @@ for fhr in  ${fhr_all}; do
   HHH=$(printf %03d $((10#$fhr)) )
   HH=$(printf %02d $((10#$fhr)) )
   GRIBFILE_LOCAL=$( "${USHrrfs}/num_to_GRIBFILE.XXX.sh"  "${knt}" )
-  NAME_FILE=${NAME_PATTERN/fHHH/${HHH}}
-  NAME_FILE=${NAME_FILE/fHH/${HH}}
-  GRIBFILE="${SOURCE_BASEDIR}/${NAME_FILE}"
+  TARGET_FILE=${FILENAME_PATTERN/fHHH/${HHH}}
+  TARGET_FILE=${TARGET_FILE/fHH/${HH}}
+  GRIBFILE="${SOURCE_BASEDIR}/${TARGET_FILE}"
   if [[ "${prefix}" == *RRFS*  ]]; then
     if [[ -s "${GRIBFILE}" ]]; then
       source "${USHrrfs}"/ungrib_rrfs.sh # prepare "${GRIBFILE_LOCAL}"
@@ -63,11 +63,11 @@ for fhr in  ${fhr_all}; do
     fi
   elif [[ -s "${GRIBFILE}" ]]; then
     ${cpreq} "${GRIBFILE}"  "${GRIBFILE_LOCAL}"
-    # if NAME_PATTERN_B is defined and non-empty
-    if [ -n "${NAME_PATTERN_B+x}" ] && [ -n "${NAME_PATTERN_B}" ]; then
-      NAME_FILE=${NAME_PATTERN_B/fHHH/${HHH}}
-      NAME_FILE=${NAME_FILE/fHH/${HH}}
-      GRIBFILE="${SOURCE_BASEDIR}/${NAME_FILE}"
+    # if FILENAME_PATTERN_B is defined and non-empty
+    if [ -n "${FILENAME_PATTERN_B+x}" ] && [ -n "${FILENAME_PATTERN_B}" ]; then
+      TARGET_FILE=${FILENAME_PATTERN_B/fHHH/${HHH}}
+      TARGET_FILE=${TARGET_FILE/fHH/${HH}}
+      GRIBFILE="${SOURCE_BASEDIR}/${TARGET_FILE}"
       cat "${GRIBFILE}" >> "${GRIBFILE_LOCAL}"
     fi
   else

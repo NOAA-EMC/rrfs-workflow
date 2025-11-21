@@ -11,14 +11,14 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
     #
     extrn_mdl_source = os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined')
     ic_source_basedir = os.getenv('IC_EXTRN_MDL_BASEDIR', 'MDL_BASEDIR_not_defined')
-    ic_name_pattern = os.getenv('IC_EXTRN_MDL_NAME_PATTERN', 'NAME_PATTERN_not_defined')
-    ic_name_pattern_b = os.getenv('IC_EXTRN_MDL_NAME_PATTERN_B', '')
+    ic_filename_pattern = os.getenv('IC_EXTRN_MDL_FILENAME_PATTERN', 'FILENAME_PATTERN_not_defined')
+    ic_filename_pattern_b = os.getenv('IC_EXTRN_MDL_FILENAME_PATTERN_B', '')
     offset = os.getenv('IC_OFFSET', '3')
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
         'TYPE': 'ic',
         'SOURCE_BASEDIR': f'<cyclestr offset="-{offset}:00:00">{ic_source_basedir}</cyclestr>',
-        'NAME_PATTERN': f'<cyclestr offset="-{offset}:00:00">{ic_name_pattern}</cyclestr>',
+        'FILENAME_PATTERN': f'<cyclestr offset="-{offset}:00:00">{ic_filename_pattern}</cyclestr>',
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
         'OFFSET': f'{offset}',
     }
@@ -55,7 +55,7 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
         fpath = f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.f{offset:>03}'
         fpath2 = f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.f{offset:>03}'
     else:
-        fpath = f'{ic_source_basedir}/{ic_name_pattern}'.replace('fHHH', offset.zfill(3))
+        fpath = f'{ic_source_basedir}/{ic_filename_pattern}'.replace('fHHH', offset.zfill(3))
         fpath = f'{fpath}'.replace('fHH', offset.zfill(2))
 
     timedep = ""
@@ -65,9 +65,9 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
     #
     datadep = f'  <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath}</cyclestr></datadep>'
-    if ic_name_pattern_b != '':
-        dcTaskEnv['NAME_PATTERN_B'] = f'<cyclestr offset="-{offset}:00:00">{ic_name_pattern_b}</cyclestr>'
-        fpath2 = f'{ic_source_basedir}/{ic_name_pattern_b}'.replace('fHHH', offset.zfill(3))
+    if ic_filename_pattern_b != '':
+        dcTaskEnv['FILENAME_PATTERN_B'] = f'<cyclestr offset="-{offset}:00:00">{ic_filename_pattern_b}</cyclestr>'
+        fpath2 = f'{ic_source_basedir}/{ic_filename_pattern_b}'.replace('fHHH', offset.zfill(3))
         fpath2 = f'{fpath2}'.replace('fHH', offset.zfill(2))
         datadep = datadep + \
             f'\n    <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath2}</cyclestr></datadep>'
