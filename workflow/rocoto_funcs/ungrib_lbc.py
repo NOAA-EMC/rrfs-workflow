@@ -92,12 +92,12 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     for i in range(int(offset), int(length) + int(offset) + 1, int(interval)):
         comin_hr3 = str(i).zfill(3)
         fpath3 = fpath.replace('fHHH', comin_hr3)
-        fpath3 = fpath.replace('fHH', str(i).zfill(2))
+        fpath3 = fpath3.replace('fHH', str(i).zfill(2))
         datadep = datadep + \
             f'\n     <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath3}</cyclestr></datadep>'
         if lbc_name_pattern_b != '':
             fpath4 = fpath2.replace('fHHH', comin_hr3)
-            fpath4 = fpath2.replace('fHH', str(i).zfill(2))
+            fpath4 = fpath4.replace('fHH', str(i).zfill(2))
             datadep = datadep + \
                 f'\n     <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath4}</cyclestr></datadep>'
 
