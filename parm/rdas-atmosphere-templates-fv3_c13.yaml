@@ -17,6 +17,8 @@ output_ensemble_increments_file: atmosphere_output_ensemble_increments_gaussian
 model_file: atmosphere_model_pseudo
 initial_condition_file: atmosphere_background
 background_error_file: atmosphere_background_error_hybrid3denvar_mgbf
+#background_error_file: atmosphere_background_error_3dvar_gsibec
+#background_error_file: atmosphere_background_error_3dvar_bumpID
 
 # Global analysis things
 # ----------------------
@@ -196,60 +198,60 @@ atmosphere_final_increment_prefix: "./anl/atminc."
 # ------------------
 observations:
 # Upper-air conventional
-#- adpupa_airTemperature_120
-#- adpupa_airTemperature_132
-#- adpupa_specificHumidity_120
-#- adpupa_specificHumidity_132
-#- adpupa_stationPressure_120
-#- adpupa_winds_220
-#- adpupa_winds_232
+- adpupa_airTemperature_120
+- adpupa_airTemperature_132
+- adpupa_specificHumidity_120
+- adpupa_specificHumidity_132
+- adpupa_stationPressure_120
+- adpupa_winds_220
+- adpupa_winds_232
 
 - aircar_airTemperature_133
-#- aircar_specificHumidity_133
-#- aircar_winds_233
-#
-#- aircft_airTemperature_130
-#- aircft_airTemperature_131
-#- aircft_airTemperature_134
-#- aircft_airTemperature_135
-#- aircft_specificHumidity_134
-#- aircft_winds_230
-#- aircft_winds_231
-#- aircft_winds_234
-#- aircft_winds_235
+- aircar_specificHumidity_133
+- aircar_winds_233
 
-#- proflr_winds_227
-#- vadwnd_winds_224
-#- rassda_airTemperature_126
+- aircft_airTemperature_130
+- aircft_airTemperature_131
+- aircft_airTemperature_134
+- aircft_airTemperature_135
+- aircft_specificHumidity_134
+- aircft_winds_230
+- aircft_winds_231
+- aircft_winds_234
+- aircft_winds_235
+
+- proflr_winds_227
+- vadwnd_winds_224
+- rassda_airTemperature_126
 
 # Surface conventional
-#- adpsfc_airTemperature_181
-#- adpsfc_airTemperature_183
-#- adpsfc_airTemperature_187
-#- adpsfc_specificHumidity_181
-#- adpsfc_specificHumidity_183
-#- adpsfc_specificHumidity_187
-#- adpsfc_stationPressure_181
-#- adpsfc_stationPressure_187
-#- adpsfc_winds_281
-#- adpsfc_winds_284
-#- adpsfc_winds_287
-#- msonet_airTemperature_188
-#- msonet_specificHumidity_188
-#- msonet_stationPressure_188
-#- msonet_winds_288
+- adpsfc_airTemperature_181
+- adpsfc_airTemperature_183
+- adpsfc_airTemperature_187
+- adpsfc_specificHumidity_181
+- adpsfc_specificHumidity_183
+- adpsfc_specificHumidity_187
+- adpsfc_stationPressure_181
+- adpsfc_stationPressure_187
+- adpsfc_winds_281
+- adpsfc_winds_284
+- adpsfc_winds_287
+- msonet_airTemperature_188
+- msonet_specificHumidity_188
+- msonet_stationPressure_188
+- msonet_winds_288
 
-#- sfcshp_airTemperature_180
-#- sfcshp_airTemperature_182
-#- sfcshp_airTemperature_183
-#- sfcshp_specificHumidity_180
-#- sfcshp_specificHumidity_182
-#- sfcshp_specificHumidity_183
-#- sfcshp_stationPressure_180
-#- sfcshp_stationPressure_182
-#- sfcshp_winds_280
-#- sfcshp_winds_282
-#- sfcshp_winds_284
+- sfcshp_airTemperature_180
+- sfcshp_airTemperature_182
+- sfcshp_airTemperature_183
+- sfcshp_specificHumidity_180
+- sfcshp_specificHumidity_182
+- sfcshp_specificHumidity_183
+- sfcshp_stationPressure_180
+- sfcshp_stationPressure_182
+- sfcshp_winds_280
+- sfcshp_winds_282
+- sfcshp_winds_284
 
 # Remote
 #- gnss_zenithTotalDelay
@@ -268,75 +270,75 @@ observations:
 
 # Analysis iuse flag (default: passivate)
 # Upper-air conventional
-iuse_adpupa_airTemperature_120: accept
-iuse_adpupa_airTemperature_132: accept
-iuse_adpupa_specificHumidity_120: accept
-iuse_adpupa_specificHumidity_132: accept
-iuse_adpupa_stationPressure_120: accept
-iuse_adpupa_winds_220: accept
-iuse_adpupa_winds_232: accept
+iuse_adpupa_airTemperature_120: passivate
+iuse_adpupa_airTemperature_132: passivate
+iuse_adpupa_specificHumidity_120: passivate
+iuse_adpupa_specificHumidity_132: passivate
+iuse_adpupa_stationPressure_120: passivate
+iuse_adpupa_winds_220: passivate
+iuse_adpupa_winds_232: passivate
 
 iuse_aircar_airTemperature_133: accept
-iuse_aircar_specificHumidity_133: accept
+iuse_aircar_specificHumidity_133: passivate
 iuse_aircar_winds_233: accept
 
-iuse_aircft_airTemperature_130: accept
-iuse_aircft_airTemperature_131: accept
-iuse_aircft_airTemperature_134: accept
-iuse_aircft_airTemperature_135: accept
-iuse_aircft_specificHumidity_134: accept
-iuse_aircft_winds_230: accept
-iuse_aircft_winds_231: accept
-iuse_aircft_winds_234: accept
-iuse_aircft_winds_235: accept
+iuse_aircft_airTemperature_130: passivate
+iuse_aircft_airTemperature_131: passivate
+iuse_aircft_airTemperature_134: passivate
+iuse_aircft_airTemperature_135: passivate
+iuse_aircft_specificHumidity_134: passivate
+iuse_aircft_winds_230: passivate
+iuse_aircft_winds_231: passivate
+iuse_aircft_winds_234: passivate
+iuse_aircft_winds_235: passivate
 
-iuse_proflr_winds_227: accept
-iuse_vadwnd_winds_224: accept
-iuse_rassda_airTemperature_126: accept
+iuse_proflr_winds_227: passivate
+iuse_vadwnd_winds_224: passivate
+iuse_rassda_airTemperature_126: passivate
 
 # Surface conventional
-iuse_adpsfc_airTemperature_181: accept
-iuse_adpsfc_airTemperature_183: accept
-iuse_adpsfc_airTemperature_187: accept
-iuse_adpsfc_specificHumidity_181: accept
-iuse_adpsfc_specificHumidity_183: accept
-iuse_adpsfc_specificHumidity_187: accept
-iuse_adpsfc_stationPressure_181: accept
-iuse_adpsfc_stationPressure_187: accept
-iuse_adpsfc_winds_281: accept
-iuse_adpsfc_winds_284: accept
-iuse_adpsfc_winds_287: accept
-iuse_msonet_airTemperature_188: accept
-iuse_msonet_specificHumidity_188: accept
-iuse_msonet_stationPressure_188: accept
-iuse_msonet_winds_288: accept
+iuse_adpsfc_airTemperature_181: passivate
+iuse_adpsfc_airTemperature_183: passivate
+iuse_adpsfc_airTemperature_187: passivate
+iuse_adpsfc_specificHumidity_181: passivate
+iuse_adpsfc_specificHumidity_183: passivate
+iuse_adpsfc_specificHumidity_187: passivate
+iuse_adpsfc_stationPressure_181: passivate
+iuse_adpsfc_stationPressure_187: passivate
+iuse_adpsfc_winds_281: passivate
+iuse_adpsfc_winds_284: passivate
+iuse_adpsfc_winds_287: passivate
+iuse_msonet_airTemperature_188: passivate
+iuse_msonet_specificHumidity_188: passivate
+iuse_msonet_stationPressure_188: passivate
+iuse_msonet_winds_288: passivate
 
-iuse_sfcshp_airTemperature_180: accept
-iuse_sfcshp_airTemperature_182: accept
-iuse_sfcshp_airTemperature_183: accept
-iuse_sfcshp_specificHumidity_180: accept
-iuse_sfcshp_specificHumidity_182: accept
-iuse_sfcshp_specificHumidity_183: accept
-iuse_sfcshp_stationPressure_180: accept
-iuse_sfcshp_stationPressure_182: accept
-iuse_sfcshp_winds_280: accept
-iuse_sfcshp_winds_282: accept
-iuse_sfcshp_winds_284: accept
+iuse_sfcshp_airTemperature_180: passivate
+iuse_sfcshp_airTemperature_182: passivate
+iuse_sfcshp_airTemperature_183: passivate
+iuse_sfcshp_specificHumidity_180: passivate
+iuse_sfcshp_specificHumidity_182: passivate
+iuse_sfcshp_specificHumidity_183: passivate
+iuse_sfcshp_stationPressure_180: passivate
+iuse_sfcshp_stationPressure_182: passivate
+iuse_sfcshp_winds_280: passivate
+iuse_sfcshp_winds_282: passivate
+iuse_sfcshp_winds_284: passivate
 
 # Remote
-iuse_gnss_zenithTotalDelay: accept
-iuse_satwnd_winds_245_270: accept
-iuse_satwnd_winds_245_272: accept
+iuse_gnss_zenithTotalDelay: passivate
+iuse_satwnd_winds_245_270: passivate
+iuse_satwnd_winds_245_272: passivate
 
 # SatRad
-iuse_abi_g16: accept
-iuse_abi_g18: accept
-iuse_amsua_n19: accept
-iuse_amsua_metop-b: accept
-iuse_amsua_metop-c: accept
-iuse_atms_npp: accept
-iuse_atms_n20: accept
-iuse_atms_n21: accept
+iuse_abi_g16: passivate
+iuse_abi_g18: passivate
+iuse_amsua_n19: passivate
+iuse_amsua_metop-b: passivate
+iuse_amsua_metop-c: passivate
+iuse_atms_npp: passivate
+iuse_atms_n20: passivate
+iuse_atms_n21: passivate
 
 crtm_coefficient_path: "Data/crtm"
 
