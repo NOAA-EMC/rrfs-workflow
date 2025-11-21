@@ -514,6 +514,8 @@ cp "${jedi_exec}" "${analworkdir}/${pgm}"
 . prep_step
 
 ${APRUN} ./$pgm jedivar.yaml >>$pgmout 2>errfile
+cp $pgmout ${COMOUT}/rrfs.t${HH}z.jediout.tm00
+cp rdas-atmosphere-templates-fv3_c13.yaml jedivar.yaml ${COMOUT}
 export err=$?; err_chk
 mv errfile errfile_jedi
 #
