@@ -30,8 +30,8 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
         'INTERVAL': f'{interval}',
     }
 
-    if os.getenv('DO_CHEMISTRY', 'false').lower() == "true":
-        dcTaskEnv['USE_EXTERNAL_CHEM'] = os.getenv('USE_EXTERNAL_CHEM_LBCS', 'FALSE').lower()
+    if os.getenv('DO_CHEMISTRY', 'FALSE').upper() == "TRUE":
+        dcTaskEnv['USE_EXTERNAL_CHEM'] = os.getenv('USE_EXTERNAL_CHEM_LBCS', 'FALSE').upper()
 
     if not do_ensemble:
         meta_bgn = ""
@@ -80,7 +80,7 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
         fpath2 = f'{lbc_source_basedir}/{lbc_filename_pattern_b}'
 
     timedep = ""
-    realtime = os.getenv("REALTIME", "false")
+    realtime = os.getenv("REALTIME", "FALSE")
     if realtime.upper() == "TRUE":
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
         timedep = f'\n     <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'

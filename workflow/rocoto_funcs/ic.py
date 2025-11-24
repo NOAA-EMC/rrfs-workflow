@@ -17,8 +17,8 @@ def ic(xmlFile, expdir, do_ensemble=False):
         'NSOIL_LEVELS': os.getenv('NSOIL_LEVELS', '9'),
     }
 
-    if os.getenv('DO_CHEMISTRY', 'false').lower() == "true":
-        dcTaskEnv['USE_EXTERNAL_CHEM'] = os.getenv('USE_EXTERNAL_CHEM_ICS', 'FALSE').lower()
+    if os.getenv('DO_CHEMISTRY', 'FALSE').upper() == "TRUE":
+        dcTaskEnv['USE_EXTERNAL_CHEM'] = os.getenv('USE_EXTERNAL_CHEM_ICS', 'FALSE').upper()
         dcTaskEnv['CHEM_GROUPS'] = os.getenv('CHEM_GROUPS', 'smoke')
 
     if not do_ensemble:
@@ -43,7 +43,7 @@ def ic(xmlFile, expdir, do_ensemble=False):
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
     timedep = ""
-    realtime = os.getenv("REALTIME", "false")
+    realtime = os.getenv("REALTIME", "FALSE")
     if realtime.upper() == "TRUE":
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
         timedep = f'\n      <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
