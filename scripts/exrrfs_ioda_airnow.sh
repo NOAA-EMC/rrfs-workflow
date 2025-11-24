@@ -7,11 +7,11 @@ cpreq=${cpreq:-cpreq}
 cd "${DATA}" || exit 1
 
 # link the AIRNOW files
-${cpreq} "${OBSPATH}/HourlyData_${CDATE}.dat" airnow
-${cpreq} "${OBSPATH}/monitoring_site_locations_${PDY}.dat" sites
+${cpreq} "${OBSPATH_AIRNOW}/HourlyData_${CDATE}.dat" airnow
+${cpreq} "${OBSPATH_AIRNOW}/monitoring_site_locations_${PDY}.dat" sites
 
 HOMErdasapp=${HOMErrfs}/sorc/RDASApp/
-${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/airnow2ioda_nc.py .
+${cpreq} "${HOMErdasapp}"/sorc/iodaconv/src/compo/airnow2ioda_nc.py .
 
 # pyioda libraries
 PYIODALIB=$(echo "$HOMErdasapp"/build/lib/python3.*)
