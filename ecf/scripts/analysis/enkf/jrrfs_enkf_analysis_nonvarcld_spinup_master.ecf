@@ -14,7 +14,26 @@ export cyc="%CYC%"
 ############################################################
 # Load modules
 ############################################################
-
+module load intel/${intel_ver}
+module load craype/${craype_ver}
+module load python/${python_ver}
+module load prod_util/${prod_util_ver}
+module load cray-mpich/${cray_mpich_ver}
+module load cray-pals/${cray_pals_ver}
+module load hdf5-D/${hdf5_ver}
+module load netcdf-D/${netcdf_ver}
+module load pnetcdf-D/${pnetcdf_ver}
+module load bacio/${bacio_ver}
+module load w3emc/${w3emc_ver}
+module load sp/${sp_ver}
+module load ip/${ip_ver}
+module load nemsio/${nemsio_ver}
+module load ncdiag-A/${ncdiag_ver}
+module load libjpeg/${libjpeg_ver}
+module load crtm/${crtm_ver}
+module load udunits/${udunits_ver}
+module load gsl/${gsl_ver}
+module load nco/${nco_ver}
 
 export WGF="%WGF%"
 export MEMBER_NAME="%MEMBER_NAME%"
@@ -23,7 +42,7 @@ module list
 ############################################################
 # CALL executable job script here
 ############################################################
-${HOMErrfs}/ush/load_modules_run_task.sh "analysis_gsi" "${HOMErrfs}/jobs/JRRFS_ANALYSIS_NONVARCLD"
+${HOMErrfs}/jobs/JRRFS_ANALYSIS_NONVARCLD
 
 %include <tail.h>
 
