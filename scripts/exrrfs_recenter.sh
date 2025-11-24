@@ -129,9 +129,12 @@ for imem in  $(seq 1 $nens)
       ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem${memberstring}_tracer
       ln -sf ${bkpath}/sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
     else
-      ln -sf ${bkpath}/bk_fv_core.res.tile1.nc  ./fv3sar_tile1_mem${memberstring}_dynvar
-      ln -sf ${bkpath}/bk_fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem${memberstring}_tracer
-      ln -sf ${bkpath}/bk_sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
+      ln -sf ${bkpath}/fv_core.res.tile1.nc  ./fv3sar_tile1_mem${memberstring}_dynvar
+      ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem${memberstring}_tracer
+      ln -sf ${bkpath}/sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
+      #ln -sf ${bkpath}/bk_fv_core.res.tile1.nc  ./fv3sar_tile1_mem${memberstring}_dynvar
+      #ln -sf ${bkpath}/bk_fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem${memberstring}_tracer
+      #ln -sf ${bkpath}/bk_sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
     fi
     ln -sf ${bkpath}/fv_core.res.tile1.nc  ./rec_fv3sar_tile1_mem${memberstring}_dynvar
     ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./rec_fv3sar_tile1_mem${memberstring}_tracer
