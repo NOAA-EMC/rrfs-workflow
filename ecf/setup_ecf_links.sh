@@ -262,7 +262,7 @@ done
 # firewx ics lbcs files
 cd $ECF_DIR/scripts/ics/firewx
 echo "Copy firewx ics lbcs files ..."
-for fhrs in $(seq 1 35); do
+for fhrs in $(seq 0 35); do
   fhr_2d=$( printf "%02d" "${fhrs}" )
   rm -f jrrfs_firewx_make_lbcs_${fhr_2d}.ecf
   cp jrrfs_firewx_make_lbcs_master.ecf jrrfs_firewx_make_lbcs_${fhr_2d}.ecf
