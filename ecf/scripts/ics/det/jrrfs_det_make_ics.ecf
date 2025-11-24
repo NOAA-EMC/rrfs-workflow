@@ -14,14 +14,27 @@ export cyc="%CYC%"
 ############################################################
 # Load modules
 ############################################################
-
+module load intel/${intel_ver}
+module load craype/${craype_ver}
+module load python/${python_ver}
+module load prod_util/${prod_util_ver}
+module load cray-mpich/${cray_mpich_ver}
+module load cray-pals/${cray_pals_ver}
+module load libjpeg/${libjpeg_ver}
+module load hdf5-D/${hdf5_ver}
+module load netcdf-D/${netcdf_ver}
+module load pnetcdf-D/${pnetcdf_ver}
+module load bacio/${bacio_ver}
+module load w3emc/${w3emc_ver}
+module load nemsio/${nemsio_ver}
+module load wgrib2/${wgrib2_ver}
 
 module list
 export WGF="%WGF%"
 ############################################################
 # CALL executable job script here
 ############################################################
-${HOMErrfs}/ush/load_modules_run_task.sh make_ics ${HOMErrfs}/jobs/JRRFS_MAKE_ICS
+${HOMErrfs}/jobs/JRRFS_MAKE_ICS
 
 %include <tail.h>
 
