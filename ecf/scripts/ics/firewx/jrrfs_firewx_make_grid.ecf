@@ -19,7 +19,6 @@ module load craype/${craype_ver}
 module load python/${python_ver}
 module load prod_util/${prod_util_ver}
 module load cray-mpich/${cray_mpich_ver}
-module load cray-pals/${cray_pals_ver}
 module load libjpeg/${libjpeg_ver}
 module load hdf5-D/${hdf5_ver}
 module load netcdf-D/${netcdf_ver}
@@ -31,9 +30,6 @@ module load sp/${sp_ver}
 module load ip/${ip_ver}
 module load g2/${g2_ver}
 module load esmf-D/${esmf_ver}
-module load udunits/${udunits_ver}
-module load gsl/${gsl_ver}
-module load nco/${nco_ver}
 
 module list
 export WGF="%WGF%"

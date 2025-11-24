@@ -31,9 +31,6 @@ module load sp/${sp_ver}
 module load ip/${ip_ver}
 module load g2/${g2_ver}
 module load esmf-D/${esmf_ver}
-module load udunits/${udunits_ver}
-module load gsl/${gsl_ver}
-module load nco/${nco_ver}
 
 module list
 export WGF="%WGF%"
