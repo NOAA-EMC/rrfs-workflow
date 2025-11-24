@@ -29,9 +29,6 @@ module load bacio/${bacio_ver}
 module load w3emc/${w3emc_ver}
 module load nemsio/${nemsio_ver}
 module load wgrib2/${wgrib2_ver}
-module load udunits/${udunits_ver}
-module load gsl/${gsl_ver}
-module load nco/${nco_ver}
 
 module list
 export WGF="%WGF%"
