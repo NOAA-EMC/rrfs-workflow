@@ -28,7 +28,7 @@ def lbc(xmlFile, expdir, do_ensemble=False):
         'NSOIL_LEVELS': os.getenv('NSOIL_LEVELS', '9'),
     }
 
-    if os.getenv('DO_CHEMISTRY', 'FALSE').lower() == "TRUE":
+    if os.getenv('DO_CHEMISTRY', 'FALSE').upper() == "TRUE":
         dcTaskEnv['USE_EXTERNAL_CHEM'] = os.getenv('USE_EXTERNAL_CHEM_LBCS', 'FALSE').upper()
         dcTaskEnv['CHEM_GROUPS'] = os.getenv('CHEM_GROUPS', 'smoke')
 

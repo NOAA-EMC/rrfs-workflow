@@ -23,7 +23,7 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
         'OFFSET': f'{offset}',
     }
 
-    if os.getenv('DO_CHEMISTRY', 'FALSE').lower() == "TRUE":
+    if os.getenv('DO_CHEMISTRY', 'FALSE').upper() == "TRUE":
         dcTaskEnv['USE_EXTERNAL_CHEM'] = os.getenv('USE_EXTERNAL_CHEM_ICS', 'FALSE').upper()
     #
     if not do_ensemble:
