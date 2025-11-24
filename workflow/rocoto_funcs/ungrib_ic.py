@@ -23,8 +23,8 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
         'OFFSET': f'{offset}',
     }
 
-    if os.getenv('DO_CHEMISTRY', 'false').lower() == "true":
-        dcTaskEnv['USE_EXTERNAL_CHEM'] = os.getenv('USE_EXTERNAL_CHEM_ICS', 'FALSE').lower()
+    if os.getenv('DO_CHEMISTRY', 'FALSE').upper() == "TRUE":
+        dcTaskEnv['USE_EXTERNAL_CHEM'] = os.getenv('USE_EXTERNAL_CHEM_ICS', 'FALSE').upper()
     #
     if not do_ensemble:
         metatask = False
@@ -59,7 +59,7 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
         fpath = f'{fpath}'.replace('fHH', offset.zfill(2))
 
     timedep = ""
-    realtime = os.getenv("REALTIME", "false")
+    realtime = os.getenv("REALTIME", "FALSE")
     if realtime.upper() == "TRUE":
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
