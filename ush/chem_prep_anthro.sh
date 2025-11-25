@@ -72,14 +72,14 @@ if [[ -r ${EMISFILE_BASE_RAW1} ]] && [[ -r ${EMISFILE_BASE_RAW2} ]]; then
          #MOY_EMIS=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${ihour} hours" +%B)
          #DOW_EMIS=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${ihour} hours" +%A)
          LINKEDEMISFILE=${UMBRELLA_PREP_CHEM_DATA}/anthro.init.${YYYY_EMIS}-${MM_EMIS}-${DD_EMIS}_${HH_EMIS}.00.00.nc
-         if [ "${HH_EMIS}" -gt 11 ]; then
+         if (( 10#${HH_EMIS} > 11 )); then
             offset=12
             EMISFILE=${EMISFILE2}
          else
             offset=0
             EMISFILE=${EMISFILE1}
          fi
-         t_ix=$((10#$HH_EMIS - offset))
+         t_ix=$(( 10#${HH_EMIS} - 10#${offset} ))
          #
          EMISFILE_FINAL=${ANTHROEMIS_OUTPUTDIR}/${ANTHRO_EMISINV}_${MESH_NAME}_${HH_EMIS}Z.nc
          # Reorder

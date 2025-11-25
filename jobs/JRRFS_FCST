@@ -66,7 +66,7 @@ fi
 #----------------------------------------
 # Remove the Temporary working directory
 #----------------------------------------
-# [[ "${KEEPDATA}" == "NO" ]] && rm -rf "${DATA}"
+# [[ "${KEEPDATA^^}" == "NO" ]] && rm -rf "${DATA}"
 # we cannot remove fcst DATA here since save_fcst lags behind and still need to access them
 #
 date

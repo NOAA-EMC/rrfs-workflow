@@ -72,7 +72,7 @@ sed -e "s/@restart_interval@/${restart_interval}/" -e "s/@history_interval@/${hi
     "${PARMrrfs}"/streams.atmosphere  > streams.atmosphere
 #
 # chemistry related processing
-if ${DO_CHEMISTRY:-false}; then
+if [[ "${DO_CHEMISTRY^^}" == "TRUE" ]]; then
   source "${USHrrfs}"/chem_fcst.sh
 fi
 #

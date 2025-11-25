@@ -73,8 +73,8 @@ def header_entities(xmlFile, expdir):
     cyc_interval = os.getenv('CYC_INTERVAL', '3')
     realtime = os.getenv("REALTIME", "false").upper()
 
-    if os.getenv('DO_CHEMISTRY', 'false').lower() == "true":
-        chem_envar = "\n<envar><name>DO_CHEMISTRY</name><value>true</value></envar>"
+    if os.getenv('DO_CHEMISTRY', 'FALSE').upper() == "TRUE":
+        chem_envar = "\n<envar><name>DO_CHEMISTRY</name><value>TRUE</value></envar>"
     else:
         chem_envar = ""
 # figure out run period for realtime experiments
