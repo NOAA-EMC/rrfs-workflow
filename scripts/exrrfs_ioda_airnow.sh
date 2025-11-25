@@ -15,8 +15,7 @@ ${cpreq} "${HOMErdasapp}"/sorc/iodaconv/src/compo/airnow2ioda_nc.py .
 
 # pyioda libraries
 PYIODALIB=$(echo "$HOMErdasapp"/build/lib/python3.*)
-WXFLOWLIB=${USHrrfs}/wxflow/src
-export PYTHONPATH="${WXFLOWLIB}:${PYIODALIB}:${PYTHONPATH}"
+export PYTHONPATH="${PYIODALIB}:${PYTHONPATH}"
 
 # run the converter
 ./airnow2ioda_nc.py -i airnow -s sites -o ioda_airnow.nc
@@ -25,6 +24,6 @@ export PYTHONPATH="${WXFLOWLIB}:${PYIODALIB}:${PYTHONPATH}"
 if ls ./ioda*nc; then
   ${cpreq} "${DATA}"/ioda*.nc "${COMOUT}/ioda_airnow/${WGF}"
 else
-  echo "FATAL ERROR: no ioda files generated."
+  echo "FATAL ERROR: no airnow ioda files generated."
   err_exit # err_exit if no ioda files generated at the development stage
 fi

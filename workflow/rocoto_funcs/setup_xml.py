@@ -60,7 +60,8 @@ def setup_xml(HOMErrfs, expdir):
 # assemble tasks for a deterministic experiment
         if do_deterministic == "TRUE":
             if os.getenv("DO_IODA", "FALSE").upper() == "TRUE":
-                ioda_airnow(xmlFile, expdir)
+                if do_chemistry == "TRUE":
+                    ioda_airnow(xmlFile, expdir)
                 ioda_bufr(xmlFile, expdir)
             if os.getenv("DO_RADAR_REF", "FALSE").upper() == "TRUE":
                 ioda_mrms_refl(xmlFile, expdir)
@@ -112,7 +113,8 @@ def setup_xml(HOMErrfs, expdir):
             ic(xmlFile, expdir, do_ensemble=True)
         elif do_ensemble == "TRUE":
             if os.getenv("DO_IODA", "FALSE").upper() == "TRUE":
-                ioda_airnow(xmlFile, expdir)
+                if do_chemistry == "TRUE":
+                    ioda_airnow(xmlFile, expdir)
                 ioda_bufr(xmlFile, expdir)
             if os.getenv("DO_RADAR_REF", "FALSE").upper() == "TRUE":
                 ioda_mrms_refl(xmlFile, expdir)
