@@ -11,7 +11,7 @@ export TAG=e3km
 export OPSROOT=/scratch3/BMC/wrfruc/gge/OPSROOT/${EXP_NAME}
 export EXPDIR=${OPSROOT}/exp/rrfs${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
-export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
+export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=YES
 #
 export DO_ENSEMBLE=true
 export IC_ONLY=false  # interpolate GEFS/GDAS to the target mesh to provide ensemble BEC
@@ -21,10 +21,12 @@ export ZETA_LEVELS="L65.txt"
 #
 export DO_IODA=false
 export DO_JEDI=false
+export DO_NONVAR_CLOUD_ANA=false
 export COLDSTART_CYCS_DO_DA=false
 export DO_RECENTER=false
 export DO_RADAR_REF=false
 export SAVE_GETKF_ANL=false
+export DO_CLEAN=true
 export RADARREFL_TIMELEVEL="00"  # 00 15 30 45 min
 
 export DO_CYC=true
@@ -62,24 +64,25 @@ export WALLTIME_MPASSIT="2:00:00"
 export WALLTIME_UPP="2:00:00"
 export WALLTIME_GETKF="00:30:00"
 #
-export KEEPDATA=no
+export KEEPDATA=NO
 export RETRO_TASKTHROTTLE=60
 #
 # local.setup: setup some local options specific to a platform or an experiment
 #
 # set up IC, LBC sources and A/Q/P/R information
 export IC_EXTRN_MDL_NAME="GEFS"
-export IC_EXTRN_MDL_NAME_PATTERN="gefs.@Y@m@d/@H/pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.ffHHH"
-export IC_EXTRN_MDL_NAME_PATTERN_B="gefs.@Y@m@d/@H/pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.ffHHH"
+export IC_EXTRN_MDL_FILENAME_PATTERN="gefs.@Y@m@d/@H/pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.ffHHH"
+export IC_EXTRN_MDL_FILENAME_PATTERN_B="gefs.@Y@m@d/@H/pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.ffHHH"
 export LBC_EXTRN_MDL_NAME=${IC_EXTRN_MDL_NAME}
-export LBC_EXTRN_MDL_NAME_PATTERN=${IC_EXTRN_MDL_NAME_PATTERN}
-export LBC_EXTRN_MDL_NAME_PATTERN_B=${IC_EXTRN_MDL_NAME_PATTERN_B}
+export LBC_EXTRN_MDL_FILENAME_PATTERN=${IC_EXTRN_MDL_FILENAME_PATTERN}
+export LBC_EXTRN_MDL_FILENAME_PATTERN_B=${IC_EXTRN_MDL_FILENAME_PATTERN_B}
 case ${MACHINE} in
   "hera")
     export IC_EXTRN_MDL_BASEDIR="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/GEFS"
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
     export OBSPATH="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
     export OBSPATH_NSSLMOSIAC="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/reflectivity"
+    export OBSPATH_AIRNOW="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/airnow"
     export ACCOUNT="wrfruc"
     export QUEUE="batch"
     export PARTITION="hera"
@@ -89,9 +92,16 @@ case ${MACHINE} in
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
     export OBSPATH="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
     export OBSPATH_NSSLMOSIAC="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/reflectivity"
+    export OBSPATH_AIRNOW="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/airnow"
     export ACCOUNT="wrfruc"
     export QUEUE="batch"
     export PARTITION="u1-compute"
+    export NODES_IC="<nodes>10:ppn=160</nodes>"
+    export NODES_LBC="<nodes>10:ppn=160</nodes>"
+    export NODES_FCST="<nodes>10:ppn=160</nodes>"
+    export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
+    export NODES_UPP="<nodes>1:ppn=80</nodes>"
+    export NODES_RECENTER="<nodes>1:ppn=32</nodes>"
     export NODES_GETKF="<nodes>20:ppn=40</nodes>"
     ;;
   "jet")
@@ -99,6 +109,7 @@ case ${MACHINE} in
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
     export OBSPATH="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
     export OBSPATH_NSSLMOSIAC="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/reflectivity"
+    export OBSPATH_AIRNOW="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/airnow"
     export ACCOUNT="nrtrr"
     export QUEUE="batch"
     export PARTITION="kjet"
@@ -108,6 +119,7 @@ case ${MACHINE} in
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
     export OBSPATH="/work2/noaa/wrfruc/RRFS2_RETRO_DATA/May2024/obs_rap"
     export OBSPATH_NSSLMOSIAC="/work2/noaa/wrfruc/RRFS2_RETRO_DATA/May2024/reflectivity"
+    export OBSPATH_AIRNOW="/work2/noaa/wrfruc/RRFS2_RETRO_DATA/May2024/airnow"
     export ACCOUNT="wrfruc"
     export QUEUE="batch"
     export PARTITION=${MACHINE}
@@ -118,10 +130,17 @@ case ${MACHINE} in
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
     export OBSPATH="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/obs_rap"
     export OBSPATH_NSSLMOSIAC="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/reflectivity"
+    export OBSPATH_AIRNOW="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/airnow"
     export ACCOUNT="bil-fire10-oar"
     export QUEUE="normal"
     export PARTITION="batch"
     export CLUSTER="c6"
+    export NODES_IC="<nodes>10:ppn=160</nodes>"
+    export NODES_LBC="<nodes>10:ppn=160</nodes>"
+    export NODES_FCST="<nodes>10:ppn=160</nodes>"
+    export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
+    export NODES_UPP="<nodes>1:ppn=80</nodes>"
+    export NODES_RECENTER="<nodes>1:ppn=32</nodes>"
     export NODES_GETKF="<nodes>20:ppn=40</nodes>"
     ;;
   "wcoss2")
@@ -129,6 +148,7 @@ case ${MACHINE} in
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
     export OBSPATH="/lfs/h2/emc/lam/noscrub/RRFS2_RETRO_DATA/May2024/obs_rap"
     export OBSPATH_NSSLMOSAIC="/lfs/h2/emc/lam/noscrub/RRFS2_RETRO_DATA/May2024/reflectivity"
+    export OBSPATH_AIRNOW="/lfs/h2/emc/lam/noscrub/RRFS2_RETRO_DATA/May2024/airnow"
     export ACCOUNT="RRFS-DEV"
     export QUEUE="dev"
     export PARTITION=""

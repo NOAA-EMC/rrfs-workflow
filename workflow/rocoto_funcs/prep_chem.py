@@ -39,6 +39,7 @@ def prep_chem(xmlFile, expdir, do_ensemble=False, do_spinup=False):
 <var name="group">{chem_groups}</var>'''
     meta_end = f'</metatask>\n'
 
+    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
     timedep = ''
     if realtime.upper() == "TRUE":

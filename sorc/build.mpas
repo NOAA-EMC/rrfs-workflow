@@ -4,6 +4,7 @@ set -x
 date
 rundir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 HOMErrfs="$(dirname "$rundir")"
+COMPILER=${COMPILER:-intel}
 
 source "${HOMErrfs}/workflow/tools/detect_machine.sh"
 source "${HOMErrfs}/workflow/tools/init.sh"
@@ -23,21 +24,17 @@ case "${MACHINE}" in
   derecho)
     compiler_str="ifort"
     ;;
-  ursa|orion|hercules)
+  ursa|orion|hercules|jet|hera)
     compiler_str="intel-mpi-ursa"
     ;;
   gaeac6)
     compiler_str="ifort_icx"
     ;;
-  *)
-    echo "unsupported platforms: ${MACHINE}"
-    exit 1
-    ;;
 esac
 
 module purge                      
 module use "${HOMErrfs}/modulefiles"
-module load "rrfs/${MACHINE}.intel"
+module load "rrfs/${MACHINE}.${COMPILER}"
 module list
 
 cd "${HOMErrfs}/sorc/MPAS-Model" || exit 1

@@ -41,7 +41,7 @@ file_content=$(< "${PARMrrfs}/${physics_suite}/namelist.init_atmosphere") # read
 eval "echo \"${file_content}\"" > namelist.init_atmosphere
 
 # update namelist.init_atmosphere if do_chemistry
-if ${DO_CHEMISTRY:-false}; then
+if [[ "${DO_CHEMISTRY^^}" == "TRUE" ]]; then
   source "${USHrrfs}"/chem_namelist_init.sh
 fi
 #
@@ -69,7 +69,7 @@ if [[ ! -s './init.nc' ]]; then
 fi
 
 # add/update chemistry species to init.nc
-if ${DO_CHEMISTRY:-false}; then
+if [[ "${DO_CHEMISTRY^^}" == "TRUE" ]]; then
   source "${USHrrfs}"/chem_ic_update.sh
 fi
 

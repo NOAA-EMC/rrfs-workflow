@@ -15,14 +15,14 @@ look_back_hours=48
 increment_hours=24
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
 offset_hours=${increment_hours}
-while ! ${found} && (( offset_hours <= look_back_hours)); do
+while ! ${found} && (( 10#${offset_hours} <= 10#${look_back_hours} )); do
   CDATEp=$(${NDATE} -"${offset_hours}" "${CDATE}")
   mpasout=${COMINrrfs}/${RUN}.${CDATEp:0:8}/${CDATEp:8:2}/fcst/${WGF}${MEMDIR}/mpasout.${timestr}.nc
   if [[ -s "${mpasout}" ]]; then
     found=true
     break
   fi
-  offset_hours=$((offset_hours+increment_hours))
+  offset_hours=$(( 10#${offset_hours} + 10#${increment_hours} ))
 done
 
 if ${found}; then

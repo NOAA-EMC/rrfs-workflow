@@ -35,7 +35,7 @@ mappings["ioda_atms_n21.nc"]="${obspath}/ioda_atms_n21.nc"
 mappings["ioda_crisf4_n20.nc"]="${obspath}/ioda_crisf4_n20.nc"
 mappings["ioda_crisf4_n21.nc"]="${obspath}/ioda_crisf4_n21.nc"
 
-if [[ "${DO_RADAR_REF}" == "true" ]]; then
+if [[ "${DO_RADAR_REF^^}" == "TRUE" ]]; then
   if ${jedivar}; then
     obspath="${COMOUT}/ioda_mrms_refl/${WGF}"
   else # getkf

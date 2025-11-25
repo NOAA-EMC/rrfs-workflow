@@ -49,7 +49,7 @@ fi
 #----------------------------------------
 # Remove the Temporary working directory
 #----------------------------------------
-[[ "${KEEPDATA}" == "NO" ]] && rm -rf "${DATA}"
+[[ "${KEEPDATA^^}" == "NO" ]] && rm -rf "${DATA}"
 #
 date
 echo "JOB ${jobid:-} HAS COMPLETED NORMALLY!"

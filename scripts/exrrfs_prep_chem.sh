@@ -76,7 +76,7 @@ MOY_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${my_fcst_length} hours" +%B)  # 
 DOY=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%j)  # Julian day 
 #
 if [[ "${DOY}" -ne 0 ]]; then
-  DOY_m1=$((DOY-1))
+  DOY_m1=$(( 10#${DOY} - 1 ))
 else
   DOY_m1=0
 fi

@@ -14,13 +14,13 @@ def getkf(xmlFile, expdir, taskType):
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
         'PHYSICS_SUITE': f'{physics_suite}',
         'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
-        'DO_RADAR_REF': os.getenv('DO_RADAR_REF', 'false'),
+        'DO_RADAR_REF': os.getenv('DO_RADAR_REF', 'FALSE').upper(),
         'YAML_GEN_METHOD': os.getenv('YAML_GEN_METHOD', '1'),
-        'COLDSTART_CYCS_DO_DA': os.getenv('COLDSTART_CYCS_DO_DA', 'true'),
-        'SAVE_GETKF_ANL': os.getenv('SAVE_GETKF_ANL', 'false'),
+        'COLDSTART_CYCS_DO_DA': os.getenv('COLDSTART_CYCS_DO_DA', 'TRUE').upper(),
+        'SAVE_GETKF_ANL': os.getenv('SAVE_GETKF_ANL', 'FALSE').upper(),
         'ENS_SIZE': os.getenv("ENS_SIZE", '5'),
         'GETKF_TYPE': taskType.lower(),
-        'USE_CONV_SAT_INFO': os.getenv('USE_CONV_SAT_INFO', 'true'),
+        'USE_CONV_SAT_INFO': os.getenv('USE_CONV_SAT_INFO', 'TRUE').upper(),
         'EMPTY_OBS_SPACE_ACTION': os.getenv('EMPTY_OBS_SPACE_ACTION', 'skip output'),
     }
     if taskType.upper() == "OBSERVER":

@@ -33,18 +33,26 @@ fi
 
 # DO_CLEAN
 if ${DO_CLEAN:-false} && ! ${REALTIME:-false}; then
-  # when DO_CLEAN is set to true in retros, if STMP_CLEAN_HRS, COM_CLEAN_HRS and LOG_CLEAN_HRS
-  # are not specified, use the following values
-  export STMP_CLEAN_HRS=${STMP_CLEAN_HRS:-24}
-  export COM_CLEAN_HRS=${COM_CLEAN_HRS:-2400}  # 100 days
-  export LOG_CLEAN_HRS=${LOG_CLEAN_HRS:-2400}
+  export STMP_RETENTION_CYCS=${STMP_RETENTION_CYCS:-24}
+  export COM_RETENTION_CYCS=${COM_RETENTION_CYCS:-2400}  # 100 days
+  export LOG_RETENTION_CYCS=${LOG_RETENTION_CYCS:-2400}
 fi
+
+# ioda_airnow
+export NODES_IODA_AIRNOW=${NODES_IODA_AIRNOW:-"<nodes>1:ppn=1</nodes>"}
 
 # ioda_bufr
 export NODES_IODA_BUFR=${NODES_IODA_BUFR:-"<nodes>1:ppn=1</nodes>"}
 
 # ioda_mrms_refl
 export NODES_IODA_MRMS_REFL=${NODES_IODA_MRMS_REFL:-"<nodes>1:ppn=20</nodes>"}
+
+# nonvar_bufrobs
+export WALLTIME_NONVAR_BUFROBS=${WALLTIME_NONVAR_BUFROBS:-"00:25:00"}
+
+# nonvar_reflobs
+export NODES_NONVAR_REFLOBS=${NODES_NONVAR_REFLOBS:-"<nodes>2:ppn=24</nodes>"}
+export WALLTIME_NONVAR_REFLOBS=${WALLTIME_NONVAR_REFLOBS:-"00:25:00"}
 
 # ic
 export NODES_IC=${NODES_IC:-"<nodes>1:ppn=40</nodes>"}
@@ -62,6 +70,10 @@ export WALLTIME_PREP_LBC=${WALLTIME_PREP_LBC:-"00:30:00"}
 
 # da
 export NODES_DA=${NODES_DA:-"<nodes>1:ppn=40</nodes>"}
+
+# nonvar_cldana
+export NODES_NONVAR_CLDANA=${NODES_NONVAR_CLDANA:-"<nodes>2:ppn=20</nodes>"}
+export WALLTIME_NONVAR_CLDANA=${WALLTIME_NONVAR_CLDANA:-"00:20:00"}
 
 # fcst
 export NODES_FCST=${NODES_FCST:-"<nodes>3:ppn=40</nodes>"}

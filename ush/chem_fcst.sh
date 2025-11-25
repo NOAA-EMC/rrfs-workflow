@@ -55,7 +55,7 @@ fi
 # Smoke/Wildfire
 files=("${UMBRELLA_PREP_CHEM_DATA}"/smoke.init*)
 if (( ${#files[@]}  )); then  # at least one file exists
-  cat "${FIXrrfs}/stream_list/chemistry/stream_list.atmosphere.smoke.output" >> ./stream_list/stream_list.atmosphere.output
+  cat "${FIXrrfs}/stream_list/chemistry/stream_list.atmosphere.output.smoke" >> ./stream_list/stream_list.atmosphere.output
   #
   if [[ "${EBB_DCYCLE}" -eq 1 ]]; then  # Diurnal cycle for EBB (Emissions from Biomass Burning)
      sed -i "\$e cat ${PARMrrfs}/chemistry/streams.atmosphere.smoke_retro" streams.atmosphere

@@ -42,6 +42,10 @@ EXEC3="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_enkf.x"
 EXEC4="${HOMErrfs}/sorc/RDASApp/build/bin/bufr2netcdf.x"
 cd "${HOMErrfs}/sorc/RDASApp" || exit 1
 
+# fix for the incorrect logic of the vertical level index interpolation in pressurecheck function
+# PR: https://github.com/JCSDA-internal/ufo/pull/3899
+cp ../_workaround_/RDASApp/obsfunctions/ObsErrorFactorPressureCheck.cc sorc/ufo/src/ufo/filters/obsfunctions/
+
 # workaround for using the GSL surface operator
 # https://github.com/JCSDA-internal/ufo/pull/3622 by Sijie
 cp ../_workaround_/RDASApp/sfccorrected/* sorc/ufo/src/ufo/operators/sfccorrected/
