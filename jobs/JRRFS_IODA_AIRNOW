@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
+set -x
+date
+#
+#-----------------------------------------------------------------------
+# Specify Execution Areas
+#-----------------------------------------------------------------------
+#
+export HOMErrfs=${HOMErrfs} #comes from the workflow at runtime
+export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
+export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
+export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
+export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
+#
+#-----------------------------------------------------------------------
+# Obtain unique process id (pid) and create the run directory (DATA).
+#-----------------------------------------------------------------------
+#
+export pid=${pid:-$$}
+export jobid=${jobid:-ioda_airnow_${cyc}}
+export UMBRELLA_IODA_AIRNOW_DATA=${UMBRELLA_IODA_AIRNOW_DATA:-${DATAROOT}/${RUN}_ioda_airnow_${cyc}_${rrfs_ver}/${WGF}}
+export DATA=${DATA:-${UMBRELLA_IODA_AIRNOW_DATA}/${jobid}}
+
+if [[ -d "${DATA}" ]]; then #remove the ${DATA} directory before a new run
+  rm -rf "${DATA}"
+fi
+mkdir -p "${DATA}"
+#
+#-----------------------------------------------------------------------
+# Define COM directories
+#-----------------------------------------------------------------------
+#
+export COMINrrfs=${COMINrrfs:-$(compath.py "${envir}/rrfs/${rrfs_ver}")}
+export COMOUT=${COMOUT:-$(compath.py -o "${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}")}
+mkdir -p "${COMOUT}/ioda_airnow/${WGF}"
+#
+#----------------------------------------
+# Execute the script.
+#----------------------------------------
+export pgmout="${DATA}/OUTPUT.$$"
+"${HOMErrfs}"/scripts/exrrfs_ioda_airnow.sh
+export err=$?; err_chk
+
+if [[ -e "${pgmout}" ]]; then
+  cat "${pgmout}"
+fi
+#
+#----------------------------------------
+# Remove the Temporary working directory
+#----------------------------------------
+[[ "${KEEPDATA^^}" == "NO" ]] && rm -rf "${DATA}"
+#
+date
+echo "JOB ${jobid:-} HAS COMPLETED NORMALLY!"
+exit 0

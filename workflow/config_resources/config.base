@@ -38,6 +38,9 @@ if ${DO_CLEAN:-false} && ! ${REALTIME:-false}; then
   export LOG_RETENTION_CYCS=${LOG_RETENTION_CYCS:-2400}
 fi
 
+# ioda_airnow
+export NODES_IODA_AIRNOW=${NODES_IODA_AIRNOW:-"<nodes>1:ppn=1</nodes>"}
+
 # ioda_bufr
 export NODES_IODA_BUFR=${NODES_IODA_BUFR:-"<nodes>1:ppn=1</nodes>"}
 
