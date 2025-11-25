@@ -20,7 +20,7 @@ prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
 
 cd "${DATA}" || exit 1
 ${cpreq} "${FIXrrfs}/ungrib/Vtable.${prefix}" Vtable
-if ${DO_CHEMISTRY:-false} && ${USE_EXTERNAL_CHEM:-false}; then
+if [[ "${DO_CHEMISTRY^^}" == "TRUE" ]] && [[ "${USE_EXTERNAL_CHEM^^}" == "TRUE" ]]; then
   ${cpreq} "${FIXrrfs}/ungrib/Vtable.${prefix}.SD" Vtable
 fi
 #
