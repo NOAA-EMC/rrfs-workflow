@@ -79,12 +79,12 @@ for bigmin_this in ${RADARREFL_TIMELEVEL[@]}; do
     while (( s <= 59 )); do
       ss=$(printf %2.2i ${s})
       nsslfile="${NSSL}/*${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.${obs_appendix}"
-      if [ -s ${nsslfile} ]; then
+      if [[ -s ${nsslfile} ]]; then
         echo "Found ${nsslfile}"
         nsslfile1="*${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.${obs_appendix}"
 	numgrib2=$(find ${NSSL}/${nsslfile1} -maxdepth 1 -type f | wc -l)
         echo "Number of GRIB-2 files: ${numgrib2}"
-        if [ "${numgrib2}" -ge 10 ] && [ ! -e filelist_mrms ]; then
+        if (( numgrib2 >= 10 )) && [ ! -e filelist_mrms ]; then
           cp ${NSSL}/${nsslfile1} .
           ls ${nsslfile1} > filelist_mrms
           echo "Creating links for ${YYYY}${MM}${DD}-${HH}${min}"
