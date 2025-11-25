@@ -89,7 +89,6 @@ Run command has not been specified for this machine:
     ;;
 
 esac
-UPP_DIR=${UPP_DIR:-$HOMErrfs/sorc/UPP}
 #
 #-----------------------------------------------------------------------
 #
@@ -172,7 +171,7 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-cpreq -p ${UPP_DIR}/parm/nam_micro_lookup.dat ./eta_micro_lookup.dat
+cpreq -p ${FIX_UPP}/nam_micro_lookup.dat ./eta_micro_lookup.dat
 
 # get crtm fix files
 for what in "amsre_aqua" "imgr_g11" "imgr_g12" "imgr_g13" \
