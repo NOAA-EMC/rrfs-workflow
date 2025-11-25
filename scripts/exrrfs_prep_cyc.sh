@@ -250,9 +250,9 @@ else
       cpreq -p ${bkpath}/gfs_ctrl.nc gfs_ctrl.nc        
       cpreq -p ${bkpath}/gfs_data.tile7.halo0.nc gfs_data.tile7.halo0.nc        
       cpreq -p ${bkpath}/sfc_data.tile7.halo0.nc sfc_data.tile7.halo0.nc        
-      cpreq -p ${bkpath}/gfs_bndy.tile7.000.nc bk_gfs_bndy.tile7.000.nc
-      cpreq -p ${bkpath}/gfs_data.tile7.halo0.nc bk_gfs_data.tile7.halo0.nc
-      cpreq -p ${bkpath}/sfc_data.tile7.halo0.nc bk_sfc_data.tile7.halo0.nc
+      #cpreq -p ${bkpath}/gfs_bndy.tile7.000.nc bk_gfs_bndy.tile7.000.nc
+      #cpreq -p ${bkpath}/gfs_data.tile7.halo0.nc bk_gfs_data.tile7.halo0.nc
+      #cpreq -p ${bkpath}/sfc_data.tile7.halo0.nc bk_sfc_data.tile7.halo0.nc
       print_info_msg "$VERBOSE" "cold start from $bkpath"
       echo "${YYYYMMDDHH}(${CYCLE_TYPE}): cold start at ${current_time} from $bkpath "
     else
@@ -270,12 +270,12 @@ else
       cpreq -p ${bkpath}/sfc_data.nc sfc_data.nc
       cpreq -p ${bkpath}/gfs_ctrl.nc gfs_ctrl.nc
       cpreq -p ${bkpath}/coupler.res bk_coupler.res
-      cpreq -p ${bkpath}/fv_core.res.nc bk_fv_core.res.nc
-      cpreq -p ${bkpath}/fv_core.res.tile1.nc bk_fv_core.res.tile1.nc
-      cpreq -p ${bkpath}/fv_srf_wnd.res.tile1.nc bk_fv_srf_wnd.res.tile1.nc
-      cpreq -p ${bkpath}/fv_tracer.res.tile1.nc bk_fv_tracer.res.tile1.nc
-      cpreq -p ${bkpath}/phy_data.nc bk_phy_data.nc
-      cpreq -p ${bkpath}/sfc_data.nc bk_sfc_data.nc
+      #cpreq -p ${bkpath}/fv_core.res.nc bk_fv_core.res.nc
+      #cpreq -p ${bkpath}/fv_core.res.tile1.nc bk_fv_core.res.tile1.nc
+      #cpreq -p ${bkpath}/fv_srf_wnd.res.tile1.nc bk_fv_srf_wnd.res.tile1.nc
+      #cpreq -p ${bkpath}/fv_tracer.res.tile1.nc bk_fv_tracer.res.tile1.nc
+      #cpreq -p ${bkpath}/phy_data.nc bk_phy_data.nc
+      #cpreq -p ${bkpath}/sfc_data.nc bk_sfc_data.nc
       echo "${YYYYMMDDHH}(${CYCLE_TYPE}): blended warm start at ${current_time} from $bkpath "
     else
       err_exit "Error: cannot find blended warm start initial condition from : ${bkpath}"
