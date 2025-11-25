@@ -65,18 +65,18 @@ for bigmin_this in ${RADARREFL_TIMELEVEL[@]}; do
   #
   #-----------------------------------------------------------------------
   #
-  if [ -s filelist_mrms ]; then
+  if [[ -s filelist_mrms ]]; then
     rm -f filelist_mrms
   fi
   echo "bigmin = ${bigmin}"
   for (( j=0; j < 4; $((j=j+1)) )); do
-    min=$( printf %2.2i $((bigmin_this+j)) )
+    min=$( printf %2.2i $(( 10#${bigmin_this} + j )) )
     echo "Looking for data valid:${YYYY}-${MM}-${DD} ${HH}:${min}"
     if [[ -e filelist_mrms ]]; then
       break
     fi
     s=0
-    while [[ $s -le 59 ]]; do
+    while (( s <= 59 )); do
       ss=$(printf %2.2i ${s})
       nsslfile="${NSSL}/*${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.${obs_appendix}"
       if [ -s ${nsslfile} ]; then
@@ -101,12 +101,8 @@ for bigmin_this in ${RADARREFL_TIMELEVEL[@]}; do
   #
   #-----------------------------------------------------------------------
   #
-  if [ ! -s filelist_mrms ]; then
-    rm -f filelist_mrms
-  fi
-
-    if [ -s filelist_mrms ]; then
-     if [ "${obs_appendix}" == "grib2.gz" ]; then
+  if [[ -s filelist_mrms ]]; then
+     if [[ "${obs_appendix}" == "grib2.gz" ]]; then
         gzip -d ./*.gz
         mv filelist_mrms filelist_mrms_org
         ls "MergedReflectivityQC_*_${YYYY}${MM}${DD}-${HH}????.grib2" > filelist_mrms
@@ -120,28 +116,26 @@ for bigmin_this in ${RADARREFL_TIMELEVEL[@]}; do
      continue
   fi
 
-  #
-#  if [ ${RADAR_REF_THINNING} -eq 2 ]; then
+#
+#  if (( RADAR_REF_THINNING == 2 )); then
 #    # heavy data thinning, typically used for EnKF
 #    precipdbzhorizskip=1
 #    precipdbzvertskip=2
 #    clearairdbzhorizskip=2
 #    clearairdbzvertskip=4
+#  elif (( RADAR_REF_THINNING == 1 )); then
+#    # light data thinning, typically used for hybrid EnVar
+#    precipdbzhorizskip=1
+#    precipdbzvertskip=1
+#    clearairdbzhorizskip=1
+#    clearairdbzvertskip=1
 #  else
-#    if [ ${RADAR_REF_THINNING} -eq 1 ]; then
-#      # light data thinning, typically used for hybrid EnVar
-#      precipdbzhorizskip=1
-#      precipdbzvertskip=1
-#      clearairdbzhorizskip=1
-#      clearairdbzvertskip=1
-#    else
-#      # no data thinning
-      precipdbzhorizskip=0
-      precipdbzvertskip=0
-      clearairdbzhorizskip=0
-      clearairdbzvertskip=0
-#    fi
-#  fi
+#    # no data thinning
+     precipdbzhorizskip=0
+     precipdbzvertskip=0
+     clearairdbzhorizskip=0
+     clearairdbzvertskip=0
+# fi
 
 cat << EOF > namelist.mosaic
    &setup
