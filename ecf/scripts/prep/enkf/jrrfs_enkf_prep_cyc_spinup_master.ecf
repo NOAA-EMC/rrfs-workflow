@@ -31,6 +31,7 @@ module load sigio/${sigio_ver}
 module load sfcio/${sfcio_ver}
 module load nemsio/${nemsio_ver}
 module load libjpeg/${libjpeg_ver}
+module load g2c/${g2c_ver}
 module load wgrib2/${wgrib2_ver}
 module load udunits/${udunits_ver}
 module load gsl/${gsl_ver}
