@@ -10,7 +10,7 @@ cd "${DATA}" || exit 1
 #
 fhr_chunk=$(( (10#${LENGTH}/10#${INTERVAL} + 1) / 10#${GROUP_TOTAL_NUM}*10#${INTERVAL} ))
 fhr_begin=$((10#${OFFSET} + (10#${GROUP_INDEX} - 1 )*10#${fhr_chunk} ))
-if (( GROUP_INDEX == GROUP_TOTAL_NUM )); then
+if (( 10#${GROUP_INDEX} == 10#${GROUP_TOTAL_NUM} )); then
   fhr_end=$(( 10#${OFFSET} + 10#${LENGTH}))
 else
   fhr_end=$((10#${OFFSET} + (10#${GROUP_INDEX})*10#${fhr_chunk} - 10#${INTERVAL} ))
@@ -56,7 +56,7 @@ file_content=$(< "${PARMrrfs}/${physics_suite}/namelist.init_atmosphere") # read
 eval "echo \"${file_content}\"" > namelist.init_atmosphere
 
 # update namelist.init_atmosphere if do_chemistry
-if ${DO_CHEMISTRY:-false}; then
+if [[ "${DO_CHEMISTRY^^}" == "TRUE" ]]; then
   source "${USHrrfs}"/chem_namelist_init.sh
 fi
 #
@@ -92,7 +92,7 @@ if ! ls ./lbc*.nc; then
 fi
 
 # add/update chemistry species to lbc.nc
-if ${DO_CHEMISTRY:-false}; then
+if [[ "${DO_CHEMISTRY^^}" == "TRUE" ]]; then
   source "${USHrrfs}"/chem_lbc_update.sh
 fi
 

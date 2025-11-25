@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2154,SC2153
-fhr_0=$(( fhr % 3 ))
-fhr_m=$(( fhr - fhr_0 ))
-fhr_p=$(( fhr - fhr_0 + 3 ))
+fhr_0=$(( 10#${fhr} % 3 ))
+fhr_m=$(( 10#${fhr} - fhr_0 ))
+fhr_p=$(( 10#${fhr} - fhr_0 + 3 ))
 HHH_M=$(printf %03d $((10#$fhr_m)) )
 HHH_P=$(printf %03d $((10#$fhr_p)) )
 NAME_FILE_M=${NAME_PATTERN/fHHH/${HHH_M}}
@@ -12,7 +12,7 @@ GRIBFILE_P="${SOURCE_BASEDIR}/${NAME_FILE_P}"
 echo "Deriving ${GRIBFILE} based on ${GRIBFILE_M} and ${GRIBFILE_P}"
 # Get interpolation weights
 vtime=$(date +%Y%m%d%H -d "${CDATEin:0:8} ${CDATEin:8:2} +${fhr_m} hours" )
-fhr_0=$(( fhr % 3 ))
+fhr_0=$(( 10#${fhr} % 3 ))
 c=$( echo "${fhr_0}/3" | bc -l )
 c1=$( printf "%.5f\n" "$c" )
 b1=$( echo "1-${c1}" | bc -l )

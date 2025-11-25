@@ -35,13 +35,13 @@ from rocoto_funcs.misc import misc
 
 def setup_xml(HOMErrfs, expdir):
     if os.path.exists(f"{expdir}/config/satinfo") and os.getenv("USE_THE_LATEST_SATBIAS") is None:
-        env_vars = {'USE_THE_LATEST_SATBIAS': 'true'}
+        env_vars = {'USE_THE_LATEST_SATBIAS': 'TRUE'}
         os.environ.update(env_vars)
     machine = os.getenv('MACHINE').lower()
-    do_deterministic = os.getenv('DO_DETERMINISTIC', 'true').upper()
-    do_ensemble = os.getenv('DO_ENSEMBLE', 'false').upper()
-    do_ensmean_post = os.getenv('DO_ENSMEAN_POST', 'false').upper()
-    do_chemistry = os.getenv('DO_CHEMISTRY', 'false').upper()
+    do_deterministic = os.getenv('DO_DETERMINISTIC', 'TRUE').upper()
+    do_ensemble = os.getenv('DO_ENSEMBLE', 'FALSE').upper()
+    do_ensmean_post = os.getenv('DO_ENSMEAN_POST', 'FALSE').upper()
+    do_chemistry = os.getenv('DO_CHEMISTRY', 'FALSE').upper()
     #
     # create cycledefs smartly
     dcCycledef = smart_cycledefs()
