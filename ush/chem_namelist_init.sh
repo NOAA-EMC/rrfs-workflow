@@ -6,7 +6,7 @@
 cat "${PARMrrfs}/chemistry/namelist.init_atmosphere" >> namelist.init_atmosphere
 #
 # Now adjust the configure options based on activated CHEM_GROUPS
-if [[ "${USE_EXTERNAL_CHEM}" == "TRUE" ]]; then
+if [[ "${USE_EXTERNAL_CHEM^^}" == "TRUE" ]]; then
   if [[ "${CHEM_GROUPS}" == *smoke* ]]; then
     sed -i "s/config_smoke_scheme\s*=\s*'off'/config_smoke_scheme = 'on'/g" namelist.init_atmosphere
   fi
