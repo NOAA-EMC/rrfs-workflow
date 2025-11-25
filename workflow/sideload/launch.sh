@@ -36,7 +36,7 @@ source /etc/profile
 module use "${HOMErrfs}/modulefiles"
 # load corresponding modules for different tasks
 case ${task_id} in
-  ioda_bufr)
+  ioda_bufr|ioda_airnow)
     module purge
     module use "${HOMErrfs}/sorc/RDASApp/modulefiles"
     module load "RDAS/${MACHINE}.${COMPILER}"
