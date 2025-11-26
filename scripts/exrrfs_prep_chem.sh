@@ -123,5 +123,5 @@ if [[ "${CHEM_GROUP}" == "pollen" ]]; then
 fi # bio/pollen
 
 if [[ "${CHEM_GROUP}" == "dust" ]]; then
-  source "${USHrrfs}"/chem_prep_dust.sh
+  echo "nothing needs to be done for dust, will modify this in the future"
 fi # dust
