@@ -124,4 +124,5 @@ fi # bio/pollen
 
 if [[ "${CHEM_GROUP}" == "dust" ]]; then
   echo "nothing needs to be done for dust, will modify this in the future"
+  #source "${HOMErrfs}/workflow/tools/chem_prep_dust.sh"
 fi # dust
