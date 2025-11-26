@@ -48,10 +48,14 @@ cd ${DATA}
 
 . $USHrrfs/source_util_funcs.sh
 
+export cycle="t${cyc}z"
+setpdy.sh
+. ./PDY
+export CDATE="${PDY}${cyc}"
+
 export COMrrfs=${COMrrfs:-$(compath.py -o rrfs/${rrfs_ver})}
 export COMIN=${COMrrfs}/${RUN}.${PDY}/${cyc}
 export COMOUT=${COMOUT:-$(compath.py -o rrfs/${rrfs_ver}/${RUN}.${PDY}/${cyc}/gempak)}
-export cycle="t${cyc}z"
 if [ ! -f ${COMOUT} ] ; then
 	mkdir -p -m 775 ${COMOUT}
 fi

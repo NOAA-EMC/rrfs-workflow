@@ -108,6 +108,7 @@ for the RRFS (in NetCDF format).
 #-----------------------------------------------------------------------
 #### export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
 #### export COMINgfs=${COMINgfs:-$(compath.py gfs/${gfs_ver})}
+export COMrrfs=${COMrrfs:-$(compath.py rrfs/${rrfs_ver})}
 
 if [ ${WGF} = "firewx" ]; then
 # Path to fix files in COM
