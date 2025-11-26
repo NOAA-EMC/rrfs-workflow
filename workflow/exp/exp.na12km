@@ -111,10 +111,10 @@ case ${MACHINE} in
     export PARTITION="u1-compute"
     export NODES_IC="<nodes>1:ppn=160</nodes>"
     export NODES_LBC="<nodes>1:ppn=160</nodes>"
-    export NODES_FCST="<nodes>1:ppn=160</nodes>"
+    export NODES_FCST="<nodes>5:ppn=80</nodes>"
     export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
     export NODES_UPP="<nodes>1:ppn=80</nodes>"
-    export NODES_JEDIVAR="<nodes>1:ppn=80</nodes>"
+    export NODES_JEDIVAR="<nodes>5:ppn=80</nodes>"
     export NODES_IODA_MRMS_REFL="<nodes>1:ppn=80</nodes>"
     ;;
   "jet")
@@ -150,10 +150,10 @@ case ${MACHINE} in
     export CLUSTER="c6"
     export NODES_IC="<nodes>1:ppn=160</nodes>"
     export NODES_LBC="<nodes>1:ppn=160</nodes>"
-    export NODES_FCST="<nodes>1:ppn=160</nodes>"
+    export NODES_FCST="<nodes>5:ppn=80</nodes>"
     export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
     export NODES_UPP="<nodes>1:ppn=80</nodes>"
-    export NODES_JEDIVAR="<nodes>1:ppn=80</nodes>"
+    export NODES_JEDIVAR="<nodes>5:ppn=80</nodes>"
     export NODES_IODA_MRMS_REFL="<nodes>1:ppn=80</nodes>"
     ;;
   "wcoss2")
