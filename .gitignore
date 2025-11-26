@@ -13,3 +13,4 @@ workflow/satinfo*
 workflow/ush/output.linter_shellcheck
 ush/test_yaml_finalize
 config.override
+workflow/rrfsexps/
