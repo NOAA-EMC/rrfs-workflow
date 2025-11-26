@@ -81,6 +81,7 @@ climatology.
 # Define COM directories
 #-----------------------------------------------------------------------
 # Send fix files to COM
+export COMrrfs=${COMrrfs:-$(compath.py rrfs/${rrfs_ver})}
 export firewx_input_dir="${COMrrfs}/firewx_input"
 mkdir -p "${firewx_input_dir}" "${firewx_input_dir}/${PDY}${cyc}"
 

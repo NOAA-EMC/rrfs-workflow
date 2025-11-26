@@ -100,7 +100,8 @@ else
   fi
   mkdir -p ${umbrella_lbcops_data}
   if [ $WGF = "firewx" ]; then
-    export firewx_input_dir="${COMrrfs}/firewx_input"
+    export COMINrrfs=${COMINrrfs:-$(compath.py rrfs/${rrfs_ver})}
+    export firewx_input_dir="${COMINrrfs}/firewx_input"
     export COMINnam=${COMINnam:-$(compath.py nam/${nam_ver})}
   fi
 fi
