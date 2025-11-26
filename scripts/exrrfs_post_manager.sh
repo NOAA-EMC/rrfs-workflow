@@ -214,7 +214,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
           if [ ${array_element_scan_release_ensf_post[$((10#$search_str))]} == "NO" ]; then
             array_element_scan_release_ensf_post[$((10#$search_str))]="found"
             ecflow_client --event release_ensf_post_mem${memuse}_f${fhr_3d}
-            it=1
+            ic=1
             continue
           fi
         else
