@@ -15,3 +15,4 @@ ush/test_yaml_finalize
 config.override
 workflow/rrfsexps/
 workflow/config.chemistry
+sorc/build_timing.txt
