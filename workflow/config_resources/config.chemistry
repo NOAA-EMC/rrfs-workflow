@@ -15,6 +15,7 @@ for i in {0..23}; do arr[i]="24"; done # 24hr fcst, only take effect at coldstar
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export LBC_LENGTH=24
 export REALTIME=false
+export RETRO_CYCLETHROTTLE=1
 #
 # ---------------------------------------------
 export CHEM_GROUPS="smoke" # any combinations of "smoke, anthro, pollen, dust, rwc"
