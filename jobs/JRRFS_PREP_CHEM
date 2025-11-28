@@ -26,7 +26,7 @@ else
 fi
 export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_${prep_ic_str}_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
 
-export jobid=${jobid:-prep_chem_${cyc}}
+export jobid=${jobid:-prep_chem_${CHEM_GROUP}_${cyc}}
 export DATA=${DATA:-${UMBRELLA_PREP_CHEM_DATA}/${jobid}}
 
 if [[ -d "${DATA}" ]]; then # remove the "${DATA}" directory if existed
