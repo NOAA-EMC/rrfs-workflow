@@ -88,6 +88,10 @@ source "${USHrrfs}/find_ensembles.sh"
 #
 cd "${DATA}" || exit 1
 ln -snf "${UMBRELLA_PREP_IC_DATA}/${initial_file}" .
+if [[ ${start_type} == "warm" ]] && [[ -v SNUDGETYPES ]]; then
+    var_list="qv,surface_pressure,theta,tslb,smois,snowh,soilt1,skintemp"
+    ncks -C -v ${var_list} ${initial_file} soilbg.nc
+fi
 #
 # generate namelist, streams, and jedivar.yaml on the fly
 run_duration=1:00:00
@@ -144,6 +148,19 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
   # check the status
   export err=$?
   err_chk
+  if [[ ${start_type} == "warm" ]] && [[ -v SNUDGETYPES ]]; then
+      # pyioda libraries
+      PYIODALIB=$(echo "$HOMErdasapp"/build/lib/python3.*)
+      WXFLOWLIB=${USHrrfs}/wxflow/src
+      export PYTHONPATH="${WXFLOWLIB}:${PYIODALIB}:${PYTHONPATH}"
+      python ${USHrrfs}/snudge.py ${CDATE} ${SNUDGETYPES} ${DATA}/${initial_file} 
+      if [[ ! -s "soil_analyzed.nc" ]]; then
+        echo "Soil nudging failed"
+        exit 1
+      fi
+      var_list="tslb,smois,soilt1,skintemp"
+      ncks -A -v ${var_list} soil_analyzed.nc ${UMBRELLA_PREP_IC_DATA}/${initial_file} 
+  fi
   # the input/output file are linked from the umbrella directory, so no need to copy
   cp "${DATA}/${initial_file}" "${COMOUT}/jedivar/${WGF}/${initial_file%.nc}.${timestr}.nc"
   cp "${DATA}"/jdiag* "${COMOUT}/jedivar/${WGF}"
