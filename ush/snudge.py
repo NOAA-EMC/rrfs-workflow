@@ -148,7 +148,7 @@ def update_smois_gsd(cs,aqwa,aqwb,apa,apb,ata,atb,snod,smois,landmask,dHtype,cor
   dsmois = [np.max([np.min([c[i]*arhincr,0.03*np.ones(len(arhincr))],axis=0),-0.03*np.ones(len(arhincr))],axis=0)for i in range(4)]
   if correct==1:
     for i in range(4)[::-1]:
-      smois[i] = np.max([np.min([smois[i]+dsmois,np.max([smois[i],smois[i+1]],axis=0)],axis=0),np.zeros(np.shape(dsmois))],axis=0)
+      smois[i] = np.max([np.min([smois[i]+dsmois[i],np.max([smois[i],smois[i+1]],axis=0)],axis=0),np.zeros(np.shape(dsmois[i]))],axis=0)
   else:
     smois[:4] = np.max([np.min([smois[:4]+dsmois,np.max([smois[:4],smois[1:5]],axis=0)],axis=0),np.zeros(np.shape(dsmois))],axis=0)
   return(smois)

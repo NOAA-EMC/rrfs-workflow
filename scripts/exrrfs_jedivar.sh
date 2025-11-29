@@ -151,15 +151,14 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
   if [[ ${start_type} == "warm" ]] && [[ -v SNUDGETYPES ]]; then
       # pyioda libraries
       PYIODALIB=$(echo "$HOMErdasapp"/build/lib/python3.*)
-      WXFLOWLIB=${USHrrfs}/wxflow/src
-      export PYTHONPATH="${WXFLOWLIB}:${PYIODALIB}:${PYTHONPATH}"
+      export PYTHONPATH="${PYIODALIB}:${PYTHONPATH}"
       python ${USHrrfs}/snudge.py ${CDATE} ${SNUDGETYPES} ${DATA}/${initial_file} 
       if [[ ! -s "soil_analyzed.nc" ]]; then
-        echo "Soil nudging failed"
-        exit 1
+        echo "Warning: soil nudging failed"
+      else
+        var_list="tslb,smois,soilt1,skintemp"
+        ncks -A -v ${var_list} soil_analyzed.nc ${UMBRELLA_PREP_IC_DATA}/${initial_file} 
       fi
-      var_list="tslb,smois,soilt1,skintemp"
-      ncks -A -v ${var_list} soil_analyzed.nc ${UMBRELLA_PREP_IC_DATA}/${initial_file} 
   fi
   # the input/output file are linked from the umbrella directory, so no need to copy
   cp "${DATA}/${initial_file}" "${COMOUT}/jedivar/${WGF}/${initial_file%.nc}.${timestr}.nc"
