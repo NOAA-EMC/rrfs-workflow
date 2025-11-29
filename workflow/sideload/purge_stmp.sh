@@ -16,11 +16,12 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 # prepare to remove all UMBRELLA directories for current ${cyc}
 # in rare situations, one can pass in a predefined search pattern to achieve customized purge
 #
+cd "${DATAROOT}" || exit 1
 PURGE_PATTERN=${PURGE_PATTERN:-${DATAROOT}/${RUN}_*_${cyc}_${rrfs_ver}/${WGF}*}
-for file in ${PURGE_PATTERN}; do
-  ls ${file}
+for mydir in ${PURGE_PATTERN}; do
+  rm -rf "${mydir}"
 done
 #
 date
-echo "JOB ${jobid:-} HAS COMPLETED NORMALLY!"
+echo "JOB purge_stmp HAS COMPLETED NORMALLY!"
 exit 0
