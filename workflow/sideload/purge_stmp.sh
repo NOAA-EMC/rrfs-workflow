@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2154
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
 date
@@ -17,9 +18,19 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 # in rare situations, one can pass in a predefined search pattern to achieve customized purge
 #
 cd "${DATAROOT}" || exit 1
-PURGE_PATTERN=${PURGE_PATTERN:-${DATAROOT}/${RUN}_*_${cyc}_${rrfs_ver}/${WGF}*}
+
+PURGE_PATTERN="${RUN}_*_${cyc}_${rrfs_ver}/${WGF}*"
+#
+# remove any leading / to make sure any `rm -rf` operations will be done under ${DATAROOT}
+#
+while [[ "${PURGE_PATTERN}" == /* ]]; do
+  PURGE_PATTERN="${PURGE_PATTERN#/}"
+done
+#
 for mydir in ${PURGE_PATTERN}; do
-  rm -rf "${mydir}"
+  if [[ -d "${mydir}" ]]; then
+    rm -rf "${mydir}"
+  fi
 done
 #
 date
