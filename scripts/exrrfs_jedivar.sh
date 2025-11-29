@@ -148,11 +148,11 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
   # check the status
   export err=$?
   err_chk
-  if [[ ${start_type} == "warm" ]] && [[ -v SNUDGETYPES ]]; then
+  if [[ ${start_type} == "warm" ]] && [[ "$SNUDGETYPES" != "" ]]; then
       # pyioda libraries
       PYIODALIB=$(echo "$HOMErdasapp"/build/lib/python3.*)
       export PYTHONPATH="${PYIODALIB}:${PYTHONPATH}"
-      python ${USHrrfs}/snudge.py ${CDATE} ${SNUDGETYPES} ${DATA}/${initial_file} 
+      ${USHrrfs}/snudge.py ${CDATE} ${SNUDGETYPES} ${DATA}/${initial_file} 
       if [[ ! -s "soil_analyzed.nc" ]]; then
         echo "Warning: soil nudging failed"
       else
