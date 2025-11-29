@@ -154,7 +154,6 @@ def update_smois_gsd(cs,aqwa,aqwb,apa,apb,ata,atb,snod,smois,landmask,dHtype,cor
     smois[:4] = np.max([np.min([smois[:4]+dsmois,np.max([smois[:4],smois[1:5]],axis=0)],axis=0),np.zeros(np.shape(dsmois))],axis=0)
   return(smois)
 
-meow=dt.datetime.now()
 datestr = sys.argv[1]
 increment_types = sys.argv[2]
 mpasout = sys.argv[3]
@@ -220,7 +219,6 @@ fout.variables['soilt1'][:] = [snot]
 fout.variables['skintemp'][:] = [tsk]
 
 fout.close()
-print('timed: ',dt.datetime.now()-meow)
 
 quit()
 

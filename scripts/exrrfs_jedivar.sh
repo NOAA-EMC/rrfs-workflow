@@ -88,7 +88,7 @@ source "${USHrrfs}/find_ensembles.sh"
 #
 cd "${DATA}" || exit 1
 ln -snf "${UMBRELLA_PREP_IC_DATA}/${initial_file}" .
-if [[ ${start_type} == "warm" ]] && [[ "$SNUDGETYPES" != "" ]]; then
+if [[ ${start_type} == "warm" ]] && [[ ${SNUDGETYPES} != "" ]]; then
     var_list="qv,surface_pressure,theta,tslb,smois,snowh,soilt1,skintemp"
     ncks -C -v ${var_list} ${initial_file} soilbg.nc
 fi
@@ -148,7 +148,7 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
   # check the status
   export err=$?
   err_chk
-  if [[ ${start_type} == "warm" ]] && [[ "$SNUDGETYPES" != "" ]]; then
+  if [[ ${start_type} == "warm" ]] && [[ ${SNUDGETYPES} != "" ]]; then
       # pyioda libraries
       PYIODALIB=$(echo "$HOMErdasapp"/build/lib/python3.*)
       export PYTHONPATH="${PYIODALIB}:${PYTHONPATH}"
