@@ -5,7 +5,28 @@
 #
 # FCST: dt, substeps, and radt
 # MPASSIT: nx, ny, dx, ref_lat, ref_lon
-if [[ ${MESH_NAME} == "conus12km" ]]; then
+if [[ ${MESH_NAME} == "na12km" ]]; then
+  export FCST_DT=60
+  export FCST_SUBSTEPS=2
+  export FCST_RADT=30
+  export UPP_DOMAIN="na."
+
+  export MPASSIT_NX=1200
+  export MPASSIT_NY=800
+  export MPASSIT_DX=12000.0
+  export MPASSIT_REF_LAT=50.0
+  export MPASSIT_REF_LON=-110.0
+
+  export GSIBEC_NLAT=292
+  export GSIBEC_NLON=513
+  export GSIBEC_NORTH_POLE_LAT=38.774123
+  export GSIBEC_NORTH_POLE_LON=67.301057
+  export GSIBEC_LON_START=-58.880000
+  export GSIBEC_LON_END=58.880000
+  export GSIBEC_LAT_START=-33.465000
+  export GSIBEC_LAT_END=33.465000
+
+elif [[ ${MESH_NAME} == "conus12km" ]]; then
   export FCST_DT=60
   export FCST_SUBSTEPS=2
   export FCST_RADT=30
