@@ -2,7 +2,6 @@
 # machine-specific settings
 # set default A/Q/P/R information and other options as needed
 
-echo "MACHINE=${MACHINE}" > machine.txt
 if [[ ${MACHINE} == "jet" ]]; then
   export ACCOUNT=${ACCOUNT:-nrtrr}
   export QUEUE=${QUEUE:-batch}
