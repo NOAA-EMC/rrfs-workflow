@@ -53,6 +53,6 @@ elif [[ ${MACHINE} == "wcoss2" ]]; then
   export ACCOUNT=${ACCOUNT:-RRFS-DEV}
   export QUEUE=${QUEUE:-dev}
   export RESERVATION=${RESERVATION:-""}
-  export REFLOBS_APPENDIX="grib2.gz"  # other machines are default to "grib2"
+  export REFLOBS_APPENDIX="grib2.gz"  # other machines default to "grib2"
 
 fi
