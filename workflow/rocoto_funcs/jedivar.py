@@ -51,7 +51,7 @@ def jedivar(xmlFile, expdir, do_spinup=False):
     }
     if do_spinup:
         dcTaskEnv['DO_SPINUP'] = 'TRUE'
-    if len(snudgetype) >=3:
+    if len(snudgetype) >= 3:
         dcTaskEnv['SNUDGETYPES'] = snudgetype
 
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
