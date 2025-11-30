@@ -115,7 +115,7 @@ esac
 if [[ ${MACHINE} == "wcoss2" ]]; then
   module load cray-pals/1.3.2 # for mpiexec command
 fi
-module load "prod_util/${MACHINE}"
+module load prod_util
 module list
 set -x
 # workaround for err_exit, https://github.com/NOAA-EMC/NCEPLIBS-prod_util/pull/73
