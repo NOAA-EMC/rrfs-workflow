@@ -55,7 +55,7 @@ pio_stride=${PPN}
 file_content=$(< "${PARMrrfs}/${physics_suite}/namelist.atmosphere") # read in all content
 eval "echo \"${file_content}\"" > namelist.atmosphere
 
-if [[ "${MESH_NAME}" == "conus12km" ]]; then
+if [[ "${FCST_CONVECTION_SCHEME^^}" == "TRUE" ]]; then
   sed -i -e "s/    config_physics_suite = 'hrrrv5'/\
     config_physics_suite = 'hrrrv5'\n\
     config_convection_scheme = 'cu_ntiedtke'\n\

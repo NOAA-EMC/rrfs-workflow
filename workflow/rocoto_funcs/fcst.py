@@ -34,6 +34,8 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         'FCST_SUBSteps': os.getenv('FCST_SUBSTEPS', 'FCST_SUBSTEPS_not_defined'),
         'FCST_RADT': os.getenv('FCST_RADT', 'FCST_RADT_not_defined'),
     }
+    if os.getenv('FCST_CONVECTION_SCHEME', 'FALSE').upper() == 'TRUE':
+        dcTaskEnv['FCST_CONVECTION_SCHEME'] = "TRUE"
     if do_spinup:
         dcTaskEnv['DO_SPINUP'] = "TRUE"
 

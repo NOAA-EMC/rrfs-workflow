@@ -9,6 +9,7 @@ if [[ ${MESH_NAME} == "na12km" ]]; then
   export FCST_DT=60
   export FCST_SUBSTEPS=2
   export FCST_RADT=30
+  export FCST_CONVECTION_SCHEME=true
   export UPP_DOMAIN="na."
 
   export MPASSIT_NX=1200
@@ -30,6 +31,7 @@ elif [[ ${MESH_NAME} == "conus12km" ]]; then
   export FCST_DT=60
   export FCST_SUBSTEPS=2
   export FCST_RADT=30
+  export FCST_CONVECTION_SCHEME=true
   export UPP_DOMAIN="conus."
 
   export MPASSIT_NX=480
