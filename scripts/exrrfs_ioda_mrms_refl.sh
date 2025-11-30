@@ -51,10 +51,7 @@ for bigmin_this in ${RADARREFL_TIMELEVEL[@]}; do
   #
   #-----------------------------------------------------------------------
   #
-  obs_appendix=grib2
-  if [[ ${MACHINE} == "WCOSS2" ]]; then
-    obs_appendix=grib2.gz
-  fi
+  obs_appendix=${REFLOBS_APPENDIX:-grib2}
   NSSL=${OBSPATH_NSSLMOSIAC}
 
   mrms="MergedReflectivityQC"
