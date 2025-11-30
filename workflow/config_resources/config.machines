@@ -11,21 +11,21 @@ if [[ ${MACHINE} == "jet" ]]; then
   export NATIVE_ENSMEAN="--exclusive"
 
 elif [[ ${MACHINE} == "hera" ]]; then
-    export ACCOUNT=${ACCOUNT:-rtrr}
-    export QUEUE=${QUEUE:-batch}
-    export PARTITION=${PARTITION:-hera}
-    export RESERVATION=${RESERVATION:-""}
-    export NATIVE_UPP="--exclusive"
+  export ACCOUNT=${ACCOUNT:-rtrr}
+  export QUEUE=${QUEUE:-batch}
+  export PARTITION=${PARTITION:-hera}
+  export RESERVATION=${RESERVATION:-""}
+  export NATIVE_UPP="--exclusive"
 
 elif [[ ${MACHINE} == "ursa" ]]; then
-    export ACCOUNT=${ACCOUNT:-rtrr}
-    export QUEUE=${QUEUE:-batch}
-    export PARTITION=${PARTITION:-u1-compute}
-    export RESERVATION=${RESERVATION:-""}
-    export NATIVE="--exclusive"
-    export NATIVE_PREP=""
-    export NATIVE_SAVE=""
-    export NATIVE_CLEAN=""
+  export ACCOUNT=${ACCOUNT:-rtrr}
+  export QUEUE=${QUEUE:-batch}
+  export PARTITION=${PARTITION:-u1-compute}
+  export RESERVATION=${RESERVATION:-""}
+  export NATIVE="--exclusive"
+  export NATIVE_PREP=""
+  export NATIVE_SAVE=""
+  export NATIVE_CLEAN=""
 
 elif [[ ${MACHINE} == "orion" ]] || [[ ${MACHINE} == "hercules" ]]; then
   export ACCOUNT=${ACCOUNT:-rtrr}
