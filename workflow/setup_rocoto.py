@@ -29,7 +29,7 @@ else:
     exit()
 
 # source the config cascase
-source(f"{HOMErrfs}/workflow/config_resources/config.{machine}")
+source(f"{HOMErrfs}/workflow/config_resources/config.machines")
 source(f"{HOMErrfs}/workflow/config_resources/config.meshdep")
 source(f"{HOMErrfs}/workflow/config_resources/config.base")
 if os.getenv('REALTIME', 'false').upper() == "TRUE":
