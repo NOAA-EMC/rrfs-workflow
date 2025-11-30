@@ -152,12 +152,12 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
       # pyioda libraries
       PYIODALIB=$(echo "$HOMErdasapp"/build/lib/python3.*)
       export PYTHONPATH="${PYIODALIB}:${PYTHONPATH}"
-      "${USHrrfs}"/snudge.py "${CDATE}" "${SNUDGETYPES}" "${DATA}"/${initial_file}
+      "${USHrrfs}"/snudge.py "${CDATE}" "${SNUDGETYPES}" "${DATA}/${initial_file}"
       if [[ ! -s "soil_analyzed.nc" ]]; then
         echo "Warning: soil nudging failed"
       else
         var_list="tslb,smois,soilt1,skintemp"
-	ncks -A -v ${var_list} soil_analyzed.nc "${UMBRELLA_PREP_IC_DATA}"/${initial_file}
+        ncks -A -v ${var_list} soil_analyzed.nc "${UMBRELLA_PREP_IC_DATA}/${initial_file}"
       fi
   fi
   # the input/output file are linked from the umbrella directory, so no need to copy
