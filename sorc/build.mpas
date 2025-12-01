@@ -21,13 +21,10 @@ case "${MACHINE}" in
     fi
     compiler_str="ftn-wcoss2"
     ;;
-  derecho)
-    compiler_str="ifort"
-    ;;
   ursa|orion|hercules|jet|hera)
     compiler_str="intel-mpi-ursa"
     ;;
-  gaeac6)
+  gaeac6|derecho)
     compiler_str="ifort_icx"
     ;;
 esac

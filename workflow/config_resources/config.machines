@@ -46,7 +46,6 @@ elif [[ ${MACHINE} == "derecho" ]]; then
   export ACCOUNT=${ACCOUNT:-test}
   export QUEUE=${QUEUE:-main}
   export RESERVATION=${RESERVATION:-""}
-  export NATIVE_UPP="--exclusive"
   export MPI_RUN_CMD="mpiexec"
 
 elif [[ ${MACHINE} == "wcoss2" ]]; then

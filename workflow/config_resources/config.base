@@ -109,6 +109,6 @@ export ACCOUNT_CLEAN=${ACCOUNT_CLEAN:-$ACCOUNT}
 export QUEUE_CLEAN=${QUEUE_CLEAN:-$QUEUE}
 export PARTITION_CLEAN=${PARTITION_CLEAN:-$PARTITION}
 export RESERVATION_CLEAN=${RESERVATION_CLEAN:-""}
-export NODES_CLEAN="<cores>1</cores>"
+export NODES_CLEAN="<nodes>1:ppn=1</nodes>"
 # misc
-export NODES_MISC="<cores>1</cores>"
+export NODES_MISC="<nodes>1:ppn=1</nodes>"
