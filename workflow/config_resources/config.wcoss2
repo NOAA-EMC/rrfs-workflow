@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-# Hera -specific settings
-export ACCOUNT=${ACCOUNT:-RRFS-DEV}
-export ACCOUNT2=${ACCOUNT2:-${ACCOUNT}}
-export QUEUE=${QUEUE:-dev}
-export QUEUE2=${QUEUE2:-${QUEUE}}
-export RESERVATION=${RESERVATION:-""}
-export RESERVATION2=${RESERVATION2:-${RESERVATION}}

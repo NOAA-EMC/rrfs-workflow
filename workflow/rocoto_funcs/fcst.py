@@ -21,19 +21,22 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     fcst_len_hrs_cycles = os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
     lbc_interval = os.getenv('LBC_INTERVAL', '3')
     history_interval = os.getenv('HISTORY_INTERVAL', '1')
-    restart_interval = os.getenv('RESTART_INTERVAL', '9999')
+    restart_interval = os.getenv('RESTART_INTERVAL', 'none')
     physics_suite = os.getenv('PHYSICS_SUITE', 'PHYSICS_SUITE_not_defined')
     dcTaskEnv = {
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
         'LBC_INTERVAL': f'{lbc_interval}',
         'HISTORY_INTERVAL': f'{history_interval}',
         'RESTART_INTERVAL': f'{restart_interval}',
+        'MPASOUT_INTERVAL': os.getenv('MPASOUT_INTERVAL', '1'),
         'PHYSICS_SUITE': f'{physics_suite}',
         'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycles}',
         'FCST_DT': os.getenv('FCST_DT', 'FCST_DT_not_defined'),
         'FCST_SUBSteps': os.getenv('FCST_SUBSTEPS', 'FCST_SUBSTEPS_not_defined'),
         'FCST_RADT': os.getenv('FCST_RADT', 'FCST_RADT_not_defined'),
     }
+    if os.getenv('FCST_CONVECTION_SCHEME', 'FALSE').upper() == 'TRUE':
+        dcTaskEnv['FCST_CONVECTION_SCHEME'] = "TRUE"
     if do_spinup:
         dcTaskEnv['DO_SPINUP'] = "TRUE"
 

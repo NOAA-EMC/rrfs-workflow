@@ -5,13 +5,6 @@ set -x
 date
 #
 export task_id=${task_id:-'graphics'}
-RUN='rrfs'
-# source the config cascade
-source "${EXPDIR}/exp.setup"
-source "${EXPDIR}/config/config.base"
-source "{EXPDIR}/config/config.${MACHINE}"
-source "{EXPDIR}/config/config.${task_id}"
-rrfs_ver=${VERSION}
 mkdir -p "${DATA}/nclprd"
 
 fhr=${FHR:-0}  # use this line or the next line

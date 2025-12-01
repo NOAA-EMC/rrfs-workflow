@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# machine-specific settings
+# set default A/Q/P/R information and other options as needed
+
+if [[ ${MACHINE} == "jet" ]]; then
+  export ACCOUNT=${ACCOUNT:-nrtrr}
+  export QUEUE=${QUEUE:-batch}
+  export PARTITION=${PARTITION:-kjet}
+  export RESERVATION=${RESERVATION:-""}
+  export NATIVE_UPP="--exclusive"
+  export NATIVE_ENSMEAN="--exclusive"
+
+elif [[ ${MACHINE} == "hera" ]]; then
+  export ACCOUNT=${ACCOUNT:-rtrr}
+  export QUEUE=${QUEUE:-batch}
+  export PARTITION=${PARTITION:-hera}
+  export RESERVATION=${RESERVATION:-""}
+  export NATIVE_UPP="--exclusive"
+
+elif [[ ${MACHINE} == "ursa" ]]; then
+  export ACCOUNT=${ACCOUNT:-rtrr}
+  export QUEUE=${QUEUE:-batch}
+  export PARTITION=${PARTITION:-u1-compute}
+  export RESERVATION=${RESERVATION:-""}
+  export NATIVE="--exclusive"
+  export NATIVE_PREP=""
+  export NATIVE_SAVE=""
+  export NATIVE_CLEAN=""
+
+elif [[ ${MACHINE} == "orion" ]] || [[ ${MACHINE} == "hercules" ]]; then
+  export ACCOUNT=${ACCOUNT:-rtrr}
+  export QUEUE=${QUEUE:-batch}
+  export PARTITION=${PARTITION:-${MACHINE}}
+  export RESERVATION=${RESERVATION:-""}
+  export NATIVE_UPP="--exclusive"
+
+elif [[ ${MACHINE} == "gaeac6" ]]; then
+  export ACCOUNT=${ACCOUNT:-wrfruc}
+  export QUEUE=${QUEUE:-normal}
+  export PARTITION=${PARTITION:-batch}
+  export RESERVATION=${RESERVATION:-""}
+  export CLUSTER=${CLUSTER:-c6}
+  export NATIVE_UPP="--exclusive"
+
+elif [[ ${MACHINE} == "derecho" ]]; then
+  export ACCOUNT=${ACCOUNT:-test}
+  export QUEUE=${QUEUE:-main}
+  export RESERVATION=${RESERVATION:-""}
+  export NATIVE_UPP="--exclusive"
+  export MPI_RUN_CMD="mpiexec"
+
+elif [[ ${MACHINE} == "wcoss2" ]]; then
+  export ACCOUNT=${ACCOUNT:-RRFS-DEV}
+  export QUEUE=${QUEUE:-dev}
+  export RESERVATION=${RESERVATION:-""}
+  export REFLOBS_APPENDIX="grib2.gz"  # other machines default to "grib2"
+
+fi
