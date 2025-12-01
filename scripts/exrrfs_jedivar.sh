@@ -57,9 +57,9 @@ if [[ ${STATIC_BEC_MODEL} == "GSIBEC" ]]; then
   ${cpreq} "${FIXrrfs}/gsi_bec/gsiparm_regional.anl" "${DATA}"/gsiparm_regional.anl
   nlevelm1=$((nlevel - 1))
   sed -i -e "s/@GSIBEC_NLAT@/${GSIBEC_NLAT}/" -e "s/@GSIBEC_NLON@/${GSIBEC_NLON}/" -e "s/@GSIBEC_NSIG@/${nlevelm1}/" \
-	 -e "s/@GSIBEC_LAT_START@/${GSIBEC_LAT_START}/" -e "s/@GSIBEC_LAT_END@/${GSIBEC_LAT_END}/" \
-	 -e "s/@GSIBEC_LON_START@/${GSIBEC_LON_START}/" -e "s/@GSIBEC_LON_END@/${GSIBEC_LON_END}/" \
-	 -e "s/@GSIBEC_NORTH_POLE_LAT@/${GSIBEC_NORTH_POLE_LAT}/"  -e "s/@GSIBEC_NORTH_POLE_LON@/${GSIBEC_NORTH_POLE_LON}/"  \
+         -e "s/@GSIBEC_LAT_START@/${GSIBEC_LAT_START}/" -e "s/@GSIBEC_LAT_END@/${GSIBEC_LAT_END}/" \
+         -e "s/@GSIBEC_LON_START@/${GSIBEC_LON_START}/" -e "s/@GSIBEC_LON_END@/${GSIBEC_LON_END}/" \
+         -e "s/@GSIBEC_NORTH_POLE_LAT@/${GSIBEC_NORTH_POLE_LAT}/"  -e "s/@GSIBEC_NORTH_POLE_LON@/${GSIBEC_NORTH_POLE_LON}/"  \
          -e "s/@GSIBEC_NSIGP1@/${nlevel}/"       "${DATA}"/gsiparm_regional.anl
 else
   # bump bec
@@ -88,6 +88,10 @@ source "${USHrrfs}/find_ensembles.sh"
 #
 cd "${DATA}" || exit 1
 ln -snf "${UMBRELLA_PREP_IC_DATA}/${initial_file}" .
+if [[ ${start_type} == "warm" ]] && [[ ${SNUDGETYPES} != "" ]]; then
+    var_list="qv,surface_pressure,theta,tslb,smois,snowh,soilt1,skintemp"
+    ncks -C -v ${var_list} ${initial_file} soilbg.nc
+fi
 #
 # generate namelist, streams, and jedivar.yaml on the fly
 run_duration=1:00:00
@@ -144,6 +148,18 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
   # check the status
   export err=$?
   err_chk
+  if [[ ${start_type} == "warm" ]] && [[ ${SNUDGETYPES} != "" ]]; then
+      # pyioda libraries
+      PYIODALIB=$(echo "$HOMErdasapp"/build/lib/python3.*)
+      export PYTHONPATH="${PYIODALIB}:${PYTHONPATH}"
+      "${USHrrfs}"/snudge.py "${CDATE}" "${SNUDGETYPES}" "${DATA}/${initial_file}"
+      if [[ ! -s "soil_analyzed.nc" ]]; then
+        echo "Warning: soil nudging failed"
+      else
+        var_list="tslb,smois,soilt1,skintemp"
+        ncks -A -v ${var_list} soil_analyzed.nc "${UMBRELLA_PREP_IC_DATA}/${initial_file}"
+      fi
+  fi
   # the input/output file are linked from the umbrella directory, so no need to copy
   cp "${DATA}/${initial_file}" "${COMOUT}/jedivar/${WGF}/${initial_file%.nc}.${timestr}.nc"
   cp "${DATA}"/jdiag* "${COMOUT}/jedivar/${WGF}"

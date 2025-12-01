@@ -16,5 +16,10 @@ grep "<task name=" ${xmlfile}
 echo -e "\n======= cycledefs ======"
 grep "<cycledef group=" ${xmlfile}
 
+if grep 'DO_CHEMISTRY</name><value>TRUE' ${xmlfile} &> /dev/null; then
+  echo -e "\n======= DO_CHEMISTRY ======"
+  grep "CHEM_GROUPS" ${xmlfile} | grep -oP '(?<=<value>).*?(?=</value>)'
+fi
+
 echo -e "\n======= any undefined variable? ======"
 grep "_not_defined" ${xmlfile}
