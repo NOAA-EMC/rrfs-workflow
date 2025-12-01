@@ -13,11 +13,12 @@ def save_fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         cycledefs = 'prod'
     # Task-specific EnVars beyond the task_common_vars
     history_interval = os.getenv('HISTORY_INTERVAL', '1')
-    restart_interval = os.getenv('RESTART_INTERVAL', '9999')
+    restart_interval = os.getenv('RESTART_INTERVAL', 'none')
     fcst_len_hrs_cycles = os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
     dcTaskEnv = {
         'HISTORY_INTERVAL': f'{history_interval}',
         'RESTART_INTERVAL': f'{restart_interval}',
+        'MPASOUT_INTERVAL': os.getenv('MPASOUT_INTERVAL', '1'),
         'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycles}'
     }
 

@@ -50,7 +50,7 @@ do
     ncrename -v PM10,e_bb_in_smoke_coarse "${EMISFILE2}"
     ln -sf "${EMISFILE2}" "${EMISFILE}"
   else
-    dummyRAVE=${COMINrrfs}/RAVE.dummy.nc
+    dummyRAVE=${FIXrrfs}/chemistry/RAVE/RAVE.dummy.${MESH_NAME}.nc
     if [[ -s ${dummyRAVE} ]]; then
       cp "${dummyRAVE}" "${EMISFILE}"
     else

@@ -7,6 +7,7 @@ cpreq=${cpreq:-cpreq}
 cd "${DATA}" || exit 1
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
 history_interval=${HISTORY_INTERVAL:-1}
+mpasout_interval=${MPASOUT_INTERVAL:-1}
 cyc_interval=${CYC_INTERVAL:-1}
 #
 # find forecst length for this cycle
@@ -48,9 +49,11 @@ for fhr in ${history_all}; do
       mv "${diag_path}"  "${UMBRELLA_SAVE_FCST_DATA}/."
       # save to com
       if (( ii <= cyc_interval )) && (( ii > 0 )); then
-        mpasout_path=$(realpath "${mpasout_file}")
+        if [[ "${mpasout_interval,,}" != "none"  ]]; then
+          mpasout_path=$(realpath "${mpasout_file}")
+          ${cpreq} "${mpasout_path}" "${COMOUT}/fcst/${WGF}${MEMDIR}/."
+        fi
         log_path=$(realpath "${log_file}")
-        ${cpreq} "${mpasout_path}" "${COMOUT}/fcst/${WGF}${MEMDIR}/."
         ${cpreq} "${log_path}" "${COMOUT}/fcst/${WGF}${MEMDIR}/."
       fi
     else

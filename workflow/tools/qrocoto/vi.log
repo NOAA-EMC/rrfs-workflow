@@ -1,0 +1,29 @@
+#!/bin/bash
+# shellcheck disable=all
+# find the log file for a given task at a given cycle
+# by Guoqing Ge, 2025/07
+#
+if [[ ! -s exp.setup ]]; then
+  echo "Run this command under the expdir where exp.setup is located"
+  exit
+fi
+source exp.setup
+if [[ $# < 2 ]]; then
+  echo "$(basename $0) <YYYYMMDDHH|YYYYMMDDHHmm> <task>"
+  exit
+fi
+
+RUN=rrfs
+
+CDATE=$1
+taskraw=$2
+task=${taskraw%_g*}
+if [[ "${task}" == *prep_chem* ]]; then
+  task="prep_chem"
+fi
+PDY=${CDATE:0:8}
+cyc=${CDATE:8:2}
+logroot=${COMROOT}/${NET}/${VERSION}/logs
+logfile="${logroot}/${RUN}.${PDY}/${cyc}/${WGF}/${RUN}_${taskraw}_${TAG}_${PDY}${cyc}.log"
+echo "vi ${logfile}"
+vi ${logfile}

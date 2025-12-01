@@ -116,7 +116,7 @@ esac
 if [[ ${MACHINE} == "wcoss2" ]]; then
   module load cray-pals/1.3.2 # for mpiexec command
 fi
-module load "prod_util/${MACHINE}"
+module load prod_util
 module list
 set -x
 # workaround for err_exit, https://github.com/NOAA-EMC/NCEPLIBS-prod_util/pull/73
@@ -139,7 +139,14 @@ case ${task_id} in
         set -x
         ;;
     esac
-    "${HOMErrfs}/workflow/sideload/clean.py"
+    if [[ "${CLEAN_MODE}" == "1"  ]]; then
+      "${HOMErrfs}/workflow/sideload/clean.py"
+    elif [[ "${CLEAN_MODE}" == "2"  ]]; then
+      "${HOMErrfs}/workflow/sideload/purge_stmp.sh"
+    else
+      echo -e "CLEAN_MODE is not 1 nor 2, no cleaning.\nEXIT NORMALLY!"
+      exit 0
+    fi
     ;;
   graphics|misc)
     "${HOMErrfs}/workflow/sideload/${task_id}.sh"

@@ -20,7 +20,7 @@
         packages="jedi_da"
         io_type="pnetcdf,cdf5"
         input_interval="initial_only"
-        output_interval="1:00:00" >
+        output_interval="@mpasout_interval@" >
         <file name="stream_list/stream_list.atmosphere.da_state"/>
 </stream>
 
@@ -30,7 +30,7 @@
                   io_type="pnetcdf,cdf5"
                   input_interval="initial_only" 
                   clobber_mode="replace_files"
-                  output_interval="@restart_interval@:00:00" />
+                  output_interval="@restart_interval@" />
 
 <stream name="output"
         type="output"
