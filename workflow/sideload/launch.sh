@@ -138,7 +138,14 @@ case ${task_id} in
         set -x
         ;;
     esac
-    "${HOMErrfs}/workflow/sideload/clean.py"
+    if [[ "${CLEAN_MODE}" == "1"  ]]; then
+      "${HOMErrfs}/workflow/sideload/clean.py"
+    elif [[ "${CLEAN_MODE}" == "2"  ]]; then
+      "${HOMErrfs}/workflow/sideload/purge_stmp.sh"
+    else
+      echo -e "CLEAN_MODE is not 1 nor 2, no cleaning.\nEXIT NORMALLY!"
+      exit 0
+    fi
     ;;
   graphics|misc)
     "${HOMErrfs}/workflow/sideload/${task_id}.sh"
