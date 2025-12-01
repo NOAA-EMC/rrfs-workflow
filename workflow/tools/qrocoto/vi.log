@@ -25,20 +25,5 @@ PDY=${CDATE:0:8}
 cyc=${CDATE:8:2}
 logroot=${COMROOT}/${NET}/${VERSION}/logs
 logfile="${logroot}/${RUN}.${PDY}/${cyc}/${WGF}/${RUN}_${taskraw}_${TAG}_${PDY}${cyc}.log"
-echo "----log file:"
-ls ${logfile}*
-
-echo -e  "\n---com output:"
-comout="${COMROOT}/${NET}/${VERSION}/${RUN}.${PDY}/${cyc}/${task}/${WGF}"
-echo "${comout}"
-if [[ ! -d "${comout}" ]]; then
-  echo " !!! the above directory either NOT created, or has been purged !!!"
-fi
-
-echo -e "\n---stmp output:"
-stmpout="${DATAROOT}/${PDY}/${RUN}_${task}_${cyc}_${VERSION}/${WGF}"
-echo "${stmpout}"
-if [[ ! -d "${stmpout}" ]]; then
-  echo " !!! the above directory either NOT created, or has been purged !!!"
-fi
-
+echo "vi ${logfile}"
+vi ${logfile}

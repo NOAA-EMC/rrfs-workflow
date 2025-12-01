@@ -64,12 +64,19 @@ fi
 
 # generate the streams file on the fly using sed as this file contains "filename_template='lbc.$Y-$M-$D_$h.$m.$s.nc'"
 lbc_interval=${LBC_INTERVAL:-3}
-restart_interval=${RESTART_INTERVAL:-99}
+restart_interval=${RESTART_INTERVAL:-none}
 history_interval=${HISTORY_INTERVAL:-1}
 diag_interval=${HISTORY_INTERVAL:-1}
+mpasout_interval=${MPASOUT_INTERVAL:-1}
+[[ ${restart_interval} =~ ^[0-9]+$ ]] && restart_interval="${restart_interval}:00:00"
+[[ ${mpasout_interval} =~ ^[0-9]+$ ]] && mpasout_interval="${mpasout_interval}:00:00"
 sed -e "s/@restart_interval@/${restart_interval}/" -e "s/@history_interval@/${history_interval}/" \
     -e "s/@diag_interval@/${diag_interval}/" -e "s/@lbc_interval@/${lbc_interval}/" \
-    "${PARMrrfs}"/streams.atmosphere  > streams.atmosphere
+    -e "s/@mpasout_interval@/${mpasout_interval}/" "${PARMrrfs}"/streams.atmosphere  > streams.atmosphere
+#
+if [[ "${mpasout_interval,,}" == "none" ]]; then  # remove the da_state stream for coldstart only forecasts
+  sed -i '/<stream name="da_state"/,/<\/stream>/d' streams.atmosphere
+fi
 #
 # chemistry related processing
 if [[ "${DO_CHEMISTRY^^}" == "TRUE" ]]; then
@@ -84,8 +91,10 @@ for fhr in ${history_all}; do
   if [[ "${DO_SPINUP:-FALSE}" != "TRUE" ]];  then
     ln -snf "${DATA}/history.${timestr}.nc" "${UMBRELLA_FCST_DATA}"
     ln -snf "${DATA}/diag.${timestr}.nc" "${UMBRELLA_FCST_DATA}"
-    ln -snf "${DATA}/mpasout.${timestr}.nc" "${UMBRELLA_FCST_DATA}"
     ln -snf "${DATA}/log.atmosphere.0000.out" "${UMBRELLA_FCST_DATA}"
+    if [[ "${mpasout_interval,,}" != "none" ]]; then
+      ln -snf "${DATA}/mpasout.${timestr}.nc" "${UMBRELLA_FCST_DATA}"
+    fi
   fi
 done
 
