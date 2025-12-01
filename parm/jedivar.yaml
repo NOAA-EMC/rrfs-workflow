@@ -14177,6 +14177,7 @@ cost function:
                ratio for small dataset: 2.0
            output file: data/satbias_out/amsua_n19.satbias_cov.nc
        obs pre filters:
+
        # Regional domain check to remove data outside of model domain
        - filter: Bounds Check
          filter variables:
@@ -14590,6 +14591,50 @@ cost function:
            output file: data/satbias_out/atms_n20.satbias_cov.nc
 
        obs pre filters:
+       # Step 0-A: Create Diagnostic Flags
+       - filter: Create Diagnostic Flags
+         filter variables:
+         - name: brightnessTemperature
+           channels: *atms_n20_channels
+         flags:
+         - name: ScanEdgeRemoval
+           initial value: false
+           force reinitialization: false
+         - name: Thinning
+           initial value: false
+           force reinitialization: false
+         - name: CLWRetrievalCheck
+           initial value: false
+           force reinitialization: false
+         - name: WindowChannelExtremeResidual
+           initial value: false
+           force reinitialization: false
+         - name: HydrometeorCheck
+           initial value: false
+           force reinitialization: false
+         - name: GrossCheck
+           initial value: false
+           force reinitialization: false
+         - name: InterChannelConsistency
+           initial value: false
+           force reinitialization: false
+         - name: UseflagCheck
+           initial value: false
+           force reinitialization: false
+
+       obs post filters:
+       # Step 0-B: Calculate derived variables
+       # Calculate CLW retrieved from observation
+       - filter: Variable Assignment
+         assignments:
+         - name: CLWRetFromObs@DerivedMetaData
+           type: float
+           function:
+             name: CLWRetMW@ObsFunction
+             options:
+               clwret_ch238: 1
+               clwret_ch314: 2
+               clwret_types: [ObsValue]
        # Calculate CLW retrieved from observation
        - filter: Variable Assignment
          assignments:
@@ -15135,6 +15180,50 @@ cost function:
            output file: data/satbias_out/atms_npp.satbias_cov.nc
 
        obs pre filters:
+       # Step 0-A: Create Diagnostic Flags
+       - filter: Create Diagnostic Flags
+         filter variables:
+         - name: brightnessTemperature
+           channels: *atms_npp_channels
+         flags:
+         - name: ScanEdgeRemoval
+           initial value: false
+           force reinitialization: false
+         - name: Thinning
+           initial value: false
+           force reinitialization: false
+         - name: CLWRetrievalCheck
+           initial value: false
+           force reinitialization: false
+         - name: WindowChannelExtremeResidual
+           initial value: false
+           force reinitialization: false
+         - name: HydrometeorCheck
+           initial value: false
+           force reinitialization: false
+         - name: GrossCheck
+           initial value: false
+           force reinitialization: false
+         - name: InterChannelConsistency
+           initial value: false
+           force reinitialization: false
+         - name: UseflagCheck
+           initial value: false
+           force reinitialization: false
+
+       obs post filters:
+       # Step 0-B: Calculate derived variables
+       # Calculate CLW retrieved from observation
+       - filter: Variable Assignment
+         assignments:
+         - name: CLWRetFromObs@DerivedMetaData
+           type: float
+           function:
+             name: CLWRetMW@ObsFunction
+             options:
+               clwret_ch238: 1
+               clwret_ch314: 2
+               clwret_types: [ObsValue]
        # Calculate CLW retrieved from observation
        - filter: Variable Assignment
          assignments:
@@ -16639,6 +16728,50 @@ cost function:
            output file: data/satbias_out/atms_n21.satbias_cov.nc
 
        obs pre filters:
+       # Step 0-A: Create Diagnostic Flags
+       - filter: Create Diagnostic Flags
+         filter variables:
+         - name: brightnessTemperature
+           channels: *atms_n21_channels
+         flags:
+         - name: ScanEdgeRemoval
+           initial value: false
+           force reinitialization: false
+         - name: Thinning
+           initial value: false
+           force reinitialization: false
+         - name: CLWRetrievalCheck
+           initial value: false
+           force reinitialization: false
+         - name: WindowChannelExtremeResidual
+           initial value: false
+           force reinitialization: false
+         - name: HydrometeorCheck
+           initial value: false
+           force reinitialization: false
+         - name: GrossCheck
+           initial value: false
+           force reinitialization: false
+         - name: InterChannelConsistency
+           initial value: false
+           force reinitialization: false
+         - name: UseflagCheck
+           initial value: false
+           force reinitialization: false
+
+       obs post filters:
+       # Step 0-B: Calculate derived variables
+       # Calculate CLW retrieved from observation
+       - filter: Variable Assignment
+         assignments:
+         - name: CLWRetFromObs@DerivedMetaData
+           type: float
+           function:
+             name: CLWRetMW@ObsFunction
+             options:
+               clwret_ch238: 1
+               clwret_ch314: 2
+               clwret_types: [ObsValue]
        # Calculate CLW retrieved from observation
        - filter: Variable Assignment
          assignments:
