@@ -426,7 +426,9 @@ cp $COMOUT/ioda_*.nc data/obs/.
 # including satellite radiance data
 #
 #-----------------------------------------------------------------------
-#
+mkdir -p data/satbias_in  data/satbias_out
+cp "${FIX_JEDI}/"/satbias_init/*.tlapse.txt data/satbias_in/.
+cp "${FIX_JEDI}/"/satbias_init/*.nc data/satbias_in/.
 #
 #-----------------------------------------------------------------------
 #
@@ -447,6 +449,7 @@ cp $COMOUT/ioda_*.nc data/obs/.
 #   bufrtable= text file ONLY needed for single obs test (oneobstest=.true.)
 #   bftab_sst= bufr table for sst ONLY needed for sst retrieval (retrieval=.true.)
 #
+ln -snf ${FIX_CRTM_JEDI} data/crtm
 #-----------------------------------------------------------------------
 #
 mkdir -p INPUT
