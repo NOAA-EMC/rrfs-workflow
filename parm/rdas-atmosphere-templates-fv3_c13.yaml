@@ -255,8 +255,10 @@ observations:
 
 # Remote
 #- gnss_zenithTotalDelay
-#- satwnd_winds_245_270
-#- satwnd_winds_245_272
+- satwnd_winds_245_270
+- satwnd_winds_245_272
+- satwnd_winds_246_270
+- satwnd_winds_246_272
 
 # SatRad
 #- abi_g16
@@ -329,6 +331,8 @@ iuse_sfcshp_winds_284: passivate
 iuse_gnss_zenithTotalDelay: passivate
 iuse_satwnd_winds_245_270: passivate
 iuse_satwnd_winds_245_272: passivate
+iuse_satwnd_winds_246_270: passivate
+iuse_satwnd_winds_246_272: passivate
 
 # SatRad
 iuse_abi_g16: passivate
