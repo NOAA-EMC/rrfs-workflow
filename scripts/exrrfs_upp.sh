@@ -11,6 +11,9 @@ domain=${UPP_DOMAIN:-""}
 #
 ${cpreq} "${EXECrrfs}/upp.x" .
 ${cpreq} "${FIXrrfs}"/upp/* .
+zeta_levels=${EXPDIR}/config/ZETA_LEVELS.txt
+nlevel=$(wc -l < "${zeta_levels}")
+${cpreq} "postxconfig-NT_L${nlevel}.txt" postxconfig-NT.txt
 FIXcrtm=${FIXrrfs}/crtm/2.4.0_upp
 while read -r line; do
   ln -snf "${FIXcrtm}/${line}" .
