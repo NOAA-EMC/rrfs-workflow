@@ -1,0 +1,176 @@
+#!/usr/bin/env python
+#
+#  By Guoqing.Ge
+#     March, 2017
+#
+#
+from subprocess import Popen, PIPE
+import getpass
+import sys
+user = getpass.getuser()
+
+nargs = len(sys.argv)
+
+seq = ('Job_ID =', 'Job_Name =', 'job_state =', 'queue =', 'Resource_List.ncpus =', 'Resource_List.nodect =',
+       'Account_Name =', 'qtime =', 'Resource_List.walltime =', 'stime =', 'resources_used.walltime =')
+dict0 = dict.fromkeys(seq)
+keys0 = list(dict0.keys())
+nkeys = len(keys0)
+
+process = Popen(['qstat', '-fu', user], stdout=PIPE, stderr=PIPE)
+stdout, stderr = process.communicate()
+
+content = []
+text = stdout.decode('utf-8', errors='replace')  # convert bytes -> str
+jobs = text.split('Job Id:')
+njobs = len(jobs)
+for knt in range(njobs):
+    if len(jobs[knt]) < 1:
+        continue
+    job0 = 'Job_ID =' + jobs[knt]
+    line0 = job0.split('\n')
+    # to create a new dict
+    dict0 = dict.fromkeys(seq)
+    for i in range(len(line0)):
+        tem = line0[i]
+        for j in range(nkeys):
+            if tem.find(keys0[j]) > -1:
+                pos = tem.find('=')
+                dict0[keys0[j]] = tem[pos + 2:]
+                break
+    content.append(dict0)
+
+# -----------------------  to print out jobs -----------------------------------------------
+dict1 = dict.fromkeys(seq, -1)  # to save the maximu length of each key
+for i in range(len(content)):
+    dict0 = content[i]
+    for j in range(nkeys):
+        tem = dict0[keys0[j]]
+        if tem is not None:
+            if len(tem) > dict1[keys0[j]]:
+                dict1[keys0[j]] = len(tem)
+
+# headers
+if dict1['Job_ID ='] < 7:
+    dict1['Job_ID ='] = 7
+header2 = '|Job_ID ' + ' ' * (dict1['Job_ID ='] - 7 - 9)  # remove '.desched1"
+if dict1['Job_Name ='] < 9:
+    dict1['Job_Name ='] = 9
+header2 = header2 + '|Job_Name ' + ' ' * (dict1['Job_Name ='] - 9)
+header2 = header2 + '|S'
+if dict1['queue ='] < 6:
+    dict1['queue ='] = 6
+header2 = header2 + '|Queue ' + ' ' * (dict1['queue ='] - 6)
+if dict1['Account_Name ='] < 5:
+    dict1['Account_Name ='] = 5
+header2 = header2 + '|Acct ' + ' ' * (dict1['Account_Name ='] - 5)
+if dict1['Resource_List.ncpus ='] < 6:
+    dict1['Resource_List.ncpus ='] = 6
+header2 = header2 + '|procs ' + ' ' * (dict1['Resource_List.ncpus ='] - 6)
+if dict1['Resource_List.nodect ='] < 6:
+    dict1['Resource_List.nodect ='] = 6
+header2 = header2 + '|nodes ' + ' ' * (dict1['Resource_List.nodect ='] - 6)
+if dict1['Resource_List.walltime ='] < 9:
+    dict1['Resource_List.walltime ='] = 9
+header2 = header2 + '|Walltime ' + ' ' * (dict1['Resource_List.walltime ='] - 9)
+if dict1['qtime ='] < 12:
+    dict1['qtime ='] = 12
+header2 = header2 + '|Queued_time ' + ' ' * (dict1['qtime ='] - 12)
+if dict1['stime ='] < 6:
+    dict1['stime ='] = 6
+header2 = header2 + '|stime ' + ' ' * (dict1['stime ='] - 6)
+if dict1['resources_used.walltime ='] < 9:
+    dict1['resources_used.walltime ='] = 9  # 11 is the length of "run_time(s) "
+header2 = header2 + '|run_time ' + ' ' * (dict1['resources_used.walltime ='] - 9)
+
+header1 = '-' * len(header2)
+print
+print(header1)
+print(header2)
+print(header1)
+
+
+# print running job
+for i in range(len(content)):
+    dict0 = content[i]
+    if dict0['job_state ='] != 'R':
+        continue
+    text = "|%-*s" % (dict1['Job_ID ='] - 9, dict0['Job_ID ='][:len(dict0['Job_ID =']) - 9])  # 9 is the length of '.desched1'
+    text = text + "|%-*s" % (dict1['Job_Name ='], dict0['Job_Name ='])
+    text = text + "|%-*s" % (dict1['job_state ='], dict0['job_state ='])
+    text = text + "|%-*s" % (dict1['queue ='], dict0['queue ='])
+    text = text + "|%-*s" % (dict1['Account_Name ='], dict0['Account_Name ='])
+    text = text + "|%-*s" % (dict1['Resource_List.ncpus ='], dict0['Resource_List.ncpus ='])
+    text = text + "|%-*s" % (dict1['Resource_List.nodect ='], dict0['Resource_List.nodect ='])
+    text = text + "|%-*s" % (dict1['Resource_List.walltime ='], dict0['Resource_List.walltime ='])
+    text = text + "|%-*s" % (dict1['qtime ='], dict0['qtime ='])
+    if dict0['stime ='] is not None:
+        text = text + "|%-*s" % (dict1['stime ='], dict0['stime ='])
+    else:
+        text = text + "|" + '*' * dict1['stime =']
+    if dict0['resources_used.walltime ='] is not None:
+        text = text + "|%-*s" % (dict1['resources_used.walltime ='], dict0['resources_used.walltime ='])
+    else:
+        text = text + "|" + '*' * dict1['resources_used.walltime =']
+    print(text)
+print
+
+# print queued job
+for i in range(len(content)):
+    dict0 = content[i]
+    if dict0['job_state ='] != 'Q':
+        continue
+    text = "|%-*s" % (dict1['Job_ID ='] - 9, dict0['Job_ID ='][:len(dict0['Job_ID =']) - 9])
+    text = text + "|%-*s" % (dict1['Job_Name ='], dict0['Job_Name ='])
+    text = text + "|%-*s" % (dict1['job_state ='], dict0['job_state ='])
+    text = text + "|%-*s" % (dict1['queue ='], dict0['queue ='])
+    text = text + "|%-*s" % (dict1['Account_Name ='], dict0['Account_Name ='])
+    text = text + "|%-*s" % (dict1['Resource_List.ncpus ='], dict0['Resource_List.ncpus ='])
+    text = text + "|%-*s" % (dict1['Resource_List.nodect ='], dict0['Resource_List.nodect ='])
+    text = text + "|%-*s" % (dict1['Resource_List.walltime ='], dict0['Resource_List.walltime ='])
+    text = text + "|%-*s" % (dict1['qtime ='], dict0['qtime ='])
+    if dict0['stime ='] is not None:
+        text = text + "|%-*s" % (dict1['stime ='], dict0['stime ='])
+    else:
+        text = text + "|" + '*' * dict1['stime =']
+    if dict0['resources_used.walltime ='] is not None:
+        text = text + "|%-*s" % (dict1['resources_used.walltime ='], dict0['resources_used.walltime ='])
+    else:
+        text = text + "|" + '*' * dict1['resources_used.walltime =']
+    print(text)
+print
+
+
+if nargs < 2:  # if no command line argument, do not print out completed jobs
+    print
+    exit()
+
+# print completed job
+for i in range(len(content)):
+    dict0 = content[i]
+    if dict0['job_state ='] != 'C' and dict0['job_state ='] != 'E':
+        continue
+    text = "|%-*s" % (dict1['Job_ID ='] - 9, dict0['Job_ID ='][:len(dict0['Job_ID =']) - 9])
+    text = text + "|%-*s" % (dict1['Job_Name ='], dict0['Job_Name ='])
+    text = text + "|%-*s" % (dict1['job_state ='], dict0['job_state ='])
+    text = text + "|%-*s" % (dict1['queue ='], dict0['queue ='])
+    text = text + "|%-*s" % (dict1['Account_Name ='], dict0['Account_Name ='])
+    text = text + "|%-*s" % (dict1['Resource_List.ncpus ='], dict0['Resource_List.ncpus ='])
+    text = text + "|%-*s" % (dict1['Resource_List.nodect ='], dict0['Resource_List.nodect ='])
+    text = text + "|%-*s" % (dict1['Resource_List.walltime ='], dict0['Resource_List.walltime ='])
+    text = text + "|%-*s" % (dict1['qtime ='], dict0['qtime ='])
+    if dict0['stime ='] is not None:
+        text = text + "|%-*s" % (dict1['stime ='], dict0['stime ='])
+    else:
+        text = text + "|" + '*' * dict1['stime =']
+    if dict0['comp_time ='] is not None:
+        text = text + "|%-*s" % (dict1['comp_time ='], dict0['comp_time ='])
+    else:
+        text = text + "|" + '*' * dict1['comp_time =']
+    if dict0['resources_used.walltime ='] is not None:
+        text = text + "|%-*s" % (dict1['resources_used.walltime ='], dict0['resources_used.walltime ='])
+    else:
+        text = text + "|" + '*' * dict1['resources_used.walltime =']
+    print(text)
+print
+print

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # tweaks for non-NCO experiments
 # This script will NOT be needed by NCO
-# shellcheck disable=SC1090,SC1091,SC2154
+# shellcheck disable=SC1090,SC1091,SC2154,SC2155
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
 #
@@ -11,19 +11,21 @@ COMMAND=$1  #get the J-JOB name
 task_id=${COMMAND#*_} # remove the "JRRFS_" part
 export task_id=${task_id,,} #to lower case
 echo "run on ${MACHINE}"
-if [[ ${MACHINE} == "wcoss2" ]]; then
-  source "${HOMErrfs}/versions/run.ver"
-  NTASKS=$( wc -l "$PBS_NODEFILE" | awk '{print $1}' )
-  PPN=$( grep -c "$(head -1 "$PBS_NODEFILE")" "$PBS_NODEFILE" )
-  export NTASKS
-  export PPN
-  export NODES=$(( NTASKS / PPN ))
-  export STRIDE=$((128 / PPN))
-  export MPI_RUN_CMD="mpiexec -n $NTASKS -ppn $PPN --cpu-bind core --depth $STRIDE --label --line-buffer"
-else
+if [[ -n "${SLURM_JOB_ID}" ]]; then # slurm
   export NTASKS=${SLURM_NTASKS}
   export NODES=${SLURM_JOB_NUM_NODES}
   export PPN=${SLURM_TASKS_PER_NODE%%(*} # remove the (x6) part of 20(x6)
+elif [[ -n "${PBS_NODEFILE}" ]]; then # PBS
+  export NTASKS=$(wc -l < "${PBS_NODEFILE}")
+  export NODES=$(sort -u "${PBS_NODEFILE}" | wc -l)
+  export PPN=$(grep -c "$(head -1 "${PBS_NODEFILE}")" "${PBS_NODEFILE}" )
+  if [[ ${MACHINE,,} == "wcoss2" ]]; then # special needs at wcoss2
+    source "${HOMErrfs}/versions/run.ver"
+    export STRIDE=$((128 / PPN))
+    export MPI_RUN_CMD="mpiexec -n $NTASKS -ppn $PPN --cpu-bind core --depth $STRIDE --label --line-buffer"
+  fi
+else
+  echo "Info: Not slurm nor PBS"
 fi
 #
 ulimit -s unlimited

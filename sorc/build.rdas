@@ -8,11 +8,11 @@ HOMErrfs="$(dirname "$rundir")"
 source "${HOMErrfs}/workflow/tools/detect_machine.sh"
 source "${HOMErrfs}/workflow/tools/init.sh"
 
-if [[ "${MACHINE}" == "derecho" ]]; then
-  #export GFORTRAN_CONVERT_UNIT='big_endian:101-200'
-  #export LMOD_TMOD_FIND_FIRST=yes
-  export COMPILER=gnu
-fi
+#if [[ "${MACHINE}" == "derecho" ]]; then
+#  #export GFORTRAN_CONVERT_UNIT='big_endian:101-200'
+#  #export LMOD_TMOD_FIND_FIRST=yes
+#  export COMPILER=gnu
+#fi
 
 # get a clean copy of the same MPAS-Model as in the workflow
 # if RDASApp has a different version from the workflow
