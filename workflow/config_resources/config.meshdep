@@ -83,7 +83,7 @@ elif [[ ${MESH_NAME} == "conus3km" ]]; then
   export NONVAR_SEARCH_RAD=1
 
 elif [[ ${MESH_NAME} == "south3.5km" ]]; then
-  export FCST_DT=20
+  export FCST_DT=25
   export FCST_SUBSTEPS=4
   export FCST_RADT=15
   export UPP_DOMAIN="subconus."
