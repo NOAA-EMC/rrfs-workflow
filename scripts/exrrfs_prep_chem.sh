@@ -123,6 +123,7 @@ if [[ "${CHEM_GROUP}" == "pollen" ]]; then
 fi # bio/pollen
 
 if [[ "${CHEM_GROUP}" == "dust" ]]; then
-  echo "nothing needs to be done for dust, will modify this in the future"
-  #source "${HOMErrfs}/workflow/tools/chem_prep_dust.sh"
+  if [[ ! -e "${FIXrrfs}/chemistry/dust/fengsha_dust_inputs.${MESH_NAME}.nc" ]]; then
+     source "${HOMErrfs}/workflow/tools"/chem_prep_dust.sh
+  fi
 fi # dust
