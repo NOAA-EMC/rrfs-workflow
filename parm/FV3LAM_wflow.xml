@@ -1140,6 +1140,12 @@ MODULES_RUN_TASK_FP script.
 {%- endif %}
 
 {%- endif %}
+{%- if do_spinup %}
+<!-- beginning of spinup block  -->
+<!--
+************************************************************************
+************************************************************************
+-->
 {%- if not do_ensfcst %}
 {%- if do_ensemble %}
  <metatask name="run_ensemble">
@@ -1147,12 +1153,6 @@ MODULES_RUN_TASK_FP script.
     {%- for m in range(1, num_ens_members+1) -%}{%- set fmtstr=" %0"~ndigits_ensmem_names~"d" -%}{{- fmtstr%m -}}{%- endfor %} </var>
 {%- endif %}
 
-{%- if do_spinup %}
-<!-- beginning of spinup block  -->
-<!--
-************************************************************************
-************************************************************************
--->
  {%- if do_ensinit %}
   <task name="&PREP_CYC_SPINUP_TN;_ensinit{{ uscore_ensmem_name }}" cycledefs="spinupcyc" maxtries="{{ maxtries_run_prepstart }}">
  {% else %}
@@ -2313,14 +2313,14 @@ MODULES_RUN_TASK_FP script.
   </metatask>
 {%- endif %}
 
-<!-- end of spinup block -->
-{%- endif %}
 
 {%- if do_ensemble %}
 </metatask>
 {%- endif %}
 
 {%- endif %}  <!-- not do_ensfcst -->
+<!-- end of spinup block -->
+{%- endif %}
 
 <!-- beginning of prod block -->
 {%- if do_ensemble %}
@@ -2675,9 +2675,11 @@ MODULES_RUN_TASK_FP script.
 {%- endif %}
 
 {% if do_ensemble %}
+{%- if do_dacycle or do_nonvar_cldanal or do_refl2tten %}
  <metatask name="run_ensemble">
   <var name="{{ ensmem_indx_name }}">
     {%- for m in range(1, num_ens_members+1) -%}{%- set fmtstr=" %0"~ndigits_ensmem_names~"d" -%}{{- fmtstr%m -}}{%- endfor %} </var>
+{%- endif %}
 {%- endif %}
 
 {%- if do_dacycle %}
@@ -3148,7 +3150,9 @@ MODULES_RUN_TASK_FP script.
 {%- endif %}
 
 {%- if do_ensemble %}
+{%- if do_dacycle or do_nonvar_cldanal or do_refl2tten %}
  </metatask>
+{%- endif %}
 {%- endif %}
 {%- endif %}
 
