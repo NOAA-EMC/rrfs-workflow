@@ -21,19 +21,27 @@ if [[ -r "${UMBRELLA_PREP_CHEM_DATA}/bio.init.nc" ]]; then
 fi
 # Dust
 if [[ "${CHEM_GROUPS,,}" == *dust* ]]; then
-  sed -i "\$e cat ${PARMrrfs}/chemistry/streams.atmosphere.dust" streams.atmosphere
-  # First check to see if a new dust file has been generated for this domain/simulation
-  if [[ -r  "${UMBRELLA_PREP_CHEM_DATA}/dust.init.nc" ]]; then
-     ln -snf "${UMBRELLA_PREP_CHEM_DATA}/dust.init.nc" dust.init.nc
-  elif [[ -r "${FIXrrfs}/chemistry/dust/fengsha_dust_inputs.${MESH_NAME}.nc" ]]; then
+  founddust=false
+  if [[ -s "${FIXrrfs}/chemistry/dust/fengsha_dust_inputs.${MESH_NAME}.nc" ]]; then
      ln -snf "${FIXrrfs}/chemistry/dust/fengsha_dust_inputs.${MESH_NAME}.nc" dust.init.nc
+     founddust=true
+  elif [[ -s "${UMBRELLA_PREP_CHEM_DATA}/dust.init.nc" ]]; then
+     cp "${UMBRELLA_PREP_CHEM_DATA}/dust.init.nc" "${FIXrrfs}/chemistry/dust/fengsha_dust_inputs.${MESH_NAME}.nc"
+     ln -snf "${FIXrrfs}/chemistry/dust/fengsha_dust_inputs.${MESH_NAME}.nc" dust.init.nc
+     founddust=true
+  else
+     echo "No dust.init.nc file exists in ${FIXrrfs} or ${UMBRELLA_PREP_CHEM_DATA}, cannot do dust"
+     sed -i "s/config_dust_scheme\s*=\s*'on'/config_dust_scheme  = 'off'/g" namelist.atmosphere
   fi
-  # Append the xtime variable if it is missing
-  if ! ncdump -hv xtime dust.init.nc 1>/dev/null ; then     	  
-     ncks -A -v xtime init.nc dust.init.nc
+  if [[ "${founddust}" == "true" ]]; 
+     sed -i "\$e cat ${PARMrrfs}/chemistry/streams.atmosphere.dust" streams.atmosphere   
+     sed -i "s/config_dust_scheme\s*=\s*'off'/config_dust_scheme  = 'on'/g" namelist.atmosphere
+     num_chem=$(( num_chem + 2 ))
+     # Append the xtime variable if it is missing
+     if ! ncdump -hv xtime dust.init.nc 1>/dev/null ; then     	  
+        ncks -A -v xtime init.nc dust.init.nc
+     fi
   fi
-  sed -i "s/config_dust_scheme\s*=\s*'off'/config_dust_scheme  = 'on'/g" namelist.atmosphere
-  num_chem=$(( num_chem + 2 ))
 fi
 #
 # save current nullglob setting and enable nullglob for this script
