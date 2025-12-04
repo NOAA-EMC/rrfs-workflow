@@ -125,5 +125,7 @@ fi # bio/pollen
 if [[ "${CHEM_GROUP}" == "dust" ]]; then
   if [[ ! -s "${FIXrrfs}/chemistry/dust/fengsha_dust_inputs.${MESH_NAME}.nc" ]]; then
      source "${HOMErrfs}/workflow/tools/chem_prep_dust.sh"
+     echo "IMPORTANT! Copy the new dust.init.nc fix file at ${UMBRELLA_PREP_CHEM_DATA}/dust.init.nc and rename to ${FIXrrfs}/chemistry/dust/fengsha_dust_inputs.${MESH_NAME}.nc"
+     #cp ${UMBRELLA_PREP_CHEM_DATA}/dust.init.nc "${FIXrrfs}/chemistry/dust/fengsha_dust_inputs.${MESH_NAME}.nc" 
   fi
 fi # dust
