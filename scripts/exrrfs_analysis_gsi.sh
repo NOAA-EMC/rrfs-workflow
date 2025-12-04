@@ -211,17 +211,9 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
   else
     poe_script=parallel_copy.sh
     export MP_CMDFILE=${poe_script}
-    launcher="time mpiexec -np 128 --cpu-bind core cfp"
+    launcher="time mpiexec -np ${ncores} -ppn ${PPN_MAKE_LBCS} --cpu-bind core cfp"
     $launcher $MP_CMDFILE
     export err=$?; err_chk
-
-#    split -l 10 parallel_copy.sh parallel_copy_run
-#    for file_to_p_copy in parallel_copy_run*; do
-#       echo "Working on ${file_to_p_copy}"
-#       cat ${file_to_p_copy} | parallel --verbose --halt-on-error 1
-#       export err=$?; err_chk
-#       sleep 6 
-#    done
   fi
 fi
 #
@@ -1157,13 +1149,15 @@ filelist="pe*.nc4 rrfs.*.${YYYYMMDDHH}_cnvstat_nc rrfs.*.${YYYYMMDDHH}_radstat_n
 for file in $filelist; do
   if [ -s $file ]; then
     [[ -f ${shared_output_data}/${file} ]]&& rm -f ${shared_output_data}/${file}
-    echo "ln -s ${DATA}/${file} ." >> ${shared_output_data}/link_shared_file.sh
+    echo "cpfs ${DATA}/${file} ${shared_output_data}/" >> ${shared_output_data}/copy_shared_file.sh
   else
     echo "WARNING $file is not available"
   fi
 done
 cd ${shared_output_data}
-sh -x link_shared_file.sh
+launcher="time mpiexec -np ${ncores} -ppn ${PPN_MAKE_LBCS} --cpu-bind core cfp"
+${launcher} ${shared_output_data}/copy_shared_file.sh
+export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
