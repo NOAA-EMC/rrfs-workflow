@@ -211,7 +211,7 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
   else
     poe_script=parallel_copy.sh
     export MP_CMDFILE=${poe_script}
-    launcher="time mpiexec -np ${ncores} -ppn ${PPN_MAKE_LBCS} --cpu-bind core cfp"
+    launcher="time mpiexec -np ${ncores} -ppn ${PPN_ANALYSIS_GSI} --cpu-bind core cfp"
     $launcher $MP_CMDFILE
     export err=$?; err_chk
   fi
@@ -1155,7 +1155,7 @@ for file in $filelist; do
   fi
 done
 cd ${shared_output_data}
-launcher="time mpiexec -np ${ncores} -ppn ${PPN_MAKE_LBCS} --cpu-bind core cfp"
+launcher="time mpiexec -np ${ncores} -ppn ${PPN_ANALYSIS_GSI} --cpu-bind core cfp"
 ${launcher} ${shared_output_data}/copy_shared_file.sh
 export err=$?; err_chk
 #
