@@ -125,6 +125,12 @@ else
   fg_restart_dirname=fcst_fv3lam
 fi
 
+bkpath=${CYCLE_DIR}/mem0001/${fg_restart_dirname}/INPUT/coupler.res
+if [[ "${DO_DACOLD}" = "FALSE" && ! -r "${bkpath}" ]]; then
+  echo "Not performing DA for cold cycles - do early clean exit"
+  exit 0
+fi
+
 imem=1
 for imem in  $(seq 1 $nens)
   do
