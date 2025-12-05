@@ -244,6 +244,8 @@ cp -p ${FIX_JEDI}/ioda_empty.nc ioda_adpupa.nc
 ./bufr2ioda_adpupa_prepbufr.py -c bufr2ioda_adpupa_prepbufr_0.json >> $pgmout
 
 # SATWND
+cp -p ${FIX_JEDI}/ioda_empty_satwnd.nc ioda_satwnd.abi_goes-16.nc
+cp -p ${FIX_JEDI}/ioda_empty_satwnd.nc ioda_satwnd.abi_goes-18.nc
 ./gen_bufr2ioda_json.py -t bufr2ioda_satwnd_amv_goes.json -o bufr2ioda_satwnd_amv_goes_0.json
 ./bufr2ioda_satwnd_amv_goes.py -c bufr2ioda_satwnd_amv_goes_0.json >> $pgmout
 
@@ -277,6 +279,20 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+is_empty_ioda() {
+    local f="$1"
+    # Robust check: look at Location dimension
+    local loc
+    loc=$(ncdump -h "$f" 2>/dev/null | awk '/Location =/ {print $3}' | tr -d ';')
+    if [ -z "$loc" ]; then
+        return 0
+    fi
+    if [ "$loc" -le 1 ]; then
+        return 0  # empty
+    fi
+    return 1  # not empty
+}
+
 cp "${RDASAPP_DIR}"/rrfs-test/IODA/offline_domain_check.py .
 cp "${RDASAPP_DIR}"/rrfs-test/IODA/offline_domain_check_satrad.py .
 cp "${RDASAPP_DIR}"/rrfs-test/IODA/offline_ioda_patch.py .
@@ -284,7 +300,12 @@ cp "${RDASAPP_DIR}"/rrfs-test/IODA/offline_vad_thinning.py .
 cp "${RDASAPP_DIR}"/rrfs-test/IODA/offline_duplicate_tagger.py .
 
 # offline domain check & patch
-for ioda_file in ioda*nc; do
+for ioda_file in ioda*.nc; do
+  # skip empty files
+  if is_empty_ioda "$ioda_file"; then
+    echo "Skipping domain check & patch: $ioda_file is empty"
+    continue
+  fi
   grid_file="${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec"
   if [[ "${ioda_file}" == *abi* && "${ioda_file}" != *satwnd* ]]; then
     echo " ${ioda_file} ioda file detected: running offline_domain_check_satrad.py"
