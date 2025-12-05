@@ -91,12 +91,6 @@ if ! ls ./lbc*.nc; then
   err_exit
 fi
 
-# add/update chemistry species to lbc.nc
-# JLS - this is currently unnecessary - init_atmosphere fills variables correctly
-#if [[ "${DO_CHEMISTRY^^}" == "TRUE" ]]; then
-#  source "${USHrrfs}"/chem_lbc_update.sh
-#fi
-
 # copy lbc*.nc to COMOUT
 ${cpreq} "${DATA}"/lbc*.nc "${COMOUT}/lbc/${WGF}${MEMDIR}"
 cp "${DATA}"/log.*.out "${COMOUT}/lbc/${WGF}${MEMDIR}"

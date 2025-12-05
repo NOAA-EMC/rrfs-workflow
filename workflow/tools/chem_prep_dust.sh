@@ -46,5 +46,4 @@ else
       ncap2 -O -s 'albedo_drag_m_in=feff_m_in' "${DUST_INITFILE}" "${DUST_INITFILE}"
    fi   
    ncks -O -6 "${DUST_INITFILE}" "${DUST_INITFILE}"
-   #shellcheck disable=SC2086
 fi
