@@ -15,7 +15,7 @@ look_back_hours=48
 increment_hours=24
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
 offset_hours=${increment_hours}
-while ! ${found} && (( 10#${offset_hours} <= 10#${look_back_hours} )); do
+while [[ "${found}" == "false" ]] && (( 10#${offset_hours} <= 10#${look_back_hours} )); do
   CDATEp=$(${NDATE} -"${offset_hours}" "${CDATE}")
   mpasout=${COMINrrfs}/${RUN}.${CDATEp:0:8}/${CDATEp:8:2}/fcst/${WGF}${MEMDIR}/mpasout.${timestr}.nc
   if [[ -s "${mpasout}" ]]; then
@@ -25,7 +25,7 @@ while ! ${found} && (( 10#${offset_hours} <= 10#${look_back_hours} )); do
   offset_hours=$(( 10#${offset_hours} + 10#${increment_hours} ))
 done
 
-if ${found}; then
+if [[ "${found}" == "true" ]]; then
    for species in "${species_list[@]}"; do
       # Check to see if the species is in the file
       if ncdump -hv "${species}" "${mpasout}" 1>/dev/null; then
@@ -33,7 +33,30 @@ if ${found}; then
       fi
    done
 else
-   for species in "${species_list[@]}"; do
-     ncap2 -O -s "${species}=1.e-12*qv" init.nc init.nc
-   done
+   if [[ "${CHEM_GROUPS,,}" == *dust* ]]; then
+     ncap2 -O -s "dust_fine=1.e-12*qv" init.nc init.nc
+     ncap2 -O -s "dust_coarse=1.e-12*qv" init.nc init.nc
+   fi
+   if [[ "${CHEM_GROUPS,,}" == *smoke* ]]; then
+     ncap2 -O -s "smoke_fine=1.e-12*qv" init.nc init.nc
+     ncap2 -O -s "smoke_coarse=1.e-12*qv" init.nc init.nc
+   fi
+   if [[ "${CHEM_GROUPS,,}" == *pollen* ]]; then
+     ncap2 -O -s "polp_tree=1.e-12*qv" init.nc init.nc
+     ncap2 -O -s "polp_grass=1.e-12*qv" init.nc init.nc
+     ncap2 -O -s "polp_weed=1.e-12*qv" init.nc init.nc
+     ncap2 -O -s "pols_all=1.e-12*qv" init.nc init.nc
+   fi
+   if [[ "${CHEM_GROUPS,,}" == *anthro* ]]; then
+     ncap2 -O -s "smoke_fine=1.e-12*qv" init.nc init.nc
+     ncap2 -O -s "smoke_coarse=1.e-12*qv" init.nc init.nc
+     ncap2 -O -s "dust_fine=1.e-12*qv" init.nc init.nc
+     ncap2 -O -s "dust_coarse=1.e-12*qv" init.nc init.nc
+     ncap2 -O -s "unspc_fine=1.e-12*qv" init.nc init.nc
+     ncap2 -O -s "unspc_coarse=1.e-12*qv" init.nc init.nc
+   fi
+   if [[ "${CHEM_GROUPS,,}" == *ssalt* ]]; then
+     ncap2 -O -s "ssalt_fine=1.e-12*qv" init.nc init.nc
+     ncap2 -O -s "ssalt_coarse=1.e-12*qv" init.nc init.nc
+   fi
 fi
