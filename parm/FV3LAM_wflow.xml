@@ -787,6 +787,7 @@ MODULES_RUN_TASK_FP script.
     <dependency>
       <and>
         <timedep><cyclestr offset="&START_TIME_IODA_BUFR;">@Y@m@d@H@M00</cyclestr></timedep>
+        <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/ioda_bufr/ioda_bufr_complete</cyclestr></datadep>
       </and>
     </dependency>
 
