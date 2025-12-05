@@ -79,10 +79,26 @@ for the specified cycle.
 #-----------------------------------------------------------------------
 
 export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
+DATE=/bin/date
+current_day="$(${DATE} -d "${PDY}" +%Y%m%d)"
+previous_day="$(${DATE} -d "${current_day} -1 days" +%Y%m%d)"
+previous_2day="$(${DATE} -d "${previous_day} -1 days" +%Y%m%d)"
+
 export COMOUT_HWP=${COMrrfs}/hourly_hwp.${PDY}
+export COMOUT_HWP_1day=${COMrrfs}/hourly_hwp.${previous_day}
+export COMOUT_HWP_2day=${COMrrfs}/hourly_hwp.${previous_2day}
+
 export COMOUT_RAVE=${COMrrfs}/rave_intp.${PDY}
+export COMOUT_RAVE_1day=${COMrrfs}/rave_intp.${previous_day}
+export COMOUT_RAVE_2day=${COMrrfs}/rave_intp.${previous_2day}
+
 mkdir -p ${COMOUT_HWP}
+mkdir -p ${COMOUT_HWP1day}
+mkdir -p ${COMOUT_HWP_2day}
+
 mkdir -p ${COMOUT_RAVE}
+mkdir -p ${COMOUT_RAVE_1day}
+mkdir -p ${COMOUT_RAVE_2day}
 
 #-----------------------------------------------------------------------
 # Execute the script.
