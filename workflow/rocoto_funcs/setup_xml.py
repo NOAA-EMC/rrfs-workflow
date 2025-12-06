@@ -100,7 +100,8 @@ def setup_xml(HOMErrfs, expdir):
                 if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
                     nonvar_cldana(xmlFile, expdir)
                 fcst(xmlFile, expdir)
-                save_mpasoutf1h(xmlFile, expdir)
+                if os.getenv('MPASOUT_INTERVAL', '1').upper() != "NONE":
+                    save_mpasoutf1h(xmlFile, expdir)
             #
             if os.getenv("DO_POST", "TRUE").upper() == "TRUE":
                 mpassit(xmlFile, expdir)
@@ -131,7 +132,8 @@ def setup_xml(HOMErrfs, expdir):
                 getkf(xmlFile, expdir, 'SOLVER')
                 getkf(xmlFile, expdir, 'POST')
             fcst(xmlFile, expdir, do_ensemble=True)
-            save_mpasoutf1h(xmlFile, expdir, do_ensemble=True)
+            if os.getenv('MPASOUT_INTERVAL', '1').upper() != "NONE":
+                save_mpasoutf1h(xmlFile, expdir, do_ensemble=True)
             mpassit(xmlFile, expdir, do_ensemble=True)
             upp(xmlFile, expdir, do_ensemble=True)
             if do_ensmean_post == "TRUE":
