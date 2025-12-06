@@ -33,5 +33,5 @@ if [[ ! -d "${stmpout}" ]]; then
   echo "not found: ${stmpout}" 
 else
   echo "ls ${stmpout}"
-  ls "${stmpout}" "${lsopts}" --color -F
+  ls "${stmpout}" ${lsopts} --color -F
 fi

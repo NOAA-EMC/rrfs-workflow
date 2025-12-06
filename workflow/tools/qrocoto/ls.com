@@ -33,5 +33,5 @@ if [[ ! -d "${comout}" ]]; then
   echo "not found: ${comout}"
 else
   echo "ls ${comout}"
-  ls "${comout}" "${lsopts}" --color -F
+  ls "${comout}" ${lsopts} --color -F
 fi

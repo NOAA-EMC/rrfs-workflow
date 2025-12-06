@@ -55,8 +55,8 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
         fpath = f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.f{offset:>03}'
         fpath2 = f'{COMINgefs}/gefs.@Y@m@d/@H/pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.f{offset:>03}'
     else:
-        fpath = f'{ic_source_basedir}/{ic_filename_pattern}'.replace('fHHH', offset.zfill(3))
-        fpath = f'{fpath}'.replace('fHH', offset.zfill(2))
+        fpath = f'{ic_source_basedir}/{ic_filename_pattern}'.replace('^HHH^', offset.zfill(3))
+        fpath = f'{fpath}'.replace('^HH^', offset.zfill(2))
 
     timedep = ""
     realtime = os.getenv("REALTIME", "FALSE")
@@ -67,8 +67,8 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
     datadep = f'  <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath}</cyclestr></datadep>'
     if ic_filename_pattern_b != '':
         dcTaskEnv['FILENAME_PATTERN_B'] = f'<cyclestr offset="-{offset}:00:00">{ic_filename_pattern_b}</cyclestr>'
-        fpath2 = f'{ic_source_basedir}/{ic_filename_pattern_b}'.replace('fHHH', offset.zfill(3))
-        fpath2 = f'{fpath2}'.replace('fHH', offset.zfill(2))
+        fpath2 = f'{ic_source_basedir}/{ic_filename_pattern_b}'.replace('^HHH^', offset.zfill(3))
+        fpath2 = f'{fpath2}'.replace('^HH^', offset.zfill(2))
         datadep = datadep + \
             f'\n    <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath2}</cyclestr></datadep>'
     dependencies = f'''
