@@ -24,7 +24,7 @@ if [[ -r "${UMBRELLA_PREP_IC_DATA}/init.nc" ]]; then
   do_DAcycling='false'
 else
   timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
-  ln -snf "${UMBRELLA_PREP_IC_DATA}/mpasout.nc" "mpasout.${timestr}.nc"
+  ln -snf "${UMBRELLA_PREP_IC_DATA}/mpasout.nc" "${UMBRELLA_FCST_DATA}/mpasout.${timestr}.nc"
   start_type='warm'
   do_DAcycling='true'
 fi
@@ -89,11 +89,10 @@ for fhr in ${history_all}; do
   CDATEp=$( ${NDATE} "${fhr}" "${CDATE}" )
   timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
   if [[ "${DO_SPINUP:-FALSE}" != "TRUE" ]];  then
-    ln -snf "${DATA}/history.${timestr}.nc" "${UMBRELLA_FCST_DATA}"
-    ln -snf "${DATA}/diag.${timestr}.nc" "${UMBRELLA_FCST_DATA}"
-    ln -snf "${DATA}/log.atmosphere.0000.out" "${UMBRELLA_FCST_DATA}"
+    ln -snf "${UMBRELLA_FCST_DATA}/history.${timestr}.nc" "${DATA}"
+    ln -snf "${UMBRELLA_FCST_DATA}/diag.${timestr}.nc" "${DATA}"
     if [[ "${mpasout_interval,,}" != "none" ]]; then
-      ln -snf "${DATA}/mpasout.${timestr}.nc" "${UMBRELLA_FCST_DATA}"
+      ln -snf "${UMBRELLA_FCST_DATA}/mpasout.${timestr}.nc" "${DATA}"
     fi
   fi
 done
@@ -116,17 +115,21 @@ else
   if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
     CDATEp=$( ${NDATE} 1 "${CDATE}" )
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
-    ${cpreq} "${DATA}/mpasout.${timestr}.nc" "${COMOUT}/fcst_spinup/${WGF}${MEMDIR}"
-    ${cpreq} "${DATA}/log.atmosphere.0000.out" "${COMOUT}/fcst_spinup/${WGF}${MEMDIR}"
+    ${cpreq} "${UMBRELLA_FCST_DATA}/mpasout.${timestr}.nc" "${COMOUT}/fcst_spinup/${WGF}${MEMDIR}"
+    cp "${DATA}/log.atmosphere.0000.out" "${COMOUT}/fcst_spinup/${WGF}${MEMDIR}"
+    cp "${DATA}/namelist.atmosphere" "${COMOUT}/fcst_spinup/${WGF}${MEMDIR}"
+    cp "${DATA}/streams.atmosphere" "${COMOUT}/fcst_spinup/${WGF}${MEMDIR}"
 
   else # prod cycles, f001 mpasout is copied by the save_mpasoutf1h task so that next cycle DA tasks can start much earlier; other mpasout files are copied here
     ${cpreq} "${DATA}/log.atmosphere.0000.out" "${COMOUT}/fcst/${WGF}${MEMDIR}"
+    cp "${DATA}/namelist.atmosphere" "${COMOUT}/fcst/${WGF}${MEMDIR}"
+    cp "${DATA}/streams.atmosphere" "${COMOUT}/fcst/${WGF}${MEMDIR}"
     if [[ "${mpasout_interval,,}" != "none"  ]] && [[ -n "${MPASOUT_SAVE2COM_HRS}" ]]; then  # copy mpasout based on the $MPASOUT_SAVE2COM_HRS setting
       read -ra array <<< "${MPASOUT_SAVE2COM_HRS}"
       for fhr in ${array[@]}; do
         CDATEp=$( ${NDATE} "${fhr}" "${CDATE}" )
         timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
-        mpasout_file=${DATA}/mpasout.${timestr}.nc
+        mpasout_file=${UMBRELLA_FCST_DATA}/mpasout.${timestr}.nc
         if [[ -s ${mpasout_file} ]]; then
           ${cpreq} "${mpasout_file}" "${COMOUT}/fcst/${WGF}${MEMDIR}"
         else
