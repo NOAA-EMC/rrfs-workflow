@@ -6,8 +6,9 @@ cpreq=${cpreq:-cpreq}
 
 cd "${DATA}" || exit 1
 mpasout_interval=${MPASOUT_INTERVAL:-1}
+cyc_interval=${CYC_INTERVAL:-1}
 #
-CDATEp=$( ${NDATE}  1  "${CDATE}" )
+CDATEp=$( ${NDATE}  "${cyc_interval}"  "${CDATE}" )
 timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
 mpasout_file=${UMBRELLA_FCST_DATA}/mpasout.${timestr}.nc
 #

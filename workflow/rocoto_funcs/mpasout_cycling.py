@@ -5,8 +5,8 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 # begin of fcst --------------------------------------------------------
 
 
-def mpasout_to_cycling(xmlFile, expdir, do_ensemble=False, do_spinup=False):
-    meta_id = 'mpasout_to_cycling'
+def mpasout_cycling(xmlFile, expdir, do_ensemble=False, do_spinup=False):
+    meta_id = 'mpasout_cycling'
     if do_spinup:
         cycledefs = 'spinup'
     else:
@@ -14,6 +14,7 @@ def mpasout_to_cycling(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
         'MPASOUT_INTERVAL': os.getenv('MPASOUT_INTERVAL', '1'),
+        'CYC_INTERVAL': os.getenv('CYC_INTERVAL', '3'),
     }
 
     if not do_ensemble:
@@ -61,5 +62,5 @@ def mpasout_to_cycling(xmlFile, expdir, do_ensemble=False, do_spinup=False):
 
     #
     xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies,
-             metatask, meta_id, meta_bgn, meta_end, "MPASOUT_TO_CYCLING")
+             metatask, meta_id, meta_bgn, meta_end, "MPASOUT_CYCLING")
 # end of fcst --------------------------------------------------------
