@@ -20,10 +20,6 @@ def clean(xmlFile, expdir):
             # go back 'CLEAN_BACK_DAYS' from the first valid clean hour
             'CLEAN_BACK_DAYS': os.getenv("CLEAN_BACK_DAYS", '5'),
         }
-    else:  # clean_mode == 2, purge the current cycle stmp directories once it finishes successfully
-        dcTaskEnv = {
-            'CLEAN_MODE': f'{clean_mode}',
-        }
 
     # determine the dependency
     taskdep = f'<metataskdep metatask="upp"/>'
