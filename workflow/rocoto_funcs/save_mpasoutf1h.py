@@ -5,8 +5,8 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 # begin of fcst --------------------------------------------------------
 
 
-def save_fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
-    meta_id = 'save_fcst'
+def save_mpasoutf1h(xmlFile, expdir, do_ensemble=False, do_spinup=False):
+    meta_id = 'save_mpasoutf1h'
     if do_spinup:
         cycledefs = 'spinup'
     else:
@@ -67,5 +67,5 @@ def save_fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
 
     #
     xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies,
-             metatask, meta_id, meta_bgn, meta_end, "SAVE_FCST")
+             metatask, meta_id, meta_bgn, meta_end, "SAVE_MPASOUTF1H")
 # end of fcst --------------------------------------------------------

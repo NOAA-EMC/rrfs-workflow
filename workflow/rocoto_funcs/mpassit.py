@@ -78,7 +78,7 @@ def mpassit(xmlFile, expdir, do_ensemble=False, do_ensmean_post=False):
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
     #
     if not do_ensmean_post:
-        taskdep = f'\n   <taskdep task="save_fcst{ensindexstr}"/>'
+        taskdep = f'\n   <taskdep task="save_mpasoutf1h{ensindexstr}"/>'
     else:
         taskdep = f'\n   <metataskdep metatask="ensmean"/>'
 
