@@ -12,14 +12,8 @@ def save_mpasoutf1h(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     else:
         cycledefs = 'prod'
     # Task-specific EnVars beyond the task_common_vars
-    history_interval = os.getenv('HISTORY_INTERVAL', '1')
-    restart_interval = os.getenv('RESTART_INTERVAL', 'none')
-    fcst_len_hrs_cycles = os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
     dcTaskEnv = {
-        'HISTORY_INTERVAL': f'{history_interval}',
-        'RESTART_INTERVAL': f'{restart_interval}',
         'MPASOUT_INTERVAL': os.getenv('MPASOUT_INTERVAL', '1'),
-        'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycles}'
     }
 
     if not do_ensemble:
@@ -49,9 +43,9 @@ def save_mpasoutf1h(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
     if do_spinup:
-        datadep = f'''<datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_spinup_@H_&rrfs_ver;/&WGF;{ensdirstr}/fcst_spinup_@H/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
+        datadep = f'''<datadep age="00:01:00"><cyclestr offset="1:00:00">&DATAROOT;/@Y@m@d/&RUN;_fcst_spinup_@H_&rrfs_ver;/&WGF;{ensdirstr}/mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
     else:
-        datadep = f'''<datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{ensdirstr}/fcst_@H/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
+        datadep = f'''<datadep age="00:01:00"><cyclestr offset="1:00:00">&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{ensdirstr}/mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
     timedep = ""
     realtime = os.getenv("REALTIME", "false")
     if realtime.upper() == "TRUE":

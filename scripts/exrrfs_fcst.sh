@@ -112,12 +112,28 @@ if (( "${num_err_log}" > 0 )) ; then
   echo "FATAL ERROR: MPAS model run failed"
   err_exit
 else
-  # spinup cycles copy mpasout and log file to com/ directly, don't need the save_fcst task
+  # spinup cycles copy f001 mpasout and log file to com/ directly, don't need the save_mpasoutf1h task
   if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
     CDATEp=$( ${NDATE} 1 "${CDATE}" )
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
     ${cpreq} "${DATA}/mpasout.${timestr}.nc" "${COMOUT}/fcst_spinup/${WGF}${MEMDIR}"
     ${cpreq} "${DATA}/log.atmosphere.0000.out" "${COMOUT}/fcst_spinup/${WGF}${MEMDIR}"
+
+  else # prod cycles, f001 mpasout is copied by the save_mpasoutf1h task so that next cycle DA tasks can start much earlier; other mpasout files are copied here
+    ${cpreq} "${DATA}/log.atmosphere.0000.out" "${COMOUT}/fcst/${WGF}${MEMDIR}"
+    if [[ "${mpasout_interval,,}" != "none"  ]] && [[ -n "${MPASOUT_SAVE2COM_HRS}" ]]; then  # copy mpasout based on the $MPASOUT_SAVE2COM_HRS setting
+      read -ra array <<< "${MPASOUT_SAVE2COM_HRS}"
+      for fhr in ${array[@]}; do
+        CDATEp=$( ${NDATE} "${fhr}" "${CDATE}" )
+        timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
+        mpasout_file=${DATA}/mpasout.${timestr}.nc
+        if [[ -s ${mpasout_file} ]]; then
+          ${cpreq} "${mpasout_file}" "${COMOUT}/fcst/${WGF}${MEMDIR}"
+        else
+          echo "WARNING: mpasout_file not found - ${mpasout_file}"
+        fi
+      done
+    fi
   fi
   exit 0
 fi

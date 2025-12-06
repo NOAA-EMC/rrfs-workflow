@@ -77,10 +77,10 @@ def mpassit(xmlFile, expdir, do_ensemble=False, do_ensmean_post=False):
         starttime = get_cascade_env(f"STARTTIME_{meta_id}".upper())
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
     #
-    if not do_ensmean_post:
-        taskdep = f'\n   <taskdep task="save_mpasoutf1h{ensindexstr}"/>'
-    else:
+    if do_ensmean_post:
         taskdep = f'\n   <metataskdep metatask="ensmean"/>'
+    else:
+        taskdep = f'\n   <taskdep task="fcst{ensindexstr}"/>'
 
     dependencies = f'''
   <dependency>
