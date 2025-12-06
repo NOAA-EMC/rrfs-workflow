@@ -111,7 +111,7 @@ if (( "${num_err_log}" > 0 )) ; then
   echo "FATAL ERROR: MPAS model run failed"
   err_exit
 else
-  # spinup cycles copy f001 mpasout and log file to com/ directly, don't need the save_mpasoutf1h task
+  # spinup cycles copy f001 mpasout to com/ directly, don't need the mpasout_to_cycling task
   if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
     CDATEp=$( ${NDATE} 1 "${CDATE}" )
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
@@ -120,7 +120,7 @@ else
     cp "${DATA}/namelist.atmosphere" "${COMOUT}/fcst_spinup/${WGF}${MEMDIR}"
     cp "${DATA}/streams.atmosphere" "${COMOUT}/fcst_spinup/${WGF}${MEMDIR}"
 
-  else # prod cycles, f001 mpasout is copied by the save_mpasoutf1h task so that next cycle DA tasks can start much earlier; other mpasout files are copied here
+  else # prod cycles, cycling mpasout is copied by the mpasout_to_cycling task so that next cycle can start much earlier; other mpasout files can be copied when fcst completes
     ${cpreq} "${DATA}/log.atmosphere.0000.out" "${COMOUT}/fcst/${WGF}${MEMDIR}"
     cp "${DATA}/namelist.atmosphere" "${COMOUT}/fcst/${WGF}${MEMDIR}"
     cp "${DATA}/streams.atmosphere" "${COMOUT}/fcst/${WGF}${MEMDIR}"

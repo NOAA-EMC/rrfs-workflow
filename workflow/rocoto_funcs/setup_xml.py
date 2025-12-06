@@ -13,7 +13,7 @@ from rocoto_funcs.prep_ic import prep_ic
 from rocoto_funcs.prep_lbc import prep_lbc
 from rocoto_funcs.jedivar import jedivar
 from rocoto_funcs.fcst import fcst
-from rocoto_funcs.save_mpasoutf1h import save_mpasoutf1h
+from rocoto_funcs.mpasout_to_cycling import mpasout_to_cycling
 from rocoto_funcs.getkf import getkf
 from rocoto_funcs.recenter import recenter
 from rocoto_funcs.ensmean import ensmean
@@ -89,7 +89,7 @@ def setup_xml(HOMErrfs, expdir):
                 if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
                     nonvar_cldana(xmlFile, expdir)
                 fcst(xmlFile, expdir)
-                save_mpasoutf1h(xmlFile, expdir)
+                mpasout_to_cycling(xmlFile, expdir)
             elif os.getenv("DO_FCST", "TRUE").upper() == "TRUE":
                 prep_ic(xmlFile, expdir)
                 prep_lbc(xmlFile, expdir)
@@ -101,7 +101,7 @@ def setup_xml(HOMErrfs, expdir):
                     nonvar_cldana(xmlFile, expdir)
                 fcst(xmlFile, expdir)
                 if os.getenv('MPASOUT_INTERVAL', '1').upper() != "NONE":
-                    save_mpasoutf1h(xmlFile, expdir)
+                    mpasout_to_cycling(xmlFile, expdir)
             #
             if os.getenv("DO_POST", "TRUE").upper() == "TRUE":
                 mpassit(xmlFile, expdir)
@@ -133,7 +133,7 @@ def setup_xml(HOMErrfs, expdir):
                 getkf(xmlFile, expdir, 'POST')
             fcst(xmlFile, expdir, do_ensemble=True)
             if os.getenv('MPASOUT_INTERVAL', '1').upper() != "NONE":
-                save_mpasoutf1h(xmlFile, expdir, do_ensemble=True)
+                mpasout_to_cycling(xmlFile, expdir, do_ensemble=True)
             mpassit(xmlFile, expdir, do_ensemble=True)
             upp(xmlFile, expdir, do_ensemble=True)
             if do_ensmean_post == "TRUE":

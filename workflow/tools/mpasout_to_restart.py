@@ -79,7 +79,7 @@ modify(myfile, changesets)
 
 
 # tweak 6 ----------------------------------------------------------
-myfile = "scripts/exrrfs_save_mpasoutf1h.sh"
+myfile = "scripts/exrrfs_mpasout_to_cycling.sh"
 changesets = {
     "mpasout": "restart",
     "history_all=$(seq 0 $((10#${history_interval})) $((10#${fcst_len_hrs_thiscyc} )) )":
@@ -91,7 +91,7 @@ modify(myfile, changesets)
 
 
 # tweak 7 ----------------------------------------------------------
-myfile = "workflow/rocoto_funcs/save_mpasoutf1h.py"
+myfile = "workflow/rocoto_funcs/mpasout_to_cycling.py"
 changesets = {
     'diag.@Y-@m-@d_@H.@M.@S.nc':
     '</cyclestr><cyclestr offset="1:00:00">diag.@Y-@m-@d_@H.@M.@S.nc',
