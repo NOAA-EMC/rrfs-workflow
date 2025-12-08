@@ -14,26 +14,27 @@ dump2stdout = True if nargs > 1 else False  # option to dump the YAML data to st
 ytype = yfile.split(".", 1)[0]  # get the yaml file type: jedivar, getkf, hofx, etc
 
 # get environmental variables
-analysisDate = os.getenv("analysisDate", "analysisDate_NOT_DEFINED")
-beginDate = os.getenv("beginDate", "beginDate_NOT_DEFINED")
-HYB_WGT_STATIC = os.getenv("HYB_WGT_STATIC", "0.5")
-HYB_WGT_ENS = os.getenv("HYB_WGT_ENS", "0.5")
+analysisDate = os.getenv("analysisDate", "@analysisDate@")
+beginDate = os.getenv("beginDate", "@beginDate@")
+HYB_WGT_STATIC = os.getenv("HYB_WGT_STATIC", "@HYB_WGT_STATIC@")
+HYB_WGT_ENS = os.getenv("HYB_WGT_ENS", "@HYB_WGT_ENS@")
+emptyObsSpaceAction = os.getenv("EMPTY_OBS_SPACE_ACTION", "@emptyObsSpaceAction@")
+
 start_type = os.getenv("start_type", "start_type_NOT_DEFINED")
 GETKF_TYPE = os.getenv("GETKF_TYPE", "TYPE_NOT_DEFINED")
 use_conv_sat_info = (os.getenv("USE_CONV_SAT_INFO", "True").upper() != "FALSE")
-emptyObsSpaceAction = os.getenv("EMPTY_OBS_SPACE_ACTION", "skip output")
 
 STATIC_BEC_MODEL = os.getenv("STATIC_BEC_MODEL", "GSIBEC")
-GSIBEC_X = os.getenv("GSIBEC_X", "10")
-GSIBEC_Y = os.getenv("GSIBEC_Y", "8")
-GSIBEC_NLAT = os.getenv("GSIBEC_NLAT", "252")
-GSIBEC_NLON = os.getenv("GSIBEC_NLON", "420")
-GSIBEC_LAT_START = os.getenv("GSIBEC_LAT_START", "-50.033098")
-GSIBEC_LAT_END = os.getenv("GSIBEC_LAT_END", "50.033098")
-GSIBEC_LON_START = os.getenv("GSIBEC_LON_START", "-29.335138")
-GSIBEC_LON_END = os.getenv("GSIBEC_LON_END", "29.335138")
-GSIBEC_NORTH_POLE_LAT = os.getenv("GSIBEC_NORTH_POLE_LAT", "128.500001")
-GSIBEC_NORTH_POLE_LON = os.getenv("GSIBEC_NORTH_POLE_LON", "82.500018")
+GSIBEC_X = os.getenv("GSIBEC_X", "@GSIBEC_X@")
+GSIBEC_Y = os.getenv("GSIBEC_Y", "@GSIBEC_Y@")
+GSIBEC_NLAT = os.getenv("GSIBEC_NLAT", "@GSIBEC_NLAT@")
+GSIBEC_NLON = os.getenv("GSIBEC_NLON", "@GSIBEC_NLON@")
+GSIBEC_LAT_START = os.getenv("GSIBEC_LAT_START", "@GSIBEC_LAT_START@")
+GSIBEC_LAT_END = os.getenv("GSIBEC_LAT_END", "@GSIBEC_LAT_END@")
+GSIBEC_LON_START = os.getenv("GSIBEC_LON_START", "@GSIBEC_LON_START@")
+GSIBEC_LON_END = os.getenv("GSIBEC_LON_END", "@GSIBEC_LON_END@")
+GSIBEC_NORTH_POLE_LAT = os.getenv("GSIBEC_NORTH_POLE_LAT", "@GSIBEC_NORTH_POLE_LAT@")
+GSIBEC_NORTH_POLE_LON = os.getenv("GSIBEC_NORTH_POLE_LON", "@GSIBEC_NORTH_POLE_LON@")
 
 # replacements for the @VAR@ patterns
 replacements = {
@@ -64,11 +65,11 @@ if ytype == "jedivar":
         bec = hy.load("bec_bump.yaml")
         querystr = "cost function/background error/components/0/covariance"
         hy.modify(data, querystr, bec)
-    if float(HYB_WGT_STATIC) == 0.0:
+    if "@" not in HYB_WGT_STATIC and float(HYB_WGT_STATIC) == 0.0:
         # remove the static BEC component, yield a pure 3DEnVar
         querystr = "cost function/background error/components/0"
         hy.drop(data, querystr)
-    if float(HYB_WGT_ENS) == 0.0:
+    if "@" not in HYB_WGT_ENS and float(HYB_WGT_ENS) == 0.0:
         # remove the ensemble BEC component, yield a pure 3DVar
         querystr = "cost function/background error/components/1"
         hy.drop(data, querystr)
@@ -80,14 +81,18 @@ if not do_radar_ref and ytype == "jedivar":
     hy.modify(data, "_member/state variables", varlist, oneline_change=True)
     pos, _ = hy.get_start_pos(data, "cost function/background/state variables")
     next_one = hy.next_pos(data, pos)
-    del data[next_one - 3:next_one]  # delete the extra 3 lines: equivalent_reflectivity_factor, w, upward_air_velocity
+    mystr = data[next_one - 3]
+    if ("equivalent_reflectivity_factor" in mystr or "w" in mystr or "upward_air_velocity" in mystr):
+        del data[next_one - 3:next_one]  # delete the extra 3 lines: equivalent_reflectivity_factor, w, upward_air_velocity
 
 elif not do_radar_ref and ytype == "getkf":
     varlist = "increment variables: [air_temperature, water_vapor_mixing_ratio_wrt_moist_air, eastward_wind, northward_wind, air_pressure_at_surface]"
     hy.modify(data, "increment variables", varlist, oneline_change=True)
     pos, _ = hy.get_start_pos(data, "_member/state variables")
     next_one = hy.next_pos(data, pos)
-    del data[next_one - 3:next_one]  # delete the extra 3 lines: equivalent_reflectivity_factor, w, upward_air_velocity
+    mystr = data[next_one - 3]
+    if ("equivalent_reflectivity_factor" in mystr or "w" in mystr or "upward_air_velocity" in mystr):
+        del data[next_one - 3:next_one]  # delete the extra 3 lines: equivalent_reflectivity_factor, w, upward_air_velocity
 
 # tweaks for cold start DA
 if ytype == "jedivar" and start_type == "cold":

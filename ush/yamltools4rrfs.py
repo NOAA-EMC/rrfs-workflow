@@ -221,7 +221,7 @@ def get_all_obs(data, shallow=False):
                 break
 
         # get the shortest observer name
-        tmp = name.split("_")
+        tmp = name.split("_", 1)
         if len(tmp) > 1 and not is_sat_radiance:
             sname = tmp[1].strip()
         else:

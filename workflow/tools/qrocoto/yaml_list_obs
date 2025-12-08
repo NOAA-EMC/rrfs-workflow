@@ -24,8 +24,8 @@ filter_text = ''
 for i in range(nobs):
     lname = obslist[i]['obs space']['name']
     sname = lname.split('=')[0]
-    if obslist[i]['obs operator']['name'].upper() != "CRTM":
-        sname = sname.rsplit('_', 1)[-1]
+    if obslist[i]['obs operator']['name'].upper() != "CRTM" and "_" in sname:
+        sname = sname.split('_', 1)[1]
     obs_text = obs_text + sname + ', '
     #
     # get the observations headers (excluding the filters) and dump

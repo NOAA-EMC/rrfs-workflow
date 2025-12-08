@@ -1,5 +1,5 @@
 #!/bin/bash
-#
+# shellcheck disable=all
 # Check if the script is sourced
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   echo "Usage: source ${0}"
@@ -40,13 +40,11 @@ case ${MACHINE} in
       BASEDIR=/gpfs/f6/bil-fire10-oar/world-shared/gge/Miniforge3
     else
       echo "unsupported gaea cluster: ${MACHINE}"
-      exit 1
     fi
     ;;
   *)
     BASEDIR=/unknown/location
     echo "platform not supported: ${MACHINE}"
-    exit 1
     ;;
 esac
 eval "$($BASEDIR/bin/micromamba shell hook --shell bash)"
