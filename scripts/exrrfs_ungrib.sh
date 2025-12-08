@@ -9,12 +9,12 @@ cpreq=${cpreq:-cpreq}
 CDATEin=$(${NDATE} "-${OFFSET}" "${CDATE}") #CDATE for input external data
 if [[ "${EXTRN_MDL_SOURCE}" == "GFS_NCO" ]]; then
   SOURCE_BASEDIR=${COMINgfs}/gfs.${CDATEin:0:8}/${CDATEin:8:2}
-  FILENAME_PATTERN=gfs.t${CDATEin:8:2}z.pgrb2.0p25.fHHH
-  FILENAME_PATTERN_B=gfs.t${CDATEin:8:2}z.pgrb2b.0p25.fHHH
+  FILENAME_PATTERN=gfs.t${CDATEin:8:2}z.pgrb2.0p25.f^HHH^
+  FILENAME_PATTERN_B=gfs.t${CDATEin:8:2}z.pgrb2b.0p25.f^HHH^
 elif [[ "${EXTRN_MDL_SOURCE}" == "GEFS_NCO" ]]; then
   SOURCE_BASEDIR=${COMINgefs}/gefs.${CDATEin:0:8}/${CDATEin:8:2}/pgrb2ap5
-  FILENAME_PATTERN=gep${ENS_INDEX:1}.t${CDATEin:8:2}z.pgrb2a.0p50.fHHH
-  FILENAME_PATTERN_B=gep${ENS_INDEX:1}.t${CDATEin:8:2}z.pgrb2b.0p50.fHHH
+  FILENAME_PATTERN=gep${ENS_INDEX:1}.t${CDATEin:8:2}z.pgrb2a.0p50.f^HHH^
+  FILENAME_PATTERN_B=gep${ENS_INDEX:1}.t${CDATEin:8:2}z.pgrb2b.0p50.f^HHH^
 fi
 prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
 
@@ -44,8 +44,8 @@ for fhr in  ${fhr_all}; do
   HHH=$(printf %03d $((10#$fhr)) )
   HH=$(printf %02d $((10#$fhr)) )
   GRIBFILE_LOCAL=$( "${USHrrfs}/num_to_GRIBFILE.XXX.sh"  "${knt}" )
-  TARGET_FILE=${FILENAME_PATTERN/fHHH/${HHH}}
-  TARGET_FILE=${TARGET_FILE/fHH/${HH}}
+  TARGET_FILE=${FILENAME_PATTERN/^HHH^/${HHH}}
+  TARGET_FILE=${TARGET_FILE/^HH^/${HH}}
   GRIBFILE="${SOURCE_BASEDIR}/${TARGET_FILE}"
   if [[ "${prefix}" == *RRFS*  ]]; then
     if [[ -s "${GRIBFILE}" ]]; then
@@ -65,8 +65,8 @@ for fhr in  ${fhr_all}; do
     ${cpreq} "${GRIBFILE}"  "${GRIBFILE_LOCAL}"
     # if FILENAME_PATTERN_B is defined and non-empty
     if [ -n "${FILENAME_PATTERN_B+x}" ] && [ -n "${FILENAME_PATTERN_B}" ]; then
-      TARGET_FILE=${FILENAME_PATTERN_B/fHHH/${HHH}}
-      TARGET_FILE=${TARGET_FILE/fHH/${HH}}
+      TARGET_FILE=${FILENAME_PATTERN_B/^HHH^/${HHH}}
+      TARGET_FILE=${TARGET_FILE/^HH^/${HH}}
       GRIBFILE="${SOURCE_BASEDIR}/${TARGET_FILE}"
       cat "${GRIBFILE}" >> "${GRIBFILE_LOCAL}"
     fi
