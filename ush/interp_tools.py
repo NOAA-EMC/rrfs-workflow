@@ -37,9 +37,9 @@ def check_for_intp_rave(comrrfs, fcst_dates, rave_to_intp, current_day):
     prev2_day = (dt.datetime.strptime(current_day, "%Y%m%d") - timedelta(days=2)).strftime("%Y%m%d")
 
    # Build both possible folder paths
-    rave_dir_today = os.path.join(comrrfs, f'rave_intp.{current_day}')
-    rave_dir_prev  = os.path.join(comrrfs, f'rave_intp.{prev_day}')
-    rave_dir_2prev  = os.path.join(comrrfs, f'rave_intp.{prev2_day}')
+    rave_dir_today = os.path.join(comrrfs, 'RAVE_INTP', f'rave_intp.{current_day}')
+    rave_dir_prev  = os.path.join(comrrfs, 'RAVE_INTP', f'rave_intp.{prev_day}')
+    rave_dir_2prev  = os.path.join(comrrfs, 'RAVE_INTP', f'rave_intp.{prev2_day}')
 
     for date in fcst_dates:
         try:

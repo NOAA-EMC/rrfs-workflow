@@ -27,9 +27,9 @@ def check_restart_files(comrrfs, fcst_dates, current_day_str):
     prev_day = (datetime.strptime(current_day, "%Y%m%d") - timedelta(days=1)).strftime("%Y%m%d")
     prev_2day = (datetime.strptime(prev_day, "%Y%m%d") - timedelta(days=1)).strftime("%Y%m%d")
 
-    hwp_dir_today = os.path.join(comrrfs, f'hourly_hwp.{current_day}')
-    hwp_dir_prev  = os.path.join(comrrfs, f'hourly_hwp.{prev_day}')
-    hwp_dir_2prev = os.path.join(comrrfs, f'hourly_hwp.{prev_2day}')
+    hwp_dir_today = os.path.join(comrrfs, 'HOURLY_HWP', f'hourly_hwp.{current_day}')
+    hwp_dir_prev  = os.path.join(comrrfs, 'HOURLY_HWP', f'hourly_hwp.{prev_day}')
+    hwp_dir_2prev = os.path.join(comrrfs, 'HOURLY_HWP', f'hourly_hwp.{prev_2day}')
 
     print(f"Checking HWP restart files in:\n  {hwp_dir_today}\n  {hwp_dir_prev}\n  {hwp_dir_2prev}")
     for cycle in fcst_dates:
@@ -87,9 +87,9 @@ def copy_missing_restart(comrrfs, hwp_non_avail_hours, current_day_str):
     prev_day = (dt.datetime.strptime(current_day, "%Y%m%d") - timedelta(days=1)).strftime("%Y%m%d")
     prev_2day = (datetime.strptime(prev_day, "%Y%m%d") - timedelta(days=1)).strftime("%Y%m%d")
 
-    hwp_dir_today = os.path.join(comrrfs, f'hourly_hwp.{current_day}')
-    hwp_dir_prev  = os.path.join(comrrfs, f'hourly_hwp.{prev_day}')
-    hwp_dir_2prev = os.path.join(comrrfs, f'hourly_hwp.{prev_2day}')
+    hwp_dir_today = os.path.join(comrrfs, 'HOURLY_HWP', f'hourly_hwp.{current_day}')
+    hwp_dir_prev  = os.path.join(comrrfs, 'HOURLY_HWP', f'hourly_hwp.{prev_day}')
+    hwp_dir_2prev = os.path.join(comrrfs, 'HOURLY_HWP', f'hourly_hwp.{prev_2day}')
     print(f"Copying HWP restart files to:\n  {hwp_dir_today}\n  {hwp_dir_prev}")
 
     for cycle in hwp_non_avail_hours:
@@ -128,7 +128,7 @@ def copy_missing_restart(comrrfs, hwp_non_avail_hours, current_day_str):
             target_dir = (
                     hwp_dir_today if file_day == current_day else
                     hwp_dir_prev if file_day == prev_day else
-                    os.path.join(comrrfs, f'hourly_hwp.{file_day}'))
+                    os.path.join(comrrfs, 'HOURLY_HWP', f'hourly_hwp.{file_day}'))
 
             target_file_path = os.path.join(target_dir, matching_file)
             tmp_file_path = target_file_path + ".tmp"
@@ -207,8 +207,8 @@ def process_hwp(fcst_dates, current_day, cols, rows, comrrfs, rave_to_intp, intp
     current_day = current_day[:8]
     prev_day = (dt.datetime.strptime(current_day, "%Y%m%d") - timedelta(days=1)).strftime("%Y%m%d")
 
-    hwp_dir_today = os.path.join(comrrfs, f"hourly_hwp.{current_day}")
-    hwp_dir_prev  = os.path.join(comrrfs, f"hourly_hwp.{prev_day}")
+    hwp_dir_today = os.path.join(comrrfs, 'HOURLY_HWP', f"hourly_hwp.{current_day}")
+    hwp_dir_prev  = os.path.join(comrrfs, 'HOURLY_HWP', f"hourly_hwp.{prev_day}")
     print(f"Processing HWP from:\n  {hwp_dir_today}\n  {hwp_dir_prev}")
 
     for cycle in fcst_dates:
@@ -224,7 +224,7 @@ def process_hwp(fcst_dates, current_day, cols, rows, comrrfs, rave_to_intp, intp
         hwp_dir = (
                 hwp_dir_today if daystr == current_day else
                 hwp_dir_prev  if daystr == prev_day else
-                os.path.join(comrrfs, f"hourly_hwp.{daystr}"))
+                os.path.join(comrrfs, 'HOURLY_HWP', f"hourly_hwp.{daystr}"))
 
         file_path = os.path.join(hwp_dir, f"{cycle[:8]}.{cycle[8:10]}0000.phy_data.nc")
         rave_path = os.path.join(intp_dir, f"{rave_to_intp}{cycle}00_{cycle}59.nc")
