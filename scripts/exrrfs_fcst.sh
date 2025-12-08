@@ -126,6 +126,7 @@ else
     cp "${DATA}/streams.atmosphere" "${COMOUT}/fcst/${WGF}${MEMDIR}"
     if [[ "${mpasout_interval,,}" != "none"  ]] && [[ -n "${MPASOUT_SAVE2COM_HRS}" ]]; then  # copy mpasout based on the $MPASOUT_SAVE2COM_HRS setting
       read -ra array <<< "${MPASOUT_SAVE2COM_HRS}"
+      # shellcheck disable=SC2068
       for fhr in ${array[@]}; do
         CDATEp=$( ${NDATE} "${fhr}" "${CDATE}" )
         timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
