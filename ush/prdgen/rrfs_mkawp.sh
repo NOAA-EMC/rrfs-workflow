@@ -26,28 +26,17 @@ then
   export INPUTfile=${COMOUT}/rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2
 
   # Only grab records that need WMO headers for AWIPS
-  # Split into 2 parts - one for wind speed records, one for everything else
   $WGRIB2 ${INPUTfile} | grep -F -f ${PARMrrfs}/wmo/rrfsparams_3km | $WGRIB2 -i ${INPUTfile} -new_grid_winds grid -set_grib_type same -grib rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2
-  $WGRIB2 ${INPUTfile} | grep -F -f ${PARMrrfs}/wmo/rrfsparams_3km_wind | $WGRIB2 -i ${INPUTfile} -new_grid_winds grid -set_grib_type same -grib rrfs.t${cyc}z.prslev.3km.f${fhr}.na.wind.grib2
 
-  # Run tocgrib2 twice and cat the files together
+  # Run tocgrib2
 
   export pgm="tocgrib2"
   . prep_step
 
-  # All records not including wind speed
   export FORT11=rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2
-  export FORT51=grib2.t${cyc}z.awprrfs_f${fhr}
+  export FORT51=grib2.t${cyc}z.awprrfs_f${fhr}_${cyc}
   $TOCGRIB2 < $PARMrrfs/wmo/grib2_awips_rrfs_f${fhr}
   export err=$?; err_chk
-
-  # Wind speed records
-  export FORT11=rrfs.t${cyc}z.prslev.3km.f${fhr}.na.wind.grib2
-  export FORT51=grib2.t${cyc}z.awprrfs_f${fhr}_wind
-  $TOCGRIB2 < $PARMrrfs/wmo/grib2_awips_rrfs_f${fhr}_wind
-  export err=$?; err_chk
-
-  cat grib2.t${cyc}z.awprrfs_f${fhr} grib2.t${cyc}z.awprrfs_f${fhr}_wind > grib2.t${cyc}z.awprrfs_f${fhr}_${cyc}
 
   cpreq -p grib2.t${cyc}z.awprrfs_f${fhr}_${cyc} ${COMOUT}/wmo
 
