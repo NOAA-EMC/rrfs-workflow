@@ -331,26 +331,22 @@ extrn_mdl_fns_on_disk = ${extrn_mdl_fns_on_disk_str}"
 
 if [ ${extrn_mdl_name} != GEFS ] ; then
  # Wait for files to become available in umbrella_lbcops_data location
- #   Only do parallel copy if BCGRP=00
- if [ ${BCGRP} = "00" ]; then
+ #   Only do parallel copy if BCGRP=00 and (WGF=det or WGF=firewx)
+ if [ ${BCGRP} = "00" ] && [[ ${WGF} = det || ${WGF} = firewx ]]; then
    touch ${DATA}/parallel_copy.sh
    for file_to_copy in "${extrn_mdl_fps_on_disk[@]}"; do
-     while [ ! -s ${file_to_copy} ]; do
-       sleep 10
-     done
      echo "Add file - ${file_to_copy} to parallel transfer job list"
      echo "cpfs ${file_to_copy} ${umbrella_lbcops_data}" >> ${DATA}/parallel_copy.sh
    done
    if [ -s ${DATA}/parallel_copy.sh ]; then
       poe_script=parallel_copy.sh
       export MP_CMDFILE=${poe_script}
-      launcher="mpiexec -np 36 --cpu-bind core cfp"
+      launcher="mpiexec -np ${ncores} --cpu-bind core cfp"
       $launcher $MP_CMDFILE
       export err=$?; err_chk
+      ecflow_client --event release_${WGF}_make_lbcs
    fi
  else
-   # 3 second of file system refreshment
-   sleep 3
    if [ ${WGF} = firewx ]; then
      # case for firewx
      t_file_ct=36
@@ -358,9 +354,13 @@ if [ ${extrn_mdl_name} != GEFS ] ; then
      # case for det
      t_file_ct=97
    fi
-   while [ $(ls ${umbrella_lbcops_data} |grep -v cptmp| wc -l) -lt ${t_file_ct} ]; do
-     sleep 66
-   done
+   if [ $(ls ${umbrella_lbcops_data} |grep -v cptmp| wc -l) -lt ${t_file_ct} ]; then
+       err_exit "\
+Some or all external model files are missing from ${umbrella_lbcops_data}.
+These files should have been copied into place by det and firewx
+make_lbcs jobs and should remain in place for downstream make_lbcs jobs.
+The list of all external model files is: ${extrn_mdl_fps_on_disk[*]}"
+   fi
  fi
  for file_to_link in ${umbrella_lbcops_data}/*; do
    ln -sf -t ${DATA} ${file_to_link}
