@@ -66,32 +66,32 @@ export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
 # Define umbrella data directories
 #-----------------------------------------------------------------------
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export umbrella_analysis_data=${umbrella_analysis_data:-${DATAROOT}/rrfs_analysis_gsi_spinup_${cyc}_${rrfs_ver}/${WGF}}
-  export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/rrfs_init_spinup_${cyc}_${rrfs_ver}/${WGF}}
+  export umbrella_analysis_data=${umbrella_analysis_data:-${DATAROOT}/rrfs_analysis_gsi_spinup_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}}
+  export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/rrfs_init_spinup_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}}
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
     if [ "${MEM_TYPE}" = "MEAN" ]; then
-      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}/ensmean
+      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}/ensmean
       export shared_output_data=${umbrella_analysis_data}/output/ensmean
     else
-      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
+      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}/${mem_num}
       export shared_output_data=${umbrella_analysis_data}/output/${mem_num}
     fi
   else
-    export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
+    export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}
     export shared_output_data=${umbrella_analysis_data}/output
   fi
 else
-  export umbrella_analysis_data=${umbrella_analysis_data:-${DATAROOT}/rrfs_analysis_gsi_${cyc}_${rrfs_ver}/${WGF}}
-  export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/rrfs_init_${cyc}_${rrfs_ver}/${WGF}}
+  export umbrella_analysis_data=${umbrella_analysis_data:-${DATAROOT}/rrfs_analysis_gsi_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}}
+  export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/rrfs_init_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}}
   if [ "${MEM_TYPE}" = "MEAN" ]; then
-    export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/ensmean
+    export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}/ensmean
     export shared_output_data=${umbrella_analysis_data}/output/ensmean
   else
     if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
+      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}/${mem_num}
       export shared_output_data=${umbrella_analysis_data}/output/${mem_num}
     else
-      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}
+      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}
       export shared_output_data=${umbrella_analysis_data}/output
     fi
   fi

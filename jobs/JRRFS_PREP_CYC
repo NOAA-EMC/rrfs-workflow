@@ -53,9 +53,9 @@ else
   export DO_ENSEMBLE="FALSE"
 fi
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}}
+  export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}/${mem_num}}
 else
-  export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver}/${WGF}}
+  export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}}
 fi
 
 # Umbrella Data for the initial condition that will be used in 
@@ -114,9 +114,9 @@ export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
 export COMOUT=${COMOUT:-${COMrrfs}/${RUN}.${PDY}/${cyc}}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   export COMOUT=${COMOUT}_spinup
-  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
+  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}
 else
-  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}
+  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}
 fi
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   if [ ${MEMBER_NAME} = "ensmean" ] ; then
@@ -126,15 +126,15 @@ if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   fi
   if [ "${CYCLE_TYPE}" = "spinup" ]; then
     if [ ${MEMBER_NAME} = "ensmean" ] ; then
-      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}/${MEMBER_NAME}
+      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}/${MEMBER_NAME}
     else
-      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
+      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}/${mem_num}
     fi
   else
     if [ ${MEMBER_NAME} = "ensmean" ] ; then
-      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/${MEMBER_NAME}
+      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}/${MEMBER_NAME}
     else
-      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
+      export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}/${mem_num}
     fi
   fi
 fi

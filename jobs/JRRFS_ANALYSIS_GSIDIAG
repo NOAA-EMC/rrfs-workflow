@@ -39,9 +39,9 @@ case "${WGF}" in
 esac
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export umbrella_analysis_data=${umbrella_analysis_data:-${DATAROOT}/rrfs_analysis_gsi_spinup_${cyc}_${rrfs_ver}/${WGF}}
+  export umbrella_analysis_data=${umbrella_analysis_data:-${DATAROOT}/rrfs_analysis_gsi_spinup_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}}
 else
-  export umbrella_analysis_data=${umbrella_analysis_data:-${DATAROOT}/rrfs_analysis_gsi_${cyc}_${rrfs_ver}/${WGF}}
+  export umbrella_analysis_data=${umbrella_analysis_data:-${DATAROOT}/rrfs_analysis_gsi_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}}
 fi
 
 export DATA=${DATA:-${umbrella_analysis_data}/${jobid}}

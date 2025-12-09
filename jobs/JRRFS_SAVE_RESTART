@@ -54,16 +54,16 @@ export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
 export COMrrfs=${COMrrfs:-$(compath.py -o rrfs/${rrfs_ver})}
 export SURFACE_DIR=${SURFACE_DIR:-${COMrrfs}/surface}
-export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}
+export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}
 
 if [ ${CYCLE_TYPE} = "spinup" ]; then
-  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
+  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
+    export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}/${mem_num}
   fi
 else
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-    export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}
+    export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}/${mem_num}
   fi
 fi
 
