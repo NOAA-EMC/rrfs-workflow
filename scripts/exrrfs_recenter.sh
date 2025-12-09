@@ -162,10 +162,10 @@ for imem in  $(seq 1 $nens)
 #
 #-----------------------------------------------------------------------
 #
-dynvarfile_control=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/det/INPUT/fv_core.res.tile1.nc
-tracerfile_control=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/det/INPUT/fv_tracer.res.tile1.nc
-dynvarfile_control_spinup=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/det/INPUT/fv_core.res.tile1.nc
-tracerfile_control_spinup=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/det/INPUT/fv_tracer.res.tile1.nc
+dynvarfile_control=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/det/INPUT/fv_core.res.tile1.nc
+tracerfile_control=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/det/INPUT/fv_tracer.res.tile1.nc
+dynvarfile_control_spinup=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver_2d}_${envir}/det/INPUT/fv_core.res.tile1.nc
+tracerfile_control_spinup=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver_2d}_${envir}/det/INPUT/fv_tracer.res.tile1.nc
 if [ -r "${dynvarfile_control_spinup}" ] && [ -r "${tracerfile_control_spinup}" ] && [[ ${DO_ENSFCST} != "TRUE" ]] ; then
   ln -sf ${ctrlpath}/INPUT/fv_core.res.tile1.nc  ./control_dynvar
   ln -sf ${ctrlpath}/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
