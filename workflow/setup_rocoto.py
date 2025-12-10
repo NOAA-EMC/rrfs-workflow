@@ -85,7 +85,7 @@ os.makedirs(exp_configdir, exist_ok=True)
 # copy the zeta_levels file if defined
 zeta_levels = os.getenv('ZETA_LEVELS', '')
 if zeta_levels != '':
-    shutil.copy(f'{HOMErrfs}/fix/meshes/{zeta_levels}', f'{exp_configdir}/ZETA_LEVELS.txt')
+    shutil.copy(f'{HOMErrfs}/fix/vert_levels/{zeta_levels}', f'{exp_configdir}/ZETA_LEVELS.txt')
 if os.getenv("DO_CHEMISTRY", "FALSE").upper() == "TRUE" and os.path.exists(f"{HOMErrfs}/workflow/config.chemistry"):
     shutil.copy(f'{HOMErrfs}/workflow/config.chemistry', f'{expdir}/config.chemistry')  # save a copy for reference
 if os.path.exists(f"{HOMErrfs}/workflow/config.override"):
