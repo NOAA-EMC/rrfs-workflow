@@ -2,6 +2,7 @@
 # shellcheck disable=SC1091,SC2153,SC2154
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
+cpreq="ln -snf"
 cpreq=${cpreq:-cpreq}
 #
 # timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 
@@ -42,7 +43,7 @@ if [ -r "${checkfile}" ]; then
   for fhr in  ${fhr_all}; do
     CDATElbc=$(${NDATE} "${fhr}" "${CDATE}")
     string_time=$(date -d "${CDATElbc:0:8} ${CDATElbc:8:2}" +%Y-%m-%d_%H.%M.%S)
-    ln -sf "${COMINrrfs}/${RUN}.${YYYYMMDDlbc}/${HHlbc}/lbc/${WGF}${MEMDIR}/lbc.${string_time}.nc"  "${UMBRELLA_PREP_LBC_DATA}/."
+    ${cpreq} "${COMINrrfs}/${RUN}.${YYYYMMDDlbc}/${HHlbc}/lbc/${WGF}${MEMDIR}/lbc.${string_time}.nc"  "${UMBRELLA_PREP_LBC_DATA}/."
   done
 else
   echo "Cannot find boundary file: ${checkfile}"
