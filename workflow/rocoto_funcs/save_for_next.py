@@ -5,8 +5,8 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 # begin of fcst --------------------------------------------------------
 
 
-def mpasout_cycling(xmlFile, expdir, do_ensemble=False, do_spinup=False):
-    meta_id = 'mpasout_cycling'
+def save_for_next(xmlFile, expdir, do_ensemble=False, do_spinup=False):
+    meta_id = 'save_for_next'
     if do_spinup:
         cycledefs = 'spinup'
     else:
@@ -62,5 +62,5 @@ def mpasout_cycling(xmlFile, expdir, do_ensemble=False, do_spinup=False):
 
     #
     xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies,
-             metatask, meta_id, meta_bgn, meta_end, "MPASOUT_CYCLING")
+             metatask, meta_id, meta_bgn, meta_end, "SAVE_FOR_NEXT")
 # end of fcst --------------------------------------------------------
