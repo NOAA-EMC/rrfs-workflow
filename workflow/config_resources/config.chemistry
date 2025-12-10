@@ -7,9 +7,9 @@ export DO_JEDI=false
 export DO_CYC=false
 export DO_SPINUP=false
 
-export CYC_INTERVAL=24
 export LBC_CYCS="00"  # evenly divide 24 hours, e.g., "00 12", "00 06 12 18", etc
 export COLDSTART_CYCS="00"
+export MPASOUT_SAVE2COM_HRS="24"  # save mpasout file(s) for chem updates at next cycle(s)
 
 for i in {0..23}; do arr[i]="24"; done # 24hr fcst, only take effect at coldstart cycles
 export FCST_LEN_HRS_CYCLES="${arr[*]}"

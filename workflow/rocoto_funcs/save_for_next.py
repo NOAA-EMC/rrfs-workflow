@@ -5,21 +5,16 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 # begin of fcst --------------------------------------------------------
 
 
-def save_fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
-    meta_id = 'save_fcst'
+def save_for_next(xmlFile, expdir, do_ensemble=False, do_spinup=False):
+    meta_id = 'save_for_next'
     if do_spinup:
         cycledefs = 'spinup'
     else:
         cycledefs = 'prod'
     # Task-specific EnVars beyond the task_common_vars
-    history_interval = os.getenv('HISTORY_INTERVAL', '1')
-    restart_interval = os.getenv('RESTART_INTERVAL', 'none')
-    fcst_len_hrs_cycles = os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
     dcTaskEnv = {
-        'HISTORY_INTERVAL': f'{history_interval}',
-        'RESTART_INTERVAL': f'{restart_interval}',
         'MPASOUT_INTERVAL': os.getenv('MPASOUT_INTERVAL', '1'),
-        'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycles}'
+        'CYC_INTERVAL': os.getenv('CYC_INTERVAL', '3'),
     }
 
     if not do_ensemble:
@@ -49,9 +44,9 @@ def save_fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
     if do_spinup:
-        datadep = f'''<datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_spinup_@H_&rrfs_ver;/&WGF;{ensdirstr}/fcst_spinup_@H/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
+        datadep = f'''<datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_spinup_@H_&rrfs_ver;/&WGF;{ensdirstr}</cyclestr><cyclestr offset="1:00:00">/mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
     else:
-        datadep = f'''<datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{ensdirstr}/fcst_@H/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
+        datadep = f'''<datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{ensdirstr}</cyclestr><cyclestr offset="1:00:00">/mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
     timedep = ""
     realtime = os.getenv("REALTIME", "false")
     if realtime.upper() == "TRUE":
@@ -67,5 +62,5 @@ def save_fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
 
     #
     xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies,
-             metatask, meta_id, meta_bgn, meta_end, "SAVE_FCST")
+             metatask, meta_id, meta_bgn, meta_end, "SAVE_FOR_NEXT")
 # end of fcst --------------------------------------------------------

@@ -11,19 +11,14 @@ def clean(xmlFile, expdir):
     cycledefs = 'prod'
     #
     clean_mode = int(os.getenv('CLEAN_MODE', '1'))
-    if clean_mode == 1:  # only keep the latest few cycles
-        dcTaskEnv = {
-            'CLEAN_MODE': f'{clean_mode}',
-            'STMP_RETENTION_CYCS': os.getenv("STMP_RETENTION_CYCS", '6'),
-            'COM_RETENTION_CYCS': os.getenv("COM_RETENTION_CYCS", '120'),  # 120 hrs = 5 days
-            'LOG_RETENTION_CYCS': os.getenv("LOG_RETENTION_CYCS", '840'),  # 840 hrs = 35 days
-            # go back 'CLEAN_BACK_DAYS' from the first valid clean hour
-            'CLEAN_BACK_DAYS': os.getenv("CLEAN_BACK_DAYS", '5'),
-        }
-    else:  # clean_mode == 2, purge the current cycle stmp directories once it finishes successfully
-        dcTaskEnv = {
-            'CLEAN_MODE': f'{clean_mode}',
-        }
+    dcTaskEnv = {
+        'CLEAN_MODE': f'{clean_mode}',
+        'STMP_RETENTION_CYCS': os.getenv("STMP_RETENTION_CYCS", '6'),
+        'COM_RETENTION_CYCS': os.getenv("COM_RETENTION_CYCS", '120'),  # 120 hrs = 5 days
+        'LOG_RETENTION_CYCS': os.getenv("LOG_RETENTION_CYCS", '840'),  # 840 hrs = 35 days
+        # go back 'CLEAN_BACK_DAYS' from the first valid clean hour
+        'CLEAN_BACK_DAYS': os.getenv("CLEAN_BACK_DAYS", '5'),
+    }
 
     # determine the dependency
     taskdep = f'<metataskdep metatask="upp"/>'
