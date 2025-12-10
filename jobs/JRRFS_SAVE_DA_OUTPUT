@@ -96,7 +96,7 @@ if [ ${WGF} == "ensf" ]; then
 else
   export COMOUT="${COMrrfs}/${RUN}.${PDY}/${cyc}/${mem_num}/forecast"
 fi
-export umbrella_forecast_data="${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}/${mem_num}/INPUT"
+export umbrella_forecast_data="${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}/${mem_num}/INPUT"
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p ${COMOUT}/DA_OUTPUT
 
