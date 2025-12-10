@@ -94,7 +94,7 @@ if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
 else
   export ENSMEM_INDX=""
   export COMOUT="${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/lbcs)}"
-  export umbrella_lbcops_data=${umbrella_ops_data:-${DATAROOT}/rrfs_lbcops_${cyc}_${rrfs_ver}/${WGF}}
+  export umbrella_lbcops_data=${umbrella_ops_data:-${DATAROOT}/rrfs_lbcops_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}}
   if [ -d ${umbrella_lbcops_data} ] && [ ${BCGRP} = "00" ]; then
     mv ${umbrella_lbcops_data} ${umbrella_lbcops_data}_$$
   fi

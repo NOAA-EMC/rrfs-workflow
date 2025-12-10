@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export rrfs_ver=v1.0
+export rrfs_ver_2d=v1.0
 
 export bacio_ver=2.4.1
 export cray_mpich_ver=8.1.19
