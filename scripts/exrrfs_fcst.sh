@@ -118,6 +118,8 @@ else
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
     ${cpreq} "${DATA}/mpasout.${timestr}.nc" "${COMOUT}/fcst_spinup/${WGF}${MEMDIR}"
     ${cpreq} "${DATA}/log.atmosphere.0000.out" "${COMOUT}/fcst_spinup/${WGF}${MEMDIR}"
+  else
+    ${cpreq} "${DATA}/log.atmosphere.0000.out" "${COMOUT}/fcst/${WGF}${MEMDIR}"
   fi
   exit 0
 fi
