@@ -76,16 +76,16 @@ boundary_len_hrs="${BOUNDARY_LEN}"
 
 hh=${CDATE:8:2}
 yyyymmdd=${CDATE:0:8}
-cdate=$( date --utc --date "${yyyymmdd} ${hh} UTC - ${time_offset_hrs} hours" "+%Y%m%d%H" )
-export extrn_mdl_cdate="$cdate"
+cdate_loc=$( date --utc --date "${yyyymmdd} ${hh} UTC - ${time_offset_hrs} hours" "+%Y%m%d%H" )
+export extrn_mdl_cdate="$cdate_loc"
 
 # Starting year, month, day, and hour of the external model forecast.
-yyyy=${cdate:0:4}
-mm=${cdate:4:2}
-dd=${cdate:6:2}
-hh=${cdate:8:2}
+yyyy=${cdate_loc:0:4}
+mm=${cdate_loc:4:2}
+dd=${cdate_loc:6:2}
+hh=${cdate_loc:8:2}
 mn="00"
-yyyymmdd=${cdate:0:8}
+yyyymmdd=${cdate_loc:0:8}
 
 # offset is to go back to a previous cycle (for example 3-h) and
 # use the forecast (3-h) from that cycle valid at this cycle.
@@ -116,7 +116,6 @@ fcst_mn="00"
 case "${extrn_mdl_name}" in
 
   "GFS")
-    COMINgfs="${COMINgfs:-$(compath.py gfs/${gfs_ver})}"
     sysdir="${COMINgfs}/gfs.${yyyymmdd}/${hh}/atmos"
     sysdir2=""
     fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
@@ -133,7 +132,6 @@ case "${extrn_mdl_name}" in
     ;;
 
   "GEFS")
-    COMINgefs="${COMINgefs:-$(compath.py gefs/${gefs_ver})}"
     sysdir="${COMINgefs}/gefs.${yyyymmdd}/${hh}/atmos/pgrb2bp5"
     sysdir2="${COMINgefs}/gefs.${yyyymmdd}/${hh}/atmos/pgrb2ap5"
     fcst_hh=( $( printf "%02d " "${lbc_spec_fhrs[@]}" ) )
@@ -144,7 +142,6 @@ case "${extrn_mdl_name}" in
     ;;
 
   "RRFS")
-    COMINrrfs="${COMINrrfs:-$(compath.py rrfs/${rrfs_ver})}"
     sysdir="${COMINrrfs}/rrfs.${yyyymmdd}/${hh}"
     sysdir2=""
     fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )

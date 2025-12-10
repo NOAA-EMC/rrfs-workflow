@@ -87,6 +87,9 @@ hour zero).
 # Send data to COMOUT since the LBCs jobs share data with other jobs
 # outside of the current cycle
 
+export COMINgfs=${COMINgfs:-$(compath.py gfs/${gfs_ver})}
+export COMINgefs=${COMINgefs:-$(compath.py gefs/${gefs_ver})}
+
 if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
   export ENSMEM_INDX=${MEMBER_NAME}
   export mem_num=m$(echo "${ENSMEM_INDX}")

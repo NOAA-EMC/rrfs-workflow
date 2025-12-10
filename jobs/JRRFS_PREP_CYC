@@ -20,6 +20,10 @@ export FIXLAM=${FIXLAM:-${HOMErrfs}/fix/lam/RRFS_NA_3km}
 export FIX_GSI="${FIXrrfs}/gsi"
 export GVF_ROOT="${DCOMROOT}/viirs"
 export COMINobsproc="${COMINobsproc:-$(compath.py obsproc/${obsproc_ver})}"
+export COMINnosofs="${COMINnosofs:-$(compath.py nosofs/${nosofs_ver})}"
+export COMINnsst="${COMINnsst:-$(compath.py nsst/${nsst_ver})}"
+export COMINhrrr="${COMINhrrr:-$(compath.py hrrr/${hrrr_ver})}"
+export COMINrap="${COMINrap:-$(compath.py rap/${rap_ver})}"
 #-----------------------------------------------------------------------
 # RRFS Prep Cyc
 #-----------------------------------------------------------------------

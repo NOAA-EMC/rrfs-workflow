@@ -112,6 +112,10 @@ setpdy.sh
 . ./PDY
 export CDATE="${PDY}${cyc}"
 
+export COMINgfs=${COMINgfs:-$(compath.py gfs/${gfs_ver})}
+export COMINobsproc=${COMINobsproc:-$(compath.py obsproc/${obsproc_ver})}
+
+
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
     if [ "${MEM_TYPE}" = "MEAN" ]; then

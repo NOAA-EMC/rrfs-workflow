@@ -38,13 +38,12 @@ set -x
 
 RRFS_Current_PDY=${PDY}
 RRFS_Current_cyc=${cyc}
-cdate=${PDY}${cyc}
-RRFS_previous_PDY=$(echo $($NDATE -1 ${cdate}) | cut -c1-8)
-RRFS_previous_cyc=$(echo $($NDATE -1 ${cdate}) | cut -c9-10)
-RRFS_next_1_PDY=$(echo $($NDATE +1 ${cdate}) | cut -c1-8)
-RRFS_next_1_cyc=$(echo $($NDATE +1 ${cdate}) | cut -c9-10)
-RRFS_next_2_PDY=$(echo $($NDATE +2 ${cdate}) | cut -c1-8)
-RRFS_next_2_cyc=$(echo $($NDATE +2 ${cdate}) | cut -c9-10)
+RRFS_previous_PDY=$(echo $($NDATE -1 ${CDATE}) | cut -c1-8)
+RRFS_previous_cyc=$(echo $($NDATE -1 ${CDATE}) | cut -c9-10)
+RRFS_next_1_PDY=$(echo $($NDATE +1 ${CDATE}) | cut -c1-8)
+RRFS_next_1_cyc=$(echo $($NDATE +1 ${CDATE}) | cut -c9-10)
+RRFS_next_2_PDY=$(echo $($NDATE +2 ${CDATE}) | cut -c1-8)
+RRFS_next_2_cyc=$(echo $($NDATE +2 ${CDATE}) | cut -c9-10)
 current_PDY_6hr_fmt=${PDY}
 if [ $((10#$RRFS_Current_cyc)) -ge 0 ] && [ $((10#$RRFS_Current_cyc)) -le 5 ]; then
   current_cyc_6hr_fmt="00"
