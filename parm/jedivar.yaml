@@ -19728,7 +19728,7 @@ cost function:
              obsfile: data/obs/ioda_crisf4_n20.nc
              missing file action: "warn"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_cris-fsr_n20.nc
@@ -20276,7 +20276,7 @@ cost function:
              obsfile: data/obs/ioda_crisf4_n21.nc
              missing file action: "warn"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_cris-fsr_n21.nc
