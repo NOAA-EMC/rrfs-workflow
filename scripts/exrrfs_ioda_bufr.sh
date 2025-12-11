@@ -114,7 +114,7 @@ ${cpreq} "${USHrrfs}"/offline_ioda_tweak.py .
 ${cpreq} "${USHrrfs}"/offline_vad_thinning.py .
 
 for ioda_file in ioda*nc; do
-  grid_file="${FIXrrfs}/meshes/${MESH_NAME}.static.nc"
+  grid_file="${FIXrrfs}/${MESH_NAME}/${MESH_NAME}.static.nc"
   #if [[ "${ioda_file}" == *abi* || "${ioda_file}" == *atms* || "${ioda_file}" == *cris* ]]; then
   if [[ "${ioda_file}" == *abi* ]]; then
     echo " ${ioda_file} ioda file detected: running offline_domain_check_satrad.py"

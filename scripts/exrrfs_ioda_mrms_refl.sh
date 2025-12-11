@@ -40,7 +40,7 @@ for bigmin_this in ${RADARREFL_TIMELEVEL[@]}; do
   #
   #-----------------------------------------------------------------------
   #
-  meshgriddir="${FIXrrfs}"/meshes
+  meshgriddir="${FIXrrfs}/${MESH_NAME}"
   echo "meshgriddir is $meshgriddir"
   cp "${meshgriddir}"/"${MESH_NAME}".grid.nc grid.nc
 
