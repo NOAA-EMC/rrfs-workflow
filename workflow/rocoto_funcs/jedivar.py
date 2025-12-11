@@ -122,7 +122,7 @@ def jedivar(xmlFile, expdir, do_spinup=False):
         strneqs = '<or>'
         streqs = '<or>'
         for hr in coldhrs:
-            hr = f"{hr:0>2}"
+            hr = f"{int(hr):02d}"
             strneqs += '\n' + spaces + f'  <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>'
             streqs += '\n' + spaces + f'  <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>'
         strneqs += '\n' + spaces + '</or>'
