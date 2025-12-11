@@ -732,6 +732,9 @@ if [ "${DO_FCST_RESTART}" = "TRUE" ] && [ $coupler_res_ct -gt 0 ] && [ $FCST_LEN
   if [ ${WGF} = "firewx" ]; then
     file_ids=( "coupler.res" "fv_core.res.nc" "fv_core.res.tile1.nc" "fv_srf_wnd.res.tile1.nc" "fv_tracer.res.tile1.nc" "phy_data.nc" "sfc_data.nc" )
   fi
+  if [ ${WGF} = "ensf" ]; then
+    file_ids=( "coupler.res" "fv_core.res.nc" "fv_core.res.tile1.nc" "fv_diag.res.tile1.nc" "fv_srf_wnd.res.tile1.nc" "fv_tracer.res.tile1.nc" "phy_data.nc" "sfc_data.nc" "atm_stoch.res.nc" )
+  fi
   num_file_ids=${#file_ids[*]}
   IFS=' '
   read -a restart_hrs <<< "${RESTART_HRS}"

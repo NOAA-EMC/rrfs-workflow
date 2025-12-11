@@ -243,16 +243,16 @@ else
     fi
   fi
 
-  if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold strat initial files from ics
+  if [ ${BKTYPE} -eq 1 ] ; then  # cold start, use prepare cold start initial files from ics
     bkpath=${ICS_ROOT}
     if [ -r "${bkpath}/gfs_data.tile7.halo0.nc" ]; then
       cpreq -p ${bkpath}/gfs_bndy.tile7.000.nc gfs_bndy.tile7.000.nc        
       cpreq -p ${bkpath}/gfs_ctrl.nc gfs_ctrl.nc        
       cpreq -p ${bkpath}/gfs_data.tile7.halo0.nc gfs_data.tile7.halo0.nc        
       cpreq -p ${bkpath}/sfc_data.tile7.halo0.nc sfc_data.tile7.halo0.nc        
-      cpreq -p ${bkpath}/gfs_bndy.tile7.000.nc bk_gfs_bndy.tile7.000.nc
-      cpreq -p ${bkpath}/gfs_data.tile7.halo0.nc bk_gfs_data.tile7.halo0.nc
-      cpreq -p ${bkpath}/sfc_data.tile7.halo0.nc bk_sfc_data.tile7.halo0.nc
+      #cpreq -p ${bkpath}/gfs_bndy.tile7.000.nc bk_gfs_bndy.tile7.000.nc
+      #cpreq -p ${bkpath}/gfs_data.tile7.halo0.nc bk_gfs_data.tile7.halo0.nc
+      #cpreq -p ${bkpath}/sfc_data.tile7.halo0.nc bk_sfc_data.tile7.halo0.nc
       print_info_msg "$VERBOSE" "cold start from $bkpath"
       echo "${YYYYMMDDHH}(${CYCLE_TYPE}): cold start at ${current_time} from $bkpath "
     else
@@ -270,12 +270,12 @@ else
       cpreq -p ${bkpath}/sfc_data.nc sfc_data.nc
       cpreq -p ${bkpath}/gfs_ctrl.nc gfs_ctrl.nc
       cpreq -p ${bkpath}/coupler.res bk_coupler.res
-      cpreq -p ${bkpath}/fv_core.res.nc bk_fv_core.res.nc
-      cpreq -p ${bkpath}/fv_core.res.tile1.nc bk_fv_core.res.tile1.nc
-      cpreq -p ${bkpath}/fv_srf_wnd.res.tile1.nc bk_fv_srf_wnd.res.tile1.nc
-      cpreq -p ${bkpath}/fv_tracer.res.tile1.nc bk_fv_tracer.res.tile1.nc
-      cpreq -p ${bkpath}/phy_data.nc bk_phy_data.nc
-      cpreq -p ${bkpath}/sfc_data.nc bk_sfc_data.nc
+      #cpreq -p ${bkpath}/fv_core.res.nc bk_fv_core.res.nc
+      #cpreq -p ${bkpath}/fv_core.res.tile1.nc bk_fv_core.res.tile1.nc
+      #cpreq -p ${bkpath}/fv_srf_wnd.res.tile1.nc bk_fv_srf_wnd.res.tile1.nc
+      #cpreq -p ${bkpath}/fv_tracer.res.tile1.nc bk_fv_tracer.res.tile1.nc
+      #cpreq -p ${bkpath}/phy_data.nc bk_phy_data.nc
+      #cpreq -p ${bkpath}/sfc_data.nc bk_sfc_data.nc
       echo "${YYYYMMDDHH}(${CYCLE_TYPE}): blended warm start at ${current_time} from $bkpath "
     else
       err_exit "Error: cannot find blended warm start initial condition from : ${bkpath}"
@@ -1059,29 +1059,37 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-mv ${DATA}/*.nc ${ICS_ROOT}
-ln -s ${ICS_ROOT}/*.nc ${FORECAST_INPUT_PRODUCT}
 
-if [ -s ${DATA}/coupler.res ]; then
-  mv ${DATA}/coupler.res ${ICS_ROOT}
-  ln -s ${ICS_ROOT}/coupler.res ${FORECAST_INPUT_PRODUCT}
-fi
-if [ -s ${DATA}/fv3_grid_spec ]; then
-  mv ${DATA}/fv3_grid_spec ${ICS_ROOT}
-  ln -s ${ICS_ROOT}/fv3_grid_spec ${FORECAST_INPUT_PRODUCT}
-fi
-if [ -s ${DATA}/bk_coupler.res ]; then
-  mv ${DATA}/bk_coupler.res ${ICS_ROOT}
-  ln -s ${ICS_ROOT}/bk_coupler.res ${FORECAST_INPUT_PRODUCT}
-fi
-if [ $(eval ls ${DATA}/gvf*|wc -l) -gt 0 ]; then
-  mv ${DATA}/gvf* ${ICS_ROOT}
-  ln -s ${ICS_ROOT}/gvf* ${FORECAST_INPUT_PRODUCT}
-fi
-if [ $(eval ls ${DATA}/*.grib2|wc -l) -gt 0 ]; then
-  mv ${DATA}/*.grib2 ${ICS_ROOT}
-  ln -s ${ICS_ROOT}/*.grib2 ${FORECAST_INPUT_PRODUCT}
-fi
+for file_for_fcst_INPUT in *.nc coupler.res fv3_grid_spec bk_coupler.res gvf* *.grib2; do
+  if [ -f ${FORECAST_INPUT_PRODUCT}/${file_for_fcst_INPUT} ]; then
+    echo "Overwrite ${FORECAST_INPUT_PRODUCT}/${file_for_fcst_INPUT}"
+  fi
+  mv ${DATA}/${file_for_fcst_INPUT} ${FORECAST_INPUT_PRODUCT}
+done
+
+
+#### mv ${DATA}/*.nc ${ICS_ROOT}
+#### ln -s ${ICS_ROOT}/*.nc ${FORECAST_INPUT_PRODUCT}
+#### if [ -s ${DATA}/coupler.res ]; then
+####   mv ${DATA}/coupler.res ${ICS_ROOT}
+####   ln -s ${ICS_ROOT}/coupler.res ${FORECAST_INPUT_PRODUCT}
+#### fi
+#### if [ -s ${DATA}/fv3_grid_spec ]; then
+####   mv ${DATA}/fv3_grid_spec ${ICS_ROOT}
+####   ln -s ${ICS_ROOT}/fv3_grid_spec ${FORECAST_INPUT_PRODUCT}
+#### fi
+#### if [ -s ${DATA}/bk_coupler.res ]; then
+####   mv ${DATA}/bk_coupler.res ${ICS_ROOT}
+####   ln -s ${ICS_ROOT}/bk_coupler.res ${FORECAST_INPUT_PRODUCT}
+#### fi
+#### if [ $(eval ls ${DATA}/gvf*|wc -l) -gt 0 ]; then
+####   mv ${DATA}/gvf* ${ICS_ROOT}
+####   ln -s ${ICS_ROOT}/gvf* ${FORECAST_INPUT_PRODUCT}
+#### fi
+#### if [ $(eval ls ${DATA}/*.grib2|wc -l) -gt 0 ]; then
+####   mv ${DATA}/*.grib2 ${ICS_ROOT}
+####   ln -s ${ICS_ROOT}/*.grib2 ${FORECAST_INPUT_PRODUCT}
+#### fi
 
 #
 #-----------------------------------------------------------------------

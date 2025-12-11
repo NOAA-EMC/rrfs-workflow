@@ -1,8 +1,14 @@
 #!/bin/bash
+# Must be run from $PACKAGEHOME/ecf
 set -eux
+module load prod_util
+
 # Assume resource is using NCO production configuration
 resource_config="EMC"
 ECF_DIR=$(pwd)
+
+# Create tmp file for git exclude
+tmp_exclude="${ECF_DIR}/exclude_list.tmp"
 
 # Function that loops over forecast hours and
 # creates link between the master and target
@@ -27,6 +33,12 @@ create_ecf_file() {
   sed "s|@ecf_fhr@|${placeholder_value}|g" "${MASTER_FILE}" > "${output_filename}"
 }
 
+add_to_tmpfile() {
+  local exclude_file="$1"
+  echo ${exclude_file} >> ${tmp_exclude}
+  echo "Added ${exclude_file} to ${tmp_exclude}"
+}
+
 ################################################################################################
 ################################################################################################
 
@@ -36,9 +48,11 @@ echo "Assign production resource version of the master files ..."
 if [ ${resource_config} == "NCO" ]; then
   rm -f jrrfs_ensf_forecast_master.ecf
   ln -s jrrfs_ensf_forecast_master.ecf-prod-resource jrrfs_ensf_forecast_master.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/forecast/ensf/jrrfs_ensf_forecast_master.ecf"
 else
   rm -f jrrfs_ensf_forecast_master.ecf
   ln -s jrrfs_ensf_forecast_master.ecf-dev-resource jrrfs_ensf_forecast_master.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/forecast/ensf/jrrfs_ensf_forecast_master.ecf"
 fi
 
 # point at proper resource fix file
@@ -46,15 +60,15 @@ cd ${ECF_DIR}/../fix/workflow/
 echo "point at proper workflow.conf version..."
   rm -f ./det/workflow.conf ./enkf/workflow.conf ./ensf/workflow.conf ./firewx/workflow.conf
 if [ ${resource_config} == "NCO" ]; then
-  ln -s ./det/workflow.conf_prod ./det/workflow.conf
-  ln -s ./enkf/workflow.conf_prod ./enkf/workflow.conf
-  ln -s ./ensf/workflow.conf_prod ./ensf/workflow.conf
-  ln -s ./firewx/workflow.conf_prod ./firewx/workflow.conf
+  cpreq ./det/workflow.conf_prod ./det/workflow.conf
+  cpreq ./enkf/workflow.conf_prod ./enkf/workflow.conf
+  cpreq ./ensf/workflow.conf_prod ./ensf/workflow.conf
+  cpreq ./firewx/workflow.conf_prod ./firewx/workflow.conf
 else
-  ln -s ./det/workflow.conf_dev ./det/workflow.conf
-  ln -s ./enkf/workflow.conf_dev ./enkf/workflow.conf
-  ln -s ./ensf/workflow.conf_dev ./ensf/workflow.conf
-  ln -s ./firewx/workflow.conf_dev ./firewx/workflow.conf
+  cpreq ./det/workflow.conf_dev ./det/workflow.conf
+  cpreq ./enkf/workflow.conf_dev ./enkf/workflow.conf
+  cpreq ./ensf/workflow.conf_dev ./ensf/workflow.conf
+  cpreq ./firewx/workflow.conf_dev ./firewx/workflow.conf
 fi
 
 # det prdgen files
@@ -76,11 +90,14 @@ for fhr in $(seq 0 17); do
     hour_combo="${fhr_padded}_${min}_00"
     output_file="jrrfs_det_prdgen_f${hour_combo}.ecf"
     create_ecf_file "${hour_combo}" "${output_file}"
+    add_to_tmpfile "$ECF_DIR/scripts/product/det/${output_file}"
   done
 done
 # Handle the two special cases for the standard files.
 create_ecf_file "000_00_36" "jrrfs_det_prdgen_f000_00_36.ecf"
+add_to_tmpfile "$ECF_DIR/scripts/product/det/jrrfs_det_prdgen_f000_00_36.ecf"
 create_ecf_file "018_00_00"    "jrrfs_det_prdgen_f018_00_00.ecf"
+add_to_tmpfile "$ECF_DIR/scripts/product/det/jrrfs_det_prdgen_f018_00_00.ecf"
 # =========================================================================
 #  Generate Long-Range Forecast Files 
 # =========================================================================
@@ -95,12 +112,14 @@ for fhr in $(seq 0 17); do
     hour_combo="${fhr_padded}_${min}_00_long"
     output_file="jrrfs_det_prdgen_f${hour_combo}.ecf"
     create_ecf_file "${hour_combo}" "${output_file}"
+    add_to_tmpfile "$ECF_DIR/scripts/product/det/${output_file}"
   done
 done
 # NOTE: The original script had a bug here. It tried to rename a file that had already
 # been moved and used an incorrect variable. The logic below corrects this by directly
 # creating the intended special-case file.
 create_ecf_file "000_00_36_long" "jrrfs_det_prdgen_f000_00_36_long.ecf"
+add_to_tmpfile "$ECF_DIR/scripts/product/det/jrrfs_det_prdgen_f000_00_36_long.ecf"
 # Loop for hours 18-84 at hourly intervals for the "_long" files.
 for fhr in $(seq 18 84); do
   fhr_padded=$(printf "%03d" "${fhr}")
@@ -108,6 +127,7 @@ for fhr in $(seq 18 84); do
   # Note: The placeholder for these files is just the hour, not the hour_minute combo.
   output_file="jrrfs_det_prdgen_f${hour_combo}.ecf"
   create_ecf_file "${hour_combo}" "${output_file}"
+  add_to_tmpfile "$ECF_DIR/scripts/product/det/${output_file}"
 done
 
 # det gempak files
@@ -118,11 +138,13 @@ for fhrs in $(seq 0 60); do
   fhr_3d=$( printf "%03d" "${fhrs}" )
   cp jrrfs_det_gempak_master.ecf jrrfs_det_gempak_f${fhr_3d}.ecf
   sed -i -e "s|@gempak_ecf_fhr@|${fhr_3d}|g" jrrfs_det_gempak_f${fhr_3d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/product/det/jrrfs_det_gempak_f${fhr_3d}.ecf"
 done
 for fhrs in $(seq 63 3 84); do
   fhr_3d=$( printf "%03d" "${fhrs}" )
   cp jrrfs_det_gempak_master.ecf jrrfs_det_gempak_f${fhr_3d}.ecf
   sed -i -e "s|@gempak_ecf_fhr@|${fhr_3d}|g" jrrfs_det_gempak_f${fhr_3d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/product/det/jrrfs_det_gempak_f${fhr_3d}.ecf"
 done
 
 # ensf bufrsnd files
@@ -133,6 +155,7 @@ for fhrs in $(seq 1 5); do
   fhr_3d=$( printf "%03d" "${fhrs}" )
   cp jrrfs_ensf_bufrsnd_master.ecf jrrfs_ensf_bufrsnd_mem${fhr_3d}.ecf
   sed -i -e "s|@ensf_bufrsnd_fhr@|${fhr_3d}|g" jrrfs_ensf_bufrsnd_mem${fhr_3d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/product/ensf/jrrfs_ensf_bufrsnd_mem${fhr_3d}.ecf"
 done
 
 # ensf prdgen files
@@ -146,6 +169,7 @@ for mem in $(seq 1 5); do
     mem_hfr_combine=mem${mem_3d}_f${fhr_3d}
     cp jrrfs_ensf_prdgen_master.ecf jrrfs_ensf_prdgen_${mem_hfr_combine}.ecf
     sed -i -e "s|@ensf_prdgen_mem_fhr@|${mem_hfr_combine}|g" jrrfs_ensf_prdgen_${mem_hfr_combine}.ecf
+    add_to_tmpfile "$ECF_DIR/scripts/product/ensf/jrrfs_ensf_prdgen_${mem_hfr_combine}.ecf"
   done
 done
 
@@ -157,13 +181,15 @@ for fhrs in $(seq 0 36); do
   fhr_3d=$( printf "%03d" "${fhrs}" )
   cp jrrfs_firewx_prdgen_master.ecf jrrfs_firewx_prdgen_f${fhr_3d}.ecf
   sed -i -e "s|@firewx_prdgen_fhr@|${fhr_3d}|g" jrrfs_firewx_prdgen_f${fhr_3d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/product/firewx/jrrfs_firewx_prdgen_f${fhr_3d}.ecf"
 done
 
 # det post files
 cd $ECF_DIR/scripts/post/det
 echo "Copy det post files ..."
 rm -f jrrfs_det_post_f*
-MASTER_FILE="jrrfs_det_post_master.ecf"
+MASTER_FILE_HOUR="jrrfs_det_post_master.ecf"
+MASTER_FILE_SUBHOUR="jrrfs_det_post_subhour_master.ecf"
 # =========================================================================
 #  Generate Standard Forecast Files (short-range, 15-min intervals)
 # =========================================================================
@@ -177,12 +203,21 @@ for fhr in $(seq 0 17); do
     fi
     hour_combo="${fhr_padded}_${min}_00"
     output_file="jrrfs_det_post_f${hour_combo}.ecf"
+    if [[ ${min} == "00" ]]; then
+      MASTER_FILE=${MASTER_FILE_HOUR}
+    else
+      MASTER_FILE=${MASTER_FILE_SUBHOUR}
+    fi
     create_ecf_file "${hour_combo}" "${output_file}"
+    add_to_tmpfile "$ECF_DIR/scripts/post/det/${output_file}"
   done
 done
+MASTER_FILE=${MASTER_FILE_HOUR}
 # Handle the two special cases for the standard files.
 create_ecf_file "000_00_36" "jrrfs_det_post_f000_00_36.ecf"
+add_to_tmpfile "$ECF_DIR/scripts/post/det/jrrfs_det_post_f000_00_36.ecf"
 create_ecf_file "018_00_00"    "jrrfs_det_post_f018_00_00.ecf"
+add_to_tmpfile "$ECF_DIR/scripts/post/det/jrrfs_det_post_f018_00_00.ecf"
 # =========================================================================
 #  Generate Long-Range Forecast Files
 # =========================================================================
@@ -196,14 +231,19 @@ for fhr in $(seq 0 17); do
     fi
     hour_combo="${fhr_padded}_${min}_00_long"
     output_file="jrrfs_det_post_f${hour_combo}.ecf"
+    if [[ ${min} == "00" ]]; then
+      MASTER_FILE=${MASTER_FILE_HOUR}
+    else
+      MASTER_FILE=${MASTER_FILE_SUBHOUR}
+    fi
     create_ecf_file "${hour_combo}" "${output_file}"
+    add_to_tmpfile "$ECF_DIR/scripts/post/det/${output_file}"
   done
 done
-
-# NOTE: The original script had a bug here. It tried to rename a file that had already
-# been moved and used an incorrect variable. The logic below corrects this by directly
+MASTER_FILE=${MASTER_FILE_HOUR}
 # creating the intended special-case file.
 create_ecf_file "000_00_36_long" "jrrfs_det_post_f000_00_36_long.ecf"
+add_to_tmpfile "$ECF_DIR/scripts/post/det/jrrfs_det_post_f000_00_36_long.ecf"
 # Loop for hours 18-84 at hourly intervals for the "_long" files.
 for fhr in $(seq 18 84); do
   fhr_padded=$(printf "%03d" "${fhr}")
@@ -211,6 +251,7 @@ for fhr in $(seq 18 84); do
   # Note: The placeholder for these files is just the hour, not the hour_minute combo.
   output_file="jrrfs_det_post_f${hour_combo}.ecf"
   create_ecf_file "${hour_combo}" "${output_file}"
+  add_to_tmpfile "$ECF_DIR/scripts/post/det/${output_file}"
 done 
 
 # ensf post files
@@ -224,6 +265,7 @@ for mem in $(seq 1 5); do
     mem_hfr_combine=mem${mem_3d}_f${fhr_3d}
     cp jrrfs_ensf_post_master.ecf jrrfs_ensf_post_${mem_hfr_combine}.ecf
     sed -i -e "s|@ensf_post_mem_fhr@|${mem_hfr_combine}|g" jrrfs_ensf_post_${mem_hfr_combine}.ecf
+    add_to_tmpfile "$ECF_DIR/scripts/post/ensf/jrrfs_ensf_post_${mem_hfr_combine}.ecf"
   done
 done
 
@@ -235,6 +277,7 @@ for fhrs in $(seq 0 36); do
   fhr_3d=$( printf "%03d" "${fhrs}" )
   cp jrrfs_firewx_post_master.ecf jrrfs_firewx_post_f${fhr_3d}.ecf
   sed -i -e "s|@firewx_post_fhr@|${fhr_3d}|g" jrrfs_firewx_post_f${fhr_3d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/post/firewx/jrrfs_firewx_post_f${fhr_3d}.ecf"
 done
 
 # det ics lbcs files
@@ -245,16 +288,18 @@ for fhrs in $(seq 0 84); do
   fhr_2d=$( printf "%02d" "${fhrs}" )
   cp jrrfs_det_make_lbcs_master.ecf jrrfs_det_make_lbcs_${fhr_2d}.ecf
   sed -i -e "s|@det_make_lbcs_fhr@|${fhr_2d}|g" jrrfs_det_make_lbcs_${fhr_2d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/ics/det/jrrfs_det_make_lbcs_${fhr_2d}.ecf"
 done
 
 # firewx ics lbcs files
 cd $ECF_DIR/scripts/ics/firewx
 echo "Copy firewx ics lbcs files ..."
-rm -f jrrfs_firewx_make_lbcs_??.ecf
 for fhrs in $(seq 0 35); do
   fhr_2d=$( printf "%02d" "${fhrs}" )
+  rm -f jrrfs_firewx_make_lbcs_${fhr_2d}.ecf
   cp jrrfs_firewx_make_lbcs_master.ecf jrrfs_firewx_make_lbcs_${fhr_2d}.ecf
   sed -i -e "s|@firewx_make_lbcs_fhr@|${fhr_2d}|g" jrrfs_firewx_make_lbcs_${fhr_2d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/ics/firewx/jrrfs_firewx_make_lbcs_${fhr_2d}.ecf"
 done
 
 # enkf ics blend ics files
@@ -265,6 +310,7 @@ for fhrs in $(seq 1 30); do
   fhr_3d=$( printf "%03d" "${fhrs}" )
   cp jrrfs_enkf_blend_ics_master.ecf jrrfs_enkf_blend_ics_mem${fhr_3d}.ecf
   sed -i -e "s|@enkf_blend_ics_member@|${fhr_3d}|g" jrrfs_enkf_blend_ics_mem${fhr_3d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/ics/enkf/jrrfs_enkf_blend_ics_mem${fhr_3d}.ecf"
 done
 
 # enkf ics make ics files
@@ -275,6 +321,7 @@ for fhrs in $(seq 1 30); do
   fhr_3d=$( printf "%03d" "${fhrs}" )
   cp jrrfs_enkf_make_ics_master.ecf jrrfs_enkf_make_ics_mem${fhr_3d}.ecf
   sed -i -e "s|@enkf_make_ics_member@|${fhr_3d}|g" jrrfs_enkf_make_ics_mem${fhr_3d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/ics/enkf/jrrfs_enkf_make_ics_mem${fhr_3d}.ecf"
 done
 
 # enkf ics make lbcs files
@@ -288,6 +335,7 @@ for grp in $(seq 0 11); do
     mem_hfr_combine=${grp_2d}_mem${mem_3d}
     cp jrrfs_enkf_make_lbcs_master.ecf jrrfs_enkf_make_lbcs_${mem_hfr_combine}.ecf
     sed -i -e "s|@enkf_make_lbcs_grp_mem@|${mem_hfr_combine}|g" jrrfs_enkf_make_lbcs_${mem_hfr_combine}.ecf
+    add_to_tmpfile "$ECF_DIR/scripts/ics/enkf/jrrfs_enkf_make_lbcs_${mem_hfr_combine}.ecf"
   done
 done
 
@@ -302,6 +350,7 @@ for grp in $(seq 0 9); do
     mem_hfr_combine=${grp_2d}_mem${mem_3d}
     cp jrrfs_ensf_make_lbcs_master.ecf jrrfs_ensf_make_lbcs_${mem_hfr_combine}.ecf
     sed -i -e "s|@ensf_make_lbcs_grp_mem@|${mem_hfr_combine}|g" jrrfs_ensf_make_lbcs_${mem_hfr_combine}.ecf
+    add_to_tmpfile "$ECF_DIR/scripts/ics/ensf/jrrfs_ensf_make_lbcs_${mem_hfr_combine}.ecf"
   done
 done
 
@@ -313,6 +362,7 @@ for fhrs in $(seq 1 30); do
   fhr_3d=$( printf "%03d" "${fhrs}" )
   cp jrrfs_enkf_forecast_master.ecf jrrfs_enkf_forecast_mem${fhr_3d}.ecf
   sed -i -e "s|@enkf_forecast_member@|${fhr_3d}|g" jrrfs_enkf_forecast_mem${fhr_3d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/forecast/enkf/jrrfs_enkf_forecast_mem${fhr_3d}.ecf"
 done
 
 # enkf ensinit fcst files
@@ -323,6 +373,7 @@ for mem in $(seq 1 30); do
   mem_3d=$( printf "%03d" "${mem}" )
   cp jrrfs_enkf_forecast_ensinit_master.ecf jrrfs_enkf_forecast_ensinit_mem${mem_3d}.ecf
   sed -i -e "s|@enkf_forecast_ensinit_member@|${mem_3d}|g" jrrfs_enkf_forecast_ensinit_mem${mem_3d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/forecast/enkf/jrrfs_enkf_forecast_ensinit_mem${mem_3d}.ecf"
 done
 
 # enkf forecast long files
@@ -333,6 +384,7 @@ for mem in $(seq 1 30); do
   mem_3d=$( printf "%03d" "${mem}" )
   cp jrrfs_enkf_forecast_long_master.ecf jrrfs_enkf_forecast_long_mem${mem_3d}.ecf
   sed -i -e "s|@enkf_forecast_long_member@|${mem_3d}|g" jrrfs_enkf_forecast_long_mem${mem_3d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/forecast/enkf/jrrfs_enkf_forecast_long_mem${mem_3d}.ecf"
 done
 
 # enkf forecast spinup files
@@ -343,6 +395,7 @@ for mem in $(seq 1 30); do
   mem_3d=$( printf "%03d" "${mem}" )
   cp jrrfs_enkf_forecast_spinup_master.ecf jrrfs_enkf_forecast_spinup_mem${mem_3d}.ecf
   sed -i -e "s|@enkf_forecast_spinup_member@|${mem_3d}|g" jrrfs_enkf_forecast_spinup_mem${mem_3d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/forecast/enkf/jrrfs_enkf_forecast_spinup_mem${mem_3d}.ecf"
 done
 
 # enkf save restart ensinit files
@@ -353,6 +406,7 @@ for mem in $(seq 1 30); do
   mem_3d=$( printf "%03d" "${mem}" )
   cp jrrfs_enkf_save_restart_ensinit_master.ecf jrrfs_enkf_save_restart_ensinit_mem${mem_3d}.ecf
   sed -i -e "s|@enkf_save_restart_ensinit_member@|${mem_3d}|g" jrrfs_enkf_save_restart_ensinit_mem${mem_3d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/forecast/enkf/jrrfs_enkf_save_restart_ensinit_mem${mem_3d}.ecf"
 done
 
 # enkf save restart long files
@@ -363,6 +417,7 @@ for mem in $(seq 1 30); do
   mem_3d=$( printf "%03d" "${mem}" )
   cp jrrfs_enkf_save_restart_long_master.ecf jrrfs_enkf_save_restart_long_mem${mem_3d}_f1.ecf
   sed -i -e "s|@enkf_save_restart_long_member@|${mem_3d}|g" jrrfs_enkf_save_restart_long_mem${mem_3d}_f1.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/forecast/enkf/jrrfs_enkf_save_restart_long_mem${mem_3d}_f1.ecf"
 done
 
 # enkf save restart files
@@ -372,6 +427,7 @@ rm -f jrrfs_enkf_save_restart_mem???_f1.ecf
 for mem in $(seq 1 30); do
   mem_3d=$( printf "%03d" "${mem}" )
   cp jrrfs_enkf_save_restart_master.ecf jrrfs_enkf_save_restart_mem${mem_3d}_f1.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/forecast/enkf/jrrfs_enkf_save_restart_mem${mem_3d}_f1.ecf"
 done
 
 # enkf save restart spinup files
@@ -382,6 +438,7 @@ for mem in $(seq 1 30); do
   mem_3d=$( printf "%03d" "${mem}" )
   cp jrrfs_enkf_save_restart_spinup_master.ecf jrrfs_enkf_save_restart_spinup_mem${mem_3d}_f001.ecf
   sed -i -e "s|@enkf_save_restart_spinup_member@|${mem_3d}|g" jrrfs_enkf_save_restart_spinup_mem${mem_3d}_f001.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/forecast/enkf/jrrfs_enkf_save_restart_spinup_mem${mem_3d}_f001.ecf"
 done
 
 # ensf forecast files
@@ -392,6 +449,7 @@ for mem in $(seq 1 5); do
   mem_3d=$( printf "%03d" "${mem}" )
   cp jrrfs_ensf_forecast_master.ecf jrrfs_ensf_forecast_mem${mem_3d}.ecf
   sed -i -e "s|@ensf_forecast_member@|${mem_3d}|g" jrrfs_ensf_forecast_mem${mem_3d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/forecast/ensf/jrrfs_ensf_forecast_mem${mem_3d}.ecf"
 done
 
 # enkf analysis nonvarcld files
@@ -402,6 +460,7 @@ for mem in $(seq 1 30); do
   mem_3d=$( printf "%03d" "${mem}" )
   cp jrrfs_enkf_analysis_nonvarcld_master.ecf jrrfs_enkf_analysis_nonvarcld_mem${mem_3d}.ecf
   sed -i -e "s|@enkf_analysis_nonvarcld_member@|${mem_3d}|g" jrrfs_enkf_analysis_nonvarcld_mem${mem_3d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/analysis/enkf/jrrfs_enkf_analysis_nonvarcld_mem${mem_3d}.ecf"
 done
 
 # enkf analysis nonvarcld spinup files
@@ -412,6 +471,7 @@ for mem in $(seq 1 30); do
   mem_3d=$( printf "%03d" "${mem}" )
   cp jrrfs_enkf_analysis_nonvarcld_spinup_master.ecf jrrfs_enkf_analysis_nonvarcld_spinup_mem${mem_3d}.ecf
   sed -i -e "s|@enkf_analysis_nonvarcld_spinup_member@|${mem_3d}|g" jrrfs_enkf_analysis_nonvarcld_spinup_mem${mem_3d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/analysis/enkf/jrrfs_enkf_analysis_nonvarcld_spinup_mem${mem_3d}.ecf"
 done
 
 # enkf save da output files
@@ -422,6 +482,7 @@ for mem in $(seq 1 5); do
   mem_3d=$( printf "%03d" "${mem}" )
   cp jrrfs_enkf_save_da_output_master.ecf jrrfs_enkf_save_da_output_mem${mem_3d}.ecf
   sed -i -e "s|@enkf_save_da_output_member@|${mem_3d}|g" jrrfs_enkf_save_da_output_mem${mem_3d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/analysis/enkf/jrrfs_enkf_save_da_output_mem${mem_3d}.ecf"
 done
 
 # ensf save da output files
@@ -432,6 +493,7 @@ for mem in $(seq 1 5); do
   mem_3d=$( printf "%03d" "${mem}" )
   cp jrrfs_ensf_save_da_output_master.ecf jrrfs_ensf_save_da_output_mem${mem_3d}.ecf
   sed -i -e "s|@ensf_save_da_output_member@|${mem_3d}|g" jrrfs_ensf_save_da_output_mem${mem_3d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/analysis/ensf/jrrfs_ensf_save_da_output_mem${mem_3d}.ecf"
 done
 
 # enkf observer gsi files
@@ -442,6 +504,7 @@ for mem in $(seq 1 30); do
   mem_3d=$( printf "%03d" "${mem}" )
   cp jrrfs_enkf_observer_gsi_master.ecf jrrfs_enkf_observer_gsi_mem${mem_3d}.ecf
   sed -i -e "s|@enkf_observer_gsi_member@|${mem_3d}|g" jrrfs_enkf_observer_gsi_mem${mem_3d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/prep/enkf/jrrfs_enkf_observer_gsi_mem${mem_3d}.ecf"
 done
 
 # enkf observer gsi spinup files
@@ -452,6 +515,7 @@ for mem in $(seq 1 30); do
   mem_3d=$( printf "%03d" "${mem}" )
   cp jrrfs_enkf_observer_gsi_spinup_master.ecf jrrfs_enkf_observer_gsi_spinup_mem${mem_3d}.ecf
   sed -i -e "s|@enkf_observer_gsi_spinup_member@|${mem_3d}|g" jrrfs_enkf_observer_gsi_spinup_mem${mem_3d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/prep/enkf/jrrfs_enkf_observer_gsi_spinup_mem${mem_3d}.ecf"
 done
 
 # enkf prep cyc files
@@ -462,6 +526,7 @@ for mem in $(seq 1 30); do
   mem_3d=$( printf "%03d" "${mem}" )
   cp jrrfs_enkf_prep_cyc_master.ecf jrrfs_enkf_prep_cyc_mem${mem_3d}.ecf
   sed -i -e "s|@enkf_prep_cyc_member@|${mem_3d}|g" jrrfs_enkf_prep_cyc_mem${mem_3d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/prep/enkf/jrrfs_enkf_prep_cyc_mem${mem_3d}.ecf"
 done
 
 # enkf prep cyc spinup files
@@ -472,6 +537,7 @@ for mem in $(seq 1 30); do
   mem_3d=$( printf "%03d" "${mem}" )
   cp jrrfs_enkf_prep_cyc_spinup_master.ecf jrrfs_enkf_prep_cyc_spinup_mem${mem_3d}.ecf
   sed -i -e "s|@enkf_prep_cyc_spinup_member@|${mem_3d}|g" jrrfs_enkf_prep_cyc_spinup_mem${mem_3d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/prep/enkf/jrrfs_enkf_prep_cyc_spinup_mem${mem_3d}.ecf"
 done
 
 # enkf prep cyc spinup ensinit files
@@ -482,6 +548,7 @@ for mem in $(seq 1 30); do
   mem_3d=$( printf "%03d" "${mem}" )
   cp jrrfs_enkf_prep_cyc_spinup_ensinit_master.ecf jrrfs_enkf_prep_cyc_spinup_ensinit_mem${mem_3d}.ecf
   sed -i -e "s|@enkf_prep_cyc_spinup_ensinit_member@|${mem_3d}|g" jrrfs_enkf_prep_cyc_spinup_ensinit_mem${mem_3d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/prep/enkf/jrrfs_enkf_prep_cyc_spinup_ensinit_mem${mem_3d}.ecf"
 done
 
 # ensf prep cyc files
@@ -492,6 +559,7 @@ for mem in $(seq 1 5); do
   mem_3d=$( printf "%03d" "${mem}" )
   cp jrrfs_ensf_prep_cyc_master.ecf jrrfs_ensf_prep_cyc_mem${mem_3d}.ecf
   sed -i -e "s|@ensf_prep_cyc_member@|${mem_3d}|g" jrrfs_ensf_prep_cyc_mem${mem_3d}.ecf
+  add_to_tmpfile "$ECF_DIR/scripts/prep/ensf/jrrfs_ensf_prep_cyc_mem${mem_3d}.ecf"
 done
 
 # Create resource dependent files
@@ -500,53 +568,65 @@ if [ ${resource_config} == "NCO" ]; then
   for file in jrrfs_det_forecast jrrfs_det_forecast_long; do
     rm -f ${file}.ecf
     ln -s ${file}.ecf-prod-resource ${file}.ecf
+    add_to_tmpfile "$ECF_DIR/scripts/forecast/det/${file}.ecf"
   done
 else
   cd $ECF_DIR/scripts/forecast/det
   for file in jrrfs_det_forecast jrrfs_det_forecast_long; do
     rm -f ${file}.ecf
     ln -s ${file}.ecf-dev-resource ${file}.ecf
+    add_to_tmpfile "$ECF_DIR/scripts/forecast/det/${file}.ecf"
   done
 fi
 
 if [ ${resource_config} == "EMC" ]; then
-
-# updates input.nml namelist files for 52 node configuration
-
-files="../parm/config/det/input.nml_18h ../parm/config/det/input.nml_restart_18h"
-
-# 53,128 --> 43,64
-#
-
-for fl in $files
-do
-        cat $fl | sed s:53:43:g > ${fl}_new
-        cat ${fl}_new | sed s:128:64:g > ${fl}
-        rm -f ${fl}_new
-done
-
-files="../parm/config/det/input.nml_restart_long ../parm/config/det/input.nml_long"
-
-# 71,128 --> 43,64
-#
-for fl in $files
-do
-        cat $fl | sed s:71:43:g > ${fl}_new
-        cat ${fl}_new | sed s:128:64:g > ${fl}
-        rm -f ${fl}_new
-done
-
-
-files="../parm/config/ensf/input.nml_restart_stoch_ensphy?"
-#
-# 45,128 --> 50,64
-#
-for fl in $files
-do
-        cat $fl | sed s:45:50:g > ${fl}_new
-        cat ${fl}_new | sed s:128:64:g > ${fl}
-        rm -f ${fl}_new
-done
-
-
+  # updates input.nml namelist files for 52 node configuration
+  files="${ECF_DIR}/../parm/config/det/input.nml_18h ${ECF_DIR}/../parm/config/det/input.nml_restart_18h"
+  # 53,128 --> 43,64
+  #
+  for fl in $files
+  do
+          cat $fl | sed s:53:43:g > ${fl}_new
+          cat ${fl}_new | sed s:128:64:g > ${fl}
+          rm -f ${fl}_new
+  done
+  
+  files="${ECF_DIR}/../parm/config/det/input.nml_restart_long ${ECF_DIR}/../parm/config/det/input.nml_long"
+  # 71,128 --> 43,64
+  #
+  for fl in $files
+  do
+          cat $fl | sed s:71:43:g > ${fl}_new
+          cat ${fl}_new | sed s:128:64:g > ${fl}
+          rm -f ${fl}_new
+  done
+  
+  files="${ECF_DIR}/../parm/config/ensf/input.nml_restart_stoch_ensphy?"
+  #
+  # 45,128 --> 50,64
+  #
+  for fl in $files
+  do
+          cat $fl | sed s:45:50:g > ${fl}_new
+          cat ${fl}_new | sed s:128:64:g > ${fl}
+          rm -f ${fl}_new
+  done
 fi
+
+# add created files/links to git info exclude
+cd $ECF_DIR
+exclude_path="${ECF_DIR}/../.git/info/exclude"
+while read line; do
+  tmpchkline=$(echo ${line} | sed "s|${ECF_DIR}|ecf|")
+  # add line to git info exclude if not already present
+  tmpchkcnt=$(grep "${tmpchkline}" ${exclude_path} | wc -l)
+  if [[ $tmpchkcnt == 0 ]]; then
+    echo "adding ${tmpchkline} to ${exclude_path}"
+    echo ${tmpchkline} >> ${exclude_path}
+  else
+    echo "${tmpchkline} already in ${exclude_path}"
+  fi
+done < ${tmp_exclude}
+
+echo "Removing temporary file: ${tmp_exclude}"
+rm ${tmp_exclude}

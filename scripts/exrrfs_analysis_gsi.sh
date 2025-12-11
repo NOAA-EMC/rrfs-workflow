@@ -132,12 +132,12 @@ AIR_REJECT_FN=$(date +%Y%m%d -d "${START_DATE} -1 day")_rejects.txt
 #
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 regional_ensemble_option=${regional_ensemble_option:-"5"}
-
-if [ "${MEM_TYPE}" = "MEAN" ]; then
-  bkpath=${FORECAST_INPUT_PRODUCT}
-else
-  bkpath=${FORECAST_INPUT_PRODUCT}
-fi
+bkpath=${FORECAST_INPUT_PRODUCT}
+#if [ "${MEM_TYPE}" = "MEAN" ]; then
+#  bkpath=${FORECAST_INPUT_PRODUCT}
+#else
+#  bkpath=${FORECAST_INPUT_PRODUCT}
+#fi
 
 # decide background type
 if [ -r "${bkpath}/coupler.res" ]; then
@@ -209,8 +209,19 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
     regional_ensemble_option=1
     l_both_fv3sar_gfs_ens=.false.
   else
-    cat ${DATA}/parallel_copy.sh | parallel --verbose
-    sleep 3
+    poe_script=parallel_copy.sh
+    export MP_CMDFILE=${poe_script}
+    launcher="time mpiexec -np 128 --cpu-bind core cfp"
+    $launcher $MP_CMDFILE
+    export err=$?; err_chk
+
+#    split -l 10 parallel_copy.sh parallel_copy_run
+#    for file_to_p_copy in parallel_copy_run*; do
+#       echo "Working on ${file_to_p_copy}"
+#       cat ${file_to_p_copy} | parallel --verbose --halt-on-error 1
+#       export err=$?; err_chk
+#       sleep 6 
+#    done
   fi
 fi
 #
@@ -793,17 +804,17 @@ fi
 # set coefficient under crtm_coeffs_path='./crtm_coeffs/',
 #-----------------------------------------------------------------------
 #
-emiscoef_IRwater=${FIX_CRTM}/Nalli.IRwater.EmisCoeff.bin
-emiscoef_IRice=${FIX_CRTM}/NPOESS.IRice.EmisCoeff.bin
-emiscoef_IRland=${FIX_CRTM}/NPOESS.IRland.EmisCoeff.bin
-emiscoef_IRsnow=${FIX_CRTM}/NPOESS.IRsnow.EmisCoeff.bin
-emiscoef_VISice=${FIX_CRTM}/NPOESS.VISice.EmisCoeff.bin
-emiscoef_VISland=${FIX_CRTM}/NPOESS.VISland.EmisCoeff.bin
-emiscoef_VISsnow=${FIX_CRTM}/NPOESS.VISsnow.EmisCoeff.bin
-emiscoef_VISwater=${FIX_CRTM}/NPOESS.VISwater.EmisCoeff.bin
-emiscoef_MWwater=${FIX_CRTM}/FASTEM6.MWwater.EmisCoeff.bin
-aercoef=${FIX_CRTM}/AerosolCoeff.bin
-cldcoef=${FIX_CRTM}/CloudCoeff.bin
+emiscoef_IRwater=${CRTM_FIX}/Nalli.IRwater.EmisCoeff.bin
+emiscoef_IRice=${CRTM_FIX}/NPOESS.IRice.EmisCoeff.bin
+emiscoef_IRland=${CRTM_FIX}/NPOESS.IRland.EmisCoeff.bin
+emiscoef_IRsnow=${CRTM_FIX}/NPOESS.IRsnow.EmisCoeff.bin
+emiscoef_VISice=${CRTM_FIX}/NPOESS.VISice.EmisCoeff.bin
+emiscoef_VISland=${CRTM_FIX}/NPOESS.VISland.EmisCoeff.bin
+emiscoef_VISsnow=${CRTM_FIX}/NPOESS.VISsnow.EmisCoeff.bin
+emiscoef_VISwater=${CRTM_FIX}/NPOESS.VISwater.EmisCoeff.bin
+emiscoef_MWwater=${CRTM_FIX}/FASTEM6.MWwater.EmisCoeff.bin
+aercoef=${CRTM_FIX}/AerosolCoeff.bin
+cldcoef=${CRTM_FIX}/CloudCoeff.bin
 
 mkdir -p crtm_coeffs
 ln -s ${emiscoef_IRwater} ./crtm_coeffs/Nalli.IRwater.EmisCoeff.bin
@@ -820,8 +831,8 @@ ln -s $cldcoef  ./crtm_coeffs/CloudCoeff.bin
 
 # Copy CRTM coefficient files based on entries in satinfo file
 for file in $(awk '{if($1!~"!"){print $1}}' ./satinfo | sort | uniq) ;do
-   ln -s ${FIX_CRTM}/${file}.SpcCoeff.bin ./crtm_coeffs/.
-   ln -s ${FIX_CRTM}/${file}.TauCoeff.bin ./crtm_coeffs/.
+   ln -s ${CRTM_FIX}/${file}.SpcCoeff.bin ./crtm_coeffs/.
+   ln -s ${CRTM_FIX}/${file}.TauCoeff.bin ./crtm_coeffs/.
 done
 
 #-----------------------------------------------------------------------
@@ -970,6 +981,7 @@ export pgm="gsi.x"
 
 $APRUN ./$pgm < gsiparm.anl >>$pgmout 2>errfile
 export err=$?; err_chk
+
 cpreq -p $pgmout $COMOUT/rrfs.t${HH}z.gsiout.tm00
 cpreq -p $pgmout rrfs.t${HH}z.gsiout.tm00
 
@@ -1037,7 +1049,7 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
   numfile_cnv=0
   numfile_rad=0
   if [ $binary_diag = ".true." ]; then
-    listall="hirs2_n14 msu_n14 sndr_g08 sndr_g11 sndr_g11 sndr_g12 sndr_g13 sndr_g08_prep sndr_g11_prep sndr_g12_prep sndr_g13_prep sndrd1_g11 sndrd2_g11 sndrd3_g11 sndrd4_g11 sndrd1_g15 sndrd2_g15 sndrd3_g15 sndrd4_g15 sndrd1_g13 sndrd2_g13 sndrd3_g13 sndrd4_g13 hirs3_n15 hirs3_n16 hirs3_n17 amsua_n15 amsua_n16 amsua_n17 amsua_n18 amsua_n19 amsua_metop-a amsua_metop-b amsua_metop-c amsub_n15 amsub_n16 amsub_n17 hsb_aqua airs_aqua amsua_aqua imgr_g08 imgr_g11 imgr_g12 pcp_ssmi_dmsp pcp_tmi_trmm conv sbuv2_n16 sbuv2_n17 sbuv2_n18 omi_aura ssmi_f13 ssmi_f14 ssmi_f15 hirs4_n18 hirs4_metop-a mhs_n18 mhs_n19 mhs_metop-a mhs_metop-b mhs_metop-c amsre_low_aqua amsre_mid_aqua amsre_hig_aqua ssmis_las_f16 ssmis_uas_f16 ssmis_img_f16 ssmis_env_f16 iasi_metop-a iasi_metop-b iasi_metop-c seviri_m08 seviri_m09 seviri_m10 seviri_m11 cris_npp atms_npp ssmis_f17 cris-fsr_npp cris-fsr_n20 atms_n20 abi_g16 abi_g18 radardbz fed atms_n21 cris-fsr_n21"
+    listall="hirs2_n14 msu_n14 sndr_g08 sndr_g11 sndr_g11 sndr_g12 sndr_g13 sndr_g08_prep sndr_g11_prep sndr_g12_prep sndr_g13_prep sndrd1_g11 sndrd2_g11 sndrd3_g11 sndrd4_g11 sndrd1_g15 sndrd2_g15 sndrd3_g15 sndrd4_g15 sndrd1_g13 sndrd2_g13 sndrd3_g13 sndrd4_g13 hirs3_n15 hirs3_n16 hirs3_n17 amsua_n15 amsua_n16 amsua_n17 amsua_n18 amsua_n19 amsua_metop-a amsua_metop-b amsua_metop-c amsub_n15 amsub_n16 amsub_n17 hsb_aqua airs_aqua amsua_aqua imgr_g08 imgr_g11 imgr_g12 pcp_ssmi_dmsp pcp_tmi_trmm conv sbuv2_n16 sbuv2_n17 sbuv2_n18 omi_aura ssmi_f13 ssmi_f14 ssmi_f15 hirs4_n18 hirs4_metop-a mhs_n18 mhs_n19 mhs_metop-a mhs_metop-b mhs_metop-c amsre_low_aqua amsre_mid_aqua amsre_hig_aqua ssmis_las_f16 ssmis_uas_f16 ssmis_img_f16 ssmis_env_f16 iasi_metop-a iasi_metop-b iasi_metop-c seviri_m08 seviri_m09 seviri_m10 seviri_m11 cris_npp atms_npp ssmis_f17 cris-fsr_npp cris-fsr_n20 atms_n20 abi_g16 abi_g18 abi_g19 radardbz fed atms_n21 cris-fsr_n21"
     for type in $listall; do
       count=$(ls pe*.${type}_${loop} | wc -l)
       if [[ $count -gt 0 ]]; then
@@ -1053,7 +1065,7 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
     export pgm="nc_diag_cat.x"
 
     listall_cnv="conv_ps conv_q conv_t conv_uv conv_pw conv_rw conv_sst conv_dbz conv_fed"
-    listall_rad="hirs2_n14 msu_n14 sndr_g08 sndr_g11 sndr_g11 sndr_g12 sndr_g13 sndr_g08_prep sndr_g11_prep sndr_g12_prep sndr_g13_prep sndrd1_g11 sndrd2_g11 sndrd3_g11 sndrd4_g11 sndrd1_g15 sndrd2_g15 sndrd3_g15 sndrd4_g15 sndrd1_g13 sndrd2_g13 sndrd3_g13 sndrd4_g13 hirs3_n15 hirs3_n16 hirs3_n17 amsua_n15 amsua_n16 amsua_n17 amsua_n18 amsua_n19 amsua_metop-a amsua_metop-b amsua_metop-c amsub_n15 amsub_n16 amsub_n17 hsb_aqua airs_aqua amsua_aqua imgr_g08 imgr_g11 imgr_g12 pcp_ssmi_dmsp pcp_tmi_trmm conv sbuv2_n16 sbuv2_n17 sbuv2_n18 omi_aura ssmi_f13 ssmi_f14 ssmi_f15 hirs4_n18 hirs4_metop-a mhs_n18 mhs_n19 mhs_metop-a mhs_metop-b mhs_metop-c amsre_low_aqua amsre_mid_aqua amsre_hig_aqua ssmis_las_f16 ssmis_uas_f16 ssmis_img_f16 ssmis_env_f16 iasi_metop-a iasi_metop-b iasi_metop-c seviri_m08 seviri_m09 seviri_m10 seviri_m11 cris_npp atms_npp ssmis_f17 cris-fsr_npp cris-fsr_n20 atms_n20 abi_g16 abi_g18 atms_n21 cris-fsr_n21"
+    listall_rad="hirs2_n14 msu_n14 sndr_g08 sndr_g11 sndr_g11 sndr_g12 sndr_g13 sndr_g08_prep sndr_g11_prep sndr_g12_prep sndr_g13_prep sndrd1_g11 sndrd2_g11 sndrd3_g11 sndrd4_g11 sndrd1_g15 sndrd2_g15 sndrd3_g15 sndrd4_g15 sndrd1_g13 sndrd2_g13 sndrd3_g13 sndrd4_g13 hirs3_n15 hirs3_n16 hirs3_n17 amsua_n15 amsua_n16 amsua_n17 amsua_n18 amsua_n19 amsua_metop-a amsua_metop-b amsua_metop-c amsub_n15 amsub_n16 amsub_n17 hsb_aqua airs_aqua amsua_aqua imgr_g08 imgr_g11 imgr_g12 pcp_ssmi_dmsp pcp_tmi_trmm conv sbuv2_n16 sbuv2_n17 sbuv2_n18 omi_aura ssmi_f13 ssmi_f14 ssmi_f15 hirs4_n18 hirs4_metop-a mhs_n18 mhs_n19 mhs_metop-a mhs_metop-b mhs_metop-c amsre_low_aqua amsre_mid_aqua amsre_hig_aqua ssmis_las_f16 ssmis_uas_f16 ssmis_img_f16 ssmis_env_f16 iasi_metop-a iasi_metop-b iasi_metop-c seviri_m08 seviri_m09 seviri_m10 seviri_m11 cris_npp atms_npp ssmis_f17 cris-fsr_npp cris-fsr_n20 atms_n20 abi_g16 abi_g18 abi_g19 atms_n21 cris-fsr_n21"
 
     for type in $listall_cnv; do
       count=$(ls pe*.${type}_${loop}.nc4 | wc -l)

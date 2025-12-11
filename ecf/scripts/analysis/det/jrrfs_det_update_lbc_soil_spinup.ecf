@@ -14,7 +14,21 @@ export cyc="%CYC%"
 ############################################################
 # Load modules
 ############################################################
-
+module load intel/${intel_ver}
+module load craype/${craype_ver}
+module load python/${python_ver}
+module load prod_util/${prod_util_ver}
+module load cray-mpich/${cray_mpich_ver}
+module load cray-pals/${cray_pals_ver}
+module load crtm/${crtm_ver}
+module load hdf5-D/${hdf5_ver}
+module load netcdf-D/${netcdf_ver}
+module load pnetcdf-D/${pnetcdf_ver}
+module load libjpeg/${libjpeg_ver}
+module load libaec/${libaec_ver}
+module load g2c/${g2c_ver}
+module load libjpeg-turbo/${libjpeg_turbo_ver}
+module load wgrib2/${wgrib2_ver}
 
 module list
 export WGF="%WGF%"
@@ -25,7 +39,7 @@ export OB_TYPE="conv_dbz"
 ############################################################
 # CALL executable job script here
 ############################################################
-${HOMErrfs}/ush/load_modules_run_task.sh post ${HOMErrfs}/jobs/JRRFS_UPDATE_LBC_SOIL
+${HOMErrfs}/jobs/JRRFS_UPDATE_LBC_SOIL
 
 %include <tail.h>
 
