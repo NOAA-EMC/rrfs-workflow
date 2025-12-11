@@ -32,6 +32,7 @@ module load libaec/${libaec_ver}
 module load g2c/${g2c_ver}
 module load libjpeg-turbo/${libjpeg_turbo_ver}
 module load wgrib2/${wgrib2_ver}
+module load cfp/${cfp_ver}
 
 module list
 export WGF="%WGF%"
