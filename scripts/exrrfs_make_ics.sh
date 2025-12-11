@@ -107,7 +107,7 @@ case "${extrn_mdl_name}" in
     ;;
 
   "RRFS")
-    sysdir="${COMINrrfs}/rrfs.${yyyymmdd}/${hh}"
+    sysdir="${COMIN}/rrfs.${yyyymmdd}/${hh}"
     fns_on_disk=( "rrfs.t${hh}z.natlev.3km.f0${fcst_hh}.na.grib2" )
     ;;
 

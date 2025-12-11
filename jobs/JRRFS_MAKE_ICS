@@ -107,7 +107,7 @@ for the RRFS (in NetCDF format).
 # Define COM directories
 #-----------------------------------------------------------------------
 export COMrrfs=${COMrrfs:-$(compath.py rrfs/${rrfs_ver})}
-export COMINrrfs=${COMINrrfs:-$(compath.py rrfs/${rrfs_ver})}
+export COMIN=${COMIN:-$(compath.py rrfs/${rrfs_ver})}
 export COMINgfs=${COMINgfs:-$(compath.py gfs/${gfs_ver})}
 
 if [ ${WGF} = "firewx" ]; then

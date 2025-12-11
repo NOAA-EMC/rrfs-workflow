@@ -142,7 +142,7 @@ case "${extrn_mdl_name}" in
     ;;
 
   "RRFS")
-    sysdir="${COMINrrfs}/rrfs.${yyyymmdd}/${hh}"
+    sysdir="${COMIN}/rrfs.${yyyymmdd}/${hh}"
     sysdir2=""
     fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
     prefix="rrfs.t${hh}z.natlev.3km.f"
