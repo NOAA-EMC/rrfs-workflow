@@ -59,7 +59,7 @@ current_day="$(${DATE} -d "${YYYYMMDD}" +%Y%m%d)"
 previous_day=`${DATE} '+%C%y%m%d' -d "${current_day} -1 days"`
 previous_2day=`${DATE} '+%C%y%m%d' -d "${current_day} -2 days"`
 
-rave_base_prefix="${COMrrfs}/rave_intp"
+rave_base_prefix="${COMrrfs}/RAVE_INTP/rave_intp"
 
 for i in $(seq 0 24); do
    timestr=$(${DATE} +%Y%m%d%H -d "${YYYYMMDD} ${HH} - $((i+1)) hours")
@@ -108,7 +108,8 @@ export err=$?; err_chk
 
 #Copy the the hourly, interpolated RAVE data to $rave_dir so it
 # is maintained there for future cycles.
-for file in ${DATA}/*; do
+for file in ${DATA}/RAVE-HrlyEmiss-* ${DATA}/RRFS_NA_3km_intp_* ${DATA}/SMOKE_RRFS_data_*
+do
    filename=$(basename "$file")
    daystr=$(echo "$filename" | grep -o '[0-9]\{8\}' | head -1)
    [ -z "$daystr" ] && continue
