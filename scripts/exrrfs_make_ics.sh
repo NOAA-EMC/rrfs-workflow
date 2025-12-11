@@ -68,7 +68,7 @@ ic_spec_fhrs=$(( 0 + time_offset_hrs ))
 
 hh=${CDATE:8:2}
 yyyymmdd=${CDATE:0:8}
-OFFSETDATE=$( date --utc --date "${yyyymmdd} ${hh} UTC - ${time_offset_hrs} hours" "+%Y%m%d%H" )
+OFFSETDATE=`$NDATE -${time_offset_hrs} ${yyyymmdd}${hh}`
 export extrn_mdl_cdate="$OFFSETDATE"
 
 # Starting year, month, day, and hour of the external model forecast.
@@ -583,7 +583,8 @@ dd="${EXTRN_MDL_CDATE:6:2}"
 hh="${EXTRN_MDL_CDATE:8:2}"
 
 fhr="${EXTRN_MDL_ICS_OFFSET_HRS}"
-cdate_crnt_fhr=$( date --utc --date "${yyyymmdd} ${hh} UTC + ${fhr} hours" "+%Y%m%d%H" )
+cdate_crnt_fhr=`$NDATE +${fhr} ${yyyymmdd}${hh}`
+
 #
 # Get the month, day, and hour corresponding to the current forecast time
 # of the the external model.

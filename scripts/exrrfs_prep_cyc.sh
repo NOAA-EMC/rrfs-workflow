@@ -760,9 +760,9 @@ if [ "${CYCLE_TYPE}" = "spinup" ]; then
   fi
 fi
 if [ ${Update_GVF} -ge 1 ]; then
-   latestGVF=$(ls ${GVF_ROOT}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm1}_c${YYYYMMDD}*.grib2)
-   latestGVF2=$(ls ${GVF_ROOT}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm2}_c${YYYYMMDDm1}*.grib2)
-   latestGVF3=$(ls ${GVF_ROOT}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm3}_c${YYYYMMDDm2}*.grib2)
+   latestGVF=$(ls ${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm1}_c${YYYYMMDD}*.grib2)
+   latestGVF2=$(ls ${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm2}_c${YYYYMMDDm1}*.grib2)
+   latestGVF3=$(ls ${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm3}_c${YYYYMMDDm2}*.grib2)
    if [ ! -r "${latestGVF}" ]; then
      if [ -r "${latestGVF2}" ]; then
        latestGVF=${latestGVF2}
