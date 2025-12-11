@@ -794,7 +794,6 @@ MODULES_RUN_TASK_FP script.
   </task>
 
 {%- endif %}
-
 </metatask>
  
 {% endif %}
