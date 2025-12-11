@@ -17,8 +17,7 @@ export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 
-export SHORTVER=$(echo "$rrfs_ver" | cut -d "." -f1-2)
-export umbrella_forecast_data_base=${DATAROOT}/rrfs_forecast_${cyc}_${SHORTVER}/${WGF}
+export umbrella_forecast_data_base=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}
 
 #################################### 
 # Specify Timeout Behavior of Post

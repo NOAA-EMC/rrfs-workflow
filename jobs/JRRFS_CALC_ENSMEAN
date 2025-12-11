@@ -81,10 +81,10 @@ export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
-  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
+  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}
 else
   export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}
+  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}
 fi
 mkdir -p ${COMOUT}
 
