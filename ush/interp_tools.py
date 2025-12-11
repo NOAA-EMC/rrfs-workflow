@@ -6,6 +6,7 @@ import ESMF
 import xarray as xr
 import numpy as np
 from netCDF4 import Dataset
+from datetime import timedelta, datetime
 
 #Create date range, this is later used to search for RAVE and HWP from previous 24 hours
 def date_range(current_day):
@@ -21,7 +22,7 @@ def date_range(current_day):
     return(fcst_dates)
 
 # Check if interoplated RAVE is available for the previous 24 hours
-def check_for_intp_rave(intp_dir, fcst_dates, rave_to_intp):
+def check_for_intp_rave(comrrfs, fcst_dates, rave_to_intp, current_day):
     intp_avail_hours = []
     intp_non_avail_hours = []
     # There are four situations here.
@@ -29,9 +30,44 @@ def check_for_intp_rave(intp_dir, fcst_dates, rave_to_intp):
     #   2) the file is present (use it)
     #   3) there is a link, but it's broken (interpolate a new file)
     #   4) there is a valid link (use it)
+
+    # --- Derive current and previous day folder names ------
+    current_day = current_day[:8]
+    prev_day = (dt.datetime.strptime(current_day, "%Y%m%d") - timedelta(days=1)).strftime("%Y%m%d")
+    prev2_day = (dt.datetime.strptime(current_day, "%Y%m%d") - timedelta(days=2)).strftime("%Y%m%d")
+
+   # Build both possible folder paths
+    rave_dir_today = os.path.join(comrrfs, 'RAVE_INTP', f'rave_intp.{current_day}')
+    rave_dir_prev  = os.path.join(comrrfs, 'RAVE_INTP', f'rave_intp.{prev_day}')
+    rave_dir_2prev  = os.path.join(comrrfs, 'RAVE_INTP', f'rave_intp.{prev2_day}')
+
     for date in fcst_dates:
+        try:
+            dt.datetime.strptime(date, "%Y%m%d%H")
+        except ValueError:
+            print(f"Bad datetime in fcst_dates: {date} (expected YYYYMMDDHH); marking as non-available.")
+            intp_non_avail_hours.append(date)
+            continue
+        # ---- Building the dynamic directories
+        daystr = date[:8]
+        if daystr == current_day:
+           rave_dir = rave_dir_today
+        elif daystr == prev_day:
+           rave_dir = rave_dir_prev
+        elif daystr == prev2_day:
+           rave_dir = rave_dir_2prev
+        else:
+           print(f"Day {daystr} not in {{current, prev, prev2}}; skipping {date}.")
+           intp_non_avail_hours.append(date)
+           continue
+
+        if not os.path.isdir(rave_dir):
+           print(f"RAVE daily directory missing: {rave_dir} (skip {date}).")
+           intp_non_avail_hours.append(date)
+           continue
+
         file_name = f'{rave_to_intp}{date}00_{date}59.nc'
-        file_path = os.path.join(intp_dir, file_name)
+        file_path = os.path.join(rave_dir, file_name)
         file_exists = os.path.isfile(file_path)
         is_link = os.path.islink(file_path)
         is_valid_link = is_link and os.path.exists(file_path)
@@ -151,16 +187,22 @@ def generate_regrider(rave_avail_hours, srcfield, tgtfield, weightfile, inp_file
     regridder = None
 
     if not use_dummy_emiss:
+        if not os.path.exists(weightfile):
+            print(f'Weight file not found: {weightfile}. Falling back to dummy emissions.')
+            return (None, True)
         try:
             print('Generating regridder.')
             regridder = ESMF.RegridFromFile(srcfield, tgtfield, weightfile)
             print('Regridder generated successfully.')
         except ValueError as e:
             print(f'Regridder failed due to a ValueError: {e}.')
+            use_dummy_emiss = True
         except OSError as e:
             print(f'Regridder failed due to an OSError: {e}. Check if the weight file exists and is accessible.')
+            use_dummy_emiss = True
         except (FileNotFoundError, IOError, RuntimeError, TypeError, KeyError, IndexError, MemoryError) as e:
             print(f'Regridder failed due to corrupted file: {e}. Check if RAVE file has a different grid or format. ')
+            use_dummy_emiss = True
         except Exception as e:
             print(f'An unexpected error occurred while generating regridder: {e}.')
     else:

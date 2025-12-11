@@ -377,8 +377,9 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ]; then
   ln -snf  ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/dust12m_data.nc  ${DATA}/INPUT/dust12m_data.nc
   ln -snf  ${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/emi_data.nc      ${DATA}/INPUT/emi_data.nc
   yyyymmddhh=${CDATE:0:10}
-  echo ${yyyymmddhh}
-  smokefile=${COMrrfs}/RAVE_INTP/SMOKE_RRFS_data_${yyyymmddhh}00.nc
+  yyyymmdd=${CDATE:0:8}
+  echo ${yyyymmddhh}, ${yyyymmdd}
+  smokefile=${COMrrfs}/RAVE_INTP/rave_intp.${yyyymmdd}/SMOKE_RRFS_data_${yyyymmddhh}00.nc
   echo "try to use smoke file=",${smokefile}
   if [ -f ${smokefile} ]; then
     cpreq -p ${smokefile} ${DATA}/INPUT/SMOKE_RRFS_data.nc

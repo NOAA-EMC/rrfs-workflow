@@ -27,10 +27,10 @@ def generate_emiss_workflow(staticdir, ravedir, newges_dir, predef_grid):
    beta = 0.3
    fg_to_ug = 1e6
    current_day = os.environ.get("CDATE")
-   comrrfs = os.environ.get("COMrrfs")    
+   comrrfs = os.environ.get("COMrrfs") 
    vars_emis = ["FRP_MEAN","FRE"]
    cols, rows = (2700, 3950) if predef_grid == 'RRFS_NA_3km' else (1092, 1820) 
-   print('PREDEF GRID',predef_grid,'cols,rows',cols,rows)
+   print('PREDEF GRID',predef_grid,cols,rows)
    veg_map = staticdir+'/veg_map.nc' 
    RAVE= ravedir
    print(RAVE)
@@ -39,7 +39,6 @@ def generate_emiss_workflow(staticdir, ravedir, newges_dir, predef_grid):
    grid_in = staticdir+'/grid_in.nc'
    weightfile = staticdir+'/weight_file.nc'
    grid_out = staticdir+'/ds_out_base.nc'
-   hourly_hwpdir = os.path.join(comrrfs,'HOURLY_HWP')
 
    # ----------------------------------------------------------------------
    # Workflow
@@ -49,7 +48,7 @@ def generate_emiss_workflow(staticdir, ravedir, newges_dir, predef_grid):
    # Sort raw RAVE, create source and target filelds, and compute emissions 
    # ----------------------------------------------------------------------
    fcst_dates = i_tools.date_range(current_day)
-   intp_avail_hours, intp_non_avail_hours, inp_files_2use = i_tools.check_for_intp_rave(intp_dir, fcst_dates, rave_to_intp)
+   intp_avail_hours, intp_non_avail_hours, inp_files_2use = i_tools.check_for_intp_rave(comrrfs, fcst_dates, rave_to_intp, current_day)
    rave_avail, rave_avail_hours, rave_nonavail_hours_test, first_day = i_tools.check_for_raw_rave(RAVE, intp_non_avail_hours, intp_avail_hours)
    srcfield, tgtfield, tgt_latt, tgt_lont, srcgrid, tgtgrid, src_latt, tgt_area = i_tools.creates_st_fields(grid_in, grid_out, intp_dir, rave_avail_hours) 
   
@@ -63,10 +62,10 @@ def generate_emiss_workflow(staticdir, ravedir, newges_dir, predef_grid):
                                     use_dummy_emiss, vars_emis, regridder, srcgrid, tgtgrid, rave_to_intp,
                                     intp_dir, src_latt, tgt_latt, tgt_lont, cols, rows)
            print('Restart dates to process',fcst_dates)
-           hwp_avail_hours, hwp_non_avail_hours = HWP_tools.check_restart_files(hourly_hwpdir, fcst_dates)
-           restart_avail, restart_nonavail_hours_test = HWP_tools.copy_missing_restart(comrrfs, hwp_non_avail_hours, hourly_hwpdir)
+           hwp_avail_hours, hwp_non_avail_hours = HWP_tools.check_restart_files(comrrfs, fcst_dates, current_day)
+           restart_avail, restart_nonavail_hours_test = HWP_tools.copy_missing_restart(comrrfs, hwp_non_avail_hours, current_day)
            start = time.time()
-           hwp_ave_arr, xarr_hwp, totprcp_ave_arr, xarr_totprcp = HWP_tools.process_hwp(fcst_dates, hourly_hwpdir, cols, rows, intp_dir, rave_to_intp)
+           hwp_ave_arr, xarr_hwp, totprcp_ave_arr, xarr_totprcp = HWP_tools.process_hwp(fcst_dates, current_day, cols, rows, comrrfs, rave_to_intp, intp_dir)
            frp_avg_reshaped, ebb_tot_reshaped = femmi_tools.averaging_FRP(fcst_dates, cols, rows, intp_dir, rave_to_intp, veg_map, tgt_area, beta, fg_to_ug)
            #Fire end hours processing
            te = femmi_tools.estimate_fire_duration(intp_avail_hours, intp_dir, fcst_dates, current_day, cols, rows, rave_to_intp)
