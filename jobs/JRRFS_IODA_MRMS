@@ -63,14 +63,14 @@ the specified cycle.
 #-----------------------------------------------------------------------
 #
 if [ ${CYCLE_TYPE} == "spinup" ]; then
-  workdir=${CYCLE_DIR}/ioda_mrms_spinup
+  export workdir=${CYCLE_DIR}/ioda_mrms_spinup
   if [ ${DO_ENSEMBLE} == "TRUE" ]; then
-     workdir=${CYCLE_DIR}/ioda_mrms_spinup_enkf
+     export workdir=${CYCLE_DIR}/ioda_mrms_spinup_enkf
   fi
 else
-  workdir=${CYCLE_DIR}/ioda_mrms
+  export workdir=${CYCLE_DIR}/ioda_mrms
   if [ ${DO_ENSEMBLE} == "TRUE" ]; then
-     workdir=${CYCLE_DIR}/ioda_mrms_enkf
+     export workdir=${CYCLE_DIR}/ioda_mrms_enkf
   fi
 fi
 rm -fr ${workdir}
@@ -109,7 +109,8 @@ export pgmout="${workdir}/OUTPUT.$$"
 env
 
 $SCRIPTSdir/exrrfs_ioda_mrms.sh \
-  CYCLE_DIR="${CYCLE_DIR}" comout="${COMOUT}"
+  CYCLE_DIR="${CYCLE_DIR}" cycle_type="${CYCLE_TYPE}" \
+  RADAR_REF_THINNING="${RADAR_REF_THINNING}"
 export err=$?; err_chk
 
 if [ -e "$pgmout" ]; then
