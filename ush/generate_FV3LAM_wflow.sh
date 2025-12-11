@@ -576,6 +576,7 @@ settings="\
 # IODA related parameters
 #
   'do_ioda_bufr': ${DO_IODA_BUFR}
+  'do_ioda_mrms': ${DO_IODA_MRMS}
 #
 # JEDIVAR related parameters
 #

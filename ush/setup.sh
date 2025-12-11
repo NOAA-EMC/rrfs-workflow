@@ -511,11 +511,12 @@ optionList[27]=DO_ENSFCST_MULPHY
 optionList[28]=DO_GLM_FED_DA
 optionList[29]=GLMFED_DATA_MODE
 optionList[30]=DO_IODA_BUFR
-optionList[31]=EBB_DCYCLE
-optionList[32]=PREP_MODEL_FOR_FED
-optionList[33]=DA_SYSTEM
-optionList[34]=DO_DACOLD
-optionList[35]=DO_ARCHIVE_RETRO
+optionList[31]=DO_IODA_MRMS
+optionList[32]=EBB_DCYCLE
+optionList[33]=PREP_MODEL_FOR_FED
+optionList[34]=DA_SYSTEM
+optionList[35]=DO_DACOLD
+optionList[36]=DO_ARCHIVE_RETRO
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));

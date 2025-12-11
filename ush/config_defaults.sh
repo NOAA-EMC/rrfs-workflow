@@ -2581,10 +2581,15 @@ GWD_HRRRsuite_BASEDIR=""
 # Parameters for IODA options
 #
 # DO_IODA_BUFR:
-# Flag turn on the IODA converters.
+# Flag to turn on the IODA converters for bufr obs.
+#
+# DO_IODA_MRMS:
+# Flag to turn on the IODA converters for MRMS refl obs.
+#
 #-----------------------------------------------------------------------
 #
 DO_IODA_BUFR="FALSE"
+DO_IODA_MRMS="FALSE"
 #
 #-----------------------------------------------------------------------
 #
