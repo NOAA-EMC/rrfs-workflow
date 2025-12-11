@@ -61,7 +61,6 @@ Workflow task names.
 <!ENTITY SAVE_RESTART_TN         "{{ save_restart }}">
 <!ENTITY SAVE_DA_OUTPUT_TN       "{{ save_da_output }}">
 <!ENTITY IODA_BUFR_TN            "{{ ioda_bufr }}">
-<!ENTITY IODA_MRMS_TN            "{{ ioda_mrms }}">
 <!ENTITY PROCESS_SMOKE_TN        "{{ process_smoke }}">
 <!ENTITY PROCESS_PM_TN           "{{ process_pm }}">
 <!ENTITY ADD_AEROSOL_TN          "{{ add_aerosol_tn }}">
@@ -79,7 +78,6 @@ Workflow task names.
 <!ENTITY RUN_SMOKE_TN         "run_proc_smoke">
 <!ENTITY RUN_PM_TN            "run_proc_pm">
 <!ENTITY RUN_IODA_BUFR_TN     "run_ioda_bufr">
-<!ENTITY RUN_IODA_MRMS_TN     "run_ioda_mrms">
 
 <!ENTITY TAG  "{{ tag }}">
 <!ENTITY NET  "{{ net }}">
@@ -371,7 +369,6 @@ define resources used for each tasks
 <!ENTITY START_TIME_LATE_ANALYSIS "{{ start_time_late_analysis }}">
 <!ENTITY START_TIME_CONVENTIONAL "{{ start_time_conventional }}">
 <!ENTITY START_TIME_IODA_BUFR "{{ start_time_ioda_bufr }}">
-<!ENTITY START_TIME_IODA_MRMS "{{ start_time_ioda_mrms }}">
 <!ENTITY START_TIME_NSSLMOSIAC   "{{ start_time_nsslmosiac }}">
 <!ENTITY START_TIME_LIGHTNINGNC  "{{ start_time_lightningnc }}">
 <!ENTITY START_TIME_PROC_GLMFED  "{{ start_time_proc_glmfed }}">
@@ -791,46 +788,6 @@ MODULES_RUN_TASK_FP script.
       <and>
         <timedep><cyclestr offset="&START_TIME_IODA_BUFR;">@Y@m@d@H@M00</cyclestr></timedep>
         <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/ioda_bufr/ioda_bufr_complete</cyclestr></datadep>
-      </and>
-    </dependency>
-
-  </task>
-
-{%- endif %}
-
-{%- if do_ioda_mrms %}
-
-  <task name="&IODA_MRMS_TN;_#type#" cycledefs="#cycletype#"  maxtries="{{ maxtries_ioda_mrms }}">
-
-    &RSRV_DEFAULT;
-    &WALL_LIMIT_ANALYSIS;
-
-<!--
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_IODA_MRMS_TN;" "&JOBSdir;/JRRFS_IODA_MRMS"</command>
--->
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANALYSIS_TN;" "&JOBSdir;/JRRFS_IODA_MRMS"</command>
-
-    <nodes>{{ nnodes_run_ioda_mrms }}:ppn={{ ppn_run_ioda_mrms }}</nodes>
-    <walltime>{{ wtime_run_ioda_mrms }}</walltime>
-    <memory>{{ memo_run_ioda_mrms }}</memory>
-    &NODESIZE_ALL;
-    <jobname>&TAG;_&IODA_MRMS_TN;_#type#</jobname>
-    <join><cyclestr>&LOGDIR;/&IODA_MRMS_TN;_#type#_&TAG;_@Y@m@d@H.log</cyclestr></join>
-
-    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
-    <envar><name>RADAR_REF_THINNING</name><value>{{ radar_ref_thinning }}</value></envar>
-    <envar><name>NWGES_BASEDIR</name><value>&NWGES_BASEDIR;</value></envar>
-    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>SLASH_ENSMEM_SUBDIR</name><value></value></envar>
-
-    <dependency>
-      <and>
-        <timedep><cyclestr offset="&START_TIME_IODA_MRMS;">@Y@m@d@H@M00</cyclestr></timedep>
-        <datadep age="00:00:00:05"><cyclestr offset="-1:00:00">&FG_ROOT;/@Y@m@d@H/ioda_mrms/ioda_mrms_complete</cyclestr></datadep>
       </and>
     </dependency>
 

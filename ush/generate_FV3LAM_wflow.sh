@@ -232,7 +232,6 @@ settings="\
   'net': ${NET}
   'run': ${RUN}
   'ioda_bufr': ${IODA_BUFR_TN}
-  'ioda_mrms': ${IODA_MRMS_TN}
 #
 # Number of nodes to use for each task.
 #
@@ -268,7 +267,6 @@ settings="\
   'nnodes_run_bufrsnd': ${NNODES_RUN_BUFRSND}
   'nnodes_save_restart': ${NNODES_SAVE_RESTART}
   'nnodes_run_ioda_bufr': ${NNODES_RUN_IODA_BUFR}
-  'nnodes_run_ioda_mrms': ${NNODES_RUN_IODA_MRMS}
   'nnodes_add_aerosol': ${NNODES_ADD_AEROSOL}
 #
 # Number of cores used for a task
@@ -316,7 +314,6 @@ settings="\
   'ppn_run_bufrsnd': ${PPN_RUN_BUFRSND}
   'ppn_save_restart': ${PPN_SAVE_RESTART}
   'ppn_run_ioda_bufr': ${PPN_RUN_IODA_BUFR}
-  'ppn_run_ioda_mrms': ${PPN_RUN_IODA_MRMS}
   'ppn_add_aerosol': ${PPN_ADD_AEROSOL}
 #
   'tpp_make_ics': ${TPP_MAKE_ICS}
@@ -364,7 +361,6 @@ settings="\
   'wtime_run_bufrsnd': ${WTIME_RUN_BUFRSND}
   'wtime_save_restart': ${WTIME_SAVE_RESTART}
   'wtime_run_ioda_bufr': ${WTIME_RUN_IODA_BUFR}
-  'wtime_run_ioda_mrms': ${WTIME_RUN_IODA_MRMS}
   'wtime_add_aerosol': ${WTIME_ADD_AEROSOL}
 #
 # start time for each task.
@@ -376,7 +372,6 @@ settings="\
   'start_time_late_analysis': ${START_TIME_LATE_ANALYSIS}
   'start_time_conventional': ${START_TIME_CONVENTIONAL}
   'start_time_ioda_bufr': ${START_TIME_IODA_BUFR}
-  'start_time_ioda_mrms': ${START_TIME_IODA_MRMS}
   'start_time_nsslmosiac': ${START_TIME_NSSLMOSIAC}
   'start_time_lightningnc': ${START_TIME_LIGHTNINGNC}
   'start_time_proc_glmfed': ${START_TIME_GLMFED}
@@ -391,7 +386,6 @@ settings="\
   'memo_run_prepstart': ${MEMO_RUN_PREPSTART}
   'memo_run_prdgen': ${MEMO_RUN_PRDGEN}
   'memo_run_ioda_bufr': ${MEMO_RUN_IODA_BUFR}
-  'memo_run_ioda_mrms': ${MEMO_RUN_IODA_MRMS}
   'memo_prep_cyc': ${MEMO_PREP_CYC}
   'memo_save_restart': ${MEMO_SAVE_RESTART}
   'memo_save_input': ${MEMO_SAVE_INPUT}
@@ -432,7 +426,6 @@ settings="\
   'maxtries_save_restart': ${MAXTRIES_SAVE_RESTART}
   'maxtries_save_da_output': ${MAXTRIES_SAVE_DA_OUTPUT}
   'maxtries_ioda_bufr': ${MAXTRIES_IODA_BUFR}
-  'maxtries_ioda_mrms': ${MAXTRIES_IODA_MRMS}
   'maxtries_add_aerosol': ${MAXTRIES_ADD_AEROSOL}
 #
 # Flags that determine whether to run the specific tasks.
