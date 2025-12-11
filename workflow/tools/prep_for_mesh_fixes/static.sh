@@ -41,7 +41,7 @@ PHYSICS_SUITE=hrrrv5  # modify if using other suites
 cp ${run_dir}/streams.init_atmosphere.static ${HOMErrfs}/parm/streams.init_atmosphere
 cp ${run_dir}/namelist.init_atmosphere.static ${HOMErrfs}/parm/${PHYSICS_SUITE}/namelist.init_atmosphere
 sed -i -e "s#@config_geog_data_path@#${config_geog_data_path}#" ${HOMErrfs}/parm/${PHYSICS_SUITE}/namelist.init_atmosphere 
-sed -i -e 's#${cpreq} "${FIXrrfs}/meshes/${MESH_NAME}.static.nc" static.nc#${cpreq} "${FIXrrfs}/meshes/${MESH_NAME}.grid.nc" grid.nc#' ${HOMErrfs}/scripts/exrrfs_ic.sh
+sed -i -e 's#${cpreq} "${FIXrrfs}/${MESH_NAME}/${MESH_NAME}.static.nc" static.nc#${cpreq} "${FIXrrfs}/${MESH_NAME}/${MESH_NAME}.grid.nc" grid.nc#' ${HOMErrfs}/scripts/exrrfs_ic.sh
 
 echo -e "\n !! Done !! Changes have been made for generating static.nc and ugwp_oro_data.nc"
 echo "Go to expdir, run 'bkg_rrun 202405060000' to get to the completion of the 'ic' task"

@@ -1,1 +1,0 @@
-../.agent/meshes/south3.5km.20251017/south3.5km.static.nc
