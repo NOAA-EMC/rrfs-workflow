@@ -50,9 +50,6 @@ if [[ ! -v OB_TYPE ]]; then
 fi
 export OB_TYPE=${OB_TYPE}
 
-# SATBIAS_DIR directory for cycling bias correction files
-SATBIAS_DIR=$(compath.py -o ${NET}/${rrfs_ver}/satbias)
-mkdir -p ${SATBIAS_DIR}
 #
 #-----------------------------------------------------------------------
 #

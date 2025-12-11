@@ -61,6 +61,7 @@ fi
 
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
+export SATBIAS_DIR=$(compath.py -o ${NET}/${rrfs_ver}/satbias)
 
 #-----------------------------------------------------------------------
 # Define umbrella data directories

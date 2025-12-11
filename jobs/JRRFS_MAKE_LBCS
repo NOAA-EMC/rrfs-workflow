@@ -89,6 +89,7 @@ hour zero).
 
 export COMINgfs=${COMINgfs:-$(compath.py gfs/${gfs_ver})}
 export COMINgefs=${COMINgefs:-$(compath.py gefs/${gefs_ver})}
+export COMINrrfs=${COMINrrfs:-$(compath.py rrfs/${rrfs_ver})}
 
 if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
   export ENSMEM_INDX=${MEMBER_NAME}
