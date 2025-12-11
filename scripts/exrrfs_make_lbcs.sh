@@ -76,16 +76,16 @@ boundary_len_hrs="${BOUNDARY_LEN}"
 
 hh=${CDATE:8:2}
 yyyymmdd=${CDATE:0:8}
-cdate_loc=$( date --utc --date "${yyyymmdd} ${hh} UTC - ${time_offset_hrs} hours" "+%Y%m%d%H" )
-export extrn_mdl_cdate="$cdate_loc"
+OFFSETDATE=$( date --utc --date "${yyyymmdd} ${hh} UTC - ${time_offset_hrs} hours" "+%Y%m%d%H" )
+export extrn_mdl_cdate="$OFFSETDATE"
 
 # Starting year, month, day, and hour of the external model forecast.
-yyyy=${cdate_loc:0:4}
-mm=${cdate_loc:4:2}
-dd=${cdate_loc:6:2}
-hh=${cdate_loc:8:2}
+yyyy=${OFFSETDATE:0:4}
+mm=${OFFSETDATE:4:2}
+dd=${OFFSETDATE:6:2}
+hh=${OFFSETDATE:8:2}
 mn="00"
-yyyymmdd=${cdate_loc:0:8}
+yyyymmdd=${OFFSETDATE:0:8}
 
 # offset is to go back to a previous cycle (for example 3-h) and
 # use the forecast (3-h) from that cycle valid at this cycle.

@@ -68,16 +68,16 @@ ic_spec_fhrs=$(( 0 + time_offset_hrs ))
 
 hh=${CDATE:8:2}
 yyyymmdd=${CDATE:0:8}
-cdate_loc=$( date --utc --date "${yyyymmdd} ${hh} UTC - ${time_offset_hrs} hours" "+%Y%m%d%H" )
-export extrn_mdl_cdate="$cdate_loc"
+OFFSETDATE=$( date --utc --date "${yyyymmdd} ${hh} UTC - ${time_offset_hrs} hours" "+%Y%m%d%H" )
+export extrn_mdl_cdate="$OFFSETDATE"
 
 # Starting year, month, day, and hour of the external model forecast.
-yyyy=${cdate_loc:0:4}
-mm=${cdate_loc:4:2}
-dd=${cdate_loc:6:2}
-hh=${cdate_loc:8:2}
+yyyy=${OFFSETDATE:0:4}
+mm=${OFFSETDATE:4:2}
+dd=${OFFSETDATE:6:2}
+hh=${OFFSETDATE:8:2}
 mn="00"
-yyymmdd=${cdate_loc:0:8}
+yyymmdd=${OFFSETDATE:0:8}
 
 fcst_hh=$( printf "%02d" "${ic_spec_fhrs}" )
 fcst_mn="00"
