@@ -1,0 +1,422 @@
+# This is overwritten in the testing but allows command line test of jcb
+algorithm: 3dvar
+
+# Search path for model and obs for JCB (relative for the submodule, or can be absolute)
+# --------------------------------------------------------------------------------------
+app_path_algorithm: rdas/algorithm/atmosphere
+app_path_model: rdas/model/atmosphere
+app_path_observations: rdas/observations/atmosphere
+app_path_observation_chronicle: rdas/observation_chronicle/atmosphere
+
+
+# Places where we deviate from the generic file name of a yaml
+# ------------------------------------------------------------
+#final_increment_file: atmosphere_final_increment_gaussian
+output_file: atmosphere_output
+output_ensemble_increments_file: atmosphere_output_ensemble_increments_gaussian
+model_file: atmosphere_model_pseudo
+initial_condition_file: atmosphere_background
+background_error_file: atmosphere_background_error_hybrid3denvar_mgbf
+#background_error_file: atmosphere_background_error_3dvar_gsibec
+#background_error_file: atmosphere_background_error_3dvar_bumpID
+
+# Global analysis things
+# ----------------------
+window_length: PT6H
+bound_to_include: begin
+minimizer: DRPCG
+final_diagnostics_departures: oman
+number_of_outer_loops: 2
+distribution: RoundRobin
+empty_obs_space_action: create output
+
+analysis_variables:
+- eastward_wind
+- northward_wind
+- air_temperature
+- water_vapor_mixing_ratio_wrt_moist_air
+- air_pressure_at_surface
+- ozone_mass_mixing_ratio
+- cloud_liquid_water
+- cloud_liquid_ice
+- rain_water
+- snow_water
+- graupel
+- upward_air_velocity
+- equivalent_reflectivity_factor
+
+# Testing
+# -------
+do_testing: false
+
+# Model things
+# ------------
+fv3lam_nml: input_lam_C775_NP14X14.nml
+atmosphere_layout_x: 14
+atmosphere_layout_y: 14
+atmosphere_npx_ges: 420 #not sure if correct
+atmosphere_npy_ges: 252 #not sure if correct
+atmosphere_npz_ges: 65
+atmosphere_npx_anl: 420 #not sure if correct
+atmosphere_npy_anl: 252 #not sure if correct
+atmosphere_npz_anl: 65
+atmosphere_ntiles: 1
+atmosphere_io_layout_x: 1
+atmosphere_io_layout_y: 1
+gradient_norm_reduction: 1e-3
+ninner: 50
+
+# Background
+atmosphere_background_path: "./"
+atmosphere_background_ensemble_path: "data/inputs/mem%mem%"
+
+atmosphere_background_time_iso: @ATMOSPHERE_BACKGROUND_TIME_ISO@
+atmosphere_background_time_prefix: ""
+filename_core: fv3_dynvars # fv_core.res.tile1.nc
+filename_trcr: fv3_tracer  # fv_tracer.res.tile1.nc
+filename_phys: phy_data_prepdbz.nc
+filename_sfcd: fv3_sfcdata # sfc_data.nc
+filename_sfcw: fv_srf_wnd.res.tile1.nc
+filename_cplr: coupler.res
+
+state_variables:
+- eastward_wind
+- northward_wind
+- air_temperature
+- air_pressure_thickness
+- water_vapor_mixing_ratio_wrt_moist_air
+- cloud_liquid_ice
+- cloud_liquid_water
+- ozone_mass_mixing_ratio
+- geopotential_height_times_gravity_at_surface
+- f10m
+- slmsk
+- sheleg
+- skin_temperature_at_surface
+- vtype
+- stype
+- vfrac
+- soilt
+- soilm
+- eastward_wind_at_surface
+- northward_wind_at_surface
+- air_pressure_at_surface
+- rain_water
+- snow_water
+- graupel
+- cloud_droplet_number_concentration
+- cloud_ice_number_concentration
+- rain_number_concentration
+- upward_air_velocity
+- equivalent_reflectivity_factor
+
+eastward_wind: ua
+northward_wind: va
+air_temperature: T
+air_pressure_thickness: delp
+air_pressure_at_surface: ps
+water_vapor_mixing_ratio_wrt_moist_air: sphum
+cloud_liquid_ice: ice_wat
+cloud_liquid_water: liq_wat
+ozone_mass_mixing_ratio: o3mr
+geopotential_height_times_gravity_at_surface: phis
+skin_temperature_at_surface: tsfc
+soilt: tslb
+soilm: smois
+eastward_wind_at_surface: u_srf
+northward_wind_at_surface: v_srf
+rain_water: rainwat
+snow_water: snowwat
+graupel: graupel
+cloud_droplet_number_concentration: water_nc
+cloud_ice_number_concentration: ice_nc
+rain_number_concentration: rain_nc
+upward_air_velocity: W
+equivalent_reflectivity_factor: ref_f3d
+
+abi_simulated_channels: 7-16
+abi_active_channels: [-1, 1, 1, 1, -1, -1, -1, -1, -1, -1]
+abi_use_flag_clddet: [-2, -2, -2, -2, -2, -2, -2, -2, -2, -2]
+abi_obs_error: [ 2.2, 1.756, 1.587, 1.185, 2.2, 2.2, 2.2, 2.2, 2.2, 2.2 ]
+abi_obserr_bound_max: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+
+amsua_simulated_channels: 1-15
+amsua_obs_error: [2.500, 2.200, 2.000, 0.550, 0.300,
+                  0.230, 0.230, 0.250, 0.250, 0.350,
+                  0.400, 0.550, 0.800, 3.000, 3.500]
+amsua_obserr_bound_max: [4.5, 4.5, 4.5, 2.5, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.5, 3.5, 4.5, 4.5, 4.5]
+
+amsua_n19_use_flag: [ 1,  1,  1,  1,  1, 1, -1, -1,  1,  1, -1,  -1,  -1,  1,  1 ]
+
+amsua_metop_b_use_flag: [ -1,  -1,  -1,  -1,  -1, -1, -1,  1,  1,  1,  -1,   -1,   -1, -1,  -1 ]
+
+amsua_metop_c_use_flag: [ 1,  1,  1,  1,  1, 1, 1,  1,  1,  1, -1,  -1,  -1, 1,  1 ]
+
+atms_simulated_channels: 1-22
+atms_obs_error: [
+             4.500,  4.500,  4.500,  2.500,  0.550,
+             0.300,  0.300,  0.400,  0.400,  0.400,
+             0.450,  0.450,  0.550,  0.800,  4.000,
+             4.000,  4.000,  3.500,  3.000,  3.000,
+             3.000,  3.000 ]
+
+atms_obserr_bound_max: [4.5, 4.5, 3.0, 3.0, 1.0,
+              1.0, 1.0, 1.0, 1.0, 1.0,
+              1.0, 1.0, 1.0, 2.0, 4.5,
+              4.5, 2.0, 2.0, 2.0, 2.0,
+              2.0, 2.0]
+
+atms_npp_use_flag: [ 1,  1,  1,  1,  1, 1,  1,  1,  1,  1, 1,  1,  1, -1, -1, 1,  1,  1,  1,  1, 1,  1]
+
+atms_n20_use_flag: [ 1,  1,  1,  1,  1, 1,  1,  1,  1,  1, 1,  1,  1, -1, -1, 1,  1,  1,  1,  1, 1,  1]
+
+atms_n21_use_flag: [ 1,  1,  1,  1,  1, 1,  1,  1,  1,  1, 1,  1,  1, -1, -1, 1,  1,  1,  1,  1, 1,  1]
+
+# Background error
+atmosphere_bump_data_directory: DATA/berror
+atmosphere_gsibec_path: DATA/berror
+atmosphere_number_ensemble_members: 30
+atmosphere_layout_gsib_x: 14
+atmosphere_layout_gsib_y: 14
+lat_start: -29.335138
+lat_end: 29.335138
+lon_start: -50.033098
+lon_end: 50.033098
+north_pole_lat: 51.499998
+north_pole_lon: 82.500018
+gsi_bands: 14
+
+# Ensemble localization
+mgbf_nml: mgbf_p196_14x14_dbz.nml
+mgbf_nx: 224
+mgbf_ny: 224
+mgbf_dx: 30.0e3
+mgbf_dy: 30.0e3
+mgbf_lonlat: [261, 40]
+mgbf_lat0: 40
+mgbf_lon0: 261
+
+# Forecasting
+atmosphere_forecast_length: PT6H
+atmosphere_forecast_timestep: PT1H
+
+# Write final increment on Gaussian grid in variational
+atmosphere_final_increment_prefix: "./anl/atminc."
+
+
+# Observation things
+# ------------------
+observations:
+# Upper-air conventional
+#- adpupa_airTemperature_120
+#- adpupa_airTemperature_132
+#- adpupa_specificHumidity_120
+#- adpupa_specificHumidity_132
+#- adpupa_stationPressure_120
+#- adpupa_winds_220
+#- adpupa_winds_232
+
+#- aircar_airTemperature_133
+#- aircar_specificHumidity_133
+#- aircar_winds_233
+
+#- aircft_airTemperature_130
+#- aircft_airTemperature_131
+#- aircft_airTemperature_134
+#- aircft_airTemperature_135
+#- aircft_specificHumidity_134
+#- aircft_winds_230
+#- aircft_winds_231
+#- aircft_winds_234
+#- aircft_winds_235
+
+#- proflr_winds_227
+#- vadwnd_winds_224
+#- rassda_airTemperature_126
+
+# Surface conventional
+#- adpsfc_airTemperature_181
+#- adpsfc_airTemperature_183
+#- adpsfc_airTemperature_187
+#- adpsfc_specificHumidity_181
+#- adpsfc_specificHumidity_183
+#- adpsfc_specificHumidity_187
+#- adpsfc_stationPressure_181
+#- adpsfc_stationPressure_187
+#- adpsfc_winds_281
+#- adpsfc_winds_284
+#- adpsfc_winds_287
+#- msonet_airTemperature_188
+#- msonet_specificHumidity_188
+#- msonet_stationPressure_188
+#- msonet_winds_288
+
+#- sfcshp_airTemperature_180
+#- sfcshp_airTemperature_182
+#- sfcshp_airTemperature_183
+#- sfcshp_specificHumidity_180
+#- sfcshp_specificHumidity_182
+#- sfcshp_specificHumidity_183
+#- sfcshp_stationPressure_180
+#- sfcshp_stationPressure_182
+#- sfcshp_winds_280
+#- sfcshp_winds_282
+#- sfcshp_winds_284
+
+# Remote
+#- gnss_zenithTotalDelay
+#- satwnd_winds_245_270
+#- satwnd_winds_245_272
+#- satwnd_winds_246_270
+#- satwnd_winds_246_272
+
+# SatRad
+#- abi_g16
+#- abi_g18
+#- amsua_n19
+#- amsua_metop-b
+#- amsua_metop-c
+#- atms_npp
+#- atms_n20
+#- atms_n21
+
+# Radar
+- mrms_refl
+
+# Analysis iuse flag (default: passivate)
+# Upper-air conventional
+iuse_adpupa_airTemperature_120: passivate
+iuse_adpupa_airTemperature_132: passivate
+iuse_adpupa_specificHumidity_120: passivate
+iuse_adpupa_specificHumidity_132: passivate
+iuse_adpupa_stationPressure_120: passivate
+iuse_adpupa_winds_220: passivate
+iuse_adpupa_winds_232: passivate
+
+iuse_aircar_airTemperature_133: accept
+iuse_aircar_specificHumidity_133: passivate
+iuse_aircar_winds_233: accept
+
+iuse_aircft_airTemperature_130: passivate
+iuse_aircft_airTemperature_131: passivate
+iuse_aircft_airTemperature_134: passivate
+iuse_aircft_airTemperature_135: passivate
+iuse_aircft_specificHumidity_134: passivate
+iuse_aircft_winds_230: passivate
+iuse_aircft_winds_231: passivate
+iuse_aircft_winds_234: passivate
+iuse_aircft_winds_235: passivate
+
+iuse_proflr_winds_227: passivate
+iuse_vadwnd_winds_224: passivate
+iuse_rassda_airTemperature_126: passivate
+
+# Surface conventional
+iuse_adpsfc_airTemperature_181: passivate
+iuse_adpsfc_airTemperature_183: passivate
+iuse_adpsfc_airTemperature_187: passivate
+iuse_adpsfc_specificHumidity_181: passivate
+iuse_adpsfc_specificHumidity_183: passivate
+iuse_adpsfc_specificHumidity_187: passivate
+iuse_adpsfc_stationPressure_181: passivate
+iuse_adpsfc_stationPressure_187: passivate
+iuse_adpsfc_winds_281: passivate
+iuse_adpsfc_winds_284: passivate
+iuse_adpsfc_winds_287: passivate
+iuse_msonet_airTemperature_188: passivate
+iuse_msonet_specificHumidity_188: passivate
+iuse_msonet_stationPressure_188: passivate
+iuse_msonet_winds_288: passivate
+
+iuse_sfcshp_airTemperature_180: passivate
+iuse_sfcshp_airTemperature_182: passivate
+iuse_sfcshp_airTemperature_183: passivate
+iuse_sfcshp_specificHumidity_180: passivate
+iuse_sfcshp_specificHumidity_182: passivate
+iuse_sfcshp_specificHumidity_183: passivate
+iuse_sfcshp_stationPressure_180: passivate
+iuse_sfcshp_stationPressure_182: passivate
+iuse_sfcshp_winds_280: passivate
+iuse_sfcshp_winds_282: passivate
+iuse_sfcshp_winds_284: passivate
+
+# Remote
+iuse_gnss_zenithTotalDelay: passivate
+iuse_satwnd_winds_245_270: passivate
+iuse_satwnd_winds_245_272: passivate
+iuse_satwnd_winds_246_270: passivate
+iuse_satwnd_winds_246_272: passivate
+
+# SatRad
+iuse_abi_g16: passivate
+iuse_abi_g18: passivate
+iuse_amsua_n19: passivate
+iuse_amsua_metop-b: passivate
+iuse_amsua_metop-c: passivate
+iuse_atms_npp: passivate
+iuse_atms_n20: passivate
+iuse_atms_n21: passivate
+
+# Radar
+iuse_mrms_refl: accept
+
+crtm_coefficient_path: "Data/crtm"
+
+# Naming conventions for observational files
+atmosphere_obsdatain_path: Data/obs
+atmosphere_obsdatain_prefix: OPREFIX_
+atmosphere_obsdatain_suffix: ".@SUFFIX@.nc"
+
+atmosphere_obsdataout_path: Data/diags
+atmosphere_obsdataout_prefix: diag_
+atmosphere_obsdataout_suffix: "_@SUFFIX@.nc"
+
+# Naming conventions for bias correction files
+atmosphere_obsbiasin_path: Data/obs
+atmosphere_obsbiasin_prefix: GPREFIX
+atmosphere_obsbiasin_suffix: ".satbias.nc"
+atmosphere_obstlapsein_prefix: GPREFIX
+atmosphere_obstlapsein_suffix: ".tlapse.txt"
+atmosphere_obsbiascovin_prefix: GPREFIX
+atmosphere_obsbiascovin_suffix: ".satbias_cov.nc"
+
+atmosphere_obsbiasout_path: Data/bc
+atmosphere_obsbiasout_prefix: APREFIX
+atmosphere_obsbiasout_suffix: ".satbias.nc"
+atmosphere_obsbiascovout_prefix: APREFIX
+atmosphere_obsbiascovout_suffix: ".satbias_cov.nc"
+
+
+# Local Ensemble DA (LETKF)
+# -------------------------
+local_ensemble_da_solver: GETKF
+
+increment_variables:
+- eastward_wind
+- northward_wind
+- air_temperature
+- air_pressure_thickness
+- water_vapor_mixing_ratio_wrt_moist_air
+- cloud_liquid_ice
+- cloud_liquid_water
+- ozone_mass_mixing_ratio
+
+# Veritcal localization for GETKF
+vl_fraction_of_retained_variance: 0.750
+vl_lengthscale: 2.1
+vl_lengthscale_units: logp
+inflation_rtps: 0.85
+inflation_rtpp: 0.0
+inflation_mult: 1.0
+
+# Driver
+driver_update_obs_config_with_geometry_info: true
+driver_save_posterior_mean: false
+driver_save_posterior_ensemble: false
+driver_save_prior_mean: false
+driver_save_posterior_mean_increment: false
+driver_save_posterior_ensemble_increments: true
+
+# Diagnostics
+atmosphere_ensemble_increment_prefix: "./anl/mem%{member}%/atminc."
+atmosphere_posterior_output_gaussian: "./mem%{member}%/atmanl."
