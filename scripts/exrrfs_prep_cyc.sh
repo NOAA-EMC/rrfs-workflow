@@ -521,7 +521,6 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-COMINnsst="${COMINnsst:-$(compath.py nsst/${nsst_ver})}"
 if [ ${HH} -eq ${SST_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
   echo "Update SST at ${SST_update_hour}z"
   if [ -r "${COMINnsst}/latest.SST" ]; then
@@ -761,9 +760,9 @@ if [ "${CYCLE_TYPE}" = "spinup" ]; then
   fi
 fi
 if [ ${Update_GVF} -ge 1 ]; then
-   latestGVF=$(ls ${GVF_ROOT}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm1}_c${YYYYMMDD}*.grib2)
-   latestGVF2=$(ls ${GVF_ROOT}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm2}_c${YYYYMMDDm1}*.grib2)
-   latestGVF3=$(ls ${GVF_ROOT}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm3}_c${YYYYMMDDm2}*.grib2)
+   latestGVF=$(ls ${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm1}_c${YYYYMMDD}*.grib2)
+   latestGVF2=$(ls ${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm2}_c${YYYYMMDDm1}*.grib2)
+   latestGVF3=$(ls ${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm3}_c${YYYYMMDDm2}*.grib2)
    if [ ! -r "${latestGVF}" ]; then
      if [ -r "${latestGVF2}" ]; then
        latestGVF=${latestGVF2}
@@ -897,8 +896,6 @@ if [ ${SFC_CYC} -eq 3 ] ; then
      do_lake_surgery=".true."
    fi
    raphrrr_com=${COMROOT}
-   COMIN_RAP=$(compath.py rap/${rap_ver})
-   COMIN_HRRR=$(compath.py hrrr/${hrrr_ver})
    rapfile='missing'
    hrrrfile='missing'
    hrrr_akfile='missing'
@@ -906,12 +903,12 @@ if [ ${SFC_CYC} -eq 3 ] ; then
    new_cdate=$($NDATE -1 ${current_cdate})
    new_pdy=$(echo ${new_cdate}| cut -c1-8)
    new_cyc=$(echo ${new_cdate}| cut -c9-10)
-   if [ -r ${COMIN_RAP}/nwges/rapges/rap_${new_cdate}f001 ]; then
-     cpreq -p ${COMIN_RAP}/nwges/rapges/rap_${new_cdate}f001 sfc_rap
+   if [ -r ${COMINrap}/nwges/rapges/rap_${new_cdate}f001 ]; then
+     cpreq -p ${COMINrap}/nwges/rapges/rap_${new_cdate}f001 sfc_rap
      rapfile='sfc_rap'
    fi
-   if [ -r ${COMIN_HRRR}/nwges/hrrrges_sfc/conus/hrrr_${new_cdate}f001 ]; then
-     cpreq -p ${COMIN_HRRR}/nwges/hrrrges_sfc/conus/hrrr_${new_cdate}f001 sfc_hrrr
+   if [ -r ${COMINhrrr}/nwges/hrrrges_sfc/conus/hrrr_${new_cdate}f001 ]; then
+     cpreq -p ${COMINhrrr}/nwges/hrrrges_sfc/conus/hrrr_${new_cdate}f001 sfc_hrrr
      hrrrfile='sfc_hrrr'
    fi
  
@@ -982,13 +979,12 @@ fi
 #-----------------------------------------------------------------------
 #
 if [ "${USE_FVCOM}" = "TRUE" ] && [ ${SFC_CYC} -eq 2 ] ; then
-  FVCOM_DIR=$(compath.py nosofs/${nosofs_ver})
   # Remap the FVCOM output from the 5 lakes onto the RRFS grid
   if [ "${PREP_FVCOM}" = "TRUE" ]; then
     ${USHrrfs}/fvcom_prep.sh \
                   INPUT_DATA="${DATA}" \
                   FIXLAM="${FIXLAM}" \
-                  FVCOM_DIR="${FVCOM_DIR}" \
+                  FVCOM_DIR="${COMINnosofs}" \
 	          YYYYJJJHH="${YYYYJJJHH}" \
                   YYYYMMDD="${YYYYMMDD}" \
                   YYYYMMDDm1="${YYYYMMDDm1}" \

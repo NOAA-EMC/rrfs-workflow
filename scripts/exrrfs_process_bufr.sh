@@ -122,13 +122,12 @@ cpreq -p $BUFR_TABLE prepobs_prep.bufrtable
 #   set observation soruce 
 #
 #-----------------------------------------------------------------------
-OBSPATH=${OBSPATH:-$(compath.py obsproc/${obsproc_ver})}
 OBSTYPE_SOURCE=${OBSTYPE_SOURCE:-"rrfs"}
 if [[ "${NET}" = "RTMA"* ]] && [[ "${RTMA_OBS_FEED}" = "NCO" ]]; then
   SUBH=$(date +%M -d "${START_DATE}")
   obs_source="rtma_ru"
   obsfileprefix=${obs_source}
-  obspath_tmp=${OBSPATH}/${obs_source}.${YYYYMMDD}
+  obspath_tmp=${COMINobsproc}/${obs_source}.${YYYYMMDD}
 else
   SUBH=""
   obs_source=${OBSTYPE_SOURCE}
@@ -141,13 +140,13 @@ else
   "WCOSS2")
 
     obsfileprefix=${obs_source}
-    obspath_tmp=${OBSPATH}/${obs_source}.${YYYYMMDD}
+    obspath_tmp=${COMINobsproc}/${obs_source}.${YYYYMMDD}
 
     ;;
   "JET" | "HERA" | "ORION" | "HERCULES")
 
     obsfileprefix=${YYYYMMDDHH}.${obs_source}
-    obspath_tmp=${OBSPATH}
+    obspath_tmp=${COMINobsproc}
 
   esac
 fi

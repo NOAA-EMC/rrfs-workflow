@@ -24,6 +24,14 @@ export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export OBSPATH=${OBSPATH:-$(compath.py obsproc/${obsproc_ver})}
 
 #-----------------------------------------------------------------------
+# Define COMIN
+#-----------------------------------------------------------------------
+
+export COMINgfs=${COMINgfs:-$(compath.py gfs/${gfs_ver})}
+export COMINgefs=${COMINgefs:-$(compath.py gefs/${gefs_ver})}
+export COMINobsproc="${COMINobsproc:-$(compath.py obsproc/${obsproc_ver})}"
+
+#-----------------------------------------------------------------------
 # Source the bash utility functions.
 #-----------------------------------------------------------------------
 

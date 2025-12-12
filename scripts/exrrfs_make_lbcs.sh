@@ -76,16 +76,16 @@ boundary_len_hrs="${BOUNDARY_LEN}"
 
 hh=${CDATE:8:2}
 yyyymmdd=${CDATE:0:8}
-cdate=$( date --utc --date "${yyyymmdd} ${hh} UTC - ${time_offset_hrs} hours" "+%Y%m%d%H" )
-export extrn_mdl_cdate="$cdate"
+OFFSETDATE=`$NDATE -${time_offset_hrs} ${yyyymmdd}${hh}`
+export extrn_mdl_cdate="$OFFSETDATE"
 
 # Starting year, month, day, and hour of the external model forecast.
-yyyy=${cdate:0:4}
-mm=${cdate:4:2}
-dd=${cdate:6:2}
-hh=${cdate:8:2}
+yyyy=${OFFSETDATE:0:4}
+mm=${OFFSETDATE:4:2}
+dd=${OFFSETDATE:6:2}
+hh=${OFFSETDATE:8:2}
 mn="00"
-yyyymmdd=${cdate:0:8}
+yyyymmdd=${OFFSETDATE:0:8}
 
 # offset is to go back to a previous cycle (for example 3-h) and
 # use the forecast (3-h) from that cycle valid at this cycle.
@@ -116,7 +116,6 @@ fcst_mn="00"
 case "${extrn_mdl_name}" in
 
   "GFS")
-    COMINgfs="${COMINgfs:-$(compath.py gfs/${gfs_ver})}"
     sysdir="${COMINgfs}/gfs.${yyyymmdd}/${hh}/atmos"
     sysdir2=""
     fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
@@ -133,7 +132,6 @@ case "${extrn_mdl_name}" in
     ;;
 
   "GEFS")
-    COMINgefs="${COMINgefs:-$(compath.py gefs/${gefs_ver})}"
     sysdir="${COMINgefs}/gefs.${yyyymmdd}/${hh}/atmos/pgrb2bp5"
     sysdir2="${COMINgefs}/gefs.${yyyymmdd}/${hh}/atmos/pgrb2ap5"
     fcst_hh=( $( printf "%02d " "${lbc_spec_fhrs[@]}" ) )
@@ -144,8 +142,7 @@ case "${extrn_mdl_name}" in
     ;;
 
   "RRFS")
-    COMINrrfs="${COMINrrfs:-$(compath.py rrfs/${rrfs_ver})}"
-    sysdir="${COMINrrfs}/rrfs.${yyyymmdd}/${hh}"
+    sysdir="${COMIN}/rrfs.${yyyymmdd}/${hh}"
     sysdir2=""
     fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
     prefix="rrfs.t${hh}z.natlev.3km.f"
@@ -692,7 +689,7 @@ list file has not specified for this external LBC model (EXTRN_MDL_NAME_LBCS):
   dd="${EXTRN_MDL_CDATE:6:2}"
   hh="${EXTRN_MDL_CDATE:8:2}"
 
-  cdate_crnt_fhr=$( date --utc --date "${yyyymmdd} ${hh} UTC + ${fhr} hours" "+%Y%m%d%H" )
+  cdate_crnt_fhr=`$NDATE +${fhr} ${yyyymmdd}${hh}`
 #
 # Get the month, day, and hour corresponding to the current forecast time
 # of the the external model.

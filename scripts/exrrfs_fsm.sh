@@ -38,13 +38,12 @@ set -x
 
 RRFS_Current_PDY=${PDY}
 RRFS_Current_cyc=${cyc}
-cdate=${PDY}${cyc}
-RRFS_previous_PDY=$(echo $($NDATE -1 ${cdate}) | cut -c1-8)
-RRFS_previous_cyc=$(echo $($NDATE -1 ${cdate}) | cut -c9-10)
-RRFS_next_1_PDY=$(echo $($NDATE +1 ${cdate}) | cut -c1-8)
-RRFS_next_1_cyc=$(echo $($NDATE +1 ${cdate}) | cut -c9-10)
-RRFS_next_2_PDY=$(echo $($NDATE +2 ${cdate}) | cut -c1-8)
-RRFS_next_2_cyc=$(echo $($NDATE +2 ${cdate}) | cut -c9-10)
+RRFS_previous_PDY=$(echo $($NDATE -1 ${CDATE}) | cut -c1-8)
+RRFS_previous_cyc=$(echo $($NDATE -1 ${CDATE}) | cut -c9-10)
+RRFS_next_1_PDY=$(echo $($NDATE +1 ${CDATE}) | cut -c1-8)
+RRFS_next_1_cyc=$(echo $($NDATE +1 ${CDATE}) | cut -c9-10)
+RRFS_next_2_PDY=$(echo $($NDATE +2 ${CDATE}) | cut -c1-8)
+RRFS_next_2_cyc=$(echo $($NDATE +2 ${CDATE}) | cut -c9-10)
 current_PDY_6hr_fmt=${PDY}
 if [ $((10#$RRFS_Current_cyc)) -ge 0 ] && [ $((10#$RRFS_Current_cyc)) -le 5 ]; then
   current_cyc_6hr_fmt="00"
@@ -332,7 +331,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
   #### scan_release_det_make_ics
   if [ ${scan_release_det_make_ics} == "YES" ]; then
     echo "Proceeding with scan_release_det_make_ics"
-    ops_gfs_inp_file=$(compath.py gfs/${gfs_ver})/gfs.${current_PDY_6hr_fmt}/${current_cyc_6hr_fmt}/atmos/gfs.t${current_cyc_6hr_fmt}z.logf003.txt
+    ops_gfs_inp_file=${COMINgfs}/gfs.${current_PDY_6hr_fmt}/${current_cyc_6hr_fmt}/atmos/gfs.t${current_cyc_6hr_fmt}z.logf003.txt
     if [ -s ${ops_gfs_inp_file} ]; then
       scan_release_det_make_ics="NO"
       ecflow_client --event release_det_make_ics
@@ -345,7 +344,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
   #### scan_release_det_make_lbcs
   if [ ${scan_release_det_make_lbcs} == "YES" ]; then
     echo "Proceeding with scan_release_det_make_lbcs"
-    ops_gfs_inp_file=$(compath.py gfs/${gfs_ver})/gfs.${RRFS_previous_PDY}/${previous_cyc_6hr_fmt}/atmos/gfs.t${previous_cyc_6hr_fmt}z.logf006.txt
+    ops_gfs_inp_file=${COMINgfs}/gfs.${RRFS_previous_PDY}/${previous_cyc_6hr_fmt}/atmos/gfs.t${previous_cyc_6hr_fmt}z.logf006.txt
     if [ -s ${ops_gfs_inp_file} ]; then
       scan_release_det_make_lbcs="NO"
       ecflow_client --event release_det_make_lbcs
@@ -414,7 +413,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
   #### release_enkf_make_lbcs
   if [ ${scan_release_enkf_make_lbcs} == "YES" ]; then
     echo "Proceeding with scan_release_enkf_make_lbcs"
-    gefs_inp_dir=$(compath.py gefs/${gefs_ver})/gefs.${prior_PDY_6hr_fmt}/${previous_cyc_6hr_fmt}/atmos/pgrb2bp5
+    gefs_inp_dir=${COMINgefs}/gefs.${prior_PDY_6hr_fmt}/${previous_cyc_6hr_fmt}/atmos/pgrb2bp5
     file_count_tmp=$(ls ${gefs_inp_dir}/gep*.t${previous_cyc_6hr_fmt}z.pgrb2b.0p50.f006 ${gefs_inp_dir}/gep*.t${previous_cyc_6hr_fmt}z.pgrb2b.0p50.f009 ${gefs_inp_dir}/gep*.t${previous_cyc_6hr_fmt}z.pgrb2b.0p50.f012 ${gefs_inp_dir}/gep*.t${previous_cyc_6hr_fmt}z.pgrb2b.0p50.f015 ${gefs_inp_dir}/gep*.t${previous_cyc_6hr_fmt}z.pgrb2b.0p50.f018|wc -l)
     if [ ${file_count_tmp} -eq 150 ]; then
       ecflow_client --event release_enkf_make_lbcs
@@ -619,7 +618,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
     echo "Proceeding with scan_release_ensf_make_lbcs"
     source_file_found="YES"
     # /lfs/h1/ops/prod/com/gefs/v12.3/gefs.20240609/18/atmos/pgrb2bp5/gep01.t18z.pgrb2b.0p50.f006
-    gefs_pth=$(compath.py gefs/${gefs_ver})/gefs.${prior_PDY_6hr_fmt}/${previous_cyc_6hr_fmt}/atmos/pgrb2bp5
+    gefs_pth=${COMINgefs}/gefs.${prior_PDY_6hr_fmt}/${previous_cyc_6hr_fmt}/atmos/pgrb2bp5
     for gp_num in $(seq 1 5); do
       for fhr in $(seq 6 3 66); do
         gp_num_2d=$( printf "%02d" ${gp_num} )
@@ -677,7 +676,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
     else
       enkfgdas_cyc=12
     fi
-    enkfgdas_pth=$(compath.py gfs/${gfs_ver})/enkfgdas.${RRFS_Current_PDY}/${enkfgdas_cyc}/atmos
+    enkfgdas_pth=${COMINgfs}/enkfgdas.${RRFS_Current_PDY}/${enkfgdas_cyc}/atmos
     for mem_nu in $(seq 1 30); do
       mem_nu_3d=$( printf "%03d" ${mem_nu} )
       target_file_scan_atmf=${enkfgdas_pth}/mem${mem_nu_3d}/gdas.t${enkfgdas_cyc}z.atmf007.nc

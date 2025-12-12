@@ -50,9 +50,6 @@ if [[ ! -v OB_TYPE ]]; then
 fi
 export OB_TYPE=${OB_TYPE}
 
-# SATBIAS_DIR directory for cycling bias correction files
-SATBIAS_DIR=$(compath.py -o ${NET}/${rrfs_ver}/satbias)
-mkdir -p ${SATBIAS_DIR}
 #
 #-----------------------------------------------------------------------
 #
@@ -71,7 +68,6 @@ case $MACHINE in
   export OMP_NUM_THREADS=${TPP_ANALYSIS_GSI}
   ncores=$(( NNODES_ANALYSIS_GSI*PPN_ANALYSIS_GSI))
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_ANALYSIS_GSI} --cpu-bind core --depth ${OMP_NUM_THREADS}"
-  export COMINgfs="${COMINgfs:-$(compath.py gfs/${gfs_ver})}"
   ;;
 #
 "HERA")
@@ -417,13 +413,12 @@ fi
 # copy observation files to working directory 
 #
 #-----------------------------------------------------------------------
-OBSPATH=${OBSPATH:-$(compath.py obsproc/${obsproc_ver})}
 OBSTYPE_SOURCE=${OBSTYPE_SOURCE:-"rrfs"}
 if [[ "${NET}" = "RTMA"* ]] && [[ "${RTMA_OBS_FEED}" = "NCO" ]]; then
   SUBH=$(date +%M -d "${START_DATE}")
   obs_source="rtma_ru"
   obsfileprefix=${obs_source}
-  obspath_tmp=${OBSPATH}/${obs_source}.${YYYYMMDD}
+  obspath_tmp=${COMINobsproc}/${obs_source}.${YYYYMMDD}
 else
   SUBH=""
   obs_source=${OBSTYPE_SOURCE}
@@ -439,21 +434,21 @@ else
 
   "WCOSS2")
      obsfileprefix=${obs_source}
-     obspath_tmp=${OBSPATH}/${obs_source}.${YYYYMMDD}
+     obspath_tmp=${COMINobsproc}/${obs_source}.${YYYYMMDD}
     ;;
   "JET" | "HERA")
      obsfileprefix=${YYYYMMDDHH}.${obs_source}
-     obspath_tmp=${OBSPATH}
+     obspath_tmp=${COMINobsproc}
     ;;
   "ORION" | "HERCULES")
      obs_source=${OBSTYPE_SOURCE}
      obsfileprefix=${YYYYMMDDHH}.${obs_source}               # observation from JET.
      #obsfileprefix=${obs_source}.${YYYYMMDD}/${obs_source}    # observation from operation.
-     obspath_tmp=${OBSPATH}
+     obspath_tmp=${COMINobsproc}
     ;;
   *)
      obsfileprefix=${obs_source}
-     obspath_tmp=${OBSPATH}
+     obspath_tmp=${COMINobsproc}
   esac
 fi
 
