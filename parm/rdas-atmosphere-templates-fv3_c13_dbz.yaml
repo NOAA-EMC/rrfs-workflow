@@ -16,9 +16,8 @@ output_file: atmosphere_output
 output_ensemble_increments_file: atmosphere_output_ensemble_increments_gaussian
 model_file: atmosphere_model_pseudo
 initial_condition_file: atmosphere_background
-background_error_file: atmosphere_background_error_hybrid3denvar_mgbf
-#background_error_file: atmosphere_background_error_3dvar_gsibec
-#background_error_file: atmosphere_background_error_3dvar_bumpID
+#background_error_file: atmosphere_background_error_hybrid3denvar_mgbf_dbz
+background_error_file: atmosphere_background_error_hybrid3denvar_bump_dbz
 
 # Global analysis things
 # ----------------------
@@ -51,15 +50,19 @@ do_testing: false
 
 # Model things
 # ------------
-fv3lam_nml: input_lam_C775_NP14X14.nml
-atmosphere_layout_x: 14
-atmosphere_layout_y: 14
+#fv3lam_nml: input_lam_C775_NP14X14.nml # mgbf
+#atmosphere_layout_x: 14 # mgbf
+#atmosphere_layout_y: 14 # mgbf
+fv3lam_nml: input_lam_C775_NP16X10.nml # bump
+atmosphere_layout_x: 16 # bump
+atmosphere_layout_y: 10 # bump
 atmosphere_npx_ges: 420 #not sure if correct
 atmosphere_npy_ges: 252 #not sure if correct
 atmosphere_npz_ges: 65
 atmosphere_npx_anl: 420 #not sure if correct
 atmosphere_npy_anl: 252 #not sure if correct
 atmosphere_npz_anl: 65
+atmosphere_fv3jedi_files_path: DataFix
 atmosphere_ntiles: 1
 atmosphere_io_layout_x: 1
 atmosphere_io_layout_y: 1
@@ -74,7 +77,7 @@ atmosphere_background_time_iso: @ATMOSPHERE_BACKGROUND_TIME_ISO@
 atmosphere_background_time_prefix: ""
 filename_core: fv3_dynvars # fv_core.res.tile1.nc
 filename_trcr: fv3_tracer  # fv_tracer.res.tile1.nc
-filename_phys: phy_data_prepdbz.nc
+filename_phys: fv3_phyvars_prepdbz
 filename_sfcd: fv3_sfcdata # sfc_data.nc
 filename_sfcw: fv_srf_wnd.res.tile1.nc
 filename_cplr: coupler.res
@@ -176,15 +179,18 @@ atms_n21_use_flag: [ 1,  1,  1,  1,  1, 1,  1,  1,  1,  1, 1,  1,  1, -1, -1, 1,
 atmosphere_bump_data_directory: DATA/berror
 atmosphere_gsibec_path: DATA/berror
 atmosphere_number_ensemble_members: 30
-atmosphere_layout_gsib_x: 14
-atmosphere_layout_gsib_y: 14
+#atmosphere_layout_gsib_x: 14 # mgbf
+#atmosphere_layout_gsib_y: 14 # mgbf
+atmosphere_layout_gsib_x: 16 # bump
+atmosphere_layout_gsib_y: 10 # bump
 lat_start: -29.335138
 lat_end: 29.335138
 lon_start: -50.033098
 lon_end: 50.033098
 north_pole_lat: 51.499998
 north_pole_lon: 82.500018
-gsi_bands: 14
+#gsi_bands: 14 # mgbf
+gsi_bands: 10 # bump
 
 # Ensemble localization
 mgbf_nml: mgbf_p196_14x14_dbz.nml
