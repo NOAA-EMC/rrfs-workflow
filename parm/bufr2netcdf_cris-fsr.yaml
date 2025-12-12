@@ -59,7 +59,7 @@ bufr:
 
     cloudCoverTotal:
       query: "*/TOCC"
-      type: float 
+      type: float
     #  transforms:
     #    - scale: 0.01
 
@@ -127,7 +127,7 @@ encoder:
 
   variables:
 
-    # MetaData 
+    # MetaData
     - name: "MetaData/dateTime"
       source: variables/timestamp
       longName: "Datetime"
