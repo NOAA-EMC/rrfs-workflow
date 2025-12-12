@@ -65,20 +65,20 @@ Workflow task names.
 <!ENTITY PROCESS_PM_TN           "{{ process_pm }}">
 <!ENTITY ADD_AEROSOL_TN          "{{ add_aerosol_tn }}">
 
-<!ENTITY RUN_PREPSTART_TN     "run_prepstart">
-<!ENTITY RUN_ANALYSIS_TN      "run_analysis_gsi">
-<!ENTITY RUN_ANALYSIS_JEDI_TN "run_analysis_jedi">
-<!ENTITY HYBRID_RADAR_REF_TN  "hybrid_radar_ref">
-<!ENTITY HYBRID_RADAR_REF_JEDI_TN  "hybrid_radar_ref_jedi">
-<!ENTITY RUN_ENKFUPDT_TN      "run_enkfupdt">
-<!ENTITY ENKF_RADAR_REF_TN    "enkf_radarref">
-<!ENTITY RUN_RECENTER_TN      "run_recenter">
-<!ENTITY RUN_BUFR_TN          "run_bufr">
-<!ENTITY CLEAN_TN             "run_clean">
-<!ENTITY ARCHIVE_TN           "run_archive">
-<!ENTITY RUN_SMOKE_TN         "run_proc_smoke">
-<!ENTITY RUN_PM_TN            "run_proc_pm">
-<!ENTITY RUN_IODA_BUFR_TN     "run_ioda_bufr">
+<!ENTITY RUN_PREPSTART_TN         "run_prepstart">
+<!ENTITY RUN_ANALYSIS_TN          "run_analysis_gsi">
+<!ENTITY RUN_ANALYSIS_JEDI_TN     "run_analysis_jedi">
+<!ENTITY HYBRID_RADAR_REF_TN      "hybrid_radar_ref">
+<!ENTITY HYBRID_RADAR_REF_JEDI_TN "hybrid_radar_ref_jedi">
+<!ENTITY RUN_ENKFUPDT_TN          "run_enkfupdt">
+<!ENTITY ENKF_RADAR_REF_TN        "enkf_radarref">
+<!ENTITY RUN_RECENTER_TN          "run_recenter">
+<!ENTITY RUN_BUFR_TN              "run_bufr">
+<!ENTITY CLEAN_TN                 "run_clean">
+<!ENTITY ARCHIVE_TN               "run_archive">
+<!ENTITY RUN_SMOKE_TN             "run_proc_smoke">
+<!ENTITY RUN_PM_TN                "run_proc_pm">
+<!ENTITY RUN_IODA_BUFR_TN         "run_ioda_bufr">
 
 <!ENTITY TAG  "{{ tag }}">
 <!ENTITY NET  "{{ net }}">
