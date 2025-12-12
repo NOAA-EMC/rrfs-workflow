@@ -65,7 +65,6 @@ export NODES_IODA_MRMS_REFL="<nodes>1:ppn=40</nodes>"
 export NODES_ENSMEAN="<nodes>1:ppn=40</nodes>"
 #
 export WALLTIME_FCST="1:30:00"
-export WALLTIME_SAVE_FCST="1:30:00"
 export WALLTIME_MPASSIT="1:00:00"
 export WALLTIME_UPP="1:00:00"
 export WALLTIME_GETKF="00:30:00"

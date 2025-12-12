@@ -2,6 +2,7 @@
 # shellcheck disable=SC1091,SC2153,SC2154
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
+cpreq="ln -snf"
 cpreq=${cpreq:-cpreq}
 #
 # timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S) 

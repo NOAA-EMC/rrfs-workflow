@@ -2,7 +2,7 @@
 # Aloha! This file is to setup some top level experiment options
 #
 export NET=rrfs                    # rrfs, rtma, 
-export MESH_NAME=conus12km         # conus12km, conus3km, south3.5km, etc
+export MESH_NAME=conus12km         # conus12km, conus3km, na12km, etc
 export WGF="det"   # working group function = "det", "enkf", "ens", "firewx"
 export EXP_NAME=hrly_12km
 export VERSION=$(cat ./VERSION)
@@ -71,7 +71,6 @@ export NODES_JEDIVAR="<nodes>4:ppn=20</nodes>"
 export NODES_IODA_MRMS_REFL="<nodes>1:ppn=40</nodes>"
 #
 export WALLTIME_FCST="1:30:00"
-export WALLTIME_SAVE_FCST="1:30:00"
 export WALLTIME_MPASSIT="1:00:00"
 export WALLTIME_UPP="1:00:00"
 export WALLTIME_JEDIVAR="00:30:00"

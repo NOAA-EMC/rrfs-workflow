@@ -39,7 +39,7 @@ for (( ii=0; ii<"${num_fhrs}"; ii=ii+"${group_total_num}" )); do
     diag_mean="${UMBRELLA_ENSMEAN_DATA}/diag.${timestr}.nc"
     # wait for history file available
     while true; do
-        historyfiles=("${UMBRELLA_SAVE_FCST_DATA}"/mem*/"history.${timestr}.nc")
+        historyfiles=("${UMBRELLA_FCST_DATA}"/mem*/"history.${timestr}.nc")
         num_historyfiles=${#historyfiles[@]}
         if [[ ${num_historyfiles} == "${ENS_SIZE}" ]]; then
            echo "find enough ensemble history forecast files: ${num_historyfiles} files"
@@ -51,10 +51,10 @@ for (( ii=0; ii<"${num_fhrs}"; ii=ii+"${group_total_num}" )); do
     done
     rm -f  "${history_mean}"
     echo "Processing ensemble mean for history.${timestr}.nc ..."
-    echo ncea --no_tmp_fl  "${UMBRELLA_SAVE_FCST_DATA}"/mem*/"history.${timestr}.nc"  "${history_mean}"  >> "${CMDFILE}"
+    echo ncea --no_tmp_fl  "${UMBRELLA_FCST_DATA}"/mem*/"history.${timestr}.nc"  "${history_mean}"  >> "${CMDFILE}"
     # wait for diag file available
     while true; do
-        diagfiles=("${UMBRELLA_SAVE_FCST_DATA}"/mem*/"diag.${timestr}.nc")
+        diagfiles=("${UMBRELLA_FCST_DATA}"/mem*/"diag.${timestr}.nc")
         num_diagfiles=${#diagfiles[@]}
         if [[ ${num_diagfiles} == "${ENS_SIZE}" ]]; then
            echo "find enough ensemble diag forecast files: ${num_diagfiles} files"
@@ -66,7 +66,7 @@ for (( ii=0; ii<"${num_fhrs}"; ii=ii+"${group_total_num}" )); do
     done
     rm -f "${diag_mean}"
     echo "Processing ensemble mean for diag.${timestr}.nc ..."
-    echo ncea --no_tmp_fl  "${UMBRELLA_SAVE_FCST_DATA}"/mem*/"diag.${timestr}.nc"  "${diag_mean}"  >> "${CMDFILE}"
+    echo ncea --no_tmp_fl  "${UMBRELLA_FCST_DATA}"/mem*/"diag.${timestr}.nc"  "${diag_mean}"  >> "${CMDFILE}"
 done
 
 NUM_CMDS=$(wc -l < "${CMDFILE}")

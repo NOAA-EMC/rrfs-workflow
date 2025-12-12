@@ -10,21 +10,33 @@ cat "${PARMrrfs}/chemistry/namelist.atmosphere" >> namelist.atmosphere
 cat "${FIXrrfs}/chemistry/stream_list/stream_list.atmosphere.output" >> ./stream_list/stream_list.atmosphere.output
 #
 # Biogenic/Pollen
-if [[ -r "${UMBRELLA_PREP_CHEM_DATA}/bio.init.nc" ]]; then
-  sed -i "\$e cat ${PARMrrfs}/chemistry/streams.atmosphere.pollen" streams.atmosphere # append before the last line (i.e. </stream>)
-  ln -snf "${UMBRELLA_PREP_CHEM_DATA}"/bio.init.nc bio.init.nc
-  #
-  if [[ "${CHEM_GROUPS,,}" == *pollen* ]]; then
-     sed -i "s/config_pollen_scheme\s*=\s*'off'/config_pollen_scheme  = 'speciated_pollen_primary'/g" namelist.atmosphere
-     num_chem=$(( num_chem + 4 ))
-  fi
+if [[ "${CHEM_GROUPS,,}" == *pollen* ]]; then
+   if [[ -s "${UMBRELLA_PREP_CHEM_DATA}/bio.init.nc" ]]; then
+      sed -i "\$e cat ${PARMrrfs}/chemistry/streams.atmosphere.pollen" streams.atmosphere # append before the last line (i.e. </stream>)
+      cat "${FIXrrfs}/chemistry/stream_list/stream_list.atmosphere.output.pollen" >> ./stream_list/stream_list.atmosphere.output
+      ln -snf "${UMBRELLA_PREP_CHEM_DATA}"/bio.init.nc bio.init.nc
+      sed -i "s/config_pollen_scheme\s*=\s*'off'/config_pollen_scheme  = 'speciated_pollen_primary'/g" namelist.atmosphere
+      num_chem=$(( num_chem + 4 ))
+   else
+      echo "WARNING: No pollen emission file exists"
+   fi
 fi
 # Dust
 if [[ "${CHEM_GROUPS,,}" == *dust* ]]; then
-  sed -i "\$e cat ${PARMrrfs}/chemistry/streams.atmosphere.dust" streams.atmosphere
-  ln -snf "${FIXrrfs}/chemistry/dust/fengsha_dust_inputs.${MESH_NAME}.nc" dust.init.nc
-  sed -i "s/config_dust_scheme\s*=\s*'off'/config_dust_scheme  = 'on'/g" namelist.atmosphere
-  num_chem=$(( num_chem + 2 ))
+  if [[ -s "${FIXrrfs}/chemistry/dust/fengsha_dust_inputs.${MESH_NAME}.nc" ]]; then
+     ln -snf "${FIXrrfs}/chemistry/dust/fengsha_dust_inputs.${MESH_NAME}.nc" dust.init.nc
+     cat "${FIXrrfs}/chemistry/stream_list/stream_list.atmosphere.output.dust" >> ./stream_list/stream_list.atmosphere.output
+     sed -i "\$e cat ${PARMrrfs}/chemistry/streams.atmosphere.dust" streams.atmosphere   
+     sed -i "s/config_dust_scheme\s*=\s*'off'/config_dust_scheme  = 'on'/g" namelist.atmosphere
+     num_chem=$(( num_chem + 2 ))
+     # Append the xtime variable if it is missing
+     if ! ncdump -hv xtime dust.init.nc 1>/dev/null 2>&1; then
+        ncks -A -v xtime init.nc dust.init.nc
+     fi
+  else
+     echo "No fengsha_dust_input.${MESH_NAME}.nc file exists in ${FIXrrfs}, you can attempt to copy from one created in ${UMBRELLA_PREP_CHEM_DATA}, but otherwise cannot do dust, turning off in namelist"
+     sed -i "s/config_dust_scheme\s*=\s*'on'/config_dust_scheme  = 'off'/g" namelist.atmosphere
+  fi
 fi
 #
 # save current nullglob setting and enable nullglob for this script
@@ -73,7 +85,7 @@ if (( ${#files[@]}  )); then  # at least one file exists
 fi
 
 # RWC - Residual Wood Combustion
-if [[ -r "${UMBRELLA_PREP_CHEM_DATA}/rwc.init.nc" ]]; then
+if [[ -s "${UMBRELLA_PREP_CHEM_DATA}/rwc.init.nc" ]]; then
   sed -i "\$e cat ${PARMrrfs}/chemistry/streams.atmosphere.rwc" streams.atmosphere
   ln -snf "${UMBRELLA_PREP_CHEM_DATA}"/rwc.init.nc rwc.init.nc
   # Set namelist
@@ -82,6 +94,9 @@ fi
 #
 # Replace the num_chem value with the correct number
 sed -i "s/num_chem\s*=\s*[0-9]*/num_chem  = ${num_chem}/" namelist.atmosphere
+# Make sure we didn't create any duplicates
+awk '!seen[$0]++' ./stream_list/stream_list.atmosphere.output  > ./stream_list/temp_stream_list.atmosphere.output && mv ./stream_list/temp_stream_list.atmosphere.output ./stream_list/stream_list.atmosphere.output
+
 #
 # Restore previous nullglob setting
 eval "${save_nullglob}"

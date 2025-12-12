@@ -13,7 +13,7 @@ from rocoto_funcs.prep_ic import prep_ic
 from rocoto_funcs.prep_lbc import prep_lbc
 from rocoto_funcs.jedivar import jedivar
 from rocoto_funcs.fcst import fcst
-from rocoto_funcs.save_fcst import save_fcst
+from rocoto_funcs.save_for_next import save_for_next
 from rocoto_funcs.getkf import getkf
 from rocoto_funcs.recenter import recenter
 from rocoto_funcs.ensmean import ensmean
@@ -89,7 +89,7 @@ def setup_xml(HOMErrfs, expdir):
                 if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
                     nonvar_cldana(xmlFile, expdir)
                 fcst(xmlFile, expdir)
-                save_fcst(xmlFile, expdir)
+                save_for_next(xmlFile, expdir)
             elif os.getenv("DO_FCST", "TRUE").upper() == "TRUE":
                 prep_ic(xmlFile, expdir)
                 prep_lbc(xmlFile, expdir)
@@ -100,7 +100,8 @@ def setup_xml(HOMErrfs, expdir):
                 if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
                     nonvar_cldana(xmlFile, expdir)
                 fcst(xmlFile, expdir)
-                save_fcst(xmlFile, expdir)
+                if os.getenv('DO_CYC', 'FALSE').upper() == "TRUE":
+                    save_for_next(xmlFile, expdir)
             #
             if os.getenv("DO_POST", "TRUE").upper() == "TRUE":
                 mpassit(xmlFile, expdir)
@@ -131,7 +132,8 @@ def setup_xml(HOMErrfs, expdir):
                 getkf(xmlFile, expdir, 'SOLVER')
                 getkf(xmlFile, expdir, 'POST')
             fcst(xmlFile, expdir, do_ensemble=True)
-            save_fcst(xmlFile, expdir, do_ensemble=True)
+            if os.getenv('DO_CYC', 'FALSE').upper() == "TRUE":
+                save_for_next(xmlFile, expdir, do_ensemble=True)
             mpassit(xmlFile, expdir, do_ensemble=True)
             upp(xmlFile, expdir, do_ensemble=True)
             if do_ensmean_post == "TRUE":

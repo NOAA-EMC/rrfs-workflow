@@ -42,7 +42,7 @@ ln -snf "${UMBRELLA_PREP_IC_DATA}/${initial_file}" .
 # MPAS invariant file
 zeta_levels=${EXPDIR}/config/ZETA_LEVELS.txt
 nlevel=$(wc -l < "${zeta_levels}")
-ln -snf "${FIXrrfs}/meshes/${MESH_NAME}.invariant.nc_L${nlevel}_${prefix}" ./invariant.nc
+ln -snf "${FIXrrfs}/${MESH_NAME}/${MESH_NAME}.invariant.nc_L${nlevel}_${prefix}" ./invariant.nc
 
 # Processed observations
 ${cpreq} "${COMOUT}/nonvar_bufrobs/${WGF}/NASALaRC_cloud4mpas.bin" .
