@@ -145,6 +145,7 @@ OBS_INPUT::
    lghtInGSI      lghtn       null      lghtn                1.0     0     0
    larcInGSI      larccld     null      larccld              1.0     0     0
    abibufr        abi         g18       abi_g18              0.0     2     0
+   abibufr        abi         g19       abi_g19              0.0     2     0
 ::
  &SUPEROB_RADAR
    del_azimuth=5.,del_elev=.25,del_range=5000.,del_time=.5,elev_angle_max=5.,minnum=50,range_max=100000., l2superob_only=.false.,
