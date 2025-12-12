@@ -29,7 +29,7 @@ yaml_list=(
 "prepbufr_rassda.yaml"
 "prepbufr_sfcshp.yaml"
 "prepbufr_vadwnd.yaml"
-"bufr2ioda_cris.yaml"
+#"bufr2ioda_cris-fsr.yaml"
 )
 
 if (( ${YAML_GEN_METHOD:-1} == 2 )); then
@@ -71,6 +71,20 @@ if [[ -f "$input_file" ]]; then
 else
   echo "Input file $input_file does not exist."
 fi
+
+# --------------------------------------------------
+# run  bufr2netcdf tool for cris-fsr bufr obs
+# --------------------------------------------------
+${cpreq} "${PARMrrfs}/bufr2netcdf_cris-fsr.yaml" .
+input_file="crisfsbufr"
+output_file="ioda_crisf4_{splits/satId}.nc"
+yaml="bufr2netcdf_cris-fsr.yaml"
+if [[ -f "$input_file" ]]; then
+  ./bufr2netcdf.x "$input_file" "$yaml" "$output_file"
+else
+  echo "Input file $input_file does not exist."
+fi
+
 # run python bufr2ioda tool for ZTD and AMV bufr obs
 # --------------------------------------------------
 HOMErdasapp=${HOMErrfs}/sorc/RDASApp/
@@ -118,7 +132,7 @@ for ioda_file in ioda*nc; do
   #if [[ "${ioda_file}" == *abi* || "${ioda_file}" == *atms* || "${ioda_file}" == *cris* ]]; then
   if [[ "${ioda_file}" == *abi* ]]; then
     echo " ${ioda_file} ioda file detected: running offline_domain_check_satrad.py"
-    ./offline_domain_check_satrad.py -o "${ioda_file}" -g "${grid_file}" -s 0.005
+    ./offline_domain_check_satrad.py -o "${ioda_file}" -g "${grid_file}" -f -s 0.005
     base_name=$(basename "$ioda_file" .nc)
     mv  "${base_name}_dc.nc" "${base_name}.nc"
   elif [[ "${ioda_file}" == *atms* || "${ioda_file}" == *cris* ]]; then
