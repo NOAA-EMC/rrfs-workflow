@@ -335,12 +335,11 @@ export PYTHONPATH="${JCBLIB}:${WXFLOWLIB}:${PYIODALIB}:${PYTHONPATH}"
 
 
 if [[ ${anav_type} == "conv" ]]; then
-  cp ${PARMdir}/rdas-atmosphere-templates-fv3_c13.yaml .
   jcb_config="rdas-atmosphere-templates-fv3_c13.yaml"
 elif [[ ${anav_type} == "radardbz" ]]; then
-  cp ${PARMdir}/rdas-atmosphere-templates-fv3_c13_dbz.yaml .
   jcb_config="rdas-atmosphere-templates-fv3_c13_dbz.yaml"
 fi
+cp ${PARMdir}/${jcb_config} .
 cp ${USHdir}/run_jcb.py .
 
 #sed - rdas-atmosphere-templates.yaml
