@@ -149,9 +149,9 @@ encoder:
       source: variables/satelliteId
       longName: "Satellite Identifier"
 
-#    - name: "MetaData/instrumentIdentifier"
-#      source: variables/sensorId
-#      longName: "Satellite Instrument Identifier"
+    #    - name: "MetaData/instrumentIdentifier"
+    #      source: variables/sensorId
+    #      longName: "Satellite Instrument Identifier"
 
     - name: "MetaData/scanLineNumber"
       source: variables/scanLineNumber
