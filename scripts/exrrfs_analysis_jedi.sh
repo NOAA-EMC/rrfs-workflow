@@ -670,7 +670,7 @@ fi
 #
 print_info_msg "
 ========================================================================
-PREPBUFR PROCESS completed successfully!!!
+JEDIVAR PROCESS completed successfully!!!
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
