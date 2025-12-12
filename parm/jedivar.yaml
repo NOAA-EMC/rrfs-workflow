@@ -19959,7 +19959,7 @@ cost function:
          filter variables:
          - name: brightnessTemperature
            channels: *cris-fsr_n20_channels
-           sensor: &sensor_id cris-fsr_n20
+           sensor: cris-fsr_n20
          action:
            name: assign error
            error parameter vector: *cris-fsr_n20_error
@@ -20098,7 +20098,7 @@ cost function:
              name: ObsFunction/ObsErrorFactorTopoRad
              channels: *cris-fsr_n20_channels
              options:
-               sensor: *sensor_id
+               sensor: cris-fsr_n20
                channels: *cris-fsr_n20_channels
 
        # -----------------------------------------------------------------------------------------------------------------------------------------------
@@ -20209,7 +20209,7 @@ cost function:
                channels: *cris-fsr_n20_channels
                obserr_demisf: [0.01, 0.02, 0.03, 0.02, 0.03]
                obserr_dtempf: [0.50, 2.00, 4.00, 2.00, 4.00]
-               sensor: *sensor_id
+               sensor: cris-fsr_n20
 
        # -------------------------------------------------------------------------------------------------------------------------------------------
        # Step 16: Gross check
@@ -20507,7 +20507,7 @@ cost function:
          filter variables:
          - name: brightnessTemperature
            channels: *cris-fsr_n21_channels
-           sensor: &sensor_id cris-fsr_n21
+           sensor: cris-fsr_n21
          action:
            name: assign error
            error parameter vector: *cris-fsr_n21_error
@@ -20646,7 +20646,7 @@ cost function:
              name: ObsFunction/ObsErrorFactorTopoRad
              channels: *cris-fsr_n21_channels
              options:
-               sensor: *sensor_id
+               sensor: cris-fsr_n21
                channels: *cris-fsr_n21_channels
 
        # -----------------------------------------------------------------------------------------------------------------------------------------------
@@ -20757,7 +20757,7 @@ cost function:
                channels: *cris-fsr_n21_channels
                obserr_demisf: [0.01, 0.02, 0.03, 0.02, 0.03]
                obserr_dtempf: [0.50, 2.00, 4.00, 2.00, 4.00]
-               sensor: *sensor_id
+               sensor: cris-fsr_n21
 
        # -------------------------------------------------------------------------------------------------------------------------------------------
        # Step 16: Gross check
