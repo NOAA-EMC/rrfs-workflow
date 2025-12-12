@@ -66,7 +66,7 @@ def nonvar_cldana(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         else:
             jedidep = f'\n    <taskdep task="jedivar"/>'
     else:
-        prep_ic_dep = f'\n    <taskdep task="prep_ic"/>'
+        prep_ic_dep = f'\n    <taskdep task="prep_ic{ensindexstr}"/>'
         if do_spinup:
             prep_ic_dep = f'\n    <taskdep task="prep_ic_spinup"/>'
     #
