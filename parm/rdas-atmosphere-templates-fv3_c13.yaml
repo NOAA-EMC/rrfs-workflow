@@ -67,6 +67,7 @@ atmosphere_background_time_iso: @ATMOSPHERE_BACKGROUND_TIME_ISO@
 atmosphere_background_time_prefix: ""
 filename_core: fv3_dynvars # fv_core.res.tile1.nc
 filename_trcr: fv3_tracer  # fv_tracer.res.tile1.nc
+filename_phys: fv3_phyvars # phy_data.nc
 filename_sfcd: fv3_sfcdata # sfc_data.nc
 filename_sfcw: fv_srf_wnd.res.tile1.nc
 filename_cplr: coupler.res
@@ -123,6 +124,7 @@ cloud_droplet_number_concentration: water_nc
 cloud_ice_number_concentration: ice_nc
 rain_number_concentration: rain_nc
 upward_air_velocity: W
+equivalent_reflectivity_factor: ref_f3d
 
 abi_simulated_channels: 7-16
 abi_active_channels: [-1, 1, 1, 1, -1, -1, -1, -1, -1, -1]
