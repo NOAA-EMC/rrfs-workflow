@@ -17,6 +17,8 @@ def jedivar(xmlFile, expdir, do_spinup=False):
     else:
         cycledefs = 'prod'
         task_id = 'jedivar'
+    coldhrs = os.getenv('COLDSTART_CYCS', '03 15')
+    coldstart_cyc_do_da = os.getenv('COLDSTART_CYCS_DO_DA', 'TRUE')
     # Task-specific EnVars beyond the task_common_vars
     extrn_mdl_source = os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined')
     physics_suite = os.getenv('PHYSICS_SUITE', 'PHYSICS_SUITE_not_defined')
@@ -112,11 +114,37 @@ def jedivar(xmlFile, expdir, do_spinup=False):
         iodadep = f'<datadep age="00:01:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/ioda_bufr/det/ioda_aircar.nc</cyclestr></datadep>'
 
     #
+    coldhrs = coldhrs.split(' ')
+    strneqs = ""
+    streqs = ""
+    if coldstart_cyc_do_da.upper() == "FALSE":
+        spaces = " " * 4
+        strneqs = '<or>'
+        streqs = '<or>'
+        for hr in coldhrs:
+            hr = f"{int(hr):02d}"
+            strneqs += '\n' + spaces + f'  <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>'
+            streqs += '\n' + spaces + f'  <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>'
+        strneqs += '\n' + spaces + '</or>'
+        streqs += '\n' + spaces + '</or>'
+        da_dep = f'''<or>
+    <and>
+    {strneqs}
+    {iodadep}{ens_dep}
+    </and>
+    {streqs}
+    </or>
+        '''
+    else:
+        da_dep = f'''
+        {iodadep}{ens_dep}
+        '''
+    #
     dependencies = f'''
   <dependency>
   <and>{timedep}
     {prep_ic_dep}
-    {iodadep}{ens_dep}
+    {da_dep}
   </and>
   </dependency>'''
     #

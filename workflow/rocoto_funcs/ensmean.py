@@ -43,7 +43,7 @@ def ensmean(xmlFile, expdir):
     dependencies = f'''
   <dependency>
   <and>{timedep}
-    <metataskdep metatask="save_fcst"/>
+    <metataskdep metatask="fcst"/>
   </and>
   </dependency>'''
     #

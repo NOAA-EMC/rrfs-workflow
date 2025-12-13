@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
+set -x
+date
+#
+#-----------------------------------------------------------------------
+# Specify Execution Areas
+#-----------------------------------------------------------------------
+#
+export HOMErrfs=${HOMErrfs} #comes from the workflow at runtime
+export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
+export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
+export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
+export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
+#
+#-----------------------------------------------------------------------
+# Obtain unique process id (pid) and create the run directory (DATA).
+#-----------------------------------------------------------------------
+#
+export pid=${pid:-$$}
+if [[ -z "${ENS_INDEX}" ]]; then
+  export MEMDIR=""
+else
+  export MEMDIR="/mem${ENS_INDEX}"
+fi
+export UMBRELLA_FCST_DATA=${UMBRELLA_FCST_DATA:-${DATAROOT}/${RUN}_fcst_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
+export jobid=${jobid:-save_for_next_${cyc}}
+export UMBRELLA_SAVE_FOR_NEXT_DATA=${UMBRELLA_SAVE_FOR_NEXT_DATA:-${DATAROOT}/${RUN}_save_for_next_${cyc}_${rrfs_ver}/${WGF}${MEMDIR}}
+export DATA=${DATA:-${UMBRELLA_SAVE_FOR_NEXT_DATA}/${jobid}}
+
+if [[ -d "${DATA}" ]]; then # remove the ${DATA} directory if existed
+  rm -rf "${DATA}"
+fi
+mkdir -p "${DATA}"
+#
+#-----------------------------------------------------------------------
+# Define COM directories
+#-----------------------------------------------------------------------
+#
+export COMINrrfs=${COMINrrfs:-$(compath.py "${envir}/rrfs/${rrfs_ver}")}
+export COMOUT=${COMOUT:-$(compath.py -o "${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}")}
+if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
+  mkdir -p "${COMOUT}/fcst_spinup/${WGF}${MEMDIR}"
+else
+  mkdir -p "${COMOUT}/fcst/${WGF}${MEMDIR}"
+fi
+#
+#----------------------------------------
+# Execute the script.
+#----------------------------------------
+export pgmout="${DATA}/OUTPUT.$$"
+"${HOMErrfs}"/scripts/exrrfs_save_for_next.sh
+export err=$?; err_chk
+
+if [[ -e "${pgmout}" ]]; then
+  cat "${pgmout}"
+fi
+#
+#----------------------------------------
+# Remove the Temporary working directory and UMBRELLA_FCST_DATA
+#----------------------------------------
+if [[ "${KEEPDATA^^}" == "NO" ]]; then
+  rm -rf "${DATA}"
+fi
+#
+date
+echo "JOB ${jobid:-} HAS COMPLETED NORMALLY!"
+exit 0
