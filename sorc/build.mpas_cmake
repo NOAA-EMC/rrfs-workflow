@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC1090,1091
+set -x
+date
+rundir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+HOMErrfs="$(dirname "$rundir")"
+
+source "${HOMErrfs}/workflow/tools/detect_machine.sh"
+source "${HOMErrfs}/workflow/tools/init.sh"
+
+EXEC="${HOMErrfs}/sorc/MPAS-Model/build/bin/mpas_init_atmosphere"
+EXEC2="${HOMErrfs}/sorc/MPAS-Model/build/bin/mpas_atmosphere"
+
+case "${MACHINE}" in
+  wcoss2)
+    BUILD_VERSION_FILE="${HOMErrfs}/versions/build.ver"
+    if [[ -f "${BUILD_VERSION_FILE}" ]]; then
+      source "${BUILD_VERSION_FILE}"
+    fi
+    ;;
+esac
+
+module purge                      
+module use "${HOMErrfs}/modulefiles"
+module load "rrfs/${MACHINE}.${COMPILER:-intel}"
+module list
+
+cd "${HOMErrfs}/sorc/MPAS-Model" || exit 1
+# clean first
+make clean CORE=init_atmosphere
+make clean CORE=atmosphere
+
+rm -rf build
+mkdir -p build
+cd build || exit 1
+
+BUILD_JOBS=${BUILD_JOBS:-8}
+#
+# list of possible future optimization options, -xHost, -fast, -fp-model fast=2, etc
+# -DCMAKE_INTERPROCEDURAL_OPTIMIZATION is to set `-ipo`
+#     -DCMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE=TRUE \
+#     -DCMAKE_EXE_LINKER_FLAGS_RELEASE="-O3" \
+#     -DCMAKE_MODULE_LINKER_FLAGS_RELEASE="-O3" \
+#     -DCMAKE_SHARED_LINKER_FLAGS_RELEASE="-O3" \
+cmake -DCMAKE_Fortran_FLAGS_RELEASE="-O3 -convert big_endian -free -align array64byte" \
+      -DCMAKE_BUILD_TYPE=Release -DMPAS_DOUBLE_PRECISION=OFF \
+      -DMPAS_CORES="init_atmosphere;atmosphere" ..
+make -j "${BUILD_JOBS}"
+
+mkdir -p "${HOMErrfs}/exec"
+echo "copy ${EXEC} to ../exec/init_atmosphere_model.x"
+cp "${EXEC}"  "${HOMErrfs}/exec/init_atmosphere_model.x"
+echo "copy ${EXEC2} to ../exec/atmosphere_model.x"
+cp "${EXEC2}"  "${HOMErrfs}/exec/atmosphere_model.x"
+exit 0
