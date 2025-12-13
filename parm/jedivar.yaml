@@ -20776,7 +20776,7 @@ cost function:
                name: ObsFunction/ObsErrorFactorLatRad
                options:
                  latitude_parameters: [25.0, 0.5, 0.04, 1.0]
-             obserr_bound_transmittop
+             obserr_bound_transmittop:
                name: ObsFunction/ObsErrorFactorTransmitTopRad
                channels: *cris-fsr_n21_channels
                options:
