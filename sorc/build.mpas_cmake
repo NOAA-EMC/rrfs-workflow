@@ -22,7 +22,7 @@ esac
 
 module purge                      
 module use "${HOMErrfs}/modulefiles"
-module load "rrfs/${MACHINE}.intel"
+module load "rrfs/${MACHINE}.${COMPILER:-intel}"
 module list
 
 cd "${HOMErrfs}/sorc/MPAS-Model" || exit 1
@@ -34,7 +34,7 @@ rm -rf build
 mkdir -p build
 cd build || exit 1
 
-BUILD_JOBS=8
+BUILD_JOBS=${BUILD_JOBS:-8}
 #
 # list of possible future optimization options, -xHost, -fast, -fp-model fast=2, etc
 # -DCMAKE_INTERPROCEDURAL_OPTIMIZATION is to set `-ipo`
@@ -43,7 +43,7 @@ BUILD_JOBS=8
 #     -DCMAKE_MODULE_LINKER_FLAGS_RELEASE="-O3" \
 #     -DCMAKE_SHARED_LINKER_FLAGS_RELEASE="-O3" \
 cmake -DCMAKE_Fortran_FLAGS_RELEASE="-O3 -convert big_endian -free -align array64byte" \
-      -DMPAS_DOUBLE_PRECISION=OFF \
+      -DCMAKE_BUILD_TYPE=Release -DMPAS_DOUBLE_PRECISION=OFF \
       -DMPAS_CORES="init_atmosphere;atmosphere" ..
 make -j "${BUILD_JOBS}"
 
