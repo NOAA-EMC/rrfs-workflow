@@ -195,6 +195,7 @@ define resources used for each tasks
 <!ENTITY RESOURCES_MAKE_LBCS    "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}:tpp={{ tpp_make_lbcs }}</nodes>">
 <!ENTITY RESOURCES_ARCHIVE_RETRO "<nodes>{{ nnodes_run_archive_retro }}:ppn={{ ppn_run_archive_retro }}:tpp={{ tpp_run_archive_retro }}</nodes>">
 <!ENTITY RESOURCES_ANALYSIS_JEDI "<nodes>{{ nnodes_run_analysis_jedi }}:ppn={{ ppn_run_analysis_jedi }}:tpp={{ tpp_run_analysis_jedi }}</nodes>">
+<!ENTITY RESOURCES_HYBRID_RADAR_REF_JEDI "<nodes>{{ nnodes_hybrid_radar_ref_jedi }}:ppn={{ ppn_hybrid_radar_ref_jedi }}:tpp={{ tpp_hybrid_radar_ref_jedi }}</nodes>">
 <!ENTITY RESOURCES_ANALYSIS_GSI "<nodes>{{ nnodes_run_analysis }}:ppn={{ ppn_run_analysis }}:tpp={{ tpp_run_analysis }}</nodes>">
 <!ENTITY RESOURCES_FCST_SPINUP  "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}:tpp={{ tpp_run_fcst }}</nodes>">
 <!ENTITY RESOURCES_FCST_PROD    "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}:tpp={{ tpp_run_fcst }}</nodes>">
@@ -216,6 +217,7 @@ define resources used for each tasks
 <!ENTITY RESOURCES_BLEND_ICS   "<nodes>{{ nnodes_blend_ics }}:ppn={{ ppn_blend_ics }}</nodes>">
 <!ENTITY RESOURCES_MAKE_LBCS   "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
 <!ENTITY RESOURCES_ANALYSIS_JEDI    "<cores>{{ ncores_run_analysis }}</cores>">
+<!ENTITY RESOURCES_HYBRID_RADAR_REF_JEDI "<cores>{{ ncores_run_analysis }}</cores>">
 <!ENTITY RESOURCES_ANALYSIS_GSI    "<cores>{{ ncores_run_analysis }}</cores>">
 <!ENTITY RESOURCES_FCST_SPINUP "<cores>{{ ncores_run_fcst }}</cores>">
 <!ENTITY RESOURCES_FCST_PROD   "<cores>{{ ncores_run_fcst }}</cores>">
@@ -233,6 +235,7 @@ define resources used for each tasks
 <!ENTITY RESOURCES_BLEND_ICS    "<nodes>{{ nnodes_blend_ics }}:ppn={{ ppn_blend_ics }}</nodes>">
 <!ENTITY RESOURCES_MAKE_LBCS    "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
 <!ENTITY RESOURCES_ANALYSIS_JEDI "<cores>{{ ncores_run_analysis }}</cores>">
+<!ENTITY RESOURCES_HYBRID_RADAR_REF_JEDI "<cores>{{ ncores_run_analysis }}</cores>">
 <!ENTITY RESOURCES_ANALYSIS_GSI "<cores>{{ ncores_run_analysis }}</cores>">
 <!ENTITY RESOURCES_FCST_SPINUP  "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
 <!ENTITY RESOURCES_FCST_PROD    "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
@@ -250,6 +253,7 @@ define resources used for each tasks
 <!ENTITY RESOURCES_BLEND_ICS    "<nodes>{{ nnodes_blend_ics }}:ppn={{ ppn_blend_ics }}</nodes>">
 <!ENTITY RESOURCES_MAKE_LBCS    "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
 <!ENTITY RESOURCES_ANALYSIS_JEDI "<nodes>{{ nnodes_run_analysis }}:ppn={{ ppn_run_analysis }}</nodes>">
+<!ENTITY RESOURCES_HYBRID_RADAR_REF_JEDI "<nodes>{{ nnodes_run_analysis }}:ppn={{ ppn_run_analysis }}</nodes>">
 <!ENTITY RESOURCES_ANALYSIS_GSI "<nodes>{{ nnodes_run_analysis }}:ppn={{ ppn_run_analysis }}</nodes>">
 <!ENTITY RESOURCES_FCST_SPINUP  "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
 <!ENTITY RESOURCES_FCST_PROD    "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
@@ -267,6 +271,7 @@ define resources used for each tasks
 <!ENTITY RESOURCES_BLEND_ICS    "<nodes>{{ nnodes_blend_ics }}:ppn={{ ppn_blend_ics }}</nodes>">
 <!ENTITY RESOURCES_MAKE_LBCS    "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}</nodes>">
 <!ENTITY RESOURCES_ANALYSIS_JEDI "<nodes>{{ nnodes_run_analysis }}:ppn={{ ppn_run_analysis }}</nodes>">
+<!ENTITY RESOURCES_HYBRID_RADAR_REF_JEDI "<nodes>{{ nnodes_run_analysis }}:ppn={{ ppn_run_analysis }}</nodes>">
 <!ENTITY RESOURCES_ANALYSIS_GSI "<nodes>{{ nnodes_run_analysis }}:ppn={{ ppn_run_analysis }}</nodes>">
 <!ENTITY RESOURCES_FCST_SPINUP  "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
 <!ENTITY RESOURCES_FCST_PROD    "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>">
@@ -1985,7 +1990,7 @@ MODULES_RUN_TASK_FP script.
     &WALL_LIMIT_ANALYSIS;
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANALYSIS_JEDI_TN;" "&JOBSdir;/JRRFS_ANALYSIS_JEDI"</command>
-    &RESOURCES_ANALYSIS_JEDI;
+    &RESOURCES_HYBRID_RADAR_REF_JEDI;
     &NATIVE_ANALYSIS_JEDI;
     <walltime>&WALLTIME_ANALYSIS_JEDI;</walltime>
     &NODESIZE_ALL;
@@ -3058,7 +3063,7 @@ MODULES_RUN_TASK_FP script.
 
     <command>&LOAD_MODULES_RUN_TASK_FP; "&RUN_ANALYSIS_JEDI_TN;" "&JOBSdir;/JRRFS_ANALYSIS_JEDI"</command>
 
-    &RESOURCES_ANALYSIS_JEDI;
+    &RESOURCES_HYBRID_RADAR_REF_JEDI;
     &NATIVE_ANALYSIS_JEDI;
     <walltime>&WALLTIME_ANALYSIS_JEDI;</walltime>
     &NODESIZE_ALL;

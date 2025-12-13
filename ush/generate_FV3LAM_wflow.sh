@@ -248,6 +248,7 @@ settings="\
   'nnodes_run_archive_retro': ${NNODES_RUN_ARCHIVE_RETRO}
   'nnodes_run_analysis': ${NNODES_RUN_ANALYSIS}
   'nnodes_run_analysis_jedi': ${NNODES_RUN_ANALYSIS_JEDI}
+  'nnodes_hybrid_radar_ref_jedi': ${NNODES_HYBRID_RADAR_REF_JEDI}
   'nnodes_run_gsidiag': ${NNODES_RUN_GSIDIAG}
   'nnodes_run_postanal': ${NNODES_RUN_POSTANAL}
   'nnodes_run_enkf': ${NNODES_RUN_ENKF}
@@ -295,6 +296,7 @@ settings="\
   'ppn_run_archive_retro': ${PPN_RUN_ARCHIVE_RETRO}
   'ppn_run_analysis': ${PPN_RUN_ANALYSIS}
   'ppn_run_analysis_jedi': ${PPN_RUN_ANALYSIS_JEDI}
+  'ppn_hybrid_radar_ref_jedi': ${PPN_HYBRID_RADAR_REF_JEDI}
   'ppn_run_gsidiag': ${PPN_RUN_GSIDIAG}
   'ppn_run_postanal': ${PPN_RUN_POSTANAL}
   'ppn_run_enkf': ${PPN_RUN_ENKF}
@@ -321,6 +323,7 @@ settings="\
   'tpp_run_archive_retro': ${TPP_RUN_ARCHIVE_RETRO}
   'tpp_run_analysis': ${TPP_RUN_ANALYSIS}
   'tpp_run_analysis_jedi': ${TPP_RUN_ANALYSIS_JEDI}
+  'tpp_hybrid_radar_ref_jedi': ${TPP_HYBRID_RADAR_REF_JEDI}
   'tpp_run_enkf': ${TPP_RUN_ENKF}
   'tpp_run_fcst': ${TPP_RUN_FCST}
   'tpp_run_post': ${TPP_RUN_POST}
