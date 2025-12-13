@@ -88,8 +88,14 @@ case $MACHINE in
   export FI_OFI_RXM_SAR_LIMIT=3145728
   export OMP_STACKSIZE=500M
   export OMP_NUM_THREADS=1 #${TPP_RUN_ANALYSIS}
-  ncores=$((NNODES_RUN_ANALYSIS_JEDI*PPN_RUN_ANALYSIS_JEDI))
-  APRUN="mpirun -n ${ncores} -ppn ${PPN_RUN_ANALYSIS_JEDI} --cpu-bind core --depth 1"
+  if [[ ${ob_type} == "conv" ]]; then
+    ncores=$((NNODES_RUN_ANALYSIS_JEDI*PPN_RUN_ANALYSIS_JEDI))
+    ppn=${PPN_RUN_ANALYSIS_JEDI}
+  elif [[ ${ob_type} == "radardbz" ]]; then
+    ncores=$((NNODES_HYBRID_RADAR_REF_JEDI*PPN_HYBRID_RADAR_REF_JEDI))
+    ppn=${PPN_HYBRID_RADAR_REF_JEDI}
+  fi
+  APRUN="mpirun -n ${ncores} -ppn ${ppn} --cpu-bind core --depth 1"
   ;;
 #
 "HERA")
@@ -560,7 +566,8 @@ cp "${jedi_exec}" "${analworkdir}/${pgm}"
 
 ${APRUN} ./$pgm jedivar.yaml >>$pgmout 2>errfile
 cp $pgmout ${COMOUT}/rrfs.t${HH}z.jediout_${anav_type}.tm00
-cp ${jcb_config} jedivar_${anav_type}.yaml ${COMOUT}
+cp ${jcb_config} ${COMOUT}
+cp jedivar.yaml ${COMOUT}/jedivar_${anav_type}.yaml
 export err=$?; err_chk
 mv errfile errfile_jedi
 #
