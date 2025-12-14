@@ -99,4 +99,52 @@ elif [[ ${MESH_NAME} == "south3.5km" ]]; then
   export NONVAR_PROJ_NAME="CONUS"
   export NONVAR_USERDX=3500
   export NONVAR_SEARCH_RAD=1
+
+elif [[ ${MESH_NAME} == "ar3.5km" ]]; then
+  export FCST_DT=25
+  export FCST_SUBSTEPS=4
+  export FCST_RADT=15
+  export UPP_DOMAIN="ar."
+
+  export MPASSIT_NX=6000
+  export MPASSIT_NY=4800
+  export MPASSIT_DX=3500.0
+  export MPASSIT_REF_LAT=40.0
+  export MPASSIT_REF_LON=-135.5
+
+  export GSIBEC_NLAT=694
+  export GSIBEC_NLON=885
+  export GSIBEC_NORTH_POLE_LAT=49.987873
+  export GSIBEC_NORTH_POLE_LON=44.500000
+  export GSIBEC_LON_START=-27.757600
+  export GSIBEC_LON_END=27.757600
+  export GSIBEC_LAT_START=-21.760200
+  export GSIBEC_LAT_END=21.760200
+
+elif [[ ${MESH_NAME} == "ea5km" ]]; then
+  export FCST_DT=25
+  export FCST_SUBSTEPS=4
+  export FCST_RADT=15
+  export UPP_DOMAIN="ea."
+
+  export MPASSIT_NX=840
+  export MPASSIT_NY=760
+  export MPASSIT_DX=5000.0
+  export MPASSIT_REF_LAT=35.0
+  export MPASSIT_REF_LON=132.0
+
+  export MPASSIT_NX=6000
+  export MPASSIT_NY=4800
+  export MPASSIT_DX=3500.0
+  export MPASSIT_REF_LAT=40.0
+  export MPASSIT_REF_LON=-135.5
+  export GSIBEC_NLAT=394
+  export GSIBEC_NLON=439
+  export GSIBEC_NORTH_POLE_LAT=54.995905
+  export GSIBEC_NORTH_POLE_LON=312.000000
+  export GSIBEC_LON_START=-19.666200
+  export GSIBEC_LON_END=19.666200
+  export GSIBEC_LAT_START=-17.645700
+  export GSIBEC_LAT_END=17.645700
+
 fi
