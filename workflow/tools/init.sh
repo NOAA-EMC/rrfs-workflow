@@ -47,4 +47,4 @@ fi
 ln -snf "${FIX_RRFS_LOCATION}"  "${agent_dir}"
 
 touch "${run_dir}/../../fix/INIT_DONE"
-${run_dir}/link_extra_meshes.sh
+"${run_dir}"/link_extra_meshes.sh
