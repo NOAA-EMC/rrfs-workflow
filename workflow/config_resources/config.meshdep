@@ -133,11 +133,6 @@ elif [[ ${MESH_NAME} == "ea5km" ]]; then
   export MPASSIT_REF_LAT=35.0
   export MPASSIT_REF_LON=132.0
 
-  export MPASSIT_NX=6000
-  export MPASSIT_NY=4800
-  export MPASSIT_DX=3500.0
-  export MPASSIT_REF_LAT=40.0
-  export MPASSIT_REF_LON=-135.5
   export GSIBEC_NLAT=394
   export GSIBEC_NLON=439
   export GSIBEC_NORTH_POLE_LAT=54.995905
