@@ -1,0 +1,75 @@
+&nhyd_model
+    config_time_integration_order = 2
+    config_dt = ${dt}
+    config_start_time = '${start_time}'
+    config_run_duration = '${run_duration}'
+    config_split_dynamics_transport = true
+    config_number_of_sub_steps = ${substeps}
+    config_dynamics_split_steps = 3
+    config_horiz_mixing = '2d_smagorinsky'
+    config_visc4_2dsmag = 0.05
+    config_scalar_advection = true
+    config_monotonic = true
+    config_coef_3rd_order = 0.25
+    config_epssm = 0.1
+    config_smdiv = 0.1
+    config_apvm_upwinding = 0.0
+/
+&damping
+    config_mpas_cam_coef             = 2.0
+    config_rayleigh_damp_u           = true
+    config_zd                        = 16000.0
+    config_xnutr                     = 0.2
+    config_number_cam_damping_levels = 8
+/
+&limited_area
+    config_apply_lbcs = false
+/
+&io
+    config_pio_num_iotasks = ${pio_num_iotasks}
+    config_pio_stride = ${pio_stride}
+/
+&decomposition
+    config_block_decomp_file_prefix  = 'graphinfo/${MESH_NAME}.graph.info.part.'
+/
+&restart
+    config_do_restart = false
+    config_do_DAcycling = ${do_DAcycling}
+/
+&printout
+    config_print_global_minmax_vel = true
+    config_print_detailed_minmax_vel = true
+    config_print_global_minmax_sca = true
+/
+&IAU
+    config_IAU_option = 'off'
+    config_IAU_window_length_s = 21600.
+/
+&physics
+    config_sst_update = false
+    config_gvf_update = false
+    config_sstdiurn_update = false
+    config_frac_seaice = true
+    config_deepsoiltemp_update = false
+    config_radtlw_interval = '00:${radt}:00'
+    config_radtsw_interval = '00:${radt}:00'
+    config_bucket_update = 'none'
+    config_physics_suite = 'hrrrv5'
+    config_convection_scheme = 'cu_grell_freitas'
+    config_gfl_sub3d = 1
+    config_tempo_aerosolaware = .true.
+    config_tempo_hailaware = .true.
+    config_gwdo_scheme = 'bl_ugwp_gwdo'
+    config_lsm_scheme    = 'sf_ruc'
+    num_soil_layers      = 9
+    config_pbl_scheme = 'bl_mynnedmf'
+    config_mynn_mixscalars = 0
+    config_mynn_mixaerosols = 1
+    config_mynn_mixnumcon = 0
+/
+&soundings
+    config_sounding_interval = 'none'
+/
+&assimilation
+    config_jedi_da = ${jedi_da}
+/
