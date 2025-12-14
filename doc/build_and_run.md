@@ -12,15 +12,6 @@ Note:
 3. If you run cold start forecasts only and don't need data assimilation, run `./build.all noda`.
 
 # 2. Setup and run experiments:
-### 2.0. OPTIONAL: if one wants to run an expeirment on a mesh other than `conus3km`, `conus12km`, `na12km`, `na3km`, one needs to do this step first:
-```
-workflow/tools/link_extra_meshes.sh
-```
-This will link a few extra meshes depending on the availability on different machines, such as `ar3.5km/global-15-3km` available on gaeac6, etc.    
-Check the newly linked meshes through `ls -lrth fix`
-
-One can add new meshes following [this wiki](https://github.com/NOAA-EMC/rrfs-workflow/wiki/Run-rrfs%E2%80%90workflow-on-a-mesh-outside-the-default-ones)
-
 ### 2.1. copy and modify exp.setup
 ```
 cd workflow
