@@ -88,8 +88,14 @@ case $MACHINE in
   export FI_OFI_RXM_SAR_LIMIT=3145728
   export OMP_STACKSIZE=500M
   export OMP_NUM_THREADS=1 #${TPP_RUN_ANALYSIS}
-  #ncores=160 #$(( NNODES_RUN_ANALYSIS*PPN_RUN_ANALYSIS))
-  APRUN="mpirun -n 196 -ppn 98 --cpu-bind core --depth 1"
+  if [[ ${ob_type} == "conv" ]]; then
+    ncores=$((NNODES_RUN_ANALYSIS_JEDI*PPN_RUN_ANALYSIS_JEDI))
+    ppn=${PPN_RUN_ANALYSIS_JEDI}
+  elif [[ ${ob_type} == "radardbz" ]]; then
+    ncores=$((NNODES_HYBRID_RADAR_REF_JEDI*PPN_HYBRID_RADAR_REF_JEDI))
+    ppn=${PPN_HYBRID_RADAR_REF_JEDI}
+  fi
+  APRUN="mpirun -n ${ncores} -ppn ${ppn} --cpu-bind core --depth 1"
   ;;
 #
 "HERA")
@@ -333,7 +339,13 @@ WXFLOWLIB=${RDASAPP_DIR}/sorc/wxflow/src
 JCBLIB=${RDASAPP_DIR}/sorc/jcb/src
 export PYTHONPATH="${JCBLIB}:${WXFLOWLIB}:${PYIODALIB}:${PYTHONPATH}"
 
-cp ${PARMdir}/rdas-atmosphere-templates-fv3_c13.yaml .
+
+if [[ ${anav_type} == "conv" ]]; then
+  jcb_config="rdas-atmosphere-templates-fv3_c13.yaml"
+elif [[ ${anav_type} == "radardbz" ]]; then
+  jcb_config="rdas-atmosphere-templates-fv3_c13_dbz.yaml"
+fi
+cp ${PARMdir}/${jcb_config} .
 cp ${USHdir}/run_jcb.py .
 
 #sed - rdas-atmosphere-templates.yaml
@@ -341,7 +353,6 @@ cp ${USHdir}/run_jcb.py .
 WIN_ISO="${YYYY}-${MM}-${DD}T${HH}:00:00Z"
 WIN_PREFIX="${YYYY}${MM}${DD}.${HH}0000."
 SUFFIX="${CDATE}"
-jcb_config="rdas-atmosphere-templates-fv3_c13.yaml"
 jedi_yaml="jedivar.yaml"
 
 # do replacements
@@ -464,8 +475,11 @@ cp ${FIX_JEDI}/fmsmpp.nml .
 cp ${FIX_JEDI}/gfs-restart.yaml .
 cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/berror_stats .
 cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/gsiparm_regional.anl .
-cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/input_lam_C775_NP14X14.nml .
+cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/input_lam_C775_NP14X14.nml . # mgbf
+cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/input_lam_C775_NP16X10.nml . # bump
 cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/mgbf_p196_14x14.nml .
+cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/mgbf_p196_14x14_dbz.nml .
+ln -snf ${RDASAPP_DIR}/fix/expr_data/fv3_2024052700/DataFix .
 #
 #-----------------------------------------------------------------------
 #
@@ -497,16 +511,50 @@ cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/mgbf_p196_14x14.nml .
 #
 #-----------------------------------------------------------------------
 #
+# Early exit if this is a cold start cycle and DO_DACOLD is False 
+#
+#-----------------------------------------------------------------------
+#
+
+if [[ "${DO_DACOLD}" = "FALSE" && "${BKTYPE}" -eq 1 ]]; then
+  echo "Not performing DA for cold cycles - do early clean exit"
+  exit 0
+fi
+
+#
+#-----------------------------------------------------------------------
+# If performing reflectivity analysis, prepare phy_data.nc files
+#-----------------------------------------------------------------------
+#
+# NOTE: eventually want to move this to the prep task for improved
+#        efficiency. but will wait to test that until we do fully
+#        coupled GETKF+Var cycling
+#
+
+if [[ ${anav_type} == "radardbz" ]]; then
+  cp ${USHdir}/prep_phydata_dbz.py ./
+  python prep_phydata_dbz.py fv3_phyvars
+  if [[ ${regional_ensemble_option:-1} ]]; then
+    cp ${USHdir}/prep_phydata_dbz.py ./
+    imem=1
+    while [[ $imem -le ${NUM_ENS_MEMBERS} ]];do
+      memcharv0=$( printf "%03d" $imem )
+      python prep_phydata_dbz.py data/inputs/mem${memcharv0}/fv3_phyvars
+      imem=$((imem+1))
+    done
+  fi
+fi
+
+#
+#-----------------------------------------------------------------------
+#
 # Run JEDI. Note that we have to launch the forecast from
 # the current cycle's run directory because the JEDI executable will look
 # for input files in the current directory.
 #
 #-----------------------------------------------------------------------
 #
-if [[ "${DO_DACOLD}" = "FALSE" && "${BKTYPE}" -eq 1 ]]; then
-  echo "Not performing DA for cold cycles - do early clean exit"
-  exit 0
-fi
+
 #export OOPS_TRACE=1
 #export OOPS_DEBUG=1
 export OMP_NUM_THREADS=1
@@ -517,8 +565,9 @@ cp "${jedi_exec}" "${analworkdir}/${pgm}"
 . prep_step
 
 ${APRUN} ./$pgm jedivar.yaml >>$pgmout 2>errfile
-cp $pgmout ${COMOUT}/rrfs.t${HH}z.jediout.tm00
-cp rdas-atmosphere-templates-fv3_c13.yaml jedivar.yaml ${COMOUT}
+cp $pgmout ${COMOUT}/rrfs.t${HH}z.jediout_${anav_type}.tm00
+cp ${jcb_config} ${COMOUT}
+cp jedivar.yaml ${COMOUT}/jedivar_${anav_type}.yaml
 export err=$?; err_chk
 mv errfile errfile_jedi
 #
@@ -627,7 +676,7 @@ fi
 #
 print_info_msg "
 ========================================================================
-PREPBUFR PROCESS completed successfully!!!
+JEDIVAR PROCESS completed successfully!!!
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"

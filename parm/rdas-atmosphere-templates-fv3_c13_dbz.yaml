@@ -16,9 +16,8 @@ output_file: atmosphere_output
 output_ensemble_increments_file: atmosphere_output_ensemble_increments_gaussian
 model_file: atmosphere_model_pseudo
 initial_condition_file: atmosphere_background
-background_error_file: atmosphere_background_error_hybrid3denvar_mgbf
-#background_error_file: atmosphere_background_error_3dvar_gsibec
-#background_error_file: atmosphere_background_error_3dvar_bumpID
+#background_error_file: atmosphere_background_error_hybrid3denvar_mgbf_refl
+background_error_file: atmosphere_background_error_hybrid3denvar_bump_refl
 
 # Global analysis things
 # ----------------------
@@ -37,6 +36,13 @@ analysis_variables:
 - water_vapor_mixing_ratio_wrt_moist_air
 - air_pressure_at_surface
 - ozone_mass_mixing_ratio
+- cloud_liquid_water
+- cloud_liquid_ice
+- rain_water
+- snow_water
+- graupel
+- upward_air_velocity
+- equivalent_reflectivity_factor
 
 # Testing
 # -------
@@ -44,15 +50,19 @@ do_testing: false
 
 # Model things
 # ------------
-fv3lam_nml: input_lam_C775_NP14X14.nml
-atmosphere_layout_x: 14
-atmosphere_layout_y: 14
+#fv3lam_nml: input_lam_C775_NP14X14.nml # mgbf
+#atmosphere_layout_x: 14 # mgbf
+#atmosphere_layout_y: 14 # mgbf
+fv3lam_nml: input_lam_C775_NP16X10.nml # bump
+atmosphere_layout_x: 16 # bump
+atmosphere_layout_y: 10 # bump
 atmosphere_npx_ges: 420 #not sure if correct
 atmosphere_npy_ges: 252 #not sure if correct
 atmosphere_npz_ges: 65
 atmosphere_npx_anl: 420 #not sure if correct
 atmosphere_npy_anl: 252 #not sure if correct
 atmosphere_npz_anl: 65
+atmosphere_fv3jedi_files_path: DataFix
 atmosphere_ntiles: 1
 atmosphere_io_layout_x: 1
 atmosphere_io_layout_y: 1
@@ -67,7 +77,7 @@ atmosphere_background_time_iso: @ATMOSPHERE_BACKGROUND_TIME_ISO@
 atmosphere_background_time_prefix: ""
 filename_core: fv3_dynvars # fv_core.res.tile1.nc
 filename_trcr: fv3_tracer  # fv_tracer.res.tile1.nc
-filename_phys: fv3_phyvars # phy_data.nc
+filename_phys: fv3_phyvars_prepdbz
 filename_sfcd: fv3_sfcdata # sfc_data.nc
 filename_sfcw: fv_srf_wnd.res.tile1.nc
 filename_cplr: coupler.res
@@ -101,6 +111,7 @@ state_variables:
 - cloud_ice_number_concentration
 - rain_number_concentration
 - upward_air_velocity
+- equivalent_reflectivity_factor
 
 eastward_wind: ua
 northward_wind: va
@@ -168,18 +179,21 @@ atms_n21_use_flag: [ 1,  1,  1,  1,  1, 1,  1,  1,  1,  1, 1,  1,  1, -1, -1, 1,
 atmosphere_bump_data_directory: DATA/berror
 atmosphere_gsibec_path: DATA/berror
 atmosphere_number_ensemble_members: 30
-atmosphere_layout_gsib_x: 14
-atmosphere_layout_gsib_y: 14
+#atmosphere_layout_gsib_x: 14 # mgbf
+#atmosphere_layout_gsib_y: 14 # mgbf
+atmosphere_layout_gsib_x: 16 # bump
+atmosphere_layout_gsib_y: 10 # bump
 lat_start: -29.335138
 lat_end: 29.335138
 lon_start: -50.033098
 lon_end: 50.033098
 north_pole_lat: 51.499998
 north_pole_lon: 82.500018
-gsi_bands: 14
+#gsi_bands: 14 # mgbf
+gsi_bands: 10 # bump
 
 # Ensemble localization
-mgbf_nml: mgbf_p196_14x14.nml
+mgbf_nml: mgbf_p196_14x14_dbz.nml
 mgbf_nx: 224
 mgbf_ny: 224
 mgbf_dx: 30.0e3
@@ -200,67 +214,67 @@ atmosphere_final_increment_prefix: "./anl/atminc."
 # ------------------
 observations:
 # Upper-air conventional
-- adpupa_airTemperature_120
-- adpupa_airTemperature_132
-- adpupa_specificHumidity_120
-- adpupa_specificHumidity_132
-- adpupa_stationPressure_120
-- adpupa_winds_220
-- adpupa_winds_232
+#- adpupa_airTemperature_120
+#- adpupa_airTemperature_132
+#- adpupa_specificHumidity_120
+#- adpupa_specificHumidity_132
+#- adpupa_stationPressure_120
+#- adpupa_winds_220
+#- adpupa_winds_232
 
-- aircar_airTemperature_133
-- aircar_specificHumidity_133
-- aircar_winds_233
+#- aircar_airTemperature_133
+#- aircar_specificHumidity_133
+#- aircar_winds_233
 
-- aircft_airTemperature_130
-- aircft_airTemperature_131
-- aircft_airTemperature_134
-- aircft_airTemperature_135
-- aircft_specificHumidity_134
-- aircft_winds_230
-- aircft_winds_231
-- aircft_winds_234
-- aircft_winds_235
+#- aircft_airTemperature_130
+#- aircft_airTemperature_131
+#- aircft_airTemperature_134
+#- aircft_airTemperature_135
+#- aircft_specificHumidity_134
+#- aircft_winds_230
+#- aircft_winds_231
+#- aircft_winds_234
+#- aircft_winds_235
 
-- proflr_winds_227
-- vadwnd_winds_224
-- rassda_airTemperature_126
+#- proflr_winds_227
+#- vadwnd_winds_224
+#- rassda_airTemperature_126
 
 # Surface conventional
-- adpsfc_airTemperature_181
-- adpsfc_airTemperature_183
-- adpsfc_airTemperature_187
-- adpsfc_specificHumidity_181
-- adpsfc_specificHumidity_183
-- adpsfc_specificHumidity_187
-- adpsfc_stationPressure_181
-- adpsfc_stationPressure_187
-- adpsfc_winds_281
-- adpsfc_winds_284
-- adpsfc_winds_287
-- msonet_airTemperature_188
-- msonet_specificHumidity_188
-- msonet_stationPressure_188
-- msonet_winds_288
+#- adpsfc_airTemperature_181
+#- adpsfc_airTemperature_183
+#- adpsfc_airTemperature_187
+#- adpsfc_specificHumidity_181
+#- adpsfc_specificHumidity_183
+#- adpsfc_specificHumidity_187
+#- adpsfc_stationPressure_181
+#- adpsfc_stationPressure_187
+#- adpsfc_winds_281
+#- adpsfc_winds_284
+#- adpsfc_winds_287
+#- msonet_airTemperature_188
+#- msonet_specificHumidity_188
+#- msonet_stationPressure_188
+#- msonet_winds_288
 
-- sfcshp_airTemperature_180
-- sfcshp_airTemperature_182
-- sfcshp_airTemperature_183
-- sfcshp_specificHumidity_180
-- sfcshp_specificHumidity_182
-- sfcshp_specificHumidity_183
-- sfcshp_stationPressure_180
-- sfcshp_stationPressure_182
-- sfcshp_winds_280
-- sfcshp_winds_282
-- sfcshp_winds_284
+#- sfcshp_airTemperature_180
+#- sfcshp_airTemperature_182
+#- sfcshp_airTemperature_183
+#- sfcshp_specificHumidity_180
+#- sfcshp_specificHumidity_182
+#- sfcshp_specificHumidity_183
+#- sfcshp_stationPressure_180
+#- sfcshp_stationPressure_182
+#- sfcshp_winds_280
+#- sfcshp_winds_282
+#- sfcshp_winds_284
 
 # Remote
 #- gnss_zenithTotalDelay
-- satwnd_winds_245_270
-- satwnd_winds_245_272
-- satwnd_winds_246_270
-- satwnd_winds_246_272
+#- satwnd_winds_245_270
+#- satwnd_winds_245_272
+#- satwnd_winds_246_270
+#- satwnd_winds_246_272
 
 # SatRad
 #- abi_g16
@@ -271,6 +285,9 @@ observations:
 #- atms_npp
 #- atms_n20
 #- atms_n21
+
+# Radar
+- mrms_refl
 
 # Analysis iuse flag (default: passivate)
 # Upper-air conventional
@@ -345,6 +362,9 @@ iuse_amsua_metop-c: passivate
 iuse_atms_npp: passivate
 iuse_atms_n20: passivate
 iuse_atms_n21: passivate
+
+# Radar
+iuse_mrms_refl: accept
 
 crtm_coefficient_path: "Data/crtm"
 
