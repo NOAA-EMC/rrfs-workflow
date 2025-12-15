@@ -101,6 +101,10 @@ err_chk
 # No need to copy output b/c ${initial_file} was linked from UMBRELLA_PREP_IC_DATA
 
 # Copy log files to COM directory
-${cpreq} stdout_cloudanalysis* "${COMOUT}/nonvar_cldana/${WGF}/"
+if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
+  ${cpreq} stdout_cloudanalysis* "${COMOUT}/nonvar_cldana_spinup/${WGF}${MEMDIR}/"
+else
+  ${cpreq} stdout_cloudanalysis* "${COMOUT}/nonvar_cldana/${WGF}${MEMDIR}/"
+fi
 
 exit 0

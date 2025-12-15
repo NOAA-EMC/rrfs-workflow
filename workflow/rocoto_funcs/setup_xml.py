@@ -119,6 +119,9 @@ def setup_xml(HOMErrfs, expdir):
                 ioda_bufr(xmlFile, expdir)
             if os.getenv("DO_RADAR_REF", "FALSE").upper() == "TRUE":
                 ioda_mrms_refl(xmlFile, expdir)
+            if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
+                nonvar_bufrobs(xmlFile, expdir)
+                nonvar_reflobs(xmlFile, expdir)
             ungrib_ic(xmlFile, expdir, do_ensemble=True)
             ungrib_lbc(xmlFile, expdir, do_ensemble=True)
             ic(xmlFile, expdir, do_ensemble=True)
@@ -131,6 +134,8 @@ def setup_xml(HOMErrfs, expdir):
                 getkf(xmlFile, expdir, 'OBSERVER')
                 getkf(xmlFile, expdir, 'SOLVER')
                 getkf(xmlFile, expdir, 'POST')
+            if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
+                nonvar_cldana(xmlFile, expdir, do_ensemble=True)
             fcst(xmlFile, expdir, do_ensemble=True)
             if os.getenv('DO_CYC', 'FALSE').upper() == "TRUE":
                 save_for_next(xmlFile, expdir, do_ensemble=True)
