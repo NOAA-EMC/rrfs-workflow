@@ -17,3 +17,7 @@ workflow/rrfsexps/
 workflow/config.chemistry
 sorc/build_timing.txt
 superyamls
+fix/ar3.5km
+fix/ea5km
+fix/global-15-3km
+fix/eu12km
