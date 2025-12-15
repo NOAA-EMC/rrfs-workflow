@@ -447,7 +447,6 @@ input files in the main experiment directory..."
 
 relative_or_null=""
 
-cpreq ${relative_or_null} ${DATA_TABLE_FP} ${DATA}
 cpreq ${relative_or_null} ${FIELD_TABLE_FP} ${DATA}
 cpreq ${relative_or_null} ${UFS_YAML_FP} ${DATA}
 
