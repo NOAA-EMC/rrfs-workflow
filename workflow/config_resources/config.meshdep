@@ -142,4 +142,16 @@ elif [[ ${MESH_NAME} == "ea5km" ]]; then
   export GSIBEC_LAT_START=-17.645700
   export GSIBEC_LAT_END=17.645700
 
+elif [[ ${MESH_NAME} == "global-15-3km" ]]; then
+  export FCST_DT=20
+  export FCST_SUBSTEPS=4
+  export FCST_RADT=15
+  export UPP_DOMAIN="conus."
+
+  export MPASSIT_NX=1800
+  export MPASSIT_NY=1060
+  export MPASSIT_DX=3000.0
+  export MPASSIT_REF_LAT=38.5
+  export MPASSIT_REF_LON=-97.5
+
 fi
