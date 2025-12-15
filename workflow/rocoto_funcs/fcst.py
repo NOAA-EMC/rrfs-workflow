@@ -104,11 +104,13 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     prep_ic_dep = f'<taskdep task="prep_ic{ensindexstr}"/>'
     if do_spinup:
         prep_ic_dep = f'<taskdep task="prep_ic_spinup"/>'
+    prep_lbc_dep = f'\n    <taskdep task="prep_lbc{ensindexstr}" cycle_offset="0:00:00"/>'
+    if "global" in os.getenv("MESH_NAME"):
+        prep_lbc_dep = ''
 
     dependencies = f'''
   <dependency>
-  <and>{timedep}
-    <taskdep task="prep_lbc{ensindexstr}" cycle_offset="0:00:00"/>
+  <and>{timedep}{prep_lbc_dep}
     {prep_ic_dep}{jedidep}{chemdep}{cloudana_dep}{recenterdep}
   </and>
   </dependency>'''
