@@ -106,8 +106,8 @@ elif [[ ${MESH_NAME} == "ar3.5km" ]]; then
   export FCST_RADT=15
   export UPP_DOMAIN="ar."
 
-  export MPASSIT_NX=6000
-  export MPASSIT_NY=4800
+  export MPASSIT_NX=1710
+  export MPASSIT_NY=1370
   export MPASSIT_DX=3500.0
   export MPASSIT_REF_LAT=40.0
   export MPASSIT_REF_LON=-135.5
