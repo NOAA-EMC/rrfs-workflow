@@ -68,6 +68,8 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     if PREP_IC_TYPE == "jedivar" or PREP_IC_TYPE == "getkf":
         dcTaskEnv['USE_THE_LATEST_SATBIAS'] = os.getenv("USE_THE_LATEST_SATBIAS", "FALSE").upper()
 
+    if "global" in os.getenv("MESH_NAME"):
+        dcTaskEnv['cpreq'] = "ln -snf"
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
     coldhrs = coldhrs.split(' ')
