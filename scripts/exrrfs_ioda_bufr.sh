@@ -29,7 +29,7 @@ yaml_list=(
 "prepbufr_rassda.yaml"
 "prepbufr_sfcshp.yaml"
 "prepbufr_vadwnd.yaml"
-"bufr2ioda_cris.yaml"
+#"bufr2ioda_cris-fsr.yaml"
 )
 
 if (( ${YAML_GEN_METHOD:-1} == 2 )); then
@@ -71,6 +71,20 @@ if [[ -f "$input_file" ]]; then
 else
   echo "Input file $input_file does not exist."
 fi
+
+# --------------------------------------------------
+# run  bufr2netcdf tool for cris-fsr bufr obs
+# --------------------------------------------------
+${cpreq} "${PARMrrfs}/bufr2netcdf_cris-fsr.yaml" .
+input_file="crisfsbufr"
+output_file="ioda_crisf4_{splits/satId}.nc"
+yaml="bufr2netcdf_cris-fsr.yaml"
+if [[ -f "$input_file" ]]; then
+  ./bufr2netcdf.x "$input_file" "$yaml" "$output_file"
+else
+  echo "Input file $input_file does not exist."
+fi
+
 # run python bufr2ioda tool for ZTD and AMV bufr obs
 # --------------------------------------------------
 HOMErdasapp=${HOMErrfs}/sorc/RDASApp/
