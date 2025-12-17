@@ -11,4 +11,5 @@
 &ungrib
   out_format = 'WPS',
   prefix = '@prefix@',
+  pmin = 1.0,
 /

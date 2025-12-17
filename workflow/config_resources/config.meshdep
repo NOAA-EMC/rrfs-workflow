@@ -106,8 +106,8 @@ elif [[ ${MESH_NAME} == "ar3.5km" ]]; then
   export FCST_RADT=15
   export UPP_DOMAIN="ar."
 
-  export MPASSIT_NX=6000
-  export MPASSIT_NY=4800
+  export MPASSIT_NX=1710
+  export MPASSIT_NY=1370
   export MPASSIT_DX=3500.0
   export MPASSIT_REF_LAT=40.0
   export MPASSIT_REF_LON=-135.5
@@ -141,5 +141,17 @@ elif [[ ${MESH_NAME} == "ea5km" ]]; then
   export GSIBEC_LON_END=19.666200
   export GSIBEC_LAT_START=-17.645700
   export GSIBEC_LAT_END=17.645700
+
+elif [[ ${MESH_NAME} == "global-15-3km" ]]; then
+  export FCST_DT=20
+  export FCST_SUBSTEPS=4
+  export FCST_RADT=15
+  export UPP_DOMAIN="conus."
+
+  export MPASSIT_NX=1800
+  export MPASSIT_NY=1060
+  export MPASSIT_DX=3000.0
+  export MPASSIT_REF_LAT=38.5
+  export MPASSIT_REF_LON=-97.5
 
 fi
