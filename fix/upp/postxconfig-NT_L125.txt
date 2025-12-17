@@ -2,7 +2,7 @@
 23
 16
 147
-WRFTWO
+POSTTWO
 4
 ncep_emc
 v2003
@@ -6192,7 +6192,7 @@ entire_atmos_single_lyr
 ?
 ?
 ?
-WRFPRS
+POSTPRS
 4
 ncep_emc
 v2003
@@ -6880,7 +6880,7 @@ depth_bel_land_sfc
 ?
 ?
 ?
-WRFNAT
+POSTNAT
 4
 ncep_emc
 v2003
