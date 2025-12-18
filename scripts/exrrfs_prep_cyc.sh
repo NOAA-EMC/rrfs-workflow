@@ -102,7 +102,7 @@ ICS_ROOT=${shared_output_data_ics}
 #
 START_DATE=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
 
-YYYYMMDDHH=$(date +%Y%m%d%H -d "${START_DATE}")
+YYYYMMDDHH=$CDATE
 JJJ=$(date +%j -d "${START_DATE}")
 
 YYYY=${YYYYMMDDHH:0:4}
@@ -113,11 +113,11 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 YYYYJJJHH=${YYYY}${JJJ}${HH}
 
 current_time=$(date "+%T")
-cdate_crnt_fhr=$( date --utc --date "${YYYYMMDD} ${HH} UTC" "+%Y%m%d%H" )
+cdate_crnt_fhr=${YYYYMMDD}${HH}
 
-YYYYMMDDm1=$(date +%Y%m%d -d "${START_DATE} 1 days ago")
-YYYYMMDDm2=$(date +%Y%m%d -d "${START_DATE} 2 days ago")
-YYYYMMDDm3=$(date +%Y%m%d -d "${START_DATE} 3 days ago")
+YYYYMMDDm1=$($NDATE -24 ${YYYYMMDD}${HH} | cut -c1-8)
+YYYYMMDDm2=$($NDATE -48 ${YYYYMMDD}${HH} | cut -c1-8)
+YYYYMMDDm3=$($NDATE -72 ${YYYYMMDD}${HH} | cut -c1-8)
 #
 #-----------------------------------------------------------------------
 #
@@ -310,7 +310,7 @@ else
   #   So the defination of restart_prefix needs a "." at the end.
   #
   if [ "${CYCLE_SUBTYPE}" = "spinup" ] ; then
-    restart_prefix=$( date "+%Y%m%d.%H%M%S" -d "${YYYYMMDD} ${HH} + ${DT_ATMOS} seconds" ).
+    restart_prefix="${YYYYMMDD}.${HH}00${DT_ATMOS}."
   else
     restart_prefix="${YYYYMMDD}.${HH}0000."
   fi
@@ -321,7 +321,7 @@ else
     bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}_spinup/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
     ctrl_bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}_spinup/${mem_num}/forecast/INPUT
   else
-    YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
+    YYYYMMDDHHmInterv=$($NDATE -${DA_CYCLE_INTERV} ${YYYYMMDD}${HH})
     YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
     HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
     if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
@@ -354,7 +354,7 @@ else
         break
       else
         n=$((n + ${DA_CYCLE_INTERV}))
-        YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${n} hours ago" )
+	YYYYMMDDHHmInterv=$($NDATE -${n} ${YYYYMMDD}${HH})
         YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
         HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
         if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
@@ -379,7 +379,7 @@ else
     if [ ! -r "${checkfile}" ] && [ ${BKTYPE} -eq 2 ]; then
      print_info_msg "$VERBOSE" "cannot find background from spin-up cycle, try product cycle"
      fg_restart_dirname=forecast
-     YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
+     YYYYMMDDHHmInterv=$($NDATE -${DA_CYCLE_INTERV} ${YYYYMMDD}${HH})
      YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
      HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
      if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
@@ -397,7 +397,7 @@ else
          break
        else
          n=$((n + ${DA_CYCLE_INTERV}))
-         YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${n} hours ago" )
+	 YYYYMMDDHHmInterv=$($NDATE -${n} ${YYYYMMDD}${HH})
          YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
          HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
          if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
@@ -584,11 +584,11 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
       surface_file_dir_name=forecast
       bkpath_find="missing"
       restart_prefix_find="missing"
-      restart_prefix=$( date +%Y%m%d.%H0000. -d "${START_DATE}" )
+      restart_prefix="${YYYYMMDD}.${HH}0000."
       if [ "${bkpath_find}" = "missing" ]; then
 
           offset_hours=${DA_CYCLE_INTERV}
-          YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
+	  YYYYMMDDHHmInterv=$($NDATE -${offset_hours} ${YYYYMMDD}${HH})
           YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
           HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
           bkpath=${COMrrfs}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/forecast/RESTART
@@ -604,7 +604,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
  
              n=$((n + ${DA_CYCLE_INTERV}))
              offset_hours=${n}
-             YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
+	     YYYYMMDDHHmInterv=$($NDATE -${offset_hours} ${YYYYMMDD}${HH})
              YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
              HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
              bkpath=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${surface_file_dir_name}/RESTART  # cycling, use background from RESTART
@@ -649,7 +649,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
     restart_suffix_find="missing"
     bkpath=${LBCS_ROOT}/${surface_file_dir_name}
 
-    restart_prefix=$( date +%Y%m%d.%H0000. -d "${START_DATE}" )
+    restart_prefix="${YYYYMMDD}.${HH}0000."
     if [ -r "${bkpath}/${restart_prefix}sfc_data.nc.sync" ]; then
       restart_prefix_find=${restart_prefix}
       restart_suffix_find="sync"
@@ -657,10 +657,11 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
       for ndayinhour in 00 24 48 72
       do 
         if [ "${restart_suffix_find}" = "missing" ]; then
-          restart_prefix=$( date +%Y%m%d.%H0000. -d "${START_DATE} ${ndayinhour} hours ago" )
+          yyyymmddhh_prev=$($NDATE -${ndayinhour} ${YYYYMMDD}${HH})
+          restart_prefix="${yyyymmddhh_prev:0:8}.${yyyymmddhh_prev:8:2}0000."
 
           offset_hours=$(( ${DA_CYCLE_INTERV} + ${ndayinhour} ))
-          YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
+	  YYYYMMDDHHmInterv=$($NDATE -${offset_hours} ${YYYYMMDD}${HH})
 
           n=${DA_CYCLE_INTERV}
           while [[ $n -le 13 ]] ; do
@@ -673,7 +674,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
 
             n=$((n + ${DA_CYCLE_INTERV}))
             offset_hours=$(( ${n} + ${ndayinhour} ))
-            YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
+	    YYYYMMDDHHmInterv=$($NDATE -${offset_hours} ${YYYYMMDD}${HH})
             print_info_msg "$VERBOSE" "Trying this cycle: ${YYYYMMDDHHmInterv}"
           done
         fi
@@ -687,10 +688,11 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
       for ndayinhour in 00 24
       do 
         if [ "${restart_suffix_find}" = "missing" ]; then
-          restart_prefix=$( date +%Y%m%d.%H0000. -d "${START_DATE} ${ndayinhour} hours ago" )
+          yyyymmddhh_prev=$($NDATE -${ndayinhour} ${YYYYMMDD}${HH})
+          restart_prefix="${yyyymmddhh_prev:0:8}.${yyyymmddhh_prev:8:2}0000."
 
           offset_hours=$(( ${DA_CYCLE_INTERV} + ${ndayinhour} ))
-          YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
+	  YYYYMMDDHHmInterv=$($NDATE -${offset_hours} ${YYYYMMDD}${HH})
 
           n=${DA_CYCLE_INTERV}
           while [[ $n -le 2 ]] ; do
@@ -703,7 +705,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
  
             n=$((n + ${DA_CYCLE_INTERV}))
             offset_hours=$(( ${n} + ${ndayinhour} ))
-            YYYYMMDDHHmInterv=$( date +%Y%m%d%H -d "${START_DATE} ${offset_hours} hours ago" )
+	    YYYYMMDDHHmInterv=$($NDATE -${offset_hours} ${YYYYMMDD}${HH})
             print_info_msg "$VERBOSE" "Trying this cycle: ${YYYYMMDDHHmInterv}"
           done
         fi
@@ -828,7 +830,7 @@ print_info_msg "$VERBOSE" " The forecast length for cycle (\"${HH}\") is
 bndy_prefix=gfs_bndy.tile7
 n=${EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS}
 end_search_hr=$(( 12 + ${EXTRN_MDL_LBCS_SEARCH_OFFSET_HRS} ))
-YYYYMMDDHHmInterv=$(date +%Y%m%d%H -d "${START_DATE} ${n} hours ago")
+YYYYMMDDHHmInterv=$($NDATE -${n} ${YYYYMMDD}${HH})
 YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
 HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
@@ -845,7 +847,7 @@ while [[ $n -le ${end_search_hr} ]] ; do
     break
   else
     n=$((n + 1))
-    YYYYMMDDHHmInterv=$(date +%Y%m%d%H -d "${START_DATE} ${n} hours ago")
+    YYYYMMDDHHmInterv=$($NDATE -${n} ${YYYYMMDD}${HH})
     YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
     HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
     if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
@@ -1001,9 +1003,9 @@ if [ "${USE_FVCOM}" = "TRUE" ] && [ ${SFC_CYC} -eq 2 ] ; then
   else
     latest_fvcom_file="${FVCOM_DIR}/${FVCOM_FILE}"
     if [ ${HH} -gt 12 ]; then 
-      starttime_fvcom="$(date +%Y%m%d -d "${START_DATE}") 12"
+      starttime_fvcom="${YYYYMMDD} 12"
     else
-      starttime_fvcom="$(date +%Y%m%d -d "${START_DATE}") 00"
+      starttime_fvcom="${YYYYMMDD} 00"
     fi
     for ii in $(seq 0 3)
     do

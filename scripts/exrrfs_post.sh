@@ -141,7 +141,7 @@ else
   post_min=00
 fi
 
-post_time=$( date --utc --date "${yyyymmdd} ${hh} UTC + ${post_fhr} hours" "+%Y%m%d%H" )
+post_time=$($NDATE ${post_fhr} ${yyyymmdd}${hh})
 post_yyyy=${post_time:0:4}
 post_mm=${post_time:4:2}
 post_dd=${post_time:6:2}

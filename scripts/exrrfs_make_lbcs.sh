@@ -422,7 +422,7 @@ Need to do time interpolation!
       echo in1=${in1}
       in2=$( echo $file | sed 's/...$/'${fhrp}'/g' )
       echo in2=${in2}
-      vtime=$( date +%Y%m%d%H -d "${yyyymmdd} ${hh} +${fcsthr_m} hours" )
+      vtime=$($NDATE ${fcsthr_m} ${yyyymmdd}${hh})
       echo vtime = $vtime
       a="vt=${vtime}"
       d1="${fcsthr} hour forecast"

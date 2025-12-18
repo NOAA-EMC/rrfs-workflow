@@ -61,22 +61,20 @@ SED=/bin/sed
 DATE=/bin/date
 LN=/bin/ln
 START_DATE=$(${ECHO} "${CDATE}" | ${SED} 's/\([[:digit:]]\{2\}\)$/ \1/')
-YYYYMMDDHH=$(${DATE} +%Y%m%d%H -d "${START_DATE}")
+YYYYMMDDHH=${CDATE:0:10}
 YYYYMMDD=${YYYYMMDDHH:0:8}
 HH=${YYYYMMDDHH:8:2}
 ${ECHO} ${YYYYMMDD}
 ${ECHO} ${HH}
-current_day=`${DATE} -d "${YYYYMMDD}"`
 current_hh=`${DATE} -d ${HH} +"%H"`
 prev_hh=`${DATE} -d "$current_hh -24 hour" +"%H"`
-previous_day=`${DATE} '+%C%y%m%d' -d "$current_day-1 days"`
-previous_day="${previous_day} ${prev_hh}"
+previous_day=$($NDATE -24 ${YYYYMMDDHH})
 nfiles=24
 smokeFile=SMOKE_RRFS_data_${YYYYMMDDHH}00.nc
 
 for i in $(seq 0 $(($nfiles - 1)) )
 do
-   timestr=`date +%Y%m%d%H -d "$previous_day + $i hours"`
+   timestr=$($NDATE $i ${previous_day})
    intp_fname=${PREDEF_GRID_NAME}_intp_${timestr}00_${timestr}59.nc
    if  [ -f ${rave_dir}/${intp_fname} ]; then
       ${LN} -sf ${rave_dir}/${intp_fname} ${DATA}/${intp_fname}
@@ -92,7 +90,7 @@ done
 #
 #-----------------------------------------------------------------------
 
-previous_2day=`${DATE} '+%C%y%m%d' -d "$current_day-2 days"`
+previous_2day=$($NDATE -48 ${YYYYMMDDHH})
 YYYYMMDDm1=${previous_day:0:8}
 YYYYMMDDm2=${previous_2day:0:8}
 if [ -d ${FIRE_RAVE_DIR}/${YYYYMMDDm1}/rave ]; then

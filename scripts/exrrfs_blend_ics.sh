@@ -98,7 +98,7 @@ pgm="blending"
 
 yyyymmdd="${cdate_crnt_fhr:0:8}"
 hh="${cdate_crnt_fhr:8:2}"
-cdate_crnt_fhr_m1=$( date --utc --date "${yyyymmdd} ${hh} UTC - 1 hours" "+%Y%m%d%H" )
+cdate_crnt_fhr_m1=$($NDATE -1 ${yyyymmdd}${hh})
 yyyymmdd_m1="${cdate_crnt_fhr_m1:0:8}"
 hh_m1="${cdate_crnt_fhr_m1:8:2}"
 
