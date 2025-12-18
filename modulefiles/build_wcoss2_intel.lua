@@ -48,6 +48,7 @@ load(pathJoin("w3emc", os.getenv("w3emc_ver")))
 load(pathJoin("w3nco", os.getenv("w3nco_ver")))
 load(pathJoin("nemsio", os.getenv("nemsio_ver")))
 
+setenv("INTEL_COMPILER_TYPE","CLASSIC")
 setenv("CMAKE_C_COMPILER","cc")
 setenv("CMAKE_CXX_COMPILER","CC")
 setenv("CMAKE_Fortran_COMPILER","ftn")
