@@ -15,13 +15,13 @@
 !otype   type  sub iuse twindow  gross ermax ermin msgtype
  tcp      112    0    0     1.5   75.0   3.0   1.0 N/A
  ps       111    0    0     1.5    5.0   3.0   1.0 SYNDAT
- ps       120    0    0     1.5    5.0   3.0   1.0 ADPUPA
+ ps       120    0    1     1.5    5.0   3.0   1.0 ADPUPA
  ps       132    0    0     1.5    5.0   3.0   1.0 ADPUPA
- ps       180    0    0     1.5    5.0   3.0   1.0 SFCSHP
- ps       181    0    0     0.25   5.0   3.0   1.0 ADPSFC
+ ps       180    0    1     1.5    5.0   3.0   1.0 SFCSHP
+ ps       181    0    1     0.25   5.0   3.0   1.0 ADPSFC
  ps       182    0    0     1.5    5.0   3.0   1.0 SFCSHP
  ps       183    0    0     0.25   5.0   3.0   1.0 ADPSFC,SFCSHP
- ps       187    0    0     0.25   5.0   3.0   1.0 ADPSFC
+ ps       187    0    1     0.25   5.0   3.0   1.0 ADPSFC
  ps       188    0    0     0.1    5.0   3.0   1.0 MSONET
  t        120    0    1     1.5    7.0   5.6   1.3 ADPUPA
  t        126    0    0     0.40   5.0   5.6   1.3 RASSDA
@@ -31,11 +31,11 @@
  t        133    0    1     0.75   7.0   5.6   1.3 AIRCAR
  t        134    0    0     0.75   7.0   5.6   1.3 AIRCFT
  t        135    0    0     0.75   7.0   5.6   1.3 AIRCFT
- t        180    0    0     1.5    7.0   3.0   1.0 SFCSHP
- t        181    0    0     0.25   5.0   3.0   1.0 ADPSFC
+ t        180    0    1     1.5    7.0   3.0   1.0 SFCSHP
+ t        181    0    1     0.25   5.0   3.0   1.0 ADPSFC
  t        182    0    0     1.5    5.0   3.0   1.0 SFCSHP
- t        183    0    0     0.25   5.0   3.0   1.0 ADPSFC,SFCSHP
- t        187    0    0     0.25   5.0   3.0   1.0 ADPSFC
+ t        183    0    1     0.25   5.0   3.0   1.0 ADPSFC,SFCSHP
+ t        187    0    1     0.25   5.0   3.0   1.0 ADPSFC
  t        188    0    0     0.1    5.0   3.0   1.0 MSONET
  q        111    0    0     1.5    7.0  75.0   5.0 SYNDAT
  q        120    0    1     1.5    7.0  50.0   5.0 ADPUPA
@@ -45,11 +45,11 @@
  q        133    0    1     0.75   7.0  50.0   5.0 AIRCAR
  q        134    0    0     0.75   7.0  50.0   5.0 AIRCFT
  q        135    0    0     0.75   7.0  50.0   5.0 AIRCFT
- q        180    0    0     1.5    7.0  50.0   5.0 SFCSHP
- q        181    0    0     0.25   7.0  50.0   5.0 ADPSFC
+ q        180    0    1     1.5    7.0  50.0   5.0 SFCSHP
+ q        181    0    1     0.25   7.0  50.0   5.0 ADPSFC
  q        182    0    0     1.5    7.0  50.0   5.0 SFCSHP
- q        183    0    0     0.25   7.0  50.0   5.0 ADPSFC,SFCSHP
- q        187    0    0     0.25   7.0  50.0   5.0 ADPSFC
+ q        183    0    1     0.25   7.0  50.0   5.0 ADPSFC,SFCSHP
+ q        187    0    1     0.25   7.0  50.0   5.0 ADPSFC
  q        188    0    0     0.1    7.0  50.0   5.0 MSONET
  pw       152    0    0     1.5    7.0   8.0   2.0 SPSSMI
  pw       153    0    0     1.5    7.0   8.0   2.0 GPSIPW
@@ -183,13 +183,13 @@
  uv       260  224    0     1.5    1.5   5.0   1.0 SATWND
  uv       260  225    0     1.5    1.5   5.0   1.0 SATWND
  uv       261    0    0     1.5    1.5   5.0   1.0 N/A
- uv       280    0    0     1.5    5.0   5.0   1.0 SFCSHP
- uv       281    0    0     0.25   5.0   5.0   1.0 ADPSFC
- uv       282    0    0     1.5    5.0   5.0   1.0 SFCSHP
- uv       284    0    0     1.5    5.0   5.0   1.0 ADPSFC,SFCSHP
+ uv       280    0    1     1.5    5.0   5.0   1.0 SFCSHP
+ uv       281    0    1     0.25   5.0   5.0   1.0 ADPSFC
+ uv       282    0    1     1.5    5.0   5.0   1.0 SFCSHP
+ uv       284    0    1     1.5    5.0   5.0   1.0 ADPSFC,SFCSHP
  uv       285    0    0     1.5    5.0   5.0   1.0 QKSWND
  uv       286    0    0     1.5    5.0   5.0   1.0 ERS1DA
- uv       287    0    0     0.25   5.0   5.0   1.0 ADPSFC
+ uv       287    0    1     0.25   5.0   5.0   1.0 ADPSFC
  uv       288    0    0     0.1    5.0   5.0   1.0 MSONET
  uv       289    0    0     1.5    5.0   5.0   1.0 WDSATR
  uv       290    4    0     1.5    5.0   5.0   1.0 ASCATW
