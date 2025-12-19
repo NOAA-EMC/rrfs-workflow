@@ -1796,10 +1796,13 @@ observations:
          simulated variables: [stationPressure]
 
        obs operator:
-         name: SfcPCorrected
-         da_psfc_scheme: GSI
+         name: SfcCorrected
+         correction scheme to use: GSL
          geovar_sfc_geomz: geopotential_height_at_surface
          geovar_geomz: geopotential_height
+         variables:
+         - name: stationPressure
+
        linear obs operator:
          name: Identity
 
@@ -4374,10 +4377,13 @@ observations:
          simulated variables: [stationPressure]
 
        obs operator:
-         name: SfcPCorrected
-         da_psfc_scheme: GSI
+         name: SfcCorrected
+         correction scheme to use: GSL
          geovar_sfc_geomz: geopotential_height_at_surface
          geovar_geomz: geopotential_height
+         variables:
+         - name: stationPressure
+
        linear obs operator:
          name: Identity
 
@@ -12470,10 +12476,13 @@ observations:
          simulated variables: [stationPressure]
 
        obs operator:
-         name: SfcPCorrected
-         da_psfc_scheme: GSI
+         name: SfcCorrected
+         correction scheme to use: GSL
          geovar_sfc_geomz: geopotential_height_at_surface
          geovar_geomz: geopotential_height
+         variables:
+         - name: stationPressure
+
        linear obs operator:
          name: Identity
 
