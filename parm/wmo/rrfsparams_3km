@@ -1,70 +1,13 @@
 APCP:surface:
+ASNOW:surface:
 CAPE:surface:
-CFRZR:surface
-CICEP:surface
 CIN:surface:
-CPOFP:surface:
-CRAIN:surface:
-CSNOW:surface:
-DPT:1000 mb:
 DPT:2 m above ground:
-DPT:250 mb:
-DPT:500 mb:
-DPT:700 mb:
-DPT:850 mb:
-DZDT:1000 mb:
-DZDT:250 mb:
-DZDT:500 mb:
-DZDT:700 mb:
-DZDT:850 mb:
-GUST:surface:
-HGT:1000 mb:
-HGT:250 mb:
-HGT:500 mb:
-HGT:700 mb:
-HGT:850 mb:
-HGT:cloud base:
-HGT:cloud ceiling:
-HGT:cloud top:
-HGT:surface:
-HLCY:1000-0 m above ground:
 HLCY:3000-0 m above ground:
-HPBL:surface:
-MAXREF:1000 m above ground:
 MSLET:mean sea level:
-MXUPHL:5000-2000 m above ground:
-PRATE:surface:
-PRES:surface:
-PWAT:entire atmosphere (considered as a single layer):
 REFC:entire atmosphere (considered as a single layer):
-REFD:1 hybrid level:
 REFD:1000 m above ground:
-REFD:4000 m above ground:
-RETOP:entire atmosphere (considered as a single layer):
-SNOD:surface:
-SPFH:2 m above ground:
-TCDC:entire atmosphere (considered as a single layer):
-TMP:1000 mb:
-TMP:250 mb:
-TMP:500 mb:
-TMP:700 mb:
-TMP:850 mb:
 TMP:2 m above ground:
 UGRD:10 m above ground:
-UGRD:1000 mb:
-UGRD:250 mb:
-UGRD:500 mb:
-UGRD:700 mb:
-UGRD:850 mb:
-USTM:6000-0 m above ground:
 VGRD:10 m above ground:
-VGRD:1000 mb:
-VGRD:250 mb:
-VGRD:500 mb:
-VGRD:700 mb:
-VGRD:850 mb:
-VIL:entire atmosphere (considered as a single layer):
 VIS:surface:
-VSTM:6000-0 m above ground:
-WEASD:surface:
-WIND:10 m above ground:
