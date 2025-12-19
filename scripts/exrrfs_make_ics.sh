@@ -755,7 +755,7 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
 
   # Required FIX files
   cpreq  $FIXLAM/${CRES}_grid.tile7.nc .
-  cpreq  $FIXLAM/${CRES}_oro_data.tile7.halo0.nc .
+  cpreq  $FIXLAM/${CRES}_oro_data.tile7.halo0.nc C3463_oro_data.tile7.halo0.nc
   cpreq  $FIX_GSI/$PREDEF_GRID_NAME/fv3_akbk fv_core.res.nc
 
   # Shortcut the file names

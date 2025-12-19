@@ -155,6 +155,10 @@ if [ "${PREDEF_GRID_NAME}" = "RRFS_FIREWX_1.5km" ]; then
 elif [ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]; then
   gridname="na"
   gridspacing="3km"
+elif [ "${PREDEF_GRID_NAME}" = "RRFS_CONUS_3km" ]; then
+  gridname="conus"
+  gridspacing="3km"
+  exit 0
 fi
 #
 net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')

@@ -16,9 +16,9 @@ export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 export FIXam=${FIXam:-${HOMErrfs}/fix/am}
-export FIXLAM=${FIXLAM:-${HOMErrfs}/fix/lam/RRFS_NA_3km}
+export FIXLAM=${FIXLAM:-${HOMErrfs}/fix/lam/${PREDEF_GRID_NAME:-"RRFS_NA_3km"}}
 export FIX_GSI="${FIXrrfs}/gsi"
-export OROG_DIR="${HOMErrfs}/fix/lam/RRFS_NA_3km"
+export OROG_DIR="${HOMErrfs}/fix/lam/${PREDEF_GRID_NAME:-"RRFS_NA_3km"}"
 export THOMPSON_MP_CLIMO_FP="${FIXam}/Thompson_MP_MONTHLY_CLIMO.nc"
 if [ $WGF == "firewx" ]; then
   export CCPP_PHYS_SUITE_FP="${PARMrrfs}/config/${WGF}/suite_RRFS_sas_nogwd.xml"
