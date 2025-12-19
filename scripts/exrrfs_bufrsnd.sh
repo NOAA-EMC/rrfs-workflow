@@ -117,8 +117,6 @@ FHRLIM=${FHRLIM}
 
 let NFILE=1
 
-START_DATE=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
-
 PDY=$CDATE
 
 YYYY=`echo $PDY | cut -c1-4`
@@ -130,7 +128,7 @@ startd=$YYYY$MM$DD
 startdate=$CYCLE
 
 STARTDATE=${YYYY}-${MM}-${DD}_${cyc}:00:00
-endtime=$(date +%Y%m%d%H -d "${START_DATE} +${FHRLIM} hours")
+endtime=$($NDATE ${FHRLIM} ${YYYY}${MM}${DD}${cyc})
 
 YYYY=`echo $endtime | cut -c1-4`
 MM=`echo $endtime | cut -c5-6`
@@ -168,7 +166,7 @@ fi
 while [ $fhr -le $FHRLIM ]
 do
 
-  date=$(date +%Y%m%d%H -d "${START_DATE} +${fhr} hours")
+  date=$($NDATE ${fhr} $CDATE)
 
   let "fhrold=$(( ${fhr#0} - 1 ))"
   if [ $fhrold -le 10 ]; then

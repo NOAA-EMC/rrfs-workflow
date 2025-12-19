@@ -79,7 +79,7 @@ esac
 #-----------------------------------------------------------------------
 #
 START_DATE=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
-YYYYMMDDHH=$(date +%Y%m%d%H -d "${START_DATE}")
+YYYYMMDDHH=${CDATE:0:10}
 JJJ=$(date +%j -d "${START_DATE}")
 
 YYYY=${YYYYMMDDHH:0:4}
@@ -124,7 +124,7 @@ cpreq -p $BUFR_TABLE prepobs_prep.bufrtable
 #-----------------------------------------------------------------------
 OBSTYPE_SOURCE=${OBSTYPE_SOURCE:-"rrfs"}
 if [[ "${NET}" = "RTMA"* ]] && [[ "${RTMA_OBS_FEED}" = "NCO" ]]; then
-  SUBH=$(date +%M -d "${START_DATE}")
+  SUBH=00
   obs_source="rtma_ru"
   obsfileprefix=${obs_source}
   obspath_tmp=${COMINobsproc}/${obs_source}.${YYYYMMDD}

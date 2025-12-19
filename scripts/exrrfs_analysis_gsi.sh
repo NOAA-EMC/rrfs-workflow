@@ -105,7 +105,7 @@ esac
 #
 START_DATE=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
 
-YYYYMMDDHH=$(date +%Y%m%d%H -d "${START_DATE}")
+YYYYMMDDHH=${CDATE:0:10}
 JJJ=$(date +%j -d "${START_DATE}")
 
 YYYY=${YYYYMMDDHH:0:4}
@@ -117,8 +117,10 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 # YYYY-MM-DD_meso_uselist.txt and YYYYMMDD_rejects.txt:
 # both contain past 7 day OmB averages till ~YYYYMMDD_23:59:59 UTC
 # So they are to be used by next day cycles
-MESO_USELIST_FN=$(date +%Y-%m-%d -d "${START_DATE} -1 day")_meso_uselist.txt
-AIR_REJECT_FN=$(date +%Y%m%d -d "${START_DATE} -1 day")_rejects.txt
+#
+prev_yyyymmddhh=$($NDATE -24 ${YYYYMMDDHH}) 
+MESO_USELIST_FN="${prev_yyyymmddhh:0:4}-${prev_yyyymmddhh:4:2}-${prev_yyyymmddhh:6:2}_meso_uselist.txt"
+AIR_REJECT_FN="${prev_yyyymmddhh:0:8}_rejects.txt"
 #
 #-----------------------------------------------------------------------
 #
@@ -171,8 +173,9 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
       while [[ $imem -le ${NUM_ENS_MEMBERS} ]];do
         memcharv0=$( printf "%03d" $imem )
         memchar=m$( printf "%03d" $imem )
-        YYYYMMDDInterv=$( date +%Y%m%d -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
-        HHInterv=$( date +%H -d "${START_DATE} ${DA_CYCLE_INTERV} hours ago" )
+	prev_YYYYMMDDHHInterv=$($NDATE -${DA_CYCLE_INTERV} ${YYYYMMDDHH})
+	YYYYMMDDInterv=${prev_YYYYMMDDHHInterv:0:8}
+        HHInterv=${prev_YYYYMMDDHHInterv:8:2}
         restart_prefix="${YYYYMMDD}.${HH}0000."
         bkpathmem=${COMrrfs}/enkfrrfs.${YYYYMMDDInterv}/${HHInterv}/${memchar}/forecast/RESTART
         if [ ${DO_SPINUP} == "TRUE" ]; then
@@ -233,11 +236,9 @@ if  [[ ${regional_ensemble_option:-1} -eq 1 || ${l_both_fv3sar_gfs_ens} = ".true
         availtimeyyyymmdd=$(echo ${timelist} | cut -d'/' -f9 | cut -c 10-17)
         availtimehh=$(echo ${timelist} | cut -d'/' -f10)
         availtime=${availtimeyyyymmdd}${availtimehh}
-        avail_time=$(echo "${availtime}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
-        avail_time=$(date -d "${avail_time}")
 
         loopfcst=$(echo ${loop}| cut -c 1-3)      # for nemsio 009s to get 009
-        stamp_avail=$(date -d "${avail_time} ${loopfcst} hours" +%s)
+        stamp_avail=$(date -d "${availtimeyyyymmdd} ${availtimehh} ${loopfcst} hours" +%s)
 
         hourDiff=$(echo "($stampcycle - $stamp_avail) / (60 * 60 )" | bc);
         if [[ ${stampcycle} -lt ${stamp_avail} ]]; then
@@ -267,15 +268,14 @@ if  [[ ${regional_ensemble_option:-1} -eq 1 || ${l_both_fv3sar_gfs_ens} = ".true
         availtimeyy=$(basename ${timelist} | cut -c 1-2)
         availtimeyyyy=20${availtimeyy}
         availtimejjj=$(basename ${timelist} | cut -c 3-5)
-        availtimemm=$(date -d "${availtimeyyyy}0101 +$(( 10#${availtimejjj} - 1 )) days" +%m)
-        availtimedd=$(date -d "${availtimeyyyy}0101 +$(( 10#${availtimejjj} - 1 )) days" +%d)
+	new_yyyymmdd=$($NDATE $(( (10#${availtimejjj} - 1) * 24 )) ${availtimeyyyy}010100)
+	availtimemm=${new_yyyymmdd:4:2}
+        availtimedd=${new_yyyymmdd:6:2}
         availtimehh=$(basename ${timelist} | cut -c 6-7)
         availtime=${availtimeyyyy}${availtimemm}${availtimedd}${availtimehh}
-        avail_time=$(echo "${availtime}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
-        avail_time=$(date -d "${avail_time}")
 
         loopfcst=$(echo ${loop}| cut -c 1-3)      # for nemsio 009s to get 009
-        stamp_avail=$(date -d "${avail_time} ${loopfcst} hours" +%s)
+        stamp_avail=$(date -d "${availtimeyyyy}${availtimemm}${availtimedd} ${availtimehh} ${loopfcst} hours" +%s)
 
         hourDiff=$(echo "($stampcycle - $stamp_avail) / (60 * 60 )" | bc);
         if [[ ${stampcycle} -lt ${stamp_avail} ]]; then
@@ -415,7 +415,7 @@ fi
 #-----------------------------------------------------------------------
 OBSTYPE_SOURCE=${OBSTYPE_SOURCE:-"rrfs"}
 if [[ "${NET}" = "RTMA"* ]] && [[ "${RTMA_OBS_FEED}" = "NCO" ]]; then
-  SUBH=$(date +%M -d "${START_DATE}")
+  SUBH=00
   obs_source="rtma_ru"
   obsfileprefix=${obs_source}
   obspath_tmp=${COMINobsproc}/${obs_source}.${YYYYMMDD}
@@ -845,7 +845,7 @@ if [ "${DO_RADDA}" = "TRUE" ]; then
   satcounter=1
   maxcounter=240
   while [ $satcounter -lt $maxcounter ]; do
-    SAT_TIME=`date +"%Y%m%d%H" -d "${START_DATE}  ${satcounter} hours ago"`
+    SAT_TIME=$($NDATE -$((10#${satcounter})) ${YYYYMMDDHH})
     echo $SAT_TIME
 
 # DO_ENS_RADDA IS NEVER TRUE - REMOVE THIS IF BLOCK?	

@@ -49,7 +49,7 @@ yyyymmdd=${CDATE:0:8}
 hh=${CDATE:8:2}
 cyc=$hh
 
-save_time=$( date --utc --date "${yyyymmdd} ${hh} UTC + ${fhr} hours" "+%Y%m%d%H" )
+save_time=$($NDATE ${fhr} ${yyyymmdd}${hh})
 save_yyyy=${save_time:0:4}
 save_mm=${save_time:4:2}
 save_dd=${save_time:6:2}
@@ -84,7 +84,7 @@ n_iolayouty=$(($IO_LAYOUT_Y-1))
 list_iolayout=$(seq 0 $n_iolayouty)
 
 if [ "${CYCLE_SUBTYPE}" = "ensinit" ]; then
-  restart_prefix=$( date "+%Y%m%d.%H%M%S" -d "${save_yyyy}${save_mm}${save_dd} ${save_hh} + ${DT_ATMOS} seconds" )
+  restart_prefix=${save_yyyy}${save_mm}${save_dd}.${save_hh}00${DT_ATMOS}
 else
   restart_prefix=${save_yyyy}${save_mm}${save_dd}.${save_hh}0000
 fi
