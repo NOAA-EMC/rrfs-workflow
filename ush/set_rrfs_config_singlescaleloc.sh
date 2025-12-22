@@ -23,7 +23,7 @@ ens_v="3"
 #######################
 
 #ens_h_radardbz="4.10790" # 3-km domain
-ens_h_radardbz="17.80098" # 12-km domain
+ens_h_radardbz="17.80098" # 13-km domain
 ens_v_radardbz="-0.30125"
 
 
