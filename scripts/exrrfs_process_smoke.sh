@@ -41,16 +41,6 @@ This is the script for the task that runs smoke emissions preprocessing.
 #
 #-----------------------------------------------------------------------
 #
-# Configuration Parameters
-#
-#-----------------------------------------------------------------------
-#
-export rave_dir=${COMrrfs}/RAVE_INTP
-export hourly_hwpdir=${COMrrfs}/HOURLY_HWP
-mkdir -p "${rave_dir}"
-mkdir -p "${hourly_hwpdir}"
-#
-#-----------------------------------------------------------------------
 #
 # Link the the hourly, interpolated RAVE data from $rave_dir so it
 # is reused
@@ -60,27 +50,30 @@ ECHO=/bin/echo
 SED=/bin/sed
 DATE=/bin/date
 LN=/bin/ln
-START_DATE=$(${ECHO} "${CDATE}" | ${SED} 's/\([[:digit:]]\{2\}\)$/ \1/')
-YYYYMMDDHH=${CDATE:0:10}
-YYYYMMDD=${YYYYMMDDHH:0:8}
-HH=${YYYYMMDDHH:8:2}
-${ECHO} ${YYYYMMDD}
-${ECHO} ${HH}
-current_hh=`${DATE} -d ${HH} +"%H"`
-prev_hh=`${DATE} -d "$current_hh -24 hour" +"%H"`
-previous_day=$($NDATE -24 ${YYYYMMDDHH})
-nfiles=24
-smokeFile=SMOKE_RRFS_data_${YYYYMMDDHH}00.nc
 
-for i in $(seq 0 $(($nfiles - 1)) )
-do
-   timestr=$($NDATE $i ${previous_day})
+YYYYMMDDHH=${CDATE}
+YYYYMMDD=${PDY}
+HH=${cyc}
+${ECHO} "${YYYYMMDD}"
+${ECHO} "${HH}"
+
+current_day="${PDY}"
+previous_day=`${NDATE} -24 ${YYYYMMDDHH} | cut -c1-8`
+previous_2day=`${NDATE} -48 ${YYYYMMDDHH} | cut -c1-8`
+
+rave_base_prefix="${COMrrfs}/RAVE_INTP/rave_intp"
+
+for i in $(seq 0 24); do
+   timestr=$(${NDATE} -$((i+1)) ${YYYYMMDDHH})
+   daystr=${timestr:0:8}
+
    intp_fname=${PREDEF_GRID_NAME}_intp_${timestr}00_${timestr}59.nc
-   if  [ -f ${rave_dir}/${intp_fname} ]; then
-      ${LN} -sf ${rave_dir}/${intp_fname} ${DATA}/${intp_fname}
-      echo "${rave_dir}/${intp_fname} interpolated file available to reuse"
+   rave_day_dir="${rave_base_prefix}.${daystr}"
+   if  [ -f ${rave_day_dir}/${intp_fname} ]; then
+      ${LN} -sf ${rave_day_dir}/${intp_fname} ${DATA}/${intp_fname}
+      echo "${rave_day_dir}/${intp_fname} interpolated file available to reuse"
    else
-      echo "${rave_dir}/${intp_fname} interpolated file not available to reuse"  
+      echo "${rave_day_dir}/${intp_fname} interpolated file not available to reuse"  
    fi
 done
 
@@ -90,14 +83,13 @@ done
 #
 #-----------------------------------------------------------------------
 
-previous_2day=$($NDATE -48 ${YYYYMMDDHH})
 YYYYMMDDm1=${previous_day:0:8}
 YYYYMMDDm2=${previous_2day:0:8}
 if [ -d ${FIRE_RAVE_DIR}/${YYYYMMDDm1}/rave ]; then
    fire_rave_dir_work=${DATA}
-   ln -snf ${FIRE_RAVE_DIR}/${YYYYMMDD}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
-   ln -snf ${FIRE_RAVE_DIR}/${YYYYMMDDm1}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
-   ln -snf ${FIRE_RAVE_DIR}/${YYYYMMDDm2}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
+   ${LN} -snf ${FIRE_RAVE_DIR}/${YYYYMMDD}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
+   ${LN} -snf ${FIRE_RAVE_DIR}/${YYYYMMDDm1}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
+   ${LN} -snf ${FIRE_RAVE_DIR}/${YYYYMMDDm2}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
 else
    fire_rave_dir_work=${FIRE_RAVE_DIR}
 fi
@@ -114,17 +106,21 @@ python -u  ${USHrrfs}/generate_fire_emissions.py \
   "${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}" \
   "${fire_rave_dir_work}" \
   "${DATA}" \
-  "${PREDEF_GRID_NAME}" \
-  "${EBB_DCYCLE}" 
+  "${PREDEF_GRID_NAME}" 
 export err=$?; err_chk
 
 #Copy the the hourly, interpolated RAVE data to $rave_dir so it
 # is maintained there for future cycles.
-for file in ${DATA}/*; do
+for file in ${DATA}/RAVE-HrlyEmiss-* ${DATA}/RRFS_NA_3km_intp_* ${DATA}/SMOKE_RRFS_data_*
+do
    filename=$(basename "$file")
-   if [ ! -f ${rave_dir}/${filename} ]; then
-      cpreq -p ${file} ${rave_dir}
-      echo "Copied file: $filename" 
+   daystr=$(echo "$filename" | grep -o '[0-9]\{8\}' | head -1)
+   [ -z "$daystr" ] && continue
+
+   rave_day_dir="${rave_base_prefix}.${daystr}"
+   if [ ! -f "${rave_day_dir}/${filename}" ]; then
+      cpreq -p ${file} ${rave_day_dir}
+      echo "Copied file: $filename → $rave_day_dir/" 
    fi
 done
 

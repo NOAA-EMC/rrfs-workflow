@@ -29,6 +29,7 @@ def averaging_FRP(fcst_dates, cols, rows, intp_dir, rave_to_intp, veg_map, tgt_a
             file_path = os.path.join(intp_dir, f'{rave_to_intp}{cycle}00_{cycle}59.nc')
 
             if os.path.exists(file_path):
+                print(f'processing RAVE interpolated file from {file_path}')
                 try:
                     with xr.open_dataset(file_path) as nc:
                         open_fre = nc.FRE[0, :, :].values
