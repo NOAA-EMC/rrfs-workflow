@@ -170,11 +170,13 @@ atmosphere_gsibec_path: DATA/berror
 atmosphere_number_ensemble_members: 30
 atmosphere_layout_gsib_x: 14
 atmosphere_layout_gsib_y: 14
-lat_start: -29.335138
-lat_end: 29.335138
-lon_start: -50.033098
-lon_end: 50.033098
-north_pole_lat: 51.499998
+gsibec_lats: 127
+gsibec_lons: 211
+lat_start: -14.726005
+lat_end: 14.726005
+lon_start: -25.076254
+lon_end: 25.076254
+north_pole_lat: 51.499999
 north_pole_lon: 82.500018
 gsi_bands: 14
 

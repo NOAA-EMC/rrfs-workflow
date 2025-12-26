@@ -2,20 +2,21 @@
 # Machine options
 MACHINE="wcoss2"
 MACHINETYPE="backup"
-version="v0.8.6"
+version="v1.2.0"
 ACCOUNT="RRFS-DEV"
 
-# Directory settings
-EXPT_BASEDIR="/lfs/h2/emc/da/noscrub/samuel.degelia/rrfs-workflow_radar/rrfs-workflow/expt_dirs/May2024_retro_radar/$version"
-EXPT_SUBDIR="rrfs_conus_13km.20251104.mgbf"
-STMP="${EXPT_BASEDIR}"
-PTMP="${EXPT_BASEDIR}"
-NWGES="${EXPT_BASEDIR}/nwges"
+# Directory settings (user-dependent)
+EXPT_BASEDIR="/lfs/h2/emc/da/noscrub/$USER/rrfs-workflow_dev/rrfs-workflow/expt_dirs/May2024_retro_radar/$version"
+EXPT_SUBDIR="rrfs_conus_13km.radar"
+STMP="/lfs/h2/emc/stmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
+PTMP="/lfs/h2/emc/ptmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
+NWGES="/lfs/h2/emc/ptmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
+ARCHIVEDIR="/NCEPDEV/emc-meso/5year/Samuel.K.Degelia/RRFSv1/May2024_retro/$version/$EXPT_SUBDIR/"
 
 PREDEF_GRID_NAME=RRFS_CONUS_13km
 
 . set_rrfs_config_general.sh
-. set_rrfs_config_SDL_VDL_MixEn.sh
+. set_rrfs_config_singlescaleloc.sh
 
 ACCOUNT=RRFS-DEV
 HPSS_ACCOUNT="RRFS-DEV"
@@ -40,10 +41,12 @@ DO_DACYCLE="TRUE"
 # Radar DA options
 DO_IODA_MRMS="TRUE"
 DO_ENVAR_RADAR_REF="TRUE"
+DO_ENVAR_RADAR_REF_ONCE="FALSE"
 RADARREFL_TIMELEVEL=(0)
 FH_DFI_RADAR="0.0,0.25,0.5"
 
 # Other options
+grid_ratio_fv3=1.0 # default: 2.0
 DO_SURFACE_CYCLE="FALSE"
 DO_SPINUP="FALSE"
 DO_SAVE_INPUT="TRUE"
