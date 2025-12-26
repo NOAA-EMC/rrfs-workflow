@@ -46,25 +46,13 @@ This is the script for the task that runs smoke emissions preprocessing.
 # is reused
 #
 #-----------------------------------------------------------------------
-ECHO=/bin/echo
-SED=/bin/sed
-DATE=/bin/date
 LN=/bin/ln
-
-YYYYMMDDHH=${CDATE}
-YYYYMMDD=${PDY}
-HH=${cyc}
-${ECHO} "${YYYYMMDD}"
-${ECHO} "${HH}"
-
-current_day="${PDY}"
-previous_day=`${NDATE} -24 ${YYYYMMDDHH} | cut -c1-8`
-previous_2day=`${NDATE} -48 ${YYYYMMDDHH} | cut -c1-8`
+echo "Cycle date: ${CDATE}"
 
 rave_base_prefix="${COMrrfs}/RAVE_INTP/rave_intp"
 
 for i in $(seq 0 24); do
-   timestr=$(${NDATE} -$((i+1)) ${YYYYMMDDHH})
+   timestr=$(${NDATE} -$((i+1)) ${CDATE})
    daystr=${timestr:0:8}
 
    intp_fname=${PREDEF_GRID_NAME}_intp_${timestr}00_${timestr}59.nc
@@ -83,13 +71,11 @@ done
 #
 #-----------------------------------------------------------------------
 
-YYYYMMDDm1=${previous_day:0:8}
-YYYYMMDDm2=${previous_2day:0:8}
-if [ -d ${FIRE_RAVE_DIR}/${YYYYMMDDm1}/rave ]; then
+if [ -d ${FIRE_RAVE_DIR}/${PDYm1}/rave ]; then
    fire_rave_dir_work=${DATA}
-   ${LN} -snf ${FIRE_RAVE_DIR}/${YYYYMMDD}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
-   ${LN} -snf ${FIRE_RAVE_DIR}/${YYYYMMDDm1}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
-   ${LN} -snf ${FIRE_RAVE_DIR}/${YYYYMMDDm2}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
+   ${LN} -snf ${FIRE_RAVE_DIR}/${PDY}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
+   ${LN} -snf ${FIRE_RAVE_DIR}/${PDYm1}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
+   ${LN} -snf ${FIRE_RAVE_DIR}/${PDYm2}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
 else
    fire_rave_dir_work=${FIRE_RAVE_DIR}
 fi
