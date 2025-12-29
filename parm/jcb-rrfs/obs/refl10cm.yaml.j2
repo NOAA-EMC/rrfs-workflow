@@ -1,0 +1,36 @@
+     - obs space:
+         name: refl10cm
+         distribution:
+           name: "RoundRobin"
+           halo size: 500e3
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: data/obs/ioda_mrms_refl.nc
+         obsdataout:
+           engine:
+             type: H5File
+             allow overwrite: true
+             obsfile: jdiag_mrms_refl.nc
+         io pool:
+           write multiple files: false
+         _source: mrms
+         simulated variables:
+         - equivalentReflectivityFactor
+       obs operator:
+         name: VertInterp
+         vertical coordinate: height_above_mean_sea_level
+         observation vertical coordinate: height
+         interpolation method: linear
+         observation alias file: obsop_name_map.yaml
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 200e3 # orig
+       _obsname: refl10cm
+       obs filters:
+       - filter: Background Check
+         filter variables:
+         - name: equivalentReflectivityFactor
+         threshold: 12.0
+         action:
+           name: reject

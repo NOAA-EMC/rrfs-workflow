@@ -1,0 +1,68 @@
+     - obs space:
+         name: gnss_ztd
+
+         distribution:   # for LETKF
+           name: "RoundRobin"
+           halo size: 500e3
+
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: "data/obs/ioda_gnss_ztd.nc"
+             missing file action: "warn"
+
+         obsgrouping:
+           group variables: ["stationIdentification"]
+           sort variable: "pressure"
+           sort order: "descending"
+         obsdataout:
+           empty obs space action: "{{emptyObsSpaceAction}}"
+           engine:
+             type: H5File
+             obsfile: jdiag_gnss_ztd.nc
+             allow overwrite: true
+         io pool:
+           max pool size: 1
+         simulated variables: [zenithTotalDelay]
+         observed variables: [zenithTotalDelay]
+
+       obs operator:
+         name: GroundgnssMetOffice
+       linear obs operator:
+         name: GroundgnssMetOffice
+         observation alias file: obsop_name_map.yaml
+
+       obs error:
+         covariance model: diagonal
+
+       obs localizations:   # for LETKF
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 200e3
+
+       obs filters:
+         # Reject all obs with QualityMarker > 10
+         - filter: Bounds Check
+           filter variables:
+           - name: zenithTotalDelay
+           test variables:
+           - name: QualityMarker/zenithTotalDelay
+           maxvalue: 10
+
+         # Initial error assignment
+         - filter: Perform Action
+           filter variables:
+           - name: zenithTotalDelay
+           action:
+             name: assign error
+             error parameter: 0.01
+
+         # Terrain Height Discrepancy Check
+         - filter: Difference Check
+           reference: MetaData/stationElevation
+           value: GeoVaLs/height_above_mean_sea_level_at_surface
+           threshold: 300    # (m)
+
+         # Gross Error Check
+         - filter: Background Check
+           threshold: 6
+

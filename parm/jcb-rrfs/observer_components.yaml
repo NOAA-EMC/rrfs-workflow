@@ -1,0 +1,90 @@
+
+
+# This YAML file list the components of the observer that are allowed for each algorithm. For each
+# algorithm the observer_nesting key will be used to determine where in the greater YAML to look
+# for the observers.
+
+
+# Variational methods
+# -------------------
+3dvar:
+  observer_nesting:
+  - cost function
+  - observations
+  - observers
+  components:
+  - obs space
+  - obs operator
+  - linear obs operator
+  - obs filters
+  - obs pre filters
+  - obs prior filters
+  - obs post filters
+  - obs bias
+  - obs error
+3dfgat: &var
+  observer_nesting:
+  - cost function
+  - observations
+  - observers
+  components:
+  - obs space
+  - obs operator
+  - linear obs operator
+  - obs filters
+  - obs pre filters
+  - obs prior filters
+  - obs post filters
+  - obs bias
+  - get values
+  - obs error
+4dvar: *var
+4denvar: *var
+
+# Hofx
+# ----
+hofx3d: &hofx
+  observer_nesting:
+  - observations
+  - observers
+  components:
+  - obs space
+  - obs operator
+  - obs filters
+  - obs pre filters
+  - obs prior filters
+  - obs post filters
+  - obs bias
+hofx4d: *hofx
+
+# Ensemble DA
+# -----------
+local_ensemble_da:
+  observer_nesting:
+  - observations
+  - observers
+  components:
+  - obs space
+  - obs operator
+  - obs filters
+  - obs pre filters
+  - obs prior filters
+  - obs post filters
+  - obs bias
+  - obs localizations
+
+# UFO Testing
+# -----------
+test_obs_filters:
+  observer_nesting:
+  - observations
+  components:
+  - obs space
+  - obs operator
+  - obs filters
+  - obs pre filters
+  - obs prior filters
+  - obs post filters
+  - obs bias
+  - geovals
+  - passedBenchmark

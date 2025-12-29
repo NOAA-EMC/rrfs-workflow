@@ -1,0 +1,167 @@
+_member: &memberConfig
+  date: &analysisDate '{{analysisDate}}'
+  state variables: &incvars [water_vapor_mixing_ratio_wrt_moist_air, air_pressure_at_surface, air_temperature, northward_wind, eastward_wind, cloud_liquid_water, cloud_liquid_ice, rain_water, snow_water, graupel, equivalent_reflectivity_factor, upward_air_velocity]
+  stream name: ensemble
+
+output:
+  filename: mpasout.nc
+  stream name: analysis
+variational:
+  minimizer:
+    algorithm: DRPCG
+  iterations:
+  - geometry:
+      nml_file: ./namelist.atmosphere
+      streams_file: ./streams.atmosphere
+      deallocate non-da fields: true
+      interpolation type: unstructured
+    gradient norm reduction: 1e-3
+    ninner: 50
+  - geometry:
+      nml_file: ./namelist.atmosphere
+      streams_file: ./streams.atmosphere
+      deallocate non-da fields: true
+      interpolation type: unstructured
+    gradient norm reduction: 1e-3
+    ninner: 50
+cost function:
+  cost type: 3D-Var
+  time window:
+     begin: '{{beginDate}}'
+     length: PT4H
+  jb evaluation: false
+  geometry:
+    nml_file: ./namelist.atmosphere
+    streams_file: ./streams.atmosphere
+    deallocate non-da fields: true
+    interpolation type: unstructured
+  analysis variables: *incvars
+  background:
+    state variables:
+    - water_vapor_mixing_ratio_wrt_moist_air
+    - air_pressure_at_surface
+    - air_temperature
+    - northward_wind
+    - eastward_wind
+    - air_potential_temperature
+    - dry_air_density
+    - u
+    - water_vapor_mixing_ratio_wrt_dry_air
+    - air_pressure
+    - landmask
+    - seaice_fraction
+    - snowc
+    - skin_temperature_at_surface
+    - ivgtyp
+    - isltyp
+    - snowh
+    - vegetation_area_fraction
+    - air_temperature_at_2m
+    - water_vapor_mixing_ratio_wrt_moist_air_at_2m
+    - eastward_wind_at_10m
+    - northward_wind_at_10m
+    - lai
+    - smois
+    - tslb
+    - pressure_p
+    - cloud_liquid_water
+    - cloud_liquid_ice
+    - graupel
+    - rain_water
+    - snow_water
+    - cldfrac
+    - equivalent_reflectivity_factor
+    - w
+    - upward_air_velocity
+    filename: mpasout.nc
+    date: *analysisDate
+  background error:
+    covariance model: hybrid
+    components:
+    - covariance:
+        covariance model: SABER
+        saber central block:
+          saber block name: gsi static covariance
+          active variables: &ctlvars
+          - eastward_wind
+          - northward_wind
+          - air_temperature
+          - relative_humidity
+          - air_pressure_at_surface
+          read:
+            gsi akbk: foo.nc
+            gsi error covariance file: berror_stats
+            gsi berror namelist file: gsiparm_regional.anl
+            processor layout x direction: "{{GSIBEC_X}}"
+            processor layout y direction: "{{GSIBEC_Y}}"
+            debugging deep bypass gsi B error: false
+            debugging mode: false
+            regional mode: true
+        saber outer blocks:
+        - saber block name: interpolation
+          inner geometry:
+            function space: StructuredColumns
+            custom grid matching gsi:
+              type: rotated_lonlat
+              lats: "{{GSIBEC_NLAT}}"
+              lons: "{{GSIBEC_NLON}}"
+              lat_start: "{{GSIBEC_LAT_START}}"
+              lat_end: "{{GSIBEC_LAT_END}}"
+              lon_start: "{{GSIBEC_LON_START}}"
+              lon_end: "{{GSIBEC_LON_END}}"
+              north_pole_lat: "{{GSIBEC_NORTH_POLE_LAT}}"
+              north_pole_lon: "{{GSIBEC_NORTH_POLE_LON}}"
+            custom partitioner matching gsi:
+              bands: "{{GSIBEC_Y}}"  # matches GSI partition for 1 or 2 MPI tasks, but too simplistic in general
+            halo: 1
+          forward interpolator:
+            local interpolator type: oops unstructured grid interpolator
+          inverse interpolator:
+            local interpolator type: oops unstructured grid interpolator
+          state variables to inverse:  # Make sure to also re-order the state passed to GSI-B constructor
+          - eastward_wind
+          - northward_wind
+          - air_temperature
+          - air_pressure_at_surface
+          - water_vapor_mixing_ratio_wrt_moist_air
+        linear variable change:
+          linear variable change name: Control2Analysis
+          input variables: *ctlvars
+          output variables: *incvars
+      weight:
+        value: "{{HYB_WGT_STATIC}}"
+    - covariance:
+        covariance model: ensemble
+        localization:
+          localization method: SABER
+          saber central block:
+            saber block name: BUMP_NICAS
+            active variables: *incvars
+            read:
+              io:
+                data directory: data/bumploc
+                files prefix: bumploc
+              drivers:
+                multivariate strategy: duplicated
+                read local nicas: true
+              model:
+                level for 2d variables: last
+        members from template:
+          template:
+            <<: *memberConfig
+            filename: ./data/ens/mem%iMember%.nc
+          pattern: "%iMember%"
+          start: 1
+          zero padding: 3
+          nmembers: 30
+      weight:
+        value: "{{HYB_WGT_ENS}}"
+  observations:
+     observers:
+{% for observation_from_jcb in observations %}
+{% if use_observer(observation_from_jcb) %}
+{% filter indent(width=4) %}
+{% include observation_from_jcb + '.yaml.j2' %}
+{% endfilter %}
+{% endif %}
+{% endfor %}
