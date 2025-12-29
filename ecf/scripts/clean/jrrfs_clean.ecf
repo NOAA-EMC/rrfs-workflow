@@ -4,8 +4,9 @@
 #PBS -q %QUEUE%
 #PBS -A %PROJ%-%PROJENVIR%
 #PBS -l walltime=00:15:00
-#PBS -l place=vscatter:shared,select=1:mpiprocs=1:ncpus=1:mem=60G
+#PBS -l place=vscatter:shared,select=1:ncpus=1:mem=10G
 #PBS -l debug=true
+set -x
 
 model=rrfs
 export cyc="%CYC%"
@@ -15,13 +16,22 @@ export cyc="%CYC%"
 # Load modules
 ############################################################
 
-
 module list
 export WGF="det"
+
 ############################################################
 # CALL executable job script here
 ############################################################
-${HOMErrfs}/scripts/exrrfs_clean.sh
+export DATA=${DATA:-${DATAROOT}/${jobid}}
+mkdir -p ${DATA}
+cd ${DATA} 
+ls -d ${DATAROOT}/rrfs_*_${cyc}_v1.0_${envir}
+rm -rf ${DATAROOT}/rrfs_*_${cyc}_v1.0_${envir}
+rm -rf ${DATAROOT}/rrfs_*_${cyc}.*.*
+
+cd ${DATAROOT}
+rm -rf ${DATA}
+#${HOMErrfs}/scripts/exrrfs_clean.sh
 
 %include <tail.h>
 
