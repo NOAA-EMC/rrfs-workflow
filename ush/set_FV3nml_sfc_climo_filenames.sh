@@ -185,6 +185,7 @@ $settings"
 #-----------------------------------------------------------------------
 #
 fv3_nml_base_fp="${FV3_NML_FN}.base"
+DATA="${EXPTDIR}"
 mv "${DATA}/${FV3_NML_FN}" "${DATA}/${fv3_nml_base_fp}"
 
 $USHrrfs/set_namelist.py -q \

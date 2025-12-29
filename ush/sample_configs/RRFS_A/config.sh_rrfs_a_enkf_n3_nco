@@ -4,10 +4,10 @@ version="v1.1.3"
 ACCOUNT="RRFS_DEV"
 #RESERVATION="rrfsdet"
 EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/Ming.Hu/rrfs/${version}"
-EXPT_SUBDIR="rrfs_c3_enkf"
+EXPT_SUBDIR="rrfs_na_enkf"
 WFLOW_XML_TMPL_FN="FV3LAM_wflow_nco.xml"
 
-PREDEF_GRID_NAME="RRFS_CONUS_3km"
+PREDEF_GRID_NAME="RRFS_NA_3km"
 
 . set_rrfs_config_general.sh
 
@@ -64,8 +64,8 @@ BOUNDARY_PROC_GROUP_NUM="12"
 
 # avaialble retro period:
 # 20210511-20210531; 20210718-20210801
-DATE_FIRST_CYCL="20251216"
-DATE_LAST_CYCL="20251216"
+DATE_FIRST_CYCL="20251210"
+DATE_LAST_CYCL="20251211"
 CYCL_HRS=( "00" "12" )
 CYCL_HRS=( "18" )
 CYCL_HRS_SPINSTART=("07" "19")
@@ -75,7 +75,7 @@ if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
 fi
 #CYCL_HRS_RECENTER=("19")
 CYCLEMONTH="12"
-CYCLEDAY="16-16"
+CYCLEDAY="10-11"
 
 STARTYEAR=${DATE_FIRST_CYCL:0:4}
 STARTMONTH=${DATE_FIRST_CYCL:4:2}
@@ -134,10 +134,10 @@ WRTCMP_quantize_nsd="18"
 OUTPUT_FH="1 -1"
 
 WTIME_FORECAST="00:30:00"
-WTIME_FORECAST_LONG="03:45:00"
-#PPN_ANALYSIS_GSI="16"
+WTIME_FORECAST_LONG="04:45:00"
+PPN_ANALYSIS_GSI="16"
 NNODES_ANALYSIS_GSI="1"
-#TPP_ANALYSIS_GSI="8"
+TPP_ANALYSIS_GSI="8"
 
 EXTRN_MDL_NAME_ICS="GDASENKF"
 EXTRN_MDL_NAME_LBCS="GEFS"
@@ -165,13 +165,11 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    write_diag_2=.true.
 
    START_TIME_SPINUP="00:30:00"
-   LAYOUT_X="11"
-   LAYOUT_Y="32"
-   NNODES_FORECAST="3"
-   PPN_FORECAST="128"
-   TPP_FORECAST="1"
+   LAYOUT_X="16"
+   LAYOUT_Y="48"
+   NNODES_FORECAST="12"
    WRTCMP_write_groups="1"
-   WRTCMP_write_tasks_per_group="32"
+   WRTCMP_write_tasks_per_group="64"
 
    NUM_ENS_MEMBERS_FCST=5
    if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
@@ -179,11 +177,11 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
      WTIME_FORECAST="04:45:00"
      WTIME_MAKE_LBCS="01:30:00"
 
-     LAYOUT_X="31"
-     LAYOUT_Y="32"
-     NNODES_FORECAST="16"
-#     WRTCMP_write_groups="1"
-#     WRTCMP_write_tasks_per_group="128"
+     LAYOUT_X="50"
+     LAYOUT_Y="64"
+     NNODES_FORECAST="52"
+     WRTCMP_write_groups="1"
+     WRTCMP_write_tasks_per_group="128"
 
      DO_ENSFCST_MULPHY="TRUE"
      DO_SPP="TRUE"
@@ -195,7 +193,7 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
 
    fi
    PPN_RECENTER="128"
-   NNODES_RECENTER="5"
+   NNODES_RECENTER="10"
 fi
 
 SPPINT=36
@@ -203,11 +201,11 @@ LNDPINT=180
 
 RUN_ensctrl="rrfs"
 RUN="enkfrrfs"
-TAG="c3enkf112"
+TAG="n3enkf113"
 WGF="enkf"
 if [[ ${DO_ENSFCST} == "TRUE" ]] ; then
   RUN="refs"
-  TAG="c3enfcst112"
+  TAG="n3enfcst113"
   WGF="ensf"
 fi
 

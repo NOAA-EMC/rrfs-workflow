@@ -4,11 +4,10 @@ version="v1.1.3"
 ACCOUNT="RRFS_DEV"
 #RESERVATION="rrfsdet"
 EXPT_BASEDIR="/lfs/h2/emc/lam/noscrub/Ming.Hu/rrfs/${version}"
-EXPT_SUBDIR="rrfs_c3"
+EXPT_SUBDIR="rrfs_na"
 WFLOW_XML_TMPL_FN="FV3LAM_wflow_nco.xml"
 
-PREDEF_GRID_NAME="RRFS_CONUS_3km"
-#PREDEF_GRID_NAME="RRFS_NA_3km"
+PREDEF_GRID_NAME="RRFS_NA_3km"
 
 . set_rrfs_config_general.sh
 . set_rrfs_config_SDL_VDL_MixEn.sh
@@ -48,13 +47,13 @@ BOUNDARY_PROC_GROUP_NUM="24"
 
 # avaialble retro period:
 # 20210511-20210531; 20210718-20210801
-DATE_FIRST_CYCL="20251216"
-DATE_LAST_CYCL="20251216"
+DATE_FIRST_CYCL="20251210"
+DATE_LAST_CYCL="20251211"
 CYCL_HRS=( "00" "12" )
 CYCL_HRS_SPINSTART=("03" "15")
 CYCL_HRS_PRODSTART=("09" "21")
 CYCLEMONTH="12"
-CYCLEDAY="16-16"
+CYCLEDAY="10-11"
 SOIL_SURGERY_time=2023100916
 
 STARTYEAR=${DATE_FIRST_CYCL:0:4}
@@ -107,11 +106,11 @@ WRTCMP_output_file="netcdf_parallel"
 WRTCMP_ideflate="1"
 WRTCMP_quantize_nsd="18"
 
-#LAYOUT_X="43"
-#LAYOUT_Y="64"
-#NNODES_FORECAST="52"
-#WRTCMP_write_groups="3"
-#WRTCMP_write_tasks_per_group="192"
+LAYOUT_X="43"
+LAYOUT_Y="64"
+NNODES_FORECAST="52"
+WRTCMP_write_groups="3"
+WRTCMP_write_tasks_per_group="192"
 
 
 regional_ensemble_option=1
@@ -122,7 +121,7 @@ EXTRN_MDL_NAME_LBCS="GFS"
 envir="para"
 
 NET="rrfs"
-TAG="c3v112"
+TAG="n3v113"
 
 MODEL="rrfs"
 RUN="rrfs"
