@@ -115,6 +115,9 @@ WRTCMP_quantize_nsd="18"
 
 
 regional_ensemble_option=1
+if [[ ${USE_RRFSE_ENS} == "TRUE" ]]; then
+  regional_ensemble_option=5   # 5 for RRFS ensemble
+fi
 
 EXTRN_MDL_NAME_ICS="GFS"
 EXTRN_MDL_NAME_LBCS="GFS"
@@ -135,7 +138,7 @@ STMP="/lfs/h2/emc/stmp/Ming.Hu/rrfs/${version}"  # Path to directory STMP that m
 PTMP="/lfs/h2/emc/ptmp/Ming.Hu/rrfs/${version}"  # Path to directory STMP that mostly contains input files.
 GESROOT="/lfs/h2/emc/ptmp/Ming.Hu/rrfs/${version}/nwges"  # Path to directory GESROOT that save boundary, cold initial, restart files
 if [[ ${regional_ensemble_option} == "5" ]]; then
-  RRFSE_GESROOT="/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}"  # Path to RRFSE directory GESROOT that mostly contains ensemble restart files for GSI hybrid.
+  RRFSE_GESROOT="/lfs/h2/emc/ptmp/Ming.Hu/rrfs/${version}/com"  # Path to RRFSE directory GESROOT that mostly contains ensemble restart files for GSI hybrid.
   NUM_ENS_MEMBERS=30     # FV3LAM ensemble size for GSI hybrid analysis
   CYCL_HRS_PRODSTART_ENS=( "08" "20" )
   DO_ENVAR_RADAR_REF="TRUE"

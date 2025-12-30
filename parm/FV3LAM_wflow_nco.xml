@@ -663,6 +663,7 @@ MODULES_RUN_TASK_FP script.
     <var name="subdirGDAS">{% for m in range(1, num_ens_members+1) %}{{ " /mem%03d"%m }}{% endfor %}</var>
 {%- endif %}
 
+{%- if not do_ensfcst %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -820,6 +821,7 @@ MODULES_RUN_TASK_FP script.
 
   </task>
   {% endif %}
+{% endif %}
 
 <!--
 ************************************************************************
@@ -2219,7 +2221,7 @@ MODULES_RUN_TASK_FP script.
     <dependency>
      {%- if do_ensfcst %}
        <and>
-         <datadep age="00:00:05:00"><cyclestr>&COMROOT;/&RUNE;.@Y@m@d/@H/m#mem#/forecast/DA_OUTPUT/coupler.res</cyclestr></datadep>
+	 <datadep age="00:00:05:00"><cyclestr>&COMROOT;/&NET;/&VERSION;/&RUNE;.@Y@m@d/@H/m#mem#/forecast/DA_OUTPUT/coupler.res</cyclestr></datadep>
          <metataskdep metatask="&MAKE_LBCS_TN;{{ uscore_ensmem_name }}"/>
        </and>
      {%- else %}
@@ -2303,6 +2305,7 @@ MODULES_RUN_TASK_FP script.
 {%- if do_ensemble %}
 </metatask>
 
+{%- if not do_ensfcst %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -2397,6 +2400,7 @@ MODULES_RUN_TASK_FP script.
 
   </task>
 
+{%- endif %}
 {%- endif %}
 
 {%- if not do_ensfcst %}
@@ -2703,7 +2707,7 @@ MODULES_RUN_TASK_FP script.
              {%- endfor %}
              </or>
              {% for h in range(1, num_ens_members+1) %}
-             <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&RRFSE_FG_ROOT;/&RUNE;.@Y@m@d/@H/m{{ "%03d" % h  }}/forecast_spinup/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+	     <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&RRFSE_FG_ROOT;/&NET;/&VERSION;/&RUNE;.@Y@m@d/@H_spinup/m{{ "%03d" % h  }}/forecast/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
              {%- endfor %}
             </and>
             <and> 
@@ -2711,13 +2715,13 @@ MODULES_RUN_TASK_FP script.
                <strneq><left>{{ h }}</left><right><cyclestr>@H</cyclestr></right></strneq>
              {%- endfor %}
              {% for h in range(1, num_ens_members+1) %}
-             <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&RRFSE_FG_ROOT;/&RUNE;.@Y@m@d/@H/m{{ "%03d" % h  }}/forecast/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+	       <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&RRFSE_FG_ROOT;/&NET;/&VERSION;/&RUNE;.@Y@m@d/@H/m{{ "%03d" % h  }}/forecast/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
              {%- endfor %}
             </and>
            {%- else %} 
             <and>
              {% for h in range(1, num_ens_members+1) %}
-             <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&RRFSE_FG_ROOT;/&RUNE;.@Y@m@d/@H/m{{ "%03d" % h  }}/forecast/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
+	    <datadep age="00:00:01:00"><cyclestr offset="-{{ da_cycle_interval_hrs }}:00:00">&RRFSE_FG_ROOT;/&NET;/&VERSION;/&RUNE;.@Y@m@d/@H/m{{ "%03d" % h  }}/forecast/RESTART/</cyclestr><cyclestr>@Y@m@d.@H0000.coupler.res</cyclestr></datadep>
              {%- endfor %}
             </and>
            {%- endif %} 
@@ -3002,9 +3006,9 @@ MODULES_RUN_TASK_FP script.
         {%- if do_ensfcst %}
           <and>
           {%- for m in range(1, num_ens_members+1) %}
-            <taskdep task="&PREP_CYC_TN;_prod_mem{{ "%04d" % m }}"/>
+            <taskdep task="&PREP_CYC_TN;_prod_m{{ "%03d" % m }}"/>
           {%- endfor %}
-            <datadep age="00:00:05:00"><cyclestr>&ENSCTRL_GESROOT;/&RUN;.@Y@m@d/@H/forecast/INPUT/coupler.res</cyclestr></datadep>
+            <datadep age="00:00:05:00"><cyclestr>&ENSCTRL_COMOUT;/@H/forecast/INPUT/coupler.res</cyclestr></datadep>
           </and>
         {%- else %}
          <and>
@@ -3195,6 +3199,7 @@ MODULES_RUN_TASK_FP script.
 
   </task>
 
+{%- if not do_ensfcst %}
 <!-- ******************************************************************* -->
   <task name="&FORECAST_TN;_prod_long{{ uscore_ensmem_name }}" cycledefs="prodcyc_long" maxtries="{{ maxtries_forecast }}">
 
@@ -3269,6 +3274,7 @@ MODULES_RUN_TASK_FP script.
     </dependency>
 
   </task>
+{%- endif %}
 
 {%- if not do_ensfcst %}
 {%- if not is_rtma %}
@@ -3423,7 +3429,7 @@ MODULES_RUN_TASK_FP script.
 
       <dependency>
         {%- if do_ensemble %}
-	   <datadep age="01:30"><cyclestr>&DATAROOT;/&RUN;_forecast_@H_&VERSION;/&WGF;/m#mem#/output/log.atm.f#fhr#</cyclestr></datadep>
+	   <datadep age="01:30"><cyclestr>&DATAROOT;/&NET;_forecast_@H_&VERSION;/&WGF;/m#mem#/output/log.atm.f#fhr#</cyclestr></datadep>
         {%- else %}
           <datadep age="01:30"><cyclestr>&DATAROOT;/&RUN;_forecast_@H_&VERSION;/&WGF;/output/log.atm.f#fhr#</cyclestr></datadep>
         {%- endif %}
@@ -3432,6 +3438,7 @@ MODULES_RUN_TASK_FP script.
     </task>
   </metatask>
 
+{%- if not do_ensfcst %}
   <metatask name="&POST_TN;{{ uscore_ensmem_name }}_long">
 
 {%- if postproc_nsout_min > 0 %}
@@ -3483,6 +3490,7 @@ MODULES_RUN_TASK_FP script.
 
     </task>
   </metatask>
+{%- endif %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -3539,6 +3547,7 @@ MODULES_RUN_TASK_FP script.
     </task>
   </metatask>
 
+{%- if not do_ensfcst %}
 <metatask name="&PRDGEN_TN;{{ uscore_ensmem_name }}_long">
 
 {%- if postproc_nsout_min > 0 %}
@@ -3591,12 +3600,14 @@ MODULES_RUN_TASK_FP script.
     </task>
   </metatask>
 {%- endif %}
+{%- endif %}
 
 {% if do_bufrsnd %}
 <!--
 ************************************************************************
 ************************************************************************
 -->
+{%- if not do_ensfcst %}
   <task name="&BUFRSND_TN;_long" cycledefs="prodcyc_long" maxtries="1">
 
     &RSRV_POST;
@@ -3634,6 +3645,7 @@ MODULES_RUN_TASK_FP script.
     </dependency>
 
   </task>
+{%- endif %}
 
   {%- if do_ensfcst %}
   <task name="&BUFRSND_TN;{{ uscore_ensmem_name }}" cycledefs="prodcyc" maxtries="1">
@@ -3674,6 +3686,8 @@ MODULES_RUN_TASK_FP script.
 {%- if do_ensemble %}
   </metatask>
 {%- endif %}
+
+{%- if not do_ensfcst %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -3700,5 +3714,6 @@ MODULES_RUN_TASK_FP script.
 {%- endif %}
 
   </task>
+{%- endif %}
 
 </workflow>
