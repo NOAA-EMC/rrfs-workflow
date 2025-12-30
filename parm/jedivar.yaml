@@ -1,8 +1,3 @@
-_member: &memberConfig
-  date: &analysisDate '@analysisDate@'
-  state variables: &incvars [water_vapor_mixing_ratio_wrt_moist_air, air_pressure_at_surface, air_temperature, northward_wind, eastward_wind, cloud_liquid_water, cloud_liquid_ice, rain_water, snow_water, graupel, equivalent_reflectivity_factor, upward_air_velocity]
-  stream name: ensemble
-
 output:
   filename: mpasout.nc
   stream name: analysis
@@ -35,7 +30,7 @@ cost function:
     streams_file: ./streams.atmosphere
     deallocate non-da fields: true
     interpolation type: unstructured
-  analysis variables: *incvars
+  analysis variables: &anavars [water_vapor_mixing_ratio_wrt_moist_air, air_pressure_at_surface, air_temperature, northward_wind, eastward_wind, cloud_liquid_water, cloud_liquid_ice, rain_water, snow_water, graupel, equivalent_reflectivity_factor, upward_air_velocity]
   background:
     state variables:
     - water_vapor_mixing_ratio_wrt_moist_air
@@ -74,7 +69,7 @@ cost function:
     - w
     - upward_air_velocity
     filename: mpasout.nc
-    date: *analysisDate
+    date: &analysisDate '@analysisDate@'
   background error:
     covariance model: hybrid
     components:
@@ -127,7 +122,7 @@ cost function:
         linear variable change:
           linear variable change name: Control2Analysis
           input variables: *ctlvars
-          output variables: *incvars
+          output variables: *anavars
       weight:
         value: "@HYB_WGT_STATIC@"
     - covariance:
@@ -136,7 +131,7 @@ cost function:
           localization method: SABER
           saber central block:
             saber block name: BUMP_NICAS
-            active variables: *incvars
+            active variables: *anavars
             read:
               io:
                 data directory: data/bumploc
@@ -148,7 +143,9 @@ cost function:
                 level for 2d variables: last
         members from template:
           template:
-            <<: *memberConfig
+            date: *analysisDate
+            state variables: *anavars
+            stream name: ensemble
             filename: ./data/ens/mem%iMember%.nc
           pattern: "%iMember%"
           start: 1

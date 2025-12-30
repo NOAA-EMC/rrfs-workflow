@@ -1,43 +1,3 @@
-_member: &memberConfig
-  date: &analysisDate '@analysisDate@'
-  state variables:
-  - water_vapor_mixing_ratio_wrt_moist_air
-  - air_pressure_at_surface
-  - air_temperature
-  - northward_wind
-  - eastward_wind
-  - air_potential_temperature
-  - dry_air_density
-  - u
-  - water_vapor_mixing_ratio_wrt_dry_air
-  - air_pressure
-  - landmask
-  - seaice_fraction
-  - snowc
-  - skin_temperature_at_surface
-  - ivgtyp
-  - isltyp
-  - snowh
-  - vegetation_area_fraction
-  - air_temperature_at_2m
-  - water_vapor_mixing_ratio_wrt_moist_air_at_2m
-  - eastward_wind_at_10m
-  - northward_wind_at_10m
-  - lai
-  - smois
-  - tslb
-  - pressure_p
-  - cloud_liquid_water
-  - cloud_liquid_ice
-  - graupel
-  - rain_water
-  - snow_water
-  - cldfrac
-  - equivalent_reflectivity_factor
-  - w
-  - upward_air_velocity
-  stream name: background
-
 increment variables: [air_temperature, water_vapor_mixing_ratio_wrt_moist_air, eastward_wind, northward_wind, air_pressure_at_surface, cloud_liquid_water, cloud_liquid_ice, rain_water, snow_water, graupel, equivalent_reflectivity_factor, upward_air_velocity]
 
 output mean prior:
@@ -62,7 +22,44 @@ geometry:
 background:
   members from template:
     template:
-      <<: *memberConfig
+      date: &analysisDate '@analysisDate@'
+      state variables:
+      - water_vapor_mixing_ratio_wrt_moist_air
+      - air_pressure_at_surface
+      - air_temperature
+      - northward_wind
+      - eastward_wind
+      - air_potential_temperature
+      - dry_air_density
+      - u
+      - water_vapor_mixing_ratio_wrt_dry_air
+      - air_pressure
+      - landmask
+      - seaice_fraction
+      - snowc
+      - skin_temperature_at_surface
+      - ivgtyp
+      - isltyp
+      - snowh
+      - vegetation_area_fraction
+      - air_temperature_at_2m
+      - water_vapor_mixing_ratio_wrt_moist_air_at_2m
+      - eastward_wind_at_10m
+      - northward_wind_at_10m
+      - lai
+      - smois
+      - tslb
+      - pressure_p
+      - cloud_liquid_water
+      - cloud_liquid_ice
+      - graupel
+      - rain_water
+      - snow_water
+      - cldfrac
+      - equivalent_reflectivity_factor
+      - w
+      - upward_air_velocity
+      stream name: background
       filename: ./data/ens/mem%iMember%.nc
     pattern: "%iMember%"
     start: 1
