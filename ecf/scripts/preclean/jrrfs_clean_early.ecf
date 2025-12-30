@@ -1,4 +1,4 @@
-#PBS -N rrfs_clean_%CYC%
+#PBS -N rrfs_clean_early_%CYC%
 #PBS -j oe
 #PBS -S /bin/bash
 #PBS -q %QUEUE%
@@ -25,9 +25,12 @@ export WGF="det"
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p ${DATA}
 cd ${DATA} 
-ls -d ${DATAROOT}/rrfs_*_${cyc}_v1.0_${envir}
-rm -rf ${DATAROOT}/rrfs_*_${cyc}_v1.0_${envir}
-rm -rf ${DATAROOT}/rrfs_*_${cyc}.*.*
+
+for old_dir in ${DATAROOT}/rrfs_*_${cyc}_v1.0_${envir}; do
+  if [ -d "$old_dir" ]; then
+    mv ${old_dir} ${old_dir}_$$
+  fi
+done
 
 cd ${DATAROOT}
 rm -rf ${DATA}
