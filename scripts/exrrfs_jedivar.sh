@@ -128,7 +128,14 @@ case ${YAML_GEN_METHOD:-1} in
     source "${USHrrfs}"/yaml_replace_placeholders.sh
     ;;
   3) # JCB
-    source "${USHrrfs}"/yaml_jcb.sh
+    cp "${EXPDIR}/config/convinfo" .
+    cp "${EXPDIR}/config/satinfo" .
+    cp "${USHrrfs}/hifiyaml4rrfs.py" .
+    cp "${USHrrfs}/yamltools4rrfs.py" .
+    cp "${USHrrfs}/jcb_render.py" .
+    JCBPATH=${HOMErrfs}/sorc/RDASApp/sorc/jcb/src
+    export PYTHONPATH="${JCBPATH}:${PYTHONPATH}"
+    "${USHrrfs}/jcb_render.py" jedivar.yaml
     ;;
   *)
     echo "unknown YAML_GEN_METHOD:${YAML_GEN_METHOD}"
