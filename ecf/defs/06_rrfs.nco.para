@@ -7,7 +7,12 @@ family rrfs
     inlimit -s rrfs_submission
     family 06z
       edit CYC '06'
+      family preclean
+        task jrrfs_clean_early
+          trigger :TIME >= 0600 and :TIME < 0900
+      endfamily
       family det
+        trigger preclean == complete
         edit WGF 'det'
         edit CYCLE_TYPE 'prod'
         family init
@@ -5996,7 +6001,7 @@ family rrfs
           task jrrfs_firewx_make_ics
             trigger ./jrrfs_firewx_make_sfc_climo==complete and ../../det/post/jrrfs_det_post_f000_00_36_long==complete
           task jrrfs_firewx_make_lbcs_00
-            trigger ./jrrfs_firewx_make_ics==complete and ../../det/post/jrrfs_det_post_f036_00_00_long==complete
+            trigger ./jrrfs_firewx_make_ics==complete and ../../det/post/jrrfs_det_post_f001_00_00_long==complete and ../../det/post/jrrfs_det_post_f002_00_00_long==complete and ../../det/post/jrrfs_det_post_f003_00_00_long==complete and ../../det/post/jrrfs_det_post_f004_00_00_long==complete and ../../det/post/jrrfs_det_post_f005_00_00_long==complete and ../../det/post/jrrfs_det_post_f006_00_00_long==complete and ../../det/post/jrrfs_det_post_f007_00_00_long==complete and ../../det/post/jrrfs_det_post_f008_00_00_long==complete and ../../det/post/jrrfs_det_post_f009_00_00_long==complete and ../../det/post/jrrfs_det_post_f010_00_00_long==complete and ../../det/post/jrrfs_det_post_f011_00_00_long==complete and ../../det/post/jrrfs_det_post_f012_00_00_long==complete and ../../det/post/jrrfs_det_post_f013_00_00_long==complete and ../../det/post/jrrfs_det_post_f014_00_00_long==complete and ../../det/post/jrrfs_det_post_f015_00_00_long==complete and ../../det/post/jrrfs_det_post_f016_00_00_long==complete and ../../det/post/jrrfs_det_post_f017_00_00_long==complete and ../../det/post/jrrfs_det_post_f018_00_00_long==complete and ../../det/post/jrrfs_det_post_f019_00_00_long==complete and ../../det/post/jrrfs_det_post_f020_00_00_long==complete and ../../det/post/jrrfs_det_post_f021_00_00_long==complete and ../../det/post/jrrfs_det_post_f022_00_00_long==complete and ../../det/post/jrrfs_det_post_f023_00_00_long==complete and ../../det/post/jrrfs_det_post_f024_00_00_long==complete and ../../det/post/jrrfs_det_post_f025_00_00_long==complete and ../../det/post/jrrfs_det_post_f026_00_00_long==complete and ../../det/post/jrrfs_det_post_f027_00_00_long==complete and ../../det/post/jrrfs_det_post_f028_00_00_long==complete and ../../det/post/jrrfs_det_post_f029_00_00_long==complete and ../../det/post/jrrfs_det_post_f030_00_00_long==complete and ../../det/post/jrrfs_det_post_f031_00_00_long==complete and ../../det/post/jrrfs_det_post_f032_00_00_long==complete and ../../det/post/jrrfs_det_post_f033_00_00_long==complete and ../../det/post/jrrfs_det_post_f034_00_00_long==complete and ../../det/post/jrrfs_det_post_f035_00_00_long==complete and ../../det/post/jrrfs_det_post_f036_00_00_long==complete
             edit BCGRP '00'
             event 1 release_firewx_make_lbcs
           task jrrfs_firewx_make_lbcs_01
@@ -6308,7 +6313,12 @@ family rrfs
     endfamily
     family 07z
       edit CYC '07'
+      family preclean
+        task jrrfs_clean_early
+          trigger :TIME >= 0700 and :TIME < 1000
+      endfamily
       family det
+        trigger preclean == complete
         edit WGF 'det'
         edit CYCLE_TYPE 'prod'
         family init
@@ -7743,7 +7753,12 @@ family rrfs
     endfamily
     family 08z
       edit CYC '08'
+      family preclean
+        task jrrfs_clean_early
+          trigger :TIME >= 0800 and :TIME < 1100
+      endfamily
       family det
+        trigger preclean == complete
         edit WGF 'det'
         edit CYCLE_TYPE 'prod'
         family init
@@ -8720,7 +8735,12 @@ family rrfs
     endfamily
     family 09z
       edit CYC '09'
+      family preclean
+        task jrrfs_clean_early
+          trigger :TIME >= 0900 and :TIME < 1200
+      endfamily
       family det
+        trigger preclean == complete
         edit WGF 'det'
         edit CYCLE_TYPE 'prod'
         family init
@@ -9663,7 +9683,12 @@ family rrfs
     endfamily
     family 10z
       edit CYC '10'
+      family preclean
+        task jrrfs_clean_early
+          trigger :TIME >= 1000 and :TIME < 1300
+      endfamily
       family det
+        trigger preclean == complete
         edit WGF 'det'
         edit CYCLE_TYPE 'prod'
         family init
@@ -10606,7 +10631,12 @@ family rrfs
     endfamily
     family 11z
       edit CYC '11'
+      family preclean
+        task jrrfs_clean_early
+          trigger :TIME >= 1100 and :TIME < 1400
+      endfamily
       family det
+        trigger preclean == complete
         edit WGF 'det'
         edit CYCLE_TYPE 'prod'
         family init
@@ -10639,7 +10669,6 @@ family rrfs
         family forecast
           task jrrfs_det_forecast
             trigger ../analysis/jrrfs_det_analysis_nonvarcld==complete
-            edit KEEPDATA 'YES'
           task jrrfs_det_save_restart_f1
             trigger ../post/jrrfs_det_post_f001_00_00 == active or ../post/jrrfs_det_post_f001_00_00 == complete
             edit FHR '001'

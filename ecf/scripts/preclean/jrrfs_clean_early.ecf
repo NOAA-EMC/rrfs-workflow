@@ -1,0 +1,42 @@
+#PBS -N rrfs_clean_early_%CYC%
+#PBS -j oe
+#PBS -S /bin/bash
+#PBS -q %QUEUE%
+#PBS -A %PROJ%-%PROJENVIR%
+#PBS -l walltime=00:15:00
+#PBS -l place=vscatter:shared,select=1:ncpus=1:mem=10G
+#PBS -l debug=true
+set -x
+
+model=rrfs
+export cyc="%CYC%"
+%include <head.h>
+%include <envir-p1.h>
+############################################################
+# Load modules
+############################################################
+
+module list
+export WGF="det"
+
+############################################################
+# CALL executable job script here
+############################################################
+export DATA=${DATA:-${DATAROOT}/${jobid}}
+mkdir -p ${DATA}
+cd ${DATA} 
+
+for old_dir in ${DATAROOT}/rrfs_*_${cyc}_v1.0_${envir}; do
+  if [ -d "$old_dir" ]; then
+    mv ${old_dir} ${old_dir}_$$
+  fi
+done
+
+cd ${DATAROOT}
+rm -rf ${DATA}
+#${HOMErrfs}/scripts/exrrfs_clean.sh
+
+%include <tail.h>
+
+%manual
+%end
