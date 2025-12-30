@@ -41,7 +41,7 @@ GSIBEC_NORTH_POLE_LON = os.getenv("GSIBEC_NORTH_POLE_LON", "{{GSIBEC_NORTH_POLE_
 # determine the temporal grid for Gaussian Thinning
 time_mesh = 3
 THINNING_TIME_MESH = f"PT{time_mesh:02d}H"
-analysis_time = datetime.strptime(analysisDate, "%Y%m%d%H")
+analysis_time = datetime.strptime(analysisDate, "%Y-%m-%dT%H:%M:%SZ")
 delta = timedelta(hours=time_mesh / 2)
 time_min = analysis_time - delta
 time_max = analysis_time + delta

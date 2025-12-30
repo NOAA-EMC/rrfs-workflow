@@ -77,8 +77,8 @@ if ytype == "jedivar":
 # modify variable list if do_radar_ref
 do_radar_ref = (os.getenv("DO_RADAR_REF", "FASLE").upper() == "TRUE" and start_type != "cold")
 if not do_radar_ref and ytype == "jedivar":
-    varlist = "state variables: &incvars [water_vapor_mixing_ratio_wrt_moist_air, air_pressure_at_surface, air_temperature, northward_wind, eastward_wind]"
-    hy.modify(data, "_member/state variables", varlist, oneline_change=True)
+    varlist = "analysis variables: &anavars [water_vapor_mixing_ratio_wrt_moist_air, air_pressure_at_surface, air_temperature, northward_wind, eastward_wind]"
+    hy.modify(data, "cost function/analysis variables", varlist, oneline_change=True)
     pos, _ = hy.get_start_pos(data, "cost function/background/state variables")
     next_one = hy.next_pos(data, pos)
     mystr = data[next_one - 3]
@@ -88,7 +88,7 @@ if not do_radar_ref and ytype == "jedivar":
 elif not do_radar_ref and ytype == "getkf":
     varlist = "increment variables: [air_temperature, water_vapor_mixing_ratio_wrt_moist_air, eastward_wind, northward_wind, air_pressure_at_surface]"
     hy.modify(data, "increment variables", varlist, oneline_change=True)
-    pos, _ = hy.get_start_pos(data, "_member/state variables")
+    pos, _ = hy.get_start_pos(data, "members from template/template/state variables")
     next_one = hy.next_pos(data, pos)
     mystr = data[next_one - 3]
     if ("equivalent_reflectivity_factor" in mystr or "w" in mystr or "upward_air_velocity" in mystr):

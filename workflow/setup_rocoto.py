@@ -147,7 +147,7 @@ with open(EXPin, 'r') as infile, open(EXPout, 'w') as outfile:
 
 setup_xml(HOMErrfs, expdir)
 
-if os.getenv('YAML_GEN_METHOD', '1') == '1':
+if os.getenv('YAML_GEN_METHOD', '1') != '2':
     # copy qrocoto utilities to expdir/qrocoto
     srcdir = f'{HOMErrfs}/workflow/tools/qrocoto'
     dstdir = f'{expdir}/qrocoto'
