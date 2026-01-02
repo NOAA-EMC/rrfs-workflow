@@ -29,7 +29,7 @@ def hofx(xmlFile, expdir, do_spinup=False):
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
     #
     dependencies = f'''
-  <dependency>
+  <dependency>{timedep}
     <taskdep task="fcst"/>
   </dependency>'''
     #
