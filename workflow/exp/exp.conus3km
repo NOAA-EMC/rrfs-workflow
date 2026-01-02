@@ -21,7 +21,6 @@ export DO_NONVAR_CLOUD_ANA=false
 export COLDSTART_CYCS_DO_DA=false
 export DO_CHEMISTRY=false
 export DO_CLEAN=true
-export DO_HOFX=false
 export HYB_WGT_ENS=0.0
 export HYB_WGT_STATIC=1.0
 export HYB_ENS_TYPE=1      # 1.rrfs; 2.interpolated GEFS/GDAS; 0.TBD on the fly (rrfs->GDAS->3DVAR)
@@ -30,6 +29,8 @@ export DO_RADAR_REF=false  # does not work for 3DVar, only EnVar or GETKF
 export RADARREFL_TIMELEVEL="00"  # 00 15 30 45 min
 export ENS_SIZE=30
 export ENS_BEC_LOOK_BACK_HRS=1  # define the hours going back for ensemble forecast files for the ensemble BEC
+export DO_HOFX=false
+export HOFX_FHRS="01 12"
 
 export STATIC_BEC_MODEL="GSIBEC" # the static bec model, GSIBEC and BUMPBEC
 export GSIBEC_X=40 #GSIBEC_X * GSIBEC_Y should match the number of MPI tasks
