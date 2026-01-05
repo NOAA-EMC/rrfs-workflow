@@ -740,7 +740,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
     else
       enkfgdas_cyc=12
     fi
-    enkfgdas_pth=$(compath.py gefs/${gefs_ver})/enkfgdas.${RRFS_Current_PDY}/${enkfgdas_cyc}/atmos
+    enkfgdas_pth=$(compath.py gfs/${gfs_ver})/enkfgdas.${RRFS_Current_PDY}/${enkfgdas_cyc}/atmos
     for mem_nu in $(seq 1 30); do
       mem_nu_3d=$( printf "%03d" ${mem_nu} )
       target_file_scan_atmf=${enkfgdas_pth}/mem${mem_nu_3d}/gdas.t${enkfgdas_cyc}z.atmf007.nc

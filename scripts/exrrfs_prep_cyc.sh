@@ -521,6 +521,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+COMINnsst="${COMINnsst:-$(compath.py nsst/${nsst_ver})}"
 if [ ${HH} -eq ${SST_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
   echo "Update SST at ${SST_update_hour}z"
   if [ -r "${COMINnsst}/latest.SST" ]; then
@@ -981,6 +982,7 @@ fi
 #-----------------------------------------------------------------------
 #
 if [ "${USE_FVCOM}" = "TRUE" ] && [ ${SFC_CYC} -eq 2 ] ; then
+  FVCOM_DIR=$(compath.py nosofs/${nosofs_ver})
   # Remap the FVCOM output from the 5 lakes onto the RRFS grid
   if [ "${PREP_FVCOM}" = "TRUE" ]; then
     ${USHrrfs}/fvcom_prep.sh \
