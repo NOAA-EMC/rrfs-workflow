@@ -45,6 +45,7 @@ DO_ENVAR_RADAR_REF="TRUE"
 DO_ENVAR_RADAR_REF_ONCE="FALSE"
 RADARREFL_TIMELEVEL=(0)
 FH_DFI_RADAR="0.0,0.25,0.5"
+diag_radardbz=.true.
 
 # Other options
 grid_ratio_fv3=1.0 # default: 2.0
