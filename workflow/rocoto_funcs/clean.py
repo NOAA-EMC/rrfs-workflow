@@ -21,7 +21,11 @@ def clean(xmlFile, expdir):
     }
 
     # determine the dependency
-    taskdep = f'<metataskdep metatask="upp"/>'
+    taskdep = '<metataskdep metatask="upp"/>'
+    if os.getenv("DO_ENSMEAN_POST", "FALSE").upper() == "TRUE":
+        taskdep = taskdep + '\n    <metataskdep metatask="upp_ensmean"/>'
+    if os.getenv("DO_HOFX", "FALSE").upper() == "TRUE":
+        taskdep = taskdep + '\n    <taskdep task="hofx"/>'
     #
     dependencies = f'''
   <dependency>
