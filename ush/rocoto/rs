@@ -2,6 +2,13 @@
 
 rocotostat -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -c all > stat
 
+total_tasks=$(grep -E '^[0-9]{10}' stat | grep -v '^210001010100' | wc -l)
+succeeded=$(grep SUC stat | wc -l)
+
+percent_complete=$(awk -v s="$succeeded" -v t="$total_tasks" 'BEGIN {
+    if (t>0) printf "%.1f", 100*s/t; else print 0
+}')
+
 echo "----------" > ./DEAD
 {
     grep DEAD stat
@@ -21,5 +28,9 @@ echo "----------" > ./RUN
     echo "#Dead:      $(grep DEA stat | wc | tr -s " " | cut -f 2 -d " ")"
     echo "#Lost:      $(grep LOS stat | wc | tr -s " " | cut -f 2 -d " ")"
     echo "#Unknwn:    $(grep UNK stat | wc | tr -s " " | cut -f 2 -d " ")"
+    echo ""
+    echo "#Total tasks: ${total_tasks}"
+    echo "#Complete:    ${percent_complete}%"
+    echo ""
     date
 } >> ./RUN

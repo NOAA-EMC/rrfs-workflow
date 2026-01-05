@@ -1056,6 +1056,8 @@ $APRUN ./$pgm < gsiparm.anl >>$pgmout 2>errfile
 cp $pgmout ${COMOUT}/rrfs.t${HH}z.gsiout.tm00
 export err=$?; err_chk
 mv errfile errfile_gsi
+cp gsiparm.anl ${COMOUT}/.
+cp convinfo ${COMOUT}/.
 
 if [ "${anav_type}" = "radardbz" ]; then
   cat fort.238 > $COMOUT/rrfs.t${HH}z.fits3.tm00

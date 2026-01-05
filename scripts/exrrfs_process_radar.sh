@@ -365,6 +365,35 @@ EOF
   export err=$?; err_chk
 
   cp RefInGSI3D.dat  ${COMOUT}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
+
+  #
+  #------------------------------------------------------------------------
+  #
+  # Now convert the binary reflectivity data to IODA format
+  #
+  #------------------------------------------------------------------------
+  #
+
+  if [ "${DO_IODA_MRMS}" = "TRUE" ]; then
+
+     # pyioda libraries
+     module purge
+     module use "${HOMErrfs}"/sorc/RDASApp/modulefiles
+     module load RDAS/wcoss2.intel
+     PYIODALIB=$(echo "${HOMErrfs}"/sorc/RDASApp/build/lib/python3.*)
+     export PYTHONPATH=${PYIODALIB}:${PYTHONPATH}
+     "${USHdir}"/MRMS2ioda.py -i ./Gridded_ref.nc -c "${YYYY}-${MM}-${DD}T${HH}:${bigmin}:00" -o "ioda_mrms_${YYYYMMDD}${HH}_${bigmin}.nc4"
+
+     # file count sanity check and copy to COMOUT
+     if [[ -s "ioda_mrms_${YYYYMMDD}${HH}_${bigmin}.nc4" ]]; then
+       cp "ioda_mrms_${YYYYMMDD}${HH}_${bigmin}.nc4" "${COMOUT}/ioda_mrms_refl.nc"
+     else
+       echo "FATAL ERROR: no ioda MRMS file generated."
+       err_exit # err_exit if no ioda files generated at the development stage
+     fi
+
+  fi
+
 done # done with the bigmin for-loop
 #
 #-----------------------------------------------------------------------

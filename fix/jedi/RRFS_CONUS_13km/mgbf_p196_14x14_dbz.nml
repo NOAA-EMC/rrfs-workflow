@@ -3,7 +3,7 @@
   mg_weig1=20.,mg_weig2=135.,mg_weig3=15000.,mg_weig4=1.,
   hx=6,hy=6,hz=12,p=2,
   mgbf_line=.true., mgbf_proc=5,
-  lm_a=65,lm=65,km2=0,km3=6,
+  lm_a=65,lm=65,km2=0,km3=13,
   coef_normalization_const=1.2236
   nxPE=14,nyPE=14,im_filt=16,jm_filt=16,
   nm0 = 224,

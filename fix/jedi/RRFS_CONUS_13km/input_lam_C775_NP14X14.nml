@@ -1,1 +1,89 @@
-../../.agent/jedi/RRFS_CONUS_13km/input_lam_C775_NP14X14.nml
+&fv_grid_nml
+    grid_file = 'INPUT/grid_spec.nc'
+/
+
+&fv_core_nml
+    a_imp = 1.0
+    adjust_dry_mass = .false.
+    agrid_vel_rst = .true.
+    bc_update_interval = 3
+    beta = 0.0
+    consv_am = .false.
+    consv_te = 0.0
+    d2_bg = 0.0
+    d2_bg_k1 = 0.2
+    d2_bg_k2 = 0.04
+    d4_bg = 0.12
+    d_con = 0.5
+    d_ext = 0.0
+    dddmp = 0.1
+    delt_max = 0.008
+    dnats = 0
+    do_sat_adj = .false.
+    do_schmidt = .true.
+    do_vort_damp = .true.
+    dwind_2d = .false.
+    dz_min = 2.0
+    external_eta = .true.
+    external_ic = .true.
+    fill = .true.
+    full_zs_filter = .false.
+    fv_debug = .false.
+    fv_sg_adj = 7200
+    gfs_phil = .false.
+    hord_dp = 6
+    hord_mt = 6
+    hord_tm = 6
+    hord_tr = 8
+    hord_vt = 6
+    hydrostatic = .false.
+    io_layout = 1, 1
+    k_split = 2
+    ke_bg = 0.0
+    kord_mt = 9
+    kord_tm = -9
+    kord_tr = 9
+    kord_wz = 9
+    layout = 14, 14
+    make_nh = .true.
+    mountain = .false.
+    n_split = 5
+    n_sponge = 65
+    n_zs_filter = 0
+    na_init = 1
+    ncep_ic = .false.
+    nggps_ic = .true.
+    no_dycore = .false.
+    nord = 3
+    nord_tr = 0
+    npx = 421
+    npy = 253
+    npz = 65
+    nrows_blend = 20
+    ntiles = 1
+    nudge_qv = .false.
+    nwat = 6
+    p_fac = 0.1
+    phys_hydrostatic = .false.
+    print_freq = 6
+    psm_bc = 1
+    range_warn = .false.
+    read_increment = .false.
+    regional = .true.
+    regional_bcs_from_gsi = .false.
+    res_latlon_dynamics = 'fv3_increment.nc'
+    reset_eta = .false.
+    rf_cutoff = 2000.0
+    sg_cutoff = -1
+    stretch_fac = 0.999
+    target_lat = 38.5
+    target_lon = -97.5
+    tau = 5.0
+    use_hydro_pressure = .false.
+    vtdm4 = 0.02
+    warm_start = .false.
+    write_restart_with_bcs = .false.
+    z_tracer = .true.
+/
+
+

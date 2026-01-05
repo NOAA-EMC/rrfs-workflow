@@ -1,1 +1,82 @@
-../../.agent/jedi/RRFS_CONUS_13km/gsiparm_regional.anl
+
+ &SETUP
+   qoption=2
+ /
+ &GRIDOPTS
+   regional=.true.,fv3_regional=.true.,grid_ratio_fv3_regional=2.0,
+   nlon=211,nlat=127,nsig=65,
+ /
+ &BKGERR
+   vs=1.0,
+   hzscl=0.7,1.4,2.80,
+   bw=0.,fstat=.true.,
+   usenewgfsberror=.true.,
+   simcv=.false.,
+ /
+ $STRONGOPTS
+ /
+ &ANBKGERR
+   anisotropic=.false.,
+ /
+ &HYBRID_ENSEMBLE
+   l_hyb_ens=.false.,
+ /
+
+met_guess::
+!var     level    crtm_use    desc              orig_name
+  ps        1      -1         surface_pressure     ps
+  z         1      -1         geopotential_height  phis
+  u        65       2         zonal_wind           u
+  v        65       2         meridional_wind      v
+  tv       65       2         virtual_temperature  tv
+  tsen     65       2         sensible_temperature tsen 
+  q        65       2         specific_humidity    sphum
+  oz       65       2         ozone                o3mr 
+#  delp     65      -1         fv3_del_pressure     delp    
+::
+
+state_derivatives::
+!var  level  src
+ ps   1      met_guess
+ u    65     met_guess
+ v    65     met_guess
+ tv   65     met_guess
+ q    65     met_guess
+ oz   65     met_guess
+ prse 66     met_guess
+::
+
+state_tendencies::
+!var  levels  source
+ u    65      met_guess
+ v    65      met_guess
+ tv   65      met_guess
+ q    65      met_guess
+ oz   65      met_guess
+ prse 66      met_guess
+::
+
+state_vector::
+!var     level  itracer source     funcof
+ u        65      0     met_guess    u
+ v        65      0     met_guess    v
+ tv       65      0     met_guess    tv
+# tsen     65      0     met_guess    tv,q
+ q        65      1     met_guess    q
+#oz       65      1     met_guess    oz
+ prse     66      0     met_guess    prse
+ ps        1      0     met_guess    ps   
+# sst       1      0     met_guess    sst
+::
+
+control_vector::
+!var     level  itracer as/tsfc_sdv  an_amp0   source  funcof
+ sf       65      0       0.90        -1.0     state    u,v
+ vp       65      0       0.90        -1.0     state    u,v
+ ps        1      0       1.00        -1.0     state    prse
+ t        65      0       1.40        -1.0     state    tv
+ q        65      1       0.80        -1.0     state    q
+# sst       1      0       1.00        -1.0     state    sst
+# stl       1      0       1.00        -1.0     motley   sst
+# sti       1      0       1.00        -1.0     motley   sst
+::

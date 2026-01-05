@@ -88,8 +88,14 @@ case $MACHINE in
   export FI_OFI_RXM_SAR_LIMIT=3145728
   export OMP_STACKSIZE=500M
   export OMP_NUM_THREADS=1 #${TPP_RUN_ANALYSIS}
-  #ncores=160 #$(( NNODES_RUN_ANALYSIS*PPN_RUN_ANALYSIS))
-  APRUN="mpirun -n 196 -ppn 98 --cpu-bind core --depth 1"
+  if [[ ${ob_type} == "conv" ]]; then
+    ncores=$((NNODES_RUN_ANALYSIS_JEDI*PPN_RUN_ANALYSIS_JEDI))
+    ppn=${PPN_RUN_ANALYSIS_JEDI}
+  elif [[ ${ob_type} == "radardbz" ]]; then
+    ncores=$((NNODES_HYBRID_RADAR_REF_JEDI*PPN_HYBRID_RADAR_REF_JEDI))
+    ppn=${PPN_HYBRID_RADAR_REF_JEDI}
+  fi
+  APRUN="mpirun -n ${ncores} -ppn ${ppn} --cpu-bind core --depth 1"
   ;;
 #
 "HERA")
@@ -333,7 +339,13 @@ WXFLOWLIB=${RDASAPP_DIR}/sorc/wxflow/src
 JCBLIB=${RDASAPP_DIR}/sorc/jcb/src
 export PYTHONPATH="${JCBLIB}:${WXFLOWLIB}:${PYIODALIB}:${PYTHONPATH}"
 
-cp ${PARMdir}/rdas-atmosphere-templates-fv3_c13.yaml .
+
+if [[ ${anav_type} == "conv" ]]; then
+  jcb_config="rdas-atmosphere-templates-fv3_c13.yaml"
+elif [[ ${anav_type} == "radardbz" ]]; then
+  jcb_config="rdas-atmosphere-templates-fv3_c13_dbz.yaml"
+fi
+cp ${PARMdir}/${jcb_config} .
 cp ${USHdir}/run_jcb.py .
 
 #sed - rdas-atmosphere-templates.yaml
@@ -341,7 +353,6 @@ cp ${USHdir}/run_jcb.py .
 WIN_ISO="${YYYY}-${MM}-${DD}T${HH}:00:00Z"
 WIN_PREFIX="${YYYY}${MM}${DD}.${HH}0000."
 SUFFIX="${CDATE}"
-jcb_config="rdas-atmosphere-templates-fv3_c13.yaml"
 jedi_yaml="jedivar.yaml"
 
 # do replacements
@@ -464,8 +475,11 @@ cp ${FIX_JEDI}/fmsmpp.nml .
 cp ${FIX_JEDI}/gfs-restart.yaml .
 cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/berror_stats .
 cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/gsiparm_regional.anl .
-cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/input_lam_C775_NP14X14.nml .
+cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/input_lam_C775_NP14X14.nml . # mgbf
+cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/input_lam_C775_NP16X10.nml . # bump
 cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/mgbf_p196_14x14.nml .
+cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/mgbf_p196_14x14_dbz.nml .
+ln -snf ${RDASAPP_DIR}/fix/expr_data/fv3_2024052700/DataFix .
 #
 #-----------------------------------------------------------------------
 #
@@ -497,16 +511,49 @@ cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/mgbf_p196_14x14.nml .
 #
 #-----------------------------------------------------------------------
 #
+# Early exit if this is a cold start cycle and DO_DACOLD is False
+#
+#-----------------------------------------------------------------------
+#
+
+if [[ "${DO_DACOLD}" = "FALSE" && "${BKTYPE}" -eq 1 ]]; then
+  echo "Not performing DA for cold cycles - do early clean exit"
+  exit 0
+fi
+
+#
+#-----------------------------------------------------------------------
+# If performing reflectivity analysis, prepare phy_data.nc files
+#-----------------------------------------------------------------------
+#
+# NOTE: eventually want to move this to the prep task for improved
+#        efficiency. but will wait to test that until we do fully
+#        coupled GETKF+Var cycling
+#
+
+if [[ ${anav_type} == "radardbz" ]]; then
+  cp ${USHdir}/prep_phydata_dbz.py ./
+  python prep_phydata_dbz.py fv3_phyvars
+  if [[ ${regional_ensemble_option:-1} ]]; then
+    cp ${USHdir}/prep_phydata_dbz.py ./
+    imem=1
+    while [[ $imem -le ${NUM_ENS_MEMBERS} ]];do
+      memcharv0=$( printf "%03d" $imem )
+      python prep_phydata_dbz.py data/inputs/mem${memcharv0}/fv3_phyvars
+      imem=$((imem+1))
+    done
+  fi
+fi
+
+#
+#-----------------------------------------------------------------------
+#
 # Run JEDI. Note that we have to launch the forecast from
 # the current cycle's run directory because the JEDI executable will look
 # for input files in the current directory.
 #
 #-----------------------------------------------------------------------
 #
-if [[ "${DO_DACOLD}" = "FALSE" && "${BKTYPE}" -eq 1 ]]; then
-  echo "Not performing DA for cold cycles - do early clean exit"
-  exit 0
-fi
 #export OOPS_TRACE=1
 #export OOPS_DEBUG=1
 export OMP_NUM_THREADS=1
@@ -517,38 +564,47 @@ cp "${jedi_exec}" "${analworkdir}/${pgm}"
 . prep_step
 
 ${APRUN} ./$pgm jedivar.yaml >>$pgmout 2>errfile
-cp $pgmout ${COMOUT}/rrfs.t${HH}z.jediout.tm00
-cp rdas-atmosphere-templates-fv3_c13.yaml jedivar.yaml ${COMOUT}
+cp $pgmout ${COMOUT}/rrfs.t${HH}z.jediout_${anav_type}.tm00
+cp ${jcb_config} ${COMOUT}
+cp jedivar.yaml ${COMOUT}/jedivar_${anav_type}.yaml
 export err=$?; err_chk
 mv errfile errfile_jedi
 #
 #-----------------------------------------------------------------------
 #
-# Compute u/v from ua/va
+# Add JEDI increments to background
 #
 #-----------------------------------------------------------------------
 #
+#####################################################################
+# 1. Convert A-grid wind increments to D-grid wind increments
+#####################################################################
 export LD_LIBRARY_PATH="/apps/ops/test/spack-stack-nco-1.9/oneapi/2024.2.1/hdf5-1.14.3-umtw5lv/lib:${LD_LIBRARY_PATH}"
 export pgm="rdas_ua2u.x"
 ua2u_exec="${EXECdir}/bin/${pgm}"
 cp "${ua2u_exec}" "${analworkdir}/${pgm}"
 
-# Rename input before running conversion
-mv analysis_jedi.fv_core.res.nc uava_analysis_jedi.fv_core.res.nc
+mv inc_jedi.fv_core.res.nc agrid_inc_jedi.fv_core.res.nc
 
-${APRUN} ./rdas_ua2u.x ua_update_u --in_grid=fv3_grid_spec --in_file=uava_analysis_jedi.fv_core.res.nc --out_file=analysis_jedi.fv_core.res.nc >>$pgmout 2>errfile
+${APRUN} ./${pgm} ua_update_u --in_grid=fv3_grid_spec --in_file=agrid_inc_jedi.fv_core.res.nc --out_file=inc_jedi.fv_core.res.nc >>$pgmout 2>errfile
 export err=$?; err_chk
 mv errfile errfile_ua2u
-#
-#-----------------------------------------------------------------------
-#
-# Post-process: type conversion and compression
-#
-#-----------------------------------------------------------------------
-#
+
+# Verify that the converter produced output
+if [ ! -s inc_jedi.fv_core.res.nc ]; then
+  echo "ERROR: inc_jedi.fv_core.res.nc missing or empty after rdas_ua2u.x"
+  exit 6
+fi
+#####################################################################
+# 2. Compute delp from ps
+#####################################################################
+
+#####################################################################
+# 3. Convert doubles to floats
+#####################################################################
 files=(
-  analysis_jedi.fv_core.res.nc
-  analysis_jedi.fv_tracer.res.nc
+  inc_jedi.fv_core.res.nc
+  inc_jedi.fv_tracer.res.nc
 )
 
 for file in "${files[@]}"; do
@@ -556,32 +612,89 @@ for file in "${files[@]}"; do
   # Extract variable names declared as double
   vars=$(ncks -m "$file" | awk '/^ *double /{gsub("double",""); gsub("\\(.*",""); gsub(";",""); print $1}')
 
-  echo "Found variables: $vars"
-
   # Convert each variable to float (from double)
   for v in $vars; do
-    echo "Converting $v to float..."
     ncap2 -O -s "${v}=float(${v})" "$file" "$file"
   done
-
-  # Remove stale checksums
-  ncatted -a checksum,,d,, "$file"
-
-  # Optional: compress (NetCDF4, level 1)
-    ncks -O -4 -L 1 "$file" "$file"
 done
 
-# inject DZ from background
-ncks -A -v DZ fv3_dynvars analysis_jedi.fv_core.res.nc
+#####################################################################
+# 4. Core background + increments
+#####################################################################
+BKG=fv3_dynvars
+INC=inc_jedi.fv_core.res.nc
+OUT=fv_core_analysis.res.tile1.nc
 
-# Fix the Time dimensions
-ncks --mk_rec_dmn Time analysis_jedi.fv_core.res.nc tmp_core.nc
-mv tmp_core.nc analysis_jedi.fv_core.res.nc
-ncks --mk_rec_dmn Time analysis_jedi.fv_tracer.res.nc tmp_tracer.nc
-mv tmp_tracer.nc analysis_jedi.fv_tracer.res.nc
+# Make Time a record dimension (unlimited dimension)
+ncks --mk_rec_dmn Time "$INC" tmp_inc.nc
+mv tmp_inc.nc "$INC"
 
-cp analysis_jedi.fv_core.res.nc     ${bkpath}/fv_core.res.tile1.nc
-cp analysis_jedi.fv_tracer.res.nc   ${bkpath}/fv_tracer.res.tile1.nc
+# Copy background
+ncks -O "$BKG" tmp_bkg.nc
+
+# Make a temporary increment file with renamed variables
+ncks -O "$INC" tmp_inc.nc
+ncrename -v u,u_inc tmp_inc.nc
+ncrename -v v,v_inc tmp_inc.nc
+ncrename -v T,T_inc tmp_inc.nc
+ncrename -v ua,ua_inc tmp_inc.nc
+ncrename -v va,va_inc tmp_inc.nc
+# ncrename -v delp,delp_inc tmp_inc.nc
+
+# Append increment vars to tmp_bkg.nc
+ncks -A tmp_inc.nc tmp_bkg.nc
+
+# Perform addition in place
+ncap2 -O \
+  -s "u=u+u_inc; v=v+v_inc; T=T+T_inc; ua=ua+ua_inc; va=va+va_inc;" \
+  tmp_bkg.nc "$OUT" #add delp
+
+# Remove increment variables
+ncks -O -x -v u_inc,v_inc,T_inc,ua_inc,va_inc "$OUT" "$OUT" #remove delp_inc here
+
+# Cleanup
+rm -f tmp_inc.nc tmp_bkg.nc
+
+#####################################################################
+# 5. Tracer background + increments
+#####################################################################
+BKGtr=fv3_tracer
+INCtr=inc_jedi.fv_tracer.res.nc
+OUTtr=fv_tracer_analysis.res.tile1.nc
+
+# Make Time a record dimension (unlimited dimension)
+ncks --mk_rec_dmn Time "$INCtr" tmp_inctr.nc
+mv tmp_inctr.nc "$INCtr"
+
+# Copy background
+ncks -O "$BKGtr" tmp_bkgtr.nc
+
+# Make a temporary increment file with renamed variables
+ncks -O "$INCtr" tmp_inctr.nc
+ncrename -v sphum,sphum_inc tmp_inctr.nc
+ncrename -v o3mr,o3mr_inc   tmp_inctr.nc
+
+# Append increment vars into OUT
+ncks -A tmp_inctr.nc tmp_bkgtr.nc
+
+# Perform addition in place
+ncap2 -O \
+  -s "sphum=sphum+sphum_inc; o3mr=o3mr+o3mr_inc;" \
+  tmp_bkgtr.nc "$OUTtr"
+
+# Remove increment variables
+ncks -O -x -v sphum_inc,o3mr_inc "$OUTtr" "$OUTtr"
+
+# Cleanup
+rm -f tmp_inctr.nc tmp_bkgtr.nc
+
+#####################################################################
+# 6. Copy results to INPUT.jedi
+#####################################################################
+cp "$OUT"                           ${bkpath}/fv_core.res.tile1.nc
+cp "$OUTtr"                         ${bkpath}/fv_tracer.res.tile1.nc
+#cp analysis_jedi.fv_core.res.nc     ${bkpath}/fv_core.res.tile1.nc
+#cp analysis_jedi.fv_tracer.res.nc   ${bkpath}/fv_tracer.res.tile1.nc
 #cp analysis_jedi.fv_srf_wnd.res.nc  ${bkpath}/fv_srf_wnd.res.tile1.nc
 #cp analysis_jedi.sfc_data.nc        ${bkpath}/sfc_data.nc
 #cp analysis_jedi.phy_data.nc        ${bkpath}/phy_data.nc
@@ -627,7 +740,7 @@ fi
 #
 print_info_msg "
 ========================================================================
-PREPBUFR PROCESS completed successfully!!!
+JEDIVAR PROCESS completed successfully!!!
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
