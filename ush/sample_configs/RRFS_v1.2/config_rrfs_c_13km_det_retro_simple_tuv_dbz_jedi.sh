@@ -11,7 +11,7 @@ EXPT_SUBDIR="rrfs_conus_13km.radar"
 STMP="/lfs/h2/emc/stmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
 PTMP="/lfs/h2/emc/ptmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
 NWGES="/lfs/h2/emc/ptmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
-ARCHIVEDIR="/NCEPDEV/emc-meso/5year/Samuel.K.Degelia/RRFSv1/May2024_retro/$version/$EXPT_SUBDIR/"
+ARCHIVEDIR="/NCEPDEV/emc-meso/5year/Samuel.Degelia/RRFSv1/May2024_retro/$version/$EXPT_SUBDIR/"
 DO_ARCHIVE_RETRO="TRUE"
 
 PREDEF_GRID_NAME=RRFS_CONUS_13km
