@@ -20,7 +20,7 @@ from python_utils import (
 from set_namelist_fcst_rst import set_namelist
 
 
-def update_input_nml(run_dir):
+def update_input_nml(run_dir,member):
     """Update the FV3 input.nml file in the specified run directory
 
     Args:
@@ -67,9 +67,24 @@ def update_input_nml(run_dir):
             "warm_start": True,
         }
 
-        settings["gfs_physics_nml"] = {
-           "sigmab_coldstart": False,
-        }
+        if int(member)==0:
+            settings["gfs_physics_nml"] = {
+               "sigmab_coldstart": False,
+            }
+        elif int(member)==1 or int(member)==3 or int(member)==4:
+            settings["gfs_physics_nml"] = {
+               "gf_coldstart": False,
+            }
+            settings["nam_stochy"] = {
+               "stochini": True,
+            }
+        else:
+            settings["gfs_physics_nml"] = {
+               "sigmab_coldstart": False,
+            }
+            settings["nam_stochy"] = {
+               "stochini": True,
+            }
 
         # settings["gfs_physics_nml"] = {
         #    "nstf_name": [2, 0, 0, 0, 0],
@@ -141,6 +156,14 @@ def parse_args(argv):
         help="Run directory."
     )
 
+
+    parser.add_argument(
+        "-m", "--member",
+        dest="member",
+        required=True,
+        help="members."
+    )
+
     parser.add_argument(
         "-p", "--path-to-defns",
         dest="path_to_defns",
@@ -162,5 +185,5 @@ if __name__ == "__main__":
     cfg = flatten_dict(cfg)
     import_vars(dictionary=cfg)
     update_input_nml(
-        run_dir=args.run_dir,
+        run_dir=args.run_dir,member=args.member
     )

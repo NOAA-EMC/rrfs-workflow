@@ -718,9 +718,14 @@ fi
 if [ "${DO_FCST_RESTART}" = "TRUE" ] && [ $coupler_res_ct -gt 0 ] && [ $FCST_LEN_HRS -gt 6 ]; then
   flag_fcst_restart="TRUE"
   # Update FV3 input.nml for restart
+   mem_res="0"
+   if [ ${WGF} = "ensf" ]; then
+     mem_res=${ensmem_num}
+   fi
    $USHrrfs/update_input_nml.py \
     --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf \
     --run_dir "${DATA}" \
+    --member ${mem_res} \
     --restart
   export err=$?
   if [ $err -ne 0 ]; then
