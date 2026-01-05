@@ -16,7 +16,7 @@ def hofx(xmlFile, expdir, do_spinup=False):
         'EXTRN_MDL_SOURCE': os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined'),
         'PHYSICS_SUITE': os.getenv('PHYSICS_SUITE', 'PHYSICS_SUITE_not_defined'),
         'EMPTY_OBS_SPACE_ACTION': os.getenv('EMPTY_OBS_SPACE_ACTION', 'skip output'),
-        'HOFX_FHRS': os.getenv('HOFX_FHRS', '01'),
+        'HOFX_FHRS': os.getenv('HOFX_FHRS', '001'),
         'IODA_PATH': f'{COMROOT}/{NET}/{rrfs_ver}'
     }
 
