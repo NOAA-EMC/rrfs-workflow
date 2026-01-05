@@ -29,6 +29,8 @@ export DO_RADAR_REF=false  # does not work for 3DVar, only EnVar or GETKF
 export RADARREFL_TIMELEVEL="00"  # 00 15 30 45 min
 export ENS_SIZE=30
 export ENS_BEC_LOOK_BACK_HRS=1  # define the hours going back for ensemble forecast files for the ensemble BEC
+export DO_HOFX=false
+export HOFX_FHRS="000 001 012"
 
 export STATIC_BEC_MODEL="GSIBEC" # the static bec model, GSIBEC and BUMPBEC
 export GSIBEC_X=40 #GSIBEC_X * GSIBEC_Y should match the number of MPI tasks
