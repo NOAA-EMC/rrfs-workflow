@@ -66,8 +66,6 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 HH=${YYYYMMDDHH:8:2}
 ${ECHO} ${YYYYMMDD}
 ${ECHO} ${HH}
-current_hh=`${DATE} -d ${HH} +"%H"`
-prev_hh=`${DATE} -d "$current_hh -24 hour" +"%H"`
 previous_day=$($NDATE -24 ${YYYYMMDDHH})
 nfiles=24
 smokeFile=SMOKE_RRFS_data_${YYYYMMDDHH}00.nc
