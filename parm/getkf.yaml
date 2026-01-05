@@ -15601,6 +15601,808 @@ observations:
              name: reject
            defer to post: true
      - obs space:
+         name: satwnd_uv247_270
+         distribution:
+           name: "RoundRobin"
+           halo size: 500e3
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: "data/obs/ioda_satwnd.abi_goes-16.nc"
+             missing file action: "warn"
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_satwnd_uv247_270.nc
+             allow overwrite: true
+         io pool:
+           max pool size: 1
+         observed variables: [windEastward, windNorthward]
+         simulated variables: [windEastward, windNorthward]
+
+       obs operator:
+           name: VertInterp
+           vertical coordinate: air_pressure
+           observation vertical coordinate: pressure
+           observation vertical coordinate group: MetaData
+           interpolation method: log-linear
+           variables:
+           - name: windEastward
+           - name: windNorthward
+
+       obs error:
+         covariance model: diagonal
+
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 200e3 # orig
+
+       obs filters:
+         # ------------------
+         # wind (247)
+         # ------------------
+         # Accept, reject, or passivate (monitor)
+         - filter: Perform Action
+           udescriptor: "iuse_check"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 270
+           action:
+             name: accept # accept, reject, passivate
+
+         # Reject all obs not 247
+         - filter: Perform Action
+           udescriptor: "obs_type_check"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_not_in: 270
+           action:
+             name: reduce obs space
+
+         # Time window filter
+         - filter: Bounds Check
+           udescriptor: "time_window_check"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           test variables:
+           - name: MetaData/timeOffset # units: s
+           minvalue: -5400
+           maxvalue:  5400
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 270
+           action:
+             name: reduce obs space
+
+         # Duplicate Check
+         - filter: Temporal Thinning
+           udescriptor: "duplicate_check"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           min_spacing: PT90M
+           tolerance: PT0H
+           seed_time: "2024-05-27T00:00:00Z"
+           category_variable:
+             name: MetaData/longitude_latitude_pressure
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 270
+           action:
+             name: reduce obs space
+
+         # Online domain check
+         - filter: Bounds Check
+           udescriptor: "online_domain_check"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           test variables:
+           - name:  GeoVaLs/observable_domain_mask
+           minvalue: 0.0
+           maxvalue: 0.5
+
+         # Initial error assignment
+         - filter: Perform Action
+           udescriptor: "initial_error_assignment"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 270
+           action:
+             name: assign error
+             error function:
+               name: ObsFunction/ObsErrorModelStepwiseLinear
+               options:
+                 xvar:
+                   name: MetaData/pressure
+                 xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
+                 errors: [3.8, 3.8, 3.8, 3.8, 3.8, 3.8, 3.8, 3.8, 3.9, 3.9, 4.0, 4.0, 4.1, 5.0, 6.0, 6.3, 6.6, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0]
+
+         # Error inflation (windEastward) based on pressure check (setupw.f90)
+         - filter: Perform Action
+           udescriptor: "error_inflation_pressure_check"
+           filter variables:
+           - name: windEastward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 270
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorPressureCheck
+               options:
+                 variable: windEastward
+                 inflation factor: 4.0
+
+         # Error inflation (windNorthward) based on pressure check (setupw.f90)
+         - filter: Perform Action
+           udescriptor: "error_inflation_pressure_check"
+           filter variables:
+           - name: windNorthward
+           where:
+           - variable: ObsType/windNorthward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 270
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorPressureCheck
+               options:
+                 variable: windNorthward
+                 inflation factor: 4.0
+
+         # Bounds Check (ObsValue)
+         - filter: Bounds Check
+           udescriptor: "bounds_check_ObsValue"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           minvalue: -200
+           maxvalue: 200
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 270
+           action:
+             name: reduce obs space
+
+         # Reject obs with qiWithoutForecast < 90. OR > 100.
+         - filter: Bounds Check
+           udescriptor: "bounds_check_qifn"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           test variables:
+           - name: MetaData/qiWithoutForecast
+           minvalue: 90.
+           maxvalue: 100.
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 270
+           action:
+             name: reject
+
+         # Reject obs with satellite zenith angle > 68
+         - filter: Bounds Check
+           udescriptor: "bounds_check_satellite_zenith_angle"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           test variables:
+           - name: MetaData/satelliteZenithAngle
+           maxvalue: 68.
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 270
+           action:
+             name: reject
+
+         # Reject obs with pressure < 150 mb
+         - filter: Bounds Check
+           udescriptor: "bounds_check_pressure"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           test variables:
+           - name: MetaData/pressure
+           #minvalue: 12500.
+           minvalue: 15000.
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 270
+           action:
+             name: reject
+
+         # Reject obs over land (isli=1) where pressure > 850 mb
+         - filter: Perform Action
+           udescriptor: "bounds_check_pressure_over_land"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: MetaData/pressure
+             minvalue: 85000.
+           - variable: GeoVaLs/land_area_fraction
+             minvalue: 0.99
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 270
+           action:
+             name: reject
+
+         # Low wind speed check
+         - filter: Perform Action
+           udescriptor: "reject_low_speed_amv"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsFunction/Velocity
+             maxvalue: 0.1
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 270
+           action:
+             name: reject
+
+         # AMV expected error norm check
+         - filter: Perform Action
+           udescriptor: "amv_experr_norm_check"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsFunction/Velocity
+             minvalue: 0.1
+           - variable: MetaData/exp_err_norm
+             minvalue: 0.9
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 270
+           action:
+             name: reject
+
+         # Halve the ob error (based on read_satwnd.f90)
+         - filter: Perform Action
+           udescriptor: "ob_error_inflation"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 270
+           action:
+             name: inflate error
+             inflation factor: 0.5
+
+         # Reject when pressure is more than 50 mb above tropopause
+         - filter: Difference Check
+           udescriptor: "difference_check_tropopause_pressure"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           reference: GeoVaLs/tropopause_pressure
+           value: MetaData/pressure
+           minvalue: -5000.  # 50 hPa above tropopause level, negative p-diff
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 270
+           action:
+             name: reject
+
+         # Reject obs within 110 mb of surface pressure over non-water surface
+         - filter: Difference Check
+           udescriptor: "difference_check_surface_pressure"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable:
+               name: GeoVaLs/water_area_fraction
+             maxvalue: 0.99
+           - variable:
+               name: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 270
+           reference: GeoVaLs/air_pressure_at_surface
+           value: MetaData/pressure
+           maxvalue: -11000.                   # within 110 hPa above surface pressure, negative p-diff
+           action:
+             name: reject
+
+         # Reject when difference of wind direction between obs and background is more than 50 degrees
+         - filter: Bounds Check
+           udescriptor: "wind_direction_check"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           test variables:
+           - name: ObsFunction/WindDirAngleDiff
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 270
+           maxvalue: 50.
+           action:
+             name: reject
+
+         # Gross Error Check (windEastward)
+         - filter: Background Check
+           udescriptor: "gross_error_check"
+           apply at iterations: 0,1
+           filter variables:
+           - name: windEastward
+           function absolute threshold:
+           - name: ObsFunction/WindsSPDBCheck
+             options:
+               wndtype:    [ 247 ]
+               cgross:     [ 2.5 ]
+               error_min:  [ 1.4 ]
+               error_max:  [ 5.0 ]
+               variable: windEastward
+           action:
+             name: reject
+           defer to post: true
+
+         # Gross Error Check (windNorthward)
+         - filter: Background Check
+           udescriptor: "gross_error_check"
+           apply at iterations: 0,1
+           filter variables:
+           - name: windNorthward
+           function absolute threshold:
+           - name: ObsFunction/WindsSPDBCheck
+             options:
+               wndtype:    [ 247 ]
+               cgross:     [ 2.5 ]
+               error_min:  [ 1.4 ]
+               error_max:  [ 5.0 ]
+               variable: windNorthward
+           action:
+             name: reject
+           defer to post: true
+     - obs space:
+         name: satwnd_uv247_272
+         distribution:
+           name: "RoundRobin"
+           halo size: 500e3
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: "data/obs/ioda_satwnd.abi_goes-18.nc"
+             missing file action: "warn"
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_satwnd_uv247_272.nc
+             allow overwrite: true
+         io pool:
+           max pool size: 1
+         observed variables: [windEastward, windNorthward]
+         simulated variables: [windEastward, windNorthward]
+
+       obs operator:
+           name: VertInterp
+           vertical coordinate: air_pressure
+           observation vertical coordinate: pressure
+           observation vertical coordinate group: MetaData
+           interpolation method: log-linear
+           variables:
+           - name: windEastward
+           - name: windNorthward
+
+       obs error:
+         covariance model: diagonal
+
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 200e3 # orig
+
+       obs filters:
+         # ------------------
+         # wind (247)
+         # ------------------
+         # Accept, reject, or passivate (monitor)
+         - filter: Perform Action
+           udescriptor: "iuse_check"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 272
+           action:
+             name: accept # accept, reject, passivate
+
+         # Reject all obs not 247
+         - filter: Perform Action
+           udescriptor: "obs_type_check"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_not_in: 272
+           action:
+             name: reduce obs space
+
+         # Time window filter
+         - filter: Bounds Check
+           udescriptor: "time_window_check"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           test variables:
+           - name: MetaData/timeOffset # units: s
+           minvalue: -5400
+           maxvalue:  5400
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 272
+           action:
+             name: reduce obs space
+
+         # Duplicate Check
+         - filter: Temporal Thinning
+           udescriptor: "duplicate_check"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           min_spacing: PT90M
+           tolerance: PT0H
+           seed_time: "2024-05-27T00:00:00Z"
+           category_variable:
+             name: MetaData/longitude_latitude_pressure
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 272
+           action:
+             name: reduce obs space
+
+         # Online domain check
+         - filter: Bounds Check
+           udescriptor: "online_domain_check"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           test variables:
+           - name:  GeoVaLs/observable_domain_mask
+           minvalue: 0.0
+           maxvalue: 0.5
+
+         # Initial error assignment
+         - filter: Perform Action
+           udescriptor: "initial_error_assignment"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 272
+           action:
+             name: assign error
+             error function:
+               name: ObsFunction/ObsErrorModelStepwiseLinear
+               options:
+                 xvar:
+                   name: MetaData/pressure
+                 xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
+                 errors: [3.8, 3.8, 3.8, 3.8, 3.8, 3.8, 3.8, 3.8, 3.9, 3.9, 4.0, 4.0, 4.1, 5.0, 6.0, 6.3, 6.6, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0]
+
+         # Error inflation (windEastward) based on pressure check (setupw.f90)
+         - filter: Perform Action
+           udescriptor: "error_inflation_pressure_check"
+           filter variables:
+           - name: windEastward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 272
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorPressureCheck
+               options:
+                 variable: windEastward
+                 inflation factor: 4.0
+
+         # Error inflation (windNorthward) based on pressure check (setupw.f90)
+         - filter: Perform Action
+           udescriptor: "error_inflation_pressure_check"
+           filter variables:
+           - name: windNorthward
+           where:
+           - variable: ObsType/windNorthward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 272
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorPressureCheck
+               options:
+                 variable: windNorthward
+                 inflation factor: 4.0
+
+         # Bounds Check (ObsValue)
+         - filter: Bounds Check
+           udescriptor: "bounds_check_ObsValue"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           minvalue: -200
+           maxvalue: 200
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 272
+           action:
+             name: reduce obs space
+
+         # Reject obs with qiWithoutForecast < 90. OR > 100.
+         - filter: Bounds Check
+           udescriptor: "bounds_check_qifn"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           test variables:
+           - name: MetaData/qiWithoutForecast
+           minvalue: 90.
+           maxvalue: 100.
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 272
+           action:
+             name: reject
+
+         # Reject obs with satellite zenith angle > 68
+         - filter: Bounds Check
+           udescriptor: "bounds_check_satellite_zenith_angle"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           test variables:
+           - name: MetaData/satelliteZenithAngle
+           maxvalue: 68.
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 272
+           action:
+             name: reject
+
+         # Reject obs with pressure < 150 mb
+         - filter: Bounds Check
+           udescriptor: "bounds_check_pressure"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           test variables:
+           - name: MetaData/pressure
+           #minvalue: 12500.
+           minvalue: 15000.
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 272
+           action:
+             name: reject
+
+         # Reject obs over land (isli=1) where pressure > 850 mb
+         - filter: Perform Action
+           udescriptor: "bounds_check_pressure_over_land"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: MetaData/pressure
+             minvalue: 85000.
+           - variable: GeoVaLs/land_area_fraction
+             minvalue: 0.99
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 272
+           action:
+             name: reject
+
+         # Low wind speed check
+         - filter: Perform Action
+           udescriptor: "reject_low_speed_amv"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsFunction/Velocity
+             maxvalue: 0.1
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 272
+           action:
+             name: reject
+
+         # AMV expected error norm check
+         - filter: Perform Action
+           udescriptor: "amv_experr_norm_check"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsFunction/Velocity
+             minvalue: 0.1
+           - variable: MetaData/exp_err_norm
+             minvalue: 0.9
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 272
+           action:
+             name: reject
+
+         # Halve the ob error (based on read_satwnd.f90)
+         - filter: Perform Action
+           udescriptor: "ob_error_inflation"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 272
+           action:
+             name: inflate error
+             inflation factor: 0.5
+
+         # Reject when pressure is more than 50 mb above tropopause
+         - filter: Difference Check
+           udescriptor: "difference_check_tropopause_pressure"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           reference: GeoVaLs/tropopause_pressure
+           value: MetaData/pressure
+           minvalue: -5000.  # 50 hPa above tropopause level, negative p-diff
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 272
+           action:
+             name: reject
+
+         # Reject obs within 110 mb of surface pressure over non-water surface
+         - filter: Difference Check
+           udescriptor: "difference_check_surface_pressure"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable:
+               name: GeoVaLs/water_area_fraction
+             maxvalue: 0.99
+           - variable:
+               name: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 272
+           reference: GeoVaLs/air_pressure_at_surface
+           value: MetaData/pressure
+           maxvalue: -11000.                   # within 110 hPa above surface pressure, negative p-diff
+           action:
+             name: reject
+
+         # Reject when difference of wind direction between obs and background is more than 50 degrees
+         - filter: Bounds Check
+           udescriptor: "wind_direction_check"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           test variables:
+           - name: ObsFunction/WindDirAngleDiff
+           where:
+           - variable: ObsType/windEastward
+             is_in: 247
+           - variable: MetaData/satelliteIdentifier
+             is_in: 272
+           maxvalue: 50.
+           action:
+             name: reject
+
+         # Gross Error Check (windEastward)
+         - filter: Background Check
+           udescriptor: "gross_error_check"
+           apply at iterations: 0,1
+           filter variables:
+           - name: windEastward
+           function absolute threshold:
+           - name: ObsFunction/WindsSPDBCheck
+             options:
+               wndtype:    [ 247 ]
+               cgross:     [ 2.5 ]
+               error_min:  [ 1.4 ]
+               error_max:  [ 5.0 ]
+               variable: windEastward
+           action:
+             name: reject
+           defer to post: true
+
+         # Gross Error Check (windNorthward)
+         - filter: Background Check
+           udescriptor: "gross_error_check"
+           apply at iterations: 0,1
+           filter variables:
+           - name: windNorthward
+           function absolute threshold:
+           - name: ObsFunction/WindsSPDBCheck
+             options:
+               wndtype:    [ 247 ]
+               cgross:     [ 2.5 ]
+               error_min:  [ 1.4 ]
+               error_max:  [ 5.0 ]
+               variable: windNorthward
+           action:
+             name: reject
+           defer to post: true
+     - obs space:
          name: amsua_n19
          _anchor_channels: &amsua_n19_channels 1-15
          _anchor_use_flag: &amsua_n19_use_flag [ 1,  1,  1,  1,  1, 1, -1, -1,  1,  1, -1,  -1,  -1,  1,  1 ]
@@ -19648,3 +20450,1099 @@ observations:
          minvalue: 1.0e-12
          action:
            name: reject
+     - obs space:
+         name: cris-fsr_n20
+         _anchor_channels: &cris-fsr_n20_channels 1
+         _anchor_use_flag: &cris-fsr_n20_use_flag [1]
+         _anchor_use_flag_clddet: &cris-fsr_n20_use_flag_clddet [1]
+         _anchor_error: &cris-fsr_n20_error [1]
+         _anchor_obserr_bound_max: &cris-fsr_n20_obserr_bound_max [1]
+         distribution:
+           name: "RoundRobin"
+           halo size: 100e3
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: data/obs/ioda_crisf4_n20.nc
+             missing file action: "warn"
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_cris-fsr_n20.nc
+         io pool:
+           max pool size: 1
+         observed variables: [radiance]
+         simulated variables: [brightnessTemperature]
+         derived variables: [brightnessTemperature]
+         channels: *cris-fsr_n20_channels
+
+       # --------------------
+       # Observation Operator
+       # --------------------
+       obs operator:
+         name: CRTM
+         Absorbers: [H2O,O3,CO2]
+         SurfaceWindGeoVars: uv
+         obs options:
+           Sensor_ID: cris-fsr_n20
+           EndianType: little_endian
+           CoefficientPath: data/crtm/
+           IRwaterCoeff: Nalli
+           IRVISlandCoeff: IGBP
+           IRVISsnowCoeff: NPOESS
+           IRVISiceCoeff: NPOESS
+         linear obs operator:
+           Absorbers: [H2O, O3]
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 300e3 # orig
+
+      # ------------------------------------
+      # Observation Bias Correction (VarBC)
+      # ------------------------------------
+       obs bias:
+         input file: data/satbias_in/cris-fsr_n20.satbias.nc
+         output file: data/satbias_out/cris-fsr_n20.satbias.nc
+         variational bc:
+           predictors:
+           - name: constant
+           - name: lapseRate
+             order: 2
+             tlapse: &cris-fsr_n20_tlapse  data/satbias_in/cris-fsr_n20.tlapse.txt
+           - name: lapseRate
+             tlapse: *cris-fsr_n20_tlapse
+           - name: emissivityJacobian
+           - name: sensorScanAngle
+             order: 4
+           - name: sensorScanAngle
+             order: 3
+           - name: sensorScanAngle
+             order: 2
+           - name: sensorScanAngle
+         covariance:
+           minimal required obs number: 20
+           variance range: [1.0e-6, 10.0]
+           step size: 1.0e-4
+           largest analysis variance: 10000.0
+           prior:
+             input file: data/satbias_in/cris-fsr_n20.satbias_cov.nc
+             inflation:
+               ratio: 1.1
+               ratio for small dataset: 2.0
+           output file: data/satbias_out/cris-fsr_n20.satbias_cov.nc
+
+       # -----------------------------------------
+       # Observation Pre Filters (QC): steps 0-6
+       # -----------------------------------------
+       obs pre filters:
+       # -------------------------------
+       # Step 0: Create Diagnostic Flags
+       # -------------------------------
+       - filter: Create Diagnostic Flags
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n20_channels
+         flags:
+         - name: ScanEdgeRemoval
+           initial value: false
+           force reinitialization: false
+         - name: Thinning
+           initial value: false
+           force reinitialization: false
+         - name: GeoDomainCheck
+           initial value: false
+           force reinitialization: false
+         - name: CloudDetectMinResidualIR
+           initial value: false
+           force reinitialization: false
+         - name: SurfaceTempJacobianCheck
+           initial value: false
+           force reinitialization: false
+         - name: GrossCheck
+           initial value: false
+           force reinitialization: false
+         - name: NearSSTRetCheckIR
+           initial value: false
+           force reinitialization: false
+         - name: UseflagCheck
+           initial value: false
+           force reinitialization: false
+
+       # ----------------------------------------------------------------
+       # Step 1 : Create Derived Variables for radiane to BT conversion
+       #          Assign channel wavenumbers in m-1
+       # ----------------------------------------------------------------
+       - filter: Variable Assignment
+         assignments:
+         - name: MetaData/sensorCentralWavenumber
+           type: float
+           channels: 19, 24, 26, 27, 28, 31, 32, 33, 37, 39, 42, 44, 47, 49, 50,
+                     51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68,
+                     69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86,
+                     87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103,
+                     104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117,
+                     118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131,
+                     132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145,
+                     146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159,
+                     160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173,
+                     174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187,
+                     188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 208,
+                     211, 216, 224, 234, 236, 238, 239, 242, 246, 248, 255, 264, 266, 268,
+                     275, 279, 283, 285, 291, 295, 301, 305, 311, 332, 342, 389, 400, 402,
+                     404, 406, 410, 427, 439, 440, 441, 445, 449, 455, 458, 461, 464, 467,
+                     470, 473, 475, 482, 486, 487, 490, 493, 496, 499, 501, 503, 505, 511,
+                     513, 514, 518, 519, 520, 522, 529, 534, 563, 568, 575, 592, 594, 596,
+                     598, 600, 602, 604, 611, 614, 616, 618, 620, 622, 626, 631, 638, 646,
+                     648, 652, 659, 673, 675, 678, 684, 688, 694, 700, 707, 710, 713
+           function:
+             name: ObsFunction/LinearCombination
+             options:
+               variables:
+               - name: ObsValue/radiance
+                 channels: 19, 24, 26, 27, 28, 31, 32, 33, 37, 39, 42, 44, 47, 49, 50,
+                         51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68,
+                         69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86,
+                         87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103,
+                         104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117,
+                         118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131,
+                         132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145,
+                         146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159,
+                         160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173,
+                         174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187,
+                         188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 208,
+                         211, 216, 224, 234, 236, 238, 239, 242, 246, 248, 255, 264, 266, 268,
+                         275, 279, 283, 285, 291, 295, 301, 305, 311, 332, 342, 389, 400, 402,
+                         404, 406, 410, 427, 439, 440, 441, 445, 449, 455, 458, 461, 464, 467,
+                         470, 473, 475, 482, 486, 487, 490, 493, 496, 499, 501, 503, 505, 511,
+                         513, 514, 518, 519, 520, 522, 529, 534, 563, 568, 575, 592, 594, 596,
+                         598, 600, 602, 604, 611, 614, 616, 618, 620, 622, 626, 631, 638, 646,
+                         648, 652, 659, 673, 675, 678, 684, 688, 694, 700, 707, 710, 713
+               coefs: [62.5]
+               intercept: 64937.5
+               use channel numbers: true
+
+         - name: MetaData/sensorCentralWavenumber
+           type: float
+           channels: 714, 718, 720, 722, 725, 728, 735, 742, 748, 753, 762, 780, 784, 798, 849,
+                    860, 862, 866, 874, 882, 890, 898, 906, 907, 908, 914, 937, 972, 973,
+                    978, 980, 981, 988, 995, 998, 1000, 1003, 1008, 1009, 1010, 1014, 1017,
+                    1018, 1020, 1022, 1024, 1026, 1029, 1030, 1032, 1034, 1037, 1038, 1041,
+                    1042, 1044, 1046, 1049, 1050, 1053, 1054, 1058, 1060, 1062, 1064, 1066,
+                    1069, 1076, 1077, 1080, 1086, 1091, 1095, 1101, 1109, 1112, 1121, 1128,
+                    1133, 1163, 1172, 1187, 1189, 1205, 1211, 1219, 1231, 1245, 1271, 1289,
+                    1300, 1313, 1316, 1325, 1329, 1346, 1347, 1473, 1474, 1491, 1499, 1553,
+                    1570
+           function:
+             name: ObsFunction/LinearCombination
+             options:
+               variables:
+               - name: ObsValue/radiance
+                 channels: 714, 718, 720, 722, 725, 728, 735, 742, 748, 753, 762, 780, 784, 798, 849,
+                          860, 862, 866, 874, 882, 890, 898, 906, 907, 908, 914, 937, 972, 973,
+                          978, 980, 981, 988, 995, 998, 1000, 1003, 1008, 1009, 1010, 1014, 1017,
+                          1018, 1020, 1022, 1024, 1026, 1029, 1030, 1032, 1034, 1037, 1038, 1041,
+                          1042, 1044, 1046, 1049, 1050, 1053, 1054, 1058, 1060, 1062, 1064, 1066,
+                          1069, 1076, 1077, 1080, 1086, 1091, 1095, 1101, 1109, 1112, 1121, 1128,
+                          1133, 1163, 1172, 1187, 1189, 1205, 1211, 1219, 1231, 1245, 1271, 1289,
+                          1300, 1313, 1316, 1325, 1329, 1346, 1347, 1473, 1474, 1491, 1499, 1553,
+                          1570
+               coefs: [62.5]
+               intercept: 76375
+               use channel numbers: true
+
+         - name: MetaData/sensorCentralWavenumber
+           type: float
+           channels: 1596, 1602, 1619, 1624, 1635, 1939, 1940, 1941, 1942, 1943, 1944,
+                   1945, 1946, 1947, 1948, 1949, 1950, 1951, 1952, 1953, 1954, 1955, 1956,
+                   1957, 1958, 1959, 1960, 1961, 1962, 1963, 1964, 1965, 1966, 1967, 1968,
+                   1969, 1970, 1971, 1972, 1973, 1974, 1975, 1976, 1977, 1978, 1979, 1980,
+                   1981, 1982, 1983, 1984, 1985, 1986, 1987, 2119, 2140, 2143, 2147, 2153,
+                   2158, 2161, 2168, 2171, 2175, 2182
+           function:
+             name: ObsFunction/LinearCombination
+             options:
+               variables:
+               - name: ObsValue/radiance
+                 channels: 1596, 1602, 1619, 1624, 1635, 1939, 1940, 1941, 1942, 1943, 1944,
+                    1945, 1946, 1947, 1948, 1949, 1950, 1951, 1952, 1953, 1954, 1955, 1956,
+                    1957, 1958, 1959, 1960, 1961, 1962, 1963, 1964, 1965, 1966, 1967, 1968,
+                    1969, 1970, 1971, 1972, 1973, 1974, 1975, 1976, 1977, 1978, 1979, 1980,
+                    1981, 1982, 1983, 1984, 1985, 1986, 1987, 2119, 2140, 2143, 2147, 2153,
+                    2158, 2161, 2168, 2171, 2175, 2182
+               coefs: [62.5]
+               intercept: 116812.5
+               use channel numbers: true
+
+       # --------------------------------------------------------
+       # Step 2: Transform radiance to brightness temperature
+       # --------------------------------------------------------
+       - filter: Variable Transforms
+         Transform: SatBrightnessTempFromRad
+         transform from:
+           name: ObsValue/radiance
+           channels: *cris-fsr_n20_channels
+         spectral variable:
+           name: MetaData/sensorCentralWavenumber
+           channels: *cris-fsr_n20_channels
+         radiance units: wavenumber
+         planck1: 1.191042953e-16
+         planck2: 1.4387774e-2
+         #SkipWhenNoObs: False
+
+       # ----------------------------------
+       # Step 3: Assign Observation Error
+       # ----------------------------------
+       - filter: Perform Action
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n20_channels
+           sensor: cris-fsr_n20
+         action:
+           name: assign error
+           error parameter vector: *cris-fsr_n20_error
+
+       # ----------------------------------
+       # Step 4: Create cloudFree variable
+       # ----------------------------------
+       - filter: Variable Assignment
+         assignments:
+         - name: DerivedMetaData/cloudFree
+           type: int
+           function:
+             name: IntObsFunction/Arithmetic
+             options:
+               variables:
+               - name: MetaData/cloudCoverTotal
+               coefs: [-1]
+               intercept: 100
+
+       # Step 4: Remove Observations from the Edge of the Scan
+       # sensorscan less than 5 or larger than 56 are removed
+       #- filter: Domain Check
+       #  filter variables:
+       #  - name: brightnessTemperature
+       #    channels: *cris-fsr_n20_channels
+       #  where:
+       #  - variable:
+       #      name: MetaData/sensorScanPosition
+       #    is_in: 5-56
+       #  actions:
+       #  - name: set
+       #    flag: ScanEdgeRemoval
+       #  - name: reject
+       #    #- name: reduce obs space
+
+       # ----------------------------------------
+       # Step 5: Observation Range Sanity Check
+       #         Valid range: (50, 550)
+       # ----------------------------------------
+       - filter: Bounds Check
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n20_channels
+         minvalue: 50.00001
+         maxvalue: 549.99999
+         action:
+           name: reject
+
+       # -----------------------
+       # Step 6: Data Thinning
+       # ------------------------
+       - filter: Gaussian Thinning
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n20_channels
+         horizontal_mesh: 60
+         use_reduced_horizontal_grid: true
+         distance_norm: geodesic
+         #priority_variable: MetaData/cloudFree
+         #  round_horizontal_bin_count_to_nearest: true
+         #  partition_longitude_bins_using_mesh: true
+         actions:
+         - name: set
+           flag: Thinning
+         - name: reduce obs space
+
+       # ---------------------------------------
+       # Observation post Filters (steps 7-17)
+       # ----------------------------------------
+       obs post filters:
+       # ----------------------------------------------------------------------------------------
+       # Step 7: online geo-domain Check, rejecting observations outside of regional MPAS domain
+       # ----------------------------------------------------------------------------------------
+       - filter: Bounds Check
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n20_channels
+         test variables:
+         - name: GeoVaLs/observable_domain_mask
+           flag all filter variables if any test variable is out of bounds: true
+           minvalue: 0.0
+           maxvalue: 0.5
+         actions:
+         - name: set
+           flag: GeoDomainCheck
+         - name: reject
+
+       # ------------------------------------------------------------------------------------------------------------------------------------------------------------
+       # Step 8: wavenumber Check, remove observations with wavenumber > 2400 cm-1 if solarzenith angle > 88.999  and containing water fraction in the field of view
+       # Note, currenlty, CrIS wavenumber > 2000 are not assimilated, this is for future refernce (i.e., CrIS short-wave DA etc.)
+       # ------------------------------------------------------------------------------------------------------------------------------------------------------------
+       - filter: Perform Action
+         filter variables:
+         - name: brightnessTemperature
+           channels: 1972, 1973, 1974, 1975, 1976, 1977, 1978, 1979, 1980, 1981,
+               1982, 1983, 1984, 1985, 1986, 1987, 2119, 2140, 2143, 2147, 2153, 2158, 2161, 2168, 2171, 2175, 2182
+         where:
+         - variable:
+             name: MetaData/solarZenithAngle
+           maxvalue: 88.9999
+         - variable:
+             name: GeoVaLs/water_area_fraction
+           minvalue: 1.0e-12
+         action:
+           name: reject
+
+       # -----------------------------------------------------------------------------------------------------------------------------------------------
+       # Step 9: Observation Error Inflation: based on Wavenumber/solza/water_fac
+       # Error Inflation Factor (EIF) for channels with wavenumber in the range of [2000, 2400] cm-1 during daytime (sun zenith angle < 89) and containing
+       # water fraction in the filed of view
+       # Note, currenlty, CrIS wavenumber > 2000 are not assimilated, this is for future refernce (i.e., CrIS short-wave DA etc.)
+       # -----------------------------------------------------------------------------------------------------------------------------------------------
+       - filter: Perform Action
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n20_channels
+         action:
+           name: inflate error
+           inflation variable:
+             name: ObsFunction/ObsErrorFactorWavenumIR
+             channels: *cris-fsr_n20_channels
+             options:
+               channels: *cris-fsr_n20_channels
+
+       # -----------------------------------------------------------------------------------------------------------
+       # Step 10: Observation Error inflation: Topography Check (H> 2000m)
+       # Error Inflation Factor (EIF) as a function of terrain height, channel, and surface-to-space transmittance.
+       # -----------------------------------------------------------------------------------------------------------
+       - filter: Perform Action
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n20_channels
+         action:
+           name: inflate error
+           inflation variable:
+             name: ObsFunction/ObsErrorFactorTopoRad
+             channels: *cris-fsr_n20_channels
+             options:
+               sensor: cris-fsr_n20
+               channels: *cris-fsr_n20_channels
+
+       # -----------------------------------------------------------------------------------------------------------------------------------------------
+       # Step 11: Observation Error inflation: Model top Transmittance Check
+       # This obsfunction calculates the observation error inflation factor for satellite radiances as a function of model top-to-space transmittance.
+       # ------------------------------------------------------------------------------------------------------------------------------------------------
+       - filter: Perform Action
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n20_channels
+         action:
+           name: inflate error
+           inflation variable:
+             name: ObsFunction/ObsErrorFactorTransmitTopRad
+             channels: *cris-fsr_n20_channels
+             options:
+               channels: *cris-fsr_n20_channels
+
+       # -------------------------------------------------------------------------------------------------------------------------------
+       # Step 12:  Cloud Detection Check
+       # This obsFunction is designed to perform cloud detection using the Minimum Residual Method for Infrared sensors
+       # using selected channels from 15 microns CO2 absorption band.
+       # The brightnessTemperature is rejected if the QC flags from this ObsFunction output value is bigger than maxvalue=1.0e-12
+       # 0 channel is not affected by cloud (clear channel)
+       # 1 channel is affected by clouds
+       # 2 channel is not affected by clouds but too sensitive to surface condition
+       # ----------------------------------------------------------------------------------------------------------------------------
+       - filter: Bounds Check
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n20_channels
+         test variables:
+         - name: ObsFunction/CloudDetectMinResidualIR
+           channels: *cris-fsr_n20_channels
+           options:
+             channels: *cris-fsr_n20_channels
+             use_flag: *cris-fsr_n20_use_flag
+             use_flag_clddet: *cris-fsr_n20_use_flag_clddet
+             obserr_dtempf: [0.50, 2.00, 4.00, 2.00, 4.00]
+             error parameter vector: *cris-fsr_n20_error
+         maxvalue: 1.0e-12
+         actions:
+         - name: set
+           flag: CloudDetectMinResidualIR
+           ignore: rejected observations
+         - name: reject
+
+       # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+       # Step 13: Surface Temperature Jacobian Check over Land, reduce influence of land pionts on window channels, surface temperaure jacobian oove land larger than 0.2, rejected
+       # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+       - filter: Bounds Check
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n20_channels
+         where:
+         - variable:
+             name: GeoVaLs/water_area_fraction
+           maxvalue: 0.99
+         test variables:
+         - name: ObsDiag/brightness_temperature_jacobian_skin_temperature_at_surface
+           channels: *cris-fsr_n20_channels
+         maxvalue: 0.2
+         actions:
+         - name: set
+           flag: SurfaceTempJacobianCheck
+           ignore: rejected observations
+         - name: reject
+
+       # ------------------------------------------------------------------------------------------------------------------------------------------------------
+       # Step 14: NSST Retrieval Check
+       # This obsFunction is designed to perform QC using retrieved near-sea-surface temperature (NSST) from Infrared radiances.
+       # The output of this obsFunction is the default JEDI QC flags: 0 = channel is retained for assimilation; 1 = channel is not retained for assimilation.
+       # The brightness_temperature is rejected if the QC flags from this ObsFunction output value is bigger than maxvalue=1.0e-12.
+       # ---------------------------------------------------------------------------------------------------------------------------------------------------------
+       - filter: Bounds Check
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n20_channels
+         test variables:
+         - name: ObsFunction/NearSSTRetCheckIR
+           channels: *cris-fsr_n20_channels
+           options:
+             channels: *cris-fsr_n20_channels
+             use_flag: *cris-fsr_n20_use_flag
+             obserr_demisf: [0.01, 0.02, 0.03, 0.02, 0.03]
+             obserr_dtempf: [0.50, 2.00, 4.00, 2.00, 4.00]
+         maxvalue: 1.0e-12
+         actions:
+         - name: set
+           flag: NearSSTRetCheckIR
+         - name: reject
+
+       # ----------------------------------------------------------------------------------------------------------
+       # Step 15: Error inflation: Surface Jacobians Check
+       # This obsFunction is designed to compute observation error inflation factor for brightness temperature as
+       # a function of weighted surface temperature jacobian and surface emissivity jacobian.
+       # -----------------------------------------------------------------------------------------------------------
+       - filter: Perform Action
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n20_channels
+         action:
+           name: inflate error
+           inflation variable:
+             name: ObsFunction/ObsErrorFactorSurfJacobianRad
+             channels: *cris-fsr_n20_channels
+             options:
+               channels: *cris-fsr_n20_channels
+               obserr_demisf: [0.01, 0.02, 0.03, 0.02, 0.03]
+               obserr_dtempf: [0.50, 2.00, 4.00, 2.00, 4.00]
+               sensor: cris-fsr_n20
+
+       # -------------------------------------------------------------------------------------------------------------------------------------------
+       # Step 16: Gross check
+       # Filter out data if |obs-h(x)| > Residual Threshold; Residual Threshold = MIN( (3.0 * ( 1 / Errflat )^2 * (1 / Errftaotop )^2), ErrobsMax )
+       # -------------------------------------------------------------------------------------------------------------------------------------------
+       - filter: Background Check
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n20_channels
+         function absolute threshold:
+         - name: ObsFunction/ObsErrorBoundIR
+           channels: *cris-fsr_n20_channels
+           options:
+             channels: *cris-fsr_n20_channels
+             obserr_bound_latitude:
+               name: ObsFunction/ObsErrorFactorLatRad
+               options:
+                 latitude_parameters: [25.0, 0.5, 0.04, 1.0]
+             obserr_bound_transmittop:
+               name: ObsFunction/ObsErrorFactorTransmitTopRad
+               channels: *cris-fsr_n20_channels
+               options:
+                 channels: *cris-fsr_n20_channels
+             obserr_bound_max: *cris-fsr_n20_obserr_bound_max
+             error parameter vector: *cris-fsr_n20_error
+         actions:
+         - name: set
+           flag: GrossCheck
+           ignore: rejected observations
+         - name: reject
+
+       # ------------------------
+       # Step 17: Useflag Check
+       # ------------------------
+       - filter: Bounds Check
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n20_channels
+         test variables:
+         - name: ObsFunction/ChannelUseflagCheckRad
+           channels: *cris-fsr_n20_channels
+           options:
+             channels: *cris-fsr_n20_channels
+             use_flag: *cris-fsr_n20_use_flag
+         minvalue: 1.0e-12
+         actions:
+         - name: set
+           flag: UseflagCheck
+           ignore: rejected observations
+         - name: reject
+     - obs space:
+         name: cris-fsr_n21
+         _anchor_channels: &cris-fsr_n21_channels 1
+         _anchor_use_flag: &cris-fsr_n21_use_flag [1]
+         _anchor_use_flag_clddet: &cris-fsr_n21_use_flag_clddet [1]
+         _anchor_error: &cris-fsr_n21_error [1]
+         _anchor_obserr_bound_max: &cris-fsr_n21_obserr_bound_max [1]
+         distribution:
+           name: "RoundRobin"
+           halo size: 100e3
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: data/obs/ioda_crisf4_n21.nc
+             missing file action: "warn"
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_cris-fsr_n21.nc
+         io pool:
+           max pool size: 1
+         observed variables: [radiance]
+         simulated variables: [brightnessTemperature]
+         derived variables: [brightnessTemperature]
+         channels: *cris-fsr_n21_channels
+
+       # --------------------
+       # Observation Operator
+       # --------------------
+       obs operator:
+         name: CRTM
+         Absorbers: [H2O,O3,CO2]
+         SurfaceWindGeoVars: uv
+         obs options:
+           Sensor_ID: cris-fsr_n21
+           EndianType: little_endian
+           CoefficientPath: data/crtm/
+           IRwaterCoeff: Nalli
+           IRVISlandCoeff: IGBP
+           IRVISsnowCoeff: NPOESS
+           IRVISiceCoeff: NPOESS
+         linear obs operator:
+           Absorbers: [H2O, O3]
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 300e3 # orig
+
+      # ------------------------------------
+      # Observation Bias Correction (VarBC)
+      # ------------------------------------
+       obs bias:
+         input file: data/satbias_in/cris-fsr_n21.satbias.nc
+         output file: data/satbias_out/cris-fsr_n21.satbias.nc
+         variational bc:
+           predictors:
+           - name: constant
+           - name: lapseRate
+             order: 2
+             tlapse: &cris-fsr_n21_tlapse  data/satbias_in/cris-fsr_n21.tlapse.txt
+           - name: lapseRate
+             tlapse: *cris-fsr_n21_tlapse
+           - name: emissivityJacobian
+           - name: sensorScanAngle
+             order: 4
+           - name: sensorScanAngle
+             order: 3
+           - name: sensorScanAngle
+             order: 2
+           - name: sensorScanAngle
+         covariance:
+           minimal required obs number: 20
+           variance range: [1.0e-6, 10.0]
+           step size: 1.0e-4
+           largest analysis variance: 10000.0
+           prior:
+             input file: data/satbias_in/cris-fsr_n21.satbias_cov.nc
+             inflation:
+               ratio: 1.1
+               ratio for small dataset: 2.0
+           output file: data/satbias_out/cris-fsr_n21.satbias_cov.nc
+
+       # -----------------------------------------
+       # Observation Pre Filters (QC): steps 0-6
+       # -----------------------------------------
+       obs pre filters:
+       # -------------------------------
+       # Step 0: Create Diagnostic Flags
+       # -------------------------------
+       - filter: Create Diagnostic Flags
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n21_channels
+         flags:
+         - name: ScanEdgeRemoval
+           initial value: false
+           force reinitialization: false
+         - name: Thinning
+           initial value: false
+           force reinitialization: false
+         - name: GeoDomainCheck
+           initial value: false
+           force reinitialization: false
+         - name: CloudDetectMinResidualIR
+           initial value: false
+           force reinitialization: false
+         - name: SurfaceTempJacobianCheck
+           initial value: false
+           force reinitialization: false
+         - name: GrossCheck
+           initial value: false
+           force reinitialization: false
+         - name: NearSSTRetCheckIR
+           initial value: false
+           force reinitialization: false
+         - name: UseflagCheck
+           initial value: false
+           force reinitialization: false
+
+       # ----------------------------------------------------------------
+       # Step 1 : Create Derived Variables for radiane to BT conversion
+       #          Assign channel wavenumbers in m-1
+       # ----------------------------------------------------------------
+       - filter: Variable Assignment
+         assignments:
+         - name: MetaData/sensorCentralWavenumber
+           type: float
+           channels: 19, 24, 26, 27, 28, 31, 32, 33, 37, 39, 42, 44, 47, 49, 50,
+                     51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68,
+                     69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86,
+                     87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103,
+                     104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117,
+                     118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131,
+                     132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145,
+                     146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159,
+                     160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173,
+                     174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187,
+                     188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 208,
+                     211, 216, 224, 234, 236, 238, 239, 242, 246, 248, 255, 264, 266, 268,
+                     275, 279, 283, 285, 291, 295, 301, 305, 311, 332, 342, 389, 400, 402,
+                     404, 406, 410, 427, 439, 440, 441, 445, 449, 455, 458, 461, 464, 467,
+                     470, 473, 475, 482, 486, 487, 490, 493, 496, 499, 501, 503, 505, 511,
+                     513, 514, 518, 519, 520, 522, 529, 534, 563, 568, 575, 592, 594, 596,
+                     598, 600, 602, 604, 611, 614, 616, 618, 620, 622, 626, 631, 638, 646,
+                     648, 652, 659, 673, 675, 678, 684, 688, 694, 700, 707, 710, 713
+           function:
+             name: ObsFunction/LinearCombination
+             options:
+               variables:
+               - name: ObsValue/radiance
+                 channels: 19, 24, 26, 27, 28, 31, 32, 33, 37, 39, 42, 44, 47, 49, 50,
+                         51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68,
+                         69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86,
+                         87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103,
+                         104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117,
+                         118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131,
+                         132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145,
+                         146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159,
+                         160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173,
+                         174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187,
+                         188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 208,
+                         211, 216, 224, 234, 236, 238, 239, 242, 246, 248, 255, 264, 266, 268,
+                         275, 279, 283, 285, 291, 295, 301, 305, 311, 332, 342, 389, 400, 402,
+                         404, 406, 410, 427, 439, 440, 441, 445, 449, 455, 458, 461, 464, 467,
+                         470, 473, 475, 482, 486, 487, 490, 493, 496, 499, 501, 503, 505, 511,
+                         513, 514, 518, 519, 520, 522, 529, 534, 563, 568, 575, 592, 594, 596,
+                         598, 600, 602, 604, 611, 614, 616, 618, 620, 622, 626, 631, 638, 646,
+                         648, 652, 659, 673, 675, 678, 684, 688, 694, 700, 707, 710, 713
+               coefs: [62.5]
+               intercept: 64937.5
+               use channel numbers: true
+
+         - name: MetaData/sensorCentralWavenumber
+           type: float
+           channels: 714, 718, 720, 722, 725, 728, 735, 742, 748, 753, 762, 780, 784, 798, 849,
+                    860, 862, 866, 874, 882, 890, 898, 906, 907, 908, 914, 937, 972, 973,
+                    978, 980, 981, 988, 995, 998, 1000, 1003, 1008, 1009, 1010, 1014, 1017,
+                    1018, 1020, 1022, 1024, 1026, 1029, 1030, 1032, 1034, 1037, 1038, 1041,
+                    1042, 1044, 1046, 1049, 1050, 1053, 1054, 1058, 1060, 1062, 1064, 1066,
+                    1069, 1076, 1077, 1080, 1086, 1091, 1095, 1101, 1109, 1112, 1121, 1128,
+                    1133, 1163, 1172, 1187, 1189, 1205, 1211, 1219, 1231, 1245, 1271, 1289,
+                    1300, 1313, 1316, 1325, 1329, 1346, 1347, 1473, 1474, 1491, 1499, 1553,
+                    1570
+           function:
+             name: ObsFunction/LinearCombination
+             options:
+               variables:
+               - name: ObsValue/radiance
+                 channels: 714, 718, 720, 722, 725, 728, 735, 742, 748, 753, 762, 780, 784, 798, 849,
+                          860, 862, 866, 874, 882, 890, 898, 906, 907, 908, 914, 937, 972, 973,
+                          978, 980, 981, 988, 995, 998, 1000, 1003, 1008, 1009, 1010, 1014, 1017,
+                          1018, 1020, 1022, 1024, 1026, 1029, 1030, 1032, 1034, 1037, 1038, 1041,
+                          1042, 1044, 1046, 1049, 1050, 1053, 1054, 1058, 1060, 1062, 1064, 1066,
+                          1069, 1076, 1077, 1080, 1086, 1091, 1095, 1101, 1109, 1112, 1121, 1128,
+                          1133, 1163, 1172, 1187, 1189, 1205, 1211, 1219, 1231, 1245, 1271, 1289,
+                          1300, 1313, 1316, 1325, 1329, 1346, 1347, 1473, 1474, 1491, 1499, 1553,
+                          1570
+               coefs: [62.5]
+               intercept: 76375
+               use channel numbers: true
+
+         - name: MetaData/sensorCentralWavenumber
+           type: float
+           channels: 1596, 1602, 1619, 1624, 1635, 1939, 1940, 1941, 1942, 1943, 1944,
+                   1945, 1946, 1947, 1948, 1949, 1950, 1951, 1952, 1953, 1954, 1955, 1956,
+                   1957, 1958, 1959, 1960, 1961, 1962, 1963, 1964, 1965, 1966, 1967, 1968,
+                   1969, 1970, 1971, 1972, 1973, 1974, 1975, 1976, 1977, 1978, 1979, 1980,
+                   1981, 1982, 1983, 1984, 1985, 1986, 1987, 2119, 2140, 2143, 2147, 2153,
+                   2158, 2161, 2168, 2171, 2175, 2182
+           function:
+             name: ObsFunction/LinearCombination
+             options:
+               variables:
+               - name: ObsValue/radiance
+                 channels: 1596, 1602, 1619, 1624, 1635, 1939, 1940, 1941, 1942, 1943, 1944,
+                    1945, 1946, 1947, 1948, 1949, 1950, 1951, 1952, 1953, 1954, 1955, 1956,
+                    1957, 1958, 1959, 1960, 1961, 1962, 1963, 1964, 1965, 1966, 1967, 1968,
+                    1969, 1970, 1971, 1972, 1973, 1974, 1975, 1976, 1977, 1978, 1979, 1980,
+                    1981, 1982, 1983, 1984, 1985, 1986, 1987, 2119, 2140, 2143, 2147, 2153,
+                    2158, 2161, 2168, 2171, 2175, 2182
+               coefs: [62.5]
+               intercept: 116812.5
+               use channel numbers: true
+
+       # --------------------------------------------------------
+       # Step 2: Transform radiance to brightness temperature
+       # --------------------------------------------------------
+       - filter: Variable Transforms
+         Transform: SatBrightnessTempFromRad
+         transform from:
+           name: ObsValue/radiance
+           channels: *cris-fsr_n21_channels
+         spectral variable:
+           name: MetaData/sensorCentralWavenumber
+           channels: *cris-fsr_n21_channels
+         radiance units: wavenumber
+         planck1: 1.191042953e-16
+         planck2: 1.4387774e-2
+         #SkipWhenNoObs: False
+
+       # ----------------------------------
+       # Step 3: Assign Observation Error
+       # ----------------------------------
+       - filter: Perform Action
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n21_channels
+           sensor: cris-fsr_n21
+         action:
+           name: assign error
+           error parameter vector: *cris-fsr_n21_error
+
+       # ----------------------------------
+       # Step 4: Create cloudFree variable
+       # ----------------------------------
+       - filter: Variable Assignment
+         assignments:
+         - name: DerivedMetaData/cloudFree
+           type: int
+           function:
+             name: IntObsFunction/Arithmetic
+             options:
+               variables:
+               - name: MetaData/cloudCoverTotal
+               coefs: [-1]
+               intercept: 100
+
+       # Step 4: Remove Observations from the Edge of the Scan
+       # sensorscan less than 5 or larger than 56 are removed
+       #- filter: Domain Check
+       #  filter variables:
+       #  - name: brightnessTemperature
+       #    channels: *cris-fsr_n21_channels
+       #  where:
+       #  - variable:
+       #      name: MetaData/sensorScanPosition
+       #    is_in: 5-56
+       #  actions:
+       #  - name: set
+       #    flag: ScanEdgeRemoval
+       #  - name: reject
+       #    #- name: reduce obs space
+
+       # ----------------------------------------
+       # Step 5: Observation Range Sanity Check
+       #         Valid range: (50, 550)
+       # ----------------------------------------
+       - filter: Bounds Check
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n21_channels
+         minvalue: 50.00001
+         maxvalue: 549.99999
+         action:
+           name: reject
+
+       # -----------------------
+       # Step 6: Data Thinning
+       # ------------------------
+       - filter: Gaussian Thinning
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n21_channels
+         horizontal_mesh: 60
+         use_reduced_horizontal_grid: true
+         distance_norm: geodesic
+         #priority_variable: MetaData/cloudFree
+         #  round_horizontal_bin_count_to_nearest: true
+         #  partition_longitude_bins_using_mesh: true
+         actions:
+         - name: set
+           flag: Thinning
+         - name: reduce obs space
+
+       # ---------------------------------------
+       # Observation post Filters (steps 7-17)
+       # ----------------------------------------
+       obs post filters:
+       # ----------------------------------------------------------------------------------------
+       # Step 7: online geo-domain Check, rejecting observations outside of regional MPAS domain
+       # ----------------------------------------------------------------------------------------
+       - filter: Bounds Check
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n21_channels
+         test variables:
+         - name: GeoVaLs/observable_domain_mask
+           flag all filter variables if any test variable is out of bounds: true
+           minvalue: 0.0
+           maxvalue: 0.5
+         actions:
+         - name: set
+           flag: GeoDomainCheck
+         - name: reject
+
+       # ------------------------------------------------------------------------------------------------------------------------------------------------------------
+       # Step 8: wavenumber Check, remove observations with wavenumber > 2400 cm-1 if solarzenith angle > 88.999  and containing water fraction in the field of view
+       # Note, currenlty, CrIS wavenumber > 2000 are not assimilated, this is for future refernce (i.e., CrIS short-wave DA etc.)
+       # ------------------------------------------------------------------------------------------------------------------------------------------------------------
+       - filter: Perform Action
+         filter variables:
+         - name: brightnessTemperature
+           channels: 1972, 1973, 1974, 1975, 1976, 1977, 1978, 1979, 1980, 1981,
+               1982, 1983, 1984, 1985, 1986, 1987, 2119, 2140, 2143, 2147, 2153, 2158, 2161, 2168, 2171, 2175, 2182
+         where:
+         - variable:
+             name: MetaData/solarZenithAngle
+           maxvalue: 88.9999
+         - variable:
+             name: GeoVaLs/water_area_fraction
+           minvalue: 1.0e-12
+         action:
+           name: reject
+
+       # -----------------------------------------------------------------------------------------------------------------------------------------------
+       # Step 9: Observation Error Inflation: based on Wavenumber/solza/water_fac
+       # Error Inflation Factor (EIF) for channels with wavenumber in the range of [2000, 2400] cm-1 during daytime (sun zenith angle < 89) and containing
+       # water fraction in the filed of view
+       # Note, currenlty, CrIS wavenumber > 2000 are not assimilated, this is for future refernce (i.e., CrIS short-wave DA etc.)
+       # -----------------------------------------------------------------------------------------------------------------------------------------------
+       - filter: Perform Action
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n21_channels
+         action:
+           name: inflate error
+           inflation variable:
+             name: ObsFunction/ObsErrorFactorWavenumIR
+             channels: *cris-fsr_n21_channels
+             options:
+               channels: *cris-fsr_n21_channels
+
+       # -----------------------------------------------------------------------------------------------------------
+       # Step 10: Observation Error inflation: Topography Check (H> 2000m)
+       # Error Inflation Factor (EIF) as a function of terrain height, channel, and surface-to-space transmittance.
+       # -----------------------------------------------------------------------------------------------------------
+       - filter: Perform Action
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n21_channels
+         action:
+           name: inflate error
+           inflation variable:
+             name: ObsFunction/ObsErrorFactorTopoRad
+             channels: *cris-fsr_n21_channels
+             options:
+               sensor: cris-fsr_n21
+               channels: *cris-fsr_n21_channels
+
+       # -----------------------------------------------------------------------------------------------------------------------------------------------
+       # Step 11: Observation Error inflation: Model top Transmittance Check
+       # This obsfunction calculates the observation error inflation factor for satellite radiances as a function of model top-to-space transmittance.
+       # ------------------------------------------------------------------------------------------------------------------------------------------------
+       - filter: Perform Action
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n21_channels
+         action:
+           name: inflate error
+           inflation variable:
+             name: ObsFunction/ObsErrorFactorTransmitTopRad
+             channels: *cris-fsr_n21_channels
+             options:
+               channels: *cris-fsr_n21_channels
+
+       # -------------------------------------------------------------------------------------------------------------------------------
+       # Step 12:  Cloud Detection Check
+       # This obsFunction is designed to perform cloud detection using the Minimum Residual Method for Infrared sensors
+       # using selected channels from 15 microns CO2 absorption band.
+       # The brightnessTemperature is rejected if the QC flags from this ObsFunction output value is bigger than maxvalue=1.0e-12
+       # 0 channel is not affected by cloud (clear channel)
+       # 1 channel is affected by clouds
+       # 2 channel is not affected by clouds but too sensitive to surface condition
+       # ----------------------------------------------------------------------------------------------------------------------------
+       - filter: Bounds Check
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n21_channels
+         test variables:
+         - name: ObsFunction/CloudDetectMinResidualIR
+           channels: *cris-fsr_n21_channels
+           options:
+             channels: *cris-fsr_n21_channels
+             use_flag: *cris-fsr_n21_use_flag
+             use_flag_clddet: *cris-fsr_n21_use_flag_clddet
+             obserr_dtempf: [0.50, 2.00, 4.00, 2.00, 4.00]
+             error parameter vector: *cris-fsr_n21_error
+         maxvalue: 1.0e-12
+         actions:
+         - name: set
+           flag: CloudDetectMinResidualIR
+           ignore: rejected observations
+         - name: reject
+
+       # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+       # Step 13: Surface Temperature Jacobian Check over Land, reduce influence of land pionts on window channels, surface temperaure jacobian oove land larger than 0.2, rejected
+       # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+       - filter: Bounds Check
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n21_channels
+         where:
+         - variable:
+             name: GeoVaLs/water_area_fraction
+           maxvalue: 0.99
+         test variables:
+         - name: ObsDiag/brightness_temperature_jacobian_skin_temperature_at_surface
+           channels: *cris-fsr_n21_channels
+         maxvalue: 0.2
+         actions:
+         - name: set
+           flag: SurfaceTempJacobianCheck
+           ignore: rejected observations
+         - name: reject
+
+       # ------------------------------------------------------------------------------------------------------------------------------------------------------
+       # Step 14: NSST Retrieval Check
+       # This obsFunction is designed to perform QC using retrieved near-sea-surface temperature (NSST) from Infrared radiances.
+       # The output of this obsFunction is the default JEDI QC flags: 0 = channel is retained for assimilation; 1 = channel is not retained for assimilation.
+       # The brightness_temperature is rejected if the QC flags from this ObsFunction output value is bigger than maxvalue=1.0e-12.
+       # ---------------------------------------------------------------------------------------------------------------------------------------------------------
+       - filter: Bounds Check
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n21_channels
+         test variables:
+         - name: ObsFunction/NearSSTRetCheckIR
+           channels: *cris-fsr_n21_channels
+           options:
+             channels: *cris-fsr_n21_channels
+             use_flag: *cris-fsr_n21_use_flag
+             obserr_demisf: [0.01, 0.02, 0.03, 0.02, 0.03]
+             obserr_dtempf: [0.50, 2.00, 4.00, 2.00, 4.00]
+         maxvalue: 1.0e-12
+         actions:
+         - name: set
+           flag: NearSSTRetCheckIR
+         - name: reject
+
+       # ----------------------------------------------------------------------------------------------------------
+       # Step 15: Error inflation: Surface Jacobians Check
+       # This obsFunction is designed to compute observation error inflation factor for brightness temperature as
+       # a function of weighted surface temperature jacobian and surface emissivity jacobian.
+       # -----------------------------------------------------------------------------------------------------------
+       - filter: Perform Action
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n21_channels
+         action:
+           name: inflate error
+           inflation variable:
+             name: ObsFunction/ObsErrorFactorSurfJacobianRad
+             channels: *cris-fsr_n21_channels
+             options:
+               channels: *cris-fsr_n21_channels
+               obserr_demisf: [0.01, 0.02, 0.03, 0.02, 0.03]
+               obserr_dtempf: [0.50, 2.00, 4.00, 2.00, 4.00]
+               sensor: cris-fsr_n21
+
+       # -------------------------------------------------------------------------------------------------------------------------------------------
+       # Step 16: Gross check
+       # Filter out data if |obs-h(x)| > Residual Threshold; Residual Threshold = MIN( (3.0 * ( 1 / Errflat )^2 * (1 / Errftaotop )^2), ErrobsMax )
+       # -------------------------------------------------------------------------------------------------------------------------------------------
+       - filter: Background Check
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n21_channels
+         function absolute threshold:
+         - name: ObsFunction/ObsErrorBoundIR
+           channels: *cris-fsr_n21_channels
+           options:
+             channels: *cris-fsr_n21_channels
+             obserr_bound_latitude:
+               name: ObsFunction/ObsErrorFactorLatRad
+               options:
+                 latitude_parameters: [25.0, 0.5, 0.04, 1.0]
+             obserr_bound_transmittop:
+               name: ObsFunction/ObsErrorFactorTransmitTopRad
+               channels: *cris-fsr_n21_channels
+               options:
+                 channels: *cris-fsr_n21_channels
+             obserr_bound_max: *cris-fsr_n21_obserr_bound_max
+             error parameter vector: *cris-fsr_n21_error
+         actions:
+         - name: set
+           flag: GrossCheck
+           ignore: rejected observations
+         - name: reject
+
+       # ------------------------
+       # Step 17: Useflag Check
+       # ------------------------
+       - filter: Bounds Check
+         filter variables:
+         - name: brightnessTemperature
+           channels: *cris-fsr_n21_channels
+         test variables:
+         - name: ObsFunction/ChannelUseflagCheckRad
+           channels: *cris-fsr_n21_channels
+           options:
+             channels: *cris-fsr_n21_channels
+             use_flag: *cris-fsr_n21_use_flag
+         minvalue: 1.0e-12
+         actions:
+         - name: set
+           flag: UseflagCheck
+           ignore: rejected observations
+         - name: reject
