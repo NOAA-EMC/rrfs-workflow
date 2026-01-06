@@ -164,7 +164,6 @@ envir="test"
 NET="rrfs"
 TAG="c13"
 
-ARCHIVEDIR="/1year/BMC/wrfruc/rrfs_dev1"
 NCL_REGION="conus"
 MODEL="rrfs"
 RUN="rrfs"
