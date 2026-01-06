@@ -83,16 +83,6 @@ Run command has not been specified for this machine:
 
 esac
 #
-#-----------------------------------------------------------------------
-#
-# Get the cycle date and hour (in formats of yyyymmdd and hh, respectively)
-# from CDATE.
-#
-#-----------------------------------------------------------------------
-#
-yyyymmdd=${CDATE:0:8}
-hh=${CDATE:8:2}
-cyc=$hh
 #
 #-----------------------------------------------------------------------
 #
@@ -116,8 +106,6 @@ INCR=01
 FHRLIM=${FHRLIM}
 
 let NFILE=1
-
-PDY=$CDATE
 
 YYYY=`echo $PDY | cut -c1-4`
 MM=`echo $PDY | cut -c5-6`
