@@ -11,8 +11,8 @@ app_path_observation_chronicle: rdas/observation_chronicle/atmosphere
 
 # Places where we deviate from the generic file name of a yaml
 # ------------------------------------------------------------
-#final_increment_file: atmosphere_final_increment_gaussian
-output_file: atmosphere_output
+final_increment_file: atmosphere_final_increment
+#output_file: atmosphere_output
 output_ensemble_increments_file: atmosphere_output_ensemble_increments_gaussian
 model_file: atmosphere_model_pseudo
 initial_condition_file: atmosphere_background
@@ -203,6 +203,8 @@ mgbf_dy: 30.0e3
 mgbf_lonlat: [261, 40]
 mgbf_lat0: 40
 mgbf_lon0: 261
+bumploc_path: bump_65km_1p075sigma_mpi160
+bumploc_prefix: bumploc_65km1p075sigma
 
 # Forecasting
 atmosphere_forecast_length: PT6H

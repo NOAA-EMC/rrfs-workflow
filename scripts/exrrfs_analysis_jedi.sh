@@ -639,18 +639,27 @@ ncrename -v v,v_inc tmp_inc.nc
 ncrename -v T,T_inc tmp_inc.nc
 ncrename -v ua,ua_inc tmp_inc.nc
 ncrename -v va,va_inc tmp_inc.nc
+if [[ ${anav_type} == "radardbz" || ${anav_type} == "conv_dbz" ]]; then
+  ncrename -v W,W_inc tmp_inc.nc
+fi
 # ncrename -v delp,delp_inc tmp_inc.nc
 
 # Append increment vars to tmp_bkg.nc
 ncks -A tmp_inc.nc tmp_bkg.nc
 
 # Perform addition in place
+addstr="u=u+u_inc; v=v+v_inc; T=T+T_inc; ua=ua+ua_inc; va=va+va_inc;"
+varlist="u_inc,v_inc,T_inc,ua_inc,va_inc"
+if [[ ${anav_type} == "radardbz" || ${anav_type} == "conv_dbz" ]]; then
+  addstr="${addstr} W=W+W_inc;"
+  varlist="${varlist},W_inc"
+fi
 ncap2 -O \
-  -s "u=u+u_inc; v=v+v_inc; T=T+T_inc; ua=ua+ua_inc; va=va+va_inc;" \
+  -s "${addstr}" \
   tmp_bkg.nc "$OUT" #add delp
 
 # Remove increment variables
-ncks -O -x -v u_inc,v_inc,T_inc,ua_inc,va_inc "$OUT" "$OUT" #remove delp_inc here
+ncks -O -x -v ${varlist} "$OUT" "$OUT" #remove delp_inc here
 
 # Cleanup
 rm -f tmp_inc.nc tmp_bkg.nc
@@ -673,26 +682,84 @@ ncks -O "$BKGtr" tmp_bkgtr.nc
 ncks -O "$INCtr" tmp_inctr.nc
 ncrename -v sphum,sphum_inc tmp_inctr.nc
 ncrename -v o3mr,o3mr_inc   tmp_inctr.nc
+if [[ ${anav_type} == "radardbz" || ${anav_type} == "conv_dbz" ]]; then
+  ncrename -v ice_wat,ice_wat_inc  tmp_inctr.nc
+  ncrename -v liq_wat,liq_wat_inc  tmp_inctr.nc
+  ncrename -v rainwat,rainwat_inc  tmp_inctr.nc
+  ncrename -v snowwat,snowwat_inc  tmp_inctr.nc
+  ncrename -v graupel,graupel_inc  tmp_inctr.nc
+fi
 
 # Append increment vars into OUT
 ncks -A tmp_inctr.nc tmp_bkgtr.nc
 
 # Perform addition in place
+addstr="sphum=sphum+sphum_inc; o3mr=o3mr+o3mr_inc;"
+varlist="sphum_inc,o3mr_inc"
+if [[ ${anav_type} == "radardbz" || ${anav_type} == "conv_dbz" ]]; then
+  addstr="${addstr} ice_wat=ice_wat+ice_wat_inc;"
+  addstr="${addstr} liq_wat=liq_wat+liq_wat_inc;"
+  addstr="${addstr} rainwat=rainwat+rainwat_inc;"
+  addstr="${addstr} snowwat=snowwat+ice_wat_inc;"
+  addstr="${addstr} graupel=graupel+graupel_inc;"
+  varlist="${varlist},ice_wat_inc,liq_wat_inc,rainwat_inc,snowwat_inc,graupel_inc"
+fi
+
 ncap2 -O \
-  -s "sphum=sphum+sphum_inc; o3mr=o3mr+o3mr_inc;" \
+  -s "${addstr}" \
   tmp_bkgtr.nc "$OUTtr"
 
 # Remove increment variables
-ncks -O -x -v sphum_inc,o3mr_inc "$OUTtr" "$OUTtr"
+ncks -O -x -v ${varlist} "$OUTtr" "$OUTtr"
 
 # Cleanup
 rm -f tmp_inctr.nc tmp_bkgtr.nc
 
 #####################################################################
-# 6. Copy results to INPUT.jedi
+# 6. Physics background + increments (only for radar DA)
+#####################################################################
+if [[ ${anav_type} == "radardbz" || ${anav_type} == "conv_dbz" ]]; then
+  BKGph=fv3_phyvars_prepdbz
+  INCph=inc_jedi.phy_data.nc
+  OUTph=phy_data_analysis.nc
+
+  # Make Time a record dimension (unlimited dimension)
+  ncks --mk_rec_dmn Time "$INCph" tmp_incph.nc
+  mv tmp_incph.nc "$INCph"
+
+  # Copy background
+  ncks -O "$BKGph" tmp_bkgph.nc
+
+  # Make a temporary increment file with renamed variables
+  ncks -O "$INCph" tmp_incph.nc
+  ncrename -v ref_f3d,ref_f3d_inc tmp_incph.nc
+
+  # Append increment vars into OUT
+  ncks -A tmp_incph.nc tmp_bkgph.nc
+
+  # Perform addition in place
+  ncap2 -O \
+    -s "ref_f3d=ref_f3d+ref_f3d_inc;" \
+    tmp_bkgph.nc "$OUTph"
+
+  # Remove increment variables
+  ncks -O -x -v ref_f3d_inc "$OUTph" "$OUTph"
+
+  # Cleanup
+  rm -f tmp_incph.nc tmp_bkgph.nc
+
+fi
+
+
+
+#####################################################################
+# 7. Copy results to INPUT.jedi
 #####################################################################
 cp "$OUT"                           ${bkpath}/fv_core.res.tile1.nc
 cp "$OUTtr"                         ${bkpath}/fv_tracer.res.tile1.nc
+if [[ ${anav_type} == "radardbz" || ${anav_type} == "conv_dbz" ]]; then
+  cp "$OUTph"                       ${bkpath}/phy_data.nc
+fi
 #cp analysis_jedi.fv_core.res.nc     ${bkpath}/fv_core.res.tile1.nc
 #cp analysis_jedi.fv_tracer.res.nc   ${bkpath}/fv_tracer.res.tile1.nc
 #cp analysis_jedi.fv_srf_wnd.res.nc  ${bkpath}/fv_srf_wnd.res.tile1.nc
