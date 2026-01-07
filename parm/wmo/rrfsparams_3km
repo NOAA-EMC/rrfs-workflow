@@ -3,6 +3,7 @@ ASNOW:surface:
 CAPE:surface:
 CIN:surface:
 DPT:2 m above ground:
+HGT:cloud ceiling:
 HLCY:3000-0 m above ground:
 MSLET:mean sea level:
 REFC:entire atmosphere (considered as a single layer):
