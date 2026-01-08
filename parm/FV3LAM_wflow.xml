@@ -1921,6 +1921,7 @@ MODULES_RUN_TASK_FP script.
          <taskdep task="&ANALYSIS_GSI_TN;_spinup{{ uscore_ensmem_name }}"/>
          <taskdep task="&ANALYSIS_JEDI_TN;_spinup{{ uscore_ensmem_name }}"/>
          {%- if do_envar_radar_ref and do_jedivar %}
+         <taskdep task="&HYBRID_RADAR_REF_TN;_spinup"/>
          <taskdep task="&HYBRID_RADAR_REF_JEDI_TN;_spinup"/>
          {%- endif %}
        </and>
@@ -2220,11 +2221,7 @@ MODULES_RUN_TASK_FP script.
       {%- elif do_dacycle and do_refl2tten%}
       <taskdep task="&RADAR_REFL2TTEN_TN;_spinup"/>
       {%- elif do_dacycle %}
-        {%- if do_envar_radar_ref and not do_envar_radar_ref_once %}
-        <taskdep task="&HYBRID_RADAR_REF_TN;_spinup"/>
-        {%- else  %}
-        <taskdep task="&POSTANAL_TN;_spinup{{ uscore_ensmem_name }}"/>
-        {%- endif %}
+      <taskdep task="&POSTANAL_TN;_spinup{{ uscore_ensmem_name }}"/>
       {%- elif do_enkfupdate or do_enkf_radar_ref %}
         <and>
           <or>
@@ -2994,6 +2991,7 @@ MODULES_RUN_TASK_FP script.
          <taskdep task="&ANALYSIS_GSI_TN;_prod{{ uscore_ensmem_name }}"/>
          <taskdep task="&ANALYSIS_JEDI_TN;_prod{{ uscore_ensmem_name }}"/>
          {%- if do_envar_radar_ref and do_jedivar %}
+         <taskdep task="&HYBRID_RADAR_REF_TN;_prod"/>
          <taskdep task="&HYBRID_RADAR_REF_JEDI_TN;_prod"/>
          {%- endif %}
        </and>
@@ -3451,11 +3449,7 @@ MODULES_RUN_TASK_FP script.
       {%- elif do_dacycle and do_refl2tten%}
       <taskdep task="&RADAR_REFL2TTEN_TN;_prod"/>
       {%- elif do_dacycle %}
-        {%- if do_envar_radar_ref and not do_envar_radar_ref_once %}
-        <taskdep task="&HYBRID_RADAR_REF_TN;_prod"/>
-        {%- else  %}
-        <taskdep task="&POSTANAL_TN;_prod"/>
-        {%- endif %}
+      <taskdep task="&POSTANAL_TN;_prod"/>
       {%- elif do_enkfupdate or do_enkf_radar_ref %}
         {%- if do_recenter %}
         <or>
@@ -3527,11 +3521,7 @@ MODULES_RUN_TASK_FP script.
       {%- elif do_dacycle and do_refl2tten%}
       <taskdep task="&RADAR_REFL2TTEN_TN;_prod"/>
       {%- elif do_dacycle %}
-        {%- if do_envar_radar_ref and not do_envar_radar_ref_once %}
-        <taskdep task="&HYBRID_RADAR_REF_TN;_prod"/>
-        {%- else  %}
-        <taskdep task="&POSTANAL_TN;_prod"/>
-        {%- endif %}
+      <taskdep task="&POSTANAL_TN;_prod"/>
       {%- elif do_enkfupdate or do_enkf_radar_ref %}
         {%- if do_recenter %}
         <or>

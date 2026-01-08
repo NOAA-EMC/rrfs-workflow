@@ -700,7 +700,7 @@ if [[ ${anav_type} == "radardbz" || ${anav_type} == "conv_dbz" ]]; then
   addstr="${addstr} ice_wat=ice_wat+ice_wat_inc;"
   addstr="${addstr} liq_wat=liq_wat+liq_wat_inc;"
   addstr="${addstr} rainwat=rainwat+rainwat_inc;"
-  addstr="${addstr} snowwat=snowwat+ice_wat_inc;"
+  addstr="${addstr} snowwat=snowwat+snowwat_inc;"
   addstr="${addstr} graupel=graupel+graupel_inc;"
   varlist="${varlist},ice_wat_inc,liq_wat_inc,rainwat_inc,snowwat_inc,graupel_inc"
 fi
