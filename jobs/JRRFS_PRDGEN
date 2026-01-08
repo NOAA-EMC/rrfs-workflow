@@ -31,7 +31,7 @@ case "${WGF}" in
     export RUN="enkfrrfs"
     ;;
   "ensf")
-    export RUN="refs"
+    export RUN="rrfsens"
     ;;
   "firewx")
     export RUN="firewx"

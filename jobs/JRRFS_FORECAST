@@ -81,7 +81,7 @@ case "${WGF}" in
     export RUN="enkfrrfs"
     ;;
   "ensf")
-    export RUN="refs"
+    export RUN="rrfsens"
     ;;
   "firewx")
     export RUN="firewx"
@@ -105,7 +105,7 @@ case $WGF in
     COM_WGF="enkfrrfs"
     ;;
   ensf)
-    COM_WGF="refs"
+    COM_WGF="rrfsens"
     ;;
   firewx)
     COM_WGF="firewx"
