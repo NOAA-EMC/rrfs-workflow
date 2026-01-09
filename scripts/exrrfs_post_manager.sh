@@ -16,6 +16,7 @@ set -x
 # scan switches
 if [ ${WGF} == "det" ]; then
   scan_release_ensf_post="NO"
+  scan_release_firewx_post="NO"
   if [[ "$cyc" =~ ^(00|06|12|18)$ ]]; then
     scan_release_det_post_long="YES" 
     scan_release_det_post="NO"
@@ -57,6 +58,7 @@ if [ ${WGF} == "det" ]; then
   fi
 elif [ ${WGF} == "ensf" ]; then
   scan_release_ensf_post="YES"
+  scan_release_firewx_post="NO"
   scan_release_det_post_long="NO" 
   scan_release_det_post="NO"
 
@@ -67,6 +69,15 @@ elif [ ${WGF} == "ensf" ]; then
       search_str=${memuse}${fhr_3d}00
       array_element_scan_release_ensf_post[$((10#$search_str))]="NO"
     done
+  done
+elif [ ${WGF} == "firewx" ]; then
+  scan_release_firewx_post="YES"
+  scan_release_ensf_post="NO"
+  scan_release_det_post_long="NO" 
+  scan_release_det_post="NO"
+    
+  for fhr in $(seq 0 36); do
+    array_element_scan_release_firewx_post[$fhr]="NO"
   done
 else
   err_exit "FATAL ERROR: WGF is not set."
@@ -229,6 +240,33 @@ while [ $proceed_trigger_scan == "YES" ]; do
     fi
   fi
   #### release_ensf_post
+
+  #### release_firewx_post
+  if [ ${scan_release_firewx_post} == "YES" ]; then
+    echo "Proceeding with scan_release_firewx_post"
+    source_file_found="YES"
+    umbrella_forecast_data=${umbrella_forecast_data_base}/output/
+    # fhr cover 000~036
+    for fhr in $(seq 0 36); do
+      fhr_3d=$( printf "%03d" ${fhr} )
+      if [ -s "${umbrella_forecast_data}/log.atm.f${fhr_3d}" ]; then
+        if [ ${array_element_scan_release_firewx_post[$fhr]} == "NO" ]; then
+          array_element_scan_release_firewx_post[$fhr]="found"
+          ecflow_client --event release_firewx_post_f${fhr_3d}
+          ic=1
+          continue
+        fi
+      else
+        source_file_found="NO"
+      fi
+    done
+    if [ ${source_file_found} == "YES" ]; then
+      scan_release_firewx_post="NO"
+    else
+      proceed_trigger_scan="YES"
+    fi
+  fi
+  #### release_firewx_post
 
   #### sleep and wait
   # The counter, ic, is reset when a new log file arrives.
