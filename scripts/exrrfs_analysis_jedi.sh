@@ -476,7 +476,7 @@ else # copy bias from previous cycle
           ls  -l $prev_comout/satbias_out
           # Copy satbias_out files from current COMOUT to your target directory
           cp ${prev_comout}/satbias_out/* data/satbias_in/.
-          break   # ← exit WHILE loop only
+          break   # exit WHILE loop 
       else
           echo "[$satcounter] Previous cycle does NOT exist: $prev_comout"
       fi
