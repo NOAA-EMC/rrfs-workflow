@@ -176,7 +176,7 @@ else
   #     cold start if BKTYPE=1 
   #     warm start if BKTYPE=0
   #     spinupcyc + warm start if BKTYPE=2
-  #       the previous 6 cycles are searched to find the restart files
+  #       the previous 3 cycles are searched to find the restart files
   #       valid at this time from the closet previous cycle.
   #
   #-----------------------------------------------------------------------
@@ -347,7 +347,7 @@ else
     fi
 
     n=${DA_CYCLE_INTERV}
-    while [[ $n -le 6 ]] ; do
+    while [[ $n -le 3 ]] ; do
       checkfile=${bkpath}/${restart_prefix}coupler.res
       if [ -r "${checkfile}" ] ; then
         print_info_msg "$VERBOSE" "Found ${checkfile}; Use it as background for analysis "
@@ -390,7 +390,7 @@ else
 
      restart_prefix="${YYYYMMDD}.${HH}0000."
      n=${DA_CYCLE_INTERV}
-     while [[ $n -le 6 ]] ; do
+     while [[ $n -le 3 ]] ; do
        checkfile=${bkpath}/${restart_prefix}coupler.res
        if [ -r "${checkfile}" ] ; then
          print_info_msg "$VERBOSE" "Found ${checkfile}; Use it as background for analysis "
@@ -1066,30 +1066,6 @@ for file_for_fcst_INPUT in *.nc coupler.res fv3_grid_spec bk_coupler.res gvf* *.
   fi
   mv ${DATA}/${file_for_fcst_INPUT} ${FORECAST_INPUT_PRODUCT}
 done
-
-
-#### mv ${DATA}/*.nc ${ICS_ROOT}
-#### ln -s ${ICS_ROOT}/*.nc ${FORECAST_INPUT_PRODUCT}
-#### if [ -s ${DATA}/coupler.res ]; then
-####   mv ${DATA}/coupler.res ${ICS_ROOT}
-####   ln -s ${ICS_ROOT}/coupler.res ${FORECAST_INPUT_PRODUCT}
-#### fi
-#### if [ -s ${DATA}/fv3_grid_spec ]; then
-####   mv ${DATA}/fv3_grid_spec ${ICS_ROOT}
-####   ln -s ${ICS_ROOT}/fv3_grid_spec ${FORECAST_INPUT_PRODUCT}
-#### fi
-#### if [ -s ${DATA}/bk_coupler.res ]; then
-####   mv ${DATA}/bk_coupler.res ${ICS_ROOT}
-####   ln -s ${ICS_ROOT}/bk_coupler.res ${FORECAST_INPUT_PRODUCT}
-#### fi
-#### if [ $(eval ls ${DATA}/gvf*|wc -l) -gt 0 ]; then
-####   mv ${DATA}/gvf* ${ICS_ROOT}
-####   ln -s ${ICS_ROOT}/gvf* ${FORECAST_INPUT_PRODUCT}
-#### fi
-#### if [ $(eval ls ${DATA}/*.grib2|wc -l) -gt 0 ]; then
-####   mv ${DATA}/*.grib2 ${ICS_ROOT}
-####   ln -s ${ICS_ROOT}/*.grib2 ${FORECAST_INPUT_PRODUCT}
-#### fi
 
 #
 #-----------------------------------------------------------------------

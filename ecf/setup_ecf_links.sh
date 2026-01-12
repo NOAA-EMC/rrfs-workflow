@@ -4,7 +4,7 @@ set -eux
 module load prod_util
 
 # Assume resource is using NCO production configuration
-resource_config="EMC"
+resource_config="NCO"
 ECF_DIR=$(pwd)
 
 # Create tmp file for git exclude
@@ -415,9 +415,12 @@ echo "Copy enkf save restart long files ..."
 rm -f jrrfs_enkf_save_restart_long_mem???_f1.ecf
 for mem in $(seq 1 30); do
   mem_3d=$( printf "%03d" "${mem}" )
-  cp jrrfs_enkf_save_restart_long_master.ecf jrrfs_enkf_save_restart_long_mem${mem_3d}_f1.ecf
-  sed -i -e "s|@enkf_save_restart_long_member@|${mem_3d}|g" jrrfs_enkf_save_restart_long_mem${mem_3d}_f1.ecf
-  add_to_tmpfile "$ECF_DIR/scripts/forecast/enkf/jrrfs_enkf_save_restart_long_mem${mem_3d}_f1.ecf"
+  for fhr_2_save in $(seq 1 3); do
+    cp jrrfs_enkf_save_restart_long_master.ecf jrrfs_enkf_save_restart_long_mem${mem_3d}_f${fhr_2_save}.ecf
+    sed -i -e "s|@enkf_save_restart_long_member@|${mem_3d}|g" jrrfs_enkf_save_restart_long_mem${mem_3d}_f${fhr_2_save}.ecf
+    sed -i -e "s|@enkf_save_restart_long_fhr@|${fhr_2_save}|g" jrrfs_enkf_save_restart_long_mem${mem_3d}_f${fhr_2_save}.ecf
+    add_to_tmpfile "$ECF_DIR/scripts/forecast/enkf/jrrfs_enkf_save_restart_long_mem${mem_3d}_f${fhr_2_save}.ecf"
+  done
 done
 
 # enkf save restart files
@@ -426,8 +429,12 @@ echo "Copy enkf save restart files ..."
 rm -f jrrfs_enkf_save_restart_mem???_f1.ecf
 for mem in $(seq 1 30); do
   mem_3d=$( printf "%03d" "${mem}" )
-  cp jrrfs_enkf_save_restart_master.ecf jrrfs_enkf_save_restart_mem${mem_3d}_f1.ecf
-  add_to_tmpfile "$ECF_DIR/scripts/forecast/enkf/jrrfs_enkf_save_restart_mem${mem_3d}_f1.ecf"
+  for fhr_2_save in $(seq 1 3); do
+    cp jrrfs_enkf_save_restart_master.ecf jrrfs_enkf_save_restart_mem${mem_3d}_f${fhr_2_save}.ecf
+    sed -i -e "s|@enkf_save_restart_member@|${mem_3d}|g" jrrfs_enkf_save_restart_mem${mem_3d}_f${fhr_2_save}.ecf
+    sed -i -e "s|@enkf_save_restart_fhr@|${fhr_2_save}|g" jrrfs_enkf_save_restart_mem${mem_3d}_f${fhr_2_save}.ecf
+    add_to_tmpfile "$ECF_DIR/scripts/forecast/enkf/jrrfs_enkf_save_restart_mem${mem_3d}_f${fhr_2_save}.ecf"
+  done
 done
 
 # enkf save restart spinup files

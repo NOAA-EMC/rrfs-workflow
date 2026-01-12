@@ -38,13 +38,14 @@ set -x
 
 RRFS_Current_PDY=${PDY}
 RRFS_Current_cyc=${cyc}
-cdate=${PDY}${cyc}
-RRFS_previous_PDY=$(echo $($NDATE -1 ${cdate}) | cut -c1-8)
-RRFS_previous_cyc=$(echo $($NDATE -1 ${cdate}) | cut -c9-10)
-RRFS_next_1_PDY=$(echo $($NDATE +1 ${cdate}) | cut -c1-8)
-RRFS_next_1_cyc=$(echo $($NDATE +1 ${cdate}) | cut -c9-10)
-RRFS_next_2_PDY=$(echo $($NDATE +2 ${cdate}) | cut -c1-8)
-RRFS_next_2_cyc=$(echo $($NDATE +2 ${cdate}) | cut -c9-10)
+RRFS_previous_PDY=$(echo $($NDATE -1 ${CDATE}) | cut -c1-8)
+RRFS_previous_cyc=$(echo $($NDATE -1 ${CDATE}) | cut -c9-10)
+RRFS_next_1_PDY=$(echo $($NDATE +1 ${CDATE}) | cut -c1-8)
+RRFS_next_1_cyc=$(echo $($NDATE +1 ${CDATE}) | cut -c9-10)
+RRFS_next_2_PDY=$(echo $($NDATE +2 ${CDATE}) | cut -c1-8)
+RRFS_next_2_cyc=$(echo $($NDATE +2 ${CDATE}) | cut -c9-10)
+RRFS_next_3_PDY=$(echo $($NDATE +3 ${CDATE}) | cut -c1-8)
+RRFS_next_3_cyc=$(echo $($NDATE +3 ${CDATE}) | cut -c9-10)
 current_PDY_6hr_fmt=${PDY}
 if [ $((10#$RRFS_Current_cyc)) -ge 0 ] && [ $((10#$RRFS_Current_cyc)) -le 5 ]; then
   current_cyc_6hr_fmt="00"
@@ -92,6 +93,7 @@ scan_release_ensf_make_lbcs="NO"
 scan_release_enkf_make_ics="NO"
 scan_release_enkf_observer_gsi_ensmean="YES"
 scan_release_enkf_save_restart_ensinit="NO"
+scan_release_enkf_save_restart_f1="NO"
 
 if [ ${cyc} == "00" ]; then
   scan_release_det_make_lbcs="YES"
@@ -100,6 +102,7 @@ if [ ${cyc} == "00" ]; then
   scan_release_det_post_long="YES"
   scan_release_ensf_post="YES"
   scan_release_save_restart_long="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "01" ]; then
@@ -110,6 +113,7 @@ fi
 if [ ${cyc} == "02" ]; then
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "03" ]; then
@@ -124,6 +128,7 @@ if [ ${cyc} == "04" ]; then
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
   scan_release_save_restart_spinup_f001="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "05" ]; then
@@ -142,6 +147,7 @@ if [ ${cyc} == "06" ]; then
   scan_release_ensf_post="YES"
   scan_release_save_restart_long="YES"
   scan_release_save_restart_spinup_f001="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "07" ]; then
@@ -158,6 +164,7 @@ if [ ${cyc} == "08" ]; then
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
   scan_release_save_restart_spinup_f001="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "09" ]; then
@@ -168,6 +175,7 @@ fi
 if [ ${cyc} == "10" ]; then
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "11" ]; then
@@ -183,6 +191,7 @@ if [ ${cyc} == "12" ]; then
   scan_release_det_post_long="YES"
   scan_release_ensf_post="YES"
   scan_release_save_restart_long="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "13" ]; then
@@ -193,6 +202,7 @@ fi
 if [ ${cyc} == "14" ]; then
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "15" ]; then
@@ -206,6 +216,7 @@ if [ ${cyc} == "16" ]; then
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
   scan_release_save_restart_spinup_f001="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "17" ]; then
@@ -223,6 +234,7 @@ if [ ${cyc} == "18" ]; then
   scan_release_ensf_post="YES"
   scan_release_save_restart_long="YES"
   scan_release_save_restart_spinup_f001="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "19" ]; then
@@ -238,6 +250,7 @@ if [ ${cyc} == "20" ]; then
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
   scan_release_save_restart_spinup_f001="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "21" ]; then
@@ -248,6 +261,7 @@ fi
 if [ ${cyc} == "22" ]; then
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "23" ]; then
@@ -433,19 +447,31 @@ while [ $proceed_trigger_scan == "YES" ]; do
     umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/det/RESTART
     restart_set_found=$(ls ${umbrella_forecast_data}/*coupler.res|wc -l)
     if [ ${cyc} == 00 ] || [ ${cyc} == 12 ]; then
-      if [ ${restart_set_found} -ge 1 ]; then
+      if [ ${restart_set_found} -eq 1 ]; then
         ecflow_client --event release_save_restart_long_1
       fi
-      if [ ${restart_set_found} -ge 2 ]; then
+      if [ ${restart_set_found} -eq 2 ]; then
+        ecflow_client --event release_save_restart_long_2
+      fi
+      if [ ${restart_set_found} -eq 3 ]; then
+        ecflow_client --event release_save_restart_long_3
+      fi
+      if [ ${restart_set_found} -ge 4 ]; then
         ecflow_client --event release_save_restart_long_6
         scan_release_save_restart_long="NO"
       fi
     fi
     if [ ${cyc} == 06 ] || [ ${cyc} == 18 ]; then
-      if [ ${restart_set_found} -ge 1 ]; then
+      if [ ${restart_set_found} -eq 1 ]; then
         ecflow_client --event release_save_restart_long_1
       fi
-      if [ ${restart_set_found} -ge 3 ]; then
+      if [ ${restart_set_found} -eq 2 ]; then
+        ecflow_client --event release_save_restart_long_2
+      fi
+      if [ ${restart_set_found} -eq 3 ]; then
+        ecflow_client --event release_save_restart_long_3
+      fi
+      if [ ${restart_set_found} -ge 5 ]; then
         ecflow_client --event release_save_restart_long_12
         scan_release_save_restart_long="NO"
       fi
@@ -460,8 +486,16 @@ while [ $proceed_trigger_scan == "YES" ]; do
     echo "Proceeding with scan_release_save_restart_f1 for det"
     umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/det/RESTART
     restart_set_found=$(ls ${umbrella_forecast_data}/${RRFS_next_1_PDY}.${RRFS_next_1_cyc}0000.coupler.res|wc -l)
-    if [ ${restart_set_found} -ge 1 ]; then
+    if [ ${restart_set_found} -eq 1 ]; then
       ecflow_client --event release_save_restart_f1
+    fi
+    restart_set_found=$(ls ${umbrella_forecast_data}/${RRFS_next_2_PDY}.${RRFS_next_2_cyc}0000.coupler.res|wc -l)
+    if [ ${restart_set_found} -eq 1 ]; then
+      ecflow_client --event release_save_restart_f2
+    fi
+    restart_set_found=$(ls ${umbrella_forecast_data}/${RRFS_next_3_PDY}.${RRFS_next_3_cyc}0000.coupler.res|wc -l)
+    if [ ${restart_set_found} -eq 1 ]; then
+      ecflow_client --event release_save_restart_f3
       scan_release_save_restart_f1="NO"
     else
       proceed_trigger_scan="YES"
@@ -483,6 +517,36 @@ while [ $proceed_trigger_scan == "YES" ]; do
     fi
   fi
   #### release_save_restart_spinup_f001
+
+  #### release_enkf_save_restart_f1
+  ## Process WGF is enkf
+  if [ ${scan_release_enkf_save_restart_f1} == "YES" ]; then
+    restart_member_completed=0
+    echo "Proceeding with scan_release_enkf_save_restart_f1 for enkf"
+    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/enkf
+    for member_name in $(seq 1 30); do
+      member_name3d=$( printf "%03d" "${member_name}" )
+      restart_set_mem001_found=$(ls ${umbrella_forecast_data}/${member_name3d}/RESTART/${RRFS_next_1_PDY}.${RRFS_next_1_cyc}0000.coupler.res|wc -l)
+      if [ ${restart_set_mem001_found} -eq 1 ]; then
+        ecflow_client --event release_enkf_save_restart_${member_name3d}_f1
+      fi
+      restart_set_mem002_found=$(ls ${umbrella_forecast_data}/${member_name3d}/RESTART/${RRFS_next_2_PDY}.${RRFS_next_2_cyc}0000.coupler.res|wc -l)
+      if [ ${restart_set_mem002_found} -eq 1 ]; then
+        ecflow_client --event release_enkf_save_restart_${member_name3d}_f2
+      fi
+      restart_set_mem003_found=$(ls ${umbrella_forecast_data}/${member_name3d}/RESTART/${RRFS_next_3_PDY}.${RRFS_next_3_cyc}0000.coupler.res|wc -l)
+      if [ ${restart_set_mem003_found} -eq 1 ]; then
+        ecflow_client --event release_enkf_save_restart_${member_name3d}_f3
+        restart_member_completed=$((restart_member_completed+1))
+      fi
+      if [ $restart_member_completed -lt 30 ]; then
+        proceed_trigger_scan="YES"
+      else
+        scan_release_enkf_save_restart_f1="NO"
+      fi
+    done
+  fi
+  #### release_save_restart_f1
 
   #### release_det_post_long
   if [ ${scan_release_det_post_long} == "YES" ]; then
@@ -618,7 +682,6 @@ while [ $proceed_trigger_scan == "YES" ]; do
   if [ ${scan_release_ensf_make_lbcs} == "YES" ]; then
     echo "Proceeding with scan_release_ensf_make_lbcs"
     source_file_found="YES"
-    # /lfs/h1/ops/prod/com/gefs/v12.3/gefs.20240609/18/atmos/pgrb2bp5/gep01.t18z.pgrb2b.0p50.f006
     gefs_pth=$(compath.py gefs/${gefs_ver})/gefs.${prior_PDY_6hr_fmt}/${previous_cyc_6hr_fmt}/atmos/pgrb2bp5
     for gp_num in $(seq 1 5); do
       for fhr in $(seq 6 3 66); do
