@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 # Command line arguments
 if [ -z "$1" -o -z "$2" ]; then
    echo "Usage: $0 yyyymmdd hh file_fmt nfcst nfcst_int"

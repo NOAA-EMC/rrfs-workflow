@@ -1,3 +1,4 @@
+set -x
 
 #  setup for real-time runs on JET
 OBSPATH_NSSLMOSIAC=/public/data/radar/nssl/mrms/conus

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 echo "--> radmon_verf_bcor.sh"
 
 export PDATE=${1:-${PDATE:?}}

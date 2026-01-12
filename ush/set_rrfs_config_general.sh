@@ -1,3 +1,4 @@
+set -x
 
 if [[ $MACHINE == "jet" ]] ; then
   ACCOUNT=nrtrr

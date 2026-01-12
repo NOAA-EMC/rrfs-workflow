@@ -1,4 +1,5 @@
 #/bin/bash
+set -x
 
 # Run data extract/validation for regional radiance diag data
 echo "---> exnam_vrfyrad.sh.ecf"
