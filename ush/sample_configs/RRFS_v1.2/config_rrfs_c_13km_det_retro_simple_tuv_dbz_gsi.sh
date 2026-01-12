@@ -7,7 +7,7 @@ ACCOUNT="RRFS-DEV"
 
 # Directory settings (user-dependent)
 EXPT_BASEDIR="/lfs/h2/emc/da/noscrub/$USER/rrfs-workflow_dev/rrfs-workflow/expt_dirs/May2024_retro_radar/$version"
-EXPT_SUBDIR="rrfs_conus_13km.radar"
+EXPT_SUBDIR="rrfs_conus_13km.radar_gsi"
 STMP="/lfs/h2/emc/stmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
 PTMP="/lfs/h2/emc/ptmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
 NWGES="/lfs/h2/emc/ptmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
@@ -32,7 +32,7 @@ QUEUE_GRAPHICS="dev"
 # JEDI options
 DO_IODA_BUFR="TRUE"
 DO_JEDIVAR="TRUE"
-DA_SYSTEM="JEDI"
+DA_SYSTEM="GSI"
 DO_DACOLD="FALSE"
 DO_DACYCLE="TRUE"
 #DO_ENSEMBLE="TRUE"
