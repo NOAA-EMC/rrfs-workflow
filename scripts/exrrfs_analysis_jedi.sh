@@ -438,8 +438,59 @@ cp $COMOUT/ioda_*.nc data/obs/.
 #
 #-----------------------------------------------------------------------
 mkdir -p data/satbias_in  data/satbias_out
-cp "${FIX_JEDI}/"/satbias_init/*.tlapse.txt data/satbias_in/.
-cp "${FIX_JEDI}/"/satbias_init/*.nc data/satbias_in/.
+
+cp "${FIX_JEDI}/"satbias_init/*.tlapse.txt data/satbias_in/.
+
+if [ ${BKTYPE} -eq 1 ]; then  # cold start uses the fixed initialize bias
+   cp "${FIX_JEDI}/satbias_init/*.nc" data/satbias_in/.
+
+else # copy bias from previous cycle
+  satcounter=1
+  maxcounter=240
+  echo 'COMOUT =', ${COMOUT}
+  cur_comout=${COMOUT}
+  while [ $satcounter -lt $maxcounter ]; do
+    # Extract the date and cycle hour from COMOUT
+    # Assuming path ends with /YYYYMMDD/HH
+    cur_date=$(basename "$(dirname "$cur_comout")")  # YYYYMMDD
+    cur_date=${cur_date#rrfs.}                       # 20240506
+    cur_hour=$(basename "$cur_comout")               # 01
+    
+
+    # Combine into YYYYMMDDHH
+    cur_cycle="${cur_date}${cur_hour}"
+
+    # Compute previous cycle using date arithmetic
+    prev_cycle=$(date -u -d "${cur_date} ${cur_hour} -1 hours" +%Y%m%d%H)
+
+    # Extract previous date and hour
+    prev_date=${prev_cycle:0:8}
+    prev_hour=${prev_cycle:8:2}
+
+    # Construct previous COMOUT path
+    prev_comout=$(dirname "$(dirname "$cur_comout")")/rrfs.${prev_date}/${prev_hour}
+
+    # Check if previous cycle exists
+      if [ -d "$prev_comout/satbias_out" ]; then
+          echo "[$satcounter] Previous cycle exists: $prev_comout/satbias_out"
+          ls  -l $prev_comout/satbias_out
+          # Copy satbias_out files from current COMOUT to your target directory
+          cp ${prev_comout}/satbias_out/* data/satbis_in/.
+      else
+          echo "[$satcounter] Previous cycle does NOT exist: $prev_comout"
+      fi
+
+    # Prepare COMOUT for next iteration (move to previous cycle)
+    cur_comout=$prev_comout
+
+    # Increment counter
+    satcounter=$((satcounter + 1))
+
+  done
+  if [ $satcounter -eq $maxcounter ]; then
+    cp "${FIX_JEDI}/"satbias_init/*.nc data/satbias_in/.
+  fi
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -702,6 +753,7 @@ cp "$OUTtr"                         ${bkpath}/fv_tracer.res.tile1.nc
 
 # Save the Jdiag files for diagnostic tools
 cp jdiag* ${COMOUT}
+cp */satbias_out ${COMOUT}/.
 
 # touch a file in INPUT.jedi its clear if jedi/gsi analysis restarts were used
 touch ${bkpath}/jedi
