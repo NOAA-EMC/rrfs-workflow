@@ -475,7 +475,8 @@ else # copy bias from previous cycle
           echo "[$satcounter] Previous cycle exists: $prev_comout/satbias_out"
           ls  -l $prev_comout/satbias_out
           # Copy satbias_out files from current COMOUT to your target directory
-          cp ${prev_comout}/satbias_out/* data/satbis_in/.
+          cp ${prev_comout}/satbias_out/* data/satbias_in/.
+          break   # ← exit WHILE loop only
       else
           echo "[$satcounter] Previous cycle does NOT exist: $prev_comout"
       fi
@@ -753,7 +754,7 @@ cp "$OUTtr"                         ${bkpath}/fv_tracer.res.tile1.nc
 
 # Save the Jdiag files for diagnostic tools
 cp jdiag* ${COMOUT}
-cp */satbias_out ${COMOUT}/.
+cp -r data/satbias_out ${COMOUT}/.
 
 # touch a file in INPUT.jedi its clear if jedi/gsi analysis restarts were used
 touch ${bkpath}/jedi
