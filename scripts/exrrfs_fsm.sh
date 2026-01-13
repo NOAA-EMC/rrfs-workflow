@@ -44,6 +44,8 @@ RRFS_next_1_PDY=$(echo $($NDATE +1 ${CDATE}) | cut -c1-8)
 RRFS_next_1_cyc=$(echo $($NDATE +1 ${CDATE}) | cut -c9-10)
 RRFS_next_2_PDY=$(echo $($NDATE +2 ${CDATE}) | cut -c1-8)
 RRFS_next_2_cyc=$(echo $($NDATE +2 ${CDATE}) | cut -c9-10)
+RRFS_next_3_PDY=$(echo $($NDATE +3 ${CDATE}) | cut -c1-8)
+RRFS_next_3_cyc=$(echo $($NDATE +3 ${CDATE}) | cut -c9-10)
 current_PDY_6hr_fmt=${PDY}
 if [ $((10#$RRFS_Current_cyc)) -ge 0 ] && [ $((10#$RRFS_Current_cyc)) -le 5 ]; then
   current_cyc_6hr_fmt="00"
@@ -91,6 +93,7 @@ scan_release_ensf_make_lbcs="NO"
 scan_release_enkf_make_ics="NO"
 scan_release_enkf_observer_gsi_ensmean="YES"
 scan_release_enkf_save_restart_ensinit="NO"
+scan_release_enkf_save_restart_f1="NO"
 
 if [ ${cyc} == "00" ]; then
   scan_release_det_make_lbcs="YES"
@@ -99,6 +102,7 @@ if [ ${cyc} == "00" ]; then
   scan_release_det_post_long="YES"
   scan_release_ensf_post="YES"
   scan_release_save_restart_long="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "01" ]; then
@@ -109,6 +113,7 @@ fi
 if [ ${cyc} == "02" ]; then
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "03" ]; then
@@ -123,6 +128,7 @@ if [ ${cyc} == "04" ]; then
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
   scan_release_save_restart_spinup_f001="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "05" ]; then
@@ -141,6 +147,7 @@ if [ ${cyc} == "06" ]; then
   scan_release_ensf_post="YES"
   scan_release_save_restart_long="YES"
   scan_release_save_restart_spinup_f001="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "07" ]; then
@@ -157,6 +164,7 @@ if [ ${cyc} == "08" ]; then
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
   scan_release_save_restart_spinup_f001="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "09" ]; then
@@ -167,6 +175,7 @@ fi
 if [ ${cyc} == "10" ]; then
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "11" ]; then
@@ -182,6 +191,7 @@ if [ ${cyc} == "12" ]; then
   scan_release_det_post_long="YES"
   scan_release_ensf_post="YES"
   scan_release_save_restart_long="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "13" ]; then
@@ -192,6 +202,7 @@ fi
 if [ ${cyc} == "14" ]; then
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "15" ]; then
@@ -205,6 +216,7 @@ if [ ${cyc} == "16" ]; then
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
   scan_release_save_restart_spinup_f001="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "17" ]; then
@@ -222,6 +234,7 @@ if [ ${cyc} == "18" ]; then
   scan_release_ensf_post="YES"
   scan_release_save_restart_long="YES"
   scan_release_save_restart_spinup_f001="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "19" ]; then
@@ -237,6 +250,7 @@ if [ ${cyc} == "20" ]; then
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
   scan_release_save_restart_spinup_f001="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "21" ]; then
@@ -247,6 +261,7 @@ fi
 if [ ${cyc} == "22" ]; then
   scan_release_det_post="YES"
   scan_release_save_restart_f1="YES"
+  scan_release_enkf_save_restart_f1="YES"
 fi
 
 if [ ${cyc} == "23" ]; then
@@ -331,7 +346,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
   #### scan_release_det_make_ics
   if [ ${scan_release_det_make_ics} == "YES" ]; then
     echo "Proceeding with scan_release_det_make_ics"
-    ops_gfs_inp_file=${COMINgfs}/gfs.${current_PDY_6hr_fmt}/${current_cyc_6hr_fmt}/atmos/gfs.t${current_cyc_6hr_fmt}z.logf003.txt
+    ops_gfs_inp_file=$(compath.py gfs/${gfs_ver})/gfs.${current_PDY_6hr_fmt}/${current_cyc_6hr_fmt}/atmos/gfs.t${current_cyc_6hr_fmt}z.logf003.txt
     if [ -s ${ops_gfs_inp_file} ]; then
       scan_release_det_make_ics="NO"
       ecflow_client --event release_det_make_ics
@@ -344,7 +359,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
   #### scan_release_det_make_lbcs
   if [ ${scan_release_det_make_lbcs} == "YES" ]; then
     echo "Proceeding with scan_release_det_make_lbcs"
-    ops_gfs_inp_file=${COMINgfs}/gfs.${RRFS_previous_PDY}/${previous_cyc_6hr_fmt}/atmos/gfs.t${previous_cyc_6hr_fmt}z.logf006.txt
+    ops_gfs_inp_file=$(compath.py gfs/${gfs_ver})/gfs.${RRFS_previous_PDY}/${previous_cyc_6hr_fmt}/atmos/gfs.t${previous_cyc_6hr_fmt}z.logf006.txt
     if [ -s ${ops_gfs_inp_file} ]; then
       scan_release_det_make_lbcs="NO"
       ecflow_client --event release_det_make_lbcs
@@ -413,7 +428,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
   #### release_enkf_make_lbcs
   if [ ${scan_release_enkf_make_lbcs} == "YES" ]; then
     echo "Proceeding with scan_release_enkf_make_lbcs"
-    gefs_inp_dir=${COMINgefs}/gefs.${prior_PDY_6hr_fmt}/${previous_cyc_6hr_fmt}/atmos/pgrb2bp5
+    gefs_inp_dir=$(compath.py gefs/${gefs_ver})/gefs.${prior_PDY_6hr_fmt}/${previous_cyc_6hr_fmt}/atmos/pgrb2bp5
     file_count_tmp=$(ls ${gefs_inp_dir}/gep*.t${previous_cyc_6hr_fmt}z.pgrb2b.0p50.f006 ${gefs_inp_dir}/gep*.t${previous_cyc_6hr_fmt}z.pgrb2b.0p50.f009 ${gefs_inp_dir}/gep*.t${previous_cyc_6hr_fmt}z.pgrb2b.0p50.f012 ${gefs_inp_dir}/gep*.t${previous_cyc_6hr_fmt}z.pgrb2b.0p50.f015 ${gefs_inp_dir}/gep*.t${previous_cyc_6hr_fmt}z.pgrb2b.0p50.f018|wc -l)
     if [ ${file_count_tmp} -eq 150 ]; then
       ecflow_client --event release_enkf_make_lbcs
@@ -429,22 +444,34 @@ while [ $proceed_trigger_scan == "YES" ]; do
   ## Process WGF is det
   if [ ${scan_release_save_restart_long} == "YES" ]; then
     echo "Proceeding with scan_release_save_restart_long for det"
-    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/det/RESTART
+    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/det/RESTART
     restart_set_found=$(ls ${umbrella_forecast_data}/*coupler.res|wc -l)
     if [ ${cyc} == 00 ] || [ ${cyc} == 12 ]; then
-      if [ ${restart_set_found} -ge 1 ]; then
+      if [ ${restart_set_found} -eq 1 ]; then
         ecflow_client --event release_save_restart_long_1
       fi
-      if [ ${restart_set_found} -ge 2 ]; then
+      if [ ${restart_set_found} -eq 2 ]; then
+        ecflow_client --event release_save_restart_long_2
+      fi
+      if [ ${restart_set_found} -eq 3 ]; then
+        ecflow_client --event release_save_restart_long_3
+      fi
+      if [ ${restart_set_found} -ge 4 ]; then
         ecflow_client --event release_save_restart_long_6
         scan_release_save_restart_long="NO"
       fi
     fi
     if [ ${cyc} == 06 ] || [ ${cyc} == 18 ]; then
-      if [ ${restart_set_found} -ge 1 ]; then
+      if [ ${restart_set_found} -eq 1 ]; then
         ecflow_client --event release_save_restart_long_1
       fi
-      if [ ${restart_set_found} -ge 3 ]; then
+      if [ ${restart_set_found} -eq 2 ]; then
+        ecflow_client --event release_save_restart_long_2
+      fi
+      if [ ${restart_set_found} -eq 3 ]; then
+        ecflow_client --event release_save_restart_long_3
+      fi
+      if [ ${restart_set_found} -ge 5 ]; then
         ecflow_client --event release_save_restart_long_12
         scan_release_save_restart_long="NO"
       fi
@@ -457,10 +484,18 @@ while [ $proceed_trigger_scan == "YES" ]; do
   ## Process WGF is det
   if [ ${scan_release_save_restart_f1} == "YES" ]; then
     echo "Proceeding with scan_release_save_restart_f1 for det"
-    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/det/RESTART
+    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/det/RESTART
     restart_set_found=$(ls ${umbrella_forecast_data}/${RRFS_next_1_PDY}.${RRFS_next_1_cyc}0000.coupler.res|wc -l)
-    if [ ${restart_set_found} -ge 1 ]; then
+    if [ ${restart_set_found} -eq 1 ]; then
       ecflow_client --event release_save_restart_f1
+    fi
+    restart_set_found=$(ls ${umbrella_forecast_data}/${RRFS_next_2_PDY}.${RRFS_next_2_cyc}0000.coupler.res|wc -l)
+    if [ ${restart_set_found} -eq 1 ]; then
+      ecflow_client --event release_save_restart_f2
+    fi
+    restart_set_found=$(ls ${umbrella_forecast_data}/${RRFS_next_3_PDY}.${RRFS_next_3_cyc}0000.coupler.res|wc -l)
+    if [ ${restart_set_found} -eq 1 ]; then
+      ecflow_client --event release_save_restart_f3
       scan_release_save_restart_f1="NO"
     else
       proceed_trigger_scan="YES"
@@ -472,7 +507,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
   ## Process WGF is det
   if [ ${scan_release_save_restart_spinup_f001} == "YES" ]; then
     echo "Proceeding with scan_release_save_restart_spinup_f001 for det"
-    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver_2d}_${envir}/det/RESTART
+    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/det/RESTART
     restart_set_found=$(ls ${umbrella_forecast_data}/${RRFS_next_1_PDY}.${RRFS_next_1_cyc}0000.coupler.res|wc -l)
     if [ ${restart_set_found} -ge 1 ]; then
       ecflow_client --event release_save_restart_spinup_f001
@@ -483,11 +518,41 @@ while [ $proceed_trigger_scan == "YES" ]; do
   fi
   #### release_save_restart_spinup_f001
 
+  #### release_enkf_save_restart_f1
+  ## Process WGF is enkf
+  if [ ${scan_release_enkf_save_restart_f1} == "YES" ]; then
+    restart_member_completed=0
+    echo "Proceeding with scan_release_enkf_save_restart_f1 for enkf"
+    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/enkf
+    for member_name in $(seq 1 30); do
+      member_name3d=$( printf "%03d" "${member_name}" )
+      restart_set_mem001_found=$(ls ${umbrella_forecast_data}/${member_name3d}/RESTART/${RRFS_next_1_PDY}.${RRFS_next_1_cyc}0000.coupler.res|wc -l)
+      if [ ${restart_set_mem001_found} -eq 1 ]; then
+        ecflow_client --event release_enkf_save_restart_${member_name3d}_f1
+      fi
+      restart_set_mem002_found=$(ls ${umbrella_forecast_data}/${member_name3d}/RESTART/${RRFS_next_2_PDY}.${RRFS_next_2_cyc}0000.coupler.res|wc -l)
+      if [ ${restart_set_mem002_found} -eq 1 ]; then
+        ecflow_client --event release_enkf_save_restart_${member_name3d}_f2
+      fi
+      restart_set_mem003_found=$(ls ${umbrella_forecast_data}/${member_name3d}/RESTART/${RRFS_next_3_PDY}.${RRFS_next_3_cyc}0000.coupler.res|wc -l)
+      if [ ${restart_set_mem003_found} -eq 1 ]; then
+        ecflow_client --event release_enkf_save_restart_${member_name3d}_f3
+        restart_member_completed=$((restart_member_completed+1))
+      fi
+      if [ $restart_member_completed -lt 30 ]; then
+        proceed_trigger_scan="YES"
+      else
+        scan_release_enkf_save_restart_f1="NO"
+      fi
+    done
+  fi
+  #### release_save_restart_f1
+
   #### release_det_post_long
   if [ ${scan_release_det_post_long} == "YES" ]; then
     echo "Proceeding with scan_release_det_post_long"
     source_file_found="YES"
-    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/det/output
+    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/det/output
     # fhr cover 000~084
     for fhr in $(seq 0 84); do
       fhr_2d=$( printf "%02d" ${fhr} )
@@ -536,7 +601,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
   if [ ${scan_release_ensf_post} == "YES" ]; then
     echo "Proceeding with scan_release_ensf_post"
     source_file_found="YES"
-    umbrella_forecast_data_base=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/ensf/
+    umbrella_forecast_data_base=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/ensf/
     # mems 1-5
     for mem in $(seq 1 5); do
       memuse=$( printf "%03d" ${mem} )
@@ -568,7 +633,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
   if [ ${scan_release_det_post} == "YES" ]; then
     echo "Proceeding with scan_release_det_post"
     source_file_found="YES"
-    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/det/output
+    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/det/output
     # fhr cover 000~018
     for fhr in $(seq 0 18); do
       fhr_2d=$( printf "%02d" ${fhr} )
@@ -617,8 +682,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
   if [ ${scan_release_ensf_make_lbcs} == "YES" ]; then
     echo "Proceeding with scan_release_ensf_make_lbcs"
     source_file_found="YES"
-    # /lfs/h1/ops/prod/com/gefs/v12.3/gefs.20240609/18/atmos/pgrb2bp5/gep01.t18z.pgrb2b.0p50.f006
-    gefs_pth=${COMINgefs}/gefs.${prior_PDY_6hr_fmt}/${previous_cyc_6hr_fmt}/atmos/pgrb2bp5
+    gefs_pth=$(compath.py gefs/${gefs_ver})/gefs.${prior_PDY_6hr_fmt}/${previous_cyc_6hr_fmt}/atmos/pgrb2bp5
     for gp_num in $(seq 1 5); do
       for fhr in $(seq 6 3 66); do
         gp_num_2d=$( printf "%02d" ${gp_num} )
@@ -676,7 +740,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
     else
       enkfgdas_cyc=12
     fi
-    enkfgdas_pth=${COMINgfs}/enkfgdas.${RRFS_Current_PDY}/${enkfgdas_cyc}/atmos
+    enkfgdas_pth=$(compath.py gfs/${gfs_ver})/enkfgdas.${RRFS_Current_PDY}/${enkfgdas_cyc}/atmos
     for mem_nu in $(seq 1 30); do
       mem_nu_3d=$( printf "%03d" ${mem_nu} )
       target_file_scan_atmf=${enkfgdas_pth}/mem${mem_nu_3d}/gdas.t${enkfgdas_cyc}z.atmf007.nc
