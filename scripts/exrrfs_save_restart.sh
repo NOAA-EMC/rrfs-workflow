@@ -91,9 +91,21 @@ fi
 
 if_save_input=FALSE
 
-if [ -s ${umbrella_forecast_data}/INPUT/gfs_ctrl.nc ]; then
-  cpreq ${umbrella_forecast_data}/INPUT/gfs_ctrl.nc ${COMOUT}/INPUT
-  if_save_input=TRUE
+copy_gfs_ctrl=TRUE
+if [ "${WGF}" = "enkf" ]; then
+  if [[ $((10#$cyc % 2)) -eq 0 ]] && [ ! "${FHR}" = "001" ]; then
+    copy_gfs_ctrl=FALSE
+  fi
+elif [ ${WGF} = "det" ]; then
+  if [ ! "${FHR}" = "001" ]; then
+    copy_gfs_ctrl=FALSE
+  fi  
+fi
+if [[ ${copy_gfs_ctrl} = TRUE ]]; then
+  if [ -s ${umbrella_forecast_data}/INPUT/gfs_ctrl.nc ]; then
+    cpreq ${umbrella_forecast_data}/INPUT/gfs_ctrl.nc ${COMOUT}/INPUT
+    if_save_input=TRUE
+  fi
 fi
 
 if [ -r "${shared_forecast_restart_data}/${restart_prefix}.coupler.res" ]; then
