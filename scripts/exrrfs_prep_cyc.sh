@@ -176,7 +176,7 @@ else
   #     cold start if BKTYPE=1 
   #     warm start if BKTYPE=0
   #     spinupcyc + warm start if BKTYPE=2
-  #       the previous 6 cycles are searched to find the restart files
+  #       the previous 3 cycles are searched to find the restart files
   #       valid at this time from the closet previous cycle.
   #
   #-----------------------------------------------------------------------
@@ -347,7 +347,7 @@ else
     fi
 
     n=${DA_CYCLE_INTERV}
-    while [[ $n -le 6 ]] ; do
+    while [[ $n -le 3 ]] ; do
       checkfile=${bkpath}/${restart_prefix}coupler.res
       if [ -r "${checkfile}" ] ; then
         print_info_msg "$VERBOSE" "Found ${checkfile}; Use it as background for analysis "
@@ -390,7 +390,7 @@ else
 
      restart_prefix="${YYYYMMDD}.${HH}0000."
      n=${DA_CYCLE_INTERV}
-     while [[ $n -le 6 ]] ; do
+     while [[ $n -le 3 ]] ; do
        checkfile=${bkpath}/${restart_prefix}coupler.res
        if [ -r "${checkfile}" ] ; then
          print_info_msg "$VERBOSE" "Found ${checkfile}; Use it as background for analysis "
