@@ -1,4 +1,5 @@
 #!/bin/sh
+set -x
 #
 basedir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 utildir="$basedir"/bash_utils

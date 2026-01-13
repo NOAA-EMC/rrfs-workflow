@@ -2,6 +2,8 @@
 # its own shell), so there's no need to put the #!/bin/some_shell on the
 # first line.
 
+set -x
+
 # Pi.
 pi_geom="3.14159265358979323846264338327"
 # Degrees per radian.
