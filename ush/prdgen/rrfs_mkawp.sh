@@ -34,11 +34,11 @@ then
   . prep_step
 
   export FORT11=rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2
-  export FORT51=grib2.t${cyc}z.awprrfs_f${fhr}_${cyc}
+  export FORT51=grib2.rrfs.t${cyc}z.awips.f${fhr}
   $TOCGRIB2 < $PARMrrfs/wmo/grib2_awips_rrfs_f${fhr}
   export err=$?; err_chk
 
-  cpreq -p grib2.t${cyc}z.awprrfs_f${fhr}_${cyc} ${COMOUT}/wmo
+  cpreq -p grib2.rrfs.t${cyc}z.awips.f${fhr} ${COMOUT}/wmo
 
 # DBN alerts from HRRR script - someone can modify this for RRFS later
 #  if [ $SENDDBN_NTC = YES -a $fhr -le 18 ]
