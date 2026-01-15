@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 PDATE=${1:-${PDATE:?}}
 

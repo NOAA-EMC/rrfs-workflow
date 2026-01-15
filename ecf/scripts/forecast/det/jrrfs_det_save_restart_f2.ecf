@@ -1,10 +1,10 @@
-#PBS -N rrfs_enkf_forecast_mem@enkf_forecast_member@_%CYC%
+#PBS -N rrfs_det_save_restart_f2_%CYC%
 #PBS -j oe
 #PBS -S /bin/bash
 #PBS -q %QUEUE%
 #PBS -A %PROJ%-%PROJENVIR%
-#PBS -l walltime=01:33:00
-#PBS -l place=vscatter:excl,select=12:ncpus=128:ompthreads=2:mem=500G
+#PBS -l walltime=00:30:00
+#PBS -l place=vscatter:shared,select=1:ncpus=1:mem=40G
 #PBS -l debug=true
 
 model=rrfs
@@ -20,19 +20,12 @@ module load python/${python_ver}
 module load prod_util/${prod_util_ver}
 module load cray-mpich/${cray_mpich_ver}
 module load cray-pals/${cray_pals_ver}
-module load jasper/${jasper_ver}
 module load hdf5-D/${hdf5_ver}
 module load netcdf-D/${netcdf_ver}
-module load pnetcdf-D/${pnetcdf_ver}
-module load fms-D/${fms_ver}
 module load bacio/${bacio_ver}
-module load crtm/${crtm_ver}
 module load g2/${g2_ver}
 module load ip/${ip_ver}
 module load sp/${sp_ver}
-module load w3emc/${w3emc_ver}
-module load pio/${pio_ver}
-module load esmf-D/${esmf_ver}
 module load libjpeg/${libjpeg_ver}
 module load udunits/${udunits_ver}
 module load gsl/${gsl_ver}
@@ -40,11 +33,11 @@ module load nco/${nco_ver}
 
 module list
 export WGF="%WGF%"
-export MEMBER_NAME="%MEMBER_NAME%"
+export FHR="%FHR%"
 ############################################################
 # CALL executable job script here
 ############################################################
-${HOMErrfs}/jobs/JRRFS_FORECAST
+${HOMErrfs}/jobs/JRRFS_SAVE_RESTART
 
 %include <tail.h>
 

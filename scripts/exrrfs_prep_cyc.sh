@@ -82,6 +82,25 @@ Run command has not been specified for this machine:
 
 esac
 export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
+
+#
+#-----------------------------------------------------------------------
+#
+# Specify Timeout Behavior of prep_cyc to checking for restart files
+# from CYCm1.
+#
+# If 1-hour restart files from CYCm1 do not exist after $SLEEP_TIME,
+# proceed with CYCm2 2-hour restart files, then CYCm3 3-hour restart files.
+#
+# SLEEP_TIME - Amount of time to wait for CYCm1 1-h hrestart files before
+#              trying CYCm2 2-h restart files
+# SLEEP_INT  - Amount of time to wait between checking for restart files
+#
+#-----------------------------------------------------------------------
+SLEEP_TIME=300
+SLEEP_INT=15
+SLEEP_LOOP_MAX=`expr $SLEEP_TIME / $SLEEP_INT`
+
 #
 #-----------------------------------------------------------------------
 #
@@ -176,7 +195,7 @@ else
   #     cold start if BKTYPE=1 
   #     warm start if BKTYPE=0
   #     spinupcyc + warm start if BKTYPE=2
-  #       the previous 6 cycles are searched to find the restart files
+  #       the previous 3 cycles are searched to find the restart files
   #       valid at this time from the closet previous cycle.
   #
   #-----------------------------------------------------------------------
@@ -347,8 +366,19 @@ else
     fi
 
     n=${DA_CYCLE_INTERV}
-    while [[ $n -le 6 ]] ; do
+    while [[ $n -le 3 ]] ; do
       checkfile=${bkpath}/${restart_prefix}coupler.res
+      if [ ! -r "${checkfile}" ] && [ "$n" == "1" ] ; then
+        ic=0
+        while [[ $ic -lt $SLEEP_LOOP_MAX ]]; do
+          print_info_msg "$VERBOSE" "${checkfile} not available. Sleep $SLEEP_INT sec... "
+          ic=`expr $ic + 1`
+          sleep $SLEEP_INT
+          if [ -r "${checkfile}" ] ; then
+            break
+          fi
+        done
+      fi
       if [ -r "${checkfile}" ] ; then
         print_info_msg "$VERBOSE" "Found ${checkfile}; Use it as background for analysis "
         break
@@ -390,8 +420,19 @@ else
 
      restart_prefix="${YYYYMMDD}.${HH}0000."
      n=${DA_CYCLE_INTERV}
-     while [[ $n -le 6 ]] ; do
+     while [[ $n -le 3 ]] ; do
        checkfile=${bkpath}/${restart_prefix}coupler.res
+       if [ ! -r "${checkfile}" ] && [ "$n" == "1" ] ; then
+         ic=0
+         while [[ $ic -lt $SLEEP_LOOP_MAX ]]; do
+           print_info_msg "$VERBOSE" "${checkfile} not available. Sleep $SLEEP_INT sec... "
+           ic=`expr $ic + 1`
+           sleep $SLEEP_INT
+           if [ -r "${checkfile}" ] ; then
+             break
+           fi
+         done
+       fi
        if [ -r "${checkfile}" ] ; then
          print_info_msg "$VERBOSE" "Found ${checkfile}; Use it as background for analysis "
          break

@@ -477,7 +477,11 @@ if [ ${BKTYPE} -eq 0 ]; then
       cpreq -p ${FV3_NML_RESTART_SPINUPCYC_FP} ${DATA}/${FV3_NML_FN}
     else
       if [ ${WGF} = "enkf" ]; then
-       FCST_LEN_HRS=1
+       if [[ $((10#$cyc % 2)) -eq 0 ]]; then
+         FCST_LEN_HRS=3
+       else
+         FCST_LEN_HRS=1
+       fi
        cpreq -p ${FV3_NML_RESTART_FP} ${DATA}/${FV3_NML_FN}
       else
         FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$((10#$cyc))]}
@@ -686,6 +690,14 @@ if [ ${CYCLE_TYPE} = "spinup" ]; then
     RESTART_HRS='0'
   fi
 fi
+
+if [ $WGF = "det" ] && [[ ! $((10#$cyc % 6)) -eq 0 ]]; then
+  RESTART_HRS='1 2 3 6 12'
+fi
+if [ $WGF = "enkf" ] && [[ $((10#$cyc % 2)) -eq 0 ]]; then
+  RESTART_HRS='1 2 3'
+fi
+
 if [ $FCST_LEN_HRS -gt 0 ]; then
   cd ${DATA}/RESTART
   file_ids=( "coupler.res" "fv_core.res.nc" "fv_core.res.tile1.nc" "fv_srf_wnd.res.tile1.nc" "fv_tracer.res.tile1.nc" "fv_diag.res.tile1.nc" "phy_data.nc" "sfc_data.nc" )
@@ -718,14 +730,9 @@ fi
 if [ "${DO_FCST_RESTART}" = "TRUE" ] && [ $coupler_res_ct -gt 0 ] && [ $FCST_LEN_HRS -gt 6 ]; then
   flag_fcst_restart="TRUE"
   # Update FV3 input.nml for restart
-   mem_res="0"
-   if [ ${WGF} = "ensf" ]; then
-     mem_res=${ensmem_num}
-   fi
    $USHrrfs/update_input_nml.py \
     --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf \
     --run_dir "${DATA}" \
-    --member ${mem_res} \
     --restart
   export err=$?
   if [ $err -ne 0 ]; then
@@ -909,7 +916,11 @@ cd INPUT
 acsnow_ct=$(ncdump -h sfc_data.nc|grep acsnow|wc -l)
 if [ $acsnow_ct -eq 0 ] && [ ! ${WGF} = "firewx" ]; then
   echo "Run DATA sfc_data.nc surge for acsnow"
-  ncks -A ${FIXrrfs}/acsnow/acsnow.nc sfc_data.nc
+  if [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km" ]; then
+    ncks -A ${FIXrrfs}/acsnow/acsnow_conus3km.nc sfc_data.nc
+  else
+    ncks -A ${FIXrrfs}/acsnow/acsnow.nc sfc_data.nc
+  fi
   export err=$?; err_chk
 fi
 cd ..

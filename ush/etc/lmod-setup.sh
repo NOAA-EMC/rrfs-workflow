@@ -1,4 +1,5 @@
 #!/bin/sh
+set -x
 
 if [ $# = 0 ]; then
    L_MACHINE=${MACHINE}
