@@ -262,6 +262,9 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
   tasks=(4 4 2 2)
   domains=(conus ak hi pr)
   count=0
+
+if [[ $SENDCOM = 'YES' ]]; then
+
   for domain in ${domains[@]}
   do
 
@@ -276,6 +279,7 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
       do
         cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2
       done
+
       wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
     else
       for task in $(seq ${tasks[count]})
@@ -338,6 +342,9 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
       echo "WARNING: ${FIX_UPP}/${TESTBED_FIELDS_FN} not found"
     fi
   fi
+
+
+fi #SENDCOM
 
   #-- Upscale & subset FAA requested information
   #-- FAA grib2 output is not generated for ensemble forecasts

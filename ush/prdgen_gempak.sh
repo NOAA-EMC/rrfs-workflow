@@ -262,6 +262,7 @@ if [[ "$SENDCOM" == "YES" ]]; then
     cpreq "$GEMGRDd" "$COMOUT/$GEMGRDd"
   fi
 
+ # Should all GEMPAK files be alerted?
   if [[ "$SENDDBN" == "YES" ]]; then
     "$DBNROOT/bin/dbn_alert" MODEL "${DBN_ALERT_TYPE}" "$job" \
       "$COMOUT/$GEMGRD"

@@ -487,6 +487,9 @@ fi
 #   copy post-processed grib2 files to COMOUT
 #-----------------------------------------------------------------------
 #
+
+if [[ $SENDCOM = "YES" ]]; then
+
 cpreq -p ${prslev} ${COMOUT}
 # Native level output is disabled for ensemble forecasts after f00
 if [[ -f ${natlev} ]]; then
@@ -509,6 +512,8 @@ fi
 if [ ${SUBH_GEN} = 1 ]; then
   cpreq -p ${prslev_subh_combo} ${COMOUT}
 fi
+
+fi #SENDCOM
 
 #-----------------------------------------------------------------------
 #   clean forecast umbrella data directory
