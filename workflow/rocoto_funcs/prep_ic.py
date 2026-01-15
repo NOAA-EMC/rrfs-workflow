@@ -23,6 +23,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     coldhrs = os.getenv('COLDSTART_CYCS', '03 15')
     cyc_interval = os.getenv('CYC_INTERVAL')
     sfc_update_cycs = os.getenv('SFC_UPDATE_CYCS', '99')
+    prep_ic_para = os.getenv('PREP_IC_PARA', 'false')
 
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
@@ -50,7 +51,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         ens_size = int(os.getenv('ENS_SIZE', '2'))
         ens_indices = ''.join(f'{i:03d} ' for i in range(1, int(ens_size) + 1)).strip()
         meta_bgn = f'''
-<metatask name="{meta_id}">
+<metatask name="{meta_id}" mode="serial">
 <var name="ens_index">{ens_indices}</var>'''
         meta_end = f'\
 </metatask>\n'
