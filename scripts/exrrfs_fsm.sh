@@ -444,7 +444,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
   ## Process WGF is det
   if [ ${scan_release_save_restart_long} == "YES" ]; then
     echo "Proceeding with scan_release_save_restart_long for det"
-    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/det/RESTART
+    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}_prod/det/RESTART
     restart_set_found=$(ls ${umbrella_forecast_data}/*coupler.res|wc -l)
     if [ ${cyc} == 00 ] || [ ${cyc} == 12 ]; then
       if [ ${restart_set_found} -eq 1 ]; then
@@ -484,7 +484,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
   ## Process WGF is det
   if [ ${scan_release_save_restart_f1} == "YES" ]; then
     echo "Proceeding with scan_release_save_restart_f1 for det"
-    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/det/RESTART
+    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}_prod/det/RESTART
     restart_set_found=$(ls ${umbrella_forecast_data}/${RRFS_next_1_PDY}.${RRFS_next_1_cyc}0000.coupler.res|wc -l)
     if [ ${restart_set_found} -eq 1 ]; then
       ecflow_client --event release_save_restart_f1
@@ -507,7 +507,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
   ## Process WGF is det
   if [ ${scan_release_save_restart_spinup_f001} == "YES" ]; then
     echo "Proceeding with scan_release_save_restart_spinup_f001 for det"
-    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/det/RESTART
+    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}_prod/det/RESTART
     restart_set_found=$(ls ${umbrella_forecast_data}/${RRFS_next_1_PDY}.${RRFS_next_1_cyc}0000.coupler.res|wc -l)
     if [ ${restart_set_found} -ge 1 ]; then
       ecflow_client --event release_save_restart_spinup_f001
@@ -523,18 +523,18 @@ while [ $proceed_trigger_scan == "YES" ]; do
   if [ ${scan_release_enkf_save_restart_f1} == "YES" ]; then
     restart_member_completed=0
     echo "Proceeding with scan_release_enkf_save_restart_f1 for enkf"
-    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/enkf
+    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}_prod/enkf
     for member_name in $(seq 1 30); do
       member_name3d=$( printf "%03d" "${member_name}" )
-      restart_set_mem001_found=$(ls ${umbrella_forecast_data}/${member_name3d}/RESTART/${RRFS_next_1_PDY}.${RRFS_next_1_cyc}0000.coupler.res|wc -l)
+      restart_set_mem001_found=$(ls ${umbrella_forecast_data}/m${member_name3d}/RESTART/${RRFS_next_1_PDY}.${RRFS_next_1_cyc}0000.coupler.res|wc -l)
       if [ ${restart_set_mem001_found} -eq 1 ]; then
         ecflow_client --event release_enkf_save_restart_${member_name3d}_f1
       fi
-      restart_set_mem002_found=$(ls ${umbrella_forecast_data}/${member_name3d}/RESTART/${RRFS_next_2_PDY}.${RRFS_next_2_cyc}0000.coupler.res|wc -l)
+      restart_set_mem002_found=$(ls ${umbrella_forecast_data}/m${member_name3d}/RESTART/${RRFS_next_2_PDY}.${RRFS_next_2_cyc}0000.coupler.res|wc -l)
       if [ ${restart_set_mem002_found} -eq 1 ]; then
         ecflow_client --event release_enkf_save_restart_${member_name3d}_f2
       fi
-      restart_set_mem003_found=$(ls ${umbrella_forecast_data}/${member_name3d}/RESTART/${RRFS_next_3_PDY}.${RRFS_next_3_cyc}0000.coupler.res|wc -l)
+      restart_set_mem003_found=$(ls ${umbrella_forecast_data}/m${member_name3d}/RESTART/${RRFS_next_3_PDY}.${RRFS_next_3_cyc}0000.coupler.res|wc -l)
       if [ ${restart_set_mem003_found} -eq 1 ]; then
         ecflow_client --event release_enkf_save_restart_${member_name3d}_f3
         restart_member_completed=$((restart_member_completed+1))
@@ -552,7 +552,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
   if [ ${scan_release_det_post_long} == "YES" ]; then
     echo "Proceeding with scan_release_det_post_long"
     source_file_found="YES"
-    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/det/output
+    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}_prod/det/output
     # fhr cover 000~084
     for fhr in $(seq 0 84); do
       fhr_2d=$( printf "%02d" ${fhr} )
@@ -601,7 +601,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
   if [ ${scan_release_ensf_post} == "YES" ]; then
     echo "Proceeding with scan_release_ensf_post"
     source_file_found="YES"
-    umbrella_forecast_data_base=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/ensf/
+    umbrella_forecast_data_base=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}_prod/ensf/
     # mems 1-5
     for mem in $(seq 1 5); do
       memuse=$( printf "%03d" ${mem} )
@@ -633,7 +633,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
   if [ ${scan_release_det_post} == "YES" ]; then
     echo "Proceeding with scan_release_det_post"
     source_file_found="YES"
-    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/det/output
+    umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}_prod/det/output
     # fhr cover 000~018
     for fhr in $(seq 0 18); do
       fhr_2d=$( printf "%02d" ${fhr} )
