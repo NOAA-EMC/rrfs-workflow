@@ -175,6 +175,8 @@ esac
 
 if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
   export FIXLAM=${firewx_input_dir}/${PDY}${cyc}
+  cpreq ${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo$((10#${NH4})).nc .
+  cpreq ${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo$((10#${NH4})).nc .
 else
   export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
 fi
@@ -618,9 +620,9 @@ hh="${cdate_crnt_fhr:8:2}"
 #
 settings="
 'config': {
- 'fix_dir_target_grid': ${FIXLAM},
- 'mosaic_file_target_grid': ${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo$((10#${NH4})).nc,
- 'orog_dir_target_grid': ${FIXLAM},
+ 'fix_dir_target_grid': ./,
+ 'mosaic_file_target_grid': ./${CRES}${DOT_OR_USCORE}mosaic.halo$((10#${NH4})).nc,
+ 'orog_dir_target_grid': ./,
  'orog_files_target_grid': ${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo$((10#${NH4})).nc,
  'vcoord_file_target_grid': ${FIXam}/${VCOORD_FILE},
  'varmap_file': ${PARMrrfs}/${varmap_file},
