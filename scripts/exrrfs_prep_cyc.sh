@@ -368,8 +368,8 @@ else
     n=${DA_CYCLE_INTERV}
     while [[ $n -le 3 ]] ; do
       checkfile=${bkpath}/${restart_prefix}coupler.res
-      ic=0
-      if [ ! -r "${checkfile}" ] ; then
+      if [ ! -r "${checkfile}" ] && [ "$n" == "1" ] ; then
+        ic=0
         while [[ $ic -lt $SLEEP_LOOP_MAX ]]; do
           print_info_msg "$VERBOSE" "${checkfile} not available. Sleep $SLEEP_INT sec... "
           ic=`expr $ic + 1`
@@ -422,8 +422,8 @@ else
      n=${DA_CYCLE_INTERV}
      while [[ $n -le 3 ]] ; do
        checkfile=${bkpath}/${restart_prefix}coupler.res
-       ic=0
-       if [ ! -r "${checkfile}" ] ; then
+       if [ ! -r "${checkfile}" ] && [ "$n" == "1" ] ; then
+         ic=0
          while [[ $ic -lt $SLEEP_LOOP_MAX ]]; do
            print_info_msg "$VERBOSE" "${checkfile} not available. Sleep $SLEEP_INT sec... "
            ic=`expr $ic + 1`
