@@ -154,10 +154,23 @@ the grid and (filtered) orography files ..."
 
 cd ${DATA}/INPUT
 
+cpreq ${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo${NH3}.nc .
+cpreq ${FIXLAM}/${CRES}${DOT_OR_USCORE}grid.tile7.halo${NH3}.nc .
+cpreq ${FIXLAM}/${CRES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH4}.nc .
+cpreq ${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH0}.nc .
+cpreq ${FIXLAM}/${CRES}.facsf.tile${TILE_RGNL}.nc .
+cpreq ${FIXLAM}/${CRES}.maximum_snow_albedo.tile${TILE_RGNL}.nc .
+cpreq ${FIXLAM}/${CRES}.slope_type.tile${TILE_RGNL}.nc .
+cpreq ${FIXLAM}/${CRES}.snowfree_albedo.tile${TILE_RGNL}.nc .
+cpreq ${FIXLAM}/${CRES}.soil_type.tile${TILE_RGNL}.nc .
+cpreq ${FIXLAM}/${CRES}.substrate_temperature.tile${TILE_RGNL}.nc .
+cpreq ${FIXLAM}/${CRES}.vegetation_greenness.tile${TILE_RGNL}.nc .
+cpreq ${FIXLAM}/${CRES}.vegetation_type.tile${TILE_RGNL}.nc .
+
 relative_or_null=""
 
 # Symlink to mosaic file with a completely different name.
-target="${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo${NH3}.nc" # must use *mosaic.halo3.nc
+target="./${CRES}${DOT_OR_USCORE}mosaic.halo${NH3}.nc" # must use *mosaic.halo3.nc
 symlink="grid_spec.nc"
 if [ -f "${target}" ]; then
   cpreq $target $symlink
@@ -171,7 +184,7 @@ fi
 mosaic_fn="grid_spec.nc"
 grid_fn=$( get_charvar_from_netcdf "${mosaic_fn}" "gridfiles" )
 
-target="${FIXLAM}/${CRES}${DOT_OR_USCORE}grid.tile7.halo${NH3}.nc"
+target="./${CRES}${DOT_OR_USCORE}grid.tile7.halo${NH3}.nc"
 symlink="${grid_fn}"
 if [ -f "${target}" ]; then
   cpreq $target $symlink
@@ -193,7 +206,7 @@ fi
 # Note that even though the message says "Stopped", the task still con-
 # sumes core-hours.
 #
-target="${FIXLAM}/${CRES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH4}.nc"
+target="./${CRES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH4}.nc"
 symlink="grid.tile${TILE_RGNL}.halo${NH4}.nc"
 if [ -f "${target}" ]; then
   cpreq $target $symlink
@@ -206,7 +219,7 @@ fi
 relative_or_null=""
 
 # Symlink to halo-0 orography file with "${CRES}_" and "halo0" stripped from name.
-target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH0}.nc"
+target="./${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH0}.nc"
 symlink="oro_data.nc"
 if [ -f "${target}" ]; then
   cpreq $target $symlink
@@ -229,7 +242,7 @@ fi
 # Note that even though the message says "Stopped", the task still con-
 # sumes core-hours.
 #
-target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH4}.nc"
+target="./${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH4}.nc"
 symlink="oro_data.tile${TILE_RGNL}.halo${NH4}.nc"
 if [ -f "${target}" ]; then
   cpreq $target $symlink
@@ -249,7 +262,8 @@ suites=( "RRFS_sas" "FV3_RAP" "FV3_HRRR" "FV3_HRRR_gf" "FV3_GFS_v15_thompson_myn
 if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" ]] ; then
   fileids=( "ss" "ls" )
   for fileid in "${fileids[@]}"; do
-    target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data_${fileid}.tile${TILE_RGNL}.halo${NH0}.nc"
+    cpreq ${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data_${fileid}.tile${TILE_RGNL}.halo${NH0}.nc .
+    target="./${CRES}${DOT_OR_USCORE}oro_data_${fileid}.tile${TILE_RGNL}.halo${NH0}.nc"
     symlink="oro_data_${fileid}.nc"
     if [ -f "${target}" ]; then
       cpreq $target $symlink
@@ -344,7 +358,8 @@ if [ "${DO_NON_DA_RUN}" = "TRUE" ]; then
   ln -sf ${relative_or_null} $target $symlink
 
   for fhr in $(seq -f "%03g" ${LBC_SPEC_INTVL_HRS} ${LBC_SPEC_INTVL_HRS} ${FCST_LEN_HRS}); do
-    target="${COMOUT}/lbcs/gfs_bndy.tile${TILE_RGNL}.${fhr}.nc"
+    cpreq ${COMOUT}/lbcs/gfs_bndy.tile${TILE_RGNL}.${fhr}.nc .
+    target="./lbcs/gfs_bndy.tile${TILE_RGNL}.${fhr}.nc"
     symlink="gfs_bndy.tile${TILE_RGNL}.${fhr}.nc"
     ln -sf ${relative_or_null} $target $symlink
   done

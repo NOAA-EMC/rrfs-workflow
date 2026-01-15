@@ -171,10 +171,13 @@ else
   prslev_subh=${net4}.t${cyc}z.prslev.${gridspacing}.subh.f${fhr}.${gridname}.grib2
 fi
 
+cpreq ${COMOUT}/${prslev} .
+cpreq ${COMOUT}/${natlev} .
+
 # extract the output fields for the testbed files
 if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
   if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN} ]]; then
-    wgrib2 ${COMOUT}/${prslev} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN} | wgrib2 -i -grib ${DATA}/${testbed} ${COMOUT}/${prslev}
+    wgrib2 ${prslev} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN} | wgrib2 -i -grib ${DATA}/${testbed} ${prslev}
     export err=$?; err_chk
   else
     echo "${FIX_UPP}/${TESTBED_FIELDS_FN} not found"
@@ -183,7 +186,7 @@ fi
 if [[ ! -z ${TESTBED_FIELDS_FN2} ]]; then
   if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN2} ]]; then
     if [[ -f ${COMOUT}/${natlev} ]]; then
-      wgrib2 ${COMOUT}/${natlev} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN2} | wgrib2 -i -append -grib ${DATA}/${testbed} ${COMOUT}/${natlev}
+      wgrib2 ${natlev} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN2} | wgrib2 -i -append -grib ${DATA}/${testbed} ${natlev}
       export err=$?; err_chk
     fi
   else
@@ -200,20 +203,21 @@ if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
 fi
 
 if [ -s ${COMOUT}/${prslev} ]; then
-  wgrib2 ${COMOUT}/${prslev} -s > ${COMOUT}/${prslev}.idx
+  wgrib2 ${prslev} -s > ${COMOUT}/${prslev}.idx
 fi
 if [ -s ${COMOUT}/${natlev} ]; then
-  wgrib2 ${COMOUT}/${natlev} -s > ${COMOUT}/${natlev}.idx
+  wgrib2 ${natlev} -s > ${COMOUT}/${natlev}.idx
 fi
 
 if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
   if [ -s ${COMOUT}/${testbed} ]; then
-    wgrib2 ${COMOUT}/${testbed} -s > ${COMOUT}/${testbed}.idx
+    wgrib2 ${testbed} -s > ${COMOUT}/${testbed}.idx
   fi
 fi
 
 if [ "${DO_ENSFCST}" != "TRUE" ] && [ ${fhr} != '000' ] && [ -e $COMOUT/${prslev_subh} ]; then
-  wgrib2 ${COMOUT}/${prslev_subh} -s > ${COMOUT}/${prslev_subh}.idx
+  cpreq ${COMOUT}/${prslev_subh} .
+  wgrib2 ${prslev_subh} -s > ${COMOUT}/${prslev_subh}.idx
 fi
 
 #  Generate products
@@ -224,7 +228,7 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
   DATAprdgen=$DATA/prdgen_${fhr}
   mkdir $DATAprdgen
 
-  wgrib2 ${COMOUT}/${prslev} >& $DATAprdgen/prslevf${fhr}.txt
+  wgrib2 ${prslev} >& $DATAprdgen/prslevf${fhr}.txt
 
   # Create parm files for subsetting on the fly - do it for each forecast hour
   # 4 subpieces for CONUS and Alaska grids
@@ -274,15 +278,17 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
     if [ ${DO_ENSFCST} = "TRUE" ]; then
       for task in $(seq ${tasks[count]})
       do
-        cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2
+        cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2
+        cpreq rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 ${COMOUT}
       done
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+      wgrib2 rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
     else
       for task in $(seq ${tasks[count]})
       do
-        cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
+        cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
+        cpreq rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2 ${COMOUT}
       done
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+      wgrib2 rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
     fi
     count=$count+1
   done
@@ -312,13 +318,14 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
         gridspecs="mercator:20 284.5:544:2500:297.491 15.0:310:2500:22.005"
       fi
         
-      wgrib2 ${COMOUT}/${prslev_subh} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib${domain}.uv
+      wgrib2 ${prslev_subh} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib${domain}.uv
       wgrib2 inputs.grib${domain}.uv -set_bitmap 1 -set_grib_type c3 \
         -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
         -new_grid_interpolation neighbor \
         -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
-        -new_grid ${gridspecs} ${COMOUT}/${prslev_subh_dom}
-      wgrib2 ${COMOUT}/${prslev_subh_dom} -s > ${COMOUT}/${prslev_subh_dom}.idx
+        -new_grid ${gridspecs} ${prslev_subh_dom}
+      cpreq ${prslev_subh_dom} ${COMOUT}
+      wgrib2 ${prslev_subh_dom} -s > ${COMOUT}/${prslev_subh_dom}.idx
     done
   fi
 
@@ -332,8 +339,9 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
   fi
   if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
     if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN} ]]; then
-      wgrib2 ${COMOUT}/${prslev_conus} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN} | wgrib2 -i -grib ${COMOUT}/${testbed_conus} ${COMOUT}/${prslev_conus}
-      wgrib2 ${COMOUT}/${testbed_conus} -s > ${COMOUT}/${testbed_conus}.idx
+      wgrib2 ${prslev_conus} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN} | wgrib2 -i -grib ${testbed_conus} ${prslev_conus}
+      cpreq ${testbed_conus} ${COMOUT}
+      wgrib2 ${testbed_conus} -s > ${COMOUT}/${testbed_conus}.idx
     else
       echo "WARNING: ${FIX_UPP}/${TESTBED_FIELDS_FN} not found"
     fi
@@ -369,7 +377,8 @@ $GTYPE
 EOF
 
   # Read in corner lat lons from UPP text file
-  export FORT11=${COMOUT}/latlons_corners.txt.f${fhr}
+  cpreq ${COMOUT}/latlons_corners.txt.f${fhr} .
+  export FORT11=${DATA}/latlons_corners.txt.f${fhr}
   export FORT45=itagfw
 
   # Calculate the wgrib2 gridspecs for the fire weather grid
@@ -377,14 +386,16 @@ EOF
   export err=$?; err_chk
 
   grid_specs_firewx=`head $DATA/copygb_gridnavfw.txt`
-  eval infile=${COMOUT}/${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx.grib2
+  cpreq ${COMOUT}/${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx.grib2 .
+  eval infile=${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx.grib2
 
   wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
    -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
    -new_grid_interpolation neighbor \
    -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
-   -new_grid ${grid_specs_firewx} ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2
-  wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2.idx
+   -new_grid ${grid_specs_firewx} rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2
+  cpreq rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2 ${COMOUT}
+  wgrib2 rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2.idx
 
 fi
 #

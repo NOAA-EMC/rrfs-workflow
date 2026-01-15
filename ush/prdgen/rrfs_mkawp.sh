@@ -23,17 +23,18 @@ runRRFS="000 003 006 009 012 015 018 021 024 027 030 033 036 039 042 045 048 051
 if  echo $runRRFS |grep $fhr;
 then
   # Processing AWIPS grid (RRFS 3-km North America grid)
-  export INPUTfile=${COMOUT}/rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2
+  cpreq ${COMOUT}/rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2 .
+  export INPUTfile=rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2
 
   # Only grab records that need WMO headers for AWIPS
-  $WGRIB2 ${INPUTfile} | grep -F -f ${PARMrrfs}/wmo/rrfsparams_3km | $WGRIB2 -i ${INPUTfile} -new_grid_winds grid -set_grib_type same -grib rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2
+  $WGRIB2 ${INPUTfile} | grep -F -f ${PARMrrfs}/wmo/rrfsparams_3km | $WGRIB2 -i ${INPUTfile} -new_grid_winds grid -set_grib_type same -grib rrfs.t${cyc}z.prslev.3km.f${fhr}.na.awips.grib2
 
   # Run tocgrib2
 
   export pgm="tocgrib2"
   . prep_step
 
-  export FORT11=rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2
+  export FORT11=rrfs.t${cyc}z.prslev.3km.f${fhr}.na.awips.grib2
   export FORT51=grib2.t${cyc}z.awprrfs_f${fhr}_${cyc}
   $TOCGRIB2 < $PARMrrfs/wmo/grib2_awips_rrfs_f${fhr}
   export err=$?; err_chk

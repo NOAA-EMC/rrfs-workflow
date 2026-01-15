@@ -150,7 +150,7 @@ for (( i=0; i<${num_nml_vars}; i++ )); do
 #
 # Set the full path to the surface climatology file.
 #
-  fp="${FIXLAM}/${CRES}.${sfc_climo_field_name}.$suffix"
+  fp="${DATA}/INPUT/${CRES}.${sfc_climo_field_name}.$suffix"
 #
 # Add a line to the variable "settings" that specifies (in a yaml-compliant
 # format) the name of the current namelist variable and the value it should
