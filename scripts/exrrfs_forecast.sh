@@ -359,9 +359,6 @@ if [ "${DO_NON_DA_RUN}" = "TRUE" ]; then
 
   for fhr in $(seq -f "%03g" ${LBC_SPEC_INTVL_HRS} ${LBC_SPEC_INTVL_HRS} ${FCST_LEN_HRS}); do
     cpreq ${COMOUT}/lbcs/gfs_bndy.tile${TILE_RGNL}.${fhr}.nc .
-    target="./lbcs/gfs_bndy.tile${TILE_RGNL}.${fhr}.nc"
-    symlink="gfs_bndy.tile${TILE_RGNL}.${fhr}.nc"
-    ln -sf ${relative_or_null} $target $symlink
   done
 else
   if [ ${BKTYPE} -eq 1 ]; then
