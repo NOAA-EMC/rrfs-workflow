@@ -13,14 +13,15 @@ lbc_interval=${LBC_INTERVAL:-3}
 fcst_len_hrs_cycles=${FCST_LEN_HRS_CYCLES:-"01 01"}
 fcst_len_hrs_thiscyc=$( "${USHrrfs}/find_fcst_length.sh"  "${fcst_len_hrs_cycles}" "${cyc}" )
 echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
+lbc_hrs=$(( 10#${PREP_LBC_LOOK_BACK_HRS} ))
 #
-# find cycle that has boundary files 
+# find cycle that has boundary files
 #
 CDATElbcend=$( ${NDATE} $((10#${fcst_len_hrs_thiscyc})) "${CDATE}")
 string_time=$(date -d "${CDATElbcend:0:8} ${CDATElbcend:8:2}" +%Y-%m-%d_%H.%M.%S)
 last_bdyfile="lbc.${string_time}.nc"
 n=0
-while [[ $n -le 12 ]]; do
+while [[ $n -le ${lbc_hrs} ]]; do
   CDATElbc=$(${NDATE} -$((10#${n})) "${CDATE}")
   YYYYMMDDlbc=${CDATElbc:0:8}
   HHlbc=${CDATElbc:8:2}

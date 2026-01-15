@@ -9,6 +9,7 @@ def prep_lbc(xmlFile, expdir, do_ensemble=False):
     meta_id = 'prep_lbc'
     cycledefs = 'prod'
     num_spinup_cycledef = int(os.getenv('NUM_SPINUP_CYCLEDEF', '0'))
+    prep_lbc_look_back_hrs = int(os.getenv("PREP_LBC_LOOK_BACK_HRS", "6"))
     if num_spinup_cycledef == 1:
         cycledefs = 'prod,spinup'
     elif num_spinup_cycledef == 2:
@@ -20,6 +21,7 @@ def prep_lbc(xmlFile, expdir, do_ensemble=False):
     dcTaskEnv = {
         'LBC_INTERVAL': os.getenv('LBC_INTERVAL', '3'),
         'FCST_LEN_HRS_CYCLES': os.getenv('FCST_LEN_HRS_CYCLES', '03 03'),
+        'PREP_LBC_LOOK_BACK_HRS': f'{prep_lbc_look_back_hrs}',
     }
 
     if not do_ensemble:
@@ -52,8 +54,7 @@ def prep_lbc(xmlFile, expdir, do_ensemble=False):
         timedep = f'\n   <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
 
     taskdep = ""
-    PREP_LBC_LOOK_BACK_HRS = int(os.getenv("PREP_LBC_LOOK_BACK_HRS", "6"))
-    for hr in range(0, PREP_LBC_LOOK_BACK_HRS):
+    for hr in range(0, int(prep_lbc_look_back_hrs) + 1):
         taskdep = taskdep + f'\n     <metataskdep metatask="lbc{ensindexstr}" cycle_offset="-{hr}:00:00" />'
 
     dependencies = ""
