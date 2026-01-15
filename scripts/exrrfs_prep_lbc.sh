@@ -15,7 +15,7 @@ fcst_len_hrs_thiscyc=$( "${USHrrfs}/find_fcst_length.sh"  "${fcst_len_hrs_cycles
 echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
 lbc_hrs=$(( 10#${PREP_LBC_LOOK_BACK_HRS} ))
 #
-# find cycle that has boundary files 
+# find cycle that has boundary files
 #
 CDATElbcend=$( ${NDATE} $((10#${fcst_len_hrs_thiscyc})) "${CDATE}")
 string_time=$(date -d "${CDATElbcend:0:8} ${CDATElbcend:8:2}" +%Y-%m-%d_%H.%M.%S)
