@@ -4,7 +4,7 @@ algorithm: 3dvar
 # Search path for model and obs for JCB (relative for the submodule, or can be absolute)
 # --------------------------------------------------------------------------------------
 app_path_algorithm: rdas/algorithm/atmosphere
-app_path_model: rdas/model/atmosphere
+app_path_model: rdas/model/fv3/atmosphere
 app_path_observations: rdas/observations/atmosphere
 app_path_observation_chronicle: rdas/observation_chronicle/atmosphere
 
@@ -35,8 +35,27 @@ analysis_variables:
 - northward_wind
 - air_temperature
 - water_vapor_mixing_ratio_wrt_moist_air
-- air_pressure_at_surface
 - ozone_mass_mixing_ratio
+#- air_pressure_thickness
+- air_pressure_at_surface
+
+control_variables:
+- eastward_wind
+- northward_wind
+- virtual_temperature
+- water_vapor_mixing_ratio_wrt_moist_air
+- ozone_mass_mixing_ratio
+- air_pressure_at_surface
+
+state_variables_to_inverse:
+- eastward_wind
+- northward_wind
+- air_temperature
+- water_vapor_mixing_ratio_wrt_moist_air
+- ozone_mass_mixing_ratio
+- geopotential_height_times_gravity_at_surface
+- air_pressure_thickness
+- air_pressure_at_surface
 
 # Testing
 # -------
