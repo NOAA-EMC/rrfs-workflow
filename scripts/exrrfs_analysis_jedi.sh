@@ -599,6 +599,19 @@ fi
 
 #
 #-----------------------------------------------------------------------
+# Set floor q value to qmin globally to mimic GSI.
+# This edits the background file on disk.
+#-----------------------------------------------------------------------
+#
+# NOTE: GSI uses qmin=1e-7 dated to 2011. We may want to only clip
+#        negative values which may already be done in JEDI. This
+#        step is just to reduce differences between JEDI and GSI for
+#        development testing. We also may add this as a configurable
+#        option in the future if there is such a need.
+ncap2 -O -s 'qmin=1.0e-7f; where(sphum < qmin) sphum = qmin;' fv3_tracer fv3_tracer
+
+#
+#-----------------------------------------------------------------------
 #
 # Run JEDI. Note that we have to launch the forecast from
 # the current cycle's run directory because the JEDI executable will look
@@ -629,7 +642,13 @@ mv errfile errfile_jedi
 #-----------------------------------------------------------------------
 #
 #####################################################################
-# 1. Convert A-grid wind increments to D-grid wind increments
+# 1. Compute delp from ps (increments)
+#####################################################################
+cp "${RDASAPP_DIR}"/rrfs-test/IODA/offline_compute_delp_inc.py .
+python offline_compute_delp_inc.py --sfc_inc inc_jedi.sfc_data.nc --core_inc inc_jedi.fv_core.res.nc --akbk fv3_akbk
+
+#####################################################################
+# 2. Convert A-grid wind increments to D-grid wind increments
 #####################################################################
 export LD_LIBRARY_PATH="/apps/ops/test/spack-stack-nco-1.9/oneapi/2024.2.1/hdf5-1.14.3-umtw5lv/lib:${LD_LIBRARY_PATH}"
 export pgm="rdas_ua2u.x"
@@ -647,10 +666,6 @@ if [ ! -s inc_jedi.fv_core.res.nc ]; then
   echo "ERROR: inc_jedi.fv_core.res.nc missing or empty after rdas_ua2u.x"
   exit 6
 fi
-#####################################################################
-# 2. Compute delp from ps
-#####################################################################
-
 #####################################################################
 # 3. Convert doubles to floats
 #####################################################################
@@ -691,27 +706,25 @@ ncrename -v v,v_inc tmp_inc.nc
 ncrename -v T,T_inc tmp_inc.nc
 ncrename -v ua,ua_inc tmp_inc.nc
 ncrename -v va,va_inc tmp_inc.nc
+ncrename -v delp,delp_inc tmp_inc.nc
 if [[ ${anav_type} == "radardbz" || ${anav_type} == "conv_dbz" ]]; then
   ncrename -v W,W_inc tmp_inc.nc
 fi
-# ncrename -v delp,delp_inc tmp_inc.nc
 
 # Append increment vars to tmp_bkg.nc
 ncks -A tmp_inc.nc tmp_bkg.nc
 
 # Perform addition in place
-addstr="u=u+u_inc; v=v+v_inc; T=T+T_inc; ua=ua+ua_inc; va=va+va_inc;"
-varlist="u_inc,v_inc,T_inc,ua_inc,va_inc"
+addstr="u=u+u_inc; v=v+v_inc; T=T+T_inc; ua=ua+ua_inc; va=va+va_inc; delp=delp+delp_inc;"
+varlist="u_inc,v_inc,T_inc,ua_inc,va_inc,delp_inc"
 if [[ ${anav_type} == "radardbz" || ${anav_type} == "conv_dbz" ]]; then
   addstr="${addstr} W=W+W_inc;"
   varlist="${varlist},W_inc"
 fi
-ncap2 -O \
-  -s "${addstr}" \
-  tmp_bkg.nc "$OUT" #add delp
+ncap2 -O -s "${addstr}" tmp_bkg.nc "$OUT"
 
 # Remove increment variables
-ncks -O -x -v ${varlist} "$OUT" "$OUT" #remove delp_inc here
+ncks -O -x -v ${varlist} "$OUT" "$OUT"
 
 # Cleanup
 rm -f tmp_inc.nc tmp_bkg.nc
