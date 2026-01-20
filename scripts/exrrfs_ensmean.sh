@@ -88,11 +88,6 @@ fi
 echo "Running all NCEA commands with ${NTASKS} tasks for ${NUM_CMDS} commands"
 srun --multi-prog "${CMDFILE}".multi
 
-#
-# use xargs to run the command using  one core at a time (this takes a long time!)
-#
-#cat "${CMDFILE}" | xargs -I {} -P ${SLURM_NTASKS} sh -c "{}"
-
 # Check for errors
 export err=$?
 if (( err != 0 )); then
