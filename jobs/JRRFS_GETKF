@@ -18,10 +18,10 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 #-----------------------------------------------------------------------
 #
 export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_prep_ic_${cyc}_${rrfs_ver}/${WGF}}
-export UMBRELLA_GETKF_DATA=${UMBRELLA_GETKF_DATA:-${DATAROOT}/${RUN}_getkf_${TYPE}_${cyc}_${rrfs_ver}/${WGF}}
+export UMBRELLA_GETKF_DATA=${UMBRELLA_GETKF_DATA:-${DATAROOT}/${RUN}_getkf_${GETKF_TYPE}_${cyc}_${rrfs_ver}/${WGF}}
 export UMBRELLA_GETKF_OBSERVER_DATA=${UMBRELLA_GETKF_OBSERVER_DATA:-${DATAROOT}/${RUN}_getkf_observer_${cyc}_${rrfs_ver}/${WGF}}
 export pid=${pid:-$$}
-export jobid=${jobid:-getkf_${TYPE}_${cyc}}
+export jobid=${jobid:-getkf_${GETKF_TYPE}_${cyc}}
 export DATA=${DATA:-${UMBRELLA_GETKF_DATA}/${jobid}}
 
 if [[ -d "${DATA}" ]]; then # remove the ${DATA} directory if existed
@@ -36,7 +36,7 @@ mkdir -p "${DATA}"
 #export COMINgfs=${COMINgfs:-$(compath.py ${envir}/gfs/${gfs_ver})}
 export COMINrrfs=${COMINrrfs:-$(compath.py "${envir}/rrfs/${rrfs_ver}")}
 export COMOUT=${COMOUT:-$(compath.py -o "${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}")}
-mkdir -p "${COMOUT}/getkf_${TYPE}/${WGF}"
+mkdir -p "${COMOUT}/getkf_${GETKF_TYPE}/${WGF}"
 #
 #----------------------------------------
 # Execute the script.
