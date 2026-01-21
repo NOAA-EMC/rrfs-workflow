@@ -177,7 +177,7 @@ done
 #
 echo "===== CMDFILE ====="
 cat  "$CMDFILE"
-cat  ${CMDFILE} | xargs -I {} -P "${SLURM_NTASKS}" sh -c '{}'
+xargs -I {} -P "${SLURM_NTASKS}" sh -c '{}' < "${CMDFILE}"
 
 # Check for errors
 export err=$?

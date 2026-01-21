@@ -41,7 +41,6 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         meta_end = ""
     else:
         ens_size = int(os.getenv('ENS_SIZE', '2'))
-        ens_indices = ''.join(f'{i:03d} ' for i in range(1, int(ens_size) + 1)).strip()
         metatask = False
         task_id = f'{meta_id}'
         meta_bgn = ""
