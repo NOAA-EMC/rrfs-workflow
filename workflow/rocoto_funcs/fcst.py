@@ -101,7 +101,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
             if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
                 recenterdep = f'\n<taskdep task="recenter"/>'
 
-    prep_ic_dep = f'<taskdep task="prep_ic{ensindexstr}"/>'
+    prep_ic_dep = f'<taskdep task="prep_ic"/>'
     if do_spinup:
         prep_ic_dep = f'<taskdep task="prep_ic_spinup"/>'
     prep_lbc_dep = f'\n    <taskdep task="prep_lbc{ensindexstr}" cycle_offset="0:00:00"/>'

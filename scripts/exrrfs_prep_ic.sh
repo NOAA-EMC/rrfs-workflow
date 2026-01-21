@@ -30,15 +30,39 @@ if (( spinup_mode == -1 )); then
   done
 fi
 echo "this cycle is ${start_type} start"
+
+export CMDFILE="${DATA}/poescript_prep_ic"
+mkdir -p "$(dirname "$CMDFILE")"
+: > "$CMDFILE"
+
+# Populate the list for the ensemble members, or deterministic member
+if [[ "${ENS_SIZE:-0}" -gt 2 ]]; then
+  mapfile -t mem_list < <(printf "/mem%03d\n" $(seq 1 "$ENS_SIZE"))
+else
+  mem_list=("/") # if determinitic
+fi
+
+for memdir in "${mem_list[@]}"; do
+  # Determine path
+  if [[ ${#memdir} -gt 1 ]]; then
+    umbrella_prep_ic_data="${UMBRELLA_PREP_IC_DATA}${memdir}"
+    mkdir -p "${COMOUT}/prep_ic/${WGF}${memdir}"
+  else
+    umbrella_prep_ic_data="${UMBRELLA_PREP_IC_DATA}"
+  fi
+
+  # Create directory safely
+  mkdir -p "${umbrella_prep_ic_data}"
 #
 #  find the right background file
 #
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
 
 if [[ "${start_type}" == "cold" ]]; then
-  thisfile=${COMINrrfs}/${RUN}.${PDY}/${cyc}/ic/${WGF}${MEMDIR}/init.nc
+  thisfile=${COMINrrfs}/${RUN}.${PDY}/${cyc}/ic/${WGF}${memdir}/init.nc
+  targetfile=${umbrella_prep_ic_data}/init.nc
   if [[ -r ${thisfile} ]]; then
-    ${cpreq} "${thisfile}" "${UMBRELLA_PREP_IC_DATA}/init.nc"
+    echo  "${cpreq}" "${thisfile}" "${targetfile}" >> "$CMDFILE"
     echo "cold start from ${thisfile}"
   else
     echo "FATAL ERROR: PREP_IC failed, cannot find cold start file: ${thisfile}"
@@ -61,13 +85,14 @@ elif [[ "${start_type}" == "warm" ]]; then
     CDATEp=$(${NDATE} -${ii} "${CDATE}" )
     PDYii=${CDATEp:0:8}
     cycii=${CDATEp:8:2}
-    thisfile=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/${fcststr}/${WGF}${MEMDIR}/mpasout.${timestr}.nc
+    thisfile=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/${fcststr}/${WGF}${memdir}/mpasout.${timestr}.nc
     if [[ -r ${thisfile} ]]; then
       break
     fi
   done
   if [[ -r ${thisfile} ]]; then
-    ${cpreq} "${thisfile}" "${UMBRELLA_PREP_IC_DATA}/mpasout.nc"
+    targetfile=${umbrella_prep_ic_data}/mpasout.nc
+    echo "${cpreq}" "${thisfile}" "${targetfile}" >> "$CMDFILE"
     echo "warm start from ${thisfile}"
   else
     echo "FATAL ERROR: PREP_IC failed, cannot find warm start file: ${thisfile}"
@@ -90,21 +115,22 @@ for hr in ${SFC_UPDATE_CYCS:-"99"}; do
       CDATEp=$(${NDATE} -${ii} "${CDATE}" )
       PDYii=${CDATEp:0:8}
       cycii=${CDATEp:8:2}
-      thisfile=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/fcst/${WGF}${MEMDIR}/mpasout.${timestr}.nc
+      thisfile=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/fcst/${WGF}${memdir}/mpasout.${timestr}.nc
       if [[ -r ${thisfile} ]]; then
         break
       fi
     done
     if [[ -r ${thisfile} ]]; then
-      ${cpreq} "${thisfile}" "${UMBRELLA_PREP_IC_DATA}/mpas_sfc.nc"
-      if [[ -r "${UMBRELLA_PREP_IC_DATA}/init.nc" ]]; then
-        to_file="${UMBRELLA_PREP_IC_DATA}/init.nc"
-      elif [[ -r "${UMBRELLA_PREP_IC_DATA}/mpasout.nc" ]]; then
-        to_file="${UMBRELLA_PREP_IC_DATA}/mpasout.nc"
+      targetfile=${umbrella_prep_ic_data}/mpas_sfc.nc
+      ${cpreq} "${thisfile}" "${targetfile}"
+      if [[ -r "${umbrella_prep_ic_data}/init.nc" ]]; then
+        to_file="${umbrella_prep_ic_data}/init.nc"
+      elif [[ -r "${umbrella_prep_ic_data}/mpasout.nc" ]]; then
+        to_file="${umbrella_prep_ic_data}/mpasout.nc"
       fi
       echo "surface update from ${thisfile} to ${to_file}"
       ncks -O -C -x -v ${var_list} "${to_file}"  tmp.nc
-      ncks -A -v ${var_list} "${UMBRELLA_PREP_IC_DATA}/mpas_sfc.nc" tmp.nc
+      ncks -A -v ${var_list} "${targetfile}" tmp.nc
       mv tmp.nc "${to_file}"
     else
       echo "SFC_UPDATE failed, cannot find warm start file: ${thisfile}"
@@ -137,11 +163,28 @@ if [[ "${PREP_IC_TYPE}" == "jedivar" ]] || [[ "${PREP_IC_TYPE}" == "getkf"  ]]; 
     satbias_path=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/${PREP_IC_TYPE}${spinup_str}/${WGF}
     nSatbias=$(find "${satbias_path}"/*satbias*.nc | wc -l)
     if (( nSatbias > 0 )); then
-      cp "${satbias_path}"/*satbias*.nc  "${UMBRELLA_PREP_IC_DATA}"
+      cp "${satbias_path}"/*satbias*.nc  "${umbrella_prep_ic_data}"
       echo "found satbias from ${satbias_path}"
       break
     fi
   done
 fi
 
-exit 0
+done
+#
+#
+# use xargs to run the command using  one core at a time (this takes a long time!)
+#
+echo "===== CMDFILE ====="
+cat  "$CMDFILE"
+cat  ${CMDFILE} | xargs -I {} -P "${SLURM_NTASKS}" sh -c '{}'
+
+# Check for errors
+export err=$?
+if (( err != 0 )); then
+    echo "prep_ic failed with error code ${err}"
+    err_exit
+else
+    echo "prep_ic completed successfully"
+fi
+

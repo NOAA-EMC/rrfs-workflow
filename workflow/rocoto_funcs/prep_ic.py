@@ -39,23 +39,15 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
             task_id = f'{meta_id}'
         meta_bgn = ""
         meta_end = ""
-        ensindexstr = ""
-        ensdirstr = ""
     else:
-        metatask = True
-        task_id = f'{meta_id}_m#ens_index#'
-        dcTaskEnv['ENS_INDEX'] = "#ens_index#"
-        meta_bgn = ""
-        meta_end = ""
         ens_size = int(os.getenv('ENS_SIZE', '2'))
         ens_indices = ''.join(f'{i:03d} ' for i in range(1, int(ens_size) + 1)).strip()
-        meta_bgn = f'''
-<metatask name="{meta_id}">
-<var name="ens_index">{ens_indices}</var>'''
-        meta_end = f'\
-</metatask>\n'
-        ensindexstr = "_m#ens_index#"
-        ensdirstr = "/mem#ens_index#"
+        metatask = False
+        task_id = f'{meta_id}'
+        meta_bgn = ""
+        meta_end = ""
+        dcTaskEnv['ENS_SIZE'] = str(ens_size)
+
     # determine prep_ic type so that we know where to find correct satbias files
     do_jedi = os.getenv("DO_JEDI", "FALSE").upper()
     if do_ensemble and do_jedi == "TRUE":
@@ -81,7 +73,14 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         strneqs = strneqs + f"\n        <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
     streqs = streqs.lstrip('\n')
     strneqs = strneqs.lstrip('\n')
-    datadep_prod = f'''\n        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;{ensdirstr}/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
+    if do_ensemble:
+        datadep_prod = ""
+        for i in range(1, int(ens_size) + 1):
+            memdirstr = f'/mem{i:03d}'
+            datadep_prod = datadep_prod + f'''\n        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;{memdirstr}/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
+    else:
+        datadep_prod = f'''\n        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
+
     datadep_spinup = f'''\n        <taskdep task="fcst_spinup" cycle_offset="-1:00:00"/>'''
     if spinup_mode == 0:  # no parallel spinup cycles
         datadep = datadep_prod
@@ -106,7 +105,10 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
         timedep = f'\n   <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
     if os.getenv('DO_IC_LBC', 'TRUE').upper() == "TRUE":
-        icdep = f'\n      <taskdep task="ic{ensindexstr}"/>'
+        if do_ensemble:
+            icdep = f'\n      <metataskdep metatask="ic"/>'
+        else:
+            icdep = f'\n      <taskdep task="ic"/>'
     else:
         icdep = ""
     #
@@ -135,7 +137,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
             dependencies = f'''
   <dependency>
   <and>{timedep}
-   <taskdep task="ic{ensindexstr}"/>
+   <taskdep task="ic"/>
   </and>
   </dependency>'''
 
