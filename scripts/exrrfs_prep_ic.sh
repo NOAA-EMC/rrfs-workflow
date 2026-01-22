@@ -31,9 +31,6 @@ if (( spinup_mode == -1 )); then
 fi
 echo "this cycle is ${start_type} start"
 
-export CMDFILE="${DATA}/poescript_prep_ic"
-mkdir -p "$(dirname "$CMDFILE")"
-: > "$CMDFILE"
 
 # Populate the list for the ensemble members, or deterministic member
 if [[ "${ENS_SIZE:-0}" -gt 2 ]]; then
@@ -47,9 +44,15 @@ for memdir in "${mem_list[@]}"; do
   if [[ ${#memdir} -gt 1 ]]; then
     umbrella_prep_ic_data="${UMBRELLA_PREP_IC_DATA}${memdir}"
     mkdir -p "${COMOUT}/prep_ic/${WGF}${memdir}"
+    pid=$((10#${memdir: -2}-1))
+    export CMDFILE="${DATA}/script_prep_ic_${pid}.sh"
   else
     umbrella_prep_ic_data="${UMBRELLA_PREP_IC_DATA}"
+    export CMDFILE="${DATA}/script_prep_ic_0.sh"
   fi
+
+  mkdir -p "$(dirname "$CMDFILE")"
+  : > "$CMDFILE"
 
   # Create directory safely
   mkdir -p "${umbrella_prep_ic_data}"
@@ -122,16 +125,16 @@ for hr in ${SFC_UPDATE_CYCS:-"99"}; do
     done
     if [[ -r ${thisfile} ]]; then
       targetfile=${umbrella_prep_ic_data}/mpas_sfc.nc
-      ${cpreq} "${thisfile}" "${targetfile}"
+      echo "${cpreq}" "${thisfile}" "${targetfile}"  >> "$CMDFILE"
       if [[ -r "${umbrella_prep_ic_data}/init.nc" ]]; then
         to_file="${umbrella_prep_ic_data}/init.nc"
       elif [[ -r "${umbrella_prep_ic_data}/mpasout.nc" ]]; then
         to_file="${umbrella_prep_ic_data}/mpasout.nc"
       fi
       echo "surface update from ${thisfile} to ${to_file}"
-      ncks -O -C -x -v ${var_list} "${to_file}"  tmp.nc
-      ncks -A -v ${var_list} "${targetfile}" tmp.nc
-      mv tmp.nc "${to_file}"
+      echo ncks -O -C -x -v ${var_list} "${to_file}"  tmp.nc  >> "$CMDFILE"
+      echo ncks -A -v ${var_list} "${targetfile}" tmp.nc  >> "$CMDFILE"
+      echo mv tmp.nc "${to_file}"  >> "$CMDFILE"
     else
       echo "SFC_UPDATE failed, cannot find warm start file: ${thisfile}"
     fi
@@ -163,7 +166,7 @@ if [[ "${PREP_IC_TYPE}" == "jedivar" ]] || [[ "${PREP_IC_TYPE}" == "getkf"  ]]; 
     satbias_path=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/${PREP_IC_TYPE}${spinup_str}/${WGF}
     nSatbias=$(find "${satbias_path}"/*satbias*.nc | wc -l)
     if (( nSatbias > 0 )); then
-      cp "${satbias_path}"/*satbias*.nc  "${umbrella_prep_ic_data}"
+      echo cp "${satbias_path}"/*satbias*.nc  "${umbrella_prep_ic_data}"  >> "$CMDFILE"
       echo "found satbias from ${satbias_path}"
       break
     fi
@@ -171,13 +174,9 @@ if [[ "${PREP_IC_TYPE}" == "jedivar" ]] || [[ "${PREP_IC_TYPE}" == "getkf"  ]]; 
 fi
 
 done
-#
-#
-# use xargs to run the command using  one core at a time (this takes a long time!)
-#
-echo "===== CMDFILE ====="
-cat  "$CMDFILE"
-xargs -I {} -P "${SLURM_NTASKS}" sh -c '{}' < "${CMDFILE}"
+
+${cpreq} "${EXECrrfs}"/rank_run.x .
+${MPI_RUN_CMD} ./rank_run.x "${DATA}/script_prep_ic_*.sh"
 
 # Check for errors
 export err=$?
