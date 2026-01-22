@@ -100,6 +100,7 @@ Settings:
   BUILD_RRFS_UTILS=${BUILD_RRFS_UTILS}
   BUILD_NEXUS=${BUILD_NEXUS}
   BUILD_AQM_UTILS=${BUILD_AQM_UTILS}
+  BUILD_SETFIREWX=${BUILD_SETFIREWX}
 
 EOF_SETTINGS
 }
@@ -142,6 +143,7 @@ BUILD_GSI="off"
 BUILD_RRFS_UTILS="off"
 BUILD_NEXUS="off"
 BUILD_AQM_UTILS="off"
+BUILD_SETFIREWX="off"
 
 # Make options
 CLEAN=false
@@ -208,6 +210,7 @@ while :; do
     rrfs_utils) DEFAULT_BUILD=false; BUILD_RRFS_UTILS="on" ;;
     nexus) DEFAULT_BUILD=false; BUILD_NEXUS="on" ;;
     aqm_utils) DEFAULT_BUILD=false; BUILD_AQM_UTILS="on" ;;
+    setfirewx) DEFAULT_BUILD=false; BUILD_SETFIREWX="on" ;;
     # unknown
     -?*|?*) usage_error "Unknown option $1" ;;
     *) break
@@ -311,6 +314,7 @@ if [ "${DEFAULT_BUILD}" = true ]; then
   BUILD_GSI="on"
   BUILD_RRFS_UTILS="on"
   BUILD_AQM_UTILS="on"
+  BUILD_SETFIREWX="on"
 fi
 
 # Choose components to build for air quality modeling (RRFS-AQM)
@@ -420,6 +424,7 @@ CMAKE_SETTINGS="\
  -DBUILD_AQM_UTILS=${BUILD_AQM_UTILS}\
  -DBUILD_IFI=${BUILD_IFI}\
  -DBUILD_GTG=${BUILD_GTG}\
+ -DBUILD_SETFIREWX=${BUILD_SETFIREWX}\
  -DENABLE_PARALLELRESTART=${ENABLE_PARALLELRESTART}\
  -DENABLE_RRFS_WAR=${ENABLE_RRFS_WAR}"
 
@@ -521,6 +526,10 @@ if [ $USE_SUB_MODULES = true ]; then
     if [ $BUILD_AQM_UTILS = "on" ]; then
         printf "... Loading AQM-utils modules ...\n"
         module use ${SORC_DIR}/AQM-utils/modulefiles
+        load_module ""
+    fi
+    if [ $BUILD_SETFIREWX = "on" ]; then
+        printf "... Loading SETFIREWX modules ...\n"
         load_module ""
     fi
 else

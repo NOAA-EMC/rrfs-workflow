@@ -125,6 +125,7 @@ option(BUILD_RRFS_UTILS "Build RRFS utilities" ON)
 option(BUILD_AQM_UTILS "Build AQM utilities" ON)
 option(BUILD_IFI "Build IFI in UPP" OFF)
 option(BUILD_GTG "Build GTG in UPP" OFF)
+option(BUILD_SETFIREWX "Build setfirewx" ON)
 option(ENABLE_PARALLELRESTART "Build PARALLEL RESTART" OFF)
 option(ENABLE_RRFS_WAR "Build PARALLEL RESTART" ON)
 
@@ -137,6 +138,7 @@ message(STATUS "BUILD_NEXUS ............. ${BUILD_NEXUS}")
 message(STATUS "BUILD_AQM_UTILS ......... ${BUILD_AQM_UTILS}")
 message(STATUS "BUILD_IFI ............... ${BUILD_IFI}")
 message(STATUS "BUILD_GTG ............... ${BUILD_GTG}")
+message(STATUS "BUILD_SETFIREWX ......... ${BUILD_SETFIREWX}")
 message(STATUS "ENABLE_PARALLELRESTART ............... ${ENABLE_PARALLELRESTART}")
 message(STATUS "ENABLE_RRFS_WAR ...................... ${ENABLE_RRFS_WAR}")
 
@@ -394,6 +396,26 @@ if (CPL_AQM)
       STEP_TARGETS build
     )
   endif()
+endif()
+
+# Build setfirewx
+if (BUILD_SETFIREWX)
+  list(APPEND TARGET_LIST SETFIREWX)
+
+  list(APPEND SETFIREWX_ARGS
+    "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
+    "-DCMAKE_INSTALL_BINDIR=${CMAKE_INSTALL_BINDIR}"
+    "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
+  )
+
+  ExternalProject_Add(SETFIREWX
+    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/setfirewx.fd
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/setfirewx.fd
+    INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+    CMAKE_ARGS ${SETFIREWX_ARGS}
+    BUILD_ALWAYS TRUE
+    STEP_TARGETS build
+    )
 endif()
 
 # add custom target for separate build and install
