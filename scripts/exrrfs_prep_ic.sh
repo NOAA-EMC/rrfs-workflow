@@ -31,6 +31,13 @@ if (( spinup_mode == -1 )); then
 fi
 echo "this cycle is ${start_type} start"
 
+timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
+
+export CMDFILE="${DATA}/poescript_prep_ic"
+export CMDFILE2="${DATA}/poescript_ncks"
+mkdir -p "$(dirname "$CMDFILE")"
+: > "$CMDFILE"
+: > "$CMDFILE2"
 
 # Populate the list for the ensemble members, or deterministic member
 if [[ "${ENS_SIZE:-0}" -gt 2 ]]; then
@@ -39,27 +46,20 @@ else
   mem_list=("/") # if determinitic
 fi
 
+#
+#  find the right background file
+#
 for memdir in "${mem_list[@]}"; do
   # Determine path
   if [[ ${#memdir} -gt 1 ]]; then
     umbrella_prep_ic_data="${UMBRELLA_PREP_IC_DATA}${memdir}"
     mkdir -p "${COMOUT}/prep_ic/${WGF}${memdir}"
-    pid=$((10#${memdir: -2}-1))
-    export CMDFILE="${DATA}/script_prep_ic_${pid}.sh"
   else
     umbrella_prep_ic_data="${UMBRELLA_PREP_IC_DATA}"
-    export CMDFILE="${DATA}/script_prep_ic_0.sh"
   fi
-
-  mkdir -p "$(dirname "$CMDFILE")"
-  : > "$CMDFILE"
 
   # Create directory safely
   mkdir -p "${umbrella_prep_ic_data}"
-#
-#  find the right background file
-#
-timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
 
 if [[ "${start_type}" == "cold" ]]; then
   thisfile=${COMINrrfs}/${RUN}.${PDY}/${cyc}/ic/${WGF}${memdir}/init.nc
@@ -109,6 +109,7 @@ fi
 #
 # do sfc cycling
 #
+
 for hr in ${SFC_UPDATE_CYCS:-"99"}; do
   shr=$(printf '%02d' $((10#$hr)) )
   var_list="smois,snow,snowh,snowc,sst,canwat,tslb,skintemp,landmask,isltyp,ivgtyp,soilt1"
@@ -125,21 +126,50 @@ for hr in ${SFC_UPDATE_CYCS:-"99"}; do
     done
     if [[ -r ${thisfile} ]]; then
       targetfile=${umbrella_prep_ic_data}/mpas_sfc.nc
-      echo "${cpreq}" "${thisfile}" "${targetfile}"  >> "$CMDFILE"
+      echo "${cpreq}" "${thisfile}" "${targetfile}" >> "$CMDFILE"
       if [[ -r "${umbrella_prep_ic_data}/init.nc" ]]; then
         to_file="${umbrella_prep_ic_data}/init.nc"
       elif [[ -r "${umbrella_prep_ic_data}/mpasout.nc" ]]; then
         to_file="${umbrella_prep_ic_data}/mpasout.nc"
       fi
       echo "surface update from ${thisfile} to ${to_file}"
-      echo ncks -O -C -x -v ${var_list} "${to_file}"  tmp.nc  >> "$CMDFILE"
-      echo ncks -A -v ${var_list} "${targetfile}" tmp.nc  >> "$CMDFILE"
-      echo mv tmp.nc "${to_file}"  >> "$CMDFILE"
+      echo " ncks -O -C -x -v ${var_list} \"${to_file}\"  tmp.nc ; \
+             ncks -A -v ${var_list} \"${targetfile}\" tmp.nc ; \
+             mv tmp.nc \"${to_file}\" " >>  "$CMDFILE2"
     else
       echo "SFC_UPDATE failed, cannot find warm start file: ${thisfile}"
     fi
   fi
 done
+
+done
+#
+#
+# use xargs to run the command using  one core at a time (this takes a long time!)
+#
+echo "===== CMDFILE ====="
+cat  "$CMDFILE"
+xargs -I {} -P "${NTASKS}" sh -c '{}' < "$CMDFILE"
+export err=$?
+
+# Check for errors
+export err=$?
+if (( err != 0 )) ; then
+    echo "prep_ic failed with error code ${err} "
+    err_exit
+fi
+
+# ncks commands
+echo "===== CMDFILE2 ====="
+cat  "$CMDFILE2"
+xargs -I {} -P "${NTASKS}" sh -c '{}' < "${CMDFILE2}"
+
+# Check for errors
+export err2=$?
+if (( err2 != 0 )) ; then
+    echo "sfc_update ncks failed with error code ${err2}"
+    err_exit
+fi
 
 #
 #  find the right satbias file
@@ -166,24 +196,10 @@ if [[ "${PREP_IC_TYPE}" == "jedivar" ]] || [[ "${PREP_IC_TYPE}" == "getkf"  ]]; 
     satbias_path=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/${PREP_IC_TYPE}${spinup_str}/${WGF}
     nSatbias=$(find "${satbias_path}"/*satbias*.nc | wc -l)
     if (( nSatbias > 0 )); then
-      echo cp "${satbias_path}"/*satbias*.nc  "${umbrella_prep_ic_data}"  >> "$CMDFILE"
+      cp "${satbias_path}"/*satbias*.nc  "${umbrella_prep_ic_data}"
       echo "found satbias from ${satbias_path}"
       break
     fi
   done
-fi
-
-done
-
-${cpreq} "${EXECrrfs}"/rank_run.x .
-${MPI_RUN_CMD} ./rank_run.x "${DATA}/script_prep_ic_*.sh"
-
-# Check for errors
-export err=$?
-if (( err != 0 )); then
-    echo "prep_ic failed with error code ${err}"
-    err_exit
-else
-    echo "prep_ic completed successfully"
 fi
 
