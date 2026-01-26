@@ -5,6 +5,7 @@ fix/INIT_DONE
 python_graphics/
 sorc/*/
 !sorc/manage_externals/
+!sorc/_workaround_/
 ush/config.sh
 ush/*.swp
 ush/__pycache__/
