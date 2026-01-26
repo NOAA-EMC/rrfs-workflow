@@ -39,6 +39,7 @@ write_tasks_per_group:   {{ write_tasks_per_group }}
 num_files:               2
 filename_base:           'dyn' 'phy'
 output_file:             '{{ output_file }}'
+use_saved_routehandles:  {{ use_saved_routehandles }}
 #
 # Write-component output frequency parameter definitions:
 #
