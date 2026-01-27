@@ -786,8 +786,8 @@ if [ "${DO_FCST_RESTART}" = "TRUE" ] && [ $coupler_res_ct -gt 0 ] && [ $FCST_LEN
    if [ ${WGF} = "ensf" ]; then
      mem_res=${ensmem_num}
 
-     if [ -e ${FIXLAM}/103_nodes_ensf/routehandle_fb01 ]; then
-       files=`ls ${FIXLAM}/103_nodes_ensf/routehandle_fb??`
+     if [ -e ${FIXLAM}/94_nodes_ensf/routehandle_fb01 ]; then
+       files=`ls ${FIXLAM}/94_nodes_ensf/routehandle_fb??`
        echo "#! /bin/sh" > ./para_copy.sh
        for fl in $files
        do
