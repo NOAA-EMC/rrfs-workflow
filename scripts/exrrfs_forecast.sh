@@ -895,17 +895,21 @@ fi
 if [ ${CYCLE_TYPE} = "spinup" ]; then
    export WRTCMP_write_groups=$WRTCMP_write_groups_SPINUP
    export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_SPINUP
+   export USE_SAVED_ROUTEHANDLES="FALSE"
 else
 
 if [ ${FCST_LEN_HRS} -eq '84' ]; then
    export WRTCMP_write_groups=$WRTCMP_write_groups_LONG
    export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_LONG
+   export USE_SAVED_ROUTEHANDLES="TRUE"
 elif [ ${FCST_LEN_HRS} -eq '60' ]; then
    export WRTCMP_write_groups=$WRTCMP_write_groups_ENSF
    export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_ENSF
+   export USE_SAVED_ROUTEHANDLES="TRUE"
 elif [ ${FCST_LEN_HRS} -eq '18' ]; then
    export WRTCMP_write_groups=$WRTCMP_write_groups_18H
    export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_18H
+   export USE_SAVED_ROUTEHANDLES="TRUE"
 fi
 
 fi
