@@ -910,6 +910,8 @@ elif [ ${FCST_LEN_HRS} -eq '18' ]; then
    export WRTCMP_write_groups=$WRTCMP_write_groups_18H
    export WRTCMP_write_tasks_per_group=$WRTCMP_write_tasks_per_group_18H
    export USE_SAVED_ROUTEHANDLES="TRUE"
+else
+   export USE_SAVED_ROUTEHANDLES="FALSE"
 fi
 
 fi
