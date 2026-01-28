@@ -287,6 +287,12 @@ if [[ $SENDCOM = 'YES' ]]; then
         cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
       done
       wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+
+  if [[ ${SENDDBN} = "YES" ]] ; then
+	  $DBNROOT/bin/dbn_alert ????  $NET $job ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
+	  $DBNROOT/bin/dbn_alert ????  $NET $job ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+  fi # SENDDBN
+
     fi
     count=$count+1
   done
@@ -343,6 +349,9 @@ if [[ $SENDCOM = 'YES' ]]; then
     fi
   fi
 
+  if [[ ${SENDDBN} = "YES" ]] ; then
+	  $DBNROOT/bin/dbn_alert ????  $NET $job ${COMOUT}/
+  fi # SENDDBN
 
 fi #SENDCOM
 
