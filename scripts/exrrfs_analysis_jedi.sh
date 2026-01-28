@@ -440,6 +440,7 @@ cp $COMOUT/ioda_*.nc data/obs/.
 mkdir -p data/satbias_in  data/satbias_out
 
 cp "${FIX_JEDI}/"satbias_init/*.tlapse.txt data/satbias_in/.
+cp "${FIX_JEDI}/"satbias_init_cris/*.tlapse.txt data/satbias_in/.
 
 if [ ${BKTYPE} -eq 1 ]; then  # cold start uses the fixed initialize bias
    cp "${FIX_JEDI}/satbias_init/*.nc" data/satbias_in/.
@@ -490,6 +491,7 @@ else # copy bias from previous cycle
   done
   if [ $satcounter -eq $maxcounter ]; then
     cp "${FIX_JEDI}/"satbias_init/*.nc data/satbias_in/.
+    cp "${FIX_JEDI}/"satbias_init_cris/*.nc data/satbias_in/.
   fi
 fi
 #

@@ -161,6 +161,7 @@ fi
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.satwnd.tm00.bufr_d" satwndbufr
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.gsrcsr.tm00.bufr_d" abibufr
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.atms.tm00.bufr_d" atmsbufr
+cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.crisf4.tm00.bufr_d" crisfsbufr
 #
 #-----------------------------------------------------------------------
 #
@@ -252,10 +253,16 @@ cp -p ${FIX_JEDI}/ioda_empty_satwnd.nc ioda_satwnd.abi_goes-18.nc
 # Satellite Radiance
 
 #1 ABI GSRCSR
+# --------------------------------------------------
+# run  bufr2netcdf tool for abi csr bufr obs
+# --------------------------------------------------
 ./gen_bufr2ioda_json.py -t bufr2ioda_gsrcsr.json -o bufr2ioda_gsrcsr_0.json
 ./bufr2ioda_gsrcsr.py -c bufr2ioda_gsrcsr_0.json >> $pgmout
 
 #2 ATMS
+# --------------------------------------------------
+# run  bufr2netcdf tool for atms bufr obs
+# --------------------------------------------------
 cp "${FIX_JEDI}/atms_beamwidth.txt" .
 cp "${PARM_IODACONV}/bufr_atms_mapping.yaml" .
 input_file="atmsbufr"
@@ -270,7 +277,19 @@ fi
 #3 AMSUA
 
 #4 CRIS
+# --------------------------------------------------
+# run  bufr2netcdf tool for cris-fsr bufr obs
+# --------------------------------------------------
+cp "${PARM_IODACONV}/bufr2netcdf_cris-fsr.yaml" .
+input_file="crisfsbufr"
+output_file="ioda_crisf4_{splits/satId}.nc"
+yaml="bufr2netcdf_cris-fsr.yaml"
 
+if [[ -f "$input_file" ]]; then
+  ${EXECdir}/bin/bufr2netcdf.x "$input_file" "$yaml" "$output_file"
+else
+  echo "Input file $input_file does not exist."
+fi
 
 #
 #-----------------------------------------------------------------------
