@@ -3,7 +3,7 @@
 #PBS -S /bin/bash
 #PBS -q %QUEUE%
 #PBS -A %PROJ%-%PROJENVIR%
-#PBS -l walltime=00:15:00
+#PBS -l walltime=00:10:00
 #PBS -l place=vscatter:shared,select=1:ncpus=1:mem=10G
 #PBS -l debug=true
 set -x
@@ -17,21 +17,17 @@ export cyc="%CYC%"
 ############################################################
 
 module list
-export WGF="det"
 
+export CLEAN_MODE=post
+
+export KEEP_RESTART=${KEEP_RESTART:-%KEEP_RESTART:NO%}
+export KEEP_DET_RESTART=${KEEP_DET_RESTART:-%KEEP_DET_RESTART:NO%}
+export KEEP_ENKF_RESTART=${KEEP_ENKF_RESTART:-%KEEP_ENKF_RESTART:NO%}
+export KEEP_TMP=${KEEP_TMP:-%KEEP_TMP:NO%}
 ############################################################
 # CALL executable job script here
 ############################################################
-export DATA=${DATA:-${DATAROOT}/${jobid}}
-mkdir -p ${DATA}
-cd ${DATA} 
-ls -d ${DATAROOT}/rrfs_*_${cyc}_v1.0_${envir}
-rm -rf ${DATAROOT}/rrfs_*_${cyc}_v1.0_${envir}
-rm -rf ${DATAROOT}/rrfs_*_${cyc}.*.*
-
-cd ${DATAROOT}
-rm -rf ${DATA}
-#${HOMErrfs}/scripts/exrrfs_clean.sh
+${HOMErrfs}/jobs/JRRFS_CLEANUP
 
 %include <tail.h>
 
