@@ -276,9 +276,6 @@ ${APRUNS} ${EXECrrfs}/$pgm < itag >>$pgmout 2>errfile
 export err=$?; err_chk
 mv errfile errfile_rrfs_sndp
 
-# should not be defined here
-SENDCOM=YES
-
 if [[ "${SENDCOM}" = "YES" ]]; then
   cpreq $DATA/class1.bufr $COMOUT/rrfs.t${cyc}z.class1.bufr
   cpreq $DATA/profilm.c1.${tmmark} ${COMOUT}/rrfs.t${cyc}z.profilm.c1
