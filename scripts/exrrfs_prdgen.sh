@@ -289,9 +289,9 @@ if [[ $SENDCOM = 'YES' ]]; then
       wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
 
   if [[ ${SENDDBN} = "YES" ]] ; then
-	  $DBNROOT/bin/dbn_alert ????  $NET $job ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
-	  $DBNROOT/bin/dbn_alert ????  $NET $job ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
-  fi # SENDDBN
+	  $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE} $job ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
+	  $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_WIDX} $job ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+  fi 
 
     fi
     count=$count+1
