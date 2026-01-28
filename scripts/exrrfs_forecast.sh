@@ -730,9 +730,14 @@ fi
 if [ "${DO_FCST_RESTART}" = "TRUE" ] && [ $coupler_res_ct -gt 0 ] && [ $FCST_LEN_HRS -gt 6 ]; then
   flag_fcst_restart="TRUE"
   # Update FV3 input.nml for restart
+   mem_res="0"
+   if [ ${WGF} = "ensf" ]; then
+     mem_res=${ensmem_num}
+   fi
    $USHrrfs/update_input_nml.py \
     --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf \
     --run_dir "${DATA}" \
+    --member ${mem_res} \
     --restart
   export err=$?
   if [ $err -ne 0 ]; then
@@ -916,11 +921,7 @@ cd INPUT
 acsnow_ct=$(ncdump -h sfc_data.nc|grep acsnow|wc -l)
 if [ $acsnow_ct -eq 0 ] && [ ! ${WGF} = "firewx" ]; then
   echo "Run DATA sfc_data.nc surge for acsnow"
-  if [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km" ]; then
-    ncks -A ${FIXrrfs}/acsnow/acsnow_conus3km.nc sfc_data.nc
-  else
-    ncks -A ${FIXrrfs}/acsnow/acsnow.nc sfc_data.nc
-  fi
+  ncks -A ${FIXrrfs}/acsnow/acsnow.nc sfc_data.nc
   export err=$?; err_chk
 fi
 cd ..
