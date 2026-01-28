@@ -40,11 +40,10 @@ then
 
   cpreq -p grib2.rrfs.t${cyc}z.awips.f${fhr} ${COMOUT}/wmo
 
-# DBN alerts from HRRR script - someone can modify this for RRFS later
-#  if [ $SENDDBN_NTC = YES -a $fhr -le 18 ]
-#  then
-#    $DBNROOT/bin/dbn_alert NTC_LOW $NET $job $WMO/grib2.${cycle}.awphrrr184_f${fhr}_${cyc}
-#  fi
+ if [ $SENDDBN_NTC = YES ]
+ then
+   $DBNROOT/bin/dbn_alert NTC_LOW $NET $job ${COMOUT}/wmo/grib2.rrfs.t${cyc}z.awips.f${fhr}
+ fi
 
 else
   echo "An AWIPS file will not be generated for forecast hour ${fhr}."
