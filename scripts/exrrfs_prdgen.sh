@@ -349,10 +349,6 @@ if [[ $SENDCOM = 'YES' ]]; then
     fi
   fi
 
-  if [[ ${SENDDBN} = "YES" ]] ; then
-	  $DBNROOT/bin/dbn_alert ????  $NET $job ${COMOUT}/
-  fi # SENDDBN
-
 fi #SENDCOM
 
   #-- Upscale & subset FAA requested information
