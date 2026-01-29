@@ -494,7 +494,7 @@ cpreq -p ${prslev} ${COMOUT}
 # Native level output is disabled for ensemble forecasts after f00
 if [[ -f ${natlev} ]]; then
   cpreq -p ${natlev} ${COMOUT}
-  if [[ ${SENDDBN} = "YES" -a ${post_fhr} -eq 000 ]]; then
+  if [[ ${SENDDBN} = "YES" && ${post_fhr} -eq "000" ]]; then
      $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE} $job ${COMOUT}/${natlev}
   fi
 fi
