@@ -194,6 +194,7 @@ cost function:
          threshold: 12.0
          action:
            name: reject
+       - *POLY
      - obs space:
          name: adpsfc_t181
          distribution:
@@ -266,6 +267,8 @@ cost function:
                maxvalue:  900
            action:
              name: reduce obs space
+
+         - filter: *POLY
 
          # Duplicate Check
 #         - filter: Temporal Thinning
@@ -543,6 +546,8 @@ cost function:
            action:
              name: reduce obs space
 
+         - filter: *POLY
+
          # Duplicate Check
 #         - filter: Temporal Thinning
 #           filter variables:
@@ -816,6 +821,8 @@ cost function:
                maxvalue:  900
            action:
              name: reduce obs space
+
+         - filter: *POLY
 
          # Duplicate Check
          - filter: Temporal Thinning
@@ -1095,6 +1102,8 @@ cost function:
            action:
              name: reduce obs space
 
+         - filter: *POLY
+
          # Duplicate Check
 #         - filter: Temporal Thinning
 #           filter variables:
@@ -1369,6 +1378,8 @@ cost function:
                maxvalue:  900
            action:
              name: reduce obs space
+
+         - filter: *POLY
 
          # Duplicate Check
 #         - filter: Temporal Thinning
@@ -1650,6 +1661,8 @@ cost function:
            action:
              name: reduce obs space
 
+         - filter: *POLY
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -1924,6 +1937,8 @@ cost function:
 #           action:
 #             name: reduce obs space
 
+         - filter: *POLY
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -2194,6 +2209,8 @@ cost function:
              name: MetaData/stationIdentification
            action:
              name: reduce obs space
+
+         - filter: *POLY
 
          # Online regional domain check
          - filter: Bounds Check
@@ -2472,6 +2489,8 @@ cost function:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
 #             name: reduce obs space
+
+         - filter: *POLY
 
          # Online domain check
          - filter: Bounds Check
@@ -2790,6 +2809,8 @@ cost function:
 #           action:
 #             name: reduce obs space
 
+         - filter: *POLY
+
          # Online domain check
          - filter: Bounds Check
            filter variables:
@@ -3099,6 +3120,8 @@ cost function:
              name: MetaData/stationIdentification
            action:
              name: reduce obs space
+
+         - filter: *POLY
 
          # Online domain check
          - filter: Bounds Check
@@ -3413,6 +3436,8 @@ cost function:
 #           action:
 #             name: reduce obs space
 
+         - filter: *POLY
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -3686,6 +3711,8 @@ cost function:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
 #             name: reduce obs space
+
+         - filter: *POLY
 
          # Online regional domain check
          - filter: Bounds Check
@@ -3961,6 +3988,8 @@ cost function:
 #           action:
 #             name: reduce obs space
 
+         - filter: *POLY
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -4235,6 +4264,8 @@ cost function:
 #           action:
 #             name: reduce obs space
 
+         - filter: *POLY
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -4504,6 +4535,8 @@ cost function:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
 #             name: reduce obs space
+
+         - filter: *POLY
 
          # Online regional domain check
          - filter: Bounds Check
@@ -4781,6 +4814,8 @@ cost function:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
 #             name: reduce obs space
+
+         - filter: *POLY
 
          # Online domain check
          - filter: Bounds Check
@@ -5092,6 +5127,8 @@ cost function:
 #           action:
 #             name: reduce obs space
 
+         - filter: *POLY
+
          # Online domain check
          - filter: Bounds Check
            filter variables:
@@ -5399,6 +5436,8 @@ cost function:
 #           action:
 #             name: reduce obs space
 
+         - filter: *POLY
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -5672,6 +5711,8 @@ cost function:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
 #             name: reduce obs space
+
+         - filter: *POLY
 
          # Online regional domain check
          - filter: Bounds Check
@@ -5949,6 +5990,8 @@ cost function:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
 #             name: reduce obs space
+
+         - filter: *POLY
 
          # Online domain check
          - filter: Bounds Check
@@ -6257,6 +6300,8 @@ cost function:
 #           action:
 #             name: reduce obs space
 
+         - filter: *POLY
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -6530,6 +6575,8 @@ cost function:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
 #             name: reduce obs space
+
+         - filter: *POLY
 
          # Online regional domain check
          - filter: Bounds Check
@@ -6805,6 +6852,8 @@ cost function:
 #           action:
 #             name: reduce obs space
 
+         - filter: *POLY
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -7079,6 +7128,8 @@ cost function:
 #           action:
 #             name: reduce obs space
 
+         - filter: *POLY
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -7352,6 +7403,8 @@ cost function:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
 #             name: reduce obs space
+
+         - filter: *POLY
 
          # Online regional domain check
          - filter: Bounds Check
@@ -7629,6 +7682,8 @@ cost function:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
 #             name: reduce obs space
+
+         - filter: *POLY
 
          # Online domain check
          - filter: Bounds Check
@@ -7940,6 +7995,8 @@ cost function:
 #           action:
 #             name: reduce obs space
 
+         - filter: *POLY
+
          # Online domain check
          - filter: Bounds Check
            filter variables:
@@ -8249,6 +8306,8 @@ cost function:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
 #             name: reduce obs space
+
+         - filter: *POLY
 
          # Online domain check
          - filter: Bounds Check
@@ -8560,6 +8619,8 @@ cost function:
 #           action:
 #             name: reduce obs space
 
+         - filter: *POLY
+
          # Online domain check
          - filter: Bounds Check
            filter variables:
@@ -8840,6 +8901,8 @@ cost function:
              name: assign error
              error parameter: 0.01
 
+         - filter: *POLY
+
          # Terrain Height Discrepancy Check
          - filter: Difference Check
            reference: MetaData/stationElevation
@@ -8940,6 +9003,8 @@ cost function:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
 #             name: reduce obs space
+
+         - filter: *POLY
 
          # Online regional domain check
          - filter: Bounds Check
@@ -9215,6 +9280,8 @@ cost function:
 #           action:
 #             name: reduce obs space
 
+         - filter: *POLY
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -9481,6 +9548,8 @@ cost function:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
 #             name: reduce obs space
+
+         - filter: *POLY
 
          # Online regional domain check
          - filter: Bounds Check
@@ -10337,6 +10406,8 @@ cost function:
 #           action:
 #             name: reduce obs space
 
+         - filter: *POLY
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -10688,6 +10759,8 @@ cost function:
 #           action:
 #             name: reduce obs space
 
+         - filter: *POLY
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -10962,6 +11035,8 @@ cost function:
 #           action:
 #             name: reduce obs space
 
+         - filter: *POLY
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -11235,6 +11310,8 @@ cost function:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
 #             name: reduce obs space
+
+         - filter: *POLY
 
          # Online regional domain check
          - filter: Bounds Check
@@ -11511,6 +11588,8 @@ cost function:
 #           action:
 #             name: reduce obs space
 
+         - filter: *POLY
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -11785,6 +11864,8 @@ cost function:
 #           action:
 #             name: reduce obs space
 
+         - filter: *POLY
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -12058,6 +12139,8 @@ cost function:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
 #             name: reduce obs space
+
+         - filter: *POLY
 
          # Online regional domain check
          - filter: Bounds Check
@@ -12334,6 +12417,8 @@ cost function:
 #           action:
 #             name: reduce obs space
 
+         - filter: *POLY
+
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
@@ -12603,6 +12688,8 @@ cost function:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
 #             name: reduce obs space
+
+         - filter: *POLY
 
          # Online regional domain check
          - filter: Bounds Check
@@ -12889,6 +12976,8 @@ cost function:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
 #             name: reduce obs space
+
+         - filter: *POLY
 
          # Online domain check
          - filter: Bounds Check
@@ -13205,6 +13294,8 @@ cost function:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
 #             name: reduce obs space
+
+         - filter: *POLY
 
          # Online domain check
          - filter: Bounds Check
@@ -13523,6 +13614,8 @@ cost function:
 #           action:
 #             name: reduce obs space
 
+         - filter: *POLY
+
          # Online domain check
          - filter: Bounds Check
            filter variables:
@@ -13838,6 +13931,8 @@ cost function:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
 #             name: reduce obs space
+
+         - filter: *POLY
 
          # Online domain check
          - filter: Bounds Check
@@ -14194,6 +14289,8 @@ cost function:
 #             is_in: 270
 #           action:
 #             name: reduce obs space
+
+         - filter: *POLY
 
          # Online domain check
          - filter: Bounds Check
@@ -14602,6 +14699,8 @@ cost function:
 #           action:
 #             name: reduce obs space
 
+         - filter: *POLY
+
          # Online domain check
          - filter: Bounds Check
            udescriptor: "online_domain_check"
@@ -15009,6 +15108,8 @@ cost function:
 #           action:
 #             name: reduce obs space
 
+         - filter: *POLY
+
          # Online domain check
          - filter: Bounds Check
            udescriptor: "online_domain_check"
@@ -15381,6 +15482,8 @@ cost function:
 #             is_in: 272
 #           action:
 #             name: reduce obs space
+
+         - filter: *POLY
 
          # Online domain check
          - filter: Bounds Check
@@ -15780,6 +15883,8 @@ cost function:
            action:
              name: reduce obs space
 
+         - filter: *POLY
+
          # Online domain check
          - filter: Bounds Check
            udescriptor: "online_domain_check"
@@ -16161,6 +16266,8 @@ cost function:
              is_in: 272
            action:
              name: reduce obs space
+
+         - filter: *POLY
 
          # Duplicate Check
          - filter: Temporal Thinning
@@ -16557,6 +16664,8 @@ cost function:
          - name: Thinning
            initial value: false
            force reinitialization: false
+       # domain boundary check
+       - *POLY
        obs post filters:
        #Thinning
        - filter: Gaussian Thinning
@@ -17013,7 +17122,8 @@ cost function:
          - name: UseflagCheck
            initial value: false
            force reinitialization: false
-
+       # domain boundary check
+       - *POLY
        obs post filters:
        # Step 0-B: Calculate derived variables
        # Calculate CLW retrieved from observation
@@ -17602,7 +17712,8 @@ cost function:
          - name: UseflagCheck
            initial value: false
            force reinitialization: false
-
+       # domain boundary check
+       - *POLY
        obs post filters:
        # Step 0-B: Calculate derived variables
        # Calculate CLW retrieved from observation
@@ -18170,6 +18281,8 @@ cost function:
          maxvalue: 65.
          action:
            name: reduce obs space
+       # domain boundary check
+       - *POLY
        # Data Thinning
        - filter: Gaussian Thinning
          filter variables:
@@ -18678,6 +18791,8 @@ cost function:
          maxvalue: 65.
          action:
            name: reduce obs space
+       # Domain boundary check
+       - *POLY
        # Data Thinning
        - filter: Gaussian Thinning
          filter variables:
@@ -19204,6 +19319,8 @@ cost function:
          - name: UseflagCheck
            initial value: false
            force reinitialization: false
+       # Domain boundary check
+       - *POLY
 
        obs post filters:
        # Step 0-B: Calculate derived variables
@@ -19759,6 +19876,8 @@ cost function:
          - name: Thinning
            initial value: false
            force reinitialization: false
+       # Domain boundary check
+       - *POLY
        obs post filters:
        #Thinning
        - filter: Gaussian Thinning
@@ -20182,6 +20301,8 @@ cost function:
          - name: Thinning
            initial value: false
            force reinitialization: false
+       # Domain boundary check
+       - *POLY
        obs post filters:
        #Thinning
        - filter: Gaussian Thinning
@@ -20641,6 +20762,11 @@ cost function:
          - name: UseflagCheck
            initial value: false
            force reinitialization: false
+
+       # --------------------------------------
+       # Step "one half:" Domain boundary check
+       # --------------------------------------
+       - *POLY
 
        # ----------------------------------------------------------------
        # Step 1 : Create Derived Variables for radiane to BT conversion
@@ -21189,6 +21315,11 @@ cost function:
          - name: UseflagCheck
            initial value: false
            force reinitialization: false
+
+       # --------------------------------------
+       # Step "one half:" Domain boundary check
+       # --------------------------------------
+       - *POLY
 
        # ----------------------------------------------------------------
        # Step 1 : Create Derived Variables for radiane to BT conversion
