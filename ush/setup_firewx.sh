@@ -10,12 +10,12 @@ echo "by the RRFS jobs that process the fire weather nest."
 
 envir=${envir:-prod}
 
-# in util/ush
+# in ush
 currentDir=$(dirname $(readlink -f "$0"))
-HOMErrfs=$currentDir/../..
+HOMErrfs=$currentDir/..
 
 . ${HOMErrfs}/versions/run.ver
-EXECfirewx=${HOMErrfs}/util/exec
+EXECfirewx=${HOMErrfs}/exec
 COMOUT=/lfs/h1/ops/${envir}/com/rrfs/${rrfs_ver}/firewx_input
 
 TMP=/lfs/h1/nco/ptmp
@@ -100,6 +100,8 @@ do
    lt=`grep ${cyc}z rrfs_firewx_loc | awk '{print $2}'`
    lg=`grep ${cyc}z rrfs_firewx_loc | awk '{print $3}'`
    echo "$cyc        $lt     $lg"
+   echo "Run Python script to check whether the center lat/lon points are inside the RRFS domain"
+   python $HOMErrfs/ush/rrfsfw_domain.py $lt $lg
   done
 
   cp -p $COMOUT/rrfs_firewx_loc $COMOUT/rrfs_firewx_loc_prev
