@@ -33,8 +33,6 @@ module load gempak/${gempak_ver}
 module list
 export WGF="%WGF%"
 export FHR="%FHR%"
-export SENDCOM="YES"
-export SENDDBN="NO"
 
 ############################################################
 # CALL executable job script here

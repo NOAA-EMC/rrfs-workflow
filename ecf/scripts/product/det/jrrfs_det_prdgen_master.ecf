@@ -35,9 +35,6 @@ module load cfp/${cfp_ver}
 module list
 export WGF="%WGF%"
 export FHR="%FHR%"
-export SENDCOM="YES"
-export SENDDBN="NO"
-export SENDDBN_NTC="NO"
 
 ############################################################
 # CALL executable job script here
