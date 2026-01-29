@@ -28,7 +28,6 @@ module load gempak/${gempak_ver}
 
 module list
 export WGF="%WGF%"
-
 ############################################################
 # CALL executable job script here
 ############################################################

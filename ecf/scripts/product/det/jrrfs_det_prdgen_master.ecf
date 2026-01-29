@@ -35,7 +35,6 @@ module load cfp/${cfp_ver}
 module list
 export WGF="%WGF%"
 export FHR="%FHR%"
-
 ############################################################
 # CALL executable job script here
 ############################################################
