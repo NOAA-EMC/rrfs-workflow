@@ -608,7 +608,7 @@ fi
 #        step is just to reduce differences between JEDI and GSI for
 #        development testing. We also may add this as a configurable
 #        option in the future if there is such a need.
-ncap2 -O -s 'qmin=1.0e-7f; where(sphum < qmin) sphum = qmin;' fv3_tracer fv3_tracer
+#ncap2 -O -s 'qmin=1.0e-7f; where(sphum < qmin) sphum = qmin;' fv3_tracer fv3_tracer
 
 #
 #-----------------------------------------------------------------------
