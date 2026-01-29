@@ -136,10 +136,16 @@ case ${YAML_GEN_METHOD:-1} in
     ;;
 esac
 
+if ( grep -E '\*POLY' jedivar.yaml > /dev/null ) ; then
+  cp jedivar.yaml no_polygon_jedivar.yaml
+  ${USHrrfs}/yamlify_domain_edge.py -g "invariant.nc" -i '' > polygon.yaml
+  cat polygon.yaml no_polygon_jedivar.yaml > jedivar.yaml
+fi
+
 if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CYCS_DO_DA^^} == "TRUE" ]]; then
   # run mpasjedi_variational.x
-  #export OOPS_TRACE=1
-  #export OOPS_DEBUG=1
+  export OOPS_TRACE=1
+  export OOPS_DEBUG=1
   export OMP_NUM_THREADS=1
 
   source prep_step
