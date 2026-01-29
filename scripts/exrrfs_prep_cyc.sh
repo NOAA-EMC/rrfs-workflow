@@ -269,16 +269,13 @@ else
       cpreq -p ${bkpath}/gfs_ctrl.nc gfs_ctrl.nc        
       cpreq -p ${bkpath}/gfs_data.tile7.halo0.nc gfs_data.tile7.halo0.nc        
       cpreq -p ${bkpath}/sfc_data.tile7.halo0.nc sfc_data.tile7.halo0.nc        
-      #cpreq -p ${bkpath}/gfs_bndy.tile7.000.nc bk_gfs_bndy.tile7.000.nc
-      #cpreq -p ${bkpath}/gfs_data.tile7.halo0.nc bk_gfs_data.tile7.halo0.nc
-      #cpreq -p ${bkpath}/sfc_data.tile7.halo0.nc bk_sfc_data.tile7.halo0.nc
       print_info_msg "$VERBOSE" "cold start from $bkpath"
       echo "${YYYYMMDDHH}(${CYCLE_TYPE}): cold start at ${current_time} from $bkpath "
     else
       err_exit "Cannot find cold start initial condition from : ${bkpath}"
     fi
 
-  elif [[ $BKTYPE == 3 ]]; then
+  elif [[ $BKTYPE == 3 ]]; then  # Blending 
     bkpath=${ICS_ROOT}
     if [ -r "${bkpath}/coupler.res" ]; then
       cpreq -p ${bkpath}/fv_core.res.nc fv_core.res.nc
@@ -289,12 +286,6 @@ else
       cpreq -p ${bkpath}/sfc_data.nc sfc_data.nc
       cpreq -p ${bkpath}/gfs_ctrl.nc gfs_ctrl.nc
       cpreq -p ${bkpath}/coupler.res bk_coupler.res
-      #cpreq -p ${bkpath}/fv_core.res.nc bk_fv_core.res.nc
-      #cpreq -p ${bkpath}/fv_core.res.tile1.nc bk_fv_core.res.tile1.nc
-      #cpreq -p ${bkpath}/fv_srf_wnd.res.tile1.nc bk_fv_srf_wnd.res.tile1.nc
-      #cpreq -p ${bkpath}/fv_tracer.res.tile1.nc bk_fv_tracer.res.tile1.nc
-      #cpreq -p ${bkpath}/phy_data.nc bk_phy_data.nc
-      #cpreq -p ${bkpath}/sfc_data.nc bk_sfc_data.nc
       echo "${YYYYMMDDHH}(${CYCLE_TYPE}): blended warm start at ${current_time} from $bkpath "
     else
       err_exit "Error: cannot find blended warm start initial condition from : ${bkpath}"
@@ -340,115 +331,70 @@ else
     bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}_spinup/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
     ctrl_bkpath=${LBCS_ROOT}/${RUN}.${PDY}/${cyc}_spinup/${mem_num}/forecast/INPUT
   else
-    YYYYMMDDHHmInterv=$($NDATE -${DA_CYCLE_INTERV} ${YYYYMMDD}${HH})
-    YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
-    HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
-    if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-      if [ ${CYCLE_TYPE} == "spinup" ]; then
-        bkpath=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}_spinup/${mem_num}/${fg_restart_dirname}/RESTART
-      else
+    n=${DA_CYCLE_INTERV}
+      YYYYMMDDHHmInterv=$($NDATE -${n} ${YYYYMMDD}${HH})
+      YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
+      HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
+      if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
         if [ ${cyc} == "08" ] || [ ${cyc} == "20" ]; then
           bkpath=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}_spinup/${mem_num}/${fg_restart_dirname}/RESTART
         else
           bkpath=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
         fi
-      fi
-    else
-      if [ ${CYCLE_TYPE} == "spinup" ]; then
-        bkpath=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}_spinup/${fg_restart_dirname}/RESTART
       else
-        if [ ${BKTYPE} -eq 2 ]; then
+        if [ ${CYCLE_TYPE} == "spinup" ]; then
           bkpath=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}_spinup/${fg_restart_dirname}/RESTART
         else
-          bkpath=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
-        fi
-      fi
-    fi
-
-    n=${DA_CYCLE_INTERV}
-    while [[ $n -le 3 ]] ; do
-      checkfile=${bkpath}/${restart_prefix}coupler.res
-      if [ ! -r "${checkfile}" ] && [ "$n" == "1" ] ; then
-        ic=0
-        while [[ $ic -lt $SLEEP_LOOP_MAX ]]; do
-          print_info_msg "$VERBOSE" "${checkfile} not available. Sleep $SLEEP_INT sec... "
-          ic=`expr $ic + 1`
-          sleep $SLEEP_INT
-          if [ -r "${checkfile}" ] ; then
-            break
-          fi
-        done
-      fi
-      if [ -r "${checkfile}" ] ; then
-        print_info_msg "$VERBOSE" "Found ${checkfile}; Use it as background for analysis "
-        break
-      else
-        n=$((n + ${DA_CYCLE_INTERV}))
-	YYYYMMDDHHmInterv=$($NDATE -${n} ${YYYYMMDD}${HH})
-        YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
-        HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
-        if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-          if [ ${CYCLE_TYPE} == "spinup" ]; then
-            bkpath=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}_spinup/${mem_num}/${fg_restart_dirname}/RESTART
-          else
-            bkpath=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
-          fi
-        else
-          if [ ${CYCLE_TYPE} == "spinup" ]; then
+          if [ ${BKTYPE} -eq 2 ]; then
             bkpath=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}_spinup/${fg_restart_dirname}/RESTART
           else
             bkpath=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
-          fi
+	  fi
         fi
-        print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
       fi
-    done
-
+      print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
     checkfile=${bkpath}/${restart_prefix}coupler.res
-    # spin-up cycle is not success, try to find background from full cycle
-    if [ ! -r "${checkfile}" ] && [ ${BKTYPE} -eq 2 ]; then
-     print_info_msg "$VERBOSE" "cannot find background from spin-up cycle, try product cycle"
-     fg_restart_dirname=forecast
-     YYYYMMDDHHmInterv=$($NDATE -${DA_CYCLE_INTERV} ${YYYYMMDD}${HH})
-     YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
-     HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
-     if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-       bkpath=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
-     else
-       bkpath=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
-     fi
-
-     restart_prefix="${YYYYMMDD}.${HH}0000."
-     n=${DA_CYCLE_INTERV}
-     while [[ $n -le 3 ]] ; do
-       checkfile=${bkpath}/${restart_prefix}coupler.res
-       if [ ! -r "${checkfile}" ] && [ "$n" == "1" ] ; then
-         ic=0
-         while [[ $ic -lt $SLEEP_LOOP_MAX ]]; do
-           print_info_msg "$VERBOSE" "${checkfile} not available. Sleep $SLEEP_INT sec... "
-           ic=`expr $ic + 1`
-           sleep $SLEEP_INT
-           if [ -r "${checkfile}" ] ; then
-             break
+    if [ ! -r "${checkfile}" ] && [ ${CYCLE_TYPE} != "spinup" ]; then
+      fallback_enable="YES"
+      ic=0
+      while [[ $ic -lt $SLEEP_LOOP_MAX ]]; do
+        print_info_msg "$VERBOSE" "${checkfile} not available. Sleep $SLEEP_INT sec... "
+        ic=`expr $ic + 1`
+        sleep $SLEEP_INT
+        if [ -r "${checkfile}" ] ; then
+          ic=$SLEEP_LOOP_MAX
+          print_info_msg "$VERBOSE" "${checkfile} is now available. Proceed without fallback"
+          fallback_enable="NO"
+        fi
+      done
+      if [ ${fallback_enable} == "YES" ]; then
+        print_info_msg "$VERBOSE" "cannot find background, fallback for product cycle"
+        fg_restart_dirname=forecast
+        restart_prefix="${YYYYMMDD}.${HH}0000."
+        if [ ${BKTYPE} -eq 2 ] && [ "${DO_ENSEMBLE}" = "FALSE" ]; then  #det cycle 09/21z start from n=1
+          n=${DA_CYCLE_INTERV}
+        else
+          n=$((n + ${DA_CYCLE_INTERV}))
+        fi
+        while [[ $n -le 3 ]] ; do
+           YYYYMMDDHHmInterv=$($NDATE -${n} ${YYYYMMDD}${HH})
+           YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
+           HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
+           if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+             bkpath=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
+           else
+             bkpath=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
            fi
-         done
-       fi
-       if [ -r "${checkfile}" ] ; then
-         print_info_msg "$VERBOSE" "Found ${checkfile}; Use it as background for analysis "
-         break
-       else
-         n=$((n + ${DA_CYCLE_INTERV}))
-	 YYYYMMDDHHmInterv=$($NDATE -${n} ${YYYYMMDD}${HH})
-         YYYYMMDDInterv=`echo ${YYYYMMDDHHmInterv} | cut -c1-8`
-         HHInterv=`echo ${YYYYMMDDHHmInterv} | cut -c9-10`
-         if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-           bkpath=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
-         else
-           bkpath=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
-         fi
-         print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
-       fi
-     done
+           print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
+  
+           checkfile=${bkpath}/${restart_prefix}coupler.res
+           if [ -r "${checkfile}" ] ; then
+             print_info_msg "$VERBOSE" "Found ${checkfile}; Use it as background for analysis "
+             break
+    	 fi
+           n=$((n + ${DA_CYCLE_INTERV}))
+        done
+      fi
     fi
   fi
 
@@ -467,31 +413,10 @@ else
       fi
       cpreq -p ${bkpath}/${restart_prefix}${file}  bk_${file}
     done
-    if [ "${CYCLE_SUBTYPE}" = "spinup" ] ; then
-      cpreq -p ${LBCS_ROOT}/${RUN}.${PDY}/${cyc}_spinup/${mem_num}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
-    else
-      if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-        if [ "${CYCLE_TYPE}" = "spinup" ]; then
-          cpreq -p ${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}_spinup/${mem_num}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
-        else
-          if [ ${cyc} == "08" ] || [ ${cyc} == "20" ]; then
-            cpreq -p ${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}_spinup/${mem_num}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
-          else
-            cpreq -p ${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${mem_num}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
-          fi
-        fi
-      else
-        if [ "${CYCLE_TYPE}" = "spinup" ]; then
-          cpreq -p ${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}_spinup/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
-        else
-          if [ ${BKTYPE} == "2" ]; then
-            cpreq -p ${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}_spinup/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
-          else
-            cpreq -p ${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/INPUT/gfs_ctrl.nc  gfs_ctrl.nc
-          fi
-        fi
-      fi
-    fi
+
+    ctrl_bkpath=${bkpath}/../INPUT
+    cpreq -p ${ctrl_bkpath}/gfs_ctrl.nc  gfs_ctrl.nc
+
     echo "${YYYYMMDDHH}(${CYCLE_TYPE}): warm start at ${current_time} from ${checkfile} "
     #
     # remove checksum from restart files. Checksum will cause trouble if model initializes from analysis
@@ -1105,30 +1030,6 @@ for file_for_fcst_INPUT in *.nc coupler.res fv3_grid_spec bk_coupler.res gvf* *.
   fi
   mv ${DATA}/${file_for_fcst_INPUT} ${FORECAST_INPUT_PRODUCT}
 done
-
-
-#### mv ${DATA}/*.nc ${ICS_ROOT}
-#### ln -s ${ICS_ROOT}/*.nc ${FORECAST_INPUT_PRODUCT}
-#### if [ -s ${DATA}/coupler.res ]; then
-####   mv ${DATA}/coupler.res ${ICS_ROOT}
-####   ln -s ${ICS_ROOT}/coupler.res ${FORECAST_INPUT_PRODUCT}
-#### fi
-#### if [ -s ${DATA}/fv3_grid_spec ]; then
-####   mv ${DATA}/fv3_grid_spec ${ICS_ROOT}
-####   ln -s ${ICS_ROOT}/fv3_grid_spec ${FORECAST_INPUT_PRODUCT}
-#### fi
-#### if [ -s ${DATA}/bk_coupler.res ]; then
-####   mv ${DATA}/bk_coupler.res ${ICS_ROOT}
-####   ln -s ${ICS_ROOT}/bk_coupler.res ${FORECAST_INPUT_PRODUCT}
-#### fi
-#### if [ $(eval ls ${DATA}/gvf*|wc -l) -gt 0 ]; then
-####   mv ${DATA}/gvf* ${ICS_ROOT}
-####   ln -s ${ICS_ROOT}/gvf* ${FORECAST_INPUT_PRODUCT}
-#### fi
-#### if [ $(eval ls ${DATA}/*.grib2|wc -l) -gt 0 ]; then
-####   mv ${DATA}/*.grib2 ${ICS_ROOT}
-####   ln -s ${ICS_ROOT}/*.grib2 ${FORECAST_INPUT_PRODUCT}
-#### fi
 
 #
 #-----------------------------------------------------------------------

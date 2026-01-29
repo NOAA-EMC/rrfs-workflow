@@ -165,26 +165,27 @@ print_info_msg "$VERBOSE" "background type is $BKTYPE"
 #
 if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
   ens_nstarthr=$( printf "%02d" ${DA_CYCLE_INTERV} )
-  imem=1
-  ifound=0
-  touch ${DATA}/parallel_copy.sh
-  for hrs in ${CYCL_HRS_HYB_FV3LAM_ENS[@]}; do
-    if [ $HH == ${hrs} ]; then
+  n=${DA_CYCLE_INTERV}
+  while [[ $n -le 3 ]] ; do  # this check only works for hourly cycle
+      imem=1
+      ifound=0
+      touch ${DATA}/parallel_copy.sh
+      YYYYMMDDHHInterv=$($NDATE -${n} ${YYYYMMDDHH})
+      YYYYMMDDInterv=${YYYYMMDDHHInterv:0:8}
+      HHInterv=${YYYYMMDDHHInterv:8:2}
+      if [ ${n} -eq 1 ]; then
+        for cycl_hrs in ${CYCL_HRS_PRODSTART_ENS[@]}; do
+          if [ $HH == ${cycl_hrs} ]; then
+            HHInterv=${YYYYMMDDHHInterv:8:2}_spinup
+          fi
+         done
+       fi
+      restart_prefix="${YYYYMMDD}.${HH}0000."
       while [[ $imem -le ${NUM_ENS_MEMBERS} ]];do
         memcharv0=$( printf "%03d" $imem )
         memchar=m$( printf "%03d" $imem )
-	prev_YYYYMMDDHHInterv=$($NDATE -${DA_CYCLE_INTERV} ${YYYYMMDDHH})
-	YYYYMMDDInterv=${prev_YYYYMMDDHHInterv:0:8}
-        HHInterv=${prev_YYYYMMDDHHInterv:8:2}
-        restart_prefix="${YYYYMMDD}.${HH}0000."
         bkpathmem=${COMrrfs}/enkfrrfs.${YYYYMMDDInterv}/${HHInterv}/${memchar}/forecast/RESTART
-        if [ ${DO_SPINUP} == "TRUE" ]; then
-          for cycl_hrs in ${CYCL_HRS_PRODSTART_ENS[@]}; do
-           if [ $HH == ${cycl_hrs} ]; then
-             bkpathmem=${COMrrfs}/enkfrrfs.${YYYYMMDDInterv}/${HHInterv}_spinup/${memchar}/forecast/RESTART
-           fi
-          done
-        fi
+
         dynvarfile=${bkpathmem}/${restart_prefix}fv_core.res.tile1.nc
         tracerfile=${bkpathmem}/${restart_prefix}fv_tracer.res.tile1.nc
         phyvarfile=${bkpathmem}/${restart_prefix}phy_data.nc
@@ -200,7 +201,13 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
         fi
         (( imem += 1 ))
       done
-    fi
+      # check if we got enough ensemble forecast
+      if [[ $ifound -eq ${NUM_ENS_MEMBERS} ]]; then
+	      break
+      else
+        rm -f ${DATA}/parallel_copy.sh
+        (( n += 1 ))
+      fi
   done
 
   if [[ $ifound -ne ${NUM_ENS_MEMBERS} ]] || [[ ${BKTYPE} -eq 1 ]]; then
