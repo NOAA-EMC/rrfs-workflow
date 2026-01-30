@@ -38,6 +38,8 @@ DO_DACYCLE="TRUE"
 #DO_ENSEMBLE="TRUE"
 #DO_ENSFCST="TRUE"
 #DO_ENS_BLENDING="TRUE"
+JCB_CONFIG_CONV="rdas-atmosphere-templates-fv3_c13.yaml"
+JCB_CONFIG_DBZ="rdas-atmosphere-templates-fv3_c13_dbz.yaml"
 
 # Radar DA options
 DO_IODA_MRMS="TRUE"

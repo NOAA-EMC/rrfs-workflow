@@ -125,8 +125,8 @@ state_variables:
 - vtype
 - stype
 - vfrac
-- soilt
-- soilm
+- tslb
+- smois
 - eastward_wind_at_surface
 - northward_wind_at_surface
 - air_pressure_at_surface
@@ -150,8 +150,8 @@ cloud_liquid_water: liq_wat
 ozone_mass_mixing_ratio: o3mr
 geopotential_height_times_gravity_at_surface: phis
 skin_temperature_at_surface: tsfc
-soilt: tslb
-soilm: smois
+tslb: tslb
+smois: smois
 eastward_wind_at_surface: u_srf
 northward_wind_at_surface: v_srf
 rain_water: rainwat
