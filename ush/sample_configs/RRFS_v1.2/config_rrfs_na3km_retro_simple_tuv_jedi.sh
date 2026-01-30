@@ -7,7 +7,7 @@ ACCOUNT="RRFS-DEV"
 
 # Directory settings (user-dependent)
 EXPT_BASEDIR="/lfs/h2/emc/da/noscrub/$USER/rrfs-workflow_na3km/rrfs-workflow/expt_dirs/May2024_retro/$version"
-EXPT_SUBDIR="rrfs_conus_na3km"
+EXPT_SUBDIR="rrfs_na_3km"
 STMP="/lfs/h2/emc/stmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
 PTMP="/lfs/h2/emc/ptmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
 NWGES="/lfs/h2/emc/ptmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
