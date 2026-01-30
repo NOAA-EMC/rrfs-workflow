@@ -11,11 +11,10 @@ echo "by the RRFS jobs that process the fire weather nest."
 envir=${envir:-prod}
 
 # in ush
-currentDir=$(dirname $(readlink -f "$0"))
+currentDir=`pwd`
 HOMErrfs=$currentDir/..
 
 . ${HOMErrfs}/versions/run.ver
-EXECfirewx=${HOMErrfs}/exec
 COMOUT=/lfs/h1/ops/${envir}/com/rrfs/${rrfs_ver}/firewx_input
 
 TMP=/lfs/h1/nco/ptmp
@@ -54,7 +53,7 @@ do
 
   2) echo "Use same fire weather points as yesterday, which are:"
      echo
-     echo "CYCLE        LAT     LONG"
+     echo "CYCLE     LAT      LON   "
      echo "-------------------------"
      for cyc in 00 06 12 18
      do
@@ -68,7 +67,7 @@ do
   3) clear
      echo "CURRENT SUBMITTED FIREWX POINTS/INFO IN PRODUCTION"
      echo 
-     echo "CYCLE	LAT	LONG"
+     echo "CYCLE     LAT      LON   "
      echo "-------------------------"
      for cyc in 00 06 12 18 
      do
@@ -86,22 +85,52 @@ do
   then
  if [ "$enter_dat" = "yes" ]
   then
-  
-  echo "Start execution of SETFIREWX code"
 
-  $EXECfirewx/setfirewx
+  for cyc in 00 06 12 18
+  do
 
+# Set default center lat/lon (Washington DC)
+   lat=38.9
+   lon=-77.0
+
+   echo
+   echo
+   echo "Enter center latitude and longitude points for ${cyc}Z cycle"
+   echo "To keep default location as Washington DC, enter 0.0 for both"
+   echo "Otherwise format is xx.x -yyy.y"
+   read clat clon
+
+   if [ $clat != "0.0" ] && [ $clon != "0.0" ]; then
+    lat=$clat
+    lon=$clon
+   fi
+
+   echo
+   echo "Run Python script to check whether the center lat/lon are inside the RRFS domain"
+   python $HOMErrfs/ush/rrfsfw_domain.py $lat $lon
+   if [ $? -ne 0 ]; then
+    echo
+    echo "WARNING: Problem with the requested fire weather grid"
+    echo "exit script"
+    exit
+   fi
+
+   echo
+   echo "For the ${cyc}Z cycle, the center latitude is ${lat} degrees and the center longitude is ${lon} degrees"
+   echo "${cyc}z $lat $lon" >> rrfs_firewx_loc
+
+  done
+
+  clear
   echo "NEW FIREWX POINTS IN PRODUCTION"
   echo
-  echo "CYCLE        LAT     LONG"
+  echo "CYCLE     LAT      LON   "
   echo "-------------------------"
   for cyc in 00 06 12 18
   do
    lt=`grep ${cyc}z rrfs_firewx_loc | awk '{print $2}'`
    lg=`grep ${cyc}z rrfs_firewx_loc | awk '{print $3}'`
    echo "$cyc        $lt     $lg"
-   echo "Run Python script to check whether the center lat/lon points are inside the RRFS domain"
-   python $HOMErrfs/ush/rrfsfw_domain.py $lt $lg
   done
 
   cp -p $COMOUT/rrfs_firewx_loc $COMOUT/rrfs_firewx_loc_prev
