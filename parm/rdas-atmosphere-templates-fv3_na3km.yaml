@@ -221,7 +221,8 @@ atmosphere_final_increment_prefix: "./anl/atminc."
 
 # Observation things
 # ------------------
-## TODO: uncomment any double hashes below?
+max_pool_size: 80
+write_multiple_files: false
 observations:
 # Upper-air conventional
 ##- adpupa_airTemperature_120
