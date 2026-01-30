@@ -133,6 +133,7 @@ PARALSTART=true
 REMOVE=false
 CONTINUE=false
 VERBOSE=false
+BUILD_WORKAROUND=true
 
 # Turn off all apps to build and choose default later
 DEFAULT_BUILD=true
@@ -203,11 +204,11 @@ while :; do
     all) DEFAULT_BUILD=false; BUILD_UFS="on";
          BUILD_UFS_UTILS="on"; BUILD_UPP="on";
          BUILD_GSI="on"; BUILD_RRFS_UTILS="on";
-         BUILD_RDASAPP="on";;
+         BUILD_RDASAPP="on"; BUILD_WORKAROUND=true ;;
     ufs) DEFAULT_BUILD=false; BUILD_UFS="on" ;;
     ufs_utils) DEFAULT_BUILD=false; BUILD_UFS_UTILS="on" ;;
     upp) DEFAULT_BUILD=false; BUILD_UPP="on" ;;
-    gsi) DEFAULT_BUILD=false; BUILD_GSI="on" ;;
+    gsi) DEFAULT_BUILD=false; BUILD_GSI="on"; BUILD_WORKAROUND=true ;;
     rrfs_utils) DEFAULT_BUILD=false; BUILD_RRFS_UTILS="on" ;;
     nexus) DEFAULT_BUILD=false; BUILD_NEXUS="on" ;;
     aqm_utils) DEFAULT_BUILD=false; BUILD_AQM_UTILS="on" ;;
@@ -317,6 +318,14 @@ if [ "${EXTRN}" = true ]; then
   fi
   printf "... checking out external components ...\n"
   ./manage_externals/checkout_externals
+
+  # Copy workaround codes (remove these as soon as PRs are merged)
+  if [[ $BUILD_WORKAROUND = true ]]; then
+    # Workaround for qmin=0 in GSI
+    # No PR planned. Simply a consistancy between GSI and JEDI for dev purposes.
+    cp _workaround_/gsi/constants.f90 gsi/src/gsi/constants.f90
+  fi
+
 fi
 
 # choose default apps to build
