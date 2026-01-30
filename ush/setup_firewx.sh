@@ -8,6 +8,34 @@ echo "/lfs/h1/ops/prod/com/rrfs/v1.0/firewx_input and is read"
 echo "by the RRFS jobs that process the fire weather nest."
 ##########################################
 
+function setfirewx { 
+     
+# Set default center lat/lons (Washington DC)
+   lat=38.9
+   lon=-77.0
+    
+   echo
+   echo
+   echo "Enter center latitude and longitude points for ${cyc}Z cycle"
+   echo "To keep default location as Washington DC, enter 0.0 for both"
+   echo "Otherwise format is xx.x -yyy.y"
+   read clat clon
+
+   if [ $clat != "0.0" ] && [ $clon != "0.0" ]; then
+    lat=$clat
+    lon=$clon
+   fi
+  
+   echo
+   echo "Run Python script to check whether the center lat/lon are inside the RRFS domain"
+   python $HOMErrfs/ush/rrfsfw_domain.py $lat $lon
+
+}
+
+##########################################
+# Start of script
+##########################################
+
 envir=${envir:-prod}
 
 # in ush
@@ -89,30 +117,20 @@ do
   for cyc in 00 06 12 18
   do
 
-# Set default center lat/lon (Washington DC)
-   lat=38.9
-   lon=-77.0
+# Call setfirewx function to set latitude and longitude
+   setfirewx
 
-   echo
-   echo
-   echo "Enter center latitude and longitude points for ${cyc}Z cycle"
-   echo "To keep default location as Washington DC, enter 0.0 for both"
-   echo "Otherwise format is xx.x -yyy.y"
-   read clat clon
-
-   if [ $clat != "0.0" ] && [ $clon != "0.0" ]; then
-    lat=$clat
-    lon=$clon
-   fi
-
-   echo
-   echo "Run Python script to check whether the center lat/lon are inside the RRFS domain"
-   python $HOMErrfs/ush/rrfsfw_domain.py $lat $lon
    if [ $? -ne 0 ]; then
     echo
     echo "WARNING: Problem with the requested fire weather grid"
-    echo "exit script"
-    exit
+    echo "Try again"
+    setfirewx
+    if [ $? -ne 0 ]; then
+     echo
+     echo "WARNING: Problem with the requested fire weather grid"
+     echo "exit script"
+     exit
+    fi
    fi
 
    echo
