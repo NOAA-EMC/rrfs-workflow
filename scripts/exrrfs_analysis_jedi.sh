@@ -662,10 +662,10 @@ cp "${jedi_exec}" "${analworkdir}/${pgm}"
 . prep_step
 
 ${APRUN} ./$pgm jedivar.yaml >>$pgmout 2>errfile
+export err=$?; err_chk
 cp $pgmout ${COMOUT}/rrfs.t${HH}z.jediout_${anav_type}.tm00
 cp ${jcb_config} ${COMOUT}
 cp jedivar.yaml ${COMOUT}/jedivar_${anav_type}.yaml
-export err=$?; err_chk
 mv errfile errfile_jedi
 #
 #-----------------------------------------------------------------------
