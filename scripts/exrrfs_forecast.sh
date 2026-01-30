@@ -485,11 +485,6 @@ if [ ${BKTYPE} -eq 0 ]; then
        cpreq -p ${FV3_NML_RESTART_FP} ${DATA}/${FV3_NML_FN}
       else
         FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$((10#$cyc))]}
-
-        if [ -e ${DATA}/routehandle* ]; then
-	  rm ${DATA}/routehandle*
-	fi
-
         if [ $FCST_LEN_HRS -eq '18' ]; then
 
           if [ -e ${FIXLAM}/115_nodes_det/routehandle_fb01 ]; then
@@ -500,7 +495,7 @@ if [ ${BKTYPE} -eq 0 ]; then
              echo "cpreq $fl ${DATA}/" >> ./para_copy.sh
            done
 	   cpprocs=`cat ./para_copy.sh | grep routehandle | wc -l`
-	   mpiexec -n ${cpprocs} -ppn ${cpprocs} ./para_copy.sh
+	   mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
 	   rm ./para_copy.sh
 	  fi
 
@@ -516,7 +511,7 @@ if [ ${BKTYPE} -eq 0 ]; then
              echo "cpreq $fl ${DATA}/" >> ./para_copy.sh
            done
 	   cpprocs=`cat ./para_copy.sh | grep routehandle | wc -l`
-	   mpiexec -n ${cpprocs} -ppn ${cpprocs} ./para_copy.sh
+	   mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
 	   rm ./para_copy.sh
 	  fi
 
@@ -550,7 +545,7 @@ else # not cycling
              echo "cpreq $fl ${DATA}/" >> ./para_copy.sh
            done
 	   cpprocs=`cat ./para_copy.sh | grep routehandle | wc -l`
-	   mpiexec -n ${cpprocs} -ppn ${cpprocs} ./para_copy.sh
+	   mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
 	   rm ./para_copy.sh
 	  fi
 
@@ -565,7 +560,7 @@ else # not cycling
              echo "cpreq $fl ${DATA}/" >> ./para_copy.sh
            done
 	   cpprocs=`cat ./para_copy.sh | grep routehandle | wc -l`
-	   mpiexec -n ${cpprocs} -ppn ${cpprocs} ./para_copy.sh
+	   mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
 	   rm ./para_copy.sh
 	  fi
 
@@ -799,7 +794,7 @@ if [ "${DO_FCST_RESTART}" = "TRUE" ] && [ $coupler_res_ct -gt 0 ] && [ $FCST_LEN
          echo "cpreq $fl ${DATA}/" >> ./para_copy.sh
        done
        cpprocs=`cat ./para_copy.sh | grep routehandle | wc -l`
-       mpiexec -n ${cpprocs} -ppn ${cpprocs} ./para_copy.sh
+       mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
        rm ./para_copy.sh
      fi
 
