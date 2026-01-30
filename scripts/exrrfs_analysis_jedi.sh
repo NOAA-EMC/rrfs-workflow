@@ -180,11 +180,11 @@ if  [ ${ob_type} != "conv" ] || [ ${BKTYPE} -eq 1 ]; then #not using GDAS
   l_both_fv3sar_gfs_ens=.false.
 fi
 
-#if [ -d "${bkpath}.jedi" ]; then #@@@ TODO: UNCOMMENT ME AFTER DEBUGGING
-#  rm -rf "${bkpath}.jedi"  #@@@ TODO: UNCOMMENT ME AFTER DEBUGGING
-#fi  #@@@ TODO: UNCOMMENT ME AFTER DEBUGGING
-#rm -rf ${bkpath}.jedi #@@@ TODO: UNCOMMENT ME AFTER DEBUGGING
-#cp -rL $bkpath ${bkpath}.jedi #@@@ TODO: UNCOMMENT ME AFTER DEBUGGING
+if [ -d "${bkpath}.jedi" ]; then
+  rm -rf "${bkpath}.jedi"
+fi
+rm -rf ${bkpath}.jedi
+cp -rL $bkpath ${bkpath}.jedi
 bkpath=${bkpath}.jedi
 
 #
