@@ -26,6 +26,7 @@ window_length: PT6H
 bound_to_include: begin
 minimizer: DRPCG
 final_diagnostics_departures: oman
+final_j_evaluation: true
 number_of_outer_loops: 2
 distribution: RoundRobin
 empty_obs_space_action: create output
