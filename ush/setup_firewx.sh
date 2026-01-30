@@ -118,20 +118,18 @@ do
   do
 
 # Call setfirewx function to set latitude and longitude
-   setfirewx
-
-   if [ $? -ne 0 ]; then
-    echo
-    echo "WARNING: Problem with the requested fire weather grid"
-    echo "Try again"
+   check="incomplete"
+   while [ ${check} = "incomplete" ] 
+   do
     setfirewx
     if [ $? -ne 0 ]; then
      echo
      echo "WARNING: Problem with the requested fire weather grid"
-     echo "exit script"
-     exit
+     echo "Try again"
+    else
+     check="complete"
     fi
-   fi
+   done
 
    echo
    echo "For the ${cyc}Z cycle, the center latitude is ${lat} degrees and the center longitude is ${lon} degrees"
