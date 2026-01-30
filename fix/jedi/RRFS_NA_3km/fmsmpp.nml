@@ -17,9 +17,9 @@
 /
 
 &fms2_io_nml
-  ncchksz               = 65536
-  netcdf_default_format = "netcdf4"
-  header_buffer_val     = 16384
-  deflate_level         = 0
-  shuffle               = .false.
+       ncchksz                 = 65536
+       netcdf_default_format   = "netcdf4"
+       header_buffer_val       = 16384
+       deflate_level           = 0
+       shuffle                 = .false.
 /
