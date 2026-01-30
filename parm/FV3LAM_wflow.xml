@@ -201,7 +201,7 @@ define resources used for each tasks
 <!ENTITY RESOURCES_FCST_PROD    "<nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}:tpp={{ tpp_run_fcst }}</nodes>">
 <!ENTITY NODESIZE_ALL    "">
 <!ENTITY NATIVE_ALL          "<native>-l place=excl</native>">
-<!ENTITY NATIVE_ANALYSIS_JEDI "<native>-l place=excl</native>">
+<!ENTITY NATIVE_ANALYSIS_JEDI "<native>-l place=vscatter</native>">
 <!ENTITY NATIVE_ANALYSIS_GSI "<native>-l place=excl</native>">
 <!ENTITY NATIVE_ENKF         "<native>-l place=vscatter</native>">
 <!ENTITY NATIVE_FCST_SPINUP  "<native>-l place=excl</native>">
