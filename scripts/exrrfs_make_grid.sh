@@ -75,7 +75,7 @@ if [ ${WGF} = "firewx" ]; then
   LON_CTR=`grep ${hh}z $firewx_loc | awk '{print $3}'`
 
   python ${USHrrfs}/rrfsfw_domain.py ${LAT_CTR} ${LON_CTR}
-  if [[ $? != 0 ]]; then
+  if [ $? -ne 0 ]; then
     err_exit "WARNING: Problem with the requested fire weather grid - ABORT"
   fi
 fi
