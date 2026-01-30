@@ -469,7 +469,7 @@ else # copy bias from previous cycle
     cur_date=$(basename "$(dirname "$cur_comout")")  # YYYYMMDD
     cur_date=${cur_date#rrfs.}                       # 20240506
     cur_hour=$(basename "$cur_comout")               # 01
-    
+
 
     # Combine into YYYYMMDDHH
     cur_cycle="${cur_date}${cur_hour}"
@@ -490,7 +490,7 @@ else # copy bias from previous cycle
           ls  -l $prev_comout/satbias_out
           # Copy satbias_out files from current COMOUT to your target directory
           cp ${prev_comout}/satbias_out/* data/satbias_in/.
-          break   # exit WHILE loop 
+          break   # exit WHILE loop
       else
           echo "[$satcounter] Previous cycle does NOT exist: $prev_comout"
       fi
