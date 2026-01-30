@@ -1,0 +1,30 @@
+#!/bin/bash
+
+date
+export PS4='+ $SECONDS + '
+set -x
+
+# Setup working directory
+export DATA=${DATA:-${DATAROOT:?}/${jobid:?}}
+mkdir -p $DATA
+cd $DATA
+
+export cycle=${cycle:-t${cyc}z}
+setpdy.sh
+. ./PDY
+
+export NET=${NET:-rrfs}
+export COMIN=${COMIN:-$(compath.py ${envir}/${NET}/$rrfs_ver)}
+
+env
+
+# Execute the script
+$HOMErrfs/scripts/exrrfs_cleanup.sh
+export err=$?; err_chk
+
+# Remove the Temporary working directory
+if [ "${KEEPDATA^^}" != YES ]; then
+  rm -rf $DATA
+fi
+
+date
