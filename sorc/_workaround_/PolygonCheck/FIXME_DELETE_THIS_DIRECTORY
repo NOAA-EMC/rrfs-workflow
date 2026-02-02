@@ -1,0 +1,6 @@
+# This directory must be deleted before the PR is merged.
+# It serves only to copy the JEDI UFO changes into this PR for testing.
+
+# Files come from here:
+
+# - https://github.com/JCSDA/ufo/pull/78

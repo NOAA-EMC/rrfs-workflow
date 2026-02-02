@@ -43,8 +43,6 @@ EXEC4="${HOMErrfs}/sorc/RDASApp/build/bin/bufr2netcdf.x"
 EXEC5="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_hofx3d.x"
 cd "${HOMErrfs}/sorc/RDASApp" || exit 1
 
-set -e
-
 # workaround for using the GSL surface operator
 # https://github.com/JCSDA-internal/ufo/pull/3622 by Sijie
 cp ../_workaround_/RDASApp/sfccorrected/* sorc/ufo/src/ufo/operators/sfccorrected/
@@ -65,6 +63,15 @@ cp ../_workaround_/RDASApp/saber/GridCheckHelper.cc sorc/saber/src/saber/gsi/uti
 cp ../_workaround_/RDASApp/saber/GSIParameters.h sorc/saber/src/saber/gsi/utils/GSIParameters.h
 cp ../_workaround_/RDASApp/saber/Geometry.cc sorc/saber/src/saber/interpolation/Geometry.cc
 
+#-----------------------------------------------------------------------
+# These lines should not be merged. They contain the files from this PR:
+# 
+# - https://github.com/JCSDA/ufo/pull/78
+#
+# FIXME: Delete this section before merging the PR.
+
+set -e
+
 cp ../_workaround_/PolygonCheck/CMakeLists.txt sorc/ufo/src/ufo/filters/CMakeLists.txt
 cp ../_workaround_/PolygonCheck/ObsPolygonCheck.cc sorc/ufo/src/ufo/filters/ObsPolygonCheck.cc
 cp ../_workaround_/PolygonCheck/ObsPolygonCheck.h sorc/ufo/src/ufo/filters/ObsPolygonCheck.h
@@ -73,6 +80,8 @@ cp ../_workaround_/PolygonCheck/filtersCMakeLists.txt sorc/ufo/test/testinput/un
 cp ../_workaround_/PolygonCheck/polygon_check.yaml sorc/ufo/test/testinput/unit_tests/filters/polygon_check.yaml
 
 set +e
+
+#-----------------------------------------------------------------------
 
 rm -rf build/
 ./build.sh -m MPAS -t NO -w NO -b NO
