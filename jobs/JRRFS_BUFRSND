@@ -84,11 +84,9 @@ on the output files corresponding to a specified forecast hour.
 
 if [ $WGF = "ensf" ]; then
   export ENSMEM_INDX=${MEMBER_NAME}
-  export FHRLIM=60
   DO_ENSFCST="TRUE"
 elif [ $WGF = "det" ]; then
   export ENSMEM_INDX=""
-  export FHRLIM=84
 fi
 export mem_num=m$(echo "${ENSMEM_INDX}")
 

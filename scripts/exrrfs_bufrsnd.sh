@@ -103,7 +103,15 @@ OUTTYP=netcdf
 model=FV3S
 
 INCR=01
-FHRLIM=${FHRLIM}
+
+if [ $WGF = "ensf" ]; then
+  FHRLIM=60
+elif [ $WGF = "det" ]; then
+  FHRLIM=84
+else
+  echo "bad WGF definition for BUFRSND job : " $WGF
+  err_exit
+fi
 
 let NFILE=1
 
