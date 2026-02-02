@@ -3,6 +3,11 @@ set -x
 
 source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
+export FIXam=${FIXam:-${HOMErrfs}/fix/am}
+export FIXLAM=${FIXLAM:-${HOMErrfs}/fix/lam/RRFS_NA_3km}
+export FIX_GSI="${FIXrrfs}/gsi"
+export OBSPATH_NSSLMOSIAC="${DCOMROOT}/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC"
+
 #
 #-----------------------------------------------------------------------
 #
@@ -62,6 +67,8 @@ print_input_args valid_args
 #-----------------------------------------------------------------------
 #
 ulimit -a
+
+MACHINE=WCOSS2
 
 case $MACHINE in
 #

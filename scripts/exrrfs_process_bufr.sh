@@ -3,6 +3,8 @@ set -x
 
 source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
+export FIX_GSI="${FIXrrfs}/gsi"
+
 #
 #-----------------------------------------------------------------------
 #
@@ -46,6 +48,8 @@ with RRFS for the specified cycle.
 #-----------------------------------------------------------------------
 #
 ulimit -a
+
+MACHINE=WCOSS2
 
 case $MACHINE in
 #

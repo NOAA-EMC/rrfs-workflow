@@ -53,6 +53,8 @@ export ctrlpath=${CRTL_CENTER}
 #
 ulimit -a
 
+MACHINE=WCOSS2
+
 case $MACHINE in
 #
 "WCOSS2")
