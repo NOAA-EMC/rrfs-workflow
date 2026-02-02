@@ -125,55 +125,40 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
   # Loop through each ensemble member and check if the 1h RRFS EnKF files exist
   #### Check NUM_ENS_MEMBERS for all WGF case to remove thie for loop dead code
   #### waite for 5 minutes
+  NUM_ENS_MEMBERS_FOUND="NO"
   yyyymmdd_m=${yyyymmdd_m1}
   hh_m=${hh_m1}
   nnn=1
   while [[ $nnn -le 5 ]] ; do
-    existing_files=0
-    for imem in $(seq 1 ${NUM_ENS_MEMBERS}); do
-        checkfile="${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
-        if [[ -f $checkfile ]]; then
-           ((existing_files++))
-           echo "checkfile count: $existing_files"
-        else
-           echo "File missing: $checkfile"
-        fi
-    done
-    if [ $existing_files -eq ${NUM_ENS_MEMBERS} ]; then
-       print_info_msg "$VERBOSE" "Found ${NUM_ENS_MEMBERS} from ${RUN}.${yyyymmdd_m1}/${hh_m1}"
-       break
-    else
+   checkfile="${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
+   if [[ -f $checkfile ]]; then
+      NUM_ENS_MEMBERS_FOUND="YES"
+      nnn=6
+      print_info_msg "$VERBOSE" "Found ${NUM_ENS_MEMBERS} from ${RUN}.${yyyymmdd_m1}/${hh_m1}"
+   else
+      echo "File missing: $checkfile"
       sleep 60
       ((nnn++))
-    fi
+   fi
   done
   # if m1 cyc does not have enough ensemble forecast, check m3 cycle
-  if [ $existing_files -lt ${NUM_ENS_MEMBERS} ]; then
-    nnn=1
-    while [[ $nnn -le 3 ]] ; do
-      existing_files=0
-      for imem in $(seq 1 ${NUM_ENS_MEMBERS}); do
-        checkfile="${COMrrfs}/${RUN}.${yyyymmdd_m3}/${hh_m3}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
-        if [[ -f $checkfile ]]; then
-           ((existing_files++))
-           echo "checkfile count: $existing_files"
-        else
-           echo "File missing: $checkfile"
-        fi
-      done
-      if [ $existing_files -eq ${NUM_ENS_MEMBERS} ]; then
-         yyyymmdd_m=${yyyymmdd_m3}
-         hh_m=${hh_m3}
-         print_info_msg "$VERBOSE" "Found ${NUM_ENS_MEMBERS} from ${RUN}.${yyyymmdd_m3}/${hh_m3}"
-         break
-      else
-        sleep 60
-        ((nnn++))
-      fi
-    done
-  fi
+  nnn=1
+  while [[ $nnn -le 3 ]] ; do
+    checkfile="${COMrrfs}/${RUN}.${yyyymmdd_m3}/${hh_m3}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
+    if [[ -f $checkfile ]]; then
+      NUM_ENS_MEMBERS_FOUND="YES"
+      nnn=4
+      yyyymmdd_m=${yyyymmdd_m3}
+      hh_m=${hh_m3}
+      print_info_msg "$VERBOSE" "Found ${NUM_ENS_MEMBERS} from ${RUN}.${yyyymmdd_m3}/${hh_m3}"
+    else
+       echo "File missing: $checkfile"
+       sleep 60
+       ((nnn++))
+    fi
+  done
   # Check if the number of existing files is equal to the total number of ensemble members
-  if [[ $existing_files -eq ${NUM_ENS_MEMBERS} ]]; then
+  if [[ ${NUM_ENS_MEMBERS_FOUND} == "YES" ]]; then
       # Check if run_blending file exists, and if not, touch it
       if [[ ! -f $run_blending ]]; then
           touch $run_blending
