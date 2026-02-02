@@ -3,6 +3,8 @@ set -x
 
 source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
+export SFC_CLIMO_INPUT_DIR="${FIXrrfs}/fix_sfc_climo"
+
 #
 #-----------------------------------------------------------------------
 #
@@ -110,6 +112,8 @@ EOF
 #-----------------------------------------------------------------------
 #
 ulimit -a
+
+MACHINE=WCOSS2
 
 case $MACHINE in
 

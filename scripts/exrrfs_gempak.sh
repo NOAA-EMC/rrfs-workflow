@@ -3,6 +3,8 @@ set -x
 
 source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
+export GEMPAK_FIX=${GEMPAK_FIX:-${FIXrrfs}/gempak/fix}
+
 #################################################
 # Set up model and cycle specific variables
 #################################################

@@ -3,6 +3,9 @@ set -x
 
 source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
+export FIX_BUFRSND="${FIXrrfs}/bufrsnd"
+export GEMPAK_FIX=${GEMPAK_FIX:-${FIXrrfs}/gempak/fix}
+
 #
 #-----------------------------------------------------------------------
 #
@@ -45,6 +48,8 @@ This is the ex-script for the task that runs the bufr-sounding
 #-----------------------------------------------------------------------
 #
 ulimit -a
+
+MACHINE=WCOSS2
 
 case $MACHINE in
 
