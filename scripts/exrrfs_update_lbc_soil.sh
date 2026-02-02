@@ -119,6 +119,8 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 #
 #-----------------------------------------------------------------------
 #
+FIX_GSI="${FIXrrfs}/gsi"
+
 fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
 
 bkpath=${FORECAST_INPUT_PRODUCT}

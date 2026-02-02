@@ -9,7 +9,6 @@ set -xue
 #-----------------------------------------------------------------------
 export NET='rrfs'
 export MACHINE="WCOSS2"
-export WORKFLOW_MANAGER="ecflow"
 export HOMErrfs=${HOMErrfs:-""}
 export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
