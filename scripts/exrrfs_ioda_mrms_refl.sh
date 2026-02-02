@@ -123,7 +123,7 @@ for bigmin_this in ${RADARREFL_TIMELEVEL[@]}; do
     gridspacingdeg=0.03
   fi
   if [[ "${MESH_NAME}" == "ea5km" ]]; then
-    gridspacingdeg=0.0.5
+    gridspacingdeg=0.05
   fi
 
   precipdbzhorizskip=0
