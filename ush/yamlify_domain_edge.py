@@ -210,7 +210,7 @@ centroid = np.nanmean(ring, axis=0)
 
 indent=args.indent
 
-print(f'''{indent}- &POLY
+print(f'''{indent}polygon: &POLY
 {indent}  filter: Polygon Check
 {indent}  action:
 {indent}    name: reduce obs space
