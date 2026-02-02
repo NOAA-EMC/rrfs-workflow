@@ -63,6 +63,13 @@ cp ../_workaround_/RDASApp/saber/GridCheckHelper.cc sorc/saber/src/saber/gsi/uti
 cp ../_workaround_/RDASApp/saber/GSIParameters.h sorc/saber/src/saber/gsi/utils/GSIParameters.h
 cp ../_workaround_/RDASApp/saber/Geometry.cc sorc/saber/src/saber/interpolation/Geometry.cc
 
+cp ../_workaround_/PolygonCheck/CMakeLists.txt sorc/RDASApp/sorc/ufo/src/ufo/filters/CMakeLists.txt
+cp ../_workaround_/PolygonCheck/ObsPolygonCheck.cc sorc/RDASApp/sorc/ufo/src/ufo/filters/ObsPolygonCheck.cc
+cp ../_workaround_/PolygonCheck/ObsPolygonCheck.h sorc/RDASApp/sorc/ufo/src/ufo/filters/ObsPolygonCheck.h
+cp ../_workaround_/PolygonCheck/instantiateObsFilterFactory.h sorc/RDASApp/sorc/ufo/src/ufo/instantiateObsFilterFactory.h
+cp ../_workaround_/PolygonCheck/filtersCMakeLists.txt sorc/RDASApp/sorc/ufo/test/testinput/unit_tests/filters/CMakeLists.txt
+cp ../_workaround_/PolygonCheck/polygon_check.yaml sorc/RDASApp/sorc/ufo/test/testinput/unit_tests/filters/polygon_check.yaml
+
 rm -rf build/
 ./build.sh -m MPAS -t NO -w NO -b NO
 

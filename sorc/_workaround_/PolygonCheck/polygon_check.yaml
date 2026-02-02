@@ -1,0 +1,21 @@
+time window:
+  begin: 2018-04-14T20:30:00Z
+  end: 2018-04-15T03:30:00Z
+
+observations:
+- obs space:
+    name: Radiosonde
+    obsdatain:
+      engine:
+        type: H5File
+        obsfile: Data/ufo/testinput_tier_1/sondes_obs_2018041500_m.nc4
+    simulated variables: [airTemperature, windEastward, windNorthward]
+  obs filters:
+  - filter: Polygon Check
+    inside point longitude: 51
+    inside point latitude: 59
+    vertex longitudes: [ 50, 50, 200, 200, 125, 50 ]
+    vertex latitudes: [ 20, 60, 60, 20, 50, 20 ]
+    action:
+      name: reduce obs space
+  passedBenchmark: 30
