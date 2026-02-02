@@ -803,6 +803,17 @@ beta_recenter=1.0
 #
 #-----------------------------------------------------------------------
 #
+# JEDI JCB configuration files
+#
+#-----------------------------------------------------------------------
+#
+JCB_CONFIG_CONV="rdas-atmosphere-templates-fv3_c13.yaml"
+JCB_CONFIG_DBZ="rdas-atmosphere-templates-fv3_c13_dbz.yaml"
+JCB_CONFIG_ENKF_OBSERVER="rdas-atmosphere-templates-fv3_c13_getkf_observer.yaml"
+JCB_CONFIG_ENKF_SOLVER="rdas-atmosphere-templates-fv3_c13_getkf_solver.yaml"
+#
+#-----------------------------------------------------------------------
+#
 # Set initial and lateral boundary condition generation parameters.  
 #
 # EXTRN_MDL_NAME_ICS:

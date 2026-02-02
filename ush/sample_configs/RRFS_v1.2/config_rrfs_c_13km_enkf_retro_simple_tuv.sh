@@ -48,6 +48,8 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    DO_ENSINIT="TRUE"
 fi
 CONVINFO_FN="convinfo.rrfs_only_133_233"
+JCB_CONFIG_ENKF_OBSERVER="rdas-atmosphere-templates-fv3_c13_getkf_observer.yaml"
+JCB_CONFIG_ENKF_SOLVER="rdas-atmosphere-templates-fv3_c13_getkf_solver.yaml"
 
 # Radar DA options
 DO_IODA_MRMS="FALSE"
