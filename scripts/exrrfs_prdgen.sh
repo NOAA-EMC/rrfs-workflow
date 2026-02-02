@@ -2,6 +2,9 @@
 set -x
 
 source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+
+export FIX_UPP="${FIXrrfs}/upp"
+
 #
 #-----------------------------------------------------------------------
 #
@@ -45,6 +48,8 @@ the output files corresponding to a specified forecast hour.
 #-----------------------------------------------------------------------
 #
 ulimit -a
+
+MACHINE=WCOSS2
 
 case $MACHINE in
 

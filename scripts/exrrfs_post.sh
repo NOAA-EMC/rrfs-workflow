@@ -3,6 +3,17 @@ set -x
 
 source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
+export FIX_UPP="${FIXrrfs}/upp"
+export FIX_UPP_CRTM="${CRTM_FIX}"
+export CUSTOM_POST_CONFIG_FP="${FIXrrfs}/upp/postxconfig-NT-rrfs.txt"
+export CUSTOM_POST_PARAMS_FP="${FIXrrfs}/upp/params_grib2_tbl_new"
+if [ $WGF == "ensf" ]; then
+  export CUSTOM_POST_CONFIG_FP="${FIXrrfs}/upp/postxconfig-NT-refs.txt"
+fi
+if [ $WGF == "firewx" ]; then
+  export CUSTOM_POST_CONFIG_FP="${FIXrrfs}/upp/postxconfig-NT-firewx.txt"
+fi
+
 #
 #-----------------------------------------------------------------------
 #
@@ -46,6 +57,8 @@ the output files corresponding to a specified forecast hour.
 #-----------------------------------------------------------------------
 #
 ulimit -a
+
+MACHINE=WCOSS2
 
 case $MACHINE in
 
