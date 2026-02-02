@@ -194,7 +194,7 @@ cost function:
          threshold: 12.0
          action:
            name: reject
-       - *POLY
+       - *POLY # yamllint disable-line rule:anchors
      - obs space:
          name: adpsfc_t181
          distribution:
@@ -268,7 +268,7 @@ cost function:
            action:
              name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Duplicate Check
 #         - filter: Temporal Thinning
@@ -546,7 +546,7 @@ cost function:
            action:
              name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Duplicate Check
 #         - filter: Temporal Thinning
@@ -822,7 +822,7 @@ cost function:
            action:
              name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Duplicate Check
          - filter: Temporal Thinning
@@ -1102,7 +1102,7 @@ cost function:
            action:
              name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Duplicate Check
 #         - filter: Temporal Thinning
@@ -1379,7 +1379,7 @@ cost function:
            action:
              name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Duplicate Check
 #         - filter: Temporal Thinning
@@ -1661,7 +1661,7 @@ cost function:
            action:
              name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -1937,7 +1937,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -2210,7 +2210,7 @@ cost function:
            action:
              name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -2490,7 +2490,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online domain check
          - filter: Bounds Check
@@ -2809,7 +2809,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online domain check
          - filter: Bounds Check
@@ -3121,7 +3121,7 @@ cost function:
            action:
              name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online domain check
          - filter: Bounds Check
@@ -3436,7 +3436,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -3712,7 +3712,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -3988,7 +3988,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -4264,7 +4264,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -4536,7 +4536,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -4815,7 +4815,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online domain check
          - filter: Bounds Check
@@ -5127,7 +5127,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online domain check
          - filter: Bounds Check
@@ -5436,7 +5436,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -5712,7 +5712,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -5991,7 +5991,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online domain check
          - filter: Bounds Check
@@ -6300,7 +6300,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -6576,7 +6576,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -6852,7 +6852,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -7128,7 +7128,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -7404,7 +7404,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -7683,7 +7683,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online domain check
          - filter: Bounds Check
@@ -7995,7 +7995,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online domain check
          - filter: Bounds Check
@@ -8307,7 +8307,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online domain check
          - filter: Bounds Check
@@ -8619,7 +8619,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online domain check
          - filter: Bounds Check
@@ -8901,7 +8901,7 @@ cost function:
              name: assign error
              error parameter: 0.01
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Terrain Height Discrepancy Check
          - filter: Difference Check
@@ -9004,7 +9004,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -9280,7 +9280,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -9549,7 +9549,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -10406,7 +10406,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -10759,7 +10759,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -11035,7 +11035,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -11311,7 +11311,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -11588,7 +11588,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -11864,7 +11864,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -12140,7 +12140,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -12417,7 +12417,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -12689,7 +12689,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online regional domain check
          - filter: Bounds Check
@@ -12977,7 +12977,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online domain check
          - filter: Bounds Check
@@ -13295,7 +13295,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online domain check
          - filter: Bounds Check
@@ -13614,7 +13614,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online domain check
          - filter: Bounds Check
@@ -13932,7 +13932,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online domain check
          - filter: Bounds Check
@@ -14290,7 +14290,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online domain check
          - filter: Bounds Check
@@ -14699,7 +14699,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online domain check
          - filter: Bounds Check
@@ -15108,7 +15108,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online domain check
          - filter: Bounds Check
@@ -15483,7 +15483,7 @@ cost function:
 #           action:
 #             name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online domain check
          - filter: Bounds Check
@@ -15883,7 +15883,7 @@ cost function:
            action:
              name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Online domain check
          - filter: Bounds Check
@@ -16267,7 +16267,7 @@ cost function:
            action:
              name: reduce obs space
 
-         - *POLY
+         - *POLY # yamllint disable-line rule:anchors
 
          # Duplicate Check
          - filter: Temporal Thinning
@@ -16665,7 +16665,7 @@ cost function:
            initial value: false
            force reinitialization: false
        # domain boundary check
-       - *POLY
+       - *POLY # yamllint disable-line rule:anchors
        obs post filters:
        #Thinning
        - filter: Gaussian Thinning
@@ -17123,7 +17123,7 @@ cost function:
            initial value: false
            force reinitialization: false
        # domain boundary check
-       - *POLY
+       - *POLY # yamllint disable-line rule:anchors
        obs post filters:
        # Step 0-B: Calculate derived variables
        # Calculate CLW retrieved from observation
@@ -17713,7 +17713,7 @@ cost function:
            initial value: false
            force reinitialization: false
        # domain boundary check
-       - *POLY
+       - *POLY # yamllint disable-line rule:anchors
        obs post filters:
        # Step 0-B: Calculate derived variables
        # Calculate CLW retrieved from observation
@@ -18282,7 +18282,7 @@ cost function:
          action:
            name: reduce obs space
        # domain boundary check
-       - *POLY
+       - *POLY # yamllint disable-line rule:anchors
        # Data Thinning
        - filter: Gaussian Thinning
          filter variables:
@@ -18792,7 +18792,7 @@ cost function:
          action:
            name: reduce obs space
        # Domain boundary check
-       - *POLY
+       - *POLY # yamllint disable-line rule:anchors
        # Data Thinning
        - filter: Gaussian Thinning
          filter variables:
@@ -19320,7 +19320,7 @@ cost function:
            initial value: false
            force reinitialization: false
        # Domain boundary check
-       - *POLY
+       - *POLY # yamllint disable-line rule:anchors
 
        obs post filters:
        # Step 0-B: Calculate derived variables
@@ -19877,7 +19877,7 @@ cost function:
            initial value: false
            force reinitialization: false
        # Domain boundary check
-       - *POLY
+       - *POLY # yamllint disable-line rule:anchors
        obs post filters:
        #Thinning
        - filter: Gaussian Thinning
@@ -20302,7 +20302,7 @@ cost function:
            initial value: false
            force reinitialization: false
        # Domain boundary check
-       - *POLY
+       - *POLY # yamllint disable-line rule:anchors
        obs post filters:
        #Thinning
        - filter: Gaussian Thinning
@@ -20766,7 +20766,7 @@ cost function:
        # --------------------------------------
        # Step "one half:" Domain boundary check
        # --------------------------------------
-       - *POLY
+       - *POLY # yamllint disable-line rule:anchors
 
        # ----------------------------------------------------------------
        # Step 1 : Create Derived Variables for radiane to BT conversion
@@ -21319,7 +21319,7 @@ cost function:
        # --------------------------------------
        # Step "one half:" Domain boundary check
        # --------------------------------------
-       - *POLY
+       - *POLY # yamllint disable-line rule:anchors
 
        # ----------------------------------------------------------------
        # Step 1 : Create Derived Variables for radiane to BT conversion
