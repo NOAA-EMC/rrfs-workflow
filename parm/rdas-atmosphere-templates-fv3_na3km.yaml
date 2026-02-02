@@ -16,8 +16,8 @@ final_increment_file: atmosphere_final_increment
 output_ensemble_increments_file: atmosphere_output_ensemble_increments_gaussian
 model_file: atmosphere_model_pseudo
 initial_condition_file: atmosphere_background
-background_error_file: atmosphere_background_error_hybrid3denvar_mgbf
-#background_error_file: atmosphere_background_error_3dvar_gsibec
+#background_error_file: atmosphere_background_error_hybrid3denvar_mgbf
+background_error_file: atmosphere_background_error_3dvar_gsibec
 #background_error_file: atmosphere_background_error_3dvar_bumpID
 
 # Global analysis things
@@ -27,7 +27,8 @@ bound_to_include: begin
 minimizer: DRPCG
 final_diagnostics_departures: oman
 final_j_evaluation: true
-number_of_outer_loops: 2
+#number_of_outer_loops: 2
+number_of_outer_loops: 1
 distribution: RoundRobin
 empty_obs_space_action: create output
 
@@ -64,14 +65,14 @@ do_testing: false
 
 # Model things
 # ------------
-fv3lam_nml: input_lam_C775_NP14X14.nml
-atmosphere_layout_x: 14
-atmosphere_layout_y: 14
-atmosphere_npx_ges: 420 #not sure if correct
-atmosphere_npy_ges: 252 #not sure if correct
+fv3lam_nml: input_lam_C3463_NP40X40.nml
+atmosphere_layout_x: 40
+atmosphere_layout_y: 40
+atmosphere_npx_ges: 3950
+atmosphere_npy_ges: 2700
 atmosphere_npz_ges: 65
-atmosphere_npx_anl: 420 #not sure if correct
-atmosphere_npy_anl: 252 #not sure if correct
+atmosphere_npx_anl: 3950
+atmosphere_npy_anl: 2700
 atmosphere_npz_anl: 65
 atmosphere_ntiles: 1
 atmosphere_io_layout_x: 1
@@ -146,24 +147,24 @@ rain_number_concentration: rain_nc
 upward_air_velocity: W
 equivalent_reflectivity_factor: ref_f3d
 
-
 # Background error
 atmosphere_bump_data_directory: DATA/berror
 atmosphere_gsibec_path: DATA/berror
 atmosphere_number_ensemble_members: 30
-atmosphere_layout_gsib_x: 14
-atmosphere_layout_gsib_y: 14
-gsibec_lats: 127
-gsibec_lons: 211
-lat_start: -14.726005
-lat_end: 14.726005
-lon_start: -25.076254
-lon_end: 25.076254
-north_pole_lat: 51.499999
-north_pole_lon: 82.500018
-gsi_bands: 14
+atmosphere_layout_gsib_x: 40
+atmosphere_layout_gsib_y: 40
+gsibec_lats: 1351
+gsibec_lons: 1976
+lat_start: -36.4147012390921
+lat_end: 36.4147012390921
+lon_start: -59.7587096910596
+lon_end: 59.7587096910596
+north_pole_lat: 34.9999966097
+north_pole_lon: 67.4999923706
+gsi_bands: 40
 
 # Ensemble localization
+# NOT YET USED, NEED TO GET NA3KM SETTINGS
 mgbf_nml: mgbf_p196_14x14.nml
 mgbf_nx: 224
 mgbf_ny: 224
@@ -183,71 +184,73 @@ atmosphere_final_increment_prefix: "./anl/atminc."
 
 # Observation things
 # ------------------
+max_pool_size: 80
+write_multiple_files: false
 observations:
 # Upper-air conventional
-- adpupa_airTemperature_120
-- adpupa_airTemperature_132
-- adpupa_specificHumidity_120
-- adpupa_specificHumidity_132
-- adpupa_stationPressure_120
-- adpupa_winds_220
-- adpupa_winds_232
+#- adpupa_airTemperature_120
+#- adpupa_airTemperature_132
+#- adpupa_specificHumidity_120
+#- adpupa_specificHumidity_132
+#- adpupa_stationPressure_120
+#- adpupa_winds_220
+#- adpupa_winds_232
 
 - aircar_airTemperature_133
 - aircar_specificHumidity_133
 - aircar_winds_233
 
-- aircft_airTemperature_130
-- aircft_airTemperature_131
-- aircft_airTemperature_134
-- aircft_airTemperature_135
-- aircft_specificHumidity_134
-- aircft_winds_230
-- aircft_winds_231
-- aircft_winds_234
-- aircft_winds_235
+#- aircft_airTemperature_130
+#- aircft_airTemperature_131
+#- aircft_airTemperature_134
+#- aircft_airTemperature_135
+#- aircft_specificHumidity_134
+#- aircft_winds_230
+#- aircft_winds_231
+#- aircft_winds_234
+#- aircft_winds_235
 
-- proflr_winds_227
-- vadwnd_winds_224
-- rassda_airTemperature_126
+#- proflr_winds_227
+#- vadwnd_winds_224
+#- rassda_airTemperature_126
 
 # Surface conventional
-- adpsfc_airTemperature_181
-- adpsfc_airTemperature_183
-- adpsfc_airTemperature_187
-- adpsfc_specificHumidity_181
-- adpsfc_specificHumidity_183
-- adpsfc_specificHumidity_187
-- adpsfc_stationPressure_181
-- adpsfc_stationPressure_187
-- adpsfc_winds_281
-- adpsfc_winds_284
-- adpsfc_winds_287
-- msonet_airTemperature_188
-- msonet_specificHumidity_188
-- msonet_stationPressure_188
-- msonet_winds_288
+#- adpsfc_airTemperature_181
+#- adpsfc_airTemperature_183
+#- adpsfc_airTemperature_187
+#- adpsfc_specificHumidity_181
+#- adpsfc_specificHumidity_183
+#- adpsfc_specificHumidity_187
+#- adpsfc_stationPressure_181
+#- adpsfc_stationPressure_187
+#- adpsfc_winds_281
+#- adpsfc_winds_284
+#- adpsfc_winds_287
+#- msonet_airTemperature_188
+#- msonet_specificHumidity_188
+#- msonet_stationPressure_188
+#- msonet_winds_288
 
-- sfcshp_airTemperature_180
-- sfcshp_airTemperature_182
-- sfcshp_airTemperature_183
-- sfcshp_specificHumidity_180
-- sfcshp_specificHumidity_182
-- sfcshp_specificHumidity_183
-- sfcshp_stationPressure_180
-- sfcshp_stationPressure_182
-- sfcshp_winds_280
-- sfcshp_winds_282
-- sfcshp_winds_284
+#- sfcshp_airTemperature_180
+#- sfcshp_airTemperature_182
+#- sfcshp_airTemperature_183
+#- sfcshp_specificHumidity_180
+#- sfcshp_specificHumidity_182
+#- sfcshp_specificHumidity_183
+#- sfcshp_stationPressure_180
+#- sfcshp_stationPressure_182
+#- sfcshp_winds_280
+#- sfcshp_winds_282
+#- sfcshp_winds_284
 
 # Remote
 #- gnss_zenithTotalDelay
-- satwnd_winds_245_270
-- satwnd_winds_245_272
-- satwnd_winds_246_270
-- satwnd_winds_246_272
-- satwnd_winds_247_270
-- satwnd_winds_247_272
+#- satwnd_winds_245_270
+#- satwnd_winds_245_272
+#- satwnd_winds_246_270
+#- satwnd_winds_246_272
+#- satwnd_winds_247_270
+#- satwnd_winds_247_272
 
 # SatRad
 #- abi_g16
@@ -258,8 +261,6 @@ observations:
 #- atms_npp
 #- atms_n20
 #- atms_n21
-#- cris-fsr_n20
-#- cris-fsr_n21
 
 # Analysis iuse flag (default: passivate)
 # Upper-air conventional
@@ -336,8 +337,6 @@ iuse_amsua_metop-c: passivate
 iuse_atms_npp: passivate
 iuse_atms_n20: passivate
 iuse_atms_n21: passivate
-iuse_cris-fsr_n20: passivate
-iuse_cris-fsr_n21: passivate
 
 crtm_coefficient_path: "Data/crtm"
 

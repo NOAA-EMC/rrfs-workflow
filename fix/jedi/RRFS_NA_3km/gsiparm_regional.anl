@@ -4,7 +4,7 @@
  /
  &GRIDOPTS
    regional=.true.,fv3_regional=.true.,grid_ratio_fv3_regional=2.0,
-   nlon=211,nlat=127,nsig=65,
+   nlon=1976,nlat=1351,nsig=65,
  /
  &BKGERR
    vs=1.0,

@@ -6,15 +6,15 @@ version="v1.2.0"
 ACCOUNT="RRFS-DEV"
 
 # Directory settings (user-dependent)
-EXPT_BASEDIR="/lfs/h2/emc/da/noscrub/$USER/rrfs-workflow_dev/rrfs-workflow/expt_dirs/May2024_retro_radar/$version"
-EXPT_SUBDIR="rrfs_conus_13km.radar"
+EXPT_BASEDIR="/lfs/h2/emc/da/noscrub/$USER/rrfs-workflow_na3km/rrfs-workflow/expt_dirs/May2024_retro/$version"
+EXPT_SUBDIR="rrfs_na_3km"
 STMP="/lfs/h2/emc/stmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
 PTMP="/lfs/h2/emc/ptmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
 NWGES="/lfs/h2/emc/ptmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
 ARCHIVEDIR="/NCEPDEV/emc-meso/5year/Samuel.Degelia/RRFSv1/May2024_retro/$version/$EXPT_SUBDIR/"
-DO_ARCHIVE_RETRO="TRUE"
+DO_ARCHIVE_RETRO="FALSE" #@@@ Change?
 
-PREDEF_GRID_NAME=RRFS_CONUS_13km
+PREDEF_GRID_NAME=RRFS_NA_3km
 
 . set_rrfs_config_general.sh
 . set_rrfs_config_singlescaleloc.sh
@@ -38,16 +38,22 @@ DO_DACYCLE="TRUE"
 #DO_ENSEMBLE="TRUE"
 #DO_ENSFCST="TRUE"
 #DO_ENS_BLENDING="TRUE"
-JCB_CONFIG_CONV="rdas-atmosphere-templates-fv3_c13.yaml"
-JCB_CONFIG_DBZ="rdas-atmosphere-templates-fv3_c13_dbz.yaml"
+JCB_CONFIG_CONV="rdas-atmosphere-templates-fv3_na3km.yaml"
+JCB_CONFIG_DBZ="rdas-atmosphere-templates-fv3_na3km_dbz.yaml" # doesn't exist yet
 
 # Radar DA options
-DO_IODA_MRMS="TRUE"
-DO_ENVAR_RADAR_REF="TRUE"
+DO_IODA_MRMS="FALSE"
+DO_ENVAR_RADAR_REF="FALSE"
 DO_ENVAR_RADAR_REF_ONCE="FALSE"
 RADARREFL_TIMELEVEL=(0)
 FH_DFI_RADAR="0.0,0.25,0.5"
 diag_radardbz=.true.
+
+# Some job settings
+NNODES_RUN_ANALYSIS_JEDI="40"
+PPN_RUN_ANALYSIS_JEDI="40"
+NNODES_HYBRID_RADAR_REF_JEDI="40"
+PPN_HYBRID_RADAR_REF_JEDI="40"
 
 # Other options
 grid_ratio_fv3=1.0 # default: 2.0
@@ -164,7 +170,7 @@ EXTRN_MDL_DATE_JULIAN="TRUE"
 envir="test"
 
 NET="rrfs"
-TAG="c13"
+TAG="na3km"
 
 NCL_REGION="conus"
 MODEL="rrfs"

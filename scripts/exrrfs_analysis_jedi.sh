@@ -85,7 +85,12 @@ export LD_LIBRARY_PATH="${RDASAPP_DIR}/build/lib64:${LD_LIBRARY_PATH}"
 case $MACHINE in
 #
 "WCOSS2")
-  export FI_OFI_RXM_SAR_LIMIT=3145728
+  export FI_MR_CACHE_MONITOR=memhooks
+  export FI_MR_CACHE_MAX_COUNT=0
+  export MPICH_ENV_DISPLAY=1
+  export MPICH_OFI_STARTUP_CONNECT=1
+  export MPICH_OFI_VERBOSE=1
+  export MPICH_MPIIO_HINTS='*.tile1.nc:romio_cb_read=disable,*.sfc_data.nc:romio_cb_read=disable,*.phy_data.nc:romio_cb_read=disable,*.fv_*.res.nc:romio_cb_write=enable,*.sfc_data.nc:romio_cb_write=enable'
   export OMP_STACKSIZE=500M
   export OMP_NUM_THREADS=1 #${TPP_RUN_ANALYSIS}
   if [[ ${ob_type} == "conv" ]]; then
@@ -96,22 +101,31 @@ case $MACHINE in
     ppn=${PPN_HYBRID_RADAR_REF_JEDI}
   fi
   APRUN="mpirun -n ${ncores} -ppn ${ppn} --cpu-bind core --depth 1"
+  if [ ${ncores} -gt 480 ]; then
+    APRUN_UA="mpirun -n 480 -ppn ${ppn} --cpu-bind core --depth 1"
+  else
+    APRUN_UA="mpirun -n ${ncores} -ppn ${ppn} --cpu-bind core --depth 1"
+  fi
   ;;
 #
 "HERA")
   APRUN="srun"
+  APRUN_UA="srun"
   ;;
   #
 "GAEA")
   APRUN="srun"
+  APRUN_UA="srun"
   ;;
 #
 "JET")
   APRUN="srun"
+  APRUN_UA="srun"
   ;;
 #
 "ORION")
   APRUN="srun"
+  APRUN_UA="srun"
   ;;
 #
 esac
@@ -341,9 +355,9 @@ export PYTHONPATH="${JCBLIB}:${WXFLOWLIB}:${PYIODALIB}:${PYTHONPATH}"
 
 
 if [[ ${anav_type} == "conv" ]]; then
-  jcb_config="rdas-atmosphere-templates-fv3_c13.yaml"
+  jcb_config=${JCB_CONFIG_CONV}
 elif [[ ${anav_type} == "radardbz" ]]; then
-  jcb_config="rdas-atmosphere-templates-fv3_c13_dbz.yaml"
+  jcb_config=${JCB_CONFIG_DBZ}
 fi
 cp ${PARMdir}/${jcb_config} .
 cp ${USHdir}/run_jcb.py .
@@ -455,7 +469,7 @@ else # copy bias from previous cycle
     cur_date=$(basename "$(dirname "$cur_comout")")  # YYYYMMDD
     cur_date=${cur_date#rrfs.}                       # 20240506
     cur_hour=$(basename "$cur_comout")               # 01
-    
+
 
     # Combine into YYYYMMDDHH
     cur_cycle="${cur_date}${cur_hour}"
@@ -476,7 +490,7 @@ else # copy bias from previous cycle
           ls  -l $prev_comout/satbias_out
           # Copy satbias_out files from current COMOUT to your target directory
           cp ${prev_comout}/satbias_out/* data/satbias_in/.
-          break   # exit WHILE loop 
+          break   # exit WHILE loop
       else
           echo "[$satcounter] Previous cycle does NOT exist: $prev_comout"
       fi
@@ -518,19 +532,16 @@ ln -snf ${FIX_CRTM_JEDI} data/crtm
 mkdir -p INPUT
 ln -snf ${fixgriddir}/fv3_akbk  fv3_akbk
 ln -snf ${fixgriddir}/fv3_grid_spec  fv3_grid_spec
-ln -snf ${FIXLAM}/C775_grid.tile7.halo3.nc INPUT/C775_grid.tile7.halo3.nc
-ln -snf ${FIXLAM}/C775_mosaic.halo3.nc INPUT/grid_spec.nc
-cp ${FIX_JEDI}/coupler.res .
+ln -snf ${FIXLAM}/${CRES}_grid.tile7.halo3.nc INPUT/${CRES}_grid.tile7.halo3.nc
+ln -snf ${FIXLAM}/${CRES}_grid.tile7.halo3.nc INPUT/${CRES}_grid.tile7.nc
+ln -snf ${FIXLAM}/${CRES}_mosaic.halo3.nc INPUT/grid_spec.nc
 cp ${FIX_JEDI}/dynamics_lam_cmaq.yaml .
 cp ${FIX_JEDI}/field_table .
-cp ${FIX_JEDI}/fmsmpp.nml .
-cp ${FIX_JEDI}/gfs-restart.yaml .
-cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/berror_stats .
+cp ${FIX_JEDI}/berror_stats .
+cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/fmsmpp.nml .
 cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/gsiparm_regional.anl .
-cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/input_lam_C775_NP14X14.nml . # mgbf
-cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/input_lam_C775_NP16X10.nml . # bump
-cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/mgbf_p196_14x14.nml .
-cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/mgbf_p196_14x14_dbz.nml .
+cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/input_lam* .
+cp ${FIX_JEDI}/${PREDEF_GRID_NAME}/mgbf* .
 ln -snf ${RDASAPP_DIR}/fix/expr_data/fv3_2024052700/DataFix .
 #
 #-----------------------------------------------------------------------
@@ -612,6 +623,28 @@ fi
 
 #
 #-----------------------------------------------------------------------
+# Restripe the output directory for faster analysis writing
+#-----------------------------------------------------------------------
+#
+
+if [ "${PREDEF_GRID_NAME}" == "RRFS_NA_3km" ]; then
+  stripesize=30
+else
+  stripesize=8
+fi
+
+for f in inc_jedi.fv_core.res.nc \
+         inc_jedi.fv_srf_wnd.res.nc \
+         inc_jedi.fv_tracer.res.nc \
+         inc_jedi.phy_data.nc \
+         inc_jedi.sfc_data.nc
+do
+  rm -f "$f"
+  lfs setstripe --stripe-count ${stripesize} --stripe-size 1048576 --pool disk "$f"
+done
+
+#
+#-----------------------------------------------------------------------
 #
 # Run JEDI. Note that we have to launch the forecast from
 # the current cycle's run directory because the JEDI executable will look
@@ -629,10 +662,10 @@ cp "${jedi_exec}" "${analworkdir}/${pgm}"
 . prep_step
 
 ${APRUN} ./$pgm jedivar.yaml >>$pgmout 2>errfile
+export err=$?; err_chk
 cp $pgmout ${COMOUT}/rrfs.t${HH}z.jediout_${anav_type}.tm00
 cp ${jcb_config} ${COMOUT}
 cp jedivar.yaml ${COMOUT}/jedivar_${anav_type}.yaml
-export err=$?; err_chk
 mv errfile errfile_jedi
 #
 #-----------------------------------------------------------------------
@@ -657,7 +690,7 @@ cp "${ua2u_exec}" "${analworkdir}/${pgm}"
 
 mv inc_jedi.fv_core.res.nc agrid_inc_jedi.fv_core.res.nc
 
-${APRUN} ./${pgm} ua_update_u --in_grid=fv3_grid_spec --in_file=agrid_inc_jedi.fv_core.res.nc --out_file=inc_jedi.fv_core.res.nc >>$pgmout 2>errfile
+${APRUN_UA} ./${pgm} ua_update_u --in_grid=fv3_grid_spec --in_file=agrid_inc_jedi.fv_core.res.nc --out_file=inc_jedi.fv_core.res.nc >>$pgmout 2>errfile
 export err=$?; err_chk
 mv errfile errfile_ua2u
 
