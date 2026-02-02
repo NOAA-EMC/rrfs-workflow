@@ -22,6 +22,7 @@
 #include <string>
 #include <vector>
 
+#include <eckit/exception/Exceptions.h>
 #include "oops/util/ObjectCounter.h"
 #include "ufo/filters/FilterBase.h"
 #include "ufo/filters/QCflags.h"
@@ -58,23 +59,29 @@ class ObsPolygonCheckParameters : public FilterParametersBase {
 /// ObsPolygonLatLonSizeMismatch: thrown when the parameters vertex_longitudes
 /// and vertex_latitudes have different lengths.
 
-class ObsPolygonLatLonSizeMismatch: public std::invalid_argument {
+class ObsPolygonLatLonSizeMismatch: public eckit::BadValue {
  public:
-  explicit ObsPolygonLatLonSizeMismatch(const std::string &message):
-    std::invalid_argument(message)
+  explicit ObsPolygonLatLonSizeMismatch(const std::string &message,
+                                        const eckit::CodeLocation &location = {}):
+    eckit::BadValue(message, location)
   {}
 };
 
 /// ObsPolygonIsInvalid: thrown when boost::geometry::is_valid doesn't like a polygon.
 
-class ObsPolygonIsInvalid: public std::invalid_argument {
+class ObsPolygonIsInvalid: public eckit::BadValue {
  public:
-  explicit ObsPolygonIsInvalid(const std::string &message):
-    std::invalid_argument(message)
+  explicit ObsPolygonIsInvalid(const std::string &message,
+                               const eckit::CodeLocation &location = {}):
+    eckit::BadValue(message, location)
   {}
 };
 
-/// PolygonCheck: find obs within a specified polygon.
+/// PolygonCheck: flags all obs that aren't inside a specified
+/// polygon; uses the boost::geometry library. The boost::geometry
+/// library doesn't know which side is the inside of the polygon when
+/// using spherical geometry. Hence, the caller must provide an
+/// "inside point." Points on the other side of the polygon are flagged.
 
 class ObsPolygonCheck : public FilterBase,
                        private util::ObjectCounter<ObsPolygonCheck> {

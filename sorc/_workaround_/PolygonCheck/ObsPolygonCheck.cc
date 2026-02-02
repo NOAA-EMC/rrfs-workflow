@@ -19,6 +19,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+
 #include <boost/geometry.hpp>
 #include "ioda/ObsSpace.h"
 #include "oops/util/Logger.h"
@@ -70,19 +71,23 @@ void ObsPolygonCheck::applyFilter(const std::vector<bool> &apply,
     std::ostringstream what;
     what << "Mismatch between vertex longitude count (" << nlon
          << ") and vertex latitude count (" << nlat << ").";
-    throw ObsPolygonLatLonSizeMismatch(what.str());
+    throw ObsPolygonLatLonSizeMismatch(what.str(), Here());
   }
-  for (int i = 0; i < nlon; i++)
-    poly.outer().push_back(point_t(vertex_longitudes[i], vertex_latitudes[i]));
+  poly.outer().reserve(nlon);
+  for (size_t i = 0; i < nlon; i++)
+    poly.outer().emplace_back(vertex_longitudes[i], vertex_latitudes[i]);
 
   // Ask boost::geometry to correct common problems in the polygon definition.
+  // As of boost 1.91, the only practical effect is to close open rings.
+  // It will also correct the vertex ordering, but vertex ordering on a
+  // sphere is ignored.
   bg::correct(poly);
 
-  // Scan for obvious errors that bg::correct couldn't correct.
+  // Check for polygons that the boost::geometry library doesn't know how to handle.
   if (std::string reason; !bg::is_valid(poly, reason)) {
     std::ostringstream what;
-    what << "ObsPolygonCheck: unable to correct invalid polygon (" << reason << ")";
-    throw ObsPolygonIsInvalid(what.str());
+    what << "ObsPolygonCheck: boost::geometry does not like your polygon (\"" << reason << "\")";
+    throw ObsPolygonIsInvalid(what.str(), Here());
   }
 
   // Get the observation locations.
@@ -91,6 +96,9 @@ void ObsPolygonCheck::applyFilter(const std::vector<bool> &apply,
   obsdb_.get_db("MetaData", "longitude", lons);
 
   // Figure out which side is the inside by checking a point that is known to be inside.
+  // As of version 1.91, boost::geometry ignores the clockwise vs. counterclockwise when
+  // deciding which side of a polygon is the inside in spherical geometry. Hence,
+  // we need this "inside point" to determine which side is the inside.
   const bool useThisSide = bg::within(insidePoint, poly);
 
   // Find all points that are on the opposite side from the "inside point"
@@ -98,20 +106,15 @@ void ObsPolygonCheck::applyFilter(const std::vector<bool> &apply,
   std::vector<bool> notInside(nlocs, true);
   size_t applyCount = 0;
   size_t insideCount = 0;
-  for (size_t iloc = 0; iloc < nlocs; iloc++)
+  for (size_t iloc = 0; iloc < nlocs; iloc++) {
     if (apply[iloc]) {
-      try {
-        applyCount++;
-        bool inside = useThisSide == bg::within(point_t(lons[iloc], lats[iloc]), poly);
-        notInside[iloc] = !inside;
-        if (inside)
-          insideCount++;
-      } catch(const bg::exception &ex) {
-        // We only catch boost geometry exceptions here; anything else is passed through.
-        oops::Log::error() << "ObsPolygonCheck: boost::geometry error: " << ex.what() << std::endl;
-        // The default value for all points is "not inside" so any erroring points will be rejected.
-      }
+      applyCount++;
+      const bool inside = useThisSide == bg::within(point_t(lons[iloc], lats[iloc]), poly);
+      notInside[iloc] = !inside;
+      if (inside)
+        insideCount++;
     }
+  }
 
   for (auto &vec : flagged)
     for (size_t iloc = 0; iloc < nlocs; iloc++)
