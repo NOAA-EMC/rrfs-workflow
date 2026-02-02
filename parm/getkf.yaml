@@ -67,7 +67,7 @@ background:
     pattern: "%iMember%"
     start: 1
     zero padding: 3
-    nmembers: 30
+    nmembers: @ens_size@
 
 driver:
   run as observer only: true

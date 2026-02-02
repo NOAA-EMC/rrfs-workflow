@@ -47,8 +47,8 @@ else
   initial_file='mpasout.nc'
 fi
 # if cold_start or not do_radar_ref, remove refl10cm and w from stream_list.atmosphere.analysis
-if [[ "${start_type}" == "cold"  ]] || ! ${DO_RADAR_REF} ; then
-  sed -i '$d;N;$d' stream_list/stream_list.atmosphere.analysis
+if [[ "${start_type}" == "cold"  ]] || [[ ${DO_RADAR_REF} == "FALSE" ]]; then
+  sed -i '$d;N;$d' ../stream_list/stream_list.atmosphere.analysis
 fi
 # link ensembles to data/ens/
 for i in $(seq -w 001 "${ENS_SIZE}"); do
