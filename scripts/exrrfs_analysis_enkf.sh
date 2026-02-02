@@ -166,6 +166,14 @@ for imem in  $(seq 1 $nens) ensmean; do
     observer_nwges_dir="${NWGES_DIR}/${slash_ensmem_subdir}/observer_gsi"
   fi
 
+  # TODO: Move this to prep script since it will be a big bottleneck
+  if [ -d "${bkpath}.gsi" ]; then
+    rm -rf "${bkpath}.gsi"
+  fi
+  rm -rf ${bkpath}.gsi
+  cp -rL $bkpath ${bkpath}.gsi
+  bkpath=${bkpath}.gsi
+
   ln -snf  ${bkpath}/fv_core.res.tile1.nc      fv3sar_tile1_${memcharv0}_dynvars
   ln -snf  ${bkpath}/fv_tracer.res.tile1.nc    fv3sar_tile1_${memcharv0}_tracer
   ln -snf  ${bkpath}/sfc_data.nc               fv3sar_tile1_${memcharv0}_sfcdata
