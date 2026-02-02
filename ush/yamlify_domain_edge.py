@@ -182,7 +182,7 @@ def print_ring(ring, lonlat, indent, columns=8):
             print(', ', end='')
         # A 3km-resolution MPAS domain had points that differed by
         # .001 degrees, hence the resolution of .0001
-        print('%8.4f'%ring[i][lonlat], end='')
+        print('%8.4f' % ring[i][lonlat], end='')
 
 
 # Parse command-line arguments
@@ -200,15 +200,13 @@ args = parser.parse_args()
 # Assign filenames
 grid_filename = args.grid  # see note above.
 
-#print(f"Grid file: {grid_filename}")
-
 grid_ds = nc.Dataset(grid_filename, 'r')
 
 # Build ring
 ring = build_domain_ring(grid_ds)
 centroid = np.nanmean(ring, axis=0)
 
-indent=args.indent
+indent = args.indent
 
 print(f'''{indent}polygon: &POLY
 {indent}  filter: Polygon Check
@@ -219,8 +217,8 @@ print(f'''{indent}polygon: &POLY
 
 print(f'{indent}  vertex longitudes: [')
 print_ring(ring, 0, f'{indent}    ')
-print(f'\n{indent}  ]')        
+print(f'\n{indent}  ]')
 
 print(f'{indent}  vertex latitudes: [')
 print_ring(ring, 1, f'{indent}    ')
-print(f'\n{indent}  ]')        
+print(f'\n{indent}  ]')

@@ -138,7 +138,7 @@ esac
 
 if ( grep -E '\*POLY' jedivar.yaml > /dev/null ) ; then
   cp jedivar.yaml no_polygon_jedivar.yaml
-  ${USHrrfs}/yamlify_domain_edge.py -g "invariant.nc" -i '' > polygon.yaml
+  "${USHrrfs}/yamlify_domain_edge.py" -g "invariant.nc" -i '' > polygon.yaml
   cat polygon.yaml no_polygon_jedivar.yaml > jedivar.yaml
 fi
 

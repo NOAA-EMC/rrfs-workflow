@@ -125,7 +125,6 @@ ${cpreq} "${USHrrfs}"/offline_ioda_tweak.py .
 ${cpreq} "${USHrrfs}"/offline_vad_thinning.py .
 
 for ioda_file in ioda*nc; do
-  grid_file="${FIXrrfs}/${MESH_NAME}/${MESH_NAME}.static.nc"
   if [[ "${ioda_file}" == *abi* || "${ioda_file}" == *atms* || "${ioda_file}" == *cris* ]]; then
     echo " ${ioda_file} ioda tweak is skipped for abi, atms, and cris"
   else
