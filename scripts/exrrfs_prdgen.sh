@@ -262,7 +262,6 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
   tasks=(4 4 2 2)
   domains=(conus ak hi pr)
   count=0
-
   for domain in ${domains[@]}
   do
 
@@ -277,27 +276,25 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
       do
         cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${DATAprdgen}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2
       done
-if [[ $SENDCOM = 'YES' ]]; then
-      cpreq ${DATAprdgen}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 ${COMOUT}
-      wgrib2  ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
-fi
+      if [[ $SENDCOM = 'YES' ]]; then
+        cpreq ${DATAprdgen}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 ${COMOUT}
+        wgrib2  ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+      fi
     else
       for task in $(seq ${tasks[count]})
       do
         cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${DATAprdgen}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
       done
-if [[ $SENDCOM = 'YES' ]]; then
-      cpreq ${DATAprdgen}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2 ${COMOUT}
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
-fi
+      if [[ $SENDCOM = 'YES' ]]; then
+        cpreq ${DATAprdgen}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2 ${COMOUT}
+        wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+      fi
 
 # may need to add limit on cycle hours for this?  Or would that be handled in the processing of dbn_alerts?
-#
-  if [[ ${SENDDBN} = "YES" ]] ; then
-	  $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE} $job ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
-	  $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_WIDX} $job ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
-  fi 
-
+      if [[ ${SENDDBN} = "YES" ]] ; then
+        $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE} $job ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
+        $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_WIDX} $job ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+      fi 
     fi
     count=$count+1
   done
