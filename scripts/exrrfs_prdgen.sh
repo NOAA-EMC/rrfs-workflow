@@ -274,15 +274,27 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
     if [ ${DO_ENSFCST} = "TRUE" ]; then
       for task in $(seq ${tasks[count]})
       do
-        cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2
+        cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${DATAprdgen}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2
       done
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+      if [[ $SENDCOM = 'YES' ]]; then
+        cpreq ${DATAprdgen}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 ${COMOUT}
+        wgrib2  ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+      fi
     else
       for task in $(seq ${tasks[count]})
       do
-        cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
+        cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${DATAprdgen}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
       done
-      wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+      if [[ $SENDCOM = 'YES' ]]; then
+        cpreq ${DATAprdgen}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2 ${COMOUT}
+        wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+      fi
+
+# may need to add limit on cycle hours for this?  Or would that be handled in the processing of dbn_alerts?
+      if [[ ${SENDDBN} = "YES" ]] ; then
+        $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE} $job ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
+        $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_WIDX} $job ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+      fi 
     fi
     count=$count+1
   done
@@ -311,14 +323,17 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
         # 2.5 km Mercator Puerto Rico domain
         gridspecs="mercator:20 284.5:544:2500:297.491 15.0:310:2500:22.005"
       fi
+
+      if [[ $SENDCOM = 'YES' ]]; then
         
-      wgrib2 ${COMOUT}/${prslev_subh} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib${domain}.uv
-      wgrib2 inputs.grib${domain}.uv -set_bitmap 1 -set_grib_type c3 \
-        -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
-        -new_grid_interpolation neighbor \
-        -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
-        -new_grid ${gridspecs} ${COMOUT}/${prslev_subh_dom}
-      wgrib2 ${COMOUT}/${prslev_subh_dom} -s > ${COMOUT}/${prslev_subh_dom}.idx
+        wgrib2 ${COMOUT}/${prslev_subh} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib${domain}.uv
+        wgrib2 inputs.grib${domain}.uv -set_bitmap 1 -set_grib_type c3 \
+          -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
+          -new_grid_interpolation neighbor \
+          -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
+          -new_grid ${gridspecs} ${COMOUT}/${prslev_subh_dom}
+        wgrib2 ${COMOUT}/${prslev_subh_dom} -s > ${COMOUT}/${prslev_subh_dom}.idx
+      fi
     done
   fi
 
@@ -332,21 +347,15 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
   fi
   if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
     if [[ -f ${FIX_UPP}/${TESTBED_FIELDS_FN} ]]; then
-      wgrib2 ${COMOUT}/${prslev_conus} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN} | wgrib2 -i -grib ${COMOUT}/${testbed_conus} ${COMOUT}/${prslev_conus}
-      wgrib2 ${COMOUT}/${testbed_conus} -s > ${COMOUT}/${testbed_conus}.idx
+
+      if [[ $SENDCOM = 'YES' ]]; then
+        wgrib2 ${COMOUT}/${prslev_conus} | grep -F -f ${FIX_UPP}/${TESTBED_FIELDS_FN} | wgrib2 -i -grib ${COMOUT}/${testbed_conus} ${COMOUT}/${prslev_conus}
+        wgrib2 ${COMOUT}/${testbed_conus} -s > ${COMOUT}/${testbed_conus}.idx
+      fi
     else
       echo "WARNING: ${FIX_UPP}/${TESTBED_FIELDS_FN} not found"
     fi
   fi
-
-  #-- Upscale & subset FAA requested information
-  #-- FAA grib2 output is not generated for ensemble forecasts
- 
-   # echo "$USHrrfs/prdgen/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT} &" >> $DATAprdgen/poescript_faa_${fhr}
-
-#  if [ ${DO_ENSFCST} = "FALSE" ]; then
-#    ${USHrrfs}/prdgen/rrfs_prdgen_faa_subpiece.sh $fhr $cyc $prslev $natlev $ififip $aviati ${COMOUT} ${USHrrfs}/prdgen
-#  fi
 
   #-- Generate AWIPS/wmo products for RRFS
   #-- AWIPS/wmo products are not generated for ensemble forecasts

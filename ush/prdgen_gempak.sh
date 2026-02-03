@@ -262,9 +262,20 @@ if [[ "$SENDCOM" == "YES" ]]; then
     cpreq "$GEMGRDd" "$COMOUT/$GEMGRDd"
   fi
 
+ # Should all GEMPAK files be alerted?
   if [[ "$SENDDBN" == "YES" ]]; then
     "$DBNROOT/bin/dbn_alert" MODEL "${DBN_ALERT_TYPE}" "$job" \
       "$COMOUT/$GEMGRD"
+    if [[ "$RUNTYPE" = "rrfs_conus_subh" ]] ; then
+       "$DBNROOT/bin/dbn_alert" MODEL "${DBN_ALERT_TYPE}" "$job" \
+	       "$COMOUT/$GEMGRDa"
+       "$DBNROOT/bin/dbn_alert" MODEL "${DBN_ALERT_TYPE}" "$job" \
+	       "$COMOUT/$GEMGRDb"
+       "$DBNROOT/bin/dbn_alert" MODEL "${DBN_ALERT_TYPE}" "$job" \
+	       "$COMOUT/$GEMGRDc"
+       "$DBNROOT/bin/dbn_alert" MODEL "${DBN_ALERT_TYPE}" "$job" \
+	       "$COMOUT/$GEMGRDd"
+    fi
   else
     echo "##### DBN_ALERT_TYPE is: ${DBN_ALERT_TYPE} #####"
   fi

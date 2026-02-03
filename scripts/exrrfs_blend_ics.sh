@@ -191,7 +191,7 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
      fi
 
      # F2Py shared object files to PYTHONPATH
-     export PYTHONPATH=$PYTHONPATH:$HOMErrfs/sorc/build/lib64
+     export PYTHONPATH=$PYTHONPATH:$HOMErrfs/lib
 
      # Required NETCDF files - RRFS
      cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.tile1.nc ./fv_core.res.tile1.nc

@@ -189,51 +189,51 @@ def main():
 
   elif (llcrnr_check == True) and (lrcrnr_check == True) and (ulcrnr_check == True) and (urcrnr_check == True):
     print(('Since all 4 corner points of the RRFS fire weather nest are outside the RRFS domain, there is no specific recommendation for how to modify the center lat/lon.'))
-    sys.exit()
+    sys.exit(1)
 
 #---- Only RRFSFW upper right corner is inside RRFS domain ----#
 #---- Shift center lat/lon to the northeast ----#
   elif (llcrnr_check == True) and (lrcrnr_check == True) and (ulcrnr_check == True):
     print(('Recommend shifting the center latitude further north and the center longitude further east.'))
-    sys.exit()
+    sys.exit(1)
 
 #---- Only RRFSFW upper left corner is inside RRFS domain ----#
 #---- Shift center lat/lon to the northwest ----#
   elif (llcrnr_check == True) and (lrcrnr_check == True) and (urcrnr_check == True):
     print(('Recommend shifting the center latitude further north and the center longitude further west.'))
-    sys.exit()
+    sys.exit(1)
 
 #---- Only RRFSFW lower right corner is inside RRFS domain ----#
 #---- Shift center lat/lon to the southeast ----#
   elif (llcrnr_check == True) and (ulcrnr_check == True) and (urcrnr_check == True):
     print(('Recommend shifting the center latitude further south and the center longitude further east.'))
-    sys.exit()
+    sys.exit(1)
 
 #---- RRFSFW is outside RRFS domain except for lower left corner ----#
 #---- Shift center lat/lon to the southwest ----#
   elif (lrcrnr_check == True) and (ulcrnr_check == True) and (urcrnr_check == True):
     print(('Recommend shifting the center latitude further south and the center longitude further west.'))
-    sys.exit()
+    sys.exit(1)
 
 #---- RRFSFW is too far south ----#
   elif (llcrnr_check == True) and (lrcrnr_check == True):
     print(('Recommend shifting the center latitude further north.'))
-    sys.exit()
+    sys.exit(1)
 
 #---- RRFSFW is too far north ----#
   elif (ulcrnr_check == True) and (urcrnr_check == True):
     print(('Recommend shifting the center latitude further south.'))
-    sys.exit()
+    sys.exit(1)
 
 #---- RRFSFW is too far west ----#
   elif (llcrnr_check == True) and (ulcrnr_check == True):
     print(('Recommend shifting the center longitude further east.'))
-    sys.exit()
+    sys.exit(1)
 
 #---- RRFSFW is too far east ----#
   elif (lrcrnr_check == True) and (urcrnr_check == True):
     print(('Recommend shifting the center longitude further west.'))
-    sys.exit()
+    sys.exit(1)
 
 
 #-----------------------------------------------------------------------
