@@ -166,6 +166,10 @@ print_info_msg "$VERBOSE" "background type is $BKTYPE"
 if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
   ens_nstarthr=$( printf "%02d" ${DA_CYCLE_INTERV} )
   n=${DA_CYCLE_INTERV}
+  SLEEP_TIME=300
+  SLEEP_INT=15
+  SLEEP_LOOP_MAX=`expr $SLEEP_TIME / $SLEEP_INT`
+  ic=0
   while [[ $n -le 3 ]] ; do  # this check only works for hourly cycle
       imem=1
       ifound=0
@@ -205,8 +209,13 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
       if [[ $ifound -eq ${NUM_ENS_MEMBERS} ]]; then
 	      break
       else
-        rm -f ${DATA}/parallel_copy.sh
-        (( n += 1 ))
+        [[ -f ${DATA}/parallel_copy.sh ]] && rm -f ${DATA}/parallel_copy.sh
+        if [[ ${n} -eq ${DA_CYCLE_INTERV} ]] && [[ ${ic} -lt $SLEEP_LOOP_MAX ]]; then
+          ic=`expr $ic + 1`
+          sleep $SLEEP_INT
+        else
+          (( n += 1 ))
+        fi
       fi
   done
 
