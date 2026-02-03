@@ -53,7 +53,7 @@ git clone https://github.com/NOAA-EMC/rrfs-workflow
 cd rrfs-workflow/sorc
 ```
 
-3. Build the RRFS workflow (must have python available in shell environment):
+3. Build the RRFS workflow:
 ```
 ./app_build.sh --extrn
 ```
