@@ -276,12 +276,15 @@ ${APRUNS} ${EXECrrfs}/$pgm < itag >>$pgmout 2>errfile
 export err=$?; err_chk
 mv errfile errfile_rrfs_sndp
 
-SENDCOM=YES
-
-if [ "${SENDCOM}" = "YES" ]; then
+if [[ "${SENDCOM}" = "YES" ]]; then
   cpreq $DATA/class1.bufr $COMOUT/rrfs.t${cyc}z.class1.bufr
   cpreq $DATA/profilm.c1.${tmmark} ${COMOUT}/rrfs.t${cyc}z.profilm.c1
-fi
+
+ if [[ "${SENDDBN}" = "YES" ]]; then
+   $DBNROOT/bin/dbn_alert MODEL RRFS_BUFR $job ${COMOUT}/rrfs.t${cyc}z.class1.bufr
+ fi
+
+fi #SENDCOM
 
 # remove bufr file breakout directory in $COMOUT if it exists
 
@@ -347,6 +350,16 @@ r
 
 exit
 EOF
+
+if [[ "${SENDCOM}" = "YES" ]]; then
+  cpreq ${outfilbase}.snd ${COMOUT}/gempak/
+  cpreq ${outfilbase}.sfc* ${COMOUT}/gempak/
+ if [[ "${SENDDBN}" = "YES" ]]; then
+  $DBNROOT/bin/dbn_alert MODEL RRFS_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.snd
+  $DBNROOT/bin/dbn_alert MODEL RRFS_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.sfc
+  $DBNROOT/bin/dbn_alert MODEL RRFS_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.sfc_aux
+ fi
+fi
 
 print_info_msg "
 ========================================================================

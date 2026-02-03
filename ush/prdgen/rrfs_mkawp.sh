@@ -34,17 +34,16 @@ then
   . prep_step
 
   export FORT11=rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2
-  export FORT51=grib2.rrfs.t${cyc}z.awips.f${fhr}
+  export FORT51=grib2.rrfs.t${cyc}z.awips.f${fhr}.na
   $TOCGRIB2 < $PARMrrfs/wmo/grib2_awips_rrfs_f${fhr}
   export err=$?; err_chk
 
-  cpreq -p grib2.rrfs.t${cyc}z.awips.f${fhr} ${COMOUT}/wmo
+  cpreq -p grib2.rrfs.t${cyc}z.awips.f${fhr}.na ${COMOUT}/wmo
 
-# DBN alerts from HRRR script - someone can modify this for RRFS later
-#  if [ $SENDDBN_NTC = YES -a $fhr -le 18 ]
-#  then
-#    $DBNROOT/bin/dbn_alert NTC_LOW $NET $job $WMO/grib2.${cycle}.awphrrr184_f${fhr}_${cyc}
-#  fi
+ if [ $SENDDBN_NTC = YES ]
+ then
+   $DBNROOT/bin/dbn_alert NTC_LOW $NET $job ${COMOUT}/wmo/grib2.rrfs.t${cyc}z.awips.f${fhr}.na
+ fi
 
 else
   echo "An AWIPS file will not be generated for forecast hour ${fhr}."
