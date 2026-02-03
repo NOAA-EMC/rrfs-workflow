@@ -17,6 +17,7 @@ def ioda_mrms_refl(xmlFile, expdir):
         cycledefs = 'prod,spinup,spinup2,spinup3'
     OBSPATH_NSSLMOSIAC = os.getenv("OBSPATH_NSSLMOSIAC", 'OBSPATH_NSSLMOSIAC_not_defined')
     RADARREFL_TIMELEVEL = os.getenv("RADARREFL_TIMELEVEL", 'RADARREFL_TIMELEVEL_not_defined')
+    MRMS_GRIDSPACINGDEG = os.getenv("MRMS_GRIDSPACINGDEG", 'MRMS_GRIDSPACINGDEG_not_defined')
     do_jedi = os.getenv("DO_JEDI", "FALSE").upper()
     do_ensemble = os.getenv("DO_ENSEMBLE", "FALSE").upper()
     if do_ensemble and do_jedi == "TRUE":
@@ -30,6 +31,7 @@ def ioda_mrms_refl(xmlFile, expdir):
         'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
         'OBSPATH_NSSLMOSIAC': f'{OBSPATH_NSSLMOSIAC}',
         'RADARREFL_TIMELEVEL': f'{RADARREFL_TIMELEVEL}',
+        'MRMS_GRIDSPACINGDEG': f'{MRMS_GRIDSPACINGDEG}',
         'ASSIM_METHOD': f'{ASSIM_METHOD}'
     }
 

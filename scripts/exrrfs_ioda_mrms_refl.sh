@@ -79,7 +79,7 @@ for bigmin_this in ${RADARREFL_TIMELEVEL[@]}; do
       nsslfile_long="${NSSL}/${YYYY}${MM}${DD}-${HH}${min}${ss}.MRMS_${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.${obs_appendix}"
       if [[ -s ${nsslfile_short} || -s ${nsslfile_long} ]]; then
         echo "Found ${nsslfile_short}"
-	echo "or ${nsslfile_long}"
+        echo "or ${nsslfile_long}"
         nsslfile1="*${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.${obs_appendix}"
 	numgrib2=$(find ${NSSL}/${nsslfile1} -maxdepth 1 -type f | wc -l)
         echo "Number of GRIB-2 files: ${numgrib2}"
@@ -116,14 +116,8 @@ for bigmin_this in ${RADARREFL_TIMELEVEL[@]}; do
   fi
 
   gridspacingdeg=0.20
-  if [[ "${MESH_NAME}" == "na12km" || "${MESH_NAME}" == "conus12km" ]]; then
-    gridspacingdeg=0.10
-  fi
-  if [[ "${MESH_NAME}" == "conus3km" || "${MESH_NAME}" == "south3.5km" || "${MESH_NAME}" == "ar3.5km" ]]; then
-    gridspacingdeg=0.03
-  fi
-  if [[ "${MESH_NAME}" == "ea5km" ]]; then
-    gridspacingdeg=0.05
+  if [[ -n "$MRMS_GRIDSPACINGDEG" ]]; then
+    gridspacingdeg=${MRMS_GRIDSPACINGDEG}
   fi
 
   precipdbzhorizskip=0
