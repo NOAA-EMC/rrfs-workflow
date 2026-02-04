@@ -264,47 +264,6 @@ if [ "${PARALSTART}" = false ]; then
   ENABLE_RRFS_WAR="on"
 fi
 
-# check out external components specified in External.cfg
-if [ "${EXTRN}" = true ]; then
-  cd ${SORC_DIR}
-  # remove existing components
-  printf "... checking if external components exist ...\n"
-  if [ -d "${SORC_DIR}/UFS_UTILS" ]; then
-    printf "... removing UFS_UTILS ...\n"
-    rm -rf "${SORC_DIR}/UFS_UTILS"
-  fi
-  if [ -d "${SORC_DIR}/ufs-weather-model" ]; then
-    printf "... removing ufs-weather-model ...\n"
-    rm -rf "${SORC_DIR}/ufs-weather-model"
-  fi
-  if [ -d "${SORC_DIR}/UPP" ]; then
-    printf "... removing UPP ...\n"
-    rm -rf "${SORC_DIR}/UPP"
-  fi
-  if [ -d "${SORC_DIR}/rrfs_utl" ]; then
-    printf "... removing rrfs_utl ...\n"
-    rm -rf "${SORC_DIR}/rrfs_utl"
-  fi
-  if [ -d "${SORC_DIR}/gsi" ]; then
-    printf "... removing GSI ...\n"
-    rm -rf "${SORC_DIR}/gsi"
-  fi
-  if [ -d "${SORC_DIR}/AQM-utils" ]; then
-    printf "... removing AQM-utils ...\n"
-    rm -rf "${SORC_DIR}/AQM-utils"
-  fi
-
-  # run check-out
-  python --version 1>/dev/null 2>/dev/null
-  if [[ $(which python) == "/usr/bin/python" ]]; then
-       module unload python
-       module load PrgEnv-intel/${PrgEnv_intel_ver}
-       module load python/${python_ver}
-  fi
-  printf "... checking out external components ...\n"
-  ./manage_externals/checkout_externals
-fi
-
 # choose default apps to build
 if [ "${DEFAULT_BUILD}" = true ]; then
   BUILD_UFS="on"
@@ -358,6 +317,47 @@ if [ "${PLATFORM}" = "wcoss2" ]; then
   if [ -f ${BUILD_VERSION_FILE} ]; then
     . ${BUILD_VERSION_FILE}
   fi
+fi
+
+# check out external components specified in External.cfg
+if [ "${EXTRN}" = true ]; then
+  cd ${SORC_DIR}
+  # remove existing components
+  printf "... checking if external components exist ...\n"
+  if [ -d "${SORC_DIR}/UFS_UTILS" ]; then
+    printf "... removing UFS_UTILS ...\n"
+    rm -rf "${SORC_DIR}/UFS_UTILS"
+  fi
+  if [ -d "${SORC_DIR}/ufs-weather-model" ]; then
+    printf "... removing ufs-weather-model ...\n"
+    rm -rf "${SORC_DIR}/ufs-weather-model"
+  fi
+  if [ -d "${SORC_DIR}/UPP" ]; then
+    printf "... removing UPP ...\n"
+    rm -rf "${SORC_DIR}/UPP"
+  fi
+  if [ -d "${SORC_DIR}/rrfs_utl" ]; then
+    printf "... removing rrfs_utl ...\n"
+    rm -rf "${SORC_DIR}/rrfs_utl"
+  fi
+  if [ -d "${SORC_DIR}/gsi" ]; then
+    printf "... removing GSI ...\n"
+    rm -rf "${SORC_DIR}/gsi"
+  fi
+  if [ -d "${SORC_DIR}/AQM-utils" ]; then
+    printf "... removing AQM-utils ...\n"
+    rm -rf "${SORC_DIR}/AQM-utils"
+  fi
+
+  # run check-out
+  python --version 1>/dev/null 2>/dev/null
+  if [[ $(which python) == "/usr/bin/python" ]]; then
+       module unload python
+       module load PrgEnv-intel/${PrgEnv_intel_ver}
+       module load python/${python_ver}
+  fi
+  printf "... checking out external components ...\n"
+  ./manage_externals/checkout_externals
 fi
 
 # set MODULE_FILE for this platform/compiler combination
