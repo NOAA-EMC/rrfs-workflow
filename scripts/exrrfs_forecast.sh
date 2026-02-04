@@ -3,7 +3,7 @@ set -x
 
 source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
-# seems like more of these can be removed.  Already removed many.
+# def NEED
 export FIXam=${FIXam:-${HOMErrfs}/fix/am}
 export FIXLAM=${FIXLAM:-${HOMErrfs}/fix/lam/RRFS_NA_3km}
 export FIXgsm=${FIXgsm:-${HOMErrfs}/fix/am}
@@ -11,11 +11,8 @@ export FIX_SMOKE_DUST="${FIXrrfs}/smoke_dust"
 export DIAG_TABLE_TMPL_FP="${PARMrrfs}/diag_table.RRFS_sas_clm"
 export MODEL_CONFIG_TMPL_FP="${PARMrrfs}/model_configure"
 export UFS_CONFIG_TMPL_FP="${PARMrrfs}/ufs.configure"
-export CCPP_PHYS_SUITE_FP="${PARMrrfs}/config/${WGF}/suite_RRFS_sas.xml"
-export DIAG_TABLE_FN="diag_table"
 export FV3_NML_FN="input.nml"
 export FV3_EXEC_FP="${EXECrrfs}/ufs_model"
-export THOMPSON_MP_CLIMO_FP="${FIXam}/Thompson_MP_MONTHLY_CLIMO.nc"
 export FIELD_TABLE_FP="${PARMrrfs}/config/${WGF}/field_table"
 export FV3_NML_FP="${PARMrrfs}/config/${WGF}/input.nml"
 export UFS_YAML_FP="${PARMrrfs}/config/${WGF}/fd_ufs.yaml"
@@ -26,9 +23,15 @@ export FV3_NML_RESTART_SPINUPCYC_FP="${PARMrrfs}/config/${WGF}/input.nml_restart
 export FV3_NML_18H_FP="${PARMrrfs}/config/${WGF}/input.nml_18h"
 export FV3_NML_LONG_FP="${PARMrrfs}/config/${WGF}/input.nml_long"
 export FV3_NML_SPINUPCYC_FP="${PARMrrfs}/config/${WGF}/input.nml_spinupcyc"
+
+# maybe remove?
+# export CCPP_PHYS_SUITE_FP="${PARMrrfs}/config/${WGF}/suite_RRFS_sas.xml"
+# export DIAG_TABLE_FN="diag_table"
+# export THOMPSON_MP_CLIMO_FP="${FIXam}/Thompson_MP_MONTHLY_CLIMO.nc"
+#
 if [ $WGF == "firewx" ]; then
   export DIAG_TABLE_TMPL_FP="${PARMrrfs}/diag_table.RRFS_sas_nogwd"
-  export CCPP_PHYS_SUITE_FP="${PARMrrfs}/config/${WGF}/suite_RRFS_sas_nogwd.xml"
+#no?  export CCPP_PHYS_SUITE_FP="${PARMrrfs}/config/${WGF}/suite_RRFS_sas_nogwd.xml"
   export CCPP_PHYS_SUITE='RRFS_sas_nogwd'
 fi
 
