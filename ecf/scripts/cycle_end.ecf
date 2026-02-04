@@ -3,7 +3,6 @@
 model=rrfs
 %include <head.h>
 %include <envir-p1.h>
-module load prod_util
 set -x
 cyc=%CYC%
 export cycle=t${cyc}z

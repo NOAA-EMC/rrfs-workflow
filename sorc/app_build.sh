@@ -296,7 +296,9 @@ if [ "${EXTRN}" = true ]; then
 
   # run check-out
   python --version 1>/dev/null 2>/dev/null
-  if [[ $? -ne 0 ]]; then
+  if [[ $(which python) == "/usr/bin/python" ]]; then
+       module unload python
+       module load PrgEnv-intel
        module load python
   fi
   printf "... checking out external components ...\n"
