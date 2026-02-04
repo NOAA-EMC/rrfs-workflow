@@ -3467,8 +3467,10 @@ MODULES_RUN_TASK_FP script.
         {%- elif do_enkf_radar_ref %}
         <taskdep task="&ENKF_RADAR_REF_TN;"/>
         {%- elif do_enkfupdate %}
-        <taskdep task="&RUN_ENKFUPDT_TN;"/>
-        <taskdep task="&RUN_ENKFUPDT_JEDI_TN;"/>
+        <and>
+          <taskdep task="&RUN_ENKFUPDT_TN;"/>
+          <taskdep task="&RUN_ENKFUPDT_JEDI_TN;"/>
+        </and>
        {%- endif %}
     {%- endif %}
     </dependency>
@@ -3553,8 +3555,10 @@ MODULES_RUN_TASK_FP script.
         {%- elif do_enkf_radar_ref %}
         <taskdep task="&ENKF_RADAR_REF_TN;"/>
         {%- else %}
-        <taskdep task="&RUN_ENKFUPDT_TN;"/>
-        <taskdep task="&RUN_ENKFUPDT_JEDI_TN;"/>
+        <and>
+          <taskdep task="&RUN_ENKFUPDT_TN;"/>
+          <taskdep task="&RUN_ENKFUPDT_JEDI_TN;"/>
+        </and>
        {%- endif %}
       {%- else %}
       <taskdep task="&PREP_CYC_TN;_prod{{ uscore_ensmem_name }}"/>
