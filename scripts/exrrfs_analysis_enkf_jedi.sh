@@ -180,6 +180,7 @@ for imem in  $(seq 1 $nens); do
   ln -snf ${bkpath}/fv_tracer.res.tile1.nc     data/inputs/${memcharv0}/fv_tracer.res.tile1.nc
   ln -snf ${bkpath}/sfc_data.nc                data/inputs/${memcharv0}/sfc_data.nc
   ln -snf ${bkpath}/phy_data.nc                data/inputs/${memcharv0}/phy_data.nc
+  ln -snf ${bkpath}/fv_srf_wnd.res.tile1.nc    data/inputs/${memcharv0}/fv_srf_wnd.res.tile1.nc
   ln -snf ${bkpath}/coupler.res                data/inputs/${memcharv0}/coupler.res
 
 done
@@ -281,14 +282,20 @@ else
   stripesize=8
 fi
 
-for f in inc_jedi.fv_core.res.nc \
-         inc_jedi.fv_srf_wnd.res.nc \
-         inc_jedi.fv_tracer.res.nc \
-         inc_jedi.phy_data.nc \
-         inc_jedi.sfc_data.nc
-do
-  rm -f "$f"
-  lfs setstripe --stripe-count ${stripesize} --stripe-size 1048576 --pool disk "$f"
+for imem in  $(seq 1 $nens); do
+  memcharv0="mem"$(printf %03i $imem)
+  mkdir ${memcharv0}
+  cd "${memcharv0}"
+  for f in inc_jedi.fv_core.res.nc \
+           inc_jedi.fv_srf_wnd.res.nc \
+           inc_jedi.fv_tracer.res.nc \
+           inc_jedi.phy_data.nc \
+           inc_jedi.sfc_data.nc
+  do
+    rm -f "$f"
+    lfs setstripe --stripe-count ${stripesize} --stripe-size 1048576 --pool disk "$f"
+  done
+  cd ..
 done
 
 #
@@ -310,13 +317,59 @@ cp "${jedi_exec}" "${enkfworkdir}/${pgm}"
 ${APRUN} ./$pgm jedienkf_observer.yaml >>$pgmout 2>errfile
 export err=$?; err_chk
 cp $pgmout ${COMOUT}/rrfs.t${HH}z.jediout_${anav_type}.tm00
-cp ${jcb_config} ${COMOUT}
+cp ${JCB_CONFIG_ENKF_OBSERVER} ${COMOUT}
 cp jedienkf_observer.yaml ${COMOUT}/jedienkf_observer.yaml
 mv errfile errfile_jedi_observer
 
+#
+#-----------------------------------------------------------------------
+#
+# Run JEDI-based EnKF for the solver step
+#
+#-----------------------------------------------------------------------
+#
+#export OOPS_TRACE=1
+#export OOPS_DEBUG=1
+export OMP_NUM_THREADS=1
+export pgm="fv3jedi_letkf.x"
+jedi_exec="${EXECdir}/bin/${pgm}"
+cp "${jedi_exec}" "${enkfworkdir}/${pgm}"
+
+. prep_step
+
+${APRUN} ./$pgm jedienkf_solver.yaml >>$pgmout 2>errfile
+export err=$?; err_chk
+cp $pgmout ${COMOUT}/rrfs.t${HH}z.jediout_${anav_type}.tm00
+cp ${JCB_CONFIG_ENKF_SOLVER} ${COMOUT}
+cp jedienkf_solver.yaml ${COMOUT}/jedienkf_solver.yaml
+mv errfile errfile_jedi_solver
+
 # Save the Jdiag files for diagnostic tools
-# TODO: prevent overlap with jedivar files?
-#cp jdiag* ${COMOUT}
+for diag in jdiag*.nc; do
+  base=${diag%.nc}
+  cp "$diag" "${COMOUT}/${base}_enkf.nc"
+done
+
+#
+#-----------------------------------------------------------------------
+#
+# Move increments to INPUT.jedi
+#
+#-----------------------------------------------------------------------
+#
+
+for imem in  $(seq 1 $nens); do
+  memchar="mem"$(printf %04i $imem)
+  memcharv0="mem"$(printf %03i $imem)
+  slash_ensmem_subdir=$memchar
+  if [ "${CYCLE_TYPE}" = "spinup" ]; then
+    bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam_spinup/INPUT
+  else
+    bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam/INPUT
+  fi
+  bkpath=${bkpath}.jedi
+  mv ${memcharv0}/* ${bkpath}
+done
 
 print_info_msg "
 ========================================================================

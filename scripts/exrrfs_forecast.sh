@@ -112,22 +112,31 @@ case $MACHINE in
     export MPICH_OFI_VERBOSE=1
     export MPICH_OFI_NIC_VERBOSE=1
     APRUN="mpiexec -n ${PE_MEMBER01} -ppn ${PPN_RUN_FCST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
+    if [ ${PE_MEMBER01} -gt 480 ]; then
+      APRUN_UA="mpiexec -n 480 -ppn ${ppn} --cpu-bind core --depth 1"
+    else
+      APRUN_UA="mpiexec -n ${PE_MEMBER01} -ppn ${PPN_RUN_FCST} --cpu-bind core --depth 1"
+    fi
     ;;
 
   "HERA")
     APRUN="srun --export=ALL --mem=0"
+    APRUN_UA="srun"
     ;;
 
   "GAEA")
     APRUN="srun --export=ALL --mem=0"
+    APRUN_UA="srun"
     ;;
 
   "ORION")
     APRUN="srun --export=ALL --mem=0"
+    APRUN_UA="srun"
     ;;
 
   "HERCULES")
     APRUN="srun --export=ALL"
+    APRUN_UA="srun"
     ;;
 
   "JET")
@@ -137,6 +146,7 @@ case $MACHINE in
     else
       OMP_NUM_THREADS=2
     fi
+    APRUN_UA="srun"
     ;;
 
   *)
@@ -157,14 +167,52 @@ export OMP_STACKSIZE=${OMP_STACKSIZE:-1024m}
 #
 #-----------------------------------------------------------------------
 #
-# For JEDI/GSI parallel runs, copy INPUT.{type} into INPUT
-# This is only performed here for the EnKF
-# The POSTANAL_TN task performs the copying for Var DA (not used in EnKF)
+# Post-process the JEDI increments for EnKF
+#    1) Convert wind increments from D-grid to A-grid for EnKF
+#    2) Apply increments to the background fields
+#    3) Copy DA results into INPUT directory
+# Note: these steps are done in the main analysis script for JEDI-Var
+#       But for EnKF we do it here so that it can be done in parallel
 #
 #-----------------------------------------------------------------------
 #
 
 if [[ ${ensmem_indx} -ge 1 ]]; then
+
+  # Convert A-grid wind increments to D-grid
+  cd ${run_dir}/INPUT.jedi
+  export LD_LIBRARY_PATH="/apps/ops/test/spack-stack-nco-1.9/oneapi/2024.2.1/hdf5-1.14.3-umtw5lv/lib:${LD_LIBRARY_PATH}"
+  export pgm="rdas_ua2u.x"
+  ua2u_exec="${EXECdir}/bin/${pgm}"
+  cp "${ua2u_exec}" "${run_dir}/INPUT.jedi/${pgm}"
+  mv inc_jedi.fv_core.res.nc agrid_inc_jedi.fv_core.res.nc
+  ${APRUN_UA} ./${pgm} ua_update_u --in_grid=fv3_grid_spec --in_file=agrid_inc_jedi.fv_core.res.nc --out_file=inc_jedi.fv_core.res.nc >>$pgmout 2>errfile
+  export err=$?; err_chk
+  mv errfile errfile_ua2u
+
+  # Verify that the converter produced output
+  if [ ! -s inc_jedi.fv_core.res.nc ]; then
+    echo "ERROR: inc_jedi.fv_core.res.nc missing or empty after rdas_ua2u.x"
+    exit 6
+  fi
+
+  # Now apply the increments to the background file with NCO tools
+  dynfile=fv_core.res.tile1.nc
+  trafile=fv_tracer.res.tile1.nc
+  phyfile=phy_data.nc
+  if ( ! time ( module purge ; module load intel udunits szip hdf5 netcdf gsl nco ; module list ; set -x ; ${USHdir}/apply_jedi_incs.sh ${DO_ENKF_RADAR_REF} ${dynfile} ${trafile} ${phyfile}) ); then
+    echo "Failed applying JEDI increments"
+  else
+    echo "Successfully applied JEDI increments"
+    cp fv_core_analysis.res.tile1.nc ${dynfile}
+    cp fv_tracer_analysis.res.tile1.nc ${trafile}
+    if [ "${DO_ENKF_RADAR_REF}" = "TRUE" ]; then
+      cp phy_data_analysis.nc ${phyfile}
+    fi
+  fi
+  cd ${run_dir}
+
+  # Copy DA results into INPUT
   echo "DA_SYSTEM: $DA_SYSTEM"
   bkpath=${run_dir}/INPUT
   case "$DA_SYSTEM" in
@@ -177,6 +225,7 @@ if [[ ${ensmem_indx} -ge 1 ]]; then
       cp -r $bkpath.jedi $bkpath
       ;;
   esac
+
 fi
 
 #

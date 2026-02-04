@@ -71,7 +71,7 @@ def patch_solver_struct(cfg_plain, ctest_yaml):
         # Only rewrite if there's an obsfile to replace (string)
         old = in_engine.get("obsfile")
         if isinstance(old, str):
-            new = f"../rundir-{observer_rundir}/{target}"
+            new = f"./{target}"
             in_engine["obsfile"] = new
             # Write back the engine in case these were None earlier
             if "engine" not in obsdatain:
