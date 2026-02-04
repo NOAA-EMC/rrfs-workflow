@@ -33,8 +33,6 @@ increment_variables:
 - air_temperature
 - air_pressure_thickness
 - water_vapor_mixing_ratio_wrt_moist_air
-- cloud_liquid_ice
-- cloud_liquid_water
 - ozone_mass_mixing_ratio
 
 # Veritcal localization for GETKF
