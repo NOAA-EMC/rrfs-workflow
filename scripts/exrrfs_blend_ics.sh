@@ -99,8 +99,11 @@ pgm="blending"
 yyyymmdd="${cdate_crnt_fhr:0:8}"
 hh="${cdate_crnt_fhr:8:2}"
 cdate_crnt_fhr_m1=$($NDATE -1 ${yyyymmdd}${hh})
+cdate_crnt_fhr_m3=$($NDATE -3 ${yyyymmdd}${hh})
 yyyymmdd_m1="${cdate_crnt_fhr_m1:0:8}"
+yyyymmdd_m3="${cdate_crnt_fhr_m3:0:8}"
 hh_m1="${cdate_crnt_fhr_m1:8:2}"
+hh_m3="${cdate_crnt_fhr_m3:8:2}"
 
 DO_ENS_BLENDING=${DO_ENS_BLENDING:-"TRUE"}
 # Check for 1h RRFS EnKF files, if at least one missing then use 1tstep initialization
@@ -121,29 +124,41 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
 
   # Loop through each ensemble member and check if the 1h RRFS EnKF files exist
   #### Check NUM_ENS_MEMBERS for all WGF case to remove thie for loop dead code
-  wait_for_restart_file=YES
-  while [[ $wait_for_restart_file = "YES" ]] ; do
-    for imem in $(seq 1 ${NUM_ENS_MEMBERS}); do
-        checkfile="${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
-        if [[ -f $checkfile ]]; then
-            ((existing_files++))
-            echo "checkfile count: $existing_files"
-        else
-            if [[ -f $checkfile ]]; then
-              ((existing_files++))
-              echo "RESTART file from previous cycle has become available"
-            else
-              echo "File missing: $checkfile"
-            fi
-        fi
-    done
-    if [ ! $existing_files -eq ${NUM_ENS_MEMBERS} ]; then
-      sleep 180
+  #### waite for 5 minutes
+  NUM_ENS_MEMBERS_FOUND="NO"
+  yyyymmdd_m=${yyyymmdd_m1}
+  hh_m=${hh_m1}
+  nnn=1
+  while [[ $nnn -le 5 ]] ; do
+   checkfile="${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
+   if [[ -f $checkfile ]]; then
+      NUM_ENS_MEMBERS_FOUND="YES"
+      nnn=6
+      print_info_msg "$VERBOSE" "Found ${NUM_ENS_MEMBERS} from ${RUN}.${yyyymmdd_m1}/${hh_m1}"
+   else
+      echo "File missing: $checkfile"
+      sleep 60
+      ((nnn++))
+   fi
+  done
+  # if m1 cyc does not have enough ensemble forecast, check m3 cycle
+  nnn=1
+  while [[ $nnn -le 3 ]] ; do
+    checkfile="${COMrrfs}/${RUN}.${yyyymmdd_m3}/${hh_m3}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
+    if [[ -f $checkfile ]]; then
+      NUM_ENS_MEMBERS_FOUND="YES"
+      nnn=4
+      yyyymmdd_m=${yyyymmdd_m3}
+      hh_m=${hh_m3}
+      print_info_msg "$VERBOSE" "Found ${NUM_ENS_MEMBERS} from ${RUN}.${yyyymmdd_m3}/${hh_m3}"
+    else
+       echo "File missing: $checkfile"
+       sleep 60
+       ((nnn++))
     fi
-    wait_for_restart_file=NO
   done
   # Check if the number of existing files is equal to the total number of ensemble members
-  if [[ $existing_files -eq ${NUM_ENS_MEMBERS} ]]; then
+  if [[ ${NUM_ENS_MEMBERS_FOUND} == "YES" ]]; then
       # Check if run_blending file exists, and if not, touch it
       if [[ ! -f $run_blending ]]; then
           touch $run_blending
@@ -194,8 +209,8 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
      export PYTHONPATH=$PYTHONPATH:$HOMErrfs/lib
 
      # Required NETCDF files - RRFS
-     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.tile1.nc ./fv_core.res.tile1.nc
-     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_tracer.res.tile1.nc ./fv_tracer.res.tile1.nc
+     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m}/${hh_m}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.tile1.nc ./fv_core.res.tile1.nc
+     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m}/${hh_m}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_tracer.res.tile1.nc ./fv_tracer.res.tile1.nc
 
      # Shortcut the file names/arguments.
      Lx=$ENS_BLENDING_LENGTHSCALE
@@ -229,11 +244,11 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
 #     ln -s ${DATA}/fv_tracer.res.tile1.nc ${shared_output_data}/fv_tracer.res.tile1.nc
      cpreq ${DATA}/fv_tracer.res.tile1.nc ${shared_output_data}/fv_tracer.res.tile1.nc
      # Move the remaining RESTART files to INPUT
-     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc          ${shared_output_data}/fv_core.res.nc
-     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_srf_wnd.res.tile1.nc ${shared_output_data}/fv_srf_wnd.res.tile1.nc
-     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.phy_data.nc             ${shared_output_data}/phy_data.nc
-     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.sfc_data.nc             ${shared_output_data}/sfc_data.nc
-     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res             ${shared_output_data}/coupler.res
+     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m}/${hh_m}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc          ${shared_output_data}/fv_core.res.nc
+     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m}/${hh_m}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_srf_wnd.res.tile1.nc ${shared_output_data}/fv_srf_wnd.res.tile1.nc
+     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m}/${hh_m}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.phy_data.nc             ${shared_output_data}/phy_data.nc
+     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m}/${hh_m}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.sfc_data.nc             ${shared_output_data}/sfc_data.nc
+     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m}/${hh_m}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res             ${shared_output_data}/coupler.res
   fi
 fi
 #
