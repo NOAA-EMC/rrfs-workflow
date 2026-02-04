@@ -115,10 +115,7 @@ for bigmin_this in ${RADARREFL_TIMELEVEL[@]}; do
      continue
   fi
 
-  gridspacingdeg=0.20
-  if [[ -n "$MRMS_GRIDSPACINGDEG" ]]; then
-    gridspacingdeg=${MRMS_GRIDSPACINGDEG}
-  fi
+  gridspacingdeg=${MRMS_GRIDSPACINGDEG:-0.20}
 
   precipdbzhorizskip=0
   precipdbzvertskip=0

@@ -112,7 +112,7 @@ observations:
          observation alias file: obsop_name_map.yaml
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 200e3 # orig
+           lengthscale: 15e3 # orig
        _obsname: refl10cm
        obs filters:
        - filter: Background Check
