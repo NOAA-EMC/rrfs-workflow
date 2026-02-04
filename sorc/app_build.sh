@@ -298,8 +298,8 @@ if [ "${EXTRN}" = true ]; then
   python --version 1>/dev/null 2>/dev/null
   if [[ $(which python) == "/usr/bin/python" ]]; then
        module unload python
-       module load PrgEnv-intel
-       module load python
+       module load PrgEnv-intel/${PrgEnv_intel_ver}
+       module load python/${python_ver}
   fi
   printf "... checking out external components ...\n"
   ./manage_externals/checkout_externals
