@@ -3,6 +3,7 @@
 ### Utility for applying FV3-JEDI increments to background restart files
 ###
 
+set -x
 do_radar=${1}
 dynfile=${2}
 trafile=${3}
