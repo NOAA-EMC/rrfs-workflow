@@ -10,6 +10,7 @@ ush/config.sh
 ush/*.swp
 ush/__pycache__/
 ush/python_utils/__pycache__/
+expt_dirs/
 
 __pycache__
 *.swp
