@@ -1604,7 +1604,10 @@ MODULES_RUN_TASK_FP script.
     <envar><name>OB_TYPE</name><value>conv</value></envar>
 
     <dependency>
+      <and>
         <metataskdep metatask="run_ensemble_observer_spinup"/>
+        <taskdep task="&IODA_BUFR_TN;_spinup"/>
+      </and>
     </dependency>
   </task>
 
@@ -2758,7 +2761,10 @@ MODULES_RUN_TASK_FP script.
     <envar><name>OB_TYPE</name><value>conv</value></envar>
 
     <dependency>
+      <and>
         <metataskdep metatask="run_ensemble_observer"/>
+        <taskdep task="&IODA_BUFR_TN;_prod"/>
+      </and>
     </dependency>
   </task>
 
