@@ -167,15 +167,8 @@ for imem in  $(seq 1 $nens); do
     BKTYPE=1              # cold start
   fi
 
-  # TODO: Move this to prep script since it will be a big bottleneck
-  if [ -d "${bkpath}.jedi" ]; then
-    rm -rf "${bkpath}.jedi"
-  fi
-  rm -rf ${bkpath}.jedi
-  cp -rL $bkpath ${bkpath}.jedi
-  bkpath=${bkpath}.jedi
-
   mkdir data/inputs/${memcharv0}
+  bkpath=${bkpath}.jedi
   ln -snf ${bkpath}/fv_core.res.tile1.nc       data/inputs/${memcharv0}/fv_core.res.tile1.nc
   ln -snf ${bkpath}/fv_tracer.res.tile1.nc     data/inputs/${memcharv0}/fv_tracer.res.tile1.nc
   ln -snf ${bkpath}/sfc_data.nc                data/inputs/${memcharv0}/sfc_data.nc
@@ -193,7 +186,6 @@ done
 #
 #-----------------------------------------------------------------------
 #
-anav_type=${ob_type}
 # pyioda libraries
 shopt -s nullglob
 dirs=("$RDASAPP_DIR"/build/lib/python3.*)
@@ -316,7 +308,7 @@ cp "${jedi_exec}" "${enkfworkdir}/${pgm}"
 
 ${APRUN} ./$pgm jedienkf_observer.yaml >>$pgmout 2>errfile
 export err=$?; err_chk
-cp $pgmout ${COMOUT}/rrfs.t${HH}z.jediout_${anav_type}.tm00
+cp $pgmout ${COMOUT}/rrfs.t${HH}z.jediout_observer.tm00
 cp ${JCB_CONFIG_ENKF_OBSERVER} ${COMOUT}
 cp jedienkf_observer.yaml ${COMOUT}/jedienkf_observer.yaml
 mv errfile errfile_jedi_observer
@@ -339,7 +331,7 @@ cp "${jedi_exec}" "${enkfworkdir}/${pgm}"
 
 ${APRUN} ./$pgm jedienkf_solver.yaml >>$pgmout 2>errfile
 export err=$?; err_chk
-cp $pgmout ${COMOUT}/rrfs.t${HH}z.jediout_${anav_type}.tm00
+cp $pgmout ${COMOUT}/rrfs.t${HH}z.jediout_solver.tm00
 cp ${JCB_CONFIG_ENKF_SOLVER} ${COMOUT}
 cp jedienkf_solver.yaml ${COMOUT}/jedienkf_solver.yaml
 mv errfile errfile_jedi_solver

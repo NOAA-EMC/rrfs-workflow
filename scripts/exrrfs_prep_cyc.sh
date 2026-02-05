@@ -1235,6 +1235,26 @@ Please check the following user defined variables:
     mv errfile errfile_fvcom
   fi
 fi
+
+#
+#-----------------------------------------------------------------------
+#
+# Copy INPUT into INPUT.jedi and INPUT.gsi for parallel runs
+# Here it can be done in parallel with a task for each member
+#
+#-----------------------------------------------------------------------
+#
+jedidir=${modelinputdir}.jedi
+gsidir=${modelinputdir}.gsi
+if [ -d "${gsidir}" ]; then
+  rm -rf "${gsidir}"
+fi
+if [ -d "${jedidir}" ]; then
+  rm -rf "${jedidir}"
+fi
+cp -rL ${modelinputdir} ${gsidir}
+cp -rL ${modelinputdir} ${jedidir}
+
 #
 #-----------------------------------------------------------------------
 #

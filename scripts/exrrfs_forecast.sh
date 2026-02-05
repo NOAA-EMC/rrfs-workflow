@@ -187,14 +187,13 @@ if [[ ${ensmem_indx} -ge 1 ]] && [[ "${BKTYPE}" -eq 0 || "${DO_DACOLD}" = "TRUE"
 
   # Convert A-grid wind increments to D-grid
   cd ${run_dir}/INPUT.jedi
-  #export LD_LIBRARY_PATH="/apps/ops/test/spack-stack-nco-1.9/oneapi/2024.2.1/hdf5-1.14.3-umtw5lv/lib:${LD_LIBRARY_PATH}"
+  ln -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
   export pgm="rdas_ua2u.x"
   ua2u_exec="${EXECdir}/bin/${pgm}"
   cp "${ua2u_exec}" "${run_dir}/INPUT.jedi/${pgm}"
   mv inc_jedi.fv_core.res.nc agrid_inc_jedi.fv_core.res.nc
   LD_LIBRARY_PATH="/apps/ops/test/spack-stack-nco-1.9/oneapi/2024.2.1/hdf5-1.14.3-umtw5lv/lib:${LD_LIBRARY_PATH}" \
     ${APRUN_UA} ./${pgm} ua_update_u --in_grid=fv3_grid_spec --in_file=agrid_inc_jedi.fv_core.res.nc --out_file=inc_jedi.fv_core.res.nc >>"$pgmout" 2>errfile
-  #${APRUN_UA} ./${pgm} ua_update_u --in_grid=fv3_grid_spec --in_file=agrid_inc_jedi.fv_core.res.nc --out_file=inc_jedi.fv_core.res.nc >>$pgmout 2>errfile
   export err=$?; err_chk
   mv errfile errfile_ua2u
 
