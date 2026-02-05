@@ -177,7 +177,13 @@ export OMP_STACKSIZE=${OMP_STACKSIZE:-1024m}
 #-----------------------------------------------------------------------
 #
 
-if [[ ${ensmem_indx} -ge 1 ]]; then
+if [ -r "${run_dir}/INPUT/coupler.res" ]; then
+  BKTYPE=0
+else
+  BKTYPE=1
+fi
+
+if [[ ${ensmem_indx} -ge 1 ]] && [[ "${BKTYPE}" -eq 0 || "${DO_DACOLD}" = "TRUE" ]]; then
 
   # Convert A-grid wind increments to D-grid
   cd ${run_dir}/INPUT.jedi
