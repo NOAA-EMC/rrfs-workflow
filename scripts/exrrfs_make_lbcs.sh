@@ -790,7 +790,7 @@ $settings"
 #
 #-----------------------------------------------------------------------
 #
-  export pgm="chgres_cube"
+  export pgm="ufs_util_chgres_cube"
   . prep_step
 
   ${APRUN} ${EXECrrfs}/$pgm >>$pgmout 2>errfile

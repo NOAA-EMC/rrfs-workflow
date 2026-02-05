@@ -382,7 +382,7 @@ EOF
   export FORT45=itagfw
 
   # Calculate the wgrib2 gridspecs for the fire weather grid
-  $APRUN $EXECrrfs/firewx_gridspecs.exe >> $pgmout 2>errfile
+  $APRUN $EXECrrfs/rrfs_util_firewx_gridspecs.exe >> $pgmout 2>errfile
   export err=$?; err_chk
 
   grid_specs_firewx=`head $DATA/copygb_gridnavfw.txt`

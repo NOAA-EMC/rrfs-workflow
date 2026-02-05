@@ -264,6 +264,45 @@ if [ "${PARALSTART}" = false ]; then
   ENABLE_RRFS_WAR="on"
 fi
 
+# check out external components specified in External.cfg
+if [ "${EXTRN}" = true ]; then
+  cd ${SORC_DIR}
+  # remove existing components
+  printf "... checking if external components exist ...\n"
+  if [ -d "${SORC_DIR}/UFS_UTILS" ]; then
+    printf "... removing UFS_UTILS ...\n"
+    rm -rf "${SORC_DIR}/UFS_UTILS"
+  fi
+  if [ -d "${SORC_DIR}/ufs-weather-model" ]; then
+    printf "... removing ufs-weather-model ...\n"
+    rm -rf "${SORC_DIR}/ufs-weather-model"
+  fi
+  if [ -d "${SORC_DIR}/UPP" ]; then
+    printf "... removing UPP ...\n"
+    rm -rf "${SORC_DIR}/UPP"
+  fi
+  if [ -d "${SORC_DIR}/rrfs_utl" ]; then
+    printf "... removing rrfs_utl ...\n"
+    rm -rf "${SORC_DIR}/rrfs_utl"
+  fi
+  if [ -d "${SORC_DIR}/gsi" ]; then
+    printf "... removing GSI ...\n"
+    rm -rf "${SORC_DIR}/gsi"
+  fi
+  if [ -d "${SORC_DIR}/AQM-utils" ]; then
+    printf "... removing AQM-utils ...\n"
+    rm -rf "${SORC_DIR}/AQM-utils"
+  fi
+
+  # run check-out
+  python --version 1>/dev/null 2>/dev/null
+  if [[ $? -ne 0 ]]; then
+       module load python
+  fi
+  printf "... checking out external components ...\n"
+  ./manage_externals/checkout_externals
+fi
+
 # choose default apps to build
 if [ "${DEFAULT_BUILD}" = true ]; then
   BUILD_UFS="on"
@@ -317,47 +356,6 @@ if [ "${PLATFORM}" = "wcoss2" ]; then
   if [ -f ${BUILD_VERSION_FILE} ]; then
     . ${BUILD_VERSION_FILE}
   fi
-fi
-
-# check out external components specified in External.cfg
-if [ "${EXTRN}" = true ]; then
-  cd ${SORC_DIR}
-  # remove existing components
-  printf "... checking if external components exist ...\n"
-  if [ -d "${SORC_DIR}/UFS_UTILS" ]; then
-    printf "... removing UFS_UTILS ...\n"
-    rm -rf "${SORC_DIR}/UFS_UTILS"
-  fi
-  if [ -d "${SORC_DIR}/ufs-weather-model" ]; then
-    printf "... removing ufs-weather-model ...\n"
-    rm -rf "${SORC_DIR}/ufs-weather-model"
-  fi
-  if [ -d "${SORC_DIR}/UPP" ]; then
-    printf "... removing UPP ...\n"
-    rm -rf "${SORC_DIR}/UPP"
-  fi
-  if [ -d "${SORC_DIR}/rrfs_utl" ]; then
-    printf "... removing rrfs_utl ...\n"
-    rm -rf "${SORC_DIR}/rrfs_utl"
-  fi
-  if [ -d "${SORC_DIR}/gsi" ]; then
-    printf "... removing GSI ...\n"
-    rm -rf "${SORC_DIR}/gsi"
-  fi
-  if [ -d "${SORC_DIR}/AQM-utils" ]; then
-    printf "... removing AQM-utils ...\n"
-    rm -rf "${SORC_DIR}/AQM-utils"
-  fi
-
-  # run check-out
-  python --version 1>/dev/null 2>/dev/null
-  if [[ $(which python) == "/usr/bin/python" ]]; then
-       module unload python
-       module load PrgEnv-intel/${PrgEnv_intel_ver}
-       module load python/${python_ver}
-  fi
-  printf "... checking out external components ...\n"
-  ./manage_externals/checkout_externals
 fi
 
 # set MODULE_FILE for this platform/compiler combination
@@ -559,5 +557,66 @@ else
       done
     fi
 fi
+
+EXEC_DIR=${HOME_DIR}/${BIN_DIR}
+RRFS_UTIL_PREFIX=rrfs_util
+UFS_UTIL_PREFIX=ufs_util
+GSI_PREFIX=gsi
+AQM_UTIL_PREFIX=aqm_util
+
+[ -f ${EXEC_DIR}/adjust_soiltq.exe ] && mv ${EXEC_DIR}/adjust_soiltq.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_adjust_soiltq.exe 
+[ -f ${EXEC_DIR}/check_imssnow_fv3lam.exe ] && mv ${EXEC_DIR}/check_imssnow_fv3lam.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_check_imssnow_fv3lam.exe
+[ -f ${EXEC_DIR}/chgres_cube ] && mv ${EXEC_DIR}/chgres_cube ${EXEC_DIR}/${UFS_UTIL_PREFIX}_chgres_cube
+[ -f ${EXEC_DIR}/dpt2m_post.exe ] && mv ${EXEC_DIR}/dpt2m_post.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_dpt2m_post.exe
+[ -f ${EXEC_DIR}/enkf.x ] && mv ${EXEC_DIR}/enkf.x ${EXEC_DIR}/${GSI_PREFIX}_enkf.x
+[ -f ${EXEC_DIR}/ens_mean_recenter_P2DIO.exe ] && mv ${EXEC_DIR}/ens_mean_recenter_P2DIO.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_ens_mean_recenter_P2DIO.exe
+[ -f ${EXEC_DIR}/filter_topo ] && mv ${EXEC_DIR}/filter_topo ${EXEC_DIR}/${UFS_UTIL_PREFIX}_filter_topo
+[ -f ${EXEC_DIR}/firewx_gridspecs.exe ] && mv ${EXEC_DIR}/firewx_gridspecs.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_firewx_gridspecs.exe
+[ -f ${EXEC_DIR}/fregrid ] && mv ${EXEC_DIR}/fregrid ${EXEC_DIR}/${UFS_UTIL_PREFIX}_fregrid
+[ -f ${EXEC_DIR}/fv3lam_nonvarcldana.exe ] && mv ${EXEC_DIR}/fv3lam_nonvarcldana.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_fv3lam_nonvarcldana.exe
+[ -f ${EXEC_DIR}/fv3lam_pre_blending.exe ] && mv ${EXEC_DIR}/fv3lam_pre_blending.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_fv3lam_pre_blending.exe
+[ -f ${EXEC_DIR}/fv3lam_pre_blending_tq.exe ] && mv ${EXEC_DIR}/fv3lam_pre_blending_tq.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_fv3lam_pre_blending_tq.exe
+[ -f ${EXEC_DIR}/fv3lam_pre_blending_uv.exe ] && mv ${EXEC_DIR}/fv3lam_pre_blending_uv.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_fv3lam_pre_blending_uv.exe
+[ -f ${EXEC_DIR}/fvcom_to_FV3 ] && mv ${EXEC_DIR}/fvcom_to_FV3 ${EXEC_DIR}/${UFS_UTIL_PREFIX}_fvcom_to_FV3
+[ -f ${EXEC_DIR}/gefs2lbc_para ] && mv ${EXEC_DIR}/gefs2lbc_para ${EXEC_DIR}/${AQM_UTIL_PREFIX}_gefs2lbc_para
+[ -f ${EXEC_DIR}/gen_annual_maxmin_GVF.exe ] && mv ${EXEC_DIR}/gen_annual_maxmin_GVF.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_gen_annual_maxmin_GVF.exe
+[ -f ${EXEC_DIR}/gen_cs.exe ] && mv ${EXEC_DIR}/gen_cs.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_gen_cs.exe
+[ -f ${EXEC_DIR}/gen_ensmean_recenter.exe ] && mv ${EXEC_DIR}/gen_ensmean_recenter.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_gen_ensmean_recenter.exe
+[ -f ${EXEC_DIR}/global_equiv_resol ] && mv ${EXEC_DIR}/global_equiv_resol ${EXEC_DIR}/${UFS_UTIL_PREFIX}_global_equiv_resol
+[ -f ${EXEC_DIR}/inland ] && mv ${EXEC_DIR}/inland ${EXEC_DIR}/${UFS_UTIL_PREFIX}_inland
+[ -f ${EXEC_DIR}/lakefrac ] && mv ${EXEC_DIR}/lakefrac ${EXEC_DIR}/${UFS_UTIL_PREFIX}_lakefrac
+[ -f ${EXEC_DIR}/lakesurgery.exe ] && mv ${EXEC_DIR}/lakesurgery.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_lakesurgery.exe
+[ -f ${EXEC_DIR}/make_hgrid ] && mv ${EXEC_DIR}/make_hgrid ${EXEC_DIR}/${UFS_UTIL_PREFIX}_make_hgrid
+[ -f ${EXEC_DIR}/make_solo_mosaic ] && mv ${EXEC_DIR}/make_solo_mosaic ${EXEC_DIR}/${UFS_UTIL_PREFIX}_make_solo_mosaic
+[ -f ${EXEC_DIR}/ocean_merge ] && mv ${EXEC_DIR}/ocean_merge ${EXEC_DIR}/${UFS_UTIL_PREFIX}_ocean_merge
+[ -f ${EXEC_DIR}/orog ] && mv ${EXEC_DIR}/orog ${EXEC_DIR}/${UFS_UTIL_PREFIX}_orog
+[ -f ${EXEC_DIR}/orog_gsl ] && mv ${EXEC_DIR}/orog_gsl ${EXEC_DIR}/${UFS_UTIL_PREFIX}_orog_gsl
+[ -f ${EXEC_DIR}/process_imssnow_fv3lam.exe ] && mv ${EXEC_DIR}/process_imssnow_fv3lam.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_process_imssnow_fv3lam.exe
+[ -f ${EXEC_DIR}/process_larccld.exe ] && mv ${EXEC_DIR}/process_larccld.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_process_larccld.exe
+[ -f ${EXEC_DIR}/process_Lightning.exe ] && mv ${EXEC_DIR}/process_Lightning.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_process_Lightning.exe
+[ -f ${EXEC_DIR}/process_metarcld.exe ] && mv ${EXEC_DIR}/process_metarcld.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_process_metarcld.exe
+[ -f ${EXEC_DIR}/process_NSSL_mosaic.exe ] && mv ${EXEC_DIR}/process_NSSL_mosaic.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_process_NSSL_mosaic.exe
+[ -f ${EXEC_DIR}/process_pm.exe ] && mv ${EXEC_DIR}/process_pm.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_process_pm.exe
+[ -f ${EXEC_DIR}/process_updatesst.exe ] && mv ${EXEC_DIR}/process_updatesst.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_process_updatesst.exe
+[ -f ${EXEC_DIR}/radmon_angle.x ] && mv ${EXEC_DIR}/radmon_angle.x ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_radmon_angle.x
+[ -f ${EXEC_DIR}/radmon_bcoef.x ] && mv ${EXEC_DIR}/radmon_bcoef.x ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_radmon_bcoef.x
+[ -f ${EXEC_DIR}/radmon_bcor.x ] && mv ${EXEC_DIR}/radmon_bcor.x ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_radmon_bcor.x
+[ -f ${EXEC_DIR}/radmon_time.x ] && mv ${EXEC_DIR}/radmon_time.x ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_radmon_time.x
+[ -f ${EXEC_DIR}/ref2tten.exe ] && mv ${EXEC_DIR}/ref2tten.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_ref2tten.exe
+[ -f ${EXEC_DIR}/regional_esg_grid ] && mv ${EXEC_DIR}/regional_esg_grid ${EXEC_DIR}/${UFS_UTIL_PREFIX}_regional_esg_grid
+[ -f ${EXEC_DIR}/rrfs_bucket.exe ] && mv ${EXEC_DIR}/rrfs_bucket.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_rrfs_bucket.exe
+[ -f ${EXEC_DIR}/rrfs_bufr.exe ] && mv ${EXEC_DIR}/rrfs_bufr.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_rrfs_bufr.exe
+[ -f ${EXEC_DIR}/rrfs_maxrh.exe ] && mv ${EXEC_DIR}/rrfs_maxrh.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_rrfs_maxrh.exe
+[ -f ${EXEC_DIR}/rrfs_maxt.exe ] && mv ${EXEC_DIR}/rrfs_maxt.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_rrfs_maxt.exe
+[ -f ${EXEC_DIR}/rrfs_minrh.exe ] && mv ${EXEC_DIR}/rrfs_minrh.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_rrfs_minrh.exe
+[ -f ${EXEC_DIR}/rrfs_mint.exe ] && mv ${EXEC_DIR}/rrfs_mint.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_rrfs_mint.exe
+[ -f ${EXEC_DIR}/rrfs_sndp.exe ] && mv ${EXEC_DIR}/rrfs_sndp.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_rrfs_sndp.exe
+[ -f ${EXEC_DIR}/rrfs_stnmlist.exe ] && mv ${EXEC_DIR}/rrfs_stnmlist.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_rrfs_stnmlist.exe
+[ -f ${EXEC_DIR}/sfc_climo_gen ] && mv ${EXEC_DIR}/sfc_climo_gen ${EXEC_DIR}/${UFS_UTIL_PREFIX}_sfc_climo_gen
+[ -f ${EXEC_DIR}/shave ] && mv ${EXEC_DIR}/shave ${EXEC_DIR}/${UFS_UTIL_PREFIX}_shave
+[ -f ${EXEC_DIR}/update_bc.exe ] && mv ${EXEC_DIR}/update_bc.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_update_bc.exe
+[ -f ${EXEC_DIR}/update_GVF.exe ] && mv ${EXEC_DIR}/update_GVF.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_update_GVF.exe
+[ -f ${EXEC_DIR}/update_ice.exe ] && mv ${EXEC_DIR}/update_ice.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_update_ice.exe
+[ -f ${EXEC_DIR}/use_raphrrr_sfc.exe ] && mv ${EXEC_DIR}/use_raphrrr_sfc.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_use_raphrrr_sfc.exe
 
 exit 0

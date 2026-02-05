@@ -465,7 +465,7 @@ if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
   if [ -r "latest.SNOW_IMS" ]; then
     ln -sf ./latest.SNOW_IMS                imssnow2
     ln -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
-    export pgm="process_imssnow_fv3lam.exe"
+    export pgm="rrfs_util_process_imssnow_fv3lam.exe"
     . prep_step
 
     ${APRUN} ${EXECrrfs}/$pgm ${IO_LAYOUT_Y} >>$pgmout 2>errfile
@@ -516,7 +516,7 @@ cat << EOF > sst.namelist
 /
 EOF
 
-    export pgm="process_updatesst.exe"
+    export pgm="rrfs_util_process_updatesst.exe"
     ln -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
     . prep_step
     ${APRUN} ${EXECrrfs}/$pgm >>$pgmout 2>errfile
@@ -693,7 +693,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
             ncks --append geolonlat.nc sfc_data.tile7.halo0.nc
             ncrename -v tslb,stc -v smois,smc -v sh2o,slc sfc_data.tile7.halo0.nc
           else
-	    export pgm="update_ice.exe"
+	    export pgm="rrfs_util_update_ice.exe"
             cpreq -p ${checkfile}  ${restart_prefix_find}sfc_data.nc
             mv sfc_data.nc gfsice.sfc_data.nc
             mv ${restart_prefix_find}sfc_data.nc sfc_data.nc
@@ -751,7 +751,7 @@ if [ ${Update_GVF} -ge 1 ]; then
       if [ ${Update_GVF} -eq 2 ]; then
         ln -sf sfc_data.tile7.halo0.nc sfc_data.nc
       fi
-      export pgm="update_GVF.exe"
+      export pgm="rrfs_util_update_GVF.exe"
       ln -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
       . prep_step
       if [ ${Update_GVF} -eq 2 ]; then
@@ -880,7 +880,7 @@ if [ ${SFC_CYC} -eq 3 ] ; then
      hrrrfile='sfc_hrrr'
    fi
  
-   export pgm="use_raphrrr_sfc.exe"
+   export pgm="rrfs_util_use_raphrrr_sfc.exe"
    ln -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
    for file in ${rapfile} ${hrrrfile} ${hrrr_akfile}
    do
@@ -998,7 +998,7 @@ Please check the following user defined variables:
     #Format for fvcom_time: YYYY-MM-DDTHH:00:00.000000
     fvcom_time="${YYYY}-${MM}-${DD}T${HH}:00:00.000000"
 
-    pgm="fvcom_to_FV3"
+    pgm="ufs_util_fvcom_to_FV3"
 
     # decide surface
     if [ ${BKTYPE} -eq 1 ] ; then
