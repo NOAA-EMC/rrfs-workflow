@@ -20,7 +20,7 @@ def ioda_mrms_refl(xmlFile, expdir):
     MRMS_GRIDSPACINGDEG = os.getenv("MRMS_GRIDSPACINGDEG", 'MRMS_GRIDSPACINGDEG_not_defined')
     do_jedi = os.getenv("DO_JEDI", "FALSE").upper()
     do_ensemble = os.getenv("DO_ENSEMBLE", "FALSE").upper()
-    if do_ensemble and do_jedi == "TRUE":
+    if do_ensemble == "TRUE" and do_jedi == "TRUE":
         ASSIM_METHOD = "getkf"
     elif do_jedi == "TRUE":
         ASSIM_METHOD = "jedivar"

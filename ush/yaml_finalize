@@ -16,7 +16,7 @@ ytype = yfile.split(".", 1)[0]  # get the yaml file type: jedivar, getkf, hofx, 
 # get environmental variables
 analysisDate = os.getenv("analysisDate", "@analysisDate@")
 beginDate = os.getenv("beginDate", "@beginDate@")
-ens_size = os.getenv("ENS_SIZE", "30")
+ENS_SIZE = os.getenv("ENS_SIZE", "30")
 HYB_WGT_STATIC = os.getenv("HYB_WGT_STATIC", "@HYB_WGT_STATIC@")
 HYB_WGT_ENS = os.getenv("HYB_WGT_ENS", "@HYB_WGT_ENS@")
 emptyObsSpaceAction = os.getenv("EMPTY_OBS_SPACE_ACTION", "@emptyObsSpaceAction@")
@@ -41,7 +41,7 @@ GSIBEC_NORTH_POLE_LON = os.getenv("GSIBEC_NORTH_POLE_LON", "@GSIBEC_NORTH_POLE_L
 replacements = {
     "analysisDate": f"{analysisDate}",
     "beginDate": f"{beginDate}",
-    "ens_size": f"{ens_size}",
+    "ENS_SIZE": f"{ENS_SIZE}",
     "HYB_WGT_STATIC": f"{HYB_WGT_STATIC}",
     "HYB_WGT_ENS": f"{HYB_WGT_ENS}",
     "emptyObsSpaceAction": f"{emptyObsSpaceAction}",
