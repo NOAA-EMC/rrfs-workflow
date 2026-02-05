@@ -47,7 +47,7 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    DO_ENSPOST="FALSE"
    DO_ENSINIT="TRUE"
 fi
-CONVINFO_FN="convinfo.rrfs_only_133_233"
+NUM_ENS_MEMBERS=30
 JCB_CONFIG_ENKF_OBSERVER="rdas-atmosphere-templates-fv3_c13_getkf_observer.yaml"
 JCB_CONFIG_ENKF_SOLVER="rdas-atmosphere-templates-fv3_c13_getkf_solver.yaml"
 
@@ -188,9 +188,6 @@ if [[ ${regional_ensemble_option} == "5" ]]; then
 #-------------------------------------------------
 # RRFSE directory contains ensemble restart files for GSI hybrid.
 RRFSE_NWGES="/lfs/h3/emc/lam/noscrub/hui.liu/runs_co13km/rrfs.v0.8.6/nwges_enkf"
-#RRFSE_NWGES=""
-
-  #NUM_ENS_MEMBERS=30     # FV3LAM ensemble size for GSI hybrid analysis
-  NUM_ENS_MEMBERS=3     # TODO: CHANGE ME BACK
-  CYCL_HRS_PRODSTART_ENS=( "07" "19" )
+NUM_ENS_MEMBERS=30
+CYCL_HRS_PRODSTART_ENS=( "07" "19" )
 fi

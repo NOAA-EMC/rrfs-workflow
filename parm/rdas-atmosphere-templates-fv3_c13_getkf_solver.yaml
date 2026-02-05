@@ -21,7 +21,7 @@ window_length: PT6H
 bound_to_include: begin
 distribution: Halo
 empty_obs_space_action: create output
-atmosphere_number_ensemble_members: 3
+atmosphere_number_ensemble_members: 30
 
 # Local Ensemble DA (LETKF)
 # -------------------------
@@ -47,7 +47,7 @@ inflation_mult: 1.0
 driver_update_obs_config_with_geometry_info: false
 driver_run_as_observer_only: false
 driver_read_HX_from_disk: true
-driver_do_posterior_observer: false
+driver_do_posterior_observer: true
 driver_save_posterior_mean: false
 driver_save_posterior_ensemble: false
 driver_save_prior_mean: false
