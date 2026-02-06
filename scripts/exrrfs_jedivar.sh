@@ -84,6 +84,17 @@ source "${USHrrfs}/copy_obs.sh" "jedivar"
 #
 source "${USHrrfs}/find_ensembles.sh"
 #
+# check number of ensemble files, if not enough, default to pure 3DVar
+#
+ens_count=$(find ens -path "ens/mem*.nc" -type f | wc -l)
+if [ "${ens_count}" -lt 30 ]; then
+   echo "Number of ensemble files is ${ens_count}, less than 30, default to 3DVar"
+   export HYB_WGT_ENS=0.0
+   export HYB_WGT_STATIC=1.0
+else
+   echo "Found ${ens_count} ensemble files"
+fi
+#
 #  link background
 #
 cd "${DATA}" || exit 1

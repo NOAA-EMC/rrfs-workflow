@@ -102,6 +102,9 @@ def jedivar(xmlFile, expdir, do_spinup=False):
       <datadep age="00:05:00"><cyclestr offset="-6:00:00">{HYB_ENS_PATH}/{RUN}.@Y@m@d/@H/ic/enkf/mem030/init.nc</cyclestr></datadep>
     </or>'''
 
+    if realtime.upper() == "TRUE":
+        ens_dep = ""
+
     # ~~~~
     if do_spinup:
         prep_ic_dep = '<taskdep task="prep_ic_spinup"/>'
