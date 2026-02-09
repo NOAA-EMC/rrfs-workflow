@@ -6,9 +6,10 @@ import sys
 args = sys.argv
 nargs = len(args) - 1
 if nargs < 2:
-    print(f"{args[0]} YYYYMMDDHH-YYYYMMDDHH fhr-fhr\n")
+    print(f"{args[0]} YYYYMMDDHH-YYYYMMDDHH fhr-fhr [fhr_interval]\n")
     print(f'  the first parameter specifies the cycle range')
     print(f'  the second parameter specifies the fhr range, example: 0-70')
+    print(f'  the third optional parameter specifies the fhr interval, 1 or 3 (default to 1)')
     exit()
 
 print(f'each cycle data will be downloaded to ./tmp/ temporarily and then moved to ./downloads/')
@@ -24,6 +25,8 @@ fhr_range = args[2]
 model = "gfs"  # gfs, rap
 dest_path = "./downloads"
 fhr_interval = 1
+if nargs > 2:
+    fhr_interval = int(args[3])
 cyc_interval = 6
 
 two_dates = date_range.split("-")
@@ -40,6 +43,8 @@ while cur_date <= date2:
         shutil.rmtree(tmp_dir)  # remove temporary directory to avoid contamination
     for product in ["pgrb2.0p25", "pgrb2b.0p25"]:
         for fhr in range(int(fhrs[0]), int(fhrs[1]) + 1, fhr_interval):
+            if fhr > 120 and (fhr - 120) % 3 != 0:
+                continue # GFS only outputs every 3h after 120h
             sdate = datetime.strftime(cur_date, "%Y-%m-%d %H:%M")
             HB = Herbie(
                 sdate,

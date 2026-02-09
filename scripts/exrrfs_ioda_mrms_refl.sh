@@ -75,17 +75,19 @@ for bigmin_this in ${RADARREFL_TIMELEVEL[@]}; do
     s=0
     while (( s <= 59 )); do
       ss=$(printf %2.2i ${s})
-      nsslfile="${NSSL}/*${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.${obs_appendix}"
-      if [[ -s ${nsslfile} ]]; then
-        echo "Found ${nsslfile}"
+      nsslfile_short="${NSSL}/${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.${obs_appendix}"
+      nsslfile_long="${NSSL}/${YYYY}${MM}${DD}-${HH}${min}${ss}.MRMS_${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.${obs_appendix}"
+      if [[ -s ${nsslfile_short} || -s ${nsslfile_long} ]]; then
+        echo "Found ${nsslfile_short}"
+        echo "or ${nsslfile_long}"
         nsslfile1="*${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.${obs_appendix}"
-	numgrib2=$(find ${NSSL}/${nsslfile1} -maxdepth 1 -type f | wc -l)
+        numgrib2=$(find ${NSSL}/${nsslfile1} -maxdepth 1 -type f | wc -l)
         echo "Number of GRIB-2 files: ${numgrib2}"
         if (( numgrib2 >= 10 )) && [ ! -e filelist_mrms ]; then
           cp ${NSSL}/${nsslfile1} .
           ls ${nsslfile1} > filelist_mrms
           echo "Creating links for ${YYYY}${MM}${DD}-${HH}${min}"
-	  break
+          break
         fi
       fi
       ((s+=1))
@@ -113,26 +115,24 @@ for bigmin_this in ${RADARREFL_TIMELEVEL[@]}; do
      continue
   fi
 
-#
-#  if (( RADAR_REF_THINNING == 2 )); then
-#    # heavy data thinning, typically used for EnKF
-#    precipdbzhorizskip=1
-#    precipdbzvertskip=2
-#    clearairdbzhorizskip=2
-#    clearairdbzvertskip=4
-#  elif (( RADAR_REF_THINNING == 1 )); then
-#    # light data thinning, typically used for hybrid EnVar
-#    precipdbzhorizskip=1
-#    precipdbzvertskip=1
-#    clearairdbzhorizskip=1
-#    clearairdbzvertskip=1
-#  else
-#    # no data thinning
-     precipdbzhorizskip=0
-     precipdbzvertskip=0
-     clearairdbzhorizskip=0
-     clearairdbzvertskip=0
-# fi
+  gridspacingdeg=${MRMS_GRIDSPACINGDEG:-0.20}
+
+  precipdbzhorizskip=0
+  precipdbzvertskip=0
+  clearairdbzhorizskip=0
+  clearairdbzvertskip=0
+  if [[ "${ASSIM_METHOD}" == "getkf" ]]; then
+    precipdbzhorizskip=1
+    precipdbzvertskip=2
+    clearairdbzhorizskip=2
+    clearairdbzvertskip=4
+  fi
+  if [[ "${ASSIM_METHOD}" == "jedivar" ]]; then
+    precipdbzhorizskip=1
+    precipdbzvertskip=1
+    clearairdbzhorizskip=1
+    clearairdbzvertskip=1
+  fi
 
 cat << EOF > namelist.mosaic
    &setup
@@ -141,6 +141,7 @@ cat << EOF > namelist.mosaic
    /
    &setup_netcdf
     output_netcdf = .true.,
+    grid_spacing_deg = ${gridspacingdeg},
     max_height = 11001.0,
     use_clear_air_type = .true.,
     precip_dbz_thresh = 10.0,
