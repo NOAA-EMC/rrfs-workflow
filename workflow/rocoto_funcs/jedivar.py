@@ -37,6 +37,7 @@ def jedivar(xmlFile, expdir, do_spinup=False):
         'HYB_ENS_TYPE': os.getenv('HYB_ENS_TYPE', '0'),
         'HYB_ENS_PATH': os.getenv('HYB_ENS_PATH', ''),
         'ENS_BEC_LOOK_BACK_HRS': f'{ens_bec_look_back_hrs}',
+        'ENS_SIZE': f'{ens_size}',
         'USE_CONV_SAT_INFO': os.getenv('USE_CONV_SAT_INFO', 'TRUE').upper(),
         'EMPTY_OBS_SPACE_ACTION': os.getenv('EMPTY_OBS_SPACE_ACTION', 'skip output'),
         'STATIC_BEC_MODEL': os.getenv('STATIC_BEC_MODEL', 'GSIBEC'),
@@ -71,8 +72,11 @@ def jedivar(xmlFile, expdir, do_spinup=False):
     HYB_ENS_PATH = os.getenv("HYB_ENS_PATH", "")
     if HYB_ENS_PATH == "":
         HYB_ENS_PATH = f'&COMROOT;/{NET}/{VERSION}'
-    ens_dep = ""
-    if HYB_WGT_ENS != "0" and HYB_WGT_ENS != "0.0" and HYB_ENS_TYPE == "1":  # rrfsens
+
+    if realtime.upper() == "TRUE":
+        ens_dep = ""
+
+    elif HYB_WGT_ENS != "0" and HYB_WGT_ENS != "0.0" and HYB_ENS_TYPE == "1":  # rrfsens
         RUN = 'rrfs'
         ens_dep0 = ""
         for enshrs in range(1, int(ens_bec_look_back_hrs) + 1):
@@ -101,9 +105,6 @@ def jedivar(xmlFile, expdir, do_spinup=False):
       <datadep age="00:05:00"><cyclestr offset="-5:00:00">{HYB_ENS_PATH}/{RUN}.@Y@m@d/@H/ic/enkf/mem030/init.nc</cyclestr></datadep>
       <datadep age="00:05:00"><cyclestr offset="-6:00:00">{HYB_ENS_PATH}/{RUN}.@Y@m@d/@H/ic/enkf/mem030/init.nc</cyclestr></datadep>
     </or>'''
-
-    if realtime.upper() == "TRUE":
-        ens_dep = ""
 
     # ~~~~
     if do_spinup:
