@@ -63,9 +63,11 @@ for (( j=0; j < 4; $((j=j+1)) )); do
   s=0
   while (( s <= 59 )); do
     ss=$(printf %2.2i ${s})
-    nsslfile="${NSSL}/${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.${obs_appendix}"
-    if [[ -s ${nsslfile} ]]; then
-      echo "Found ${nsslfile}"
+    nsslfile_short="${NSSL}/${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.${obs_appendix}"
+    nsslfile_long="${NSSL}/${YYYY}${MM}${DD}-${HH}${min}${ss}.MRMS_${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.${obs_appendix}"
+    if [[ -s ${nsslfile_short} || -s ${nsslfile_long} ]]; then
+      echo "Found ${nsslfile_short}"
+      echo "or ${nsslfile_long}"
       nsslfile1="*${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.${obs_appendix}"
       numgrib2=$(find ${NSSL}/${nsslfile1} -maxdepth 1 -type f | wc -l)
       echo "Number of GRIB-2 files: ${numgrib2}"
