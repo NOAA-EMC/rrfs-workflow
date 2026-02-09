@@ -41,6 +41,7 @@ export LBC_LENGTH=15
 export LBC_INTERVAL=1
 export LBC_UNGRIB_GROUP_TOTAL_NUM=2
 export LBC_GROUP_TOTAL_NUM=2
+export PREP_LBC_LOOK_BACK_HRS=11  # define the hours going back for prep_lbc to find lbc files
 
 export RETRO_PERIOD="2024052700-2024052800"
 export LBC_CYCS="00 06 12 18"  # evenly divide 24 hours, e.g., "00 12", "00 06 12 18", etc
@@ -73,12 +74,14 @@ export KEEPDATA=NO
 # local.setup: setup some local options specific to a platform or an experiment
 #
 # set up IC, LBC sources and A/Q/P/R information
-export IC_EXTRN_MDL_NAME="RAP"
-export IC_EXTRN_MDL_FILENAME_PATTERN="@y@j@H000^HHH^"
+export IC_EXTRN_MDL_NAME="GFS"
+export IC_EXTRN_MDL_FILENAME_PATTERN="gfs.@Y@m@d/@H/atmos/gfs.t@Hz.pgrb2.0p25.f^HHH^"
+export IC_EXTRN_MDL_FILENAME_PATTERN_B="gfs.@Y@m@d/@H/atmos/gfs.t@Hz.pgrb2b.0p25.f^HHH^"
 export LBC_EXTRN_MDL_NAME=${IC_EXTRN_MDL_NAME}
 export LBC_EXTRN_MDL_FILENAME_PATTERN=${IC_EXTRN_MDL_FILENAME_PATTERN}
-export IC_EXTRN_MDL_BASEDIR="/public/data/grib/ftp_rap_hyb/7/0/105/0_794802_32769"
-export LBC_EXTRN_MDL_BASEDIR="/public/data/grib/ftp_rap_hyb/7/0/105/0_794802_32769"
+export LBC_EXTRN_MDL_FILENAME_PATTERN_B=${IC_EXTRN_MDL_FILENAME_PATTERN_B}
+export IC_EXTRN_MDL_BASEDIR="/public/data/grids/gfs/ncep"
+export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
 export OBSPATH="/public/data/grids/rap/obs"
 #
 export ACCOUNT="rtwrfruc"
@@ -97,5 +100,7 @@ export STARTTIME_PREP_IC="00:30:00"
 export STARTTIME_PREP_LBC="00:30:00"
 export MORE_XML_ENTITIES=true
 export DO_CLEAN=true
+export DO_HOFX=false
+export HOFX_FHRS="000 001 012"
 export RESERVATION_CLEAN=${RESERVATION}
 export USE_THE_LATEST_SATBIAS=false

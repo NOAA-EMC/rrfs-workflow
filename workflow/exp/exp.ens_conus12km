@@ -91,7 +91,7 @@ case ${MACHINE} in
     export PARTITION="hera"
     ;;
   "ursa")
-    export IC_EXTRN_MDL_BASEDIR="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/GFS"
+    export IC_EXTRN_MDL_BASEDIR="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/GEFS"
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
     export OBSPATH="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
     export OBSPATH_NSSLMOSIAC="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/reflectivity"

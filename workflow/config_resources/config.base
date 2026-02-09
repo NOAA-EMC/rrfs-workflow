@@ -25,10 +25,10 @@ export MPASOUT_SAVE2COM_HRS=${MPASOUT_SAVE2COM_HRS:-""}  # cycling mpasout.nc is
 
 # PREP_LBC_LOOK_BACK_HRS
 if ${REALTIME:-false}; then
-  export PREP_LBC_LOOK_BACK_HRS=${PREP_LBC_LOOK_BACK_HRS:-13} # Python range(0,13) will make it 0-12
+  export PREP_LBC_LOOK_BACK_HRS=${PREP_LBC_LOOK_BACK_HRS:-13}
 else
   LBC_CYCS=$(echo "${LBC_CYCS}" | xargs) # trim any leading, trailing and extra spaces
-  lbc_step_hrs=$(( 24*3/(${#LBC_CYCS}+1) ))
+  lbc_step_hrs=$(( 24*3/(${#LBC_CYCS}+1) -1 ))
   export PREP_LBC_LOOK_BACK_HRS=${PREP_LBC_LOOK_BACK_HRS:-${lbc_step_hrs}}
 fi
 

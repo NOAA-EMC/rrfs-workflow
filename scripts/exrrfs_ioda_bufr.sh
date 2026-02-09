@@ -64,7 +64,7 @@ done
 ${cpreq} "${FIXrrfs}/jedi/atms_beamwidth.txt" .
 ${cpreq} "${PARMrrfs}/bufr_atms_mapping.yaml" .
 input_file="atmsbufr"
-output_file="ioda.atms_{splits/satId}.nc"
+output_file="ioda_atms_{splits/satId}.nc"
 yaml="bufr_atms_mapping.yaml"
 if [[ -f "$input_file" ]]; then
   ./bufr2netcdf.x "$input_file" "$yaml" "$output_file"

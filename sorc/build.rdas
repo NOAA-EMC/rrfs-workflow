@@ -40,6 +40,7 @@ EXEC="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_variational.x"
 EXEC2="${HOMErrfs}/sorc/RDASApp/build/bin/bufr2ioda.x"
 EXEC3="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_enkf.x"
 EXEC4="${HOMErrfs}/sorc/RDASApp/build/bin/bufr2netcdf.x"
+EXEC5="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_hofx3d.x"
 cd "${HOMErrfs}/sorc/RDASApp" || exit 1
 
 # workaround for using the GSL surface operator
@@ -77,4 +78,7 @@ cp "${EXEC3}" "${HOMErrfs}/exec/mpasjedi_enkf.x"
 
 echo "copy ${EXEC4} to ../exec/bufr2netcdf.x"
 cp "${EXEC4}" "${HOMErrfs}/exec/bufr2netcdf.x"
+
+echo "copy ${EXEC5} to ../exec/mpasjedi_hofx3d.x"
+cp "${EXEC5}" "${HOMErrfs}/exec/mpasjedi_hofx3d.x"
 exit 0

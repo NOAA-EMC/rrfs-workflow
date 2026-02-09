@@ -67,7 +67,7 @@ background:
     pattern: "%iMember%"
     start: 1
     zero padding: 3
-    nmembers: 30
+    nmembers: '@ENS_SIZE@'
 
 driver:
   run as observer only: true
@@ -112,7 +112,7 @@ observations:
          observation alias file: obsop_name_map.yaml
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 200e3 # orig
+           lengthscale: 15e3 # orig
        _obsname: refl10cm
        obs filters:
        - filter: Background Check
