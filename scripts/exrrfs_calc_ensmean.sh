@@ -219,6 +219,14 @@ done
 #
 #-----------------------------------------------------------------------
 #
+# Copy INPUT into INPUT.gsi for parallel GSI and JEDI runs
+#
+#-----------------------------------------------------------------------
+#
+cp -r ${ensmeandir} ${ensmeandir}.gsi
+#
+#-----------------------------------------------------------------------
+#
 # touch a file to show completion of the task
 #
 touch ${COMOUT}/calc_ensmean_complete.txt
