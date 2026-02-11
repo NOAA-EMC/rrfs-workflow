@@ -45,8 +45,6 @@ if (( ${YAML_GEN_METHOD:-1} == 2 )); then
   ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_msonet.nc
   ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_proflr.nc
   ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_rassda.nc
-  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_satwnd.abi_goes-16.nc
-  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_satwnd.abi_goes-18.nc
   ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_sfcshp.nc
   ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_vadwnd.nc
 fi
