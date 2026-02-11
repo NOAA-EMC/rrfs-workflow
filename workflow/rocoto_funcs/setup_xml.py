@@ -29,6 +29,7 @@ from rocoto_funcs.prep_chem import prep_chem
 from rocoto_funcs.clean import clean
 from rocoto_funcs.graphics import graphics
 from rocoto_funcs.misc import misc
+from rocoto_funcs.hofx import hofx
 
 # setup_xml
 
@@ -109,6 +110,8 @@ def setup_xml(HOMErrfs, expdir):
             if os.getenv("DO_POST", "TRUE").upper() == "TRUE":
                 mpassit(xmlFile, expdir)
                 upp(xmlFile, expdir)
+            if os.getenv("DO_HOFX", "FALSE").upper() == "TRUE":
+                hofx(xmlFile, expdir)
 
 # ---------------------------------------------------------------------------
 # assemble tasks for an ensemble experiment
@@ -145,8 +148,9 @@ def setup_xml(HOMErrfs, expdir):
             fcst(xmlFile, expdir, do_ensemble=True)
             if os.getenv('DO_CYC', 'FALSE').upper() == "TRUE":
                 save_for_next(xmlFile, expdir, do_ensemble=True)
-            mpassit(xmlFile, expdir, do_ensemble=True)
-            upp(xmlFile, expdir, do_ensemble=True)
+            if os.getenv("DO_POST", "TRUE").upper() == "TRUE":
+                mpassit(xmlFile, expdir, do_ensemble=True)
+                upp(xmlFile, expdir, do_ensemble=True)
             if do_ensmean_post == "TRUE":
                 ensmean(xmlFile, expdir)
                 mpassit(xmlFile, expdir, do_ensemble=True, do_ensmean_post=True)

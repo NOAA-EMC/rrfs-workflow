@@ -11,6 +11,7 @@ if [[ ${MESH_NAME} == "na12km" ]]; then
   export FCST_RADT=30
   export FCST_CONVECTION_SCHEME=true
   export UPP_DOMAIN="na."
+  export MRMS_GRIDSPACINGDEG=0.10
 
   export MPASSIT_NX=1200
   export MPASSIT_NY=800
@@ -33,6 +34,7 @@ elif [[ ${MESH_NAME} == "conus12km" ]]; then
   export FCST_RADT=30
   export FCST_CONVECTION_SCHEME=true
   export UPP_DOMAIN="conus."
+  export MRMS_GRIDSPACINGDEG=0.10
 
   export MPASSIT_NX=480
   export MPASSIT_NY=280
@@ -60,6 +62,7 @@ elif [[ ${MESH_NAME} == "conus3km" ]]; then
   export FCST_SUBSTEPS=4
   export FCST_RADT=15
   export UPP_DOMAIN="conus."
+  export MRMS_GRIDSPACINGDEG=0.03
 
   export MPASSIT_NX=1800
   export MPASSIT_NY=1060
@@ -87,6 +90,7 @@ elif [[ ${MESH_NAME} == "south3.5km" ]]; then
   export FCST_SUBSTEPS=4
   export FCST_RADT=15
   export UPP_DOMAIN="subconus."
+  export MRMS_GRIDSPACINGDEG=0.03
 
   export MPASSIT_NX=660
   export MPASSIT_NY=440
@@ -105,6 +109,7 @@ elif [[ ${MESH_NAME} == "ar3.5km" ]]; then
   export FCST_SUBSTEPS=4
   export FCST_RADT=15
   export UPP_DOMAIN="ar."
+  export MRMS_GRIDSPACINGDEG=0.03
 
   export MPASSIT_NX=1710
   export MPASSIT_NY=1370
@@ -126,6 +131,7 @@ elif [[ ${MESH_NAME} == "ea5km" ]]; then
   export FCST_SUBSTEPS=4
   export FCST_RADT=15
   export UPP_DOMAIN="ea."
+  export MRMS_GRIDSPACINGDEG=0.05
 
   export MPASSIT_NX=840
   export MPASSIT_NY=760
@@ -147,6 +153,7 @@ elif [[ ${MESH_NAME} == "global-15-3km" ]]; then
   export FCST_SUBSTEPS=4
   export FCST_RADT=15
   export UPP_DOMAIN="conus."
+  export MRMS_GRIDSPACINGDEG=0.10
 
   export MPASSIT_NX=1800
   export MPASSIT_NY=1060

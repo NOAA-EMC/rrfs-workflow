@@ -6,6 +6,7 @@ Param| Type |Level1|Level2| Name     | Units   | Description                    
   34 | 100  |   *  |      | VV       | m s-1   | V                                       |  0  |  2  |  3  | 100 | 1 |
   52 | 100  |   *  |      | RH       | %       | Relative Humidity                       |  0  |  1  |  1  | 100 | 1 |
    7 | 100  |   *  |      | HGT      | m       | Height                                  |  0  |  3  |  5  | 100 | 1 |
+ 153 | 109  |   *  |      | QC       | kg kg-1  | Cloud water mixing ratio               |  0  |  1  | 22  | 100 | 1 |
   11 | 105  |   2  |      | TT       | K       | Temperature       at 2 m                |  0  |  0  |  0  | 103 | 1 |
   52 | 105  |   2  |      | RH       | %       | Relative Humidity at 2 m                |  0  |  1  |  1  | 103 | 1 |
   33 | 105  |  10  |      | UU       | m s-1   | U                 at 10 m               |  0  |  2  |  2  | 103 | 1 |
