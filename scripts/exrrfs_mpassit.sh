@@ -72,17 +72,9 @@ for (( ii=0; ii<"${num_fhrs}"; ii=ii+"${group_total_num}" )); do
       source prep_step
       ${MPI_RUN_CMD} ./mpassit.x namelist.mpassit
       # check the status, copy output to UMBRELLA_MPASSIT_DATA
-      if [[ -s "./mpassit.${timestr}.nc" ]]; then
-	SIZE=$(du -sb "./mpassit.${timestr}.nc" | awk '{ print $1 }')
-	chars=`echo -n $SIZE | wc -c`
-	# check for incomplete output files
-	if [[ $chars -gt 8 ]] ; then
-          mv "./mpassit.${timestr}.nc" "${UMBRELLA_MPASSIT_DATA}/."
-          mv namelist.mpassit "namelist.mpassit_${fhr}"
-	else
-	  echo "FATAL ERROR: failed to generate full mpassit.${timestr}.nc"
-	  err_exit
-	fi
+      if [[ -f "./mpassit.${timestr}.nc" ]] && (( $(stat -c%s "./mpassit.${timestr}.nc") > 104857600 )); then
+        mv "./mpassit.${timestr}.nc" "${UMBRELLA_MPASSIT_DATA}/."
+        mv namelist.mpassit "namelist.mpassit_${fhr}"
       else
         echo "FATAL ERROR: failed to generate mpassit.${timestr}.nc"
         err_exit
