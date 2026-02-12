@@ -35,9 +35,10 @@ export GSIBEC_Y=20
 
 export DO_CYC=true
 export CYC_INTERVAL=1
-for i in {0..23};    do arr[$i]="06"; done # 3hr fcst
-for i in {0..23..02};    do arr[$i]="18"; done # 3hr fcst
-#for i in {0..23..06}; do arr[$i]="12"; done # 12hr fcst every 12hrs
+for i in {0..23};    do arr[$i]="03"; done # 3hr fcst
+for i in {0..23..03}; do arr[$i]="18"; done # 18hr fcst
+for i in {0..23..12}; do arr[$i]="24"; done # 24hr fcst every 12hrs
+for i in 00; do arr[$i]="36"; done # 36hr fcst at 00Z
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
 export MPASSIT_GROUP_TOTAL_NUM=2
@@ -49,7 +50,7 @@ export LBC_LENGTH=30
 export LBC_INTERVAL=1
 export LBC_UNGRIB_GROUP_TOTAL_NUM=5
 export LBC_GROUP_TOTAL_NUM=5
-export PREP_LBC_LOOK_BACK_HRS=11 # define the hours going back for prep_lbc to find lbc files
+export PREP_LBC_LOOK_BACK_HRS=5 # define the hours going back for prep_lbc to find lbc files
 
 export RETRO_PERIOD="2024052700-2024052800"
 export LBC_CYCS="00 06 12 18"  # evenly divide 24 hours, e.g., "00 12", "00 06 12 18", etc
