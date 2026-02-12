@@ -342,9 +342,9 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
 	if [[ $SENDDBN = 'YES' ]]; then
            if (( 10#$cyc % 3 == 0 )); then
              $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE} $job \
-		     ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.subh.f${fhr}.${domain}.grib2
+                  ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.subh.f${fhr}.${domain}.grib2
              $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_WIDX} $job \
-		     ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.subh.f${fhr}.${domain}.grib2.idx
+                  ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.subh.f${fhr}.${domain}.grib2.idx
 	   fi
 	fi
       fi
