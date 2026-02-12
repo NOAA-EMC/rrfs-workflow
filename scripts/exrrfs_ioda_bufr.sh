@@ -45,7 +45,6 @@ if (( ${YAML_GEN_METHOD:-1} == 2 )); then
   ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_msonet.nc
   ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_proflr.nc
   ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_rassda.nc
-  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_satwnd.nc
   ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_sfcshp.nc
   ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_vadwnd.nc
 fi
@@ -91,7 +90,8 @@ HOMErdasapp=${HOMErrfs}/sorc/RDASApp/
 ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda_adpupa_prepbufr.json .
 ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda_adpupa_prepbufr.py .
 ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda_ztd.py .
-#${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda_satwnd.py .
+${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda_satwnd_amv_goes.json .
+${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda_satwnd_amv_goes.py .
 ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda.json .
 ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda_gsrcsr.json .
 ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda_gsrcsr.py .
@@ -113,7 +113,8 @@ ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/gen_bufr2ioda_json.py .
 ./bufr2ioda_ztd.py -c bufr2ioda_0.json
 
 # SATWND
-#./bufr2ioda_satwnd.py -c bufr2ioda_0.json
+./gen_bufr2ioda_json.py -t bufr2ioda_satwnd_amv_goes.json -o bufr2ioda_satwnd_amv_goes_0.json
+./bufr2ioda_satwnd_amv_goes.py -c bufr2ioda_satwnd_amv_goes_0.json
 
 # GSRCSR
 ln -sf abibufr "rap.t${cyc}z.gsrcsr.tm00.bufr_d"
@@ -129,8 +130,7 @@ ${cpreq} "${USHrrfs}"/offline_vad_thinning.py .
 
 for ioda_file in ioda*nc; do
   grid_file="${FIXrrfs}/${MESH_NAME}/${MESH_NAME}.static.nc"
-  #if [[ "${ioda_file}" == *abi* || "${ioda_file}" == *atms* || "${ioda_file}" == *cris* ]]; then
-  if [[ "${ioda_file}" == *abi* ]]; then
+  if [[ "${ioda_file}" == *abi* && "${ioda_file}" != *satwnd* ]]; then
     echo " ${ioda_file} ioda file detected: running offline_domain_check_satrad.py"
     ./offline_domain_check_satrad.py -o "${ioda_file}" -g "${grid_file}" -s 0.005
     base_name=$(basename "$ioda_file" .nc)
