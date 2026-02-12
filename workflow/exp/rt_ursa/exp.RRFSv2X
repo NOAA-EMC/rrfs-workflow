@@ -5,10 +5,10 @@
 export NET=rrfs                    # rrfs, rtma, 
 export MESH_NAME=conus3km         # conus12km, conus3km, atl3km, etc
 export WGF="det"   # working group function = "det", "enkf", "ens", "firewx"
-export EXP_NAME=rrfsx
+export EXP_NAME=RRFSv2X
 export VERSION=$(cat ./VERSION)
-export TAG=rrfsx
-export OPSROOT=/scratch4/BMC/rtrr/NCO_dirs/MPAS_${EXP_NAME}
+export TAG=rrfsv2x
+export OPSROOT=/scratch4/BMC/rtrr/NCO_dirs/${EXP_NAME}
 export EXPDIR=${OPSROOT}/exp/${VERSION}/rrfs${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=YES
@@ -69,7 +69,7 @@ export WALLTIME_FCST="4:00:00"
 export WALLTIME_SAVE_FCST="4:00:00"
 export WALLTIME_MPASSIT="2:00:00"
 export WALLTIME_UPP="2:00:00"
-export WALLTIME_JEDIVAR="01:30:00"
+export WALLTIME_JEDIVAR="00:30:00"
 # Ursa
 export QUEUE="batch"
 export PARTITION="u1-compute"
