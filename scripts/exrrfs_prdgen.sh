@@ -291,17 +291,15 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
       fi
 
       if [[ ${SENDDBN} = "YES" ]] ; then
-
-	      # only 3 hourly cycles
-              if (( 10#$cyc % 3 == 0 )); then
-	      # hourly to 60, then three hourly
-              if (( 10#$fhr <= 60 || 10#$fhr%3 == 0 )) ; then
-
-        $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE} $job ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
-        $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_WIDX} $job ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
-	      fi
-	      fi
-      fi 
+        if (( 10#$cyc % 3 == 0 )); then
+          if (( 10#$fhr <= 60 || 10#$fhr%3 == 0 )) ; then
+            $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE} $job \
+                ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
+            $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_WIDX} $job \
+                ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+          fi
+        fi
+      fi  #SENDDBN
     fi
     count=$count+1
   done
@@ -341,10 +339,12 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
           -new_grid ${gridspecs} ${COMOUT}/${prslev_subh_dom}
         wgrib2 ${COMOUT}/${prslev_subh_dom} -s > ${COMOUT}/${prslev_subh_dom}.idx
 
-	if [[ $SENDDBN = 'YES ]]; then
+	if [[ $SENDDBN = 'YES' ]]; then
            if (( 10#$cyc % 3 == 0 )); then
-        $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE} $job ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.subh.f${fhr}.${domain}.grib2
-        $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_WIDX} $job ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.subh.f${fhr}.${domain}.grib2.idx
+             $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE} $job \
+		     ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.subh.f${fhr}.${domain}.grib2
+             $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_WIDX} $job \
+		     ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.subh.f${fhr}.${domain}.grib2.idx
 	   fi
 	fi
       fi
