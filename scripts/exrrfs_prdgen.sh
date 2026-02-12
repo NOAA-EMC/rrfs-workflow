@@ -290,10 +290,17 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
         wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi
 
-# may need to add limit on cycle hours for this?  Or would that be handled in the processing of dbn_alerts?
       if [[ ${SENDDBN} = "YES" ]] ; then
+
+	      # only 3 hourly cycles
+              if (( 10#$cyc % 3 == 0 )); then
+	      # hourly to 60, then three hourly
+              if (( 10#$fhr <= 60 || 10#$fhr%3 == 0 )) ; then
+
         $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE} $job ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
         $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_WIDX} $job ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+	      fi
+	      fi
       fi 
     fi
     count=$count+1
