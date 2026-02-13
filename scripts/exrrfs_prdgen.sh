@@ -290,11 +290,16 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
         wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi
 
-# may need to add limit on cycle hours for this?  Or would that be handled in the processing of dbn_alerts?
       if [[ ${SENDDBN} = "YES" ]] ; then
-        $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE} $job ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
-        $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_WIDX} $job ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
-      fi 
+        if (( 10#$cyc % 3 == 0 )); then
+          if (( 10#$fhr <= 60 || 10#$fhr%3 == 0 )) ; then
+            $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE} $job \
+                ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
+            $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_WIDX} $job \
+                ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+          fi
+        fi
+      fi  #SENDDBN
     fi
     count=$count+1
   done
@@ -333,6 +338,15 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
           -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
           -new_grid ${gridspecs} ${COMOUT}/${prslev_subh_dom}
         wgrib2 ${COMOUT}/${prslev_subh_dom} -s > ${COMOUT}/${prslev_subh_dom}.idx
+
+	if [[ $SENDDBN = 'YES' ]]; then
+           if (( 10#$cyc % 3 == 0 )); then
+             $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE} $job \
+                  ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.subh.f${fhr}.${domain}.grib2
+             $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_WIDX} $job \
+                  ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.subh.f${fhr}.${domain}.grib2.idx
+	   fi
+	fi
       fi
     done
   fi
