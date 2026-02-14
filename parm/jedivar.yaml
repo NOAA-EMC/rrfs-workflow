@@ -18179,9 +18179,9 @@ cost function:
          horizontal_mesh: 60
          use_reduced_horizontal_grid: true
          distance_norm: maximum
-         time_mesh: '{{window_length}}'
-         time_min: '{{window_begin}}'
-         time_max: '{{window_end}}'
+         time_mesh: '@THINNING_TIME_MESH@'
+         time_min: '@THINNING_TIME_MIN@'
+         time_max: '@THINNING_TIME_MAX@'
          #  round_horizontal_bin_count_to_nearest: true
          #  partition_longitude_bins_using_mesh: true
          actions:
@@ -18687,9 +18687,9 @@ cost function:
          horizontal_mesh: 60
          use_reduced_horizontal_grid: true
          distance_norm: maximum
-         time_mesh: '{{window_length}}'
-         time_min: '{{window_begin}}'
-         time_max: '{{window_end}}'
+         time_mesh: '@THINNING_TIME_MESH@'
+         time_min: '@THINNING_TIME_MIN@'
+         time_max: '@THINNING_TIME_MAX@'
          #  round_horizontal_bin_count_to_nearest: true
          #  partition_longitude_bins_using_mesh: true
          actions:
