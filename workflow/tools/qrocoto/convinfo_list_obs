@@ -7,8 +7,11 @@ import os
 args = sys.argv
 nargs = len(args) - 1
 if nargs < 1:
-    print(f"{os.path.basename(sys.argv[0])} <convinfo_filename>")
+    print(f"{os.path.basename(sys.argv[0])} <convinfo_filename> [0|1|-1]")
     exit()
+show_iuse = 99 # show used, monitored and unused at the same time
+if nargs > 1:
+    show_iuse = int(args[2])
 
 dcConvInfo = {}
 with open(args[1], 'r') as sfile:
@@ -45,9 +48,14 @@ for key, value in dcConvInfo.items():
     else:
         listUnuse.append(key)
 
-print('*** used obs (iuse=1):')
-print(', '.join(listUse))
-print('\n*** monitored obs (iuse=-1):')
-print(', '.join(listMonitor))
-print('\n*** unused obs (iuse=0):')
-print(', '.join(listUnuse))
+if show_iuse == 1 or show_iuse == 99:
+    print('*** used obs (iuse=1):')
+    print(', '.join(listUse))
+
+if show_iuse == -1 or show_iuse == 99:
+    print('\n*** monitored obs (iuse=-1):')
+    print(', '.join(listMonitor))
+
+if show_iuse == 0 or show_iuse == 99:
+    print('\n*** unused obs (iuse=0):')
+    print(', '.join(listUnuse))
