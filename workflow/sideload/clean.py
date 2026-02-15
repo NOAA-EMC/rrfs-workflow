@@ -24,6 +24,8 @@ def day_clean(srcPath, cyc1, cyc2, srcType, WGF):
             pattern = f'{i:02}/{WGF}'
         elif srcType == "stmp":
             pattern = f'*_{i:02}_*/{WGF}'
+        elif srcType == "com_lbc":
+            pattern = f'{i:02}/lbc/{WGF}'
         else:  # com
             pattern = f'{i:02}/*/{WGF}'
         pathlist = list(Path(srcPath).glob(pattern))
@@ -76,7 +78,7 @@ def group_clean(cdate, retention_cycs, srcBase, srcType, NET, RUN, WGF, rrfs_ver
         bPDY = bdate.strftime("%Y%m%d")
         if srcType == "stmp":
             srcPath = f"{srcBase}/{bPDY}"
-        elif srcType == "com":
+        elif srcType.startswith("com"):
             srcPath = f"{srcBase}/{NET}/{rrfs_ver}/{RUN}.{bPDY}"
         elif srcType == "log":
             srcPath = f"{srcBase}/{NET}/{rrfs_ver}/logs/{RUN}.{bPDY}"
@@ -87,7 +89,7 @@ def group_clean(cdate, retention_cycs, srcBase, srcType, NET, RUN, WGF, rrfs_ver
     # clean cycles in the first clean cycle day
     if srcType == "stmp":
         srcPath = f"{srcBase}/{pPDY}"
-    elif srcType == "com":
+    elif srcType.startswith("com"):
         srcPath = f"{srcBase}/{NET}/{rrfs_ver}/{RUN}.{pPDY}"
     elif srcType == "log":
         srcPath = f"{srcBase}/{NET}/{rrfs_ver}/logs/{RUN}.{pPDY}"
@@ -126,6 +128,7 @@ if not all(envar.strip() for envar in list_envars):  # if not "all envars are no
 #
 stmp_retention_cycs = int(os.getenv("STMP_RETENTION_CYCS", "24"))
 com_retention_cycs = int(os.getenv("COM_RETENTION_CYCS", "120"))
+com_lbc_retention_cycs = int(os.getenv("COM_LBC_RETENTION_CYCS", "48"))
 log_retention_cycs = int(os.getenv("LOG_RETENTION_CYCS", "840"))
 clean_back_days = int(os.getenv("CLEAN_BACK_DAYS", "5"))
 #
@@ -136,6 +139,7 @@ cdate = datetime.strptime(f'{PDY}{cyc}', "%Y%m%d%H")
 print(f'cdate={cdate}')
 print(f'stmp_retention_cycs={stmp_retention_cycs}')
 print(f'com_retention_cycs={com_retention_cycs}')
+print(f'com_lbc_retention_cycs={com_lbc_retention_cycs}')
 print(f'log_retention_cycs={log_retention_cycs}')
 print(f'clean_back_days={clean_back_days}')
 
@@ -144,6 +148,9 @@ group_clean(cdate, stmp_retention_cycs, DATAROOT, 'stmp', NET, RUN, WGF, rrfs_ve
 
 print(f'\nclean com: {COMROOT}')
 group_clean(cdate, com_retention_cycs, COMROOT, 'com', NET, RUN, WGF, rrfs_ver)
+
+print(f'\nclean com_lbc: {COMROOT}')
+group_clean(cdate, com_lbc_retention_cycs, COMROOT, 'com_lbc', NET, RUN, WGF, rrfs_ver)
 
 print('\nclean log: ' + COMROOT.rstrip('/') + f'{NET}/{rrfs_ver}/logs')
 group_clean(cdate, log_retention_cycs, COMROOT, 'log', NET, RUN, WGF, rrfs_ver)
