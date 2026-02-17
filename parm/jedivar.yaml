@@ -82,12 +82,6 @@ cost function:
         covariance model: SABER
         saber central block:
           saber block name: gsi static covariance
-          active variables: &ctlvars
-          - eastward_wind
-          - northward_wind
-          - air_temperature
-          - relative_humidity
-          - air_pressure_at_surface
           read:
             gsi akbk: foo.nc
             gsi error covariance file: berror_stats
@@ -123,11 +117,8 @@ cost function:
           - northward_wind
           - air_temperature
           - air_pressure_at_surface
+          - air_pressure
           - water_vapor_mixing_ratio_wrt_moist_air
-        linear variable change:
-          linear variable change name: Control2Analysis
-          input variables: *ctlvars
-          output variables: *incvars
       weight:
         value: "@HYB_WGT_STATIC@"
     - covariance:

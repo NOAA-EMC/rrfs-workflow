@@ -258,8 +258,8 @@ if (.not. self%grid%noGSI) then
        endif
      endif
      deallocate(tbdvars)
-
   endif
+
   if(jouter==1) call rf_set()
 
 endif ! noGSI
@@ -274,7 +274,7 @@ contains
 
 ! print *, 'Atlas 2-dim: ', size(rank2,2), ' gsi-vec: ', self%grid%lat2,' ', self%grid%lon2
   allocate(aux(self%grid%lat2,self%grid%lon2))
-  call atlas_to_gsi_(rank2(1,:),aux)
+  call atlas_to_gsi_(rank2(1,:),aux,self%rank,self%grid%layout)
   call gsibec_set_guess(varname,islot,aux)
   deallocate(aux)
 
@@ -292,11 +292,11 @@ contains
   allocate(aux(self%grid%lat2,self%grid%lon2,npz))
   if (self%grid%vflip) then
      do k=1,npz
-        call atlas_to_gsi_(rank2(k,:),aux(:,:,npz-k+1))
+        call atlas_to_gsi_(rank2(k,:),aux(:,:,npz-k+1),self%rank,self%grid%layout)
      enddo
   else
      do k=1,npz
-        call atlas_to_gsi_(rank2(k,:),aux(:,:,k))
+        call atlas_to_gsi_(rank2(k,:),aux(:,:,k),self%rank,self%grid%layout)
      enddo
   endif
   call gsibec_set_guess(varname,islot,aux)
@@ -429,7 +429,7 @@ real(kind=kind_real), allocatable :: aux1(:)
 type(control_vector) :: gsicv
 type(gsi_bundle),allocatable :: gsisv(:)
 integer :: isc,iec,jsc,jec,npz
-integer :: iv,k,ier,itbd,ii
+integer :: iv,k,ier,itbd,ii,i,j
 
 character(len=32),allocatable :: gvars2d(:),gvars3d(:)
 character(len=30),allocatable :: tbdvars(:),needvrs(:)
@@ -497,7 +497,7 @@ do ii=1,ntimes
         cycle
      endif
      allocate(aux(size(gsivar2d,1),size(gsivar2d,2)))
-     call atlas_to_gsi_(rank2(1,:),aux)
+     call atlas_to_gsi_(rank2(1,:),aux,self%rank,self%grid%layout)
      gsivar2d=aux
      deallocate(aux)
    enddo
@@ -519,12 +519,12 @@ do ii=1,ntimes
      allocate(aux(size(gsivar3d,1),size(gsivar3d,2)))
      if (self%grid%vflip) then
         do k=1,npz
-           call atlas_to_gsi_(rank2(k,:),aux)
+           call atlas_to_gsi_(rank2(k,:),aux,self%rank,self%grid%layout)
            gsivar3d(:,:,npz-k+1)=aux
         enddo
      else
         do k=1,npz
-           call atlas_to_gsi_(rank2(k,:),aux)
+           call atlas_to_gsi_(rank2(k,:),aux,self%rank,self%grid%layout)
            gsivar3d(:,:,k)=aux
         enddo
      endif
@@ -532,7 +532,7 @@ do ii=1,ntimes
    enddo
 enddo ! ntimes
 needvrs=tbdvars
-go to 100
+
 ! fill in missing fields
 if (self%cv) then
   call cvfix_(gsicv,fields,self%grid%vflip,needvrs,ntimes,'adm')
@@ -546,7 +546,7 @@ if (any(needvrs(:)(1:6)/='filled')) then
   enddo
   call abor1_ftn(myname_//": missing fields in cv(adm) ")
 endif
-100 continue
+
 ! Apply GSI B-error operator
 ! --------------------------
 if (self%cv) then
@@ -596,7 +596,7 @@ do ii=1,ntimes
      deallocate(aux1)
    enddo
 enddo ! ntimes
-go to 200
+
 ! Fill in missing fields
 needvrs=tbdvars
 if (self%cv) then
@@ -611,7 +611,6 @@ if (any(needvrs(:)(1:6)/='filled')) then
   enddo
   call abor1_ftn(myname_//": missing fields in cv(tlm) ")
 endif
-200 continue
 
 ! Release pointer
 ! ---------------
@@ -655,15 +654,9 @@ end subroutine multiply
       call afield%data(rank2)
       ier=0
    endif
-   if (trim(vname) == 'prse' .or. trim(vname) == 'air_pressure_levels') then
-      if (.not.fields%has('air_pressure_levels')) return
-      afield = fields%field('air_pressure_levels')
-      call afield%data(rank2)
-      ier=0
-   endif
-   if (trim(vname) == 'delp') then
-      if (.not.fields%has('air_pressure_thickness')) return
-      afield = fields%field('air_pressure_thickness')
+   if (trim(vname) == 'prse' .or. trim(vname) == 'air_pressure') then
+      if (.not.fields%has('air_pressure')) return
+      afield = fields%field('air_pressure')
       call afield%data(rank2)
       ier=0
    endif
@@ -705,22 +698,14 @@ end subroutine multiply
       ier=0
    endif
    if (trim(vname) == 'tv' ) then
-      !if (.not.fields%has('virtual_temperature')) return
-      !afield = fields%field('virtual_temperature')
-      if (.not.fields%has('air_temperature')) return
-      afield = fields%field('air_temperature')
+      if (.not.fields%has('virtual_temperature')) return
+      afield = fields%field('virtual_temperature')
       call afield%data(rank2)
       ier=0
    endif
-   if (trim(vname) == 'sphum' ) then
+   if (trim(vname) == 'q' .or. trim(vname) == 'sphum' ) then
       if (.not.fields%has('water_vapor_mixing_ratio_wrt_moist_air')) return
       afield = fields%field('water_vapor_mixing_ratio_wrt_moist_air')
-      call afield%data(rank2)
-      ier=0
-   endif
-   if (trim(vname) == 'q') then
-      if (.not.fields%has('relative_humidity')) return
-      afield = fields%field('relative_humidity')
       call afield%data(rank2)
       ier=0
    endif
@@ -817,11 +802,13 @@ end subroutine multiply
 
    ! copy atlas array into GSI array
    ! the atlas halos are copied as well, so it is assumed the atlas halos are up-to-date
-   subroutine atlas_to_gsi_(rank,var)
+   subroutine atlas_to_gsi_(rank,var,pe,layout)
    real(kind=kind_real),intent(in) :: rank(:)
    real(kind=kind_real),intent(inout):: var(:,:)
+   integer, intent(in), optional :: pe
+   integer, intent(in), optional :: layout(2)
    integer ii,jj,jnode
-   integer mylat2,mylon2
+   integer mylat2,mylon2,mype,nxpe,nype
    mylat2 = size(var,1)
    mylon2 = size(var,2)
    jnode=1
@@ -837,20 +824,128 @@ end subroutine multiply
    ! - all x @ ymin
    ! - pairs of (xmin, xmax) @ each y from (ymin+1, ymax-1)
    ! - all x @ ymax
-   do ii=1,mylon2
-       var(1,ii) = rank(jnode)
-       jnode = jnode + 1
-   enddo
-   do jj=2,mylat2-1
-       var(jj,1) = rank(jnode)
-       jnode = jnode + 1
-       var(jj,mylon2) = rank(jnode)
-       jnode = jnode + 1
-   enddo
-   do ii=1,mylon2
-       var(mylat2,ii) = rank(jnode)
-       jnode = jnode + 1
-   enddo
+ 
+   if(present(pe).and.present(layout)) then
+     mype = pe
+     nxpe = layout(1)
+     nype = layout(2)
+     if(mype == 0) then
+       do jj=2,mylat2-1
+           var(jj,mylon2) = rank(jnode)
+           jnode = jnode + 1
+       enddo
+       do ii=2,mylon2
+           var(mylat2,ii) = rank(jnode)
+           jnode = jnode + 1
+       enddo
+     else if(mype == nxpe-1) then
+       do jj=2,mylat2-1
+           var(jj,1) = rank(jnode)
+           jnode = jnode + 1
+       enddo
+       do ii=1,mylon2-1
+           var(mylat2,ii) = rank(jnode)
+           jnode = jnode + 1
+       enddo
+     else if(mype == nxpe*(nype-1)) then
+       do ii=2,mylon2
+           var(1,ii) = rank(jnode)
+           jnode = jnode + 1
+       enddo
+       do jj=2,mylat2-1
+           var(jj,mylon2) = rank(jnode)
+           jnode = jnode + 1
+       enddo
+     else if(mype == nxpe*nype-1) then
+       do ii=1,mylon2-1
+           var(1,ii) = rank(jnode)
+           jnode = jnode + 1
+       enddo
+       do jj=2,mylat2-1
+           var(jj,1) = rank(jnode)
+           jnode = jnode + 1
+       enddo
+     else if(mype>0 .and. mype<nxpe-1) then
+       do jj=2,mylat2-1
+           var(jj,1) = rank(jnode)
+           jnode = jnode + 1
+           var(jj,mylon2) = rank(jnode)
+           jnode = jnode + 1
+       enddo
+       do ii=1,mylon2
+           var(mylat2,ii) = rank(jnode)
+           jnode = jnode + 1
+       enddo
+     else if(mype>nxpe*(nype-1) .and. mype<nxpe*nype-1) then
+       do ii=1,mylon2
+           var(1,ii) = rank(jnode)
+           jnode = jnode + 1
+       enddo
+       do jj=2,mylat2-1
+           var(jj,1) = rank(jnode)
+           jnode = jnode + 1
+           var(jj,mylon2) = rank(jnode)
+           jnode = jnode + 1
+       enddo
+     else if(mod(mype,nxpe)==0 .and. mype>0 .and. mype<nxpe*(nype-1)) then
+       do ii=2,mylon2
+           var(1,ii) = rank(jnode)
+           jnode = jnode + 1
+       enddo
+       do jj=2,mylat2-1
+           var(jj,mylon2) = rank(jnode)
+           jnode = jnode + 1
+       enddo
+       do ii=2,mylon2
+           var(mylat2,ii) = rank(jnode)
+           jnode = jnode + 1
+       enddo
+     else if(mod(mype,nxpe)==nxpe-1 .and. mype>nxpe-1 .and. mype<nxpe*nype-1) then
+       do ii=1,mylon2-1
+           var(1,ii) = rank(jnode)
+           jnode = jnode + 1
+       enddo
+       do jj=2,mylat2-1
+           var(jj,1) = rank(jnode)
+           jnode = jnode + 1
+       enddo
+       do ii=1,mylon2-1
+           var(mylat2,ii) = rank(jnode)
+           jnode = jnode + 1
+       enddo
+     else
+       do ii=1,mylon2
+           var(1,ii) = rank(jnode)
+           jnode = jnode + 1
+       enddo
+       do jj=2,mylat2-1
+           var(jj,1) = rank(jnode)
+           jnode = jnode + 1
+           var(jj,mylon2) = rank(jnode)
+           jnode = jnode + 1
+       enddo
+       do ii=1,mylon2
+           var(mylat2,ii) = rank(jnode)
+           jnode = jnode + 1
+       enddo
+     endif
+   else
+     do ii=1,mylon2
+         var(1,ii) = rank(jnode)
+         jnode = jnode + 1
+     enddo
+     do jj=2,mylat2-1
+         var(jj,1) = rank(jnode)
+         jnode = jnode + 1
+         var(jj,mylon2) = rank(jnode)
+         jnode = jnode + 1
+     enddo
+     do ii=1,mylon2
+         var(mylat2,ii) = rank(jnode)
+         jnode = jnode + 1
+     enddo
+   endif
+
    end subroutine atlas_to_gsi_
 
    ! copy GSI array into atlas array
@@ -893,6 +988,7 @@ end subroutine multiply
 !
    real(kind=kind_real), allocatable :: t_pt(:,:,:)
    real(kind=kind_real), pointer ::    tv(:,:,:)=>NULL()
+   real(kind=kind_real), pointer ::     t(:,:,:)=>NULL()
    real(kind=kind_real), pointer :: tv_pt(:,:,:)=>NULL()
    real(kind=kind_real), pointer ::     q(:,:,:)=>NULL()
    real(kind=kind_real), pointer ::  q_pt(:,:,:)=>NULL()
@@ -907,6 +1003,7 @@ end subroutine multiply
       ! from first guess ...
       call gsi_bundlegetpointer(gsi_metguess_bundle(ii),'q' ,q ,ier)
       call gsi_bundlegetpointer(gsi_metguess_bundle(ii),'tv',tv,ier)
+      call gsi_bundlegetpointer(gsi_metguess_bundle(ii),'tsen',t,ier)
       ! from GSI cv ...
       call gsi_bundlegetpointer(gsicv%step(ii),'q' ,q_pt ,ier)
       call gsi_bundlegetpointer(gsicv%step(ii),'tv',tv_pt,ier)
@@ -925,7 +1022,7 @@ end subroutine multiply
       endif
       ! retrieve missing field
       if(which=='tlm') then
-        call gsi_tv_to_t_tl(tv,tv_pt,q,q_pt,t_pt)
+        call gsi_tv_to_t_tl(tv,tv_pt,q,q_pt,t_pt,t)
         ! pass it back to JEDI ...
         allocate(aux1(size(rank2,2)))
         if (vflip) then
@@ -945,7 +1042,7 @@ end subroutine multiply
         endwhere
       endif
       if(which=='adm') then
-        call gsi_tv_to_t_ad(tv,tv_pt,q,q_pt,t_pt)
+        call gsi_tv_to_t_ad(tv,tv_pt,q,q_pt,t_pt,t)
         where(need=='tv')
            need='filled-'//need
         endwhere
@@ -1006,6 +1103,7 @@ end subroutine multiply
 !
    real(kind=kind_real), allocatable :: t_pt(:,:,:)
    real(kind=kind_real), pointer ::       tv(:,:,:)=>NULL()
+   real(kind=kind_real), pointer ::        t(:,:,:)=>NULL()
    real(kind=kind_real), pointer ::    tv_pt(:,:,:)=>NULL()
    real(kind=kind_real), pointer ::        q(:,:,:)=>NULL()
    real(kind=kind_real), pointer ::     q_pt(:,:,:)=>NULL()
@@ -1034,6 +1132,7 @@ end subroutine multiply
       ! from first guess ...
       call gsi_bundlegetpointer(gsi_metguess_bundle(ii),'q' ,q ,ier)
       call gsi_bundlegetpointer(gsi_metguess_bundle(ii),'tv',tv,ier)
+      call gsi_bundlegetpointer(gsi_metguess_bundle(ii),'tsen',t,ier)
       ! from GSI cv ...
       call gsi_bundlegetpointer(gsisv(ii),'q' ,q_pt ,ier)
       call gsi_bundlegetpointer(gsisv(ii),'tv',tv_pt,ier)
@@ -1052,7 +1151,7 @@ end subroutine multiply
       endif
       ! retrieve missing field
       if(which=='tlm') then
-        call gsi_tv_to_t_tl(tv,tv_pt,q,q_pt,t_pt)
+        call gsi_tv_to_t_tl(tv,tv_pt,q,q_pt,t_pt,t)
         where(need=='tv')
            need='filled-'//need
         endwhere
@@ -1072,7 +1171,7 @@ end subroutine multiply
         deallocate(aux1)
       endif
       if(which=='adm') then
-        call gsi_tv_to_t_ad(tv,tv_pt,q,q_pt,t_pt)
+        call gsi_tv_to_t_ad(tv,tv_pt,q,q_pt,t_pt,t)
         where(need=='tv')
            need='filled-'//need
         endwhere

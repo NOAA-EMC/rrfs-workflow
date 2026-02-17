@@ -73,6 +73,7 @@ def jedivar(xmlFile, expdir, do_spinup=False):
     if HYB_ENS_PATH == "":
         HYB_ENS_PATH = f'&COMROOT;/{NET}/{VERSION}'
 
+    ens_dep = ""
     if realtime.upper() == "TRUE":
         ens_dep = ""
 

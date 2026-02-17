@@ -55,7 +55,7 @@ cp ../_workaround_/RDASApp/mpas-jedi/mpas2ufo_vars_mod.F90 sorc/mpas-jedi/src/mp
 
 # workaround for GSIbec
 # no PR yet
-cp ../_workaround_/RDASApp/gsibec/* sorc/gsibec/src/gsibec/gsi
+cp ../_workaround_/RDASApp/gsibec/* sorc/gsibec/src/gsibec/gsi/
 
 cp ../_workaround_/RDASApp/saber/gsi_covariance_mod.f90 sorc/saber/src/saber/gsi/covariance/gsi_covariance_mod.f90
 cp ../_workaround_/RDASApp/saber/gsi_grid_mod.f90 sorc/saber/src/saber/gsi/grid/gsi_grid_mod.f90

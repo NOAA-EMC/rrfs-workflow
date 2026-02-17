@@ -30,7 +30,8 @@ met_guess::
   v        @GSIBEC_NSIG@       2         meridional_wind      v
   tv       @GSIBEC_NSIG@       2         virtual_temperature  tv
   tsen     @GSIBEC_NSIG@       2         sensible_temperature tsen 
-  sphum    @GSIBEC_NSIG@       2         specific_humidity    sphum
+  q        @GSIBEC_NSIG@       2         specific_humidity    sphum
+  prse     @GSIBEC_NSIG@      -1         air_pressure         prse    
 #  oz       @GSIBEC_NSIG@       2         ozone                o3mr 
 #  delp     @GSIBEC_NSIG@      -1         fv3_del_pressure     delp    
 ::

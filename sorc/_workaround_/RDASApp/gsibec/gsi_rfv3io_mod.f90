@@ -3838,7 +3838,7 @@ subroutine m_gsi_rfv3io_get_grid_specs(gsi_lats,gsi_lons,ierr)
     !endif
 
   endif
-
+ 
   if(mpas_regional) then
     nsig=0
     open(11,file='mpas_pave.txt')

@@ -56,7 +56,6 @@ use control_vectors, only: cvars3d,cvars2d
 use bias_predictors, only: predictors
 use gridmod, only: regional,lat2,lon2,nsig,twodvar_regional,mpas_regional
 use jfunc, only: nsclen,npclen,ntclen
-use jfunc, only: qoption
 use gsi_4dvar, only: nsubwin, lsqrtb
 #ifdef USE_ALL_ORIGINAL
 use cwhydromod, only: cw2hydro_ad
@@ -98,6 +97,7 @@ integer(i_kind) :: icpblh,icgust,icvis,icoz,icwspd10m,icw
 integer(i_kind) :: ictd2m,icmxtm,icmitm,icpmsl,ichowv
 integer(i_kind) :: ictcamt,iclcbas,icsfwter,icvpwter
 integer(i_kind) :: iccldch,icuwnd10m,icvwnd10m
+integer(i_kind) :: icext1,icext2
 character(len=3), parameter :: mycvars(ncvars) = (/  &
                 'sf ', 'vp ', 'ps ', 't  ', 'q  ', 'cw ', 'ql ', 'qi ', 'w  ' /)
 logical :: lc_sf,lc_vp,lc_w,lc_ps,lc_t,lc_rh,lc_cw,lc_ql,lc_qi
@@ -127,6 +127,7 @@ real(r_kind),pointer,dimension(:,:)   :: rv_pmsl=>NULL(),rv_howv=>NULL(),rv_cldc
 real(r_kind),pointer,dimension(:,:)   :: rv_uwnd10m=>NULL(),rv_vwnd10m=>NULL()
 real(r_kind),pointer,dimension(:,:,:) :: rv_u=>NULL(),rv_v=>NULL(),rv_w=>NULL(),rv_dw=>NULL(),rv_prse=>NULL()
 real(r_kind),pointer,dimension(:,:,:) :: rv_q=>NULL(),rv_tsen=>NULL(),rv_tv=>NULL(),rv_oz=>NULL()
+real(r_kind),pointer,dimension(:,:,:) :: rv_ext1=>NULL(),rv_ext2=>NULL()
 real(r_kind),pointer,dimension(:,:,:) :: rv_rank3=>NULL()
 real(r_kind),pointer,dimension(:,:)   :: rv_rank2=>NULL()
 
@@ -205,6 +206,8 @@ call gsi_bundlegetpointer (grad%step(1),'lcbas',iclcbas,istatus)
 call gsi_bundlegetpointer (grad%step(1),'cldch',iccldch,istatus)
 call gsi_bundlegetpointer (grad%step(1),'uwnd10m',icuwnd10m,istatus)
 call gsi_bundlegetpointer (grad%step(1),'vwnd10m',icvwnd10m,istatus)
+call gsi_bundlegetpointer (grad%step(1),'ext1',icext1,istatus)
+call gsi_bundlegetpointer (grad%step(1),'ext2',icext2,istatus)
 
 ! Loop over control steps
 do jj=1,nsubwin
@@ -280,12 +283,7 @@ do jj=1,nsubwin
 
 !  Adjoint of control to initial state
    call gsi_bundleputvar ( wbundle, 't' ,  rv_tv,  istatus )
-   if(mpas_regional .and. qoption==1) then
-     rv_q = rv_q * 100.
-     call gsi_bundleputvar ( wbundle, 'q' ,  rv_q,   istatus )
-   else
-     call gsi_bundleputvar ( wbundle, 'q' ,  zero,   istatus )
-   endif
+   call gsi_bundleputvar ( wbundle, 'q' ,  zero,   istatus )
    call gsi_bundleputvar ( wbundle, 'ps',  rv_ps,  istatus )
 
    if (do_cw_to_hydro_ad .and. .not.do_cw_to_hydro_ad_hwrf) then
@@ -316,7 +314,8 @@ do jj=1,nsubwin
 
 !  Adjoint of convert input normalized RH to q to add contribution of moisture
 !  to t, p , and normalized rh
-   if(do_normal_rh_to_q_ad) call normal_rh_to_q_ad(cv_rh,cv_t,rv_prse,rv_q)
+   if(regional .and. ls_prse) rv_prse = 0.
+   if(do_normal_rh_to_q_ad .or. mpas_regional) call normal_rh_to_q_ad(cv_rh,cv_t,rv_prse,rv_q)
 
 !  Adjoint to convert ps to 3-d pressure
    if(do_getprs_ad) call getprs_ad(cv_ps,cv_t,rv_prse)
@@ -418,6 +417,14 @@ do jj=1,nsubwin
    if (icvwnd10m>0) then
       call gsi_bundlegetpointer (rval(jj),'vwnd10m' ,rv_vwnd10m, istatus)
       call gsi_bundleputvar ( wbundle, 'vwnd10m', rv_vwnd10m, istatus )
+   end if
+   if (icext1>0) then
+      call gsi_bundlegetpointer (rval(jj),'ext1' ,rv_ext1, istatus)
+      call gsi_bundleputvar ( wbundle, 'ext1', rv_ext1, istatus )
+   end if
+   if (icext2>0) then
+      call gsi_bundlegetpointer (rval(jj),'ext2' ,rv_ext2, istatus)
+      call gsi_bundleputvar ( wbundle, 'ext2', rv_ext2, istatus )
    end if
 
 !$omp end parallel sections
