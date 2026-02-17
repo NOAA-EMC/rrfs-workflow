@@ -15,6 +15,7 @@ def clean(xmlFile, expdir):
         'CLEAN_MODE': f'{clean_mode}',
         'STMP_RETENTION_CYCS': os.getenv("STMP_RETENTION_CYCS", '6'),
         'COM_RETENTION_CYCS': os.getenv("COM_RETENTION_CYCS", '120'),  # 120 hrs = 5 days
+        'COM_LBC_RETENTION_CYCS': os.getenv("COM_LBC_RETENTION_CYCS", '48'),  # 48 hrs = 2 days
         'LOG_RETENTION_CYCS': os.getenv("LOG_RETENTION_CYCS", '840'),  # 840 hrs = 35 days
         # go back 'CLEAN_BACK_DAYS' from the first valid clean hour
         'CLEAN_BACK_DAYS': os.getenv("CLEAN_BACK_DAYS", '5'),

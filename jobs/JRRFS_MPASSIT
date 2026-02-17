@@ -42,7 +42,6 @@ mkdir -p "${DATA}"
 #
 export COMINrrfs=${COMINrrfs:-$(compath.py "${envir}/rrfs/${rrfs_ver}")}
 export COMOUT=${COMOUT:-$(compath.py -o "${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}")}
-mkdir -p "${COMOUT}/mpassit/${WGF}${MEMDIR}"
 #
 #----------------------------------------
 # Execute the script.

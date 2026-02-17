@@ -15,7 +15,6 @@ fields:
   - re_ice
   - re_snow
   - cldfrac
-  - lai
   - u10
   - v10
   - q2
@@ -38,7 +37,6 @@ fields:
   - xice
   - snowc
   - znt
-  - t2m
   - skintemp
   - ivgtyp
   - isltyp

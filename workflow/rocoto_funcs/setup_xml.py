@@ -180,6 +180,9 @@ def setup_xml(HOMErrfs, expdir):
     with open(fPath, 'w') as rocotoFile:
         text = \
             f'''#!/usr/bin/env bash
+## Example crontab entry (use "crontab -e" to modify crontab):
+## */5 * * * * {fPath}
+
 source /etc/profile{extra}
 module load rocoto
 cd {expdir}
