@@ -559,7 +559,7 @@ else
 	      ./check_imssnow_fv3lam.exe ./fv3lam_pre_blending_tq.exe \
 	      ./fv3lam_pre_blending_uv.exe ./gen_annual_maxmin_GVF.exe \
 	      ./gen_cs.exe ./gen_ensmean_recenter.exe ./lakesurgery.exe \
-	      ./process_pm.exe ./refs2tten.exe ./rrfs_bucket.exe"
+	      ./rrfs_bucket.exe"
 
       rm -f ${remove_list}
 
