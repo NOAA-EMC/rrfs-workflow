@@ -273,7 +273,7 @@ iuse_adpupa_winds_220: passivate
 iuse_adpupa_winds_232: passivate
 
 iuse_aircar_airTemperature_133: accept
-iuse_aircar_specificHumidity_133: passivate
+iuse_aircar_specificHumidity_133: accept
 iuse_aircar_winds_233: accept
 
 iuse_aircft_airTemperature_130: passivate

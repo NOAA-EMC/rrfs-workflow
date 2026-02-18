@@ -39,9 +39,27 @@ increment_variables:
 vl_fraction_of_retained_variance: 0.850
 vl_lengthscale: 0.50
 vl_lengthscale_units: logp
-inflation_rtps: 0.95
+inflation_rtps: 1.0
 inflation_rtpp: 0.0
 inflation_mult: 1.0
+
+# Horizontal localization for GETKF
+obs_distribution_localizations:
+  obs_distribution:
+    name: RoundRobin
+    halo size: 500e3
+  obs_localizations:
+  - localization method: Horizontal Gaspari-Cohn
+    lengthscale: 300e3
+override_obs_distribution_localizations:
+  override: true
+  mrms_refl:
+    obs_distribution:
+      name: RoundRobin
+      halo size: 100e3
+    obs_localizations:
+    - localization method: Horizontal Gaspari-Cohn
+      lengthscale: 18e3
 
 # Driver
 driver_update_obs_config_with_geometry_info: false
