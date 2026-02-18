@@ -293,9 +293,9 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
       if [[ ${SENDDBN} = "YES" ]] ; then
         if (( 10#$cyc % 3 == 0 )); then
           if (( 10#$fhr <= 60 || 10#$fhr%3 == 0 )) ; then
-            $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE} $job \
+            $DBNROOT/bin/dbn_alert MODEL RRFS_DET $job \
                 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
-            $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_WIDX} $job \
+	    $DBNROOT/bin/dbn_alert MODEL RRFS_DET_IDX $job \
                 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
           fi
         fi
@@ -341,9 +341,9 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
 
 	if [[ $SENDDBN = 'YES' ]]; then
            if (( 10#$cyc % 3 == 0 )); then
-             $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE} $job \
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBH $job \
                   ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.subh.f${fhr}.${domain}.grib2
-             $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_WIDX} $job \
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBH_IDX $job \
                   ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.subh.f${fhr}.${domain}.grib2.idx
 	   fi
 	fi

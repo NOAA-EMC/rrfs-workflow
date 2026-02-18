@@ -47,6 +47,7 @@ export nsst_ver=v1.2
 export hrrr_ver=v4.1
 export rap_ver=v5.1
 
+export DBNLOG=YES
 #### NOT COMPLY WITH IMPLEMENTATION STANDARD - NEED TO BE REMOVED BEFORE CODE DELIVERY
 
 # NCO Testing 20250919 JBP: comment out below EMC_DEV, EMC_LOG_OUTPUT, and envir definitions.
