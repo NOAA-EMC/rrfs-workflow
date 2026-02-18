@@ -1258,6 +1258,22 @@ cp -rL ${modelinputdir} ${jedidir}
 #
 #-----------------------------------------------------------------------
 #
+# If performing reflectivity analysis, prepare phy_data.nc files
+#
+#-----------------------------------------------------------------------
+#
+
+if [[ "${DO_ENVAR_RADAR_REF}" = "TRUE" || "${DO_ENKF_RADAR_REF}" == "TRUE" ]]; then
+  if [[ ${BKTYPE} == 0 || ${BKTYPE} == 3 ]]; then
+    cd ${jedidir}
+    cp ${USHdir}/prep_phydata_dbz.py .
+    python prep_phydata_dbz.py phy_data.nc
+  fi
+fi
+
+#
+#-----------------------------------------------------------------------
+#
 # Print message indicating successful completion of script.
 #
 #-----------------------------------------------------------------------

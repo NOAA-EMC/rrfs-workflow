@@ -172,7 +172,11 @@ for imem in  $(seq 1 $nens); do
   ln -snf ${bkpath}/fv_core.res.tile1.nc       data/inputs/${memcharv0}/fv_core.res.tile1.nc
   ln -snf ${bkpath}/fv_tracer.res.tile1.nc     data/inputs/${memcharv0}/fv_tracer.res.tile1.nc
   ln -snf ${bkpath}/sfc_data.nc                data/inputs/${memcharv0}/sfc_data.nc
-  ln -snf ${bkpath}/phy_data.nc                data/inputs/${memcharv0}/phy_data.nc
+  if [[ "${DO_ENKF_RADAR_REF}" == "TRUE" ]]; then
+    ln -snf ${bkpath}/phy_data.nc_prepdbz      data/inputs/${memcharv0}/phy_data.nc
+  else
+    ln -snf ${bkpath}/phy_data.nc              data/inputs/${memcharv0}/phy_data.nc
+  fi
   ln -snf ${bkpath}/fv_srf_wnd.res.tile1.nc    data/inputs/${memcharv0}/fv_srf_wnd.res.tile1.nc
   ln -snf ${bkpath}/coupler.res                data/inputs/${memcharv0}/coupler.res
 

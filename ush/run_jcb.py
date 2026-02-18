@@ -5,6 +5,8 @@ import re
 from datetime import datetime, timedelta
 from jcb import render
 from wxflow import parse_j2yaml
+from collections.abc import Mapping, Sequence
+from pathlib import Path
 
 def update_cycle_times(config, cycle_str):
     cycle_time = datetime.strptime(cycle_str, "%Y%m%d%H")
@@ -82,6 +84,32 @@ def patch_solver_struct(cfg_plain, ctest_yaml):
 
     return cfg_plain
 
+def to_plain(obj):
+    # Common pattern in wxflow/JCB style objects
+    for attr in ("to_dict", "as_dict", "dict"):
+        if hasattr(obj, attr) and callable(getattr(obj, attr)):
+            return to_plain(getattr(obj, attr)())
+
+    # dict-like
+    if isinstance(obj, Mapping):
+        return {str(k): to_plain(v) for k, v in obj.items()}
+
+    # list-like (but not strings/bytes)
+    if isinstance(obj, Sequence) and not isinstance(obj, (str, bytes, bytearray)):
+        return [to_plain(v) for v in obj]
+
+    # pathlib, numpy scalars, etc.
+    if isinstance(obj, Path):
+        return str(obj)
+    try:
+        import numpy as np
+        if isinstance(obj, np.generic):
+            return obj.item()
+    except Exception:
+        pass
+
+    return obj
+
 if __name__ == "__main__":
     if len(sys.argv) != 4:
         print("Usage: run.py YYYYMMDDHH jcb_config jedi_yaml")
@@ -103,9 +131,10 @@ if __name__ == "__main__":
 
     # Render (returns wxflow/JCB wrapper objects)
     rendered = render(cycle_config)
+    rendered_plain = to_plain(rendered)
 
     # Dump to plain YAML text, then load back to plain dicts/lists
-    yaml_text = yaml.safe_dump(rendered, default_flow_style=False, sort_keys=False)
+    yaml_text = yaml.safe_dump(rendered_plain, default_flow_style=False, sort_keys=False)
     cfg_plain = yaml.safe_load(yaml_text)
 
     # If solver, structurally patch obsfiles to observer rundir jdiag
