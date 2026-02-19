@@ -28,6 +28,7 @@ export netcdf_ver=4.9.2
 export pnetcdf_ver=1.12.2
 export pio_ver=2.5.10
 export PrgEnv_intel_ver=8.5.0
+export python_ver=3.8.6
 export sigio_ver=2.3.2
 export sfcio_ver=1.4.1
 export sp_ver=2.4.0

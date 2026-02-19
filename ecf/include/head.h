@@ -55,6 +55,7 @@ if [ -d /apps/ops/prod ]; then # On WCOSS2
   set -x
   . ${ECF_ROOT}/versions/run.ver
   set +x
+  module load prod_util/${prod_util_ver}
   module load prod_envir/${prod_envir_ver}
   echo "Listing modules from head.h:"
   module list

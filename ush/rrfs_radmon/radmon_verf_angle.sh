@@ -12,7 +12,7 @@ else
 fi
 
 err=0
-angle_exec=radmon_angle.x
+angle_exec=rrfs_util_radmon_angle.x
 
 shared_scaninfo=${shared_scaninfo:-$FIXgdas/gdas_radmon_scaninfo.txt}
 echo "shared_scaninfo = $shared_scaninfo"

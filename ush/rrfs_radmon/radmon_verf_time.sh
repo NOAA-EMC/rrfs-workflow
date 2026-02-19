@@ -24,7 +24,7 @@ chan_hdr=chan_hdr.txt
 count_hdr=count_hdr.txt
 count_err=count_err.txt
 
-time_exec=radmon_time.x
+time_exec=rrfs_util_radmon_time.x
 err=0 
 
 if [[ $USE_ANL -eq 1 ]]; then

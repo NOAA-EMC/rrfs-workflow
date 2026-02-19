@@ -74,6 +74,7 @@ def create_model_configure_file(
     # Set parameters in the model configure file.
     #
     dot_quilting_dot = f".{lowercase(str(QUILTING))}."
+    dot_usesavedroutehandles_dot = f".{lowercase(str(USE_SAVED_ROUTEHANDLES))}."
     dot_write_dopost = f".{lowercase(str(WRITE_DOPOST))}."
     restart_interval = restart_hrs
     nsout = NSOUT
@@ -151,6 +152,7 @@ def create_model_configure_file(
         "restart_interval": restart_interval,
         "write_dopost": dot_write_dopost,
         "quilting": dot_quilting_dot,
+        "use_saved_routehandles": dot_usesavedroutehandles_dot,
         "output_grid": WRTCMP_output_grid,
         "output_file": WRTCMP_output_file,
         "zstandard_level" : WRTCMP_zstandard_level,

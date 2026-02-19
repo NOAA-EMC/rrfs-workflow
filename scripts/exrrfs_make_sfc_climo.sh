@@ -152,7 +152,7 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-export pgm="sfc_climo_gen"
+export pgm="ufs_util_sfc_climo_gen"
 . prep_step
 
 $APRUN $EXECrrfs/$pgm >>$pgmout 2>errfile
