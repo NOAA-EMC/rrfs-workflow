@@ -67,10 +67,10 @@ the specified cycle.
 #
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  export enkfworkdir="${CYCLE_DIR}/enkfupdt_${OB_TYPE}_jedi_spinup"
+  export enkfworkdir="${CYCLE_DIR}/enkfupdt_jedi_spinup"
   export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}_spinup"
 else
-  export enkfworkdir="${CYCLE_DIR}/enkfupdt_${OB_TYPE}_jedi"
+  export enkfworkdir="${CYCLE_DIR}/enkfupdt_jedi"
   export COMOUT="${COMOUT_BASEDIR}/$RUN.$PDY/${cyc}"
 fi
 rm -fr ${enkfworkdir}
