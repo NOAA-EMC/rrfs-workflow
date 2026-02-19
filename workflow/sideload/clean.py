@@ -44,6 +44,8 @@ def day_clean(srcPath, cyc1, cyc2, srcType, WGF):
     check_is_cyc_done = os.getenv("CHECK_IS_CYC_DONE", "FALSE").upper() == "TRUE"
     if check_is_cyc_done:  # mainly for retros. Not needed by realtime runs as we want to remove all old cycles including expired ones
         EXPDIR = os.getenv("EXPDIR", "EXPDIR_not_defined")
+        STMP_KEPT_TASKS = os.getenv("STMP_KEPT_TASKS", "").strip()
+        RUN = os.getenv("RUN", "")
 
     for i in range(cyc1, cyc2 + 1):
         if check_is_cyc_done:
@@ -60,7 +62,15 @@ def day_clean(srcPath, cyc1, cyc2, srcType, WGF):
             pattern = f'{i:02}/lbc/{WGF}'
         else:  # com
             pattern = f'{i:02}/*/{WGF}'
+
         pathlist = list(Path(srcPath).glob(pattern))
+        if srcType == "stmp" and STMP_KEPT_TASKS != "":  # exclude STMP_KEPT_TASKS from pathlist
+            kept_tasks = STMP_KEPT_TASKS.split(",")
+            excludes = []
+            for task in kept_tasks:
+                excludes.append(f'{RUN}_{task}_{i:02}_')
+            pathlist = [p for p in pathlist if not any(ex in str(p) for ex in excludes)]
+
         for mypath in pathlist:
             if os.path.exists(mypath):
                 sys.stdout.write(f'purge {mypath}......')

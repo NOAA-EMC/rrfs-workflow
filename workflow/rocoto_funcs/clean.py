@@ -20,6 +20,7 @@ def clean(xmlFile, expdir):
         'LOG_RETENTION_CYCS': os.getenv("LOG_RETENTION_CYCS", '840'),  # 840 hrs = 35 days
         # go back 'CLEAN_BACK_DAYS' from the first valid clean hour
         'CLEAN_BACK_DAYS': os.getenv("CLEAN_BACK_DAYS", '5'),
+        'STMP_KEPT_TASKS': os.getenv("STMP_KEPT_TASKS", ''),
     }
 
     # determine the dependency
