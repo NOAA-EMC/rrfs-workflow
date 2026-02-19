@@ -3550,8 +3550,10 @@ MODULES_RUN_TASK_FP script.
         {%- elif do_nonvar_cldanal%}
         <taskdep task="&CLDANL_NONVAR_TN;_prod{{ uscore_ensmem_name }}"/>
         {%- elif do_enkf_radar_ref %}
+        <and>
         <taskdep task="&ENKF_RADAR_REF_TN;"/>
         <taskdep task="&RUN_ENKFUPDT_JEDI_TN;"/>
+        </and>
         {%- else %}
         <and>
           <taskdep task="&RUN_ENKFUPDT_TN;"/>
@@ -3626,11 +3628,15 @@ MODULES_RUN_TASK_FP script.
         {%- elif do_nonvar_cldanal%}
         <taskdep task="&CLDANL_NONVAR_TN;_prod{{ uscore_ensmem_name }}"/>
         {%- elif do_enkf_radar_ref %}
+        <and>
         <taskdep task="&ENKF_RADAR_REF_TN;"/>
         <taskdep task="&RUN_ENKFUPDT_JEDI_TN;"/>
+        </and>
         {%- else %}
+        <and>
         <taskdep task="&RUN_ENKFUPDT_TN;"/>
         <taskdep task="&RUN_ENKFUPDT_JEDI_TN;"/>
+        </and>
        {%- endif %}
       {%- else %}
       <taskdep task="&PREP_CYC_TN;_prod{{ uscore_ensmem_name }}"/>
