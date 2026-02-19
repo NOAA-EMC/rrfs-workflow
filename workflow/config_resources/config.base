@@ -39,7 +39,7 @@ if ${DO_CLEAN:-false} && ! ${REALTIME:-false}; then
   export COM_LBC_RETENTION_CYCS=${COM_RETENTION_CYCS:-2400}
   export LOG_RETENTION_CYCS=${LOG_RETENTION_CYCS:-2400}
   export CHECK_IS_CYC_DONE=${CHECK_IS_CYC_DONE:-true}
-  export STMP_KEPT_TASKS=""  # eg. jedivar or jedivar,mpassit,upp
+  export STMP_KEPT_TASKS=${STMP_KEPT_TASKS:-""}  # eg. jedivar or jedivar,mpassit,upp
 fi
 
 # ioda_airnow
