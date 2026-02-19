@@ -466,7 +466,7 @@ fi # PRSLEV test
 
 # post process 2m dew point for NBM - this is needed for RRFS (det) and REFS (ensf)
 if [ $WGF = "det" ] || [ $WGF = "ensf" ]; then
-  export pgm="dpt2m_post.exe"
+  export pgm="rrfs_util_dpt2m_post.exe"
   . prep_step
 
   $EXECrrfs/$pgm PRSLEV.GrbF${post_fhr} DPT2M.GrbF${post_fhr} >>$pgmout 2>errfile

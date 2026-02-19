@@ -144,7 +144,7 @@ list_iolayout=$(seq 0 $n_iolayouty)
 print_info_msg "$VERBOSE" "
 Getting into working directory for radar reflectivity process ..."
 
-export pgm="process_NSSL_mosaic.exe"
+export pgm="rrfs_util_process_NSSL_mosaic.exe"
 . prep_step
 
 for bigmin in ${RADARREFL_TIMELEVEL[@]}; do

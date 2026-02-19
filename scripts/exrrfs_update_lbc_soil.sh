@@ -152,7 +152,7 @@ cat << EOF > namelist.soiltq
  /
 EOF
 
-  export pgm="adjust_soiltq.exe"
+  export pgm="rrfs_util_adjust_soiltq.exe"
   . prep_step
 
   $APRUN ${EXECrrfs}/$pgm >>$pgmout 2>errfile
@@ -179,7 +179,7 @@ cat << EOF > namelist.updatebc
  /
 EOF
 
-  export pgm="update_bc.exe"
+  export pgm="rrfs_util_update_bc.exe"
   . prep_step
 
   $APRUN ${EXECrrfs}/$pgm >>$pgmout 2>errfile

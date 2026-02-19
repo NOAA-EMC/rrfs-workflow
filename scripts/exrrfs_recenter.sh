@@ -200,7 +200,7 @@ EOF
 #-----------------------------------------------------------------------
 #
 echo pwd is `pwd`
-export pgm="ens_mean_recenter_P2DIO.exe"
+export pgm="rrfs_util_ens_mean_recenter_P2DIO.exe"
 
 ${APRUN} ${EXECrrfs}/$pgm < namelist.ens >>$pgmout 2>errfile
 export err=$?; err_chk

@@ -223,7 +223,7 @@ ln -sf $DATA/bufrpost/regional_profdat     fort.19
 ln -sf $DATA/bufrpost/profilm.c1.${tmmark} fort.79
 ln -sf ./itag                              fort.11
 
-  export pgm="rrfs_bufr.exe"
+  export pgm="rrfs_util_rrfs_bufr.exe"
   . prep_step
 
   ${APRUNC} ${EXECrrfs}/$pgm >>$pgmout 2>errfile
@@ -252,8 +252,6 @@ cd $DATA
 # SNDP code
 ########################################################
 
-export pgm=rrfs_sndp
-
 cpreq -p ${FIX_BUFRSND}/regional_sndp.parm.mono $DATA/regional_sndp.parm.mono
 cpreq -p ${FIX_BUFRSND}/regional_bufr.tbl $DATA/regional_bufr.tbl
 
@@ -269,7 +267,7 @@ nlev=65
 FCST_LEN_HRS=$FHRLIM
 echo "$nlev $NSTAT $FCST_LEN_HRS" > itag
 
-export pgm="rrfs_sndp.exe"
+export pgm="rrfs_util_rrfs_sndp.exe"
 . prep_step
 
 ${APRUNS} ${EXECrrfs}/$pgm < itag >>$pgmout 2>errfile
@@ -311,7 +309,7 @@ export DIRD=${COMOUT}/bufr.${cyc}/bufr
 
 echo "before stnmlist.exe"
 
-export pgm="rrfs_stnmlist.exe"
+export pgm="rrfs_util_rrfs_stnmlist.exe"
 . prep_step
 
 ${APRUNS} ${EXECrrfs}/$pgm < stnmlist_input >>$pgmout 2>errfile

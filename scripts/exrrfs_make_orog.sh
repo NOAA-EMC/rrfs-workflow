@@ -167,7 +167,7 @@ cat "${input_redirect_fn}"
 #
 print_info_msg "Starting orography file generation..."
 
-export pgm="orog"
+export pgm="ufs_util_orog"
 . prep_step
 
 $APRUN ${EXECrrfs}/$pgm < "${input_redirect_fn}" >>$pgmout 2>${DATA}/raw_topo/tmp/errfile
@@ -224,7 +224,7 @@ EOF
 
   print_info_msg "Starting orography file generation..."
 
-  export pgm="orog_gsl"
+  export pgm="ufs_util_orog_gsl"
   . prep_step
 
   ${APRUN} ${EXECrrfs}/$pgm < "${input_redirect_fn}" >>$pgmout 2>${DATA}/raw_topo/tmp/errfile
@@ -357,7 +357,7 @@ cd "${DATA}/filtered_topo"
 # Run the orography filtering executable.
 print_info_msg "Starting filtering of orography..."
 
-export pgm="filter_topo"
+export pgm="ufs_util_filter_topo"
 . prep_step
 
 $APRUN ${EXECrrfs}/$pgm >>$pgmout 2>${DATA}/raw_topo/tmp/errfile
@@ -402,7 +402,7 @@ cd "${DATA}/shave_tmp"
 # Create an input namelist file for the shave executable to generate
 # orography files with varios halos from the one with a wide halo.
 #
-export pgm="shave"
+export pgm="ufs_util_shave"
 
 halo_num_list=('0' '4')
 halo_num_list[${#halo_num_list[@]}]="${NHW}"

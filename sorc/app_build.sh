@@ -554,10 +554,63 @@ else
       printf "... Moving pre-compiled executables to designated location ...\n"
       mkdir -p ${HOME_DIR}/${BIN_DIR}
       cd "${INSTALL_DIR}/${BIN_DIR}"
+#     remove some here
+      remove_list="./gefs2lbc_para ./fregrid ./inland ./lakefrac ./ocean_merge ./gefs2lbcs_para \
+	      ./check_imssnow_fv3lam.exe ./fv3lam_pre_blending_tq.exe \
+	      ./fv3lam_pre_blending_uv.exe ./gen_annual_maxmin_GVF.exe \
+	      ./gen_cs.exe ./gen_ensmean_recenter.exe ./lakesurgery.exe \
+	      ./rrfs_bucket.exe"
+
+      rm -f ${remove_list}
+
       for file in *; do
         [ -x "${file}" ] && mv "${file}" "${HOME_DIR}/${BIN_DIR}"
       done
     fi
 fi
+
+
+EXEC_DIR=${HOME_DIR}/${BIN_DIR}
+RRFS_UTIL_PREFIX=rrfs_util
+UFS_UTIL_PREFIX=ufs_util
+GSI_PREFIX=gsi
+AQM_UTIL_PREFIX=aqm_util
+
+[ -f ${EXEC_DIR}/adjust_soiltq.exe ] && mv ${EXEC_DIR}/adjust_soiltq.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_adjust_soiltq.exe
+[ -f ${EXEC_DIR}/chgres_cube ] && mv ${EXEC_DIR}/chgres_cube ${EXEC_DIR}/${UFS_UTIL_PREFIX}_chgres_cube
+[ -f ${EXEC_DIR}/dpt2m_post.exe ] && mv ${EXEC_DIR}/dpt2m_post.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_dpt2m_post.exe
+[ -f ${EXEC_DIR}/enkf.x ] && mv ${EXEC_DIR}/enkf.x ${EXEC_DIR}/${GSI_PREFIX}_enkf.x
+[ -f ${EXEC_DIR}/ens_mean_recenter_P2DIO.exe ] && mv ${EXEC_DIR}/ens_mean_recenter_P2DIO.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_ens_mean_recenter_P2DIO.exe
+[ -f ${EXEC_DIR}/filter_topo ] && mv ${EXEC_DIR}/filter_topo ${EXEC_DIR}/${UFS_UTIL_PREFIX}_filter_topo
+[ -f ${EXEC_DIR}/firewx_gridspecs.exe ] && mv ${EXEC_DIR}/firewx_gridspecs.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_firewx_gridspecs.exe
+[ -f ${EXEC_DIR}/fv3lam_nonvarcldana.exe ] && mv ${EXEC_DIR}/fv3lam_nonvarcldana.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_fv3lam_nonvarcldana.exe
+[ -f ${EXEC_DIR}/fv3lam_pre_blending.exe ] && mv ${EXEC_DIR}/fv3lam_pre_blending.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_fv3lam_pre_blending.exe
+[ -f ${EXEC_DIR}/fvcom_to_FV3 ] && mv ${EXEC_DIR}/fvcom_to_FV3 ${EXEC_DIR}/${UFS_UTIL_PREFIX}_fvcom_to_FV3
+[ -f ${EXEC_DIR}/gen_ensmean_recenter.exe ] && mv ${EXEC_DIR}/gen_ensmean_recenter.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_gen_ensmean_recenter.exe
+[ -f ${EXEC_DIR}/global_equiv_resol ] && mv ${EXEC_DIR}/global_equiv_resol ${EXEC_DIR}/${UFS_UTIL_PREFIX}_global_equiv_resol
+[ -f ${EXEC_DIR}/make_hgrid ] && mv ${EXEC_DIR}/make_hgrid ${EXEC_DIR}/${UFS_UTIL_PREFIX}_make_hgrid
+[ -f ${EXEC_DIR}/make_solo_mosaic ] && mv ${EXEC_DIR}/make_solo_mosaic ${EXEC_DIR}/${UFS_UTIL_PREFIX}_make_solo_mosaic
+[ -f ${EXEC_DIR}/orog ] && mv ${EXEC_DIR}/orog ${EXEC_DIR}/${UFS_UTIL_PREFIX}_orog
+[ -f ${EXEC_DIR}/orog_gsl ] && mv ${EXEC_DIR}/orog_gsl ${EXEC_DIR}/${UFS_UTIL_PREFIX}_orog_gsl
+[ -f ${EXEC_DIR}/process_imssnow_fv3lam.exe ] && mv ${EXEC_DIR}/process_imssnow_fv3lam.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_process_imssnow_fv3lam.exe
+[ -f ${EXEC_DIR}/process_larccld.exe ] && mv ${EXEC_DIR}/process_larccld.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_process_larccld.exe
+[ -f ${EXEC_DIR}/process_Lightning.exe ] && mv ${EXEC_DIR}/process_Lightning.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_process_Lightning.exe
+[ -f ${EXEC_DIR}/process_metarcld.exe ] && mv ${EXEC_DIR}/process_metarcld.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_process_metarcld.exe
+[ -f ${EXEC_DIR}/process_NSSL_mosaic.exe ] && mv ${EXEC_DIR}/process_NSSL_mosaic.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_process_NSSL_mosaic.exe
+[ -f ${EXEC_DIR}/process_updatesst.exe ] && mv ${EXEC_DIR}/process_updatesst.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_process_updatesst.exe
+[ -f ${EXEC_DIR}/radmon_angle.x ] && mv ${EXEC_DIR}/radmon_angle.x ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_radmon_angle.x
+[ -f ${EXEC_DIR}/radmon_bcoef.x ] && mv ${EXEC_DIR}/radmon_bcoef.x ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_radmon_bcoef.x
+[ -f ${EXEC_DIR}/radmon_bcor.x ] && mv ${EXEC_DIR}/radmon_bcor.x ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_radmon_bcor.x
+[ -f ${EXEC_DIR}/radmon_time.x ] && mv ${EXEC_DIR}/radmon_time.x ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_radmon_time.x
+[ -f ${EXEC_DIR}/regional_esg_grid ] && mv ${EXEC_DIR}/regional_esg_grid ${EXEC_DIR}/${UFS_UTIL_PREFIX}_regional_esg_grid
+[ -f ${EXEC_DIR}/rrfs_bufr.exe ] && mv ${EXEC_DIR}/rrfs_bufr.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_rrfs_bufr.exe
+[ -f ${EXEC_DIR}/rrfs_sndp.exe ] && mv ${EXEC_DIR}/rrfs_sndp.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_rrfs_sndp.exe
+[ -f ${EXEC_DIR}/rrfs_stnmlist.exe ] && mv ${EXEC_DIR}/rrfs_stnmlist.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_rrfs_stnmlist.exe
+[ -f ${EXEC_DIR}/sfc_climo_gen ] && mv ${EXEC_DIR}/sfc_climo_gen ${EXEC_DIR}/${UFS_UTIL_PREFIX}_sfc_climo_gen
+[ -f ${EXEC_DIR}/shave ] && mv ${EXEC_DIR}/shave ${EXEC_DIR}/${UFS_UTIL_PREFIX}_shave
+[ -f ${EXEC_DIR}/update_bc.exe ] && mv ${EXEC_DIR}/update_bc.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_update_bc.exe
+[ -f ${EXEC_DIR}/update_GVF.exe ] && mv ${EXEC_DIR}/update_GVF.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_update_GVF.exe
+[ -f ${EXEC_DIR}/update_ice.exe ] && mv ${EXEC_DIR}/update_ice.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_update_ice.exe
+[ -f ${EXEC_DIR}/use_raphrrr_sfc.exe ] && mv ${EXEC_DIR}/use_raphrrr_sfc.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_use_raphrrr_sfc.exe
 
 exit 0

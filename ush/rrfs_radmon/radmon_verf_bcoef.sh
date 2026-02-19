@@ -4,7 +4,7 @@ set -x
 PDATE=${1:-${PDATE:?}}
 
 err=0
-bcoef_exec=radmon_bcoef.x
+bcoef_exec=rrfs_util_radmon_bcoef.x
 
 if [[ $USE_ANL -eq 1 ]]; then
    gesanl="ges anl"

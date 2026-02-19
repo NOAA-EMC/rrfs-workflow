@@ -199,7 +199,7 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-export pgm="process_Lightning.exe"
+export pgm="rrfs_util_process_Lightning.exe"
 . prep_step
 
 if [[ "$run_lightning" == true ]]; then
@@ -270,7 +270,7 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-export pgm="process_larccld.exe"
+export pgm="rrfs_util_process_larccld.exe"
 . prep_step
 if [[ "$run_cloud" == true ]]; then
   $APRUN ${EXECrrfs}/$pgm >>$pgmout 2>errfile
@@ -331,7 +331,7 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-export pgm="process_metarcld.exe"
+export pgm="rrfs_util_process_metarcld.exe"
 . prep_step
 if [[ "$run_metar" == true ]]; then
   $APRUN ${EXECrrfs}/$pgm >>$pgmout 2>errfile

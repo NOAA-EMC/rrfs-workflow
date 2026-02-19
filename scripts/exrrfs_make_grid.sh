@@ -94,7 +94,7 @@ if [ "${GRID_GEN_METHOD}" = "GFDLgrid" ]; then
   nx_t6sg=$(( 2*GFDLgrid_RES ))
   grid_name="${GRID_GEN_METHOD}"
 
-  export pgm="make_hgrid"
+  export pgm="ufs_util_make_hgrid"
   . prep_step
 
   $APRUN ${EXECrrfs}/$pgm \
@@ -157,7 +157,7 @@ $settings"
   fi
 
   # Call the executable that generates the grid file.
-  export pgm="regional_esg_grid"
+  export pgm="ufs_util_regional_esg_grid"
   . prep_step
 
   $APRUN ${EXECrrfs}/$pgm ${rgnl_grid_nml_fp} >>$pgmout 2>${DATA}/errfile
@@ -181,7 +181,7 @@ print_info_msg "$VERBOSE" "Grid file generation completed successfully."
 #
 #-----------------------------------------------------------------------
 #
-export pgm="global_equiv_resol"
+export pgm="ufs_util_global_equiv_resol"
 . prep_step
 
 $APRUN ${EXECrrfs}/$pgm "${grid_fp}" >>$pgmout 2>${DATA}/errfile
@@ -267,7 +267,7 @@ fi
 # Set the full path to the "unshaved" grid file (wide halo).
 unshaved_fp="${grid_fp}"
 
-export pgm="shave"
+export pgm="ufs_util_shave"
 
 halo_num_list=('0' '3' '4')
 for halo_num in "${halo_num_list[@]}"; do
@@ -293,7 +293,7 @@ done
 #
 #-----------------------------------------------------------------------
 #
-export pgm="make_solo_mosaic"
+export pgm="ufs_util_make_solo_mosaic"
 
 halo_num_list[${#halo_num_list[@]}]="${NHW}"
 for halo_num in "${halo_num_list[@]}"; do

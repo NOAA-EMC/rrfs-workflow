@@ -75,7 +75,7 @@ function make_grid_mosaic_file() {
 #
 #-----------------------------------------------------------------------
 #
-  exec_fn="make_solo_mosaic"
+  exec_fn="ufs_util_make_solo_mosaic"
   exec_fp="$HOMErrfs/exec/${exec_fn}"
   if [ ! -f "${exec_fp}" ]; then
     print_err_msg_exit "\
