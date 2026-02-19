@@ -50,7 +50,7 @@ def day_clean(srcPath, cyc1, cyc2, srcType, WGF):
             CDATE = srcPath.rstrip("/")[-8:] + f'{i:02}'
             if not is_cycle_done(EXPDIR, CDATE):  # skip the clean process for cycles not done yet
                 print(f'{CDATE} NOT done yet, no cleaning')
-                break
+                continue
 
         if srcType == "log":
             pattern = f'{i:02}/{WGF}'
