@@ -34,12 +34,12 @@ fi
 
 # DO_CLEAN
 if ${DO_CLEAN:-false} && ! ${REALTIME:-false}; then
-  export STMP_RETENTION_CYCS=${STMP_RETENTION_CYCS:-24}
+  export STMP_RETENTION_CYCS=${STMP_RETENTION_CYCS:-2}
   export COM_RETENTION_CYCS=${COM_RETENTION_CYCS:-2400}  # 100 days
   export COM_LBC_RETENTION_CYCS=${COM_RETENTION_CYCS:-2400}
   export LOG_RETENTION_CYCS=${LOG_RETENTION_CYCS:-2400}
-  export CLEAN_MODE=${CLEAN_MODE:-2} # default to 2 for retros
-  # 1. only keep the latest few cycles; 2. purge current cycle stmp directories when it finishes successfully
+  export CHECK_IS_CYC_DONE=${CHECK_IS_CYC_DONE:-true}
+  export STMP_KEPT_TASKS=${STMP_KEPT_TASKS:-""}  # eg. jedivar or jedivar,mpassit,upp
 fi
 
 # ioda_airnow
