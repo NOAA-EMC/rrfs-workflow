@@ -3,7 +3,8 @@ from pathlib import Path
 import os
 import sys
 import shutil
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+import sqlite3
 """
  clean up com/ stmp/ logs/ directoris mostly for realtime runs
  but it can also be used for offline clean up at the command line
@@ -18,8 +19,41 @@ def is_directory_empty(directory_path):
 #
 
 
+def is_cycle_done(EXPDIR, CDATE):
+    is_done = False
+    db = f"{EXPDIR}/rrfs.db"
+    conn = sqlite3.connect(db)
+    cur = conn.cursor()
+    cur.execute(f"SELECT * FROM cycles")
+    rows = cur.fetchall()  # id, cycle, activated, expired, done, draining
+    for r in rows:
+        dt = datetime.fromtimestamp(r[1], tz=timezone.utc)
+        rcycle = dt.strftime("%Y%m%d%H%M")
+        if rcycle == f'{CDATE}00':
+            if r[4] != 0:  # non-zero means "done"
+                is_done = True
+            break
+    # ~~~~~~~~
+    return is_done
+#
+# ----------------------------------------------------------------------
+#
+
+
 def day_clean(srcPath, cyc1, cyc2, srcType, WGF):
+    check_is_cyc_done = os.getenv("CHECK_IS_CYC_DONE", "FALSE").upper() == "TRUE"
+    if check_is_cyc_done:  # mainly for retros. Not needed by realtime runs as we want to remove all old cycles including expired ones
+        EXPDIR = os.getenv("EXPDIR", "EXPDIR_not_defined")
+        STMP_KEPT_TASKS = os.getenv("STMP_KEPT_TASKS", "").strip()
+        RUN = os.getenv("RUN", "")
+
     for i in range(cyc1, cyc2 + 1):
+        if check_is_cyc_done:
+            CDATE = srcPath.rstrip("/")[-8:] + f'{i:02}'
+            if not is_cycle_done(EXPDIR, CDATE):  # skip the clean process for cycles not done yet
+                print(f'{CDATE} NOT done yet, no cleaning')
+                continue
+
         if srcType == "log":
             pattern = f'{i:02}/{WGF}'
         elif srcType == "stmp":
@@ -28,20 +62,29 @@ def day_clean(srcPath, cyc1, cyc2, srcType, WGF):
             pattern = f'{i:02}/lbc/{WGF}'
         else:  # com
             pattern = f'{i:02}/*/{WGF}'
+
         pathlist = list(Path(srcPath).glob(pattern))
+        if srcType == "stmp" and STMP_KEPT_TASKS != "":  # exclude STMP_KEPT_TASKS from pathlist
+            kept_tasks = STMP_KEPT_TASKS.split(",")
+            excludes = []
+            for task in kept_tasks:
+                excludes.append(f'{RUN}_{task}_{i:02}_')
+            pathlist = [p for p in pathlist if not any(ex in str(p) for ex in excludes)]
+
         for mypath in pathlist:
-            sys.stdout.write(f'purge {mypath}......')
-            try:
-                shutil.rmtree(mypath)
-                sys.stdout.write(f'done!\n')
-            except Exception as e:
-                sys.stdout.write(f'\n    An error occurred: {e}')
+            if os.path.exists(mypath):
+                sys.stdout.write(f'purge {mypath}......')
+                try:
+                    shutil.rmtree(mypath)
+                    sys.stdout.write(f'done!\n')
+                except Exception as e:
+                    sys.stdout.write(f'\n    An error occurred: {e}')
         # ~~~~~~~~~~~~
         # remove empty directories
         #
         pathlist = list(Path(srcPath).glob(pattern.rstrip(f'/{WGF}')))
         for mypath in pathlist:
-            if is_directory_empty(mypath):
+            if os.path.exists(mypath) and is_directory_empty(mypath):
                 os.rmdir(mypath)
                 print(f'remove empty directory: {mypath}')
         # ~~~~~~~~~~~~
@@ -136,6 +179,7 @@ clean_back_days = int(os.getenv("CLEAN_BACK_DAYS", "5"))
 # remove data based on clean-realted environmental variables
 #
 cdate = datetime.strptime(f'{PDY}{cyc}', "%Y%m%d%H")
+cdate = cdate.replace(tzinfo=timezone.utc)  # make it UTC-aware
 print(f'cdate={cdate}')
 print(f'stmp_retention_cycs={stmp_retention_cycs}')
 print(f'com_retention_cycs={com_retention_cycs}')
@@ -143,16 +187,16 @@ print(f'com_lbc_retention_cycs={com_lbc_retention_cycs}')
 print(f'log_retention_cycs={log_retention_cycs}')
 print(f'clean_back_days={clean_back_days}')
 
-print(f'\nclean stmp: {os.path.dirname(DATAROOT)}')
+print(f'\nTry to clean stmp: {os.path.dirname(DATAROOT)}')
 group_clean(cdate, stmp_retention_cycs, DATAROOT, 'stmp', NET, RUN, WGF, rrfs_ver)
 
-print(f'\nclean com: {COMROOT}')
+print(f'\nTry to clean com: {COMROOT}')
 group_clean(cdate, com_retention_cycs, COMROOT, 'com', NET, RUN, WGF, rrfs_ver)
 
-print(f'\nclean com_lbc: {COMROOT}')
+print(f'\nTry to clean com_lbc: {COMROOT}')
 group_clean(cdate, com_lbc_retention_cycs, COMROOT, 'com_lbc', NET, RUN, WGF, rrfs_ver)
 
-print('\nclean log: ' + COMROOT.rstrip('/') + f'{NET}/{rrfs_ver}/logs')
+print('\nTry to clean log: ' + COMROOT.rstrip('/') + f'{NET}/{rrfs_ver}/logs')
 group_clean(cdate, log_retention_cycs, COMROOT, 'log', NET, RUN, WGF, rrfs_ver)
 
 print('\nDone!')

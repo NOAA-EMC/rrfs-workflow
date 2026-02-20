@@ -37,7 +37,7 @@ ${cpreq} "${FIXrrfs}"/jedi/obsop_name_map.yaml .
 ${cpreq} "${FIXrrfs}"/jedi/keptvars.yaml .
 ${cpreq} "${FIXrrfs}"/jedi/geovars.yaml .
 # if cold_start or not do_radar_ref, remove refl10cm and w from stream_list.atmosphere.analysis
-if [[ "${start_type}" == "cold"  ]] || ! ${DO_RADAR_REF} ; then
+if [[ "${start_type}" == "cold"  ]] || [[ ${DO_RADAR_REF} == "FALSE" ]]; then
   sed -i '$d;N;$d' stream_list/stream_list.atmosphere.analysis
 fi
 #
