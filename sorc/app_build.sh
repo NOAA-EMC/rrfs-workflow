@@ -133,7 +133,7 @@ PARALSTART=true
 REMOVE=false
 CONTINUE=false
 VERBOSE=false
-BUILD_WORKAROUND=true
+BUILD_WORKAROUND=false
 
 # Turn off all apps to build and choose default later
 DEFAULT_BUILD=true
@@ -176,6 +176,8 @@ while :; do
     --disable-options|--disable-options=) usage_error "$1 requires argument." ;;
     --extrn) EXTRN=true ;;
     --extrn=?*|--extrn=) usage_error "$1 argument ignored." ;;
+    --workaround) BUILD_WORKAROUND=true ;;
+    --workaround=?*|--workaround=) usage_error "$1 argument ignored." ;;
     --nogtg) NOGTG=true ;;
     --noifi) NOIFI=true ;;
     --noparalstart) PARALSTART=false ;;
@@ -204,11 +206,11 @@ while :; do
     all) DEFAULT_BUILD=false; BUILD_UFS="on";
          BUILD_UFS_UTILS="on"; BUILD_UPP="on";
          BUILD_GSI="on"; BUILD_RRFS_UTILS="on";
-         BUILD_RDASAPP="on"; BUILD_WORKAROUND=true ;;
+         BUILD_RDASAPP="on"; BUILD_WORKAROUND=false ;;
     ufs) DEFAULT_BUILD=false; BUILD_UFS="on" ;;
     ufs_utils) DEFAULT_BUILD=false; BUILD_UFS_UTILS="on" ;;
     upp) DEFAULT_BUILD=false; BUILD_UPP="on" ;;
-    gsi) DEFAULT_BUILD=false; BUILD_GSI="on"; BUILD_WORKAROUND=true ;;
+    gsi) DEFAULT_BUILD=false; BUILD_GSI="on"; BUILD_WORKAROUND=false ;;
     rrfs_utils) DEFAULT_BUILD=false; BUILD_RRFS_UTILS="on" ;;
     nexus) DEFAULT_BUILD=false; BUILD_NEXUS="on" ;;
     aqm_utils) DEFAULT_BUILD=false; BUILD_AQM_UTILS="on" ;;
@@ -319,12 +321,43 @@ if [ "${EXTRN}" = true ]; then
   printf "... checking out external components ...\n"
   ./manage_externals/checkout_externals
 
-  # Copy workaround codes (remove these as soon as PRs are merged)
-  if [[ $BUILD_WORKAROUND = true ]]; then
-    # Workaround for qmin=0 in GSI
-    # No PR planned. Simply a consistancy between GSI and JEDI for dev purposes.
-    cp _workaround_/gsi/constants.f90 gsi/src/gsi/constants.f90
-  fi
+fi
+
+# Copy workaround codes (remove these as soon as PRs are merged)
+if [[ $BUILD_WORKAROUND = true ]]; then
+   printf "... copying workaround codes ...\n"
+
+  # No PRs planned for following workarounds. These are simply for consistency between GSI and JEDI for dev purposes.
+  # Workarounds copied under RDASApp/sorc should go to the RDASApp _workaround_ to apply on top of those workarounds.
+
+  # Workaround for qmin=0 in GSI
+  cp _workaround_/gsi/constants.f90 gsi/src/gsi/constants.f90
+
+  # Workaround for qoption=1 in GSI
+  cp _workaround_/fix/gsi/gsiparm.anl.sh ../fix/gsi/gsiparm.anl.sh
+
+  # Workaround for aircar+aircft t, q, uv
+  cp _workaround_/fix/gsi/convinfo.rrfs ../fix/gsi/convinfo.rrfs
+
+  # Workaround for GSI 3DVar
+  cp _workaround_/scripts/exrrfs_analysis_gsi.sh ../scripts/exrrfs_analysis_gsi.sh
+
+  # Workaround for qmin=0 in JEDI
+  cp _workaround_/gsibec/constants.f90 RDASApp/sorc/_workaround_/gsibec/constants.f90
+
+  # Workaround for lnobalance option in JEDI
+  cp _workaround_/gsibec/gsimod.F90 RDASApp/sorc/_workaround_/gsibec/gsimod.F90
+
+  # Workaround for grid_ratio=1 in JEDI
+  cp _workaround_/gsibec/mod_fv3_lola.f90 RDASApp/sorc/_workaround_/gsibec/mod_fv3_lola.f90
+  cp _workaround_/fix/jedi/RRFS_CONUS_13km/gsiparm_regional.anl ../fix/jedi/RRFS_CONUS_13km/gsiparm_regional.anl
+
+  # Workaround for grid_ratio=1, aircar+aircft, and 3DVar
+  cp _workaround_/parm/rdas-atmosphere-templates-fv3_c13.yaml ../parm/rdas-atmosphere-templates-fv3_c13.yaml
+
+  # Configuration files for GSI and JEDI
+  cp _workaround_/ush/config_det_c13_3dvar_gsi_car_cft.sh ../ush/config_det_c13_3dvar_gsi_car_cft.sh
+  cp _workaround_/ush/config_det_c13_3dvar_jedi_car_cft.sh ../ush/config_det_c13_3dvar_jedi_car_cft.sh
 
 fi
 
