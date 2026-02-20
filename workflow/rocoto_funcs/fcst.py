@@ -91,11 +91,11 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
             cloudana_dep = f'\n    <taskdep task="nonvar_cldana{ensindexstr}"/>'
     elif os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
         if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
-            jedidep = f'\n<taskdep task="getkf_solver"/>'
+            jedidep = f'\n    <taskdep task="getkf_solver"/>'
         elif do_spinup:
-            jedidep = f'\n<taskdep task="jedivar_spinup"/>'
+            jedidep = f'\n    <taskdep task="jedivar_spinup"/>'
         else:
-            jedidep = f'\n<taskdep task="jedivar"/>'
+            jedidep = f'\n    <taskdep task="jedivar"/>'
     else:
         if os.getenv("DO_RECENTER", "FALSE").upper() == "TRUE":
             if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
