@@ -78,11 +78,11 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     for hr in coldhrs:
         hr = f"{hr:0>2}"
         streqs = streqs + f"\n        <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
-        strneqs = strneqs + f"\n        <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
+        strneqs = strneqs + f"\n      <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
     streqs = streqs.lstrip('\n')
     strneqs = strneqs.lstrip('\n')
-    datadep_prod = f'''\n        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;{ensdirstr}/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
-    datadep_spinup = f'''\n        <taskdep task="fcst_spinup" cycle_offset="-1:00:00"/>'''
+    datadep_prod = f'''\n      <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;{ensdirstr}/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
+    datadep_spinup = f'''\n      <taskdep task="fcst_spinup" cycle_offset="-1:00:00"/>'''
     if spinup_mode == 0:  # no parallel spinup cycles
         datadep = datadep_prod
     elif spinup_mode == 1:  # a spinup cycle
@@ -96,8 +96,8 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         # cold start cycles wait for the latest satbias updated from the -1h cycles
         spaces = " " * 6
         satbias_dep = '\n' + spaces + '<or>'
-        satbias_dep += '\n' + spaces + f' <taskdep task="jedivar" cycle_offset="-{cyc_interval}:00:00"/>'
-        satbias_dep += '\n' + spaces + f' <datadep><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/jedivar/&WGF;/satbias_jumpstart</cyclestr></datadep>'
+        satbias_dep += '\n' + spaces + f'  <taskdep task="jedivar" cycle_offset="-{cyc_interval}:00:00"/>'
+        satbias_dep += '\n' + spaces + f'  <datadep><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/jedivar/&WGF;/satbias_jumpstart</cyclestr></datadep>'
         satbias_dep += '\n' + spaces + '</or>'
     #
     timedep = ""
@@ -120,9 +120,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
       </or>{icdep}{satbias_dep}
     </and>
     <and>
-      <and>
 {strneqs}{datadep}
-      </and>
     </and>
    </or>
   </and>
@@ -149,7 +147,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         for hr in prodswitch_hrs.split(' '):
             hr = f"{hr:0>2}"
             streqs = streqs + f"\n        <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
-            strneqs = strneqs + f"\n        <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
+            strneqs = strneqs + f"\n      <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
         streqs = streqs.lstrip('\n')
         strneqs = strneqs.lstrip('\n')
         datadep_spinup = datadep_spinup.lstrip('\n')[2:]
@@ -164,9 +162,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
 {datadep_spinup}
     </and>
     <and>
-      <and>
 {strneqs}{datadep_prod}
-      </and>
     </and>
    </or>
   </and>
