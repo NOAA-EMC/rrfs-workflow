@@ -169,14 +169,16 @@ def setup_xml(HOMErrfs, expdir):
 
     fPath = f"{expdir}/run_rocoto.sh"
     extra = ""
-    if machine in ['orion', 'hercules']:
-        extra = "\nmodule load contrib"
+    if machine in ['orion']:
+        extra = "\nmodule use /work/noaa/zrtrr/gge/rocoto/modulefiles"
+    elif machine in ['hercules']:
+        extra = "\nmodule use /work/noaa/zrtrr/gge/hercules/rocoto/modulefiles"
     elif machine in ['gaeac6']:
-        extra = "\nmodule use /ncrc/proj/epic/rocoto/modulefiles"
+        extra = "\nmodule use /gpfs/f6/arfs-gsl/world-shared/gge/rocoto/modulefiles"
     elif machine in ['wcoss2']:
         extra = "\nmodule use /apps/ops/test/nco/modulefiles/core"
     elif machine in ['derecho']:
-        extra = "\nsource /etc/profile.d/z00_modules.sh\nmodule use /glade/work/epicufsrt/contrib/derecho/modulefiles"
+        extra = "\nsource /etc/profile.d/z00_modules.sh\nmodule use /glade/work/geguo/rocoto/modulefiles"
     with open(fPath, 'w') as rocotoFile:
         text = \
             f'''#!/usr/bin/env bash
@@ -184,7 +186,7 @@ def setup_xml(HOMErrfs, expdir):
 ## */5 * * * * {fPath}
 
 source /etc/profile{extra}
-module load rocoto
+module load rocoto/1.3.7g
 cd {expdir}
 rocotorun -w rrfs.xml -d rrfs.db
 '''
