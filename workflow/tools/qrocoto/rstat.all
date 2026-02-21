@@ -4,7 +4,7 @@
 # by Guoqing Ge, 2019/04
 #
 fulltasks="yes"
-module load rocoto
+module load rocoto/1.3.7g
 #known major xml files for different systems
 xmlarray=("RTMA_3D.xml" "HRRR_primary.xml" "RAP_primary.xml" "FV3LAM_wflow.xml" "rrfs.xml")
 # rstat [xmlfile] [offset] [cycles] [tasks] [-m=metatasks]
