@@ -5,6 +5,7 @@ import stat
 from rocoto_funcs.base import header_begin, header_entities, header_end, \
     wflow_begin, wflow_log, wflow_cycledefs, wflow_end
 from rocoto_funcs.smart_cycledefs import smart_cycledefs
+from rocoto_funcs.smart_post_groups import smart_post_groups
 from rocoto_funcs.ungrib_ic import ungrib_ic
 from rocoto_funcs.ungrib_lbc import ungrib_lbc
 from rocoto_funcs.ic import ic
@@ -46,6 +47,13 @@ def setup_xml(HOMErrfs, expdir):
     #
     # create cycledefs smartly
     dcCycledef = smart_cycledefs()
+    # create post groups smartly and update dcCycleDef accordingly
+    if os.getenv("DO_POST", "TRUE").upper() == "TRUE":
+        dcPostGrpInfo = smart_post_groups(dcCycledef)
+        print(dcCycledef, '\n')
+        print(dcPostGrpInfo)
+        import sys
+        sys.exit()
 
     fPath = f"{expdir}/rrfs.xml"
     with open(fPath, 'w') as xmlFile:
