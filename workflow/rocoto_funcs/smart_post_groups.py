@@ -2,7 +2,6 @@
 import os
 import sys
 import math
-from datetime import datetime, timedelta
 
 
 def smart_post_groups(dcCycleDef):
@@ -10,7 +9,7 @@ def smart_post_groups(dcCycleDef):
     fcst_lengths = os.getenv('FCST_LEN_HRS_CYCLES', '')
     fcst_lengths = list(map(int, fcst_lengths.split()))  # collapses spaces into one separator and ignore leading/trailing spaces
     if len(fcst_lengths) != 24:
-        print(f'FATAL ERROR: wrong FCST_LEN_HRS_CYCLES="{FCST_LEN_HRS_CYCLES}"')
+        print(f'FATAL ERROR: wrong FCST_LEN_HRS_CYCLES="{fcst_lengths}"')
         sys.exit()
     max_fcst_length = max(fcst_lengths)
     cycles_by_fcst_length = {}
@@ -28,7 +27,7 @@ def smart_post_groups(dcCycleDef):
     if spec == "":  # automatic grouping by size if spec is non defined
         ngroups = math.floor(max_fcst_length / size + 0.5)
         for i in range(ngroups):
-            bgn_hr = i * size +1
+            bgn_hr = i * size + 1
             if i == 0:
                 bgn_hr = 0
             end_hr = (i + 1) * size
@@ -46,13 +45,13 @@ def smart_post_groups(dcCycleDef):
     dcCycles_by_postgrp = {}  # cycles in each cycledef
     dc_iPost_cycledefs = {}  # for each entry in the "groups" list, its corresponding index in dcCycles_by_postgrp
     igroup = -1
-    for key,value in cycles_by_fcst_length_sorted.items():
-        for index,item in enumerate(groups):
+    for key, value in cycles_by_fcst_length_sorted.items():
+        for index, item in enumerate(groups):
             bgn_hr, end_hr = item.split('-')
             if key >= int(bgn_hr) and key <= int(end_hr):
                 if index != igroup:  # need a new cycledef_post
-                    num_post_cycledefs = num_post_cycledefs +1
-                    dcCycles_by_postgrp[num_post_cycledefs-1] = value
+                    num_post_cycledefs = num_post_cycledefs + 1
+                    dcCycles_by_postgrp[num_post_cycledefs - 1] = value
                     dc_iPost_cycledefs[index] = num_post_cycledefs - 1
                     # check and define the entreis before index
                     for j in range(index):
@@ -60,12 +59,12 @@ def smart_post_groups(dcCycleDef):
                             dc_iPost_cycledefs[j] = num_post_cycledefs - 1
                     igroup = index
                 else:  # combine cycles if using the same cycldef_post
-                    dcCycles_by_postgrp[num_post_cycledefs-1].extend(value)
+                    dcCycles_by_postgrp[num_post_cycledefs - 1].extend(value)
                 break
     # ~~~~~~~~~~~~~
     # update dcCycledef accordingly
-    for i in range(num_post_cycledefs-1):
-        for j in range(i+1, num_post_cycledefs):
+    for i in range(num_post_cycledefs - 1):
+        for j in range(i + 1, num_post_cycledefs):
             dcCycles_by_postgrp[i].extend(dcCycles_by_postgrp[j])
     #
     cycledef_prod = dcCycleDef['prod']
@@ -88,7 +87,7 @@ def smart_post_groups(dcCycleDef):
     # ~~~~~~~~~~~~~
     # construct listGroupInfo: hours and cycledef for each post group
     listGroupInfo = []
-    for index,item in enumerate(groups):
+    for index, item in enumerate(groups):
         ipos = dc_iPost_cycledefs[index]
         if ipos == 0:
             mycycledef = "prod"
