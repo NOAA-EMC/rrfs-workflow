@@ -49,11 +49,7 @@ def setup_xml(HOMErrfs, expdir):
     dcCycledef = smart_cycledefs()
     # create post groups smartly and update dcCycleDef accordingly
     if os.getenv("DO_POST", "TRUE").upper() == "TRUE":
-        dcPostGrpInfo = smart_post_groups(dcCycledef)
-        print(dcCycledef, '\n')
-        print(dcPostGrpInfo)
-        import sys
-        sys.exit()
+        listPostGrpInfo = smart_post_groups(dcCycledef)
 
     fPath = f"{expdir}/rrfs.xml"
     with open(fPath, 'w') as xmlFile:
@@ -116,7 +112,8 @@ def setup_xml(HOMErrfs, expdir):
                     save_for_next(xmlFile, expdir)
             #
             if os.getenv("DO_POST", "TRUE").upper() == "TRUE":
-                mpassit(xmlFile, expdir)
+                for index, dcGrpInfo in enumerate(listPostGrpInfo):
+                    mpassit(xmlFile, expdir, index, dcGrpInfo)
                 upp(xmlFile, expdir)
             if os.getenv("DO_HOFX", "FALSE").upper() == "TRUE":
                 hofx(xmlFile, expdir)

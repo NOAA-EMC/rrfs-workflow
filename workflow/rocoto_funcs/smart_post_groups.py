@@ -35,11 +35,11 @@ def smart_post_groups(dcCycleDef):
             if (i + 1) == ngroups:
                 end_hr = max_fcst_length
             groups.append(f'{bgn_hr}-{end_hr}')
-        print(f"MPASSIT/UPP automatic grouping: {groups}")
+        print(f"MPASSIT/UPP automatic grouping: {groups}\n")
 
     else:  # POST_GROUP_SPEC is defined, has the highest priority, ignore POST_GROUP_SIZE
         groups = spec.split()
-        print(f"MPASSIT/UPP customized grouping: {groups}")
+        print(f"MPASSIT/UPP customized grouping: {groups}\n")
 
     # determine how many post cycledefs are needed
     num_post_cycledefs = 0  # the number of post cycledefs needed
@@ -86,8 +86,8 @@ def smart_post_groups(dcCycleDef):
         else:  # use exclude_hours if exclude_str non-empty
             dcCycleDef[f'post{index:02d}'] = {'exclude_hours': f'{exclude_str}', "cycledef": f'{cycledef_prod}'}
     # ~~~~~~~~~~~~~
-    # construct dcGroupInfo: hours and cycledef for each post group
-    dcGroupInfo = []
+    # construct listGroupInfo: hours and cycledef for each post group
+    listGroupInfo = []
     for index,item in enumerate(groups):
         ipos = dc_iPost_cycledefs[index]
         if ipos == 0:
@@ -95,12 +95,12 @@ def smart_post_groups(dcCycleDef):
         else:
             mycycledef = f'post{ipos:02d}'
         dcTmp = {"hours": f'{item}', "cycledef": f'{mycycledef}'}
-        dcGroupInfo.append(dcTmp)
+        listGroupInfo.append(dcTmp)
     # ~~~~~~~~~~~~~
     # debug:
     # print(cycles_by_fcst_length_sorted, "\n")
     # print(dc_iPost_cycledefs, "\n")
     # print(dcCycleDef, "\n")
-    # print(dcGroupInfo)
+    # print(listGroupInfo)
     # ~~~~~~~~~~~~~
-    return dcGroupInfo
+    return listGroupInfo

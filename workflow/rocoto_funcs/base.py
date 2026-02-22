@@ -190,7 +190,17 @@ def wflow_log(xmlFile, log_fpath):
 def wflow_cycledefs(xmlFile, dcCycledef):
     text = ""
     for key, value in dcCycledef.items():
-        text = text + f'\n  <cycledef group="{key}">{value}</cycledef>'
+        if isinstance(value, dict):  #  a dictionary value containing "valid_hours" or "exclude_hours"
+            if "valid_hours" in value:
+                valid_hours = value["valid_hours"]
+                mycycledef = value["cycledef"]
+                text = text + f'\n  <cycledef group="{key}" valid_hours="{valid_hours}">{mycycledef}</cycledef>'
+            else:
+                exclude_hours = value["exclude_hours"]
+                mycycledef = value["cycledef"]
+                text = text + f'\n  <cycledef group="{key}" exclude_hours="{exclude_hours}">{mycycledef}</cycledef>'
+        else:
+            text = text + f'\n  <cycledef group="{key}">{value}</cycledef>'
     xmlFile.write(f'{text}\n')
 
 # objTask

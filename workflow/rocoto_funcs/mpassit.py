@@ -5,7 +5,7 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 # begin of mpassit --------------------------------------------------------
 
 
-def mpassit(xmlFile, expdir, do_ensemble=False, do_ensmean_post=False):
+def mpassit(xmlFile, expdir, index, dcGrpInfo, do_ensemble=False, do_ensmean_post=False):
     meta_id = 'mpassit'
     cycledefs = 'prod'
     #
