@@ -35,8 +35,6 @@ echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
 # loop through forecast history files for this group
 #
 read -ra fhr_all <<< "${GROUP_HOURS}"  # convert string to array
-group_index=$((10#${GROUP_INDEX}))
-
 for fhr in "${fhr_all[@]}"; do
     if (( 10#${fhr} > 10#${fcst_len_hrs_thiscyc} )); then
       break

@@ -36,11 +36,13 @@ def smart_post_groups(dcCycleDef):
             if (i + 1) == ngroups:
                 end_hr = max_fcst_length
             groups.append(f'{bgn_hr}-{end_hr}-{history_interval}')
-        print(f"MPASSIT/UPP automatic grouping: {groups}\n")
+        str_groups = " ".join(f"{s}" for s in groups)
+        print(f'MPASSIT/UPP automatic grouping: "{str_groups}"\n')
 
     else:  # POST_GROUP_SPEC is defined, has the highest priority, ignore POST_GROUP_SIZE
         groups = spec.split()
-        print(f"MPASSIT/UPP customized grouping: {groups}\n")
+        str_groups = " ".join(f"{s}" for s in groups)
+        print(f'MPASSIT/UPP customized grouping: "{str_groups}"\n')
 
     # determine how many post cycledefs are needed
     num_post_cycledefs = 0  # the number of post cycledefs needed
