@@ -25,28 +25,13 @@ dx=${MPASSIT_DX:-12000.0}
 ref_lat=${MPASSIT_REF_LAT:-"39.0"}
 ref_lon=${MPASSIT_REF_LON:-"-97.5"}
 #
-#
-# find forecst length for this cycle
-#
-fcst_len_hrs_cycles=${FCST_LEN_HRS_CYCLES:-"01 01"}
-fcst_len_hrs_thiscyc=$("${USHrrfs}/find_fcst_length.sh" "${fcst_len_hrs_cycles}" "${cyc}" )
-echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
-#
 # loop through forecast history files for this group
 #
-fhr_string=$( seq 0 $((10#${HISTORY_INTERVAL})) $((10#${fcst_len_hrs_thiscyc} )) | paste -sd ' ' )
-read -ra fhr_all <<< "${fhr_string}"  # convert fhr_string to an array
-num_fhrs=${#fhr_all[@]}
-group_total_num=$((10#${GROUP_TOTAL_NUM}))
+read -ra fhr_all <<< "${GROUP_HOURS}"  # convert string to array
 group_index=$((10#${GROUP_INDEX}))
 
-for (( ii=0; ii<"${num_fhrs}"; ii=ii+"${group_total_num}" )); do
-    i=$(( ii + "${group_index}" - 1 ))
-    if (( i >= num_fhrs )); then
-      break
-    fi
+for fhr in "${fhr_all[@]}"; do
     # get forecast hour and string
-    fhr=${fhr_all[$i]}
     CDATEp=$(${NDATE} "${fhr}" "${CDATE}" )
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S) 
     # decide the history files   
