@@ -23,6 +23,7 @@ def mpassit(xmlFile, expdir, index, dcGrpInfo, do_ensemble=False, do_ensmean_pos
     #
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
+        'FCST_LEN_HRS_CYCLES': os.getenv('FCST_LEN_HRS_CYCLES', '03 03'),
         'GROUP_INDEX': f'{index:02d}',
         'GROUP_HOURS': f'{str_hours}',
         'MPASSIT_NX': os.getenv('MPASSIT_NX', 'MPASSIT_NX_not_defined'),
@@ -40,6 +41,7 @@ def mpassit(xmlFile, expdir, index, dcGrpInfo, do_ensemble=False, do_ensmean_pos
         task_id = f'{meta_id}_g{index:02d}'
         meta_bgn = ""
         meta_end = ""
+        ensindexstr = ""
         memdir = ""
     else:
         if not do_ensmean_post:
@@ -52,6 +54,7 @@ def mpassit(xmlFile, expdir, index, dcGrpInfo, do_ensemble=False, do_ensmean_pos
             meta_end = f'</metatask>\n'
             task_id = f'{meta_id}_g{index:02d}_m#ens_index#'
             dcTaskEnv['ENS_INDEX'] = "#ens_index#"
+            ensindexstr = "_m#ens_index#"
             memdir = "/mem#ens_index#"
         else:  # do_ensmean_post
             metatask = False
@@ -60,6 +63,7 @@ def mpassit(xmlFile, expdir, index, dcGrpInfo, do_ensemble=False, do_ensmean_pos
             meta_bgn = ""
             meta_end = ""
             memdir = "/ensmean"
+            ensindexstr = "_ensmean"
 
     dcTaskEnv['MEMDIR'] = f'{memdir}'
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
@@ -70,15 +74,18 @@ def mpassit(xmlFile, expdir, index, dcGrpInfo, do_ensemble=False, do_ensmean_pos
         starttime = get_cascade_env(f"STARTTIME_{meta_id}".upper())
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
     #
-    extra_dep = f'  <datadep age="00:05:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{memdir}</cyclestr><cyclestr offset="{end_hr}:00:00">/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'
+    extra_dep = f'''
+    <or>
+      <datadep age="00:05:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{memdir}</cyclestr><cyclestr offset="{end_hr}:00:00">/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+      <taskdep task="fcst{ensindexstr}"/>
+    </or>'''
     #
     if do_ensmean_post:
-        extra_dep = f'  <metataskdep metatask="ensmean"/>'
+        extra_dep = f'    <metataskdep metatask="ensmean"/>'
 
     dependencies = f'''
   <dependency>
-  <and>{timedep}
-  {extra_dep}
+  <and>{timedep}{extra_dep}
   </and>
   </dependency>'''
     #

@@ -22,6 +22,7 @@ def upp(xmlFile, expdir, index, dcGrpInfo, do_ensemble=False, do_ensmean_post=Fa
     #
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
+        'FCST_LEN_HRS_CYCLES': os.getenv('FCST_LEN_HRS_CYCLES', '03 03'),
         'GROUP_INDEX': f'{index:02d}',
         'GROUP_HOURS': f'{str_hours}',
         'UPP_DOMAIN': os.getenv('UPP_DOMAIN', ''),

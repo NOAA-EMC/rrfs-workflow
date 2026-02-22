@@ -23,10 +23,19 @@ done < crtmfiles.upp
 #
 YYJJJHH=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%y%j%H)
 #
+# find forecst length for this cycle
+#
+fcst_len_hrs_cycles=${FCST_LEN_HRS_CYCLES:-"01 01"}
+fcst_len_hrs_thiscyc=$( "${USHrrfs}/find_fcst_length.sh"  "${fcst_len_hrs_cycles}"  "${cyc}" )
+echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
+#
 # loop through forecast history files for this group
 #
 read -ra fhr_all <<< "${GROUP_HOURS}"  # convert string to array
 for fhr in "${fhr_all[@]}"; do
+    if (( 10#${fhr} > 10#${fcst_len_hrs_thiscyc} )); then
+      break
+    fi
     # get forecast hour and string
     CDATEp=$( ${NDATE} "${fhr}"  "${CDATE}" )
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
