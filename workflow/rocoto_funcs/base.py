@@ -190,7 +190,7 @@ def wflow_log(xmlFile, log_fpath):
 def wflow_cycledefs(xmlFile, dcCycledef):
     text = ""
     for key, value in dcCycledef.items():
-        if isinstance(value, dict):  #  a dictionary value containing "valid_hours" or "exclude_hours"
+        if isinstance(value, dict):  # a dictionary value containing "valid_hours" or "exclude_hours"
             if "valid_hours" in value:
                 valid_hours = value["valid_hours"]
                 mycycledef = value["cycledef"]

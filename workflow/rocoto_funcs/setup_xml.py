@@ -114,7 +114,7 @@ def setup_xml(HOMErrfs, expdir):
             if os.getenv("DO_POST", "TRUE").upper() == "TRUE":
                 for index, dcGrpInfo in enumerate(listPostGrpInfo):
                     mpassit(xmlFile, expdir, index, dcGrpInfo)
-                upp(xmlFile, expdir)
+                    upp(xmlFile, expdir, index, dcGrpInfo)
             if os.getenv("DO_HOFX", "FALSE").upper() == "TRUE":
                 hofx(xmlFile, expdir)
 
@@ -154,12 +154,14 @@ def setup_xml(HOMErrfs, expdir):
             if os.getenv('DO_CYC', 'FALSE').upper() == "TRUE":
                 save_for_next(xmlFile, expdir, do_ensemble=True)
             if os.getenv("DO_POST", "TRUE").upper() == "TRUE":
-                mpassit(xmlFile, expdir, do_ensemble=True)
-                upp(xmlFile, expdir, do_ensemble=True)
+                for index, dcGrpInfo in enumerate(listPostGrpInfo):
+                    mpassit(xmlFile, expdir, index, dcGrpInfo, do_ensemble=True)
+                    upp(xmlFile, expdir, index, dcGrpInfo, do_ensemble=True)
             if do_ensmean_post == "TRUE":
                 ensmean(xmlFile, expdir)
-                mpassit(xmlFile, expdir, do_ensemble=True, do_ensmean_post=True)
-                upp(xmlFile, expdir, do_ensemble=True, do_ensmean_post=True)
+                for index, dcGrpInfo in enumerate(listPostGrpInfo):
+                    mpassit(xmlFile, expdir, index, dcGrpInfo, do_ensemble=True, do_ensmean_post=True)
+                    upp(xmlFile, expdir, index, dcGrpInfo, do_ensemble=True, do_ensmean_post=True)
 
 # ---------------------------------------------------------------------------
         if os.getenv("DO_CLEAN", 'FALSE').upper() == "TRUE":  # write out the clean task if needed, usually for realtime runs
