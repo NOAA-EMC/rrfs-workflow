@@ -22,12 +22,11 @@ def smart_post_groups(dcCycleDef):
     #
     # construct groups based on the configuration in the exp file
     groups = []
-    size = int(os.getenv('POST_GROUP_SIZE', '6'))
+    ngroups = int(os.getenv('POST_GROUP_TOT_NUM', '1'))
     spec = os.getenv('POST_GROUP_SPEC', '')
-    if spec == "":  # automatic grouping by size if spec is non defined
+    if spec == "":  # automatic grouping if POST_GROUP_SPEC is non defined
         history_interval = int(os.getenv('HISTORY_INTERVAL', '1'))
-        step = size * history_interval
-        ngroups = math.floor(max_fcst_length / step + 0.5)
+        step = math.floor(max_fcst_length / ngroups + 0.5)
         for i in range(ngroups):
             bgn_hr = i * step + 1
             if i == 0:
@@ -39,7 +38,7 @@ def smart_post_groups(dcCycleDef):
         str_groups = " ".join(f"{s}" for s in groups)
         print(f'MPASSIT/UPP automatic grouping: "{str_groups}"\n')
 
-    else:  # POST_GROUP_SPEC is defined, has the highest priority, ignore POST_GROUP_SIZE
+    else:  # POST_GROUP_SPEC is defined, has the highest priority, ignore POST_GROUP_TOT_NUM
         groups = spec.split()
         str_groups = " ".join(f"{s}" for s in groups)
         print(f'MPASSIT/UPP customized grouping: "{str_groups}"\n')
