@@ -32,8 +32,8 @@ for i in {0..23};    do arr[$i]="03"; done # 3hr fcst
 for i in {0..23..12}; do arr[$i]="12"; done # 12hr fcst every 12hrs
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
-export MPASSIT_GROUP_TOTAL_NUM=2
-export UPP_GROUP_TOTAL_NUM=2
+export POST_GROUP_TOT_NUM=2 # num of groups, the final group absorbs leftovers, the first group contains the extra f000h file
+#export POST_GROUP_SPEC="0-10 11-20 21-30 31-36" # customized group specification; if set, POST_GROUP_TOT_NUM will be ignored
 
 export IC_OFFSET=0
 export LBC_OFFSET=3
