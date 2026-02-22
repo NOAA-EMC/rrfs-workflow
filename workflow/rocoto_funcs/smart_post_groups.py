@@ -25,15 +25,17 @@ def smart_post_groups(dcCycleDef):
     size = int(os.getenv('POST_GROUP_SIZE', '6'))
     spec = os.getenv('POST_GROUP_SPEC', '')
     if spec == "":  # automatic grouping by size if spec is non defined
-        ngroups = math.floor(max_fcst_length / size + 0.5)
+        history_interval = int(os.getenv('HISTORY_INTERVAL', '1'))
+        step = size * history_interval
+        ngroups = math.floor(max_fcst_length / step + 0.5)
         for i in range(ngroups):
-            bgn_hr = i * size + 1
+            bgn_hr = i * step + 1
             if i == 0:
                 bgn_hr = 0
-            end_hr = (i + 1) * size
+            end_hr = (i + 1) * step
             if (i + 1) == ngroups:
                 end_hr = max_fcst_length
-            groups.append(f'{bgn_hr}-{end_hr}')
+            groups.append(f'{bgn_hr}-{end_hr}-{history_interval}')
         print(f"MPASSIT/UPP automatic grouping: {groups}\n")
 
     else:  # POST_GROUP_SPEC is defined, has the highest priority, ignore POST_GROUP_SIZE
@@ -47,7 +49,12 @@ def smart_post_groups(dcCycleDef):
     igroup = -1
     for key, value in cycles_by_fcst_length_sorted.items():
         for index, item in enumerate(groups):
-            bgn_hr, end_hr = item.split('-')
+            parts = item.split("-")
+            if len(parts) == 1:
+                bgn_hr = end_hr = parts[0]
+            else:
+                bgn_hr = parts[0]
+                end_hr = parts[1]
             if key >= int(bgn_hr) and key <= int(end_hr):
                 if index != igroup:  # need a new cycledef_post
                     num_post_cycledefs = num_post_cycledefs + 1
@@ -101,5 +108,6 @@ def smart_post_groups(dcCycleDef):
     # print(dc_iPost_cycledefs, "\n")
     # print(dcCycleDef, "\n")
     # print(listGroupInfo)
+    # sys.exit()
     # ~~~~~~~~~~~~~
     return listGroupInfo

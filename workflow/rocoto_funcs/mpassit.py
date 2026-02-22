@@ -9,14 +9,22 @@ def mpassit(xmlFile, expdir, index, dcGrpInfo, do_ensemble=False, do_ensmean_pos
     meta_id = 'mpassit'
     cycledefs = dcGrpInfo['cycledef']
     group_hours = dcGrpInfo["hours"]
+    parts = group_hours.split('-')
+    if len(parts) == 1:
+        end_hr = int(parts[0])
+        str_hours = parts[0]
+    else:
+        step = 1
+        if len(parts) == 3:
+            step = int(parts[2])
+        bgn_hr = int(parts[0])
+        end_hr = int(parts[1])
+        str_hours = " ".join(str(i) for i in range(bgn_hr, end_hr + step, step))
     #
-    history_interval = os.getenv('HISTORY_INTERVAL', '1')
-    fcst_len_hrs_cycles = os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
-        'HISTORY_INTERVAL': f'{history_interval}',
-        'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycles}',
-        'GROUP_HOURS': f'{group_hours}',
+        'GROUP_INDEX': f'{index:02d}',
+        'GROUP_HOURS': f'{str_hours}',
         'MPASSIT_NX': os.getenv('MPASSIT_NX', 'MPASSIT_NX_not_defined'),
         'MPASSIT_NY': os.getenv('MPASSIT_NY', 'MPASSIT_NY_not_defined'),
         'MPASSIT_DX': os.getenv('MPASSIT_DX', 'MPASSIT_DX_not_defined'),
@@ -62,12 +70,7 @@ def mpassit(xmlFile, expdir, index, dcGrpInfo, do_ensemble=False, do_ensmean_pos
         starttime = get_cascade_env(f"STARTTIME_{meta_id}".upper())
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
     #
-    listHours = group_hours.split('-')
-    if len(listHours) > 1:
-        end_hours = listHours[1]
-    else:
-        end_hours = listHours[0]
-    extra_dep = f'  <datadep age="00:05:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{memdir}</cyclestr><cyclestr offset="{end_hours}:00:00">/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'
+    extra_dep = f'  <datadep age="00:05:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{memdir}</cyclestr><cyclestr offset="{end_hr}:00:00">/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'
     #
     if do_ensmean_post:
         extra_dep = f'  <metataskdep metatask="ensmean"/>'

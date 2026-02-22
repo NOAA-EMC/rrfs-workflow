@@ -9,14 +9,21 @@ def upp(xmlFile, expdir, index, dcGrpInfo, do_ensemble=False, do_ensmean_post=Fa
     meta_id = 'upp'
     cycledefs = dcGrpInfo['cycledef']
     group_hours = dcGrpInfo["hours"]
+    parts = group_hours.split('-')
+    if len(parts) == 1:
+        str_hours = parts[0]
+    else:
+        step = 1
+        if len(parts) == 3:
+            step = int(parts[2])
+        bgn_hr = int(parts[0])
+        end_hr = int(parts[1])
+        str_hours = " ".join(str(i) for i in range(bgn_hr, end_hr + step, step))
     #
-    history_interval = os.getenv('HISTORY_INTERVAL', '1')
-    fcst_len_hrs_cycles = os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
-        'HISTORY_INTERVAL': f'{history_interval}',
-        'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycles}',
-        'GROUP_HOURS': f'{group_hours}',
+        'GROUP_INDEX': f'{index:02d}',
+        'GROUP_HOURS': f'{str_hours}',
         'UPP_DOMAIN': os.getenv('UPP_DOMAIN', ''),
     }
 
