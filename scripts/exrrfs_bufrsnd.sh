@@ -104,6 +104,7 @@ NSTAT=1950
 cpreq -p ${FIX_BUFRSND}/${PREDEF_GRID_NAME}/rrfs_profdat.${NSTAT} regional_profdat
 
 OUTTYP=netcdf
+export tmmark=tm00
 
 model=FV3S
 
