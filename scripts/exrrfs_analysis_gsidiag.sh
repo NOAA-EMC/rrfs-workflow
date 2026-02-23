@@ -92,7 +92,6 @@ esac
 # Process shared_output_data from Umbrella DATA
 #-----------------------------------------------------------------------
 #
-export shared_output_data=${umbrella_analysis_data}/output
 if [ ! -r ${shared_output_data} ]; then
   echo "FATAL ERROR: Directory ${shared_output_data} is not available for this job"
 fi
