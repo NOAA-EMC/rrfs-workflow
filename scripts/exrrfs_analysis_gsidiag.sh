@@ -326,7 +326,8 @@ if [ "${DO_RADMON}" = "TRUE" ]; then
 
      export RAD_AREA=${RAD_AREA:-rgn}
      export CYCLE_INTERVAL=${CYCLE_INTERVAL:-1}
-     export DATA=${DATA}/radmon
+     export DATAradmon=${DATA}/radmon
+     mkdir -p $DATAradmon
      export TANKverf_radM1=${TANKverf_radM1:-${TANKverf}/radmon.${PDY}}
 
      export GSI_MON_BIN=$EXECrrfs

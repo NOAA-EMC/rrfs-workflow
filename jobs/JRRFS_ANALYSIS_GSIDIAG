@@ -43,9 +43,7 @@ fi
 
 export shared_output_data=${umbrella_analysis_data}/output
 export DATA=${DATA:-${umbrella_analysis_data}/${jobid}}
-export DATAradmon=${DATAradmon:-${DATA}/radmon}
 mkdir -p ${DATA}
-mkdir -p ${DATAradmon}
 cd ${DATA}
 
 export cycle="t${cyc}z"
