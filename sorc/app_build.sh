@@ -372,8 +372,7 @@ if [ "${EXTRN}" = true ]; then
   fi
 
   # run check-out
-  python --version 1>/dev/null 2>/dev/null
-  if [[ $(which python) == "/usr/bin/python" ]]; then
+  if [[ "$NCO_BUILD" == "TRUE" ]]; then
        module unload python
        module load PrgEnv-intel/${PrgEnv_intel_ver}
        module load python/${python_ver}
