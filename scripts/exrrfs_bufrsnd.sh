@@ -49,8 +49,6 @@ This is the ex-script for the task that runs the bufr-sounding
 #
 ulimit -a
 
-MACHINE=WCOSS2
-
 case $MACHINE in
 
   "WCOSS2")

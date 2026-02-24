@@ -46,8 +46,6 @@ RRFS for the specified cycle.
 
 ulimit -a
 
-MACHINE=WCOSS2
-
 case $MACHINE in
 #
 "WCOSS2")

@@ -52,8 +52,6 @@ This is the ex-script for the prep_cyc tasks for the specified cycle.
 #-----------------------------------------------------------------------
 #
 
-MACHINE=WCOSS2
-
 case $MACHINE in
 
   "WCOSS2")

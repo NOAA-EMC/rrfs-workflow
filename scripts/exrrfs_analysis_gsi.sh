@@ -67,8 +67,6 @@ export AIRCRAFT_REJECT="${FIXrrfs}/gsi"
 export SFCOBS_USELIST="${FIXrrfs}/gsi"
 
 
-MACHINE=WCOSS2
-
 case $MACHINE in
 #
 "WCOSS2")

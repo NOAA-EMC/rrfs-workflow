@@ -111,8 +111,6 @@ fi
 #
 ulimit -a
 
-MACHINE=WCOSS2
-
 case $MACHINE in
 
   "WCOSS2")

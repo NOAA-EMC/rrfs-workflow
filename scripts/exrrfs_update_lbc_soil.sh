@@ -59,8 +59,6 @@ export OB_TYPE=${OB_TYPE}
 #
 ulimit -a
 
-MACHINE=WCOSS2
-
 case $MACHINE in
 
 "WCOSS2")

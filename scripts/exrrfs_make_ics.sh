@@ -151,8 +151,6 @@ export extrn_mdl_staging_dir="${shared_output_data}"
 #
 ulimit -a
 
-MACHINE=WCOSS2
-
 case "$MACHINE" in
 
   "WCOSS2")

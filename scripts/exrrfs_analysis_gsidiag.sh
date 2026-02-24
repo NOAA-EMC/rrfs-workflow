@@ -48,7 +48,6 @@ the specified cycle.
 ulimit -a
 
 export FIX_GSI="${FIXrrfs}/gsi"
-MACHINE=WCOSS2
 
 case $MACHINE in
 #

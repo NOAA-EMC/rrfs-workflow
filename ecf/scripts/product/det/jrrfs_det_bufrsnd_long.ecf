@@ -9,6 +9,7 @@
 #PBS -l debug=true
 
 model=rrfs
+export MACHINE=WCOSS2
 export cyc="%CYC%"
 %include <head.h>
 %include <envir-p1.h>

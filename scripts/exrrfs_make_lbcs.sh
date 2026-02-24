@@ -182,8 +182,6 @@ export extrn_mdl_staging_dir="${DATA}"
 #
 ulimit -a
 
-MACHINE=WCOSS2
-
 case "$MACHINE" in
 
   "WCOSS2")

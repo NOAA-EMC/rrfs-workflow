@@ -58,8 +58,6 @@ the output files corresponding to a specified forecast hour.
 #
 ulimit -a
 
-MACHINE=WCOSS2
-
 case $MACHINE in
 
   "WCOSS2")
