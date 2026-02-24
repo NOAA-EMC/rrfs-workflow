@@ -354,16 +354,16 @@ else
       fi
       print_info_msg "$VERBOSE" "Trying this path: ${bkpath}"
     checkfile=${bkpath}/${restart_prefix}coupler.res
-    if [ ! -r "${checkfile}" ] && [ ${CYCLE_TYPE} != "spinup" ]; then
+    if (( $(ls -l ${bkpath}/${restart_prefix}* 2>/dev/null | wc -l ) != 8 )) && [ ${CYCLE_TYPE} != "spinup" ]; then
       fallback_enable="YES"
       ic=0
       while [[ $ic -lt $SLEEP_LOOP_MAX ]]; do
-        print_info_msg "$VERBOSE" "${checkfile} not available. Sleep $SLEEP_INT sec... "
+        print_info_msg "$VERBOSE" "Not all ${restart_prefix}* files are available. Sleep $SLEEP_INT sec... "
         ic=`expr $ic + 1`
         sleep $SLEEP_INT
-        if [ -r "${checkfile}" ] ; then
+        if [ -r "${checkfile}" ] && (( $(ls -l ${bkpath}/${restart_prefix}* 2>/dev/null | wc -l ) == 8 )) ; then
           ic=$SLEEP_LOOP_MAX
-          print_info_msg "$VERBOSE" "${checkfile} is now available. Proceed without fallback"
+          print_info_msg "$VERBOSE" "All ${restart_prefix}* files are now available. Proceed without fallback"
           fallback_enable="NO"
         fi
       done
