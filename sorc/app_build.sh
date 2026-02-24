@@ -234,15 +234,37 @@ if [ "${BUILD}" = false ] && [ "${MOVE}" = true ]; then
   exit 0
 fi
 
+NCO_BUILD="FALSE"
 # check if PLATFORM is set
 if [ -z $PLATFORM ] ; then
   # Automatically detect HPC platforms for wcoss2, hera, jet, orion, hercules, etc
-  source ${HOME_DIR}/ush/fix_rrfs_locations.sh
+  if [[ "$HOME_DIR" == "/lfs/h1/ops"* ]] ; then
+      PLATFORM=wcoss2
+      NCO_BUILD="TRUE"
+  elif [[ "$HOME_DIR" == "/lfs/h2"* ]] ; then
+      PLATFORM=wcoss2
+  elif [[ "$HOME_DIR" == "/scratch1"* ]] ; then
+      PLATFORM=hera
+  elif [[ "$HOME_DIR" == "/jetmon"* ]] ; then
+      PLATFORM=jet
+  elif [[ "$HOME_DIR" == "/work"* ]]; then
+      hoststr=$(hostname)
+      if [[ "$hoststr" == "hercules"* ]]; then
+        PLATFORM=hercules
+      else
+        PLATFORM=orion
+      fi
+  else
+      PLATFORM=unknown
+  fi
+
   if [[ "$PLATFORM" == "unknown" ]]; then
     printf "\nERROR: Please set PLATFORM.\n\n"
     usage
     exit 0
   fi
+elif [[ "$HOME_DIR" == "/lfs/h1/ops"* ]] ; then
+      NCO_BUILD="TRUE"
 fi
 # set PLATFORM (MACHINE)
 MACHINE="${PLATFORM}"
@@ -612,5 +634,41 @@ AQM_UTIL_PREFIX=aqm_util
 [ -f ${EXEC_DIR}/update_GVF.exe ] && mv ${EXEC_DIR}/update_GVF.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_update_GVF.exe
 [ -f ${EXEC_DIR}/update_ice.exe ] && mv ${EXEC_DIR}/update_ice.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_update_ice.exe
 [ -f ${EXEC_DIR}/use_raphrrr_sfc.exe ] && mv ${EXEC_DIR}/use_raphrrr_sfc.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_use_raphrrr_sfc.exe
+
+# Remove developer-only codes if building for ops:
+dev_list="scripts/exrrfs_fsm.sh \
+          ecf/defs/rrfs_prod.def \
+          ecf/scripts/cycle_end.ecf \
+          ecf/defs/rrfs_prod.def \
+          ecf/include/envir-p1.h \
+          ecf/include/head.h \
+          ecf/include/tail.h \
+          ush/config_defaults.sh \
+          ush/fix_rrfs_locations.sh \
+          ush/rocoto/fv3gfs_workflow.sh \
+          ush/rocoto/rocoto_viewer.py \
+          ush/rocoto/workflow_utils.py \
+          ush/set_extrn_mdl_params.sh \
+          ush/bash_utils/make_agent_link_for_fix \
+          ush/set_rrfs_config.sh  \
+          ush/generate_FV3LAM_wflow.sh \
+          ush/launch_FV3LAM_wflow.sh \
+          ush/load_modules_wflow.sh \
+          ush/setup.sh \
+          ush/etc/lmod-setup.sh \
+          ush/Init.sh \
+          scripts/exrrfs_clean.sh \
+          ush/cmp_expt_to_baseline.sh \
+          ush/cmp_rundirs_ncfiles.sh \
+          ush/NCL/make_FV3_RAP_domain_plots.sh \
+          ush/NCL/NCL_ICs_BCs/generate_ICs_BCs.sh \
+          ush/log_change.py"
+
+cd $HOME_DIR
+if [[ $NCO_BUILD = "TRUE" ]]; then
+    for filetodel in $dev_list; do
+        [[ -e $filetodel ]] && ls -l $filetodel
+    done
+fi
 
 exit 0
