@@ -129,18 +129,6 @@ if [ ${len_ensmem} -eq 0 ] && [ ! "${DO_ENSEMBLE}" = "TRUE" ]; then
 fi
 
 #-----------------------------------------------------------------------
-# Make sure that fhr is a non-empty string consisting of only digits.  
-#-----------------------------------------------------------------------
-fhr=${FHR:-0}
-export fhr=$( printf "%s" "${fhr}" | sed -n -r -e "s/^([0-9]+)$/\1/p" )
-if [ -z "$fhr" ]; then
-  err_exit "\
-The forecast hour (fhr) must be a non-empty string consisting of only 
-digits:
-  fhr = \"${fhr}\""
-fi
-
-#-----------------------------------------------------------------------
 # Execute the script.
 #-----------------------------------------------------------------------
 

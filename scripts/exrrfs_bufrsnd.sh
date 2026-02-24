@@ -142,7 +142,7 @@ if [ -e sndpostdone00.tm00 ]; then
   lasthour=`ls -1rt sndpostdone??.tm00 | tail -1 | cut -c 12-13`
   typeset -Z2 lasthour
 
-  let "fhr=$(( ${fhr#0} + 1 ))"
+  let "fhr=$(( ${lasthour#0} + 1 ))"
   if [ $fhr -le 10 ]; then
      fhr=$(printf "%02d" $fhr)
   fi

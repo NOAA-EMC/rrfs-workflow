@@ -33,7 +33,6 @@ case "${WGF}" in
     export RUN="firewx"
     ;;
 esac
-export fhr=${FHR:-}
 
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p ${DATA}
