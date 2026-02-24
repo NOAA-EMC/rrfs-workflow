@@ -19,7 +19,6 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 #-----------------------------------------------------------------------
 export pid=${pid:-$$}
 export outid=${outid:-"LL$job"}
-export NET=${NET:-rrfs}
 case "${WGF}" in
   "det")
     export RUN="rrfs"

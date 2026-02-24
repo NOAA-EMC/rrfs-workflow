@@ -20,7 +20,6 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 export pid=${pid:-$$}
 export outid=${outid:-"LL$job"}
 export RUN=${RUN:-rrfs}
-export NET=${NET:-rrfs}
 export cycle="t${cyc}z"
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p ${DATA}
