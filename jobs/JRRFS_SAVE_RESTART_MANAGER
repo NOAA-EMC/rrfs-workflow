@@ -19,17 +19,6 @@ export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 
 export umbrella_forecast_data_base=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}
 
-#################################### 
-# Specify Timeout Behavior of Post
-#
-# SLEEP_TIME - Amount of time to wait for
-#              any new file before exiting
-# SLEEP_INT  - Amount of time to wait between
-#              checking for files
-####################################
-export SLEEP_TIME=2500
-export SLEEP_INT=15
-
 env
 
 ${HOMErrfs}/scripts/exrrfs_save_restart_manager.sh

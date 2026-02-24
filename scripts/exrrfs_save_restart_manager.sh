@@ -6,6 +6,18 @@ set -x
 # Even cycles only.
 #-----------------------------------------------------------------------
 
+####################################
+# Specify Timeout Behavior of Post
+#
+# SLEEP_TIME - Amount of time to wait for
+#              any new file before exiting
+# SLEEP_INT  - Amount of time to wait between
+#              checking for files
+####################################
+export SLEEP_TIME=2500
+export SLEEP_INT=15
+
+
 #-----------------------------------------------------------------------
 # Configure cycle dependency switch
 #-----------------------------------------------------------------------
