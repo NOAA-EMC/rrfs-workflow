@@ -670,7 +670,7 @@ if [[ $NCO_BUILD = "TRUE" ]]; then
         if [[ -e $filetodel ]]; then 
             echo "deleting ${filetodel}"
             rm -f $filetodel
-        elif
+        else
             echo "${filetodel} does not exist. Confirm file existence."
         fi
     done
