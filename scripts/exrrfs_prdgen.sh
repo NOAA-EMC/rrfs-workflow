@@ -2,6 +2,9 @@
 set -x
 
 source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+
+export FIX_UPP="${FIXrrfs}/upp"
+
 #
 #-----------------------------------------------------------------------
 #
@@ -93,6 +96,7 @@ esac
 yyyymmdd=${CDATE:0:8}
 hh=${CDATE:8:2}
 cyc=$hh
+fhr=${FHR:-}
 #
 #-----------------------------------------------------------------------
 #

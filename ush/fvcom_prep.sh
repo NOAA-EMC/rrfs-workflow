@@ -119,30 +119,17 @@ elif [ $HH -eq 05 -o $HH -eq 11 -o $HH -eq 17 -o $HH -eq 23 ]; then
   fhrm1=011	# The 11-hr forecast from cycfm1
 fi
 
-# Find the most recent FVCOM files
-if [ "$MACHINE" = "WCOSS2" ]; then
-  erie="${FVCOM_DIR}/leofs.${PDYf}/leofs.t${cycf}z.${PDYf}.fields.f${fhr}.nc"
-  mh="${FVCOM_DIR}/lmhofs.${PDYf}/lmhofs.t${cycf}z.${PDYf}.fields.f${fhr}.nc"
-  sup="${FVCOM_DIR}/lsofs.${PDYf}/lsofs.t${cycf}z.${PDYf}.fields.f${fhr}.nc"
-  ont="${FVCOM_DIR}/loofs.${PDYf}/loofs.t${cycf}z.${PDYf}.fields.f${fhr}.nc"
+# Find the most recent FVCOM files, using WCOSS option by default
+#
+erie="${FVCOM_DIR}/leofs.${PDYf}/leofs.t${cycf}z.${PDYf}.fields.f${fhr}.nc"
+mh="${FVCOM_DIR}/lmhofs.${PDYf}/lmhofs.t${cycf}z.${PDYf}.fields.f${fhr}.nc"
+sup="${FVCOM_DIR}/lsofs.${PDYf}/lsofs.t${cycf}z.${PDYf}.fields.f${fhr}.nc"
+ont="${FVCOM_DIR}/loofs.${PDYf}/loofs.t${cycf}z.${PDYf}.fields.f${fhr}.nc"
 
-  erie2="${FVCOM_DIR}/leofs.${PDYfm1}/leofs.t${cycfm1}z.${PDYfm1}.fields.f${fhrm1}.nc"
-  mh2="${FVCOM_DIR}/lmhofs.${PDYfm1}/lmhofs.t${cycfm1}z.${PDYfm1}.fields.f${fhrm1}.nc"
-  sup2="${FVCOM_DIR}/lsofs.${PDYfm1}/lsofs.t${cycfm1}z.${PDYfm1}.fields.f${fhrm1}.nc"
-  ont2="${FVCOM_DIR}/loofs.${PDYfm1}/loofs.t${cycfm1}z.${PDYfm1}.fields.f${fhrm1}.nc"
-
-else
-
-  erie="${FVCOM_DIR}/leofs/nos.leofs.fields.f${fhr}.${PDYf}.${cycf}z.nc"
-  mh="${FVCOM_DIR}/lmhofs/nos.lmhofs.fields.f${fhr}.${PDYf}.${cycf}z.nc"
-  sup="${FVCOM_DIR}/lsofs/nos.lsofs.fields.f${fhr}.${PDYf}.${cycf}z.nc"
-  ont="${FVCOM_DIR}/loofs/nos.loofs.fields.f${fhr}.${PDYf}.${cycf}z.nc"
-
-  erie2="${FVCOM_DIR}/leofs/nos.leofs.fields.f${fhrm1}.${PDYfm1}.${cycfm1}z.nc"
-  mh2="${FVCOM_DIR}/lmhofs/nos.lmhofs.fields.f${fhrm1}.${PDYfm1}.${cycfm1}z.nc"
-  sup2="${FVCOM_DIR}/lsofs/nos.lsofs.fields.f${fhrm1}.${PDYfm1}.${cycfm1}z.nc"
-  ont2="${FVCOM_DIR}/loofs/nos.loofs.fields.f${fhrm1}.${PDYfm1}.${cycfm1}z.nc"
-fi
+erie2="${FVCOM_DIR}/leofs.${PDYfm1}/leofs.t${cycfm1}z.${PDYfm1}.fields.f${fhrm1}.nc"
+mh2="${FVCOM_DIR}/lmhofs.${PDYfm1}/lmhofs.t${cycfm1}z.${PDYfm1}.fields.f${fhrm1}.nc"
+sup2="${FVCOM_DIR}/lsofs.${PDYfm1}/lsofs.t${cycfm1}z.${PDYfm1}.fields.f${fhrm1}.nc"
+ont2="${FVCOM_DIR}/loofs.${PDYfm1}/loofs.t${cycfm1}z.${PDYfm1}.fields.f${fhrm1}.nc"
 
 if [[ -e "$erie" && -e "$mh" && -e "$sup" && -e "$ont" ]]; then
   output_erie=$erie

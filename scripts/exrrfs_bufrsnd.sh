@@ -3,6 +3,9 @@ set -x
 
 source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
+export FIX_BUFRSND="${FIXrrfs}/bufrsnd"
+export GEMPAK_FIX=${GEMPAK_FIX:-${FIXrrfs}/gempak/fix}
+
 #
 #-----------------------------------------------------------------------
 #
@@ -99,11 +102,20 @@ NSTAT=1950
 cpreq -p ${FIX_BUFRSND}/${PREDEF_GRID_NAME}/rrfs_profdat.${NSTAT} regional_profdat
 
 OUTTYP=netcdf
+export tmmark=tm00
 
 model=FV3S
 
 INCR=01
-FHRLIM=${FHRLIM}
+
+if [ $WGF = "ensf" ]; then
+  FHRLIM=60
+elif [ $WGF = "det" ]; then
+  FHRLIM=84
+else
+  echo "bad WGF definition for BUFRSND job : " $WGF
+  err_exit
+fi
 
 let NFILE=1
 
@@ -128,7 +140,7 @@ if [ -e sndpostdone00.tm00 ]; then
   lasthour=`ls -1rt sndpostdone??.tm00 | tail -1 | cut -c 12-13`
   typeset -Z2 lasthour
 
-  let "fhr=$(( ${fhr#0} + 1 ))"
+  let "fhr=$(( ${lasthour#0} + 1 ))"
   if [ $fhr -le 10 ]; then
      fhr=$(printf "%02d" $fhr)
   fi

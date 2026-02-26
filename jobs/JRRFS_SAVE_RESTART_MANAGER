@@ -1,0 +1,36 @@
+#!/bin/bash
+
+date
+export PS4='+ $SECONDS + '
+set -x
+
+export DATA=${DATA:-${DATAROOT:?}/${jobid:?}}
+mkdir -p ${DATA}
+cd ${DATA}
+
+export cycle=${cycle:-t${cyc}z}
+setpdy.sh
+. ./PDY
+
+export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
+export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
+export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
+export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
+
+export umbrella_forecast_data_base=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}
+
+env
+
+${HOMErrfs}/scripts/exrrfs_save_restart_manager.sh
+export err=$?; err_chk
+
+msg="$job completed normally"
+postmsg "$msg"          
+
+##################################################
+# Remove the Temporary working directory
+##################################################
+if [ "${KEEPDATA^^}" != YES ]; then
+  cd $DATAROOT
+  rm -rf $DATA
+fi

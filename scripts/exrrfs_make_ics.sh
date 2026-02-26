@@ -3,6 +3,16 @@ set -x
 
 source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
+export FIXam=${FIXam:-${HOMErrfs}/fix/am}
+export FIXLAM=${FIXLAM:-${HOMErrfs}/fix/lam/RRFS_NA_3km}
+export FIX_GSI="${FIXrrfs}/gsi"
+# export OROG_DIR="${HOMErrfs}/fix/lam/RRFS_NA_3km"
+export THOMPSON_MP_CLIMO_FP="${FIXam}/Thompson_MP_MONTHLY_CLIMO.nc"
+if [ $WGF == "firewx" ]; then
+#notused?  export CCPP_PHYS_SUITE_FP="${PARMrrfs}/config/${WGF}/suite_RRFS_sas_nogwd.xml"
+  export CCPP_PHYS_SUITE='RRFS_sas_nogwd'
+fi
+
 #
 #-----------------------------------------------------------------------
 #

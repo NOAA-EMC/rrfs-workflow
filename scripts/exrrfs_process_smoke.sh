@@ -3,6 +3,9 @@ set -x
 
 source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
+export FIX_SMOKE_DUST="${FIXrrfs}/smoke_dust"
+export FIRE_RAVE_DIR="${DCOMROOT}"
+
 #
 #
 #-----------------------------------------------------------------------
