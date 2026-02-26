@@ -639,13 +639,15 @@ if [[ $NCO_BUILD = "TRUE" ]]; then
     cd $HOME_DIR
     RMFILE_LIST="${HOME_DIR}/parm/non_ops_files_to_rm.list"
     exclude_path="${HOME_DIR}/.git/info/exclude"
-    echo "Removing files not needed for operational runs:"
+    echo "Removing files not needed for ops and updating git index..."
     while read line; do
-        if [[ -e $line ]]; then
-            # update local git-index to ignore these files.
-            git update-index --assume-unchanged $line
-            echo "updating git index and deleting ${line}"
+        echo "updating git index and deleting ${line}"
+        if [[ -d $line ]]; then
+            git update-index --assume-unchanged ${line}/*
             rm -rf $line
+        elif [[ -e $line ]]; then
+            git update-index --assume-unchanged $line
+            rm -f $line
         else
             echo "${line} does not exist. Confirm file existence."
         fi
