@@ -665,8 +665,14 @@ dev_list="scripts/exrrfs_fsm.sh \
 
 cd $HOME_DIR
 if [[ $NCO_BUILD = "TRUE" ]]; then
+    echo "Removing files not needed for operational runs:"
     for filetodel in $dev_list; do
-        [[ -e $filetodel ]] && ls -l $filetodel
+        if [[ -e $filetodel ]]; then 
+            echo "deleting ${filetodel}"
+            rm -f $filetodel
+        elif
+            echo "${filetodel} does not exist. Confirm file existence."
+        fi
     done
 fi
 
