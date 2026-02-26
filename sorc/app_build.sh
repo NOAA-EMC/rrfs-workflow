@@ -635,45 +635,27 @@ AQM_UTIL_PREFIX=aqm_util
 [ -f ${EXEC_DIR}/use_raphrrr_sfc.exe ] && mv ${EXEC_DIR}/use_raphrrr_sfc.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_use_raphrrr_sfc.exe
 
 # Remove developer-only codes if building for ops:
-dev_list="scripts/exrrfs_fsm.sh \
-          ecf/defs/rrfs_prod.def \
-          ecf/scripts/cycle_end.ecf \
-          ecf/defs/rrfs_prod.def \
-          ecf/include/envir-p1.h \
-          ecf/include/head.h \
-          ecf/include/tail.h \
-          ush/config_defaults.sh \
-          ush/fix_rrfs_locations.sh \
-          ush/rocoto/fv3gfs_workflow.sh \
-          ush/rocoto/rocoto_viewer.py \
-          ush/rocoto/workflow_utils.py \
-          ush/set_extrn_mdl_params.sh \
-          ush/bash_utils/make_agent_link_for_fix \
-          ush/set_rrfs_config.sh  \
-          ush/generate_FV3LAM_wflow.sh \
-          ush/launch_FV3LAM_wflow.sh \
-          ush/load_modules_wflow.sh \
-          ush/setup.sh \
-          ush/etc/lmod-setup.sh \
-          ush/Init.sh \
-          scripts/exrrfs_clean.sh \
-          ush/cmp_expt_to_baseline.sh \
-          ush/cmp_rundirs_ncfiles.sh \
-          ush/NCL/make_FV3_RAP_domain_plots.sh \
-          ush/NCL/NCL_ICs_BCs/generate_ICs_BCs.sh \
-          ush/log_change.py"
-
-cd $HOME_DIR
 if [[ $NCO_BUILD = "TRUE" ]]; then
+    cd $HOME_DIR
+    RMFILE_LIST="${HOME_DIR}/parm/non_ops_files_to_rm.list"
+    exclude_path="${HOME_DIR}/.git/info/exclude"
     echo "Removing files not needed for operational runs:"
-    for filetodel in $dev_list; do
-        if [[ -e $filetodel ]]; then 
-            echo "deleting ${filetodel}"
-            rm -f $filetodel
+    while read line; do
+        if [[ -e $line ]]; then
+            # add line to git info exclude if not already present
+            tmpchkcnt=$(grep "${line}" ${exclude_path} | wc -l)
+            if [[ $tmpchkcnt == 0 ]]; then
+              echo "adding ${line} to ${exclude_path}"
+              echo ${line} >> ${exclude_path}
+            else
+              echo "${line} already in ${exclude_path}"
+            fi 
+            echo "deleting ${line}"
+            rm -rf $line
         else
-            echo "${filetodel} does not exist. Confirm file existence."
+            echo "${line} does not exist. Confirm file existence."
         fi
-    done
+    done < $RMFILE_LIST
 fi
 
 exit 0
