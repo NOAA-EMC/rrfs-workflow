@@ -7,9 +7,7 @@ ecf/include/head.h
 ecf/include/tail.h
 ush/config_defaults.sh
 ush/fix_rrfs_locations.sh
-ush/rocoto/fv3gfs_workflow.sh
-ush/rocoto/rocoto_viewer.py
-ush/rocoto/workflow_utils.py
+ush/rocoto
 ush/set_extrn_mdl_params.sh
 ush/bash_utils/make_agent_link_for_fix
 ush/set_rrfs_config.sh 
