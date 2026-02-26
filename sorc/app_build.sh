@@ -642,15 +642,9 @@ if [[ $NCO_BUILD = "TRUE" ]]; then
     echo "Removing files not needed for operational runs:"
     while read line; do
         if [[ -e $line ]]; then
-            # add line to git info exclude if not already present
-            tmpchkcnt=$(grep "${line}" ${exclude_path} | wc -l)
-            if [[ $tmpchkcnt == 0 ]]; then
-              echo "adding ${line} to ${exclude_path}"
-              echo ${line} >> ${exclude_path}
-            else
-              echo "${line} already in ${exclude_path}"
-            fi 
-            echo "deleting ${line}"
+            # update local git-index to ignore these files.
+            git update-index --assume-unchanged $line
+            echo "updating git index and deleting ${line}"
             rm -rf $line
         else
             echo "${line} does not exist. Confirm file existence."
