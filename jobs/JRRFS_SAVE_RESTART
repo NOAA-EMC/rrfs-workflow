@@ -8,14 +8,11 @@ set -xue
 # Specify Package Location
 #-----------------------------------------------------------------------
 export NET='rrfs'
-export MACHINE="WCOSS2"
-export WORKFLOW_MANAGER="ecflow"
 export HOMErrfs=${HOMErrfs:-""}
 export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
-export FIX_GSI="${FIXrrfs}/gsi"
 
 #-----------------------------------------------------------------------
 # RRFS Save Restart
@@ -129,18 +126,6 @@ SLASH_ENSMEM_SUBDIR=${SLASH_ENSMEM_SUBDIR:-""}
 len_ensmem=${#SLASH_ENSMEM_SUBDIR} 
 if [ ${len_ensmem} -eq 0 ] && [ ! "${DO_ENSEMBLE}" = "TRUE" ]; then
   export CYCLE_SUBTYPE="control"
-fi
-
-#-----------------------------------------------------------------------
-# Make sure that fhr is a non-empty string consisting of only digits.  
-#-----------------------------------------------------------------------
-fhr=${FHR:-0}
-export fhr=$( printf "%s" "${fhr}" | sed -n -r -e "s/^([0-9]+)$/\1/p" )
-if [ -z "$fhr" ]; then
-  err_exit "\
-The forecast hour (fhr) must be a non-empty string consisting of only 
-digits:
-  fhr = \"${fhr}\""
 fi
 
 #-----------------------------------------------------------------------

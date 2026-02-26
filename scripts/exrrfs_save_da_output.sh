@@ -47,7 +47,6 @@ This is the ex-script for the task that saves DA analysis files to nwges.
 #
 yyyymmdd=${CDATE:0:8}
 hh=${CDATE:8:2}
-cyc=$hh
 # 
 #-----------------------------------------------------------------------
 #

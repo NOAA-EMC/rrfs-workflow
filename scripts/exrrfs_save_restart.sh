@@ -47,7 +47,7 @@ This is the ex-script for the task that saves restart files to nwges.
 #
 yyyymmdd=${CDATE:0:8}
 hh=${CDATE:8:2}
-cyc=$hh
+fhr=${FHR:-}
 
 save_time=$($NDATE ${fhr} ${yyyymmdd}${hh})
 save_yyyy=${save_time:0:4}

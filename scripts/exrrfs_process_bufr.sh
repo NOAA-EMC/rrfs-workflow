@@ -3,6 +3,8 @@ set -x
 
 source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
+export FIX_GSI="${FIXrrfs}/gsi"
+
 #
 #-----------------------------------------------------------------------
 #
