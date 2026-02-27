@@ -634,11 +634,11 @@ AQM_UTIL_PREFIX=aqm_util
 [ -f ${EXEC_DIR}/update_ice.exe ] && mv ${EXEC_DIR}/update_ice.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_update_ice.exe
 [ -f ${EXEC_DIR}/use_raphrrr_sfc.exe ] && mv ${EXEC_DIR}/use_raphrrr_sfc.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_use_raphrrr_sfc.exe
 
-# Remove version-controlled developer-only codes if building for ops:
+# For ops builds, remove version-controlled developer-only codes and
+# locally update git-index to hide these deletions from git (status).
 if [[ $NCO_BUILD = "TRUE" ]]; then
     cd $HOME_DIR
     RMFILE_LIST="${HOME_DIR}/parm/non_ops_files_to_rm.list"
-    exclude_path="${HOME_DIR}/.git/info/exclude"
     echo "Removing files not needed for ops and updating git index..."
     while read line; do
         echo "updating git index and deleting ${line}"
