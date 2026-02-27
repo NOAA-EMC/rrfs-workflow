@@ -634,7 +634,7 @@ AQM_UTIL_PREFIX=aqm_util
 [ -f ${EXEC_DIR}/update_ice.exe ] && mv ${EXEC_DIR}/update_ice.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_update_ice.exe
 [ -f ${EXEC_DIR}/use_raphrrr_sfc.exe ] && mv ${EXEC_DIR}/use_raphrrr_sfc.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_use_raphrrr_sfc.exe
 
-# Remove developer-only codes if building for ops:
+# Remove version-controlled developer-only codes if building for ops:
 if [[ $NCO_BUILD = "TRUE" ]]; then
     cd $HOME_DIR
     RMFILE_LIST="${HOME_DIR}/parm/non_ops_files_to_rm.list"
@@ -643,7 +643,7 @@ if [[ $NCO_BUILD = "TRUE" ]]; then
     while read line; do
         echo "updating git index and deleting ${line}"
         if [[ -d $line ]]; then
-            git update-index --assume-unchanged ${line}/*
+            git update-index --assume-unchanged ${line}/{.,}*
             rm -rf $line
         elif [[ -e $line ]]; then
             git update-index --assume-unchanged $line
